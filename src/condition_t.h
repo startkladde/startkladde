@@ -1,12 +1,12 @@
 #ifndef condition_t_h
 #define condition_t_h
 
-#include "data_types.h"
+#include "src/data_types.h"
 
-#include "sk_time_t.h"
+#include "src/time/sk_time_t.h"
 #include <string>
 #include <qdatetime.h>
-#include "db_types.h"
+#include "src/db/db_types.h"
 
 /*
  * condition_t
@@ -36,7 +36,7 @@ enum condition_type_t	// A query condition type
 	cond_flight_plane_flying_at, cond_flight_person_flying_at,
 	cond_flight_plane_date, cond_flight_person_date, cond_flight_person_date_range,
 	// Plane conditions
-	cond_plane_registration, 
+	cond_plane_registration,
 	// Person conditions
 	cond_person_first_name, cond_person_last_name, cond_person_name, cond_person_club_club_id
 };

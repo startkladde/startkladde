@@ -1,10 +1,10 @@
-#include <argument.h>
-#include <object_field.h>
-#include <sk_flug.h>
-#include <sk_flugzeug.h>
-#include <sk_person.h>
-#include <startart_t.h>
-#include <plugin_data_format.h>
+#include <src/web/argument.h>
+#include <src/object_field.h>
+#include <src/model/sk_flug.h>
+#include <src/model/sk_flugzeug.h>
+#include <src/model/sk_person.h>
+#include <src/model/startart_t.h>
+#include <src/plugins/plugin_data_format.h>
 #include <string>
 
 const string format_lsv_albgau="lsv_albgau";

@@ -1,14 +1,14 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "version.h"
-#include "accessor.h"
-#include "argument.h"
-#include "text.h"
-#include "web_session.h"
-#include "sk_db.h"
-#include "io.h"
-#include "options.h"
+#include "src/version.h"
+#include "src/accessor.h"
+#include "src/web/argument.h"
+#include "src/text.h"
+#include "src/web/web_session.h"
+#include "src/db/sk_db.h"
+#include "src/io/io.h"
+#include "src/config/options.h"
 
 // Qt3:
 //#include <qptrlist.h>
@@ -17,18 +17,18 @@
 #define QPtrList Q3PtrList
 #define QPtrListIterator Q3PtrListIterator
 
-#include "html_document.h"
-#include "http_document.h"
-#include "what_next.h"
-#include "sk_user.h"
-#include "object_field.h"
-#include "mime_header.h"
-#include "table.h"
-#include "sk_date.h"
-#include "flugbuch.h"
-#include "bordbuch.h"
-#include "latex_document.h"
-#include "plugin_data_format.h"
+#include "src/web/html_document.h"
+#include "src/web/http_document.h"
+#include "src/web/what_next.h"
+#include "src/model/sk_user.h"
+#include "src/object_field.h"
+#include "src/web/mime_header.h"
+#include "src/documents/table.h"
+#include "src/time/sk_date.h"
+#include "src/statistics/flugbuch.h"
+#include "src/statistics/bordbuch.h"
+#include "src/documents/latex_document.h"
+#include "src/plugins/plugin_data_format.h"
 
 // Places that need to be changed when adding a web interface state are marked
 // with _STATE_
@@ -39,9 +39,9 @@
 // TODO mehr write_text
 
 // TODO: check all parameters from the user for validity
-//   - passwörter: dürfen keine "" enthalten (?)
+//   - passwï¿½rter: dï¿½rfen keine "" enthalten (?)
 
-// Person editieren: +Bemerkung +Vereinsid +Löschen
+// Person editieren: +Bemerkung +Vereinsid +Lï¿½schen
 
 // TODO: When changing to the same state (login->do_login->login), preenter the
 // values like username (not password), like already done for some states.
@@ -654,7 +654,7 @@ list<float> widths_flightlist;			    // The column widths of a flightlist entry,
 
 // Global variables/*{{{*/
 bool debug_enabled;                         // Whether debugging is enabled
-ostringstream debug_stream;                 // A stream whose contents are 
+ostringstream debug_stream;                 // A stream whose contents are
 											// displayed in the document footer
 											// when the debug argument is set
 web_session session;                        // The login session
@@ -753,7 +753,7 @@ void require_access (db_access_t req, const string &message="")/*{{{*/
 			throw ex_write_error_document (
 				"Unzureichender Datenbankzugriff"
 				" (vorhanden: "+db_access_string (session_access)+";"
-				" benötigt: "+db_access_string (req)+")"
+				" benï¿½tigt: "+db_access_string (req)+")"
 				);
 		else
 			throw ex_write_error_document (message);
@@ -772,14 +772,14 @@ void require_club_admin (const string &message="")/*{{{*/
 	switch (session_access)
 	{
 		case dba_access: case dba_none:
-			throw ex_write_error_document (message_or_default (message, "Vereinsadministratorrechte benötigt"));
+			throw ex_write_error_document (message_or_default (message, "Vereinsadministratorrechte benï¿½tigt"));
 		case dba_root: return; break;
 		case dba_sk_admin: return; break;
 		case dba_sk_user:
 			if (!session_user)
 				throw ex_write_error_document ("session_user nicht gesetzt").is_program_error ();
 			if (!session_user->perm_club_admin)
-				throw ex_write_error_document (message_or_default (message, "Vereinsadministratorrechte benötigt"));
+				throw ex_write_error_document (message_or_default (message, "Vereinsadministratorrechte benï¿½tigt"));
 			return;
 			break;
 	}
@@ -865,7 +865,7 @@ void require_not_self (const string &username, const string &message="")/*{{{*/
 	 */
 {
 	if (session_username==username)
-		throw ex_write_error_document (message_or_default (message, "Diese Aktionen kann nicht mit sich selbst durchgeführt werden"));
+		throw ex_write_error_document (message_or_default (message, "Diese Aktionen kann nicht mit sich selbst durchgefï¿½hrt werden"));
 }
 /*}}}*/
 
@@ -890,7 +890,7 @@ user_class_t determine_user_class (const string &name)/*{{{*/
 	 * Determines to which user class a given login name belongs.
 	 * Parameters:
 	 *   - name: the user name.
-	 * Return value: 
+	 * Return value:
 	 *   - The user class of the user.
 	 */
 {
@@ -959,7 +959,7 @@ bool authenticate (const string &username, const string &password, string &error
 		case uc_none:
 		{
 			// Now this is easy. The user is not allowed to log in.
-			LOGIN_ERROR ("Anmeldung für Benutzer "+username+" nicht erlaubt.");
+			LOGIN_ERROR ("Anmeldung fï¿½r Benutzer "+username+" nicht erlaubt.");
 			session_access=dba_none;
 		} break;
 		case uc_mysql_user:
@@ -993,8 +993,8 @@ bool authenticate (const string &username, const string &password, string &error
 			// to authenticate the user using sk_db sk_user functions.
 
 			// Check whether we have sk_admin access data at all.
-			LOGIN_ERROR_IF (opts.sk_admin_name.empty (), "Name für das Administratorkonta (sk_admin) nicht konfiguriert");
-			LOGIN_ERROR_IF (opts.sk_admin_password.empty (), "Passwort für '"+opts.sk_admin_name+"' nicht konfiguriert");
+			LOGIN_ERROR_IF (opts.sk_admin_name.empty (), "Name fï¿½r das Administratorkonta (sk_admin) nicht konfiguriert");
+			LOGIN_ERROR_IF (opts.sk_admin_password.empty (), "Passwort fï¿½r '"+opts.sk_admin_name+"' nicht konfiguriert");
 
 			// Try to log in to the server as user sk_admin.
 			if (db.connected ()) db.disconnect ();
@@ -1024,7 +1024,7 @@ bool authenticate (const string &username, const string &password, string &error
 			ret=db.sk_user_get (*_session_user, username);
 			LOGIN_ERROR_IF (ret!=db_ok, db.db_error_description (ret, true));
 			session_user=_session_user;
-			
+
 			return true;
 		} break;
 	}
@@ -1208,7 +1208,7 @@ void write_document_footer ()/*{{{*/
 	if (!current_state || current_state->get_label ()!=web_main_menu)
 		document
 			.write_br ()
-			.write_text_link (back_link_url (web_main_menu), "Zurück zum Hauptmenü")
+			.write_text_link (back_link_url (web_main_menu), "Zurï¿½ck zum Hauptmenï¿½")
 			;
 
 	document.end_paragraph ();
@@ -1242,7 +1242,7 @@ void write_document_footer ()/*{{{*/
 			document.write (html_escape (name+"="+value)+"<br>\n");
 		}
 		document.end_paragraph ();
-	
+
 		// Write connection information
 		document
 			.start_paragraph ()
@@ -1314,7 +1314,7 @@ string make_anchor_name (db_id id)/*{{{*/
 	 *     passed to CGI_READ, so arg_cgi_ is prepended to the name.
 	 */
 #define CHECK_AN_ID(ID, CGI_ARG)	\
-	do { if (id_invalid (ID)) return what_next::output_error ("Ungültige ID \""+CGI_READ (CGI_ARG)+"\""); } while (false)
+	do { if (id_invalid (ID)) return what_next::output_error ("Ungï¿½ltige ID \""+CGI_READ (CGI_ARG)+"\""); } while (false)
 /*}}}*/
 
 // CHECK_ID/*{{{*/
@@ -1368,14 +1368,14 @@ what_next csv_to_persons (const string &csv, QPtrList<sk_person> &persons, const
 		additional_args.set_value (arg_cgi_data_type, CGI_READ (data_type));
 		document
 			.start_paragraph ()
-			.write_text_link (back_link_url (web_master_data_import, additional_args), "Zurück")
+			.write_text_link (back_link_url (web_master_data_import, additional_args), "Zurï¿½ck")
 			.end_paragraph ()
 			;
 		return what_next::output_document ();
 	}
 
 	// OK, all required columns are present.
-	
+
 	// Parse the CSV file to a table
 	table csv_table=table::from_csv (csv_stream);
 
@@ -1407,7 +1407,7 @@ what_next csv_to_persons (const string &csv, QPtrList<sk_person> &persons, const
 	// handling functions in sk_web.
 	table::const_iterator table_end=csv_table.end ();
 	for (table::const_iterator it=csv_table.begin (); it!=table_end; ++it)
-	{	
+	{
 		sk_person *p=new sk_person;
 #define WRITE(NAME,TARGET) do { if (index_ ## NAME>=0 && ((int)(*it).size ())>index_ ## NAME) p->TARGET=(*it).at (index_ ## NAME); } while (false)
 		WRITE (last_name, nachname);
@@ -1630,9 +1630,9 @@ void write_delete_links (const string &delete_state, const string &ident_arg, co
 	argument_list delete_args;
 	delete_args.set_value (ident_arg, ident_val);
 	document
-		.write_text_link (back_link_url (delete_state, delete_args), "Wirklich löschen")
+		.write_text_link (back_link_url (delete_state, delete_args), "Wirklich lï¿½schen")
 		.write (" ")
-		.write_text_link (back_link_url (back_state, anchor), "Zurück");
+		.write_text_link (back_link_url (back_state, anchor), "Zurï¿½ck");
 }
 /*}}}*/
 
@@ -1646,7 +1646,7 @@ void check_username (const string &username)/*{{{*/
 	 *   - ex_write_error_document: thrown when the user name is not valid.
 	 */
 {
-	if (!user_name_valid (username)) throw ex_write_error_document ("Benutzername \""+username+"\" enthält ungültige Zeichen");
+	if (!user_name_valid (username)) throw ex_write_error_document ("Benutzername \""+username+"\" enthï¿½lt ungï¿½ltige Zeichen");
 }
 /*}}}*/
 
@@ -1664,7 +1664,7 @@ void setup_latex_headings (latex_document &ldoc, const string &caption, const st
 /*}}}*/
 
 // TODO use the add_* functions everywhere, also where writing forms based on
-// object_fields 
+// object_fields
 void add_date_inputs (html_table &table, bool include_range)/*{{{*/
 {
 	// TODO add possibility to include any combination, use hidden
@@ -1896,7 +1896,7 @@ void treat_additional_fields (treatment_t treatment, const list<argument> &addit
 		case tm_write_edit:
 			document.write (
 				"<tr><td colspan=2>\n"
-				"  <input type=\"submit\" value=\""+string ("Ändern")+"\">\n"
+				"  <input type=\"submit\" value=\""+string ("ï¿½ndern")+"\">\n"
 				"</td></tr>\n"
 				);
 			break;
@@ -2029,11 +2029,11 @@ what_next treat_person (sk_person *_p, treatment_t treatment, const string &new_
 		if (args) fields.add (*args);
 		// TODO don't specify manually
 		fields.set_value ("Editieren", back_link_url (web_edit_person)+"&"+arg_cgi_id+"="+num_to_string (p->id));
-		fields.set_value ("Löschen", back_link_url (web_delete_person)+"&"+arg_cgi_id+"="+num_to_string (p->id));
-		fields.set_value ("Überschreiben", back_link_url (web_select_merge_person)+"&"+arg_cgi_id+"="+num_to_string (p->id));
+		fields.set_value ("Lï¿½schen", back_link_url (web_delete_person)+"&"+arg_cgi_id+"="+num_to_string (p->id));
+		fields.set_value ("ï¿½berschreiben", back_link_url (web_select_merge_person)+"&"+arg_cgi_id+"="+num_to_string (p->id));
 		treat_additional_fields (treatment, fields.get_list ());
 	}
-	
+
 	// Appendix
 	argument_list appendix_args;
 	appendix_args.set_value (ident_arg, num_to_string (p->id));
@@ -2397,12 +2397,12 @@ void write_flugbuch (latex_document &ldoc, const QPtrList<flugbuch_entry> &flugb
 	// XXX
 {
 	// TODO code duplication with csv writing
-	setup_latex_headings (ldoc, "Flugbuch für "+latex_escape (person_name), date_text);
+	setup_latex_headings (ldoc, "Flugbuch fï¿½r "+latex_escape (person_name), date_text);
 	ldoc.landscape=false;
 
 	if (flugbuch.isEmpty ())
 	{
-		ldoc.write_text ("Keine Flüge\n");
+		ldoc.write_text ("Keine Flï¿½ge\n");
 	}
 	else
 	{
@@ -2427,12 +2427,12 @@ void write_bordbuch (latex_document &ldoc, const QPtrList<bordbuch_entry> &bordb
 	// XXX
 {
 	// TODO code duplication with csv writing
-	setup_latex_headings (ldoc, "Bordbücher "+latex_escape (opts.ort), date_text);
+	setup_latex_headings (ldoc, "Bordbï¿½cher "+latex_escape (opts.ort), date_text);
 	ldoc.landscape=false;
 
 	if (bordbuch.isEmpty ())
 	{
-		ldoc.write_text ("Keine Flüge\n");
+		ldoc.write_text ("Keine Flï¿½ge\n");
 	}
 	else
 	{
@@ -2463,7 +2463,7 @@ void write_flightlist (latex_document &ldoc, const flight_list &flights, const s
 
 	if (flights.isEmpty ())
 	{
-		ldoc.write_text ("Keine Flüge\n");
+		ldoc.write_text ("Keine Flï¿½ge\n");
 	}
 	else
 	{
@@ -2527,7 +2527,7 @@ void field_user_lock (list<object_field> &fields)/*{{{*/
 void write_fields_display (list<object_field> fields)/*{{{*/
 {
 	html_table table;
-	
+
 	list<object_field>::const_iterator end=fields.end ();
 	for (list<object_field>::const_iterator it=fields.begin (); it!=end; ++it)
 	{
@@ -2605,7 +2605,7 @@ void fields_write_edit_table (const list<object_field> &fields, bool create_new,
 
 			if (!field_edit || field.get_locked ())
 				document.write_hidden_field (field.get_label (), field.make_text ());
-			
+
 			if (!field_state.empty ())
 			{
 				// The field can be edited using a link/button
@@ -2655,7 +2655,7 @@ void fields_write_edit_table (const list<object_field> &fields, bool create_new,
 	document
 		.start_tag ("tr")
 		.start_tag ("td", "colspan=2")
-		.write_submit (create_new?"Anlegen":"Ändern")
+		.write_submit (create_new?"Anlegen":"ï¿½ndern")
 		.end_tag ("td")
 		.end_tag ("tr")
 		;
@@ -2807,13 +2807,13 @@ what_next handler_do_login ()/*{{{*/
 {
 	// We may only do this via POST requests.
 	if (request_method!=rm_post)
-		return what_next::output_error ("Aus Sicherheitsgründen ist dieser Zugang nicht möglich. Bitte die Anmeldeseite verwenden.");
-	
+		return what_next::output_error ("Aus Sicherheitsgrï¿½nden ist dieser Zugang nicht mï¿½glich. Bitte die Anmeldeseite verwenden.");
+
 	// Check parameter: username. Must be present and non-empty.
 	if (!CGI_HAS (username)) return what_next::go_to_state (web_login, "Kein Benutzername angegeben", true);
 	string username=CGI_READ (username);
 	if (username.empty ()) return what_next::go_to_state (web_login, "Kein Benutzername angegeben", true);
-	if (!user_name_valid (username)) return what_next::go_to_state (web_login, "Benutzername enthält ungültige Zeichen", true);
+	if (!user_name_valid (username)) return what_next::go_to_state (web_login, "Benutzername enthï¿½lt ungï¿½ltige Zeichen", true);
 
 	// Check parameter password. Must be present and non-empty.
 	if (!CGI_HAS (password)) return what_next::go_to_state (web_login, "Kein Passwort angegeben", true);
@@ -2916,7 +2916,7 @@ what_next handler_main_menu ()/*{{{*/
 {
 	// TODO: hier eine Funktion, die einen korrekt titulierten Link auf den Zustand ausgibt.
 	// TODO: consider only listing entries which are acually available
-	
+
 	list<string> database_list;
 	list<string> account_list;
 	list<string> person_list;
@@ -2972,15 +2972,15 @@ what_next handler_change_password ()/*{{{*/
 	switch (determine_user_class (SESSION_READ (login_name)))
 	{
 		case uc_none:
-			return what_next::output_error ("Passwortänderung für Benutzer der Klasse uc_none nicht möglich");
+			return what_next::output_error ("Passwortï¿½nderung fï¿½r Benutzer der Klasse uc_none nicht mï¿½glich");
 			break;
 		case uc_mysql_user:
-			return what_next::output_error ("Passwortänderung für Benutzer der Klasse uc_mysql_user nicht implementiert");
+			return what_next::output_error ("Passwortï¿½nderung fï¿½r Benutzer der Klasse uc_mysql_user nicht implementiert");
 			// SET PASSWORD=PASSWORD ('foo');
 			break;
 		case uc_sk_user:
 		{
-			document.write_paragraph ("Passwortänderung für Benutzer "+html_escape (SESSION_READ (login_name)));
+			document.write_paragraph ("Passwortï¿½nderung fï¿½r Benutzer "+html_escape (SESSION_READ (login_name)));
 			// TODO use document methods
 			document.write (
 				"<form action=\""+relative_url+"\" method=\"POST\">\n"
@@ -2997,7 +2997,7 @@ what_next handler_change_password ()/*{{{*/
 				"      <td>Neues Passwort (wiederholen):</td>\n"
 				"      <td><input type=\"password\" name=\""+arg_cgi_new_password_2+"\"></td>\n"
 				"    </tr>\n"
-				"    <tr><td colspan=2><input type=\"submit\" value=\"Ändern\"></td></tr>\n"
+				"    <tr><td colspan=2><input type=\"submit\" value=\"ï¿½ndern\"></td></tr>\n"
 				"  </table>\n"
 				+back_form_hidden (web_do_change_password)+
 				"</form>\n"
@@ -3021,16 +3021,16 @@ what_next handler_do_change_password ()/*{{{*/
 	switch (determine_user_class (user_name))
 	{
 		case uc_none:
-			return what_next::output_error ("Passwortänderung für Benutzer der Klasse uc_none nicht möglich");
+			return what_next::output_error ("Passwortï¿½nderung fï¿½r Benutzer der Klasse uc_none nicht mï¿½glich");
 			break;
 		case uc_mysql_user:
-			return what_next::output_error ("Passwortänderung für Benutzer der Klasse uc_mysql_user nicht implementiert");
+			return what_next::output_error ("Passwortï¿½nderung fï¿½r Benutzer der Klasse uc_mysql_user nicht implementiert");
 			// dann auch gespeichertes passwort (in session) aktualisieren
 			break;
 		case uc_sk_user:
 		{
 			if (user_name.empty ()) return what_next::output_error ("login_name nicht gesetzt");
-			if (new_password_1!=new_password_2) return what_next::go_to_state (web_change_password, "Neue Passwörter stimmen nicht überein", true);
+			if (new_password_1!=new_password_2) return what_next::go_to_state (web_change_password, "Neue Passwï¿½rter stimmen nicht ï¿½berein", true);
 			if (new_password_1.empty ()) return what_next::go_to_state (web_change_password, "Neues Passwort nicht angegeben", true);
 			string error_message;
 			if (!authenticate (user_name, old_password, error_message)) return what_next::go_to_state (web_change_password, error_message, true);
@@ -3038,10 +3038,10 @@ what_next handler_do_change_password ()/*{{{*/
 			int ret=db.sk_user_change_password (user_name, new_password_1);
 			CHECK_DB_ERROR_ERROR;
 
-			return redirect_to_result ("Passwortänderung erfolgt", false, web_main_menu);
+			return redirect_to_result ("Passwortï¿½nderung erfolgt", false, web_main_menu);
 		} break;
 	}
-	
+
 	return what_next::output_error ("Unbehandelte Benutzerklasse in handler_do_change_password (Programmfehler)");
 }
 /*}}}*/
@@ -3169,7 +3169,7 @@ what_next handler_delete_person ()/*{{{*/
 	CHECK_ID;
 
 	if (db.person_used (id))
-		return what_next::output_error ("Die Person kann nicht gelöscht werden, weil sie noch verwendet wird.");
+		return what_next::output_error ("Die Person kann nicht gelï¿½scht werden, weil sie noch verwendet wird.");
 		// TODO where?
 
 	// Read the person
@@ -3177,7 +3177,7 @@ what_next handler_delete_person ()/*{{{*/
 	int ret=db.get_person (&person, id);
 	CHECK_DB_ERROR_ERROR;
 
-	document.write_paragraph ("Die folgende Person wird gelöscht:");
+	document.write_paragraph ("Die folgende Person wird gelï¿½scht:");
 
 	// Display the person
 	document.start_paragraph ();
@@ -3190,9 +3190,9 @@ what_next handler_delete_person ()/*{{{*/
 	document
 		.write_paragraph ("OK?")
 		.start_paragraph ()
-		.write_text_link (back_link_url (web_do_delete_person, delete_args), "Wirklich löschen")
+		.write_text_link (back_link_url (web_do_delete_person, delete_args), "Wirklich lï¿½schen")
 		.write (" ")
-		.write_text_link (back_link_url (web_list_persons, make_anchor_name (person.id)), "Zurück")
+		.write_text_link (back_link_url (web_list_persons, make_anchor_name (person.id)), "Zurï¿½ck")
 		.end_paragraph ()
 		;
 
@@ -3211,7 +3211,7 @@ what_next handler_do_delete_person ()/*{{{*/
 	CHECK_ID;
 
 	if (db.person_used (id))
-		return what_next::output_error ("Die Person kann nicht gelöscht werden, weil sie noch verwendet wird.");
+		return what_next::output_error ("Die Person kann nicht gelï¿½scht werden, weil sie noch verwendet wird.");
 		// TODO where?
 
 	// Delete
@@ -3243,7 +3243,7 @@ what_next handler_result ()/*{{{*/
 		}
 		catch (web_interface_state::ex_not_found)
 		{
-			document.write_paragraph ("(Ungülitiger Zustand "+next_state+")");
+			document.write_paragraph ("(Ungï¿½litiger Zustand "+next_state+")");
 		}
 	}
 
@@ -3311,10 +3311,10 @@ what_next handler_select_merge_person ()/*{{{*/
 	ret=db.get_person (&person, id);
 	CHECK_DB_ERROR_ERROR;
 
-	document.write_paragraph ("Die folgende (falsche) Person wird überschrieben:");
+	document.write_paragraph ("Die folgende (falsche) Person wird ï¿½berschrieben:");
 	DO_SUB_ACTION (treat_person (&person, tm_write_display));
 
-	document.write_paragraph ("Bitte die korrekte Person auswählen:");
+	document.write_paragraph ("Bitte die korrekte Person auswï¿½hlen:");
 
 	// For linking to the do_merge state, we need to pass the wrong person.
 	argument_list additional_args;
@@ -3325,7 +3325,7 @@ what_next handler_select_merge_person ()/*{{{*/
 	CHECK_DB_ERROR_ERROR;
 	DO_SUB_ACTION (write_person_list (persons, false, web_merge_person, arg_cgi_correct_person, &additional_args, false, true));
 
-	document.write_paragraph (document.text_link (back_link_url (web_list_persons, make_anchor_name (person.id)), "Zurück zur Benutzerliste"));
+	document.write_paragraph (document.text_link (back_link_url (web_list_persons, make_anchor_name (person.id)), "Zurï¿½ck zur Benutzerliste"));
 
 	return what_next::output_document ();
 }
@@ -3342,10 +3342,10 @@ what_next handler_merge_person ()/*{{{*/
 	CHECK_AN_ID (wrong_id, id);
 	CHECK_AN_ID (correct_id, correct_person);
 
-	if (correct_id==wrong_id) return what_next::go_to_state (web_select_merge_person, "Identische Person ausgewählt", true);
+	if (correct_id==wrong_id) return what_next::go_to_state (web_select_merge_person, "Identische Person ausgewï¿½hlt", true);
 
 	// Write persons and get confirmation
-	
+
 	// Get the persons from the database
 	// Wrong person
 	sk_person wrong_person;
@@ -3359,7 +3359,7 @@ what_next handler_merge_person ()/*{{{*/
 	document.write_paragraph ("Die folgende (falsche) Person:");
 	DO_SUB_ACTION (treat_person (&wrong_person, tm_write_display));
 
-	document.write_paragraph ("wird durch folgende (korrekten) Person überschrieben:");
+	document.write_paragraph ("wird durch folgende (korrekten) Person ï¿½berschrieben:");
 	DO_SUB_ACTION (treat_person (&correct_person, tm_write_display));
 
 	document.write_paragraph ("OK?");
@@ -3368,24 +3368,24 @@ what_next handler_merge_person ()/*{{{*/
 	argument_list merge_args;
 	merge_args.set_value (arg_cgi_id, num_to_string (wrong_id));
 	merge_args.set_value (arg_cgi_correct_person, num_to_string (correct_person.id));
-	string merge_link_target=back_link_url (web_do_merge_person, merge_args);	//, "Neu auswählen";
+	string merge_link_target=back_link_url (web_do_merge_person, merge_args);	//, "Neu auswï¿½hlen";
 
 	// Back to selection
 	argument_list back_select_args;
 	back_select_args.set_value (arg_cgi_id, num_to_string (wrong_id));
-	string back_select_link_target=back_link_url (web_select_merge_person, back_select_args); //, "Neu auswählen");
+	string back_select_link_target=back_link_url (web_select_merge_person, back_select_args); //, "Neu auswï¿½hlen");
 
 	// Back to list
 	string anchor=make_anchor_name (wrong_person.id);
-	string back_list_link_target=back_link_url (web_list_persons, anchor);	//, "Zurück zur Personenliste");
+	string back_list_link_target=back_link_url (web_list_persons, anchor);	//, "Zurï¿½ck zur Personenliste");
 
 	document
 		.start_paragraph ()
-		.write_text_link (merge_link_target, "Überschreiben")
+		.write_text_link (merge_link_target, "ï¿½berschreiben")
 		.write (" ")
-		.write_text_link (back_select_link_target, "Neu auswählen")
+		.write_text_link (back_select_link_target, "Neu auswï¿½hlen")
 		.write (" ")
-		.write_text_link (back_list_link_target, "Zurück zur Personenliste")
+		.write_text_link (back_list_link_target, "Zurï¿½ck zur Personenliste")
 		.end_paragraph ()
 		;
 
@@ -3402,7 +3402,7 @@ what_next handler_do_merge_person ()/*{{{*/
 	CHECK_AN_ID (wrong_id, id);
 	CHECK_AN_ID (correct_id, correct_person);
 
-	if (correct_id==wrong_id) return what_next::go_to_state (web_select_merge_person, "Identische Person ausgewählt", true);
+	if (correct_id==wrong_id) return what_next::go_to_state (web_select_merge_person, "Identische Person ausgewï¿½hlt", true);
 
 	try
 	{
@@ -3417,7 +3417,7 @@ what_next handler_do_merge_person ()/*{{{*/
 		return what_next::output_error (e.description ());
 	}
 
-	SESSION_WRITE (one_time_message, "Person überschrieben");
+	SESSION_WRITE (one_time_message, "Person ï¿½berschrieben");
 	return make_redirect (web_list_persons, make_anchor_name (correct_id));
 }
 ///*}}}*/
@@ -3454,7 +3454,7 @@ what_next handler_user_list ()/*{{{*/
 
 		// Write the edit and delete cells
 		user_row.push_back (make_link_cell (web_user_edit, "Editieren", arg_cgi_username, (*user).username));
-		user_row.push_back (make_link_cell (web_user_delete, "Löschen", arg_cgi_username, (*user).username));
+		user_row.push_back (make_link_cell (web_user_delete, "Lï¿½schen", arg_cgi_username, (*user).username));
 
 		// End of row
 		table.push_back (user_row);
@@ -3472,7 +3472,7 @@ what_next handler_user_delete ()/*{{{*/
 	// Display user
 
 	require_club_admin ();
-	
+
 	if (!CGI_HAS (username)) return what_next::output_error ("Kein Benutzername angegeben");
 	string username=CGI_READ (username);
 	if (username.empty ()) return what_next::output_error ("Benutzername ist leer");
@@ -3483,10 +3483,10 @@ what_next handler_user_delete ()/*{{{*/
 	CHECK_DB_ERROR_ERROR;
 	sk_user_to_fields (user);
 
-	require_not_self (user.username, "Man kann sich nicht selbst löschen");
-	require_matching_club_admin (user.club, "Es können nur Benutzer des eigenen Vereins gelöscht werden");
+	require_not_self (user.username, "Man kann sich nicht selbst lï¿½schen");
+	require_matching_club_admin (user.club, "Es kï¿½nnen nur Benutzer des eigenen Vereins gelï¿½scht werden");
 
-	document.write_paragraph ("Der folgende Benutzer wird gelöscht:");
+	document.write_paragraph ("Der folgende Benutzer wird gelï¿½scht:");
 
 	document.start_paragraph ();
 	write_fields_display (fields_sk_user);
@@ -3505,7 +3505,7 @@ what_next handler_user_do_delete ()/*{{{*/
 	// Delete the user
 
 	require_club_admin ();
-	
+
 	if (!CGI_HAS (username)) return what_next::output_error ("Kein Benutzername angegeben");
 	string username=CGI_READ (username);
 	if (username.empty ()) return what_next::output_error ("Benutzername ist leer");
@@ -3516,8 +3516,8 @@ what_next handler_user_do_delete ()/*{{{*/
 	int ret=db.sk_user_get (user_to_delete, username);
 	CHECK_DB_ERROR_ERROR;
 
-	require_not_self (username, "Man kann sich nicht selbst löschen");
-	require_matching_club_admin (user_to_delete.club, "Es können nur Benutzer des eigenen Vereins gelöscht werden");
+	require_not_self (username, "Man kann sich nicht selbst lï¿½schen");
+	require_matching_club_admin (user_to_delete.club, "Es kï¿½nnen nur Benutzer des eigenen Vereins gelï¿½scht werden");
 
 	ret=db.sk_user_delete (username);
 	CHECK_DB_ERROR_ERROR;
@@ -3610,7 +3610,7 @@ what_next handler_user_edit ()/*{{{*/
 				sk_person person;
 				int ret=db.get_person (&person, person_id);
 				CHECK_DB_ERROR_ERROR;
-	
+
 				// ...and enter its club.
 				(*field_club).set_to (person.club);
 			}
@@ -3655,9 +3655,9 @@ what_next handler_user_do_edit ()/*{{{*/
 		if (create_new) session.args.set_value (arg_session_create_new);
 
 		// Now we can safely go to the selection state
-		return what_next::go_to_state (web_person_select, "Person auswählen");
+		return what_next::go_to_state (web_person_select, "Person auswï¿½hlen");
 	}
-	
+
 	require_club_admin ();
 
 	int ret;
@@ -3677,7 +3677,7 @@ what_next handler_user_do_edit ()/*{{{*/
 	{
 		// Create
 		username=user.username;
-		if (!user_name_valid (username)) return what_next::go_to_state (web_user_edit, "Benutzername enthält ungültige Zeichen", true);
+		if (!user_name_valid (username)) return what_next::go_to_state (web_user_edit, "Benutzername enthï¿½lt ungï¿½ltige Zeichen", true);
 
 		// TODO: handle these checks via lock_fields
 		if (user.perm_club_admin) require_sk_admin ("Nur der Startkladdenadministrator kann Vereinsadministratorrechte vergeben");
@@ -3694,13 +3694,13 @@ what_next handler_user_do_edit ()/*{{{*/
 		CHECK_DB_ERROR_ERROR;
 
 		// TODO handle these checks via lock_fields
-		if (user.perm_club_admin!=org_user.perm_club_admin) require_sk_admin ("Nur der Startkladdenadministrator kann Vereinsadministratorrechte ändern");
-		if (user.perm_read_flight_db!=org_user.perm_read_flight_db) require_sk_admin ("Nur der Startkladdenadministrator kann Datenbankleserechte ändern");
+		if (user.perm_club_admin!=org_user.perm_club_admin) require_sk_admin ("Nur der Startkladdenadministrator kann Vereinsadministratorrechte ï¿½ndern");
+		if (user.perm_read_flight_db!=org_user.perm_read_flight_db) require_sk_admin ("Nur der Startkladdenadministrator kann Datenbankleserechte ï¿½ndern");
 	}
 
 
 	if (user.perm_club_admin && user.club.empty ())
-		return what_next::go_to_state (web_user_edit, "Für einen Vereinsadmin ist ein Verein nötig", true);
+		return what_next::go_to_state (web_user_edit, "Fï¿½r einen Vereinsadmin ist ein Verein nï¿½tig", true);
 
 	// Check the username
 	if (username.empty ()) return what_next::go_to_state (web_user_edit, "Kein Benutzername angegeben", true);
@@ -3728,18 +3728,18 @@ what_next handler_user_do_edit ()/*{{{*/
 	if (create_new)
 	{
 		// Create
-		
+
 		// Determine and check the passwords
 		string password_1=CGI_READ_F (field_user_password);
 		string password_2=CGI_READ_F (field_user_password_repeat);
 		if (password_1.empty ()) return what_next::go_to_state (web_user_edit, "Kein Passwort angegeben", true);
-		if (password_1!=password_2) return what_next::go_to_state (web_user_edit, "Passwörter stimmen nicht überein", true);
-		
+		if (password_1!=password_2) return what_next::go_to_state (web_user_edit, "Passwï¿½rter stimmen nicht ï¿½berein", true);
+
 		// Check if the user exists
 		ret=db.sk_user_exists (user.username);
 		CHECK_DB_ERROR_ERROR;
 		if (ret>0) return what_next::go_to_state (web_user_edit, "Der Benutzername \""+user.username+"\" existiert bereits", true);
-		
+
 		// Add the user
 		ret=db.sk_user_add (user, password_1);
 		CHECK_DB_ERROR_ERROR;
@@ -3764,7 +3764,7 @@ what_next handler_user_do_edit ()/*{{{*/
 		ret=db.sk_user_modify (user);
 		CHECK_DB_ERROR_ERROR;
 	}
-	
+
 	return make_redirect (web_user_list, user.username);
 }
 /*}}}*/
@@ -3783,7 +3783,7 @@ what_next handler_user_change_password ()/*{{{*/
 	if (determine_user_class (username)!=uc_sk_user) return what_next::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
 	check_username (username);
 
-	document.write_paragraph ("Passwortänderung für Benutzer "+username);
+	document.write_paragraph ("Passwortï¿½nderung fï¿½r Benutzer "+username);
 
 	// Get the user
 	sk_user user;
@@ -3791,8 +3791,8 @@ what_next handler_user_change_password ()/*{{{*/
 	CHECK_DB_ERROR_ERROR;
 
 	// Permission checking
-	require_matching_club_admin (user.club, "Man kann nur Passwörter von Benutzern des eigenen Vereins ändern");
-	
+	require_matching_club_admin (user.club, "Man kann nur Passwï¿½rter von Benutzern des eigenen Vereins ï¿½ndern");
+
 	html_table table;
 
 	html_table_row row;
@@ -3806,7 +3806,7 @@ what_next handler_user_change_password ()/*{{{*/
 	table.push_back (row);
 
 	row.clear ();
-	row.push_back (html_table_cell (document.make_submit ("Ändern"), false, 2));
+	row.push_back (html_table_cell (document.make_submit ("ï¿½ndern"), false, 2));
 	table.push_back (row);
 
 	argument_list additional_args;
@@ -3817,7 +3817,7 @@ what_next handler_user_change_password ()/*{{{*/
 	document.write (back_form_hidden (web_user_do_change_password));
 	document.write_hidden_fields (additional_args);
 	document.end_tag ("form");
-	
+
 	return what_next::output_document ();
 }
 /*}}}*/
@@ -3841,7 +3841,7 @@ what_next handler_user_do_change_password ()/*{{{*/
 
 	// TODO add fuction for password checks
 	if (new_password_1.empty ()) return what_next::go_to_state (web_user_change_password, "Passwort nicht angegeben", true);
-	if (new_password_2!=new_password_1) return what_next::go_to_state (web_user_change_password, "Passwörter stimmen nicht überein", true);
+	if (new_password_2!=new_password_1) return what_next::go_to_state (web_user_change_password, "Passwï¿½rter stimmen nicht ï¿½berein", true);
 
 	// Get the user
 	sk_user user;
@@ -3849,13 +3849,13 @@ what_next handler_user_do_change_password ()/*{{{*/
 	CHECK_DB_ERROR_ERROR;
 
 	// Permission checking
-	require_matching_club_admin (user.club, "Man kann nur Passwörter von Benutzern des eigenen Vereins ändern");
+	require_matching_club_admin (user.club, "Man kann nur Passwï¿½rter von Benutzern des eigenen Vereins ï¿½ndern");
 
 	ret=db.sk_user_change_password (username, new_password_1);
 	CHECK_DB_ERROR_STATE (web_user_change_password);
 
 	// Success
-	SESSION_WRITE (one_time_message, "Passwortänderung erfolgt");
+	SESSION_WRITE (one_time_message, "Passwortï¿½nderung erfolgt");
 
 	// For linking back
 	argument_list args;
@@ -3910,12 +3910,12 @@ what_next handler_master_data_import ()/*{{{*/
 	row.push_back (html_table_cell (document.make_submit ("Absenden"), false, 2));
 	table.push_back (row);
 
-	document.write_paragraph ("Bitte den Datentyp und die Datei auswählen. Die Daten werden dann eingelesen und überprüft.");
+	document.write_paragraph ("Bitte den Datentyp und die Datei auswï¿½hlen. Die Daten werden dann eingelesen und ï¿½berprï¿½ft.");
 	document.write (table);
 	document.write (back_form_hidden (web_master_data_upload));
 
 	document.end_tag ("form");
-	
+
 	return what_next::output_document ();
 }
 /*}}}*/
@@ -3926,7 +3926,7 @@ what_next handler_master_data_upload ()/*{{{*/
 
 	// Don't check club admin here, this state does not need database access.
 	if (CGI_READ (data_type)!=arg_cgi_data_type_person)
-		return what_next::output_error ("Ungültiger Datentyp");
+		return what_next::output_error ("Ungï¿½ltiger Datentyp");
 
 	SESSION_WRITE (master_data_file, CGI_READ (file));
 	SESSION_WRITE (master_data_filename, filenames.get_value (arg_cgi_file));
@@ -3943,7 +3943,7 @@ what_next handler_master_data_check ()/*{{{*/
 	require_club_admin ();
 
 	if (CGI_READ (data_type)!=arg_cgi_data_type_person)
-		return what_next::output_error ("Ungültiger Datentyp");
+		return what_next::output_error ("Ungï¿½ltiger Datentyp");
 
 	// If there is not data file, the page was probably reloaded after another
 	// state was activated. Silently redirect to the form.
@@ -3956,7 +3956,7 @@ what_next handler_master_data_check ()/*{{{*/
 
 	string filename=SESSION_READ (master_data_filename);
 	if (filename.empty ())
-		// TODO besser zurück in den Auswahlzustand, aber Felder voreintragen
+		// TODO besser zurï¿½ck in den Auswahlzustand, aber Felder voreintragen
 		return what_next::output_error ("Keine Datei angegeben");
 
 	string csv=SESSION_READ (master_data_file);
@@ -3983,7 +3983,7 @@ what_next handler_master_data_check ()/*{{{*/
 	// If there are errors, display them.
 	if (num_fatal_errors>0)
 	{
-		document.write_paragraph (html_escape ("Die Daten können nicht importiert werden, weil folgende Probleme bestehen:"), "error");
+		document.write_paragraph (html_escape ("Die Daten kï¿½nnen nicht importiert werden, weil folgende Probleme bestehen:"), "error");
 
 		DO_SUB_ACTION (write_message_list (messages));
 
@@ -4000,12 +4000,12 @@ what_next handler_master_data_check ()/*{{{*/
 	// displayed to the user in a separate table.
 	if (!messages.empty ())
 	{
-		document.write_paragraph (html_escape ("Bitte folgende Personen speziell überprüfen:"));
+		document.write_paragraph (html_escape ("Bitte folgende Personen speziell ï¿½berprï¿½fen:"));
 		DO_SUB_ACTION (write_message_list (messages));
 	}
-	
+
 	// Display the list of persons
-	document.write_paragraph (html_escape ("Die folgenden Personen wurden aus der CSV-Datei \""+filename+"\" gelesen. Bitte überprüfen:"));
+	document.write_paragraph (html_escape ("Die folgenden Personen wurden aus der CSV-Datei \""+filename+"\" gelesen. Bitte ï¿½berprï¿½fen:"));
 	DO_SUB_ACTION (write_person_list (persons, false, "", "", NULL, true));
 
 	// Write a link to the next state for acepting or back to the selection state
@@ -4014,10 +4014,10 @@ what_next handler_master_data_check ()/*{{{*/
 	document
 		.start_paragraph ()
 		.write_text_link (back_link_url (web_master_data_do_import, additional_args), "OK").endl ()
-		.write_text_link (back_link_url (web_master_data_import, additional_args), "Zurück").endl ()
+		.write_text_link (back_link_url (web_master_data_import, additional_args), "Zurï¿½ck").endl ()
 		.end_paragraph ()
 		;
-	
+
 	if (debug_enabled)
 	{
 		document.write_paragraph ("The file transferred was:");
@@ -4037,7 +4037,7 @@ what_next handler_master_data_do_import ()/*{{{*/
 		return what_next::output_error ("Keine Daten vorhanden");
 
 	if (CGI_READ (data_type)!=arg_cgi_data_type_person)
-		return what_next::output_error ("Ungültiger Datentyp");
+		return what_next::output_error ("Ungï¿½ltiger Datentyp");
 
 	string csv=SESSION_READ (master_data_file);
 	QPtrList<sk_person> persons; persons.setAutoDelete (true);
@@ -4065,7 +4065,7 @@ what_next handler_master_data_do_import ()/*{{{*/
 what_next handler_person_logbook ()/*{{{*/
 {
 	require_sk_user ("Dem Benutzer "+session_username+" ist keine Person zugeordnet. Bitte als anderer Benutzer anmelden.");
-	if (id_invalid (session_user->person)) 
+	if (id_invalid (session_user->person))
 		return what_next::output_error ("Dem Benutzer ist keine Person zugeordnet. Ein Vereinsadministrator oder der Startkladdenadministrator muss diese Zuordnung vornehmen.");
 
 	sk_person person;
@@ -4073,7 +4073,7 @@ what_next handler_person_logbook ()/*{{{*/
 	CHECK_DB_ERROR_ERROR;
 	// TODO handle not found error explicitly
 
-	document.write_paragraph ("Flugbuchabfrage für "+person.text_name ());
+	document.write_paragraph ("Flugbuchabfrage fï¿½r "+person.text_name ());
 
 	document.start_tag ("form", "action=\""+relative_url+"\" method=\"GET\"");
 
@@ -4107,9 +4107,9 @@ what_next handler_person_logbook ()/*{{{*/
 
 	list<string> fi_mode_explanation;
 	// TODO: this list should be part of the logbook class
-	fi_mode_explanation.push_back ("Nein: Nur Flüge als Pilot werden verwendet.");
-	fi_mode_explanation.push_back ("Streng: Auch Flüge als Begleiter werden verwendet, wenn der Flugtyp \"Schulung\" ist.");
-	fi_mode_explanation.push_back ("Locker: Alle Flüge als Begleiter werden verwendet.");
+	fi_mode_explanation.push_back ("Nein: Nur Flï¿½ge als Pilot werden verwendet.");
+	fi_mode_explanation.push_back ("Streng: Auch Flï¿½ge als Begleiter werden verwendet, wenn der Flugtyp \"Schulung\" ist.");
+	fi_mode_explanation.push_back ("Locker: Alle Flï¿½ge als Begleiter werden verwendet.");
 
 	document
 		.start_paragraph ()
@@ -4117,7 +4117,7 @@ what_next handler_person_logbook ()/*{{{*/
 		.write_text_list (fi_mode_explanation)
 		.end_paragraph ()
 		;
-	
+
 
 	return what_next::output_document ();
 }
@@ -4150,11 +4150,11 @@ what_next handler_do_person_logbook ()/*{{{*/
 
 	// Determine the flight instructor mode/*{{{*/
 	flugbuch_entry::flight_instructor_mode fim=flugbuch_entry::fim_no;
-	if (fim_text==arg_cgi_flight_instructor_mode_no) 
+	if (fim_text==arg_cgi_flight_instructor_mode_no)
 		fim=flugbuch_entry::fim_no;
-	else if (fim_text==arg_cgi_flight_instructor_mode_strict) 
+	else if (fim_text==arg_cgi_flight_instructor_mode_strict)
 		fim=flugbuch_entry::fim_strict;
-	else if (fim_text==arg_cgi_flight_instructor_mode_loose) 
+	else if (fim_text==arg_cgi_flight_instructor_mode_loose)
 		fim=flugbuch_entry::fim_loose;
 	else
 		return what_next::output_error ("Unbekannter Fluglehrermodus "+fim_text);
@@ -4177,7 +4177,7 @@ what_next handler_do_person_logbook ()/*{{{*/
 		date_text=date.text ();
 		// TODO append date_text and move down
 		filename.append (date.text ());
-	
+
 		// List the flights.
 		db.list_flights (flights, condition_t (cond_flight_person_date, person_id, &q_date));
 	}
@@ -4185,7 +4185,7 @@ what_next handler_do_person_logbook ()/*{{{*/
 	{
 		// Read and check the date.
 		sk_date date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
-		if (date.is_invalid ()) return what_next::output_error ("Das angegebene Datum ist ungültig.");
+		if (date.is_invalid ()) return what_next::output_error ("Das angegebene Datum ist ungï¿½ltig.");
 		QDate q_date=(QDate)date;
 		date_text=date.text ();
 		filename.append (date.text ());
@@ -4197,12 +4197,12 @@ what_next handler_do_person_logbook ()/*{{{*/
 	{
 		// Read and check the start date.
 		sk_date start_date=date_from_cgi (arg_cgi_date_start_year, arg_cgi_date_start_month, arg_cgi_date_start_day);
-		if (start_date.is_invalid ()) return what_next::output_error ("Das angegebene Anfangsdatum ist ungültig.");
+		if (start_date.is_invalid ()) return what_next::output_error ("Das angegebene Anfangsdatum ist ungï¿½ltig.");
 		QDate q_start_date=(QDate)start_date;
 
 		// Read and check the end date.
 		sk_date end_date=date_from_cgi (arg_cgi_date_end_year, arg_cgi_date_end_month, arg_cgi_date_end_day);
-		if (end_date.is_invalid ()) return what_next::output_error ("Das angegebene Enddatum ist ungültig.");
+		if (end_date.is_invalid ()) return what_next::output_error ("Das angegebene Enddatum ist ungï¿½ltig.");
 		QDate q_end_date=(QDate)end_date;
 
 		if (end_date<start_date) return what_next::output_error ("Das Enddatum liegt vor dem Anfangsdatum.");
@@ -4228,11 +4228,11 @@ what_next handler_do_person_logbook ()/*{{{*/
 	// We have got a list<flugbuch_entry>.
 	if (format==arg_cgi_format_html)
 	{
-		document.write_paragraph ("Flugbuchabfrage für "+person.text_name ()+", "+date_text);
+		document.write_paragraph ("Flugbuchabfrage fï¿½r "+person.text_name ()+", "+date_text);
 
 		if (flugbuch.isEmpty ())
 		{
-			document.write_paragraph ("Keine Flüge");
+			document.write_paragraph ("Keine Flï¿½ge");
 		}
 		else
 		{
@@ -4253,7 +4253,7 @@ what_next handler_do_person_logbook ()/*{{{*/
 			}
 
 			document.write (table);
-			document.write_paragraph (num_to_string (flugbuch.count ())+" Einträge");
+			document.write_paragraph (num_to_string (flugbuch.count ())+" Eintrï¿½ge");
 		}
 
 		return what_next::output_document ();
@@ -4274,7 +4274,7 @@ what_next handler_do_person_logbook ()/*{{{*/
 		}
 
 		filename.append (".csv");
-		return what_next::output_raw_document (tab.csv (opts.csv_quote), http_document::mime_type_csv, filename, "Flugbuch für "+person.text_name ());
+		return what_next::output_raw_document (tab.csv (opts.csv_quote), http_document::mime_type_csv, filename, "Flugbuch fï¿½r "+person.text_name ());
 	}
 	else if (format==arg_cgi_format_latex)
 	{
@@ -4282,7 +4282,7 @@ what_next handler_do_person_logbook ()/*{{{*/
 		write_flugbuch (ldoc, flugbuch, date_text, person.text_name ());
 
 		filename.append (".tex");
-		return what_next::output_raw_document (ldoc.get_string (), http_document::mime_type_plaintext, filename, "Flugbuch für "+person.text_name ());
+		return what_next::output_raw_document (ldoc.get_string (), http_document::mime_type_plaintext, filename, "Flugbuch fï¿½r "+person.text_name ());
 	}
 	else if (format==arg_cgi_format_pdf)
 	{
@@ -4293,7 +4293,7 @@ what_next handler_do_person_logbook ()/*{{{*/
 		try
 		{
 			string pdf=ldoc.make_pdf ();
-			return what_next::output_raw_document (pdf, http_document::mime_type_pdf, filename, "Flugbuch für "+person.text_name ());
+			return what_next::output_raw_document (pdf, http_document::mime_type_pdf, filename, "Flugbuch fï¿½r "+person.text_name ());
 		}
 		catch (latex_document::ex_command_failed &e)
 		{
@@ -4339,14 +4339,14 @@ what_next handler_do_plane_logbook ()/*{{{*/
 	// Access without session is possible from local hosts. For other hosts, we
 	// need a session. This requirement is checked in do_next.
 
-	flight_list flights; 
+	flight_list flights;
 	flights.setAutoDelete (true);
-	QPtrList<sk_flugzeug> planes; 
+	QPtrList<sk_flugzeug> planes;
 	planes.setAutoDelete (true);
 	string date_text;
 
 	string date_spec=CGI_READ (date_spec);
-	if (date_spec.empty ()) 
+	if (date_spec.empty ())
 		return what_next::output_error ("Kein Datumsmodus angegeben");
 
 	// TODO!: more abstraction
@@ -4363,12 +4363,12 @@ what_next handler_do_plane_logbook ()/*{{{*/
 	{
 		// Read and check the date.
 		date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
-		if (date.is_invalid ()) 
-			return what_next::output_error ("Das angegebene Datum ist ungültig.");
+		if (date.is_invalid ())
+			return what_next::output_error ("Das angegebene Datum ist ungï¿½ltig.");
 	}
 	else if (date_spec==arg_cgi_date_spec_range)
 	{
-		return what_next::output_error ("Ungültiger Datumsmodus \""+date_spec+"\"");
+		return what_next::output_error ("Ungï¿½ltiger Datumsmodus \""+date_spec+"\"");
 	}
 	else
 	{
@@ -4427,7 +4427,7 @@ what_next handler_do_plane_logbook ()/*{{{*/
 	try
 	{
 		string pdf=ldoc.make_pdf ();
-		return what_next::output_raw_document (pdf, http_document::mime_type_pdf, filename, "Bordbücher für "+date_text);
+		return what_next::output_raw_document (pdf, http_document::mime_type_pdf, filename, "Bordbï¿½cher fï¿½r "+date_text);
 	}
 	catch (latex_document::ex_command_failed &e)
 	{
@@ -4487,11 +4487,11 @@ what_next handler_do_flightlist ()/*{{{*/
 	{
 		// Read and check the date.
 		date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
-		if (date.is_invalid ()) return what_next::output_error ("Das angegebene Datum ist ungültig.");
+		if (date.is_invalid ()) return what_next::output_error ("Das angegebene Datum ist ungï¿½ltig.");
 	}
 	else if (date_spec==arg_cgi_date_spec_range)
 	{
-		return what_next::output_error ("Ungültiger Datumsmodus \""+date_spec+"\"");
+		return what_next::output_error ("Ungï¿½ltiger Datumsmodus \""+date_spec+"\"");
 	}
 	else
 	{
@@ -4518,7 +4518,7 @@ what_next handler_do_flightlist ()/*{{{*/
 	try
 	{
 		string pdf=ldoc.make_pdf ();
-		return what_next::output_raw_document (pdf, http_document::mime_type_pdf, filename, "Startliste für "+date_text);
+		return what_next::output_raw_document (pdf, http_document::mime_type_pdf, filename, "Startliste fï¿½r "+date_text);
 	}
 	catch (latex_document::ex_command_failed &e)
 	{
@@ -4543,7 +4543,7 @@ what_next handler_flight_db ()/*{{{*/
 
 	// TODO remove today and single, is not needed
 	add_date_inputs (table, true);
-	add_bool_input (table, "Schleppflüge einzeln", arg_cgi_towflights_extra);
+	add_bool_input (table, "Schleppflï¿½ge einzeln", arg_cgi_towflights_extra);
 
 	// Make a list of data formats available.
 	argument_list data_formats;
@@ -4577,7 +4577,7 @@ what_next handler_flight_db ()/*{{{*/
 			debug_stream << "Fehler in Plugin " << (*plugin).get_display_filename () << ": "+e.description () << endl;
 		}
 	}
-	
+
 	if (data_formats.size ()>1)
 		add_select_input (table, "Datenformat:", arg_cgi_data_format, data_formats, arg_cgi_data_format_default);
 
@@ -4607,11 +4607,11 @@ what_next handler_do_flight_db ()/*{{{*/
 	if (CGI_HAS (data_format))
 	{
 		data_format=CGI_READ (data_format);
-		if (data_format!=arg_cgi_data_format_default) 
+		if (data_format!=arg_cgi_data_format_default)
 			use_default_data_format=false;
 	}
 
-	flight_list flights; 
+	flight_list flights;
 	flights.setAutoDelete (true);
 	string date_text;
 
@@ -4627,7 +4627,7 @@ what_next handler_do_flight_db ()/*{{{*/
 		QDate q_date=(QDate)date;
 		date_text=date.text ();
 		filename.append (date.text ());
-	
+
 		// List the flights.
 		db.list_flights_date (flights, &q_date);
 	}
@@ -4635,7 +4635,7 @@ what_next handler_do_flight_db ()/*{{{*/
 	{
 		// Read and check the date.
 		sk_date date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
-		if (date.is_invalid ()) return what_next::output_error ("Das angegebene Datum ist ungültig.");
+		if (date.is_invalid ()) return what_next::output_error ("Das angegebene Datum ist ungï¿½ltig.");
 		QDate q_date=(QDate)date;
 		date_text=date.text ();
 		filename.append (date.text ());
@@ -4647,12 +4647,12 @@ what_next handler_do_flight_db ()/*{{{*/
 	{
 		// Read and check the start date.
 		sk_date start_date=date_from_cgi (arg_cgi_date_start_year, arg_cgi_date_start_month, arg_cgi_date_start_day);
-		if (start_date.is_invalid ()) return what_next::output_error ("Das angegebene Anfangsdatum ist ungültig.");
+		if (start_date.is_invalid ()) return what_next::output_error ("Das angegebene Anfangsdatum ist ungï¿½ltig.");
 		QDate q_start_date=(QDate)start_date;
 
 		// Read and check the end date.
 		sk_date end_date=date_from_cgi (arg_cgi_date_end_year, arg_cgi_date_end_month, arg_cgi_date_end_day);
-		if (end_date.is_invalid ()) return what_next::output_error ("Das angegebene Enddatum ist ungültig.");
+		if (end_date.is_invalid ()) return what_next::output_error ("Das angegebene Enddatum ist ungï¿½ltig.");
 		QDate q_end_date=(QDate)end_date;
 
 		if (end_date<start_date) return what_next::output_error ("Das Enddatum liegt vor dem Anfangsdatum.");
@@ -4707,7 +4707,7 @@ what_next handler_do_flight_db ()/*{{{*/
 
 				// Determine the startart.
 				db_id towflight_startart_id;
-				startart_t ss; 
+				startart_t ss;
 				if (db.get_startart_by_type (&ss, sat_self)==db_ok)
 					towflight_startart_id=ss.get_id ();
 				else
@@ -4762,7 +4762,7 @@ what_next handler_do_flight_db ()/*{{{*/
 			}
 		}
 
-		if (!format_plugin) 
+		if (!format_plugin)
 			return what_next::output_error ("Datenformat \""+data_format+"\" nicht gefunden.");
 	}
 
@@ -4796,7 +4796,7 @@ what_next handler_do_flight_db ()/*{{{*/
 
 			sk_flug_data flight_data=sk_flug_data::owner ();
 			db.make_flight_data (flight_data, f);
-		
+
 			try
 			{
 				if (use_default_data_format)
@@ -4820,7 +4820,7 @@ what_next handler_do_flight_db ()/*{{{*/
 	}
 
 	filename.append (".csv");
-	return what_next::output_raw_document (tab.csv (opts.csv_quote), http_document::mime_type_csv, filename, "Flugliste für "+date_text);
+	return what_next::output_raw_document (tab.csv (opts.csv_quote), http_document::mime_type_csv, filename, "Flugliste fï¿½r "+date_text);
 	/*}}}*/
 
 	return what_next::output_error ("Unbehandelter Fall in handler_do_flight_db");
@@ -4874,7 +4874,7 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 			{
 				// Go to the output_error state, because wn_go_on may not be used
 				// as a program state.
-				return what_next::output_error ("Zustand wn_go_on ausgeführt (Programmfehler)");
+				return what_next::output_error ("Zustand wn_go_on ausgefï¿½hrt (Programmfehler)");
 			} break;/*}}}*/
 			case wn_output_error:/*{{{*/
 			{
@@ -4889,7 +4889,7 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 				document.write_error_paragraph (html_escape (next.get_message ()));
 				if (!next.get_explanation ().empty ()) document.write_paragraph (next.get_explanation ());
 				if (session.is_ok ())
-					document.write_paragraph (document.text_link (back_link_url (web_main_menu), "Hauptmenü"));
+					document.write_paragraph (document.text_link (back_link_url (web_main_menu), "Hauptmenï¿½"));
 				else
 					document.write_paragraph (document.text_link (back_link_url (web_logout), "Anmeldeseite"));
 				return what_next::output_document ();
@@ -4935,7 +4935,7 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 				}
 				catch (web_interface_state::ex_not_found)
 				{
-					return what_next::output_error ("Ungültiger Zustand "+next.get_state_label ());
+					return what_next::output_error ("Ungï¿½ltiger Zustand "+next.get_state_label ());
 				}
 				const web_interface_state &state=*p_state;
 
@@ -4961,7 +4961,7 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 					else
 						document.write_paragraph (next.get_message ());
 				}
-				
+
 				// Some state have certain preconditions, for example, that a
 				// session is needed or that access without a session is only
 				// allowed for local hosts. If these preconditions are not met,
@@ -5002,9 +5002,9 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 					string error_description;
 
 					if (state.get_allow_local ())
-						error_description="Diese Aktion kann nur von lokalen Rechnern oder nach erfolgter Anmeldung durchgeführt werden.";
+						error_description="Diese Aktion kann nur von lokalen Rechnern oder nach erfolgter Anmeldung durchgefï¿½hrt werden.";
 					else
-						error_description="Diese Aktion kann nur nach erfolgter Anmeldung durchgeführt werden.";
+						error_description="Diese Aktion kann nur nach erfolgter Anmeldung durchgefï¿½hrt werden.";
 
 					return what_next::output_error (error_message, error_description);
 				}
@@ -5021,7 +5021,7 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 					return what_next::output_error (
 							"Unzureichender Datenbankzugriff"
 							" (vorhanden: "+db_access_string (session_access)+";"
-							" benötigt: "+db_access_string (db_access_needed)+")");
+							" benï¿½tigt: "+db_access_string (db_access_needed)+")");
 				}
 
 				// If a database connection is required, make sure it is
@@ -5066,7 +5066,7 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 				SESSION_REMOVE (one_time_message);
 
 				state_handler handler=state.get_handler ();
-				if (!handler) return what_next::output_error ("Handler für Zustand \""+state.get_label ()+"\" nicht gesetzt (Programmfehler)");
+				if (!handler) return what_next::output_error ("Handler fï¿½r Zustand \""+state.get_label ()+"\" nicht gesetzt (Programmfehler)");
 				current_state=p_state;
 				try
 				{
@@ -5106,7 +5106,7 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 			{
 				// Go to the output_error state, because this function should not
 				// have been called when wn_end_program was commanded.
-				return what_next::output_error ("Zustand wn_end_program ausgeführt (Programmfehler)");
+				return what_next::output_error ("Zustand wn_end_program ausgefï¿½hrt (Programmfehler)");
 			} break;/*}}}*/
 		}
 	}
@@ -5118,7 +5118,7 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 	catch (...)
 	{
 		// An unhandled exception. This is very, very bad.
-		return what_next::output_error ("Unbehandelte exception. Großer, böser Programmfehler. So kann ich nicht arbeiten.");
+		return what_next::output_error ("Unbehandelte exception. Groï¿½er, bï¿½ser Programmfehler. So kann ich nicht arbeiten.");
 	}
 
 	// It may happen that one of the what_next_t cases has been handled above,
@@ -5129,7 +5129,7 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 
 void setup_static_data ()/*{{{*/
 {
-	// caption bei states ohne Ausgabe: Zum Beispiel für error-document verwendet
+	// caption bei states ohne Ausgabe: Zum Beispiel fï¿½r error-document verwendet
 
 #define ADD_HANDLER(STATE, HAS_OUTPUT, DB_ACCESS_NEEDED, ALLOW_ANON, ALLOW_LOCAL, CAPTION) \
 	do	\
@@ -5147,32 +5147,32 @@ void setup_static_data ()/*{{{*/
 	//           state                        output  db needed    anon   local    caption
 	ADD_HANDLER (login                      , true  , dba_none,    true , false,   "Anmelden"                  );
 	ADD_HANDLER (do_login                   , false , dba_access,  true , false,   "Anmelden"                  );
-	ADD_HANDLER (main_menu                  , true  , dba_none,    true , true,    "Hauptmenü"                 );
+	ADD_HANDLER (main_menu                  , true  , dba_none,    true , true,    "Hauptmenï¿½"                 );
 	ADD_HANDLER (logout                     , false , dba_none,    true , false,   "Abmelden"                  );
-	ADD_HANDLER (change_password            , true  , dba_none,    false, false,   "Passwort ändern"           );
-	ADD_HANDLER (do_change_password         , false , dba_sk_user, false, false,   "Passwort ändern"           );
+	ADD_HANDLER (change_password            , true  , dba_none,    false, false,   "Passwort ï¿½ndern"           );
+	ADD_HANDLER (do_change_password         , false , dba_sk_user, false, false,   "Passwort ï¿½ndern"           );
 	ADD_HANDLER (list_persons               , true  , dba_sk_user, false, false,   "Personen auflisten"        );
 	ADD_HANDLER (display_person             , true  , dba_sk_user, false, false,   "Person anzeigen"           );
 	ADD_HANDLER (edit_person                , true  , dba_sk_user, false, false,   "Person editieren"          );
 	ADD_HANDLER (do_edit_person             , false , dba_sk_user, false, false,   "Person editieren"          );
 	ADD_HANDLER (result                     , true  , dba_none,    true , false,   "Ergebnis"                  );
-	ADD_HANDLER (delete_person              , true  , dba_sk_user, false, false,   "Person löschen"            );
-	ADD_HANDLER (do_delete_person           , false , dba_sk_user, false, false,   "Person löschen"            );
+	ADD_HANDLER (delete_person              , true  , dba_sk_user, false, false,   "Person lï¿½schen"            );
+	ADD_HANDLER (do_delete_person           , false , dba_sk_user, false, false,   "Person lï¿½schen"            );
 	ADD_HANDLER (create_person              , true  , dba_sk_user, false, false,   "Person anlegen"            );
 	ADD_HANDLER (do_create_person           , true  , dba_sk_user, false, false,   "Person anlegen"            );
-	ADD_HANDLER (select_merge_person        , true  , dba_sk_user, false, false,   "Person überschreiben"      );
-	ADD_HANDLER (merge_person               , true  , dba_sk_user, false, false,   "Person überschreiben"      );
-	ADD_HANDLER (do_merge_person            , false , dba_sk_user, false, false,   "Person überschreiben"      );
+	ADD_HANDLER (select_merge_person        , true  , dba_sk_user, false, false,   "Person ï¿½berschreiben"      );
+	ADD_HANDLER (merge_person               , true  , dba_sk_user, false, false,   "Person ï¿½berschreiben"      );
+	ADD_HANDLER (do_merge_person            , false , dba_sk_user, false, false,   "Person ï¿½berschreiben"      );
 
 	ADD_HANDLER (user_list                  , true  , dba_sk_user, false, false,   "Benutzerliste"             );
-	ADD_HANDLER (user_delete                , true  , dba_sk_user, false, false,   "Benutzer löschen"          );
-	ADD_HANDLER (user_do_delete             , false , dba_sk_user, false, false,   "Benutzer löschen"          );
+	ADD_HANDLER (user_delete                , true  , dba_sk_user, false, false,   "Benutzer lï¿½schen"          );
+	ADD_HANDLER (user_do_delete             , false , dba_sk_user, false, false,   "Benutzer lï¿½schen"          );
 	ADD_HANDLER (user_add                   , false , dba_none,    false, false,   "Benutzer anlegen"          );
 	ADD_HANDLER (user_edit                  , true  , dba_sk_user, false, false,   "Benutzer editieren"        );
 	ADD_HANDLER (user_do_edit               , false , dba_sk_user, false, false,   "Benutzer editieren"        );
-	ADD_HANDLER (user_change_password       , true  , dba_sk_user, false, false,   "Benutzerpasswort ändern"   );
-	ADD_HANDLER (user_do_change_password    , false , dba_sk_user, false, false,   "Benutzerpasswort ändern"   );
-	ADD_HANDLER (person_select              , true  , dba_sk_user, false, false,   "Person auswählen"          );
+	ADD_HANDLER (user_change_password       , true  , dba_sk_user, false, false,   "Benutzerpasswort ï¿½ndern"   );
+	ADD_HANDLER (user_do_change_password    , false , dba_sk_user, false, false,   "Benutzerpasswort ï¿½ndern"   );
+	ADD_HANDLER (person_select              , true  , dba_sk_user, false, false,   "Person auswï¿½hlen"          );
 
 	ADD_HANDLER (master_data_import         , true  , dba_sk_user, false, false,   "Stammdaten einspielen"     );
 	ADD_HANDLER (master_data_upload         , false , dba_none,    false, false,   "Stammdaten einspielen"     );
@@ -5181,8 +5181,8 @@ void setup_static_data ()/*{{{*/
 
 	ADD_HANDLER (person_logbook             , true  , dba_sk_user, false, false,   "Flugbuch abrufen"          );
 	ADD_HANDLER (do_person_logbook          , true  , dba_sk_user, false, false,   "Flugbuch abrufen"          );
-	ADD_HANDLER (plane_logbook              , true  , dba_access , false, true ,   "Bordbücher abrufen"        );
-	ADD_HANDLER (do_plane_logbook           , true  , dba_access , false, true ,   "Bordbücher abrufen"        );
+	ADD_HANDLER (plane_logbook              , true  , dba_access , false, true ,   "Bordbï¿½cher abrufen"        );
+	ADD_HANDLER (do_plane_logbook           , true  , dba_access , false, true ,   "Bordbï¿½cher abrufen"        );
     ADD_HANDLER (flightlist                 , true  , dba_access , false, true ,   "Startliste abrufen"        );
     ADD_HANDLER (do_flightlist              , true  , dba_access , false, true ,   "Startliste abrufen"        );
     ADD_HANDLER (flight_db                  , true  , dba_sk_user, false, false,   "Flugdatenbank abrufen"     );
@@ -5198,8 +5198,8 @@ void setup_static_data ()/*{{{*/
 	//                                                                     list___ edit____________________________      create__________________________
 	//                            caption                 data_type        display display edit   state     caption      display edit   state     caption      label
 	fields_sk_user.push_back (OF ("Benutzername",         OF::dt_string,   true ,  true ,  false, "",       "",          false,  true,  "",       "",          field_user_username        ));
-	fields_sk_user.push_back (OF ("Person",               OF::dt_db_id,    true ,  false,  true,  CGI_SEL,  "Auswählen", false,  true,  CGI_SEL,  "Auswählen", field_user_person          ));
-	fields_sk_user.push_back (OF ("Passwort",             OF::dt_password, false,  false,  false, WEB_CHPW, "Ändern",    false,  true,  "",       "",          field_user_password        ));
+	fields_sk_user.push_back (OF ("Person",               OF::dt_db_id,    true ,  false,  true,  CGI_SEL,  "Auswï¿½hlen", false,  true,  CGI_SEL,  "Auswï¿½hlen", field_user_person          ));
+	fields_sk_user.push_back (OF ("Passwort",             OF::dt_password, false,  false,  false, WEB_CHPW, "ï¿½ndern",    false,  true,  "",       "",          field_user_password        ));
 	fields_sk_user.push_back (OF ("Passwort wiederholen", OF::dt_password, false,  false,  false, "",       "",          false,  true,  "",       "",          field_user_password_repeat ));
 	fields_sk_user.push_back (OF ("Vereinsadmin",         OF::dt_bool,     true ,  false,  true , "",       "",          false,  true,  "",       "",          field_user_club_admin      ));
 	fields_sk_user.push_back (OF ("Flugdatenbank lesen",  OF::dt_bool,     true ,  false,  true , "",       "",          false,  true,  "",       "",          field_user_read_flight_db  ));
@@ -5211,7 +5211,7 @@ void setup_static_data ()/*{{{*/
 	fields_flugbuch_entry.push_back (OOF ("Tag"            , field_flugbuch_tag             ).set_no_break ()); widths_flugbuch_entry.push_back (15);	// "Tag"
 	fields_flugbuch_entry.push_back (OOF ("Muster"         , field_flugbuch_muster          ));                 widths_flugbuch_entry.push_back (12);	// "Muster"
 	fields_flugbuch_entry.push_back (OOF ("Kennzeichen"    , field_flugbuch_kennzeichen     ));                 widths_flugbuch_entry.push_back (14);	// "Kennzeichen"
-	fields_flugbuch_entry.push_back (OOF ("Flugzeugführer" , field_flugbuch_flugzeugfuehrer ));                 widths_flugbuch_entry.push_back (20);	// "Flugzeugführer"
+	fields_flugbuch_entry.push_back (OOF ("Flugzeugfï¿½hrer" , field_flugbuch_flugzeugfuehrer ));                 widths_flugbuch_entry.push_back (20);	// "Flugzeugfï¿½hrer"
 	fields_flugbuch_entry.push_back (OOF ("Begleiter"      , field_flugbuch_begleiter       ));                 widths_flugbuch_entry.push_back (20);	// "Begleiter"
 	fields_flugbuch_entry.push_back (OOF ("Startart"       , field_flugbuch_startart        ));                 widths_flugbuch_entry.push_back (10);	// "Startart"
 	fields_flugbuch_entry.push_back (OOF ("Ort Start"      , field_flugbuch_ort_start       ));                 widths_flugbuch_entry.push_back (15);	// "Ort Start"
@@ -5418,7 +5418,7 @@ what_next setup_variables ()/*{{{*/
 		// Request method POST, data is passed on stdin
 		// Format as determined by CONTENT_TYPE
 		string content_type_string=get_environment ("CONTENT_TYPE");
-		if (content_type_string.empty ()) return what_next::output_error ("CONTENT_TYPE für POST nicht angegeben");
+		if (content_type_string.empty ()) return what_next::output_error ("CONTENT_TYPE fï¿½r POST nicht angegeben");
 		// Make a mime header structure
 		mime_header content_type_header (content_type_string, mime_header::text_name_content_type);
 
@@ -5503,7 +5503,7 @@ what_next setup_variables ()/*{{{*/
 								if (part_header.value!="form-data") return what_next::output_error ("Unbekannte Content-Disposition: "+part_header.value);
 
 								// Check and save the element name
-								if (!part_header.args.has_argument ("name")) return what_next::output_error ("Content-Disposition enthält keinen Namen");
+								if (!part_header.args.has_argument ("name")) return what_next::output_error ("Content-Disposition enthï¿½lt keinen Namen");
 								current_key=part_header.args.get_value ("name");
 
 								current_filename=part_header.args.get_value ("filename");
@@ -5575,7 +5575,7 @@ what_next setup_variables ()/*{{{*/
 			// Session ain't no good.
 			// Cannot use error_description of the session because that only
 			// works for creation.
-			return what_next::output_error ("Ungültige Sitzung \""+CGI_READ (session_id)+"\"");
+			return what_next::output_error ("Ungï¿½ltige Sitzung \""+CGI_READ (session_id)+"\"");
 		}
 	}
 /*}}}*/
@@ -5675,7 +5675,7 @@ what_next setup_variables ()/*{{{*/
 		}
 		catch (web_interface_state::ex_not_found)
 		{
-			return what_next::output_error ("Ungültiger Zustand \""+state_string+"\"");
+			return what_next::output_error ("Ungï¿½ltiger Zustand \""+state_string+"\"");
 		}
 	}
 	else

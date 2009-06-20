@@ -13,8 +13,8 @@
 #include <qdatetime.h>
 #include <qstring.h>
 
-#include "data_types.h"
-#include "db_types.h"
+#include "src/data_types.h"
+#include "src/db/db_types.h"
 
 using namespace std;
 
@@ -28,10 +28,10 @@ string t_begleiter_bezeichnung (flug_typ, casus c=cas_nominativ);
 string trim (const string &);
 void replace_substring (string &, const string&, const string&);
 void replace_tabs (string &s);
-string num_to_string (int num, unsigned int min_length=0, char pad='0'); 
-string num_to_string (unsigned int num); 
-string num_to_string (float num); 
-string num_to_string (db_id num); 
+string num_to_string (int num, unsigned int min_length=0, char pad='0');
+string num_to_string (unsigned int num);
+string num_to_string (float num);
+string num_to_string (db_id num);
 //string num_to_string (size_t num);
 QString simplify_club_name (const QString& s);
 string simplify_club_name (const string& s);

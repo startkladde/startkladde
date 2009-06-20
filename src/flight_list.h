@@ -14,8 +14,8 @@
 #include <q3ptrcollection.h>
 #define QPtrCollection Q3PtrCollection
 
-#include "sk_flug.h"
-#include "sk_time_t.h"
+#include "src/model/sk_flug.h"
+#include "src/time/sk_time_t.h"
 
 using namespace std;
 

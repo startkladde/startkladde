@@ -7,9 +7,9 @@
  * 2005-01-04
  */
 
-#include "db_types.h"
+#include "src/db/db_types.h"
 #include <string>
-#include "accessor.h"
+#include "src/accessor.h"
 
 using namespace std;
 
@@ -161,7 +161,7 @@ class object_field
 		bool create_edit;
 		string create_state;
 		string create_state_caption;
-		
+
 		string label;
 
 		// Current value

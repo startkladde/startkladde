@@ -14,7 +14,7 @@ QT_LIB_DIR        ?= $(QTDIR)/lib
 MYSQL_INCLUDE_DIR ?= /usr/include/mysql
 MYSQL_LIB_DIR     ?= /usr/lib/mysql
 
-SKDIR=../../../src/
+SKDIR=../../..
 
 # QT3:
 #QT_INCLUDE   = -I$(QT_INCLUDE_DIR)
@@ -28,9 +28,13 @@ CPPFLAGS=-DQT3_SUPPORT
 all: format_lsv_albgau.so
 
 format_lsv_albgau.o: format_lsv_albgau.cpp	\
-	$(SKDIR)/argument.h $(SKDIR)/object_field.h $(SKDIR)/sk_flug.h	\
-	$(SKDIR)/sk_flugzeug.h $(SKDIR)/sk_person.h $(SKDIR)/startart_t.h	\
-	$(SKDIR)/plugin_data_format.h
+	$(SKDIR)/src/web/argument.h \
+	$(SKDIR)/src/object_field.h \
+	$(SKDIR)/src/model/sk_flug.h	\
+	$(SKDIR)/src/model/sk_flugzeug.h \
+	$(SKDIR)/src/model/sk_person.h \
+	$(SKDIR)/src/model/startart_t.h	\
+	$(SKDIR)/src/plugins/plugin_data_format.h
 	gcc -I$(SKDIR) $(QT_INCLUDE) -I$(MYSQL_INCLUDE_DIR) -fPIC -Wall -c format_lsv_albgau.cpp
 
 format_lsv_albgau.so: format_lsv_albgau.o

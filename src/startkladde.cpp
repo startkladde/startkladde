@@ -1,14 +1,13 @@
-#include "startkladde.h"
-
-#include "sk_db.h"
-#include "sk_win_main.h"
-#include "options.h"
+#include "src/db/sk_db.h"
+#include "src/gui/windows/sk_win_main.h"
+#include "src/config/options.h"
 #include <unistd.h>
-#include "sk_plugin.h"
-#include "text.h"
+#include "src/plugins/sk_plugin.h"
+#include "src/text.h"
 #include <list>
-#include "splash.h"
+#include "src/gui/windows/splash.h"
 #include "logo.xpm"
+#include <qapplication.h>
 
 // Testen des Wetterplugins
 //#include "WeatherDialog.h"
@@ -28,7 +27,7 @@ int main (int argc, char **argv)
 	/*
 	 * Starts the startkladde program.
 	 * Parameters:
-	 *   - argc, argv: the usual. Some of the options can be passed here. 
+	 *   - argc, argv: the usual. Some of the options can be passed here.
 	 * Return value:
 	 *   the return value of the QApplication, and thus of the main window.
 	 */

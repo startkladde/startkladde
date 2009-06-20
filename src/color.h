@@ -2,7 +2,8 @@
 #define color_h
 
 #include <qcolor.h>
-#include "sk_flug.h"
+
+#include "src/model/sk_flug.h"
 
 QColor flug_farbe (flug_modus, bool, bool, bool, bool);
 

@@ -7,7 +7,7 @@
 #include <mysql.h>
 #include <qstring.h>
 
-#include "messages.h"
+#include "src/logging/messages.h"
 
 using namespace std;
 
