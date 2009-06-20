@@ -1,0 +1,15 @@
+#!/bin/bash
+
+imagefile=/tmp/radar_ani.gif
+
+echo "[MSG] [Radarfilm wird heruntergeladen]"
+
+# Wetterradarfilm herunterladen (4 h)
+if wget -O $imagefile http://imgs.www.wetter.com/v2/img/wx/RADAR_w30/radar_DE/v2/l/ani_DE__240.gif; then
+	mogrify -delay 25 "$imagefile"
+	echo "[MOV] [$imagefile]"
+else
+	echo "[MSG] [Fehler beim Abrufen des Radarfilms]"
+fi
+
+

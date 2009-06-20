@@ -1,0 +1,40 @@
+#!/bin/bash
+
+indexfile=/tmp/index.html
+imagefile=/tmp/radar.gif
+
+#echo "[MSG] [Test test test test Versuch test test test test test test test test]"
+#exit 1
+
+download()
+{
+	wget "--user-agent=Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)" "$@"
+}
+
+echo "[MSG] [Radarbild wird heruntergeladen...]"
+
+# Wetterseite herunterladen
+#set -x
+if download -O $indexfile "http://www.wetteronline.de/daten/radarhtml/de/dwddg/radarf.htm"; then
+	# URL der Grafik extrahieren
+	imageurl=`grep 'daten/radar.*gif' $indexfile |sed 's/.*src="\([^"]*\)".*/\1/'`
+	imageurl="http://www.wetteronline.de/$imageurl"
+
+	if [ -n "$imageurl" ]; then
+		# Grafik herunterladen
+		if download -O $imagefile "$imageurl"; then
+			echo "[IMG] [$imagefile]"
+		else
+			echo "[MSG] [Fehler beim Abrufen der Wettergrafik]"
+		fi
+	else
+		echo "[MSG] [Auf der Wetterseite wurde keine Wettergrafik gefunden]"
+	fi
+else
+	echo "[MSG] [Fehler beim Abrufen der Wetterseite]"
+fi
+
+rm $indexfile
+
+
+

@@ -1,0 +1,507 @@
+345: Verein aus Flug entfernt (Oberfläche)
+375: Datenbankstrings escaped
+376: Start-/Zielort bei Modusänderung im Flugeditor
+378: BUGFIX: Prüfung auf !Startzeit, Landezeit bei kommenden Flügen
+379: Prüfung auf Startort bei kommenden Flügen
+383: BUGFIX: Bemerkung '0' bei Personen
+412: BUGFIX: Start-/Zielort überschrieben beim Editieren von Flügen
+414: BUGFIX: Datum 1970 bei nicht gelandeten kommenden
+463: Prüfung auf Existenz zurückgegebener Felder in Datenbankfunktionen
+472: db_flug_person_datum umgestellt auf make_flug_query
+473: sk_combo_box::fill_string_array, lbl_cbox::fill_full_string_array
+475: Flugeditor nicht zweimal Personenliste aus Datenbank laden
+476: BUGFIX: Segfault von 475 (war ja klar)
+485: version/build.log
+497: BUGFIX: id= statt flugzeug= in make_flug_query, q statt query_string in
+     db_flug_liste_flugzeug_datum (), Bordbuch geht
+505: BUGFIX: q statt query_string in db_flug_person_datum, Flugbuch geht
+511: if (i%11) emit progress, Programmstart schneller
+512: emit progress (..., ...-1)
+558: Z
+562: BUGFIX: Z-Bug
+564: WORKAROUND: Taste, die von flight_table akzeptiert wird, schließt nicht
+     das Hilfe->Info ==> alle ignoriert
+565: -CSV schreiben
+570: Flugeditor ohne WStyle_Customize, behebt vielleicht Hintergrund-Bug?
+     Personen- und Flugzeugliste ebenfalls ohne WStyle_Customize
+575: BUGFIX: Schleppflüge nicht per Tastatur landbar
+581: BUGFIX: Z-Bug (jetzt hoffentlich wirklich)
+582: Kunstflug gibt es nicht mehr
+583: BUGFIX: Startzeit ändern ==> SFZ Landung geändert
+584: Tabelle wird vor dem refresh ausgeblendet und danach eingeblendet
+     ==> schnellere Darstellung auf arthur
+612: [start,lande]_null ersetzt durch nicht_ge[start,land]et
+613: Vorbereitete Flüge per make_flug_query
+614: Darstellung der ID in der Flugtabelle
+616: "Fehlerhafte Flüge immer anzeigen" greift nur bei editierbaren Flügen.
+     Ja, es gibt Flüge, die datumsungebunden und fehlerhaft sind, zum Beispiel
+	 fgnghf==trynaqrg, zbqhf==ybxny. Diese Lösung ist u. U. nicht optimal, aber
+	 mir fällt weder ein konkretes Problem damit noch eine bessere Lösung ein.
+621: Fehlerdarstellung im Flugeditor beim Editieren
+635: Flüge mit modus==lokal und status==gelandet werden dem richtigen Tag
+     zugeordnet.
+666: Zeiteditorfelder zeigen nur hh:mm
+675: Instant-Fehlerchecking für Zeitfelder und Startart
+677: Nur positive Anzahl Zwischenlandungen erlaubt
+691: Instant-Fehlerchecking für Datum und Status
+696: Flugzeugeinbeziehung im Fehlerchecking und Instant-Fehlerchecking
+705: Zu Schleppflug/Geschlepptem Flug springen
+717: Editorfenster auch bei nicht editierbaren Flügen wegen Fehlerdarstellung
+721: BUGFIX: Datenbank bei Programmstart mehrfach gelesen
+722: Bei Echo-Flugzeugen keine Warnung, wenn kein Pilot angegeben
+747: BUGFIX: selected_plane beim Editieren nicht eingetragen (jetzt: in
+     setup_controls)
+760: Instant-Fehlerchecking für Pilot und Begleiter 
+763: Instant-Fehlerchecking für Startort und Zielort
+766: Instant-Fehlerchecking für Zwischenlandungen
+770: BUGFIX: Fehlermeldung bei Segelflugzeug und Zwischenlandungen=1
+772: BUGFIX: Instant-Fehlerchecking erkennt nicht ff_pilot_gleich_begleiter
+775: Alle Flugprüfungen (außer 'fliegt noch') im Fehlerchecking
+783: Überall Instant-Fehlerchecking und korrekt
+871: Fehlende Start-/Zielortangabe als Fehler gewertet
+872: Kennzeichen kann auch ohne "D-" angegeben werden (mit Nachfrage)
+874: Korrekte Angabe ich Fragen, wenn Kennzeichen mit D-Zusatz gewählt
+876: Flugzeug wird nicht angegeben nicht mehr als Datenbankfehler gemeldet
+893: Fehler "Landezeit vor Startzeit" nur wenn gelandet und gestartet
+901: BUGFIX: Alle aktualisieren dauert lang.
+950: BUGFIX: Einstellige Daten in Haupttabelle
+955: BUGFIX: Datum zurückstellen nicht abschaltbar
+978: Neue Versionsskripte, sollten jetzt funktionieren
+979: Unbenutzte flugleiter- und Startschreiberfunktionen deaktiviert
+990: BUGFIX: combo_box überschreibt Text bei insert in Liste, wenn Liste leer
+     ==> Wenn Personendatenbank leer war, wird Begleiter=Pilot gesetzt.
+994: Prüfung auf "+1"
+996: BUGFIX: Begleiter im einsitzigen Flugzeug prüft =1 statt <2: unbekante
+     Sitzzahl
+997: Prüfung: Motorflugzeug an der Winde
+1060: Config file
+1070: Antialiasing
+1076: BUGFIX: 996 korrigiert zu ==1 statt =1
+1077: BUGFIX Versionsskripte (Makefile)
+1078: Fenstertitel aus Konfigurationsdatei
+1093: Personen-VID in der CSV
+1094: Datum in der CSV
+1097: Verschiedene "-"s in der CSV
+1099: BUGFIX: ungültige PDF, wenn keine Flüge
+1105: BUGFIX: Datumsbereichsdump schaute auf startzeit statt auf effdatum
+1126: Datum in CSV nach vorne, Nummer bezieht sich auf Tag statt auf gewählten
+      Bereich
+1139: Bemerkungsfeld in PDF auf 42 Zeichen beschränkt
+1143: LaTeX-Ausgabe oberer und unterer Seitenrand
+1153: LaTeX-Ausgabe \raggedright in der Tabelle
+1161: BUGFIX: Datenbankfunktionen stürzen ab, wenn String aus Datenbank=NULL,
+      beim Versuch "...=(string)(row[...])".
+1164: Listen im Flug-/Stuffeditor Einträge nur einmal
+1166: Vereins- und Ortsliste sortiert
+1181: Felder, die ausgefüllt werden müssen, markiert
+1184: BUGFIX: Flug, der an anderes Datum editiert wurde, verschwand nicht
+      sofort
+1194: Konfigurationsdatei "source"-Anweisung ==> Passwort in eigene Datei
+1212: Netzwerkdiagnose
+1217: skdump --version
+1222: CSV-Ausgabe: Flugtyp
+1224: CSV-Ausgabe: Z bei Zeiten weg
+1225: CSV-Ausgabe: Landungen 1 statt 0
+1227: BUGFIX: Gehende Flüge blau angezeigt
+1246: BUGFIX: Anzeigedatum der Tabelle nicht initialisiert ==> Flüge wurden
+      erst nach Anlegen eines neuen Flugs angezeigt.
+1255: BUGFIX: PDF: Kennzeichenspalte zu schmal für D-WWWW
+1275: Abkürzungen in PDF-Tabelle
+1282: Personen und Flugzeuge, die verwendet werden, können nicht gelöscht werden.
+1284: BUGFIX: segfault in skdump wenn kein Pilot vorhanden
+1289: BUGFIX: Vorbereitete Flüge nicht angezeigt
+1299: BUGFIX: Flugdauer bei vorbereiteten kommenden Flügen
+1300: Selbststart bei Mike eingetragen (fliegt raus, sobald ein UL-SFZ
+      auftaucht)
+1301: Zwischenlandungen bei kommenden Flügen möglich
+1308: BUGFIX: Mehrfach vorhandene Piloten
+1310: Kriterium für "Pilot benötigt" ist Selbststart (nicht mehr Echo)
+1311: BUGFIX: Farbe von gehenden Selbststartern dunkelgrün
+1312: BUGFIX: Startart bei gehenden Flügen nicht angezeigt (statt kommende)
+1347: "D-" im Kennzeichenfeld voreingetragen
+1349: BUGFIX: Bordbuch Betriebsdauer
+1350: BUGFIX: Namensvervollständigung ging nicht bei direktem Klick auf Button
+1359: "Bitte warten"-Fenster bei Bordbuch/Flugbuch
+1360: BUGFIX: Statistikfunktionen verwenden aktuelles Datum statt Anzeigedatum
+1365: BUGFIX: Cursor in die gleiche Spalte wie Zeile nach Flug dazufügen
+1368: BUGFIX: "Fliegt noch"-Prüfung, wenn gelandeter Flug eingetragen
+      (Nachtragen)
+1371: Zielort beim Nachtragen automatisch eingetragen
+1385: BUGFIX: person_flog und flugzeug_flog Bedingung, person_flog und
+      flugzeug_flog auf make_flug_query umgestellt
+1386: Bei D-KILD und D-KIFP Selbststart eingetragen
+1393: Meldung bei Datumseinstellen
+1395: F11 zum Ein-/Ausblenden gelandete
+1397: CTRL+A zum Ein-/Ausblenden gelandete
+1400: Alle Tabellen mit F9 sortierbar
+1409: Segelflugzeug im F-Schlepp kann Zwischenlandung machen.
+1413: Sortieren per CTRL+T in allen Tabellen, Startartstatistik CTRL+K
+1450: BUGFIX: Focusspringen im Flugeditor (sk_time_edit-Felder)
+1451: Anzeigedatum zurückstellen auch bei Starten von vorbereiteten Flügen
+1462: Zwischenlandungen auf Anzahl Landungen geändert (DATENBANK Inhalt)
+1464: BUGFIX: Begleiter "-" in Tabelle bei Gastflug
+1467: Flugtypen "Gastflug Extern" und "Gastflug Privat"
+1468: BUGFIX: Gelandeter Flug in der gleichen Minute noch als "Fliegt noch"
+1469: BUGFIX: Flugtyp immer Gast (E) in Tabelle
+1471: BUGFIX: select * bei Flug
+1496: Unvollständige Namen können eingetragen werden (DATENBANK Tabelle)
+1510: Demosystem-Menü
+1526: BUGFIX: Stuffliste geschlossen nach Editieren (mit return aufgerufen)
+1528: Kommende Flüge wie gehende nicht per default ausgeblendet
+1529: BUGFIX: Errorcontrol bei Landungen==0 fehlerhaft
+1530: BUGFIX: Fehlermeldung bei gehenden Flügen mit Landungen==0, wenn
+      "gelanded" gesetzt war.
+1531: Zeiteditorfelder autoadvance
+1532: Zeiteditorfelder Cursor auf Stunde zurückgesetzt beim Wiederöffnen
+1534: BUGFIX: "Vorname" und "Nachname" bei "nur *name angegeben" vertauscht
+1536: BUGFIX: Wenn als Pilot 2^31-1 (?) in der DB steht, konnte kein anderer
+      Pilot mehr angegeben werden.
+1538: Bei nur ein Namensteil wird beim Öffnen des Flugs im Editor nicht der
+	  andere Teil completed, auch, wenn es nur eine Person mit diesem
+	  Namensteil gibt.
+1540: Bei Landungen=0 wird nicht "-" in der Tabelle geschrieben.
+1545: Unvollständige Namen im CSV-Dump 
+1547: Fehlerliste rot bei Fehlern
+1548: BUGFIX: Bei lfz_echo-Flugzeugen Startart mit Selbststart überschrieben.
+1549: BUGFIX: Bei KILD und KIFP Startart mit Selbststart überschrieben
+1550: Wenn bei Landezeit "automatisch" entfernt wird (Nachtragen), wird neben
+      dem Zielort auch die Anzahl der Landungen (1) eingetragen
+1555: Das Logo ist jetzt als XPM einkompiliert, die logo.png hat im Betrieb (!)
+      keine Funktion mehr. logo.xpm wird per makefile aus logo.png erzeugt.
+1560: Prüfung auf Landungen!=0 ohne Start
+1563: BUGFIX: Fehlerliste bei Änderung des Flugmodus nicht sofort aktualisiert
+1571: Startart Selbststart wird beim Wiederholen übernommen.
+1572: Pilot muss auch bei kommenden Flügen angegeben werden.
+1574: BUGFIX: Typo "Starort" in PDF-Ausgabe
+1578: LaTeX-Ausgabe mit weniger Spaltenabstand und clipping
+1585: Flugdauer im PDF
+1589: Flugdauer im CSV
+1620: BUGFIX: Landungen in der Tabelle bei Schleppflug nicht als "-"
+1631: Abrechnungshinweis und Schleppflug Modus/Zielort dazugefügt
+1633: Gehender Schleppflug Farbdarstellung korrigiert
+1636: Bedingung für Anzeige des Schleppflugs korrigiert (für kommende)
+1638: Menütext für gehende Schlepps auf "Schlepp beenden" geändert
+1639: 1638 für das Kontextmenü
+1642: Für das automatische Eintragen des Zielorts wird der Startort statt des
+      default_ort verwendet.
+1643: Abrechnungshinweis in Haupttabelle
+1650: Schleppflugzeug Zielort in PDF
+1656: Abrechnungshinweis, Schleppflugzeug Modus und Zielort in CSV
+1659: Neue Shortcuts im Flugeditor, mit symbolischen Konstanten
+1670: ist_schulung, starts_here, lands_here
+1674: Sonderformat Albgau
+1722: Bordbuch-Dumps in LaTeX
+1725: Vereinsliste-Dump
+1727: skdump: Datum auch als ISO-Datum als Parameter angebbar
+1729: BUGFIX: skdump Stringtypen bei einigen Funktionen std statt q
+1730: Bordbuch-Dump auch für Motorsegler
+1731: BUGFIX: skdump Sonderformat Albgau: zusätzliche leere Spalte
+1732: Demosystem als Konfigurationsdatei-Option (demosystem)
+1733: skdump: Default-Typ Liste
+1738: Ort aus Konfigurationsdatei gelesen
+1741: skdump: Bordbuch: "Keine Flüge" wenn keine Flüge
+1742: sk_db angefangen
+1888: The current QT version does not mess up the verticalHeader when deleting
+      a row from a QTable. Not refreshing the table any more when deleting a flight.
+1970: sk_db fertig (~230 Builds)
+1974: BUGFIX: Begleiter-Nachname eingetragen bei einsitziger Schulung/Gastflug,
+      wenn vorher ein Begleiter im Feld stand.
+1991: Flugausblendeeinstellungen überarbeitet und korrigiert.
+2001: BUGFIX: Fehlermeldung "kein Begleiter", wenn für den Fluglehrer nur ein
+      Nachname/Vorname angegeben wurde.
+2003: Fehlermeldungen in der Fehlerliste im Flugeditor zeigen bei Schulung
+      "Flugschüler" etc. an.
+2005: BUGFIX: Fehlermeldung "kein Pilot", wenn für den Piloten nur ein
+      Nachname/Vorname angegeben wurde.
+2006: BUGFIX: Falsche modus-Bedingungen bei Fehlercheckung
+2007: BUGFIX: Bei Löschen eines F-Schlepps blieb der Schleppflug stehen. Dieser
+      Bug wurde nicht bemerkt, weil wegen des QT-Bugs (->1888) ohnehin die Tabelle
+	  aktualisiert wurde.
+2015: BUGFIX: Datumsangabeninterpretationsprobleme in sk_dump
+2016: startet_hier und landet_hier implementiert und überall verwendet (ca.
+      60/80 manuelle Vergleiche ersetzt). Dummerweise gab es schon ein starts_here
+      und lands_here...
+2017: startet_hier->starts_here (*grummel*)
+2018: =="" -> eintrag_ist_leer
+2020: bwlv -> lvnum, sql.h weg
+2021: schulung->schul_2, uebung->schul_1
+2024: Fehlerprüfung: Startort gleich Zielort
+2025: db_id aus data_types ausgelagert
+2048: Statistikfenster modal
+2072: Statistikfenster benutzt events statt splashes selbst anzulegen
+2111: BUGFIX: Kriterium für "Flug landet nach Uhrzeit" falsch, dadurch wurde
+      Flüge fälschlicherweise als "fliegt noch" gemeldet.
+2151: Flugbuch/Bordbuch ist UNGLAUBLICH viel schneller
+2162: BUGFIX: Lokale Flüge mit Landung ohne Start wurden als "vorbereitet"
+      gezählt.
+2179: BUGFIX: nicht editierbarer Flug wird nach Löschversucht nicht aus der
+      Tabelle entfernt, Fehlermeldung stattdessen.
+2181: Keine Buttons in Tabelle wenn Anzeigedatum!=heute
+2183: Menüeinträge deaktiviert, wenn Anzeigedatum!=heute
+2184: Kontextmenüeinträge deaktiviert, wenn Anzeigedatum!=heute *grummel*
+2188: BUGFIX: Flüge ohne Startzeit zu anderem Datum anlegen funktionierte nicht
+2190: Nicht editierbare vorbereitete nicht angezeit
+2192: Aufräumungen in sk_flug.
+2194: Mehr Aufräumung: db_ok und id_invalid statt ==0, id_invalid nach
+      db_types.h
+2196: Fehlerprüfung Segelflugzeug Landungen ohne Landung
+2197: Vorbereitete nur bei aktuellem Anzeigedatum angezeigt
+2206: Neuer Bordbuchcode und sk_win_stat nutzt ihn
+2207: BUGFIX: Fehlerprüfung mit Begleiter nur, wenn Begleiter erlaubt
+2218: Neuer Flugbuchcode und sk_win_stat nutzt ihn
+2229: sk_dump nutzt neuen Bordbuchcode
+2231: "Keine Flüge" in Bordbuchdump, wenn ein bestimmter Verein keine Flüge hat
+2239: BUGFIX: Segfault bei Aufruf der Bordbuchfunktion mit leerer Flugliste
+2244: BUGFIX: Flüge statt Flugzeugen gelöscht
+2248: BUGFIX: skdump Anzahl Personen schaute auf begleiter_id wenn !begleiter_erlaubt.
+2251: BUGFIX: diverse fehlende QString/std::string-Konvertierungen, die auf
+      magrathea trotzdem kompilierten (???)
+2260: Kein Programmabbruch, wenn Datenbank beim Start nicht erreichbar ist
+2262: Fehlermeldung im Hauptfenster angezeigt, wenn Datenbank nicht erreichbar
+2284: BUGFIX: Zielort Schleppflugzeug bei Windenstarts angezeigt
+2291: Log
+2299: sk_dump-Version auf PDF-Auszügen
+2302: MySQL-Client-Version im Versionsstring
+2304: Motorflugzeuge auf Startart!=Selbststart geprüft statt nur Winde
+2374: Nur NN/VN angegeben: Auswahlliste
+2376: Mehrere Personen mit gleichem Namen: neue Auswahlliste
+2381: Mehrere Personen mit gleichem Namen: "unbekannt" funktioniert korrekt
+2393: BUGFIX: Person nicht genullt, wenn "(unbekannt)" ausgewählt.
+2414: ID in stuff_list angezeigt
+2415: Auswahlmodus auf sk_win_stuff_list entfernt
+2419: Anzahl Landungen bei gehenden Flügen und bei Schleppflügen korrekt
+      angezeigt
+2421: BUGFIX: gehender Schleppflug beim editieren nicht eingetragen
+2431: BUGFIX: Bemerkungen zu Flugzeugen nicht aus der DB gelesen
+2434: BUGFIX: Prüfung auf +1 auch bei Gastflügen
+2442: Flugbuch sortiert nach Namen
+2445: Funktionstasten funktionieren im stuff lister, Editieren im Menü
+2460: BUGFIX: Namensteile doppelt gelistet, wenn sowohl editierbar als auch
+      nicht editierbar vorhanden.
+2462: Aufräumen in sk_win_flight::check_person (), Wiedereinführung der
+      Personenvorauswahl im Selector
+2464: Personenvorauswahl passend zum Flugzeug, wenn vorhanden.
+2467: Personenvorauswahl für Fluglehrer passend zum Flugschüler
+2517: Informationen über die Anzeige im stuff selector in die Datenklassen
+      umgesiedelt, stuff selector als template.
+2557: startart_t
+2559: Sonstige F-Schlepps
+2566: Sonstige F-Schlepps mit Angabe von Kennzeichen
+2569: Fliegt-noch-Meldung mit Kennzeichen
+2596: Konfigurationsdatei: style
+2599: BUGFIX: Pilot "-" fliegt noch
+2615: Unbekannte Startarten werden als (Unbekannt) angezeigt
+2616: BUGFIX: kommende vorbereitete ließen sich nicht starten
+2630: Passender Verein im Personenauswahldialog angezeigt
+2632: Verein des Flugzeugs bei Personenauswahl beachtet
+2650: Bordbücher auch für Motorflugzeuge
+2651: Bei Tabellenrefresh cursor auf den gleichen Flug (statt gleiche Zeile,
+	  unterschiedlich zum Beispiel bein Ein-/Ausblenden gelandeter), wenn nicht
+	  da, letzte Zeile
+2652: BUGFIX: Stuff editor widgets mehrfach geloescht.
+2665: flight_list mit .sort
+2666: Sortierung in Flugtabelle
+2667: Korrekte Sortierung im Flugbuch
+2677: Bordbücher für Schleppflugzeuge OK, nicht zusammenfassbare einzeln
+2685: Flugeditor: Fehlerwidgets rot markiert
+2691: Vorbereitete beim Sortieren korrekt behandelt. Sortiertverfahren in sk_flug.
+2694: Bordbuchdump: per default alle Vereine.
+2695: BUGFIX: segfault in sk_dump.
+2696: Später starten default button im Flugeditor.
+2697: Eigenstart beim Wiederholen wieder übernommen.
+2700: BUGFIX: Kein default button beim Editieren.
+2702: BUGFIX: Nichtexistierendes Widget von fehler_eintragen gefragt.
+2703: Flug editieren: Focus auf erstes fehlerhaftes Widget.
+2707: BUGFIX: Startart "keine" als "unbekannt" angezeigt.
+2710: BUGFIX: Explizit angegebenes Schleppflugzeug überschrieben, sobald eine
+      andere Startart angegeben wurde.
+2712: BUGFIX: Behandlung unbekannter Startarten funktionierte nicht richtig.
+2719: BUGFIX: Startarten in Flugtabelle nicht richtig dargestellt
+2735: Löschen von Flugzeugen verhindert, wenn als Schleppflugzeug verwendet.
+2738: Fehlerprüfung: Segelflugzeug als Schleppflugzeug
+2744: QString::sprintf ersetzt
+2747: Explizit angegebenes Schleppflugzeug nicht überschrieben, wenn andere
+      Startart ausgewählt
+2748: Typ des Schleppflugzeugs auch bei regulären F-Schlepps angezeigt
+2751: dump: Flüge richtig sortiert
+2756: read_config_file in zentrale Datei
+2762: BUGFIX: Spaltenversatz in sk_dump/csv/albgau
+2763: Kennzeichen des Schleppflugzeugs in sk_dump/csv/standard
+2765: Unbekannter F-Schlepp: Kennzeichen zu Bemerkungen in sk_dump/latex
+2676: Unbekannte Startart als "???" in sk_dump/latex
+2770: Start "keine" korrekt dargestellt in sk_dump/latex
+2777: BUGFIX: Vornamen auch im Nachnamenfeld
+2778: BUGFIX: fehler_eintragen beim Öffnen des Editors 10 mal aufgerufen
+2787: Div. Codeübersetzungen
+2792: BUGFIX: sk_db::get_plane_registration ergibt leichtsinnig
+	  db_err_not_found (z. B. auch bei db_err_query_failed) ==> wenn die Query
+	  einen Fehler enthält kann kein Flug gestartet werden.
+2796: BUGFIX: Pilot "-" fliegt noch aus Hauptfenster
+2799: BUGFIX: Flug nicht startbar, wenn regulärer F-Schlepp und SFZ noch flog
+2821: BUGFIX: Unbekanntes Flugzeug nicht korrekt behandelt
+2824: BUGFIX: Fehlermeldung, wenn versucht, leere Zeile zu löschen
+2834: Einstellmöglichkeit "immer aktuelle Datum verwenden"
+2836: BUGFIX: Datum auf 1970 gestellt bei vorbereitetem Flug
+2839: BUGFIX: "Fliegt noch"-Prüfung beim Nachtragen
+3026: sk_admin: finished DB checking
+3029: sk_admin: "like table" aufgelöst vor Benutzen der Tabellen
+3033: "like table"-Auflösung in sk_db verschoben
+3046: sk_admin Programmstruktur
+3076: options-Klasse funktioniert
+3080: sk_admin: Konfigurationsdateien bei --version etc. nicht gelesen
+3085: sk_dump benutzt options
+3087: Kommandozeilenparameter haben Vorrang vor Konfigurationsdateien
+      (funktioniert leider nicht)
+3104: default_ort entfernt
+3105: check_db implementiert (noch nicht benutzt)
+3108: check_db in sk_admin benutzt
+3121: check_db und initialize_db rudimentär in GUI eingebunden
+3139: BUGFIX: q2std mit ungültigen strings
+3143: Modellierung der Datenbankverbindung als endlichen Automaten
+3176: BUGFIX: Startartliste leer
+3192: Abstand im Info-Frame kleiner
+3195: Info-Frame auf QLayout umgestellt ==> resizeEvent entfernt
+3268: sk_plugin funktioniert
+3297: sk_plugin in GUI eingebunden
+3299: Benutzer-default-style verwendet statt hard coded light
+3310: Plugins aus Konfigurationsdatei gelesen
+3316: Attribute rich_text, warn_on_death
+3318: <nobr> bei richtext-Label immer dazugefügt
+3425: Layouts im infoframe so, dass die Labels sich nicht bei jeder
+      Größenänderung der Pluginlabels verschieben.
+3430: Plugins auf QProcess umgestellt
+3446: Plugin-Beschreibung auch Richtext um Alignment-Probleme zu vermeiden
+3524: BUGFIX: Diverses im Zusammenhang mit Datenbank anlegen
+3552: BUGFIX: nonopts mehrfach gefüllt
+3580: BUGFIX: Zweites Parsen der Parameter klappte nicht
+3597: merge_person
+3698: Grundstruktur Web-FSM (dummy-Anmeldung)
+3714: Rudimentäres Session-Handling
+3750: Session-Handling funktioniert
+3811: init_db legt auch einen db_admin-Benutzer an
+3986: Neuer Webinterface-Code
+4014: state_id ersetzt durch state_label
+4066: auf treat_person umgestellt
+4160: BUGFIX: option arguments als non-options erkannt
+4167: BUGFIX: sk_dump: options nicht verwendet
+4516: QLayout in sk_win_flight, sk_win_stuff_editor, lbl_cbox, sk_tine_edit,
+      sk_win_stuff_list
+4531: Datenbankbenutzbarkeit beim Einloggen in sk_web überprüft
+4591: Personenzuordnung von Benutzern in DB und Webinterface
+4603: Personenzuordnung beim Editieren überprüft
+4607: Person verwendet: auch auf Benutzer geprüft
+4608: sk_web: verwendete Personen nicht löschbar
+4634: sk_web: Person überschreiben (merge)
+4649: sk_web: Person editierbar/nicht editierbar machen
+4662: sk_web: Nicht editierbare Personen beim anlegen, editieren und löschen
+      korrekt behandelt
+4681: mime_header
+4736: Dateiupload, Anfänge Stammdaten
+4758: table fertig
+4882: Stammdaten einspielen
+4887: BUGFIX: Dokument ausgegeben, bevor die session geschrieben war (race
+      condition)
+4910: BUGFIX: leere Passwörter nicht akzeptiert (sk_admin und io)
+4933: removed set_widget_colors from sk_win_flight, fixing ill-defined
+      behaviour concerning label visibility/color
+4954: Kennzeichen "D-" als Fehler gewertet
+4955: F2 etc. bei fehlender Datenbankverbindung deaktiviert
+4960: Bugfix: Vorzeichen vor Zeit bis sunset für die erste Stunde nach sunset
+4962: sk_web: Fehlermeldung, wenn doppelte Vereins-ID beim Editieren und
+      Anlegen von Personen
+4983: Murx: Tabellenzeilenhöhen
+4985: BUGFIX: Labels im Flugeditor manchmal nicht sichtbar (uninitialisierte Variablen)
+5123: Flugbuchabfrage mit HTML und CSV
+5128: Content-Disposition
+5218: BUGFIX: sk_web: redirect URL für https
+5220: BUGFIX: flugbuch: falscher Pilot für Fluglehrermodus
+5233: sk_web: Für sk_admin Benutzerverein beim Auswählen der Person
+      eingetragen, wenn noch nicht manuell eingetragen
+5238: BUGFIX: sk_db: doppelte Vereins-ID nicht richtig erkannt
+5266: sk_web: Fehler beim LaTeX-Lauf etc. werden angezeigt.
+5300: Startlistenabfrage, div. Kleinigkeiten
+5340: sk_web: Flugdatenbankabfrage, entsprechendes Benutzerattribut
+5361: Fluglistenabfrage von lokal
+5362: Hauptmenü für nicht angemeldete Benutzer (Standardzustand)
+5367: Startarten mit ungültiger ID werden nicht akzeptiert
+5463: Format-Pluginschnittstelle und Beispielplugin (lsv_albgau) fertig, damit
+	  Flugdatenbankabfrage fertig.
+5466: Berechtigungen der nicht-sk_admins korrigiert, entsprechende
+      sk_user-Felder gesperrt
+5489: no_redirect dazugefügt, um IE-Problem zu untersuchen
+5513: Bordbuchabfrage
+5522: BUGFIX: Personen beim Wiederholen von Flügen eingetragen, obwohl leer.
+5524: Warnung "Kein Verein" beim Editieren von Flugzeugen entfernt
+5541: Warnung "Kein Verein" beim Editieren von Personen entfernt
+5542: BUGFIX: Warnung "Exisitiert schon" beim Editieren von Flugzeugen
+5544: Fehlermeldung beim Hinzufügen eines Flugzeug mit bereits exisitierendem
+      Kennzeichen
+5548: BUGFIX: Unvollständige Namen bei Datenbankabfrage nicht zurückgegeben
+5549: admin: leere Passwörter nicht zugelassen
+5563: shell-plugins im Plugin-Pfad gesucht und in ihren eigenen Verzeichnis
+      ausgeführt
+5567: Tooltip mit Dateinamen und Verzeichnis für Plugin-Labels
+5584: Mehrere Formate in Plugins benutzbar
+5592: error_text als Paramter in Format-Plugins
+5608: Uniqe plugin names
+5610: removed sk_dump (obsolete)
+5634: sk_web: Nur Verfügbare Links im Hauptmenü (noch ohne Benutzerprüfung),
+      Hauptmenü und anonymes Hauptmenü zusammengefasst
+5639: BUGFIX: sk_web: <p>s im footer nicht immer korrekt geschlossen
+5641: "Keine Flüge" in HTML-Ausgabe statt leerer Tabelle
+5644: Z in CVS-Downloads weg
+5672: Hardcoded Breite der sekundären Labels im Flugeditor entfernt
+5674: BUGFIX: Sichtbarkeit von Eingabefeldern im Flugeditor beim Öffnen nicht
+      korrekt aktualisiert
+5692: Ausgabe des Dokuments bei LaTeX-Fehler
+5694: BUGFIX: PDF-Erstellung funktioniert nicht, wenn "} im LaTeX-Dokument
+      vorkommt (Rheinstetten 2005-03-28)
+5695: BUGFIX: leere Vereins-ID auf Eindeutigkeit geprüft
+5696: BUGFIX: sk_web: Editier-Links bei Auswahl für "Person überschreiben"
+      angezeigt
+5700: Wenn nur eine Startart vorhanden, wird die standardmäßig ausgewählt.
+5707: Flugtyp bei Wiederholung nicht korrekt eingetragen
+5724: Tabellenspaltenbreiten nicht hard coded
+5727: BUGFIX: Für neue Flüge immer aktuelles Datum verwendet.
+5739: REQUEST_METHOD=CMDLINE in sk_web
+5742: Flugliste: Gastflüge mit "(Gast)" als Begleiter
+5756: Schleppilot
+
+1.2:
+  - PLabel neu starten durch Label doppelklicken
+
+1.3:
+  - Wetterbild
+  - Umgestellt auf QT4
+
+1.4:
+  - Bugfix: F11 ging nicht (Qt4-Portierung)
+  - Zeilenumbruch im Wetterplugin-Widget aktiviert
+  - Bugfix: Wetteranimation nicht richtig dargestellt (Qt4-Portierung)
+  - Bugfix: Endlosschleife auf 64-Bit-Systemen (unsigned int gegen string::npos
+	verglichen)
+  - Regenradar von wetteronline.de dazugefügt und in
+	Beispielkonfigurationsdatei eingetragen
+  - Wetterplugins: Zeilenumbruch
+  - Bugfix: Schlepppilot im Schleppflug nicht angezeigt
+  - Bugfix: Darstellung von Zeit- und Datumsfeldern (Qt4-Portierung)
+  - Bugfix: Fehlendes num_to_string (size_t) (64-bit): cast auf unsigned int
+  - Bugfix: Auto-Vervollständigung bei Namen ist wieder
+	großschreibungserhaltend (von Qt4 anscheinend nicht unterstützt)
+  - Flugeditor ist verkleinerbar
+  - Zeilenumbruch in Shell-Plugins => Verkleinerung des Hauptfensters möglich
+  - Bugfix: Fehlerfeld im Flugeditor zu groß (Qt4-Portierung)
+  - Bugfix: Abstand zwischen Labels bei Plugins
+
+1.5:
+  -QSettings implementiert, schreibt Daten nach ~/.config/startkladde/startkladde.conf
+  -Hier liegen Schriftart und Größe, sowie Spaltenbreite der Flugtabelle (0 = Spalte unterdrückt)
+  -Unterstützung der virtuellen Tastatur kvkbd
+  -Toolbar mit Tasten für Tastatur, Neuer Flug, Umschaltung auf komplette Flugliste
+  -Bei Umschaltung auf komplette Flugliste wird an das Ende gescrollt
+  -Anzeige des Batterie-Ladezustandes über ACPI; benötigt wird libacpi von:
+   http://www.ngolde.de/libacpi.html
+  -Quote-Zeichen f�r CSV-Werte konfigurierbar: Option csv_quote in startkladde.conf
+  -QCompleter in sk_combo_box implementiert
+
+1.6:

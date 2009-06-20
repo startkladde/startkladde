@@ -1,0 +1,13 @@
+#!/bin/bash
+
+HOST=$1
+
+if [ -z "$HOST" ]; then
+	HOST=adam
+fi
+
+echo "HOST=$HOST"
+cd ~startkladde
+scp startkladde@$HOST:sk/startkladde/startkladde ./
+cp startkladde /home/startkladde/
+

@@ -1,0 +1,119 @@
+#!/bin/bash
+# sk_make_csv
+# 2005-08-29 Martin Herrmann
+# Outputs the CSV database using the CMDLINE request method of sk_web
+
+# Create global variables#{{{
+export QUERY_STRING=""
+#}}}
+
+function add_to_query ()#{{{
+	# Adds a parameter to the query.
+{
+	QUERY_STRING="$QUERY_STRING&$1=$2"
+}
+#}}}
+
+function usage ()#{{{
+	# Shows usage information
+{
+	echo "Usage: $0 [--help] [--debug] [--towflights_extra] [date [date]]"
+	echo "If no date is given, the current date is used."
+	echo "If one date is given, this date is used."
+	echo "If two dates are given, this range is used."
+
+	exit 1
+}
+#}}}
+
+function is_date ()#{{{
+	# Determines whether the parameter given looks like a date.
+{
+	year=`echo "$1" |cut -d "-" -f 1`
+	month=`echo "$1" |cut -d "-" -f 2`
+	day=`echo "$1" |cut -d "-" -f 3`
+
+	if [ -z "$year"  ]; then return 1; fi
+	if [ -z "$month" ]; then return 1; fi
+	if [ -z "$day"   ]; then return 1; fi
+
+	return 0;
+}
+#}}}
+
+# Determine the SK_WEB executable#{{{
+if [ -z "$SK_WEB" ]; then
+	if [ -e "./sk_web" ]; then
+		SK_WEB="./sk_web"
+	else
+		SK_WEB="sk_web";
+	fi
+fi
+#}}}
+
+# Set up the environment variables#{{{
+export REQUEST_METHOD="CMDLINE"
+export QUERY_STRING="action=do_flight_db"
+#}}}
+
+# Parse the parameters#{{{
+while [ -n "$*" ]; do
+	case "$1" in
+		"--towflights_extra") towflights_extra=1;;
+		"-?") usage;;
+		"-h") usage;;
+		"--help") usage;;
+		"--debug") debug=1;;
+		-*) echo "Option $1 unknown."; exit 1;;
+		*)
+			# This must be a date. Assign it to the next date parameter not yet
+			# set.
+			if is_date "$1"; then
+				if [ -z "$date1" ]; then
+					date1=$1
+				elif [ -z "$date2" ]; then
+					date2=$1
+				else
+					echo "Too many dates given."
+					exit 1
+				fi
+			else
+				echo "$1 is not a date."
+				exit 1
+			fi
+	esac
+	shift
+done
+#}}}
+
+# Depending on which dates are set, build the query#{{{
+if [ -z "$date1" ]; then
+	add_to_query "date_spec" "today"
+elif [ -z "$date2" ]; then
+	add_to_query "date_spec" "single"
+	add_to_query "date_single_year"  `echo "$date1" |cut -d "-" -f 1`
+	add_to_query "date_single_month" `echo "$date1" |cut -d "-" -f 2`
+	add_to_query "date_single_day"   `echo "$date1" |cut -d "-" -f 3`
+else
+	add_to_query "date_spec" "range"
+	add_to_query "date_start_year"   `echo "$date1" |cut -d "-" -f 1`
+	add_to_query "date_start_month"  `echo "$date1" |cut -d "-" -f 2`
+	add_to_query "date_start_day"    `echo "$date1" |cut -d "-" -f 3`
+	add_to_query "date_end_year"     `echo "$date2" |cut -d "-" -f 1`
+	add_to_query "date_end_month"    `echo "$date2" |cut -d "-" -f 2`
+	add_to_query "date_end_day"      `echo "$date2" |cut -d "-" -f 3`
+fi
+
+if [ -n "$towflights_extra" ]; then
+	add_to_query "towflights_extra" "1"
+fi
+#}}}
+
+# Display (--debug) or execute the query#{{{
+if [ -n "$debug" ]; then
+	echo $QUERY_STRING
+else
+	$SK_WEB
+fi
+#}}}
+

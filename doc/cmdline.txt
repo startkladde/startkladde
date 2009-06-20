@@ -1,0 +1,36 @@
+Zugriff auf die Daten via Kommandozeile (das, was früher mal sk_dump war) geht
+jetzt mit sk_web.
+
+Der direkte Aufruf funktioniert so, dass die Umgebungsvariable REQUEST_METHOD
+auf "CMDLINE" gestellt wird. In der Umgebungsvariablen QUERY_STRING wird die
+Query angegeben, die ausgeführt werden soll. So kann sämtliche Funktionalität
+des Webinterface auch von der Kommandozeile erreicht werden.
+
+Da der direkte Zugriff etwas umständlich ist, empfiehlt es sich, ein Skript
+dafür zu verwenden. Ein Beispielskript liegt in scripts/sk_make_csv. Es dient
+dazu, die Flugdatenbank als CSV-Datei abzurufen.
+Es wird folgendermaßen benutzt: sk_make_csv [--towflights_extra] [date [date]].
+Daten werden im ISO-Format (YYYY-MM-DD) angegeben. Wird kein Datum angegeben,
+wird der aktuelle Tag verwendet. Bei einem Datum wird dieser Tag verwendet, bei
+zwei Daten der durch diese Daten gegebene Bereich.
+Der Schalter --towflights_extra bewirkt, dass Schleppflüge nochmals als
+separate Einträge dargestellt werden.
+
+Zum Zugriff mittels Kommandozeile ist es erforderlich, dass der Benutzer die
+Konfigurationsdatei mit dem Datenbankpasswort lesen kann. Es kann also kein
+unerlaubter Zugriff stattfinden.
+Für den Zugriff werden die Rechte des Administrators (sk_admin) verwendet, es
+findet also keine interne Authentifikation mehr statt. Das ist dadurch
+begründet, dass der aufrufende Benutzer ohnehin Zugriff auf das
+Datenbankpasswort haben muss und er sich daher auch direkt als sk_admin
+anmelden könnte.
+
+Soll eine weitere Authentifikation verwendet werden, bietet sich SSH an. Mit
+Schlüsselauthentifikation kann der Zugriff bestimmter Benutzer (genauer:
+Schlüssel) auf bestimmte Programme eingeschränkt werden. Es kann also
+eingestellt werden, dass mit einem bestimmten Schlüssel nur eine bestimmte
+Aktion (z. B. CSV abrufen) möglich ist.
+Nähere Information findet sich in der Dokumentation zu ssh unter dem Begriff
+"authorized_keys" (bei openssh zum Beispiel in man sshd).
+
+

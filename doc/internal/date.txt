@@ -1,0 +1,27 @@
+About dates given on the command line
+
+,---- date given
+|,--- start_date given
+||,-- end_date given
+|||,- # non-option dates
+||||                ,---------------- Date OK
+||||                |,--------------- Use range
+||||   ,- Meaning   || ,------------- effective date
+||||   |            || |     ,------- effective start date
+||||   |            || |     |     ,- effective end date
+||||   |            || |     |     |
+111-   Error        -
+110-   Error        -
+101-   Error        -
+100-   Date         +- Date  ~     ~
+011-   Start-End    ++       Start End
+010-   Error        -
+001-   Error        -
+000-   Today        +- Today ~     ~
+
+0001   #1           +- #1    ~     ~
+0002   #1-#2        ++       #1    #2
+000>   Error        -
+
+other  Error        -
+

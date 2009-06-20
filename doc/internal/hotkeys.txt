@@ -1,0 +1,43 @@
+Hotkeys im Flugeditor:
+
+Es gibt zu viele Labels/Buttons, um eindeutige Hotkeys zu vergeben (25).
+Ansatz: Alles, was direkt etwas schaltet, bekommt einen eindeutigen Hotkey
+(auﬂer Schlieﬂen/Abbrechen, weil disjunkt).
+Alles, was nur Felder anspringt, darf doppelt belegt werden.
+OK bekommt O
+
+Text									Buchstaben		Eindeutig	Ergebnis
+                                                                            
+Kennzeichen								CEHIKNZ			K			K      	
+Flugtyp									FGLPTUY			Y			Y      	
+Nachname								ACEHMN						N      	
+Vorname									AEMNORV			 			V      	
+Nachname								ACEHMN						H      	
+Vorname									AEMNORV						M      	
+Modus									DMOSU						D      	
+Startart								ARST			R			R      	
+Schleppflug Modus						CDEFGHLMOPSU				F      	
+Startzeit								AEIRSTZ						I      	
+Landezeit								ADEILNTZ					Z      	
+Schleppende/Landezeit Schleppflugzeug	CDEHLNPS					E      	
+Startort								AORST			R			R	  	
+Zielort									EILORTZ						L      	
+Zielort Schleppflugzeug					CEFGHILOPRSTUZ				Z      	
+Landungen								ADEGLNU						G      	
+Bemerkungen								BEGKMNRU		B			B      	
+Abrechnungshinweis						ABCEGHINRSUW	W			W      	
+Datum									ADMTU						U      	
+Fehler									EFHLR						E
+                                                                           	
+Automatisch/Gestartet					AST				S	       	S		
+Automatisch/Gelandet					AT				A	       	A		
+Automatisch/Gelandet/Beendet			T				T			T      	
+Sp‰ter starten/Sp‰ter landen			AENPRST						P	  	
+Jetzt starten/Jetzt landen				AEJNTZ			J			J      	
+OK										O				O			O      	
+Abbrechen								C				C			C      	
+Schlieﬂen								CEHILNS						C
+
+
+
+

@@ -1,0 +1,6 @@
+setxkbmap de
+xhost +local:
+#xset m 8 2
+xset m 80/10 2
+wmaker --no-dock --no-clip
+

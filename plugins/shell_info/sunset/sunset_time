@@ -1,0 +1,16 @@
+#!/bin/bash
+
+datafile=$1
+if [ -z "$1" ]; then
+	datafile=sunsets
+fi
+
+date=`date -I`
+sunset=`grep $date $datafile |cut -f 2`
+
+if [ -z "$sunset" ]; then
+	echo "Datum $date nicht in Datendatei vorhanden"
+else
+	echo "${sunset}Z"
+fi
+

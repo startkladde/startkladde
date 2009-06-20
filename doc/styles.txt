@@ -1,0 +1,13 @@
+Use KDE styles on non-KDE systems:
+You need:
+  - The style files (for example from /usr/lib/kde3/plugins/styles/)
+  - libkdefx.so
+  - The version of QT used to build the plugin must match the version of QT
+    used to build the program (the build key must match, see
+    http://doc.trolltech.com/3.3/plugins-howto.html).
+
+The plugins can be placed in the styles subdirectory of the program. If
+libkdefx.* cannot be placed in the system library directory, LD_LIBRARY_PATH
+can be used.
+
+Apparently, qtconfig can not be used to select the additional styles.

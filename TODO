@@ -1,0 +1,380 @@
+Diese Liste ist veraltet. Neue TODOs sollten in Trac eingetragen werden. 
+
+Diese TODOs auf Aktualität prüfen und in Trac eintragen.
+
+Bug: wenn keine Fl�ge vorhanden, wird keine Bordbuchseite erzeugt => Fehler
+beim Aufruf von dvips
+
+Fieser 64-Bit-Bug: Positionen bei der Stringverarbeitung werden manchmal als
+unsigned int gespeichert. string::npos ist -1, daher schl�gt der Vergleich
+unsigned int/string::npos auf 64-Bit-Systemen fehl.
+L�sung: string::size_type verwenden.
+
+- Regenradar: Nicht-quadratische Radarbilder werden nicht funktionieren ==>
+  resizeable-Modus im Dialog/Widget und Breite anpassen im Widget
+- Release, Webseite, Screenshots
+
+Wetterplugin-Architektur f�r Shell-Plugins verwenden
+] in Wetterplugin-Texten erlauben
+
+Default-Config: Plugins (metar, regenrader) eintragen
+
+Startarten, die nicht mehr benutzt werden k�nnen (alte Winden...), aber noch angezeigt werden m�ssen
+
+Splash-Screen besser (fr�her?)
+
+Gastflug in Flugliste?
+Wenn der Pilot nachtr�glich entfernt wird, wird kein Fehler dargestellt (?)
+
+add: flugzeuge, die nur eigenstart machen
+schleppfl�ge in hauptflugbuchpdf eigene zeile
+use tt2 (www.tt2.org) for output
+
+Problem: Anmeldung mit Internet Explorer klappt nicht. Problem liegt beim IE:
+Bei Buttons wird der Inhalt als Wert gesendet, nicht der "value" (?)
+
+Flugbuch:
+> 1. Ausgabe Anzahl Landungen (Interessant bei Platzrunden mit dem Motorflieger)
+> 2. Zusammenfassung von Fluglehrerstarts wie folgt:
+> - Alle Starts eines Tages mit einem Flugzeugkennzeichen ergeben eine Zeile.
+> - In der Zeile Begleiter steht eine durch Kommas getrennte Liste aller Begleiter des Tages.
+> - Startzeit ist die erste Startzeit des Tages auf dem Kennzeichen.
+> - Landezeit ist die letzte Landezeit des Tages auf dem Kennzeichen.
+> - Anzahl Langungen = Anzahl in der Zeile zusammengefassten Fl�ge.
+
+Als n�chstes:
+  - Benutzerrechtepr�fung in state_available
+  - sk_web: Flugbuch als HTML: Summe der Zeit
+  - sk_web: personal status page
+  - sk_web: program status page
+  - Plugin-Makefile: Pfadanpassung
+
+sk_web: fehlermeldung auf stderr (siehe webserverlog)
+sk_web: nach Anmeldung zum vorherigen Zustand zur�ck
+
+Features:
+  - Felder: Schlepph�he, Motorlaufzeit
+  - Felder: beliebige Felder?
+
+doc: Doxygen? doc++?
+
+Bibliotheken verwenden:
+  - TT2 (templates)
+  - Logger
+
+Umschreiben:
+  - argument_list statt list<argument> �berall
+  - STL statt QTL (also im Wesentlichen std::list statt QPtrList)
+  - std::string statt QString
+  - foo::foo () :foo_member (bar),... { ...} statt foo:foo () { foo_member=bar; }
+  - Named constructor idiom
+  - Named parameter idiom
+  - Exceptions
+  - const correctness
+  - arrays[] weg (am besten zu std::vector)
+  - QActions
+  - printf weg
+  - .clear statt =""
+  - sk_admin -> config -> sk_plugin -> QT includierung ist schlecht
+  - mysql++ statt mysql-lib
+  - atoi weg/auslagern
+  - skdate statt qdate/manuell
+  - string::append statt +=
+  - Vern�nftiges Format (Klassen), um Dokumente (HTML, LaTeX) zu erzeugen
+
+Datenbank:
+  - gestartet, gelandet, sfz gelandet statt status
+  - BWLV --> Landesverband
+  - schlepppilot
+  - Spitzname
+  - "bemerkung" in db, "bemerkungen" im Programm
+
+Zum Testprogramm:
+  - Alle Kombinationen
+	{flug,schlepp}{lokal,kommt,geht}{gestartet}{gelandet}{editierbar} richtig
+	dargestellt
+  - Kommender Schlepp
+  - Fliegt noch
+  - Editieren (als admin) von editierbaren/nicht editierbaren
+  - Merge Editierbar/Nicht editierbar etc., auch wenn in beiden Tabellen
+	vorhanden
+  - Pr�fen, ob �berschreiben sich auch in Bezug auf Benutzer korrekt verh�lt.
+  - Alle Escapes in
+    - LaTeX-Ausgabe
+	- CVS-Ausgabe
+	- HTML-Ausgabe
+
+Funktionalit�t:
+  - Bordb�cher auf Hauptflugbuch drauf
+  - DB-Version
+  - Flugsuche (==> 4119)
+  - Pluginschnittstelle
+
+zeit direkt in hwclock schreiben
+
+Mit Datenbank�nderung:
+	Datenbankversion
+	flug macht nur zwischenlandungen 
+
+Die ganzen "fliegt noch"-Pr�fungen m�ssen eigentlich das Datum im
+Startzeit-Feld verwenden, falls vorhanden, statt current ().
+
+webinterface/scripts alle pfadeinstellungen in eine einzelne datei
+motorflug/motorsegler nicht fehlerhaft, wenn kein pilot (?)
+
+
+INSTALL:
+8. Client einrichten
+  - F�r Datumseinstellung:
+    In /etc/sudoers eintragen:
+      startkladde  ALL=NOPASSWD:/bin/date
+      startkladde  ALL=NOPASSWD:/etc/init.d/hwclock.sh stop
+
+
+Normale Priorit�t:
+  - Bugs:
+    - repaint im splash screen
+    - Mitternachtsproblem
+    - anzeigedatum utc
+    - Nachnamen eintragen, in Vornamenfeld wechseln, Text wird nicht selektiert.
+      Zur�ckwechseln, ebenfalls nicht. Wieder vor, dann wird er. Das Problem
+	  scheint immer dann aufzutreten, wenn die cbox im lbl_cbox umgestellt wird.
+      In lbl_cbox::set_active_cbox (...) die selection mitzukopieren scheint
+      nichts zu bringen.
+    - segfault in sk_win_flight wenn populate_lists nicht aufgerufen wurd
+    - <user> als Benutzername f�hrt zu Fehlern
+    - Wieso gibt das Plugin nix aus, wenn das Programm nicht existiert?
+  - Funktionalit�t:
+    - Starten/Landen r�ckg�ngig
+    - Versuchen, ein identisches FZ dazuzuf�gen?
+    - Tabellenupdate statt refresh, wenn etwas ge�ndert, zum Beispiel Flugzeuginfo
+    - Unterschidung zwischen "fliegt noch", "flog da" und "egal, startet
+	  sp�ter"
+    - Flugbuch/Bordbuch in skdump
+    - Anzeigedatum nach UTC einstellen, auch Datum in flugeditor
+    - Unified Fehlerchecking: Flugeditor: Neues FZ aufgenommen: in selected_plane speichern
+    - Unix socket Name ausw�hlbar machen
+    - ID->Datum suche
+    - flugbuch etc. Fortschrittsanzeige
+    - ausgetretene Personen
+    - stammdatenschnittstelle --> vereinsid nicht mehr vom ss editierbar?
+	- Bei Anzahl fliegender auch Schleppfl�ge ber�cksichtigen
+	- Bordbuch ung�ltig bei �berlappenden Fl�gen
+	- bessere Fehlerbehandlung bei Datenbankaufrufen
+    - sk_web: Vereinsauswahlseite
+    - sk_web: stylesheet in config
+    - sk_web: --version
+    - sk_web: LaTeX-Ausgabei bei LaTeX-Fehler
+    - sk_web: Benutzer wechseln
+    - Synchronisation Plugins mit Uhr
+    - Grafische Winddarstellung
+    - gescheites Quoting/Escaping in der Konfigurationsdatei
+    - DB: Rechte select,update,insert pr�fen
+    - �berlappungspr�fung bei Nachtragen
+    - sk_web: Datenbank initialisieren
+    - sk_admin: f�r merge zum Beispiel braucht man kein root sondern nur sk_admin
+
+  - Implementation:
+    - sk_db kein QObject
+    - db_event auch das alte und neue db-element aufnehmen (?)
+    - reset () im flugeditor teilweise ersetzen durch eintragen eines
+	  leeren flugs?
+	- context_row durch context_id ersetzen
+    - beim zeilen entfernen muss die gespeicherte startzeit deleted werden (?)
+    - Startartstatistik per Count-Query
+	- db_change events von der Datenbank emittieren
+	- sk_dump aufr�umen
+	- sk_dump Spaltenbreiten zentralisieren
+	- remove db_proxy
+	- handle gracefully old flights without a sfz_modus
+	- Fehlerchecking is called *often*
+	- Starten, Landen etc. per Query machen, statt RMW.
+    - return 0 als id durch invalid_id ersetzen
+	- Personen/Flugzeuge, die mehrere Fl�ge haben, werden bei jedem
+	  Tabellenupdate neu geladen ==> cache oder so
+	- "Fliegt noch" wenn Start in gleicher Minute wie Landung
+	- Bessere Behandlung der verschiedenen Modi, die so ein Flugeditor hat
+	  (nachtragen, editieren, anzeigen, anlegen) und Ankreuzfelder (gestartet),
+	  so dass definitiv immer alle Buttons, der Titel etc. richtig geetzt sind.
+    - const string &
+    - iteratoren: end cachen
+    - dialogs.o nach GUI_OBJS, nachdem es aus sk_flug raus ist.
+    - sk_db is way too large and should be split up some.
+    - remove sk_time
+    - link plugins only to GUI. That means, remove plugin list from options.
+    - sk_time deprecated in favor of sk_time_t??? unify sk_time, sk_date, sk_time_t
+    - auf table-Klasse umstellen
+    - replace QPtrList<sk_flug> with flight_list, add flight_list_iterator
+
+  - UI:
+    - focus nach editieren von person/flugzeug
+    - options: explizite Datumsangabe hat Vorrang, kein Fehler
+	- Netz�berwachung, alle Fenster disablen
+    - F1: Hilfe
+	- im stuff editor neuheiten in der richtigen sortierung eintragen
+    - fb/bb als unvollst�ndig markieren, wenn flug noch fliegt (besonders bb ist ung�ltig!)
+    - Datumseinstellung: [X] Heute
+    - Sortierung Kommt/Geht
+    - Einf�gen sortiert (Nachtragen!)
+    - datum: heute gestern sonstige
+    - ID bei "fliegt noch" anzeigen
+    - Fehlermeldungen im Editor nur bei Anlegen, ansonsten gibts ja die Fehlerliste.
+    - Show output from creation
+    - Wenn die Labels sehr lang werden, wird das Programmfenster verbreitert
+	- Wenn mal long_operation_start ohne long_operation_end kommt, ist die GUI
+	  nicht mehr benutzbar
+  - Datenbankcode:
+    - Konvertierung zwischen QString und std::string: q2std (...)
+      und std2q (...), statt (const char *) und .c_str (), auch
+      .ascii ist nicht gut.
+    - =="" und .length ()==0 --> .empty ()
+    - db_to und to_db: default!
+  - Datenbank:
+    - Ungenutzte Spalten rausschmei�en
+    - editierbar-Spalte in flug?
+    - startart-Spalte in flug: Datentyp???
+    - original_id-Spalte in flug?
+    - sk_dump-Benutzer (read only)
+  - Makefile:
+    - Make dump fixen
+  - Doku
+    - sample config file: ases/moobert
+    - Beispielkonfig Ort etc.
+	- Codedoku sk_db
+  - Webinterface
+    - �berall um input hidden span
+    - Nach Passwort�nderung Meldung "Passwort ge�ndert"
+    - In object_field, add display_state for getting details (for example,
+      web_display_person for field_user_person).
+    - Der FHS garantiert nicht, dass Dateien in /tmp zwischen zwei
+      Programmaufrufen erhalten bleiben. Daher sollen die sessions wo anders
+      hingeschrieben werden.
+    - Sortierung der Listen nach verschiedenen Spalten
+    - Bei Fehlermeldungen: dazuschreiben, wo hin es zur�ck geht
+	- Die praktische Wiedereintragung bei Fehlern wie bei Benutzer anlegen bei
+	  allen Forms
+    - Benutzerzuordnung/-anzeige aus der Personentabelle
+  - options
+    - /etc/startkladde.conf
+    - ~/ in source cfgfile
+  
+- Geringe Priorit�t:
+  - Umgebung
+    - Windows-Portierung
+  - Bugs:
+    - startzeit automatisch, landezeit manuell->fehlermeldung
+    - Mitternachts-Zeitzonen-Problem
+  - Funktionalit�t:
+    - Was passiert bei date wrap? Anzeigedatum anpassen? Tabelle aktualisieren?
+    - In allen Fenstern, die db_update machen, auch det_delete behandeln
+	- db_event: unterscheidung zwischen refresh/alle und refresh/(eine bestimmte)
+	- error_control im stuff_editor
+    - Gattung "2mot" und "heli" und dann ist_motorflugzeug (gattung)
+    - sitze aus typ, evtl. auch nur flugzeuge nach typ listen
+    - verein_aus_namen (vn, nn)
+    - fluege_aktuell: auch schleppfl�ge (?)
+    - Identischer Pilot wird dazugef�gt?
+    - liste_vornamen/liste_nachnamen: Pr�fix angeben (case insensitive)
+	- Editieren: Fliegt-noch-�berlappungscheck
+    - Begleiter im Einsitzer nicht mehr pr�fen, wenn 2Schulung im Einsitzer akzeptiert
+	- Schleppflugzeug Zwischenlandung
+	- ZWL bei Segelflugzeug zulassen (nach Warnung)
+	- Schlepppilot (�berhaupt mehr Schleppzeug...)
+    - Bei Flugzeugen vermerken, ob sie nur Selbststart k�nnen, und dann Selbststart
+      vorausw�hlen (auch beim Wiederholen), wenn es nur eine Selbststartstartart
+      gibt.
+  - Implementation:
+    - sk_db: Alle execute_query, wo das Ergebnis nicht gebraucht wird, umstellen.
+	- Man braucht einen vern�nftigen Weg, um Metadaten zur Erzeugung
+	  von Queries zu speichern.  Wichtig dabei ist, dass die
+	  Objektklassen keine Information dar�ber enthalten sollen, in
+	  welcher Form die Daten in der Datenbank gespeichert sind.
+    - Im stuff Lister nicht nach Stufftype unterscheiden sondern an
+      die Datenbank weiterreichen (db->delete_object (type, id), db_object_type dort).
+	- Die $irgendwas_string (...) Funktionen erhalten sowohl innerhalb als auch
+	  untereinander jede Menge Code- und Informationsduplikation. Besser: aus
+	  Tabelle einlesen (lenspec/item) und Zeug wie [...] automatisch
+	  generieren.
+    - Funktion bool flug_anzeigen (flug) statt "if (fl.datum ()==anzeigedatum
+	  || fl.vorbereitet ())" sk_win_main::slot_db_update (), beachten, dass
+	  auch Schlepp anzeigen?
+	- Sortierung vereinheitlichen zwischen refresh_table und
+	  sk_flight_table::set_flight.
+    - in sk_win_stuff_list.cpp gibts einige funktionen, die in stuff.cpp oder
+	  stuff_functions.cpp oder so sollten
+    - wenn die Men�eintr�ge f�r Manipulationen deaktiviert werden, sind diese
+	  Manipulationen Fehler und per log_error zu loggen
+    - operationen auf den Schleppflug vereinheitlichen, fm_land_schlepp streichen
+    - aboutToShow f�r Men�s
+    - Pr�fen, ob die Listenbuttons wieder entladen werden
+    - list_flugtyp sollte nicht hardcoded nur die zur�ckgeben, die in den
+	  Flugeditor kommen. Am besten: Parameter an die Funktion und
+	  Auflistfunktion.
+    - in check_flight: immer, wenn einer der parameter nicht gesetzt wird,
+	  false zur�ck
+    - das data_id in der tabellenzelle sollte ein void * sein (anlegen/
+	  l�schen beachten!)
+    - dependencies pr�fen, makefile aktualisieren
+    - Strings, zum Beispiel f�r Tabellenheader, als Konstanten
+	  Nach M�glichkeit ein struct { Tabellenheader, Editorlabel,
+	  Tabellenkey (?), Tabellenposition, Editortyp, Editorposition }
+	- einheitliche plausibilit�tspr�fung, m�glichkeit zum Best�tigen im
+	  Hauptfenster. Idee: eine funktion sk_flight::flug_kann_das_machen (flug,
+	  flug_action), enum flug_action { starten, vorbereiten, landen ... },
+	  alle Funktion, die was machen wollen, legen einen tempor�ren sk_flight an
+	  und checken den.
+	  vorteil: ein flugzeug, das noch fliegt, darf vorbereitet werden.
+	  dann muss allerdings ein "user_approved" dazu, um z. B. mehrfaches "der
+	  Typ stimmt nicht" zu vermeiden.
+	- M�glichkeit, strings und QStrings automatisch ineinander zu konvertieren?
+	- sk_flight::fliegt () �berall verwenden statt gestartet ()/gelandet ()
+	- namespace std �berall
+    - Flug sollte eigentlich von stuff inherited sein
+    - Unified Fehlerchecking:
+      - context menu slot
+      - enable menus
+      - manipulate flight
+      - accept flight
+    - t_pilot_bezeichnung rausschmeissen, durch flug->pilot_bezeichnung ersetzen
+    - stuff selector so umbauen, dass immer die statische funktion benutzt wird,
+      auch zum listen der Eintr�ge (dann ists auch nur noch eine funktion). Dann
+      kann man personen auch als stuff listen.
+      Alternative: enttemplatisieren, alles dynamisch machen. Hat das Problem,
+      dass bei einer leeren Liste die Spaltenk�pfe nicht festgestellt werden
+      k�nnen. evtl. kann man die zweite M�glichkeit zus�tzlich bieten.
+    - static function for stuff selector
+    - startartstatistik wie flugbuch/bordbuch
+    - status dialog: eigene Klasse, basierend auf QSplash
+    - sk_win_flight::fehler_eintragen wird zu oft aufgrufen durch slots
+
+  - UI:
+    - alle comboboxes insetionpolicy einstellen, speziell flugeditor
+    - Titelleiste im Statistikdialog: Flugbuch f�r $DATUM/$PERSON
+    - timeedit: kein text, wenn nicht gesetzt/eigene Implementation, ohne Sekunden
+	- Hilfe
+	- Easteregg
+    - Fehlerfeld doppelklickbar, entsprechendes Feld fokussiert
+    - Was-das-Programm-gerade-macht-Anzeige
+    - Nicht gestartete editieren: Jetzt starten/Sp�ter starten buttons
+    - Fliegenden editieren: Jetzt landen-Button
+    - Im stuff seelctor markieren, welche zum preselect-Verein passen, wenn nicht
+      eindeutig
+    - Evtl. die Fehlerpr�fung beim Editieren einschr�nken, so dass das Zeug, was auch
+      schon im error_control steht, nicht noch mal gefragt wird.
+    - Makefile:
+    - Makefile: siehe info makefile: include Dependencies, und Dependencies automatisch erstellen
+    - Doppelklick auf Plugin label: Prozess neu starten
+  - sk_web
+    - Bei "IP stimmt nicht" keine Hauptmen�-Links
+
+Probleme:
+  - Refresh im stuff lister: hide();show(); sonst focus im mainwindow
+
+Doku:
+  - fehlerchecking erkl�ren
+  - db_change erkl�ren
+
+- Konfiguration f�r Plugins. Beispiel: geographische L�nge, um
+  Sonnenuntergangszeiten zu korrigieren.
+- Nicht alle gelandeten Fl�ge ausblenden sondern nur die, die �lter sind als
+  n Minuten

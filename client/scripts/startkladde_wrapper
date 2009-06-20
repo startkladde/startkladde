@@ -1,0 +1,41 @@
+#!/bin/bash
+
+host="tadam"
+pidfile="/tmp/$$.pid"
+timeout="1"
+
+tunnel_loop()
+{
+	while true; do
+		tunnel $host &
+		tunnel_pid=$!
+		echo $tunnel_pid >$pidfile
+		wait $tunnel_pid
+	done
+}
+
+startkladde_loop ()
+{
+	while true; do
+		startkladde #>/tmp/startkladde.log
+		ret=$?
+		if [ "$ret" == "69" ]; then
+			sudo halt
+		fi
+	done
+}
+
+cleanup ()
+{
+	rm -f $pidfile
+	exit 0
+}
+
+trap cleanup TERM INTERRUPT HUP 
+
+export PATH=~:$PATH
+
+tunnel_loop &
+abschiesser $host $timeout $pidfile &
+startkladde_loop
+

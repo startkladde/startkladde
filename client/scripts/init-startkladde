@@ -1,0 +1,31 @@
+#!/bin/sh
+# startkladde
+# Startet die Startkladde.
+
+case "$1" in
+  start)
+	echo "Starte Startkladde"
+	su - startkladde ~startkladde/startkladde-up &
+	;;
+  stop)
+	echo "Beende Startkladde"
+	su - startkladde ~startkladde/startkladde-down
+	;;
+  restart|force-reload)
+	echo "Neustarte Startkladdensystem"
+	$0 stop
+	$0 start
+	;;
+  reload)
+	echo "Neustarte Startkladde"
+	killall startkladde
+	;;
+  *)
+	N=$0
+	echo "Usage: $N {start|stop|reload|restart|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0
+

@@ -1,0 +1,398 @@
+Startkladde Konfiguration
+=========================
+
+Die Konfigurations wird aus ~/.startkladde.conf gelesen, falls diese existiert,
+ansonsten aus ./startkladde.conf.
+Mit dem Kommandozeilenparamter --config_file bzw. -f lässt sich eine Datei
+angeben, die stattdessen gelesen werden soll.
+
+Es wird eine Option pro Zeile aufgelistet. Zuerst kommt der Name der Option,
+dann, durch ein Leerzeichen getrennt, die Parameter/Werte, mit Komma getrennt,
+sofern die Option Parameter besitzt.
+Leere Zeilen und Zeilen, die mit einem '#' anfangen, werden ignoriert.
+Die Reihenfolge, in der Optionen angegeben wird, spielt gennerell keine Rolle;
+die Ausnahme sind Auflistungen von zum Beispiel Plugins, die im Programm in der
+gleichen Reihenfolge wie in der Konfigurationsdatei aufgelistet werden.
+
+Die folgenden Optionen stehen zur Verfügung. Namen von Parametern sind in <>
+angegeben, diese werden in der Konfigurationsdatei nicht angegeben. Optionale
+Paramter stehen in [].
+
+Unter "Standard" steht der Wert, der verwendet wird, wenn diese Option nicht
+explizit angegeben wird.
+
+server <host>
+  Beschreibung:
+    Gibt den Datenbankserver an
+  Parameter:
+    - host: die Adresse oder der Hostname des Servers
+  Beispiele:
+    server 127.0.0.1
+    server localhost
+    server 192.168.1.1
+  Standard: localhost
+
+server_display_name <name>
+  Beschreibung:
+    Gibt den angezeigten Namen des Datenbankservers an. Muss nach server vorkommen.
+  Parameter:
+    - name: der angezeigte Name
+  Beispiele:
+    server_display_name localhost
+  Standard: der gleiche Wert wie server
+
+port <num>
+  Beschreibung:
+    Gibt den Port an, auf dem der Server läuft. Standard von MySQL ist 3306.
+    Achtung: bei lokalen Serververbindungen (127.0.0.1) wird diese Angabe
+    ignoriert. Soll ein Port Forwarder verwendet werden, muss stattdessen die
+    Netzwerkadresse des eigenen Rechners verwendet werden.
+  Parameter:
+    - num: der Port, auf dem der Server läuft
+  Beispiele:
+    port 3306
+  Standard: 3306
+
+database <name>
+  Beschreibung:
+    Legt die MySQL-Datenbank fest, die verwendet werden soll.
+  Parameter:
+    - name: der Name der Datenbank
+  Beispiele:
+    name startkladde
+    name startkladde2
+  Standard: startkladde
+
+username <name>
+  Beschreibung:
+    Legt den Benutzer fest, der zum Zugriff verwendet wird.
+  Paramter:
+    - name: der Name des Benutzers
+  Beispiele:
+    name startkladde
+    name ases
+  Standard: startkladde
+
+
+password <pass>
+  Beschreibung:
+    Legt das Passwort für den Benutzer fest.
+  Parameter:
+    - pass: das Passwort, im Klartext
+  Beispiele:
+    name moobert
+  Standard:
+
+
+sk_admin_name <name>
+  Beschreibung:
+    Legt den Benutzer für den Startkladdenadministrationsaccount fest. Dieser
+    Account wird zum Beispiel vom Webinterface verwendet.
+  Parameter:
+    - name: der Benutzername für den Admin-Account
+  Beispiele:
+    sk_admin_name sk_admin
+  Standard: sk_admin
+
+sk_admin_password <pass>
+  Beschreibung:
+    Legt das Passwort für den Administrationsbenutzer fest
+  Paramter:
+    - pass: das Passwort, im Klartext
+  Beispiele:
+    sk_admin_password moobertshausen
+  Standard:
+
+debug
+  Beschreibung:
+    Aktiviert diverse Optionen die zum Debugging hilfreich sind.
+  Parameter: keine
+  Beispiele:
+    debug
+  Standard: nicht aktiv
+
+title <text>
+  Beschreibung:
+    Legt den Fenstertitel fest.
+  Parameter: 
+    text: der Text für den Titel
+  Beispiele:
+    title Hauptflugbuch Rheinstetten (startkladde)
+  Standard: Startkladde
+
+diag_cmd <cmd>
+  Beschreibung:
+    Legt das Kommando für den Menüeintrag "Netzwerkdiagnose" fest.
+  Parameter:
+    - cmd: das Kommando, das aufgerufen wird, wenn dieser Menüeintrag ausgewählt
+      wird. Sollte ein & am Ende enthalten, sofern das angegebene Programm
+      nicht sofort beendet wird oder in den Hintergrund geht.
+  Beispiele:
+    diag_cmd xterm -e ./netztest &
+
+ort name
+  Beschreibung:
+    Legt den Standardtext für die Felder "Startort" und "Zielort" fest.
+  Parameter:
+    - name: der Name des Orts/Flugplatzes
+  Beispiele:
+    ort Karlsruhe/Forchheim
+  Standard:
+
+style <name>
+  Beschreibung:
+    Legt den QT-Stil für das Programm fest. Wenn KDE installiert ist, können
+    auch KDE-Stile verwendet werden.
+  Paramter:
+    - name: der Name des Stils
+  Beispiele:
+    style light, 3rd revision
+    style Windows
+  Standard: (Systemeinstellung wird verwendet)
+
+source <filename>
+  Beschreibung:
+    Liest eine andere Datei ein. Kann zum Beispiel verwendet werden, um das
+    Passwort ein einer anderen Datei zu speichern, damit man die
+    Konfigurationsdatei editieren kann, ohne, dass jemand, der zuschaut, das
+    Passwort lesen kann.
+  Parameter:
+    - filename: der Name der einzulesenden Datei
+  Beispiele:
+    source /home/startkladde/.startkladde.password
+
+record_towpilot
+  Beschreibung:
+	Falls angegeben, wird bei F-Schlepps der Schlepppilot erfasst und in der
+	Datenbank gespeichert.
+  Parameter: keine
+  Beispiele:
+    record_towpilot
+  Standard: Schlepppilot wird nicht erfasst
+
+startart <id>, <type>, <registration>, <name>, <shortname>, <shortcut>, <logbook_string>, <person_required>
+  Beschreibung:
+    Fügt eine Startart zur Startartliste dazu.
+    Achtung: die IDs in dieser Liste sollten nicht mehr geändert werden, sobald
+    sie in der Datenbank verwendet wurden, da sonst die falschen Startarten
+    angezeigt und eingetragen werden.
+	Diese Option kann mehrfach vorkommen.
+  Parameter:
+	- id: die Datenbankkennung, unter der die Startart identifiziert wird. Darf
+	  nicht 0 sein.
+    - type: einer der folgenden Werte, der angibt, um welche Sorte Startart es
+      sich handelt:
+      - winch: Windenstart
+      - airtow: F-Schlepp
+      - self: Eigenstart
+      - other: Sonstige
+    - registration: Für type=airtow das Kennzeichen des Schleppflugzeugs. Sonst
+      wird dieser Paramter ignoriert und kann leer gelassen werden.
+    - name: Der Name, der im Auswahlfeld angezeigt wird
+    - shortname: Die Bezeichnung, die in der Tabelle angezeigt wird
+    - shortcut: das Tastenkürzel für die Startart
+    - logbook_string: Die Bezeichnung, die im Flugbuch erscheint
+    - person_required: true oder false. Wenn true, dann gilt es als Fehler,
+      wenn für einen Flug mit dieser Startart kein Pilot angegeben wurde.
+  Beispiele:
+    - startart  1, winch,        , Winde Akaflieg,       WA,  A, W, true
+    - startart  4, airtow, D-EIAV, D-EIAV,               AV,  V, F, true
+    - startart  7, self,         , Eigenstart,           ES,  E, E, false
+    - startart  8, other,        , Sonstige,             SO,  S, ?, true
+    - startart 12, airtow,       , Sonstige (F-Schlepp), SOF, F, F, true
+    - startart 13, other,        , Gummiseilstart,       GS,  G, G, true
+  Standard: keine
+
+local_hosts hostspec [, hostspec [, ...]]
+  Beschreibung:
+	Fügt eine neue Adresse oder einen Adressbereich zur Liste der lokalen
+	Adressen dazu. Von lokalen Adressen aus können bestimmte
+	Webinterface-Funktionen verwendet werden, ohne dass eine Anmeldung nötig
+	ist. Zum Beispiel können so Startlisten abgerufen werden.
+	Diese Option kann mehrfach vorkommen.
+  Parameter:
+    - hostspec: eine Angabe über eine IP-Adresse oder einen Adressbereich.
+	  Adressen werden explizit in Dotted-Quad-Notation angegeben, also zum
+	  Beispiel "192.168.1.1".
+	  Wenn das letzte Zeichen (abgesehen von Leerzeichen) ein * ist, handelt es
+	  sich um einen Adressbereich. Alle Adressen, die mit diesem Text anfangen,
+	  werden als lokal behandelt. Wird zum Beispiel 192.168.1.* verwendet, dann
+	  gelten unter anderem die Adressen 192.168.1.1 und 192.168.1.42 als lokal.
+  Beispiele:
+    local_hosts 127.0.0.1, 192.168.1.*
+  Standard:
+    Keine Adresse wird als lokal behandelt.
+
+plugin_path path
+  Beschreibung:
+	Fügt einen Suchpfad für Plugins dazu.
+	Die Dateien für Plugins werden folgendendermaßen gesucht:
+	  - Wenn das erste Zeichen (außer whitespace) ein "/" ist, wird der Name
+		als absoluter Pfad interpretiert.
+	  - Wenn der erste Zeichen kein "/" ist, der Name aber "/" enthält, wird
+		der Name als relativer Pfad zum aktuellen Verzeichnis interpretiert
+	  - Wenn der Name kein "/" enthält, wird eine Datei mit diesem Namen in
+		allen Verzeichnissen aus dem Suchpfad gesucht.
+	  - Die erste Datei, die auf diese Weise gefunden wird, wird verwendet,
+		unabhängig davon, ob sie tatsächlich gültig ist (wenn nicht, werden
+		entsprechende Fehlermeldungen ausgegeben).
+	Diese Option kann mehrfach vorkommen. Wenn ein Verzeichnis mehrfach
+	angegeben wird, wird es mehrfach durchsucht.
+  Parameter:
+	- path: Der Suchpfad. Wenn das erste Zeichen ein "/" ist, wird die Angabe
+	  als absoluter Pfad interpretiert, ansonsten als relativer Pfad zum
+	  aktuellen Verzeichnis.
+  Beispiele:
+    plugin_path /usr/local/startkladde/plugins
+	plugin_path .
+	plugin_path plugins
+	plugin_path ./plugins
+	  Die letzten beiden Optionen haben die gleiche Bedeutung
+	plugin_path plugins/shell_info
+	plugin_path plugins/shell_info/sunset
+  Standard:
+	Wenn (und nur wenn) kein Plugin-Pfad angegeben ist, werden Plugins im
+	aktuellen Verzeichnis gesucht; dies is äquivalent zu "plugin_path .".
+
+plugin_data_format filename
+  Beschreibung:
+    Fügt ein neues Plugin für die Konvertierung von Flugdaten dazu.
+	Diese Option kann mehrfach vorkommen.
+  Parameter:
+	filename: der Name der Datei, die das Plugin enthält, ohne
+	Dateinamenerweiterung. An den Dateinamen wird eine platformspezifische
+	Endung (".so") angehängt.
+	Für die Regeln, nach denen die Datei gesucht wird, siehe unter plugin_path.
+  Beispiele:
+    plugin_data_format format_lsv_albgau
+	  Die Datei format_lsv_albgau wird um Plugin-Suchpfad gesucht.
+	plugin_data_format ./format_lsv_albgau
+	  Die Datei format_lsv_albgau aus dem aktuellen Verzeichnis wird verwendet.
+	plugin_data_format /usr/local/lib/format_lsv_albgau
+	  Die Datei format_lsv_albgau aus dem Verzeichnis /usr/local/lib wird
+	  verwendet.
+  Standard:
+    Keine Plugins.
+
+shell_plugin <title>, <command>, <interval> [, warn_on_death] [, rich_text]
+  Beschreibung:
+    Fügt ein shell-Plugin dazu. Shell-Plugins werden im Informationsbereich des
+    Hauptfensters (oben rechts) angezeigt. Es wird in periodischen Abständen
+	ein Programm (zum Beispiel ein Shellskript) aufgerufen, dessen Ausgabe
+	angezeigt wird. Es wird immer die letzte Zeile der Ausgabe angezeigt. Wenn
+	der Prozess beendet wird, wird er nach der angegebenen Zeit wieder
+	gestartet. 
+	Wenn ein Pfad explizit angegeben wird (absolut oder relativ), dann wird das
+	Plugin mit dem aktuellen Verzeichnis als Arbeitsverzeichnis (CWD)
+	gestartet. Wenn nicht, wird das Verzeichnis, in dem sich das Plugin
+	befindet, als Arbeitsverzeichnis verwendet. Dadurch können Parameter
+	angeben, die Dateinamen relativ zu dem Plugin-Verzeichnis enthalten (siehe
+	Beispiel "sunset").
+	Diese Option kann mehrfach vorkommen.
+	Siehe auch doc/plugins.
+  Paramter:
+    - title: Der Titel des Plugins
+    - command: Der Befehl, der ausgeführt wird.
+	  Für die Regeln, nach denen die Datei gesucht wird, siehe unter
+	  plugin_path.
+    - interval: Die Zeitdauer, nach der das Programm wieder gestartet wird,
+      nachdem es beendet wurde. 0 sollte hier nicht verwendet werden, weil
+      sonst sehr viel Last erzeugt wird, wenn der Prozess nicht gestartet
+      werden kann.
+    - warn_on_death: Wenn angegeben, wird eine Meldung auf stdout ausgegeben,
+      wenn der Prozess beendet wird.
+    - rich_text: Wenn angegeben, wird die Ausgabe als QT rich text
+      interpretiert, siehe doc/plugins.
+  Beispiele:
+	Einige Beispiele für Plugins sind in der Quellcodedistribution enthalten.
+	Die folgenden Beispiele gehen davon aus, dass der Plugin-Suchpfad korrekt
+	gesetzt ist, zum Beispiel, wie in der mitgelieferten
+	Beispielkonfigurationsdatei.
+    shell_plugin Sunset:, sunset_time sunsets, -1
+      Zeigt die heutige sunset-Zeit an. Wird nur ein mal beim Start aufgerufen.
+	  Dieses Plugin befindet sich in plugins/shell_info/sunset/.
+    shell_plugin Zeit bis sunset:, sunset_countdown sunsets, 60, rich_text
+      Zeigt die verbleibende Zeit bis sunset an. Wird ein mal pro Minute
+      ausgeführt und verwendet rich_text, damit der Wert rot dargestellt werden
+      kann, wenn es nach sunset ist.
+	  Dieses Plugin befindet sich in plugins/shell_info/sunset/. Die Datei
+	  "sunsets" enthält die Sunset-Zeiten und befindet sich im gleichen
+	  Verzeichnis.
+    shell_plugin Wind:, wind /tmp/wind, 1, warn_on_death
+      Zeigt den Wind an, der von einer Wetterstation empfangen wird. Der
+      Prozess beendet sich normalerweise nicht. Falls doch, wird eine Warnung
+      ausgegeben und der Prozess neu gestartet.
+	  Dieses Plugin befindet sich in plugins/shell_info/. Damit es
+	  funktioniert, müssen die Daten auf irgend eine Weise in die named pipe
+	  /tmp/wind geschrieben werden.
+	shell_plugin System:, /bin/uname -a, -1
+	  Zeigt Systeminformationen an.
+  Standard: keine Plugins.
+
+weather_plugin command
+  Beschreibung:
+    Das Programm, das die Wetterdarstellung im Hauptfenster erledigt.
+	Ausgaben des Programms:
+	  [MSG] [Text]: Text anzeigen
+	  [IMG] [filename]: Bild aus filename laden
+	  [MOV] [filename]: Video aus filename laden
+  Parameter:
+    - command: das auszuführende Programm
+  Beispiele:
+    weather_plugin plugins/weather/regenradar_wetter.com
+  Standard: "" (keine Wetterdarstellung)
+
+weather_height height
+  Beschreibung:
+    Legt die Größe der Wetterdarstellung im Hauptfenster fest. 
+	Achtung: Videos können so nicht vergrößert/verkleinert werden und werden
+	abgeschnitten. Videos vorher, zum Beispiel mit mogrify, verkleinern.
+  Parameter:
+	- height: die Höhe der Wetterdarstellung in Pixeln. Die Breite wird
+	  entsprechend angepasst
+  Beispiele:
+    weather_height 200
+  Standard: 200
+
+weather_interval interval
+  Beschreibung:
+	Legt die Zeit fest, nach der das Plugin für die Wetterdarstellung neu
+	gestartet wird.
+  Parameter:
+    - interval: Zeit in Sekunden
+  Beispiele:
+    weather_interval 300
+  Standard: 600
+
+weather_dialog_plugin command
+  Beschreibung:
+    Wie weather_dialog, aber für den Extradialog
+  Standard: "" (kein Wetterdialog)
+
+weather_dialog_title title
+  Beschreibung:
+    Legt den Titel des Wetterdialogs fest
+  Parameter:
+    - title: der Titel
+  Beispiele:
+    weather_dialog_title Regenradar (4 Stunden)
+  Standard: "Wetter"
+
+weather_dialog_interval interval
+  Beschreibung:
+    Wie weather_interval, aber für den Extradialog
+  Standard: 600
+
+
+=========================
+
+(option) <arg> ...
+  Beschreibung:
+    ...
+  Parameter:
+    - arg: ...
+  Beispiele:
+    (option) <arg> ...
+	...
+  Standard: <default>
+

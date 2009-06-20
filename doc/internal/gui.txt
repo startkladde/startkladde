@@ -1,0 +1,24 @@
+Widget im Flugeditor dazufügen:
+  - sk_win_flight Klassendefinition:
+      - unter private type *edit_name;
+	  - unter private slots: void slot_name (...);
+  - sk_win_flight.h: NUM_FIELDS anpassen
+  - sk_win_flight::sk_win_flight:
+      - widgets anlegen (Reihenfolge!)
+	  - widgets einstellen
+	  - editor-labels einstellen
+      - sk_win_flight::sk_win_flight: signale verbinden
+  - sk_win_flight::slot_name (...) anlegen
+  - sk_win_flight::reset ()
+  - sk_win_flight::setup_controls ()
+  - Wenn Liste: sk_win_flight::populate_lists ()
+  - Wenn aus Datenbank: read_db ()
+  - Plausibilitätsprüfung in sk_win_flight::check_flight
+  - sk_win_flight::accept_flight_data
+  - sk_win_flight::flug_eintragen (Beachte wiederholen)
+
+Tabellenspalten in Haupttabelle dazufügen:
+  - sk_flight_table.h: Konstanten (nummerierung fortlaufend), tabellenspalten=(anzahl)
+  - sk_flight_table::sk_flight_table: spalte anlegen
+  - sk_flight_table::set_flight: eintragen
+

@@ -1,0 +1,61 @@
+Beschreibung des CVS-Formats für die Verwendung mit startkladde
+Martin Herrmann, 2004-03-12
+
+Für Datenaustausch mit anderen Programmen oder Benutzern wird das Dateiformat
+CSV verwendet. Dies ist ein Standard-Format, das von praktisch allen
+Tabellenkalkulations- und Datenbankprogrammen gelesen bzw. geschrieben werden
+kann. Dieser Text beschreibt das genaue Dateiformat, das verwendet wird.
+
+Die wichtigsten Daten:
+  - Zeichensatz: ISO-8859-1
+  - Feldtrenner: , (Komma, Zeichen 44)
+  - Quote-Zeichen: " (Doppeltes Anführungszeichen, Zeichen 34)
+  - Zeilentrenner: LF (Unix) oder CRLF (Windows)
+
+CSV steht für "comma separated values". Das Dateiformat ist Klartext
+(Zeichensatz ISO-8859-1) mit einem Datensatz pro Zeile. Die einzelnen Felder des
+Datensatzes sind durch ein Komma getrennt.
+
+Wenn ein Datenfeld ein Komma enthält, dann wird das gesamte Feld in
+Anführungszeichen gesetzt, damit das Komma nicht als Datensatztrenner
+interpretiert wird.
+Wenn ein Datenfeld ein Anführungszeichen enthält, dann wird das Feld ebenfalls
+in Anführungszeichen gesetzt, zusätzlich wird das Anführungszeichen, das in dem
+Feld vorkommt, verdoppelt, damit es nicht als Feldende interpretiert wird.
+Leere Datenfelder können mit oder ohne Anführungszeichen angegeben werden.
+
+Die Bedeutung von Anführungszeichen in Feldern, die nicht von Anführungszeichen
+begrenzt sind, ist undefiniert. Dieser Fall darf nicht vorkommen.
+Es ist erlaubt, Felder ohne besondere Zeichen in Anführungszeichen zu setzen.
+
+Die erste Zeile der Datei ist eine Kopfzeile, die die Namen der einzelnen
+Datenfelder festlegt. Das Format der Kopfzeile ist das gleiche wie das von
+Datenzeilen.
+Die Datenfelder dürfen in beliebiger Reihenfolge vorkommen. Die Kopfzeile muss
+die Feldnamen in der gleichen Reihenfolge enthalten.
+
+Beispiel zu Kopfzeilen:
+Eine Datei soll die Datenfelder "Vorname" und "Nachname" enthalten. Es sind drei
+Datensätze vorhanden. Folgende Darstellungen sind möglich:
+================
+Nachname,Vorname
+Müller,Hans
+Meier,Klaus
+Bauer,Franz
+================
+Vorname,Nachname
+Hans,Müller
+Klaus,Meier
+Franz,Bauer
+================
+Beide Dateien werden gleich interpretiert.
+
+Beispiel zu Sonderzeichen:
+================
+Name,Bemerkungen
+Hans,
+Kaus,"Fluglehrer, Flugleiter"
+Franz,"Bemerkung mit ""Anführungszeichen"""
+================
+
+
