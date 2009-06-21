@@ -15,8 +15,8 @@ lbl_cbox::lbl_cbox (const char *text, bool editable, QWidget *parent, const char
 {
 	focus_out_locked=false;
 
-	cbox=new sk_combo_box (editable, this);
-	full_cbox=new sk_combo_box (editable, this);
+	cbox=new SkComboBox (editable, this);
+	full_cbox=new SkComboBox (editable, this);
 	lbl=new QLabel (cbox, text, this, "lbl");
 
 	QHBoxLayout *lay_main=new QHBoxLayout (this, 0, -1, "lay_main");
@@ -53,7 +53,7 @@ lbl_cbox::lbl_cbox (const char *text, bool editable, QWidget *parent, const char
 //	set_active_cbox (cbox);
 }/*}}}*/
 
-void lbl_cbox::set_active_cbox (sk_combo_box *b)/*{{{*/
+void lbl_cbox::set_active_cbox (SkComboBox *b)/*{{{*/
 	/*
 	 * Stellt die aktive cbox ein.
 	 * Attention: the contents of the current editor field are copied to the new
@@ -129,7 +129,7 @@ void lbl_cbox::setAutoCompletion (bool a)/*{{{*/
 
 
 // TODO remove del
-void lbl_cbox::fillStringArray (sk_combo_box *box, const QStringList& array, bool clear_first, bool blank_line, bool del)/*{{{*/
+void lbl_cbox::fillStringArray (SkComboBox *box, const QStringList& array, bool clear_first, bool blank_line, bool del)/*{{{*/
 	/*
 	 * Fills one of the cboxes with an array of strings.
 	 * This is the main filling function which is called with different sets of

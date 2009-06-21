@@ -1,10 +1,10 @@
-#include "sk_table.h"
+#include "SkTable.h"
 #include <qapplication.h>
 
-sk_table::sk_table (QWidget *parent, const char *name)/*{{{*/
+SkTable::SkTable (QWidget *parent, const char *name)/*{{{*/
 	:QTable (parent, name)
 	/*
-	 * Constructs an sk_table instance.
+	 * Constructs an SkTable instance.
 	 * Parameters:
 	 *   - parent, name: passed to the QTable constructor.
 	 */
@@ -12,7 +12,7 @@ sk_table::sk_table (QWidget *parent, const char *name)/*{{{*/
 	setSelectionMode (QTable::NoSelection);
 }/*}}}*/
 
-void sk_table::simulate_key (int key)/*{{{*/
+void SkTable::simulate_key (int key)/*{{{*/
 	/*
 	 * Act as if a given key had been pressed.
 	 * Parameters:
@@ -23,7 +23,7 @@ void sk_table::simulate_key (int key)/*{{{*/
 	keyPressEvent (&e);
 }/*}}}*/
 
-void sk_table::keyPressEvent (QKeyEvent *e)/*{{{*/
+void SkTable::keyPressEvent (QKeyEvent *e)/*{{{*/
 	/*
 	 * Handle a key pressed.
 	 * This implements, among others, HJKL.
@@ -50,7 +50,7 @@ void sk_table::keyPressEvent (QKeyEvent *e)/*{{{*/
 			e->ignore ();
 			break;
 	}
-	
+
 	if (e->key ()!=Qt::Key_Return)	// Hack, weil accept () nicht funktioniert
 		QTable::keyPressEvent (e);
 
@@ -59,7 +59,7 @@ void sk_table::keyPressEvent (QKeyEvent *e)/*{{{*/
 	e->ignore ();
 }/*}}}*/
 
-void sk_table::set_table_column (QHeader *header, int column, string title, string sample)/*{{{*/
+void SkTable::set_table_column (QHeader *header, int column, string title, string sample)/*{{{*/
 	/*
 	 * Sets the a table header column to a given title and adjusts the width so
 	 * that the title and a provided sample text are fully visible (sort of).
@@ -90,7 +90,7 @@ void sk_table::set_table_column (QHeader *header, int column, string title, stri
 
 
 
-sk_table_item *sk_table::set_cell (int row, int col, const string &text, QColor bg)/*{{{*/
+sk_table_item *SkTable::set_cell (int row, int col, const string &text, QColor bg)/*{{{*/
 	/*
 	 * Sets a cell to a given text and color.
 	 * Parameters:
@@ -123,7 +123,7 @@ sk_table_item *sk_table::set_cell (int row, int col, const string &text, QColor 
 	return ret;
 }/*}}}*/
 
-sk_table_item *sk_table::set_cell (int row, int col, const QString &text, QColor bg)/*{{{*/
+sk_table_item *SkTable::set_cell (int row, int col, const QString &text, QColor bg)/*{{{*/
 	/*
 	 * An overloaded function taking a QString instead of a std::string.
 	 */
@@ -131,7 +131,7 @@ sk_table_item *sk_table::set_cell (int row, int col, const QString &text, QColor
 	return set_cell (row, col, q2std (text), bg);
 }/*}}}*/
 
-sk_table_item *sk_table::set_cell (int row, int col, const char *text, QColor bg)/*{{{*/
+sk_table_item *SkTable::set_cell (int row, int col, const char *text, QColor bg)/*{{{*/
 	/*
 	 * An overloaded function taking a char* instead of a std::string.
 	 */
@@ -141,7 +141,7 @@ sk_table_item *sk_table::set_cell (int row, int col, const char *text, QColor bg
 
 
 
-void sk_table::clear_table ()/*{{{*/
+void SkTable::clear_table ()/*{{{*/
 	/*
 	 * Clears the table.
 	 */
@@ -158,7 +158,7 @@ void sk_table::clear_table ()/*{{{*/
 
 
 
-void sk_table::removeRow (int row)/*{{{*/
+void SkTable::removeRow (int row)/*{{{*/
 	/*
 	 * Remove a row from the table.
 	 * Parameters:
@@ -174,7 +174,7 @@ void sk_table::removeRow (int row)/*{{{*/
 
 
 
-int sk_table::row_from_column_id (db_id id, int col)/*{{{*/
+int SkTable::row_from_column_id (db_id id, int col)/*{{{*/
 	/*
 	 * Finds the row where a given ID is saved in a given column.
 	 * Parameters:
@@ -191,7 +191,7 @@ int sk_table::row_from_column_id (db_id id, int col)/*{{{*/
 	return -1;
 }/*}}}*/
 
-db_id sk_table::id_from_cell (int row, int col)/*{{{*/
+db_id SkTable::id_from_cell (int row, int col)/*{{{*/
 	/*
 	 * Finds the ID that is saved in a given cell.
 	 * Parameters:
@@ -210,7 +210,7 @@ db_id sk_table::id_from_cell (int row, int col)/*{{{*/
 /*}}}*/
 
 
-void sk_table::columnClicked (int c)/*{{{*/
+void SkTable::columnClicked (int c)/*{{{*/
 	/*
 	 * A column header was clicked. Sort the table by the corresponding column.
 	 * Parameters:

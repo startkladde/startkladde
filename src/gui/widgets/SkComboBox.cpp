@@ -1,21 +1,22 @@
-#include "sk_combo_box.h"
+#include "SkComboBox.h"
+
 #include <iostream>
 #include <QtCore/QtDebug>
 #include <QtGui/QCompleter>
 
 /**
-  * Constructs a sk_combo_box instance.
+  * Constructs a SkComboBox instance.
   * Parameters:
   *   - rw, parent, name: passsed on to the QComboBox constructor.
   */
-sk_combo_box::sk_combo_box (bool editable, QWidget *parent)
+SkComboBox::SkComboBox (bool editable, QWidget *parent)
 	:QComboBox (parent)
 {
 	setInsertPolicy (QComboBox::NoInsert);
 	setEditable (editable);
 }
 
-void sk_combo_box::setAutoCompletion (bool autocomplete) {
+void SkComboBox::setAutoCompletion (bool autocomplete) {
 	if (autocomplete) {
 		QCompleter* completer = this->completer();
 		if (completer) {
@@ -33,12 +34,12 @@ void sk_combo_box::setAutoCompletion (bool autocomplete) {
   * Parameters:
   *   - s, index: passed on to QComboBox::insertItem.
   */
-void sk_combo_box::insertItem (const string &s, int index)
+void SkComboBox::insertItem (const string &s, int index)
 {
 	QComboBox::insertItem (std2q (s), index);
 }
 
-string sk_combo_box::edit_text_string ()/*{{{*/
+string SkComboBox::edit_text_string ()/*{{{*/
 	/*
 	 * Returns a string with the current contents of the editor field.
 	 * Return value:
@@ -50,7 +51,7 @@ string sk_combo_box::edit_text_string ()/*{{{*/
 	return q2std (currentText ());
 }/*}}}*/
 
-string sk_combo_box::current_text_string ()/*{{{*/
+string SkComboBox::current_text_string ()/*{{{*/
 	/*
 	 * Returns a string with the current item.
 	 * Return value:
@@ -67,7 +68,7 @@ string sk_combo_box::current_text_string ()/*{{{*/
   *   - num: the number of entries in the array.
   *   - del: whether to delete the array.
   */
-void sk_combo_box::fillStringArray (string **array, int num, bool del)
+void SkComboBox::fillStringArray (string **array, int num, bool del)
 {
 	hide ();
 	clear ();
@@ -80,7 +81,7 @@ void sk_combo_box::fillStringArray (string **array, int num, bool del)
 	show ();
 }
 
-void sk_combo_box::setCurrentItem (int index)/*{{{*/
+void SkComboBox::setCurrentItem (int index)/*{{{*/
 	/*
 	 * Sets the current item and emit the activation signal.
 	 * Parameters:
@@ -91,16 +92,16 @@ void sk_combo_box::setCurrentItem (int index)/*{{{*/
 	emit activated (index);
 }/*}}}*/
 
-void sk_combo_box::insert_if_new (const string &t)/*{{{*/
+void SkComboBox::insert_if_new (const string &t)/*{{{*/
 	/*
 	 * Insert an item to the list if it is new.
 	 * Parameters:
 	 *   - t: the text of the new item.
 	 */
 {
-	// TODO das sollte besser gehen. Insbesondere müsste das sortierbar sein.
+	// TODO das sollte besser gehen. Insbesondere mï¿½sste das sortierbar sein.
 	//
-	
+
 	bool is_new=true;
 	for (int i=0; i<count (); i++)
 	{
@@ -109,14 +110,14 @@ void sk_combo_box::insert_if_new (const string &t)/*{{{*/
 
 	if (is_new)
 	{
-		// Wenn die Liste leer war, wird offenbar das Textfeld überschrieben
+		// Wenn die Liste leer war, wird offenbar das Textfeld ï¿½berschrieben
 		QString old_string=currentText ();
 		insertItem (t);
 		setCurrentText (old_string);
 	}
 }/*}}}*/
 
-void sk_combo_box::cursor_to_end ()/*{{{*/
+void SkComboBox::cursor_to_end ()/*{{{*/
 	/*
 	 * Moves the cursor to the end of the editing field.
 	 */
@@ -126,14 +127,14 @@ void sk_combo_box::cursor_to_end ()/*{{{*/
 }
 /*}}}*/
 
-void sk_combo_box::focusOutEvent (QFocusEvent *event)/*{{{*/
+void SkComboBox::focusOutEvent (QFocusEvent *event)/*{{{*/
 {
 	QComboBox::focusOutEvent (event);
 	emit focus_out ();
 }
 /*}}}*/
 
-void sk_combo_box::focusInEvent (QFocusEvent *event)/*{{{*/
+void SkComboBox::focusInEvent (QFocusEvent *event)/*{{{*/
 {
 	QComboBox::focusInEvent (event);
 	emit focus_in ();

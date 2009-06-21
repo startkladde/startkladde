@@ -1,5 +1,5 @@
-#ifndef sk_button_h
-#define sk_button_h
+#ifndef _SkButton_h
+#define _SkButton_h
 
 #include <qpushbutton.h>
 
@@ -8,12 +8,12 @@
 
 using namespace std;
 
-class sk_button:public QPushButton
+class SkButton:public QPushButton
 {
 	Q_OBJECT
 
 	public:
-		sk_button (db_id, const QString &, QWidget *, const char *name=0);
+		SkButton (db_id, const QString &, QWidget *, const char *name=0);
 
 	signals:
 		void clicked (db_id, db_id);

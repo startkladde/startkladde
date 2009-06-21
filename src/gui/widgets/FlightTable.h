@@ -1,5 +1,5 @@
-#ifndef sk_flight_table_h
-#define sk_flight_table_h
+#ifndef _FlightTable_h
+#define _FlightTable_h
 
 // Qt3:
 //#include <qmemarray.h>
@@ -10,11 +10,11 @@
 // #include <qtimer.h>
 
 #include "src/model/sk_flug.h"
-#include "src/gui/widgets/sk_table_item.h"
-#include "src/gui/widgets/sk_button.h"
+#include "src/gui/widgets/SkTableItem.h"
+#include "src/gui/widgets/SkButton.h"
 #include "src/data_types.h"
 #include "src/db/db_proxy.h"
-#include "src/gui/widgets/sk_table.h"
+#include "src/gui/widgets/SkTable.h"
 #include "src/db/sk_db.h"
 #include "src/model/startart_t.h"
 #include "src/time/sk_time_t.h"
@@ -48,12 +48,12 @@ const int tbl_idx_schleppref=tbl_idx_startart;
 //enum zell_typ { zt_none, zt_nothing, zt_time, zt_button, zt_missing };
 enum zell_typ { zt_unhandled, zt_empty, zt_n_a, zt_button, zt_time, zt_missing, zt_invalid, zt_program_error };
 
-class sk_flight_table:public sk_table
+class FlightTable:public SkTable
 {
 	Q_OBJECT
 
 	public:
-		sk_flight_table (sk_db *_db, QWidget *parent=0, const char *name=0);
+		FlightTable (sk_db *_db, QWidget *parent=0, const char *name=0);
 
 		db_id id_from_row (int row);
 		db_id schleppref_from_row (int row);
@@ -90,9 +90,9 @@ class sk_flight_table:public sk_table
 		void set_cell_by_type (int row, int column, zell_typ typ, char *button_text, string zeit_text, QColor bg, db_id data, const char *);
 		void set_flight (int, sk_flug *, db_id, bool);
 //		int create_empty_row ();
-		sk_button *set_button_or_text (int row, int column, bool set_button, QString text, QColor bg, db_id data);
-		sk_button *set_button_or_text (int row, int column, bool set_button, string text, QColor bg, db_id data);
-		sk_button *set_button_or_text (int row, int column, bool set_button, const char *text, QColor bg, db_id data);
+		SkButton *set_button_or_text (int row, int column, bool set_button, QString text, QColor bg, db_id data);
+		SkButton *set_button_or_text (int row, int column, bool set_button, string text, QColor bg, db_id data);
+		SkButton *set_button_or_text (int row, int column, bool set_button, const char *text, QColor bg, db_id data);
 
 		QDate anzeigedatum;
 		sk_db *db;

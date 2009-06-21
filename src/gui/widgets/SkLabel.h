@@ -1,8 +1,8 @@
-#ifndef sk_label_h
-#define sk_label_h
+#ifndef _SkLabel_h
+#define _SkLabel_h
 
 /*
- * sk_label
+ * SkLabel
  * martin
  * 2005-02-04
  */
@@ -11,14 +11,14 @@
 
 using namespace std;
 
-class sk_label:public QLabel
+class SkLabel:public QLabel
 	// Not hidden by hide () because this messes up the QLayout.
 {
 	Q_OBJECT
 
 	public:
-		sk_label (QColor _background_color, QColor _error_color, QWidget *parent=NULL, const char *name=NULL);
-		sk_label (const QString &text, QWidget *parent=NULL, const char *name=NULL);
+		SkLabel (QColor _background_color, QColor _error_color, QWidget *parent=NULL, const char *name=NULL);
+		SkLabel (const QString &text, QWidget *parent=NULL, const char *name=NULL);
 
 	public slots:
 		void set_error (bool _error);
@@ -34,7 +34,7 @@ class sk_label:public QLabel
 		// The inactive palette state might also be used to hide the widget.
 		//void paletteChange (const QPalette &oldPalette)
 		virtual void mouseDoubleClickEvent (QMouseEvent *e);
-	
+
 	private:
 		QColor background_color;
 		QColor error_color;

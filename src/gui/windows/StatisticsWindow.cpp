@@ -49,7 +49,7 @@ StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool moda
 	 */
 {
 	// Create and setup table
-	tab=new sk_table (this);
+	tab=new SkTable (this);
 
 	// Create and setup close button
 	but_close=new QPushButton (this);

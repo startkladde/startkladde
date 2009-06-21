@@ -63,7 +63,7 @@ StuffListWindow::StuffListWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 	but_close->setText ("&Schlie�en");
 	QObject::connect (but_close, SIGNAL (clicked ()), this, SLOT (accept ()));
 
-	tab=new sk_table (frame_main);
+	tab=new SkTable (frame_main);
 	tab->setSorting (true);
 
 	// Men� 'Datenbank'

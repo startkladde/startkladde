@@ -10,7 +10,7 @@
 #include "kvkbd.xpm"
 #include "src/config/options.h"
 #include "src/db/sk_db.h"
-#include "src/gui/widgets/sk_flight_table.h"
+#include "src/gui/widgets/FlightTable.h"
 #include "src/model/sk_flug.h"
 #include "src/model/sk_flugzeug.h"
 #include "src/gui/windows/DateWindow.h"
@@ -179,8 +179,8 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 	int row=0;
 	for (list<sk_plugin>::iterator it=plugins->begin (); it!=end; ++it)
 	{
-		sk_label *lbl_caption=new sk_label ("[...]", info_frame, "lbl_caption[...]");
-		sk_label *lbl_value=new sk_label ("[...]", info_frame, "lbl_value[...]");
+		SkLabel *lbl_caption=new SkLabel ("[...]", info_frame, "lbl_caption[...]");
+		SkLabel *lbl_value=new SkLabel ("[...]", info_frame, "lbl_value[...]");
 
 		lbl_value->setAlignment (Qt::WordBreak);
 		if ((*it).get_rich_text ())
@@ -220,7 +220,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 /*}}}*/
 
 	// Flugtabelle/*{{{*/
-	tbl_fluege = new sk_flight_table (db, main_frame, "tbl_fluege");
+	tbl_fluege = new FlightTable (db, main_frame, "tbl_fluege");
 	main_layout->addWidget (tbl_fluege, 1);
 	tbl_fluege->set_anzeigedatum (anzeigedatum);
 /*}}}*/
@@ -684,7 +684,7 @@ void MainWindow::keyPressEvent (QKeyEvent *e)/*{{{*/
 		case Qt::Key_F7: slot_table_zwischenlandung (); break;
 		case Qt::Key_F8: slot_table_delete (); break;
 
-//		case Qt::Key_F9: slot_tabelle_sortieren (); break;	// In sk_table gemacht
+//		case Qt::Key_F9: slot_tabelle_sortieren (); break;	// In SkTable gemacht
 //		case Qt::Key_F10: slot_close (); break;
 		case Qt::Key_F11: slot_menu_ansicht_flug_gelandete (true); break;
 		case Qt::Key_F12: slot_refresh_table (); break;

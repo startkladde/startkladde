@@ -7,7 +7,7 @@
 #include <qlabel.h>
 #include <qstringlist.h>
 
-#include "src/gui/widgets/sk_combo_box.h"
+#include "src/gui/widgets/SkComboBox.h"
 #include "src/data_types.h"
 
 using namespace std;
@@ -53,11 +53,11 @@ class lbl_cbox:public QFrame
 	private:
 		bool focus_out_locked;
 		QLabel *lbl;
-		sk_combo_box *cbox;
-		sk_combo_box *full_cbox;
-		sk_combo_box *used_cbox;
-		void fillStringArray (sk_combo_box *box, const QStringList& array, bool clear_first=true, bool blank_line=false, bool del=true);
-		void set_active_cbox (sk_combo_box *);
+		SkComboBox *cbox;
+		SkComboBox *full_cbox;
+		SkComboBox *used_cbox;
+		void fillStringArray (SkComboBox *box, const QStringList& array, bool clear_first=true, bool blank_line=false, bool del=true);
+		void set_active_cbox (SkComboBox *);
 };
 
 #endif

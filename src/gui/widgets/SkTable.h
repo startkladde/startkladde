@@ -1,5 +1,5 @@
-#ifndef sk_table_h
-#define sk_table_h
+#ifndef _SkTable_h
+#define _SkTable_h
 
 // Qt3:
 //#include <qtable.h>
@@ -8,23 +8,23 @@
 #define QHeader Q3Header
 #define QMemArray Q3MemArray
 
-#include "src/gui/widgets/sk_table_item.h"
+#include "src/gui/widgets/SkTableItem.h"
 
 using namespace std;
 
-class sk_table:public QTable
+class SkTable:public QTable
 {
 	Q_OBJECT
 
 	public:
-		sk_table (QWidget *parent, const char *name=NULL);
+		SkTable (QWidget *parent, const char *name=NULL);
 		void clear_table ();
 		int row_from_column_id (db_id id, int col);
 		db_id id_from_cell (int row, int col);
 		sk_table_item *set_cell (int, int, const string &, QColor);
 		sk_table_item *set_cell (int, int, const QString &, QColor);
 		sk_table_item *set_cell (int, int, const char *, QColor);
-	
+
 	protected:
 		void keyPressEvent (QKeyEvent *);
 		void simulate_key (int);
@@ -37,7 +37,7 @@ class sk_table:public QTable
 		virtual void removeRow (int);
 
 	private:
-	
+
 	signals:
 		void key (int);
 };

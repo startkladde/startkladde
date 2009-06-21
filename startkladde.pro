@@ -40,13 +40,13 @@ HEADERS += \
            src/gui/widgets/SkListWidget.h \
            src/gui/widgets/WeatherWidget.h \
            src/gui/widgets/lbl_cbox.h \
-           src/gui/widgets/sk_button.h \
-           src/gui/widgets/sk_combo_box.h \
-           src/gui/widgets/sk_flight_table.h \
-           src/gui/widgets/sk_label.h \
-           src/gui/widgets/sk_table.h \
-           src/gui/widgets/sk_table_item.h \
-           src/gui/widgets/sk_text_box.h \
+           src/gui/widgets/SkButton.h \
+           src/gui/widgets/SkComboBox.h \
+           src/gui/widgets/FlightTable.h \
+           src/gui/widgets/SkLabel.h \
+           src/gui/widgets/SkTable.h \
+           src/gui/widgets/SkTableItem.h \
+           src/gui/widgets/SkTextBox.h \
            src/gui/widgets/sk_time_edit.h \
            src/gui/windows/DateWindow.h \
            src/gui/windows/FlightWindow.h \
@@ -112,13 +112,13 @@ SOURCES += \
            src/gui/widgets/SkListWidget.cpp \
            src/gui/widgets/WeatherWidget.cpp \
            src/gui/widgets/lbl_cbox.cpp \
-           src/gui/widgets/sk_button.cpp \
-           src/gui/widgets/sk_combo_box.cpp \
-           src/gui/widgets/sk_flight_table.cpp \
-           src/gui/widgets/sk_label.cpp \
-           src/gui/widgets/sk_table.cpp \
-           src/gui/widgets/sk_table_item.cpp \
-           src/gui/widgets/sk_text_box.cpp \
+           src/gui/widgets/SkButton.cpp \
+           src/gui/widgets/SkComboBox.cpp \
+           src/gui/widgets/FlightTable.cpp \
+           src/gui/widgets/SkLabel.cpp \
+           src/gui/widgets/SkTable.cpp \
+           src/gui/widgets/SkTableItem.cpp \
+           src/gui/widgets/SkTextBox.cpp \
            src/gui/widgets/sk_time_edit.cpp \
            src/gui/windows/DateWindow.cpp \
            src/gui/windows/FlightWindow.cpp \

@@ -1,5 +1,5 @@
-#ifndef sk_combo_box_h
-#define sk_combo_box_h
+#ifndef _SkComboBox_h
+#define _SkComboBox_h
 
 
 #include <cstdio>
@@ -13,12 +13,12 @@
 
 using namespace std;
 
-class sk_combo_box:public QComboBox
+class SkComboBox:public QComboBox
 {
 	Q_OBJECT
 
 	public:
-		sk_combo_box (bool editable, QWidget * parent=0);
+		SkComboBox (bool editable, QWidget * parent=0);
 		void insertItem (const string &, int index=-1);
 		string current_text_string ();
 		void fillStringArray (string **array, int num, bool del=true);

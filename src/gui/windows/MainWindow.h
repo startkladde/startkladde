@@ -29,14 +29,14 @@
 #include "src/gui/settings.h"
 #include "src/plugins/sk_plugin.h"
 #include "src/gui/widgets/WeatherWidget.h"
-#include "src/gui/widgets/sk_label.h"
+#include "src/gui/widgets/SkLabel.h"
 #include "src/gui/windows/WeatherDialog.h"
 
 class db_event;
 class flight;
 class options;
 class sk_db;
-class sk_flight_table;
+class FlightTable;
 class sk_flug;
 class sk_flugzeug;
 class DateWindow;
@@ -110,7 +110,7 @@ class MainWindow:public QMainWindow
 		void flug_wiederholen (sk_flug *vorlage=NULL);
 /*}}}*/
 		// Table/*{{{*/
-		sk_flight_table *tbl_fluege;
+		FlightTable *tbl_fluege;
 		db_id get_flight_id (int);
 		void table_activated (int);
 		int context_row, context_col;

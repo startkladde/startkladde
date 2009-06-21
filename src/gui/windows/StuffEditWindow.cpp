@@ -68,13 +68,13 @@ StuffEditWindow::StuffEditWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 
 			num_fields=7;
 			edit_widgets=new QWidget*[num_fields];
-			edit_widgets[0]=edit_registration=new sk_text_box (this);
-			edit_widgets[1]=edit_wettkennz=new sk_text_box (this);
-			edit_widgets[2]=edit_category=new sk_combo_box (false, this);
-			edit_widgets[3]=edit_typ=new sk_combo_box (true, this);
-			edit_widgets[4]=edit_club=new sk_combo_box (true, this);
+			edit_widgets[0]=edit_registration=new SkTextBox (this);
+			edit_widgets[1]=edit_wettkennz=new SkTextBox (this);
+			edit_widgets[2]=edit_category=new SkComboBox (false, this);
+			edit_widgets[3]=edit_typ=new SkComboBox (true, this);
+			edit_widgets[4]=edit_club=new SkComboBox (true, this);
 			edit_widgets[5]=edit_sitze=new QLineEdit (this);
-			edit_widgets[6]=edit_bemerkungen=new sk_text_box (this);
+			edit_widgets[6]=edit_bemerkungen=new SkTextBox (this);
 
 			edit_club->setAutoCompletion (true);
 			edit_club->setInsertionPolicy (QComboBox::NoInsertion);
@@ -88,11 +88,11 @@ StuffEditWindow::StuffEditWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 
 			num_fields=5;
 			edit_widgets=new QWidget*[num_fields];
-			edit_widgets[0]=edit_nachname=new sk_text_box (this);
-			edit_widgets[1]=edit_vorname=new sk_text_box (this);
-			edit_widgets[2]=edit_club=new sk_combo_box (true, this);
-			edit_widgets[3]=edit_landesverbandsnummer=new sk_text_box (this);
-			edit_widgets[4]=edit_bemerkungen=new sk_text_box (this);
+			edit_widgets[0]=edit_nachname=new SkTextBox (this);
+			edit_widgets[1]=edit_vorname=new SkTextBox (this);
+			edit_widgets[2]=edit_club=new SkComboBox (true, this);
+			edit_widgets[3]=edit_landesverbandsnummer=new SkTextBox (this);
+			edit_widgets[4]=edit_bemerkungen=new SkTextBox (this);
 
 			edit_club->setAutoCompletion (true);
 			edit_club->setInsertionPolicy (QComboBox::NoInsertion);

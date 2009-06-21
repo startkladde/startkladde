@@ -106,30 +106,30 @@ FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool 
 	// Editor-Widgets anlegen/*{{{*/
 	// TODO Codeduplikation Reihenfolge
 	int i=0;
-	edit_widget[i++]=edit_registration=new sk_combo_box (true, editorWidget);
+	edit_widget[i++]=edit_registration=new SkComboBox (true, editorWidget);
 	edit_widget[i++]=edit_flugzeug_typ=new QLabel (editorWidget);
-	edit_widget[i++]=edit_flug_typ=new sk_combo_box (false, editorWidget);
+	edit_widget[i++]=edit_flug_typ=new SkComboBox (false, editorWidget);
 	edit_widget[i++]=edit_pilot_nn=new lbl_cbox (text_nachname_1, true, editorWidget, "edit_pilot_nn");
 	edit_widget[i++]=edit_pilot_vn=new lbl_cbox (text_vorname_1, true, editorWidget, "edit_pilot_vn");
 	edit_widget[i++]=edit_begleiter_nn=new lbl_cbox (text_nachname_2, true, editorWidget, "edit_begleiter_nn");
 	edit_widget[i++]=edit_begleiter_vn=new lbl_cbox (text_vorname_2, true, editorWidget, "edit_begleiter_vn");
-	edit_widget[i++]=edit_modus=new sk_combo_box (false, editorWidget);
-	edit_widget[i++]=edit_startart=new sk_combo_box (false, editorWidget);
-	edit_widget[i++]=edit_registration_sfz=new sk_combo_box (true, editorWidget);
+	edit_widget[i++]=edit_modus=new SkComboBox (false, editorWidget);
+	edit_widget[i++]=edit_startart=new SkComboBox (false, editorWidget);
+	edit_widget[i++]=edit_registration_sfz=new SkComboBox (true, editorWidget);
 	edit_widget[i++]=edit_typ_sfz=new QLabel (editorWidget);
 	// Towpilot is always added, but not displayed when !opts.record_towpilot
 	edit_widget[i++]=edit_towpilot_nn=new lbl_cbox (text_nachname_3, true, editorWidget, "edit_towpilot_nn");
 	edit_widget[i++]=edit_towpilot_vn=new lbl_cbox (text_vorname_3, true, editorWidget, "edit_towpilot_vn");
-	edit_widget[i++]=edit_modus_sfz=new sk_combo_box (false, editorWidget);
+	edit_widget[i++]=edit_modus_sfz=new SkComboBox (false, editorWidget);
 	edit_widget[i++]=edit_startzeit=new sk_time_edit (editorWidget, "startzeit");
 	edit_widget[i++]=edit_landezeit=new sk_time_edit (editorWidget, "landezeit");
 	edit_widget[i++]=edit_landezeit_sfz=new sk_time_edit (editorWidget, "sfz_lande");
-	edit_widget[i++]=edit_startort=new sk_combo_box (true, editorWidget);
-	edit_widget[i++]=edit_zielort=new sk_combo_box (true, editorWidget);
-	edit_widget[i++]=edit_zielort_sfz=new sk_combo_box (true, editorWidget);
+	edit_widget[i++]=edit_startort=new SkComboBox (true, editorWidget);
+	edit_widget[i++]=edit_zielort=new SkComboBox (true, editorWidget);
+	edit_widget[i++]=edit_zielort_sfz=new SkComboBox (true, editorWidget);
 	edit_widget[i++]=edit_landungen=new QLineEdit (editorWidget);
-	edit_widget[i++]=edit_bemerkungen=new sk_text_box (editorWidget);
-	edit_widget[i++]=edit_abrechnungshinweis=new sk_combo_box (true, editorWidget);
+	edit_widget[i++]=edit_bemerkungen=new SkTextBox (editorWidget);
+	edit_widget[i++]=edit_abrechnungshinweis=new SkComboBox (true, editorWidget);
 	edit_widget[i++]=edit_datum=new QDateEdit (editorWidget);
 	edit_widget[i++]=edit_fehler=new SkListWidget (editorWidget);
 	/*}}}*/
@@ -190,7 +190,7 @@ FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool 
 	// Editor-Labels anlegen/*{{{*/
 	for (int i=0; i<NUM_FIELDS; i++)
 	{
-		label[i]=new sk_label (get_default_color (edit_widget[i]), col_erroneous, editorWidget);
+		label[i]=new SkLabel (get_default_color (edit_widget[i]), col_erroneous, editorWidget);
 		label[i]->setBuddy (edit_widget[i]);
 	}/*}}}*/
 

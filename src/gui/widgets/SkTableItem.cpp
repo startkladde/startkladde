@@ -1,4 +1,4 @@
-#include "sk_table_item.h"
+#include "SkTableItem.h"
 
 sk_table_item::sk_table_item (QTable *table, const QString &text, QColor bg)/*{{{*/
 	:QTableItem (table, QTableItem::Never, text)
@@ -93,7 +93,7 @@ void sk_table_item::set_background (int red, int green, int blue)/*{{{*/
 {
 	background.setRgb (red, green, blue);
 }/*}}}*/
-	
+
 QColor sk_table_item::get_background ()/*{{{*/
 	/*
 	 * Gets the background color.

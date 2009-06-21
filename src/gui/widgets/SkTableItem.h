@@ -1,5 +1,5 @@
-#ifndef sk_table_item_h
-#define sk_table_item_h
+#ifndef _SkTableItem_h
+#define _SkTableItem_h
 
 // Qt3
 //#include <qtable.h>

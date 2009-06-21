@@ -1,13 +1,14 @@
-#include "sk_flight_table.h"
+#include "FlightTable.h"
+
 #include <qapplication.h>
 #include <qfontmetrics.h>
 
 #include "src/color.h"
 
-sk_flight_table::sk_flight_table (sk_db *_db, QWidget *parent, const char *name)/*{{{*/
-	:sk_table (parent, name)
+FlightTable::FlightTable (sk_db *_db, QWidget *parent, const char *name)/*{{{*/
+	:SkTable (parent, name)
 	/*
-	 * Constructs a sk_flight_table instance.
+	 * Constructs a FlightTable instance.
 	 * Parameters:
 	 *   - parent, name: passed on to base class constructor.
 	 */
@@ -53,7 +54,7 @@ sk_flight_table::sk_flight_table (sk_db *_db, QWidget *parent, const char *name)
 	setNumRows (0);
 }/*}}}*/
 
-QWidget *sk_flight_table::beginEdit ( int row, int col, bool replace )/*{{{*/
+QWidget *FlightTable::beginEdit ( int row, int col, bool replace )/*{{{*/
 	/*
 	 * Returns NULL to signify that the table data cannot be edited.
 	 * Paramters:
@@ -70,7 +71,7 @@ QWidget *sk_flight_table::beginEdit ( int row, int col, bool replace )/*{{{*/
 
 
 
-db_id sk_flight_table::id_from_row (int row)/*{{{*/
+db_id FlightTable::id_from_row (int row)/*{{{*/
 	/*
 	 * Gets the ID saved in a given row.
 	 * Parameters:
@@ -82,7 +83,7 @@ db_id sk_flight_table::id_from_row (int row)/*{{{*/
 	return id_from_cell (row, tbl_idx_id);
 }/*}}}*/
 
-db_id sk_flight_table::schleppref_from_row (int row)/*{{{*/
+db_id FlightTable::schleppref_from_row (int row)/*{{{*/
 	/*
 	 * Gets the !!Schleppref saved in a given row.
 	 * Parameters:
@@ -96,7 +97,7 @@ db_id sk_flight_table::schleppref_from_row (int row)/*{{{*/
 
 
 
-int sk_flight_table::row_from_id (db_id id)/*{{{*/
+int FlightTable::row_from_id (db_id id)/*{{{*/
 	/*
 	 * Gets the row where a given ID is saved.
 	 * Parameters:
@@ -108,7 +109,7 @@ int sk_flight_table::row_from_id (db_id id)/*{{{*/
 	return row_from_column_id (id, tbl_idx_id);
 }/*}}}*/
 
-int sk_flight_table::row_from_sref (db_id sref)/*{{{*/
+int FlightTable::row_from_sref (db_id sref)/*{{{*/
 	/*
 	 * Gets the row where a given !!Schleppref is saved.
 	 * Parameters:
@@ -120,7 +121,7 @@ int sk_flight_table::row_from_sref (db_id sref)/*{{{*/
 	return row_from_column_id (sref, tbl_idx_schleppref);
 }/*}}}*/
 
-bool sk_flight_table::row_is_flight (int row)/*{{{*/
+bool FlightTable::row_is_flight (int row)/*{{{*/
 	/*
 	 * Check if a column of the table contains a flight.
 	 * Parameters:
@@ -142,7 +143,7 @@ bool sk_flight_table::row_is_flight (int row)/*{{{*/
 
 
 
-sk_button *sk_flight_table::set_button_or_text (int row, int column, bool set_button, QString text, QColor bg, db_id data)/*{{{*/
+SkButton *FlightTable::set_button_or_text (int row, int column, bool set_button, QString text, QColor bg, db_id data)/*{{{*/
 	/*
 	 * Sets a cell to a button or a text.
 	 * Parameters:
@@ -157,14 +158,14 @@ sk_button *sk_flight_table::set_button_or_text (int row, int column, bool set_bu
 
 	// Hier muss unbedingt clearCell stehen, sonst ist Text, der durch einen
 	// Button/Text ersetzt wurde, beim n�chsten �berfahren mit dem cursor
-	// wieder sichtbar. M�glicherweise ein Bug in sk_table::set_cell () oder
+	// wieder sichtbar. M�glicherweise ein Bug in SkTable::set_cell () oder
 	// in QT.
 	clearCell (row, column);
 	clearCellWidget (row, column);
 
 	if (set_button)
 	{
-		sk_button *button=new sk_button (data, text, this, "Tabellenbutton");
+		SkButton *button=new SkButton (data, text, this, "Tabellenbutton");
 		setCellWidget (row, column, button);
 		return button;
 	}
@@ -175,7 +176,7 @@ sk_button *sk_flight_table::set_button_or_text (int row, int column, bool set_bu
 	}
 }/*}}}*/
 
-sk_button *sk_flight_table::set_button_or_text (int row, int column, bool set_button, string text, QColor bg, db_id data)/*{{{*/
+SkButton *FlightTable::set_button_or_text (int row, int column, bool set_button, string text, QColor bg, db_id data)/*{{{*/
 	/*
 	 * Overloaded function using a QString instead of a std::string.
 	 */
@@ -183,7 +184,7 @@ sk_button *sk_flight_table::set_button_or_text (int row, int column, bool set_bu
 	return set_button_or_text (row, column, set_button, std2q (text), bg, data);
 }/*}}}*/
 
-sk_button *sk_flight_table::set_button_or_text (int row, int column, bool set_button, const char *text, QColor bg, db_id data)/*{{{*/
+SkButton *FlightTable::set_button_or_text (int row, int column, bool set_button, const char *text, QColor bg, db_id data)/*{{{*/
 	/*
 	 * Overloaded function using a char* instead of a std::string.
 	 */
@@ -193,7 +194,7 @@ sk_button *sk_flight_table::set_button_or_text (int row, int column, bool set_bu
 
 
 
-void sk_flight_table::set_cell_by_type (int row, int column, zell_typ typ, char *button_text, string zeit_text, QColor bg, db_id data, const char *signal_target)/*{{{*/
+void FlightTable::set_cell_by_type (int row, int column, zell_typ typ, char *button_text, string zeit_text, QColor bg, db_id data, const char *signal_target)/*{{{*/
 	/*
 	 * Sets a cell according to a cell type given.
 	 * Parameters:
@@ -207,7 +208,7 @@ void sk_flight_table::set_cell_by_type (int row, int column, zell_typ typ, char 
 	 *     typ==zt_button.
 	 */
 {
-	sk_button *but;
+	SkButton *but;
 
 	switch (typ)
 	{
@@ -252,7 +253,7 @@ void sk_flight_table::set_cell_by_type (int row, int column, zell_typ typ, char 
 
 
 
-int sk_flight_table::insert_row_for_flight (sk_flug *f)/*{{{*/
+int FlightTable::insert_row_for_flight (sk_flug *f)/*{{{*/
 	/*
 	 * Insert a row at the correct position for a given flight.
 	 * Parameters:
@@ -292,7 +293,7 @@ int sk_flight_table::insert_row_for_flight (sk_flug *f)/*{{{*/
 	return row;
 }/*}}}*/
 
-void sk_flight_table::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*{{{*/
+void FlightTable::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*{{{*/
 	/*
 	 * Writes a given flight to a given row in the table.
 	 * Parameters:
@@ -629,7 +630,7 @@ void sk_flight_table::set_flight (int row, sk_flug *f, db_id id, bool set_schlep
 	setRowHeight (row, row_height);
 }/*}}}*/
 
-void sk_flight_table::update_flight (db_id id, sk_flug *f)/*{{{*/
+void FlightTable::update_flight (db_id id, sk_flug *f)/*{{{*/
 	/*
 	 * Updates the flight data in the table, add the flight if it is not in
 	 * the table yet, or remove it if it is not to be shown (for example, if it
@@ -743,7 +744,7 @@ void sk_flight_table::update_flight (db_id id, sk_flug *f)/*{{{*/
 	}
 }/*}}}*/
 
-void sk_flight_table::removeRow (int row)/*{{{*/
+void FlightTable::removeRow (int row)/*{{{*/
 	/*
 	 * Removes a row from the table.
 	 * Parameters:
@@ -752,10 +753,10 @@ void sk_flight_table::removeRow (int row)/*{{{*/
 {
 	clearCellWidget (row, tbl_idx_startzeit);
 	clearCellWidget (row, tbl_idx_landezeit);
-	sk_table::removeRow (row);
+	SkTable::removeRow (row);
 }/*}}}*/
 
-void sk_flight_table::remove_flight (db_id id)/*{{{*/
+void FlightTable::remove_flight (db_id id)/*{{{*/
 	/*
 	 * Removes a row containing a given flight from the table, also remove the
 	 * row containing the !!Schleppflug, if any
@@ -774,7 +775,7 @@ void sk_flight_table::remove_flight (db_id id)/*{{{*/
 
 
 
-void sk_flight_table::update_row_time (int row, sk_time_t *t)/*{{{*/
+void FlightTable::update_row_time (int row, sk_time_t *t)/*{{{*/
 	/*
 	 * Updates the time displayed in a row.
 	 * Parameters:
@@ -812,7 +813,7 @@ void sk_flight_table::update_row_time (int row, sk_time_t *t)/*{{{*/
 	}
 }/*}}}*/
 
-void sk_flight_table::update_row_time (int row)/*{{{*/
+void FlightTable::update_row_time (int row)/*{{{*/
 	/*
 	 * Updates the time displayed in a row, using the current time.
 	 * Parameters:
@@ -824,7 +825,7 @@ void sk_flight_table::update_row_time (int row)/*{{{*/
 	update_row_time (row, &t);
 }/*}}}*/
 
-void sk_flight_table::update_time ()/*{{{*/
+void FlightTable::update_time ()/*{{{*/
 	/*
 	 * If the current second is 0, update the time entries in every row.
 	 */
@@ -840,14 +841,14 @@ void sk_flight_table::update_time ()/*{{{*/
 
 
 
-void sk_flight_table::columnClicked (int c)/*{{{*/
+void FlightTable::columnClicked (int c)/*{{{*/
 	/*
 	 * A column header was clicked. Sort the table by the corresponding column.
 	 * Parameters:
 	 *   see QT documentation.
 	 */
 {
-	// Why isn't this inherited from sk_table?
+	// Why isn't this inherited from SkTable?
 	sortColumn (c, true, true);
 }/*}}}*/
 
@@ -857,7 +858,7 @@ void sk_flight_table::columnClicked (int c)/*{{{*/
   * Parameters:
   *   - date: the new display date to set.
   */
-void sk_flight_table::set_anzeigedatum (QDate date)
+void FlightTable::set_anzeigedatum (QDate date)
 {
 	anzeigedatum=date;
 }
@@ -868,7 +869,7 @@ void sk_flight_table::set_anzeigedatum (QDate date)
   * column width set to zero will not be displayed
   * provide default values if the config file is not present
   */
-void sk_flight_table::readSettings (QSettings& settings)
+void FlightTable::readSettings (QSettings& settings)
 {
         settings.beginGroup ("flight_table");
         setColumnWidth (tbl_idx_registration,           settings.value ("tbl_idx_registration",       95).toInt());
@@ -895,7 +896,7 @@ void sk_flight_table::readSettings (QSettings& settings)
   * writeSettings
   * write persistent settings
   */
-void sk_flight_table::writeSettings (QSettings& settings)
+void FlightTable::writeSettings (QSettings& settings)
 {
         settings.beginGroup ("flight_table");
         settings.setValue ("tbl_idx_registration",              columnWidth (tbl_idx_registration));
@@ -922,7 +923,7 @@ void sk_flight_table::writeSettings (QSettings& settings)
   * setFont
   * set font of table
   */
-void sk_flight_table::setFont (const QFont& font)
+void FlightTable::setFont (const QFont& font)
 {
 	QHeader *table_header=horizontalHeader ();
 	table_header->setFont(font);

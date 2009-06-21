@@ -1,9 +1,9 @@
-#include "sk_text_box.h"
+#include "SkTextBox.h"
 
-sk_text_box::sk_text_box (QWidget *parent, const char *name)/*{{{*/
+SkTextBox::SkTextBox (QWidget *parent, const char *name)/*{{{*/
 	:QLineEdit (parent, name)
 	/*
-	 * Constructs an sk_text_box instance.
+	 * Constructs an SkTextBox instance.
 	 * Parameters:
 	 *   - parent, name: passed on to the QLineEdit constructor.
 	 */
@@ -15,7 +15,7 @@ sk_text_box::sk_text_box (QWidget *parent, const char *name)/*{{{*/
 }
 /*}}}*/
 
-void sk_text_box::focusInEvent (QFocusEvent *qfe)/*{{{*/
+void SkTextBox::focusInEvent (QFocusEvent *qfe)/*{{{*/
 	/*
 	 * Called when the input focus is set on the widget. Emits a signal.
 	 * Parameters:
@@ -27,7 +27,7 @@ void sk_text_box::focusInEvent (QFocusEvent *qfe)/*{{{*/
 }
 /*}}}*/
 
-void sk_text_box::focusOutEvent (QFocusEvent *qfe)/*{{{*/
+void SkTextBox::focusOutEvent (QFocusEvent *qfe)/*{{{*/
 	/*
 	 * Called when the input focus is removed from the widget. Emits a signal.
 	 * Parameters:

@@ -17,8 +17,8 @@
 
 
 
-#include "src/gui/widgets/sk_combo_box.h"
-#include "src/gui/widgets/sk_text_box.h"
+#include "src/gui/widgets/SkComboBox.h"
+#include "src/gui/widgets/SkTextBox.h"
 #include "src/model/sk_flug.h"
 #include "src/model/sk_flugzeug.h"
 #include "src/logging/messages.h"
@@ -34,7 +34,7 @@
 #include "src/db/db_event.h"
 #include "src/db/sk_db.h"
 #include "src/gui/windows/StuffSelectWindow.h"
-#include "src/gui/widgets/sk_label.h"
+#include "src/gui/widgets/SkLabel.h"
 #include "src/gui/widgets/SkListWidget.h"
 
 using namespace std;
@@ -124,32 +124,32 @@ class FlightWindow:public SkDialog
 		QObject *status_dialog;
 
 		// TODO use list/QPtrList/...
-		sk_label *label[NUM_FIELDS];
+		SkLabel *label[NUM_FIELDS];
 		QWidget *edit_widget[NUM_FIELDS];
 
-		sk_combo_box *edit_registration;
+		SkComboBox *edit_registration;
 		QLabel *edit_flugzeug_typ;
-		sk_combo_box *edit_flug_typ;
+		SkComboBox *edit_flug_typ;
 		lbl_cbox *edit_pilot_vn;
 		lbl_cbox *edit_pilot_nn;
 		lbl_cbox *edit_begleiter_vn;
 		lbl_cbox *edit_begleiter_nn;
 		lbl_cbox *edit_towpilot_vn;
 		lbl_cbox *edit_towpilot_nn;
-		sk_combo_box *edit_startart;
-		sk_combo_box *edit_registration_sfz;
+		SkComboBox *edit_startart;
+		SkComboBox *edit_registration_sfz;
 		QLabel *edit_typ_sfz;
-		sk_combo_box *edit_modus;
-		sk_combo_box *edit_modus_sfz;
+		SkComboBox *edit_modus;
+		SkComboBox *edit_modus_sfz;
 		sk_time_edit *edit_startzeit;
 		sk_time_edit *edit_landezeit;
 		sk_time_edit *edit_landezeit_sfz;
-		sk_combo_box *edit_startort;
-		sk_combo_box *edit_zielort;
-		sk_combo_box *edit_zielort_sfz;
+		SkComboBox *edit_startort;
+		SkComboBox *edit_zielort;
+		SkComboBox *edit_zielort_sfz;
 		QLineEdit *edit_landungen;
-		sk_text_box *edit_bemerkungen;
-		sk_combo_box *edit_abrechnungshinweis;
+		SkTextBox *edit_bemerkungen;
+		SkComboBox *edit_abrechnungshinweis;
 		QDateEdit *edit_datum;
 		QListWidget *edit_fehler;
 

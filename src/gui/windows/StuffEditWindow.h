@@ -7,8 +7,8 @@
 #include <qmessagebox.h>
 #include <qvalidator.h>
 
-#include "src/gui/widgets/sk_combo_box.h"
-#include "src/gui/widgets/sk_text_box.h"
+#include "src/gui/widgets/SkComboBox.h"
+#include "src/gui/widgets/SkTextBox.h"
 #include "src/model/sk_flugzeug.h"
 #include "src/logging/messages.h"
 #include "src/gui/spacing.h"
@@ -69,16 +69,16 @@ class StuffEditWindow:public SkDialog
 		QWidget **edit_widgets;
 
 		// Shortcuts/*{{{*/
-		sk_text_box *edit_registration;
-		sk_text_box *edit_wettkennz;
-		sk_combo_box *edit_category;
-		sk_combo_box *edit_typ;
-		sk_combo_box *edit_club;
+		SkTextBox *edit_registration;
+		SkTextBox *edit_wettkennz;
+		SkComboBox *edit_category;
+		SkComboBox *edit_typ;
+		SkComboBox *edit_club;
 		QLineEdit *edit_sitze;
-		sk_text_box *edit_vorname;
-		sk_text_box *edit_nachname;
-		sk_text_box *edit_landesverbandsnummer;
-		sk_text_box *edit_bemerkungen;/*}}}*/
+		SkTextBox *edit_vorname;
+		SkTextBox *edit_nachname;
+		SkTextBox *edit_landesverbandsnummer;
+		SkTextBox *edit_bemerkungen;/*}}}*/
 
 		QPushButton *but_save, *but_cancel;
 
