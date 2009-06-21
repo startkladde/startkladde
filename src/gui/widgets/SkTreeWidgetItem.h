@@ -14,7 +14,6 @@
 
 using namespace std;
 
-// TODO rename, it is a tree widget with qt4
 class SkTreeWidgetItem:public QTreeWidgetItem
 {
 	public:
