@@ -7,7 +7,7 @@ WeatherDialog::WeatherDialog (sk_plugin *_plugin, QWidget *parent, const char *n
 {
 	plugin=_plugin;
 
-	ww=new weather_widget (this, "ww");
+	ww=new WeatherWidget (this, "ww");
 
 	QObject::connect (plugin, SIGNAL (lineRead (QString)), ww, SLOT (inputLine (QString)));
 	QObject::connect (plugin, SIGNAL (pluginNotFound ()), ww, SLOT (pluginNotFound ()));

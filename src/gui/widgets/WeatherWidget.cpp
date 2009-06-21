@@ -1,4 +1,4 @@
-#include "weather_widget.h"
+#include "WeatherWidget.h"
 
 #include <qpainter.h>
 #include <qmovie.h>
@@ -7,7 +7,7 @@
 
 #include "src/config/options.h"
 
-weather_widget::weather_widget (QWidget *parent, const char *name)/*{{{*/
+WeatherWidget::WeatherWidget (QWidget *parent, const char *name)/*{{{*/
 	:QLabel (parent, name)
 {
 	if (opts.colorful)
@@ -23,7 +23,7 @@ weather_widget::weather_widget (QWidget *parent, const char *name)/*{{{*/
 	setTextFormat (Qt::RichText);
 }/*}}}*/
 
-bool weather_widget::loadImage (const QString &fileName)/*{{{*/
+bool WeatherWidget::loadImage (const QString &fileName)/*{{{*/
 {
 	setWordWrap (false);
 
@@ -43,7 +43,7 @@ bool weather_widget::loadImage (const QString &fileName)/*{{{*/
 }
 /*}}}*/
 
-bool weather_widget::loadMovie (const QString &fileName)/*{{{*/
+bool WeatherWidget::loadMovie (const QString &fileName)/*{{{*/
 {
 	// NB: wenn hier WordWrap=true ist (zum Beispiel, weil vorher ein Text
 	// gesetzt war), dann funktioniert die Movie-Darstellung nicht mehr, wenn
@@ -61,7 +61,7 @@ bool weather_widget::loadMovie (const QString &fileName)/*{{{*/
 }
 /*}}}*/
 
-void weather_widget::setText (const QString &text)/*{{{*/
+void WeatherWidget::setText (const QString &text)/*{{{*/
 {
 	setWordWrap (true);
 	QLabel::setText (text);
@@ -69,7 +69,7 @@ void weather_widget::setText (const QString &text)/*{{{*/
 }
 /*}}}*/
 
-void weather_widget::inputLine (QString line)/*{{{*/
+void WeatherWidget::inputLine (QString line)/*{{{*/
 {
 	if (line.startsWith ("[MSG]", false))
 	{
@@ -113,19 +113,19 @@ void weather_widget::inputLine (QString line)/*{{{*/
 }
 /*}}}*/
 
-void weather_widget::mouseDoubleClickEvent (QMouseEvent *e)/*{{{*/
+void WeatherWidget::mouseDoubleClickEvent (QMouseEvent *e)/*{{{*/
 {
 	emit (doubleClicked ());
 }
 /*}}}*/
 
-void weather_widget::pluginNotFound ()/*{{{*/
+void WeatherWidget::pluginNotFound ()/*{{{*/
 {
 	setText ("Plugin nicht gefunden");
 }
 /*}}}*/
 
-void weather_widget::resizeEvent (QResizeEvent *e)/*{{{*/
+void WeatherWidget::resizeEvent (QResizeEvent *e)/*{{{*/
 {
 	QLabel::resizeEvent (e);
 	emit sizeChanged (e->size ());
@@ -136,7 +136,7 @@ void weather_widget::resizeEvent (QResizeEvent *e)/*{{{*/
 
 // FIXME wenn Bild angezeigt, Bild mitresizen
 
-//void weather_widget::paintEvent (QPaintEvent *e)/*{{{*/
+//void WeatherWidget::paintEvent (QPaintEvent *e)/*{{{*/
 //{
 //	::paintEvent (e)
 //	// Is an image loaded?

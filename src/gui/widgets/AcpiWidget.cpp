@@ -1,7 +1,8 @@
+#include "AcpiWidget.h"
+
 #include <qdebug.h>
 #include <qpalette.h>
 #include <qcolor.h>
-#include "src/gui/widgets/acpiwidget.h"
 
 extern "C" {
 #include <libacpi.h>
@@ -12,14 +13,14 @@ extern "C" {
   * eggert.ehmke@berlin.de
   * 10.09.2008
   */
-        
+
 
 /**
-  * the global structure is _the_ acpi structure here 
+  * the global structure is _the_ acpi structure here
   */
 static global_t global_acpi;
 
-acpiwidget::acpiwidget (QWidget* parent)
+AcpiWidget::AcpiWidget (QWidget* parent)
 	:QLabel (parent)
 {
 	setAutoFillBackground (true);
@@ -31,7 +32,7 @@ acpiwidget::acpiwidget (QWidget* parent)
 	slotTimer();
 }
 
-bool acpiwidget::valid ()
+bool AcpiWidget::valid ()
 {
 	if(check_acpi_support() == NOT_SUPPORTED){
 		qDebug () << "No acpi support for your system?" << endl;
@@ -42,13 +43,13 @@ bool acpiwidget::valid ()
 	return true;
 }
 
-void acpiwidget::slotTimer()
+void AcpiWidget::slotTimer()
 {
 	adapter_t *ac = &global_acpi.adapt;
 
 	QString message;
 	QPalette palette;
-	
+
 	if(check_acpi_support() == NOT_SUPPORTED){
 		qDebug () << "No acpi support for your system?" << endl;
 		return;
@@ -103,16 +104,16 @@ void acpiwidget::slotTimer()
 						binfo->last_full_cap, binfo->design_voltage,
 						binfo->present_rate, binfo->remaining_cap,
 						binfo->present_voltage, binfo->charge_state,
-						binfo->batt_state, binfo->percentage, 
+						binfo->batt_state, binfo->percentage,
 						binfo->charge_time / 60, binfo->charge_time % 60,
 						binfo->remaining_time / 60, binfo->remaining_time % 60);
 */
 				setToolTip (tooltip);
 		}
-	} 
-	else 
+	}
+	else
 		message += "nicht bekannt; ";
-	
+
 	setText (message);
 	//update ();
 }

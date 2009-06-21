@@ -1,5 +1,5 @@
-#ifndef ACPIWIDGET_H
-#define ACPIWIDGET_H
+#ifndef _AcpiWidget_h
+#define _AcpiWidget_h
 
 /**
   * wrapper class for libacpi
@@ -10,18 +10,18 @@
 #include <qlabel.h>
 #include <qtimer.h>
 
-class acpiwidget: public QLabel
+class AcpiWidget: public QLabel
 {
   Q_OBJECT
 
   public:
-  acpiwidget (QWidget* parent);
+  AcpiWidget (QWidget* parent);
 
   static bool valid ();
 
   private:
   QTimer* timer;
-        
+
   private slots:
   void slotTimer();
 };

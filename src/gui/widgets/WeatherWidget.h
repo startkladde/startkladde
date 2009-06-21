@@ -1,8 +1,8 @@
-#ifndef weather_widget_h
-#define weather_widget_h
+#ifndef _WeatherWidget_h
+#define _WeatherWidget_h
 
 /*
- * weather_widget
+ * WeatherWidget
  * martin
  * 2008-02-15
  */
@@ -13,12 +13,12 @@
 
 using namespace std;
 
-class weather_widget:public QLabel
+class WeatherWidget:public QLabel
 {
 	Q_OBJECT
 
 	public:
-		weather_widget (QWidget *parent=NULL, const char *name=NULL);
+		WeatherWidget (QWidget *parent=NULL, const char *name=NULL);
 		virtual bool loadImage (const QString&);
 		virtual bool loadMovie (const QString&);
 		virtual void setText (const QString&);
@@ -29,7 +29,7 @@ class weather_widget:public QLabel
 	signals:
 		void doubleClicked ();
 		void sizeChanged (const QSize&);
-	
+
 	protected:
 		virtual void mouseDoubleClickEvent (QMouseEvent *e);
 		virtual void resizeEvent (QResizeEvent *);

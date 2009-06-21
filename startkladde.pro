@@ -16,8 +16,13 @@ HEADERS += \
            src/accessor.h \
            src/color.h \
            src/condition_t.h \
-           src/config/options.h \
            src/data_types.h \
+           src/flight_list.h \
+           src/object_field.h \
+           src/sk_exception.h \
+           src/text.h \
+           src/version.h \
+           src/config/options.h \
            src/db/admin_functions.h \
            src/db/db_column.h \
            src/db/db_event.h \
@@ -27,32 +32,31 @@ HEADERS += \
            src/db/sk_db.h \
            src/documents/latex_document.h \
            src/documents/table.h \
-           src/flight_list.h \
            src/gui/dialogs.h \
            src/gui/settings.h \
            src/gui/sk_list_view_item.h \
            src/gui/spacing.h \
-           src/gui/widgets/acpiwidget.h \
+           src/gui/widgets/AcpiWidget.h \
+           src/gui/widgets/SkListWidget.h \
+           src/gui/widgets/WeatherWidget.h \
            src/gui/widgets/lbl_cbox.h \
            src/gui/widgets/sk_button.h \
            src/gui/widgets/sk_combo_box.h \
            src/gui/widgets/sk_flight_table.h \
            src/gui/widgets/sk_label.h \
-           src/gui/widgets/SkListWidget.h \
            src/gui/widgets/sk_table.h \
            src/gui/widgets/sk_table_item.h \
            src/gui/widgets/sk_text_box.h \
            src/gui/widgets/sk_time_edit.h \
-           src/gui/widgets/weather_widget.h \
-           src/gui/windows/SkDialog.h \
            src/gui/windows/DateWindow.h \
            src/gui/windows/FlightWindow.h \
            src/gui/windows/MainWindow.h \
+           src/gui/windows/SkDialog.h \
+           src/gui/windows/SplashScreen.h \
            src/gui/windows/StatisticsWindow.h \
            src/gui/windows/StuffEditWindow.h \
            src/gui/windows/StuffListWindow.h \
            src/gui/windows/StuffSelectWindow.h \
-           src/gui/windows/SplashScreen.h \
            src/gui/windows/WeatherDialog.h \
            src/io/colors.h \
            src/io/io.h \
@@ -64,31 +68,34 @@ HEADERS += \
            src/model/sk_user.h \
            src/model/startart_t.h \
            src/model/stuff.h \
-           src/object_field.h \
            src/plugins/plugin_data_format.h \
            src/plugins/sk_plugin.h \
-           src/sk_exception.h \
            src/statistics/bordbuch.h \
            src/statistics/bordbuch.h \
            src/statistics/flugbuch.h \
-           src/text.h \
            src/time/sk_date.h \
            src/time/sk_time.h \
            src/time/sk_time_t.h \
            src/time/time_functions.h \
-           src/version.h \
            src/web/argument.h \
            src/web/html_document.h \
            src/web/http_document.h \
            src/web/mime_header.h \
            src/web/web_session.h \
            src/web/what_next.h \
-           version/version.h
+           version/version.h \
+		   # Empty line
+
 SOURCES += \
            src/color.cpp \
            src/condition_t.cpp \
-           src/config/options.cpp \
            src/data_types.cpp \
+           src/flight_list.cpp \
+           src/object_field.cpp \
+           src/startkladde.cpp \
+           src/text.cpp \
+           src/version.cpp \
+           src/config/options.cpp \
            src/db/admin_functions.cpp \
            src/db/db_column.cpp \
            src/db/db_event.cpp \
@@ -98,12 +105,12 @@ SOURCES += \
            src/db/sk_db.cpp \
            src/documents/latex_document.cpp \
            src/documents/table.cpp \
-           src/flight_list.cpp \
            src/gui/dialogs.cpp \
            src/gui/settings.cpp \
            src/gui/sk_list_view_item.cpp \
+           src/gui/widgets/AcpiWidget.cpp \
            src/gui/widgets/SkListWidget.cpp \
-           src/gui/widgets/acpiwidget.cpp \
+           src/gui/widgets/WeatherWidget.cpp \
            src/gui/widgets/lbl_cbox.cpp \
            src/gui/widgets/sk_button.cpp \
            src/gui/widgets/sk_combo_box.cpp \
@@ -113,17 +120,16 @@ SOURCES += \
            src/gui/widgets/sk_table_item.cpp \
            src/gui/widgets/sk_text_box.cpp \
            src/gui/widgets/sk_time_edit.cpp \
-           src/gui/widgets/weather_widget.cpp \
-           src/gui/windows/WeatherDialog.cpp \
-           src/gui/windows/SkDialog.cpp \
            src/gui/windows/DateWindow.cpp \
            src/gui/windows/FlightWindow.cpp \
            src/gui/windows/MainWindow.cpp \
+           src/gui/windows/SkDialog.cpp \
+           src/gui/windows/SplashScreen.cpp \
            src/gui/windows/StatisticsWindow.cpp \
            src/gui/windows/StuffEditWindow.cpp \
            src/gui/windows/StuffListWindow.cpp \
            src/gui/windows/StuffSelectWindow.cpp \
-           src/gui/windows/SplashScreen.cpp \
+           src/gui/windows/WeatherDialog.cpp \
            src/io/io.cpp \
            src/io/temp_dir.cpp \
            src/logging/messages.cpp \
@@ -133,22 +139,19 @@ SOURCES += \
            src/model/sk_user.cpp \
            src/model/startart_t.cpp \
            src/model/stuff.cpp \
-           src/object_field.cpp \
            src/plugins/plugin_data_format.cpp \
            src/plugins/sk_plugin.cpp \
-           src/startkladde.cpp \
            src/statistics/bordbuch.cpp \
            src/statistics/flugbuch.cpp \
-           src/text.cpp \
            src/time/sk_date.cpp \
            src/time/sk_time.cpp \
            src/time/sk_time_t.cpp \
            src/time/time_functions.cpp \
-           src/version.cpp \
            src/web/argument.cpp \
            src/web/html_document.cpp \
            src/web/http_document.cpp \
            src/web/mime_header.cpp \
            src/web/web_session.cpp \
-           src/web/what_next.cpp
+           src/web/what_next.cpp \
+		   # Empty line
 

@@ -19,7 +19,7 @@
 #include "src/gui/windows/StuffListWindow.h"
 #include "src/gui/windows/SplashScreen.h"
 #include "src/time/time_functions.h"
-#include "src/gui/widgets/acpiwidget.h"
+#include "src/gui/widgets/AcpiWidget.h"
 
 // UI/*{{{*/
 MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, const char *name, WFlags f)/*{{{*/
@@ -84,7 +84,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 	{
 		// Create and setup the weather widget. The weather widget is located to
 		// the right of the info frame.
-		weather=new weather_widget (main_frame, "weather");
+		weather=new WeatherWidget (main_frame, "weather");
 		weather->setFixedHeight (opts.weather_height);
 		weather->setFixedWidth (opts.weather_height); // Wird bei Laden eines Bildes angepasst
 		weather->setText ("[Regenradar]");
@@ -135,9 +135,9 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 	for (int i=0; i<num_info_labels; i++)
 	{
 		if (i == idx_info_acpi) {
-			if (acpiwidget::valid()) {
+			if (AcpiWidget::valid()) {
 				lbl_info[i]=new QLabel ("[...]", info_frame, "lbl_info[...]");
-				lbl_info_value[i] = new acpiwidget (info_frame);
+				lbl_info_value[i] = new AcpiWidget (info_frame);
 			}
 			else {
 				lbl_info[i] = NULL;
@@ -170,7 +170,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 	lbl_info[idx_info_utc]->setText ("UTC: ");
 	lbl_info[idx_info_time]->setText ("Lokalzeit: ");
 	lbl_info[idx_info_datenbankverbindung]->setText ("Datenbankverbindung: ");
-	if (acpiwidget::valid())
+	if (AcpiWidget::valid())
 		lbl_info[idx_info_acpi]->setText ("Stromversorgung:");
 
 	// Plugins

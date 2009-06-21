@@ -28,7 +28,7 @@
 #include "src/logging/messages.h"
 #include "src/gui/settings.h"
 #include "src/plugins/sk_plugin.h"
-#include "src/gui/widgets/weather_widget.h"
+#include "src/gui/widgets/WeatherWidget.h"
 #include "src/gui/widgets/sk_label.h"
 #include "src/gui/windows/WeatherDialog.h"
 
@@ -139,7 +139,7 @@ class MainWindow:public QMainWindow
 		QFrame *weather_frame;
 		QLabel *lbl_info[num_info_labels];
 		QLabel *lbl_info_value[num_info_labels];
-		weather_widget *weather;
+		WeatherWidget *weather;
 /*}}}*/
 		void initActions();
 		void initMenu();

@@ -10,7 +10,7 @@
 #include <QtGui/QLayout>
 #include <QtGui/QResizeEvent>
 
-#include "src/gui/widgets/weather_widget.h"
+#include "src/gui/widgets/WeatherWidget.h"
 #include "src/plugins/sk_plugin.h"
 
 using namespace std;
@@ -27,7 +27,7 @@ class WeatherDialog:public QDialog
 		virtual void resizeEvent (QResizeEvent *);
 
 	private:
-		weather_widget *ww;
+		WeatherWidget *ww;
 		sk_plugin *plugin;
 		QHBoxLayout *weatherLayout;
 

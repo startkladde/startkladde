@@ -13,8 +13,12 @@ MOC_DIR= build/
 # Input
 HEADERS += \
            src/condition_t.h \
-           src/config/options.h \
            src/data_types.h \
+           src/flight_list.h \
+           src/object_field.h \
+           src/text.h \
+           src/version.h \
+           src/config/options.h \
            src/db/db_column.h \
            src/db/db_proxy.h \
            src/db/db_table.h \
@@ -22,7 +26,6 @@ HEADERS += \
            src/db/sk_db.h \
            src/documents/latex_document.h \
            src/documents/table.h \
-           src/flight_list.h \
            src/gui/dialogs.h \
            src/gui/settings.h \
            src/io/io.h \
@@ -34,16 +37,13 @@ HEADERS += \
            src/model/sk_user.h \
            src/model/startart_t.h \
            src/model/stuff.h \
-           src/object_field.h \
            src/plugins/plugin_data_format.h \
            src/plugins/sk_plugin.h \
            src/statistics/bordbuch.h \
            src/statistics/flugbuch.h \
-           src/text.h \
            src/time/sk_date.h \
            src/time/sk_time_t.h \
            src/time/time_functions.h \
-           src/version.h \
            src/version/version.h \
            src/web/argument.h \
            src/web/html_document.h \
@@ -51,11 +51,17 @@ HEADERS += \
            src/web/mime_header.h \
            src/web/web_session.h \
            src/web/what_next.h \
+		   # Empty line
 
 SOURCES += \
            src/condition_t.cpp \
-           src/config/options.cpp \
            src/data_types.cpp \
+           src/flight_list.cpp \
+           src/object_field.cpp \
+           src/sk_web.cpp \
+           src/text.cpp \
+           src/version.cpp \
+           src/config/options.cpp \
            src/db/db_column.cpp \
            src/db/db_proxy.cpp \
            src/db/db_table.cpp \
@@ -63,7 +69,6 @@ SOURCES += \
            src/db/sk_db.cpp \
            src/documents/latex_document.cpp \
            src/documents/table.cpp \
-           src/flight_list.cpp \
            src/gui/dialogs.cpp \
            src/gui/settings.cpp \
            src/io/io.cpp \
@@ -75,21 +80,18 @@ SOURCES += \
            src/model/sk_user.cpp \
            src/model/startart_t.cpp \
            src/model/stuff.cpp \
-           src/object_field.cpp \
            src/plugins/plugin_data_format.cpp \
            src/plugins/sk_plugin.cpp \
-           src/sk_web.cpp \
            src/statistics/bordbuch.cpp \
            src/statistics/flugbuch.cpp \
-           src/text.cpp \
            src/time/sk_date.cpp \
            src/time/sk_time_t.cpp \
            src/time/time_functions.cpp \
-           src/version.cpp \
            src/web/argument.cpp \
            src/web/html_document.cpp \
            src/web/http_document.cpp \
            src/web/mime_header.cpp \
            src/web/web_session.cpp \
            src/web/what_next.cpp \
+		   # Empty line
 
