@@ -602,7 +602,7 @@ void MainWindow::initMenu ()
  */
 void MainWindow::initContextMenu ()
 {
-	menu_ctx_flug = new QPopupMenu (this, "menu_ctx_flug");
+	menu_ctx_flug = new QMenu (this);
 	menu_ctx_flug->addAction (actionNewFlight);
 	menu_ctx_flug->addSeparator ();
 
@@ -615,7 +615,7 @@ void MainWindow::initContextMenu ()
 	menu_ctx_flug->addAction (actionDeleteFlight);
 
 	// Kontextmen� f�r leere Zeilen
-	menu_ctx_emptyrow = new QPopupMenu (this, "menu_ctx_emptyrow");
+	menu_ctx_emptyrow = new QMenu (this);
 	menu_ctx_emptyrow->addAction (actionNewFlight);
 }
 

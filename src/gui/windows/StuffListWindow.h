@@ -5,7 +5,6 @@
 #include <QMenuBar>
 
 #include <Qt3Support> // XXX
-#define QPopupMenu Q3PopupMenu
 #define QPtrListIterator Q3PtrListIterator
 
 #include "src/data_types.h"
@@ -59,7 +58,7 @@ class StuffListWindow:public SkDialog
 
 		stuff *stuff_new (stuff_type t);
 		QMenuBar *menu_bar;
-		QPopupMenu *menu_datenbank;
+		QMenu *menu_datenbank;
 
 		StuffEditWindow *editor_fenster;
 

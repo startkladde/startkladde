@@ -67,7 +67,7 @@ StuffListWindow::StuffListWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 	tab->setSortingEnabled (true);
 
 	// Men� 'Datenbank'
-	menu_datenbank = new QPopupMenu (this, "menu_datenbank");
+	menu_datenbank = new QMenu (this);
 	menu_datenbank->insertTearOffHandle ();
 	menu_datenbank->insertItem ("&Neu", this, SLOT (slot_neu ()), CTRL+Key_N);
 	menu_datenbank->insertItem ("&L�schen", this, SLOT (slot_loeschen ()), CTRL+Key_L);
