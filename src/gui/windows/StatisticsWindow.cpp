@@ -1,4 +1,4 @@
-#include "sk_win_stat.h"
+#include "StatisticsWindow.h"
 
 #include <qlayout.h>
 
@@ -38,8 +38,8 @@ const int tbl_sas_anzahl=1;
 const int sas_spalten=2;/*}}}*/
 
 
-sk_win_stat::sk_win_stat (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog, sk_db *_db)/*{{{*/
-	:sk_dialog (parent, name, false, f, status_dialog), db (_db)
+StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog, sk_db *_db)/*{{{*/
+	:SkDialog (parent, name, false, f, status_dialog), db (_db)
 	/*
 	 * Initializes a statistics window instance.
 	 * Parameters:
@@ -53,7 +53,7 @@ sk_win_stat::sk_win_stat (QWidget *parent, const char *name, bool modal, WFlags 
 
 	// Create and setup close button
 	but_close=new QPushButton (this);
-	but_close->setText ("&Schließen");
+	but_close->setText ("&Schlieï¿½en");
 	QObject::connect (but_close, SIGNAL (clicked ()), this, SLOT (accept ()));
 
 	// Main layout for the table
@@ -68,7 +68,7 @@ sk_win_stat::sk_win_stat (QWidget *parent, const char *name, bool modal, WFlags 
 	resize (780, 540);
 }/*}}}*/
 
-sk_table_item *sk_win_stat::set_table_cell (int row, int col, const string &text, QColor bg)/*{{{*/
+sk_table_item *StatisticsWindow::set_table_cell (int row, int col, const string &text, QColor bg)/*{{{*/
 	/*
 	 * Sets a table item to a given text and color.
 	 * Parameters:
@@ -90,7 +90,7 @@ sk_table_item *sk_win_stat::set_table_cell (int row, int col, const string &text
 
 
 
-void sk_win_stat::fill_sastat (QDate datum)/*{{{*/
+void StatisticsWindow::fill_sastat (QDate datum)/*{{{*/
 	/*
 	 * Generates and fills in the startartstatistik.
 	 * Parameters:
@@ -107,7 +107,7 @@ void sk_win_stat::fill_sastat (QDate datum)/*{{{*/
 		int *sa_fluege=new int[num_startarten];
 		for (int i=0; i<num_startarten; i++) sa_fluege[i]=0;
 
-		// Alle Flüge listen
+		// Alle Flï¿½ge listen
 		QPtrList<sk_flug> flights; flights.setAutoDelete (true);
 		db->list_flights_date (flights, &datum); // TODO Fehlerbehandlung
 
@@ -123,7 +123,7 @@ void sk_win_stat::fill_sastat (QDate datum)/*{{{*/
 			}
 		}
 
-		// Startarten mit Anzahl ihrer Flüge eintragen
+		// Startarten mit Anzahl ihrer Flï¿½ge eintragen
 		int s=0;
 		for (QPtrListIterator<startart_t> sa (startarten); *sa; ++sa)
 		{
@@ -139,7 +139,7 @@ void sk_win_stat::fill_sastat (QDate datum)/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_stat::sastat (QDate datum)/*{{{*/
+void StatisticsWindow::sastat (QDate datum)/*{{{*/
 	/*
 	 * Displays the window, displaying the startartstatistik.
 	 * Parameters:
@@ -166,7 +166,7 @@ void sk_win_stat::sastat (QDate datum)/*{{{*/
 
 // New code...
 
-void sk_win_stat::bordbuch (QDate datum)/*{{{*/
+void StatisticsWindow::bordbuch (QDate datum)/*{{{*/
 	/*
 	 * Displays the window, displaying the bordbuch.
 	 * Parameters:
@@ -192,7 +192,7 @@ void sk_win_stat::bordbuch (QDate datum)/*{{{*/
 	table_header->setLabel (tbl_bob_betriebszeit, "Betriebsdauer", 110);
 	table_header->setLabel (tbl_bob_bemerkungen, "Bemerkungen", 200);
 
-	emit status ("Bordbücher werden erzeugt, bitte warten...");
+	emit status ("Bordbï¿½cher werden erzeugt, bitte warten...");
 	emit long_operation_start ();
 
 	QPtrList<bordbuch_entry> bordbuch; bordbuch.setAutoDelete (true);
@@ -212,7 +212,7 @@ void sk_win_stat::bordbuch (QDate datum)/*{{{*/
 	show ();
 }/*}}}*/
 
-void sk_win_stat::flugbuch (QDate datum)/*{{{*/
+void StatisticsWindow::flugbuch (QDate datum)/*{{{*/
 	/*
 	 * Displays the window, displaying the flugbuch.
 	 * Parameters:
@@ -238,7 +238,7 @@ void sk_win_stat::flugbuch (QDate datum)/*{{{*/
 	table_header->setLabel (tbl_flb_flugdauer, "Dauer", 44);
 	table_header->setLabel (tbl_flb_bemerkung, "Bemerkung", 147);
 
-	emit status ("Flugbücher werden erzeugt, bitte warten...");
+	emit status ("Flugbï¿½cher werden erzeugt, bitte warten...");
 	emit long_operation_start ();
 
 	QPtrList<flugbuch_entry> flugbuch; flugbuch.setAutoDelete (true);
@@ -259,7 +259,7 @@ void sk_win_stat::flugbuch (QDate datum)/*{{{*/
 }/*}}}*/
 
 
-void sk_win_stat::display_bordbuch_entry (bordbuch_entry *bbe)/*{{{*/
+void StatisticsWindow::display_bordbuch_entry (bordbuch_entry *bbe)/*{{{*/
 	/*
 	 * Adds a bordbuch entry to the table.
 	 * Parameters:
@@ -297,12 +297,12 @@ void sk_win_stat::display_bordbuch_entry (bordbuch_entry *bbe)/*{{{*/
 		add_parentheses (tbl_bob_betriebszeit)
 #undef add_parentheses
 
-		set_table_cell (row, tbl_bob_bemerkungen, "Eintrag ungültig, da noch offene Flüge");
+		set_table_cell (row, tbl_bob_bemerkungen, "Eintrag ungï¿½ltig, da noch offene Flï¿½ge");
 	}
 }
 /*}}}*/
 
-void sk_win_stat::display_flugbuch_entry (flugbuch_entry *fbe)/*{{{*/
+void StatisticsWindow::display_flugbuch_entry (flugbuch_entry *fbe)/*{{{*/
 	/*
 	 * Adds a flugbuch entry to the table.
 	 * Parameters:
@@ -337,7 +337,7 @@ void sk_win_stat::display_flugbuch_entry (flugbuch_entry *fbe)/*{{{*/
 #undef add_parentheses
 
 		if (!bemerkung.empty ()) bemerkung+="; ";
-		bemerkung+="Eintrag ungültig, da noch offene Flüge";
+		bemerkung+="Eintrag ungï¿½ltig, da noch offene Flï¿½ge";
 	}
 
 	set_table_cell (row, tbl_flb_bemerkung, bemerkung);

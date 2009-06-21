@@ -44,15 +44,15 @@ HEADERS += \
            src/gui/widgets/sk_text_box.h \
            src/gui/widgets/sk_time_edit.h \
            src/gui/widgets/weather_widget.h \
-           src/gui/windows/sk_dialog.h \
-           src/gui/windows/sk_win_date.h \
-           src/gui/windows/sk_win_flight.h \
-           src/gui/windows/sk_win_main.h \
-           src/gui/windows/sk_win_stat.h \
-           src/gui/windows/sk_win_stuff_editor.h \
-           src/gui/windows/sk_win_stuff_list.h \
-           src/gui/windows/sk_win_stuff_select.h \
-           src/gui/windows/splash.h \
+           src/gui/windows/SkDialog.h \
+           src/gui/windows/DateWindow.h \
+           src/gui/windows/FlightWindow.h \
+           src/gui/windows/MainWindow.h \
+           src/gui/windows/StatisticsWindow.h \
+           src/gui/windows/StuffEditWindow.h \
+           src/gui/windows/StuffListWindow.h \
+           src/gui/windows/StuffSelectWindow.h \
+           src/gui/windows/SplashScreen.h \
            src/gui/windows/WeatherDialog.h \
            src/io/colors.h \
            src/io/io.h \
@@ -115,15 +115,15 @@ SOURCES += \
            src/gui/widgets/sk_time_edit.cpp \
            src/gui/widgets/weather_widget.cpp \
            src/gui/windows/WeatherDialog.cpp \
-           src/gui/windows/sk_dialog.cpp \
-           src/gui/windows/sk_win_date.cpp \
-           src/gui/windows/sk_win_flight.cpp \
-           src/gui/windows/sk_win_main.cpp \
-           src/gui/windows/sk_win_stat.cpp \
-           src/gui/windows/sk_win_stuff_editor.cpp \
-           src/gui/windows/sk_win_stuff_list.cpp \
-           src/gui/windows/sk_win_stuff_select.cpp \
-           src/gui/windows/splash.cpp \
+           src/gui/windows/SkDialog.cpp \
+           src/gui/windows/DateWindow.cpp \
+           src/gui/windows/FlightWindow.cpp \
+           src/gui/windows/MainWindow.cpp \
+           src/gui/windows/StatisticsWindow.cpp \
+           src/gui/windows/StuffEditWindow.cpp \
+           src/gui/windows/StuffListWindow.cpp \
+           src/gui/windows/StuffSelectWindow.cpp \
+           src/gui/windows/SplashScreen.cpp \
            src/io/io.cpp \
            src/io/temp_dir.cpp \
            src/logging/messages.cpp \

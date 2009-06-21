@@ -1,4 +1,4 @@
-#include "sk_win_flight.h"
+#include "FlightWindow.h"
 #include <qlayout.h>
 #include <qapplication.h>
 
@@ -40,24 +40,24 @@ const char *text_gelandet_1="Gel&andet";
 const char *text_automatisch_3="Au&tomatisch";
 const char *text_gelandet_2="Gelande&t";
 const char *text_beendet="Beende&t";
-const char *text_spaeter_starten="S&päter starten";
-const char *text_spaeter_landen="S&päter landen";
+const char *text_spaeter_starten="S&pï¿½ter starten";
+const char *text_spaeter_landen="S&pï¿½ter landen";
 const char *text_jetzt_starten="&Jetzt starten";
 const char *text_jetzt_landen="&Jetzt landen";
-const char *text_spaeter_="S&päter ";
+const char *text_spaeter_="S&pï¿½ter ";
 const char *text_jetzt_="&Jetzt ";
 const char *text_landen="landen";
 const char *text_starten="starten";
 const char *text_ok="&OK";
 const char *text_abbrechen="Abbre&chen";
-const char *text_schliessen="S&chließen";
+const char *text_schliessen="S&chlieï¿½en";
 /*}}}*/
 
 const string unknown_startart_text="(Unbekannt)";
 const string registration_prefix="D-";
 
-sk_win_flight::sk_win_flight (QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dlg)/*{{{*/
-	:sk_dialog (parent, name, modal, f, status_dlg)
+FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dlg)/*{{{*/
+	:SkDialog (parent, name, modal, f, status_dlg)
 	/*
 	 * Creates the flight editor window.
 	 * Parameters:
@@ -164,7 +164,7 @@ sk_win_flight::sk_win_flight (QWidget *parent, sk_db *_db, const char *name, boo
 
 	edit_fehler->setSelectionMode (QListWidget::NoSelection);	// Single
 //	edit_fehler->setFixedHeight (edit_fehler->minimumSize ().height ());
-	edit_fehler->setFixedHeight (80); // MURX: besser "4*Zeilenhöhe
+	edit_fehler->setFixedHeight (80); // MURX: besser "4*Zeilenhï¿½he
 	//edit_fehler->setAutoScrollBar (true);
 	//printSizeHint (edit_fehler);
 
@@ -244,7 +244,7 @@ sk_win_flight::sk_win_flight (QWidget *parent, sk_db *_db, const char *name, boo
 	}
 
 
-		// TODO Unregelmäßiger Abstand
+		// TODO Unregelmï¿½ï¿½iger Abstand
 //		if (
 //				edit_widget[i]==edit_pilot_nn||
 //				edit_widget[i]==edit_bemerkungen||
@@ -283,17 +283,17 @@ sk_win_flight::sk_win_flight (QWidget *parent, sk_db *_db, const char *name, boo
 	/*}}}*/
 
 
-	// Dialog auf beste Größe setzen
+	// Dialog auf beste Grï¿½ï¿½e setzen
 	//printSizeHint (editorWidget);
 	//printSizeHint (this);
 	//printSizeHint (backgroundLayout);
 	//printSizeHint (scrollArea);
 
-	// Höhe einstellen
+	// Hï¿½he einstellen
 	QSize size=backgroundLayout->sizeHint ();
 	int height=size.height ();
 
-	height+=editorWidget->sizeHint ().height ()-scrollArea->sizeHint ().height (); // Falsche Größe der ScrollArea ausgleichen
+	height+=editorWidget->sizeHint ().height ()-scrollArea->sizeHint ().height (); // Falsche Grï¿½ï¿½e der ScrollArea ausgleichen
 	height+=20;	// Pfusch, aber sonst ists ein paar Pixel zu klein
 
 	int desktopHeight=(QApplication::desktop ())->availableGeometry ().height ();
@@ -309,7 +309,7 @@ sk_win_flight::sk_win_flight (QWidget *parent, sk_db *_db, const char *name, boo
 
 	populate_lists ();
 	reset ();
-	
+
 	// Signale verbinden/*{{{*/
 	QObject::connect (but_cancel, SIGNAL(clicked()), this, SLOT(slot_cancel ()));
 	QObject::connect (but_ok, SIGNAL(clicked()), this, SLOT(slot_ok ()));
@@ -338,8 +338,8 @@ sk_win_flight::sk_win_flight (QWidget *parent, sk_db *_db, const char *name, boo
 	QObject::connect (edit_datum, SIGNAL (dateChanged (const QDate &)), this, SLOT (slot_datum ()));
 	QObject::connect (edit_bemerkungen, SIGNAL (focus_out ()), this, SLOT (slot_bemerkung ()));
 	QObject::connect (edit_abrechnungshinweis, SIGNAL (focus_out ()), this, SLOT (slot_abrechnungshinweis ()));
-	
-	// Oh je, das ist ja fürchterlich (3*2*3). Wäre da nicht ein wenig Zusammenfassen angebracht?
+
+	// Oh je, das ist ja fï¿½rchterlich (3*2*3). Wï¿½re da nicht ein wenig Zusammenfassen angebracht?
 	QObject::connect (edit_pilot_vn, SIGNAL (focus_out ()), this, SLOT (slot_pilot_vn ()));
 //	QObject::connect (edit_pilot_vn, SIGNAL (activated (const QString &)), this, SLOT (slot_pilot_vn ()));
 	QObject::connect (edit_pilot_vn, SIGNAL (progress (int, int)), this, SIGNAL (progress (int, int)));
@@ -371,7 +371,7 @@ sk_win_flight::sk_win_flight (QWidget *parent, sk_db *_db, const char *name, boo
 	edit_widget[0]->setFocus ();
 }/*}}}*/
 
-sk_win_flight::~sk_win_flight ()/*{{{*/
+FlightWindow::~FlightWindow ()/*{{{*/
 	/*
 	 * Destructor, delete local heap variables.
 	 */
@@ -382,7 +382,7 @@ sk_win_flight::~sk_win_flight ()/*{{{*/
 	num_flugtypen=0;
 }/*}}}*/
 
-void sk_win_flight::reset ()/*{{{*/
+void FlightWindow::reset ()/*{{{*/
 	/*
 	 * Reset all controls to their default value.
 	 * Actually, this should be done in the constructor. However, this window is
@@ -448,7 +448,7 @@ void sk_win_flight::reset ()/*{{{*/
 	scrollArea->ensureVisible (0, 0, 0, 0);
 }/*}}}*/
 
-void sk_win_flight::set_buttons (bool spaeter_enabled, string aktion_text, bool read_only)/*{{{*/
+void FlightWindow::set_buttons (bool spaeter_enabled, string aktion_text, bool read_only)/*{{{*/
 	/*
 	 * Setup the buttons (text and visibility).
 	 * Parameters:
@@ -475,7 +475,7 @@ void sk_win_flight::set_buttons (bool spaeter_enabled, string aktion_text, bool 
 	}
 	else
 	{
-		// Später (aktion) nicht aktiv, also nur OK
+		// Spï¿½ter (aktion) nicht aktiv, also nur OK
 		but_later->hide ();
 		but_ok->setText (text_ok);
 		but_ok->show ();
@@ -484,7 +484,7 @@ void sk_win_flight::set_buttons (bool spaeter_enabled, string aktion_text, bool 
 	}
 }/*}}}*/
 
-void sk_win_flight::setup_controls (bool init, bool read_only, bool repeat)/*{{{*/
+void FlightWindow::setup_controls (bool init, bool read_only, bool repeat)/*{{{*/
 	/*
 	 * Sets up the controls and member variables, according to the member 'mode'
 	 * etc.
@@ -632,7 +632,7 @@ void sk_win_flight::setup_controls (bool init, bool read_only, bool repeat)/*{{{
 	}
 }/*}}}*/
 
-void sk_win_flight::populate_lists ()/*{{{*/
+void FlightWindow::populate_lists ()/*{{{*/
 	/*
 	 * Fill the list fields which do not need to query the database.
 	 */
@@ -655,13 +655,13 @@ void sk_win_flight::populate_lists ()/*{{{*/
 
 	for (QPtrListIterator<startart_t> sa (saen); *sa; ++sa)
 	{
-		// TODO das sorgt zwar dafür, dass die Indizies in startarten und
-		// edit_startart übereinstimmen, aber gut ist das nicht.
+		// TODO das sorgt zwar dafï¿½r, dass die Indizies in startarten und
+		// edit_startart ï¿½bereinstimmen, aber gut ist das nicht.
 		startarten.append ((*sa)->get_id ());
 		edit_startart->insertItem ((*sa)->list_text (), edit_startart->count ());
 	}
 	/*}}}*/
-	
+
 	// Flugmodi eintragen/*{{{*/
 	// TODO fillstringarraydelete, clear () wegmachen
 	edit_modus->clear ();
@@ -693,7 +693,7 @@ void sk_win_flight::populate_lists ()/*{{{*/
 	/*}}}*/
 }/*}}}*/
 
-void sk_win_flight::read_db ()/*{{{*/
+void FlightWindow::read_db ()/*{{{*/
 	/*
 	 * Read database entries (planes, airfields, persons etc.). Slow for large
 	 * amounts of data.
@@ -705,7 +705,7 @@ void sk_win_flight::read_db ()/*{{{*/
 	// Personen eintragen/*{{{*/
 	namen_aus_datenbank (edit_pilot_vn, edit_pilot_nn, edit_begleiter_vn, edit_begleiter_nn, edit_towpilot_vn, edit_towpilot_nn);
 	/*}}}*/
-	
+
 	emit status ("Flugeditor: Orte aus Datenbank lesen...");
 	// Orte eintragen/*{{{*/
 	// TODO fillstringarraydelete, clear () wegmachen
@@ -757,7 +757,7 @@ void sk_win_flight::read_db ()/*{{{*/
 	emit long_operation_end ();
 }/*}}}*/
 
-void sk_win_flight::namen_aus_datenbank (lbl_cbox *vorname, lbl_cbox *nachname, lbl_cbox *vorname2, lbl_cbox *nachname2, lbl_cbox *vorname3, lbl_cbox *nachname3)/*{{{*/
+void FlightWindow::namen_aus_datenbank (lbl_cbox *vorname, lbl_cbox *nachname, lbl_cbox *vorname2, lbl_cbox *nachname2, lbl_cbox *vorname3, lbl_cbox *nachname3)/*{{{*/
 	/*
 	 * Read all names from the database and write them to the complete lists.
 	 * This is slow and should only be done once on initialization.
@@ -784,7 +784,7 @@ void sk_win_flight::namen_aus_datenbank (lbl_cbox *vorname, lbl_cbox *nachname, 
 	}
 }/*}}}*/
 
-void sk_win_flight::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, namens_teil quelle, int *anzahl_kandidaten, db_id *kandidaten_id, bool preserve_target_text)/*{{{*/
+void FlightWindow::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, namens_teil quelle, int *anzahl_kandidaten, db_id *kandidaten_id, bool preserve_target_text)/*{{{*/
 	/*
 	 * Read the matching names from the database and write them to the
 	 * incomplete lists.
@@ -832,22 +832,22 @@ void sk_win_flight::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, name
 
 	QStringList names;
 
-	// Ja gut, das ist natürlich Pfusch. Die ganze Klasse gehört neu
+	// Ja gut, das ist natï¿½rlich Pfusch. Die ganze Klasse gehï¿½rt neu
 	// geschrieben. Version 2...
 #define locked(a) { bool old_locked=lock_edit_slots; lock_edit_slots=true; do {a} while (false); lock_edit_slots=old_locked; }
 
 	if (eintrag_ist_leer (quelltext))
 	{
-		// Länge des Quelltexts ist 0. Im Zielfeld alle anzeigen.
+		// Lï¿½nge des Quelltexts ist 0. Im Zielfeld alle anzeigen.
 		locked (zielfeld->use_full (true);)
 		if (anzahl_kandidaten) if (eintrag_ist_leer (zieltext)) *anzahl_kandidaten=0;
 	}
 	else
 	{
-		// Länge des Quelltexts ist nicht gleich 0. Alle die auflisten,
+		// Lï¿½nge des Quelltexts ist nicht gleich 0. Alle die auflisten,
 		// die dazu passen, und ins Zielfeld schreiben. Das sollte so
 		// wenige sein, dass es schnell geht.
-		
+
 		switch (quelle)
 		{
 			case nt_vorname:
@@ -861,7 +861,7 @@ void sk_win_flight::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, name
 		}
 
 		anzahl=names.count ();
-		if (anzahl_kandidaten) 
+		if (anzahl_kandidaten)
 			*anzahl_kandidaten=names.count ();
 
 		if (anzahl==0)
@@ -882,7 +882,7 @@ void sk_win_flight::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, name
 			{
 				if (anzahl==1)
 				{
-					QPtrList<sk_person> persons; 
+					QPtrList<sk_person> persons;
 					persons.setAutoDelete (true);
 					// TODO error handling
 					db->list_persons_by_name (persons, q2std (vorname->currentText ()), q2std (nachname->currentText ()));
@@ -901,7 +901,7 @@ void sk_win_flight::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, name
 
 
 
-void sk_win_flight::done (int r)/*{{{*/
+void FlightWindow::done (int r)/*{{{*/
 	/*
 	 * Closes the dialog and does something, according to the action.
 	 * Parameters:
@@ -934,24 +934,24 @@ void sk_win_flight::done (int r)/*{{{*/
 	QDialog::done (r);
 }/*}}}*/
 
-void sk_win_flight::slot_ok ()/*{{{*/
+void FlightWindow::slot_ok ()/*{{{*/
 	/*
 	 * The OK/((land/start) now) button was pressed. Check if the flight is OK,
 	 * then write it to the database and close the window.
 	 */
 {
 	but_ok->setFocus ();
-	
+
 	if (accept_flight_data ())
 	{
 		flug_modus m=modi[edit_modus->currentItem ()];
 
-		// TODO waaaah diese Bedingung ist doch garantiert nicht vollständig.
-		// Außerdem Codeduplikation mit dem Code, der die buttons zwischen
-		// "jetzt/später starten" und "OK" umschaltet.
-		// Das ist nur dann, wenn auch tatsächlich "create now" durchgeführt wird.
+		// TODO waaaah diese Bedingung ist doch garantiert nicht vollstï¿½ndig.
+		// Auï¿½erdem Codeduplikation mit dem Code, der die buttons zwischen
+		// "jetzt/spï¿½ter starten" und "OK" umschaltet.
+		// Das ist nur dann, wenn auch tatsï¿½chlich "create now" durchgefï¿½hrt wird.
 		// Bei zum Beispiel Nachtragen ist das nicht der Fall.
-		// Die aktuelle Lösung ist jedenfalls Murx.
+		// Die aktuelle Lï¿½sung ist jedenfalls Murx.
 		if (mode==fe_create && edit_datum->date ()==QDate::currentDate ())
 		{
 			switch (m)
@@ -973,7 +973,7 @@ void sk_win_flight::slot_ok ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_later ()/*{{{*/
+void FlightWindow::slot_later ()/*{{{*/
 	/*
 	 * The start later button was pressed.
 	 */
@@ -986,7 +986,7 @@ void sk_win_flight::slot_later ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_cancel ()/*{{{*/
+void FlightWindow::slot_cancel ()/*{{{*/
 	/*
 	 * The cancel button was pressed. Close the window.
 	 */
@@ -996,7 +996,7 @@ void sk_win_flight::slot_cancel ()/*{{{*/
 
 
 
-void sk_win_flight::enable_widget (int ind, bool en)/*{{{*/
+void FlightWindow::enable_widget (int ind, bool en)/*{{{*/
 	/*
 	 * Show or hide a widget, given its index.
 	 * Parameters:
@@ -1004,11 +1004,11 @@ void sk_win_flight::enable_widget (int ind, bool en)/*{{{*/
 	 *   - en: whether the widget is to be shown (true) or hidden (false).
 	 */
 {
-	// TODO sollte display/show_widget heißen.
-	
+	// TODO sollte display/show_widget heiï¿½en.
+
 	// We don't hide () and show () the labels because then the layout manager
 	// would remove the row along with its spacing so the widgets below would
-	// shift up. 
+	// shift up.
 	if (en)
 	{
 		edit_widget[ind]->show ();
@@ -1022,7 +1022,7 @@ void sk_win_flight::enable_widget (int ind, bool en)/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::enable_widget (QWidget *wid, bool en)/*{{{*/
+void FlightWindow::enable_widget (QWidget *wid, bool en)/*{{{*/
 	/*
 	 * Show or hide a widget, given a pointer to it.
 	 * Parameters:
@@ -1035,7 +1035,7 @@ void sk_win_flight::enable_widget (QWidget *wid, bool en)/*{{{*/
 	enable_widget (widget_index (wid), en);
 }/*}}}*/
 
-void sk_win_flight::set_field_error (QWidget *w, bool _error)/*{{{*/
+void FlightWindow::set_field_error (QWidget *w, bool _error)/*{{{*/
 	/*
 	 * XXX
 	 * Parameter:
@@ -1048,7 +1048,7 @@ void sk_win_flight::set_field_error (QWidget *w, bool _error)/*{{{*/
 
 
 
-void sk_win_flight::slot_registration ()/*{{{*/
+void FlightWindow::slot_registration ()/*{{{*/
 	/*
 	 * Get the selected plane from the database, and, if found, set up some of
 	 * the editing fields accordingly.
@@ -1098,7 +1098,7 @@ void sk_win_flight::slot_registration ()/*{{{*/
 	fehler_eintragen (flight, selected_plane, selected_towplane);
 }/*}}}*/
 
-void sk_win_flight::slot_registration_in ()/*{{{*/
+void FlightWindow::slot_registration_in ()/*{{{*/
 	/*
 	 * Moves the cursor of the registration field to the end. Used because
 	 * registration_prefix is preentered.
@@ -1109,7 +1109,7 @@ void sk_win_flight::slot_registration_in ()/*{{{*/
 	edit_registration->cursor_to_end ();
 }/*}}}*/
 
-void sk_win_flight::slot_flugtyp (int ind)/*{{{*/
+void FlightWindow::slot_flugtyp (int ind)/*{{{*/
 	/*
 	 * Setup controls according to the flight type chosen.
 	 * Parameters:
@@ -1129,7 +1129,7 @@ void sk_win_flight::slot_flugtyp (int ind)/*{{{*/
 	// TODO remove, wenn bei widget_enable der slot aufgerufen wird
 	if (begleiter_erlaubt (typ))
 	{
-		// Variable f->begleiter zerstört
+		// Variable f->begleiter zerstï¿½rt
 		slot_begleiter_nn ();
 		slot_begleiter_vn ();
 	}
@@ -1143,16 +1143,16 @@ void sk_win_flight::slot_flugtyp (int ind)/*{{{*/
 		case ft_normal:
 			break;
 		case ft_schul_1:
-			label[pilot_idx]->setText ("Flugschüler");
+			label[pilot_idx]->setText ("Flugschï¿½ler");
 			break;
 		case ft_schul_2:
-			label[pilot_idx]->setText ("Flugschüler");
+			label[pilot_idx]->setText ("Flugschï¿½ler");
 			label[begleiter_idx]->setText ("Fluglehrer");
 			break;
 		case ft_gast_privat: case ft_gast_extern:
 			break;
 		case ft_schlepp:
-			log_error ("Schleppflug darf nicht auswählbar sein in sk_win_flight::slot_flugtyp ()");
+			log_error ("Schleppflug darf nicht auswï¿½hlbar sein in sk_win_flight::slot_flugtyp ()");
 			break;
 		default:
 			log_error ("Unbehandelter Flugtyp in sk_win_flight::slot_flugtyp ()");
@@ -1167,7 +1167,7 @@ void sk_win_flight::slot_flugtyp (int ind)/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_pilot_vn ()/*{{{*/
+void FlightWindow::slot_pilot_vn ()/*{{{*/
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1186,7 +1186,7 @@ void sk_win_flight::slot_pilot_vn ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_pilot_nn ()/*{{{*/
+void FlightWindow::slot_pilot_nn ()/*{{{*/
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1205,7 +1205,7 @@ void sk_win_flight::slot_pilot_nn ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_begleiter_vn ()/*{{{*/
+void FlightWindow::slot_begleiter_vn ()/*{{{*/
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1224,7 +1224,7 @@ void sk_win_flight::slot_begleiter_vn ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_begleiter_nn ()/*{{{*/
+void FlightWindow::slot_begleiter_nn ()/*{{{*/
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1243,7 +1243,7 @@ void sk_win_flight::slot_begleiter_nn ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_towpilot_vn ()/*{{{*/
+void FlightWindow::slot_towpilot_vn ()/*{{{*/
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1262,7 +1262,7 @@ void sk_win_flight::slot_towpilot_vn ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_towpilot_nn ()/*{{{*/
+void FlightWindow::slot_towpilot_nn ()/*{{{*/
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1281,7 +1281,7 @@ void sk_win_flight::slot_towpilot_nn ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_modus (int ind)/*{{{*/
+void FlightWindow::slot_modus (int ind)/*{{{*/
 	/*
 	 * Setup the controls according to the flight mode.
 	 * Parameters:
@@ -1294,7 +1294,7 @@ void sk_win_flight::slot_modus (int ind)/*{{{*/
 	// TODO: Besser: Wenn noch nicht manuell editiert.
 	if (mode==fe_create)
 	{
-		// TODO Bedingung überprüfen
+		// TODO Bedingung ï¿½berprï¿½fen
 		if (starts_here (m))
 		{
 			// Leeren Startort auf default setzen
@@ -1319,7 +1319,7 @@ void sk_win_flight::slot_modus (int ind)/*{{{*/
 	if (!starts_here (m))
 	{
 		// Wenn der Flug von extern kommt, dann ist die Startart sowieso
-		// irrelevant, dann müssen wir auch nicht drauf achten und können
+		// irrelevant, dann mï¿½ssen wir auch nicht drauf achten und kï¿½nnen
 		// davon ausgehen, dass kein SFZ vorhanden ist.
 		enable_widget (edit_landezeit_sfz, false);
 	}
@@ -1327,7 +1327,7 @@ void sk_win_flight::slot_modus (int ind)/*{{{*/
 	{
 		// Wenn der Flug allerdings nicht von extern kommt, dann kann noch
 		// lange nicht automatisch davon ausgegangen werden, dass es ein
-		// SFZ gibt --> das hängt von der Startart ab.
+		// SFZ gibt --> das hï¿½ngt von der Startart ab.
 		slot_startart (edit_startart->currentItem ());
 	}
 	setup_controls (false);
@@ -1339,7 +1339,7 @@ void sk_win_flight::slot_modus (int ind)/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_startart (int ind)/*{{{*/
+void FlightWindow::slot_startart (int ind)/*{{{*/
 	/*
 	 * Setup the edit fields according to the Startart chosen.
 	 * Parameters:
@@ -1377,7 +1377,7 @@ void sk_win_flight::slot_startart (int ind)/*{{{*/
 	// TODO immer wenn ein control angezeigt wird, den entsprechenden slot aufrufen (?)
 	if (towflight_widgets_visible)
 	{
-		slot_modus_sfz (edit_modus_sfz->currentItem ());	// TODO currentItem in die Funktion schieben und -1 übergeben
+		slot_modus_sfz (edit_modus_sfz->currentItem ());	// TODO currentItem in die Funktion schieben und -1 ï¿½bergeben
 	}
 
 	if (towplane_widgets_visible)
@@ -1409,7 +1409,7 @@ void sk_win_flight::slot_startart (int ind)/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_registration_sfz ()/*{{{*/
+void FlightWindow::slot_registration_sfz ()/*{{{*/
 	/*
 	 * Get the selected tow plane from the database, and, if found, set up some of
 	 * the editing fields accordingly.
@@ -1438,7 +1438,7 @@ void sk_win_flight::slot_registration_sfz ()/*{{{*/
 	fehler_eintragen (flight, selected_plane, selected_towplane);
 }/*}}}*/
 
-void sk_win_flight::slot_registration_sfz_in ()/*{{{*/
+void FlightWindow::slot_registration_sfz_in ()/*{{{*/
 	/*
 	 * Moves the cursor of the registration_sfz field to the end. Used because
 	 * registration_prefix is preentered.
@@ -1449,7 +1449,7 @@ void sk_win_flight::slot_registration_sfz_in ()/*{{{*/
 	edit_registration_sfz->cursor_to_end ();
 }/*}}}*/
 
-void sk_win_flight::slot_modus_sfz (int ind)/*{{{*/
+void FlightWindow::slot_modus_sfz (int ind)/*{{{*/
 	/*
 	 * Setup the controls according to the tow flight mode.
 	 * Parameters:
@@ -1482,7 +1482,7 @@ void sk_win_flight::slot_modus_sfz (int ind)/*{{{*/
 }
 /*}}}*/
 
-void sk_win_flight::slot_gestartet ()/*{{{*/
+void FlightWindow::slot_gestartet ()/*{{{*/
 	/*
 	 * It was changed if the flight already started. Setup the controls
 	 * accordingly.
@@ -1500,7 +1500,7 @@ void sk_win_flight::slot_gestartet ()/*{{{*/
 	edit_startzeit->setFocus ();
 }/*}}}*/
 
-void sk_win_flight::slot_startzeit ()/*{{{*/
+void FlightWindow::slot_startzeit ()/*{{{*/
 	/*
 	 * The starting time changed. Setup the control accordingly.
 	 */
@@ -1513,7 +1513,7 @@ void sk_win_flight::slot_startzeit ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_gelandet ()/*{{{*/
+void FlightWindow::slot_gelandet ()/*{{{*/
 	/*
 	 * It was changed if the flight already landed. Setup the controls
 	 * accordingly.
@@ -1553,7 +1553,7 @@ void sk_win_flight::slot_gelandet ()/*{{{*/
 	edit_landezeit->setFocus ();
 }/*}}}*/
 
-void sk_win_flight::slot_landezeit ()/*{{{*/
+void FlightWindow::slot_landezeit ()/*{{{*/
 	/*
 	 * The landing time changed. Setup the control accordingly.
 	 */
@@ -1566,7 +1566,7 @@ void sk_win_flight::slot_landezeit ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_sfz_gelandet ()/*{{{*/
+void FlightWindow::slot_sfz_gelandet ()/*{{{*/
 	/*
 	 * It was changed if the towplane already landed. Setup the controls
 	 * accordingly.
@@ -1603,7 +1603,7 @@ void sk_win_flight::slot_sfz_gelandet ()/*{{{*/
 	edit_landezeit_sfz->setFocus ();
 }/*}}}*/
 
-void sk_win_flight::slot_landezeit_sfz ()/*{{{*/
+void FlightWindow::slot_landezeit_sfz ()/*{{{*/
 	/*
 	 * The landing time of the towplane changed. Setup the control accordingly.
 	 */
@@ -1616,7 +1616,7 @@ void sk_win_flight::slot_landezeit_sfz ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_startort ()/*{{{*/
+void FlightWindow::slot_startort ()/*{{{*/
 	/*
 	 * The starting airfield was changed. Change the controls accordingly.
 	 */
@@ -1629,7 +1629,7 @@ void sk_win_flight::slot_startort ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_zielort ()/*{{{*/
+void FlightWindow::slot_zielort ()/*{{{*/
 	/*
 	 * The landing airfield was changed. Change the controls accordingly.
 	 */
@@ -1642,7 +1642,7 @@ void sk_win_flight::slot_zielort ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_zielort_sfz ()/*{{{*/
+void FlightWindow::slot_zielort_sfz ()/*{{{*/
 	/*
 	 * The landing airfield of the towplane was changed. Change the controls accordingly.
 	 */
@@ -1657,7 +1657,7 @@ void sk_win_flight::slot_zielort_sfz ()/*{{{*/
 }
 /*}}}*/
 
-void sk_win_flight::slot_landungen ()/*{{{*/
+void FlightWindow::slot_landungen ()/*{{{*/
 	/*
 	 * The number of landings was changed. Change the controls accordingly.
 	 */
@@ -1670,7 +1670,7 @@ void sk_win_flight::slot_landungen ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_datum ()/*{{{*/
+void FlightWindow::slot_datum ()/*{{{*/
 	// ???
 {
 	if (lock_edit_slots) return;
@@ -1678,7 +1678,7 @@ void sk_win_flight::slot_datum ()/*{{{*/
 	setup_controls ();
 }/*}}}*/
 
-void sk_win_flight::slot_bemerkung ()/*{{{*/
+void FlightWindow::slot_bemerkung ()/*{{{*/
 	// The comment field was changed
 {
 	if (lock_edit_slots) return;
@@ -1692,7 +1692,7 @@ void sk_win_flight::slot_bemerkung ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::slot_abrechnungshinweis ()/*{{{*/
+void FlightWindow::slot_abrechnungshinweis ()/*{{{*/
 	// The billing information field was changed
 {
 	if (lock_edit_slots) return;
@@ -1706,7 +1706,7 @@ void sk_win_flight::slot_abrechnungshinweis ()/*{{{*/
 
 
 
-bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot_id, db_id *begleiter_id, db_id *towpilot_id, bool spaeter, QWidget **error_control)/*{{{*/
+bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot_id, db_id *begleiter_id, db_id *towpilot_id, bool spaeter, QWidget **error_control)/*{{{*/
 	/*
 	 * Check if a flight seems correct. If not: ask the user. If the user says
 	 * that the flight is OK, regard is as correct. Also query the user if there
@@ -1732,9 +1732,9 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 	// TODO in diese Funktion sicherstellen, dass alle parameter nur bei
 	// existenz geschrieben werden.
 	// TODO hier nich today () verwenden
-	// TODO alle checkungen mit zeit prüfen ob ankreuzfeld
+	// TODO alle checkungen mit zeit prï¿½fen ob ankreuzfeld
 	// TODO dazu im time editor funktion, die angibt, ob das timefeld aktiv ist.
-	// TODO müssten Teile hiervon nicht durch UFC erledigt werden?
+	// TODO mï¿½ssten Teile hiervon nicht durch UFC erledigt werden?
 	//   - aber nicht alle, es gibt auch Warnungen (Motorflugzeug an der Winde...)
 	string msg;
 	bool fz_bekannt=false;
@@ -1742,7 +1742,7 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 
 	int startart_index=edit_startart->currentItem ();
 	db_id sa_id;
-	
+
 	if (startart_index==unknown_startart_index)
 	{
 		sa_id=original_startart;
@@ -1830,15 +1830,15 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 		}
 	}
 
-	// TODO: andere prüfung auf fe_create als oben
+	// TODO: andere prï¿½fung auf fe_create als oben
 	// TODO mit check_plane_flying machen
 
-	// Begleiter enthält "+1" /*{{{*/
+	// Begleiter enthï¿½lt "+1" /*{{{*/
 	if (begleiter_erlaubt (typ) && (edit_begleiter_vn->currentText ().find (QString ("+1"), 0, false)>=0 || edit_begleiter_nn->currentText ().find (QString ("+1"), 0, false)>=0))
 	{
 		int ret=QMessageBox::information (this, "Begleiter fehlerhaft",
-				"Für den Begleiter wurde \"+1\" angegeben.\n"
-				"Für Gastflüge soll stattdessen der Flugtyp\n"
+				"Fï¿½r den Begleiter wurde \"+1\" angegeben.\n"
+				"Fï¿½r Gastflï¿½ge soll stattdessen der Flugtyp\n"
 				"\"Gastflug Privat\" der \"Gastflug Extern\"\n"
 				"verwendet werden.\n"
 				"Soll dieser Flugtyp verwendet werden?",
@@ -1851,7 +1851,7 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 			if (begleiter_id) *begleiter_id=invalid_id;
 		}
 	}/*}}}*/
-	
+
 	// Kein Startort angegeben/*{{{*/
 	if ((gestartet || !starts_here (modus)) && eintrag_ist_leer (edit_startort->currentText ()))
 	{
@@ -1877,10 +1877,10 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 	}
 	/*}}}*/
 
-	// Kein Zielort für das Schleppflugzeug angegeben/*{{{*/
+	// Kein Zielort fï¿½r das Schleppflugzeug angegeben/*{{{*/
 	if ((sfz_gelandet || !lands_here (modus_sfz)) && eintrag_ist_leer (edit_zielort_sfz->currentText ()))
 	{
-		msg="Es wurde kein Zielort für das Schleppflugzeug angegeben.\n";
+		msg="Es wurde kein Zielort fï¿½r das Schleppflugzeug angegeben.\n";
 		if (error_control) *error_control=edit_zielort_sfz;
 		if (!check_message (this, msg)) return false;
 	}/*}}}*/
@@ -1900,7 +1900,7 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 		if (error_control) *error_control=edit_landezeit;
 		if (!check_message (this, msg)) return false;
 	}/*}}}*/
-	
+
 	// Gelandet, aber Ladungen==0/*{{{*/
 	if (lands_here (modus) && gelandet && edit_landungen->text ().toInt ()==0)
 	{
@@ -1925,7 +1925,7 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 		if (!check_message (this, msg)) return false;
 	}/*}}}*/
 
-	// TODO sollte das nicht fz_bekannt heißen?
+	// TODO sollte das nicht fz_bekannt heiï¿½en?
 	if (flugzeug_id && *flugzeug_id>0)
 	{
 		// Gastflug in einsitzigem Flugzeug/*{{{*/
@@ -1936,7 +1936,7 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 			if (error_control) *error_control=edit_registration;
 			if (!check_message (this, msg)) return false;
 		}/*}}}*/
-		
+
 		// Doppelsitzige Schulung in einsitzigem Flugzeug/*{{{*/
 		if (fz.sitze==1 && typ==ft_schul_2)
 		{
@@ -1954,7 +1954,7 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 		if (error_control) *error_control=edit_landungen;
 			if (!check_message (this, msg)) return false;
 		}/*}}}*/
-		
+
 		// Segelflugzeug mit Zwischenlandungen /*{{{*/
 		if (fz.category==lfz_segelflugzeug && !gelandet && edit_landungen->text ().toInt ()>0 && !sa.is_airtow ())
 		{
@@ -1963,7 +1963,7 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 		if (error_control) *error_control=edit_landungen;
 			if (!check_message (this, msg)) return false;
 		}/*}}}*/
-		
+
 		// Segelflugzeug im Selbststart /*{{{*/
 		if (fz.category==lfz_segelflugzeug && sa.get_type ()==sat_self)
 		{
@@ -1972,7 +1972,7 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 		if (error_control) *error_control=edit_startart;
 			if (!check_message (this, msg)) return false;
 		}/*}}}*/
-		
+
 		// Motorflugzeug an der Winde /*{{{*/
 		if (fz.category==lfz_echo && sa.get_type ()!=sat_self)
 		{
@@ -1983,7 +1983,7 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 		}/*}}}*/
 	}
 
-	// Personenkram am Ende prüfen, weil sonst Personenauswahl nach jedem
+	// Personenkram am Ende prï¿½fen, weil sonst Personenauswahl nach jedem
 	// korrigierten Fehler.
 	// Piloten und Begleiter nicht angegeben oder stehen nicht in der Datenbank/*{{{*/
 	if (error_control) *error_control=edit_pilot_nn;
@@ -1998,12 +1998,12 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 
 	if (begleiter_erlaubt (typ))
 	{
-		// Begleiter ist nie erforderlich. Lehrer wird später gesondert erfasst.
+		// Begleiter ist nie erforderlich. Lehrer wird spï¿½ter gesondert erfasst.
 		if (error_control) *error_control=edit_begleiter_nn;
-		// TODO: Für die preselection sollte man, wenn es keine Person mit dem
-		// Verein des Flugschülers gibt, doch wieder auf den Verein des
+		// TODO: Fï¿½r die preselection sollte man, wenn es keine Person mit dem
+		// Verein des Flugschï¿½lers gibt, doch wieder auf den Verein des
 		// Flugzeugs schauen. Das merkt man allerdings erst in check_person,
-		// daher müssen da beide Vereine reingegeben werden.
+		// daher mï¿½ssen da beide Vereine reingegeben werden.
 		if (typ==ft_schul_2 && pilot_id && !id_invalid (*pilot_id))
 		{
 			// Double seated training. The flight instructor is preselected
@@ -2071,11 +2071,11 @@ bool sk_win_flight::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilo
 			if (!check_message (this, msg)) return false;
 		}/*}}}*/
 	}
-	
+
 	return true;
 }/*}}}*/
 
-bool sk_win_flight::person_anlegen (db_id *person_id, QString nachname, QString vorname, QString bezeichnung, bool force)/*{{{*/
+bool FlightWindow::person_anlegen (db_id *person_id, QString nachname, QString vorname, QString bezeichnung, bool force)/*{{{*/
 	/*
 	 * Show the person editor and create a person in the database.
 	 * Parameters:
@@ -2102,13 +2102,13 @@ bool sk_win_flight::person_anlegen (db_id *person_id, QString nachname, QString 
 	if (force)
 		aufnehmen=true;
 	else
-		aufnehmen=(QMessageBox::information (this, "Person nicht bekannt", 
+		aufnehmen=(QMessageBox::information (this, "Person nicht bekannt",
 		"Der "+bezeichnung+" \""+std2q (person.text_name ())+"\" ist nicht bekannt.\nSoll er in die Datenbank aufgenommen werden?",
 		"&Ja", "&Nein", QString::null, 0, 1)==0);/*}}}*/
 
 	if (aufnehmen)
 	{
-		sk_win_stuff_editor se (st_person, this, db, "namening", true);
+		StuffEditWindow se (st_person, this, db, "namening", true);
 		se.read_db ();
 		int erg=se.create (&person, true);
 
@@ -2137,7 +2137,7 @@ bool sk_win_flight::person_anlegen (db_id *person_id, QString nachname, QString 
 	return ret;
 }/*}}}*/
 
-void sk_win_flight::warning_message (const QString &msg)/*{{{*/
+void FlightWindow::warning_message (const QString &msg)/*{{{*/
 	/*
 	 * Show a warning message.
 	 * Parameters:
@@ -2148,7 +2148,7 @@ void sk_win_flight::warning_message (const QString &msg)/*{{{*/
 			msg, QMessageBox::Ok, QMessageBox::NoButton);
 }/*}}}*/
 
-bool sk_win_flight::check_plane (db_id *plane_id, sk_flugzeug *_plane, string registration, string description_n, string description_a, int seat_guess)/*{{{*/
+bool FlightWindow::check_plane (db_id *plane_id, sk_flugzeug *_plane, string registration, string description_n, string description_a, int seat_guess)/*{{{*/
 	/*
 	 * Check if a plane is in the database. If not, it is created after
 	 * confirming.
@@ -2229,7 +2229,7 @@ bool sk_win_flight::check_plane (db_id *plane_id, sk_flugzeug *_plane, string re
 
 				if (!plane_ok)
 				{
-					int ret=QMessageBox::information (this, std2q (description_n)+" nicht bekannt", 
+					int ret=QMessageBox::information (this, std2q (description_n)+" nicht bekannt",
 						"Das "+std2q (description_n)+" \""+std2q (registration)+"\" ist nicht bekannt.\n"
 						"Soll es in die Datenbank aufgenommen werden?",
 						"&Ja", "&Nein", QString::null, 0, 1);
@@ -2238,7 +2238,7 @@ bool sk_win_flight::check_plane (db_id *plane_id, sk_flugzeug *_plane, string re
 						// Yes, create the plane
 						plane->registration=registration;
 						plane->sitze=seat_guess;
-						sk_win_stuff_editor se (st_plane, this, db, "se", true);
+						StuffEditWindow se (st_plane, this, db, "se", true);
 						se.read_db ();
 						int ret=se.create (plane);
 
@@ -2247,7 +2247,7 @@ bool sk_win_flight::check_plane (db_id *plane_id, sk_flugzeug *_plane, string re
 							// Plane confirmed
 							plane->id=0;
 							db_id id=db->write_plane (plane);
-//							// Das hier soll helfen, weitere Fehlercheckung zu ermöglichen, wenn FZ aufgenommen.
+//							// Das hier soll helfen, weitere Fehlercheckung zu ermï¿½glichen, wenn FZ aufgenommen.
 //							// Aktiveren, wenn OK-Fehlercheckung mit UFC gemacht wird
 //							if (selected_plane) delete selected_plane;
 //							selected_plane=new sk_flugzeug (fz);
@@ -2278,7 +2278,7 @@ bool sk_win_flight::check_plane (db_id *plane_id, sk_flugzeug *_plane, string re
 }
 /*}}}*/
 
-bool sk_win_flight::check_plane_flying (db_id plane_id, string registration, string description_n)/*{{{*/
+bool FlightWindow::check_plane_flying (db_id plane_id, string registration, string description_n)/*{{{*/
 	// registration not determined from plane_id to save time
 	// TODO determine registration from plane_id if not given
 {
@@ -2305,7 +2305,7 @@ bool sk_win_flight::check_plane_flying (db_id plane_id, string registration, str
 }
 /*}}}*/
 
-bool sk_win_flight::check_person (db_id *person_id, string vorname, string nachname, string bezeichnung_n, string bezeichnung_a, bool person_required, bool check_flying, db_id original_id, string *preselection_club)/*{{{*/
+bool FlightWindow::check_person (db_id *person_id, string vorname, string nachname, string bezeichnung_n, string bezeichnung_a, bool person_required, bool check_flying, db_id original_id, string *preselection_club)/*{{{*/
 	/*
 	 * Check if a person is in the database. If not, it is created after
 	 * confirming. If there are multiple persons with that name, show a
@@ -2351,21 +2351,21 @@ bool sk_win_flight::check_person (db_id *person_id, string vorname, string nachn
 	string action_text;
 /*}}}*/
 
-	// TODO bessere Lösung für die Markierung, welche Persone einen passenden
+	// TODO bessere Lï¿½sung fï¿½r die Markierung, welche Persone einen passenden
 	// Verein haben, und sei es nur, dass da steht "Verein des
-	// Flugzeugs"/"Verein des Flugschülers"
+	// Flugzeugs"/"Verein des Flugschï¿½lers"
 	string please_select_text;/*{{{*/
 	if (preselection_club)
-		please_select_text="\nBitte auswählen (Passender Verein: "+*preselection_club+"):";
+		please_select_text="\nBitte auswï¿½hlen (Passender Verein: "+*preselection_club+"):";
 	else
-		please_select_text="\nBitte auswählen:";
+		please_select_text="\nBitte auswï¿½hlen:";
 /*}}}*/
 
 	if (vorname_leer && nachname_leer)/*{{{*/
 	{
 		// No name was given.
 		// Return "no person". If the person is required, we need to confirm.
-		action_text="Für den Flug wurde kein "+bezeichnung_n+" angegeben.\n";
+		action_text="Fï¿½r den Flug wurde kein "+bezeichnung_n+" angegeben.\n";
 		result=rt_no_person;
 		confirm=person_required;
 	}/*}}}*/
@@ -2374,7 +2374,7 @@ bool sk_win_flight::check_person (db_id *person_id, string vorname, string nachn
 		// Only a last name was given.
 		// Display a list of matching first names.
 		db->list_persons_by_last_name (persons, nachname);
-			action_text="Für den "+bezeichnung_a+" wurde nur ein Nachname angegeben."+please_select_text;
+			action_text="Fï¿½r den "+bezeichnung_a+" wurde nur ein Nachname angegeben."+please_select_text;
 		display_selector=true;
 	}/*}}}*/
 	else if (!vorname_leer && nachname_leer)/*{{{*/
@@ -2382,7 +2382,7 @@ bool sk_win_flight::check_person (db_id *person_id, string vorname, string nachn
 		// Only a first name was given.
 		// Display a list of matching last names.
 		db->list_persons_by_first_name (persons, vorname);
-			action_text="Für den "+bezeichnung_a+" wurde nur ein Vorname angegeben."+please_select_text;
+			action_text="Fï¿½r den "+bezeichnung_a+" wurde nur ein Vorname angegeben."+please_select_text;
 		display_selector=true;
 	}/*}}}*/
 	else/*{{{*/
@@ -2462,7 +2462,7 @@ bool sk_win_flight::check_person (db_id *person_id, string vorname, string nachn
 			preselect_id=club_match_id;
 		}
 
-		sk_win_stuff_select<sk_person> selector (this, "selector");
+		StuffSelectWindow<sk_person> selector (this, "selector");
 		selection_result res=selector.do_selection ("Personenauswahl", std2q (action_text), persons, preselect_id);
 
 		switch (res)
@@ -2496,7 +2496,7 @@ bool sk_win_flight::check_person (db_id *person_id, string vorname, string nachn
 	// If we need, create a new person/*{{{*/
 	if (create_new)
 	{
-		// The person need to be created, either because the 
+		// The person need to be created, either because the
 		if (person_anlegen (&result_id, std2q (nachname), std2q (vorname), std2q (bezeichnung_n), !confirm_create))
 			result=rt_id;
 		else
@@ -2550,7 +2550,7 @@ bool sk_win_flight::check_person (db_id *person_id, string vorname, string nachn
 	return true;
 }/*}}}*/
 
-void sk_win_flight::accept_date ()/*{{{*/
+void FlightWindow::accept_date ()/*{{{*/
 	// ???
 {
 	bool gestartet=false, gelandet=false, sfz_gelandet=false;
@@ -2573,16 +2573,16 @@ void sk_win_flight::accept_date ()/*{{{*/
 		log_error ("Unbekannter modus in sk_win_flight::accept_flight_date ()");
 	}/*}}}*/
 
-	// MURX: Besser nicht nachträglich überschreiben
+	// MURX: Besser nicht nachtrï¿½glich ï¿½berschreiben
 	if (!starts_here (flight->modus)) gestartet=false;
 	if (!lands_here (flight->modus)) gelandet=false;
-	
+
 	set_time (gestartet, &(flight->gestartet), &(flight->startzeit), edit_datum->date (), edit_startzeit->time ());
 	set_time (gelandet, &(flight->gelandet), &(flight->landezeit), edit_datum->date (), edit_landezeit->time ());
 	set_time (sfz_gelandet, &(flight->sfz_gelandet), &(flight->landezeit_schleppflugzeug), edit_datum->date (), edit_landezeit_sfz->time ());
 }/*}}}*/
 
-bool sk_win_flight::accept_flight_data (bool spaeter)/*{{{*/
+bool FlightWindow::accept_flight_data (bool spaeter)/*{{{*/
 	/*
 	 * Check the flight data, if OK, write to the flight member variable.
 	 * Parameters:
@@ -2614,8 +2614,8 @@ bool sk_win_flight::accept_flight_data (bool spaeter)/*{{{*/
 		flight->zielort=q2std (edit_zielort->currentText ());
 		flight->zielort_sfz=q2std (edit_zielort_sfz->currentText ());
 		flight->landungen=edit_landungen->text ().toInt ();
-	
-		// pilot_id und begleiter_id können 0 sein, wenn nur ein Namensteil
+
+		// pilot_id und begleiter_id kï¿½nnen 0 sein, wenn nur ein Namensteil
 		// angegeben und vom Benutzer akzeptiert wurde.
 		// begleiter_id kann auch 0 sein, wenn einfach kein Begleiter angegeben
 		// wurde.
@@ -2637,7 +2637,7 @@ bool sk_win_flight::accept_flight_data (bool spaeter)/*{{{*/
 
 		// TODO ist begleiter_erlaubt das einzige/richtige Kritierium?
 		// TODO Vielleicht besser bei !begleiter_erlaubt so tun, als ob die
-		// Felder leer wären, aber hier nicht überschreiben.
+		// Felder leer wï¿½ren, aber hier nicht ï¿½berschreiben.
 		if (begleiter_id>0)
 		{
 			// Begleiter angegeben und erkannt.
@@ -2679,10 +2679,10 @@ bool sk_win_flight::accept_flight_data (bool spaeter)/*{{{*/
 		flight->modus_sfz=m_sfz;
 		flight->bemerkungen=q2std (edit_bemerkungen->text ());
 		flight->abrechnungshinweis=q2std (edit_abrechnungshinweis->currentText ());
-	
+
 		// Datum in alle Felder eintragen
 		accept_date ();
-		
+
 		return true;
 	}
 	else
@@ -2693,18 +2693,18 @@ bool sk_win_flight::accept_flight_data (bool spaeter)/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_flight::set_time (bool use_time, bool *use_ziel, sk_time_t *zeit_ziel, QDate datum, QTime zeit)/*{{{*/
+void FlightWindow::set_time (bool use_time, bool *use_ziel, sk_time_t *zeit_ziel, QDate datum, QTime zeit)/*{{{*/
 	// ???
 {
 	(*use_ziel)=use_time;
 	if (use_time)
 		zeit_ziel->set_to (datum, zeit, tz_utc, true);
-		// Ansonsten: nicht ändern
+		// Ansonsten: nicht ï¿½ndern
 //	else
 //		zeit_ziel->set_null ();
 }/*}}}*/
 
-void sk_win_flight::flug_eintragen (sk_flug *f, bool repeat)/*{{{*/
+void FlightWindow::flug_eintragen (sk_flug *f, bool repeat)/*{{{*/
 	/*
 	 * Write the flight data to the editor controls.
 	 * Parameters:
@@ -2810,11 +2810,11 @@ void sk_win_flight::flug_eintragen (sk_flug *f, bool repeat)/*{{{*/
 		edit_towpilot_nn->setCurrentText (towpilot.nachname);
 	}
 
-	// Felder eintragen, abhängig von repeat
+	// Felder eintragen, abhï¿½ngig von repeat
 	// Hier besteht die Wichtigkeit, dass das nach den Piloten geschieht, weil
-	// nämlich sonst via slot_flugtyp in slot_begleiter_vn/nn der Begleiter in
-	// f überschrieben wird, was auf das unglaublich schlechtes Design dieser
-	// Klasse zurückzuführen ist.
+	// nï¿½mlich sonst via slot_flugtyp in slot_begleiter_vn/nn der Begleiter in
+	// f ï¿½berschrieben wird, was auf das unglaublich schlechtes Design dieser
+	// Klasse zurï¿½ckzufï¿½hren ist.
 	edit_registration->setCurrentText (std2q (fz.registration));
 	edit_flugzeug_typ->setText (std2q (fz.typ));
 	edit_flug_typ->setCurrentItem (flugtyp_index (f->flugtyp));
@@ -2831,7 +2831,7 @@ void sk_win_flight::flug_eintragen (sk_flug *f, bool repeat)/*{{{*/
 	// This is because it could be different than before (different winch)
 	// An exception is self start because it is sufficiently unlikely that a
 	// plane which did a self start does something else the next time.
-	if (!repeat || (startart_ok && startart.get_type ()==sat_self)) 
+	if (!repeat || (startart_ok && startart.get_type ()==sat_self))
 	{
 		// If the startart is OK or there is no startart (id==invalid_id), do
 		// not display the "unknown" entry.
@@ -2873,7 +2873,7 @@ void sk_win_flight::flug_eintragen (sk_flug *f, bool repeat)/*{{{*/
 
 	int mi=modus_index (f->modus);
 	if (mi<0) mi=modus_index (fmod_lokal);
-	// BUG: Der folgende Befehl überschreibe selected_plane
+	// BUG: Der folgende Befehl ï¿½berschreibe selected_plane
 	edit_modus->setCurrentItem (mi);
 
 	if (!repeat)
@@ -2900,7 +2900,7 @@ void sk_win_flight::flug_eintragen (sk_flug *f, bool repeat)/*{{{*/
 	disable_error_check=old_disable_error_check;
 }/*}}}*/
 
-void sk_win_flight::fehler_eintragen (sk_flug *f, sk_flugzeug *fz, sk_flugzeug *sfz, bool move_focus)/*{{{*/
+void FlightWindow::fehler_eintragen (sk_flug *f, sk_flugzeug *fz, sk_flugzeug *sfz, bool move_focus)/*{{{*/
 	/*
 	 * Show the errors of a flight in the error list control.
 	 * Parameters:
@@ -2966,7 +2966,7 @@ void sk_win_flight::fehler_eintragen (sk_flug *f, sk_flugzeug *fz, sk_flugzeug *
 
 
 
-int sk_win_flight::go (flight_editor_mode m, sk_flug *vorlage, QDate *date_to_use)/*{{{*/
+int FlightWindow::go (flight_editor_mode m, sk_flug *vorlage, QDate *date_to_use)/*{{{*/
 	/*
 	 * The main function to open the flight editor. Does some preparation, then
 	 * shows the window.
@@ -3048,7 +3048,7 @@ int sk_win_flight::go (flight_editor_mode m, sk_flug *vorlage, QDate *date_to_us
 
 
 
-int sk_win_flight::startart_index (db_id sa)/*{{{*/
+int FlightWindow::startart_index (db_id sa)/*{{{*/
 	/*
 	 * For a given Startart, finds its index in the Startart array.  Needed for
 	 * setting the Startart editor widget to a given value.
@@ -3078,7 +3078,7 @@ int sk_win_flight::startart_index (db_id sa)/*{{{*/
 	}
 }/*}}}*/
 
-int sk_win_flight::modus_index (flug_modus sa)/*{{{*/
+int FlightWindow::modus_index (flug_modus sa)/*{{{*/
 	/*
 	 * For a given flight mode, finds its index in the flight mode array.
 	 * Needed for setting the flight mode editor widget to a given value.
@@ -3097,7 +3097,7 @@ int sk_win_flight::modus_index (flug_modus sa)/*{{{*/
 	return -1;
 }/*}}}*/
 
-int sk_win_flight::sfz_modus_index (flug_modus sa)/*{{{*/
+int FlightWindow::sfz_modus_index (flug_modus sa)/*{{{*/
 	/*
 	 * For a given towflight mode, finds its index in the towflight mode array.
 	 * Needed for setting the towflight mode editor widget to a given value.
@@ -3116,7 +3116,7 @@ int sk_win_flight::sfz_modus_index (flug_modus sa)/*{{{*/
 	return -1;
 }/*}}}*/
 
-int sk_win_flight::flugtyp_index (flug_typ t)/*{{{*/
+int FlightWindow::flugtyp_index (flug_typ t)/*{{{*/
 	/*
 	 * For a given flight type, finds its index in the flight type array.
 	 * Needed for setting the flight type editor widget to a given value.
@@ -3135,7 +3135,7 @@ int sk_win_flight::flugtyp_index (flug_typ t)/*{{{*/
 	return -1;
 }/*}}}*/
 
-int sk_win_flight::widget_index (QWidget *w)/*{{{*/
+int FlightWindow::widget_index (QWidget *w)/*{{{*/
 	/*
 	 * Finds the index of a given editor widget in the widget array.
 	 * Parameters:
@@ -3155,7 +3155,7 @@ int sk_win_flight::widget_index (QWidget *w)/*{{{*/
 
 
 
-void sk_win_flight::slot_db_update (db_event  *event)/*{{{*/
+void FlightWindow::slot_db_update (db_event  *event)/*{{{*/
 	/*
 	 * Handler for the db_change mechanism. See db_change mechanism.
 	 */
@@ -3199,14 +3199,14 @@ void sk_win_flight::slot_db_update (db_event  *event)/*{{{*/
 			}
 		}
 	}
-	
-	sk_dialog::slot_db_update (event);
+
+	SkDialog::slot_db_update (event);
 }/*}}}*/
 
 
 
 // Interface
-int sk_win_flight::create_flight (QDate *date_to_use)/*{{{*/
+int FlightWindow::create_flight (QDate *date_to_use)/*{{{*/
 	/*
 	 * Open the window for creating a flight.
 	 * Return value:
@@ -3216,7 +3216,7 @@ int sk_win_flight::create_flight (QDate *date_to_use)/*{{{*/
 	return go (fe_create, NULL, date_to_use);
 }/*}}}*/
 
-int sk_win_flight::edit_flight (sk_flug *f)/*{{{*/
+int FlightWindow::edit_flight (sk_flug *f)/*{{{*/
 	/*
 	 * Open the window for editing a flight.
 	 * Parameters:
@@ -3228,7 +3228,7 @@ int sk_win_flight::edit_flight (sk_flug *f)/*{{{*/
 	return go (fe_edit, f, NULL);
 }/*}}}*/
 
-int sk_win_flight::duplicate_flight (sk_flug *vorlage)/*{{{*/
+int FlightWindow::duplicate_flight (sk_flug *vorlage)/*{{{*/
 	/*
 	 * Open the window for creating a flight, using a template (for repeating a
 	 * flight).
@@ -3243,7 +3243,7 @@ int sk_win_flight::duplicate_flight (sk_flug *vorlage)/*{{{*/
 
 
 // Fehlerbehandlung
-QWidget *sk_win_flight::get_error_control (flug_fehler error)/*{{{*/
+QWidget *FlightWindow::get_error_control (flug_fehler error)/*{{{*/
 {
 	switch (error)
 	{
@@ -3295,7 +3295,7 @@ QWidget *sk_win_flight::get_error_control (flug_fehler error)/*{{{*/
 
 
 
-QColor sk_win_flight::get_default_color (QWidget *w)/*{{{*/
+QColor FlightWindow::get_default_color (QWidget *w)/*{{{*/
 {
 	if (w==edit_registration) return col_obligatory;
 	if (w==edit_pilot_nn) return col_obligatory;

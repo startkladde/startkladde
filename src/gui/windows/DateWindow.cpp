@@ -1,8 +1,8 @@
-#include "sk_win_date.h"
+#include "DateWindow.h"
 
 #include <qlayout.h>
 
-void sk_win_date::init_common ()/*{{{*/
+void DateWindow::init_common ()/*{{{*/
 	/*
 	 * Does initialization stuff common to all of the constructors.
 	 * Initializes the widgets and connects signals.
@@ -51,7 +51,7 @@ void sk_win_date::init_common ()/*{{{*/
 	setCaption ("Zeit einstellen");
 }/*}}}*/
 
-sk_win_date::sk_win_date (QWidget *parent, QDate datum)/*{{{*/
+DateWindow::DateWindow (QWidget *parent, QDate datum)/*{{{*/
 	:QDialog (parent)
 	/*
 	 * Constructs an instance and write a given date to the editor field.
@@ -63,7 +63,7 @@ sk_win_date::sk_win_date (QWidget *parent, QDate datum)/*{{{*/
 	edit_datum->setDate (datum);
 }/*}}}*/
 
-sk_win_date::sk_win_date (QWidget *parent, QDateTime dt)/*{{{*/
+DateWindow::DateWindow (QWidget *parent, QDateTime dt)/*{{{*/
 	:QDialog (parent)
 	/*
 	 * Constructs an instance and write a given date and time to the editor
@@ -77,7 +77,7 @@ sk_win_date::sk_win_date (QWidget *parent, QDateTime dt)/*{{{*/
 	edit_zeit->setTime (dt.time ());
 }/*}}}*/
 
-void sk_win_date::edit_date ()/*{{{*/
+void DateWindow::edit_date ()/*{{{*/
 	/*
 	 * Displays the window for editing the date.
 	 */
@@ -93,7 +93,7 @@ void sk_win_date::edit_date ()/*{{{*/
 	exec ();
 }/*}}}*/
 
-void sk_win_date::edit_datetime ()/*{{{*/
+void DateWindow::edit_datetime ()/*{{{*/
 	/*
 	 * Displays the window for editing the date and time.
 	 */
@@ -110,7 +110,7 @@ void sk_win_date::edit_datetime ()/*{{{*/
 }/*}}}*/
 
 
-void sk_win_date::slot_ok ()/*{{{*/
+void DateWindow::slot_ok ()/*{{{*/
 	/*
 	 * The OK button was pressed. Emit the signals and close the window.
 	 */
@@ -120,7 +120,7 @@ void sk_win_date::slot_ok ()/*{{{*/
 	accept ();
 }/*}}}*/
 
-void sk_win_date::slot_cancel ()/*{{{*/
+void DateWindow::slot_cancel ()/*{{{*/
 	/*
 	 * The cancel button was pressed. Close the window.
 	 */
@@ -128,7 +128,7 @@ void sk_win_date::slot_cancel ()/*{{{*/
 	reject ();
 }/*}}}*/
 
-int sk_win_date::exec ()/*{{{*/
+int DateWindow::exec ()/*{{{*/
 	/*
 	 * Displays the dialog.
 	 */

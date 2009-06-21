@@ -1,4 +1,4 @@
-#include "sk_win_stuff_editor.h"
+#include "StuffEditWindow.h"
 
 #include <qlayout.h>
 
@@ -9,22 +9,22 @@
 //switch (type)
 //{
 //	case st_none:
-//		log_error ("Invalid type in sk_win_stuff_editor:: ()");
+//		log_error ("Invalid type in StuffEditWindow:: ()");
 //		break;
 //	case st_plane:
 //		break;
 //	case st_startart:
 //		break;
 //	default:
-//		log_error ("Unhandled type in sk_win_stuff_editor:: ()");
+//		log_error ("Unhandled type in StuffEditWindow:: ()");
 //		break;
 //}
 ///*}}}*/
 
 
 
-sk_win_stuff_editor::sk_win_stuff_editor (stuff_type t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dialog)/*{{{*/
-	:sk_dialog (parent, name, modal, f, status_dialog)
+StuffEditWindow::StuffEditWindow (stuff_type t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dialog)/*{{{*/
+	:SkDialog (parent, name, modal, f, status_dialog)
 	/*
 	 * Initializes a stuff editor window.
 	 * Parameters:
@@ -65,7 +65,7 @@ sk_win_stuff_editor::sk_win_stuff_editor (stuff_type t, QWidget *parent, sk_db *
 		case st_plane:
 		{
 			setCaption ("Flugzeug");
-			
+
 			num_fields=7;
 			edit_widgets=new QWidget*[num_fields];
 			edit_widgets[0]=edit_registration=new sk_text_box (this);
@@ -166,7 +166,7 @@ sk_win_stuff_editor::sk_win_stuff_editor (stuff_type t, QWidget *parent, sk_db *
 	populate_lists ();
 }/*}}}*/
 
-sk_win_stuff_editor::~sk_win_stuff_editor ()/*{{{*/
+StuffEditWindow::~StuffEditWindow ()/*{{{*/
 	/*
 	 * Cleans up a stuff editor instance.
 	 */
@@ -177,7 +177,7 @@ sk_win_stuff_editor::~sk_win_stuff_editor ()/*{{{*/
 
 
 
-void sk_win_stuff_editor::populate_lists ()/*{{{*/
+void StuffEditWindow::populate_lists ()/*{{{*/
 	/*
 	 * Fill in all lists that don't need to query the database.
 	 */
@@ -207,7 +207,7 @@ void sk_win_stuff_editor::populate_lists ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_stuff_editor::read_db ()/*{{{*/
+void StuffEditWindow::read_db ()/*{{{*/
 	/*
 	 * Reads the lists relevant to the current type from the datbase.
 	 */
@@ -228,7 +228,7 @@ void sk_win_stuff_editor::read_db ()/*{{{*/
 			db->list_clubs (clubs);
 			edit_club->insertStringList (clubs);
 			edit_club->setEditText ("");/*}}}*/
-			
+
 			emit status ("Flugzeugeditor: Flugzeugtypen aus Datenbank lesen...");
 			// Typen eintragen/*{{{*/
 			edit_typ->clear ();
@@ -255,7 +255,7 @@ void sk_win_stuff_editor::read_db ()/*{{{*/
 	emit long_operation_end ();
 }/*}}}*/
 
-void sk_win_stuff_editor::enable_widgets (bool enable)/*{{{*/
+void StuffEditWindow::enable_widgets (bool enable)/*{{{*/
 	/*
 	 * Enable or disable (make read-only) all editing widgets.
 	 */
@@ -263,7 +263,7 @@ void sk_win_stuff_editor::enable_widgets (bool enable)/*{{{*/
 	for (int i=0; i<num_fields; i++) edit_widgets[i]->setEnabled (enable);
 }/*}}}*/
 
-void sk_win_stuff_editor::setup_controls ()/*{{{*/
+void StuffEditWindow::setup_controls ()/*{{{*/
 	/*
 	 * Setup the controls, depending on the editor mode and stuff type.
 	 */
@@ -327,7 +327,7 @@ void sk_win_stuff_editor::setup_controls ()/*{{{*/
 
 
 
-void sk_win_stuff_editor::flugzeug_eintragen (sk_flugzeug *f)/*{{{*/
+void StuffEditWindow::flugzeug_eintragen (sk_flugzeug *f)/*{{{*/
 	/*
 	 * Write a plane to the editor controls.
 	 * Parameters:
@@ -348,7 +348,7 @@ void sk_win_stuff_editor::flugzeug_eintragen (sk_flugzeug *f)/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_stuff_editor::person_eintragen (sk_person *p)/*{{{*/
+void StuffEditWindow::person_eintragen (sk_person *p)/*{{{*/
 	/*
 	 * Write a person to the editor controls.
 	 * Parameters:
@@ -364,7 +364,7 @@ void sk_win_stuff_editor::person_eintragen (sk_person *p)/*{{{*/
 
 
 
-void sk_win_stuff_editor::slot_save ()/*{{{*/
+void StuffEditWindow::slot_save ()/*{{{*/
 	/*
 	 * Accept the data and close the dialog.
 	 * Called when the save button is pressed.
@@ -376,7 +376,7 @@ void sk_win_stuff_editor::slot_save ()/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_stuff_editor::slot_registration ()/*{{{*/
+void StuffEditWindow::slot_registration ()/*{{{*/
 	/*
 	 * Try to determine the category of the plane from the registration.
 	 * Called when the focus is moved off the registration field.
@@ -388,7 +388,7 @@ void sk_win_stuff_editor::slot_registration ()/*{{{*/
 
 
 
-bool sk_win_stuff_editor::check_data ()/*{{{*/
+bool StuffEditWindow::check_data ()/*{{{*/
 	/*
 	 * Check whether the data enterede seem plausible. If not: ask the user. If
 	 * the user says, data is OK, data is OK.
@@ -397,7 +397,7 @@ bool sk_win_stuff_editor::check_data ()/*{{{*/
 	 *   - false else.
 	 */
 {
-	// TODO: In eine temporäre Instanz schreiben und Überprüfung in die Klasse schieben
+	// TODO: In eine temporï¿½re Instanz schreiben und ï¿½berprï¿½fung in die Klasse schieben
 	string msg;
 
 	switch (type)
@@ -425,14 +425,14 @@ bool sk_win_stuff_editor::check_data ()/*{{{*/
 			// Kennzeichen ist leer/*{{{*/
 			if (eintrag_ist_leer (edit_registration->text ()))
 			{
-				msg="Für das Flugzeug wurde kein Kennzeichen angegeben.\n";
+				msg="Fï¿½r das Flugzeug wurde kein Kennzeichen angegeben.\n";
 				if (!check_message (this, msg)) return false;
 			}/*}}}*/
 
 			// Typ ist leer/*{{{*/
 			if (eintrag_ist_leer (edit_typ->currentText ()))
 			{
-				msg="Für das Flugzeug wurde kein Typ angegeben.\n";
+				msg="Fï¿½r das Flugzeug wurde kein Typ angegeben.\n";
 				if (!check_message (this, msg)) return false;
 			}/*}}}*/
 
@@ -470,7 +470,7 @@ bool sk_win_stuff_editor::check_data ()/*{{{*/
 	return true;
 }/*}}}*/
 
-bool sk_win_stuff_editor::accept_data ()/*{{{*/
+bool StuffEditWindow::accept_data ()/*{{{*/
 	/*
 	 * Accept the data, that is, check if everything is OK and, if yes, write
 	 * the data to the buffer buf.
@@ -518,7 +518,7 @@ bool sk_win_stuff_editor::accept_data ()/*{{{*/
 				log_error ("Unhandled type in sk_win_stuff_editor::accept_data ()");
 				break;
 		}
-		
+
 		return true;
 	}
 	else
@@ -529,7 +529,7 @@ bool sk_win_stuff_editor::accept_data ()/*{{{*/
 
 
 
-void sk_win_stuff_editor::reset ()/*{{{*/
+void StuffEditWindow::reset ()/*{{{*/
 	/*
 	 * Initializes the controls.
 	 */
@@ -538,7 +538,7 @@ void sk_win_stuff_editor::reset ()/*{{{*/
 }/*}}}*/
 
 
-int sk_win_stuff_editor::exec ()/*{{{*/
+int StuffEditWindow::exec ()/*{{{*/
 	/*
 	 * Displays the dialog, after filling in the fields.
 	 * Return value:
@@ -563,10 +563,10 @@ int sk_win_stuff_editor::exec ()/*{{{*/
 			break;
 	}
 
-	return sk_dialog::exec ();
+	return SkDialog::exec ();
 }/*}}}*/
 
-int sk_win_stuff_editor::create (stuff *data, bool can_change_name)/*{{{*/
+int StuffEditWindow::create (stuff *data, bool can_change_name)/*{{{*/
 	/*
 	 * Displays the dialog for creating a stuff.
 	 * Parameters:
@@ -584,7 +584,7 @@ int sk_win_stuff_editor::create (stuff *data, bool can_change_name)/*{{{*/
 	return exec ();
 }/*}}}*/
 
-int sk_win_stuff_editor::edit (stuff *data, bool can_change_name)/*{{{*/
+int StuffEditWindow::edit (stuff *data, bool can_change_name)/*{{{*/
 	/*
 	 * Displays the dialog for editing a stuff.
 	 * Parameters:
@@ -602,7 +602,7 @@ int sk_win_stuff_editor::edit (stuff *data, bool can_change_name)/*{{{*/
 	return exec ();
 }/*}}}*/
 
-int sk_win_stuff_editor::disp (stuff *data)/*{{{*/
+int StuffEditWindow::disp (stuff *data)/*{{{*/
 	/*
 	 * Displays the dialog for displaying (read only) a stuff.
 	 * Parameters:
@@ -621,7 +621,7 @@ int sk_win_stuff_editor::disp (stuff *data)/*{{{*/
 
 
 
-int sk_win_stuff_editor::category_index (aircraft_category gat)/*{{{*/
+int StuffEditWindow::category_index (aircraft_category gat)/*{{{*/
 	/*
 	 * Return the index of a given category in the category list.
 	 * Parameter:
@@ -639,12 +639,12 @@ int sk_win_stuff_editor::category_index (aircraft_category gat)/*{{{*/
 
 
 
-void sk_win_stuff_editor::slot_db_update (db_event *event)/*{{{*/
+void StuffEditWindow::slot_db_update (db_event *event)/*{{{*/
 	/*
 	 * Called when the database is changed. Update lists, if applicable.
 	 */
 {
-	// Vereine machen wir unabhängig vom Typ, Flugzeugtypen werden nur
+	// Vereine machen wir unabhï¿½ngig vom Typ, Flugzeugtypen werden nur
 	// eingetragen, wenn edit_typ existiert.
 	if ((event->type==det_add||event->type==det_change) && event->id>0)
 	{
@@ -672,7 +672,7 @@ void sk_win_stuff_editor::slot_db_update (db_event *event)/*{{{*/
 	{
 		read_db ();
 	}
-	
-	sk_dialog::slot_db_update (event);
+
+	SkDialog::slot_db_update (event);
 }/*}}}*/
 

@@ -1,5 +1,5 @@
-#ifndef sk_win_stat_h
-#define sk_win_stat_h
+#ifndef _StatisticsWindow_h
+#define _StatisticsWindow_h
 
 #include <qdialog.h>
 #include <qpushbutton.h>
@@ -12,7 +12,7 @@
 #include "src/data_types.h"
 #include "src/gui/widgets/sk_table.h"
 #include "src/db/sk_db.h"
-#include "src/gui/windows/sk_dialog.h"
+#include "src/gui/windows/SkDialog.h"
 #include <qapplication.h>
 #include "src/statistics/bordbuch.h"
 #include "src/statistics/flugbuch.h"
@@ -28,16 +28,16 @@ using namespace std;
 /*
  * A statistics window for displaying logbooks and startart statistics.
  */
-class sk_win_stat:public sk_dialog
+class StatisticsWindow:public SkDialog
 {
 	Q_OBJECT
-	
+
 	public:
-		sk_win_stat (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog, sk_db *_db);
+		StatisticsWindow (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog, sk_db *_db);
 		void bordbuch (QDate datum);
 		void flugbuch (QDate datum);
 		void sastat (QDate datum);
-	
+
 	private:
 		sk_table *tab;
 		QPushButton *but_close;

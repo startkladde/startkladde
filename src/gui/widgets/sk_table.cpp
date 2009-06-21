@@ -54,8 +54,8 @@ void sk_table::keyPressEvent (QKeyEvent *e)/*{{{*/
 	if (e->key ()!=Qt::Key_Return)	// Hack, weil accept () nicht funktioniert
 		QTable::keyPressEvent (e);
 
-	// Pfusch, weil sk_win_main das Event auch braucht, weil das Hilfe->Info
-	// nicht den Eingabefocus erhält.
+	// Pfusch, weil MainWindow das Event auch braucht, weil das Hilfe->Info
+	// nicht den Eingabefocus erhï¿½lt.
 	e->ignore ();
 }/*}}}*/
 

@@ -1,5 +1,5 @@
-#ifndef sk_win_flight_h
-#define sk_win_flight_h
+#ifndef _FlightWindow_h
+#define _FlightWindow_h
 
 #include <qframe.h>
 #include <cstdio>
@@ -29,11 +29,11 @@
 #include "src/gui/widgets/lbl_cbox.h"
 #include "src/data_types.h"
 #include "src/gui/settings.h"
-#include "src/gui/windows/sk_win_stuff_editor.h"
-#include "src/gui/windows/sk_dialog.h"
+#include "src/gui/windows/StuffEditWindow.h"
+#include "src/gui/windows/SkDialog.h"
 #include "src/db/db_event.h"
 #include "src/db/sk_db.h"
-#include "src/gui/windows/sk_win_stuff_select.h"
+#include "src/gui/windows/StuffSelectWindow.h"
 #include "src/gui/widgets/sk_label.h"
 #include "src/gui/widgets/SkListWidget.h"
 
@@ -43,13 +43,13 @@ using namespace std;
 
 enum flight_editor_mode { fe_none, fe_create, fe_edit };
 
-class sk_win_flight:public sk_dialog
+class FlightWindow:public SkDialog
 {
 	Q_OBJECT
 
 	public:
-		sk_win_flight (QWidget *parent, sk_db *_db, const char *name=0, bool modal=FALSE, WFlags f=0, QObject *status_dialog=NULL);
-		~sk_win_flight ();
+		FlightWindow (QWidget *parent, sk_db *_db, const char *name=0, bool modal=FALSE, WFlags f=0, QObject *status_dialog=NULL);
+		~FlightWindow ();
 
 		// TODO das gehoert privat.
 		int go (flight_editor_mode, sk_flug *, QDate *);
@@ -99,7 +99,7 @@ class sk_win_flight:public sk_dialog
 
 		void setup_controls (bool init=false, bool read_only=false, bool repeat=false);
 		void accept_date ();
-	
+
 	protected:
 		virtual void done (int);
 
@@ -119,7 +119,7 @@ class sk_win_flight:public sk_dialog
 		sk_flug *flight;
 		sk_flugzeug *selected_plane;
 		sk_flugzeug *selected_towplane;
-		int anzahl_pilot, anzahl_begleiter, anzahl_towpilot;	// Kandidaten für Pilot/Begleiter/Schleppilot
+		int anzahl_pilot, anzahl_begleiter, anzahl_towpilot;	// Kandidaten fï¿½r Pilot/Begleiter/Schleppilot
 		db_id original_pilot_id, original_begleiter_id, original_towpilot_id;
 		QObject *status_dialog;
 
@@ -190,7 +190,7 @@ class sk_win_flight:public sk_dialog
 		sk_db *db;
 
 		bool disable_error_check;
-	
+
 		QVBoxLayout *backgroundLayout;
 		QScrollArea *scrollArea;
 

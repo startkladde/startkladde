@@ -1,5 +1,5 @@
-#ifndef sk_win_main_h
-#define sk_win_main_h
+#ifndef _MainWindow_h
+#define _MainWindow_h
 
 #include <cstdio>
 #include <stdlib.h>
@@ -39,12 +39,11 @@ class sk_db;
 class sk_flight_table;
 class sk_flug;
 class sk_flugzeug;
-class sk_win_date;
-class sk_win_flight;
-class sk_win_stat;
-class sk_win_stuff_list;
-class splash;
-
+class DateWindow;
+class FlightWindow;
+class StatisticsWindow;
+class StuffListWindow;
+class SplashScreen;
 
 using namespace std;
 using namespace Qt;
@@ -60,19 +59,19 @@ const int idx_info_acpi=6;
 const int num_info_labels=7;
 /*}}}*/
 
-class sk_win_main:public QMainWindow
+class MainWindow:public QMainWindow
 {
 	Q_OBJECT
-	
+
 	public:
 		enum db_state_t { ds_uninitialized, ds_no_connection, ds_established, ds_unusable, ds_connection_lost };
-		sk_win_main (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, const char *name, WFlags f=WType_TopLevel);
-		~sk_win_main ();
+		MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, const char *name, WFlags f=WType_TopLevel);
+		~MainWindow ();
 		void start_db ();
-	
+
 	protected:
 		void keyPressEvent (QKeyEvent *);
-	
+
 	private:
 		// Program menagement/*{{{*/
 		bool startup_complete;
@@ -84,10 +83,10 @@ class sk_win_main:public QMainWindow
 		bool display_log;
 /*}}}*/
 		// Other windows/*{{{*/
-		splash *ss;
-		sk_win_flight *flug_editor;
-		sk_win_stuff_list *flugzeug_liste;
-		sk_win_stuff_list *personen_liste;
+		::SplashScreen *ss;
+		FlightWindow *flug_editor;
+		StuffListWindow *flugzeug_liste;
+		StuffListWindow *personen_liste;
 		WeatherDialog *weatherDialog;
 /*}}}*/
 		// Database/*{{{*/
@@ -152,7 +151,7 @@ class sk_win_main:public QMainWindow
 		QMenu *menu_flug, *menu_ansicht, *menu_statistik,
 			*menu_datenbank, *menu_ansicht_fluege, *menu_ansicht_datum, *menu_hilfe,
 			*menu_debug, *menu_demosystem;
-		QPopupMenu *menu_ctx_flug, *menu_ctx_emptyrow; 
+		QPopupMenu *menu_ctx_flug, *menu_ctx_emptyrow;
 		QToolBar *toolBar;
 
 		QAction *actionSetTime;
@@ -160,7 +159,7 @@ class sk_win_main:public QMainWindow
 		QAction *actionShutDown;
 		QAction *actionStart, *actionLanding, *actionCtxLanding, *actionGoAround;
 		QAction *actionEditFlight, *actionCopyFlight, *actionDeleteFlight, *actionSortTable;
-		
+
 		QAction *actionRefreshTable;
 		QAction *toggleKeyboard;
 		QAction *actionNewFlight;

@@ -130,7 +130,7 @@ string category_string (aircraft_category category, length_specification lenspec
 		} break;/*}}}*/
 		default:/*{{{*/
 		{
-			log_error ("Unbehandelte Längenangabe in flugtyp_string ()");
+			log_error ("Unbehandelte Lï¿½ngenangabe in flugtyp_string ()");
 			switch (category)
 			{
 				case lfz_echo: return "[Echo]"; break;
@@ -308,7 +308,7 @@ string flugtyp_string (flug_typ typ, length_specification lenspec)/*{{{*/
 		} break;/*}}}*/
 		default:/*{{{*/
 		{
-			log_error ("Unbehandelte Längenangabe in flugtyp_string ()");
+			log_error ("Unbehandelte Lï¿½ngenangabe in flugtyp_string ()");
 			switch (typ)
 			{
 				case ft_kein: return "[-]"; break;
@@ -444,7 +444,7 @@ string modus_string (flug_modus modus, length_specification lenspec)/*{{{*/
 		} break;/*}}}*/
 		default:/*{{{*/
 		{
-			log_error ("Unbehandelte Längenangabe in modus_string ()");
+			log_error ("Unbehandelte Lï¿½ngenangabe in modus_string ()");
 			switch (modus)
 			{
 				case fmod_kein: return "[-]"; break;
@@ -545,7 +545,7 @@ string q2std (QString s)/*{{{*/
 db_event_table table_aus_stuff_type (stuff_type t)/*{{{*/
 	/*
 	 * Finds out which table to use in the db_change mechanism for a given
-	 * stuff type (see sk_win_stuff_editor).
+	 * stuff type (see StuffEditWindow).
 	 * This is a workaround for the fact that there is some code duplication
 	 * between these two variable types.
 	 * Parameters:

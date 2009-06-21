@@ -1,5 +1,5 @@
-#ifndef splash_h
-#define splash_h
+#ifndef _SplashScreen_h
+#define _SplashScreen_h
 
 #include <qdialog.h>
 #include <qpainter.h>
@@ -16,15 +16,15 @@ using namespace std;
 using namespace Qt;
 
 /*
- * A splash screen capable of displaying a progress indicator
+ * A SplashScreen screen capable of displaying a progress indicator
  */
 
-class splash:public QDialog
+class SplashScreen:public QDialog
 {
 	Q_OBJECT
 
 	public:
-		splash (QWidget *, const char * const *logo);
+		SplashScreen (QWidget *, const char * const *logo);
 		void info ();
 
 	private:
@@ -37,10 +37,10 @@ class splash:public QDialog
 
 		QString i_string, n_string;
 
-	
+
 	protected:
 		void keyPressEvent (QKeyEvent *);
-	
+
 	public slots:
 		void show_splash ();
 		void show_version ();

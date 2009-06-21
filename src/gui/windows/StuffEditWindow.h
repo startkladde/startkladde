@@ -1,5 +1,5 @@
-#ifndef sk_win_plane_h
-#define sk_win_plane_h
+#ifndef _StuffEditWindow_h
+#define _StuffEditWindow_h
 
 #include <cstdio>
 #include <qlabel.h>
@@ -14,7 +14,7 @@
 #include "src/gui/spacing.h"
 #include "src/text.h"
 #include "src/model/stuff.h"
-#include "src/gui/windows/sk_dialog.h"
+#include "src/gui/windows/SkDialog.h"
 #include "src/db/db_event.h"
 #include "src/db/sk_db.h"
 
@@ -28,13 +28,13 @@ enum stuff_editor_mode { em_none, em_create, em_edit, em_display };
 // TODO use virtual functions to determine controls, use polymorphy instead of
 // stuff_type. beware slot_registration etc.
 
-class sk_win_stuff_editor:public sk_dialog
+class StuffEditWindow:public SkDialog
 {
 	Q_OBJECT
 
 	public:
-		sk_win_stuff_editor (stuff_type, QWidget *parent, sk_db *_db, const char *name=NULL, bool modal=FALSE, WFlags f=0, QObject *status_dialog=NULL);
-		~sk_win_stuff_editor ();
+		StuffEditWindow (stuff_type, QWidget *parent, sk_db *_db, const char *name=NULL, bool modal=FALSE, WFlags f=0, QObject *status_dialog=NULL);
+		~StuffEditWindow ();
 		int create (stuff *, bool can_change_name=false);
 		int edit (stuff *, bool can_change_name=false);
 		int disp (stuff *);
@@ -44,7 +44,7 @@ class sk_win_stuff_editor:public sk_dialog
 	private slots:
 		void slot_save ();
 		void slot_registration ();
-	
+
 	private:
 		void reset ();
 		aircraft_category *categories;

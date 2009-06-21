@@ -1,13 +1,13 @@
-#include "sk_dialog.h"
+#include "SkDialog.h"
 
 
 // TODO: es gibt noch eine andere Klasse, die im Konstruktor ein status_dialog
 // bekommt. Sollte die vielleicht von dieser Klasse abgleietet werden?
 
-sk_dialog::sk_dialog (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog)/*{{{*/
+SkDialog::SkDialog (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog)/*{{{*/
 	:QDialog (parent, name, modal, f)
 	/*
-	 * Construct an sk_dialog.
+	 * Construct an SkDialog.
 	 * Parameters:
 	 *   - parent, name, modal, f: passed on to the QDialog constructor.
 	 *   - status_dialog: the dialog (or whatever) to display status messages with.
@@ -22,7 +22,7 @@ sk_dialog::sk_dialog (QWidget *parent, const char *name, bool modal, WFlags f, Q
 	}
 }/*}}}*/
 
-void sk_dialog::db_connect (QObject *ob)/*{{{*/
+void SkDialog::db_connect (QObject *ob)/*{{{*/
 	/*
 	 * Creates a connection for the db_change mechanism.
 	 * Parameters:
@@ -30,13 +30,13 @@ void sk_dialog::db_connect (QObject *ob)/*{{{*/
 	 * TODO: diesen Mechanismus genauer dokumentieren.
 	 */
 {
-	// Wenn ein Objekt die Datenbank geändert hat, weiterreichen.
+	// Wenn ein Objekt die Datenbank geï¿½ndert hat, weiterreichen.
 	QObject::connect (ob, SIGNAL (db_change (db_event *)), this, SIGNAL (db_change (db_event *)));
-	// Wenn Datenbankänderungen übernommen werden sollen, weiterreichen.
+	// Wenn Datenbankï¿½nderungen ï¿½bernommen werden sollen, weiterreichen.
 	QObject::connect (this, SIGNAL (db_update (db_event *)), ob, SLOT (slot_db_update (db_event *)));
 }/*}}}*/
 
-void sk_dialog::slot_db_update (db_event  *event)/*{{{*/
+void SkDialog::slot_db_update (db_event  *event)/*{{{*/
 	/*
 	 * Called by a signal _by the parent_ when a database change has happened.
 	 * Emit the signal so children get notified.

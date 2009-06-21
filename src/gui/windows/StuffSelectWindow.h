@@ -1,5 +1,5 @@
-#ifndef sk_win_stuff_select_h
-#define sk_win_stuff_select_h
+#ifndef _StuffSelectWindow_h
+#define _StuffSelectWindow_h
 
 #include <qpushbutton.h>
 #include <qlabel.h>
@@ -15,7 +15,7 @@
 #define QPtrListIterator Q3PtrListIterator
 
 #include "src/data_types.h"
-#include "src/gui/windows/sk_dialog.h"
+#include "src/gui/windows/SkDialog.h"
 #include "src/gui/sk_list_view_item.h"
 #include "src/model/stuff.h"
 
@@ -25,16 +25,16 @@ enum selection_result { sr_cancelled, sr_ok, sr_new, sr_unknown, sr_none_selecte
 
 /*
  * The helper classes for using slots and signals with the template class
- * sk_win_stuff_select.
+ * StuffSelectWindow.
  */
-class selector_base:public sk_dialog/*{{{*/
+class selector_base:public SkDialog/*{{{*/
 {
 	friend class selector_helper;
 
 	public:
 		selector_base (QWidget *parent, const char *name=NULL, bool modal=false, WFlags f=0)
-			:sk_dialog (parent, name, modal, f) {};
-	
+			:SkDialog (parent, name, modal, f) {};
+
 		// Problem when there is a TYPE as parameter to one of our redirected slots.
 		virtual void slot_ok ()=0;
 		virtual void slot_double_click (QListViewItem *, const QPoint &, int)=0;
@@ -68,19 +68,19 @@ class selector_helper:public QObject/*{{{*/
  * If the result is sr_ok, you can use get_result_id () to get the selected ID.
  */
 
-template<class TYPE> class sk_win_stuff_select:public selector_base/*{{{*/
+template<class TYPE> class StuffSelectWindow:public selector_base/*{{{*/
 {
 	// A template class cannot be a Q_OBJECT
 
 	public:
-		sk_win_stuff_select (QWidget *parent, const char *name=NULL, WFlags f=0);
-		~sk_win_stuff_select ();
+		StuffSelectWindow (QWidget *parent, const char *name=NULL, WFlags f=0);
+		~StuffSelectWindow ();
 		void test ();
 		virtual selection_result do_selection (QString, QString, QPtrList<TYPE> &, db_id preselected=invalid_id);
 		static string selection_result_text (selection_result sr);
 		db_id get_result_id ();
 		selector_helper *helper () { return _helper; }
-	
+
 	private:
 		QLabel *text;
 		QListView *list;
@@ -89,7 +89,7 @@ template<class TYPE> class sk_win_stuff_select:public selector_base/*{{{*/
 		sk_list_view_item *new_item;
 		sk_list_view_item *unknown_item;
 		db_id result_id;
-	
+
 	private:
 		int setup_columns ();
 		void set_entry (sk_list_view_item *item, TYPE *entry, int num_columns);
@@ -101,10 +101,10 @@ template<class TYPE> class sk_win_stuff_select:public selector_base/*{{{*/
 };
 /*}}}*/
 
-template<class TYPE> sk_win_stuff_select<TYPE>::sk_win_stuff_select (QWidget *parent, const char *name, WFlags f)/*{{{*/
+template<class TYPE> StuffSelectWindow<TYPE>::StuffSelectWindow (QWidget *parent, const char *name, WFlags f)/*{{{*/
 	:selector_base (parent, name, true, f)
 	/*
-	 * Creates a sk_win_stuff_select class.
+	 * Creates a StuffSelectWindow class.
 	 * Parameters:
 	 *   - parent, name, f: passed to the base class constructor.
 	 */
@@ -146,16 +146,16 @@ template<class TYPE> sk_win_stuff_select<TYPE>::sk_win_stuff_select (QWidget *pa
 /*}}}*/
 }/*}}}*/
 
-template<class TYPE> sk_win_stuff_select<TYPE>::~sk_win_stuff_select ()/*{{{*/
+template<class TYPE> StuffSelectWindow<TYPE>::~StuffSelectWindow ()/*{{{*/
 	/*
-	 * Cleans up a sk_win_stuff_select class.
+	 * Cleans up a StuffSelectWindow class.
 	 */
 {
 	delete _helper;
 }
 /*}}}*/
 
-template<class TYPE> void sk_win_stuff_select<TYPE>::slot_ok ()/*{{{*/
+template<class TYPE> void StuffSelectWindow<TYPE>::slot_ok ()/*{{{*/
 	/*
 	 * The OK button was pressed. Close the dialog, accepting.
 	 */
@@ -164,7 +164,7 @@ template<class TYPE> void sk_win_stuff_select<TYPE>::slot_ok ()/*{{{*/
 }
 /*}}}*/
 
-template<class TYPE> void sk_win_stuff_select<TYPE>::slot_double_click (QListViewItem *it, const QPoint &, int)/*{{{*/
+template<class TYPE> void StuffSelectWindow<TYPE>::slot_double_click (QListViewItem *it, const QPoint &, int)/*{{{*/
 	/*
 	 * The list was double clicked.
 	 */
@@ -174,7 +174,7 @@ template<class TYPE> void sk_win_stuff_select<TYPE>::slot_double_click (QListVie
 }
 /*}}}*/
 
-template<class TYPE> string sk_win_stuff_select<TYPE>::selection_result_text (selection_result sr)/*{{{*/
+template<class TYPE> string StuffSelectWindow<TYPE>::selection_result_text (selection_result sr)/*{{{*/
 	/*
 	 * Creates a text describing a selection_result.
 	 * Parameters:
@@ -195,7 +195,7 @@ template<class TYPE> string sk_win_stuff_select<TYPE>::selection_result_text (se
 }
 /*}}}*/
 
-template<class TYPE> db_id sk_win_stuff_select<TYPE>::get_result_id ()/*{{{*/
+template<class TYPE> db_id StuffSelectWindow<TYPE>::get_result_id ()/*{{{*/
 	/*
 	 * Gets the selection result.
 	 * Return value:
@@ -208,7 +208,7 @@ template<class TYPE> db_id sk_win_stuff_select<TYPE>::get_result_id ()/*{{{*/
 
 
 
-template<class TYPE> int sk_win_stuff_select<TYPE>::setup_columns ()/*{{{*/
+template<class TYPE> int StuffSelectWindow<TYPE>::setup_columns ()/*{{{*/
 	/*
 	 * Sets up the list columns.
 	 * Return value:
@@ -227,7 +227,7 @@ template<class TYPE> int sk_win_stuff_select<TYPE>::setup_columns ()/*{{{*/
 }
 /*}}}*/
 
-template<class TYPE> void sk_win_stuff_select<TYPE>::set_entry (sk_list_view_item *item, TYPE *entry, int num_columns)/*{{{*/
+template<class TYPE> void StuffSelectWindow<TYPE>::set_entry (sk_list_view_item *item, TYPE *entry, int num_columns)/*{{{*/
 	/*
 	 * Writes an entry to the list.
 	 * Parameters:
@@ -243,7 +243,7 @@ template<class TYPE> void sk_win_stuff_select<TYPE>::set_entry (sk_list_view_ite
 }
 /*}}}*/
 
-template<class TYPE> selection_result sk_win_stuff_select<TYPE>::do_selection (QString caption_text, QString label_text, QPtrList<TYPE> &stuff_list, db_id preselected)/*{{{*/
+template<class TYPE> selection_result StuffSelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QPtrList<TYPE> &stuff_list, db_id preselected)/*{{{*/
 	/*
 	 * Displays the selector.
 	 * Parameters:

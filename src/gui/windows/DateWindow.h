@@ -1,5 +1,5 @@
-#ifndef sk_win_date_h
-#define sk_win_date_h
+#ifndef _DateWindow_h
+#define _DateWindow_h
 
 #include <qdialog.h>
 #include <qdatetime.h>
@@ -15,13 +15,13 @@ using namespace std;
 /*
  * A date or (date and time) editor window.
  */
-class sk_win_date:public QDialog
+class DateWindow:public QDialog
 {
 	Q_OBJECT
 
 	public:
-		sk_win_date (QWidget *parent, QDate datum);
-		sk_win_date (QWidget *parent, QDateTime dt);
+		DateWindow (QWidget *parent, QDate datum);
+		DateWindow (QWidget *parent, QDateTime dt);
 
 	protected:
 //		void resizeEvent (QResizeEvent *);

@@ -1,11 +1,11 @@
 #include "src/db/sk_db.h"
-#include "src/gui/windows/sk_win_main.h"
+#include "src/gui/windows/MainWindow.h"
 #include "src/config/options.h"
 #include <unistd.h>
 #include "src/plugins/sk_plugin.h"
 #include "src/text.h"
 #include <list>
-#include "src/gui/windows/splash.h"
+#include "src/gui/windows/SplashScreen.h"
 #include "logo.xpm"
 #include <qapplication.h>
 
@@ -59,7 +59,7 @@ int main (int argc, char **argv)
 		//weatherDialog->show ();
 		//return a.exec ();
 
-		sk_win_main w (NULL, &db, &plugins, "sk_win_main", Qt::WType_TopLevel);
+		MainWindow w (NULL, &db, &plugins, "sk_win_main", Qt::WType_TopLevel);
 		a.setMainWidget (&w);
 
 		// Let the plugins initialize

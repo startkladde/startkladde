@@ -1,4 +1,4 @@
-#include "sk_win_stuff_list.h"
+#include "StuffListWindow.h"
 
 #include "qlayout.h"
 
@@ -8,14 +8,14 @@ const int id_mnu_datenbank=0;
 //switch (type)
 //{
 //	case st_none:
-//		log_error ("Invalid type in sk_win_stuff_list:: ()");
+//		log_error ("Invalid type in StuffListWindow:: ()");
 //		break;
 //	case st_plane:
 //		break;
 //	case st_startart:
 //		break;
 //	default:
-//		log_error ("Unhandled type in sk_win_stuff_list:: ()");
+//		log_error ("Unhandled type in StuffListWindow:: ()");
 //		break;
 //}
 ///*}}}*/
@@ -47,8 +47,8 @@ const int ps_spalten=7;/*}}}*/
 
 
 
-sk_win_stuff_list::sk_win_stuff_list (stuff_type t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, splash *spl)/*{{{*/
-	:sk_dialog (parent, name, modal, f), db (_db), type (t), ss (spl)
+StuffListWindow::StuffListWindow (stuff_type t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, ::SplashScreen *spl)/*{{{*/
+	:SkDialog (parent, name, modal, f), db (_db), type (t), ss (spl)
 	/*
 	 * Creates a stuff list instance.
 	 * Parameters:
@@ -60,31 +60,31 @@ sk_win_stuff_list::sk_win_stuff_list (stuff_type t, QWidget *parent, sk_db *_db,
 	QFrame *frame_main=new QFrame (this, "frame_main");
 
 	but_close=new QPushButton (frame_main);
-	but_close->setText ("&Schließen");
+	but_close->setText ("&Schlieï¿½en");
 	QObject::connect (but_close, SIGNAL (clicked ()), this, SLOT (accept ()));
 
 	tab=new sk_table (frame_main);
 	tab->setSorting (true);
 
-	// Menü 'Datenbank'
+	// Menï¿½ 'Datenbank'
 	menu_datenbank = new QPopupMenu (this, "menu_datenbank");
 	menu_datenbank->insertTearOffHandle ();
 	menu_datenbank->insertItem ("&Neu", this, SLOT (slot_neu ()), CTRL+Key_N);
-	menu_datenbank->insertItem ("&Löschen", this, SLOT (slot_loeschen ()), CTRL+Key_L);
+	menu_datenbank->insertItem ("&Lï¿½schen", this, SLOT (slot_loeschen ()), CTRL+Key_L);
 	menu_datenbank->insertItem ("&Editieren", this, SLOT (slot_editieren ()), CTRL+Key_E);
 	menu_datenbank->insertSeparator ();
 	menu_datenbank->insertItem ("Liste aktualisie&ren", this, SLOT (slot_refresh ()), CTRL+Key_R);
 	menu_datenbank->insertSeparator ();
-	menu_datenbank->insertItem ("&Schließen", this, SLOT (accept ()), CTRL+Key_W);
+	menu_datenbank->insertItem ("&Schlieï¿½en", this, SLOT (accept ()), CTRL+Key_W);
 
-	// Menüleiste
+	// Menï¿½leiste
 	menu_bar = new QMenuBar (this, "menu_bar");
 	menu_bar->insertItem ("&Datenbank", menu_datenbank, id_mnu_datenbank);
-	
+
 
 	QObject::connect (tab, SIGNAL (doubleClicked (int, int, int, const QPoint&)), this, SLOT (slot_table_double_click (int, int, int, const QPoint&)));
 	QObject::connect (tab, SIGNAL (key (int)), this, SLOT (slot_table_key (int)));
-//	TODO Kontextmenü
+//	TODO Kontextmenï¿½
 //	QObject::connect (tab, SIGNAL (contextMenuRequested(int,int,const QPoint&)), this, SLOT(slot_table_context (int,int,const QPoint &)));
 
 	setup_controls ();
@@ -103,14 +103,14 @@ sk_win_stuff_list::sk_win_stuff_list (stuff_type t, QWidget *parent, sk_db *_db,
 	layout_but->addWidget (but_close);
 
 
-	editor_fenster=new sk_win_stuff_editor (type, this, db, "editor", true);
+	editor_fenster=new StuffEditWindow (type, this, db, "editor", true);
 	QObject::connect (editor_fenster, SIGNAL (status (QString)), this, SIGNAL (status (QString)));
 	db_connect (editor_fenster);
 
 	resize (780, 540);
 }/*}}}*/
 
-sk_win_stuff_list::~sk_win_stuff_list ()/*{{{*/
+StuffListWindow::~StuffListWindow ()/*{{{*/
 	/*
 	 * Cleans up a stuff list instance.
 	 */
@@ -121,7 +121,7 @@ sk_win_stuff_list::~sk_win_stuff_list ()/*{{{*/
 //		printf ("%d\n", table_header->sectionSize (i));
 }/*}}}*/
 
-sk_table_item *sk_win_stuff_list::set_table_cell (int row, int col, const string &text, QColor bg, db_id id)/*{{{*/
+sk_table_item *StuffListWindow::set_table_cell (int row, int col, const string &text, QColor bg, db_id id)/*{{{*/
 	/*
 	 * Sets a table in the cell to a given text and background color and save an ID.
 	 * Parameters:
@@ -141,7 +141,7 @@ sk_table_item *sk_win_stuff_list::set_table_cell (int row, int col, const string
 
 
 
-int sk_win_stuff_list::add_stuff (stuff_type t, stuff *st)/*{{{*/
+int StuffListWindow::add_stuff (stuff_type t, stuff *st)/*{{{*/
 	/*
 	 * Adds an entry to the list.
 	 * Parameters:
@@ -159,7 +159,7 @@ int sk_win_stuff_list::add_stuff (stuff_type t, stuff *st)/*{{{*/
 	return row;
 }/*}}}*/
 
-void sk_win_stuff_list::stuff_eintragen (stuff_type t, int row, stuff *st)/*{{{*/
+void StuffListWindow::stuff_eintragen (stuff_type t, int row, stuff *st)/*{{{*/
 	/*
 	 * Writes an entry to a given row.
 	 * Parameters:
@@ -204,7 +204,7 @@ void sk_win_stuff_list::stuff_eintragen (stuff_type t, int row, stuff *st)/*{{{*
 	}
 }/*}}}*/
 
-void sk_win_stuff_list::list_stuff (stuff_type t)/*{{{*/
+void StuffListWindow::list_stuff (stuff_type t)/*{{{*/
 	/*
 	 * Lists all entries from the database to the table.
 	 * Parameters:
@@ -212,7 +212,7 @@ void sk_win_stuff_list::list_stuff (stuff_type t)/*{{{*/
 	 */
 {
 	QPtrList<stuff> list; list.setAutoDelete (true);
-	
+
 	setup_controls ();
 
 	emit long_operation_start ();
@@ -247,7 +247,7 @@ void sk_win_stuff_list::list_stuff (stuff_type t)/*{{{*/
 	tab->hide ();
 	tab->clear_table ();
 
-	// NB: 10 s für 500 Datensätze, wenn einzeln in der Schleife
+	// NB: 10 s fï¿½r 500 Datensï¿½tze, wenn einzeln in der Schleife
 	int i=0, num=list.count ();
 	tab->insertRows (0, num);
 	for (QPtrListIterator<stuff> item (list); *item; ++i, ++item)
@@ -264,7 +264,7 @@ void sk_win_stuff_list::list_stuff (stuff_type t)/*{{{*/
 
 
 
-int sk_win_stuff_list::stuff_loeschen (stuff_type t, db_id id)/*{{{*/
+int StuffListWindow::stuff_loeschen (stuff_type t, db_id id)/*{{{*/
 	/*
 	 * Deletes an entry from the database.
 	 * Paremters:
@@ -306,7 +306,7 @@ int sk_win_stuff_list::stuff_loeschen (stuff_type t, db_id id)/*{{{*/
 
 
 
-void sk_win_stuff_list::setup_controls ()/*{{{*/
+void StuffListWindow::setup_controls ()/*{{{*/
 	/*
 	 * Sets up the controls to match the current stuff type.
 	 */
@@ -360,7 +360,7 @@ void sk_win_stuff_list::setup_controls ()/*{{{*/
 
 }/*}}}*/
 
-void sk_win_stuff_list::reset ()/*{{{*/
+void StuffListWindow::reset ()/*{{{*/
 	/*
 	 * Resets the dialog to its initial state.
 	 */
@@ -370,7 +370,7 @@ void sk_win_stuff_list::reset ()/*{{{*/
 }/*}}}*/
 
 
-void sk_win_stuff_list::keyPressEvent (QKeyEvent *e)/*{{{*/
+void StuffListWindow::keyPressEvent (QKeyEvent *e)/*{{{*/
 	/*
 	 * Handles key shortcuts.
 	 * Parameters:
@@ -383,24 +383,24 @@ void sk_win_stuff_list::keyPressEvent (QKeyEvent *e)/*{{{*/
 		case Qt::Key_F4: slot_editieren (); break;
 		case Qt::Key_F8: slot_loeschen (); break;
 		case Qt::Key_F12: slot_refresh (); break;
-		case Qt::Key_Escape: 
+		case Qt::Key_Escape:
 			accept ();
 			// Hier nicht ::kPE aufrufen. e->accept () scheint nicht zu
 			// funktionieren.
 			break;
 		case Qt::Key_Return:
-			// MURX: Bei Return spricht sonst der "Schließen"-Button an
+			// MURX: Bei Return spricht sonst der "Schlieï¿½en"-Button an
 			e->accept ();
 			break;
 		default:
 			e->ignore ();
-			sk_dialog::keyPressEvent (e);
+			SkDialog::keyPressEvent (e);
 			break;
 	}
 }/*}}}*/
 
 
-stuff *sk_win_stuff_list::stuff_new (stuff_type t)/*{{{*/
+stuff *StuffListWindow::stuff_new (stuff_type t)/*{{{*/
 	/*
 	 * Creates a new stuff instance. (MURX)
 	 * Parameters:
@@ -428,7 +428,7 @@ stuff *sk_win_stuff_list::stuff_new (stuff_type t)/*{{{*/
 	}
 }/*}}}*/
 
-int sk_win_stuff_list::stuff_aus_id (stuff_type t, stuff *b, db_id id)/*{{{*/
+int StuffListWindow::stuff_aus_id (stuff_type t, stuff *b, db_id id)/*{{{*/
 	/*
 	 * Retrieves a stuff from the database, given its ID.
 	 * Parameters:
@@ -459,7 +459,7 @@ int sk_win_stuff_list::stuff_aus_id (stuff_type t, stuff *b, db_id id)/*{{{*/
 	return -1;
 }/*}}}*/
 
-db_id sk_win_stuff_list::stuff_editieren (stuff_type t, stuff *b)/*{{{*/
+db_id StuffListWindow::stuff_editieren (stuff_type t, stuff *b)/*{{{*/
 	/*
 	 * Writes a stuff to the database.
 	 * Parameters:
@@ -489,7 +489,7 @@ db_id sk_win_stuff_list::stuff_editieren (stuff_type t, stuff *b)/*{{{*/
 	return invalid_id;
 }/*}}}*/
 
-void sk_win_stuff_list::table_activated (int row)/*{{{*/
+void StuffListWindow::table_activated (int row)/*{{{*/
 	/*
 	 * Called when the table is double clicked or enter is pressed.
 	 * Parameters:
@@ -523,7 +523,7 @@ void sk_win_stuff_list::table_activated (int row)/*{{{*/
 	delete p;
 }/*}}}*/
 
-void sk_win_stuff_list::slot_table_double_click (int row, int col, int button, const QPoint &mousePos)/*{{{*/
+void StuffListWindow::slot_table_double_click (int row, int col, int button, const QPoint &mousePos)/*{{{*/
 	/*
 	 * Called when the table is double clicked.
 	 * Parameters:
@@ -535,7 +535,7 @@ void sk_win_stuff_list::slot_table_double_click (int row, int col, int button, c
 	table_activated (row);
 }/*}}}*/
 
-void sk_win_stuff_list::slot_table_key (int key)/*{{{*/
+void StuffListWindow::slot_table_key (int key)/*{{{*/
 	/*
 	 * A key was pressed on the table.
 	 * Parameters:
@@ -556,13 +556,13 @@ void sk_win_stuff_list::slot_table_key (int key)/*{{{*/
 	if (key==Qt::Key_Insert) slot_neu ();
 }/*}}}*/
 
-void sk_win_stuff_list::slot_neu ()/*{{{*/
+void StuffListWindow::slot_neu ()/*{{{*/
 	/*
 	 * Show the user the dialog for a new stuff and add it to the database.
 	*/
 {
 	stuff *s=stuff_new (type);
-	
+
 	int ret=editor_fenster->create (s, true);
 
 	if (ret==QDialog::Accepted)
@@ -577,7 +577,7 @@ void sk_win_stuff_list::slot_neu ()/*{{{*/
 }/*}}}*/
 
 
-bool sk_win_stuff_list::stuff_verwendet (stuff_type type, db_id id)/*{{{*/
+bool StuffListWindow::stuff_verwendet (stuff_type type, db_id id)/*{{{*/
 	/*
 	 * Determine from the database wheter the stuff has a flight.
 	 * Parameters:
@@ -608,7 +608,7 @@ bool sk_win_stuff_list::stuff_verwendet (stuff_type type, db_id id)/*{{{*/
 }
 /*}}}*/
 
-void sk_win_stuff_list::tabelle_loeschen (int row)/*{{{*/
+void StuffListWindow::tabelle_loeschen (int row)/*{{{*/
 	/*
 	 * Removes an entry from the database after checking if that is possible
 	 * and confirming with the user.
@@ -631,12 +631,12 @@ void sk_win_stuff_list::tabelle_loeschen (int row)/*{{{*/
 			}
 			else if (stuff_verwendet (type, id))
 			{
-				show_warning (bez_n+" wird verwendet und kann nicht gelöscht werden.", this);
+				show_warning (bez_n+" wird verwendet und kann nicht gelï¿½scht werden.", this);
 			}
 			else
 			{
-				int res=QMessageBox::information (this, "Wirklich löschen?", 
-					bez_a+" \""+std2q (s->text_name ())+"\" wirklich löschen?", "&Ja", "&Nein", QString::null, 0, 1);
+				int res=QMessageBox::information (this, "Wirklich lï¿½schen?",
+					bez_a+" \""+std2q (s->text_name ())+"\" wirklich lï¿½schen?", "&Ja", "&Nein", QString::null, 0, 1);
 
 				delete s;
 
@@ -645,9 +645,9 @@ void sk_win_stuff_list::tabelle_loeschen (int row)/*{{{*/
 					res=stuff_loeschen (type, id);
 					if (res<0)
 					{
-						// Löschen hat nicht geklappt
+						// Lï¿½schen hat nicht geklappt
 						QMessageBox::warning (this, "Fehler",
-							"Fehler beim Löschen: "+std2q (db->db_error_description (res)), QMessageBox::Ok, QMessageBox::NoButton);
+							"Fehler beim Lï¿½schen: "+std2q (db->db_error_description (res)), QMessageBox::Ok, QMessageBox::NoButton);
 					}
 				}
 			}
@@ -659,7 +659,7 @@ void sk_win_stuff_list::tabelle_loeschen (int row)/*{{{*/
 	}
 }/*}}}*/
 
-void sk_win_stuff_list::slot_loeschen ()/*{{{*/
+void StuffListWindow::slot_loeschen ()/*{{{*/
 	/*
 	 * The "delete" menu entry was selected.
 	 */
@@ -667,7 +667,7 @@ void sk_win_stuff_list::slot_loeschen ()/*{{{*/
 	tabelle_loeschen (tab->currentRow ());
 }/*}}}*/
 
-void sk_win_stuff_list::slot_refresh ()/*{{{*/
+void StuffListWindow::slot_refresh ()/*{{{*/
 	/*
 	 * The "refresh" menu entry was selected. Refreshes the table.
 	 */
@@ -682,7 +682,7 @@ void sk_win_stuff_list::slot_refresh ()/*{{{*/
 }/*}}}*/
 
 
-void sk_win_stuff_list::liste ()/*{{{*/
+void StuffListWindow::liste ()/*{{{*/
 	/*
 	 * Displays the dialog.
 	 */
@@ -691,7 +691,7 @@ void sk_win_stuff_list::liste ()/*{{{*/
 	show ();
 }/*}}}*/
 
-void sk_win_stuff_list::slot_db_update (db_event *event)/*{{{*/
+void StuffListWindow::slot_db_update (db_event *event)/*{{{*/
 	/*
 	 * The database changed. Update the table, if appropriate.
 	 * Parameters:
@@ -726,7 +726,7 @@ void sk_win_stuff_list::slot_db_update (db_event *event)/*{{{*/
 			int row=tab->row_from_column_id (event->id, 0);
 			if (row<0)
 			{
-				// Steht nicht in der Tabelle? Uh-oh, dann war die Tabelle unvollständig.
+				// Steht nicht in der Tabelle? Uh-oh, dann war die Tabelle unvollstï¿½ndig.
 				log_error ("det_change in sk_win_stuff_list::slot_db_update (), aber id steht nicht in der Tabelle");
 				add_stuff (type, s);
 			}
@@ -736,7 +736,7 @@ void sk_win_stuff_list::slot_db_update (db_event *event)/*{{{*/
 				stuff_eintragen (type, row, s);
 			}
 		}/*}}}*/
-		
+
 		if (event->type==det_delete && event->id>0)/*{{{*/
 		{
 			int row=tab->row_from_column_id (event->id, 0);
@@ -749,12 +749,12 @@ void sk_win_stuff_list::slot_db_update (db_event *event)/*{{{*/
 		delete s;
 	}
 
-	sk_dialog::slot_db_update (event);
+	SkDialog::slot_db_update (event);
 }/*}}}*/
 
 
 
-void sk_win_stuff_list::slot_ok ()/*{{{*/
+void StuffListWindow::slot_ok ()/*{{{*/
 	/*
 	 * The OK button was pressed. Close the dialog, returning the current row.
 	 */
@@ -762,7 +762,7 @@ void sk_win_stuff_list::slot_ok ()/*{{{*/
 	done (tab->currentRow ());
 }/*}}}*/
 
-void sk_win_stuff_list::slot_abbrechen ()/*{{{*/
+void StuffListWindow::slot_abbrechen ()/*{{{*/
 	/*
 	 * The Cancel button was pressed. Close the dialog, returning -1.
 	 */
@@ -770,13 +770,13 @@ void sk_win_stuff_list::slot_abbrechen ()/*{{{*/
 	done (-1);
 }/*}}}*/
 
-void sk_win_stuff_list::slot_editieren ()/*{{{*/
+void StuffListWindow::slot_editieren ()/*{{{*/
 	/*
 	 * The "editieren" menu entry was selected. Edit the currently selected
 	 * entry.
 	 */
 {
-	table_activated (tab->currentRow ()); 
+	table_activated (tab->currentRow ());
 }
 /*}}}*/
 

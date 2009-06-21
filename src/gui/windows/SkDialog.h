@@ -1,5 +1,5 @@
-#ifndef sk_dialog_h
-#define sk_dialog_h
+#ifndef _SkDialog_h
+#define _SkDialog_h
 
 #include <qnamespace.h>
 #include <qdialog.h>
@@ -9,12 +9,12 @@
 using namespace std;
 using namespace Qt;
 
-class sk_dialog:public QDialog
+class SkDialog:public QDialog
 {
 	Q_OBJECT
 
 	public:
-		sk_dialog (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog=NULL);
+		SkDialog (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog=NULL);
 
 		void db_connect (QObject *);
 

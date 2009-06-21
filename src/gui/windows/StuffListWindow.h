@@ -1,5 +1,5 @@
-#ifndef sk_win_stuff_list_h
-#define sk_win_stuff_list_h
+#ifndef _StuffListWindow_h
+#define _StuffListWindow_h
 
 #include <qpushbutton.h>
 #include <qmenubar.h>
@@ -19,11 +19,13 @@
 #include "src/data_types.h"
 #include "src/model/stuff.h"
 #include "src/gui/widgets/sk_table.h"
-#include "src/gui/windows/sk_win_stuff_editor.h"
-#include "src/gui/windows/sk_dialog.h"
+#include "src/gui/windows/StuffEditWindow.h"
+#include "src/gui/windows/SkDialog.h"
 #include "src/db/db_event.h"
 #include "src/db/sk_db.h"
-#include "src/gui/windows/splash.h"
+#include "src/gui/windows/SplashScreen.h"
+
+class SplashScreen;
 
 using namespace std;
 
@@ -35,15 +37,15 @@ const QColor col_default=QColor (255, 255, 255);
  * of all the swich ()es.
  */
 
-class sk_win_stuff_list:public sk_dialog
+class StuffListWindow:public SkDialog
 {
 	Q_OBJECT
 
 	public:
-		sk_win_stuff_list (stuff_type, QWidget *parent, sk_db *_db, const char *name=NULL, bool modal=FALSE, WFlags f=0, splash *spl=NULL);
-		~sk_win_stuff_list ();
+		StuffListWindow (stuff_type, QWidget *parent, sk_db *_db, const char *name=NULL, bool modal=FALSE, WFlags f=0, ::SplashScreen *spl=NULL);
+		~StuffListWindow ();
 		void liste ();
-	
+
 	private:
 		sk_db *db;
 		stuff_type type;
@@ -58,18 +60,18 @@ class sk_win_stuff_list:public sk_dialog
 		int stuff_aus_id (stuff_type, stuff *, db_id id);
 		db_id stuff_editieren (stuff_type t, stuff *b);
 		int stuff_loeschen (stuff_type t, db_id id);
-		
+
 		stuff *stuff_new (stuff_type t);
 		QMenuBar *menu_bar;
 		QPopupMenu *menu_datenbank;
 
-		sk_win_stuff_editor *editor_fenster;
+		StuffEditWindow *editor_fenster;
 
-		splash *ss;
-	
+		::SplashScreen *ss;
+
 	protected:
 		void keyPressEvent (QKeyEvent *e);
-	
+
 	private:
 		void table_activated (int row);
 		void tabelle_loeschen (int row);
@@ -85,7 +87,7 @@ class sk_win_stuff_list:public sk_dialog
 		void slot_ok ();
 		void slot_abbrechen ();
 		void slot_editieren ();
-	
+
 	public slots:
 		void slot_db_update (db_event *);
 };
