@@ -1,27 +1,23 @@
 #ifndef _StatisticsWindow_h
 #define _StatisticsWindow_h
 
-#include <qdialog.h>
-#include <qpushbutton.h>
+#include <QApplication>
+#include <QDialog>
+#include <QPushButton>
+#include <Qt3Support> // XXX
+#define QPtrList Q3PtrList
 
+#include "src/data_types.h"
+#include "src/db/sk_db.h"
 #include "src/gui/spacing.h"
+#include "src/gui/widgets/SkTable.h"
+#include "src/gui/widgets/SkTableItem.h"
+#include "src/gui/windows/SkDialog.h"
 #include "src/model/sk_flug.h"
 #include "src/model/sk_flugzeug.h"
 #include "src/model/sk_person.h"
-#include "src/gui/widgets/SkTableItem.h"
-#include "src/data_types.h"
-#include "src/gui/widgets/SkTable.h"
-#include "src/db/sk_db.h"
-#include "src/gui/windows/SkDialog.h"
-#include <qapplication.h>
 #include "src/statistics/bordbuch.h"
 #include "src/statistics/flugbuch.h"
-
-// Qt3:
-//#include "qptrlist.h"
-// Qt4:
-#include <Qt3Support>
-#define QPtrList Q3PtrList
 
 using namespace std;
 

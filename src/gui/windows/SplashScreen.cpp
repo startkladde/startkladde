@@ -1,5 +1,7 @@
 #include "SplashScreen.h"
 
+#include <QKeyEvent>
+
 #include "src/text.h"
 
 // TODO multiple lines in message area

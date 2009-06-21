@@ -1,6 +1,7 @@
 #include "FlightWindow.h"
-#include <qlayout.h>
-#include <qapplication.h>
+
+#include <QLayout>
+#include <QApplication>
 
 #define printSizeHint(w) do { QSize size=w->sizeHint (); cout << #w " size hint: " << size.width () << "x" << size.height () << endl; } while (0)
 

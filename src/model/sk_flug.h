@@ -1,20 +1,21 @@
 #ifndef sk_flug_h
 #define sk_flug_h
 
-#include <string>
 #include <sstream>
+#include <string>
 
-#include "src/time/sk_time.h"
+#include <QDateTime>
+
+#include "src/accessor.h"
 #include "src/data_types.h"
+#include "src/text.h"
 #include "src/gui/dialogs.h"
 #include "src/gui/settings.h"
-#include "src/text.h"
-#include "qdatetime.h"
-#include "src/time/sk_time_t.h"
 #include "src/model/sk_flugzeug.h"
-#include "src/model/startart_t.h"
 #include "src/model/sk_person.h"
-#include "src/accessor.h"
+#include "src/model/startart_t.h"
+#include "src/time/sk_time.h"
+#include "src/time/sk_time_t.h"
 
 using namespace std;
 

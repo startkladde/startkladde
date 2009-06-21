@@ -1,5 +1,7 @@
 #include "text.h"
+
 #include <list>
+
 #include <stdlib.h>
 
 const string whitespace=" \t\r\n";

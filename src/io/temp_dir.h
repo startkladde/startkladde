@@ -7,8 +7,9 @@
  * 2005-02-12
  */
 
+#include <cstring>
 #include <string>
-#include <string.h>
+
 #include "src/accessor.h"
 #include "src/sk_exception.h"
 

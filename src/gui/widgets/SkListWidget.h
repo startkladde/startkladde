@@ -6,7 +6,8 @@
  * martin
  * 2008-07-21
  */
-#include <qlistwidget.h>
+
+#include <QListWidget>
 
 using namespace std;
 

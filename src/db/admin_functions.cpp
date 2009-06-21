@@ -1,8 +1,9 @@
 #include "admin_functions.h"
 
-#include "src/db/db_table.h"
-#include "src/db/db_column.h"
 #include <algorithm>
+
+#include "src/db/db_column.h"
+#include "src/db/db_table.h"
 
 void initialize_database (sk_db &root_db, string _username, string _userpass, string _database, string _sk_admin_name, string _sk_admin_password)/*{{{*/
 	throw (sk_db::ex_init_failed, sk_db::ex_not_connected, sk_db::ex_access_denied, sk_db::ex_parameter_error)

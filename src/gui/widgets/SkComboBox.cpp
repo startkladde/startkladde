@@ -1,8 +1,9 @@
 #include "SkComboBox.h"
 
 #include <iostream>
-#include <QtCore/QtDebug>
-#include <QtGui/QCompleter>
+
+#include <QCompleter>
+#include <QtDebug> // XXX
 
 /**
   * Constructs a SkComboBox instance.

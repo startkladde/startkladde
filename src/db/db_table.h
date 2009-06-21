@@ -7,9 +7,10 @@
  * 2004-12-13
  */
 
-#include "src/db/db_column.h"
-#include <list>
 #include <iostream>
+#include <list>
+
+#include "src/db/db_column.h"
 
 using namespace std;
 

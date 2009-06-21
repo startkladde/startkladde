@@ -4,8 +4,9 @@
 #include <cstdio>
 #include <string>
 
+#include <QString>
+
 #include <mysql.h>
-#include <qstring.h>
 
 #include "src/logging/messages.h"
 

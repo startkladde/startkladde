@@ -6,14 +6,15 @@
  * martin
  * 2004-10-18
  */
-#include <qlistview.h>
-#include <qstring.h>
-#include "src/db/db_types.h"
 
-// Qt4
+#include <QListView>
+#include <QString>
+// XXX
 #include <Qt3Support>
 #define QListView Q3ListView
 #define QListViewItem Q3ListViewItem
+
+#include "src/db/db_types.h"
 
 using namespace std;
 

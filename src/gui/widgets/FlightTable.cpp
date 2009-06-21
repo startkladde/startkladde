@@ -1,7 +1,7 @@
 #include "FlightTable.h"
 
-#include <qapplication.h>
-#include <qfontmetrics.h>
+#include <QApplication>
+#include <QFontMetrics>
 
 #include "src/color.h"
 

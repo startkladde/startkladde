@@ -2,21 +2,22 @@
 #define _StuffEditWindow_h
 
 #include <cstdio>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qmessagebox.h>
-#include <qvalidator.h>
 
-#include "src/gui/widgets/SkComboBox.h"
-#include "src/gui/widgets/SkTextBox.h"
-#include "src/model/sk_flugzeug.h"
-#include "src/logging/messages.h"
-#include "src/gui/spacing.h"
+#include <QLabel>
+#include <QPushButton>
+#include <QMessageBox>
+#include <QValidator>
+
 #include "src/text.h"
-#include "src/model/stuff.h"
-#include "src/gui/windows/SkDialog.h"
 #include "src/db/db_event.h"
 #include "src/db/sk_db.h"
+#include "src/gui/spacing.h"
+#include "src/gui/widgets/SkComboBox.h"
+#include "src/gui/widgets/SkTextBox.h"
+#include "src/gui/windows/SkDialog.h"
+#include "src/logging/messages.h"
+#include "src/model/sk_flugzeug.h"
+#include "src/model/stuff.h"
 
 using namespace std;
 

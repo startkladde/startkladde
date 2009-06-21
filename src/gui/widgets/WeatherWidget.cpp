@@ -1,9 +1,10 @@
 #include "WeatherWidget.h"
 
-#include <qpainter.h>
-#include <qmovie.h>
-#include <qregexp.h>
-#include <qevent.h>
+#include <QEvent>
+#include <QMovie>
+#include <QPainter>
+#include <QRegExp>
+#include <QResizeEvent>
 
 #include "src/config/options.h"
 

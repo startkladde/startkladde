@@ -1,11 +1,12 @@
 #ifndef stuff_h
 #define stuff_h
 
-#include "src/data_types.h"
-#include <string>
 #include <iostream>
-#include "src/db/db_types.h"
+#include <string>
+
+#include "src/data_types.h"
 #include "src/text.h"
+#include "src/db/db_types.h"
 
 using namespace std;
 

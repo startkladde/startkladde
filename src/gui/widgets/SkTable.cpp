@@ -1,5 +1,6 @@
 #include "SkTable.h"
-#include <qapplication.h>
+
+#include <QApplication>
 
 SkTable::SkTable (QWidget *parent, const char *name)/*{{{*/
 	:QTable (parent, name)

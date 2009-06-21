@@ -6,8 +6,8 @@
  * martin
  * 2005-02-04
  */
-#include <qlabel.h>
-#include <qcolor.h>
+#include <QLabel>
+#include <QColor>
 
 using namespace std;
 

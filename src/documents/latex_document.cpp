@@ -1,10 +1,12 @@
 #include "latex_document.h"
 
-#include "src/text.h"
-#include "malloc.h"
-#include "unistd.h"
 #include <fstream>
 #include <sstream>
+
+#include "malloc.h"
+#include "unistd.h"
+
+#include "src/text.h"
 
 string latex_document::package::make_use_clause () const/*{{{*/
 {

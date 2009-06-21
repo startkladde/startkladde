@@ -1,6 +1,6 @@
 #include "WeatherDialog.h"
 
-#include <QtGui/QMovie>
+#include <QMovie>
 
 WeatherDialog::WeatherDialog (sk_plugin *_plugin, QWidget *parent, const char *name)/*{{{*/
 	:QDialog (parent, name)

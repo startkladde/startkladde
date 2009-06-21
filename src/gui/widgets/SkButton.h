@@ -1,7 +1,7 @@
 #ifndef _SkButton_h
 #define _SkButton_h
 
-#include <qpushbutton.h>
+#include <QPushButton>
 
 #include "src/data_types.h"
 #include "src/db/db_types.h"

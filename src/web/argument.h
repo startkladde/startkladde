@@ -7,10 +7,11 @@
  * 2004-12-29
  */
 
-#include "src/accessor.h"
-#include <string>
-#include <list>
 #include <iostream>
+#include <list>
+#include <string>
+
+#include "src/accessor.h"
 
 // TODO split in two files
 

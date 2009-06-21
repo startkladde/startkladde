@@ -1,12 +1,12 @@
 #ifndef _DateWindow_h
 #define _DateWindow_h
 
-#include <qdialog.h>
-#include <qdatetime.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qdatetimeedit.h>
-#include <QtGui/QDateEdit>
+#include <QDateEdit>
+#include <QDateTime>
+#include <QDateTimeEdit>
+#include <QDialog>
+#include <QLabel>
+#include <QPushButton>
 
 #include "src/gui/spacing.h"
 

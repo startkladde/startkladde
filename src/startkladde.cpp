@@ -1,13 +1,15 @@
+#include <list>
+#include <unistd.h>
+
+#include <QApplication>
+
+#include "logo.xpm"
+#include "src/text.h"
+#include "src/config/options.h"
 #include "src/db/sk_db.h"
 #include "src/gui/windows/MainWindow.h"
-#include "src/config/options.h"
-#include <unistd.h>
-#include "src/plugins/sk_plugin.h"
-#include "src/text.h"
-#include <list>
 #include "src/gui/windows/SplashScreen.h"
-#include "logo.xpm"
-#include <qapplication.h>
+#include "src/plugins/sk_plugin.h"
 
 // Testen des Wetterplugins
 //#include "WeatherDialog.h"

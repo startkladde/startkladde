@@ -1,17 +1,13 @@
 #ifndef text_h
 #define text_h
 
-//#undef QT_NO_MESSAGEBOX	// HUH?
-//#include <qt.h>
-//#include <qdialog.h>
-#include <qmessagebox.h>
-
+#include <set>
 #include <sstream>
 #include <string>
-#include <set>
 
-#include <qdatetime.h>
-#include <qstring.h>
+#include <QDateTime>
+#include <QMessageBox>
+#include <QString>
 
 #include "src/data_types.h"
 #include "src/db/db_types.h"

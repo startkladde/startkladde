@@ -9,12 +9,12 @@
 
 // Adding an option: see doc/internal/options
 
-// Qt4
+#include <list>
+#include <string>
+
+#include <qdatetime.h>
 #include <qfile.h>
 
-#include <string>
-#include <qdatetime.h>
-#include <list>
 #include "src/plugins/plugin_data_format.h"
 
 using namespace std;

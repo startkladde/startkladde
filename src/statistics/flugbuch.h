@@ -7,21 +7,20 @@
  * 2004-09-28
  */
 
-// Qt3:
-//#include <qptrlist.h>
-// Qt4:
+#include <string>
+
+// XXX
 #include <q3ptrlist.h>
 #define QPtrList Q3PtrList
 #define QPtrListIterator Q3PtrListIterator
+#include <QDateTime>
 
-#include <string>
-#include <qdatetime.h>
-#include "src/model/sk_flugzeug.h"
+#include "src/flight_list.h"
+#include "src/db/sk_db.h"
 #include "src/model/sk_flug.h"
+#include "src/model/sk_flugzeug.h"
 #include "src/model/sk_person.h"
 #include "src/time/sk_time_t.h"
-#include "src/db/sk_db.h"
-#include "src/flight_list.h"
 
 using namespace std;
 

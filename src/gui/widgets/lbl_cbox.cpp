@@ -1,6 +1,7 @@
 #include "lbl_cbox.h"
 
-#include <qlayout.h>
+#include <QLayout>
+
 #include "src/config/options.h"
 
 lbl_cbox::lbl_cbox (const char *text, bool editable, QWidget *parent, const char *name)/*{{{*/

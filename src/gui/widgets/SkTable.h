@@ -1,10 +1,7 @@
 #ifndef _SkTable_h
 #define _SkTable_h
 
-// Qt3:
-//#include <qtable.h>
-// Qt4:
-#include <Qt3Support>
+#include <Qt3Support> // XXX
 #define QHeader Q3Header
 #define QMemArray Q3MemArray
 

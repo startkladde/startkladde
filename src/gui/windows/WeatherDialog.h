@@ -6,9 +6,9 @@
  * martin
  * 2008-02-18
  */
-#include <QtGui/QDialog>
-#include <QtGui/QLayout>
-#include <QtGui/QResizeEvent>
+#include <QDialog>
+#include <QLayout>
+#include <QResizeEvent>
 
 #include "src/gui/widgets/WeatherWidget.h"
 #include "src/plugins/sk_plugin.h"

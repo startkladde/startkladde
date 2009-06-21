@@ -1,8 +1,8 @@
 #ifndef time_functions_h
 #define time_functions_h
 
+#include <ctime>
 #include <string>
-#include <time.h>
 
 using namespace std;
 

@@ -1,15 +1,16 @@
 #ifndef _SplashScreen_h
 #define _SplashScreen_h
 
-#include <qdialog.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qlabel.h>
-#include <qapplication.h>
-#include <qnamespace.h>
 #include <iostream>
-#include <qdesktopwidget.h>
-#include <qevent.h>
+
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QDialog>
+#include <QEvent>
+#include <QLabel>
+#include <QPainter>
+#include <QPixmap>
+
 #include "src/version.h"
 
 using namespace std;

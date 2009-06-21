@@ -1,18 +1,15 @@
 #ifndef _SkTableItem_h
 #define _SkTableItem_h
 
-// Qt3
-//#include <qtable.h>
-
-#include <Qt3Support>
+#include <Qt3Support> // XXX
 #define QTableItem Q3TableItem
 #define QTable Q3Table
 
 #include <cstdio>
 #include <string>
-#include "src/db/sk_db.h"
 
 #include "src/data_types.h"
+#include "src/db/sk_db.h"
 
 using namespace std;
 

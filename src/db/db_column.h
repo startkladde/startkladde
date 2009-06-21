@@ -7,10 +7,12 @@
  * 2004-12-12
  */
 
-#include <string>
-#include "src/text.h"
 #include <iostream>
+#include <string>
+
 #include <mysql.h>
+
+#include "src/text.h"
 
 using namespace std;
 

@@ -7,12 +7,14 @@
  * 2004-10-20
  */
 
-#include "src/db/db_types.h"
 #include <string>
-#include "src/model/stuff.h"
-#include <qstringlist.h>
+
+#include <QStringList> // XXX
+
 #include "src/text.h"
+#include "src/db/db_types.h"
 #include "src/logging/messages.h"
+#include "src/model/stuff.h"
 
 using namespace std;
 

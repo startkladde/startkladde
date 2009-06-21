@@ -1,22 +1,19 @@
 #ifndef _StuffSelectWindow_h
 #define _StuffSelectWindow_h
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qlistview.h>
-#include <qlayout.h>
+#include <QPushButton>
+#include <QLabel>
+#include <QListView>
+#include <QLayout>
 
-// Qt3:
-//#include <qvbox.h>
-//#include <qhbox.h>
-// Qt4:
+// Qt4: XXX
 #include <Qt3Support>
 #define QPtrList Q3PtrList
 #define QPtrListIterator Q3PtrListIterator
 
 #include "src/data_types.h"
-#include "src/gui/windows/SkDialog.h"
 #include "src/gui/sk_list_view_item.h"
+#include "src/gui/windows/SkDialog.h"
 #include "src/model/stuff.h"
 
 using namespace std;

@@ -1,8 +1,7 @@
 #ifndef _SkDialog_h
 #define _SkDialog_h
 
-#include <qnamespace.h>
-#include <qdialog.h>
+#include <QDialog>
 
 #include "src/db/db_event.h"
 

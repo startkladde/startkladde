@@ -1,8 +1,8 @@
 #include "AcpiWidget.h"
 
-#include <qdebug.h>
-#include <qpalette.h>
-#include <qcolor.h>
+#include <QDebug> // XXX
+#include <QPalette>
+#include <QColor>
 
 extern "C" {
 #include <libacpi.h>

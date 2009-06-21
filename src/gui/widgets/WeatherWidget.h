@@ -6,10 +6,10 @@
  * martin
  * 2008-02-15
  */
-#include <qlabel.h>
-#include <qimage.h>
-#include <qpixmap.h>
-#include <qimagereader.h>
+#include <QLabel>
+#include <QImage>
+#include <QPixmap>
+#include <QImageReader>
 
 using namespace std;
 

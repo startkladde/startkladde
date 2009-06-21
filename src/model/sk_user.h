@@ -10,6 +10,7 @@
 using namespace std;
 
 #include <string>
+
 #include "src/db/db_types.h"
 
 class sk_user

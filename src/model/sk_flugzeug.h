@@ -1,9 +1,10 @@
 #ifndef sk_flugzeug_h
 #define sk_flugzeug_h
 
-#include <string>
-#include "src/data_types.h"
 #include <cstdio>
+#include <string>
+
+#include "src/data_types.h"
 #include "src/model/stuff.h"
 
 using namespace std;

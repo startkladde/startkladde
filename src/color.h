@@ -1,7 +1,7 @@
 #ifndef color_h
 #define color_h
 
-#include <qcolor.h>
+#include <QColor>
 
 #include "src/model/sk_flug.h"
 

@@ -2,16 +2,18 @@
 #define sk_time_t_h
 
 #ifndef _SVID_SOURCE
-	#define _SVID_SOURCE	// braucht man f�r timegm () und timelocal ()
+	#define _SVID_SOURCE	// braucht man für timegm () und timelocal ()
 #endif
 #ifndef _XOPEN_SOURCE
-	#define _XOPEN_SOURCE	// braucht man f�r strptime ()
+	#define _XOPEN_SOURCE	// braucht man für strptime ()
 #endif
 
-#include <time.h>
-#include <string>
 #include <cstdio>
-#include <qdatetime.h>
+#include <ctime>
+#include <string>
+
+#include <QDateTime>
+
 #include "src/logging/messages.h"
 #include "src/time/time_functions.h"
 

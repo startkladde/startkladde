@@ -11,22 +11,13 @@
 #include <iostream>
 #include <cstdio>
 #include <fstream>
+
+#include <QLabel>
+#include <QObject>
+#include <QToolTip>
+#include <QProcess>
+
 #include "src/accessor.h"
-
-#include <qlabel.h>
-
-// Qt3:
-//#include <qprocess.h>
-// Qt4:
-//#include <Qt3Support>
-
-#include <qobject.h>
-
-#include <qtooltip.h>
-#include <qprocess.h>
-
-// Qt4:
-//#define QProcess Q3Process
 
 using namespace std;
 

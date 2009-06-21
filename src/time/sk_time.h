@@ -1,8 +1,8 @@
 #ifndef sk_time_h
 #define sk_time_h
 
-#include <qdatetime.h>
-#include <qstring.h>
+#include <QDateTime>
+#include <QString>
 
 using namespace std;
 

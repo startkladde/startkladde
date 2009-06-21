@@ -1,34 +1,31 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "src/version.h"
-#include "src/accessor.h"
-#include "src/web/argument.h"
-#include "src/text.h"
-#include "src/web/web_session.h"
-#include "src/db/sk_db.h"
-#include "src/io/io.h"
-#include "src/config/options.h"
 
-// Qt3:
-//#include <qptrlist.h>
-// Qt4:
-#include <Qt3Support>
+#include <Qt3Support> // XXX
 #define QPtrList Q3PtrList
 #define QPtrListIterator Q3PtrListIterator
 
+#include "src/accessor.h"
+#include "src/object_field.h"
+#include "src/text.h"
+#include "src/version.h"
+#include "src/config/options.h"
+#include "src/db/sk_db.h"
+#include "src/documents/latex_document.h"
+#include "src/documents/table.h"
+#include "src/io/io.h"
+#include "src/model/sk_user.h"
+#include "src/plugins/plugin_data_format.h"
+#include "src/statistics/bordbuch.h"
+#include "src/statistics/flugbuch.h"
+#include "src/time/sk_date.h"
+#include "src/web/argument.h"
 #include "src/web/html_document.h"
 #include "src/web/http_document.h"
-#include "src/web/what_next.h"
-#include "src/model/sk_user.h"
-#include "src/object_field.h"
 #include "src/web/mime_header.h"
-#include "src/documents/table.h"
-#include "src/time/sk_date.h"
-#include "src/statistics/flugbuch.h"
-#include "src/statistics/bordbuch.h"
-#include "src/documents/latex_document.h"
-#include "src/plugins/plugin_data_format.h"
+#include "src/web/web_session.h"
+#include "src/web/what_next.h"
 
 // Places that need to be changed when adding a web interface state are marked
 // with _STATE_

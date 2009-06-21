@@ -7,9 +7,7 @@
  * 2004-10-26
  */
 
-//Qt3:
-//#include <qptrlist.h>
-//Qt4:
+// XXX
 #include <q3ptrlist.h>
 #include <q3ptrcollection.h>
 #define QPtrCollection Q3PtrCollection
@@ -19,9 +17,6 @@
 
 using namespace std;
 
-// Qt3:
-//class flight_list:public QPtrList<sk_flug>
-// Qt4:
 class flight_list:public Q3PtrList<sk_flug>
 {
 	public:

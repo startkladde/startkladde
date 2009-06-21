@@ -1,8 +1,10 @@
 #include "argument.h"
 
-#include "src/text.h"
 #include <fstream>
+
 #include <errno.h>
+
+#include "src/text.h"
 
 
 // ***** Argument

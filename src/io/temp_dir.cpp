@@ -1,9 +1,10 @@
 #include "temp_dir.h"
 
+#include <iostream>
+
 #include "errno.h"
 #include "malloc.h"
 #include "stdlib.h"
-#include <iostream>
 
 temp_dir::temp_dir (const string &id)/*{{{*/
 	throw (ex_create_error)

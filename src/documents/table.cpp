@@ -1,8 +1,8 @@
 #include "table.h"
 
-#include <sstream>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <sstream>
 
 enum csv_parser_state { ps_first_data, ps_data, ps_quoted_data, ps_quoted_quote, ps_end };
 

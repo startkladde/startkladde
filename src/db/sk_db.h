@@ -6,30 +6,27 @@
 
 #include <mysql.h>
 
-//Qt3:
-//#include <qptrlist.h>
-//Qt4:
+// XXX
 #include <q3ptrlist.h>
 #include <q3valuelist.h>
 #define QPtrList Q3PtrList
 #define QValueList Q3ValueList
-
 #include <qstringlist.h>
 
 #include "src/accessor.h"
 #include "src/condition_t.h"
 #include "src/data_types.h"
+#include "src/flight_list.h"
+#include "src/sk_exception.h"
+#include "src/config/options.h"
 #include "src/db/db_column.h"
 #include "src/db/db_table.h"
 #include "src/db/db_types.h"
-#include "src/sk_exception.h"
 #include "src/model/sk_flug.h"
 #include "src/model/sk_flugzeug.h"
 #include "src/model/sk_person.h"
-#include "src/model/startart_t.h"
-#include "src/config/options.h"
 #include "src/model/sk_user.h"
-#include "src/flight_list.h"
+#include "src/model/startart_t.h"
 
 using namespace std;
 

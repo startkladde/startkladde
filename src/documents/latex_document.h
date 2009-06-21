@@ -9,10 +9,11 @@
 
 #include <iostream>
 #include <sstream>
-#include "src/documents/table.h"
 #include <set>
-#include "src/io/temp_dir.h"
+
 #include "src/sk_exception.h"
+#include "src/documents/table.h"
+#include "src/io/temp_dir.h"
 
 using namespace std;
 

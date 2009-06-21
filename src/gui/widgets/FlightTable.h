@@ -1,21 +1,16 @@
 #ifndef _FlightTable_h
 #define _FlightTable_h
 
-// Qt3:
-//#include <qmemarray.h>
-// Qt4:
-//#include <q3memarray.h>
-#include <Qt3Support>
-#include <qsettings.h>
-// #include <qtimer.h>
+#include <Qt3Support> // XXX
+#include <QSettings>
 
-#include "src/model/sk_flug.h"
-#include "src/gui/widgets/SkTableItem.h"
-#include "src/gui/widgets/SkButton.h"
 #include "src/data_types.h"
 #include "src/db/db_proxy.h"
-#include "src/gui/widgets/SkTable.h"
 #include "src/db/sk_db.h"
+#include "src/gui/widgets/SkButton.h"
+#include "src/gui/widgets/SkTable.h"
+#include "src/gui/widgets/SkTableItem.h"
+#include "src/model/sk_flug.h"
 #include "src/model/startart_t.h"
 #include "src/time/sk_time_t.h"
 

@@ -1,12 +1,13 @@
 #ifndef condition_t_h
 #define condition_t_h
 
-#include "src/data_types.h"
-
-#include "src/time/sk_time_t.h"
 #include <string>
-#include <qdatetime.h>
+
+#include <QDateTime>
+
+#include "src/data_types.h"
 #include "src/db/db_types.h"
+#include "src/time/sk_time_t.h"
 
 /*
  * condition_t

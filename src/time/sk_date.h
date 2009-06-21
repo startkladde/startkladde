@@ -8,8 +8,10 @@
  */
 
 #include <string>
+
+#include <QDateTime>
+
 #include "src/accessor.h"
-#include <qdatetime.h>	// Transitional, remove
 
 using namespace std;
 

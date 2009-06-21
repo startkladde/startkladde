@@ -1,6 +1,6 @@
 #include "StuffListWindow.h"
 
-#include "qlayout.h"
+#include <QLayout>
 
 const int id_mnu_datenbank=0;
 

@@ -2,6 +2,7 @@
 #define version_h
 
 #include <string>
+
 #include "version/version.h"
 
 using namespace std;

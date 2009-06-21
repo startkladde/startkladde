@@ -1,11 +1,12 @@
 #include "options.h"
 
-#include <getopt.h>
-#include <fstream>
 #include <cstdlib>
+#include <fstream>
+
+#include <getopt.h>
+
 #include "src/version.h"
 #include "src/db/sk_db.h"
-
 #include "src/plugins/sk_plugin.h"
 
 const string default_home_config_filename=".startkladde.conf";

@@ -1,10 +1,10 @@
 #include <iostream>
 
+#include "src/version.h"
+#include "src/config/options.h"
+#include "src/db/admin_functions.h"
 #include "src/db/sk_db.h"
 #include "src/io/io.h"
-#include "src/db/admin_functions.h"
-#include "src/config/options.h"
-#include "src/version.h"
 
 void display_help ()/*{{{*/
 {

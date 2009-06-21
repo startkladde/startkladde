@@ -1,41 +1,39 @@
 #ifndef _FlightWindow_h
 #define _FlightWindow_h
 
-#include <qframe.h>
 #include <cstdio>
-#include <qpushbutton.h>
-#include <qdatetimeedit.h>
-#include <qmessagebox.h>
-#include <qvalidator.h>
 #include <unistd.h>
 
-#include <QtGui/QDateEdit>
-#include <QtGui/QListWidget>
+#include <QFrame>
+#include <QPushButton>
+#include <QDateTimeEdit>
+#include <QMessageBox>
+#include <QValidator> // XXX
+#include <QDateEdit>
+#include <QListWidget>
 
-#include <Qt3Support>
+#include <Qt3Support> // XXX
 #define QValueVector Q3ValueVector
 
-
-
-#include "src/gui/widgets/SkComboBox.h"
-#include "src/gui/widgets/SkTextBox.h"
-#include "src/model/sk_flug.h"
-#include "src/model/sk_flugzeug.h"
-#include "src/logging/messages.h"
-#include "src/gui/widgets/sk_time_edit.h"
-#include "src/gui/spacing.h"
-#include "src/text.h"
-#include "src/db/db_proxy.h"
-#include "src/gui/widgets/lbl_cbox.h"
 #include "src/data_types.h"
-#include "src/gui/settings.h"
-#include "src/gui/windows/StuffEditWindow.h"
-#include "src/gui/windows/SkDialog.h"
+#include "src/text.h"
 #include "src/db/db_event.h"
+#include "src/db/db_proxy.h"
 #include "src/db/sk_db.h"
-#include "src/gui/windows/StuffSelectWindow.h"
+#include "src/gui/settings.h"
+#include "src/gui/spacing.h"
+#include "src/gui/widgets/SkComboBox.h"
 #include "src/gui/widgets/SkLabel.h"
 #include "src/gui/widgets/SkListWidget.h"
+#include "src/gui/widgets/SkTextBox.h"
+#include "src/gui/widgets/lbl_cbox.h"
+#include "src/gui/widgets/sk_time_edit.h"
+#include "src/gui/windows/SkDialog.h"
+#include "src/gui/windows/StuffEditWindow.h"
+#include "src/gui/windows/StuffSelectWindow.h"
+#include "src/logging/messages.h"
+#include "src/model/sk_flug.h"
+#include "src/model/sk_flugzeug.h"
 
 using namespace std;
 

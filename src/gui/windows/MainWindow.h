@@ -6,31 +6,31 @@
 #include <string>
 #include <vector>
 
-// Qt4
+// Qt4 XXX
 #include <Qt3Support>
 #define QPopupMenu Q3PopupMenu
 #define QTextEdit Q3TextEdit
 
-#include <qapplication.h>
-#include <qdatetime.h>
-#include <qframe.h>
-#include <qlayout.h>
-#include <qmainwindow.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <qsplitter.h>
-#include <qtextedit.h>
-#include <qtimer.h>
+#include <QApplication>
+#include <QDateTime>
+#include <QFrame>
+#include <QLayout>
+#include <QMainWindow>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QSplitter>
+#include <QTextEdit>
+#include <QTimer>
 
 #include "src/data_types.h"
 #include "src/db/db_types.h"
-#include "src/gui/spacing.h"
-#include "src/logging/messages.h"
 #include "src/gui/settings.h"
-#include "src/plugins/sk_plugin.h"
-#include "src/gui/widgets/WeatherWidget.h"
+#include "src/gui/spacing.h"
 #include "src/gui/widgets/SkLabel.h"
+#include "src/gui/widgets/WeatherWidget.h"
 #include "src/gui/windows/WeatherDialog.h"
+#include "src/logging/messages.h"
+#include "src/plugins/sk_plugin.h"
 
 class db_event;
 class flight;

@@ -1,12 +1,12 @@
 #ifndef sk_time_edit_h
 #define sk_time_edit_h
 
-#include <qframe.h>
-#include <qdatetimeedit.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qdatetime.h>
-#include <QtGui/QTimeEdit>
+#include <QFrame>
+#include <QDateTimeEdit>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QDateTime>
+#include <QTimeEdit>
 
 #include "src/logging/messages.h"
 #include "src/time/sk_time.h"

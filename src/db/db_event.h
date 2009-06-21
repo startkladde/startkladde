@@ -4,6 +4,7 @@
 #include "src/data_types.h"
 #include "src/db/db_types.h"
 
+// XXX
 #define VALUE(x,z) case x: printf (z); break;
 #define DEFAULT default: printf ("???"); break;
 
@@ -17,7 +18,6 @@ class db_event
 		db_event_type type;
 		db_event_table table;
 		db_id id;
-
 };
 
 

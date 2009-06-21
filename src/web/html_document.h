@@ -8,8 +8,9 @@
  */
 
 #include <string>
-#include "src/accessor.h"
 #include <sstream>
+
+#include "src/accessor.h"
 #include "src/text.h"	// TODO move html_escape here?
 #include "src/web/argument.h"
 

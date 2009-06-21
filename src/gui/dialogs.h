@@ -1,7 +1,7 @@
 #ifndef dialogs_h
 #define dialogs_h
 
-#include <qmessagebox.h>
+#include <QMessageBox>
 
 using namespace std;
 

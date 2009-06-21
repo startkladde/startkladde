@@ -1,6 +1,6 @@
 #include "sk_time_edit.h"
 
-#include <qlayout.h>
+#include <QLayout>
 
 // Class management
 sk_time_edit::sk_time_edit (QWidget *parent, const char *name)/*{{{*/

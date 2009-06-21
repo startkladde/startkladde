@@ -3,12 +3,12 @@
 
 #include <string>
 
-#include <qframe.h>
-#include <qlabel.h>
-#include <qstringlist.h>
+#include <QFrame>
+#include <QLabel>
+#include <QStringList> // XXX
 
-#include "src/gui/widgets/SkComboBox.h"
 #include "src/data_types.h"
+#include "src/gui/widgets/SkComboBox.h"
 
 using namespace std;
 

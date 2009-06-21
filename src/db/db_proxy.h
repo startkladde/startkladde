@@ -3,16 +3,15 @@
 
 #include <string>
 
-#include <qdatetime.h>
-#include <qstring.h>
-#include <qcombobox.h>
+#include <QDateTime>
+#include <QString>
+#include <QComboBox>
 
 #include "src/data_types.h"
+#include "src/db/sk_db.h"
 #include "src/logging/messages.h"
 #include "src/model/sk_flugzeug.h"
 #include "src/model/startart_t.h"
-
-#include "sk_db.h"
 
 using namespace std;
 

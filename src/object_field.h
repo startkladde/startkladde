@@ -7,9 +7,10 @@
  * 2005-01-04
  */
 
-#include "src/db/db_types.h"
 #include <string>
+
 #include "src/accessor.h"
+#include "src/db/db_types.h"
 
 using namespace std;
 

@@ -1,29 +1,25 @@
 #ifndef _StuffListWindow_h
 #define _StuffListWindow_h
 
-#include <qpushbutton.h>
-#include <qmenubar.h>
+#include <QPushButton>
+#include <QMenuBar>
 
-// Qt3:
-//#include <qtable.h>
-//#include <qpopupmenu.h>
-// Qt4:
-#include <Qt3Support>
+#include <Qt3Support> // XXX
 #define QPopupMenu Q3PopupMenu
 #define QPtrListIterator Q3PtrListIterator
 
-#include "src/gui/spacing.h"
-#include "src/model/sk_flugzeug.h"
-#include "src/model/sk_person.h"
-#include "src/gui/widgets/SkTableItem.h"
 #include "src/data_types.h"
-#include "src/model/stuff.h"
-#include "src/gui/widgets/SkTable.h"
-#include "src/gui/windows/StuffEditWindow.h"
-#include "src/gui/windows/SkDialog.h"
 #include "src/db/db_event.h"
 #include "src/db/sk_db.h"
+#include "src/gui/spacing.h"
+#include "src/gui/widgets/SkTable.h"
+#include "src/gui/widgets/SkTableItem.h"
+#include "src/gui/windows/SkDialog.h"
 #include "src/gui/windows/SplashScreen.h"
+#include "src/gui/windows/StuffEditWindow.h"
+#include "src/model/sk_flugzeug.h"
+#include "src/model/sk_person.h"
+#include "src/model/stuff.h"
 
 class SplashScreen;
 

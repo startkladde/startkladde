@@ -1,6 +1,7 @@
 #include "object_field.h"
 
 #include <stdlib.h>
+
 #include "src/text.h"
 
 void object_field::parse_text (const string &text)/*{{{*/

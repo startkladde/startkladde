@@ -7,8 +7,8 @@
   * 10.09.2008
   */
 
-#include <qlabel.h>
-#include <qtimer.h>
+#include <QLabel>
+#include <QTimer>
 
 class AcpiWidget: public QLabel
 {

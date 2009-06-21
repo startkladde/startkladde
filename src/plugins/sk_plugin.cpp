@@ -5,9 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
-#include "src/text.h"
 #include <signal.h>
-#include <qtimer.h>
+
+#include <QTimer>
+
+#include "src/text.h"
 #include "src/config/options.h"
 
 

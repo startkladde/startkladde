@@ -4,10 +4,11 @@
 
 #include <cstdio>
 #include <string>
-#include <QtCore/QStringList>
-#include <QtGui/QLineEdit>
-#include <QtGui/QStringListModel>
-#include <QtGui/QComboBox>
+
+#include <QStringList>
+#include <QLineEdit>
+#include <QStringListModel>
+#include <QComboBox>
 
 #include "src/text.h"
 

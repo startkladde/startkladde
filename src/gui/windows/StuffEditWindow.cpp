@@ -1,6 +1,6 @@
 #include "StuffEditWindow.h"
 
-#include <qlayout.h>
+#include <QLayout>
 
 // TODO when creating, set the focus to the first control not yet given (e. g.
 // club).

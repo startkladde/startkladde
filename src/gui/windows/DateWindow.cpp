@@ -1,6 +1,6 @@
 #include "DateWindow.h"
 
-#include <qlayout.h>
+#include <QLayout>
 
 void DateWindow::init_common ()/*{{{*/
 	/*

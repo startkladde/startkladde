@@ -1,5 +1,7 @@
 #include "sk_person.h"
+
 #include <iostream>
+
 #include "src/text.h"
 
 sk_person::sk_person ()/*{{{*/

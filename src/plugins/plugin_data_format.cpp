@@ -1,7 +1,8 @@
 #include "plugin_data_format.h"
 
-#include "src/text.h"
 #include <dlfcn.h>
+
+#include "src/text.h"
 #include "src/config/options.h"
 
 // Construction

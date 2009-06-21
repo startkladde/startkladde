@@ -1,6 +1,6 @@
 #include "StatisticsWindow.h"
 
-#include <qlayout.h>
+#include <QLayout>
 
 // Columns Bordbuch/*{{{*/
 const int tbl_bob_registration=0;

@@ -1,25 +1,25 @@
 #include "MainWindow.h"
 
-#include <qinputdialog.h>
-#include <qpicture.h>
+#include <QInputDialog>
+#include <QPicture>
 
+#include "kvkbd.xpm"
+#include "logo.xpm"
+#include "src/flight_list.h"
+#include "src/config/options.h"
 #include "src/db/admin_functions.h"
 #include "src/db/db_event.h"
-#include "src/flight_list.h"
-#include "logo.xpm"
-#include "kvkbd.xpm"
-#include "src/config/options.h"
 #include "src/db/sk_db.h"
+#include "src/gui/widgets/AcpiWidget.h"
 #include "src/gui/widgets/FlightTable.h"
-#include "src/model/sk_flug.h"
-#include "src/model/sk_flugzeug.h"
 #include "src/gui/windows/DateWindow.h"
 #include "src/gui/windows/FlightWindow.h"
+#include "src/gui/windows/SplashScreen.h"
 #include "src/gui/windows/StatisticsWindow.h"
 #include "src/gui/windows/StuffListWindow.h"
-#include "src/gui/windows/SplashScreen.h"
+#include "src/model/sk_flug.h"
+#include "src/model/sk_flugzeug.h"
 #include "src/time/time_functions.h"
-#include "src/gui/widgets/AcpiWidget.h"
 
 // UI/*{{{*/
 MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, const char *name, WFlags f)/*{{{*/

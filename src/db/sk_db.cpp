@@ -1,21 +1,20 @@
 #include "sk_db.h"
 
-#include "src/text.h"
-#include "src/data_types.h"
-#include <mysqld_error.h>
-#include "src/config/options.h"
+#include <algorithm>
+#include <assert.h>
+#include <sstream>
 
-// Qt3:
-//#include <qptrlist.h>
-// Qt4:
-#include <q3ptrlist.h>
+#include <q3ptrlist.h> // XXX
 #define QPtrList Q3PtrList
 #define QPtrListIterator Q3PtrListIterator
 #define QValueListIterator Q3ValueListIterator
 
-#include <sstream>
-#include <assert.h>
-#include <algorithm>
+#include <mysqld_error.h>
+
+#include "src/text.h"
+#include "src/data_types.h"
+#include "src/config/options.h"
+
 
 
 /*

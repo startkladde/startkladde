@@ -2,7 +2,7 @@
 #define messages_h
 
 #include <cstdio>
-#include <time.h>
+#include <ctime>
 #include <string>
 
 #include "src/io/colors.h"

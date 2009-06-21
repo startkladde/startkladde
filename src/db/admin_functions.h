@@ -2,6 +2,7 @@
 #define admin_functions_h
 
 #include <string>
+
 #include "src/db/sk_db.h"
 
 using namespace std;

@@ -1,4 +1,5 @@
 #include "src/statistics/bordbuch.h"
+
 #include "src/text.h"
 
 bordbuch_entry::bordbuch_entry ()/*{{{*/

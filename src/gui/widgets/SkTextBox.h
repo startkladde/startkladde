@@ -1,9 +1,10 @@
 #ifndef _SkTextBox_h
 #define _SkTextBox_h
 
-#include <Qt3Support>
-#include <qlineedit.h>
 #include <cstdio>
+
+#include <Qt3Support> // XXX
+#include <QLineEdit>
 
 using namespace std;
 

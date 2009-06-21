@@ -1,7 +1,9 @@
-#include "src/version.h"
 #include <iostream>
+
 #include <mysql.h>
+
 #include "src/text.h"
+#include "src/version.h"
 
 void display_version ()
 {
