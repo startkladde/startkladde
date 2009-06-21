@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QListView>
 #include <QLayout>
+#include <QTreeWidget>
 
 // Qt4: XXX
 #include <Qt3Support>
@@ -12,8 +13,8 @@
 #define QPtrListIterator Q3PtrListIterator
 
 #include "src/data_types.h"
-#include "src/gui/widgets/sk_list_view_item.h"
 #include "src/gui/windows/SkDialog.h"
+#include "src/gui/widgets/SkTreeWidgetItem.h"
 #include "src/model/stuff.h"
 
 using namespace std;
@@ -34,7 +35,7 @@ class selector_base:public SkDialog/*{{{*/
 
 		// Problem when there is a TYPE as parameter to one of our redirected slots.
 		virtual void slot_ok ()=0;
-		virtual void slot_double_click (QListViewItem *, const QPoint &, int)=0;
+		virtual void slot_double_click (QTreeWidgetItem *, int)=0;
 };
 /*}}}*/
 
@@ -47,7 +48,7 @@ class selector_helper:public QObject/*{{{*/
 
 	public slots:
 		void slot_ok () { helped->slot_ok (); }
-		void slot_double_click (QListViewItem *item, const QPoint &point, int column) { helped->slot_double_click (item, point, column); }
+		void slot_double_click (QTreeWidgetItem *item, int column) { helped->slot_double_click (item, column); }
 		void reject () { helped->reject (); }
 
 	private:
@@ -80,21 +81,21 @@ template<class TYPE> class StuffSelectWindow:public selector_base/*{{{*/
 
 	private:
 		QLabel *text;
-		QListView *list;
+		QTreeWidget *list;
 		QPushButton *but_ok;
 		QPushButton *but_cancel;
-		sk_list_view_item *new_item;
-		sk_list_view_item *unknown_item;
+		SkTreeWidgetItem *new_item;
+		SkTreeWidgetItem *unknown_item;
 		db_id result_id;
 
 	private:
 		int setup_columns ();
-		void set_entry (sk_list_view_item *item, TYPE *entry, int num_columns);
+		void set_entry (SkTreeWidgetItem *item, TYPE *entry, int num_columns);
 		selector_helper *_helper;
 
 //	private slots:
 		void slot_ok ();
-		void slot_double_click (QListViewItem *, const QPoint &, int);
+		void slot_double_click (QTreeWidgetItem *, int);
 };
 /*}}}*/
 
@@ -113,22 +114,22 @@ template<class TYPE> StuffSelectWindow<TYPE>::StuffSelectWindow (QWidget *parent
 
 	// Create the controls/*{{{*/
 	text=new QLabel ("", this, "text");
-	list=new QListView (this, "list");
+	list=new QTreeWidget (this);
 	but_ok=new QPushButton ("&OK", this, "but_ok");
 	but_cancel=new QPushButton ("&Abbrechen", this, "but_cancel");
 /*}}}*/
 
 	// Setup the controls/*{{{*/
 	list->setAllColumnsShowFocus (true);
-	list->setSorting (-1);
-	list->setSelectionMode (QListView::Single);
+	list->setSortingEnabled (false);
+	list->setSelectionMode (QAbstractItemView::SingleSelection);
 	but_ok->setDefault (true);
 /*}}}*/
 
 	// Connect the signals/*{{{*/
 	QObject::connect (but_ok, SIGNAL (clicked ()), helper (), SLOT (slot_ok ()));
 	QObject::connect (but_cancel, SIGNAL (clicked ()), helper (), SLOT (reject ()));
-	QObject::connect (list, SIGNAL (doubleClicked (QListViewItem *, const QPoint&, int)), helper (), SLOT (slot_double_click (QListViewItem *, const QPoint &, int)));
+	QObject::connect (list, SIGNAL (itemActivated (QTreeWidgetItem *, int)), helper (), SLOT (slot_double_click (QTreeWidgetItem *, int)));
 /*}}}*/
 
 	// Arrange the controls/*{{{*/
@@ -161,7 +162,7 @@ template<class TYPE> void StuffSelectWindow<TYPE>::slot_ok ()/*{{{*/
 }
 /*}}}*/
 
-template<class TYPE> void StuffSelectWindow<TYPE>::slot_double_click (QListViewItem *it, const QPoint &, int)/*{{{*/
+template<class TYPE> void StuffSelectWindow<TYPE>::slot_double_click (QTreeWidgetItem *it, int)/*{{{*/
 	/*
 	 * The list was double clicked.
 	 */
@@ -214,17 +215,23 @@ template<class TYPE> int StuffSelectWindow<TYPE>::setup_columns ()/*{{{*/
 {
 	int i=0;
 	string title;
+
+	QStringList header;
+
 	while (title=TYPE::get_selector_caption (i), !title.empty ())
 	{
-		list->addColumn (std2q (title));
-		i++;
+		header.append (std2q (title));
+		++i;
 	}
+
+	list->setColumnCount(header.size ());
+	list->setHeaderLabels (header);
 
 	return i;
 }
 /*}}}*/
 
-template<class TYPE> void StuffSelectWindow<TYPE>::set_entry (sk_list_view_item *item, TYPE *entry, int num_columns)/*{{{*/
+template<class TYPE> void StuffSelectWindow<TYPE>::set_entry (SkTreeWidgetItem *item, TYPE *entry, int num_columns)/*{{{*/
 	/*
 	 * Writes an entry to the list.
 	 * Parameters:
@@ -257,23 +264,23 @@ template<class TYPE> selection_result StuffSelectWindow<TYPE>::do_selection (QSt
 	text->setText (label_text);
 	if (label_text.isEmpty ()) text->hide ();
 
-	int num_columns=list->columns ();
-	for (int i=0; i<num_columns; i++) list->removeColumn (0);
+	list->setColumnCount (0);
 
-	num_columns=setup_columns ();
+	int num_columns=setup_columns ();
 
-	sk_list_view_item *last_item;
-	unknown_item=last_item=new sk_list_view_item (list, "(Unbekannt)");
-	new_item=last_item=new sk_list_view_item (list, last_item, "(Neu anlegen)");
+	SkTreeWidgetItem *last_item;
+	unknown_item=last_item=new SkTreeWidgetItem (list, "(Unbekannt)");
+	new_item=last_item=new SkTreeWidgetItem (list, last_item, "(Neu anlegen)");
 
-	list->setSelected (unknown_item, true);
+	list->setCurrentItem (unknown_item);
 
 	for (QPtrListIterator<TYPE> it (stuff_list); *it; ++it)
 	{
-		last_item=new sk_list_view_item (list, last_item);
+		last_item=new SkTreeWidgetItem (list, last_item);
 		last_item->id=(*it)->id;
 		set_entry (last_item, *it, num_columns);
-		if (!id_invalid (preselected) && (*it)->id==preselected) list->setSelected (last_item, true);
+		if (!id_invalid (preselected) && (*it)->id==preselected)
+			list->setCurrentItem (last_item);
 	}
 
 	int result=exec ();
@@ -284,17 +291,18 @@ template<class TYPE> selection_result StuffSelectWindow<TYPE>::do_selection (QSt
 	}
 	else
 	{
-		QListViewItem *current_item=list->selectedItem ();
-		if (!current_item)
+//		QTreeWidgetItem *current_item=list->selectedItem ();
+		QList<QTreeWidgetItem *> selected=list->selectedItems ();
+		if (selected.empty ())
 			return sr_none_selected;
-		else if (current_item==new_item)
+		else if (selected[0]==new_item)
 			return sr_new;
-		else if (current_item==unknown_item)
+		else if (selected[0]==unknown_item)
 			return sr_unknown;
 		else
 		{
 			// There may only be sk_list_view_items in the list.
-			result_id=((sk_list_view_item *)current_item)->id;
+			result_id=((SkTreeWidgetItem *)selected[0])->id;
 			return sr_ok;
 		}
 	}
