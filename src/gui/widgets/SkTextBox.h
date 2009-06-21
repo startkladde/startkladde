@@ -3,7 +3,6 @@
 
 #include <cstdio>
 
-#include <Qt3Support> // XXX
 #include <QLineEdit>
 
 using namespace std;
@@ -18,10 +17,6 @@ class SkTextBox:public QLineEdit
 	protected:
 		void focusOutEvent (QFocusEvent *);
 		void focusInEvent (QFocusEvent *);
-
-//	public slots:
-//		void flight_new ();
-//		void flight_land ();
 
 	signals:
 		void focus_out ();

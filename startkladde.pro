@@ -34,7 +34,6 @@ HEADERS += \
            src/documents/table.h \
            src/gui/dialogs.h \
            src/gui/settings.h \
-           src/gui/sk_list_view_item.h \
            src/gui/spacing.h \
            src/gui/widgets/AcpiWidget.h \
            src/gui/widgets/FlightTable.h \
@@ -47,6 +46,7 @@ HEADERS += \
            src/gui/widgets/SkTextBox.h \
            src/gui/widgets/WeatherWidget.h \
            src/gui/widgets/lbl_cbox.h \
+           src/gui/widgets/sk_list_view_item.h \
            src/gui/widgets/sk_time_edit.h \
            src/gui/windows/DateWindow.h \
            src/gui/windows/FlightWindow.h \
@@ -107,12 +107,12 @@ SOURCES += \
            src/documents/table.cpp \
            src/gui/dialogs.cpp \
            src/gui/settings.cpp \
-           src/gui/sk_list_view_item.cpp \
            src/gui/widgets/AcpiWidget.cpp \
            src/gui/widgets/FlightTable.cpp \
            src/gui/widgets/SkButton.cpp \
            src/gui/widgets/SkComboBox.cpp \
            src/gui/widgets/SkLabel.cpp \
+           src/gui/widgets/sk_list_view_item.cpp \
            src/gui/widgets/SkListWidget.cpp \
            src/gui/widgets/SkTable.cpp \
            src/gui/widgets/SkTableItem.cpp \

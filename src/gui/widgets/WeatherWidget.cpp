@@ -36,7 +36,7 @@ bool WeatherWidget::loadImage (const QString &fileName)/*{{{*/
 	QPixmap pixmap (image);
 
 	resize (pixmap.width (), pixmap.height ());
-	// FIXME Pfusch
+	// TODO Pfusch
 //	setFixedWidth (height ()*pixmap.width ()/pixmap.height ());
 	setPixmap (pixmap);
 
@@ -135,7 +135,7 @@ void WeatherWidget::resizeEvent (QResizeEvent *e)/*{{{*/
 
 //////////////////////
 
-// FIXME wenn Bild angezeigt, Bild mitresizen
+// TODO wenn Bild angezeigt, Bild mitresizen
 
 //void WeatherWidget::paintEvent (QPaintEvent *e)/*{{{*/
 //{

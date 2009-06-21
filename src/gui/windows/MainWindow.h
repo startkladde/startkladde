@@ -6,11 +6,6 @@
 #include <string>
 #include <vector>
 
-// Qt4 XXX
-#include <Qt3Support>
-#define QPopupMenu Q3PopupMenu
-#define QTextEdit Q3TextEdit
-
 #include <QApplication>
 #include <QDateTime>
 #include <QFrame>
@@ -151,7 +146,7 @@ class MainWindow:public QMainWindow
 		QMenu *menu_flug, *menu_ansicht, *menu_statistik,
 			*menu_datenbank, *menu_ansicht_fluege, *menu_ansicht_datum, *menu_hilfe,
 			*menu_debug, *menu_demosystem;
-		QPopupMenu *menu_ctx_flug, *menu_ctx_emptyrow;
+		QMenu *menu_ctx_flug, *menu_ctx_emptyrow;
 		QToolBar *toolBar;
 
 		QAction *actionSetTime;

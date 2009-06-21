@@ -1,7 +1,6 @@
 #ifndef _FlightTable_h
 #define _FlightTable_h
 
-#include <Qt3Support> // XXX
 #include <QSettings>
 
 #include "src/data_types.h"

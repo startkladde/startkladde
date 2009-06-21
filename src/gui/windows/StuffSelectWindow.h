@@ -12,7 +12,7 @@
 #define QPtrListIterator Q3PtrListIterator
 
 #include "src/data_types.h"
-#include "src/gui/sk_list_view_item.h"
+#include "src/gui/widgets/sk_list_view_item.h"
 #include "src/gui/windows/SkDialog.h"
 #include "src/model/stuff.h"
 

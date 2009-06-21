@@ -12,9 +12,6 @@
 #include <QDateEdit>
 #include <QListWidget>
 
-#include <Qt3Support> // XXX
-#define QValueVector Q3ValueVector
-
 #include "src/data_types.h"
 #include "src/text.h"
 #include "src/db/db_event.h"
@@ -163,7 +160,7 @@ class FlightWindow:public SkDialog
 		bool check_plane_flying (db_id plane_id, string registration, string description_n);
 
 		// TODO bessere Datenstrukturen...
-		QValueVector<db_id> startarten;	// Startart IDs, same indicies as in edit_startart
+		QVector<db_id> startarten;	// Startart IDs, same indicies as in edit_startart
 		int startart_index (db_id sa);
 		int unknown_startart_index;
 		db_id original_startart;

@@ -8,9 +8,6 @@ SkTextBox::SkTextBox (QWidget *parent, const char *name)/*{{{*/
 	 *   - parent, name: passed on to the QLineEdit constructor.
 	 */
 {
-	// Qt3:
-	//setFocusPolicy (QWidget::StrongFocus);
-	// Qt4:
 	setFocusPolicy (Qt::StrongFocus);
 }
 /*}}}*/
