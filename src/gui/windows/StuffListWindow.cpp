@@ -64,7 +64,7 @@ StuffListWindow::StuffListWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 	QObject::connect (but_close, SIGNAL (clicked ()), this, SLOT (accept ()));
 
 	tab=new SkTable (frame_main);
-	tab->setSorting (true);
+	tab->setSortingEnabled (true);
 
 	// Men� 'Datenbank'
 	menu_datenbank = new QPopupMenu (this, "menu_datenbank");
@@ -82,7 +82,7 @@ StuffListWindow::StuffListWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 	menu_bar->insertItem ("&Datenbank", menu_datenbank, id_mnu_datenbank);
 
 
-	QObject::connect (tab, SIGNAL (doubleClicked (int, int, int, const QPoint&)), this, SLOT (slot_table_double_click (int, int, int, const QPoint&)));
+	QObject::connect (tab, SIGNAL (cellDoubleClicked (int, int)), this, SLOT (slot_table_double_click (int, int)));
 	QObject::connect (tab, SIGNAL (key (int)), this, SLOT (slot_table_key (int)));
 //	TODO Kontextmen�
 //	QObject::connect (tab, SIGNAL (contextMenuRequested(int,int,const QPoint&)), this, SLOT(slot_table_context (int,int,const QPoint &)));
@@ -121,7 +121,7 @@ StuffListWindow::~StuffListWindow ()/*{{{*/
 //		printf ("%d\n", table_header->sectionSize (i));
 }/*}}}*/
 
-sk_table_item *StuffListWindow::set_table_cell (int row, int col, const string &text, QColor bg, db_id id)/*{{{*/
+SkTableItem *StuffListWindow::set_table_cell (int row, int col, const string &text, QColor bg, db_id id)/*{{{*/
 	/*
 	 * Sets a table in the cell to a given text and background color and save an ID.
 	 * Parameters:
@@ -133,8 +133,8 @@ sk_table_item *StuffListWindow::set_table_cell (int row, int col, const string &
 	 *   - a pointer to the newly created table item.
 	 */
 {
-	sk_table_item *ret=NULL;
-	tab->setItem (row, col, ret=new sk_table_item (tab, text, bg));
+	SkTableItem *ret=NULL;
+	tab->setItem (row, col, ret=new SkTableItem (text, bg));
 	ret->set_id (id);
 	return ret;
 }/*}}}*/
@@ -152,8 +152,8 @@ int StuffListWindow::add_stuff (stuff_type t, stuff *st)/*{{{*/
 	 */
 {
 	// TODO sortiert, aber als parameter, spart zeit beim populaten
-	int row=tab->numRows ();
-	tab->insertRows (row);
+	int row=tab->rowCount();
+	tab->insertRow (row);
 	stuff_eintragen (t, row, st);
 	tab->setCurrentCell (row, tab->currentColumn ());
 	return row;
@@ -245,11 +245,11 @@ void StuffListWindow::list_stuff (stuff_type t)/*{{{*/
 			break;
 	}
 	tab->hide ();
-	tab->clear_table ();
+	tab->removeAllRows ();
 
 	// NB: 10 s f�r 500 Datens�tze, wenn einzeln in der Schleife
 	int i=0, num=list.count ();
-	tab->insertRows (0, num);
+	tab->setRowCount (num);
 	for (QPtrListIterator<stuff> item (list); *item; ++i, ++item)
 	{
 		if (i%11==0||i==num-1) emit progress (i, num-1);
@@ -311,8 +311,6 @@ void StuffListWindow::setup_controls ()/*{{{*/
 	 * Sets up the controls to match the current stuff type.
 	 */
 {
-	QHeader *table_header=tab->horizontalHeader ();
-
 	menu_bar->show ();
 
 	but_close->show ();
@@ -323,33 +321,33 @@ void StuffListWindow::setup_controls ()/*{{{*/
 			log_error ("Invalid type in sk_win_stuff_list::setup_controls ()");
 			break;
 		case st_plane:
-			tab->setNumCols (fz_spalten);
+			tab->setColumnCount (fz_spalten);
 			setCaption ("Flugzeuge");
 			tab->showColumn (tbl_fz_editierbar);
 
-			table_header->setLabel (tbl_fz_registration, "Kennz.", 61);
-			table_header->setLabel (tbl_fz_wettkennz, "WK", 32);
-			table_header->setLabel (tbl_fz_typ, "Typ", 162);
-			table_header->setLabel (tbl_fz_category, "Gattung", 85);
-			table_header->setLabel (tbl_fz_sitze, "Sitze", 41);
-			table_header->setLabel (tbl_fz_club, "Verein", 200);
-			table_header->setLabel (tbl_fz_bemerkungen, "Bemerkungen", 200);
-			table_header->setLabel (tbl_fz_id, "ID", 30);
-			table_header->setLabel (tbl_fz_editierbar, "Editierbar", 80);
+			tab->setColumn (tbl_fz_registration, "Kennz.", 61);
+			tab->setColumn (tbl_fz_wettkennz, "WK", 32);
+			tab->setColumn (tbl_fz_typ, "Typ", 162);
+			tab->setColumn (tbl_fz_category, "Gattung", 85);
+			tab->setColumn (tbl_fz_sitze, "Sitze", 41);
+			tab->setColumn (tbl_fz_club, "Verein", 200);
+			tab->setColumn (tbl_fz_bemerkungen, "Bemerkungen", 200);
+			tab->setColumn (tbl_fz_id, "ID", 30);
+			tab->setColumn (tbl_fz_editierbar, "Editierbar", 80);
 			break;
 		case st_person:
-			tab->setNumCols (ps_spalten);
+			tab->setColumnCount (ps_spalten);
 			setCaption ("Personen");
 			tab->showColumn (tbl_ps_editierbar);
 
-			tab->setNumCols (ps_spalten);
-			table_header->setLabel (tbl_ps_nachname, "Nachname", 180);
-			table_header->setLabel (tbl_ps_vorname, "Vorname", 180);
-			table_header->setLabel (tbl_ps_club, "Verein", 200);
-			table_header->setLabel (tbl_ps_lvnum, "Landesverbandsnummer", 200);
-			table_header->setLabel (tbl_ps_bemerkungen, "Bemerkungen", 200);
-			table_header->setLabel (tbl_ps_id, "ID", 30);
-			table_header->setLabel (tbl_ps_editierbar, "Editierbar", 80);
+			tab->setColumnCount (ps_spalten);
+			tab->setColumn (tbl_ps_nachname, "Nachname", 180);
+			tab->setColumn (tbl_ps_vorname, "Vorname", 180);
+			tab->setColumn (tbl_ps_club, "Verein", 200);
+			tab->setColumn (tbl_ps_lvnum, "Landesverbandsnummer", 200);
+			tab->setColumn (tbl_ps_bemerkungen, "Bemerkungen", 200);
+			tab->setColumn (tbl_ps_id, "ID", 30);
+			tab->setColumn (tbl_ps_editierbar, "Editierbar", 80);
 			break;
 		default:
 			log_error ("Unhandled type in sk_win_stuff_list::setup_controls ()");
@@ -523,7 +521,7 @@ void StuffListWindow::table_activated (int row)/*{{{*/
 	delete p;
 }/*}}}*/
 
-void StuffListWindow::slot_table_double_click (int row, int col, int button, const QPoint &mousePos)/*{{{*/
+void StuffListWindow::slot_table_double_click (int row, int col)/*{{{*/
 	/*
 	 * Called when the table is double clicked.
 	 * Parameters:
@@ -532,6 +530,7 @@ void StuffListWindow::slot_table_double_click (int row, int col, int button, con
 	 *   - mousePos: the position of the mouse.
 	 */
 {
+	(void)col;
 	table_activated (row);
 }/*}}}*/
 

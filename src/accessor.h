@@ -1,6 +1,7 @@
 #ifndef accessor_h
 #define accessor_h
 
+
 #define RO_ACCESSOR(type, var)	\
 		inline type get_ ## var () const { return var; }
 

@@ -1,31 +1,32 @@
 #ifndef _SkTable_h
 #define _SkTable_h
 
-#include <Qt3Support> // XXX
-#define QHeader Q3Header
-#define QMemArray Q3MemArray
+#include <QTableWidget>
 
-#include "src/gui/widgets/SkTableItem.h"
+#include "src/db/db_types.h"
+
+class SkTableItem;
 
 using namespace std;
 
-class SkTable:public QTable
+class SkTable:public QTableWidget
 {
 	Q_OBJECT
 
 	public:
-		SkTable (QWidget *parent, const char *name=NULL);
-		void clear_table ();
+		SkTable (QWidget *parent);
+		void removeAllRows ();
 		int row_from_column_id (db_id id, int col);
 		db_id id_from_cell (int row, int col);
-		sk_table_item *set_cell (int, int, const string &, QColor);
-		sk_table_item *set_cell (int, int, const QString &, QColor);
-		sk_table_item *set_cell (int, int, const char *, QColor);
+		SkTableItem *set_cell (int, int, const string &, QColor);
+		SkTableItem *set_cell (int, int, const QString &, QColor);
+		SkTableItem *set_cell (int, int, const char *, QColor);
+		void setColumn (int column, QString caption, int width);
 
 	protected:
 		void keyPressEvent (QKeyEvent *);
 		void simulate_key (int);
-		void set_table_column (QHeader *header, int column, string title, string sample);
+		void set_table_column (int column, string title, string sample);
 
 	protected slots:
 		virtual void columnClicked (int);

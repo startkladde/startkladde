@@ -37,7 +37,7 @@ class StatisticsWindow:public SkDialog
 	private:
 		SkTable *tab;
 		QPushButton *but_close;
-		sk_table_item *set_table_cell (int row, int col, const string &text, QColor bg=QColor (255, 255, 255));
+		SkTableItem *set_table_cell (int row, int col, const string &text, QColor bg=QColor (255, 255, 255));
 		void person_flugbuch (QDate date, sk_person *p, QPtrList<sk_flug> &flights);
 		void fill_sastat (QDate datum);
 		sk_db *db;

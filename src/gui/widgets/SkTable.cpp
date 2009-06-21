@@ -1,16 +1,21 @@
 #include "SkTable.h"
 
-#include <QApplication>
+#include <cassert>
 
-SkTable::SkTable (QWidget *parent, const char *name)/*{{{*/
-	:QTable (parent, name)
+#include <QApplication>
+#include <QKeyEvent>
+
+#include "src/gui/widgets/SkTableItem.h"
+
+SkTable::SkTable (QWidget *parent)/*{{{*/
+	:QTableWidget (parent)
 	/*
 	 * Constructs an SkTable instance.
 	 * Parameters:
 	 *   - parent, name: passed to the QTable constructor.
 	 */
 {
-	setSelectionMode (QTable::NoSelection);
+	setSelectionMode (QAbstractItemView::NoSelection);
 }/*}}}*/
 
 void SkTable::simulate_key (int key)/*{{{*/
@@ -43,8 +48,8 @@ void SkTable::keyPressEvent (QKeyEvent *e)/*{{{*/
 		case Qt::Key_Insert: emit key (Qt::Key_Insert); break;
 		case Qt::Key_Delete: emit key (Qt::Key_Delete); break;
 
-		case Qt::Key_F9: sortColumn (currentColumn (), true, true); break;
-		case Qt::Key_T: if (e->state ()&Qt::ControlButton) sortColumn (currentColumn (), true, true); break;
+		case Qt::Key_F9: sortByColumn (currentColumn ()); break;
+		case Qt::Key_T: if (e->state ()&Qt::ControlButton) sortByColumn (currentColumn ()); break;
 
 		default:
 			emit key (e->key ());
@@ -53,19 +58,18 @@ void SkTable::keyPressEvent (QKeyEvent *e)/*{{{*/
 	}
 
 	if (e->key ()!=Qt::Key_Return)	// Hack, weil accept () nicht funktioniert
-		QTable::keyPressEvent (e);
+		QTableWidget::keyPressEvent (e);
 
 	// Pfusch, weil MainWindow das Event auch braucht, weil das Hilfe->Info
 	// nicht den Eingabefocus erh�lt.
 	e->ignore ();
 }/*}}}*/
 
-void SkTable::set_table_column (QHeader *header, int column, string title, string sample)/*{{{*/
+void SkTable::set_table_column (int column, string title, string sample)/*{{{*/
 	/*
 	 * Sets the a table header column to a given title and adjusts the width so
 	 * that the title and a provided sample text are fully visible (sort of).
 	 * Parameters:
-	 *   - header: the table header to use. Use QTable::horizontalHeader ().
 	 *   - column: the column index to set.
 	 *   - title: the title text to set.
 	 *   - sample: the sample text.
@@ -83,15 +87,14 @@ void SkTable::set_table_column (QHeader *header, int column, string title, strin
 	else
 		width=title_width+8;	// Hard coded table header margin width
 
-	header->setLabel (column, std2q (title), width);
-
+	setColumn (column, std2q (title), width);
 }
 /*}}}*/
 
 
 
 
-sk_table_item *SkTable::set_cell (int row, int col, const string &text, QColor bg)/*{{{*/
+SkTableItem *SkTable::set_cell (int row, int col, const string &text, QColor bg)/*{{{*/
 	/*
 	 * Sets a cell to a given text and color.
 	 * Parameters:
@@ -102,11 +105,11 @@ sk_table_item *SkTable::set_cell (int row, int col, const string &text, QColor b
 	 *   the newly created table item.
 	 */
 {
-	sk_table_item *ret;
+	SkTableItem *ret;
 //					// This should make it faster, but when using it, the cell
 //					// contents are not redrawn until they get focus. This
 //					// might be bug in QT. TODO
-//					ret=(sk_table_item *)item (row, col);
+//					ret=(SkTableItem *)item (row, col);
 //					if (ret)
 //					{
 //						ret->set_background (bg);
@@ -116,15 +119,15 @@ sk_table_item *SkTable::set_cell (int row, int col, const string &text, QColor b
 //					else
 //					{
 		db_id old_id=0;
-		sk_table_item *old_item=(sk_table_item *)item (row, col);
+		SkTableItem *old_item=(SkTableItem *)item (row, col);
 		if (old_item) old_id=old_item->id ();
-		setItem (row, col, ret=new sk_table_item (this, text, bg));
+		setItem (row, col, ret=new SkTableItem (text, bg));
 		ret->set_id (old_id);
 //					}
 	return ret;
 }/*}}}*/
 
-sk_table_item *SkTable::set_cell (int row, int col, const QString &text, QColor bg)/*{{{*/
+SkTableItem *SkTable::set_cell (int row, int col, const QString &text, QColor bg)/*{{{*/
 	/*
 	 * An overloaded function taking a QString instead of a std::string.
 	 */
@@ -132,7 +135,7 @@ sk_table_item *SkTable::set_cell (int row, int col, const QString &text, QColor 
 	return set_cell (row, col, q2std (text), bg);
 }/*}}}*/
 
-sk_table_item *SkTable::set_cell (int row, int col, const char *text, QColor bg)/*{{{*/
+SkTableItem *SkTable::set_cell (int row, int col, const char *text, QColor bg)/*{{{*/
 	/*
 	 * An overloaded function taking a char* instead of a std::string.
 	 */
@@ -142,22 +145,10 @@ sk_table_item *SkTable::set_cell (int row, int col, const char *text, QColor bg)
 
 
 
-void SkTable::clear_table ()/*{{{*/
-	/*
-	 * Clears the table.
-	 */
+void SkTable::removeAllRows ()
 {
-	int n=numRows ();
-	if (n==0) return;
-
-	// Use a QMemArray because this is faster (than clear ()? Huh???).
-	// TODO: check this.
-	QMemArray<int> f(n);
-	for (int i=0; i<n; i++) f[i]=i;
-	removeRows (f);
-}/*}}}*/
-
-
+	setRowCount (0);
+}
 
 void SkTable::removeRow (int row)/*{{{*/
 	/*
@@ -168,7 +159,7 @@ void SkTable::removeRow (int row)/*{{{*/
 {
 	int r=currentRow ();
 	int c=currentColumn ();
-	QTable::removeRow (row);
+	QTableWidget::removeRow (row);
 	// TODO what happens if r/c does not exist any more?
 	setCurrentCell (r, c);
 }/*}}}*/
@@ -184,9 +175,9 @@ int SkTable::row_from_column_id (db_id id, int col)/*{{{*/
 	 */
 {
 	if (id<=0) return -1;
-	for (int r=0; r<numRows (); r++)
+	for (int r=0; r<rowCount (); r++)
 	{
-		sk_table_item *i=(sk_table_item *)item (r, col);
+		SkTableItem *i=(SkTableItem *)item (r, col);
 		if (i && i->id ()==id) return r;
 	}
 	return -1;
@@ -203,8 +194,8 @@ db_id SkTable::id_from_cell (int row, int col)/*{{{*/
 	 */
 {
 	if (row<0) return 0;
-	if (row>=numRows ()) return 0;
-	sk_table_item *id_item=(sk_table_item *)item (row, col);
+	if (row>=rowCount ()) return 0;
+	SkTableItem *id_item=(SkTableItem *)item (row, col);
 	if (id_item==NULL) return 0;
 	return id_item->id ();
 }
@@ -218,6 +209,18 @@ void SkTable::columnClicked (int c)/*{{{*/
 	 *   see QT documentation.
 	 */
 {
-	sortColumn (c, true, true);
+	sortByColumn (c);
 }/*}}}*/
 
+
+void SkTable::setColumn (int column, QString caption, int width)
+{
+	QTableWidgetItem *headerItem=horizontalHeaderItem (column);
+
+	if (headerItem)
+		headerItem->setText (caption);
+	else
+		setHorizontalHeaderItem(column, new QTableWidgetItem (caption));
+
+	setColumnWidth (column, width);
+}

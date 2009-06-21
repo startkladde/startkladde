@@ -47,7 +47,7 @@ class FlightTable:public SkTable
 	Q_OBJECT
 
 	public:
-		FlightTable (sk_db *_db, QWidget *parent=0, const char *name=0);
+		FlightTable (sk_db *_db, QWidget *parent=0);
 
 		db_id id_from_row (int row);
 		db_id schleppref_from_row (int row);
@@ -72,9 +72,8 @@ class FlightTable:public SkTable
 		void readSettings (QSettings&);
 		void writeSettings (QSettings&);
 		void setFont (const QFont&);
-	protected:
-		QWidget *beginEdit (int row, int col, bool replace);
-		int row_height;
+
+		void setText (int row, int column, QString text);
 
 	protected slots:
 		virtual void columnClicked (int);
@@ -83,16 +82,12 @@ class FlightTable:public SkTable
 		int insert_row_for_flight (sk_flug *f);
 		void set_cell_by_type (int row, int column, zell_typ typ, char *button_text, string zeit_text, QColor bg, db_id data, const char *);
 		void set_flight (int, sk_flug *, db_id, bool);
-//		int create_empty_row ();
 		SkButton *set_button_or_text (int row, int column, bool set_button, QString text, QColor bg, db_id data);
 		SkButton *set_button_or_text (int row, int column, bool set_button, string text, QColor bg, db_id data);
 		SkButton *set_button_or_text (int row, int column, bool set_button, const char *text, QColor bg, db_id data);
 
 		QDate anzeigedatum;
 		sk_db *db;
-
-	private slots:
-//		void slot_button_landung (db_id, db_id);
 
 	signals:
 		void signal_button_start (db_id);

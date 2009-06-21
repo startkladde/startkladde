@@ -68,7 +68,7 @@ StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool moda
 	resize (780, 540);
 }/*}}}*/
 
-sk_table_item *StatisticsWindow::set_table_cell (int row, int col, const string &text, QColor bg)/*{{{*/
+SkTableItem *StatisticsWindow::set_table_cell (int row, int col, const string &text, QColor bg)/*{{{*/
 	/*
 	 * Sets a table item to a given text and color.
 	 * Parameters:
@@ -80,8 +80,8 @@ sk_table_item *StatisticsWindow::set_table_cell (int row, int col, const string 
 	 */
 {
 	// TODO: deltete the table items?
-	sk_table_item *ret;
-	tab->setItem (row, col, ret=new sk_table_item (tab, text, bg));
+	SkTableItem *ret;
+	tab->setItem (row, col, ret=new SkTableItem (text, bg));
 	return ret;
 }/*}}}*/
 
@@ -128,7 +128,7 @@ void StatisticsWindow::fill_sastat (QDate datum)/*{{{*/
 		for (QPtrListIterator<startart_t> sa (startarten); *sa; ++sa)
 		{
 			int row=s;
-			tab->insertRows (s);
+			tab->insertRow (s);
 			set_table_cell (row, tbl_sas_startart, (*sa)->get_description ());
 			set_table_cell (row, tbl_sas_anzahl, num_to_string (sa_fluege[s]));
 			s++;
@@ -148,11 +148,13 @@ void StatisticsWindow::sastat (QDate datum)/*{{{*/
 {
 	setCaption ("Startartstatistik");
 
-	tab->setNumCols (sas_spalten);
-	QHeader *table_header=tab->horizontalHeader ();
+	tab->setColumnCount (sas_spalten);
 
-	table_header->setLabel (tbl_sas_startart, "Startart", 120);
-	table_header->setLabel (tbl_sas_anzahl, "Anzahl Starts", 100);
+	tab->horizontalHeaderItem(tbl_sas_startart)->setText ("Startart");
+	tab->horizontalHeaderItem(tbl_sas_anzahl)->setText ("Anzahl Starts");
+
+	tab->setColumnWidth (tbl_sas_startart, 120);
+	tab->setColumnWidth (tbl_sas_anzahl, 100);
 
 	emit status ("Startartstatistik wird erzeugt, bitte warten...");
 	emit long_operation_start ();
@@ -176,21 +178,20 @@ void StatisticsWindow::bordbuch (QDate datum)/*{{{*/
 	setCaption ("Bordbuch");
 
 	// Setup table for !!Bordbuch
-	tab->setNumCols (bob_spalten);
-	QHeader *table_header=tab->horizontalHeader ();
-	// 012j0y$12k0f,;llPldwj
-	table_header->setLabel (tbl_bob_registration, "Kennz.", 55);
-	table_header->setLabel (tbl_bob_flugzeug_typ, "Typ", 56);
-	table_header->setLabel (tbl_bob_datum, "Datum", 80);
-	table_header->setLabel (tbl_bob_name, "Name", 120);
-	table_header->setLabel (tbl_bob_insassen, "Insassen", 70);
-	table_header->setLabel (tbl_bob_ort_von, "Ort: Von", 140);
-	table_header->setLabel (tbl_bob_ort_nach, "Ort: Nach", 140);
-	table_header->setLabel (tbl_bob_zeit_start, "Start", 80);
-	table_header->setLabel (tbl_bob_zeit_landung, "Landung", 80);
-	table_header->setLabel (tbl_bob_anzahl_landungen, "Anz. Ldg.", 65);
-	table_header->setLabel (tbl_bob_betriebszeit, "Betriebsdauer", 110);
-	table_header->setLabel (tbl_bob_bemerkungen, "Bemerkungen", 200);
+	tab->setColumnCount (bob_spalten);
+
+	tab->setColumn (tbl_bob_registration, "Kennz.", 55);
+	tab->setColumn (tbl_bob_flugzeug_typ, "Typ", 56);
+	tab->setColumn (tbl_bob_datum, "Datum", 80);
+	tab->setColumn (tbl_bob_name, "Name", 120);
+	tab->setColumn (tbl_bob_insassen, "Insassen", 70);
+	tab->setColumn (tbl_bob_ort_von, "Ort: Von", 140);
+	tab->setColumn (tbl_bob_ort_nach, "Ort: Nach", 140);
+	tab->setColumn (tbl_bob_zeit_start, "Start", 80);
+	tab->setColumn (tbl_bob_zeit_landung, "Landung", 80);
+	tab->setColumn (tbl_bob_anzahl_landungen, "Anz. Ldg.", 65);
+	tab->setColumn (tbl_bob_betriebszeit, "Betriebsdauer", 110);
+	tab->setColumn (tbl_bob_bemerkungen, "Bemerkungen", 200);
 
 	emit status ("Bordb�cher werden erzeugt, bitte warten...");
 	emit long_operation_start ();
@@ -222,23 +223,22 @@ void StatisticsWindow::flugbuch (QDate datum)/*{{{*/
 	setCaption ("Flugbuch");
 
 	// Setup table for !!Flugbuch
-	tab->setNumCols (flb_spalten);
-	QHeader *table_header=tab->horizontalHeader ();
-	// 012j0y$12k0f,;llPldwj
-	table_header->setLabel (tbl_flb_tag, "Tag", 80);
-	table_header->setLabel (tbl_flb_muster, "Muster", 60);
-	table_header->setLabel (tbl_flb_registration, "Kennz.", 56);
-	table_header->setLabel (tbl_flb_flugzeugfuehrer, "Pilot", 120);
-	table_header->setLabel (tbl_flb_begleiter, "Begleiter", 98);
-	table_header->setLabel (tbl_flb_startart, "Startart", 49);
-	table_header->setLabel (tbl_flb_ort_start, "Ort Start", 80);
-	table_header->setLabel (tbl_flb_ort_landung, "Ort Landung", 80);
-	table_header->setLabel (tbl_flb_zeit_start, "Start", 40);
-	table_header->setLabel (tbl_flb_zeit_landung, "Ldg.", 40);
-	table_header->setLabel (tbl_flb_flugdauer, "Dauer", 44);
-	table_header->setLabel (tbl_flb_bemerkung, "Bemerkung", 147);
+	tab->setColumnCount (flb_spalten);
 
-	emit status ("Flugb�cher werden erzeugt, bitte warten...");
+	tab->setColumn (tbl_flb_tag, "Tag", 80);
+	tab->setColumn (tbl_flb_muster, "Muster", 60);
+	tab->setColumn (tbl_flb_registration, "Kennz.", 56);
+	tab->setColumn (tbl_flb_flugzeugfuehrer, "Pilot", 120);
+	tab->setColumn (tbl_flb_begleiter, "Begleiter", 98);
+	tab->setColumn (tbl_flb_startart, "Startart", 49);
+	tab->setColumn (tbl_flb_ort_start, "Ort Start", 80);
+	tab->setColumn (tbl_flb_ort_landung, "Ort Landung", 80);
+	tab->setColumn (tbl_flb_zeit_start, "Start", 40);
+	tab->setColumn (tbl_flb_zeit_landung, "Ldg.", 40);
+	tab->setColumn (tbl_flb_flugdauer, "Dauer", 44);
+	tab->setColumn (tbl_flb_bemerkung, "Bemerkung", 147);
+
+	emit status ("Flugbücher werden erzeugt, bitte warten...");
 	emit long_operation_start ();
 
 	QPtrList<flugbuch_entry> flugbuch; flugbuch.setAutoDelete (true);
@@ -266,8 +266,8 @@ void StatisticsWindow::display_bordbuch_entry (bordbuch_entry *bbe)/*{{{*/
 	 *   - bbe: the bordbuch entry to display.
 	 */
 {
-	int row=tab->numRows ();
-	tab->insertRows (row);
+	int row=tab->columnCount ();
+	tab->insertRow (row);
 
 	set_table_cell (row, tbl_bob_registration, bbe->registration);
 	set_table_cell (row, tbl_bob_flugzeug_typ, bbe->flugzeug_typ);
@@ -309,8 +309,8 @@ void StatisticsWindow::display_flugbuch_entry (flugbuch_entry *fbe)/*{{{*/
 	 *   - bbe: the flugbuch entry to display.
 	 */
 {
-	int row=tab->numRows ();
-	tab->insertRows (row);
+	int row=tab->columnCount ();
+	tab->insertRow (row);
 	string bemerkung;
 
 	set_table_cell (row, tbl_flb_tag, fbe->tag_string ());

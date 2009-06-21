@@ -1,12 +1,17 @@
 #include "FlightTable.h"
 
+#include <cassert>
+
 #include <QApplication>
 #include <QFontMetrics>
+#include <QHeaderView>
+
+#include "src/gui/widgets/SkTableItem.h"
 
 #include "src/color.h"
 
-FlightTable::FlightTable (sk_db *_db, QWidget *parent, const char *name)/*{{{*/
-	:SkTable (parent, name)
+FlightTable::FlightTable (sk_db *_db, QWidget *parent)
+	:SkTable (parent)
 	/*
 	 * Constructs a FlightTable instance.
 	 * Parameters:
@@ -15,57 +20,34 @@ FlightTable::FlightTable (sk_db *_db, QWidget *parent, const char *name)/*{{{*/
 {
 	db=_db;
 
-	setNumCols (tabellenspalten);
+	setColumnCount (tabellenspalten);
 
-	QHeader *table_header=horizontalHeader ();
-
-	set_table_column (table_header, tbl_idx_registration,       "Kennz.",             "D-WWWW (WW)");
-	set_table_column (table_header, tbl_idx_flugzeug_typ,       "Typ",                "DR-400/180");
-	set_table_column (table_header, tbl_idx_flug_typ,           "Flugtyp",            "Normal");
-	set_table_column (table_header, tbl_idx_pilot,              "Pilot/FS",           "Herrmann, Martin");
-	set_table_column (table_header, tbl_idx_begleiter,          "Begleiter/FL",       "Herrmann, Martin");
-	set_table_column (table_header, tbl_idx_startart,           "Startart",           "XXX");
-	set_table_column (table_header, tbl_idx_startzeit,          "Start",              "  Starten  ");
-	set_table_column (table_header, tbl_idx_landezeit,          "Landung",            "  Landen  ");
-	set_table_column (table_header, tbl_idx_flugdauer,          "Dauer",              "00:00");
-	set_table_column (table_header, tbl_idx_landungen,          "Ldg.",               "00");
-	set_table_column (table_header, tbl_idx_startort,           "Startort",           "Rheinstetten");
-	set_table_column (table_header, tbl_idx_zielort,            "Zielort",            "Rheinstetten");
-	set_table_column (table_header, tbl_idx_bemerkungen,        "Bemerkungen",        "Seilriss�bung");
-	set_table_column (table_header, tbl_idx_abrechnungshinweis, "Abrechnungshinweis", "Bezahlt");
-	set_table_column (table_header, tbl_idx_editierbar,         "Editierbar",         "Nein");
-	set_table_column (table_header, tbl_idx_datum,              "Datum",              "0000-00-00");
-	set_table_column (table_header, tbl_idx_id_display,         "ID",                 "9999");
+	set_table_column (tbl_idx_registration,       "Kennz.",             "D-WWWW (WW)");
+	set_table_column (tbl_idx_flugzeug_typ,       "Typ",                "DR-400/180");
+	set_table_column (tbl_idx_flug_typ,           "Flugtyp",            "Normal");
+	set_table_column (tbl_idx_pilot,              "Pilot/FS",           "XXXXXXXX, YYYYYY");
+	set_table_column (tbl_idx_begleiter,          "Begleiter/FL",       "XXXXXXXX, YYYYYY");
+	set_table_column (tbl_idx_startart,           "Startart",           "XXX");
+	set_table_column (tbl_idx_startzeit,          "Start",              "  Starten  ");
+	set_table_column (tbl_idx_landezeit,          "Landung",            "  Landen  ");
+	set_table_column (tbl_idx_flugdauer,          "Dauer",              "00:00");
+	set_table_column (tbl_idx_landungen,          "Ldg.",               "00");
+	set_table_column (tbl_idx_startort,           "Startort",           "Rheinstetten");
+	set_table_column (tbl_idx_zielort,            "Zielort",            "Rheinstetten");
+	set_table_column (tbl_idx_bemerkungen,        "Bemerkungen",        "Seilrissübung");
+	set_table_column (tbl_idx_abrechnungshinweis, "Abrechnungshinweis", "Bezahlt");
+	set_table_column (tbl_idx_editierbar,         "Editierbar",         "Nein");
+	set_table_column (tbl_idx_datum,              "Datum",              "0000-00-00");
+	set_table_column (tbl_idx_id_display,         "ID",                 "9999");
 
 
 	gelandete_ausblenden=true;
 	weggeflogene_gekommene_anzeigen=true;
 	fehlerhafte_immer=true;
 
-	// MURX because there are problems with big fonts/resolutions
-	sk_flug flug;
-	flug.gestartet=true;
-	flug.gelandet=false;
-	flug.modus=fmod_lokal;
-
-	set_flight  (-1, &flug, 0, false);
-	adjustRow (0);
-	row_height=rowHeight (0);
-	setNumRows (0);
-}/*}}}*/
-
-QWidget *FlightTable::beginEdit ( int row, int col, bool replace )/*{{{*/
-	/*
-	 * Returns NULL to signify that the table data cannot be edited.
-	 * Paramters:
-	 *   - see QT documentation.
-	 * Return value:
-	 *   - see QT documentation.
-	 */
-{
-	return NULL;
-}/*}}}*/
-
+	// Set up a prototyp item
+	setItemPrototype (new SkTableItem ());
+}
 
 
 
@@ -154,14 +136,7 @@ SkButton *FlightTable::set_button_or_text (int row, int column, bool set_button,
 	 *   - data: the additional data to save in the cell.
 	 */
 {
-	// TODO: die hier als set_cell_button, clearCellWidget in ::set_cell
-
-	// Hier muss unbedingt clearCell stehen, sonst ist Text, der durch einen
-	// Button/Text ersetzt wurde, beim n�chsten �berfahren mit dem cursor
-	// wieder sichtbar. M�glicherweise ein Bug in SkTable::set_cell () oder
-	// in QT.
-	clearCell (row, column);
-	clearCellWidget (row, column);
+	setCellWidget (row, column, NULL);
 
 	if (set_button)
 	{
@@ -270,13 +245,13 @@ int FlightTable::insert_row_for_flight (sk_flug *f)/*{{{*/
 	{
 		// Flight is prepared. Append to the end.
 		// The order of multiple prepared flights is undefined.
-		row=numRows ();
+		row=rowCount ();
 	}
 	else
 	{
 		// Flight has happened.
-		row=numRows ();
-		for (int r=0; r<numRows (); r++)
+		row=rowCount();
+		for (int r=0; r<rowCount (); r++)
 		{
 			// TODO this fails for coming prepared flights because
 			// they don't have a start button (but we can't look at
@@ -289,7 +264,7 @@ int FlightTable::insert_row_for_flight (sk_flug *f)/*{{{*/
 		}
 	}
 
-	insertRows (row);
+	insertRow (row);
 	return row;
 }/*}}}*/
 
@@ -306,6 +281,7 @@ void FlightTable::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*
 	 */
 {
 	if (row<0) row=insert_row_for_flight (f);
+	resizeRowToContents (row);
 
 	// Startart lesen
 	startart_t startart;
@@ -358,10 +334,10 @@ void FlightTable::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*
 	bg=flug_farbe (eff_modus, eff_fehlerhaft, set_schlepp, eff_gestartet, eff_gelandet);
 
 	// Referenzitems
-	sk_table_item *id_item, *sref_item, *startzeit_item;
+	SkTableItem *id_item, *sref_item, *startzeit_item;
 
 	// Wenn gespeicherte Startzeit existiert, l�schen
-	startzeit_item=(sk_table_item *)item (row, tbl_idx_startzeit);
+	startzeit_item=(SkTableItem *)item (row, tbl_idx_startzeit);
 	if (startzeit_item)
 	{
 		delete (sk_time_t *)startzeit_item->get_data ();
@@ -609,7 +585,7 @@ void FlightTable::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*
 	set_cell (row, tbl_idx_datum, dat_string, bg);
 
 	// Startzeit in der Startzeit-Zelle abspeichern
-	startzeit_item=(sk_table_item *)item (row, tbl_idx_startzeit);
+	startzeit_item=(SkTableItem *)item (row, tbl_idx_startzeit);
 	if (startzeit_item)
 	{
 		if (f->gestartet)
@@ -619,15 +595,13 @@ void FlightTable::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*
 	}
 
 	// ID/Schleppref eintragen
-	id_item=(sk_table_item *)item (row, tbl_idx_id);
-	sref_item=(sk_table_item *)item (row, tbl_idx_schleppref);
+	id_item=(SkTableItem *)item (row, tbl_idx_id);
+	sref_item=(SkTableItem *)item (row, tbl_idx_schleppref);
 	if (id_item) id_item->set_id (set_schlepp?0:id);
 	if (sref_item) sref_item->set_id (set_schlepp?id:0);
 
 	update_row_time (row);
 
-	// MURX
-	setRowHeight (row, row_height);
 }/*}}}*/
 
 void FlightTable::update_flight (db_id id, sk_flug *f)/*{{{*/
@@ -717,7 +691,7 @@ void FlightTable::update_flight (db_id id, sk_flug *f)/*{{{*/
 	{
 		// Pr�fen, ob der Flug bereits in der Tabelle steht.
 		row=row_from_id (id);
-		//sk_table_item* item0 = (sk_table_item*)item (row, 0);
+		//SkTableItem* item0 = (SkTableItem*)item (row, 0);
 		//bool timerActive = (item0 ? item0->isTimerActive() : false);
 		//qDebug () << "item: " << item0 << endl;
 		//if (item0)
@@ -751,8 +725,10 @@ void FlightTable::removeRow (int row)/*{{{*/
 	 *   - row: the number of the row to remove.
 	 */
 {
-	clearCellWidget (row, tbl_idx_startzeit);
-	clearCellWidget (row, tbl_idx_landezeit);
+//	clearCellWidget (row, tbl_idx_startzeit);
+//	clearCellWidget (row, tbl_idx_landezeit);
+	setCellWidget (row, tbl_idx_startzeit, NULL);
+	setCellWidget (row, tbl_idx_landezeit, NULL);
 	SkTable::removeRow (row);
 }/*}}}*/
 
@@ -788,7 +764,7 @@ void FlightTable::update_row_time (int row, sk_time_t *t)/*{{{*/
 	{
 		// Landezeit: Widget, also Button, also noch nicht gelandet
 
-		sk_table_item *sz_item=(sk_table_item *)item (row, tbl_idx_startzeit);
+		SkTableItem *sz_item=(SkTableItem *)item (row, tbl_idx_startzeit);
 		if (sz_item)
 		{
 			sk_time_t *startzeit;
@@ -813,6 +789,24 @@ void FlightTable::update_row_time (int row, sk_time_t *t)/*{{{*/
 	}
 }/*}}}*/
 
+void FlightTable::setText (int row, int column, QString text)
+{
+	QTableWidgetItem *i=item (row, column);
+	assert (i);
+//	if (i)
+//	{
+		i->setText (text);
+//	}
+//	else
+//	{
+//		assert (false);
+//		// FIXME confirm requried
+//		i=new QTableWidgetItem (text);
+//		i->setFlags (i->flags() &~Qt::ItemIsEditable);
+//		setItem (row, column, i);
+//	}
+}
+
 void FlightTable::update_row_time (int row)/*{{{*/
 	/*
 	 * Updates the time displayed in a row, using the current time.
@@ -832,7 +826,7 @@ void FlightTable::update_time ()/*{{{*/
 {
 	if (QTime::currentTime ().second ()==0)
 	{
-		for (int row=0; row<numRows (); row++)
+		for (int row=0; row<rowCount(); row++)
 		{
 			update_row_time (row);
 		}
@@ -849,7 +843,8 @@ void FlightTable::columnClicked (int c)/*{{{*/
 	 */
 {
 	// Why isn't this inherited from SkTable?
-	sortColumn (c, true, true);
+	sortByColumn (c);
+//	sortColumn (c, true, true);
 }/*}}}*/
 
 
@@ -925,8 +920,8 @@ void FlightTable::writeSettings (QSettings& settings)
   */
 void FlightTable::setFont (const QFont& font)
 {
-	QHeader *table_header=horizontalHeader ();
+	QHeaderView *table_header=horizontalHeader ();
 	table_header->setFont(font);
 	// seems not to work
-	table_header->adjustHeaderSize();
+	table_header->adjustSize ();
 }

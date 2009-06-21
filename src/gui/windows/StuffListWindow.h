@@ -48,7 +48,7 @@ class StuffListWindow:public SkDialog
 		SkTable *tab;
 		QPushButton *but_close;
 
-		sk_table_item *set_table_cell (int row, int col, const string &text, QColor bg=col_default, db_id id=0);
+		SkTableItem *set_table_cell (int row, int col, const string &text, QColor bg=col_default, db_id id=0);
 		void stuff_eintragen (stuff_type t, int row, stuff *);
 		void list_stuff (stuff_type);
 		int add_stuff (stuff_type t, stuff *st);
@@ -75,7 +75,7 @@ class StuffListWindow:public SkDialog
 		bool stuff_verwendet (stuff_type, db_id);
 
 	private slots:
-		void slot_table_double_click (int, int, int, const QPoint &);
+		void slot_table_double_click (int, int);
 		void slot_table_key (int);
 		void slot_neu ();
 		void slot_loeschen ();

@@ -259,8 +259,8 @@ class MainWindow:public QMainWindow
 		void slot_context_wiederholen ();
 /*}}}*/
 		// Mouse/Keyboard event slots/*{{{*/
-		void slot_table_context (int, int, const QPoint &);
-		void slot_table_double_click (int, int, int, const QPoint &);
+		void slot_table_context (const QPoint &);
+		void slot_table_double_click (int, int);
 		void slot_table_key (int);
 		void slot_current_changed ();
 //		void slot_plugin_clicked (int);
