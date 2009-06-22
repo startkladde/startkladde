@@ -54,20 +54,20 @@ HEADERS += \
            src/gui/windows/SkDialog.h \
            src/gui/windows/SplashScreen.h \
            src/gui/windows/StatisticsWindow.h \
-           src/gui/windows/StuffEditWindow.h \
-           src/gui/windows/StuffListWindow.h \
-           src/gui/windows/StuffSelectWindow.h \
+           src/gui/windows/EntityEditWindow.h \
+           src/gui/windows/EntityListWindow.h \
+           src/gui/windows/EntitySelectWindow.h \
            src/gui/windows/WeatherDialog.h \
            src/io/colors.h \
            src/io/io.h \
            src/io/temp_dir.h \
            src/logging/messages.h \
-           src/model/sk_flug.h \
-           src/model/sk_flugzeug.h \
-           src/model/sk_person.h \
-           src/model/sk_user.h \
-           src/model/startart_t.h \
-           src/model/stuff.h \
+           src/model/Flight.h \
+           src/model/Plane.h \
+           src/model/Person.h \
+           src/model/User.h \
+           src/model/LaunchType.h \
+           src/model/Entity.h \
            src/plugins/plugin_data_format.h \
            src/plugins/sk_plugin.h \
            src/statistics/bordbuch.h \
@@ -126,19 +126,19 @@ SOURCES += \
            src/gui/windows/SkDialog.cpp \
            src/gui/windows/SplashScreen.cpp \
            src/gui/windows/StatisticsWindow.cpp \
-           src/gui/windows/StuffEditWindow.cpp \
-           src/gui/windows/StuffListWindow.cpp \
-           src/gui/windows/StuffSelectWindow.cpp \
+           src/gui/windows/EntityEditWindow.cpp \
+           src/gui/windows/EntityListWindow.cpp \
+           src/gui/windows/EntitySelectWindow.cpp \
            src/gui/windows/WeatherDialog.cpp \
            src/io/io.cpp \
            src/io/temp_dir.cpp \
            src/logging/messages.cpp \
-           src/model/sk_flug.cpp \
-           src/model/sk_flugzeug.cpp \
-           src/model/sk_person.cpp \
-           src/model/sk_user.cpp \
-           src/model/startart_t.cpp \
-           src/model/stuff.cpp \
+           src/model/Flight.cpp \
+           src/model/Plane.cpp \
+           src/model/Person.cpp \
+           src/model/User.cpp \
+           src/model/LaunchType.cpp \
+           src/model/Entity.cpp \
            src/plugins/plugin_data_format.cpp \
            src/plugins/sk_plugin.cpp \
            src/statistics/bordbuch.cpp \

@@ -12,12 +12,12 @@
 #include <q3ptrcollection.h>
 #define QPtrCollection Q3PtrCollection
 
-#include "src/model/sk_flug.h"
+#include "src/model/Flight.h"
 #include "src/time/sk_time_t.h"
 
 using namespace std;
 
-class flight_list:public Q3PtrList<sk_flug>
+class flight_list:public Q3PtrList<Flight>
 {
 	public:
 

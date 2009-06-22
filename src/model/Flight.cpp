@@ -1,4 +1,4 @@
-#include "sk_flug.h"
+#include "Flight.h"
 
 #include <iostream>
 
@@ -26,9 +26,9 @@ switch (modus)
 // TODO Vereinheitlichen der Statusfunktionen untereinander und mit den
 // condition-strings
 /**
-  * Constructs an sk_flug instance with empty values.
+  * Constructs an Flight instance with empty values.
   */
-sk_flug::sk_flug ()
+Flight::Flight ()
 {
 	id=invalid_id;
 	flugzeug=invalid_id;
@@ -42,7 +42,7 @@ sk_flug::sk_flug ()
 	towplane=invalid_id;
 }
 
-bool sk_flug::fliegt () const/*{{{*/
+bool Flight::fliegt () const/*{{{*/
 	/*
 	 * Determines whether a flight has landed.
 	 * Return value:
@@ -53,7 +53,7 @@ bool sk_flug::fliegt () const/*{{{*/
 	return happened () && !finished ();
 }/*}}}*/
 
-bool sk_flug::sfz_fliegt () const/*{{{*/
+bool Flight::sfz_fliegt () const/*{{{*/
 	/*
 	 * Determine if the !!Schleppflugzeug is flying.
 	 * Return value:
@@ -64,7 +64,7 @@ bool sk_flug::sfz_fliegt () const/*{{{*/
 	return happened () && !sfz_gelandet;
 }/*}}}*/
 
-bool sk_flug::vorbereitet () const/*{{{*/
+bool Flight::vorbereitet () const/*{{{*/
 	/*
 	 * Check if the flight is prepared.
 	 * Return value:
@@ -75,7 +75,7 @@ bool sk_flug::vorbereitet () const/*{{{*/
 	return !happened ();
 }/*}}}*/
 
-bool sk_flug::happened () const/*{{{*/
+bool Flight::happened () const/*{{{*/
 {
 	if (starts_here (modus) && gestartet) return true;
 	if (lands_here (modus) && gelandet) return true;
@@ -83,13 +83,13 @@ bool sk_flug::happened () const/*{{{*/
 }
 /*}}}*/
 
-bool sk_flug::finished () const/*{{{*/
+bool Flight::finished () const/*{{{*/
 {
 	return (lands_here (modus)?gelandet:true);
 }
 /*}}}*/
 
-sk_time_t sk_flug::flugdauer () const/*{{{*/
+sk_time_t Flight::flugdauer () const/*{{{*/
 	/*
 	 * Calculate the flight time of the flight.
 	 * Return value:
@@ -102,7 +102,7 @@ sk_time_t sk_flug::flugdauer () const/*{{{*/
 	return t;
 }/*}}}*/
 
-sk_time_t sk_flug::schleppflugdauer () const/*{{{*/
+sk_time_t Flight::schleppflugdauer () const/*{{{*/
 	/*
 	 * Calculate the flight time of the !!Schleppflug.
 	 * Return value:
@@ -115,7 +115,7 @@ sk_time_t sk_flug::schleppflugdauer () const/*{{{*/
 	return t;
 }/*}}}*/
 
-bool sk_flug::fehlerhaft (sk_flugzeug *fz, sk_flugzeug *sfz, startart_t *sa) const/*{{{*/
+bool Flight::fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const/*{{{*/
 	/*
 	 * Finds out if the flight contains an error.
 	 * Parameters:
@@ -129,7 +129,7 @@ bool sk_flug::fehlerhaft (sk_flugzeug *fz, sk_flugzeug *sfz, startart_t *sa) con
 	return (fehlerchecking (&i, true, false, fz, sfz, sa)!=ff_ok);
 }/*}}}*/
 
-bool sk_flug::schlepp_fehlerhaft (sk_flugzeug *fz, sk_flugzeug *sfz, startart_t *sa) const/*{{{*/
+bool Flight::schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const/*{{{*/
 	/*
 	 * Finds out if the !!Schleppflug for this flight (if any) contains an error.
 	 * Parameters:
@@ -143,7 +143,7 @@ bool sk_flug::schlepp_fehlerhaft (sk_flugzeug *fz, sk_flugzeug *sfz, startart_t 
 	return (fehlerchecking (&i, false, true, fz, sfz, sa)!=ff_ok);
 }/*}}}*/
 
-string sk_flug::fehler_string (flug_fehler code) const/*{{{*/
+string Flight::fehler_string (FlightError code) const/*{{{*/
 	/*
 	 * Makes a string describing a flight error.
 	 * Parameters:
@@ -157,26 +157,26 @@ string sk_flug::fehler_string (flug_fehler code) const/*{{{*/
 		case ff_ok: return "Kein Fehler";
 		case ff_keine_id: return "Flug hat keine ID";
 		case ff_kein_flugzeug: return "Kein Flugzeug angegeben";
-		// TODO use person_bezeichnung (flugtyp) (oder wie die heißt) here
-		case ff_pilot_nur_nachname: return "Für den "+string (flugtyp==ft_schul_2?"Flugschüler":"Piloten")+" ist nur ein Nachname angegeben";
-		case ff_pilot_nur_vorname: return  "Für den "+string (flugtyp==ft_schul_2?"Flugschüler":"Piloten")+" ist nur ein Vorname angegeben";
-		case ff_pilot_nicht_identifiziert: return  "Der "+string (flugtyp==ft_schul_2?"Flugschüler":"Pilot")+" ist nicht identifiziert";
-		case ff_begleiter_nur_nachname: return "Für den "+string (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben";
-		case ff_begleiter_nur_vorname: return  "Für den "+string (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
+		// TODO use person_bezeichnung (flugtyp) (oder wie die heiï¿½t) here
+		case ff_pilot_nur_nachname: return "Fï¿½r den "+string (flugtyp==ft_schul_2?"Flugschï¿½ler":"Piloten")+" ist nur ein Nachname angegeben";
+		case ff_pilot_nur_vorname: return  "Fï¿½r den "+string (flugtyp==ft_schul_2?"Flugschï¿½ler":"Piloten")+" ist nur ein Vorname angegeben";
+		case ff_pilot_nicht_identifiziert: return  "Der "+string (flugtyp==ft_schul_2?"Flugschï¿½ler":"Pilot")+" ist nicht identifiziert";
+		case ff_begleiter_nur_nachname: return "Fï¿½r den "+string (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben";
+		case ff_begleiter_nur_vorname: return  "Fï¿½r den "+string (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
 		case ff_begleiter_nicht_identifiziert: return  "Der "+string (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nicht identifiziert";
-		case ff_towpilot_nur_nachname: return "Für den Schleppiloten ist nur ein Nachname angegeben";
-		case ff_towpilot_nur_vorname: return  "Für den Schleppiloten ist nur ein Vorname angegeben";
+		case ff_towpilot_nur_nachname: return "Fï¿½r den Schleppiloten ist nur ein Nachname angegeben";
+		case ff_towpilot_nur_vorname: return  "Fï¿½r den Schleppiloten ist nur ein Vorname angegeben";
 		case ff_towpilot_nicht_identifiziert: return  "Der Schleppilot ist nicht identifiziert";
-		case ff_kein_pilot: return "Kein "+string (flugtyp==ft_schul_2 || flugtyp==ft_schul_1?"Flugschüler":"Pilot")+" angegeben";
-		case ff_pilot_gleich_begleiter: return string (flugtyp==ft_schul_2?"Flugschüler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
-		case ff_pilot_gleich_towpilot: return string (flugtyp==ft_schul_2?"Flugschüler":"Pilot")+" und Schlepppilot sind identisch";
+		case ff_kein_pilot: return "Kein "+string (flugtyp==ft_schul_2 || flugtyp==ft_schul_1?"Flugschï¿½ler":"Pilot")+" angegeben";
+		case ff_pilot_gleich_begleiter: return string (flugtyp==ft_schul_2?"Flugschï¿½ler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
+		case ff_pilot_gleich_towpilot: return string (flugtyp==ft_schul_2?"Flugschï¿½ler":"Pilot")+" und Schlepppilot sind identisch";
 		case ff_schulung_ohne_begleiter: return "Doppelsitzige Schulung ohne Fluglehrer";
 		case ff_begleiter_nicht_erlaubt: return "Begleiter ist nicht erlaubt";
 		case ff_nur_gelandet: return "Flug ist gelandet, aber nicht gestartet";
 		case ff_landung_vor_start: return "Landung liegt vor Start";
 		case ff_keine_startart: return "Keine Startart angegeben";
 		case ff_kein_modus: return "Kein Modus angegeben";
-		case ff_kein_sfz_modus: return "Kein Modus für den Schleppflug angegeben";
+		case ff_kein_sfz_modus: return "Kein Modus fï¿½r den Schleppflug angegeben";
 		case ff_kein_flugtyp: return "Kein Flugtyp angegeben";
 		case ff_landungen_negativ: return "Negative Anzahl Landungen";
 		case ff_landungen_null: return "Flug ist gelandet, aber Anzahl der Landungen ist 0";
@@ -185,7 +185,7 @@ string sk_flug::fehler_string (flug_fehler code) const/*{{{*/
 		case ff_doppelsitzige_schulung_in_einsitzer: return "Doppelsitzige Schulung in Einsitzer";
 		case ff_kein_startort: return "Kein Startort angegeben";
 		case ff_kein_zielort: return "Kein Zielort angegeben";
-		case ff_kein_zielort_sfz: return "Kein Zielort für das Schleppflugzeug angegeben";
+		case ff_kein_zielort_sfz: return "Kein Zielort fï¿½r das Schleppflugzeug angegeben";
 		case ff_segelflugzeug_landungen: return "Segelflugzeug macht mehr als eine Landung";
 		case ff_segelflugzeug_landungen_ohne_landung: return "Segelflugzeug macht Landungen ohne Landezeit";
 		case ff_begleiter_in_einsitzer: return "Begleiter in einsitzigem Flugzeug";
@@ -201,7 +201,7 @@ string sk_flug::fehler_string (flug_fehler code) const/*{{{*/
 	return "Unbekannter Fehler";
 }/*}}}*/
 
-flug_fehler sk_flug::fehlerchecking (int *index, bool check_flug, bool check_schlepp, sk_flugzeug *fz, sk_flugzeug *sfz, startart_t *sa) const/*{{{*/
+FlightError Flight::fehlerchecking (int *index, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchType *sa) const/*{{{*/
 	/*
 	 * Does the unified error checking.
 	 * Usage of this function:
@@ -275,7 +275,7 @@ flug_fehler sk_flug::fehlerchecking (int *index, bool check_flug, bool check_sch
 
 
 
-bool sk_flug::starten (bool force, bool interactive)/*{{{*/
+bool Flight::starten (bool force, bool interactive)/*{{{*/
 	/*
 	 * Start the flight now.
 	 * Parameters:
@@ -305,7 +305,7 @@ bool sk_flug::starten (bool force, bool interactive)/*{{{*/
 	}
 }/*}}}*/
 
-bool sk_flug::landen (bool force, bool interactive)/*{{{*/
+bool Flight::landen (bool force, bool interactive)/*{{{*/
 	/*
 	 * Land the flight now.
 	 * Parameters:
@@ -344,7 +344,7 @@ bool sk_flug::landen (bool force, bool interactive)/*{{{*/
 	}
 }/*}}}*/
 
-bool sk_flug::schlepp_landen (bool force, bool interactive)/*{{{*/
+bool Flight::schlepp_landen (bool force, bool interactive)/*{{{*/
 	/*
 	 * Land the !!Schleppflug now.
 	 * Parameters:
@@ -376,7 +376,7 @@ bool sk_flug::schlepp_landen (bool force, bool interactive)/*{{{*/
 	}
 }/*}}}*/
 
-bool sk_flug::zwischenlandung (bool force, bool interactive)/*{{{*/
+bool Flight::zwischenlandung (bool force, bool interactive)/*{{{*/
 	/*
 	 * Make a !!Zwischenlandung now.
 	 * Parameters:
@@ -407,7 +407,7 @@ bool sk_flug::zwischenlandung (bool force, bool interactive)/*{{{*/
 
 
 
-string sk_flug::typ_string (length_specification lenspec) const/*{{{*/
+string Flight::typ_string (length_specification lenspec) const/*{{{*/
 	/*
 	 * Generates a string describing the type of the flight.
 	 * Parameters:
@@ -421,7 +421,7 @@ string sk_flug::typ_string (length_specification lenspec) const/*{{{*/
 
 
 
-sk_time_t sk_flug::efftime () const/*{{{*/
+sk_time_t Flight::efftime () const/*{{{*/
 {
 	// TODO this assumes that every flight at least starts or lands here.
 	if (starts_here (modus) && gestartet) return startzeit;
@@ -432,7 +432,7 @@ sk_time_t sk_flug::efftime () const/*{{{*/
 
 
 
-string sk_flug::pilot_bezeichnung () const/*{{{*/
+string Flight::pilot_bezeichnung () const/*{{{*/
 	/*
 	 * Return a description for the pilot.
 	 * Return value:
@@ -442,7 +442,7 @@ string sk_flug::pilot_bezeichnung () const/*{{{*/
 	return t_pilot_bezeichnung (flugtyp);
 }/*}}}*/
 
-string sk_flug::begleiter_bezeichnung () const/*{{{*/
+string Flight::begleiter_bezeichnung () const/*{{{*/
 	/*
 	 * Return a description for the copilot.
 	 * Return value:
@@ -453,7 +453,7 @@ string sk_flug::begleiter_bezeichnung () const/*{{{*/
 }/*}}}*/
 
 
-string sk_flug::unvollst_pilot_name () const/*{{{*/
+string Flight::unvollst_pilot_name () const/*{{{*/
 	/*
 	 * Makes the incomplete name of the pilot.
 	 * Return value:
@@ -464,7 +464,7 @@ string sk_flug::unvollst_pilot_name () const/*{{{*/
 }
 /*}}}*/
 
-string sk_flug::unvollst_begleiter_name () const/*{{{*/
+string Flight::unvollst_begleiter_name () const/*{{{*/
 	/*
 	 * Makes the incomplete name of the copilot.
 	 * Return value:
@@ -475,7 +475,7 @@ string sk_flug::unvollst_begleiter_name () const/*{{{*/
 }
 /*}}}*/
 
-string sk_flug::unvollst_towpilot_name () const/*{{{*/
+string Flight::unvollst_towpilot_name () const/*{{{*/
 	/*
 	 * Makes the incomplete name of the towpilot.
 	 * Return value:
@@ -486,7 +486,7 @@ string sk_flug::unvollst_towpilot_name () const/*{{{*/
 }
 /*}}}*/
 
-string sk_flug::unvollst_person_name (string nn, string vn) const/*{{{*/
+string Flight::unvollst_person_name (string nn, string vn) const/*{{{*/
 	/*
 	 * Makes the incomplete name of a person.
 	 * Parameters:
@@ -509,13 +509,13 @@ string sk_flug::unvollst_person_name (string nn, string vn) const/*{{{*/
 
 
 
-bool sk_flug::flight_lands_here () const/*{{{*/
+bool Flight::flight_lands_here () const/*{{{*/
 {
 	return lands_here (modus);
 }
 /*}}}*/
 
-bool sk_flug::flight_starts_here () const/*{{{*/
+bool Flight::flight_starts_here () const/*{{{*/
 {
 	return starts_here (modus);
 }
@@ -523,7 +523,7 @@ bool sk_flug::flight_starts_here () const/*{{{*/
 
 
 
-void sk_flug::get_towflight (sk_flug *towflight, db_id towplane_id, db_id sa_id) const/*{{{*/
+void Flight::get_towflight (Flight *towflight, db_id towplane_id, db_id sa_id) const/*{{{*/
 {
 	towflight->id=id;										// The tow flight gets the same ID because there
 	                                                        // would be no way to get the ID for a given tow
@@ -547,7 +547,7 @@ void sk_flug::get_towflight (sk_flug *towflight, db_id towplane_id, db_id sa_id)
 		towflight->landungen=1;
 	else
 		towflight->landungen=0;
-	towflight->bemerkungen="Schleppflug für "+num_to_string (id);
+	towflight->bemerkungen="Schleppflug fï¿½r "+num_to_string (id);
 	towflight->abrechnungshinweis="";
 	towflight->editierbar=false;							// The tow flight is not editable on its own.
 	towflight->modus=modus_sfz;
@@ -565,7 +565,7 @@ void sk_flug::get_towflight (sk_flug *towflight, db_id towplane_id, db_id sa_id)
 }
 /*}}}*/
 
-bool sk_flug::collective_bb_entry_possible (sk_flug *prev, const sk_flugzeug &plane) const/*{{{*/
+bool Flight::collective_bb_entry_possible (Flight *prev, const Plane &plane) const/*{{{*/
 {
 	// Only allow if the previous flight and the current flight start and land
 	// at the same place.
@@ -589,7 +589,7 @@ bool sk_flug::collective_bb_entry_possible (sk_flug *prev, const sk_flugzeug &pl
 
 
 
-void sk_flug::dump () const/*{{{*/
+void Flight::dump () const/*{{{*/
 {
 #define DUMP2(l, v) << " " #l ": " << v
 #define DUMP(v) DUMP2 (v, v)
@@ -608,7 +608,7 @@ void sk_flug::dump () const/*{{{*/
 }
 /*}}}*/
 
-int sk_flug::sort (sk_flug *other) const/*{{{*/
+int Flight::sort (Flight *other) const/*{{{*/
 	/*
 	 * Return value:
 	 *   - >0 if this flight is later
@@ -634,7 +634,7 @@ int sk_flug::sort (sk_flug *other) const/*{{{*/
 
 
 
-QDate sk_flug::effdatum (time_zone tz) const/*{{{*/
+QDate Flight::effdatum (time_zone tz) const/*{{{*/
         /*
          * Calculates the effective date, that is the date to use when sorting the
          * table.

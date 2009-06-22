@@ -1,20 +1,20 @@
-#include "sk_person.h"
+#include "Person.h"
 
 #include <iostream>
 
 #include "src/text.h"
 
-sk_person::sk_person ()/*{{{*/
-	:stuff ()
+Person::Person ()/*{{{*/
+	:Entity ()
 	/*
-	 * Constructs an empty sk_person instance.
+	 * Constructs an empty Person instance.
 	 */
 {
 }/*}}}*/
 
-sk_person::sk_person (string vn, string nn)/*{{{*/
+Person::Person (string vn, string nn)/*{{{*/
 	/*
-	 * Constructs an sk_person instance with given first and last name.
+	 * Constructs an Person instance with given first and last name.
 	 * Parameters:
 	 *   - vn, nn: the initial values for the fields.
 	 */
@@ -24,9 +24,9 @@ sk_person::sk_person (string vn, string nn)/*{{{*/
 	id=0;
 }/*}}}*/
 
-sk_person::sk_person (string vn, string nn, string ve, string cid, string lvnum, db_id p_id)/*{{{*/
+Person::Person (string vn, string nn, string ve, string cid, string lvnum, db_id p_id)/*{{{*/
 	/*
-	 * Constructs an sk_person instance with given data.
+	 * Constructs an Person instance with given data.
 	 * Parameters:
 	 *   - vn, nn, ve, vid, lvnum, id: the initial values for the fields.
 	 */
@@ -39,7 +39,7 @@ sk_person::sk_person (string vn, string nn, string ve, string cid, string lvnum,
 	id=p_id;
 }/*}}}*/
 
-string sk_person::name () const/*{{{*/
+string Person::name () const/*{{{*/
 	/*
 	 * Returns the name of the person in a form suitable for enumerations.
 	 * Return value:
@@ -52,7 +52,7 @@ string sk_person::name () const/*{{{*/
 	return nachname+", "+vorname;
 }/*}}}*/
 
-string sk_person::pdf_name () const/*{{{*/
+string Person::pdf_name () const/*{{{*/
 	/*
 	 * Returns the name of the person in a form suitable for the PDF document.
 	 * Return value:
@@ -63,7 +63,7 @@ string sk_person::pdf_name () const/*{{{*/
 }
 /*}}}*/
 
-string sk_person::tabelle_name () const/*{{{*/
+string Person::tabelle_name () const/*{{{*/
 	/*
 	 * Returns the name of the person in a form suitable for the table.
 	 * Return value:
@@ -74,7 +74,7 @@ string sk_person::tabelle_name () const/*{{{*/
 	return name ()+" ("+club+")";
 }/*}}}*/
 
-string sk_person::text_name () const/*{{{*/
+string Person::text_name () const/*{{{*/
 	/*
 	 * Returns the name of the person in a form suitable for running text.
 	 * Return value:
@@ -87,7 +87,7 @@ string sk_person::text_name () const/*{{{*/
 	return vorname+" "+nachname;
 }/*}}}*/
 
-string sk_person::bezeichnung (casus c) const/*{{{*/
+string Person::bezeichnung (casus c) const/*{{{*/
 	/*
 	 * Returns a text describing the fact that this is a plane.
 	 * Parameters:
@@ -96,10 +96,10 @@ string sk_person::bezeichnung (casus c) const/*{{{*/
 	 *   the text.
 	 */
 {
-	return stuff_bezeichnung (st_person, c);
+	return entityLabel (st_person, c);
 }/*}}}*/
 
-void sk_person::dump () const/*{{{*/
+void Person::dump () const/*{{{*/
 	/*
 	 * Print a description of the person to stdout. Used for debugging.
 	 */
@@ -109,7 +109,7 @@ void sk_person::dump () const/*{{{*/
 
 
 
-string sk_person::get_selector_value (int column_number) const/*{{{*/
+string Person::get_selector_value (int column_number) const/*{{{*/
 {
 	switch (column_number)
 	{
@@ -123,7 +123,7 @@ string sk_person::get_selector_value (int column_number) const/*{{{*/
 }
 /*}}}*/
 
-string sk_person::get_selector_caption (int column_number)/*{{{*/
+string Person::get_selector_caption (int column_number)/*{{{*/
 {
 	switch (column_number)
 	{
@@ -137,14 +137,14 @@ string sk_person::get_selector_caption (int column_number)/*{{{*/
 }
 /*}}}*/
 
-void sk_person::output (ostream &stream, output_format_t format)/*{{{*/
+void Person::output (ostream &stream, output_format_t format)/*{{{*/
 {
-	stuff::output (stream, format, false, "ID", id);
-	stuff::output (stream, format, false, "Nachname", nachname);
-	stuff::output (stream, format, false, "Vorname", vorname);
-	stuff::output (stream, format, false, "Verein", club);
-	stuff::output (stream, format, false, "Vereins-ID", club_id);
-	stuff::output (stream, format, true, "Landesverbandsnummer", landesverbands_nummer);
+	Entity::output (stream, format, false, "ID", id);
+	Entity::output (stream, format, false, "Nachname", nachname);
+	Entity::output (stream, format, false, "Vorname", vorname);
+	Entity::output (stream, format, false, "Verein", club);
+	Entity::output (stream, format, false, "Vereins-ID", club_id);
+	Entity::output (stream, format, true, "Landesverbandsnummer", landesverbands_nummer);
 }
 /*}}}*/
 

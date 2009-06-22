@@ -1,5 +1,5 @@
-#ifndef _StuffSelectWindow_h
-#define _StuffSelectWindow_h
+#ifndef _EntitySelectWindow_h
+#define _EntitySelectWindow_h
 
 #include <QPushButton>
 #include <QLabel>
@@ -15,7 +15,7 @@
 #include "src/data_types.h"
 #include "src/gui/windows/SkDialog.h"
 #include "src/gui/widgets/SkTreeWidgetItem.h"
-#include "src/model/stuff.h"
+#include "src/model/Entity.h"
 
 using namespace std;
 
@@ -23,7 +23,7 @@ enum selection_result { sr_cancelled, sr_ok, sr_new, sr_unknown, sr_none_selecte
 
 /*
  * The helper classes for using slots and signals with the template class
- * StuffSelectWindow.
+ * EntitySelectWindow.
  */
 class selector_base:public SkDialog/*{{{*/
 {
@@ -59,20 +59,20 @@ class selector_helper:public QObject/*{{{*/
 
 
 /*
- * A dialog for letting the user select a stuff from a list. A "new" and
+ * A dialog for letting the user select a Entity from a list. A "new" and
  * "unknown" entry are also given.
  * Usage:
- * Call do_selection, passing the stuff list.
+ * Call do_selection, passing the Entity list.
  * If the result is sr_ok, you can use get_result_id () to get the selected ID.
  */
 
-template<class TYPE> class StuffSelectWindow:public selector_base/*{{{*/
+template<class TYPE> class EntitySelectWindow:public selector_base/*{{{*/
 {
 	// A template class cannot be a Q_OBJECT
 
 	public:
-		StuffSelectWindow (QWidget *parent, const char *name=NULL, WFlags f=0);
-		~StuffSelectWindow ();
+		EntitySelectWindow (QWidget *parent, const char *name=NULL, WFlags f=0);
+		~EntitySelectWindow ();
 		void test ();
 		virtual selection_result do_selection (QString, QString, QPtrList<TYPE> &, db_id preselected=invalid_id);
 		static string selection_result_text (selection_result sr);
@@ -99,10 +99,10 @@ template<class TYPE> class StuffSelectWindow:public selector_base/*{{{*/
 };
 /*}}}*/
 
-template<class TYPE> StuffSelectWindow<TYPE>::StuffSelectWindow (QWidget *parent, const char *name, WFlags f)/*{{{*/
+template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *parent, const char *name, WFlags f)/*{{{*/
 	:selector_base (parent, name, true, f)
 	/*
-	 * Creates a StuffSelectWindow class.
+	 * Creates a EntitySelectWindow class.
 	 * Parameters:
 	 *   - parent, name, f: passed to the base class constructor.
 	 */
@@ -144,16 +144,16 @@ template<class TYPE> StuffSelectWindow<TYPE>::StuffSelectWindow (QWidget *parent
 /*}}}*/
 }/*}}}*/
 
-template<class TYPE> StuffSelectWindow<TYPE>::~StuffSelectWindow ()/*{{{*/
+template<class TYPE> EntitySelectWindow<TYPE>::~EntitySelectWindow ()/*{{{*/
 	/*
-	 * Cleans up a StuffSelectWindow class.
+	 * Cleans up a EntitySelectWindow class.
 	 */
 {
 	delete _helper;
 }
 /*}}}*/
 
-template<class TYPE> void StuffSelectWindow<TYPE>::slot_ok ()/*{{{*/
+template<class TYPE> void EntitySelectWindow<TYPE>::slot_ok ()/*{{{*/
 	/*
 	 * The OK button was pressed. Close the dialog, accepting.
 	 */
@@ -162,7 +162,7 @@ template<class TYPE> void StuffSelectWindow<TYPE>::slot_ok ()/*{{{*/
 }
 /*}}}*/
 
-template<class TYPE> void StuffSelectWindow<TYPE>::slot_double_click (QTreeWidgetItem *it, int)/*{{{*/
+template<class TYPE> void EntitySelectWindow<TYPE>::slot_double_click (QTreeWidgetItem *it, int)/*{{{*/
 	/*
 	 * The list was double clicked.
 	 */
@@ -172,7 +172,7 @@ template<class TYPE> void StuffSelectWindow<TYPE>::slot_double_click (QTreeWidge
 }
 /*}}}*/
 
-template<class TYPE> string StuffSelectWindow<TYPE>::selection_result_text (selection_result sr)/*{{{*/
+template<class TYPE> string EntitySelectWindow<TYPE>::selection_result_text (selection_result sr)/*{{{*/
 	/*
 	 * Creates a text describing a selection_result.
 	 * Parameters:
@@ -188,12 +188,12 @@ template<class TYPE> string StuffSelectWindow<TYPE>::selection_result_text (sele
 		case sr_new: return "new";
 		case sr_unknown: return "unknown";
 		case sr_none_selected: return "none selected";
-		default: log_error ("Unhandled selection_result in sk_win_stuff_select::selection_result_text ()"); return "?";
+		default: log_error ("Unhandled selection_result in EntitySelectWindow::selection_result_text ()"); return "?";
 	}
 }
 /*}}}*/
 
-template<class TYPE> db_id StuffSelectWindow<TYPE>::get_result_id ()/*{{{*/
+template<class TYPE> db_id EntitySelectWindow<TYPE>::get_result_id ()/*{{{*/
 	/*
 	 * Gets the selection result.
 	 * Return value:
@@ -206,7 +206,7 @@ template<class TYPE> db_id StuffSelectWindow<TYPE>::get_result_id ()/*{{{*/
 
 
 
-template<class TYPE> int StuffSelectWindow<TYPE>::setup_columns ()/*{{{*/
+template<class TYPE> int EntitySelectWindow<TYPE>::setup_columns ()/*{{{*/
 	/*
 	 * Sets up the list columns.
 	 * Return value:
@@ -231,7 +231,7 @@ template<class TYPE> int StuffSelectWindow<TYPE>::setup_columns ()/*{{{*/
 }
 /*}}}*/
 
-template<class TYPE> void StuffSelectWindow<TYPE>::set_entry (SkTreeWidgetItem *item, TYPE *entry, int num_columns)/*{{{*/
+template<class TYPE> void EntitySelectWindow<TYPE>::set_entry (SkTreeWidgetItem *item, TYPE *entry, int num_columns)/*{{{*/
 	/*
 	 * Writes an entry to the list.
 	 * Parameters:
@@ -247,13 +247,13 @@ template<class TYPE> void StuffSelectWindow<TYPE>::set_entry (SkTreeWidgetItem *
 }
 /*}}}*/
 
-template<class TYPE> selection_result StuffSelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QPtrList<TYPE> &stuff_list, db_id preselected)/*{{{*/
+template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QPtrList<TYPE> &entityList, db_id preselected)/*{{{*/
 	/*
 	 * Displays the selector.
 	 * Parameters:
 	 *   - caption_text: the text to display in the window title.
 	 *   - label_text: the text displayed in the descriptive label.
-	 *   - stuff_list: the list to select from.
+	 *   - entityList: the list to select from.
 	 *   - preselected: the ID to preselect, or 0 if none should be
 	 *     preselected.
 	 * Return value:
@@ -274,7 +274,7 @@ template<class TYPE> selection_result StuffSelectWindow<TYPE>::do_selection (QSt
 
 	list->setCurrentItem (unknown_item);
 
-	for (QPtrListIterator<TYPE> it (stuff_list); *it; ++it)
+	for (QPtrListIterator<TYPE> it (entityList); *it; ++it)
 	{
 		last_item=new SkTreeWidgetItem (list, last_item);
 		last_item->id=(*it)->id;

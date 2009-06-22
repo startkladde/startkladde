@@ -32,12 +32,12 @@ class flight;
 class options;
 class sk_db;
 class FlightTable;
-class sk_flug;
-class sk_flugzeug;
+class Flight;
+class Plane;
 class DateWindow;
 class FlightWindow;
 class StatisticsWindow;
-class StuffListWindow;
+class EntityListWindow;
 class SplashScreen;
 
 using namespace std;
@@ -80,8 +80,8 @@ class MainWindow:public QMainWindow
 		// Other windows/*{{{*/
 		::SplashScreen *ss;
 		FlightWindow *flug_editor;
-		StuffListWindow *flugzeug_liste;
-		StuffListWindow *personen_liste;
+		EntityListWindow *flugzeug_liste;
+		EntityListWindow *personen_liste;
 		WeatherDialog *weatherDialog;
 /*}}}*/
 		// Database/*{{{*/
@@ -98,11 +98,11 @@ class MainWindow:public QMainWindow
 		bool db_available ();
 /*}}}*/
 		// Flights/*{{{*/
-		void edit_flight (sk_flug *);
+		void edit_flight (Flight *);
 		void manipulate_flight (db_id, flight_manipulation, db_id sref=0);
 		void manipulate_flight_by_row (int, flight_manipulation);
-		void neuer_flug (sk_flug *vorlage=NULL);
-		void flug_wiederholen (sk_flug *vorlage=NULL);
+		void neuer_flug (Flight *vorlage=NULL);
+		void flug_wiederholen (Flight *vorlage=NULL);
 /*}}}*/
 		// Table/*{{{*/
 		FlightTable *tbl_fluege;

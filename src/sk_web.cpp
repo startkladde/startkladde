@@ -15,7 +15,7 @@
 #include "src/documents/latex_document.h"
 #include "src/documents/table.h"
 #include "src/io/io.h"
-#include "src/model/sk_user.h"
+#include "src/model/User.h"
 #include "src/plugins/plugin_data_format.h"
 #include "src/statistics/bordbuch.h"
 #include "src/statistics/flugbuch.h"
@@ -202,7 +202,7 @@ bool provides (db_access_t a, db_access_t b)/*{{{*/
 
 	switch (a)
 	{
-		//        A    provides none   access, sk_user sk_admin root
+		//        A    provides none   access, User sk_admin root
 		HANDLE_A (dba_none,     true , false,  false,  false,   false)
 		HANDLE_A (dba_access,   true , true ,  false,  false,   false)
 		HANDLE_A (dba_sk_user,  true , true ,  true ,  false,   false)
@@ -639,7 +639,7 @@ string remote_address;				// The address of the client
 request_method_t request_method;    // The request method
 // TODO need to implement object_field successor. These global vars
 // mixing data and metadata are MURX.
-list<object_field> fields_sk_user;	        // The member field description of an sk_user
+list<object_field> fields_sk_user;	        // The member field description of an User
 list<object_field> fields_flugbuch_entry;	// The member field description of a flugbuch_entry
 list<object_field> fields_bordbuch_entry;	// The member field description of a bordbuch_entry
 list<object_field> fields_flightlist_entry; // The member field description of a flight list entry
@@ -664,7 +664,7 @@ db_access_t session_access;                 // The access level that is present
                                             // for the session.
 string session_username;                    // The name of the web interface
                                             // user logged in.
-const sk_user *session_user;                // The user logged in if
+const User *session_user;                // The user logged in if
                                             // session_access==dba_sk_user
 string query_string;                        // The CGI query string (might not
 											// exist for form/multipart POSTs)
@@ -847,7 +847,7 @@ void require_sk_admin (const string &message="")/*{{{*/
 	 * Checks whether the user logged in has permission sk_admin.
 	 */
 {
-	// For club admin, we need sk_user
+	// For club admin, we need User
 	require_access (dba_sk_admin, message);
 }
 /*}}}*/
@@ -869,7 +869,7 @@ void require_not_self (const string &username, const string &message="")/*{{{*/
 void require_sk_user (const string &message="")/*{{{*/
 	throw (ex_write_error_document)
 	/*
-	 * Checks whether the user logged in has *exactly* the permission sk_user.
+	 * Checks whether the user logged in has *exactly* the permission User.
 	 * This is used for operations which require information from a user, for
 	 * example, outputting logbooks.
 	 */
@@ -925,7 +925,7 @@ bool authenticate (const string &username, const string &password, string &error
 	//     All other mysql user cannot log ing.
 	//     The names of these accounts can be overridden in the config file or
 	//     on the command line.
-	//   - login as sk_user
+	//   - login as User
 	//     These are defined in the "user" table of the startkladde database.
 	//     We need a MySQL account with fairly extensive permissions because
 	//     these users may do things like, for example, write and modify master
@@ -987,7 +987,7 @@ bool authenticate (const string &username, const string &password, string &error
 		{
 			// This is the interesting case: log in as sk user. This means that
 			// there is not corresponding MySQL user, so we log in as sk_admin
-			// to authenticate the user using sk_db sk_user functions.
+			// to authenticate the user using sk_db User functions.
 
 			// Check whether we have sk_admin access data at all.
 			LOGIN_ERROR_IF (opts.sk_admin_name.empty (), "Name f�r das Administratorkonta (sk_admin) nicht konfiguriert");
@@ -1017,7 +1017,7 @@ bool authenticate (const string &username, const string &password, string &error
 			// Now we can also set session_user
 			// Use a temporary pointer to keep session_user const.
 			if (session_user) delete session_user; session_user=NULL;
-			sk_user *_session_user=new sk_user;
+			User *_session_user=new User;
 			ret=db.sk_user_get (*_session_user, username);
 			LOGIN_ERROR_IF (ret!=db_ok, db.db_error_description (ret, true));
 			session_user=_session_user;
@@ -1322,11 +1322,11 @@ string make_anchor_name (db_id id)/*{{{*/
 #define CHECK_ID CHECK_AN_ID (id, id);
 /*}}}*/
 
-what_next csv_to_persons (const string &csv, QPtrList<sk_person> &persons, const string &club)/*{{{*/
+what_next csv_to_persons (const string &csv, QPtrList<Person> &persons, const string &club)/*{{{*/
 	/*
 	 * Converts a string containing a CSV file to a list of persons.
 	 * This uses session_user, so only call this when the access level is
-	 * (exactly) sk_user. An error is output if this is not the case.
+	 * (exactly) User. An error is output if this is not the case.
 	 * Parameters:
 	 *   - csv: the CSV file contents
 	 *   - persons: the person list to write
@@ -1405,7 +1405,7 @@ what_next csv_to_persons (const string &csv, QPtrList<sk_person> &persons, const
 	table::const_iterator table_end=csv_table.end ();
 	for (table::const_iterator it=csv_table.begin (); it!=table_end; ++it)
 	{
-		sk_person *p=new sk_person;
+		Person *p=new Person;
 #define WRITE(NAME,TARGET) do { if (index_ ## NAME>=0 && ((int)(*it).size ())>index_ ## NAME) p->TARGET=(*it).at (index_ ## NAME); } while (false)
 		WRITE (last_name, nachname);
 		WRITE (first_name, vorname);
@@ -1423,7 +1423,7 @@ what_next csv_to_persons (const string &csv, QPtrList<sk_person> &persons, const
 }
 /*}}}*/
 
-void make_unique_club_list (list<string> &club_list, QPtrList<sk_flugzeug> plane_list)/*{{{*/
+void make_unique_club_list (list<string> &club_list, QPtrList<Plane> plane_list)/*{{{*/
 	/*
 	 * For each plane, adds the club to the club list, if not already present.
 	 * Parameters:
@@ -1431,7 +1431,7 @@ void make_unique_club_list (list<string> &club_list, QPtrList<sk_flugzeug> plane
 	 *   - plane_list: the list of planes.
 	 */
 {
-	for (QPtrListIterator <sk_flugzeug> plane (plane_list); *plane; ++plane)
+	for (QPtrListIterator <Plane> plane (plane_list); *plane; ++plane)
 	{
 		// Don't use .grep here because we need to simplify_club_name
 		bool already_has=false;
@@ -1955,7 +1955,7 @@ void treat_appendix (treatment_t treatment, const string &edit_next_state, const
 /*}}}*/
 
 //treat_person (person *, treatment, new_state, ident_arg, args, for_import, for_select, additional_text
-what_next treat_person (sk_person *_p, treatment_t treatment, const string &new_state=web_display_person, const string &ident_arg=arg_cgi_id, const argument_list *args=NULL, bool for_import=false, bool for_select=false, const string &additional_text="")/*{{{*/
+what_next treat_person (Person *_p, treatment_t treatment, const string &new_state=web_display_person, const string &ident_arg=arg_cgi_id, const argument_list *args=NULL, bool for_import=false, bool for_select=false, const string &additional_text="")/*{{{*/
 	/*
 	 * Handle a treatment for a person.
 	 * This function basically calls treat_field on all of the fields of
@@ -1970,8 +1970,8 @@ what_next treat_person (sk_person *_p, treatment_t treatment, const string &new_
 	if (!_p && object_required (treatment))
 		return what_next::output_error ("Fehlende Person in treat_person (Programmfehler)");
 
-	sk_person dummy;
-	sk_person *p=_p;
+	Person dummy;
+	Person *p=_p;
 	if (!p) p=&dummy;
 
 	// Preamble
@@ -2040,7 +2040,7 @@ what_next treat_person (sk_person *_p, treatment_t treatment, const string &new_
 }
 /*}}}*/
 
-what_next write_person_list (QPtrList<sk_person> &persons, bool include_none, const string &target_state, const string &result_field, const argument_list *args=NULL, bool for_import=false, bool for_select=false)/*{{{*/
+what_next write_person_list (QPtrList<Person> &persons, bool include_none, const string &target_state, const string &result_field, const argument_list *args=NULL, bool for_import=false, bool for_select=false)/*{{{*/
 	/*
 	 * Writes a person list (table).
 	 * this function is obsolete as it uses the treat_* mechanism.
@@ -2060,7 +2060,7 @@ what_next write_person_list (QPtrList<sk_person> &persons, bool include_none, co
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_prefix));
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_header, "", "", NULL, for_import));
 	if (include_none) DO_SUB_ACTION (treat_person (NULL, tm_write_table_data, target_state, result_field, args, for_import, for_select));	// Write "none"
-	for (QPtrListIterator<sk_person> person (persons); person; ++person)
+	for (QPtrListIterator<Person> person (persons); person; ++person)
 		DO_SUB_ACTION (treat_person (*person, tm_write_table_data, target_state, result_field, args, for_import, for_select));	// Write person
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_suffix));
 
@@ -2086,7 +2086,7 @@ what_next write_message_list (list<sk_db::import_message> messages)/*{{{*/
 	{
 		if ((*it).get_p1 ())
 		{
-			sk_person p=*((*it).get_p1 ());	// TODO remove when treat_person does not require a writeable object
+			Person p=*((*it).get_p1 ());	// TODO remove when treat_person does not require a writeable object
 			DO_SUB_ACTION (treat_person (&p, tm_write_table_data, "", "", NULL, true, false, (*it).description (false)));	// Write person
 		}
 		else
@@ -2106,10 +2106,10 @@ what_next write_message_list (list<sk_db::import_message> messages)/*{{{*/
 // Field conversion
 // Note: rather than continuing development of these functions, better
 // implement the object_fields successor.
-void sk_user_to_fields (const sk_user &user)/*{{{*/
+void sk_user_to_fields (const User &user)/*{{{*/
 	throw (ex_write_error_document)
 	/*
-	 * Converts an sk_user structure to the (global) sk_user fields.
+	 * Converts an User structure to the (global) User fields.
 	 * Paramters:
 	 *   - user: the user to convert.
 	 * See also:
@@ -2119,8 +2119,8 @@ void sk_user_to_fields (const sk_user &user)/*{{{*/
 	// TODO don't use global variable but pass reference
 	// TODO replace object_field
 	// TODO sk_user_{to,from}_fields are almost identical. Merge?
-	// Iterate over all sk_user fields and, depending on the label, read the
-	// data from the sk_user.
+	// Iterate over all User fields and, depending on the label, read the
+	// data from the User.
 	list<object_field>::const_iterator end=fields_sk_user.end ();
 	for (list<object_field>::iterator field=fields_sk_user.begin (); field!=end; ++field)
 	{
@@ -2139,10 +2139,10 @@ void sk_user_to_fields (const sk_user &user)/*{{{*/
 }
 /*}}}*/
 
-void sk_user_from_fields (sk_user &user)/*{{{*/
+void sk_user_from_fields (User &user)/*{{{*/
 	throw (ex_write_error_document)
 	/*
-	 * Converts the (global) sk_user fields to an sk_user.
+	 * Converts the (global) User fields to an User.
 	 * Paramters:
 	 *   - user: the user to write.
 	 * See also:
@@ -2152,8 +2152,8 @@ void sk_user_from_fields (sk_user &user)/*{{{*/
 	// TODO don't use global variable but pass reference
 	// TODO replace object_field
 	// TODO sk_user_{to,from}_fields are almost identical. Merge?
-	// Iterate over all sk_user fields and, depending on the label, read the
-	// data from the sk_user.
+	// Iterate over all User fields and, depending on the label, read the
+	// data from the User.
 	list<object_field>::const_iterator end=fields_sk_user.end ();
 	for (list<object_field>::iterator field=fields_sk_user.begin (); field!=end; ++field)
 	{
@@ -2244,7 +2244,7 @@ void bordbuch_entry_to_fields (const bordbuch_entry &bbe, bool no_letters=false)
 }
 /*}}}*/
 
-void flight_to_fields (list<object_field> &fields, const sk_flug &f, const sk_flug_data &flight_data, int &num, const string &none_text="")/*{{{*/
+void flight_to_fields (list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const string &none_text="")/*{{{*/
 	throw (ex_write_error_document)
 	/*
 	 * Converts a flight list entry to a list of object_fields.
@@ -2471,7 +2471,7 @@ void write_flightlist (latex_document &ldoc, const flight_list &flights, const s
 
 		// For each flight, make a table row.
 		int num=0;
-		for (QPtrListIterator<sk_flug> it (flights); *it; ++it)
+		for (QPtrListIterator<Flight> it (flights); *it; ++it)
 		{
 			num++;
 
@@ -2697,7 +2697,7 @@ void fields_write_edit_form (const list<object_field> &fields, const string &url
 	fields_write_edit_table (fields, create_new, ident_arg, ident_val);
 
 	// We need to tell the next state about the username, in addition to the
-	// standard stuff (session_id, debug, etc.)
+	// standard Entity (session_id, debug, etc.)
 	argument_list additional_args;
 	additional_args.set_value (ident_arg, ident_val);
 	if (create_new) additional_args.set_value (arg_cgi_create_new);
@@ -3047,7 +3047,7 @@ what_next handler_list_persons ()/*{{{*/
 {
 	document.write_paragraph (document.text_link (back_link_url (web_create_person), "Neu anlegen"));
 
-	QPtrList<sk_person> persons; persons.setAutoDelete (true);
+	QPtrList<Person> persons; persons.setAutoDelete (true);
 	int ret=db.list_persons_all (persons);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3066,7 +3066,7 @@ what_next handler_edit_person ()/*{{{*/
 	db_id id=atoi (CGI_READ (id).c_str ());
 	CHECK_ID;
 
-	sk_person person;
+	Person person;
 	int ret=db.get_person (&person, id);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3087,7 +3087,7 @@ what_next handler_do_edit_person ()/*{{{*/
 	CHECK_ID;
 
 	// Read the person
-	sk_person person;
+	Person person;
 	int ret=db.get_person (&person, id);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3099,12 +3099,12 @@ what_next handler_do_edit_person ()/*{{{*/
 	// If the club ID is not empty, check if there are other persons with this club ID
 	if (!person.club_id.empty ())
 	{
-		QPtrList<sk_person> persons; persons.setAutoDelete (true);
+		QPtrList<Person> persons; persons.setAutoDelete (true);
 		db.list_persons_by_club_club_id (persons, person.club, person.club_id);
 		// If there is at least one persons with a different ID and the same club
 		// ID, then this is an error.
 		bool duplicate_club_id=false;
-		for (QPtrListIterator<sk_person> it (persons); *it; ++it)
+		for (QPtrListIterator<Person> it (persons); *it; ++it)
 			if ((*it)->id!=person.id) duplicate_club_id=true;
 
 		if (duplicate_club_id) return what_next::output_error ("Vereins-ID nicht eindeutig");
@@ -3145,7 +3145,7 @@ what_next handler_display_person ()/*{{{*/
 	CHECK_ID;
 
 	// Read the person
-	sk_person person;
+	Person person;
 	int ret=db.get_person (&person, id);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3170,7 +3170,7 @@ what_next handler_delete_person ()/*{{{*/
 		// TODO where?
 
 	// Read the person
-	sk_person person;
+	Person person;
 	int ret=db.get_person (&person, id);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3266,7 +3266,7 @@ what_next handler_do_create_person ()/*{{{*/
 	// TODO code duplication with handler_do_edit_person
 
 	// Create a new person
-	sk_person person;
+	Person person;
 
 	// TODO Verein des Benutzers als default eintragen
 	// Modify the person
@@ -3277,12 +3277,12 @@ what_next handler_do_create_person ()/*{{{*/
 	// club ID
 	if (!person.club_id.empty ())
 	{
-		QPtrList<sk_person> persons; persons.setAutoDelete (true);
+		QPtrList<Person> persons; persons.setAutoDelete (true);
 		db.list_persons_by_club_club_id (persons, person.club, person.club_id);
 		// If there is at least one persons with a different ID, then this is an
 		// error.
 		bool duplicate_club_id=false;
-		for (QPtrListIterator<sk_person> it (persons); *it; ++it)
+		for (QPtrListIterator<Person> it (persons); *it; ++it)
 			if ((*it)->id!=person.id) duplicate_club_id=true;
 
 		if (duplicate_club_id) return what_next::output_error ("Vereins-ID nicht eindeutig");
@@ -3304,7 +3304,7 @@ what_next handler_select_merge_person ()/*{{{*/
 	db_id id=atoi (CGI_READ (id).c_str ());
 	CHECK_ID;
 
-	sk_person person;
+	Person person;
 	ret=db.get_person (&person, id);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3317,7 +3317,7 @@ what_next handler_select_merge_person ()/*{{{*/
 	argument_list additional_args;
 	additional_args.set_value (arg_cgi_id, num_to_string (person.id));
 
-	QPtrList<sk_person> persons; persons.setAutoDelete (true);
+	QPtrList<Person> persons; persons.setAutoDelete (true);
 	ret=db.list_persons_all (persons);
 	CHECK_DB_ERROR_ERROR;
 	DO_SUB_ACTION (write_person_list (persons, false, web_merge_person, arg_cgi_correct_person, &additional_args, false, true));
@@ -3345,11 +3345,11 @@ what_next handler_merge_person ()/*{{{*/
 
 	// Get the persons from the database
 	// Wrong person
-	sk_person wrong_person;
+	Person wrong_person;
 	ret=db.get_person (&wrong_person, wrong_id);
 	CHECK_DB_ERROR_ERROR;
 	// Correct person
-	sk_person correct_person;
+	Person correct_person;
 	ret=db.get_person (&correct_person, correct_id);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3433,7 +3433,7 @@ what_next handler_user_list ()/*{{{*/
 	// TODO extract the generic part of this list, like write_fields_display.
 	document.write_paragraph (document.text_link (back_link_url (web_user_add), "Neu anlegen"));
 
-	list<sk_user> users;
+	list<User> users;
 	int ret=db.sk_user_list (users);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3443,8 +3443,8 @@ what_next handler_user_list ()/*{{{*/
 	table.push_back (make_table_header (fields_sk_user));
 
 	// For each user, write a table row.
-	list<sk_user>::const_iterator users_end=users.end ();
-	for (list<sk_user>::const_iterator user=users.begin (); user!=users_end; ++user)
+	list<User>::const_iterator users_end=users.end ();
+	for (list<User>::const_iterator user=users.begin (); user!=users_end; ++user)
 	{
 		sk_user_to_fields (*user);
 		html_table_row user_row=make_table_data_row (fields_sk_user);
@@ -3475,7 +3475,7 @@ what_next handler_user_delete ()/*{{{*/
 	if (username.empty ()) return what_next::output_error ("Benutzername ist leer");
 	if (determine_user_class (username)!=uc_sk_user) return what_next::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
 
-	sk_user user;
+	User user;
 	int ret=db.sk_user_get (user, username);
 	CHECK_DB_ERROR_ERROR;
 	sk_user_to_fields (user);
@@ -3509,7 +3509,7 @@ what_next handler_user_do_delete ()/*{{{*/
 	if (determine_user_class (username)!=uc_sk_user) return what_next::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
 	check_username (username);
 
-	sk_user user_to_delete;
+	User user_to_delete;
 	int ret=db.sk_user_get (user_to_delete, username);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3559,7 +3559,7 @@ what_next handler_user_edit ()/*{{{*/
 		check_username (username);
 	}
 
-	sk_user user;
+	User user;
 
 	if (!create_new)
 	{
@@ -3604,7 +3604,7 @@ what_next handler_user_edit ()/*{{{*/
 			if (!id_invalid (person_id))
 			{
 				// ...get it from the database...
-				sk_person person;
+				Person person;
 				int ret=db.get_person (&person, person_id);
 				CHECK_DB_ERROR_ERROR;
 
@@ -3659,7 +3659,7 @@ what_next handler_user_do_edit ()/*{{{*/
 
 	int ret;
 	string result_username;
-	sk_user user;
+	User user;
 
 	// Set the correct field lockage. Also sets the values for locked fields.
 	field_user_lock (fields_sk_user);
@@ -3686,7 +3686,7 @@ what_next handler_user_do_edit ()/*{{{*/
 		username=CGI_READ (username);
 		check_username (username);
 
-		sk_user org_user;
+		User org_user;
 		int ret=db.sk_user_get (org_user, username);
 		CHECK_DB_ERROR_ERROR;
 
@@ -3705,7 +3705,7 @@ what_next handler_user_do_edit ()/*{{{*/
 
 	if (!id_invalid (user.person))
 	{
-		sk_person person;
+		Person person;
 		ret=db.get_person (&person, user.person);
 		if (ret==db_err_not_found) return what_next::go_to_state (web_user_edit, "Die Person "+num_to_string (user.person)+" existiert nicht", true);
 		CHECK_DB_ERROR_ERROR;
@@ -3783,7 +3783,7 @@ what_next handler_user_change_password ()/*{{{*/
 	document.write_paragraph ("Passwort�nderung f�r Benutzer "+username);
 
 	// Get the user
-	sk_user user;
+	User user;
 	ret=db.sk_user_get (user, username);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3841,7 +3841,7 @@ what_next handler_user_do_change_password ()/*{{{*/
 	if (new_password_2!=new_password_1) return what_next::go_to_state (web_user_change_password, "Passw�rter stimmen nicht �berein", true);
 
 	// Get the user
-	sk_user user;
+	User user;
 	ret=db.sk_user_get (user, username);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3868,7 +3868,7 @@ what_next handler_person_select ()/*{{{*/
 	// person currently selected
 
 	// Read persons from the database
-	QPtrList<sk_person> persons; persons.setAutoDelete (true);
+	QPtrList<Person> persons; persons.setAutoDelete (true);
 	int ret=db.list_persons_all (persons);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3957,7 +3957,7 @@ what_next handler_master_data_check ()/*{{{*/
 		return what_next::output_error ("Keine Datei angegeben");
 
 	string csv=SESSION_READ (master_data_file);
-	QPtrList<sk_person> persons; persons.setAutoDelete (true);
+	QPtrList<Person> persons; persons.setAutoDelete (true);
 
 
 	// Make the person list from the CSV data
@@ -4037,7 +4037,7 @@ what_next handler_master_data_do_import ()/*{{{*/
 		return what_next::output_error ("Ung�ltiger Datentyp");
 
 	string csv=SESSION_READ (master_data_file);
-	QPtrList<sk_person> persons; persons.setAutoDelete (true);
+	QPtrList<Person> persons; persons.setAutoDelete (true);
 
 	DO_SUB_ACTION (csv_to_persons (csv, persons, session_user->club));
 
@@ -4065,7 +4065,7 @@ what_next handler_person_logbook ()/*{{{*/
 	if (id_invalid (session_user->person))
 		return what_next::output_error ("Dem Benutzer ist keine Person zugeordnet. Ein Vereinsadministrator oder der Startkladdenadministrator muss diese Zuordnung vornehmen.");
 
-	sk_person person;
+	Person person;
 	int ret=db.get_person (&person, session_user->person);
 	CHECK_DB_ERROR_ERROR;
 	// TODO handle not found error explicitly
@@ -4125,14 +4125,14 @@ what_next handler_do_person_logbook ()/*{{{*/
 	// TODO This function is too large. Need more abstraction, for example a
 	// counterpart to add_date_inputs.
 	//
-	// Make sure that a sk_user is logged in and a person is associated with
+	// Make sure that a User is logged in and a person is associated with
 	// it.
 	require_sk_user ();
 	db_id person_id=session_user->person;
 	if (id_invalid (person_id)) return what_next::output_error ("Dem Benutzer ist keine Person zugeordnet.");
 
 	// Get the person.
-	sk_person person;
+	Person person;
 	int ret=db.get_person (&person, person_id);
 	CHECK_DB_ERROR_ERROR;
 
@@ -4165,7 +4165,7 @@ what_next handler_do_person_logbook ()/*{{{*/
 
 	// Step 1: read the flights we are interested in from the database./*{{{*/
 	// TODO make sk_db frontend function for listing.
-	// TODO remove QDate stuff
+	// TODO remove QDate Entity
 	if (date_spec==arg_cgi_date_spec_today)
 	{
 		// Generate the date.
@@ -4338,7 +4338,7 @@ what_next handler_do_plane_logbook ()/*{{{*/
 
 	flight_list flights;
 	flights.setAutoDelete (true);
-	QPtrList<sk_flugzeug> planes;
+	QPtrList<Plane> planes;
 	planes.setAutoDelete (true);
 	string date_text;
 
@@ -4348,7 +4348,7 @@ what_next handler_do_plane_logbook ()/*{{{*/
 
 	// TODO!: more abstraction
 	// Read the flights we are interested in from the database./*{{{*/
-	// TODO remove QDate stuff
+	// TODO remove QDate Entity
 	// TODO code duplication with handler_do_flightlist
 	sk_date date;
 	if (date_spec==arg_cgi_date_spec_today)
@@ -4473,7 +4473,7 @@ what_next handler_do_flightlist ()/*{{{*/
 	if (date_spec.empty ()) return what_next::output_error ("Kein Datumsmodus angegeben");
 
 	// Read the flights we are interested in from the database.
-	// TODO remove QDate stuff
+	// TODO remove QDate Entity
 	sk_date date;
 	if (date_spec==arg_cgi_date_spec_today)
 	{
@@ -4616,7 +4616,7 @@ what_next handler_do_flight_db ()/*{{{*/
 	string filename="startkladde_";
 
 	// Step 1: read the flights we are interested in from the database./*{{{*/
-	// TODO remove QDate stuff
+	// TODO remove QDate Entity
 	if (date_spec==arg_cgi_date_spec_today)
 	{
 		// Generate the date.
@@ -4671,12 +4671,12 @@ what_next handler_do_flight_db ()/*{{{*/
 	{
 		flight_list towflights;	// No autoDelete because we add them to flights later.
 
-		for (QPtrListIterator<sk_flug> it (flights); *it; ++it)
+		for (QPtrListIterator<Flight> it (flights); *it; ++it)
 		{
 			int ret;
 
 			// Read the startart from the database
-			startart_t sa;
+			LaunchType sa;
 			ret=db.get_startart (&sa, (*it)->startart);
 			bool sa_ok=(ret==db_ok);
 
@@ -4688,7 +4688,7 @@ what_next handler_do_flight_db ()/*{{{*/
 				if (sa.towplane_known ())
 				{
 					// The towplane is known by registration. Get its ID.
-					sk_flugzeug sfz;
+					Plane sfz;
 					ret=db.get_plane_registration (&sfz, sa.get_towplane ());
 					if (ret==db_ok)
 						towplane_id=sfz.id;
@@ -4704,13 +4704,13 @@ what_next handler_do_flight_db ()/*{{{*/
 
 				// Determine the startart.
 				db_id towflight_startart_id;
-				startart_t ss;
+				LaunchType ss;
 				if (db.get_startart_by_type (&ss, sat_self)==db_ok)
 					towflight_startart_id=ss.get_id ();
 				else
 					towflight_startart_id=invalid_id;
 
-				sk_flug *towflight=new sk_flug;
+				Flight *towflight=new Flight;
 
 				(*it)->get_towflight (towflight, towplane_id, towflight_startart_id);
 				towflights.append (towflight);
@@ -4719,7 +4719,7 @@ what_next handler_do_flight_db ()/*{{{*/
 		}
 
 		// Copy the towflights to the flight list
-		for (QPtrListIterator<sk_flug> tow (towflights); *tow; ++tow)
+		for (QPtrListIterator<Flight> tow (towflights); *tow; ++tow)
 		{
 			flights.append (*tow);
 		}
@@ -4780,9 +4780,9 @@ what_next handler_do_flight_db ()/*{{{*/
 		QDate old_date;
 		int num;
 
-		for (QPtrListIterator<sk_flug> it (flights); *it; ++it)
+		for (QPtrListIterator<Flight> it (flights); *it; ++it)
 		{
-			sk_flug &f=**it;
+			Flight &f=**it;
 
 			QDate this_date=(*it)->effdatum ();
 			if (old_date.isNull () || this_date!=old_date)
@@ -5045,8 +5045,8 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 						if (session_user) delete session_user; session_user=NULL;
 						if (session_access==dba_sk_user)
 						{
-							sk_user *_session_user;
-							_session_user=new sk_user;
+							User *_session_user;
+							_session_user=new User;
 							int ret=db.sk_user_get (*_session_user, session_username);
 							if (ret!=db_ok) return what_next::output_error ("Fehler beim Lesen des Benutzers \""+session_username+"\": "+db.db_error_description (ret, true));
 							session_user=_session_user;

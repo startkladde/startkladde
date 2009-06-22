@@ -1,20 +1,20 @@
-#ifndef sk_flugzeug_h
-#define sk_flugzeug_h
+#ifndef _Plane_h
+#define _Plane_h
 
 #include <cstdio>
 #include <string>
 
 #include "src/data_types.h"
-#include "src/model/stuff.h"
+#include "src/model/Entity.h"
 
 using namespace std;
 
 
-class sk_flugzeug: public stuff
+class Plane: public Entity
 {
 	public:
-		sk_flugzeug (string, string, string, string, int, db_id p_id=0);
-		sk_flugzeug ();
+		Plane (string, string, string, string, int, db_id p_id=0);
+		Plane ();
 
 		string registration;
 		string wettbewerbskennzeichen;

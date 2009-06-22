@@ -9,8 +9,8 @@
 #include "src/gui/widgets/SkButton.h"
 #include "src/gui/widgets/SkTable.h"
 #include "src/gui/widgets/SkTableItem.h"
-#include "src/model/sk_flug.h"
-#include "src/model/startart_t.h"
+#include "src/model/Flight.h"
+#include "src/model/LaunchType.h"
 #include "src/time/sk_time_t.h"
 
 using namespace std;
@@ -55,7 +55,7 @@ class FlightTable:public SkTable
 		int row_from_sref (db_id sref);
 		bool row_is_flight (int row);
 
-		void update_flight (db_id, sk_flug *);
+		void update_flight (db_id, Flight *);
 		void remove_flight (db_id);
 		void removeRow (int);
 
@@ -79,9 +79,9 @@ class FlightTable:public SkTable
 		virtual void columnClicked (int);
 
 	private:
-		int insert_row_for_flight (sk_flug *f);
+		int insert_row_for_flight (Flight *f);
 		void set_cell_by_type (int row, int column, zell_typ typ, char *button_text, string zeit_text, QColor bg, db_id data, const char *);
-		void set_flight (int, sk_flug *, db_id, bool);
+		void set_flight (int, Flight *, db_id, bool);
 		SkButton *set_button_or_text (int row, int column, bool set_button, QString text, QColor bg, db_id data);
 		SkButton *set_button_or_text (int row, int column, bool set_button, string text, QColor bg, db_id data);
 		SkButton *set_button_or_text (int row, int column, bool set_button, const char *text, QColor bg, db_id data);

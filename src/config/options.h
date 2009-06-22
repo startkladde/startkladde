@@ -88,7 +88,7 @@ class options
 		QDate start_date;
 		QDate end_date;
 
-		// Plugin stuff
+		// Plugin Entity
 		list<string> plugin_paths;
 		list<plugin_data_format> plugins_data_format;
 

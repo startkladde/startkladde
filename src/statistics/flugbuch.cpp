@@ -1,6 +1,6 @@
 #include "flugbuch.h"
 
-#include "src/model/startart_t.h"
+#include "src/model/LaunchType.h"
 
 flugbuch_entry::flugbuch_entry ()/*{{{*/
 {
@@ -33,7 +33,7 @@ string flugbuch_entry::flugdauer_string () const/*{{{*/
 
 
 
-void make_flugbuch_person (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date, sk_person *person, QPtrList<sk_flug> &flights, flugbuch_entry::flight_instructor_mode fim)/*{{{*/
+void make_flugbuch_person (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date, Person *person, QPtrList<Flight> &flights, flugbuch_entry::flight_instructor_mode fim)/*{{{*/
 	// flights may contain flights which don't belong to the person
 	// TODO pass list of planes here?
 	// TODO this is slow because it needs to query the database for persons
@@ -46,7 +46,7 @@ void make_flugbuch_person (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date, 
 
 	// We use only flights where both the person and the date matches. Make a
 	// list of these flights ("interesting flights").
-	for (QPtrListIterator<sk_flug> flight (flights); *flight; ++flight)
+	for (QPtrListIterator<Flight> flight (flights); *flight; ++flight)
 	{
 		// First condition: person matches.
 		// This means that the person given is the pilot, or (in case of
@@ -70,19 +70,19 @@ void make_flugbuch_person (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date, 
 	interesting_flights.sort ();
 
 	// Iterate over all interesting flights, generating logbook entries.
-	for (QPtrListIterator<sk_flug> flight (interesting_flights); *flight; ++flight)
+	for (QPtrListIterator<Flight> flight (interesting_flights); *flight; ++flight)
 	{
 		// TODO Move to flugbuch_entry class
 		flugbuch_entry *fb_entry=new flugbuch_entry;
 
 		// Get additional data
 		// TODO error checking
-		sk_flugzeug fz; db->get_plane (&fz, (*flight)->flugzeug);
+		Plane fz; db->get_plane (&fz, (*flight)->flugzeug);
 
 		// The person we are checking may either be pilot (regular) or copilot
 		// (flight instructor). Thus, both of these may be a different person.
 
-		sk_person pilot, begleiter;
+		Person pilot, begleiter;
 
 		// If the pilot is the person we're checking, copy it. If not, get it
 		// from the database.
@@ -99,7 +99,7 @@ void make_flugbuch_person (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date, 
 			// TODO error checking
 			db->get_person (&begleiter, (*flight)->begleiter);
 
-		startart_t sa; db->get_startart (&sa, (*flight)->startart);
+		LaunchType sa; db->get_startart (&sa, (*flight)->startart);
 
 		fb_entry->tag=(*flight)->effdatum ();
 		fb_entry->muster=fz.typ;
@@ -129,7 +129,7 @@ void make_flugbuch_day (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date)/*{{
 {
 	// TODO error handling
 
-	QPtrList<sk_person> persons; persons.setAutoDelete (true);
+	QPtrList<Person> persons; persons.setAutoDelete (true);
 	// Find out which persons had flights today
 	db->list_persons_date (persons, &date);
 
@@ -137,12 +137,12 @@ void make_flugbuch_day (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date)/*{{
 	// TODO this uses manual selection sort. Better use the heap sort provided
 	// by QPtrList.
 	persons.setAutoDelete (false);
-	QPtrList<sk_person> sorted_persons; sorted_persons.setAutoDelete (true);
+	QPtrList<Person> sorted_persons; sorted_persons.setAutoDelete (true);
 	while (!persons.isEmpty ())
 	{
-		sk_person *smallest=NULL;
+		Person *smallest=NULL;
 		// Find the smallest element.
-		for (QPtrListIterator<sk_person> person (persons); *person; ++person)
+		for (QPtrListIterator<Person> person (persons); *person; ++person)
 		{
 			if (!smallest)
 				// No smallest entry set yet (first element in list)
@@ -158,12 +158,12 @@ void make_flugbuch_day (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date)/*{{
 		persons.remove (smallest);
 	}
 
-	QPtrList<sk_flug> flights; flights.setAutoDelete (true);
+	QPtrList<Flight> flights; flights.setAutoDelete (true);
 	// We need all flights of that date anyway. For speed, we don't query the
 	// database for each person but retrieve all flights here.
 	db->list_flights_date (flights, &date);
 
-	for (QPtrListIterator<sk_person> person (sorted_persons); *person; ++person)
+	for (QPtrListIterator<Person> person (sorted_persons); *person; ++person)
 	{
 		// TODO emit progress
 		make_flugbuch_person (fb, db, date, *person, flights);

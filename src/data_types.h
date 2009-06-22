@@ -25,7 +25,7 @@ enum casus { cas_nominativ, cas_genitiv, cas_dativ, cas_akkusativ };
 enum db_event_type { det_none, det_add, det_delete, det_change, det_refresh };
 enum db_event_table { db_kein, db_alle, db_person, db_flug, db_flugzeug };
 
-enum stuff_type { st_none, st_plane, st_person, st_startart };
+enum EntityType { st_none, st_plane, st_person, st_startart };
 
 int list_categories (aircraft_category **g, bool include_invalid);
 string category_string (aircraft_category category, length_specification lenspec);
@@ -49,7 +49,7 @@ bool starts_here (flug_modus m);
 QString std2q (string);
 string q2std (QString);
 
-db_event_table table_aus_stuff_type (stuff_type);
+db_event_table TableFromEntityType (EntityType);
 
 #endif
 

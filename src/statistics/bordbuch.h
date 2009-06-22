@@ -17,9 +17,9 @@
 
 #include "src/flight_list.h"
 #include "src/db/sk_db.h"
-#include "src/model/sk_flug.h"
-#include "src/model/sk_flugzeug.h"
-#include "src/model/sk_person.h"
+#include "src/model/Flight.h"
+#include "src/model/Plane.h"
+#include "src/model/Person.h"
 #include "src/time/sk_time_t.h"
 
 using namespace std;
@@ -52,9 +52,9 @@ class bordbuch_entry
 		string anzahl_landungen_string () const;
 };
 
-bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<sk_flug> &flights, sk_flugzeug &fz, QDate date);
-void make_bordbuch_plane (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, sk_flugzeug &fz, QPtrList<sk_flug> &flights);
-void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, QPtrList<sk_flugzeug> planes, QPtrList<sk_flug> flights, string *club=NULL);
+bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<Flight> &flights, Plane &fz, QDate date);
+void make_bordbuch_plane (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, Plane &fz, QPtrList<Flight> &flights);
+void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, string *club=NULL);
 void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date);
 
 #endif

@@ -211,7 +211,7 @@ Normale Priorit�t:
     - options: explizite Datumsangabe hat Vorrang, kein Fehler
 	- Netz�berwachung, alle Fenster disablen
     - F1: Hilfe
-	- im stuff editor neuheiten in der richtigen sortierung eintragen
+	- im entity editor neuheiten in der richtigen sortierung eintragen
     - fb/bb als unvollst�ndig markieren, wenn flug noch fliegt (besonders bb ist ung�ltig!)
     - Datumseinstellung: [X] Heute
     - Sortierung Kommt/Geht
@@ -268,7 +268,7 @@ Normale Priorit�t:
     - Was passiert bei date wrap? Anzeigedatum anpassen? Tabelle aktualisieren?
     - In allen Fenstern, die db_update machen, auch det_delete behandeln
 	- db_event: unterscheidung zwischen refresh/alle und refresh/(eine bestimmte)
-	- error_control im stuff_editor
+	- error_control im entity_editor
     - Gattung "2mot" und "heli" und dann ist_motorflugzeug (gattung)
     - sitze aus typ, evtl. auch nur flugzeuge nach typ listen
     - verein_aus_namen (vn, nn)
@@ -289,7 +289,7 @@ Normale Priorit�t:
 	  von Queries zu speichern.  Wichtig dabei ist, dass die
 	  Objektklassen keine Information dar�ber enthalten sollen, in
 	  welcher Form die Daten in der Datenbank gespeichert sind.
-    - Im stuff Lister nicht nach Stufftype unterscheiden sondern an
+    - Im entity Lister nicht nach EntityType unterscheiden sondern an
       die Datenbank weiterreichen (db->delete_object (type, id), db_object_type dort).
 	- Die $irgendwas_string (...) Funktionen erhalten sowohl innerhalb als auch
 	  untereinander jede Menge Code- und Informationsduplikation. Besser: aus
@@ -300,8 +300,8 @@ Normale Priorit�t:
 	  auch Schlepp anzeigen?
 	- Sortierung vereinheitlichen zwischen refresh_table und
 	  sk_flight_table::set_flight.
-    - in sk_win_stuff_list.cpp gibts einige funktionen, die in stuff.cpp oder
-	  stuff_functions.cpp oder so sollten
+    - in sk_win_entity_list.cpp gibts einige funktionen, die in entity.cpp oder
+	  entity_functions.cpp oder so sollten
     - wenn die Men�eintr�ge f�r Manipulationen deaktiviert werden, sind diese
 	  Manipulationen Fehler und per log_error zu loggen
     - operationen auf den Schleppflug vereinheitlichen, fm_land_schlepp streichen
@@ -329,20 +329,20 @@ Normale Priorit�t:
 	- M�glichkeit, strings und QStrings automatisch ineinander zu konvertieren?
 	- sk_flight::fliegt () �berall verwenden statt gestartet ()/gelandet ()
 	- namespace std �berall
-    - Flug sollte eigentlich von stuff inherited sein
+    - Flug sollte eigentlich von entity inherited sein
     - Unified Fehlerchecking:
       - context menu slot
       - enable menus
       - manipulate flight
       - accept flight
     - t_pilot_bezeichnung rausschmeissen, durch flug->pilot_bezeichnung ersetzen
-    - stuff selector so umbauen, dass immer die statische funktion benutzt wird,
+    - entity selector so umbauen, dass immer die statische funktion benutzt wird,
       auch zum listen der Eintr�ge (dann ists auch nur noch eine funktion). Dann
-      kann man personen auch als stuff listen.
+      kann man personen auch als entity listen.
       Alternative: enttemplatisieren, alles dynamisch machen. Hat das Problem,
       dass bei einer leeren Liste die Spaltenk�pfe nicht festgestellt werden
       k�nnen. evtl. kann man die zweite M�glichkeit zus�tzlich bieten.
-    - static function for stuff selector
+    - static function for entity selector
     - startartstatistik wie flugbuch/bordbuch
     - status dialog: eigene Klasse, basierend auf QSplash
     - sk_win_flight::fehler_eintragen wird zu oft aufgrufen durch slots
@@ -357,7 +357,7 @@ Normale Priorit�t:
     - Was-das-Programm-gerade-macht-Anzeige
     - Nicht gestartete editieren: Jetzt starten/Sp�ter starten buttons
     - Fliegenden editieren: Jetzt landen-Button
-    - Im stuff seelctor markieren, welche zum preselect-Verein passen, wenn nicht
+    - Im entity seelctor markieren, welche zum preselect-Verein passen, wenn nicht
       eindeutig
     - Evtl. die Fehlerpr�fung beim Editieren einschr�nken, so dass das Zeug, was auch
       schon im error_control steht, nicht noch mal gefragt wird.
@@ -368,7 +368,7 @@ Normale Priorit�t:
     - Bei "IP stimmt nicht" keine Hauptmen�-Links
 
 Probleme:
-  - Refresh im stuff lister: hide();show(); sonst focus im mainwindow
+  - Refresh im entity lister: hide();show(); sonst focus im mainwindow
 
 Doku:
   - fehlerchecking erkl�ren

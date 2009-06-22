@@ -130,7 +130,7 @@ void plugin_data_format::plugin_make_field_list (const string &format, list<obje
 }
 /*}}}*/
 
-void plugin_data_format::plugin_flight_to_fields (const string &format, list<object_field> &fields, const sk_flug &f, const sk_flug_data &flight_data, int &num, const string &none_text, const string &error_text) const/*{{{*/
+void plugin_data_format::plugin_flight_to_fields (const string &format, list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const string &none_text, const string &error_text) const/*{{{*/
 {
 	load ();
 	REQUIRE_SYMBOL (flight_to_fields);

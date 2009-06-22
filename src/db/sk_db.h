@@ -22,11 +22,11 @@
 #include "src/db/db_column.h"
 #include "src/db/db_table.h"
 #include "src/db/db_types.h"
-#include "src/model/sk_flug.h"
-#include "src/model/sk_flugzeug.h"
-#include "src/model/sk_person.h"
-#include "src/model/sk_user.h"
-#include "src/model/startart_t.h"
+#include "src/model/Flight.h"
+#include "src/model/Plane.h"
+#include "src/model/Person.h"
+#include "src/model/User.h"
+#include "src/model/LaunchType.h"
 
 using namespace std;
 
@@ -239,13 +239,13 @@ class sk_db:public QObject
 			// Properties access
 			virtual string description (bool extended) const;
 			bool fatal () const { return fatal (type); }
-			RW_P_ACCESSOR (const sk_person, p1)
-			RW_P_ACCESSOR (const sk_person, p2)
+			RW_P_ACCESSOR (const Person, p1)
+			RW_P_ACCESSOR (const Person, p2)
 
 #define SINGLE_PERSON_MESSAGE(NAME) \
-			static import_message NAME (const sk_person *_p1=NULL, const string &_text_value="") { return import_message (imt_ ## NAME, _p1, NULL, _text_value); }
+			static import_message NAME (const Person *_p1=NULL, const string &_text_value="") { return import_message (imt_ ## NAME, _p1, NULL, _text_value); }
 #define DOUBLE_PERSON_MESSAGE(NAME) \
-			static import_message NAME (const sk_person *_p1=NULL, const sk_person *_p2=NULL, const string &_text_value="") { return import_message (imt_ ## NAME, _p1, _p2, _text_value); }
+			static import_message NAME (const Person *_p1=NULL, const Person *_p2=NULL, const string &_text_value="") { return import_message (imt_ ## NAME, _p1, _p2, _text_value); }
 
 			// Static construction
 			SINGLE_PERSON_MESSAGE (first_name_missing)
@@ -283,7 +283,7 @@ class sk_db:public QObject
 			};
 
 			// Constructor
-			import_message (import_message_type _type, const sk_person *_p1=NULL, const sk_person *_p2=NULL, const string &_text_value="")
+			import_message (import_message_type _type, const Person *_p1=NULL, const Person *_p2=NULL, const string &_text_value="")
 				:type (_type), p1 (_p1), p2 (_p2), text_value (_text_value) {}
 
 			// Properties
@@ -292,7 +292,7 @@ class sk_db:public QObject
 
 			// Data members
 			import_message_type type;
-			const sk_person *p1, *p2;
+			const Person *p1, *p2;
 			string text_value;
 	};
 /*}}}*/
@@ -344,16 +344,16 @@ class sk_db:public QObject
 		void merge_person (db_id correct_id, db_id wrong_id) throw (ex_not_connected, ex_parameter_error, ex_query_failed, ex_operation_failed);
 
 		// Importing
-		static void remove_editable_persons (QPtrList<sk_person> persons);
+		static void remove_editable_persons (QPtrList<Person> persons);
 
-		void import_check (const sk_person &person) throw (import_message);
-		void import_check (const QPtrList<sk_person> &persons, list<import_message> &notes);
+		void import_check (const Person &person) throw (import_message);
+		void import_check (const QPtrList<Person> &persons, list<import_message> &notes);
 
-		db_id import_identify (const sk_person &p, list<import_message> *notes=NULL) throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message);
-		void import_identify (QPtrList<sk_person> &persons, list<import_message> &notes) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
+		db_id import_identify (const Person &p, list<import_message> *notes=NULL) throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message);
+		void import_identify (QPtrList<Person> &persons, list<import_message> &notes) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
 
-		db_id import_person (const sk_person &person) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
-		void import_persons (const QPtrList<sk_person> &persons) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
+		db_id import_person (const Person &person) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
+		void import_persons (const QPtrList<Person> &persons) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
 
 		// Editable
 	public:
@@ -365,15 +365,15 @@ class sk_db:public QObject
 		int delete_flight (db_id id);
 		int delete_plane (db_id id);
 		int delete_person (db_id id);
-		db_id write_flight (sk_flug *p);
-		db_id write_plane (sk_flugzeug *p);
-		db_id write_person (sk_person *p);
+		db_id write_flight (Flight *p);
+		db_id write_plane (Plane *p);
+		db_id write_person (Person *p);
 		int flight_exists (db_id id);
 		int plane_exists (db_id id);
 		int person_exists (db_id id);
-		int get_flight (sk_flug *flight, db_id id);
-		int get_plane (sk_flugzeug *plane, db_id id);
-		int get_person (sk_person *person, db_id id);
+		int get_flight (Flight *flight, db_id id);
+		int get_plane (Plane *plane, db_id id);
+		int get_person (Person *person, db_id id);
 		long long int count_flights (condition_t c);
 		long long int count_planes (condition_t c);
 		long long int count_persons (condition_t c);
@@ -386,27 +386,27 @@ class sk_db:public QObject
 		bool plane_has_flight (db_id id);
 		bool person_used (db_id id);
 		bool plane_used (db_id id);
-		int list_flights (QPtrList<sk_flug> &flights, condition_t c);
-		int list_planes (QPtrList<sk_flugzeug> &planes, condition_t c);
-		int list_persons (QPtrList<sk_person> &persons, condition_t c);
+		int list_flights (QPtrList<Flight> &flights, condition_t c);
+		int list_planes (QPtrList<Plane> &planes, condition_t c);
+		int list_persons (QPtrList<Person> &persons, condition_t c);
 /*}}}*/
 
 		// Listing frontends/*{{{*/
-		int list_flights_prepared (QPtrList<sk_flug> &flights);
-		int list_flights_date (QPtrList<sk_flug> &flights, QDate *date);
+		int list_flights_prepared (QPtrList<Flight> &flights);
+		int list_flights_date (QPtrList<Flight> &flights, QDate *date);
 		int list_flights_date_range (flight_list &flights, QDate *start_date, QDate *end_date);
-		int list_persons_by_name (QPtrList<sk_person> &persons, string vorname, string nachname);
-		int list_persons_by_first_name (QPtrList<sk_person> &persons, string vorname);
-		int list_persons_by_last_name (QPtrList<sk_person> &persons, string nachname);
-		int list_persons_by_club_club_id (QPtrList<sk_person> &persons, string club, string club_id);
-		int list_planes_all (QPtrList<sk_flugzeug> &planes);
-		int list_persons_all (QPtrList<sk_person> &persons);
-		int list_startarten_all (QPtrList<startart_t> &saen);
-		int list_planes_date (QPtrList<sk_flugzeug> &planes, QDate *date);
-		int list_persons_date (QPtrList<sk_person> &persons, QDate *date);
-		int list_planes_registration (QPtrList<sk_flugzeug> &planes, string registration);
+		int list_persons_by_name (QPtrList<Person> &persons, string vorname, string nachname);
+		int list_persons_by_first_name (QPtrList<Person> &persons, string vorname);
+		int list_persons_by_last_name (QPtrList<Person> &persons, string nachname);
+		int list_persons_by_club_club_id (QPtrList<Person> &persons, string club, string club_id);
+		int list_planes_all (QPtrList<Plane> &planes);
+		int list_persons_all (QPtrList<Person> &persons);
+		int list_startarten_all (QPtrList<LaunchType> &saen);
+		int list_planes_date (QPtrList<Plane> &planes, QDate *date);
+		int list_persons_date (QPtrList<Person> &persons, QDate *date);
+		int list_planes_registration (QPtrList<Plane> &planes, string registration);
 		// TODO get_plane_id_registration oder so
-		int get_plane_registration (sk_flugzeug *plane, string registration);
+		int get_plane_registration (Plane *plane, string registration);
 /*}}}*/
 
 		// List strings/*{{{*/
@@ -421,14 +421,14 @@ class sk_db:public QObject
 /*}}}*/
 
 		// Startarten/*{{{*/
-		bool add_startart_to_list (startart_t *sa);
-		int get_startart (startart_t *sa, db_id id);
-		int get_startart_by_type (startart_t *startart, startart_type sat);
+		bool add_startart_to_list (LaunchType *sa);
+		int get_startart (LaunchType *sa, db_id id);
+		int get_startart_by_type (LaunchType *startart, startart_type sat);
 		db_id get_startart_id_by_type (startart_type sat);
 		int count_startart ();
 /*}}}*/
 
-		int get_towplane (sk_flugzeug *towplane, const startart_t &startart, const db_id towplane_id);
+		int get_towplane (Plane *towplane, const LaunchType &startart, const db_id towplane_id);
 
 		bool display_queries;
 		ostream &debug_stream;
@@ -449,19 +449,19 @@ class sk_db:public QObject
 		int sk_user_authenticate (const string &username, const string &password);
 		int sk_user_change_password (const string &username, const string &password);
 
-		int sk_user_add (const sk_user &user, const string &password);
-		int sk_user_modify (const sk_user &user, const string &username="");
+		int sk_user_add (const User &user, const string &password);
+		int sk_user_modify (const User &user, const string &username="");
 		int sk_user_delete (const string &username);
 
-		int sk_user_get (sk_user &user, const string &username);
-		int sk_user_list (list<sk_user> &users, const string &username="");
+		int sk_user_get (User &user, const string &username);
+		int sk_user_list (list<User> &users, const string &username="");
 
-		int row_to_user (sk_user &user, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields);
-		int result_to_user_list (list<sk_user> &users, MYSQL_RES *result);
-		string user_value_list (const sk_user &user);
+		int row_to_user (User &user, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields);
+		int result_to_user_list (list<User> &users, MYSQL_RES *result);
+		string user_value_list (const User &user);
 
 		// Data collection
-		void make_flight_data (sk_flug_data &flight_data, const sk_flug &flight);
+		void make_flight_data (sk_flug_data &flight_data, const Flight &flight);
 
 
 		static void test ();
@@ -477,7 +477,7 @@ class sk_db:public QObject
 /*}}}*/
 
 		// Startart list/*{{{*/
-		QPtrList<startart_t> startarten;
+		QPtrList<LaunchType> startarten;
 /*}}}*/
 
 		// Generic functions/*{{{*/

@@ -228,7 +228,7 @@ void FlightTable::set_cell_by_type (int row, int column, zell_typ typ, char *but
 
 
 
-int FlightTable::insert_row_for_flight (sk_flug *f)/*{{{*/
+int FlightTable::insert_row_for_flight (Flight *f)/*{{{*/
 	/*
 	 * Insert a row at the correct position for a given flight.
 	 * Parameters:
@@ -268,7 +268,7 @@ int FlightTable::insert_row_for_flight (sk_flug *f)/*{{{*/
 	return row;
 }/*}}}*/
 
-void FlightTable::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*{{{*/
+void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)/*{{{*/
 	/*
 	 * Writes a given flight to a given row in the table.
 	 * Parameters:
@@ -284,16 +284,16 @@ void FlightTable::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*
 	resizeRowToContents (row);
 
 	// Startart lesen
-	startart_t startart;
+	LaunchType startart;
 	// TODO error checking (ex. startart invalid)
 	db->get_startart (&startart, f->startart);
 
 	// Determine the plane to be shown
-	sk_flugzeug fz;
-	sk_flugzeug sfz;
+	Plane fz;
+	Plane sfz;
 	bool fz_ok=(db->get_plane (&fz, f->flugzeug)==db_ok);
 	bool sfz_ok=(db_ok==db->get_towplane (&sfz, startart, f->towplane));
-	sk_flugzeug *eff_plane=NULL;
+	Plane *eff_plane=NULL;
 	bool eff_plane_ok=false;
 
 	if (set_schlepp)
@@ -450,7 +450,7 @@ void FlightTable::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*
 		{
 			if (opts.record_towpilot)
 			{
-				sk_person towpilot;
+				Person towpilot;
 				string towpilot_eintrag;
 
 				// Eintrag f�r den Schlepppiloten festlegen
@@ -477,7 +477,7 @@ void FlightTable::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*
 				set_cell (row, tbl_idx_landungen, "-", bg);
 			// CONFIGURATION ls_tablle vs. ls_kurz
 			set_cell (row, tbl_idx_flug_typ, flugtyp_string (ft_schlepp, ls_tabelle), bg);
-			startart_t ss; bool ss_ok=(db->get_startart_by_type (&ss, sat_self)==db_ok);
+			LaunchType ss; bool ss_ok=(db->get_startart_by_type (&ss, sat_self)==db_ok);
 			set_cell (row, tbl_idx_startart, ss_ok?ss.get_short_description ():"?", bg);
 			set_cell (row, tbl_idx_id_display, "("+QString::number (id)+")", bg);
 		}
@@ -485,7 +485,7 @@ void FlightTable::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*
 	else
 	{
 		// Flug eintragen
-		sk_person pilot, begleiter;
+		Person pilot, begleiter;
 		string pilot_eintrag;
 		string begleiter_eintrag;
 
@@ -604,7 +604,7 @@ void FlightTable::set_flight (int row, sk_flug *f, db_id id, bool set_schlepp)/*
 
 }/*}}}*/
 
-void FlightTable::update_flight (db_id id, sk_flug *f)/*{{{*/
+void FlightTable::update_flight (db_id id, Flight *f)/*{{{*/
 	/*
 	 * Updates the flight data in the table, add the flight if it is not in
 	 * the table yet, or remove it if it is not to be shown (for example, if it
@@ -619,13 +619,13 @@ void FlightTable::update_flight (db_id id, sk_flug *f)/*{{{*/
 	int row=-1;
 
 	// TODO error handling
-	startart_t startart;
+	LaunchType startart;
 	db->get_startart (&startart, f->startart);
 
-	sk_flugzeug fz;
+	Plane fz;
 	db->get_plane (&fz, f->flugzeug);
 
-	sk_flugzeug sfz;
+	Plane sfz;
 	db->get_towplane (&sfz, startart, f->towplane);
 
 	// ****** First, we determine whether the flight/tow is to be shown.

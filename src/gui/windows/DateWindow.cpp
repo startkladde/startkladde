@@ -4,7 +4,7 @@
 
 void DateWindow::init_common ()/*{{{*/
 	/*
-	 * Does initialization stuff common to all of the constructors.
+	 * Does initialization Entity common to all of the constructors.
 	 * Initializes the widgets and connects signals.
 	 */
 {

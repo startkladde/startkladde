@@ -1,4 +1,4 @@
-#include "StuffEditWindow.h"
+#include "EntityEditWindow.h"
 
 #include <QLayout>
 
@@ -9,26 +9,26 @@
 //switch (type)
 //{
 //	case st_none:
-//		log_error ("Invalid type in StuffEditWindow:: ()");
+//		log_error ("Invalid type in EntityEditWindow:: ()");
 //		break;
 //	case st_plane:
 //		break;
 //	case st_startart:
 //		break;
 //	default:
-//		log_error ("Unhandled type in StuffEditWindow:: ()");
+//		log_error ("Unhandled type in EntityEditWindow:: ()");
 //		break;
 //}
 ///*}}}*/
 
 
 
-StuffEditWindow::StuffEditWindow (stuff_type t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dialog)/*{{{*/
+EntityEditWindow::EntityEditWindow (EntityType t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dialog)/*{{{*/
 	:SkDialog (parent, name, modal, f, status_dialog)
 	/*
-	 * Initializes a stuff editor window.
+	 * Initializes a Entity editor window.
 	 * Parameters:
-	 *   - t: the type of stuff to edit.
+	 *   - t: the type of Entity to edit.
 	 *   - parent, name, modal, f: passed to the parent class constructor.
 	 *   - db: the database to use.
 	 *   - status_dialog: an object providing the status dialog interface.
@@ -60,7 +60,7 @@ StuffEditWindow::StuffEditWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 	switch (type)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_editor::sk_win_stuff_editor ()");
+			log_error ("Invalid type in EntityEditWindow::EntityEditWindow");
 			break;
 		case st_plane:
 		{
@@ -98,7 +98,7 @@ StuffEditWindow::StuffEditWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 			edit_club->setInsertionPolicy (QComboBox::NoInsertion);
 		} break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_editor::sk_win_stuff_editor ()");
+			log_error ("Unhandled type in EntityEditWindow::EntityEditWindow");
 			break;
 	}/*}}}*/
 
@@ -123,7 +123,7 @@ StuffEditWindow::StuffEditWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 	switch (type)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_editor::sk_win_stuff_editor ()");
+			log_error ("Invalid type in EntityEditWindow::EntityEditWindow");
 			break;
 		case st_plane:
 			labels[0]->setText ("&Kennzeichen");
@@ -142,7 +142,7 @@ StuffEditWindow::StuffEditWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 			labels[4]->setText ("Be&merkungen");
 			break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_editor::sk_win_stuff_editor ()");
+			log_error ("Unhandled type in EntityEditWindow::EntityEditWindow");
 			break;
 	}/*}}}*/
 
@@ -166,9 +166,9 @@ StuffEditWindow::StuffEditWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 	populate_lists ();
 }/*}}}*/
 
-StuffEditWindow::~StuffEditWindow ()/*{{{*/
+EntityEditWindow::~EntityEditWindow ()/*{{{*/
 	/*
-	 * Cleans up a stuff editor instance.
+	 * Cleans up a Entity editor instance.
 	 */
 {
 	if (categories) delete[] categories;
@@ -177,7 +177,7 @@ StuffEditWindow::~StuffEditWindow ()/*{{{*/
 
 
 
-void StuffEditWindow::populate_lists ()/*{{{*/
+void EntityEditWindow::populate_lists ()/*{{{*/
 	/*
 	 * Fill in all lists that don't need to query the database.
 	 */
@@ -185,7 +185,7 @@ void StuffEditWindow::populate_lists ()/*{{{*/
 	switch (type)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_editor::populte_lists ()");
+			log_error ("Invalid type in EntityEditWindow::populte_lists ()");
 			break;
 		case st_plane:
 		{
@@ -202,12 +202,12 @@ void StuffEditWindow::populate_lists ()/*{{{*/
 		{
 		} break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_editor::populte_lists ()");
+			log_error ("Unhandled type in EntityEditWindow::populate_lists ()");
 			break;
 	}
 }/*}}}*/
 
-void StuffEditWindow::read_db ()/*{{{*/
+void EntityEditWindow::read_db ()/*{{{*/
 	/*
 	 * Reads the lists relevant to the current type from the datbase.
 	 */
@@ -217,7 +217,7 @@ void StuffEditWindow::read_db ()/*{{{*/
 	switch (type)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_editor::populte_lists ()");
+			log_error ("Invalid type in EntityEditWindow::read_db");
 			break;
 		case st_plane:
 		{
@@ -248,14 +248,14 @@ void StuffEditWindow::read_db ()/*{{{*/
 			edit_club->setEditText ("");/*}}}*/
 		} break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_editor::populte_lists ()");
+			log_error ("Unhandled type in EntityEditWindow::read_db");
 			break;
 	}
 
 	emit long_operation_end ();
 }/*}}}*/
 
-void StuffEditWindow::enable_widgets (bool enable)/*{{{*/
+void EntityEditWindow::enable_widgets (bool enable)/*{{{*/
 	/*
 	 * Enable or disable (make read-only) all editing widgets.
 	 */
@@ -263,9 +263,9 @@ void StuffEditWindow::enable_widgets (bool enable)/*{{{*/
 	for (int i=0; i<num_fields; i++) edit_widgets[i]->setEnabled (enable);
 }/*}}}*/
 
-void StuffEditWindow::setup_controls ()/*{{{*/
+void EntityEditWindow::setup_controls ()/*{{{*/
 	/*
-	 * Setup the controls, depending on the editor mode and stuff type.
+	 * Setup the controls, depending on the editor mode and Entity type.
 	 */
 {
 	QString type_string;
@@ -294,14 +294,14 @@ void StuffEditWindow::setup_controls ()/*{{{*/
 			enable_widgets (true);
 		} break;/*}}}*/
 		default:/*{{{*/
-			  log_error ("Unhandled mode in sk_win_stuff_editor::setup_controls ()");
+			  log_error ("Unhandled mode in EntityEditWindow::setup_controls ()");
 			  break;/*}}}*/
 	}
 
 	switch (type)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_editor::setup_controls ()");
+			log_error ("Invalid type in EntityEditWindow::setup_controls ()");
 			break;
 		case st_plane:
 			edit_registration->setEnabled (name_editable);
@@ -317,7 +317,7 @@ void StuffEditWindow::setup_controls ()/*{{{*/
 			type_string="Person";
 			break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_editor::setup_controls ()");
+			log_error ("Unhandled type in EntityEditWindow::setup_controls ()");
 			type_string="Zeug";
 			break;
 	}
@@ -327,7 +327,7 @@ void StuffEditWindow::setup_controls ()/*{{{*/
 
 
 
-void StuffEditWindow::flugzeug_eintragen (sk_flugzeug *f)/*{{{*/
+void EntityEditWindow::flugzeug_eintragen (Plane *f)/*{{{*/
 	/*
 	 * Write a plane to the editor controls.
 	 * Parameters:
@@ -348,7 +348,7 @@ void StuffEditWindow::flugzeug_eintragen (sk_flugzeug *f)/*{{{*/
 	}
 }/*}}}*/
 
-void StuffEditWindow::person_eintragen (sk_person *p)/*{{{*/
+void EntityEditWindow::person_eintragen (Person *p)/*{{{*/
 	/*
 	 * Write a person to the editor controls.
 	 * Parameters:
@@ -364,7 +364,7 @@ void StuffEditWindow::person_eintragen (sk_person *p)/*{{{*/
 
 
 
-void StuffEditWindow::slot_save ()/*{{{*/
+void EntityEditWindow::slot_save ()/*{{{*/
 	/*
 	 * Accept the data and close the dialog.
 	 * Called when the save button is pressed.
@@ -376,7 +376,7 @@ void StuffEditWindow::slot_save ()/*{{{*/
 	}
 }/*}}}*/
 
-void StuffEditWindow::slot_registration ()/*{{{*/
+void EntityEditWindow::slot_registration ()/*{{{*/
 	/*
 	 * Try to determine the category of the plane from the registration.
 	 * Called when the focus is moved off the registration field.
@@ -388,7 +388,7 @@ void StuffEditWindow::slot_registration ()/*{{{*/
 
 
 
-bool StuffEditWindow::check_data ()/*{{{*/
+bool EntityEditWindow::check_data ()/*{{{*/
 	/*
 	 * Check whether the data enterede seem plausible. If not: ask the user. If
 	 * the user says, data is OK, data is OK.
@@ -403,7 +403,7 @@ bool StuffEditWindow::check_data ()/*{{{*/
 	switch (type)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_editor::check_data ()");
+			log_error ("Invalid type in EntityEditWindow::check_data ()");
 			break;
 		case st_plane:
 		{
@@ -412,7 +412,7 @@ bool StuffEditWindow::check_data ()/*{{{*/
 			// Kennzeichen existiert schon/*{{{*/
 			if (mode==em_create)
 			{
-				sk_flugzeug plane;
+				Plane plane;
 				int ret=db->get_plane_registration (&plane, q2std (edit_registration->text ()));
 				if (ret==db_ok)
 				{
@@ -463,14 +463,14 @@ bool StuffEditWindow::check_data ()/*{{{*/
 		{
 		} break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_editor::check_data ()");
+			log_error ("Unhandled type in EntityEditWindow::check_data ()");
 			break;
 	}
 
 	return true;
 }/*}}}*/
 
-bool StuffEditWindow::accept_data ()/*{{{*/
+bool EntityEditWindow::accept_data ()/*{{{*/
 	/*
 	 * Accept the data, that is, check if everything is OK and, if yes, write
 	 * the data to the buffer buf.
@@ -486,11 +486,11 @@ bool StuffEditWindow::accept_data ()/*{{{*/
 		switch (type)
 		{
 			case st_none:
-				log_error ("Invalid type in sk_win_stuff_editor::accept_data ()");
+				log_error ("Invalid type in EntityEditWindow::accept_data ()");
 				break;
 			case st_plane:
 			{
-				sk_flugzeug *plane=(sk_flugzeug *)buf;
+				Plane *plane=(Plane *)buf;
 
 				if (name_editable)
 				plane->registration=q2std (edit_registration->text ());
@@ -504,7 +504,7 @@ bool StuffEditWindow::accept_data ()/*{{{*/
 			case st_person:
 			{
 				// TODO q2std
-				sk_person *person=(sk_person *)buf;
+				Person *person=(Person *)buf;
 				if (name_editable)
 				{
 					person->vorname=q2std (edit_vorname->text ());
@@ -515,7 +515,7 @@ bool StuffEditWindow::accept_data ()/*{{{*/
 				person->bemerkungen=q2std (edit_bemerkungen->text ());
 			} break;
 			default:
-				log_error ("Unhandled type in sk_win_stuff_editor::accept_data ()");
+				log_error ("Unhandled type in EntityEditWindow::accept_data ()");
 				break;
 		}
 
@@ -529,16 +529,16 @@ bool StuffEditWindow::accept_data ()/*{{{*/
 
 
 
-void StuffEditWindow::reset ()/*{{{*/
+void EntityEditWindow::reset ()/*{{{*/
 	/*
 	 * Initializes the controls.
 	 */
 {
-	// Does nothing, fields are initialized by entering an empty stuff class.
+	// Does nothing, fields are initialized by entering an empty Entity class.
 }/*}}}*/
 
 
-int StuffEditWindow::exec ()/*{{{*/
+int EntityEditWindow::exec ()/*{{{*/
 	/*
 	 * Displays the dialog, after filling in the fields.
 	 * Return value:
@@ -550,27 +550,27 @@ int StuffEditWindow::exec ()/*{{{*/
 	switch (type)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_editor::exec ()");
+			log_error ("Invalid type in EntityEditWindow::exec ()");
 			break;
 		case st_plane:
-			flugzeug_eintragen ((sk_flugzeug *)buf);
+			flugzeug_eintragen ((Plane *)buf);
 			break;
 		case st_person:
-			person_eintragen ((sk_person *)buf);
+			person_eintragen ((Person *)buf);
 			break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_editor::exec ()");
+			log_error ("Unhandled type in EntityEditWindow::exec ()");
 			break;
 	}
 
 	return SkDialog::exec ();
 }/*}}}*/
 
-int StuffEditWindow::create (stuff *data, bool can_change_name)/*{{{*/
+int EntityEditWindow::create (Entity *data, bool can_change_name)/*{{{*/
 	/*
-	 * Displays the dialog for creating a stuff.
+	 * Displays the dialog for creating a Entity.
 	 * Parameters:
-	 *   - data: the buffer where the stuff is written, if accepted. It is
+	 *   - data: the buffer where the Entity is written, if accepted. It is
 	 *     written to the editor before the dialog is displayed.
 	 *   - can_change_name: whether the name can be edited by the user.
 	 * Return value:
@@ -584,11 +584,11 @@ int StuffEditWindow::create (stuff *data, bool can_change_name)/*{{{*/
 	return exec ();
 }/*}}}*/
 
-int StuffEditWindow::edit (stuff *data, bool can_change_name)/*{{{*/
+int EntityEditWindow::edit (Entity *data, bool can_change_name)/*{{{*/
 	/*
-	 * Displays the dialog for editing a stuff.
+	 * Displays the dialog for editing a Entity.
 	 * Parameters:
-	 *   - data: the buffer where the stuff is written, if accepted. It is
+	 *   - data: the buffer where the Entity is written, if accepted. It is
 	 *     written to the editor before the dialog is displayed.
 	 *   - can_change_name: whether the name can be edited by the user.
 	 * Return value:
@@ -602,11 +602,11 @@ int StuffEditWindow::edit (stuff *data, bool can_change_name)/*{{{*/
 	return exec ();
 }/*}}}*/
 
-int StuffEditWindow::disp (stuff *data)/*{{{*/
+int EntityEditWindow::disp (Entity *data)/*{{{*/
 	/*
-	 * Displays the dialog for displaying (read only) a stuff.
+	 * Displays the dialog for displaying (read only) a Entity.
 	 * Parameters:
-	 *   - data: the buffer the stuff is read from
+	 *   - data: the buffer the Entity is read from
 	 * Return value:
 	 *   - the result of exec ().
 	 */
@@ -621,7 +621,7 @@ int StuffEditWindow::disp (stuff *data)/*{{{*/
 
 
 
-int StuffEditWindow::category_index (aircraft_category gat)/*{{{*/
+int EntityEditWindow::category_index (aircraft_category gat)/*{{{*/
 	/*
 	 * Return the index of a given category in the category list.
 	 * Parameter:
@@ -639,7 +639,7 @@ int StuffEditWindow::category_index (aircraft_category gat)/*{{{*/
 
 
 
-void StuffEditWindow::slot_db_update (db_event *event)/*{{{*/
+void EntityEditWindow::slot_db_update (db_event *event)/*{{{*/
 	/*
 	 * Called when the database is changed. Update lists, if applicable.
 	 */
@@ -650,20 +650,20 @@ void StuffEditWindow::slot_db_update (db_event *event)/*{{{*/
 	{
 		if (type==st_plane && event->table==db_flugzeug)
 		{
-			sk_flugzeug fz;
+			Plane fz;
 			db->get_plane (&fz, event->id);
 			if (edit_club) edit_club->insert_if_new (fz.club);
 			if (edit_typ) edit_typ->insert_if_new (fz.typ);
 		}
 		if (type==st_person && event->table==db_person)
 		{
-			sk_person ps;
+			Person ps;
 			db->get_person (&ps, event->id);
 			if (edit_club) edit_club->insert_if_new (ps.club);
 		}
 		if (event->table==db_flug)
 		{
-			sk_flug fl;
+			Flight fl;
 			db->get_flight (&fl, event->id);
 		}
 	}

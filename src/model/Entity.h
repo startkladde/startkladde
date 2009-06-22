@@ -1,5 +1,5 @@
-#ifndef stuff_h
-#define stuff_h
+#ifndef _Entity_h
+#define _Entity_h
 
 #include <iostream>
 #include <string>
@@ -13,7 +13,7 @@ using namespace std;
 
 //#define column_string(num, title, value) if (column_number==num) { if (entry) return value; else return title; }
 
-class stuff
+class Entity
 /*
  * A base class for various items, like planes and persons.
  */
@@ -34,8 +34,8 @@ class stuff
 		//     from database writing.
 		enum output_format_t { of_single, of_table_header, of_table_data };
 
-		stuff ();
-		virtual ~stuff ();
+		Entity ();
+		virtual ~Entity ();
 		virtual string bezeichnung (casus) const=0;
 		virtual string name () const=0;
 		virtual string text_name () const=0;
@@ -58,7 +58,7 @@ class stuff
 
 // TODO make this a static class function
 // TODO this should not be necessery but be implemented via inheritance
-string stuff_bezeichnung (stuff_type t, casus c);
+string entityLabel (EntityType t, casus c);
 
 #endif
 

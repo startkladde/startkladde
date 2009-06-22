@@ -17,9 +17,9 @@
 
 #include "src/flight_list.h"
 #include "src/db/sk_db.h"
-#include "src/model/sk_flug.h"
-#include "src/model/sk_flugzeug.h"
-#include "src/model/sk_person.h"
+#include "src/model/Flight.h"
+#include "src/model/Plane.h"
+#include "src/model/Person.h"
 #include "src/time/sk_time_t.h"
 
 using namespace std;
@@ -53,7 +53,7 @@ class flugbuch_entry
 };
 
 void make_flugbuch_day (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date);
-void make_flugbuch_person (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date, sk_person *person, QPtrList<sk_flug> &flights, flugbuch_entry::flight_instructor_mode fim=flugbuch_entry::fim_no);
+void make_flugbuch_person (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date, Person *person, QPtrList<Flight> &flights, flugbuch_entry::flight_instructor_mode fim=flugbuch_entry::fim_no);
 
 #endif
 

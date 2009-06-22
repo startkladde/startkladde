@@ -27,12 +27,12 @@ HEADERS += \
            src/gui/settings.h \
            src/io/io.h \
            src/logging/messages.h \
-           src/model/sk_flug.h \
-           src/model/sk_flugzeug.h \
-           src/model/sk_person.h \
-           src/model/sk_user.h \
-           src/model/startart_t.h \
-           src/model/stuff.h \
+           src/model/Flight.h \
+           src/model/Plane.h \
+           src/model/Person.h \
+           src/model/User.h \
+           src/model/LaunchType.h \
+           src/model/Entity.h \
            src/plugins/plugin_data_format.h \
            src/plugins/sk_plugin.h \
            src/time/sk_date.h \
@@ -59,12 +59,12 @@ SOURCES += \
            src/gui/settings.cpp \
            src/io/io.cpp \
            src/logging/messages.cpp \
-           src/model/sk_flug.cpp \
-           src/model/sk_flugzeug.cpp \
-           src/model/sk_person.cpp \
-           src/model/sk_user.cpp \
-           src/model/startart_t.cpp \
-           src/model/stuff.cpp \
+           src/model/Flight.cpp \
+           src/model/Plane.cpp \
+           src/model/Person.cpp \
+           src/model/User.cpp \
+           src/model/LaunchType.cpp \
+           src/model/Entity.cpp \
            src/plugins/plugin_data_format.cpp \
            src/plugins/sk_plugin.cpp \
            src/time/sk_date.cpp \

@@ -1,4 +1,4 @@
-#include "StuffListWindow.h"
+#include "EntityListWindow.h"
 
 #include <QLayout>
 
@@ -8,14 +8,14 @@ const int id_mnu_datenbank=0;
 //switch (type)
 //{
 //	case st_none:
-//		log_error ("Invalid type in StuffListWindow:: ()");
+//		log_error ("Invalid type in EntityListWindow:: ()");
 //		break;
 //	case st_plane:
 //		break;
 //	case st_startart:
 //		break;
 //	default:
-//		log_error ("Unhandled type in StuffListWindow:: ()");
+//		log_error ("Unhandled type in EntityListWindow:: ()");
 //		break;
 //}
 ///*}}}*/
@@ -47,12 +47,12 @@ const int ps_spalten=7;/*}}}*/
 
 
 
-StuffListWindow::StuffListWindow (stuff_type t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, ::SplashScreen *spl)/*{{{*/
+EntityListWindow::EntityListWindow (EntityType t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, ::SplashScreen *spl)/*{{{*/
 	:SkDialog (parent, name, modal, f), db (_db), type (t), ss (spl)
 	/*
-	 * Creates a stuff list instance.
+	 * Creates a Entity list instance.
 	 * Parameters:
-	 *   - t: the type of stuff to list.
+	 *   - t: the type of Entity to list.
 	 *   - parent, name, model, f: passed to the base class constructor.
 	 *   - _db: the database connection to use.
 	 */
@@ -103,16 +103,16 @@ StuffListWindow::StuffListWindow (stuff_type t, QWidget *parent, sk_db *_db, con
 	layout_but->addWidget (but_close);
 
 
-	editor_fenster=new StuffEditWindow (type, this, db, "editor", true);
+	editor_fenster=new EntityEditWindow (type, this, db, "editor", true);
 	QObject::connect (editor_fenster, SIGNAL (status (QString)), this, SIGNAL (status (QString)));
 	db_connect (editor_fenster);
 
 	resize (780, 540);
 }/*}}}*/
 
-StuffListWindow::~StuffListWindow ()/*{{{*/
+EntityListWindow::~EntityListWindow ()/*{{{*/
 	/*
-	 * Cleans up a stuff list instance.
+	 * Cleans up a Entity list instance.
 	 */
 {
 	// Output header widths.
@@ -121,7 +121,7 @@ StuffListWindow::~StuffListWindow ()/*{{{*/
 //		printf ("%d\n", table_header->sectionSize (i));
 }/*}}}*/
 
-SkTableItem *StuffListWindow::set_table_cell (int row, int col, const string &text, QColor bg, db_id id)/*{{{*/
+SkTableItem *EntityListWindow::set_table_cell (int row, int col, const string &text, QColor bg, db_id id)/*{{{*/
 	/*
 	 * Sets a table in the cell to a given text and background color and save an ID.
 	 * Parameters:
@@ -141,12 +141,12 @@ SkTableItem *StuffListWindow::set_table_cell (int row, int col, const string &te
 
 
 
-int StuffListWindow::add_stuff (stuff_type t, stuff *st)/*{{{*/
+int EntityListWindow::addEntity (EntityType t, Entity *st)/*{{{*/
 	/*
 	 * Adds an entry to the list.
 	 * Parameters:
 	 *   - t: the type of st.
-	 *   - *st: the stuff to enter.
+	 *   - *st: the Entity to enter.
 	 * Return value:
 	 *   - the newly created row number.
 	 */
@@ -154,12 +154,12 @@ int StuffListWindow::add_stuff (stuff_type t, stuff *st)/*{{{*/
 	// TODO sortiert, aber als parameter, spart zeit beim populaten
 	int row=tab->rowCount();
 	tab->insertRow (row);
-	stuff_eintragen (t, row, st);
+	fillInEntity (t, row, st);
 	tab->setCurrentCell (row, tab->currentColumn ());
 	return row;
 }/*}}}*/
 
-void StuffListWindow::stuff_eintragen (stuff_type t, int row, stuff *st)/*{{{*/
+void EntityListWindow::fillInEntity (EntityType t, int row, Entity *st)/*{{{*/
 	/*
 	 * Writes an entry to a given row.
 	 * Parameters:
@@ -171,11 +171,11 @@ void StuffListWindow::stuff_eintragen (stuff_type t, int row, stuff *st)/*{{{*/
 	switch (type)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_list::stuff_eintragen ()");
+			log_error ("Invalid type in EntityListWindow::fillInEntity ()");
 			break;
 		case st_plane:
 		{
-			sk_flugzeug *fz=(sk_flugzeug *)st;
+			Plane *fz=(Plane *)st;
 			QString s; s.setNum (fz->sitze);
 			set_table_cell (row, tbl_fz_registration, fz->registration, col_default, fz->id);
 			set_table_cell (row, tbl_fz_wettkennz, fz->wettbewerbskennzeichen);
@@ -189,7 +189,7 @@ void StuffListWindow::stuff_eintragen (stuff_type t, int row, stuff *st)/*{{{*/
 		} break;
 		case st_person:
 		{
-			sk_person *ps=(sk_person *)st;
+			Person *ps=(Person *)st;
 			set_table_cell (row, tbl_ps_nachname, ps->nachname, col_default, ps->id);
 			set_table_cell (row, tbl_ps_vorname, ps->vorname);
 			set_table_cell (row, tbl_ps_club, ps->club);
@@ -199,19 +199,19 @@ void StuffListWindow::stuff_eintragen (stuff_type t, int row, stuff *st)/*{{{*/
 			set_table_cell (row, tbl_ps_editierbar, ps->editierbar?"Ja":"Nein");
 		} break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_list::stuff_eintragen ()");
+			log_error ("Unhandled type in EntityListWindow::fillInEntity ()");
 			break;
 	}
 }/*}}}*/
 
-void StuffListWindow::list_stuff (stuff_type t)/*{{{*/
+void EntityListWindow::listEntity (EntityType t)/*{{{*/
 	/*
 	 * Lists all entries from the database to the table.
 	 * Parameters:
-	 *   - t: the stuff type to list.
+	 *   - t: the Entity type to list.
 	 */
 {
-	QPtrList<stuff> list; list.setAutoDelete (true);
+	QPtrList<Entity> list; list.setAutoDelete (true);
 
 	setup_controls ();
 
@@ -220,28 +220,28 @@ void StuffListWindow::list_stuff (stuff_type t)/*{{{*/
 	switch (t)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_list:: ()");
+			log_error ("Invalid type in EntityListWindow::listEntity ()");
 			break;
 		case st_plane:
 		{
 			emit status ("Flugzeugliste: Flugzeuge aus Datenbank lesen...");
-			QPtrList<sk_flugzeug> planes; planes.setAutoDelete (false);
+			QPtrList<Plane> planes; planes.setAutoDelete (false);
 			// TODO error handling
 			db->list_planes_all (planes);
 			// MURX
-			for (QPtrListIterator <sk_flugzeug> plane (planes); *plane; ++plane) list.append (*plane);
+			for (QPtrListIterator <Plane> plane (planes); *plane; ++plane) list.append (*plane);
 		} break;
 		case st_person:
 		{
 			emit status ("Personenliste: Personen aus Datenbank lesen...");
-			QPtrList<sk_person> persons; persons.setAutoDelete (false);
+			QPtrList<Person> persons; persons.setAutoDelete (false);
 			// TODO error handling
 			db->list_persons_all (persons);
 			// MURX
-			for (QPtrListIterator <sk_person> person (persons); *person; ++person) list.append (*person);
+			for (QPtrListIterator <Person> person (persons); *person; ++person) list.append (*person);
 		} break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_list:: ()");
+			log_error ("Unhandled type in ListWindow::listEntity ()");
 			break;
 	}
 	tab->hide ();
@@ -250,10 +250,10 @@ void StuffListWindow::list_stuff (stuff_type t)/*{{{*/
 	// NB: 10 s f�r 500 Datens�tze, wenn einzeln in der Schleife
 	int i=0, num=list.count ();
 	tab->setRowCount (num);
-	for (QPtrListIterator<stuff> item (list); *item; ++i, ++item)
+	for (QPtrListIterator<Entity> item (list); *item; ++i, ++item)
 	{
 		if (i%11==0||i==num-1) emit progress (i, num-1);
-		stuff_eintragen (t, i, *item);
+		fillInEntity (t, i, *item);
 	}
 
 	tab->show ();
@@ -264,7 +264,7 @@ void StuffListWindow::list_stuff (stuff_type t)/*{{{*/
 
 
 
-int StuffListWindow::stuff_loeschen (stuff_type t, db_id id)/*{{{*/
+int EntityListWindow::deleteEntity (EntityType t, db_id id)/*{{{*/
 	/*
 	 * Deletes an entry from the database.
 	 * Paremters:
@@ -280,7 +280,7 @@ int StuffListWindow::stuff_loeschen (stuff_type t, db_id id)/*{{{*/
 	switch (t)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_list:: ()");
+			log_error ("Invalid type in EntityListWindow::deleteEntity");
 			ret=-1;
 			break;
 		case st_plane:
@@ -290,14 +290,14 @@ int StuffListWindow::stuff_loeschen (stuff_type t, db_id id)/*{{{*/
 			ret=db->delete_person (id);
 			break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_list:: ()");
+			log_error ("Unhandled type in EntityListWindow::deleteEntity");
 			ret=-1;
 			break;
 	}
 
 	if (ret>=0)
 	{
-		db_event e (det_delete, table_aus_stuff_type (t), id);
+		db_event e (det_delete, TableFromEntityType (t), id);
 		emit db_change (&e);
 	}
 
@@ -306,9 +306,9 @@ int StuffListWindow::stuff_loeschen (stuff_type t, db_id id)/*{{{*/
 
 
 
-void StuffListWindow::setup_controls ()/*{{{*/
+void EntityListWindow::setup_controls ()/*{{{*/
 	/*
-	 * Sets up the controls to match the current stuff type.
+	 * Sets up the controls to match the current Entity type.
 	 */
 {
 	menu_bar->show ();
@@ -318,7 +318,7 @@ void StuffListWindow::setup_controls ()/*{{{*/
 	switch (type)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_list::setup_controls ()");
+			log_error ("Invalid type in EntityListWindow::setup_controls");
 			break;
 		case st_plane:
 			tab->setColumnCount (fz_spalten);
@@ -350,7 +350,7 @@ void StuffListWindow::setup_controls ()/*{{{*/
 			tab->setColumn (tbl_ps_editierbar, "Editierbar", 80);
 			break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_list::setup_controls ()");
+			log_error ("Unhandled type in EntityListWindow::setup_controls");
 			break;
 	}
 
@@ -358,7 +358,7 @@ void StuffListWindow::setup_controls ()/*{{{*/
 
 }/*}}}*/
 
-void StuffListWindow::reset ()/*{{{*/
+void EntityListWindow::reset ()/*{{{*/
 	/*
 	 * Resets the dialog to its initial state.
 	 */
@@ -368,7 +368,7 @@ void StuffListWindow::reset ()/*{{{*/
 }/*}}}*/
 
 
-void StuffListWindow::keyPressEvent (QKeyEvent *e)/*{{{*/
+void EntityListWindow::keyPressEvent (QKeyEvent *e)/*{{{*/
 	/*
 	 * Handles key shortcuts.
 	 * Parameters:
@@ -398,39 +398,39 @@ void StuffListWindow::keyPressEvent (QKeyEvent *e)/*{{{*/
 }/*}}}*/
 
 
-stuff *StuffListWindow::stuff_new (stuff_type t)/*{{{*/
+Entity *EntityListWindow::newEntity (EntityType t)/*{{{*/
 	/*
-	 * Creates a new stuff instance. (MURX)
+	 * Creates a new Entity instance. (MURX)
 	 * Parameters:
-	 *   - t: the type of stuff to create.
+	 *   - t: the type of Entity to create.
 	 * Return value:
-	 *   - a pointer to the stuff created.
+	 *   - a pointer to the Entity created.
 	 */
 {
 	switch (type)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_list::stuff_new ()");
+			log_error ("Invalid type in EntityListWindow::newEntity ()");
 			return NULL;
 			break;
 		case st_plane:
-			return new sk_flugzeug;
+			return new Plane;
 			break;
 		case st_person:
-			return new sk_person;
+			return new Person;
 			break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_list::stuff_new ()");
+			log_error ("Unhandled type in EntityListWindow::newEntity ()");
 			return NULL;
 			break;
 	}
 }/*}}}*/
 
-int StuffListWindow::stuff_aus_id (stuff_type t, stuff *b, db_id id)/*{{{*/
+int EntityListWindow::entityFromId (EntityType t, Entity *b, db_id id)/*{{{*/
 	/*
-	 * Retrieves a stuff from the database, given its ID.
+	 * Retrieves a Entity from the database, given its ID.
 	 * Parameters:
-	 *   - t: the type of stuff.
+	 *   - t: the type of Entity.
 	 *   - b: the buffer where the result is written.
 	 *   - id: the ID of the element to retrieve.
 	 * Return value:
@@ -441,27 +441,27 @@ int StuffListWindow::stuff_aus_id (stuff_type t, stuff *b, db_id id)/*{{{*/
 	switch (t)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_list::stuff_aus_id ()");
+			log_error ("Invalid type in EntityListWindow::entityFromId");
 			break;
 		case st_plane:
-			return db->get_plane ((sk_flugzeug *)b, id);
+			return db->get_plane ((Plane *)b, id);
 			break;
 		case st_person:
-			return db->get_person ((sk_person *)b, id);
+			return db->get_person ((Person *)b, id);
 			break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_list::stuff_aus_id ()");
+			log_error ("Unhandled type in EntityListWindow::entityFromId");
 			break;
 	}
 
 	return -1;
 }/*}}}*/
 
-db_id StuffListWindow::stuff_editieren (stuff_type t, stuff *b)/*{{{*/
+db_id EntityListWindow::editEntity (EntityType t, Entity *b)/*{{{*/
 	/*
-	 * Writes a stuff to the database.
+	 * Writes a Entity to the database.
 	 * Parameters:
-	 *   - t: the type of stuff.
+	 *   - t: the type of Entity.
 	 *   - b: the entry to write.
 	 * Return value:
 	 *   - -1 if there was a parameter error (MURX).
@@ -471,23 +471,23 @@ db_id StuffListWindow::stuff_editieren (stuff_type t, stuff *b)/*{{{*/
 	switch (t)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_list::stuff_editieren ()");
+			log_error ("Invalid type in EntityListWindow::editEntity");
 			break;
 		case st_plane:
-			return db->write_plane ((sk_flugzeug *)b);
+			return db->write_plane ((Plane *)b);
 			break;
 		case st_person:
-			return db->write_person ((sk_person *)b);
+			return db->write_person ((Person *)b);
 			break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_list::stuff_editieren ()");
+			log_error ("Unhandled type in EntityListWindow::editEntity");
 			break;
 	}
 
 	return invalid_id;
 }/*}}}*/
 
-void StuffListWindow::table_activated (int row)/*{{{*/
+void EntityListWindow::table_activated (int row)/*{{{*/
 	/*
 	 * Called when the table is double clicked or enter is pressed.
 	 * Parameters:
@@ -498,9 +498,9 @@ void StuffListWindow::table_activated (int row)/*{{{*/
 	if (id_invalid (id)) return;
 
 	int ret;
-	stuff *p=stuff_new (type);
+	Entity *p=newEntity (type);
 
-	ret=stuff_aus_id (type, p, id);
+	ret=entityFromId (type, p, id);
 	if (ret==0)
 	{
 		if (p->editierbar)
@@ -508,8 +508,8 @@ void StuffListWindow::table_activated (int row)/*{{{*/
 			ret=editor_fenster->edit (p, true);
 			if (ret==QDialog::Accepted)
 			{
-				stuff_editieren (type, p);
-				db_event event (det_change, table_aus_stuff_type (type), id);
+				editEntity (type, p);
+				db_event event (det_change, TableFromEntityType (type), id);
 				emit db_change (&event);
 			}
 		}
@@ -521,7 +521,7 @@ void StuffListWindow::table_activated (int row)/*{{{*/
 	delete p;
 }/*}}}*/
 
-void StuffListWindow::slot_table_double_click (int row, int col)/*{{{*/
+void EntityListWindow::slot_table_double_click (int row, int col)/*{{{*/
 	/*
 	 * Called when the table is double clicked.
 	 * Parameters:
@@ -534,7 +534,7 @@ void StuffListWindow::slot_table_double_click (int row, int col)/*{{{*/
 	table_activated (row);
 }/*}}}*/
 
-void StuffListWindow::slot_table_key (int key)/*{{{*/
+void EntityListWindow::slot_table_key (int key)/*{{{*/
 	/*
 	 * A key was pressed on the table.
 	 * Parameters:
@@ -555,20 +555,20 @@ void StuffListWindow::slot_table_key (int key)/*{{{*/
 	if (key==Qt::Key_Insert) slot_neu ();
 }/*}}}*/
 
-void StuffListWindow::slot_neu ()/*{{{*/
+void EntityListWindow::slot_neu ()/*{{{*/
 	/*
-	 * Show the user the dialog for a new stuff and add it to the database.
+	 * Show the user the dialog for a new Entity and add it to the database.
 	*/
 {
-	stuff *s=stuff_new (type);
+	Entity *s=newEntity (type);
 
 	int ret=editor_fenster->create (s, true);
 
 	if (ret==QDialog::Accepted)
 	{
 		s->id=0;
-		db_id id=stuff_editieren (type, s);
-		db_event event (det_add, table_aus_stuff_type (type), id);
+		db_id id=editEntity (type, s);
+		db_event event (det_add, TableFromEntityType (type), id);
 		emit db_change (&event);
 	}
 
@@ -576,21 +576,21 @@ void StuffListWindow::slot_neu ()/*{{{*/
 }/*}}}*/
 
 
-bool StuffListWindow::stuff_verwendet (stuff_type type, db_id id)/*{{{*/
+bool EntityListWindow::entityUsed (EntityType type, db_id id)/*{{{*/
 	/*
-	 * Determine from the database wheter the stuff has a flight.
+	 * Determine from the database wheter the Entity has a flight.
 	 * Parameters:
-	 *   - type: the stuff type.
-	 *   - id: the ID of the stuff in question.
+	 *   - type: the Entity type.
+	 *   - id: the ID of the Entity in question.
 	 * Return value:
-	 *   - true if the stuff has a flight.
+	 *   - true if the Entity has a flight.
 	 *   - false else.
 	 */
 {
 	switch (type)
 	{
 		case st_none:
-			log_error ("Invalid type in sk_win_stuff_list:: ()");
+			log_error ("Invalid type in EntityListWindow::entityUsed");
 			break;
 		case st_plane:
 			return db->plane_used (id);
@@ -599,7 +599,7 @@ bool StuffListWindow::stuff_verwendet (stuff_type type, db_id id)/*{{{*/
 			return db->person_used (id);
 			break;
 		default:
-			log_error ("Unhandled type in sk_win_stuff_list:: ()");
+			log_error ("Unhandled type in EntityListWindow::entityUsed");
 			break;
 	}
 
@@ -607,7 +607,7 @@ bool StuffListWindow::stuff_verwendet (stuff_type type, db_id id)/*{{{*/
 }
 /*}}}*/
 
-void StuffListWindow::tabelle_loeschen (int row)/*{{{*/
+void EntityListWindow::tabelle_loeschen (int row)/*{{{*/
 	/*
 	 * Removes an entry from the database after checking if that is possible
 	 * and confirming with the user.
@@ -618,17 +618,17 @@ void StuffListWindow::tabelle_loeschen (int row)/*{{{*/
 	db_id id=tab->id_from_cell (row, 0);
 	if (id>0)
 	{
-		stuff *s=stuff_new (type);
-		if (stuff_aus_id (type, s, id)==0)
+		Entity *s=newEntity (type);
+		if (entityFromId (type, s, id)==0)
 		{
-			QString bez_a=std2q (stuff_bezeichnung (type, cas_akkusativ));
-			QString bez_n=std2q (stuff_bezeichnung (type, cas_nominativ));
+			QString bez_a=std2q (entityLabel (type, cas_akkusativ));
+			QString bez_n=std2q (entityLabel (type, cas_nominativ));
 
 			if (!s->editierbar)
 			{
 				show_warning (bez_n+" ist nicht editierbar.", this);
 			}
-			else if (stuff_verwendet (type, id))
+			else if (entityUsed (type, id))
 			{
 				show_warning (bez_n+" wird verwendet und kann nicht gel�scht werden.", this);
 			}
@@ -641,7 +641,7 @@ void StuffListWindow::tabelle_loeschen (int row)/*{{{*/
 
 				if (res==0)
 				{
-					res=stuff_loeschen (type, id);
+					res=deleteEntity (type, id);
 					if (res<0)
 					{
 						// L�schen hat nicht geklappt
@@ -658,7 +658,7 @@ void StuffListWindow::tabelle_loeschen (int row)/*{{{*/
 	}
 }/*}}}*/
 
-void StuffListWindow::slot_loeschen ()/*{{{*/
+void EntityListWindow::slot_loeschen ()/*{{{*/
 	/*
 	 * The "delete" menu entry was selected.
 	 */
@@ -666,12 +666,12 @@ void StuffListWindow::slot_loeschen ()/*{{{*/
 	tabelle_loeschen (tab->currentRow ());
 }/*}}}*/
 
-void StuffListWindow::slot_refresh ()/*{{{*/
+void EntityListWindow::slot_refresh ()/*{{{*/
 	/*
 	 * The "refresh" menu entry was selected. Refreshes the table.
 	 */
 {
-	list_stuff (type);
+	listEntity (type);
 	if (isVisible ())
 	{
 		// Focus geht sonst auf das Hauptfenster
@@ -681,7 +681,7 @@ void StuffListWindow::slot_refresh ()/*{{{*/
 }/*}}}*/
 
 
-void StuffListWindow::liste ()/*{{{*/
+void EntityListWindow::liste ()/*{{{*/
 	/*
 	 * Displays the dialog.
 	 */
@@ -690,7 +690,7 @@ void StuffListWindow::liste ()/*{{{*/
 	show ();
 }/*}}}*/
 
-void StuffListWindow::slot_db_update (db_event *event)/*{{{*/
+void EntityListWindow::slot_db_update (db_event *event)/*{{{*/
 	/*
 	 * The database changed. Update the table, if appropriate.
 	 * Parameters:
@@ -699,40 +699,40 @@ void StuffListWindow::slot_db_update (db_event *event)/*{{{*/
 {
 	if (event->type==det_refresh) slot_refresh ();
 
-	if (table_aus_stuff_type (type)==event->table)
+	if (TableFromEntityType (type)==event->table)
 	{
-		stuff *s=stuff_new (type);
+		Entity *s=newEntity (type);
 
 		if (event->type==det_add && event->id>0)/*{{{*/
 		{
-			stuff_aus_id (type, s, event->id);
+			entityFromId (type, s, event->id);
 			int row=tab->row_from_column_id (event->id, 0);
 			if (row<0)
 			{
-				add_stuff (type, s);
+				addEntity (type, s);
 			}
 			else
 			{
 				// Steht schon in der Tabelle? Uh-oh, da stimmt was nicht
-				log_error ("det_add in sk_win_stuff_list::slot_db_update (), aber id steht schon in der Tabelle");
-				stuff_eintragen (type, row, s);
+				log_error ("det_add in EntityListWindow::slot_db_update, aber id steht schon in der Tabelle");
+				fillInEntity (type, row, s);
 			}
 		}/*}}}*/
 
 		if (event->type==det_change && event->id>0)/*{{{*/
 		{
-			stuff_aus_id (type, s, event->id);
+			entityFromId (type, s, event->id);
 			int row=tab->row_from_column_id (event->id, 0);
 			if (row<0)
 			{
 				// Steht nicht in der Tabelle? Uh-oh, dann war die Tabelle unvollst�ndig.
-				log_error ("det_change in sk_win_stuff_list::slot_db_update (), aber id steht nicht in der Tabelle");
-				add_stuff (type, s);
+				log_error ("det_change in EntityListWindow::slot_db_update, aber id steht nicht in der Tabelle");
+				addEntity (type, s);
 			}
 			else
 			{
 				// TODO sortierung?
-				stuff_eintragen (type, row, s);
+				fillInEntity (type, row, s);
 			}
 		}/*}}}*/
 
@@ -740,7 +740,7 @@ void StuffListWindow::slot_db_update (db_event *event)/*{{{*/
 		{
 			int row=tab->row_from_column_id (event->id, 0);
 			if (row<0)
-				log_error ("det_delete in sk_win_stuff_list::slot_db_update (), aber id steht nicht in der Tabelle");
+				log_error ("det_delete in EntityListWindow::slot_db_update, aber id steht nicht in der Tabelle");
 			else
 				tab->removeRow (row);
 		}/*}}}*/
@@ -753,7 +753,7 @@ void StuffListWindow::slot_db_update (db_event *event)/*{{{*/
 
 
 
-void StuffListWindow::slot_ok ()/*{{{*/
+void EntityListWindow::slot_ok ()/*{{{*/
 	/*
 	 * The OK button was pressed. Close the dialog, returning the current row.
 	 */
@@ -761,7 +761,7 @@ void StuffListWindow::slot_ok ()/*{{{*/
 	done (tab->currentRow ());
 }/*}}}*/
 
-void StuffListWindow::slot_abbrechen ()/*{{{*/
+void EntityListWindow::slot_abbrechen ()/*{{{*/
 	/*
 	 * The Cancel button was pressed. Close the dialog, returning -1.
 	 */
@@ -769,7 +769,7 @@ void StuffListWindow::slot_abbrechen ()/*{{{*/
 	done (-1);
 }/*}}}*/
 
-void StuffListWindow::slot_editieren ()/*{{{*/
+void EntityListWindow::slot_editieren ()/*{{{*/
 	/*
 	 * The "editieren" menu entry was selected. Edit the currently selected
 	 * entry.

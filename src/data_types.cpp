@@ -542,14 +542,14 @@ string q2std (QString s)/*{{{*/
 
 
 
-db_event_table table_aus_stuff_type (stuff_type t)/*{{{*/
+db_event_table TableFromEntityType (EntityType t)/*{{{*/
 	/*
 	 * Finds out which table to use in the db_change mechanism for a given
-	 * stuff type (see StuffEditWindow).
+	 * Entity type (see EntityEditWindow).
 	 * This is a workaround for the fact that there is some code duplication
 	 * between these two variable types.
 	 * Parameters:
-	 *   - t: the stuff type.
+	 *   - t: the Entity type.
 	 * Return value:
 	 *   - the table to use.
 	 */

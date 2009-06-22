@@ -12,10 +12,10 @@
 
 #include "src/accessor.h"
 #include "src/object_field.h"
-#include "src/model/sk_flug.h"
-#include "src/model/sk_flugzeug.h"
-#include "src/model/sk_person.h"
-#include "src/model/startart_t.h"
+#include "src/model/Flight.h"
+#include "src/model/Plane.h"
+#include "src/model/Person.h"
+#include "src/model/LaunchType.h"
 #include "src/web/argument.h"
 
 using namespace std;
@@ -90,7 +90,7 @@ class plugin_data_format
 
 		// Actual plugin functions
 		void plugin_make_field_list (const string &format, list<object_field> &fields) const;
-		void plugin_flight_to_fields (const string &format, list<object_field> &fields, const sk_flug &f, const sk_flug_data &flight_data, int &num, const string &none_text="", const string &error_text="") const;
+		void plugin_flight_to_fields (const string &format, list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const string &none_text="", const string &error_text="") const;
 
 	private:
 		// Library handling
@@ -105,7 +105,7 @@ class plugin_data_format
 
 		PLUGIN_SYMBOL (list_formats, argument_list, ())
 		PLUGIN_SYMBOL (make_field_list, void, (const string &format, list<object_field> &fields));
-		PLUGIN_SYMBOL (flight_to_fields, void, (const string &format, list<object_field> &fields, const sk_flug &f, const sk_flug_data &flight_data, int &num, const string &none_text, const string &error_text));
+		PLUGIN_SYMBOL (flight_to_fields, void, (const string &format, list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const string &none_text, const string &error_text));
 #undef PLUGIN_SYMBOL
 
 };

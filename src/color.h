@@ -3,7 +3,7 @@
 
 #include <QColor>
 
-#include "src/model/sk_flug.h"
+#include "src/model/Flight.h"
 
 QColor flug_farbe (flug_modus, bool, bool, bool, bool);
 

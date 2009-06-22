@@ -894,7 +894,7 @@ string sk_db::query_value_list (db_object_type type, void *object)/*{{{*/
 	{
 		case ot_flight:
 		{
-			sk_flug *flight=(sk_flug *)object;
+			Flight *flight=(Flight *)object;
 			OUTPUT ("pilot", flight->pilot);
 			OUTPUT ("begleiter", flight->begleiter);
 			OUTPUT ("startort", flight->startort);
@@ -926,7 +926,7 @@ string sk_db::query_value_list (db_object_type type, void *object)/*{{{*/
 		} break;
 		case ot_plane:
 		{
-			sk_flugzeug *plane=(sk_flugzeug *)object;
+			Plane *plane=(Plane *)object;
 			OUTPUT ("kennzeichen", plane->registration);
 			OUTPUT ("verein", plane->club);
 			OUTPUT ("sitze", plane->sitze);
@@ -937,7 +937,7 @@ string sk_db::query_value_list (db_object_type type, void *object)/*{{{*/
 		} break;
 		case ot_person:
 		{
-			sk_person *person=(sk_person *)object;
+			Person *person=(Person *)object;
 			OUTPUT ("nachname", person->nachname);
 			OUTPUT ("vorname", person->vorname);
 			OUTPUT ("vereins_id", person->club_id);
@@ -967,7 +967,7 @@ int sk_db::row_to_object (db_object_type otype, void *object, MYSQL_ROW row, int
 	{
 		case ot_flight:
 		{
-			sk_flug *p=(sk_flug *)object;
+			Flight *p=(Flight *)object;
 			// TODO: hier pr�fen, ob diese Felder existieren.
 			USE ("id");                 p->id=atoll (value);
 			USE ("pilot");              p->pilot=atol (value);
@@ -1005,7 +1005,7 @@ int sk_db::row_to_object (db_object_type otype, void *object, MYSQL_ROW row, int
 		} break;
 		case ot_plane:
 		{
-			sk_flugzeug *p=(sk_flugzeug *)object;
+			Plane *p=(Plane *)object;
 			USE ("id");						p->id=atoll (value);
 			USE ("kennzeichen");			p->registration=value;
 			USE ("verein");					p->club=value;
@@ -1018,7 +1018,7 @@ int sk_db::row_to_object (db_object_type otype, void *object, MYSQL_ROW row, int
 		} break;
 		case ot_person:
 		{
-			sk_person *p=(sk_person *)object;
+			Person *p=(Person *)object;
 			USE ("id");				p->id=atoll (value);
 			USE ("nachname");		p->nachname=value;
 			USE ("vorname");		p->vorname=value;
@@ -1073,9 +1073,9 @@ int sk_db::copy_object (db_object_type type, void *target, void *source)/*{{{*/
 #define CASE(object_type, data_type) case object_type: (*(data_type *)target)=(*(data_type *)source); return db_ok; break;
 	switch (type)
 	{
-		CASE (ot_flight, sk_flug)
-		CASE (ot_plane, sk_flugzeug)
-		CASE (ot_person, sk_person)
+		CASE (ot_flight, Flight)
+		CASE (ot_plane, Plane)
+		CASE (ot_person, Person)
 		// No default to enable compiler warnings (g++ -Wall)
 		case ot_none: debug_stream << "[db] Error: object type ot_none in copy_object ()" << endl; return db_err_parameter_error; break;
 	}
@@ -1090,9 +1090,9 @@ void *sk_db::new_object (db_object_type type)/*{{{*/
 {
 	switch (type)
 	{
-		case ot_flight: return new sk_flug; break;
-		case ot_plane: return new sk_flugzeug; break;
-		case ot_person: return new sk_person; break;
+		case ot_flight: return new Flight; break;
+		case ot_plane: return new Plane; break;
+		case ot_person: return new Person; break;
 		case ot_none: debug_stream << "[db] Error: object type ot_none in new_object ()" << endl; return NULL;
 	}
 
@@ -1105,9 +1105,9 @@ int sk_db::free_object (db_object_type type, void *object)/*{{{*/
 {
 	switch (type)
 	{
-		case ot_flight: delete (sk_flug *)object; return db_ok; break;
-		case ot_plane: delete (sk_flugzeug *)object; return db_ok; break;
-		case ot_person: delete (sk_person *)object; return db_ok; break;
+		case ot_flight: delete (Flight *)object; return db_ok; break;
+		case ot_plane: delete (Plane *)object; return db_ok; break;
+		case ot_person: delete (Person *)object; return db_ok; break;
 		case ot_none: debug_stream << "[db] Error: object type ot_none in free_object ()" << endl; return db_err_parameter_error; break;
 	}
 
@@ -1867,16 +1867,16 @@ db_id sk_db::write_object (db_object_type type, void *object)/*{{{*/
 	switch (type)
 	{
 		case ot_flight:
-			object_id=((sk_flug *)object)->id;
-			editable_flag=((sk_flug *)object)->editierbar;
+			object_id=((Flight *)object)->id;
+			editable_flag=((Flight *)object)->editierbar;
 			break;
 		case ot_plane:
-			object_id=((sk_flugzeug *)object)->id;
-			editable_flag=((sk_flugzeug *)object)->editierbar;
+			object_id=((Plane *)object)->id;
+			editable_flag=((Plane *)object)->editierbar;
 			break;
 		case ot_person:
-			object_id=((sk_person *)object)->id;
-			editable_flag=((sk_person *)object)->editierbar;
+			object_id=((Person *)object)->id;
+			editable_flag=((Person *)object)->editierbar;
 			break;
 		default:
 			debug_stream << "[db] Unhandled object type in sk_db::write_object ()" << endl;
@@ -1929,19 +1929,19 @@ db_id sk_db::write_object (db_object_type type, void *object)/*{{{*/
 }
 /*}}}*/
 
-db_id sk_db::write_flight (sk_flug *p)/*{{{*/
+db_id sk_db::write_flight (Flight *p)/*{{{*/
 {
 	return write_object (ot_flight, p);
 }
 /*}}}*/
 
-db_id sk_db::write_person (sk_person *p)/*{{{*/
+db_id sk_db::write_person (Person *p)/*{{{*/
 {
 	return write_object (ot_person, p);
 }
 /*}}}*/
 
-db_id sk_db::write_plane (sk_flugzeug *p)/*{{{*/
+db_id sk_db::write_plane (Plane *p)/*{{{*/
 {
 	return write_object (ot_plane, p);
 }
@@ -2326,32 +2326,32 @@ int sk_db::list_objects (db_object_type type, QPtrList<void> &objects, condition
 }
 /*}}}*/
 
-int sk_db::list_flights (QPtrList<sk_flug> &flights, condition_t c)/*{{{*/
+int sk_db::list_flights (QPtrList<Flight> &flights, condition_t c)/*{{{*/
 {
 	QPtrList<void> objects;
 	int r=list_objects (ot_flight, objects, c);
 	// MURX Zeiger umkopieren, weil die Listentypen nicht konvertibel sind.
-	for (QPtrListIterator<void> ob (objects); *ob; ++ob) flights.append ((sk_flug *)*ob);
+	for (QPtrListIterator<void> ob (objects); *ob; ++ob) flights.append ((Flight *)*ob);
 	return r;
 }
 /*}}}*/
 
-int sk_db::list_planes (QPtrList<sk_flugzeug> &planes, condition_t c)/*{{{*/
+int sk_db::list_planes (QPtrList<Plane> &planes, condition_t c)/*{{{*/
 {
 	QPtrList<void> objects;
 	int r=list_objects (ot_plane, objects, c);
 	// MURX Zeiger umkopieren, weil die Listentypen nicht konvertibel sind.
-	for (QPtrListIterator<void> ob (objects); *ob; ++ob) planes.append ((sk_flugzeug *)*ob);
+	for (QPtrListIterator<void> ob (objects); *ob; ++ob) planes.append ((Plane *)*ob);
 	return r;
 }
 /*}}}*/
 
-int sk_db::list_persons (QPtrList<sk_person> &persons, condition_t c)/*{{{*/
+int sk_db::list_persons (QPtrList<Person> &persons, condition_t c)/*{{{*/
 {
 	QPtrList<void> objects;
 	int r=list_objects (ot_person, objects, c);
 	// MURX Zeiger umkopieren, weil die Listentypen nicht konvertibel sind.
-	for (QPtrListIterator<void> ob (objects); *ob; ++ob) persons.append ((sk_person *)*ob);
+	for (QPtrListIterator<void> ob (objects); *ob; ++ob) persons.append ((Person *)*ob);
 	return r;
 }
 /*}}}*/
@@ -2401,7 +2401,7 @@ int sk_db::list_strings_query (const string query, const unsigned int field_num,
 
 
 // Listing Frontends
-int sk_db::list_flights_date (QPtrList<sk_flug> &flights, QDate *date)/*{{{*/
+int sk_db::list_flights_date (QPtrList<Flight> &flights, QDate *date)/*{{{*/
 {
 	int r=list_flights (flights, condition_t (cond_flight_happened_on_date, date));
 	return r;
@@ -2415,7 +2415,7 @@ int sk_db::list_flights_date_range (flight_list &flights, QDate *start_date, QDa
 }
 /*}}}*/
 
-int sk_db::list_flights_prepared (QPtrList<sk_flug> &flights)/*{{{*/
+int sk_db::list_flights_prepared (QPtrList<Flight> &flights)/*{{{*/
 {
 	int r=list_flights (flights, condition_t (cond_flight_prepared));
 	return r;
@@ -2464,43 +2464,43 @@ db_id sk_db::plane_flying (db_id id, sk_time_t *given_time)/*{{{*/
 }
 /*}}}*/
 
-int sk_db::list_persons_by_name (QPtrList<sk_person> &names, string vorname, string nachname)/*{{{*/
+int sk_db::list_persons_by_name (QPtrList<Person> &names, string vorname, string nachname)/*{{{*/
 {
 	return list_persons (names, condition_t (cond_person_name, &vorname, &nachname));
 }
 /*}}}*/
 
-int sk_db::list_persons_by_first_name (QPtrList<sk_person> &names, string vorname)/*{{{*/
+int sk_db::list_persons_by_first_name (QPtrList<Person> &names, string vorname)/*{{{*/
 {
 	return list_persons (names, condition_t (cond_person_first_name, &vorname));
 }
 /*}}}*/
 
-int sk_db::list_persons_by_last_name (QPtrList<sk_person> &names, string nachname)/*{{{*/
+int sk_db::list_persons_by_last_name (QPtrList<Person> &names, string nachname)/*{{{*/
 {
 	return list_persons (names, condition_t (cond_person_last_name, &nachname));
 }
 /*}}}*/
 
-int sk_db::list_persons_by_club_club_id (QPtrList<sk_person> &persons, string club, string club_id)/*{{{*/
+int sk_db::list_persons_by_club_club_id (QPtrList<Person> &persons, string club, string club_id)/*{{{*/
 {
 	return list_persons (persons, condition_t (cond_person_club_club_id, &club, &club_id));
 }
 /*}}}*/
 
-int sk_db::list_planes_all (QPtrList<sk_flugzeug> &planes)/*{{{*/
+int sk_db::list_planes_all (QPtrList<Plane> &planes)/*{{{*/
 {
 	return list_planes (planes, condition_t (cond_any));
 }
 /*}}}*/
 
-int sk_db::list_persons_all (QPtrList<sk_person> &planes)/*{{{*/
+int sk_db::list_persons_all (QPtrList<Person> &planes)/*{{{*/
 {
 	return list_persons (planes, condition_t (cond_any));
 }
 /*}}}*/
 
-int sk_db::list_planes_date (QPtrList<sk_flugzeug> &planes, QDate *date)/*{{{*/
+int sk_db::list_planes_date (QPtrList<Plane> &planes, QDate *date)/*{{{*/
 {
 	// TODO code duplication list_persons_date
 
@@ -2521,7 +2521,7 @@ int sk_db::list_planes_date (QPtrList<sk_flugzeug> &planes, QDate *date)/*{{{*/
 		// However, we don't want to include it in the output.
 		if (!id_invalid (*id))
 		{
-			sk_flugzeug *plane=new sk_flugzeug;
+			Plane *plane=new Plane;
 
 			int r=get_plane (plane, *id);
 			if (r==db_ok)
@@ -2534,7 +2534,7 @@ int sk_db::list_planes_date (QPtrList<sk_flugzeug> &planes, QDate *date)/*{{{*/
 }
 /*}}}*/
 
-int sk_db::list_persons_date (QPtrList<sk_person> &persons, QDate *date)/*{{{*/
+int sk_db::list_persons_date (QPtrList<Person> &persons, QDate *date)/*{{{*/
 {
 	/*
 	 * //TODO these are generic notes, put them to the documentation.
@@ -2570,7 +2570,7 @@ int sk_db::list_persons_date (QPtrList<sk_person> &persons, QDate *date)/*{{{*/
 		// However, we don't want to include it in the output.
 		if (!id_invalid (*id))
 		{
-			sk_person *person=new sk_person;
+			Person *person=new Person;
 
 			int r=get_person (person, *id);
 			if (r==db_ok)
@@ -2583,15 +2583,15 @@ int sk_db::list_persons_date (QPtrList<sk_person> &persons, QDate *date)/*{{{*/
 }
 /*}}}*/
 
-int sk_db::list_planes_registration (QPtrList<sk_flugzeug> &planes, string registration)/*{{{*/
+int sk_db::list_planes_registration (QPtrList<Plane> &planes, string registration)/*{{{*/
 {
 	return list_planes (planes, condition_t (cond_plane_registration, &registration));
 }
 /*}}}*/
 
-int sk_db::get_plane_registration (sk_flugzeug *plane, string registration)/*{{{*/
+int sk_db::get_plane_registration (Plane *plane, string registration)/*{{{*/
 {
-	QPtrList<sk_flugzeug> planes; planes.setAutoDelete (true);
+	QPtrList<Plane> planes; planes.setAutoDelete (true);
 	int res=list_planes_registration (planes, registration);
 
 	// TODO handle multiple
@@ -2847,19 +2847,19 @@ int sk_db::get_object (db_object_type type, void *object, db_id id)/*{{{*/
 }
 /*}}}*/
 
-int sk_db::get_flight (sk_flug *flight, db_id id)/*{{{*/
+int sk_db::get_flight (Flight *flight, db_id id)/*{{{*/
 {
 	return get_object (ot_flight, flight, id);
 }
 /*}}}*/
 
-int sk_db::get_plane (sk_flugzeug *plane, db_id id)/*{{{*/
+int sk_db::get_plane (Plane *plane, db_id id)/*{{{*/
 {
 	return get_object (ot_plane, plane, id);
 }
 /*}}}*/
 
-int sk_db::get_person (sk_person *person, db_id id)/*{{{*/
+int sk_db::get_person (Person *person, db_id id)/*{{{*/
 {
 	return get_object (ot_person, person, id);
 }
@@ -2876,7 +2876,7 @@ int sk_db::count_startart ()/*{{{*/
 }
 /*}}}*/
 
-bool sk_db::add_startart_to_list (startart_t *sa)/*{{{*/
+bool sk_db::add_startart_to_list (LaunchType *sa)/*{{{*/
 {
 	// TODO some types must be unique, for example sat_self
 
@@ -2900,18 +2900,18 @@ bool sk_db::add_startart_to_list (startart_t *sa)/*{{{*/
 }
 /*}}}*/
 
-int sk_db::list_startarten_all (QPtrList<startart_t> &saen)/*{{{*/
+int sk_db::list_startarten_all (QPtrList<LaunchType> &saen)/*{{{*/
 {
-	for (QPtrListIterator<startart_t> sa (startarten); *sa; ++sa)
-		saen.append (new startart_t (**sa));
+	for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
+		saen.append (new LaunchType (**sa));
 
 	return true;
 }
 /*}}}*/
 
-int sk_db::get_startart (startart_t *startart, db_id id)/*{{{*/
+int sk_db::get_startart (LaunchType *startart, db_id id)/*{{{*/
 {
-	for (QPtrListIterator<startart_t> sa (startarten); *sa; ++sa)
+	for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
 	{
 		if ((*sa)->get_id ()==id)
 		{
@@ -2928,11 +2928,11 @@ int sk_db::get_startart (startart_t *startart, db_id id)/*{{{*/
 }
 /*}}}*/
 
-int sk_db::get_startart_by_type (startart_t *startart, startart_type sat)/*{{{*/
+int sk_db::get_startart_by_type (LaunchType *startart, startart_type sat)/*{{{*/
 {
 	bool found=false;
 
-	for (QPtrListIterator<startart_t> sa (startarten); *sa; ++sa)
+	for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
 	{
 		if ((*sa)->get_type ()==sat)
 		{
@@ -2952,7 +2952,7 @@ int sk_db::get_startart_by_type (startart_t *startart, startart_type sat)/*{{{*/
 
 db_id sk_db::get_startart_id_by_type (startart_type sat)/*{{{*/
 {
-	for (QPtrListIterator<startart_t> sa (startarten); *sa; ++sa)
+	for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
 		if ((*sa)->get_type ()==sat)
 			return (*sa)->get_id ();
 
@@ -2960,7 +2960,7 @@ db_id sk_db::get_startart_id_by_type (startart_type sat)/*{{{*/
 }
 /*}}}*/
 
-int sk_db::get_towplane (sk_flugzeug *towplane, const startart_t &startart, const db_id towplane_id)/*{{{*/
+int sk_db::get_towplane (Plane *towplane, const LaunchType &startart, const db_id towplane_id)/*{{{*/
 {
 	if (startart.ok && startart.is_airtow () && startart.towplane_known ())
 	{
@@ -3047,9 +3047,9 @@ void sk_db::merge_person (db_id correct_id, db_id wrong_id)/*{{{*/
 
 
 // Importing
-void sk_db::remove_editable_persons (QPtrList<sk_person> persons)/*{{{*/
+void sk_db::remove_editable_persons (QPtrList<Person> persons)/*{{{*/
 {
-	QPtrListIterator<sk_person> it (persons);
+	QPtrListIterator<Person> it (persons);
 	while (*it)
 	{
 		if ((*it)->editierbar)
@@ -3060,7 +3060,7 @@ void sk_db::remove_editable_persons (QPtrList<sk_person> persons)/*{{{*/
 }
 /*}}}*/
 
-void sk_db::import_check (const sk_person &person)/*{{{*/
+void sk_db::import_check (const Person &person)/*{{{*/
 	throw (import_message)
 {
 	// First name is empty
@@ -3071,14 +3071,14 @@ void sk_db::import_check (const sk_person &person)/*{{{*/
 }
 /*}}}*/
 
-void sk_db::import_check (const QPtrList<sk_person> &persons, list<import_message> &messages)/*{{{*/
+void sk_db::import_check (const QPtrList<Person> &persons, list<import_message> &messages)/*{{{*/
 	// This function make be slow because it takes quadratic time (in the
 	// number of persons) with lots of string comparisons.
 {
 	// This checks every single person from the list and additionally performs
 	// cross checking (like club ID uniquity).
 
-	for (QPtrListIterator<sk_person> p1 (persons); *p1; ++p1)
+	for (QPtrListIterator<Person> p1 (persons); *p1; ++p1)
 	{
 		// Check person
 		try
@@ -3092,7 +3092,7 @@ void sk_db::import_check (const QPtrList<sk_person> &persons, list<import_messag
 		}
 
 		// Cross checks
-		for (QPtrListIterator<sk_person> p2 (persons); *p2; ++p2)
+		for (QPtrListIterator<Person> p2 (persons); *p2; ++p2)
 			// Don't start at p1 here because there may be error relations
 			// which are not symmetric: for example, two persons with the same
 			// name only one of which has a club ID. This is an error for the
@@ -3121,7 +3121,7 @@ void sk_db::import_check (const QPtrList<sk_person> &persons, list<import_messag
 }
 /*}}}*/
 
-db_id sk_db::import_identify (const sk_person &p, list<import_message> *non_fatal_messages)/*{{{*/
+db_id sk_db::import_identify (const Person &p, list<import_message> *non_fatal_messages)/*{{{*/
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message)
 	/*
 	 * Identify a person for importing.
@@ -3174,7 +3174,7 @@ db_id sk_db::import_identify (const sk_person &p, list<import_message> *non_fata
 	{
 		// An old club ID was explicitly given. This means that the person
 		// identified by this club ID must exist. Everything else is an error.
-		QPtrList<sk_person> persons; persons.setAutoDelete (true);
+		QPtrList<Person> persons; persons.setAutoDelete (true);
 		int ret=list_persons_by_club_club_id (persons, p.club, p.club_id_old);
 		if (ret!=0) throw ex_legacy_error (ret, *this);
 		remove_editable_persons (persons);
@@ -3194,7 +3194,7 @@ db_id sk_db::import_identify (const sk_person &p, list<import_message> *non_fata
 	{
 		// A club ID was given. If it does not exist, the person has to be
 		// created. If it does, the person with this club_id will be modified.
-		QPtrList<sk_person> persons; persons.setAutoDelete (true);
+		QPtrList<Person> persons; persons.setAutoDelete (true);
 		int ret=list_persons_by_club_club_id (persons, p.club, p.club_id);
 		if (ret!=0) throw ex_legacy_error (ret, *this);
 		remove_editable_persons (persons);
@@ -3221,7 +3221,7 @@ db_id sk_db::import_identify (const sk_person &p, list<import_message> *non_fata
 	if (select_by_name)
 	{
 		// We need to select the person by name.
-		QPtrList<sk_person> persons; persons.setAutoDelete (true);
+		QPtrList<Person> persons; persons.setAutoDelete (true);
 		int ret=list_persons_by_name (persons, p.vorname, p.nachname);
 		if (ret!=0) throw ex_legacy_error (ret, *this);
 
@@ -3269,7 +3269,7 @@ db_id sk_db::import_identify (const sk_person &p, list<import_message> *non_fata
 			int num_fixed_own_no_club_id=0; db_id id_fixed_own_no_club_id=invalid_id; string club_fixed_own_no_club_id;
 			int num_editable=0;             db_id id_editable=invalid_id;             string club_editable;
 			int num_editable_own=0;         db_id id_editable_own=invalid_id;         string club_editable_own;
-			QPtrListIterator<sk_person> it (persons);
+			QPtrListIterator<Person> it (persons);
 			while (*it)
 			{
 				// Remove the person if category 1. or 2.
@@ -3368,10 +3368,10 @@ db_id sk_db::import_identify (const sk_person &p, list<import_message> *non_fata
 }
 /*}}}*/
 
-void sk_db::import_identify (QPtrList<sk_person> &persons, list<import_message> &messages)/*{{{*/
+void sk_db::import_identify (QPtrList<Person> &persons, list<import_message> &messages)/*{{{*/
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed)
 {
-	for (QPtrListIterator<sk_person> it (persons); *it; ++it)
+	for (QPtrListIterator<Person> it (persons); *it; ++it)
 	{
 		try
 		{
@@ -3389,7 +3389,7 @@ void sk_db::import_identify (QPtrList<sk_person> &persons, list<import_message> 
 }
 /*}}}*/
 
-db_id sk_db::import_person (const sk_person &person)/*{{{*/
+db_id sk_db::import_person (const Person &person)/*{{{*/
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed)
 {
 	if (!connected ()) throw ex_not_connected ();
@@ -3408,7 +3408,7 @@ db_id sk_db::import_person (const sk_person &person)/*{{{*/
 
 	// Step 2: Write the person to the database
 	// Make a copy so we don't have to overwrite the parameter.
-	sk_person p=person;
+	Person p=person;
 	p.id=id;
 	// Write the person to the database
 	int result_id=write_person (&p);
@@ -3421,12 +3421,12 @@ db_id sk_db::import_person (const sk_person &person)/*{{{*/
 }
 /*}}}*/
 
-void sk_db::import_persons (const QPtrList<sk_person> &persons)/*{{{*/
+void sk_db::import_persons (const QPtrList<Person> &persons)/*{{{*/
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed)
 {
 	if (!connected ()) throw ex_not_connected ();
 
-	for (QPtrListIterator<sk_person> it (persons); *it; ++it)
+	for (QPtrListIterator<Person> it (persons); *it; ++it)
 		import_person (**it);
 }
 /*}}}*/
@@ -3435,7 +3435,7 @@ void sk_db::import_persons (const QPtrList<sk_person> &persons)/*{{{*/
 
 
 // User management
-// Cannot use the "generic" functions because user is not a stuff
+// Cannot use the "generic" functions because user is not a Entity
 // (does not have an ID etc.). Also, the table is not duplicated
 // (_temp);
 // Code duplication with the "generic" functions.
@@ -3488,7 +3488,7 @@ int sk_db::sk_user_change_password (const string &username, const string &passwo
 }
 /*}}}*/
 
-int sk_db::sk_user_add (const sk_user &user, const string &password)/*{{{*/
+int sk_db::sk_user_add (const User &user, const string &password)/*{{{*/
 	/*
 	 * Adds a user.
 	 * Parameters:
@@ -3506,7 +3506,7 @@ int sk_db::sk_user_add (const sk_user &user, const string &password)/*{{{*/
 }
 /*}}}*/
 
-int sk_db::sk_user_modify (const sk_user &user, const string &username)/*{{{*/
+int sk_db::sk_user_modify (const User &user, const string &username)/*{{{*/
 	/*
 	 * The user "username" (user.username if not given) is modified.
 	 * Parameters:
@@ -3566,7 +3566,7 @@ int sk_db::sk_user_modify (const sk_user &user, const string &username)/*{{{*/
 }
 /*}}}*/
 
-int sk_db::sk_user_get (sk_user &user, const string &username)/*{{{*/
+int sk_db::sk_user_get (User &user, const string &username)/*{{{*/
 	/*
 	 * Gets a user from the database.
 	 * Parameters:
@@ -3581,7 +3581,7 @@ int sk_db::sk_user_get (sk_user &user, const string &username)/*{{{*/
 	if (!connected ()) return db_err_not_connected;
 	if (username.empty ()) return db_err_parameter_error;
 
-	list<sk_user> users;
+	list<User> users;
 	int ret=sk_user_list (users, username);
 	if (ret<0) return ret;
 
@@ -3605,7 +3605,7 @@ int sk_db::sk_user_delete (const string &username)/*{{{*/
 }
 /*}}}*/
 
-int sk_db::sk_user_list (list<sk_user> &users, const string &username)/*{{{*/
+int sk_db::sk_user_list (list<User> &users, const string &username)/*{{{*/
 	/*
 	 * Returns a user list.
 	 * Parameters:
@@ -3640,7 +3640,7 @@ int sk_db::sk_user_list (list<sk_user> &users, const string &username)/*{{{*/
 }
 /*}}}*/
 
-int sk_db::row_to_user (sk_user &user, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields)/*{{{*/
+int sk_db::row_to_user (User &user, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields)/*{{{*/
 	/*
 	 * Converts a MySQL row to a user.
 	 * Parameters:
@@ -3666,7 +3666,7 @@ int sk_db::row_to_user (sk_user &user, MYSQL_ROW row, int num_fields, MYSQL_FIEL
 }
 /*}}}*/
 
-int sk_db::result_to_user_list (list<sk_user> &users, MYSQL_RES *result)/*{{{*/
+int sk_db::result_to_user_list (list<User> &users, MYSQL_RES *result)/*{{{*/
 	/*
 	 * Converts a MySQL result to a list of sk_users.
 	 * Parameters:
@@ -3686,7 +3686,7 @@ int sk_db::result_to_user_list (list<sk_user> &users, MYSQL_RES *result)/*{{{*/
 	MYSQL_ROW row;
 	while ((row=mysql_fetch_row (result)))
 	{
-		sk_user user;
+		User user;
 
 		// Decode the object and add it to the list if successful
 		if (row_to_user (user, row, num_fields, fields)==db_ok)
@@ -3697,7 +3697,7 @@ int sk_db::result_to_user_list (list<sk_user> &users, MYSQL_RES *result)/*{{{*/
 }
 /*}}}*/
 
-string sk_db::user_value_list (const sk_user &user)/*{{{*/
+string sk_db::user_value_list (const User &user)/*{{{*/
 {
 	string r;
 	ostringstream oss;
@@ -3718,7 +3718,7 @@ string sk_db::user_value_list (const sk_user &user)/*{{{*/
 
 
 
-void sk_db::make_flight_data (sk_flug_data &flight_data, const sk_flug &flight)/*{{{*/
+void sk_db::make_flight_data (sk_flug_data &flight_data, const Flight &flight)/*{{{*/
 	// XXX Ownership is set to true.
 {
 	// Read the parts of the flight (plane, persons...) from the database.
@@ -3735,11 +3735,11 @@ void sk_db::make_flight_data (sk_flug_data &flight_data, const sk_flug &flight)/
 	flight_data.FLIGHT_DATA_MEMBER.set_owner (true);	\
 	flight_data.FLIGHT_DATA_MEMBER.set (VAR, VAR ## _given, VAR ## _ok, VAR ## _result);
 
-	ITEM (startart_t,  sa,       !id_invalid (flight.startart),  get_startart, flight.startart,  startart)
-	ITEM (sk_flugzeug, plane,    !id_invalid (flight.flugzeug),  get_plane,    flight.flugzeug,  plane)
-	ITEM (sk_person,   pilot,    !id_invalid (flight.pilot),     get_person,   flight.pilot,     pilot)
-	ITEM (sk_person,   copilot,  !id_invalid (flight.begleiter), get_person,   flight.begleiter, copilot)
-	ITEM (sk_person,   towpilot, !id_invalid (flight.towpilot),  get_person,   flight.towpilot,  towpilot)
+	ITEM (LaunchType,  sa,       !id_invalid (flight.startart),  get_startart, flight.startart,  startart)
+	ITEM (Plane, plane,    !id_invalid (flight.flugzeug),  get_plane,    flight.flugzeug,  plane)
+	ITEM (Person,   pilot,    !id_invalid (flight.pilot),     get_person,   flight.pilot,     pilot)
+	ITEM (Person,   copilot,  !id_invalid (flight.begleiter), get_person,   flight.begleiter, copilot)
+	ITEM (Person,   towpilot, !id_invalid (flight.towpilot),  get_person,   flight.towpilot,  towpilot)
 #undef ITEM
 
 	// Towplane is special because we may need to use different
@@ -3747,7 +3747,7 @@ void sk_db::make_flight_data (sk_flug_data &flight_data, const sk_flug &flight)/
 	// This block is basically the above macro ITEM expanded, apart
 	// from the block where the towplane is read from the database.
 	// This is not a good solution and TODO.
-	sk_flugzeug *towplane=new sk_flugzeug;
+	Plane *towplane=new Plane;
 	bool towplane_given=(sa_ok && sa->is_airtow ());
 	bool towplane_ok=false;
 	int towplane_result=db_ok;
@@ -3790,7 +3790,7 @@ void sk_db::test ()/*{{{*/
 //	cout << "Auth baz/qux: " << db.sk_user_authenticate ("baz", "qux") << endl;
 
 	cout << "Get user" << endl;
-	sk_user user;
+	User user;
 	db.sk_user_get (user, "foo");
 	cout << "Modify user" << endl;
 	db.sk_user_modify (user);

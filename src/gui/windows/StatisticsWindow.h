@@ -13,9 +13,9 @@
 #include "src/gui/widgets/SkTable.h"
 #include "src/gui/widgets/SkTableItem.h"
 #include "src/gui/windows/SkDialog.h"
-#include "src/model/sk_flug.h"
-#include "src/model/sk_flugzeug.h"
-#include "src/model/sk_person.h"
+#include "src/model/Flight.h"
+#include "src/model/Plane.h"
+#include "src/model/Person.h"
 #include "src/statistics/bordbuch.h"
 #include "src/statistics/flugbuch.h"
 
@@ -38,7 +38,7 @@ class StatisticsWindow:public SkDialog
 		SkTable *tab;
 		QPushButton *but_close;
 		SkTableItem *set_table_cell (int row, int col, const string &text, QColor bg=QColor (255, 255, 255));
-		void person_flugbuch (QDate date, sk_person *p, QPtrList<sk_flug> &flights);
+		void person_flugbuch (QDate date, Person *p, QPtrList<Flight> &flights);
 		void fill_sastat (QDate datum);
 		sk_db *db;
 

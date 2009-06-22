@@ -1,21 +1,22 @@
-#ifndef sk_person_h
-#define sk_person_h
+#ifndef _Person_h
+#define _Person_h
 
 #include <string>
 
 #include "src/data_types.h"
-#include "src/model/stuff.h"
+#include "src/model/Entity.h"
 
 using namespace std;
 
-enum namens_teil { nt_kein, nt_vorname, nt_nachname };
+// TODO: move to Person and change value names
+enum NamePart { nt_kein, nt_vorname, nt_nachname };
 
-class sk_person: public stuff
+class Person: public Entity
 {
 	public:
-		sk_person ();
-		sk_person (string, string);
-		sk_person (string, string, string, string, string, db_id p_id=0);
+		Person ();
+		Person (string, string);
+		Person (string, string, string, string, string, db_id p_id=0);
 		void dump () const;
 		virtual void output (ostream &stream, output_format_t format);
 

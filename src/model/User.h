@@ -1,8 +1,8 @@
-#ifndef sk_user_h
-#define sk_user_h
+#ifndef _User_h
+#define _User_h
 
 /*
- * sk_user
+ * User
  * Martin Herrmann
  * 2005-01-04
  */
@@ -13,10 +13,10 @@ using namespace std;
 
 #include "src/db/db_types.h"
 
-class sk_user
+class User
 {
 	public:
-		sk_user ();
+		User ();
 
 		string username;
 		// password not saved here

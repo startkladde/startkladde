@@ -70,7 +70,7 @@ extern "C" void make_field_list (const string &format, list<object_field> &field
 	}
 }
 
-extern "C" void flight_to_fields (const string &format, list<object_field> &fields, const sk_flug &f, const sk_flug_data &flight_data, int &num, const string &none_text, const string &error_text)
+extern "C" void flight_to_fields (const string &format, list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const string &none_text, const string &error_text)
 {
 	if (format!=format_lsv_albgau) throw plugin_data_format::ex_plugin_invalid_format (format);
 

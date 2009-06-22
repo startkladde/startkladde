@@ -98,7 +98,7 @@ void StatisticsWindow::fill_sastat (QDate datum)/*{{{*/
 	 */
 {
 	// Startarten listen
-	QPtrList<startart_t> startarten; startarten.setAutoDelete (true);
+	QPtrList<LaunchType> startarten; startarten.setAutoDelete (true);
 	db->list_startarten_all (startarten);
 	// TODO vereinfachen
 	int num_startarten=startarten.count ();
@@ -108,13 +108,13 @@ void StatisticsWindow::fill_sastat (QDate datum)/*{{{*/
 		for (int i=0; i<num_startarten; i++) sa_fluege[i]=0;
 
 		// Alle Fl�ge listen
-		QPtrList<sk_flug> flights; flights.setAutoDelete (true);
+		QPtrList<Flight> flights; flights.setAutoDelete (true);
 		db->list_flights_date (flights, &datum); // TODO Fehlerbehandlung
 
-		for (QPtrListIterator<sk_flug> fl (flights); *fl; ++fl)
+		for (QPtrListIterator<Flight> fl (flights); *fl; ++fl)
 		{
 			int i=0;
-			for (QPtrListIterator<startart_t> sa (startarten); *sa; ++sa)
+			for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
 			{
 				if ((*sa)->get_id ()==(*fl)->startart)
 					sa_fluege[i]++;
@@ -125,7 +125,7 @@ void StatisticsWindow::fill_sastat (QDate datum)/*{{{*/
 
 		// Startarten mit Anzahl ihrer Fl�ge eintragen
 		int s=0;
-		for (QPtrListIterator<startart_t> sa (startarten); *sa; ++sa)
+		for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
 		{
 			int row=s;
 			tab->insertRow (s);

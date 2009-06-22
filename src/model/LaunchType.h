@@ -1,8 +1,8 @@
-#ifndef startart_t_h
-#define startart_t_h
+#ifndef _LaunchType_h
+#define _LaunchType_h
 
 /*
- * startart_t
+ * LaunchType
  * Martin Herrmann
  * 2004-10-20
  */
@@ -14,7 +14,7 @@
 #include "src/text.h"
 #include "src/db/db_types.h"
 #include "src/logging/messages.h"
-#include "src/model/stuff.h"
+#include "src/model/Entity.h"
 
 using namespace std;
 
@@ -22,12 +22,12 @@ using namespace std;
 enum startart_type { sat_winch, sat_airtow, sat_self, sat_other };
 string startart_type_string (startart_type t);
 
-class startart_t:public stuff
+class LaunchType:public Entity
 {
 	public:
-		startart_t ();
-		startart_t (int _id, startart_type _type, string _towplane, string _description, string _short_description, string _accelerator, string _logbook_string, bool _person_required);
-		startart_t (string desc);
+		LaunchType ();
+		LaunchType (int _id, startart_type _type, string _towplane, string _description, string _short_description, string _accelerator, string _logbook_string, bool _person_required);
+		LaunchType (string desc);
 		void init ();
 		virtual void output (ostream &stream, output_format_t format);
 

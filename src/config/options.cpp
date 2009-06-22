@@ -366,7 +366,7 @@ bool options::read_config_file (string filename, sk_db *db, list<sk_plugin> *plu
 			// Database options
 			if (key=="record_towpilot") record_towpilot=true;
 
-			// Plugin stuff
+			// Plugin Entity
 			if (key=="plugin_data_format")
 			{
 				plugins_data_format.push_back (plugin_data_format (value));
@@ -413,7 +413,7 @@ bool options::read_config_file (string filename, sk_db *db, list<sk_plugin> *plu
 			// Options not saved locally
 			if (db && key=="startart")
 			{
-				startart_t *sa=new startart_t (value);
+				LaunchType *sa=new LaunchType (value);
 				if (id_invalid (sa->get_id ()))
 				{
 					cerr << "Error: startart with invalid ID "+num_to_string (sa->get_id ())+" specified.";

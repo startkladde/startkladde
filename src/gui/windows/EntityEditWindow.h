@@ -1,5 +1,5 @@
-#ifndef _StuffEditWindow_h
-#define _StuffEditWindow_h
+#ifndef _EntityEditWindow_h
+#define _EntityEditWindow_h
 
 #include <cstdio>
 
@@ -16,29 +16,30 @@
 #include "src/gui/widgets/SkTextBox.h"
 #include "src/gui/windows/SkDialog.h"
 #include "src/logging/messages.h"
-#include "src/model/sk_flugzeug.h"
-#include "src/model/stuff.h"
+#include "src/model/Plane.h"
+#include "src/model/Entity.h"
 
 using namespace std;
 
-enum stuff_editor_mode { em_none, em_create, em_edit, em_display };
+// TODO move to EntityEditWindow
+enum entity_editor_mode { em_none, em_create, em_edit, em_display };
 
 /*
- * An editor dialog for object classes derived from the stuff class.
+ * An editor dialog for object classes derived from the Entity class.
  */
 // TODO use virtual functions to determine controls, use polymorphy instead of
-// stuff_type. beware slot_registration etc.
+// EntityType. beware slot_registration etc.
 
-class StuffEditWindow:public SkDialog
+class EntityEditWindow:public SkDialog
 {
 	Q_OBJECT
 
 	public:
-		StuffEditWindow (stuff_type, QWidget *parent, sk_db *_db, const char *name=NULL, bool modal=FALSE, WFlags f=0, QObject *status_dialog=NULL);
-		~StuffEditWindow ();
-		int create (stuff *, bool can_change_name=false);
-		int edit (stuff *, bool can_change_name=false);
-		int disp (stuff *);
+		EntityEditWindow (EntityType, QWidget *parent, sk_db *_db, const char *name=NULL, bool modal=FALSE, WFlags f=0, QObject *status_dialog=NULL);
+		~EntityEditWindow ();
+		int create (Entity *, bool can_change_name=false);
+		int edit (Entity *, bool can_change_name=false);
+		int disp (Entity *);
 		void read_db ();
 		int exec ();
 
@@ -56,14 +57,14 @@ class StuffEditWindow:public SkDialog
 		void setup_controls ();
 		void populate_lists ();
 
-		void flugzeug_eintragen (sk_flugzeug *);
-		void person_eintragen (sk_person *);
+		void flugzeug_eintragen (Plane *);
+		void person_eintragen (Person *);
 
 		void enable_widgets (bool enable);
 
-		stuff_type type;
-		stuff_editor_mode mode;
-		stuff *buf;
+		EntityType type;
+		entity_editor_mode mode;
+		Entity *buf;
 
 		int num_fields;
 		QLabel **labels;

@@ -1,19 +1,19 @@
-#include "sk_flugzeug.h"
+#include "Plane.h"
 
 #include "src/text.h"
 
-sk_flugzeug::sk_flugzeug ()/*{{{*/
-	:stuff ()
+Plane::Plane ()/*{{{*/
+	:Entity ()
 	/*
-	 * Constructs an empty sk_flugzeug instance.
+	 * Constructs an empty Plane instance.
 	 */
 {
 	sitze=0;
 }/*}}}*/
 
-sk_flugzeug::sk_flugzeug (string p_registration, string p_wettbewerbskennzeichen, string p_typ, string p_club, int p_sitze, db_id p_id)/*{{{*/
+Plane::Plane (string p_registration, string p_wettbewerbskennzeichen, string p_typ, string p_club, int p_sitze, db_id p_id)/*{{{*/
 	/*
-	 * Constructs an sk_flugzeug instance with given data.
+	 * Constructs an Plane instance with given data.
 	 * Parameters:
 	 *   - p_registration, p_wettbewerbskennzeichen, p_typ, p_verein, p_sitze,
 	 *     p_id: the initial values for the fields.
@@ -28,7 +28,7 @@ sk_flugzeug::sk_flugzeug (string p_registration, string p_wettbewerbskennzeichen
 	id=p_id;
 }/*}}}*/
 
-void sk_flugzeug::dump () const/*{{{*/
+void Plane::dump () const/*{{{*/
 	/*
 	 * Print a description of the plane to stdout. Used for debugging.
 	 */
@@ -48,7 +48,7 @@ void sk_flugzeug::dump () const/*{{{*/
 			(int)id);
 }/*}}}*/
 
-string sk_flugzeug::bezeichnung (casus c) const/*{{{*/
+string Plane::bezeichnung (casus c) const/*{{{*/
 	/*
 	 * Returns a text describing the fact that this is a plane.
 	 * Parameters:
@@ -57,10 +57,10 @@ string sk_flugzeug::bezeichnung (casus c) const/*{{{*/
 	 *   the text.
 	 */
 {
-	return stuff_bezeichnung (st_plane, c);
+	return entityLabel (st_plane, c);
 }/*}}}*/
-							
-string sk_flugzeug::name () const/*{{{*/
+
+string Plane::name () const/*{{{*/
 	/*
 	 * Returns the name of the plane in a form suitable for enumerations.
 	 * Return value:
@@ -70,7 +70,7 @@ string sk_flugzeug::name () const/*{{{*/
 	return registration;
 }/*}}}*/
 
-string sk_flugzeug::tabelle_name () const/*{{{*/
+string Plane::tabelle_name () const/*{{{*/
 	/*
 	 * Returns the name of the plane in a form suitable for the table.
 	 * Return value:
@@ -80,7 +80,7 @@ string sk_flugzeug::tabelle_name () const/*{{{*/
 	return tabelle_name (false);
 }/*}}}*/
 
-string sk_flugzeug::tabelle_name (bool schlepp) const/*{{{*/
+string Plane::tabelle_name (bool schlepp) const/*{{{*/
 	/*
 	 * Returns the name of the plane in a form suitable for the table.
 	 * Parameters:
@@ -95,7 +95,7 @@ string sk_flugzeug::tabelle_name (bool schlepp) const/*{{{*/
 	return name ()+" ("+wettbewerbskennzeichen+")";
 }/*}}}*/
 
-string sk_flugzeug::text_name () const/*{{{*/
+string Plane::text_name () const/*{{{*/
 	/*
 	 * Returns the name of the plane in a form suitable for running text.
 	 * Return value:
@@ -105,14 +105,14 @@ string sk_flugzeug::text_name () const/*{{{*/
 	return name ();
 }/*}}}*/
 
-void sk_flugzeug::output (ostream &stream, output_format_t format)/*{{{*/
+void Plane::output (ostream &stream, output_format_t format)/*{{{*/
 {
-	stuff::output (stream, format, false, "ID", id);
-	stuff::output (stream, format, false, "Kennzeichen", registration);
-	stuff::output (stream, format, false, "Wettbewerbskennzeichen", wettbewerbskennzeichen);
-	stuff::output (stream, format, false, "Sitze", sitze);
-	stuff::output (stream, format, false, "Verein", club);
-	stuff::output (stream, format, true, "Gattung", category_string (category, ls_lang));
+	Entity::output (stream, format, false, "ID", id);
+	Entity::output (stream, format, false, "Kennzeichen", registration);
+	Entity::output (stream, format, false, "Wettbewerbskennzeichen", wettbewerbskennzeichen);
+	Entity::output (stream, format, false, "Sitze", sitze);
+	Entity::output (stream, format, false, "Verein", club);
+	Entity::output (stream, format, true, "Gattung", category_string (category, ls_lang));
 }
 /*}}}*/
 

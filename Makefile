@@ -66,6 +66,8 @@ version: version/version.h
 version/version.h: version/major version/minor
 	cd version; ./make_version; cd ..
 
+programs: $(PROGRAMS)
+
 
 ####################
 ## Subdirectories ##

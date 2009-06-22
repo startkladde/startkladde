@@ -1,5 +1,5 @@
-#ifndef sk_flug_h
-#define sk_flug_h
+#ifndef _Flight_h
+#define _Flight_h
 
 #include <sstream>
 #include <string>
@@ -11,15 +11,15 @@
 #include "src/text.h"
 #include "src/gui/dialogs.h"
 #include "src/gui/settings.h"
-#include "src/model/sk_flugzeug.h"
-#include "src/model/sk_person.h"
-#include "src/model/startart_t.h"
+#include "src/model/Plane.h"
+#include "src/model/Person.h"
+#include "src/model/LaunchType.h"
 #include "src/time/sk_time.h"
 #include "src/time/sk_time_t.h"
 
 using namespace std;
 
-enum flug_fehler {
+enum FlightError {
 	ff_ok,
 	ff_keine_id, ff_kein_flugzeug, ff_kein_pilot, ff_pilot_gleich_begleiter,
 	ff_pilot_gleich_towpilot,
@@ -40,10 +40,10 @@ enum flug_fehler {
 	ff_startort_gleich_zielort, ff_kein_schleppflugzeug, ff_towplane_is_glider
 	};
 
-class sk_flug
+class Flight
 {
 	public:
-		sk_flug ();
+		Flight ();
 
 		bool fliegt () const;	// Use with care
 		bool sfz_fliegt () const;
@@ -55,14 +55,14 @@ class sk_flug
 		string typ_string (length_specification lenspec) const;
 		sk_time_t flugdauer () const;
 		sk_time_t schleppflugdauer () const;
-		bool fehlerhaft (sk_flugzeug *fz, sk_flugzeug *sfz, startart_t *sa) const;
-		bool schlepp_fehlerhaft (sk_flugzeug *fz, sk_flugzeug *sfz, startart_t *sa) const;
-		flug_fehler fehlerchecking (int *, bool check_flug, bool check_schlepp, sk_flugzeug *fz, sk_flugzeug *sfz, startart_t *startart) const;
-		string fehler_string (flug_fehler code) const;
+		bool fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const;
+		bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const;
+		FlightError fehlerchecking (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchType *startart) const;
+		string fehler_string (FlightError code) const;
 		void dump () const;
 		bool happened () const;
 		bool finished () const;
-		void get_towflight (sk_flug *towflight, db_id towplane_id, db_id sa_id) const;
+		void get_towflight (Flight *towflight, db_id towplane_id, db_id sa_id) const;
 
 		db_id id;							// ID des Flugs in der Datenbank
 		db_id flugzeug;
@@ -100,12 +100,12 @@ class sk_flug
 		string unvollst_begleiter_name () const;
 		string unvollst_towpilot_name () const;
 
-		bool collective_bb_entry_possible (sk_flug *prev, const sk_flugzeug &plane) const;
+		bool collective_bb_entry_possible (Flight *prev, const Plane &plane) const;
 
 		bool flight_lands_here () const;
 		bool flight_starts_here () const;
 
-		int sort (sk_flug *other) const;
+		int sort (Flight *other) const;
 
 	private:
 		string unvollst_person_name (string nn, string vn) const;
@@ -153,12 +153,12 @@ class sk_flug_data
 			return data;
 		}
 
-		data_item<sk_person> pilot;
-		data_item<sk_person> copilot;
-		data_item<sk_person> towpilot;
-		data_item<sk_flugzeug> plane;
-		data_item<sk_flugzeug> towplane;
-		data_item<startart_t> startart;
+		data_item<Person> pilot;
+		data_item<Person> copilot;
+		data_item<Person> towpilot;
+		data_item<Plane> plane;
+		data_item<Plane> towplane;
+		data_item<LaunchType> startart;
 };
 
 

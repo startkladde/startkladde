@@ -1,8 +1,8 @@
-#include "stuff.h"
+#include "Entity.h"
 
-stuff::stuff ()/*{{{*/
+Entity::Entity ()/*{{{*/
 	/*
-	 * Constructs an empty stuff instance.
+	 * Constructs an empty Entity instance.
 	 */
 {
 	id=0;
@@ -10,22 +10,22 @@ stuff::stuff ()/*{{{*/
 }
 /*}}}*/
 
-stuff::~stuff ()/*{{{*/
+Entity::~Entity ()/*{{{*/
 	/*
-	 * Cleans up a stuff instance.
+	 * Cleans up a Entity instance.
 	 */
 {
 
 }
 /*}}}*/
 
-string stuff_bezeichnung (stuff_type t, casus c)/*{{{*/
+string entityLabel (EntityType t, casus c)/*{{{*/
 	/*
-	 * Returns a word describing the type of stuff.
+	 * Returns a word describing the type of Entity.
 	 * TODO: this function should be overridden in the base class instead of
-	 * using stuff_type t.
+	 * using EntityType t.
 	 * Parameters:
-	 *   - t: the stuff type.
+	 *   - t: the Entity type.
 	 *   - c: the (grammatical) case of the word.
 	 * Return value:
 	 *   the word.
@@ -83,7 +83,7 @@ string stuff_bezeichnung (stuff_type t, casus c)/*{{{*/
 
 
 
-string stuff::get_selector_value (int column_number) const/*{{{*/
+string Entity::get_selector_value (int column_number) const/*{{{*/
 {
 	switch (column_number)
 	{
@@ -94,7 +94,7 @@ string stuff::get_selector_value (int column_number) const/*{{{*/
 }
 /*}}}*/
 
-string stuff::get_selector_caption (int column_number)/*{{{*/
+string Entity::get_selector_caption (int column_number)/*{{{*/
 {
 	switch (column_number)
 	{
@@ -106,7 +106,7 @@ string stuff::get_selector_caption (int column_number)/*{{{*/
 /*}}}*/
 
 
-void stuff::output (ostream &stream, output_format_t format, bool last, string name, string value)/*{{{*/
+void Entity::output (ostream &stream, output_format_t format, bool last, string name, string value)/*{{{*/
 {
 	switch (format)
 	{
@@ -134,7 +134,7 @@ void stuff::output (ostream &stream, output_format_t format, bool last, string n
 }
 /*}}}*/
 
-void stuff::output (ostream &stream, output_format_t format, bool last, string name, db_id value)/*{{{*/
+void Entity::output (ostream &stream, output_format_t format, bool last, string name, db_id value)/*{{{*/
 {
 	output (stream, format, last, name, num_to_string (value));
 }

@@ -1,9 +1,9 @@
-#include "startart_t.h"
+#include "LaunchType.h"
 
 #include <cstdlib>
 
 // Class management
-void startart_t::init ()/*{{{*/
+void LaunchType::init ()/*{{{*/
 {
 	id=invalid_id;
 	towplane="";
@@ -17,14 +17,14 @@ void startart_t::init ()/*{{{*/
 }
 /*}}}*/
 
-startart_t::startart_t ()/*{{{*/
-	:stuff ()
+LaunchType::LaunchType ()/*{{{*/
+	:Entity ()
 {
 	init ();
 }/*}}}*/
 
-startart_t::startart_t (int _id, startart_type _type, string _towplane, string _description, string _short_description, string _accelerator, string _logbook_string, bool _person_required)/*{{{*/
-	:stuff ()
+LaunchType::LaunchType (int _id, startart_type _type, string _towplane, string _description, string _short_description, string _accelerator, string _logbook_string, bool _person_required)/*{{{*/
+	:Entity ()
 {
 	id=_id;
 	type=_type;
@@ -37,8 +37,8 @@ startart_t::startart_t (int _id, startart_type _type, string _towplane, string _
 }
 /*}}}*/
 
-startart_t::startart_t (string desc)/*{{{*/
-	:stuff ()
+LaunchType::LaunchType (string desc)/*{{{*/
+	:Entity ()
 {
 	init ();
 
@@ -74,29 +74,29 @@ startart_t::startart_t (string desc)/*{{{*/
 /*}}}*/
 
 // Class information
-string startart_t::name () const/*{{{*/
+string LaunchType::name () const/*{{{*/
 {
 	return description;
 }/*}}}*/
 
-string startart_t::tabelle_name () const/*{{{*/
+string LaunchType::tabelle_name () const/*{{{*/
 {
 	return short_description;
 }/*}}}*/
 
-string startart_t::text_name () const/*{{{*/
+string LaunchType::text_name () const/*{{{*/
 {
 	return description;
 }/*}}}*/
 
-string startart_t::bezeichnung (casus c) const/*{{{*/
+string LaunchType::bezeichnung (casus c) const/*{{{*/
 {
-	return stuff_bezeichnung (st_startart, c);
+	return entityLabel (st_startart, c);
 }/*}}}*/
 
 
 
-string startart_t::get_selector_value (int column_number) const/*{{{*/
+string LaunchType::get_selector_value (int column_number) const/*{{{*/
 {
 	switch (column_number)
 	{
@@ -108,7 +108,7 @@ string startart_t::get_selector_value (int column_number) const/*{{{*/
 }
 /*}}}*/
 
-string startart_t::get_selector_caption (int column_number)/*{{{*/
+string LaunchType::get_selector_caption (int column_number)/*{{{*/
 {
 	switch (column_number)
 	{
@@ -122,7 +122,7 @@ string startart_t::get_selector_caption (int column_number)/*{{{*/
 
 
 
-string startart_t::list_text () const/*{{{*/
+string LaunchType::list_text () const/*{{{*/
 {
 	if (accelerator.empty ())
 		return string (" ")+description;
@@ -146,11 +146,11 @@ string startart_type_string (startart_type t)/*{{{*/
 }
 /*}}}*/
 
-void startart_t::output (ostream &stream, output_format_t format)/*{{{*/
+void LaunchType::output (ostream &stream, output_format_t format)/*{{{*/
 {
-	stuff::output (stream, format, false, "ID", id);
-	stuff::output (stream, format, false, "Bezeichnung", description);
-	stuff::output (stream, format, true, "Typ", startart_type_string (type));
+	Entity::output (stream, format, false, "ID", id);
+	Entity::output (stream, format, false, "Bezeichnung", description);
+	Entity::output (stream, format, true, "Typ", startart_type_string (type));
 }
 /*}}}*/
 

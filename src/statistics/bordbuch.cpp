@@ -60,7 +60,7 @@ string bordbuch_entry::anzahl_landungen_string () const/*{{{*/
 /*}}}*/
 
 
-bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<sk_flug> &flights, sk_flugzeug &fz, QDate date)/*{{{*/
+bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<Flight> &flights, Plane &fz, QDate date)/*{{{*/
 	// No plane/date checking is done.
 {
 	// Skip if the the list is empty
@@ -75,7 +75,7 @@ bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<sk_flug>
 
 		// The list is sorted
 		// Iterate over the flights, gathering information.
-		for (QPtrListIterator<sk_flug> flight (flights); *flight; ++flight)
+		for (QPtrListIterator<Flight> flight (flights); *flight; ++flight)
 		{
 			// If any flight is not yet finished the collective entry is
 			// invalid
@@ -102,7 +102,7 @@ bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<sk_flug>
 		// TODO error checking last pilot exists?
 
 		// Get additional data
-		sk_person last_pilot;
+		Person last_pilot;
 		db->get_person (&last_pilot, flights.last ()->pilot);
 
 		// Fill in the rest of the information
@@ -118,7 +118,7 @@ bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<sk_flug>
 			if (flights.count ()<=1)
 				bb_entry->bemerkungen="Schleppflug"+bb_entry->bemerkungen;
 			else
-				bb_entry->bemerkungen="Schleppflüge"+bb_entry->bemerkungen;
+				bb_entry->bemerkungen="Schleppflï¿½ge"+bb_entry->bemerkungen;
 		}
 
 		return true;
@@ -130,7 +130,7 @@ bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<sk_flug>
 }
 /*}}}*/
 
-void add_bordbuch_entry (QPtrList<bordbuch_entry> &bb, sk_db *db, QPtrList<sk_flug> &flights, sk_flugzeug &fz, QDate date)/*{{{*/
+void add_bordbuch_entry (QPtrList<bordbuch_entry> &bb, sk_db *db, QPtrList<Flight> &flights, Plane &fz, QDate date)/*{{{*/
 {
 	bordbuch_entry *bb_entry=new bordbuch_entry;
 	bool entry_ok=make_bordbuch_entry (bb_entry, db, flights, fz, date);
@@ -142,13 +142,13 @@ void add_bordbuch_entry (QPtrList<bordbuch_entry> &bb, sk_db *db, QPtrList<sk_fl
 }
 /*}}}*/
 
-void make_bordbuch_plane (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, sk_flugzeug &fz, QPtrList<sk_flug> &flights)/*{{{*/
+void make_bordbuch_plane (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, Plane &fz, QPtrList<Flight> &flights)/*{{{*/
 	// flights may contain flights which don't belong to the plane
 {
 	// First, make a sorted list of all fligths that belong to this plane
 	flight_list interesting_flights; interesting_flights.setAutoDelete (false);
 	// Iterate over all of the flights in the list.
-	for (QPtrListIterator<sk_flug> select_flug (flights); *select_flug; ++select_flug)
+	for (QPtrListIterator<Flight> select_flug (flights); *select_flug; ++select_flug)
 	{
 		// Select only flights with matching plane and date.
 		if ((*select_flug)->flugzeug==fz.id && (*select_flug)->effdatum ()==date)
@@ -160,9 +160,9 @@ void make_bordbuch_plane (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, s
 
 	// Iterate over the interesting flights, grouping those who can form a
 	// collective entry, and add them to the list.
-	QPtrList<sk_flug> entry_flights; entry_flights.setAutoDelete (false);
-	sk_flug *prev=NULL;
-	for (QPtrListIterator<sk_flug> flight (interesting_flights); *flight; ++flight)
+	QPtrList<Flight> entry_flights; entry_flights.setAutoDelete (false);
+	Flight *prev=NULL;
+	for (QPtrListIterator<Flight> flight (interesting_flights); *flight; ++flight)
 	{
 		// If this entry cannot be merged with the previous, we have to make an
 		// entry from the list and clear the list before continuing.
@@ -179,10 +179,10 @@ void make_bordbuch_plane (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, s
 }
 /*}}}*/
 
-void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, QPtrList<sk_flugzeug> planes, QPtrList<sk_flug> flights, string *club)/*{{{*/
+void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, string *club)/*{{{*/
 	// If club is specified, only planes of this club are used.
 {
-	for (QPtrListIterator<sk_flugzeug> plane (planes); *plane; ++plane)
+	for (QPtrListIterator<Plane> plane (planes); *plane; ++plane)
 	{
 		// TODO emit progress
 		if (club==NULL || simplify_club_name ((*plane)->club)==simplify_club_name (*club))
@@ -197,11 +197,11 @@ void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date)/*{{
 {
 	// TODO error handling
 
-	QPtrList<sk_flugzeug> planes; planes.setAutoDelete (true);
+	QPtrList<Plane> planes; planes.setAutoDelete (true);
 	// Find out which planes had flights today
 	db->list_planes_date (planes, &date);
 
-	QPtrList<sk_flug> flights; flights.setAutoDelete (true);
+	QPtrList<Flight> flights; flights.setAutoDelete (true);
 	// We need all flights of that date anyway. For speed, we don't query the
 	// database for each plane but retrieve all flights here.
 	db->list_flights_date (flights, &date);
@@ -214,11 +214,11 @@ void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date)/*{{
 	// the tow flight to the flight list.
 	// TODO in Funktion schieben, evtl. in sk_db
 	QValueList<db_id> towplane_ids;
-	for (QPtrListIterator<sk_flug> flight (flights); *flight; ++flight)
+	for (QPtrListIterator<Flight> flight (flights); *flight; ++flight)
 	{
 		// Determine the startart
 		db_id sa_id=(*flight)->startart;
-		startart_t sa;
+		LaunchType sa;
 		bool sa_ok=(db->get_startart (&sa, sa_id)==db_ok);
 
 		if (sa_ok && sa.is_airtow ())
@@ -228,7 +228,7 @@ void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date)/*{{
 			db_id towplane_id;
 			if (sa.towplane_known ())
 			{
-				sk_flugzeug towplane;
+				Plane towplane;
 				// TODO error checking
 				db->get_plane_registration (&towplane, sa.get_towplane ());
 				towplane_id=towplane.id;
@@ -247,7 +247,7 @@ void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date)/*{{
 
 				// Create a new flight, set it to the tow flight and add it to the
 				// flight list.
-				sk_flug *towflight=new sk_flug;
+				Flight *towflight=new Flight;
 				(*flight)->get_towflight (towflight, towplane_id, self_start_id);
 
 				// Do some very special processing
@@ -261,7 +261,7 @@ void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date)/*{{
 	for (QValueList<db_id>::iterator plane_id=towplane_ids.begin (); plane_id!=towplane_ids.end (); ++plane_id)
 	{
 		// Get the plane from the database
-		sk_flugzeug *towplane=new sk_flugzeug;
+		Plane *towplane=new Plane;
 		bool plane_ok=(db->get_plane (towplane, *plane_id)==db_ok);
 
 		if (plane_ok)
@@ -269,7 +269,7 @@ void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date)/*{{
 			// If that plane exists, add it to the list, if it is not already
 			// there.
 			bool towplane_already_present=false;
-			for (QPtrListIterator<sk_flugzeug> search_pl (planes); *search_pl; ++search_pl)
+			for (QPtrListIterator<Plane> search_pl (planes); *search_pl; ++search_pl)
 			{
 				if ((*search_pl)->registration==towplane->registration)
 				{

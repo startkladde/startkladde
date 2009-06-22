@@ -8,7 +8,7 @@
 #include <QPushButton>
 #include <QDateTimeEdit>
 #include <QMessageBox>
-#include <QValidator> // XXX
+#include <QValidator>
 #include <QDateEdit>
 #include <QListWidget>
 
@@ -26,11 +26,11 @@
 #include "src/gui/widgets/LabelComboBox.h"
 #include "src/gui/widgets/SkTimeEdit.h"
 #include "src/gui/windows/SkDialog.h"
-#include "src/gui/windows/StuffEditWindow.h"
-#include "src/gui/windows/StuffSelectWindow.h"
+#include "src/gui/windows/EntityEditWindow.h"
+#include "src/gui/windows/EntitySelectWindow.h"
 #include "src/logging/messages.h"
-#include "src/model/sk_flug.h"
-#include "src/model/sk_flugzeug.h"
+#include "src/model/Flight.h"
+#include "src/model/Plane.h"
 
 using namespace std;
 
@@ -47,17 +47,17 @@ class FlightWindow:public SkDialog
 		~FlightWindow ();
 
 		// TODO das gehoert privat.
-		int go (flight_editor_mode, sk_flug *, QDate *);
+		int go (flight_editor_mode, Flight *, QDate *);
 
 		void populate_lists ();
 		void read_db ();
 
-		int edit_flight (sk_flug *f);
+		int edit_flight (Flight *f);
 		int create_flight (QDate *date_to_use=NULL);
-		int duplicate_flight (sk_flug *vorlage);
+		int duplicate_flight (Flight *vorlage);
 
 		flight_editor_mode get_mode () { return mode; }
-		sk_flug *get_flight_buffer () { return flight; }
+		Flight *get_flight_buffer () { return flight; }
 
 	private slots:
 		void slot_ok ();
@@ -105,15 +105,15 @@ class FlightWindow:public SkDialog
 		int widget_index (QWidget *w);
 		void enable_widget (int ind, bool en);
 		void enable_widget (QWidget *wid, bool en);
-		void fehler_eintragen (sk_flug *f, sk_flugzeug *fz, sk_flugzeug *sfz, bool move_focus=false);
+		void fehler_eintragen (Flight *f, Plane *fz, Plane *sfz, bool move_focus=false);
 		void set_field_error (QWidget *, bool);
 		QColor get_default_color (QWidget *w);
-		QWidget *get_error_control (flug_fehler error);
+		QWidget *get_error_control (FlightError error);
 
 		flight_editor_mode mode;
-		sk_flug *flight;
-		sk_flugzeug *selected_plane;
-		sk_flugzeug *selected_towplane;
+		Flight *flight;
+		Plane *selected_plane;
+		Plane *selected_towplane;
 		int anzahl_pilot, anzahl_begleiter, anzahl_towpilot;	// Kandidaten f�r Pilot/Begleiter/Schleppilot
 		db_id original_pilot_id, original_begleiter_id, original_towpilot_id;
 		QObject *status_dialog;
@@ -156,7 +156,7 @@ class FlightWindow:public SkDialog
 		void warning_message (const QString &);
 		bool check_flight (db_id *, db_id *, db_id *, db_id *, db_id *, bool, QWidget **error_control=NULL);
 		bool check_person (db_id *person_id, string vorname, string nachname, string bezeichnung_n, string bezeichnung_a, bool person_required=true, bool check_flying=true, db_id original_id=invalid_id, string *preselection_club=NULL);
-		bool check_plane (db_id *plane_id, sk_flugzeug *plane, string registration, string bezeichnung_n, string bezeichnung_a, int seat_guess);
+		bool check_plane (db_id *plane_id, Plane *plane, string registration, string bezeichnung_n, string bezeichnung_a, int seat_guess);
 		bool check_plane_flying (db_id plane_id, string registration, string description_n);
 
 		// TODO bessere Datenstrukturen...
@@ -177,10 +177,10 @@ class FlightWindow:public SkDialog
 		int flugtyp_index (flug_typ t);
 
 
-		void flug_eintragen (sk_flug *, bool);
+		void flug_eintragen (Flight *, bool);
 		void reset ();
 		void namen_aus_datenbank (lbl_cbox *vorname, lbl_cbox *nachname, lbl_cbox *vorname2=NULL, lbl_cbox *nachname2=NULL, lbl_cbox *vorname3=NULL, lbl_cbox *nachname3=NULL);
-		void namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, namens_teil quelle, int *, db_id *, bool preserve_target_text=false);
+		void namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, NamePart quelle, int *, db_id *, bool preserve_target_text=false);
 
 		sk_db *db;
 

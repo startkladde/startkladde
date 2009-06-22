@@ -1,6 +1,6 @@
-#include "sk_user.h"
+#include "User.h"
 
-sk_user::sk_user ()/*{{{*/
+User::User ()/*{{{*/
 	:perm_club_admin (false), perm_read_flight_db (false), person (invalid_id)
 {
 }/*}}}*/

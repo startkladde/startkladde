@@ -16,9 +16,9 @@
 #include "src/gui/windows/FlightWindow.h"
 #include "src/gui/windows/SplashScreen.h"
 #include "src/gui/windows/StatisticsWindow.h"
-#include "src/gui/windows/StuffListWindow.h"
-#include "src/model/sk_flug.h"
-#include "src/model/sk_flugzeug.h"
+#include "src/gui/windows/EntityListWindow.h"
+#include "src/model/Flight.h"
+#include "src/model/Plane.h"
 #include "src/time/time_functions.h"
 
 // UI/*{{{*/
@@ -259,11 +259,11 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 	// Update: Allerdings scheint es nicht zu funktionieren: die Fensterchen
 	// [flugzeug|personen]_liste bleiben *immer* im Vordergrund. H�h?
 	//	flug_editor=new FlightWindow (this, NULL, flugeditor_modal, Qt::WStyle_Customize | Qt::WStyle_StaysOnTop, ss);
-	//	flugzeug_liste=new StuffListWindow (st_plane, this, "flugzeug_liste", false, Qt::WStyle_Customize, ss);
-	//	personen_liste=new StuffListWindow (st_person, this, "personen_liste", false, Qt::WStyle_Customize, ss);
+	//	flugzeug_liste=new EntityListWindow (st_plane, this, "flugzeug_liste", false, Qt::WStyle_Customize, ss);
+	//	personen_liste=new EntityListWindow (st_person, this, "personen_liste", false, Qt::WStyle_Customize, ss);
 	flug_editor = new FlightWindow (this, db, NULL, flugeditor_modal, 0, ss);
-	flugzeug_liste = new StuffListWindow (st_plane, this, db, "flugzeug_liste", false, 0, ss);
-	personen_liste = new StuffListWindow (st_person, this, db, "personen_liste", false, 0, ss);
+	flugzeug_liste = new EntityListWindow (st_plane, this, db, "flugzeug_liste", false, 0, ss);
+	personen_liste = new EntityListWindow (st_person, this, db, "personen_liste", false, 0, ss);
 	/*}}}*/
 
 	tbl_fluege->setContextMenuPolicy (Qt::CustomContextMenu);
@@ -743,12 +743,12 @@ void MainWindow::slot_db_update (db_event *event)/*{{{*/
 			// TODO: das in funktion
 			if (display_new_flight_date)
 			{
-				sk_flug fl;
+				Flight fl;
 				int ret = db->get_flight (&fl, event->id);
 				if (ret == db_ok && fl.happened ()) set_anzeigedatum (fl.effdatum ());
 			}
 
-			sk_flug fl;
+			Flight fl;
 			if (event->id != 0 && db->get_flight (&fl, event->id) == db_ok)
 			{
 				//TODO das immer
@@ -761,7 +761,7 @@ void MainWindow::slot_db_update (db_event *event)/*{{{*/
 		}
 		if (event->type == det_change)
 		{
-			sk_flug fl;
+			Flight fl;
 			int ret = db->get_flight (&fl, event->id);
 			if (ret == db_ok) tbl_fluege->update_flight (event->id, &fl);
 		}
@@ -806,7 +806,7 @@ void MainWindow::dbase_connect (QObject *ob)/*{{{*/
 /*}}}*/
 
 // Fl�ge/*{{{*/
-void MainWindow::neuer_flug (sk_flug *vorlage)/*{{{*/
+void MainWindow::neuer_flug (Flight *vorlage)/*{{{*/
 /*
  * Open the dialog for creating a new flight.
  * Parameters:
@@ -822,7 +822,7 @@ void MainWindow::neuer_flug (sk_flug *vorlage)/*{{{*/
 		flug_editor->create_flight (always_use_current_date ? NULL : &anzeigedatum);
 }/*}}}*/
 
-void MainWindow::edit_flight (sk_flug *f)/*{{{*/
+void MainWindow::edit_flight (Flight *f)/*{{{*/
 /*
  * Open the dialog for editing a flight.
  * Parameters:
@@ -965,7 +965,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 		if (action == fm_start && display_new_flight_date) set_anzeigedatum (QDate::currentDate ());
 
 		// Flug aus Datenbank lesen
-		sk_flug f;
+		Flight f;
 		if (db->get_flight (&f, target_id) < 0)
 		{
 			log_error ("Datenbankanfrage fehlgeschlagen in sk_win_main::manipulate_flight ()");
@@ -973,11 +973,11 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 		else
 		{
 			// TODO error handling
-			startart_t sa;
+			LaunchType sa;
 			db->get_startart (&sa, f.startart);
 
 			bool action_ok = true;
-			sk_flugzeug fz;
+			Plane fz;
 			if (f.flugzeug > 0 && db->get_plane (&fz, f.flugzeug) < 0)
 			{
 				log_error ("Flugzeugdatenbankanfrage fehlgeschlagen in sk_win_main::manipulate_flight ()");
@@ -1012,7 +1012,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 						ct.set_current ();
 						if (starten && !id_invalid (f.pilot) && !id_invalid (db->person_flying (f.pilot, &ct)))
 						{
-							sk_person p;
+							Person p;
 							db->get_person (&p, f.pilot);
 							string msg = "Laut Datenbank fliegt der " + f.pilot_bezeichnung () + " \"" + p.text_name ()
 									+ "\" noch.\n";
@@ -1020,7 +1020,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 						}
 						if (starten && !id_invalid (f.begleiter) && !id_invalid (db->person_flying (f.begleiter, &ct)))
 						{
-							sk_person p;
+							Person p;
 							db->get_person (&p, f.begleiter);
 							string msg = "Laut Datenbank fliegt der " + f.begleiter_bezeichnung () + " \""
 									+ p.text_name () + "\" noch.\n";
@@ -1028,7 +1028,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 						}
 						if (starten && !id_invalid (f.flugzeug) && !id_invalid (db->plane_flying (f.flugzeug, &ct)))
 						{
-							sk_flugzeug fz;
+							Plane fz;
 							db->get_plane (&fz, f.flugzeug);
 							string msg = "Laut Datenbank fliegt das Flugzeug \"" + fz.registration + "\" noch.\n";
 							if (!check_message (this, msg)) starten = false;
@@ -1105,7 +1105,7 @@ void MainWindow::manipulate_flight_by_row (int row, flight_manipulation action)/
 	else
 	{
 		// Flug aus der Datenbank lesen.
-		sk_flug f;
+		Flight f;
 		if (db->get_flight (&f, id) == db_ok)
 		{
 			if (ist_schlepp)
@@ -1183,7 +1183,7 @@ void MainWindow::slot_refresh_table ()
 
 		cout << "Die datenbank reicht uns " << flights.count () << " Flyge ryber." << endl;
 		flights.sort ();
-		for (QPtrListIterator<sk_flug> f (flights); *f; ++f)
+		for (QPtrListIterator<Flight> f (flights); *f; ++f)
 		{
 			tbl_fluege->update_flight ((*f)->id, (*f));
 		}
@@ -1226,7 +1226,7 @@ void MainWindow::slot_table_context (const QPoint &pos)/*{{{*/
 			ist_schlepp = true;
 		}
 
-		sk_flug f;
+		Flight f;
 		if (db_available ())
 		{
 			// Datenbank ist OK
@@ -1594,7 +1594,7 @@ void MainWindow::menu_enables (bool cell_change)/*{{{*/
 				// sondern eher den Flug in einer Tabellenzeile speichern.
 				// TODO make it so
 
-				sk_flug f;
+				Flight f;
 				// TODO hier und �berall ist_schlepp und ist_flug verwenden.
 				if (id > 0 && db->get_flight (&f, id) >= 0)
 				{
