@@ -1,5 +1,5 @@
-#ifndef sk_time_edit_h
-#define sk_time_edit_h
+#ifndef _SkTimeEdit_h
+#define _SkTimeEdit_h
 
 #include <QFrame>
 #include <QDateTimeEdit>
@@ -20,12 +20,12 @@ enum sk_te_mode { tm_time, tm_box_time, tm_time_but };
  * check box which toggles the visibility of the time editor.
  */
 // TODO remove the button because it is not well tested.
-class sk_time_edit:public QFrame
+class SkTimeEdit:public QFrame
 {
 	Q_OBJECT
 
 	public:
-		sk_time_edit (QWidget *parent, const char *name=NULL);
+		SkTimeEdit (QWidget *parent, const char *name=NULL);
 		void set_mode (sk_te_mode p_mode);
 		void reset ();
 

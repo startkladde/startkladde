@@ -45,9 +45,9 @@ HEADERS += \
            src/gui/widgets/SkTableItem.h \
            src/gui/widgets/SkTextBox.h \
            src/gui/widgets/WeatherWidget.h \
-           src/gui/widgets/lbl_cbox.h \
+           src/gui/widgets/LabelComboBox.h \
            src/gui/widgets/SkTreeWidgetItem.h \
-           src/gui/widgets/sk_time_edit.h \
+           src/gui/widgets/SkTimeEdit.h \
            src/gui/windows/DateWindow.h \
            src/gui/windows/FlightWindow.h \
            src/gui/windows/MainWindow.h \
@@ -118,8 +118,8 @@ SOURCES += \
            src/gui/widgets/SkTableItem.cpp \
            src/gui/widgets/SkTextBox.cpp \
            src/gui/widgets/WeatherWidget.cpp \
-           src/gui/widgets/lbl_cbox.cpp \
-           src/gui/widgets/sk_time_edit.cpp \
+           src/gui/widgets/LabelComboBox.cpp \
+           src/gui/widgets/SkTimeEdit.cpp \
            src/gui/windows/DateWindow.cpp \
            src/gui/windows/FlightWindow.cpp \
            src/gui/windows/MainWindow.cpp \

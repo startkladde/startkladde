@@ -1,9 +1,9 @@
-#include "sk_time_edit.h"
+#include "SkTimeEdit.h"
 
 #include <QLayout>
 
 // Class management
-sk_time_edit::sk_time_edit (QWidget *parent, const char *name)/*{{{*/
+SkTimeEdit::SkTimeEdit (QWidget *parent, const char *name)/*{{{*/
 	:QFrame (parent, name)
 	/*
 	 * Constructs a sk_time_edit window instance.
@@ -22,7 +22,7 @@ sk_time_edit::sk_time_edit (QWidget *parent, const char *name)/*{{{*/
 	layout->add (tedit);
 	layout->add (pbut);
 
-	// OLDVERS: Nächste Zeile weg
+	// OLDVERS: Nï¿½chste Zeile weg
 	reset ();
 
 	QObject::connect (pbut, SIGNAL (clicked ()), this, SIGNAL (clicked ()));
@@ -33,7 +33,7 @@ sk_time_edit::sk_time_edit (QWidget *parent, const char *name)/*{{{*/
 //	resizeEvent (NULL);
 }/*}}}*/
 
-void sk_time_edit::set_mode (sk_te_mode p_mode)/*{{{*/
+void SkTimeEdit::set_mode (sk_te_mode p_mode)/*{{{*/
 	/*
 	 * Sets the editor mode. There are the following modes:
 	 *   - tm_time: time editor only
@@ -76,7 +76,7 @@ void sk_time_edit::set_mode (sk_te_mode p_mode)/*{{{*/
 //	resizeEvent (NULL);
 }/*}}}*/
 
-void sk_time_edit::reset ()/*{{{*/
+void SkTimeEdit::reset ()/*{{{*/
 	/*
 	 * Resets the window to an initial state.
 	 */
@@ -89,7 +89,7 @@ void sk_time_edit::reset ()/*{{{*/
 
 
 // Slots
-void sk_time_edit::set_current_time ()/*{{{*/
+void SkTimeEdit::set_current_time ()/*{{{*/
 	/*
 	 * Writes the current time to the time editor.
 	 */
@@ -100,7 +100,7 @@ void sk_time_edit::set_current_time ()/*{{{*/
 
 
 // Time editor widget
-QTime sk_time_edit::time ()/*{{{*/
+QTime SkTimeEdit::time ()/*{{{*/
 	/*
 	 * Gets the time from the time editor.
 	 * Return value:
@@ -110,22 +110,22 @@ QTime sk_time_edit::time ()/*{{{*/
 	return tedit->time ();
 }/*}}}*/
 
-void sk_time_edit::set_time (sk_time t)/*{{{*/
+void SkTimeEdit::set_time (sk_time t)/*{{{*/
 	/*
 	 * Writes a given time to the time editor.
 	 * Parameters:
 	 *   - t: the time to write
 	 */
 {
-	// MURX: Während die Zeit gesetzt wird, das Signal disconnecten, damit nur
-	// Änderungen von der UI ein Signal auslösen.
+	// MURX: Wï¿½hrend die Zeit gesetzt wird, das Signal disconnecten, damit nur
+	// ï¿½nderungen von der UI ein Signal auslï¿½sen.
 	// TODO: Timezone?
 	QObject::disconnect (tedit, SIGNAL (timeChanged (const QTime &)), this, SIGNAL (time_changed ()));
 	tedit->setTime (t);
 	QObject::connect (tedit, SIGNAL (timeChanged (const QTime &)), this, SIGNAL (time_changed ()));
 }/*}}}*/
 
-void sk_time_edit::null_zeit ()/*{{{*/
+void SkTimeEdit::null_zeit ()/*{{{*/
 	/*
 	 * Sets the time editor to a null time.
 	 */
@@ -137,7 +137,7 @@ void sk_time_edit::null_zeit ()/*{{{*/
 
 
 // Checkbox
-void sk_time_edit::set_cbox_text (const QString &t)/*{{{*/
+void SkTimeEdit::set_cbox_text (const QString &t)/*{{{*/
 	/*
 	 * Sets the text of the check box label.
 	 * Parameters:
@@ -147,7 +147,7 @@ void sk_time_edit::set_cbox_text (const QString &t)/*{{{*/
 	cbox->setText (t);
 }/*}}}*/
 
-void sk_time_edit::set_checked (bool c)/*{{{*/
+void SkTimeEdit::set_checked (bool c)/*{{{*/
 	/*
 	 * Sets the checked property of the check box.
 	 * Parameters:
@@ -158,7 +158,7 @@ void sk_time_edit::set_checked (bool c)/*{{{*/
 	update_cbox ();
 }/*}}}*/
 
-bool sk_time_edit::checked ()/*{{{*/
+bool SkTimeEdit::checked ()/*{{{*/
 	/*
 	 * Returns the value of the checked property of the checkbox.
 	 * Return value:
@@ -168,7 +168,7 @@ bool sk_time_edit::checked ()/*{{{*/
 	return cbox->isChecked ();
 }/*}}}*/
 
-void sk_time_edit::update_cbox ()/*{{{*/
+void SkTimeEdit::update_cbox ()/*{{{*/
 	/*
 	 * Shows or hides the time editor field, depending on whether it should be
 	 * visible.
@@ -189,7 +189,7 @@ void sk_time_edit::update_cbox ()/*{{{*/
 	}
 }/*}}}*/
 
-bool sk_time_edit::time_enabled ()/*{{{*/
+bool SkTimeEdit::time_enabled ()/*{{{*/
 	/*
 	 * Determines whether the time editor should be visible, depending on the
 	 * mode and the checkbox.
@@ -206,7 +206,7 @@ bool sk_time_edit::time_enabled ()/*{{{*/
 
 
 // Push button
-void sk_time_edit::set_pbut_text (const QString &t)/*{{{*/
+void SkTimeEdit::set_pbut_text (const QString &t)/*{{{*/
 	/*
 	 * Sets the text of the button.
 	 * Parameters:

@@ -4,7 +4,7 @@
 #include <QPushButton>
 #include <QMenuBar>
 
-#include <Qt3Support> // XXX
+#include <Qt3Support>
 #define QPtrListIterator Q3PtrListIterator
 
 #include "src/data_types.h"

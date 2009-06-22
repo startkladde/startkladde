@@ -23,8 +23,8 @@
 #include "src/gui/widgets/SkLabel.h"
 #include "src/gui/widgets/SkListWidget.h"
 #include "src/gui/widgets/SkTextBox.h"
-#include "src/gui/widgets/lbl_cbox.h"
-#include "src/gui/widgets/sk_time_edit.h"
+#include "src/gui/widgets/LabelComboBox.h"
+#include "src/gui/widgets/SkTimeEdit.h"
 #include "src/gui/windows/SkDialog.h"
 #include "src/gui/windows/StuffEditWindow.h"
 #include "src/gui/windows/StuffSelectWindow.h"
@@ -136,9 +136,9 @@ class FlightWindow:public SkDialog
 		QLabel *edit_typ_sfz;
 		SkComboBox *edit_modus;
 		SkComboBox *edit_modus_sfz;
-		sk_time_edit *edit_startzeit;
-		sk_time_edit *edit_landezeit;
-		sk_time_edit *edit_landezeit_sfz;
+		SkTimeEdit *edit_startzeit;
+		SkTimeEdit *edit_landezeit;
+		SkTimeEdit *edit_landezeit_sfz;
 		SkComboBox *edit_startort;
 		SkComboBox *edit_zielort;
 		SkComboBox *edit_zielort_sfz;

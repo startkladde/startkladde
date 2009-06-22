@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-#include <QDateTime>
+#include <qdatetime.h>
 
 #include "src/accessor.h"
 #include "src/data_types.h"

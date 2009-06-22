@@ -793,18 +793,7 @@ void FlightTable::setText (int row, int column, QString text)
 {
 	QTableWidgetItem *i=item (row, column);
 	assert (i);
-//	if (i)
-//	{
-		i->setText (text);
-//	}
-//	else
-//	{
-//		assert (false);
-//		// FIXME confirm requried
-//		i=new QTableWidgetItem (text);
-//		i->setFlags (i->flags() &~Qt::ItemIsEditable);
-//		setItem (row, column, i);
-//	}
+	i->setText (text);
 }
 
 void FlightTable::update_row_time (int row)/*{{{*/

@@ -236,7 +236,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 	update_checks ();
 	log->hide ();
 	log->setTextFormat (LogText);
-	log->document ()->setMaximumBlockCount (1000); // FIXME check this works
+	log->document ()->setMaximumBlockCount (1000); // TODO check this works
 
 	connect (db, SIGNAL (executing_query (string *)), this, SLOT (log_message (string *)));
 	/*}}}*/

@@ -1,4 +1,4 @@
-#include "lbl_cbox.h"
+#include "LabelComboBox.h"
 
 #include <QLayout>
 

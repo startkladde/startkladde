@@ -122,9 +122,9 @@ FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool 
 	edit_widget[i++]=edit_towpilot_nn=new lbl_cbox (text_nachname_3, true, editorWidget, "edit_towpilot_nn");
 	edit_widget[i++]=edit_towpilot_vn=new lbl_cbox (text_vorname_3, true, editorWidget, "edit_towpilot_vn");
 	edit_widget[i++]=edit_modus_sfz=new SkComboBox (false, editorWidget);
-	edit_widget[i++]=edit_startzeit=new sk_time_edit (editorWidget, "startzeit");
-	edit_widget[i++]=edit_landezeit=new sk_time_edit (editorWidget, "landezeit");
-	edit_widget[i++]=edit_landezeit_sfz=new sk_time_edit (editorWidget, "sfz_lande");
+	edit_widget[i++]=edit_startzeit=new SkTimeEdit (editorWidget, "startzeit");
+	edit_widget[i++]=edit_landezeit=new SkTimeEdit (editorWidget, "landezeit");
+	edit_widget[i++]=edit_landezeit_sfz=new SkTimeEdit (editorWidget, "sfz_lande");
 	edit_widget[i++]=edit_startort=new SkComboBox (true, editorWidget);
 	edit_widget[i++]=edit_zielort=new SkComboBox (true, editorWidget);
 	edit_widget[i++]=edit_zielort_sfz=new SkComboBox (true, editorWidget);

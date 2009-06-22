@@ -1,5 +1,5 @@
-#ifndef lbl_cbox_h
-#define lbl_cbox_h
+#ifndef _LabelComboBox_h
+#define _LabelComboBox_h
 
 #include <string>
 
