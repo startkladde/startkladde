@@ -7,25 +7,25 @@ flugbuch_entry::flugbuch_entry ()/*{{{*/
 	invalid=false;
 }/*}}}*/
 
-string flugbuch_entry::tag_string () const/*{{{*/
+QString flugbuch_entry::tag_string () const/*{{{*/
 {
-	return q2std (tag.toString ("yyyy-MM-dd"));
+	return tag.toString ("yyyy-MM-dd");
 }
 /*}}}*/
 
-string flugbuch_entry::zeit_start_string (bool no_letters) const/*{{{*/
+QString flugbuch_entry::zeit_start_string (bool no_letters) const/*{{{*/
 {
 	return zeit_start.to_string ("%H:%M", tz_utc, 0, no_letters);
 }
 /*}}}*/
 
-string flugbuch_entry::zeit_landung_string (bool no_letters) const/*{{{*/
+QString flugbuch_entry::zeit_landung_string (bool no_letters) const/*{{{*/
 {
 	return zeit_landung.to_string ("%H:%M", tz_utc, 0, no_letters);
 }
 /*}}}*/
 
-string flugbuch_entry::flugdauer_string () const/*{{{*/
+QString flugbuch_entry::flugdauer_string () const/*{{{*/
 {
 	return flugdauer.to_string ("%H:%M", tz_timespan);
 }

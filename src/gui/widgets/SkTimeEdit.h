@@ -11,8 +11,6 @@
 #include "src/logging/messages.h"
 #include "src/time/sk_time.h"
 
-using namespace std;
-
 enum sk_te_mode { tm_time, tm_box_time, tm_time_but };
 
 /*

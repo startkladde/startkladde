@@ -7,12 +7,10 @@
  * 2005-01-04
  */
 
-#include <string>
+#include <QString>
 
 #include "src/accessor.h"
 #include "src/db/db_types.h"
-
-using namespace std;
 
 /*
  * This is still not satisfying.
@@ -59,18 +57,18 @@ class object_field
 		enum data_type_t { dt_string, dt_db_id, dt_bool, dt_password, dt_special };
 
 		object_field (
-			const string &_caption,
+			const QString &_caption,
 			data_type_t _data_type,
 			bool _list_display,
 			bool _edit_display,
 			bool _edit_edit,
-			const string &_edit_state,
-			const string &_edit_state_caption,
+			const QString &_edit_state,
+			const QString &_edit_state_caption,
 			bool _create_display,
 			bool _create_edit,
-			const string &_create_state,
-			const string &_create_state_caption,
-			const string &_label
+			const QString &_create_state,
+			const QString &_create_state_caption,
+			const QString &_label
 			):
 			caption (_caption),
 			data_type (_data_type),
@@ -89,11 +87,11 @@ class object_field
 			no_break (false)
 			{};
 
-		static object_field output_field (const string &_caption, data_type_t _data_type, const string &_label)
+		static object_field output_field (const QString &_caption, data_type_t _data_type, const QString &_label)
 		{
 			return object_field (_caption, _data_type, true, true, false, "", "", true, false, "", "", _label);
 		}
-		static object_field output_field (const string &_caption, const string &_label)
+		static object_field output_field (const QString &_caption, const QString &_label)
 		{
 			return object_field (_caption, dt_string, true, true, false, "", "", true, false, "", "", _label);
 		}
@@ -102,44 +100,44 @@ class object_field
 
 		// These functions set the value saved to a given value.
 		void clear ();
-		void set_to (const string &string_value) { current_string=string_value; }
-		void set_to (const char *string_value) { set_to (string (string_value)); }
+		void set_to (const QString &string_value) { current_string=string_value; }
+		void set_to (const char *string_value) { set_to (QString (string_value)); }
 		void set_to (db_id db_id_value) { current_db_id=db_id_value; }
 		void set_to (bool bool_value) { current_bool=bool_value; }
 
 		// These functions get the value saved.
-		string get_string () const { return current_string; }
+		QString get_string () const { return current_string; }
 		db_id get_db_id () const { return current_db_id; }
 		bool get_bool () const { return current_bool; }
 
 		// This function parses a text representation (for example, from a CGI
 		// form)
-		void parse_text (const string &text);
+		void parse_text (const QString &text);
 
-		// This function makes a string that can be parsed (for example, for
+		// This function makes a QString that can be parsed (for example, for
 		// presetting a CGI form)
-		string make_text () const;
-		string make_text_safe () const;
+		QString make_text () const;
+		QString make_text_safe () const;
 
-		// This function makes a string suitable for display in a table
-		string make_display_text () const;
+		// This function makes a QString suitable for display in a table
+		QString make_display_text () const;
 
 		bool list_present () const { return list_display; }
-		bool edit_present () const { return edit_display || edit_edit || !edit_state.empty (); }
-		bool create_present () const { return create_display || create_edit || !create_state.empty (); }
+		bool edit_present () const { return edit_display || edit_edit || !edit_state.isEmpty (); }
+		bool create_present () const { return create_display || create_edit || !create_state.isEmpty (); }
 
-		RO_ACCESSOR (string, caption)
+		RO_ACCESSOR (QString, caption)
 		RO_ACCESSOR (data_type_t, data_type)
 		RO_ACCESSOR (bool, list_display)
 		RO_ACCESSOR (bool, edit_display)
 		RO_ACCESSOR (bool, edit_edit)
-		RO_ACCESSOR (string, edit_state)
-		RO_ACCESSOR (string, edit_state_caption)
+		RO_ACCESSOR (QString, edit_state)
+		RO_ACCESSOR (QString, edit_state_caption)
 		RO_ACCESSOR (bool, create_display)
 		RO_ACCESSOR (bool, create_edit)
-		RO_ACCESSOR (string, create_state)
-		RO_ACCESSOR (string, create_state_caption)
-		RO_ACCESSOR (string, label)
+		RO_ACCESSOR (QString, create_state)
+		RO_ACCESSOR (QString, create_state_caption)
+		RO_ACCESSOR (QString, label)
 
 		RW_ACCESSOR (bool, given)
 		RW_ACCESSOR (bool, locked)
@@ -148,25 +146,25 @@ class object_field
 
 	private:
 		// Field description in general
-		string caption;
+		QString caption;
 		data_type_t data_type;
 
 		bool list_display;
 
 		bool edit_display;
 		bool edit_edit;
-		string edit_state;
-		string edit_state_caption;
+		QString edit_state;
+		QString edit_state_caption;
 
 		bool create_display;
 		bool create_edit;
-		string create_state;
-		string create_state_caption;
+		QString create_state;
+		QString create_state_caption;
 
-		string label;
+		QString label;
 
 		// Current value
-		string current_string;
+		QString current_string;
 		db_id current_db_id;
 		bool current_bool;
 

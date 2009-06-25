@@ -11,8 +11,6 @@
 #include <QPixmap>
 #include <QImageReader>
 
-using namespace std;
-
 class WeatherWidget:public QLabel
 {
 	Q_OBJECT

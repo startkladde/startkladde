@@ -9,31 +9,30 @@
 
 // ***** Argument
 // Construction
-argument argument::from_cgi_argument (const string &query_argument)/*{{{*/
+argument argument::from_cgi_argument (const QString &query_argument)/*{{{*/
 	/*
-	 * Constructs an argument from a www-form-url-encoded query string part
+	 * Constructs an argument from a www-form-url-encoded query QString part
 	 * used in CGI queries (with unescaping).
 	 * Example: "name=value"
 	 */
 {
 	argument r;
 
-	list<string> parts;
-	split_string (parts, "=", query_argument);
+	QStringList parts=query_argument.split ('=');
 
 	if (parts.empty ())
 	{
-		cerr << "Error: \"" << query_argument << "\" contains no parts" << endl;
+		std::cerr << "Error: \"" << query_argument << "\" contains no parts" << std::endl;
 	}
 	else if (parts.size ()==1)
 	{
-		cerr << "Warning: \"" << query_argument << "\" contains less than 2 parts" << endl;
+		std::cerr << "Warning: \"" << query_argument << "\" contains less than 2 parts" << std::endl;
 		r.name=cgi_unescape (parts.front ());
 	}
 	else
 	{
 		if (parts.size ()>2)
-			cerr << "Warning: \"" << query_argument << "\" contains more than 2 parts" << endl;
+			std::cerr << "Warning: \"" << query_argument << "\" contains more than 2 parts" << std::endl;
 
 		r.name=cgi_unescape (*(parts.begin ()));
 		r.value=cgi_unescape (*(++parts.begin ()));
@@ -45,7 +44,7 @@ argument argument::from_cgi_argument (const string &query_argument)/*{{{*/
 
 
 // Reading
-string argument::make_cgi_parameter () const/*{{{*/
+QString argument::make_cgi_parameter () const/*{{{*/
 {
 	return cgi_escape (name)+"="+cgi_escape (value);
 }
@@ -53,24 +52,24 @@ string argument::make_cgi_parameter () const/*{{{*/
 
 
 // I/O
-ostream &operator<< (ostream &s, const argument &arg)/*{{{*/
+std::ostream &operator<< (std::ostream &s, const argument &arg)/*{{{*/
 	/*
 	 * Writes an argument to a stream.
 	 */
 {
-	s << arg.name << "\t" << arg.value << endl;
+	s << arg.name << "\t" << arg.value << std::endl;
 	return s;
 }
 /*}}}*/
 
-ostream &argument::write_to (ostream &s) const/*{{{*/
+std::ostream &argument::write_to (std::ostream &s) const/*{{{*/
 {
-	s << cgi_escape (name, true) << "=" << cgi_escape (value, true) << endl;
+	s << cgi_escape (name, true) << "=" << cgi_escape (value, true) << std::endl;
 	return s;
 }
 /*}}}*/
 
-argument argument::read_from (const string &s)/*{{{*/
+argument argument::read_from (const QString &s)/*{{{*/
 {
 	return from_cgi_argument (s);
 }
@@ -80,21 +79,20 @@ argument argument::read_from (const string &s)/*{{{*/
 // ***** Argument list
 
 // Construction
-argument_list argument_list::from_cgi_query (const string &query_string)/*{{{*/
+argument_list argument_list::from_cgi_query (const QString &query_string)/*{{{*/
 	/*
-	 * Constructs an argument list from a www-form-url-encoded query string
+	 * Constructs an argument list from a www-form-url-encoded query QString
 	 * used in CGI queries.
 	 * Example: "name1=value1&name2=value2"
 	 */
 {
 	argument_list r;
 
-	list<string> arg_strings;
-	split_string (arg_strings, "&", query_string);
+	QStringList arg_strings=query_string.split ('&');
 
-	list<string>::const_iterator e=arg_strings.end ();
-	for (list<string>::const_iterator it=arg_strings.begin (); it!=e; ++it)
-		r.set_value (argument::from_cgi_argument (*it));
+	QStringListIterator it (arg_strings);
+	while (it.hasNext ())
+		r.set_value (argument::from_cgi_argument (it.next ()));
 
 	return r;
 }
@@ -102,13 +100,13 @@ argument_list argument_list::from_cgi_query (const string &query_string)/*{{{*/
 
 
 // Writing
-void argument_list::set_value (const string &name, const string &value)/*{{{*/
+void argument_list::set_value (const QString &name, const QString &value)/*{{{*/
 	/*
 	 * If there is an entry with name 'name', it is set to 'value'. If not, a
 	 * new one is created.
 	 */
 {
-	list<argument>::iterator it=find_by_name (name);
+	std::list<argument>::iterator it=find_by_name (name);
 	if (it!=args.end ())
 		(*it).value=value;
 	else
@@ -126,10 +124,10 @@ void argument_list::set_value (const argument &arg)/*{{{*/
 }
 /*}}}*/
 
-void argument_list::remove (const string &name)/*{{{*/
+void argument_list::remove (const QString &name)/*{{{*/
 {
-	list<argument>::const_iterator end=args.end ();
-	for (list<argument>::iterator it=args.begin (); it!=end; ++it)
+	std::list<argument>::const_iterator end=args.end ();
+	for (std::list<argument>::iterator it=args.begin (); it!=end; ++it)
 	{
 		if (name==(*it).get_name ())
 		{
@@ -148,16 +146,16 @@ void argument_list::clear ()/*{{{*/
 
 void argument_list::add (const argument_list &other)/*{{{*/
 {
-	const list<argument> &other_list=other.get_list ();
-	list<argument>::const_iterator end=other_list.end ();
-	for (list<argument>::const_iterator it=other_list.begin (); it!=end; ++it)
+	const std::list<argument> &other_list=other.get_list ();
+	std::list<argument>::const_iterator end=other_list.end ();
+	for (std::list<argument>::const_iterator it=other_list.begin (); it!=end; ++it)
 		set_value (*it);
 }
 /*}}}*/
 
 
 // Reading
-bool argument_list::has_argument (const string &name) const/*{{{*/
+bool argument_list::has_argument (const QString &name) const/*{{{*/
 	/*
 	 * Returns whether there is an entry with name 'name'.
 	 */
@@ -169,13 +167,13 @@ bool argument_list::has_argument (const string &name) const/*{{{*/
 }
 /*}}}*/
 
-string argument_list::get_value (const string &name) const/*{{{*/
+QString argument_list::get_value (const QString &name) const/*{{{*/
 	/*
 	 * If there is an entry with name 'name', its value is returned. If not, an
-	 * empty string is returned.
+	 * empty QString is returned.
 	 */
 {
-	list<argument>::const_iterator it=find_by_name (name);
+	std::list<argument>::const_iterator it=find_by_name (name);
 	if (it==args.end ())
 		return "";
 	else
@@ -183,13 +181,13 @@ string argument_list::get_value (const string &name) const/*{{{*/
 }
 /*}}}*/
 
-argument argument_list::get_argument (const string &name) const/*{{{*/
+argument argument_list::get_argument (const QString &name) const/*{{{*/
 	/*
 	 * If there is an entry with name 'name', it is returned. If not, an
 	 * empty argument is returned.
 	 */
 {
-	list<argument>::const_iterator it=find_by_name (name);
+	std::list<argument>::const_iterator it=find_by_name (name);
 	if (it==args.end ())
 		return argument ();
 	else
@@ -197,15 +195,15 @@ argument argument_list::get_argument (const string &name) const/*{{{*/
 }
 /*}}}*/
 
-string argument_list::make_cgi_parameters () const/*{{{*/
+QString argument_list::make_cgi_parameters () const/*{{{*/
 	/*
-	 * Returns a CGI escaped string of the parameter list.
+	 * Returns a CGI escaped QString of the parameter list.
 	 * Example: foo=bar&baz=q+u+x
 	 */
 {
-	string r;
-	list<argument>::const_iterator end=args.end ();
-	for (list<argument>::const_iterator it=args.begin (); it!=end; ++it)
+	QString r;
+	std::list<argument>::const_iterator end=args.end ();
+	for (std::list<argument>::const_iterator it=args.begin (); it!=end; ++it)
 	{
 		if (it!=args.begin ()) r+="&";
 		r+=(*it).make_cgi_parameter ();
@@ -217,32 +215,33 @@ string argument_list::make_cgi_parameters () const/*{{{*/
 
 
 // I/O
-ostream &operator<< (ostream &s, const argument_list &argl)/*{{{*/
+std::ostream &operator<< (std::ostream &s, const argument_list &argl)/*{{{*/
 	/*
 	 * Writes the list to a stream.
 	 */
 {
-	list<argument>::const_iterator e=argl.args.end ();
-	for (list<argument>::const_iterator it=argl.args.begin (); it!=e; ++it)
+	std::list<argument>::const_iterator e=argl.args.end ();
+	for (std::list<argument>::const_iterator it=argl.args.begin (); it!=e; ++it)
 		s << *it;
 
 	return s;
 }
 /*}}}*/
 
-ostream &argument_list::write_to (ostream &s) const/*{{{*/
+std::ostream &argument_list::write_to (std::ostream &s) const/*{{{*/
 {
-	list<argument>::const_iterator e=args.end ();
-	for (list<argument>::const_iterator it=args.begin (); it!=e; ++it)
+	std::list<argument>::const_iterator e=args.end ();
+	for (std::list<argument>::const_iterator it=args.begin (); it!=e; ++it)
 		(*it).write_to (s);
 
 	return s;
 }
 /*}}}*/
 
-bool argument_list::write_to_file (const string &file_name) const/*{{{*/
+bool argument_list::write_to_file (const QString &file_name) const/*{{{*/
 {
-	ofstream file (file_name.c_str ());
+	// TODO Qt-ize
+	std::ofstream file (file_name.latin1());
 	if (!file)
 	{
 		return false;
@@ -254,20 +253,22 @@ bool argument_list::write_to_file (const string &file_name) const/*{{{*/
 }
 /*}}}*/
 
-void argument_list::read_from (istream &s)/*{{{*/
+// TODO Qt-ize
+void argument_list::read_from (std::istream &s)/*{{{*/
 {
-	string line;
+	std::string line;
 	while (s.good ())
 	{
 		getline (s, line);
-		if (!line.empty ()) set_value (argument::read_from (line));
+		if (!line.empty ()) set_value (argument::read_from (std2q (line)));
 	}
 }
 /*}}}*/
 
-bool argument_list::read_from_file (const string &file_name)/*{{{*/
+bool argument_list::read_from_file (const QString &file_name)/*{{{*/
 {
-	ifstream file (file_name.c_str ());
+	// TODO Qt-ize
+	std::ifstream file (file_name.latin1 ());
 	if (file)
 	{
 		read_from (file);
@@ -283,28 +284,28 @@ bool argument_list::read_from_file (const string &file_name)/*{{{*/
 
 
 // Finding
-list<argument>::iterator argument_list::find_by_name (const string &name)/*{{{*/
+std::list<argument>::iterator argument_list::find_by_name (const QString &name)/*{{{*/
 	/*
 	 * If there is an entry with name 'name', an iterator to it is returned. If
 	 * not, an iterator to the end of the list is returned.
 	 */
 {
-	list<argument>::iterator e=args.end ();
-	for (list<argument>::iterator it=args.begin (); it!=e; ++it)
+	std::list<argument>::iterator e=args.end ();
+	for (std::list<argument>::iterator it=args.begin (); it!=e; ++it)
 		if (name==(*it).get_name ())
 			return it;
 	return e;
 }
 /*}}}*/
 
-list<argument>::const_iterator argument_list::find_by_name (const string &name) const/*{{{*/
+std::list<argument>::const_iterator argument_list::find_by_name (const QString &name) const/*{{{*/
 	/*
 	 * If there is an entry with name 'name', an iterator to it is returned. If
 	 * not, an iterator to the end of the list is returned.
 	 */
 {
-	list<argument>::const_iterator e=args.end ();
-	for (list<argument>::const_iterator it=args.begin (); it!=e; ++it)
+	std::list<argument>::const_iterator e=args.end ();
+	for (std::list<argument>::const_iterator it=args.begin (); it!=e; ++it)
 		if (name==(*it).get_name ())
 			return it;
 	return e;
@@ -317,22 +318,22 @@ void argument_list::test ()/*{{{*/
 {
 	argument_list argl;
 	argl.set_value ("foo", "b a r");
-	argl.set_value ("müller", "I\nam\nnot\nwithout\nnewlines!");
+	argl.set_value ("mï¿½ller", "I\nam\nnot\nwithout\nnewlines!");
 
 	argl.set_value ("hello", "world");
-	cout << argl << endl;
+	std::cout << argl << std::endl;
 	argl.remove ("hello");
 
-	cout << argl << endl;
+	std::cout << argl << std::endl;
 	if (argl.write_to_file ("/tmp/test.arglist"))
-		cout << "Write success" << endl;
+		std::cout << "Write success" << std::endl;
 	else
-		cout << "Write failure" << endl;
+		std::cout << "Write failure" << std::endl;
 
 	argl.clear ();
 	argl.read_from_file ("/tmp/test.arglist");
-	cout << endl;
-	cout << argl;
+	std::cout << std::endl;
+	std::cout << argl;
 }
 /*}}}*/
 

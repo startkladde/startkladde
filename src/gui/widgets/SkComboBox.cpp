@@ -31,35 +31,33 @@ void SkComboBox::setAutoCompletion (bool autocomplete) {
 }
 
 /**
-  * Inserts an Item. Overloaded function taking a std::string.
+  * Inserts an Item. Overloaded function taking a std::QString.
   * Parameters:
   *   - s, index: passed on to QComboBox::insertItem.
   */
-void SkComboBox::insertItem (const string &s, int index)
+void SkComboBox::insertItem (const QString &s, int index)
 {
-	QComboBox::insertItem (std2q (s), index);
+	QComboBox::insertItem (s, index);
 }
 
-string SkComboBox::edit_text_string ()/*{{{*/
+QString SkComboBox::edit_text_string ()/*{{{*/
 	/*
-	 * Returns a string with the current contents of the editor field.
+	 * Returns a QString with the current contents of the editor field.
 	 * Return value:
 	 *   the contents of the editor field.
 	 */
 {
-	// TODO: q2std
-//	return string (q2std (lineEdit ()->text ()));
-	return q2std (currentText ());
+	return currentText ();
 }/*}}}*/
 
-string SkComboBox::current_text_string ()/*{{{*/
+QString SkComboBox::current_text_string ()/*{{{*/
 	/*
-	 * Returns a string with the current item.
+	 * Returns a QString with the current item.
 	 * Return value:
 	 *   the item.
 	 */
 {
-	return string (q2std (currentText ()));
+	return currentText ();
 }/*}}}*/
 
 /**
@@ -69,7 +67,7 @@ string SkComboBox::current_text_string ()/*{{{*/
   *   - num: the number of entries in the array.
   *   - del: whether to delete the array.
   */
-void SkComboBox::fillStringArray (string **array, int num, bool del)
+void SkComboBox::fillStringArray (QString **array, int num, bool del)
 {
 	hide ();
 	clear ();
@@ -93,7 +91,7 @@ void SkComboBox::setCurrentItem (int index)/*{{{*/
 	emit activated (index);
 }/*}}}*/
 
-void SkComboBox::insert_if_new (const string &t)/*{{{*/
+void SkComboBox::insert_if_new (const QString &t)/*{{{*/
 	/*
 	 * Insert an item to the list if it is new.
 	 * Parameters:
@@ -106,7 +104,7 @@ void SkComboBox::insert_if_new (const string &t)/*{{{*/
 	bool is_new=true;
 	for (int i=0; i<count (); i++)
 	{
-		if (t==q2std (text (i))) is_new=false;
+		if (t==text (i)) is_new=false;
 	}
 
 	if (is_new)

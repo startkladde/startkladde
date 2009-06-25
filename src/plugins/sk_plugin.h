@@ -7,7 +7,7 @@
  * 2004-12-18
  */
 
-#include <string>
+#include <QString>
 #include <iostream>
 #include <cstdio>
 #include <fstream>
@@ -18,8 +18,6 @@
 #include <QProcess>
 
 #include "src/accessor.h"
-
-using namespace std;
 
 // This is a shell plugin.
 
@@ -32,14 +30,14 @@ class sk_plugin: public QObject
 		void init ();
 		sk_plugin ();	// Initialize to default values
 		sk_plugin (const sk_plugin &o);	// Copy constructor
-		sk_plugin (const string desc);	// Initialize from config file string
-		sk_plugin (const string &_caption, const string &_command, int interval);	// Initialize to given values
+		sk_plugin (const QString desc);	// Initialize from config file QString
+		sk_plugin (const QString &_caption, const QString &_command, int interval);	// Initialize to given values
 		virtual ~sk_plugin ();
 		sk_plugin &operator= (const sk_plugin &o);
 
 		// Display
-		RO_ACCESSOR (string, caption)
-		RO_ACCESSOR (string, command)
+		RO_ACCESSOR (QString, caption)
+		RO_ACCESSOR (QString, command)
 		RO_ACCESSOR (bool, rich_text)
 		RW_ACCESSOR (int, restart_interval)
 		RO_ACCESSOR (bool, warn_on_death)
@@ -59,8 +57,8 @@ class sk_plugin: public QObject
 
 	private:
 		// Plugin properties
-		string caption;
-		string command;
+		QString caption;
+		QString command;
 		bool rich_text;
 		int restart_interval;	// Restart interval in seconds, -1 for no restart
 		bool warn_on_death;

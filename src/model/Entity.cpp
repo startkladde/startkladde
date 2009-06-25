@@ -19,7 +19,7 @@ Entity::~Entity ()/*{{{*/
 }
 /*}}}*/
 
-string entityLabel (EntityType t, casus c)/*{{{*/
+QString entityLabel (EntityType t, casus c)/*{{{*/
 	/*
 	 * Returns a word describing the type of Entity.
 	 * TODO: this function should be overridden in the base class instead of
@@ -83,60 +83,60 @@ string entityLabel (EntityType t, casus c)/*{{{*/
 
 
 
-string Entity::get_selector_value (int column_number) const/*{{{*/
+QString Entity::get_selector_value (int column_number) const/*{{{*/
 {
 	switch (column_number)
 	{
-		case 0: return num_to_string (id);
+		case 0: return QString::number (id);
 		case 1: return bemerkungen;
-		default: return string ();
+		default: return QString ();
 	}
 }
 /*}}}*/
 
-string Entity::get_selector_caption (int column_number)/*{{{*/
+QString Entity::get_selector_caption (int column_number)/*{{{*/
 {
 	switch (column_number)
 	{
 		case 0: return "ID";
 		case 1: return "Bemerkungen";
-		default: return string ();
+		default: return QString ();
 	}
 }
 /*}}}*/
 
 
-void Entity::output (ostream &stream, output_format_t format, bool last, string name, string value)/*{{{*/
+void Entity::output (std::ostream &stream, output_format_t format, bool last, QString name, QString value)/*{{{*/
 {
 	switch (format)
 	{
 		case of_single:
 		{
-			stream << name << "\t" << value << endl;
+			stream << name << "\t" << value << std::endl;
 		} break;
 		case of_table_data:
 		{
-			string v=value;
+			QString v=value;
 			replace_tabs (v);
 			stream << v;
 			if (!last) stream << "\t";
-			if (last) stream << endl;
+			if (last) stream << std::endl;
 		} break;
 		case of_table_header:
 		{
-			string n=name;
+			QString n=name;
 			replace_tabs (n);
 			stream << n;
 			if (!last) stream << "\t";
-			if (last) stream << endl;
+			if (last) stream << std::endl;
 		} break;
 	}
 }
 /*}}}*/
 
-void Entity::output (ostream &stream, output_format_t format, bool last, string name, db_id value)/*{{{*/
+void Entity::output (std::ostream &stream, output_format_t format, bool last, QString name, db_id value)/*{{{*/
 {
-	output (stream, format, last, name, num_to_string (value));
+	output (stream, format, last, name, QString::number (value));
 }
 /*}}}*/
 

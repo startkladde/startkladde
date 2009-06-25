@@ -12,7 +12,7 @@ Person::Person ()/*{{{*/
 {
 }/*}}}*/
 
-Person::Person (string vn, string nn)/*{{{*/
+Person::Person (QString vn, QString nn)/*{{{*/
 	/*
 	 * Constructs an Person instance with given first and last name.
 	 * Parameters:
@@ -24,7 +24,7 @@ Person::Person (string vn, string nn)/*{{{*/
 	id=0;
 }/*}}}*/
 
-Person::Person (string vn, string nn, string ve, string cid, string lvnum, db_id p_id)/*{{{*/
+Person::Person (QString vn, QString nn, QString ve, QString cid, QString lvnum, db_id p_id)/*{{{*/
 	/*
 	 * Constructs an Person instance with given data.
 	 * Parameters:
@@ -39,7 +39,7 @@ Person::Person (string vn, string nn, string ve, string cid, string lvnum, db_id
 	id=p_id;
 }/*}}}*/
 
-string Person::name () const/*{{{*/
+QString Person::name () const/*{{{*/
 	/*
 	 * Returns the name of the person in a form suitable for enumerations.
 	 * Return value:
@@ -52,7 +52,7 @@ string Person::name () const/*{{{*/
 	return nachname+", "+vorname;
 }/*}}}*/
 
-string Person::pdf_name () const/*{{{*/
+QString Person::pdf_name () const/*{{{*/
 	/*
 	 * Returns the name of the person in a form suitable for the PDF document.
 	 * Return value:
@@ -63,7 +63,7 @@ string Person::pdf_name () const/*{{{*/
 }
 /*}}}*/
 
-string Person::tabelle_name () const/*{{{*/
+QString Person::tabelle_name () const/*{{{*/
 	/*
 	 * Returns the name of the person in a form suitable for the table.
 	 * Return value:
@@ -74,7 +74,7 @@ string Person::tabelle_name () const/*{{{*/
 	return name ()+" ("+club+")";
 }/*}}}*/
 
-string Person::text_name () const/*{{{*/
+QString Person::text_name () const/*{{{*/
 	/*
 	 * Returns the name of the person in a form suitable for running text.
 	 * Return value:
@@ -87,7 +87,7 @@ string Person::text_name () const/*{{{*/
 	return vorname+" "+nachname;
 }/*}}}*/
 
-string Person::bezeichnung (casus c) const/*{{{*/
+QString Person::bezeichnung (casus c) const/*{{{*/
 	/*
 	 * Returns a text describing the fact that this is a plane.
 	 * Parameters:
@@ -104,12 +104,12 @@ void Person::dump () const/*{{{*/
 	 * Print a description of the person to stdout. Used for debugging.
 	 */
 {
-	cout << "sk_person dump: " << id << ", " << nachname << ", " << vorname << ", " << club << endl;
+	std::cout << "sk_person dump: " << id << ", " << nachname << ", " << vorname << ", " << club << std::endl;
 }/*}}}*/
 
 
 
-string Person::get_selector_value (int column_number) const/*{{{*/
+QString Person::get_selector_value (int column_number) const/*{{{*/
 {
 	switch (column_number)
 	{
@@ -117,13 +117,13 @@ string Person::get_selector_value (int column_number) const/*{{{*/
 		case 1: return vorname;
 		case 2: return club;
 		case 3: return bemerkungen;
-		case 4: return num_to_string (id);
-		default: return string ();
+		case 4: return QString::number (id);
+		default: return QString ();
 	}
 }
 /*}}}*/
 
-string Person::get_selector_caption (int column_number)/*{{{*/
+QString Person::get_selector_caption (int column_number)/*{{{*/
 {
 	switch (column_number)
 	{
@@ -132,12 +132,12 @@ string Person::get_selector_caption (int column_number)/*{{{*/
 		case 2: return "Verein";
 		case 3: return "Bemerkungen";
 		case 4: return "ID";
-		default: return string ();
+		default: return QString ();
 	}
 }
 /*}}}*/
 
-void Person::output (ostream &stream, output_format_t format)/*{{{*/
+void Person::output (std::ostream &stream, output_format_t format)/*{{{*/
 {
 	Entity::output (stream, format, false, "ID", id);
 	Entity::output (stream, format, false, "Nachname", nachname);

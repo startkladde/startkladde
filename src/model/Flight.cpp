@@ -143,9 +143,9 @@ bool Flight::schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const/*{
 	return (fehlerchecking (&i, false, true, fz, sfz, sa)!=ff_ok);
 }/*}}}*/
 
-string Flight::fehler_string (FlightError code) const/*{{{*/
+QString Flight::fehler_string (FlightError code) const/*{{{*/
 	/*
-	 * Makes a string describing a flight error.
+	 * Makes a QString describing a flight error.
 	 * Parameters:
 	 *   code: an error code.
 	 * Return value:
@@ -158,18 +158,18 @@ string Flight::fehler_string (FlightError code) const/*{{{*/
 		case ff_keine_id: return "Flug hat keine ID";
 		case ff_kein_flugzeug: return "Kein Flugzeug angegeben";
 		// TODO use person_bezeichnung (flugtyp) (oder wie die hei�t) here
-		case ff_pilot_nur_nachname: return "F�r den "+string (flugtyp==ft_schul_2?"Flugsch�ler":"Piloten")+" ist nur ein Nachname angegeben";
-		case ff_pilot_nur_vorname: return  "F�r den "+string (flugtyp==ft_schul_2?"Flugsch�ler":"Piloten")+" ist nur ein Vorname angegeben";
-		case ff_pilot_nicht_identifiziert: return  "Der "+string (flugtyp==ft_schul_2?"Flugsch�ler":"Pilot")+" ist nicht identifiziert";
-		case ff_begleiter_nur_nachname: return "F�r den "+string (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben";
-		case ff_begleiter_nur_vorname: return  "F�r den "+string (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
-		case ff_begleiter_nicht_identifiziert: return  "Der "+string (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nicht identifiziert";
+		case ff_pilot_nur_nachname: return "F�r den "+QString (flugtyp==ft_schul_2?"Flugsch�ler":"Piloten")+" ist nur ein Nachname angegeben";
+		case ff_pilot_nur_vorname: return  "F�r den "+QString (flugtyp==ft_schul_2?"Flugsch�ler":"Piloten")+" ist nur ein Vorname angegeben";
+		case ff_pilot_nicht_identifiziert: return  "Der "+QString (flugtyp==ft_schul_2?"Flugsch�ler":"Pilot")+" ist nicht identifiziert";
+		case ff_begleiter_nur_nachname: return "F�r den "+QString (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben";
+		case ff_begleiter_nur_vorname: return  "F�r den "+QString (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
+		case ff_begleiter_nicht_identifiziert: return  "Der "+QString (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nicht identifiziert";
 		case ff_towpilot_nur_nachname: return "F�r den Schleppiloten ist nur ein Nachname angegeben";
 		case ff_towpilot_nur_vorname: return  "F�r den Schleppiloten ist nur ein Vorname angegeben";
 		case ff_towpilot_nicht_identifiziert: return  "Der Schleppilot ist nicht identifiziert";
-		case ff_kein_pilot: return "Kein "+string (flugtyp==ft_schul_2 || flugtyp==ft_schul_1?"Flugsch�ler":"Pilot")+" angegeben";
-		case ff_pilot_gleich_begleiter: return string (flugtyp==ft_schul_2?"Flugsch�ler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
-		case ff_pilot_gleich_towpilot: return string (flugtyp==ft_schul_2?"Flugsch�ler":"Pilot")+" und Schlepppilot sind identisch";
+		case ff_kein_pilot: return "Kein "+QString (flugtyp==ft_schul_2 || flugtyp==ft_schul_1?"Flugsch�ler":"Pilot")+" angegeben";
+		case ff_pilot_gleich_begleiter: return QString (flugtyp==ft_schul_2?"Flugsch�ler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
+		case ff_pilot_gleich_towpilot: return QString (flugtyp==ft_schul_2?"Flugsch�ler":"Pilot")+" und Schlepppilot sind identisch";
 		case ff_schulung_ohne_begleiter: return "Doppelsitzige Schulung ohne Fluglehrer";
 		case ff_begleiter_nicht_erlaubt: return "Begleiter ist nicht erlaubt";
 		case ff_nur_gelandet: return "Flug ist gelandet, aber nicht gestartet";
@@ -230,19 +230,19 @@ FlightError Flight::fehlerchecking (int *index, bool check_flug, bool check_schl
 
 	CHECK_FEHLER (FLUG, id_invalid (id), ff_keine_id)
 	CHECK_FEHLER (FLUG, id_invalid (flugzeug), ff_kein_flugzeug)
-	CHECK_FEHLER (FLUG, sa->get_person_required () && id_invalid (pilot) && pvn.empty () && pnn.empty (), ff_kein_pilot)
-	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pvn.empty () && pnn.empty (), ff_pilot_nur_vorname);
-	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pnn.empty () && pvn.empty (), ff_pilot_nur_nachname);
-	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pnn.empty () && !pvn.empty (), ff_pilot_nicht_identifiziert);
-	CHECK_FEHLER (FLUG, begleiter_erlaubt (flugtyp) && id_invalid (begleiter) && !bvn.empty () && bnn.empty (), ff_begleiter_nur_vorname);
-	CHECK_FEHLER (FLUG, begleiter_erlaubt (flugtyp) && id_invalid (begleiter) && !bnn.empty () && bvn.empty (), ff_begleiter_nur_nachname);
-	CHECK_FEHLER (FLUG, begleiter_erlaubt (flugtyp) && id_invalid (begleiter) && !bnn.empty () && !bvn.empty (), ff_begleiter_nicht_identifiziert);
+	CHECK_FEHLER (FLUG, sa->get_person_required () && id_invalid (pilot) && pvn.isEmpty () && pnn.isEmpty (), ff_kein_pilot)
+	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pvn.isEmpty () && pnn.isEmpty (), ff_pilot_nur_vorname);
+	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pnn.isEmpty () && pvn.isEmpty (), ff_pilot_nur_nachname);
+	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pnn.isEmpty () && !pvn.isEmpty (), ff_pilot_nicht_identifiziert);
+	CHECK_FEHLER (FLUG, begleiter_erlaubt (flugtyp) && id_invalid (begleiter) && !bvn.isEmpty () && bnn.isEmpty (), ff_begleiter_nur_vorname);
+	CHECK_FEHLER (FLUG, begleiter_erlaubt (flugtyp) && id_invalid (begleiter) && !bnn.isEmpty () && bvn.isEmpty (), ff_begleiter_nur_nachname);
+	CHECK_FEHLER (FLUG, begleiter_erlaubt (flugtyp) && id_invalid (begleiter) && !bnn.isEmpty () && !bvn.isEmpty (), ff_begleiter_nicht_identifiziert);
 	CHECK_FEHLER (FLUG, begleiter_erlaubt (flugtyp) && pilot!=0 && pilot==begleiter, ff_pilot_gleich_begleiter)
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && id_invalid (towpilot) && !tpvn.empty () && tpnn.empty (), ff_towpilot_nur_vorname);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && id_invalid (towpilot) && !tpnn.empty () && tpvn.empty (), ff_towpilot_nur_nachname);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && id_invalid (towpilot) && !tpnn.empty () && !tpvn.empty (), ff_towpilot_nicht_identifiziert);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && id_invalid (towpilot) && !tpvn.isEmpty () && tpnn.isEmpty (), ff_towpilot_nur_vorname);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && id_invalid (towpilot) && !tpnn.isEmpty () && tpvn.isEmpty (), ff_towpilot_nur_nachname);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && id_invalid (towpilot) && !tpnn.isEmpty () && !tpvn.isEmpty (), ff_towpilot_nicht_identifiziert);
 	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && towpilot!=0 && pilot==towpilot, ff_pilot_gleich_towpilot)
-	CHECK_FEHLER (FLUG, id_invalid (begleiter) && (flugtyp==ft_schul_2) && bnn.empty () && bvn.empty (), ff_schulung_ohne_begleiter)
+	CHECK_FEHLER (FLUG, id_invalid (begleiter) && (flugtyp==ft_schul_2) && bnn.isEmpty () && bvn.isEmpty (), ff_schulung_ohne_begleiter)
 	// TODO einsitzige Schulung mit Begleiter
 	CHECK_FEHLER (FLUG, begleiter!=0 && !begleiter_erlaubt (flugtyp), ff_begleiter_nicht_erlaubt)
 	CHECK_FEHLER (FLUG, starts_here (modus) && lands_here (modus) && gelandet && !gestartet, ff_nur_gelandet)
@@ -407,9 +407,9 @@ bool Flight::zwischenlandung (bool force, bool interactive)/*{{{*/
 
 
 
-string Flight::typ_string (length_specification lenspec) const/*{{{*/
+QString Flight::typ_string (length_specification lenspec) const/*{{{*/
 	/*
-	 * Generates a string describing the type of the flight.
+	 * Generates a QString describing the type of the flight.
 	 * Parameters:
 	 *   - lenspec: the length to generate.
 	 * Return value:
@@ -432,7 +432,7 @@ sk_time_t Flight::efftime () const/*{{{*/
 
 
 
-string Flight::pilot_bezeichnung () const/*{{{*/
+QString Flight::pilot_bezeichnung () const/*{{{*/
 	/*
 	 * Return a description for the pilot.
 	 * Return value:
@@ -442,7 +442,7 @@ string Flight::pilot_bezeichnung () const/*{{{*/
 	return t_pilot_bezeichnung (flugtyp);
 }/*}}}*/
 
-string Flight::begleiter_bezeichnung () const/*{{{*/
+QString Flight::begleiter_bezeichnung () const/*{{{*/
 	/*
 	 * Return a description for the copilot.
 	 * Return value:
@@ -453,7 +453,7 @@ string Flight::begleiter_bezeichnung () const/*{{{*/
 }/*}}}*/
 
 
-string Flight::unvollst_pilot_name () const/*{{{*/
+QString Flight::unvollst_pilot_name () const/*{{{*/
 	/*
 	 * Makes the incomplete name of the pilot.
 	 * Return value:
@@ -464,7 +464,7 @@ string Flight::unvollst_pilot_name () const/*{{{*/
 }
 /*}}}*/
 
-string Flight::unvollst_begleiter_name () const/*{{{*/
+QString Flight::unvollst_begleiter_name () const/*{{{*/
 	/*
 	 * Makes the incomplete name of the copilot.
 	 * Return value:
@@ -475,7 +475,7 @@ string Flight::unvollst_begleiter_name () const/*{{{*/
 }
 /*}}}*/
 
-string Flight::unvollst_towpilot_name () const/*{{{*/
+QString Flight::unvollst_towpilot_name () const/*{{{*/
 	/*
 	 * Makes the incomplete name of the towpilot.
 	 * Return value:
@@ -486,7 +486,7 @@ string Flight::unvollst_towpilot_name () const/*{{{*/
 }
 /*}}}*/
 
-string Flight::unvollst_person_name (string nn, string vn) const/*{{{*/
+QString Flight::unvollst_person_name (QString nn, QString vn) const/*{{{*/
 	/*
 	 * Makes the incomplete name of a person.
 	 * Parameters:
@@ -499,11 +499,11 @@ string Flight::unvollst_person_name (string nn, string vn) const/*{{{*/
 	// MURX: gcc warns about Trigraph ??).
 	if (eintrag_ist_leer (nn) && eintrag_ist_leer (vn)) return "-";
 	if (eintrag_ist_leer (nn) && !eintrag_ist_leer (vn)) return "(???, "+vn+")";
-	if (!eintrag_ist_leer (nn) && eintrag_ist_leer (vn)) return "("+nn+", "+"???"+string (")");
+	if (!eintrag_ist_leer (nn) && eintrag_ist_leer (vn)) return "("+nn+", "+"???"+QString (")");
 	// TODO code duplication: displayed name generation from parts
 	if (!eintrag_ist_leer (nn) && !eintrag_ist_leer (vn)) return "("+nn+", "+vn+")";
 	log_error ("Unreachable code reached in sk_flug::unvollst_person_name ()");
-	return "("+string ("???")+")";
+	return "("+QString ("???")+")";
 }
 /*}}}*/
 
@@ -547,7 +547,7 @@ void Flight::get_towflight (Flight *towflight, db_id towplane_id, db_id sa_id) c
 		towflight->landungen=1;
 	else
 		towflight->landungen=0;
-	towflight->bemerkungen="Schleppflug f�r "+num_to_string (id);
+	towflight->bemerkungen="Schleppflug f�r "+QString::number (id);
 	towflight->abrechnungshinweis="";
 	towflight->editierbar=false;							// The tow flight is not editable on its own.
 	towflight->modus=modus_sfz;
@@ -594,14 +594,14 @@ void Flight::dump () const/*{{{*/
 #define DUMP2(l, v) << " " #l ": " << v
 #define DUMP(v) DUMP2 (v, v)
 #define DUMP_BOOL(v) DUMP2 (v, (v?"true":"false"))
-	cout << "sk_flug dump:"
+	std::cout << "sk_flug dump:"
 		DUMP (id)
 		DUMP (flugzeug)
 		DUMP (pilot)
 		DUMP (towpilot)
 		DUMP (begleiter)
 		DUMP_BOOL (editierbar)
-		<< endl;
+		<< std::endl;
 #undef DUMP
 #undef BDUMP
 #undef DUMP2

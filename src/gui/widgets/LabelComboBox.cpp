@@ -181,7 +181,7 @@ void lbl_cbox::fillFullStringArray (const QStringList& array, bool clear_first, 
 	fillStringArray (full_cbox, array, clear_first, blank_line, del);
 }/*}}}*/
 
-void lbl_cbox::insert_full_if_new (const string &t)/*{{{*/
+void lbl_cbox::insert_full_if_new (const QString &t)/*{{{*/
 	/*
 	 * Inserts an item into the full cbox if it is new.
 	 * Parameters:
@@ -193,23 +193,12 @@ void lbl_cbox::insert_full_if_new (const string &t)/*{{{*/
 
 
 // The follwing functions copy other functions but use different
-// parameters types (std::string, QString, char *) for convenience.
+// parameters types (std::QString, QString, char *) for convenience.
 
-string lbl_cbox::current_text_string ()/*{{{*/
+QString lbl_cbox::current_text_string ()/*{{{*/
 {
-	return q2std (currentText ());
+	return currentText ();
 }/*}}}*/
-
-void lbl_cbox::setCurrentText (const string &t)/*{{{*/
-{
-	setCurrentText (std2q (t));
-}/*}}}*/
-
-void lbl_cbox::setCurrentText (const char *t)/*{{{*/
-{
-	setCurrentText (QString (t));
-}/*}}}*/
-
 
 // The following functions operate on both cboxes at the same time.
 void lbl_cbox::setEditText (const QString &newText)/*{{{*/
@@ -246,14 +235,14 @@ QString lbl_cbox::currentText () const/*{{{*/
 	return used_cbox->currentText ();
 }/*}}}*/
 
-string lbl_cbox::edit_text_string ()/*{{{*/
+QString lbl_cbox::edit_text_string ()/*{{{*/
 	/*
 	 * Reads the current text from the active field.
 	 * Return value:
 	 *   the current text.
 	 */
 {
-	return q2std (used_cbox->lineEdit ()->text ());
+	return used_cbox->lineEdit ()->text ();
 }/*}}}*/
 
 void lbl_cbox::clear ()/*{{{*/

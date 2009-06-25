@@ -10,6 +10,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "src/text.h"
+
 // TODO expire sessions
 
 web_session::web_session ()/*{{{*/
@@ -47,7 +49,7 @@ web_session web_session::create ()/*{{{*/
 	}
 	else
 	{
-		r.id=string (filename_buffer+strlen (filename_buffer)-6);
+		r.id=QString (filename_buffer+strlen (filename_buffer)-6);
 		r.ok=true;
 	}
 
@@ -55,7 +57,7 @@ web_session web_session::create ()/*{{{*/
 }
 /*}}}*/
 
-web_session web_session::open (string _id)/*{{{*/
+web_session web_session::open (QString _id)/*{{{*/
 	/*
 	 * Opens a session.
 	 * That means: opens the file, reads the data.
@@ -88,7 +90,7 @@ bool web_session::destroy ()/*{{{*/
 	 * That means: deletes the file.
 	 */
 {
-	int ret=unlink (make_file_name ().c_str ());
+	int ret=unlink (make_file_name ().latin1());
 	if (ret!=0) perror ("Deleting the session file");
 	ok=false;
 	return ret==0;
@@ -97,7 +99,7 @@ bool web_session::destroy ()/*{{{*/
 
 
 
-string web_session::make_file_name ()/*{{{*/
+QString web_session::make_file_name ()/*{{{*/
 {
 	return "/tmp/sk_web.session."+id;
 }

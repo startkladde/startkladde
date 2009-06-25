@@ -22,7 +22,7 @@
 #include "src/time/time_functions.h"
 
 // UI/*{{{*/
-MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, const char *name, WFlags f)/*{{{*/
+MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plugins, const char *name, WFlags f)/*{{{*/
 :
 	QMainWindow (parent, name, f)
 /*
@@ -81,7 +81,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 	info_frame->setFrameStyle (QFrame::Panel | QFrame::Raised);
 	info_frame->setLineWidth (1);
 
-	if (!opts.weather_plugin.empty ())
+	if (!opts.weather_plugin.isEmpty ())
 	{
 		// Create and setup the weather widget. The weather widget is located to
 		// the right of the info frame.
@@ -179,9 +179,9 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 
 	// Plugins
 	plugins = _plugins;
-	list<sk_plugin>::iterator end = plugins->end ();
+	std::list<sk_plugin>::iterator end = plugins->end ();
 	int row = 0;
-	for (list<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
+	for (std::list<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
 	{
 		SkLabel *lbl_caption = new SkLabel ("[...]", info_frame, "lbl_caption[...]");
 		SkLabel *lbl_value = new SkLabel ("[...]", info_frame, "lbl_value[...]");
@@ -190,14 +190,14 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 		if ((*it).get_rich_text ())
 		{
 			lbl_caption->setTextFormat (Qt::RichText);
-			lbl_caption->setText (std2q ("<nobr>" + (*it).get_caption () + "</nobr>"));
+			lbl_caption->setText ("<nobr>" + (*it).get_caption () + "</nobr>");
 			lbl_value->setTextFormat (Qt::RichText);
 		}
 		else
 		{
 			lbl_caption->setTextFormat (Qt::PlainText);
 			lbl_value->setTextFormat (Qt::PlainText);
-			lbl_caption->setText (std2q ((*it).get_caption ()));
+			lbl_caption->setText ((*it).get_caption ());
 		}
 
 		(*it).set_caption_display (lbl_caption);
@@ -238,7 +238,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 	log->setTextFormat (LogText);
 	log->document ()->setMaximumBlockCount (1000); // TODO check this works
 
-	connect (db, SIGNAL (executing_query (string *)), this, SLOT (log_message (string *)));
+	connect (db, SIGNAL (executing_query (QString *)), this, SLOT (log_message (QString *)));
 	/*}}}*/
 
 	// Timerzeug/*{{{*/
@@ -348,7 +348,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, 
 	/*}}}*/
 
 	// Fenstereinstellungen/*{{{*/
-	setCaption (std2q (opts.title));
+	setCaption (opts.title);
 	//	resize (480, 360);
 	//	setMinimumSize (240, 180);
 
@@ -489,7 +489,7 @@ void MainWindow::initActions ()
 	actionInfo = new QAction ("&Info", this);
 
 	actionNetDiag = new QAction ("&Netzwerkdiagnose", this);
-	actionNetDiag->setEnabled (!opts.diag_cmd.empty ());
+	actionNetDiag->setEnabled (!opts.diag_cmd.isEmpty ());
 
 	actionSegfault = new QAction ("&Segfault", this);
 
@@ -649,12 +649,12 @@ MainWindow::~MainWindow ()/*{{{*/
 
 	if (plugins)
 	{
-		list<sk_plugin>::iterator end = plugins->end ();
-		for (list<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
+		std::list<sk_plugin>::iterator end = plugins->end ();
+		for (std::list<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
 		{
 			(*it).terminate ();
 			sched_yield ();
-			cout << "Terminating plugin " << (*it).get_caption () << endl;
+			std::cout << "Terminating plugin " << (*it).get_caption () << std::endl;
 		}
 	}
 
@@ -946,8 +946,8 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 			}
 			else
 			{
-				QMessageBox::warning (this, "Fehler beim L�schen", "Fehler beim L�schen: " + std2q (
-						db->db_error_description (db_result)), QMessageBox::Ok, QMessageBox::NoButton);
+				QMessageBox::warning (this, "Fehler beim L�schen", "Fehler beim L�schen: " +
+						db->db_error_description (db_result), QMessageBox::Ok, QMessageBox::NoButton);
 			}
 		}
 	}
@@ -1014,7 +1014,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 						{
 							Person p;
 							db->get_person (&p, f.pilot);
-							string msg = "Laut Datenbank fliegt der " + f.pilot_bezeichnung () + " \"" + p.text_name ()
+							QString msg = "Laut Datenbank fliegt der " + f.pilot_bezeichnung () + " \"" + p.text_name ()
 									+ "\" noch.\n";
 							if (!check_message (this, msg)) starten = false;
 						}
@@ -1022,7 +1022,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 						{
 							Person p;
 							db->get_person (&p, f.begleiter);
-							string msg = "Laut Datenbank fliegt der " + f.begleiter_bezeichnung () + " \""
+							QString msg = "Laut Datenbank fliegt der " + f.begleiter_bezeichnung () + " \""
 									+ p.text_name () + "\" noch.\n";
 							if (!check_message (this, msg)) starten = false;
 						}
@@ -1030,7 +1030,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 						{
 							Plane fz;
 							db->get_plane (&fz, f.flugzeug);
-							string msg = "Laut Datenbank fliegt das Flugzeug \"" + fz.registration + "\" noch.\n";
+							QString msg = "Laut Datenbank fliegt das Flugzeug \"" + fz.registration + "\" noch.\n";
 							if (!check_message (this, msg)) starten = false;
 						}
 
@@ -1181,7 +1181,7 @@ void MainWindow::slot_refresh_table ()
 		db->list_flights_date (flights, &anzeigedatum);
 		if (anzeigedatum == QDate::currentDate ()) db->list_flights_prepared (flights);
 
-		cout << "Die datenbank reicht uns " << flights.count () << " Flyge ryber." << endl;
+		std::cout << "Die datenbank reicht uns " << flights.count () << " Flyge ryber." << std::endl;
 		flights.sort ();
 		for (QPtrListIterator<Flight> f (flights); *f; ++f)
 		{
@@ -1438,12 +1438,12 @@ void MainWindow::update_info ()/*{{{*/
 		if (flightsCurrent >= 0)
 			lbl_info_value[idx_info_fluege_luft]->setText (s.setNum (flightsCurrent));
 		else
-			lbl_info_value[idx_info_fluege_luft]->setText (std2q (db->db_error_description (flightsCurrent)));
+			lbl_info_value[idx_info_fluege_luft]->setText (db->db_error_description (flightsCurrent));
 
 		if (flightsToday >= 0)
 			lbl_info_value[idx_info_fluege_gesamt]->setText (s.setNum (flightsToday));
 		else
-			lbl_info_value[idx_info_fluege_gesamt]->setText (std2q (db->db_error_description (flightsToday)));
+			lbl_info_value[idx_info_fluege_gesamt]->setText (db->db_error_description (flightsToday));
 	}
 	else
 	{
@@ -1459,8 +1459,8 @@ void MainWindow::update_time ()/*{{{*/
  * Updates the time labels in the information frame with the current time.
  */
 {
-	lbl_info_value[idx_info_utc]->setText (std2q (get_current_time_text (tz_utc)));
-	lbl_info_value[idx_info_time]->setText (std2q (get_current_time_text (tz_local)));
+	lbl_info_value[idx_info_utc]->setText (get_current_time_text (tz_utc));
+	lbl_info_value[idx_info_time]->setText (get_current_time_text (tz_local));
 
 	tbl_fluege->update_time ();
 }/*}}}*/
@@ -1702,11 +1702,11 @@ void MainWindow::setdate (QDateTime dt)/*{{{*/
 	// TODO in ein Skript auslagern, denn hier sollte hwclock geschrieben
 	// werden.
 
-	string s = "sudo date -s '" + num_to_string (dt.date ().year ()) + "-" + num_to_string (dt.date ().month ()) + "-"
-			+ num_to_string (dt.date ().day ()) + " " + num_to_string (dt.time ().hour ()) + ":" + num_to_string (
-			dt.time ().minute ()) + ":" + num_to_string (dt.time ().second ()) + "'";
+	QString s = "sudo date -s '" + QString::number (dt.date ().year ()) + "-" + QString::number (dt.date ().month ()) + "-"
+			+ QString::number (dt.date ().day ()) + " " + QString::number (dt.time ().hour ()) + ":" + QString::number (
+			dt.time ().minute ()) + ":" + QString::number (dt.time ().second ()) + "'";
 
-	system (s.c_str ());
+	system (s.latin1());
 
 	// TODO Ja, genau.
 	show_warning ("Die Systemzeit wurde ge�ndert. Um die �nderung dauerhaft\n"
@@ -2016,7 +2016,7 @@ void MainWindow::slot_netztest ()/*{{{*/
  * Execute the external network testing utility, if set.
  */
 {
-	if (!opts.diag_cmd.empty ()) system (opts.diag_cmd.c_str ());
+	if (!opts.diag_cmd.isEmpty ()) system (opts.diag_cmd.latin1());
 }/*}}}*/
 /*}}}*/
 
@@ -2070,28 +2070,28 @@ void MainWindow::slot_webinterface ()/*{{{*/
 /*}}}*/
 
 // Logging
-void MainWindow::log_message (string message)/*{{{*/
+void MainWindow::log_message (QString message)/*{{{*/
 {
-	log->append ("[" + QTime::currentTime ().toString () + "] " + std2q (message));
+	log->append ("[" + QTime::currentTime ().toString () + "] " + message);
 }
 /*}}}*/
 
-void MainWindow::log_message (string *message)/*{{{*/
+void MainWindow::log_message (QString *message)/*{{{*/
 {
 	if (message) log_message (*message);
 }
 /*}}}*/
 
 // Auxiliary functions
-bool MainWindow::try_initialize_db (string reason)/*{{{*/
+bool MainWindow::try_initialize_db (QString reason)/*{{{*/
 // Returns: success
 {
 	// We need to initialize the database. Therefore, we ask the
 	// root password from the user.
 	QString caption = "root-Passwort ben�tigt";
-	string user_display = opts.root_name + "@" + opts.server_display_name;
-	QString label = std2q ("Die Datenbank " + opts.database + " ist nicht benutzbar. Grund:\n" + reason + "\n"
-			+ "Zur Korrektur wird das Password von " + user_display + " ben�tigt.");
+	QString user_display = opts.root_name + "@" + opts.server_display_name;
+	QString label = "Die Datenbank " + opts.database + " ist nicht benutzbar. Grund:\n" + reason + "\n"
+			+ "Zur Korrektur wird das Password von " + user_display + " ben�tigt.";
 
 	bool wrong_password_do_it_again;
 	do
@@ -2099,8 +2099,8 @@ bool MainWindow::try_initialize_db (string reason)/*{{{*/
 		wrong_password_do_it_again = false;
 		bool ok;
 		// TODO when a password was given, don't ask.
-		string root_pass =
-				q2std (QInputDialog::getText (caption, label, QLineEdit::Password, QString::null, &ok, this));
+		QString root_pass =
+				QInputDialog::getText (caption, label, QLineEdit::Password, QString::null, &ok, this);
 		if (ok)
 		{
 			// OK pressed
@@ -2116,13 +2116,13 @@ bool MainWindow::try_initialize_db (string reason)/*{{{*/
 			catch (sk_db::ex_access_denied &e)
 			{
 				wrong_password_do_it_again = true;
-				label = std2q (e.description (true) + "\nPasswort f�r " + opts.root_name + "@"
-						+ opts.server_display_name + ":");
+				label = e.description (true) + "\nPasswort f�r " + opts.root_name + "@"
+						+ opts.server_display_name + ":";
 			}
 			catch (sk_db::ex_init_failed &e)
 			{
 				db_error = e.description (true);
-				QMessageBox::critical (this, std2q (e.description (true)), std2q (db_error), QMessageBox::Ok,
+				QMessageBox::critical (this, e.description (true), db_error, QMessageBox::Ok,
 						QMessageBox::NoButton);
 				return false;
 			}
@@ -2132,7 +2132,7 @@ bool MainWindow::try_initialize_db (string reason)/*{{{*/
 				// Database initialization failed. That means that there is no point in
 				// trying the connection again.
 				db_error = "Datenbankfehler: " + e.description ();
-				QMessageBox::critical (this, "Datenbankfehler", std2q (db_error), QMessageBox::Ok,
+				QMessageBox::critical (this, "Datenbankfehler", db_error, QMessageBox::Ok,
 						QMessageBox::NoButton);
 				return false;
 			}
@@ -2155,10 +2155,9 @@ bool MainWindow::db_available ()/*{{{*/
 }
 /*}}}*/
 
-void MainWindow::set_connection_label (const string &text, const QColor &color)/*{{{*/
+void MainWindow::set_connection_label (const QString &text, const QColor &color)/*{{{*/
 {
-	if (lbl_info_value[idx_info_datenbankverbindung]) lbl_info_value[idx_info_datenbankverbindung]->setText (std2q (
-			text));
+	if (lbl_info_value[idx_info_datenbankverbindung]) lbl_info_value[idx_info_datenbankverbindung]->setText (text);
 	if (lbl_info_value[idx_info_datenbankverbindung]) lbl_info_value[idx_info_datenbankverbindung]->setPaletteForegroundColor (
 			color);
 	// TODO auch dieser Aufruf f�hrt dazu, dass beim Starten manchmal das
@@ -2193,16 +2192,16 @@ void MainWindow::db_set_state (db_state_t new_state)/*{{{*/
 	case STATE:	\
 		if (TIMER>=0) timer_db->start (TIMER); else timer_db->stop ();	\
 		tbl_fluege->setEnabled (CONTROLS);	\
-		set_connection_label (string (TEXT), COLOR);	\
+		set_connection_label (QString (TEXT), COLOR);	\
 		menu_enables (false);	\
-		if (!error_string.empty ()) log_message (error_string);	\
+		if (!error_string.isEmpty ()) log_message (error_string);	\
 		break;
 
 	static const QColor col_ok (0, 0, 0);
 	static const QColor col_error (255, 0, 0);
 
-	string error_string;
-	if (db_error.empty ())
+	QString error_string;
+	if (db_error.isEmpty ())
 		error_string = db->get_last_error ();
 	else
 		error_string = db_error;
@@ -2255,7 +2254,7 @@ MainWindow::db_state_t MainWindow::db_action_connect ()/*{{{*/
 	do
 	{
 		initialize_and_try_again = false;
-		string reason;
+		QString reason;
 
 		try
 		{
@@ -2391,8 +2390,8 @@ void MainWindow::restart_all_plugins ()/*{{{*/
 		weather_plugin->restart ();
 	}
 
-	list<sk_plugin>::iterator end = plugins->end ();
-	for (list<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
+	std::list<sk_plugin>::iterator end = plugins->end ();
+	for (std::list<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
 	{
 		(*it).restart ();
 	}
@@ -2401,14 +2400,14 @@ void MainWindow::restart_all_plugins ()/*{{{*/
 
 void MainWindow::openWeatherDialog ()/*{{{*/
 {
-	if (!opts.weather_dialog_plugin.empty ())
+	if (!opts.weather_dialog_plugin.isEmpty ())
 	{
 		sk_plugin *weather_ani_plugin = new sk_plugin (opts.weather_dialog_title, opts.weather_dialog_plugin,
 				opts.weather_dialog_interval); // Initialize to given values
 
 		if (weatherDialog) delete weatherDialog;
 		weatherDialog = new WeatherDialog (weather_ani_plugin, this, "weatherDialog");
-		weatherDialog->setCaption (std2q (opts.weather_dialog_title));
+		weatherDialog->setCaption (opts.weather_dialog_title);
 		weatherDialog->show ();
 	}
 }

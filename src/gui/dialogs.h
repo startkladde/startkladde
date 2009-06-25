@@ -3,8 +3,6 @@
 
 #include <QMessageBox>
 
-using namespace std;
-
 void show_warning (const QString &, QWidget *parent);
 
 

@@ -13,7 +13,6 @@
 
 #include "src/version.h"
 
-using namespace std;
 using namespace Qt;
 
 /*

@@ -1,10 +1,6 @@
 #include <string>
 
 #include <src/object_field.h>
-#include <src/model/sk_flug.h>
-#include <src/model/sk_flugzeug.h>
-#include <src/model/sk_person.h>
-#include <src/model/startart_t.h>
 #include <src/plugins/plugin_data_format.h>
 #include <src/web/argument.h>
 
@@ -287,7 +283,7 @@ extern "C" void flight_to_fields (const string &format, list<object_field> &fiel
 		else if (label==field_name_begleiter_code) (*field).set_to (copilot_code);
 		else if (label==field_name_bemerkungen) (*field).set_to (f.bemerkungen);
 		else if (label==field_name_abrechnungshinweis) (*field).set_to (f.abrechnungshinweis);
-		else if (label==field_name_id) (*field).set_to (num_to_string (f.id));
+		else if (label==field_name_id) (*field).set_to (QString::number (f.id));
 		else
 			throw plugin_data_format::ex_plugin_internal_error ("Unbehandeltes Feld \""+(*field).get_caption ()+"\" in flight_to_fields");
 	}

@@ -7,7 +7,7 @@
  * 2005-03-20
  */
 
-#include <string>
+#include <QString>
 #include <list>
 
 #include "src/accessor.h"
@@ -17,8 +17,6 @@
 #include "src/model/Person.h"
 #include "src/model/LaunchType.h"
 #include "src/web/argument.h"
-
-using namespace std;
 
 // Not using qlibrary because it does strange things to the name (resulting in
 // "liblibfoo.so.so" when copying) and has poor error reporting.
@@ -32,30 +30,30 @@ class plugin_data_format
 		class exception: public std::exception/*{{{*/
 		{
 			public:
-				exception (const string &_desc) :desc (_desc) {}
+				exception (const QString &_desc) :desc (_desc) {}
 				~exception () throw () {}
-				virtual string description () { return desc; }
-				string desc;
+				virtual QString description () { return desc; }
+				QString desc;
 		};/*}}}*/
 		class ex_file_not_found: public exception/*{{{*/
 		{
 			public:
-				ex_file_not_found (const string &name=""):exception (name.empty ()?"Plugin-Datei nicht gefunden":"Plugin-Datei "+name+" nicht gefunden") {};
+				ex_file_not_found (const QString &name=""):exception (name.isEmpty ()?"Plugin-Datei nicht gefunden":"Plugin-Datei "+name+" nicht gefunden") {};
 		};/*}}}*/
 		class ex_load_error: public exception/*{{{*/
 		{
 			public:
-				ex_load_error (const string &msg=""):exception (msg.empty ()?"Fehler beim Laden der Bibliothek":"Fehler beim Laden der Bibliothek: "+msg) {};
+				ex_load_error (const QString &msg=""):exception (msg.isEmpty ()?"Fehler beim Laden der Bibliothek":"Fehler beim Laden der Bibliothek: "+msg) {};
 		};/*}}}*/
 		class ex_symbol_not_found: public exception/*{{{*/
 		{
 			public:
-				ex_symbol_not_found (const string &name):exception ("Symbol "+name+" nicht gefunden") {};
+				ex_symbol_not_found (const QString &name):exception ("Symbol "+name+" nicht gefunden") {};
 		};/*}}}*/
 		class ex_plugin_internal_error: public exception/*{{{*/
 		{
 			public:
-				ex_plugin_internal_error (const string &msg):exception (msg), fatal (true) {};
+				ex_plugin_internal_error (const QString &msg):exception (msg), fatal (true) {};
 				ex_plugin_internal_error &is_fatal (bool f=true) { fatal=f; return *this; }
 				bool fatal;
 
@@ -63,49 +61,49 @@ class plugin_data_format
 		class ex_plugin_invalid_format: public ex_plugin_internal_error/*{{{*/
 		{
 			public:
-				ex_plugin_invalid_format (const string &fmt=""): ex_plugin_internal_error (fmt.empty ()?"Ung�ltiges Format":"Ung�ltiges Format \""+fmt+"\"") { fatal=true; }
+				ex_plugin_invalid_format (const QString &fmt=""): ex_plugin_internal_error (fmt.isEmpty ()?"Ung�ltiges Format":"Ung�ltiges Format \""+fmt+"\"") { fatal=true; }
 		};/*}}}*/
 
 		// Construction
-		plugin_data_format (const string &_filename);
+		plugin_data_format (const QString &_filename);
 		plugin_data_format (const plugin_data_format &p);
 		~plugin_data_format ();
 
 		// Library handling
 		void load () const;
-		RO_ACCESSOR (string, filename)
-		RO_ACCESSOR (string, real_filename)
+		RO_ACCESSOR (QString, filename)
+		RO_ACCESSOR (QString, real_filename)
 		RO_ACCESSOR (bool, loaded)
-		string get_display_filename () const { if (real_filename.empty ()) return filename; else return real_filename; }
+		QString get_display_filename () const { if (real_filename.isEmpty ()) return filename; else return real_filename; }
 
 		// Metainformation
 		argument_list plugin_list_formats () const;
-		bool provides_format (const string &label) const;
+		bool provides_format (const QString &label) const;
 		// Unique names have the filename or something appended so they can be
 		// distiguished from other plugins using the same format name.
 		argument_list plugin_list_unique_formats () const;
-		bool provides_unique_format (const string &label) const;
-		string make_unique (const string &label) const;
-		string make_non_unique (const string &label) const;
+		bool provides_unique_format (const QString &label) const;
+		QString make_unique (const QString &label) const;
+		QString make_non_unique (const QString &label) const;
 
 		// Actual plugin functions
-		void plugin_make_field_list (const string &format, list<object_field> &fields) const;
-		void plugin_flight_to_fields (const string &format, list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const string &none_text="", const string &error_text="") const;
+		void plugin_make_field_list (const QString &format, std::list<object_field> &fields) const;
+		void plugin_flight_to_fields (const QString &format, std::list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text="", const QString &error_text="") const;
 
 	private:
 		// Library handling
-		string filename;
+		QString filename;
 		mutable bool loaded;
 		mutable void *handle;
-		mutable string real_filename;
+		mutable QString real_filename;
 
 #define PLUGIN_SYMBOL(NAME, RETVAL, ARGLIST)	\
 		typedef RETVAL (*type_ ## NAME) ARGLIST;	\
 		mutable type_ ## NAME symbol_ ## NAME;
 
 		PLUGIN_SYMBOL (list_formats, argument_list, ())
-		PLUGIN_SYMBOL (make_field_list, void, (const string &format, list<object_field> &fields));
-		PLUGIN_SYMBOL (flight_to_fields, void, (const string &format, list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const string &none_text, const string &error_text));
+		PLUGIN_SYMBOL (make_field_list, void, (const QString &format, std::list<object_field> &fields));
+		PLUGIN_SYMBOL (flight_to_fields, void, (const QString &format, std::list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text, const QString &error_text));
 #undef PLUGIN_SYMBOL
 
 };

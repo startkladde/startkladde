@@ -13,7 +13,7 @@
  *   Return value:
  *     the size of the array allocated.
  *
- * string xxx_string (xxx d, length_specification lenspec)
+ * QString xxx_string (xxx d, length_specification lenspec)
  *   Generates a description for the value for a given length.
  *   Parameters:
  *     - d: the value to create the description for.
@@ -56,7 +56,7 @@ int list_categories (aircraft_category **g, bool include_invalid)/*{{{*/
 	return num;
 }/*}}}*/
 
-string category_string (aircraft_category category, length_specification lenspec)/*{{{*/
+QString category_string (aircraft_category category, length_specification lenspec)/*{{{*/
 	/*
 	 * See top of file.
 	 */
@@ -147,36 +147,33 @@ string category_string (aircraft_category category, length_specification lenspec
 	return ("!!!");
 }/*}}}*/
 
-aircraft_category category_from_registration (string reg)/*{{{*/
-	/*
-	 * Try to determine the kind of aircraft, given its registration. This is done based on german rules.
-	 * Parameters:
-	 *   - reg: the registration.
-	 * Return value:
-	 *   - the kind of aircraft, if one can be determined
-	 *   - lfz_sonstige else
-	 */
+aircraft_category category_from_registration (QString reg)/*{{{*/
+/*
+ * Try to determine the kind of aircraft, given its registration. This is done based on german rules.
+ * Parameters:
+ *   - reg: the registration.
+ * Return value:
+ *   - the kind of aircraft, if one can be determined
+ *   - lfz_sonstige else
+ */
 {
-	if (reg.length ()<3) return lfz_keine;
-	if (reg[0]!='D') return lfz_keine;
-	if (reg[1]!='-') return lfz_keine;
+	if (reg.length () < 3) return lfz_keine;
+	if (reg[0] != 'D') return lfz_keine;
+	if (reg[1] != '-') return lfz_keine;
 
-	char kbu=reg[2];
+	QChar kbu = reg.at (2);
 
-	switch (kbu)
-	{
-		case '0': case '1': case '2': case '3': case '4':
-		case '5': case '6': case '7': case '8': case '9':
-			return lfz_segelflugzeug; break;
-		case 'E': case 'e':
-			return lfz_echo; break;
-		case 'M': case 'm':
-			return lfz_ultraleicht; break;
-		case 'K': case 'k':
-			return lfz_motorsegler; break;
-		default:
-			return lfz_sonstige; break;
-	}
+	if (kbu == '0' || kbu == '1' || kbu == '2' || kbu == '3' || kbu == '4'
+		|| kbu == '5' || kbu == '6' || kbu == '7' || kbu == '8' || kbu == '9')
+		return lfz_segelflugzeug;
+	else if (kbu.toLower () == 'e')
+		return lfz_echo;
+	else if (kbu.toLower () == 'm')
+		return lfz_ultraleicht;
+	else if (kbu.toLower () == 'k')
+		return lfz_motorsegler;
+	else
+		return lfz_sonstige;
 }/*}}}*/
 
 
@@ -215,7 +212,7 @@ int list_flugtyp (flug_typ **t, bool include_invalid)/*{{{*/
 	return num;
 }/*}}}*/
 
-string flugtyp_string (flug_typ typ, length_specification lenspec)/*{{{*/
+QString flugtyp_string (flug_typ typ, length_specification lenspec)/*{{{*/
 	/*
 	 * See top of file.
 	 */
@@ -402,7 +399,7 @@ int list_sfz_modus (flug_modus **m, bool include_invalid)/*{{{*/
 	return num;
 }/*}}}*/
 
-string modus_string (flug_modus modus, length_specification lenspec)/*{{{*/
+QString modus_string (flug_modus modus, length_specification lenspec)/*{{{*/
 	/*
 	 * See top of file.
 	 */
@@ -511,35 +508,30 @@ bool starts_here (flug_modus m)/*{{{*/
 
 
 
-QString std2q (string s)/*{{{*/
+QString std2q (std::string s)/*{{{*/
 	/*
-	 * Converts a std::string to a QString.
+	 * Converts a std::QString to a QString.
 	 * Parameters:
 	 *   - s: the source.
 	 * Return value:
-	 *   the converted string.
+	 *   the converted QString.
 	 */
 {
-	if (s.empty ()) return "";
 	return QString (s.c_str ());
 }/*}}}*/
 
-string q2std (QString s)/*{{{*/
+std::string q2std (QString s)/*{{{*/
 	/*
-	 * Converts a QString to a std::string
+	 * Converts a QString to a std::QString
 	 * Parameters:
 	 *   - s: the source.
 	 * Return value:
-	 *   the converted string.
+	 *   the converted QString.
 	 */
 {
 	if (s.isNull ()) return "";
-//QT3:
-//	return string ((const char *)s);
-//	QT4:
-	return string (s.toLatin1 ().constData ());
+	return std::string (s.toLatin1 ().constData ());
 }/*}}}*/
-
 
 
 db_event_table TableFromEntityType (EntityType t)/*{{{*/

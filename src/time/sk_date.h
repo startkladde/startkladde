@@ -7,13 +7,11 @@
  * 2005-02-07
  */
 
-#include <string>
+#include <QString>
 
 #include <QDateTime>
 
 #include "src/accessor.h"
-
-using namespace std;
 
 // TODO make gettable from sk_time_t, remove functionality here.
 class sk_date
@@ -22,7 +20,7 @@ class sk_date
 		sk_date (int _year=0, int _month=0, int _day=0): year (_year), month (_month), day (_day) {}
 		static sk_date current ();
 
-		string text ();
+		QString text ();
 		bool is_invalid ();
 
 		RW_ACCESSOR (unsigned int, year)

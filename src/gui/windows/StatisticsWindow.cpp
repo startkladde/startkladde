@@ -68,7 +68,7 @@ StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool moda
 	resize (780, 540);
 }/*}}}*/
 
-SkTableItem *StatisticsWindow::set_table_cell (int row, int col, const string &text, QColor bg)/*{{{*/
+SkTableItem *StatisticsWindow::set_table_cell (int row, int col, const QString &text, QColor bg)/*{{{*/
 	/*
 	 * Sets a table item to a given text and color.
 	 * Parameters:
@@ -130,7 +130,7 @@ void StatisticsWindow::fill_sastat (QDate datum)/*{{{*/
 			int row=s;
 			tab->insertRow (s);
 			set_table_cell (row, tbl_sas_startart, (*sa)->get_description ());
-			set_table_cell (row, tbl_sas_anzahl, num_to_string (sa_fluege[s]));
+			set_table_cell (row, tbl_sas_anzahl, QString::number (sa_fluege[s]));
 			s++;
 		}
 
@@ -311,7 +311,7 @@ void StatisticsWindow::display_flugbuch_entry (flugbuch_entry *fbe)/*{{{*/
 {
 	int row=tab->columnCount ();
 	tab->insertRow (row);
-	string bemerkung;
+	QString bemerkung;
 
 	set_table_cell (row, tbl_flb_tag, fbe->tag_string ());
 	set_table_cell (row, tbl_flb_muster, fbe->muster);
@@ -336,7 +336,7 @@ void StatisticsWindow::display_flugbuch_entry (flugbuch_entry *fbe)/*{{{*/
 		add_parentheses (tbl_flb_flugdauer)
 #undef add_parentheses
 
-		if (!bemerkung.empty ()) bemerkung+="; ";
+		if (!bemerkung.isEmpty ()) bemerkung+="; ";
 		bemerkung+="Eintrag ung�ltig, da noch offene Fl�ge";
 	}
 

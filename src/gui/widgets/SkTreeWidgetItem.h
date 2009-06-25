@@ -12,8 +12,6 @@
 
 #include "src/db/db_types.h"
 
-using namespace std;
-
 class SkTreeWidgetItem:public QTreeWidgetItem
 {
 	public:

@@ -13,8 +13,6 @@
 #include "src/gui/widgets/WeatherWidget.h"
 #include "src/plugins/sk_plugin.h"
 
-using namespace std;
-
 class WeatherDialog:public QDialog
 {
 	Q_OBJECT

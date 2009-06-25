@@ -12,7 +12,7 @@ db_id schleppmaschine_flog (sk_db *db, db_id sa_id, sk_time_t t)/*{{{*/
 	 */
 {
 	// TODO move to sk_db
-	
+
 	Plane plane;
 
 	if (schleppflugzeug_aus_startart (db, &plane, sa_id)==0)
@@ -45,9 +45,9 @@ int schleppflugzeug_aus_startart (sk_db *db, Plane *fz, int sa_num)/*{{{*/
 
 	if (!sa.is_airtow ()) return db_err_parameter_error;
 
-	string registration=sa.get_towplane ();
-	if (registration.empty ()) return db_err_parameter_error;
-	
+	QString registration=sa.get_towplane ();
+	if (registration.isEmpty ()) return db_err_parameter_error;
+
 	// TODO Fehler pr�fen.
 	QPtrList<Plane> planes; planes.setAutoDelete (true);
 	db->list_planes_registration (planes, registration);

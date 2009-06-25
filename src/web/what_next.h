@@ -7,11 +7,9 @@
  * 2005-01-02
  */
 
-#include <string>
+#include <QString>
 
 #include "src/accessor.h"
-
-using namespace std;
 
 /*
  * What to do next, basically the program state.
@@ -39,11 +37,11 @@ class what_next
 {
 	public:
 		static what_next go_on ();
-		static what_next output_error (const string &message, const string &explanation="");
+		static what_next output_error (const QString &message, const QString &explanation="");
 		static what_next output_document ();
-		static what_next output_raw_document (const string &document, const string &mime_type, const string &filename="", const string &description="");
-		static what_next go_to_state (const string &new_state_label, const string &_message="", bool _message_error=false);
-		static what_next do_redirect (const string &url);
+		static what_next output_raw_document (const QString &document, const QString &mime_type, const QString &filename="", const QString &description="");
+		static what_next go_to_state (const QString &new_state_label, const QString &_message="", bool _message_error=false);
+		static what_next do_redirect (const QString &url);
 		static what_next end_program ();
 
 #define READ_ACCESS(TYPE, NAME, REALNAME)	\
@@ -53,15 +51,15 @@ class what_next
 		}
 
 		READ_ACCESS (what_next_t, next, next)	// *
-		READ_ACCESS (string, message, data)	// output_error go_to_state
-		READ_ACCESS (string, state_label, state_label)	// go_to_state
+		READ_ACCESS (QString, message, data)	// output_error go_to_state
+		READ_ACCESS (QString, state_label, state_label)	// go_to_state
 		READ_ACCESS (bool, message_error, flag)	// go_to_state
-		READ_ACCESS (string, url, data)	// do_redirect
-		READ_ACCESS (string, document, data)	// output_raw_document
-		READ_ACCESS (string, mime_type, mime_type)	// output_raw_document
-		READ_ACCESS (string, filename, filename)	// output_raw_document
-		READ_ACCESS (string, description, description)	// output_raw_document
-		READ_ACCESS (string, explanation, description)	// output_error
+		READ_ACCESS (QString, url, data)	// do_redirect
+		READ_ACCESS (QString, document, data)	// output_raw_document
+		READ_ACCESS (QString, mime_type, mime_type)	// output_raw_document
+		READ_ACCESS (QString, filename, filename)	// output_raw_document
+		READ_ACCESS (QString, description, description)	// output_raw_document
+		READ_ACCESS (QString, explanation, description)	// output_error
 #undef READ_ACCESS
 
 		RW_ACCESSOR_REF_DEF (what_next, bool, keep_title, true)
@@ -77,12 +75,12 @@ class what_next
 			return *this;	\
 		}
 		SETTABLE_MEMBER (what_next_t, next)
-		SETTABLE_MEMBER (string, data)
-		SETTABLE_MEMBER (string, state_label)
+		SETTABLE_MEMBER (QString, data)
+		SETTABLE_MEMBER (QString, state_label)
 		SETTABLE_MEMBER (bool, flag)
-		SETTABLE_MEMBER (string, mime_type)
-		SETTABLE_MEMBER (string, filename)
-		SETTABLE_MEMBER (string, description)
+		SETTABLE_MEMBER (QString, mime_type)
+		SETTABLE_MEMBER (QString, filename)
+		SETTABLE_MEMBER (QString, description)
 #undef SETTABLE_MEMBER
 
 		bool keep_title;

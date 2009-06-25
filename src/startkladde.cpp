@@ -20,8 +20,8 @@ void display_help ()/*{{{*/
 	 * Displays a brief parameter information.
 	 */
 {
-	cout << "usage: startkladde [options]" << endl;
-	cout << "  options:" << endl;
+	std::cout << "usage: startkladde [options]" << std::endl;
+	std::cout << "  options:" << std::endl;
 	options::display_options ("    ");
 }/*}}}*/
 
@@ -37,7 +37,7 @@ int main (int argc, char **argv)
 	opts.parse_arguments (argc, argv);
 
 	sk_db db;
-	list<sk_plugin> plugins;
+	std::list<sk_plugin> plugins;
 
 	if (opts.need_display ())
 		opts.do_display ();
@@ -51,7 +51,7 @@ int main (int argc, char **argv)
 
 		// Put light.{la,so} to styles/
 		//a.setStyle ("light, 3rd revision");
-		if (!opts.style.empty ()) a.setStyle (std2q (opts.style));
+		if (!opts.style.isEmpty ()) a.setStyle (opts.style);
 
 		// Testen des Wetterplugins
 		//sk_plugin *weather_ani_plugin=new sk_plugin ("Wettertitel", "plugins/weather/regenradar_wetteronline.de_ani", 600);	// Initialize to given values

@@ -7,8 +7,6 @@
  * 2005-01-25
  */
 
-using namespace std;
-
 #include <iostream>
 
 #include "src/web/argument.h"
@@ -16,20 +14,20 @@ using namespace std;
 class mime_header
 {
 	public:
-		static const string text_name_content_type;
-		static const string text_name_content_disposition;
+		static const QString text_name_content_type;
+		static const QString text_name_content_disposition;
 
-		mime_header (const string &text, const string &_name="");
+		mime_header (const QString &text, const QString &_name="");
 
-		string name;
-		string value;
+		QString name;
+		QString value;
 		argument_list args;
 
 		static void test ();
-		static void test (const string &text, const string &_name="");
+		static void test (const QString &text, const QString &_name="");
 };
 
-ostream &operator<< (ostream &s, const mime_header &mh);
+std::ostream &operator<< (std::ostream &s, const mime_header &mh);
 
 #endif
 

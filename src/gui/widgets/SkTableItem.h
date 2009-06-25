@@ -2,21 +2,18 @@
 #define _SkTableItem_h
 
 #include <cstdio>
-#include <string>
+#include <QString>
 
 #include "src/data_types.h"
 #include "src/db/sk_db.h"
 
 #include <QTableWidgetItem>
 
-using namespace std;
-
 class SkTableItem:public QTableWidgetItem
 {
 	public:
 		SkTableItem ();
 		SkTableItem (const QString &, QColor);
-		SkTableItem (const string &, QColor);
 		SkTableItem (const char *, QColor);
 
 		void set_data (void *d) { data=d; }

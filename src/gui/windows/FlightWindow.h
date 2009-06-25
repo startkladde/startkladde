@@ -32,8 +32,6 @@
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
 
-using namespace std;
-
 #define NUM_FIELDS 25
 
 enum flight_editor_mode { fe_none, fe_create, fe_edit };
@@ -100,7 +98,7 @@ class FlightWindow:public SkDialog
 
 	private:
 		void set_time (bool use_time, bool *use_ziel, sk_time_t *zeit_ziel, QDate datum, QTime zeit);
-		void set_buttons (bool, string aktion_text="", bool read_only=false);
+		void set_buttons (bool, QString aktion_text="", bool read_only=false);
 		bool person_anlegen (db_id *person_id, QString nachname, QString vorname, QString bezeichnung, bool force);
 		int widget_index (QWidget *w);
 		void enable_widget (int ind, bool en);
@@ -155,9 +153,9 @@ class FlightWindow:public SkDialog
 		bool accept_flight_data (bool spaeter=false);
 		void warning_message (const QString &);
 		bool check_flight (db_id *, db_id *, db_id *, db_id *, db_id *, bool, QWidget **error_control=NULL);
-		bool check_person (db_id *person_id, string vorname, string nachname, string bezeichnung_n, string bezeichnung_a, bool person_required=true, bool check_flying=true, db_id original_id=invalid_id, string *preselection_club=NULL);
-		bool check_plane (db_id *plane_id, Plane *plane, string registration, string bezeichnung_n, string bezeichnung_a, int seat_guess);
-		bool check_plane_flying (db_id plane_id, string registration, string description_n);
+		bool check_person (db_id *person_id, QString vorname, QString nachname, QString bezeichnung_n, QString bezeichnung_a, bool person_required=true, bool check_flying=true, db_id original_id=invalid_id, QString *preselection_club=NULL);
+		bool check_plane (db_id *plane_id, Plane *plane, QString registration, QString bezeichnung_n, QString bezeichnung_a, int seat_guess);
+		bool check_plane_flying (db_id plane_id, QString registration, QString description_n);
 
 		// TODO bessere Datenstrukturen...
 		QVector<db_id> startarten;	// Startart IDs, same indicies as in edit_startart

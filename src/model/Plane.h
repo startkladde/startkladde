@@ -2,35 +2,32 @@
 #define _Plane_h
 
 #include <cstdio>
-#include <string>
+#include <QString>
 
 #include "src/data_types.h"
 #include "src/model/Entity.h"
 
-using namespace std;
-
-
 class Plane: public Entity
 {
 	public:
-		Plane (string, string, string, string, int, db_id p_id=0);
+		Plane (QString, QString, QString, QString, int, db_id p_id=0);
 		Plane ();
 
-		string registration;
-		string wettbewerbskennzeichen;
-		string typ;
-		string club;
+		QString registration;
+		QString wettbewerbskennzeichen;
+		QString typ;
+		QString club;
 		int sitze;
 		aircraft_category category;
 
-		virtual string name () const;
+		virtual QString name () const;
 
 		void dump () const;
-		virtual void output (ostream &stream, output_format_t format);
-		virtual string bezeichnung (casus) const;
-		virtual string text_name () const;
-		virtual string tabelle_name (bool schlepp) const;
-		virtual string tabelle_name () const;
+		virtual void output (std::ostream &stream, output_format_t format);
+		virtual QString bezeichnung (casus) const;
+		virtual QString text_name () const;
+		virtual QString tabelle_name (bool schlepp) const;
+		virtual QString tabelle_name () const;
 };
 
 #endif

@@ -7,22 +7,22 @@
 
 void display_version ()
 {
-	cout << version_info () << endl;
+	std::cout << version_info () << std::endl;
 }
 
 void display_short_version ()
 {
-	cout << string (VERSION) << endl;
+	std::cout << QString (VERSION) << std::endl;
 }
 
-string version_info ()/*{{{*/
+QString version_info ()/*{{{*/
 	/*
-	 * Gets string containing descriptive (for display) Version information.
+	 * Gets QString containing descriptive (for display) Version information.
 	 * This information should not be used for comparison.
 	 */
 {
-//	return string (VERSION)+"/MySQL "+num_to_string ((int)mysql_get_client_version ());
-	return string (VERSION)+"/MySQL "+mysql_get_client_info ();
+//	return QString (VERSION)+"/MySQL "+num_to_string ((int)mysql_get_client_version ());
+	return QString (VERSION)+"/MySQL "+mysql_get_client_info ();
 }
 /*}}}*/
 

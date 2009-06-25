@@ -45,7 +45,7 @@ SplashScreen::SplashScreen (QWidget *parent, const char * const *logo)/*{{{*/
 	palette.setColor (QPalette::Foreground, QColor (255, 255, 255));
 	lbl_version->setPalette (palette);
 	}
-	lbl_version->setText (std2q (version_info ()));
+	lbl_version->setText (version_info ());
 	lbl_version->move (0, lbl_picture->height ());
 	lbl_version->adjustSize ();
 	lbl_version->resize (lbl_picture->width (), lbl_version->height ());
@@ -147,7 +147,7 @@ void SplashScreen::set_status (QString s)/*{{{*/
 	 *   - s: the text to set.
 	 */
 {
-	cout << "Status: " << q2std (s) << endl;
+	std::cout << "Status: " << s << std::endl;
 	status_text=s;
 	lbl_status->setText (status_text);
 	qApp->processEvents ();

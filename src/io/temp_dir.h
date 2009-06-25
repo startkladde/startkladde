@@ -8,12 +8,10 @@
  */
 
 #include <cstring>
-#include <string>
+#include <QString>
 
 #include "src/accessor.h"
 #include "src/sk_exception.h"
-
-using namespace std;
 
 class temp_dir
 {
@@ -23,20 +21,20 @@ class temp_dir
 			public:
 				ex_create_error (int _errno) { errno=_errno; desc=strerror (errno); }
 				~ex_create_error () throw () {};
-				string description () const { return desc; }
+				QString description () const { return desc; }
 
 				int errno;
-				string desc;
+				QString desc;
 		};
 /*}}}*/
 
-		temp_dir (const string &id="temp_dir.") throw (ex_create_error);
+		temp_dir (const QString &id="temp_dir.") throw (ex_create_error);
 		~temp_dir ();
 
-		RO_ACCESSOR (string, name)
+		RO_ACCESSOR (QString, name)
 
 	private:
-		string name;
+		QString name;
 };
 
 #endif

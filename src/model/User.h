@@ -7,9 +7,7 @@
  * 2005-01-04
  */
 
-using namespace std;
-
-#include <string>
+#include <QString>
 
 #include "src/db/db_types.h"
 
@@ -18,11 +16,11 @@ class User
 	public:
 		User ();
 
-		string username;
+		QString username;
 		// password not saved here
 		bool perm_club_admin;
 		bool perm_read_flight_db;
-		string club;
+		QString club;
 
 		db_id person;
 };

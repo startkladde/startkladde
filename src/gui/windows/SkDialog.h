@@ -5,7 +5,6 @@
 
 #include "src/db/db_event.h"
 
-using namespace std;
 using namespace Qt;
 
 class SkDialog:public QDialog

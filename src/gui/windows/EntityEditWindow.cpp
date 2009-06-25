@@ -334,12 +334,12 @@ void EntityEditWindow::flugzeug_eintragen (Plane *f)/*{{{*/
 	 *   - f: the plane to write.
 	 */
 {
-	edit_registration->setText (std2q (f->registration));
-	edit_wettkennz->setText (std2q (f->wettbewerbskennzeichen));
-	edit_typ->setCurrentText (std2q (f->typ));
-	edit_club->setCurrentText (std2q (f->club));
+	edit_registration->setText (f->registration);
+	edit_wettkennz->setText (f->wettbewerbskennzeichen);
+	edit_typ->setCurrentText (f->typ);
+	edit_club->setCurrentText (f->club);
 	edit_category->setCurrentItem (category_index (category_from_registration (f->registration)));
-	edit_bemerkungen->setText (std2q (f->bemerkungen));
+	edit_bemerkungen->setText (f->bemerkungen);
 
 	if (f->sitze>0)
 	{
@@ -355,11 +355,11 @@ void EntityEditWindow::person_eintragen (Person *p)/*{{{*/
 	 *   - f: the person to write.
 	 */
 {
-	edit_vorname->setText (std2q (p->vorname));
-	edit_nachname->setText (std2q (p->nachname));
-	edit_club->setCurrentText (std2q (p->club));
-	edit_landesverbandsnummer->setText (std2q (p->landesverbands_nummer));
-	edit_bemerkungen->setText (std2q (p->bemerkungen));
+	edit_vorname->setText (p->vorname);
+	edit_nachname->setText (p->nachname);
+	edit_club->setCurrentText (p->club);
+	edit_landesverbandsnummer->setText (p->landesverbands_nummer);
+	edit_bemerkungen->setText (p->bemerkungen);
 }/*}}}*/
 
 
@@ -382,7 +382,7 @@ void EntityEditWindow::slot_registration ()/*{{{*/
 	 * Called when the focus is moved off the registration field.
 	 */
 {
-	aircraft_category gat=category_from_registration (q2std (edit_registration->text ()));
+	aircraft_category gat=category_from_registration (edit_registration->text ());
 	if (gat!=lfz_keine) edit_category->setCurrentItem (category_index (gat));
 }/*}}}*/
 
@@ -398,7 +398,7 @@ bool EntityEditWindow::check_data ()/*{{{*/
 	 */
 {
 	// TODO: In eine tempor�re Instanz schreiben und �berpr�fung in die Klasse schieben
-	string msg;
+	QString msg;
 
 	switch (type)
 	{
@@ -413,11 +413,11 @@ bool EntityEditWindow::check_data ()/*{{{*/
 			if (mode==em_create)
 			{
 				Plane plane;
-				int ret=db->get_plane_registration (&plane, q2std (edit_registration->text ()));
+				int ret=db->get_plane_registration (&plane, edit_registration->text ());
 				if (ret==db_ok)
 				{
-					msg="Es gibt bereits ein Flugzeug mit dem Kennzeichen \""+q2std (edit_registration->text ())+"\".\n";
-					QMessageBox::critical (this, "Flugzeug exisitiert bereits", std2q (msg), QMessageBox::Ok, QMessageBox::NoButton);
+					msg="Es gibt bereits ein Flugzeug mit dem Kennzeichen \""+edit_registration->text ()+"\".\n";
+					QMessageBox::critical (this, "Flugzeug exisitiert bereits", msg, QMessageBox::Ok, QMessageBox::NoButton);
 					return false;
 				}
 			}/*}}}*/
@@ -437,7 +437,7 @@ bool EntityEditWindow::check_data ()/*{{{*/
 			}/*}}}*/
 
 			// Category does not match registration/*{{{*/
-			if (gat!=category_from_registration (q2std (edit_registration->text ())))
+			if (gat!=category_from_registration (edit_registration->text ()))
 			{
 				msg="Die angegebene Gattung passt nicht zum Kennzeichen.\n";
 				if (!check_message (this, msg)) return false;
@@ -493,26 +493,25 @@ bool EntityEditWindow::accept_data ()/*{{{*/
 				Plane *plane=(Plane *)buf;
 
 				if (name_editable)
-				plane->registration=q2std (edit_registration->text ());
-				plane->wettbewerbskennzeichen=q2std (edit_wettkennz->text ());
+				plane->registration=edit_registration->text ();
+				plane->wettbewerbskennzeichen=edit_wettkennz->text ();
 				plane->category=categories[edit_category->currentItem ()];
-				plane->typ=q2std (edit_typ->currentText ());
-				plane->club=q2std (edit_club->currentText ());
+				plane->typ=edit_typ->currentText ();
+				plane->club=edit_club->currentText ();
 				plane->sitze=edit_sitze->text ().toInt ();
-				plane->bemerkungen=q2std (edit_bemerkungen->text ());
+				plane->bemerkungen=edit_bemerkungen->text ();
 			} break;
 			case st_person:
 			{
-				// TODO q2std
 				Person *person=(Person *)buf;
 				if (name_editable)
 				{
-					person->vorname=q2std (edit_vorname->text ());
-					person->nachname=q2std (edit_nachname->text ());
+					person->vorname=edit_vorname->text ();
+					person->nachname=edit_nachname->text ();
 				}
-				person->club=q2std (edit_club->currentText ());
-				person->landesverbands_nummer=q2std (edit_landesverbandsnummer->text ());
-				person->bemerkungen=q2std (edit_bemerkungen->text ());
+				person->club=edit_club->currentText ();
+				person->landesverbands_nummer=edit_landesverbandsnummer->text ();
+				person->bemerkungen=edit_bemerkungen->text ();
 			} break;
 			default:
 				log_error ("Unhandled type in EntityEditWindow::accept_data ()");

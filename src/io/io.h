@@ -1,11 +1,9 @@
 #ifndef io_h
 #define io_h
 
-#include <string>
+#include <QString>
 
-using namespace std;
-
-string read_password ();
+QString read_password ();
 
 #endif
 

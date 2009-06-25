@@ -10,14 +10,12 @@
 
 #include <cstdio>
 #include <ctime>
-#include <string>
+#include <QString>
 
 #include <QDateTime>
 
 #include "src/logging/messages.h"
 #include "src/time/time_functions.h"
-
-using namespace std;
 
 class sk_time_t
 {
@@ -42,11 +40,11 @@ class sk_time_t
 		int secs_to (const sk_time_t *) const;
 		int secs_to (const sk_time_t &) const;
 
-		string to_string (const char *format=NULL, time_zone tz=tz_utc, int buf_size=0, bool no_letters=false) const;	// Generate string
-		string table_string (const char *, time_zone tz=tz_utc, int buf_size=0, bool no_letters=false) const;
+		QString to_string (const char *format=NULL, time_zone tz=tz_utc, int buf_size=0, bool no_letters=false) const;	// Generate QString
+		QString table_string (const char *, time_zone tz=tz_utc, int buf_size=0, bool no_letters=false) const;
 		// TODO: gelandet ist MURX, no_letters ist schlecht so
-		string table_string (time_zone tz=tz_utc, bool gelandet=true, bool no_letters=false) const;
-		string csv_string (time_zone tz=tz_utc) const;
+		QString table_string (time_zone tz=tz_utc, bool gelandet=true, bool no_letters=false) const;
+		QString csv_string (time_zone tz=tz_utc) const;
 
 		bool operator> (const sk_time_t &) const;
 		bool operator< (const sk_time_t &) const;

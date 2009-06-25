@@ -44,7 +44,6 @@ HEADERS += \
            src/time/sk_date.h \
            src/time/sk_time_t.h \
            src/time/time_functions.h \
-           src/version/version.h \
            src/web/argument.h \
            src/web/html_document.h \
            src/web/http_document.h \

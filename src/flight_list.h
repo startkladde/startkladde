@@ -15,8 +15,6 @@
 #include "src/model/Flight.h"
 #include "src/time/sk_time_t.h"
 
-using namespace std;
-
 class flight_list:public Q3PtrList<Flight>
 {
 	public:

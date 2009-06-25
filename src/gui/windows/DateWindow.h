@@ -10,8 +10,6 @@
 
 #include "src/gui/spacing.h"
 
-using namespace std;
-
 /*
  * A date or (date and time) editor window.
  */

@@ -1,34 +1,16 @@
 #include "text.h"
 
-#include <list>
+#include <QStringList>
 
 #include <stdlib.h>
 
-const string whitespace=" \t\r\n";
+const QString whitespace=" \t\r\n";
 
-string trim (const string& s)/*{{{*/
-	/*
-	 * Cuts off leading and trailing whitespace.
-	 * Parameters:
-	 *   - s: the original string. Unmodified.
-	 * Return value:
-	 *   - the string without leading or trailing whitespace.
-	 */
-{
-	if (s.length ()==0) return s;
-	int first=s.find_first_not_of (whitespace);
-	int last=s.find_last_not_of (whitespace);
-	if (first<0) return "";
-	int len=last-first+1;
-	return string (s, first, len);
-}
-/*}}}*/
-
-bool eintrag_ist_leer (const QString &eintrag)/*{{{*/
+bool eintrag_ist_leer (QString eintrag)/*{{{*/
 	/*
 	 * Finds out whether an entry is considered "empty".
 	 * Parameters:
-	 *   - eintrag: the string.
+	 *   - eintrag: the QString.
 	 * Return value:
 	 *   if eintrag is to be considered "empty".
 	 */
@@ -41,20 +23,7 @@ bool eintrag_ist_leer (const QString &eintrag)/*{{{*/
 }
 /*}}}*/
 
-bool eintrag_ist_leer (const string &eintrag)/*{{{*/
-	/*
-	 * Wrapper for eintrag_ist_leer (QString), taking a std::string instead.
-	 * Parameters:
-	 *   - eintrag: converted an passed on.
-	 * Return value:
-	 *   - passed on.
-	 */
-{
-	return eintrag_ist_leer (std2q (eintrag));
-}
-/*}}}*/
-
-bool check_message (QWidget *parent, const string &msg)/*{{{*/
+bool check_message (QWidget *parent, const QString &msg)/*{{{*/
 	/*
 	 * Displays a message and ask the user if he wishes to accept anyway.
 	 * Parameters:
@@ -64,14 +33,14 @@ bool check_message (QWidget *parent, const string &msg)/*{{{*/
 	 *   - if the user accepted.
 	 */
 {
-	int ret=QMessageBox::information (parent, "Warnung", 
-			std2q (msg)+"Trotzdem akzeptieren?", "&Ja", "&Nein", QString::null, 0, 1)
+	int ret=QMessageBox::information (parent, "Warnung",
+			msg+"Trotzdem akzeptieren?", "&Ja", "&Nein", QString::null, 0, 1)
 			!=QDialog::Accepted;
 	return (ret==QDialog::Accepted);
 }
 /*}}}*/
 
-string t_pilot_bezeichnung (flug_typ flugtyp, casus c)/*{{{*/
+QString t_pilot_bezeichnung (flug_typ flugtyp, casus c)/*{{{*/
 	/*
 	 * Creates a description of the pilot's function (pilot, flight instructor...).
 	 * Parameters:
@@ -84,7 +53,7 @@ string t_pilot_bezeichnung (flug_typ flugtyp, casus c)/*{{{*/
 	// TODO diese hier in data_types.cpp
 	switch (flugtyp)
 	{
-		case ft_schul_2: return string ("Flugschüler"); break;
+		case ft_schul_2: return QString ("Flugschï¿½ler"); break;
 		default:
 			switch (c)
 			{
@@ -97,7 +66,7 @@ string t_pilot_bezeichnung (flug_typ flugtyp, casus c)/*{{{*/
 }
 /*}}}*/
 
-string t_begleiter_bezeichnung (flug_typ flugtyp, casus c)/*{{{*/
+QString t_begleiter_bezeichnung (flug_typ flugtyp, casus c)/*{{{*/
 	/*
 	 * Creates a description of the copilot's function (pilot, flight instructor...).
 	 * Parameters:
@@ -116,77 +85,14 @@ string t_begleiter_bezeichnung (flug_typ flugtyp, casus c)/*{{{*/
 }
 /*}}}*/
 
-void replace_substring (string &s, const string& substr, const string& replacement)/*{{{*/
-	/*
-	 * Replaces every occurance of a substring in a string with some other string.
-	 * Slow. Undefined for overlaps.
-	 * Parameters:
-	 *   - s: the string to search in.
-	 *   - substr: the string to search for.
-	 *   - replacement: the string substr is replaced with.
-	 */
+void replace_tabs (QString &s)/*{{{*/
 {
-	for (string::size_type pos=0;
-		(pos=s.find (substr))!=string::npos;
-		pos++)
-		s.replace (pos, substr.length (), replacement);
+	s.replace ('\t', ' ');
 }
 /*}}}*/
 
-void replace_tabs (string &s)/*{{{*/
+QString simplify_club_name (const QString s)/*{{{*/
 {
-	replace_substring (s, "\t", " ");
-}
-/*}}}*/
-
-string num_to_string (int num, unsigned int min_length, char pad)/*{{{*/
-{
-	ostringstream oss;
-	oss << num;
-	string r=oss.str ();
-	if (r.length ()<min_length) r=string (min_length-r.length (), pad)+r;
-	return r;
-}
-/*}}}*/
-
-string num_to_string (float num)/*{{{*/
-{
-	ostringstream oss;
-	oss << num;
-	string r=oss.str ();
-	return r;
-}
-/*}}}*/
-
-string num_to_string (unsigned int num)/*{{{*/
-{
-	ostringstream oss;
-	oss << num;
-	return oss.str ();
-}
-/*}}}*/
-
-string num_to_string (db_id num)/*{{{*/
-{
-	ostringstream oss;
-	oss << num;
-	return oss.str ();
-}
-/*}}}*/
-
-//string text::num_to_string (size_t num)/*{{{*/
-//{
-//	ostringstream oss;
-//	oss << num;
-//	return oss.str ();
-//}
-/*}}}*/
-
-QString simplify_club_name (const QString& s)/*{{{*/
-{
-	// QT3:
-	//QString r=s.simplifyWhiteSpace ().lower ();
-	// QT4:
 	QString r=s.simplified ().toLower ();
 	if (eintrag_ist_leer (r))
 		return "-";
@@ -195,19 +101,13 @@ QString simplify_club_name (const QString& s)/*{{{*/
 }
 /*}}}*/
 
-string simplify_club_name (const string& s)/*{{{*/
-{
-	return q2std (simplify_club_name (std2q (s)));
-}
-/*}}}*/
-
-bool club_name_identical (const string& s1, const string& s2)/*{{{*/
+bool club_name_identical (const QString s1, const QString s2)/*{{{*/
 {
 	return simplify_club_name (s1)==simplify_club_name (s2);
 }
 /*}}}*/
 
-string concatenate_comments (const string& s1, const string& s2)/*{{{*/
+QString concatenate_comments (const QString& s1, const QString& s2)/*{{{*/
 {
 	if (eintrag_ist_leer (s1)) return s2;
 	if (eintrag_ist_leer (s2)) return s1;
@@ -215,7 +115,7 @@ string concatenate_comments (const string& s1, const string& s2)/*{{{*/
 }
 /*}}}*/
 
-string string_or_none (const string& text)/*{{{*/
+QString string_or_none (const QString& text)/*{{{*/
 {
 	if (eintrag_ist_leer (text))
 		return "-";
@@ -231,143 +131,115 @@ bool parameter_matches (char *parameter, char *val1, char *val2)/*{{{*/
 
 #include <iostream>
 
-void split_string (list<string> &strings, const string &separators, const string &text)/*{{{*/
+void split_string (QString &string1, QString &string2, QString separator, QString text)
+	// Splits a QString at the first occurence of one of separators. Results in string1 and string2
 {
-	string::size_type start_pos=0;
-	string::size_type end_pos;
-
-	if (text.empty ()) return;
-
-	while (end_pos=text.find_first_of (separators, start_pos), end_pos!=string::npos)
+	if (text.contains (separator))
 	{
-		strings.push_back (text.substr (start_pos, end_pos-start_pos));
-		start_pos=end_pos+1;
-	}
-	strings.push_back (text.substr (start_pos));
-}
-/*}}}*/
+		int pos=text.indexOf (separator);
 
-void split_string (string &string1, string &string2, const string &separators, const string &text)/*{{{*/
-	// Splits a string at the first occurence of one of separators. Results in string1 and string2
-{
-	string::size_type pos=text.find_first_of (separators);
-	
-	if (pos==string::npos)
-	{
-		// No separator found
-		string1=text;
-		string2="";
+		string1=text.mid (0, pos);
+		string2=text.mid (pos+1);
 	}
 	else
 	{
-		// abc=defgh
-		// 012345678
-		// pos=3
-		// l=9
-		// l1=3
-		// l2=6
-		//
-		string1=text.substr (0, pos);
-		if (pos>=text.length ()-1)
-			string2="";
-		else
-			string2=text.substr (pos+1);
+		string1=text;
+		string2="";
+	}
+}
+
+void trim (QStringList &strings)/*{{{*/
+{
+	QMutableStringListIterator it (strings);
+	while (it.hasNext ())
+	{
+		it.next ();
+		it.value()=it.value().trimmed();
 	}
 }
 /*}}}*/
 
-void trim (list<string> &strings)/*{{{*/
-{
-	list<string>::iterator end=strings.end ();
-	for (list<string>::iterator it=strings.begin (); it!=end; ++it)
-		(*it)=trim (*it);
-}
-/*}}}*/
-
-bool is_date (const string& s)/*{{{*/
+bool is_date (const QString& s)/*{{{*/
 	/*
-	 * Finds out if a string can be parsed as date.
+	 * Finds out if a QString can be parsed as date.
 	 * Parameters:
-	 *   - s: the string to test.
+	 *   - s: the QString to test.
 	 * Return value:
 	 *   - true if s is a date.
 	 *   - false else.
 	 */
 {
 	// TODO remove as the result is discarded.
-	return QDate::fromString (std2q (s), Qt::ISODate).isValid ();
+	return QDate::fromString (s, Qt::ISODate).isValid ();
 }
 /*}}}*/
 
-string latex_escape (const string& o)/*{{{*/
+QString latex_escape (const QString& o)/*{{{*/
 	/*
-	 * Escape a string for putting to a LaTeX document.
+	 * Escape a QString for putting to a LaTeX document.
 	 * Parameters:
-	 *   - o: the string to escape.
+	 *   - o: the QString to escape.
 	 * Return value:
-	 *   - the escaped string.
+	 *   - the escaped QString.
 	 */
 {
-	ostringstream oss;
+	QString result;
 
-	for (unsigned int i=0; i<o.length (); i++)
+	for (int i=0; i<o.length (); i++)
 	{
-		switch (o[i])
-		{
-			case '$': oss << "\\$"; break;
-			case '\\': oss << "\\textbackslash{}"; break;
-			case '%': oss << "\\%"; break;
-			case '_': oss << "\\_"; break;
-			case '{': oss << "\\{"; break;
-			case '&': oss << "\\&"; break;
-			case '#': oss << "\\#"; break;
-			case '}': oss << "\\}"; break;
-			case '^': oss << "\\textasciicircum{}"; break;
-			case '~': oss << "\\textasciitilde{}"; break;
-			case '"': oss << "\\textquotedbl{}"; break;
-			// Seems like guilsingl{left,right} don't work properly
-			//case '<': oss << "\\guilsinglleft{}"; break;
-			//case '>': oss << "\\guilsinglright{}"; break;
-			default: oss << o[i]; break;
-		}
+		if      (o[i]=='$' ) result+="\\$";
+		else if (o[i]=='\\') result+="\\textbackslash{}";
+		else if (o[i]=='%' ) result+="\\%";
+		else if (o[i]=='_' ) result+="\\_";
+		else if (o[i]=='{' ) result+="\\{";
+		else if (o[i]=='&' ) result+="\\&";
+		else if (o[i]=='#' ) result+="\\#";
+		else if (o[i]=='}' ) result+="\\}";
+		else if (o[i]=='^' ) result+="\\textasciicircum{}";
+		else if (o[i]=='~' ) result+="\\textasciitilde{}";
+		else if (o[i]=='"' ) result+="\\textquotedbl{}";
+		// Seems like guilsingl{left,right} don't work properly
+		//case '<': oss << "\\guilsinglleft{}"; break;
+		//case '>': oss << "\\guilsinglright{}"; break;
+		else result+=o[i];
 	}
 
-	return oss.str ();
+	return result;
 }/*}}}*/
 
 /**
-  * Escape a string for putting to a LaTeX document.
+  * Escape a QString for putting to a LaTeX document.
   * Parameters:
-  *   - o: the string to escape.
+  *   - o: the QString to escape.
   * Return value:
-  *   - the escaped string.
+  *   - the escaped QString.
   */
-string csv_escape (const string& o)
+QString csv_escape (const QString& o)
 {
 	// TODO werden ""en korrekt behandelt?
-	ostringstream oss;
+	QString result;
 
-	char quote_char='"';
+	QChar quote_char='"';
 
-	oss << quote_char;
-	for (unsigned int i=0; i<o.length (); i++)
+	result+=quote_char;
+	for (int i=0; i<o.length (); i++)
 	{
 		if (o[i]==quote_char)
-			oss << quote_char << quote_char;
+			(result+=quote_char)+=quote_char;
 		else
-			oss << o[i];
+			result+=o[i];
 	}
-	oss <<quote_char;
+	result+=quote_char;
 
-	return oss.str ();
+	return result;
 }
 
-string html_escape (const string& s, bool also_escape_newlines)/*{{{*/
+QString html_escape (const QString& s, bool also_escape_newlines)/*{{{*/
 {
-	string r;
+	QString r;
 
-	string::const_iterator end=s.end ();
-	for (string::const_iterator ch=s.begin (); ch!=end; ++ch)
+	QString::const_iterator end=s.end ();
+	for (QString::const_iterator ch=s.begin (); ch!=end; ++ch)
 	{
 		if (*ch=='<') r+="&lt;";
 		else if (*ch=='>') r+="&gt;";
@@ -376,31 +248,31 @@ string html_escape (const string& s, bool also_escape_newlines)/*{{{*/
 //		else if (*ch==' ') r+="&nbsp;";
 		else if (*ch=='&') r+="&amp;";
 		else if (also_escape_newlines && *ch=='\n') r+="<br>";
-		else r+=string (1, *ch);
+		else r+=QString (1, *ch);
 	}
 
 	return r;
 }
 /*}}}*/
 
-list<string> html_escape (const list<string> &l, bool also_escape_newlines)/*{{{*/
+QStringList html_escape (const QStringList &l, bool also_escape_newlines)/*{{{*/
 {
-	list<string> r;
-	list<string>::const_iterator end=l.end ();
-	for (list<string>::const_iterator it=l.begin (); it!=end; ++it)
-		r.push_back (html_escape (*it, also_escape_newlines));
+	QStringList r;
+	QStringListIterator it (l);
+	while (it.hasNext ())
+		r.append (html_escape (it.next(), also_escape_newlines));
 
 	return r;
 }
 /*}}}*/
 
-string get_environment (const string& name)
+QString get_environment (const QString& name)
 {
-	char *r=getenv (name.c_str ());
+	char *r=getenv (name.latin1());
 	if (r)
-		return string (r);
+		return QString (r);
 	else
-		return string ();
+		return QString ();
 }
 
 
@@ -429,7 +301,7 @@ char hex_digit_value (char digit)/*{{{*/
 }
 /*}}}*/
 
-string hex_digit (char value)/*{{{*/
+QString hex_digit (char value)/*{{{*/
 {
 	switch (value%16)
 	{
@@ -454,22 +326,22 @@ string hex_digit (char value)/*{{{*/
 }
 /*}}}*/
 
-string hex_string (unsigned char value)/*{{{*/
+QString hex_string (unsigned char value)/*{{{*/
 {
 	return hex_digit (value/16)+hex_digit (value%16);
 }
 /*}}}*/
 
-string cgi_unescape (const string &text)/*{{{*/
+QString cgi_unescape (const QString &text)/*{{{*/
 {
 	enum state_t { st_normal, st_expect_first, st_expect_second };
 	state_t state=st_normal;
 
-	string r;
+	QString r;
 	char special;
 
-	string::const_iterator e=text.end ();
-	for (string::const_iterator it=text.begin (); it!=e; ++it)
+	QString::const_iterator e=text.end ();
+	for (QString::const_iterator it=text.begin (); it!=e; ++it)
 	{
 		switch (state)
 		{
@@ -481,15 +353,15 @@ string cgi_unescape (const string &text)/*{{{*/
 				else if (*it=='+')
 					r+=" ";
 				else
-					r+=string (1, *it);
+					r+=QString (1, *it);
 				break;
 			case st_expect_first:
-				special=16*hex_digit_value (*it);
+				special=16*hex_digit_value ((*it).toAscii());
 				state=st_expect_second;
 				break;
 			case st_expect_second:
-				special+=hex_digit_value (*it);
-				r+=string (1, special);
+				special+=hex_digit_value ((*it).toAscii());
+				r+=QString (1, special);
 				state=st_normal;
 				break;
 		}
@@ -499,16 +371,16 @@ string cgi_unescape (const string &text)/*{{{*/
 }
 /*}}}*/
 
-string cgi_escape (const string &text, bool leave_high)/*{{{*/
+QString cgi_escape (const QString &text, bool leave_high)/*{{{*/
 	// leave_high: leave alone characters>127. This is incompatible with CGI,
 	// but useful for using the escaping mechanism in other places.
 {
-	string r;
+	QString r;
 
-	string::const_iterator e=text.end ();
-	for (string::const_iterator it=text.begin (); it!=e; ++it)
+	QString::const_iterator e=text.end ();
+	for (QString::const_iterator it=text.begin (); it!=e; ++it)
 	{
-		unsigned char ch=(*it);
+		unsigned char ch=(*it).toAscii();
 		if (ch==' ')
 			r+="+";
 		else if (
@@ -521,14 +393,14 @@ string cgi_escape (const string &text, bool leave_high)/*{{{*/
 			ch<32)
 			r+="%"+hex_string (ch);
 		else
-			r+=string (1, ch);
+			r+=QString (1, ch);
 	}
 
 	return r;
 }
 /*}}}*/
 
-string bool_to_string (bool val, const string &true_value, const string &false_value)/*{{{*/
+QString bool_to_string (bool val, const QString &true_value, const QString &false_value)/*{{{*/
 {
 	if (val)
 		return true_value;
@@ -537,39 +409,21 @@ string bool_to_string (bool val, const string &true_value, const string &false_v
 }
 /*}}}*/
 
-bool string_to_bool (const string &text)/*{{{*/
+bool string_to_bool (const QString &text)/*{{{*/
 {
-	if (atoi (text.c_str ())==0)
+	if (text.toInt ()==0)
 		return false;
 	else
 		return true;
 }
 /*}}}*/
 
-bool starts_with (const string &text, const string &substring)/*{{{*/
+QString make_string (const std::set<QString> s, const QString &separator)/*{{{*/
 {
-	if (text.substr (0, substring.length ())==substring)
-		return true;
-	else
-		return false;
-}
-/*}}}*/
+	QString r;
 
-bool ends_with (const string &text, const string &substring)/*{{{*/
-{
-	if (text.substr (text.length ()-substring.length ())==substring)
-		return true;
-	else
-		return false;
-}
-/*}}}*/
-
-string make_string (const set<string> s, const string &separator)/*{{{*/
-{
-	string r;
-
-	set<string>::const_iterator end=s.end ();
-	for (set<string>::const_iterator it=s.begin (); it!=end; ++it)
+	std::set<QString>::const_iterator end=s.end ();
+	for (std::set<QString>::const_iterator it=s.begin (); it!=end; ++it)
 	{
 		if (it!=s.begin ()) r.append (separator);
 		r.append (*it);
@@ -578,5 +432,13 @@ string make_string (const set<string> s, const string &separator)/*{{{*/
 	return r;
 }
 /*}}}*/
+
+
+std::ostream &operator<< (std::ostream &s, const QString &c)/*{{{*/
+{
+	return s << q2std (c);
+}
+/*}}}*/
+
 
 

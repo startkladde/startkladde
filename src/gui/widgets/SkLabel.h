@@ -9,8 +9,6 @@
 #include <QLabel>
 #include <QColor>
 
-using namespace std;
-
 class SkLabel:public QLabel
 	// Not hidden by hide () because this messes up the QLayout.
 {

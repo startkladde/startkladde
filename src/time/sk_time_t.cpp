@@ -116,10 +116,10 @@ void sk_time_t::set_to (const QDate d, const QTime t, time_zone tz, bool null_se
 
 void sk_time_t::parse (const char *p, time_zone tz, const char *format)/*{{{*/
 	/*
-	 * Parses a string and stores the result.
+	 * Parses a QString and stores the result.
 	 * Parameters:
-	 *   - p: the string.
-	 *   - tz: the timezone to interpret the string with.
+	 *   - p: the QString.
+	 *   - tz: the timezone to interpret the QString with.
 	 *   - format: the parse format specification.
 	 */
 {
@@ -254,17 +254,17 @@ int sk_time_t::secs_to (const sk_time_t &other) const/*{{{*/
 
 
 // TODO change no_letters to letters
-string sk_time_t::to_string (const char *format, time_zone tz, int buf_size, bool no_letters) const/*{{{*/
+QString sk_time_t::to_string (const char *format, time_zone tz, int buf_size, bool no_letters) const/*{{{*/
 	/*
-	 * Converts the time to a string.
+	 * Converts the time to a QString.
 	 * Parameters:
 	 *   - format: the format specification as understood by the get_tm_text
 	 *     function from time_functions.h.
-	 *   - tz: the time zone to make the string for.
+	 *   - tz: the time zone to make the QString for.
 	 *   - buf_size: the maximum buffer size needed. Passed on to get_tm_text.
 	 *   - no_letters: don't append timezone specification (like Z for GMT).
 	 * Return value:
-	 *   - the generated string.
+	 *   - the generated QString.
 	 */
 {
 	// Break down time, according to local_time parameter
@@ -280,16 +280,16 @@ string sk_time_t::to_string (const char *format, time_zone tz, int buf_size, boo
 	// Set default format if none given
 	if (!format) format=def_format;
 
-	string t=get_tm_text (&tm_time, format, buf_size);
+	QString t=get_tm_text (&tm_time, format, buf_size);
 	if (tz==tz_utc && !no_letters) t+="Z";
 	return t;
 }/*}}}*/
 
-string sk_time_t::csv_string (time_zone tz) const/*{{{*/
+QString sk_time_t::csv_string (time_zone tz) const/*{{{*/
 	/*
-	 * Makes a string suitable for outputting CSV files.
+	 * Makes a QString suitable for outputting CSV files.
 	 * Return value:
-	 *   the string.
+	 *   the QString.
 	 */
 {
 	if (is_null ())
@@ -298,15 +298,15 @@ string sk_time_t::csv_string (time_zone tz) const/*{{{*/
 		return to_string ("%H:%M", tz, 6, true);
 }/*}}}*/
 
-string sk_time_t::table_string (const char *format, time_zone tz, int buf_size, bool no_letters) const/*{{{*/
+QString sk_time_t::table_string (const char *format, time_zone tz, int buf_size, bool no_letters) const/*{{{*/
 	/*
-	 * Makes a string suitable for displaying in a table.
+	 * Makes a QString suitable for displaying in a table.
 	 * Parameters:
 	 *   - format: the format to use. Passed on to to_string.
-	 *   - tz: the timezone to generate the string for.
+	 *   - tz: the timezone to generate the QString for.
 	 *   - buf_size: the maximum buffer size needed, passed on to to_string.
 	 * Return value:
-	 *   the string.
+	 *   the QString.
 	 */
 {
 	if (is_null ())
@@ -315,11 +315,11 @@ string sk_time_t::table_string (const char *format, time_zone tz, int buf_size, 
 		return to_string (format, tz, buf_size, no_letters);
 }/*}}}*/
 
-string sk_time_t::table_string (time_zone tz, bool gelandet, bool no_letters) const/*{{{*/
+QString sk_time_t::table_string (time_zone tz, bool gelandet, bool no_letters) const/*{{{*/
 	/*
-	 * Makes a string suitable for displaying in a table.
+	 * Makes a QString suitable for displaying in a table.
 	 * Parameters:
-	 *   - tz: the timezone to generate the string for.
+	 *   - tz: the timezone to generate the QString for.
 	 *   - gelandet: whether the flight has landed.
 	 */
 {

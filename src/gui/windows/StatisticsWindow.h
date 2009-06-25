@@ -19,8 +19,6 @@
 #include "src/statistics/bordbuch.h"
 #include "src/statistics/flugbuch.h"
 
-using namespace std;
-
 /*
  * A statistics window for displaying logbooks and startart statistics.
  */
@@ -37,7 +35,7 @@ class StatisticsWindow:public SkDialog
 	private:
 		SkTable *tab;
 		QPushButton *but_close;
-		SkTableItem *set_table_cell (int row, int col, const string &text, QColor bg=QColor (255, 255, 255));
+		SkTableItem *set_table_cell (int row, int col, const QString &text, QColor bg=QColor (255, 255, 255));
 		void person_flugbuch (QDate date, Person *p, QPtrList<Flight> &flights);
 		void fill_sastat (QDate datum);
 		sk_db *db;

@@ -6,15 +6,17 @@
 #include "malloc.h"
 #include "stdlib.h"
 
-temp_dir::temp_dir (const string &id)/*{{{*/
+#include "src/text.h"
+
+temp_dir::temp_dir (const QString &id)/*{{{*/
 	throw (ex_create_error)
 	// Name will be /tmp/${id}XXXXXX
 {
-	string name_template=id;
-	string::const_iterator end=name_template.end ();
-	for (string::iterator it=name_template.begin (); it!=end; ++it)
+	QString name_template=id;
+	QString::const_iterator end=name_template.end ();
+	for (QString::iterator it=name_template.begin (); it!=end; ++it)
 	{
-		if (string ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-.").find (*it)==string::npos)
+		if (QString::fromAscii ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-.").find (*it)<0)
 		{
 			(*it)='_';
 		}
@@ -25,7 +27,7 @@ temp_dir::temp_dir (const string &id)/*{{{*/
 	// Need to copy to char * manually
 	int len=name_template.size ();
 	char *dirname_buffer=new char[len+1];
-	strcpy (dirname_buffer, name_template.c_str ());
+	strcpy (dirname_buffer, name_template.latin1());
 
 	// Make the temporary directory
 	char *dirname_ret=mkdtemp (dirname_buffer);
@@ -45,21 +47,21 @@ temp_dir::temp_dir (const string &id)/*{{{*/
 
 temp_dir::~temp_dir ()/*{{{*/
 {
-	if (!name.empty ())
+	if (!name.isEmpty ())
 	{
-		if (name.substr (0, 5)!="/tmp/")
+		if (name.left (5)!="/tmp/")
 		{
 			// For safety reasons, do not delete this.
-			cerr << "Error: the directory name \""+name+"\" does not start with /tmp/.";
+			std::cerr << "Error: the directory name \""+name+"\" does not start with /tmp/.";
 		}
-		else if (name.find ("/../")!=string::npos)
+		else if (name.find ("/../")>=0)
 		{
-			cerr << "Error: the directory name \""+name+"\" contains /../.";
+			std::cerr << "Error: the directory name \""+name+"\" contains /../.";
 		}
 		else
 		{
-			system ((string ("rm -r ")+name).c_str ());
-			//system ((string ("touch ")+name+string (".delete")).c_str ());
+			system ((QString ("rm -r ")+name).latin1());
+			//system ((QString ("touch ")+name+QString (".delete")).c_str ());
 		}
 	}
 }/*}}}*/

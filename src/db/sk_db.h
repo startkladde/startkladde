@@ -28,8 +28,6 @@
 #include "src/model/User.h"
 #include "src/model/LaunchType.h"
 
-using namespace std;
-
 // TODO replace cerr with debug_stream
 
 // TODO split off startkladde-specifig parts.
@@ -62,35 +60,35 @@ class sk_db:public QObject
 	class ex_allocation_error:public sk_exception/*{{{*/
 	{
 		public:
-			virtual string description () const { return "Speicherfehler"; }
+			virtual QString description () const { return "Speicherfehler"; }
 	};
 	/*}}}*/
 	class ex_parameter_error:public sk_exception/*{{{*/
 	{
 		public:
 			~ex_parameter_error () throw () {};
-			ex_parameter_error (const string &_reason) { reason=_reason; }
-			virtual string description (bool extended) const
+			ex_parameter_error (const QString &_reason) { reason=_reason; }
+			virtual QString description (bool extended) const
 			{
-				if (extended && !reason.empty ())
+				if (extended && !reason.isEmpty ())
 					return description (false)+" ("+reason+")";
 				else
 					return "Parameterfehler";
 			}
-			virtual string description () const { return description (false); }
-			string reason;
+			virtual QString description () const { return description (false); }
+			QString reason;
 	};
 	/*}}}*/
 	class ex_connection_failed:public sk_exception/*{{{*/
 	{
 		public:
-			virtual string description () const { return "Verbindungsfehler"; }
+			virtual QString description () const { return "Verbindungsfehler"; }
 	};
 	/*}}}*/
 	class ex_database_not_accessible:public sk_exception/*{{{*/
 	{
 		public:
-			virtual string description () const { return "Datenbankzugriff nicht m�glich"; }
+			virtual QString description () const { return "Datenbankzugriff nicht m�glich"; }
 	};
 	/*}}}*/
 
@@ -99,122 +97,122 @@ class sk_db:public QObject
 	{
 		public:
 			~ex_query_failed () throw () {};
-			ex_query_failed (const string &_query) { query=_query; }
-			virtual string description (bool extended) const
+			ex_query_failed (const QString &_query) { query=_query; }
+			virtual QString description (bool extended) const
 			{
-				if (extended && !query.empty ())
+				if (extended && !query.isEmpty ())
 					return description (false)+" ("+query+")";
 				else
 					return "Query fehlgeschlagen";
 			}
-			virtual string description () const { return description (false); }
-			string query;
+			virtual QString description () const { return description (false); }
+			QString query;
 	};
 	/*}}}*/
 	class ex_init_failed:public sk_exception/*{{{*/
 	{
 		public:
 			~ex_init_failed () throw () {};
-			ex_init_failed (const string &_reason) { reason=_reason; }
-			virtual string description (bool extended) const
+			ex_init_failed (const QString &_reason) { reason=_reason; }
+			virtual QString description (bool extended) const
 			{
-				if (extended && !reason.empty ())
+				if (extended && !reason.isEmpty ())
 					return description (false)+" ("+reason+")";
 				else
 					return "Datenbankeinrichtung fehlgeschlagen";
 			}
-			virtual string description () const { return description (false); }
-			string reason;
+			virtual QString description () const { return description (false); }
+			QString reason;
 	};
 	/*}}}*/
 	class ex_operation_failed:public sk_exception/*{{{*/
 	{
 		public:
 			~ex_operation_failed () throw () {};
-			ex_operation_failed (const string &_reason) { reason=_reason; }
-			virtual string description (bool extended) const
+			ex_operation_failed (const QString &_reason) { reason=_reason; }
+			virtual QString description (bool extended) const
 			{
-				if (extended && !reason.empty ())
+				if (extended && !reason.isEmpty ())
 					return description (false)+" ("+reason+")";
 				else
 					return "Operation fehlgeschlagen";
 			}
-			virtual string description () const { return description (false); }
-			string reason;
+			virtual QString description () const { return description (false); }
+			QString reason;
 	};
 	/*}}}*/
 	class ex_not_connected:public sk_exception/*{{{*/
 	{
 		public:
-			virtual string description () const { return "Keine Verbindung"; }
+			virtual QString description () const { return "Keine Verbindung"; }
 	};
 	/*}}}*/
 	class ex_access_denied:public sk_exception/*{{{*/
 	{
 		public:
 			~ex_access_denied () throw () {};
-			ex_access_denied (const string &_message) { message=_message; }
-			virtual string description (bool extended) const
+			ex_access_denied (const QString &_message) { message=_message; }
+			virtual QString description (bool extended) const
 			{
-				if (extended && !message.empty ())
+				if (extended && !message.isEmpty ())
 					return description (false)+" ("+message+")";
 				else
 					return "Zugriff verweigert";
 			}
-			virtual string description () const { return description (false); }
-			string message;
+			virtual QString description () const { return description (false); }
+			QString message;
 	};
 	/*}}}*/
 
 	class ex_unusable:public sk_exception/*{{{*/
 	{
 		public:
-			virtual string description () const { return "Database unusable"; }
+			virtual QString description () const { return "Database unusable"; }
 	};
 	/*}}}*/
 	class ex_table_not_found:public ex_unusable/*{{{*/
 	{
 		public:
 			~ex_table_not_found () throw () {};
-			ex_table_not_found (const string &_name) { name=_name; }
-			virtual string description () const { return "Tabelle "+name+" nicht gefunden"; }
-			string name;
+			ex_table_not_found (const QString &_name) { name=_name; }
+			virtual QString description () const { return "Tabelle "+name+" nicht gefunden"; }
+			QString name;
 	};
 	/*}}}*/
 	class ex_column_not_found:public ex_unusable/*{{{*/
 	{
 		public:
 			~ex_column_not_found () throw () {};
-			ex_column_not_found (const string &_table, const string &_column) { table=_table; column=_column; }
-			virtual string description () const { return "Spalte "+table+":"+column+" nicht gefunden"; }
-			string table, column;
+			ex_column_not_found (const QString &_table, const QString &_column) { table=_table; column=_column; }
+			virtual QString description () const { return "Spalte "+table+":"+column+" nicht gefunden"; }
+			QString table, column;
 	};
 	/*}}}*/
 	class ex_column_type_mismatch:public ex_unusable/*{{{*/
 	{
 		public:
 			~ex_column_type_mismatch () throw () {};
-			ex_column_type_mismatch (const string &_table, const string &_column) { table=_table; column=_column; }
-			virtual string description () const { return "Spalte "+table+":"+column+" hat den falschen Typ"; }
-			string table, column;
+			ex_column_type_mismatch (const QString &_table, const QString &_column) { table=_table; column=_column; }
+			virtual QString description () const { return "Spalte "+table+":"+column+" hat den falschen Typ"; }
+			QString table, column;
 	};
 	/*}}}*/
 	class ex_insufficient_access:public ex_unusable/*{{{*/
 	{
 		public:
 			~ex_insufficient_access () throw () {};
-			ex_insufficient_access (const string &_target) { target=_target; }
-			virtual string description () const { return "Ungen�gende Zugriffsrechte auf "+target; }
-			string target;
+			ex_insufficient_access (const QString &_target) { target=_target; }
+			virtual QString description () const { return "Ungen�gende Zugriffsrechte auf "+target; }
+			QString target;
 	};
 	/*}}}*/
 	class ex_database_not_found:public ex_unusable/*{{{*/
 	{
 		public:
 			~ex_database_not_found () throw () {};
-			ex_database_not_found (string _name) { name=_name; }
-			virtual string description () const { return "Datenbank "+name+" nicht gefunden"; }
-			string name;
+			ex_database_not_found (QString _name) { name=_name; }
+			virtual QString description () const { return "Datenbank "+name+" nicht gefunden"; }
+			QString name;
 	};
 	/*}}}*/
 
@@ -226,8 +224,8 @@ class sk_db:public QObject
 		public:
 			~ex_legacy_error () throw () {};
 			ex_legacy_error (int _error, const sk_db &_db): db (_db) { error=_error; }
-			virtual string description (bool extended=false) const { return "Datenbankfehler: "+db.db_error_description (error, extended); }
-			virtual string description () const { return description (false); }
+			virtual QString description (bool extended=false) const { return "Datenbankfehler: "+db.db_error_description (error, extended); }
+			virtual QString description () const { return description (false); }
 			int error;
 			const sk_db &db;
 	};
@@ -237,15 +235,15 @@ class sk_db:public QObject
 	{
 		public:
 			// Properties access
-			virtual string description (bool extended) const;
+			virtual QString description (bool extended) const;
 			bool fatal () const { return fatal (type); }
 			RW_P_ACCESSOR (const Person, p1)
 			RW_P_ACCESSOR (const Person, p2)
 
 #define SINGLE_PERSON_MESSAGE(NAME) \
-			static import_message NAME (const Person *_p1=NULL, const string &_text_value="") { return import_message (imt_ ## NAME, _p1, NULL, _text_value); }
+			static import_message NAME (const Person *_p1=NULL, const QString &_text_value="") { return import_message (imt_ ## NAME, _p1, NULL, _text_value); }
 #define DOUBLE_PERSON_MESSAGE(NAME) \
-			static import_message NAME (const Person *_p1=NULL, const Person *_p2=NULL, const string &_text_value="") { return import_message (imt_ ## NAME, _p1, _p2, _text_value); }
+			static import_message NAME (const Person *_p1=NULL, const Person *_p2=NULL, const QString &_text_value="") { return import_message (imt_ ## NAME, _p1, _p2, _text_value); }
 
 			// Static construction
 			SINGLE_PERSON_MESSAGE (first_name_missing)
@@ -283,61 +281,61 @@ class sk_db:public QObject
 			};
 
 			// Constructor
-			import_message (import_message_type _type, const Person *_p1=NULL, const Person *_p2=NULL, const string &_text_value="")
+			import_message (import_message_type _type, const Person *_p1=NULL, const Person *_p2=NULL, const QString &_text_value="")
 				:type (_type), p1 (_p1), p2 (_p2), text_value (_text_value) {}
 
 			// Properties
-			virtual string description () const { return description (false); }
+			virtual QString description () const { return description (false); }
 			static bool fatal (import_message_type t);
 
 			// Data members
 			import_message_type type;
 			const Person *p1, *p2;
-			string text_value;
+			QString text_value;
 	};
 /*}}}*/
 
 
 
 		// Connection management/*{{{*/
-		sk_db (ostream &_debug_stream=cerr);
+		sk_db (std::ostream &_debug_stream=std::cerr);
 		~sk_db ();
-		void connect (string _server, int _port, string _username, string _password) throw (ex_allocation_error, ex_connection_failed, ex_access_denied);
+		void connect (QString _server, int _port, QString _username, QString _password) throw (ex_allocation_error, ex_connection_failed, ex_access_denied);
 		void connect () throw (ex_allocation_error, ex_connection_failed, ex_access_denied);
-		void use_db (string _database) throw (ex_database_not_accessible, ex_parameter_error, ex_database_not_found, ex_insufficient_access);
+		void use_db (QString _database) throw (ex_database_not_accessible, ex_parameter_error, ex_database_not_found, ex_insufficient_access);
 		void use_db () throw (ex_database_not_accessible, ex_parameter_error, ex_database_not_found, ex_insufficient_access);
-		void set_connection_data (string _server, int _port, string _username, string _password);
-		void set_database (string _database);
-		void set_user_data (string _username, string _password);
+		void set_connection_data (QString _server, int _port, QString _username, QString _password);
+		void set_database (QString _database);
+		void set_user_data (QString _username, QString _password);
 		int disconnect ();
-		string get_last_error () const;
+		QString get_last_error () const;
 		unsigned int get_last_errno () const;
-		string db_error_description (int error, bool extended=false) const;
+		QString db_error_description (int error, bool extended=false) const;
 		bool connected () const;
 		bool alife () const;
 		bool silent;
-		RO_ACCESSOR (string, last_query)
+		RO_ACCESSOR (QString, last_query)
 		RO_ACCESSOR (bool, last_query_success)
 		RW_ACCESSOR (bool, is_admin_db)
 /*}}}*/
 
 		// Database metainformation/*{{{*/
-		void list_required_tables (list<string> &tables);
-		void list_required_writeable_tables (list<string> &tables);
-		db_table get_table_information (const string table_name, bool resolve_like=false) const;
+		void list_required_tables (QStringList &tables);
+		void list_required_writeable_tables (QStringList &tables);
+		db_table get_table_information (const QString table_name, bool resolve_like=false) const;
 		void check_usability () throw (ex_database_not_accessible, ex_parameter_error, ex_database_not_found, ex_not_connected, ex_query_failed, ex_unusable, ex_insufficient_access);
 /*}}}*/
 
 		// Database management/*{{{*/
-		int grant (string permissions, string target, string user, string password);
-		int grant (string permissions, string target, string user);
-		int create_database (string name, bool force=false);
-		int list_tables (list<string> &tables);
+		int grant (QString permissions, QString target, QString user, QString password);
+		int grant (QString permissions, QString target, QString user);
+		int create_database (QString name, bool force=false);
+		int list_tables (QStringList &tables);
 		int create_table (const db_table &tab, bool force=false);
-		int list_column_names (list<string> &names, string table);
-		int list_columns (list<db_column> &columns, string table);
-		int add_column (const string &table, const db_column &column);
-		int modify_column (const string &table, const db_column &column);
+		int list_column_names (QStringList &names, QString table);
+		int list_columns (std::list<db_column> &columns, QString table);
+		int add_column (const QString &table, const db_column &column);
+		int modify_column (const QString &table, const db_column &column);
 /*}}}*/
 
 		// Administration
@@ -347,10 +345,10 @@ class sk_db:public QObject
 		static void remove_editable_persons (QPtrList<Person> persons);
 
 		void import_check (const Person &person) throw (import_message);
-		void import_check (const QPtrList<Person> &persons, list<import_message> &notes);
+		void import_check (const QPtrList<Person> &persons, std::list<import_message> &notes);
 
-		db_id import_identify (const Person &p, list<import_message> *notes=NULL) throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message);
-		void import_identify (QPtrList<Person> &persons, list<import_message> &notes) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
+		db_id import_identify (const Person &p, std::list<import_message> *notes=NULL) throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message);
+		void import_identify (QPtrList<Person> &persons, std::list<import_message> &notes) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
 
 		db_id import_person (const Person &person) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
 		void import_persons (const QPtrList<Person> &persons) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
@@ -395,25 +393,25 @@ class sk_db:public QObject
 		int list_flights_prepared (QPtrList<Flight> &flights);
 		int list_flights_date (QPtrList<Flight> &flights, QDate *date);
 		int list_flights_date_range (flight_list &flights, QDate *start_date, QDate *end_date);
-		int list_persons_by_name (QPtrList<Person> &persons, string vorname, string nachname);
-		int list_persons_by_first_name (QPtrList<Person> &persons, string vorname);
-		int list_persons_by_last_name (QPtrList<Person> &persons, string nachname);
-		int list_persons_by_club_club_id (QPtrList<Person> &persons, string club, string club_id);
+		int list_persons_by_name (QPtrList<Person> &persons, QString vorname, QString nachname);
+		int list_persons_by_first_name (QPtrList<Person> &persons, QString vorname);
+		int list_persons_by_last_name (QPtrList<Person> &persons, QString nachname);
+		int list_persons_by_club_club_id (QPtrList<Person> &persons, QString club, QString club_id);
 		int list_planes_all (QPtrList<Plane> &planes);
 		int list_persons_all (QPtrList<Person> &persons);
 		int list_startarten_all (QPtrList<LaunchType> &saen);
 		int list_planes_date (QPtrList<Plane> &planes, QDate *date);
 		int list_persons_date (QPtrList<Person> &persons, QDate *date);
-		int list_planes_registration (QPtrList<Plane> &planes, string registration);
+		int list_planes_registration (QPtrList<Plane> &planes, QString registration);
 		// TODO get_plane_id_registration oder so
-		int get_plane_registration (Plane *plane, string registration);
+		int get_plane_registration (Plane *plane, QString registration);
 /*}}}*/
 
 		// List strings/*{{{*/
 		// TODO UNIQUE
 		int list_airfields (QStringList &airfields);
-		int list_first_names (QStringList &names, string last_name="");
-		int list_last_names (QStringList &names, string first_name="");
+		int list_first_names (QStringList &names, QString last_name="");
+		int list_last_names (QStringList &names, QString first_name="");
 		int list_accounting_note (QStringList &notes);
 		int list_registrations (QStringList &registrations);
 		int list_types (QStringList &types);
@@ -431,34 +429,34 @@ class sk_db:public QObject
 		int get_towplane (Plane *towplane, const LaunchType &startart, const db_id towplane_id);
 
 		bool display_queries;
-		ostream &debug_stream;
+		std::ostream &debug_stream;
 
 		// Blind queries
 		int flush_privileges () { return execute_query ("FLUSH PRIVILEGES"); }
 
 		// Accessors/*{{{*/
-		RO_ACCESSOR (string, server);
-		RO_ACCESSOR (string, username);
-		RO_ACCESSOR (string, password);
-		RO_ACCESSOR (string, database);
+		RO_ACCESSOR (QString, server);
+		RO_ACCESSOR (QString, username);
+		RO_ACCESSOR (QString, password);
+		RO_ACCESSOR (QString, database);
 		RO_ACCESSOR (int, port);
 /*}}}*/
 
 		// User management
-		int sk_user_exists (const string &username);
-		int sk_user_authenticate (const string &username, const string &password);
-		int sk_user_change_password (const string &username, const string &password);
+		int sk_user_exists (const QString &username);
+		int sk_user_authenticate (const QString &username, const QString &password);
+		int sk_user_change_password (const QString &username, const QString &password);
 
-		int sk_user_add (const User &user, const string &password);
-		int sk_user_modify (const User &user, const string &username="");
-		int sk_user_delete (const string &username);
+		int sk_user_add (const User &user, const QString &password);
+		int sk_user_modify (const User &user, const QString &username="");
+		int sk_user_delete (const QString &username);
 
-		int sk_user_get (User &user, const string &username);
-		int sk_user_list (list<User> &users, const string &username="");
+		int sk_user_get (User &user, const QString &username);
+		int sk_user_list (std::list<User> &users, const QString &username="");
 
 		int row_to_user (User &user, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields);
-		int result_to_user_list (list<User> &users, MYSQL_RES *result);
-		string user_value_list (const User &user);
+		int result_to_user_list (std::list<User> &users, MYSQL_RES *result);
+		QString user_value_list (const User &user);
 
 		// Data collection
 		void make_flight_data (sk_flug_data &flight_data, const Flight &flight);
@@ -469,9 +467,9 @@ class sk_db:public QObject
 		// Connection management/*{{{*/
 		MYSQL *mysql;
 		bool connection_established;
-		string server, username, password, database; int port;
-		string current_server;
-		string last_query;
+		QString server, username, password, database; int port;
+		QString current_server;
+		QString last_query;
 		bool last_query_success;
 		bool is_admin_db;
 /*}}}*/
@@ -481,35 +479,35 @@ class sk_db:public QObject
 /*}}}*/
 
 		// Generic functions/*{{{*/
-		string escape (string text);
+		QString escape (QString text);
 /*}}}*/
 
 		// Database metainformation/*{{{*/
-		string fixed_table_name (db_object_type type);
-		string editable_table_name (db_object_type type);
-		string default_sort_column (db_object_type type);
+		QString fixed_table_name (db_object_type type);
+		QString editable_table_name (db_object_type type);
+		QString default_sort_column (db_object_type type);
 /*}}}*/
 
 		// Data type conversion/*{{{*/
-		string to_string (sk_time_t *t);
+		QString to_string (sk_time_t *t);
 		long long int row_to_number (MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields, const char *field_name);
-		void parse (sk_time_t *time, string text);
-		string query_column_list (db_object_type otype, bool id_only);
-		string query_value_list (db_object_type type, void *object);
+		void parse (sk_time_t *time, QString text);
+		QString query_column_list (db_object_type otype, bool id_only);
+		QString query_value_list (db_object_type type, void *object);
 		int row_to_object (db_object_type otype, void *object, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields);
 /*}}}*/
 
 		// Object management/*{{{*/
 		void *new_object (db_object_type type);
 		int free_object (db_object_type type, void *object);
-		string object_name (db_object_type type, bool plural=false);
+		QString object_name (db_object_type type, bool plural=false);
 		int copy_object (db_object_type type, void *target, void *source);
 /*}}}*/
 
 		// Enumeration type conversion/*{{{*/
-		static string flugtyp_to_db(flug_typ t);
-		static string modus_to_db(flug_modus m);
-		static string category_to_db(aircraft_category m);
+		static QString flugtyp_to_db(flug_typ t);
+		static QString modus_to_db(flug_modus m);
+		static QString category_to_db(aircraft_category m);
 		static flug_typ db_to_flugtyp (char *in);
 		static flug_modus db_to_modus (char *in);
 		static aircraft_category db_to_category (char *in);
@@ -523,25 +521,24 @@ class sk_db:public QObject
 /*}}}*/
 
 		// Query core functions/*{{{*/
-		int execute_query (MYSQL_RES **result, string query_string, bool retrieve_immediately);
-		int execute_query (string query_string) { return execute_query (NULL, query_string, true); }
-		string make_query (query_type_t query_type, db_object_type object_type, string condition, string columns, bool add_column_editable, bool distinct, string sort_column="", string group_column="", bool editable_flag=true);
-		string make_condition (condition_t c);
+		int execute_query (MYSQL_RES **result, QString query_string, bool retrieve_immediately);
+		int execute_query (QString query_string) { return execute_query (NULL, query_string, true); }
+		QString make_query (query_type_t query_type, db_object_type object_type, QString condition, QString columns, bool add_column_editable, bool distinct, QString sort_column="", QString group_column="", bool editable_flag=true);
+		QString make_condition (condition_t c);
 /*}}}*/
 
 		// Direct access helper functions/*{{{*/
-		void object_copy (const string &source, const string &target, db_id id) throw (ex_legacy_error);
-		void object_delete_from (const string &table, const db_id &id) throw (ex_legacy_error);
-		bool object_exists_in (const string &table, const db_id &id) throw (ex_legacy_error);
+		void object_copy (const QString &source, const QString &target, db_id id) throw (ex_legacy_error);
+		void object_delete_from (const QString &table, const db_id &id) throw (ex_legacy_error);
+		bool object_exists_in (const QString &table, const db_id &id) throw (ex_legacy_error);
 /*}}}*/
 
 
 		// Result processing/*{{{*/
 		int result_to_list (db_object_type type, QPtrList<void> &result_list, MYSQL_RES *result);
 		int result_to_num_list (QValueList<long long int> &num_list, MYSQL_RES *result, const char *field_name);
-		int result_to_string_list (QStringList &strings, MYSQL_RES *result, const char *field_name);	// TODO remove
-		int result_to_string_list (list<string> &strings, MYSQL_RES *result, const char *field_name);
-		int result_to_string_list (list<string> &strings, MYSQL_RES *result, const unsigned int field_num);
+		int result_to_string_list (QStringList &strings, MYSQL_RES *result, const char *field_name);
+		int result_to_string_list (QStringList &strings, MYSQL_RES *result, const unsigned int field_num);
 		int result_to_id_list (QValueList<db_id> &ids, MYSQL_RES *result);
 		char *named_field_value (MYSQL_ROW &row, int num_fields, MYSQL_FIELD *fields, const char *name);
 		const char *field_value (const MYSQL_ROW &row, const unsigned int num_fields, MYSQL_FIELD *fields, const unsigned int num);
@@ -551,15 +548,15 @@ class sk_db:public QObject
 		int list_id_data (db_object_type type, QValueList<db_id> &ids, QStringList &data_columns, condition_t c);
 		int list_ids (db_object_type type, QValueList<db_id> &ids, condition_t c);
 		// TODO: custom query only supported for strings
-		int list_strings (db_object_type type, string field_name, QStringList &strings, condition_t c, string custom_query="");
+		int list_strings (db_object_type type, QString field_name, QStringList &strings, condition_t c, QString custom_query="");
 		int list_objects (db_object_type type, QPtrList<void> &objects, condition_t c);
-		int list_strings_query (const string query, const string field_name, list<string> &strings);
-		int list_strings_query (const string query, const unsigned int field_num, list<string> &strings);
+		int list_strings_query (const QString query, const QString field_name, QStringList &strings);
+		int list_strings_query (const QString query, const unsigned int field_num, QStringList &strings);
 /*}}}*/
 
 		// Existance/*{{{*/
-		int num_results_query (string query);
-		int rows_exist_query (string query);
+		int num_results_query (QString query);
+		int rows_exist_query (QString query);
 		int get_object (db_object_type type, void *object, db_id id);
 		int object_exists (db_object_type type, db_id id);
 /*}}}*/
@@ -586,13 +583,13 @@ class sk_db:public QObject
 		// This is used for display instead of the next real query, if
 		// set. Can be used for hiding passwords from clear text output.
 		// Will automatically be reset after the next query.
-		void set_query_display_alias (string qda) { query_display_alias=qda; }
-		string query_display_alias;
+		void set_query_display_alias (QString qda) { query_display_alias=qda; }
+		QString query_display_alias;
 /*}}}*/
 
 
 	signals:
-		void executing_query (string *s);
+		void executing_query (QString *s);
 
 };
 

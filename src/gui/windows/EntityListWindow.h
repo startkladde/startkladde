@@ -22,8 +22,6 @@
 
 class SplashScreen;
 
-using namespace std;
-
 const QColor col_default=QColor (255, 255, 255);
 
 /*
@@ -47,7 +45,7 @@ class EntityListWindow:public SkDialog
 		SkTable *tab;
 		QPushButton *but_close;
 
-		SkTableItem *set_table_cell (int row, int col, const string &text, QColor bg=col_default, db_id id=0);
+		SkTableItem *set_table_cell (int row, int col, const QString &text, QColor bg=col_default, db_id id=0);
 		void fillInEntity (EntityType t, int row, Entity *);
 		void listEntity (EntityType);
 		int addEntity (EntityType t, Entity *st);

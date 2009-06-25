@@ -1,7 +1,7 @@
 #ifndef _LabelComboBox_h
 #define _LabelComboBox_h
 
-#include <string>
+#include <QString>
 
 #include <QFrame>
 #include <QLabel>
@@ -10,7 +10,6 @@
 #include "src/data_types.h"
 #include "src/gui/widgets/SkComboBox.h"
 
-using namespace std;
 
 class lbl_cbox:public QFrame
 {
@@ -19,18 +18,16 @@ class lbl_cbox:public QFrame
 	public:
 		lbl_cbox (const char *text, bool editable, QWidget *parent, const char *name);
 		QString currentText () const;
-		virtual void setCurrentText ( const QString & );
-		virtual void setCurrentText ( const string & );
-		virtual void setCurrentText (const char *);
+		virtual void setCurrentText (const QString & );
 		void setAutoCompletion (bool a);
 //		bool eventFilter (QObject *o, QEvent *e);
-		string current_text_string ();
+		QString current_text_string ();
 		void fillStringArray (const QStringList& array, bool clear_first=true, bool blank_line=false, bool del=true);
 		void fillFullStringArray (const QStringList& array, bool clear_first=true, bool blank_line=false, bool del=true);
 		void setEditText (const QString &newText);
-		string edit_text_string ();
+		QString edit_text_string ();
 		void use_full (bool full);
-		void insert_full_if_new (const string &);
+		void insert_full_if_new (const QString &);
 		void select_all ();
 		int get_label_width () { return lbl->width (); }
 		void set_label_width (int w) { lbl->setFixedWidth (w); }
@@ -39,8 +36,8 @@ class lbl_cbox:public QFrame
 		void clear ();
 
 	signals:
-		void activated (const QString &string);
-		void highlighted (const QString &string);
+		void activated (const QString &QString);
+		void highlighted (const QString &QString);
 		void focus_out ();	// The focus was moved out of the widget.
 		void progress (int, int);
 

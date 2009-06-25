@@ -9,7 +9,7 @@ bordbuch_entry::bordbuch_entry ()/*{{{*/
 	insassen=0;
 }/*}}}*/
 
-string bordbuch_entry::insassen_string () const/*{{{*/
+QString bordbuch_entry::insassen_string () const/*{{{*/
 {
 	// TODO unify for more
 	if (insassen==0) return "0";
@@ -20,13 +20,13 @@ string bordbuch_entry::insassen_string () const/*{{{*/
 }
 /*}}}*/
 
-string bordbuch_entry::datum_string () const/*{{{*/
+QString bordbuch_entry::datum_string () const/*{{{*/
 {
-	return q2std (datum.toString ("yyyy-MM-dd"));
+	return datum.toString ("yyyy-MM-dd");
 }
 /*}}}*/
 
-string bordbuch_entry::zeit_start_string (bool no_letters) const/*{{{*/
+QString bordbuch_entry::zeit_start_string (bool no_letters) const/*{{{*/
 {
 	if (zeit_start.is_null ())
 		return "-";
@@ -35,7 +35,7 @@ string bordbuch_entry::zeit_start_string (bool no_letters) const/*{{{*/
 }
 /*}}}*/
 
-string bordbuch_entry::zeit_landung_string (bool no_letters) const/*{{{*/
+QString bordbuch_entry::zeit_landung_string (bool no_letters) const/*{{{*/
 {
 	if (zeit_landung.is_null ())
 		return "-";
@@ -44,18 +44,18 @@ string bordbuch_entry::zeit_landung_string (bool no_letters) const/*{{{*/
 }
 /*}}}*/
 
-string bordbuch_entry::betriebsdauer_string () const/*{{{*/
+QString bordbuch_entry::betriebsdauer_string () const/*{{{*/
 {
 	return betriebsdauer.to_string ("%H:%M", tz_timespan);
 }
 /*}}}*/
 
-string bordbuch_entry::anzahl_landungen_string () const/*{{{*/
+QString bordbuch_entry::anzahl_landungen_string () const/*{{{*/
 {
 	if (anzahl_landungen==0)
 		return "-";
 	else
-		return num_to_string (anzahl_landungen);
+		return QString::number (anzahl_landungen);
 }
 /*}}}*/
 
@@ -114,7 +114,7 @@ bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<Flight> 
 
 		if (flights.first ()->flugtyp==ft_schlepp)
 		{
-			if (!bb_entry->bemerkungen.empty ()) bb_entry->bemerkungen="; "+bb_entry->bemerkungen;
+			if (!bb_entry->bemerkungen.isEmpty ()) bb_entry->bemerkungen="; "+bb_entry->bemerkungen;
 			if (flights.count ()<=1)
 				bb_entry->bemerkungen="Schleppflug"+bb_entry->bemerkungen;
 			else
@@ -179,7 +179,7 @@ void make_bordbuch_plane (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, P
 }
 /*}}}*/
 
-void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, string *club)/*{{{*/
+void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, QString *club)/*{{{*/
 	// If club is specified, only planes of this club are used.
 {
 	for (QPtrListIterator<Plane> plane (planes); *plane; ++plane)

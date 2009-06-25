@@ -19,8 +19,6 @@
 #include "src/model/Plane.h"
 #include "src/model/Entity.h"
 
-using namespace std;
-
 // TODO move to EntityEditWindow
 enum entity_editor_mode { em_none, em_create, em_edit, em_display };
 

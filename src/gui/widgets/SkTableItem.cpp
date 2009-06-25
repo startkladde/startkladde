@@ -17,12 +17,6 @@ SkTableItem::SkTableItem (const QString &text, QColor bg)
 	init (bg);
 }
 
-SkTableItem::SkTableItem (const string &text, QColor bg)
-	:QTableWidgetItem (std2q (text))
-{
-	init (bg);
-}
-
 SkTableItem::SkTableItem (const char *text, QColor bg)
 	:QTableWidgetItem ((QString)text)
 {

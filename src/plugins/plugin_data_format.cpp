@@ -6,7 +6,7 @@
 #include "src/config/options.h"
 
 // Construction
-plugin_data_format::plugin_data_format (const string &_filename)/*{{{*/
+plugin_data_format::plugin_data_format (const QString &_filename)/*{{{*/
 	:filename (_filename+".so"), loaded (false), handle (NULL)
 	// filename: without extension
 {
@@ -35,11 +35,11 @@ void plugin_data_format::load () const/*{{{*/
 	if (!loaded)
 	{
 		real_filename=opts.find_plugin_file (filename);
-		if (real_filename.empty ()) {
+		if (real_filename.isEmpty ()) {
 			throw ex_file_not_found (filename);
 		}
 
-		handle=dlopen ((real_filename).c_str (), RTLD_NOW);
+		handle=dlopen (real_filename.latin1(), RTLD_NOW);
 
 		if (handle)
 		{
@@ -48,7 +48,7 @@ void plugin_data_format::load () const/*{{{*/
 		else
 		{
 			loaded=false;
-			throw ex_load_error (string (dlerror ()));
+			throw ex_load_error (QString (dlerror ()));
 		}
 	}
 
@@ -73,7 +73,7 @@ argument_list plugin_data_format::plugin_list_formats () const/*{{{*/
 }
 /*}}}*/
 
-bool plugin_data_format::provides_format (const string &label) const/*{{{*/
+bool plugin_data_format::provides_format (const QString &label) const/*{{{*/
 {
 	argument_list plugins=plugin_list_formats ();
 	return plugins.has_argument (label);
@@ -95,7 +95,7 @@ argument_list plugin_data_format::plugin_list_unique_formats () const/*{{{*/
 }
 /*}}}*/
 
-bool plugin_data_format::provides_unique_format (const string &unique_label) const/*{{{*/
+bool plugin_data_format::provides_unique_format (const QString &unique_label) const/*{{{*/
 {
 	argument_list plugins=plugin_list_unique_formats ();
 	return plugins.has_argument (unique_label);
@@ -103,26 +103,26 @@ bool plugin_data_format::provides_unique_format (const string &unique_label) con
 /*}}}*/
 
 
-string plugin_data_format::make_unique (const string &label) const/*{{{*/
+QString plugin_data_format::make_unique (const QString &label) const/*{{{*/
 {
 	return real_filename+":"+label;
 }
 /*}}}*/
 
-string plugin_data_format::make_non_unique (const string &label) const/*{{{*/
+QString plugin_data_format::make_non_unique (const QString &label) const/*{{{*/
 {
-	string::size_type pos=label.rfind (':', label.length ());
-	if (pos==string::npos)
+	int pos=label.lastIndexOf (':');
+	if (pos<0)
 		return label;
 	else
-		return label.substr (pos+1);
+		return label.mid (pos+1);
 }
 /*}}}*/
 
 
 
 // Plugin functions
-void plugin_data_format::plugin_make_field_list (const string &format, list<object_field> &fields) const/*{{{*/
+void plugin_data_format::plugin_make_field_list (const QString &format, std::list<object_field> &fields) const/*{{{*/
 {
 	load ();
 	REQUIRE_SYMBOL (make_field_list);
@@ -130,7 +130,7 @@ void plugin_data_format::plugin_make_field_list (const string &format, list<obje
 }
 /*}}}*/
 
-void plugin_data_format::plugin_flight_to_fields (const string &format, list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const string &none_text, const string &error_text) const/*{{{*/
+void plugin_data_format::plugin_flight_to_fields (const QString &format, std::list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text, const QString &error_text) const/*{{{*/
 {
 	load ();
 	REQUIRE_SYMBOL (flight_to_fields);

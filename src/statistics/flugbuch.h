@@ -7,7 +7,7 @@
  * 2004-09-28
  */
 
-#include <string>
+#include <QString>
 
 // XXX
 #include <q3ptrlist.h>
@@ -22,8 +22,6 @@
 #include "src/model/Person.h"
 #include "src/time/sk_time_t.h"
 
-using namespace std;
-
 class flugbuch_entry
 {
 	public:
@@ -32,24 +30,24 @@ class flugbuch_entry
 		flugbuch_entry ();
 
 		QDate tag;
-		string muster;
-		string registration;
-		string flugzeugfuehrer;
-		string begleiter;
-		string startart;
-		string ort_start;
-		string ort_landung;
+		QString muster;
+		QString registration;
+		QString flugzeugfuehrer;
+		QString begleiter;
+		QString startart;
+		QString ort_start;
+		QString ort_landung;
 		sk_time_t zeit_start;
 		sk_time_t zeit_landung;
 		sk_time_t flugdauer;
-		string bemerkung;
+		QString bemerkung;
 
 		bool invalid;
 
-		string tag_string () const;
-		string zeit_start_string (bool no_letters=false) const;
-		string zeit_landung_string (bool no_letters=false) const;
-		string flugdauer_string () const;
+		QString tag_string () const;
+		QString zeit_start_string (bool no_letters=false) const;
+		QString zeit_landung_string (bool no_letters=false) const;
+		QString flugdauer_string () const;
 };
 
 void make_flugbuch_day (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date);

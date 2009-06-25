@@ -5,8 +5,6 @@
 
 #include <QLineEdit>
 
-using namespace std;
-
 class SkTextBox:public QLineEdit
 {
 	Q_OBJECT

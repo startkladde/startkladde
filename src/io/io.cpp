@@ -5,9 +5,11 @@
 #include <unistd.h>
 #include <termios.h>
 
-string read_password ()
+#include "src/text.h"
+
+QString read_password ()
 	/*
-	 * Reads a string (up to \n) without echo when on a terminal.
+	 * Reads a QString (up to \n) without echo when on a terminal.
 	 */
 {
 	// Find out if we are reading from a terminal.
@@ -26,8 +28,8 @@ string read_password ()
 	}
 
 	// Read the text
-	string r;
-	getline (cin, r);
+	std::string r;
+	getline (std::cin, r);
 //	cin >> r;
 
 	if (tty)
@@ -36,10 +38,10 @@ string read_password ()
 		tcsetattr (STDIN_FILENO, TCSANOW, &term_org);
 
 		// Output the endl that was lost during input.
-		cout << endl;
+		std::cout << std::endl;
 	}
 
-	return r;
+	return std2q (r);
 }
 
 

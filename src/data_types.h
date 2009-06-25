@@ -2,15 +2,13 @@
 #define data_types_h
 
 #include <cstdio>
-#include <string>
-
 #include <QString>
+
+#include <string>
 
 #include <mysql.h>
 
 #include "src/logging/messages.h"
-
-using namespace std;
 
 // TODO: change uebung to schulung1, schulung to schulung2
 enum flug_typ { ft_kein, ft_normal, ft_schul_2, ft_schul_1, ft_schlepp, ft_gast_privat, ft_gast_extern };
@@ -28,26 +26,26 @@ enum db_event_table { db_kein, db_alle, db_person, db_flug, db_flugzeug };
 enum EntityType { st_none, st_plane, st_person, st_startart };
 
 int list_categories (aircraft_category **g, bool include_invalid);
-string category_string (aircraft_category category, length_specification lenspec);
-aircraft_category category_from_registration (string reg);
+QString category_string (aircraft_category category, length_specification lenspec);
+aircraft_category category_from_registration (QString reg);
 
 int list_flugtyp (flug_typ **t, bool include_invalid);
-string flugtyp_string (flug_typ flugtyp, length_specification lenspec);
+QString flugtyp_string (flug_typ flugtyp, length_specification lenspec);
 bool begleiter_erlaubt (flug_typ flugtyp);
 
 int list_modus (flug_modus **, bool);
 int list_sfz_modus (flug_modus **, bool);
-string modus_string (flug_modus, length_specification);
+QString modus_string (flug_modus, length_specification);
 
 bool ist_schulung (flug_typ t);
 bool lands_here (flug_modus m);
 bool starts_here (flug_modus m);
 
 
-//string flugstatus_string (flug_status, length_specification lenspec);
+//QString flugstatus_string (flug_status, length_specification lenspec);
 
-QString std2q (string);
-string q2std (QString);
+QString std2q (std::string);
+std::string q2std (QString);
 
 db_event_table TableFromEntityType (EntityType);
 

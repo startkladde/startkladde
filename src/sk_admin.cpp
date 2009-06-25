@@ -8,13 +8,13 @@
 
 void display_help ()/*{{{*/
 {
-	cout << "usage: skadmin [options...] action [actionopts...]" << endl;
-	cout << "  actions:" << endl;
-	cout << "    - check_db: check database usability." << endl;
-	cout << "    - init_db: initialize the database." << endl;
-	cout << "    - noop: no operation (apart from reading the configuration)." << endl;
-	cout << "    - merge_person correct_id wrong_id...: merge persons" << endl;
-	cout << "  options:" << endl;
+	std::cout << "usage: skadmin [options...] action [actionopts...]" << std::endl;
+	std::cout << "  actions:" << std::endl;
+	std::cout << "    - check_db: check database usability." << std::endl;
+	std::cout << "    - init_db: initialize the database." << std::endl;
+	std::cout << "    - noop: no operation (apart from reading the configuration)." << std::endl;
+	std::cout << "    - merge_person correct_id wrong_id...: merge persons" << std::endl;
+	std::cout << "  options:" << std::endl;
 	options::display_options ("    ");
 }
 /*}}}*/
@@ -28,11 +28,11 @@ void init_db (sk_db &root_db)/*{{{*/
 	}
 	catch (sk_db::ex_init_failed &e)
 	{
-		cout << e.description (true) << endl;
+		std::cout << e.description (true) << std::endl;
 	}
 	catch (sk_exception &e)
 	{
-		cout << e.description (true) << endl;
+		std::cout << e.description (true) << std::endl;
 	}
 }
 /*}}}*/
@@ -46,50 +46,50 @@ int check_db (sk_db &db)/*{{{*/
 		db.connect ();
 		db.check_usability ();
 		db.disconnect ();
-		cout << "Database seems OK" << endl;
+		std::cout << "Database seems OK" << std::endl;
 	}
-	catch (sk_db::ex_access_denied &e) { cout << e.description () << endl; return 3; }
-	catch (sk_db::ex_insufficient_access &e) { cout << e.description () << endl; return 3; }
-	catch (sk_db::ex_unusable &e) { cout << "Database unusable: " << e.description () << endl; return 3; }
-	catch (sk_exception &e) { cout << e.description () << endl; return 2; }
-	catch (...) { cout << "Uncaught exception!" << endl; return 2; }
+	catch (sk_db::ex_access_denied &e) { std::cout << e.description () << std::endl; return 3; }
+	catch (sk_db::ex_insufficient_access &e) { std::cout << e.description () << std::endl; return 3; }
+	catch (sk_db::ex_unusable &e) { std::cout << "Database unusable: " << e.description () << std::endl; return 3; }
+	catch (sk_exception &e) { std::cout << e.description () << std::endl; return 2; }
+	catch (...) { std::cout << "Uncaught exception!" << std::endl; return 2; }
 
 	return 0;
 }
 /*}}}*/
 
-int merge_person (sk_db &db, const list<string> &args)/*{{{*/
+int merge_person (sk_db &db, const std::list<QString> &args)/*{{{*/
 {
 	if (args.size ()<2)
 	{
-		cout << "Error: too few option arguments." << endl
-			<< "Usage: merge_person correct_id wrong_id [wrong_id...]" << endl;
+		std::cout << "Error: too few option arguments." << std::endl
+			<< "Usage: merge_person correct_id wrong_id [wrong_id...]" << std::endl;
 
 		return 1;
 	}
 	else
 	{
-		list<string>::const_iterator args_end=args.end ();
-		list<string>::const_iterator arg=args.begin ();
+		std::list<QString>::const_iterator args_end=args.end ();
+		std::list<QString>::const_iterator arg=args.begin ();
 
 		// Determine the correct ID/*{{{*/
-		db_id correct_id=atoi ((*arg).c_str ());
+		db_id correct_id=(*arg).toLongLong ();
 		if (id_invalid (correct_id))
 		{
-			cout << "Error: " << *arg << " is not a valid ID" << endl;
+			std::cout << "Error: " << *arg << " is not a valid ID" << std::endl;
 			return 2;
 		}
 		arg++;
 /*}}}*/
 
 		// Determine the wrong IDs/*{{{*/
-		list<db_id> wrong_ids;
+		std::list<db_id> wrong_ids;
 		for (; arg!=args_end; arg++)
 		{
-			db_id wrong_id=atoi ((*arg).c_str ());
+			db_id wrong_id=(*arg).toLongLong();
 			if (id_invalid (wrong_id))
 			{
-				cout << "Error: " << *arg << " is not a valid ID" << endl;
+				std::cout << "Error: " << *arg << " is not a valid ID" << std::endl;
 				return 2;
 			}
 			wrong_ids.push_back (wrong_id);
@@ -97,11 +97,11 @@ int merge_person (sk_db &db, const list<string> &args)/*{{{*/
 /*}}}*/
 
 		// Display what we're about to do/*{{{*/
-		cout << "Merging wrong person";
-		if (wrong_ids.size ()>1) cout << "s";
-		for (list<db_id>::iterator i=wrong_ids.begin (); i!=wrong_ids.end (); ++i)
-			cout << " " << *i;
-		cout << " into " << correct_id << "." << endl;
+		std::cout << "Merging wrong person";
+		if (wrong_ids.size ()>1) std::cout << "s";
+		for (std::list<db_id>::iterator i=wrong_ids.begin (); i!=wrong_ids.end (); ++i)
+			std::cout << " " << *i;
+		std::cout << " into " << correct_id << "." << std::endl;
 /*}}}*/
 
 		try
@@ -109,23 +109,23 @@ int merge_person (sk_db &db, const list<string> &args)/*{{{*/
 			db.connect ();
 			db.use_db ();
 
-			for (list<db_id>::iterator i=wrong_ids.begin (); i!=wrong_ids.end (); ++i)
+			for (std::list<db_id>::iterator i=wrong_ids.begin (); i!=wrong_ids.end (); ++i)
 			{
 				db_id wrong_id=*i;
-				cout << "Merging " << wrong_id << " into " << correct_id << "." << endl;
+				std::cout << "Merging " << wrong_id << " into " << correct_id << "." << std::endl;
 				db.merge_person (correct_id, wrong_id);
 			}
 
-			cout << "Success" << endl;
+			std::cout << "Success" << std::endl;
 		}
 		catch (sk_db::ex_operation_failed &e)
 		{
-			cout << "Error: " << e.description (true) << endl;
+			std::cout << "Error: " << e.description (true) << std::endl;
 			return 2;
 		}
 		catch (sk_exception &e)
 		{
-			cout << "Error: " << e.description () << endl;
+			std::cout << "Error: " << e.description () << std::endl;
 			return 2;
 		}
 	}
@@ -139,7 +139,7 @@ int main (int argc, char *argv[])/*{{{*/
 
 	if (argc<=1)
 	{
-		cout << "Error: Missing an action." << endl;
+		std::cout << "Error: Missing an action." << std::endl;
 		display_help ();
 		return 1;
 	}
@@ -153,7 +153,7 @@ int main (int argc, char *argv[])/*{{{*/
 			display_help ();
 		else if (opts.non_options.empty ())
 		{
-			cout << "Error: Missing an action." << endl;
+			std::cout << "Error: Missing an action." << std::endl;
 			display_help ();
 			return 1;
 		}
@@ -161,7 +161,7 @@ int main (int argc, char *argv[])/*{{{*/
 		{
 			enum admin_action { aa_none, aa_init_db, aa_noop, aa_check_db, aa_merge_person };
 
-			string action=opts.non_options.front ();
+			QString action=opts.non_options.front ();
 			admin_action act=aa_none;
 
 			if (action=="init_db") act=aa_init_db;
@@ -171,7 +171,7 @@ int main (int argc, char *argv[])/*{{{*/
 
 			if (act!=aa_none) opts.read_config_files (NULL, NULL, argc, argv);
 
-			list<string>::iterator nonopt=opts.non_options.begin (); nonopt++;
+			QStringList::iterator nonopt=opts.non_options.begin (); nonopt++;
 
 			// Determine whether we need an root connection (need_root_db)/*{{{*/
 			bool need_root_db=false;
@@ -190,12 +190,12 @@ int main (int argc, char *argv[])/*{{{*/
 /*}}}*/
 
 			// Get the root password (root_password)/*{{{*/
-			string root_password;
+			QString root_password;
 			if (need_root_db)
 			{
-				if (opts.root_password.empty ()) 
+				if (opts.root_password.isEmpty ())
 				{
-					cout << "Enter the password for " << opts.root_name << "@" << opts.server_display_name << ":" << opts.port << ": ";
+					std::cout << "Enter the password for " << opts.root_name << "@" << opts.server_display_name << ":" << opts.port << ": ";
 					root_password=read_password ();
 				}
 				else
@@ -224,13 +224,13 @@ int main (int argc, char *argv[])/*{{{*/
 					return check_db (db);
 					break;
 				case aa_merge_person:
-					return merge_person (db, list<string> (nonopt, opts.non_options.end ()));
+					return merge_person (db, std::list<QString> (nonopt, opts.non_options.end ()));
 					break;
 				case aa_noop:
-					cout << "noop" << endl;
+					std::cout << "noop" << std::endl;
 					break;
 				case aa_none:
-					cout << "Error: Unknown option " << action << "." << endl;
+					std::cout << "Error: Unknown option " << action << "." << std::endl;
 					display_help ();
 					break;
 				// No default to allow compiler warnings

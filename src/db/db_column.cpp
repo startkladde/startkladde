@@ -13,7 +13,7 @@ db_column::db_column ()/*{{{*/
 	init_flags ();
 }/*}}}*/
 
-db_column::db_column (const string &_name, const enum_field_types _type, const unsigned int _length, const string &_def)/*{{{*/
+db_column::db_column (const QString &_name, const enum_field_types _type, const unsigned int _length, const QString &_def)/*{{{*/
 	:name (_name), type (_type), length (_length), def (_def)
 {
 	init_flags ();
@@ -25,7 +25,7 @@ db_column::db_column (const MYSQL_FIELD &f)/*{{{*/
 	if (f.name) name=f.name;
 	type=f.type;
 	length=f.length;
-	if (f.def) def=string (f.def);
+	if (f.def) def=QString (f.def);
 	not_null=(f.flags & NOT_NULL_FLAG);
 	type_unsigned=(f.flags & UNSIGNED_FLAG);
 	zerofill=(f.flags & ZEROFILL_FLAG);
@@ -33,10 +33,10 @@ db_column::db_column (const MYSQL_FIELD &f)/*{{{*/
 }
 /*}}}*/
 
-string db_column::type_string () const/*{{{*/
+QString db_column::type_string () const/*{{{*/
 	// Now why doesn't the MySQL library have function to do this?
 {
-	string r="???";
+	QString r="???";
 	switch (type)
 	{
 		case FIELD_TYPE_TINY: r="TINYINT"; break;
@@ -74,19 +74,19 @@ string db_column::type_string () const/*{{{*/
 		case MYSQL_TYPE_NEWDECIMAL: r="NEWDECIMAL"; break;
 	}
 
-	if (length>0) r+="("+num_to_string (length)+")";
+	if (length>0) r+="("+QString::number (length)+")";
 
 	return r;
 }
 /*}}}*/
 
-string db_column::mysql_spec () const/*{{{*/
+QString db_column::mysql_spec () const/*{{{*/
 {
-	string r;
+	QString r;
 
 	r=name;
 	r+=" "+type_string ();
-	if (!def.empty ()) r+=" "+string ("default ")+def;
+	if (!def.isEmpty()) r+=" "+QString ("default ")+def;
 	if (not_null) r+=" NOT NULL";
 	if (IS_NUM (type) && type_unsigned) r+=" UNSIGNED";
 	if (IS_NUM (type) && zerofill) r+=" ZEROFILL";
@@ -98,7 +98,7 @@ string db_column::mysql_spec () const/*{{{*/
 }
 /*}}}*/
 
-ostream &operator<< (ostream &s, const db_column &c)/*{{{*/
+std::ostream &operator<< (std::ostream &s, const db_column &c)/*{{{*/
 {
 	return s << c.mysql_spec ();
 }

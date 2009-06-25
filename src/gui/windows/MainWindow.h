@@ -3,7 +3,7 @@
 
 #include <cstdio>
 #include <stdlib.h>
-#include <string>
+#include <QString>
 #include <vector>
 
 #include <QApplication>
@@ -40,7 +40,6 @@ class StatisticsWindow;
 class EntityListWindow;
 class SplashScreen;
 
-using namespace std;
 using namespace Qt;
 
 // Info label IDs/*{{{*/
@@ -60,7 +59,7 @@ class MainWindow:public QMainWindow
 
 	public:
 		enum db_state_t { ds_uninitialized, ds_no_connection, ds_established, ds_unusable, ds_connection_lost };
-		MainWindow (QWidget *parent, sk_db *_db, list<sk_plugin> *_plugins, const char *name, WFlags f=WType_TopLevel);
+		MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plugins, const char *name, WFlags f=WType_TopLevel);
 		~MainWindow ();
 		void start_db ();
 
@@ -87,9 +86,9 @@ class MainWindow:public QMainWindow
 		// Database/*{{{*/
 		sk_db *db;
 		db_state_t db_state;
-		string db_error;
-		bool try_initialize_db (string reason);
-		void set_connection_label (const string &text, const QColor &color=QColor (0, 0, 0));
+		QString db_error;
+		bool try_initialize_db (QString reason);
+		void set_connection_label (const QString &text, const QColor &color=QColor (0, 0, 0));
 		// FSM
 		void db_do_action ();
 		void db_set_state (db_state_t new_state);
@@ -178,14 +177,14 @@ class MainWindow:public QMainWindow
 
 
 		QTextEdit *log;
-		list<sk_plugin> *plugins;
+		std::list<sk_plugin> *plugins;
 		sk_plugin *weather_plugin;
 
 	public slots:
 		void slot_db_update (db_event *event);
 		void set_anzeigedatum (QDate);
-		void log_message (string message);
-		void log_message (string *message);
+		void log_message (QString message);
+		void log_message (QString *message);
 		void restart_all_plugins ();
 		void openWeatherDialog ();
 

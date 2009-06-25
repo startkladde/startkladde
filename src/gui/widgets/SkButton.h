@@ -6,8 +6,6 @@
 #include "src/data_types.h"
 #include "src/db/db_types.h"
 
-using namespace std;
-
 class SkButton:public QPushButton
 {
 	Q_OBJECT

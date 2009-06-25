@@ -121,7 +121,7 @@ EntityListWindow::~EntityListWindow ()/*{{{*/
 //		printf ("%d\n", table_header->sectionSize (i));
 }/*}}}*/
 
-SkTableItem *EntityListWindow::set_table_cell (int row, int col, const string &text, QColor bg, db_id id)/*{{{*/
+SkTableItem *EntityListWindow::set_table_cell (int row, int col, const QString &text, QColor bg, db_id id)/*{{{*/
 	/*
 	 * Sets a table in the cell to a given text and background color and save an ID.
 	 * Parameters:
@@ -181,10 +181,10 @@ void EntityListWindow::fillInEntity (EntityType t, int row, Entity *st)/*{{{*/
 			set_table_cell (row, tbl_fz_wettkennz, fz->wettbewerbskennzeichen);
 			set_table_cell (row, tbl_fz_typ, fz->typ);
 			set_table_cell (row, tbl_fz_category, category_string (fz->category, ls_tabelle));
-			set_table_cell (row, tbl_fz_sitze, q2std (s));
+			set_table_cell (row, tbl_fz_sitze, s);
 			set_table_cell (row, tbl_fz_club, fz->club);
 			set_table_cell (row, tbl_fz_bemerkungen, fz->bemerkungen);
-			set_table_cell (row, tbl_fz_id, num_to_string (fz->id));
+			set_table_cell (row, tbl_fz_id, QString::number (fz->id));
 			set_table_cell (row, tbl_fz_editierbar, fz->editierbar?"Ja":"Nein");
 		} break;
 		case st_person:
@@ -195,7 +195,7 @@ void EntityListWindow::fillInEntity (EntityType t, int row, Entity *st)/*{{{*/
 			set_table_cell (row, tbl_ps_club, ps->club);
 			set_table_cell (row, tbl_ps_lvnum, ps->landesverbands_nummer);
 			set_table_cell (row, tbl_ps_bemerkungen, ps->bemerkungen);
-			set_table_cell (row, tbl_ps_id, num_to_string (ps->id));
+			set_table_cell (row, tbl_ps_id, QString::number (ps->id));
 			set_table_cell (row, tbl_ps_editierbar, ps->editierbar?"Ja":"Nein");
 		} break;
 		default:
@@ -621,8 +621,8 @@ void EntityListWindow::tabelle_loeschen (int row)/*{{{*/
 		Entity *s=newEntity (type);
 		if (entityFromId (type, s, id)==0)
 		{
-			QString bez_a=std2q (entityLabel (type, cas_akkusativ));
-			QString bez_n=std2q (entityLabel (type, cas_nominativ));
+			QString bez_a=entityLabel (type, cas_akkusativ);
+			QString bez_n=entityLabel (type, cas_nominativ);
 
 			if (!s->editierbar)
 			{
@@ -635,7 +635,7 @@ void EntityListWindow::tabelle_loeschen (int row)/*{{{*/
 			else
 			{
 				int res=QMessageBox::information (this, "Wirklich l�schen?",
-					bez_a+" \""+std2q (s->text_name ())+"\" wirklich l�schen?", "&Ja", "&Nein", QString::null, 0, 1);
+					bez_a+" \""+s->text_name ()+"\" wirklich l�schen?", "&Ja", "&Nein", QString::null, 0, 1);
 
 				delete s;
 
@@ -646,7 +646,7 @@ void EntityListWindow::tabelle_loeschen (int row)/*{{{*/
 					{
 						// L�schen hat nicht geklappt
 						QMessageBox::warning (this, "Fehler",
-							"Fehler beim L�schen: "+std2q (db->db_error_description (res)), QMessageBox::Ok, QMessageBox::NoButton);
+							"Fehler beim L�schen: "+db->db_error_description (res), QMessageBox::Ok, QMessageBox::NoButton);
 					}
 				}
 			}

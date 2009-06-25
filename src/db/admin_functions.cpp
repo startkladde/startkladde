@@ -5,7 +5,7 @@
 #include "src/db/db_column.h"
 #include "src/db/db_table.h"
 
-void initialize_database (sk_db &root_db, string _username, string _userpass, string _database, string _sk_admin_name, string _sk_admin_password)/*{{{*/
+void initialize_database (sk_db &root_db, QString _username, QString _userpass, QString _database, QString _sk_admin_name, QString _sk_admin_password)/*{{{*/
 	throw (sk_db::ex_init_failed, sk_db::ex_not_connected, sk_db::ex_access_denied, sk_db::ex_parameter_error)
 	// This function initializes the database for use with the program.
 	// This assumes that root_db has user data for root and is connected.
@@ -22,14 +22,14 @@ void initialize_database (sk_db &root_db, string _username, string _userpass, st
 	// 4 Correct tables are writeable            ???
 	// 5 All columns exist/have the correct type SHOW COLUMNS FROM
 
-	ostream &output=cout;
+	std::ostream &output=std::cout;
 
-	output << "Initializing database " << _database << " for user " << _username << "." << endl;
+	output << "Initializing database " << _database << " for user " << _username << "." << std::endl;
 
 	// TODO: add reason to the exception returned and add catch-all exception
 	// handlers.
 
-	string query;
+	QString query;
 	// User database connection for testing./*{{{*/
 	sk_db user_db;
 	user_db.set_connection_data (root_db.get_server (), root_db.get_port (), _username, _userpass);
@@ -45,24 +45,24 @@ void initialize_database (sk_db &root_db, string _username, string _userpass, st
 /*}}}*/
 
 	// -1. Paramters/*{{{*/
-	if (_username.empty ()) throw sk_db::ex_parameter_error ("Benutzername nicht angegeben");
+	if (_username.isEmpty ()) throw sk_db::ex_parameter_error ("Benutzername nicht angegeben");
 	// Passwords may not be empty.
-	if (_userpass.empty ()) throw sk_db::ex_parameter_error ("Kein Benutzerpasswort angegeben");
-	if (_database.empty ()) throw sk_db::ex_parameter_error ("Datenbank nicht angegeben");
-	if (_sk_admin_name.empty ()) throw sk_db::ex_parameter_error ("Adminstratorname nicht angegeben");
-	if (_sk_admin_password.empty ()) throw sk_db::ex_parameter_error ("Kein Administratorpasswort angegeben");
+	if (_userpass.isEmpty ()) throw sk_db::ex_parameter_error ("Kein Benutzerpasswort angegeben");
+	if (_database.isEmpty ()) throw sk_db::ex_parameter_error ("Datenbank nicht angegeben");
+	if (_sk_admin_name.isEmpty ()) throw sk_db::ex_parameter_error ("Adminstratorname nicht angegeben");
+	if (_sk_admin_password.isEmpty ()) throw sk_db::ex_parameter_error ("Kein Administratorpasswort angegeben");
 /*}}}*/
 
 	// 0. root connection/*{{{*/
 	// We must already have connected.
-	output << "0. Checking root connection..." << endl;
+	output << "0. Checking root connection..." << std::endl;
 	if (!root_db.connected ()) throw sk_db::ex_not_connected ();
 
 	// Furthermore, we need to get access to the "mysql" database. If we can't
 	// get it, that means that we are not root (or something different).
-	output << "Opening mysql database" << endl;
+	output << "Opening mysql database" << std::endl;
 	try { root_db.use_db ("mysql"); }
-	catch (sk_db::ex_database_not_accessible) { throw sk_db::ex_init_failed ("root-Datenbankzugriff nicht möglich"); }
+	catch (sk_db::ex_database_not_accessible) { throw sk_db::ex_init_failed ("root-Datenbankzugriff nicht mï¿½glich"); }
 	catch (sk_db::ex_database_not_found) { throw sk_db::ex_init_failed ("Datenbank \"mysql\" nicht gefunden"); }
 	catch (sk_db::ex_insufficient_access &e) { throw sk_db::ex_init_failed (e.description ()); }
 /*}}}*/
@@ -81,23 +81,23 @@ void initialize_database (sk_db &root_db, string _username, string _userpass, st
 	// Note, however, that we cannot grant the table specific rights yet
 	// because the tables might not exist yet and MySQL does not allow this.
 
-	output << "1a. Granting the user access to the database..." << endl;
+	output << "1a. Granting the user access to the database..." << std::endl;
 	if (root_db.grant ("SELECT", _database+".*", _username, _userpass)!=db_ok) throw sk_db::ex_init_failed ("Fehler bei Query");
 	if (root_db.flush_privileges ()!=db_ok) throw sk_db::ex_init_failed ("Fehler bei Query");
 
 	// Check if we succeeded
 	try
 	{
-		output << "Checking if the user can connect to the server" << endl;
+		output << "Checking if the user can connect to the server" << std::endl;
 		user_db.connect ();
 	}
-	catch (sk_db::ex_allocation_error &e) { output << "failed" << endl; throw sk_db::ex_init_failed (e.description ()); }
-	catch (sk_db::ex_connection_failed &e) { output << "failed" << endl; throw sk_db::ex_init_failed (e.description ()); }
+	catch (sk_db::ex_allocation_error &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
+	catch (sk_db::ex_connection_failed &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
 	catch (sk_db::ex_access_denied &e)
 	{
 		// Access still is not possible. This means that something is majorly
 		// wrong.
-		output << "failed" << endl;
+		output << "failed" << std::endl;
 		throw sk_db::ex_init_failed (e.description ());
 	}
 /*}}}*/
@@ -109,23 +109,23 @@ void initialize_database (sk_db &root_db, string _username, string _userpass, st
 	// The query performed is:
 	//   - grant ALL on $database.* to $admin_name identified by $userpass
 
-	output << "1b. Granting the admin access to the database..." << endl;
+	output << "1b. Granting the admin access to the database..." << std::endl;
 	if (root_db.grant ("ALL", _database+".*", _sk_admin_name, _sk_admin_password)!=db_ok) throw sk_db::ex_init_failed ("Fehler bei Query");
 	if (root_db.flush_privileges ()!=db_ok) throw sk_db::ex_init_failed ("Fehler bei Query");
 
 	// Check if we succeeded
 	try
 	{
-		output << "Checking if the admin can connect to the server" << endl;
+		output << "Checking if the admin can connect to the server" << std::endl;
 		sk_admin_db.connect ();
 	}
-	catch (sk_db::ex_allocation_error &e) { output << "failed" << endl; throw sk_db::ex_init_failed (e.description ()); }
-	catch (sk_db::ex_connection_failed &e) { output << "failed" << endl; throw sk_db::ex_init_failed (e.description ()); }
+	catch (sk_db::ex_allocation_error &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
+	catch (sk_db::ex_connection_failed &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
 	catch (sk_db::ex_access_denied &e)
 	{
 		// Access still is not possible. This means that something is majorly
 		// wrong.
-		output << "failed" << endl;
+		output << "failed" << std::endl;
 		throw sk_db::ex_init_failed (e.description ());
 	}
 /*}}}*/
@@ -135,26 +135,26 @@ void initialize_database (sk_db &root_db, string _username, string _userpass, st
 	// It must be possible for the user to access the database (use $database).
 	// We gave the user access in step 1. Now we have to create the table if it
 	// does not exist.
-	output << "2. Ensuring the database exists..." << endl;
+	output << "2. Ensuring the database exists..." << std::endl;
 	if (root_db.create_database (_database)!=db_ok) throw sk_db::ex_init_failed ("Fehler beim Anlegen der Datenbank "+_database);
 
 	// Now check if the user can use the database.
-	output << "2a. Checking if the user can use the database" << endl;
+	output << "2a. Checking if the user can use the database" << std::endl;
 	try { user_db.use_db (); }
-	catch (sk_db::ex_database_not_accessible &e) { output << "failed" << endl; throw sk_db::ex_init_failed (e.description ()); }
+	catch (sk_db::ex_database_not_accessible &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
 	catch (sk_db::ex_insufficient_access &e) { throw sk_db::ex_init_failed (e.description ()); }
-	catch (sk_db::ex_database_not_found &e) { output << "failed" << endl; throw sk_db::ex_init_failed (e.description ()); }
+	catch (sk_db::ex_database_not_found &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
 /*}}}*/
 
 	// 2b. Admin database access possible/*{{{*/
 	// ==================================
 	// It must be possible for the admin to access the database (use $database).
 	// We created the database in step 2a, so we only have to check.
-	output << "2b. Checking if the admin can use the database" << endl;
+	output << "2b. Checking if the admin can use the database" << std::endl;
 	try { sk_admin_db.use_db (); }
-	catch (sk_db::ex_database_not_accessible &e) { output << "failed" << endl; throw sk_db::ex_init_failed (e.description ()); }
+	catch (sk_db::ex_database_not_accessible &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
 	catch (sk_db::ex_insufficient_access &e) { throw sk_db::ex_init_failed (e.description ()); }
-	catch (sk_db::ex_database_not_found &e) { output << "failed" << endl; throw sk_db::ex_init_failed (e.description ()); }
+	catch (sk_db::ex_database_not_found &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
 /*}}}*/
 
 	// 3. All tables exist/*{{{*/
@@ -164,41 +164,41 @@ void initialize_database (sk_db &root_db, string _username, string _userpass, st
 	// For checking, use the user table as the user must have all require
 	// permissions by now.
 
-	output << "3. Checking table existance..." << endl;
+	output << "3. Checking table existance..." << std::endl;
 
 	// Build a list of tables that are required.
-	list<string> tables_required;
+	QStringList tables_required;
 	user_db.list_required_tables (tables_required);
 
 	// Get a list of tables that are present.
-	list<string> tables_present;
+	QStringList tables_present;
 	if (user_db.list_tables (tables_present)!=db_ok) throw sk_db::ex_init_failed ("Fehler beim Listen der Tabellen");
-	list<string>::const_iterator present_end=tables_present.end ();
-	list<string>::const_iterator present_begin=tables_present.begin ();
+	QStringList::const_iterator present_end=tables_present.end ();
+	QStringList::const_iterator present_begin=tables_present.begin ();
 
 	// Switch to the database
-	try 
+	try
 	{
-		output << "Switching to the database" << endl;
+		output << "Switching to the database" << std::endl;
 		root_db.use_db (_database);
 	}
 	catch (...) { throw sk_db::ex_init_failed ("Unbekannter Fehler (Schritt 3)"); }
 
 	// Create the missing tables
-	list<string>::const_iterator required_end=tables_required.end ();
-	for (list<string>::const_iterator it=tables_required.begin (); it!=required_end; ++it)
+	QStringList::const_iterator required_end=tables_required.end ();
+	for (QStringList::const_iterator it=tables_required.begin (); it!=required_end; ++it)
 	{
 		output << "Checking table " << *it << "...";
-		if (find (present_begin, present_end, *it)==present_end)
+		if (std::find (present_begin, present_end, *it)==present_end)
 		{
-			output << "missing. Creating it." << endl;
+			output << "missing. Creating it." << std::endl;
 
 			db_table tab=user_db.get_table_information (*it, true);
 			if (root_db.create_table (tab)!=db_ok) throw sk_db::ex_init_failed ("Fehler beim Anlegen der Tabelle "+tab.name);
 		}
 		else
 		{
-			output << "OK" << endl;
+			output << "OK" << std::endl;
 		}
 	}
 /*}}}*/
@@ -207,22 +207,22 @@ void initialize_database (sk_db &root_db, string _username, string _userpass, st
 	// ===============================
 	// It must be possible for the user to write certain tables.
 	// We give the user access unconditionally.
-	output << "4. Setting user write access..." << endl;
-	list<string> writeable;
+	output << "4. Setting user write access..." << std::endl;
+	QStringList writeable;
 	user_db.list_required_writeable_tables (writeable);
-	if (!writeable.empty ())
+	if (!writeable.isEmpty ())
 	{
 		output << "Granting write access to ";
-		list<string>::const_iterator end=writeable.end ();
-		for (list<string>::const_iterator it=writeable.begin (); it!=end; ++it)
+		QStringList::const_iterator end=writeable.end ();
+		for (QStringList::const_iterator it=writeable.begin (); it!=end; ++it)
 		{
 			if (it!=writeable.begin ()) output << ", ";
 			output << *it;
 		}
-		output << " to the user" << endl;
+		output << " to the user" << std::endl;
 
 		end=writeable.end ();
-		for (list<string>::const_iterator it=writeable.begin (); it!=end; ++it)
+		for (QStringList::const_iterator it=writeable.begin (); it!=end; ++it)
 			if (root_db.grant ("insert,update,delete", _database+"."+*it, _username)!=db_ok)
 				throw sk_db::ex_init_failed ("Fehler bei Query");
 
@@ -236,32 +236,32 @@ void initialize_database (sk_db &root_db, string _username, string _userpass, st
 	// operational.
 	// TODO optional columns.
 
-	output << "5. Checking columns..." << endl;
+	output << "5. Checking columns..." << std::endl;
 	// We can use tables_required/_end from above.
-	for (list<string>::const_iterator required_table_name=tables_required.begin (); required_table_name!=required_end; ++required_table_name)
+	for (QStringList::const_iterator required_table_name=tables_required.begin (); required_table_name!=required_end; ++required_table_name)
 	{
 		// required_table_name: iterator to the name of the table we're checking
-		output << "Checking table " << *required_table_name << endl;
+		output << "Checking table " << *required_table_name << std::endl;
 
 		// columns_present/_begin/_end: the columns that we have
-		list<db_column> columns_present;
+		std::list<db_column> columns_present;
 		if (user_db.list_columns (columns_present, *required_table_name)!=db_ok) throw sk_db::ex_init_failed ("Fehler beim Listen der Spalten in "+*required_table_name);
-		list<db_column>::const_iterator columns_present_begin=columns_present.begin ();
-		list<db_column>::const_iterator columns_present_end=columns_present.end ();
+		std::list<db_column>::const_iterator columns_present_begin=columns_present.begin ();
+		std::list<db_column>::const_iterator columns_present_end=columns_present.end ();
 
 		// columns_required/_end: the columns that we need
 		db_table required_table=user_db.get_table_information (*required_table_name, true);
-		list<db_column> &columns_required=required_table.columns;
-		list<db_column>::const_iterator columns_required_end=columns_required.end ();
+		std::list<db_column> &columns_required=required_table.columns;
+		std::list<db_column>::const_iterator columns_required_end=columns_required.end ();
 
 		// Iterate over the required columns, checking existance and correct
 		// type.
-		for (list<db_column>::const_iterator required_column=columns_required.begin (); required_column!=columns_required_end; required_column++)
+		for (std::list<db_column>::const_iterator required_column=columns_required.begin (); required_column!=columns_required_end; required_column++)
 		{
 			// required_column: iterator to the column we're checking
 
 			// In the list of columns that we have, find the one with the same name.
-			list<db_column>::const_iterator col;
+			std::list<db_column>::const_iterator col;
 			for (col=columns_present_begin; col!=columns_present_end; ++col)
 				if ((*col).name==(*required_column).name)
 					break;
@@ -272,14 +272,14 @@ void initialize_database (sk_db &root_db, string _username, string _userpass, st
 			if (col==columns_present_end)
 			{
 				// There is no column with that name
-				output << "Column missing: " << (*required_column).name << ". Adding it." << endl;
+				output << "Column missing: " << (*required_column).name << ". Adding it." << std::endl;
 
 				if (root_db.add_column (*required_table_name, *required_column)!=db_ok) throw sk_db::ex_init_failed ("Fehler bei Query");
 			}
 			else if ((*col).type!=(*required_column).type || (*col).length<(*required_column).length)
 			{
 				// The type does not match or the field is too short
-				output << "Column type mismatch: " << (*required_column).name << " is of type " << (*col).type_string () << " but should be " << (*required_column).type_string () << ". Changing it." << endl;
+				output << "Column type mismatch: " << (*required_column).name << " is of type " << (*col).type_string () << " but should be " << (*required_column).type_string () << ". Changing it." << std::endl;
 
 				if (root_db.modify_column (*required_table_name, *required_column)!=db_ok) throw sk_db::ex_init_failed ("Fehler bei Query");
 			}
@@ -287,7 +287,7 @@ void initialize_database (sk_db &root_db, string _username, string _userpass, st
 	}
 /*}}}*/
 
-	output << "Database initialization succeeded" << endl;
+	output << "Database initialization succeeded" << std::endl;
 }
 /*}}}*/
 

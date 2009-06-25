@@ -17,8 +17,6 @@
 #include "src/gui/widgets/SkTreeWidgetItem.h"
 #include "src/model/Entity.h"
 
-using namespace std;
-
 enum selection_result { sr_cancelled, sr_ok, sr_new, sr_unknown, sr_none_selected };
 
 /*
@@ -75,7 +73,7 @@ template<class TYPE> class EntitySelectWindow:public selector_base/*{{{*/
 		~EntitySelectWindow ();
 		void test ();
 		virtual selection_result do_selection (QString, QString, QPtrList<TYPE> &, db_id preselected=invalid_id);
-		static string selection_result_text (selection_result sr);
+		static QString selection_result_text (selection_result sr);
 		db_id get_result_id ();
 		selector_helper *helper () { return _helper; }
 
@@ -172,7 +170,7 @@ template<class TYPE> void EntitySelectWindow<TYPE>::slot_double_click (QTreeWidg
 }
 /*}}}*/
 
-template<class TYPE> string EntitySelectWindow<TYPE>::selection_result_text (selection_result sr)/*{{{*/
+template<class TYPE> QString EntitySelectWindow<TYPE>::selection_result_text (selection_result sr)/*{{{*/
 	/*
 	 * Creates a text describing a selection_result.
 	 * Parameters:
@@ -214,13 +212,13 @@ template<class TYPE> int EntitySelectWindow<TYPE>::setup_columns ()/*{{{*/
 	 */
 {
 	int i=0;
-	string title;
+	QString title;
 
 	QStringList header;
 
-	while (title=TYPE::get_selector_caption (i), !title.empty ())
+	while (title=TYPE::get_selector_caption (i), !title.isEmpty ())
 	{
-		header.append (std2q (title));
+		header.append (title);
 		++i;
 	}
 
@@ -242,7 +240,7 @@ template<class TYPE> void EntitySelectWindow<TYPE>::set_entry (SkTreeWidgetItem 
 {
 	for (int i=0; i<num_columns; i++)
 	{
-		item->setText (i, std2q (entry->get_selector_value (i)));
+		item->setText (i, entry->get_selector_value (i));
 	}
 }
 /*}}}*/

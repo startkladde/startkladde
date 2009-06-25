@@ -21,7 +21,7 @@ condition_t::condition_t (condition_type_t _type, db_id _id1)/*{{{*/
 }
 /*}}}*/
 
-condition_t::condition_t (condition_type_t _type, string *_text1, string *_text2)/*{{{*/
+condition_t::condition_t (condition_type_t _type, QString *_text1, QString *_text2)/*{{{*/
 {
 	init ();
 	type=_type;
@@ -71,7 +71,7 @@ void condition_t::init ()/*{{{*/
 }
 /*}}}*/
 
-void condition_t::set_meta_query (db_object_type _table, const string *_column)/*{{{*/
+void condition_t::set_meta_query (db_object_type _table, const QString *_column)/*{{{*/
 {
 	meta_query_table=_table;
 	meta_query_column=_column;

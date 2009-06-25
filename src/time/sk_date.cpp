@@ -20,9 +20,9 @@ sk_date sk_date::current ()/*{{{*/
 }
 /*}}}*/
 
-string sk_date::text ()/*{{{*/
+QString sk_date::text ()/*{{{*/
 {
-	return (num_to_string (year, 4)+"-"+num_to_string (month, 2)+"-"+num_to_string (day, 2));
+	return (QString::number (year, 4)+"-"+QString::number (month, 2)+"-"+QString::number (day, 2));
 }
 /*}}}*/
 

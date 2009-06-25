@@ -4,36 +4,36 @@
 
 #include "src/text.h"
 
-void object_field::parse_text (const string &text)/*{{{*/
+void object_field::parse_text (const QString &text)/*{{{*/
 {
 	switch (data_type)
 	{
 		case dt_string: current_string=text; break;
 		case dt_db_id:
 		{
-			if (text.empty () || text=="-")
+			if (text.isEmpty () || text=="-")
 				current_db_id=invalid_id;
 			else
-				current_db_id=atoll (text.c_str ());
+				current_db_id=text.toLongLong ();
 		} break;
-		case dt_bool: current_bool=(atoi (text.c_str ())!=0); break;
+		case dt_bool: current_bool=(text.toInt()!=0); break;
 		case dt_password: current_string=text; break;
 		case dt_special: break;
 	}
 }
 /*}}}*/
 
-string object_field::make_text () const/*{{{*/
+QString object_field::make_text () const/*{{{*/
 {
 	switch (data_type)
 	{
 		case dt_string: return current_string; break;
-		case dt_db_id: 
+		case dt_db_id:
 		{
 			if (id_invalid (current_db_id))
 				return "";
 			else
-				return num_to_string (current_db_id);
+				return QString::number(current_db_id);
 		} break;
 		case dt_bool: return current_bool?"1":"0"; break;
 		case dt_password: return current_string; break;
@@ -44,7 +44,7 @@ string object_field::make_text () const/*{{{*/
 }
 /*}}}*/
 
-string object_field::make_text_safe () const/*{{{*/
+QString object_field::make_text_safe () const/*{{{*/
 {
 	if (data_type==dt_password)
 		return "***";
@@ -53,7 +53,7 @@ string object_field::make_text_safe () const/*{{{*/
 }
 /*}}}*/
 
-string object_field::make_display_text () const/*{{{*/
+QString object_field::make_display_text () const/*{{{*/
 {
 	switch (data_type)
 	{
@@ -63,7 +63,7 @@ string object_field::make_display_text () const/*{{{*/
 			if (id_invalid (current_db_id))
 				return "-";
 			else
-				return num_to_string (current_db_id);
+				return QString::number(current_db_id);
 		} break;
 		case dt_bool: return current_bool?"Ja":"Nein"; break;
 		case dt_password: return "***"; break;

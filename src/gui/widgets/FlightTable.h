@@ -13,7 +13,6 @@
 #include "src/model/LaunchType.h"
 #include "src/time/sk_time_t.h"
 
-using namespace std;
 
 // Indizies zur Zuordnung von Feldern zu Tabellenspalten/*{{{*/
 const int tbl_idx_registration				=0;
@@ -80,11 +79,9 @@ class FlightTable:public SkTable
 
 	private:
 		int insert_row_for_flight (Flight *f);
-		void set_cell_by_type (int row, int column, zell_typ typ, char *button_text, string zeit_text, QColor bg, db_id data, const char *);
+		void set_cell_by_type (int row, int column, zell_typ typ, QString button_text, QString zeit_text, QColor bg, db_id data, const char *);
 		void set_flight (int, Flight *, db_id, bool);
 		SkButton *set_button_or_text (int row, int column, bool set_button, QString text, QColor bg, db_id data);
-		SkButton *set_button_or_text (int row, int column, bool set_button, string text, QColor bg, db_id data);
-		SkButton *set_button_or_text (int row, int column, bool set_button, const char *text, QColor bg, db_id data);
 
 		QDate anzeigedatum;
 		sk_db *db;

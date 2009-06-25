@@ -8,13 +8,12 @@
  */
 
 #include <iostream>
-#include <string>
+#include <QString>
 
 #include <mysql.h>
 
 #include "src/text.h"
 
-using namespace std;
 
 // Flags: NOT_NULL_FLAG, PRI_KEY_FLAG, UNIQUE_KEY_FLAG, MULTIPLE_KEY_FLAG, UNSIGNED_FLAG, ZEROFILL_FLAG, BINARY_FLAG, AUTO_INCREMENT_FLAG
 //
@@ -25,14 +24,14 @@ class db_column
 	public:
 		db_column ();
 		db_column (const MYSQL_FIELD &f);
-		db_column (const string &_name, const enum_field_types _type, const unsigned int _length=0, const string &_def="");
+		db_column (const QString &_name, const enum_field_types _type, const unsigned int _length=0, const QString &_def="");
 		void init_flags ();
 
 		// name                // MYSQL_FIELD member
-		string name;           // name
+		QString name;           // name
 		enum_field_types type; // type
 		unsigned int length;   // length
-		string def;            // def
+		QString def;            // def
 		// table, max_length, flags, decimals
 		bool not_null, type_unsigned, zerofill, binary, auto_increment;
 		//bool primary_key, unique_key, multiple_key;
@@ -49,11 +48,11 @@ class db_column
 		MODIFIER (bool, auto_increment)
 #undef MODIFIER
 
-		string type_string () const;
-		string mysql_spec () const;
+		QString type_string () const;
+		QString mysql_spec () const;
 };
 
-ostream &operator<< (ostream &s, const db_column &c);
+std::ostream &operator<< (std::ostream &s, const db_column &c);
 
 #endif
 

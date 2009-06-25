@@ -3,7 +3,7 @@
 
 
 #include <cstdio>
-#include <string>
+#include <QString>
 
 #include <QStringList>
 #include <QLineEdit>
@@ -12,20 +12,18 @@
 
 #include "src/text.h"
 
-using namespace std;
-
 class SkComboBox:public QComboBox
 {
 	Q_OBJECT
 
 	public:
 		SkComboBox (bool editable, QWidget * parent=0);
-		void insertItem (const string &, int index=-1);
-		string current_text_string ();
-		void fillStringArray (string **array, int num, bool del=true);
-		string edit_text_string ();
+		void insertItem (const QString &, int index=-1);
+		QString current_text_string ();
+		void fillStringArray (QString **array, int num, bool del=true);
+		QString edit_text_string ();
 		void setCurrentItem (int);
-		void insert_if_new (const string &);
+		void insert_if_new (const QString &);
 		void cursor_to_end ();
 		void setAutoCompletion (bool);
 

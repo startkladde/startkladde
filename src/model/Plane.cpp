@@ -11,7 +11,7 @@ Plane::Plane ()/*{{{*/
 	sitze=0;
 }/*}}}*/
 
-Plane::Plane (string p_registration, string p_wettbewerbskennzeichen, string p_typ, string p_club, int p_sitze, db_id p_id)/*{{{*/
+Plane::Plane (QString p_registration, QString p_wettbewerbskennzeichen, QString p_typ, QString p_club, int p_sitze, db_id p_id)/*{{{*/
 	/*
 	 * Constructs an Plane instance with given data.
 	 * Parameters:
@@ -40,15 +40,15 @@ void Plane::dump () const/*{{{*/
 			"Verein %s\n"
 			"Sitze %d\n"
 			"ID %d\n",
-			registration.c_str(),
-			wettbewerbskennzeichen.c_str(),
-			typ.c_str(),
-			club.c_str(),
+			registration.latin1(),
+			wettbewerbskennzeichen.latin1(),
+			typ.latin1(),
+			club.latin1(),
 			sitze,
 			(int)id);
 }/*}}}*/
 
-string Plane::bezeichnung (casus c) const/*{{{*/
+QString Plane::bezeichnung (casus c) const/*{{{*/
 	/*
 	 * Returns a text describing the fact that this is a plane.
 	 * Parameters:
@@ -60,7 +60,7 @@ string Plane::bezeichnung (casus c) const/*{{{*/
 	return entityLabel (st_plane, c);
 }/*}}}*/
 
-string Plane::name () const/*{{{*/
+QString Plane::name () const/*{{{*/
 	/*
 	 * Returns the name of the plane in a form suitable for enumerations.
 	 * Return value:
@@ -70,7 +70,7 @@ string Plane::name () const/*{{{*/
 	return registration;
 }/*}}}*/
 
-string Plane::tabelle_name () const/*{{{*/
+QString Plane::tabelle_name () const/*{{{*/
 	/*
 	 * Returns the name of the plane in a form suitable for the table.
 	 * Return value:
@@ -80,7 +80,7 @@ string Plane::tabelle_name () const/*{{{*/
 	return tabelle_name (false);
 }/*}}}*/
 
-string Plane::tabelle_name (bool schlepp) const/*{{{*/
+QString Plane::tabelle_name (bool schlepp) const/*{{{*/
 	/*
 	 * Returns the name of the plane in a form suitable for the table.
 	 * Parameters:
@@ -95,7 +95,7 @@ string Plane::tabelle_name (bool schlepp) const/*{{{*/
 	return name ()+" ("+wettbewerbskennzeichen+")";
 }/*}}}*/
 
-string Plane::text_name () const/*{{{*/
+QString Plane::text_name () const/*{{{*/
 	/*
 	 * Returns the name of the plane in a form suitable for running text.
 	 * Return value:
@@ -105,7 +105,7 @@ string Plane::text_name () const/*{{{*/
 	return name ();
 }/*}}}*/
 
-void Plane::output (ostream &stream, output_format_t format)/*{{{*/
+void Plane::output (std::ostream &stream, output_format_t format)/*{{{*/
 {
 	Entity::output (stream, format, false, "ID", id);
 	Entity::output (stream, format, false, "Kennzeichen", registration);

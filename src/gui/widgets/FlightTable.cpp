@@ -151,25 +151,7 @@ SkButton *FlightTable::set_button_or_text (int row, int column, bool set_button,
 	}
 }/*}}}*/
 
-SkButton *FlightTable::set_button_or_text (int row, int column, bool set_button, string text, QColor bg, db_id data)/*{{{*/
-	/*
-	 * Overloaded function using a QString instead of a std::string.
-	 */
-{
-	return set_button_or_text (row, column, set_button, std2q (text), bg, data);
-}/*}}}*/
-
-SkButton *FlightTable::set_button_or_text (int row, int column, bool set_button, const char *text, QColor bg, db_id data)/*{{{*/
-	/*
-	 * Overloaded function using a char* instead of a std::string.
-	 */
-{
-	return set_button_or_text (row, column, set_button, QString (text), bg, data);
-}/*}}}*/
-
-
-
-void FlightTable::set_cell_by_type (int row, int column, zell_typ typ, char *button_text, string zeit_text, QColor bg, db_id data, const char *signal_target)/*{{{*/
+void FlightTable::set_cell_by_type (int row, int column, zell_typ typ, QString button_text, QString zeit_text, QColor bg, db_id data, const char *signal_target)/*{{{*/
 	/*
 	 * Sets a cell according to a cell type given.
 	 * Parameters:
@@ -202,16 +184,8 @@ void FlightTable::set_cell_by_type (int row, int column, zell_typ typ, char *but
 			set_button_or_text (row, column, false, "-", bg, 0);
 			break;
 		case zt_button:
-			if (button_text)
-			{
-				but=set_button_or_text (row, column, true, button_text, bg, data);
-				QObject::connect (but, SIGNAL (clicked (db_id)), this, signal_target);
-			}
-			else
-			{
-				log_error ("Button ohne Buttontext in sk_flight_table::set_cell_by_type ()");
-				set_button_or_text (row, column, false, "!!!", bg, 0);
-			}
+			but=set_button_or_text (row, column, true, button_text, bg, data);
+			QObject::connect (but, SIGNAL (clicked (db_id)), this, signal_target);
 			break;
 		case zt_time:
 			set_button_or_text (row, column, false, zeit_text, bg, 0);
@@ -360,8 +334,8 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)/*{
 
 	// TODO unhandled cases with flights without modus
 
-	string startbutton_text="!";
-	string landebutton_text="!";
+	QString startbutton_text="!";
+	QString landebutton_text="!";
 
 	if (
 			eff_modus==fmod_lokal && !set_schlepp	||
@@ -435,10 +409,10 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)/*{
 	}
 
 	// Set the time cells
-	set_cell_by_type (row, tbl_idx_startzeit, start_zelle, (char *)startbutton_text.c_str (), eff_startzeit.table_string (), bg, id, start_signal);
-	set_cell_by_type (row, tbl_idx_landezeit, landung_zelle, (char *)(landebutton_text.c_str ()), eff_landezeit.table_string (), bg, id, landung_signal);
-	string fdstring=eff_flugdauer.table_string (tz_none);
-	set_cell_by_type (row, tbl_idx_flugdauer, dauer_zelle, NULL, fdstring.c_str (), bg, id, NULL);
+	set_cell_by_type (row, tbl_idx_startzeit, start_zelle, startbutton_text, eff_startzeit.table_string (), bg, id, start_signal);
+	set_cell_by_type (row, tbl_idx_landezeit, landung_zelle, landebutton_text, eff_landezeit.table_string (), bg, id, landung_signal);
+	QString fdstring=eff_flugdauer.table_string (tz_none);
+	set_cell_by_type (row, tbl_idx_flugdauer, dauer_zelle, NULL, fdstring.latin1(), bg, id, NULL);
 
 	if (set_schlepp)
 	{
@@ -451,7 +425,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)/*{
 			if (opts.record_towpilot)
 			{
 				Person towpilot;
-				string towpilot_eintrag;
+				QString towpilot_eintrag;
 
 				// Eintrag f�r den Schlepppiloten festlegen
 				if (id_invalid (f->towpilot))
@@ -486,8 +460,8 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)/*{
 	{
 		// Flug eintragen
 		Person pilot, begleiter;
-		string pilot_eintrag;
-		string begleiter_eintrag;
+		QString pilot_eintrag;
+		QString begleiter_eintrag;
 
 		// Eintrag f�r den Piloten festlegen
 		if (id_invalid (f->pilot))
@@ -549,8 +523,8 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)/*{
 	}
 
 	// Gemeinsames f�r Flug und Schleppflug
-	string registration_string;
-	string typ_string;
+	QString registration_string;
+	QString typ_string;
 	if (eff_plane_ok)
 	{
 		registration_string=eff_plane->tabelle_name (set_schlepp);
@@ -774,7 +748,7 @@ void FlightTable::update_row_time (int row, sk_time_t *t)/*{{{*/
 			{
 				sk_time_t flugdauer;
 				flugdauer.set_to (startzeit->secs_to (t));
-				setText (row, tbl_idx_flugdauer, std2q (flugdauer.table_string (tz_none)));
+				setText (row, tbl_idx_flugdauer, flugdauer.table_string (tz_none));
 			}
 			else
 			{

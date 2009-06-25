@@ -1,12 +1,14 @@
 #include "messages.h"
 
+#include "src/text.h"
+
 char datetime_buf[20];
 
 char *datetime ()/*{{{*/
 	/*
-	 * Makes a string containing the current date and time.
+	 * Makes a QString containing the current date and time.
 	 * Return value:
-	 *   The string. This string is statically allocated.
+	 *   The QString. This QString is statically allocated.
 	 */
 {
 	time_t curtime;
@@ -21,7 +23,7 @@ char *datetime ()/*{{{*/
 }/*}}}*/
 
 
-void log_message (const char *message)/*{{{*/
+void log_message (QString message)/*{{{*/
 	/*
 	 * Writes a message, prefixed with date and time, to the log, whatever the
 	 * log is.
@@ -30,10 +32,10 @@ void log_message (const char *message)/*{{{*/
 	 *   - message: The message to write.
 	 */
 {
-	printf (c_message "%s: %s\n" c_default, datetime (), message);
+	printf (c_message "%s: %s\n" c_default, datetime (), message.latin1());
 }/*}}}*/
 
-void log_error (const char *message)/*{{{*/
+void log_error (QString message)/*{{{*/
 	/*
 	 * Writes an error message, prefixed with date and time, to the log,
 	 * whatever the log is.
@@ -42,11 +44,5 @@ void log_error (const char *message)/*{{{*/
 	 *   - message: The message to write.
 	 */
 {
-	printf (c_error "%s: Error: %s\n" c_default, datetime (), message);
+	printf (c_error "%s: Error: %s\n" c_default, datetime (), message.latin1());
 }/*}}}*/
-
-void log_error (string message)/*{{{*/
-{
-	log_error (message.c_str ());
-}/*}}}*/
-

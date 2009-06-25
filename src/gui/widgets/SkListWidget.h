@@ -9,8 +9,6 @@
 
 #include <QListWidget>
 
-using namespace std;
-
 class SkListWidget:public QListWidget
 {
 	Q_OBJECT

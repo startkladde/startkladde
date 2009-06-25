@@ -2,7 +2,7 @@
 #define _Flight_h
 
 #include <sstream>
-#include <string>
+#include <QString>
 
 #include <qdatetime.h>
 
@@ -16,8 +16,6 @@
 #include "src/model/LaunchType.h"
 #include "src/time/sk_time.h"
 #include "src/time/sk_time_t.h"
-
-using namespace std;
 
 enum FlightError {
 	ff_ok,
@@ -52,13 +50,13 @@ class Flight
 		bool landen (bool force=true, bool interactive=false);
 		bool schlepp_landen (bool force=true, bool interactive=false);
 		bool zwischenlandung (bool force=true, bool interactive=false);
-		string typ_string (length_specification lenspec) const;
+		QString typ_string (length_specification lenspec) const;
 		sk_time_t flugdauer () const;
 		sk_time_t schleppflugdauer () const;
 		bool fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const;
 		bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const;
 		FlightError fehlerchecking (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchType *startart) const;
-		string fehler_string (FlightError code) const;
+		QString fehler_string (FlightError code) const;
 		void dump () const;
 		bool happened () const;
 		bool finished () const;
@@ -74,16 +72,16 @@ class Flight
 		sk_time_t landezeit_schleppflugzeug;
 		db_id startart;				// ID der Startart
 		flug_typ flugtyp;					// Typ des Flugs
-		string startort;
-		string zielort;
-		string zielort_sfz;
+		QString startort;
+		QString zielort;
+		QString zielort_sfz;
 		int landungen;
-		string bemerkungen;
-		string abrechnungshinweis;
+		QString bemerkungen;
+		QString abrechnungshinweis;
 		bool editierbar;
 		flug_modus modus;
 		flug_modus modus_sfz;
-		string pvn, pnn, bvn, bnn, tpvn, tpnn;			// Dumme Sache f�r den Fall, dass nur ein Nachname/Vorname bekannt ist.
+		QString pvn, pnn, bvn, bnn, tpvn, tpnn;			// Dumme Sache f�r den Fall, dass nur ein Nachname/Vorname bekannt ist.
 		db_id towplane;
 		bool gestartet, gelandet, sfz_gelandet;
 		// Whenn adding something here, add it to get_towflight ()
@@ -92,13 +90,13 @@ class Flight
 		QDate effdatum (time_zone tz=tz_utc) const;
 
 
-		string pilot_bezeichnung () const;
-		string begleiter_bezeichnung () const;
-		string towpilot_bezeichnung () const;
+		QString pilot_bezeichnung () const;
+		QString begleiter_bezeichnung () const;
+		QString towpilot_bezeichnung () const;
 
-		string unvollst_pilot_name () const;
-		string unvollst_begleiter_name () const;
-		string unvollst_towpilot_name () const;
+		QString unvollst_pilot_name () const;
+		QString unvollst_begleiter_name () const;
+		QString unvollst_towpilot_name () const;
 
 		bool collective_bb_entry_possible (Flight *prev, const Plane &plane) const;
 
@@ -108,7 +106,7 @@ class Flight
 		int sort (Flight *other) const;
 
 	private:
-		string unvollst_person_name (string nn, string vn) const;
+		QString unvollst_person_name (QString nn, QString vn) const;
 };
 
 template<class T> class data_item

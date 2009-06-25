@@ -1,9 +1,8 @@
 #ifndef condition_t_h
 #define condition_t_h
 
-#include <string>
-
 #include <QDateTime>
+#include <QString>
 
 #include "src/data_types.h"
 #include "src/db/db_types.h"
@@ -14,8 +13,6 @@
  * Martin Herrmann
  * 2004-09-09
  */
-
-using namespace std;
 
 // Note: when changing this enum, also update sk_db::make_condition
 
@@ -49,21 +46,21 @@ class condition_t
 		condition_t ();
 		condition_t (condition_type_t _type);
 		condition_t (condition_type_t _type, db_id _id1);
-		condition_t (condition_type_t _type, string *_text1, string *_text2=NULL);
+		condition_t (condition_type_t _type, QString *_text1, QString *_text2=NULL);
 		condition_t (condition_type_t _type, const QDate *_date1, const QDate *_date2=NULL);
 		condition_t (condition_type_t _type, sk_time_t *_given_time1);
 		condition_t (condition_type_t _type, db_id _id1, QDate *_date1, QDate *_date2=NULL);
 		void init ();
 
 		// Note: meta queries are not very well tested.
-		void set_meta_query (db_object_type _table, const string *_column);
+		void set_meta_query (db_object_type _table, const QString *_column);
 
 		db_object_type meta_query_table;
-		const string *meta_query_column;
+		const QString *meta_query_column;
 
 		condition_type_t type;
 		db_id id1;
-		string *text1, *text2;
+		QString *text1, *text2;
 		const QDate *date1, *date2;
 		sk_time_t *given_time1;
 };

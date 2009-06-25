@@ -5,12 +5,14 @@
 
 #include <getopt.h>
 
+#include <QTextStream>
+
 #include "src/version.h"
 #include "src/db/sk_db.h"
 #include "src/plugins/sk_plugin.h"
 
-const string default_home_config_filename=".startkladde.conf";
-const string default_local_config_fielname="startkladde.conf";
+const QString default_home_config_filename=".startkladde.conf";
+const QString default_local_config_fielname="startkladde.conf";
 
 // 4000 Connection
 const int opt_server_display_name=4005;
@@ -97,37 +99,37 @@ options::options ()/*{{{*/
 	weather_dialog_interval=600;
 }/*}}}*/
 
-void options::display_options (string prefix)/*{{{*/
+void options::display_options (QString prefix)/*{{{*/
 {
-	cout << prefix << "--config_file name, -f name: read config file name instead of the default" << endl;
-	cout << prefix << "--help, -h: display help" << endl;
-	cout << prefix << "--version: display version" << endl;
-	cout << prefix << "--short_version: display short version" << endl;
-	cout << prefix << "--server name, -s name: use database server name (IP/hostname)" << endl;
-	cout << prefix << "--server_display_name name: use name for display (e. g. when using a tunnel/proxy)" << endl;
-	cout << prefix << "--port num, -p num: connect to port num on the server" << endl;
-	cout << prefix << "--database name, -d name: use database name" << endl;
-	cout << prefix << "--username name, -u name: log in as user name" << endl;
-	cout << prefix << "--password pw, -p pw: log in with password pw" << endl;
-	cout << prefix << "--root_name name: use user name for root access (default: root)" << endl;
-	cout << prefix << "--root_password pw: use pw as root password instead of prompting" << endl;
-	cout << prefix << "--sk_admin_name name: use name for administration (default: sk_admin)" << endl;
-	cout << prefix << "--sk_admin_password pw: use pw as sk_admin password instead of prompting" << endl;
-	cout << prefix << "--demosystem: show the demosystem menu" << endl;
-	cout << prefix << "--title text: show text in the window title (where applicable)" << endl;
-	cout << prefix << "--diag_cmd cmd: set the command for network diagnostics" << endl;
-	cout << prefix << "--ort o: the default value for Startort/Zielort" << endl;
-	cout << prefix << "--style s: use QT style s, if available" << endl;
-	cout << prefix << "--debug: display" << endl;
-	cout << prefix << "--display_queries: display all queries as they are executed" << endl;
-	cout << prefix << "--colorful: colorful display" << endl;
-	cout << prefix << "--club name, -C name (multi): include club name" << endl;
-	cout << prefix << "--type t, -t t: dump type t" << endl;
-	cout << prefix << "--format f, -f f: dump format f" << endl;
-	cout << prefix << "--columns c, -c c: dump columns c" << endl;
-	cout << prefix << "--date d, -D d: use date D" << endl;
-	cout << prefix << "--start_date s, -S s: start with date s" << endl;
-	cout << prefix << "--end_date e, -E e: end with date e" << endl;
+	std::cout << prefix << "--config_file name, -f name: read config file name instead of the default" << std::endl;
+	std::cout << prefix << "--help, -h: display help" << std::endl;
+	std::cout << prefix << "--version: display version" << std::endl;
+	std::cout << prefix << "--short_version: display short version" << std::endl;
+	std::cout << prefix << "--server name, -s name: use database server name (IP/hostname)" << std::endl;
+	std::cout << prefix << "--server_display_name name: use name for display (e. g. when using a tunnel/proxy)" << std::endl;
+	std::cout << prefix << "--port num, -p num: connect to port num on the server" << std::endl;
+	std::cout << prefix << "--database name, -d name: use database name" << std::endl;
+	std::cout << prefix << "--username name, -u name: log in as user name" << std::endl;
+	std::cout << prefix << "--password pw, -p pw: log in with password pw" << std::endl;
+	std::cout << prefix << "--root_name name: use user name for root access (default: root)" << std::endl;
+	std::cout << prefix << "--root_password pw: use pw as root password instead of prompting" << std::endl;
+	std::cout << prefix << "--sk_admin_name name: use name for administration (default: sk_admin)" << std::endl;
+	std::cout << prefix << "--sk_admin_password pw: use pw as sk_admin password instead of prompting" << std::endl;
+	std::cout << prefix << "--demosystem: show the demosystem menu" << std::endl;
+	std::cout << prefix << "--title text: show text in the window title (where applicable)" << std::endl;
+	std::cout << prefix << "--diag_cmd cmd: set the command for network diagnostics" << std::endl;
+	std::cout << prefix << "--ort o: the default value for Startort/Zielort" << std::endl;
+	std::cout << prefix << "--style s: use QT style s, if available" << std::endl;
+	std::cout << prefix << "--debug: display" << std::endl;
+	std::cout << prefix << "--display_queries: display all queries as they are executed" << std::endl;
+	std::cout << prefix << "--colorful: colorful display" << std::endl;
+	std::cout << prefix << "--club name, -C name (multi): include club name" << std::endl;
+	std::cout << prefix << "--type t, -t t: dump type t" << std::endl;
+	std::cout << prefix << "--format f, -f f: dump format f" << std::endl;
+	std::cout << prefix << "--columns c, -c c: dump columns c" << std::endl;
+	std::cout << prefix << "--date d, -D d: use date D" << std::endl;
+	std::cout << prefix << "--start_date s, -S s: start with date s" << std::endl;
+	std::cout << prefix << "--end_date e, -E e: end with date e" << std::endl;
 }
 /*}}}*/
 
@@ -242,7 +244,7 @@ bool options::parse_arguments (int argc, char *argv[])/*{{{*/
 			case '?': if (optopt=='?') display_help=true; else return false; break;
 			case ':': return false; break;
 			case -1: break;
-			default: cerr << "Error: unhandled option " << c << endl; return false; break;
+			default: std::cerr << "Error: unhandled option " << c << std::endl; return false; break;
 		}
 	} while (c>0);
 
@@ -267,13 +269,13 @@ bool options::parse_arguments (int argc, char *argv[])/*{{{*/
 }
 /*}}}*/
 
-bool options::read_config_files (sk_db *db, list<sk_plugin> *plugins, int argc, char *argv[])/*{{{*/
+bool options::read_config_files (sk_db *db, std::list<sk_plugin> *plugins, int argc, char *argv[])/*{{{*/
 	// db is only passed for startrten (TODO change something)
 	// Also reads command line arguments, if argc>0 (and a configuration file
 	// was read)
 	// Returns whether a configuration file was read.
 {
-	if (config_file.empty ())
+	if (config_file.isEmpty ())
 	{
 		if (!read_config_file (get_environment ("HOME")+"/"+default_home_config_filename, db, plugins))
 		{
@@ -291,7 +293,7 @@ bool options::read_config_files (sk_db *db, list<sk_plugin> *plugins, int argc, 
 		// Read the given configuration file.
 		if (!read_config_file (config_file, db, plugins))
 		{
-			cerr << "Error: the specified configuration file " << config_file << " could not be read." << endl;
+			std::cerr << "Error: the specified configuration file " << config_file << " could not be read." << std::endl;
 			return false;
 		}
 	}
@@ -302,41 +304,47 @@ bool options::read_config_files (sk_db *db, list<sk_plugin> *plugins, int argc, 
 }
 /*}}}*/
 
-bool options::read_config_file (string filename, sk_db *db, list<sk_plugin> *plugins)/*{{{*/
+bool options::read_config_file (QString filename, sk_db *db, std::list<sk_plugin> *plugins)
 	// db is only passed for startarten (TODO change something)
 	// Returns whether the file existed.
 {
-	ifstream config_file;
-	config_file.open (filename.c_str ());
-	if (!config_file) return false;
+	QFile configFile (filename);
 
-	if (!silent) cout << "Reading configuration file " << filename << endl;
-
-	string line;
-	while (getline (config_file, line))
+	if (!configFile.open (IO_ReadOnly))
 	{
-		line=trim (line);
+		if (!silent) std::cout << "Configuration file " << filename << " could not be opened" << std::endl;
+		return false;
+	}
+
+	if (!silent) std::cout << "Reading configuration file " << filename << std::endl;
+
+	QTextStream stream (&configFile);
+
+	while (!stream.atEnd ())
+	{
+		std::string line=q2std (stream.readLine ().trimmed());
 
 		if (line.length ()>0 && line[0]!='#')
 		{
-			string key, value;
-			string::size_type pos=line.find_first_of (whitespace);
+			QString key, value;
+			// We use std::string here because it has find_first_of and find_first_not_of
+			std::string::size_type pos=line.find_first_of (q2std (whitespace)); // TODO conversion is done for every line
 
-			if (pos!=string::npos)
+			if (pos!=std::string::npos)
 			{
-				key=line.substr (0, pos);
-				pos=line.find_first_not_of (whitespace, pos);
-				value=trim (line.substr (pos));
+				key=std2q (line.substr (0, pos));
+				pos=line.find_first_not_of (q2std (whitespace), pos); // TODO conversion is done for every line
+				value=std2q (line.substr (pos)).trimmed();
 			}
 			else
 			{
-				key=line;
+				key=std2q (line);
 			}
 
 			// Connection
 			if (key=="server") { server=value; server_display_name=server; }
 			if (key=="server_display_name") { server_display_name=value; }
-			if (key=="port") port=atoi (value.c_str ());
+			if (key=="port") port=value.toInt ();
 			if (key=="database") database=value;
 			if (key=="username") username=value;
 			if (key=="user_name") username=value;
@@ -357,10 +365,9 @@ bool options::read_config_file (string filename, sk_db *db, list<sk_plugin> *plu
 			// Networking options
 			if (key=="local_hosts")
 			{
-				list<string> split;
-				split_string (split, ",", value);
+				QStringList split=value.split (',');
 				trim (split);
-				local_hosts.splice (local_hosts.end (), split);
+				local_hosts+=split;
 			}
 
 			// Database options
@@ -370,34 +377,34 @@ bool options::read_config_file (string filename, sk_db *db, list<sk_plugin> *plu
 			if (key=="plugin_data_format")
 			{
 				plugins_data_format.push_back (plugin_data_format (value));
-//				cerr << "Data format plugin: " << value << endl;
+//				std::cerr << "Data format plugin: " << value << std::endl;
 			}
 			if (key=="plugin_path")
 			{
 				plugin_paths.push_back (value);
-//				cerr << "Plugin path: " << value << endl;
+//				std::cerr << "Plugin path: " << value << std::endl;
 			}
 
 			if (key=="csv_quote")
 			{
 				csv_quote = true;
-				cerr << "CSV quote: " << csv_quote << endl;
+				std::cerr << "CSV quote: " << csv_quote << std::endl;
 			}
 
 			if (plugins && key=="shell_plugin")
 			{
 				sk_plugin *p=new sk_plugin (value);
 				plugins->push_back (*p);
-				if (!silent) cout << "Added shell plugin \"" << p->get_caption () << "\"" << endl;
+				if (!silent) std::cout << "Added shell plugin \"" << p->get_caption () << "\"" << std::endl;
 			}
 
 			// Weather plugins
 			if (key=="weather_plugin") weather_plugin=value;
-			if (key=="weather_height") weather_height=atoi (value.c_str ());
-			if (key=="weather_interval") weather_interval=atoi (value.c_str ());
+			if (key=="weather_height") weather_height=value.toInt();
+			if (key=="weather_interval") weather_interval=value.toInt();
 			if (key=="weather_dialog_plugin") weather_dialog_plugin=value;
 			if (key=="weather_dialog_title") weather_dialog_title=value;
-			if (key=="weather_dialog_interval") weather_dialog_interval=atoi (value.c_str ());
+			if (key=="weather_dialog_interval") weather_dialog_interval=value.toInt();
 
 			// Debugging
 			if (key=="debug") debug=true;
@@ -407,7 +414,7 @@ bool options::read_config_file (string filename, sk_db *db, list<sk_plugin> *plu
 			if (key=="source")
 			{
 				bool ret=read_config_file (value, db, plugins);
-				if (!ret) cerr << "Error: file \"" << value << "\" could not be read." << endl;
+				if (!ret) std::cerr << "Error: file \"" << value << "\" could not be read." << std::endl;
 			}
 
 			// Options not saved locally
@@ -416,7 +423,7 @@ bool options::read_config_file (string filename, sk_db *db, list<sk_plugin> *plu
 				LaunchType *sa=new LaunchType (value);
 				if (id_invalid (sa->get_id ()))
 				{
-					cerr << "Error: startart with invalid ID "+num_to_string (sa->get_id ())+" specified.";
+					std::cerr << "Error: startart with invalid ID " << sa->get_id () << " specified.";
 					delete sa;
 				}
 				else
@@ -425,11 +432,11 @@ bool options::read_config_file (string filename, sk_db *db, list<sk_plugin> *plu
 
 		}
 	}
-	config_file.close ();
+
+	configFile.close ();
 
 	return true;
 }
-/*}}}*/
 
 void options::do_display ()/*{{{*/
 {
@@ -447,7 +454,7 @@ bool options::need_display ()/*{{{*/
 }
 /*}}}*/
 
-bool options::parse_type (const string &type_string)/*{{{*/
+bool options::parse_type (const QString &type_string)/*{{{*/
 {
 	dump_type=dt_invalid;
 	if (type_string=="list" || type_string=="l") dump_type=dt_liste;
@@ -457,34 +464,34 @@ bool options::parse_type (const string &type_string)/*{{{*/
 	if (type_string=="clubs" || type_string=="c") dump_type=dt_clublist;
 	if (type_string=="clublist" || type_string=="c") dump_type=dt_clublist;
 	if (type_string=="club_list" || type_string=="c") dump_type=dt_clublist;
-	if (dump_type==dt_invalid) cerr << "Invalid dump type specification \"" << type_string << "\"" << endl;
+	if (dump_type==dt_invalid) std::cerr << "Invalid dump type specification \"" << type_string << "\"" << std::endl;
 	return (dump_type!=dt_invalid);
 }
 /*}}}*/
 
-bool options::parse_format (const string &format_string)/*{{{*/
+bool options::parse_format (const QString &format_string)/*{{{*/
 {
 	dump_format=df_invalid;
 	if (format_string=="latex" || format_string=="l") dump_format=df_latex;
 	if (format_string=="csv" || format_string=="c") dump_format=df_csv;
-	if (dump_format==df_invalid) cerr << "Invalid format type specification \"" << format_string << "\"" << endl;
+	if (dump_format==df_invalid) std::cerr << "Invalid format type specification \"" << format_string << "\"" << std::endl;
 	return (dump_format!=df_invalid);
 }
 /*}}}*/
 
-bool options::parse_columns (const string &columns_string)/*{{{*/
+bool options::parse_columns (const QString &columns_string)/*{{{*/
 {
 	dump_columns=dc_invalid;
 	if (columns_string=="standard" || columns_string=="s") dump_columns=dc_standard;
 	if (columns_string=="albgau" || columns_string=="a") dump_columns=dc_albgau;
-	if (dump_columns==dc_invalid) cerr << "Invalid columns type specification \"" << columns_string << "\"" << endl;
+	if (dump_columns==dc_invalid) std::cerr << "Invalid columns type specification \"" << columns_string << "\"" << std::endl;
 	return (dump_columns!=dc_invalid);
 }
 /*}}}*/
 
-bool options::parse_date (const string &date_string, QDate &d, bool required)/*{{{*/
+bool options::parse_date (const QString &date_string, QDate &d, bool required)/*{{{*/
 {
-	d=QDate::fromString (std2q (date_string), Qt::ISODate);
+	d=QDate::fromString (date_string, Qt::ISODate);
 	return d.isValid ();
 }
 /*}}}*/
@@ -502,7 +509,7 @@ bool options::check_date () const/*{{{*/
 	int n=dates.size ();           // The number of non-option dates
 	bool imp=(n>0);                // Any date was implicityly given
 
-#define DATE_ERROR(condition, text) do { if ((condition)) { cerr << "Error: " << text << endl; return false; } } while (false);
+#define DATE_ERROR(condition, text) do { if ((condition)) { std::cerr << "Error: " << text << std::endl; return false; } } while (false);
 
 	DATE_ERROR (exp && imp, "There were both explicit and non-option dates given.");
 	DATE_ERROR (n>2, "There were more than 2 non-option dates given.");
@@ -581,7 +588,7 @@ QDate options::eff_end_date () const/*{{{*/
 }
 /*}}}*/
 
-bool options::address_is_local (const string &address) const/*{{{*/
+bool options::address_is_local (const QString &address) const/*{{{*/
 	/*
 	 * Checks whether an address is to be regarded local.
 	 * Parameters:
@@ -592,17 +599,18 @@ bool options::address_is_local (const string &address) const/*{{{*/
 	 *   - false else.
 	 */
 {
-	list<string>::const_iterator end=local_hosts.end ();
-	for (list<string>::const_iterator it=local_hosts.begin (); it!=end; ++it)
+	QStringListIterator it (local_hosts);
+
+	while (it.hasNext ())
 	{
-		const string &l=*it;
+		QString l=it.next();
 		if (l.at (l.length ()-1)=='*')
 		{
 			// The local address specifcation ends with a *, thus is an address
 			// range. Check if the given address starts with the local address
 			// specification (without the *).
 			int relevant_length=l.length ()-1;
-			if (l.substr (0, relevant_length)==address.substr (0, relevant_length)) return true;
+			if (l.left (relevant_length)==address.left (relevant_length)) return true;
 		}
 		else
 		{
@@ -616,25 +624,25 @@ bool options::address_is_local (const string &address) const/*{{{*/
 }
 /*}}}*/
 
-string options::find_plugin_file (const string &filename, string *dir, string *basename) const/*{{{*/
+QString options::find_plugin_file (const QString &filename, QString *dir, QString *basename) const/*{{{*/
 	// The file returned exists or else the name is empty.
 	// *dir will be set to the dir if the result is not empty.
 {
 	// Empty file names are empty file names.
-	if (filename.empty ()) return "";
-	if (filename.find ('/', 0)!=string::npos)
+	if (filename.isEmpty ()) return "";
+	if (filename.indexOf ('/')>=0)
 	{
 		// The name contains a '/' which means that it is an absolute or relative
-		if (QFile::exists (std2q (filename)))
+		if (QFile::exists (filename))
 		{
 			// Find the last slash: it separates the path from the basename
 			// Absolute: /foo/bar/baz
 			// Relative: bar/baz
 			//           0123456
-			unsigned int last_slash_pos=filename.rfind ('/', filename.length ());
+			unsigned int last_slash_pos=filename.lastIndexOf ('/');
 			// last_slash_pos cannot be npos becase there is a slash
-			if (dir) *dir=filename.substr (0, last_slash_pos);
-			if (basename) *basename=filename.substr (last_slash_pos+4);
+			if (dir) *dir=filename.left (last_slash_pos);
+			if (basename) *basename=filename.mid (last_slash_pos+4);
 			return filename;
 		}
 		else
@@ -643,7 +651,7 @@ string options::find_plugin_file (const string &filename, string *dir, string *b
 	else if (plugin_paths.empty ())
 	{
 		// Pugin path is empty
-		if (QFile::exists (std2q ("./"+filename)))
+		if (QFile::exists (QString ("./")+filename))
 		{
 			if (dir) *dir=".";
 			if (basename) *basename=filename;
@@ -655,12 +663,14 @@ string options::find_plugin_file (const string &filename, string *dir, string *b
 	else
 	{
 		// So we have to search the plugin path.
-		for (list<string>::const_iterator path_end=plugin_paths.end (),
-			path_entry=plugin_paths.begin (); path_entry!=path_end; ++path_entry)
+		QStringListIterator it (plugin_paths);
+
+		while (it.hasNext ())
 		{
-			if (QFile::exists (std2q (*path_entry+"/"+filename)))
+			QString path_entry=it.next ();
+			if (QFile::exists (path_entry+"/"+filename))
 			{
-				if (dir) *dir=*path_entry;
+				if (dir) *dir=path_entry;
 				if (basename) *basename=filename;
 				return *path_entry+"/"+filename;
 			}

@@ -65,7 +65,7 @@ void SkTable::keyPressEvent (QKeyEvent *e)/*{{{*/
 	e->ignore ();
 }/*}}}*/
 
-void SkTable::set_table_column (int column, string title, string sample)/*{{{*/
+void SkTable::set_table_column (int column, QString title, QString sample)/*{{{*/
 	/*
 	 * Sets the a table header column to a given title and adjusts the width so
 	 * that the title and a provided sample text are fully visible (sort of).
@@ -78,8 +78,8 @@ void SkTable::set_table_column (int column, string title, string sample)/*{{{*/
 	QFont normal_font=qApp->font ();
 	QFont bold_font=normal_font; bold_font.setBold (true);
 
-	int sample_width=QFontMetrics (normal_font).width (std2q (sample));
-	int title_width=QFontMetrics (bold_font).width (std2q (title));
+	int sample_width=QFontMetrics (normal_font).width (sample);
+	int title_width=QFontMetrics (bold_font).width (title);
 
 	int width;
 	if (sample_width>title_width)
@@ -87,14 +87,14 @@ void SkTable::set_table_column (int column, string title, string sample)/*{{{*/
 	else
 		width=title_width+8;	// Hard coded table header margin width
 
-	setColumn (column, std2q (title), width);
+	setColumn (column, title, width);
 }
 /*}}}*/
 
 
 
 
-SkTableItem *SkTable::set_cell (int row, int col, const string &text, QColor bg)/*{{{*/
+SkTableItem *SkTable::set_cell (int row, int col, const QString &text, QColor bg)/*{{{*/
 	/*
 	 * Sets a cell to a given text and color.
 	 * Parameters:
@@ -126,23 +126,6 @@ SkTableItem *SkTable::set_cell (int row, int col, const string &text, QColor bg)
 //					}
 	return ret;
 }/*}}}*/
-
-SkTableItem *SkTable::set_cell (int row, int col, const QString &text, QColor bg)/*{{{*/
-	/*
-	 * An overloaded function taking a QString instead of a std::string.
-	 */
-{
-	return set_cell (row, col, q2std (text), bg);
-}/*}}}*/
-
-SkTableItem *SkTable::set_cell (int row, int col, const char *text, QColor bg)/*{{{*/
-	/*
-	 * An overloaded function taking a char* instead of a std::string.
-	 */
-{
-	return set_cell (row, col, string (text), bg);
-}/*}}}*/
-
 
 
 void SkTable::removeAllRows ()

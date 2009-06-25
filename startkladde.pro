@@ -68,7 +68,6 @@ HEADERS += \
            src/model/User.h \
            src/model/LaunchType.h \
            src/model/Entity.h \
-           src/plugins/plugin_data_format.h \
            src/plugins/sk_plugin.h \
            src/statistics/bordbuch.h \
            src/statistics/bordbuch.h \
@@ -77,13 +76,6 @@ HEADERS += \
            src/time/sk_time.h \
            src/time/sk_time_t.h \
            src/time/time_functions.h \
-           src/web/argument.h \
-           src/web/html_document.h \
-           src/web/http_document.h \
-           src/web/mime_header.h \
-           src/web/web_session.h \
-           src/web/what_next.h \
-           version/version.h \
 		   # Empty line
 
 SOURCES += \

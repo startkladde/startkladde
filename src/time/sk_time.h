@@ -4,8 +4,6 @@
 #include <QDateTime>
 #include <QString>
 
-using namespace std;
-
 class sk_time:public QTime
 {
 	public:

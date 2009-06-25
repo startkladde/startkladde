@@ -23,7 +23,7 @@ LaunchType::LaunchType ()/*{{{*/
 	init ();
 }/*}}}*/
 
-LaunchType::LaunchType (int _id, startart_type _type, string _towplane, string _description, string _short_description, string _accelerator, string _logbook_string, bool _person_required)/*{{{*/
+LaunchType::LaunchType (int _id, startart_type _type, QString _towplane, QString _description, QString _short_description, QString _accelerator, QString _logbook_string, bool _person_required)/*{{{*/
 	:Entity ()
 {
 	id=_id;
@@ -37,12 +37,12 @@ LaunchType::LaunchType (int _id, startart_type _type, string _towplane, string _
 }
 /*}}}*/
 
-LaunchType::LaunchType (string desc)/*{{{*/
+LaunchType::LaunchType (QString desc)/*{{{*/
 	:Entity ()
 {
 	init ();
 
-	QStringList split=QStringList::split (",", std2q (desc), true);
+	QStringList split=QStringList::split (",", desc, true);
 	for (QStringList::Iterator s=split.begin (); s!=split.end (); ++s)
 		*s=(*s).simplifyWhiteSpace ();
 	int n=split.count ();
@@ -56,7 +56,7 @@ LaunchType::LaunchType (string desc)/*{{{*/
 		else if (split[1].lower ()=="other") type=sat_other;
 		else
 		{
-			log_error ("Unknown startart type in startart_t::startart_t (string)");
+			log_error ("Unknown startart type in startart_t::startart_t (QString)");
 			type=sat_other;
 		}
 	}
@@ -64,75 +64,75 @@ LaunchType::LaunchType (string desc)/*{{{*/
 	{
 		type=sat_other;
 	}
-	if (n>=2) towplane=q2std (split[2]);
-	if (n>=3) description=q2std (split[3]);
-	if (n>=4) short_description=q2std (split[4]);
-	if (n>=5) accelerator=q2std (split[5]);
-	if (n>=6) logbook_string=q2std (split[6]);
+	if (n>=2) towplane=split[2];
+	if (n>=3) description=split[3];
+	if (n>=4) short_description=split[4];
+	if (n>=5) accelerator=split[5];
+	if (n>=6) logbook_string=split[6];
 	if (n>=7 && split[7].lower ()=="false") person_required=false;
 }
 /*}}}*/
 
 // Class information
-string LaunchType::name () const/*{{{*/
+QString LaunchType::name () const/*{{{*/
 {
 	return description;
 }/*}}}*/
 
-string LaunchType::tabelle_name () const/*{{{*/
+QString LaunchType::tabelle_name () const/*{{{*/
 {
 	return short_description;
 }/*}}}*/
 
-string LaunchType::text_name () const/*{{{*/
+QString LaunchType::text_name () const/*{{{*/
 {
 	return description;
 }/*}}}*/
 
-string LaunchType::bezeichnung (casus c) const/*{{{*/
+QString LaunchType::bezeichnung (casus c) const/*{{{*/
 {
 	return entityLabel (st_startart, c);
 }/*}}}*/
 
 
 
-string LaunchType::get_selector_value (int column_number) const/*{{{*/
+QString LaunchType::get_selector_value (int column_number) const/*{{{*/
 {
 	switch (column_number)
 	{
 		case 0: return description;
 		case 1: return bemerkungen;
-		case 2: return num_to_string (id);
-		default: return string ();
+		case 2: return QString::number (id);
+		default: return QString ();
 	}
 }
 /*}}}*/
 
-string LaunchType::get_selector_caption (int column_number)/*{{{*/
+QString LaunchType::get_selector_caption (int column_number)/*{{{*/
 {
 	switch (column_number)
 	{
 		case 0: return "Bezeichnung";
 		case 1: return "Bemerkungen";
 		case 2: return "(ID)";
-		default: return string ();
+		default: return QString ();
 	}
 }
 /*}}}*/
 
 
 
-string LaunchType::list_text () const/*{{{*/
+QString LaunchType::list_text () const/*{{{*/
 {
-	if (accelerator.empty ())
-		return string (" ")+description;
+	if (accelerator.isEmpty ())
+		return QString (" ")+description;
 	else
-		return string (accelerator)+string (" - ")+description;
+		return QString (accelerator)+QString (" - ")+description;
 }
 /*}}}*/
 
 
-string startart_type_string (startart_type t)/*{{{*/
+QString startart_type_string (startart_type t)/*{{{*/
 {
 	switch (t)
 	{
@@ -146,7 +146,7 @@ string startart_type_string (startart_type t)/*{{{*/
 }
 /*}}}*/
 
-void LaunchType::output (ostream &stream, output_format_t format)/*{{{*/
+void LaunchType::output (std::ostream &stream, output_format_t format)/*{{{*/
 {
 	Entity::output (stream, format, false, "ID", id);
 	Entity::output (stream, format, false, "Bezeichnung", description);

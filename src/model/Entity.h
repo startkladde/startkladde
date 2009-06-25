@@ -2,13 +2,11 @@
 #define _Entity_h
 
 #include <iostream>
-#include <string>
+#include <QString>
 
 #include "src/data_types.h"
 #include "src/text.h"
 #include "src/db/db_types.h"
-
-using namespace std;
 
 
 //#define column_string(num, title, value) if (column_number==num) { if (entry) return value; else return title; }
@@ -36,29 +34,29 @@ class Entity
 
 		Entity ();
 		virtual ~Entity ();
-		virtual string bezeichnung (casus) const=0;
-		virtual string name () const=0;
-		virtual string text_name () const=0;
-		virtual string tabelle_name () const=0;
+		virtual QString bezeichnung (casus) const=0;
+		virtual QString name () const=0;
+		virtual QString text_name () const=0;
+		virtual QString tabelle_name () const=0;
 		// TODO code duplication with dump
-		virtual void output (ostream &stream, output_format_t format)=0;
+		virtual void output (std::ostream &stream, output_format_t format)=0;
 
-		virtual string get_selector_value (int column_number) const;
-		static string get_selector_caption (int column_number);
+		virtual QString get_selector_value (int column_number) const;
+		static QString get_selector_caption (int column_number);
 
 
 		db_id id;
 		bool editierbar;
-		string bemerkungen;
+		QString bemerkungen;
 
 	protected:
-		void output (ostream &stream, output_format_t format, bool last, string name, string value);
-		void output (ostream &stream, output_format_t format, bool last, string name, db_id value);
+		void output (std::ostream &stream, output_format_t format, bool last, QString name, QString value);
+		void output (std::ostream &stream, output_format_t format, bool last, QString name, db_id value);
 };
 
 // TODO make this a static class function
 // TODO this should not be necessery but be implemented via inheritance
-string entityLabel (EntityType t, casus c);
+QString entityLabel (EntityType t, casus c);
 
 #endif
 

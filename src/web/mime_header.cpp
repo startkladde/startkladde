@@ -2,11 +2,11 @@
 
 #include "src/text.h"
 
-const string mime_header::text_name_content_type="Content-Type";
-const string mime_header::text_name_content_disposition="Content-Disposition";
+const QString mime_header::text_name_content_type="Content-Type";
+const QString mime_header::text_name_content_disposition="Content-Disposition";
 
 
-mime_header::mime_header (const string &text, const string &_name)/*{{{*/
+mime_header::mime_header (const QString &text, const QString &_name)/*{{{*/
 {
 	// multipart/form-data; boundary=----------PmlqQ32HDjGJWAIJ7Ez1C
 	//   name: (must be given)
@@ -24,51 +24,50 @@ mime_header::mime_header (const string &text, const string &_name)/*{{{*/
 	//   value: application/octet-stream
 	//   args: empty
 
-	list<string> text_parts;
-	split_string (text_parts, ";", text);
+	QStringList text_parts=text.split (';');
 	trim (text_parts);
 
-	// Save and remove the first string which is either of form "name: value"
+	// Save and remove the first QString which is either of form "name: value"
 	// or "value".
-	string name_value=text_parts.front ();
+	QString name_value=text_parts.front ();
 	text_parts.pop_front ();
-	
+
 	// Determine the name
-	if (_name.empty ())
+	if (_name.isEmpty ())
 	{
 		// name_value is of form "name: value"
-		if (name_value.find (":")==string::npos) return;
+		if (!name_value.contains (":")) return;
 		split_string (name, value, ":", name_value);
-		name=trim (name);
-		value=trim (value);
+		name=name.trimmed ();
+		value=value.trimmed ();
 	}
 	else
 	{
 		name=_name;
-		value=trim (name_value);
+		value=name_value.trimmed ();
 	}
 
-	list<string>::const_iterator end=text_parts.end ();
-	for (list<string>::const_iterator it=text_parts.begin (); it!=end; ++it)
+	QStringListIterator it (text_parts);
+	while (it.hasNext ())
 	{
-		string key, val;
-		split_string (key, val, "=", *it);
+		QString key, val;
+		split_string (key, val, "=", it.next ());
 		// Remove whitespace and ""
-		key=trim (key);
-		val=trim (val);
+		key=key.trimmed();
+		val=val.trimmed();
 		if (val.length ()>1 && val.at (0)=='"' && val.at (val.length ()-1)=='"')
-			val=val.substr (1, val.length ()-2);
+			val=val.mid (1, val.length ()-2);
 		args.set_value (key, val);
 	}
 }/*}}}*/
 
-ostream &operator<< (ostream &s, const mime_header &mh)/*{{{*/
+std::ostream &operator<< (std::ostream &s, const mime_header &mh)/*{{{*/
 {
 	// TODO Escape (how to escape MIME headers?)
 	s << mh.name << ": " << mh.value;
 
-	list<argument>::const_iterator end=mh.args.get_list ().end ();
-	for (list<argument>::const_iterator it=mh.args.get_list ().begin (); it!=end; ++it)
+	std::list<argument>::const_iterator end=mh.args.get_list ().end ();
+	for (std::list<argument>::const_iterator it=mh.args.get_list ().begin (); it!=end; ++it)
 	{
 		s << "; " << (*it).get_name () << "=\"" << (*it).get_value () << "\"";
 	}
@@ -77,14 +76,14 @@ ostream &operator<< (ostream &s, const mime_header &mh)/*{{{*/
 }
 /*}}}*/
 
-void mime_header::test (const string &text, const string &_name)/*{{{*/
+void mime_header::test (const QString &text, const QString &_name)/*{{{*/
 {
-	if (_name.empty ())
-		cout << "In:  [" << text << "]" << endl;
+	if (_name.isEmpty ())
+		std::cout << "In:  [" << text << "]" << std::endl;
 	else
-		cout << "In:  [" << _name << "] [" << text << "]" << endl;
+		std::cout << "In:  [" << _name << "] [" << text << "]" << std::endl;
 
-	cout << "Out: [" << mime_header (text, _name) << "]" << endl;
+	std::cout << "Out: [" << mime_header (text, _name) << "]" << std::endl;
 }
 /*}}}*/
 
