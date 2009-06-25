@@ -3,18 +3,18 @@
 # 2005-08-29 Martin Herrmann
 # Outputs the CSV database using the CMDLINE request method of sk_web
 
-# Create global variables#{{{
+# Create global variables
 export QUERY_STRING=""
-#}}}
 
-function add_to_query ()#{{{
+
+function add_to_query ()
 	# Adds a parameter to the query.
 {
 	QUERY_STRING="$QUERY_STRING&$1=$2"
 }
-#}}}
 
-function usage ()#{{{
+
+function usage ()
 	# Shows usage information
 {
 	echo "Usage: $0 [--help] [--debug] [--towflights_extra] [date [date]]"
@@ -24,9 +24,9 @@ function usage ()#{{{
 
 	exit 1
 }
-#}}}
 
-function is_date ()#{{{
+
+function is_date ()
 	# Determines whether the parameter given looks like a date.
 {
 	year=`echo "$1" |cut -d "-" -f 1`
@@ -39,9 +39,9 @@ function is_date ()#{{{
 
 	return 0;
 }
-#}}}
 
-# Determine the SK_WEB executable#{{{
+
+# Determine the SK_WEB executable
 if [ -z "$SK_WEB" ]; then
 	if [ -e "./sk_web" ]; then
 		SK_WEB="./sk_web"
@@ -49,14 +49,14 @@ if [ -z "$SK_WEB" ]; then
 		SK_WEB="sk_web";
 	fi
 fi
-#}}}
 
-# Set up the environment variables#{{{
+
+# Set up the environment variables
 export REQUEST_METHOD="CMDLINE"
 export QUERY_STRING="action=do_flight_db"
-#}}}
 
-# Parse the parameters#{{{
+
+# Parse the parameters
 while [ -n "$*" ]; do
 	case "$1" in
 		"--towflights_extra") towflights_extra=1;;
@@ -84,9 +84,9 @@ while [ -n "$*" ]; do
 	esac
 	shift
 done
-#}}}
 
-# Depending on which dates are set, build the query#{{{
+
+# Depending on which dates are set, build the query
 if [ -z "$date1" ]; then
 	add_to_query "date_spec" "today"
 elif [ -z "$date2" ]; then
@@ -107,13 +107,13 @@ fi
 if [ -n "$towflights_extra" ]; then
 	add_to_query "towflights_extra" "1"
 fi
-#}}}
 
-# Display (--debug) or execute the query#{{{
+
+# Display (--debug) or execute the query
 if [ -n "$debug" ]; then
 	echo $QUERY_STRING
 else
 	$SK_WEB
 fi
-#}}}
+
 

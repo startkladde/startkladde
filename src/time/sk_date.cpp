@@ -4,7 +4,7 @@
 
 #include "src/text.h"
 
-sk_date sk_date::current ()/*{{{*/
+sk_date sk_date::current ()
 {
 	struct tm lt;
 	time_t t=time (NULL);
@@ -18,34 +18,29 @@ sk_date sk_date::current ()/*{{{*/
 
 	return sk_date (year, month, day);
 }
-/*}}}*/
 
-QString sk_date::text ()/*{{{*/
+QString sk_date::text ()
 {
 	return (QString::number (year, 4)+"-"+QString::number (month, 2)+"-"+QString::number (day, 2));
 }
-/*}}}*/
 
-bool sk_date::is_invalid ()/*{{{*/
+bool sk_date::is_invalid ()
 {
 	return (year==0 || month==0 || day==0);
 }
-/*}}}*/
 
-sk_date::operator QDate ()/*{{{*/
+sk_date::operator QDate ()
 {
 	return QDate (year, month, day);
 }
-/*}}}*/
 
-bool sk_date::operator== (const sk_date &o)/*{{{*/
+bool sk_date::operator== (const sk_date &o)
 {
 	return (year==o.year && month==o.month && day==o.day);
 }
-/*}}}*/
 
 // OK, date comparison:
-bool sk_date::operator< (const sk_date &o)/*{{{*/
+bool sk_date::operator< (const sk_date &o)
 {
 	if (year    < o.year)  return true;
 	if (o.year  < year)    return false;
@@ -55,9 +50,8 @@ bool sk_date::operator< (const sk_date &o)/*{{{*/
 	if (o.day   < day)     return false;
 	return false;	// Dates are equal.
 }
-/*}}}*/
 
-bool sk_date::operator> (const sk_date &o)/*{{{*/
+bool sk_date::operator> (const sk_date &o)
 {
 	if (year    > o.year)  return true;
 	if (o.year  > year)    return false;
@@ -67,9 +61,8 @@ bool sk_date::operator> (const sk_date &o)/*{{{*/
 	if (o.day   > day)     return false;
 	return false;	// Dates are equal.
 }
-/*}}}*/
 
-bool sk_date::operator<= (const sk_date &o)/*{{{*/
+bool sk_date::operator<= (const sk_date &o)
 {
 	if (year    < o.year)  return true;
 	if (o.year  < year)    return false;
@@ -79,9 +72,8 @@ bool sk_date::operator<= (const sk_date &o)/*{{{*/
 	if (o.day   < day)     return false;
 	return true;	// Dates are equal.
 }
-/*}}}*/
 
-bool sk_date::operator>= (const sk_date &o)/*{{{*/
+bool sk_date::operator>= (const sk_date &o)
 {
 	if (year    > o.year)  return true;
 	if (o.year  > year)    return false;
@@ -91,5 +83,4 @@ bool sk_date::operator>= (const sk_date &o)/*{{{*/
 	if (o.day   > day)     return false;
 	return true;	// Dates are equal.
 }
-/*}}}*/
 

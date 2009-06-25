@@ -13,8 +13,8 @@
 #include "src/config/options.h"
 
 
-// Construction/destruction/*{{{*/
-void sk_plugin::init ()/*{{{*/
+// Construction/destruction
+void sk_plugin::init ()
 {
 	restart_interval=-1;
 	rich_text=false;
@@ -23,23 +23,21 @@ void sk_plugin::init ()/*{{{*/
 	warn_on_death=false;
 	subprocess=NULL;
 }
-/*}}}*/
 
-sk_plugin::sk_plugin ()/*{{{*/
+sk_plugin::sk_plugin ()
 {
 	init ();
 	caption="Time:";
 	command="date +%H:%M";
 	restart_interval=-1;
-}/*}}}*/
+}
 
-sk_plugin::sk_plugin (const sk_plugin &o)	// Copy constructor/*{{{*/
+sk_plugin::sk_plugin (const sk_plugin &o)	// Copy constructor
 {
 	(*this)=o;
 }
-/*}}}*/
 
-sk_plugin::sk_plugin (const QString desc)/*{{{*/
+sk_plugin::sk_plugin (const QString desc)
 {
 	init ();
 
@@ -60,18 +58,17 @@ sk_plugin::sk_plugin (const QString desc)/*{{{*/
 
 	start ();
 }
-///*}}}*/
+//
 
-sk_plugin::sk_plugin (const QString &_caption, const QString &_command, int _interval)/*{{{*/
+sk_plugin::sk_plugin (const QString &_caption, const QString &_command, int _interval)
 {
 	init ();
 	caption=_caption;
 	command=_command;
 	restart_interval=_interval;
 }
-/*}}}*/
 
-sk_plugin &sk_plugin::operator= (const sk_plugin &o)/*{{{*/
+sk_plugin &sk_plugin::operator= (const sk_plugin &o)
 {
 	caption=o.caption;
 	command=o.command;
@@ -83,9 +80,8 @@ sk_plugin &sk_plugin::operator= (const sk_plugin &o)/*{{{*/
 	value_display=o.value_display;
 	return *this;
 }
-/*}}}*/
 
-sk_plugin::~sk_plugin ()/*{{{*/
+sk_plugin::~sk_plugin ()
 {
 	// qt3
 	//if (subprocess) subprocess->tryTerminate ();
@@ -93,11 +89,10 @@ sk_plugin::~sk_plugin ()/*{{{*/
 	if (subprocess) subprocess->terminate ();
 	sched_yield ();
 }
-///*}}}*/
-/*}}}*/
+//
 
 
-void sk_plugin::start ()/*{{{*/
+void sk_plugin::start ()
 {
 	if (subprocess) delete subprocess;
 	if (command.isEmpty ())
@@ -207,9 +202,8 @@ void sk_plugin::start ()/*{{{*/
 
 	}
 }
-/*}}}*/
 
-void sk_plugin::output_available ()/*{{{*/
+void sk_plugin::output_available ()
 {
 	if (!subprocess) return;
 
@@ -229,28 +223,24 @@ void sk_plugin::output_available ()/*{{{*/
 		}
 	}
 }
-/*}}}*/
 
-void sk_plugin::subprocess_died ()/*{{{*/
+void sk_plugin::subprocess_died ()
 {
 	if (warn_on_death) std::cout << "The process for '" << caption << "' died." << std::endl;
 	if (restart_interval>=0) QTimer::singleShot (restart_interval*1000, this, SLOT (start ()));
 }
-/*}}}*/
 
-void sk_plugin::terminate ()/*{{{*/
+void sk_plugin::terminate ()
 {
 	// Qt3
 	//if (subprocess) subprocess->tryTerminate ();
 	// Qt4
 	if (subprocess) subprocess->terminate ();
 }
-/*}}}*/
 
-void sk_plugin::restart ()/*{{{*/
+void sk_plugin::restart ()
 {
 	terminate ();
 	start ();
 }
-/*}}}*/
 

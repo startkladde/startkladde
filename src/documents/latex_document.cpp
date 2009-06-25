@@ -8,7 +8,7 @@
 
 #include "src/text.h"
 
-QString latex_document::package::make_use_clause () const/*{{{*/
+QString latex_document::package::make_use_clause () const
 {
 	QString r;
 	r.append ("\\usepackage");
@@ -17,9 +17,8 @@ QString latex_document::package::make_use_clause () const/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
-latex_document::package::package (const QString &_name, const QString &opt0, const QString &opt1, const QString &opt2, const QString &opt3)/*{{{*/
+latex_document::package::package (const QString &_name, const QString &opt0, const QString &opt1, const QString &opt2, const QString &opt3)
 {
 	name=_name;
 	if (!opt0.isEmpty ()) options.insert (opt0);
@@ -27,9 +26,8 @@ latex_document::package::package (const QString &_name, const QString &opt0, con
 	if (!opt2.isEmpty ()) options.insert (opt2);
 	if (!opt3.isEmpty ()) options.insert (opt3);
 }
-/*}}}*/
 
-latex_document::latex_document ()/*{{{*/
+latex_document::latex_document ()
 {
 	document_class="scrartcl";
 	document_options.insert ("a4paper");
@@ -41,9 +39,9 @@ latex_document::latex_document ()/*{{{*/
 	margin_bottom="2.5cm";
 	tabcolsep="0.4mm";
 	landscape=false;
-}/*}}}*/
+}
 
-void latex_document::write_header ()/*{{{*/
+void latex_document::write_header ()
 {
 	// Set up document options
 	std::set<QString> docopts=document_options;
@@ -105,16 +103,14 @@ void latex_document::write_header ()/*{{{*/
 	doc << "\\setlength{\\tabcolsep}{" << tabcolsep << "}" << std::endl;
 	doc << std::endl;
 }
-/*}}}*/
 
-void latex_document::write_footer ()/*{{{*/
+void latex_document::write_footer ()
 {
 	doc << std::endl;
 	doc << "\\end{document}" << std::endl;
 }
-/*}}}*/
 
-void latex_document::add_package (const package &p)/*{{{*/
+void latex_document::add_package (const package &p)
 {
 	std::list<package>::const_iterator end=packages.end ();
 	for (std::list<package>::iterator it=packages.begin (); it!=end; ++it)
@@ -130,9 +126,8 @@ void latex_document::add_package (const package &p)/*{{{*/
 
 	packages.push_back (p);
 }
-/*}}}*/
 
-QString latex_document::get_string ()/*{{{*/
+QString latex_document::get_string ()
 {
 	// Delete the document buffer
 	doc.str ();
@@ -145,9 +140,8 @@ QString latex_document::get_string ()/*{{{*/
 	// Return the document.
 	return std2q (doc.str ());
 }
-/*}}}*/
 
-latex_document &latex_document::write (const table &tab, const table_row &header, const std::list<float> &widths)/*{{{*/
+latex_document &latex_document::write (const table &tab, const table_row &header, const std::list<float> &widths)
 {
 	// This writes a table. It is a bit q'n'd, in lack of a proper data
 	// structure. Only rows for which widths exist are written.
@@ -191,31 +185,27 @@ latex_document &latex_document::write (const table &tab, const table_row &header
 	body << "\\end{longtable}" << std::endl;
 	return *this;
 }
-/*}}}*/
 
-latex_document &latex_document::write_text (const QString &text)/*{{{*/
+latex_document &latex_document::write_text (const QString &text)
 {
 	body << latex_escape (text);
 	return *this;
 }
-/*}}}*/
 
-latex_document &latex_document::start_section (const QString &caption)/*{{{*/
+latex_document &latex_document::start_section (const QString &caption)
 {
 	body << "\\section{" << latex_escape (caption) << "}" << std::endl;
 	return *this;
 }
-/*}}}*/
 
-latex_document &latex_document::write_empty_line ()/*{{{*/
+latex_document &latex_document::write_empty_line ()
 {
 	body << std::endl;
 	return *this;
 }
-/*}}}*/
 
 // TODO auslagern
-void latex_document::execute_command (const QString &command, const QString &location) throw (ex_generate_error)/*{{{*/
+void latex_document::execute_command (const QString &command, const QString &location) throw (ex_generate_error)
 {
 	// TODO this is a generic function
 	// TODO better error checking: if there was an error, return the output of
@@ -240,9 +230,8 @@ void latex_document::execute_command (const QString &command, const QString &loc
 
 	if (ret!=0) throw ex_command_failed ("Fehler "+QString::number (ret)+" "+location, ret, command, output);
 }
-/*}}}*/
 
-QString latex_document::make_pdf ()/*{{{*/
+QString latex_document::make_pdf ()
 	throw (sk_exception)
 {
 	// Make a temporary directory
@@ -311,6 +300,5 @@ QString latex_document::make_pdf ()/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
 

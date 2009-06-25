@@ -1,26 +1,24 @@
 #include "db_column.h"
 
-void db_column::init_flags ()/*{{{*/
+void db_column::init_flags ()
 {
 	not_null=type_unsigned=zerofill=binary=auto_increment=false;
 	//primary_key=unique_key=multiple_key=false;
 }
-/*}}}*/
 
-db_column::db_column ()/*{{{*/
+db_column::db_column ()
 	:type (FIELD_TYPE_NULL), length (0)
 {
 	init_flags ();
-}/*}}}*/
+}
 
-db_column::db_column (const QString &_name, const enum_field_types _type, const unsigned int _length, const QString &_def)/*{{{*/
+db_column::db_column (const QString &_name, const enum_field_types _type, const unsigned int _length, const QString &_def)
 	:name (_name), type (_type), length (_length), def (_def)
 {
 	init_flags ();
 }
-/*}}}*/
 
-db_column::db_column (const MYSQL_FIELD &f)/*{{{*/
+db_column::db_column (const MYSQL_FIELD &f)
 {
 	if (f.name) name=f.name;
 	type=f.type;
@@ -31,9 +29,8 @@ db_column::db_column (const MYSQL_FIELD &f)/*{{{*/
 	zerofill=(f.flags & ZEROFILL_FLAG);
 	binary=auto_increment=(f.flags & BINARY_FLAG);
 }
-/*}}}*/
 
-QString db_column::type_string () const/*{{{*/
+QString db_column::type_string () const
 	// Now why doesn't the MySQL library have function to do this?
 {
 	QString r="???";
@@ -78,9 +75,8 @@ QString db_column::type_string () const/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
-QString db_column::mysql_spec () const/*{{{*/
+QString db_column::mysql_spec () const
 {
 	QString r;
 
@@ -96,13 +92,11 @@ QString db_column::mysql_spec () const/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
-std::ostream &operator<< (std::ostream &s, const db_column &c)/*{{{*/
+std::ostream &operator<< (std::ostream &s, const db_column &c)
 {
 	return s << c.mysql_spec ();
 }
-/*}}}*/
 
 
 

@@ -1,14 +1,14 @@
 #include "sk_time.h"
 
-sk_time::sk_time ()/*{{{*/
+sk_time::sk_time ()
 	:QTime ()
 	/*
 	 * Constructs an empty sk_time instance.
 	 */
 {
-}/*}}}*/
+}
 
-QString sk_time::table_string (const char *format)/*{{{*/
+QString sk_time::table_string (const char *format)
 	/*
 	 * Makes a text for the table.
 	 * Parameters:
@@ -21,9 +21,9 @@ QString sk_time::table_string (const char *format)/*{{{*/
 //		return "";
 //	else
 		return toString (format);
-}/*}}}*/
+}
 
-QString sk_time::table_string (bool gelandet)/*{{{*/
+QString sk_time::table_string (bool gelandet)
 	/*
 	 * Makes a text for the table depending on a flight status.
 	 * Parameters:
@@ -36,9 +36,9 @@ QString sk_time::table_string (bool gelandet)/*{{{*/
 		return table_string ("hh:mm");
 	else
 		return table_string ("(hh:mm)");
-}/*}}}*/
+}
 
-sk_time::sk_time (const QTime &t)/*{{{*/
+sk_time::sk_time (const QTime &t)
 	:QTime (t)
 	/*
 	 * Constructs an sk_time instance given the time as QTime.
@@ -46,9 +46,9 @@ sk_time::sk_time (const QTime &t)/*{{{*/
 	 *   - t: the time.
 	 */
 {
-}/*}}}*/
+}
 
-sk_time::sk_time (int h, int m, int s, int ms)/*{{{*/
+sk_time::sk_time (int h, int m, int s, int ms)
 	:QTime (h, m, s, ms)
 	/*
 	 * Constructs an sk_time instance given the time as hour, minute, second
@@ -58,5 +58,4 @@ sk_time::sk_time (int h, int m, int s, int ms)/*{{{*/
 	 */
 {
 }
-/*}}}*/
 

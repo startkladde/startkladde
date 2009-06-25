@@ -14,18 +14,16 @@
 
 // TODO expire sessions
 
-web_session::web_session ()/*{{{*/
+web_session::web_session ()
 {
 	ok=false;
 }
-/*}}}*/
 
-web_session::~web_session ()/*{{{*/
+web_session::~web_session ()
 {
 }
-/*}}}*/
 
-web_session web_session::create ()/*{{{*/
+web_session web_session::create ()
 	/*
 	 * Creates a session.
 	 * That means: makes a unique file name, creates that file and saves
@@ -55,9 +53,8 @@ web_session web_session::create ()/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
-web_session web_session::open (QString _id)/*{{{*/
+web_session web_session::open (QString _id)
 	/*
 	 * Opens a session.
 	 * That means: opens the file, reads the data.
@@ -71,9 +68,8 @@ web_session web_session::open (QString _id)/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
-bool web_session::save ()/*{{{*/
+bool web_session::save ()
 	/*
 	 * Saves a session.
 	 * That means: writes the session data to the file.
@@ -82,9 +78,8 @@ bool web_session::save ()/*{{{*/
 	if (!ok) return false;
 	return args.write_to_file (make_file_name ());
 }
-/*}}}*/
 
-bool web_session::destroy ()/*{{{*/
+bool web_session::destroy ()
 	/*
 	 * Destroys a session.
 	 * That means: deletes the file.
@@ -95,19 +90,16 @@ bool web_session::destroy ()/*{{{*/
 	ok=false;
 	return ret==0;
 }
-/*}}}*/
 
 
 
-QString web_session::make_file_name ()/*{{{*/
+QString web_session::make_file_name ()
 {
 	return "/tmp/sk_web.session."+id;
 }
-/*}}}*/
 
-bool web_session::is_ok ()/*{{{*/
+bool web_session::is_ok ()
 {
 	return ok;
 }
-/*}}}*/
 

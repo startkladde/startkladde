@@ -6,7 +6,7 @@
 
 const QString whitespace=" \t\r\n";
 
-bool eintrag_ist_leer (QString eintrag)/*{{{*/
+bool eintrag_ist_leer (QString eintrag)
 	/*
 	 * Finds out whether an entry is considered "empty".
 	 * Parameters:
@@ -21,9 +21,8 @@ bool eintrag_ist_leer (QString eintrag)/*{{{*/
 	QString e=eintrag.simplified ();
 	return (e=="" || e=="-");
 }
-/*}}}*/
 
-bool check_message (QWidget *parent, const QString &msg)/*{{{*/
+bool check_message (QWidget *parent, const QString &msg)
 	/*
 	 * Displays a message and ask the user if he wishes to accept anyway.
 	 * Parameters:
@@ -38,9 +37,8 @@ bool check_message (QWidget *parent, const QString &msg)/*{{{*/
 			!=QDialog::Accepted;
 	return (ret==QDialog::Accepted);
 }
-/*}}}*/
 
-QString t_pilot_bezeichnung (flug_typ flugtyp, casus c)/*{{{*/
+QString t_pilot_bezeichnung (flug_typ flugtyp, casus c)
 	/*
 	 * Creates a description of the pilot's function (pilot, flight instructor...).
 	 * Parameters:
@@ -64,9 +62,8 @@ QString t_pilot_bezeichnung (flug_typ flugtyp, casus c)/*{{{*/
 			break;
 	}
 }
-/*}}}*/
 
-QString t_begleiter_bezeichnung (flug_typ flugtyp, casus c)/*{{{*/
+QString t_begleiter_bezeichnung (flug_typ flugtyp, casus c)
 	/*
 	 * Creates a description of the copilot's function (pilot, flight instructor...).
 	 * Parameters:
@@ -83,15 +80,13 @@ QString t_begleiter_bezeichnung (flug_typ flugtyp, casus c)/*{{{*/
 		default: return "Begleiter"; break;
 	}
 }
-/*}}}*/
 
-void replace_tabs (QString &s)/*{{{*/
+void replace_tabs (QString &s)
 {
 	s.replace ('\t', ' ');
 }
-/*}}}*/
 
-QString simplify_club_name (const QString s)/*{{{*/
+QString simplify_club_name (const QString s)
 {
 	QString r=s.simplified ().toLower ();
 	if (eintrag_ist_leer (r))
@@ -99,35 +94,31 @@ QString simplify_club_name (const QString s)/*{{{*/
 	else
 		return r;
 }
-/*}}}*/
 
-bool club_name_identical (const QString s1, const QString s2)/*{{{*/
+bool club_name_identical (const QString s1, const QString s2)
 {
 	return simplify_club_name (s1)==simplify_club_name (s2);
 }
-/*}}}*/
 
-QString concatenate_comments (const QString& s1, const QString& s2)/*{{{*/
+QString concatenate_comments (const QString& s1, const QString& s2)
 {
 	if (eintrag_ist_leer (s1)) return s2;
 	if (eintrag_ist_leer (s2)) return s1;
 	return s1+"; "+s2;
 }
-/*}}}*/
 
-QString string_or_none (const QString& text)/*{{{*/
+QString string_or_none (const QString& text)
 {
 	if (eintrag_ist_leer (text))
 		return "-";
 	else
 		return text;
 }
-/*}}}*/
 
-bool parameter_matches (char *parameter, char *val1, char *val2)/*{{{*/
+bool parameter_matches (char *parameter, char *val1, char *val2)
 {
 	return ((strcmp (parameter, val1)==0) || (strcmp (parameter, val2)==0));
-}/*}}}*/
+}
 
 #include <iostream>
 
@@ -148,7 +139,7 @@ void split_string (QString &string1, QString &string2, QString separator, QStrin
 	}
 }
 
-void trim (QStringList &strings)/*{{{*/
+void trim (QStringList &strings)
 {
 	QMutableStringListIterator it (strings);
 	while (it.hasNext ())
@@ -157,9 +148,8 @@ void trim (QStringList &strings)/*{{{*/
 		it.value()=it.value().trimmed();
 	}
 }
-/*}}}*/
 
-bool is_date (const QString& s)/*{{{*/
+bool is_date (const QString& s)
 	/*
 	 * Finds out if a QString can be parsed as date.
 	 * Parameters:
@@ -172,9 +162,8 @@ bool is_date (const QString& s)/*{{{*/
 	// TODO remove as the result is discarded.
 	return QDate::fromString (s, Qt::ISODate).isValid ();
 }
-/*}}}*/
 
-QString latex_escape (const QString& o)/*{{{*/
+QString latex_escape (const QString& o)
 	/*
 	 * Escape a QString for putting to a LaTeX document.
 	 * Parameters:
@@ -205,7 +194,7 @@ QString latex_escape (const QString& o)/*{{{*/
 	}
 
 	return result;
-}/*}}}*/
+}
 
 /**
   * Escape a QString for putting to a LaTeX document.
@@ -234,7 +223,7 @@ QString csv_escape (const QString& o)
 	return result;
 }
 
-QString html_escape (const QString& s, bool also_escape_newlines)/*{{{*/
+QString html_escape (const QString& s, bool also_escape_newlines)
 {
 	QString r;
 
@@ -253,9 +242,8 @@ QString html_escape (const QString& s, bool also_escape_newlines)/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
-QStringList html_escape (const QStringList &l, bool also_escape_newlines)/*{{{*/
+QStringList html_escape (const QStringList &l, bool also_escape_newlines)
 {
 	QStringList r;
 	QStringListIterator it (l);
@@ -264,7 +252,6 @@ QStringList html_escape (const QStringList &l, bool also_escape_newlines)/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
 QString get_environment (const QString& name)
 {
@@ -276,7 +263,7 @@ QString get_environment (const QString& name)
 }
 
 
-char hex_digit_value (char digit)/*{{{*/
+char hex_digit_value (char digit)
 {
 	switch (digit)
 	{
@@ -299,9 +286,8 @@ char hex_digit_value (char digit)/*{{{*/
 		default: return 0; break;
 	}
 }
-/*}}}*/
 
-QString hex_digit (char value)/*{{{*/
+QString hex_digit (char value)
 {
 	switch (value%16)
 	{
@@ -324,15 +310,13 @@ QString hex_digit (char value)/*{{{*/
 	}
 	return "?";
 }
-/*}}}*/
 
-QString hex_string (unsigned char value)/*{{{*/
+QString hex_string (unsigned char value)
 {
 	return hex_digit (value/16)+hex_digit (value%16);
 }
-/*}}}*/
 
-QString cgi_unescape (const QString &text)/*{{{*/
+QString cgi_unescape (const QString &text)
 {
 	enum state_t { st_normal, st_expect_first, st_expect_second };
 	state_t state=st_normal;
@@ -369,9 +353,8 @@ QString cgi_unescape (const QString &text)/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
-QString cgi_escape (const QString &text, bool leave_high)/*{{{*/
+QString cgi_escape (const QString &text, bool leave_high)
 	// leave_high: leave alone characters>127. This is incompatible with CGI,
 	// but useful for using the escaping mechanism in other places.
 {
@@ -398,27 +381,24 @@ QString cgi_escape (const QString &text, bool leave_high)/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
-QString bool_to_string (bool val, const QString &true_value, const QString &false_value)/*{{{*/
+QString bool_to_string (bool val, const QString &true_value, const QString &false_value)
 {
 	if (val)
 		return true_value;
 	else
 		return false_value;
 }
-/*}}}*/
 
-bool string_to_bool (const QString &text)/*{{{*/
+bool string_to_bool (const QString &text)
 {
 	if (text.toInt ()==0)
 		return false;
 	else
 		return true;
 }
-/*}}}*/
 
-QString make_string (const std::set<QString> s, const QString &separator)/*{{{*/
+QString make_string (const std::set<QString> s, const QString &separator)
 {
 	QString r;
 
@@ -431,14 +411,12 @@ QString make_string (const std::set<QString> s, const QString &separator)/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
 
-std::ostream &operator<< (std::ostream &s, const QString &c)/*{{{*/
+std::ostream &operator<< (std::ostream &s, const QString &c)
 {
 	return s << q2std (c);
 }
-/*}}}*/
 
 
 

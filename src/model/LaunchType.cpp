@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 // Class management
-void LaunchType::init ()/*{{{*/
+void LaunchType::init ()
 {
 	id=invalid_id;
 	towplane="";
@@ -15,15 +15,14 @@ void LaunchType::init ()/*{{{*/
 	type=sat_other;
 	ok=false;
 }
-/*}}}*/
 
-LaunchType::LaunchType ()/*{{{*/
+LaunchType::LaunchType ()
 	:Entity ()
 {
 	init ();
-}/*}}}*/
+}
 
-LaunchType::LaunchType (int _id, startart_type _type, QString _towplane, QString _description, QString _short_description, QString _accelerator, QString _logbook_string, bool _person_required)/*{{{*/
+LaunchType::LaunchType (int _id, startart_type _type, QString _towplane, QString _description, QString _short_description, QString _accelerator, QString _logbook_string, bool _person_required)
 	:Entity ()
 {
 	id=_id;
@@ -35,9 +34,8 @@ LaunchType::LaunchType (int _id, startart_type _type, QString _towplane, QString
 	logbook_string=_logbook_string;
 	person_required=_person_required;
 }
-/*}}}*/
 
-LaunchType::LaunchType (QString desc)/*{{{*/
+LaunchType::LaunchType (QString desc)
 	:Entity ()
 {
 	init ();
@@ -71,32 +69,31 @@ LaunchType::LaunchType (QString desc)/*{{{*/
 	if (n>=6) logbook_string=split[6];
 	if (n>=7 && split[7].lower ()=="false") person_required=false;
 }
-/*}}}*/
 
 // Class information
-QString LaunchType::name () const/*{{{*/
+QString LaunchType::name () const
 {
 	return description;
-}/*}}}*/
+}
 
-QString LaunchType::tabelle_name () const/*{{{*/
+QString LaunchType::tabelle_name () const
 {
 	return short_description;
-}/*}}}*/
+}
 
-QString LaunchType::text_name () const/*{{{*/
+QString LaunchType::text_name () const
 {
 	return description;
-}/*}}}*/
+}
 
-QString LaunchType::bezeichnung (casus c) const/*{{{*/
+QString LaunchType::bezeichnung (casus c) const
 {
 	return entityLabel (st_startart, c);
-}/*}}}*/
+}
 
 
 
-QString LaunchType::get_selector_value (int column_number) const/*{{{*/
+QString LaunchType::get_selector_value (int column_number) const
 {
 	switch (column_number)
 	{
@@ -106,9 +103,8 @@ QString LaunchType::get_selector_value (int column_number) const/*{{{*/
 		default: return QString ();
 	}
 }
-/*}}}*/
 
-QString LaunchType::get_selector_caption (int column_number)/*{{{*/
+QString LaunchType::get_selector_caption (int column_number)
 {
 	switch (column_number)
 	{
@@ -118,21 +114,19 @@ QString LaunchType::get_selector_caption (int column_number)/*{{{*/
 		default: return QString ();
 	}
 }
-/*}}}*/
 
 
 
-QString LaunchType::list_text () const/*{{{*/
+QString LaunchType::list_text () const
 {
 	if (accelerator.isEmpty ())
 		return QString (" ")+description;
 	else
 		return QString (accelerator)+QString (" - ")+description;
 }
-/*}}}*/
 
 
-QString startart_type_string (startart_type t)/*{{{*/
+QString startart_type_string (startart_type t)
 {
 	switch (t)
 	{
@@ -144,14 +138,12 @@ QString startart_type_string (startart_type t)/*{{{*/
 
 	return "???";
 }
-/*}}}*/
 
-void LaunchType::output (std::ostream &stream, output_format_t format)/*{{{*/
+void LaunchType::output (std::ostream &stream, output_format_t format)
 {
 	Entity::output (stream, format, false, "ID", id);
 	Entity::output (stream, format, false, "Bezeichnung", description);
 	Entity::output (stream, format, true, "Typ", startart_type_string (type));
 }
-/*}}}*/
 
 

@@ -8,7 +8,7 @@
 
 #include "src/text.h"
 
-temp_dir::temp_dir (const QString &id)/*{{{*/
+temp_dir::temp_dir (const QString &id)
 	throw (ex_create_error)
 	// Name will be /tmp/${id}XXXXXX
 {
@@ -43,9 +43,9 @@ temp_dir::temp_dir (const QString &id)/*{{{*/
 		// EINAVL: name does not end with XXXXXX
 		throw ex_create_error (errno);
 	}
-}/*}}}*/
+}
 
-temp_dir::~temp_dir ()/*{{{*/
+temp_dir::~temp_dir ()
 {
 	if (!name.isEmpty ())
 	{
@@ -64,5 +64,5 @@ temp_dir::~temp_dir ()/*{{{*/
 			//system ((QString ("touch ")+name+QString (".delete")).c_str ());
 		}
 	}
-}/*}}}*/
+}
 

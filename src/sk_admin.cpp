@@ -6,7 +6,7 @@
 #include "src/db/sk_db.h"
 #include "src/io/io.h"
 
-void display_help ()/*{{{*/
+void display_help ()
 {
 	std::cout << "usage: skadmin [options...] action [actionopts...]" << std::endl;
 	std::cout << "  actions:" << std::endl;
@@ -17,9 +17,8 @@ void display_help ()/*{{{*/
 	std::cout << "  options:" << std::endl;
 	options::display_options ("    ");
 }
-/*}}}*/
 
-void init_db (sk_db &root_db)/*{{{*/
+void init_db (sk_db &root_db)
 	// TODO return value
 {
 	try
@@ -35,9 +34,8 @@ void init_db (sk_db &root_db)/*{{{*/
 		std::cout << e.description (true) << std::endl;
 	}
 }
-/*}}}*/
 
-int check_db (sk_db &db)/*{{{*/
+int check_db (sk_db &db)
 	// Returns: 3 for db not usable, 2 for connection/program/server errors
 	// That means for doing a db_init: 3: might help, 2: no use
 {
@@ -56,9 +54,8 @@ int check_db (sk_db &db)/*{{{*/
 
 	return 0;
 }
-/*}}}*/
 
-int merge_person (sk_db &db, const std::list<QString> &args)/*{{{*/
+int merge_person (sk_db &db, const std::list<QString> &args)
 {
 	if (args.size ()<2)
 	{
@@ -72,7 +69,7 @@ int merge_person (sk_db &db, const std::list<QString> &args)/*{{{*/
 		std::list<QString>::const_iterator args_end=args.end ();
 		std::list<QString>::const_iterator arg=args.begin ();
 
-		// Determine the correct ID/*{{{*/
+		// Determine the correct ID
 		db_id correct_id=(*arg).toLongLong ();
 		if (id_invalid (correct_id))
 		{
@@ -80,9 +77,8 @@ int merge_person (sk_db &db, const std::list<QString> &args)/*{{{*/
 			return 2;
 		}
 		arg++;
-/*}}}*/
 
-		// Determine the wrong IDs/*{{{*/
+		// Determine the wrong IDs
 		std::list<db_id> wrong_ids;
 		for (; arg!=args_end; arg++)
 		{
@@ -94,15 +90,13 @@ int merge_person (sk_db &db, const std::list<QString> &args)/*{{{*/
 			}
 			wrong_ids.push_back (wrong_id);
 		}
-/*}}}*/
 
-		// Display what we're about to do/*{{{*/
+		// Display what we're about to do
 		std::cout << "Merging wrong person";
 		if (wrong_ids.size ()>1) std::cout << "s";
 		for (std::list<db_id>::iterator i=wrong_ids.begin (); i!=wrong_ids.end (); ++i)
 			std::cout << " " << *i;
 		std::cout << " into " << correct_id << "." << std::endl;
-/*}}}*/
 
 		try
 		{
@@ -132,9 +126,8 @@ int merge_person (sk_db &db, const std::list<QString> &args)/*{{{*/
 
 	return 0;
 }
-/*}}}*/
 
-int main (int argc, char *argv[])/*{{{*/
+int main (int argc, char *argv[])
 {
 
 	if (argc<=1)
@@ -173,7 +166,7 @@ int main (int argc, char *argv[])/*{{{*/
 
 			QStringList::iterator nonopt=opts.non_options.begin (); nonopt++;
 
-			// Determine whether we need an root connection (need_root_db)/*{{{*/
+			// Determine whether we need an root connection (need_root_db)
 			bool need_root_db=false;
 			switch (act)
 			{
@@ -187,9 +180,8 @@ int main (int argc, char *argv[])/*{{{*/
 					need_root_db=false;
 					break;
 			}
-/*}}}*/
 
-			// Get the root password (root_password)/*{{{*/
+			// Get the root password (root_password)
 			QString root_password;
 			if (need_root_db)
 			{
@@ -203,9 +195,8 @@ int main (int argc, char *argv[])/*{{{*/
 					root_password=opts.root_password;
 				}
 			}
-/*}}}*/
 
-			// Set database connection/*{{{*/
+			// Set database connection
 			sk_db db;
 			db.display_queries=opts.display_queries;
 			db.set_database (opts.database);
@@ -213,7 +204,6 @@ int main (int argc, char *argv[])/*{{{*/
 				db.set_connection_data (opts.server, opts.port, opts.root_name, root_password);
 			else
 				db.set_connection_data (opts.server, opts.port, opts.username, opts.password);
-/*}}}*/
 
 			switch (act)
 			{
@@ -242,5 +232,4 @@ int main (int argc, char *argv[])/*{{{*/
 
 	return 0;
 }
-/*}}}*/
 

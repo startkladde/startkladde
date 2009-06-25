@@ -2,7 +2,7 @@
 
 #include <QLayout>
 
-// Columns Bordbuch/*{{{*/
+// Columns Bordbuch
 const int tbl_bob_registration=0;
 const int tbl_bob_flugzeug_typ=1;
 const int tbl_bob_datum=2;
@@ -15,9 +15,9 @@ const int tbl_bob_zeit_landung=8;
 const int tbl_bob_anzahl_landungen=9;
 const int tbl_bob_betriebszeit=10;
 const int tbl_bob_bemerkungen=11;
-const int bob_spalten=12;/*}}}*/
+const int bob_spalten=12;
 
-// Columns Flugbuch/*{{{*/
+// Columns Flugbuch
 const int tbl_flb_tag=0;
 const int tbl_flb_muster=1;
 const int tbl_flb_registration=2;
@@ -30,15 +30,15 @@ const int tbl_flb_zeit_start=8;
 const int tbl_flb_zeit_landung=9;
 const int tbl_flb_flugdauer=10;
 const int tbl_flb_bemerkung=11;
-const int flb_spalten=12;/*}}}*/
+const int flb_spalten=12;
 
-// Columns Startartstatistik/*{{{*/
+// Columns Startartstatistik
 const int tbl_sas_startart=0;
 const int tbl_sas_anzahl=1;
-const int sas_spalten=2;/*}}}*/
+const int sas_spalten=2;
 
 
-StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog, sk_db *_db)/*{{{*/
+StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog, sk_db *_db)
 	:SkDialog (parent, name, false, f, status_dialog), db (_db)
 	/*
 	 * Initializes a statistics window instance.
@@ -66,9 +66,9 @@ StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool moda
 	layout_but->addWidget (but_close);
 
 	resize (780, 540);
-}/*}}}*/
+}
 
-SkTableItem *StatisticsWindow::set_table_cell (int row, int col, const QString &text, QColor bg)/*{{{*/
+SkTableItem *StatisticsWindow::set_table_cell (int row, int col, const QString &text, QColor bg)
 	/*
 	 * Sets a table item to a given text and color.
 	 * Parameters:
@@ -83,14 +83,14 @@ SkTableItem *StatisticsWindow::set_table_cell (int row, int col, const QString &
 	SkTableItem *ret;
 	tab->setItem (row, col, ret=new SkTableItem (text, bg));
 	return ret;
-}/*}}}*/
+}
 
 
 
 
 
 
-void StatisticsWindow::fill_sastat (QDate datum)/*{{{*/
+void StatisticsWindow::fill_sastat (QDate datum)
 	/*
 	 * Generates and fills in the startartstatistik.
 	 * Parameters:
@@ -137,9 +137,9 @@ void StatisticsWindow::fill_sastat (QDate datum)/*{{{*/
 		delete[] sa_fluege;
 		tab->setCurrentCell (0,0);
 	}
-}/*}}}*/
+}
 
-void StatisticsWindow::sastat (QDate datum)/*{{{*/
+void StatisticsWindow::sastat (QDate datum)
 	/*
 	 * Displays the window, displaying the startartstatistik.
 	 * Parameters:
@@ -163,12 +163,12 @@ void StatisticsWindow::sastat (QDate datum)/*{{{*/
 	emit long_operation_end ();
 
 	show ();
-}/*}}}*/
+}
 
 
 // New code...
 
-void StatisticsWindow::bordbuch (QDate datum)/*{{{*/
+void StatisticsWindow::bordbuch (QDate datum)
 	/*
 	 * Displays the window, displaying the bordbuch.
 	 * Parameters:
@@ -211,9 +211,9 @@ void StatisticsWindow::bordbuch (QDate datum)/*{{{*/
 
 	emit long_operation_end ();
 	show ();
-}/*}}}*/
+}
 
-void StatisticsWindow::flugbuch (QDate datum)/*{{{*/
+void StatisticsWindow::flugbuch (QDate datum)
 	/*
 	 * Displays the window, displaying the flugbuch.
 	 * Parameters:
@@ -256,10 +256,10 @@ void StatisticsWindow::flugbuch (QDate datum)/*{{{*/
 
 	emit long_operation_end ();
 	show ();
-}/*}}}*/
+}
 
 
-void StatisticsWindow::display_bordbuch_entry (bordbuch_entry *bbe)/*{{{*/
+void StatisticsWindow::display_bordbuch_entry (bordbuch_entry *bbe)
 	/*
 	 * Adds a bordbuch entry to the table.
 	 * Parameters:
@@ -300,9 +300,8 @@ void StatisticsWindow::display_bordbuch_entry (bordbuch_entry *bbe)/*{{{*/
 		set_table_cell (row, tbl_bob_bemerkungen, "Eintrag ung�ltig, da noch offene Fl�ge");
 	}
 }
-/*}}}*/
 
-void StatisticsWindow::display_flugbuch_entry (flugbuch_entry *fbe)/*{{{*/
+void StatisticsWindow::display_flugbuch_entry (flugbuch_entry *fbe)
 	/*
 	 * Adds a flugbuch entry to the table.
 	 * Parameters:
@@ -342,5 +341,4 @@ void StatisticsWindow::display_flugbuch_entry (flugbuch_entry *fbe)/*{{{*/
 
 	set_table_cell (row, tbl_flb_bemerkung, bemerkung);
 }
-/*}}}*/
 

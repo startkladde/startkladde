@@ -1,6 +1,6 @@
 #include "db_event.h"
 
-db_event::db_event (db_event_type tp, db_event_table tb, db_id i)/*{{{*/
+db_event::db_event (db_event_type tp, db_event_table tb, db_id i)
 	/*
 	 * Initializes a db_event with given data.
 	 * Parameters:
@@ -10,9 +10,9 @@ db_event::db_event (db_event_type tp, db_event_table tb, db_id i)/*{{{*/
 	type=tp;
 	table=tb;
 	id=i;
-}/*}}}*/
+}
 
-db_event::db_event ()/*{{{*/
+db_event::db_event ()
 	/*
 	 * Initializes a db_event with default (empty/none) data.
 	 */
@@ -20,9 +20,9 @@ db_event::db_event ()/*{{{*/
 	type=det_none;
 	table=db_kein;
 	id=0;
-}/*}}}*/
+}
 
-void db_event::dump ()/*{{{*/
+void db_event::dump ()
 	/*
 	 * Displays a dump of the event on stdout. Used for debugging.
 	 */
@@ -49,5 +49,5 @@ void db_event::dump ()/*{{{*/
 		DEFAULT
 	} printf ("    ");
 	printf ("id: %llu\n", id);
-}/*}}}*/
+}
 

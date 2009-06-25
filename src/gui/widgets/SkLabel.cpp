@@ -1,31 +1,28 @@
 #include "SkLabel.h"
 
-SkLabel::SkLabel (QColor _background_color, QColor _error_color, QWidget *parent, const char *name)/*{{{*/
+SkLabel::SkLabel (QColor _background_color, QColor _error_color, QWidget *parent, const char *name)
 	:QLabel (parent, name), background_color (_background_color), error_color (_error_color), invisible (false), error (false)
 {
-}/*}}}*/
+}
 
-SkLabel::SkLabel (const QString &text, QWidget *parent, const char *name)/*{{{*/
+SkLabel::SkLabel (const QString &text, QWidget *parent, const char *name)
 	:QLabel (text, parent, name)
 {
 }
-/*}}}*/
 
-void SkLabel::set_error (bool _error)/*{{{*/
+void SkLabel::set_error (bool _error)
 {
 	error=_error;
 	set_colors ();
 }
-/*}}}*/
 
-void SkLabel::set_invisible (bool _invisible)/*{{{*/
+void SkLabel::set_invisible (bool _invisible)
 {
 	invisible=_invisible;
 	set_colors ();
 }
-/*}}}*/
 
-void SkLabel::set_colors ()/*{{{*/
+void SkLabel::set_colors ()
 {
 	if (invisible)
 	{
@@ -54,11 +51,9 @@ void SkLabel::set_colors ()/*{{{*/
 		setPalette (pal);
 	}
 }
-/*}}}*/
 
-void SkLabel::mouseDoubleClickEvent (QMouseEvent *e)/*{{{*/
+void SkLabel::mouseDoubleClickEvent (QMouseEvent *e)
 {
 	emit (clicked ());
 }
-/*}}}*/
 

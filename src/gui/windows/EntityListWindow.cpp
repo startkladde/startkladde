@@ -4,7 +4,7 @@
 
 const int id_mnu_datenbank=0;
 
-//switch type template/*{{{*/
+//switch type template
 //switch (type)
 //{
 //	case st_none:
@@ -18,11 +18,11 @@ const int id_mnu_datenbank=0;
 //		log_error ("Unhandled type in EntityListWindow:: ()");
 //		break;
 //}
-///*}}}*/
+//
 
 
 
-// Tabellenspalten Flugzeug/*{{{*/
+// Tabellenspalten Flugzeug
 const int tbl_fz_registration=0;
 const int tbl_fz_wettkennz=1;
 const int tbl_fz_typ=2;
@@ -32,9 +32,9 @@ const int tbl_fz_club=5;
 const int tbl_fz_bemerkungen=6;
 const int tbl_fz_id=7;
 const int tbl_fz_editierbar=8;
-const int fz_spalten=9;/*}}}*/
+const int fz_spalten=9;
 
-// Tabellenspalten Person/*{{{*/
+// Tabellenspalten Person
 const int tbl_ps_nachname=0;
 const int tbl_ps_vorname=1;
 const int tbl_ps_club=2;
@@ -42,12 +42,12 @@ const int tbl_ps_lvnum=3;
 const int tbl_ps_bemerkungen=4;
 const int tbl_ps_id=5;
 const int tbl_ps_editierbar=6;
-const int ps_spalten=7;/*}}}*/
+const int ps_spalten=7;
 
 
 
 
-EntityListWindow::EntityListWindow (EntityType t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, ::SplashScreen *spl)/*{{{*/
+EntityListWindow::EntityListWindow (EntityType t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, ::SplashScreen *spl)
 	:SkDialog (parent, name, modal, f), db (_db), type (t), ss (spl)
 	/*
 	 * Creates a Entity list instance.
@@ -108,9 +108,9 @@ EntityListWindow::EntityListWindow (EntityType t, QWidget *parent, sk_db *_db, c
 	db_connect (editor_fenster);
 
 	resize (780, 540);
-}/*}}}*/
+}
 
-EntityListWindow::~EntityListWindow ()/*{{{*/
+EntityListWindow::~EntityListWindow ()
 	/*
 	 * Cleans up a Entity list instance.
 	 */
@@ -119,9 +119,9 @@ EntityListWindow::~EntityListWindow ()/*{{{*/
 //	QHeader *table_header=tab->horizontalHeader ();
 //	for (int i=0; i<table_header->count (); i++)
 //		printf ("%d\n", table_header->sectionSize (i));
-}/*}}}*/
+}
 
-SkTableItem *EntityListWindow::set_table_cell (int row, int col, const QString &text, QColor bg, db_id id)/*{{{*/
+SkTableItem *EntityListWindow::set_table_cell (int row, int col, const QString &text, QColor bg, db_id id)
 	/*
 	 * Sets a table in the cell to a given text and background color and save an ID.
 	 * Parameters:
@@ -137,11 +137,11 @@ SkTableItem *EntityListWindow::set_table_cell (int row, int col, const QString &
 	tab->setItem (row, col, ret=new SkTableItem (text, bg));
 	ret->set_id (id);
 	return ret;
-}/*}}}*/
+}
 
 
 
-int EntityListWindow::addEntity (EntityType t, Entity *st)/*{{{*/
+int EntityListWindow::addEntity (EntityType t, Entity *st)
 	/*
 	 * Adds an entry to the list.
 	 * Parameters:
@@ -157,9 +157,9 @@ int EntityListWindow::addEntity (EntityType t, Entity *st)/*{{{*/
 	fillInEntity (t, row, st);
 	tab->setCurrentCell (row, tab->currentColumn ());
 	return row;
-}/*}}}*/
+}
 
-void EntityListWindow::fillInEntity (EntityType t, int row, Entity *st)/*{{{*/
+void EntityListWindow::fillInEntity (EntityType t, int row, Entity *st)
 	/*
 	 * Writes an entry to a given row.
 	 * Parameters:
@@ -202,9 +202,9 @@ void EntityListWindow::fillInEntity (EntityType t, int row, Entity *st)/*{{{*/
 			log_error ("Unhandled type in EntityListWindow::fillInEntity ()");
 			break;
 	}
-}/*}}}*/
+}
 
-void EntityListWindow::listEntity (EntityType t)/*{{{*/
+void EntityListWindow::listEntity (EntityType t)
 	/*
 	 * Lists all entries from the database to the table.
 	 * Parameters:
@@ -260,11 +260,11 @@ void EntityListWindow::listEntity (EntityType t)/*{{{*/
 	tab->setCurrentCell (0, 0);
 
 	emit long_operation_end ();
-}/*}}}*/
+}
 
 
 
-int EntityListWindow::deleteEntity (EntityType t, db_id id)/*{{{*/
+int EntityListWindow::deleteEntity (EntityType t, db_id id)
 	/*
 	 * Deletes an entry from the database.
 	 * Paremters:
@@ -302,11 +302,11 @@ int EntityListWindow::deleteEntity (EntityType t, db_id id)/*{{{*/
 	}
 
 	return ret;
-}/*}}}*/
+}
 
 
 
-void EntityListWindow::setup_controls ()/*{{{*/
+void EntityListWindow::setup_controls ()
 	/*
 	 * Sets up the controls to match the current Entity type.
 	 */
@@ -356,19 +356,19 @@ void EntityListWindow::setup_controls ()/*{{{*/
 
 	reset ();
 
-}/*}}}*/
+}
 
-void EntityListWindow::reset ()/*{{{*/
+void EntityListWindow::reset ()
 	/*
 	 * Resets the dialog to its initial state.
 	 */
 {
 	tab->setCurrentCell (0, 0);
 	tab->setFocus ();
-}/*}}}*/
+}
 
 
-void EntityListWindow::keyPressEvent (QKeyEvent *e)/*{{{*/
+void EntityListWindow::keyPressEvent (QKeyEvent *e)
 	/*
 	 * Handles key shortcuts.
 	 * Parameters:
@@ -395,10 +395,10 @@ void EntityListWindow::keyPressEvent (QKeyEvent *e)/*{{{*/
 			SkDialog::keyPressEvent (e);
 			break;
 	}
-}/*}}}*/
+}
 
 
-Entity *EntityListWindow::newEntity (EntityType t)/*{{{*/
+Entity *EntityListWindow::newEntity (EntityType t)
 	/*
 	 * Creates a new Entity instance. (MURX)
 	 * Parameters:
@@ -424,9 +424,9 @@ Entity *EntityListWindow::newEntity (EntityType t)/*{{{*/
 			return NULL;
 			break;
 	}
-}/*}}}*/
+}
 
-int EntityListWindow::entityFromId (EntityType t, Entity *b, db_id id)/*{{{*/
+int EntityListWindow::entityFromId (EntityType t, Entity *b, db_id id)
 	/*
 	 * Retrieves a Entity from the database, given its ID.
 	 * Parameters:
@@ -455,9 +455,9 @@ int EntityListWindow::entityFromId (EntityType t, Entity *b, db_id id)/*{{{*/
 	}
 
 	return -1;
-}/*}}}*/
+}
 
-db_id EntityListWindow::editEntity (EntityType t, Entity *b)/*{{{*/
+db_id EntityListWindow::editEntity (EntityType t, Entity *b)
 	/*
 	 * Writes a Entity to the database.
 	 * Parameters:
@@ -485,9 +485,9 @@ db_id EntityListWindow::editEntity (EntityType t, Entity *b)/*{{{*/
 	}
 
 	return invalid_id;
-}/*}}}*/
+}
 
-void EntityListWindow::table_activated (int row)/*{{{*/
+void EntityListWindow::table_activated (int row)
 	/*
 	 * Called when the table is double clicked or enter is pressed.
 	 * Parameters:
@@ -519,9 +519,9 @@ void EntityListWindow::table_activated (int row)/*{{{*/
 		}
 	}
 	delete p;
-}/*}}}*/
+}
 
-void EntityListWindow::slot_table_double_click (int row, int col)/*{{{*/
+void EntityListWindow::slot_table_double_click (int row, int col)
 	/*
 	 * Called when the table is double clicked.
 	 * Parameters:
@@ -532,9 +532,9 @@ void EntityListWindow::slot_table_double_click (int row, int col)/*{{{*/
 {
 	(void)col;
 	table_activated (row);
-}/*}}}*/
+}
 
-void EntityListWindow::slot_table_key (int key)/*{{{*/
+void EntityListWindow::slot_table_key (int key)
 	/*
 	 * A key was pressed on the table.
 	 * Parameters:
@@ -553,9 +553,9 @@ void EntityListWindow::slot_table_key (int key)/*{{{*/
 
 	if (key==Qt::Key_Delete) tabelle_loeschen (tab->currentRow ());
 	if (key==Qt::Key_Insert) slot_neu ();
-}/*}}}*/
+}
 
-void EntityListWindow::slot_neu ()/*{{{*/
+void EntityListWindow::slot_neu ()
 	/*
 	 * Show the user the dialog for a new Entity and add it to the database.
 	*/
@@ -573,10 +573,10 @@ void EntityListWindow::slot_neu ()/*{{{*/
 	}
 
 	delete s;
-}/*}}}*/
+}
 
 
-bool EntityListWindow::entityUsed (EntityType type, db_id id)/*{{{*/
+bool EntityListWindow::entityUsed (EntityType type, db_id id)
 	/*
 	 * Determine from the database wheter the Entity has a flight.
 	 * Parameters:
@@ -605,9 +605,8 @@ bool EntityListWindow::entityUsed (EntityType type, db_id id)/*{{{*/
 
 	return false;
 }
-/*}}}*/
 
-void EntityListWindow::tabelle_loeschen (int row)/*{{{*/
+void EntityListWindow::tabelle_loeschen (int row)
 	/*
 	 * Removes an entry from the database after checking if that is possible
 	 * and confirming with the user.
@@ -656,17 +655,17 @@ void EntityListWindow::tabelle_loeschen (int row)/*{{{*/
 			show_warning ("Fehler beim Lesen aus der Datenbank", this);
 		}
 	}
-}/*}}}*/
+}
 
-void EntityListWindow::slot_loeschen ()/*{{{*/
+void EntityListWindow::slot_loeschen ()
 	/*
 	 * The "delete" menu entry was selected.
 	 */
 {
 	tabelle_loeschen (tab->currentRow ());
-}/*}}}*/
+}
 
-void EntityListWindow::slot_refresh ()/*{{{*/
+void EntityListWindow::slot_refresh ()
 	/*
 	 * The "refresh" menu entry was selected. Refreshes the table.
 	 */
@@ -678,19 +677,19 @@ void EntityListWindow::slot_refresh ()/*{{{*/
 		hide ();
 		show ();
 	}
-}/*}}}*/
+}
 
 
-void EntityListWindow::liste ()/*{{{*/
+void EntityListWindow::liste ()
 	/*
 	 * Displays the dialog.
 	 */
 {
 	setup_controls ();
 	show ();
-}/*}}}*/
+}
 
-void EntityListWindow::slot_db_update (db_event *event)/*{{{*/
+void EntityListWindow::slot_db_update (db_event *event)
 	/*
 	 * The database changed. Update the table, if appropriate.
 	 * Parameters:
@@ -703,7 +702,7 @@ void EntityListWindow::slot_db_update (db_event *event)/*{{{*/
 	{
 		Entity *s=newEntity (type);
 
-		if (event->type==det_add && event->id>0)/*{{{*/
+		if (event->type==det_add && event->id>0)
 		{
 			entityFromId (type, s, event->id);
 			int row=tab->row_from_column_id (event->id, 0);
@@ -717,9 +716,9 @@ void EntityListWindow::slot_db_update (db_event *event)/*{{{*/
 				log_error ("det_add in EntityListWindow::slot_db_update, aber id steht schon in der Tabelle");
 				fillInEntity (type, row, s);
 			}
-		}/*}}}*/
+		}
 
-		if (event->type==det_change && event->id>0)/*{{{*/
+		if (event->type==det_change && event->id>0)
 		{
 			entityFromId (type, s, event->id);
 			int row=tab->row_from_column_id (event->id, 0);
@@ -734,42 +733,42 @@ void EntityListWindow::slot_db_update (db_event *event)/*{{{*/
 				// TODO sortierung?
 				fillInEntity (type, row, s);
 			}
-		}/*}}}*/
+		}
 
-		if (event->type==det_delete && event->id>0)/*{{{*/
+		if (event->type==det_delete && event->id>0)
 		{
 			int row=tab->row_from_column_id (event->id, 0);
 			if (row<0)
 				log_error ("det_delete in EntityListWindow::slot_db_update, aber id steht nicht in der Tabelle");
 			else
 				tab->removeRow (row);
-		}/*}}}*/
+		}
 
 		delete s;
 	}
 
 	SkDialog::slot_db_update (event);
-}/*}}}*/
+}
 
 
 
-void EntityListWindow::slot_ok ()/*{{{*/
+void EntityListWindow::slot_ok ()
 	/*
 	 * The OK button was pressed. Close the dialog, returning the current row.
 	 */
 {
 	done (tab->currentRow ());
-}/*}}}*/
+}
 
-void EntityListWindow::slot_abbrechen ()/*{{{*/
+void EntityListWindow::slot_abbrechen ()
 	/*
 	 * The Cancel button was pressed. Close the dialog, returning -1.
 	 */
 {
 	done (-1);
-}/*}}}*/
+}
 
-void EntityListWindow::slot_editieren ()/*{{{*/
+void EntityListWindow::slot_editieren ()
 	/*
 	 * The "editieren" menu entry was selected. Edit the currently selected
 	 * entry.
@@ -777,6 +776,5 @@ void EntityListWindow::slot_editieren ()/*{{{*/
 {
 	table_activated (tab->currentRow ());
 }
-/*}}}*/
 
 

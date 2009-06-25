@@ -4,15 +4,15 @@
 
 #include "src/text.h"
 
-Person::Person ()/*{{{*/
+Person::Person ()
 	:Entity ()
 	/*
 	 * Constructs an empty Person instance.
 	 */
 {
-}/*}}}*/
+}
 
-Person::Person (QString vn, QString nn)/*{{{*/
+Person::Person (QString vn, QString nn)
 	/*
 	 * Constructs an Person instance with given first and last name.
 	 * Parameters:
@@ -22,9 +22,9 @@ Person::Person (QString vn, QString nn)/*{{{*/
 	vorname=vn;
 	nachname=nn;
 	id=0;
-}/*}}}*/
+}
 
-Person::Person (QString vn, QString nn, QString ve, QString cid, QString lvnum, db_id p_id)/*{{{*/
+Person::Person (QString vn, QString nn, QString ve, QString cid, QString lvnum, db_id p_id)
 	/*
 	 * Constructs an Person instance with given data.
 	 * Parameters:
@@ -37,9 +37,9 @@ Person::Person (QString vn, QString nn, QString ve, QString cid, QString lvnum, 
 	club_id=cid;
 	landesverbands_nummer=lvnum;
 	id=p_id;
-}/*}}}*/
+}
 
-QString Person::name () const/*{{{*/
+QString Person::name () const
 	/*
 	 * Returns the name of the person in a form suitable for enumerations.
 	 * Return value:
@@ -50,9 +50,9 @@ QString Person::name () const/*{{{*/
 	if (eintrag_ist_leer (nachname)) return vorname;
 	if (eintrag_ist_leer (vorname)) return nachname;
 	return nachname+", "+vorname;
-}/*}}}*/
+}
 
-QString Person::pdf_name () const/*{{{*/
+QString Person::pdf_name () const
 	/*
 	 * Returns the name of the person in a form suitable for the PDF document.
 	 * Return value:
@@ -61,9 +61,8 @@ QString Person::pdf_name () const/*{{{*/
 {
 	return name ();
 }
-/*}}}*/
 
-QString Person::tabelle_name () const/*{{{*/
+QString Person::tabelle_name () const
 	/*
 	 * Returns the name of the person in a form suitable for the table.
 	 * Return value:
@@ -72,9 +71,9 @@ QString Person::tabelle_name () const/*{{{*/
 {
 	if (eintrag_ist_leer (club)) return name ();
 	return name ()+" ("+club+")";
-}/*}}}*/
+}
 
-QString Person::text_name () const/*{{{*/
+QString Person::text_name () const
 	/*
 	 * Returns the name of the person in a form suitable for running text.
 	 * Return value:
@@ -85,9 +84,9 @@ QString Person::text_name () const/*{{{*/
 	if (eintrag_ist_leer (nachname)) return vorname;
 	if (eintrag_ist_leer (vorname)) return nachname;
 	return vorname+" "+nachname;
-}/*}}}*/
+}
 
-QString Person::bezeichnung (casus c) const/*{{{*/
+QString Person::bezeichnung (casus c) const
 	/*
 	 * Returns a text describing the fact that this is a plane.
 	 * Parameters:
@@ -97,19 +96,19 @@ QString Person::bezeichnung (casus c) const/*{{{*/
 	 */
 {
 	return entityLabel (st_person, c);
-}/*}}}*/
+}
 
-void Person::dump () const/*{{{*/
+void Person::dump () const
 	/*
 	 * Print a description of the person to stdout. Used for debugging.
 	 */
 {
 	std::cout << "sk_person dump: " << id << ", " << nachname << ", " << vorname << ", " << club << std::endl;
-}/*}}}*/
+}
 
 
 
-QString Person::get_selector_value (int column_number) const/*{{{*/
+QString Person::get_selector_value (int column_number) const
 {
 	switch (column_number)
 	{
@@ -121,9 +120,8 @@ QString Person::get_selector_value (int column_number) const/*{{{*/
 		default: return QString ();
 	}
 }
-/*}}}*/
 
-QString Person::get_selector_caption (int column_number)/*{{{*/
+QString Person::get_selector_caption (int column_number)
 {
 	switch (column_number)
 	{
@@ -135,9 +133,8 @@ QString Person::get_selector_caption (int column_number)/*{{{*/
 		default: return QString ();
 	}
 }
-/*}}}*/
 
-void Person::output (std::ostream &stream, output_format_t format)/*{{{*/
+void Person::output (std::ostream &stream, output_format_t format)
 {
 	Entity::output (stream, format, false, "ID", id);
 	Entity::output (stream, format, false, "Nachname", nachname);
@@ -146,5 +143,4 @@ void Person::output (std::ostream &stream, output_format_t format)/*{{{*/
 	Entity::output (stream, format, false, "Vereins-ID", club_id);
 	Entity::output (stream, format, true, "Landesverbandsnummer", landesverbands_nummer);
 }
-/*}}}*/
 

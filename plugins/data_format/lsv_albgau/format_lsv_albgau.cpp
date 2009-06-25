@@ -6,13 +6,12 @@
 
 const string format_lsv_albgau="lsv_albgau";
 
-extern "C" argument_list list_formats ()/*{{{*/
+extern "C" argument_list list_formats ()
 {
 	argument_list l;
 	l.set_value (format_lsv_albgau, "LSV Albgau");
 	return l;
 }
-/*}}}*/
 
 // _FIELDS_
 const string field_name_datum="datum";

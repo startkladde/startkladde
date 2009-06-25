@@ -7,7 +7,7 @@
 
 #include "src/gui/widgets/SkTableItem.h"
 
-SkTable::SkTable (QWidget *parent)/*{{{*/
+SkTable::SkTable (QWidget *parent)
 	:QTableWidget (parent)
 	/*
 	 * Constructs an SkTable instance.
@@ -16,9 +16,9 @@ SkTable::SkTable (QWidget *parent)/*{{{*/
 	 */
 {
 	setSelectionMode (QAbstractItemView::NoSelection);
-}/*}}}*/
+}
 
-void SkTable::simulate_key (int key)/*{{{*/
+void SkTable::simulate_key (int key)
 	/*
 	 * Act as if a given key had been pressed.
 	 * Parameters:
@@ -27,9 +27,9 @@ void SkTable::simulate_key (int key)/*{{{*/
 {
 	QKeyEvent e (QEvent::KeyPress, key, 0, 0);
 	keyPressEvent (&e);
-}/*}}}*/
+}
 
-void SkTable::keyPressEvent (QKeyEvent *e)/*{{{*/
+void SkTable::keyPressEvent (QKeyEvent *e)
 	/*
 	 * Handle a key pressed.
 	 * This implements, among others, HJKL.
@@ -63,9 +63,9 @@ void SkTable::keyPressEvent (QKeyEvent *e)/*{{{*/
 	// Pfusch, weil MainWindow das Event auch braucht, weil das Hilfe->Info
 	// nicht den Eingabefocus erh�lt.
 	e->ignore ();
-}/*}}}*/
+}
 
-void SkTable::set_table_column (int column, QString title, QString sample)/*{{{*/
+void SkTable::set_table_column (int column, QString title, QString sample)
 	/*
 	 * Sets the a table header column to a given title and adjusts the width so
 	 * that the title and a provided sample text are fully visible (sort of).
@@ -89,12 +89,11 @@ void SkTable::set_table_column (int column, QString title, QString sample)/*{{{*
 
 	setColumn (column, title, width);
 }
-/*}}}*/
 
 
 
 
-SkTableItem *SkTable::set_cell (int row, int col, const QString &text, QColor bg)/*{{{*/
+SkTableItem *SkTable::set_cell (int row, int col, const QString &text, QColor bg)
 	/*
 	 * Sets a cell to a given text and color.
 	 * Parameters:
@@ -125,7 +124,7 @@ SkTableItem *SkTable::set_cell (int row, int col, const QString &text, QColor bg
 		ret->set_id (old_id);
 //					}
 	return ret;
-}/*}}}*/
+}
 
 
 void SkTable::removeAllRows ()
@@ -133,7 +132,7 @@ void SkTable::removeAllRows ()
 	setRowCount (0);
 }
 
-void SkTable::removeRow (int row)/*{{{*/
+void SkTable::removeRow (int row)
 	/*
 	 * Remove a row from the table.
 	 * Parameters:
@@ -145,11 +144,11 @@ void SkTable::removeRow (int row)/*{{{*/
 	QTableWidget::removeRow (row);
 	// TODO what happens if r/c does not exist any more?
 	setCurrentCell (r, c);
-}/*}}}*/
+}
 
 
 
-int SkTable::row_from_column_id (db_id id, int col)/*{{{*/
+int SkTable::row_from_column_id (db_id id, int col)
 	/*
 	 * Finds the row where a given ID is saved in a given column.
 	 * Parameters:
@@ -164,9 +163,9 @@ int SkTable::row_from_column_id (db_id id, int col)/*{{{*/
 		if (i && i->id ()==id) return r;
 	}
 	return -1;
-}/*}}}*/
+}
 
-db_id SkTable::id_from_cell (int row, int col)/*{{{*/
+db_id SkTable::id_from_cell (int row, int col)
 	/*
 	 * Finds the ID that is saved in a given cell.
 	 * Parameters:
@@ -182,10 +181,9 @@ db_id SkTable::id_from_cell (int row, int col)/*{{{*/
 	if (id_item==NULL) return 0;
 	return id_item->id ();
 }
-/*}}}*/
 
 
-void SkTable::columnClicked (int c)/*{{{*/
+void SkTable::columnClicked (int c)
 	/*
 	 * A column header was clicked. Sort the table by the corresponding column.
 	 * Parameters:
@@ -193,7 +191,7 @@ void SkTable::columnClicked (int c)/*{{{*/
 	 */
 {
 	sortByColumn (c);
-}/*}}}*/
+}
 
 
 void SkTable::setColumn (int column, QString caption, int width)

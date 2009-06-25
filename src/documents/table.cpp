@@ -39,7 +39,7 @@ QString table_cell::csv (bool quote) const
 }
 
 
-table_row table_row::from_csv (const QString &line)/*{{{*/
+table_row table_row::from_csv (const QString &line)
 {
 	table_row row;
 	QString current_cell;
@@ -111,9 +111,8 @@ table_row table_row::from_csv (const QString &line)/*{{{*/
 
 	return row;
 }
-/*}}}*/
 
-table_row table_row::from_csv (std::istream &stream)/*{{{*/
+table_row table_row::from_csv (std::istream &stream)
 {
 	// TODO Qt-ize
 	std::string line;
@@ -127,7 +126,6 @@ table_row table_row::from_csv (std::istream &stream)/*{{{*/
 		return from_csv (std2q (line));
 	}
 }
-/*}}}*/
 
 /**
   * @param quote:  if true, the csv values will be quoted
@@ -147,7 +145,7 @@ QString table_row::csv (bool quote) const
 	return r;
 }
 
-std::ostream &operator<< (std::ostream &o, const table_row &row)/*{{{*/
+std::ostream &operator<< (std::ostream &o, const table_row &row)
 {
 	table_row::const_iterator end=row.end ();
 	for (table_row::const_iterator it=row.begin (); it!=end; ++it)
@@ -158,26 +156,23 @@ std::ostream &operator<< (std::ostream &o, const table_row &row)/*{{{*/
 
 	return o;
 }
-/*}}}*/
 
-void table_row::test (const QString &text)/*{{{*/
+void table_row::test (const QString &text)
 {
 	table_row row=table_row::from_csv (text);
 	std::cout << row;
 }
-/*}}}*/
 
-void table_row::test ()/*{{{*/
+void table_row::test ()
 {
 	test ("ab,\"cd,ef\",gh");
 	test ("ij,\"k\"\"l\",\"m,n\"");
 }
-/*}}}*/
 
 
 
 
-void table::read_csv (std::istream &s)/*{{{*/
+void table::read_csv (std::istream &s)
 {
 	// TODO Qt-ize
 	std::string line;
@@ -188,31 +183,27 @@ void table::read_csv (std::istream &s)/*{{{*/
 			push_back (table_row::from_csv (std2q (line)));
 	}
 }
-/*}}}*/
 
-void table::read_csv (const QString &s)/*{{{*/
+void table::read_csv (const QString &s)
 {
 	// TODO Qt-ize
 	std::istringstream stream (q2std (s));
 	read_csv (stream);
 }
-/*}}}*/
 
-table table::from_csv (std::istream &s)/*{{{*/
+table table::from_csv (std::istream &s)
 {
 	table t;
 	t.read_csv (s);
 	return t;
 }
-/*}}}*/
 
-table table::from_csv (const QString &s)/*{{{*/
+table table::from_csv (const QString &s)
 {
 	table t;
 	t.read_csv (s);
 	return t;
 }
-/*}}}*/
 
 /**
   * @param quote:  if true, the csv values will be quoted
@@ -234,7 +225,7 @@ QString table::csv (bool quote) const
 	return r;
 }
 
-std::ostream &operator<< (std::ostream &o, const table &tab)/*{{{*/
+std::ostream &operator<< (std::ostream &o, const table &tab)
 {
 	table::const_iterator end=tab.end ();
 	for (table::const_iterator it=tab.begin (); it!=end; ++it)
@@ -244,15 +235,13 @@ std::ostream &operator<< (std::ostream &o, const table &tab)/*{{{*/
 
 	return o;
 }
-/*}}}*/
 
-void table::test ()/*{{{*/
+void table::test ()
 {
 	table t=table::from_csv ("foo,\"bar,\"\"baz\"\"\"\nqux,qu\"ux\nquuux,\n,gaga");
 	std::cout << t;
 
 
 }
-/*}}}*/
 
 

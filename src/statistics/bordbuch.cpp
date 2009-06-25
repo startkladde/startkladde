@@ -2,14 +2,14 @@
 
 #include "src/text.h"
 
-bordbuch_entry::bordbuch_entry ()/*{{{*/
+bordbuch_entry::bordbuch_entry ()
 {
 	invalid=false;
 	anzahl_landungen=0;
 	insassen=0;
-}/*}}}*/
+}
 
-QString bordbuch_entry::insassen_string () const/*{{{*/
+QString bordbuch_entry::insassen_string () const
 {
 	// TODO unify for more
 	if (insassen==0) return "0";
@@ -18,49 +18,43 @@ QString bordbuch_entry::insassen_string () const/*{{{*/
 	else if (insassen==3) return "1/2";
 	else return "?";
 }
-/*}}}*/
 
-QString bordbuch_entry::datum_string () const/*{{{*/
+QString bordbuch_entry::datum_string () const
 {
 	return datum.toString ("yyyy-MM-dd");
 }
-/*}}}*/
 
-QString bordbuch_entry::zeit_start_string (bool no_letters) const/*{{{*/
+QString bordbuch_entry::zeit_start_string (bool no_letters) const
 {
 	if (zeit_start.is_null ())
 		return "-";
 	else
 		return zeit_start.to_string ("%H:%M", tz_utc, 0, no_letters);
 }
-/*}}}*/
 
-QString bordbuch_entry::zeit_landung_string (bool no_letters) const/*{{{*/
+QString bordbuch_entry::zeit_landung_string (bool no_letters) const
 {
 	if (zeit_landung.is_null ())
 		return "-";
 	else
 		return zeit_landung.to_string ("%H:%M", tz_utc, 0, no_letters);
 }
-/*}}}*/
 
-QString bordbuch_entry::betriebsdauer_string () const/*{{{*/
+QString bordbuch_entry::betriebsdauer_string () const
 {
 	return betriebsdauer.to_string ("%H:%M", tz_timespan);
 }
-/*}}}*/
 
-QString bordbuch_entry::anzahl_landungen_string () const/*{{{*/
+QString bordbuch_entry::anzahl_landungen_string () const
 {
 	if (anzahl_landungen==0)
 		return "-";
 	else
 		return QString::number (anzahl_landungen);
 }
-/*}}}*/
 
 
-bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<Flight> &flights, Plane &fz, QDate date)/*{{{*/
+bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<Flight> &flights, Plane &fz, QDate date)
 	// No plane/date checking is done.
 {
 	// Skip if the the list is empty
@@ -128,9 +122,8 @@ bool make_bordbuch_entry (bordbuch_entry *bb_entry, sk_db *db, QPtrList<Flight> 
 		return false;
 	}
 }
-/*}}}*/
 
-void add_bordbuch_entry (QPtrList<bordbuch_entry> &bb, sk_db *db, QPtrList<Flight> &flights, Plane &fz, QDate date)/*{{{*/
+void add_bordbuch_entry (QPtrList<bordbuch_entry> &bb, sk_db *db, QPtrList<Flight> &flights, Plane &fz, QDate date)
 {
 	bordbuch_entry *bb_entry=new bordbuch_entry;
 	bool entry_ok=make_bordbuch_entry (bb_entry, db, flights, fz, date);
@@ -140,9 +133,8 @@ void add_bordbuch_entry (QPtrList<bordbuch_entry> &bb, sk_db *db, QPtrList<Fligh
 	else
 		delete bb_entry;
 }
-/*}}}*/
 
-void make_bordbuch_plane (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, Plane &fz, QPtrList<Flight> &flights)/*{{{*/
+void make_bordbuch_plane (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, Plane &fz, QPtrList<Flight> &flights)
 	// flights may contain flights which don't belong to the plane
 {
 	// First, make a sorted list of all fligths that belong to this plane
@@ -177,9 +169,8 @@ void make_bordbuch_plane (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, P
 	}
 	add_bordbuch_entry (bb, db, entry_flights, fz, date);
 }
-/*}}}*/
 
-void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, QString *club)/*{{{*/
+void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, QString *club)
 	// If club is specified, only planes of this club are used.
 {
 	for (QPtrListIterator<Plane> plane (planes); *plane; ++plane)
@@ -191,9 +182,8 @@ void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date, QPt
 		}
 	}
 }
-/*}}}*/
 
-void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date)/*{{{*/
+void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date)
 {
 	// TODO error handling
 
@@ -286,7 +276,6 @@ void make_bordbuch_day (QPtrList<bordbuch_entry> &bb, sk_db *db, QDate date)/*{{
 
 	make_bordbuch_day (bb, db, date, planes, flights);
 }
-/*}}}*/
 
 
 

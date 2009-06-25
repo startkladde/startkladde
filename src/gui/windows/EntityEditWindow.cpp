@@ -5,7 +5,7 @@
 // TODO when creating, set the focus to the first control not yet given (e. g.
 // club).
 
-//switch type template/*{{{*/
+//switch type template
 //switch (type)
 //{
 //	case st_none:
@@ -19,11 +19,11 @@
 //		log_error ("Unhandled type in EntityEditWindow:: ()");
 //		break;
 //}
-///*}}}*/
+//
 
 
 
-EntityEditWindow::EntityEditWindow (EntityType t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dialog)/*{{{*/
+EntityEditWindow::EntityEditWindow (EntityType t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dialog)
 	:SkDialog (parent, name, modal, f, status_dialog)
 	/*
 	 * Initializes a Entity editor window.
@@ -56,7 +56,7 @@ EntityEditWindow::EntityEditWindow (EntityType t, QWidget *parent, sk_db *_db, c
 
 	categories=NULL; num_categories=0;
 
-	// Widgets anlegen und einstellen/*{{{*/
+	// Widgets anlegen und einstellen
 	switch (type)
 	{
 		case st_none:
@@ -100,11 +100,11 @@ EntityEditWindow::EntityEditWindow (EntityType t, QWidget *parent, sk_db *_db, c
 		default:
 			log_error ("Unhandled type in EntityEditWindow::EntityEditWindow");
 			break;
-	}/*}}}*/
+	}
 
 	edit_widgets[0]->setFocus ();
 
-	// Weigets positionieren, Labels anlegen und positionieren/*{{{*/
+	// Weigets positionieren, Labels anlegen und positionieren
 	labels=new QLabel*[num_fields];
 	QGridLayout *layout=new QGridLayout (this, 0, 2, widget_border, widget_gap, "layout");
 	for (int i=0; i<num_fields; i++)
@@ -114,11 +114,11 @@ EntityEditWindow::EntityEditWindow (EntityType t, QWidget *parent, sk_db *_db, c
 
 		layout->addWidget (labels[i], i, 0);
 		layout->addWidget (edit_widgets[i], i, 1);
-	}/*}}}*/
+	}
 
 	layout->setRowStretch (num_fields, 1);
 
-	// Labels und Focus einstellen/*{{{*/
+	// Labels und Focus einstellen
 	edit_widgets[0]->setFocus ();
 	switch (type)
 	{
@@ -144,7 +144,7 @@ EntityEditWindow::EntityEditWindow (EntityType t, QWidget *parent, sk_db *_db, c
 		default:
 			log_error ("Unhandled type in EntityEditWindow::EntityEditWindow");
 			break;
-	}/*}}}*/
+	}
 
 	layout->setColSpacing (1, edit_widgets[0]->width ()*2);
 
@@ -164,20 +164,20 @@ EntityEditWindow::EntityEditWindow (EntityType t, QWidget *parent, sk_db *_db, c
 	QObject::connect (but_save, SIGNAL (clicked()), this, SLOT (slot_save ()));
 
 	populate_lists ();
-}/*}}}*/
+}
 
-EntityEditWindow::~EntityEditWindow ()/*{{{*/
+EntityEditWindow::~EntityEditWindow ()
 	/*
 	 * Cleans up a Entity editor instance.
 	 */
 {
 	if (categories) delete[] categories;
 	num_categories=0;
-}/*}}}*/
+}
 
 
 
-void EntityEditWindow::populate_lists ()/*{{{*/
+void EntityEditWindow::populate_lists ()
 	/*
 	 * Fill in all lists that don't need to query the database.
 	 */
@@ -189,14 +189,14 @@ void EntityEditWindow::populate_lists ()/*{{{*/
 			break;
 		case st_plane:
 		{
-			// Fill in categories/*{{{*/
+			// Fill in categories
 			edit_category->clear ();
 			num_categories=list_categories (&categories, false);
 			for (int i=0; i<num_categories; i++)
 			{
 				edit_category->insertItem (category_string (categories[i], ls_schnellzugriff), i);
 			}
-			edit_category->setCurrentItem (category_index (lfz_sonstige));/*}}}*/
+			edit_category->setCurrentItem (category_index (lfz_sonstige));
 		} break;
 		case st_person:
 		{
@@ -205,9 +205,9 @@ void EntityEditWindow::populate_lists ()/*{{{*/
 			log_error ("Unhandled type in EntityEditWindow::populate_lists ()");
 			break;
 	}
-}/*}}}*/
+}
 
-void EntityEditWindow::read_db ()/*{{{*/
+void EntityEditWindow::read_db ()
 	/*
 	 * Reads the lists relevant to the current type from the datbase.
 	 */
@@ -222,30 +222,30 @@ void EntityEditWindow::read_db ()/*{{{*/
 		case st_plane:
 		{
 			emit status ("Flugzeugeditor: Vereine aus Datenbank lesen...");
-			// Vereine eintragen/*{{{*/
+			// Vereine eintragen
 			edit_club->clear ();
 			QStringList clubs;
 			db->list_clubs (clubs);
 			edit_club->insertStringList (clubs);
-			edit_club->setEditText ("");/*}}}*/
+			edit_club->setEditText ("");
 
 			emit status ("Flugzeugeditor: Flugzeugtypen aus Datenbank lesen...");
-			// Typen eintragen/*{{{*/
+			// Typen eintragen
 			edit_typ->clear ();
 			QStringList typen;
 			db->list_types (typen);
 			edit_typ->insertStringList (typen);
-			edit_typ->setEditText ("");/*}}}*/
+			edit_typ->setEditText ("");
 		} break;
 		case st_person:
 		{
 			emit status ("Personeneditor: Vereine aus Datenbank lesen...");
-			// Vereine eintragen/*{{{*/
+			// Vereine eintragen
 			edit_club->clear ();
 			QStringList clubs;
 			db->list_clubs (clubs);
 			edit_club->insertStringList (clubs);
-			edit_club->setEditText ("");/*}}}*/
+			edit_club->setEditText ("");
 		} break;
 		default:
 			log_error ("Unhandled type in EntityEditWindow::read_db");
@@ -253,17 +253,17 @@ void EntityEditWindow::read_db ()/*{{{*/
 	}
 
 	emit long_operation_end ();
-}/*}}}*/
+}
 
-void EntityEditWindow::enable_widgets (bool enable)/*{{{*/
+void EntityEditWindow::enable_widgets (bool enable)
 	/*
 	 * Enable or disable (make read-only) all editing widgets.
 	 */
 {
 	for (int i=0; i<num_fields; i++) edit_widgets[i]->setEnabled (enable);
-}/*}}}*/
+}
 
-void EntityEditWindow::setup_controls ()/*{{{*/
+void EntityEditWindow::setup_controls ()
 	/*
 	 * Setup the controls, depending on the editor mode and Entity type.
 	 */
@@ -273,29 +273,29 @@ void EntityEditWindow::setup_controls ()/*{{{*/
 
 	switch (mode)
 	{
-		case em_create:/*{{{*/
+		case em_create:
 		{
 			mode_string="erstellen";
 			enable_widgets (true);
-		} break;/*}}}*/
-		case em_edit:/*{{{*/
+		} break;
+		case em_edit:
 		{
 			mode_string="editieren";
 			enable_widgets (true);
-		} break;/*}}}*/
-		case em_display: /*{{{*/
+		} break;
+		case em_display: 
 		{
 			mode_string="anzeigen";
 			enable_widgets (false);
-		} break;/*}}}*/
-		case em_none:/*{{{*/
+		} break;
+		case em_none:
 		{
 			mode_string="[machen]";
 			enable_widgets (true);
-		} break;/*}}}*/
-		default:/*{{{*/
+		} break;
+		default:
 			  log_error ("Unhandled mode in EntityEditWindow::setup_controls ()");
-			  break;/*}}}*/
+			  break;
 	}
 
 	switch (type)
@@ -323,11 +323,11 @@ void EntityEditWindow::setup_controls ()/*{{{*/
 	}
 
 	setCaption (type_string + " " + mode_string);
-}/*}}}*/
+}
 
 
 
-void EntityEditWindow::flugzeug_eintragen (Plane *f)/*{{{*/
+void EntityEditWindow::flugzeug_eintragen (Plane *f)
 	/*
 	 * Write a plane to the editor controls.
 	 * Parameters:
@@ -346,9 +346,9 @@ void EntityEditWindow::flugzeug_eintragen (Plane *f)/*{{{*/
 		QString s; s.setNum (f->sitze);
 		edit_sitze->setText (s);
 	}
-}/*}}}*/
+}
 
-void EntityEditWindow::person_eintragen (Person *p)/*{{{*/
+void EntityEditWindow::person_eintragen (Person *p)
 	/*
 	 * Write a person to the editor controls.
 	 * Parameters:
@@ -360,11 +360,11 @@ void EntityEditWindow::person_eintragen (Person *p)/*{{{*/
 	edit_club->setCurrentText (p->club);
 	edit_landesverbandsnummer->setText (p->landesverbands_nummer);
 	edit_bemerkungen->setText (p->bemerkungen);
-}/*}}}*/
+}
 
 
 
-void EntityEditWindow::slot_save ()/*{{{*/
+void EntityEditWindow::slot_save ()
 	/*
 	 * Accept the data and close the dialog.
 	 * Called when the save button is pressed.
@@ -374,9 +374,9 @@ void EntityEditWindow::slot_save ()/*{{{*/
 	{
 		accept ();
 	}
-}/*}}}*/
+}
 
-void EntityEditWindow::slot_registration ()/*{{{*/
+void EntityEditWindow::slot_registration ()
 	/*
 	 * Try to determine the category of the plane from the registration.
 	 * Called when the focus is moved off the registration field.
@@ -384,11 +384,11 @@ void EntityEditWindow::slot_registration ()/*{{{*/
 {
 	aircraft_category gat=category_from_registration (edit_registration->text ());
 	if (gat!=lfz_keine) edit_category->setCurrentItem (category_index (gat));
-}/*}}}*/
+}
 
 
 
-bool EntityEditWindow::check_data ()/*{{{*/
+bool EntityEditWindow::check_data ()
 	/*
 	 * Check whether the data enterede seem plausible. If not: ask the user. If
 	 * the user says, data is OK, data is OK.
@@ -409,7 +409,7 @@ bool EntityEditWindow::check_data ()/*{{{*/
 		{
 			aircraft_category gat=categories[edit_category->currentItem ()];
 
-			// Kennzeichen existiert schon/*{{{*/
+			// Kennzeichen existiert schon
 			if (mode==em_create)
 			{
 				Plane plane;
@@ -420,32 +420,32 @@ bool EntityEditWindow::check_data ()/*{{{*/
 					QMessageBox::critical (this, "Flugzeug exisitiert bereits", msg, QMessageBox::Ok, QMessageBox::NoButton);
 					return false;
 				}
-			}/*}}}*/
+			}
 
-			// Kennzeichen ist leer/*{{{*/
+			// Kennzeichen ist leer
 			if (eintrag_ist_leer (edit_registration->text ()))
 			{
 				msg="F�r das Flugzeug wurde kein Kennzeichen angegeben.\n";
 				if (!check_message (this, msg)) return false;
-			}/*}}}*/
+			}
 
-			// Typ ist leer/*{{{*/
+			// Typ ist leer
 			if (eintrag_ist_leer (edit_typ->currentText ()))
 			{
 				msg="F�r das Flugzeug wurde kein Typ angegeben.\n";
 				if (!check_message (this, msg)) return false;
-			}/*}}}*/
+			}
 
-			// Category does not match registration/*{{{*/
+			// Category does not match registration
 			if (gat!=category_from_registration (edit_registration->text ()))
 			{
 				msg="Die angegebene Gattung passt nicht zum Kennzeichen.\n";
 				if (!check_message (this, msg)) return false;
-			}/*}}}*/
+			}
 
 			if (gat==lfz_segelflugzeug||gat==lfz_motorsegler||gat==lfz_ultraleicht)
 			{
-				// Anzahl der Sitze/*{{{*/
+				// Anzahl der Sitze
 				int sitze=edit_sitze->text ().toInt ();
 				if (sitze < 1)
 				{
@@ -456,7 +456,7 @@ bool EntityEditWindow::check_data ()/*{{{*/
 				{
 					msg="Das Flugzeug hat etwas viele Sitze.\n";
 					if (!check_message (this, msg)) return false;
-				}/*}}}*/
+				}
 			}
 		} break;
 		case st_person:
@@ -468,9 +468,9 @@ bool EntityEditWindow::check_data ()/*{{{*/
 	}
 
 	return true;
-}/*}}}*/
+}
 
-bool EntityEditWindow::accept_data ()/*{{{*/
+bool EntityEditWindow::accept_data ()
 	/*
 	 * Accept the data, that is, check if everything is OK and, if yes, write
 	 * the data to the buffer buf.
@@ -524,20 +524,20 @@ bool EntityEditWindow::accept_data ()/*{{{*/
 	{
 		return false;
 	}
-}/*}}}*/
+}
 
 
 
-void EntityEditWindow::reset ()/*{{{*/
+void EntityEditWindow::reset ()
 	/*
 	 * Initializes the controls.
 	 */
 {
 	// Does nothing, fields are initialized by entering an empty Entity class.
-}/*}}}*/
+}
 
 
-int EntityEditWindow::exec ()/*{{{*/
+int EntityEditWindow::exec ()
 	/*
 	 * Displays the dialog, after filling in the fields.
 	 * Return value:
@@ -563,9 +563,9 @@ int EntityEditWindow::exec ()/*{{{*/
 	}
 
 	return SkDialog::exec ();
-}/*}}}*/
+}
 
-int EntityEditWindow::create (Entity *data, bool can_change_name)/*{{{*/
+int EntityEditWindow::create (Entity *data, bool can_change_name)
 	/*
 	 * Displays the dialog for creating a Entity.
 	 * Parameters:
@@ -581,9 +581,9 @@ int EntityEditWindow::create (Entity *data, bool can_change_name)/*{{{*/
 	name_editable=can_change_name;
 	buf=data;
 	return exec ();
-}/*}}}*/
+}
 
-int EntityEditWindow::edit (Entity *data, bool can_change_name)/*{{{*/
+int EntityEditWindow::edit (Entity *data, bool can_change_name)
 	/*
 	 * Displays the dialog for editing a Entity.
 	 * Parameters:
@@ -599,9 +599,9 @@ int EntityEditWindow::edit (Entity *data, bool can_change_name)/*{{{*/
 	name_editable=can_change_name;
 	buf=data;
 	return exec ();
-}/*}}}*/
+}
 
-int EntityEditWindow::disp (Entity *data)/*{{{*/
+int EntityEditWindow::disp (Entity *data)
 	/*
 	 * Displays the dialog for displaying (read only) a Entity.
 	 * Parameters:
@@ -615,12 +615,12 @@ int EntityEditWindow::disp (Entity *data)/*{{{*/
 	name_editable=false;
 	buf=data;
 	return exec ();
-}/*}}}*/
+}
 
 
 
 
-int EntityEditWindow::category_index (aircraft_category gat)/*{{{*/
+int EntityEditWindow::category_index (aircraft_category gat)
 	/*
 	 * Return the index of a given category in the category list.
 	 * Parameter:
@@ -634,11 +634,11 @@ int EntityEditWindow::category_index (aircraft_category gat)/*{{{*/
 		if (categories[i]==gat) return i;
 	}
 	return -1;
-}/*}}}*/
+}
 
 
 
-void EntityEditWindow::slot_db_update (db_event *event)/*{{{*/
+void EntityEditWindow::slot_db_update (db_event *event)
 	/*
 	 * Called when the database is changed. Update lists, if applicable.
 	 */
@@ -673,5 +673,5 @@ void EntityEditWindow::slot_db_update (db_event *event)/*{{{*/
 	}
 
 	SkDialog::slot_db_update (event);
-}/*}}}*/
+}
 

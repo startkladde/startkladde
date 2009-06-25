@@ -4,7 +4,7 @@
 
 #include "src/text.h"
 
-void object_field::parse_text (const QString &text)/*{{{*/
+void object_field::parse_text (const QString &text)
 {
 	switch (data_type)
 	{
@@ -21,9 +21,8 @@ void object_field::parse_text (const QString &text)/*{{{*/
 		case dt_special: break;
 	}
 }
-/*}}}*/
 
-QString object_field::make_text () const/*{{{*/
+QString object_field::make_text () const
 {
 	switch (data_type)
 	{
@@ -42,18 +41,16 @@ QString object_field::make_text () const/*{{{*/
 
 	return "???";
 }
-/*}}}*/
 
-QString object_field::make_text_safe () const/*{{{*/
+QString object_field::make_text_safe () const
 {
 	if (data_type==dt_password)
 		return "***";
 	else
 		return make_text ();
 }
-/*}}}*/
 
-QString object_field::make_display_text () const/*{{{*/
+QString object_field::make_display_text () const
 {
 	switch (data_type)
 	{
@@ -72,9 +69,8 @@ QString object_field::make_display_text () const/*{{{*/
 
 	return "???";
 }
-/*}}}*/
 
-void object_field::clear ()/*{{{*/
+void object_field::clear ()
 {
 	switch (data_type)
 	{
@@ -85,5 +81,4 @@ void object_field::clear ()/*{{{*/
 		case dt_special: break;
 	}
 }
-/*}}}*/
 

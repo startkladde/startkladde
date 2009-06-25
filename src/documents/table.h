@@ -14,21 +14,19 @@
 
 // Table with CSV functionality
 
-namespace csv/*{{{*/
+namespace csv
 {
 	const char delimiter=',';
 	const char quote='"';
 	const QString newline="\n";
 }
-/*}}}*/
 
-class table_cell:public QString/*{{{*/
+class table_cell:public QString
 {
 	public:
 		table_cell (const QString &s):QString (s) {}
 		QString csv (bool quote) const;
 };
-/*}}}*/
 
 class table_row:public std::vector<table_cell>
 {
@@ -45,7 +43,7 @@ class table_row:public std::vector<table_cell>
 //	ostream &operator<< (ostream &o, const table_row &row);
 //}
 
-class table:public std::list<table_row>/*{{{*/
+class table:public std::list<table_row>
 {
 	public:
 		// Construction
@@ -60,7 +58,6 @@ class table:public std::list<table_row>/*{{{*/
 };
 
 //std::ostream &operator<< (std::ostream &o, const table &tab);
-/*}}}*/
 
 #endif
 

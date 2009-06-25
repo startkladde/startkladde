@@ -42,7 +42,7 @@ class SplashScreen;
 
 using namespace Qt;
 
-// Info label IDs/*{{{*/
+// Info label IDs
 const int idx_info_time=0;
 const int idx_info_utc=1;
 const int idx_info_anzeige_datum=2;
@@ -51,7 +51,6 @@ const int idx_info_fluege_gesamt=4;
 const int idx_info_datenbankverbindung=5;
 const int idx_info_acpi=6;
 const int num_info_labels=7;
-/*}}}*/
 
 class MainWindow:public QMainWindow
 {
@@ -67,23 +66,20 @@ class MainWindow:public QMainWindow
 		void keyPressEvent (QKeyEvent *);
 
 	private:
-		// Program menagement/*{{{*/
+		// Program menagement
 		bool startup_complete;
 		void shutdown ();
-/*}}}*/
-		// UI/*{{{*/
+		// UI
 		void update_checks ();
 		void menu_enables (bool cell_change=false);
 		bool display_log;
-/*}}}*/
-		// Other windows/*{{{*/
+		// Other windows
 		::SplashScreen *ss;
 		FlightWindow *flug_editor;
 		EntityListWindow *flugzeug_liste;
 		EntityListWindow *personen_liste;
 		WeatherDialog *weatherDialog;
-/*}}}*/
-		// Database/*{{{*/
+		// Database
 		sk_db *db;
 		db_state_t db_state;
 		QString db_error;
@@ -95,36 +91,31 @@ class MainWindow:public QMainWindow
 		db_state_t db_action_connect ();
 		db_state_t db_action_check_connection ();
 		bool db_available ();
-/*}}}*/
-		// Flights/*{{{*/
+		// Flights
 		void edit_flight (Flight *);
 		void manipulate_flight (db_id, flight_manipulation, db_id sref=0);
 		void manipulate_flight_by_row (int, flight_manipulation);
 		void neuer_flug (Flight *vorlage=NULL);
 		void flug_wiederholen (Flight *vorlage=NULL);
-/*}}}*/
-		// Table/*{{{*/
+		// Table
 		FlightTable *tbl_fluege;
 		db_id get_flight_id (int);
 		void table_activated (int);
 		int context_row, context_col;
 		int old_row;
-/*}}}*/
-		// Window I/O/*{{{*/
+		// Window I/O
 		void simulate_key (int);
 		void update_info ();
 		void dbase_connect (QObject *);
-/*}}}*/
-		// Settings/*{{{*/
+		// Settings
 		void readSettings ();
 		void writeSettings ();
-/*}}}*/
-		// Date management/*{{{*/
+		// Date management
 		QDate anzeigedatum;
 		bool display_new_flight_date;
 		bool always_use_current_date;
-		/*}}}*/
-		// Layout/*{{{*/
+		
+		// Layout
 		QSplitter *split_main;
 		QFrame *main_frame;
 		QVBoxLayout *main_layout;
@@ -134,13 +125,12 @@ class MainWindow:public QMainWindow
 		QLabel *lbl_info[num_info_labels];
 		QLabel *lbl_info_value[num_info_labels];
 		WeatherWidget *weather;
-/*}}}*/
 		void initActions();
 		void initMenu();
 		void initContextMenu();
 		void initToolbar();
 
-		// Menus/*{{{*/
+		// Menus
 		QMenu *menu_programm;
 		QMenu *menu_flug, *menu_ansicht, *menu_statistik,
 			*menu_datenbank, *menu_ansicht_fluege, *menu_ansicht_datum, *menu_hilfe,
@@ -169,11 +159,9 @@ class MainWindow:public QMainWindow
 		QAction *actionRefreshAll; // *actionWriteCSV;
 		QAction *actionInfo, *actionNetDiag;
 		QAction *actionSegfault, *actionPing, *actionDisplayLog;
-/*}}}*/
-		// Timers/*{{{*/
+		// Timers
 		QTimer *timer_status;
 		QTimer *timer_db;
-/*}}}*/
 
 
 		QTextEdit *log;
@@ -190,15 +178,13 @@ class MainWindow:public QMainWindow
 
 	private slots:
 		void slotToggleKeyboard (bool);
-		// Flight menu slots/*{{{*/
+		// Flight menu slots
 		void slot_flight_new ();
-/*}}}*/
-		// Program menu slots/*{{{*/
+		// Program menu slots
 		void slot_close ();
 		void slot_shutdown ();
 		void slot_setdate ();
-/*}}}*/
-		// View menu slots/*{{{*/
+		// View menu slots
 		void slot_menu_ansicht_flug_gelandete (bool);
 		void slot_menu_ansicht_flug_weggeflogene_gekommene (bool);
 		void slot_menu_ansicht_flug_fehlerhafte (bool);
@@ -212,58 +198,48 @@ class MainWindow:public QMainWindow
 		void slot_schleppref_springen ();
 		void slot_tabelle_sortieren ();
 		void slot_refresh_table ();
-/*}}}*/
-		// Statistics menu slots/*{{{*/
+		// Statistics menu slots
 		void slot_flugbuch ();
 		void slot_bordbuch ();
 		void slot_sastat ();
-/*}}}*/
-		// Database menu slots/*{{{*/
+		// Database menu slots
 		void slot_flugzeugeditor ();
 		void slot_personeneditor ();
 		void slot_db_refresh_all ();
-/*}}}*/
-		// Debug menu slots/*{{{*/
+		// Debug menu slots
 		void slot_display_log ();
 		void slot_ping_db ();
 		void slot_segfault ();
-/*}}}*/
-		// Help menu slots/*{{{*/
+		// Help menu slots
 		void slot_info ();
 		void slot_netztest ();
-/*}}}*/
-		// Demo system menu slots/*{{{*/
+		// Demo system menu slots
 		void slot_webinterface ();
-/*}}}*/
 
-		// Table slots/*{{{*/
+		// Table slots
 		void slot_table_edit ();
 		void slot_table_land ();
 		void slot_table_start ();
 		void slot_table_delete ();
 		void slot_table_zwischenlandung ();
 		void slot_table_wiederholen ();
-/*}}}*/
-		// Table button slots/*{{{*/
+		// Table button slots
 		void slot_tbut_start (db_id);
 		void slot_tbut_landung (db_id);
 		void slot_tbut_schlepplandung (db_id);
-/*}}}*/
-		// Context menu slots/*{{{*/
+		// Context menu slots
 		void slot_context_edit ();
 		void slot_context_land ();
 		void slot_context_start ();
 		void slot_context_delete ();
 		void slot_context_zwischenlandung ();
 		void slot_context_wiederholen ();
-/*}}}*/
-		// Mouse/Keyboard event slots/*{{{*/
+		// Mouse/Keyboard event slots
 		void slot_table_context (const QPoint &);
 		void slot_table_double_click (int, int);
 		void slot_table_key (int);
 		void slot_current_changed ();
 //		void slot_plugin_clicked (int);
-/*}}}*/
 
 		void update_time ();
 //		void slot_menu (int);

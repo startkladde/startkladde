@@ -8,7 +8,7 @@
 const QColor col_obligatory (224, 224, 224);
 const QColor col_erroneous (255, 127, 127);
 
-// Symbolic constants for widget labels/buttons/*{{{*/
+// Symbolic constants for widget labels/buttons
 const char *text_registration="&Kennzeichen";
 const char *text_flugtyp="Flugt&yp";
 const char *text_nachname_1="&Nachname";
@@ -52,12 +52,11 @@ const char *text_starten="starten";
 const char *text_ok="&OK";
 const char *text_abbrechen="Abbre&chen";
 const char *text_schliessen="S&chlie�en";
-/*}}}*/
 
 const QString unknown_startart_text="(Unbekannt)";
 const QString registration_prefix="D-";
 
-FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dlg)/*{{{*/
+FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dlg)
 	:SkDialog (parent, name, modal, f, status_dlg)
 	/*
 	 * Creates the flight editor window.
@@ -104,7 +103,7 @@ FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool 
 	backgroundLayout->addWidget (scrollArea);
 
 
-	// Editor-Widgets anlegen/*{{{*/
+	// Editor-Widgets anlegen
 	// TODO Codeduplikation Reihenfolge
 	int i=0;
 	edit_widget[i++]=edit_registration=new SkComboBox (true, editorWidget);
@@ -133,9 +132,9 @@ FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool 
 	edit_widget[i++]=edit_abrechnungshinweis=new SkComboBox (true, editorWidget);
 	edit_widget[i++]=edit_datum=new QDateEdit (editorWidget);
 	edit_widget[i++]=edit_fehler=new SkListWidget (editorWidget);
-	/*}}}*/
+	
 
-	// Editor-Widgets einstellen/*{{{*/
+	// Editor-Widgets einstellen
 	edit_registration->setAutoCompletion (true);
 	edit_pilot_nn->setAutoCompletion (true);
 	edit_pilot_vn->setAutoCompletion (true);
@@ -186,16 +185,16 @@ FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool 
 	edit_begleiter_vn ->set_label_width (max_name_label_width);
 	edit_towpilot_nn  ->set_label_width (max_name_label_width);
 	edit_towpilot_vn  ->set_label_width (max_name_label_width);
-	/*}}}*/
+	
 
-	// Editor-Labels anlegen/*{{{*/
+	// Editor-Labels anlegen
 	for (int i=0; i<NUM_FIELDS; i++)
 	{
 		label[i]=new SkLabel (get_default_color (edit_widget[i]), col_erroneous, editorWidget);
 		label[i]->setBuddy (edit_widget[i]);
-	}/*}}}*/
+	}
 
-	// Editor-Labels einstellen/*{{{*/
+	// Editor-Labels einstellen
 	// TODO Codeduplikation Reihenfolge
 	i=0;
 	label[i++]->setText (text_registration);
@@ -223,9 +222,9 @@ FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool 
 	label[i++]->setText (text_abrechnungshinweis);
 	label[i++]->setText (text_datum);
 	label[i++]->setText (text_fehler);
-	/*}}}*/
+	
 
-	// Layout/*{{{*/
+	// Layout
 	QGridLayout *layout_edit=new QGridLayout (editorWidget, 0, 2, widget_border, widget_gap, "layout_edit");
 	for (int i=0; i<NUM_FIELDS; i++)
 	{
@@ -262,9 +261,9 @@ FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool 
 //				false) top+=small_gap;
 //		else top+=widget_gap;
 
-//	}/*}}}*/
+//	}
 
-	// Buttons anlegen und positionieren/*{{{*/
+	// Buttons anlegen und positionieren
 	QHBoxLayout *layout_buttons=new QHBoxLayout ();
 	layout_buttons->setMargin (9);
 
@@ -281,7 +280,7 @@ FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool 
 //	layout_edit->addMultiCellLayout (layout_buttons, NUM_FIELDS+1, NUM_FIELDS+1, 0, 1);
 
 	but_ok->setDefault (true);
-	/*}}}*/
+	
 
 
 	// Dialog auf beste Gr��e setzen
@@ -311,7 +310,7 @@ FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool 
 	populate_lists ();
 	reset ();
 
-	// Signale verbinden/*{{{*/
+	// Signale verbinden
 	QObject::connect (but_cancel, SIGNAL(clicked()), this, SLOT(slot_cancel ()));
 	QObject::connect (but_ok, SIGNAL(clicked()), this, SLOT(slot_ok ()));
 	QObject::connect (but_later, SIGNAL(clicked()), this, SLOT(slot_later ()));
@@ -367,12 +366,12 @@ FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool 
 
 	QObject::connect (edit_startzeit, SIGNAL (cbox_clicked ()), this, SLOT (setup_controls ()));
 	QObject::connect (edit_landezeit, SIGNAL (cbox_clicked ()), this, SLOT (setup_controls ()));
-	/*}}}*/
+	
 
 	edit_widget[0]->setFocus ();
-}/*}}}*/
+}
 
-FlightWindow::~FlightWindow ()/*{{{*/
+FlightWindow::~FlightWindow ()
 	/*
 	 * Destructor, delete local heap variables.
 	 */
@@ -381,9 +380,9 @@ FlightWindow::~FlightWindow ()/*{{{*/
 
 	if (flugtypen) delete[] flugtypen;
 	num_flugtypen=0;
-}/*}}}*/
+}
 
-void FlightWindow::reset ()/*{{{*/
+void FlightWindow::reset ()
 	/*
 	 * Reset all controls to their default value.
 	 * Actually, this should be done in the constructor. However, this window is
@@ -447,9 +446,9 @@ void FlightWindow::reset ()/*{{{*/
 	slot_modus_sfz (edit_modus_sfz->currentItem ());
 
 	scrollArea->ensureVisible (0, 0, 0, 0);
-}/*}}}*/
+}
 
-void FlightWindow::set_buttons (bool spaeter_enabled, QString aktion_text, bool read_only)/*{{{*/
+void FlightWindow::set_buttons (bool spaeter_enabled, QString aktion_text, bool read_only)
 	/*
 	 * Setup the buttons (text and visibility).
 	 * Parameters:
@@ -483,9 +482,9 @@ void FlightWindow::set_buttons (bool spaeter_enabled, QString aktion_text, bool 
 		but_cancel->setText (text_abbrechen);
 		but_ok->setDefault (true);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::setup_controls (bool init, bool read_only, bool repeat)/*{{{*/
+void FlightWindow::setup_controls (bool init, bool read_only, bool repeat)
 	/*
 	 * Sets up the controls and member variables, according to the member 'mode'
 	 * etc.
@@ -631,14 +630,14 @@ void FlightWindow::setup_controls (bool init, bool read_only, bool repeat)/*{{{*
 		else
 			edit_widget[0]->setFocus ();
 	}
-}/*}}}*/
+}
 
-void FlightWindow::populate_lists ()/*{{{*/
+void FlightWindow::populate_lists ()
 	/*
 	 * Fill the list fields which do not need to query the database.
 	 */
 {
-	// Startarten eintragen/*{{{*/
+	// Startarten eintragen
 	// TODO this does query the database, move to different location?
 	unknown_startart_index=-1;	// None
 
@@ -661,9 +660,9 @@ void FlightWindow::populate_lists ()/*{{{*/
 		startarten.append ((*sa)->get_id ());
 		edit_startart->insertItem ((*sa)->list_text (), edit_startart->count ());
 	}
-	/*}}}*/
+	
 
-	// Flugmodi eintragen/*{{{*/
+	// Flugmodi eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
 	edit_modus->clear ();
 	num_modi=list_modus (&modi, false);
@@ -671,9 +670,9 @@ void FlightWindow::populate_lists ()/*{{{*/
 	{
 		edit_modus->insertItem (modus_string (modi[i], ls_schnellzugriff), i);
 	}
-	/*}}}*/
+	
 
-	// Flugmodi Schleppflugzeug eintragen/*{{{*/
+	// Flugmodi Schleppflugzeug eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
 	edit_modus_sfz->clear ();
 	num_sfz_modi=list_sfz_modus (&sfz_modi, false);
@@ -681,9 +680,9 @@ void FlightWindow::populate_lists ()/*{{{*/
 	{
 		edit_modus_sfz->insertItem (modus_string (sfz_modi[i], ls_schnellzugriff), i);
 	}
-	/*}}}*/
+	
 
-	// Flugtypen eintragen/*{{{*/
+	// Flugtypen eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
 	edit_flug_typ->clear ();
 	num_flugtypen=list_flugtyp (&flugtypen, false);
@@ -691,10 +690,10 @@ void FlightWindow::populate_lists ()/*{{{*/
 	{
 		edit_flug_typ->insertItem (flugtyp_string (flugtypen[i], ls_schnellzugriff), i);
 	}
-	/*}}}*/
-}/*}}}*/
+	
+}
 
-void FlightWindow::read_db ()/*{{{*/
+void FlightWindow::read_db ()
 	/*
 	 * Read database entries (planes, airfields, persons etc.). Slow for large
 	 * amounts of data.
@@ -703,12 +702,12 @@ void FlightWindow::read_db ()/*{{{*/
 	emit long_operation_start ();
 
 	emit status ("Flugeditor: Personen aus Datenbank lesen...");
-	// Personen eintragen/*{{{*/
+	// Personen eintragen
 	namen_aus_datenbank (edit_pilot_vn, edit_pilot_nn, edit_begleiter_vn, edit_begleiter_nn, edit_towpilot_vn, edit_towpilot_nn);
-	/*}}}*/
+	
 
 	emit status ("Flugeditor: Orte aus Datenbank lesen...");
-	// Orte eintragen/*{{{*/
+	// Orte eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
 	edit_startort->clear ();
 	edit_zielort->clear ();
@@ -726,10 +725,10 @@ void FlightWindow::read_db ()/*{{{*/
 	edit_startort->setCurrentText (opts.ort);
 	edit_zielort->setCurrentText (opts.ort);		// Damit opts.ort in der Liste steht
 	edit_zielort->setCurrentText ("");
-	edit_zielort_sfz->setCurrentText ("");/*}}}*/
+	edit_zielort_sfz->setCurrentText ("");
 
 	emit status ("Flugeditor: Abrechnungshinweise aus Datenbank lesen...");
-	// Abrechnungshinweise eintragen/*{{{*/
+	// Abrechnungshinweise eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
 	edit_abrechnungshinweis->clear ();
 	edit_abrechnungshinweis->insertItem ("");
@@ -738,10 +737,9 @@ void FlightWindow::read_db ()/*{{{*/
 	edit_abrechnungshinweis->insertStringList (abhins);
 
 	edit_abrechnungshinweis->setCurrentText ("");
-/*}}}*/
 
 	emit status ("Flugeditor: Flugzeuge aus Datenbank lesen...");
-	// Kennzeichen eintragen/*{{{*/
+	// Kennzeichen eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
 	edit_registration->clear ();
 	edit_registration_sfz->clear ();
@@ -753,12 +751,12 @@ void FlightWindow::read_db ()/*{{{*/
 	edit_registration->insertStringList (registrations);
 	edit_registration_sfz->insertStringList (registrations);
 	edit_registration->setCurrentText ("");
-	edit_registration_sfz->setCurrentText ("");/*}}}*/
+	edit_registration_sfz->setCurrentText ("");
 
 	emit long_operation_end ();
-}/*}}}*/
+}
 
-void FlightWindow::namen_aus_datenbank (lbl_cbox *vorname, lbl_cbox *nachname, lbl_cbox *vorname2, lbl_cbox *nachname2, lbl_cbox *vorname3, lbl_cbox *nachname3)/*{{{*/
+void FlightWindow::namen_aus_datenbank (lbl_cbox *vorname, lbl_cbox *nachname, lbl_cbox *vorname2, lbl_cbox *nachname2, lbl_cbox *vorname3, lbl_cbox *nachname3)
 	/*
 	 * Read all names from the database and write them to the complete lists.
 	 * This is slow and should only be done once on initialization.
@@ -783,9 +781,9 @@ void FlightWindow::namen_aus_datenbank (lbl_cbox *vorname, lbl_cbox *nachname, l
 		if (nachname2) nachname2->fillFullStringArray (names, true, false, false);
 		if (vorname) nachname->fillFullStringArray (names, true, false, true);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, NamePart quelle, int *anzahl_kandidaten, db_id *kandidaten_id, bool preserve_target_text)/*{{{*/
+void FlightWindow::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, NamePart quelle, int *anzahl_kandidaten, db_id *kandidaten_id, bool preserve_target_text)
 	/*
 	 * Read the matching names from the database and write them to the
 	 * incomplete lists.
@@ -808,7 +806,7 @@ void FlightWindow::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, NameP
 
 	//int (*list_funktion)(QString ***, QString);
 
-	// Zuordnung von (quelle, ziel, funktion) zu (vorname, nachname)/*{{{*/
+	// Zuordnung von (quelle, ziel, funktion) zu (vorname, nachname)
 	switch (quelle)
 	{
 		case nt_vorname:
@@ -824,7 +822,7 @@ void FlightWindow::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, NameP
 			// Fatal. Da /wollen/ wir nicht weitermachen.
 			return;
 			break;
-	}/*}}}*/
+	}
 
 	QString old_ziel=zielfeld->currentText ();
 
@@ -898,11 +896,11 @@ void FlightWindow::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, NameP
 	{
 		locked ( zielfeld->setEditText (old_ziel););
 	}
-}/*}}}*/
+}
 
 
 
-void FlightWindow::done (int r)/*{{{*/
+void FlightWindow::done (int r)
 	/*
 	 * Closes the dialog and does something, according to the action.
 	 * Parameters:
@@ -933,9 +931,9 @@ void FlightWindow::done (int r)/*{{{*/
 	}
 	emit dialog_finished (r);
 	QDialog::done (r);
-}/*}}}*/
+}
 
-void FlightWindow::slot_ok ()/*{{{*/
+void FlightWindow::slot_ok ()
 	/*
 	 * The OK/((land/start) now) button was pressed. Check if the flight is OK,
 	 * then write it to the database and close the window.
@@ -972,9 +970,9 @@ void FlightWindow::slot_ok ()/*{{{*/
 		}
 		done (1);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_later ()/*{{{*/
+void FlightWindow::slot_later ()
 	/*
 	 * The start later button was pressed.
 	 */
@@ -985,19 +983,19 @@ void FlightWindow::slot_later ()/*{{{*/
 	{
 		done (2);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_cancel ()/*{{{*/
+void FlightWindow::slot_cancel ()
 	/*
 	 * The cancel button was pressed. Close the window.
 	 */
 {
 	done (0);
-}/*}}}*/
+}
 
 
 
-void FlightWindow::enable_widget (int ind, bool en)/*{{{*/
+void FlightWindow::enable_widget (int ind, bool en)
 	/*
 	 * Show or hide a widget, given its index.
 	 * Parameters:
@@ -1021,9 +1019,9 @@ void FlightWindow::enable_widget (int ind, bool en)/*{{{*/
 		edit_widget[ind]->hide ();
 		label[ind]->set_invisible (true);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::enable_widget (QWidget *wid, bool en)/*{{{*/
+void FlightWindow::enable_widget (QWidget *wid, bool en)
 	/*
 	 * Show or hide a widget, given a pointer to it.
 	 * Parameters:
@@ -1034,9 +1032,9 @@ void FlightWindow::enable_widget (QWidget *wid, bool en)/*{{{*/
 	// Don't show/hide directly but use the index so the corresponding label can
 	// also be shown/hidden.
 	enable_widget (widget_index (wid), en);
-}/*}}}*/
+}
 
-void FlightWindow::set_field_error (QWidget *w, bool _error)/*{{{*/
+void FlightWindow::set_field_error (QWidget *w, bool _error)
 	/*
 	 * XXX
 	 * Parameter:
@@ -1045,11 +1043,10 @@ void FlightWindow::set_field_error (QWidget *w, bool _error)/*{{{*/
 {
 	label[widget_index (w)]->set_error (_error);
 }
-/*}}}*/
 
 
 
-void FlightWindow::slot_registration ()/*{{{*/
+void FlightWindow::slot_registration ()
 	/*
 	 * Get the selected plane from the database, and, if found, set up some of
 	 * the editing fields accordingly.
@@ -1097,9 +1094,9 @@ void FlightWindow::slot_registration ()/*{{{*/
 	}
 
 	fehler_eintragen (flight, selected_plane, selected_towplane);
-}/*}}}*/
+}
 
-void FlightWindow::slot_registration_in ()/*{{{*/
+void FlightWindow::slot_registration_in ()
 	/*
 	 * Moves the cursor of the registration field to the end. Used because
 	 * registration_prefix is preentered.
@@ -1108,9 +1105,9 @@ void FlightWindow::slot_registration_in ()/*{{{*/
 	if (lock_edit_slots) return;
 	// TODO only if registration_prefix, else select the text
 	edit_registration->cursor_to_end ();
-}/*}}}*/
+}
 
-void FlightWindow::slot_flugtyp (int ind)/*{{{*/
+void FlightWindow::slot_flugtyp (int ind)
 	/*
 	 * Setup controls according to the flight type chosen.
 	 * Parameters:
@@ -1166,9 +1163,9 @@ void FlightWindow::slot_flugtyp (int ind)/*{{{*/
 		if (!begleiter_erlaubt (typ)) flight->begleiter=0;
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_pilot_vn ()/*{{{*/
+void FlightWindow::slot_pilot_vn ()
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1185,9 +1182,9 @@ void FlightWindow::slot_pilot_vn ()/*{{{*/
 		if (anzahl_pilot==1) flight->pilot=id;
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_pilot_nn ()/*{{{*/
+void FlightWindow::slot_pilot_nn ()
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1204,9 +1201,9 @@ void FlightWindow::slot_pilot_nn ()/*{{{*/
 		if (anzahl_pilot==1) flight->pilot=id;
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_begleiter_vn ()/*{{{*/
+void FlightWindow::slot_begleiter_vn ()
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1223,9 +1220,9 @@ void FlightWindow::slot_begleiter_vn ()/*{{{*/
 		if (anzahl_begleiter==1) flight->begleiter=id;
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_begleiter_nn ()/*{{{*/
+void FlightWindow::slot_begleiter_nn ()
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1242,9 +1239,9 @@ void FlightWindow::slot_begleiter_nn ()/*{{{*/
 		if (anzahl_begleiter==1) flight->begleiter=id;
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_towpilot_vn ()/*{{{*/
+void FlightWindow::slot_towpilot_vn ()
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1261,9 +1258,9 @@ void FlightWindow::slot_towpilot_vn ()/*{{{*/
 		if (anzahl_towpilot==1) flight->towpilot=id;
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_towpilot_nn ()/*{{{*/
+void FlightWindow::slot_towpilot_nn ()
 	/*
 	 * The (first/last) name of the (pilot/copilot) was entered. Fill the list
 	 * for the other part.
@@ -1280,9 +1277,9 @@ void FlightWindow::slot_towpilot_nn ()/*{{{*/
 		if (anzahl_towpilot==1) flight->towpilot=id;
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_modus (int ind)/*{{{*/
+void FlightWindow::slot_modus (int ind)
 	/*
 	 * Setup the controls according to the flight mode.
 	 * Parameters:
@@ -1338,9 +1335,9 @@ void FlightWindow::slot_modus (int ind)/*{{{*/
 		flight->modus=m;
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_startart (int ind)/*{{{*/
+void FlightWindow::slot_startart (int ind)
 	/*
 	 * Setup the edit fields according to the Startart chosen.
 	 * Parameters:
@@ -1408,9 +1405,9 @@ void FlightWindow::slot_startart (int ind)/*{{{*/
 		flight->startart=sa_id;
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_registration_sfz ()/*{{{*/
+void FlightWindow::slot_registration_sfz ()
 	/*
 	 * Get the selected tow plane from the database, and, if found, set up some of
 	 * the editing fields accordingly.
@@ -1437,9 +1434,9 @@ void FlightWindow::slot_registration_sfz ()/*{{{*/
 	}
 
 	fehler_eintragen (flight, selected_plane, selected_towplane);
-}/*}}}*/
+}
 
-void FlightWindow::slot_registration_sfz_in ()/*{{{*/
+void FlightWindow::slot_registration_sfz_in ()
 	/*
 	 * Moves the cursor of the registration_sfz field to the end. Used because
 	 * registration_prefix is preentered.
@@ -1448,9 +1445,9 @@ void FlightWindow::slot_registration_sfz_in ()/*{{{*/
 	if (lock_edit_slots) return;
 	// TODO only if registration_prefix, else select the text
 	edit_registration_sfz->cursor_to_end ();
-}/*}}}*/
+}
 
-void FlightWindow::slot_modus_sfz (int ind)/*{{{*/
+void FlightWindow::slot_modus_sfz (int ind)
 	/*
 	 * Setup the controls according to the tow flight mode.
 	 * Parameters:
@@ -1481,9 +1478,8 @@ void FlightWindow::slot_modus_sfz (int ind)/*{{{*/
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
 }
-/*}}}*/
 
-void FlightWindow::slot_gestartet ()/*{{{*/
+void FlightWindow::slot_gestartet ()
 	/*
 	 * It was changed if the flight already started. Setup the controls
 	 * accordingly.
@@ -1499,9 +1495,9 @@ void FlightWindow::slot_gestartet ()/*{{{*/
 		}
 	}
 	edit_startzeit->setFocus ();
-}/*}}}*/
+}
 
-void FlightWindow::slot_startzeit ()/*{{{*/
+void FlightWindow::slot_startzeit ()
 	/*
 	 * The starting time changed. Setup the control accordingly.
 	 */
@@ -1512,9 +1508,9 @@ void FlightWindow::slot_startzeit ()/*{{{*/
 		flight->startzeit.set_to (edit_datum->date (), edit_startzeit->time (), tz_utc, true);
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_gelandet ()/*{{{*/
+void FlightWindow::slot_gelandet ()
 	/*
 	 * It was changed if the flight already landed. Setup the controls
 	 * accordingly.
@@ -1552,9 +1548,9 @@ void FlightWindow::slot_gelandet ()/*{{{*/
 		slot_zielort ();
 	}
 	edit_landezeit->setFocus ();
-}/*}}}*/
+}
 
-void FlightWindow::slot_landezeit ()/*{{{*/
+void FlightWindow::slot_landezeit ()
 	/*
 	 * The landing time changed. Setup the control accordingly.
 	 */
@@ -1565,9 +1561,9 @@ void FlightWindow::slot_landezeit ()/*{{{*/
 		flight->landezeit.set_to (edit_datum->date (), edit_landezeit->time (), tz_utc, true);
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_sfz_gelandet ()/*{{{*/
+void FlightWindow::slot_sfz_gelandet ()
 	/*
 	 * It was changed if the towplane already landed. Setup the controls
 	 * accordingly.
@@ -1602,9 +1598,9 @@ void FlightWindow::slot_sfz_gelandet ()/*{{{*/
 		slot_zielort_sfz ();
 	}
 	edit_landezeit_sfz->setFocus ();
-}/*}}}*/
+}
 
-void FlightWindow::slot_landezeit_sfz ()/*{{{*/
+void FlightWindow::slot_landezeit_sfz ()
 	/*
 	 * The landing time of the towplane changed. Setup the control accordingly.
 	 */
@@ -1615,9 +1611,9 @@ void FlightWindow::slot_landezeit_sfz ()/*{{{*/
 		flight->landezeit_schleppflugzeug.set_to (edit_datum->date (), edit_landezeit_sfz->time (), tz_utc, true);
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_startort ()/*{{{*/
+void FlightWindow::slot_startort ()
 	/*
 	 * The starting airfield was changed. Change the controls accordingly.
 	 */
@@ -1628,9 +1624,9 @@ void FlightWindow::slot_startort ()/*{{{*/
 		flight->startort=edit_startort->currentText ();
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_zielort ()/*{{{*/
+void FlightWindow::slot_zielort ()
 	/*
 	 * The landing airfield was changed. Change the controls accordingly.
 	 */
@@ -1641,9 +1637,9 @@ void FlightWindow::slot_zielort ()/*{{{*/
 		flight->zielort=edit_zielort->currentText ();
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_zielort_sfz ()/*{{{*/
+void FlightWindow::slot_zielort_sfz ()
 	/*
 	 * The landing airfield of the towplane was changed. Change the controls accordingly.
 	 */
@@ -1656,9 +1652,8 @@ void FlightWindow::slot_zielort_sfz ()/*{{{*/
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
 }
-/*}}}*/
 
-void FlightWindow::slot_landungen ()/*{{{*/
+void FlightWindow::slot_landungen ()
 	/*
 	 * The number of landings was changed. Change the controls accordingly.
 	 */
@@ -1669,17 +1664,17 @@ void FlightWindow::slot_landungen ()/*{{{*/
 		flight->landungen=edit_landungen->text ().toInt ();
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_datum ()/*{{{*/
+void FlightWindow::slot_datum ()
 	// ???
 {
 	if (lock_edit_slots) return;
 	if (flight) accept_date ();
 	setup_controls ();
-}/*}}}*/
+}
 
-void FlightWindow::slot_bemerkung ()/*{{{*/
+void FlightWindow::slot_bemerkung ()
 	// The comment field was changed
 {
 	if (lock_edit_slots) return;
@@ -1691,9 +1686,9 @@ void FlightWindow::slot_bemerkung ()/*{{{*/
 		flight->bemerkungen=edit_bemerkungen->text ();
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
-}/*}}}*/
+}
 
-void FlightWindow::slot_abrechnungshinweis ()/*{{{*/
+void FlightWindow::slot_abrechnungshinweis ()
 	// The billing information field was changed
 {
 	if (lock_edit_slots) return;
@@ -1703,11 +1698,10 @@ void FlightWindow::slot_abrechnungshinweis ()/*{{{*/
 		fehler_eintragen (flight, selected_plane, selected_towplane);
 	}
 }
-/*}}}*/
 
 
 
-bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot_id, db_id *begleiter_id, db_id *towpilot_id, bool spaeter, QWidget **error_control)/*{{{*/
+bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot_id, db_id *begleiter_id, db_id *towpilot_id, bool spaeter, QWidget **error_control)
 	/*
 	 * Check if a flight seems correct. If not: ask the user. If the user says
 	 * that the flight is OK, regard is as correct. Also query the user if there
@@ -1773,13 +1767,13 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 
 	*error_control=NULL;
 
-	// Keine Startart angegeben/*{{{*/
+	// Keine Startart angegeben
 	if (!spaeter && starts_here (modus) && id_invalid (sa_id))
 	{
 		msg="Es wurde keine Startart angegeben.\n";
 		if (error_control) *error_control=edit_startart;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
 	QString registration=edit_registration->currentText ();
 
@@ -1834,7 +1828,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 	// TODO: andere pr�fung auf fe_create als oben
 	// TODO mit check_plane_flying machen
 
-	// Begleiter enth�lt "+1" /*{{{*/
+	// Begleiter enth�lt "+1" 
 	if (begleiter_erlaubt (typ) && (edit_begleiter_vn->currentText ().find (QString ("+1"), 0, false)>=0 || edit_begleiter_nn->currentText ().find (QString ("+1"), 0, false)>=0))
 	{
 		int ret=QMessageBox::information (this, "Begleiter fehlerhaft",
@@ -1851,142 +1845,142 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 			edit_flug_typ->setCurrentItem (flugtyp_index (typ));
 			if (begleiter_id) *begleiter_id=invalid_id;
 		}
-	}/*}}}*/
+	}
 
-	// Kein Startort angegeben/*{{{*/
+	// Kein Startort angegeben
 	if ((gestartet || !starts_here (modus)) && eintrag_ist_leer (edit_startort->currentText ()))
 	{
 		msg="Es wurde kein Startort angegeben.\n";
 		if (error_control) *error_control=edit_startort;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
-	// Kein Zielort angegeben/*{{{*/
+	// Kein Zielort angegeben
 	if ((gelandet || !lands_here (modus)) && eintrag_ist_leer (edit_zielort->currentText ()))
 	{
 		msg="Es wurde kein Zielort angegeben.\n";
 		if (error_control) *error_control=edit_zielort;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
-	// Startort gleich Zielort, wenn es nicht so sein sollte /*{{{*/
+	// Startort gleich Zielort, wenn es nicht so sein sollte 
 	if ((starts_here (modus)!=lands_here (modus)) && (edit_zielort->currentText ()==edit_startort->currentText ()))
 	{
 		msg="Der Startort ist gleich dem Zielort\n";
 		if (error_control) *error_control=starts_here (modus)?edit_zielort:edit_startort;
 		if (!check_message (this, msg)) return false;
 	}
-	/*}}}*/
+	
 
-	// Kein Zielort f�r das Schleppflugzeug angegeben/*{{{*/
+	// Kein Zielort f�r das Schleppflugzeug angegeben
 	if ((sfz_gelandet || !lands_here (modus_sfz)) && eintrag_ist_leer (edit_zielort_sfz->currentText ()))
 	{
 		msg="Es wurde kein Zielort f�r das Schleppflugzeug angegeben.\n";
 		if (error_control) *error_control=edit_zielort_sfz;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
-	// Landung vor Start/*{{{*/
+	// Landung vor Start
 	if (gelandet && gestartet && edit_startzeit->time ().secsTo (edit_landezeit->time ())<0 && !edit_landezeit->checked () && !edit_landezeit->time ().isNull ())
 	{
 		msg="Die Landezeit des Flugs liegt vor der Startzeit.\n";
 		if (error_control) *error_control=edit_landezeit;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
-	// Landung ohne Start/*{{{*/
+	// Landung ohne Start
 	if (starts_here (modus) && lands_here (modus) && gelandet && !gestartet)
 	{
 		msg="Es wurde eine Landezeit, aber keine Startzeit angegeben.\n";
 		if (error_control) *error_control=edit_landezeit;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
-	// Gelandet, aber Ladungen==0/*{{{*/
+	// Gelandet, aber Ladungen==0
 	if (lands_here (modus) && gelandet && edit_landungen->text ().toInt ()==0)
 	{
 		msg="Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0.\n";
 		if (error_control) *error_control=edit_landungen;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
-	// Landung SFZ vor Start/*{{{*/
+	// Landung SFZ vor Start
 	if (sfz_gelandet && gestartet && edit_startzeit->time ().secsTo (edit_landezeit_sfz->time ())<0 && !edit_landezeit_sfz->checked () && !edit_landezeit_sfz->time ().isNull ())
 	{
 		msg="Die Landezeit des Schleppflugs liegt vor der Startzeit.\n";
 		if (error_control) *error_control=edit_landezeit_sfz;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
-	// Landung SFZ ohne Start/*{{{*/
+	// Landung SFZ ohne Start
 	if (sfz_gelandet && !gestartet)
 	{
 		msg="Es wurde eine Landezeit des Schleppflugs, aber keine Startzeit angegeben.\n";
 		if (error_control) *error_control=edit_landezeit_sfz;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
 	// TODO sollte das nicht fz_bekannt hei�en?
 	if (flugzeug_id && *flugzeug_id>0)
 	{
-		// Gastflug in einsitzigem Flugzeug/*{{{*/
+		// Gastflug in einsitzigem Flugzeug
 		if (fz.sitze==1 && (typ==ft_gast_privat||typ==ft_gast_extern))
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") einsitzig.\n"
 				"In einem Einsitzer kann man keinen Gastflug machen.\n";
 			if (error_control) *error_control=edit_registration;
 			if (!check_message (this, msg)) return false;
-		}/*}}}*/
+		}
 
-		// Doppelsitzige Schulung in einsitzigem Flugzeug/*{{{*/
+		// Doppelsitzige Schulung in einsitzigem Flugzeug
 		if (fz.sitze==1 && typ==ft_schul_2)
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") einsitzig.\n"
 					"Es wurde jedoch doppelsitzige Schulung angegeben.\n";
 			if (error_control) *error_control=edit_flug_typ;
 			if (!check_message (this, msg)) return false;
-		}/*}}}*/
+		}
 
-		// Segelflugzeug mit Zwischenlandungen /*{{{*/
+		// Segelflugzeug mit Zwischenlandungen 
 		if (fz.category==lfz_segelflugzeug && edit_landungen->text ().toInt ()>1 && !sa.is_airtow ())
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Segelflugzeug.\n"
 					"Es wurden jedoch mehr als eine Landung angegeben.\n";
 		if (error_control) *error_control=edit_landungen;
 			if (!check_message (this, msg)) return false;
-		}/*}}}*/
+		}
 
-		// Segelflugzeug mit Zwischenlandungen /*{{{*/
+		// Segelflugzeug mit Zwischenlandungen 
 		if (fz.category==lfz_segelflugzeug && !gelandet && edit_landungen->text ().toInt ()>0 && !sa.is_airtow ())
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Segelflugzeug.\n"
 					"Es wurden jedoch eine Landung, aber keine Landezeit angegeben.\n";
 		if (error_control) *error_control=edit_landungen;
 			if (!check_message (this, msg)) return false;
-		}/*}}}*/
+		}
 
-		// Segelflugzeug im Selbststart /*{{{*/
+		// Segelflugzeug im Selbststart 
 		if (fz.category==lfz_segelflugzeug && sa.get_type ()==sat_self)
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Segelflugzeug.\n"
 					"Es wurden jedoch \"Selbststart\" als Startart angegeben.\n";
 		if (error_control) *error_control=edit_startart;
 			if (!check_message (this, msg)) return false;
-		}/*}}}*/
+		}
 
-		// Motorflugzeug an der Winde /*{{{*/
+		// Motorflugzeug an der Winde 
 		if (fz.category==lfz_echo && sa.get_type ()!=sat_self)
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Motorflugzeug.\n"
 					"Es wurden jedoch eine andere Startart als Eigenstart angegeben.\n";
 		if (error_control) *error_control=edit_startart;
 			if (!check_message (this, msg)) return false;
-		}/*}}}*/
+		}
 	}
 
 	// Personenkram am Ende pr�fen, weil sonst Personenauswahl nach jedem
 	// korrigierten Fehler.
-	// Piloten und Begleiter nicht angegeben oder stehen nicht in der Datenbank/*{{{*/
+	// Piloten und Begleiter nicht angegeben oder stehen nicht in der Datenbank
 	if (error_control) *error_control=edit_pilot_nn;
 
 	QString *preselection_club=NULL;
@@ -2031,52 +2025,52 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		// TODO: Hier checken, ob Begleiter angegeben wurde, ggf meckern?
 		if (begleiter_id) *begleiter_id=0;
 	}
-	/*}}}*/
+	
 
 	// Towpilot
 	if (false==check_person (towpilot_id, edit_towpilot_vn->currentText (), edit_towpilot_nn->currentText (), "Schleppilot", "Schleppiloten", (opts.record_towpilot && sa.is_airtow ()), check_flying, original_towpilot_id, NULL))
 		return false;
 
-	// Pilot und Begleiter identisch/*{{{*/
+	// Pilot und Begleiter identisch
 	if (pilot_id && begleiter_id && (*pilot_id)!=0 && (*pilot_id)==(*begleiter_id))
 	{
 		msg="Pilot und Begleiter sind identisch.\n";
 		if (error_control) *error_control=edit_pilot_nn;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
-	// Pilot und Schleppilot identisch/*{{{*/
+	// Pilot und Schleppilot identisch
 	if (opts.record_towpilot && pilot_id && towpilot_id && (*pilot_id)!=0 && (*pilot_id)==(*towpilot_id))
 	{
 		msg="Pilot und Schleppilot sind identisch.\n";
 		if (error_control) *error_control=edit_pilot_nn;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
-	// Kein Lehrer bei doppelsitziger Schulung/*{{{*/
+	// Kein Lehrer bei doppelsitziger Schulung
 	if (typ==ft_schul_2 && begleiter_id && id_invalid (*begleiter_id) && !kein_begleiter_akzeptiert)
 	{
 		msg="Dieser Flug soll eine doppelsitzige Schulung sein.\nEs wurde jedoch kein Lehrer angegeben.\n";
 		if (error_control) *error_control=edit_begleiter_nn;
 		if (!check_message (this, msg)) return false;
-	}/*}}}*/
+	}
 
 	if (flugzeug_id && *flugzeug_id>0)
 	{
-		// Begleiter in einsitzigem Flugzeug/*{{{*/
+		// Begleiter in einsitzigem Flugzeug
 		if (fz.sitze==1 && begleiter_id && *begleiter_id!=0)
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+")\neinsitzig. "
 					"Es wurde jedoch ein Begleiter angegeben.\n";
 		if (error_control) *error_control=edit_registration;
 			if (!check_message (this, msg)) return false;
-		}/*}}}*/
+		}
 	}
 
 	return true;
-}/*}}}*/
+}
 
-bool FlightWindow::person_anlegen (db_id *person_id, QString nachname, QString vorname, QString bezeichnung, bool force)/*{{{*/
+bool FlightWindow::person_anlegen (db_id *person_id, QString nachname, QString vorname, QString bezeichnung, bool force)
 	/*
 	 * Show the person editor and create a person in the database.
 	 * Parameters:
@@ -2092,12 +2086,12 @@ bool FlightWindow::person_anlegen (db_id *person_id, QString nachname, QString v
 	bool ret=false;
 	Person person;		// Puffer zum Schreiben in die Datenbank.
 
-	// Vorname, Nachname eintragen/*{{{*/
+	// Vorname, Nachname eintragen
 	person.nachname=nachname;
 	person.vorname=vorname;
-	/*}}}*/
+	
 
-	// Wenn nicht force: erst nachfragen/*{{{*/
+	// Wenn nicht force: erst nachfragen
 	bool aufnehmen;
 	// TODO wird das hier uberhaupt gebraucht!?
 	if (force)
@@ -2105,7 +2099,7 @@ bool FlightWindow::person_anlegen (db_id *person_id, QString nachname, QString v
 	else
 		aufnehmen=(QMessageBox::information (this, "Person nicht bekannt",
 		"Der "+bezeichnung+" \""+person.text_name ()+"\" ist nicht bekannt.\nSoll er in die Datenbank aufgenommen werden?",
-		"&Ja", "&Nein", QString::null, 0, 1)==0);/*}}}*/
+		"&Ja", "&Nein", QString::null, 0, 1)==0);
 
 	if (aufnehmen)
 	{
@@ -2115,7 +2109,7 @@ bool FlightWindow::person_anlegen (db_id *person_id, QString nachname, QString v
 
 		if (erg==QDialog::Accepted)
 		{
-			// Person in die Datenbank schreiben/*{{{*/
+			// Person in die Datenbank schreiben
 			// TODO error handling
 			person.id=0;
 			db_id id=db->write_person (&person);
@@ -2123,7 +2117,6 @@ bool FlightWindow::person_anlegen (db_id *person_id, QString nachname, QString v
 			emit db_change (&event);
 			*person_id=id;
 			ret=true;
-/*}}}*/
 		}
 		else
 		{
@@ -2136,9 +2129,9 @@ bool FlightWindow::person_anlegen (db_id *person_id, QString nachname, QString v
 	}
 
 	return ret;
-}/*}}}*/
+}
 
-void FlightWindow::warning_message (const QString &msg)/*{{{*/
+void FlightWindow::warning_message (const QString &msg)
 	/*
 	 * Show a warning message.
 	 * Parameters:
@@ -2147,9 +2140,9 @@ void FlightWindow::warning_message (const QString &msg)/*{{{*/
 {
 	QMessageBox::warning (this, "Warnung",
 			msg, QMessageBox::Ok, QMessageBox::NoButton);
-}/*}}}*/
+}
 
-bool FlightWindow::check_plane (db_id *plane_id, Plane *_plane, QString registration, QString description_n, QString description_a, int seat_guess)/*{{{*/
+bool FlightWindow::check_plane (db_id *plane_id, Plane *_plane, QString registration, QString description_n, QString description_a, int seat_guess)
 	/*
 	 * Check if a plane is in the database. If not, it is created after
 	 * confirming.
@@ -2202,7 +2195,7 @@ bool FlightWindow::check_plane (db_id *plane_id, Plane *_plane, QString registra
 			else
 			{
 				// Plane not found
-				// Look if there is a plane with registration_prefix in front of the registration/*{{{*/
+				// Look if there is a plane with registration_prefix in front of the registration
 				QString d_registration=registration_prefix+registration;
 				bool d_plane_known=(db_ok==db->get_plane_registration (plane, d_registration));
 				bool plane_ok=false;
@@ -2226,7 +2219,6 @@ bool FlightWindow::check_plane (db_id *plane_id, Plane *_plane, QString registra
 						plane_ok=false;
 					}
 				}
-/*}}}*/
 
 				if (!plane_ok)
 				{
@@ -2277,9 +2269,8 @@ bool FlightWindow::check_plane (db_id *plane_id, Plane *_plane, QString registra
 
 	return true;
 }
-/*}}}*/
 
-bool FlightWindow::check_plane_flying (db_id plane_id, QString registration, QString description_n)/*{{{*/
+bool FlightWindow::check_plane_flying (db_id plane_id, QString registration, QString description_n)
 	// registration not determined from plane_id to save time
 	// TODO determine registration from plane_id if not given
 {
@@ -2304,9 +2295,8 @@ bool FlightWindow::check_plane_flying (db_id plane_id, QString registration, QSt
 
 	return true;
 }
-/*}}}*/
 
-bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nachname, QString bezeichnung_n, QString bezeichnung_a, bool person_required, bool check_flying, db_id original_id, QString *preselection_club)/*{{{*/
+bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nachname, QString bezeichnung_n, QString bezeichnung_a, bool person_required, bool check_flying, db_id original_id, QString *preselection_club)
 	/*
 	 * Check if a person is in the database. If not, it is created after
 	 * confirming. If there are multiple persons with that name, show a
@@ -2329,101 +2319,96 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 	 *   - false else
 	 */
 {
-	// Return values/*{{{*/
+	// Return values
 	enum result_type { rt_none, rt_id, rt_no_person, rt_cancel }
 	result=rt_none;
 	db_id result_id=invalid_id;
-/*}}}*/
 
-	// See which name parts are empty./*{{{*/
+	// See which name parts are empty.
 	bool vorname_leer=eintrag_ist_leer (vorname);
 	bool nachname_leer=eintrag_ist_leer (nachname);
-/*}}}*/
 
-	// Further action to take/*{{{*/
+	// Further action to take
 	bool display_selector=false;
 	bool create_new=false;
 	bool confirm_create=true;
 	bool confirm=false;	// Whether to confirm first
-/*}}}*/
 
-	// Further action data/*{{{*/
+	// Further action data
 	QPtrList<Person> persons; persons.setAutoDelete (true);
 	QString action_text;
-/*}}}*/
 
 	// TODO bessere L�sung f�r die Markierung, welche Persone einen passenden
 	// Verein haben, und sei es nur, dass da steht "Verein des
 	// Flugzeugs"/"Verein des Flugsch�lers"
-	QString please_select_text;/*{{{*/
+	QString please_select_text;
 	if (preselection_club)
 		please_select_text="\nBitte ausw�hlen (Passender Verein: "+*preselection_club+"):";
 	else
 		please_select_text="\nBitte ausw�hlen:";
-/*}}}*/
 
-	if (vorname_leer && nachname_leer)/*{{{*/
+	if (vorname_leer && nachname_leer)
 	{
 		// No name was given.
 		// Return "no person". If the person is required, we need to confirm.
 		action_text="F�r den Flug wurde kein "+bezeichnung_n+" angegeben.\n";
 		result=rt_no_person;
 		confirm=person_required;
-	}/*}}}*/
-	else if (vorname_leer && !nachname_leer)/*{{{*/
+	}
+	else if (vorname_leer && !nachname_leer)
 	{
 		// Only a last name was given.
 		// Display a list of matching first names.
 		db->list_persons_by_last_name (persons, nachname);
 			action_text="F�r den "+bezeichnung_a+" wurde nur ein Nachname angegeben."+please_select_text;
 		display_selector=true;
-	}/*}}}*/
-	else if (!vorname_leer && nachname_leer)/*{{{*/
+	}
+	else if (!vorname_leer && nachname_leer)
 	{
 		// Only a first name was given.
 		// Display a list of matching last names.
 		db->list_persons_by_first_name (persons, vorname);
 			action_text="F�r den "+bezeichnung_a+" wurde nur ein Vorname angegeben."+please_select_text;
 		display_selector=true;
-	}/*}}}*/
-	else/*{{{*/
+	}
+	else
 	{
 		// A full name was given.
 		// Get the matching names from the database.
 		int ret=db->list_persons_by_name (persons, vorname, nachname);
 		int num_persons=persons.count ();
-		if (ret<0)/*{{{*/
+		if (ret<0)
 		{
 			// An error occured.
 			// Conservative action: return no person.
 			// TODO error message
 			log_error ("Fehler bei der Personenabfrage in sk_win_flight::check_person ()");
 			result=rt_no_person;
-		}/*}}}*/
-		else if (num_persons==0)/*{{{*/
+		}
+		else if (num_persons==0)
 		{
 			// There were no persons.
 			// Create a database entry.
 			create_new=true;
 			confirm_create=true;
-		}/*}}}*/
-		else if (num_persons==1)/*{{{*/
+		}
+		else if (num_persons==1)
 		{
 			// The person is unique.
 			// Return it.
 			result=rt_id;
 			result_id=persons.first ()->id;
-		}/*}}}*/
-		else/*{{{*/
+		}
+		else
 		{
 			// There was more than one person.
 			// Display a selector.
 				action_text="Es gibt mehrere Personen mit diesem Namen."+please_select_text;
 			display_selector=true;
-		}/*}}}*/
-	}/*}}}*/
+		}
+	}
 
-	// If we need, display the selector/*{{{*/
+	// If we need, display the selector
 	if (display_selector)
 	{
 		// There were multiple persons. Let the user select one.
@@ -2492,9 +2477,8 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 				break;
 		}
 	}
-/*}}}*/
 
-	// If we need, create a new person/*{{{*/
+	// If we need, create a new person
 	if (create_new)
 	{
 		// The person need to be created, either because the
@@ -2503,9 +2487,8 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 		else
 			result=rt_cancel;
 	}
-/*}}}*/
 
-	// Check if the person is still flying. /*{{{*/
+	// Check if the person is still flying. 
 	if (result==rt_id && !id_invalid (result_id) && check_flying)
 	{
 		sk_time_t ct;
@@ -2517,18 +2500,17 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 			action_text="Laut Datenbank fliegt der "+bezeichnung_n+" \""+p.text_name ()+"\" noch.\n";
 			confirm=true;
 		}
-	}/*}}}*/
+	}
 
-	// If the result needs to be confirmed, do so./*{{{*/
+	// If the result needs to be confirmed, do so.
 	// The result 'cancel' does not need to be confirmed because it is what is
 	// done when confirmation fails.
 	if (result!=rt_cancel && confirm)
 	{
 		if (!check_message (this, action_text)) result=rt_cancel;
 	}
-/*}}}*/
 
-	// Return something, based on the return type/*{{{*/
+	// Return something, based on the return type
 #define return_with(return_value, return_id) if (person_id) *person_id=return_id; return return_value; break;
 	switch (result)
 	{
@@ -2546,33 +2528,32 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 			return_with (true, invalid_id);
 	}
 #undef return_with
-/*}}}*/
 
 	return true;
-}/*}}}*/
+}
 
-void FlightWindow::accept_date ()/*{{{*/
+void FlightWindow::accept_date ()
 	// ???
 {
 	bool gestartet=false, gelandet=false, sfz_gelandet=false;
 	// PFUSCH: Das ist schlecht, dass hier unterschieden werden muss. Besser:
 	// checked () XOR invert (), aber aufpassen mit setup_controls
-	if (mode==fe_edit)/*{{{*/
+	if (mode==fe_edit)
 	{
 		gestartet=edit_startzeit->checked ();
 		gelandet=edit_landezeit->checked ();
 		sfz_gelandet=edit_landezeit_sfz->checked ();
-	}/*}}}*/
-	else if (mode==fe_create)/*{{{*/
+	}
+	else if (mode==fe_create)
 	{
 		gestartet=!edit_startzeit->checked ();
 		gelandet=!edit_landezeit->checked ();
 		sfz_gelandet=!edit_landezeit_sfz->checked ();
-	}/*}}}*/
-	else/*{{{*/
+	}
+	else
 	{
 		log_error ("Unbekannter modus in sk_win_flight::accept_flight_date ()");
-	}/*}}}*/
+	}
 
 	// MURX: Besser nicht nachtr�glich �berschreiben
 	if (!starts_here (flight->modus)) gestartet=false;
@@ -2581,9 +2562,9 @@ void FlightWindow::accept_date ()/*{{{*/
 	set_time (gestartet, &(flight->gestartet), &(flight->startzeit), edit_datum->date (), edit_startzeit->time ());
 	set_time (gelandet, &(flight->gelandet), &(flight->landezeit), edit_datum->date (), edit_landezeit->time ());
 	set_time (sfz_gelandet, &(flight->sfz_gelandet), &(flight->landezeit_schleppflugzeug), edit_datum->date (), edit_landezeit_sfz->time ());
-}/*}}}*/
+}
 
-bool FlightWindow::accept_flight_data (bool spaeter)/*{{{*/
+bool FlightWindow::accept_flight_data (bool spaeter)
 	/*
 	 * Check the flight data, if OK, write to the flight member variable.
 	 * Parameters:
@@ -2692,9 +2673,9 @@ bool FlightWindow::accept_flight_data (bool spaeter)/*{{{*/
 		if (error_control) error_control->setFocus ();
 		return false;
 	}
-}/*}}}*/
+}
 
-void FlightWindow::set_time (bool use_time, bool *use_ziel, sk_time_t *zeit_ziel, QDate datum, QTime zeit)/*{{{*/
+void FlightWindow::set_time (bool use_time, bool *use_ziel, sk_time_t *zeit_ziel, QDate datum, QTime zeit)
 	// ???
 {
 	(*use_ziel)=use_time;
@@ -2703,9 +2684,9 @@ void FlightWindow::set_time (bool use_time, bool *use_ziel, sk_time_t *zeit_ziel
 		// Ansonsten: nicht �ndern
 //	else
 //		zeit_ziel->set_null ();
-}/*}}}*/
+}
 
-void FlightWindow::flug_eintragen (Flight *f, bool repeat)/*{{{*/
+void FlightWindow::flug_eintragen (Flight *f, bool repeat)
 	/*
 	 * Write the flight data to the editor controls.
 	 * Parameters:
@@ -2899,9 +2880,9 @@ void FlightWindow::flug_eintragen (Flight *f, bool repeat)/*{{{*/
 	namen_eintragen (edit_towpilot_vn, edit_towpilot_nn, nt_nachname, &anzahl_begleiter, NULL, true);
 
 	disable_error_check=old_disable_error_check;
-}/*}}}*/
+}
 
-void FlightWindow::fehler_eintragen (Flight *f, Plane *fz, Plane *sfz, bool move_focus)/*{{{*/
+void FlightWindow::fehler_eintragen (Flight *f, Plane *fz, Plane *sfz, bool move_focus)
 	/*
 	 * Show the errors of a flight in the error list control.
 	 * Parameters:
@@ -2963,11 +2944,11 @@ void FlightWindow::fehler_eintragen (Flight *f, Plane *fz, Plane *sfz, bool move
 			edit_fehler->setPalette (pal);
 		}
 	}
-}/*}}}*/
+}
 
 
 
-int FlightWindow::go (flight_editor_mode m, Flight *vorlage, QDate *date_to_use)/*{{{*/
+int FlightWindow::go (flight_editor_mode m, Flight *vorlage, QDate *date_to_use)
 	/*
 	 * The main function to open the flight editor. Does some preparation, then
 	 * shows the window.
@@ -3045,11 +3026,11 @@ int FlightWindow::go (flight_editor_mode m, Flight *vorlage, QDate *date_to_use)
 		show ();
 
 	return 0;
-}/*}}}*/
+}
 
 
 
-int FlightWindow::startart_index (db_id sa)/*{{{*/
+int FlightWindow::startart_index (db_id sa)
 	/*
 	 * For a given Startart, finds its index in the Startart array.  Needed for
 	 * setting the Startart editor widget to a given value.
@@ -3077,9 +3058,9 @@ int FlightWindow::startart_index (db_id sa)/*{{{*/
 		log_error ("Startart nicht gefunden in startart_index ()");
 		return -1;
 	}
-}/*}}}*/
+}
 
-int FlightWindow::modus_index (flug_modus sa)/*{{{*/
+int FlightWindow::modus_index (flug_modus sa)
 	/*
 	 * For a given flight mode, finds its index in the flight mode array.
 	 * Needed for setting the flight mode editor widget to a given value.
@@ -3096,9 +3077,9 @@ int FlightWindow::modus_index (flug_modus sa)/*{{{*/
 	}
 	log_error ("Modus nicht gefunden in modus_index ()");
 	return -1;
-}/*}}}*/
+}
 
-int FlightWindow::sfz_modus_index (flug_modus sa)/*{{{*/
+int FlightWindow::sfz_modus_index (flug_modus sa)
 	/*
 	 * For a given towflight mode, finds its index in the towflight mode array.
 	 * Needed for setting the towflight mode editor widget to a given value.
@@ -3115,9 +3096,9 @@ int FlightWindow::sfz_modus_index (flug_modus sa)/*{{{*/
 	}
 	log_error ("Modus nicht gefunden in sfz_modus_index ()");
 	return -1;
-}/*}}}*/
+}
 
-int FlightWindow::flugtyp_index (flug_typ t)/*{{{*/
+int FlightWindow::flugtyp_index (flug_typ t)
 	/*
 	 * For a given flight type, finds its index in the flight type array.
 	 * Needed for setting the flight type editor widget to a given value.
@@ -3134,9 +3115,9 @@ int FlightWindow::flugtyp_index (flug_typ t)/*{{{*/
 	}
 	log_error ("Flugtyp nicht gefunden in flugtyp_index ()");
 	return -1;
-}/*}}}*/
+}
 
-int FlightWindow::widget_index (QWidget *w)/*{{{*/
+int FlightWindow::widget_index (QWidget *w)
 	/*
 	 * Finds the index of a given editor widget in the widget array.
 	 * Parameters:
@@ -3152,11 +3133,11 @@ int FlightWindow::widget_index (QWidget *w)/*{{{*/
 
 	log_error ("Widget nicht gefunden in widget_index ()");
 	return -1;
-}/*}}}*/
+}
 
 
 
-void FlightWindow::slot_db_update (db_event  *event)/*{{{*/
+void FlightWindow::slot_db_update (db_event  *event)
 	/*
 	 * Handler for the db_change mechanism. See db_change mechanism.
 	 */
@@ -3202,12 +3183,12 @@ void FlightWindow::slot_db_update (db_event  *event)/*{{{*/
 	}
 
 	SkDialog::slot_db_update (event);
-}/*}}}*/
+}
 
 
 
 // Interface
-int FlightWindow::create_flight (QDate *date_to_use)/*{{{*/
+int FlightWindow::create_flight (QDate *date_to_use)
 	/*
 	 * Open the window for creating a flight.
 	 * Return value:
@@ -3215,9 +3196,9 @@ int FlightWindow::create_flight (QDate *date_to_use)/*{{{*/
 	 */
 {
 	return go (fe_create, NULL, date_to_use);
-}/*}}}*/
+}
 
-int FlightWindow::edit_flight (Flight *f)/*{{{*/
+int FlightWindow::edit_flight (Flight *f)
 	/*
 	 * Open the window for editing a flight.
 	 * Parameters:
@@ -3227,9 +3208,9 @@ int FlightWindow::edit_flight (Flight *f)/*{{{*/
 	 */
 {
 	return go (fe_edit, f, NULL);
-}/*}}}*/
+}
 
-int FlightWindow::duplicate_flight (Flight *vorlage)/*{{{*/
+int FlightWindow::duplicate_flight (Flight *vorlage)
 	/*
 	 * Open the window for creating a flight, using a template (for repeating a
 	 * flight).
@@ -3240,11 +3221,11 @@ int FlightWindow::duplicate_flight (Flight *vorlage)/*{{{*/
 	 */
 {
 	return go (fe_create, vorlage, NULL);
-}/*}}}*/
+}
 
 
 // Fehlerbehandlung
-QWidget *FlightWindow::get_error_control (FlightError error)/*{{{*/
+QWidget *FlightWindow::get_error_control (FlightError error)
 {
 	switch (error)
 	{
@@ -3292,11 +3273,10 @@ QWidget *FlightWindow::get_error_control (FlightError error)/*{{{*/
 
 	return NULL;
 }
-/*}}}*/
 
 
 
-QColor FlightWindow::get_default_color (QWidget *w)/*{{{*/
+QColor FlightWindow::get_default_color (QWidget *w)
 {
 	if (w==edit_registration) return col_obligatory;
 	if (w==edit_pilot_nn) return col_obligatory;
@@ -3308,5 +3288,4 @@ QColor FlightWindow::get_default_color (QWidget *w)/*{{{*/
 	if (w==edit_registration_sfz) return col_obligatory;
 	return paletteBackgroundColor ();
 }
-/*}}}*/
 

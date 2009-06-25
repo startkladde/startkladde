@@ -16,7 +16,7 @@
 class temp_dir
 {
 	public:
-		class ex_create_error: public sk_exception/*{{{*/
+		class ex_create_error: public sk_exception
 		{
 			public:
 				ex_create_error (int _errno) { errno=_errno; desc=strerror (errno); }
@@ -26,7 +26,6 @@ class temp_dir
 				int errno;
 				QString desc;
 		};
-/*}}}*/
 
 		temp_dir (const QString &id="temp_dir.") throw (ex_create_error);
 		~temp_dir ();

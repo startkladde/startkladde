@@ -2,14 +2,14 @@
 # Netztest
 # Martin Herrmann
 # 2004-03-15
-# Prüft die Verfügbarkeit einiger Rechner/APs im lokalen Netzwerk
-# Angepasst für die Installation Karlsruhe/Forchheim
+# Prï¿½ft die Verfï¿½gbarkeit einiger Rechner/APs im lokalen Netzwerk
+# Angepasst fï¿½r die Installation Karlsruhe/Forchheim
 
 color=true
 
 kernlog="/var/log/kern.log"
 
-if $color; then	#{{{
+if $color; then	
 	col_def="\033[0m"
 	col_notok="\033[31m"
 	col_ok="\033[32m"
@@ -17,9 +17,9 @@ if $color; then	#{{{
 	col_host="\033[33m"
 	col_bold="\033[1m"
 fi
-#}}}
 
-echo_with_color()	#{{{
+
+echo_with_color()	
 {
 	unset opts
 	if [ "$1" == "-n" ]; then opts="-n"; shift; fi
@@ -27,16 +27,16 @@ echo_with_color()	#{{{
 
 	echo -e $opts "${color}$@${col_def}"
 }
-#}}}
 
-echo_item()	#{{{
+
+echo_item()	
 {
 	echo_with_color -n "$@"
 	echo -n ": "
 }
-#}}}
 
-checkhost()	#{{{
+
+checkhost()	
 {
 	host=$1
 	name=$2
@@ -60,7 +60,7 @@ checkhost()	#{{{
 		return 0
 	fi
 }
-#}}}
+
 
 echo
 echo_with_color $col_bold "Startkladde - Netzwerkschnelldiagnose"

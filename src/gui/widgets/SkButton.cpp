@@ -1,6 +1,6 @@
 #include "SkButton.h"
 
-SkButton::SkButton (db_id dt, const QString &text, QWidget *parent, const char *name)/*{{{*/
+SkButton::SkButton (db_id dt, const QString &text, QWidget *parent, const char *name)
 	:QPushButton (text, parent, name)
 	/*
 	 * Constructs an SkButton, given the additional data.
@@ -11,13 +11,13 @@ SkButton::SkButton (db_id dt, const QString &text, QWidget *parent, const char *
 {
 	data=dt;
 	QObject::connect (this, SIGNAL (clicked ()), this, SLOT (slot_clicked ()));
-}/*}}}*/
+}
 
-void SkButton::slot_clicked ()/*{{{*/
+void SkButton::slot_clicked ()
 	/*
 	 * The button was clicked, emit the clicked signal passing the additional data.
 	 */
 {
 	emit clicked (data);
-}/*}}}*/
+}
 

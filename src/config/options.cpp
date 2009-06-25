@@ -47,7 +47,7 @@ options opts;
 // Static members
 bool options::silent=false;
 
-options::options ()/*{{{*/
+options::options ()
 {
 	// Set default values
 
@@ -97,9 +97,9 @@ options::options ()/*{{{*/
 	weather_dialog_plugin="";
 	weather_dialog_title="Wetter";
 	weather_dialog_interval=600;
-}/*}}}*/
+}
 
-void options::display_options (QString prefix)/*{{{*/
+void options::display_options (QString prefix)
 {
 	std::cout << prefix << "--config_file name, -f name: read config file name instead of the default" << std::endl;
 	std::cout << prefix << "--help, -h: display help" << std::endl;
@@ -131,9 +131,8 @@ void options::display_options (QString prefix)/*{{{*/
 	std::cout << prefix << "--start_date s, -S s: start with date s" << std::endl;
 	std::cout << prefix << "--end_date e, -E e: end with date e" << std::endl;
 }
-/*}}}*/
 
-bool options::parse_arguments (int argc, char *argv[])/*{{{*/
+bool options::parse_arguments (int argc, char *argv[])
 {
 	int c=0;
 	opterr=1;
@@ -267,9 +266,8 @@ bool options::parse_arguments (int argc, char *argv[])/*{{{*/
 
 	return true;
 }
-/*}}}*/
 
-bool options::read_config_files (sk_db *db, std::list<sk_plugin> *plugins, int argc, char *argv[])/*{{{*/
+bool options::read_config_files (sk_db *db, std::list<sk_plugin> *plugins, int argc, char *argv[])
 	// db is only passed for startrten (TODO change something)
 	// Also reads command line arguments, if argc>0 (and a configuration file
 	// was read)
@@ -302,7 +300,6 @@ bool options::read_config_files (sk_db *db, std::list<sk_plugin> *plugins, int a
 
 	return true;
 }
-/*}}}*/
 
 bool options::read_config_file (QString filename, sk_db *db, std::list<sk_plugin> *plugins)
 	// db is only passed for startarten (TODO change something)
@@ -438,23 +435,21 @@ bool options::read_config_file (QString filename, sk_db *db, std::list<sk_plugin
 	return true;
 }
 
-void options::do_display ()/*{{{*/
+void options::do_display ()
 {
 	if (show_version)
 		display_version ();
 	else if (show_short_version)
 		display_short_version ();
 }
-/*}}}*/
 
-bool options::need_display ()/*{{{*/
+bool options::need_display ()
 {
 	// No display_help because this is handled by the caller.
 	return (show_version || show_short_version);
 }
-/*}}}*/
 
-bool options::parse_type (const QString &type_string)/*{{{*/
+bool options::parse_type (const QString &type_string)
 {
 	dump_type=dt_invalid;
 	if (type_string=="list" || type_string=="l") dump_type=dt_liste;
@@ -467,9 +462,8 @@ bool options::parse_type (const QString &type_string)/*{{{*/
 	if (dump_type==dt_invalid) std::cerr << "Invalid dump type specification \"" << type_string << "\"" << std::endl;
 	return (dump_type!=dt_invalid);
 }
-/*}}}*/
 
-bool options::parse_format (const QString &format_string)/*{{{*/
+bool options::parse_format (const QString &format_string)
 {
 	dump_format=df_invalid;
 	if (format_string=="latex" || format_string=="l") dump_format=df_latex;
@@ -477,9 +471,8 @@ bool options::parse_format (const QString &format_string)/*{{{*/
 	if (dump_format==df_invalid) std::cerr << "Invalid format type specification \"" << format_string << "\"" << std::endl;
 	return (dump_format!=df_invalid);
 }
-/*}}}*/
 
-bool options::parse_columns (const QString &columns_string)/*{{{*/
+bool options::parse_columns (const QString &columns_string)
 {
 	dump_columns=dc_invalid;
 	if (columns_string=="standard" || columns_string=="s") dump_columns=dc_standard;
@@ -487,16 +480,14 @@ bool options::parse_columns (const QString &columns_string)/*{{{*/
 	if (dump_columns==dc_invalid) std::cerr << "Invalid columns type specification \"" << columns_string << "\"" << std::endl;
 	return (dump_columns!=dc_invalid);
 }
-/*}}}*/
 
-bool options::parse_date (const QString &date_string, QDate &d, bool required)/*{{{*/
+bool options::parse_date (const QString &date_string, QDate &d, bool required)
 {
 	d=QDate::fromString (date_string, Qt::ISODate);
 	return d.isValid ();
 }
-/*}}}*/
 
-bool options::check_date () const/*{{{*/
+bool options::check_date () const
 	// Checks dates. Outputs an error message on error.
 	// Return value:
 	//   - false: error
@@ -518,9 +509,8 @@ bool options::check_date () const/*{{{*/
 	DATE_ERROR (!s && e, "There was only an end date given.");
 	return true;
 }
-/*}}}*/
 
-bool options::use_date_range () const/*{{{*/
+bool options::use_date_range () const
 	/*
 	 * Determines whether to use a date range or a single date.
 	 * Conditions:
@@ -535,9 +525,8 @@ bool options::use_date_range () const/*{{{*/
 	if (start_date.isValid () && end_date.isValid ()) return true;
 	return false;
 }
-/*}}}*/
 
-QDate options::eff_date () const/*{{{*/
+QDate options::eff_date () const
 	/*
 	 * Determines the effictive date to use for single date.
 	 * Return value:
@@ -552,9 +541,8 @@ QDate options::eff_date () const/*{{{*/
 	if (date.isValid ()) return date;
 	return QDate::currentDate ();
 }
-/*}}}*/
 
-QDate options::eff_start_date () const/*{{{*/
+QDate options::eff_start_date () const
 	/*
 	 * Determines the effective start date.
 	 * Return value:
@@ -569,9 +557,8 @@ QDate options::eff_start_date () const/*{{{*/
 	if (!dates.empty ()) return dates.front ();
 	return start_date;
 }
-/*}}}*/
 
-QDate options::eff_end_date () const/*{{{*/
+QDate options::eff_end_date () const
 	/*
 	 * Determines the effective end date.
 	 * Return value:
@@ -586,9 +573,8 @@ QDate options::eff_end_date () const/*{{{*/
 	if (!dates.empty ()) return dates.back ();
 	return end_date;
 }
-/*}}}*/
 
-bool options::address_is_local (const QString &address) const/*{{{*/
+bool options::address_is_local (const QString &address) const
 	/*
 	 * Checks whether an address is to be regarded local.
 	 * Parameters:
@@ -622,9 +608,8 @@ bool options::address_is_local (const QString &address) const/*{{{*/
 
 	return false;
 }
-/*}}}*/
 
-QString options::find_plugin_file (const QString &filename, QString *dir, QString *basename) const/*{{{*/
+QString options::find_plugin_file (const QString &filename, QString *dir, QString *basename) const
 	// The file returned exists or else the name is empty.
 	// *dir will be set to the dir if the result is not empty.
 {
@@ -680,5 +665,4 @@ QString options::find_plugin_file (const QString &filename, QString *dir, QStrin
 	// Nothing found.
 	return "";
 }
-/*}}}*/
 

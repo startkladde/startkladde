@@ -23,7 +23,7 @@ enum selection_result { sr_cancelled, sr_ok, sr_new, sr_unknown, sr_none_selecte
  * The helper classes for using slots and signals with the template class
  * EntitySelectWindow.
  */
-class selector_base:public SkDialog/*{{{*/
+class selector_base:public SkDialog
 {
 	friend class selector_helper;
 
@@ -35,9 +35,8 @@ class selector_base:public SkDialog/*{{{*/
 		virtual void slot_ok ()=0;
 		virtual void slot_double_click (QTreeWidgetItem *, int)=0;
 };
-/*}}}*/
 
-class selector_helper:public QObject/*{{{*/
+class selector_helper:public QObject
 {
 	Q_OBJECT
 
@@ -52,7 +51,6 @@ class selector_helper:public QObject/*{{{*/
 	private:
 		selector_base *helped;
 };
-/*}}}*/
 
 
 
@@ -64,7 +62,7 @@ class selector_helper:public QObject/*{{{*/
  * If the result is sr_ok, you can use get_result_id () to get the selected ID.
  */
 
-template<class TYPE> class EntitySelectWindow:public selector_base/*{{{*/
+template<class TYPE> class EntitySelectWindow:public selector_base
 {
 	// A template class cannot be a Q_OBJECT
 
@@ -95,9 +93,8 @@ template<class TYPE> class EntitySelectWindow:public selector_base/*{{{*/
 		void slot_ok ();
 		void slot_double_click (QTreeWidgetItem *, int);
 };
-/*}}}*/
 
-template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *parent, const char *name, WFlags f)/*{{{*/
+template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *parent, const char *name, WFlags f)
 	:selector_base (parent, name, true, f)
 	/*
 	 * Creates a EntitySelectWindow class.
@@ -105,32 +102,28 @@ template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *pare
 	 *   - parent, name, f: passed to the base class constructor.
 	 */
 {
-	// Initialize variables/*{{{*/
+	// Initialize variables
 	_helper=new selector_helper (this);
 	result_id=invalid_id;
-/*}}}*/
 
-	// Create the controls/*{{{*/
+	// Create the controls
 	text=new QLabel ("", this, "text");
 	list=new QTreeWidget (this);
 	but_ok=new QPushButton ("&OK", this, "but_ok");
 	but_cancel=new QPushButton ("&Abbrechen", this, "but_cancel");
-/*}}}*/
 
-	// Setup the controls/*{{{*/
+	// Setup the controls
 	list->setAllColumnsShowFocus (true);
 	list->setSortingEnabled (false);
 	list->setSelectionMode (QAbstractItemView::SingleSelection);
 	but_ok->setDefault (true);
-/*}}}*/
 
-	// Connect the signals/*{{{*/
+	// Connect the signals
 	QObject::connect (but_ok, SIGNAL (clicked ()), helper (), SLOT (slot_ok ()));
 	QObject::connect (but_cancel, SIGNAL (clicked ()), helper (), SLOT (reject ()));
 	QObject::connect (list, SIGNAL (itemActivated (QTreeWidgetItem *, int)), helper (), SLOT (slot_double_click (QTreeWidgetItem *, int)));
-/*}}}*/
 
-	// Arrange the controls/*{{{*/
+	// Arrange the controls
 	QVBoxLayout *main_layout=new QVBoxLayout (this, 4, -1, "main_layout");
 	main_layout->addWidget (text);
 	main_layout->addWidget (list);
@@ -139,28 +132,25 @@ template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *pare
 	button_layout->addStretch ();
 	button_layout->addWidget (but_ok);
 	button_layout->addWidget (but_cancel);
-/*}}}*/
-}/*}}}*/
+}
 
-template<class TYPE> EntitySelectWindow<TYPE>::~EntitySelectWindow ()/*{{{*/
+template<class TYPE> EntitySelectWindow<TYPE>::~EntitySelectWindow ()
 	/*
 	 * Cleans up a EntitySelectWindow class.
 	 */
 {
 	delete _helper;
 }
-/*}}}*/
 
-template<class TYPE> void EntitySelectWindow<TYPE>::slot_ok ()/*{{{*/
+template<class TYPE> void EntitySelectWindow<TYPE>::slot_ok ()
 	/*
 	 * The OK button was pressed. Close the dialog, accepting.
 	 */
 {
 	accept ();
 }
-/*}}}*/
 
-template<class TYPE> void EntitySelectWindow<TYPE>::slot_double_click (QTreeWidgetItem *it, int)/*{{{*/
+template<class TYPE> void EntitySelectWindow<TYPE>::slot_double_click (QTreeWidgetItem *it, int)
 	/*
 	 * The list was double clicked.
 	 */
@@ -168,9 +158,8 @@ template<class TYPE> void EntitySelectWindow<TYPE>::slot_double_click (QTreeWidg
 {
 	if (it) slot_ok ();
 }
-/*}}}*/
 
-template<class TYPE> QString EntitySelectWindow<TYPE>::selection_result_text (selection_result sr)/*{{{*/
+template<class TYPE> QString EntitySelectWindow<TYPE>::selection_result_text (selection_result sr)
 	/*
 	 * Creates a text describing a selection_result.
 	 * Parameters:
@@ -189,9 +178,8 @@ template<class TYPE> QString EntitySelectWindow<TYPE>::selection_result_text (se
 		default: log_error ("Unhandled selection_result in EntitySelectWindow::selection_result_text ()"); return "?";
 	}
 }
-/*}}}*/
 
-template<class TYPE> db_id EntitySelectWindow<TYPE>::get_result_id ()/*{{{*/
+template<class TYPE> db_id EntitySelectWindow<TYPE>::get_result_id ()
 	/*
 	 * Gets the selection result.
 	 * Return value:
@@ -200,11 +188,10 @@ template<class TYPE> db_id EntitySelectWindow<TYPE>::get_result_id ()/*{{{*/
 {
 	return result_id;
 }
-/*}}}*/
 
 
 
-template<class TYPE> int EntitySelectWindow<TYPE>::setup_columns ()/*{{{*/
+template<class TYPE> int EntitySelectWindow<TYPE>::setup_columns ()
 	/*
 	 * Sets up the list columns.
 	 * Return value:
@@ -227,9 +214,8 @@ template<class TYPE> int EntitySelectWindow<TYPE>::setup_columns ()/*{{{*/
 
 	return i;
 }
-/*}}}*/
 
-template<class TYPE> void EntitySelectWindow<TYPE>::set_entry (SkTreeWidgetItem *item, TYPE *entry, int num_columns)/*{{{*/
+template<class TYPE> void EntitySelectWindow<TYPE>::set_entry (SkTreeWidgetItem *item, TYPE *entry, int num_columns)
 	/*
 	 * Writes an entry to the list.
 	 * Parameters:
@@ -243,9 +229,8 @@ template<class TYPE> void EntitySelectWindow<TYPE>::set_entry (SkTreeWidgetItem 
 		item->setText (i, entry->get_selector_value (i));
 	}
 }
-/*}}}*/
 
-template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QPtrList<TYPE> &entityList, db_id preselected)/*{{{*/
+template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QPtrList<TYPE> &entityList, db_id preselected)
 	/*
 	 * Displays the selector.
 	 * Parameters:
@@ -305,7 +290,6 @@ template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QS
 		}
 	}
 }
-/*}}}*/
 
 #endif
 

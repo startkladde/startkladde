@@ -6,7 +6,7 @@
 
 // MURX: dass hier Meldungen angezeigt werden (bool interactive) ist Pfusch.
 
-/* Switch modus template {{{
+/* Switch modus template
 switch (modus)
 {
 	case fmod_lokal:
@@ -19,7 +19,7 @@ switch (modus)
 		log_error ("Unbehandelter Flugmodus");
 		break;
 }
-}}}*/
+*/
 
 
 
@@ -42,7 +42,7 @@ Flight::Flight ()
 	towplane=invalid_id;
 }
 
-bool Flight::fliegt () const/*{{{*/
+bool Flight::fliegt () const
 	/*
 	 * Determines whether a flight has landed.
 	 * Return value:
@@ -51,9 +51,9 @@ bool Flight::fliegt () const/*{{{*/
 	 */
 {
 	return happened () && !finished ();
-}/*}}}*/
+}
 
-bool Flight::sfz_fliegt () const/*{{{*/
+bool Flight::sfz_fliegt () const
 	/*
 	 * Determine if the !!Schleppflugzeug is flying.
 	 * Return value:
@@ -62,9 +62,9 @@ bool Flight::sfz_fliegt () const/*{{{*/
 	 */
 {
 	return happened () && !sfz_gelandet;
-}/*}}}*/
+}
 
-bool Flight::vorbereitet () const/*{{{*/
+bool Flight::vorbereitet () const
 	/*
 	 * Check if the flight is prepared.
 	 * Return value:
@@ -73,23 +73,21 @@ bool Flight::vorbereitet () const/*{{{*/
 	 */
 {
 	return !happened ();
-}/*}}}*/
+}
 
-bool Flight::happened () const/*{{{*/
+bool Flight::happened () const
 {
 	if (starts_here (modus) && gestartet) return true;
 	if (lands_here (modus) && gelandet) return true;
 	return false;
 }
-/*}}}*/
 
-bool Flight::finished () const/*{{{*/
+bool Flight::finished () const
 {
 	return (lands_here (modus)?gelandet:true);
 }
-/*}}}*/
 
-sk_time_t Flight::flugdauer () const/*{{{*/
+sk_time_t Flight::flugdauer () const
 	/*
 	 * Calculate the flight time of the flight.
 	 * Return value:
@@ -100,9 +98,9 @@ sk_time_t Flight::flugdauer () const/*{{{*/
 	if (gestartet && gelandet) t.set_to (startzeit.secs_to (&landezeit));
 	//t=t.addSecs (startzeit.secs_to (&landezeit));
 	return t;
-}/*}}}*/
+}
 
-sk_time_t Flight::schleppflugdauer () const/*{{{*/
+sk_time_t Flight::schleppflugdauer () const
 	/*
 	 * Calculate the flight time of the !!Schleppflug.
 	 * Return value:
@@ -113,9 +111,9 @@ sk_time_t Flight::schleppflugdauer () const/*{{{*/
 	if (gestartet && sfz_gelandet) t.set_to (startzeit.secs_to (&landezeit_schleppflugzeug));
 		//t=t.addSecs (startzeit.secsTo (landezeit_schleppflugzeug));
 	return t;
-}/*}}}*/
+}
 
-bool Flight::fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const/*{{{*/
+bool Flight::fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const
 	/*
 	 * Finds out if the flight contains an error.
 	 * Parameters:
@@ -127,9 +125,9 @@ bool Flight::fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const/*{{{*/
 {
 	int i=0;
 	return (fehlerchecking (&i, true, false, fz, sfz, sa)!=ff_ok);
-}/*}}}*/
+}
 
-bool Flight::schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const/*{{{*/
+bool Flight::schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const
 	/*
 	 * Finds out if the !!Schleppflug for this flight (if any) contains an error.
 	 * Parameters:
@@ -141,9 +139,9 @@ bool Flight::schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const/*{
 {
 	int i=0;
 	return (fehlerchecking (&i, false, true, fz, sfz, sa)!=ff_ok);
-}/*}}}*/
+}
 
-QString Flight::fehler_string (FlightError code) const/*{{{*/
+QString Flight::fehler_string (FlightError code) const
 	/*
 	 * Makes a QString describing a flight error.
 	 * Parameters:
@@ -199,9 +197,9 @@ QString Flight::fehler_string (FlightError code) const/*{{{*/
 	}
 
 	return "Unbekannter Fehler";
-}/*}}}*/
+}
 
-FlightError Flight::fehlerchecking (int *index, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchType *sa) const/*{{{*/
+FlightError Flight::fehlerchecking (int *index, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchType *sa) const
 	/*
 	 * Does the unified error checking.
 	 * Usage of this function:
@@ -271,11 +269,11 @@ FlightError Flight::fehlerchecking (int *index, bool check_flug, bool check_schl
 #undef CHECK_FEHLER
 #undef FLUG
 #undef SCHLEPP
-}/*}}}*/
+}
 
 
 
-bool Flight::starten (bool force, bool interactive)/*{{{*/
+bool Flight::starten (bool force, bool interactive)
 	/*
 	 * Start the flight now.
 	 * Parameters:
@@ -303,9 +301,9 @@ bool Flight::starten (bool force, bool interactive)/*{{{*/
 		}
 		return false;
 	}
-}/*}}}*/
+}
 
-bool Flight::landen (bool force, bool interactive)/*{{{*/
+bool Flight::landen (bool force, bool interactive)
 	/*
 	 * Land the flight now.
 	 * Parameters:
@@ -342,9 +340,9 @@ bool Flight::landen (bool force, bool interactive)/*{{{*/
 		}
 		return false;
 	}
-}/*}}}*/
+}
 
-bool Flight::schlepp_landen (bool force, bool interactive)/*{{{*/
+bool Flight::schlepp_landen (bool force, bool interactive)
 	/*
 	 * Land the !!Schleppflug now.
 	 * Parameters:
@@ -374,9 +372,9 @@ bool Flight::schlepp_landen (bool force, bool interactive)/*{{{*/
 		}
 		return false;
 	}
-}/*}}}*/
+}
 
-bool Flight::zwischenlandung (bool force, bool interactive)/*{{{*/
+bool Flight::zwischenlandung (bool force, bool interactive)
 	/*
 	 * Make a !!Zwischenlandung now.
 	 * Parameters:
@@ -403,11 +401,11 @@ bool Flight::zwischenlandung (bool force, bool interactive)/*{{{*/
 		}
 		return false;
 	}
-}/*}}}*/
+}
 
 
 
-QString Flight::typ_string (length_specification lenspec) const/*{{{*/
+QString Flight::typ_string (length_specification lenspec) const
 	/*
 	 * Generates a QString describing the type of the flight.
 	 * Parameters:
@@ -417,22 +415,21 @@ QString Flight::typ_string (length_specification lenspec) const/*{{{*/
 	 */
 {
 	return flugtyp_string (flugtyp, lenspec);
-}/*}}}*/
+}
 
 
 
-sk_time_t Flight::efftime () const/*{{{*/
+sk_time_t Flight::efftime () const
 {
 	// TODO this assumes that every flight at least starts or lands here.
 	if (starts_here (modus) && gestartet) return startzeit;
 	if (lands_here (modus) && gelandet) return landezeit;
 	return sk_time_t ();
 }
-/*}}}*/
 
 
 
-QString Flight::pilot_bezeichnung () const/*{{{*/
+QString Flight::pilot_bezeichnung () const
 	/*
 	 * Return a description for the pilot.
 	 * Return value:
@@ -440,9 +437,9 @@ QString Flight::pilot_bezeichnung () const/*{{{*/
 	 */
 {
 	return t_pilot_bezeichnung (flugtyp);
-}/*}}}*/
+}
 
-QString Flight::begleiter_bezeichnung () const/*{{{*/
+QString Flight::begleiter_bezeichnung () const
 	/*
 	 * Return a description for the copilot.
 	 * Return value:
@@ -450,10 +447,10 @@ QString Flight::begleiter_bezeichnung () const/*{{{*/
 	 */
 {
 	return t_begleiter_bezeichnung (flugtyp);
-}/*}}}*/
+}
 
 
-QString Flight::unvollst_pilot_name () const/*{{{*/
+QString Flight::unvollst_pilot_name () const
 	/*
 	 * Makes the incomplete name of the pilot.
 	 * Return value:
@@ -462,9 +459,8 @@ QString Flight::unvollst_pilot_name () const/*{{{*/
 {
 	return unvollst_person_name (pnn, pvn);
 }
-/*}}}*/
 
-QString Flight::unvollst_begleiter_name () const/*{{{*/
+QString Flight::unvollst_begleiter_name () const
 	/*
 	 * Makes the incomplete name of the copilot.
 	 * Return value:
@@ -473,9 +469,8 @@ QString Flight::unvollst_begleiter_name () const/*{{{*/
 {
 	return unvollst_person_name (bnn, bvn);
 }
-/*}}}*/
 
-QString Flight::unvollst_towpilot_name () const/*{{{*/
+QString Flight::unvollst_towpilot_name () const
 	/*
 	 * Makes the incomplete name of the towpilot.
 	 * Return value:
@@ -484,9 +479,8 @@ QString Flight::unvollst_towpilot_name () const/*{{{*/
 {
 	return unvollst_person_name (tpnn, tpvn);
 }
-/*}}}*/
 
-QString Flight::unvollst_person_name (QString nn, QString vn) const/*{{{*/
+QString Flight::unvollst_person_name (QString nn, QString vn) const
 	/*
 	 * Makes the incomplete name of a person.
 	 * Parameters:
@@ -505,25 +499,22 @@ QString Flight::unvollst_person_name (QString nn, QString vn) const/*{{{*/
 	log_error ("Unreachable code reached in sk_flug::unvollst_person_name ()");
 	return "("+QString ("???")+")";
 }
-/*}}}*/
 
 
 
-bool Flight::flight_lands_here () const/*{{{*/
+bool Flight::flight_lands_here () const
 {
 	return lands_here (modus);
 }
-/*}}}*/
 
-bool Flight::flight_starts_here () const/*{{{*/
+bool Flight::flight_starts_here () const
 {
 	return starts_here (modus);
 }
-/*}}}*/
 
 
 
-void Flight::get_towflight (Flight *towflight, db_id towplane_id, db_id sa_id) const/*{{{*/
+void Flight::get_towflight (Flight *towflight, db_id towplane_id, db_id sa_id) const
 {
 	towflight->id=id;										// The tow flight gets the same ID because there
 	                                                        // would be no way to get the ID for a given tow
@@ -563,9 +554,8 @@ void Flight::get_towflight (Flight *towflight, db_id towplane_id, db_id sa_id) c
 	towflight->gelandet=sfz_gelandet;
 	towflight->sfz_gelandet=false;
 }
-/*}}}*/
 
-bool Flight::collective_bb_entry_possible (Flight *prev, const Plane &plane) const/*{{{*/
+bool Flight::collective_bb_entry_possible (Flight *prev, const Plane &plane) const
 {
 	// Only allow if the previous flight and the current flight start and land
 	// at the same place.
@@ -585,11 +575,10 @@ bool Flight::collective_bb_entry_possible (Flight *prev, const Plane &plane) con
 		return false;
 	}
 }
-/*}}}*/
 
 
 
-void Flight::dump () const/*{{{*/
+void Flight::dump () const
 {
 #define DUMP2(l, v) << " " #l ": " << v
 #define DUMP(v) DUMP2 (v, v)
@@ -606,9 +595,8 @@ void Flight::dump () const/*{{{*/
 #undef BDUMP
 #undef DUMP2
 }
-/*}}}*/
 
-int Flight::sort (Flight *other) const/*{{{*/
+int Flight::sort (Flight *other) const
 	/*
 	 * Return value:
 	 *   - >0 if this flight is later
@@ -630,11 +618,10 @@ int Flight::sort (Flight *other) const/*{{{*/
 	if (t1<t2) return -1;
 	return 0;
 }
-/*}}}*/
 
 
 
-QDate Flight::effdatum (time_zone tz) const/*{{{*/
+QDate Flight::effdatum (time_zone tz) const
         /*
          * Calculates the effective date, that is the date to use when sorting the
          * table.
@@ -645,5 +632,5 @@ QDate Flight::effdatum (time_zone tz) const/*{{{*/
          */
 {
         return efftime ().get_qdate (tz);
-}/*}}}*/
+}
 

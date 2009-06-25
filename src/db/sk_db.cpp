@@ -151,7 +151,7 @@ const char *db_time_format="%Y-%m-%d %H:%M:%S";
 const QString query_separator=";";
 
 // ***** import_message
-bool sk_db::import_message::fatal (import_message_type t)/*{{{*/
+bool sk_db::import_message::fatal (import_message_type t)
 {
 	switch (t)
 	{
@@ -169,9 +169,8 @@ bool sk_db::import_message::fatal (import_message_type t)/*{{{*/
 	}
 	return true;
 }
-/*}}}*/
 
-QString sk_db::import_message::description (bool extended) const/*{{{*/
+QString sk_db::import_message::description (bool extended) const
 {
 	// Message with a different extended message
 #define MESSAGE_D(CASE, NUM_PERSONS, MESS, EXTMESS)	\
@@ -207,12 +206,11 @@ QString sk_db::import_message::description (bool extended) const/*{{{*/
 #undef MESSAGE_D
 #undef MESSAGE_S
 }
-/*}}}*/
 
 // ***** sk_db
 
 // Class and connection management
-sk_db::sk_db (std::ostream &_debug_stream)/*{{{*/
+sk_db::sk_db (std::ostream &_debug_stream)
 	:debug_stream (_debug_stream)
 	/*
 	 * Parameters:
@@ -236,17 +234,15 @@ sk_db::sk_db (std::ostream &_debug_stream)/*{{{*/
 	startarten.setAutoDelete (true);
 	is_admin_db=false;
 }
-/*}}}*/
 
-sk_db::~sk_db ()/*{{{*/
+sk_db::~sk_db ()
 {
 //	DEB ("database class destroyed");
 
 	disconnect ();
 }
-/*}}}*/
 
-void sk_db::connect ()/*{{{*/
+void sk_db::connect ()
 	throw (ex_allocation_error, ex_connection_failed, ex_access_denied)
 {
 	disconnect ();
@@ -281,18 +277,16 @@ void sk_db::connect ()/*{{{*/
 
 //	DEB ("database connection established");
 }
-/*}}}*/
 
-void sk_db::connect (QString _server, int _port, QString _username, QString _password)/*{{{*/
+void sk_db::connect (QString _server, int _port, QString _username, QString _password)
 	throw (ex_allocation_error, ex_connection_failed, ex_access_denied)
 	// 0 on success
 {
 	set_connection_data (_server, _port, _username, _password);
 	connect ();
 }
-/*}}}*/
 
-void sk_db::use_db ()/*{{{*/
+void sk_db::use_db ()
 	throw (ex_database_not_accessible, ex_parameter_error, ex_database_not_found, ex_insufficient_access)
 {
 	if (database.isEmpty ()) throw ex_parameter_error ("Datenbank nicht angegeben");
@@ -309,39 +303,34 @@ void sk_db::use_db ()/*{{{*/
 			throw ex_database_not_accessible ();
 	}
 }
-/*}}}*/
 
-void sk_db::use_db (QString _database)/*{{{*/
+void sk_db::use_db (QString _database)
 	throw (ex_database_not_accessible, ex_parameter_error, ex_database_not_found, ex_insufficient_access)
 {
 	set_database (_database);
 	use_db ();
 }
-/*}}}*/
 
-void sk_db::set_connection_data (QString _server, int _port, QString _username, QString _password)/*{{{*/
+void sk_db::set_connection_data (QString _server, int _port, QString _username, QString _password)
 {
 	server=_server;
 	port=_port;
 	username=_username;
 	password=_password;
 }
-/*}}}*/
 
-void sk_db::set_database (QString _database)/*{{{*/
+void sk_db::set_database (QString _database)
 {
 	database=_database;
 }
-/*}}}*/
 
-void sk_db::set_user_data (QString _username, QString _password)/*{{{*/
+void sk_db::set_user_data (QString _username, QString _password)
 {
 	username=_username;
 	password=_password;
 }
-/*}}}*/
 
-int sk_db::disconnect ()/*{{{*/
+int sk_db::disconnect ()
 {
 	if (mysql)
 	{
@@ -353,39 +342,34 @@ int sk_db::disconnect ()/*{{{*/
 
 	return db_ok;
 }
-/*}}}*/
 
-QString sk_db::get_last_error () const/*{{{*/
+QString sk_db::get_last_error () const
 {
 	if (mysql)
 		return QString (mysql_error (mysql));
 	else
 		return "";
 }
-/*}}}*/
 
-unsigned int sk_db::get_last_errno () const/*{{{*/
+unsigned int sk_db::get_last_errno () const
 {
 	if (mysql)
 		return mysql_errno (mysql);
 	else
 		return 0;
 }
-/*}}}*/
 
-bool sk_db::connected () const/*{{{*/
+bool sk_db::connected () const
 {
 	return connection_established;
 }
-/*}}}*/
 
-bool sk_db::alife () const/*{{{*/
+bool sk_db::alife () const
 {
 	return connected () && (mysql_ping (mysql)==0);
 }
-/*}}}*/
 
-QString sk_db::db_error_description (int error, bool extended) const/*{{{*/
+QString sk_db::db_error_description (int error, bool extended) const
 {
 	switch (error)
 	{
@@ -412,12 +396,11 @@ QString sk_db::db_error_description (int error, bool extended) const/*{{{*/
 		default: return "Fehler "+QString::number (error); break;
 	}
 }
-/*}}}*/
 
 
 
 // Database metainformation
-void sk_db::list_required_tables (QStringList &tables)/*{{{*/
+void sk_db::list_required_tables (QStringList &tables)
 {
 	// Tables that depend on another table must be listed after that table.
 	tables.push_back ("flug");
@@ -428,17 +411,15 @@ void sk_db::list_required_tables (QStringList &tables)/*{{{*/
 	tables.push_back ("person_temp");
 	tables.push_back ("user");
 }
-/*}}}*/
 
-void sk_db::list_required_writeable_tables (QStringList &tables)/*{{{*/
+void sk_db::list_required_writeable_tables (QStringList &tables)
 {
 	tables.push_back ("flug_temp");
 	tables.push_back ("flugzeug_temp");
 	tables.push_back ("person_temp");
 }
-/*}}}*/
 
-db_table sk_db::get_table_information (const QString table_name, bool resolve_like) const/*{{{*/
+db_table sk_db::get_table_information (const QString table_name, bool resolve_like) const
 	/*
 	 * Returns information required to create the table, like columns, column
 	 * types, keys etc. in a db_table structure.
@@ -555,25 +536,22 @@ db_table sk_db::get_table_information (const QString table_name, bool resolve_li
 
 	return r;
 }
-/*}}}*/
 
-void sk_db::check_usability ()/*{{{*/
+void sk_db::check_usability ()
 	throw (ex_database_not_accessible, ex_parameter_error, ex_database_not_found, ex_not_connected, ex_query_failed, ex_unusable, ex_insufficient_access)
 {
 	// The numbers are references to the corresponding
 	// admin_functions.initialize_database section.
 	// TODO this has some non-negligible code duplication with admin_functions.initialize_database
 
-	// (0) Connection/*{{{*/
+	// (0) Connection
 	// We must already be connected
 	if (!connected ()) throw ex_not_connected ();
-/*}}}*/
 
-	// (2) Check if we can use the database./*{{{*/
+	// (2) Check if we can use the database.
 	use_db ();
-/*}}}*/
 
-	// (3) Check if all tables exist/*{{{*/
+	// (3) Check if all tables exist
 	// Build a list of tables that are required.
 	QStringList tables_required;
 	list_required_tables (tables_required);
@@ -590,11 +568,10 @@ void sk_db::check_usability ()/*{{{*/
 	for (QStringList::const_iterator it=required_begin; it!=required_end; ++it)
 		if (std::find (present_begin, present_end, *it)==present_end)
 			throw ex_table_not_found (*it);
-/*}}}*/
 
 	// TODO: check writeable
 
-	// (5) Check column types/*{{{*/
+	// (5) Check column types
 	// TODO optional columns.
 
 	// We can use tables_required/_end from above.
@@ -635,14 +612,12 @@ void sk_db::check_usability ()/*{{{*/
 				throw ex_column_type_mismatch (*required_table_name, (*required_column).name);
 		}
 	}
-/*}}}*/
 }
-/*}}}*/
 
 
 
 // Database management
-int sk_db::grant (QString permissions, QString target, QString user, QString password)/*{{{*/
+int sk_db::grant (QString permissions, QString target, QString user, QString password)
 {
 	QString query="GRANT "+permissions+" ON "+target+" TO "+user;
 	if (!password.isEmpty ())
@@ -652,15 +627,13 @@ int sk_db::grant (QString permissions, QString target, QString user, QString pas
 	}
 	return execute_query (query);
 }
-/*}}}*/
 
-int sk_db::grant (QString permissions, QString target, QString user)/*{{{*/
+int sk_db::grant (QString permissions, QString target, QString user)
 {
 	return grant (permissions, target, user, "");
 }
-/*}}}*/
 
-int sk_db::create_database (QString name, bool force)/*{{{*/
+int sk_db::create_database (QString name, bool force)
 {
 	QString query="CREATE DATABASE ";
 	if (!force) query+="IF NOT EXISTS ";
@@ -668,22 +641,19 @@ int sk_db::create_database (QString name, bool force)/*{{{*/
 
 	return execute_query (query);
 }
-/*}}}*/
 
-int sk_db::create_table (const db_table &tab, bool force)/*{{{*/
+int sk_db::create_table (const db_table &tab, bool force)
 {
 	QString query=tab.mysql_create_query (force);
 	return execute_query (query);
 }
-/*}}}*/
 
-int sk_db::list_tables (QStringList &tables)/*{{{*/
+int sk_db::list_tables (QStringList &tables)
 {
 	return list_strings_query ("SHOW TABLES", 0, tables);
 }
-/*}}}*/
 
-int sk_db::list_column_names (QStringList &names, QString table)/*{{{*/
+int sk_db::list_column_names (QStringList &names, QString table)
 {
 	std::list<db_column> columns;
 	int ret=list_columns (columns, table);
@@ -694,9 +664,8 @@ int sk_db::list_column_names (QStringList &names, QString table)/*{{{*/
 
 	return ret;
 }
-/*}}}*/
 
-int sk_db::list_columns (std::list<db_column> &columns, QString table)/*{{{*/
+int sk_db::list_columns (std::list<db_column> &columns, QString table)
 {
 	MYSQL_RES *result;
 
@@ -723,25 +692,22 @@ int sk_db::list_columns (std::list<db_column> &columns, QString table)/*{{{*/
 
 	return ret;
 }
-/*}}}*/
 
-int sk_db::add_column (const QString &table, const db_column &column)/*{{{*/
+int sk_db::add_column (const QString &table, const db_column &column)
 {
 	QString query="ALTER TABLE "+table+" ADD COLUMN "+column.mysql_spec ();
 	return execute_query (query);
 }
-/*}}}*/
 
-int sk_db::modify_column (const QString &table, const db_column &column)/*{{{*/
+int sk_db::modify_column (const QString &table, const db_column &column)
 {
 	QString query="ALTER TABLE "+table+" MODIFY COLUMN "+column.mysql_spec ();
 	return execute_query (query);
 }
-/*}}}*/
 
 
 // Generic functions
-char *sk_db::named_field_value (MYSQL_ROW &row, int num_fields, MYSQL_FIELD *fields, const char *name)/*{{{*/
+char *sk_db::named_field_value (MYSQL_ROW &row, int num_fields, MYSQL_FIELD *fields, const char *name)
 	// This function probably is quite slow, especially when called often,
 	// there should be a better way to do this.
 {
@@ -766,9 +732,8 @@ char *sk_db::named_field_value (MYSQL_ROW &row, int num_fields, MYSQL_FIELD *fie
 		return row[field_num]?row[field_num]:(char *)"";
 	}
 }
-/*}}}*/
 
-const char *sk_db::field_value (const MYSQL_ROW &row, const unsigned int num_fields, MYSQL_FIELD *fields, const unsigned int num)/*{{{*/
+const char *sk_db::field_value (const MYSQL_ROW &row, const unsigned int num_fields, MYSQL_FIELD *fields, const unsigned int num)
 {
 	if (num>=num_fields)
 	{
@@ -778,9 +743,8 @@ const char *sk_db::field_value (const MYSQL_ROW &row, const unsigned int num_fie
 
 	return row[num]?row[num]:(char *)"";
 }
-/*}}}*/
 
-QString sk_db::escape (QString text)/*{{{*/
+QString sk_db::escape (QString text)
 {
 	if (connected ())
 	{
@@ -798,11 +762,10 @@ QString sk_db::escape (QString text)/*{{{*/
 		return "";
 	}
 }
-/*}}}*/
 
 
 // Database metainformation (table names etc.)
-QString sk_db::fixed_table_name (db_object_type type)/*{{{*/
+QString sk_db::fixed_table_name (db_object_type type)
 {
 	switch (type)
 	{
@@ -812,9 +775,8 @@ QString sk_db::fixed_table_name (db_object_type type)/*{{{*/
 		default: return "unknown"; break;	// TODO Fehlermeldung
 	}
 }
-/*}}}*/
 
-QString sk_db::editable_table_name (db_object_type type)/*{{{*/
+QString sk_db::editable_table_name (db_object_type type)
 {
 	switch (type)
 	{
@@ -824,9 +786,8 @@ QString sk_db::editable_table_name (db_object_type type)/*{{{*/
 		default: return "unknown"; break;	// TODO Fehlermeldung
 	}
 }
-/*}}}*/
 
-QString sk_db::default_sort_column (db_object_type type)/*{{{*/
+QString sk_db::default_sort_column (db_object_type type)
 {
 	switch (type)
 	{
@@ -839,11 +800,10 @@ QString sk_db::default_sort_column (db_object_type type)/*{{{*/
 			break;
 	}
 }
-/*}}}*/
 
 
 // Data structures
-QString sk_db::query_column_list (db_object_type otype, bool id_only)/*{{{*/
+QString sk_db::query_column_list (db_object_type otype, bool id_only)
 	// TODO id_only weg und daf�r �berall column_name_id verwenden.
 {
 	if (id_only)
@@ -877,9 +837,8 @@ QString sk_db::query_column_list (db_object_type otype, bool id_only)/*{{{*/
 
 	return "";
 }
-/*}}}*/
 
-QString sk_db::query_value_list (db_object_type type, void *object)/*{{{*/
+QString sk_db::query_value_list (db_object_type type, void *object)
 {
 	// TODO unify with query_column_list and row_to_object
 	std::ostringstream oss;
@@ -958,9 +917,8 @@ QString sk_db::query_value_list (db_object_type type, void *object)/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
-int sk_db::row_to_object (db_object_type otype, void *object, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields)/*{{{*/
+int sk_db::row_to_object (db_object_type otype, void *object, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields)
 {
 	// Key is a char *. This macro sets the variable value to the value.
 #define USE(key) value=named_field_value (row, num_fields, fields, key);
@@ -1042,33 +1000,29 @@ int sk_db::row_to_object (db_object_type otype, void *object, MYSQL_ROW row, int
 
 	return db_ok;
 }
-/*}}}*/
 
-long long int sk_db::row_to_number (MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields, const char *field_name)/*{{{*/
+long long int sk_db::row_to_number (MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields, const char *field_name)
 {
 	return atoll (named_field_value (row, num_fields, fields, field_name));
 }
-/*}}}*/
 
-QString sk_db::to_string (sk_time_t *t)/*{{{*/
+QString sk_db::to_string (sk_time_t *t)
 {
 	if (t->is_null ())
 		return db_null_time;
 	else
 		return t->to_string (db_time_format, tz_utc, 20, true);
 }
-/*}}}*/
 
-void sk_db::parse (sk_time_t *time, QString text)/*{{{*/
+void sk_db::parse (sk_time_t *time, QString text)
 {
 	if (text==db_null_time)
 		time->set_null ();
 	else
 		time->parse (text, tz_utc, db_time_format);
 }
-/*}}}*/
 
-int sk_db::copy_object (db_object_type type, void *target, void *source)/*{{{*/
+int sk_db::copy_object (db_object_type type, void *target, void *source)
 {
 	if (!source) return db_err_parameter_error;
 	if (!target) return db_err_parameter_error;
@@ -1087,9 +1041,8 @@ int sk_db::copy_object (db_object_type type, void *target, void *source)/*{{{*/
 	debug_stream << "[db] Error: unhandled object type in sk_db::copy_object" << std::endl;
 	return db_err_unhandled;
 }
-/*}}}*/
 
-void *sk_db::new_object (db_object_type type)/*{{{*/
+void *sk_db::new_object (db_object_type type)
 {
 	switch (type)
 	{
@@ -1102,9 +1055,8 @@ void *sk_db::new_object (db_object_type type)/*{{{*/
 	debug_stream << "[db] Error: unhandled object type in sk_db::new_object ()" << std::endl;
 	return NULL;
 }
-/*}}}*/
 
-int sk_db::free_object (db_object_type type, void *object)/*{{{*/
+int sk_db::free_object (db_object_type type, void *object)
 {
 	switch (type)
 	{
@@ -1117,9 +1069,8 @@ int sk_db::free_object (db_object_type type, void *object)/*{{{*/
 	debug_stream << "[db] Error: unhandled object type in sk_db::free_object ()" << std::endl;
 	return db_err_unhandled;
 }
-/*}}}*/
 
-QString sk_db::object_name (db_object_type type, bool plural)/*{{{*/
+QString sk_db::object_name (db_object_type type, bool plural)
 {
 	switch (type)
 	{
@@ -1132,12 +1083,11 @@ QString sk_db::object_name (db_object_type type, bool plural)/*{{{*/
 	debug_stream << "[db] Error: unhandled object type in sk_db::free_object ()" << std::endl;
 	return plural?"unknwon objects":"unknwon object";
 }
-/*}}}*/
 
 
 
 // Enumeration types
-//QString sk_db::startart_to_db (flug_startart s)/*{{{*/
+//QString sk_db::startart_to_db (flug_startart s)
 //{
 //	// TODO Nicht hardcoden sondern zumindest in die
 //	// Konfigurationsdatei, besser in die Datenbank
@@ -1160,9 +1110,8 @@ QString sk_db::object_name (db_object_type type, bool plural)/*{{{*/
 //
 //	return "-";
 //}
-/*}}}*/
 
-QString sk_db::flugtyp_to_db (flug_typ t)/*{{{*/
+QString sk_db::flugtyp_to_db (flug_typ t)
 {
 	switch (t)
 	{
@@ -1181,9 +1130,8 @@ QString sk_db::flugtyp_to_db (flug_typ t)/*{{{*/
 
 	return "-";
 }
-/*}}}*/
 
-QString sk_db::modus_to_db (flug_modus m)/*{{{*/
+QString sk_db::modus_to_db (flug_modus m)
 {
 	switch (m)
 	{
@@ -1198,9 +1146,9 @@ QString sk_db::modus_to_db (flug_modus m)/*{{{*/
 	}
 
 	return "-";
-}/*}}}*/
+}
 
-QString sk_db::category_to_db (aircraft_category g)/*{{{*/
+QString sk_db::category_to_db (aircraft_category g)
 {
 	switch (g)
 	{
@@ -1217,9 +1165,9 @@ QString sk_db::category_to_db (aircraft_category g)/*{{{*/
 	}
 
 	return "-";
-}/*}}}*/
+}
 
-flug_typ sk_db::db_to_flugtyp (char *in)/*{{{*/
+flug_typ sk_db::db_to_flugtyp (char *in)
 {
 	switch (in[0])
 	{
@@ -1236,9 +1184,8 @@ flug_typ sk_db::db_to_flugtyp (char *in)/*{{{*/
 			return ft_kein;
 	}
 }
-/*}}}*/
 
-flug_modus sk_db::db_to_modus (char *in)/*{{{*/
+flug_modus sk_db::db_to_modus (char *in)
 {
 	switch (in[0])
 	{
@@ -1252,9 +1199,9 @@ flug_modus sk_db::db_to_modus (char *in)/*{{{*/
 	}
 
 	return fmod_kein;
-}/*}}}*/
+}
 
-aircraft_category sk_db::db_to_category (char *in)/*{{{*/
+aircraft_category sk_db::db_to_category (char *in)
 {
 	switch (in[0])
 	{
@@ -1270,17 +1217,16 @@ aircraft_category sk_db::db_to_category (char *in)/*{{{*/
 	}
 
 	return lfz_keine;
-}/*}}}*/
+}
 
 
 // Bitmask types
-bool sk_db::status_gestartet (unsigned int status)/*{{{*/
+bool sk_db::status_gestartet (unsigned int status)
 {
 	return (status & STATUS_GESTARTET);
 }
-/*}}}*/
 
-unsigned int sk_db::make_status (bool gestartet, bool gelandet, bool sfz_gelandet)/*{{{*/
+unsigned int sk_db::make_status (bool gestartet, bool gelandet, bool sfz_gelandet)
 {
 	int r=0;
 	if (gestartet) r|=STATUS_GESTARTET;
@@ -1288,23 +1234,20 @@ unsigned int sk_db::make_status (bool gestartet, bool gelandet, bool sfz_gelande
 	if (sfz_gelandet) r|=STATUS_SFZ_GELANDET;
 	return r;
 }
-/*}}}*/
 
-bool sk_db::status_gelandet (unsigned int status)/*{{{*/
+bool sk_db::status_gelandet (unsigned int status)
 {
 	return (status & STATUS_GELANDET);
 }
-/*}}}*/
 
-bool sk_db::status_sfz_gelandet (unsigned int status)/*{{{*/
+bool sk_db::status_sfz_gelandet (unsigned int status)
 {
 	return (status & STATUS_SFZ_GELANDET);
 }
-/*}}}*/
 
 
 // Querying core functions
-int sk_db::execute_query (MYSQL_RES **result, QString query_string, bool retrieve_immediately)/*{{{*/
+int sk_db::execute_query (MYSQL_RES **result, QString query_string, bool retrieve_immediately)
 	// The result is valid exactly if 0 is returned.
 	// You must call mysql_free_result on the result if it is valid.
 	// result may be NULL in which case it freed by this function.
@@ -1373,9 +1316,8 @@ int sk_db::execute_query (MYSQL_RES **result, QString query_string, bool retriev
 		return db_err_query_failed;
 	}
 }
-/*}}}*/
 
-QString sk_db::make_query (query_type_t query_type, db_object_type object_type, QString condition, QString columns, bool add_column_editable, bool distinct, QString sort_column, QString group_column, bool editable_flag)/*{{{*/
+QString sk_db::make_query (query_type_t query_type, db_object_type object_type, QString condition, QString columns, bool add_column_editable, bool distinct, QString sort_column, QString group_column, bool editable_flag)
 	/*
 	 * This function is mainly used for making queries where two
 	 * tables (name and name_temp) have to be considered.
@@ -1399,25 +1341,25 @@ QString sk_db::make_query (query_type_t query_type, db_object_type object_type, 
 
 	switch (query_type)
 	{
-		case qt_create:/*{{{*/
+		case qt_create:
 		{
 			// insert into $table set $values
 			query="insert into "+target_table+" set "+columns;
-		} break;/*}}}*/
-		case qt_update:/*{{{*/
+		} break;
+		case qt_update:
 			//// update $editable_table set $values where $condition and $editalbe_table.id not in (select id from $fixed_table)
 			//query="update "+editable_table+" set "+columns+" where "+condition+" AND "+editable_table+".id not in (select id from "+fixed_table+")";
 			// update $table set $values where $condition
 			query="update "+target_table+" set "+columns+" where "+condition;
-			break;/*}}}*/
-		case qt_delete:/*{{{*/
+			break;
+		case qt_delete:
 		{
 			//// delete from $editable_table where $condition and $editalbe_table.id not in (select id from $fixed_table)
 			//query="delete from "+editable_table+" where "+condition+" AND "+editable_table+".id not in (select id from "+fixed_table+")";
 			// delete from $table where $condition
 			query="delete from "+target_table+" where "+condition;
-		} break;/*}}}*/
-		case qt_list:/*{{{*/
+		} break;
+		case qt_list:
 		{
 			// select [distinct] $columns,0 as editable from $fixed_table
 			//   where $condition
@@ -1444,8 +1386,8 @@ QString sk_db::make_query (query_type_t query_type, db_object_type object_type, 
 
 			if (!sort_column.isEmpty ()) query+=" order by "+sort_column;
 			if (!group_column.isEmpty ()) query+=" group by "+group_column;
-		} break;/*}}}*/
-//		case qt_count:/*{{{*/
+		} break;
+//		case qt_count:
 			/*
 			 * Problem here:
 			 * I need the number of entries in the fixed table, plus the number
@@ -1470,28 +1412,27 @@ QString sk_db::make_query (query_type_t query_type, db_object_type object_type, 
 			 * Gives the same 1246 as above.
 			 */
 //			query="";
-//			break;/*}}}*/
-		case qt_count_murx:/*{{{*/
+//			break;
+		case qt_count_murx:
 			// (select COUNT(*) as count from $fixed where $condition) UNION ALL (select COUNT(*) as count from $editable where ($condition and id not in (select id from $fixed)))
 			query="(select COUNT(*) as count from "+fixed_table+" where ("+condition+")) "
 				+"UNION ALL (select COUNT(*) as count from "
 				+editable_table+" where (("+condition+") and (id not in (select id from "+fixed_table+"))))";
-			break;/*}}}*/
+			break;
 //		case qt_describe:
 //			// describe $table
 //			query="describe ";
 //			break;
-		default:/*{{{*/
+		default:
 			debug_stream << "[db] Unhandled query_type in sk_db::make_query ()" << std::endl;
 			query="";
-			break;/*}}}*/
+			break;
 	}
 
 	return query;
 }
-/*}}}*/
 
-QString sk_db::make_condition (condition_t c)/*{{{*/
+QString sk_db::make_condition (condition_t c)
 	// TODO: move this to contition_t::? Note that this calls make_query.
 	// Maybe make a class query_t?
 	// The fourth attempt to write a condition making function.
@@ -1700,11 +1641,10 @@ QString sk_db::make_condition (condition_t c)/*{{{*/
 #undef _plane_registration
 #undef CASE
 }
-/*}}}*/
 
 
 // Direct access helper functions
-bool sk_db::object_exists_in (const QString &table, const db_id &id)/*{{{*/
+bool sk_db::object_exists_in (const QString &table, const db_id &id)
 	throw (ex_legacy_error)
 	/*
 	 * Checks if an object with at given ID exists a a given table.
@@ -1721,9 +1661,8 @@ bool sk_db::object_exists_in (const QString &table, const db_id &id)/*{{{*/
 	if (ret>0) return true;
 	return false;
 }
-/*}}}*/
 
-void sk_db::object_delete_from (const QString &table, const db_id &id)/*{{{*/
+void sk_db::object_delete_from (const QString &table, const db_id &id)
 	throw (ex_legacy_error)
 	/*
 	 * Deletes an object from a table.
@@ -1737,9 +1676,8 @@ void sk_db::object_delete_from (const QString &table, const db_id &id)/*{{{*/
 	int ret=execute_query ("delete from "+table+" where "+condition);
 	if (ret<0) throw ex_legacy_error (ret, *this);
 }
-/*}}}*/
 
-void sk_db::object_copy (const QString &source, const QString &target, db_id id)/*{{{*/
+void sk_db::object_copy (const QString &source, const QString &target, db_id id)
 	throw (ex_legacy_error)
 	/*
 	 * Copies an object from one table to another.
@@ -1757,11 +1695,10 @@ void sk_db::object_copy (const QString &source, const QString &target, db_id id)
 	int ret=execute_query (query);
 	if (ret<0) throw ex_legacy_error (ret, *this);
 }
-/*}}}*/
 
 
 // Editable
-void sk_db::make_editable (db_object_type type, int id, bool editable)/*{{{*/
+void sk_db::make_editable (db_object_type type, int id, bool editable)
 	throw (ex_legacy_error, ex_operation_failed)
 	/*
 	 * Changes the state of an object from editabe to non-editable or vice versa.
@@ -1847,12 +1784,11 @@ void sk_db::make_editable (db_object_type type, int id, bool editable)/*{{{*/
 		}
 	}
 }
-/*}}}*/
 
 
 
 // Writing
-db_id sk_db::write_object (db_object_type type, void *object)/*{{{*/
+db_id sk_db::write_object (db_object_type type, void *object)
 {
 	// TODO this function is MURX.
 	//
@@ -1930,29 +1866,25 @@ db_id sk_db::write_object (db_object_type type, void *object)/*{{{*/
 		return object_id;
 	}
 }
-/*}}}*/
 
-db_id sk_db::write_flight (Flight *p)/*{{{*/
+db_id sk_db::write_flight (Flight *p)
 {
 	return write_object (ot_flight, p);
 }
-/*}}}*/
 
-db_id sk_db::write_person (Person *p)/*{{{*/
+db_id sk_db::write_person (Person *p)
 {
 	return write_object (ot_person, p);
 }
-/*}}}*/
 
-db_id sk_db::write_plane (Plane *p)/*{{{*/
+db_id sk_db::write_plane (Plane *p)
 {
 	return write_object (ot_plane, p);
 }
-/*}}}*/
 
 
 // Deletion
-int sk_db::delete_object (db_object_type otype, db_id id)/*{{{*/
+int sk_db::delete_object (db_object_type otype, db_id id)
 {
 	// TODO this function is a mess.
 
@@ -2015,29 +1947,25 @@ int sk_db::delete_object (db_object_type otype, db_id id)/*{{{*/
 		return res;
 	}
 }
-/*}}}*/
 
-int sk_db::delete_flight (db_id id)/*{{{*/
+int sk_db::delete_flight (db_id id)
 {
 	return delete_object (ot_flight, id);
 }
-/*}}}*/
 
-int sk_db::delete_person (db_id id)/*{{{*/
+int sk_db::delete_person (db_id id)
 {
 	return delete_object (ot_person, id);
 }
-/*}}}*/
 
-int sk_db::delete_plane (db_id id)/*{{{*/
+int sk_db::delete_plane (db_id id)
 {
 	return delete_object (ot_plane, id);
 }
-/*}}}*/
 
 
 // Existance
-int sk_db::num_results_query (QString query)/*{{{*/
+int sk_db::num_results_query (QString query)
 	// Executes a query and returns the number of results
 {
 	if (!connected ()) return db_err_not_connected;
@@ -2054,9 +1982,8 @@ int sk_db::num_results_query (QString query)/*{{{*/
 		return db_err_query_failed;
 	}
 }
-/*}}}*/
 
-int sk_db::rows_exist_query (QString query)/*{{{*/
+int sk_db::rows_exist_query (QString query)
 {
 	int res=num_results_query (query);
 
@@ -2067,9 +1994,8 @@ int sk_db::rows_exist_query (QString query)/*{{{*/
 	else
 		return 1;
 }
-/*}}}*/
 
-int sk_db::object_exists (db_object_type type, db_id id)/*{{{*/
+int sk_db::object_exists (db_object_type type, db_id id)
 {
 	// Try to get the (id of the) object. If that returns rows, the object
 	// exists.
@@ -2083,29 +2009,25 @@ int sk_db::object_exists (db_object_type type, db_id id)/*{{{*/
 
 	return rows_exist_query (query);
 }
-/*}}}*/
 
-int sk_db::flight_exists (db_id id)/*{{{*/
+int sk_db::flight_exists (db_id id)
 {
 	return object_exists (ot_flight, id);
 }
-/*}}}*/
 
-int sk_db::plane_exists (db_id id)/*{{{*/
+int sk_db::plane_exists (db_id id)
 {
 	return object_exists (ot_plane, id);
 }
-/*}}}*/
 
-int sk_db::person_exists (db_id id)/*{{{*/
+int sk_db::person_exists (db_id id)
 {
 	return object_exists (ot_person, id);
 }
-/*}}}*/
 
 
 // Listing
-int sk_db::result_to_list (db_object_type type, QPtrList<void> &result_list, MYSQL_RES *result)/*{{{*/
+int sk_db::result_to_list (db_object_type type, QPtrList<void> &result_list, MYSQL_RES *result)
 {
 	if (type==ot_none) return db_err_parameter_error;
 	if (!result) return db_err_parameter_error;
@@ -2128,9 +2050,8 @@ int sk_db::result_to_list (db_object_type type, QPtrList<void> &result_list, MYS
 
 	return db_ok;
 }
-/*}}}*/
 
-int sk_db::result_to_num_list (QValueList<long long int> &nums, MYSQL_RES *result, const char *field_name)/*{{{*/
+int sk_db::result_to_num_list (QValueList<long long int> &nums, MYSQL_RES *result, const char *field_name)
 {
 	// TODO code duplication with result_to_list
 	if (!result) return db_err_parameter_error;
@@ -2149,9 +2070,8 @@ int sk_db::result_to_num_list (QValueList<long long int> &nums, MYSQL_RES *resul
 
 	return db_ok;
 }
-/*}}}*/
 
-int sk_db::result_to_string_list (QStringList &strings, MYSQL_RES *result, const char *field_name)/*{{{*/
+int sk_db::result_to_string_list (QStringList &strings, MYSQL_RES *result, const char *field_name)
 {
 	// TODO code duplication with result_to_list
 	if (!result) return db_err_parameter_error;
@@ -2166,9 +2086,8 @@ int sk_db::result_to_string_list (QStringList &strings, MYSQL_RES *result, const
 
 	return db_ok;
 }
-/*}}}*/
 
-int sk_db::result_to_string_list (QStringList &strings, MYSQL_RES *result, const unsigned int field_num)/*{{{*/
+int sk_db::result_to_string_list (QStringList &strings, MYSQL_RES *result, const unsigned int field_num)
 {
 	// TODO code duplication with result_to_list
 	// TODO code duplication with other result_to_list functions
@@ -2184,9 +2103,8 @@ int sk_db::result_to_string_list (QStringList &strings, MYSQL_RES *result, const
 
 	return db_ok;
 }
-/*}}}*/
 
-int sk_db::result_to_id_list (QValueList<db_id> &ids, MYSQL_RES *result)/*{{{*/
+int sk_db::result_to_id_list (QValueList<db_id> &ids, MYSQL_RES *result)
 {
 	QValueList<long long int> temp_list;
 	// TODO "id" hardcoded
@@ -2199,9 +2117,8 @@ int sk_db::result_to_id_list (QValueList<db_id> &ids, MYSQL_RES *result)/*{{{*/
 
 	return db_ok;
 }
-/*}}}*/
 
-int sk_db::list_id_data (db_object_type type, QValueList<db_id> &ids, QStringList &data_columns, condition_t c)/*{{{*/
+int sk_db::list_id_data (db_object_type type, QValueList<db_id> &ids, QStringList &data_columns, condition_t c)
 	// This function returns IDs from multiple columns where the row matches
 	// a given condition c.
 	// Example: all values from "pilot" and "begleiter" from flights that
@@ -2235,9 +2152,8 @@ int sk_db::list_id_data (db_object_type type, QValueList<db_id> &ids, QStringLis
 		return db_err_query_failed;
 	}
 }
-/*}}}*/
 
-int sk_db::list_ids (db_object_type type, QValueList<db_id> &ids, condition_t c)/*{{{*/
+int sk_db::list_ids (db_object_type type, QValueList<db_id> &ids, condition_t c)
 	// This function returns the IDs of table rows matching a given condition
 	// c.
 	// Example: the IDs of all flights that happened on a certain date.
@@ -2247,9 +2163,8 @@ int sk_db::list_ids (db_object_type type, QValueList<db_id> &ids, condition_t c)
 	data_columns.append (query_column_list (type, true));
 	return list_id_data (type, ids, data_columns, c);
 }
-/*}}}*/
 
-int sk_db::list_strings (db_object_type type, QString field_name, QStringList &strings, condition_t c, QString custom_query)/*{{{*/
+int sk_db::list_strings (db_object_type type, QString field_name, QStringList &strings, condition_t c, QString custom_query)
 {
 	// TODO use list_strings_query
 	// TODO code duplication with list_objects
@@ -2284,9 +2199,8 @@ int sk_db::list_strings (db_object_type type, QString field_name, QStringList &s
 		return db_err_query_failed;
 	}
 }
-/*}}}*/
 
-int sk_db::list_objects (db_object_type type, QPtrList<void> &objects, condition_t c)/*{{{*/
+int sk_db::list_objects (db_object_type type, QPtrList<void> &objects, condition_t c)
 {
 	if (!connected ()) return db_err_not_connected;
 
@@ -2308,9 +2222,8 @@ int sk_db::list_objects (db_object_type type, QPtrList<void> &objects, condition
 		return db_err_query_failed;
 	}
 }
-/*}}}*/
 
-int sk_db::list_flights (QPtrList<Flight> &flights, condition_t c)/*{{{*/
+int sk_db::list_flights (QPtrList<Flight> &flights, condition_t c)
 {
 	QPtrList<void> objects;
 	int r=list_objects (ot_flight, objects, c);
@@ -2318,9 +2231,8 @@ int sk_db::list_flights (QPtrList<Flight> &flights, condition_t c)/*{{{*/
 	for (QPtrListIterator<void> ob (objects); *ob; ++ob) flights.append ((Flight *)*ob);
 	return r;
 }
-/*}}}*/
 
-int sk_db::list_planes (QPtrList<Plane> &planes, condition_t c)/*{{{*/
+int sk_db::list_planes (QPtrList<Plane> &planes, condition_t c)
 {
 	QPtrList<void> objects;
 	int r=list_objects (ot_plane, objects, c);
@@ -2328,9 +2240,8 @@ int sk_db::list_planes (QPtrList<Plane> &planes, condition_t c)/*{{{*/
 	for (QPtrListIterator<void> ob (objects); *ob; ++ob) planes.append ((Plane *)*ob);
 	return r;
 }
-/*}}}*/
 
-int sk_db::list_persons (QPtrList<Person> &persons, condition_t c)/*{{{*/
+int sk_db::list_persons (QPtrList<Person> &persons, condition_t c)
 {
 	QPtrList<void> objects;
 	int r=list_objects (ot_person, objects, c);
@@ -2338,9 +2249,8 @@ int sk_db::list_persons (QPtrList<Person> &persons, condition_t c)/*{{{*/
 	for (QPtrListIterator<void> ob (objects); *ob; ++ob) persons.append ((Person *)*ob);
 	return r;
 }
-/*}}}*/
 
-int sk_db::list_strings_query (const QString query, const QString field_name, QStringList &strings)/*{{{*/
+int sk_db::list_strings_query (const QString query, const QString field_name, QStringList &strings)
 {
 	// TODO code duplication with other list_strings_query
 	if (!connected ()) return db_err_not_connected;
@@ -2359,9 +2269,8 @@ int sk_db::list_strings_query (const QString query, const QString field_name, QS
 		return db_err_query_failed;
 	}
 }
-/*}}}*/
 
-int sk_db::list_strings_query (const QString query, const unsigned int field_num, QStringList &strings)/*{{{*/
+int sk_db::list_strings_query (const QString query, const unsigned int field_num, QStringList &strings)
 {
 	// TODO code duplication with other list_strings_query
 	if (!connected ()) return db_err_not_connected;
@@ -2380,33 +2289,29 @@ int sk_db::list_strings_query (const QString query, const unsigned int field_num
 		return db_err_query_failed;
 	}
 }
-/*}}}*/
 
 
 
 // Listing Frontends
-int sk_db::list_flights_date (QPtrList<Flight> &flights, QDate *date)/*{{{*/
+int sk_db::list_flights_date (QPtrList<Flight> &flights, QDate *date)
 {
 	int r=list_flights (flights, condition_t (cond_flight_happened_on_date, date));
 	return r;
 }
-/*}}}*/
 
-int sk_db::list_flights_date_range (flight_list &flights, QDate *start_date, QDate *end_date)/*{{{*/
+int sk_db::list_flights_date_range (flight_list &flights, QDate *start_date, QDate *end_date)
 {
 	int r=list_flights (flights, condition_t (cond_flight_happened_between, start_date, end_date));
 	return r;
 }
-/*}}}*/
 
-int sk_db::list_flights_prepared (QPtrList<Flight> &flights)/*{{{*/
+int sk_db::list_flights_prepared (QPtrList<Flight> &flights)
 {
 	int r=list_flights (flights, condition_t (cond_flight_prepared));
 	return r;
 }
-/*}}}*/
 
-db_id sk_db::object_flying (db_object_type otype, db_id id, sk_time_t *given_time)/*{{{*/
+db_id sk_db::object_flying (db_object_type otype, db_id id, sk_time_t *given_time)
 {
 	if (id_invalid (id)) return invalid_id;
 
@@ -2434,57 +2339,48 @@ db_id sk_db::object_flying (db_object_type otype, db_id id, sk_time_t *given_tim
 		// TODO newest...
 		return ids.first ();
 }
-/*}}}*/
 
-db_id sk_db::person_flying (db_id id, sk_time_t *given_time)/*{{{*/
+db_id sk_db::person_flying (db_id id, sk_time_t *given_time)
 {
 	return object_flying (ot_person, id, given_time);
 }
-/*}}}*/
 
-db_id sk_db::plane_flying (db_id id, sk_time_t *given_time)/*{{{*/
+db_id sk_db::plane_flying (db_id id, sk_time_t *given_time)
 {
 	return object_flying (ot_plane, id, given_time);
 }
-/*}}}*/
 
-int sk_db::list_persons_by_name (QPtrList<Person> &names, QString vorname, QString nachname)/*{{{*/
+int sk_db::list_persons_by_name (QPtrList<Person> &names, QString vorname, QString nachname)
 {
 	return list_persons (names, condition_t (cond_person_name, &vorname, &nachname));
 }
-/*}}}*/
 
-int sk_db::list_persons_by_first_name (QPtrList<Person> &names, QString vorname)/*{{{*/
+int sk_db::list_persons_by_first_name (QPtrList<Person> &names, QString vorname)
 {
 	return list_persons (names, condition_t (cond_person_first_name, &vorname));
 }
-/*}}}*/
 
-int sk_db::list_persons_by_last_name (QPtrList<Person> &names, QString nachname)/*{{{*/
+int sk_db::list_persons_by_last_name (QPtrList<Person> &names, QString nachname)
 {
 	return list_persons (names, condition_t (cond_person_last_name, &nachname));
 }
-/*}}}*/
 
-int sk_db::list_persons_by_club_club_id (QPtrList<Person> &persons, QString club, QString club_id)/*{{{*/
+int sk_db::list_persons_by_club_club_id (QPtrList<Person> &persons, QString club, QString club_id)
 {
 	return list_persons (persons, condition_t (cond_person_club_club_id, &club, &club_id));
 }
-/*}}}*/
 
-int sk_db::list_planes_all (QPtrList<Plane> &planes)/*{{{*/
+int sk_db::list_planes_all (QPtrList<Plane> &planes)
 {
 	return list_planes (planes, condition_t (cond_any));
 }
-/*}}}*/
 
-int sk_db::list_persons_all (QPtrList<Person> &planes)/*{{{*/
+int sk_db::list_persons_all (QPtrList<Person> &planes)
 {
 	return list_persons (planes, condition_t (cond_any));
 }
-/*}}}*/
 
-int sk_db::list_planes_date (QPtrList<Plane> &planes, QDate *date)/*{{{*/
+int sk_db::list_planes_date (QPtrList<Plane> &planes, QDate *date)
 {
 	// TODO code duplication list_persons_date
 
@@ -2516,9 +2412,8 @@ int sk_db::list_planes_date (QPtrList<Plane> &planes, QDate *date)/*{{{*/
 	}
 	return r;
 }
-/*}}}*/
 
-int sk_db::list_persons_date (QPtrList<Person> &persons, QDate *date)/*{{{*/
+int sk_db::list_persons_date (QPtrList<Person> &persons, QDate *date)
 {
 	/*
 	 * //TODO these are generic notes, put them to the documentation.
@@ -2565,15 +2460,13 @@ int sk_db::list_persons_date (QPtrList<Person> &persons, QDate *date)/*{{{*/
 	}
 	return r;
 }
-/*}}}*/
 
-int sk_db::list_planes_registration (QPtrList<Plane> &planes, QString registration)/*{{{*/
+int sk_db::list_planes_registration (QPtrList<Plane> &planes, QString registration)
 {
 	return list_planes (planes, condition_t (cond_plane_registration, &registration));
 }
-/*}}}*/
 
-int sk_db::get_plane_registration (Plane *plane, QString registration)/*{{{*/
+int sk_db::get_plane_registration (Plane *plane, QString registration)
 {
 	QPtrList<Plane> planes; planes.setAutoDelete (true);
 	int res=list_planes_registration (planes, registration);
@@ -2587,12 +2480,11 @@ int sk_db::get_plane_registration (Plane *plane, QString registration)/*{{{*/
 
 	return res;
 }
-/*}}}*/
 
 
 // String lists
 //	return list_strings (ot_, "(column name)", (QString list), condition_t (cond_));
-int sk_db::list_airfields (QStringList &airfields)/*{{{*/
+int sk_db::list_airfields (QStringList &airfields)
 {
 	QString custom_query;
 	custom_query+="select startort as ort from "+fixed_table_name (ot_flight);
@@ -2601,45 +2493,39 @@ int sk_db::list_airfields (QStringList &airfields)/*{{{*/
 	custom_query+=" UNION select zielort as ort from "+editable_table_name (ot_flight)+" group by ort";
 	return list_strings (ot_none, "ort", airfields, condition_t (), custom_query);
 }
-/*}}}*/
 
-int sk_db::list_first_names (QStringList &names, QString last_name)/*{{{*/
+int sk_db::list_first_names (QStringList &names, QString last_name)
 {
 	if (last_name.isEmpty ())
 		return list_strings (ot_person, "vorname", names, condition_t (cond_any));
 	else
 		return list_strings (ot_person, "vorname", names, condition_t (cond_person_last_name, &last_name));
 }
-/*}}}*/
 
-int sk_db::list_last_names (QStringList &names, QString first_name)/*{{{*/
+int sk_db::list_last_names (QStringList &names, QString first_name)
 {
 	if (first_name.isEmpty ())
 		return list_strings (ot_person, "nachname", names, condition_t (cond_any));
 	else
 		return list_strings (ot_person, "nachname", names, condition_t (cond_person_first_name, &first_name));
 }
-/*}}}*/
 
-int sk_db::list_accounting_note (QStringList &notes)/*{{{*/
+int sk_db::list_accounting_note (QStringList &notes)
 {
 	return list_strings (ot_flight, "abrechnungshinweis", notes, condition_t (cond_any));
 }
-/*}}}*/
 
-int sk_db::list_registrations (QStringList &registrations)/*{{{*/
+int sk_db::list_registrations (QStringList &registrations)
 {
 	return list_strings (ot_plane, "kennzeichen", registrations, condition_t (cond_any));
 }
-/*}}}*/
 
-int sk_db::list_types (QStringList &types)/*{{{*/
+int sk_db::list_types (QStringList &types)
 {
 	return list_strings (ot_plane, "typ", types, condition_t (cond_any));
 }
-/*}}}*/
 
-int sk_db::list_clubs (QStringList &clubs)/*{{{*/
+int sk_db::list_clubs (QStringList &clubs)
 {
 	QString custom_query;
 	custom_query+="select verein from "+fixed_table_name (ot_flight);
@@ -2649,14 +2535,13 @@ int sk_db::list_clubs (QStringList &clubs)/*{{{*/
 	return list_strings (ot_none, "verein", clubs, condition_t (), custom_query);
 	return db_err_not_implemented;
 }
-/*}}}*/
 
 
 
 
 
 // Counting
-long long int sk_db::count_objects (db_object_type type, condition_t c)/*{{{*/
+long long int sk_db::count_objects (db_object_type type, condition_t c)
 {
 	// TODO code duplication with list_objects
 	if (!connected ()) return db_err_not_connected;
@@ -2682,42 +2567,36 @@ long long int sk_db::count_objects (db_object_type type, condition_t c)/*{{{*/
 		return db_err_query_failed;
 	}
 }
-/*}}}*/
 
-long long int sk_db::count_flights (condition_t c)/*{{{*/
+long long int sk_db::count_flights (condition_t c)
 {
 	return count_objects (ot_flight, c);
 }
-/*}}}*/
 
-long long int sk_db::count_planes (condition_t c)/*{{{*/
+long long int sk_db::count_planes (condition_t c)
 {
 	return count_objects (ot_plane, c);
 }
-/*}}}*/
 
-long long int sk_db::count_persons (condition_t c)/*{{{*/
+long long int sk_db::count_persons (condition_t c)
 {
 	return count_objects (ot_person, c);
 }
-/*}}}*/
 
 
 // Counting frontends
-long long int sk_db::count_flights_current (QDate &date)/*{{{*/
+long long int sk_db::count_flights_current (QDate &date)
 {
 	return count_flights (condition_t (cond_flight_will_land, &date));
 }
-/*}}}*/
 
-long long int sk_db::count_flights_today (QDate &date)/*{{{*/
+long long int sk_db::count_flights_today (QDate &date)
 {
 	return count_flights (condition_t (cond_flight_happened_on_date, &date));
 }
-/*}}}*/
 
 // TODO all these functions lack proper error handling
-bool sk_db::object_has_flight (db_object_type otype, db_id id)/*{{{*/
+bool sk_db::object_has_flight (db_object_type otype, db_id id)
 {
 	condition_type_t crit;
 
@@ -2733,15 +2612,13 @@ bool sk_db::object_has_flight (db_object_type otype, db_id id)/*{{{*/
 
 	return (count_flights (condition_t (crit, id))>0);
 }
-/*}}}*/
 
-bool sk_db::person_has_flight (db_id id)/*{{{*/
+bool sk_db::person_has_flight (db_id id)
 {
 	return object_has_flight (ot_person, id);
 }
-/*}}}*/
 
-bool sk_db::person_has_user (db_id id)/*{{{*/
+bool sk_db::person_has_user (db_id id)
 {
 	int ret=rows_exist_query ("select username from user where person="+QString::number (id));
 
@@ -2752,30 +2629,26 @@ bool sk_db::person_has_user (db_id id)/*{{{*/
 	else
 		return false;
 }
-/*}}}*/
 
-bool sk_db::plane_has_flight (db_id id)/*{{{*/
+bool sk_db::plane_has_flight (db_id id)
 {
 	return object_has_flight (ot_plane, id);
 }
-/*}}}*/
 
-bool sk_db::person_used (db_id id)/*{{{*/
+bool sk_db::person_used (db_id id)
 {
 	return (person_has_flight (id) || person_has_user (id));
 }
-/*}}}*/
 
-bool sk_db::plane_used (db_id id)/*{{{*/
+bool sk_db::plane_used (db_id id)
 {
 	return (plane_has_flight (id));
 }
-/*}}}*/
 
 
 
 // Get by ID
-int sk_db::get_object (db_object_type type, void *object, db_id id)/*{{{*/
+int sk_db::get_object (db_object_type type, void *object, db_id id)
 	// type and the type of object must match!
 {
 	if (!connected ()) return db_err_not_connected;
@@ -2829,38 +2702,33 @@ int sk_db::get_object (db_object_type type, void *object, db_id id)/*{{{*/
 		}
 	}
 }
-/*}}}*/
 
-int sk_db::get_flight (Flight *flight, db_id id)/*{{{*/
+int sk_db::get_flight (Flight *flight, db_id id)
 {
 	return get_object (ot_flight, flight, id);
 }
-/*}}}*/
 
-int sk_db::get_plane (Plane *plane, db_id id)/*{{{*/
+int sk_db::get_plane (Plane *plane, db_id id)
 {
 	return get_object (ot_plane, plane, id);
 }
-/*}}}*/
 
-int sk_db::get_person (Person *person, db_id id)/*{{{*/
+int sk_db::get_person (Person *person, db_id id)
 {
 	return get_object (ot_person, person, id);
 }
-/*}}}*/
 
 
 
 
 // Startart - to be sorted
 
-int sk_db::count_startart ()/*{{{*/
+int sk_db::count_startart ()
 {
 	return startarten.count ();
 }
-/*}}}*/
 
-bool sk_db::add_startart_to_list (LaunchType *sa)/*{{{*/
+bool sk_db::add_startart_to_list (LaunchType *sa)
 {
 	// TODO some types must be unique, for example sat_self
 
@@ -2882,18 +2750,16 @@ bool sk_db::add_startart_to_list (LaunchType *sa)/*{{{*/
 		return true;
 	}
 }
-/*}}}*/
 
-int sk_db::list_startarten_all (QPtrList<LaunchType> &saen)/*{{{*/
+int sk_db::list_startarten_all (QPtrList<LaunchType> &saen)
 {
 	for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
 		saen.append (new LaunchType (**sa));
 
 	return true;
 }
-/*}}}*/
 
-int sk_db::get_startart (LaunchType *startart, db_id id)/*{{{*/
+int sk_db::get_startart (LaunchType *startart, db_id id)
 {
 	for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
 	{
@@ -2910,9 +2776,8 @@ int sk_db::get_startart (LaunchType *startart, db_id id)/*{{{*/
 
 	return db_err_not_found;
 }
-/*}}}*/
 
-int sk_db::get_startart_by_type (LaunchType *startart, startart_type sat)/*{{{*/
+int sk_db::get_startart_by_type (LaunchType *startart, startart_type sat)
 {
 	bool found=false;
 
@@ -2932,9 +2797,8 @@ int sk_db::get_startart_by_type (LaunchType *startart, startart_type sat)/*{{{*/
 
 	return found?db_ok:db_err_not_found;
 }
-/*}}}*/
 
-db_id sk_db::get_startart_id_by_type (startart_type sat)/*{{{*/
+db_id sk_db::get_startart_id_by_type (startart_type sat)
 {
 	for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
 		if ((*sa)->get_type ()==sat)
@@ -2942,9 +2806,8 @@ db_id sk_db::get_startart_id_by_type (startart_type sat)/*{{{*/
 
 	return invalid_id;
 }
-/*}}}*/
 
-int sk_db::get_towplane (Plane *towplane, const LaunchType &startart, const db_id towplane_id)/*{{{*/
+int sk_db::get_towplane (Plane *towplane, const LaunchType &startart, const db_id towplane_id)
 {
 	if (startart.ok && startart.is_airtow () && startart.towplane_known ())
 	{
@@ -2958,19 +2821,17 @@ int sk_db::get_towplane (Plane *towplane, const LaunchType &startart, const db_i
 		return get_plane (towplane, towplane_id);
 	}
 }
-/*}}}*/
 
 
 
 // Merging persons
-QString merge_person_query (QString table, QString column, db_id correct, db_id wrong)/*{{{*/
+QString merge_person_query (QString table, QString column, db_id correct, db_id wrong)
 {
 	// update table set $column=$correct where $column=$wrong
 	return "update "+table+" set "+column+"="+QString::number (correct)+" where "+column+"="+QString::number (wrong);
 }
-/*}}}*/
 
-void sk_db::merge_person (db_id correct_id, db_id wrong_id)/*{{{*/
+void sk_db::merge_person (db_id correct_id, db_id wrong_id)
 	throw (ex_not_connected, ex_parameter_error, ex_query_failed, ex_operation_failed)
 {
 	// Check some preconditions.
@@ -3026,12 +2887,11 @@ void sk_db::merge_person (db_id correct_id, db_id wrong_id)/*{{{*/
 		if (delete_person (wrong_id)!=db_ok) throw ex_operation_failed (get_last_error ());
 	}
 }
-/*}}}*/
 
 
 
 // Importing
-void sk_db::remove_editable_persons (QPtrList<Person> persons)/*{{{*/
+void sk_db::remove_editable_persons (QPtrList<Person> persons)
 {
 	QPtrListIterator<Person> it (persons);
 	while (*it)
@@ -3042,9 +2902,8 @@ void sk_db::remove_editable_persons (QPtrList<Person> persons)/*{{{*/
 			++it;
 	}
 }
-/*}}}*/
 
-void sk_db::import_check (const Person &person)/*{{{*/
+void sk_db::import_check (const Person &person)
 	throw (import_message)
 {
 	// First name is empty
@@ -3053,9 +2912,8 @@ void sk_db::import_check (const Person &person)/*{{{*/
 	// Last name is empty
 	if (person.nachname.isEmpty ()) throw import_message::last_name_missing ();
 }
-/*}}}*/
 
-void sk_db::import_check (const QPtrList<Person> &persons, std::list<import_message> &messages)/*{{{*/
+void sk_db::import_check (const QPtrList<Person> &persons, std::list<import_message> &messages)
 	// This function make be slow because it takes quadratic time (in the
 	// number of persons) with lots of QString comparisons.
 {
@@ -3103,9 +2961,8 @@ void sk_db::import_check (const QPtrList<Person> &persons, std::list<import_mess
 		}
 	}
 }
-/*}}}*/
 
-db_id sk_db::import_identify (const Person &p, std::list<import_message> *non_fatal_messages)/*{{{*/
+db_id sk_db::import_identify (const Person &p, std::list<import_message> *non_fatal_messages)
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message)
 	/*
 	 * Identify a person for importing.
@@ -3350,9 +3207,8 @@ db_id sk_db::import_identify (const Person &p, std::list<import_message> *non_fa
 	//TODO replace by internal_error
 	throw ex_operation_failed ("Unbehandelter Fall in sk_db::import_identify ()");
 }
-/*}}}*/
 
-void sk_db::import_identify (QPtrList<Person> &persons, std::list<import_message> &messages)/*{{{*/
+void sk_db::import_identify (QPtrList<Person> &persons, std::list<import_message> &messages)
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed)
 {
 	for (QPtrListIterator<Person> it (persons); *it; ++it)
@@ -3371,9 +3227,8 @@ void sk_db::import_identify (QPtrList<Person> &persons, std::list<import_message
 		}
 	}
 }
-/*}}}*/
 
-db_id sk_db::import_person (const Person &person)/*{{{*/
+db_id sk_db::import_person (const Person &person)
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed)
 {
 	if (!connected ()) throw ex_not_connected ();
@@ -3403,9 +3258,8 @@ db_id sk_db::import_person (const Person &person)/*{{{*/
 
 	return result_id;
 }
-/*}}}*/
 
-void sk_db::import_persons (const QPtrList<Person> &persons)/*{{{*/
+void sk_db::import_persons (const QPtrList<Person> &persons)
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed)
 {
 	if (!connected ()) throw ex_not_connected ();
@@ -3413,7 +3267,6 @@ void sk_db::import_persons (const QPtrList<Person> &persons)/*{{{*/
 	for (QPtrListIterator<Person> it (persons); *it; ++it)
 		import_person (**it);
 }
-/*}}}*/
 
 
 
@@ -3423,7 +3276,7 @@ void sk_db::import_persons (const QPtrList<Person> &persons)/*{{{*/
 // (does not have an ID etc.). Also, the table is not duplicated
 // (_temp);
 // Code duplication with the "generic" functions.
-int sk_db::sk_user_exists (const QString &username)/*{{{*/
+int sk_db::sk_user_exists (const QString &username)
 	/*
 	 * Finds out if a user with a given name exists.
 	 * Parameters:
@@ -3436,9 +3289,8 @@ int sk_db::sk_user_exists (const QString &username)/*{{{*/
 {
 	return rows_exist_query ("SELECT username FROM user WHERE username='"+escape (username)+"'");
 }
-/*}}}*/
 
-int sk_db::sk_user_authenticate (const QString &username, const QString &password)/*{{{*/
+int sk_db::sk_user_authenticate (const QString &username, const QString &password)
 	/*
 	 * Finds out if the user can login with a given username and password.
 	 * Parameters:
@@ -3453,9 +3305,8 @@ int sk_db::sk_user_authenticate (const QString &username, const QString &passwor
 	set_query_display_alias ("SELECT username FROM user WHERE username='"+escape (username)+"' AND password=PASSWORD ('***')");
 	return rows_exist_query ("SELECT username FROM user WHERE username='"+escape (username)+"' AND password=PASSWORD ('"+password+"')");
 }
-/*}}}*/
 
-int sk_db::sk_user_change_password (const QString &username, const QString &password)/*{{{*/
+int sk_db::sk_user_change_password (const QString &username, const QString &password)
 	/*
 	 * Changes the password for a user.
 	 * Parameters:
@@ -3470,9 +3321,8 @@ int sk_db::sk_user_change_password (const QString &username, const QString &pass
 	set_query_display_alias ("UPDATE user SET password=PASSWORD ('***') WHERE "+condition);
 	return execute_query ("UPDATE user SET password=PASSWORD ('"+escape (password)+"') WHERE "+condition);
 }
-/*}}}*/
 
-int sk_db::sk_user_add (const User &user, const QString &password)/*{{{*/
+int sk_db::sk_user_add (const User &user, const QString &password)
 	/*
 	 * Adds a user.
 	 * Parameters:
@@ -3488,9 +3338,8 @@ int sk_db::sk_user_add (const User &user, const QString &password)/*{{{*/
 	if (ret<0) return ret;
 	return sk_user_modify (user);	// To write the other attributes
 }
-/*}}}*/
 
-int sk_db::sk_user_modify (const User &user, const QString &username)/*{{{*/
+int sk_db::sk_user_modify (const User &user, const QString &username)
 	/*
 	 * The user "username" (user.username if not given) is modified.
 	 * Parameters:
@@ -3548,9 +3397,8 @@ int sk_db::sk_user_modify (const User &user, const QString &username)/*{{{*/
 
 	return db_ok;
 }
-/*}}}*/
 
-int sk_db::sk_user_get (User &user, const QString &username)/*{{{*/
+int sk_db::sk_user_get (User &user, const QString &username)
 	/*
 	 * Gets a user from the database.
 	 * Parameters:
@@ -3575,9 +3423,8 @@ int sk_db::sk_user_get (User &user, const QString &username)/*{{{*/
 	user=users.front ();
 	return db_ok;
 }
-/*}}}*/
 
-int sk_db::sk_user_delete (const QString &username)/*{{{*/
+int sk_db::sk_user_delete (const QString &username)
 {
 	if (!connected ()) return db_err_not_connected;
 	if (username.isEmpty ()) return db_err_parameter_error;
@@ -3587,9 +3434,8 @@ int sk_db::sk_user_delete (const QString &username)/*{{{*/
 
 	return db_ok;
 }
-/*}}}*/
 
-int sk_db::sk_user_list (std::list<User> &users, const QString &username)/*{{{*/
+int sk_db::sk_user_list (std::list<User> &users, const QString &username)
 	/*
 	 * Returns a user list.
 	 * Parameters:
@@ -3622,9 +3468,8 @@ int sk_db::sk_user_list (std::list<User> &users, const QString &username)/*{{{*/
 		return db_err_query_failed;
 	}
 }
-/*}}}*/
 
-int sk_db::row_to_user (User &user, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields)/*{{{*/
+int sk_db::row_to_user (User &user, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields)
 	/*
 	 * Converts a MySQL row to a user.
 	 * Parameters:
@@ -3648,9 +3493,8 @@ int sk_db::row_to_user (User &user, MYSQL_ROW row, int num_fields, MYSQL_FIELD *
 
 	return db_ok;
 }
-/*}}}*/
 
-int sk_db::result_to_user_list (std::list<User> &users, MYSQL_RES *result)/*{{{*/
+int sk_db::result_to_user_list (std::list<User> &users, MYSQL_RES *result)
 	/*
 	 * Converts a MySQL result to a list of sk_users.
 	 * Parameters:
@@ -3679,9 +3523,8 @@ int sk_db::result_to_user_list (std::list<User> &users, MYSQL_RES *result)/*{{{*
 
 	return db_ok;
 }
-/*}}}*/
 
-QString sk_db::user_value_list (const User &user)/*{{{*/
+QString sk_db::user_value_list (const User &user)
 {
 	QString r;
 	std::ostringstream oss;
@@ -3697,12 +3540,11 @@ QString sk_db::user_value_list (const User &user)/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
 
 
 
-void sk_db::make_flight_data (sk_flug_data &flight_data, const Flight &flight)/*{{{*/
+void sk_db::make_flight_data (sk_flug_data &flight_data, const Flight &flight)
 	// XXX Ownership is set to true.
 {
 	// Read the parts of the flight (plane, persons...) from the database.
@@ -3746,10 +3588,9 @@ void sk_db::make_flight_data (sk_flug_data &flight_data, const Flight &flight)/*
 	}
 	flight_data.towplane.set (towplane, towplane_given, towplane_ok, towplane_result);
 }
-/*}}}*/
 
 
-void sk_db::test ()/*{{{*/
+void sk_db::test ()
 {
 	sk_db db;
 
@@ -3782,5 +3623,4 @@ void sk_db::test ()/*{{{*/
 	db.disconnect ();
 	return;
 }
-/*}}}*/
 

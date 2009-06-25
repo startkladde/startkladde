@@ -6,31 +6,29 @@
 #include "src/config/options.h"
 
 // Construction
-plugin_data_format::plugin_data_format (const QString &_filename)/*{{{*/
+plugin_data_format::plugin_data_format (const QString &_filename)
 	:filename (_filename+".so"), loaded (false), handle (NULL)
 	// filename: without extension
 {
 	symbol_list_formats=NULL;
 	symbol_make_field_list=NULL;
 	symbol_flight_to_fields=NULL;
-}/*}}}*/
+}
 
-plugin_data_format::plugin_data_format (const plugin_data_format &p)/*{{{*/
+plugin_data_format::plugin_data_format (const plugin_data_format &p)
 	:filename (p.filename), loaded (false), handle (NULL)
 {
 }
-/*}}}*/
 
-plugin_data_format::~plugin_data_format ()/*{{{*/
+plugin_data_format::~plugin_data_format ()
 {
 	if (handle) dlclose (handle);
 }
-/*}}}*/
 
 /**
   *load plugin library
   */
-void plugin_data_format::load () const/*{{{*/
+void plugin_data_format::load () const
 {
 	if (!loaded)
 	{
@@ -60,27 +58,24 @@ void plugin_data_format::load () const/*{{{*/
 #undef USE_SYMBOL
 }
 
-/*}}}*/
 
 #define REQUIRE_SYMBOL(NAME) do { if (!symbol_ ## NAME) throw ex_symbol_not_found (#NAME); } while (false)
 
 // Metainformation
-argument_list plugin_data_format::plugin_list_formats () const/*{{{*/
+argument_list plugin_data_format::plugin_list_formats () const
 {
 	load ();
 	REQUIRE_SYMBOL (list_formats);
 	return symbol_list_formats ();
 }
-/*}}}*/
 
-bool plugin_data_format::provides_format (const QString &label) const/*{{{*/
+bool plugin_data_format::provides_format (const QString &label) const
 {
 	argument_list plugins=plugin_list_formats ();
 	return plugins.has_argument (label);
 }
-/*}}}*/
 
-argument_list plugin_data_format::plugin_list_unique_formats () const/*{{{*/
+argument_list plugin_data_format::plugin_list_unique_formats () const
 {
 	load ();
 	REQUIRE_SYMBOL (list_formats);
@@ -93,23 +88,20 @@ argument_list plugin_data_format::plugin_list_unique_formats () const/*{{{*/
 
 	return unique_formats;
 }
-/*}}}*/
 
-bool plugin_data_format::provides_unique_format (const QString &unique_label) const/*{{{*/
+bool plugin_data_format::provides_unique_format (const QString &unique_label) const
 {
 	argument_list plugins=plugin_list_unique_formats ();
 	return plugins.has_argument (unique_label);
 }
-/*}}}*/
 
 
-QString plugin_data_format::make_unique (const QString &label) const/*{{{*/
+QString plugin_data_format::make_unique (const QString &label) const
 {
 	return real_filename+":"+label;
 }
-/*}}}*/
 
-QString plugin_data_format::make_non_unique (const QString &label) const/*{{{*/
+QString plugin_data_format::make_non_unique (const QString &label) const
 {
 	int pos=label.lastIndexOf (':');
 	if (pos<0)
@@ -117,26 +109,23 @@ QString plugin_data_format::make_non_unique (const QString &label) const/*{{{*/
 	else
 		return label.mid (pos+1);
 }
-/*}}}*/
 
 
 
 // Plugin functions
-void plugin_data_format::plugin_make_field_list (const QString &format, std::list<object_field> &fields) const/*{{{*/
+void plugin_data_format::plugin_make_field_list (const QString &format, std::list<object_field> &fields) const
 {
 	load ();
 	REQUIRE_SYMBOL (make_field_list);
 	return symbol_make_field_list (make_non_unique (format), fields);
 }
-/*}}}*/
 
-void plugin_data_format::plugin_flight_to_fields (const QString &format, std::list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text, const QString &error_text) const/*{{{*/
+void plugin_data_format::plugin_flight_to_fields (const QString &format, std::list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text, const QString &error_text) const
 {
 	load ();
 	REQUIRE_SYMBOL (flight_to_fields);
 	return symbol_flight_to_fields (make_non_unique (format), fields, f, flight_data, num, none_text, error_text);
 }
-/*}}}*/
 
 
 

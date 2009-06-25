@@ -2,7 +2,7 @@
 
 #include <QLayout>
 
-void DateWindow::init_common ()/*{{{*/
+void DateWindow::init_common ()
 	/*
 	 * Does initialization Entity common to all of the constructors.
 	 * Initializes the widgets and connects signals.
@@ -49,9 +49,9 @@ void DateWindow::init_common ()/*{{{*/
 //	edit_zeit->setSeparator (".");
 
 	setCaption ("Zeit einstellen");
-}/*}}}*/
+}
 
-DateWindow::DateWindow (QWidget *parent, QDate datum)/*{{{*/
+DateWindow::DateWindow (QWidget *parent, QDate datum)
 	:QDialog (parent)
 	/*
 	 * Constructs an instance and write a given date to the editor field.
@@ -61,9 +61,9 @@ DateWindow::DateWindow (QWidget *parent, QDate datum)/*{{{*/
 {
 	init_common ();
 	edit_datum->setDate (datum);
-}/*}}}*/
+}
 
-DateWindow::DateWindow (QWidget *parent, QDateTime dt)/*{{{*/
+DateWindow::DateWindow (QWidget *parent, QDateTime dt)
 	:QDialog (parent)
 	/*
 	 * Constructs an instance and write a given date and time to the editor
@@ -75,9 +75,9 @@ DateWindow::DateWindow (QWidget *parent, QDateTime dt)/*{{{*/
 	init_common ();
 	edit_datum->setDate (dt.date ());
 	edit_zeit->setTime (dt.time ());
-}/*}}}*/
+}
 
-void DateWindow::edit_date ()/*{{{*/
+void DateWindow::edit_date ()
 	/*
 	 * Displays the window for editing the date.
 	 */
@@ -91,9 +91,9 @@ void DateWindow::edit_date ()/*{{{*/
 	lbl_zeit->hide ();
 
 	exec ();
-}/*}}}*/
+}
 
-void DateWindow::edit_datetime ()/*{{{*/
+void DateWindow::edit_datetime ()
 	/*
 	 * Displays the window for editing the date and time.
 	 */
@@ -107,10 +107,10 @@ void DateWindow::edit_datetime ()/*{{{*/
 	edit_datum->setFocus ();
 
 	exec ();
-}/*}}}*/
+}
 
 
-void DateWindow::slot_ok ()/*{{{*/
+void DateWindow::slot_ok ()
 	/*
 	 * The OK button was pressed. Emit the signals and close the window.
 	 */
@@ -118,17 +118,17 @@ void DateWindow::slot_ok ()/*{{{*/
 	emit date_accepted (edit_datum->date ());
 	emit datetime_accepted (QDateTime (edit_datum->date (), edit_zeit->time ()));
 	accept ();
-}/*}}}*/
+}
 
-void DateWindow::slot_cancel ()/*{{{*/
+void DateWindow::slot_cancel ()
 	/*
 	 * The cancel button was pressed. Close the window.
 	 */
 {
 	reject ();
-}/*}}}*/
+}
 
-int DateWindow::exec ()/*{{{*/
+int DateWindow::exec ()
 	/*
 	 * Displays the dialog.
 	 */
@@ -136,5 +136,5 @@ int DateWindow::exec ()/*{{{*/
 	resize (180, edit_zeit->height ()+edit_datum->height ()+but_ok->height ()+4*8);
 	resizeEvent (NULL);
 	return QDialog::exec ();
-}/*}}}*/
+}
 

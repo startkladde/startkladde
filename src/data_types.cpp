@@ -22,7 +22,7 @@
  *     the description.
  */
 
-int list_categories (aircraft_category **g, bool include_invalid)/*{{{*/
+int list_categories (aircraft_category **g, bool include_invalid)
 	/*
 	 * See top of file.
 	 */
@@ -54,16 +54,16 @@ int list_categories (aircraft_category **g, bool include_invalid)/*{{{*/
 
 	*g=list;
 	return num;
-}/*}}}*/
+}
 
-QString category_string (aircraft_category category, length_specification lenspec)/*{{{*/
+QString category_string (aircraft_category category, length_specification lenspec)
 	/*
 	 * See top of file.
 	 */
 {
 	switch (lenspec)
 	{
-		case ls_kurz: case ls_tabelle: case ls_flugbuch:/*{{{*/
+		case ls_kurz: case ls_tabelle: case ls_flugbuch:
 		{
 			switch (category)
 			{
@@ -75,8 +75,8 @@ QString category_string (aircraft_category category, length_specification lenspe
 				case lfz_keine: return "-"; break;
 				default: return "?"; break;
 			}
-		} break;/*}}}*/
-		case ls_druck:/*{{{*/
+		} break;
+		case ls_druck:
 		{
 			switch (category)
 			{
@@ -88,8 +88,8 @@ QString category_string (aircraft_category category, length_specification lenspe
 				case lfz_keine: return "-"; break;
 				default: return "?"; break;
 			}
-		} break;/*}}}*/
-		case ls_lang:/*{{{*/
+		} break;
+		case ls_lang:
 		{
 			switch (category)
 			{
@@ -101,8 +101,8 @@ QString category_string (aircraft_category category, length_specification lenspe
 				case lfz_keine: return "Keine"; break;
 				default: return "???"; break;
 			}
-		} break;/*}}}*/
-		case ls_csv:/*{{{*/
+		} break;
+		case ls_csv:
 		{
 			switch (category)
 			{
@@ -114,8 +114,8 @@ QString category_string (aircraft_category category, length_specification lenspe
 				case lfz_keine: return "Keine"; break;
 				default: return "???"; break;
 			}
-		} break;/*}}}*/
-		case ls_schnellzugriff:/*{{{*/
+		} break;
+		case ls_schnellzugriff:
 		{
 			switch (category)
 			{
@@ -127,8 +127,8 @@ QString category_string (aircraft_category category, length_specification lenspe
 				case lfz_keine: return "- - Keine"; break;
 				default: return "???"; break;
 			}
-		} break;/*}}}*/
-		default:/*{{{*/
+		} break;
+		default:
 		{
 			log_error ("Unbehandelte L�ngenangabe in flugtyp_string ()");
 			switch (category)
@@ -141,13 +141,13 @@ QString category_string (aircraft_category category, length_specification lenspe
 				case lfz_keine: return "[-]"; break;
 				default: return "[?]"; break;
 			}
-		} break;/*}}}*/
+		} break;
 	}
 
 	return ("!!!");
-}/*}}}*/
+}
 
-aircraft_category category_from_registration (QString reg)/*{{{*/
+aircraft_category category_from_registration (QString reg)
 /*
  * Try to determine the kind of aircraft, given its registration. This is done based on german rules.
  * Parameters:
@@ -174,11 +174,11 @@ aircraft_category category_from_registration (QString reg)/*{{{*/
 		return lfz_motorsegler;
 	else
 		return lfz_sonstige;
-}/*}}}*/
+}
 
 
 
-int list_flugtyp (flug_typ **t, bool include_invalid)/*{{{*/
+int list_flugtyp (flug_typ **t, bool include_invalid)
 	/*
 	 * See top of file.
 	 */
@@ -210,16 +210,16 @@ int list_flugtyp (flug_typ **t, bool include_invalid)/*{{{*/
 
 	*t=list;
 	return num;
-}/*}}}*/
+}
 
-QString flugtyp_string (flug_typ typ, length_specification lenspec)/*{{{*/
+QString flugtyp_string (flug_typ typ, length_specification lenspec)
 	/*
 	 * See top of file.
 	 */
 {
 	switch (lenspec)
 	{
-		case ls_kurz:/*{{{*/
+		case ls_kurz:
 		{
 			switch (typ)
 			{
@@ -232,8 +232,8 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)/*{{{*/
 				case ft_gast_extern: return "E"; break;
 				default: return "?"; break;
 			}
-		} break;/*}}}*/
-		case ls_druck:/*{{{*/
+		} break;
+		case ls_druck:
 		{
 			switch (typ)
 			{
@@ -246,8 +246,8 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)/*{{{*/
 				case ft_gast_extern: return "E"; break;
 				default: return "?"; break;
 			}
-		} break;/*}}}*/
-		case ls_tabelle: case ls_flugbuch:/*{{{*/
+		} break;
+		case ls_tabelle: case ls_flugbuch:
 		{
 			switch (typ)
 			{
@@ -260,8 +260,8 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)/*{{{*/
 				case ft_gast_extern: return "Gast (E)"; break;
 				default: return "?"; break;
 			}
-		} break;/*}}}*/
-		case ls_lang:/*{{{*/
+		} break;
+		case ls_lang:
 		{
 			switch (typ)
 			{
@@ -274,8 +274,8 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)/*{{{*/
 				case ft_gast_extern: return "Gastflug (Extern)"; break;
 				default: return "???"; break;
 			}
-		} break;/*}}}*/
-		case ls_csv:/*{{{*/
+		} break;
+		case ls_csv:
 		{
 			switch (typ)
 			{
@@ -288,8 +288,8 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)/*{{{*/
 				case ft_gast_extern: return "Gastflug (E)"; break;
 				default: return "???"; break;
 			}
-		} break;/*}}}*/
-		case ls_schnellzugriff:/*{{{*/
+		} break;
+		case ls_schnellzugriff:
 		{
 			switch (typ)
 			{
@@ -302,8 +302,8 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)/*{{{*/
 				case ft_gast_extern: return "E - Gastflug (Extern)"; break;
 				default: return "???"; break;
 			}
-		} break;/*}}}*/
-		default:/*{{{*/
+		} break;
+		default:
 		{
 			log_error ("Unbehandelte L�ngenangabe in flugtyp_string ()");
 			switch (typ)
@@ -317,13 +317,13 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)/*{{{*/
 				case ft_gast_extern: return "[Gast (E)]"; break;
 				default: return "[?]"; break;
 			}
-		} break;/*}}}*/
+		} break;
 	}
 
 	return ("!!!");
-}/*}}}*/
+}
 
-bool begleiter_erlaubt (flug_typ flugtyp)/*{{{*/
+bool begleiter_erlaubt (flug_typ flugtyp)
 	/*
 	 * Finds out if a copilot is allowed _to be recorded in the database_ for a
 	 * given flight type.
@@ -337,11 +337,11 @@ bool begleiter_erlaubt (flug_typ flugtyp)/*{{{*/
 	if (flugtyp==ft_gast_privat) return false;		// Datenbanktechnisch gesehen jedenfalls
 	if (flugtyp==ft_gast_extern) return false;		// Datenbanktechnisch gesehen jedenfalls
 	return true;
-}/*}}}*/
+}
 
 
 
-int list_modus (flug_modus **m, bool include_invalid)/*{{{*/
+int list_modus (flug_modus **m, bool include_invalid)
 	/*
 	 * See top of file.
 	 */
@@ -369,9 +369,9 @@ int list_modus (flug_modus **m, bool include_invalid)/*{{{*/
 
 	*m=list;
 	return num;
-}/*}}}*/
+}
 
-int list_sfz_modus (flug_modus **m, bool include_invalid)/*{{{*/
+int list_sfz_modus (flug_modus **m, bool include_invalid)
 	/*
 	 * See top of file.
 	 */
@@ -397,16 +397,16 @@ int list_sfz_modus (flug_modus **m, bool include_invalid)/*{{{*/
 
 	*m=list;
 	return num;
-}/*}}}*/
+}
 
-QString modus_string (flug_modus modus, length_specification lenspec)/*{{{*/
+QString modus_string (flug_modus modus, length_specification lenspec)
 	/*
 	 * See top of file.
 	 */
 {
 	switch (lenspec)
 	{
-		case ls_kurz: case ls_tabelle: case ls_druck: case ls_flugbuch:/*{{{*/
+		case ls_kurz: case ls_tabelle: case ls_druck: case ls_flugbuch:
 		{
 			switch (modus)
 			{
@@ -416,8 +416,8 @@ QString modus_string (flug_modus modus, length_specification lenspec)/*{{{*/
 				case fmod_geht: return "Geht"; break;
 				default: return "?"; break;
 			}
-		} break;/*}}}*/
-		case ls_lang: case ls_csv:/*{{{*/
+		} break;
+		case ls_lang: case ls_csv:
 		{
 			switch (modus)
 			{
@@ -427,8 +427,8 @@ QString modus_string (flug_modus modus, length_specification lenspec)/*{{{*/
 				case fmod_geht: return "Geht"; break;
 				default: return "???"; break;
 			}
-		} break;/*}}}*/
-		case ls_schnellzugriff:/*{{{*/
+		} break;
+		case ls_schnellzugriff:
 		{
 			switch (modus)
 			{
@@ -438,8 +438,8 @@ QString modus_string (flug_modus modus, length_specification lenspec)/*{{{*/
 				case fmod_geht: return "Geht"; break;
 				default: return "???"; break;
 			}
-		} break;/*}}}*/
-		default:/*{{{*/
+		} break;
+		default:
 		{
 			log_error ("Unbehandelte L�ngenangabe in modus_string ()");
 			switch (modus)
@@ -450,15 +450,15 @@ QString modus_string (flug_modus modus, length_specification lenspec)/*{{{*/
 				case fmod_geht: return "[Geht]"; break;
 				default: return "[?]"; break;
 			}
-		} break;/*}}}*/
+		} break;
 	}
 
 	return ("!!!");
-}/*}}}*/
+}
 
 
 
-bool ist_schulung (flug_typ t)/*{{{*/
+bool ist_schulung (flug_typ t)
 	/*
 	 * Finds out if a given flight type is training.
 	 * Parameters:
@@ -472,9 +472,8 @@ bool ist_schulung (flug_typ t)/*{{{*/
 		t==ft_schul_1 ||
 		false);
 }
-/*}}}*/
 
-bool lands_here (flug_modus m)/*{{{*/
+bool lands_here (flug_modus m)
 	/*
 	 * Finds out if a flight of a given mode lands here.
 	 * Parameters:
@@ -488,9 +487,8 @@ bool lands_here (flug_modus m)/*{{{*/
 		m==fmod_kommt ||
 		false);
 }
-/*}}}*/
 
-bool starts_here (flug_modus m)/*{{{*/
+bool starts_here (flug_modus m)
 	/*
 	 * Finds out if a flight of a given mode starts here.
 	 * Parameters:
@@ -504,11 +502,10 @@ bool starts_here (flug_modus m)/*{{{*/
 		m==fmod_geht ||
 		false);
 }
-/*}}}*/
 
 
 
-QString std2q (std::string s)/*{{{*/
+QString std2q (std::string s)
 	/*
 	 * Converts a std::QString to a QString.
 	 * Parameters:
@@ -518,9 +515,9 @@ QString std2q (std::string s)/*{{{*/
 	 */
 {
 	return QString (s.c_str ());
-}/*}}}*/
+}
 
-std::string q2std (QString s)/*{{{*/
+std::string q2std (QString s)
 	/*
 	 * Converts a QString to a std::QString
 	 * Parameters:
@@ -531,10 +528,10 @@ std::string q2std (QString s)/*{{{*/
 {
 	if (s.isNull ()) return "";
 	return std::string (s.toLatin1 ().constData ());
-}/*}}}*/
+}
 
 
-db_event_table TableFromEntityType (EntityType t)/*{{{*/
+db_event_table TableFromEntityType (EntityType t)
 	/*
 	 * Finds out which table to use in the db_change mechanism for a given
 	 * Entity type (see EntityEditWindow).
@@ -553,6 +550,6 @@ db_event_table TableFromEntityType (EntityType t)/*{{{*/
 		case st_person: return db_person; break;
 		default: return db_kein; break;
 	}
-}/*}}}*/
+}
 
 

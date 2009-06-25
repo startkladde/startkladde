@@ -1,6 +1,6 @@
 #include "dialogs.h"
 
-void show_warning (const QString &text, QWidget *parent)/*{{{*/
+void show_warning (const QString &text, QWidget *parent)
 	/*
 	 * Displays a warning dialog with the given text.
 	 * Parameters:
@@ -9,6 +9,6 @@ void show_warning (const QString &text, QWidget *parent)/*{{{*/
 	 */
 {
 	QMessageBox::warning (parent, "Warnung", text, QMessageBox::Ok, QMessageBox::NoButton);
-}/*}}}*/
+}
 
 

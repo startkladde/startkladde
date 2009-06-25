@@ -6,7 +6,7 @@ const QString mime_header::text_name_content_type="Content-Type";
 const QString mime_header::text_name_content_disposition="Content-Disposition";
 
 
-mime_header::mime_header (const QString &text, const QString &_name)/*{{{*/
+mime_header::mime_header (const QString &text, const QString &_name)
 {
 	// multipart/form-data; boundary=----------PmlqQ32HDjGJWAIJ7Ez1C
 	//   name: (must be given)
@@ -59,9 +59,9 @@ mime_header::mime_header (const QString &text, const QString &_name)/*{{{*/
 			val=val.mid (1, val.length ()-2);
 		args.set_value (key, val);
 	}
-}/*}}}*/
+}
 
-std::ostream &operator<< (std::ostream &s, const mime_header &mh)/*{{{*/
+std::ostream &operator<< (std::ostream &s, const mime_header &mh)
 {
 	// TODO Escape (how to escape MIME headers?)
 	s << mh.name << ": " << mh.value;
@@ -74,9 +74,8 @@ std::ostream &operator<< (std::ostream &s, const mime_header &mh)/*{{{*/
 
 	return s;
 }
-/*}}}*/
 
-void mime_header::test (const QString &text, const QString &_name)/*{{{*/
+void mime_header::test (const QString &text, const QString &_name)
 {
 	if (_name.isEmpty ())
 		std::cout << "In:  [" << text << "]" << std::endl;
@@ -85,13 +84,11 @@ void mime_header::test (const QString &text, const QString &_name)/*{{{*/
 
 	std::cout << "Out: [" << mime_header (text, _name) << "]" << std::endl;
 }
-/*}}}*/
 
-void mime_header::test ()/*{{{*/
+void mime_header::test ()
 {
 	test ("multipart/form-data; boundary=----------PmlqQ32HDjGJWAIJ7Ez1C", "Content-Type");
 	test ("Content-Disposition: form-data; name=\"datei\"; filename=\"TODO\"");
 	test ("Content-Type: application/octet-stream");
 }
-/*}}}*/
 

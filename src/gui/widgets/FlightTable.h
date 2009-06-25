@@ -14,7 +14,7 @@
 #include "src/time/sk_time_t.h"
 
 
-// Indizies zur Zuordnung von Feldern zu Tabellenspalten/*{{{*/
+// Indizies zur Zuordnung von Feldern zu Tabellenspalten
 const int tbl_idx_registration				=0;
 const int tbl_idx_flugzeug_typ				=1;
 const int tbl_idx_flug_typ					=2;
@@ -36,7 +36,6 @@ const int tabellenspalten=17;
 
 const int tbl_idx_id=tbl_idx_registration;
 const int tbl_idx_schleppref=tbl_idx_startart;
-/*}}}*/
 
 //enum zell_typ { zt_none, zt_nothing, zt_time, zt_button, zt_missing };
 enum zell_typ { zt_unhandled, zt_empty, zt_n_a, zt_button, zt_time, zt_missing, zt_invalid, zt_program_error };

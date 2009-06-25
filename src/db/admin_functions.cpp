@@ -5,7 +5,7 @@
 #include "src/db/db_column.h"
 #include "src/db/db_table.h"
 
-void initialize_database (sk_db &root_db, QString _username, QString _userpass, QString _database, QString _sk_admin_name, QString _sk_admin_password)/*{{{*/
+void initialize_database (sk_db &root_db, QString _username, QString _userpass, QString _database, QString _sk_admin_name, QString _sk_admin_password)
 	throw (sk_db::ex_init_failed, sk_db::ex_not_connected, sk_db::ex_access_denied, sk_db::ex_parameter_error)
 	// This function initializes the database for use with the program.
 	// This assumes that root_db has user data for root and is connected.
@@ -30,30 +30,27 @@ void initialize_database (sk_db &root_db, QString _username, QString _userpass, 
 	// handlers.
 
 	QString query;
-	// User database connection for testing./*{{{*/
+	// User database connection for testing.
 	sk_db user_db;
 	user_db.set_connection_data (root_db.get_server (), root_db.get_port (), _username, _userpass);
 	user_db.set_database (_database);
 	user_db.display_queries=root_db.display_queries;
-/*}}}*/
 
-	// sk_admin database connection for testing./*{{{*/
+	// sk_admin database connection for testing.
 	sk_db sk_admin_db;
 	sk_admin_db.set_connection_data (root_db.get_server (), root_db.get_port (), _sk_admin_name, _sk_admin_password);
 	sk_admin_db.set_database (_database);
 	sk_admin_db.display_queries=root_db.display_queries;
-/*}}}*/
 
-	// -1. Paramters/*{{{*/
+	// -1. Paramters
 	if (_username.isEmpty ()) throw sk_db::ex_parameter_error ("Benutzername nicht angegeben");
 	// Passwords may not be empty.
 	if (_userpass.isEmpty ()) throw sk_db::ex_parameter_error ("Kein Benutzerpasswort angegeben");
 	if (_database.isEmpty ()) throw sk_db::ex_parameter_error ("Datenbank nicht angegeben");
 	if (_sk_admin_name.isEmpty ()) throw sk_db::ex_parameter_error ("Adminstratorname nicht angegeben");
 	if (_sk_admin_password.isEmpty ()) throw sk_db::ex_parameter_error ("Kein Administratorpasswort angegeben");
-/*}}}*/
 
-	// 0. root connection/*{{{*/
+	// 0. root connection
 	// We must already have connected.
 	output << "0. Checking root connection..." << std::endl;
 	if (!root_db.connected ()) throw sk_db::ex_not_connected ();
@@ -65,9 +62,8 @@ void initialize_database (sk_db &root_db, QString _username, QString _userpass, 
 	catch (sk_db::ex_database_not_accessible) { throw sk_db::ex_init_failed ("root-Datenbankzugriff nicht m�glich"); }
 	catch (sk_db::ex_database_not_found) { throw sk_db::ex_init_failed ("Datenbank \"mysql\" nicht gefunden"); }
 	catch (sk_db::ex_insufficient_access &e) { throw sk_db::ex_init_failed (e.description ()); }
-/*}}}*/
 
-	// 1a. user connection possible/*{{{*/
+	// 1a. user connection possible
 	// ======================
 	// It must be possible for the user to connect to the server.
 	// From the MySQL documentation: 'MySQL allows you to create database-level
@@ -100,9 +96,8 @@ void initialize_database (sk_db &root_db, QString _username, QString _userpass, 
 		output << "failed" << std::endl;
 		throw sk_db::ex_init_failed (e.description ());
 	}
-/*}}}*/
 
-	// 1b. admin connection possible/*{{{*/
+	// 1b. admin connection possible
 	// ======================
 	// It must be possible for the admin to connect to the server.
 	// The notes from 1a apply her as well.
@@ -128,9 +123,8 @@ void initialize_database (sk_db &root_db, QString _username, QString _userpass, 
 		output << "failed" << std::endl;
 		throw sk_db::ex_init_failed (e.description ());
 	}
-/*}}}*/
 
-	// 2a. User database access possible/*{{{*/
+	// 2a. User database access possible
 	// =================================
 	// It must be possible for the user to access the database (use $database).
 	// We gave the user access in step 1. Now we have to create the table if it
@@ -144,9 +138,8 @@ void initialize_database (sk_db &root_db, QString _username, QString _userpass, 
 	catch (sk_db::ex_database_not_accessible &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
 	catch (sk_db::ex_insufficient_access &e) { throw sk_db::ex_init_failed (e.description ()); }
 	catch (sk_db::ex_database_not_found &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
-/*}}}*/
 
-	// 2b. Admin database access possible/*{{{*/
+	// 2b. Admin database access possible
 	// ==================================
 	// It must be possible for the admin to access the database (use $database).
 	// We created the database in step 2a, so we only have to check.
@@ -155,9 +148,8 @@ void initialize_database (sk_db &root_db, QString _username, QString _userpass, 
 	catch (sk_db::ex_database_not_accessible &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
 	catch (sk_db::ex_insufficient_access &e) { throw sk_db::ex_init_failed (e.description ()); }
 	catch (sk_db::ex_database_not_found &e) { output << "failed" << std::endl; throw sk_db::ex_init_failed (e.description ()); }
-/*}}}*/
 
-	// 3. All tables exist/*{{{*/
+	// 3. All tables exist
 	// There are a number of tables which have to exist for the database to be
 	// useful.
 	// Check if the required tables to exist. If they don't, create them.
@@ -201,9 +193,8 @@ void initialize_database (sk_db &root_db, QString _username, QString _userpass, 
 			output << "OK" << std::endl;
 		}
 	}
-/*}}}*/
 
-	// 4. Correct tables are writeable/*{{{*/
+	// 4. Correct tables are writeable
 	// ===============================
 	// It must be possible for the user to write certain tables.
 	// We give the user access unconditionally.
@@ -229,9 +220,8 @@ void initialize_database (sk_db &root_db, QString _username, QString _userpass, 
 		if (root_db.flush_privileges ()!=db_ok) throw sk_db::ex_init_failed ("Fehler bei Query");
 	}
 	// ADD: check for success?
-/*}}}*/
 
-	// 5. All columns exist and have the correct type/*{{{*/
+	// 5. All columns exist and have the correct type
 	// There are some columns which have to exist for the program to be
 	// operational.
 	// TODO optional columns.
@@ -285,13 +275,11 @@ void initialize_database (sk_db &root_db, QString _username, QString _userpass, 
 			}
 		}
 	}
-/*}}}*/
 
 	output << "Database initialization succeeded" << std::endl;
 }
-/*}}}*/
 
-void initialize_database (sk_db &root_db)/*{{{*/
+void initialize_database (sk_db &root_db)
 	throw (sk_db::ex_init_failed, sk_db::ex_access_denied, sk_db::ex_allocation_error, sk_db::ex_connection_failed, sk_db::ex_parameter_error)
 	// root_pass is not read from opts but is passed because it usually needs
 	// to be asked from the user.
@@ -308,5 +296,4 @@ void initialize_database (sk_db &root_db)/*{{{*/
 		throw sk_db::ex_connection_failed ();
 	}
 }
-/*}}}*/
 

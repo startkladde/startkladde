@@ -2,16 +2,16 @@
 
 #include "src/text.h"
 
-Plane::Plane ()/*{{{*/
+Plane::Plane ()
 	:Entity ()
 	/*
 	 * Constructs an empty Plane instance.
 	 */
 {
 	sitze=0;
-}/*}}}*/
+}
 
-Plane::Plane (QString p_registration, QString p_wettbewerbskennzeichen, QString p_typ, QString p_club, int p_sitze, db_id p_id)/*{{{*/
+Plane::Plane (QString p_registration, QString p_wettbewerbskennzeichen, QString p_typ, QString p_club, int p_sitze, db_id p_id)
 	/*
 	 * Constructs an Plane instance with given data.
 	 * Parameters:
@@ -26,9 +26,9 @@ Plane::Plane (QString p_registration, QString p_wettbewerbskennzeichen, QString 
 	club=p_club;
 	sitze=p_sitze;
 	id=p_id;
-}/*}}}*/
+}
 
-void Plane::dump () const/*{{{*/
+void Plane::dump () const
 	/*
 	 * Print a description of the plane to stdout. Used for debugging.
 	 */
@@ -46,9 +46,9 @@ void Plane::dump () const/*{{{*/
 			club.latin1(),
 			sitze,
 			(int)id);
-}/*}}}*/
+}
 
-QString Plane::bezeichnung (casus c) const/*{{{*/
+QString Plane::bezeichnung (casus c) const
 	/*
 	 * Returns a text describing the fact that this is a plane.
 	 * Parameters:
@@ -58,9 +58,9 @@ QString Plane::bezeichnung (casus c) const/*{{{*/
 	 */
 {
 	return entityLabel (st_plane, c);
-}/*}}}*/
+}
 
-QString Plane::name () const/*{{{*/
+QString Plane::name () const
 	/*
 	 * Returns the name of the plane in a form suitable for enumerations.
 	 * Return value:
@@ -68,9 +68,9 @@ QString Plane::name () const/*{{{*/
 	 */
 {
 	return registration;
-}/*}}}*/
+}
 
-QString Plane::tabelle_name () const/*{{{*/
+QString Plane::tabelle_name () const
 	/*
 	 * Returns the name of the plane in a form suitable for the table.
 	 * Return value:
@@ -78,9 +78,9 @@ QString Plane::tabelle_name () const/*{{{*/
 	 */
 {
 	return tabelle_name (false);
-}/*}}}*/
+}
 
-QString Plane::tabelle_name (bool schlepp) const/*{{{*/
+QString Plane::tabelle_name (bool schlepp) const
 	/*
 	 * Returns the name of the plane in a form suitable for the table.
 	 * Parameters:
@@ -93,9 +93,9 @@ QString Plane::tabelle_name (bool schlepp) const/*{{{*/
 	// TODO: wk auch bei schlepps
 	if (schlepp||eintrag_ist_leer (wettbewerbskennzeichen)) return name ();
 	return name ()+" ("+wettbewerbskennzeichen+")";
-}/*}}}*/
+}
 
-QString Plane::text_name () const/*{{{*/
+QString Plane::text_name () const
 	/*
 	 * Returns the name of the plane in a form suitable for running text.
 	 * Return value:
@@ -103,9 +103,9 @@ QString Plane::text_name () const/*{{{*/
 	 */
 {
 	return name ();
-}/*}}}*/
+}
 
-void Plane::output (std::ostream &stream, output_format_t format)/*{{{*/
+void Plane::output (std::ostream &stream, output_format_t format)
 {
 	Entity::output (stream, format, false, "ID", id);
 	Entity::output (stream, format, false, "Kennzeichen", registration);
@@ -114,6 +114,5 @@ void Plane::output (std::ostream &stream, output_format_t format)/*{{{*/
 	Entity::output (stream, format, false, "Verein", club);
 	Entity::output (stream, format, true, "Gattung", category_string (category, ls_lang));
 }
-/*}}}*/
 
 

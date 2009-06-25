@@ -7,7 +7,7 @@
 // TODO multiple lines in message area
 // TODO Klick auf labels schlie�en
 
-SplashScreen::SplashScreen (QWidget *parent, const char * const *logo)/*{{{*/
+SplashScreen::SplashScreen (QWidget *parent, const char * const *logo)
 	:QDialog (parent, "splash screen", true, WStyle_Customize|Qt::WStyle_NoBorder|Qt::WStyle_StaysOnTop|Qt::WType_TopLevel)
 	/*
 	 * Creates a SplashScreen instance.
@@ -68,25 +68,25 @@ SplashScreen::SplashScreen (QWidget *parent, const char * const *logo)/*{{{*/
 
 	QObject::connect (this, SIGNAL (clicked ()), this, SLOT (try_close ()));
 	resize (lbl_picture->width (), lbl_picture->height ()+lbl_version->height ()+lbl_status->height ());
-}/*}}}*/
+}
 
-void SplashScreen::try_close ()/*{{{*/
+void SplashScreen::try_close ()
 	/*
 	 * Close the window if can_close is set.
 	 */
 {
 	if (can_close) close ();
-}/*}}}*/
+}
 
-void SplashScreen::close ()/*{{{*/
+void SplashScreen::close ()
 	/*
 	 * Close the window.
 	 */
 {
 	done (0);
-}/*}}}*/
+}
 
-void SplashScreen::info ()/*{{{*/
+void SplashScreen::info ()
 	/*
 	 * Show as info dialog.
 	 */
@@ -99,9 +99,9 @@ void SplashScreen::info ()/*{{{*/
 	setFocus ();
 	show ();
 	qApp->processEvents ();
-}/*}}}*/
+}
 
-void SplashScreen::show_splash ()/*{{{*/
+void SplashScreen::show_splash ()
 	/*
 	 * Show as SplashScreen screen.
 	 */
@@ -113,17 +113,17 @@ void SplashScreen::show_splash ()/*{{{*/
 	qApp->processEvents ();
 	show ();
 	qApp->processEvents ();
-}/*}}}*/
+}
 
-void SplashScreen::hide_splash ()/*{{{*/
+void SplashScreen::hide_splash ()
 	/*
 	 * Close the window.
 	 */
 {
 	done (0);
-}/*}}}*/
+}
 
-void SplashScreen::show_version ()/*{{{*/
+void SplashScreen::show_version ()
 	/*
 	 * Display as version display.
 	 */
@@ -136,11 +136,11 @@ void SplashScreen::show_version ()/*{{{*/
 //	setActiveWindow ();
 	lbl_version->setFocus ();
 //	exec ();
-}/*}}}*/
+}
 
 
 
-void SplashScreen::set_status (QString s)/*{{{*/
+void SplashScreen::set_status (QString s)
 	/*
 	 * Sets the status text.
 	 * Paramters:
@@ -151,9 +151,9 @@ void SplashScreen::set_status (QString s)/*{{{*/
 	status_text=s;
 	lbl_status->setText (status_text);
 	qApp->processEvents ();
-}/*}}}*/
+}
 
-void SplashScreen::set_progress (int i, int n)/*{{{*/
+void SplashScreen::set_progress (int i, int n)
 	/*
 	 * Sets the progress indicator.
 	 * Parameters:
@@ -165,11 +165,11 @@ void SplashScreen::set_progress (int i, int n)/*{{{*/
 	n_string.setNum (n);
 	lbl_status->setText (status_text+" ("+i_string+"/"+n_string+")");
 	qApp->processEvents ();
-}/*}}}*/
+}
 
 
 
-void SplashScreen::keyPressEvent (QKeyEvent *e)/*{{{*/
+void SplashScreen::keyPressEvent (QKeyEvent *e)
 	/*
 	 * A key was pressed. Handle it.
 	 * Parameters:
@@ -197,9 +197,9 @@ void SplashScreen::keyPressEvent (QKeyEvent *e)/*{{{*/
 	// the base class?
 	if (!e->isAccepted ())
 		QDialog::keyPressEvent (e);
-}/*}}}*/
+}
 
-void SplashScreen::mousePressEvent (QMouseEvent * e)/*{{{*/
+void SplashScreen::mousePressEvent (QMouseEvent * e)
 	/*
 	 * A mouse event occured.
 	 * Parameters:
@@ -207,5 +207,5 @@ void SplashScreen::mousePressEvent (QMouseEvent * e)/*{{{*/
 	 */
 {
 	emit clicked ();
-}/*}}}*/
+}
 

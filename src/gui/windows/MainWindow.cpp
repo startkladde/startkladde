@@ -21,8 +21,8 @@
 #include "src/model/Plane.h"
 #include "src/time/time_functions.h"
 
-// UI/*{{{*/
-MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plugins, const char *name, WFlags f)/*{{{*/
+// UI
+MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plugins, const char *name, WFlags f)
 :
 	QMainWindow (parent, name, f)
 /*
@@ -35,13 +35,13 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
  *   XXX
  */
 {
-	// Splash screen/*{{{*/
+	// Splash screen
 	ss = new ::SplashScreen (this, logo);
 	ss->show_splash ();
 	qApp->processEvents ();
-	/*}}}*/
+	
 
-	// Variablen initialisieren/*{{{*/
+	// Variablen initialisieren
 	// TODO: nach UTC einstellen
 	// TODO: das in funktion
 	anzeigedatum = QDate::currentDate ();
@@ -56,24 +56,24 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	db = _db;
 
 	weatherDialog = NULL;
-	/*}}}*/
+	
 
 	initActions ();
 	initMenu ();
 	initContextMenu ();
 	initToolbar ();
 
-	// Splitter/*{{{*/
+	// Splitter
 	split_main = new QSplitter (Qt::Vertical, this, "split_main");
 	setCentralWidget (split_main);
-	/*}}}*/
+	
 
-	// Hauptrahmen/*{{{*/
+	// Hauptrahmen
 	main_frame = new QFrame (split_main, "main_frame");
 	main_layout = new QVBoxLayout (main_frame, window_margin, -1, "main_layout");
-	/*}}}*/
+	
 
-	// Infoframe/*{{{*/
+	// Infoframe
 
 	// Create and setup the info frame. The info frame ist where the info
 	// labels are located, excluding the weather graphics.
@@ -220,15 +220,15 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	plugin_layout->setRowStretch (row, 1);
 
 	update_info ();
-	/*}}}*/
+	
 
-	// Flugtabelle/*{{{*/
+	// Flugtabelle
 	tbl_fluege = new FlightTable (db, main_frame);
 	main_layout->addWidget (tbl_fluege, 1);
 	tbl_fluege->set_anzeigedatum (anzeigedatum);
-	/*}}}*/
+	
 
-	// Log/*{{{*/
+	// Log
 	display_log = false;
 	log = new QTextEdit (split_main, "log");
 	// TODO better call the function that updates the check mark and
@@ -239,9 +239,9 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	log->document ()->setMaximumBlockCount (1000); // TODO check this works
 
 	connect (db, SIGNAL (executing_query (QString *)), this, SLOT (log_message (QString *)));
-	/*}}}*/
+	
 
-	// Timerzeug/*{{{*/
+	// Timerzeug
 	timer_status = new QTimer (this);
 	QObject::connect (timer_status, SIGNAL (timeout ()), this, SLOT (update_time ()));
 	timer_status->start (1000, false);
@@ -250,9 +250,9 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	QObject::connect (timer_db, SIGNAL (timeout ()), this, SLOT (slot_timer_db ()));
 
 	update_time ();
-	/*}}}*/
+	
 
-	// Sonstige Fensterchen/*{{{*/
+	// Sonstige Fensterchen
 	// Warum WStyle_StaysOnTop bedeutet, dass es gerade nicht OnTopStays, ist
 	// mir ein R�tsel. Jedensfalls ist das anscheinend nur bei nicht-modalen
 	// Fensterchen so.
@@ -264,11 +264,11 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	flug_editor = new FlightWindow (this, db, NULL, flugeditor_modal, 0, ss);
 	flugzeug_liste = new EntityListWindow (st_plane, this, db, "flugzeug_liste", false, 0, ss);
 	personen_liste = new EntityListWindow (st_person, this, db, "personen_liste", false, 0, ss);
-	/*}}}*/
+	
 
 	tbl_fluege->setContextMenuPolicy (Qt::CustomContextMenu);
 
-	// Signale verbinden/*{{{*/
+	// Signale verbinden
 	QObject::connect (tbl_fluege, SIGNAL (cellDoubleClicked (int, int)), this,
 			SLOT (slot_table_double_click (int, int)));
 	QObject::connect (tbl_fluege, SIGNAL (key (int)), this, SLOT (slot_table_key (int)));
@@ -299,7 +299,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 		QObject::connect (this, SIGNAL (long_operation_start ()), status_dialog, SLOT (show_splash ()));
 		QObject::connect (this, SIGNAL (long_operation_end ()), status_dialog, SLOT (hide_splash ()));
 	}
-	/*}}}*/
+	
 
 	connect (qApp, SIGNAL(lastWindowClosed()), this, SLOT(slot_close()));
 	connect (actionSetTime, SIGNAL(activated()), this, SLOT(slot_setdate()));
@@ -342,12 +342,12 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	connect (actionPing, SIGNAL(activated()), this, SLOT (slot_ping_db ()));
 	connect (actionDisplayLog, SIGNAL(activated()), this, SLOT (slot_display_log ()));
 
-	// Datenbank initialieren/*{{{*/
+	// Datenbank initialieren
 	// Initialize the DB as soon as the GUI is initialized.
 	//QTimer::singleShot (0, this, SLOT (slot_timer_db ()));
-	/*}}}*/
+	
 
-	// Fenstereinstellungen/*{{{*/
+	// Fenstereinstellungen
 	setCaption (opts.title);
 	//	resize (480, 360);
 	//	setMinimumSize (240, 180);
@@ -371,13 +371,13 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	// tritt aber nicht immer auf. Manchmal kann man es provozieren, indem man
 	// dem Programm eine unbenutzbare Datenbank vorsetzt. Whatever...
 	qApp->processEvents ();
-	/*}}}*/
+	
 
 	restart_all_plugins ();
 
 	readSettings ();
 
-}/*}}}*/
+}
 
 /**
  * initialize actions
@@ -635,7 +635,7 @@ void MainWindow::initToolbar ()
 	actionDecFont->addTo (toolBar);
 }
 
-MainWindow::~MainWindow ()/*{{{*/
+MainWindow::~MainWindow ()
 /*
  * Clean up the main program window variables
  */
@@ -658,9 +658,9 @@ MainWindow::~MainWindow ()/*{{{*/
 		}
 	}
 
-}/*}}}*/
+}
 
-void MainWindow::keyPressEvent (QKeyEvent *e)/*{{{*/
+void MainWindow::keyPressEvent (QKeyEvent *e)
 /*
  * A key was pressed. Process the key event.
  * Parameters:
@@ -710,9 +710,9 @@ void MainWindow::keyPressEvent (QKeyEvent *e)/*{{{*/
 	}
 
 	QMainWindow::keyPressEvent (e);
-}/*}}}*/
+}
 
-void MainWindow::simulate_key (int key)/*{{{*/
+void MainWindow::simulate_key (int key)
 /*
  * Act as if a key had been pressed on the main window.
  * Parameters:
@@ -721,11 +721,10 @@ void MainWindow::simulate_key (int key)/*{{{*/
 {
 	QKeyEvent e (QEvent::KeyPress, key, 0, 0);
 	keyPressEvent (&e);
-}/*}}}*/
-/*}}}*/
+}
 
-// DB/*{{{*/
-void MainWindow::slot_db_update (db_event *event)/*{{{*/
+// DB
+void MainWindow::slot_db_update (db_event *event)
 /*
  * (db_change) Something happened at the database. Check if we are
  * interested and accordingly.
@@ -785,9 +784,8 @@ void MainWindow::slot_db_update (db_event *event)/*{{{*/
 
 	emit db_update (event);
 }
-/*}}}*/
 
-void MainWindow::dbase_connect (QObject *ob)/*{{{*/
+void MainWindow::dbase_connect (QObject *ob)
 /*
  * (db_change) Connect the signals used for the db_change mechanism with a
  * contained object. See SkDialog.cpp.
@@ -802,11 +800,10 @@ void MainWindow::dbase_connect (QObject *ob)/*{{{*/
 	// Wenn Datenbank�nderungen �bernommen werden sollen, weiterreichen.
 	QObject::connect (this, SIGNAL (db_update (db_event *)), ob, SLOT (slot_db_update (db_event *)));
 }
-/*}}}*/
-/*}}}*/
 
-// Fl�ge/*{{{*/
-void MainWindow::neuer_flug (Flight *vorlage)/*{{{*/
+
+// Fl�ge
+void MainWindow::neuer_flug (Flight *vorlage)
 /*
  * Open the dialog for creating a new flight.
  * Parameters:
@@ -820,9 +817,9 @@ void MainWindow::neuer_flug (Flight *vorlage)/*{{{*/
 		flug_editor->duplicate_flight (vorlage);
 	else
 		flug_editor->create_flight (always_use_current_date ? NULL : &anzeigedatum);
-}/*}}}*/
+}
 
-void MainWindow::edit_flight (Flight *f)/*{{{*/
+void MainWindow::edit_flight (Flight *f)
 /*
  * Open the dialog for editing a flight.
  * Parameters:
@@ -834,9 +831,9 @@ void MainWindow::edit_flight (Flight *f)/*{{{*/
 	// TODO: was passiert, wenn f==NULL?
 	flug_editor->edit_flight (f);
 	// TODO error handling?
-}/*}}}*/
+}
 
-db_id MainWindow::get_flight_id (int row)/*{{{*/
+db_id MainWindow::get_flight_id (int row)
 /*
  * Find the ID of the flight contained in a given row of the main table.
  * Parameters:
@@ -855,9 +852,9 @@ db_id MainWindow::get_flight_id (int row)/*{{{*/
 	{
 		return 0;
 	}
-}/*}}}*/
+}
 
-void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id sref)/*{{{*/
+void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id sref)
 /*
  * Do a change to a flight or an airtow identified by the database ID of the
  * flight.
@@ -1072,9 +1069,9 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 		}
 	}
 
-}/*}}}*/
+}
 
-void MainWindow::manipulate_flight_by_row (int row, flight_manipulation action)/*{{{*/
+void MainWindow::manipulate_flight_by_row (int row, flight_manipulation action)
 /*
  * Do a change to a flight or an airtow identified by its row in the main
  * table.
@@ -1118,20 +1115,19 @@ void MainWindow::manipulate_flight_by_row (int row, flight_manipulation action)/
 			log_error ("Fehler beim Lesen des Flugs");
 		}
 	}
-}/*}}}*/
+}
 
-void MainWindow::slot_flight_new ()/*{{{*/
+void MainWindow::slot_flight_new ()
 /*
  * "New flight" was chosen. Create a new flight.
  */
 {
 	if (!db_available ()) return;
 	neuer_flug ();
-}/*}}}*/
-/*}}}*/
+}
 
-// Tabelle/*{{{*/
-void MainWindow::table_activated (int row)/*{{{*/
+// Tabelle
+void MainWindow::table_activated (int row)
 /*
  * Do the default action for table activation.
  * If a flight is selected, edit it. Else, create a new one.
@@ -1149,7 +1145,7 @@ void MainWindow::table_activated (int row)/*{{{*/
 	{
 		slot_flight_new ();
 	}
-}/*}}}*/
+}
 
 /**
  * Refresh all data in the table.
@@ -1205,7 +1201,7 @@ void MainWindow::slot_refresh_table ()
 	emit long_operation_end ();
 }
 
-void MainWindow::slot_table_context (const QPoint &pos)/*{{{*/
+void MainWindow::slot_table_context (const QPoint &pos)
 {
 	int row = tbl_fluege->rowAt (pos.y ());
 
@@ -1307,9 +1303,9 @@ void MainWindow::slot_table_context (const QPoint &pos)/*{{{*/
 
 		menu_ctx_emptyrow->popup (tbl_fluege->mapToGlobal (pos));
 	}
-}/*}}}*/
+}
 
-void MainWindow::slot_table_double_click (int row, int col)/*{{{*/
+void MainWindow::slot_table_double_click (int row, int col)
 /*
  * The table was double-clicked. Process the double click.
  * Parameters:
@@ -1319,9 +1315,9 @@ void MainWindow::slot_table_double_click (int row, int col)/*{{{*/
 {
 	(void)col;
 	table_activated (row);
-}/*}}}*/
+}
 
-void MainWindow::slot_table_key (int key)/*{{{*/
+void MainWindow::slot_table_key (int key)
 /*
  * A key was pressed on the main table. Process the keypress.
  * Parameters:
@@ -1348,82 +1344,79 @@ void MainWindow::slot_table_key (int key)/*{{{*/
 		default:
 			break;
 	}
-}/*}}}*/
+}
 
-void MainWindow::slot_current_changed ()/*{{{*/
+void MainWindow::slot_current_changed ()
 /*
  * The current row changed. Do what is needed to reflect the newly selected
  * flight at the user interface.
  */
 {
 	menu_enables (true);
-}/*}}}*/
-/*}}}*/
+}
 
-// Flight manipulations/*{{{*/
+// Flight manipulations
 /*
  * These functions get called when the corresponding menu entries are selected.
  */
-void MainWindow::slot_table_start ()/*{{{*/
+void MainWindow::slot_table_start ()
 {
 	if (!db_available ()) return;
 	manipulate_flight_by_row (tbl_fluege->currentRow (), fm_start);
-}/*}}}*/
+}
 
-void MainWindow::slot_table_land ()/*{{{*/
+void MainWindow::slot_table_land ()
 {
 	if (!db_available ()) return;
 	manipulate_flight_by_row (tbl_fluege->currentRow (), fm_land);
-}/*}}}*/
+}
 
-void MainWindow::slot_table_zwischenlandung ()/*{{{*/
+void MainWindow::slot_table_zwischenlandung ()
 {
 	if (!db_available ()) return;
 	manipulate_flight_by_row (tbl_fluege->currentRow (), fm_zwischenlandung);
-}/*}}}*/
+}
 
-void MainWindow::slot_table_edit ()/*{{{*/
+void MainWindow::slot_table_edit ()
 {
 	if (!db_available ()) return;
 	manipulate_flight_by_row (tbl_fluege->currentRow (), fm_edit);
-}/*}}}*/
+}
 
-void MainWindow::slot_table_delete ()/*{{{*/
+void MainWindow::slot_table_delete ()
 {
 	if (!db_available ()) return;
 	manipulate_flight_by_row (tbl_fluege->currentRow (), fm_delete);
-}/*}}}*/
+}
 
-void MainWindow::slot_table_wiederholen ()/*{{{*/
+void MainWindow::slot_table_wiederholen ()
 {
 	if (!db_available ()) return;
 	manipulate_flight_by_row (tbl_fluege->currentRow (), fm_wiederholen);
-}/*}}}*/
-/*}}}*/
+}
 
-// Tabellenbuttons/*{{{*/
+// Tabellenbuttons
 /*
  * These functions get called when the corresponding button in the table
  * is pressed.
  */
-void MainWindow::slot_tbut_start (db_id id)/*{{{*/
+void MainWindow::slot_tbut_start (db_id id)
 {
 	manipulate_flight (id, fm_start);
-}/*}}}*/
+}
 
-void MainWindow::slot_tbut_landung (db_id id)/*{{{*/
+void MainWindow::slot_tbut_landung (db_id id)
 {
 	manipulate_flight (id, fm_land);
-}/*}}}*/
+}
 
-void MainWindow::slot_tbut_schlepplandung (db_id id)/*{{{*/
+void MainWindow::slot_tbut_schlepplandung (db_id id)
 {
 	manipulate_flight (id, fm_land_schlepp);
-}/*}}}*/
-/*}}}*/
+}
 
-// Infoframe/*{{{*/
-void MainWindow::update_info ()/*{{{*/
+// Infoframe
+void MainWindow::update_info ()
 /*
  * Updates all information labels in the information frame except the time
  * labels.
@@ -1452,9 +1445,9 @@ void MainWindow::update_info ()/*{{{*/
 	}
 
 	lbl_info_value[idx_info_anzeige_datum]->setText (anzeigedatum.toString ("yyyy-MM-dd"));
-}/*}}}*/
+}
 
-void MainWindow::update_time ()/*{{{*/
+void MainWindow::update_time ()
 /*
  * Updates the time labels in the information frame with the current time.
  */
@@ -1463,48 +1456,46 @@ void MainWindow::update_time ()/*{{{*/
 	lbl_info_value[idx_info_time]->setText (get_current_time_text (tz_local));
 
 	tbl_fluege->update_time ();
-}/*}}}*/
-/*}}}*/
+}
 
-// Kontextmen�/*{{{*/
+// Kontextmen�
 /*
  * These functions are called when a menu entry from the context menu is
  * selected. They use the context_row instead of the current table row.
  * Question: but the context_row seems always to be identical to the current row?
  */
-void MainWindow::slot_context_start ()/*{{{*/
+void MainWindow::slot_context_start ()
 {
 	manipulate_flight_by_row (context_row, fm_start);
-}/*}}}*/
+}
 
-void MainWindow::slot_context_land ()/*{{{*/
+void MainWindow::slot_context_land ()
 {
 	manipulate_flight_by_row (context_row, fm_land);
-}/*}}}*/
+}
 
-void MainWindow::slot_context_zwischenlandung ()/*{{{*/
+void MainWindow::slot_context_zwischenlandung ()
 {
 	manipulate_flight_by_row (context_row, fm_zwischenlandung);
-}/*}}}*/
+}
 
-void MainWindow::slot_context_edit ()/*{{{*/
+void MainWindow::slot_context_edit ()
 {
 	manipulate_flight_by_row (context_row, fm_edit);
-}/*}}}*/
+}
 
-void MainWindow::slot_context_delete ()/*{{{*/
+void MainWindow::slot_context_delete ()
 {
 	manipulate_flight_by_row (context_row, fm_delete);
-}/*}}}*/
+}
 
-void MainWindow::slot_context_wiederholen ()/*{{{*/
+void MainWindow::slot_context_wiederholen ()
 {
 	manipulate_flight_by_row (context_row, fm_wiederholen);
-}/*}}}*/
-/*}}}*/
+}
 
-// Men�s/*{{{*/
-void MainWindow::menu_enables (bool cell_change)/*{{{*/
+// Men�s
+void MainWindow::menu_enables (bool cell_change)
 /*
  * Enables or disables entries in the menus, according to the selected
  * flight and the database connection status.
@@ -1560,7 +1551,7 @@ void MainWindow::menu_enables (bool cell_change)/*{{{*/
 	actionSchleppRef->setText ("Zu " + sref_springen_text + " spr&ingen");
 	actionSchleppRef->setEnabled (sref_springen_enabled);
 
-	if (alife)/*{{{*/
+	if (alife)
 	{
 		// Datenbankverbindung ist vorhanden
 		actionNewFlight->setEnabled (true);
@@ -1629,8 +1620,8 @@ void MainWindow::menu_enables (bool cell_change)/*{{{*/
 				actionDeleteFlight->setEnabled (false);
 			}
 		}
-	}/*}}}*/
-	else/*{{{*/
+	}
+	else
 	{
 		// Datenbankverbindung ist nicht vorhanden
 		actionNewFlight->setEnabled (false);
@@ -1646,12 +1637,12 @@ void MainWindow::menu_enables (bool cell_change)/*{{{*/
 		actionCopyFlight->setEnabled (false);
 		//menu_flug->setItemEnabled (id_ctx_loeschen, false);
 		actionDeleteFlight->setEnabled (false);
-	}/*}}}*/
+	}
 
 	old_row = row;
-}/*}}}*/
+}
 
-//void MainWindow::slot_menu (int i)/*{{{*/
+//void MainWindow::slot_menu (int i)
 //	/*
 //	 * Gets called when a menu is opened. Does the necessary enables for the
 //	 * menu.
@@ -1663,9 +1654,9 @@ void MainWindow::menu_enables (bool cell_change)/*{{{*/
 //	{
 //		menu_enables ();
 //	}
-//}/*}}}*/
+//}
 
-void MainWindow::update_checks ()/*{{{*/
+void MainWindow::update_checks ()
 /*
  * Updates the check marks in the menus according to current settings.
  */
@@ -1677,11 +1668,10 @@ void MainWindow::update_checks ()/*{{{*/
 	actionNewFlightNewDate->setChecked (display_new_flight_date);
 	actionNewFlightCurrDate->setChecked (always_use_current_date);
 	actionDisplayLog->setChecked (display_log);
-}/*}}}*/
-/*}}}*/
+}
 
-// Men� Programm/*{{{*/
-void MainWindow::slot_setdate ()/*{{{*/
+// Men� Programm
+void MainWindow::slot_setdate ()
 /*
  * Open the time editor to change the date.
  */
@@ -1689,9 +1679,9 @@ void MainWindow::slot_setdate ()/*{{{*/
 	DateWindow editor (this, QDateTime::currentDateTime ());
 	QObject::connect (&editor, SIGNAL (datetime_accepted (QDateTime)), this, SLOT (setdate (QDateTime)));
 	editor.edit_datetime ();
-}/*}}}*/
+}
 
-void MainWindow::setdate (QDateTime dt)/*{{{*/
+void MainWindow::setdate (QDateTime dt)
 /*
  * Updates the current system time.
  * Parameters:
@@ -1720,7 +1710,7 @@ void MainWindow::setdate (QDateTime dt)/*{{{*/
 
 	update_info ();
 	update_time ();
-}/*}}}*/
+}
 
 /**
  * End the program after confirming.
@@ -1734,7 +1724,7 @@ void MainWindow::slot_close ()
 	}
 }
 
-void MainWindow::slot_shutdown ()/*{{{*/
+void MainWindow::slot_shutdown ()
 /*
  * Shutdown the system after confirming. The shutdown is done by the
  * shutdown () function.
@@ -1746,17 +1736,16 @@ void MainWindow::slot_shutdown ()/*{{{*/
 		writeSettings ();
 		shutdown ();
 	}
-}/*}}}*/
+}
 
-void MainWindow::shutdown ()/*{{{*/
+void MainWindow::shutdown ()
 /*
  * Shut down the program. This is done by returning a magic number to the
  * shell.
  */
 {
 	QApplication::exit (69);
-}/*}}}*/
-/*}}}*/
+}
 
 // Qt3
 //#define toggle(menu, id) do {} while (false)
@@ -1767,7 +1756,7 @@ void MainWindow::shutdown ()/*{{{*/
  * Toggle whether landed flights are displayed in the table. Apply the
  * change.
  */
-void MainWindow::slot_menu_ansicht_flug_gelandete (bool toggle)/*{{{*/
+void MainWindow::slot_menu_ansicht_flug_gelandete (bool toggle)
 {
 	tbl_fluege->gelandete_ausblenden = toggle;
 	if (toggle)
@@ -1800,7 +1789,7 @@ void MainWindow::slot_menu_ansicht_flug_fehlerhafte (bool toggle)
 	slot_refresh_table ();
 }
 
-void MainWindow::slot_menu_ansicht_datum_einstellen ()/*{{{*/
+void MainWindow::slot_menu_ansicht_datum_einstellen ()
 /*
  * Open the date editor to hange the date for which flights are displayed.
  */
@@ -1810,9 +1799,9 @@ void MainWindow::slot_menu_ansicht_datum_einstellen ()/*{{{*/
 	DateWindow editor (this, anzeigedatum);
 	QObject::connect (&editor, SIGNAL (date_accepted (QDate)), this, SLOT (set_anzeigedatum (QDate)));
 	editor.edit_date ();
-}/*}}}*/
+}
 
-void MainWindow::set_anzeigedatum (QDate date)/*{{{*/
+void MainWindow::set_anzeigedatum (QDate date)
 /*
  * Change the date for which flights are displayed. Apply the change.
  * Parameters:
@@ -1834,9 +1823,9 @@ void MainWindow::set_anzeigedatum (QDate date)/*{{{*/
 			// TODO infoframe?
 		}
 	}
-}/*}}}*/
+}
 
-void MainWindow::slot_menu_ansicht_display_new_flight_date ()/*{{{*/
+void MainWindow::slot_menu_ansicht_display_new_flight_date ()
 /*
  * Toggles whether the display date is reset to the current date whenever a
  * new flight is created.
@@ -1846,7 +1835,7 @@ void MainWindow::slot_menu_ansicht_display_new_flight_date ()/*{{{*/
 
 	//	display_new_flight_date=!menu_ansicht_datum->isItemChecked (id_mnu_ansicht_display_new_flight_date);
 	update_checks ();
-}/*}}}*/
+}
 
 /**
  * sets the default font of the application
@@ -1890,7 +1879,7 @@ void MainWindow::slotDecFont ()
 	}
 }
 
-void MainWindow::slot_menu_ansicht_always_use_current_date ()/*{{{*/
+void MainWindow::slot_menu_ansicht_always_use_current_date ()
 /*
  * Toggles whether the display date is reset to the current date whenever a
  * new flight is created.
@@ -1900,9 +1889,9 @@ void MainWindow::slot_menu_ansicht_always_use_current_date ()/*{{{*/
 
 	//	always_use_current_date=!menu_ansicht_datum->isItemChecked (id_mnu_ansicht_always_use_current_date);
 	update_checks ();
-}/*}}}*/
+}
 
-void MainWindow::slot_schleppref_springen ()/*{{{*/
+void MainWindow::slot_schleppref_springen ()
 /*
  * If the currently selected entry in the table is a member of an airtow,
  * jump to the other member.
@@ -1919,9 +1908,9 @@ void MainWindow::slot_schleppref_springen ()/*{{{*/
 		target_row = tbl_fluege->row_from_sref (id); // Flug
 
 	if (target_row >= 0) tbl_fluege->setCurrentCell (target_row, tbl_fluege->currentColumn ());
-}/*}}}*/
+}
 
-void MainWindow::slot_tabelle_sortieren ()/*{{{*/
+void MainWindow::slot_tabelle_sortieren ()
 /*
  * Sort the table by the currently selected column.
  */
@@ -1929,54 +1918,52 @@ void MainWindow::slot_tabelle_sortieren ()/*{{{*/
 	int col = tbl_fluege->currentColumn ();
 	tbl_fluege->sortByColumn (col);
 
-}/*}}}*/
-/*}}}*/
+}
 
-// Men� Statistik/*{{{*/
-void MainWindow::slot_flugbuch ()/*{{{*/
+// Men� Statistik
+void MainWindow::slot_flugbuch ()
 /*
  * Opens the Flugbuch statistics window for the current display date.
  */
 {
 	(new StatisticsWindow (this, "fbf", false, Qt::WDestructiveClose, ss, db))->flugbuch (anzeigedatum);
-}/*}}}*/
+}
 
-void MainWindow::slot_bordbuch ()/*{{{*/
+void MainWindow::slot_bordbuch ()
 /*
  * Opens the Bordbuch statistics window for the current display date.
  */
 {
 	(new StatisticsWindow (this, "bbf", false, Qt::WDestructiveClose, ss, db))->bordbuch (anzeigedatum);
-}/*}}}*/
+}
 
-void MainWindow::slot_sastat ()/*{{{*/
+void MainWindow::slot_sastat ()
 /*
  * Opens the Startartstatistik statistics window for the current display
  * date.
  */
 {
 	(new StatisticsWindow (this, "sas", false, Qt::WDestructiveClose, ss, db))->sastat (anzeigedatum);
-}/*}}}*/
-/*}}}*/
+}
 
-// Men� Datenbank/*{{{*/
-void MainWindow::slot_flugzeugeditor ()/*{{{*/
+// Men� Datenbank
+void MainWindow::slot_flugzeugeditor ()
 /*
  * Opens the plane editor.
  */
 {
 	flugzeug_liste->liste ();
-}/*}}}*/
+}
 
-void MainWindow::slot_personeneditor ()/*{{{*/
+void MainWindow::slot_personeneditor ()
 /*
  * Opens the person editor.
  */
 {
 	personen_liste->liste ();
-}/*}}}*/
+}
 
-//void MainWindow::slot_csv ()/*{{{*/
+//void MainWindow::slot_csv ()
 //	/*
 //	 * Old function to create a CSV table. Now done by the webinterface.
 //	 */
@@ -1987,9 +1974,9 @@ void MainWindow::slot_personeneditor ()/*{{{*/
 //	{
 //		show_warning ("Fehler bei der Erstellung der CSV-Ausz�ge.", this);
 //	}
-//}/*}}}*/
+//}
 
-void MainWindow::slot_db_refresh_all ()/*{{{*/
+void MainWindow::slot_db_refresh_all ()
 /*
  * Start a refresh of the complete database.
  * Note that this function does not do any refreshing but emits a signal
@@ -1999,38 +1986,36 @@ void MainWindow::slot_db_refresh_all ()/*{{{*/
 {
 	db_event event (det_refresh, db_alle, 0);
 	emit db_change (&event);
-}/*}}}*/
-/*}}}*/
+}
 
-// Men� Hilfe/*{{{*/
-void MainWindow::slot_info ()/*{{{*/
+// Men� Hilfe
+void MainWindow::slot_info ()
 /*
  * Show the information dialog with the program version information.
  */
 {
 	ss->show_version ();
-}/*}}}*/
+}
 
-void MainWindow::slot_netztest ()/*{{{*/
+void MainWindow::slot_netztest ()
 /*
  * Execute the external network testing utility, if set.
  */
 {
 	if (!opts.diag_cmd.isEmpty ()) system (opts.diag_cmd.latin1());
-}/*}}}*/
-/*}}}*/
+}
 
-// Men� Debug/*{{{*/
-void MainWindow::slot_segfault ()/*{{{*/
+// Men� Debug
+void MainWindow::slot_segfault ()
 /*
  * Cause a segfault.
  * This function is intended for testing the automatic restart mechanism.
  */
 {
 	*(int *)NULL = 0;
-}/*}}}*/
+}
 
-void MainWindow::slot_ping_db ()/*{{{*/
+void MainWindow::slot_ping_db ()
 /*
  * Check if the database connection is OK and inform the user.
  */
@@ -2043,9 +2028,9 @@ void MainWindow::slot_ping_db ()/*{{{*/
 	{
 		QMessageBox::information (this, "Datenbankstatus", "Datenbank ist tot"); //, "&Ja", "&Nein", QString::null, 0, 1);
 	}
-}/*}}}*/
+}
 
-void MainWindow::slot_display_log ()/*{{{*/
+void MainWindow::slot_display_log ()
 {
 	//	toggle (menu_debug, id_mnu_debug_display_log);
 
@@ -2056,34 +2041,30 @@ void MainWindow::slot_display_log ()/*{{{*/
 	else
 		log->hide ();
 }
-/*}}}*/
-/*}}}*/
 
-// Men� Demosystem/*{{{*/
-void MainWindow::slot_webinterface ()/*{{{*/
+
+// Men� Demosystem
+void MainWindow::slot_webinterface ()
 /*
  * Calls a browser with the web interface.
  */
 {
 	system ("firefox http://localhost/ &");
-}/*}}}*/
-/*}}}*/
+}
 
 // Logging
-void MainWindow::log_message (QString message)/*{{{*/
+void MainWindow::log_message (QString message)
 {
 	log->append ("[" + QTime::currentTime ().toString () + "] " + message);
 }
-/*}}}*/
 
-void MainWindow::log_message (QString *message)/*{{{*/
+void MainWindow::log_message (QString *message)
 {
 	if (message) log_message (*message);
 }
-/*}}}*/
 
 // Auxiliary functions
-bool MainWindow::try_initialize_db (QString reason)/*{{{*/
+bool MainWindow::try_initialize_db (QString reason)
 // Returns: success
 {
 	// We need to initialize the database. Therefore, we ask the
@@ -2147,15 +2128,13 @@ bool MainWindow::try_initialize_db (QString reason)/*{{{*/
 
 	return true;
 }
-/*}}}*/
 
-bool MainWindow::db_available ()/*{{{*/
+bool MainWindow::db_available ()
 {
 	return (db_state == ds_established);
 }
-/*}}}*/
 
-void MainWindow::set_connection_label (const QString &text, const QColor &color)/*{{{*/
+void MainWindow::set_connection_label (const QString &text, const QColor &color)
 {
 	if (lbl_info_value[idx_info_datenbankverbindung]) lbl_info_value[idx_info_datenbankverbindung]->setText (text);
 	if (lbl_info_value[idx_info_datenbankverbindung]) lbl_info_value[idx_info_datenbankverbindung]->setPaletteForegroundColor (
@@ -2167,22 +2146,20 @@ void MainWindow::set_connection_label (const QString &text, const QColor &color)
 	// Vielleicht kann man es auch einfach weglassen?
 	//	qApp->processEvents ();
 }
-/*}}}*/
 
 ////////////////////////////////////////////////////////////////
 //////////////// NEW DATABASE STATE CODE ///////////////////////
 ////////////////////////////////////////////////////////////////
 
 // FSM functions
-void MainWindow::slot_timer_db ()/*{{{*/
+void MainWindow::slot_timer_db ()
 {
 	// When the timer is triggered, do the action correspondig to the current
 	// state.
 	db_do_action ();
 }
-/*}}}*/
 
-void MainWindow::db_set_state (db_state_t new_state)/*{{{*/
+void MainWindow::db_set_state (db_state_t new_state)
 // Sets the state and updates other variables
 {
 	db_state_t old_state = db_state;
@@ -2243,9 +2220,8 @@ void MainWindow::db_set_state (db_state_t new_state)/*{{{*/
 
 	if (new_state != old_state && new_state != ds_no_connection) db_do_action ();
 }
-/*}}}*/
 
-MainWindow::db_state_t MainWindow::db_action_connect ()/*{{{*/
+MainWindow::db_state_t MainWindow::db_action_connect ()
 {
 	//set_connection_label ("Verbindungsaufbau zu "+db->get_server ()+"...");
 	set_connection_label ("Verbindungsaufbau zu " + opts.server_display_name + "...");
@@ -2314,18 +2290,16 @@ MainWindow::db_state_t MainWindow::db_action_connect ()/*{{{*/
 	restart_all_plugins ();
 	return ds_established;
 }
-/*}}}*/
 
-MainWindow::db_state_t MainWindow::db_action_check_connection ()/*{{{*/
+MainWindow::db_state_t MainWindow::db_action_check_connection ()
 {
 	if (db->alife ())
 		return ds_established;
 	else
 		return ds_connection_lost;
 }
-/*}}}*/
 
-void MainWindow::db_do_action ()/*{{{*/
+void MainWindow::db_do_action ()
 {
 	switch (db_state)
 	{
@@ -2346,19 +2320,16 @@ void MainWindow::db_do_action ()/*{{{*/
 			// no default to allow compiler warnings
 	}
 }
-/*}}}*/
 
-void MainWindow::start_db ()/*{{{*/
+void MainWindow::start_db ()
 {
 	db_do_action ();
 }
-/*}}}*/
 
-//void MainWindow::slot_plugin_clicked (int i)/*{{{*/
+//void MainWindow::slot_plugin_clicked (int i)
 //{
 //	plugins[i].restart ();
 //}
-/*}}}*/
 
 /**
  * versuch, die virtuelle tastatur zu aktivieren/deaktivieren
@@ -2383,7 +2354,7 @@ void MainWindow::slotToggleKeyboard (bool active)
 // ** Plugins **
 // *************
 
-void MainWindow::restart_all_plugins ()/*{{{*/
+void MainWindow::restart_all_plugins ()
 {
 	if (weather)
 	{
@@ -2396,9 +2367,8 @@ void MainWindow::restart_all_plugins ()/*{{{*/
 		(*it).restart ();
 	}
 }
-/*}}}*/
 
-void MainWindow::openWeatherDialog ()/*{{{*/
+void MainWindow::openWeatherDialog ()
 {
 	if (!opts.weather_dialog_plugin.isEmpty ())
 	{
@@ -2411,7 +2381,6 @@ void MainWindow::openWeatherDialog ()/*{{{*/
 		weatherDialog->show ();
 	}
 }
-/*}}}*/
 
 /**
  * read config settings

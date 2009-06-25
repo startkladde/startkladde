@@ -1,6 +1,6 @@
 #include "db_proxy.h"
 
-db_id schleppmaschine_flog (sk_db *db, db_id sa_id, sk_time_t t)/*{{{*/
+db_id schleppmaschine_flog (sk_db *db, db_id sa_id, sk_time_t t)
 	/*
 	 * Proxy for db->plane_flying, taking a !!Startart (which should designate
 	 * an airtow) instead of an ID.
@@ -24,9 +24,9 @@ db_id schleppmaschine_flog (sk_db *db, db_id sa_id, sk_time_t t)/*{{{*/
 	{
 		return invalid_id;
 	}
-}	/*}}}*/
+}	
 
-int schleppflugzeug_aus_startart (sk_db *db, Plane *fz, int sa_num)/*{{{*/
+int schleppflugzeug_aus_startart (sk_db *db, Plane *fz, int sa_num)
 	/*
 	 * Proxy for db->get_plane_registration, taking a !!Startart (which should designate
 	 * an airtow) instead of an ID.
@@ -62,5 +62,5 @@ int schleppflugzeug_aus_startart (sk_db *db, Plane *fz, int sa_num)/*{{{*/
 		*fz=*(planes.first ());
 		return 0;
 	}
-}/*}}}*/
+}
 

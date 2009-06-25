@@ -68,7 +68,7 @@ class EntityEditWindow:public SkDialog
 		QLabel **labels;
 		QWidget **edit_widgets;
 
-		// Shortcuts/*{{{*/
+		// Shortcuts
 		SkTextBox *edit_registration;
 		SkTextBox *edit_wettkennz;
 		SkComboBox *edit_category;
@@ -78,7 +78,7 @@ class EntityEditWindow:public SkDialog
 		SkTextBox *edit_vorname;
 		SkTextBox *edit_nachname;
 		SkTextBox *edit_landesverbandsnummer;
-		SkTextBox *edit_bemerkungen;/*}}}*/
+		SkTextBox *edit_bemerkungen;
 
 		QPushButton *but_save, *but_cancel;
 

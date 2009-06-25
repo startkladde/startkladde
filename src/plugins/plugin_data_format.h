@@ -27,42 +27,42 @@ class plugin_data_format
 {
 	public:
 		// Exceptions
-		class exception: public std::exception/*{{{*/
+		class exception: public std::exception
 		{
 			public:
 				exception (const QString &_desc) :desc (_desc) {}
 				~exception () throw () {}
 				virtual QString description () { return desc; }
 				QString desc;
-		};/*}}}*/
-		class ex_file_not_found: public exception/*{{{*/
+		};
+		class ex_file_not_found: public exception
 		{
 			public:
 				ex_file_not_found (const QString &name=""):exception (name.isEmpty ()?"Plugin-Datei nicht gefunden":"Plugin-Datei "+name+" nicht gefunden") {};
-		};/*}}}*/
-		class ex_load_error: public exception/*{{{*/
+		};
+		class ex_load_error: public exception
 		{
 			public:
 				ex_load_error (const QString &msg=""):exception (msg.isEmpty ()?"Fehler beim Laden der Bibliothek":"Fehler beim Laden der Bibliothek: "+msg) {};
-		};/*}}}*/
-		class ex_symbol_not_found: public exception/*{{{*/
+		};
+		class ex_symbol_not_found: public exception
 		{
 			public:
 				ex_symbol_not_found (const QString &name):exception ("Symbol "+name+" nicht gefunden") {};
-		};/*}}}*/
-		class ex_plugin_internal_error: public exception/*{{{*/
+		};
+		class ex_plugin_internal_error: public exception
 		{
 			public:
 				ex_plugin_internal_error (const QString &msg):exception (msg), fatal (true) {};
 				ex_plugin_internal_error &is_fatal (bool f=true) { fatal=f; return *this; }
 				bool fatal;
 
-		};/*}}}*/
-		class ex_plugin_invalid_format: public ex_plugin_internal_error/*{{{*/
+		};
+		class ex_plugin_invalid_format: public ex_plugin_internal_error
 		{
 			public:
 				ex_plugin_invalid_format (const QString &fmt=""): ex_plugin_internal_error (fmt.isEmpty ()?"Ung�ltiges Format":"Ung�ltiges Format \""+fmt+"\"") { fatal=true; }
-		};/*}}}*/
+		};
 
 		// Construction
 		plugin_data_format (const QString &_filename);

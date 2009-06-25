@@ -1,17 +1,16 @@
 #include "db_table.h"
 
-db_table::db_table (QString _name)/*{{{*/
+db_table::db_table (QString _name)
 	:name (_name)
 {
-}/*}}}*/
+}
 
-db_table::db_table (QString _name, QString _like_table)/*{{{*/
+db_table::db_table (QString _name, QString _like_table)
 	:name (_name), like_table (_like_table)
 {
 }
-/*}}}*/
 
-std::ostream &operator<< (std::ostream &s, const db_table &t)/*{{{*/
+std::ostream &operator<< (std::ostream &s, const db_table &t)
 {
 	if (t.like_table.isEmpty ())
 	{
@@ -27,9 +26,8 @@ std::ostream &operator<< (std::ostream &s, const db_table &t)/*{{{*/
 
 	return s;
 }
-/*}}}*/
 
-QString db_table::mysql_create_query (bool force) const/*{{{*/
+QString db_table::mysql_create_query (bool force) const
 {
 	QString r="CREATE TABLE ";
 	if (!force) r+="IF NOT EXISTS ";
@@ -75,5 +73,4 @@ QString db_table::mysql_create_query (bool force) const/*{{{*/
 
 	return r;
 }
-/*}}}*/
 

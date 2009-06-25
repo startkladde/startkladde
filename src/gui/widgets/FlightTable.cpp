@@ -53,7 +53,7 @@ FlightTable::FlightTable (sk_db *_db, QWidget *parent)
 
 
 
-db_id FlightTable::id_from_row (int row)/*{{{*/
+db_id FlightTable::id_from_row (int row)
 	/*
 	 * Gets the ID saved in a given row.
 	 * Parameters:
@@ -63,9 +63,9 @@ db_id FlightTable::id_from_row (int row)/*{{{*/
 	 */
 {
 	return id_from_cell (row, tbl_idx_id);
-}/*}}}*/
+}
 
-db_id FlightTable::schleppref_from_row (int row)/*{{{*/
+db_id FlightTable::schleppref_from_row (int row)
 	/*
 	 * Gets the !!Schleppref saved in a given row.
 	 * Parameters:
@@ -75,11 +75,11 @@ db_id FlightTable::schleppref_from_row (int row)/*{{{*/
 	 */
 {
 	return id_from_cell (row, tbl_idx_schleppref);
-}/*}}}*/
+}
 
 
 
-int FlightTable::row_from_id (db_id id)/*{{{*/
+int FlightTable::row_from_id (db_id id)
 	/*
 	 * Gets the row where a given ID is saved.
 	 * Parameters:
@@ -89,9 +89,9 @@ int FlightTable::row_from_id (db_id id)/*{{{*/
 	 */
 {
 	return row_from_column_id (id, tbl_idx_id);
-}/*}}}*/
+}
 
-int FlightTable::row_from_sref (db_id sref)/*{{{*/
+int FlightTable::row_from_sref (db_id sref)
 	/*
 	 * Gets the row where a given !!Schleppref is saved.
 	 * Parameters:
@@ -101,9 +101,9 @@ int FlightTable::row_from_sref (db_id sref)/*{{{*/
 	 */
 {
 	return row_from_column_id (sref, tbl_idx_schleppref);
-}/*}}}*/
+}
 
-bool FlightTable::row_is_flight (int row)/*{{{*/
+bool FlightTable::row_is_flight (int row)
 	/*
 	 * Check if a column of the table contains a flight.
 	 * Parameters:
@@ -121,11 +121,11 @@ bool FlightTable::row_is_flight (int row)/*{{{*/
 		return true;
 	}
 	return false;
-}/*}}}*/
+}
 
 
 
-SkButton *FlightTable::set_button_or_text (int row, int column, bool set_button, QString text, QColor bg, db_id data)/*{{{*/
+SkButton *FlightTable::set_button_or_text (int row, int column, bool set_button, QString text, QColor bg, db_id data)
 	/*
 	 * Sets a cell to a button or a text.
 	 * Parameters:
@@ -149,9 +149,9 @@ SkButton *FlightTable::set_button_or_text (int row, int column, bool set_button,
 		set_cell (row, column, text, bg);
 		return NULL;
 	}
-}/*}}}*/
+}
 
-void FlightTable::set_cell_by_type (int row, int column, zell_typ typ, QString button_text, QString zeit_text, QColor bg, db_id data, const char *signal_target)/*{{{*/
+void FlightTable::set_cell_by_type (int row, int column, zell_typ typ, QString button_text, QString zeit_text, QColor bg, db_id data, const char *signal_target)
 	/*
 	 * Sets a cell according to a cell type given.
 	 * Parameters:
@@ -198,11 +198,11 @@ void FlightTable::set_cell_by_type (int row, int column, zell_typ typ, QString b
 			set_button_or_text (row, column, false, "!!!", bg, 0);
 			break;
 	}
-}/*}}}*/
+}
 
 
 
-int FlightTable::insert_row_for_flight (Flight *f)/*{{{*/
+int FlightTable::insert_row_for_flight (Flight *f)
 	/*
 	 * Insert a row at the correct position for a given flight.
 	 * Parameters:
@@ -240,9 +240,9 @@ int FlightTable::insert_row_for_flight (Flight *f)/*{{{*/
 
 	insertRow (row);
 	return row;
-}/*}}}*/
+}
 
-void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)/*{{{*/
+void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	/*
 	 * Writes a given flight to a given row in the table.
 	 * Parameters:
@@ -576,9 +576,9 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)/*{
 
 	update_row_time (row);
 
-}/*}}}*/
+}
 
-void FlightTable::update_flight (db_id id, Flight *f)/*{{{*/
+void FlightTable::update_flight (db_id id, Flight *f)
 	/*
 	 * Updates the flight data in the table, add the flight if it is not in
 	 * the table yet, or remove it if it is not to be shown (for example, if it
@@ -690,9 +690,9 @@ void FlightTable::update_flight (db_id id, Flight *f)/*{{{*/
 			if (row>=0) removeRow (row);
 		}
 	}
-}/*}}}*/
+}
 
-void FlightTable::removeRow (int row)/*{{{*/
+void FlightTable::removeRow (int row)
 	/*
 	 * Removes a row from the table.
 	 * Parameters:
@@ -704,9 +704,9 @@ void FlightTable::removeRow (int row)/*{{{*/
 	setCellWidget (row, tbl_idx_startzeit, NULL);
 	setCellWidget (row, tbl_idx_landezeit, NULL);
 	SkTable::removeRow (row);
-}/*}}}*/
+}
 
-void FlightTable::remove_flight (db_id id)/*{{{*/
+void FlightTable::remove_flight (db_id id)
 	/*
 	 * Removes a row containing a given flight from the table, also remove the
 	 * row containing the !!Schleppflug, if any
@@ -721,11 +721,11 @@ void FlightTable::remove_flight (db_id id)/*{{{*/
 	row=row_from_sref (id);
 	if (row>=0)
 		removeRow (row);
-}/*}}}*/
+}
 
 
 
-void FlightTable::update_row_time (int row, sk_time_t *t)/*{{{*/
+void FlightTable::update_row_time (int row, sk_time_t *t)
 	/*
 	 * Updates the time displayed in a row.
 	 * Parameters:
@@ -761,7 +761,7 @@ void FlightTable::update_row_time (int row, sk_time_t *t)/*{{{*/
 			setText (row, tbl_idx_flugdauer, "Error");
 		}
 	}
-}/*}}}*/
+}
 
 void FlightTable::setText (int row, int column, QString text)
 {
@@ -770,7 +770,7 @@ void FlightTable::setText (int row, int column, QString text)
 	i->setText (text);
 }
 
-void FlightTable::update_row_time (int row)/*{{{*/
+void FlightTable::update_row_time (int row)
 	/*
 	 * Updates the time displayed in a row, using the current time.
 	 * Parameters:
@@ -780,9 +780,9 @@ void FlightTable::update_row_time (int row)/*{{{*/
 	sk_time_t t;
 	t.set_current ();
 	update_row_time (row, &t);
-}/*}}}*/
+}
 
-void FlightTable::update_time ()/*{{{*/
+void FlightTable::update_time ()
 	/*
 	 * If the current second is 0, update the time entries in every row.
 	 */
@@ -794,11 +794,11 @@ void FlightTable::update_time ()/*{{{*/
 			update_row_time (row);
 		}
 	}
-}/*}}}*/
+}
 
 
 
-void FlightTable::columnClicked (int c)/*{{{*/
+void FlightTable::columnClicked (int c)
 	/*
 	 * A column header was clicked. Sort the table by the corresponding column.
 	 * Parameters:
@@ -808,7 +808,7 @@ void FlightTable::columnClicked (int c)/*{{{*/
 	// Why isn't this inherited from SkTable?
 	sortByColumn (c);
 //	sortColumn (c, true, true);
-}/*}}}*/
+}
 
 
 /**

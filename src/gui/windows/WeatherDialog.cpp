@@ -2,7 +2,7 @@
 
 #include <QMovie>
 
-WeatherDialog::WeatherDialog (sk_plugin *_plugin, QWidget *parent, const char *name)/*{{{*/
+WeatherDialog::WeatherDialog (sk_plugin *_plugin, QWidget *parent, const char *name)
 	:QDialog (parent, name)
 {
 	plugin=_plugin;
@@ -18,15 +18,14 @@ WeatherDialog::WeatherDialog (sk_plugin *_plugin, QWidget *parent, const char *n
 	weatherLayout->setSizeConstraint (QLayout::SetFixedSize);
 	weatherLayout->addWidget (ww);
 	setLayout (weatherLayout);
-}/*}}}*/
+}
 
-WeatherDialog::~WeatherDialog ()/*{{{*/
+WeatherDialog::~WeatherDialog ()
 {
 	if (plugin) delete plugin; plugin=NULL;
 }
-/*}}}*/
 
-void WeatherDialog::resizeEvent (QResizeEvent *e)/*{{{*/
+void WeatherDialog::resizeEvent (QResizeEvent *e)
 {
 	// Bei Größenänderung: so verschieben, dass das Zentrum des Dialogs an der
 	// gleichen Stelle bleibt.
@@ -42,5 +41,4 @@ void WeatherDialog::resizeEvent (QResizeEvent *e)/*{{{*/
 
 	move (newX, newY);
 }
-/*}}}*/
 

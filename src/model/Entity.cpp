@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity ()/*{{{*/
+Entity::Entity ()
 	/*
 	 * Constructs an empty Entity instance.
 	 */
@@ -8,18 +8,16 @@ Entity::Entity ()/*{{{*/
 	id=0;
 	editierbar=true;
 }
-/*}}}*/
 
-Entity::~Entity ()/*{{{*/
+Entity::~Entity ()
 	/*
 	 * Cleans up a Entity instance.
 	 */
 {
 
 }
-/*}}}*/
 
-QString entityLabel (EntityType t, casus c)/*{{{*/
+QString entityLabel (EntityType t, casus c)
 	/*
 	 * Returns a word describing the type of Entity.
 	 * TODO: this function should be overridden in the base class instead of
@@ -33,7 +31,7 @@ QString entityLabel (EntityType t, casus c)/*{{{*/
 {
 	switch (t)
 	{
-		case st_plane:/*{{{*/
+		case st_plane:
 		{
 			switch (c)
 			{
@@ -43,8 +41,8 @@ QString entityLabel (EntityType t, casus c)/*{{{*/
 				case cas_akkusativ: return "Flugzeug"; break;
 				default: return "[Flugzeug]"; break;
 			}
-		} break;/*}}}*/
-		case st_person:/*{{{*/
+		} break;
+		case st_person:
 		{
 			switch (c)
 			{
@@ -54,8 +52,8 @@ QString entityLabel (EntityType t, casus c)/*{{{*/
 				case cas_akkusativ: return "Person"; break;
 				default: return "[Person]"; break;
 			}
-		} break;/*}}}*/
-		case st_startart:/*{{{*/
+		} break;
+		case st_startart:
 		{
 			switch (c)
 			{
@@ -65,8 +63,8 @@ QString entityLabel (EntityType t, casus c)/*{{{*/
 				case cas_akkusativ: return "Startart"; break;
 				default: return "[Startart]"; break;
 			}
-		} break;/*}}}*/
-		default:/*{{{*/
+		} break;
+		default:
 		{
 			switch (c)
 			{
@@ -76,14 +74,13 @@ QString entityLabel (EntityType t, casus c)/*{{{*/
 				case cas_akkusativ: return "Zeug"; break;
 				default: return "[Zeug]"; break;
 			}
-		} break;/*}}}*/
+		} break;
 	}
 }
-/*}}}*/
 
 
 
-QString Entity::get_selector_value (int column_number) const/*{{{*/
+QString Entity::get_selector_value (int column_number) const
 {
 	switch (column_number)
 	{
@@ -92,9 +89,8 @@ QString Entity::get_selector_value (int column_number) const/*{{{*/
 		default: return QString ();
 	}
 }
-/*}}}*/
 
-QString Entity::get_selector_caption (int column_number)/*{{{*/
+QString Entity::get_selector_caption (int column_number)
 {
 	switch (column_number)
 	{
@@ -103,10 +99,9 @@ QString Entity::get_selector_caption (int column_number)/*{{{*/
 		default: return QString ();
 	}
 }
-/*}}}*/
 
 
-void Entity::output (std::ostream &stream, output_format_t format, bool last, QString name, QString value)/*{{{*/
+void Entity::output (std::ostream &stream, output_format_t format, bool last, QString name, QString value)
 {
 	switch (format)
 	{
@@ -132,11 +127,9 @@ void Entity::output (std::ostream &stream, output_format_t format, bool last, QS
 		} break;
 	}
 }
-/*}}}*/
 
-void Entity::output (std::ostream &stream, output_format_t format, bool last, QString name, db_id value)/*{{{*/
+void Entity::output (std::ostream &stream, output_format_t format, bool last, QString name, db_id value)
 {
 	output (stream, format, last, name, QString::number (value));
 }
-/*}}}*/
 

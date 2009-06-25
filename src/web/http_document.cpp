@@ -7,13 +7,12 @@ const QString http_document::mime_type_form_urlencoded="application/x-www-form-u
 const QString http_document::mime_type_multipart_form_data="multipart/form-data";
 
 
-http_document::http_document ()/*{{{*/
+http_document::http_document ()
 {
 	no_header=false;
 }
-/*}}}*/
 
-void http_document::output_header (const QString &mime_type, const QString &charset)/*{{{*/
+void http_document::output_header (const QString &mime_type, const QString &charset)
 {
 	if (no_header) return;
 
@@ -43,33 +42,28 @@ void http_document::output_header (const QString &mime_type, const QString &char
 	output_buffer << header;
 	output_buffer << std::endl;
 }
-/*}}}*/
 
-void http_document::output (const QString &document, const QString &mime_type, const QString &charset)/*{{{*/
+void http_document::output (const QString &document, const QString &mime_type, const QString &charset)
 {
 	output_header (mime_type, charset);
 	output_buffer << document;
 }
-/*}}}*/
 
-void http_document::output (const html_document &document)/*{{{*/
+void http_document::output (const html_document &document)
 {
 	output_header ("text/html", "ISO-8859-1");
 	output_buffer << document.text ();
 }
-/*}}}*/
 
-void http_document::output_redirect (QString target)/*{{{*/
+void http_document::output_redirect (QString target)
 {
 	output_buffer << "Location: " << target << std::endl;
 	output_buffer << std::endl;
 }
-/*}}}*/
 
-void http_document::do_output (std::ostream &stream)/*{{{*/
+void http_document::do_output (std::ostream &stream)
 {
 	stream << output_buffer.str ();
 	output_buffer.str ("");
 }
-/*}}}*/
 

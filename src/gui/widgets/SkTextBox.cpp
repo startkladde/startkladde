@@ -1,6 +1,6 @@
 #include "SkTextBox.h"
 
-SkTextBox::SkTextBox (QWidget *parent, const char *name)/*{{{*/
+SkTextBox::SkTextBox (QWidget *parent, const char *name)
 	:QLineEdit (parent, name)
 	/*
 	 * Constructs an SkTextBox instance.
@@ -10,9 +10,8 @@ SkTextBox::SkTextBox (QWidget *parent, const char *name)/*{{{*/
 {
 	setFocusPolicy (Qt::StrongFocus);
 }
-/*}}}*/
 
-void SkTextBox::focusInEvent (QFocusEvent *qfe)/*{{{*/
+void SkTextBox::focusInEvent (QFocusEvent *qfe)
 	/*
 	 * Called when the input focus is set on the widget. Emits a signal.
 	 * Parameters:
@@ -22,9 +21,8 @@ void SkTextBox::focusInEvent (QFocusEvent *qfe)/*{{{*/
 	QLineEdit::focusInEvent (qfe);
 	emit focus_in ();
 }
-/*}}}*/
 
-void SkTextBox::focusOutEvent (QFocusEvent *qfe)/*{{{*/
+void SkTextBox::focusOutEvent (QFocusEvent *qfe)
 	/*
 	 * Called when the input focus is removed from the widget. Emits a signal.
 	 * Parameters:
@@ -34,4 +32,3 @@ void SkTextBox::focusOutEvent (QFocusEvent *qfe)/*{{{*/
 	emit focus_out ();
 	QLineEdit::focusOutEvent (qfe);
 }
-/*}}}*/

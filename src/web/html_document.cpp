@@ -1,6 +1,6 @@
 #include "html_document.h"
 
-unsigned int html_table_row::num_cells () const/*{{{*/
+unsigned int html_table_row::num_cells () const
 	// Returns the number of cells in the row, according to their colspan
 {
 	int r=0;
@@ -16,12 +16,11 @@ unsigned int html_table_row::num_cells () const/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
 
 
 
-html_document::html_document (bool _auto_title)/*{{{*/
+html_document::html_document (bool _auto_title)
 	:newline (true),
 	auto_title (_auto_title),
 	indent (auto_title?2:0),
@@ -29,9 +28,8 @@ html_document::html_document (bool _auto_title)/*{{{*/
 {
 
 }
-/*}}}*/
 
-html_document &html_document::write (const QString &s, bool do_indent)/*{{{*/
+html_document &html_document::write (const QString &s, bool do_indent)
 {
 	QString indent_string;
 	if (do_indent)
@@ -53,21 +51,18 @@ html_document &html_document::write (const QString &s, bool do_indent)/*{{{*/
 
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_text (const QString &s, bool do_indent)/*{{{*/
+html_document &html_document::write_text (const QString &s, bool do_indent)
 {
 	return write (html_escape (s), do_indent);
 }
-/*}}}*/
 
-html_document &html_document::write_text (bool b, bool do_indent)/*{{{*/
+html_document &html_document::write_text (bool b, bool do_indent)
 {
 	return write (html_escape (bool_to_string (b)), do_indent);
 }
-/*}}}*/
 
-html_document &html_document::write_paragraph (const QString &s, const QString &style_class)/*{{{*/
+html_document &html_document::write_paragraph (const QString &s, const QString &style_class)
 {
 	QString style_string;
 	if (!style_class.isEmpty ()) style_string=" class=\""+style_class+"\"";
@@ -87,22 +82,19 @@ html_document &html_document::write_paragraph (const QString &s, const QString &
 
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_error_paragraph (const QString &s)/*{{{*/
+html_document &html_document::write_error_paragraph (const QString &s)
 {
 	return write_paragraph (s, "error");
 }
-/*}}}*/
 
-void html_document::clear ()/*{{{*/
+void html_document::clear ()
 {
 	out.str ("");
 	title="";
 }
-/*}}}*/
 
-QString html_document::text () const/*{{{*/
+QString html_document::text () const
 {
 	if (auto_title)
 	{
@@ -129,9 +121,8 @@ QString html_document::text () const/*{{{*/
 		return std2q (out.str ());
 	}
 }
-/*}}}*/
 
-html_document &html_document::start_section (const QString &caption)/*{{{*/
+html_document &html_document::start_section (const QString &caption)
 {
 	write (
 		"<h"+QString::number (heading)+">"
@@ -142,62 +133,54 @@ html_document &html_document::start_section (const QString &caption)/*{{{*/
 
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::end_section ()/*{{{*/
+html_document &html_document::end_section ()
 {
 	--heading;
 
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::start_paragraph (const QString &style_class)/*{{{*/
+html_document &html_document::start_paragraph (const QString &style_class)
 {
 	QString style_string;
 	if (!style_class.isEmpty ()) style_string=" class=\""+style_class+"\"";
 	start_tag ("p", style_string);
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::end_paragraph ()/*{{{*/
+html_document &html_document::end_paragraph ()
 {
 	end_tag ("p");
 	return *this;
 }
-/*}}}*/
 
 
 
-QString html_document::param (const QString &name, const QString &value)/*{{{*/
+QString html_document::param (const QString &name, const QString &value)
 {
 	return " "+name+"=\""+html_escape (value)+"\"";
 }
-/*}}}*/
 
-QString html_document::text_link (const QString &target, const QString &text)/*{{{*/
+QString html_document::text_link (const QString &target, const QString &text)
 {
 	return "<a href=\""+html_escape (target)+"\">"+html_escape (text)+"</a>";
 }
-/*}}}*/
 
-QString html_document::text_link (const QString &target, const QString &text, const argument_list &args)/*{{{*/
+QString html_document::text_link (const QString &target, const QString &text, const argument_list &args)
 {
 	QString targ=target;
 	if (!args.empty ()) targ+="?"+args.make_cgi_parameters ();
 
 	return "<a href=\""+html_escape (targ)+"\">"+html_escape (text)+"</a>";
 }
-/*}}}*/
 
-QString html_document::anchor (const QString &name, const QString &text)/*{{{*/
+QString html_document::anchor (const QString &name, const QString &text)
 {
 	return "<a name=\""+html_escape (name)+"\">"+html_escape (text)+"</a>";
 }
-/*}}}*/
 
-html_document &html_document::start_tag (const QString &tag, const QString &params)/*{{{*/
+html_document &html_document::start_tag (const QString &tag, const QString &params)
 {
 	QString text=tag;
 	if (!params.isEmpty ()) text+=" "+params;
@@ -205,23 +188,20 @@ html_document &html_document::start_tag (const QString &tag, const QString &para
 	++indent;
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::end_tag (const QString &tag)/*{{{*/
+html_document &html_document::end_tag (const QString &tag)
 {
 	--indent;
 	write ("</"+tag+">\n");
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_hidden_field (const QString &name, const QString &value)/*{{{*/
+html_document &html_document::write_hidden_field (const QString &name, const QString &value)
 {
 	return write ("<div><input type=\"hidden\" name=\""+html_escape (name)+"\" value=\""+html_escape (value)+"\"></div>\n");
 }
-/*}}}*/
 
-html_document &html_document::write_hidden_fields (const std::list<argument> &args)/*{{{*/
+html_document &html_document::write_hidden_fields (const std::list<argument> &args)
 {
 	QString r;
 	std::list<argument>::const_iterator end=args.end ();
@@ -230,26 +210,23 @@ html_document &html_document::write_hidden_fields (const std::list<argument> &ar
 
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_hidden_fields (const argument_list &args)/*{{{*/
+html_document &html_document::write_hidden_fields (const argument_list &args)
 {
 	return write_hidden_fields (args.get_list ());
 }
-/*}}}*/
 
-html_document &html_document::write_table_data (const QString &text, int colspan)/*{{{*/
+html_document &html_document::write_table_data (const QString &text, int colspan)
 {
 	write ("<td");
 	if (colspan>1) write (" colspan="+QString::number (colspan));
 	write (">"+text+"</td>\n");
 	return *this;
 }
-/*}}}*/
 
 
 
-html_document &html_document::write (const html_table_cell &cell, unsigned int num, unsigned int num_columns)/*{{{*/
+html_document &html_document::write (const html_table_cell &cell, unsigned int num, unsigned int num_columns)
 	// num: 0 based
 {
 	QString tag=cell.header?"th":"td";
@@ -281,9 +258,8 @@ html_document &html_document::write (const html_table_cell &cell, unsigned int n
 
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write (const html_table_row &row, unsigned int num_columns)/*{{{*/
+html_document &html_document::write (const html_table_row &row, unsigned int num_columns)
 {
 	start_tag ("tr");
 	html_table_row::const_iterator end=row.end ();
@@ -298,9 +274,8 @@ html_document &html_document::write (const html_table_row &row, unsigned int num
 	end_tag ("tr");
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write (const html_table &table, bool noborder)/*{{{*/
+html_document &html_document::write (const html_table &table, bool noborder)
 {
 	QString attrib;
 	if (noborder) attrib="class=\"noborder\"";
@@ -319,10 +294,9 @@ html_document &html_document::write (const html_table &table, bool noborder)/*{{
 	end_tag ("table");
 	return *this;
 }
-/*}}}*/
 
 
-QString html_document::make_input_text (const QString &name, const QString &value, unsigned int size)/*{{{*/
+QString html_document::make_input_text (const QString &name, const QString &value, unsigned int size)
 {
 	QString params;
 	params+=" name=\""+html_escape (name)+"\"";
@@ -331,15 +305,13 @@ QString html_document::make_input_text (const QString &name, const QString &valu
 
 	return "<input type=\"text\""+params+">\n";
 }
-/*}}}*/
 
-QString html_document::make_input_file (const QString &name)/*{{{*/
+QString html_document::make_input_file (const QString &name)
 {
 	return "<input type=\"file\" name=\""+html_escape (name)+"\">\n";
 }
-/*}}}*/
 
-QString html_document::make_input_password (const QString &name, const QString &value)/*{{{*/
+QString html_document::make_input_password (const QString &name, const QString &value)
 {
 	QString r;
 
@@ -349,15 +321,13 @@ QString html_document::make_input_password (const QString &name, const QString &
 
 	return r;
 }
-/*}}}*/
 
-QString html_document::make_submit (const QString &caption)/*{{{*/
+QString html_document::make_submit (const QString &caption)
 {
 	return "<input type=\"submit\" value=\""+html_escape (caption)+"\">\n";
 }
-/*}}}*/
 
-QString html_document::make_input_checkbox (const QString &name, const QString &text, bool checked)/*{{{*/
+QString html_document::make_input_checkbox (const QString &name, const QString &text, bool checked)
 {
 	QString r;
 	r="<input type=\"checkbox\" name=\""+html_escape (name)+"\"";
@@ -365,9 +335,8 @@ QString html_document::make_input_checkbox (const QString &name, const QString &
 	r+=">"+html_escape (text)+"\n";
 	return r;
 }
-/*}}}*/
 
-QString html_document::make_input_radio (const QString &name, const QString &value, const QString &text, bool checked)/*{{{*/
+QString html_document::make_input_radio (const QString &name, const QString &value, const QString &text, bool checked)
 {
 	QString r;
 	r="<input type=\"radio\" name=\""+html_escape (name)+"\" value=\""+html_escape (value)+"\"";
@@ -377,9 +346,8 @@ QString html_document::make_input_radio (const QString &name, const QString &val
 	r+="\n";
 	return r;
 }
-/*}}}*/
 
-QString html_document::make_input_select (const QString &name, const argument_list &options, const QString &selected)/*{{{*/
+QString html_document::make_input_select (const QString &name, const argument_list &options, const QString &selected)
 {
 	QString r;
 	r+="<select name=\""+name+"\">\n";
@@ -395,9 +363,8 @@ QString html_document::make_input_select (const QString &name, const argument_li
 
 	return r;
 }
-/*}}}*/
 
-QString html_document::make_input_select_bool (const QString &name, bool selected_value)/*{{{*/
+QString html_document::make_input_select_bool (const QString &name, bool selected_value)
 {
 	argument_list options;
 	options.set_value ("0", bool_to_string (false));
@@ -406,15 +373,13 @@ QString html_document::make_input_select_bool (const QString &name, bool selecte
 	QString selected=selected_value?"1":"0";
 	return make_input_select (name, options, selected);
 }
-/*}}}*/
 
-QString html_document::make_text_button (const QString &name, const QString &value, const QString &text)/*{{{*/
+QString html_document::make_text_button (const QString &name, const QString &value, const QString &text)
 {
 	return "<button type=\"submit\" name=\""+html_escape (name)+"\" value=\""+html_escape (value)+"\">"+html_escape (text)+"</button>\n";
 }
-/*}}}*/
 
-QString html_document::make_list (QStringList entries, bool numbered)/*{{{*/
+QString html_document::make_list (QStringList entries, bool numbered)
 {
 	QString r;
 
@@ -436,94 +401,81 @@ QString html_document::make_list (QStringList entries, bool numbered)/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
-QString html_document::make_text_list (const QStringList entries, bool numbered)/*{{{*/
+QString html_document::make_text_list (const QStringList entries, bool numbered)
 {
 	return make_list (html_escape (entries), numbered);
 }
-/*}}}*/
 
 
 
 
-html_document &html_document::write_input_text (const QString &name, const QString &value, unsigned int size)/*{{{*/
+html_document &html_document::write_input_text (const QString &name, const QString &value, unsigned int size)
 {
 	write (make_input_text (name, value, size));
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_input_file (const QString &name)/*{{{*/
+html_document &html_document::write_input_file (const QString &name)
 {
 	write (make_input_file (name));
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_input_password (const QString &name, const QString &value)/*{{{*/
+html_document &html_document::write_input_password (const QString &name, const QString &value)
 {
 	write (make_input_password (name, value));
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_input_checkbox (const QString &name, const QString &text, bool checked)/*{{{*/
+html_document &html_document::write_input_checkbox (const QString &name, const QString &text, bool checked)
 {
 	write (make_input_checkbox (name, text, checked));
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_input_radio (const QString &name, const QString &value, const QString &text, bool checked)/*{{{*/
+html_document &html_document::write_input_radio (const QString &name, const QString &value, const QString &text, bool checked)
 {
 	write (make_input_radio (name, value, text, checked));
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_submit (const QString &caption)/*{{{*/
+html_document &html_document::write_submit (const QString &caption)
 {
 	write (make_submit (caption));
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_input_select (const QString &name, const argument_list &options, const QString &selected)/*{{{*/
+html_document &html_document::write_input_select (const QString &name, const argument_list &options, const QString &selected)
 {
 	write (make_input_select (name, options, selected));
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_input_select_bool (const QString &name, bool is_selected)/*{{{*/
+html_document &html_document::write_input_select_bool (const QString &name, bool is_selected)
 {
 	write (make_input_select_bool (name, is_selected));
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_text_button (const QString &name, const QString &value, const QString &text)/*{{{*/
+html_document &html_document::write_text_button (const QString &name, const QString &value, const QString &text)
 {
 	return write (make_text_button (name, value, text));
 }
-/*}}}*/
 
-html_document &html_document::write_list (QStringList entries, bool numbered)/*{{{*/
+html_document &html_document::write_list (QStringList entries, bool numbered)
 {
 	write (make_list (entries, numbered));
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_text_list (QStringList entries, bool numbered)/*{{{*/
+html_document &html_document::write_text_list (QStringList entries, bool numbered)
 {
 	write (make_text_list (entries, numbered));
 	return *this;
 }
-/*}}}*/
 
-html_document &html_document::write_preformatted (const QString &text)/*{{{*/
+html_document &html_document::write_preformatted (const QString &text)
 {
 	start_tag ("pre");
 	out << html_escape (text, false);
@@ -531,7 +483,6 @@ html_document &html_document::write_preformatted (const QString &text)/*{{{*/
 
 	return *this;
 }
-/*}}}*/
 
 
 

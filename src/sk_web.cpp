@@ -143,7 +143,7 @@
 //   possible).
 
 // TODO replace this because it mixes authentication and db access/authorization.
-enum db_access_t/*{{{*/
+enum db_access_t
 {
 	dba_none,
 	dba_access,
@@ -151,9 +151,8 @@ enum db_access_t/*{{{*/
 	dba_sk_admin,
 	dba_root
 };
-/*}}}*/
 
-QString db_access_string (db_access_t a)/*{{{*/
+QString db_access_string (db_access_t a)
 	/*
 	 * Makes a description for a db_access_t.
 	 * Paramters:
@@ -173,9 +172,8 @@ QString db_access_string (db_access_t a)/*{{{*/
 
 	return "???";
 }
-/*}}}*/
 
-bool provides (db_access_t a, db_access_t b)/*{{{*/
+bool provides (db_access_t a, db_access_t b)
 	/*
 	 * Returns whether one db access levels provides another.
 	 * Parameters:
@@ -216,7 +214,6 @@ bool provides (db_access_t a, db_access_t b)/*{{{*/
 	std::cerr << "Unhandled db_access_t case in provides ()" << std::endl;
 	return false;
 }
-/*}}}*/
 
 
 class web_interface_state;
@@ -224,7 +221,7 @@ class what_next;
 // TODO consider replacing state_hander by function objects
 typedef what_next (*state_handler) ();
 
-class web_interface_state/*{{{*/
+class web_interface_state
 {
 	public:
 		class ex_not_found: public std::exception {};
@@ -287,12 +284,11 @@ class web_interface_state/*{{{*/
 		QString caption;
 		state_handler handler;
 };
-/*}}}*/
 
 // web_interface_state static variables
 std::list<web_interface_state> web_interface_state::state_list;
 
-bool web_interface_state::add_to_list (const web_interface_state &state)/*{{{*/
+bool web_interface_state::add_to_list (const web_interface_state &state)
 	// Only, if label is unique
 {
 	// TODO hat std::list nicht so was wie find_if?
@@ -304,9 +300,8 @@ bool web_interface_state::add_to_list (const web_interface_state &state)/*{{{*/
 	state_list.push_back (state);
 	return true;
 }
-/*}}}*/
 
-const web_interface_state &web_interface_state::from_list (const QString &_label)/*{{{*/
+const web_interface_state &web_interface_state::from_list (const QString &_label)
 	throw (ex_not_found)
 {
 	// TODO hat std::list nicht so was wie find_if?
@@ -317,10 +312,9 @@ const web_interface_state &web_interface_state::from_list (const QString &_label
 
 	throw ex_not_found ();
 }
-/*}}}*/
 
 
-class ex_write_error_document: public std::exception/*{{{*/
+class ex_write_error_document: public std::exception
 {
 	public:
 		ex_write_error_document (const QString &_message):message (_message), program_error (false) {}
@@ -329,9 +323,8 @@ class ex_write_error_document: public std::exception/*{{{*/
 		QString message;
 		bool program_error;
 };
-/*}}}*/
 
-class ex_go_to_state: public std::exception/*{{{*/
+class ex_go_to_state: public std::exception
 {
 	public:
 		ex_go_to_state (const QString &_state):state (_state), error (false) {}
@@ -342,14 +335,13 @@ class ex_go_to_state: public std::exception/*{{{*/
 		QString message;
 		bool error;
 };
-/*}}}*/
 
 /****************************
  * SPECIFIC CODE BELOW HERE *
  ****************************/
 
 // Data types
-enum user_class_t/*{{{*/
+enum user_class_t
 	/*
 	 * Users of the web interface can be categorized in different classes. This
 	 * determines how they are authenticated and authorized.
@@ -360,9 +352,8 @@ enum user_class_t/*{{{*/
 				// sk_admin
 	uc_mysql_user	// MySQL user, log in as such
 };
-/*}}}*/
 
-// States/*{{{*/
+// States
 	/*
 	 * The web interface is modelled as a FSM. It has different states, each of
 	 * which peforms an action an then outputs a result page or goes to another
@@ -422,9 +413,8 @@ const QString web_test_redirect ="test_redirect";
 // TODO: user_change_pass und change_password Zusammenfassen?
 
 const QString &default_state=web_main_menu;
-/*}}}*/
 
-enum treatment_t/*{{{*/
+enum treatment_t
 	/*
 	 * "Treating" an object is performing a certain action, like displaying or
 	 * editing.  Treating is obsoleted by the object_field mechanism and only
@@ -441,9 +431,8 @@ enum treatment_t/*{{{*/
 	tm_edit,
 	tm_create
 };
-/*}}}*/
 
-bool object_required (treatment_t t)/*{{{*/
+bool object_required (treatment_t t)
 	/*
 	 * Whether we need a object to do the action.
 	 * For example, writing a table header does not require this.
@@ -463,29 +452,26 @@ bool object_required (treatment_t t)/*{{{*/
 	}
 	return true;
 }
-/*}}}*/
 
-enum request_method_t/*{{{*/
+enum request_method_t
 {
 	rm_post,
 	rm_get,
 	rm_commandline,
 	rm_other
 };
-/*}}}*/
 
 
 // Constants/Variables
-// CSV fields/*{{{*/
+// CSV fields
 // Column names for CSV columns.
 const QString csv_field_person_last_name="Nachname";
 const QString csv_field_person_first_name="Vorname";
 const QString csv_field_person_comments="Bemerkungen";
 const QString csv_field_person_club_id="Vereins-ID";
 const QString csv_field_person_club_id_old="Vereins-ID_alt";
-/*}}}*/
 
-// Arguments/*{{{*/
+// Arguments
 /*
  * Arguments can be stored in the CGI query and in the session. They are
  * identified by labels which have symbolic names defined here.
@@ -628,10 +614,9 @@ const QString field_flight_registration_towplane    ="registration_towplane";
 const QString field_flight_mode_towplane            ="mode_towplane";
 const QString field_flight_abrechnungshinweis       ="abrechnungshinweis";
 const QString field_flight_id                       ="id";
-/*}}}*/
 
 
-// Global (semi-)constants/*{{{*/
+// Global (semi-)constants
 const QString caption_prefix="Startkladde Web-Administration: ";
 QString relative_url;				// The relative URL where to reach the cgi program
 QString absolute_url;				// The absolute URL where to reach the cgi program
@@ -647,9 +632,8 @@ std::list<object_field> fields_flight_db_entry;  // The member field description
 std::list<float> widths_flugbuch_entry;			// The column widths of a flugbuch entry, in mm
 std::list<float> widths_bordbuch_entry;			// The column widths of an bordbuch entry, in mm
 std::list<float> widths_flightlist;			    // The column widths of a flightlist entry, in mm
-/*}}}*/
 
-// Global variables/*{{{*/
+// Global variables
 bool debug_enabled;                         // Whether debugging is enabled
 std::ostringstream debug_stream;                 // A stream whose contents are
 											// displayed in the document footer
@@ -669,7 +653,6 @@ const User *session_user;                // The user logged in if
 QString query_string;                        // The CGI query QString (might not
 											// exist for form/multipart POSTs)
 bool client_is_local;
-/*}}}*/
 
 
 // Helper functions
@@ -690,7 +673,7 @@ bool client_is_local;
 
 // Generic functions
 // TODO move to text
-const QString &message_or_default (const QString &message, const QString &def)/*{{{*/
+const QString &message_or_default (const QString &message, const QString &def)
 	/*
 	 * Returns a message, or, if it is empty, a default message.
 	 * Parameters:
@@ -706,9 +689,8 @@ const QString &message_or_default (const QString &message, const QString &def)/*
 	else
 		return message;
 }
-/*}}}*/
 
-sk_date date_from_cgi (const QString &year_arg, const QString &month_arg, const QString &day_arg)/*{{{*/
+sk_date date_from_cgi (const QString &year_arg, const QString &month_arg, const QString &day_arg)
 	/*
 	 * Reads a date from the CGI parameters:
 	 * Parameters:
@@ -726,7 +708,6 @@ sk_date date_from_cgi (const QString &year_arg, const QString &month_arg, const 
 	// value will be 0.
 	return sk_date (year, month, day);
 }
-/*}}}*/
 
 
 // Requirements checking
@@ -736,7 +717,7 @@ sk_date date_from_cgi (const QString &year_arg, const QString &month_arg, const 
 //     used.
 // Common std::exceptions:
 //   - ex_write_error_document: thrown in cas the requirement is not met.
-void require_access (db_access_t req, const QString &message="")/*{{{*/
+void require_access (db_access_t req, const QString &message="")
 	throw (ex_write_error_document)
 	/*
 	 * Checks if a certain access level or higher is present.
@@ -757,9 +738,8 @@ void require_access (db_access_t req, const QString &message="")/*{{{*/
 
 	}
 }
-/*}}}*/
 
-void require_club_admin (const QString &message="")/*{{{*/
+void require_club_admin (const QString &message="")
 	throw (ex_write_error_document)
 	/*
 	 * Checks whether club admin permissions are present. The sk_admin and root
@@ -783,9 +763,8 @@ void require_club_admin (const QString &message="")/*{{{*/
 
 	throw ex_write_error_document ("Unbehandelte Fall in require_club_admin").is_program_error ();
 }
-/*}}}*/
 
-void require_read_flight_db (const QString &message="")/*{{{*/
+void require_read_flight_db (const QString &message="")
 	throw (ex_write_error_document)
 	/*
 	 * Checks whether permissions for reading the flight database are present.
@@ -809,9 +788,8 @@ void require_read_flight_db (const QString &message="")/*{{{*/
 
 	throw ex_write_error_document ("Unbehandelte Fall in require_read_flight_db").is_program_error ();
 }
-/*}}}*/
 
-void require_matching_club_admin (const QString &club_name, const QString &message="", const QString &state="")/*{{{*/
+void require_matching_club_admin (const QString &club_name, const QString &message="", const QString &state="")
 	throw (ex_write_error_document, ex_go_to_state)
 	/*
 	 * Checks whether the user logged in is club admin for a given club.  The
@@ -839,9 +817,8 @@ void require_matching_club_admin (const QString &club_name, const QString &messa
 		}
 	}
 }
-/*}}}*/
 
-void require_sk_admin (const QString &message="")/*{{{*/
+void require_sk_admin (const QString &message="")
 	throw (ex_write_error_document)
 	/*
 	 * Checks whether the user logged in has permission sk_admin.
@@ -850,9 +827,8 @@ void require_sk_admin (const QString &message="")/*{{{*/
 	// For club admin, we need User
 	require_access (dba_sk_admin, message);
 }
-/*}}}*/
 
-void require_not_self (const QString &username, const QString &message="")/*{{{*/
+void require_not_self (const QString &username, const QString &message="")
 	throw (ex_write_error_document)
 	/*
 	 * Checks whether the name of the user logged in does *not* match a given
@@ -864,9 +840,8 @@ void require_not_self (const QString &username, const QString &message="")/*{{{*
 	if (session_username==username)
 		throw ex_write_error_document (message_or_default (message, "Diese Aktionen kann nicht mit sich selbst durchgef�hrt werden"));
 }
-/*}}}*/
 
-void require_sk_user (const QString &message="")/*{{{*/
+void require_sk_user (const QString &message="")
 	throw (ex_write_error_document)
 	/*
 	 * Checks whether the user logged in has *exactly* the permission User.
@@ -878,11 +853,10 @@ void require_sk_user (const QString &message="")/*{{{*/
 	if (session_access!=dba_sk_user)
 		throw ex_write_error_document (message_or_default (message, "Datenbankzugriff muss dba_sk_user sein."));
 }
-/*}}}*/
 
 
 
-user_class_t determine_user_class (const QString &name)/*{{{*/
+user_class_t determine_user_class (const QString &name)
 	/*
 	 * Determines to which user class a given login name belongs.
 	 * Parameters:
@@ -904,9 +878,8 @@ user_class_t determine_user_class (const QString &name)/*{{{*/
 	else
 		return uc_sk_user;
 }
-/*}}}*/
 
-bool authenticate (const QString &username, const QString &password, QString &error_message)/*{{{*/
+bool authenticate (const QString &username, const QString &password, QString &error_message)
 	/*
 	 * Find out whether the user is allowed to log in.
 	 * Parameters:
@@ -1031,9 +1004,8 @@ bool authenticate (const QString &username, const QString &password, QString &er
 #undef LOGIN_ERROR
 #undef LOGIN_ERROR_IF
 }
-/*}}}*/
 
-argument_list make_persistent_parameter_list (const QString &state_label)/*{{{*/
+argument_list make_persistent_parameter_list (const QString &state_label)
 	/*
 	 * Persistent parameters are those which need to be carried on the the next
 	 * state. This functions make a list of persistent parameters.
@@ -1062,9 +1034,8 @@ argument_list make_persistent_parameter_list (const QString &state_label)/*{{{*/
 
 	return args;
 }
-/*}}}*/
 
-QString back_form_hidden (QString new_state_label)/*{{{*/
+QString back_form_hidden (QString new_state_label)
 	/*
 	 * Returns a QString containing HTML hidden inputs for going to a new state,
 	 * includin the persistent parameters.
@@ -1085,9 +1056,8 @@ QString back_form_hidden (QString new_state_label)/*{{{*/
 
 	return r;
 }
-/*}}}*/
 
-QString back_link_url (const QString &new_state_label, const argument_list &parameters, const QString &anchor="", bool absolute=false)/*{{{*/
+QString back_link_url (const QString &new_state_label, const argument_list &parameters, const QString &anchor="", bool absolute=false)
 	/*
 	 * Makes the URL for linking to another state.
 	 * Parameters:
@@ -1117,9 +1087,8 @@ QString back_link_url (const QString &new_state_label, const argument_list &para
 	// Return the complete URL
 	return url;
 }
-/*}}}*/
 
-QString back_link_url (const QString &new_state_label, const QString &anchor="", bool absolute=false)/*{{{*/
+QString back_link_url (const QString &new_state_label, const QString &anchor="", bool absolute=false)
 	/*
 	 * Like back_link_url above, but without the parameters list. No additional
 	 * parameters are added.
@@ -1128,9 +1097,8 @@ QString back_link_url (const QString &new_state_label, const QString &anchor="",
 	argument_list parameters;
 	return back_link_url (new_state_label, parameters, anchor, absolute);
 }
-/*}}}*/
 
-what_next make_redirect (const QString &new_state_label, const argument_list &args, const QString &anchor="")/*{{{*/
+what_next make_redirect (const QString &new_state_label, const argument_list &args, const QString &anchor="")
 	/*
 	 * Makes a redirect action to another state.
 	 * Parameters:
@@ -1145,9 +1113,8 @@ what_next make_redirect (const QString &new_state_label, const argument_list &ar
 	QString url=back_link_url (new_state_label, args, anchor, true);
 	return what_next::do_redirect (url);
 }
-/*}}}*/
 
-what_next make_redirect (const QString &new_state_label, const QString &anchor="")/*{{{*/
+what_next make_redirect (const QString &new_state_label, const QString &anchor="")
 	/*
 	 * Like make_redirect above, but without the additional argument list. No
 	 * additional arguments will be added.
@@ -1156,9 +1123,8 @@ what_next make_redirect (const QString &new_state_label, const QString &anchor="
 	argument_list args;
 	return make_redirect (new_state_label, args, anchor);
 }
-/*}}}*/
 
-QString logout_link ()/*{{{*/
+QString logout_link ()
 	throw ()
 	/*
 	 * Creates an URL for logging out of the web interface.
@@ -1168,9 +1134,8 @@ QString logout_link ()/*{{{*/
 {
 	return document.text_link (back_link_url (web_logout), "Abmelden");
 }
-/*}}}*/
 
-void write_document_footer ()/*{{{*/
+void write_document_footer ()
 	/*
 	 * Writes the document footer. The document footer may consist of, possibly
 	 * among others:
@@ -1259,9 +1224,8 @@ void write_document_footer ()/*{{{*/
 		//document.write_paragraph (query_string);
 	}
 }
-/*}}}*/
 
-QString make_anchor_name (db_id id)/*{{{*/
+QString make_anchor_name (db_id id)
 	/*
 	 * Makes an anchor name for object lists which have db_ids.
 	 * Parameters:
@@ -1272,9 +1236,8 @@ QString make_anchor_name (db_id id)/*{{{*/
 {
 	return "id_"+QString::number (id);
 }
-/*}}}*/
 
-// CHECK_DB_ERROR_ERROR/*{{{*/
+// CHECK_DB_ERROR_ERROR
 	/*
 	 * Checks the return value of a database call and returns an error action
 	 * if the return value sigifies an error.
@@ -1285,9 +1248,8 @@ QString make_anchor_name (db_id id)/*{{{*/
 // std::exception on error. Better yet a function.
 #define CHECK_DB_ERROR_ERROR	\
 	do { if (ret<0) return what_next::output_error (db.db_error_description (ret, true)); } while (false)
-/*}}}*/
 
-// CHECK_DB_ERROR_STATE(STATE)/*{{{*/
+// CHECK_DB_ERROR_STATE(STATE)
 	/*
 	 * Checks the return value of a database call and returns a state change
 	 * action if the return value sigifies an error.
@@ -1298,9 +1260,8 @@ QString make_anchor_name (db_id id)/*{{{*/
 	 */
 #define CHECK_DB_ERROR_STATE(STATE)	\
 	do { if (ret<0) return what_next::go_to_state (STATE, db.db_error_description (ret), true); } while (false)
-/*}}}*/
 
-// CHECK_AN_ID/*{{{*/
+// CHECK_AN_ID
 	/*
 	 * Checks an ID and outputs an error state if it is invalid. The error
 	 * message contains the value given for the ID as read from the CGI
@@ -1312,17 +1273,15 @@ QString make_anchor_name (db_id id)/*{{{*/
 	 */
 #define CHECK_AN_ID(ID, CGI_ARG)	\
 	do { if (id_invalid (ID)) return what_next::output_error ("Ung�ltige ID \""+CGI_READ (CGI_ARG)+"\""); } while (false)
-/*}}}*/
 
-// CHECK_ID/*{{{*/
+// CHECK_ID
 	/*
 	 * Checks an ID which is contained in the variable called id and was read
 	 * from the CGI argument arg_cgi_id.
 	 */
 #define CHECK_ID CHECK_AN_ID (id, id);
-/*}}}*/
 
-what_next csv_to_persons (const QString &csv, QPtrList<Person> &persons, const QString &club)/*{{{*/
+what_next csv_to_persons (const QString &csv, QPtrList<Person> &persons, const QString &club)
 	/*
 	 * Converts a QString containing a CSV file to a list of persons.
 	 * This uses session_user, so only call this when the access level is
@@ -1421,9 +1380,8 @@ what_next csv_to_persons (const QString &csv, QPtrList<Person> &persons, const Q
 
 	return what_next::go_on ();
 }
-/*}}}*/
 
-void make_unique_club_list (std::list<QString> &club_list, QPtrList<Plane> plane_list)/*{{{*/
+void make_unique_club_list (std::list<QString> &club_list, QPtrList<Plane> plane_list)
 	/*
 	 * For each plane, adds the club to the club list, if not already present.
 	 * Parameters:
@@ -1448,13 +1406,12 @@ void make_unique_club_list (std::list<QString> &club_list, QPtrList<Plane> plane
 		if (!already_has) club_list.push_back (plane_club);
 	}
 }
-/*}}}*/
 
 
 
 
 
-bool user_name_valid (const QString &name)/*{{{*/
+bool user_name_valid (const QString &name)
 	/*
 	 * Checks whether a user name is valid (e. g., does not contain any invalid
 	 * characters).
@@ -1474,9 +1431,8 @@ bool user_name_valid (const QString &name)/*{{{*/
 	else
 		return false;
 }
-/*}}}*/
 
-what_next redirect_to_result (QString result_text, bool result_error=false, QString next_state_label="")/*{{{*/
+what_next redirect_to_result (QString result_text, bool result_error=false, QString next_state_label="")
 	/*
 	 * Makes a redirect to the result page. A message is passed to the result
 	 * state via the session.
@@ -1494,9 +1450,8 @@ what_next redirect_to_result (QString result_text, bool result_error=false, QStr
 	if (result_error) SESSION_WRITE (result_error, "");
 	return make_redirect (web_result);
 }
-/*}}}*/
 
-// DO_SUB_ACTION(ACTION)/*{{{*/
+// DO_SUB_ACTION(ACTION)
 	/*
 	 * Calls a function that returns a what_next and returns this what_next
 	 * unless it is wn_go_on.
@@ -1509,9 +1464,8 @@ do	\
 	what_next n=ACTION;	\
 	if (n.get_next ()!=wn_go_on) return n;	\
 } while (false)
-/*}}}*/
 
-html_table_row make_table_header (std::list<object_field> fields)/*{{{*/
+html_table_row make_table_header (std::list<object_field> fields)
 	/*
 	 * Makes a table header suitable for tables listing objects.
 	 * Paramters:
@@ -1531,9 +1485,8 @@ html_table_row make_table_header (std::list<object_field> fields)/*{{{*/
 
 	return row;
 }
-/*}}}*/
 
-html_table_row make_table_data_row (std::list<object_field> fields)/*{{{*/
+html_table_row make_table_data_row (std::list<object_field> fields)
 	/*
 	 * Makes a table data row suitable for tables listing objects.
 	 * Paramters:
@@ -1558,9 +1511,8 @@ html_table_row make_table_data_row (std::list<object_field> fields)/*{{{*/
 
 	return row;
 }
-/*}}}*/
 
-table_row table_row_from_fields (std::list<object_field> fields, bool header=false)/*{{{*/
+table_row table_row_from_fields (std::list<object_field> fields, bool header=false)
 	/*
 	 * Converts a list of object fields to a table row. The table row contains
 	 * either the QString representations from the object fields or the
@@ -1593,9 +1545,8 @@ table_row table_row_from_fields (std::list<object_field> fields, bool header=fal
 
 	return row;
 }
-/*}}}*/
 
-html_table_cell make_link_cell (const QString &next_state, const QString &caption, const QString &argname, const QString &argvalue)/*{{{*/
+html_table_cell make_link_cell (const QString &next_state, const QString &caption, const QString &argname, const QString &argvalue)
 	/*
 	 * Makes a cess containing a link to another state.
 	 * Paramters:
@@ -1609,9 +1560,8 @@ html_table_cell make_link_cell (const QString &next_state, const QString &captio
 	args.set_value (argname, argvalue);
 	return html_table_cell (document.text_link (back_link_url (next_state, args), caption));
 }
-/*}}}*/
 
-void write_delete_links (const QString &delete_state, const QString &ident_arg, const QString &ident_val, const QString &back_state, const QString &anchor)/*{{{*/
+void write_delete_links (const QString &delete_state, const QString &ident_arg, const QString &ident_val, const QString &back_state, const QString &anchor)
 	/*
 	 * Write links to the document asking the user for deletion confirmation,
 	 * that is, a
@@ -1631,9 +1581,8 @@ void write_delete_links (const QString &delete_state, const QString &ident_arg, 
 		.write (" ")
 		.write_text_link (back_link_url (back_state, anchor), "Zur�ck");
 }
-/*}}}*/
 
-void check_username (const QString &username)/*{{{*/
+void check_username (const QString &username)
 	throw (ex_write_error_document)
 	/*
 	 * Checks the user name and outputs an error if it is invalid.
@@ -1645,11 +1594,10 @@ void check_username (const QString &username)/*{{{*/
 {
 	if (!user_name_valid (username)) throw ex_write_error_document ("Benutzername \""+username+"\" enth�lt ung�ltige Zeichen");
 }
-/*}}}*/
 
 
 // Output handling
-void setup_latex_headings (latex_document &ldoc, const QString &caption, const QString &date_text)/*{{{*/
+void setup_latex_headings (latex_document &ldoc, const QString &caption, const QString &date_text)
 {
 	ldoc.font_size=8;
 	ldoc.head_ro=date_text;
@@ -1658,11 +1606,10 @@ void setup_latex_headings (latex_document &ldoc, const QString &caption, const Q
 	ldoc.foot_lo="sk\\textunderscore{}web "+latex_escape (version_info ());
 	ldoc.foot_co="";
 }
-/*}}}*/
 
 // TODO use the add_* functions everywhere, also where writing forms based on
 // object_fields
-void add_date_inputs (html_table &table, bool include_range)/*{{{*/
+void add_date_inputs (html_table &table, bool include_range)
 {
 	// TODO add possibility to include any combination, use hidden
 	// instead of radio button if there is only one option,
@@ -1713,17 +1660,15 @@ void add_date_inputs (html_table &table, bool include_range)/*{{{*/
 		table.push_back (row);
 	}
 }
-/*}}}*/
 
-void add_submit_input (html_table &table, const QString &text="Abrufen")/*{{{*/
+void add_submit_input (html_table &table, const QString &text="Abrufen")
 {
 	html_table_row row;
 	row.push_back (html_table_cell (document.make_submit (text), false, 0));
 	table.push_back (row);
 }
-/*}}}*/
 
-void add_bool_input (html_table &table, const QString &caption, const QString &label, bool default_value=false)/*{{{*/
+void add_bool_input (html_table &table, const QString &caption, const QString &label, bool default_value=false)
 {
 	html_table_row row;
 
@@ -1731,16 +1676,14 @@ void add_bool_input (html_table &table, const QString &caption, const QString &l
 	row.push_back (html_table_cell (document.make_input_select_bool (label, default_value)));
 	table.push_back (row);
 }
-/*}}}*/
 
-void add_select_input (html_table &table, const QString &caption, const QString &label, const argument_list &options, const QString &def="")/*{{{*/
+void add_select_input (html_table &table, const QString &caption, const QString &label, const argument_list &options, const QString &def="")
 {
 	html_table_row row;
 	row.push_back (html_table_cell::text (caption));
 	row.push_back (html_table_cell (document.make_input_select (label, options, def), false, 0));
 	table.push_back (row);
 }
-/*}}}*/
 
 // Treat person
 /*
@@ -1752,7 +1695,7 @@ void add_select_input (html_table &table, const QString &caption, const QString 
  * Common parameters:
  *   - treatment: the action to perform.
  */
-void treat_preamble (treatment_t treatment, QString anchor_name)/*{{{*/
+void treat_preamble (treatment_t treatment, QString anchor_name)
 	/*
 	 * Writes the introduction for a treatment of a single object, if any (for
 	 * example, table row beginning tags).
@@ -1783,9 +1726,8 @@ void treat_preamble (treatment_t treatment, QString anchor_name)/*{{{*/
 		case tm_create: break;
 	}
 }
-/*}}}*/
 
-void treat_field (treatment_t treatment, const QString &caption, const QString &cginame, const QString &string_value, QString *string_member, bool bool_value, bool *bool_member, const QString &link_to)/*{{{*/
+void treat_field (treatment_t treatment, const QString &caption, const QString &cginame, const QString &string_value, QString *string_member, bool bool_value, bool *bool_member, const QString &link_to)
 	/*
 	 * Handle a treatment for a single field.
 	 * This function takes a lot of parameters not all of which are used for
@@ -1860,9 +1802,8 @@ void treat_field (treatment_t treatment, const QString &caption, const QString &
 			break;
 	}
 }
-/*}}}*/
 
-void treat_additional_fields (treatment_t treatment, const std::list<argument> &additional_fields)/*{{{*/
+void treat_additional_fields (treatment_t treatment, const std::list<argument> &additional_fields)
 	/*
 	 * Writes additional fields, for example, submit buttons or additional
 	 * columns.
@@ -1908,9 +1849,8 @@ void treat_additional_fields (treatment_t treatment, const std::list<argument> &
 		case tm_create: break;
 	}
 }
-/*}}}*/
 
-void treat_appendix (treatment_t treatment, const QString &edit_next_state, const QString &create_next_state, const std::list<argument> &additional_args)/*{{{*/
+void treat_appendix (treatment_t treatment, const QString &edit_next_state, const QString &create_next_state, const std::list<argument> &additional_args)
 	/*
 	 * Writes the appendix for a treatment of a single object, if any. This is
 	 * the counterpart treat_preamble.
@@ -1952,10 +1892,9 @@ void treat_appendix (treatment_t treatment, const QString &edit_next_state, cons
 		case tm_create: break;
 	}
 }
-/*}}}*/
 
 //treat_person (person *, treatment, new_state, ident_arg, args, for_import, for_select, additional_text
-what_next treat_person (Person *_p, treatment_t treatment, const QString &new_state=web_display_person, const QString &ident_arg=arg_cgi_id, const argument_list *args=NULL, bool for_import=false, bool for_select=false, const QString &additional_text="")/*{{{*/
+what_next treat_person (Person *_p, treatment_t treatment, const QString &new_state=web_display_person, const QString &ident_arg=arg_cgi_id, const argument_list *args=NULL, bool for_import=false, bool for_select=false, const QString &additional_text="")
 	/*
 	 * Handle a treatment for a person.
 	 * This function basically calls treat_field on all of the fields of
@@ -2038,9 +1977,8 @@ what_next treat_person (Person *_p, treatment_t treatment, const QString &new_st
 
 	return what_next::go_on ();
 }
-/*}}}*/
 
-what_next write_person_list (QPtrList<Person> &persons, bool include_none, const QString &target_state, const QString &result_field, const argument_list *args=NULL, bool for_import=false, bool for_select=false)/*{{{*/
+what_next write_person_list (QPtrList<Person> &persons, bool include_none, const QString &target_state, const QString &result_field, const argument_list *args=NULL, bool for_import=false, bool for_select=false)
 	/*
 	 * Writes a person list (table).
 	 * this function is obsolete as it uses the treat_* mechanism.
@@ -2066,9 +2004,8 @@ what_next write_person_list (QPtrList<Person> &persons, bool include_none, const
 
 	return what_next::go_on ();
 }
-/*}}}*/
 
-what_next write_message_list (std::list<sk_db::import_message> messages)/*{{{*/
+what_next write_message_list (std::list<sk_db::import_message> messages)
 	/*
 	 * Write a list of messages concerning importing of master data.
 	 * Paramters:
@@ -2099,14 +2036,13 @@ what_next write_message_list (std::list<sk_db::import_message> messages)/*{{{*/
 
 	return what_next::go_on ();
 }
-/*}}}*/
 
 
 
 // Field conversion
 // Note: rather than continuing development of these functions, better
 // implement the object_fields successor.
-void sk_user_to_fields (const User &user)/*{{{*/
+void sk_user_to_fields (const User &user)
 	throw (ex_write_error_document)
 	/*
 	 * Converts an User structure to the (global) User fields.
@@ -2137,9 +2073,8 @@ void sk_user_to_fields (const User &user)/*{{{*/
 			throw ex_write_error_document ("Unbehandeltes Feld \""+(*field).get_caption ()+"\" in sk_user_to_fields").is_program_error ();
 	}
 }
-/*}}}*/
 
-void sk_user_from_fields (User &user)/*{{{*/
+void sk_user_from_fields (User &user)
 	throw (ex_write_error_document)
 	/*
 	 * Converts the (global) User fields to an User.
@@ -2170,9 +2105,8 @@ void sk_user_from_fields (User &user)/*{{{*/
 			throw ex_write_error_document ("Unbehandeltes Feld \""+(*field).get_caption ()+"\" in sk_user_from_fields").is_program_error ();
 	}
 }
-/*}}}*/
 
-void flugbuch_entry_to_fields (const flugbuch_entry &fbe, bool no_letters=false)/*{{{*/
+void flugbuch_entry_to_fields (const flugbuch_entry &fbe, bool no_letters=false)
 	throw (ex_write_error_document)
 	/*
 	 * Converts a flugbuch entry to the (global) flugbuch object_fields.
@@ -2207,9 +2141,8 @@ void flugbuch_entry_to_fields (const flugbuch_entry &fbe, bool no_letters=false)
 		// TODO should we handle .invalid here?
 	}
 }
-/*}}}*/
 
-void bordbuch_entry_to_fields (const bordbuch_entry &bbe, bool no_letters=false)/*{{{*/
+void bordbuch_entry_to_fields (const bordbuch_entry &bbe, bool no_letters=false)
 	throw (ex_write_error_document)
 	/*
 	 * Converts a blugbuch entry to the (global) blugbuch object_fields.
@@ -2242,9 +2175,8 @@ void bordbuch_entry_to_fields (const bordbuch_entry &bbe, bool no_letters=false)
 			throw ex_write_error_document ("Unbehandeltes Feld \""+(*field).get_caption ()+"\" in bordbuch_entry_to_fields").is_program_error ();
 	}
 }
-/*}}}*/
 
-void flight_to_fields (std::list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text="")/*{{{*/
+void flight_to_fields (std::list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text="")
 	throw (ex_write_error_document)
 	/*
 	 * Converts a flight list entry to a list of object_fields.
@@ -2387,10 +2319,9 @@ void flight_to_fields (std::list<object_field> &fields, const Flight &f, const s
 			throw ex_write_error_document ("Unbehandeltes Feld \""+(*field).get_caption ()+"\" in flight_to_fields").is_program_error ();
 	}
 }
-/*}}}*/
 
 
-void write_flugbuch (latex_document &ldoc, const QPtrList<flugbuch_entry> &flugbuch, const QString &date_text, const QString &person_name)/*{{{*/
+void write_flugbuch (latex_document &ldoc, const QPtrList<flugbuch_entry> &flugbuch, const QString &date_text, const QString &person_name)
 	// XXX
 {
 	// TODO code duplication with csv writing
@@ -2418,9 +2349,8 @@ void write_flugbuch (latex_document &ldoc, const QPtrList<flugbuch_entry> &flugb
 		ldoc.write (tab, header_row, widths_flugbuch_entry);
 	}
 }
-/*}}}*/
 
-void write_bordbuch (latex_document &ldoc, const QPtrList<bordbuch_entry> &bordbuch, const QString &date_text)/*{{{*/
+void write_bordbuch (latex_document &ldoc, const QPtrList<bordbuch_entry> &bordbuch, const QString &date_text)
 	// XXX
 {
 	// TODO code duplication with csv writing
@@ -2448,9 +2378,8 @@ void write_bordbuch (latex_document &ldoc, const QPtrList<bordbuch_entry> &bordb
 		ldoc.write (tab, header_row, widths_bordbuch_entry);
 	}
 }
-/*}}}*/
 
-void write_flightlist (latex_document &ldoc, const flight_list &flights, const QString &date_text)/*{{{*/
+void write_flightlist (latex_document &ldoc, const flight_list &flights, const QString &date_text)
 //	// XXX
 {
 	// TODO code duplication with csv
@@ -2485,11 +2414,10 @@ void write_flightlist (latex_document &ldoc, const flight_list &flights, const Q
 		ldoc.write (tab, header_row, widths_flightlist);
 	}
 }
-/*}}}*/
 
 
 // Specific field handling
-void field_user_lock (std::list<object_field> &fields)/*{{{*/
+void field_user_lock (std::list<object_field> &fields)
 {
 	std::list<object_field>::const_iterator fields_end=fields.end ();
 	for (std::list<object_field>::iterator field_it=fields.begin (); field_it!=fields_end; ++field_it)
@@ -2517,11 +2445,10 @@ void field_user_lock (std::list<object_field> &fields)/*{{{*/
 		}
 	}
 }
-/*}}}*/
 
 
 // Generic field handling
-void write_fields_display (std::list<object_field> fields)/*{{{*/
+void write_fields_display (std::list<object_field> fields)
 {
 	html_table table;
 
@@ -2540,9 +2467,8 @@ void write_fields_display (std::list<object_field> fields)/*{{{*/
 
 	document.write (table, true);
 }
-/*}}}*/
 
-void fields_write_edit_table (const std::list<object_field> &fields, bool create_new, const QString &ident_arg, const QString &ident_val)/*{{{*/
+void fields_write_edit_table (const std::list<object_field> &fields, bool create_new, const QString &ident_arg, const QString &ident_val)
 {
 	// For each field, write the table row
 	// TODO html_table verwenden
@@ -2659,9 +2585,8 @@ void fields_write_edit_table (const std::list<object_field> &fields, bool create
 
 	document.end_tag ("table");
 }
-/*}}}*/
 
-void fields_from_cgi (std::list<object_field> &fields)/*{{{*/
+void fields_from_cgi (std::list<object_field> &fields)
 {
 	std::list<object_field>::const_iterator end=fields.end ();
 	for (std::list<object_field>::iterator field=fields.begin (); field!=end; ++field)
@@ -2687,9 +2612,8 @@ void fields_from_cgi (std::list<object_field> &fields)/*{{{*/
 		}
 	}
 }
-/*}}}*/
 
-void fields_write_edit_form (const std::list<object_field> &fields, const QString &url, const QString &next_state, bool create_new, const QString &ident_arg, const QString &ident_val)/*{{{*/
+void fields_write_edit_form (const std::list<object_field> &fields, const QString &url, const QString &next_state, bool create_new, const QString &ident_arg, const QString &ident_val)
 {
 	// TODO auslagern
 	document.start_tag ("form", "action=\""+url+"\" method=\"POST\"");
@@ -2708,9 +2632,8 @@ void fields_write_edit_form (const std::list<object_field> &fields, const QStrin
 
 	document.end_tag ("form");
 }
-/*}}}*/
 
-void fields_write_to_session (const std::list<object_field> &fields)/*{{{*/
+void fields_write_to_session (const std::list<object_field> &fields)
 {
 	std::list<object_field>::const_iterator end=fields.end ();
 	for (std::list<object_field>::const_iterator field=fields.begin (); field!=end; ++field)
@@ -2720,9 +2643,8 @@ void fields_write_to_session (const std::list<object_field> &fields)/*{{{*/
 		session.args.set_value (label, text);
 	}
 }
-/*}}}*/
 
-void fields_read_from_session (std::list<object_field> &fields)/*{{{*/
+void fields_read_from_session (std::list<object_field> &fields)
 {
 	std::list<object_field>::const_iterator end=fields.end ();
 	for (std::list<object_field>::iterator field=fields.begin (); field!=end; ++field)
@@ -2739,9 +2661,8 @@ void fields_read_from_session (std::list<object_field> &fields)/*{{{*/
 //		}
 	}
 }
-/*}}}*/
 
-void fields_delete_from_session (const std::list<object_field> &fields)/*{{{*/
+void fields_delete_from_session (const std::list<object_field> &fields)
 {
 	std::list<object_field>::const_iterator end=fields.end ();
 	for (std::list<object_field>::const_iterator field=fields.begin (); field!=end; ++field)
@@ -2750,11 +2671,10 @@ void fields_delete_from_session (const std::list<object_field> &fields)/*{{{*/
 		session.args.remove (label);
 	}
 }
-/*}}}*/
 
 
 // State handler functions _STATE_
-what_next handler_login ()/*{{{*/
+what_next handler_login ()
 {
 	html_table table;
 	html_table_row row;
@@ -2798,9 +2718,8 @@ what_next handler_login ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_do_login ()/*{{{*/
+what_next handler_do_login ()
 {
 	// We may only do this via POST requests.
 	if (request_method!=rm_post)
@@ -2850,10 +2769,9 @@ what_next handler_do_login ()/*{{{*/
 		return what_next::go_to_state (web_login, error_message, true);
 	}
 }
-/*}}}*/
 
 
-bool state_available (const QString &label)/*{{{*/
+bool state_available (const QString &label)
 {
 	const web_interface_state &state=web_interface_state::from_list (label);
 
@@ -2875,9 +2793,8 @@ bool state_available (const QString &label)/*{{{*/
 
 	return true;
 }
-/*}}}*/
 
-QString make_state_link (const QString &state_label, const QString &title="")/*{{{*/
+QString make_state_link (const QString &state_label, const QString &title="")
 {
 	QString link_title;
 	if (!title.isEmpty ())
@@ -2898,18 +2815,16 @@ QString make_state_link (const QString &state_label, const QString &title="")/*{
 
 	return document.text_link (back_link_url (state_label), link_title);
 }
-/*}}}*/
 
-void add_state_link_if_available (QStringList &link_list, const QString &state_label, bool force=false)/*{{{*/
+void add_state_link_if_available (QStringList &link_list, const QString &state_label, bool force=false)
 {
 	if (force || debug_enabled || state_available (state_label))
 		link_list.append (make_state_link (state_label));
 }
-/*}}}*/
 
 
 
-what_next handler_main_menu ()/*{{{*/
+what_next handler_main_menu ()
 {
 	// TODO: hier eine Funktion, die einen korrekt titulierten Link auf den Zustand ausgibt.
 	// TODO: consider only listing entries which are acually available
@@ -2955,16 +2870,14 @@ what_next handler_main_menu ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_logout ()/*{{{*/
+what_next handler_logout ()
 {
 	if (session.is_ok ()) session.destroy ();
 	return what_next::do_redirect (absolute_url);
 }
-/*}}}*/
 
-what_next handler_change_password ()/*{{{*/
+what_next handler_change_password ()
 {
 	switch (determine_user_class (SESSION_READ (login_name)))
 	{
@@ -3004,9 +2917,8 @@ what_next handler_change_password ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_do_change_password ()/*{{{*/
+what_next handler_do_change_password ()
 {
 	QString user_name=SESSION_READ (login_name);
 	QString old_password=CGI_READ (old_password);
@@ -3041,9 +2953,8 @@ what_next handler_do_change_password ()/*{{{*/
 
 	return what_next::output_error ("Unbehandelte Benutzerklasse in handler_do_change_password (Programmfehler)");
 }
-/*}}}*/
 
-what_next handler_list_persons ()/*{{{*/
+what_next handler_list_persons ()
 {
 	document.write_paragraph (document.text_link (back_link_url (web_create_person), "Neu anlegen"));
 
@@ -3057,9 +2968,8 @@ what_next handler_list_persons ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_edit_person ()/*{{{*/
+what_next handler_edit_person ()
 {
 	require_club_admin ();
 
@@ -3074,9 +2984,8 @@ what_next handler_edit_person ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_do_edit_person ()/*{{{*/
+what_next handler_do_edit_person ()
 {
 	require_club_admin ();
 	// We don't require a specific club because there may be the need to edit
@@ -3137,9 +3046,8 @@ what_next handler_do_edit_person ()/*{{{*/
 
 	return make_redirect (web_list_persons, make_anchor_name (id));
 }
-/*}}}*/
 
-what_next handler_display_person ()/*{{{*/
+what_next handler_display_person ()
 {
 	db_id id=CGI_READ (id).toLongLong ();
 	CHECK_ID;
@@ -3156,9 +3064,8 @@ what_next handler_display_person ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_delete_person ()/*{{{*/
+what_next handler_delete_person ()
 {
 	require_club_admin ();
 
@@ -3195,9 +3102,8 @@ what_next handler_delete_person ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_do_delete_person ()/*{{{*/
+what_next handler_do_delete_person ()
 {
 	int ret;
 	require_club_admin ();
@@ -3217,9 +3123,8 @@ what_next handler_do_delete_person ()/*{{{*/
 
 	return make_redirect (web_list_persons);
 }
-/*}}}*/
 
-what_next handler_result ()/*{{{*/
+what_next handler_result ()
 	// session arguments: message_text, message_error
 {
 	QString message_text=SESSION_READ (result_text);
@@ -3246,9 +3151,8 @@ what_next handler_result ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_create_person ()/*{{{*/
+what_next handler_create_person ()
 {
 	require_club_admin ();
 	// We don't require a specific club because there may be the need to edit
@@ -3257,9 +3161,8 @@ what_next handler_create_person ()/*{{{*/
 	DO_SUB_ACTION (treat_person (NULL, tm_write_create));
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_do_create_person ()/*{{{*/
+what_next handler_do_create_person ()
 {
 	require_club_admin ();
 
@@ -3294,9 +3197,8 @@ what_next handler_do_create_person ()/*{{{*/
 
 	return make_redirect (web_list_persons, make_anchor_name (id));
 }
-/*}}}*/
 
-what_next handler_select_merge_person ()/*{{{*/
+what_next handler_select_merge_person ()
 {
 	int ret;
 	require_club_admin ();
@@ -3326,9 +3228,8 @@ what_next handler_select_merge_person ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_merge_person ()/*{{{*/
+what_next handler_merge_person ()
 {
 	int ret;
 
@@ -3388,9 +3289,8 @@ what_next handler_merge_person ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_do_merge_person ()/*{{{*/
+what_next handler_do_merge_person ()
 {
 	require_club_admin ();
 
@@ -3417,14 +3317,14 @@ what_next handler_do_merge_person ()/*{{{*/
 	SESSION_WRITE (one_time_message, "Person �berschrieben");
 	return make_redirect (web_list_persons, make_anchor_name (correct_id));
 }
-///*}}}*/
+//
 
 // Contrary to the person_* handlers, the user_* handlers don't use treat_*
 // functions but object_field. The object_field concept is newer and cleaner,
 // although I will admit that the functions making use of it are still longer.
 // Another difference is that the user_* handlers have a common function for
 // editing and creating. It is unknown whether is is an advantage.
-what_next handler_user_list ()/*{{{*/
+what_next handler_user_list ()
 {
 	// List users
 
@@ -3462,9 +3362,8 @@ what_next handler_user_list ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_user_delete ()/*{{{*/
+what_next handler_user_delete ()
 {
 	// Display user
 
@@ -3495,9 +3394,8 @@ what_next handler_user_delete ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_user_do_delete ()/*{{{*/
+what_next handler_user_do_delete ()
 {
 	// Delete the user
 
@@ -3521,17 +3419,15 @@ what_next handler_user_do_delete ()/*{{{*/
 
 	return make_redirect (web_user_list);
 }
-/*}}}*/
 
-what_next handler_user_add ()/*{{{*/
+what_next handler_user_add ()
 {
 	// Permissions are checked by web_user_edit.
 	cgi_args.set_value (arg_cgi_create_new);
 	return what_next::go_to_state (web_user_edit).set_keep_title ();
 }
-/*}}}*/
 
-what_next handler_user_edit ()/*{{{*/
+what_next handler_user_edit ()
 {
 	// TODO dass edit und add die gleiche Funktion ist, ist vielleicht doch
 	// nicht so geschickt gewesen? Mal sehen, wie kurz man die Funktion unter
@@ -3631,9 +3527,8 @@ what_next handler_user_edit ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_user_do_edit ()/*{{{*/
+what_next handler_user_do_edit ()
 {
 	// Are we creating the user (as opposed to modifying it)?
 	bool create_new=CGI_HAS (create_new);
@@ -3764,9 +3659,8 @@ what_next handler_user_do_edit ()/*{{{*/
 
 	return make_redirect (web_user_list, user.username);
 }
-/*}}}*/
 
-what_next handler_user_change_password ()/*{{{*/
+what_next handler_user_change_password ()
 {
 	int ret;
 	require_club_admin ();
@@ -3817,9 +3711,8 @@ what_next handler_user_change_password ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_user_do_change_password ()/*{{{*/
+what_next handler_user_do_change_password ()
 {
 	int ret;
 	require_club_admin ();
@@ -3859,9 +3752,8 @@ what_next handler_user_do_change_password ()/*{{{*/
 	args.set_value (arg_cgi_username, username);
 	return make_redirect (web_user_edit, args);
 }
-/*}}}*/
 
-what_next handler_person_select ()/*{{{*/
+what_next handler_person_select ()
 {
 	// TODO code duplication with handler_list_persons
 	// TODO consider writing a redirect here to jump the the anchor of the
@@ -3876,9 +3768,8 @@ what_next handler_person_select ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_master_data_import ()/*{{{*/
+what_next handler_master_data_import ()
 {
 	// TODO allow sk_admin to upload, specifying the club.
 	require_sk_user ();
@@ -3915,9 +3806,8 @@ what_next handler_master_data_import ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_master_data_upload ()/*{{{*/
+what_next handler_master_data_upload ()
 {
 	require_sk_user ();
 
@@ -3932,9 +3822,8 @@ what_next handler_master_data_upload ()/*{{{*/
 	additional_args.set_value (arg_cgi_data_type, CGI_READ (data_type));
 	return make_redirect (web_master_data_check, additional_args);
 }
-/*}}}*/
 
-what_next handler_master_data_check ()/*{{{*/
+what_next handler_master_data_check ()
 {
 	require_sk_user ();
 	require_club_admin ();
@@ -4023,9 +3912,8 @@ what_next handler_master_data_check ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_master_data_do_import ()/*{{{*/
+what_next handler_master_data_do_import ()
 {
 	require_sk_user ();
 	require_club_admin ();
@@ -4057,9 +3945,8 @@ what_next handler_master_data_do_import ()/*{{{*/
 	SESSION_WRITE (one_time_message, QString::number (persons.count ())+" Personen eingespielt");
 	return make_redirect (web_list_persons);
 }
-/*}}}*/
 
-what_next handler_person_logbook ()/*{{{*/
+what_next handler_person_logbook ()
 {
 	require_sk_user ("Dem Benutzer "+session_username+" ist keine Person zugeordnet. Bitte als anderer Benutzer anmelden.");
 	if (id_invalid (session_user->person))
@@ -4118,9 +4005,8 @@ what_next handler_person_logbook ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_do_person_logbook ()/*{{{*/
+what_next handler_do_person_logbook ()
 {
 	// TODO This function is too large. Need more abstraction, for example a
 	// counterpart to add_date_inputs.
@@ -4145,7 +4031,7 @@ what_next handler_do_person_logbook ()/*{{{*/
 	if (date_spec.isEmpty ()) return what_next::output_error ("Kein Datumsmodus angegeben");
 	if (fim_text.isEmpty ()) return what_next::output_error ("Kein Fluglehrermodus angegeben");
 
-	// Determine the flight instructor mode/*{{{*/
+	// Determine the flight instructor mode
 	flugbuch_entry::flight_instructor_mode fim=flugbuch_entry::fim_no;
 	if (fim_text==arg_cgi_flight_instructor_mode_no)
 		fim=flugbuch_entry::fim_no;
@@ -4155,7 +4041,6 @@ what_next handler_do_person_logbook ()/*{{{*/
 		fim=flugbuch_entry::fim_loose;
 	else
 		return what_next::output_error ("Unbekannter Fluglehrermodus "+fim_text);
-/*}}}*/
 
 	flight_list flights; flights.setAutoDelete (true);
 	QString date_text;
@@ -4163,7 +4048,7 @@ what_next handler_do_person_logbook ()/*{{{*/
 	// Start the filename
 	QString filename="flugbuch_"+person.vorname+"-"+person.nachname+"_";
 
-	// Step 1: read the flights we are interested in from the database./*{{{*/
+	// Step 1: read the flights we are interested in from the database.
 	// TODO make sk_db frontend function for listing.
 	// TODO remove QDate Entity
 	if (date_spec==arg_cgi_date_spec_today)
@@ -4213,15 +4098,14 @@ what_next handler_do_person_logbook ()/*{{{*/
 	{
 		return what_next::output_error ("Unbekannter Datumsmodus \""+date_spec+"\"");
 	}
-/*}}}*/
 
-	// Step 2: Make the personal logbook./*{{{*/
+	// Step 2: Make the personal logbook.
 	QPtrList<flugbuch_entry> flugbuch; flugbuch.setAutoDelete (true);
 	// We pass an empty QDate here because we already filtered for date above.
 	make_flugbuch_person (flugbuch, &db, QDate (), &person, flights, fim);
-	/*}}}*/
+	
 
-	// Step 3: Output the logbook./*{{{*/
+	// Step 3: Output the logbook.
 	// We have got a std::list<flugbuch_entry>.
 	if (format==arg_cgi_format_html)
 	{
@@ -4305,13 +4189,12 @@ what_next handler_do_person_logbook ()/*{{{*/
 	{
 		return what_next::output_error ("\""+format+"\"? Komisches Format. Kenne ich nicht.");
 	}
-	/*}}}*/
+	
 
 	return what_next::output_error ("Unbehandelter Fall in handler_do_person_logbook ()");
 }
-/*}}}*/
 
-what_next handler_plane_logbook ()/*{{{*/
+what_next handler_plane_logbook ()
 {
 	// Access without session is possible from local hosts. For other hosts, we
 	// need a session. This requirement is checked in do_next.
@@ -4329,9 +4212,8 @@ what_next handler_plane_logbook ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_do_plane_logbook ()/*{{{*/
+what_next handler_do_plane_logbook ()
 {
 	// Access without session is possible from local hosts. For other hosts, we
 	// need a session. This requirement is checked in do_next.
@@ -4347,7 +4229,7 @@ what_next handler_do_plane_logbook ()/*{{{*/
 		return what_next::output_error ("Kein Datumsmodus angegeben");
 
 	// TODO!: more abstraction
-	// Read the flights we are interested in from the database./*{{{*/
+	// Read the flights we are interested in from the database.
 	// TODO remove QDate Entity
 	// TODO code duplication with handler_do_flightlist
 	sk_date date;
@@ -4386,7 +4268,7 @@ what_next handler_do_plane_logbook ()/*{{{*/
 
 	ret=db.list_planes_date (planes, &q_date);
 	CHECK_DB_ERROR_ERROR;
-///*}}}*/
+//
 
 	// Make the club list
 	// TODO: this functionality could be moved to write_bordbuch
@@ -4437,9 +4319,8 @@ what_next handler_do_plane_logbook ()/*{{{*/
 
 	return what_next::output_error ("Unbehandelter Fall in handler_do_person_logbook ()");
 }
-/*}}}*/
 
-what_next handler_flightlist ()/*{{{*/
+what_next handler_flightlist ()
 {
 	// Access without session is possible from local hosts. For other hosts, we
 	// need a session. This requirement is checked in do_next.
@@ -4458,9 +4339,8 @@ what_next handler_flightlist ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_do_flightlist ()/*{{{*/
+what_next handler_do_flightlist ()
 {
 	// Access without session is possible from local hosts. For other hosts, we
 	// need a session. This requirement is checked in do_next.
@@ -4526,9 +4406,8 @@ what_next handler_do_flightlist ()/*{{{*/
 		return what_next::output_error (e.description ());
 	}
 }
-/*}}}*/
 
-what_next handler_flight_db ()/*{{{*/
+what_next handler_flight_db ()
 {
 	require_read_flight_db ();
 
@@ -4586,9 +4465,8 @@ what_next handler_flight_db ()/*{{{*/
 
 	return what_next::output_document ();
 }
-/*}}}*/
 
-what_next handler_do_flight_db ()/*{{{*/
+what_next handler_do_flight_db ()
 {
 	require_read_flight_db ();
 
@@ -4615,7 +4493,7 @@ what_next handler_do_flight_db ()/*{{{*/
 	// Start the filename
 	QString filename="startkladde_";
 
-	// Step 1: read the flights we are interested in from the database./*{{{*/
+	// Step 1: read the flights we are interested in from the database.
 	// TODO remove QDate Entity
 	if (date_spec==arg_cgi_date_spec_today)
 	{
@@ -4663,9 +4541,8 @@ what_next handler_do_flight_db ()/*{{{*/
 	{
 		return what_next::output_error ("Unbekannter Datumsmodus \""+date_spec+"\"");
 	}
-/*}}}*/
 
-	// Step 2: Make the flight list./*{{{*/
+	// Step 2: Make the flight list.
 	// If the towflights should have own entries, add them.
 	if (string_to_bool (CGI_READ (towflights_extra)))
 	{
@@ -4725,9 +4602,9 @@ what_next handler_do_flight_db ()/*{{{*/
 		}
 	}
 	flights.sort ();
-	/*}}}*/
+	
 
-	// Step 3: Output the list./*{{{*/
+	// Step 3: Output the list.
 	// We have got a flight_list
 	// Convert flight_list to a table row by row.
 	table tab;
@@ -4818,13 +4695,12 @@ what_next handler_do_flight_db ()/*{{{*/
 
 	filename.append (".csv");
 	return what_next::output_raw_document (tab.csv (opts.csv_quote), http_document::mime_type_csv, filename, "Flugliste f�r "+date_text);
-	/*}}}*/
+	
 
 	return what_next::output_error ("Unbehandelter Fall in handler_do_flight_db");
 }
-/*}}}*/
 
-what_next handler_test_redirect ()/*{{{*/
+what_next handler_test_redirect ()
 {
 	QString url;
 	if (CGI_HAS (url))
@@ -4832,20 +4708,20 @@ what_next handler_test_redirect ()/*{{{*/
 	else
 		return make_redirect (web_main_menu);
 }
-///*}}}*/
+//
 
 
-//what_next handler_ ()/*{{{*/
+//what_next handler_ ()
 //{
 //	return what_next::output_error ("\""+current_state->make_caption ()+"\" ist nicht implementiert.");	// TODO
 //}
-///*}}}*/
+//
 
 
 
 
 
-void cleanup_session (const QString &state)/*{{{*/
+void cleanup_session (const QString &state)
 {
 	// Session variables are not cleaned up immediately in order to be able to
 	// handle reloads.
@@ -4858,22 +4734,21 @@ void cleanup_session (const QString &state)/*{{{*/
 	if (state!=web_master_data_check && state!=web_master_data_do_import) SESSION_REMOVE (master_data_file);
 	if (state!=web_master_data_check && state!=web_master_data_do_import) SESSION_REMOVE (master_data_filename);
 }
-/*}}}*/
 
-what_next do_next (const what_next next, http_document &http)/*{{{*/
+what_next do_next (const what_next next, http_document &http)
 	// TODO generic? this should best be a member of what_next
 {
 	try
 	{
 		switch (next.get_next ())
 		{
-			case wn_go_on:/*{{{*/
+			case wn_go_on:
 			{
 				// Go to the output_error state, because wn_go_on may not be used
 				// as a program state.
 				return what_next::output_error ("Zustand wn_go_on ausgef�hrt (Programmfehler)");
-			} break;/*}}}*/
-			case wn_output_error:/*{{{*/
+			} break;
+			case wn_output_error:
 			{
 				// Output an error document.
 				// That means: clear the current document (this may be called after
@@ -4890,8 +4765,8 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 				else
 					document.write_paragraph (document.text_link (back_link_url (web_logout), "Anmeldeseite"));
 				return what_next::output_document ();
-			} break;/*}}}*/
-			case wn_output_document:/*{{{*/
+			} break;
+			case wn_output_document:
 			{
 				// Output the document.
 				// That means: write the document footer. Write the current
@@ -4901,8 +4776,8 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 
 				http.output (document);
 				return what_next::end_program ();
-			} break;/*}}}*/
-			case wn_output_raw_document:/*{{{*/
+			} break;
+			case wn_output_raw_document:
 			{
 				// Output a raw document.
 				// That means: write the raw document to stdout with http headers.
@@ -4913,8 +4788,8 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 				http.content_description=next.get_description ();
 				http.output (next.get_document (), next.get_mime_type ());
 				return what_next::end_program ();
-			} break;/*}}}*/
-			case wn_change_state:/*{{{*/
+			} break;
+			case wn_change_state:
 			{
 				// Go to a different state.
 				// That means: clear the current document if the new state has
@@ -5079,8 +4954,8 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 				{
 					return what_next::go_to_state (e.state, e.message, e.error);
 				}
-			} break;/*}}}*/
-			case wn_do_redirect:/*{{{*/
+			} break;
+			case wn_do_redirect:
 			{
 				if (CGI_HAS (no_redirects))
 				{
@@ -5098,13 +4973,13 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 					http.output_redirect (next.get_url ());
 					return what_next::end_program ();
 				}
-			} break;/*}}}*/
-			case wn_end_program:/*{{{*/
+			} break;
+			case wn_end_program:
 			{
 				// Go to the output_error state, because this function should not
 				// have been called when wn_end_program was commanded.
 				return what_next::output_error ("Zustand wn_end_program ausgef�hrt (Programmfehler)");
-			} break;/*}}}*/
+			} break;
 		}
 	}
 	catch (std::exception &e)
@@ -5122,9 +4997,8 @@ what_next do_next (const what_next next, http_document &http)/*{{{*/
 	// but it did not return anything as it should. This is caught here.
 	return what_next::output_error ("Unbehandelter Zustand in do_next () (Programmfehler)");
 }
-/*}}}*/
 
-void setup_static_data ()/*{{{*/
+void setup_static_data ()
 {
 	// caption bei states ohne Ausgabe: Zum Beispiel f�r error-document verwendet
 
@@ -5285,9 +5159,8 @@ void setup_static_data ()/*{{{*/
 #undef WEB_CHPW
 #undef OF
 }
-/*}}}*/
 
-what_next read_options ()/*{{{*/
+what_next read_options ()
 {
 	// Read the options
 	// Read the options from the file. This is needed for various
@@ -5314,9 +5187,8 @@ what_next read_options ()/*{{{*/
 
 	return what_next::go_on ();
 }
-/*}}}*/
 
-what_next setup_variables ()/*{{{*/
+what_next setup_variables ()
 	/*
 	 * Set up global variables needed for the web interface state handling system.
 	 * These include:
@@ -5332,26 +5204,22 @@ what_next setup_variables ()/*{{{*/
 	 *   - a what_next object indicating what to do next.
 	 */
 {
-	// First of all: silence on stdout./*{{{*/
+	// First of all: silence on stdout.
 	options::silent=true;
 	db.silent=true;
-/*}}}*/
 
-	// Initialize variables/*{{{*/
+	// Initialize variables
 	session_access=dba_none;
 	session_user=NULL;
-/*}}}*/
 
-	// Read the options/*{{{*/
+	// Read the options
 	DO_SUB_ACTION (read_options ());
-/*}}}*/
 
-	// Set up miscellaneous variables from the environment/*{{{*/
+	// Set up miscellaneous variables from the environment
 	remote_address=get_environment ("REMOTE_ADDR");
 	client_is_local=opts.address_is_local (remote_address);
-/*}}}*/
 
-	// Set up URLs/*{{{*/
+	// Set up URLs
 	// This is the URL we have to use in outputting links so the user can reach
 	// this program. It is constructed from information found in the
 	// environment.
@@ -5374,9 +5242,8 @@ what_next setup_variables ()/*{{{*/
 
 	relative_url=script_name;
 	absolute_url=protocol_prefix+http_host+script_name;
-/*}}}*/
 
-	// Build the cgi argument list./*{{{*/
+	// Build the cgi argument list.
 	// These are arguments passed by the user (i. e., from the user-filled web
 	// form). They are taken from the environment or from stdin, depending on
 	// the request method found in the environment. The format is determined
@@ -5543,13 +5410,11 @@ what_next setup_variables ()/*{{{*/
 		request_method=rm_other;
 		return what_next::output_error ("Unsupported request method \""+method+"\"");
 	}
-/*}}}*/
 
-	// Set up some global variables from CGI arguments/*{{{*/
+	// Set up some global variables from CGI arguments
 	debug_enabled=CGI_HAS (debug);
-/*}}}*/
 
-	// Set up the session/*{{{*/
+	// Set up the session
 	// If a session_id CGI parameter was given, we try to open the session,
 	// regardless of whether the state we're going to needs a session. If
 	// opening the session failes, an error is output (returned). After opening
@@ -5579,9 +5444,8 @@ what_next setup_variables ()/*{{{*/
 			return what_next::output_error ("Ung�ltige Sitzung \""+CGI_READ (session_id)+"\"");
 		}
 	}
-/*}}}*/
 
-	// Set the database connection data if there was a connection./*{{{*/
+	// Set the database connection data if there was a connection.
 	if (session.is_ok ())
 	{
 		if (SESSION_HAS (login_name))
@@ -5659,9 +5523,8 @@ what_next setup_variables ()/*{{{*/
 		}
 	}
 
-/*}}}*/
 
-	// Determine and return the state./*{{{*/
+	// Determine and return the state.
 	// If a new_state cgi argument is given, this state is to be used. If not,
 	// we use the default state, which is probably either login or some kind of
 	// public main menu.
@@ -5684,11 +5547,9 @@ what_next setup_variables ()/*{{{*/
 		// No state was given, use the default
 		return what_next::go_to_state (default_state);
 	}
-/*}}}*/
 }
-/*}}}*/
 
-int main (int argc, char *argv[])/*{{{*/
+int main (int argc, char *argv[])
 {
 	(void)argc;
 	(void)argv;
@@ -5724,6 +5585,5 @@ int main (int argc, char *argv[])/*{{{*/
 
 	return 0;
 }
-/*}}}*/
 
 

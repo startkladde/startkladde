@@ -40,7 +40,7 @@ void SkComboBox::insertItem (const QString &s, int index)
 	QComboBox::insertItem (s, index);
 }
 
-QString SkComboBox::edit_text_string ()/*{{{*/
+QString SkComboBox::edit_text_string ()
 	/*
 	 * Returns a QString with the current contents of the editor field.
 	 * Return value:
@@ -48,9 +48,9 @@ QString SkComboBox::edit_text_string ()/*{{{*/
 	 */
 {
 	return currentText ();
-}/*}}}*/
+}
 
-QString SkComboBox::current_text_string ()/*{{{*/
+QString SkComboBox::current_text_string ()
 	/*
 	 * Returns a QString with the current item.
 	 * Return value:
@@ -58,7 +58,7 @@ QString SkComboBox::current_text_string ()/*{{{*/
 	 */
 {
 	return currentText ();
-}/*}}}*/
+}
 
 /**
   * Fills the box with an array of strings.
@@ -80,7 +80,7 @@ void SkComboBox::fillStringArray (QString **array, int num, bool del)
 	show ();
 }
 
-void SkComboBox::setCurrentItem (int index)/*{{{*/
+void SkComboBox::setCurrentItem (int index)
 	/*
 	 * Sets the current item and emit the activation signal.
 	 * Parameters:
@@ -89,9 +89,9 @@ void SkComboBox::setCurrentItem (int index)/*{{{*/
 {
 	QComboBox::setCurrentItem (index);
 	emit activated (index);
-}/*}}}*/
+}
 
-void SkComboBox::insert_if_new (const QString &t)/*{{{*/
+void SkComboBox::insert_if_new (const QString &t)
 	/*
 	 * Insert an item to the list if it is new.
 	 * Parameters:
@@ -114,9 +114,9 @@ void SkComboBox::insert_if_new (const QString &t)/*{{{*/
 		insertItem (t);
 		setCurrentText (old_string);
 	}
-}/*}}}*/
+}
 
-void SkComboBox::cursor_to_end ()/*{{{*/
+void SkComboBox::cursor_to_end ()
 	/*
 	 * Moves the cursor to the end of the editing field.
 	 */
@@ -124,18 +124,15 @@ void SkComboBox::cursor_to_end ()/*{{{*/
 	QLineEdit *le=lineEdit ();
 	if (le) le->setSelection (le->text ().length (), 0);
 }
-/*}}}*/
 
-void SkComboBox::focusOutEvent (QFocusEvent *event)/*{{{*/
+void SkComboBox::focusOutEvent (QFocusEvent *event)
 {
 	QComboBox::focusOutEvent (event);
 	emit focus_out ();
 }
-/*}}}*/
 
-void SkComboBox::focusInEvent (QFocusEvent *event)/*{{{*/
+void SkComboBox::focusInEvent (QFocusEvent *event)
 {
 	QComboBox::focusInEvent (event);
 	emit focus_in ();
 }
-/*}}}*/

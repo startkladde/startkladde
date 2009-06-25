@@ -3,7 +3,7 @@
 #include <QLayout>
 
 // Class management
-SkTimeEdit::SkTimeEdit (QWidget *parent, const char *name)/*{{{*/
+SkTimeEdit::SkTimeEdit (QWidget *parent, const char *name)
 	:QFrame (parent, name)
 	/*
 	 * Constructs a sk_time_edit window instance.
@@ -31,9 +31,9 @@ SkTimeEdit::SkTimeEdit (QWidget *parent, const char *name)/*{{{*/
 	QObject::connect (tedit, SIGNAL (timeChanged (const QTime &)), this, SIGNAL (time_changed ()));
 
 //	resizeEvent (NULL);
-}/*}}}*/
+}
 
-void SkTimeEdit::set_mode (sk_te_mode p_mode)/*{{{*/
+void SkTimeEdit::set_mode (sk_te_mode p_mode)
 	/*
 	 * Sets the editor mode. There are the following modes:
 	 *   - tm_time: time editor only
@@ -74,9 +74,9 @@ void SkTimeEdit::set_mode (sk_te_mode p_mode)/*{{{*/
 			log_error ("Unhandled mode in sk_time_edit::set_mode ()");
 	}
 //	resizeEvent (NULL);
-}/*}}}*/
+}
 
-void SkTimeEdit::reset ()/*{{{*/
+void SkTimeEdit::reset ()
 	/*
 	 * Resets the window to an initial state.
 	 */
@@ -85,22 +85,22 @@ void SkTimeEdit::reset ()/*{{{*/
 	set_time (sk_time (0, 0, 0, 0));
 	set_mode (tm_time);
 	set_checked (true);
-}/*}}}*/
+}
 
 
 // Slots
-void SkTimeEdit::set_current_time ()/*{{{*/
+void SkTimeEdit::set_current_time ()
 	/*
 	 * Writes the current time to the time editor.
 	 */
 {
 	// TODO time zone?
 	tedit->setTime (QTime::currentTime ());
-}/*}}}*/
+}
 
 
 // Time editor widget
-QTime SkTimeEdit::time ()/*{{{*/
+QTime SkTimeEdit::time ()
 	/*
 	 * Gets the time from the time editor.
 	 * Return value:
@@ -108,9 +108,9 @@ QTime SkTimeEdit::time ()/*{{{*/
 	 */
 {
 	return tedit->time ();
-}/*}}}*/
+}
 
-void SkTimeEdit::set_time (sk_time t)/*{{{*/
+void SkTimeEdit::set_time (sk_time t)
 	/*
 	 * Writes a given time to the time editor.
 	 * Parameters:
@@ -123,21 +123,21 @@ void SkTimeEdit::set_time (sk_time t)/*{{{*/
 	QObject::disconnect (tedit, SIGNAL (timeChanged (const QTime &)), this, SIGNAL (time_changed ()));
 	tedit->setTime (t);
 	QObject::connect (tedit, SIGNAL (timeChanged (const QTime &)), this, SIGNAL (time_changed ()));
-}/*}}}*/
+}
 
-void SkTimeEdit::null_zeit ()/*{{{*/
+void SkTimeEdit::null_zeit ()
 	/*
 	 * Sets the time editor to a null time.
 	 */
 {
 	QTime t;
 	tedit->setTime (t);
-}/*}}}*/
+}
 
 
 
 // Checkbox
-void SkTimeEdit::set_cbox_text (const QString &t)/*{{{*/
+void SkTimeEdit::set_cbox_text (const QString &t)
 	/*
 	 * Sets the text of the check box label.
 	 * Parameters:
@@ -145,9 +145,9 @@ void SkTimeEdit::set_cbox_text (const QString &t)/*{{{*/
 	 */
 {
 	cbox->setText (t);
-}/*}}}*/
+}
 
-void SkTimeEdit::set_checked (bool c)/*{{{*/
+void SkTimeEdit::set_checked (bool c)
 	/*
 	 * Sets the checked property of the check box.
 	 * Parameters:
@@ -156,9 +156,9 @@ void SkTimeEdit::set_checked (bool c)/*{{{*/
 {
 	cbox->setChecked (c);
 	update_cbox ();
-}/*}}}*/
+}
 
-bool SkTimeEdit::checked ()/*{{{*/
+bool SkTimeEdit::checked ()
 	/*
 	 * Returns the value of the checked property of the checkbox.
 	 * Return value:
@@ -166,9 +166,9 @@ bool SkTimeEdit::checked ()/*{{{*/
 	 */
 {
 	return cbox->isChecked ();
-}/*}}}*/
+}
 
-void SkTimeEdit::update_cbox ()/*{{{*/
+void SkTimeEdit::update_cbox ()
 	/*
 	 * Shows or hides the time editor field, depending on whether it should be
 	 * visible.
@@ -187,9 +187,9 @@ void SkTimeEdit::update_cbox ()/*{{{*/
 		tedit->hide ();
 		setFocusProxy (cbox);
 	}
-}/*}}}*/
+}
 
-bool SkTimeEdit::time_enabled ()/*{{{*/
+bool SkTimeEdit::time_enabled ()
 	/*
 	 * Determines whether the time editor should be visible, depending on the
 	 * mode and the checkbox.
@@ -202,11 +202,11 @@ bool SkTimeEdit::time_enabled ()/*{{{*/
 		return (cbox->isChecked ()==invert);
 	else
 		return true;
-}/*}}}*/
+}
 
 
 // Push button
-void SkTimeEdit::set_pbut_text (const QString &t)/*{{{*/
+void SkTimeEdit::set_pbut_text (const QString &t)
 	/*
 	 * Sets the text of the button.
 	 * Parameters:
@@ -214,11 +214,11 @@ void SkTimeEdit::set_pbut_text (const QString &t)/*{{{*/
 	 */
 {
 	pbut->setText (t);
-}/*}}}*/
+}
 
 
 // Events
-//void sk_time_edit::resizeEvent (QResizeEvent *e)/*{{{*/
+//void sk_time_edit::resizeEvent (QResizeEvent *e)
 //	/*
 //	 * Arranges the controls, depending on the mode.
 //	 * Paremters:
@@ -247,5 +247,5 @@ void SkTimeEdit::set_pbut_text (const QString &t)/*{{{*/
 //			log_error ("Unhandled mode in sk_time_edit::resizeEvent ()");
 //	}
 //
-//}/*}}}*/
+//}
 

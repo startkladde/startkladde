@@ -20,7 +20,7 @@
 class latex_document
 {
 	public:
-		class package/*{{{*/
+		class package
 		{
 			public:
 				package (const QString &_name, const QString &opt0="", const QString &opt1="", const QString &opt2="", const QString &opt3="");
@@ -28,8 +28,7 @@ class latex_document
 				std::set<QString> options;
 				QString make_use_clause () const;
 		};
-/*}}}*/
-		class ex_generate_error:public sk_exception/*{{{*/
+		class ex_generate_error:public sk_exception
 		{
 			public:
 				ex_generate_error (const QString &_desc):desc (_desc) {};
@@ -38,8 +37,7 @@ class latex_document
 
 				QString desc;
 		};
-/*}}}*/
-		class ex_command_failed:public ex_generate_error/*{{{*/
+		class ex_command_failed:public ex_generate_error
 		{
 			public:
 				ex_command_failed (const QString &_desc, int _num, const QString &_command, const QString &_output, const QString &_document=""):ex_generate_error (_desc), num (_num), command (_command), output (_output), document (_document) {};
@@ -51,7 +49,6 @@ class latex_document
 				QString output;
 				QString document;
 		};
-/*}}}*/
 		latex_document ();
 
 		void write_header ();

@@ -7,7 +7,7 @@
 //const char *default_format="%0d.%0m.%0Y %0H:%0M:%0S";
 const char *default_format="%0Y-%0m-%0d %0H:%0M:%0S";
 
-QString get_tm_text (struct tm *tm_time, const char *format, int buf_size)/*{{{*/
+QString get_tm_text (struct tm *tm_time, const char *format, int buf_size)
 	/*
 	 * Gets a text representation of a time, essentially like strftime.
 	 * Parameters:
@@ -29,9 +29,9 @@ QString get_tm_text (struct tm *tm_time, const char *format, int buf_size)/*{{{*
 
 	// Convert text to QString
 	return QString (text);
-}/*}}}*/
+}
 
-QString get_current_time_text (time_zone tz, const char *format, int buf_size)/*{{{*/
+QString get_current_time_text (time_zone tz, const char *format, int buf_size)
 	/*
 	 * Gets a text representation of the current time, essentially like strftime.
 	 * Parameters:
@@ -64,7 +64,7 @@ QString get_current_time_text (time_zone tz, const char *format, int buf_size)/*
 	QString tt=get_tm_text (&tm_time, format, buf_size);
 	if (tz==tz_utc) tt+="Z";
 	return tt;
-}/*}}}*/
+}
 
 
 

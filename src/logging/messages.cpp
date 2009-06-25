@@ -4,7 +4,7 @@
 
 char datetime_buf[20];
 
-char *datetime ()/*{{{*/
+char *datetime ()
 	/*
 	 * Makes a QString containing the current date and time.
 	 * Return value:
@@ -20,10 +20,10 @@ char *datetime ()/*{{{*/
 	strftime (datetime_buf, 20, format, loctime);
 
 	return datetime_buf;
-}/*}}}*/
+}
 
 
-void log_message (QString message)/*{{{*/
+void log_message (QString message)
 	/*
 	 * Writes a message, prefixed with date and time, to the log, whatever the
 	 * log is.
@@ -33,9 +33,9 @@ void log_message (QString message)/*{{{*/
 	 */
 {
 	printf (c_message "%s: %s\n" c_default, datetime (), message.latin1());
-}/*}}}*/
+}
 
-void log_error (QString message)/*{{{*/
+void log_error (QString message)
 	/*
 	 * Writes an error message, prefixed with date and time, to the log,
 	 * whatever the log is.
@@ -45,4 +45,4 @@ void log_error (QString message)/*{{{*/
 	 */
 {
 	printf (c_error "%s: Error: %s\n" c_default, datetime (), message.latin1());
-}/*}}}*/
+}

@@ -15,7 +15,7 @@
 //#include "WeatherDialog.h"
 //#include "sk_plugin.h"
 
-void display_help ()/*{{{*/
+void display_help ()
 	/*
 	 * Displays a brief parameter information.
 	 */
@@ -23,7 +23,7 @@ void display_help ()/*{{{*/
 	std::cout << "usage: startkladde [options]" << std::endl;
 	std::cout << "  options:" << std::endl;
 	options::display_options ("    ");
-}/*}}}*/
+}
 
 int main (int argc, char **argv)
 	/*

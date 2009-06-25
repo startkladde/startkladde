@@ -2,38 +2,34 @@
 
 #include "src/model/LaunchType.h"
 
-flugbuch_entry::flugbuch_entry ()/*{{{*/
+flugbuch_entry::flugbuch_entry ()
 {
 	invalid=false;
-}/*}}}*/
+}
 
-QString flugbuch_entry::tag_string () const/*{{{*/
+QString flugbuch_entry::tag_string () const
 {
 	return tag.toString ("yyyy-MM-dd");
 }
-/*}}}*/
 
-QString flugbuch_entry::zeit_start_string (bool no_letters) const/*{{{*/
+QString flugbuch_entry::zeit_start_string (bool no_letters) const
 {
 	return zeit_start.to_string ("%H:%M", tz_utc, 0, no_letters);
 }
-/*}}}*/
 
-QString flugbuch_entry::zeit_landung_string (bool no_letters) const/*{{{*/
+QString flugbuch_entry::zeit_landung_string (bool no_letters) const
 {
 	return zeit_landung.to_string ("%H:%M", tz_utc, 0, no_letters);
 }
-/*}}}*/
 
-QString flugbuch_entry::flugdauer_string () const/*{{{*/
+QString flugbuch_entry::flugdauer_string () const
 {
 	return flugdauer.to_string ("%H:%M", tz_timespan);
 }
-/*}}}*/
 
 
 
-void make_flugbuch_person (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date, Person *person, QPtrList<Flight> &flights, flugbuch_entry::flight_instructor_mode fim)/*{{{*/
+void make_flugbuch_person (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date, Person *person, QPtrList<Flight> &flights, flugbuch_entry::flight_instructor_mode fim)
 	// flights may contain flights which don't belong to the person
 	// TODO pass list of planes here?
 	// TODO this is slow because it needs to query the database for persons
@@ -122,9 +118,8 @@ void make_flugbuch_person (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date, 
 		fb.append (fb_entry);
 	}
 }
-/*}}}*/
 
-void make_flugbuch_day (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date)/*{{{*/
+void make_flugbuch_day (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date)
 	// Make all flugbuchs for one day
 {
 	// TODO error handling
@@ -169,6 +164,5 @@ void make_flugbuch_day (QPtrList<flugbuch_entry> &fb, sk_db *db, QDate date)/*{{
 		make_flugbuch_person (fb, db, date, *person, flights);
 	}
 }
-/*}}}*/
 
 
