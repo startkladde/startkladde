@@ -70,7 +70,6 @@ Umschreiben:
   - QActions
   - printf weg
   - .clear statt =""
-  - atoi weg/auslagern
   - skdate statt qdate/manuell
 
 Datenbank:

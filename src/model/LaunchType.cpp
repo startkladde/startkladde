@@ -40,12 +40,12 @@ LaunchType::LaunchType (QString desc)
 {
 	init ();
 
-	QStringList split=QStringList::split (",", desc, true);
-	for (QStringList::Iterator s=split.begin (); s!=split.end (); ++s)
-		*s=(*s).simplifyWhiteSpace ();
+	QStringList split=desc.split (",");
+	for (int i=0; i<split.size (); ++i)
+		split[i]=split[i].simplifyWhiteSpace ();
 	int n=split.count ();
 
-	if (n>=0) id=atoi (split[0]);
+	if (n>=0) id=split[0].toLongLong ();
 	if (n>=1)
 	{
 		if (split[1].lower ()=="winch") type=sat_winch;
