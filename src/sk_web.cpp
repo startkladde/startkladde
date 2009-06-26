@@ -1381,7 +1381,7 @@ what_next csv_to_persons (const QString &csv, QPtrList<Person> &persons, const Q
 	return what_next::go_on ();
 }
 
-void make_unique_club_list (std::list<QString> &club_list, QPtrList<Plane> plane_list)
+void make_unique_club_list (QStringList &club_list, QPtrList<Plane> plane_list)
 	/*
 	 * For each plane, adds the club to the club list, if not already present.
 	 * Parameters:
@@ -1389,21 +1389,14 @@ void make_unique_club_list (std::list<QString> &club_list, QPtrList<Plane> plane
 	 *   - plane_list: the list of planes.
 	 */
 {
+	// TODO QSet<QString> instead of QStringList?
 	for (QPtrListIterator <Plane> plane (plane_list); *plane; ++plane)
 	{
 		// Don't use .grep here because we need to simplify_club_name
-		bool already_has=false;
-		QString plane_club=(*plane)->club;
-		if (eintrag_ist_leer (plane_club)) plane_club="-";
-		for (std::list<QString>::iterator club=club_list.begin (); club!=club_list.end (); ++club)
-		{
-			if (simplify_club_name (*club)==simplify_club_name (plane_club))
-			{
-				already_has=true;
-				break;
-			}
-		}
-		if (!already_has) club_list.push_back (plane_club);
+//		bool already_has=false;
+		QString plane_club=simplify_club_name ((*plane)->club);
+		if (!club_list.contains (plane_club))
+			club_list.append (plane_club);
 	}
 }
 
@@ -4103,7 +4096,7 @@ what_next handler_do_person_logbook ()
 	QPtrList<flugbuch_entry> flugbuch; flugbuch.setAutoDelete (true);
 	// We pass an empty QDate here because we already filtered for date above.
 	make_flugbuch_person (flugbuch, &db, QDate (), &person, flights, fim);
-	
+
 
 	// Step 3: Output the logbook.
 	// We have got a std::list<flugbuch_entry>.
@@ -4189,7 +4182,7 @@ what_next handler_do_person_logbook ()
 	{
 		return what_next::output_error ("\""+format+"\"? Komisches Format. Kenne ich nicht.");
 	}
-	
+
 
 	return what_next::output_error ("Unbehandelter Fall in handler_do_person_logbook ()");
 }
@@ -4272,16 +4265,16 @@ what_next handler_do_plane_logbook ()
 
 	// Make the club list
 	// TODO: this functionality could be moved to write_bordbuch
-	std::list<QString> club_list;
+	QStringList club_list;
 	make_unique_club_list (club_list, planes);
 
 	// Make the logbook
 	latex_document ldoc;
 	ldoc.no_section_numbers=true;
-	for (std::list<QString>::const_iterator clubs_end=club_list.end (),
-			club=club_list.begin (); club!=clubs_end; ++club)
+
+	for (int i=0; i<club_list.size (); ++i)
 	{
-		QString c=*club;
+		QString c=club_list[i];
 
 		// Generate the bordbuch
 		QPtrList<bordbuch_entry> bordbuch; bordbuch.setAutoDelete (true);
@@ -4602,7 +4595,7 @@ what_next handler_do_flight_db ()
 		}
 	}
 	flights.sort ();
-	
+
 
 	// Step 3: Output the list.
 	// We have got a flight_list
@@ -4695,7 +4688,7 @@ what_next handler_do_flight_db ()
 
 	filename.append (".csv");
 	return what_next::output_raw_document (tab.csv (opts.csv_quote), http_document::mime_type_csv, filename, "Flugliste f�r "+date_text);
-	
+
 
 	return what_next::output_error ("Unbehandelter Fall in handler_do_flight_db");
 }

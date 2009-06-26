@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include <QStringList>
+
 #include "src/version.h"
 #include "src/config/options.h"
 #include "src/db/admin_functions.h"
@@ -55,7 +57,7 @@ int check_db (sk_db &db)
 	return 0;
 }
 
-int merge_person (sk_db &db, const std::list<QString> &args)
+int merge_person (sk_db &db, const QStringList &args)
 {
 	if (args.size ()<2)
 	{
@@ -66,26 +68,22 @@ int merge_person (sk_db &db, const std::list<QString> &args)
 	}
 	else
 	{
-		std::list<QString>::const_iterator args_end=args.end ();
-		std::list<QString>::const_iterator arg=args.begin ();
-
 		// Determine the correct ID
-		db_id correct_id=(*arg).toLongLong ();
+		db_id correct_id=args[0].toLongLong ();
 		if (id_invalid (correct_id))
 		{
-			std::cout << "Error: " << *arg << " is not a valid ID" << std::endl;
+			std::cout << "Error: " << args[0] << " is not a valid ID" << std::endl;
 			return 2;
 		}
-		arg++;
 
 		// Determine the wrong IDs
 		std::list<db_id> wrong_ids;
-		for (; arg!=args_end; arg++)
+		for (int i=1; i<args.size (); ++i)
 		{
-			db_id wrong_id=(*arg).toLongLong();
+			db_id wrong_id=args[i].toLongLong();
 			if (id_invalid (wrong_id))
 			{
-				std::cout << "Error: " << *arg << " is not a valid ID" << std::endl;
+				std::cout << "Error: " << args[i] << " is not a valid ID" << std::endl;
 				return 2;
 			}
 			wrong_ids.push_back (wrong_id);
@@ -164,8 +162,6 @@ int main (int argc, char *argv[])
 
 			if (act!=aa_none) opts.read_config_files (NULL, NULL, argc, argv);
 
-			QStringList::iterator nonopt=opts.non_options.begin (); nonopt++;
-
 			// Determine whether we need an root connection (need_root_db)
 			bool need_root_db=false;
 			switch (act)
@@ -205,6 +201,7 @@ int main (int argc, char *argv[])
 			else
 				db.set_connection_data (opts.server, opts.port, opts.username, opts.password);
 
+			QStringList::iterator nonopt=opts.non_options.begin (); nonopt++;
 			switch (act)
 			{
 				case aa_init_db:
@@ -214,7 +211,8 @@ int main (int argc, char *argv[])
 					return check_db (db);
 					break;
 				case aa_merge_person:
-					return merge_person (db, std::list<QString> (nonopt, opts.non_options.end ()));
+
+					return merge_person (db, opts.non_options.mid (1));
 					break;
 				case aa_noop:
 					std::cout << "noop" << std::endl;
