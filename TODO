@@ -64,23 +64,14 @@ Bibliotheken verwenden:
 
 Umschreiben:
   - argument_list statt list<argument> �berall
-  - STL statt QTL (also im Wesentlichen std::list statt QPtrList)
-  - std::string statt QString
-  - foo::foo () :foo_member (bar),... { ...} statt foo:foo () { foo_member=bar; }
-  - Named constructor idiom
-  - Named parameter idiom
+  - Initialisierung statt Zuweisung in Konstruktoren
   - Exceptions
-  - const correctness
-  - arrays[] weg (am besten zu std::vector)
+  - arrays[] weg (am besten zu QList)
   - QActions
   - printf weg
   - .clear statt =""
-  - sk_admin -> config -> sk_plugin -> QT includierung ist schlecht
-  - mysql++ statt mysql-lib
   - atoi weg/auslagern
   - skdate statt qdate/manuell
-  - string::append statt +=
-  - Vern�nftiges Format (Klassen), um Dokumente (HTML, LaTeX) zu erzeugen
 
 Datenbank:
   - gestartet, gelandet, sfz gelandet statt status
