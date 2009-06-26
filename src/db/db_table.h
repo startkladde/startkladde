@@ -8,7 +8,6 @@
  */
 
 #include <iostream>
-#include <list>
 
 #include "src/db/db_column.h"
 
@@ -22,7 +21,7 @@ class db_table
 
 		QString name;
 		QString like_table;
-		std::list<db_column> columns;
+		QList<db_column> columns;
 		QString primary_key;
 		QStringList unique_keys;
 

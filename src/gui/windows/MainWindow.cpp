@@ -22,7 +22,7 @@
 #include "src/time/time_functions.h"
 
 // UI
-MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plugins, const char *name, WFlags f)
+MainWindow::MainWindow (QWidget *parent, sk_db *_db, QList<sk_plugin> *_plugins, const char *name, WFlags f)
 :
 	QMainWindow (parent, name, f)
 /*
@@ -39,7 +39,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	ss = new ::SplashScreen (this, logo);
 	ss->show_splash ();
 	qApp->processEvents ();
-	
+
 
 	// Variablen initialisieren
 	// TODO: nach UTC einstellen
@@ -56,7 +56,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	db = _db;
 
 	weatherDialog = NULL;
-	
+
 
 	initActions ();
 	initMenu ();
@@ -66,12 +66,12 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	// Splitter
 	split_main = new QSplitter (Qt::Vertical, this, "split_main");
 	setCentralWidget (split_main);
-	
+
 
 	// Hauptrahmen
 	main_frame = new QFrame (split_main, "main_frame");
 	main_layout = new QVBoxLayout (main_frame, window_margin, -1, "main_layout");
-	
+
 
 	// Infoframe
 
@@ -179,9 +179,9 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 
 	// Plugins
 	plugins = _plugins;
-	std::list<sk_plugin>::iterator end = plugins->end ();
+	QList<sk_plugin>::iterator end = plugins->end ();
 	int row = 0;
-	for (std::list<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
+	for (QList<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
 	{
 		SkLabel *lbl_caption = new SkLabel ("[...]", info_frame, "lbl_caption[...]");
 		SkLabel *lbl_value = new SkLabel ("[...]", info_frame, "lbl_value[...]");
@@ -220,13 +220,13 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	plugin_layout->setRowStretch (row, 1);
 
 	update_info ();
-	
+
 
 	// Flugtabelle
 	tbl_fluege = new FlightTable (db, main_frame);
 	main_layout->addWidget (tbl_fluege, 1);
 	tbl_fluege->set_anzeigedatum (anzeigedatum);
-	
+
 
 	// Log
 	display_log = false;
@@ -239,7 +239,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	log->document ()->setMaximumBlockCount (1000); // TODO check this works
 
 	connect (db, SIGNAL (executing_query (QString *)), this, SLOT (log_message (QString *)));
-	
+
 
 	// Timerzeug
 	timer_status = new QTimer (this);
@@ -250,7 +250,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	QObject::connect (timer_db, SIGNAL (timeout ()), this, SLOT (slot_timer_db ()));
 
 	update_time ();
-	
+
 
 	// Sonstige Fensterchen
 	// Warum WStyle_StaysOnTop bedeutet, dass es gerade nicht OnTopStays, ist
@@ -264,7 +264,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	flug_editor = new FlightWindow (this, db, NULL, flugeditor_modal, 0, ss);
 	flugzeug_liste = new EntityListWindow (st_plane, this, db, "flugzeug_liste", false, 0, ss);
 	personen_liste = new EntityListWindow (st_person, this, db, "personen_liste", false, 0, ss);
-	
+
 
 	tbl_fluege->setContextMenuPolicy (Qt::CustomContextMenu);
 
@@ -299,7 +299,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 		QObject::connect (this, SIGNAL (long_operation_start ()), status_dialog, SLOT (show_splash ()));
 		QObject::connect (this, SIGNAL (long_operation_end ()), status_dialog, SLOT (hide_splash ()));
 	}
-	
+
 
 	connect (qApp, SIGNAL(lastWindowClosed()), this, SLOT(slot_close()));
 	connect (actionSetTime, SIGNAL(activated()), this, SLOT(slot_setdate()));
@@ -345,7 +345,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	// Datenbank initialieren
 	// Initialize the DB as soon as the GUI is initialized.
 	//QTimer::singleShot (0, this, SLOT (slot_timer_db ()));
-	
+
 
 	// Fenstereinstellungen
 	setCaption (opts.title);
@@ -371,7 +371,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plug
 	// tritt aber nicht immer auf. Manchmal kann man es provozieren, indem man
 	// dem Programm eine unbenutzbare Datenbank vorsetzt. Whatever...
 	qApp->processEvents ();
-	
+
 
 	restart_all_plugins ();
 
@@ -649,8 +649,8 @@ MainWindow::~MainWindow ()
 
 	if (plugins)
 	{
-		std::list<sk_plugin>::iterator end = plugins->end ();
-		for (std::list<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
+		QList<sk_plugin>::iterator end = plugins->end ();
+		for (QList<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
 		{
 			(*it).terminate ();
 			sched_yield ();
@@ -2361,8 +2361,8 @@ void MainWindow::restart_all_plugins ()
 		weather_plugin->restart ();
 	}
 
-	std::list<sk_plugin>::iterator end = plugins->end ();
-	for (std::list<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
+	QList<sk_plugin>::iterator end = plugins->end ();
+	for (QList<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
 	{
 		(*it).restart ();
 	}

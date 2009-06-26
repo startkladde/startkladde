@@ -113,14 +113,14 @@ QString plugin_data_format::make_non_unique (const QString &label) const
 
 
 // Plugin functions
-void plugin_data_format::plugin_make_field_list (const QString &format, std::list<object_field> &fields) const
+void plugin_data_format::plugin_make_field_list (const QString &format, QList<object_field> &fields) const
 {
 	load ();
 	REQUIRE_SYMBOL (make_field_list);
 	return symbol_make_field_list (make_non_unique (format), fields);
 }
 
-void plugin_data_format::plugin_flight_to_fields (const QString &format, std::list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text, const QString &error_text) const
+void plugin_data_format::plugin_flight_to_fields (const QString &format, QList<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text, const QString &error_text) const
 {
 	load ();
 	REQUIRE_SYMBOL (flight_to_fields);

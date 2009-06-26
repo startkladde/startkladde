@@ -9,7 +9,6 @@
 
 // Adding an option: see doc/internal/options
 
-#include <list>
 #include <QString>
 
 #include <qdatetime.h>
@@ -29,8 +28,8 @@ class options
 	public:
 		options ();
 		bool parse_arguments (int argc, char *argv[]);
-		bool read_config_file (QString filename, sk_db *db, std::list<sk_plugin> *plugins);
-		bool read_config_files (sk_db *db, std::list<sk_plugin> *plugins, int argc, char *argv[]);
+		bool read_config_file (QString filename, sk_db *db, QList<sk_plugin> *plugins);
+		bool read_config_files (sk_db *db, QList<sk_plugin> *plugins, int argc, char *argv[]);
 		static void display_options (QString prefix);
 		void do_display ();
 		bool need_display ();
@@ -88,7 +87,7 @@ class options
 
 		// Plugin Entity
 		QStringList plugin_paths;
-		std::list<plugin_data_format> plugins_data_format;
+		QList<plugin_data_format> plugins_data_format;
 
 		// Weather plugin
 		QString weather_plugin;
@@ -100,7 +99,7 @@ class options
 
 		// Non-options
 		QStringList non_options;
-		std::list<QDate> dates;
+		QList<QDate> dates;
 
 		// Parsing
 		bool parse_type (const QString &type_string);

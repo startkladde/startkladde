@@ -44,7 +44,7 @@ latex_document::latex_document ()
 void latex_document::write_header ()
 {
 	// Set up document options
-	std::set<QString> docopts=document_options;
+	QSet<QString> docopts=document_options;
 	docopts.insert (QString::number(font_size)+"pt");
 	if (landscape) docopts.insert ("landscape");
 
@@ -68,8 +68,8 @@ void latex_document::write_header ()
 	doc << "\\documentclass[" << make_string (docopts, ",") << "]{" << document_class << "}" << std::endl;
 
 	// Packages
-	std::list<package>::const_iterator end=packages.end ();
-	for (std::list<package>::const_iterator it=packages.begin (); it!=end; ++it)
+	QList<package>::const_iterator end=packages.end ();
+	for (QList<package>::const_iterator it=packages.begin (); it!=end; ++it)
 		doc << (*it).make_use_clause () << std::endl;
 
 	doc << "\\pagestyle{" << pagestyle << "}" << std::endl;
@@ -112,13 +112,14 @@ void latex_document::write_footer ()
 
 void latex_document::add_package (const package &p)
 {
-	std::list<package>::const_iterator end=packages.end ();
-	for (std::list<package>::iterator it=packages.begin (); it!=end; ++it)
+	QList<package>::const_iterator end=packages.end ();
+	for (QList<package>::iterator it=packages.begin (); it!=end; ++it)
 	{
 		if ((*it).name==p.name)
 		{
 			// Already have this package
-			(*it).options.insert (p.options.begin (), p.options.end ());
+			foreach (QString option, p.options)
+				(*it).options << option;
 
 			return;
 		}
@@ -141,15 +142,15 @@ QString latex_document::get_string ()
 	return std2q (doc.str ());
 }
 
-latex_document &latex_document::write (const table &tab, const table_row &header, const std::list<float> &widths)
+latex_document &latex_document::write (const table &tab, const table_row &header, const QList<float> &widths)
 {
 	// This writes a table. It is a bit q'n'd, in lack of a proper data
 	// structure. Only rows for which widths exist are written.
 
 	table_row::const_iterator header_end=header.end ();
-	std::list<float>::const_iterator widths_end=widths.end ();
+	QList<float>::const_iterator widths_end=widths.end ();
 	table_row::const_iterator column;
-	std::list<float>::const_iterator width;
+	QList<float>::const_iterator width;
 
 	// Write the columns declaration
 	QString columns_string;

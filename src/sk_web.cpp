@@ -266,7 +266,7 @@ class web_interface_state
 		RO_ACCESSOR (state_handler, handler)
 
 	private:
-		static std::list<web_interface_state> state_list;
+		static QList<web_interface_state> state_list;
 
 		// Variables
 		// Identification
@@ -286,14 +286,14 @@ class web_interface_state
 };
 
 // web_interface_state static variables
-std::list<web_interface_state> web_interface_state::state_list;
+QList<web_interface_state> web_interface_state::state_list;
 
 bool web_interface_state::add_to_list (const web_interface_state &state)
 	// Only, if label is unique
 {
-	// TODO hat std::list nicht so was wie find_if?
-	std::list<web_interface_state>::const_iterator end=state_list.end ();
-	for (std::list<web_interface_state>::const_iterator it=state_list.begin (); it!=end; ++it)
+	// TODO hat QList nicht so was wie find_if?
+	QList<web_interface_state>::const_iterator end=state_list.end ();
+	for (QList<web_interface_state>::const_iterator it=state_list.begin (); it!=end; ++it)
 		if ((*it).label==state.label)
 			return false;
 
@@ -304,9 +304,9 @@ bool web_interface_state::add_to_list (const web_interface_state &state)
 const web_interface_state &web_interface_state::from_list (const QString &_label)
 	throw (ex_not_found)
 {
-	// TODO hat std::list nicht so was wie find_if?
-	std::list<web_interface_state>::const_iterator end=state_list.end ();
-	for (std::list<web_interface_state>::const_iterator it=state_list.begin (); it!=end; ++it)
+	// TODO hat QList nicht so was wie find_if?
+	QList<web_interface_state>::const_iterator end=state_list.end ();
+	for (QList<web_interface_state>::const_iterator it=state_list.begin (); it!=end; ++it)
 		if ((*it).label==_label)
 			return *it;
 
@@ -624,14 +624,14 @@ QString remote_address;				// The address of the client
 request_method_t request_method;    // The request method
 // TODO need to implement object_field successor. These global vars
 // mixing data and metadata are MURX.
-std::list<object_field> fields_sk_user;	        // The member field description of an User
-std::list<object_field> fields_flugbuch_entry;	// The member field description of a flugbuch_entry
-std::list<object_field> fields_bordbuch_entry;	// The member field description of a bordbuch_entry
-std::list<object_field> fields_flightlist_entry; // The member field description of a flight list entry
-std::list<object_field> fields_flight_db_entry;  // The member field description of a flight list entry
-std::list<float> widths_flugbuch_entry;			// The column widths of a flugbuch entry, in mm
-std::list<float> widths_bordbuch_entry;			// The column widths of an bordbuch entry, in mm
-std::list<float> widths_flightlist;			    // The column widths of a flightlist entry, in mm
+QList<object_field> fields_sk_user;	        // The member field description of an User
+QList<object_field> fields_flugbuch_entry;	// The member field description of a flugbuch_entry
+QList<object_field> fields_bordbuch_entry;	// The member field description of a bordbuch_entry
+QList<object_field> fields_flightlist_entry; // The member field description of a flight list entry
+QList<object_field> fields_flight_db_entry;  // The member field description of a flight list entry
+QList<float> widths_flugbuch_entry;			// The column widths of a flugbuch entry, in mm
+QList<float> widths_bordbuch_entry;			// The column widths of an bordbuch entry, in mm
+QList<float> widths_flightlist;			    // The column widths of a flightlist entry, in mm
 
 // Global variables
 bool debug_enabled;                         // Whether debugging is enabled
@@ -1188,7 +1188,7 @@ void write_document_footer ()
 
 		// Write the CGI argument list
 		document.start_paragraph ();
-		const std::list<argument> &cgi_args_list=cgi_args.get_list ();
+		const QList<argument> &cgi_args_list=cgi_args.get_list ();
 		argument_list::const_iterator end=cgi_args_list.end ();
 		for (argument_list::const_iterator it=cgi_args_list.begin (); it!=end; ++it)
 		{
@@ -1358,7 +1358,7 @@ what_next csv_to_persons (const QString &csv, QPtrList<Person> &persons, const Q
 	}
 
 	// Make a list of persons from the table
-	// Legacy: persons are listed in QPtrList instead of a std::list
+	// Legacy: persons are listed in QPtrList instead of a QList
 	// because the database still uses this type and so do the person
 	// handling functions in sk_web.
 	table::const_iterator table_end=csv_table.end ();
@@ -1458,7 +1458,7 @@ do	\
 	if (n.get_next ()!=wn_go_on) return n;	\
 } while (false)
 
-html_table_row make_table_header (std::list<object_field> fields)
+html_table_row make_table_header (QList<object_field> fields)
 	/*
 	 * Makes a table header suitable for tables listing objects.
 	 * Paramters:
@@ -1469,9 +1469,9 @@ html_table_row make_table_header (std::list<object_field> fields)
 {
 	html_table_row row;
 
-	std::list<object_field>::const_iterator fields_end=fields.end ();
+	QList<object_field>::const_iterator fields_end=fields.end ();
 	// For each entry in the fields list, write a header cell
-	for (std::list<object_field>::const_iterator field=fields.begin (); field!=fields_end; ++field)
+	for (QList<object_field>::const_iterator field=fields.begin (); field!=fields_end; ++field)
 		// Only write if the field should be visible
 		if ((*field).get_list_display ())
 			row.push_back (html_table_cell::text ((*field).get_caption (), true));
@@ -1479,7 +1479,7 @@ html_table_row make_table_header (std::list<object_field> fields)
 	return row;
 }
 
-html_table_row make_table_data_row (std::list<object_field> fields)
+html_table_row make_table_data_row (QList<object_field> fields)
 	/*
 	 * Makes a table data row suitable for tables listing objects.
 	 * Paramters:
@@ -1492,9 +1492,9 @@ html_table_row make_table_data_row (std::list<object_field> fields)
 	// use table (table_row_from_fields)?
 	html_table_row row;
 
-	std::list<object_field>::const_iterator fields_end=fields.end ();
+	QList<object_field>::const_iterator fields_end=fields.end ();
 	// For each field, write the data cell.
-	for (std::list<object_field>::const_iterator field=fields.begin (); field!=fields_end; ++field)
+	for (QList<object_field>::const_iterator field=fields.begin (); field!=fields_end; ++field)
 		if ((*field).get_list_display ())
 		{
 			QString text=html_escape ((*field).make_display_text ());
@@ -1505,7 +1505,7 @@ html_table_row make_table_data_row (std::list<object_field> fields)
 	return row;
 }
 
-table_row table_row_from_fields (std::list<object_field> fields, bool header=false)
+table_row table_row_from_fields (QList<object_field> fields, bool header=false)
 	/*
 	 * Converts a list of object fields to a table row. The table row contains
 	 * either the QString representations from the object fields or the
@@ -1522,8 +1522,8 @@ table_row table_row_from_fields (std::list<object_field> fields, bool header=fal
 	table_row row;
 
 	// For each field, write the data cell.
-	std::list<object_field>::const_iterator fields_end=fields.end ();
-	for (std::list<object_field>::const_iterator field=fields.begin (); field!=fields_end; ++field)
+	QList<object_field>::const_iterator fields_end=fields.end ();
+	for (QList<object_field>::const_iterator field=fields.begin (); field!=fields_end; ++field)
 	{
 		if (header)
 		{
@@ -1796,7 +1796,7 @@ void treat_field (treatment_t treatment, const QString &caption, const QString &
 	}
 }
 
-void treat_additional_fields (treatment_t treatment, const std::list<argument> &additional_fields)
+void treat_additional_fields (treatment_t treatment, const QList<argument> &additional_fields)
 	/*
 	 * Writes additional fields, for example, submit buttons or additional
 	 * columns.
@@ -1843,7 +1843,7 @@ void treat_additional_fields (treatment_t treatment, const std::list<argument> &
 	}
 }
 
-void treat_appendix (treatment_t treatment, const QString &edit_next_state, const QString &create_next_state, const std::list<argument> &additional_args)
+void treat_appendix (treatment_t treatment, const QString &edit_next_state, const QString &create_next_state, const QList<argument> &additional_args)
 	/*
 	 * Writes the appendix for a treatment of a single object, if any. This is
 	 * the counterpart treat_preamble.
@@ -1998,7 +1998,7 @@ what_next write_person_list (QPtrList<Person> &persons, bool include_none, const
 	return what_next::go_on ();
 }
 
-what_next write_message_list (std::list<sk_db::import_message> messages)
+what_next write_message_list (QList<sk_db::import_message> messages)
 	/*
 	 * Write a list of messages concerning importing of master data.
 	 * Paramters:
@@ -2011,8 +2011,8 @@ what_next write_message_list (std::list<sk_db::import_message> messages)
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_prefix));
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_header, "", "", NULL, true, false, "Problem"));
 
-	std::list<sk_db::import_message>::const_iterator end=messages.end ();
-	for (std::list<sk_db::import_message>::const_iterator it=messages.begin (); it!=end; ++it)
+	QList<sk_db::import_message>::const_iterator end=messages.end ();
+	for (QList<sk_db::import_message>::const_iterator it=messages.begin (); it!=end; ++it)
 	{
 		if ((*it).get_p1 ())
 		{
@@ -2050,8 +2050,8 @@ void sk_user_to_fields (const User &user)
 	// TODO sk_user_{to,from}_fields are almost identical. Merge?
 	// Iterate over all User fields and, depending on the label, read the
 	// data from the User.
-	std::list<object_field>::const_iterator end=fields_sk_user.end ();
-	for (std::list<object_field>::iterator field=fields_sk_user.begin (); field!=end; ++field)
+	QList<object_field>::const_iterator end=fields_sk_user.end ();
+	for (QList<object_field>::iterator field=fields_sk_user.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
@@ -2082,8 +2082,8 @@ void sk_user_from_fields (User &user)
 	// TODO sk_user_{to,from}_fields are almost identical. Merge?
 	// Iterate over all User fields and, depending on the label, read the
 	// data from the User.
-	std::list<object_field>::const_iterator end=fields_sk_user.end ();
-	for (std::list<object_field>::iterator field=fields_sk_user.begin (); field!=end; ++field)
+	QList<object_field>::const_iterator end=fields_sk_user.end ();
+	for (QList<object_field>::iterator field=fields_sk_user.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
@@ -2111,8 +2111,8 @@ void flugbuch_entry_to_fields (const flugbuch_entry &fbe, bool no_letters=false)
 	// TODO replace object_field
 	// Iterate over all flugbuch_entry fields and, depending on the label, read
 	// the data from the flugbuch_entry.
-	std::list<object_field>::const_iterator end=fields_flugbuch_entry.end ();
-	for (std::list<object_field>::iterator field=fields_flugbuch_entry.begin (); field!=end; ++field)
+	QList<object_field>::const_iterator end=fields_flugbuch_entry.end ();
+	for (QList<object_field>::iterator field=fields_flugbuch_entry.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
@@ -2147,8 +2147,8 @@ void bordbuch_entry_to_fields (const bordbuch_entry &bbe, bool no_letters=false)
 	// TODO replace object_field
 	// Iterate over all bordbuch_entry fields and, depending on the label, read
 	// the data from the bordbuch_entry.
-	std::list<object_field>::const_iterator end=fields_bordbuch_entry.end ();
-	for (std::list<object_field>::iterator field=fields_bordbuch_entry.begin (); field!=end; ++field)
+	QList<object_field>::const_iterator end=fields_bordbuch_entry.end ();
+	for (QList<object_field>::iterator field=fields_bordbuch_entry.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
@@ -2169,7 +2169,7 @@ void bordbuch_entry_to_fields (const bordbuch_entry &bbe, bool no_letters=false)
 	}
 }
 
-void flight_to_fields (std::list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text="")
+void flight_to_fields (QList<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text="")
 	throw (ex_write_error_document)
 	/*
 	 * Converts a flight list entry to a list of object_fields.
@@ -2269,8 +2269,8 @@ void flight_to_fields (std::list<object_field> &fields, const Flight &f, const s
 	// Iterate over all fields and, depending on the label, read the data from
 	// the flight and write it to the field.
 	// Depending on the list used, not all of these fields are set.
-	std::list<object_field>::const_iterator end=fields.end ();
-	for (std::list<object_field>::iterator field=fields.begin (); field!=end; ++field)
+	QList<object_field>::const_iterator end=fields.end ();
+	for (QList<object_field>::iterator field=fields.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
@@ -2410,10 +2410,10 @@ void write_flightlist (latex_document &ldoc, const flight_list &flights, const Q
 
 
 // Specific field handling
-void field_user_lock (std::list<object_field> &fields)
+void field_user_lock (QList<object_field> &fields)
 {
-	std::list<object_field>::const_iterator fields_end=fields.end ();
-	for (std::list<object_field>::iterator field_it=fields.begin (); field_it!=fields_end; ++field_it)
+	QList<object_field>::const_iterator fields_end=fields.end ();
+	for (QList<object_field>::iterator field_it=fields.begin (); field_it!=fields_end; ++field_it)
 	{
 		if (session_access==dba_sk_user)
 		{
@@ -2441,12 +2441,12 @@ void field_user_lock (std::list<object_field> &fields)
 
 
 // Generic field handling
-void write_fields_display (std::list<object_field> fields)
+void write_fields_display (QList<object_field> fields)
 {
 	html_table table;
 
-	std::list<object_field>::const_iterator end=fields.end ();
-	for (std::list<object_field>::const_iterator it=fields.begin (); it!=end; ++it)
+	QList<object_field>::const_iterator end=fields.end ();
+	for (QList<object_field>::const_iterator it=fields.begin (); it!=end; ++it)
 	{
 		if ((*it).get_list_display ())
 		{
@@ -2461,13 +2461,13 @@ void write_fields_display (std::list<object_field> fields)
 	document.write (table, true);
 }
 
-void fields_write_edit_table (const std::list<object_field> &fields, bool create_new, const QString &ident_arg, const QString &ident_val)
+void fields_write_edit_table (const QList<object_field> &fields, bool create_new, const QString &ident_arg, const QString &ident_val)
 {
 	// For each field, write the table row
 	// TODO html_table verwenden
 	document.start_tag ("table");
-	std::list<object_field>::const_iterator fields_end=fields.end ();
-	for (std::list<object_field>::const_iterator field_it=fields.begin (); field_it!=fields_end; ++field_it)
+	QList<object_field>::const_iterator fields_end=fields.end ();
+	for (QList<object_field>::const_iterator field_it=fields.begin (); field_it!=fields_end; ++field_it)
 	{
 		const object_field &field=*field_it;
 
@@ -2579,10 +2579,10 @@ void fields_write_edit_table (const std::list<object_field> &fields, bool create
 	document.end_tag ("table");
 }
 
-void fields_from_cgi (std::list<object_field> &fields)
+void fields_from_cgi (QList<object_field> &fields)
 {
-	std::list<object_field>::const_iterator end=fields.end ();
-	for (std::list<object_field>::iterator field=fields.begin (); field!=end; ++field)
+	QList<object_field>::const_iterator end=fields.end ();
+	for (QList<object_field>::iterator field=fields.begin (); field!=end; ++field)
 	{
 		const QString &label=(*field).get_label ();
 		if (CGI_HAS_F (label))
@@ -2606,7 +2606,7 @@ void fields_from_cgi (std::list<object_field> &fields)
 	}
 }
 
-void fields_write_edit_form (const std::list<object_field> &fields, const QString &url, const QString &next_state, bool create_new, const QString &ident_arg, const QString &ident_val)
+void fields_write_edit_form (const QList<object_field> &fields, const QString &url, const QString &next_state, bool create_new, const QString &ident_arg, const QString &ident_val)
 {
 	// TODO auslagern
 	document.start_tag ("form", "action=\""+url+"\" method=\"POST\"");
@@ -2626,10 +2626,10 @@ void fields_write_edit_form (const std::list<object_field> &fields, const QStrin
 	document.end_tag ("form");
 }
 
-void fields_write_to_session (const std::list<object_field> &fields)
+void fields_write_to_session (const QList<object_field> &fields)
 {
-	std::list<object_field>::const_iterator end=fields.end ();
-	for (std::list<object_field>::const_iterator field=fields.begin (); field!=end; ++field)
+	QList<object_field>::const_iterator end=fields.end ();
+	for (QList<object_field>::const_iterator field=fields.begin (); field!=end; ++field)
 	{
 		const QString &label=(*field).get_label ();
 		const QString text=(*field).make_text ();
@@ -2637,10 +2637,10 @@ void fields_write_to_session (const std::list<object_field> &fields)
 	}
 }
 
-void fields_read_from_session (std::list<object_field> &fields)
+void fields_read_from_session (QList<object_field> &fields)
 {
-	std::list<object_field>::const_iterator end=fields.end ();
-	for (std::list<object_field>::iterator field=fields.begin (); field!=end; ++field)
+	QList<object_field>::const_iterator end=fields.end ();
+	for (QList<object_field>::iterator field=fields.begin (); field!=end; ++field)
 	{
 		const QString &label=(*field).get_label ();
 		if (session.args.has_argument (label))
@@ -2655,10 +2655,10 @@ void fields_read_from_session (std::list<object_field> &fields)
 	}
 }
 
-void fields_delete_from_session (const std::list<object_field> &fields)
+void fields_delete_from_session (const QList<object_field> &fields)
 {
-	std::list<object_field>::const_iterator end=fields.end ();
-	for (std::list<object_field>::const_iterator field=fields.begin (); field!=end; ++field)
+	QList<object_field>::const_iterator end=fields.end ();
+	for (QList<object_field>::const_iterator field=fields.begin (); field!=end; ++field)
 	{
 		const QString &label=(*field).get_label ();
 		session.args.remove (label);
@@ -3326,7 +3326,7 @@ what_next handler_user_list ()
 	// TODO extract the generic part of this list, like write_fields_display.
 	document.write_paragraph (document.text_link (back_link_url (web_user_add), "Neu anlegen"));
 
-	std::list<User> users;
+	QList<User> users;
 	int ret=db.sk_user_list (users);
 	CHECK_DB_ERROR_ERROR;
 
@@ -3336,8 +3336,8 @@ what_next handler_user_list ()
 	table.push_back (make_table_header (fields_sk_user));
 
 	// For each user, write a table row.
-	std::list<User>::const_iterator users_end=users.end ();
-	for (std::list<User>::const_iterator user=users.begin (); user!=users_end; ++user)
+	QList<User>::const_iterator users_end=users.end ();
+	for (QList<User>::const_iterator user=users.begin (); user!=users_end; ++user)
 	{
 		sk_user_to_fields (*user);
 		html_table_row user_row=make_table_data_row (fields_sk_user);
@@ -3472,10 +3472,10 @@ what_next handler_user_edit ()
 	if (create_new && provides (session_access, dba_sk_admin))
 	{
 		// Find the club and person fields
-		std::list<object_field>::iterator fields_end=fields_sk_user.end ();
-		std::list<object_field>::iterator field_club=fields_end;
-		std::list<object_field>::iterator field_person=fields_end;
-		for (std::list<object_field>::iterator it=fields_sk_user.begin (); it!=fields_end; ++it)
+		QList<object_field>::iterator fields_end=fields_sk_user.end ();
+		QList<object_field>::iterator field_club=fields_end;
+		QList<object_field>::iterator field_person=fields_end;
+		for (QList<object_field>::iterator it=fields_sk_user.begin (); it!=fields_end; ++it)
 		{
 			if ((*it).get_label ()==field_user_club) field_club=it;
 			if ((*it).get_label ()==field_user_person) field_person=it;
@@ -3849,14 +3849,14 @@ what_next handler_master_data_check ()
 		return what_next::output_error ("Keine Personen in der CSV-Datei gefunden");
 
 	// Check the persons for errors.
-	std::list<sk_db::import_message> messages;
+	QList<sk_db::import_message> messages;
 	db.import_check (persons, messages);
 	db.import_identify (persons, messages);
 
 	// Count the fatal errors
 	unsigned int num_fatal_errors=0;
-	std::list<sk_db::import_message>::const_iterator end=messages.end ();
-	for (std::list<sk_db::import_message>::const_iterator it=messages.begin (); it!=end; ++it)
+	QList<sk_db::import_message>::const_iterator end=messages.end ();
+	for (QList<sk_db::import_message>::const_iterator it=messages.begin (); it!=end; ++it)
 		if ((*it).fatal ()) ++num_fatal_errors;
 
 	// If there are errors, display them.
@@ -4099,7 +4099,7 @@ what_next handler_do_person_logbook ()
 
 
 	// Step 3: Output the logbook.
-	// We have got a std::list<flugbuch_entry>.
+	// We have got a QList<flugbuch_entry>.
 	if (format==arg_cgi_format_html)
 	{
 		document.write_paragraph ("Flugbuchabfrage f�r "+person.text_name ()+", "+date_text);
@@ -4110,7 +4110,7 @@ what_next handler_do_person_logbook ()
 		}
 		else
 		{
-			// Convert std::list<flugbuch_entry> to an html_table row by row.
+			// Convert QList<flugbuch_entry> to an html_table row by row.
 			html_table table;
 
 			// Write the table header
@@ -4134,7 +4134,7 @@ what_next handler_do_person_logbook ()
 	}
 	else if (format==arg_cgi_format_csv)
 	{
-		// Convert std::list<flugbuch_entry> to a table row by row.
+		// Convert QList<flugbuch_entry> to a table row by row.
 		table tab;
 
 		// Add the header
@@ -4420,8 +4420,8 @@ what_next handler_flight_db ()
 	data_formats.set_value (arg_cgi_data_format_default, "Standard");
 
 	// Add the data formats provided by plugins to the list.
-	std::list<plugin_data_format>::const_iterator plugins_end=opts.plugins_data_format.end ();
-	for (std::list<plugin_data_format>::const_iterator plugin=opts.plugins_data_format.begin (); plugin!=plugins_end; ++plugin)
+	QList<plugin_data_format>::const_iterator plugins_end=opts.plugins_data_format.end ();
+	for (QList<plugin_data_format>::const_iterator plugin=opts.plugins_data_format.begin (); plugin!=plugins_end; ++plugin)
 	{
 		// If there is a problem in one of the plugins, go on trying the
 		// others.
@@ -4609,7 +4609,7 @@ what_next handler_do_flight_db ()
 	{
 		if (data_format!=arg_cgi_data_format_default)
 		{
-			for (std::list<plugin_data_format>::const_iterator plugins_end=opts.plugins_data_format.end (),
+			for (QList<plugin_data_format>::const_iterator plugins_end=opts.plugins_data_format.end (),
 				plugin=opts.plugins_data_format.begin (); plugin!=plugins_end; ++plugin)
 			{
 				// If there is a problem with this plugin, go on trying the
@@ -4637,7 +4637,7 @@ what_next handler_do_flight_db ()
 	try
 	{
 		// Determine the field list.
-		std::list<object_field> fields;
+		QList<object_field> fields;
 		if (use_default_data_format)
 			fields=fields_flight_db_entry;
 		else

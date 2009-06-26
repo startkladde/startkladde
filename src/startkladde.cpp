@@ -1,4 +1,3 @@
-#include <list>
 #include <unistd.h>
 
 #include <QApplication>
@@ -37,7 +36,7 @@ int main (int argc, char **argv)
 	opts.parse_arguments (argc, argv);
 
 	sk_db db;
-	std::list<sk_plugin> plugins;
+	QList<sk_plugin> plugins;
 
 	if (opts.need_display ())
 		opts.do_display ();

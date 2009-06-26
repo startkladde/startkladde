@@ -267,7 +267,7 @@ bool options::parse_arguments (int argc, char *argv[])
 	return true;
 }
 
-bool options::read_config_files (sk_db *db, std::list<sk_plugin> *plugins, int argc, char *argv[])
+bool options::read_config_files (sk_db *db, QList<sk_plugin> *plugins, int argc, char *argv[])
 	// db is only passed for startrten (TODO change something)
 	// Also reads command line arguments, if argc>0 (and a configuration file
 	// was read)
@@ -301,7 +301,7 @@ bool options::read_config_files (sk_db *db, std::list<sk_plugin> *plugins, int a
 	return true;
 }
 
-bool options::read_config_file (QString filename, sk_db *db, std::list<sk_plugin> *plugins)
+bool options::read_config_file (QString filename, sk_db *db, QList<sk_plugin> *plugins)
 	// db is only passed for startarten (TODO change something)
 	// Returns whether the file existed.
 {

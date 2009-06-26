@@ -3,9 +3,8 @@
 
 #include <cstdio>
 #include <stdlib.h>
-#include <QString>
-#include <vector>
 
+#include <QString>
 #include <QApplication>
 #include <QDateTime>
 #include <QFrame>
@@ -58,7 +57,7 @@ class MainWindow:public QMainWindow
 
 	public:
 		enum db_state_t { ds_uninitialized, ds_no_connection, ds_established, ds_unusable, ds_connection_lost };
-		MainWindow (QWidget *parent, sk_db *_db, std::list<sk_plugin> *_plugins, const char *name, WFlags f=WType_TopLevel);
+		MainWindow (QWidget *parent, sk_db *_db, QList<sk_plugin> *_plugins, const char *name, WFlags f=WType_TopLevel);
 		~MainWindow ();
 		void start_db ();
 
@@ -114,7 +113,7 @@ class MainWindow:public QMainWindow
 		QDate anzeigedatum;
 		bool display_new_flight_date;
 		bool always_use_current_date;
-		
+
 		// Layout
 		QSplitter *split_main;
 		QFrame *main_frame;
@@ -165,7 +164,7 @@ class MainWindow:public QMainWindow
 
 
 		QTextEdit *log;
-		std::list<sk_plugin> *plugins;
+		QList<sk_plugin> *plugins;
 		sk_plugin *weather_plugin;
 
 	public slots:

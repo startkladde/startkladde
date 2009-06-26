@@ -15,8 +15,8 @@ std::ostream &operator<< (std::ostream &s, const db_table &t)
 	if (t.like_table.isEmpty ())
 	{
 		s << t.name << std::endl;
-		std::list<db_column>::const_iterator end=t.columns.end ();
-		for (std::list<db_column>::const_iterator it=t.columns.begin (); it!=end; ++it)
+		QList<db_column>::const_iterator end=t.columns.end ();
+		for (QList<db_column>::const_iterator it=t.columns.begin (); it!=end; ++it)
 			s << "  " << *it << std::endl;
 	}
 	else
@@ -37,10 +37,10 @@ QString db_table::mysql_create_query (bool force) const
 	{
 		// Create from columns and other values
 		r+=" (\n";
-		std::list<db_column>::const_iterator col_begin=columns.begin ();
-		std::list<db_column>::const_iterator col_end=columns.end ();
+		QList<db_column>::const_iterator col_begin=columns.begin ();
+		QList<db_column>::const_iterator col_end=columns.end ();
 
-		for (std::list<db_column>::const_iterator cit=col_begin; cit!=col_end; ++cit)
+		for (QList<db_column>::const_iterator cit=col_begin; cit!=col_end; ++cit)
 		{
 			if (cit!=col_begin) r+=",\n";
 			r+="  "+(*cit).mysql_spec ();

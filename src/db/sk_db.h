@@ -2,7 +2,6 @@
 #define sk_db_h
 
 #include <iostream>
-#include <list>
 
 #include <mysql.h>
 
@@ -62,7 +61,7 @@ class sk_db:public QObject
 		public:
 			virtual QString description () const { return "Speicherfehler"; }
 	};
-	
+
 	class ex_parameter_error:public sk_exception
 	{
 		public:
@@ -78,19 +77,19 @@ class sk_db:public QObject
 			virtual QString description () const { return description (false); }
 			QString reason;
 	};
-	
+
 	class ex_connection_failed:public sk_exception
 	{
 		public:
 			virtual QString description () const { return "Verbindungsfehler"; }
 	};
-	
+
 	class ex_database_not_accessible:public sk_exception
 	{
 		public:
 			virtual QString description () const { return "Datenbankzugriff nicht m�glich"; }
 	};
-	
+
 
 	// TODO code duplication extended
 	class ex_query_failed:public sk_exception
@@ -108,7 +107,7 @@ class sk_db:public QObject
 			virtual QString description () const { return description (false); }
 			QString query;
 	};
-	
+
 	class ex_init_failed:public sk_exception
 	{
 		public:
@@ -124,7 +123,7 @@ class sk_db:public QObject
 			virtual QString description () const { return description (false); }
 			QString reason;
 	};
-	
+
 	class ex_operation_failed:public sk_exception
 	{
 		public:
@@ -140,13 +139,13 @@ class sk_db:public QObject
 			virtual QString description () const { return description (false); }
 			QString reason;
 	};
-	
+
 	class ex_not_connected:public sk_exception
 	{
 		public:
 			virtual QString description () const { return "Keine Verbindung"; }
 	};
-	
+
 	class ex_access_denied:public sk_exception
 	{
 		public:
@@ -162,14 +161,14 @@ class sk_db:public QObject
 			virtual QString description () const { return description (false); }
 			QString message;
 	};
-	
+
 
 	class ex_unusable:public sk_exception
 	{
 		public:
 			virtual QString description () const { return "Database unusable"; }
 	};
-	
+
 	class ex_table_not_found:public ex_unusable
 	{
 		public:
@@ -178,7 +177,7 @@ class sk_db:public QObject
 			virtual QString description () const { return "Tabelle "+name+" nicht gefunden"; }
 			QString name;
 	};
-	
+
 	class ex_column_not_found:public ex_unusable
 	{
 		public:
@@ -187,7 +186,7 @@ class sk_db:public QObject
 			virtual QString description () const { return "Spalte "+table+":"+column+" nicht gefunden"; }
 			QString table, column;
 	};
-	
+
 	class ex_column_type_mismatch:public ex_unusable
 	{
 		public:
@@ -196,7 +195,7 @@ class sk_db:public QObject
 			virtual QString description () const { return "Spalte "+table+":"+column+" hat den falschen Typ"; }
 			QString table, column;
 	};
-	
+
 	class ex_insufficient_access:public ex_unusable
 	{
 		public:
@@ -205,7 +204,7 @@ class sk_db:public QObject
 			virtual QString description () const { return "Ungen�gende Zugriffsrechte auf "+target; }
 			QString target;
 	};
-	
+
 	class ex_database_not_found:public ex_unusable
 	{
 		public:
@@ -214,7 +213,7 @@ class sk_db:public QObject
 			virtual QString description () const { return "Datenbank "+name+" nicht gefunden"; }
 			QString name;
 	};
-	
+
 
 	class ex_legacy_error:public sk_exception
 		/*
@@ -229,7 +228,7 @@ class sk_db:public QObject
 			int error;
 			const sk_db &db;
 	};
-	
+
 
 	class import_message:public sk_exception
 	{
@@ -330,7 +329,7 @@ class sk_db:public QObject
 		int list_tables (QStringList &tables);
 		int create_table (const db_table &tab, bool force=false);
 		int list_column_names (QStringList &names, QString table);
-		int list_columns (std::list<db_column> &columns, QString table);
+		int list_columns (QList<db_column> &columns, QString table);
 		int add_column (const QString &table, const db_column &column);
 		int modify_column (const QString &table, const db_column &column);
 
@@ -341,10 +340,10 @@ class sk_db:public QObject
 		static void remove_editable_persons (QPtrList<Person> persons);
 
 		void import_check (const Person &person) throw (import_message);
-		void import_check (const QPtrList<Person> &persons, std::list<import_message> &notes);
+		void import_check (const QPtrList<Person> &persons, QList<import_message> &notes);
 
-		db_id import_identify (const Person &p, std::list<import_message> *notes=NULL) throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message);
-		void import_identify (QPtrList<Person> &persons, std::list<import_message> &notes) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
+		db_id import_identify (const Person &p, QList<import_message> *notes=NULL) throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message);
+		void import_identify (QPtrList<Person> &persons, QList<import_message> &notes) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
 
 		db_id import_person (const Person &person) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
 		void import_persons (const QPtrList<Person> &persons) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
@@ -443,10 +442,10 @@ class sk_db:public QObject
 		int sk_user_delete (const QString &username);
 
 		int sk_user_get (User &user, const QString &username);
-		int sk_user_list (std::list<User> &users, const QString &username="");
+		int sk_user_list (QList<User> &users, const QString &username="");
 
 		int row_to_user (User &user, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields);
-		int result_to_user_list (std::list<User> &users, MYSQL_RES *result);
+		int result_to_user_list (QList<User> &users, MYSQL_RES *result);
 		QString user_value_list (const User &user);
 
 		// Data collection

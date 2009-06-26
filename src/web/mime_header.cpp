@@ -66,8 +66,8 @@ std::ostream &operator<< (std::ostream &s, const mime_header &mh)
 	// TODO Escape (how to escape MIME headers?)
 	s << mh.name << ": " << mh.value;
 
-	std::list<argument>::const_iterator end=mh.args.get_list ().end ();
-	for (std::list<argument>::const_iterator it=mh.args.get_list ().begin (); it!=end; ++it)
+	QList<argument>::const_iterator end=mh.args.get_list ().end ();
+	for (QList<argument>::const_iterator it=mh.args.get_list ().begin (); it!=end; ++it)
 	{
 		s << "; " << (*it).get_name () << "=\"" << (*it).get_value () << "\"";
 	}

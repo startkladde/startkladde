@@ -201,11 +201,11 @@ html_document &html_document::write_hidden_field (const QString &name, const QSt
 	return write ("<div><input type=\"hidden\" name=\""+html_escape (name)+"\" value=\""+html_escape (value)+"\"></div>\n");
 }
 
-html_document &html_document::write_hidden_fields (const std::list<argument> &args)
+html_document &html_document::write_hidden_fields (const QList<argument> &args)
 {
 	QString r;
-	std::list<argument>::const_iterator end=args.end ();
-	for (std::list<argument>::const_iterator it=args.begin (); it!=end; ++it)
+	QList<argument>::const_iterator end=args.end ();
+	for (QList<argument>::const_iterator it=args.begin (); it!=end; ++it)
 		write_hidden_field ((*it).get_name (), (*it).get_value ());
 
 	return *this;
@@ -352,8 +352,8 @@ QString html_document::make_input_select (const QString &name, const argument_li
 	QString r;
 	r+="<select name=\""+name+"\">\n";
 
-	std::list<argument>::const_iterator end=options.get_list ().end ();
-	for (std::list<argument>::const_iterator option=options.get_list ().begin (); option!=end; ++option)
+	QList<argument>::const_iterator end=options.get_list ().end ();
+	for (QList<argument>::const_iterator option=options.get_list ().begin (); option!=end; ++option)
 	{
 		QString selected_string;
 		if ((*option).get_name ()==selected) selected_string=" selected";

@@ -8,8 +8,8 @@
  */
 
 #include <iostream>
-#include <list>
 #include <QString>
+#include <QList>
 
 #include "src/accessor.h"
 
@@ -45,8 +45,8 @@ std::ostream &operator<< (std::ostream &s, const argument &arg);
 class argument_list
 {
 	public:
-		typedef std::list<argument>::iterator iterator;
-		typedef std::list<argument>::const_iterator const_iterator;
+		typedef QList<argument>::iterator iterator;
+		typedef QList<argument>::const_iterator const_iterator;
 		iterator begin () { return args.begin (); }
 		iterator end () { return args.end (); }
 		const_iterator begin () const { return args.begin (); }
@@ -67,7 +67,7 @@ class argument_list
 		bool has_argument (const QString &name) const;
 		QString get_value (const QString &name) const;
 		argument get_argument (const QString &name) const;
-		const std::list<argument> &get_list () const { return args; }
+		const QList<argument> &get_list () const { return args; }
 		int size () const { return args.size (); }
 		QString make_cgi_parameters () const;
 		bool empty () const { return args.empty (); }
@@ -82,7 +82,7 @@ class argument_list
 		static void test ();
 
 	private:
-		std::list<argument> args;
+		QList<argument> args;
 
 		// Finding
 		iterator find_by_name (const QString &name);

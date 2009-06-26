@@ -9,7 +9,8 @@
 
 #include <iostream>
 #include <sstream>
-#include <set>
+
+#include <QSet>
 
 #include "src/sk_exception.h"
 #include "src/documents/table.h"
@@ -25,7 +26,7 @@ class latex_document
 			public:
 				package (const QString &_name, const QString &opt0="", const QString &opt1="", const QString &opt2="", const QString &opt3="");
 				QString name;
-				std::set<QString> options;
+				QSet<QString> options;
 				QString make_use_clause () const;
 		};
 		class ex_generate_error:public sk_exception
@@ -54,7 +55,7 @@ class latex_document
 		void write_header ();
 		void write_footer ();
 
-		std::set<QString> document_options;
+		QSet<QString> document_options;
 		unsigned int font_size;
 		bool landscape;
 		QString document_class;
@@ -71,7 +72,7 @@ class latex_document
 		// another table along with functions converting to/from object_fields
 		// and the various table types does not seem like a good idea. Maybe
 		// this can be solved with the object_field successor.
-		latex_document &write (const table &tab, const table_row &header, const std::list<float> &widths);
+		latex_document &write (const table &tab, const table_row &header, const QList<float> &widths);
 		latex_document &write_text (const QString &text);
 		latex_document &start_section (const QString &caption);
 		latex_document &write_empty_line ();
@@ -85,7 +86,7 @@ class latex_document
 		// TODO remove global document
 		std::ostringstream doc;
 		std::ostringstream body;
-		std::list<package> packages;
+		QList<package> packages;
 };
 
 #endif

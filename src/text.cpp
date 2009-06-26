@@ -398,12 +398,12 @@ bool string_to_bool (const QString &text)
 		return true;
 }
 
-QString make_string (const std::set<QString> s, const QString &separator)
+QString make_string (const QSet<QString> s, const QString &separator)
 {
 	QString r;
 
-	std::set<QString>::const_iterator end=s.end ();
-	for (std::set<QString>::const_iterator it=s.begin (); it!=end; ++it)
+	QSet<QString>::const_iterator end=s.end ();
+	for (QSet<QString>::const_iterator it=s.begin (); it!=end; ++it)
 	{
 		if (it!=s.begin ()) r.append (separator);
 		r.append (*it);

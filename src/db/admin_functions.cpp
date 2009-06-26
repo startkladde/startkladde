@@ -234,24 +234,24 @@ void initialize_database (sk_db &root_db, QString _username, QString _userpass, 
 		output << "Checking table " << *required_table_name << std::endl;
 
 		// columns_present/_begin/_end: the columns that we have
-		std::list<db_column> columns_present;
+		QList<db_column> columns_present;
 		if (user_db.list_columns (columns_present, *required_table_name)!=db_ok) throw sk_db::ex_init_failed ("Fehler beim Listen der Spalten in "+*required_table_name);
-		std::list<db_column>::const_iterator columns_present_begin=columns_present.begin ();
-		std::list<db_column>::const_iterator columns_present_end=columns_present.end ();
+		QList<db_column>::const_iterator columns_present_begin=columns_present.begin ();
+		QList<db_column>::const_iterator columns_present_end=columns_present.end ();
 
 		// columns_required/_end: the columns that we need
 		db_table required_table=user_db.get_table_information (*required_table_name, true);
-		std::list<db_column> &columns_required=required_table.columns;
-		std::list<db_column>::const_iterator columns_required_end=columns_required.end ();
+		QList<db_column> &columns_required=required_table.columns;
+		QList<db_column>::const_iterator columns_required_end=columns_required.end ();
 
 		// Iterate over the required columns, checking existance and correct
 		// type.
-		for (std::list<db_column>::const_iterator required_column=columns_required.begin (); required_column!=columns_required_end; required_column++)
+		for (QList<db_column>::const_iterator required_column=columns_required.begin (); required_column!=columns_required_end; required_column++)
 		{
 			// required_column: iterator to the column we're checking
 
 			// In the list of columns that we have, find the one with the same name.
-			std::list<db_column>::const_iterator col;
+			QList<db_column>::const_iterator col;
 			for (col=columns_present_begin; col!=columns_present_end; ++col)
 				if ((*col).name==(*required_column).name)
 					break;

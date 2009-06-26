@@ -38,13 +38,13 @@ class html_table_cell
 		unsigned int colspan;
 };
 
-class html_table_row:public std::list<html_table_cell>
+class html_table_row:public QList<html_table_cell>
 {
 	public:
 		unsigned int num_cells () const;
 };
 
-typedef std::list<html_table_row> html_table;
+typedef QList<html_table_row> html_table;
 
 
 class html_document
@@ -74,7 +74,7 @@ class html_document
 		html_document &end_paragraph ();
 		html_document &write_hidden_field (const QString &name, const QString &value="");
 		html_document &write_hidden_fields (const argument_list &args);
-		html_document &write_hidden_fields (const std::list<argument> &args);
+		html_document &write_hidden_fields (const QList<argument> &args);
 		html_document &endl () { write ("\n"); return *this; }
 		html_document &write_input_text (const QString &name, const QString &value="", unsigned int size=0);
 		html_document &write_input_file (const QString &name);

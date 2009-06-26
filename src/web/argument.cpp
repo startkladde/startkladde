@@ -100,7 +100,7 @@ void argument_list::set_value (const QString &name, const QString &value)
 	 * new one is created.
 	 */
 {
-	std::list<argument>::iterator it=find_by_name (name);
+	QList<argument>::iterator it=find_by_name (name);
 	if (it!=args.end ())
 		(*it).value=value;
 	else
@@ -118,8 +118,8 @@ void argument_list::set_value (const argument &arg)
 
 void argument_list::remove (const QString &name)
 {
-	std::list<argument>::const_iterator end=args.end ();
-	for (std::list<argument>::iterator it=args.begin (); it!=end; ++it)
+	QList<argument>::const_iterator end=args.end ();
+	for (QList<argument>::iterator it=args.begin (); it!=end; ++it)
 	{
 		if (name==(*it).get_name ())
 		{
@@ -136,9 +136,9 @@ void argument_list::clear ()
 
 void argument_list::add (const argument_list &other)
 {
-	const std::list<argument> &other_list=other.get_list ();
-	std::list<argument>::const_iterator end=other_list.end ();
-	for (std::list<argument>::const_iterator it=other_list.begin (); it!=end; ++it)
+	const QList<argument> &other_list=other.get_list ();
+	QList<argument>::const_iterator end=other_list.end ();
+	for (QList<argument>::const_iterator it=other_list.begin (); it!=end; ++it)
 		set_value (*it);
 }
 
@@ -161,7 +161,7 @@ QString argument_list::get_value (const QString &name) const
 	 * empty QString is returned.
 	 */
 {
-	std::list<argument>::const_iterator it=find_by_name (name);
+	QList<argument>::const_iterator it=find_by_name (name);
 	if (it==args.end ())
 		return "";
 	else
@@ -174,7 +174,7 @@ argument argument_list::get_argument (const QString &name) const
 	 * empty argument is returned.
 	 */
 {
-	std::list<argument>::const_iterator it=find_by_name (name);
+	QList<argument>::const_iterator it=find_by_name (name);
 	if (it==args.end ())
 		return argument ();
 	else
@@ -188,8 +188,8 @@ QString argument_list::make_cgi_parameters () const
 	 */
 {
 	QString r;
-	std::list<argument>::const_iterator end=args.end ();
-	for (std::list<argument>::const_iterator it=args.begin (); it!=end; ++it)
+	QList<argument>::const_iterator end=args.end ();
+	for (QList<argument>::const_iterator it=args.begin (); it!=end; ++it)
 	{
 		if (it!=args.begin ()) r+="&";
 		r+=(*it).make_cgi_parameter ();
@@ -205,8 +205,8 @@ std::ostream &operator<< (std::ostream &s, const argument_list &argl)
 	 * Writes the list to a stream.
 	 */
 {
-	std::list<argument>::const_iterator e=argl.args.end ();
-	for (std::list<argument>::const_iterator it=argl.args.begin (); it!=e; ++it)
+	QList<argument>::const_iterator e=argl.args.end ();
+	for (QList<argument>::const_iterator it=argl.args.begin (); it!=e; ++it)
 		s << *it;
 
 	return s;
@@ -214,8 +214,8 @@ std::ostream &operator<< (std::ostream &s, const argument_list &argl)
 
 std::ostream &argument_list::write_to (std::ostream &s) const
 {
-	std::list<argument>::const_iterator e=args.end ();
-	for (std::list<argument>::const_iterator it=args.begin (); it!=e; ++it)
+	QList<argument>::const_iterator e=args.end ();
+	for (QList<argument>::const_iterator it=args.begin (); it!=e; ++it)
 		(*it).write_to (s);
 
 	return s;
@@ -264,27 +264,27 @@ bool argument_list::read_from_file (const QString &file_name)
 
 
 // Finding
-std::list<argument>::iterator argument_list::find_by_name (const QString &name)
+QList<argument>::iterator argument_list::find_by_name (const QString &name)
 	/*
 	 * If there is an entry with name 'name', an iterator to it is returned. If
 	 * not, an iterator to the end of the list is returned.
 	 */
 {
-	std::list<argument>::iterator e=args.end ();
-	for (std::list<argument>::iterator it=args.begin (); it!=e; ++it)
+	QList<argument>::iterator e=args.end ();
+	for (QList<argument>::iterator it=args.begin (); it!=e; ++it)
 		if (name==(*it).get_name ())
 			return it;
 	return e;
 }
 
-std::list<argument>::const_iterator argument_list::find_by_name (const QString &name) const
+QList<argument>::const_iterator argument_list::find_by_name (const QString &name) const
 	/*
 	 * If there is an entry with name 'name', an iterator to it is returned. If
 	 * not, an iterator to the end of the list is returned.
 	 */
 {
-	std::list<argument>::const_iterator e=args.end ();
-	for (std::list<argument>::const_iterator it=args.begin (); it!=e; ++it)
+	QList<argument>::const_iterator e=args.end ();
+	for (QList<argument>::const_iterator it=args.begin (); it!=e; ++it)
 		if (name==(*it).get_name ())
 			return it;
 	return e;

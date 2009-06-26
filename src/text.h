@@ -1,10 +1,9 @@
 #ifndef text_h
 #define text_h
 
-#include <set>
 #include <sstream>
-#include <QString>
 
+#include <QSet>
 #include <QDateTime>
 #include <QMessageBox>
 #include <QString>
@@ -37,7 +36,7 @@ QString html_escape (const QString& s, bool also_escape_newlines=true);
 QStringList html_escape (const QStringList &list, bool also_escape_newlines=true);
 QString bool_to_string (bool val, const QString &true_value="Ja", const QString &false_value="Nein");
 bool string_to_bool (const QString &text);
-QString make_string (const std::set<QString> s, const QString &separator=",");
+QString make_string (const QSet<QString> s, const QString &separator=",");
 void split_string (QString &string1, QString &string2, QString separator, QString text);
 
 std::ostream &operator<< (std::ostream &s, const QString &c);

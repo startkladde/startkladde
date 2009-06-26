@@ -580,24 +580,24 @@ void sk_db::check_usability ()
 		// required_table_name: iterator to the name of the table we're checking
 
 		// columns_present/_begin/_end: the columns that we have
-		std::list<db_column> columns_present;
+		QList<db_column> columns_present;
 		if (list_columns (columns_present, *required_table_name)!=db_ok) throw ex_query_failed (last_query);
-		std::list<db_column>::const_iterator columns_present_begin=columns_present.begin ();
-		std::list<db_column>::const_iterator columns_present_end=columns_present.end ();
+		QList<db_column>::const_iterator columns_present_begin=columns_present.begin ();
+		QList<db_column>::const_iterator columns_present_end=columns_present.end ();
 
 		// columns_required/_end: the columns that we need
 		db_table required_table=get_table_information (*required_table_name, true);
-		std::list<db_column> &columns_required=required_table.columns;
-		std::list<db_column>::const_iterator columns_required_begin=columns_required.begin ();
-		std::list<db_column>::const_iterator columns_required_end=columns_required.end ();
+		QList<db_column> &columns_required=required_table.columns;
+		QList<db_column>::const_iterator columns_required_begin=columns_required.begin ();
+		QList<db_column>::const_iterator columns_required_end=columns_required.end ();
 
 		// Iterate over the required columns, checking existance and correct type.
-		for (std::list<db_column>::const_iterator required_column=columns_required_begin; required_column!=columns_required_end; required_column++)
+		for (QList<db_column>::const_iterator required_column=columns_required_begin; required_column!=columns_required_end; required_column++)
 		{
 			// required_column: iterator to the column we're checking
 
 			// In the list of columns that we have, find the one with the same name.
-			std::list<db_column>::const_iterator col;
+			QList<db_column>::const_iterator col;
 			for (col=columns_present_begin; col!=columns_present_end; ++col)
 				if ((*col).name==(*required_column).name)
 					break;
@@ -655,17 +655,17 @@ int sk_db::list_tables (QStringList &tables)
 
 int sk_db::list_column_names (QStringList &names, QString table)
 {
-	std::list<db_column> columns;
+	QList<db_column> columns;
 	int ret=list_columns (columns, table);
 
-	std::list<db_column>::const_iterator end=columns.end ();
-	for (std::list<db_column>::const_iterator it=columns.begin (); it!=end; ++it)
+	QList<db_column>::const_iterator end=columns.end ();
+	for (QList<db_column>::const_iterator it=columns.begin (); it!=end; ++it)
 		names.push_back ((*it).name);
 
 	return ret;
 }
 
-int sk_db::list_columns (std::list<db_column> &columns, QString table)
+int sk_db::list_columns (QList<db_column> &columns, QString table)
 {
 	MYSQL_RES *result;
 
@@ -2913,7 +2913,7 @@ void sk_db::import_check (const Person &person)
 	if (person.nachname.isEmpty ()) throw import_message::last_name_missing ();
 }
 
-void sk_db::import_check (const QPtrList<Person> &persons, std::list<import_message> &messages)
+void sk_db::import_check (const QPtrList<Person> &persons, QList<import_message> &messages)
 	// This function make be slow because it takes quadratic time (in the
 	// number of persons) with lots of QString comparisons.
 {
@@ -2962,7 +2962,7 @@ void sk_db::import_check (const QPtrList<Person> &persons, std::list<import_mess
 	}
 }
 
-db_id sk_db::import_identify (const Person &p, std::list<import_message> *non_fatal_messages)
+db_id sk_db::import_identify (const Person &p, QList<import_message> *non_fatal_messages)
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message)
 	/*
 	 * Identify a person for importing.
@@ -3208,7 +3208,7 @@ db_id sk_db::import_identify (const Person &p, std::list<import_message> *non_fa
 	throw ex_operation_failed ("Unbehandelter Fall in sk_db::import_identify ()");
 }
 
-void sk_db::import_identify (QPtrList<Person> &persons, std::list<import_message> &messages)
+void sk_db::import_identify (QPtrList<Person> &persons, QList<import_message> &messages)
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed)
 {
 	for (QPtrListIterator<Person> it (persons); *it; ++it)
@@ -3413,7 +3413,7 @@ int sk_db::sk_user_get (User &user, const QString &username)
 	if (!connected ()) return db_err_not_connected;
 	if (username.isEmpty ()) return db_err_parameter_error;
 
-	std::list<User> users;
+	QList<User> users;
 	int ret=sk_user_list (users, username);
 	if (ret<0) return ret;
 
@@ -3435,7 +3435,7 @@ int sk_db::sk_user_delete (const QString &username)
 	return db_ok;
 }
 
-int sk_db::sk_user_list (std::list<User> &users, const QString &username)
+int sk_db::sk_user_list (QList<User> &users, const QString &username)
 	/*
 	 * Returns a user list.
 	 * Parameters:
@@ -3494,7 +3494,7 @@ int sk_db::row_to_user (User &user, MYSQL_ROW row, int num_fields, MYSQL_FIELD *
 	return db_ok;
 }
 
-int sk_db::result_to_user_list (std::list<User> &users, MYSQL_RES *result)
+int sk_db::result_to_user_list (QList<User> &users, MYSQL_RES *result)
 	/*
 	 * Converts a MySQL result to a list of sk_users.
 	 * Parameters:

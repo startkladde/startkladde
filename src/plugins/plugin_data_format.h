@@ -8,7 +8,6 @@
  */
 
 #include <QString>
-#include <list>
 
 #include "src/accessor.h"
 #include "src/object_field.h"
@@ -87,8 +86,8 @@ class plugin_data_format
 		QString make_non_unique (const QString &label) const;
 
 		// Actual plugin functions
-		void plugin_make_field_list (const QString &format, std::list<object_field> &fields) const;
-		void plugin_flight_to_fields (const QString &format, std::list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text="", const QString &error_text="") const;
+		void plugin_make_field_list (const QString &format, QList<object_field> &fields) const;
+		void plugin_flight_to_fields (const QString &format, QList<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text="", const QString &error_text="") const;
 
 	private:
 		// Library handling
@@ -102,8 +101,8 @@ class plugin_data_format
 		mutable type_ ## NAME symbol_ ## NAME;
 
 		PLUGIN_SYMBOL (list_formats, argument_list, ())
-		PLUGIN_SYMBOL (make_field_list, void, (const QString &format, std::list<object_field> &fields));
-		PLUGIN_SYMBOL (flight_to_fields, void, (const QString &format, std::list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text, const QString &error_text));
+		PLUGIN_SYMBOL (make_field_list, void, (const QString &format, QList<object_field> &fields));
+		PLUGIN_SYMBOL (flight_to_fields, void, (const QString &format, QList<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text, const QString &error_text));
 #undef PLUGIN_SYMBOL
 
 };

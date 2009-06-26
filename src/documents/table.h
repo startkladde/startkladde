@@ -8,8 +8,7 @@
  */
 
 #include <QString>
-#include <list>
-#include <vector>
+#include <QList>
 
 
 // Table with CSV functionality
@@ -28,7 +27,7 @@ class table_cell:public QString
 		QString csv (bool quote) const;
 };
 
-class table_row:public std::vector<table_cell>
+class table_row:public QList<table_cell>
 {
 	public:
 		static table_row from_csv (const QString &line);
@@ -43,7 +42,7 @@ class table_row:public std::vector<table_cell>
 //	ostream &operator<< (ostream &o, const table_row &row);
 //}
 
-class table:public std::list<table_row>
+class table:public QList<table_row>
 {
 	public:
 		// Construction

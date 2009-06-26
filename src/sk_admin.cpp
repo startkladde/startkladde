@@ -77,7 +77,7 @@ int merge_person (sk_db &db, const QStringList &args)
 		}
 
 		// Determine the wrong IDs
-		std::list<db_id> wrong_ids;
+		QList<db_id> wrong_ids;
 		for (int i=1; i<args.size (); ++i)
 		{
 			db_id wrong_id=args[i].toLongLong();
@@ -92,7 +92,7 @@ int merge_person (sk_db &db, const QStringList &args)
 		// Display what we're about to do
 		std::cout << "Merging wrong person";
 		if (wrong_ids.size ()>1) std::cout << "s";
-		for (std::list<db_id>::iterator i=wrong_ids.begin (); i!=wrong_ids.end (); ++i)
+		for (QList<db_id>::iterator i=wrong_ids.begin (); i!=wrong_ids.end (); ++i)
 			std::cout << " " << *i;
 		std::cout << " into " << correct_id << "." << std::endl;
 
@@ -101,7 +101,7 @@ int merge_person (sk_db &db, const QStringList &args)
 			db.connect ();
 			db.use_db ();
 
-			for (std::list<db_id>::iterator i=wrong_ids.begin (); i!=wrong_ids.end (); ++i)
+			for (QList<db_id>::iterator i=wrong_ids.begin (); i!=wrong_ids.end (); ++i)
 			{
 				db_id wrong_id=*i;
 				std::cout << "Merging " << wrong_id << " into " << correct_id << "." << std::endl;
