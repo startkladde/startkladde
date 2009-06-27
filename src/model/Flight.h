@@ -50,7 +50,7 @@ class Flight
 		bool landen (bool force=true, bool interactive=false);
 		bool schlepp_landen (bool force=true, bool interactive=false);
 		bool zwischenlandung (bool force=true, bool interactive=false);
-		QString typ_string (length_specification lenspec) const;
+		QString typ_string (lengthSpecification lenspec) const;
 		sk_time_t flugdauer () const;
 		sk_time_t schleppflugdauer () const;
 		bool fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const;

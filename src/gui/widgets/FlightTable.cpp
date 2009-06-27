@@ -449,8 +449,8 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 				set_cell (row, tbl_idx_landungen, f->sfz_gelandet?"1":"0", bg);
 			else
 				set_cell (row, tbl_idx_landungen, "-", bg);
-			// CONFIGURATION ls_tablle vs. ls_kurz
-			set_cell (row, tbl_idx_flug_typ, flugtyp_string (ft_schlepp, ls_tabelle), bg);
+			// CONFIGURATION ls_tablle vs. lsShort
+			set_cell (row, tbl_idx_flug_typ, flugtyp_string (ft_schlepp, lsTable), bg);
 			LaunchType ss; bool ss_ok=(db->get_startart_by_type (&ss, sat_self)==db_ok);
 			set_cell (row, tbl_idx_startart, ss_ok?ss.get_short_description ():"?", bg);
 			set_cell (row, tbl_idx_id_display, "("+QString::number (id)+")", bg);
@@ -497,8 +497,8 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 		else
 			set_cell (row, tbl_idx_landungen, "-", bg);
 
-		// CONFIGURATION ls_tablle vs. ls_kurz
-		set_cell (row, tbl_idx_flug_typ, f->typ_string (ls_tabelle), bg);
+		// CONFIGURATION ls_tablle vs. lsShort
+		set_cell (row, tbl_idx_flug_typ, f->typ_string (lsTable), bg);
 		if (!starts_here (f->modus))
 			set_cell (row, tbl_idx_startart, "-", bg);
 		else if (id_invalid (f->startart))

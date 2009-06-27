@@ -668,7 +668,7 @@ void FlightWindow::populate_lists ()
 	num_modi=list_modus (&modi, false);
 	for (int i=0; i<num_modi; i++)
 	{
-		edit_modus->insertItem (modus_string (modi[i], ls_schnellzugriff), i);
+		edit_modus->insertItem (modus_string (modi[i], lsWithShortcut), i);
 	}
 
 
@@ -678,7 +678,7 @@ void FlightWindow::populate_lists ()
 	num_sfz_modi=list_sfz_modus (&sfz_modi, false);
 	for (int i=0; i<num_sfz_modi; i++)
 	{
-		edit_modus_sfz->insertItem (modus_string (sfz_modi[i], ls_schnellzugriff), i);
+		edit_modus_sfz->insertItem (modus_string (sfz_modi[i], lsWithShortcut), i);
 	}
 
 
@@ -688,7 +688,7 @@ void FlightWindow::populate_lists ()
 	num_flugtypen=list_flugtyp (&flugtypen, false);
 	for (int i=0; i<num_flugtypen; i++)
 	{
-		edit_flug_typ->insertItem (flugtyp_string (flugtypen[i], ls_schnellzugriff), i);
+		edit_flug_typ->insertItem (flugtyp_string (flugtypen[i], lsWithShortcut), i);
 	}
 
 }
@@ -1066,7 +1066,7 @@ void FlightWindow::slot_registration ()
 		{
 			// Motorflugzeuge machen nur Selbststart, aber nur, wenn
 			// nicht was anderes angegeben war.
-			if (selected_plane->category==Plane::categorySep || selected_plane->category==Plane::categoryUltralight)
+			if (selected_plane->category==Plane::categorySingleEngine || selected_plane->category==Plane::categoryUltralight)
 				edit_startart->setCurrentItem (startart_index (db->get_startart_id_by_type (sat_self)));
 		}
 
@@ -1969,7 +1969,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		}
 
 		// Motorflugzeug an der Winde
-		if (fz.category==Plane::categorySep && sa.get_type ()!=sat_self)
+		if (fz.category==Plane::categorySingleEngine && sa.get_type ()!=sat_self)
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Motorflugzeug.\n"
 					"Es wurden jedoch eine andere Startart als Eigenstart angegeben.\n";

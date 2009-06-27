@@ -13,7 +13,7 @@
  *   Return value:
  *     the size of the array allocated.
  *
- * QString xxx_string (xxx d, length_specification lenspec)
+ * QString xxx_string (xxx d, lengthSpecification lenspec)
  *   Generates a description for the value for a given length.
  *   Parameters:
  *     - d: the value to create the description for.
@@ -57,14 +57,14 @@ int list_flugtyp (flug_typ **t, bool include_invalid)
 	return num;
 }
 
-QString flugtyp_string (flug_typ typ, length_specification lenspec)
+QString flugtyp_string (flug_typ typ, lengthSpecification lenspec)
 	/*
 	 * See top of file.
 	 */
 {
 	switch (lenspec)
 	{
-		case ls_kurz:
+		case lsShort:
 		{
 			switch (typ)
 			{
@@ -78,7 +78,7 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)
 				default: return "?"; break;
 			}
 		} break;
-		case ls_druck:
+		case lsPrintout:
 		{
 			switch (typ)
 			{
@@ -92,7 +92,7 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)
 				default: return "?"; break;
 			}
 		} break;
-		case ls_tabelle: case ls_pilot_log:
+		case lsTable: case lsPilotLog:
 		{
 			switch (typ)
 			{
@@ -106,7 +106,7 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)
 				default: return "?"; break;
 			}
 		} break;
-		case ls_lang:
+		case lsLong:
 		{
 			switch (typ)
 			{
@@ -120,7 +120,7 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)
 				default: return "???"; break;
 			}
 		} break;
-		case ls_csv:
+		case lsCsv:
 		{
 			switch (typ)
 			{
@@ -134,7 +134,7 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)
 				default: return "???"; break;
 			}
 		} break;
-		case ls_schnellzugriff:
+		case lsWithShortcut:
 		{
 			switch (typ)
 			{
@@ -244,14 +244,14 @@ int list_sfz_modus (flug_modus **m, bool include_invalid)
 	return num;
 }
 
-QString modus_string (flug_modus modus, length_specification lenspec)
+QString modus_string (flug_modus modus, lengthSpecification lenspec)
 	/*
 	 * See top of file.
 	 */
 {
 	switch (lenspec)
 	{
-		case ls_kurz: case ls_tabelle: case ls_druck: case ls_pilot_log:
+		case lsShort: case lsTable: case lsPrintout: case lsPilotLog:
 		{
 			switch (modus)
 			{
@@ -262,7 +262,7 @@ QString modus_string (flug_modus modus, length_specification lenspec)
 				default: return "?"; break;
 			}
 		} break;
-		case ls_lang: case ls_csv:
+		case lsLong: case lsCsv:
 		{
 			switch (modus)
 			{
@@ -273,7 +273,7 @@ QString modus_string (flug_modus modus, length_specification lenspec)
 				default: return "???"; break;
 			}
 		} break;
-		case ls_schnellzugriff:
+		case lsWithShortcut:
 		{
 			switch (modus)
 			{

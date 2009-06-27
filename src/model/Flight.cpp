@@ -407,7 +407,7 @@ bool Flight::zwischenlandung (bool force, bool interactive)
 
 
 
-QString Flight::typ_string (length_specification lenspec) const
+QString Flight::typ_string (lengthSpecification lenspec) const
 	/*
 	 * Generates a QString describing the type of the flight.
 	 * Parameters:

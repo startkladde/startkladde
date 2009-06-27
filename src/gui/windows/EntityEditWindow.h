@@ -47,7 +47,7 @@ class EntityEditWindow:public SkDialog
 
 	private:
 		void reset ();
-		Plane::Category *categories;
+		QList<Plane::Category> categories;
 		int num_categories;
 		int category_index (Plane::Category gat);
 		bool name_editable;

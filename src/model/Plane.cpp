@@ -1,5 +1,7 @@
 #include "Plane.h"
 
+#include <cassert>
+
 #include "src/text.h"
 
 Plane::Plane ()
@@ -112,145 +114,93 @@ void Plane::output (std::ostream &stream, output_format_t format)
 	Entity::output (stream, format, false, "Wettbewerbskennzeichen", wettbewerbskennzeichen);
 	Entity::output (stream, format, false, "Sitze", sitze);
 	Entity::output (stream, format, false, "Verein", club);
-	Entity::output (stream, format, true, "Gattung", category_string (category, ls_lang));
+	Entity::output (stream, format, true, "Gattung", categoryString (category, lsLong));
 }
 
 
 
-int Plane::list_categories (Plane::Category **g, bool include_invalid)
-	/*
-	 * See top of file.
-	 */
+QList<Plane::Category> Plane::listCategories (bool includeInvalid)
 {
-	Plane::Category *list=NULL;
-	int num=0;
+	QList<Category> result;
+	result << categorySingleEngine << categoryGlider << categoryMotorglider << categoryUltralight << categoryOther;
 
-	if (include_invalid)
-	{
-		num=6;
-		list=new Plane::Category[num];
-		list[0]=categorySep;
-		list[1]=categoryGlider;
-		list[2]=categoryMotorglider;
-		list[3]=categoryUltralight;
-		list[4]=categoryOther;
-		list[5]=categoryNone;
-	}
-	else
-	{
-		num=5;
-		list=new Plane::Category[num];
-		list[0]=categorySep;
-		list[1]=categoryGlider;
-		list[2]=categoryMotorglider;
-		list[3]=categoryUltralight;
-		list[4]=categoryOther;
-	}
+	if (includeInvalid)
+		result << categoryNone;
 
-	*g=list;
-	return num;
+	return result;
 }
 
-QString Plane::category_string (Plane::Category category, length_specification lenspec)
-	/*
-	 * See top of file.
-	 */
+QString Plane::categoryString (Plane::Category category, lengthSpecification lenspec)
 {
 	switch (lenspec)
 	{
-		case ls_kurz: case ls_tabelle: case ls_pilot_log:
-		{
+		case lsShort: case lsTable: case lsPilotLog:
 			switch (category)
 			{
-				case categorySep: return "Echo"; break;
-				case categoryGlider: return "Segel"; break;
-				case categoryMotorglider: return "MoSe"; break;
-				case categoryUltralight: return "UL"; break;
-				case categoryOther: return "Sonst"; break;
-				case categoryNone: return "-"; break;
-				default: return "?"; break;
+				case categorySingleEngine: return "Einmot";
+				case categoryGlider:       return "Segel";
+				case categoryMotorglider:  return "MoSe";
+				case categoryUltralight:   return "UL";
+				case categoryOther:        return "Sonst";
+				case categoryNone:         return "-";
 			}
-		} break;
-		case ls_druck:
-		{
+		case lsPrintout:
 			switch (category)
 			{
-				case categorySep: return "Echo"; break;
-				case categoryGlider: return "Segel"; break;
-				case categoryMotorglider: return "MoSe"; break;
-				case categoryUltralight: return "UL"; break;
-				case categoryOther: return "Sonst"; break;
-				case categoryNone: return "-"; break;
-				default: return "?"; break;
+				case categorySingleEngine: return "1-mot";
+				case categoryGlider:       return "Segel";
+				case categoryMotorglider:  return "MoSe";
+				case categoryUltralight:   return "UL";
+				case categoryOther:        return "Sonst";
+				case categoryNone:         return "-";
 			}
-		} break;
-		case ls_lang:
-		{
+		case lsLong:
 			switch (category)
 			{
-				case categorySep: return "Motorflugzeug (Echo)"; break;
-				case categoryGlider: return "Segelflugzeug"; break;
-				case categoryMotorglider: return "Motorsegler"; break;
-				case categoryUltralight: return "Ultraleicht"; break;
-				case categoryOther: return "Sonstige"; break;
-				case categoryNone: return "Keine"; break;
-				default: return "???"; break;
+				case categorySingleEngine: return "Motorflugzeug (einmotorig)";
+				case categoryGlider:       return "Segelflugzeug";
+				case categoryMotorglider:  return "Motorsegler";
+				case categoryUltralight:   return "Ultraleicht";
+				case categoryOther:        return "Sonstige";
+				case categoryNone:         return "Keine";
 			}
-		} break;
-		case ls_csv:
-		{
+		case lsCsv:
 			switch (category)
 			{
-				case categorySep: return "Motorflugzeug (Echo)"; break;
-				case categoryGlider: return "Segelflugzeug"; break;
-				case categoryMotorglider: return "Motorsegler"; break;
-				case categoryUltralight: return "Ultraleicht"; break;
-				case categoryOther: return "Sonstige"; break;
-				case categoryNone: return "Keine"; break;
-				default: return "???"; break;
+				case categorySingleEngine: return "Motorflugzeug";
+				case categoryGlider:       return "Segelflugzeug";
+				case categoryMotorglider:  return "Motorsegler";
+				case categoryUltralight:   return "Ultraleicht";
+				case categoryOther:        return "Sonstige";
+				case categoryNone:         return "Keine";
 			}
-		} break;
-		case ls_schnellzugriff:
-		{
+		case lsWithShortcut:
 			switch (category)
 			{
-				case categorySep: return "E - Motorflugzeug (Echo)"; break;
-				case categoryGlider: return "1 - Segelflugzeug"; break;
-				case categoryMotorglider: return "K - Motorsegler"; break;
-				case categoryUltralight: return "M - Ultraleicht"; break;
-				case categoryOther: return "Sonstige"; break;
-				case categoryNone: return "- - Keine"; break;
-				default: return "???"; break;
+				case categorySingleEngine: return "E - Motorflugzeug (einmotorig)";
+				case categoryGlider:       return "G - Segelflugzeug";
+				case categoryMotorglider:  return "K - Motorsegler";
+				case categoryUltralight:   return "M - Ultraleicht";
+				case categoryOther:        return "S - Sonstige";
+				case categoryNone:         return "- - Keine";
 			}
-		} break;
-		default:
-		{
-			log_error ("Unbehandelte L�ngenangabe in flugtyp_string ()");
-			switch (category)
-			{
-				case categorySep: return "[Echo]"; break;
-				case categoryGlider: return "[Segel]"; break;
-				case categoryMotorglider: return "[Motorsegler]"; break;
-				case categoryUltralight: return "[UL]"; break;
-				case categoryOther: return "[Sonst]"; break;
-				case categoryNone: return "[-]"; break;
-				default: return "[?]"; break;
-			}
-		} break;
 	}
 
-	return ("!!!");
+	// We must have returned by now - the compiler should catch unhandled
+	// values.
+	assert (false);
 }
 
-Plane::Category Plane::category_from_registration (QString reg)
-/*
- * Try to determine the kind of aircraft, given its registration. This is done based on german rules.
- * Parameters:
- *   - reg: the registration.
- * Return value:
- *   - the kind of aircraft, if one can be determined
- *   - categoryOther else
+/**
+ * Tries to determine the category of an aircraft from its registration. This
+ * only works for countries where the category follows from the registration.
+ * Currently, this is only implemented for german (D-....) registrations
+ *
+ * @param registration the registration
+ * @return the category for the registration reg, or categoryNone or
+ *         categoryOther
  */
+Plane::Category Plane::categoryFromRegistration (QString registration)
 {
 	if (reg.length () < 3) return categoryNone;
 	if (reg[0] != 'D') return categoryNone;
@@ -262,7 +212,7 @@ Plane::Category Plane::category_from_registration (QString reg)
 		|| kbu == '5' || kbu == '6' || kbu == '7' || kbu == '8' || kbu == '9')
 		return categoryGlider;
 	else if (kbu.toLower () == 'e')
-		return categorySep;
+		return categorySingleEngine;
 	else if (kbu.toLower () == 'm')
 		return categoryUltralight;
 	else if (kbu.toLower () == 'k')

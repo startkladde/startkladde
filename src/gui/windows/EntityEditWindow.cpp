@@ -54,8 +54,6 @@ EntityEditWindow::EntityEditWindow (EntityType t, QWidget *parent, Database *_db
 	num_fields=0;
 	name_editable=false;
 
-	categories=NULL; num_categories=0;
-
 	// Widgets anlegen und einstellen
 	switch (type)
 	{
@@ -171,8 +169,6 @@ EntityEditWindow::~EntityEditWindow ()
 	 * Cleans up a Entity editor instance.
 	 */
 {
-	if (categories) delete[] categories;
-	num_categories=0;
 }
 
 
@@ -191,11 +187,11 @@ void EntityEditWindow::populate_lists ()
 		{
 			// Fill in categories
 			edit_category->clear ();
-			num_categories=Plane::list_categories (&categories, false);
-			for (int i=0; i<num_categories; i++)
-			{
-				edit_category->insertItem (Plane::category_string (categories[i], ls_schnellzugriff), i);
-			}
+			categories=Plane::listCategories (false);
+
+			for (int i=0; i<categories.size(); ++i)
+				edit_category->insertItem (Plane::categoryString (categories[i], lsWithShortcut), i);
+
 			edit_category->setCurrentItem (category_index (Plane::categoryOther));
 		} break;
 		case st_person:
@@ -338,7 +334,7 @@ void EntityEditWindow::flugzeug_eintragen (Plane *f)
 	edit_wettkennz->setText (f->wettbewerbskennzeichen);
 	edit_typ->setCurrentText (f->typ);
 	edit_club->setCurrentText (f->club);
-	edit_category->setCurrentItem (category_index (Plane::category_from_registration (f->registration)));
+	edit_category->setCurrentItem (category_index (Plane::categoryFromRegistration (f->registration)));
 	edit_bemerkungen->setText (f->bemerkungen);
 
 	if (f->sitze>0)
@@ -382,7 +378,7 @@ void EntityEditWindow::slot_registration ()
 	 * Called when the focus is moved off the registration field.
 	 */
 {
-	Plane::Category gat=Plane::category_from_registration (edit_registration->text ());
+	Plane::Category gat=Plane::categoryFromRegistration (edit_registration->text ());
 	if (gat!=Plane::categoryNone) edit_category->setCurrentItem (category_index (gat));
 }
 
@@ -437,7 +433,7 @@ bool EntityEditWindow::check_data ()
 			}
 
 			// Category does not match registration
-			if (gat!=Plane::category_from_registration (edit_registration->text ()))
+			if (gat!=Plane::categoryFromRegistration (edit_registration->text ()))
 			{
 				msg="Die angegebene Gattung passt nicht zum Kennzeichen.\n";
 				if (!check_message (this, msg)) return false;
