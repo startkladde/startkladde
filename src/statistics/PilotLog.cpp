@@ -29,7 +29,7 @@ QString PilotLogEntry::flugdauer_string () const
 
 
 
-void make_flugbuch_person (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, Person *person, QPtrList<Flight> &flights, PilotLogEntry::flight_instructor_mode fim)
+void makePilotLogPerson (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, Person *person, QPtrList<Flight> &flights, PilotLogEntry::flight_instructor_mode fim)
 	// flights may contain flights which don't belong to the person
 	// TODO pass list of planes here?
 	// TODO this is slow because it needs to query the database for persons
@@ -119,8 +119,8 @@ void make_flugbuch_person (QPtrList<PilotLogEntry> &fb, Database *db, QDate date
 	}
 }
 
-void make_flugbuch_day (QPtrList<PilotLogEntry> &fb, Database *db, QDate date)
-	// Make all flugbuchs for one day
+void makePilotLogsDay (QPtrList<PilotLogEntry> &fb, Database *db, QDate date)
+	// Make all pilot logs for one day
 {
 	// TODO error handling
 
@@ -161,7 +161,7 @@ void make_flugbuch_day (QPtrList<PilotLogEntry> &fb, Database *db, QDate date)
 	for (QPtrListIterator<Person> person (sorted_persons); *person; ++person)
 	{
 		// TODO emit progress
-		make_flugbuch_person (fb, db, date, *person, flights);
+		makePilotLogPerson (fb, db, date, *person, flights);
 	}
 }
 

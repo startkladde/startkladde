@@ -17,7 +17,7 @@ enum aircraft_category { lfz_keine, lfz_echo, lfz_segelflugzeug, lfz_motorsegler
 
 enum flight_manipulation { fm_start, fm_land, fm_land_schlepp, fm_edit, fm_delete, fm_zwischenlandung, fm_wiederholen };
 
-enum length_specification { ls_kurz, ls_tabelle, ls_lang, ls_schnellzugriff, ls_druck, ls_csv, ls_flugbuch };
+enum length_specification { ls_kurz, ls_tabelle, ls_lang, ls_schnellzugriff, ls_druck, ls_csv, ls_pilot_log };
 enum casus { cas_nominativ, cas_genitiv, cas_dativ, cas_akkusativ };
 
 enum db_event_type { det_none, det_add, det_delete, det_change, det_refresh };

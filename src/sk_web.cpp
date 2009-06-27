@@ -554,31 +554,31 @@ const QString field_user_read_flight_db="f_user_read_flight_db";
 const QString field_user_club="f_user_club";
 const QString field_user_person="f_user_person";
 
-const QString field_flugbuch_tag             ="tag";
-const QString field_flugbuch_muster          ="muster";
-const QString field_flugbuch_kennzeichen     ="kennzeichen";
-const QString field_flugbuch_flugzeugfuehrer ="flugzeugfuehrer";
-const QString field_flugbuch_begleiter       ="begleiter";
-const QString field_flugbuch_startart        ="startart";
-const QString field_flugbuch_ort_start       ="ort_start";
-const QString field_flugbuch_ort_landung     ="ort_landung";
-const QString field_flugbuch_zeit_start      ="zeit_start";
-const QString field_flugbuch_zeit_landung    ="zeit_landung";
-const QString field_flugbuch_flugdauer       ="flugdauer";
-const QString field_flugbuch_bemerkung       ="bemerkung";
+const QString field_pilot_log_tag             ="tag";
+const QString field_pilot_log_muster          ="muster";
+const QString field_pilot_log_kennzeichen     ="kennzeichen";
+const QString field_pilot_log_flugzeugfuehrer ="flugzeugfuehrer";
+const QString field_pilot_log_begleiter       ="begleiter";
+const QString field_pilot_log_startart        ="startart";
+const QString field_pilot_log_ort_start       ="ort_start";
+const QString field_pilot_log_ort_landung     ="ort_landung";
+const QString field_pilot_log_zeit_start      ="zeit_start";
+const QString field_pilot_log_zeit_landung    ="zeit_landung";
+const QString field_pilot_log_flugdauer       ="flugdauer";
+const QString field_pilot_log_bemerkung       ="bemerkung";
 
-const QString field_bordbuch_date         ="date";
-const QString field_bordbuch_club         ="club";
-const QString field_bordbuch_registration ="registration";
-const QString field_bordbuch_plane_type   ="plane_type";
-const QString field_bordbuch_name         ="name";
-const QString field_bordbuch_num_persons  ="num_persons";
-const QString field_bordbuch_place_from   ="place_from";
-const QString field_bordbuch_place_to     ="place_to";
-const QString field_bordbuch_starttime    ="starttime";
-const QString field_bordbuch_landtime     ="landtime";
-const QString field_bordbuch_num_landings ="num_landings";
-const QString field_bordbuch_flight_time  ="flight_time";
+const QString field_plane_log_date         ="date";
+const QString field_plane_log_club         ="club";
+const QString field_plane_log_registration ="registration";
+const QString field_plane_log_plane_type   ="plane_type";
+const QString field_plane_log_name         ="name";
+const QString field_plane_log_num_persons  ="num_persons";
+const QString field_plane_log_place_from   ="place_from";
+const QString field_plane_log_place_to     ="place_to";
+const QString field_plane_log_starttime    ="starttime";
+const QString field_plane_log_landtime     ="landtime";
+const QString field_plane_log_num_landings ="num_landings";
+const QString field_plane_log_flight_time  ="flight_time";
 
 const QString field_flight_number            ="number";
 const QString field_flight_registration      ="registration";
@@ -625,12 +625,12 @@ request_method_t request_method;    // The request method
 // TODO need to implement ObjectField successor. These global vars
 // mixing data and metadata are MURX.
 QList<ObjectField> fields_sk_user;	        // The member field description of an User
-QList<ObjectField> fields_flugbuch_entry;	// The member field description of a PilotLogEntry
-QList<ObjectField> fields_bordbuch_entry;	// The member field description of a PlaneLogEntry
+QList<ObjectField> fields_pilot_log_entry;	// The member field description of a PilotLogEntry
+QList<ObjectField> fields_plane_log_entry;	// The member field description of a PlaneLogEntry
 QList<ObjectField> fields_flightlist_entry; // The member field description of a flight list entry
 QList<ObjectField> fields_flight_db_entry;  // The member field description of a flight list entry
-QList<float> widths_flugbuch_entry;			// The column widths of a flugbuch entry, in mm
-QList<float> widths_bordbuch_entry;			// The column widths of an bordbuch entry, in mm
+QList<float> widths_pilot_log_entry;			// The column widths of a pilotLog entry, in mm
+QList<float> widths_plane_log_entry;			// The column widths of an planeLog entry, in mm
 QList<float> widths_flightlist;			    // The column widths of a flightlist entry, in mm
 
 // Global variables
@@ -2099,10 +2099,10 @@ void sk_user_from_fields (User &user)
 	}
 }
 
-void flugbuch_entry_to_fields (const PilotLogEntry &fbe, bool no_letters=false)
+void pilot_log_entry_to_fields (const PilotLogEntry &ple, bool no_letters=false)
 	throw (ex_write_error_document)
 	/*
-	 * Converts a flugbuch entry to the (global) flugbuch object_fields.
+	 * Converts a pilotLog entry to the (global) pilotLog object_fields.
 	 * Paremters:
 	 *   - fbe: the entry to convert.
 	 */
@@ -2111,31 +2111,31 @@ void flugbuch_entry_to_fields (const PilotLogEntry &fbe, bool no_letters=false)
 	// TODO replace ObjectField
 	// Iterate over all PilotLogEntry fields and, depending on the label, read
 	// the data from the PilotLogEntry.
-	QList<ObjectField>::const_iterator end=fields_flugbuch_entry.end ();
-	for (QList<ObjectField>::iterator field=fields_flugbuch_entry.begin (); field!=end; ++field)
+	QList<ObjectField>::const_iterator end=fields_pilot_log_entry.end ();
+	for (QList<ObjectField>::iterator field=fields_pilot_log_entry.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
-		if (label==field_flugbuch_tag)                   (*field).set_to (fbe.tag_string ());
-		else if (label==field_flugbuch_muster)           (*field).set_to (fbe.muster);
-		else if (label==field_flugbuch_kennzeichen)      (*field).set_to (fbe.registration);
-		else if (label==field_flugbuch_flugzeugfuehrer)  (*field).set_to (fbe.flugzeugfuehrer);
-		else if (label==field_flugbuch_begleiter)        (*field).set_to (fbe.begleiter);
-		else if (label==field_flugbuch_startart)         (*field).set_to (fbe.startart);
-		else if (label==field_flugbuch_ort_start)        (*field).set_to (fbe.ort_start);
-		else if (label==field_flugbuch_ort_landung)      (*field).set_to (fbe.ort_landung);
-		else if (label==field_flugbuch_zeit_start)       (*field).set_to (fbe.zeit_start_string (no_letters));
-		else if (label==field_flugbuch_zeit_landung)     (*field).set_to (fbe.zeit_landung_string (no_letters));
-		else if (label==field_flugbuch_flugdauer)        (*field).set_to (fbe.flugdauer_string ());
-		else if (label==field_flugbuch_bemerkung)        (*field).set_to (fbe.bemerkung);
+		if (label==field_pilot_log_tag)                   (*field).set_to (ple.tag_string ());
+		else if (label==field_pilot_log_muster)           (*field).set_to (ple.muster);
+		else if (label==field_pilot_log_kennzeichen)      (*field).set_to (ple.registration);
+		else if (label==field_pilot_log_flugzeugfuehrer)  (*field).set_to (ple.flugzeugfuehrer);
+		else if (label==field_pilot_log_begleiter)        (*field).set_to (ple.begleiter);
+		else if (label==field_pilot_log_startart)         (*field).set_to (ple.startart);
+		else if (label==field_pilot_log_ort_start)        (*field).set_to (ple.ort_start);
+		else if (label==field_pilot_log_ort_landung)      (*field).set_to (ple.ort_landung);
+		else if (label==field_pilot_log_zeit_start)       (*field).set_to (ple.zeit_start_string (no_letters));
+		else if (label==field_pilot_log_zeit_landung)     (*field).set_to (ple.zeit_landung_string (no_letters));
+		else if (label==field_pilot_log_flugdauer)        (*field).set_to (ple.flugdauer_string ());
+		else if (label==field_pilot_log_bemerkung)        (*field).set_to (ple.bemerkung);
 		else
-			throw ex_write_error_document ("Unbehandeltes Feld \""+(*field).get_caption ()+"\" in flugbuch_entry_to_fields").is_program_error ();
+			throw ex_write_error_document ("Unbehandeltes Feld \""+(*field).get_caption ()+"\" in pilot_log_entry_to_fields").is_program_error ();
 
 		// TODO should we handle .invalid here?
 	}
 }
 
-void bordbuch_entry_to_fields (const PlaneLogEntry &bbe, bool no_letters=false)
+void plane_log_entry_to_fields (const PlaneLogEntry &bbe, bool no_letters=false)
 	throw (ex_write_error_document)
 	/*
 	 * Converts a blugbuch entry to the (global) blugbuch object_fields.
@@ -2147,25 +2147,25 @@ void bordbuch_entry_to_fields (const PlaneLogEntry &bbe, bool no_letters=false)
 	// TODO replace ObjectField
 	// Iterate over all PlaneLogEntry fields and, depending on the label, read
 	// the data from the PlaneLogEntry.
-	QList<ObjectField>::const_iterator end=fields_bordbuch_entry.end ();
-	for (QList<ObjectField>::iterator field=fields_bordbuch_entry.begin (); field!=end; ++field)
+	QList<ObjectField>::const_iterator end=fields_plane_log_entry.end ();
+	for (QList<ObjectField>::iterator field=fields_plane_log_entry.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
-		if (label==field_bordbuch_date)                 (*field).set_to (bbe.datum_string ());
-		else if (label==field_bordbuch_club)            (*field).set_to (bbe.club);
-		else if (label==field_bordbuch_registration)    (*field).set_to (bbe.registration);
-		else if (label==field_bordbuch_plane_type)      (*field).set_to (bbe.flugzeug_typ);
-		else if (label==field_bordbuch_name)            (*field).set_to (bbe.name);
-		else if (label==field_bordbuch_num_persons)     (*field).set_to (bbe.insassen_string ());
-		else if (label==field_bordbuch_place_from)      (*field).set_to (bbe.ort_von);
-		else if (label==field_bordbuch_place_to)        (*field).set_to (bbe.ort_nach);
-		else if (label==field_bordbuch_starttime)       (*field).set_to (bbe.zeit_start_string (no_letters));
-		else if (label==field_bordbuch_landtime)        (*field).set_to (bbe.zeit_landung_string (no_letters));
-		else if (label==field_bordbuch_num_landings)    (*field).set_to (bbe.anzahl_landungen_string ());
-		else if (label==field_bordbuch_flight_time)     (*field).set_to (bbe.betriebsdauer_string ());
+		if (label==field_plane_log_date)                 (*field).set_to (bbe.datum_string ());
+		else if (label==field_plane_log_club)            (*field).set_to (bbe.club);
+		else if (label==field_plane_log_registration)    (*field).set_to (bbe.registration);
+		else if (label==field_plane_log_plane_type)      (*field).set_to (bbe.flugzeug_typ);
+		else if (label==field_plane_log_name)            (*field).set_to (bbe.name);
+		else if (label==field_plane_log_num_persons)     (*field).set_to (bbe.insassen_string ());
+		else if (label==field_plane_log_place_from)      (*field).set_to (bbe.ort_von);
+		else if (label==field_plane_log_place_to)        (*field).set_to (bbe.ort_nach);
+		else if (label==field_plane_log_starttime)       (*field).set_to (bbe.zeit_start_string (no_letters));
+		else if (label==field_plane_log_landtime)        (*field).set_to (bbe.zeit_landung_string (no_letters));
+		else if (label==field_plane_log_num_landings)    (*field).set_to (bbe.anzahl_landungen_string ());
+		else if (label==field_plane_log_flight_time)     (*field).set_to (bbe.betriebsdauer_string ());
 		else
-			throw ex_write_error_document ("Unbehandeltes Feld \""+(*field).get_caption ()+"\" in bordbuch_entry_to_fields").is_program_error ();
+			throw ex_write_error_document ("Unbehandeltes Feld \""+(*field).get_caption ()+"\" in plane_log_entry_to_fields").is_program_error ();
 	}
 }
 
@@ -2314,14 +2314,14 @@ void flight_to_fields (QList<ObjectField> &fields, const Flight &f, const sk_flu
 }
 
 
-void write_flugbuch (LatexDocument &ldoc, const QPtrList<PilotLogEntry> &flugbuch, const QString &date_text, const QString &person_name)
+void write_pilot_log (LatexDocument &ldoc, const QPtrList<PilotLogEntry> &pilotLog, const QString &date_text, const QString &person_name)
 	// XXX
 {
 	// TODO code duplication with csv writing
 	setup_latex_headings (ldoc, "Flugbuch f�r "+latex_escape (person_name), date_text);
 	ldoc.landscape=false;
 
-	if (flugbuch.isEmpty ())
+	if (pilotLog.isEmpty ())
 	{
 		ldoc.write_text ("Keine Fl�ge\n");
 	}
@@ -2330,27 +2330,27 @@ void write_flugbuch (LatexDocument &ldoc, const QPtrList<PilotLogEntry> &flugbuc
 		Table tab;
 
 		// Make a header row
-		TableRow header_row=table_row_from_fields (fields_flugbuch_entry, true);
+		TableRow header_row=table_row_from_fields (fields_pilot_log_entry, true);
 
-		// For each bordbuch entry, make a Table row.
-		for (QPtrListIterator<PilotLogEntry> it (flugbuch); *it; ++it)
+		// For each planeLog entry, make a Table row.
+		for (QPtrListIterator<PilotLogEntry> it (pilotLog); *it; ++it)
 		{
-			flugbuch_entry_to_fields (**it);
-			tab.push_back (table_row_from_fields (fields_flugbuch_entry));
+			pilot_log_entry_to_fields (**it);
+			tab.push_back (table_row_from_fields (fields_pilot_log_entry));
 		}
 
-		ldoc.write (tab, header_row, widths_flugbuch_entry);
+		ldoc.write (tab, header_row, widths_pilot_log_entry);
 	}
 }
 
-void write_bordbuch (LatexDocument &ldoc, const QPtrList<PlaneLogEntry> &bordbuch, const QString &date_text)
+void writePlaneLog (LatexDocument &ldoc, const QPtrList<PlaneLogEntry> &planeLog, const QString &date_text)
 	// XXX
 {
 	// TODO code duplication with csv writing
 	setup_latex_headings (ldoc, "Bordb�cher "+latex_escape (opts.ort), date_text);
 	ldoc.landscape=false;
 
-	if (bordbuch.isEmpty ())
+	if (planeLog.isEmpty ())
 	{
 		ldoc.write_text ("Keine Fl�ge\n");
 	}
@@ -2359,16 +2359,16 @@ void write_bordbuch (LatexDocument &ldoc, const QPtrList<PlaneLogEntry> &bordbuc
 		Table tab;
 
 		// Make a header row
-		TableRow header_row=table_row_from_fields (fields_bordbuch_entry, true);
+		TableRow header_row=table_row_from_fields (fields_plane_log_entry, true);
 
-		// For each bordbuch entry, make a Table row.
-		for (QPtrListIterator<PlaneLogEntry> it (bordbuch); *it; ++it)
+		// For each planeLog entry, make a Table row.
+		for (QPtrListIterator<PlaneLogEntry> it (planeLog); *it; ++it)
 		{
-			bordbuch_entry_to_fields (**it);
-			tab.push_back (table_row_from_fields (fields_bordbuch_entry));
+			plane_log_entry_to_fields (**it);
+			tab.push_back (table_row_from_fields (fields_plane_log_entry));
 		}
 
-		ldoc.write (tab, header_row, widths_bordbuch_entry);
+		ldoc.write (tab, header_row, widths_plane_log_entry);
 	}
 }
 
@@ -4093,9 +4093,9 @@ WhatNext handler_do_person_logbook ()
 	}
 
 	// Step 2: Make the personal logbook.
-	QPtrList<PilotLogEntry> flugbuch; flugbuch.setAutoDelete (true);
+	QPtrList<PilotLogEntry> pilotLog; pilotLog.setAutoDelete (true);
 	// We pass an empty QDate here because we already filtered for date above.
-	make_flugbuch_person (flugbuch, &db, QDate (), &person, flights, fim);
+	makePilotLogPerson (pilotLog, &db, QDate (), &person, flights, fim);
 
 
 	// Step 3: Output the logbook.
@@ -4104,7 +4104,7 @@ WhatNext handler_do_person_logbook ()
 	{
 		document.write_paragraph ("Flugbuchabfrage f�r "+person.text_name ()+", "+date_text);
 
-		if (flugbuch.isEmpty ())
+		if (pilotLog.isEmpty ())
 		{
 			document.write_paragraph ("Keine Fl�ge");
 		}
@@ -4114,20 +4114,20 @@ WhatNext handler_do_person_logbook ()
 			html_table table;
 
 			// Write the Table header
-			table.push_back (make_table_header (fields_flugbuch_entry));
+			table.push_back (make_table_header (fields_pilot_log_entry));
 
-			// For each flugbuch entry, write a Table row.
-			for (QPtrListIterator<PilotLogEntry> it (flugbuch); *it; ++it)
+			// For each pilotLog entry, write a Table row.
+			for (QPtrListIterator<PilotLogEntry> it (pilotLog); *it; ++it)
 			{
-				flugbuch_entry_to_fields (**it);
-				HtmlTableRow user_row=make_table_data_row (fields_flugbuch_entry);
+				pilot_log_entry_to_fields (**it);
+				HtmlTableRow user_row=make_table_data_row (fields_pilot_log_entry);
 
 				// End of row
 				table.push_back (user_row);
 			}
 
 			document.write (table);
-			document.write_paragraph (QString::number (flugbuch.count ())+" Eintr�ge");
+			document.write_paragraph (QString::number (pilotLog.count ())+" Eintr�ge");
 		}
 
 		return WhatNext::output_document ();
@@ -4138,13 +4138,13 @@ WhatNext handler_do_person_logbook ()
 		Table tab;
 
 		// Add the header
-		tab.push_back (table_row_from_fields (fields_flugbuch_entry, true));
+		tab.push_back (table_row_from_fields (fields_pilot_log_entry, true));
 
-		// For each flugbuch entry, make a Table row.
-		for (QPtrListIterator<PilotLogEntry> it (flugbuch); *it; ++it)
+		// For each pilotLog entry, make a Table row.
+		for (QPtrListIterator<PilotLogEntry> it (pilotLog); *it; ++it)
 		{
-			flugbuch_entry_to_fields (**it, true);
-			tab.push_back (table_row_from_fields (fields_flugbuch_entry));
+			pilot_log_entry_to_fields (**it, true);
+			tab.push_back (table_row_from_fields (fields_pilot_log_entry));
 		}
 
 		filename.append (".csv");
@@ -4153,7 +4153,7 @@ WhatNext handler_do_person_logbook ()
 	else if (format==arg_cgi_format_latex)
 	{
 		LatexDocument ldoc;
-		write_flugbuch (ldoc, flugbuch, date_text, person.text_name ());
+		write_pilot_log (ldoc, pilotLog, date_text, person.text_name ());
 
 		filename.append (".tex");
 		return WhatNext::output_raw_document (ldoc.get_string (), HttpDocument::mime_type_plaintext, filename, "Flugbuch f�r "+person.text_name ());
@@ -4161,7 +4161,7 @@ WhatNext handler_do_person_logbook ()
 	else if (format==arg_cgi_format_pdf)
 	{
 		LatexDocument ldoc;
-		write_flugbuch (ldoc, flugbuch, date_text, person.text_name ());
+		write_pilot_log (ldoc, pilotLog, date_text, person.text_name ());
 
 		filename.append (".pdf");
 		try
@@ -4264,7 +4264,7 @@ WhatNext handler_do_plane_logbook ()
 //
 
 	// Make the club list
-	// TODO: this functionality could be moved to write_bordbuch
+	// TODO: this functionality could be moved to writePlaneLog
 	QStringList club_list;
 	make_unique_club_list (club_list, planes);
 
@@ -4276,12 +4276,12 @@ WhatNext handler_do_plane_logbook ()
 	{
 		QString c=club_list[i];
 
-		// Generate the bordbuch
-		QPtrList<PlaneLogEntry> bordbuch; bordbuch.setAutoDelete (true);
+		// Generate the planeLog
+		QPtrList<PlaneLogEntry> planeLog; planeLog.setAutoDelete (true);
 			QPtrList<PlaneLogEntry> bb;
-		make_bordbuch_day (bordbuch, &db, q_date, planes, flights, &c);
+		makePlaneLogDay (planeLog, &db, q_date, planes, flights, &c);
 
-		if (!bordbuch.isEmpty ())
+		if (!planeLog.isEmpty ())
 		{
 			if (eintrag_ist_leer (c))
 				ldoc.start_section ("Kein Verein");
@@ -4289,7 +4289,7 @@ WhatNext handler_do_plane_logbook ()
 				ldoc.start_section (c);
 
 			// Output the logbook.
-			write_bordbuch (ldoc, bordbuch, date_text);
+			writePlaneLog (ldoc, planeLog, date_text);
 			ldoc.write_empty_line ();
 		}
 	}
@@ -5072,32 +5072,32 @@ void setup_static_data ()
 	// Output only
 
 	//                                    caption            label
-	fields_flugbuch_entry.push_back (OOF ("Tag"            , field_flugbuch_tag             ).set_no_break ()); widths_flugbuch_entry.push_back (15);	// "Tag"
-	fields_flugbuch_entry.push_back (OOF ("Muster"         , field_flugbuch_muster          ));                 widths_flugbuch_entry.push_back (12);	// "Muster"
-	fields_flugbuch_entry.push_back (OOF ("Kennzeichen"    , field_flugbuch_kennzeichen     ));                 widths_flugbuch_entry.push_back (14);	// "Kennzeichen"
-	fields_flugbuch_entry.push_back (OOF ("Flugzeugf�hrer" , field_flugbuch_flugzeugfuehrer ));                 widths_flugbuch_entry.push_back (20);	// "Flugzeugf�hrer"
-	fields_flugbuch_entry.push_back (OOF ("Begleiter"      , field_flugbuch_begleiter       ));                 widths_flugbuch_entry.push_back (20);	// "Begleiter"
-	fields_flugbuch_entry.push_back (OOF ("Startart"       , field_flugbuch_startart        ));                 widths_flugbuch_entry.push_back (10);	// "Startart"
-	fields_flugbuch_entry.push_back (OOF ("Ort Start"      , field_flugbuch_ort_start       ));                 widths_flugbuch_entry.push_back (15);	// "Ort Start"
-	fields_flugbuch_entry.push_back (OOF ("Ort Landung"    , field_flugbuch_ort_landung     ));                 widths_flugbuch_entry.push_back (15);	// "Ort Landung"
-	fields_flugbuch_entry.push_back (OOF ("Zeit Start"     , field_flugbuch_zeit_start      ));                 widths_flugbuch_entry.push_back (13);	// "Zeit Start"
-	fields_flugbuch_entry.push_back (OOF ("Zeit Landung"   , field_flugbuch_zeit_landung    ));                 widths_flugbuch_entry.push_back (13);	// "Zeit Landung"
-	fields_flugbuch_entry.push_back (OOF ("Flugdauer"      , field_flugbuch_flugdauer       ));                 widths_flugbuch_entry.push_back (13);	// "Flugdauer"
-	fields_flugbuch_entry.push_back (OOF ("Bemerkung"      , field_flugbuch_bemerkung       ));                 widths_flugbuch_entry.push_back (20);	// "Bemerkung"
+	fields_pilot_log_entry.push_back (OOF ("Tag"            , field_pilot_log_tag             ).set_no_break ()); widths_pilot_log_entry.push_back (15);	// "Tag"
+	fields_pilot_log_entry.push_back (OOF ("Muster"         , field_pilot_log_muster          ));                 widths_pilot_log_entry.push_back (12);	// "Muster"
+	fields_pilot_log_entry.push_back (OOF ("Kennzeichen"    , field_pilot_log_kennzeichen     ));                 widths_pilot_log_entry.push_back (14);	// "Kennzeichen"
+	fields_pilot_log_entry.push_back (OOF ("Flugzeugf�hrer" , field_pilot_log_flugzeugfuehrer ));                 widths_pilot_log_entry.push_back (20);	// "Flugzeugf�hrer"
+	fields_pilot_log_entry.push_back (OOF ("Begleiter"      , field_pilot_log_begleiter       ));                 widths_pilot_log_entry.push_back (20);	// "Begleiter"
+	fields_pilot_log_entry.push_back (OOF ("Startart"       , field_pilot_log_startart        ));                 widths_pilot_log_entry.push_back (10);	// "Startart"
+	fields_pilot_log_entry.push_back (OOF ("Ort Start"      , field_pilot_log_ort_start       ));                 widths_pilot_log_entry.push_back (15);	// "Ort Start"
+	fields_pilot_log_entry.push_back (OOF ("Ort Landung"    , field_pilot_log_ort_landung     ));                 widths_pilot_log_entry.push_back (15);	// "Ort Landung"
+	fields_pilot_log_entry.push_back (OOF ("Zeit Start"     , field_pilot_log_zeit_start      ));                 widths_pilot_log_entry.push_back (13);	// "Zeit Start"
+	fields_pilot_log_entry.push_back (OOF ("Zeit Landung"   , field_pilot_log_zeit_landung    ));                 widths_pilot_log_entry.push_back (13);	// "Zeit Landung"
+	fields_pilot_log_entry.push_back (OOF ("Flugdauer"      , field_pilot_log_flugdauer       ));                 widths_pilot_log_entry.push_back (13);	// "Flugdauer"
+	fields_pilot_log_entry.push_back (OOF ("Bemerkung"      , field_pilot_log_bemerkung       ));                 widths_pilot_log_entry.push_back (20);	// "Bemerkung"
 
 	//                                    caption            label
-	fields_bordbuch_entry.push_back (OOF ("Datum"          , field_bordbuch_date         ).set_no_break ()); widths_bordbuch_entry.push_back (15);	// "Datum"
-	fields_bordbuch_entry.push_back (OOF ("Verein"         , field_bordbuch_club         ));                 widths_bordbuch_entry.push_back (25);	// "Verein"
-	fields_bordbuch_entry.push_back (OOF ("Kennz."         , field_bordbuch_registration ));                 widths_bordbuch_entry.push_back (14);	// "Kennz."
-	fields_bordbuch_entry.push_back (OOF ("Typ"            , field_bordbuch_plane_type   ));                 widths_bordbuch_entry.push_back (16);	// "Typ"
-	fields_bordbuch_entry.push_back (OOF ("Name"           , field_bordbuch_name         ));                 widths_bordbuch_entry.push_back (27);	// "Name"
-	fields_bordbuch_entry.push_back (OOF ("Ins."           , field_bordbuch_num_persons  ));                 widths_bordbuch_entry.push_back (06);	// "Ins."
-	fields_bordbuch_entry.push_back (OOF ("Startort"       , field_bordbuch_place_from   ));                 widths_bordbuch_entry.push_back (19);	// "Startort"
-	fields_bordbuch_entry.push_back (OOF ("Zielort"        , field_bordbuch_place_to     ));                 widths_bordbuch_entry.push_back (19);	// "Zielort"
-	fields_bordbuch_entry.push_back (OOF ("Start"          , field_bordbuch_starttime    ));                 widths_bordbuch_entry.push_back ( 9);	// "Start"
-	fields_bordbuch_entry.push_back (OOF ("Landg."         , field_bordbuch_landtime     ));                 widths_bordbuch_entry.push_back ( 9);	// "Landg."
-	fields_bordbuch_entry.push_back (OOF ("#Ldg."          , field_bordbuch_num_landings ));                 widths_bordbuch_entry.push_back ( 9);	// "#Ldg."
-	fields_bordbuch_entry.push_back (OOF ("Dauer"          , field_bordbuch_flight_time  ));                 widths_bordbuch_entry.push_back ( 8);	// "Dauer"
+	fields_plane_log_entry.push_back (OOF ("Datum"          , field_plane_log_date         ).set_no_break ()); widths_plane_log_entry.push_back (15);	// "Datum"
+	fields_plane_log_entry.push_back (OOF ("Verein"         , field_plane_log_club         ));                 widths_plane_log_entry.push_back (25);	// "Verein"
+	fields_plane_log_entry.push_back (OOF ("Kennz."         , field_plane_log_registration ));                 widths_plane_log_entry.push_back (14);	// "Kennz."
+	fields_plane_log_entry.push_back (OOF ("Typ"            , field_plane_log_plane_type   ));                 widths_plane_log_entry.push_back (16);	// "Typ"
+	fields_plane_log_entry.push_back (OOF ("Name"           , field_plane_log_name         ));                 widths_plane_log_entry.push_back (27);	// "Name"
+	fields_plane_log_entry.push_back (OOF ("Ins."           , field_plane_log_num_persons  ));                 widths_plane_log_entry.push_back (06);	// "Ins."
+	fields_plane_log_entry.push_back (OOF ("Startort"       , field_plane_log_place_from   ));                 widths_plane_log_entry.push_back (19);	// "Startort"
+	fields_plane_log_entry.push_back (OOF ("Zielort"        , field_plane_log_place_to     ));                 widths_plane_log_entry.push_back (19);	// "Zielort"
+	fields_plane_log_entry.push_back (OOF ("Start"          , field_plane_log_starttime    ));                 widths_plane_log_entry.push_back ( 9);	// "Start"
+	fields_plane_log_entry.push_back (OOF ("Landg."         , field_plane_log_landtime     ));                 widths_plane_log_entry.push_back ( 9);	// "Landg."
+	fields_plane_log_entry.push_back (OOF ("#Ldg."          , field_plane_log_num_landings ));                 widths_plane_log_entry.push_back ( 9);	// "#Ldg."
+	fields_plane_log_entry.push_back (OOF ("Dauer"          , field_plane_log_flight_time  ));                 widths_plane_log_entry.push_back ( 8);	// "Dauer"
 
 	//                                      caption         label
 	fields_flightlist_entry.push_back (OOF ("Nr."         , field_flight_number            )); widths_flightlist.push_back ( 5);	// Nr.

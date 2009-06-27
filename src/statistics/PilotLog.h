@@ -44,8 +44,8 @@ class PilotLogEntry
 		QString flugdauer_string () const;
 };
 
-void make_flugbuch_day (QPtrList<PilotLogEntry> &fb, Database *db, QDate date);
-void make_flugbuch_person (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, Person *person, QPtrList<Flight> &flights, PilotLogEntry::flight_instructor_mode fim=PilotLogEntry::fim_no);
+void makePilotLogsDay (QPtrList<PilotLogEntry> &fb, Database *db, QDate date);
+void makePilotLogPerson (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, Person *person, QPtrList<Flight> &flights, PilotLogEntry::flight_instructor_mode fim=PilotLogEntry::fim_no);
 
 #endif
 

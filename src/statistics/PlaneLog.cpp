@@ -54,7 +54,7 @@ QString PlaneLogEntry::anzahl_landungen_string () const
 }
 
 
-bool make_bordbuch_entry (PlaneLogEntry *bb_entry, Database *db, QPtrList<Flight> &flights, Plane &fz, QDate date)
+bool makePlaneLogEntry (PlaneLogEntry *bb_entry, Database *db, QPtrList<Flight> &flights, Plane &fz, QDate date)
 	// No plane/date checking is done.
 {
 	// Skip if the the list is empty
@@ -123,10 +123,10 @@ bool make_bordbuch_entry (PlaneLogEntry *bb_entry, Database *db, QPtrList<Flight
 	}
 }
 
-void add_bordbuch_entry (QPtrList<PlaneLogEntry> &bb, Database *db, QPtrList<Flight> &flights, Plane &fz, QDate date)
+void addPlaneLogEntry (QPtrList<PlaneLogEntry> &bb, Database *db, QPtrList<Flight> &flights, Plane &fz, QDate date)
 {
 	PlaneLogEntry *bb_entry=new PlaneLogEntry;
-	bool entry_ok=make_bordbuch_entry (bb_entry, db, flights, fz, date);
+	bool entry_ok=makePlaneLogEntry (bb_entry, db, flights, fz, date);
 
 	if (entry_ok)
 		bb.append (bb_entry);
@@ -134,7 +134,7 @@ void add_bordbuch_entry (QPtrList<PlaneLogEntry> &bb, Database *db, QPtrList<Fli
 		delete bb_entry;
 }
 
-void make_bordbuch_plane (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, Plane &fz, QPtrList<Flight> &flights)
+void makePlaneLogPlane (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, Plane &fz, QPtrList<Flight> &flights)
 	// flights may contain flights which don't belong to the plane
 {
 	// First, make a sorted list of all fligths that belong to this plane
@@ -160,17 +160,17 @@ void make_bordbuch_plane (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date,
 		// entry from the list and clear the list before continuing.
 		if (prev && !(*flight)->collective_bb_entry_possible (prev, fz))
 		{
-			add_bordbuch_entry (bb, db, entry_flights, fz, date);
+			addPlaneLogEntry (bb, db, entry_flights, fz, date);
 			entry_flights.clear ();
 		}
 
 		entry_flights.append (*flight);
 		prev=*flight;
 	}
-	add_bordbuch_entry (bb, db, entry_flights, fz, date);
+	addPlaneLogEntry (bb, db, entry_flights, fz, date);
 }
 
-void make_bordbuch_day (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, QString *club)
+void makePlaneLogDay (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, QString *club)
 	// If club is specified, only planes of this club are used.
 {
 	for (QPtrListIterator<Plane> plane (planes); *plane; ++plane)
@@ -178,12 +178,12 @@ void make_bordbuch_day (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, Q
 		// TODO emit progress
 		if (club==NULL || simplify_club_name ((*plane)->club)==simplify_club_name (*club))
 		{
-			make_bordbuch_plane (bb, db, date, **plane, flights);
+			makePlaneLogPlane (bb, db, date, **plane, flights);
 		}
 	}
 }
 
-void make_bordbuch_day (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date)
+void makePlaneLogDay (QPtrList<PlaneLogEntry> &planeLog, Database *db, QDate date)
 {
 	// TODO error handling
 
@@ -274,7 +274,7 @@ void make_bordbuch_day (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date)
 			delete towplane;
 	}
 
-	make_bordbuch_day (bb, db, date, planes, flights);
+	makePlaneLogDay (planeLog, db, date, planes, flights);
 }
 
 

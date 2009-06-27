@@ -153,7 +153,7 @@ class MainWindow:public QMainWindow
 		QAction *actionRestartPlugins;
 		QAction *actionSuppressLanded, *actionShowDeparted, *actionShowFaulty;
 		QAction *actionSetDate, *actionNewFlightNewDate, *actionNewFlightCurrDate;
-		QAction *actionBordbuch, *actionFlugbuch, *actionStartart;
+		QAction *actionPlaneLog, *actionPilotLog, *actionStartart;
 		QAction *actionEditPlanes, *actionEditPersons;
 		QAction *actionRefreshAll; // *actionWriteCSV;
 		QAction *actionInfo, *actionNetDiag;
@@ -198,8 +198,8 @@ class MainWindow:public QMainWindow
 		void slot_tabelle_sortieren ();
 		void slot_refresh_table ();
 		// Statistics menu slots
-		void slot_flugbuch ();
-		void slot_bordbuch ();
+		void slot_pilot_log ();
+		void slot_plane_log ();
 		void slot_sastat ();
 		// Database menu slots
 		void slot_flugzeugeditor ();

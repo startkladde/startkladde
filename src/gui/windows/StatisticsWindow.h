@@ -28,21 +28,21 @@ class StatisticsWindow:public SkDialog
 
 	public:
 		StatisticsWindow (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog, Database *_db);
-		void bordbuch (QDate datum);
-		void flugbuch (QDate datum);
+		void planeLog (QDate datum);
+		void pilotLog (QDate datum);
 		void sastat (QDate datum);
 
 	private:
 		SkTable *tab;
 		QPushButton *but_close;
 		SkTableItem *set_table_cell (int row, int col, const QString &text, QColor bg=QColor (255, 255, 255));
-		void person_flugbuch (QDate date, Person *p, QPtrList<Flight> &flights);
+		void person_pilot_log (QDate date, Person *p, QPtrList<Flight> &flights);
 		void fill_sastat (QDate datum);
 		Database *db;
 
 		// New functions
-		void display_bordbuch_entry (PlaneLogEntry *bbe);
-		void display_flugbuch_entry (PilotLogEntry *fbe);
+		void displayPlaneLogEntry (PlaneLogEntry *bbe);
+		void display_pilot_log_entry (PilotLogEntry *fbe);
 };
 
 #endif

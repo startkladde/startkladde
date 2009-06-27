@@ -140,7 +140,6 @@ Normale Priorit�t:
     - Tabellenupdate statt refresh, wenn etwas ge�ndert, zum Beispiel Flugzeuginfo
     - Unterschidung zwischen "fliegt noch", "flog da" und "egal, startet
 	  sp�ter"
-    - Flugbuch/Bordbuch in skdump
     - Anzeigedatum nach UTC einstellen, auch Datum in flugeditor
     - Unified Fehlerchecking: Flugeditor: Neues FZ aufgenommen: in selected_plane speichern
     - Unix socket Name ausw�hlbar machen

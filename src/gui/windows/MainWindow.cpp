@@ -330,8 +330,8 @@ MainWindow::MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin> *_plu
 	connect (actionSetDate, SIGNAL(activated()), this, SLOT(slot_menu_ansicht_datum_einstellen()));
 	connect (actionNewFlightNewDate, SIGNAL(activated()), this, SLOT(slot_menu_ansicht_display_new_flight_date()));
 	connect (actionNewFlightCurrDate, SIGNAL(activated()), this, SLOT(slot_menu_ansicht_always_use_current_date()));
-	connect (actionBordbuch, SIGNAL(activated()), this, SLOT(slot_bordbuch()));
-	connect (actionFlugbuch, SIGNAL(activated()), this, SLOT(slot_flugbuch()));
+	connect (actionPlaneLog, SIGNAL(activated()), this, SLOT(slot_plane_log()));
+	connect (actionPilotLog, SIGNAL(activated()), this, SLOT(slot_pilot_log()));
 	connect (actionStartart, SIGNAL(activated()), this, SLOT(slot_sastat()));
 	connect (actionEditPlanes, SIGNAL(activated()), this, SLOT(slot_flugzeugeditor()));
 	connect (actionEditPersons, SIGNAL(activated()), this, SLOT(slot_personeneditor()));
@@ -469,11 +469,11 @@ void MainWindow::initActions ()
 
 	actionNewFlightCurrDate = new QAction ("F�r neue Fl�ge immer &aktuelles Datum verwenden", this);
 
-	actionBordbuch = new QAction ("&Bordbuch", this);
-	actionBordbuch->setShortcut (CTRL + Key_B);
+	actionPlaneLog = new QAction ("&Bordbuch", this);
+	actionPlaneLog->setShortcut (CTRL + Key_B);
 
-	actionFlugbuch = new QAction ("&Flugbuch", this);
-	actionFlugbuch->setShortcut (CTRL + Key_F);
+	actionPilotLog = new QAction ("&Flugbuch", this);
+	actionPilotLog->setShortcut (CTRL + Key_F);
 
 	actionStartart = new QAction ("Startartstatisti&k", this);
 	actionStartart->setShortcut (CTRL + Key_K);
@@ -565,8 +565,8 @@ void MainWindow::initMenu ()
 	menu_ansicht_datum->addAction (actionNewFlightCurrDate);
 
 	menu_statistik->setTearOffEnabled (true);
-	menu_statistik->addAction (actionBordbuch);
-	menu_statistik->addAction (actionFlugbuch);
+	menu_statistik->addAction (actionPlaneLog);
+	menu_statistik->addAction (actionPilotLog);
 	menu_statistik->addAction (actionStartart);
 
 	menu_datenbank->setTearOffEnabled (true);
@@ -1515,8 +1515,8 @@ void MainWindow::menu_enables (bool cell_change)
 	actionRefreshTable->setEnabled (alife);
 	actionSetDate->setEnabled (alife);
 
-	actionBordbuch->setEnabled (alife);
-	actionFlugbuch->setEnabled (alife);
+	actionPlaneLog->setEnabled (alife);
+	actionPilotLog->setEnabled (alife);
 	actionStartart->setEnabled (alife);
 	actionEditPlanes->setEnabled (alife);
 	actionEditPersons->setEnabled (alife);
@@ -1924,25 +1924,25 @@ void MainWindow::slot_tabelle_sortieren ()
 }
 
 // Men� Statistik
-void MainWindow::slot_flugbuch ()
+void MainWindow::slot_pilot_log ()
 /*
- * Opens the Flugbuch statistics window for the current display date.
+ * Opens the pilot log statistics window for the current display date.
  */
 {
-	(new StatisticsWindow (this, "fbf", false, Qt::WDestructiveClose, ss, db))->flugbuch (anzeigedatum);
+	(new StatisticsWindow (this, "fbf", false, Qt::WDestructiveClose, ss, db))->pilotLog (anzeigedatum);
 }
 
-void MainWindow::slot_bordbuch ()
+void MainWindow::slot_plane_log ()
 /*
- * Opens the Bordbuch statistics window for the current display date.
+ * Opens the plane log statistics window for the current display date.
  */
 {
-	(new StatisticsWindow (this, "bbf", false, Qt::WDestructiveClose, ss, db))->bordbuch (anzeigedatum);
+	(new StatisticsWindow (this, "bbf", false, Qt::WDestructiveClose, ss, db))->planeLog (anzeigedatum);
 }
 
 void MainWindow::slot_sastat ()
 /*
- * Opens the Startartstatistik statistics window for the current display
+ * Opens the launch type statistics window for the current display
  * date.
  */
 {

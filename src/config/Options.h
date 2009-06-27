@@ -10,7 +10,7 @@
 
 #include "src/plugins/DataFormatPlugin.h"
 
-enum dump_type_t { dt_invalid, dt_kein, dt_clublist, dt_liste, dt_flugbuch, dt_bordbuch };
+enum dump_type_t { dt_invalid, dt_kein, dt_clublist, dt_liste, dt_pilot_log, dt_plane_log };
 enum dump_format_t { df_invalid, df_kein, df_latex, df_csv };
 enum dump_columns_t { dc_invalid, dc_kein, dc_standard, dc_albgau };
 

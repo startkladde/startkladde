@@ -44,10 +44,10 @@ class PlaneLogEntry
 		QString anzahl_landungen_string () const;
 };
 
-bool make_bordbuch_entry (PlaneLogEntry *bb_entry, Database *db, QPtrList<Flight> &flights, Plane &fz, QDate date);
-void make_bordbuch_plane (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, Plane &fz, QPtrList<Flight> &flights);
-void make_bordbuch_day (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, QString *club=NULL);
-void make_bordbuch_day (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date);
+bool makePlaneLogEntry (PlaneLogEntry *bb_entry, Database *db, QPtrList<Flight> &flights, Plane &fz, QDate date);
+void makePlaneLogPlane (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, Plane &fz, QPtrList<Flight> &flights);
+void makePlaneLogDay (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, QString *club=NULL);
+void makePlaneLogDay (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date);
 
 #endif
 

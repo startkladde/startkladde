@@ -2,7 +2,7 @@
 
 #include <QLayout>
 
-// Columns Bordbuch
+// Columns plane log
 const int tbl_bob_registration=0;
 const int tbl_bob_flugzeug_typ=1;
 const int tbl_bob_datum=2;
@@ -17,7 +17,7 @@ const int tbl_bob_betriebszeit=10;
 const int tbl_bob_bemerkungen=11;
 const int bob_spalten=12;
 
-// Columns Flugbuch
+// Columns pilot log
 const int tbl_flb_tag=0;
 const int tbl_flb_muster=1;
 const int tbl_flb_registration=2;
@@ -32,7 +32,7 @@ const int tbl_flb_flugdauer=10;
 const int tbl_flb_bemerkung=11;
 const int flb_spalten=12;
 
-// Columns Startartstatistik
+// Columns launch type statistics
 const int tbl_sas_startart=0;
 const int tbl_sas_anzahl=1;
 const int sas_spalten=2;
@@ -168,16 +168,16 @@ void StatisticsWindow::sastat (QDate datum)
 
 // New code...
 
-void StatisticsWindow::bordbuch (QDate datum)
+void StatisticsWindow::planeLog (QDate datum)
 	/*
-	 * Displays the window, displaying the bordbuch.
+	 * Displays the window, displaying the planeLog.
 	 * Parameters:
 	 *   - datum: the date to generate statistics for.
 	 */
 {
 	setCaption ("Bordbuch");
 
-	// Setup Table for !!Bordbuch
+	// Setup Table for plane log
 	tab->setColumnCount (bob_spalten);
 
 	tab->setColumn (tbl_bob_registration, "Kennz.", 55);
@@ -196,14 +196,14 @@ void StatisticsWindow::bordbuch (QDate datum)
 	emit status ("Bordb�cher werden erzeugt, bitte warten...");
 	emit long_operation_start ();
 
-	QPtrList<PlaneLogEntry> bordbuch; bordbuch.setAutoDelete (true);
-	make_bordbuch_day (bordbuch, db, datum);
+	QPtrList<PlaneLogEntry> planeLog; planeLog.setAutoDelete (true);
+	makePlaneLogDay (planeLog, db, datum);
 
 	tab->hide ();
-	for (QPtrListIterator<PlaneLogEntry> bbe (bordbuch); *bbe; ++bbe)
+	for (QPtrListIterator<PlaneLogEntry> bbe (planeLog); *bbe; ++bbe)
 	{
 		// TODO emit progress
-		display_bordbuch_entry (*bbe);
+		displayPlaneLogEntry (*bbe);
 	}
 
 	tab->setCurrentCell (0,0);
@@ -213,16 +213,16 @@ void StatisticsWindow::bordbuch (QDate datum)
 	show ();
 }
 
-void StatisticsWindow::flugbuch (QDate datum)
+void StatisticsWindow::pilotLog (QDate datum)
 	/*
-	 * Displays the window, displaying the flugbuch.
+	 * Displays the window, displaying the pilotLog.
 	 * Parameters:
 	 *   - datum: the date to generate statistics for.
 	 */
 {
 	setCaption ("Flugbuch");
 
-	// Setup Table for !!Flugbuch
+	// Setup Table for pilot log
 	tab->setColumnCount (flb_spalten);
 
 	tab->setColumn (tbl_flb_tag, "Tag", 80);
@@ -241,14 +241,14 @@ void StatisticsWindow::flugbuch (QDate datum)
 	emit status ("Flugbücher werden erzeugt, bitte warten...");
 	emit long_operation_start ();
 
-	QPtrList<PilotLogEntry> flugbuch; flugbuch.setAutoDelete (true);
-	make_flugbuch_day (flugbuch, db, datum);
+	QPtrList<PilotLogEntry> pilotLog; pilotLog.setAutoDelete (true);
+	makePilotLogsDay (pilotLog, db, datum);
 
 	tab->hide ();
-	for (QPtrListIterator<PilotLogEntry> fbe (flugbuch); *fbe; ++fbe)
+	for (QPtrListIterator<PilotLogEntry> fbe (pilotLog); *fbe; ++fbe)
 	{
 		// TODO emit progress
-		display_flugbuch_entry (*fbe);
+		display_pilot_log_entry (*fbe);
 	}
 
 	tab->setCurrentCell (0,0);
@@ -259,11 +259,11 @@ void StatisticsWindow::flugbuch (QDate datum)
 }
 
 
-void StatisticsWindow::display_bordbuch_entry (PlaneLogEntry *bbe)
+void StatisticsWindow::displayPlaneLogEntry (PlaneLogEntry *bbe)
 	/*
-	 * Adds a bordbuch entry to the Table.
+	 * Adds a planeLog entry to the Table.
 	 * Parameters:
-	 *   - bbe: the bordbuch entry to display.
+	 *   - bbe: the planeLog entry to display.
 	 */
 {
 	int row=tab->columnCount ();
@@ -301,11 +301,11 @@ void StatisticsWindow::display_bordbuch_entry (PlaneLogEntry *bbe)
 	}
 }
 
-void StatisticsWindow::display_flugbuch_entry (PilotLogEntry *fbe)
+void StatisticsWindow::display_pilot_log_entry (PilotLogEntry *fbe)
 	/*
-	 * Adds a flugbuch entry to the Table.
+	 * Adds a pilotLog entry to the Table.
 	 * Parameters:
-	 *   - bbe: the flugbuch entry to display.
+	 *   - bbe: the pilotLog entry to display.
 	 */
 {
 	int row=tab->columnCount ();

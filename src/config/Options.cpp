@@ -454,8 +454,8 @@ bool Options::parse_type (const QString &type_string)
 	dump_type=dt_invalid;
 	if (type_string=="list" || type_string=="l") dump_type=dt_liste;
 	if (type_string=="liste" || type_string=="l") dump_type=dt_liste;
-	if (type_string=="flugbuch" || type_string=="f") dump_type=dt_flugbuch;
-	if (type_string=="bordbuch" || type_string=="b") dump_type=dt_bordbuch;
+	if (type_string=="flugbuch" || type_string=="f") dump_type=dt_pilot_log;
+	if (type_string=="bordbuch" || type_string=="b") dump_type=dt_plane_log;
 	if (type_string=="clubs" || type_string=="c") dump_type=dt_clublist;
 	if (type_string=="clublist" || type_string=="c") dump_type=dt_clublist;
 	if (type_string=="club_list" || type_string=="c") dump_type=dt_clublist;

@@ -63,7 +63,7 @@ QString category_string (aircraft_category category, length_specification lenspe
 {
 	switch (lenspec)
 	{
-		case ls_kurz: case ls_tabelle: case ls_flugbuch:
+		case ls_kurz: case ls_tabelle: case ls_pilot_log:
 		{
 			switch (category)
 			{
@@ -247,7 +247,7 @@ QString flugtyp_string (flug_typ typ, length_specification lenspec)
 				default: return "?"; break;
 			}
 		} break;
-		case ls_tabelle: case ls_flugbuch:
+		case ls_tabelle: case ls_pilot_log:
 		{
 			switch (typ)
 			{
@@ -406,7 +406,7 @@ QString modus_string (flug_modus modus, length_specification lenspec)
 {
 	switch (lenspec)
 	{
-		case ls_kurz: case ls_tabelle: case ls_druck: case ls_flugbuch:
+		case ls_kurz: case ls_tabelle: case ls_druck: case ls_pilot_log:
 		{
 			switch (modus)
 			{
