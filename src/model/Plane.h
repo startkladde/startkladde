@@ -10,15 +10,21 @@
 class Plane: public Entity
 {
 	public:
+		enum Category { categoryNone, categorySep, categoryGlider, categoryMotorglider, categoryUltralight, categoryOther };
+
 		Plane (QString, QString, QString, QString, int, db_id p_id=0);
 		Plane ();
+
+		static int list_categories (Plane::Category **g, bool include_invalid);
+		static QString category_string (Plane::Category category, length_specification lenspec);
+		static Plane::Category category_from_registration (QString reg);
 
 		QString registration;
 		QString wettbewerbskennzeichen;
 		QString typ;
 		QString club;
 		int sitze;
-		aircraft_category category;
+		Category category;
 
 		virtual QString name () const;
 

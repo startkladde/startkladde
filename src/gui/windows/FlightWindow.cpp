@@ -1066,7 +1066,7 @@ void FlightWindow::slot_registration ()
 		{
 			// Motorflugzeuge machen nur Selbststart, aber nur, wenn
 			// nicht was anderes angegeben war.
-			if (selected_plane->category==lfz_echo || selected_plane->category==lfz_ultraleicht)
+			if (selected_plane->category==Plane::categorySep || selected_plane->category==Plane::categoryUltralight)
 				edit_startart->setCurrentItem (startart_index (db->get_startart_id_by_type (sat_self)));
 		}
 
@@ -1817,7 +1817,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		if (mode==fe_create && !spaeter && !gelandet && sfz_id && !check_plane_flying (local_sfz_id, sfz.registration, "Schleppflugzeug"))
 			return false;
 
-		if (sfz_bekannt && sa.is_airtow () && !sa.towplane_known () && sfz.category==lfz_segelflugzeug)
+		if (sfz_bekannt && sa.is_airtow () && !sa.towplane_known () && sfz.category==Plane::categoryGlider)
 		{
 			msg="Laut Datenbank ist das Schleppflugzeug "+sfz.registration+" ("+sfz.typ+") ein Segelflugzeug.\n";
 			if (error_control) *error_control=edit_registration_sfz;
@@ -1942,7 +1942,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		}
 
 		// Segelflugzeug mit Zwischenlandungen
-		if (fz.category==lfz_segelflugzeug && edit_landungen->text ().toInt ()>1 && !sa.is_airtow ())
+		if (fz.category==Plane::categoryGlider && edit_landungen->text ().toInt ()>1 && !sa.is_airtow ())
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Segelflugzeug.\n"
 					"Es wurden jedoch mehr als eine Landung angegeben.\n";
@@ -1951,7 +1951,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		}
 
 		// Segelflugzeug mit Zwischenlandungen
-		if (fz.category==lfz_segelflugzeug && !gelandet && edit_landungen->text ().toInt ()>0 && !sa.is_airtow ())
+		if (fz.category==Plane::categoryGlider && !gelandet && edit_landungen->text ().toInt ()>0 && !sa.is_airtow ())
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Segelflugzeug.\n"
 					"Es wurden jedoch eine Landung, aber keine Landezeit angegeben.\n";
@@ -1960,7 +1960,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		}
 
 		// Segelflugzeug im Selbststart
-		if (fz.category==lfz_segelflugzeug && sa.get_type ()==sat_self)
+		if (fz.category==Plane::categoryGlider && sa.get_type ()==sat_self)
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Segelflugzeug.\n"
 					"Es wurden jedoch \"Selbststart\" als Startart angegeben.\n";
@@ -1969,7 +1969,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		}
 
 		// Motorflugzeug an der Winde
-		if (fz.category==lfz_echo && sa.get_type ()!=sat_self)
+		if (fz.category==Plane::categorySep && sa.get_type ()!=sat_self)
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Motorflugzeug.\n"
 					"Es wurden jedoch eine andere Startart als Eigenstart angegeben.\n";

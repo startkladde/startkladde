@@ -986,7 +986,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 			}
 			else
 			{
-				if (f.flugzeug > 0 && action == fm_zwischenlandung && fz.category == lfz_segelflugzeug
+				if (f.flugzeug > 0 && action == fm_zwischenlandung && fz.category == Plane::categoryGlider
 						&& !sa.is_airtow ())
 				{
 					show_warning ("Ein Segelflugzeug kann keine Zwischenlandung machen.", this);

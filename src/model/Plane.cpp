@@ -116,3 +116,157 @@ void Plane::output (std::ostream &stream, output_format_t format)
 }
 
 
+
+int Plane::list_categories (Plane::Category **g, bool include_invalid)
+	/*
+	 * See top of file.
+	 */
+{
+	Plane::Category *list=NULL;
+	int num=0;
+
+	if (include_invalid)
+	{
+		num=6;
+		list=new Plane::Category[num];
+		list[0]=categorySep;
+		list[1]=categoryGlider;
+		list[2]=categoryMotorglider;
+		list[3]=categoryUltralight;
+		list[4]=categoryOther;
+		list[5]=categoryNone;
+	}
+	else
+	{
+		num=5;
+		list=new Plane::Category[num];
+		list[0]=categorySep;
+		list[1]=categoryGlider;
+		list[2]=categoryMotorglider;
+		list[3]=categoryUltralight;
+		list[4]=categoryOther;
+	}
+
+	*g=list;
+	return num;
+}
+
+QString Plane::category_string (Plane::Category category, length_specification lenspec)
+	/*
+	 * See top of file.
+	 */
+{
+	switch (lenspec)
+	{
+		case ls_kurz: case ls_tabelle: case ls_pilot_log:
+		{
+			switch (category)
+			{
+				case categorySep: return "Echo"; break;
+				case categoryGlider: return "Segel"; break;
+				case categoryMotorglider: return "MoSe"; break;
+				case categoryUltralight: return "UL"; break;
+				case categoryOther: return "Sonst"; break;
+				case categoryNone: return "-"; break;
+				default: return "?"; break;
+			}
+		} break;
+		case ls_druck:
+		{
+			switch (category)
+			{
+				case categorySep: return "Echo"; break;
+				case categoryGlider: return "Segel"; break;
+				case categoryMotorglider: return "MoSe"; break;
+				case categoryUltralight: return "UL"; break;
+				case categoryOther: return "Sonst"; break;
+				case categoryNone: return "-"; break;
+				default: return "?"; break;
+			}
+		} break;
+		case ls_lang:
+		{
+			switch (category)
+			{
+				case categorySep: return "Motorflugzeug (Echo)"; break;
+				case categoryGlider: return "Segelflugzeug"; break;
+				case categoryMotorglider: return "Motorsegler"; break;
+				case categoryUltralight: return "Ultraleicht"; break;
+				case categoryOther: return "Sonstige"; break;
+				case categoryNone: return "Keine"; break;
+				default: return "???"; break;
+			}
+		} break;
+		case ls_csv:
+		{
+			switch (category)
+			{
+				case categorySep: return "Motorflugzeug (Echo)"; break;
+				case categoryGlider: return "Segelflugzeug"; break;
+				case categoryMotorglider: return "Motorsegler"; break;
+				case categoryUltralight: return "Ultraleicht"; break;
+				case categoryOther: return "Sonstige"; break;
+				case categoryNone: return "Keine"; break;
+				default: return "???"; break;
+			}
+		} break;
+		case ls_schnellzugriff:
+		{
+			switch (category)
+			{
+				case categorySep: return "E - Motorflugzeug (Echo)"; break;
+				case categoryGlider: return "1 - Segelflugzeug"; break;
+				case categoryMotorglider: return "K - Motorsegler"; break;
+				case categoryUltralight: return "M - Ultraleicht"; break;
+				case categoryOther: return "Sonstige"; break;
+				case categoryNone: return "- - Keine"; break;
+				default: return "???"; break;
+			}
+		} break;
+		default:
+		{
+			log_error ("Unbehandelte L�ngenangabe in flugtyp_string ()");
+			switch (category)
+			{
+				case categorySep: return "[Echo]"; break;
+				case categoryGlider: return "[Segel]"; break;
+				case categoryMotorglider: return "[Motorsegler]"; break;
+				case categoryUltralight: return "[UL]"; break;
+				case categoryOther: return "[Sonst]"; break;
+				case categoryNone: return "[-]"; break;
+				default: return "[?]"; break;
+			}
+		} break;
+	}
+
+	return ("!!!");
+}
+
+Plane::Category Plane::category_from_registration (QString reg)
+/*
+ * Try to determine the kind of aircraft, given its registration. This is done based on german rules.
+ * Parameters:
+ *   - reg: the registration.
+ * Return value:
+ *   - the kind of aircraft, if one can be determined
+ *   - categoryOther else
+ */
+{
+	if (reg.length () < 3) return categoryNone;
+	if (reg[0] != 'D') return categoryNone;
+	if (reg[1] != '-') return categoryNone;
+
+	QChar kbu = reg.at (2);
+
+	if (kbu == '0' || kbu == '1' || kbu == '2' || kbu == '3' || kbu == '4'
+		|| kbu == '5' || kbu == '6' || kbu == '7' || kbu == '8' || kbu == '9')
+		return categoryGlider;
+	else if (kbu.toLower () == 'e')
+		return categorySep;
+	else if (kbu.toLower () == 'm')
+		return categoryUltralight;
+	else if (kbu.toLower () == 'k')
+		return categoryMotorglider;
+	else
+		return categoryOther;
+}

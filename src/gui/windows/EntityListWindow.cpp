@@ -181,7 +181,7 @@ void EntityListWindow::fillInEntity (EntityType t, int row, Entity *st)
 			set_table_cell (row, tbl_fz_registration, fz->registration, col_default, fz->id);
 			set_table_cell (row, tbl_fz_wettkennz, fz->wettbewerbskennzeichen);
 			set_table_cell (row, tbl_fz_typ, fz->typ);
-			set_table_cell (row, tbl_fz_category, category_string (fz->category, ls_tabelle));
+			set_table_cell (row, tbl_fz_category, Plane::category_string (fz->category, ls_tabelle));
 			set_table_cell (row, tbl_fz_sitze, s);
 			set_table_cell (row, tbl_fz_club, fz->club);
 			set_table_cell (row, tbl_fz_bemerkungen, fz->bemerkungen);

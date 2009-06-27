@@ -491,10 +491,10 @@ class Database:public QObject
 		// Enumeration type conversion
 		static QString flugtyp_to_db(flug_typ t);
 		static QString modus_to_db(flug_modus m);
-		static QString category_to_db(aircraft_category m);
+		static QString category_to_db(Plane::Category m);
 		static flug_typ db_to_flugtyp (char *in);
 		static flug_modus db_to_modus (char *in);
-		static aircraft_category db_to_category (char *in);
+		static Plane::Category db_to_category (char *in);
 
 		// Bitmask type conversion
 		static bool status_gestartet (unsigned int status);

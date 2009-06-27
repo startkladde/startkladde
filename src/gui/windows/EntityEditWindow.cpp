@@ -191,12 +191,12 @@ void EntityEditWindow::populate_lists ()
 		{
 			// Fill in categories
 			edit_category->clear ();
-			num_categories=list_categories (&categories, false);
+			num_categories=Plane::list_categories (&categories, false);
 			for (int i=0; i<num_categories; i++)
 			{
-				edit_category->insertItem (category_string (categories[i], ls_schnellzugriff), i);
+				edit_category->insertItem (Plane::category_string (categories[i], ls_schnellzugriff), i);
 			}
-			edit_category->setCurrentItem (category_index (lfz_sonstige));
+			edit_category->setCurrentItem (category_index (Plane::categoryOther));
 		} break;
 		case st_person:
 		{
@@ -283,7 +283,7 @@ void EntityEditWindow::setup_controls ()
 			mode_string="editieren";
 			enable_widgets (true);
 		} break;
-		case em_display: 
+		case em_display:
 		{
 			mode_string="anzeigen";
 			enable_widgets (false);
@@ -338,7 +338,7 @@ void EntityEditWindow::flugzeug_eintragen (Plane *f)
 	edit_wettkennz->setText (f->wettbewerbskennzeichen);
 	edit_typ->setCurrentText (f->typ);
 	edit_club->setCurrentText (f->club);
-	edit_category->setCurrentItem (category_index (category_from_registration (f->registration)));
+	edit_category->setCurrentItem (category_index (Plane::category_from_registration (f->registration)));
 	edit_bemerkungen->setText (f->bemerkungen);
 
 	if (f->sitze>0)
@@ -382,8 +382,8 @@ void EntityEditWindow::slot_registration ()
 	 * Called when the focus is moved off the registration field.
 	 */
 {
-	aircraft_category gat=category_from_registration (edit_registration->text ());
-	if (gat!=lfz_keine) edit_category->setCurrentItem (category_index (gat));
+	Plane::Category gat=Plane::category_from_registration (edit_registration->text ());
+	if (gat!=Plane::categoryNone) edit_category->setCurrentItem (category_index (gat));
 }
 
 
@@ -407,7 +407,7 @@ bool EntityEditWindow::check_data ()
 			break;
 		case st_plane:
 		{
-			aircraft_category gat=categories[edit_category->currentItem ()];
+			Plane::Category gat=categories[edit_category->currentItem ()];
 
 			// Kennzeichen existiert schon
 			if (mode==em_create)
@@ -437,13 +437,13 @@ bool EntityEditWindow::check_data ()
 			}
 
 			// Category does not match registration
-			if (gat!=category_from_registration (edit_registration->text ()))
+			if (gat!=Plane::category_from_registration (edit_registration->text ()))
 			{
 				msg="Die angegebene Gattung passt nicht zum Kennzeichen.\n";
 				if (!check_message (this, msg)) return false;
 			}
 
-			if (gat==lfz_segelflugzeug||gat==lfz_motorsegler||gat==lfz_ultraleicht)
+			if (gat==Plane::categoryGlider||gat==Plane::categoryMotorglider||gat==Plane::categoryUltralight)
 			{
 				// Anzahl der Sitze
 				int sitze=edit_sitze->text ().toInt ();
@@ -620,7 +620,7 @@ int EntityEditWindow::disp (Entity *data)
 
 
 
-int EntityEditWindow::category_index (aircraft_category gat)
+int EntityEditWindow::category_index (Plane::Category gat)
 	/*
 	 * Return the index of a given category in the category list.
 	 * Parameter:

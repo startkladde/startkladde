@@ -47,9 +47,9 @@ class EntityEditWindow:public SkDialog
 
 	private:
 		void reset ();
-		aircraft_category *categories;
+		Plane::Category *categories;
 		int num_categories;
-		int category_index (aircraft_category gat);
+		int category_index (Plane::Category gat);
 		bool name_editable;
 
 		void setup_controls ();

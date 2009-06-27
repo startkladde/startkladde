@@ -256,16 +256,16 @@ FlightError Flight::fehlerchecking (int *index, bool check_flug, bool check_schl
 	CHECK_FEHLER (FLUG, (gestartet || !starts_here (modus)) && eintrag_ist_leer (startort), ff_kein_startort)
 	CHECK_FEHLER (FLUG, (gelandet || !lands_here (modus)) && eintrag_ist_leer (zielort), ff_kein_zielort)
 	CHECK_FEHLER (FLUG, (sfz_gelandet || !lands_here (modus_sfz)) && eintrag_ist_leer (zielort_sfz), ff_kein_zielort_sfz)
-	CHECK_FEHLER (FLUG, fz && fz->category==lfz_segelflugzeug && landungen>1 && !sa->is_airtow (), ff_segelflugzeug_landungen)
-	CHECK_FEHLER (FLUG, fz && fz->category==lfz_segelflugzeug && !gelandet && landungen>0 && !sa->is_airtow (), ff_segelflugzeug_landungen_ohne_landung)
+	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && landungen>1 && !sa->is_airtow (), ff_segelflugzeug_landungen)
+	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && !gelandet && landungen>0 && !sa->is_airtow (), ff_segelflugzeug_landungen_ohne_landung)
 	CHECK_FEHLER (FLUG, fz && fz->sitze<=1 && begleiter_erlaubt (flugtyp) && begleiter!=0, ff_begleiter_in_einsitzer)
 	CHECK_FEHLER (FLUG, fz && fz->sitze<=1 && flugtyp==ft_gast_privat, ff_gastflug_in_einsitzer)
 	CHECK_FEHLER (FLUG, fz && fz->sitze<=1 && flugtyp==ft_gast_extern, ff_gastflug_in_einsitzer)
-	//CHECK_FEHLER (FLUG, fz && fz->category==lfz_segelflugzeug && startart==sa_ss, ff_segelflugzeug_selbststart)
+	//CHECK_FEHLER (FLUG, fz && fz->category==categoryGlider && startart==sa_ss, ff_segelflugzeug_selbststart)
 	CHECK_FEHLER (FLUG, starts_here (modus) && landungen>0 && !gestartet, ff_landungen_ohne_start)
 	CHECK_FEHLER (FLUG, starts_here (modus)!=lands_here (modus) && startort==zielort, ff_startort_gleich_zielort)
 	CHECK_FEHLER (FLUG, sa && sa->is_airtow () && !sa->towplane_known () && id_invalid (towplane), ff_kein_schleppflugzeug)
-	CHECK_FEHLER (FLUG, sa && sfz && sa->is_airtow () && !sa->towplane_known () && sfz->category==lfz_segelflugzeug, ff_towplane_is_glider);
+	CHECK_FEHLER (FLUG, sa && sfz && sa->is_airtow () && !sa->towplane_known () && sfz->category==Plane::categoryGlider, ff_towplane_is_glider);
 
 	return ff_ok;
 #undef CHECK_FEHLER
@@ -567,7 +567,7 @@ bool Flight::collective_bb_entry_possible (Flight *prev, const Plane &plane) con
 	if (startort!=zielort) return false;
 
 	// For motor planes: only allow if the flights are towflights.
-	if (plane.category==lfz_segelflugzeug || plane.category==lfz_motorsegler)
+	if (plane.category==Plane::categoryGlider || plane.category==Plane::categoryMotorglider)
 	{
 		return true;
 	}

@@ -14,7 +14,6 @@
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
 #include "src/model/LaunchType.h"
-#include "src/time/sk_time.h"
 #include "src/time/sk_time_t.h"
 #include "src/time/timeFunctions.h"
 

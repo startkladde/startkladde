@@ -1150,16 +1150,16 @@ QString Database::modus_to_db (flug_modus m)
 	return "-";
 }
 
-QString Database::category_to_db (aircraft_category g)
+QString Database::category_to_db (Plane::Category g)
 {
 	switch (g)
 	{
-		case lfz_echo: return "e"; break;
-		case lfz_segelflugzeug: return "1"; break;
-		case lfz_motorsegler: return "k"; break;
-		case lfz_ultraleicht: return "m"; break;
-		case lfz_sonstige: return "s"; break;
-		case lfz_keine: return "-"; break;
+		case Plane::categorySep: return "e"; break;
+		case Plane::categoryGlider: return "1"; break;
+		case Plane::categoryMotorglider: return "k"; break;
+		case Plane::categoryUltralight: return "m"; break;
+		case Plane::categoryOther: return "s"; break;
+		case Plane::categoryNone: return "-"; break;
 		default:
 			log_error ("Unknown category in category_to_db ()");
 			return "-";
@@ -1203,22 +1203,22 @@ flug_modus Database::db_to_modus (char *in)
 	return fmod_kein;
 }
 
-aircraft_category Database::db_to_category (char *in)
+Plane::Category Database::db_to_category (char *in)
 {
 	switch (in[0])
 	{
-		case 'e': return lfz_echo; break;
-		case '1': return lfz_segelflugzeug; break;
-		case 'k': return lfz_motorsegler; break;
-		case 'm': return lfz_ultraleicht; break;
-		case 's': return lfz_sonstige; break;
+		case 'e': return Plane::categorySep; break;
+		case '1': return Plane::categoryGlider; break;
+		case 'k': return Plane::categoryMotorglider; break;
+		case 'm': return Plane::categoryUltralight; break;
+		case 's': return Plane::categoryOther; break;
 		default:
 			std::cerr << "Unknown category in db_to_category ()" << std::endl;
-			return lfz_keine;
+			return Plane::categoryNone;
 			break;
 	}
 
-	return lfz_keine;
+	return Plane::categoryNone;
 }
 
 
