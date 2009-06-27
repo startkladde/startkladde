@@ -1,7 +1,7 @@
 #include "src/color.h"
 
 
-// Ganz tolle Präprozessor-Macros für das Ankreuzfeld-System, siehe
+// Ganz tolle Prï¿½prozessor-Macros fï¿½r das Ankreuzfeld-System, siehe
 // flug_farbe ().
 #define ist_true(x) ((x)==true)
 #define ist_false(x) ((x)==false)
@@ -39,16 +39,16 @@ QColor flug_farbe (flug_modus modus, bool fehler, bool schlepp, bool gestartet, 
 	 * Parameters:
 	 *   - modus: the mode of the flight.
 	 *   - fehler: whether the flight is erroneous.
-	 *   - schlepp: whether the flight is a !!Schleppflug.
+	 *   - schlepp: whether the flight is a towflight
 	 *   - gestarted: whether the flight has started.
 	 *   - gelandet: whether the flight has landed.
 	 * Return value:
 	 *   - the color for the flight.
 	 */
 {
-	// Ganz tolles Farbauswahl-Ankreuzfeld-C-Präprozessor-System, gebaut von
-	// Martin, dem Helden der Softwareentwicklung für die Luftfahrt.
-	// Man trage in die entsprechende Spalte ein, wofür diese Farbe gelten
+	// Ganz tolles Farbauswahl-Ankreuzfeld-C-Prï¿½prozessor-System, gebaut von
+	// Martin, dem Helden der Softwareentwicklung fï¿½r die Luftfahrt.
+	// Man trage in die entsprechende Spalte ein, wofï¿½r diese Farbe gelten
 	// soll. t: die entsprechende Variable muss true sein, f: die
 	// entsprechende Variable muss false sein, x: der Wert der Variablen ist
 	// egal. Der erste Treffer gewinnt.
@@ -62,36 +62,36 @@ QColor flug_farbe (flug_modus modus, bool fehler, bool schlepp, bool gestartet, 
 	//     u   p  r  n  e
 	//     s   p  t  d  r
 
-	// Fehlerhafte Flüge
+	// Fehlerhafte Flï¿½ge
 	farbe (xx, t, x, x, t, rot);		// Schleppflug Fehler
 	farbe (xx, f, x, x, t, hellrot);	// Fehler
 	farbe (ge, x, f, t, x, pink);		// }Gelandet, aber nicht gestartet: Programmfehler
-	farbe (lo, x, f, t, x, pink);		// }muss vorher gecheckt werden und Fehler auslösen
+	farbe (lo, x, f, t, x, pink);		// }muss vorher gecheckt werden und Fehler auslï¿½sen
 
-	// Flüge von extern
-	farbe (ko, f, x, f, f, hellblau);	// Angekündigt==Fliegt
+	// Flï¿½ge von extern
+	farbe (ko, f, x, f, f, hellblau);	// Angekï¿½ndigt==Fliegt
 	farbe (ko, f, x, t, f, hellgruen);	// Gelandet
 	farbe (ko, t, x, x, f, pink);		// Programmfehler: es gibt keine kommenden Schlepps
 
-	// Flüge nach extern
+	// Flï¿½ge nach extern
 	farbe (ge, f, f, x, f, hellgelb);	// Vorbereitet
 	farbe (ge, f, t, x, f, hellgruen);	// Landung wird nicht aufgezeichnet
 	farbe (ge, t, f, x, f, gelb);		// Schlepp, Vorbereitet, kommt nicht vor
 	farbe (ge, t, t, x, f, gruen);		// Schlepp, Landung wird nicht aufgezeichnet
-	
-	// Lokale Flüge
+
+	// Lokale Flï¿½ge
 	farbe (lo, f, f, x, f, hellgelb);	// nicht gestartet
 	farbe (lo, f, t, f, f, hellblau);	// Flug in der Luft
 	farbe (lo, f, t, t, f, hellgruen);	// gelandeter Flug
 	farbe (lo, t, f, x, f, gelb);		// nicht gestarteter Schleppflug
 	farbe (lo, t, t, f, f, blau);		// Schleppflug in der Luft
-	farbe (lo, t, t, t, f, gruen);		// gelandeter Schleppflug: grün
+	farbe (lo, t, t, t, f, gruen);		// gelandeter Schleppflug: grï¿½n
 
 //	Template
 //	farbe (ll, x, x, x, x, white);
 //	fargb (ll, x, x, x, x, 000, 000, 000);
 
-	return QColor (255, 255, 255);	// Default: weiß
+	return QColor (255, 255, 255);	// Default: weiï¿½
 }
 
 

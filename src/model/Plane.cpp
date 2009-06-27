@@ -84,7 +84,7 @@ QString Plane::tabelle_name (bool schlepp) const
 	/*
 	 * Returns the name of the plane in a form suitable for the Table.
 	 * Parameters:
-	 *   - schlepp: whether to return the name of the !!Schleppflugzeug.
+	 *   - schlepp: whether to return the name of the towplane
 	 * Return value:
 	 *   - the name.
 	 */

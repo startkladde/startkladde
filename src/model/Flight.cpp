@@ -55,9 +55,9 @@ bool Flight::fliegt () const
 
 bool Flight::sfz_fliegt () const
 	/*
-	 * Determine if the !!Schleppflugzeug is flying.
+	 * Determine if the towplane is flying.
 	 * Return value:
-	 *   - true if the !!Schleppflugzeug is flying.
+	 *   - true if the towplane is flying.
 	 *   - false else.
 	 */
 {
@@ -102,7 +102,7 @@ sk_time_t Flight::flugdauer () const
 
 sk_time_t Flight::schleppflugdauer () const
 	/*
-	 * Calculate the flight time of the !!Schleppflug.
+	 * Calculate the flight time of the towflight
 	 * Return value:
 	 *   - the flight time.
 	 */
@@ -129,7 +129,7 @@ bool Flight::fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const
 
 bool Flight::schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const
 	/*
-	 * Finds out if the !!Schleppflug for this flight (if any) contains an error.
+	 * Finds out if the towflight for this flight (if any) contains an error.
 	 * Parameters:
 	 *   - fz: the plane data structure for the flight.
 	 * Return value:
@@ -346,14 +346,14 @@ bool Flight::landen (bool force, bool interactive)
 
 bool Flight::schlepp_landen (bool force, bool interactive)
 	/*
-	 * Land the !!Schleppflug now.
+	 * Land the towflight now.
 	 * Parameters:
-	 *   - force: whether to land, regardless of whether the !!Schleppflug can
+	 *   - force: whether to land, regardless of whether the towflight can
 	 *     be landed or not.
-	 *   - interactive: whether to show warnings if the !!Schleppflug cannot be
+	 *   - interactive: whether to show warnings if the towflight cannot be
 	 *     landed.
 	 * Return value:
-	 *   - true if the !!Schleppflug could be landed.
+	 *   - true if the towflight could be landed.
 	 *   - false else.
 	 */
 {
@@ -378,14 +378,14 @@ bool Flight::schlepp_landen (bool force, bool interactive)
 
 bool Flight::zwischenlandung (bool force, bool interactive)
 	/*
-	 * Make a !!Zwischenlandung now.
+	 * Make a touch and go now.
 	 * Parameters:
-	 *   - force: whether to make a !!Zwischenlandung, regardless of whether
+	 *   - force: whether to make a touch and go, regardless of whether
 	 *     this is possible or not.
-	 *   - interactive: whether to show warnings if the !!Zwischenlandung could
+	 *   - interactive: whether to show warnings if the touch and go could
 	 *     not be performed.
 	 * Return value:
-	 *   - true if the !!Zwischenlandung could be performed.
+	 *   - true if the touch and go could be performed.
 	 *   - false else.
 	 */
 {

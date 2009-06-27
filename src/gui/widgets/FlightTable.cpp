@@ -67,11 +67,11 @@ db_id FlightTable::id_from_row (int row)
 
 db_id FlightTable::schleppref_from_row (int row)
 	/*
-	 * Gets the !!Schleppref saved in a given row.
+	 * Gets the tow reference saved in a given row.
 	 * Parameters:
 	 *   - the number of the row.
 	 * Return value:
-	 *   - the !!Schleppref saved in that row.
+	 *   - the tow reference saved in that row.
 	 */
 {
 	return id_from_cell (row, tbl_idx_schleppref);
@@ -93,11 +93,11 @@ int FlightTable::row_from_id (db_id id)
 
 int FlightTable::row_from_sref (db_id sref)
 	/*
-	 * Gets the row where a given !!Schleppref is saved.
+	 * Gets the row where a given tow reference is saved.
 	 * Parameters:
-	 *   - the !!Schleppref to search for.
+	 *   - the tow reference to search for.
 	 * Return value:
-	 *   - the row where this !!Schleppref is saved.
+	 *   - the row where this tow reference is saved.
 	 */
 {
 	return row_from_column_id (sref, tbl_idx_schleppref);
@@ -250,7 +250,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	 *     position, as defined in insert_row_for_flight ().
 	 *   - *f: the flight to enter.
 	 *   - id: The database ID of the flight.	// TODO read from f?
-	 *   - set_schlepp: wheter to set the !!Schleppflug (true) or the actual
+	 *   - set_schlepp: wheter to set the towflight (true) or the actual
 	 *     flight (false).
 	 */
 {
@@ -709,7 +709,7 @@ void FlightTable::removeRow (int row)
 void FlightTable::remove_flight (db_id id)
 	/*
 	 * Removes a row containing a given flight from the Table, also remove the
-	 * row containing the !!Schleppflug, if any
+	 * row containing the towflight, if any
 	 * Parameters:
 	 *   - id: the ID of the flight to remove.
 	 */

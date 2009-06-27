@@ -1530,7 +1530,7 @@ void FlightWindow::slot_gelandet ()
 		bool zielort_default=edit_zielort->currentText ()==opts.ort;
 		bool zielort_gleich_startort=(edit_zielort->currentText ()==edit_startort->currentText ());
 
-		// For !!Nachtragen
+		// For changing afterwards
 		if (time_enabled && zielort_leer)
 		{
 			//edit_zielort->lineEdit ()->setText (opts.ort);
@@ -1583,7 +1583,7 @@ void FlightWindow::slot_sfz_gelandet ()
 		bool zielort_default=edit_zielort_sfz->currentText ()==opts.ort;
 		bool zielort_gleich_startort=(edit_zielort_sfz->currentText ()==edit_startort->currentText ());
 
-		// For !!Nachtragen
+		// For changing afterwards
 		if (time_enabled && zielort_leer)
 		{
 			//edit_zielort_sfz->lineEdit ()->setText (opts.ort);
@@ -1987,7 +1987,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 	// TODO: Vereinheitlichen mit UFC-Code!
 	// TODO Modus-Bedingung richtig (erforderlich)
 	if (fz_bekannt) preselection_club=&(fz.club);
-	// We don't require the name if the flight does not start here or the flight does a !!selbststart.
+	// We don't require the name if the flight does not start here or the flight does a self launch.
 	if (false==check_person (pilot_id, edit_pilot_vn->currentText (), edit_pilot_nn->currentText (), t_pilot_bezeichnung (typ, cas_nominativ), t_pilot_bezeichnung (typ, cas_akkusativ), (starts_here (modus) && sa.get_type ()!=sat_self), check_flying, original_pilot_id, preselection_club))
 		return false;
 
@@ -2810,7 +2810,7 @@ void FlightWindow::flug_eintragen (Flight *f, bool repeat)
 
 	edit_abrechnungshinweis->setCurrentText (f->abrechnungshinweis);
 
-	// !!Startarten are not copied when repeating a flight.
+	// Launch types are not copied when repeating a flight.
 	// This is because it could be different than before (different winch)
 	// An exception is self start because it is sufficiently unlikely that a
 	// plane which did a self start does something else the next time.

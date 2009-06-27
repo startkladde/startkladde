@@ -2,7 +2,7 @@
 
 db_id schleppmaschine_flog (Database *db, db_id sa_id, sk_time_t t)
 	/*
-	 * Proxy for db->plane_flying, taking a !!Startart (which should designate
+	 * Proxy for db->plane_flying, taking a launch type (which should designate
 	 * an airtow) instead of an ID.
 	 * Parameters:
 	 *   - sa: the startart.
@@ -28,7 +28,7 @@ db_id schleppmaschine_flog (Database *db, db_id sa_id, sk_time_t t)
 
 int schleppflugzeug_aus_startart (Database *db, Plane *fz, int sa_num)
 	/*
-	 * Proxy for db->get_plane_registration, taking a !!Startart (which should designate
+	 * Proxy for db->get_plane_registration, taking a launch type (which should designate
 	 * an airtow) instead of an ID.
 	 * Parameters:
 	 *   - sa: the startart.
