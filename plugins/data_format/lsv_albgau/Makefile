@@ -42,5 +42,5 @@ format_lsv_albgau.so: format_lsv_albgau.o
 
 .PHONY: clean
 clean:
-	-rm *~ *.o *.so *.ii *.s 2>/dev/null 
+	-rm -f *~ *.o *.so *.ii *.s 2>/dev/null 
 
