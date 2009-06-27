@@ -1,11 +1,6 @@
 #ifndef _WeatherWidget_h
 #define _WeatherWidget_h
 
-/*
- * WeatherWidget
- * martin
- * 2008-02-15
- */
 #include <QLabel>
 #include <QImage>
 #include <QPixmap>

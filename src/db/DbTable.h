@@ -1,12 +1,6 @@
 #ifndef _DbTable_h
 #define _DbTable_h
 
-/*
- * DbTable
- * Martin Herrmann
- * 2004-12-13
- */
-
 #include <iostream>
 
 #include "src/db/DbColumn.h"

@@ -1,12 +1,6 @@
 #ifndef _LatexDocument_h
 #define _LatexDocument_h
 
-/*
- * LatexDocument
- * martin
- * 2005-02-09
- */
-
 #include <iostream>
 #include <sstream>
 

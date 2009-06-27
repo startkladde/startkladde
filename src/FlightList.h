@@ -1,12 +1,6 @@
 #ifndef _FlightList_h
 #define _FlightList_h
 
-/*
- * FlightList
- * martin
- * 2004-10-26
- */
-
 // XXX
 #include <q3ptrlist.h>
 #include <q3ptrcollection.h>

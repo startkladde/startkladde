@@ -1,12 +1,6 @@
 #ifndef _PilotLog_h
 #define _PilotLog_h
 
-/*
- * PilotLog
- * Martin Herrmann
- * 2004-09-28
- */
-
 #include <QString>
 
 // XXX

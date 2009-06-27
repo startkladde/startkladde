@@ -1,12 +1,6 @@
 #ifndef _Argument_h
 #define _Argument_h
 
-/*
- * Argument
- * martin
- * 2004-12-29
- */
-
 #include <iostream>
 #include <QString>
 #include <QList>

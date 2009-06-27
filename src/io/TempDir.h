@@ -1,12 +1,6 @@
 #ifndef _TempDir_h
 #define _TempDir_h
 
-/*
- * TempDir
- * martin
- * 2005-02-12
- */
-
 #include <cstring>
 #include <QString>
 

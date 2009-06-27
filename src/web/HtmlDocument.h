@@ -1,12 +1,6 @@
 #ifndef _HtmlDocument_h
 #define _HtmlDocument_h
 
-/*
- * HtmlDocument
- * martin
- * 2005-01-01
- */
-
 #include <QString>
 #include <sstream>
 

@@ -1,12 +1,6 @@
 #ifndef _LaunchType_h
 #define _LaunchType_h
 
-/*
- * LaunchType
- * Martin Herrmann
- * 2004-10-20
- */
-
 #include <QString>
 
 #include <QStringList> // XXX

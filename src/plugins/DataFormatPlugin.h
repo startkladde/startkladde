@@ -1,12 +1,6 @@
 #ifndef _DataFormatPlugin_h
 #define _DataFormatPlugin_h
 
-/*
- * DataFormatPlugin
- * martin
- * 2005-03-20
- */
-
 #include <QString>
 
 #include "src/accessor.h"

@@ -1,12 +1,6 @@
 #ifndef _DbColumn_h
 #define _DbColumn_h
 
-/*
- * DbColumn
- * Martin Herrmann
- * 2004-12-12
- */
-
 #include <iostream>
 #include <QString>
 

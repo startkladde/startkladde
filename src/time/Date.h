@@ -1,12 +1,6 @@
 #ifndef _Date_h
 #define _Date_h
 
-/*
- * sk_date
- * martin
- * 2005-02-07
- */
-
 #include <QString>
 
 #include <QDateTime>

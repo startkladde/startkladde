@@ -1,12 +1,6 @@
 #ifndef _Table_h
 #define _Table_h
 
-/*
- * Table
- * martin
- * 2005-01-29
- */
-
 #include <QString>
 #include <QList>
 

@@ -1,12 +1,6 @@
 #ifndef _ObjectField_h
 #define _ObjectField_h
 
-/*
- * ObjectField
- * martin
- * 2005-01-04
- */
-
 #include <QString>
 
 #include "src/accessor.h"

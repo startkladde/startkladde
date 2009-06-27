@@ -1,12 +1,6 @@
 #ifndef _Options_h
 #define _Options_h
 
-/*
- * Options
- * Martin Herrmann
- * 2004-12-15
- */
-
 // Adding an option: see doc/internal/Options
 
 #include <QString>

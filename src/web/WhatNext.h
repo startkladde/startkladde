@@ -1,12 +1,6 @@
 #ifndef _WhatNext_h
 #define _WhatNext_h
 
-/*
- * WhatNext
- * martin
- * 2005-01-02
- */
-
 #include <QString>
 
 #include "src/accessor.h"

@@ -1,12 +1,6 @@
 #ifndef _HttpDocument_h
 #define _HttpDocument_h
 
-/*
- * HttpDocument
- * martin
- * 2005-01-01
- */
-
 #include <iostream>
 #include <QString>
 #include <sstream>

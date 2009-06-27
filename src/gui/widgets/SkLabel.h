@@ -1,11 +1,6 @@
 #ifndef _SkLabel_h
 #define _SkLabel_h
 
-/*
- * SkLabel
- * martin
- * 2005-02-04
- */
 #include <QLabel>
 #include <QColor>
 

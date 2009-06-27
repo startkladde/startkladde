@@ -1,12 +1,6 @@
 #ifndef _SkTreeWidgetItem_h
 #define _SkTreeWidgetItem_h
 
-/*
- * SkTreeWidgetItem
- * martin
- * 2004-10-18
- */
-
 #include <QTreeWidget>
 #include <QString>
 

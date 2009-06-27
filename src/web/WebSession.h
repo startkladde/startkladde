@@ -1,12 +1,6 @@
 #ifndef _WebSession_h
 #define _WebSession_h
 
-/*
- * WebSession
- * martin
- * 2004-12-29
- */
-
 #include <QString>
 
 #include "src/accessor.h"

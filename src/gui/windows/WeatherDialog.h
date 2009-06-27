@@ -1,11 +1,6 @@
 #ifndef _WeatherDialog_h
 #define _WeatherDialog_h
 
-/*
- * WeatherDialog
- * martin
- * 2008-02-18
- */
 #include <QDialog>
 #include <QLayout>
 #include <QResizeEvent>

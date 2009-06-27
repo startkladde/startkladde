@@ -8,12 +8,6 @@
 #include "src/db/dbTypes.h"
 #include "src/time/sk_time_t.h"
 
-/*
- * Condition
- * Martin Herrmann
- * 2004-09-09
- */
-
 // Note: when changing this enum, also update Database::make_condition
 
 // TODO rewrite this using named constructors

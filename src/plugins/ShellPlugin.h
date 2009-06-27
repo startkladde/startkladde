@@ -1,12 +1,6 @@
 #ifndef _ShellPlugin_h
 #define _ShellPlugin_h
 
-/*
- * ShellPlugin
- * martin
- * 2004-12-18
- */
-
 #include <QString>
 #include <iostream>
 #include <cstdio>

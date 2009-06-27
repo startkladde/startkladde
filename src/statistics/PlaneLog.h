@@ -1,12 +1,6 @@
 #ifndef _PlaneLog_h
 #define _PlaneLog_h
 
-/*
- * PlaneLog
- * Martin Herrmann
- * 2004-09-28
- */
-
 #include <QString>
 
 // XXX

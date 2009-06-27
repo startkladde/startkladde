@@ -4,14 +4,13 @@
 #include <QPalette>
 #include <QColor>
 
-extern "C" {
-#include <libacpi.h>
+extern "C"
+{
+	#include <libacpi.h>
 }
 
 /**
-  * wrapper class for libacpi
-  * eggert.ehmke@berlin.de
-  * 10.09.2008
+  * Wrapper class for libacpi
   */
 
 

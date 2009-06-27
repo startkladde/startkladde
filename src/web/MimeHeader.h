@@ -1,12 +1,6 @@
 #ifndef _MimeHeader_h
 #define _MimeHeader_h
 
-/*
- * MimeHeader
- * martin
- * 2005-01-25
- */
-
 #include <iostream>
 
 #include "src/web/Argument.h"
