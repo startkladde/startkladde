@@ -112,14 +112,15 @@ void latex_document::write_footer ()
 
 void latex_document::add_package (const package &p)
 {
-	QList<package>::const_iterator end=packages.end ();
-	for (QList<package>::iterator it=packages.begin (); it!=end; ++it)
+	QMutableListIterator<package> it (packages);
+	while (it.hasNext ())
 	{
-		if ((*it).name==p.name)
+		package &currentPackage=it.next ();
+		if (currentPackage.name==p.name)
 		{
 			// Already have this package
 			foreach (QString option, p.options)
-				(*it).options << option;
+				currentPackage.options << option;
 
 			return;
 		}

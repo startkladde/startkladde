@@ -179,29 +179,31 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, QList<sk_plugin> *_plugins,
 
 	// Plugins
 	plugins = _plugins;
-	QList<sk_plugin>::iterator end = plugins->end ();
 	int row = 0;
-	for (QList<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
+	QMutableListIterator<sk_plugin> it (*plugins);
+	while (it.hasNext ())
 	{
+		sk_plugin &plugin=it.next ();
+
 		SkLabel *lbl_caption = new SkLabel ("[...]", info_frame, "lbl_caption[...]");
 		SkLabel *lbl_value = new SkLabel ("[...]", info_frame, "lbl_value[...]");
 
 		lbl_value->setAlignment (Qt::WordBreak);
-		if ((*it).get_rich_text ())
+		if (plugin.get_rich_text ())
 		{
 			lbl_caption->setTextFormat (Qt::RichText);
-			lbl_caption->setText ("<nobr>" + (*it).get_caption () + "</nobr>");
+			lbl_caption->setText ("<nobr>" + plugin.get_caption () + "</nobr>");
 			lbl_value->setTextFormat (Qt::RichText);
 		}
 		else
 		{
 			lbl_caption->setTextFormat (Qt::PlainText);
 			lbl_value->setTextFormat (Qt::PlainText);
-			lbl_caption->setText ((*it).get_caption ());
+			lbl_caption->setText (plugin.get_caption ());
 		}
 
-		(*it).set_caption_display (lbl_caption);
-		(*it).set_value_display (lbl_value);
+		plugin.set_caption_display (lbl_caption);
+		plugin.set_value_display (lbl_value);
 
 		plugin_layout->addWidget (lbl_caption, row, 0, Qt::AlignTop);
 		plugin_layout->addWidget (lbl_value, row, 1, Qt::AlignTop);
@@ -214,8 +216,8 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, QList<sk_plugin> *_plugins,
 		}
 		plugin_layout->setRowStretch (row, 0);
 
-		QObject::connect (lbl_caption, SIGNAL (clicked ()), &(*it), SLOT (restart ()));
-		QObject::connect (lbl_value, SIGNAL (clicked ()), &(*it), SLOT (restart ()));
+		QObject::connect (lbl_caption, SIGNAL (clicked ()), &plugin, SLOT (restart ()));
+		QObject::connect (lbl_value, SIGNAL (clicked ()), &plugin, SLOT (restart ()));
 	}
 	plugin_layout->setRowStretch (row, 1);
 
@@ -649,12 +651,13 @@ MainWindow::~MainWindow ()
 
 	if (plugins)
 	{
-		QList<sk_plugin>::iterator end = plugins->end ();
-		for (QList<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
+		QMutableListIterator<sk_plugin> plugin (*plugins);
+		while (plugin.hasNext())
 		{
-			(*it).terminate ();
-			sched_yield ();
-			std::cout << "Terminating plugin " << (*it).get_caption () << std::endl;
+			plugin.peekNext().terminate();
+			sched_yield();
+			std::cout << "Terminating plugin " << plugin.peekNext().get_caption () << std::endl;
+			plugin.next ();
 		}
 	}
 
@@ -2361,11 +2364,9 @@ void MainWindow::restart_all_plugins ()
 		weather_plugin->restart ();
 	}
 
-	QList<sk_plugin>::iterator end = plugins->end ();
-	for (QList<sk_plugin>::iterator it = plugins->begin (); it != end; ++it)
-	{
-		(*it).restart ();
-	}
+	QMutableListIterator<sk_plugin> plugin (*plugins);
+	while (plugin.hasNext ())
+		plugin.next().restart();
 }
 
 void MainWindow::openWeatherDialog ()
