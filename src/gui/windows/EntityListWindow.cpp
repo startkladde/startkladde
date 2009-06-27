@@ -47,7 +47,7 @@ const int ps_spalten=7;
 
 
 
-EntityListWindow::EntityListWindow (EntityType t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, ::SplashScreen *spl)
+EntityListWindow::EntityListWindow (EntityType t, QWidget *parent, Database *_db, const char *name, bool modal, WFlags f, ::SplashScreen *spl)
 	:SkDialog (parent, name, modal, f), db (_db), type (t), ss (spl)
 	/*
 	 * Creates a Entity list instance.
@@ -123,14 +123,14 @@ EntityListWindow::~EntityListWindow ()
 
 SkTableItem *EntityListWindow::set_table_cell (int row, int col, const QString &text, QColor bg, db_id id)
 	/*
-	 * Sets a table in the cell to a given text and background color and save an ID.
+	 * Sets a Table in the cell to a given text and background color and save an ID.
 	 * Parameters:
 	 *   - row, col: the row and column of the cell to set.
 	 *   - text: the text to display.
 	 *   - bg: the background color to set.
 	 *   - id: the ID to save in the cell.
 	 * Return value:
-	 *   - a pointer to the newly created table item.
+	 *   - a pointer to the newly created Table item.
 	 */
 {
 	SkTableItem *ret=NULL;
@@ -206,7 +206,7 @@ void EntityListWindow::fillInEntity (EntityType t, int row, Entity *st)
 
 void EntityListWindow::listEntity (EntityType t)
 	/*
-	 * Lists all entries from the database to the table.
+	 * Lists all entries from the database to the Table.
 	 * Parameters:
 	 *   - t: the Entity type to list.
 	 */
@@ -297,7 +297,7 @@ int EntityListWindow::deleteEntity (EntityType t, db_id id)
 
 	if (ret>=0)
 	{
-		db_event e (det_delete, TableFromEntityType (t), id);
+		DbEvent e (det_delete, TableFromEntityType (t), id);
 		emit db_change (&e);
 	}
 
@@ -489,9 +489,9 @@ db_id EntityListWindow::editEntity (EntityType t, Entity *b)
 
 void EntityListWindow::table_activated (int row)
 	/*
-	 * Called when the table is double clicked or enter is pressed.
+	 * Called when the Table is double clicked or enter is pressed.
 	 * Parameters:
-	 *   - row: the row where the table was activated.
+	 *   - row: the row where the Table was activated.
 	 */
 {
 	db_id id=tab->id_from_cell (row, 0);
@@ -509,7 +509,7 @@ void EntityListWindow::table_activated (int row)
 			if (ret==QDialog::Accepted)
 			{
 				editEntity (type, p);
-				db_event event (det_change, TableFromEntityType (type), id);
+				DbEvent event (det_change, TableFromEntityType (type), id);
 				emit db_change (&event);
 			}
 		}
@@ -523,7 +523,7 @@ void EntityListWindow::table_activated (int row)
 
 void EntityListWindow::slot_table_double_click (int row, int col)
 	/*
-	 * Called when the table is double clicked.
+	 * Called when the Table is double clicked.
 	 * Parameters:
 	 *   - row, col: the row and column of the cell that was clicked.
 	 *   - button: the button that was used.
@@ -536,7 +536,7 @@ void EntityListWindow::slot_table_double_click (int row, int col)
 
 void EntityListWindow::slot_table_key (int key)
 	/*
-	 * A key was pressed on the table.
+	 * A key was pressed on the Table.
 	 * Parameters:
 	 *   - key: the key, as determined by the QT library.
 	 */
@@ -568,7 +568,7 @@ void EntityListWindow::slot_neu ()
 	{
 		s->id=0;
 		db_id id=editEntity (type, s);
-		db_event event (det_add, TableFromEntityType (type), id);
+		DbEvent event (det_add, TableFromEntityType (type), id);
 		emit db_change (&event);
 	}
 
@@ -667,7 +667,7 @@ void EntityListWindow::slot_loeschen ()
 
 void EntityListWindow::slot_refresh ()
 	/*
-	 * The "refresh" menu entry was selected. Refreshes the table.
+	 * The "refresh" menu entry was selected. Refreshes the Table.
 	 */
 {
 	listEntity (type);
@@ -689,9 +689,9 @@ void EntityListWindow::liste ()
 	show ();
 }
 
-void EntityListWindow::slot_db_update (db_event *event)
+void EntityListWindow::slot_db_update (DbEvent *event)
 	/*
-	 * The database changed. Update the table, if appropriate.
+	 * The database changed. Update the Table, if appropriate.
 	 * Parameters:
 	 *   - event: a description of the database change.
 	 */

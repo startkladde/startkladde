@@ -1,5 +1,5 @@
-#ifndef version_h
-#define version_h
+#ifndef _version_h
+#define _version_h
 
 #include <QString>
 

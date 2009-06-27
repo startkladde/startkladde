@@ -9,8 +9,8 @@
 #include <QValidator>
 
 #include "src/text.h"
-#include "src/db/db_event.h"
-#include "src/db/sk_db.h"
+#include "src/db/DbEvent.h"
+#include "src/db/Database.h"
 #include "src/gui/spacing.h"
 #include "src/gui/widgets/SkComboBox.h"
 #include "src/gui/widgets/SkTextBox.h"
@@ -33,7 +33,7 @@ class EntityEditWindow:public SkDialog
 	Q_OBJECT
 
 	public:
-		EntityEditWindow (EntityType, QWidget *parent, sk_db *_db, const char *name=NULL, bool modal=FALSE, WFlags f=0, QObject *status_dialog=NULL);
+		EntityEditWindow (EntityType, QWidget *parent, Database *_db, const char *name=NULL, bool modal=FALSE, WFlags f=0, QObject *status_dialog=NULL);
 		~EntityEditWindow ();
 		int create (Entity *, bool can_change_name=false);
 		int edit (Entity *, bool can_change_name=false);
@@ -85,10 +85,10 @@ class EntityEditWindow:public SkDialog
 		bool accept_data ();
 		bool check_data ();
 
-		sk_db *db;
+		Database *db;
 
 	public slots:
-		void slot_db_update (db_event *);
+		void slot_db_update (DbEvent *);
 };
 
 #endif

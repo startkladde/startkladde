@@ -1,5 +1,5 @@
-#ifndef sk_time_t_h
-#define sk_time_t_h
+#ifndef _sk_time_t_h
+#define _sk_time_t_h
 
 #ifndef _SVID_SOURCE
 	#define _SVID_SOURCE	// braucht man für timegm () und timelocal ()
@@ -15,7 +15,7 @@
 #include <QDateTime>
 
 #include "src/logging/messages.h"
-#include "src/time/time_functions.h"
+#include "src/time/timeFunctions.h"
 
 class sk_time_t
 {

@@ -3,8 +3,8 @@
 
 #include <QPushButton>
 
-#include "src/data_types.h"
-#include "src/db/db_types.h"
+#include "src/dataTypes.h"
+#include "src/db/dbTypes.h"
 
 class SkButton:public QPushButton
 {

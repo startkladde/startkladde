@@ -7,25 +7,25 @@
 #define QPtrListIterator Q3PtrListIterator
 
 #include "src/accessor.h"
-#include "src/object_field.h"
+#include "src/ObjectField.h"
 #include "src/text.h"
 #include "src/version.h"
-#include "src/config/options.h"
-#include "src/db/sk_db.h"
-#include "src/documents/latex_document.h"
-#include "src/documents/table.h"
+#include "src/config/Options.h"
+#include "src/db/Database.h"
+#include "src/documents/LatexDocument.h"
+#include "src/documents/Table.h"
 #include "src/io/io.h"
 #include "src/model/User.h"
-#include "src/plugins/plugin_data_format.h"
-#include "src/statistics/bordbuch.h"
-#include "src/statistics/flugbuch.h"
-#include "src/time/sk_date.h"
-#include "src/web/argument.h"
-#include "src/web/html_document.h"
-#include "src/web/http_document.h"
-#include "src/web/mime_header.h"
-#include "src/web/web_session.h"
-#include "src/web/what_next.h"
+#include "src/plugins/DataFormatPlugin.h"
+#include "src/statistics/PlaneLog.h"
+#include "src/statistics/PilotLog.h"
+#include "src/time/Date.h"
+#include "src/web/Argument.h"
+#include "src/web/HtmlDocument.h"
+#include "src/web/HttpDocument.h"
+#include "src/web/MimeHeader.h"
+#include "src/web/WebSession.h"
+#include "src/web/WhatNext.h"
 
 // Places that need to be changed when adding a web interface state are marked
 // with _STATE_
@@ -77,7 +77,7 @@
  *     - in cleanup_session, delete the values.
  *   - one_time_message
  *     This is a special case of "via session". Set the session
- *     argument arg_session_one_time_message (SESSION_WRITE
+ *     Argument arg_session_one_time_message (SESSION_WRITE
  *     (one_time_message, "...")). The message is displayed on the
  *     next call of the program. Then, the message is deleted from the
  *     session. That means that when the page is reloaded, the message
@@ -87,7 +87,7 @@
 
 /*
  * State change mechanisms
- *   - return what_next::go_to_state (new_state). This changes the state
+ *   - return WhatNext::go_to_state (new_state). This changes the state
  *     immediately. Any output written so far is discarded.
  *     You can also pass a message to be displayed.
  *   - Write a back link (back_link_url). This allows the user to enter a
@@ -118,7 +118,7 @@
  *     superior permissions, like dba_sk_admin. In this case, there is no
  *     session user. So before using session_user, always check if
  *     session_access==dba_sk_user.
- *   - For helper functions returning what_next, use the DO_SUB_ACTION macro.
+ *   - For helper functions returning WhatNext, use the DO_SUB_ACTION macro.
  *   - A state that is called with POST, enctype=form/multipart must save the
  *     files passed via the session and do a redirect immediately.
  */
@@ -217,9 +217,9 @@ bool provides (db_access_t a, db_access_t b)
 
 
 class web_interface_state;
-class what_next;
+class WhatNext;
 // TODO consider replacing state_hander by function objects
-typedef what_next (*state_handler) ();
+typedef WhatNext (*state_handler) ();
 
 class web_interface_state
 {
@@ -417,7 +417,7 @@ const QString &default_state=web_main_menu;
 enum treatment_t
 	/*
 	 * "Treating" an object is performing a certain action, like displaying or
-	 * editing.  Treating is obsoleted by the object_field mechanism and only
+	 * editing.  Treating is obsoleted by the ObjectField mechanism and only
 	 * used for persons.
 	 */
 {
@@ -435,7 +435,7 @@ enum treatment_t
 bool object_required (treatment_t t)
 	/*
 	 * Whether we need a object to do the action.
-	 * For example, writing a table header does not require this.
+	 * For example, writing a Table header does not require this.
 	 */
 {
 	switch (t)
@@ -545,7 +545,7 @@ const QString arg_session_master_data_file="file";
 const QString arg_session_master_data_filename="filename";
 
 // These are arguments used (usually in the CGI query) for setting fields of the
-// object_field mechanism.
+// ObjectField mechanism.
 const QString field_user_username="f_user_username";
 const QString field_user_password="f_user_password";
 const QString field_user_password_repeat="f_user_password_repeat";
@@ -622,13 +622,13 @@ QString relative_url;				// The relative URL where to reach the cgi program
 QString absolute_url;				// The absolute URL where to reach the cgi program
 QString remote_address;				// The address of the client
 request_method_t request_method;    // The request method
-// TODO need to implement object_field successor. These global vars
+// TODO need to implement ObjectField successor. These global vars
 // mixing data and metadata are MURX.
-QList<object_field> fields_sk_user;	        // The member field description of an User
-QList<object_field> fields_flugbuch_entry;	// The member field description of a flugbuch_entry
-QList<object_field> fields_bordbuch_entry;	// The member field description of a bordbuch_entry
-QList<object_field> fields_flightlist_entry; // The member field description of a flight list entry
-QList<object_field> fields_flight_db_entry;  // The member field description of a flight list entry
+QList<ObjectField> fields_sk_user;	        // The member field description of an User
+QList<ObjectField> fields_flugbuch_entry;	// The member field description of a PilotLogEntry
+QList<ObjectField> fields_bordbuch_entry;	// The member field description of a PlaneLogEntry
+QList<ObjectField> fields_flightlist_entry; // The member field description of a flight list entry
+QList<ObjectField> fields_flight_db_entry;  // The member field description of a flight list entry
 QList<float> widths_flugbuch_entry;			// The column widths of a flugbuch entry, in mm
 QList<float> widths_bordbuch_entry;			// The column widths of an bordbuch entry, in mm
 QList<float> widths_flightlist;			    // The column widths of a flightlist entry, in mm
@@ -637,12 +637,12 @@ QList<float> widths_flightlist;			    // The column widths of a flightlist entry
 bool debug_enabled;                         // Whether debugging is enabled
 std::ostringstream debug_stream;                 // A stream whose contents are
 											// displayed in the document footer
-											// when the debug argument is set
-web_session session;                        // The login session
-argument_list cgi_args;                     // Arguments passed via CGI
-argument_list filenames;			// Mapping from CGI parameters to filenames
-sk_db db (debug_stream);                    // The database connection
-html_document document (true);              // The document to write (to)
+											// when the debug Argument is set
+WebSession session;                        // The login session
+ArgumentList cgi_args;                     // Arguments passed via CGI
+ArgumentList filenames;			// Mapping from CGI parameters to filenames
+Database db (debug_stream);                    // The database connection
+HtmlDocument document (true);              // The document to write (to)
 const web_interface_state *current_state;   // The state currently executing
 db_access_t session_access;                 // The access level that is present
                                             // for the session.
@@ -899,7 +899,7 @@ bool authenticate (const QString &username, const QString &password, QString &er
 	//     The names of these accounts can be overridden in the config file or
 	//     on the command line.
 	//   - login as User
-	//     These are defined in the "user" table of the startkladde database.
+	//     These are defined in the "user" Table of the startkladde database.
 	//     We need a MySQL account with fairly extensive permissions because
 	//     these users may do things like, for example, write and modify master
 	//     data.  These user don't exist as MySQL users because they should not
@@ -950,7 +950,7 @@ bool authenticate (const QString &username, const QString &password, QString &er
 
 				return true;
 			}
-			catch (sk_exception &e)
+			catch (SkException &e)
 			{
 				LOGIN_ERROR (e.description ());
 			}
@@ -960,7 +960,7 @@ bool authenticate (const QString &username, const QString &password, QString &er
 		{
 			// This is the interesting case: log in as sk user. This means that
 			// there is not corresponding MySQL user, so we log in as sk_admin
-			// to authenticate the user using sk_db User functions.
+			// to authenticate the user using Database User functions.
 
 			// Check whether we have sk_admin access data at all.
 			LOGIN_ERROR_IF (opts.sk_admin_name.isEmpty (), "Name f�r das Administratorkonta (sk_admin) nicht konfiguriert");
@@ -974,7 +974,7 @@ bool authenticate (const QString &username, const QString &password, QString &er
 				db.connect ();
 				db.use_db ();
 			}
-			catch (sk_exception &e)
+			catch (SkException &e)
 			{
 				LOGIN_ERROR_IF (true, "sk_admin: "+e.description ());
 			}
@@ -1005,7 +1005,7 @@ bool authenticate (const QString &username, const QString &password, QString &er
 #undef LOGIN_ERROR_IF
 }
 
-argument_list make_persistent_parameter_list (const QString &state_label)
+ArgumentList make_persistent_parameter_list (const QString &state_label)
 	/*
 	 * Persistent parameters are those which need to be carried on the the next
 	 * state. This functions make a list of persistent parameters.
@@ -1016,7 +1016,7 @@ argument_list make_persistent_parameter_list (const QString &state_label)
 	 *   - The list.
 	 */
 {
-	argument_list args;
+	ArgumentList args;
 
 	// Add the state if not empty
 	if (!state_label.isEmpty ())
@@ -1046,18 +1046,18 @@ QString back_form_hidden (QString new_state_label)
 	 */
 {
 	// Make the parameter list
-	argument_list parameters=make_persistent_parameter_list (new_state_label);
+	ArgumentList parameters=make_persistent_parameter_list (new_state_label);
 
 	// TODO move tag writing to html class
 	QString r;
-	argument_list::const_iterator end=parameters.get_list ().end ();
-	for (argument_list::const_iterator it=parameters.get_list ().begin (); it!=end; ++it)
+	ArgumentList::const_iterator end=parameters.get_list ().end ();
+	for (ArgumentList::const_iterator it=parameters.get_list ().begin (); it!=end; ++it)
 		r+="<div><input type=\"hidden\" name=\""+html_escape ((*it).get_name ())+"\" value=\""+html_escape ((*it).get_value ())+"\"></div>\n";
 
 	return r;
 }
 
-QString back_link_url (const QString &new_state_label, const argument_list &parameters, const QString &anchor="", bool absolute=false)
+QString back_link_url (const QString &new_state_label, const ArgumentList &parameters, const QString &anchor="", bool absolute=false)
 	/*
 	 * Makes the URL for linking to another state.
 	 * Parameters:
@@ -1075,7 +1075,7 @@ QString back_link_url (const QString &new_state_label, const argument_list &para
 		url=relative_url;
 
 	// Make the parameter list
-	argument_list params=make_persistent_parameter_list (new_state_label);
+	ArgumentList params=make_persistent_parameter_list (new_state_label);
 	params.add (parameters);
 
 	// Add the parameters
@@ -1094,11 +1094,11 @@ QString back_link_url (const QString &new_state_label, const QString &anchor="",
 	 * parameters are added.
 	 */
 {
-	argument_list parameters;
+	ArgumentList parameters;
 	return back_link_url (new_state_label, parameters, anchor, absolute);
 }
 
-what_next make_redirect (const QString &new_state_label, const argument_list &args, const QString &anchor="")
+WhatNext make_redirect (const QString &new_state_label, const ArgumentList &args, const QString &anchor="")
 	/*
 	 * Makes a redirect action to another state.
 	 * Parameters:
@@ -1111,16 +1111,16 @@ what_next make_redirect (const QString &new_state_label, const argument_list &ar
 {
 	// For redirects, it seems we need to use an absolute URL.
 	QString url=back_link_url (new_state_label, args, anchor, true);
-	return what_next::do_redirect (url);
+	return WhatNext::do_redirect (url);
 }
 
-what_next make_redirect (const QString &new_state_label, const QString &anchor="")
+WhatNext make_redirect (const QString &new_state_label, const QString &anchor="")
 	/*
-	 * Like make_redirect above, but without the additional argument list. No
+	 * Like make_redirect above, but without the additional Argument list. No
 	 * additional arguments will be added.
 	 */
 {
-	argument_list args;
+	ArgumentList args;
 	return make_redirect (new_state_label, args, anchor);
 }
 
@@ -1186,11 +1186,11 @@ void write_document_footer ()
 		if (!debug_string.isEmpty ())
 			document.write ("<p><pre>\n").write (debug_string, false).write ("</pre></p>\n");
 
-		// Write the CGI argument list
+		// Write the CGI Argument list
 		document.start_paragraph ();
-		const QList<argument> &cgi_args_list=cgi_args.get_list ();
-		argument_list::const_iterator end=cgi_args_list.end ();
-		for (argument_list::const_iterator it=cgi_args_list.begin (); it!=end; ++it)
+		const QList<Argument> &cgi_args_list=cgi_args.get_list ();
+		ArgumentList::const_iterator end=cgi_args_list.end ();
+		for (ArgumentList::const_iterator it=cgi_args_list.begin (); it!=end; ++it)
 		{
 			QString name=(*it).get_name ();
 			QString value;
@@ -1247,7 +1247,7 @@ QString make_anchor_name (db_id id)
 // TODO: replace this by DO_DB_ACTION (action (args)) which throws an
 // std::exception on error. Better yet a function.
 #define CHECK_DB_ERROR_ERROR	\
-	do { if (ret<0) return what_next::output_error (db.db_error_description (ret, true)); } while (false)
+	do { if (ret<0) return WhatNext::output_error (db.db_error_description (ret, true)); } while (false)
 
 // CHECK_DB_ERROR_STATE(STATE)
 	/*
@@ -1259,7 +1259,7 @@ QString make_anchor_name (db_id id)
 	 *   - ret: the return value of a database call.
 	 */
 #define CHECK_DB_ERROR_STATE(STATE)	\
-	do { if (ret<0) return what_next::go_to_state (STATE, db.db_error_description (ret), true); } while (false)
+	do { if (ret<0) return WhatNext::go_to_state (STATE, db.db_error_description (ret), true); } while (false)
 
 // CHECK_AN_ID
 	/*
@@ -1268,20 +1268,20 @@ QString make_anchor_name (db_id id)
 	 * parameters.
 	 * Paremters:
 	 *   - ID: the ID to check
-	 *   - CGI_ARG: the CGI argument to read the given value from. This is
+	 *   - CGI_ARG: the CGI Argument to read the given value from. This is
 	 *     passed to CGI_READ, so arg_cgi_ is prepended to the name.
 	 */
 #define CHECK_AN_ID(ID, CGI_ARG)	\
-	do { if (id_invalid (ID)) return what_next::output_error ("Ung�ltige ID \""+CGI_READ (CGI_ARG)+"\""); } while (false)
+	do { if (id_invalid (ID)) return WhatNext::output_error ("Ung�ltige ID \""+CGI_READ (CGI_ARG)+"\""); } while (false)
 
 // CHECK_ID
 	/*
 	 * Checks an ID which is contained in the variable called id and was read
-	 * from the CGI argument arg_cgi_id.
+	 * from the CGI Argument arg_cgi_id.
 	 */
 #define CHECK_ID CHECK_AN_ID (id, id);
 
-what_next csv_to_persons (const QString &csv, QPtrList<Person> &persons, const QString &club)
+WhatNext csv_to_persons (const QString &csv, QPtrList<Person> &persons, const QString &club)
 	/*
 	 * Converts a QString containing a CSV file to a list of persons.
 	 * This uses session_user, so only call this when the access level is
@@ -1296,7 +1296,7 @@ what_next csv_to_persons (const QString &csv, QPtrList<Person> &persons, const Q
 
 	std::istringstream csv_stream (q2std (csv));
 
-	table_row header_row=table_row::from_csv (csv_stream);
+	TableRow header_row=TableRow::from_csv (csv_stream);
 
 	// Check the CSV fields
 	// Make a list of fields that must be present.
@@ -1306,9 +1306,9 @@ what_next csv_to_persons (const QString &csv, QPtrList<Person> &persons, const Q
 	missing_fields.append (csv_field_person_club_id);
 
 	// Remove headers which are actually present from the list.
-	table_row::const_iterator header_row_end=header_row.end ();
+	TableRow::const_iterator header_row_end=header_row.end ();
 	// TODO case insensitivity
-	for (table_row::const_iterator it=header_row.begin (); it!=header_row_end; ++it)
+	for (TableRow::const_iterator it=header_row.begin (); it!=header_row_end; ++it)
 		missing_fields.remove (*it);
 
 	// If the list still contains elemnts, this is an error.
@@ -1320,20 +1320,20 @@ what_next csv_to_persons (const QString &csv, QPtrList<Person> &persons, const Q
 		document.write_text_list (missing_fields, false);
 
 		// Write a link back to the file selection page
-		argument_list additional_args;
+		ArgumentList additional_args;
 		additional_args.set_value (arg_cgi_data_type, CGI_READ (data_type));
 		document
 			.start_paragraph ()
 			.write_text_link (back_link_url (web_master_data_import, additional_args), "Zur�ck")
 			.end_paragraph ()
 			;
-		return what_next::output_document ();
+		return WhatNext::output_document ();
 	}
 
 	// OK, all required columns are present.
 
-	// Parse the CSV file to a table
-	table csv_table=table::from_csv (csv_stream);
+	// Parse the CSV file to a Table
+	Table csv_table=Table::from_csv (csv_stream);
 
 	// TODO better field handling
 	// Find out where which field is
@@ -1357,12 +1357,12 @@ what_next csv_to_persons (const QString &csv, QPtrList<Person> &persons, const Q
 #undef TEST
 	}
 
-	// Make a list of persons from the table
+	// Make a list of persons from the Table
 	// Legacy: persons are listed in QPtrList instead of a QList
 	// because the database still uses this type and so do the person
 	// handling functions in sk_web.
-	table::const_iterator table_end=csv_table.end ();
-	for (table::const_iterator it=csv_table.begin (); it!=table_end; ++it)
+	Table::const_iterator table_end=csv_table.end ();
+	for (Table::const_iterator it=csv_table.begin (); it!=table_end; ++it)
 	{
 		Person *p=new Person;
 #define WRITE(NAME,TARGET) do { if (index_ ## NAME>=0 && ((int)(*it).size ())>index_ ## NAME) p->TARGET=(*it).at (index_ ## NAME); } while (false)
@@ -1378,7 +1378,7 @@ what_next csv_to_persons (const QString &csv, QPtrList<Person> &persons, const Q
 		persons.append (p);
 	}
 
-	return what_next::go_on ();
+	return WhatNext::go_on ();
 }
 
 void make_unique_club_list (QStringList &club_list, QPtrList<Plane> plane_list)
@@ -1425,7 +1425,7 @@ bool user_name_valid (const QString &name)
 		return false;
 }
 
-what_next redirect_to_result (QString result_text, bool result_error=false, QString next_state_label="")
+WhatNext redirect_to_result (QString result_text, bool result_error=false, QString next_state_label="")
 	/*
 	 * Makes a redirect to the result page. A message is passed to the result
 	 * state via the session.
@@ -1446,7 +1446,7 @@ what_next redirect_to_result (QString result_text, bool result_error=false, QStr
 
 // DO_SUB_ACTION(ACTION)
 	/*
-	 * Calls a function that returns a what_next and returns this what_next
+	 * Calls a function that returns a WhatNext and returns this WhatNext
 	 * unless it is wn_go_on.
 	 */
 // TODO replace this by action throwing an std::exception, then remove
@@ -1454,104 +1454,104 @@ what_next redirect_to_result (QString result_text, bool result_error=false, QStr
 #define DO_SUB_ACTION(ACTION)	\
 do	\
 {	\
-	what_next n=ACTION;	\
+	WhatNext n=ACTION;	\
 	if (n.get_next ()!=wn_go_on) return n;	\
 } while (false)
 
-html_table_row make_table_header (QList<object_field> fields)
+HtmlTableRow make_table_header (QList<ObjectField> fields)
 	/*
-	 * Makes a table header suitable for tables listing objects.
+	 * Makes a Table header suitable for tables listing objects.
 	 * Paramters:
 	 *   - fields: the object fields containing the data.
 	 * Return value:
-	 *   The table row.
+	 *   The Table row.
 	 */
 {
-	html_table_row row;
+	HtmlTableRow row;
 
-	QList<object_field>::const_iterator fields_end=fields.end ();
+	QList<ObjectField>::const_iterator fields_end=fields.end ();
 	// For each entry in the fields list, write a header cell
-	for (QList<object_field>::const_iterator field=fields.begin (); field!=fields_end; ++field)
+	for (QList<ObjectField>::const_iterator field=fields.begin (); field!=fields_end; ++field)
 		// Only write if the field should be visible
 		if ((*field).get_list_display ())
-			row.push_back (html_table_cell::text ((*field).get_caption (), true));
+			row.push_back (HtmlTableCell::text ((*field).get_caption (), true));
 
 	return row;
 }
 
-html_table_row make_table_data_row (QList<object_field> fields)
+HtmlTableRow make_table_data_row (QList<ObjectField> fields)
 	/*
-	 * Makes a table data row suitable for tables listing objects.
+	 * Makes a Table data row suitable for tables listing objects.
 	 * Paramters:
 	 *   - fields: the object fields containing the data.
 	 * Return value:
-	 *   The table row.
+	 *   The Table row.
 	 */
 {
-	// TODO move to HTML table?
-	// use table (table_row_from_fields)?
-	html_table_row row;
+	// TODO move to HTML Table?
+	// use Table (table_row_from_fields)?
+	HtmlTableRow row;
 
-	QList<object_field>::const_iterator fields_end=fields.end ();
+	QList<ObjectField>::const_iterator fields_end=fields.end ();
 	// For each field, write the data cell.
-	for (QList<object_field>::const_iterator field=fields.begin (); field!=fields_end; ++field)
+	for (QList<ObjectField>::const_iterator field=fields.begin (); field!=fields_end; ++field)
 		if ((*field).get_list_display ())
 		{
 			QString text=html_escape ((*field).make_display_text ());
 			if ((*field).get_no_break ()) text="<nobr>"+text+"</nobr>";
-			row.push_back (html_table_cell (text));
+			row.push_back (HtmlTableCell (text));
 		}
 
 	return row;
 }
 
-table_row table_row_from_fields (QList<object_field> fields, bool header=false)
+TableRow table_row_from_fields (QList<ObjectField> fields, bool header=false)
 	/*
-	 * Converts a list of object fields to a table row. The table row contains
+	 * Converts a list of object fields to a Table row. The Table row contains
 	 * either the QString representations from the object fields or the
 	 * captions.
 	 * Paramters:
 	 *   - fields: the list of fields containing data for an object.
 	 *   - header: whether to use headers or data.
 	 * Return value:
-	 *   The table row.
+	 *   The Table row.
 	 */
 {
-	// TODO move to table? move to object_field?
+	// TODO move to Table? move to ObjectField?
 
-	table_row row;
+	TableRow row;
 
 	// For each field, write the data cell.
-	QList<object_field>::const_iterator fields_end=fields.end ();
-	for (QList<object_field>::const_iterator field=fields.begin (); field!=fields_end; ++field)
+	QList<ObjectField>::const_iterator fields_end=fields.end ();
+	for (QList<ObjectField>::const_iterator field=fields.begin (); field!=fields_end; ++field)
 	{
 		if (header)
 		{
-			row.push_back (table_cell ((*field).get_caption ()));
+			row.push_back (TableCell ((*field).get_caption ()));
 		}
 		else
 		{
 			if ((*field).get_list_display ())
-				row.push_back (table_cell ((*field).make_display_text ()));
+				row.push_back (TableCell ((*field).make_display_text ()));
 		}
 	}
 
 	return row;
 }
 
-html_table_cell make_link_cell (const QString &next_state, const QString &caption, const QString &argname, const QString &argvalue)
+HtmlTableCell make_link_cell (const QString &next_state, const QString &caption, const QString &argname, const QString &argvalue)
 	/*
 	 * Makes a cess containing a link to another state.
 	 * Paramters:
 	 *   - next_state: the state to link to.
 	 *   - caption: the text of the link.
-	 *   - argname: the name of an additional argument to pass.
-	 *   - argvalue: value of the argument argname.
+	 *   - argname: the name of an additional Argument to pass.
+	 *   - argvalue: value of the Argument argname.
 	 */
 {
-	argument_list args;
+	ArgumentList args;
 	args.set_value (argname, argvalue);
-	return html_table_cell (document.text_link (back_link_url (next_state, args), caption));
+	return HtmlTableCell (document.text_link (back_link_url (next_state, args), caption));
 }
 
 void write_delete_links (const QString &delete_state, const QString &ident_arg, const QString &ident_val, const QString &back_state, const QString &anchor)
@@ -1561,13 +1561,13 @@ void write_delete_links (const QString &delete_state, const QString &ident_arg, 
 	 * "really delete" link and a "back" link.
 	 * Parameters:
 	 *   - delete_state: the state to go to for deleting.
-	 *   - ident_arg: the argument used for identifying the object to be deleted.
+	 *   - ident_arg: the Argument used for identifying the object to be deleted.
 	 *   - ident_val: the value for ident_arg.
 	 *   - back_state: the state to go back to if not deleting.
 	 *   - anchor: the anchor to jump to on the back page, if not empty.
 	 */
 {
-	argument_list delete_args;
+	ArgumentList delete_args;
 	delete_args.set_value (ident_arg, ident_val);
 	document
 		.write_text_link (back_link_url (delete_state, delete_args), "Wirklich l�schen")
@@ -1590,7 +1590,7 @@ void check_username (const QString &username)
 
 
 // Output handling
-void setup_latex_headings (latex_document &ldoc, const QString &caption, const QString &date_text)
+void setup_latex_headings (LatexDocument &ldoc, const QString &caption, const QString &date_text)
 {
 	ldoc.font_size=8;
 	ldoc.head_ro=date_text;
@@ -1614,75 +1614,75 @@ void add_date_inputs (html_table &table, bool include_range)
 	QString now_month=QString::number (current_date.get_month ());
 	QString now_day=QString::number (current_date.get_day ());
 
-	html_table_row row;
+	HtmlTableRow row;
 
 	row.clear ();
-	row.push_back (html_table_cell::text ("Datum:"));
-	row.push_back (html_table_cell (document.make_input_radio (arg_cgi_date_spec, arg_cgi_date_spec_today, "Heute", true)+"<br>", false));
+	row.push_back (HtmlTableCell::text ("Datum:"));
+	row.push_back (HtmlTableCell (document.make_input_radio (arg_cgi_date_spec, arg_cgi_date_spec_today, "Heute", true)+"<br>", false));
 	table.push_back (row);
 
 	QString single_date_text=include_range?"Ein Tag:":"Anderes Datum";
 
 	row.clear ();
-	row.push_back (html_table_cell::empty ());
-	row.push_back (html_table_cell (document.make_input_radio (arg_cgi_date_spec, arg_cgi_date_spec_single, single_date_text, false)+"<br>"));
-	if (include_range) row.push_back (html_table_cell::text ("Datum:"));
-	row.push_back (html_table_cell (html_escape ("Jahr: ")+document.make_input_text (arg_cgi_date_single_year, now_year, 4)));
-	row.push_back (html_table_cell (html_escape ("Monat: ")+document.make_input_text (arg_cgi_date_single_month, now_month, 2)));
-	row.push_back (html_table_cell (html_escape ("Tag: ")+document.make_input_text (arg_cgi_date_single_day, now_day, 2)));
+	row.push_back (HtmlTableCell::empty ());
+	row.push_back (HtmlTableCell (document.make_input_radio (arg_cgi_date_spec, arg_cgi_date_spec_single, single_date_text, false)+"<br>"));
+	if (include_range) row.push_back (HtmlTableCell::text ("Datum:"));
+	row.push_back (HtmlTableCell (html_escape ("Jahr: ")+document.make_input_text (arg_cgi_date_single_year, now_year, 4)));
+	row.push_back (HtmlTableCell (html_escape ("Monat: ")+document.make_input_text (arg_cgi_date_single_month, now_month, 2)));
+	row.push_back (HtmlTableCell (html_escape ("Tag: ")+document.make_input_text (arg_cgi_date_single_day, now_day, 2)));
 	table.push_back (row);
 
 	if (include_range)
 	{
 		row.clear ();
-		row.push_back (html_table_cell::empty ());
-		row.push_back (html_table_cell (document.make_input_radio (arg_cgi_date_spec, arg_cgi_date_spec_range, "Bereich:", false)+"<br>"));
-		row.push_back (html_table_cell::text ("Anfang:"));
-		row.push_back (html_table_cell (html_escape ("Jahr: ")+document.make_input_text (arg_cgi_date_start_year, now_year, 4)));
-		row.push_back (html_table_cell (html_escape ("Monat: ")+document.make_input_text (arg_cgi_date_start_month, "1", 2)));
-		row.push_back (html_table_cell (html_escape ("Tag: ")+document.make_input_text (arg_cgi_date_start_day, "1", 2)));
+		row.push_back (HtmlTableCell::empty ());
+		row.push_back (HtmlTableCell (document.make_input_radio (arg_cgi_date_spec, arg_cgi_date_spec_range, "Bereich:", false)+"<br>"));
+		row.push_back (HtmlTableCell::text ("Anfang:"));
+		row.push_back (HtmlTableCell (html_escape ("Jahr: ")+document.make_input_text (arg_cgi_date_start_year, now_year, 4)));
+		row.push_back (HtmlTableCell (html_escape ("Monat: ")+document.make_input_text (arg_cgi_date_start_month, "1", 2)));
+		row.push_back (HtmlTableCell (html_escape ("Tag: ")+document.make_input_text (arg_cgi_date_start_day, "1", 2)));
 		table.push_back (row);
 
 		row.clear ();
-		row.push_back (html_table_cell::empty ());
-		row.push_back (html_table_cell::empty ());
-		row.push_back (html_table_cell::text ("Ende:"));
-		row.push_back (html_table_cell (html_escape ("Jahr: ")+document.make_input_text (arg_cgi_date_end_year, now_year, 4)));
-		row.push_back (html_table_cell (html_escape ("Monat: ")+document.make_input_text (arg_cgi_date_end_month, now_month, 2)));
-		row.push_back (html_table_cell (html_escape ("Tag: ")+document.make_input_text (arg_cgi_date_end_day, now_day, 2)));
+		row.push_back (HtmlTableCell::empty ());
+		row.push_back (HtmlTableCell::empty ());
+		row.push_back (HtmlTableCell::text ("Ende:"));
+		row.push_back (HtmlTableCell (html_escape ("Jahr: ")+document.make_input_text (arg_cgi_date_end_year, now_year, 4)));
+		row.push_back (HtmlTableCell (html_escape ("Monat: ")+document.make_input_text (arg_cgi_date_end_month, now_month, 2)));
+		row.push_back (HtmlTableCell (html_escape ("Tag: ")+document.make_input_text (arg_cgi_date_end_day, now_day, 2)));
 		table.push_back (row);
 	}
 }
 
 void add_submit_input (html_table &table, const QString &text="Abrufen")
 {
-	html_table_row row;
-	row.push_back (html_table_cell (document.make_submit (text), false, 0));
+	HtmlTableRow row;
+	row.push_back (HtmlTableCell (document.make_submit (text), false, 0));
 	table.push_back (row);
 }
 
 void add_bool_input (html_table &table, const QString &caption, const QString &label, bool default_value=false)
 {
-	html_table_row row;
+	HtmlTableRow row;
 
-	row.push_back (html_table_cell::text (caption+QString (":")));
-	row.push_back (html_table_cell (document.make_input_select_bool (label, default_value)));
+	row.push_back (HtmlTableCell::text (caption+QString (":")));
+	row.push_back (HtmlTableCell (document.make_input_select_bool (label, default_value)));
 	table.push_back (row);
 }
 
-void add_select_input (html_table &table, const QString &caption, const QString &label, const argument_list &options, const QString &def="")
+void add_select_input (html_table &table, const QString &caption, const QString &label, const ArgumentList &options, const QString &def="")
 {
-	html_table_row row;
-	row.push_back (html_table_cell::text (caption));
-	row.push_back (html_table_cell (document.make_input_select (label, options, def), false, 0));
+	HtmlTableRow row;
+	row.push_back (HtmlTableCell::text (caption));
+	row.push_back (HtmlTableCell (document.make_input_select (label, options, def), false, 0));
 	table.push_back (row);
 }
 
 // Treat person
 /*
  * These functions do a certain action with a person. They are deprecated for
- * anything else than a user in favor of the object_field mechanism, or rather
- * an object_field successor. Even for persons, this should be replaced onece
+ * anything else than a user in favor of the ObjectField mechanism, or rather
+ * an ObjectField successor. Even for persons, this should be replaced onece
  * an object_fields successor is implemented.
  * Note (I repeat): these functions are obsolete.
  * Common parameters:
@@ -1691,7 +1691,7 @@ void add_select_input (html_table &table, const QString &caption, const QString 
 void treat_preamble (treatment_t treatment, QString anchor_name)
 	/*
 	 * Writes the introduction for a treatment of a single object, if any (for
-	 * example, table row beginning tags).
+	 * example, Table row beginning tags).
 	 * Parameters:
 	 *   - anchor_name: the name of the anchor to place for tables. If empty,
 	 *     no anchor is placed.
@@ -1796,7 +1796,7 @@ void treat_field (treatment_t treatment, const QString &caption, const QString &
 	}
 }
 
-void treat_additional_fields (treatment_t treatment, const QList<argument> &additional_fields)
+void treat_additional_fields (treatment_t treatment, const QList<Argument> &additional_fields)
 	/*
 	 * Writes additional fields, for example, submit buttons or additional
 	 * columns.
@@ -1814,8 +1814,8 @@ void treat_additional_fields (treatment_t treatment, const QList<argument> &addi
 		case tm_write_table_header: break;
 		case tm_write_table_data:
 		{
-			argument_list::const_iterator end=additional_fields.end ();
-			for (argument_list::const_iterator it=additional_fields.begin (); it!=end; ++it)
+			ArgumentList::const_iterator end=additional_fields.end ();
+			for (ArgumentList::const_iterator it=additional_fields.begin (); it!=end; ++it)
 			{
 				document
 					.start_tag ("td")
@@ -1843,7 +1843,7 @@ void treat_additional_fields (treatment_t treatment, const QList<argument> &addi
 	}
 }
 
-void treat_appendix (treatment_t treatment, const QString &edit_next_state, const QString &create_next_state, const QList<argument> &additional_args)
+void treat_appendix (treatment_t treatment, const QString &edit_next_state, const QString &create_next_state, const QList<Argument> &additional_args)
 	/*
 	 * Writes the appendix for a treatment of a single object, if any. This is
 	 * the counterpart treat_preamble.
@@ -1887,7 +1887,7 @@ void treat_appendix (treatment_t treatment, const QString &edit_next_state, cons
 }
 
 //treat_person (person *, treatment, new_state, ident_arg, args, for_import, for_select, additional_text
-what_next treat_person (Person *_p, treatment_t treatment, const QString &new_state=web_display_person, const QString &ident_arg=arg_cgi_id, const argument_list *args=NULL, bool for_import=false, bool for_select=false, const QString &additional_text="")
+WhatNext treat_person (Person *_p, treatment_t treatment, const QString &new_state=web_display_person, const QString &ident_arg=arg_cgi_id, const ArgumentList *args=NULL, bool for_import=false, bool for_select=false, const QString &additional_text="")
 	/*
 	 * Handle a treatment for a person.
 	 * This function basically calls treat_field on all of the fields of
@@ -1900,7 +1900,7 @@ what_next treat_person (Person *_p, treatment_t treatment, const QString &new_st
 {
 	// Check
 	if (!_p && object_required (treatment))
-		return what_next::output_error ("Fehlende Person in treat_person (Programmfehler)");
+		return WhatNext::output_error ("Fehlende Person in treat_person (Programmfehler)");
 
 	Person dummy;
 	Person *p=_p;
@@ -1911,7 +1911,7 @@ what_next treat_person (Person *_p, treatment_t treatment, const QString &new_st
 
 	// Data
 	// TODO not manually
-	argument_list link_to_arguments;
+	ArgumentList link_to_arguments;
 	if (args) link_to_arguments.add (*args);
 	link_to_arguments.set_value (ident_arg, QString::number (p->id));
 
@@ -1954,7 +1954,7 @@ what_next treat_person (Person *_p, treatment_t treatment, const QString &new_st
 	// Additional fields
 	if (!for_import && !for_select)
 	{
-		argument_list fields;
+		ArgumentList fields;
 		if (args) fields.add (*args);
 		// TODO don't specify manually
 		fields.set_value ("Editieren", back_link_url (web_edit_person)+"&"+arg_cgi_id+"="+QString::number (p->id));
@@ -1964,22 +1964,22 @@ what_next treat_person (Person *_p, treatment_t treatment, const QString &new_st
 	}
 
 	// Appendix
-	argument_list appendix_args;
+	ArgumentList appendix_args;
 	appendix_args.set_value (ident_arg, QString::number (p->id));
 	treat_appendix (treatment, web_do_edit_person, web_do_create_person, appendix_args.get_list ());
 
-	return what_next::go_on ();
+	return WhatNext::go_on ();
 }
 
-what_next write_person_list (QPtrList<Person> &persons, bool include_none, const QString &target_state, const QString &result_field, const argument_list *args=NULL, bool for_import=false, bool for_select=false)
+WhatNext write_person_list (QPtrList<Person> &persons, bool include_none, const QString &target_state, const QString &result_field, const ArgumentList *args=NULL, bool for_import=false, bool for_select=false)
 	/*
-	 * Writes a person list (table).
+	 * Writes a person list (Table).
 	 * this function is obsolete as it uses the treat_* mechanism.
 	 * Paramters:
 	 *   - persons: the person list to write
 	 *   - include_none: whether to write a row with a "none" entry.
 	 *   - target_state: the state to go to when selecting a person.
-	 *   - result_field: the name of the argument to pass the ID in.
+	 *   - result_field: the name of the Argument to pass the ID in.
 	 *   - args: additional arguments to pass.
 	 *   - for_import: whether to write the list for importing (MURX)
 	 *   - for_select: whether to write the list for selecting (MURX)
@@ -1995,10 +1995,10 @@ what_next write_person_list (QPtrList<Person> &persons, bool include_none, const
 		DO_SUB_ACTION (treat_person (*person, tm_write_table_data, target_state, result_field, args, for_import, for_select));	// Write person
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_suffix));
 
-	return what_next::go_on ();
+	return WhatNext::go_on ();
 }
 
-what_next write_message_list (QList<sk_db::import_message> messages)
+WhatNext write_message_list (QList<Database::import_message> messages)
 	/*
 	 * Write a list of messages concerning importing of master data.
 	 * Paramters:
@@ -2011,8 +2011,8 @@ what_next write_message_list (QList<sk_db::import_message> messages)
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_prefix));
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_header, "", "", NULL, true, false, "Problem"));
 
-	QList<sk_db::import_message>::const_iterator end=messages.end ();
-	for (QList<sk_db::import_message>::const_iterator it=messages.begin (); it!=end; ++it)
+	QList<Database::import_message>::const_iterator end=messages.end ();
+	for (QList<Database::import_message>::const_iterator it=messages.begin (); it!=end; ++it)
 	{
 		if ((*it).get_p1 ())
 		{
@@ -2021,13 +2021,13 @@ what_next write_message_list (QList<sk_db::import_message> messages)
 		}
 		else
 		{
-			return what_next::output_error ("Fehlermeldung ohne Person (Programmfehler)");
+			return WhatNext::output_error ("Fehlermeldung ohne Person (Programmfehler)");
 		}
 	}
 
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_suffix));
 
-	return what_next::go_on ();
+	return WhatNext::go_on ();
 }
 
 
@@ -2046,12 +2046,12 @@ void sk_user_to_fields (const User &user)
 	 */
 {
 	// TODO don't use global variable but pass reference
-	// TODO replace object_field
+	// TODO replace ObjectField
 	// TODO sk_user_{to,from}_fields are almost identical. Merge?
 	// Iterate over all User fields and, depending on the label, read the
 	// data from the User.
-	QList<object_field>::const_iterator end=fields_sk_user.end ();
-	for (QList<object_field>::iterator field=fields_sk_user.begin (); field!=end; ++field)
+	QList<ObjectField>::const_iterator end=fields_sk_user.end ();
+	for (QList<ObjectField>::iterator field=fields_sk_user.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
@@ -2078,12 +2078,12 @@ void sk_user_from_fields (User &user)
 	 */
 {
 	// TODO don't use global variable but pass reference
-	// TODO replace object_field
+	// TODO replace ObjectField
 	// TODO sk_user_{to,from}_fields are almost identical. Merge?
 	// Iterate over all User fields and, depending on the label, read the
 	// data from the User.
-	QList<object_field>::const_iterator end=fields_sk_user.end ();
-	for (QList<object_field>::iterator field=fields_sk_user.begin (); field!=end; ++field)
+	QList<ObjectField>::const_iterator end=fields_sk_user.end ();
+	for (QList<ObjectField>::iterator field=fields_sk_user.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
@@ -2099,7 +2099,7 @@ void sk_user_from_fields (User &user)
 	}
 }
 
-void flugbuch_entry_to_fields (const flugbuch_entry &fbe, bool no_letters=false)
+void flugbuch_entry_to_fields (const PilotLogEntry &fbe, bool no_letters=false)
 	throw (ex_write_error_document)
 	/*
 	 * Converts a flugbuch entry to the (global) flugbuch object_fields.
@@ -2108,11 +2108,11 @@ void flugbuch_entry_to_fields (const flugbuch_entry &fbe, bool no_letters=false)
 	 */
 {
 	// TODO don't use global variable but pass reference
-	// TODO replace object_field
-	// Iterate over all flugbuch_entry fields and, depending on the label, read
-	// the data from the flugbuch_entry.
-	QList<object_field>::const_iterator end=fields_flugbuch_entry.end ();
-	for (QList<object_field>::iterator field=fields_flugbuch_entry.begin (); field!=end; ++field)
+	// TODO replace ObjectField
+	// Iterate over all PilotLogEntry fields and, depending on the label, read
+	// the data from the PilotLogEntry.
+	QList<ObjectField>::const_iterator end=fields_flugbuch_entry.end ();
+	for (QList<ObjectField>::iterator field=fields_flugbuch_entry.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
@@ -2135,7 +2135,7 @@ void flugbuch_entry_to_fields (const flugbuch_entry &fbe, bool no_letters=false)
 	}
 }
 
-void bordbuch_entry_to_fields (const bordbuch_entry &bbe, bool no_letters=false)
+void bordbuch_entry_to_fields (const PlaneLogEntry &bbe, bool no_letters=false)
 	throw (ex_write_error_document)
 	/*
 	 * Converts a blugbuch entry to the (global) blugbuch object_fields.
@@ -2144,11 +2144,11 @@ void bordbuch_entry_to_fields (const bordbuch_entry &bbe, bool no_letters=false)
 	 */
 {
 	// TODO don't use global variable but pass reference
-	// TODO replace object_field
-	// Iterate over all bordbuch_entry fields and, depending on the label, read
-	// the data from the bordbuch_entry.
-	QList<object_field>::const_iterator end=fields_bordbuch_entry.end ();
-	for (QList<object_field>::iterator field=fields_bordbuch_entry.begin (); field!=end; ++field)
+	// TODO replace ObjectField
+	// Iterate over all PlaneLogEntry fields and, depending on the label, read
+	// the data from the PlaneLogEntry.
+	QList<ObjectField>::const_iterator end=fields_bordbuch_entry.end ();
+	for (QList<ObjectField>::iterator field=fields_bordbuch_entry.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
@@ -2169,7 +2169,7 @@ void bordbuch_entry_to_fields (const bordbuch_entry &bbe, bool no_letters=false)
 	}
 }
 
-void flight_to_fields (QList<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text="")
+void flight_to_fields (QList<ObjectField> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const QString &none_text="")
 	throw (ex_write_error_document)
 	/*
 	 * Converts a flight list entry to a list of object_fields.
@@ -2269,8 +2269,8 @@ void flight_to_fields (QList<object_field> &fields, const Flight &f, const sk_fl
 	// Iterate over all fields and, depending on the label, read the data from
 	// the flight and write it to the field.
 	// Depending on the list used, not all of these fields are set.
-	QList<object_field>::const_iterator end=fields.end ();
-	for (QList<object_field>::iterator field=fields.begin (); field!=end; ++field)
+	QList<ObjectField>::const_iterator end=fields.end ();
+	for (QList<ObjectField>::iterator field=fields.begin (); field!=end; ++field)
 	{
 		QString label=(*field).get_label ();
 
@@ -2314,7 +2314,7 @@ void flight_to_fields (QList<object_field> &fields, const Flight &f, const sk_fl
 }
 
 
-void write_flugbuch (latex_document &ldoc, const QPtrList<flugbuch_entry> &flugbuch, const QString &date_text, const QString &person_name)
+void write_flugbuch (LatexDocument &ldoc, const QPtrList<PilotLogEntry> &flugbuch, const QString &date_text, const QString &person_name)
 	// XXX
 {
 	// TODO code duplication with csv writing
@@ -2327,13 +2327,13 @@ void write_flugbuch (latex_document &ldoc, const QPtrList<flugbuch_entry> &flugb
 	}
 	else
 	{
-		table tab;
+		Table tab;
 
 		// Make a header row
-		table_row header_row=table_row_from_fields (fields_flugbuch_entry, true);
+		TableRow header_row=table_row_from_fields (fields_flugbuch_entry, true);
 
-		// For each bordbuch entry, make a table row.
-		for (QPtrListIterator<flugbuch_entry> it (flugbuch); *it; ++it)
+		// For each bordbuch entry, make a Table row.
+		for (QPtrListIterator<PilotLogEntry> it (flugbuch); *it; ++it)
 		{
 			flugbuch_entry_to_fields (**it);
 			tab.push_back (table_row_from_fields (fields_flugbuch_entry));
@@ -2343,7 +2343,7 @@ void write_flugbuch (latex_document &ldoc, const QPtrList<flugbuch_entry> &flugb
 	}
 }
 
-void write_bordbuch (latex_document &ldoc, const QPtrList<bordbuch_entry> &bordbuch, const QString &date_text)
+void write_bordbuch (LatexDocument &ldoc, const QPtrList<PlaneLogEntry> &bordbuch, const QString &date_text)
 	// XXX
 {
 	// TODO code duplication with csv writing
@@ -2356,13 +2356,13 @@ void write_bordbuch (latex_document &ldoc, const QPtrList<bordbuch_entry> &bordb
 	}
 	else
 	{
-		table tab;
+		Table tab;
 
 		// Make a header row
-		table_row header_row=table_row_from_fields (fields_bordbuch_entry, true);
+		TableRow header_row=table_row_from_fields (fields_bordbuch_entry, true);
 
-		// For each bordbuch entry, make a table row.
-		for (QPtrListIterator<bordbuch_entry> it (bordbuch); *it; ++it)
+		// For each bordbuch entry, make a Table row.
+		for (QPtrListIterator<PlaneLogEntry> it (bordbuch); *it; ++it)
 		{
 			bordbuch_entry_to_fields (**it);
 			tab.push_back (table_row_from_fields (fields_bordbuch_entry));
@@ -2372,7 +2372,7 @@ void write_bordbuch (latex_document &ldoc, const QPtrList<bordbuch_entry> &bordb
 	}
 }
 
-void write_flightlist (latex_document &ldoc, const flight_list &flights, const QString &date_text)
+void write_flightlist (LatexDocument &ldoc, const FlightList &flights, const QString &date_text)
 //	// XXX
 {
 	// TODO code duplication with csv
@@ -2386,12 +2386,12 @@ void write_flightlist (latex_document &ldoc, const flight_list &flights, const Q
 	}
 	else
 	{
-		table tab;
+		Table tab;
 
 		// Make a header row
-		table_row header_row=table_row_from_fields (fields_flightlist_entry, true);
+		TableRow header_row=table_row_from_fields (fields_flightlist_entry, true);
 
-		// For each flight, make a table row.
+		// For each flight, make a Table row.
 		int num=0;
 		for (QPtrListIterator<Flight> it (flights); *it; ++it)
 		{
@@ -2410,10 +2410,10 @@ void write_flightlist (latex_document &ldoc, const flight_list &flights, const Q
 
 
 // Specific field handling
-void field_user_lock (QList<object_field> &fields)
+void field_user_lock (QList<ObjectField> &fields)
 {
-	QList<object_field>::const_iterator fields_end=fields.end ();
-	for (QList<object_field>::iterator field_it=fields.begin (); field_it!=fields_end; ++field_it)
+	QList<ObjectField>::const_iterator fields_end=fields.end ();
+	for (QList<ObjectField>::iterator field_it=fields.begin (); field_it!=fields_end; ++field_it)
 	{
 		if (session_access==dba_sk_user)
 		{
@@ -2441,18 +2441,18 @@ void field_user_lock (QList<object_field> &fields)
 
 
 // Generic field handling
-void write_fields_display (QList<object_field> fields)
+void write_fields_display (QList<ObjectField> fields)
 {
 	html_table table;
 
-	QList<object_field>::const_iterator end=fields.end ();
-	for (QList<object_field>::const_iterator it=fields.begin (); it!=end; ++it)
+	QList<ObjectField>::const_iterator end=fields.end ();
+	for (QList<ObjectField>::const_iterator it=fields.begin (); it!=end; ++it)
 	{
 		if ((*it).get_list_display ())
 		{
-			html_table_row row;
-			row.push_back (html_table_cell::text ((*it).get_caption ()+":"));
-			row.push_back (html_table_cell::text ((*it).make_display_text ()));
+			HtmlTableRow row;
+			row.push_back (HtmlTableCell::text ((*it).get_caption ()+":"));
+			row.push_back (HtmlTableCell::text ((*it).make_display_text ()));
 
 			table.push_back (row);
 		}
@@ -2461,15 +2461,15 @@ void write_fields_display (QList<object_field> fields)
 	document.write (table, true);
 }
 
-void fields_write_edit_table (const QList<object_field> &fields, bool create_new, const QString &ident_arg, const QString &ident_val)
+void fields_write_edit_table (const QList<ObjectField> &fields, bool create_new, const QString &ident_arg, const QString &ident_val)
 {
-	// For each field, write the table row
+	// For each field, write the Table row
 	// TODO html_table verwenden
 	document.start_tag ("table");
-	QList<object_field>::const_iterator fields_end=fields.end ();
-	for (QList<object_field>::const_iterator field_it=fields.begin (); field_it!=fields_end; ++field_it)
+	QList<ObjectField>::const_iterator fields_end=fields.end ();
+	for (QList<ObjectField>::const_iterator field_it=fields.begin (); field_it!=fields_end; ++field_it)
 	{
-		const object_field &field=*field_it;
+		const ObjectField &field=*field_it;
 
 		bool field_present                =create_new? field.create_present ()          : field.edit_present ();
 		bool field_display                =create_new? field.get_create_display ()      : field.get_edit_display ();
@@ -2500,21 +2500,21 @@ void fields_write_edit_table (const QList<object_field> &fields, bool create_new
 				// TODO auslagern dieses switches
 				else switch (field.get_data_type ())
 				{
-					case object_field::dt_string:
+					case ObjectField::dt_string:
 						document.write_input_text (field.get_label (), field.get_string ());
 						break;
-					case object_field::dt_bool:
+					case ObjectField::dt_bool:
 						// Problem with checkbox is that it is not possible to
 						// distinguish "off" and "not given".
 						document.write_input_select_bool (field.get_label (), field.get_bool ());
 						break;
-					case object_field::dt_db_id:
+					case ObjectField::dt_db_id:
 						document.write_input_text (field.get_label (), field.make_text ());
 						break;
-					case object_field::dt_password:
+					case ObjectField::dt_password:
 						document.write_input_password (field.get_label (), field.make_text ());
 						break;
-					case object_field::dt_special:
+					case ObjectField::dt_special:
 						break;
 				}
 			}
@@ -2525,7 +2525,7 @@ void fields_write_edit_table (const QList<object_field> &fields, bool create_new
 			if (!field_state.isEmpty ())
 			{
 				// The field can be edited using a link/button
-				argument_list args;
+				ArgumentList args;
 				args.set_value (ident_arg, ident_val);
 
 				if (field_edit)
@@ -2579,10 +2579,10 @@ void fields_write_edit_table (const QList<object_field> &fields, bool create_new
 	document.end_tag ("table");
 }
 
-void fields_from_cgi (QList<object_field> &fields)
+void fields_from_cgi (QList<ObjectField> &fields)
 {
-	QList<object_field>::const_iterator end=fields.end ();
-	for (QList<object_field>::iterator field=fields.begin (); field!=end; ++field)
+	QList<ObjectField>::const_iterator end=fields.end ();
+	for (QList<ObjectField>::iterator field=fields.begin (); field!=end; ++field)
 	{
 		const QString &label=(*field).get_label ();
 		if (CGI_HAS_F (label))
@@ -2606,7 +2606,7 @@ void fields_from_cgi (QList<object_field> &fields)
 	}
 }
 
-void fields_write_edit_form (const QList<object_field> &fields, const QString &url, const QString &next_state, bool create_new, const QString &ident_arg, const QString &ident_val)
+void fields_write_edit_form (const QList<ObjectField> &fields, const QString &url, const QString &next_state, bool create_new, const QString &ident_arg, const QString &ident_val)
 {
 	// TODO auslagern
 	document.start_tag ("form", "action=\""+url+"\" method=\"POST\"");
@@ -2615,7 +2615,7 @@ void fields_write_edit_form (const QList<object_field> &fields, const QString &u
 
 	// We need to tell the next state about the username, in addition to the
 	// standard Entity (session_id, debug, etc.)
-	argument_list additional_args;
+	ArgumentList additional_args;
 	additional_args.set_value (ident_arg, ident_val);
 	if (create_new) additional_args.set_value (arg_cgi_create_new);
 	document
@@ -2626,10 +2626,10 @@ void fields_write_edit_form (const QList<object_field> &fields, const QString &u
 	document.end_tag ("form");
 }
 
-void fields_write_to_session (const QList<object_field> &fields)
+void fields_write_to_session (const QList<ObjectField> &fields)
 {
-	QList<object_field>::const_iterator end=fields.end ();
-	for (QList<object_field>::const_iterator field=fields.begin (); field!=end; ++field)
+	QList<ObjectField>::const_iterator end=fields.end ();
+	for (QList<ObjectField>::const_iterator field=fields.begin (); field!=end; ++field)
 	{
 		const QString &label=(*field).get_label ();
 		const QString text=(*field).make_text ();
@@ -2637,10 +2637,10 @@ void fields_write_to_session (const QList<object_field> &fields)
 	}
 }
 
-void fields_read_from_session (QList<object_field> &fields)
+void fields_read_from_session (QList<ObjectField> &fields)
 {
-	QList<object_field>::const_iterator end=fields.end ();
-	for (QList<object_field>::iterator field=fields.begin (); field!=end; ++field)
+	QList<ObjectField>::const_iterator end=fields.end ();
+	for (QList<ObjectField>::iterator field=fields.begin (); field!=end; ++field)
 	{
 		const QString &label=(*field).get_label ();
 		if (session.args.has_argument (label))
@@ -2655,10 +2655,10 @@ void fields_read_from_session (QList<object_field> &fields)
 	}
 }
 
-void fields_delete_from_session (const QList<object_field> &fields)
+void fields_delete_from_session (const QList<ObjectField> &fields)
 {
-	QList<object_field>::const_iterator end=fields.end ();
-	for (QList<object_field>::const_iterator field=fields.begin (); field!=end; ++field)
+	QList<ObjectField>::const_iterator end=fields.end ();
+	for (QList<ObjectField>::const_iterator field=fields.begin (); field!=end; ++field)
 	{
 		const QString &label=(*field).get_label ();
 		session.args.remove (label);
@@ -2667,37 +2667,37 @@ void fields_delete_from_session (const QList<object_field> &fields)
 
 
 // State handler functions _STATE_
-what_next handler_login ()
+WhatNext handler_login ()
 {
 	html_table table;
-	html_table_row row;
+	HtmlTableRow row;
 
 	row.clear ();
-	row.push_back (html_table_cell::text ("Name:"));
-	row.push_back (html_table_cell (document.make_input_text (arg_cgi_username, CGI_READ (username))));
+	row.push_back (HtmlTableCell::text ("Name:"));
+	row.push_back (HtmlTableCell (document.make_input_text (arg_cgi_username, CGI_READ (username))));
 	table.push_back (row);
 
 	row.clear ();
-	row.push_back (html_table_cell::text ("Password:"));
-	row.push_back (html_table_cell (document.make_input_password (arg_cgi_password)));
+	row.push_back (HtmlTableCell::text ("Password:"));
+	row.push_back (HtmlTableCell (document.make_input_password (arg_cgi_password)));
 	table.push_back (row);
 
 	row.clear ();
-	row.push_back (html_table_cell (document.make_input_checkbox (arg_cgi_debug, "Debug", CGI_HAS (debug)), false, 2));
+	row.push_back (HtmlTableCell (document.make_input_checkbox (arg_cgi_debug, "Debug", CGI_HAS (debug)), false, 2));
 	table.push_back (row);
 
 	if (CGI_HAS (debug))
 	{
 		row.clear ();
-		row.push_back (html_table_cell (document.make_input_checkbox (arg_cgi_no_redirects, "Keine redirects", CGI_HAS (no_redirects)), false, 2));
+		row.push_back (HtmlTableCell (document.make_input_checkbox (arg_cgi_no_redirects, "Keine redirects", CGI_HAS (no_redirects)), false, 2));
 		table.push_back (row);
 	}
 
 	row.clear ();
 	// TODO: use the regular submit button and a hidden field, like everyone
 	// else. But don't use back_form hidden because it overwrites debug.
-//	row.push_back (html_table_cell::text (document.make_submit ("Anmelden"), false, 2));
-	row.push_back (html_table_cell (document.make_text_button (arg_cgi_new_state, web_do_login, "Anmelden"), false, 2));
+//	row.push_back (HtmlTableCell::text (document.make_submit ("Anmelden"), false, 2));
+	row.push_back (HtmlTableCell (document.make_text_button (arg_cgi_new_state, web_do_login, "Anmelden"), false, 2));
 	table.push_back (row);
 
 	document
@@ -2709,23 +2709,23 @@ what_next handler_login ()
 		.end_tag ("form")
 		;
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_do_login ()
+WhatNext handler_do_login ()
 {
 	// We may only do this via POST requests.
 	if (request_method!=rm_post)
-		return what_next::output_error ("Aus Sicherheitsgr�nden ist dieser Zugang nicht m�glich. Bitte die Anmeldeseite verwenden.");
+		return WhatNext::output_error ("Aus Sicherheitsgr�nden ist dieser Zugang nicht m�glich. Bitte die Anmeldeseite verwenden.");
 
 	// Check parameter: username. Must be present and non-empty.
-	if (!CGI_HAS (username)) return what_next::go_to_state (web_login, "Kein Benutzername angegeben", true);
+	if (!CGI_HAS (username)) return WhatNext::go_to_state (web_login, "Kein Benutzername angegeben", true);
 	QString username=CGI_READ (username);
-	if (username.isEmpty ()) return what_next::go_to_state (web_login, "Kein Benutzername angegeben", true);
-	if (!user_name_valid (username)) return what_next::go_to_state (web_login, "Benutzername enth�lt ung�ltige Zeichen", true);
+	if (username.isEmpty ()) return WhatNext::go_to_state (web_login, "Kein Benutzername angegeben", true);
+	if (!user_name_valid (username)) return WhatNext::go_to_state (web_login, "Benutzername enth�lt ung�ltige Zeichen", true);
 
 	// Check parameter password. Must be present and non-empty.
-	if (!CGI_HAS (password)) return what_next::go_to_state (web_login, "Kein Passwort angegeben", true);
+	if (!CGI_HAS (password)) return WhatNext::go_to_state (web_login, "Kein Passwort angegeben", true);
 	QString password=CGI_READ (password);
 	// Password empty is not an error, although it is for setting new
 	// passwords.
@@ -2735,7 +2735,7 @@ what_next handler_do_login ()
 	if (authenticate (username, password, error_message))
 	{
 		// Authentication succeeded. Try to create a session.
-		session=web_session::create ();
+		session=WebSession::create ();
 		if (session.is_ok ())
 		{
 			// Session created OK. Save the username (and possibly password) to
@@ -2745,21 +2745,21 @@ what_next handler_do_login ()
 			if (determine_user_class (username)==uc_mysql_user) SESSION_WRITE (password, password);
 
 			// Save the remote address to the session for later checking.
-			if (remote_address.isEmpty ()) return what_next::output_error ("remote_address ist leer (Programmfehler)");
+			if (remote_address.isEmpty ()) return WhatNext::output_error ("remote_address ist leer (Programmfehler)");
 			SESSION_WRITE (remote_address, remote_address);
 			return make_redirect (web_main_menu);
 		}
 		else
 		{
 			// Creating a session failed. Display the error.
-			return what_next::output_error ("Anlegen einer Sitzung fehlgeschlagen: "+session.get_error_description ());
+			return WhatNext::output_error ("Anlegen einer Sitzung fehlgeschlagen: "+session.get_error_description ());
 		}
 	}
 	else
 	{
 		// Authentication failed. Display the error and go back to the login
 		// state.
-		return what_next::go_to_state (web_login, error_message, true);
+		return WhatNext::go_to_state (web_login, error_message, true);
 	}
 }
 
@@ -2817,7 +2817,7 @@ void add_state_link_if_available (QStringList &link_list, const QString &state_l
 
 
 
-what_next handler_main_menu ()
+WhatNext handler_main_menu ()
 {
 	// TODO: hier eine Funktion, die einen korrekt titulierten Link auf den Zustand ausgibt.
 	// TODO: consider only listing entries which are acually available
@@ -2852,7 +2852,7 @@ what_next handler_main_menu ()
 	if (debug_enabled)
 	{
 		QStringList debug_list;
-		argument_list arg_url;
+		ArgumentList arg_url;
 		arg_url.set_value (arg_cgi_url, "http://www.google.de");
 		debug_list.push_back (document.text_link (back_link_url (web_test_redirect), "Redirect testen"));
 		debug_list.push_back (document.text_link (back_link_url (web_test_redirect, arg_url), "Redirect testen (mit URL)"));
@@ -2861,24 +2861,24 @@ what_next handler_main_menu ()
 
 	document.write_list (main_list);
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_logout ()
+WhatNext handler_logout ()
 {
 	if (session.is_ok ()) session.destroy ();
-	return what_next::do_redirect (absolute_url);
+	return WhatNext::do_redirect (absolute_url);
 }
 
-what_next handler_change_password ()
+WhatNext handler_change_password ()
 {
 	switch (determine_user_class (SESSION_READ (login_name)))
 	{
 		case uc_none:
-			return what_next::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_none nicht m�glich");
+			return WhatNext::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_none nicht m�glich");
 			break;
 		case uc_mysql_user:
-			return what_next::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_mysql_user nicht implementiert");
+			return WhatNext::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_mysql_user nicht implementiert");
 			// SET PASSWORD=PASSWORD ('foo');
 			break;
 		case uc_sk_user:
@@ -2908,10 +2908,10 @@ what_next handler_change_password ()
 		} break;
 	}
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_do_change_password ()
+WhatNext handler_do_change_password ()
 {
 	QString user_name=SESSION_READ (login_name);
 	QString old_password=CGI_READ (old_password);
@@ -2923,19 +2923,19 @@ what_next handler_do_change_password ()
 	switch (determine_user_class (user_name))
 	{
 		case uc_none:
-			return what_next::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_none nicht m�glich");
+			return WhatNext::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_none nicht m�glich");
 			break;
 		case uc_mysql_user:
-			return what_next::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_mysql_user nicht implementiert");
+			return WhatNext::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_mysql_user nicht implementiert");
 			// dann auch gespeichertes passwort (in session) aktualisieren
 			break;
 		case uc_sk_user:
 		{
-			if (user_name.isEmpty ()) return what_next::output_error ("login_name nicht gesetzt");
-			if (new_password_1!=new_password_2) return what_next::go_to_state (web_change_password, "Neue Passw�rter stimmen nicht �berein", true);
-			if (new_password_1.isEmpty ()) return what_next::go_to_state (web_change_password, "Neues Passwort nicht angegeben", true);
+			if (user_name.isEmpty ()) return WhatNext::output_error ("login_name nicht gesetzt");
+			if (new_password_1!=new_password_2) return WhatNext::go_to_state (web_change_password, "Neue Passw�rter stimmen nicht �berein", true);
+			if (new_password_1.isEmpty ()) return WhatNext::go_to_state (web_change_password, "Neues Passwort nicht angegeben", true);
 			QString error_message;
-			if (!authenticate (user_name, old_password, error_message)) return what_next::go_to_state (web_change_password, error_message, true);
+			if (!authenticate (user_name, old_password, error_message)) return WhatNext::go_to_state (web_change_password, error_message, true);
 
 			int ret=db.sk_user_change_password (user_name, new_password_1);
 			CHECK_DB_ERROR_ERROR;
@@ -2944,10 +2944,10 @@ what_next handler_do_change_password ()
 		} break;
 	}
 
-	return what_next::output_error ("Unbehandelte Benutzerklasse in handler_do_change_password (Programmfehler)");
+	return WhatNext::output_error ("Unbehandelte Benutzerklasse in handler_do_change_password (Programmfehler)");
 }
 
-what_next handler_list_persons ()
+WhatNext handler_list_persons ()
 {
 	document.write_paragraph (document.text_link (back_link_url (web_create_person), "Neu anlegen"));
 
@@ -2959,10 +2959,10 @@ what_next handler_list_persons ()
 
 	document.write_paragraph (QString::number (persons.count ())+" Personen");
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_edit_person ()
+WhatNext handler_edit_person ()
 {
 	require_club_admin ();
 
@@ -2975,10 +2975,10 @@ what_next handler_edit_person ()
 
 	DO_SUB_ACTION (treat_person (&person, tm_write_edit));
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_do_edit_person ()
+WhatNext handler_do_edit_person ()
 {
 	require_club_admin ();
 	// We don't require a specific club because there may be the need to edit
@@ -3009,13 +3009,13 @@ what_next handler_do_edit_person ()
 		for (QPtrListIterator<Person> it (persons); *it; ++it)
 			if ((*it)->id!=person.id) duplicate_club_id=true;
 
-		if (duplicate_club_id) return what_next::output_error ("Vereins-ID nicht eindeutig");
+		if (duplicate_club_id) return WhatNext::output_error ("Vereins-ID nicht eindeutig");
 	}
 
 
 	// Write the person
 	db_id ret_id=db.write_person (&person);
-	if (id_invalid (ret_id)) return what_next::output_error ("Aktualisieren fehlgeschlagen");
+	if (id_invalid (ret_id)) return WhatNext::output_error ("Aktualisieren fehlgeschlagen");
 
 	// If the "editable" state was changed (i. e., it is different from the one
 	// in the database), change it.
@@ -3024,23 +3024,23 @@ what_next handler_do_edit_person ()
 		if (person.editierbar!=old_editable)
 			db.make_person_editable (ret_id, person.editierbar);
 	}
-	catch (sk_db::ex_operation_failed &e)
+	catch (Database::ex_operation_failed &e)
 	{
-		return what_next::output_error (e.description (true));
+		return WhatNext::output_error (e.description (true));
 	}
-	catch (sk_db::ex_legacy_error &e)
+	catch (Database::ex_legacy_error &e)
 	{
-		return what_next::output_error (e.description (true));
+		return WhatNext::output_error (e.description (true));
 	}
-	catch (sk_exception &e)
+	catch (SkException &e)
 	{
-		return what_next::output_error (e.description ());
+		return WhatNext::output_error (e.description ());
 	}
 
 	return make_redirect (web_list_persons, make_anchor_name (id));
 }
 
-what_next handler_display_person ()
+WhatNext handler_display_person ()
 {
 	db_id id=CGI_READ (id).toLongLong ();
 	CHECK_ID;
@@ -3055,10 +3055,10 @@ what_next handler_display_person ()
 
 	// TODO Display flights of the person
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_delete_person ()
+WhatNext handler_delete_person ()
 {
 	require_club_admin ();
 
@@ -3066,7 +3066,7 @@ what_next handler_delete_person ()
 	CHECK_ID;
 
 	if (db.person_used (id))
-		return what_next::output_error ("Die Person kann nicht gel�scht werden, weil sie noch verwendet wird.");
+		return WhatNext::output_error ("Die Person kann nicht gel�scht werden, weil sie noch verwendet wird.");
 		// TODO where?
 
 	// Read the person
@@ -3082,7 +3082,7 @@ what_next handler_delete_person ()
 	document.end_paragraph ();
 
 	// TODO: nicht manuell
-	argument_list delete_args;
+	ArgumentList delete_args;
 	delete_args.set_value (arg_cgi_id, QString::number (person.id));
 	document
 		.write_paragraph ("OK?")
@@ -3093,10 +3093,10 @@ what_next handler_delete_person ()
 		.end_paragraph ()
 		;
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_do_delete_person ()
+WhatNext handler_do_delete_person ()
 {
 	int ret;
 	require_club_admin ();
@@ -3107,7 +3107,7 @@ what_next handler_do_delete_person ()
 	CHECK_ID;
 
 	if (db.person_used (id))
-		return what_next::output_error ("Die Person kann nicht gel�scht werden, weil sie noch verwendet wird.");
+		return WhatNext::output_error ("Die Person kann nicht gel�scht werden, weil sie noch verwendet wird.");
 		// TODO where?
 
 	// Delete
@@ -3117,7 +3117,7 @@ what_next handler_do_delete_person ()
 	return make_redirect (web_list_persons);
 }
 
-what_next handler_result ()
+WhatNext handler_result ()
 	// session arguments: message_text, message_error
 {
 	QString message_text=SESSION_READ (result_text);
@@ -3142,20 +3142,20 @@ what_next handler_result ()
 		}
 	}
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_create_person ()
+WhatNext handler_create_person ()
 {
 	require_club_admin ();
 	// We don't require a specific club because there may be the need to edit
 	// persons from external clubs.
 
 	DO_SUB_ACTION (treat_person (NULL, tm_write_create));
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_do_create_person ()
+WhatNext handler_do_create_person ()
 {
 	require_club_admin ();
 
@@ -3181,17 +3181,17 @@ what_next handler_do_create_person ()
 		for (QPtrListIterator<Person> it (persons); *it; ++it)
 			if ((*it)->id!=person.id) duplicate_club_id=true;
 
-		if (duplicate_club_id) return what_next::output_error ("Vereins-ID nicht eindeutig");
+		if (duplicate_club_id) return WhatNext::output_error ("Vereins-ID nicht eindeutig");
 	}
 
 	// Write the person
 	db_id id=db.write_person (&person);
-	if (id_invalid (id)) return what_next::output_error ("Anlegen fehlgeschlagen");
+	if (id_invalid (id)) return WhatNext::output_error ("Anlegen fehlgeschlagen");
 
 	return make_redirect (web_list_persons, make_anchor_name (id));
 }
 
-what_next handler_select_merge_person ()
+WhatNext handler_select_merge_person ()
 {
 	int ret;
 	require_club_admin ();
@@ -3209,7 +3209,7 @@ what_next handler_select_merge_person ()
 	document.write_paragraph ("Bitte die korrekte Person ausw�hlen:");
 
 	// For linking to the do_merge state, we need to pass the wrong person.
-	argument_list additional_args;
+	ArgumentList additional_args;
 	additional_args.set_value (arg_cgi_id, QString::number (person.id));
 
 	QPtrList<Person> persons; persons.setAutoDelete (true);
@@ -3219,10 +3219,10 @@ what_next handler_select_merge_person ()
 
 	document.write_paragraph (document.text_link (back_link_url (web_list_persons, make_anchor_name (person.id)), "Zur�ck zur Benutzerliste"));
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_merge_person ()
+WhatNext handler_merge_person ()
 {
 	int ret;
 
@@ -3233,7 +3233,7 @@ what_next handler_merge_person ()
 	CHECK_AN_ID (wrong_id, id);
 	CHECK_AN_ID (correct_id, correct_person);
 
-	if (correct_id==wrong_id) return what_next::go_to_state (web_select_merge_person, "Identische Person ausgew�hlt", true);
+	if (correct_id==wrong_id) return WhatNext::go_to_state (web_select_merge_person, "Identische Person ausgew�hlt", true);
 
 	// Write persons and get confirmation
 
@@ -3256,13 +3256,13 @@ what_next handler_merge_person ()
 	document.write_paragraph ("OK?");
 
 	// OK, merge
-	argument_list merge_args;
+	ArgumentList merge_args;
 	merge_args.set_value (arg_cgi_id, QString::number (wrong_id));
 	merge_args.set_value (arg_cgi_correct_person, QString::number (correct_person.id));
 	QString merge_link_target=back_link_url (web_do_merge_person, merge_args);	//, "Neu ausw�hlen";
 
 	// Back to selection
-	argument_list back_select_args;
+	ArgumentList back_select_args;
 	back_select_args.set_value (arg_cgi_id, QString::number (wrong_id));
 	QString back_select_link_target=back_link_url (web_select_merge_person, back_select_args); //, "Neu ausw�hlen");
 
@@ -3280,10 +3280,10 @@ what_next handler_merge_person ()
 		.end_paragraph ()
 		;
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_do_merge_person ()
+WhatNext handler_do_merge_person ()
 {
 	require_club_admin ();
 
@@ -3292,19 +3292,19 @@ what_next handler_do_merge_person ()
 	CHECK_AN_ID (wrong_id, id);
 	CHECK_AN_ID (correct_id, correct_person);
 
-	if (correct_id==wrong_id) return what_next::go_to_state (web_select_merge_person, "Identische Person ausgew�hlt", true);
+	if (correct_id==wrong_id) return WhatNext::go_to_state (web_select_merge_person, "Identische Person ausgew�hlt", true);
 
 	try
 	{
 		db.merge_person (correct_id, wrong_id);
 	}
-	catch (sk_db::ex_operation_failed &e)
+	catch (Database::ex_operation_failed &e)
 	{
-		return what_next::output_error (e.description (true));
+		return WhatNext::output_error (e.description (true));
 	}
-	catch (sk_exception &e)
+	catch (SkException &e)
 	{
-		return what_next::output_error (e.description ());
+		return WhatNext::output_error (e.description ());
 	}
 
 	SESSION_WRITE (one_time_message, "Person �berschrieben");
@@ -3313,11 +3313,11 @@ what_next handler_do_merge_person ()
 //
 
 // Contrary to the person_* handlers, the user_* handlers don't use treat_*
-// functions but object_field. The object_field concept is newer and cleaner,
+// functions but ObjectField. The ObjectField concept is newer and cleaner,
 // although I will admit that the functions making use of it are still longer.
 // Another difference is that the user_* handlers have a common function for
 // editing and creating. It is unknown whether is is an advantage.
-what_next handler_user_list ()
+WhatNext handler_user_list ()
 {
 	// List users
 
@@ -3332,15 +3332,15 @@ what_next handler_user_list ()
 
 	html_table table;
 
-	// Write the table header
+	// Write the Table header
 	table.push_back (make_table_header (fields_sk_user));
 
-	// For each user, write a table row.
+	// For each user, write a Table row.
 	QList<User>::const_iterator users_end=users.end ();
 	for (QList<User>::const_iterator user=users.begin (); user!=users_end; ++user)
 	{
 		sk_user_to_fields (*user);
-		html_table_row user_row=make_table_data_row (fields_sk_user);
+		HtmlTableRow user_row=make_table_data_row (fields_sk_user);
 
 		// Write the edit and delete cells
 		user_row.push_back (make_link_cell (web_user_edit, "Editieren", arg_cgi_username, (*user).username));
@@ -3353,19 +3353,19 @@ what_next handler_user_list ()
 	document.write (table);
 	document.write_paragraph (QString::number ((unsigned int)users.size ())+" Benutzer");
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_user_delete ()
+WhatNext handler_user_delete ()
 {
 	// Display user
 
 	require_club_admin ();
 
-	if (!CGI_HAS (username)) return what_next::output_error ("Kein Benutzername angegeben");
+	if (!CGI_HAS (username)) return WhatNext::output_error ("Kein Benutzername angegeben");
 	QString username=CGI_READ (username);
-	if (username.isEmpty ()) return what_next::output_error ("Benutzername ist leer");
-	if (determine_user_class (username)!=uc_sk_user) return what_next::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
+	if (username.isEmpty ()) return WhatNext::output_error ("Benutzername ist leer");
+	if (determine_user_class (username)!=uc_sk_user) return WhatNext::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
 
 	User user;
 	int ret=db.sk_user_get (user, username);
@@ -3385,19 +3385,19 @@ what_next handler_user_delete ()
 	write_delete_links (web_user_do_delete, arg_cgi_username, user.username, web_user_list, user.username);
 	document.end_paragraph ();
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_user_do_delete ()
+WhatNext handler_user_do_delete ()
 {
 	// Delete the user
 
 	require_club_admin ();
 
-	if (!CGI_HAS (username)) return what_next::output_error ("Kein Benutzername angegeben");
+	if (!CGI_HAS (username)) return WhatNext::output_error ("Kein Benutzername angegeben");
 	QString username=CGI_READ (username);
-	if (username.isEmpty ()) return what_next::output_error ("Benutzername ist leer");
-	if (determine_user_class (username)!=uc_sk_user) return what_next::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
+	if (username.isEmpty ()) return WhatNext::output_error ("Benutzername ist leer");
+	if (determine_user_class (username)!=uc_sk_user) return WhatNext::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
 	check_username (username);
 
 	User user_to_delete;
@@ -3413,18 +3413,18 @@ what_next handler_user_do_delete ()
 	return make_redirect (web_user_list);
 }
 
-what_next handler_user_add ()
+WhatNext handler_user_add ()
 {
 	// Permissions are checked by web_user_edit.
 	cgi_args.set_value (arg_cgi_create_new);
-	return what_next::go_to_state (web_user_edit).set_keep_title ();
+	return WhatNext::go_to_state (web_user_edit).set_keep_title ();
 }
 
-what_next handler_user_edit ()
+WhatNext handler_user_edit ()
 {
 	// TODO dass edit und add die gleiche Funktion ist, ist vielleicht doch
 	// nicht so geschickt gewesen? Mal sehen, wie kurz man die Funktion unter
-	// Verwendung von object_field bekommt.
+	// Verwendung von ObjectField bekommt.
 	bool create_new=false;
 	if (CGI_HAS (create_new)) create_new=true;
 	if (session.args.has_argument (arg_session_create_new)) create_new=true;
@@ -3444,7 +3444,7 @@ what_next handler_user_edit ()
 			username=session.args.get_value (field_user_username);
 		}
 
-		if (username.isEmpty ()) return what_next::output_error ("Kein Benutzername angegeben");
+		if (username.isEmpty ()) return WhatNext::output_error ("Kein Benutzername angegeben");
 		check_username (username);
 	}
 
@@ -3472,18 +3472,18 @@ what_next handler_user_edit ()
 	if (create_new && provides (session_access, dba_sk_admin))
 	{
 		// Find the club and person fields
-		QList<object_field>::iterator fields_end=fields_sk_user.end ();
-		QList<object_field>::iterator field_club=fields_end;
-		QList<object_field>::iterator field_person=fields_end;
-		for (QList<object_field>::iterator it=fields_sk_user.begin (); it!=fields_end; ++it)
+		QList<ObjectField>::iterator fields_end=fields_sk_user.end ();
+		QList<ObjectField>::iterator field_club=fields_end;
+		QList<ObjectField>::iterator field_person=fields_end;
+		for (QList<ObjectField>::iterator it=fields_sk_user.begin (); it!=fields_end; ++it)
 		{
 			if ((*it).get_label ()==field_user_club) field_club=it;
 			if ((*it).get_label ()==field_user_person) field_person=it;
 		}
 
 		// Check that the fields were found
-		if (field_club==fields_end) return what_next::output_error ("Vereinsfeld in fields_sk_user nicht gefunden (Programmfehler)");
-		if (field_person==fields_end) return what_next::output_error ("Personenfeld in fields_sk_user nicht gefunden (Programmfehler)");
+		if (field_club==fields_end) return WhatNext::output_error ("Vereinsfeld in fields_sk_user nicht gefunden (Programmfehler)");
+		if (field_person==fields_end) return WhatNext::output_error ("Personenfeld in fields_sk_user nicht gefunden (Programmfehler)");
 
 		// If the club is empty...
 		if ((*field_club).get_string ().trimmed().isEmpty ())
@@ -3518,10 +3518,10 @@ what_next handler_user_edit ()
 
 	document.write_paragraph (document.text_link (back_link_url (web_user_list, user.username), "Zur Benutzerliste"));
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_user_do_edit ()
+WhatNext handler_user_do_edit ()
 {
 	// Are we creating the user (as opposed to modifying it)?
 	bool create_new=CGI_HAS (create_new);
@@ -3540,7 +3540,7 @@ what_next handler_user_do_edit ()
 		if (create_new) session.args.set_value (arg_session_create_new);
 
 		// Now we can safely go to the selection state
-		return what_next::go_to_state (web_person_select, "Person ausw�hlen");
+		return WhatNext::go_to_state (web_person_select, "Person ausw�hlen");
 	}
 
 	require_club_admin ();
@@ -3562,7 +3562,7 @@ what_next handler_user_do_edit ()
 	{
 		// Create
 		username=user.username;
-		if (!user_name_valid (username)) return what_next::go_to_state (web_user_edit, "Benutzername enth�lt ung�ltige Zeichen", true);
+		if (!user_name_valid (username)) return WhatNext::go_to_state (web_user_edit, "Benutzername enth�lt ung�ltige Zeichen", true);
 
 		// TODO: handle these checks via lock_fields
 		if (user.perm_club_admin) require_sk_admin ("Nur der Startkladdenadministrator kann Vereinsadministratorrechte vergeben");
@@ -3585,17 +3585,17 @@ what_next handler_user_do_edit ()
 
 
 	if (user.perm_club_admin && user.club.isEmpty ())
-		return what_next::go_to_state (web_user_edit, "F�r einen Vereinsadmin ist ein Verein n�tig", true);
+		return WhatNext::go_to_state (web_user_edit, "F�r einen Vereinsadmin ist ein Verein n�tig", true);
 
 	// Check the username
-	if (username.isEmpty ()) return what_next::go_to_state (web_user_edit, "Kein Benutzername angegeben", true);
-	if (determine_user_class (username)!=uc_sk_user) return what_next::go_to_state (web_user_edit, "Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user", true);
+	if (username.isEmpty ()) return WhatNext::go_to_state (web_user_edit, "Kein Benutzername angegeben", true);
+	if (determine_user_class (username)!=uc_sk_user) return WhatNext::go_to_state (web_user_edit, "Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user", true);
 
 	if (!id_invalid (user.person))
 	{
 		Person person;
 		ret=db.get_person (&person, user.person);
-		if (ret==db_err_not_found) return what_next::go_to_state (web_user_edit, "Die Person "+QString::number (user.person)+" existiert nicht", true);
+		if (ret==db_err_not_found) return WhatNext::go_to_state (web_user_edit, "Die Person "+QString::number (user.person)+" existiert nicht", true);
 		CHECK_DB_ERROR_ERROR;
 
 		// TODO what about non-editable persons?
@@ -3617,13 +3617,13 @@ what_next handler_user_do_edit ()
 		// Determine and check the passwords
 		QString password_1=CGI_READ_F (field_user_password);
 		QString password_2=CGI_READ_F (field_user_password_repeat);
-		if (password_1.isEmpty ()) return what_next::go_to_state (web_user_edit, "Kein Passwort angegeben", true);
-		if (password_1!=password_2) return what_next::go_to_state (web_user_edit, "Passw�rter stimmen nicht �berein", true);
+		if (password_1.isEmpty ()) return WhatNext::go_to_state (web_user_edit, "Kein Passwort angegeben", true);
+		if (password_1!=password_2) return WhatNext::go_to_state (web_user_edit, "Passw�rter stimmen nicht �berein", true);
 
 		// Check if the user exists
 		ret=db.sk_user_exists (user.username);
 		CHECK_DB_ERROR_ERROR;
-		if (ret>0) return what_next::go_to_state (web_user_edit, "Der Benutzername \""+user.username+"\" existiert bereits", true);
+		if (ret>0) return WhatNext::go_to_state (web_user_edit, "Der Benutzername \""+user.username+"\" existiert bereits", true);
 
 		// Add the user
 		ret=db.sk_user_add (user, password_1);
@@ -3643,7 +3643,7 @@ what_next handler_user_do_edit ()
 		// Check if the user exists
 		ret=db.sk_user_exists (user.username);
 		CHECK_DB_ERROR_ERROR;
-		if (ret==0) return what_next::output_error ("Der Benutzername \""+user.username+"\" existiert nicht. Query: "+db.get_last_query ());
+		if (ret==0) return WhatNext::output_error ("Der Benutzername \""+user.username+"\" existiert nicht. Query: "+db.get_last_query ());
 
 		// Write the user to the database.
 		ret=db.sk_user_modify (user);
@@ -3653,7 +3653,7 @@ what_next handler_user_do_edit ()
 	return make_redirect (web_user_list, user.username);
 }
 
-what_next handler_user_change_password ()
+WhatNext handler_user_change_password ()
 {
 	int ret;
 	require_club_admin ();
@@ -3661,10 +3661,10 @@ what_next handler_user_change_password ()
 	// TODO this checking block occurs in multiple functions. Replace it by
 	// more generic functions throwing the ex_write_error_document std::exception.
 	// Then, make one function that does all these checks.
-	if (!CGI_HAS (username)) return what_next::output_error ("Kein Benutzername angegeben");
+	if (!CGI_HAS (username)) return WhatNext::output_error ("Kein Benutzername angegeben");
 	QString username=CGI_READ (username);
-	if (username.isEmpty ()) return what_next::output_error ("Benutzername ist leer");
-	if (determine_user_class (username)!=uc_sk_user) return what_next::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
+	if (username.isEmpty ()) return WhatNext::output_error ("Benutzername ist leer");
+	if (determine_user_class (username)!=uc_sk_user) return WhatNext::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
 	check_username (username);
 
 	document.write_paragraph ("Passwort�nderung f�r Benutzer "+username);
@@ -3679,21 +3679,21 @@ what_next handler_user_change_password ()
 
 	html_table table;
 
-	html_table_row row;
-	row.push_back (html_table_cell::text ("Passwort:"));
+	HtmlTableRow row;
+	row.push_back (HtmlTableCell::text ("Passwort:"));
 	row.push_back (document.make_input_password (arg_cgi_new_password_1));
 	table.push_back (row);
 
 	row.clear ();
-	row.push_back (html_table_cell::text ("Passwort wiederholen:"));
+	row.push_back (HtmlTableCell::text ("Passwort wiederholen:"));
 	row.push_back (document.make_input_password (arg_cgi_new_password_2));
 	table.push_back (row);
 
 	row.clear ();
-	row.push_back (html_table_cell (document.make_submit ("�ndern"), false, 2));
+	row.push_back (HtmlTableCell (document.make_submit ("�ndern"), false, 2));
 	table.push_back (row);
 
-	argument_list additional_args;
+	ArgumentList additional_args;
 	additional_args.set_value (arg_cgi_username, username);
 
 	document.start_tag ("form", "action=\""+relative_url+"\" method=\"POST\"");
@@ -3702,29 +3702,29 @@ what_next handler_user_change_password ()
 	document.write_hidden_fields (additional_args);
 	document.end_tag ("form");
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_user_do_change_password ()
+WhatNext handler_user_do_change_password ()
 {
 	int ret;
 	require_club_admin ();
 
-	if (!CGI_HAS (username)) return what_next::output_error ("Kein Benutzername angegeben");
-	if (!CGI_HAS (new_password_1)) return what_next::output_error ("Passwort nicht angegeben");
-	if (!CGI_HAS (new_password_2)) return what_next::output_error ("Passwortwiederholung nicht angegeben");
+	if (!CGI_HAS (username)) return WhatNext::output_error ("Kein Benutzername angegeben");
+	if (!CGI_HAS (new_password_1)) return WhatNext::output_error ("Passwort nicht angegeben");
+	if (!CGI_HAS (new_password_2)) return WhatNext::output_error ("Passwortwiederholung nicht angegeben");
 
 	QString username=CGI_READ (username);
 	QString new_password_1=CGI_READ (new_password_1);
 	QString new_password_2=CGI_READ (new_password_2);
 	check_username (username);
 
-	if (username.isEmpty ()) return what_next::output_error ("Benutzername ist leer");
-	if (determine_user_class (username)!=uc_sk_user) return what_next::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
+	if (username.isEmpty ()) return WhatNext::output_error ("Benutzername ist leer");
+	if (determine_user_class (username)!=uc_sk_user) return WhatNext::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
 
 	// TODO add fuction for password checks
-	if (new_password_1.isEmpty ()) return what_next::go_to_state (web_user_change_password, "Passwort nicht angegeben", true);
-	if (new_password_2!=new_password_1) return what_next::go_to_state (web_user_change_password, "Passw�rter stimmen nicht �berein", true);
+	if (new_password_1.isEmpty ()) return WhatNext::go_to_state (web_user_change_password, "Passwort nicht angegeben", true);
+	if (new_password_2!=new_password_1) return WhatNext::go_to_state (web_user_change_password, "Passw�rter stimmen nicht �berein", true);
 
 	// Get the user
 	User user;
@@ -3741,12 +3741,12 @@ what_next handler_user_do_change_password ()
 	SESSION_WRITE (one_time_message, "Passwort�nderung erfolgt");
 
 	// For linking back
-	argument_list args;
+	ArgumentList args;
 	args.set_value (arg_cgi_username, username);
 	return make_redirect (web_user_edit, args);
 }
 
-what_next handler_person_select ()
+WhatNext handler_person_select ()
 {
 	// TODO code duplication with handler_list_persons
 	// TODO consider writing a redirect here to jump the the anchor of the
@@ -3759,36 +3759,36 @@ what_next handler_person_select ()
 
 	DO_SUB_ACTION (write_person_list (persons, true, web_user_edit, field_user_person, NULL, false, true));
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_master_data_import ()
+WhatNext handler_master_data_import ()
 {
 	// TODO allow sk_admin to upload, specifying the club.
 	require_sk_user ();
 	require_club_admin ();
 
 	// TODO auslagern
-	document.start_tag ("form", "action=\""+relative_url+"\" method=\"POST\" enctype=\""+http_document::mime_type_multipart_form_data+"\"");
+	document.start_tag ("form", "action=\""+relative_url+"\" method=\"POST\" enctype=\""+HttpDocument::mime_type_multipart_form_data+"\"");
 
-	argument_list data_types;
+	ArgumentList data_types;
 	data_types.set_value (arg_cgi_data_type_person, "Personen");
 
 	html_table table;
-	html_table_row row;
+	HtmlTableRow row;
 
 	row.clear ();
-	row.push_back (html_table_cell::text ("Datentyp"));
-	row.push_back (html_table_cell (document.make_input_select (arg_cgi_data_type, data_types, CGI_READ (data_type))));
+	row.push_back (HtmlTableCell::text ("Datentyp"));
+	row.push_back (HtmlTableCell (document.make_input_select (arg_cgi_data_type, data_types, CGI_READ (data_type))));
 	table.push_back (row);
 
 	row.clear ();
-	row.push_back (html_table_cell::text ("Datei"));
-	row.push_back (html_table_cell (document.make_input_file (arg_cgi_file)));
+	row.push_back (HtmlTableCell::text ("Datei"));
+	row.push_back (HtmlTableCell (document.make_input_file (arg_cgi_file)));
 	table.push_back (row);
 
 	row.clear ();
-	row.push_back (html_table_cell (document.make_submit ("Absenden"), false, 2));
+	row.push_back (HtmlTableCell (document.make_submit ("Absenden"), false, 2));
 	table.push_back (row);
 
 	document.write_paragraph ("Bitte den Datentyp und die Datei ausw�hlen. Die Daten werden dann eingelesen und �berpr�ft.");
@@ -3797,38 +3797,38 @@ what_next handler_master_data_import ()
 
 	document.end_tag ("form");
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_master_data_upload ()
+WhatNext handler_master_data_upload ()
 {
 	require_sk_user ();
 
 	// Don't check club admin here, this state does not need database access.
 	if (CGI_READ (data_type)!=arg_cgi_data_type_person)
-		return what_next::output_error ("Ung�ltiger Datentyp");
+		return WhatNext::output_error ("Ung�ltiger Datentyp");
 
 	SESSION_WRITE (master_data_file, CGI_READ (file));
 	SESSION_WRITE (master_data_filename, filenames.get_value (arg_cgi_file));
 
-	argument_list additional_args;
+	ArgumentList additional_args;
 	additional_args.set_value (arg_cgi_data_type, CGI_READ (data_type));
 	return make_redirect (web_master_data_check, additional_args);
 }
 
-what_next handler_master_data_check ()
+WhatNext handler_master_data_check ()
 {
 	require_sk_user ();
 	require_club_admin ();
 
 	if (CGI_READ (data_type)!=arg_cgi_data_type_person)
-		return what_next::output_error ("Ung�ltiger Datentyp");
+		return WhatNext::output_error ("Ung�ltiger Datentyp");
 
 	// If there is not data file, the page was probably reloaded after another
 	// state was activated. Silently redirect to the form.
 	if (!SESSION_HAS (master_data_file))
 	{
-		argument_list additional_args;
+		ArgumentList additional_args;
 		additional_args.set_value (arg_cgi_data_type_person, CGI_READ (data_type));
 		return make_redirect (web_master_data_import, additional_args);
 	}
@@ -3836,7 +3836,7 @@ what_next handler_master_data_check ()
 	QString filename=SESSION_READ (master_data_filename);
 	if (filename.isEmpty ())
 		// TODO besser zur�ck in den Auswahlzustand, aber Felder voreintragen
-		return what_next::output_error ("Keine Datei angegeben");
+		return WhatNext::output_error ("Keine Datei angegeben");
 
 	QString csv=SESSION_READ (master_data_file);
 	QPtrList<Person> persons; persons.setAutoDelete (true);
@@ -3846,17 +3846,17 @@ what_next handler_master_data_check ()
 	DO_SUB_ACTION (csv_to_persons (csv, persons, session_user->club));
 
 	if (persons.isEmpty ())
-		return what_next::output_error ("Keine Personen in der CSV-Datei gefunden");
+		return WhatNext::output_error ("Keine Personen in der CSV-Datei gefunden");
 
 	// Check the persons for errors.
-	QList<sk_db::import_message> messages;
+	QList<Database::import_message> messages;
 	db.import_check (persons, messages);
 	db.import_identify (persons, messages);
 
 	// Count the fatal errors
 	unsigned int num_fatal_errors=0;
-	QList<sk_db::import_message>::const_iterator end=messages.end ();
-	for (QList<sk_db::import_message>::const_iterator it=messages.begin (); it!=end; ++it)
+	QList<Database::import_message>::const_iterator end=messages.end ();
+	for (QList<Database::import_message>::const_iterator it=messages.begin (); it!=end; ++it)
 		if ((*it).fatal ()) ++num_fatal_errors;
 
 	// If there are errors, display them.
@@ -3872,11 +3872,11 @@ what_next handler_master_data_check ()
 			.end_paragraph ()
 			;
 
-		return what_next::output_document ();
+		return WhatNext::output_document ();
 	}
 
 	// There are no fatal errors. If there are any messages left, these are
-	// displayed to the user in a separate table.
+	// displayed to the user in a separate Table.
 	if (!messages.empty ())
 	{
 		document.write_paragraph (html_escape ("Bitte folgende Personen speziell �berpr�fen:"));
@@ -3888,7 +3888,7 @@ what_next handler_master_data_check ()
 	DO_SUB_ACTION (write_person_list (persons, false, "", "", NULL, true));
 
 	// Write a link to the next state for acepting or back to the selection state
-	argument_list additional_args;
+	ArgumentList additional_args;
 	additional_args.set_value (arg_cgi_data_type, CGI_READ (data_type));
 	document
 		.start_paragraph ()
@@ -3903,19 +3903,19 @@ what_next handler_master_data_check ()
 		document.write_preformatted (SESSION_READ (master_data_file));
 	}
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_master_data_do_import ()
+WhatNext handler_master_data_do_import ()
 {
 	require_sk_user ();
 	require_club_admin ();
 
 	if (!SESSION_HAS (master_data_file))
-		return what_next::output_error ("Keine Daten vorhanden");
+		return WhatNext::output_error ("Keine Daten vorhanden");
 
 	if (CGI_READ (data_type)!=arg_cgi_data_type_person)
-		return what_next::output_error ("Ung�ltiger Datentyp");
+		return WhatNext::output_error ("Ung�ltiger Datentyp");
 
 	QString csv=SESSION_READ (master_data_file);
 	QPtrList<Person> persons; persons.setAutoDelete (true);
@@ -3926,24 +3926,24 @@ what_next handler_master_data_do_import ()
 	{
 		db.import_persons (persons);
 	}
-	catch (sk_db::import_message &m)
+	catch (Database::import_message &m)
 	{
-		return what_next::output_error ("Problem beim Importieren: "+m.description (true));
+		return WhatNext::output_error ("Problem beim Importieren: "+m.description (true));
 	}
-	catch (sk_exception &e)
+	catch (SkException &e)
 	{
-		return what_next::output_error (e.description (true));
+		return WhatNext::output_error (e.description (true));
 	}
 
 	SESSION_WRITE (one_time_message, QString::number (persons.count ())+" Personen eingespielt");
 	return make_redirect (web_list_persons);
 }
 
-what_next handler_person_logbook ()
+WhatNext handler_person_logbook ()
 {
 	require_sk_user ("Dem Benutzer "+session_username+" ist keine Person zugeordnet. Bitte als anderer Benutzer anmelden.");
 	if (id_invalid (session_user->person))
-		return what_next::output_error ("Dem Benutzer ist keine Person zugeordnet. Ein Vereinsadministrator oder der Startkladdenadministrator muss diese Zuordnung vornehmen.");
+		return WhatNext::output_error ("Dem Benutzer ist keine Person zugeordnet. Ein Vereinsadministrator oder der Startkladdenadministrator muss diese Zuordnung vornehmen.");
 
 	Person person;
 	int ret=db.get_person (&person, session_user->person);
@@ -3955,9 +3955,9 @@ what_next handler_person_logbook ()
 	document.start_tag ("form", "action=\""+relative_url+"\" method=\"GET\"");
 
 	html_table table;
-	html_table_row row;
+	HtmlTableRow row;
 
-	argument_list formats;
+	ArgumentList formats;
 	formats.set_value (arg_cgi_format_html, "HTML");
 	formats.set_value (arg_cgi_format_csv, "CSV");
 	formats.set_value (arg_cgi_format_pdf, "PDF");
@@ -3967,7 +3967,7 @@ what_next handler_person_logbook ()
 	add_date_inputs (table, true);
 
 	// TODO: this list should be part of the logbook class
-	argument_list fims;
+	ArgumentList fims;
 	fims.set_value (arg_cgi_flight_instructor_mode_no, "Nein");
 	fims.set_value (arg_cgi_flight_instructor_mode_strict, "Streng");
 	fims.set_value (arg_cgi_flight_instructor_mode_loose, "Locker");
@@ -3996,10 +3996,10 @@ what_next handler_person_logbook ()
 		;
 
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_do_person_logbook ()
+WhatNext handler_do_person_logbook ()
 {
 	// TODO This function is too large. Need more abstraction, for example a
 	// counterpart to add_date_inputs.
@@ -4008,7 +4008,7 @@ what_next handler_do_person_logbook ()
 	// it.
 	require_sk_user ();
 	db_id person_id=session_user->person;
-	if (id_invalid (person_id)) return what_next::output_error ("Dem Benutzer ist keine Person zugeordnet.");
+	if (id_invalid (person_id)) return WhatNext::output_error ("Dem Benutzer ist keine Person zugeordnet.");
 
 	// Get the person.
 	Person person;
@@ -4020,29 +4020,29 @@ what_next handler_do_person_logbook ()
 	QString date_spec=CGI_READ (date_spec);
 	QString fim_text=CGI_READ (flight_instructor_mode);
 
-	if (format.isEmpty ()) return what_next::output_error ("Kein Format angegeben");
-	if (date_spec.isEmpty ()) return what_next::output_error ("Kein Datumsmodus angegeben");
-	if (fim_text.isEmpty ()) return what_next::output_error ("Kein Fluglehrermodus angegeben");
+	if (format.isEmpty ()) return WhatNext::output_error ("Kein Format angegeben");
+	if (date_spec.isEmpty ()) return WhatNext::output_error ("Kein Datumsmodus angegeben");
+	if (fim_text.isEmpty ()) return WhatNext::output_error ("Kein Fluglehrermodus angegeben");
 
 	// Determine the flight instructor mode
-	flugbuch_entry::flight_instructor_mode fim=flugbuch_entry::fim_no;
+	PilotLogEntry::flight_instructor_mode fim=PilotLogEntry::fim_no;
 	if (fim_text==arg_cgi_flight_instructor_mode_no)
-		fim=flugbuch_entry::fim_no;
+		fim=PilotLogEntry::fim_no;
 	else if (fim_text==arg_cgi_flight_instructor_mode_strict)
-		fim=flugbuch_entry::fim_strict;
+		fim=PilotLogEntry::fim_strict;
 	else if (fim_text==arg_cgi_flight_instructor_mode_loose)
-		fim=flugbuch_entry::fim_loose;
+		fim=PilotLogEntry::fim_loose;
 	else
-		return what_next::output_error ("Unbekannter Fluglehrermodus "+fim_text);
+		return WhatNext::output_error ("Unbekannter Fluglehrermodus "+fim_text);
 
-	flight_list flights; flights.setAutoDelete (true);
+	FlightList flights; flights.setAutoDelete (true);
 	QString date_text;
 
 	// Start the filename
 	QString filename="flugbuch_"+person.vorname+"-"+person.nachname+"_";
 
 	// Step 1: read the flights we are interested in from the database.
-	// TODO make sk_db frontend function for listing.
+	// TODO make Database frontend function for listing.
 	// TODO remove QDate Entity
 	if (date_spec==arg_cgi_date_spec_today)
 	{
@@ -4054,52 +4054,52 @@ what_next handler_do_person_logbook ()
 		filename.append (date.text ());
 
 		// List the flights.
-		db.list_flights (flights, condition_t (cond_flight_person_date, person_id, &q_date));
+		db.list_flights (flights, Condition (cond_flight_person_date, person_id, &q_date));
 	}
 	else if (date_spec==arg_cgi_date_spec_single)
 	{
 		// Read and check the date.
 		sk_date date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
-		if (date.is_invalid ()) return what_next::output_error ("Das angegebene Datum ist ung�ltig.");
+		if (date.is_invalid ()) return WhatNext::output_error ("Das angegebene Datum ist ung�ltig.");
 		QDate q_date=(QDate)date;
 		date_text=date.text ();
 		filename.append (date.text ());
 
 		// List the flights.
-		db.list_flights (flights, condition_t (cond_flight_person_date, person_id, &q_date));
+		db.list_flights (flights, Condition (cond_flight_person_date, person_id, &q_date));
 	}
 	else if (date_spec==arg_cgi_date_spec_range)
 	{
 		// Read and check the start date.
 		sk_date start_date=date_from_cgi (arg_cgi_date_start_year, arg_cgi_date_start_month, arg_cgi_date_start_day);
-		if (start_date.is_invalid ()) return what_next::output_error ("Das angegebene Anfangsdatum ist ung�ltig.");
+		if (start_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Anfangsdatum ist ung�ltig.");
 		QDate q_start_date=(QDate)start_date;
 
 		// Read and check the end date.
 		sk_date end_date=date_from_cgi (arg_cgi_date_end_year, arg_cgi_date_end_month, arg_cgi_date_end_day);
-		if (end_date.is_invalid ()) return what_next::output_error ("Das angegebene Enddatum ist ung�ltig.");
+		if (end_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Enddatum ist ung�ltig.");
 		QDate q_end_date=(QDate)end_date;
 
-		if (end_date<start_date) return what_next::output_error ("Das Enddatum liegt vor dem Anfangsdatum.");
+		if (end_date<start_date) return WhatNext::output_error ("Das Enddatum liegt vor dem Anfangsdatum.");
 		date_text=start_date.text ()+" bis "+end_date.text ();
 		filename.append (start_date.text ()+"_"+end_date.text ());
 
 		// List the flights.
-		db.list_flights (flights, condition_t (cond_flight_person_date_range, person_id, &q_start_date, &q_end_date));
+		db.list_flights (flights, Condition (cond_flight_person_date_range, person_id, &q_start_date, &q_end_date));
 	}
 	else
 	{
-		return what_next::output_error ("Unbekannter Datumsmodus \""+date_spec+"\"");
+		return WhatNext::output_error ("Unbekannter Datumsmodus \""+date_spec+"\"");
 	}
 
 	// Step 2: Make the personal logbook.
-	QPtrList<flugbuch_entry> flugbuch; flugbuch.setAutoDelete (true);
+	QPtrList<PilotLogEntry> flugbuch; flugbuch.setAutoDelete (true);
 	// We pass an empty QDate here because we already filtered for date above.
 	make_flugbuch_person (flugbuch, &db, QDate (), &person, flights, fim);
 
 
 	// Step 3: Output the logbook.
-	// We have got a QList<flugbuch_entry>.
+	// We have got a QList<PilotLogEntry>.
 	if (format==arg_cgi_format_html)
 	{
 		document.write_paragraph ("Flugbuchabfrage f�r "+person.text_name ()+", "+date_text);
@@ -4110,17 +4110,17 @@ what_next handler_do_person_logbook ()
 		}
 		else
 		{
-			// Convert QList<flugbuch_entry> to an html_table row by row.
+			// Convert QList<PilotLogEntry> to an html_table row by row.
 			html_table table;
 
-			// Write the table header
+			// Write the Table header
 			table.push_back (make_table_header (fields_flugbuch_entry));
 
-			// For each flugbuch entry, write a table row.
-			for (QPtrListIterator<flugbuch_entry> it (flugbuch); *it; ++it)
+			// For each flugbuch entry, write a Table row.
+			for (QPtrListIterator<PilotLogEntry> it (flugbuch); *it; ++it)
 			{
 				flugbuch_entry_to_fields (**it);
-				html_table_row user_row=make_table_data_row (fields_flugbuch_entry);
+				HtmlTableRow user_row=make_table_data_row (fields_flugbuch_entry);
 
 				// End of row
 				table.push_back (user_row);
@@ -4130,64 +4130,64 @@ what_next handler_do_person_logbook ()
 			document.write_paragraph (QString::number (flugbuch.count ())+" Eintr�ge");
 		}
 
-		return what_next::output_document ();
+		return WhatNext::output_document ();
 	}
 	else if (format==arg_cgi_format_csv)
 	{
-		// Convert QList<flugbuch_entry> to a table row by row.
-		table tab;
+		// Convert QList<PilotLogEntry> to a Table row by row.
+		Table tab;
 
 		// Add the header
 		tab.push_back (table_row_from_fields (fields_flugbuch_entry, true));
 
-		// For each flugbuch entry, make a table row.
-		for (QPtrListIterator<flugbuch_entry> it (flugbuch); *it; ++it)
+		// For each flugbuch entry, make a Table row.
+		for (QPtrListIterator<PilotLogEntry> it (flugbuch); *it; ++it)
 		{
 			flugbuch_entry_to_fields (**it, true);
 			tab.push_back (table_row_from_fields (fields_flugbuch_entry));
 		}
 
 		filename.append (".csv");
-		return what_next::output_raw_document (tab.csv (opts.csv_quote), http_document::mime_type_csv, filename, "Flugbuch f�r "+person.text_name ());
+		return WhatNext::output_raw_document (tab.csv (opts.csv_quote), HttpDocument::mime_type_csv, filename, "Flugbuch f�r "+person.text_name ());
 	}
 	else if (format==arg_cgi_format_latex)
 	{
-		latex_document ldoc;
+		LatexDocument ldoc;
 		write_flugbuch (ldoc, flugbuch, date_text, person.text_name ());
 
 		filename.append (".tex");
-		return what_next::output_raw_document (ldoc.get_string (), http_document::mime_type_plaintext, filename, "Flugbuch f�r "+person.text_name ());
+		return WhatNext::output_raw_document (ldoc.get_string (), HttpDocument::mime_type_plaintext, filename, "Flugbuch f�r "+person.text_name ());
 	}
 	else if (format==arg_cgi_format_pdf)
 	{
-		latex_document ldoc;
+		LatexDocument ldoc;
 		write_flugbuch (ldoc, flugbuch, date_text, person.text_name ());
 
 		filename.append (".pdf");
 		try
 		{
 			QString pdf=ldoc.make_pdf ();
-			return what_next::output_raw_document (pdf, http_document::mime_type_pdf, filename, "Flugbuch f�r "+person.text_name ());
+			return WhatNext::output_raw_document (pdf, HttpDocument::mime_type_pdf, filename, "Flugbuch f�r "+person.text_name ());
 		}
-		catch (latex_document::ex_command_failed &e)
+		catch (LatexDocument::ex_command_failed &e)
 		{
-			return what_next::output_error (e.description ()+"\nBefehl: "+e.command+"\n\nAusgabe:\n"+e.output+"\n\nDokument:\n"+e.document);
+			return WhatNext::output_error (e.description ()+"\nBefehl: "+e.command+"\n\nAusgabe:\n"+e.output+"\n\nDokument:\n"+e.document);
 		}
-		catch (sk_exception &e)
+		catch (SkException &e)
 		{
-			return what_next::output_error (e.description ());
+			return WhatNext::output_error (e.description ());
 		}
 	}
 	else
 	{
-		return what_next::output_error ("\""+format+"\"? Komisches Format. Kenne ich nicht.");
+		return WhatNext::output_error ("\""+format+"\"? Komisches Format. Kenne ich nicht.");
 	}
 
 
-	return what_next::output_error ("Unbehandelter Fall in handler_do_person_logbook ()");
+	return WhatNext::output_error ("Unbehandelter Fall in handler_do_person_logbook ()");
 }
 
-what_next handler_plane_logbook ()
+WhatNext handler_plane_logbook ()
 {
 	// Access without session is possible from local hosts. For other hosts, we
 	// need a session. This requirement is checked in do_next.
@@ -4203,15 +4203,15 @@ what_next handler_plane_logbook ()
 	document.write (back_form_hidden (web_do_plane_logbook));
 	document.end_tag ("form");
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_do_plane_logbook ()
+WhatNext handler_do_plane_logbook ()
 {
 	// Access without session is possible from local hosts. For other hosts, we
 	// need a session. This requirement is checked in do_next.
 
-	flight_list flights;
+	FlightList flights;
 	flights.setAutoDelete (true);
 	QPtrList<Plane> planes;
 	planes.setAutoDelete (true);
@@ -4219,7 +4219,7 @@ what_next handler_do_plane_logbook ()
 
 	QString date_spec=CGI_READ (date_spec);
 	if (date_spec.isEmpty ())
-		return what_next::output_error ("Kein Datumsmodus angegeben");
+		return WhatNext::output_error ("Kein Datumsmodus angegeben");
 
 	// TODO!: more abstraction
 	// Read the flights we are interested in from the database.
@@ -4236,15 +4236,15 @@ what_next handler_do_plane_logbook ()
 		// Read and check the date.
 		date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
 		if (date.is_invalid ())
-			return what_next::output_error ("Das angegebene Datum ist ung�ltig.");
+			return WhatNext::output_error ("Das angegebene Datum ist ung�ltig.");
 	}
 	else if (date_spec==arg_cgi_date_spec_range)
 	{
-		return what_next::output_error ("Ung�ltiger Datumsmodus \""+date_spec+"\"");
+		return WhatNext::output_error ("Ung�ltiger Datumsmodus \""+date_spec+"\"");
 	}
 	else
 	{
-		return what_next::output_error ("Unbekannter Datumsmodus \""+date_spec+"\"");
+		return WhatNext::output_error ("Unbekannter Datumsmodus \""+date_spec+"\"");
 	}
 
 	// Make the date and the file name
@@ -4269,7 +4269,7 @@ what_next handler_do_plane_logbook ()
 	make_unique_club_list (club_list, planes);
 
 	// Make the logbook
-	latex_document ldoc;
+	LatexDocument ldoc;
 	ldoc.no_section_numbers=true;
 
 	for (int i=0; i<club_list.size (); ++i)
@@ -4277,8 +4277,8 @@ what_next handler_do_plane_logbook ()
 		QString c=club_list[i];
 
 		// Generate the bordbuch
-		QPtrList<bordbuch_entry> bordbuch; bordbuch.setAutoDelete (true);
-			QPtrList<bordbuch_entry> bb;
+		QPtrList<PlaneLogEntry> bordbuch; bordbuch.setAutoDelete (true);
+			QPtrList<PlaneLogEntry> bb;
 		make_bordbuch_day (bordbuch, &db, q_date, planes, flights, &c);
 
 		if (!bordbuch.isEmpty ())
@@ -4299,21 +4299,21 @@ what_next handler_do_plane_logbook ()
 	try
 	{
 		QString pdf=ldoc.make_pdf ();
-		return what_next::output_raw_document (pdf, http_document::mime_type_pdf, filename, "Bordb�cher f�r "+date_text);
+		return WhatNext::output_raw_document (pdf, HttpDocument::mime_type_pdf, filename, "Bordb�cher f�r "+date_text);
 	}
-	catch (latex_document::ex_command_failed &e)
+	catch (LatexDocument::ex_command_failed &e)
 	{
-		return what_next::output_error (e.description ()+"\nBefehl: "+e.command+"\n\nAusgabe:\n"+e.output+"\n\nDokument:\n"+e.document);
+		return WhatNext::output_error (e.description ()+"\nBefehl: "+e.command+"\n\nAusgabe:\n"+e.output+"\n\nDokument:\n"+e.document);
 	}
-	catch (sk_exception &e)
+	catch (SkException &e)
 	{
-		return what_next::output_error (e.description ());
+		return WhatNext::output_error (e.description ());
 	}
 
-	return what_next::output_error ("Unbehandelter Fall in handler_do_person_logbook ()");
+	return WhatNext::output_error ("Unbehandelter Fall in handler_do_person_logbook ()");
 }
 
-what_next handler_flightlist ()
+WhatNext handler_flightlist ()
 {
 	// Access without session is possible from local hosts. For other hosts, we
 	// need a session. This requirement is checked in do_next.
@@ -4330,20 +4330,20 @@ what_next handler_flightlist ()
 	document.write (back_form_hidden (web_do_flightlist));
 	document.end_tag ("form");
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_do_flightlist ()
+WhatNext handler_do_flightlist ()
 {
 	// Access without session is possible from local hosts. For other hosts, we
 	// need a session. This requirement is checked in do_next.
 
-	flight_list flights; flights.setAutoDelete (true);
+	FlightList flights; flights.setAutoDelete (true);
 	QString date_text;
 
 	// TODO this pattern occurs quite often. Make function or something.
 	QString date_spec=CGI_READ (date_spec);
-	if (date_spec.isEmpty ()) return what_next::output_error ("Kein Datumsmodus angegeben");
+	if (date_spec.isEmpty ()) return WhatNext::output_error ("Kein Datumsmodus angegeben");
 
 	// Read the flights we are interested in from the database.
 	// TODO remove QDate Entity
@@ -4357,15 +4357,15 @@ what_next handler_do_flightlist ()
 	{
 		// Read and check the date.
 		date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
-		if (date.is_invalid ()) return what_next::output_error ("Das angegebene Datum ist ung�ltig.");
+		if (date.is_invalid ()) return WhatNext::output_error ("Das angegebene Datum ist ung�ltig.");
 	}
 	else if (date_spec==arg_cgi_date_spec_range)
 	{
-		return what_next::output_error ("Ung�ltiger Datumsmodus \""+date_spec+"\"");
+		return WhatNext::output_error ("Ung�ltiger Datumsmodus \""+date_spec+"\"");
 	}
 	else
 	{
-		return what_next::output_error ("Unbekannter Datumsmodus \""+date_spec+"\"");
+		return WhatNext::output_error ("Unbekannter Datumsmodus \""+date_spec+"\"");
 	}
 
 	// Make the date and the file name
@@ -4381,26 +4381,26 @@ what_next handler_do_flightlist ()
 	flights.sort ();
 
 	// Output the list.
-	latex_document ldoc;
+	LatexDocument ldoc;
 	write_flightlist (ldoc, flights, date_text);
 
 	filename.append (".pdf");
 	try
 	{
 		QString pdf=ldoc.make_pdf ();
-		return what_next::output_raw_document (pdf, http_document::mime_type_pdf, filename, "Startliste f�r "+date_text);
+		return WhatNext::output_raw_document (pdf, HttpDocument::mime_type_pdf, filename, "Startliste f�r "+date_text);
 	}
-	catch (latex_document::ex_command_failed &e)
+	catch (LatexDocument::ex_command_failed &e)
 	{
-		return what_next::output_error (e.description ()+"\nBefehl: "+e.command+"\n\nAusgabe:\n"+e.output+"\n\nDokument:\n"+e.document);
+		return WhatNext::output_error (e.description ()+"\nBefehl: "+e.command+"\n\nAusgabe:\n"+e.output+"\n\nDokument:\n"+e.document);
 	}
-	catch (sk_exception &e)
+	catch (SkException &e)
 	{
-		return what_next::output_error (e.description ());
+		return WhatNext::output_error (e.description ());
 	}
 }
 
-what_next handler_flight_db ()
+WhatNext handler_flight_db ()
 {
 	require_read_flight_db ();
 
@@ -4408,29 +4408,29 @@ what_next handler_flight_db ()
 	document.start_tag ("form", "action=\""+relative_url+"\" method=\"GET\"");
 
 	html_table table;
-	html_table_row row;
+	HtmlTableRow row;
 
 	// TODO remove today and single, is not needed
 	add_date_inputs (table, true);
 	add_bool_input (table, "Schleppfl�ge einzeln", arg_cgi_towflights_extra);
 
 	// Make a list of data formats available.
-	argument_list data_formats;
+	ArgumentList data_formats;
 	// The default data format is hardcoded and always available.
 	data_formats.set_value (arg_cgi_data_format_default, "Standard");
 
 	// Add the data formats provided by plugins to the list.
-	QList<plugin_data_format>::const_iterator plugins_end=opts.plugins_data_format.end ();
-	for (QList<plugin_data_format>::const_iterator plugin=opts.plugins_data_format.begin (); plugin!=plugins_end; ++plugin)
+	QList<DataFormatPlugin>::const_iterator plugins_end=opts.plugins_data_format.end ();
+	for (QList<DataFormatPlugin>::const_iterator plugin=opts.plugins_data_format.begin (); plugin!=plugins_end; ++plugin)
 	{
 		// If there is a problem in one of the plugins, go on trying the
 		// others.
 		try
 		{
-			argument_list this_plugin_formats=(*plugin).plugin_list_unique_formats ();
+			ArgumentList this_plugin_formats=(*plugin).plugin_list_unique_formats ();
 
-			argument_list::const_iterator formats_end=this_plugin_formats.end ();
-			for (argument_list::const_iterator format=this_plugin_formats.begin (); format!=formats_end; ++format)
+			ArgumentList::const_iterator formats_end=this_plugin_formats.end ();
+			for (ArgumentList::const_iterator format=this_plugin_formats.begin (); format!=formats_end; ++format)
 			{
 				QString label=(*format).get_name ();
 				QString caption=(*format).get_value ();
@@ -4441,7 +4441,7 @@ what_next handler_flight_db ()
 				data_formats.set_value (label, caption);
 			}
 		}
-		catch (plugin_data_format::exception &e)
+		catch (DataFormatPlugin::exception &e)
 		{
 			debug_stream << "Fehler in Plugin " << (*plugin).get_display_filename () << ": "+e.description () << std::endl;
 		}
@@ -4456,10 +4456,10 @@ what_next handler_flight_db ()
 	document.write (back_form_hidden (web_do_flight_db));
 	document.end_tag ("form");
 
-	return what_next::output_document ();
+	return WhatNext::output_document ();
 }
 
-what_next handler_do_flight_db ()
+WhatNext handler_do_flight_db ()
 {
 	require_read_flight_db ();
 
@@ -4467,7 +4467,7 @@ what_next handler_do_flight_db ()
 	// TODO code duplication with handler_do_person_logbook: date parsing,
 	// flight reading, csv output
 	QString date_spec=CGI_READ (date_spec);
-	if (date_spec.isEmpty ()) return what_next::output_error ("Kein Datumsmodus angegeben");
+	if (date_spec.isEmpty ()) return WhatNext::output_error ("Kein Datumsmodus angegeben");
 
 	// Find out which data format to use
 	bool use_default_data_format=true;
@@ -4479,7 +4479,7 @@ what_next handler_do_flight_db ()
 			use_default_data_format=false;
 	}
 
-	flight_list flights;
+	FlightList flights;
 	flights.setAutoDelete (true);
 	QString date_text;
 
@@ -4503,7 +4503,7 @@ what_next handler_do_flight_db ()
 	{
 		// Read and check the date.
 		sk_date date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
-		if (date.is_invalid ()) return what_next::output_error ("Das angegebene Datum ist ung�ltig.");
+		if (date.is_invalid ()) return WhatNext::output_error ("Das angegebene Datum ist ung�ltig.");
 		QDate q_date=(QDate)date;
 		date_text=date.text ();
 		filename.append (date.text ());
@@ -4515,15 +4515,15 @@ what_next handler_do_flight_db ()
 	{
 		// Read and check the start date.
 		sk_date start_date=date_from_cgi (arg_cgi_date_start_year, arg_cgi_date_start_month, arg_cgi_date_start_day);
-		if (start_date.is_invalid ()) return what_next::output_error ("Das angegebene Anfangsdatum ist ung�ltig.");
+		if (start_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Anfangsdatum ist ung�ltig.");
 		QDate q_start_date=(QDate)start_date;
 
 		// Read and check the end date.
 		sk_date end_date=date_from_cgi (arg_cgi_date_end_year, arg_cgi_date_end_month, arg_cgi_date_end_day);
-		if (end_date.is_invalid ()) return what_next::output_error ("Das angegebene Enddatum ist ung�ltig.");
+		if (end_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Enddatum ist ung�ltig.");
 		QDate q_end_date=(QDate)end_date;
 
-		if (end_date<start_date) return what_next::output_error ("Das Enddatum liegt vor dem Anfangsdatum.");
+		if (end_date<start_date) return WhatNext::output_error ("Das Enddatum liegt vor dem Anfangsdatum.");
 		date_text=start_date.text ()+" bis "+end_date.text ();
 		filename.append (start_date.text ()+"_"+end_date.text ());
 
@@ -4532,14 +4532,14 @@ what_next handler_do_flight_db ()
 	}
 	else
 	{
-		return what_next::output_error ("Unbekannter Datumsmodus \""+date_spec+"\"");
+		return WhatNext::output_error ("Unbekannter Datumsmodus \""+date_spec+"\"");
 	}
 
 	// Step 2: Make the flight list.
 	// If the towflights should have own entries, add them.
 	if (string_to_bool (CGI_READ (towflights_extra)))
 	{
-		flight_list towflights;	// No autoDelete because we add them to flights later.
+		FlightList towflights;	// No autoDelete because we add them to flights later.
 
 		for (QPtrListIterator<Flight> it (flights); *it; ++it)
 		{
@@ -4598,18 +4598,18 @@ what_next handler_do_flight_db ()
 
 
 	// Step 3: Output the list.
-	// We have got a flight_list
-	// Convert flight_list to a table row by row.
-	table tab;
+	// We have got a FlightList
+	// Convert FlightList to a Table row by row.
+	Table tab;
 
 	// If we do not use the default data format, find the plugin that provides
 	// the data format to use. Output an error if it is not found.
-	const plugin_data_format *format_plugin=NULL;
+	const DataFormatPlugin *format_plugin=NULL;
 	if (!use_default_data_format)
 	{
 		if (data_format!=arg_cgi_data_format_default)
 		{
-			for (QList<plugin_data_format>::const_iterator plugins_end=opts.plugins_data_format.end (),
+			for (QList<DataFormatPlugin>::const_iterator plugins_end=opts.plugins_data_format.end (),
 				plugin=opts.plugins_data_format.begin (); plugin!=plugins_end; ++plugin)
 			{
 				// If there is a problem with this plugin, go on trying the
@@ -4622,7 +4622,7 @@ what_next handler_do_flight_db ()
 						break;
 					}
 				}
-				catch (plugin_data_format::exception &e)
+				catch (DataFormatPlugin::exception &e)
 				{
 					debug_stream << "Fehler in Plugin " << (*plugin).get_display_filename () << ": "+e.description () << std::endl;
 				}
@@ -4630,14 +4630,14 @@ what_next handler_do_flight_db ()
 		}
 
 		if (!format_plugin)
-			return what_next::output_error ("Datenformat \""+data_format+"\" nicht gefunden.");
+			return WhatNext::output_error ("Datenformat \""+data_format+"\" nicht gefunden.");
 	}
 
 	// If there is a problem with this plugin, there is no point in continuing.
 	try
 	{
 		// Determine the field list.
-		QList<object_field> fields;
+		QList<ObjectField> fields;
 		if (use_default_data_format)
 			fields=fields_flight_db_entry;
 		else
@@ -4646,7 +4646,7 @@ what_next handler_do_flight_db ()
 		// Add the header
 		tab.push_back (table_row_from_fields (fields, true));
 
-		// For each list entry, make a table row.
+		// For each list entry, make a Table row.
 		QDate old_date;
 		int num;
 
@@ -4671,7 +4671,7 @@ what_next handler_do_flight_db ()
 				else
 					format_plugin->plugin_flight_to_fields (data_format, fields, f, flight_data, num, "", "???");
 			}
-			catch (plugin_data_format::ex_plugin_internal_error &e)
+			catch (DataFormatPlugin::ex_plugin_internal_error &e)
 			{
 				// If the error is not fatal, we can continue. Else, we throw
 				// it again to cancel output.
@@ -4681,32 +4681,32 @@ what_next handler_do_flight_db ()
 			tab.push_back (table_row_from_fields (fields));
 		}
 	}
-	catch (plugin_data_format::exception &e)
+	catch (DataFormatPlugin::exception &e)
 	{
-		return what_next::output_error ("Fehler in Plugin "+format_plugin->get_display_filename ()+": "+e.description ());
+		return WhatNext::output_error ("Fehler in Plugin "+format_plugin->get_display_filename ()+": "+e.description ());
 	}
 
 	filename.append (".csv");
-	return what_next::output_raw_document (tab.csv (opts.csv_quote), http_document::mime_type_csv, filename, "Flugliste f�r "+date_text);
+	return WhatNext::output_raw_document (tab.csv (opts.csv_quote), HttpDocument::mime_type_csv, filename, "Flugliste f�r "+date_text);
 
 
-	return what_next::output_error ("Unbehandelter Fall in handler_do_flight_db");
+	return WhatNext::output_error ("Unbehandelter Fall in handler_do_flight_db");
 }
 
-what_next handler_test_redirect ()
+WhatNext handler_test_redirect ()
 {
 	QString url;
 	if (CGI_HAS (url))
-		return what_next::do_redirect (CGI_READ (url));
+		return WhatNext::do_redirect (CGI_READ (url));
 	else
 		return make_redirect (web_main_menu);
 }
 //
 
 
-//what_next handler_ ()
+//WhatNext handler_ ()
 //{
-//	return what_next::output_error ("\""+current_state->make_caption ()+"\" ist nicht implementiert.");	// TODO
+//	return WhatNext::output_error ("\""+current_state->make_caption ()+"\" ist nicht implementiert.");	// TODO
 //}
 //
 
@@ -4728,8 +4728,8 @@ void cleanup_session (const QString &state)
 	if (state!=web_master_data_check && state!=web_master_data_do_import) SESSION_REMOVE (master_data_filename);
 }
 
-what_next do_next (const what_next next, http_document &http)
-	// TODO generic? this should best be a member of what_next
+WhatNext do_next (const WhatNext next, HttpDocument &http)
+	// TODO generic? this should best be a member of WhatNext
 {
 	try
 	{
@@ -4739,7 +4739,7 @@ what_next do_next (const what_next next, http_document &http)
 			{
 				// Go to the output_error state, because wn_go_on may not be used
 				// as a program state.
-				return what_next::output_error ("Zustand wn_go_on ausgef�hrt (Programmfehler)");
+				return WhatNext::output_error ("Zustand wn_go_on ausgef�hrt (Programmfehler)");
 			} break;
 			case wn_output_error:
 			{
@@ -4757,7 +4757,7 @@ what_next do_next (const what_next next, http_document &http)
 					document.write_paragraph (document.text_link (back_link_url (web_main_menu), "Hauptmen�"));
 				else
 					document.write_paragraph (document.text_link (back_link_url (web_logout), "Anmeldeseite"));
-				return what_next::output_document ();
+				return WhatNext::output_document ();
 			} break;
 			case wn_output_document:
 			{
@@ -4768,7 +4768,7 @@ what_next do_next (const what_next next, http_document &http)
 				write_document_footer ();
 
 				http.output (document);
-				return what_next::end_program ();
+				return WhatNext::end_program ();
 			} break;
 			case wn_output_raw_document:
 			{
@@ -4776,11 +4776,11 @@ what_next do_next (const what_next next, http_document &http)
 				// That means: write the raw document to stdout with http headers.
 				// Then, change to the end_program state.
 
-				http.content_disposition="attachment";	// TODO symb. const. in http_document
+				http.content_disposition="attachment";	// TODO symb. const. in HttpDocument
 				http.content_filename=next.get_filename ();
 				http.content_description=next.get_description ();
 				http.output (next.get_document (), next.get_mime_type ());
-				return what_next::end_program ();
+				return WhatNext::end_program ();
 			} break;
 			case wn_change_state:
 			{
@@ -4792,7 +4792,7 @@ what_next do_next (const what_next next, http_document &http)
 				// is called, if it exists. If it doesn't, change to the
 				// output_error state.  We return whatever the handler returns.
 
-				// Get the new state, as what_next only saves the id.
+				// Get the new state, as WhatNext only saves the id.
 				const web_interface_state *p_state;
 				try
 				{
@@ -4800,7 +4800,7 @@ what_next do_next (const what_next next, http_document &http)
 				}
 				catch (web_interface_state::ex_not_found)
 				{
-					return what_next::output_error ("Ung�ltiger Zustand "+next.get_state_label ());
+					return WhatNext::output_error ("Ung�ltiger Zustand "+next.get_state_label ());
 				}
 				const web_interface_state &state=*p_state;
 
@@ -4871,7 +4871,7 @@ what_next do_next (const what_next next, http_document &http)
 					else
 						error_description="Diese Aktion kann nur nach erfolgter Anmeldung durchgef�hrt werden.";
 
-					return what_next::output_error (error_message, error_description);
+					return WhatNext::output_error (error_message, error_description);
 				}
 
 				// If we don't have enough db access level, this is an error.
@@ -4883,7 +4883,7 @@ what_next do_next (const what_next next, http_document &http)
 					// The access level present does not provide the access level
 					// needed. This is a problem.
 
-					return what_next::output_error (
+					return WhatNext::output_error (
 							"Unzureichender Datenbankzugriff"
 							" (vorhanden: "+db_access_string (session_access)+";"
 							" ben�tigt: "+db_access_string (db_access_needed)+")");
@@ -4903,9 +4903,9 @@ what_next do_next (const what_next next, http_document &http)
 						{
 							db.check_usability ();
 						}
-						catch (sk_exception &e)
+						catch (SkException &e)
 						{
-							return what_next::output_error ("Datenbank ist nicht benutzbar. Grund: "+e.description ());
+							return WhatNext::output_error ("Datenbank ist nicht benutzbar. Grund: "+e.description ());
 						}
 
 						// Now that we have the database, we can set session_user, if appropriate.
@@ -4916,13 +4916,13 @@ what_next do_next (const what_next next, http_document &http)
 							User *_session_user;
 							_session_user=new User;
 							int ret=db.sk_user_get (*_session_user, session_username);
-							if (ret!=db_ok) return what_next::output_error ("Fehler beim Lesen des Benutzers \""+session_username+"\": "+db.db_error_description (ret, true));
+							if (ret!=db_ok) return WhatNext::output_error ("Fehler beim Lesen des Benutzers \""+session_username+"\": "+db.db_error_description (ret, true));
 							session_user=_session_user;
 						}
 					}
-					catch (sk_exception &e)
+					catch (SkException &e)
 					{
-						return what_next::output_error ("Fehler beim Wiederherstellen der Datenbankverbindung: "+e.description ());
+						return WhatNext::output_error ("Fehler beim Wiederherstellen der Datenbankverbindung: "+e.description ());
 					}
 				}
 
@@ -4931,7 +4931,7 @@ what_next do_next (const what_next next, http_document &http)
 				SESSION_REMOVE (one_time_message);
 
 				state_handler handler=state.get_handler ();
-				if (!handler) return what_next::output_error ("Handler f�r Zustand \""+state.get_label ()+"\" nicht gesetzt (Programmfehler)");
+				if (!handler) return WhatNext::output_error ("Handler f�r Zustand \""+state.get_label ()+"\" nicht gesetzt (Programmfehler)");
 				current_state=p_state;
 				try
 				{
@@ -4941,11 +4941,11 @@ what_next do_next (const what_next next, http_document &http)
 				{
 					QString message=e.message;
 					if (e.program_error) message+=" (Programmfehler)";
-					return what_next::output_error (message);
+					return WhatNext::output_error (message);
 				}
 				catch (ex_go_to_state &e)
 				{
-					return what_next::go_to_state (e.state, e.message, e.error);
+					return WhatNext::go_to_state (e.state, e.message, e.error);
 				}
 			} break;
 			case wn_do_redirect:
@@ -4959,36 +4959,36 @@ what_next do_next (const what_next next, http_document &http)
 								document.text_link (next.get_url (), next.get_url ())
 								)
 						;
-					return what_next::output_document ();
+					return WhatNext::output_document ();
 				}
 				else
 				{
 					http.output_redirect (next.get_url ());
-					return what_next::end_program ();
+					return WhatNext::end_program ();
 				}
 			} break;
 			case wn_end_program:
 			{
 				// Go to the output_error state, because this function should not
 				// have been called when wn_end_program was commanded.
-				return what_next::output_error ("Zustand wn_end_program ausgef�hrt (Programmfehler)");
+				return WhatNext::output_error ("Zustand wn_end_program ausgef�hrt (Programmfehler)");
 			} break;
 		}
 	}
 	catch (std::exception &e)
 	{
 		// An unhandled std::exception. This is very, very bad.
-		return what_next::output_error ("Unbehandelte std::exception: "+QString (e.what ()));
+		return WhatNext::output_error ("Unbehandelte std::exception: "+QString (e.what ()));
 	}
 	catch (...)
 	{
 		// An unhandled std::exception. This is very, very bad.
-		return what_next::output_error ("Unbehandelte std::exception. Gro�er, b�ser Programmfehler. So kann ich nicht arbeiten.");
+		return WhatNext::output_error ("Unbehandelte std::exception. Gro�er, b�ser Programmfehler. So kann ich nicht arbeiten.");
 	}
 
-	// It may happen that one of the what_next_t cases has been handled above,
+	// It may happen that one of the WhatNextType cases has been handled above,
 	// but it did not return anything as it should. This is caught here.
-	return what_next::output_error ("Unbehandelter Zustand in do_next () (Programmfehler)");
+	return WhatNext::output_error ("Unbehandelter Zustand in do_next () (Programmfehler)");
 }
 
 void setup_static_data ()
@@ -5055,8 +5055,8 @@ void setup_static_data ()
     ADD_HANDLER (test_redirect              , false , dba_none,    true,  true ,   "Redirects testen"          );
 #undef ADD_HANDLER
 
-#define OF object_field
-#define OOF object_field::output_field
+#define OF ObjectField
+#define OOF ObjectField::output_field
 #define WEB_CHPW web_user_change_password
 #define CGI_SEL arg_cgi_select_person
 	//                                                                     list___ edit____________________________      create__________________________
@@ -5153,15 +5153,15 @@ void setup_static_data ()
 #undef OF
 }
 
-what_next read_options ()
+WhatNext read_options ()
 {
-	// Read the options
-	// Read the options from the file. This is needed for various
+	// Read the Options
+	// Read the Options from the file. This is needed for various
 	// things, like accessing the database.
 	if (opts.read_config_files (&db, NULL, 0, NULL))
 	{
-		// Reading the options succeeded.
-		// Now, we need to enter the data from the options read to
+		// Reading the Options succeeded.
+		// Now, we need to enter the data from the Options read to
 		// the db class.
 		// For the user name and password, we use empty values for now because
 		// we don't know yet which kind of login we're going to need.
@@ -5173,15 +5173,15 @@ what_next read_options ()
 	}
 	else
 	{
-		// Reading the options failed.
+		// Reading the Options failed.
 		// We think that this is so bad that we fail right away.
-		return what_next::output_error ("Konfigurationsdatei konnte nicht gelesen werden.");
+		return WhatNext::output_error ("Konfigurationsdatei konnte nicht gelesen werden.");
 	}
 
-	return what_next::go_on ();
+	return WhatNext::go_on ();
 }
 
-what_next setup_variables ()
+WhatNext setup_variables ()
 	/*
 	 * Set up global variables needed for the web interface state handling system.
 	 * These include:
@@ -5190,22 +5190,22 @@ what_next setup_variables ()
 	 *   - parameters passed by the user via the CGI interface (in cgi_args)
 	 *     and variables derived from these, like the state we're going to.
 	 *   - the session, if a session parameter is set.
-	 *   - the current program state, in terms of a what_next object.
+	 *   - the current program state, in terms of a WhatNext object.
 	 *   - the request method. The request method is set to rm_commandline if
 	 *     no CGI environment is detected.
 	 * Return value:
-	 *   - a what_next object indicating what to do next.
+	 *   - a WhatNext object indicating what to do next.
 	 */
 {
 	// First of all: silence on stdout.
-	options::silent=true;
+	Options::silent=true;
 	db.silent=true;
 
 	// Initialize variables
 	session_access=dba_none;
 	session_user=NULL;
 
-	// Read the options
+	// Read the Options
 	DO_SUB_ACTION (read_options ());
 
 	// Set up miscellaneous variables from the environment
@@ -5236,14 +5236,14 @@ what_next setup_variables ()
 	relative_url=script_name;
 	absolute_url=protocol_prefix+http_host+script_name;
 
-	// Build the cgi argument list.
+	// Build the cgi Argument list.
 	// These are arguments passed by the user (i. e., from the user-filled web
 	// form). They are taken from the environment or from stdin, depending on
 	// the request method found in the environment. The format is determined
 	// from environment variables.
 	// TODO:
-	//   - move to the argument_list class
-	//   - create cgi_argument_list class derived from argument_list
+	//   - move to the ArgumentList class
+	//   - create cgi_argument_list class derived from ArgumentList
 	//   - handle that funny multipart document type
 	// GATEWAY_INTERFACE="CGI/1.1"
 	// CONTENT_LENGTH
@@ -5260,14 +5260,14 @@ what_next setup_variables ()
 			std::cerr << "For GET queries:" << std::endl;
 			std::cerr << "export REQUEST_METHOD=\"GET\"" << std::endl << "export QUERY_STRING=\"action=login\"" << std::endl;
 			std::cerr << "For POST queries:" << std::endl;
-			std::cerr << "export REQUEST_METHOD=\"POST\"" << std::endl << "export CONTENT_TYPE=" << http_document::mime_type_form_urlencoded << std::endl << "export QUERY_STRING=\"action=login\"" << std::endl;
+			std::cerr << "export REQUEST_METHOD=\"POST\"" << std::endl << "export CONTENT_TYPE=" << HttpDocument::mime_type_form_urlencoded << std::endl << "export QUERY_STRING=\"action=login\"" << std::endl;
 			std::cerr << "For CMDLINE queries:" << std::endl;
 			std::cerr << "export REQUEST_METHOD=\"CMDLINE\"" << std::endl << "export QUERY_STRING=\"date_spec=today&action=do_flight_db\"" << std::endl << "export REMOTE_ADDR=127.0.0.1" << std::endl;
 		}
 
 		// Request method GET, data is passed via QUERY_STRING
 		query_string=get_environment ("QUERY_STRING");
-		cgi_args=argument_list::from_cgi_query (query_string);
+		cgi_args=ArgumentList::from_cgi_query (query_string);
 	}
 	else if (method=="POST" || method=="post")
 	{
@@ -5275,19 +5275,19 @@ what_next setup_variables ()
 		// Request method POST, data is passed on stdin
 		// Format as determined by CONTENT_TYPE
 		QString content_type_string=get_environment ("CONTENT_TYPE");
-		if (content_type_string.isEmpty ()) return what_next::output_error ("CONTENT_TYPE f�r POST nicht angegeben");
+		if (content_type_string.isEmpty ()) return WhatNext::output_error ("CONTENT_TYPE f�r POST nicht angegeben");
 		// Make a mime header structure
-		mime_header content_type_header (content_type_string, mime_header::text_name_content_type);
+		MimeHeader content_type_header (content_type_string, MimeHeader::text_name_content_type);
 
-		if (content_type_header.value==http_document::mime_type_form_urlencoded)
+		if (content_type_header.value==HttpDocument::mime_type_form_urlencoded)
 		{
 			// Data is a query QString
 			std::string qs;
 			getline (std::cin, qs);
 			query_string=std2q (qs);
-			cgi_args=argument_list::from_cgi_query (query_string);
+			cgi_args=ArgumentList::from_cgi_query (query_string);
 		}
-		else if (content_type_header.value==http_document::mime_type_multipart_form_data)
+		else if (content_type_header.value==HttpDocument::mime_type_multipart_form_data)
 		{
 			// Data is multipart. Now comes the fun part.
 			if (content_type_header.args.has_argument ("boundary"))
@@ -5347,7 +5347,7 @@ what_next setup_variables ()
 							// Empty line. This means that this is the end of the header.
 
 							// If no name was set, this is an error.
-							if (current_key.isEmpty ()) return what_next::output_error ("Kein Elementname im Header angegeben");
+							if (current_key.isEmpty ()) return WhatNext::output_error ("Kein Elementname im Header angegeben");
 
 							reading_header=false;
 							reading_data=true;
@@ -5355,16 +5355,16 @@ what_next setup_variables ()
 						else
 						{
 							// Header line, parse it.
-							mime_header part_header (line);
-							if (part_header.name==mime_header::text_name_content_disposition)
+							MimeHeader part_header (line);
+							if (part_header.name==MimeHeader::text_name_content_disposition)
 							{
 								// Content-disposition header. This carries the name of the element.
 
 								// Check that the content-disposition is form-data
-								if (part_header.value!="form-data") return what_next::output_error ("Unbekannte Content-Disposition: "+part_header.value);
+								if (part_header.value!="form-data") return WhatNext::output_error ("Unbekannte Content-Disposition: "+part_header.value);
 
 								// Check and save the element name
-								if (!part_header.args.has_argument ("name")) return what_next::output_error ("Content-Disposition enth�lt keinen Namen");
+								if (!part_header.args.has_argument ("name")) return WhatNext::output_error ("Content-Disposition enth�lt keinen Namen");
 								current_key=part_header.args.get_value ("name");
 
 								current_filename=part_header.args.get_value ("filename");
@@ -5382,12 +5382,12 @@ what_next setup_variables ()
 			else
 			{
 				// No boundary found
-				return what_next::output_error ("Kein \"boundary\"-Eintrag gefunden");
+				return WhatNext::output_error ("Kein \"boundary\"-Eintrag gefunden");
 			}
 		}
 		else
 		{
-			return what_next::output_error ("Unbekannter content_type \""+content_type_header.value+"\"");
+			return WhatNext::output_error ("Unbekannter content_type \""+content_type_header.value+"\"");
 		}
 	}
 	else if (method=="CMDLINE" || method=="cmdline")
@@ -5396,12 +5396,12 @@ what_next setup_variables ()
 
 		// Data is read from QUERY_STRING, as with request method GET.
 		query_string=get_environment ("QUERY_STRING");
-		cgi_args=argument_list::from_cgi_query (query_string);
+		cgi_args=ArgumentList::from_cgi_query (query_string);
 	}
 	else
 	{
 		request_method=rm_other;
-		return what_next::output_error ("Unsupported request method \""+method+"\"");
+		return WhatNext::output_error ("Unsupported request method \""+method+"\"");
 	}
 
 	// Set up some global variables from CGI arguments
@@ -5418,23 +5418,23 @@ what_next setup_variables ()
 	// session.
 	if (CGI_HAS (session_id))
 	{
-		session=web_session::open (CGI_READ (session_id));
+		session=WebSession::open (CGI_READ (session_id));
 		if (session.is_ok ())
 		{
 			// Check the session for validity.
 			if (!SESSION_HAS (remote_address))
-				return what_next::output_error ("client-Adresse nicht bekannt (Programmfehler)");
+				return WhatNext::output_error ("client-Adresse nicht bekannt (Programmfehler)");
 
 			QString session_remote_address=SESSION_READ (remote_address);
 			if (remote_address!=session_remote_address)
-				return what_next::output_error ("Falsche client-Adresse (ist: \""+remote_address+"\"; soll: \""+session_remote_address+"\")");
+				return WhatNext::output_error ("Falsche client-Adresse (ist: \""+remote_address+"\"; soll: \""+session_remote_address+"\")");
 		}
 		else
 		{
 			// Session ain't no good.
 			// Cannot use error_description of the session because that only
 			// works for creation.
-			return what_next::output_error ("Ung�ltige Sitzung \""+CGI_READ (session_id)+"\"");
+			return WhatNext::output_error ("Ung�ltige Sitzung \""+CGI_READ (session_id)+"\"");
 		}
 	}
 
@@ -5444,7 +5444,7 @@ what_next setup_variables ()
 		if (SESSION_HAS (login_name))
 		{
 			session_username=SESSION_READ (login_name);
-			if (session_username.isEmpty ()) return what_next::output_error ("Leerer Benutzername");
+			if (session_username.isEmpty ()) return WhatNext::output_error ("Leerer Benutzername");
 
 			user_class_t user_class=determine_user_class (session_username);
 			switch (user_class)
@@ -5454,7 +5454,7 @@ what_next setup_variables ()
 					// User which cannot log in.
 					// How did he make it into the session?
 					// No change in session_access
-					return what_next::output_error ("Benutzer mit Benutzerklasse uc_none in session");
+					return WhatNext::output_error ("Benutzer mit Benutzerklasse uc_none in session");
 				} break;
 				case uc_mysql_user:
 				{
@@ -5467,7 +5467,7 @@ what_next setup_variables ()
 					else if (session_username==opts.sk_admin_name)
 						session_access=dba_sk_admin;
 					else
-						return what_next::output_error ("Unbehandelter MySQL-Benutzer (Programmfehler)");
+						return WhatNext::output_error ("Unbehandelter MySQL-Benutzer (Programmfehler)");
 				} break;
 				case uc_sk_user:
 				{
@@ -5475,8 +5475,8 @@ what_next setup_variables ()
 					// MySQL login. There is a user ==> login was successful ==>
 					// the sk_admin data in the configuration were correct.
 
-					if (opts.sk_admin_name.isEmpty ()) return what_next::output_error ("sk_admin nicht mehr definiert");
-					if (opts.sk_admin_password.isEmpty ()) return what_next::output_error ("sk_admin_password nicht mehr definiert");
+					if (opts.sk_admin_name.isEmpty ()) return WhatNext::output_error ("sk_admin nicht mehr definiert");
+					if (opts.sk_admin_password.isEmpty ()) return WhatNext::output_error ("sk_admin_password nicht mehr definiert");
 
 					db.set_is_admin_db (true);
 					db.set_user_data (opts.sk_admin_name, opts.sk_admin_password);
@@ -5495,8 +5495,8 @@ what_next setup_variables ()
 		// There is no session. In case we need database access, use the
 		// sk_admin user.
 
-		if (opts.sk_admin_name.isEmpty ()) return what_next::output_error ("sk_admin nicht mehr definiert");
-		if (opts.sk_admin_password.isEmpty ()) return what_next::output_error ("sk_admin_password nicht mehr definiert");
+		if (opts.sk_admin_name.isEmpty ()) return WhatNext::output_error ("sk_admin nicht mehr definiert");
+		if (opts.sk_admin_password.isEmpty ()) return WhatNext::output_error ("sk_admin_password nicht mehr definiert");
 
 		db.set_is_admin_db (true);
 		db.set_user_data (opts.sk_admin_name, opts.sk_admin_password);
@@ -5518,7 +5518,7 @@ what_next setup_variables ()
 
 
 	// Determine and return the state.
-	// If a new_state cgi argument is given, this state is to be used. If not,
+	// If a new_state cgi Argument is given, this state is to be used. If not,
 	// we use the default state, which is probably either login or some kind of
 	// public main menu.
 	if (CGI_HAS (new_state))
@@ -5528,17 +5528,17 @@ what_next setup_variables ()
 		try
 		{
 			web_interface_state::from_list (state_string);
-			return what_next::go_to_state (state_string);
+			return WhatNext::go_to_state (state_string);
 		}
 		catch (web_interface_state::ex_not_found)
 		{
-			return what_next::output_error ("Ung�ltiger Zustand \""+state_string+"\"");
+			return WhatNext::output_error ("Ung�ltiger Zustand \""+state_string+"\"");
 		}
 	}
 	else
 	{
 		// No state was given, use the default
-		return what_next::go_to_state (default_state);
+		return WhatNext::go_to_state (default_state);
 	}
 }
 
@@ -5546,14 +5546,14 @@ int main (int argc, char *argv[])
 {
 	(void)argc;
 	(void)argv;
-//	table_row::test (); return 0;
-//	table::test (); return 0;
-//	mime_header::test (); return 0;
-//	sk_db::test (); return 0;
+//	TableRow::test (); return 0;
+//	Table::test (); return 0;
+//	MimeHeader::test (); return 0;
+//	Database::test (); return 0;
 
 	// Initialize static and dynamic data
 	setup_static_data ();
-	what_next next=setup_variables ();
+	WhatNext next=setup_variables ();
 
 //	if (request_method==rm_commandline)
 //	{
@@ -5561,7 +5561,7 @@ int main (int argc, char *argv[])
 //	else
 //	{
 		// Execute the states
-		http_document http;
+		HttpDocument http;
 		if (request_method==rm_commandline) http.no_header=true;
 
 		while (next.get_next ()!=wn_end_program) next=do_next (next, http);

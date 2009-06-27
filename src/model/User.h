@@ -9,7 +9,7 @@
 
 #include <QString>
 
-#include "src/db/db_types.h"
+#include "src/db/dbTypes.h"
 
 class User
 {

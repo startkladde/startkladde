@@ -12,7 +12,7 @@
 #include <QStringList> // XXX
 
 #include "src/text.h"
-#include "src/db/db_types.h"
+#include "src/db/dbTypes.h"
 #include "src/logging/messages.h"
 #include "src/model/Entity.h"
 

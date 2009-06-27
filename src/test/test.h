@@ -1,5 +1,5 @@
-#ifndef test_h
-#define test_h
+#ifndef _test_h
+#define _test_h
 
 #include <cstdio>
 #include <unistd.h>

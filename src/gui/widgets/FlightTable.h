@@ -3,9 +3,9 @@
 
 #include <QSettings>
 
-#include "src/data_types.h"
-#include "src/db/db_proxy.h"
-#include "src/db/sk_db.h"
+#include "src/dataTypes.h"
+#include "src/db/dbProxy.h"
+#include "src/db/Database.h"
 #include "src/gui/widgets/SkButton.h"
 #include "src/gui/widgets/SkTable.h"
 #include "src/gui/widgets/SkTableItem.h"
@@ -45,7 +45,7 @@ class FlightTable:public SkTable
 	Q_OBJECT
 
 	public:
-		FlightTable (sk_db *_db, QWidget *parent=0);
+		FlightTable (Database *_db, QWidget *parent=0);
 
 		db_id id_from_row (int row);
 		db_id schleppref_from_row (int row);
@@ -83,7 +83,7 @@ class FlightTable:public SkTable
 		SkButton *set_button_or_text (int row, int column, bool set_button, QString text, QColor bg, db_id data);
 
 		QDate anzeigedatum;
-		sk_db *db;
+		Database *db;
 
 	signals:
 		void signal_button_start (db_id);

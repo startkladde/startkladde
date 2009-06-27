@@ -3,9 +3,9 @@
 #include <QStringList>
 
 #include "src/version.h"
-#include "src/config/options.h"
-#include "src/db/admin_functions.h"
-#include "src/db/sk_db.h"
+#include "src/config/Options.h"
+#include "src/db/adminFunctions.h"
+#include "src/db/Database.h"
 #include "src/io/io.h"
 
 void display_help ()
@@ -17,27 +17,27 @@ void display_help ()
 	std::cout << "    - noop: no operation (apart from reading the configuration)." << std::endl;
 	std::cout << "    - merge_person correct_id wrong_id...: merge persons" << std::endl;
 	std::cout << "  options:" << std::endl;
-	options::display_options ("    ");
+	Options::display_options ("    ");
 }
 
-void init_db (sk_db &root_db)
+void init_db (Database &root_db)
 	// TODO return value
 {
 	try
 	{
 		initialize_database (root_db);
 	}
-	catch (sk_db::ex_init_failed &e)
+	catch (Database::ex_init_failed &e)
 	{
 		std::cout << e.description (true) << std::endl;
 	}
-	catch (sk_exception &e)
+	catch (SkException &e)
 	{
 		std::cout << e.description (true) << std::endl;
 	}
 }
 
-int check_db (sk_db &db)
+int check_db (Database &db)
 	// Returns: 3 for db not usable, 2 for connection/program/server errors
 	// That means for doing a db_init: 3: might help, 2: no use
 {
@@ -48,16 +48,16 @@ int check_db (sk_db &db)
 		db.disconnect ();
 		std::cout << "Database seems OK" << std::endl;
 	}
-	catch (sk_db::ex_access_denied &e) { std::cout << e.description () << std::endl; return 3; }
-	catch (sk_db::ex_insufficient_access &e) { std::cout << e.description () << std::endl; return 3; }
-	catch (sk_db::ex_unusable &e) { std::cout << "Database unusable: " << e.description () << std::endl; return 3; }
-	catch (sk_exception &e) { std::cout << e.description () << std::endl; return 2; }
+	catch (Database::ex_access_denied &e) { std::cout << e.description () << std::endl; return 3; }
+	catch (Database::ex_insufficient_access &e) { std::cout << e.description () << std::endl; return 3; }
+	catch (Database::ex_unusable &e) { std::cout << "Database unusable: " << e.description () << std::endl; return 3; }
+	catch (SkException &e) { std::cout << e.description () << std::endl; return 2; }
 	catch (...) { std::cout << "Uncaught exception!" << std::endl; return 2; }
 
 	return 0;
 }
 
-int merge_person (sk_db &db, const QStringList &args)
+int merge_person (Database &db, const QStringList &args)
 {
 	if (args.size ()<2)
 	{
@@ -110,12 +110,12 @@ int merge_person (sk_db &db, const QStringList &args)
 
 			std::cout << "Success" << std::endl;
 		}
-		catch (sk_db::ex_operation_failed &e)
+		catch (Database::ex_operation_failed &e)
 		{
 			std::cout << "Error: " << e.description (true) << std::endl;
 			return 2;
 		}
-		catch (sk_exception &e)
+		catch (SkException &e)
 		{
 			std::cout << "Error: " << e.description () << std::endl;
 			return 2;
@@ -193,7 +193,7 @@ int main (int argc, char *argv[])
 			}
 
 			// Set database connection
-			sk_db db;
+			Database db;
 			db.display_queries=opts.display_queries;
 			db.set_database (opts.database);
 			if (need_root_db)

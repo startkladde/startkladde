@@ -4,8 +4,8 @@
 #include <cstdio>
 #include <QString>
 
-#include "src/data_types.h"
-#include "src/db/sk_db.h"
+#include "src/dataTypes.h"
+#include "src/db/Database.h"
 
 #include <QTableWidgetItem>
 

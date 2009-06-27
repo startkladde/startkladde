@@ -64,7 +64,7 @@ QString Person::pdf_name () const
 
 QString Person::tabelle_name () const
 	/*
-	 * Returns the name of the person in a form suitable for the table.
+	 * Returns the name of the person in a form suitable for the Table.
 	 * Return value:
 	 *   - the name.
 	 */

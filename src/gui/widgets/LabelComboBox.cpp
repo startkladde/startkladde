@@ -2,7 +2,7 @@
 
 #include <QLayout>
 
-#include "src/config/options.h"
+#include "src/config/Options.h"
 
 lbl_cbox::lbl_cbox (const char *text, bool editable, QWidget *parent, const char *name)
 	:QFrame (parent, name)

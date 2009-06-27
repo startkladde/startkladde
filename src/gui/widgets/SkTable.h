@@ -3,7 +3,7 @@
 
 #include <QTableWidget>
 
-#include "src/db/db_types.h"
+#include "src/db/dbTypes.h"
 
 class SkTableItem;
 

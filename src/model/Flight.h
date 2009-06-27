@@ -7,7 +7,7 @@
 #include <qdatetime.h>
 
 #include "src/accessor.h"
-#include "src/data_types.h"
+#include "src/dataTypes.h"
 #include "src/text.h"
 #include "src/gui/dialogs.h"
 #include "src/gui/settings.h"
@@ -16,6 +16,7 @@
 #include "src/model/LaunchType.h"
 #include "src/time/sk_time.h"
 #include "src/time/sk_time_t.h"
+#include "src/time/timeFunctions.h"
 
 enum FlightError {
 	ff_ok,

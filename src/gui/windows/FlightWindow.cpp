@@ -56,7 +56,7 @@ const char *text_schliessen="S&chlie�en";
 const QString unknown_startart_text="(Unbekannt)";
 const QString registration_prefix="D-";
 
-FlightWindow::FlightWindow (QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dlg)
+FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bool modal, WFlags f, QObject *status_dlg)
 	:SkDialog (parent, name, modal, f, status_dlg)
 	/*
 	 * Creates the flight editor window.
@@ -925,7 +925,7 @@ void FlightWindow::done (int r)
 		}
 		else
 		{
-			db_event event (mode==fe_create?det_add:det_change, db_flug, id);
+			DbEvent event (mode==fe_create?det_add:det_change, db_flug, id);
 			emit db_change (&event);
 		}
 	}
@@ -2113,7 +2113,7 @@ bool FlightWindow::person_anlegen (db_id *person_id, QString nachname, QString v
 			// TODO error handling
 			person.id=0;
 			db_id id=db->write_person (&person);
-			db_event event (det_add, db_person, id);
+			DbEvent event (det_add, db_person, id);
 			emit db_change (&event);
 			*person_id=id;
 			ret=true;
@@ -2245,7 +2245,7 @@ bool FlightWindow::check_plane (db_id *plane_id, Plane *_plane, QString registra
 //							if (selected_plane) delete selected_plane;
 //							selected_plane=new Plane (fz);
 
-							db_event event (det_add, db_flugzeug, id);
+							DbEvent event (det_add, db_flugzeug, id);
 							emit db_change (&event);
 							*plane_id=id;
 						}
@@ -3137,7 +3137,7 @@ int FlightWindow::widget_index (QWidget *w)
 
 
 
-void FlightWindow::slot_db_update (db_event  *event)
+void FlightWindow::slot_db_update (DbEvent  *event)
 	/*
 	 * Handler for the db_change mechanism. See db_change mechanism.
 	 */

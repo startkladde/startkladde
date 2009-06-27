@@ -38,7 +38,7 @@ const int tbl_sas_anzahl=1;
 const int sas_spalten=2;
 
 
-StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog, sk_db *_db)
+StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool modal, WFlags f, QObject *status_dialog, Database *_db)
 	:SkDialog (parent, name, false, f, status_dialog), db (_db)
 	/*
 	 * Initializes a statistics window instance.
@@ -48,7 +48,7 @@ StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool moda
 	 *   - db: the database to use.
 	 */
 {
-	// Create and setup table
+	// Create and setup Table
 	tab=new SkTable (this);
 
 	// Create and setup close button
@@ -56,11 +56,11 @@ StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool moda
 	but_close->setText ("&Schlie�en");
 	QObject::connect (but_close, SIGNAL (clicked ()), this, SLOT (accept ()));
 
-	// Main layout for the table
+	// Main layout for the Table
 	QVBoxLayout *layout_main=new QVBoxLayout (this, window_margin, -1, "layout_main");
 	layout_main->addWidget (tab);
 
-	// Layout for buttons under the table
+	// Layout for buttons under the Table
 	QHBoxLayout *layout_but=new QHBoxLayout (layout_main, -1, "layout_but");
 	layout_but->addStretch (1);
 	layout_but->addWidget (but_close);
@@ -70,16 +70,16 @@ StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool moda
 
 SkTableItem *StatisticsWindow::set_table_cell (int row, int col, const QString &text, QColor bg)
 	/*
-	 * Sets a table item to a given text and color.
+	 * Sets a Table item to a given text and color.
 	 * Parameters:
 	 *   - row, column: the coordinates of the cell to set.
 	 *   - text: the text to set.
 	 *   - bg: the background color to set.
 	 * Return value:
-	 *   - the newly created table item.
+	 *   - the newly created Table item.
 	 */
 {
-	// TODO: deltete the table items?
+	// TODO: deltete the Table items?
 	SkTableItem *ret;
 	tab->setItem (row, col, ret=new SkTableItem (text, bg));
 	return ret;
@@ -177,7 +177,7 @@ void StatisticsWindow::bordbuch (QDate datum)
 {
 	setCaption ("Bordbuch");
 
-	// Setup table for !!Bordbuch
+	// Setup Table for !!Bordbuch
 	tab->setColumnCount (bob_spalten);
 
 	tab->setColumn (tbl_bob_registration, "Kennz.", 55);
@@ -196,11 +196,11 @@ void StatisticsWindow::bordbuch (QDate datum)
 	emit status ("Bordb�cher werden erzeugt, bitte warten...");
 	emit long_operation_start ();
 
-	QPtrList<bordbuch_entry> bordbuch; bordbuch.setAutoDelete (true);
+	QPtrList<PlaneLogEntry> bordbuch; bordbuch.setAutoDelete (true);
 	make_bordbuch_day (bordbuch, db, datum);
 
 	tab->hide ();
-	for (QPtrListIterator<bordbuch_entry> bbe (bordbuch); *bbe; ++bbe)
+	for (QPtrListIterator<PlaneLogEntry> bbe (bordbuch); *bbe; ++bbe)
 	{
 		// TODO emit progress
 		display_bordbuch_entry (*bbe);
@@ -222,7 +222,7 @@ void StatisticsWindow::flugbuch (QDate datum)
 {
 	setCaption ("Flugbuch");
 
-	// Setup table for !!Flugbuch
+	// Setup Table for !!Flugbuch
 	tab->setColumnCount (flb_spalten);
 
 	tab->setColumn (tbl_flb_tag, "Tag", 80);
@@ -241,11 +241,11 @@ void StatisticsWindow::flugbuch (QDate datum)
 	emit status ("Flugbücher werden erzeugt, bitte warten...");
 	emit long_operation_start ();
 
-	QPtrList<flugbuch_entry> flugbuch; flugbuch.setAutoDelete (true);
+	QPtrList<PilotLogEntry> flugbuch; flugbuch.setAutoDelete (true);
 	make_flugbuch_day (flugbuch, db, datum);
 
 	tab->hide ();
-	for (QPtrListIterator<flugbuch_entry> fbe (flugbuch); *fbe; ++fbe)
+	for (QPtrListIterator<PilotLogEntry> fbe (flugbuch); *fbe; ++fbe)
 	{
 		// TODO emit progress
 		display_flugbuch_entry (*fbe);
@@ -259,9 +259,9 @@ void StatisticsWindow::flugbuch (QDate datum)
 }
 
 
-void StatisticsWindow::display_bordbuch_entry (bordbuch_entry *bbe)
+void StatisticsWindow::display_bordbuch_entry (PlaneLogEntry *bbe)
 	/*
-	 * Adds a bordbuch entry to the table.
+	 * Adds a bordbuch entry to the Table.
 	 * Parameters:
 	 *   - bbe: the bordbuch entry to display.
 	 */
@@ -301,9 +301,9 @@ void StatisticsWindow::display_bordbuch_entry (bordbuch_entry *bbe)
 	}
 }
 
-void StatisticsWindow::display_flugbuch_entry (flugbuch_entry *fbe)
+void StatisticsWindow::display_flugbuch_entry (PilotLogEntry *fbe)
 	/*
-	 * Adds a flugbuch entry to the table.
+	 * Adds a flugbuch entry to the Table.
 	 * Parameters:
 	 *   - bbe: the flugbuch entry to display.
 	 */

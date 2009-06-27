@@ -67,7 +67,7 @@ void SkTable::keyPressEvent (QKeyEvent *e)
 
 void SkTable::set_table_column (int column, QString title, QString sample)
 	/*
-	 * Sets the a table header column to a given title and adjusts the width so
+	 * Sets the a Table header column to a given title and adjusts the width so
 	 * that the title and a provided sample text are fully visible (sort of).
 	 * Parameters:
 	 *   - column: the column index to set.
@@ -85,7 +85,7 @@ void SkTable::set_table_column (int column, QString title, QString sample)
 	if (sample_width>title_width)
 		width=sample_width;
 	else
-		width=title_width+8;	// Hard coded table header margin width
+		width=title_width+8;	// Hard coded Table header margin width
 
 	setColumn (column, title, width);
 }
@@ -101,7 +101,7 @@ SkTableItem *SkTable::set_cell (int row, int col, const QString &text, QColor bg
 	 *   - text: the text to set.
 	 *   - bg: the background color for the cell.
 	 * Return value:
-	 *   the newly created table item.
+	 *   the newly created Table item.
 	 */
 {
 	SkTableItem *ret;
@@ -134,7 +134,7 @@ void SkTable::removeAllRows ()
 
 void SkTable::removeRow (int row)
 	/*
-	 * Remove a row from the table.
+	 * Remove a row from the Table.
 	 * Parameters:
 	 *   - row: the row to remove.
 	 */
@@ -185,7 +185,7 @@ db_id SkTable::id_from_cell (int row, int col)
 
 void SkTable::columnClicked (int c)
 	/*
-	 * A column header was clicked. Sort the table by the corresponding column.
+	 * A column header was clicked. Sort the Table by the corresponding column.
 	 * Parameters:
 	 *   see QT documentation.
 	 */

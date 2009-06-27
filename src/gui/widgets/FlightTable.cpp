@@ -10,7 +10,7 @@
 
 #include "src/color.h"
 
-FlightTable::FlightTable (sk_db *_db, QWidget *parent)
+FlightTable::FlightTable (Database *_db, QWidget *parent)
 	:SkTable (parent)
 	/*
 	 * Constructs a FlightTable instance.
@@ -105,7 +105,7 @@ int FlightTable::row_from_sref (db_id sref)
 
 bool FlightTable::row_is_flight (int row)
 	/*
-	 * Check if a column of the table contains a flight.
+	 * Check if a column of the Table contains a flight.
 	 * Parameters:
 	 *   - row: a row number.
 	 * Return value:
@@ -211,7 +211,7 @@ int FlightTable::insert_row_for_flight (Flight *f)
 	 */
 {
 	// TODO this function needs to look at the times saved in the
-	// table. It also has to handle tow flights correctly (insert
+	// Table. It also has to handle tow flights correctly (insert
 	// under the towed flight).
 	int row;
 
@@ -244,7 +244,7 @@ int FlightTable::insert_row_for_flight (Flight *f)
 
 void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	/*
-	 * Writes a given flight to a given row in the table.
+	 * Writes a given flight to a given row in the Table.
 	 * Parameters:
 	 *   - row: The number of the row. If 0, a line is created at the correct
 	 *     position, as defined in insert_row_for_flight ().
@@ -580,8 +580,8 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 
 void FlightTable::update_flight (db_id id, Flight *f)
 	/*
-	 * Updates the flight data in the table, add the flight if it is not in
-	 * the table yet, or remove it if it is not to be shown (for example, if it
+	 * Updates the flight data in the Table, add the flight if it is not in
+	 * the Table yet, or remove it if it is not to be shown (for example, if it
 	 * is landed).
 	 * Parameters:
 	 *   - id: the database ID of the flight. // TODO read from f?
@@ -660,7 +660,7 @@ void FlightTable::update_flight (db_id id, Flight *f)
 
 
 	// ***** Then, we (add or remove) the (flight and tow) (to or from) the
-	// table, depending on what we just found out and wheter it is already
+	// Table, depending on what we just found out and wheter it is already
 	// present.
 	{
 		// Pr�fen, ob der Flug bereits in der Tabelle steht.
@@ -694,7 +694,7 @@ void FlightTable::update_flight (db_id id, Flight *f)
 
 void FlightTable::removeRow (int row)
 	/*
-	 * Removes a row from the table.
+	 * Removes a row from the Table.
 	 * Parameters:
 	 *   - row: the number of the row to remove.
 	 */
@@ -708,7 +708,7 @@ void FlightTable::removeRow (int row)
 
 void FlightTable::remove_flight (db_id id)
 	/*
-	 * Removes a row containing a given flight from the table, also remove the
+	 * Removes a row containing a given flight from the Table, also remove the
 	 * row containing the !!Schleppflug, if any
 	 * Parameters:
 	 *   - id: the ID of the flight to remove.
@@ -800,7 +800,7 @@ void FlightTable::update_time ()
 
 void FlightTable::columnClicked (int c)
 	/*
-	 * A column header was clicked. Sort the table by the corresponding column.
+	 * A column header was clicked. Sort the Table by the corresponding column.
 	 * Parameters:
 	 *   see QT documentation.
 	 */
@@ -879,7 +879,7 @@ void FlightTable::writeSettings (QSettings& settings)
 
 /**
   * setFont
-  * set font of table
+  * set font of Table
   */
 void FlightTable::setFont (const QFont& font)
 {

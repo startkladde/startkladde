@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "src/db/db_event.h"
+#include "src/db/DbEvent.h"
 
 using namespace Qt;
 
@@ -17,11 +17,11 @@ class SkDialog:public QDialog
 		void db_connect (QObject *);
 
 	public slots:
-		void slot_db_update (db_event *event);
+		void slot_db_update (DbEvent *event);
 
 	signals:
-		void db_change (db_event *event);
-		void db_update (db_event *event);
+		void db_change (DbEvent *event);
+		void db_update (DbEvent *event);
 		void status (QString);
 		void progress (int, int);
 		void long_operation_start ();

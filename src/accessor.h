@@ -1,5 +1,5 @@
-#ifndef accessor_h
-#define accessor_h
+#ifndef _accessor_h
+#define _accessor_h
 
 
 #define RO_ACCESSOR(type, var)	\

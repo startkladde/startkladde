@@ -300,7 +300,7 @@ QString sk_time_t::csv_string (time_zone tz) const
 
 QString sk_time_t::table_string (const char *format, time_zone tz, int buf_size, bool no_letters) const
 	/*
-	 * Makes a QString suitable for displaying in a table.
+	 * Makes a QString suitable for displaying in a Table.
 	 * Parameters:
 	 *   - format: the format to use. Passed on to to_string.
 	 *   - tz: the timezone to generate the QString for.
@@ -317,7 +317,7 @@ QString sk_time_t::table_string (const char *format, time_zone tz, int buf_size,
 
 QString sk_time_t::table_string (time_zone tz, bool gelandet, bool no_letters) const
 	/*
-	 * Makes a QString suitable for displaying in a table.
+	 * Makes a QString suitable for displaying in a Table.
 	 * Parameters:
 	 *   - tz: the timezone to generate the QString for.
 	 *   - gelandet: whether the flight has landed.

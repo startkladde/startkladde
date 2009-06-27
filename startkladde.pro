@@ -15,23 +15,23 @@ HEADERS += \
 		   logo.xpm \
            src/accessor.h \
            src/color.h \
-           src/condition_t.h \
-           src/data_types.h \
-           src/flight_list.h \
-           src/object_field.h \
-           src/sk_exception.h \
+           src/Condition.h \
+           src/dataTypes.h \
+           src/FlightList.h \
+           src/ObjectField.h \
+           src/SkException.h \
            src/text.h \
            src/version.h \
-           src/config/options.h \
-           src/db/admin_functions.h \
-           src/db/db_column.h \
-           src/db/db_event.h \
-           src/db/db_proxy.h \
-           src/db/db_table.h \
-           src/db/db_types.h \
-           src/db/sk_db.h \
-           src/documents/latex_document.h \
-           src/documents/table.h \
+           src/config/Options.h \
+           src/db/adminFunctions.h \
+           src/db/DbColumn.h \
+           src/db/DbEvent.h \
+           src/db/dbProxy.h \
+           src/db/DbTable.h \
+           src/db/dbTypes.h \
+           src/db/Database.h \
+           src/documents/LatexDocument.h \
+           src/documents/Table.h \
            src/gui/dialogs.h \
            src/gui/settings.h \
            src/gui/spacing.h \
@@ -60,7 +60,7 @@ HEADERS += \
            src/gui/windows/WeatherDialog.h \
            src/io/colors.h \
            src/io/io.h \
-           src/io/temp_dir.h \
+           src/io/TempDir.h \
            src/logging/messages.h \
            src/model/Flight.h \
            src/model/Plane.h \
@@ -68,35 +68,35 @@ HEADERS += \
            src/model/User.h \
            src/model/LaunchType.h \
            src/model/Entity.h \
-           src/plugins/sk_plugin.h \
-           src/statistics/bordbuch.h \
-           src/statistics/bordbuch.h \
-           src/statistics/flugbuch.h \
-           src/time/sk_date.h \
+           src/plugins/ShellPlugin.h \
+           src/statistics/PlaneLog.h \
+           src/statistics/PilotLog.h \
+           src/time/Date.h \
            src/time/sk_time.h \
            src/time/sk_time_t.h \
-           src/time/time_functions.h \
+           src/time/timeFunctions.h \
+           src/web/Argument.h \
 		   # Empty line
 
 SOURCES += \
            src/color.cpp \
-           src/condition_t.cpp \
-           src/data_types.cpp \
-           src/flight_list.cpp \
-           src/object_field.cpp \
+           src/Condition.cpp \
+           src/dataTypes.cpp \
+           src/FlightList.cpp \
+           src/ObjectField.cpp \
            src/startkladde.cpp \
            src/text.cpp \
            src/version.cpp \
-           src/config/options.cpp \
-           src/db/admin_functions.cpp \
-           src/db/db_column.cpp \
-           src/db/db_event.cpp \
-           src/db/db_proxy.cpp \
-           src/db/db_table.cpp \
-           src/db/db_types.cpp \
-           src/db/sk_db.cpp \
-           src/documents/latex_document.cpp \
-           src/documents/table.cpp \
+           src/config/Options.cpp \
+           src/db/adminFunctions.cpp \
+           src/db/DbColumn.cpp \
+           src/db/DbEvent.cpp \
+           src/db/dbProxy.cpp \
+           src/db/DbTable.cpp \
+           src/db/dbTypes.cpp \
+           src/db/Database.cpp \
+           src/documents/LatexDocument.cpp \
+           src/documents/Table.cpp \
            src/gui/dialogs.cpp \
            src/gui/settings.cpp \
            src/gui/widgets/AcpiWidget.cpp \
@@ -123,7 +123,7 @@ SOURCES += \
            src/gui/windows/EntitySelectWindow.cpp \
            src/gui/windows/WeatherDialog.cpp \
            src/io/io.cpp \
-           src/io/temp_dir.cpp \
+           src/io/TempDir.cpp \
            src/logging/messages.cpp \
            src/model/Flight.cpp \
            src/model/Plane.cpp \
@@ -131,19 +131,14 @@ SOURCES += \
            src/model/User.cpp \
            src/model/LaunchType.cpp \
            src/model/Entity.cpp \
-           src/plugins/plugin_data_format.cpp \
-           src/plugins/sk_plugin.cpp \
-           src/statistics/bordbuch.cpp \
-           src/statistics/flugbuch.cpp \
-           src/time/sk_date.cpp \
+           src/plugins/DataFormatPlugin.cpp \
+           src/plugins/ShellPlugin.cpp \
+           src/statistics/PlaneLog.cpp \
+           src/statistics/PilotLog.cpp \
+           src/time/Date.cpp \
            src/time/sk_time.cpp \
            src/time/sk_time_t.cpp \
-           src/time/time_functions.cpp \
-           src/web/argument.cpp \
-           src/web/html_document.cpp \
-           src/web/http_document.cpp \
-           src/web/mime_header.cpp \
-           src/web/web_session.cpp \
-           src/web/what_next.cpp \
+           src/time/timeFunctions.cpp \
+           src/web/Argument.cpp \
 		   # Empty line
 

@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <QString>
 
-#include "src/data_types.h"
+#include "src/dataTypes.h"
 #include "src/model/Entity.h"
 
 class Plane: public Entity

@@ -7,7 +7,7 @@
 #include <QLabel>
 #include <QStringList> // XXX
 
-#include "src/data_types.h"
+#include "src/dataTypes.h"
 #include "src/gui/widgets/SkComboBox.h"
 
 

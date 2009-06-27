@@ -10,7 +10,7 @@ sk_time::sk_time ()
 
 QString sk_time::table_string (const char *format)
 	/*
-	 * Makes a text for the table.
+	 * Makes a text for the Table.
 	 * Parameters:
 	 *   - format: the format of the text.
 	 * Return value:
@@ -25,7 +25,7 @@ QString sk_time::table_string (const char *format)
 
 QString sk_time::table_string (bool gelandet)
 	/*
-	 * Makes a text for the table depending on a flight status.
+	 * Makes a text for the Table depending on a flight status.
 	 * Parameters:
 	 *   - gelandet: whether the flight has landed.
 	 * Return value:

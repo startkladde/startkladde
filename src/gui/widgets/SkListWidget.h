@@ -1,5 +1,5 @@
-#ifndef SkListWidget_h
-#define SkListWidget_h
+#ifndef _SkListWidget_h
+#define _SkListWidget_h
 
 /*
  * SkListWidget

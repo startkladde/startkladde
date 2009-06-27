@@ -12,11 +12,11 @@
 #include <QDateEdit>
 #include <QListWidget>
 
-#include "src/data_types.h"
+#include "src/dataTypes.h"
 #include "src/text.h"
-#include "src/db/db_event.h"
-#include "src/db/db_proxy.h"
-#include "src/db/sk_db.h"
+#include "src/db/DbEvent.h"
+#include "src/db/dbProxy.h"
+#include "src/db/Database.h"
 #include "src/gui/settings.h"
 #include "src/gui/spacing.h"
 #include "src/gui/widgets/SkComboBox.h"
@@ -41,7 +41,7 @@ class FlightWindow:public SkDialog
 	Q_OBJECT
 
 	public:
-		FlightWindow (QWidget *parent, sk_db *_db, const char *name=0, bool modal=FALSE, WFlags f=0, QObject *status_dialog=NULL);
+		FlightWindow (QWidget *parent, Database *_db, const char *name=0, bool modal=FALSE, WFlags f=0, QObject *status_dialog=NULL);
 		~FlightWindow ();
 
 		// TODO das gehoert privat.
@@ -180,7 +180,7 @@ class FlightWindow:public SkDialog
 		void namen_aus_datenbank (lbl_cbox *vorname, lbl_cbox *nachname, lbl_cbox *vorname2=NULL, lbl_cbox *nachname2=NULL, lbl_cbox *vorname3=NULL, lbl_cbox *nachname3=NULL);
 		void namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, NamePart quelle, int *, db_id *, bool preserve_target_text=false);
 
-		sk_db *db;
+		Database *db;
 
 		bool disable_error_check;
 
@@ -188,7 +188,7 @@ class FlightWindow:public SkDialog
 		QScrollArea *scrollArea;
 
 	public slots:
-		void slot_db_update (db_event *);
+		void slot_db_update (DbEvent *);
 
 	signals:
 		void dialog_finished (int);

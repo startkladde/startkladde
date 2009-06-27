@@ -1,5 +1,5 @@
-#ifndef messages_h
-#define messages_h
+#ifndef _messages_h
+#define _messages_h
 
 #include <cstdio>
 #include <ctime>

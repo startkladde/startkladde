@@ -1,5 +1,5 @@
-#ifndef color_h
-#define color_h
+#ifndef _color_h
+#define _color_h
 
 #include <QColor>
 

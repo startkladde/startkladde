@@ -23,7 +23,7 @@
 
 
 
-EntityEditWindow::EntityEditWindow (EntityType t, QWidget *parent, sk_db *_db, const char *name, bool modal, WFlags f, QObject *status_dialog)
+EntityEditWindow::EntityEditWindow (EntityType t, QWidget *parent, Database *_db, const char *name, bool modal, WFlags f, QObject *status_dialog)
 	:SkDialog (parent, name, modal, f, status_dialog)
 	/*
 	 * Initializes a Entity editor window.
@@ -638,7 +638,7 @@ int EntityEditWindow::category_index (aircraft_category gat)
 
 
 
-void EntityEditWindow::slot_db_update (db_event *event)
+void EntityEditWindow::slot_db_update (DbEvent *event)
 	/*
 	 * Called when the database is changed. Update lists, if applicable.
 	 */

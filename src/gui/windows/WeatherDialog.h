@@ -1,5 +1,5 @@
-#ifndef WeatherDialog_h
-#define WeatherDialog_h
+#ifndef _WeatherDialog_h
+#define _WeatherDialog_h
 
 /*
  * WeatherDialog
@@ -11,14 +11,14 @@
 #include <QResizeEvent>
 
 #include "src/gui/widgets/WeatherWidget.h"
-#include "src/plugins/sk_plugin.h"
+#include "src/plugins/ShellPlugin.h"
 
 class WeatherDialog:public QDialog
 {
 	Q_OBJECT
 
 	public:
-		WeatherDialog (sk_plugin *_plugin, QWidget *parent=NULL, const char *name=NULL);
+		WeatherDialog (ShellPlugin *_plugin, QWidget *parent=NULL, const char *name=NULL);
 		~WeatherDialog ();
 
 	protected:
@@ -26,7 +26,7 @@ class WeatherDialog:public QDialog
 
 	private:
 		WeatherWidget *ww;
-		sk_plugin *plugin;
+		ShellPlugin *plugin;
 		QHBoxLayout *weatherLayout;
 
 };

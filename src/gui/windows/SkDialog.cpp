@@ -31,12 +31,12 @@ void SkDialog::db_connect (QObject *ob)
 	 */
 {
 	// Wenn ein Objekt die Datenbank ge�ndert hat, weiterreichen.
-	QObject::connect (ob, SIGNAL (db_change (db_event *)), this, SIGNAL (db_change (db_event *)));
+	QObject::connect (ob, SIGNAL (db_change (DbEvent *)), this, SIGNAL (db_change (DbEvent *)));
 	// Wenn Datenbank�nderungen �bernommen werden sollen, weiterreichen.
-	QObject::connect (this, SIGNAL (db_update (db_event *)), ob, SLOT (slot_db_update (db_event *)));
+	QObject::connect (this, SIGNAL (db_update (DbEvent *)), ob, SLOT (slot_db_update (DbEvent *)));
 }
 
-void SkDialog::slot_db_update (db_event  *event)
+void SkDialog::slot_db_update (DbEvent  *event)
 	/*
 	 * Called by a signal _by the parent_ when a database change has happened.
 	 * Emit the signal so children get notified.

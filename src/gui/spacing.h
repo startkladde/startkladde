@@ -1,5 +1,5 @@
-#ifndef spacing_h
-#define spacing_h
+#ifndef _spacing_h
+#define _spacing_h
 
 const int window_margin=4;
 

@@ -1,8 +1,8 @@
+#ifndef _colors_h
+#define _colors_h
+
 // TODO rename to ansiColors.h
 
-#undef colors_h
-#ifndef colors_h
-#define colors_h
 
 #define c_1 "\033["
 #define c_0 "m"

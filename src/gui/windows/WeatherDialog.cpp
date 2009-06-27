@@ -2,7 +2,7 @@
 
 #include <QMovie>
 
-WeatherDialog::WeatherDialog (sk_plugin *_plugin, QWidget *parent, const char *name)
+WeatherDialog::WeatherDialog (ShellPlugin *_plugin, QWidget *parent, const char *name)
 	:QDialog (parent, name)
 {
 	plugin=_plugin;

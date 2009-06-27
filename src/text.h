@@ -1,5 +1,5 @@
-#ifndef text_h
-#define text_h
+#ifndef _text_h
+#define _text_h
 
 #include <sstream>
 
@@ -8,8 +8,8 @@
 #include <QMessageBox>
 #include <QString>
 
-#include "src/data_types.h"
-#include "src/db/db_types.h"
+#include "src/dataTypes.h"
+#include "src/db/dbTypes.h"
 
 extern const QString whitespace;
 

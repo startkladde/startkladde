@@ -1,5 +1,5 @@
-#ifndef io_h
-#define io_h
+#ifndef _io_h
+#define _io_h
 
 #include <QString>
 

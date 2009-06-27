@@ -10,7 +10,7 @@
 #include <QTreeWidget>
 #include <QString>
 
-#include "src/db/db_types.h"
+#include "src/db/dbTypes.h"
 
 class SkTreeWidgetItem:public QTreeWidgetItem
 {

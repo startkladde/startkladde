@@ -12,48 +12,48 @@ MOC_DIR= build/
 
 # Input
 HEADERS += \
-           src/condition_t.h \
-           src/data_types.h \
+           src/Condition.h \
+           src/dataTypes.h \
            src/text.h \
            src/version.h \
-           src/config/options.h \
-           src/db/admin_functions.h \
-           src/db/db_column.h \
-           src/db/db_proxy.h \
-           src/db/db_table.h \
-           src/db/db_types.h \
-           src/db/sk_db.h \
+           src/config/Options.h \
+           src/db/Database.h \
+           src/db/DbColumn.h \
+           src/db/DbTable.h \
+           src/db/adminFunctions.h \
+           src/db/dbProxy.h \
+           src/db/dbTypes.h \
            src/gui/dialogs.h \
            src/gui/settings.h \
            src/io/io.h \
            src/logging/messages.h \
-           src/model/Flight.h \
-           src/model/Plane.h \
-           src/model/Person.h \
-           src/model/User.h \
-           src/model/LaunchType.h \
            src/model/Entity.h \
-           src/plugins/plugin_data_format.h \
-           src/plugins/sk_plugin.h \
-           src/time/sk_date.h \
+           src/model/Flight.h \
+           src/model/LaunchType.h \
+           src/model/Person.h \
+           src/model/Plane.h \
+           src/model/User.h \
+           src/plugins/ShellPlugin.h \
+           src/plugins/DataFormatPlugin.h \
+           src/time/Date.h \
            src/time/sk_time_t.h \
-           src/time/time_functions.h \
+           src/time/timeFunctions.h \
            src/web/argument.h \
 		   # Empty line
 
 SOURCES += \
-           src/condition_t.cpp \
-           src/data_types.cpp \
+           src/Condition.cpp \
+           src/dataTypes.cpp \
            src/sk_admin.cpp \
            src/text.cpp \
            src/version.cpp \
-           src/config/options.cpp \
-           src/db/admin_functions.cpp \
-           src/db/db_column.cpp \
-           src/db/db_proxy.cpp \
-           src/db/db_table.cpp \
-           src/db/db_types.cpp \
-           src/db/sk_db.cpp \
+           src/config/Options.cpp \
+           src/db/adminFunctions.cpp \
+           src/db/DbColumn.cpp \
+           src/db/dbProxy.cpp \
+           src/db/DbTable.cpp \
+           src/db/dbTypes.cpp \
+           src/db/Database.cpp \
            src/gui/dialogs.cpp \
            src/gui/settings.cpp \
            src/io/io.cpp \
@@ -64,11 +64,11 @@ SOURCES += \
            src/model/User.cpp \
            src/model/LaunchType.cpp \
            src/model/Entity.cpp \
-           src/plugins/plugin_data_format.cpp \
-           src/plugins/sk_plugin.cpp \
-           src/time/sk_date.cpp \
+           src/plugins/DataFormatPlugin.cpp \
+           src/plugins/ShellPlugin.cpp \
+           src/time/Date.cpp \
            src/time/sk_time_t.cpp \
-           src/time/time_functions.cpp \
+           src/time/timeFunctions.cpp \
            src/web/argument.cpp \
 		   # Empty line
 

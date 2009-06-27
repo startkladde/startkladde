@@ -6,9 +6,9 @@
 
 const string format_lsv_albgau="lsv_albgau";
 
-extern "C" argument_list list_formats ()
+extern "C" ArgumentList list_formats ()
 {
-	argument_list l;
+	ArgumentList l;
 	l.set_value (format_lsv_albgau, "LSV Albgau");
 	return l;
 }
@@ -34,51 +34,51 @@ const string field_name_bemerkungen="bemerkung";
 const string field_name_abrechnungshinweis="abrechnungshinweis";
 const string field_name_id="record_id";
 
-extern "C" void make_field_list (const string &format, list<object_field> &fields)
+extern "C" void make_field_list (const string &format, list<ObjectField> &fields)
 {
 	if (format==format_lsv_albgau)
 	{
 		// _FIELDS_
-		fields.push_back (object_field::output_field ("Datum", field_name_datum));
-		fields.push_back (object_field::output_field ("Startzeit Stunden", field_name_startzeit_stunden));
-		fields.push_back (object_field::output_field ("Startzeit Minuten", field_name_startzeit_minuten));
-		fields.push_back (object_field::output_field ("Landezeit Stunden", field_name_landezeit_stunden));
-		fields.push_back (object_field::output_field ("Landezeit Minuten", field_name_landezeit_minuten));
-		fields.push_back (object_field::output_field ("Flugzeug Kennzeichen", field_name_flugzeug_kennzeichen));
-		fields.push_back (object_field::output_field ("Flugzeug Verein", field_name_flugzeug_verein));
-		fields.push_back (object_field::output_field ("Flugart", field_name_flugart));
-		fields.push_back (object_field::output_field ("Startart", field_name_startart));
-		fields.push_back (object_field::output_field ("Pilot Nachname", field_name_pilot_nachname));
-		fields.push_back (object_field::output_field ("Pilot Vorname", field_name_pilot_vorname));
-		fields.push_back (object_field::output_field ("Pilot Code", field_name_pilot_code));
-		fields.push_back (object_field::output_field ("Pilot Verein", field_name_pilot_verein));
-		fields.push_back (object_field::output_field ("Begleiter Nachname", field_name_begleiter_nachname));
-		fields.push_back (object_field::output_field ("Begleiter Vorname", field_name_begleiter_vorname));
-		fields.push_back (object_field::output_field ("Begleiter Code", field_name_begleiter_code));
-		fields.push_back (object_field::output_field ("Bemerkungen", field_name_bemerkungen));
-		fields.push_back (object_field::output_field ("Abrechnungshinweis", field_name_abrechnungshinweis));
-		fields.push_back (object_field::output_field ("ID", field_name_id));
+		fields.push_back (ObjectField::output_field ("Datum", field_name_datum));
+		fields.push_back (ObjectField::output_field ("Startzeit Stunden", field_name_startzeit_stunden));
+		fields.push_back (ObjectField::output_field ("Startzeit Minuten", field_name_startzeit_minuten));
+		fields.push_back (ObjectField::output_field ("Landezeit Stunden", field_name_landezeit_stunden));
+		fields.push_back (ObjectField::output_field ("Landezeit Minuten", field_name_landezeit_minuten));
+		fields.push_back (ObjectField::output_field ("Flugzeug Kennzeichen", field_name_flugzeug_kennzeichen));
+		fields.push_back (ObjectField::output_field ("Flugzeug Verein", field_name_flugzeug_verein));
+		fields.push_back (ObjectField::output_field ("Flugart", field_name_flugart));
+		fields.push_back (ObjectField::output_field ("Startart", field_name_startart));
+		fields.push_back (ObjectField::output_field ("Pilot Nachname", field_name_pilot_nachname));
+		fields.push_back (ObjectField::output_field ("Pilot Vorname", field_name_pilot_vorname));
+		fields.push_back (ObjectField::output_field ("Pilot Code", field_name_pilot_code));
+		fields.push_back (ObjectField::output_field ("Pilot Verein", field_name_pilot_verein));
+		fields.push_back (ObjectField::output_field ("Begleiter Nachname", field_name_begleiter_nachname));
+		fields.push_back (ObjectField::output_field ("Begleiter Vorname", field_name_begleiter_vorname));
+		fields.push_back (ObjectField::output_field ("Begleiter Code", field_name_begleiter_code));
+		fields.push_back (ObjectField::output_field ("Bemerkungen", field_name_bemerkungen));
+		fields.push_back (ObjectField::output_field ("Abrechnungshinweis", field_name_abrechnungshinweis));
+		fields.push_back (ObjectField::output_field ("ID", field_name_id));
 	}
 	else
 	{
-		throw plugin_data_format::ex_plugin_invalid_format (format);
+		throw DataFormatPlugin::ex_plugin_invalid_format (format);
 	}
 }
 
-extern "C" void flight_to_fields (const string &format, list<object_field> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const string &none_text, const string &error_text)
+extern "C" void flight_to_fields (const string &format, list<ObjectField> &fields, const Flight &f, const sk_flug_data &flight_data, int &num, const string &none_text, const string &error_text)
 {
-	if (format!=format_lsv_albgau) throw plugin_data_format::ex_plugin_invalid_format (format);
+	if (format!=format_lsv_albgau) throw DataFormatPlugin::ex_plugin_invalid_format (format);
 
 	//bool is_airtow=flight_data.towplane.given;
 
 	// Iterate over all fields and, depending on the label, read the data from
 	// the flight and write it to the field.
 	// Depending on the list used, not all of these fields are set.
-	list<object_field>::const_iterator end=fields.end ();
+	list<ObjectField>::const_iterator end=fields.end ();
 	// TODO: all the values are determined from the beginning for each field.
 	// Move the field value determination before this loop (wonder where i've
 	// been when I coded this...).
-	for (list<object_field>::iterator field=fields.begin (); field!=end; ++field)
+	for (list<ObjectField>::iterator field=fields.begin (); field!=end; ++field)
 	{
 		// Make the display text for the flight_data items:
 		//   - If the item is not given, use the text for "none"
@@ -284,7 +284,7 @@ extern "C" void flight_to_fields (const string &format, list<object_field> &fiel
 		else if (label==field_name_abrechnungshinweis) (*field).set_to (f.abrechnungshinweis);
 		else if (label==field_name_id) (*field).set_to (QString::number (f.id));
 		else
-			throw plugin_data_format::ex_plugin_internal_error ("Unbehandeltes Feld \""+(*field).get_caption ()+"\" in flight_to_fields");
+			throw DataFormatPlugin::ex_plugin_internal_error ("Unbehandeltes Feld \""+(*field).get_caption ()+"\" in flight_to_fields");
 	}
 }
 

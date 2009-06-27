@@ -72,7 +72,7 @@ QString Plane::name () const
 
 QString Plane::tabelle_name () const
 	/*
-	 * Returns the name of the plane in a form suitable for the table.
+	 * Returns the name of the plane in a form suitable for the Table.
 	 * Return value:
 	 *   - the name.
 	 */
@@ -82,7 +82,7 @@ QString Plane::tabelle_name () const
 
 QString Plane::tabelle_name (bool schlepp) const
 	/*
-	 * Returns the name of the plane in a form suitable for the table.
+	 * Returns the name of the plane in a form suitable for the Table.
 	 * Parameters:
 	 *   - schlepp: whether to return the name of the !!Schleppflugzeug.
 	 * Return value:

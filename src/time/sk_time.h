@@ -1,5 +1,5 @@
-#ifndef sk_time_h
-#define sk_time_h
+#ifndef _sk_time_h
+#define _sk_time_h
 
 #include <QDateTime>
 #include <QString>

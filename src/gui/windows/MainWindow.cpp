@@ -5,11 +5,11 @@
 
 #include "kvkbd.xpm"
 #include "logo.xpm"
-#include "src/flight_list.h"
-#include "src/config/options.h"
-#include "src/db/admin_functions.h"
-#include "src/db/db_event.h"
-#include "src/db/sk_db.h"
+#include "src/FlightList.h"
+#include "src/config/Options.h"
+#include "src/db/adminFunctions.h"
+#include "src/db/DbEvent.h"
+#include "src/db/Database.h"
 #include "src/gui/widgets/AcpiWidget.h"
 #include "src/gui/widgets/FlightTable.h"
 #include "src/gui/windows/DateWindow.h"
@@ -19,10 +19,10 @@
 #include "src/gui/windows/EntityListWindow.h"
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
-#include "src/time/time_functions.h"
+#include "src/time/timeFunctions.h"
 
 // UI
-MainWindow::MainWindow (QWidget *parent, sk_db *_db, QList<sk_plugin> *_plugins, const char *name, WFlags f)
+MainWindow::MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin> *_plugins, const char *name, WFlags f)
 :
 	QMainWindow (parent, name, f)
 /*
@@ -93,7 +93,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, QList<sk_plugin> *_plugins,
 		weather->setLineWidth (1);
 
 		// Create and setup the weather plugin and connect it to the weather widget
-		weather_plugin = new sk_plugin ("Wetter", opts.weather_plugin, opts.weather_interval); // Initialize to given values
+		weather_plugin = new ShellPlugin ("Wetter", opts.weather_plugin, opts.weather_interval); // Initialize to given values
 		QObject::connect (weather_plugin, SIGNAL (lineRead (QString)), weather, SLOT (inputLine (QString)));
 		// TODO neu laden aus Kontextmenu
 		QObject::connect (weather_plugin, SIGNAL (pluginNotFound ()), weather, SLOT (pluginNotFound ()));
@@ -180,10 +180,10 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, QList<sk_plugin> *_plugins,
 	// Plugins
 	plugins = _plugins;
 	int row = 0;
-	QMutableListIterator<sk_plugin> it (*plugins);
+	QMutableListIterator<ShellPlugin> it (*plugins);
 	while (it.hasNext ())
 	{
-		sk_plugin &plugin=it.next ();
+		ShellPlugin &plugin=it.next ();
 
 		SkLabel *lbl_caption = new SkLabel ("[...]", info_frame, "lbl_caption[...]");
 		SkLabel *lbl_value = new SkLabel ("[...]", info_frame, "lbl_value[...]");
@@ -290,7 +290,7 @@ MainWindow::MainWindow (QWidget *parent, sk_db *_db, QList<sk_plugin> *_plugins,
 	// Wir sind "db_change hub", also umsetzer von db_change auf db_update
 	// Nicht mit dem Signal verbinden, das gibt sonst Schleifen
 	// (slot_db_update db_update)
-	QObject::connect (this, SIGNAL (db_change (db_event *)), this, SLOT (slot_db_update (db_event *)));
+	QObject::connect (this, SIGNAL (db_change (DbEvent *)), this, SLOT (slot_db_update (DbEvent *)));
 
 	QObject *status_dialog = ss;
 	// TODO code duplication with SkDialog
@@ -651,7 +651,7 @@ MainWindow::~MainWindow ()
 
 	if (plugins)
 	{
-		QMutableListIterator<sk_plugin> plugin (*plugins);
+		QMutableListIterator<ShellPlugin> plugin (*plugins);
 		while (plugin.hasNext())
 		{
 			plugin.peekNext().terminate();
@@ -727,7 +727,7 @@ void MainWindow::simulate_key (int key)
 }
 
 // DB
-void MainWindow::slot_db_update (db_event *event)
+void MainWindow::slot_db_update (DbEvent *event)
 /*
  * (db_change) Something happened at the database. Check if we are
  * interested and accordingly.
@@ -799,9 +799,9 @@ void MainWindow::dbase_connect (QObject *ob)
  */
 {
 	// Wenn ein Objekt die Datenbank ge�ndert hat, weiterreichen.
-	QObject::connect (ob, SIGNAL (db_change (db_event *)), this, SIGNAL (db_change (db_event *)));
+	QObject::connect (ob, SIGNAL (db_change (DbEvent *)), this, SIGNAL (db_change (DbEvent *)));
 	// Wenn Datenbank�nderungen �bernommen werden sollen, weiterreichen.
-	QObject::connect (this, SIGNAL (db_update (db_event *)), ob, SLOT (slot_db_update (db_event *)));
+	QObject::connect (this, SIGNAL (db_update (DbEvent *)), ob, SLOT (slot_db_update (DbEvent *)));
 }
 
 
@@ -838,7 +838,7 @@ void MainWindow::edit_flight (Flight *f)
 
 db_id MainWindow::get_flight_id (int row)
 /*
- * Find the ID of the flight contained in a given row of the main table.
+ * Find the ID of the flight contained in a given row of the main Table.
  * Parameters:
  *   - row: the row containing the flight.
  * Return value:
@@ -941,7 +941,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 			int db_result = db->delete_flight (target_id);
 			if (db_result == db_ok)
 			{
-				db_event event (det_delete, db_flug, target_id);
+				DbEvent event (det_delete, db_flug, target_id);
 				emit db_change (&event);
 			}
 			else
@@ -1066,7 +1066,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 				// TODO Fehlerbehandlung
 				db->write_flight (&f);
 
-				db_event event (det_change, db_flug, target_id);
+				DbEvent event (det_change, db_flug, target_id);
 				emit db_change (&event);
 			}
 		}
@@ -1077,7 +1077,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 void MainWindow::manipulate_flight_by_row (int row, flight_manipulation action)
 /*
  * Do a change to a flight or an airtow identified by its row in the main
- * table.
+ * Table.
  * Parameters:
  *   - row: the row of the the flight or the airtow to be manipulated.
  *   - action: what to do to the flight.
@@ -1132,7 +1132,7 @@ void MainWindow::slot_flight_new ()
 // Tabelle
 void MainWindow::table_activated (int row)
 /*
- * Do the default action for table activation.
+ * Do the default action for Table activation.
  * If a flight is selected, edit it. Else, create a new one.
  * Parameters:
  *   - row: The row which was activated.
@@ -1151,12 +1151,12 @@ void MainWindow::table_activated (int row)
 }
 
 /**
- * Refresh all data in the table.
+ * Refresh all data in the Table.
  */
 void MainWindow::slot_refresh_table ()
 {
 	// If startup is not completed, there might not be a database connection or
-	// the table yet (?, TODO check reason).
+	// the Table yet (?, TODO check reason).
 	if (!db_available ()) return;
 	if (!startup_complete) return;
 
@@ -1175,7 +1175,7 @@ void MainWindow::slot_refresh_table ()
 		tbl_fluege->removeAllRows ();
 
 		// Flüge von heute
-		flight_list flights;
+		FlightList flights;
 		flights.setAutoDelete (true);
 		db->list_flights_date (flights, &anzeigedatum);
 		if (anzeigedatum == QDate::currentDate ()) db->list_flights_prepared (flights);
@@ -1310,10 +1310,10 @@ void MainWindow::slot_table_context (const QPoint &pos)
 
 void MainWindow::slot_table_double_click (int row, int col)
 /*
- * The table was double-clicked. Process the double click.
+ * The Table was double-clicked. Process the double click.
  * Parameters:
- *   - row: the row where the table was double-clicked.
- *   - col: the column where the table was double-clicked.
+ *   - row: the row where the Table was double-clicked.
+ *   - col: the column where the Table was double-clicked.
  */
 {
 	(void)col;
@@ -1322,7 +1322,7 @@ void MainWindow::slot_table_double_click (int row, int col)
 
 void MainWindow::slot_table_key (int key)
 /*
- * A key was pressed on the main table. Process the keypress.
+ * A key was pressed on the main Table. Process the keypress.
  * Parameters:
  *   - key: the key that was pressed.
  */
@@ -1400,7 +1400,7 @@ void MainWindow::slot_table_wiederholen ()
 
 // Tabellenbuttons
 /*
- * These functions get called when the corresponding button in the table
+ * These functions get called when the corresponding button in the Table
  * is pressed.
  */
 void MainWindow::slot_tbut_start (db_id id)
@@ -1464,7 +1464,7 @@ void MainWindow::update_time ()
 // Kontextmen�
 /*
  * These functions are called when a menu entry from the context menu is
- * selected. They use the context_row instead of the current table row.
+ * selected. They use the context_row instead of the current Table row.
  * Question: but the context_row seems always to be identical to the current row?
  */
 void MainWindow::slot_context_start ()
@@ -1756,7 +1756,7 @@ void MainWindow::shutdown ()
 //#define toggle(menu, id) do { menu->setItemChecked (id, !menu->isItemChecked (id)); } while (false)
 
 /**
- * Toggle whether landed flights are displayed in the table. Apply the
+ * Toggle whether landed flights are displayed in the Table. Apply the
  * change.
  */
 void MainWindow::slot_menu_ansicht_flug_gelandete (bool toggle)
@@ -1771,7 +1771,7 @@ void MainWindow::slot_menu_ansicht_flug_gelandete (bool toggle)
 }
 
 /**
- * Toggle whether flights which are flown away are displayed in the table.
+ * Toggle whether flights which are flown away are displayed in the Table.
  * Apply the change.
  */
 void MainWindow::slot_menu_ansicht_flug_weggeflogene_gekommene (bool toggle)
@@ -1782,7 +1782,7 @@ void MainWindow::slot_menu_ansicht_flug_weggeflogene_gekommene (bool toggle)
 }
 
 /**
- * Toggle whether erroneous flights are displayed in the table regardless of
+ * Toggle whether erroneous flights are displayed in the Table regardless of
  * their state. Apply the change.
  */
 void MainWindow::slot_menu_ansicht_flug_fehlerhafte (bool toggle)
@@ -1896,7 +1896,7 @@ void MainWindow::slot_menu_ansicht_always_use_current_date ()
 
 void MainWindow::slot_schleppref_springen ()
 /*
- * If the currently selected entry in the table is a member of an airtow,
+ * If the currently selected entry in the Table is a member of an airtow,
  * jump to the other member.
  */
 {
@@ -1915,7 +1915,7 @@ void MainWindow::slot_schleppref_springen ()
 
 void MainWindow::slot_tabelle_sortieren ()
 /*
- * Sort the table by the currently selected column.
+ * Sort the Table by the currently selected column.
  */
 {
 	int col = tbl_fluege->currentColumn ();
@@ -1968,7 +1968,7 @@ void MainWindow::slot_personeneditor ()
 
 //void MainWindow::slot_csv ()
 //	/*
-//	 * Old function to create a CSV table. Now done by the webinterface.
+//	 * Old function to create a CSV Table. Now done by the webinterface.
 //	 */
 //{
 //	int r=system ("tools/make_csv");
@@ -1987,7 +1987,7 @@ void MainWindow::slot_db_refresh_all ()
  * It is intended to be called by the UI.
  */
 {
-	db_event event (det_refresh, db_alle, 0);
+	DbEvent event (det_refresh, db_alle, 0);
 	emit db_change (&event);
 }
 
@@ -2090,20 +2090,20 @@ bool MainWindow::try_initialize_db (QString reason)
 			// OK pressed
 			try
 			{
-				sk_db root_db;
+				Database root_db;
 				root_db.display_queries = opts.display_queries;
 				root_db.set_database (opts.database);
 				root_db.set_connection_data (opts.server, opts.port, opts.root_name, root_pass);
 
 				initialize_database (root_db);
 			}
-			catch (sk_db::ex_access_denied &e)
+			catch (Database::ex_access_denied &e)
 			{
 				wrong_password_do_it_again = true;
 				label = e.description (true) + "\nPasswort f�r " + opts.root_name + "@"
 						+ opts.server_display_name + ":";
 			}
-			catch (sk_db::ex_init_failed &e)
+			catch (Database::ex_init_failed &e)
 			{
 				db_error = e.description (true);
 				QMessageBox::critical (this, e.description (true), db_error, QMessageBox::Ok,
@@ -2111,7 +2111,7 @@ bool MainWindow::try_initialize_db (QString reason)
 				return false;
 			}
 			// TODO show output from creation
-			catch (sk_exception &e)
+			catch (SkException &e)
 			{
 				// Database initialization failed. That means that there is no point in
 				// trying the connection again.
@@ -2240,36 +2240,36 @@ MainWindow::db_state_t MainWindow::db_action_connect ()
 			//try
 			{
 				db->connect ();
-			} //catch (sk_db::ex_access_denied &e) { throw sk_db::ex_unusable (e.description ()); }
+			} //catch (Database::ex_access_denied &e) { throw Database::ex_unusable (e.description ()); }
 			db->use_db ();
 			db->check_usability ();
 		}
-		catch (sk_db::ex_access_denied &e)
+		catch (Database::ex_access_denied &e)
 		{
 			initialize_and_try_again = true;
 			reason = e.description ();
 		}
-		catch (sk_db::ex_insufficient_access &e)
+		catch (Database::ex_insufficient_access &e)
 		{
 			initialize_and_try_again = true;
 			reason = e.description ();
 		}
-		catch (sk_db::ex_unusable &e)
+		catch (Database::ex_unusable &e)
 		{
 			// The database was found to be unusable, so we need to initialize
 			// it (as root) and try again.
 			initialize_and_try_again = true;
 			reason = e.description ();
 		}
-		catch (sk_db::ex_connection_failed &e)
+		catch (Database::ex_connection_failed &e)
 		{
 			return ds_no_connection;
 		}
-		catch (sk_db::ex_query_failed &e)
+		catch (Database::ex_query_failed &e)
 		{
 			db_error = e.description ();
 		}
-		catch (sk_exception &e)
+		catch (SkException &e)
 		{
 			// ex_allocation_error ex_database_not_accessible
 			// ex_parameter_error ex_not_connected ex_query_failed
@@ -2364,7 +2364,7 @@ void MainWindow::restart_all_plugins ()
 		weather_plugin->restart ();
 	}
 
-	QMutableListIterator<sk_plugin> plugin (*plugins);
+	QMutableListIterator<ShellPlugin> plugin (*plugins);
 	while (plugin.hasNext ())
 		plugin.next().restart();
 }
@@ -2373,7 +2373,7 @@ void MainWindow::openWeatherDialog ()
 {
 	if (!opts.weather_dialog_plugin.isEmpty ())
 	{
-		sk_plugin *weather_ani_plugin = new sk_plugin (opts.weather_dialog_title, opts.weather_dialog_plugin,
+		ShellPlugin *weather_ani_plugin = new ShellPlugin (opts.weather_dialog_title, opts.weather_dialog_plugin,
 				opts.weather_dialog_interval); // Initialize to given values
 
 		if (weatherDialog) delete weatherDialog;

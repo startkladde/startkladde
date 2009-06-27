@@ -7,9 +7,9 @@
 #include <Qt3Support>
 #define QPtrListIterator Q3PtrListIterator
 
-#include "src/data_types.h"
-#include "src/db/db_event.h"
-#include "src/db/sk_db.h"
+#include "src/dataTypes.h"
+#include "src/db/DbEvent.h"
+#include "src/db/Database.h"
 #include "src/gui/spacing.h"
 #include "src/gui/widgets/SkTable.h"
 #include "src/gui/widgets/SkTableItem.h"
@@ -25,7 +25,7 @@ class SplashScreen;
 const QColor col_default=QColor (255, 255, 255);
 
 /*
- * A dialog for listing Entity in a table.
+ * A dialog for listing Entity in a Table.
  * This class needs redoing, either as template or using polymorphy, to get rid
  * of all the swich ()es.
  */
@@ -35,12 +35,12 @@ class EntityListWindow:public SkDialog
 	Q_OBJECT
 
 	public:
-		EntityListWindow (EntityType, QWidget *parent, sk_db *_db, const char *name=NULL, bool modal=FALSE, WFlags f=0, ::SplashScreen *spl=NULL);
+		EntityListWindow (EntityType, QWidget *parent, Database *_db, const char *name=NULL, bool modal=FALSE, WFlags f=0, ::SplashScreen *spl=NULL);
 		~EntityListWindow ();
 		void liste ();
 
 	private:
-		sk_db *db;
+		Database *db;
 		EntityType type;
 		SkTable *tab;
 		QPushButton *but_close;
@@ -82,7 +82,7 @@ class EntityListWindow:public SkDialog
 		void slot_editieren ();
 
 	public slots:
-		void slot_db_update (db_event *);
+		void slot_db_update (DbEvent *);
 };
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef dialogs_h
-#define dialogs_h
+#ifndef _dialogs_h
+#define _dialogs_h
 
 #include <QMessageBox>
 

@@ -4,15 +4,15 @@
 
 #include "logo.xpm"
 #include "src/text.h"
-#include "src/config/options.h"
-#include "src/db/sk_db.h"
+#include "src/config/Options.h"
+#include "src/db/Database.h"
 #include "src/gui/windows/MainWindow.h"
 #include "src/gui/windows/SplashScreen.h"
-#include "src/plugins/sk_plugin.h"
+#include "src/plugins/ShellPlugin.h"
 
 // Testen des Wetterplugins
 //#include "WeatherDialog.h"
-//#include "sk_plugin.h"
+//#include "ShellPlugin.h"
 
 void display_help ()
 	/*
@@ -21,22 +21,22 @@ void display_help ()
 {
 	std::cout << "usage: startkladde [options]" << std::endl;
 	std::cout << "  options:" << std::endl;
-	options::display_options ("    ");
+	Options::display_options ("    ");
 }
 
 int main (int argc, char **argv)
 	/*
 	 * Starts the startkladde program.
 	 * Parameters:
-	 *   - argc, argv: the usual. Some of the options can be passed here.
+	 *   - argc, argv: the usual. Some of the Options can be passed here.
 	 * Return value:
 	 *   the return value of the QApplication, and thus of the main window.
 	 */
 {
 	opts.parse_arguments (argc, argv);
 
-	sk_db db;
-	QList<sk_plugin> plugins;
+	Database db;
+	QList<ShellPlugin> plugins;
 
 	if (opts.need_display ())
 		opts.do_display ();
@@ -53,7 +53,7 @@ int main (int argc, char **argv)
 		if (!opts.style.isEmpty ()) a.setStyle (opts.style);
 
 		// Testen des Wetterplugins
-		//sk_plugin *weather_ani_plugin=new sk_plugin ("Wettertitel", "plugins/weather/regenradar_wetteronline.de_ani", 600);	// Initialize to given values
+		//ShellPlugin *weather_ani_plugin=new ShellPlugin ("Wettertitel", "plugins/weather/regenradar_wetteronline.de_ani", 600);	// Initialize to given values
 		//WeatherDialog *weatherDialog;
 		//weatherDialog=new WeatherDialog (weather_ani_plugin);
 		//weatherDialog->setCaption ("Moobert");

@@ -4,9 +4,9 @@
 #include <iostream>
 #include <QString>
 
-#include "src/data_types.h"
+#include "src/dataTypes.h"
 #include "src/text.h"
-#include "src/db/db_types.h"
+#include "src/db/dbTypes.h"
 
 
 //#define column_string(num, title, value) if (column_number==num) { if (entry) return value; else return title; }
@@ -20,7 +20,7 @@ class Entity
 		// TODO: this concept needs work.
 		// Instead of specifying different output formats here, make a
 		// function that returns a list of key/value pairs
-		// (argument_list, for example) and use that for display.
+		// (ArgumentList, for example) and use that for display.
 		// Then, this function can also be used in the web interface
 		// code.
 		// Note: there are problems with passwords:

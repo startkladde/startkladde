@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "src/config/options.h"
+#include "src/config/Options.h"
 
 // MURX: dass hier Meldungen angezeigt werden (bool interactive) ist Pfusch.
 
@@ -624,7 +624,7 @@ int Flight::sort (Flight *other) const
 QDate Flight::effdatum (time_zone tz) const
         /*
          * Calculates the effective date, that is the date to use when sorting the
-         * table.
+         * Table.
          * Parameters:
          *   - tz: the time zone to use.
          * Return value:

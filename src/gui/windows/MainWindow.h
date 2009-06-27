@@ -16,20 +16,20 @@
 #include <QTextEdit>
 #include <QTimer>
 
-#include "src/data_types.h"
-#include "src/db/db_types.h"
+#include "src/dataTypes.h"
+#include "src/db/dbTypes.h"
 #include "src/gui/settings.h"
 #include "src/gui/spacing.h"
 #include "src/gui/widgets/SkLabel.h"
 #include "src/gui/widgets/WeatherWidget.h"
 #include "src/gui/windows/WeatherDialog.h"
 #include "src/logging/messages.h"
-#include "src/plugins/sk_plugin.h"
+#include "src/plugins/ShellPlugin.h"
 
-class db_event;
+class DbEvent;
 class flight;
-class options;
-class sk_db;
+class Options;
+class Database;
 class FlightTable;
 class Flight;
 class Plane;
@@ -57,7 +57,7 @@ class MainWindow:public QMainWindow
 
 	public:
 		enum db_state_t { ds_uninitialized, ds_no_connection, ds_established, ds_unusable, ds_connection_lost };
-		MainWindow (QWidget *parent, sk_db *_db, QList<sk_plugin> *_plugins, const char *name, WFlags f=WType_TopLevel);
+		MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin> *_plugins, const char *name, WFlags f=WType_TopLevel);
 		~MainWindow ();
 		void start_db ();
 
@@ -79,7 +79,7 @@ class MainWindow:public QMainWindow
 		EntityListWindow *personen_liste;
 		WeatherDialog *weatherDialog;
 		// Database
-		sk_db *db;
+		Database *db;
 		db_state_t db_state;
 		QString db_error;
 		bool try_initialize_db (QString reason);
@@ -164,11 +164,11 @@ class MainWindow:public QMainWindow
 
 
 		QTextEdit *log;
-		QList<sk_plugin> *plugins;
-		sk_plugin *weather_plugin;
+		QList<ShellPlugin> *plugins;
+		ShellPlugin *weather_plugin;
 
 	public slots:
-		void slot_db_update (db_event *event);
+		void slot_db_update (DbEvent *event);
 		void set_anzeigedatum (QDate);
 		void log_message (QString message);
 		void log_message (QString *message);
@@ -246,8 +246,8 @@ class MainWindow:public QMainWindow
 		void slot_timer_db ();
 
 	signals:
-		void db_change (db_event *event);
-		void db_update (db_event *event);
+		void db_change (DbEvent *event);
+		void db_update (DbEvent *event);
 		void status (QString);
 		void progress (int, int);
 		void long_operation_start ();

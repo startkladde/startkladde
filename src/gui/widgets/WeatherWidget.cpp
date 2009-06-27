@@ -6,7 +6,7 @@
 #include <QRegExp>
 #include <QResizeEvent>
 
-#include "src/config/options.h"
+#include "src/config/Options.h"
 
 WeatherWidget::WeatherWidget (QWidget *parent, const char *name)
 	:QLabel (parent, name)
