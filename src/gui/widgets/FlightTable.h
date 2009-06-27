@@ -11,7 +11,7 @@
 #include "src/gui/widgets/SkTableItem.h"
 #include "src/model/Flight.h"
 #include "src/model/LaunchType.h"
-#include "src/time/sk_time_t.h"
+#include "src/time/Time.h"
 
 
 // Indizies zur Zuordnung von Feldern zu Tabellenspalten
@@ -63,7 +63,7 @@ class FlightTable:public SkTable
 
 		void update_time ();
 		void update_row_time (int);
-		void update_row_time (int, sk_time_t *);
+		void update_row_time (int, Time *);
 
 		void set_anzeigedatum (QDate);
 

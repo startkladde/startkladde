@@ -287,9 +287,9 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	bool eff_gestartet=f->gestartet;
 	bool eff_gelandet=set_schlepp?f->sfz_gelandet:f->gelandet;
 	bool eff_fehlerhaft=set_schlepp?f->schlepp_fehlerhaft (&fz, &sfz, &startart):f->fehlerhaft (&fz, &sfz, &startart);
-	sk_time_t eff_startzeit=f->startzeit;
-	sk_time_t eff_landezeit=set_schlepp?f->landezeit_schleppflugzeug:f->landezeit;
-	sk_time_t eff_flugdauer=set_schlepp?f->schleppflugdauer ():f->flugdauer ();
+	Time eff_startzeit=f->startzeit;
+	Time eff_landezeit=set_schlepp?f->landezeit_schleppflugzeug:f->landezeit;
+	Time eff_flugdauer=set_schlepp?f->schleppflugdauer ():f->flugdauer ();
 	bool editierbar=f->editierbar;
 
 	// Modus
@@ -314,7 +314,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	startzeit_item=(SkTableItem *)item (row, tbl_idx_startzeit);
 	if (startzeit_item)
 	{
-		delete (sk_time_t *)startzeit_item->get_data ();
+		delete (Time *)startzeit_item->get_data ();
 		startzeit_item->set_data (NULL);
 	}
 
@@ -563,7 +563,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	if (startzeit_item)
 	{
 		if (f->gestartet)
-			startzeit_item->set_data (new sk_time_t (eff_startzeit));
+			startzeit_item->set_data (new Time (eff_startzeit));
 		else
 			startzeit_item->set_data (NULL);
 	}
@@ -725,7 +725,7 @@ void FlightTable::remove_flight (db_id id)
 
 
 
-void FlightTable::update_row_time (int row, sk_time_t *t)
+void FlightTable::update_row_time (int row, Time *t)
 	/*
 	 * Updates the time displayed in a row.
 	 * Parameters:
@@ -741,12 +741,12 @@ void FlightTable::update_row_time (int row, sk_time_t *t)
 		SkTableItem *sz_item=(SkTableItem *)item (row, tbl_idx_startzeit);
 		if (sz_item)
 		{
-			sk_time_t *startzeit;
-			startzeit=(sk_time_t *)sz_item->get_data ();
+			Time *startzeit;
+			startzeit=(Time *)sz_item->get_data ();
 
 			if (startzeit)
 			{
-				sk_time_t flugdauer;
+				Time flugdauer;
 				flugdauer.set_to (startzeit->secs_to (t));
 				setText (row, tbl_idx_flugdauer, flugdauer.table_string (tz_none));
 			}
@@ -777,7 +777,7 @@ void FlightTable::update_row_time (int row)
 	 *   - row: the number of the row to update.
 	 */
 {
-	sk_time_t t;
+	Time t;
 	t.set_current ();
 	update_row_time (row, &t);
 }

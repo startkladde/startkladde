@@ -690,7 +690,7 @@ const QString &message_or_default (const QString &message, const QString &def)
 		return message;
 }
 
-sk_date date_from_cgi (const QString &year_arg, const QString &month_arg, const QString &day_arg)
+Date date_from_cgi (const QString &year_arg, const QString &month_arg, const QString &day_arg)
 	/*
 	 * Reads a date from the CGI parameters:
 	 * Parameters:
@@ -706,7 +706,7 @@ sk_date date_from_cgi (const QString &year_arg, const QString &month_arg, const 
 
 	// If one parameter is not given, this date is automatically invalid as the
 	// value will be 0.
-	return sk_date (year, month, day);
+	return Date (year, month, day);
 }
 
 
@@ -1609,7 +1609,7 @@ void add_date_inputs (html_table &table, bool include_range)
 	// make configurable which radio button is preselected.
 
 	// Determine the default values for dates
-	sk_date current_date=sk_date::current ();
+	Date current_date=Date::current ();
 	QString now_year=QString::number (current_date.get_year ());
 	QString now_month=QString::number (current_date.get_month ());
 	QString now_day=QString::number (current_date.get_day ());
@@ -4047,7 +4047,7 @@ WhatNext handler_do_person_logbook ()
 	if (date_spec==arg_cgi_date_spec_today)
 	{
 		// Generate the date.
-		sk_date date=sk_date::current ();
+		Date date=Date::current ();
 		QDate q_date=(QDate)date;
 		date_text=date.text ();
 		// TODO append date_text and move down
@@ -4059,7 +4059,7 @@ WhatNext handler_do_person_logbook ()
 	else if (date_spec==arg_cgi_date_spec_single)
 	{
 		// Read and check the date.
-		sk_date date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
+		Date date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
 		if (date.is_invalid ()) return WhatNext::output_error ("Das angegebene Datum ist ung�ltig.");
 		QDate q_date=(QDate)date;
 		date_text=date.text ();
@@ -4071,12 +4071,12 @@ WhatNext handler_do_person_logbook ()
 	else if (date_spec==arg_cgi_date_spec_range)
 	{
 		// Read and check the start date.
-		sk_date start_date=date_from_cgi (arg_cgi_date_start_year, arg_cgi_date_start_month, arg_cgi_date_start_day);
+		Date start_date=date_from_cgi (arg_cgi_date_start_year, arg_cgi_date_start_month, arg_cgi_date_start_day);
 		if (start_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Anfangsdatum ist ung�ltig.");
 		QDate q_start_date=(QDate)start_date;
 
 		// Read and check the end date.
-		sk_date end_date=date_from_cgi (arg_cgi_date_end_year, arg_cgi_date_end_month, arg_cgi_date_end_day);
+		Date end_date=date_from_cgi (arg_cgi_date_end_year, arg_cgi_date_end_month, arg_cgi_date_end_day);
 		if (end_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Enddatum ist ung�ltig.");
 		QDate q_end_date=(QDate)end_date;
 
@@ -4225,11 +4225,11 @@ WhatNext handler_do_plane_logbook ()
 	// Read the flights we are interested in from the database.
 	// TODO remove QDate Entity
 	// TODO code duplication with handler_do_flightlist
-	sk_date date;
+	Date date;
 	if (date_spec==arg_cgi_date_spec_today)
 	{
 		// Generate the date.
-		date=sk_date::current ();
+		date=Date::current ();
 	}
 	else if (date_spec==arg_cgi_date_spec_single)
 	{
@@ -4347,11 +4347,11 @@ WhatNext handler_do_flightlist ()
 
 	// Read the flights we are interested in from the database.
 	// TODO remove QDate Entity
-	sk_date date;
+	Date date;
 	if (date_spec==arg_cgi_date_spec_today)
 	{
 		// Generate the date.
-		date=sk_date::current ();
+		date=Date::current ();
 	}
 	else if (date_spec==arg_cgi_date_spec_single)
 	{
@@ -4491,7 +4491,7 @@ WhatNext handler_do_flight_db ()
 	if (date_spec==arg_cgi_date_spec_today)
 	{
 		// Generate the date.
-		sk_date date=sk_date::current ();
+		Date date=Date::current ();
 		QDate q_date=(QDate)date;
 		date_text=date.text ();
 		filename.append (date.text ());
@@ -4502,7 +4502,7 @@ WhatNext handler_do_flight_db ()
 	else if (date_spec==arg_cgi_date_spec_single)
 	{
 		// Read and check the date.
-		sk_date date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
+		Date date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
 		if (date.is_invalid ()) return WhatNext::output_error ("Das angegebene Datum ist ung�ltig.");
 		QDate q_date=(QDate)date;
 		date_text=date.text ();
@@ -4514,12 +4514,12 @@ WhatNext handler_do_flight_db ()
 	else if (date_spec==arg_cgi_date_spec_range)
 	{
 		// Read and check the start date.
-		sk_date start_date=date_from_cgi (arg_cgi_date_start_year, arg_cgi_date_start_month, arg_cgi_date_start_day);
+		Date start_date=date_from_cgi (arg_cgi_date_start_year, arg_cgi_date_start_month, arg_cgi_date_start_day);
 		if (start_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Anfangsdatum ist ung�ltig.");
 		QDate q_start_date=(QDate)start_date;
 
 		// Read and check the end date.
-		sk_date end_date=date_from_cgi (arg_cgi_date_end_year, arg_cgi_date_end_month, arg_cgi_date_end_day);
+		Date end_date=date_from_cgi (arg_cgi_date_end_year, arg_cgi_date_end_month, arg_cgi_date_end_day);
 		if (end_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Enddatum ist ung�ltig.");
 		QDate q_end_date=(QDate)end_date;
 

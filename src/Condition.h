@@ -6,7 +6,7 @@
 
 #include "src/dataTypes.h"
 #include "src/db/dbTypes.h"
-#include "src/time/sk_time_t.h"
+#include "src/time/Time.h"
 
 // Note: when changing this enum, also update Database::make_condition
 
@@ -42,7 +42,7 @@ class Condition
 		Condition (ConditionType _type, db_id _id1);
 		Condition (ConditionType _type, QString *_text1, QString *_text2=NULL);
 		Condition (ConditionType _type, const QDate *_date1, const QDate *_date2=NULL);
-		Condition (ConditionType _type, sk_time_t *_given_time1);
+		Condition (ConditionType _type, Time *_given_time1);
 		Condition (ConditionType _type, db_id _id1, QDate *_date1, QDate *_date2=NULL);
 		void init ();
 
@@ -56,7 +56,7 @@ class Condition
 		db_id id1;
 		QString *text1, *text2;
 		const QDate *date1, *date2;
-		sk_time_t *given_time1;
+		Time *given_time1;
 };
 
 #endif

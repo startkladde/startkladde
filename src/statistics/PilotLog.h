@@ -14,7 +14,7 @@
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
-#include "src/time/sk_time_t.h"
+#include "src/time/Time.h"
 
 class PilotLogEntry
 {
@@ -31,9 +31,9 @@ class PilotLogEntry
 		QString startart;
 		QString ort_start;
 		QString ort_landung;
-		sk_time_t zeit_start;
-		sk_time_t zeit_landung;
-		sk_time_t flugdauer;
+		Time zeit_start;
+		Time zeit_landung;
+		Time flugdauer;
 		QString bemerkung;
 
 		bool invalid;

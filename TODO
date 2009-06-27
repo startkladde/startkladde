@@ -189,7 +189,6 @@ Normale Priorit�t:
     - iteratoren: end cachen
     - dialogs.o nach GUI_OBJS, nachdem es aus sk_flug raus ist.
     - sk_db is way too large and should be split up some.
-    - remove sk_time
     - link plugins only to GUI. That means, remove plugin list from options.
     - sk_time deprecated in favor of sk_time_t??? unify sk_time, sk_date, sk_time_t
     - auf table-Klasse umstellen

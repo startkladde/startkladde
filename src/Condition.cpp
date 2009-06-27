@@ -34,7 +34,7 @@ Condition::Condition (ConditionType _type, const QDate *_date1, const QDate *_da
 	date2=_date2;
 }
 
-Condition::Condition (ConditionType _type, sk_time_t *_given_time1)
+Condition::Condition (ConditionType _type, Time *_given_time1)
 {
 	init ();
 	type=_type;

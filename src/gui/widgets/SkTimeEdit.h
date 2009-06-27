@@ -9,7 +9,6 @@
 #include <QTimeEdit>
 
 #include "src/logging/messages.h"
-#include "src/time/sk_time.h"
 
 enum sk_te_mode { tm_time, tm_box_time, tm_time_but };
 
@@ -29,7 +28,7 @@ class SkTimeEdit:public QFrame
 
 		// QTimeEdit properties
 		QTime time ();
-		void set_time (sk_time);
+		void set_time (const QTime &);
 		void null_zeit ();
 
 		// QCheckBox properties

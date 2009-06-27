@@ -97,7 +97,7 @@ class FlightWindow:public SkDialog
 		virtual void done (int);
 
 	private:
-		void set_time (bool use_time, bool *use_ziel, sk_time_t *zeit_ziel, QDate datum, QTime zeit);
+		void set_time (bool use_time, bool *use_ziel, Time *zeit_ziel, QDate datum, QTime zeit);
 		void set_buttons (bool, QString aktion_text="", bool read_only=false);
 		bool person_anlegen (db_id *person_id, QString nachname, QString vorname, QString bezeichnung, bool force);
 		int widget_index (QWidget *w);

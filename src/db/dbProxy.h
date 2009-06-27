@@ -15,7 +15,7 @@
 
 
 int schleppflugzeug_aus_startart (Database *db, Plane *fz, int  sa_num);
-db_id schleppmaschine_flog (Database *db, db_id sa_id, sk_time_t t);
+db_id schleppmaschine_flog (Database *db, db_id sa_id, Time t);
 
 #endif
 

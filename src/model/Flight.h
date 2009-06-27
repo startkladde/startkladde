@@ -14,7 +14,7 @@
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
 #include "src/model/LaunchType.h"
-#include "src/time/sk_time_t.h"
+#include "src/time/Time.h"
 #include "src/time/timeFunctions.h"
 
 enum FlightError {
@@ -51,8 +51,8 @@ class Flight
 		bool schlepp_landen (bool force=true, bool interactive=false);
 		bool zwischenlandung (bool force=true, bool interactive=false);
 		QString typ_string (lengthSpecification lenspec) const;
-		sk_time_t flugdauer () const;
-		sk_time_t schleppflugdauer () const;
+		Time flugdauer () const;
+		Time schleppflugdauer () const;
 		bool fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const;
 		bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const;
 		FlightError fehlerchecking (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchType *startart) const;
@@ -67,9 +67,9 @@ class Flight
 		db_id pilot;						// ID des Piloten
 		db_id begleiter;					// ID des Begleiters
 		db_id towpilot;						// ID des Schleppiloten
-		sk_time_t startzeit;
-		sk_time_t landezeit;
-		sk_time_t landezeit_schleppflugzeug;
+		Time startzeit;
+		Time landezeit;
+		Time landezeit_schleppflugzeug;
 		db_id startart;				// ID der Startart
 		flug_typ flugtyp;					// Typ des Flugs
 		QString startort;
@@ -86,7 +86,7 @@ class Flight
 		bool gestartet, gelandet, sfz_gelandet;
 		// Whenn adding something here, add it to get_towflight ()
 
-		sk_time_t efftime () const;
+		Time efftime () const;
 		QDate effdatum (time_zone tz=tz_utc) const;
 
 

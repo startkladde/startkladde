@@ -7,7 +7,7 @@
 #define QPtrCollection Q3PtrCollection
 
 #include "src/model/Flight.h"
-#include "src/time/sk_time_t.h"
+#include "src/time/Time.h"
 
 class FlightList:public Q3PtrList<Flight>
 {

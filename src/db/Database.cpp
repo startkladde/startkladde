@@ -1008,7 +1008,7 @@ long long int Database::row_to_number (MYSQL_ROW row, int num_fields, MYSQL_FIEL
 	return atoll (named_field_value (row, num_fields, fields, field_name));
 }
 
-QString Database::to_string (sk_time_t *t)
+QString Database::to_string (Time *t)
 {
 	if (t->is_null ())
 		return db_null_time;
@@ -1016,7 +1016,7 @@ QString Database::to_string (sk_time_t *t)
 		return t->to_string (db_time_format, tz_utc, 20, true);
 }
 
-void Database::parse (sk_time_t *time, QString text)
+void Database::parse (Time *time, QString text)
 {
 	if (text==db_null_time)
 		time->set_null ();
@@ -2313,7 +2313,7 @@ int Database::list_flights_prepared (QPtrList<Flight> &flights)
 	return r;
 }
 
-db_id Database::object_flying (db_object_type otype, db_id id, sk_time_t *given_time)
+db_id Database::object_flying (db_object_type otype, db_id id, Time *given_time)
 {
 	if (id_invalid (id)) return invalid_id;
 
@@ -2342,12 +2342,12 @@ db_id Database::object_flying (db_object_type otype, db_id id, sk_time_t *given_
 		return ids.first ();
 }
 
-db_id Database::person_flying (db_id id, sk_time_t *given_time)
+db_id Database::person_flying (db_id id, Time *given_time)
 {
 	return object_flying (ot_person, id, given_time);
 }
 
-db_id Database::plane_flying (db_id id, sk_time_t *given_time)
+db_id Database::plane_flying (db_id id, Time *given_time)
 {
 	return object_flying (ot_plane, id, given_time);
 }

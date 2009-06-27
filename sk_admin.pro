@@ -37,7 +37,7 @@ HEADERS += \
            src/plugins/ShellPlugin.h \
            src/plugins/DataFormatPlugin.h \
            src/time/Date.h \
-           src/time/sk_time_t.h \
+           src/time/Time.h \
            src/time/timeFunctions.h \
            src/web/argument.h \
 		   # Empty line
@@ -68,7 +68,7 @@ SOURCES += \
            src/plugins/DataFormatPlugin.cpp \
            src/plugins/ShellPlugin.cpp \
            src/time/Date.cpp \
-           src/time/sk_time_t.cpp \
+           src/time/Time.cpp \
            src/time/timeFunctions.cpp \
            src/web/argument.cpp \
 		   # Empty line

@@ -73,8 +73,7 @@ HEADERS += \
            src/statistics/PlaneLog.h \
            src/statistics/PilotLog.h \
            src/time/Date.h \
-           src/time/sk_time.h \
-           src/time/sk_time_t.h \
+           src/time/Time.h \
            src/time/timeFunctions.h \
            src/web/Argument.h \
 		   # Empty line
@@ -137,8 +136,7 @@ SOURCES += \
            src/statistics/PlaneLog.cpp \
            src/statistics/PilotLog.cpp \
            src/time/Date.cpp \
-           src/time/sk_time.cpp \
-           src/time/sk_time_t.cpp \
+           src/time/Time.cpp \
            src/time/timeFunctions.cpp \
            src/web/Argument.cpp \
 		   # Empty line

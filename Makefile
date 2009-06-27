@@ -90,7 +90,7 @@ clean: Makefile_startkladde Makefile_sk_web Makefile_sk_admin logo.xpm kvkbd.xpm
 	$(MAKE) -C plugins clean
 	rm -f Makefile_startkladde Makefile_sk_web Makefile_sk_admin
 	rm -f version/version.h
-	rmdir build
+	rm -rf build
 
 
 ##########

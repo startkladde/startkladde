@@ -14,7 +14,7 @@
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
-#include "src/time/sk_time_t.h"
+#include "src/time/Time.h"
 
 class PlaneLogEntry
 {
@@ -29,10 +29,10 @@ class PlaneLogEntry
 		int insassen;
 		QString ort_von;
 		QString ort_nach;
-		sk_time_t zeit_start;
-		sk_time_t zeit_landung;
+		Time zeit_start;
+		Time zeit_landung;
 		int anzahl_landungen;
-		sk_time_t betriebsdauer;
+		Time betriebsdauer;
 		QString bemerkungen;
 		bool invalid;
 

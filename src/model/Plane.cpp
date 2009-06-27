@@ -202,11 +202,11 @@ QString Plane::categoryString (Plane::Category category, lengthSpecification len
  */
 Plane::Category Plane::categoryFromRegistration (QString registration)
 {
-	if (reg.length () < 3) return categoryNone;
-	if (reg[0] != 'D') return categoryNone;
-	if (reg[1] != '-') return categoryNone;
+	if (registration.length () < 3) return categoryNone;
+	if (registration[0] != 'D') return categoryNone;
+	if (registration[1] != '-') return categoryNone;
 
-	QChar kbu = reg.at (2);
+	QChar kbu = registration.at (2);
 
 	if (kbu == '0' || kbu == '1' || kbu == '2' || kbu == '3' || kbu == '4'
 		|| kbu == '5' || kbu == '6' || kbu == '7' || kbu == '8' || kbu == '9')

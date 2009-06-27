@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-// TODO move to sk_date?
+// TODO move to Date?
 
 //const char *default_format="%0d.%0m.%0Y %0H:%0M:%0S";
 const char *default_format="%0Y-%0m-%0d %0H:%0M:%0S";

@@ -1,11 +1,11 @@
-#ifndef _sk_time_t_h
-#define _sk_time_t_h
+#ifndef _Time_h
+#define _Time_h
 
 #ifndef _SVID_SOURCE
-	#define _SVID_SOURCE	// braucht man für timegm () und timelocal ()
+	#define _SVID_SOURCE	// Required for timegm () and timelocal ()
 #endif
 #ifndef _XOPEN_SOURCE
-	#define _XOPEN_SOURCE	// braucht man für strptime ()
+	#define _XOPEN_SOURCE	// Requried for strptime ()
 #endif
 
 #include <cstdio>
@@ -17,11 +17,11 @@
 #include "src/logging/messages.h"
 #include "src/time/timeFunctions.h"
 
-class sk_time_t
+class Time
 {
 	public:
-		sk_time_t ();	// Default constructor, init to 0
-		sk_time_t (time_t);	// Contructor, init to given time
+		Time ();	// Default constructor, init to 0
+		Time (time_t);	// Contructor, init to given time
 
 		void set_to (const time_t, bool null_sec=false);	// Set to given time
 		void set_to (const int, bool null_sec=false);	// Set to given time
@@ -31,14 +31,14 @@ class sk_time_t
 		void set_current (bool null_sec=false);	// Set to current time
 		void null_seconds ();
 		void add_seconds (int s);
-		void add_time (sk_time_t tt);
+		void add_time (Time tt);
 		void set_null ();	// Set to 0
 		bool is_null () const;	// Check for 0
 		QTime get_qtime (time_zone tz=tz_utc) const;
 		QDate get_qdate (time_zone tz=tz_utc) const;
 
-		int secs_to (const sk_time_t *) const;
-		int secs_to (const sk_time_t &) const;
+		int secs_to (const Time *) const;
+		int secs_to (const Time &) const;
 
 		QString to_string (const char *format=NULL, time_zone tz=tz_utc, int buf_size=0, bool no_letters=false) const;	// Generate QString
 		QString table_string (const char *, time_zone tz=tz_utc, int buf_size=0, bool no_letters=false) const;
@@ -46,9 +46,9 @@ class sk_time_t
 		QString table_string (time_zone tz=tz_utc, bool gelandet=true, bool no_letters=false) const;
 		QString csv_string (time_zone tz=tz_utc) const;
 
-		bool operator> (const sk_time_t &) const;
-		bool operator< (const sk_time_t &) const;
-		bool operator== (const sk_time_t &) const;
+		bool operator> (const Time &) const;
+		bool operator< (const Time &) const;
+		bool operator== (const Time &) const;
 
 		//const char *default_format ();
 		time_t unix_time () const;

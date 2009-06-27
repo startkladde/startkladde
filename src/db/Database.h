@@ -372,8 +372,8 @@ class Database:public QObject
 		long long int count_persons (Condition c);
 		long long int count_flights_current (QDate &date);
 		long long int count_flights_today (QDate &date);
-		db_id person_flying (db_id id, sk_time_t *given_time);
-		db_id plane_flying (db_id id, sk_time_t *given_time);
+		db_id person_flying (db_id id, Time *given_time);
+		db_id plane_flying (db_id id, Time *given_time);
 		bool person_has_flight (db_id id);
 		bool person_has_user (db_id id);
 		bool plane_has_flight (db_id id);
@@ -475,9 +475,9 @@ class Database:public QObject
 		QString default_sort_column (db_object_type type);
 
 		// Data type conversion
-		QString to_string (sk_time_t *t);
+		QString to_string (Time *t);
 		long long int row_to_number (MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields, const char *field_name);
-		void parse (sk_time_t *time, QString text);
+		void parse (Time *time, QString text);
 		QString query_column_list (db_object_type otype, bool id_only);
 		QString query_value_list (db_object_type type, void *object);
 		int row_to_object (db_object_type otype, void *object, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields);
@@ -549,7 +549,7 @@ class Database:public QObject
 		long long int count_objects (db_object_type type, Condition c);
 
 		// Frontends
-		db_id object_flying (db_object_type otype, db_id id, sk_time_t *given_time);
+		db_id object_flying (db_object_type otype, db_id id, Time *given_time);
 		bool object_has_flight (db_object_type otype, db_id id);
 
 		// Display alias

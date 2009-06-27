@@ -82,7 +82,7 @@ void SkTimeEdit::reset ()
 	 */
 {
 	tedit->setDisplayFormat ("hh:mm");
-	set_time (sk_time (0, 0, 0, 0));
+	set_time (QTime (0, 0, 0, 0));
 	set_mode (tm_time);
 	set_checked (true);
 }
@@ -110,7 +110,7 @@ QTime SkTimeEdit::time ()
 	return tedit->time ();
 }
 
-void SkTimeEdit::set_time (sk_time t)
+void SkTimeEdit::set_time (const QTime &t)
 	/*
 	 * Writes a given time to the time editor.
 	 * Parameters:

@@ -7,12 +7,12 @@
 
 #include "src/accessor.h"
 
-// TODO make gettable from sk_time_t, remove functionality here.
-class sk_date
+// TODO make gettable from Time, remove functionality here.
+class Date
 {
 	public:
-		sk_date (int _year=0, int _month=0, int _day=0): year (_year), month (_month), day (_day) {}
-		static sk_date current ();
+		Date (int _year=0, int _month=0, int _day=0): year (_year), month (_month), day (_day) {}
+		static Date current ();
 
 		QString text ();
 		bool is_invalid ();
@@ -24,11 +24,11 @@ class sk_date
 		operator QDate ();	// Transitional, remove
 
 		// Relations
-		bool operator== (const sk_date &o);
-		bool operator< (const sk_date &o);
-		bool operator> (const sk_date &o);
-		bool operator<= (const sk_date &o);
-		bool operator>= (const sk_date &o);
+		bool operator== (const Date &o);
+		bool operator< (const Date &o);
+		bool operator> (const Date &o);
+		bool operator<= (const Date &o);
+		bool operator>= (const Date &o);
 
 	private:
 		unsigned int year, month, day;

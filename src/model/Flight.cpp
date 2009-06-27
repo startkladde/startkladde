@@ -87,27 +87,27 @@ bool Flight::finished () const
 	return (lands_here (modus)?gelandet:true);
 }
 
-sk_time_t Flight::flugdauer () const
+Time Flight::flugdauer () const
 	/*
 	 * Calculate the flight time of the flight.
 	 * Return value:
 	 *   - the flight time.
 	 */
 {
-	sk_time_t t;
+	Time t;
 	if (gestartet && gelandet) t.set_to (startzeit.secs_to (&landezeit));
 	//t=t.addSecs (startzeit.secs_to (&landezeit));
 	return t;
 }
 
-sk_time_t Flight::schleppflugdauer () const
+Time Flight::schleppflugdauer () const
 	/*
 	 * Calculate the flight time of the towflight
 	 * Return value:
 	 *   - the flight time.
 	 */
 {
-	sk_time_t t;
+	Time t;
 	if (gestartet && sfz_gelandet) t.set_to (startzeit.secs_to (&landezeit_schleppflugzeug));
 		//t=t.addSecs (startzeit.secsTo (landezeit_schleppflugzeug));
 	return t;
@@ -421,12 +421,12 @@ QString Flight::typ_string (lengthSpecification lenspec) const
 
 
 
-sk_time_t Flight::efftime () const
+Time Flight::efftime () const
 {
 	// TODO this assumes that every flight at least starts or lands here.
 	if (starts_here (modus) && gestartet) return startzeit;
 	if (lands_here (modus) && gelandet) return landezeit;
-	return sk_time_t ();
+	return Time ();
 }
 
 
@@ -530,7 +530,7 @@ void Flight::get_towflight (Flight *towflight, db_id towplane_id, db_id sa_id) c
 	towflight->begleiter=invalid_id;						// There is no tow copilot.
 	towflight->startzeit=startzeit;							// The tow flight started the same time as the towed flight.
 	towflight->landezeit=landezeit_schleppflugzeug;			// The tow flight landing time is our landezeit_schleppflugzeug.
-	towflight->landezeit_schleppflugzeug=sk_time_t (); 		// The tow flight has no tow flight.
+	towflight->landezeit_schleppflugzeug=Time (); 		// The tow flight has no tow flight.
 	towflight->startart=sa_id;								// The startart of the tow flight is given as a parameter.
 	towflight->flugtyp=ft_schlepp;
 	towflight->startort=startort;							// The tow flight started the same place as the towed flight.
@@ -614,8 +614,8 @@ int Flight::sort (Flight *other) const
 	if (other->vorbereitet ()) return -1;
 
 	// Sort by effective time
-	sk_time_t t1=efftime ();
-	sk_time_t t2=other->efftime ();
+	Time t1=efftime ();
+	Time t2=other->efftime ();
 	if (t1>t2) return 1;
 	if (t1<t2) return -1;
 	return 0;

@@ -1003,12 +1003,12 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 					{
 						bool starten = true;
 
-						// TODO currentDateTime ersetzen durch sk_time_t
+						// TODO currentDateTime ersetzen durch Time
 						// TODO unified fehlerchecking
 						// TODO das hier ist codeduplikation mit FlightWindow
 						// TODO hier auch schleppmaschine (bzw. besser nicht
 						// hier sondern an einheitlicher Stelle)
-						sk_time_t ct;
+						Time ct;
 						ct.set_current ();
 						if (starten && !id_invalid (f.pilot) && !id_invalid (db->person_flying (f.pilot, &ct)))
 						{

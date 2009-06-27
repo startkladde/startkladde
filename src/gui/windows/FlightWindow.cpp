@@ -2277,7 +2277,7 @@ bool FlightWindow::check_plane_flying (db_id plane_id, QString registration, QSt
 {
 	if (id_invalid (plane_id)) return invalid_id;
 
-	sk_time_t ct;
+	Time ct;
 	ct.set_current (true);
 	db_id id=db->plane_flying (plane_id, &ct);
 
@@ -2492,7 +2492,7 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 	// Check if the person is still flying.
 	if (result==rt_id && !id_invalid (result_id) && check_flying)
 	{
-		sk_time_t ct;
+		Time ct;
 		ct.set_current (true);
 		if (!id_invalid (db->person_flying (result_id, &ct)))
 		{
@@ -2676,7 +2676,7 @@ bool FlightWindow::accept_flight_data (bool spaeter)
 	}
 }
 
-void FlightWindow::set_time (bool use_time, bool *use_ziel, sk_time_t *zeit_ziel, QDate datum, QTime zeit)
+void FlightWindow::set_time (bool use_time, bool *use_ziel, Time *zeit_ziel, QDate datum, QTime zeit)
 	// ???
 {
 	(*use_ziel)=use_time;
