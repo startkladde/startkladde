@@ -483,6 +483,7 @@ bool Options::parse_columns (const QString &columns_string)
 
 bool Options::parse_date (const QString &date_string, QDate &d, bool required)
 {
+	(void)required;
 	d=QDate::fromString (date_string, Qt::ISODate);
 	return d.isValid ();
 }

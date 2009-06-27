@@ -54,6 +54,7 @@ void SkLabel::set_colors ()
 
 void SkLabel::mouseDoubleClickEvent (QMouseEvent *e)
 {
+	(void)e;
 	emit (clicked ());
 }
 

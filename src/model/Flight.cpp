@@ -215,11 +215,13 @@ FlightError Flight::fehlerchecking (int *index, bool check_flug, bool check_schl
 	 * Parameters:
 	 *   - index: the index of the first error to check.
 	 *   - check_flug: wheter to check the actual flight
-	 *   - check_schlepp: whether to check the !!Schleppflug.
+	 *   - check_schlepp: whether to check the tow flight
 	 * Return value:
 	 *   - error code, or ff_ok, if no more error is found.
 	 */
 {
+	// TODO check_schlepp not used. Investigate.
+	(void)check_schlepp;
 #define CHECK_FEHLER(bereich, bedingung, fehlercode) if ((*index)==(num++)) { (*index)++; if (bereich && bedingung) return fehlercode; }
 #define FLUG (check_flug)
 #define SCHLEPP (check_schlepp)

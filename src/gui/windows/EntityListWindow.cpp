@@ -168,6 +168,7 @@ void EntityListWindow::fillInEntity (EntityType t, int row, Entity *st)
 	 *   - *st: the data.
 	 */
 {
+	(void)t;
 	switch (type)
 	{
 		case st_none:
@@ -407,6 +408,7 @@ Entity *EntityListWindow::newEntity (EntityType t)
 	 *   - a pointer to the Entity created.
 	 */
 {
+	(void)t;
 	switch (type)
 	{
 		case st_none:

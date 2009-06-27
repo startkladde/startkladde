@@ -2,7 +2,6 @@
 
 #include <QApplication>
 
-#include "logo.xpm"
 #include "src/text.h"
 #include "src/config/Options.h"
 #include "src/db/Database.h"

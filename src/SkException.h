@@ -9,7 +9,7 @@ class SkException
 		SkException () throw () {};
 		virtual ~SkException () throw () {};
 		virtual QString description () const=0;
-		virtual QString description (bool verbose) const { return description (); }
+		virtual QString description (bool verbose) const { (void)verbose; return description (); }
 };
 
 

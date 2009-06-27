@@ -132,7 +132,7 @@ FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bo
 	edit_widget[i++]=edit_abrechnungshinweis=new SkComboBox (true, editorWidget);
 	edit_widget[i++]=edit_datum=new QDateEdit (editorWidget);
 	edit_widget[i++]=edit_fehler=new SkListWidget (editorWidget);
-	
+
 
 	// Editor-Widgets einstellen
 	edit_registration->setAutoCompletion (true);
@@ -185,7 +185,7 @@ FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bo
 	edit_begleiter_vn ->set_label_width (max_name_label_width);
 	edit_towpilot_nn  ->set_label_width (max_name_label_width);
 	edit_towpilot_vn  ->set_label_width (max_name_label_width);
-	
+
 
 	// Editor-Labels anlegen
 	for (int i=0; i<NUM_FIELDS; i++)
@@ -222,7 +222,7 @@ FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bo
 	label[i++]->setText (text_abrechnungshinweis);
 	label[i++]->setText (text_datum);
 	label[i++]->setText (text_fehler);
-	
+
 
 	// Layout
 	QGridLayout *layout_edit=new QGridLayout (editorWidget, 0, 2, widget_border, widget_gap, "layout_edit");
@@ -280,7 +280,7 @@ FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bo
 //	layout_edit->addMultiCellLayout (layout_buttons, NUM_FIELDS+1, NUM_FIELDS+1, 0, 1);
 
 	but_ok->setDefault (true);
-	
+
 
 
 	// Dialog auf beste Gr��e setzen
@@ -366,7 +366,7 @@ FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bo
 
 	QObject::connect (edit_startzeit, SIGNAL (cbox_clicked ()), this, SLOT (setup_controls ()));
 	QObject::connect (edit_landezeit, SIGNAL (cbox_clicked ()), this, SLOT (setup_controls ()));
-	
+
 
 	edit_widget[0]->setFocus ();
 }
@@ -660,7 +660,7 @@ void FlightWindow::populate_lists ()
 		startarten.append ((*sa)->get_id ());
 		edit_startart->insertItem ((*sa)->list_text (), edit_startart->count ());
 	}
-	
+
 
 	// Flugmodi eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
@@ -670,7 +670,7 @@ void FlightWindow::populate_lists ()
 	{
 		edit_modus->insertItem (modus_string (modi[i], ls_schnellzugriff), i);
 	}
-	
+
 
 	// Flugmodi Schleppflugzeug eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
@@ -680,7 +680,7 @@ void FlightWindow::populate_lists ()
 	{
 		edit_modus_sfz->insertItem (modus_string (sfz_modi[i], ls_schnellzugriff), i);
 	}
-	
+
 
 	// Flugtypen eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
@@ -690,7 +690,7 @@ void FlightWindow::populate_lists ()
 	{
 		edit_flug_typ->insertItem (flugtyp_string (flugtypen[i], ls_schnellzugriff), i);
 	}
-	
+
 }
 
 void FlightWindow::read_db ()
@@ -704,7 +704,7 @@ void FlightWindow::read_db ()
 	emit status ("Flugeditor: Personen aus Datenbank lesen...");
 	// Personen eintragen
 	namen_aus_datenbank (edit_pilot_vn, edit_pilot_nn, edit_begleiter_vn, edit_begleiter_nn, edit_towpilot_vn, edit_towpilot_nn);
-	
+
 
 	emit status ("Flugeditor: Orte aus Datenbank lesen...");
 	// Orte eintragen
@@ -1828,7 +1828,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 	// TODO: andere pr�fung auf fe_create als oben
 	// TODO mit check_plane_flying machen
 
-	// Begleiter enth�lt "+1" 
+	// Begleiter enth�lt "+1"
 	if (begleiter_erlaubt (typ) && (edit_begleiter_vn->currentText ().find (QString ("+1"), 0, false)>=0 || edit_begleiter_nn->currentText ().find (QString ("+1"), 0, false)>=0))
 	{
 		int ret=QMessageBox::information (this, "Begleiter fehlerhaft",
@@ -1863,14 +1863,14 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		if (!check_message (this, msg)) return false;
 	}
 
-	// Startort gleich Zielort, wenn es nicht so sein sollte 
+	// Startort gleich Zielort, wenn es nicht so sein sollte
 	if ((starts_here (modus)!=lands_here (modus)) && (edit_zielort->currentText ()==edit_startort->currentText ()))
 	{
 		msg="Der Startort ist gleich dem Zielort\n";
 		if (error_control) *error_control=starts_here (modus)?edit_zielort:edit_startort;
 		if (!check_message (this, msg)) return false;
 	}
-	
+
 
 	// Kein Zielort f�r das Schleppflugzeug angegeben
 	if ((sfz_gelandet || !lands_here (modus_sfz)) && eintrag_ist_leer (edit_zielort_sfz->currentText ()))
@@ -1941,7 +1941,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 			if (!check_message (this, msg)) return false;
 		}
 
-		// Segelflugzeug mit Zwischenlandungen 
+		// Segelflugzeug mit Zwischenlandungen
 		if (fz.category==lfz_segelflugzeug && edit_landungen->text ().toInt ()>1 && !sa.is_airtow ())
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Segelflugzeug.\n"
@@ -1950,7 +1950,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 			if (!check_message (this, msg)) return false;
 		}
 
-		// Segelflugzeug mit Zwischenlandungen 
+		// Segelflugzeug mit Zwischenlandungen
 		if (fz.category==lfz_segelflugzeug && !gelandet && edit_landungen->text ().toInt ()>0 && !sa.is_airtow ())
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Segelflugzeug.\n"
@@ -1959,7 +1959,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 			if (!check_message (this, msg)) return false;
 		}
 
-		// Segelflugzeug im Selbststart 
+		// Segelflugzeug im Selbststart
 		if (fz.category==lfz_segelflugzeug && sa.get_type ()==sat_self)
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Segelflugzeug.\n"
@@ -1968,7 +1968,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 			if (!check_message (this, msg)) return false;
 		}
 
-		// Motorflugzeug an der Winde 
+		// Motorflugzeug an der Winde
 		if (fz.category==lfz_echo && sa.get_type ()!=sat_self)
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") ein Motorflugzeug.\n"
@@ -2025,7 +2025,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		// TODO: Hier checken, ob Begleiter angegeben wurde, ggf meckern?
 		if (begleiter_id) *begleiter_id=0;
 	}
-	
+
 
 	// Towpilot
 	if (false==check_person (towpilot_id, edit_towpilot_vn->currentText (), edit_towpilot_nn->currentText (), "Schleppilot", "Schleppiloten", (opts.record_towpilot && sa.is_airtow ()), check_flying, original_towpilot_id, NULL))
@@ -2089,7 +2089,7 @@ bool FlightWindow::person_anlegen (db_id *person_id, QString nachname, QString v
 	// Vorname, Nachname eintragen
 	person.nachname=nachname;
 	person.vorname=vorname;
-	
+
 
 	// Wenn nicht force: erst nachfragen
 	bool aufnehmen;
@@ -2161,6 +2161,7 @@ bool FlightWindow::check_plane (db_id *plane_id, Plane *_plane, QString registra
 	 *   - false else
 	 */
 {
+	(void)description_a;
 	// TODO der Code ist zu einem gewissen Teil identisch mit dem Personencode. Codemerge?
 
 	Plane local_plane;	// MURX: geht nicht auf dem heap weil returns in der Funktion
@@ -2488,7 +2489,7 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 			result=rt_cancel;
 	}
 
-	// Check if the person is still flying. 
+	// Check if the person is still flying.
 	if (result==rt_id && !id_invalid (result_id) && check_flying)
 	{
 		sk_time_t ct;

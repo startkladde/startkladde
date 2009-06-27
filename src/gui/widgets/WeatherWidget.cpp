@@ -112,6 +112,7 @@ void WeatherWidget::inputLine (QString line)
 
 void WeatherWidget::mouseDoubleClickEvent (QMouseEvent *e)
 {
+	(void)e;
 	emit (doubleClicked ());
 }
 

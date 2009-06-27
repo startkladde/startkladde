@@ -283,7 +283,7 @@ HtmlDocument &HtmlDocument::write (const html_table &table, bool noborder)
 	html_table::const_iterator end=table.end ();
 	// First, count the maximum number of cells, so that colspan==0 for "rest
 	// of the Table" works.
-	unsigned int num_columns=0;
+	int num_columns=0;
 	for (html_table::const_iterator it=table.begin (); it!=end; ++it)
 		if ((*it).size ()>num_columns)
 			num_columns=(*it).num_cells ();

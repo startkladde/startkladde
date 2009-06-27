@@ -9,6 +9,7 @@ LIBS += -L/usr/lib64/mysql -lmysqlclient -lz -lacpi
 MAKEFILE = Makefile_sk_web
 OBJECTS_DIR = build/
 MOC_DIR= build/
+QMAKE_CXXFLAGS += -Werror
 
 # Input
 HEADERS += \

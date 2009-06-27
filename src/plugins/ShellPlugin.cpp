@@ -32,7 +32,8 @@ ShellPlugin::ShellPlugin ()
 	restart_interval=-1;
 }
 
-ShellPlugin::ShellPlugin (const ShellPlugin &o)	// Copy constructor
+ShellPlugin::ShellPlugin (const ShellPlugin &o):
+	QObject ()
 {
 	(*this)=o;
 }

@@ -193,7 +193,7 @@ void SplashScreen::keyPressEvent (QKeyEvent *e)
 
 	if (can_close) hide ();
 
-	// Hm. Is there something line QKeyEvent::accept () that also works for
+	// Hm. Is there something like QKeyEvent::accept () that also works for
 	// the base class?
 	if (!e->isAccepted ())
 		QDialog::keyPressEvent (e);
@@ -206,6 +206,7 @@ void SplashScreen::mousePressEvent (QMouseEvent * e)
 	 *   - e: the mouse event passed by the QT library.
 	 */
 {
+	(void)e;
 	emit clicked ();
 }
 

@@ -51,15 +51,8 @@ QString t_pilot_bezeichnung (flug_typ flugtyp, casus c)
 	// TODO diese hier in data_types.cpp
 	switch (flugtyp)
 	{
-		case ft_schul_2: return QString ("Flugsch�ler"); break;
-		default:
-			switch (c)
-			{
-				case cas_nominativ: return "Pilot"; break;
-				case cas_akkusativ: return "Piloten"; break;
-				default: return "[Pilot]"; break;
-			}
-			break;
+		case ft_schul_2: return c==cas_genitiv   ? QString::fromUtf8 ("Flugschülers") : QString::fromUtf8 ("Flugschüler");
+		default:         return c==cas_nominativ ? QString::fromUtf8 ("Pilot")        : QString::fromUtf8 ("Piloten");
 	}
 }
 
@@ -75,9 +68,9 @@ QString t_begleiter_bezeichnung (flug_typ flugtyp, casus c)
 {
 	switch (flugtyp)
 	{
-		case ft_schul_2: return "Fluglehrer"; break;
-		case ft_gast_privat: case ft_gast_extern: return "Gast"; break;
-		default: return "Begleiter"; break;
+		case ft_schul_2:                          return c==cas_genitiv ? "Fluglehrers": "Fluglehrer";
+		case ft_gast_privat: case ft_gast_extern: return c==cas_genitiv ? "Gasts"      : "Gast";
+		default:                                  return c==cas_genitiv ? "Begleiters" : "Begleiter";
 	}
 }
 

@@ -1,4 +1,4 @@
-# 0wxxxxifind . -name A€kb€kb!!sh0xxi           A \j
+# 0wxxxxifind . -name Aï¿½kbï¿½kb!!sh0xxi           A \j
 CONFIG += qt debug
 QT += qt3support
 TEMPLATE = app
@@ -9,6 +9,7 @@ LIBS += -L/usr/lib64/mysql -lmysqlclient -lz -lacpi
 MAKEFILE = Makefile_sk_admin
 OBJECTS_DIR = build/
 MOC_DIR= build/
+QMAKE_CXXFLAGS += -Werror
 
 # Input
 HEADERS += \

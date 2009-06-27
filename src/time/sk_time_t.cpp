@@ -111,6 +111,8 @@ void sk_time_t::set_to (const QDate d, const QTime t, time_zone tz, bool null_se
 	 *   - null_sec: if true, the seconds are set to 0.
 	 */
 {
+	// FIXME tz not used
+	(void)tz;
 	set_to (d.year (), d.month (), d.day (), t.hour (), t.minute (), null_sec?0:t.second ());
 }
 

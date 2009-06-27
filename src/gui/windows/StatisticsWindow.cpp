@@ -48,6 +48,9 @@ StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool moda
 	 *   - db: the database to use.
 	 */
 {
+	// FIXME: modal is not used. Investigate.
+	(void)modal;
+
 	// Create and setup Table
 	tab=new SkTable (this);
 

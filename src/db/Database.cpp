@@ -735,6 +735,8 @@ char *Database::named_field_value (MYSQL_ROW &row, int num_fields, MYSQL_FIELD *
 
 const char *Database::field_value (const MYSQL_ROW &row, const unsigned int num_fields, MYSQL_FIELD *fields, const unsigned int num)
 {
+	(void)fields;
+
 	if (num>=num_fields)
 	{
 		log_error ("Field number "+QString::number (num)+" out of range in sk_db::named_field_value ()");

@@ -144,6 +144,9 @@ void lbl_cbox::fillStringArray (SkComboBox *box, const QStringList& array, bool 
 	 *   - del: whether the array should be deleted afterwards.
 	 */
 {
+	(void)del;
+	// FIXME del is not used, remove it
+
 	if (clear_first) box->clear ();
 	if (blank_line) box->insertItem ("");
 

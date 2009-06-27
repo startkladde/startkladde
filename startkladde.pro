@@ -8,6 +8,7 @@ LIBS += -L/usr/lib64/mysql -lmysqlclient -lz -lacpi
 MAKEFILE = Makefile_startkladde
 OBJECTS_DIR = build/
 MOC_DIR= build/
+QMAKE_CXXFLAGS += -Werror
 
 # Input
 HEADERS += \
@@ -141,4 +142,5 @@ SOURCES += \
            src/time/timeFunctions.cpp \
            src/web/Argument.cpp \
 		   # Empty line
+
 
