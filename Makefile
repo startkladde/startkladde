@@ -14,7 +14,7 @@
 PROGRAMS = startkladde sk_web sk_admin tests
 
 # The XPM images used by the program
-XPMS = kvkbd.xpm logo.xpm
+XPMS = build/kvkbd.xpm build/logo.xpm
 
 
 #####################
@@ -45,7 +45,8 @@ Makefile_%: %.pro
 $(PROGRAMS): %: Makefile_% version
 	$(MAKE) -f Makefile_$@
 
-$(XPMS): %.xpm: graphics/%.png
+$(XPMS): build/%.xpm: graphics/%.png
+	mkdir -p build
 	convert $< $@
 	mv $@ $@.tmp
 	sed 's/char/const char/g' <$@.tmp >$@
@@ -83,7 +84,7 @@ plugins:
 #############
 
 .PHONY: clean
-clean: Makefile_startkladde Makefile_sk_web Makefile_sk_admin Makefile_tests logo.xpm kvkbd.xpm
+clean: Makefile_startkladde Makefile_sk_web Makefile_sk_admin Makefile_tests build/logo.xpm build/kvkbd.xpm
 	$(MAKE) -f Makefile_startkladde distclean
 	$(MAKE) -f Makefile_sk_web distclean
 	$(MAKE) -f Makefile_sk_admin distclean

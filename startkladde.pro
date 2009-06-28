@@ -12,8 +12,6 @@ QMAKE_CXXFLAGS += -Werror
 
 # Input
 HEADERS += \
-		   kvkbd.xpm \
-		   logo.xpm \
            src/accessor.h \
            src/color.h \
            src/Condition.h \

@@ -5,8 +5,8 @@
 #include <QFontDialog>
 #include <QToolBar>
 
-#include "kvkbd.xpm"
-#include "logo.xpm"
+#include "build/kvkbd.xpm"
+#include "build/logo.xpm"
 #include "src/config/Options.h"
 #include "src/db/adminFunctions.h"
 #include "src/db/DbEvent.h"
