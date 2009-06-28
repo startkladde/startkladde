@@ -4,11 +4,6 @@
 #include <assert.h>
 #include <sstream>
 
-#include <q3ptrlist.h> // XXX
-#define QPtrList Q3PtrList
-#define QPtrListIterator Q3PtrListIterator
-#define QValueListIterator Q3ValueListIterator
-
 #include <mysqld_error.h>
 
 #include "src/text.h"
@@ -231,13 +226,14 @@ Database::Database (std::ostream &_debug_stream)
 	connection_established=false;
 	display_queries=false;
 	silent=false;
-	startarten.setAutoDelete (true);
 	is_admin_db=false;
 }
 
 Database::~Database ()
 {
 //	DEB ("database class destroyed");
+
+	foreach (LaunchType *s, startarten) delete s;
 
 	disconnect ();
 }
@@ -2029,7 +2025,7 @@ int Database::person_exists (db_id id)
 
 
 // Listing
-int Database::result_to_list (db_object_type type, QPtrList<void> &result_list, MYSQL_RES *result)
+int Database::result_to_list (db_object_type type, QList<void *> &result_list, MYSQL_RES *result)
 {
 	if (type==ot_none) return db_err_parameter_error;
 	if (!result) return db_err_parameter_error;
@@ -2053,7 +2049,7 @@ int Database::result_to_list (db_object_type type, QPtrList<void> &result_list, 
 	return db_ok;
 }
 
-int Database::result_to_num_list (QValueList<long long int> &nums, MYSQL_RES *result, const char *field_name)
+int Database::result_to_num_list (QList<long long int> &nums, MYSQL_RES *result, const char *field_name)
 {
 	// TODO code duplication with result_to_list
 	if (!result) return db_err_parameter_error;
@@ -2106,21 +2102,21 @@ int Database::result_to_string_list (QStringList &strings, MYSQL_RES *result, co
 	return db_ok;
 }
 
-int Database::result_to_id_list (QValueList<db_id> &ids, MYSQL_RES *result)
+int Database::result_to_id_list (QList<db_id> &ids, MYSQL_RES *result)
 {
-	QValueList<long long int> temp_list;
+	QList<long long int> temp_list;
 	// TODO "id" hardcoded
 	int r=result_to_num_list (temp_list, result, "id");
 	if (r<0) return r;
 
 	// Convert from long long int to db_id
-	for (QValueListIterator<long long int> it=temp_list.begin (); it!=temp_list.end (); ++it)
-		ids.append ((db_id)*it);
+	foreach (db_id it, temp_list)
+		ids.append (it);
 
 	return db_ok;
 }
 
-int Database::list_id_data (db_object_type type, QValueList<db_id> &ids, QStringList &data_columns, Condition c)
+int Database::list_id_data (db_object_type type, QList<db_id> &ids, QStringList &data_columns, Condition c)
 	// This function returns IDs from multiple columns where the row matches
 	// a given condition c.
 	// Example: all values from "pilot" and "begleiter" from flights that
@@ -2155,7 +2151,7 @@ int Database::list_id_data (db_object_type type, QValueList<db_id> &ids, QString
 	}
 }
 
-int Database::list_ids (db_object_type type, QValueList<db_id> &ids, Condition c)
+int Database::list_ids (db_object_type type, QList<db_id> &ids, Condition c)
 	// This function returns the IDs of Table rows matching a given condition
 	// c.
 	// Example: the IDs of all flights that happened on a certain date.
@@ -2202,7 +2198,7 @@ int Database::list_strings (db_object_type type, QString field_name, QStringList
 	}
 }
 
-int Database::list_objects (db_object_type type, QPtrList<void> &objects, Condition c)
+int Database::list_objects (db_object_type type, QList<void *> &objects, Condition c)
 {
 	if (!connected ()) return db_err_not_connected;
 
@@ -2225,30 +2221,33 @@ int Database::list_objects (db_object_type type, QPtrList<void> &objects, Condit
 	}
 }
 
-int Database::list_flights (QPtrList<Flight> &flights, Condition c)
+int Database::list_flights (QList<Flight *> &flights, Condition c)
 {
-	QPtrList<void> objects;
+	QList<void *> objects;
 	int r=list_objects (ot_flight, objects, c);
 	// MURX Zeiger umkopieren, weil die Listentypen nicht konvertibel sind.
-	for (QPtrListIterator<void> ob (objects); *ob; ++ob) flights.append ((Flight *)*ob);
+	foreach (void *ob, objects)
+		flights.append ((Flight *)ob);
 	return r;
 }
 
-int Database::list_planes (QPtrList<Plane> &planes, Condition c)
+int Database::list_planes (QList<Plane *> &planes, Condition c)
 {
-	QPtrList<void> objects;
+	QList<void *> objects;
 	int r=list_objects (ot_plane, objects, c);
 	// MURX Zeiger umkopieren, weil die Listentypen nicht konvertibel sind.
-	for (QPtrListIterator<void> ob (objects); *ob; ++ob) planes.append ((Plane *)*ob);
+	foreach (void *ob, objects)
+		planes.append ((Plane *)ob);
 	return r;
 }
 
-int Database::list_persons (QPtrList<Person> &persons, Condition c)
+int Database::list_persons (QList<Person *> &persons, Condition c)
 {
-	QPtrList<void> objects;
+	QList<void *> objects;
 	int r=list_objects (ot_person, objects, c);
 	// MURX Zeiger umkopieren, weil die Listentypen nicht konvertibel sind.
-	for (QPtrListIterator<void> ob (objects); *ob; ++ob) persons.append ((Person *)*ob);
+	foreach (void *ob, objects)
+		persons.append ((Person *)ob);
 	return r;
 }
 
@@ -2295,19 +2294,19 @@ int Database::list_strings_query (const QString query, const unsigned int field_
 
 
 // Listing Frontends
-int Database::list_flights_date (QPtrList<Flight> &flights, QDate *date)
+int Database::list_flights_date (QList<Flight *> &flights, QDate *date)
 {
 	int r=list_flights (flights, Condition (cond_flight_happened_on_date, date));
 	return r;
 }
 
-int Database::list_flights_date_range (Q3PtrList<Flight> &flights, QDate *start_date, QDate *end_date)
+int Database::list_flights_date_range (QList<Flight *> &flights, QDate *start_date, QDate *end_date)
 {
 	int r=list_flights (flights, Condition (cond_flight_happened_between, start_date, end_date));
 	return r;
 }
 
-int Database::list_flights_prepared (QPtrList<Flight> &flights)
+int Database::list_flights_prepared (QList<Flight *> &flights)
 {
 	int r=list_flights (flights, Condition (cond_flight_prepared));
 	return r;
@@ -2330,7 +2329,7 @@ db_id Database::object_flying (db_object_type otype, db_id id, Time *given_time)
 	Condition c (cond, id);
 	c.given_time1=given_time;
 
-	QValueList<db_id> ids;
+	QList<db_id> ids;
 	int res=list_ids (ot_flight, ids, c);
 
 	if (res!=db_ok) return false;
@@ -2352,37 +2351,37 @@ db_id Database::plane_flying (db_id id, Time *given_time)
 	return object_flying (ot_plane, id, given_time);
 }
 
-int Database::list_persons_by_name (QPtrList<Person> &names, QString vorname, QString nachname)
+int Database::list_persons_by_name (QList<Person *> &names, QString vorname, QString nachname)
 {
 	return list_persons (names, Condition (cond_person_name, &vorname, &nachname));
 }
 
-int Database::list_persons_by_first_name (QPtrList<Person> &names, QString vorname)
+int Database::list_persons_by_first_name (QList<Person *> &names, QString vorname)
 {
 	return list_persons (names, Condition (cond_person_first_name, &vorname));
 }
 
-int Database::list_persons_by_last_name (QPtrList<Person> &names, QString nachname)
+int Database::list_persons_by_last_name (QList<Person *> &names, QString nachname)
 {
 	return list_persons (names, Condition (cond_person_last_name, &nachname));
 }
 
-int Database::list_persons_by_club_club_id (QPtrList<Person> &persons, QString club, QString club_id)
+int Database::list_persons_by_club_club_id (QList<Person *> &persons, QString club, QString club_id)
 {
 	return list_persons (persons, Condition (cond_person_club_club_id, &club, &club_id));
 }
 
-int Database::list_planes_all (QPtrList<Plane> &planes)
+int Database::list_planes_all (QList<Plane *> &planes)
 {
 	return list_planes (planes, Condition (cond_any));
 }
 
-int Database::list_persons_all (QPtrList<Person> &planes)
+int Database::list_persons_all (QList<Person *> &planes)
 {
 	return list_persons (planes, Condition (cond_any));
 }
 
-int Database::list_planes_date (QPtrList<Plane> &planes, QDate *date)
+int Database::list_planes_date (QList<Plane *> &planes, QDate *date)
 {
 	// TODO code duplication list_persons_date
 
@@ -2390,22 +2389,22 @@ int Database::list_planes_date (QPtrList<Plane> &planes, QDate *date)
 	// one returning actual objects. Probably put the copying code not in the
 	// latter but in a separate function (get_persons (person_list, id_list)).
 	Condition cond (cond_flight_happened_on_date, date);
-	QValueList<db_id> id_list;
+	QList<db_id> id_list;
 
 	QStringList column_list;
 	column_list.append (column_name_flug_flugzeug);
 
 	int r=list_id_data (ot_flight, id_list, column_list, cond);
 	// TODO error handling
-	for (QValueListIterator<db_id> id=id_list.begin (); id!=id_list.end (); ++id)
+	foreach (db_id id, id_list)
 	{
 		// ID==0 is OK as the data column may continue this to signify "none".
 		// However, we don't want to include it in the output.
-		if (!id_invalid (*id))
+		if (!id_invalid (id))
 		{
 			Plane *plane=new Plane;
 
-			int r=get_plane (plane, *id);
+			int r=get_plane (plane, id);
 			if (r==db_ok)
 				planes.append (plane);
 			else
@@ -2415,7 +2414,7 @@ int Database::list_planes_date (QPtrList<Plane> &planes, QDate *date)
 	return r;
 }
 
-int Database::list_persons_date (QPtrList<Person> &persons, QDate *date)
+int Database::list_persons_date (QList<Person *> &persons, QDate *date)
 {
 	/*
 	 * //TODO these are generic notes, put them to the documentation.
@@ -2437,7 +2436,7 @@ int Database::list_persons_date (QPtrList<Person> &persons, QDate *date)
 	// one returning actual objects. Probably put the copying code not in the
 	// latter but in a separate function (get_persons (person_list, id_list)).
 	Condition cond (cond_flight_happened_on_date, date);
-	QValueList<db_id> id_list;
+	QList<db_id> id_list;
 
 	QStringList column_list;
 	column_list.append (column_name_flug_pilot);
@@ -2445,15 +2444,15 @@ int Database::list_persons_date (QPtrList<Person> &persons, QDate *date)
 
 	int r=list_id_data (ot_flight, id_list, column_list, cond);
 	// TODO error handling
-	for (QValueListIterator<db_id> id=id_list.begin (); id!=id_list.end (); ++id)
+	foreach (db_id id, id_list)
 	{
 		// ID==0 is OK as the data column may continue this to signify "none".
 		// However, we don't want to include it in the output.
-		if (!id_invalid (*id))
+		if (!id_invalid (id))
 		{
 			Person *person=new Person;
 
-			int r=get_person (person, *id);
+			int r=get_person (person, id);
 			if (r==db_ok)
 				persons.append (person);
 			else
@@ -2463,14 +2462,14 @@ int Database::list_persons_date (QPtrList<Person> &persons, QDate *date)
 	return r;
 }
 
-int Database::list_planes_registration (QPtrList<Plane> &planes, QString registration)
+int Database::list_planes_registration (QList<Plane *> &planes, QString registration)
 {
 	return list_planes (planes, Condition (cond_plane_registration, &registration));
 }
 
 int Database::get_plane_registration (Plane *plane, QString registration)
 {
-	QPtrList<Plane> planes; planes.setAutoDelete (true);
+	QList<Plane *> planes;
 	int res=list_planes_registration (planes, registration);
 
 	// TODO handle multiple
@@ -2479,6 +2478,9 @@ int Database::get_plane_registration (Plane *plane, QString registration)
 		*plane=*(planes.first ());
 
 	if (planes.isEmpty ()) res=db_err_not_found;
+
+	foreach (Plane *p, planes)
+		delete p;
 
 	return res;
 }
@@ -2555,13 +2557,13 @@ long long int Database::count_objects (db_object_type type, Condition c)
 	if (execute_query (&result, query, true)==db_ok)
 	{
 		// Make a list from the objects
-		QValueList<long long int> nums;
+		QList<long long int> nums;
 		result_to_num_list (nums, result, column_name_count.latin1 ());
 		mysql_free_result (result);
 
 		long long int sum=0;
-		for (QValueListIterator<long long int> it=nums.begin (); it!=nums.end (); ++it)
-			sum+=*it;
+		foreach (long long int it, nums)
+			sum+=it;
 		return sum;
 	}
 	else
@@ -2659,7 +2661,7 @@ int Database::get_object (db_object_type type, void *object, db_id id)
 	if (object)
 	{
 		// Get the object
-		QPtrList<void> objects; objects.setAutoDelete (true);
+		QList<void *> objects;
 		int ret=list_objects (type, objects, Condition (cond_id, id));
 
 		if (ret==db_ok)
@@ -2689,7 +2691,7 @@ int Database::get_object (db_object_type type, void *object, db_id id)
 	else
 	{
 		// Check for existance only
-		QValueList<db_id> id_list;
+		QList<db_id> id_list;
 		int ret=list_ids (type, id_list, Condition (cond_id, id));
 		if (ret==db_ok)
 		{
@@ -2753,23 +2755,23 @@ bool Database::add_startart_to_list (LaunchType *sa)
 	}
 }
 
-int Database::list_startarten_all (QPtrList<LaunchType> &saen)
+int Database::list_startarten_all (QList<LaunchType *> &saen)
 {
-	for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
-		saen.append (new LaunchType (**sa));
+	foreach (LaunchType *sa, startarten)
+		saen.append (new LaunchType (*sa));
 
 	return true;
 }
 
 int Database::get_startart (LaunchType *startart, db_id id)
 {
-	for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
+	foreach (LaunchType *sa, startarten)
 	{
-		if ((*sa)->get_id ()==id)
+		if (sa->get_id ()==id)
 		{
 			if (startart)
 			{
-				(*startart)=**sa;
+				(*startart)=*sa;
 				startart->ok=true;
 			}
 			return db_ok;
@@ -2783,13 +2785,13 @@ int Database::get_startart_by_type (LaunchType *startart, startart_type sat)
 {
 	bool found=false;
 
-	for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
+	foreach (LaunchType *sa, startarten)
 	{
-		if ((*sa)->get_type ()==sat)
+		if (sa->get_type ()==sat)
 		{
 			if (startart)
 			{
-				(*startart)=**sa;
+				(*startart)=*sa;
 				startart->ok=true;
 			}
 			found=true;
@@ -2802,9 +2804,9 @@ int Database::get_startart_by_type (LaunchType *startart, startart_type sat)
 
 db_id Database::get_startart_id_by_type (startart_type sat)
 {
-	for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
-		if ((*sa)->get_type ()==sat)
-			return (*sa)->get_id ();
+	foreach (LaunchType *sa, startarten)
+		if (sa->get_type ()==sat)
+			return sa->get_id ();
 
 	return invalid_id;
 }
@@ -2855,7 +2857,7 @@ void Database::merge_person (db_id correct_id, db_id wrong_id)
 	// Now check if there are still any persons with that ID
 	// Select flights which have that person.
 	if (!silent) std::cout << "Checking success" << std::endl;
-	QValueList<db_id> flight_ids;
+	QList<db_id> flight_ids;
 	Condition cond (cond_flight_person, wrong_id);
 	if (list_ids (ot_flight, flight_ids, cond)!=db_ok) throw ex_operation_failed (get_last_error ());
 	// This list better be empty.
@@ -2863,10 +2865,11 @@ void Database::merge_person (db_id correct_id, db_id wrong_id)
 	{
 		debug_stream << "Error: after changing the IDs, there are still flights with the wrong ID " << wrong_id <<":" << std::endl;
 
-		for (QValueListIterator<db_id> it=flight_ids.begin (); it!=flight_ids.end (); ++it)
+		bool first=true;
+		foreach (db_id it, flight_ids)
 		{
-			if (it!=flight_ids.begin ()) debug_stream << ", ";
-			debug_stream << *it;
+			if (!first) debug_stream << ", "; first=true;
+			debug_stream << it;
 		}
 		debug_stream << std::endl;
 
@@ -2893,16 +2896,12 @@ void Database::merge_person (db_id correct_id, db_id wrong_id)
 
 
 // Importing
-void Database::remove_editable_persons (QPtrList<Person> persons)
+void Database::remove_editable_persons (QList<Person *> persons)
 {
-	QPtrListIterator<Person> it (persons);
-	while (*it)
-	{
-		if ((*it)->editierbar)
-			persons.remove (*it);
-		else
-			++it;
-	}
+	QMutableListIterator<Person *> it (persons);
+	while (it.hasNext ())
+		if (it.next()->editierbar)
+			it.remove ();
 }
 
 void Database::import_check (const Person &person)
@@ -2915,28 +2914,28 @@ void Database::import_check (const Person &person)
 	if (person.nachname.isEmpty ()) throw import_message::last_name_missing ();
 }
 
-void Database::import_check (const QPtrList<Person> &persons, QList<import_message> &messages)
+void Database::import_check (const QList<Person *> &persons, QList<import_message> &messages)
 	// This function make be slow because it takes quadratic time (in the
 	// number of persons) with lots of QString comparisons.
 {
 	// This checks every single person from the list and additionally performs
 	// cross checking (like club ID uniquity).
 
-	for (QPtrListIterator<Person> p1 (persons); *p1; ++p1)
+	foreach (Person *p1, persons)
 	{
 		// Check person
 		try
 		{
-			import_check (**p1);
+			import_check (*p1);
 		}
 		catch (import_message &n)
 		{
-			n.set_p1 (*p1);
+			n.set_p1 (p1);
 			messages.push_back (n);
 		}
 
 		// Cross checks
-		for (QPtrListIterator<Person> p2 (persons); *p2; ++p2)
+		foreach (Person *p2, persons)
 			// Don't start at p1 here because there may be error relations
 			// which are not symmetric: for example, two persons with the same
 			// name only one of which has a club ID. This is an error for the
@@ -2946,19 +2945,19 @@ void Database::import_check (const QPtrList<Person> &persons, QList<import_messa
 			{
 				// Same club and club ID (except "")
 				if (
-					!(*p1)->club_id.isEmpty () &&
-					(*p1)->club == (*p2)->club &&
-					(*p1)->club_id == (*p2)->club_id
+					!p1->club_id.isEmpty () &&
+					p1->club == p2->club &&
+					p1->club_id == p2->club_id
 					)
-					messages.push_back (import_message::duplicate_club_id (*p1, *p2));
+					messages.push_back (import_message::duplicate_club_id (p1, p2));
 
 				// Non-unique names without club_id
 				if (
-					(*p1)->club_id.isEmpty () &&
-					(*p1)->vorname == (*p2)->vorname &&
-					(*p1)->nachname == (*p2)->nachname
+					p1->club_id.isEmpty () &&
+					p1->vorname == p2->vorname &&
+					p1->nachname == p2->nachname
 					)
-					messages.push_back (import_message::duplicate_name_without_club_id (*p1, *p2));
+					messages.push_back (import_message::duplicate_name_without_club_id (p1, p2));
 			}
 		}
 	}
@@ -3017,42 +3016,62 @@ db_id Database::import_identify (const Person &p, QList<import_message> *non_fat
 	{
 		// An old club ID was explicitly given. This means that the person
 		// identified by this club ID must exist. Everything else is an error.
-		QPtrList<Person> persons; persons.setAutoDelete (true);
+		QList<Person *> persons;
 		int ret=list_persons_by_club_club_id (persons, p.club, p.club_id_old);
 		if (ret!=0) throw ex_legacy_error (ret, *this);
 		remove_editable_persons (persons);
 
 		if (persons.isEmpty ())
+		{
 			// No person with this club ID was found. This is an error.
+			foreach (Person *p, persons) delete p;
 			throw import_message::club_id_old_not_found ();
+		}
 		else if (persons.count ()==1)
+		{
 			// Exactly one person was found. Return it.
-			return persons.getFirst ()->id;
+			db_id id=persons[0]->id;
+			foreach (Person *p, persons) delete p;
+			return id;
+		}
 		else
+		{
 			// There were multiple objects found. To prevent accidental damage,
 			// this is an error.
+			foreach (Person *p, persons) delete p;
 			throw import_message::club_id_not_unique ();
+		}
 	}
 	else if (club_id_given)
 	{
 		// A club ID was given. If it does not exist, the person has to be
 		// created. If it does, the person with this club_id will be modified.
-		QPtrList<Person> persons; persons.setAutoDelete (true);
+		QList<Person *> persons;
 		int ret=list_persons_by_club_club_id (persons, p.club, p.club_id);
 		if (ret!=0) throw ex_legacy_error (ret, *this);
 		remove_editable_persons (persons);
 
 		if (persons.isEmpty ())
+		{
 			// No person with this club ID was found. Either the person is new
 			// or no club ID is used. Try to select the person by name.
+			foreach (Person *p, persons) delete p;
 			select_by_name=true;
+		}
 		else if (persons.count ()==1)
+		{
 			// Exactly one person was found. Return it.
-			return persons.getFirst ()->id;
+			db_id id=persons[0]->id;
+			foreach (Person *p, persons) delete p;
+			return id;
+		}
 		else
+		{
 			// There were multiple objects found. To prevent accidental dmage,
 			// this is an error.
+			foreach (Person *p, persons) delete p;
 			throw import_message::club_id_not_unique ();
+		}
 	}
 	else
 	{
@@ -3064,14 +3083,17 @@ db_id Database::import_identify (const Person &p, QList<import_message> *non_fat
 	if (select_by_name)
 	{
 		// We need to select the person by name.
-		QPtrList<Person> persons; persons.setAutoDelete (true);
+		QList<Person *> persons;
 		int ret=list_persons_by_name (persons, p.vorname, p.nachname);
 		if (ret!=0) throw ex_legacy_error (ret, *this);
 
 		if (persons.isEmpty ())
+		{
 			// No person with this name exists. This means that the person has
 			// to be newly created.
+			foreach (Person *p, persons) delete p;
 			return invalid_id;
+		}
 		else
 		{
 			// Now this is a little bit complicated.
@@ -3112,16 +3134,17 @@ db_id Database::import_identify (const Person &p, QList<import_message> *non_fat
 			int num_fixed_own_no_club_id=0; db_id id_fixed_own_no_club_id=invalid_id; QString club_fixed_own_no_club_id;
 			int num_editable=0;             db_id id_editable=invalid_id;             QString club_editable;
 			int num_editable_own=0;         db_id id_editable_own=invalid_id;         QString club_editable_own;
-			QPtrListIterator<Person> it (persons);
-			while (*it)
+			QMutableListIterator<Person *> it (persons);
+			while (it.hasNext ())
 			{
+				Person *ip=it.next ();
 				// Remove the person if category 1. or 2.
 				if (
-						( !(*it)->editierbar       && (*it)->club!=p.club) ||	// 1.
-						( !(*it)->club_id.isEmpty () && (*it)->club==p.club)		// 2.
+						( !ip->editierbar       && ip->club!=p.club) ||	// 1.
+						( !ip->club_id.isEmpty () && ip->club==p.club)		// 2.
 				   )
 				{
-					persons.remove (*it);
+					it.remove ();
 					// The iterator it will now point to the item after the
 					// removed one, which also has to be checked, so don't
 					// increment it here.
@@ -3136,31 +3159,28 @@ db_id Database::import_identify (const Person &p, QList<import_message> *non_fat
 					// Not removed.
 
 					// Category 3: fixed, own club, no club_id
-					if (!(*it)->editierbar && (*it)->club==p.club && (*it)->club_id.isEmpty ())
+					if (!ip->editierbar && ip->club==p.club && ip->club_id.isEmpty ())
 					{
 						num_fixed_own_no_club_id++;
-						id_fixed_own_no_club_id=(*it)->id;
-						club_fixed_own_no_club_id=(*it)->club;
+						id_fixed_own_no_club_id=ip->id;
+						club_fixed_own_no_club_id=ip->club;
 					}
 
 					// Category 4 (4a or 4b): editable
-					if ((*it)->editierbar)
+					if (ip->editierbar)
 					{
 						num_editable++;
-						id_editable=(*it)->id;
-						club_editable=(*it)->club;
+						id_editable=ip->id;
+						club_editable=ip->club;
 					}
 
 					// Category 4b: editable, own club
-					if ((*it)->editierbar && (*it)->club==p.club)
+					if (ip->editierbar && ip->club==p.club)
 					{
 						num_editable_own++;
-						id_editable_own=(*it)->id;
-						club_editable_own=(*it)->club;
+						id_editable_own=ip->id;
+						club_editable_own=ip->club;
 					}
-
-					// As the persons was not removed, increment the iterator.
-					++it;
 				}
 
 			}
@@ -3203,6 +3223,9 @@ db_id Database::import_identify (const Person &p, QList<import_message> *non_fat
 				// Multiple editable persons with that name, none of our club.
 				// We don't know which one to use ==> error.
 				throw import_message::multiple_editable_persons_name ();
+
+			// TODO this may not be reached => memory leak
+			foreach (Person *p, persons) delete p;
 		}
 	}
 
@@ -3210,21 +3233,21 @@ db_id Database::import_identify (const Person &p, QList<import_message> *non_fat
 	throw ex_operation_failed ("Unbehandelter Fall in sk_db::import_identify ()");
 }
 
-void Database::import_identify (QPtrList<Person> &persons, QList<import_message> &messages)
+void Database::import_identify (QList<Person *> &persons, QList<import_message> &messages)
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed)
 {
-	for (QPtrListIterator<Person> it (persons); *it; ++it)
+	foreach (Person *it, persons)
 	{
 		try
 		{
 			// Don't add the ID here as it is unclear what to do for errors.
-			db_id id=import_identify (**it, &messages);
-			(*it)->id=id;
+			db_id id=import_identify (*it, &messages);
+			it->id=id;
 		}
 		catch (import_message &n)
 		{
-			(*it)->id=0;
-			n.set_p1 (*it);
+			it->id=0;
+			n.set_p1 (it);
 			messages.push_back (n);
 		}
 	}
@@ -3261,13 +3284,13 @@ db_id Database::import_person (const Person &person)
 	return result_id;
 }
 
-void Database::import_persons (const QPtrList<Person> &persons)
+void Database::import_persons (const QList<Person *> &persons)
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed)
 {
 	if (!connected ()) throw ex_not_connected ();
 
-	for (QPtrListIterator<Person> it (persons); *it; ++it)
-		import_person (**it);
+	foreach (Person *p, persons)
+		import_person (*p);
 }
 
 

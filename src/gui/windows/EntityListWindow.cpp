@@ -1,6 +1,7 @@
 #include "EntityListWindow.h"
 
 #include <QLayout>
+#include <QKeyEvent>
 
 const int id_mnu_datenbank=0;
 
@@ -212,7 +213,7 @@ void EntityListWindow::listEntity (EntityType t)
 	 *   - t: the Entity type to list.
 	 */
 {
-	QPtrList<Entity> list; list.setAutoDelete (true);
+	QList<Entity *> list;
 
 	setup_controls ();
 
@@ -226,20 +227,21 @@ void EntityListWindow::listEntity (EntityType t)
 		case st_plane:
 		{
 			emit status ("Flugzeugliste: Flugzeuge aus Datenbank lesen...");
-			QPtrList<Plane> planes; planes.setAutoDelete (false);
+			QList<Plane *> planes;
 			// TODO error handling
 			db->list_planes_all (planes);
 			// MURX
-			for (QPtrListIterator <Plane> plane (planes); *plane; ++plane) list.append (*plane);
+			foreach (Plane *p, planes)
+				list.append (p);
 		} break;
 		case st_person:
 		{
 			emit status ("Personenliste: Personen aus Datenbank lesen...");
-			QPtrList<Person> persons; persons.setAutoDelete (false);
+			QList<Person *> persons;
 			// TODO error handling
 			db->list_persons_all (persons);
 			// MURX
-			for (QPtrListIterator <Person> person (persons); *person; ++person) list.append (*person);
+			foreach (Person *p, persons) list.append (p);
 		} break;
 		default:
 			log_error ("Unhandled type in ListWindow::listEntity ()");
@@ -251,14 +253,16 @@ void EntityListWindow::listEntity (EntityType t)
 	// NB: 10 s f�r 500 Datens�tze, wenn einzeln in der Schleife
 	int i=0, num=list.count ();
 	tab->setRowCount (num);
-	for (QPtrListIterator<Entity> item (list); *item; ++i, ++item)
+	foreach (Entity *item, list)
 	{
 		if (i%11==0||i==num-1) emit progress (i, num-1);
-		fillInEntity (t, i, *item);
+		fillInEntity (t, i, item);
 	}
 
 	tab->show ();
 	tab->setCurrentCell (0, 0);
+
+	foreach (Entity *e, list) delete e;
 
 	emit long_operation_end ();
 }

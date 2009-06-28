@@ -54,7 +54,7 @@ QString PlaneLogEntry::anzahl_landungen_string () const
 }
 
 
-bool makePlaneLogEntry (PlaneLogEntry *bb_entry, Database *db, QPtrList<Flight> &flights, Plane &fz, QDate date)
+bool makePlaneLogEntry (PlaneLogEntry *bb_entry, Database *db, QList<Flight *> &flights, Plane &fz, QDate date)
 	// No plane/date checking is done.
 {
 	// Skip if the the list is empty
@@ -69,23 +69,23 @@ bool makePlaneLogEntry (PlaneLogEntry *bb_entry, Database *db, QPtrList<Flight> 
 
 		// The list is sorted
 		// Iterate over the flights, gathering information.
-		for (QPtrListIterator<Flight> flight (flights); *flight; ++flight)
+		foreach (Flight *flight, flights)
 		{
 			// If any flight is not yet finished the collective entry is
 			// invalid
-			if ((*flight)->finished ())
+			if (flight->finished ())
 			{
-				bb_entry->anzahl_landungen+=(*flight)->landungen;
+				bb_entry->anzahl_landungen+=flight->landungen;
 
 				// See how many persons there were
 				// TODO add num_persons (flugtyp)
-				if (!begleiter_erlaubt ((*flight)->flugtyp) || id_invalid ((*flight)->begleiter))
+				if (!begleiter_erlaubt (flight->flugtyp) || id_invalid (flight->begleiter))
 					bb_entry->insassen|=1;
 				else
 					bb_entry->insassen|=2;
 
 				// Add up total operation time
-				bb_entry->betriebsdauer.add_time ((*flight)->flugdauer ());
+				bb_entry->betriebsdauer.add_time (flight->flugdauer ());
 			}
 			else
 			{
@@ -123,7 +123,7 @@ bool makePlaneLogEntry (PlaneLogEntry *bb_entry, Database *db, QPtrList<Flight> 
 	}
 }
 
-void addPlaneLogEntry (QPtrList<PlaneLogEntry> &bb, Database *db, QPtrList<Flight> &flights, Plane &fz, QDate date)
+void addPlaneLogEntry (QList<PlaneLogEntry *> &bb, Database *db, QList<Flight *> &flights, Plane &fz, QDate date)
 {
 	PlaneLogEntry *bb_entry=new PlaneLogEntry;
 	bool entry_ok=makePlaneLogEntry (bb_entry, db, flights, fz, date);
@@ -134,25 +134,25 @@ void addPlaneLogEntry (QPtrList<PlaneLogEntry> &bb, Database *db, QPtrList<Fligh
 		delete bb_entry;
 }
 
-void makePlaneLogPlane (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, Plane &fz, QPtrList<Flight> &flights)
+void makePlaneLogPlane (QList<PlaneLogEntry *> &bb, Database *db, QDate date, Plane &fz, QList<Flight *> &flights)
 	// flights may contain flights which don't belong to the plane
 {
 	// First, make a sorted list of all fligths that belong to this plane
 	QList <Flight *> interesting_flights;
 	// Iterate over all of the flights in the list.
-	for (QPtrListIterator<Flight> select_flug (flights); *select_flug; ++select_flug)
+	foreach (Flight *select_flug, flights)
 	{
 		// Select only flights with matching plane and date.
-		if ((*select_flug)->flugzeug==fz.id && (*select_flug)->effdatum ()==date)
+		if (select_flug->flugzeug==fz.id && select_flug->effdatum ()==date)
 		{
-			interesting_flights.append (*select_flug);
+			interesting_flights.append (select_flug);
 		}
 	}
 	qSort (interesting_flights);
 
 	// Iterate over the interesting flights, grouping those who can form a
 	// collective entry, and add them to the list.
-	QPtrList<Flight> entry_flights; entry_flights.setAutoDelete (false);
+	QList<Flight *> entry_flights;
 	Flight *prev=NULL;
 	QListIterator<Flight *> flight (interesting_flights);
 	while (flight.hasNext ())
@@ -172,28 +172,28 @@ void makePlaneLogPlane (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, P
 	addPlaneLogEntry (bb, db, entry_flights, fz, date);
 }
 
-void makePlaneLogDay (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, QString *club)
+void makePlaneLogDay (QList<PlaneLogEntry *> &bb, Database *db, QDate date, QList<Plane *> planes, QList<Flight *> flights, QString *club)
 	// If club is specified, only planes of this club are used.
 {
-	for (QPtrListIterator<Plane> plane (planes); *plane; ++plane)
+	foreach (Plane *plane, planes)
 	{
 		// TODO emit progress
-		if (club==NULL || simplify_club_name ((*plane)->club)==simplify_club_name (*club))
+		if (club==NULL || simplify_club_name (plane->club)==simplify_club_name (*club))
 		{
-			makePlaneLogPlane (bb, db, date, **plane, flights);
+			makePlaneLogPlane (bb, db, date, *plane, flights);
 		}
 	}
 }
 
-void makePlaneLogDay (QPtrList<PlaneLogEntry> &planeLog, Database *db, QDate date)
+void makePlaneLogDay (QList<PlaneLogEntry *> &planeLog, Database *db, QDate date)
 {
 	// TODO error handling
 
-	QPtrList<Plane> planes; planes.setAutoDelete (true);
+	QList<Plane *> planes;
 	// Find out which planes had flights today
 	db->list_planes_date (planes, &date);
 
-	QPtrList<Flight> flights; flights.setAutoDelete (true);
+	QList<Flight *> flights;
 	// We need all flights of that date anyway. For speed, we don't query the
 	// database for each plane but retrieve all flights here.
 	db->list_flights_date (flights, &date);
@@ -205,11 +205,11 @@ void makePlaneLogDay (QPtrList<PlaneLogEntry> &planeLog, Database *db, QDate dat
 	// plane id to the towplane id list if it is not already present and add
 	// the tow flight to the flight list.
 	// TODO in Funktion schieben, evtl. in Database
-	QValueList<db_id> towplane_ids;
-	for (QPtrListIterator<Flight> flight (flights); *flight; ++flight)
+	QList<db_id> towplane_ids;
+	foreach (Flight *flight, flights)
 	{
 		// Determine the startart
-		db_id sa_id=(*flight)->startart;
+		db_id sa_id=flight->startart;
 		LaunchType sa;
 		bool sa_ok=(db->get_startart (&sa, sa_id)==db_ok);
 
@@ -227,7 +227,7 @@ void makePlaneLogDay (QPtrList<PlaneLogEntry> &planeLog, Database *db, QDate dat
 			}
 			else
 			{
-				towplane_id=(*flight)->towplane;
+				towplane_id=flight->towplane;
 			}
 
 			// Only continue if towplane_id denotes a valid plane.
@@ -240,7 +240,7 @@ void makePlaneLogDay (QPtrList<PlaneLogEntry> &planeLog, Database *db, QDate dat
 				// Create a new flight, set it to the tow flight and add it to the
 				// flight list.
 				Flight *towflight=new Flight;
-				(*flight)->get_towflight (towflight, towplane_id, self_start_id);
+				flight->get_towflight (towflight, towplane_id, self_start_id);
 
 				// Do some very special processing
 				if (towflight->modus==fmLeaving) towflight->landezeit.set_null ();
@@ -250,7 +250,7 @@ void makePlaneLogDay (QPtrList<PlaneLogEntry> &planeLog, Database *db, QDate dat
 	}
 
 	// For all entries in the towplane ID list...
-	for (QValueList<db_id>::iterator plane_id=towplane_ids.begin (); plane_id!=towplane_ids.end (); ++plane_id)
+	for (QList<db_id>::iterator plane_id=towplane_ids.begin (); plane_id!=towplane_ids.end (); ++plane_id)
 	{
 		// Get the plane from the database
 		Plane *towplane=new Plane;
@@ -261,9 +261,9 @@ void makePlaneLogDay (QPtrList<PlaneLogEntry> &planeLog, Database *db, QDate dat
 			// If that plane exists, add it to the list, if it is not already
 			// there.
 			bool towplane_already_present=false;
-			for (QPtrListIterator<Plane> search_pl (planes); *search_pl; ++search_pl)
+			foreach (Plane *search_pl, planes)
 			{
-				if ((*search_pl)->registration==towplane->registration)
+				if (search_pl->registration==towplane->registration)
 				{
 					towplane_already_present=true;
 					break;
@@ -277,6 +277,9 @@ void makePlaneLogDay (QPtrList<PlaneLogEntry> &planeLog, Database *db, QDate dat
 	}
 
 	makePlaneLogDay (planeLog, db, date, planes, flights);
+
+	foreach (Plane *p, planes) delete p;
+	foreach (Flight *f, flights) delete f;
 }
 
 

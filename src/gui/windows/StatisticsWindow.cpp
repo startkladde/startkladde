@@ -101,7 +101,7 @@ void StatisticsWindow::fill_sastat (QDate datum)
 	 */
 {
 	// Startarten listen
-	QPtrList<LaunchType> startarten; startarten.setAutoDelete (true);
+	QList<LaunchType *> startarten;
 	db->list_startarten_all (startarten);
 	// TODO vereinfachen
 	int num_startarten=startarten.count ();
@@ -111,15 +111,15 @@ void StatisticsWindow::fill_sastat (QDate datum)
 		for (int i=0; i<num_startarten; i++) sa_fluege[i]=0;
 
 		// Alle Fl�ge listen
-		QPtrList<Flight> flights; flights.setAutoDelete (true);
+		QList<Flight *> flights;
 		db->list_flights_date (flights, &datum); // TODO Fehlerbehandlung
 
-		for (QPtrListIterator<Flight> fl (flights); *fl; ++fl)
+		foreach (Flight *fl, flights)
 		{
 			int i=0;
-			for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
+			foreach (LaunchType *sa, startarten)
 			{
-				if ((*sa)->get_id ()==(*fl)->startart)
+				if (sa->get_id ()==fl->startart)
 					sa_fluege[i]++;
 
 				i++;
@@ -128,18 +128,23 @@ void StatisticsWindow::fill_sastat (QDate datum)
 
 		// Startarten mit Anzahl ihrer Fl�ge eintragen
 		int s=0;
-		for (QPtrListIterator<LaunchType> sa (startarten); *sa; ++sa)
+		foreach (LaunchType *sa, startarten)
 		{
 			int row=s;
 			tab->insertRow (s);
-			set_table_cell (row, tbl_sas_startart, (*sa)->get_description ());
+			set_table_cell (row, tbl_sas_startart, sa->get_description ());
 			set_table_cell (row, tbl_sas_anzahl, QString::number (sa_fluege[s]));
 			s++;
 		}
 
+		foreach (Flight *f, flights) delete f;
+
 		delete[] sa_fluege;
 		tab->setCurrentCell (0,0);
 	}
+
+	foreach (LaunchType *l, startarten)
+		delete l;
 }
 
 void StatisticsWindow::sastat (QDate datum)
@@ -199,14 +204,14 @@ void StatisticsWindow::planeLog (QDate datum)
 	emit status ("Bordb�cher werden erzeugt, bitte warten...");
 	emit long_operation_start ();
 
-	QPtrList<PlaneLogEntry> planeLog; planeLog.setAutoDelete (true);
+	QList<PlaneLogEntry *> planeLog;
 	makePlaneLogDay (planeLog, db, datum);
 
 	tab->hide ();
-	for (QPtrListIterator<PlaneLogEntry> bbe (planeLog); *bbe; ++bbe)
+	foreach (PlaneLogEntry *bbe, planeLog)
 	{
 		// TODO emit progress
-		displayPlaneLogEntry (*bbe);
+		displayPlaneLogEntry (bbe);
 	}
 
 	tab->setCurrentCell (0,0);
@@ -214,6 +219,8 @@ void StatisticsWindow::planeLog (QDate datum)
 
 	emit long_operation_end ();
 	show ();
+
+	foreach (PlaneLogEntry *e, planeLog) delete e;
 }
 
 void StatisticsWindow::pilotLog (QDate datum)
@@ -244,14 +251,14 @@ void StatisticsWindow::pilotLog (QDate datum)
 	emit status ("Flugbücher werden erzeugt, bitte warten...");
 	emit long_operation_start ();
 
-	QPtrList<PilotLogEntry> pilotLog; pilotLog.setAutoDelete (true);
+	QList<PilotLogEntry *> pilotLog;
 	makePilotLogsDay (pilotLog, db, datum);
 
 	tab->hide ();
-	for (QPtrListIterator<PilotLogEntry> fbe (pilotLog); *fbe; ++fbe)
+	foreach (PilotLogEntry *fbe, pilotLog)
 	{
 		// TODO emit progress
-		display_pilot_log_entry (*fbe);
+		display_pilot_log_entry (fbe);
 	}
 
 	tab->setCurrentCell (0,0);
@@ -259,6 +266,8 @@ void StatisticsWindow::pilotLog (QDate datum)
 
 	emit long_operation_end ();
 	show ();
+
+	foreach (PilotLogEntry *p, pilotLog) delete p;
 }
 
 

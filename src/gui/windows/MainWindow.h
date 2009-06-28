@@ -57,7 +57,7 @@ class MainWindow:public QMainWindow
 
 	public:
 		enum db_state_t { ds_uninitialized, ds_no_connection, ds_established, ds_unusable, ds_connection_lost };
-		MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin> *_plugins, const char *name, WFlags f=WType_TopLevel);
+		MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin> *_plugins, Qt::WindowFlags f=0);
 		~MainWindow ();
 		void start_db ();
 

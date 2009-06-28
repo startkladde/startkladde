@@ -2,6 +2,8 @@
 
 #include <QInputDialog>
 #include <QPicture>
+#include <QFontDialog>
+#include <QToolBar>
 
 #include "kvkbd.xpm"
 #include "logo.xpm"
@@ -21,9 +23,9 @@
 #include "src/time/timeFunctions.h"
 
 // UI
-MainWindow::MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin> *_plugins, const char *name, WFlags f)
+MainWindow::MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin> *_plugins, Qt::WindowFlags f)
 :
-	QMainWindow (parent, name, f)
+	QMainWindow (parent, f)
 /*
  * Initialize the main program window
  * Parameters:
@@ -1174,17 +1176,14 @@ void MainWindow::slot_refresh_table ()
 		tbl_fluege->removeAllRows ();
 
 		// Flüge von heute
-		Q3PtrList<Flight> flights;
-		flights.setAutoDelete (true);
+		QList<Flight *> flights;
 		db->list_flights_date (flights, &anzeigedatum);
 		if (anzeigedatum == QDate::currentDate ()) db->list_flights_prepared (flights);
 
 		std::cout << "Die datenbank reicht uns " << flights.count () << " Flyge ryber." << std::endl;
-		flights.sort ();
-		for (QPtrListIterator<Flight> f (flights); *f; ++f)
-		{
-			tbl_fluege->update_flight ((*f)->id, (*f));
-		}
+		qSort (flights);
+		foreach (Flight *f, flights)
+			tbl_fluege->update_flight (f->id, f);
 
 		tbl_fluege->show ();
 		//int new_row=tbl_fluege->row_from_id (old_id);
@@ -1198,6 +1197,8 @@ void MainWindow::slot_refresh_table ()
 		// Scheint nicht zu funktionieren, wenn Tabelle leer, wie kriegt man
 		// den Focus in diesem Fall auf die Tabelle?
 		tbl_fluege->setFocus ();
+
+		foreach (Flight *f, flights) delete f;
 	}
 
 	emit long_operation_end ();

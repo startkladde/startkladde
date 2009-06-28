@@ -634,7 +634,7 @@ void FlightWindow::populate_lists ()
 	// TODO this does query the database, move to different location?
 	unknown_startart_index=-1;	// None
 
-	QPtrList<LaunchType> saen; saen.setAutoDelete (true);
+	QList<LaunchType *> saen;
 	db->list_startarten_all (saen);
 
 	edit_startart->clear ();
@@ -646,12 +646,12 @@ void FlightWindow::populate_lists ()
 		edit_startart->insertItem ("---", edit_startart->count ());
 	}
 
-	for (QPtrListIterator<LaunchType> sa (saen); *sa; ++sa)
+	foreach (LaunchType *sa, saen)
 	{
 		// TODO das sorgt zwar daf�r, dass die Indizies in startarten und
 		// edit_startart �bereinstimmen, aber gut ist das nicht.
-		startarten.append ((*sa)->get_id ());
-		edit_startart->insertItem ((*sa)->list_text (), edit_startart->count ());
+		startarten.append (sa->get_id ());
+		edit_startart->insertItem (sa->list_text (), edit_startart->count ());
 	}
 
 
@@ -678,6 +678,8 @@ void FlightWindow::populate_lists ()
 	for (int i=0; i<flightTypes.size(); i++)
 		edit_flug_typ->insertItem (flightTypeText (flightTypes[i], lsWithShortcut), i);
 
+	foreach (LaunchType *l, saen)
+		delete l;
 }
 
 void FlightWindow::read_db ()
@@ -865,12 +867,14 @@ void FlightWindow::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, NameP
 			{
 				if (anzahl==1)
 				{
-					QPtrList<Person> persons;
-					persons.setAutoDelete (true);
+					QList<Person *> persons;
 					// TODO error handling
 					db->list_persons_by_name (persons, vorname->currentText (), nachname->currentText ());
 					// TODO else... error handling, >1 error handling
 					if (persons.count ()>0) *kandidaten_id=persons.first ()->id;
+
+					foreach (Person *p, persons)
+						delete p;
 				}
 			}
 		}
@@ -2325,7 +2329,7 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 	bool confirm=false;	// Whether to confirm first
 
 	// Further action data
-	QPtrList<Person> persons; persons.setAutoDelete (true);
+	QList<Person *> persons;
 	QString action_text;
 
 	// TODO bessere L�sung f�r die Markierung, welche Persone einen passenden
@@ -2408,23 +2412,23 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 		int num_club_matches=0;
 		db_id club_match_id=invalid_id;
 
-		for (QPtrListIterator<Person> person (persons); *person; ++person)
+		foreach (Person *person, persons)
 		{
 			// Iterate over the persons. If a person with the correct ID is
 			// found, this ID is preselected.
-			if (!id_invalid (original_id) && (*person)->id==original_id)
+			if (!id_invalid (original_id) && person->id==original_id)
 			{
 				// The original person is in the list. Use that person.
-				preselect_id=(*person)->id;
+				preselect_id=person->id;
 				// Stop processing here because a match in the original ID
 				// overrides all other criteria.
 				break;
 			}
 
-			if (preselection_club && simplify_club_name ((*person)->club)==simplified_preselection_club)
+			if (preselection_club && simplify_club_name (person->club)==simplified_preselection_club)
 			{
 				// The club of this person matches the preselection club.
-				club_match_id=(*person)->id;
+				club_match_id=person->id;
 				num_club_matches++;
 			}
 		}
@@ -2518,6 +2522,10 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 			return_with (true, invalid_id);
 	}
 #undef return_with
+
+	// FIXME may not be reached => memory leak
+	foreach (Person *p, persons)
+		delete p;
 
 	return true;
 }

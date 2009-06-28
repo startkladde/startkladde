@@ -4,8 +4,6 @@
 #include <QApplication>
 #include <QDialog>
 #include <QPushButton>
-#include <Qt3Support> // XXX
-#define QPtrList Q3PtrList
 
 #include "src/dataTypes.h"
 #include "src/db/Database.h"
@@ -36,7 +34,7 @@ class StatisticsWindow:public SkDialog
 		SkTable *tab;
 		QPushButton *but_close;
 		SkTableItem *set_table_cell (int row, int col, const QString &text, QColor bg=QColor (255, 255, 255));
-		void person_pilot_log (QDate date, Person *p, QPtrList<Flight> &flights);
+		void person_pilot_log (QDate date, Person *p, QList<Flight *> &flights);
 		void fill_sastat (QDate datum);
 		Database *db;
 

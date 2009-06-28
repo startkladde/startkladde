@@ -49,18 +49,25 @@ int schleppflugzeug_aus_startart (Database *db, Plane *fz, int sa_num)
 	if (registration.isEmpty ()) return db_err_parameter_error;
 
 	// TODO Fehler pr�fen.
-	QPtrList<Plane> planes; planes.setAutoDelete (true);
+	QList<Plane *> planes;
 	db->list_planes_registration (planes, registration);
+
+	int result;
 
 	if (planes.isEmpty ())
 	{
-		return -1;
+		result=-1;
 	}
 	else
 	{
 		// TODO check more than one
 		*fz=*(planes.first ());
-		return 0;
+		result=0;
 	}
+
+	foreach (Plane *p, planes)
+		delete p;
+
+	return result;
 }
 

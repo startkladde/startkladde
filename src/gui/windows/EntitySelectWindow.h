@@ -7,11 +7,6 @@
 #include <QLayout>
 #include <QTreeWidget>
 
-// Qt4: XXX
-#include <Qt3Support>
-#define QPtrList Q3PtrList
-#define QPtrListIterator Q3PtrListIterator
-
 #include "src/dataTypes.h"
 #include "src/gui/windows/SkDialog.h"
 #include "src/gui/widgets/SkTreeWidgetItem.h"
@@ -70,7 +65,7 @@ template<class TYPE> class EntitySelectWindow:public selector_base
 		EntitySelectWindow (QWidget *parent, const char *name=NULL, WFlags f=0);
 		~EntitySelectWindow ();
 		void test ();
-		virtual selection_result do_selection (QString, QString, QPtrList<TYPE> &, db_id preselected=invalid_id);
+		virtual selection_result do_selection (QString, QString, QList<TYPE *> &, db_id preselected=invalid_id);
 		static QString selection_result_text (selection_result sr);
 		db_id get_result_id ();
 		selector_helper *helper () { return _helper; }
@@ -230,7 +225,7 @@ template<class TYPE> void EntitySelectWindow<TYPE>::set_entry (SkTreeWidgetItem 
 	}
 }
 
-template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QPtrList<TYPE> &entityList, db_id preselected)
+template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QList<TYPE *> &entityList, db_id preselected)
 	/*
 	 * Displays the selector.
 	 * Parameters:
@@ -257,12 +252,12 @@ template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QS
 
 	list->setCurrentItem (unknown_item);
 
-	for (QPtrListIterator<TYPE> it (entityList); *it; ++it)
+	foreach (TYPE *it, entityList)
 	{
 		last_item=new SkTreeWidgetItem (list, last_item);
-		last_item->id=(*it)->id;
-		set_entry (last_item, *it, num_columns);
-		if (!id_invalid (preselected) && (*it)->id==preselected)
+		last_item->id=it->id;
+		set_entry (last_item, it, num_columns);
+		if (!id_invalid (preselected) && it->id==preselected)
 			list->setCurrentItem (last_item);
 	}
 

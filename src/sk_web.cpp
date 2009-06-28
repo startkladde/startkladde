@@ -2,9 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-#include <Qt3Support> // XXX
-#define QPtrList Q3PtrList
-#define QPtrListIterator Q3PtrListIterator
+#include <QList>
 
 #include "src/accessor.h"
 #include "src/ObjectField.h"
@@ -1281,7 +1279,7 @@ QString make_anchor_name (db_id id)
 	 */
 #define CHECK_ID CHECK_AN_ID (id, id);
 
-WhatNext csv_to_persons (const QString &csv, QPtrList<Person> &persons, const QString &club)
+WhatNext csv_to_persons (const QString &csv, QList<Person *> &persons, const QString &club)
 	/*
 	 * Converts a QString containing a CSV file to a list of persons.
 	 * This uses session_user, so only call this when the access level is
@@ -1381,7 +1379,7 @@ WhatNext csv_to_persons (const QString &csv, QPtrList<Person> &persons, const QS
 	return WhatNext::go_on ();
 }
 
-void make_unique_club_list (QStringList &club_list, QPtrList<Plane> plane_list)
+void make_unique_club_list (QStringList &club_list, QList<Plane *> plane_list)
 	/*
 	 * For each plane, adds the club to the club list, if not already present.
 	 * Parameters:
@@ -1390,11 +1388,11 @@ void make_unique_club_list (QStringList &club_list, QPtrList<Plane> plane_list)
 	 */
 {
 	// TODO QSet<QString> instead of QStringList?
-	for (QPtrListIterator <Plane> plane (plane_list); *plane; ++plane)
+	foreach (Plane *plane, plane_list)
 	{
 		// Don't use .grep here because we need to simplify_club_name
 //		bool already_has=false;
-		QString plane_club=simplify_club_name ((*plane)->club);
+		QString plane_club=simplify_club_name (plane->club);
 		if (!club_list.contains (plane_club))
 			club_list.append (plane_club);
 	}
@@ -1971,7 +1969,7 @@ WhatNext treat_person (Person *_p, treatment_t treatment, const QString &new_sta
 	return WhatNext::go_on ();
 }
 
-WhatNext write_person_list (QPtrList<Person> &persons, bool include_none, const QString &target_state, const QString &result_field, const ArgumentList *args=NULL, bool for_import=false, bool for_select=false)
+WhatNext write_person_list (QList<Person *> &persons, bool include_none, const QString &target_state, const QString &result_field, const ArgumentList *args=NULL, bool for_import=false, bool for_select=false)
 	/*
 	 * Writes a person list (Table).
 	 * this function is obsolete as it uses the treat_* mechanism.
@@ -1991,8 +1989,8 @@ WhatNext write_person_list (QPtrList<Person> &persons, bool include_none, const 
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_prefix));
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_header, "", "", NULL, for_import));
 	if (include_none) DO_SUB_ACTION (treat_person (NULL, tm_write_table_data, target_state, result_field, args, for_import, for_select));	// Write "none"
-	for (QPtrListIterator<Person> person (persons); person; ++person)
-		DO_SUB_ACTION (treat_person (*person, tm_write_table_data, target_state, result_field, args, for_import, for_select));	// Write person
+	foreach (Person *person, persons)
+		DO_SUB_ACTION (treat_person (person, tm_write_table_data, target_state, result_field, args, for_import, for_select));	// Write person
 	DO_SUB_ACTION (treat_person (NULL, tm_write_table_suffix));
 
 	return WhatNext::go_on ();
@@ -2314,7 +2312,7 @@ void flight_to_fields (QList<ObjectField> &fields, const Flight &f, const sk_flu
 }
 
 
-void write_pilot_log (LatexDocument &ldoc, const QPtrList<PilotLogEntry> &pilotLog, const QString &date_text, const QString &person_name)
+void write_pilot_log (LatexDocument &ldoc, const QList<PilotLogEntry *> &pilotLog, const QString &date_text, const QString &person_name)
 	// XXX
 {
 	// TODO code duplication with csv writing
@@ -2333,9 +2331,9 @@ void write_pilot_log (LatexDocument &ldoc, const QPtrList<PilotLogEntry> &pilotL
 		TableRow header_row=table_row_from_fields (fields_pilot_log_entry, true);
 
 		// For each planeLog entry, make a Table row.
-		for (QPtrListIterator<PilotLogEntry> it (pilotLog); *it; ++it)
+		foreach (PilotLogEntry *it, pilotLog)
 		{
-			pilot_log_entry_to_fields (**it);
+			pilot_log_entry_to_fields (*it);
 			tab.push_back (table_row_from_fields (fields_pilot_log_entry));
 		}
 
@@ -2343,7 +2341,7 @@ void write_pilot_log (LatexDocument &ldoc, const QPtrList<PilotLogEntry> &pilotL
 	}
 }
 
-void writePlaneLog (LatexDocument &ldoc, const QPtrList<PlaneLogEntry> &planeLog, const QString &date_text)
+void writePlaneLog (LatexDocument &ldoc, const QList<PlaneLogEntry *> &planeLog, const QString &date_text)
 	// XXX
 {
 	// TODO code duplication with csv writing
@@ -2362,9 +2360,9 @@ void writePlaneLog (LatexDocument &ldoc, const QPtrList<PlaneLogEntry> &planeLog
 		TableRow header_row=table_row_from_fields (fields_plane_log_entry, true);
 
 		// For each planeLog entry, make a Table row.
-		for (QPtrListIterator<PlaneLogEntry> it (planeLog); *it; ++it)
+		foreach (PlaneLogEntry *it, planeLog)
 		{
-			plane_log_entry_to_fields (**it);
+			plane_log_entry_to_fields (*it);
 			tab.push_back (table_row_from_fields (fields_plane_log_entry));
 		}
 
@@ -2372,7 +2370,7 @@ void writePlaneLog (LatexDocument &ldoc, const QPtrList<PlaneLogEntry> &planeLog
 	}
 }
 
-void write_flightlist (LatexDocument &ldoc, const FlightList &flights, const QString &date_text)
+void write_flightlist (LatexDocument &ldoc, const QList<Flight *> &flights, const QString &date_text)
 //	// XXX
 {
 	// TODO code duplication with csv
@@ -2393,14 +2391,14 @@ void write_flightlist (LatexDocument &ldoc, const FlightList &flights, const QSt
 
 		// For each flight, make a Table row.
 		int num=0;
-		for (QPtrListIterator<Flight> it (flights); *it; ++it)
+		foreach (Flight *f, flights)
 		{
 			num++;
 
 			sk_flug_data flight_data=sk_flug_data::owner ();
-			db.make_flight_data (flight_data, **it);
+			db.make_flight_data (flight_data, *f);
 
-			flight_to_fields (fields_flightlist_entry, **it, flight_data, num, "---");
+			flight_to_fields (fields_flightlist_entry, *f, flight_data, num, "---");
 			tab.push_back (table_row_from_fields (fields_flightlist_entry));
 		}
 
@@ -2951,13 +2949,15 @@ WhatNext handler_list_persons ()
 {
 	document.write_paragraph (document.text_link (back_link_url (web_create_person), "Neu anlegen"));
 
-	QPtrList<Person> persons; persons.setAutoDelete (true);
+	QList<Person *> persons;
 	int ret=db.list_persons_all (persons);
 	CHECK_DB_ERROR_ERROR;
 
 	DO_SUB_ACTION (write_person_list (persons, false, web_display_person, arg_cgi_id));
 
 	document.write_paragraph (QString::number (persons.count ())+" Personen");
+
+	foreach (Person *p, persons) delete p;
 
 	return WhatNext::output_document ();
 }
@@ -3001,13 +3001,15 @@ WhatNext handler_do_edit_person ()
 	// If the club ID is not empty, check if there are other persons with this club ID
 	if (!person.club_id.isEmpty ())
 	{
-		QPtrList<Person> persons; persons.setAutoDelete (true);
+		QList<Person *> persons;
 		db.list_persons_by_club_club_id (persons, person.club, person.club_id);
 		// If there is at least one persons with a different ID and the same club
 		// ID, then this is an error.
 		bool duplicate_club_id=false;
-		for (QPtrListIterator<Person> it (persons); *it; ++it)
-			if ((*it)->id!=person.id) duplicate_club_id=true;
+		foreach (Person *it, persons)
+			if (it->id!=person.id) duplicate_club_id=true;
+
+		foreach (Person *p, persons) delete p;
 
 		if (duplicate_club_id) return WhatNext::output_error ("Vereins-ID nicht eindeutig");
 	}
@@ -3173,14 +3175,15 @@ WhatNext handler_do_create_person ()
 	// club ID
 	if (!person.club_id.isEmpty ())
 	{
-		QPtrList<Person> persons; persons.setAutoDelete (true);
+		QList<Person *> persons;
 		db.list_persons_by_club_club_id (persons, person.club, person.club_id);
 		// If there is at least one persons with a different ID, then this is an
 		// error.
 		bool duplicate_club_id=false;
-		for (QPtrListIterator<Person> it (persons); *it; ++it)
-			if ((*it)->id!=person.id) duplicate_club_id=true;
+		foreach (Person *it, persons)
+			if (it->id!=person.id) duplicate_club_id=true;
 
+		foreach (Person *p, persons) delete p;
 		if (duplicate_club_id) return WhatNext::output_error ("Vereins-ID nicht eindeutig");
 	}
 
@@ -3212,12 +3215,14 @@ WhatNext handler_select_merge_person ()
 	ArgumentList additional_args;
 	additional_args.set_value (arg_cgi_id, QString::number (person.id));
 
-	QPtrList<Person> persons; persons.setAutoDelete (true);
+	QList<Person *> persons;
 	ret=db.list_persons_all (persons);
 	CHECK_DB_ERROR_ERROR;
 	DO_SUB_ACTION (write_person_list (persons, false, web_merge_person, arg_cgi_correct_person, &additional_args, false, true));
 
 	document.write_paragraph (document.text_link (back_link_url (web_list_persons, make_anchor_name (person.id)), "Zur�ck zur Benutzerliste"));
+
+	foreach (Person *p, persons) delete p;
 
 	return WhatNext::output_document ();
 }
@@ -3753,11 +3758,14 @@ WhatNext handler_person_select ()
 	// person currently selected
 
 	// Read persons from the database
-	QPtrList<Person> persons; persons.setAutoDelete (true);
+	QList<Person *> persons;
 	int ret=db.list_persons_all (persons);
 	CHECK_DB_ERROR_ERROR;
 
 	DO_SUB_ACTION (write_person_list (persons, true, web_user_edit, field_user_person, NULL, false, true));
+
+	foreach (Person *p, persons)
+		delete p;
 
 	return WhatNext::output_document ();
 }
@@ -3839,7 +3847,7 @@ WhatNext handler_master_data_check ()
 		return WhatNext::output_error ("Keine Datei angegeben");
 
 	QString csv=SESSION_READ (master_data_file);
-	QPtrList<Person> persons; persons.setAutoDelete (true);
+	QList<Person *> persons;
 
 
 	// Make the person list from the CSV data
@@ -3903,6 +3911,8 @@ WhatNext handler_master_data_check ()
 		document.write_preformatted (SESSION_READ (master_data_file));
 	}
 
+	foreach (Person *p, persons) delete p;
+
 	return WhatNext::output_document ();
 }
 
@@ -3918,7 +3928,7 @@ WhatNext handler_master_data_do_import ()
 		return WhatNext::output_error ("Ung�ltiger Datentyp");
 
 	QString csv=SESSION_READ (master_data_file);
-	QPtrList<Person> persons; persons.setAutoDelete (true);
+	QList<Person *> persons;
 
 	DO_SUB_ACTION (csv_to_persons (csv, persons, session_user->club));
 
@@ -3934,6 +3944,9 @@ WhatNext handler_master_data_do_import ()
 	{
 		return WhatNext::output_error (e.description (true));
 	}
+
+	// TODO may not be reached => memory leak
+	foreach (Person *person, persons) delete person;
 
 	SESSION_WRITE (one_time_message, QString::number (persons.count ())+" Personen eingespielt");
 	return make_redirect (web_list_persons);
@@ -4035,7 +4048,7 @@ WhatNext handler_do_person_logbook ()
 	else
 		return WhatNext::output_error ("Unbekannter Fluglehrermodus "+fim_text);
 
-	FlightList flights; flights.setAutoDelete (true);
+	QList<Flight *> flights;
 	QString date_text;
 
 	// Start the filename
@@ -4093,10 +4106,9 @@ WhatNext handler_do_person_logbook ()
 	}
 
 	// Step 2: Make the personal logbook.
-	QPtrList<PilotLogEntry> pilotLog; pilotLog.setAutoDelete (true);
+	QList<PilotLogEntry *> pilotLog;
 	// We pass an empty QDate here because we already filtered for date above.
 	makePilotLogPerson (pilotLog, &db, QDate (), &person, flights, fim);
-
 
 	// Step 3: Output the logbook.
 	// We have got a QList<PilotLogEntry>.
@@ -4117,9 +4129,9 @@ WhatNext handler_do_person_logbook ()
 			table.push_back (make_table_header (fields_pilot_log_entry));
 
 			// For each pilotLog entry, write a Table row.
-			for (QPtrListIterator<PilotLogEntry> it (pilotLog); *it; ++it)
+			foreach (PilotLogEntry *it, pilotLog)
 			{
-				pilot_log_entry_to_fields (**it);
+				pilot_log_entry_to_fields (*it);
 				HtmlTableRow user_row=make_table_data_row (fields_pilot_log_entry);
 
 				// End of row
@@ -4141,9 +4153,9 @@ WhatNext handler_do_person_logbook ()
 		tab.push_back (table_row_from_fields (fields_pilot_log_entry, true));
 
 		// For each pilotLog entry, make a Table row.
-		for (QPtrListIterator<PilotLogEntry> it (pilotLog); *it; ++it)
+		foreach (PilotLogEntry *it, pilotLog)
 		{
-			pilot_log_entry_to_fields (**it, true);
+			pilot_log_entry_to_fields (*it, true);
 			tab.push_back (table_row_from_fields (fields_pilot_log_entry));
 		}
 
@@ -4184,6 +4196,10 @@ WhatNext handler_do_person_logbook ()
 	}
 
 
+	// TODO may not be reached => memory leak
+	foreach (Flight *f, flights) delete f;
+	foreach (PilotLogEntry *e, pilotLog) delete e;
+
 	return WhatNext::output_error ("Unbehandelter Fall in handler_do_person_logbook ()");
 }
 
@@ -4211,10 +4227,8 @@ WhatNext handler_do_plane_logbook ()
 	// Access without session is possible from local hosts. For other hosts, we
 	// need a session. This requirement is checked in do_next.
 
-	FlightList flights;
-	flights.setAutoDelete (true);
-	QPtrList<Plane> planes;
-	planes.setAutoDelete (true);
+	QList<Flight *> flights;
+	QList<Plane *> planes;
 	QString date_text;
 
 	QString date_spec=CGI_READ (date_spec);
@@ -4257,7 +4271,8 @@ WhatNext handler_do_plane_logbook ()
 
 	int ret=db.list_flights_date (flights, &q_date);
 	CHECK_DB_ERROR_ERROR;
-	flights.sort ();
+	// FIXME this fails because it sorts pointers
+	qSort (flights);
 
 	ret=db.list_planes_date (planes, &q_date);
 	CHECK_DB_ERROR_ERROR;
@@ -4277,8 +4292,8 @@ WhatNext handler_do_plane_logbook ()
 		QString c=club_list[i];
 
 		// Generate the planeLog
-		QPtrList<PlaneLogEntry> planeLog; planeLog.setAutoDelete (true);
-			QPtrList<PlaneLogEntry> bb;
+		QList<PlaneLogEntry *> planeLog;
+		QList<PlaneLogEntry *> bb;
 		makePlaneLogDay (planeLog, &db, q_date, planes, flights, &c);
 
 		if (!planeLog.isEmpty ())
@@ -4292,6 +4307,8 @@ WhatNext handler_do_plane_logbook ()
 			writePlaneLog (ldoc, planeLog, date_text);
 			ldoc.write_empty_line ();
 		}
+
+		foreach (PlaneLogEntry *e, planeLog) delete e;
 	}
 
 	// TODO!: more abstraction, and getting LaTeX here would be nice.
@@ -4338,7 +4355,7 @@ WhatNext handler_do_flightlist ()
 	// Access without session is possible from local hosts. For other hosts, we
 	// need a session. This requirement is checked in do_next.
 
-	FlightList flights; flights.setAutoDelete (true);
+	QList<Flight *> flights;
 	QString date_text;
 
 	// TODO this pattern occurs quite often. Make function or something.
@@ -4378,11 +4395,14 @@ WhatNext handler_do_flightlist ()
 	int ret=db.list_flights_date (flights, &q_date);
 	CHECK_DB_ERROR_ERROR;
 
-	flights.sort ();
+	// FIXME this fails because it sorts pointers
+	qSort (flights);
 
 	// Output the list.
 	LatexDocument ldoc;
 	write_flightlist (ldoc, flights, date_text);
+
+	foreach (Flight *f, flights) delete f;
 
 	filename.append (".pdf");
 	try
@@ -4479,8 +4499,7 @@ WhatNext handler_do_flight_db ()
 			use_default_data_format=false;
 	}
 
-	FlightList flights;
-	flights.setAutoDelete (true);
+	QList<Flight *> flights;
 	QString date_text;
 
 	// Start the filename
@@ -4539,15 +4558,15 @@ WhatNext handler_do_flight_db ()
 	// If the towflights should have own entries, add them.
 	if (string_to_bool (CGI_READ (towflights_extra)))
 	{
-		FlightList towflights;	// No autoDelete because we add them to flights later.
+		QList<Flight *> towflights;
 
-		for (QPtrListIterator<Flight> it (flights); *it; ++it)
+		foreach (Flight *it, flights)
 		{
 			int ret;
 
 			// Read the startart from the database
 			LaunchType sa;
-			ret=db.get_startart (&sa, (*it)->startart);
+			ret=db.get_startart (&sa, it->startart);
 			bool sa_ok=(ret==db_ok);
 
 			// If the startart is an airtow, we need to construct the towflight.
@@ -4569,7 +4588,7 @@ WhatNext handler_do_flight_db ()
 				{
 					// The towplane is not known from the startart, so its ID
 					// is saved in the flight.
-					towplane_id=(*it)->towplane;
+					towplane_id=it->towplane;
 				}
 
 				// Determine the startart.
@@ -4582,24 +4601,24 @@ WhatNext handler_do_flight_db ()
 
 				Flight *towflight=new Flight;
 
-				(*it)->get_towflight (towflight, towplane_id, towflight_startart_id);
+				it->get_towflight (towflight, towplane_id, towflight_startart_id);
 				towflights.append (towflight);
 			}
 
 		}
 
 		// Copy the towflights to the flight list
-		for (QPtrListIterator<Flight> tow (towflights); *tow; ++tow)
+		foreach (Flight *tow, towflights)
 		{
-			flights.append (*tow);
+			flights.append (tow);
 		}
 	}
-	flights.sort ();
+	qSort (flights);
 
 
 	// Step 3: Output the list.
-	// We have got a FlightList
-	// Convert FlightList to a Table row by row.
+	// We have got a flight list
+	// Convert flight list to a Table row by row.
 	Table tab;
 
 	// If we do not use the default data format, find the plugin that provides
@@ -4650,11 +4669,11 @@ WhatNext handler_do_flight_db ()
 		QDate old_date;
 		int num;
 
-		for (QPtrListIterator<Flight> it (flights); *it; ++it)
+		foreach (Flight *it, flights)
 		{
-			Flight &f=**it;
+			Flight &f=*it;
 
-			QDate this_date=(*it)->effdatum ();
+			QDate this_date=f.effdatum ();
 			if (old_date.isNull () || this_date!=old_date)
 				num=1;
 			else
@@ -4689,6 +4708,7 @@ WhatNext handler_do_flight_db ()
 	filename.append (".csv");
 	return WhatNext::output_raw_document (tab.csv (opts.csv_quote), HttpDocument::mime_type_csv, filename, "Flugliste f�r "+date_text);
 
+	foreach (Flight *f, flights) delete f;
 
 	return WhatNext::output_error ("Unbehandelter Fall in handler_do_flight_db");
 }

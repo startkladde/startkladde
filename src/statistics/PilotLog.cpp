@@ -29,7 +29,7 @@ QString PilotLogEntry::flugdauer_string () const
 
 
 
-void makePilotLogPerson (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, Person *person, QPtrList<Flight> &flights, PilotLogEntry::flight_instructor_mode fim)
+void makePilotLogPerson (QList<PilotLogEntry *> &fb, Database *db, QDate date, Person *person, QList<Flight *> &flights, PilotLogEntry::flight_instructor_mode fim)
 	// flights may contain flights which don't belong to the person
 	// TODO pass list of planes here?
 	// TODO this is slow because it needs to query the database for persons
@@ -42,26 +42,26 @@ void makePilotLogPerson (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, 
 
 	// We use only flights where both the person and the date matches. Make a
 	// list of these flights ("interesting flights").
-	for (QPtrListIterator<Flight> flight (flights); *flight; ++flight)
+	foreach (Flight *flight, flights)
 	{
 		// First condition: person matches.
 		// This means that the person given is the pilot, or (in case of
 		// certain flight instructor modes, the flight instructor, which is the
 		// copilot).
 		bool person_match=false;
-		if ((*flight)->pilot==person->id) person_match=true;
-		else if (fim==PilotLogEntry::fim_loose && (*flight)->begleiter==person->id) person_match=true;
-		else if (fim==PilotLogEntry::fim_strict && (*flight)->begleiter==person->id && (*flight)->flugtyp==ftTraining2) person_match=true;
+		if (flight->pilot==person->id) person_match=true;
+		else if (fim==PilotLogEntry::fim_loose && flight->begleiter==person->id) person_match=true;
+		else if (fim==PilotLogEntry::fim_strict && flight->begleiter==person->id && flight->flugtyp==ftTraining2) person_match=true;
 
 		// Second condition: date matches.
 		// This means that, if the date is given, it must match the flight's
 		// effective date.
 		bool date_match=false;
 		if (!date.isValid ()) date_match=true;
-		else if ((*flight)->effdatum ()==date) date_match=true;
+		else if (flight->effdatum ()==date) date_match=true;
 
 		if (person_match && date_match)
-			interesting_flights.append (*flight);
+			interesting_flights.append (flight);
 	}
 	qSort (interesting_flights);
 
@@ -123,50 +123,52 @@ void makePilotLogPerson (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, 
 	}
 }
 
-void makePilotLogsDay (QPtrList<PilotLogEntry> &fb, Database *db, QDate date)
+void makePilotLogsDay (QList<PilotLogEntry *> &fb, Database *db, QDate date)
 	// Make all pilot logs for one day
 {
 	// TODO error handling
 
-	QPtrList<Person> persons; persons.setAutoDelete (true);
+	QList<Person *> persons;
 	// Find out which persons had flights today
 	db->list_persons_date (persons, &date);
 
 	// Sort the persons
 	// TODO this uses manual selection sort. Better use the heap sort provided
 	// by QPtrList.
-	persons.setAutoDelete (false);
-	QPtrList<Person> sorted_persons; sorted_persons.setAutoDelete (true);
+	QList<Person *> sorted_persons;
 	while (!persons.isEmpty ())
 	{
 		Person *smallest=NULL;
 		// Find the smallest element.
-		for (QPtrListIterator<Person> person (persons); *person; ++person)
+		foreach (Person *person, persons)
 		{
 			if (!smallest)
 				// No smallest entry set yet (first element in list)
-				smallest=*person;
-			else if ((*person)->nachname<smallest->nachname)
+				smallest=person;
+			else if (person->nachname<smallest->nachname)
 				// Last name smaller
-				smallest=*person;
-			else if ((*person)->nachname==smallest->nachname && (*person)->vorname<smallest->vorname)
+				smallest=person;
+			else if (person->nachname==smallest->nachname && person->vorname<smallest->vorname)
 				// Last name identical, first name smaller
-				smallest=*person;
+				smallest=person;
 		}
 		sorted_persons.append (smallest);
 		persons.remove (smallest);
 	}
 
-	QPtrList<Flight> flights; flights.setAutoDelete (true);
+	QList<Flight *> flights;
 	// We need all flights of that date anyway. For speed, we don't query the
 	// database for each person but retrieve all flights here.
 	db->list_flights_date (flights, &date);
 
-	for (QPtrListIterator<Person> person (sorted_persons); *person; ++person)
+	foreach (Person *person, sorted_persons)
 	{
 		// TODO emit progress
-		makePilotLogPerson (fb, db, date, *person, flights);
+		makePilotLogPerson (fb, db, date, person, flights);
 	}
+
+	foreach (Flight *f, flights) delete f;
+	foreach (Person *p, sorted_persons) delete p;
 }
 
 

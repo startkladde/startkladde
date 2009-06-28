@@ -3,10 +3,6 @@
 
 #include <QString>
 
-// XXX
-#include <q3ptrlist.h>
-#define QPtrList Q3PtrList
-#define QPtrListIterator Q3PtrListIterator
 #include <QDateTime>
 
 #include "src/db/Database.h"
@@ -43,8 +39,8 @@ class PilotLogEntry
 		QString flugdauer_string () const;
 };
 
-void makePilotLogsDay (QPtrList<PilotLogEntry> &fb, Database *db, QDate date);
-void makePilotLogPerson (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, Person *person, QPtrList<Flight> &flights, PilotLogEntry::flight_instructor_mode fim=PilotLogEntry::fim_no);
+void makePilotLogsDay (QList<PilotLogEntry *> &fb, Database *db, QDate date);
+void makePilotLogPerson (QList<PilotLogEntry *> &fb, Database *db, QDate date, Person *person, QList<Flight *> &flights, PilotLogEntry::flight_instructor_mode fim=PilotLogEntry::fim_no);
 
 #endif
 

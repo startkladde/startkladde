@@ -11,6 +11,8 @@
 #include <QValidator>
 #include <QDateEdit>
 #include <QListWidget>
+#include <QScrollArea>
+#include <QDesktopWidget>
 
 #include "src/dataTypes.h"
 #include "src/text.h"

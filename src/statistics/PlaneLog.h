@@ -2,11 +2,6 @@
 #define _PlaneLog_h
 
 #include <QString>
-
-// XXX
-#include <q3ptrlist.h>
-#define QPtrList Q3PtrList
-#define QPtrListIterator Q3PtrListIterator
 #include <QDateTime>
 
 #include "src/db/Database.h"
@@ -43,10 +38,10 @@ class PlaneLogEntry
 		QString anzahl_landungen_string () const;
 };
 
-bool makePlaneLogEntry (PlaneLogEntry *bb_entry, Database *db, QPtrList<Flight> &flights, Plane &fz, QDate date);
-void makePlaneLogPlane (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, Plane &fz, QPtrList<Flight> &flights);
-void makePlaneLogDay (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, QPtrList<Plane> planes, QPtrList<Flight> flights, QString *club=NULL);
-void makePlaneLogDay (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date);
+bool makePlaneLogEntry (PlaneLogEntry *bb_entry, Database *db, QList<Flight *> &flights, Plane &fz, QDate date);
+void makePlaneLogPlane (QList<PlaneLogEntry *> &bb, Database *db, QDate date, Plane &fz, QList<Flight *> &flights);
+void makePlaneLogDay (QList<PlaneLogEntry *> &bb, Database *db, QDate date, QList<Plane *> planes, QList<Flight *> flights, QString *club=NULL);
+void makePlaneLogDay (QList<PlaneLogEntry *> &bb, Database *db, QDate date);
 
 #endif
 

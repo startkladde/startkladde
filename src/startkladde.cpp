@@ -59,8 +59,7 @@ int main (int argc, char **argv)
 		//weatherDialog->show ();
 		//return a.exec ();
 
-		MainWindow w (NULL, &db, &plugins, "sk_win_main", Qt::WType_TopLevel);
-		a.setMainWidget (&w);
+		MainWindow w (NULL, &db, &plugins, Qt::Window);
 
 		// Let the plugins initialize
 		sched_yield ();

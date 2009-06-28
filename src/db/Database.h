@@ -5,11 +5,6 @@
 
 #include <mysql.h>
 
-// XXX
-#include <q3ptrlist.h>
-#include <q3valuelist.h>
-#define QPtrList Q3PtrList
-#define QValueList Q3ValueList
 #include <qstringlist.h>
 
 #include "src/accessor.h"
@@ -336,16 +331,16 @@ class Database:public QObject
 		void merge_person (db_id correct_id, db_id wrong_id) throw (ex_not_connected, ex_parameter_error, ex_query_failed, ex_operation_failed);
 
 		// Importing
-		static void remove_editable_persons (QPtrList<Person> persons);
+		static void remove_editable_persons (QList<Person *> persons);
 
 		void import_check (const Person &person) throw (import_message);
-		void import_check (const QPtrList<Person> &persons, QList<import_message> &notes);
+		void import_check (const QList<Person *> &persons, QList<import_message> &notes);
 
 		db_id import_identify (const Person &p, QList<import_message> *notes=NULL) throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message);
-		void import_identify (QPtrList<Person> &persons, QList<import_message> &notes) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
+		void import_identify (QList<Person *> &persons, QList<import_message> &notes) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
 
 		db_id import_person (const Person &person) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
-		void import_persons (const QPtrList<Person> &persons) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
+		void import_persons (const QList<Person *> &persons) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
 
 		// Editable
 	public:
@@ -378,24 +373,24 @@ class Database:public QObject
 		bool plane_has_flight (db_id id);
 		bool person_used (db_id id);
 		bool plane_used (db_id id);
-		int list_flights (QPtrList<Flight> &flights, Condition c);
-		int list_planes (QPtrList<Plane> &planes, Condition c);
-		int list_persons (QPtrList<Person> &persons, Condition c);
+		int list_flights (QList<Flight *> &flights, Condition c);
+		int list_planes (QList<Plane *> &planes, Condition c);
+		int list_persons (QList<Person *> &persons, Condition c);
 
 		// Listing frontends
-		int list_flights_prepared (QPtrList<Flight> &flights);
-		int list_flights_date (QPtrList<Flight> &flights, QDate *date);
-		int list_flights_date_range (QPtrList<Flight> &flights, QDate *start_date, QDate *end_date);
-		int list_persons_by_name (QPtrList<Person> &persons, QString vorname, QString nachname);
-		int list_persons_by_first_name (QPtrList<Person> &persons, QString vorname);
-		int list_persons_by_last_name (QPtrList<Person> &persons, QString nachname);
-		int list_persons_by_club_club_id (QPtrList<Person> &persons, QString club, QString club_id);
-		int list_planes_all (QPtrList<Plane> &planes);
-		int list_persons_all (QPtrList<Person> &persons);
-		int list_startarten_all (QPtrList<LaunchType> &saen);
-		int list_planes_date (QPtrList<Plane> &planes, QDate *date);
-		int list_persons_date (QPtrList<Person> &persons, QDate *date);
-		int list_planes_registration (QPtrList<Plane> &planes, QString registration);
+		int list_flights_prepared (QList<Flight *> &flights);
+		int list_flights_date (QList<Flight *> &flights, QDate *date);
+		int list_flights_date_range (QList<Flight *> &flights, QDate *start_date, QDate *end_date);
+		int list_persons_by_name (QList<Person *> &persons, QString vorname, QString nachname);
+		int list_persons_by_first_name (QList<Person*> &persons, QString vorname);
+		int list_persons_by_last_name (QList<Person *> &persons, QString nachname);
+		int list_persons_by_club_club_id (QList<Person *> &persons, QString club, QString club_id);
+		int list_planes_all (QList<Plane *> &planes);
+		int list_persons_all (QList<Person *> &persons);
+		int list_startarten_all (QList<LaunchType *> &saen);
+		int list_planes_date (QList<Plane *> &planes, QDate *date);
+		int list_persons_date (QList<Person *> &persons, QDate *date);
+		int list_planes_registration (QList<Plane *> &planes, QString registration);
 		// TODO get_plane_id_registration oder so
 		int get_plane_registration (Plane *plane, QString registration);
 
@@ -463,7 +458,7 @@ class Database:public QObject
 		bool is_admin_db;
 
 		// Startart list
-		QPtrList<LaunchType> startarten;
+		QList<LaunchType *> startarten;
 
 		// Generic functions
 		QString escape (QString text);
@@ -514,20 +509,20 @@ class Database:public QObject
 
 
 		// Result processing
-		int result_to_list (db_object_type type, QPtrList<void> &result_list, MYSQL_RES *result);
-		int result_to_num_list (QValueList<long long int> &num_list, MYSQL_RES *result, const char *field_name);
+		int result_to_list (db_object_type type, QList<void *> &result_list, MYSQL_RES *result);
+		int result_to_num_list (QList<long long int> &num_list, MYSQL_RES *result, const char *field_name);
 		int result_to_string_list (QStringList &strings, MYSQL_RES *result, const char *field_name);
 		int result_to_string_list (QStringList &strings, MYSQL_RES *result, const unsigned int field_num);
-		int result_to_id_list (QValueList<db_id> &ids, MYSQL_RES *result);
+		int result_to_id_list (QList<db_id> &ids, MYSQL_RES *result);
 		char *named_field_value (MYSQL_ROW &row, int num_fields, MYSQL_FIELD *fields, const char *name);
 		const char *field_value (const MYSQL_ROW &row, const unsigned int num_fields, MYSQL_FIELD *fields, const unsigned int num);
 
 		// Listing
-		int list_id_data (db_object_type type, QValueList<db_id> &ids, QStringList &data_columns, Condition c);
-		int list_ids (db_object_type type, QValueList<db_id> &ids, Condition c);
+		int list_id_data (db_object_type type, QList<db_id> &ids, QStringList &data_columns, Condition c);
+		int list_ids (db_object_type type, QList<db_id> &ids, Condition c);
 		// TODO: custom query only supported for strings
 		int list_strings (db_object_type type, QString field_name, QStringList &strings, Condition c, QString custom_query="");
-		int list_objects (db_object_type type, QPtrList<void> &objects, Condition c);
+		int list_objects (db_object_type type, QList<void *> &objects, Condition c);
 		int list_strings_query (const QString query, const QString field_name, QStringList &strings);
 		int list_strings_query (const QString query, const unsigned int field_num, QStringList &strings);
 

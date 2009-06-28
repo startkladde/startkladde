@@ -4,9 +4,6 @@
 #include <QPushButton>
 #include <QMenuBar>
 
-#include <Qt3Support>
-#define QPtrListIterator Q3PtrListIterator
-
 #include "src/dataTypes.h"
 #include "src/db/DbEvent.h"
 #include "src/db/Database.h"
@@ -21,6 +18,7 @@
 #include "src/model/Entity.h"
 
 class SplashScreen;
+class QKeyEvent;
 
 const QColor col_default=QColor (255, 255, 255);
 
