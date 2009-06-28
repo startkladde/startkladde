@@ -43,6 +43,8 @@ class Flight
 	public:
 		Flight ();
 
+		bool operator< (const Flight &o);
+
 		bool fliegt () const;	// Use with care
 		bool sfz_fliegt () const;
 		bool vorbereitet () const;
@@ -103,7 +105,7 @@ class Flight
 		bool flight_lands_here () const;
 		bool flight_starts_here () const;
 
-		int sort (Flight *other) const;
+		int sort (const Flight *other) const;
 
 	private:
 		QString unvollst_person_name (QString nn, QString vn) const;

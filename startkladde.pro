@@ -18,7 +18,6 @@ HEADERS += \
            src/color.h \
            src/Condition.h \
            src/dataTypes.h \
-           src/FlightList.h \
            src/ObjectField.h \
            src/SkException.h \
            src/text.h \
@@ -82,7 +81,6 @@ SOURCES += \
            src/color.cpp \
            src/Condition.cpp \
            src/dataTypes.cpp \
-           src/FlightList.cpp \
            src/ObjectField.cpp \
            src/startkladde.cpp \
            src/text.cpp \

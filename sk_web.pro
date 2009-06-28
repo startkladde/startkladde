@@ -15,7 +15,6 @@ QMAKE_CXXFLAGS += -Werror
 HEADERS += \
            src/Condition.h \
            src/dataTypes.h \
-           src/FlightList.h \
            src/ObjectField.h \
            src/text.h \
            src/version.h \
@@ -56,7 +55,6 @@ HEADERS += \
 SOURCES += \
            src/Condition.cpp \
            src/dataTypes.cpp \
-           src/FlightList.cpp \
            src/ObjectField.cpp \
            src/sk_web.cpp \
            src/text.cpp \

@@ -598,7 +598,12 @@ void Flight::dump () const
 #undef DUMP2
 }
 
-int Flight::sort (Flight *other) const
+bool Flight::operator< (const Flight &o)
+{
+	return sort (&o)<0;
+}
+
+int Flight::sort (const Flight *other) const
 	/*
 	 * Return value:
 	 *   - >0 if this flight is later

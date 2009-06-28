@@ -2301,7 +2301,7 @@ int Database::list_flights_date (QPtrList<Flight> &flights, QDate *date)
 	return r;
 }
 
-int Database::list_flights_date_range (FlightList &flights, QDate *start_date, QDate *end_date)
+int Database::list_flights_date_range (Q3PtrList<Flight> &flights, QDate *start_date, QDate *end_date)
 {
 	int r=list_flights (flights, Condition (cond_flight_happened_between, start_date, end_date));
 	return r;

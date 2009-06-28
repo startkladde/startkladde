@@ -15,9 +15,6 @@ bool eintrag_ist_leer (QString eintrag)
 	 *   if eintrag is to be considered "empty".
 	 */
 {
-	// QT3:
-	//QString e=eintrag.stripWhiteSpace ();
-	// QT4:
 	QString e=eintrag.simplified ();
 	return (e=="" || e=="-");
 }

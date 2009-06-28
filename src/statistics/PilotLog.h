@@ -9,7 +9,6 @@
 #define QPtrListIterator Q3PtrListIterator
 #include <QDateTime>
 
-#include "src/FlightList.h"
 #include "src/db/Database.h"
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"

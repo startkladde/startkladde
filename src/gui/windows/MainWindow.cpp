@@ -5,7 +5,6 @@
 
 #include "kvkbd.xpm"
 #include "logo.xpm"
-#include "src/FlightList.h"
 #include "src/config/Options.h"
 #include "src/db/adminFunctions.h"
 #include "src/db/DbEvent.h"
@@ -1175,7 +1174,7 @@ void MainWindow::slot_refresh_table ()
 		tbl_fluege->removeAllRows ();
 
 		// Flüge von heute
-		FlightList flights;
+		Q3PtrList<Flight> flights;
 		flights.setAutoDelete (true);
 		db->list_flights_date (flights, &anzeigedatum);
 		if (anzeigedatum == QDate::currentDate ()) db->list_flights_prepared (flights);

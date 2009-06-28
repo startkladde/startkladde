@@ -38,7 +38,7 @@ void makePilotLogPerson (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, 
 {
 	// TODO! this should use flight_data
 
-	FlightList interesting_flights; interesting_flights.setAutoDelete (false);
+	QList<Flight *> interesting_flights;
 
 	// We use only flights where both the person and the date matches. Make a
 	// list of these flights ("interesting flights").
@@ -63,17 +63,21 @@ void makePilotLogPerson (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, 
 		if (person_match && date_match)
 			interesting_flights.append (*flight);
 	}
-	interesting_flights.sort ();
+	qSort (interesting_flights);
 
 	// Iterate over all interesting flights, generating logbook entries.
-	for (QPtrListIterator<Flight> flight (interesting_flights); *flight; ++flight)
+
+	QListIterator<Flight *> flight (interesting_flights);
+	while (flight.hasNext ())
 	{
+		Flight *f=flight.next ();
+
 		// TODO Move to PilotLogEntry class
 		PilotLogEntry *fb_entry=new PilotLogEntry;
 
 		// Get additional data
 		// TODO error checking
-		Plane fz; db->get_plane (&fz, (*flight)->flugzeug);
+		Plane fz; db->get_plane (&fz, f->flugzeug);
 
 		// The person we are checking may either be pilot (regular) or copilot
 		// (flight instructor). Thus, both of these may be a different person.
@@ -82,35 +86,35 @@ void makePilotLogPerson (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, 
 
 		// If the pilot is the person we're checking, copy it. If not, get it
 		// from the database.
-		if ((*flight)->pilot==person->id)
+		if (f->pilot==person->id)
 			pilot=*person;
 		else
 			// TODO error checking
-			db->get_person (&pilot, (*flight)->pilot);
+			db->get_person (&pilot, f->pilot);
 
 		// Same for copilot
-		if ((*flight)->begleiter==person->id)
+		if (f->begleiter==person->id)
 			begleiter=*person;
 		else
 			// TODO error checking
-			db->get_person (&begleiter, (*flight)->begleiter);
+			db->get_person (&begleiter, f->begleiter);
 
-		LaunchType sa; db->get_startart (&sa, (*flight)->startart);
+		LaunchType sa; db->get_startart (&sa, f->startart);
 
-		fb_entry->tag=(*flight)->effdatum ();
+		fb_entry->tag=f->effdatum ();
 		fb_entry->muster=fz.typ;
 		fb_entry->registration=fz.registration;
 		fb_entry->flugzeugfuehrer=pilot.name ();
 		fb_entry->begleiter=begleiter.name ();
 		fb_entry->startart=sa.get_logbook_string ();
-		fb_entry->ort_start=(*flight)->startort;
-		fb_entry->ort_landung=(*flight)->zielort;
-		fb_entry->zeit_start=(*flight)->startzeit;
-		fb_entry->zeit_landung=(*flight)->landezeit;
-		fb_entry->flugdauer=(*flight)->flugdauer ();
-		fb_entry->bemerkung=(*flight)->bemerkungen;
+		fb_entry->ort_start=f->startort;
+		fb_entry->ort_landung=f->zielort;
+		fb_entry->zeit_start=f->startzeit;
+		fb_entry->zeit_landung=f->landezeit;
+		fb_entry->flugdauer=f->flugdauer ();
+		fb_entry->bemerkung=f->bemerkungen;
 
-		if (!(*flight)->finished ())
+		if (!f->finished ())
 		{
 			fb_entry->invalid=true;
 		}

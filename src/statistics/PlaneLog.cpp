@@ -138,7 +138,7 @@ void makePlaneLogPlane (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, P
 	// flights may contain flights which don't belong to the plane
 {
 	// First, make a sorted list of all fligths that belong to this plane
-	FlightList interesting_flights; interesting_flights.setAutoDelete (false);
+	QList <Flight *> interesting_flights;
 	// Iterate over all of the flights in the list.
 	for (QPtrListIterator<Flight> select_flug (flights); *select_flug; ++select_flug)
 	{
@@ -148,24 +148,26 @@ void makePlaneLogPlane (QPtrList<PlaneLogEntry> &bb, Database *db, QDate date, P
 			interesting_flights.append (*select_flug);
 		}
 	}
-	interesting_flights.sort ();
+	qSort (interesting_flights);
 
 	// Iterate over the interesting flights, grouping those who can form a
 	// collective entry, and add them to the list.
 	QPtrList<Flight> entry_flights; entry_flights.setAutoDelete (false);
 	Flight *prev=NULL;
-	for (QPtrListIterator<Flight> flight (interesting_flights); *flight; ++flight)
+	QListIterator<Flight *> flight (interesting_flights);
+	while (flight.hasNext ())
 	{
+		Flight *f=flight.next ();
 		// If this entry cannot be merged with the previous, we have to make an
 		// entry from the list and clear the list before continuing.
-		if (prev && !(*flight)->collective_bb_entry_possible (prev, fz))
+		if (prev && !f->collective_bb_entry_possible (prev, fz))
 		{
 			addPlaneLogEntry (bb, db, entry_flights, fz, date);
 			entry_flights.clear ();
 		}
 
-		entry_flights.append (*flight);
-		prev=*flight;
+		entry_flights.append (f);
+		prev=f;
 	}
 	addPlaneLogEntry (bb, db, entry_flights, fz, date);
 }

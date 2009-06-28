@@ -15,7 +15,6 @@
 #include "src/accessor.h"
 #include "src/Condition.h"
 #include "src/dataTypes.h"
-#include "src/FlightList.h"
 #include "src/SkException.h"
 #include "src/config/Options.h"
 #include "src/db/DbColumn.h"
@@ -386,7 +385,7 @@ class Database:public QObject
 		// Listing frontends
 		int list_flights_prepared (QPtrList<Flight> &flights);
 		int list_flights_date (QPtrList<Flight> &flights, QDate *date);
-		int list_flights_date_range (FlightList &flights, QDate *start_date, QDate *end_date);
+		int list_flights_date_range (QPtrList<Flight> &flights, QDate *start_date, QDate *end_date);
 		int list_persons_by_name (QPtrList<Person> &persons, QString vorname, QString nachname);
 		int list_persons_by_first_name (QPtrList<Person> &persons, QString vorname);
 		int list_persons_by_last_name (QPtrList<Person> &persons, QString nachname);
