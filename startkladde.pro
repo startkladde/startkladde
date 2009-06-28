@@ -28,6 +28,7 @@ HEADERS += \
            src/db/DbTable.h \
            src/db/dbTypes.h \
            src/db/Database.h \
+           src/db/DataStorage.h \
            src/documents/LatexDocument.h \
            src/documents/Table.h \
            src/gui/dialogs.h \
@@ -91,6 +92,7 @@ SOURCES += \
            src/db/DbTable.cpp \
            src/db/dbTypes.cpp \
            src/db/Database.cpp \
+           src/db/DataStorage.cpp \
            src/documents/LatexDocument.cpp \
            src/documents/Table.cpp \
            src/gui/dialogs.cpp \
