@@ -11,7 +11,7 @@
 ##################
 
 # The programs (with an own .pro file) to be built
-PROGRAMS = startkladde sk_web sk_admin
+PROGRAMS = startkladde sk_web sk_admin tests
 
 # The XPM images used by the program
 XPMS = kvkbd.xpm logo.xpm
@@ -26,7 +26,7 @@ XPMS = kvkbd.xpm logo.xpm
 default: startkladde
 
 # Build all: the programs and the plugins
-.PHONTY: all
+.PHONY: all
 all: $(PROGRAMS) plugins
 
 
@@ -83,12 +83,13 @@ plugins:
 #############
 
 .PHONY: clean
-clean: Makefile_startkladde Makefile_sk_web Makefile_sk_admin logo.xpm kvkbd.xpm
+clean: Makefile_startkladde Makefile_sk_web Makefile_sk_admin Makefile_tests logo.xpm kvkbd.xpm
 	$(MAKE) -f Makefile_startkladde distclean
 	$(MAKE) -f Makefile_sk_web distclean
 	$(MAKE) -f Makefile_sk_admin distclean
+	$(MAKE) -f Makefile_tests distclean
 	$(MAKE) -C plugins clean
-	rm -f Makefile_startkladde Makefile_sk_web Makefile_sk_admin
+	rm -f Makefile_startkladde Makefile_sk_web Makefile_sk_admin Makefile_tests
 	rm -f version/version.h
 	rm -rf build
 
