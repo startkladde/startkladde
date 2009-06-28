@@ -656,23 +656,22 @@ void FlightWindow::populate_lists ()
 
 
 	// Flugmodi eintragen
-	// TODO fillstringarraydelete, clear () wegmachen
 	edit_modus->clear ();
 	modi=listFlightModes (false);
+
 	for (int i=0; i<modi.size (); i++)
 		edit_modus->insertItem (flightModeText (modi[i], lsWithShortcut), i);
 
 
 	// Flugmodi Schleppflugzeug eintragen
-	// TODO fillstringarraydelete, clear () wegmachen
 	edit_modus_sfz->clear ();
 	sfz_modi=listTowFlightModes (false);
+
 	for (int i=0; i<sfz_modi.size(); i++)
 		edit_modus_sfz->insertItem (flightModeText (sfz_modi[i], lsWithShortcut), i);
 
 
 	// Flugtypen eintragen
-	// TODO fillstringarraydelete, clear () wegmachen
 	edit_flug_typ->clear ();
 	flightTypes=listFlightTypes (false);
 
@@ -696,7 +695,6 @@ void FlightWindow::read_db ()
 
 	emit status ("Flugeditor: Orte aus Datenbank lesen...");
 	// Orte eintragen
-	// TODO fillstringarraydelete, clear () wegmachen
 	edit_startort->clear ();
 	edit_zielort->clear ();
 	edit_zielort_sfz->clear ();
@@ -717,7 +715,6 @@ void FlightWindow::read_db ()
 
 	emit status ("Flugeditor: Abrechnungshinweise aus Datenbank lesen...");
 	// Abrechnungshinweise eintragen
-	// TODO fillstringarraydelete, clear () wegmachen
 	edit_abrechnungshinweis->clear ();
 	edit_abrechnungshinweis->insertItem ("");
 	QStringList abhins;
@@ -728,7 +725,6 @@ void FlightWindow::read_db ()
 
 	emit status ("Flugeditor: Flugzeuge aus Datenbank lesen...");
 	// Kennzeichen eintragen
-	// TODO fillstringarraydelete, clear () wegmachen
 	edit_registration->clear ();
 	edit_registration_sfz->clear ();
 //	QPtrList<Plane> planes; planes.setAutoDelete (true);
