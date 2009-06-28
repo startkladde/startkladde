@@ -56,11 +56,6 @@ Features:
   - Felder: Schlepph�he, Motorlaufzeit
   - Felder: beliebige Felder?
 
-doc: Doxygen? doc++?
-
-Bibliotheken verwenden:
-  - TT2 (templates)
-  - Logger
 
 Umschreiben:
   - argument_list statt list<argument> �berall
