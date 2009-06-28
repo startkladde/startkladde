@@ -165,13 +165,10 @@ class FlightWindow:public SkDialog
 
 		QList <FlightMode> modi;
 		QList <FlightMode> sfz_modi;
-		int num_modi;
-		int num_sfz_modi;
 		int modus_index (FlightMode m);
 		int sfz_modus_index (FlightMode m);
 
 		QList<FlightType> flightTypes;
-		int num_flugtypen;
 		int flugtyp_index (FlightType t);
 
 

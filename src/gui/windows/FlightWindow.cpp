@@ -675,7 +675,7 @@ void FlightWindow::populate_lists ()
 	edit_flug_typ->clear ();
 	flightTypes=listFlightTypes (false);
 
-	for (int i=0; i<num_flugtypen; i++)
+	for (int i=0; i<flightTypes.size(); i++)
 		edit_flug_typ->insertItem (flightTypeText (flightTypes[i], lsWithShortcut), i);
 
 }
@@ -1098,6 +1098,8 @@ void FlightWindow::slot_flugtyp (int ind)
 	 *   - ind: the index of the flight type.
 	 */
 {
+	if (ind<0) return;
+
 	if (lock_edit_slots) return;
 	FlightType typ=flightTypes[ind];
 
@@ -1270,6 +1272,7 @@ void FlightWindow::slot_modus (int ind)
 	 *   - ind: the index of the flight mode.
 	 */
 {
+	if (ind<0) return;
 	if (lock_edit_slots) return;
 	FlightMode m=modi[ind];
 
@@ -1438,6 +1441,8 @@ void FlightWindow::slot_modus_sfz (int ind)
 	 *   - ind: the index of the tow flight mode.
 	 */
 {
+	if (ind<0) return;
+
 	if (lock_edit_slots) return;
 	FlightMode m=sfz_modi[ind];
 
@@ -3056,7 +3061,7 @@ int FlightWindow::modus_index (FlightMode sa)
 	 *   - -1 else.
 	 */
 {
-	for (int i=0; i<num_modi; i++)
+	for (int i=0; i<modi.size(); i++)
 	{
 		if (modi[i]==sa) return i;
 	}
@@ -3075,7 +3080,7 @@ int FlightWindow::sfz_modus_index (FlightMode sa)
 	 *   - -1 else.
 	 */
 {
-	for (int i=0; i<num_sfz_modi; i++)
+	for (int i=0; i<sfz_modi.size(); i++)
 	{
 		if (sfz_modi[i]==sa) return i;
 	}
@@ -3094,7 +3099,7 @@ int FlightWindow::flugtyp_index (FlightType t)
 	 *   - -1 else.
 	 */
 {
-	for (int i=0; i<num_flugtypen; i++)
+	for (int i=0; i<flightTypes.size (); i++)
 		if (flightTypes[i]==t) return i;
 
 	log_error ("Flugtyp nicht gefunden in flugtyp_index ()");
