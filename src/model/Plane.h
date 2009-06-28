@@ -17,7 +17,7 @@ class Plane: public Entity
 		Plane ();
 
 		static QList<Category> listCategories (bool include_invalid);
-		static QString categoryString (Plane::Category category, lengthSpecification lenspec);
+		static QString categoryText (Plane::Category category, lengthSpecification lenspec);
 		static Plane::Category categoryFromRegistration (QString registration);
 
 		QString registration;

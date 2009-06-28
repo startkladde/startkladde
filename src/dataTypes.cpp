@@ -1,174 +1,99 @@
 #include "dataTypes.h"
 
-/*
- * There are different functions for all of the data types here.
- * These are:
- *
- * list_xxx (xxx **d, bool include_invalid)
- *   Makes an array of all xxxs known.
- *   Parameters:
- *     - include_invalid: also include the internal "invalid" values.
- *   Parametrs set:
- *     - *d: set to point to the array. This is newly allocated and must be freed by the caller.
- *   Return value:
- *     the size of the array allocated.
- *
- * QString xxx_string (xxx d, lengthSpecification lenspec)
- *   Generates a description for the value for a given length.
- *   Parameters:
- *     - d: the value to create the description for.
- *     - lenspec: the length (e. g. short, long, Table, csv...)
- *   Return value:
- *     the description.
- */
+#include <cassert>
 
-
-int list_flugtyp (flug_typ **t, bool include_invalid)
-	/*
-	 * See top of file.
-	 */
+QList<FlightType> listFlightTypes (bool include_invalid)
 {
-	flug_typ *list=NULL;
-	int num=0;
+	QList<FlightType> result;
 
 	if (include_invalid)
-	{
-		num=6;
-		list=new flug_typ[num];
-		list[0]=ft_kein;
-		list[1]=ft_normal;
-		list[2]=ft_schul_2;
-		list[3]=ft_schul_1;
-		list[4]=ft_gast_privat;
-		list[5]=ft_gast_extern;
-	}
-	else
-	{
-		num=5;
-		list=new flug_typ[num];
-		list[0]=ft_normal;
-		list[1]=ft_schul_2;
-		list[2]=ft_schul_1;
-		list[3]=ft_gast_privat;
-		list[4]=ft_gast_extern;
-	}
+		result << ftNone;
 
-	*t=list;
-	return num;
+	result << ftNormal << ftTraining2 << ftTraining1 << ftGuestPrivate << ftGuestExternal;
+
+	return result;
 }
 
-QString flugtyp_string (flug_typ typ, lengthSpecification lenspec)
-	/*
-	 * See top of file.
-	 */
+QString flightTypeText (FlightType flightType, lengthSpecification lenspec)
 {
 	switch (lenspec)
 	{
 		case lsShort:
-		{
-			switch (typ)
+			switch (flightType)
 			{
-				case ft_kein: return "-"; break;
-				case ft_normal: return "N"; break;
-				case ft_schul_2: return "S2"; break;
-				case ft_schul_1: return "S1"; break;
-				case ft_schlepp: return "F"; break;
-				case ft_gast_privat: return "G"; break;
-				case ft_gast_extern: return "E"; break;
-				default: return "?"; break;
+				case ftNone:          return "-";
+				case ftNormal:        return "N";
+				case ftTraining2:     return "S2";
+				case ftTraining1:     return "S1";
+				case ftTow:           return "F";
+				case ftGuestPrivate:  return "G";
+				case ftGuestExternal: return "E";
 			}
-		} break;
 		case lsPrintout:
-		{
-			switch (typ)
+			switch (flightType)
 			{
-				case ft_kein: return "-"; break;
-				case ft_normal: return "N"; break;
-				case ft_schul_2: return "S2"; break;
-				case ft_schul_1: return "S1"; break;
-				case ft_schlepp: return "F"; break;
-				case ft_gast_privat: return "G"; break;
-				case ft_gast_extern: return "E"; break;
-				default: return "?"; break;
+				case ftNone:          return "-";
+				case ftNormal:        return "N";
+				case ftTraining2:     return "S2";
+				case ftTraining1:     return "S1";
+				case ftTow:           return "F";
+				case ftGuestPrivate:  return "G";
+				case ftGuestExternal: return "E";
 			}
-		} break;
 		case lsTable: case lsPilotLog:
-		{
-			switch (typ)
+			switch (flightType)
 			{
-				case ft_kein: return "-"; break;
-				case ft_normal: return "Normal"; break;
-				case ft_schul_2: return "Schul (2)"; break;
-				case ft_schul_1: return "Schul (1)"; break;
-				case ft_schlepp: return "Schlepp"; break;
-				case ft_gast_privat: return "Gast (P)"; break;
-				case ft_gast_extern: return "Gast (E)"; break;
-				default: return "?"; break;
+				case ftNone:          return "-";
+				case ftNormal:        return "Normal";
+				case ftTraining2:     return "Schul (2)";
+				case ftTraining1:     return "Schul (1)";
+				case ftTow:           return "Schlepp";
+				case ftGuestPrivate:  return "Gast (P)";
+				case ftGuestExternal: return "Gast (E)";
 			}
-		} break;
 		case lsLong:
-		{
-			switch (typ)
+			switch (flightType)
 			{
-				case ft_kein: return "---"; break;
-				case ft_normal: return "Normalflug"; break;
-				case ft_schul_2: return "Schulungsflug (Doppelsitzig)"; break;
-				case ft_schul_1: return "Schulungsflug (Einsitzig)"; break;
-				case ft_schlepp: return "Schleppflug"; break;
-				case ft_gast_privat: return "Gastflug (Privat)"; break;
-				case ft_gast_extern: return "Gastflug (Extern)"; break;
-				default: return "???"; break;
+				case ftNone:          return "---";
+				case ftNormal:        return "Normalflug";
+				case ftTraining2:     return "Schulungsflug (doppelsitzig)";
+				case ftTraining1:     return "Schulungsflug (einsitzig)";
+				case ftTow:           return "Schleppflug";
+				case ftGuestPrivate:  return "Gastflug (privat)";
+				case ftGuestExternal: return "Gastflug (extern)";
 			}
-		} break;
 		case lsCsv:
-		{
-			switch (typ)
+			switch (flightType)
 			{
-				case ft_kein: return "---"; break;
-				case ft_normal: return "Normalflug"; break;
-				case ft_schul_2: return "Schulung (2)"; break;
-				case ft_schul_1: return "Schulung (1)"; break;
-				case ft_schlepp: return "Schlepp"; break;
-				case ft_gast_privat: return "Gastflug (P)"; break;
-				case ft_gast_extern: return "Gastflug (E)"; break;
-				default: return "???"; break;
+				case ftNone:          return "---";
+				case ftNormal:        return "Normalflug";
+				case ftTraining2:     return "Schulung (2)";
+				case ftTraining1:     return "Schulung (1)";
+				case ftTow:           return "Schlepp";
+				case ftGuestPrivate:  return "Gastflug (P)";
+				case ftGuestExternal: return "Gastflug (E)";
+				default:              return "???";
 			}
-		} break;
 		case lsWithShortcut:
-		{
-			switch (typ)
+			switch (flightType)
 			{
-				case ft_kein: return "---"; break;
-				case ft_normal: return "N - Normalflug"; break;
-				case ft_schul_2: return "2 - Schulungsflug (Doppelsitzig)"; break;
-				case ft_schul_1: return "1 - Schulungsflug (Einsitzig)"; break;
-				case ft_schlepp: return "S - Schleppflug"; break;
-				case ft_gast_privat: return "G - Gastflug (Privat)"; break;
-				case ft_gast_extern: return "E - Gastflug (Extern)"; break;
-				default: return "???"; break;
+				case ftNone:          return "---";
+				case ftNormal:        return "N - Normalflug";
+				case ftTraining2:     return "2 - Schulungsflug (doppelsitzig)";
+				case ftTraining1:     return "1 - Schulungsflug (einsitzig)";
+				case ftTow:           return "S - Schleppflug";
+				case ftGuestPrivate:  return "G - Gastflug (privat)";
+				case ftGuestExternal: return "E - Gastflug (extern)";
+				default:              return "???";
 			}
-		} break;
-		default:
-		{
-			log_error ("Unbehandelte L�ngenangabe in flugtyp_string ()");
-			switch (typ)
-			{
-				case ft_kein: return "[-]"; break;
-				case ft_normal: return "[Normal]"; break;
-				case ft_schul_2: return "[Schulung (2)]"; break;
-				case ft_schul_1: return "[Schulung (1)]"; break;
-				case ft_schlepp: return "[Schlepp]"; break;
-				case ft_gast_privat: return "[Gast (P)]"; break;
-				case ft_gast_extern: return "[Gast (E)]"; break;
-				default: return "[?]"; break;
-			}
-		} break;
 	}
 
-	return ("!!!");
+	// We must have returned by now - the compiler should catch unhandled
+	// values.
+	assert (false);
 }
 
-bool begleiter_erlaubt (flug_typ flugtyp)
+bool begleiter_erlaubt (FlightType flugtyp)
 	/*
 	 * Finds out if a copilot is allowed _to be recorded in the database_ for a
 	 * given flight type.
@@ -178,132 +103,63 @@ bool begleiter_erlaubt (flug_typ flugtyp)
 	 *   - if a copilot is allowed.
 	 */
 {
-	if (flugtyp==ft_schul_1) return false;
-	if (flugtyp==ft_gast_privat) return false;		// Datenbanktechnisch gesehen jedenfalls
-	if (flugtyp==ft_gast_extern) return false;		// Datenbanktechnisch gesehen jedenfalls
+	if (flugtyp==ftTraining1) return false;
+	if (flugtyp==ftGuestPrivate) return false;		// Datenbanktechnisch gesehen jedenfalls
+	if (flugtyp==ftGuestExternal) return false;		// Datenbanktechnisch gesehen jedenfalls
 	return true;
 }
 
 
 
-int list_modus (flug_modus **m, bool include_invalid)
-	/*
-	 * See top of file.
-	 */
+QList<FlightMode> listFlightModes (bool include_invalid)
 {
-	flug_modus *list=NULL;
-	int num=0;
+	QList<FlightMode> result;
 
 	if (include_invalid)
-	{
-		num=4;
-		list=new flug_modus[num];
-		list[0]=fmod_kein;
-		list[1]=fmod_lokal;
-		list[2]=fmod_kommt;
-		list[3]=fmod_geht;
-	}
-	else
-	{
-		num=3;
-		list=new flug_modus[num];
-		list[0]=fmod_lokal;
-		list[1]=fmod_kommt;
-		list[2]=fmod_geht;
-	}
+		result << fmNone;
 
-	*m=list;
-	return num;
+	result << fmLocal << fmComing << fmLeaving;
+
+	return result;
 }
 
-int list_sfz_modus (flug_modus **m, bool include_invalid)
-	/*
-	 * See top of file.
-	 */
+QList<FlightMode> listTowFlightModes (bool include_invalid)
 {
-	flug_modus *list=NULL;
-	int num=0;
+	QList<FlightMode> result;
 
 	if (include_invalid)
-	{
-		num=3;
-		list=new flug_modus[num];
-		list[0]=fmod_kein;
-		list[1]=fmod_lokal;
-		list[2]=fmod_geht;
-	}
-	else
-	{
-		num=2;
-		list=new flug_modus[num];
-		list[0]=fmod_lokal;
-		list[1]=fmod_geht;
-	}
+		result << fmNone;
 
-	*m=list;
-	return num;
+	result << fmLocal << fmLeaving;
+
+	return result;
 }
 
-QString modus_string (flug_modus modus, lengthSpecification lenspec)
-	/*
-	 * See top of file.
-	 */
+QString flightModeText (FlightMode modus, lengthSpecification lenspec)
 {
+	// The text is the same for all length specifications. Use a switch
+	// statement anyway to enable compiler warnings in case another length
+	// specification is added.
 	switch (lenspec)
 	{
-		case lsShort: case lsTable: case lsPrintout: case lsPilotLog:
-		{
+		case lsShort: case lsTable: case lsPrintout: case lsPilotLog: case lsLong: case lsCsv: case lsWithShortcut:
 			switch (modus)
 			{
-				case fmod_kein: return "-"; break;
-				case fmod_lokal: return "Lokal"; break;
-				case fmod_kommt: return "Kommt"; break;
-				case fmod_geht: return "Geht"; break;
-				default: return "?"; break;
+				case fmNone:    return "-";
+				case fmLocal:   return "Lokal";
+				case fmComing:  return "Kommt";
+				case fmLeaving: return "Geht";
 			}
-		} break;
-		case lsLong: case lsCsv:
-		{
-			switch (modus)
-			{
-				case fmod_kein: return "---"; break;
-				case fmod_lokal: return "Lokal"; break;
-				case fmod_kommt: return "Kommt"; break;
-				case fmod_geht: return "Geht"; break;
-				default: return "???"; break;
-			}
-		} break;
-		case lsWithShortcut:
-		{
-			switch (modus)
-			{
-				case fmod_kein: return "---"; break;
-				case fmod_lokal: return "Lokal"; break;
-				case fmod_kommt: return "Kommt"; break;
-				case fmod_geht: return "Geht"; break;
-				default: return "???"; break;
-			}
-		} break;
-		default:
-		{
-			log_error ("Unbehandelte L�ngenangabe in modus_string ()");
-			switch (modus)
-			{
-				case fmod_kein: return "[-]"; break;
-				case fmod_lokal: return "[Lokal]"; break;
-				case fmod_kommt: return "[Kommt]"; break;
-				case fmod_geht: return "[Geht]"; break;
-				default: return "[?]"; break;
-			}
-		} break;
 	}
 
-	return ("!!!");
+	// We must have returned by now - the compiler should catch unhandled
+	// values.
+	assert (false);
 }
 
 
 
-bool ist_schulung (flug_typ t)
+bool ist_schulung (FlightType t)
 	/*
 	 * Finds out if a given flight type is training.
 	 * Parameters:
@@ -313,12 +169,12 @@ bool ist_schulung (flug_typ t)
 	 */
 {
 	return (
-		t==ft_schul_2 ||
-		t==ft_schul_1 ||
+		t==ftTraining2 ||
+		t==ftTraining1 ||
 		false);
 }
 
-bool lands_here (flug_modus m)
+bool lands_here (FlightMode m)
 	/*
 	 * Finds out if a flight of a given mode lands here.
 	 * Parameters:
@@ -328,12 +184,12 @@ bool lands_here (flug_modus m)
 	 */
 {
 	return (
-		m==fmod_lokal ||
-		m==fmod_kommt ||
+		m==fmLocal ||
+		m==fmComing ||
 		false);
 }
 
-bool starts_here (flug_modus m)
+bool starts_here (FlightMode m)
 	/*
 	 * Finds out if a flight of a given mode starts here.
 	 * Parameters:
@@ -343,8 +199,8 @@ bool starts_here (flug_modus m)
 	 */
 {
 	return (
-		m==fmod_lokal ||
-		m==fmod_geht ||
+		m==fmLocal ||
+		m==fmLeaving ||
 		false);
 }
 

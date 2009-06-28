@@ -71,7 +71,7 @@ class Flight
 		Time landezeit;
 		Time landezeit_schleppflugzeug;
 		db_id startart;				// ID der Startart
-		flug_typ flugtyp;					// Typ des Flugs
+		FlightType flugtyp;					// Typ des Flugs
 		QString startort;
 		QString zielort;
 		QString zielort_sfz;
@@ -79,8 +79,8 @@ class Flight
 		QString bemerkungen;
 		QString abrechnungshinweis;
 		bool editierbar;
-		flug_modus modus;
-		flug_modus modus_sfz;
+		FlightMode modus;
+		FlightMode modus_sfz;
 		QString pvn, pnn, bvn, bnn, tpvn, tpnn;			// Dumme Sache f�r den Fall, dass nur ein Nachname/Vorname bekannt ist.
 		db_id towplane;
 		bool gestartet, gelandet, sfz_gelandet;

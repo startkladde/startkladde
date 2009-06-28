@@ -124,13 +124,13 @@ extern "C" void flight_to_fields (const string &format, list<ObjectField> &field
 		{
 			switch (f.flugtyp)
 			{
-				case ft_gast_extern: flight_type="�"; break;
-				case ft_gast_privat: flight_type="�"; break;
-				case ft_kein: flight_type=none_text; break;
-				case ft_schlepp: flight_type="-"; break;
-				case ft_schul_1: flight_type="E"; break;
-				case ft_schul_2: flight_type="S"; break;
-				case ft_normal: flight_type="�"; break;
+				case ftGuestExternal: flight_type="�"; break;
+				case ftGuestPrivate: flight_type="�"; break;
+				case ftNone: flight_type=none_text; break;
+				case ftTow: flight_type="-"; break;
+				case ftTraining1: flight_type="E"; break;
+				case ftTraining2: flight_type="S"; break;
+				case ftNormal: flight_type="�"; break;
 			}
 		}
 

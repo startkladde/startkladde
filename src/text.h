@@ -15,8 +15,8 @@ extern const QString whitespace;
 
 bool eintrag_ist_leer (QString eintrag);
 bool check_message (QWidget *, const QString &);
-QString t_pilot_bezeichnung (flug_typ, casus c=cas_nominativ);
-QString t_begleiter_bezeichnung (flug_typ, casus c=cas_nominativ);
+QString t_pilot_bezeichnung (FlightType, casus c=cas_nominativ);
+QString t_begleiter_bezeichnung (FlightType, casus c=cas_nominativ);
 void replace_substring (QString &, const QString&, const QString&);
 void replace_tabs (QString &s);
 QString simplify_club_name (const QString s);

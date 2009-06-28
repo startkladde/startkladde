@@ -2239,7 +2239,7 @@ void flight_to_fields (QList<ObjectField> &fields, const Flight &f, const sk_flu
 		}
 	}
 
-	if (f.flugtyp==ft_gast_privat || f.flugtyp==ft_gast_extern)
+	if (f.flugtyp==ftGuestPrivate || f.flugtyp==ftGuestExternal)
 	{
 		copilot_name="(Gast)";
 		copilot_first_name=none_text;
@@ -2257,7 +2257,7 @@ void flight_to_fields (QList<ObjectField> &fields, const Flight &f, const sk_flu
 	QString landtime_towplane =CONDITIONAL (is_airtow && f.gestartet && lands_here (f.modus_sfz) && f.sfz_gelandet,     f.landezeit_schleppflugzeug.table_string (tz_utc, true, true) );
 	QString duration_towplane =CONDITIONAL (is_airtow && f.gestartet && lands_here (f.modus_sfz) && f.sfz_gelandet,     f.schleppflugdauer ().table_string (tz_timespan)              );
 	QString zielort_towplane  =CONDITIONAL (is_airtow,                                                                  f.zielort_sfz                                                 );
-	QString mode_towplane     =CONDITIONAL (is_airtow,                                                                  modus_string (f.modus_sfz, lsCsv)                            );
+	QString mode_towplane     =CONDITIONAL (is_airtow,                                                                  flightModeText (f.modus_sfz, lsCsv)                            );
 #undef CONDITION
 
 	// Another towplane special: the towplane comment is added if it is not
@@ -2302,8 +2302,8 @@ void flight_to_fields (QList<ObjectField> &fields, const Flight &f, const sk_flu
 		else if (label==field_flight_copilot_first_name)    (*field).set_to (copilot_first_name);
 		else if (label==field_flight_copilot_club)          (*field).set_to (copilot_club);
 		else if (label==field_flight_copilot_club_id)       (*field).set_to (copilot_club_id);
-		else if (label==field_flight_flight_type)           (*field).set_to (flugtyp_string (f.flugtyp, lsCsv));
-		else if (label==field_flight_mode)                  (*field).set_to (modus_string (f.modus, lsCsv));
+		else if (label==field_flight_flight_type)           (*field).set_to (flightTypeText (f.flugtyp, lsCsv));
+		else if (label==field_flight_mode)                  (*field).set_to (flightModeText (f.modus, lsCsv));
 		else if (label==field_flight_registration_towplane) (*field).set_to (towplane_registration);
 		else if (label==field_flight_mode_towplane)         (*field).set_to (mode_towplane);
 		else if (label==field_flight_abrechnungshinweis)    (*field).set_to (f.abrechnungshinweis);

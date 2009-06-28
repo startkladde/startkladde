@@ -6,9 +6,9 @@
 #define ist_true(x) ((x)==true)
 #define ist_false(x) ((x)==false)
 #define ist_egal(x) (true)
-#define ist_lokal(x) ((x)==fmod_lokal)
-#define ist_kommt(x) ((x)==fmod_kommt)
-#define ist_geht(x) ((x)==fmod_geht)
+#define ist_lokal(x) ((x)==fmLocal)
+#define ist_kommt(x) ((x)==fmComing)
+#define ist_geht(x) ((x)==fmLeaving)
 #define farbe(mod, sch, sta, lan, feh, far)	\
 	if (mod(modus) && sch(schlepp) && sta(gestartet) && lan(gelandet) && feh(fehler)) return QColor (far);
 #define fargb(mod, sch, sta, lan, feh, rot, gru, bla)	\
@@ -33,7 +33,7 @@
 #define white 255,255,255
 
 
-QColor flug_farbe (flug_modus modus, bool fehler, bool schlepp, bool gestartet, bool gelandet)
+QColor flug_farbe (FlightMode modus, bool fehler, bool schlepp, bool gestartet, bool gelandet)
 	/*
 	 * Finds out which color to use for a given flight.
 	 * Parameters:

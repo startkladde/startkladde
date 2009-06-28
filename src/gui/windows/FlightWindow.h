@@ -163,16 +163,16 @@ class FlightWindow:public SkDialog
 		int unknown_startart_index;
 		db_id original_startart;
 
-		flug_modus *modi;
-		flug_modus *sfz_modi;
+		QList <FlightMode> modi;
+		QList <FlightMode> sfz_modi;
 		int num_modi;
 		int num_sfz_modi;
-		int modus_index (flug_modus m);
-		int sfz_modus_index (flug_modus m);
+		int modus_index (FlightMode m);
+		int sfz_modus_index (FlightMode m);
 
-		flug_typ *flugtypen;
+		QList<FlightType> flightTypes;
 		int num_flugtypen;
-		int flugtyp_index (flug_typ t);
+		int flugtyp_index (FlightType t);
 
 
 		void flug_eintragen (Flight *, bool);

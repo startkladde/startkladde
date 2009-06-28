@@ -106,7 +106,7 @@ bool makePlaneLogEntry (PlaneLogEntry *bb_entry, Database *db, QPtrList<Flight> 
 		bb_entry->zeit_start=flights.first ()->startzeit;
 		bb_entry->zeit_landung=flights.last ()->landezeit;
 
-		if (flights.first ()->flugtyp==ft_schlepp)
+		if (flights.first ()->flugtyp==ftTow)
 		{
 			if (!bb_entry->bemerkungen.isEmpty ()) bb_entry->bemerkungen="; "+bb_entry->bemerkungen;
 			if (flights.count ()<=1)
@@ -241,7 +241,7 @@ void makePlaneLogDay (QPtrList<PlaneLogEntry> &planeLog, Database *db, QDate dat
 				(*flight)->get_towflight (towflight, towplane_id, self_start_id);
 
 				// Do some very special processing
-				if (towflight->modus==fmod_geht) towflight->landezeit.set_null ();
+				if (towflight->modus==fmLeaving) towflight->landezeit.set_null ();
 				flights.append (towflight);
 			}
 		}

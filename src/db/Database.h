@@ -489,11 +489,11 @@ class Database:public QObject
 		int copy_object (db_object_type type, void *target, void *source);
 
 		// Enumeration type conversion
-		static QString flugtyp_to_db(flug_typ t);
-		static QString modus_to_db(flug_modus m);
+		static QString flugtyp_to_db(FlightType t);
+		static QString modus_to_db(FlightMode m);
 		static QString category_to_db(Plane::Category m);
-		static flug_typ db_to_flugtyp (char *in);
-		static flug_modus db_to_modus (char *in);
+		static FlightType db_to_flugtyp (char *in);
+		static FlightMode db_to_modus (char *in);
 		static Plane::Category db_to_category (char *in);
 
 		// Bitmask type conversion

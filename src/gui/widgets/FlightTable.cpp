@@ -293,7 +293,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	bool editierbar=f->editierbar;
 
 	// Modus
-	flug_modus eff_modus=set_schlepp?f->modus_sfz:f->modus;
+	FlightMode eff_modus=set_schlepp?f->modus_sfz:f->modus;
 	bool eff_starts_here=starts_here (eff_modus);
 	bool eff_lands_here=lands_here (eff_modus);
 
@@ -338,9 +338,9 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	QString landebutton_text="!";
 
 	if (
-			eff_modus==fmod_lokal && !set_schlepp	||
-			eff_modus==fmod_lokal && set_schlepp	||
-			eff_modus==fmod_geht && set_schlepp)
+			eff_modus==fmLocal && !set_schlepp	||
+			eff_modus==fmLocal && set_schlepp	||
+			eff_modus==fmLeaving && set_schlepp)
 	{
 		/*
 		 * SL:	Start		Landung		Dauer
@@ -357,7 +357,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 		landebutton_text=(set_schlepp && !eff_lands_here)?"Ende":"Landen";
 	}
 	else if (
-			eff_modus==fmod_kommt && set_schlepp)
+			eff_modus==fmComing && set_schlepp)
 	{
 		// Programmfehler: kommende Schlepps werden nicht geschrieben
 		start_zelle=zt_program_error;
@@ -365,7 +365,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 		dauer_zelle=zt_program_error;
 	}
 	else if (
-			eff_modus==fmod_kommt && !set_schlepp)
+			eff_modus==fmComing && !set_schlepp)
 	{
 		/*
 		 * SL:	Start	Landung		Dauer
@@ -380,7 +380,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 		landebutton_text="Landen";
 	}
 	else if (
-			eff_modus==fmod_geht && !set_schlepp)
+			eff_modus==fmLeaving && !set_schlepp)
 	{
 		/*
 		 * SL:	Start		Landung	Dauer
@@ -450,7 +450,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 			else
 				set_cell (row, tbl_idx_landungen, "-", bg);
 			// CONFIGURATION ls_tablle vs. lsShort
-			set_cell (row, tbl_idx_flug_typ, flugtyp_string (ft_schlepp, lsTable), bg);
+			set_cell (row, tbl_idx_flug_typ, flightTypeText (ftTow, lsTable), bg);
 			LaunchType ss; bool ss_ok=(db->get_startart_by_type (&ss, sat_self)==db_ok);
 			set_cell (row, tbl_idx_startart, ss_ok?ss.get_short_description ():"?", bg);
 			set_cell (row, tbl_idx_id_display, "("+QString::number (id)+")", bg);
@@ -472,11 +472,11 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 			pilot_eintrag=pilot.tabelle_name ();
 
 		// TODO hier f->begleiter->bezeichnung () verwenden?
-		if (f->flugtyp==ft_gast_privat)
+		if (f->flugtyp==ftGuestPrivate)
 			begleiter_eintrag="(Gast P)";
-		else if (f->flugtyp==ft_gast_extern)
+		else if (f->flugtyp==ftGuestExternal)
 			begleiter_eintrag="(Gast E)";
-		else if (f->flugtyp==ft_schul_1)
+		else if (f->flugtyp==ftTraining1)
 			begleiter_eintrag="-";
 		else if (id_invalid (f->begleiter))
 			// TODO nicht unbedingt unvollst�ndig, vielleicht auch einfach nicht vorhanden.
@@ -612,7 +612,7 @@ void FlightTable::update_flight (db_id id, Flight *f)
 			if (f->gelandet) {
 				flug_anzeigen = false;
 			}
-			if (f->modus==fmod_geht && f->gestartet)
+			if (f->modus==fmLeaving && f->gestartet)
 				flug_anzeigen=false;
 			// Bei gehenden Schleppfl�gen hat 'gelandet' die Bedeutung 'Schlepp
 			// beendet', ansonsten 'Schleppflugzeug gelandet'
@@ -623,8 +623,8 @@ void FlightTable::update_flight (db_id id, Flight *f)
 		// Wenn geht oder kommt, gem�� Einstellung doch anzeigen
 		if (weggeflogene_gekommene_anzeigen)
 		{
-			if (f->modus==fmod_geht || f->modus==fmod_kommt) flug_anzeigen=true;
-			if (f->modus_sfz==fmod_geht) schlepp_anzeigen=true;
+			if (f->modus==fmLeaving || f->modus==fmComing) flug_anzeigen=true;
+			if (f->modus_sfz==fmLeaving) schlepp_anzeigen=true;
 		}
 
 		// Wenn nicht an Anzeigedatum, nicht anzeigen

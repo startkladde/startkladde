@@ -9,11 +9,11 @@
 /* Switch modus template
 switch (modus)
 {
-	case fmod_lokal:
+	case fmLocal:
 		break;
-	case fmod_geht:
+	case fmLeaving:
 		break;
-	case fmod_kommt:
+	case fmComing:
 		break;
 	default:
 		log_error ("Unbehandelter Flugmodus");
@@ -35,8 +35,8 @@ Flight::Flight ()
 	landungen=invalid_id;
 	pilot=begleiter=towpilot=invalid_id;
 	startart=invalid_id;
-	flugtyp=ft_kein;
-	modus=modus_sfz=fmod_kein;
+	flugtyp=ftNone;
+	modus=modus_sfz=fmNone;
 	gestartet=gelandet=sfz_gelandet=false;
 	editierbar=false;
 	towplane=invalid_id;
@@ -156,18 +156,18 @@ QString Flight::fehler_string (FlightError code) const
 		case ff_keine_id: return "Flug hat keine ID";
 		case ff_kein_flugzeug: return "Kein Flugzeug angegeben";
 		// TODO use person_bezeichnung (flugtyp) (oder wie die hei�t) here
-		case ff_pilot_nur_nachname: return "F�r den "+QString (flugtyp==ft_schul_2?"Flugsch�ler":"Piloten")+" ist nur ein Nachname angegeben";
-		case ff_pilot_nur_vorname: return  "F�r den "+QString (flugtyp==ft_schul_2?"Flugsch�ler":"Piloten")+" ist nur ein Vorname angegeben";
-		case ff_pilot_nicht_identifiziert: return  "Der "+QString (flugtyp==ft_schul_2?"Flugsch�ler":"Pilot")+" ist nicht identifiziert";
-		case ff_begleiter_nur_nachname: return "F�r den "+QString (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben";
-		case ff_begleiter_nur_vorname: return  "F�r den "+QString (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
-		case ff_begleiter_nicht_identifiziert: return  "Der "+QString (flugtyp==ft_schul_2?"Fluglehrer":"Begleiter")+" ist nicht identifiziert";
+		case ff_pilot_nur_nachname: return "F�r den "+QString (flugtyp==ftTraining2?"Flugsch�ler":"Piloten")+" ist nur ein Nachname angegeben";
+		case ff_pilot_nur_vorname: return  "F�r den "+QString (flugtyp==ftTraining2?"Flugsch�ler":"Piloten")+" ist nur ein Vorname angegeben";
+		case ff_pilot_nicht_identifiziert: return  "Der "+QString (flugtyp==ftTraining2?"Flugsch�ler":"Pilot")+" ist nicht identifiziert";
+		case ff_begleiter_nur_nachname: return "F�r den "+QString (flugtyp==ftTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben";
+		case ff_begleiter_nur_vorname: return  "F�r den "+QString (flugtyp==ftTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
+		case ff_begleiter_nicht_identifiziert: return  "Der "+QString (flugtyp==ftTraining2?"Fluglehrer":"Begleiter")+" ist nicht identifiziert";
 		case ff_towpilot_nur_nachname: return "F�r den Schleppiloten ist nur ein Nachname angegeben";
 		case ff_towpilot_nur_vorname: return  "F�r den Schleppiloten ist nur ein Vorname angegeben";
 		case ff_towpilot_nicht_identifiziert: return  "Der Schleppilot ist nicht identifiziert";
-		case ff_kein_pilot: return "Kein "+QString (flugtyp==ft_schul_2 || flugtyp==ft_schul_1?"Flugsch�ler":"Pilot")+" angegeben";
-		case ff_pilot_gleich_begleiter: return QString (flugtyp==ft_schul_2?"Flugsch�ler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
-		case ff_pilot_gleich_towpilot: return QString (flugtyp==ft_schul_2?"Flugsch�ler":"Pilot")+" und Schlepppilot sind identisch";
+		case ff_kein_pilot: return "Kein "+QString (flugtyp==ftTraining2 || flugtyp==ftTraining1?"Flugsch�ler":"Pilot")+" angegeben";
+		case ff_pilot_gleich_begleiter: return QString (flugtyp==ftTraining2?"Flugsch�ler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
+		case ff_pilot_gleich_towpilot: return QString (flugtyp==ftTraining2?"Flugsch�ler":"Pilot")+" und Schlepppilot sind identisch";
 		case ff_schulung_ohne_begleiter: return "Doppelsitzige Schulung ohne Fluglehrer";
 		case ff_begleiter_nicht_erlaubt: return "Begleiter ist nicht erlaubt";
 		case ff_nur_gelandet: return "Flug ist gelandet, aber nicht gestartet";
@@ -242,25 +242,25 @@ FlightError Flight::fehlerchecking (int *index, bool check_flug, bool check_schl
 	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && id_invalid (towpilot) && !tpnn.isEmpty () && tpvn.isEmpty (), ff_towpilot_nur_nachname);
 	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && id_invalid (towpilot) && !tpnn.isEmpty () && !tpvn.isEmpty (), ff_towpilot_nicht_identifiziert);
 	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && towpilot!=0 && pilot==towpilot, ff_pilot_gleich_towpilot)
-	CHECK_FEHLER (FLUG, id_invalid (begleiter) && (flugtyp==ft_schul_2) && bnn.isEmpty () && bvn.isEmpty (), ff_schulung_ohne_begleiter)
+	CHECK_FEHLER (FLUG, id_invalid (begleiter) && (flugtyp==ftTraining2) && bnn.isEmpty () && bvn.isEmpty (), ff_schulung_ohne_begleiter)
 	// TODO einsitzige Schulung mit Begleiter
 	CHECK_FEHLER (FLUG, begleiter!=0 && !begleiter_erlaubt (flugtyp), ff_begleiter_nicht_erlaubt)
 	CHECK_FEHLER (FLUG, starts_here (modus) && lands_here (modus) && gelandet && !gestartet, ff_nur_gelandet)
 	CHECK_FEHLER (FLUG, starts_here (modus) && lands_here (modus) && gestartet && gelandet && startzeit>landezeit, ff_landung_vor_start)
 	CHECK_FEHLER (FLUG, id_invalid (startart) && gestartet && starts_here (modus), ff_keine_startart)
-	CHECK_FEHLER (FLUG, modus==fmod_kein, ff_kein_modus)
-	CHECK_FEHLER (FLUG, flugtyp==ft_kein, ff_kein_flugtyp)
+	CHECK_FEHLER (FLUG, modus==fmNone, ff_kein_modus)
+	CHECK_FEHLER (FLUG, flugtyp==ftNone, ff_kein_flugtyp)
 	CHECK_FEHLER (FLUG, landungen<0, ff_landungen_negativ)
 	CHECK_FEHLER (FLUG, lands_here (modus) && landungen==0 && gelandet, ff_landungen_null)
-	CHECK_FEHLER (FLUG, fz && fz->sitze<=1 && flugtyp==ft_schul_2, ff_doppelsitzige_schulung_in_einsitzer)
+	CHECK_FEHLER (FLUG, fz && fz->sitze<=1 && flugtyp==ftTraining2, ff_doppelsitzige_schulung_in_einsitzer)
 	CHECK_FEHLER (FLUG, (gestartet || !starts_here (modus)) && eintrag_ist_leer (startort), ff_kein_startort)
 	CHECK_FEHLER (FLUG, (gelandet || !lands_here (modus)) && eintrag_ist_leer (zielort), ff_kein_zielort)
 	CHECK_FEHLER (FLUG, (sfz_gelandet || !lands_here (modus_sfz)) && eintrag_ist_leer (zielort_sfz), ff_kein_zielort_sfz)
 	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && landungen>1 && !sa->is_airtow (), ff_segelflugzeug_landungen)
 	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && !gelandet && landungen>0 && !sa->is_airtow (), ff_segelflugzeug_landungen_ohne_landung)
 	CHECK_FEHLER (FLUG, fz && fz->sitze<=1 && begleiter_erlaubt (flugtyp) && begleiter!=0, ff_begleiter_in_einsitzer)
-	CHECK_FEHLER (FLUG, fz && fz->sitze<=1 && flugtyp==ft_gast_privat, ff_gastflug_in_einsitzer)
-	CHECK_FEHLER (FLUG, fz && fz->sitze<=1 && flugtyp==ft_gast_extern, ff_gastflug_in_einsitzer)
+	CHECK_FEHLER (FLUG, fz && fz->sitze<=1 && flugtyp==ftGuestPrivate, ff_gastflug_in_einsitzer)
+	CHECK_FEHLER (FLUG, fz && fz->sitze<=1 && flugtyp==ftGuestExternal, ff_gastflug_in_einsitzer)
 	//CHECK_FEHLER (FLUG, fz && fz->category==categoryGlider && startart==sa_ss, ff_segelflugzeug_selbststart)
 	CHECK_FEHLER (FLUG, starts_here (modus) && landungen>0 && !gestartet, ff_landungen_ohne_start)
 	CHECK_FEHLER (FLUG, starts_here (modus)!=lands_here (modus) && startort==zielort, ff_startort_gleich_zielort)
@@ -416,7 +416,7 @@ QString Flight::typ_string (lengthSpecification lenspec) const
 	 *   - the description.
 	 */
 {
-	return flugtyp_string (flugtyp, lenspec);
+	return flightTypeText (flugtyp, lenspec);
 }
 
 
@@ -532,7 +532,7 @@ void Flight::get_towflight (Flight *towflight, db_id towplane_id, db_id sa_id) c
 	towflight->landezeit=landezeit_schleppflugzeug;			// The tow flight landing time is our landezeit_schleppflugzeug.
 	towflight->landezeit_schleppflugzeug=Time (); 		// The tow flight has no tow flight.
 	towflight->startart=sa_id;								// The startart of the tow flight is given as a parameter.
-	towflight->flugtyp=ft_schlepp;
+	towflight->flugtyp=ftTow;
 	towflight->startort=startort;							// The tow flight started the same place as the towed flight.
 	towflight->zielort=zielort_sfz;							// The tow flight landing place is our zielort_sfz.
 	towflight->zielort_sfz="";
@@ -544,7 +544,7 @@ void Flight::get_towflight (Flight *towflight, db_id towplane_id, db_id sa_id) c
 	towflight->abrechnungshinweis="";
 	towflight->editierbar=false;							// The tow flight is not editable on its own.
 	towflight->modus=modus_sfz;
-	towflight->modus_sfz=fmod_kein;
+	towflight->modus_sfz=fmNone;
 	towflight->pvn="";
 	towflight->pnn="";
 	towflight->bvn="";
@@ -561,7 +561,7 @@ bool Flight::collective_bb_entry_possible (Flight *prev, const Plane &plane) con
 {
 	// Only allow if the previous flight and the current flight start and land
 	// at the same place.
-	if (prev->modus!=fmod_lokal || modus!=fmod_lokal) return false;
+	if (prev->modus!=fmLocal || modus!=fmLocal) return false;
 	if (prev->startort!=prev->zielort) return false;
 	if (prev->zielort!=startort) return false;
 	if (startort!=zielort) return false;
@@ -573,7 +573,7 @@ bool Flight::collective_bb_entry_possible (Flight *prev, const Plane &plane) con
 	}
 	else
 	{
-		if (prev->flugtyp==ft_schlepp && flugtyp==ft_schlepp) return true;
+		if (prev->flugtyp==ftTow && flugtyp==ftTow) return true;
 		return false;
 	}
 }

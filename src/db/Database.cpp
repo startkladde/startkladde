@@ -1113,17 +1113,17 @@ QString Database::object_name (db_object_type type, bool plural)
 //	return "-";
 //}
 
-QString Database::flugtyp_to_db (flug_typ t)
+QString Database::flugtyp_to_db (FlightType t)
 {
 	switch (t)
 	{
-		case ft_normal: return "2"; break;
-		case ft_schul_2: return "3"; break;
-		case ft_schul_1: return "4"; break;
-		case ft_gast_privat: return "6"; break;
-		case ft_gast_extern: return "8"; break;
-		case ft_schlepp: return "7"; break;
-		case ft_kein: return "1"; break;
+		case ftNormal: return "2"; break;
+		case ftTraining2: return "3"; break;
+		case ftTraining1: return "4"; break;
+		case ftGuestPrivate: return "6"; break;
+		case ftGuestExternal: return "8"; break;
+		case ftTow: return "7"; break;
+		case ftNone: return "1"; break;
 		default:
 			log_error ("Unbekannter Flugtyp in sk_db::flugtyp_to_db ()");
 			return "-";
@@ -1133,14 +1133,14 @@ QString Database::flugtyp_to_db (flug_typ t)
 	return "-";
 }
 
-QString Database::modus_to_db (flug_modus m)
+QString Database::modus_to_db (FlightMode m)
 {
 	switch (m)
 	{
-		case fmod_lokal: return "l"; break;
-		case fmod_geht: return "g"; break;
-		case fmod_kommt: return "k"; break;
-		case fmod_kein: return "-"; break;
+		case fmLocal: return "l"; break;
+		case fmLeaving: return "g"; break;
+		case fmComing: return "k"; break;
+		case fmNone: return "-"; break;
 		default:
 			log_error ("Unbekannter Flugmodus in modus_to_db ()");
 			return "-";
@@ -1169,38 +1169,38 @@ QString Database::category_to_db (Plane::Category g)
 	return "-";
 }
 
-flug_typ Database::db_to_flugtyp (char *in)
+FlightType Database::db_to_flugtyp (char *in)
 {
 	switch (in[0])
 	{
-		case '1': return ft_kein;
-		case '2': return ft_normal;
-		case '3': return ft_schul_2;
-		case '4': return ft_schul_1;
-		case '5': std::cerr << "In der Datenbank steht ein Kunstflug" << std::endl; return ft_normal;
-		case '6': return ft_gast_privat;
-		case '8': return ft_gast_extern;
-		case '7': return ft_schlepp;
+		case '1': return ftNone;
+		case '2': return ftNormal;
+		case '3': return ftTraining2;
+		case '4': return ftTraining1;
+		case '5': std::cerr << "In der Datenbank steht ein Kunstflug" << std::endl; return ftNormal;
+		case '6': return ftGuestPrivate;
+		case '8': return ftGuestExternal;
+		case '7': return ftTow;
 		default:
 			std::cerr << "Unknown Flight type " << in[0] << " in db_to_flugtyp ()" << std::endl;
-			return ft_kein;
+			return ftNone;
 	}
 }
 
-flug_modus Database::db_to_modus (char *in)
+FlightMode Database::db_to_modus (char *in)
 {
 	switch (in[0])
 	{
-		case 'l': return fmod_lokal; break;
-		case 'k': return fmod_kommt; break;
-		case 'g': return fmod_geht; break;
+		case 'l': return fmLocal; break;
+		case 'k': return fmComing; break;
+		case 'g': return fmLeaving; break;
 		default:
 			std::cerr << "Unknown flight mode '" << in << "' in db_to_modus ()" << std::endl;
-			return fmod_kein;
+			return fmNone;
 			break;
 	}
 
-	return fmod_kein;
+	return fmNone;
 }
 
 Plane::Category Database::db_to_category (char *in)
@@ -1482,9 +1482,9 @@ QString Database::make_condition (Condition c)
 #define _flight_person START EQUALS (pilot, param_id) OR EQUALS (begleiter, param_id) END
 #define _flight_plane EQUALS (flugzeug, param_id)
 #define _flight_plane_or_towplane START EQUALS (flugzeug, param_id) OR EQUALS (towplane, param_id) END
-#define _flight_mode_local EQUALS (modus, modus_to_db (fmod_lokal))
-#define _flight_mode_coming EQUALS (modus, modus_to_db (fmod_kommt))
-#define _flight_mode_going EQUALS (modus, modus_to_db (fmod_geht))
+#define _flight_mode_local EQUALS (modus, modus_to_db (fmLocal))
+#define _flight_mode_coming EQUALS (modus, modus_to_db (fmComing))
+#define _flight_mode_going EQUALS (modus, modus_to_db (fmLeaving))
 #define _flight_starts_here START _flight_mode_local OR _flight_mode_going END
 #define _flight_started START "status & "+QString::number (STATUS_GESTARTET) END
 #define _flight_landed START "status & "+QString::number (STATUS_GELANDET) END

@@ -51,7 +51,7 @@ void makePilotLogPerson (QPtrList<PilotLogEntry> &fb, Database *db, QDate date, 
 		bool person_match=false;
 		if ((*flight)->pilot==person->id) person_match=true;
 		else if (fim==PilotLogEntry::fim_loose && (*flight)->begleiter==person->id) person_match=true;
-		else if (fim==PilotLogEntry::fim_strict && (*flight)->begleiter==person->id && (*flight)->flugtyp==ft_schul_2) person_match=true;
+		else if (fim==PilotLogEntry::fim_strict && (*flight)->begleiter==person->id && (*flight)->flugtyp==ftTraining2) person_match=true;
 
 		// Second condition: date matches.
 		// This means that, if the date is given, it must match the flight's

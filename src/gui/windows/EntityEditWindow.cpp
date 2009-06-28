@@ -190,7 +190,7 @@ void EntityEditWindow::populate_lists ()
 			categories=Plane::listCategories (false);
 
 			for (int i=0; i<categories.size(); ++i)
-				edit_category->insertItem (Plane::categoryString (categories[i], lsWithShortcut), i);
+				edit_category->insertItem (Plane::categoryText (categories[i], lsWithShortcut), i);
 
 			edit_category->setCurrentItem (category_index (Plane::categoryOther));
 		} break;

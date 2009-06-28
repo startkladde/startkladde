@@ -38,7 +38,7 @@ bool check_message (QWidget *parent, const QString &msg)
 	return (ret==QDialog::Accepted);
 }
 
-QString t_pilot_bezeichnung (flug_typ flugtyp, casus c)
+QString t_pilot_bezeichnung (FlightType flugtyp, casus c)
 	/*
 	 * Creates a description of the pilot's function (pilot, flight instructor...).
 	 * Parameters:
@@ -51,12 +51,12 @@ QString t_pilot_bezeichnung (flug_typ flugtyp, casus c)
 	// TODO diese hier in data_types.cpp
 	switch (flugtyp)
 	{
-		case ft_schul_2: return c==cas_genitiv   ? QString::fromUtf8 ("Flugschülers") : QString::fromUtf8 ("Flugschüler");
+		case ftTraining2: return c==cas_genitiv   ? QString::fromUtf8 ("Flugschülers") : QString::fromUtf8 ("Flugschüler");
 		default:         return c==cas_nominativ ? QString::fromUtf8 ("Pilot")        : QString::fromUtf8 ("Piloten");
 	}
 }
 
-QString t_begleiter_bezeichnung (flug_typ flugtyp, casus c)
+QString t_begleiter_bezeichnung (FlightType flugtyp, casus c)
 	/*
 	 * Creates a description of the copilot's function (pilot, flight instructor...).
 	 * Parameters:
@@ -68,8 +68,8 @@ QString t_begleiter_bezeichnung (flug_typ flugtyp, casus c)
 {
 	switch (flugtyp)
 	{
-		case ft_schul_2:                          return c==cas_genitiv ? "Fluglehrers": "Fluglehrer";
-		case ft_gast_privat: case ft_gast_extern: return c==cas_genitiv ? "Gasts"      : "Gast";
+		case ftTraining2:                          return c==cas_genitiv ? "Fluglehrers": "Fluglehrer";
+		case ftGuestPrivate: case ftGuestExternal: return c==cas_genitiv ? "Gasts"      : "Gast";
 		default:                                  return c==cas_genitiv ? "Begleiters" : "Begleiter";
 	}
 }

@@ -72,7 +72,6 @@ FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bo
 {
 	flight=NULL;
 
-	modi=NULL; num_modi=0;
 	mode=fe_none;
 	flight=NULL;
 	selected_plane=NULL;
@@ -372,14 +371,8 @@ FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bo
 }
 
 FlightWindow::~FlightWindow ()
-	/*
-	 * Destructor, delete local heap variables.
-	 */
 {
 	// Widgets are deleted by the QT library.
-
-	if (flugtypen) delete[] flugtypen;
-	num_flugtypen=0;
 }
 
 void FlightWindow::reset ()
@@ -401,7 +394,7 @@ void FlightWindow::reset ()
 	edit_registration->setCurrentText (registration_prefix);
 	edit_registration->cursor_to_end ();
 	edit_flugzeug_typ->setText ("");
-	edit_flug_typ->setCurrentItem (flugtyp_index (ft_normal));
+	edit_flug_typ->setCurrentItem (flugtyp_index (ftNormal));
 	edit_pilot_vn->use_full (true);
 	edit_pilot_vn->setCurrentText ("");
 	edit_pilot_nn->use_full (true);
@@ -420,8 +413,8 @@ void FlightWindow::reset ()
 	edit_registration_sfz->setCurrentText (registration_prefix);
 	edit_registration_sfz->cursor_to_end ();
 	edit_typ_sfz->setText ("");
-	edit_modus->setCurrentItem (modus_index (fmod_lokal));
-	edit_modus_sfz->setCurrentItem (sfz_modus_index (fmod_lokal));
+	edit_modus->setCurrentItem (modus_index (fmLocal));
+	edit_modus_sfz->setCurrentItem (sfz_modus_index (fmLocal));
 	edit_startzeit->reset ();
 	edit_landezeit->reset ();
 	edit_landezeit_sfz->reset ();
@@ -562,7 +555,7 @@ void FlightWindow::setup_controls (bool init, bool read_only, bool repeat)
 		edit_widget[i]->setEnabled (!read_only);
 	edit_fehler->setEnabled (true);
 
-	flug_modus fmod=modi[edit_modus->currentItem ()];
+	FlightMode fmod=modi[edit_modus->currentItem ()];
 	bool sz_auto=edit_startzeit->checked ();
 	bool lz_auto=edit_landezeit->checked ();
 
@@ -580,13 +573,13 @@ void FlightWindow::setup_controls (bool init, bool read_only, bool repeat)
 		{
 			switch (fmod)
 			{
-				case fmod_lokal:
+				case fmLocal:
 					set_buttons (sz_auto, text_starten);
 					break;
-				case fmod_kommt:
+				case fmComing:
 					set_buttons (lz_auto, text_landen);
 					break;
-				case fmod_geht:
+				case fmLeaving:
 					set_buttons (sz_auto, text_starten);
 					break;
 				default:
@@ -665,31 +658,26 @@ void FlightWindow::populate_lists ()
 	// Flugmodi eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
 	edit_modus->clear ();
-	num_modi=list_modus (&modi, false);
-	for (int i=0; i<num_modi; i++)
-	{
-		edit_modus->insertItem (modus_string (modi[i], lsWithShortcut), i);
-	}
+	modi=listFlightModes (false);
+	for (int i=0; i<modi.size (); i++)
+		edit_modus->insertItem (flightModeText (modi[i], lsWithShortcut), i);
 
 
 	// Flugmodi Schleppflugzeug eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
 	edit_modus_sfz->clear ();
-	num_sfz_modi=list_sfz_modus (&sfz_modi, false);
-	for (int i=0; i<num_sfz_modi; i++)
-	{
-		edit_modus_sfz->insertItem (modus_string (sfz_modi[i], lsWithShortcut), i);
-	}
+	sfz_modi=listTowFlightModes (false);
+	for (int i=0; i<sfz_modi.size(); i++)
+		edit_modus_sfz->insertItem (flightModeText (sfz_modi[i], lsWithShortcut), i);
 
 
 	// Flugtypen eintragen
 	// TODO fillstringarraydelete, clear () wegmachen
 	edit_flug_typ->clear ();
-	num_flugtypen=list_flugtyp (&flugtypen, false);
+	flightTypes=listFlightTypes (false);
+
 	for (int i=0; i<num_flugtypen; i++)
-	{
-		edit_flug_typ->insertItem (flugtyp_string (flugtypen[i], lsWithShortcut), i);
-	}
+		edit_flug_typ->insertItem (flightTypeText (flightTypes[i], lsWithShortcut), i);
 
 }
 
@@ -943,7 +931,7 @@ void FlightWindow::slot_ok ()
 
 	if (accept_flight_data ())
 	{
-		flug_modus m=modi[edit_modus->currentItem ()];
+		FlightMode m=modi[edit_modus->currentItem ()];
 
 		// TODO waaaah diese Bedingung ist doch garantiert nicht vollst�ndig.
 		// Au�erdem Codeduplikation mit dem Code, der die buttons zwischen
@@ -957,10 +945,10 @@ void FlightWindow::slot_ok ()
 			{
 				// PFUSCH: Das hier sollte in accept_flight_data, oder zumindest
 				// die Entscheidung, ob jetzt gestartet/gelandet wird.
-				case fmod_lokal: case fmod_geht:
+				case fmLocal: case fmLeaving:
 					if (edit_startzeit->checked ()) flight->starten ();
 					break;
-				case fmod_kommt:
+				case fmComing:
 					if (edit_landezeit->checked ()) flight->landen ();
 					break;
 				default:
@@ -1115,7 +1103,7 @@ void FlightWindow::slot_flugtyp (int ind)
 	 */
 {
 	if (lock_edit_slots) return;
-	flug_typ typ=flugtypen[ind];
+	FlightType typ=flightTypes[ind];
 
 	int pilot_idx=widget_index (edit_pilot_nn);
 	int begleiter_idx=widget_index (edit_begleiter_nn);
@@ -1138,18 +1126,18 @@ void FlightWindow::slot_flugtyp (int ind)
 
 	switch (typ)
 	{
-		case ft_normal:
+		case ftNormal:
 			break;
-		case ft_schul_1:
+		case ftTraining1:
 			label[pilot_idx]->setText ("Flugsch�ler");
 			break;
-		case ft_schul_2:
+		case ftTraining2:
 			label[pilot_idx]->setText ("Flugsch�ler");
 			label[begleiter_idx]->setText ("Fluglehrer");
 			break;
-		case ft_gast_privat: case ft_gast_extern:
+		case ftGuestPrivate: case ftGuestExternal:
 			break;
-		case ft_schlepp:
+		case ftTow:
 			log_error ("Schleppflug darf nicht ausw�hlbar sein in sk_win_flight::slot_flugtyp ()");
 			break;
 		default:
@@ -1287,7 +1275,7 @@ void FlightWindow::slot_modus (int ind)
 	 */
 {
 	if (lock_edit_slots) return;
-	flug_modus m=modi[ind];
+	FlightMode m=modi[ind];
 
 	// TODO: Besser: Wenn noch nicht manuell editiert.
 	if (mode==fe_create)
@@ -1455,7 +1443,7 @@ void FlightWindow::slot_modus_sfz (int ind)
 	 */
 {
 	if (lock_edit_slots) return;
-	flug_modus m=sfz_modi[ind];
+	FlightMode m=sfz_modi[ind];
 
 	// Landezeit Schleppflugzeug Text
 	// TODO Codeduplikation Text ==> in setup_controls
@@ -1747,7 +1735,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		sa_id=startarten[edit_startart->currentItem ()];
 	}
 
-	flug_typ typ=flugtypen[edit_flug_typ->currentItem ()];
+	FlightType typ=flightTypes[edit_flug_typ->currentItem ()];
 	Plane fz, sfz;
 	// TODO error handling
 	LaunchType sa;
@@ -1762,8 +1750,8 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 	bool gelandet=edit_landezeit->time_enabled ();
 	bool sfz_gelandet=edit_landezeit_sfz->time_enabled ();
 
-	flug_modus modus=modi[edit_modus->currentItem ()];
-	flug_modus modus_sfz=sfz_modi[edit_modus_sfz->currentItem ()];
+	FlightMode modus=modi[edit_modus->currentItem ()];
+	FlightMode modus_sfz=sfz_modi[edit_modus_sfz->currentItem ()];
 
 	*error_control=NULL;
 
@@ -1841,7 +1829,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		if (ret==0)
 		{
 			// Ja, Gastflug
-			typ=ft_gast_extern;
+			typ=ftGuestExternal;
 			edit_flug_typ->setCurrentItem (flugtyp_index (typ));
 			if (begleiter_id) *begleiter_id=invalid_id;
 		}
@@ -1924,7 +1912,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 	if (flugzeug_id && *flugzeug_id>0)
 	{
 		// Gastflug in einsitzigem Flugzeug
-		if (fz.sitze==1 && (typ==ft_gast_privat||typ==ft_gast_extern))
+		if (fz.sitze==1 && (typ==ftGuestPrivate||typ==ftGuestExternal))
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") einsitzig.\n"
 				"In einem Einsitzer kann man keinen Gastflug machen.\n";
@@ -1933,7 +1921,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		}
 
 		// Doppelsitzige Schulung in einsitzigem Flugzeug
-		if (fz.sitze==1 && typ==ft_schul_2)
+		if (fz.sitze==1 && typ==ftTraining2)
 		{
 			msg="Laut Datenbank ist das Flugzeug \""+fz.registration+"\" ("+fz.typ+") einsitzig.\n"
 					"Es wurde jedoch doppelsitzige Schulung angegeben.\n";
@@ -1999,7 +1987,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		// Verein des Flugsch�lers gibt, doch wieder auf den Verein des
 		// Flugzeugs schauen. Das merkt man allerdings erst in check_person,
 		// daher m�ssen da beide Vereine reingegeben werden.
-		if (typ==ft_schul_2 && pilot_id && !id_invalid (*pilot_id))
+		if (typ==ftTraining2 && pilot_id && !id_invalid (*pilot_id))
 		{
 			// Double seated training. The flight instructor is preselected
 			// according to the flight student, if present.
@@ -2048,7 +2036,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 	}
 
 	// Kein Lehrer bei doppelsitziger Schulung
-	if (typ==ft_schul_2 && begleiter_id && id_invalid (*begleiter_id) && !kein_begleiter_akzeptiert)
+	if (typ==ftTraining2 && begleiter_id && id_invalid (*begleiter_id) && !kein_begleiter_akzeptiert)
 	{
 		msg="Dieser Flug soll eine doppelsitzige Schulung sein.\nEs wurde jedoch kein Lehrer angegeben.\n";
 		if (error_control) *error_control=edit_begleiter_nn;
@@ -2587,9 +2575,9 @@ bool FlightWindow::accept_flight_data (bool spaeter)
 
 	if (check_flight (&flugzeug_id, &sfz_id, &pilot_id, &begleiter_id, &towpilot_id, spaeter, &error_control))
 	{
-		flug_modus m=modi[edit_modus->currentItem ()];
-		flug_modus m_sfz=sfz_modi[edit_modus_sfz->currentItem ()];
-		flug_typ typ=flugtypen[edit_flug_typ->currentItem ()];
+		FlightMode m=modi[edit_modus->currentItem ()];
+		FlightMode m_sfz=sfz_modi[edit_modus_sfz->currentItem ()];
+		FlightType typ=flightTypes[edit_flug_typ->currentItem ()];
 
 		flight->flugzeug=flugzeug_id;
 		flight->flugtyp=typ;
@@ -2741,7 +2729,7 @@ void FlightWindow::flug_eintragen (Flight *f, bool repeat)
 	{
 		edit_zielort_sfz->setCurrentText (f->zielort_sfz);
 		int mi=sfz_modus_index (f->modus_sfz);
-		if (mi<0) mi=modus_index (fmod_lokal);
+		if (mi<0) mi=modus_index (fmLocal);
 		edit_modus_sfz->setCurrentItem (mi);
 
 		edit_landungen->setText (f->landungen>0?QString::number(f->landungen):"");
@@ -2855,14 +2843,14 @@ void FlightWindow::flug_eintragen (Flight *f, bool repeat)
 	}
 
 	int mi=modus_index (f->modus);
-	if (mi<0) mi=modus_index (fmod_lokal);
+	if (mi<0) mi=modus_index (fmLocal);
 	// BUG: Der folgende Befehl �berschreibe selected_plane
 	edit_modus->setCurrentItem (mi);
 
 	if (!repeat)
 	{
 		int m_sfz_i=sfz_modus_index (f->modus_sfz);
-		if (m_sfz_i<0) m_sfz_i=sfz_modus_index (fmod_lokal);
+		if (m_sfz_i<0) m_sfz_i=sfz_modus_index (fmLocal);
 		edit_modus_sfz->setCurrentItem (m_sfz_i);
 	}
 
@@ -3061,7 +3049,7 @@ int FlightWindow::startart_index (db_id sa)
 	}
 }
 
-int FlightWindow::modus_index (flug_modus sa)
+int FlightWindow::modus_index (FlightMode sa)
 	/*
 	 * For a given flight mode, finds its index in the flight mode array.
 	 * Needed for setting the flight mode editor widget to a given value.
@@ -3080,7 +3068,7 @@ int FlightWindow::modus_index (flug_modus sa)
 	return -1;
 }
 
-int FlightWindow::sfz_modus_index (flug_modus sa)
+int FlightWindow::sfz_modus_index (FlightMode sa)
 	/*
 	 * For a given towflight mode, finds its index in the towflight mode array.
 	 * Needed for setting the towflight mode editor widget to a given value.
@@ -3099,7 +3087,7 @@ int FlightWindow::sfz_modus_index (flug_modus sa)
 	return -1;
 }
 
-int FlightWindow::flugtyp_index (flug_typ t)
+int FlightWindow::flugtyp_index (FlightType t)
 	/*
 	 * For a given flight type, finds its index in the flight type array.
 	 * Needed for setting the flight type editor widget to a given value.
@@ -3111,9 +3099,8 @@ int FlightWindow::flugtyp_index (flug_typ t)
 	 */
 {
 	for (int i=0; i<num_flugtypen; i++)
-	{
-		if (flugtypen[i]==t) return i;
-	}
+		if (flightTypes[i]==t) return i;
+
 	log_error ("Flugtyp nicht gefunden in flugtyp_index ()");
 	return -1;
 }

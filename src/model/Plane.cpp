@@ -114,7 +114,7 @@ void Plane::output (std::ostream &stream, output_format_t format)
 	Entity::output (stream, format, false, "Wettbewerbskennzeichen", wettbewerbskennzeichen);
 	Entity::output (stream, format, false, "Sitze", sitze);
 	Entity::output (stream, format, false, "Verein", club);
-	Entity::output (stream, format, true, "Gattung", categoryString (category, lsLong));
+	Entity::output (stream, format, true, "Gattung", categoryText (category, lsLong));
 }
 
 
@@ -130,7 +130,7 @@ QList<Plane::Category> Plane::listCategories (bool includeInvalid)
 	return result;
 }
 
-QString Plane::categoryString (Plane::Category category, lengthSpecification lenspec)
+QString Plane::categoryText (Plane::Category category, lengthSpecification lenspec)
 {
 	switch (lenspec)
 	{
