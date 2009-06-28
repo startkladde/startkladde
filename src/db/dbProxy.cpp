@@ -48,7 +48,7 @@ int schleppflugzeug_aus_startart (Database *db, Plane *fz, int sa_num)
 	QString registration=sa.get_towplane ();
 	if (registration.isEmpty ()) return db_err_parameter_error;
 
-	// TODO Fehler pr�fen.
+	// TODO Fehler prüfen.
 	QList<Plane *> planes;
 	db->list_planes_registration (planes, registration);
 

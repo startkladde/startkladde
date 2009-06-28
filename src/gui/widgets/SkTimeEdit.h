@@ -35,7 +35,7 @@ class SkTimeEdit:public QFrame
 		void set_cbox_text (const QString &);
 		void set_checked (bool);
 		bool checked ();
-		// TODO diese funktion �fter verwenden statt checked ();
+		// TODO diese funktion öfter verwenden statt checked ();
 		bool time_enabled ();
 
 		// QPushButton properties

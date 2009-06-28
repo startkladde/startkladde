@@ -1,8 +1,8 @@
-Installationsanleitung für startkladde
+Installationsanleitung fÃ¼r startkladde
 Stand: 2005-02-05
 Martin Herrmann
 
-Überblick:
+Ã¼berblick:
  -1. Notation
   0. Voraussetzungen
   1. Datenbankserver installieren
@@ -16,13 +16,13 @@ Martin Herrmann
 -1. Notation
 ============
 
-Befehle, die in der shell auszuführen sind, sind mit einem vorangestellten #
+Befehle, die in der shell auszufÃ¼hren sind, sind mit einem vorangestellten #
 gekennzeichnet. MySQL-Befehle sind mit einem vorangestellten > gekennzeichnet.
 
 0. Voraussetzungen
 ==================
 
-Benötigte Software:
+BenÃ¶tigte Software:
   - MySQL
 	Eine Version ab 4.1 ist zwingend erforderlich. Die Versionen 4.1.0 und 4.1.1
 	sind auf Grund von Fehlern im Zusammenhang mit der Interpretation von
@@ -30,19 +30,19 @@ Benötigte Software:
 	Version ab 4.1.5.
   - QT
   	Seit Version 1.3 ist Qt Version 4 erforderlich.
-  - Webserver (für die Webschnittstelle)
-	Für die Web-Schnittstelle wird ein Webserver benötigt. Empfohlen wird
+  - Webserver (fÃ¼r die Webschnittstelle)
+	FÃ¼r die Web-Schnittstelle wird ein Webserver benÃ¶tigt. Empfohlen wird
 	Apache ab Version 1.3.
-  - LaTeX (für die Webschnittstelle)
-	Für die Erzeugung von PDF-Dateien werdem die Programme LaTeX, dvips und
-	ps2pdf benötigt. Die Programme müssen im Suchpfad liegen. Das Paket
-	koma-script wird benötigt. Es ist in praktisch allen LaTeX-Distributionen
+  - LaTeX (fÃ¼r die Webschnittstelle)
+	FÃ¼r die Erzeugung von PDF-Dateien werdem die Programme LaTeX, dvips und
+	ps2pdf benÃ¶tigt. Die Programme mÃ¼ssen im Suchpfad liegen. Das Paket
+	koma-script wird benÃ¶tigt. Es ist in praktisch allen LaTeX-Distributionen
 	enthalten, muss aber ggf. installiert werden.
-  - libacpi (für die Batteriekontrolle)
+  - libacpi (fÃ¼r die Batteriekontrolle)
 	
 
 Die Versionen, die in Debian ab Version 3.1 "sarge" enthalten sind, sind auf
-jeden Fall aktuell genug. Benötigt wird hier insbesondere tetex-extra, um
+jeden Fall aktuell genug. BenÃ¶tigt wird hier insbesondere tetex-extra, um
 die koma-script-Klassen zu installieren.
 
 
@@ -52,16 +52,16 @@ die koma-script-Klassen zu installieren.
 Als Datenbankserver wird MySQL verwendet. Wenn dieser in einer hinreichend
 aktuellen Version (siehe Abschnitt 0) in der Paketverwaltung der Distribution
 vorhanden ist, ist dies der bevorzugte Weg, ihn zu installieren. Der Rest dieses
-Abschnitts kann dann übersprungen werden.
+Abschnitts kann dann Ã¼bersprungen werden.
 
 Falls die Paketverwaltung nicht verwendet werden kann, muss der Server manuell
 installiert werden. Dazu wird eine aktuelle Version von heruntergeladen (Version
 unter "Linux (x86, glibc-2.2, static, gcc)", Standard-Edition).
 
-Folgende Schritte sind für die Installation notwendig. Sie sind auch in der
+Folgende Schritte sind fÃ¼r die Installation notwendig. Sie sind auch in der
 MySQL beiliegenden Datei INSTALL-BINARY beschrieben.
 
-- Benutzer und Benutzergruppe für den Server anlegen:
+- Benutzer und Benutzergruppe fÃ¼r den Server anlegen:
   # groupadd mysql
   # useradd -g mysql mysql
 
@@ -87,8 +87,8 @@ MySQL beiliegenden Datei INSTALL-BINARY beschrieben.
 - Falls der Server beim Hochfahren automatisch gestartet werden soll, muss diese
   Datei beim Systemstart automatisch aufgerufen werden. Dazu wird ein Symlink im
   entsprechenden Verzeichnis angelegt. Welches Verzeichnis das ist, ist von der
-  Distribution abhängig.
-  Beispiel für Debian: Standard-Runlevel ist 2, das entsprechende Verzeichnis
+  Distribution abhÃ¤ngig.
+  Beispiel fÃ¼r Debian: Standard-Runlevel ist 2, das entsprechende Verzeichnis
   ist /etc/rc2.d:
   # cd /etc/rc2.d
   # ln -s ../init.d/mysql.server S95mysql.server
@@ -98,78 +98,78 @@ MySQL beiliegenden Datei INSTALL-BINARY beschrieben.
 
 1.1 ACPI-Bibliothek installieren
 ================================
-Die Bibliothek muss aus den Quellen installiert werden. Zum Download diese URL öffnen:
+Die Bibliothek muss aus den Quellen installiert werden. Zum Download diese URL Ã¶ffnen:
 http://www.ngolde.de/libacpi.html
-Hier das Archiv libacpi-0.2.tar.gz (oder höhere Versionen) downloaden und z.B. 
+Hier das Archiv libacpi-0.2.tar.gz (oder hÃ¶here Versionen) downloaden und z.B. 
 nach /usr/local/src entpacken. Im entpackten Verzeichnis die Kommandos aufrufen:
 make
 make install
-Wenn keine Batteriekontrolle gewünscht ist, dann müssen im Makefile und in sk_win_main.cpp die betreffenden Einträge entfernt werden.
+Wenn keine Batteriekontrolle gewÃ¼nscht ist, dann mÃ¼ssen im Makefile und in sk_win_main.cpp die betreffenden EintrÃ¤ge entfernt werden.
 
 1.2 Die virtuelle Tastatur installieren
-Das Paket kvkbd mit den Methoden der Distribution installieren. Ebenso wird das Programm dcop benötigt, das zum Umfang von KDE gehört. Sind diese Programme nicht vorhanden, so wird der betreffende Eintrag in der Toolbar nicht angezeigt.
+Das Paket kvkbd mit den Methoden der Distribution installieren. Ebenso wird das Programm dcop benÃ¶tigt, das zum Umfang von KDE gehÃ¶rt. Sind diese Programme nicht vorhanden, so wird der betreffende Eintrag in der Toolbar nicht angezeigt.
 
 
 2. Programm compilieren
 =======================
 
-Die MySQL-Bibliothek und die dazu gehörigen Header müssen istalliert sein. Zur
+Die MySQL-Bibliothek und die dazu gehÃ¶rigen Header mÃ¼ssen istalliert sein. Zur
 Installation des MySQL-Servers (mit Bibliotheken) siehe Abschnitt 1.
-Die QT-Bibliothek und Header müssen ebenfalls installiert sein.
+Die QT-Bibliothek und Header mÃ¼ssen ebenfalls installiert sein.
 Die ACPI-Bibliothek libacpi muss installiert sein
 
-Das Programm wird durch ausführen von "make all" compiliert. Dazu müssen die
+Das Programm wird durch ausfÃ¼hren von "make all" compiliert. Dazu mÃ¼ssen die
 Umgebungsvariablen QTDIR und MYSQLDIR korrekt gesetzt sein. Alternativ kann auch
-die Angabe in der Datei "Makefile" (erster Absatz) geändert werden.
+die Angabe in der Datei "Makefile" (erster Absatz) geÃ¤ndert werden.
 
 Falls die QT- oder MySQL-Bibliothek in abweichenden Verzeichnisstrukturen
-installiert sind, müssen die Variablen QT_LIB_DIR, QT_INCLUDE_DIR, MYSQL_LIB_DIR
+installiert sind, mÃ¼ssen die Variablen QT_LIB_DIR, QT_INCLUDE_DIR, MYSQL_LIB_DIR
 und MYSQL_INCLUDE_DIR gesetzt werden (entweder als Umgebungsvariable oder in
 Makefile, zweiter Absatz).
-Zum suchen: qt.h bzw. mysql.h müssen in dem jeweiligen INCLUDE_DIR vorhanden
+Zum suchen: qt.h bzw. mysql.h mÃ¼ssen in dem jeweiligen INCLUDE_DIR vorhanden
 sein.
 
 Wenn "make" fertig ist, werden folgende Dateien produziert:
-  - startkladde: das Erfassungsprogramm mit grafischer Oberfläche
-  - sk_admin: ein Administrationsprogramm für die Kommandozeile
-  - sk_web: das Programm für das Webinterface
+  - startkladde: das Erfassungsprogramm mit grafischer OberflÃ¤che
+  - sk_admin: ein Administrationsprogramm fÃ¼r die Kommandozeile
+  - sk_web: das Programm fÃ¼r das Webinterface
   (sk_dump wurde durch sk_web ersetzt und wird nicht mehr erzeugt)
 
-Wenn make zu einem ungünstigen Zeitpunkt unterbrochen wird, kann es passieren,
-dass weitere Läufe mit folgender Fehlermeldung abbrechen:
+Wenn make zu einem ungÃ¼nstigen Zeitpunkt unterbrochen wird, kann es passieren,
+dass weitere LÃ¤ufe mit folgender Fehlermeldung abbrechen:
 version.h:5:29: version/version.h: Datei oder Verzeichnis nicht gefunden
-In diesem Fall hilft es, "make version/version.h" auszuführen.
+In diesem Fall hilft es, "make version/version.h" auszufÃ¼hren.
 
 
 3. Datenbankserver einrichten
 =============================
 
-Zuerst sollte ein Passwort für den root-Benutzer des MySQL-Servers vergeben
+Zuerst sollte ein Passwort fÃ¼r den root-Benutzer des MySQL-Servers vergeben
 werden (dieser root-Benutzer hat mit dem Systembenutzer "root" nichts zu tun):
 # mysql -u root mysql
 > update user set password=password ("neues_password") where user="root";
 > flush privileges;
 
-Soll der Benutzer "root" von anderen Rechner aus zugreifen können, dann muss
+Soll der Benutzer "root" von anderen Rechner aus zugreifen kÃ¶nnnen, dann muss
 man dies noch freischalten:
 > update user set host="%" where user="root";
 > flush privileges;
 
 In der Standardinstallation des MySQL-Servers (auch der MySQL-Installation von
-Debian) ist keine Anmeldung möglich. Dies wird folgendermaßen korrigiert:
+Debian) ist keine Anmeldung mÃ¶glich. Dies wird folgendermaÃŸen korrigiert:
 # mysql -u root -p mysql
 > delete from user where user='';
 > flush privileges;
 Nach dem ersten Befehl muss das oben definierte Passwort eingegeben werden.
-Wurde kein Passwort vergeben, lässt man die Option "-p" weg.
+Wurde kein Passwort vergeben, lÃ¤sst man die Option "-p" weg.
 
-Bei Debian sind außerdem nur Verbindungen von localhost erlaubt. Wenn die
+Bei Debian sind auÃŸerdem nur Verbindungen von localhost erlaubt. Wenn die
 Verbindung von einem anderen Rechner stattfinden soll, muss in
 /etc/mysql/my.cnf in der Zeile "bind-address = 127.0.0.1" die Adresse durch
 0.0.0.0 ersetzt werden. Danach den Server mit "/etc/ini.d/mysql restart" neu
 starten.
 
-Bei älteren Debian-Version ist stattdessen der Netzwerkzugriff vollständig
+Bei Ã¤lteren Debian-Version ist stattdessen der Netzwerkzugriff vollstÃ¤ndig
 deaktiviert. Zum Aktivieren muss in /etc/mysql/my.cnf die Zeile mit
 "skip-networking" entfernt werden. Danach den Server mit "/etc/init.d/mysql
 restart" neu starten.
@@ -178,21 +178,21 @@ restart" neu starten.
 4. Programm einrichten
 ======================
 
-Das Programm wird über eine Konfigurationsdatei konfiguriert. Diese wird zuerst
+Das Programm wird Ã¼ber eine Konfigurationsdatei konfiguriert. Diese wird zuerst
 im Homeverzeichnis unter dem Namen .startkladde.conf (mit Punkt am Anfang)
 gesucht. Existiert diese Datei nicht, wird startkladde.conf (ohne Punkt am
 Anfang) aus dem aktuellen Verzeichnis verwendet. Es liegt eine
 Beispielkonfiguration mit diesem Namen bei, die als .startkladde.conf ins
 Homeverzeichnis des Benutzers kopiert werden sollte. Die folgenden Werte sind
 anzupassen:
-  - die Passwörter
+  - die PasswÃ¶rter
   - ggf. der Server
-  - der Ort (Standardwert für Start- und Zielortfelder)
+  - der Ort (Standardwert fÃ¼r Start- und Zielortfelder)
   - die Startarten
-Alle weiteren Felder können geändert werden, um zum Beispiel eine andere
+Alle weiteren Felder kÃ¶nnnen geÃ¤ndert werden, um zum Beispiel eine andere
 Datenbank oder einen anderen Benutzernamen zu verwenden.
 
-Achtung: da die Datei Passwörter enthält, sollte sie nicht für jedermann lesbar
+Achtung: da die Datei PasswÃ¶rter enthÃ¤lt, sollte sie nicht fÃ¼r jedermann lesbar
 sein. Auf einem Mehrbenutzersystem sollten die Zugriffsrechte entsprechend
 restriktiv eingestellt werden.
 
@@ -200,15 +200,15 @@ restriktiv eingestellt werden.
 5. Datenbank initialisieren
 ===========================
 
-Um die Datenbank benutzen zu können, muss ein MySQL-Benutzer vorhanden sein,
-außerdem müssen einige Tabellen existieren. Dies wird vom dem Programm
+Um die Datenbank benutzen zu kÃ¶nnnen, muss ein MySQL-Benutzer vorhanden sein,
+auÃŸerdem mÃ¼ssen einige Tabellen existieren. Dies wird vom dem Programm
 erledigt, eine manuelle Einrichtung ist hier in der Regel nicht erforderlich
-(selbstverständlich kann man alles auch manuell einrichten).
+(selbstverstÃ¤ndlich kann man alles auch manuell einrichten).
 
-Beim Start des Programms werden die Tabellen überprüft und, falls sie nicht
-vorhanden oder nicht vollständig sind, nach dem root-Passwort gefragt, um sie
-anzulegen. Wenn das Programm auf einem anderen Rechner läuft, muss dafür der
-Netzwerkzugriff für root freigeschaltet sein, wie in Abschnitt 3 beschrieben. 
+Beim Start des Programms werden die Tabellen Ã¼berprÃ¼ft und, falls sie nicht
+vorhanden oder nicht vollstÃ¤ndig sind, nach dem root-Passwort gefragt, um sie
+anzulegen. Wenn das Programm auf einem anderen Rechner lÃ¤uft, muss dafÃ¼r der
+Netzwerkzugriff fÃ¼r root freigeschaltet sein, wie in Abschnitt 3 beschrieben. 
 
 Alternativ kann auch das sk_admin-Programm verwendet werden:
 # sk_admin init_db
@@ -218,33 +218,33 @@ Auch hier wird nach dem root-Passwort gefragt.
 6. Webserver einrichten
 =======================
 
-Für den Zugriff auf das Webinterface muss der Webserver entsprechend
-eingerichtet werden. Für den Betrieb des Programms ist dies nicht zwingend
-erforderlich, allerdings für die Auswertung empfehlenswert.
+FÃ¼r den Zugriff auf das Webinterface muss der Webserver entsprechend
+eingerichtet werden. FÃ¼r den Betrieb des Programms ist dies nicht zwingend
+erforderlich, allerdings fÃ¼r die Auswertung empfehlenswert.
 
-Die folgende Anleitung bezieht sich auf Apache, Version 1.3. Außerdem wird in
+Die folgende Anleitung bezieht sich auf Apache, Version 1.3. AuÃŸerdem wird in
 diesem und dem folgenden Abschnitt angenommen, dass das Skript in das
-systemweite Webseiten-Verzeichnis installiert werden soll. Selbstverständlich
-sind hier auch andere Varianten (zum Beispiel suExec) möglich.
+systemweite Webseiten-Verzeichnis installiert werden soll. SelbstverstÃ¤ndlich
+sind hier auch andere Varianten (zum Beispiel suExec) mÃ¶glich.
 Unter Debian ist dieses Verzeichnis /var/www. Falls ein anderes Verzeichnis
 verwendet wird, sind die Optionen entsprechend anzupassen.
 
-Der Server muss so konfiguriert sein, dass er CGI-Skripte ausführt. Hierfür
+Der Server muss so konfiguriert sein, dass er CGI-Skripte ausfÃ¼hrt. HierfÃ¼r
 empfiehlt es sich in der Konfigurationsdatei (/etc/apache/httpd.conf) folgende
-Änderungen vorzunehmen:
+Ã„nderungen vorzunehmen:
   - Dateien mit der Endung .cgi als CGI-Skripte behandeln: "AddHandler
-	cgi-script .cgi" einfügen.
-  - Für das Verzeichnis, wo das Webinterface-Programm liegt, die Ausführung von
+	cgi-script .cgi" einfÃ¼gen.
+  - FÃ¼r das Verzeichnis, wo das Webinterface-Programm liegt, die AusfÃ¼hrung von
 	CGI-Skripten aktivieren. Dazu unter <Directory /var/www/> (falls die
-	Dateien für die Webseite nicht unter /var/www/ gespeichert sind, heißt der
-	Abschnitt entsprechend anders) hinter "Options" "ExecCGI" anfügen.
-Außerdem muss der Server so konfiguriert sein, dass mittels der .htaccess-Datei
-der Zugriff auf Dateien eingeschränkt werden kann (siehe Abschnitt 7). Dazu ist
+	Dateien fÃ¼r die Webseite nicht unter /var/www/ gespeichert sind, heiÃŸt der
+	Abschnitt entsprechend anders) hinter "Options" "ExecCGI" anfÃ¼gen.
+AuÃŸerdem muss der Server so konfiguriert sein, dass mittels der .htaccess-Datei
+der Zugriff auf Dateien eingeschrÃ¤nkt werden kann (siehe Abschnitt 7). Dazu ist
 muss in der Konfigurationsdatei in dem <Directory ...>-Abschnitt hinter
-"AllowOverride" "Limit" aufgeführt sein, also zum Beispiel "AllowOverride
+"AllowOverride" "Limit" aufgefÃ¼hrt sein, also zum Beispiel "AllowOverride
 Limit".
 
-Nach den Änderungen muss der Server seine Konfigurationsdatei neu einlesen:
+Nach den Ã„nderungen muss der Server seine Konfigurationsdatei neu einlesen:
 # /etc/init.d/apache reload
 
 
@@ -254,7 +254,7 @@ Nach den Änderungen muss der Server seine Konfigurationsdatei neu einlesen:
 In dem Webseiten-Verzeichnis (z. B. /var/www) wird ein Unterverzeichnis
 angelegt. 
 Das Verzeichnis "webinterface" wird unter dem Namen "startkladde" in das
-Webseiten-Verzeichnis (z. B. /var/www) kopiert. Außerdem wird das Programm
+Webseiten-Verzeichnis (z. B. /var/www) kopiert. AuÃŸerdem wird das Programm
 sk_web in dieses Verzeichnis kopiert:
 # cp -av webinterface /var/www/startkladde
 # cp -av sk_web /var/www/startkladde/
@@ -262,12 +262,12 @@ sk_web in dieses Verzeichnis kopiert:
 Wichtig ist hierbei, dass auch die (versteckte) Datei "webinterface/.htaccess"
 mitkopiert wird (siehe unten).
 
-Die Konfigurationsdatei, die die korrekten Einstellungen für den Server
-enthält, muss ebenfalls unter dem Namen "startkladde.conf" in dieses
+Die Konfigurationsdatei, die die korrekten Einstellungen fÃ¼r den Server
+enthÃ¤lt, muss ebenfalls unter dem Namen "startkladde.conf" in dieses
 Verzeichnis kopiert werden.
 
-Die Dateien müssen für die Benutzerkennung, unter der der Webserver ausgeführt
-wird, lesbar, die Skripte auch ausführbar sein. Bei debian ist dies der
+Die Dateien mÃ¼ssen fÃ¼r die Benutzerkennung, unter der der Webserver ausgefÃ¼hrt
+wird, lesbar, die Skripte auch ausfÃ¼hrbar sein. Bei debian ist dies der
 Benutzer www-data:
 # chown -R www-data:www-data /var/www/startkladde
 # cd /var/www/startkladde/
@@ -276,22 +276,22 @@ Benutzer www-data:
 
 Wenn der Benutzername nicht www-data ist, muss er in obigem Aufruf entsprechend
 angepasst werden.
-Da die Datei startkladde.conf Passwörter enthält, sollte der Zugriff nicht für
+Da die Datei startkladde.conf PasswÃ¶rter enthÃ¤lt, sollte der Zugriff nicht fÃ¼r
 alle Benutzer des Systems freigegeben werden, sofern es sich um ein
-Mehrbenutzersystem handelt. Ansonsten könnte jeder Benutzer, der sich einloggen
+Mehrbenutzersystem handelt. Ansonsten kÃ¶nnte jeder Benutzer, der sich einloggen
 kann, das Passwort lesen.
 
-Wichtig: die Datei startkladde.conf enthält Passwörter. Daher muss sie vor
-Zugriffen über den Webserver geschützt werden. Dies geschieht durch die Datei
+Wichtig: die Datei startkladde.conf enthÃ¤lt PasswÃ¶rter. Daher muss sie vor
+Zugriffen Ã¼ber den Webserver geschÃ¼tzt werden. Dies geschieht durch die Datei
 .htaccess, die schon vorbereitet ist. Damit dies funktioniert, muss die Datei
 mitkopiert worden sein (siehe oben), der Server muss entsprechend eingestellt
 sein (AllowOverride Limit, siehe Abschnitt 6), und die Datei muss lesbar sein.
-Auf jeden Fall sollte geprüft werden, ob die Datei tatsächlich nicht gelesen
+Auf jeden Fall sollte geprÃ¼ft werden, ob die Datei tatsÃ¤chlich nicht gelesen
 werden kann.
 
 Das Webinterface sollte jetzt unter der URL http://localhost/startkladde/sk.cgi
-erreichbar sein. Wenn der Webserver auch Zugriffe von anderen Rechner zulässt,
-kann der Zugriff auch über das Netzwerk erfolgen. Dazu wird die URL
+erreichbar sein. Wenn der Webserver auch Zugriffe von anderen Rechner zulÃ¤sst,
+kann der Zugriff auch Ã¼ber das Netzwerk erfolgen. Dazu wird die URL
 http://computername/startkladde/ verwendet. computername muss hierbei durch die
 IP-Adresse oder (sofern vorhanden) den Namen des Rechners ersetzt werden.
 

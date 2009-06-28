@@ -114,7 +114,7 @@ class FlightWindow:public SkDialog
 		Flight *flight;
 		Plane *selected_plane;
 		Plane *selected_towplane;
-		int anzahl_pilot, anzahl_begleiter, anzahl_towpilot;	// Kandidaten f�r Pilot/Begleiter/Schleppilot
+		int anzahl_pilot, anzahl_begleiter, anzahl_towpilot;	// Kandidaten für Pilot/Begleiter/Schleppilot
 		db_id original_pilot_id, original_begleiter_id, original_towpilot_id;
 		QObject *status_dialog;
 

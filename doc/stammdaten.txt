@@ -2,100 +2,100 @@ Dokumatation der startkladde-Stammdatenschnittstelle
 Martin Herrmann, 2004-03-12
 
 Die Stammdatenschnittstelle der Startkladde dient zum einfachen Pflegen der
-Stammdaten, die in der Datenbank vorhanden sind. Dies sind primär die
-Personendaten, in einer zukünftigen Version auch die Flugzeugdaten.
-Bei der Datenpflege werden verschiedene Vereine uneingeschränkt und unabhängig
-voneinander unterstützt.
+Stammdaten, die in der Datenbank vorhanden sind. Dies sind primÃ¤r die
+Personendaten, in einer zukÃ¼nftigen Version auch die Flugzeugdaten.
+Bei der Datenpflege werden verschiedene Vereine uneingeschrÃ¤nkt und unabhÃ¤ngig
+voneinander unterstÃ¼tzt.
 
-Personendaten können auf zwei Wegen in die Datenbank gelangen:
-  1. Durch den Startschreiber, der die Person während des Flugbetriebs neu
+Personendaten kÃ¶nnnen auf zwei Wegen in die Datenbank gelangen:
+  1. Durch den Startschreiber, der die Person wÃ¤hrend des Flugbetriebs neu
      aufnimmt.
   2. Durch einen Vereinsadministrator, der die Daten manuell oder aus einer
 	 Tabelle in die Datenbank aufnimmt.
 
 Personen werden in der Datenbank durch eine eindeutige Kennung (ID)
-identifiziert. Diese Kennung spielt für Benutzer und Vereinsadministratoren
+identifiziert. Diese Kennung spielt fÃ¼r Benutzer und Vereinsadministratoren
 allerdings keine Rolle.
 Eine Person kann auch eindeutig identifiziert werden durch die
-Vereinszugehörigkeit und eine vereinsweit eindeutige Kennung, die Vereins-ID.
-Auf diese Weise können auch mehrere Personen mit dem gleichen Namen (gleicher
+VereinszugehÃ¶rigkeit und eine vereinsweit eindeutige Kennung, die Vereins-ID.
+Auf diese Weise kÃ¶nnnen auch mehrere Personen mit dem gleichen Namen (gleicher
 Vorname und gleicher Nachname) korrekt identifiziert werden.
 
 Die Vereins-ID kann beispielsweise eine Mitgliedernummer, eine
 Landesverbandsnummer oder sonst ein beliebiger Text sein. Wichtig ist lediglich,
-dass die Vereins-ID für alle Personen eines Vereins eindeutig ist. Personen
-unterschiedlicher Vereine können die gleiche Vereins-ID haben, eine Absprache
-zwischen verschiedenen Vereinen ist also nicht nötig.
+dass die Vereins-ID fÃ¼r alle Personen eines Vereins eindeutig ist. Personen
+unterschiedlicher Vereine kÃ¶nnnen die gleiche Vereins-ID haben, eine Absprache
+zwischen verschiedenen Vereinen ist also nicht nÃ¶tig.
 Ist keine Vereins-ID vorhanden, wird die Person neben dem Verein noch durch
-ihren Namen identifiziert. In diesem Fall dürfen sich in einem Verein keine zwei
+ihren Namen identifiziert. In diesem Fall dÃ¼rfen sich in einem Verein keine zwei
 Personen mit dem gleichen Namen befinden. Wiederum sind Personen aus anderen
 Vereinen irrelevant.
-Die Mischung der beiden Identifikationsverfahren ist möglich, es ist also
-möglich, dass alle Personen mit eindeutigem Namen keine Vereins-ID haben und
+Die Mischung der beiden Identifikationsverfahren ist mÃ¶glich, es ist also
+mÃ¶glich, dass alle Personen mit eindeutigem Namen keine Vereins-ID haben und
 eine Vereins-ID lediglich bei Personen mit nicht eindeutigem Namen vorhanden
 ist.
 
-Vom Startschreiber aufgenommene Personen können vom Startschreiber editiert
-werden, um Fehler korrigieren zu können. Durch den Vereinsadministrator
-aufgenommene Personen können vom Startschreiber nicht geändert werden. Diese
-beiden Zustände werden als "editierbar" und "nicht editierbar" bezeichnet.
-Der Vereinsadministrator kann Daten immer ändern, selbst, wenn sie im Zustand
-"nicht editierbar" sind. Außerdem kann er den Zustand "editierbar" in "nicht
-editierbar" und umgekehrt ändern.
+Vom Startschreiber aufgenommene Personen kÃ¶nnnen vom Startschreiber editiert
+werden, um Fehler korrigieren zu kÃ¶nnnen. Durch den Vereinsadministrator
+aufgenommene Personen kÃ¶nnnen vom Startschreiber nicht geÃ¤ndert werden. Diese
+beiden ZustÃ¤nde werden als "editierbar" und "nicht editierbar" bezeichnet.
+Der Vereinsadministrator kann Daten immer Ã¤ndern, selbst, wenn sie im Zustand
+"nicht editierbar" sind. AuÃŸerdem kann er den Zustand "editierbar" in "nicht
+editierbar" und umgekehrt Ã¤ndern.
 
-Neben dem manuellen Anlegen und Editieren von Personeneinträgen mit Hilfe des
-Webinterface gibt es noch die Möglichkeit, die Stammdaten gesammelt
+Neben dem manuellen Anlegen und Editieren von PersoneneintrÃ¤gen mit Hilfe des
+Webinterface gibt es noch die MÃ¶glichkeit, die Stammdaten gesammelt
 einzuspielen. Dazu wird, ebenfalls mit dem Webinterface eine CSV-Datei (Zum
-CSV-Format: siehe doc/csv) hochgeladen, die aktuelle Personendaten enthält.
+CSV-Format: siehe doc/csv) hochgeladen, die aktuelle Personendaten enthÃ¤lt.
 Die Datei muss folgende Datenfelder enthalten:
   - Nachname: der Nachname der Person
   - Vorname: der Vorname der Person
   - Vereins-ID: die aktuelle Vereins-ID der Person (darf leer sein, wenn der
 	Name eindeutig ist).
-Außerdem können folgende Felder vorhanden sein:
+AuÃŸerdem kÃ¶nnnen folgende Felder vorhanden sein:
   - Bemerkungen: ein beliebiger Text
   - Vereins-ID_alt: die alte Vereins-ID, siehe unten.
 
-Nachdem die CSV-Datei hochgeladen wurde, wird sie auf Fehler geprüft. Werden
+Nachdem die CSV-Datei hochgeladen wurde, wird sie auf Fehler geprÃ¼ft. Werden
 Probleme festgestellt, zum Beispiel, dass eine Vereins-ID nicht eindeutig ist,
 dann werden diese angezeigt. Ansonsten wird die erzeugte Tabelle nochmals dem
-Benutzer zur Überprüfung angezeigt. Ist die Tabelle OK, werden die enthaltenen
+Benutzer zur Ã¼berprÃ¼fung angezeigt. Ist die Tabelle OK, werden die enthaltenen
 Personen in die Datenbank aufgenommen. Personen, die bereits vorhanden sind,
-werden ggf. aktualisiert (zum Beispiel, wenn sich der Name geändert hat),
-ansonsten nicht geändert. Flüge der Person bleiben erhalten.
+werden ggf. aktualisiert (zum Beispiel, wenn sich der Name geÃ¤ndert hat),
+ansonsten nicht geÃ¤ndert. FlÃ¼ge der Person bleiben erhalten.
 Auf diese Weise aufgenommene Personen werden automatisch auf "nicht editierbar"
 gesetzt.
 
 Das Feld "Vereins-ID_alt" spielt nur dann eine Rolle, wenn die Vereins-ID von
-Personen geändert werden soll. Dazu muss unter "Vereins-ID_alt" die alte und
+Personen geÃ¤ndert werden soll. Dazu muss unter "Vereins-ID_alt" die alte und
 unter "Vereins-ID" die neue Vereins-ID eingetragen werden. Dann wird der
 Datenbankeintrag entsprechend angepasst.
 
-Das übliche Vorgehen ist, dass der Vereinsadministrator in regelmäßigen
-Abständen die aktuellen Stammdaten einspielt. So lange sich die Vereins-ID einer
-Person nicht ändert, ist nichts weiter zu beachten.
+Das Ã¼bliche Vorgehen ist, dass der Vereinsadministrator in regelmÃ¤ÃŸigen
+AbstÃ¤nden die aktuellen Stammdaten einspielt. So lange sich die Vereins-ID einer
+Person nicht Ã¤ndert, ist nichts weiter zu beachten.
 Dieses Einspielen kann beliebig oft geschehen; sofern sich an den Daten nichts
-geändert hat, bleibt die Datenbank unverändert.
+geÃ¤ndert hat, bleibt die Datenbank unverÃ¤ndert.
 ACHTUNG: es ist unbedingt darauf zu achten, dass die Vereins-ID der Personen
 korrekt ist, sofern sie verwendet wird, da bei Fehlern leicht schwerwiegende
-Fehlereinträge in der Datenbank entstehen können.
+FehlereintrÃ¤ge in der Datenbank entstehen kÃ¶nnnen.
 
 Verschiedene Szenarios:
   - Eine Person ist neu
-	Die Person wird wie oben beschrieben in der Datei aufgeführt. Es ist nichts
+	Die Person wird wie oben beschrieben in der Datei aufgefÃ¼hrt. Es ist nichts
 	spezielles zu beachten.
   - Eine Person, die bereits vom Startschreiber eingetragen wurde, wird
 	aufgenommen
 	Auch hier ist nichts spezielles zu beachten. Die Namen der vom
-	Startschreiber aufgenommenen Person und derer in der Datei müssen
-	übereinstimmen.
-  - Eine Person hat den Namen geändert
+	Startschreiber aufgenommenen Person und derer in der Datei mÃ¼ssen
+	Ã¼bereinstimmen.
+  - Eine Person hat den Namen geÃ¤ndert
 	Wenn die Person eine Vereins-ID hat, dann ist nichts weiter zu beachten; der
-	neue Name wird eingetragen. Falls nicht, dann ist die automatische Änderung
-	nicht möglich. Entweder der Name der Person muss manuell geändert werden
+	neue Name wird eingetragen. Falls nicht, dann ist die automatische Ã¤nderung
+	nicht mÃ¶glich. Entweder der Name der Person muss manuell geÃ¤ndert werden
 	oder es wird eine neue Person mit dem neuen Namen angelegt. Die beiden
-	Einträge können nachträglich noch zu einem zusammengefasst werden.
-  - Eine Vereins-ID soll geändert werden.
+	EintrÃ¤ge kÃ¶nnnen nachtrÃ¤glich noch zu einem zusammengefasst werden.
+  - Eine Vereins-ID soll geÃ¤ndert werden.
     Die alte Vereins-ID wird als "Vereins-ID_alt", die neue als "Vereins-ID"
 	eingetragen.
 

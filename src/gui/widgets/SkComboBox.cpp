@@ -98,7 +98,7 @@ void SkComboBox::insert_if_new (const QString &t)
 	 *   - t: the text of the new item.
 	 */
 {
-	// TODO das sollte besser gehen. Insbesondere m�sste das sortierbar sein.
+	// TODO das sollte besser gehen. Insbesondere müsste das sortierbar sein.
 	//
 
 	bool is_new=true;
@@ -109,7 +109,7 @@ void SkComboBox::insert_if_new (const QString &t)
 
 	if (is_new)
 	{
-		// Wenn die Liste leer war, wird offenbar das Textfeld �berschrieben
+		// Wenn die Liste leer war, wird offenbar das Textfeld überschrieben
 		QString old_string=currentText ();
 		insertItem (t);
 		setCurrentText (old_string);

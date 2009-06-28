@@ -155,26 +155,26 @@ QString Flight::fehler_string (FlightError code) const
 		case ff_ok: return "Kein Fehler";
 		case ff_keine_id: return "Flug hat keine ID";
 		case ff_kein_flugzeug: return "Kein Flugzeug angegeben";
-		// TODO use person_bezeichnung (flugtyp) (oder wie die hei�t) here
-		case ff_pilot_nur_nachname: return "F�r den "+QString (flugtyp==ftTraining2?"Flugsch�ler":"Piloten")+" ist nur ein Nachname angegeben";
-		case ff_pilot_nur_vorname: return  "F�r den "+QString (flugtyp==ftTraining2?"Flugsch�ler":"Piloten")+" ist nur ein Vorname angegeben";
-		case ff_pilot_nicht_identifiziert: return  "Der "+QString (flugtyp==ftTraining2?"Flugsch�ler":"Pilot")+" ist nicht identifiziert";
-		case ff_begleiter_nur_nachname: return "F�r den "+QString (flugtyp==ftTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben";
-		case ff_begleiter_nur_vorname: return  "F�r den "+QString (flugtyp==ftTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
+		// TODO use person_bezeichnung (flugtyp) (oder wie die heißt) here
+		case ff_pilot_nur_nachname: return "Für den "+QString (flugtyp==ftTraining2?"Flugschüler":"Piloten")+" ist nur ein Nachname angegeben";
+		case ff_pilot_nur_vorname: return  "Für den "+QString (flugtyp==ftTraining2?"Flugschüler":"Piloten")+" ist nur ein Vorname angegeben";
+		case ff_pilot_nicht_identifiziert: return  "Der "+QString (flugtyp==ftTraining2?"Flugschüler":"Pilot")+" ist nicht identifiziert";
+		case ff_begleiter_nur_nachname: return "Für den "+QString (flugtyp==ftTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben";
+		case ff_begleiter_nur_vorname: return  "Für den "+QString (flugtyp==ftTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
 		case ff_begleiter_nicht_identifiziert: return  "Der "+QString (flugtyp==ftTraining2?"Fluglehrer":"Begleiter")+" ist nicht identifiziert";
-		case ff_towpilot_nur_nachname: return "F�r den Schleppiloten ist nur ein Nachname angegeben";
-		case ff_towpilot_nur_vorname: return  "F�r den Schleppiloten ist nur ein Vorname angegeben";
+		case ff_towpilot_nur_nachname: return "Für den Schleppiloten ist nur ein Nachname angegeben";
+		case ff_towpilot_nur_vorname: return  "Für den Schleppiloten ist nur ein Vorname angegeben";
 		case ff_towpilot_nicht_identifiziert: return  "Der Schleppilot ist nicht identifiziert";
-		case ff_kein_pilot: return "Kein "+QString (flugtyp==ftTraining2 || flugtyp==ftTraining1?"Flugsch�ler":"Pilot")+" angegeben";
-		case ff_pilot_gleich_begleiter: return QString (flugtyp==ftTraining2?"Flugsch�ler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
-		case ff_pilot_gleich_towpilot: return QString (flugtyp==ftTraining2?"Flugsch�ler":"Pilot")+" und Schlepppilot sind identisch";
+		case ff_kein_pilot: return "Kein "+QString (flugtyp==ftTraining2 || flugtyp==ftTraining1?"Flugschüler":"Pilot")+" angegeben";
+		case ff_pilot_gleich_begleiter: return QString (flugtyp==ftTraining2?"Flugschüler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
+		case ff_pilot_gleich_towpilot: return QString (flugtyp==ftTraining2?"Flugschüler":"Pilot")+" und Schlepppilot sind identisch";
 		case ff_schulung_ohne_begleiter: return "Doppelsitzige Schulung ohne Fluglehrer";
 		case ff_begleiter_nicht_erlaubt: return "Begleiter ist nicht erlaubt";
 		case ff_nur_gelandet: return "Flug ist gelandet, aber nicht gestartet";
 		case ff_landung_vor_start: return "Landung liegt vor Start";
 		case ff_keine_startart: return "Keine Startart angegeben";
 		case ff_kein_modus: return "Kein Modus angegeben";
-		case ff_kein_sfz_modus: return "Kein Modus f�r den Schleppflug angegeben";
+		case ff_kein_sfz_modus: return "Kein Modus für den Schleppflug angegeben";
 		case ff_kein_flugtyp: return "Kein Flugtyp angegeben";
 		case ff_landungen_negativ: return "Negative Anzahl Landungen";
 		case ff_landungen_null: return "Flug ist gelandet, aber Anzahl der Landungen ist 0";
@@ -183,7 +183,7 @@ QString Flight::fehler_string (FlightError code) const
 		case ff_doppelsitzige_schulung_in_einsitzer: return "Doppelsitzige Schulung in Einsitzer";
 		case ff_kein_startort: return "Kein Startort angegeben";
 		case ff_kein_zielort: return "Kein Zielort angegeben";
-		case ff_kein_zielort_sfz: return "Kein Zielort f�r das Schleppflugzeug angegeben";
+		case ff_kein_zielort_sfz: return "Kein Zielort für das Schleppflugzeug angegeben";
 		case ff_segelflugzeug_landungen: return "Segelflugzeug macht mehr als eine Landung";
 		case ff_segelflugzeug_landungen_ohne_landung: return "Segelflugzeug macht Landungen ohne Landezeit";
 		case ff_begleiter_in_einsitzer: return "Begleiter in einsitzigem Flugzeug";
@@ -540,7 +540,7 @@ void Flight::get_towflight (Flight *towflight, db_id towplane_id, db_id sa_id) c
 		towflight->landungen=1;
 	else
 		towflight->landungen=0;
-	towflight->bemerkungen="Schleppflug f�r "+QString::number (id);
+	towflight->bemerkungen="Schleppflug für "+QString::number (id);
 	towflight->abrechnungshinweis="";
 	towflight->editierbar=false;							// The tow flight is not editable on its own.
 	towflight->modus=modus_sfz;

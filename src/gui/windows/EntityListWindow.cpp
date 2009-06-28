@@ -61,31 +61,31 @@ EntityListWindow::EntityListWindow (EntityType t, QWidget *parent, Database *_db
 	QFrame *frame_main=new QFrame (this, "frame_main");
 
 	but_close=new QPushButton (frame_main);
-	but_close->setText ("&Schlie�en");
+	but_close->setText ("&Schließen");
 	QObject::connect (but_close, SIGNAL (clicked ()), this, SLOT (accept ()));
 
 	tab=new SkTable (frame_main);
 	tab->setSortingEnabled (true);
 
-	// Men� 'Datenbank'
+	// Menü 'Datenbank'
 	menu_datenbank = new QMenu (this);
 	menu_datenbank->insertTearOffHandle ();
 	menu_datenbank->insertItem ("&Neu", this, SLOT (slot_neu ()), CTRL+Key_N);
-	menu_datenbank->insertItem ("&L�schen", this, SLOT (slot_loeschen ()), CTRL+Key_L);
+	menu_datenbank->insertItem ("&Löschen", this, SLOT (slot_loeschen ()), CTRL+Key_L);
 	menu_datenbank->insertItem ("&Editieren", this, SLOT (slot_editieren ()), CTRL+Key_E);
 	menu_datenbank->insertSeparator ();
 	menu_datenbank->insertItem ("Liste aktualisie&ren", this, SLOT (slot_refresh ()), CTRL+Key_R);
 	menu_datenbank->insertSeparator ();
-	menu_datenbank->insertItem ("&Schlie�en", this, SLOT (accept ()), CTRL+Key_W);
+	menu_datenbank->insertItem ("&Schließen", this, SLOT (accept ()), CTRL+Key_W);
 
-	// Men�leiste
+	// Menüleiste
 	menu_bar = new QMenuBar (this, "menu_bar");
 	menu_bar->insertItem ("&Datenbank", menu_datenbank, id_mnu_datenbank);
 
 
 	QObject::connect (tab, SIGNAL (cellDoubleClicked (int, int)), this, SLOT (slot_table_double_click (int, int)));
 	QObject::connect (tab, SIGNAL (key (int)), this, SLOT (slot_table_key (int)));
-//	TODO Kontextmen�
+//	TODO Kontextmenü
 //	QObject::connect (tab, SIGNAL (contextMenuRequested(int,int,const QPoint&)), this, SLOT(slot_table_context (int,int,const QPoint &)));
 
 	setup_controls ();
@@ -250,7 +250,7 @@ void EntityListWindow::listEntity (EntityType t)
 	tab->hide ();
 	tab->removeAllRows ();
 
-	// NB: 10 s f�r 500 Datens�tze, wenn einzeln in der Schleife
+	// NB: 10 s für 500 Datensätze, wenn einzeln in der Schleife
 	int i=0, num=list.count ();
 	tab->setRowCount (num);
 	foreach (Entity *item, list)
@@ -392,7 +392,7 @@ void EntityListWindow::keyPressEvent (QKeyEvent *e)
 			// funktionieren.
 			break;
 		case Qt::Key_Return:
-			// MURX: Bei Return spricht sonst der "Schlie�en"-Button an
+			// MURX: Bei Return spricht sonst der "Schließen"-Button an
 			e->accept ();
 			break;
 		default:
@@ -635,12 +635,12 @@ void EntityListWindow::tabelle_loeschen (int row)
 			}
 			else if (entityUsed (type, id))
 			{
-				show_warning (bez_n+" wird verwendet und kann nicht gel�scht werden.", this);
+				show_warning (bez_n+" wird verwendet und kann nicht gelöscht werden.", this);
 			}
 			else
 			{
-				int res=QMessageBox::information (this, "Wirklich l�schen?",
-					bez_a+" \""+s->text_name ()+"\" wirklich l�schen?", "&Ja", "&Nein", QString::null, 0, 1);
+				int res=QMessageBox::information (this, "Wirklich löschen?",
+					bez_a+" \""+s->text_name ()+"\" wirklich löschen?", "&Ja", "&Nein", QString::null, 0, 1);
 
 				delete s;
 
@@ -649,9 +649,9 @@ void EntityListWindow::tabelle_loeschen (int row)
 					res=deleteEntity (type, id);
 					if (res<0)
 					{
-						// L�schen hat nicht geklappt
+						// Löschen hat nicht geklappt
 						QMessageBox::warning (this, "Fehler",
-							"Fehler beim L�schen: "+db->db_error_description (res), QMessageBox::Ok, QMessageBox::NoButton);
+							"Fehler beim Löschen: "+db->db_error_description (res), QMessageBox::Ok, QMessageBox::NoButton);
 					}
 				}
 			}
@@ -730,7 +730,7 @@ void EntityListWindow::slot_db_update (DbEvent *event)
 			int row=tab->row_from_column_id (event->id, 0);
 			if (row<0)
 			{
-				// Steht nicht in der Tabelle? Uh-oh, dann war die Tabelle unvollst�ndig.
+				// Steht nicht in der Tabelle? Uh-oh, dann war die Tabelle unvollständig.
 				log_error ("det_change in EntityListWindow::slot_db_update, aber id steht nicht in der Tabelle");
 				addEntity (type, s);
 			}

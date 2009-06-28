@@ -170,8 +170,8 @@ MainWindow::MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin> *_plu
 	}
 	info_layout->setRowStretch (num_info_labels, 1);
 
-	lbl_info[idx_info_fluege_luft]->setText ("Fl�ge in der Luft: ");
-	lbl_info[idx_info_fluege_gesamt]->setText ("Fl�ge gesamt: ");
+	lbl_info[idx_info_fluege_luft]->setText ("Flüge in der Luft: ");
+	lbl_info[idx_info_fluege_gesamt]->setText ("Flüge gesamt: ");
 	lbl_info[idx_info_anzeige_datum]->setText ("Anzeigedatum: ");
 	lbl_info[idx_info_utc]->setText ("UTC: ");
 	lbl_info[idx_info_time]->setText ("Lokalzeit: ");
@@ -257,10 +257,10 @@ MainWindow::MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin> *_plu
 
 	// Sonstige Fensterchen
 	// Warum WStyle_StaysOnTop bedeutet, dass es gerade nicht OnTopStays, ist
-	// mir ein R�tsel. Jedensfalls ist das anscheinend nur bei nicht-modalen
+	// mir ein Rätsel. Jedensfalls ist das anscheinend nur bei nicht-modalen
 	// Fensterchen so.
 	// Update: Allerdings scheint es nicht zu funktionieren: die Fensterchen
-	// [flugzeug|personen]_liste bleiben *immer* im Vordergrund. H�h?
+	// [flugzeug|personen]_liste bleiben *immer* im Vordergrund. Häh?
 	//	flug_editor=new FlightWindow (this, NULL, flugeditor_modal, Qt::WStyle_Customize | Qt::WStyle_StaysOnTop, ss);
 	//	flugzeug_liste=new EntityListWindow (st_plane, this, "flugzeug_liste", false, Qt::WStyle_Customize, ss);
 	//	personen_liste=new EntityListWindow (st_person, this, "personen_liste", false, Qt::WStyle_Customize, ss);
@@ -283,7 +283,7 @@ MainWindow::MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin> *_plu
 	QObject::connect (tbl_fluege, SIGNAL (signal_button_schlepplandung (db_id)), this,
 			SLOT (slot_tbut_schlepplandung (db_id)));
 
-	// Datenbank�ndernde Objekte verbinden
+	// Datenbankändernde Objekte verbinden
 	dbase_connect (flug_editor);
 	dbase_connect (flugzeug_liste);
 	dbase_connect (personen_liste);
@@ -430,17 +430,17 @@ void MainWindow::initActions ()
 	actionCopyFlight = new QAction ("Wiederh&olen...", this);
 	actionCopyFlight->setShortcut (CTRL + Key_O);
 
-	actionDeleteFlight = new QAction ("L�sc&hen...", this);
+	actionDeleteFlight = new QAction ("Lösc&hen...", this);
 	actionDeleteFlight->setShortcut (CTRL + Key_H);
 
 	actionRefreshTable = new QAction ("Tabelle aktualisie&ren", this);
 	actionRefreshTable->setShortcut (CTRL + Key_R);
 
 	actionSetFont = new QAction ("Schriftart", this);
-	actionSetFont->setToolTip ("Schriftart und Gr��e �ndern");
+	actionSetFont->setToolTip ("Schriftart und Größe ändern");
 
 	actionIncFont = new QAction ("+", this);
-	actionIncFont->setToolTip ("Schrift vergr��ern");
+	actionIncFont->setToolTip ("Schrift vergrößern");
 
 	actionDecFont = new QAction ("-", this);
 	actionDecFont->setToolTip ("Schrift verkleinern");
@@ -451,11 +451,11 @@ void MainWindow::initActions ()
 	actionRestartPlugins = new QAction ("&Plugins neu starten", this);
 	actionRestartPlugins->setShortcut (CTRL + Key_P);
 
-	actionSuppressLanded = new QAction ("Gelandete/Weggeflogene Fl�ge ausb&lenden", this);
+	actionSuppressLanded = new QAction ("Gelandete/Weggeflogene Flüge ausb&lenden", this);
 	actionSuppressLanded->setShortcut (CTRL + Key_A);
 	actionSuppressLanded->setCheckable (true);
 
-	actionShowDeparted = new QAction ("&Wegfliegende/Kommende Fl�ge immer anzeigen", this);
+	actionShowDeparted = new QAction ("&Wegfliegende/Kommende Flüge immer anzeigen", this);
 	actionShowDeparted->setCheckable (true);
 
 	actionShowFaulty = new QAction ("&Fehlerhafte immer anzeigen", this);
@@ -468,7 +468,7 @@ void MainWindow::initActions ()
 
 	actionNewFlightNewDate = new QAction ("Anzeigedatum bei neuem Flug anpas&sen", this);
 
-	actionNewFlightCurrDate = new QAction ("F�r neue Fl�ge immer &aktuelles Datum verwenden", this);
+	actionNewFlightCurrDate = new QAction ("Für neue Flüge immer &aktuelles Datum verwenden", this);
 
 	actionPlaneLog = new QAction ("&Bordbuch", this);
 	actionPlaneLog->setShortcut (CTRL + Key_B);
@@ -537,7 +537,7 @@ void MainWindow::initMenu ()
 	menu_flug->addAction (actionNewFlight);
 	menu_flug->addSeparator ();
 	menu_flug->addAction (actionStart);
-	// TODO hier k�nnte man das jeweils richtige reinschreiben, abh�ngig vom Flug
+	// TODO hier könnte man das jeweils richtige reinschreiben, abhängig vom Flug
 	menu_flug->addAction (actionLanding);
 	menu_flug->addAction (actionGoAround);
 	menu_flug->addSeparator ();
@@ -547,7 +547,7 @@ void MainWindow::initMenu ()
 
 	menu_ansicht->setTearOffEnabled (true);
 	menu_ansicht->addAction (actionRefreshTable);
-	menu_ansicht_fluege = menu_ansicht->addMenu ("&Fl�ge");
+	menu_ansicht_fluege = menu_ansicht->addMenu ("&Flüge");
 	menu_ansicht_datum = menu_ansicht->addMenu ("&Datum");
 	menu_ansicht->addAction (actionSetFont);
 	menu_ansicht->addSeparator ();
@@ -617,7 +617,7 @@ void MainWindow::initContextMenu ()
 	menu_ctx_flug->addAction (actionCopyFlight);
 	menu_ctx_flug->addAction (actionDeleteFlight);
 
-	// Kontextmen� f�r leere Zeilen
+	// Kontextmenü für leere Zeilen
 	menu_ctx_emptyrow = new QMenu (this);
 	menu_ctx_emptyrow->addAction (actionNewFlight);
 }
@@ -671,7 +671,7 @@ void MainWindow::keyPressEvent (QKeyEvent *e)
  *   - e: See ::keyPressEvent.
  */
 {
-	// Ganz �bler Pfusch, weil das SplashScreen nicht den Focus erh�lt, wenn �ber
+	// Ganz übler Pfusch, weil das SplashScreen nicht den Focus erhält, wenn über
 	// Hilfe->Info aufgerufen.
 	ss->try_close ();
 
@@ -778,9 +778,9 @@ void MainWindow::slot_db_update (DbEvent *event)
 	}
 	else
 	{
-		// Wenn etwas anderes als die Flugdatenbank ge�ndert wurde, Tabelle
-		// aktualisieren, da sich einiges ge�ndert haben kann.
-		// TODO: Wir wissen, welche ID, daher k�nnen wir auch selektiv
+		// Wenn etwas anderes als die Flugdatenbank geändert wurde, Tabelle
+		// aktualisieren, da sich einiges geändert haben kann.
+		// TODO: Wir wissen, welche ID, daher können wir auch selektiv
 		// update_flight()s machen.
 		if (event->type == det_change) slot_refresh_table ();
 		if (event->type == det_delete) slot_refresh_table ();
@@ -799,14 +799,14 @@ void MainWindow::dbase_connect (QObject *ob)
  * better here.
  */
 {
-	// Wenn ein Objekt die Datenbank ge�ndert hat, weiterreichen.
+	// Wenn ein Objekt die Datenbank geändert hat, weiterreichen.
 	QObject::connect (ob, SIGNAL (db_change (DbEvent *)), this, SIGNAL (db_change (DbEvent *)));
-	// Wenn Datenbank�nderungen �bernommen werden sollen, weiterreichen.
+	// Wenn Datenbankänderungen übernommen werden sollen, weiterreichen.
 	QObject::connect (this, SIGNAL (db_update (DbEvent *)), ob, SLOT (slot_db_update (DbEvent *)));
 }
 
 
-// Fl�ge
+// Flüge
 void MainWindow::neuer_flug (Flight *vorlage)
 /*
  * Open the dialog for creating a new flight.
@@ -816,7 +816,7 @@ void MainWindow::neuer_flug (Flight *vorlage)
  * TODO: is *vorlage destroyed?
  */
 {
-	// Flugdialog auf�hren
+	// Flugdialog auführen
 	if (vorlage)
 		flug_editor->duplicate_flight (vorlage);
 	else
@@ -831,7 +831,7 @@ void MainWindow::edit_flight (Flight *f)
  * TODO: is *f destroyed? is the database updated?
  */
 {
-	// Flugdialog ausf�hren
+	// Flugdialog ausführen
 	// TODO: was passiert, wenn f==NULL?
 	flug_editor->edit_flight (f);
 	// TODO error handling?
@@ -870,20 +870,20 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
  *     is to be manipulated.
  */
 /*
- * TODO: multiple id-�bergable ist doof, besser enum { mt_flug,
- * mt_schleppflug } manipulation_target einf�hren.
+ * TODO: multiple id-übergable ist doof, besser enum { mt_flug,
+ * mt_schleppflug } manipulation_target einführen.
  * TODO: hier den ganzen Kram wie anzeigedatum==heute und flug schon
- * gelandet pr�fen, damit man die Men�deaktivierung wegmachen kann.
- * Au�erdem kann man dann hier melden, warum das nicht geht.
+ * gelandet prüfen, damit man die Menüdeaktivierung wegmachen kann.
+ * Außerdem kann man dann hier melden, warum das nicht geht.
  */
 {
 	bool changed = false;
 	db_id target_id = id;
 
 	// Falls per sref aufgerufen wurde, betreffen die Operationen den
-	// Schleppflug, werden aber auf dem eigentlichen Flug ausgef�hrt, da der
-	// Schleppflug nicht als eigener Flug gef�hrt wird.
-	// Einige Aktionen werden bei einem Schleppflug auch gar nicht ausgef�hrt.
+	// Schleppflug, werden aber auf dem eigentlichen Flug ausgeführt, da der
+	// Schleppflug nicht als eigener Flug geführt wird.
+	// Einige Aktionen werden bei einem Schleppflug auch gar nicht ausgeführt.
 	if (id_invalid (id))
 	{
 		// Aufruf per sref.
@@ -899,22 +899,22 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 				action = fm_land_schlepp;
 				break;
 			case fm_land_schlepp:
-				log_error ("Schlepplandung f�r Schleppflug in sk_win_main::manipulate_flight ()");
+				log_error ("Schlepplandung für Schleppflug in sk_win_main::manipulate_flight ()");
 				// Trotzdem machen
 				break;
 			case fm_zwischenlandung:
 				// Zwischenlandung des Segelflugs
-				//				show_warning ("Zwischenlandung f�r Schleppflug nicht m�glich.", this);
+				//				show_warning ("Zwischenlandung für Schleppflug nicht möglich.", this);
 				//				abort=true;
 				break;
 			case fm_edit:
 				// Flug wird editiert.
 				break;
 			case fm_delete:
-				// Flug wird gel�scht
+				// Flug wird gelöscht
 				break;
 			case fm_wiederholen:
-				show_warning ("Schleppfl�ge k�nnen nicht wiederholt werden.", this);
+				show_warning ("Schleppflüge können nicht wiederholt werden.", this);
 				abort = true;
 				break;
 			default:
@@ -929,12 +929,12 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 	{
 		QString query_string;
 		if (id > 0)
-			query_string = "Flug wirklich l�schen?";
+			query_string = "Flug wirklich löschen?";
 		else
 			query_string
-					= "Dies ist ein Schleppflug. Soll der dazu geh�rige\ngeschleppte Flug wirklich gel�scht werden?";
+					= "Dies ist ein Schleppflug. Soll der dazu gehörige\ngeschleppte Flug wirklich gelöscht werden?";
 
-		int ret = QMessageBox::information (this, "Wirklich l�schen?", query_string, "&Ja", "&Nein", QString::null, 0,
+		int ret = QMessageBox::information (this, "Wirklich löschen?", query_string, "&Ja", "&Nein", QString::null, 0,
 				1);
 
 		if (ret == 0)
@@ -947,7 +947,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 			}
 			else
 			{
-				QMessageBox::warning (this, "Fehler beim L�schen", "Fehler beim L�schen: " +
+				QMessageBox::warning (this, "Fehler beim Löschen", "Fehler beim Löschen: " +
 						db->db_error_description (db_result), QMessageBox::Ok, QMessageBox::NoButton);
 			}
 		}
@@ -983,7 +983,7 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 			{
 				log_error ("Flugzeugdatenbankanfrage fehlgeschlagen in sk_win_main::manipulate_flight ()");
 				// Trotzdem weiter machen, an dem fehlenden Flugzeug soll der Flug nicht scheitern
-				// TODO: wird hier immer gepr�ft, ob das FZ tats�chlich g�ltig ist?
+				// TODO: wird hier immer geprüft, ob das FZ tatsächlich gültig ist?
 			}
 			else
 			{
@@ -1048,11 +1048,11 @@ void MainWindow::manipulate_flight (db_id id, flight_manipulation action, db_id 
 						if (f.zwischenlandung (false, true)) changed = true;
 						break;
 						// Bei edit: changed=false, weil der Flugeditor die
-						// �nderungen eintr�gt und db_changed ausl�st.
+						// Änderungen einträgt und db_changed auslöst.
 					case fm_edit:
 						edit_flight (&f);
 						changed = false;
-						break; // Kein changed: db_changed wird vom Editor ausgel�st
+						break; // Kein changed: db_changed wird vom Editor ausgelöst
 					case fm_wiederholen:
 						neuer_flug (&f);
 						changed = false;
@@ -1100,7 +1100,7 @@ void MainWindow::manipulate_flight_by_row (int row, flight_manipulation action)
 
 	if (id_invalid (id))
 	{
-		// ID ist immer noch 0 ==> Die Tablle enth�lt G�lle.
+		// ID ist immer noch 0 ==> Die Tablle enthält Gülle.
 		log_error ("Tabellenzeile ist kein Flug");
 	}
 	else
@@ -1215,8 +1215,8 @@ void MainWindow::slot_table_context (const QPoint &pos)
 
 	if (tbl_fluege->row_is_flight (row))
 	{
-		// Das ist ein eingetragener Flug, Men� zum Starten/Landen/Editieren/
-		// L�schen �ffnen
+		// Das ist ein eingetragener Flug, Menü zum Starten/Landen/Editieren/
+		// Löschen öffnen
 		bool ist_schlepp = false;
 		db_id id = tbl_fluege->id_from_row (row);
 		if (id_invalid (id))
@@ -1235,13 +1235,13 @@ void MainWindow::slot_table_context (const QPoint &pos)
 			{
 				if (true/* && anzeigedatum==QDate::currentDate ()*/)
 				//         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-				//         Was soll der Bl�dsinn? Fl�ge von ande-
+				//         Was soll der Blödsinn? Flüge von ande-
 				//         ren Tagen sind auch noch editierbar,
 				//         wenn sie als editierbar in der
 				//         Datenbank stehen!
 				{
 					// TODO: CODEDUPLIKATION! Auf unified fehlerchecking umstellen!
-					// TODO: CODEDUPLIKATION: Das ist der gleiche Code wie in menu_enables (mit einem anderen Men�).
+					// TODO: CODEDUPLIKATION: Das ist der gleiche Code wie in menu_enables (mit einem anderen Menü).
 					//menu_ctx_flug->setItemEnabled (id_ctx_starten, starts_here (f.modus) && !f.gestartet);
 					actionStart->setEnabled (starts_here (f.modus) && !f.gestartet);
 					//menu_ctx_flug->setItemEnabled (id_ctx_editieren, true);
@@ -1271,7 +1271,7 @@ void MainWindow::slot_table_context (const QPoint &pos)
 					actionCopyFlight->setEnabled (false);
 				}
 
-				// TODO Bedingung �berpr�fen
+				// TODO Bedingung überprüfen
 				actionCtxLanding->setText ((ist_schlepp && !lands_here (f.modus_sfz)) ? "Sch&lepp beenden" : "&Landen");
 			}
 			else
@@ -1301,7 +1301,7 @@ void MainWindow::slot_table_context (const QPoint &pos)
 	}
 	else
 	{
-		// Leerer Platz/leere Zeile, Men� zum Anlegen �fnen
+		// Leerer Platz/leere Zeile, Menü zum Anlegen öfnen
 		actionNewFlight->setEnabled (db_available ());
 
 		menu_ctx_emptyrow->popup (tbl_fluege->mapToGlobal (pos));
@@ -1443,8 +1443,8 @@ void MainWindow::update_info ()
 	}
 	else
 	{
-		lbl_info_value[idx_info_fluege_luft]->setText ("(Datenbank nicht verf�gbar)");
-		lbl_info_value[idx_info_fluege_gesamt]->setText ("(Datenbank nicht verf�gbar)");
+		lbl_info_value[idx_info_fluege_luft]->setText ("(Datenbank nicht verfügbar)");
+		lbl_info_value[idx_info_fluege_gesamt]->setText ("(Datenbank nicht verfügbar)");
 	}
 
 	lbl_info_value[idx_info_anzeige_datum]->setText (anzeigedatum.toString ("yyyy-MM-dd"));
@@ -1461,7 +1461,7 @@ void MainWindow::update_time ()
 	tbl_fluege->update_time ();
 }
 
-// Kontextmen�
+// Kontextmenü
 /*
  * These functions are called when a menu entry from the context menu is
  * selected. They use the context_row instead of the current Table row.
@@ -1497,7 +1497,7 @@ void MainWindow::slot_context_wiederholen ()
 	manipulate_flight_by_row (context_row, fm_wiederholen);
 }
 
-// Men�s
+// Menüs
 void MainWindow::menu_enables (bool cell_change)
 /*
  * Enables or disables entries in the menus, according to the selected
@@ -1563,13 +1563,13 @@ void MainWindow::menu_enables (bool cell_change)
 		{
 			if (tbl_fluege->row_is_flight (row)/* && anzeigedatum==QDate::currentDate ()*/)
 			//                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-			//                                    Was soll der Bl�dsinn? Fl�ge von ande-
+			//                                    Was soll der Blödsinn? Flüge von ande-
 			//                                    ren Tagen sind auch noch editierbar,
 			//                                    wenn sie als editierbar in der
 			//                                    Datenbank stehen!
 			{
-				// Das ist ein eingetragener Flug, Men� zum Starten/Landen/Editieren/
-				// L�schen �ffnen
+				// Das ist ein eingetragener Flug, Menü zum Starten/Landen/Editieren/
+				// Löschen öffnen
 				db_id id = tbl_fluege->id_from_row (row);
 				bool ist_schlepp = false;
 				if (id_invalid (id))
@@ -1578,9 +1578,9 @@ void MainWindow::menu_enables (bool cell_change)
 					ist_schlepp = true;
 				}
 
-				// TODO das kann man sich unter Umst�nden sparen, wenn es
+				// TODO das kann man sich unter Umständen sparen, wenn es
 				// Geschwindigkeit bringt; ob die Aktionen erlaubt sind,
-				// wird sowieso separat gepr�ft, weil die Funktionstasten
+				// wird sowieso separat geprüft, weil die Funktionstasten
 				// hier nicht gesperrt werden.
 				// Dann aber auch alles auf true setzen.
 				// Update: wir unterscheiden auch zwischen Flug und Schlepp,
@@ -1589,7 +1589,7 @@ void MainWindow::menu_enables (bool cell_change)
 				// TODO make it so
 
 				Flight f;
-				// TODO hier und �berall ist_schlepp und ist_flug verwenden.
+				// TODO hier und überall ist_schlepp und ist_flug verwenden.
 				if (id > 0 && db->get_flight (&f, id) >= 0)
 				{
 					//menu_flug->setItemEnabled (id_ctx_starten, starts_here (f.modus) && !f.gestartet);
@@ -1673,7 +1673,7 @@ void MainWindow::update_checks ()
 	actionDisplayLog->setChecked (display_log);
 }
 
-// Men� Programm
+// Menü Programm
 void MainWindow::slot_setdate ()
 /*
  * Open the time editor to change the date.
@@ -1702,13 +1702,13 @@ void MainWindow::setdate (QDateTime dt)
 	system (s.latin1());
 
 	// TODO Ja, genau.
-	show_warning ("Die Systemzeit wurde ge�ndert. Um die �nderung dauerhaft\n"
+	show_warning ("Die Systemzeit wurde geändert. Um die änderung dauerhaft\n"
 		"zu speichern, muss der Rechner einmal heruntergefahren\n"
 		"werden, bevor er ausgeschaltet wird.", this);
 
 	//	s="sudo /etc/init.d/hwclock.sh stop &";
 	//	r=system (s.c_str ());
-	//	if (r!=0) show_warning ("Zur�ckschreiben der Zeit fehlgeschlagen. Bitte den Rechner\n"
+	//	if (r!=0) show_warning ("Zurückschreiben der Zeit fehlgeschlagen. Bitte den Rechner\n"
 	//	                        "herunterfahren, um die Zeiteinstellung dauerhaft zu speichern.", this);
 
 	update_info ();
@@ -1763,9 +1763,9 @@ void MainWindow::slot_menu_ansicht_flug_gelandete (bool toggle)
 {
 	tbl_fluege->gelandete_ausblenden = toggle;
 	if (toggle)
-		actionSuppressLanded->setText ("Gelandete/Weggeflogene Fl�ge anzeigen");
+		actionSuppressLanded->setText ("Gelandete/Weggeflogene Flüge anzeigen");
 	else
-		actionSuppressLanded->setText ("Gelandete/Weggeflogene Fl�ge ausb&lenden");
+		actionSuppressLanded->setText ("Gelandete/Weggeflogene Flüge ausb&lenden");
 	update_checks ();
 	slot_refresh_table ();
 }
@@ -1923,7 +1923,7 @@ void MainWindow::slot_tabelle_sortieren ()
 
 }
 
-// Men� Statistik
+// Menü Statistik
 void MainWindow::slot_pilot_log ()
 /*
  * Opens the pilot log statistics window for the current display date.
@@ -1949,7 +1949,7 @@ void MainWindow::slot_sastat ()
 	(new StatisticsWindow (this, "sas", false, Qt::WDestructiveClose, ss, db))->sastat (anzeigedatum);
 }
 
-// Men� Datenbank
+// Menü Datenbank
 void MainWindow::slot_flugzeugeditor ()
 /*
  * Opens the plane editor.
@@ -1975,7 +1975,7 @@ void MainWindow::slot_personeneditor ()
 //
 //	if (r!=0)
 //	{
-//		show_warning ("Fehler bei der Erstellung der CSV-Ausz�ge.", this);
+//		show_warning ("Fehler bei der Erstellung der CSV-Auszüge.", this);
 //	}
 //}
 
@@ -1991,7 +1991,7 @@ void MainWindow::slot_db_refresh_all ()
 	emit db_change (&event);
 }
 
-// Men� Hilfe
+// Menü Hilfe
 void MainWindow::slot_info ()
 /*
  * Show the information dialog with the program version information.
@@ -2008,7 +2008,7 @@ void MainWindow::slot_netztest ()
 	if (!opts.diag_cmd.isEmpty ()) system (opts.diag_cmd.latin1());
 }
 
-// Men� Debug
+// Menü Debug
 void MainWindow::slot_segfault ()
 /*
  * Cause a segfault.
@@ -2046,7 +2046,7 @@ void MainWindow::slot_display_log ()
 }
 
 
-// Men� Demosystem
+// Menü Demosystem
 void MainWindow::slot_webinterface ()
 /*
  * Calls a browser with the web interface.
@@ -2072,10 +2072,10 @@ bool MainWindow::try_initialize_db (QString reason)
 {
 	// We need to initialize the database. Therefore, we ask the
 	// root password from the user.
-	QString caption = "root-Passwort ben�tigt";
+	QString caption = "root-Passwort benötigt";
 	QString user_display = opts.root_name + "@" + opts.server_display_name;
 	QString label = "Die Datenbank " + opts.database + " ist nicht benutzbar. Grund:\n" + reason + "\n"
-			+ "Zur Korrektur wird das Password von " + user_display + " ben�tigt.";
+			+ "Zur Korrektur wird das Password von " + user_display + " benötigt.";
 
 	bool wrong_password_do_it_again;
 	do
@@ -2100,7 +2100,7 @@ bool MainWindow::try_initialize_db (QString reason)
 			catch (Database::ex_access_denied &e)
 			{
 				wrong_password_do_it_again = true;
-				label = e.description (true) + "\nPasswort f�r " + opts.root_name + "@"
+				label = e.description (true) + "\nPasswort für " + opts.root_name + "@"
 						+ opts.server_display_name + ":";
 			}
 			catch (Database::ex_init_failed &e)
@@ -2142,7 +2142,7 @@ void MainWindow::set_connection_label (const QString &text, const QColor &color)
 	if (lbl_info_value[idx_info_datenbankverbindung]) lbl_info_value[idx_info_datenbankverbindung]->setText (text);
 	if (lbl_info_value[idx_info_datenbankverbindung]) lbl_info_value[idx_info_datenbankverbindung]->setPaletteForegroundColor (
 			color);
-	// TODO auch dieser Aufruf f�hrt dazu, dass beim Starten manchmal das
+	// TODO auch dieser Aufruf führt dazu, dass beim Starten manchmal das
 	// Fenster verkleinert wird. WTF?
 	//	lbl_info_value[idx_info_datenbankverbindung]->adjustSize ();
 	// TODO hier wurde beim Starten manchmal das Fenster verkleinert.

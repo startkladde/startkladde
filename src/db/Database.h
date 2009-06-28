@@ -81,7 +81,7 @@ class Database:public QObject
 	class ex_database_not_accessible:public SkException
 	{
 		public:
-			virtual QString description () const { return "Datenbankzugriff nicht m�glich"; }
+			virtual QString description () const { return "Datenbankzugriff nicht möglich"; }
 	};
 
 
@@ -195,7 +195,7 @@ class Database:public QObject
 		public:
 			~ex_insufficient_access () throw () {};
 			ex_insufficient_access (const QString &_target) { target=_target; }
-			virtual QString description () const { return "Ungen�gende Zugriffsrechte auf "+target; }
+			virtual QString description () const { return "Ungenügende Zugriffsrechte auf "+target; }
 			QString target;
 	};
 

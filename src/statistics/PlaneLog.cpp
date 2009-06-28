@@ -112,7 +112,7 @@ bool makePlaneLogEntry (PlaneLogEntry *bb_entry, Database *db, QList<Flight *> &
 			if (flights.count ()<=1)
 				bb_entry->bemerkungen="Schleppflug"+bb_entry->bemerkungen;
 			else
-				bb_entry->bemerkungen="Schleppfl�ge"+bb_entry->bemerkungen;
+				bb_entry->bemerkungen="Schleppflüge"+bb_entry->bemerkungen;
 		}
 
 		return true;

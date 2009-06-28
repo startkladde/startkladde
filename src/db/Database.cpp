@@ -28,14 +28,14 @@
  */
 
 /*
- * M�gliche L�sung zur Spezifikation der Bedingung:
- *   - F�r jede Kombination, die man braucht, einen enum-Wert aufnehmen.
+ * Mögliche Lösung zur Spezifikation der Bedingung:
+ *   - Für jede Kombination, die man braucht, einen enum-Wert aufnehmen.
  *     Probleme:
- *       - sehr viele einzeln zu behandelnde Spezialf�lle
- *   - Den Listenfunktionen fertige Queries �bergeben, die durch make_condition
+ *       - sehr viele einzeln zu behandelnde Spezialfälle
+ *   - Den Listenfunktionen fertige Queries übergeben, die durch make_condition
  *     und and_condition etc. zusammengebaut werden.
  *     Probleme:
- *       - Komplexe conditions zu bauen wird un�bersichtlich und f�hrt zu
+ *       - Komplexe conditions zu bauen wird unübersichtlich und führt zu
  *         codeduplikation (+" AND "+...)/uneinheitlichen Queries
  *       - Codeduplikation, wenn gleiche Teile mehrfach gebraucht werden.
  */
@@ -77,15 +77,15 @@
 // Nichts mit Condition sollte public sein, weil nicht type safe
 // und das Interface trotz allem beschissen ist.
 
-// Die Condition sollten als referenzen �bergeben werden
+// Die Condition sollten als referenzen übergeben werden
 
 // TODO condition und columns evtl. doch innerhalb von make_query
 // erzeugen?
 //
-// TODO reconnect, dazu m�ssen die Verbindungsdaten doch gespeichert werden.
+// TODO reconnect, dazu müssen die Verbindungsdaten doch gespeichert werden.
 // Dann nicht beim Start sofort connecten bzw. nicht abbrechen, wenn das nicht
 // klappt.
-// Au�erdem sollten mehr Signale emittiert werden.
+// Außerdem sollten mehr Signale emittiert werden.
 //   - connection_established
 //   - connection_lost
 //   - start_query
@@ -102,8 +102,8 @@
 
 // TODO all functions should check all parameters
 
-// TODO Funktionalit�t des Bedingung-Erzeugens in die Condition-Klasse. au�erdem
-// dort add_condition oder so dazuf�gen, sonst baut man jede einzelne
+// TODO Funktionalität des Bedingung-Erzeugens in die Condition-Klasse. außerdem
+// dort add_condition oder so dazufügen, sonst baut man jede einzelne
 // kombination aus datuskriterium und anderem kriterium einzeln nach
 
 //#define DEBUG
@@ -388,7 +388,7 @@ QString Database::db_error_description (int error, bool extended) const
 		case db_err_not_editable: return "Nicht editierbar"; break;
 		case db_err_multiple: return "Ergebnis nicht eindeutig"; break;
 		case db_err_already_exists: return "Objekt exisitiert bereits"; break;
-		case db_err_not_admin_db: return "Aministrationsverbindung ben�tigt"; break;
+		case db_err_not_admin_db: return "Aministrationsverbindung benötigt"; break;
 		default: return "Fehler "+QString::number (error); break;
 	}
 }
@@ -802,7 +802,7 @@ QString Database::default_sort_column (db_object_type type)
 
 // Data structures
 QString Database::query_column_list (db_object_type otype, bool id_only)
-	// TODO id_only weg und daf�r �berall column_name_id verwenden.
+	// TODO id_only weg und dafür überall column_name_id verwenden.
 {
 	if (id_only)
 	{
@@ -927,7 +927,7 @@ int Database::row_to_object (db_object_type otype, void *object, MYSQL_ROW row, 
 		case ot_flight:
 		{
 			Flight *p=(Flight *)object;
-			// TODO: hier pr�fen, ob diese Felder existieren.
+			// TODO: hier prüfen, ob diese Felder existieren.
 			USE ("id");                 p->id=atoll (value);
 			USE ("pilot");              p->pilot=atol (value);
 			USE ("begleiter");          p->begleiter=atol (value);
@@ -1735,7 +1735,7 @@ void Database::make_editable (db_object_type type, int id, bool editable)
 			exists_editable=object_exists_in (editable_table, id);
 
 			// If the object still exists in the editable Table, this is an error.
-			if (exists_editable) throw ex_operation_failed ("Objekt existiert nach L�schen aus editierbarer Tabelle noch");
+			if (exists_editable) throw ex_operation_failed ("Objekt existiert nach Löschen aus editierbarer Tabelle noch");
 
 			// Now that the object is deleted, we can copy it from the fixed Table.
 			object_copy (fixed_table, editable_table, id);
@@ -1750,7 +1750,7 @@ void Database::make_editable (db_object_type type, int id, bool editable)
 			exists_fixed=object_exists_in (fixed_table, id);
 
 			// If the object still exists, this is an error.
-			if (exists_fixed) throw ex_operation_failed ("Objekt existiert nach L�schen aus fester Tabelle noch");
+			if (exists_fixed) throw ex_operation_failed ("Objekt existiert nach Löschen aus fester Tabelle noch");
 		}
 		else
 		{
@@ -2157,7 +2157,7 @@ int Database::list_ids (db_object_type type, QList<db_id> &ids, Condition c)
 	// Example: the IDs of all flights that happened on a certain date.
 {
 	QStringList data_columns;
-	// Murx: query_column_list, das nur "id" zur�ckgibt, besser column_name_id hier verwenden.
+	// Murx: query_column_list, das nur "id" zurückgibt, besser column_name_id hier verwenden.
 	data_columns.append (query_column_list (type, true));
 	return list_id_data (type, ids, data_columns, c);
 }
@@ -2840,8 +2840,8 @@ void Database::merge_person (db_id correct_id, db_id wrong_id)
 {
 	// Check some preconditions.
 	if (!connected ()) throw ex_not_connected ();
-	if (id_invalid (correct_id)) throw ex_parameter_error ("Korrekte ID ist ung�ltig");
-	if (id_invalid (wrong_id)) throw ex_parameter_error ("Falsche ID ist ung�ltig");
+	if (id_invalid (correct_id)) throw ex_parameter_error ("Korrekte ID ist ungültig");
+	if (id_invalid (wrong_id)) throw ex_parameter_error ("Falsche ID ist ungültig");
 
 	// Change the person everywhere it occurs. This can be the flight tables,
 	// columns pilot and begleiter.

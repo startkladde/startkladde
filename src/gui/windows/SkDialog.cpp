@@ -30,9 +30,9 @@ void SkDialog::db_connect (QObject *ob)
 	 * TODO: diesen Mechanismus genauer dokumentieren.
 	 */
 {
-	// Wenn ein Objekt die Datenbank ge�ndert hat, weiterreichen.
+	// Wenn ein Objekt die Datenbank geändert hat, weiterreichen.
 	QObject::connect (ob, SIGNAL (db_change (DbEvent *)), this, SIGNAL (db_change (DbEvent *)));
-	// Wenn Datenbank�nderungen �bernommen werden sollen, weiterreichen.
+	// Wenn DatenbankÄnderungen übernommen werden sollen, weiterreichen.
 	QObject::connect (this, SIGNAL (db_update (DbEvent *)), ob, SLOT (slot_db_update (DbEvent *)));
 }
 

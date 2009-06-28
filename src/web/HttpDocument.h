@@ -18,7 +18,7 @@ class HttpDocument
 		static const QString mime_type_multipart_form_data;
 
 		HttpDocument ();
-		void output (const QString &document, const QString &mime_type, const QString &charset="ISO-8859-1");
+		void output (const QString &document, const QString &mime_type, const QString &charset="UTF-8");
 		void output (const HtmlDocument &document);
 		void output_redirect (QString target);
 		void do_output (std::ostream &stream=std::cout);

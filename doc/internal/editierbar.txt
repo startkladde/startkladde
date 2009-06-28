@@ -2,13 +2,13 @@ Editierbarkeit
 ==============
 
 Editierbar bedeutet, dass der Eintrag vom Startschreiber editiert werden kann.
-Grundsätzlich können alle Einträge vom sk_admin editiert werden.
+GrundsÃ¤tzlich kÃ¶nnnen alle EintrÃ¤ge vom sk_admin editiert werden.
 Um Sicherheit gegen direkten SQL-Zugriff zu erhalten, reicht ein Flag in der
-Tabelle dazu nicht aus, da Zugriffsrechte nicht Datensatzweise gewährt werden
-können.
+Tabelle dazu nicht aus, da Zugriffsrechte nicht Datensatzweise gewÃ¤hrt werden
+kÃ¶nnnen.
 Daher gibt es eine Tabelle # und eine Tabelle #_temp, mit # aus (flug, person,
 flugzeug). Schreibrechte bestehen auf #_temp.
-Ein Eintrag, der in # vorhanden ist, hat Priorität über einen Eintrag mit der
+Ein Eintrag, der in # vorhanden ist, hat PrioritÃ¤t Ã¼ber einen Eintrag mit der
 gleichen ID, der auch in #_temp vorhanden ist.
 
 
@@ -18,26 +18,26 @@ Bedingungen hinterher:
   - Nicht editierbar: Perm ja
 
 Existiert  ||                |       |           |Editierbar | Nicht edi-
-Perm |Temp ||Beschreibung    |Gültig |Editierbar |machen     | tierbar machen
+Perm |Temp ||Beschreibung    |GÃ¼ltig |Editierbar |machen     | tierbar machen
 -----+-----++----------------+-------+-----------+-----------+---------------
 Nein |Nein ||Fehler          |-      |-          |Fehler     | Fehler
 Nein |Ja   ||Startschreiber  |Temp   |Ja         |-          | T>P (-T)
 Ja   |Nein ||Stammdaten      |Perm   |Nein       |P>T -P     | -
-Ja   |Ja   ||Extern geändert |Perm   |Nein       |P>T -P     | (-T)
+Ja   |Ja   ||Extern geÃ¤ndert |Perm   |Nein       |P>T -P     | (-T)
 
 Perm: Permanent
 Temp: Temporary
 P: Perm
 T: Temp
 a>b: Von a in b kopieren
--a: Aus a löschen
+-a: Aus a lÃ¶schen
 (.): Nicht zwingend
 
 Queries:
 Kopieren:
 insert into #(_temp) select from #(_temp) where id=$id
-Prüfen:
+PrÃ¼fen:
 select from #(_temp) where id=$id
-Löschen:
+LÃ¶schen:
 delete from $(_temp) where id=$id
 

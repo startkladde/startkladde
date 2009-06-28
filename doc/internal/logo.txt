@@ -1,2 +1,2 @@
 logo: gimp/script-fu/clothify
-Filter -> K�nstlerisch -> Stoffmalerei
+Filter -> Künstlerisch -> Stoffmalerei

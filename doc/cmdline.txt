@@ -1,36 +1,36 @@
-Zugriff auf die Daten via Kommandozeile (das, was früher mal sk_dump war) geht
+Zugriff auf die Daten via Kommandozeile (das, was frÃ¼her mal sk_dump war) geht
 jetzt mit sk_web.
 
 Der direkte Aufruf funktioniert so, dass die Umgebungsvariable REQUEST_METHOD
 auf "CMDLINE" gestellt wird. In der Umgebungsvariablen QUERY_STRING wird die
-Query angegeben, die ausgeführt werden soll. So kann sämtliche Funktionalität
+Query angegeben, die ausgefÃ¼hrt werden soll. So kann sÃ¤mtliche FunktionalitÃ¤t
 des Webinterface auch von der Kommandozeile erreicht werden.
 
-Da der direkte Zugriff etwas umständlich ist, empfiehlt es sich, ein Skript
-dafür zu verwenden. Ein Beispielskript liegt in scripts/sk_make_csv. Es dient
+Da der direkte Zugriff etwas umstÃ¤ndlich ist, empfiehlt es sich, ein Skript
+dafÃ¼r zu verwenden. Ein Beispielskript liegt in scripts/sk_make_csv. Es dient
 dazu, die Flugdatenbank als CSV-Datei abzurufen.
-Es wird folgendermaßen benutzt: sk_make_csv [--towflights_extra] [date [date]].
+Es wird folgendermaÃŸen benutzt: sk_make_csv [--towflights_extra] [date [date]].
 Daten werden im ISO-Format (YYYY-MM-DD) angegeben. Wird kein Datum angegeben,
 wird der aktuelle Tag verwendet. Bei einem Datum wird dieser Tag verwendet, bei
 zwei Daten der durch diese Daten gegebene Bereich.
-Der Schalter --towflights_extra bewirkt, dass Schleppflüge nochmals als
-separate Einträge dargestellt werden.
+Der Schalter --towflights_extra bewirkt, dass SchleppflÃ¼ge nochmals als
+separate EintrÃ¤ge dargestellt werden.
 
 Zum Zugriff mittels Kommandozeile ist es erforderlich, dass der Benutzer die
 Konfigurationsdatei mit dem Datenbankpasswort lesen kann. Es kann also kein
 unerlaubter Zugriff stattfinden.
-Für den Zugriff werden die Rechte des Administrators (sk_admin) verwendet, es
+FÃ¼r den Zugriff werden die Rechte des Administrators (sk_admin) verwendet, es
 findet also keine interne Authentifikation mehr statt. Das ist dadurch
-begründet, dass der aufrufende Benutzer ohnehin Zugriff auf das
+begrÃ¼ndet, dass der aufrufende Benutzer ohnehin Zugriff auf das
 Datenbankpasswort haben muss und er sich daher auch direkt als sk_admin
-anmelden könnte.
+anmelden kÃ¶nnte.
 
 Soll eine weitere Authentifikation verwendet werden, bietet sich SSH an. Mit
-Schlüsselauthentifikation kann der Zugriff bestimmter Benutzer (genauer:
-Schlüssel) auf bestimmte Programme eingeschränkt werden. Es kann also
-eingestellt werden, dass mit einem bestimmten Schlüssel nur eine bestimmte
-Aktion (z. B. CSV abrufen) möglich ist.
-Nähere Information findet sich in der Dokumentation zu ssh unter dem Begriff
+SchlÃ¼sselauthentifikation kann der Zugriff bestimmter Benutzer (genauer:
+SchlÃ¼ssel) auf bestimmte Programme eingeschrÃ¤nkt werden. Es kann also
+eingestellt werden, dass mit einem bestimmten SchlÃ¼ssel nur eine bestimmte
+Aktion (z. B. CSV abrufen) mÃ¶glich ist.
+NÃ¤here Information findet sich in der Dokumentation zu ssh unter dem Begriff
 "authorized_keys" (bei openssh zum Beispiel in man sshd).
 
 

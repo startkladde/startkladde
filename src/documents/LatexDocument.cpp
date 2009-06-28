@@ -254,7 +254,7 @@ QString LatexDocument::make_pdf ()
 
 
 	std::ofstream latex_file (latex_file_name.latin1());
-	if (!latex_file.is_open ()) throw ex_generate_error ("Fehler beim �ffnen der Ausgabedatei");
+	if (!latex_file.is_open ()) throw ex_generate_error ("Fehler beim öffnen der Ausgabedatei");
 
 	latex_file << doc_string;
 	latex_file.close ();
@@ -285,7 +285,7 @@ QString LatexDocument::make_pdf ()
 	execute_command ("ps2pdf "+ps_file_name, "beim Aufruf von ps2pdf");
 
 	std::ifstream pdf_file (pdf_file_name.latin1());
-	if (!pdf_file.is_open ()) throw ex_generate_error ("Fehler beim �ffnen der PDF-Datei");
+	if (!pdf_file.is_open ()) throw ex_generate_error ("Fehler beim öffnen der PDF-Datei");
 
 	// Copy the file
 	// TODO Qt-ize

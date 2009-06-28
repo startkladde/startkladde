@@ -41,17 +41,17 @@ const char *text_gelandet_1="Gel&andet";
 const char *text_automatisch_3="Au&tomatisch";
 const char *text_gelandet_2="Gelande&t";
 const char *text_beendet="Beende&t";
-const char *text_spaeter_starten="S&p�ter starten";
-const char *text_spaeter_landen="S&p�ter landen";
+const char *text_spaeter_starten="S&päter starten";
+const char *text_spaeter_landen="S&päter landen";
 const char *text_jetzt_starten="&Jetzt starten";
 const char *text_jetzt_landen="&Jetzt landen";
-const char *text_spaeter_="S&p�ter ";
+const char *text_spaeter_="S&päter ";
 const char *text_jetzt_="&Jetzt ";
 const char *text_landen="landen";
 const char *text_starten="starten";
 const char *text_ok="&OK";
 const char *text_abbrechen="Abbre&chen";
-const char *text_schliessen="S&chlie�en";
+const char *text_schliessen="S&chließen";
 
 const QString unknown_startart_text="(Unbekannt)";
 const QString registration_prefix="D-";
@@ -163,7 +163,7 @@ FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bo
 
 	edit_fehler->setSelectionMode (QListWidget::NoSelection);	// Single
 //	edit_fehler->setFixedHeight (edit_fehler->minimumSize ().height ());
-	edit_fehler->setFixedHeight (80); // MURX: besser "4*Zeilenh�he
+	edit_fehler->setFixedHeight (80); // MURX: besser "4*Zeilenhöhe
 	//edit_fehler->setAutoScrollBar (true);
 	//printSizeHint (edit_fehler);
 
@@ -243,7 +243,7 @@ FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bo
 	}
 
 
-		// TODO Unregelm��iger Abstand
+		// TODO Unregelmäßiger Abstand
 //		if (
 //				edit_widget[i]==edit_pilot_nn||
 //				edit_widget[i]==edit_bemerkungen||
@@ -282,17 +282,17 @@ FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bo
 
 
 
-	// Dialog auf beste Gr��e setzen
+	// Dialog auf beste Größe setzen
 	//printSizeHint (editorWidget);
 	//printSizeHint (this);
 	//printSizeHint (backgroundLayout);
 	//printSizeHint (scrollArea);
 
-	// H�he einstellen
+	// Höhe einstellen
 	QSize size=backgroundLayout->sizeHint ();
 	int height=size.height ();
 
-	height+=editorWidget->sizeHint ().height ()-scrollArea->sizeHint ().height (); // Falsche Gr��e der ScrollArea ausgleichen
+	height+=editorWidget->sizeHint ().height ()-scrollArea->sizeHint ().height (); // Falsche Größe der ScrollArea ausgleichen
 	height+=20;	// Pfusch, aber sonst ists ein paar Pixel zu klein
 
 	int desktopHeight=(QApplication::desktop ())->availableGeometry ().height ();
@@ -338,7 +338,6 @@ FlightWindow::FlightWindow (QWidget *parent, Database *_db, const char *name, bo
 	QObject::connect (edit_bemerkungen, SIGNAL (focus_out ()), this, SLOT (slot_bemerkung ()));
 	QObject::connect (edit_abrechnungshinweis, SIGNAL (focus_out ()), this, SLOT (slot_abrechnungshinweis ()));
 
-	// Oh je, das ist ja f�rchterlich (3*2*3). W�re da nicht ein wenig Zusammenfassen angebracht?
 	QObject::connect (edit_pilot_vn, SIGNAL (focus_out ()), this, SLOT (slot_pilot_vn ()));
 //	QObject::connect (edit_pilot_vn, SIGNAL (activated (const QString &)), this, SLOT (slot_pilot_vn ()));
 	QObject::connect (edit_pilot_vn, SIGNAL (progress (int, int)), this, SIGNAL (progress (int, int)));
@@ -468,7 +467,7 @@ void FlightWindow::set_buttons (bool spaeter_enabled, QString aktion_text, bool 
 	}
 	else
 	{
-		// Sp�ter (aktion) nicht aktiv, also nur OK
+		// Später (aktion) nicht aktiv, also nur OK
 		but_later->hide ();
 		but_ok->setText (text_ok);
 		but_ok->show ();
@@ -648,8 +647,8 @@ void FlightWindow::populate_lists ()
 
 	foreach (LaunchType *sa, saen)
 	{
-		// TODO das sorgt zwar daf�r, dass die Indizies in startarten und
-		// edit_startart �bereinstimmen, aber gut ist das nicht.
+		// TODO das sorgt zwar dafür, dass die Indizies in startarten und
+		// edit_startart übereinstimmen, aber gut ist das nicht.
 		startarten.append (sa->get_id ());
 		edit_startart->insertItem (sa->list_text (), edit_startart->count ());
 	}
@@ -817,19 +816,19 @@ void FlightWindow::namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, NameP
 
 	QStringList names;
 
-	// Ja gut, das ist nat�rlich Pfusch. Die ganze Klasse geh�rt neu
+	// Ja gut, das ist natürlich Pfusch. Die ganze Klasse gehört neu
 	// geschrieben. Version 2...
 #define locked(a) { bool old_locked=lock_edit_slots; lock_edit_slots=true; do {a} while (false); lock_edit_slots=old_locked; }
 
 	if (eintrag_ist_leer (quelltext))
 	{
-		// L�nge des Quelltexts ist 0. Im Zielfeld alle anzeigen.
+		// Länge des Quelltexts ist 0. Im Zielfeld alle anzeigen.
 		locked (zielfeld->use_full (true);)
 		if (anzahl_kandidaten) if (eintrag_ist_leer (zieltext)) *anzahl_kandidaten=0;
 	}
 	else
 	{
-		// L�nge des Quelltexts ist nicht gleich 0. Alle die auflisten,
+		// Länge des Quelltexts ist nicht gleich 0. Alle die auflisten,
 		// die dazu passen, und ins Zielfeld schreiben. Das sollte so
 		// wenige sein, dass es schnell geht.
 
@@ -933,12 +932,12 @@ void FlightWindow::slot_ok ()
 	{
 		FlightMode m=modi[edit_modus->currentItem ()];
 
-		// TODO waaaah diese Bedingung ist doch garantiert nicht vollst�ndig.
-		// Au�erdem Codeduplikation mit dem Code, der die buttons zwischen
-		// "jetzt/sp�ter starten" und "OK" umschaltet.
-		// Das ist nur dann, wenn auch tats�chlich "create now" durchgef�hrt wird.
+		// TODO waaaah diese Bedingung ist doch garantiert nicht vollständig.
+		// Außerdem Codeduplikation mit dem Code, der die buttons zwischen
+		// "jetzt/später starten" und "OK" umschaltet.
+		// Das ist nur dann, wenn auch tatsächlich "create now" durchgeführt wird.
 		// Bei zum Beispiel Nachtragen ist das nicht der Fall.
-		// Die aktuelle L�sung ist jedenfalls Murx.
+		// Die aktuelle Lösung ist jedenfalls Murx.
 		if (mode==fe_create && edit_datum->date ()==QDate::currentDate ())
 		{
 			switch (m)
@@ -991,7 +990,7 @@ void FlightWindow::enable_widget (int ind, bool en)
 	 *   - en: whether the widget is to be shown (true) or hidden (false).
 	 */
 {
-	// TODO sollte display/show_widget hei�en.
+	// TODO sollte display/show_widget heißen.
 
 	// We don't hide () and show () the labels because then the layout manager
 	// would remove the row along with its spacing so the widgets below would
@@ -1117,7 +1116,7 @@ void FlightWindow::slot_flugtyp (int ind)
 	// TODO remove, wenn bei widget_enable der slot aufgerufen wird
 	if (begleiter_erlaubt (typ))
 	{
-		// Variable f->begleiter zerst�rt
+		// Variable f->begleiter zerstört
 		slot_begleiter_nn ();
 		slot_begleiter_vn ();
 	}
@@ -1131,16 +1130,16 @@ void FlightWindow::slot_flugtyp (int ind)
 		case ftNormal:
 			break;
 		case ftTraining1:
-			label[pilot_idx]->setText ("Flugsch�ler");
+			label[pilot_idx]->setText ("Flugschüler");
 			break;
 		case ftTraining2:
-			label[pilot_idx]->setText ("Flugsch�ler");
+			label[pilot_idx]->setText ("Flugschüler");
 			label[begleiter_idx]->setText ("Fluglehrer");
 			break;
 		case ftGuestPrivate: case ftGuestExternal:
 			break;
 		case ftTow:
-			log_error ("Schleppflug darf nicht ausw�hlbar sein in sk_win_flight::slot_flugtyp ()");
+			log_error ("Schleppflug darf nicht auswählbar sein in sk_win_flight::slot_flugtyp ()");
 			break;
 		default:
 			log_error ("Unbehandelter Flugtyp in sk_win_flight::slot_flugtyp ()");
@@ -1283,7 +1282,7 @@ void FlightWindow::slot_modus (int ind)
 	// TODO: Besser: Wenn noch nicht manuell editiert.
 	if (mode==fe_create)
 	{
-		// TODO Bedingung �berpr�fen
+		// TODO Bedingung überprüfen
 		if (starts_here (m))
 		{
 			// Leeren Startort auf default setzen
@@ -1308,7 +1307,7 @@ void FlightWindow::slot_modus (int ind)
 	if (!starts_here (m))
 	{
 		// Wenn der Flug von extern kommt, dann ist die Startart sowieso
-		// irrelevant, dann m�ssen wir auch nicht drauf achten und k�nnen
+		// irrelevant, dann müssen wir auch nicht drauf achten und können
 		// davon ausgehen, dass kein SFZ vorhanden ist.
 		enable_widget (edit_landezeit_sfz, false);
 	}
@@ -1316,7 +1315,7 @@ void FlightWindow::slot_modus (int ind)
 	{
 		// Wenn der Flug allerdings nicht von extern kommt, dann kann noch
 		// lange nicht automatisch davon ausgegangen werden, dass es ein
-		// SFZ gibt --> das h�ngt von der Startart ab.
+		// SFZ gibt --> das hängt von der Startart ab.
 		slot_startart (edit_startart->currentItem ());
 	}
 	setup_controls (false);
@@ -1366,7 +1365,7 @@ void FlightWindow::slot_startart (int ind)
 	// TODO immer wenn ein control angezeigt wird, den entsprechenden slot aufrufen (?)
 	if (towflight_widgets_visible)
 	{
-		slot_modus_sfz (edit_modus_sfz->currentItem ());	// TODO currentItem in die Funktion schieben und -1 �bergeben
+		slot_modus_sfz (edit_modus_sfz->currentItem ());	// TODO currentItem in die Funktion schieben und -1 übergeben
 	}
 
 	if (towplane_widgets_visible)
@@ -1720,9 +1719,9 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 	// TODO in diese Funktion sicherstellen, dass alle parameter nur bei
 	// existenz geschrieben werden.
 	// TODO hier nich today () verwenden
-	// TODO alle checkungen mit zeit pr�fen ob ankreuzfeld
+	// TODO alle checkungen mit zeit prüfen ob ankreuzfeld
 	// TODO dazu im time editor funktion, die angibt, ob das timefeld aktiv ist.
-	// TODO m�ssten Teile hiervon nicht durch UFC erledigt werden?
+	// TODO müssten Teile hiervon nicht durch UFC erledigt werden?
 	//   - aber nicht alle, es gibt auch Warnungen (Motorflugzeug an der Winde...)
 	QString msg;
 	bool fz_bekannt=false;
@@ -1818,15 +1817,15 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		}
 	}
 
-	// TODO: andere pr�fung auf fe_create als oben
+	// TODO: andere prüfung auf fe_create als oben
 	// TODO mit check_plane_flying machen
 
-	// Begleiter enth�lt "+1"
+	// Begleiter enthält "+1"
 	if (begleiter_erlaubt (typ) && (edit_begleiter_vn->currentText ().find (QString ("+1"), 0, false)>=0 || edit_begleiter_nn->currentText ().find (QString ("+1"), 0, false)>=0))
 	{
 		int ret=QMessageBox::information (this, "Begleiter fehlerhaft",
-				"F�r den Begleiter wurde \"+1\" angegeben.\n"
-				"F�r Gastfl�ge soll stattdessen der Flugtyp\n"
+				"Für den Begleiter wurde \"+1\" angegeben.\n"
+				"Für Gastflüge soll stattdessen der Flugtyp\n"
 				"\"Gastflug Privat\" der \"Gastflug Extern\"\n"
 				"verwendet werden.\n"
 				"Soll dieser Flugtyp verwendet werden?",
@@ -1865,10 +1864,10 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 	}
 
 
-	// Kein Zielort f�r das Schleppflugzeug angegeben
+	// Kein Zielort für das Schleppflugzeug angegeben
 	if ((sfz_gelandet || !lands_here (modus_sfz)) && eintrag_ist_leer (edit_zielort_sfz->currentText ()))
 	{
-		msg="Es wurde kein Zielort f�r das Schleppflugzeug angegeben.\n";
+		msg="Es wurde kein Zielort für das Schleppflugzeug angegeben.\n";
 		if (error_control) *error_control=edit_zielort_sfz;
 		if (!check_message (this, msg)) return false;
 	}
@@ -1913,7 +1912,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		if (!check_message (this, msg)) return false;
 	}
 
-	// TODO sollte das nicht fz_bekannt hei�en?
+	// TODO sollte das nicht fz_bekannt heißen?
 	if (flugzeug_id && *flugzeug_id>0)
 	{
 		// Gastflug in einsitzigem Flugzeug
@@ -1971,7 +1970,7 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 		}
 	}
 
-	// Personenkram am Ende pr�fen, weil sonst Personenauswahl nach jedem
+	// Personenkram am Ende prüfen, weil sonst Personenauswahl nach jedem
 	// korrigierten Fehler.
 	// Piloten und Begleiter nicht angegeben oder stehen nicht in der Datenbank
 	if (error_control) *error_control=edit_pilot_nn;
@@ -1986,12 +1985,12 @@ bool FlightWindow::check_flight (db_id *flugzeug_id, db_id *sfz_id, db_id *pilot
 
 	if (begleiter_erlaubt (typ))
 	{
-		// Begleiter ist nie erforderlich. Lehrer wird sp�ter gesondert erfasst.
+		// Begleiter ist nie erforderlich. Lehrer wird später gesondert erfasst.
 		if (error_control) *error_control=edit_begleiter_nn;
-		// TODO: F�r die preselection sollte man, wenn es keine Person mit dem
-		// Verein des Flugsch�lers gibt, doch wieder auf den Verein des
+		// TODO: Für die preselection sollte man, wenn es keine Person mit dem
+		// Verein des Flugschülers gibt, doch wieder auf den Verein des
 		// Flugzeugs schauen. Das merkt man allerdings erst in check_person,
-		// daher m�ssen da beide Vereine reingegeben werden.
+		// daher müssen da beide Vereine reingegeben werden.
 		if (typ==ftTraining2 && pilot_id && !id_invalid (*pilot_id))
 		{
 			// Double seated training. The flight instructor is preselected
@@ -2234,7 +2233,7 @@ bool FlightWindow::check_plane (db_id *plane_id, Plane *_plane, QString registra
 							// Plane confirmed
 							plane->id=0;
 							db_id id=db->write_plane (plane);
-//							// Das hier soll helfen, weitere Fehlercheckung zu erm�glichen, wenn FZ aufgenommen.
+//							// Das hier soll helfen, weitere Fehlercheckung zu ermöglichen, wenn FZ aufgenommen.
 //							// Aktiveren, wenn OK-Fehlercheckung mit UFC gemacht wird
 //							if (selected_plane) delete selected_plane;
 //							selected_plane=new Plane (fz);
@@ -2332,20 +2331,20 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 	QList<Person *> persons;
 	QString action_text;
 
-	// TODO bessere L�sung f�r die Markierung, welche Persone einen passenden
+	// TODO bessere Lösung für die Markierung, welche Persone einen passenden
 	// Verein haben, und sei es nur, dass da steht "Verein des
-	// Flugzeugs"/"Verein des Flugsch�lers"
+	// Flugzeugs"/"Verein des Flugschülers"
 	QString please_select_text;
 	if (preselection_club)
-		please_select_text="\nBitte ausw�hlen (Passender Verein: "+*preselection_club+"):";
+		please_select_text="\nBitte auswählen (Passender Verein: "+*preselection_club+"):";
 	else
-		please_select_text="\nBitte ausw�hlen:";
+		please_select_text="\nBitte auswählen:";
 
 	if (vorname_leer && nachname_leer)
 	{
 		// No name was given.
 		// Return "no person". If the person is required, we need to confirm.
-		action_text="F�r den Flug wurde kein "+bezeichnung_n+" angegeben.\n";
+		action_text="Für den Flug wurde kein "+bezeichnung_n+" angegeben.\n";
 		result=rt_no_person;
 		confirm=person_required;
 	}
@@ -2354,7 +2353,7 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 		// Only a last name was given.
 		// Display a list of matching first names.
 		db->list_persons_by_last_name (persons, nachname);
-			action_text="F�r den "+bezeichnung_a+" wurde nur ein Nachname angegeben."+please_select_text;
+			action_text="Für den "+bezeichnung_a+" wurde nur ein Nachname angegeben."+please_select_text;
 		display_selector=true;
 	}
 	else if (!vorname_leer && nachname_leer)
@@ -2362,7 +2361,7 @@ bool FlightWindow::check_person (db_id *person_id, QString vorname, QString nach
 		// Only a first name was given.
 		// Display a list of matching last names.
 		db->list_persons_by_first_name (persons, vorname);
-			action_text="F�r den "+bezeichnung_a+" wurde nur ein Vorname angegeben."+please_select_text;
+			action_text="Für den "+bezeichnung_a+" wurde nur ein Vorname angegeben."+please_select_text;
 		display_selector=true;
 	}
 	else
@@ -2553,7 +2552,7 @@ void FlightWindow::accept_date ()
 		log_error ("Unbekannter modus in sk_win_flight::accept_flight_date ()");
 	}
 
-	// MURX: Besser nicht nachtr�glich �berschreiben
+	// MURX: Besser nicht nachträglich überschreiben
 	if (!starts_here (flight->modus)) gestartet=false;
 	if (!lands_here (flight->modus)) gelandet=false;
 
@@ -2595,7 +2594,7 @@ bool FlightWindow::accept_flight_data (bool spaeter)
 		flight->zielort_sfz=edit_zielort_sfz->currentText ();
 		flight->landungen=edit_landungen->text ().toInt ();
 
-		// pilot_id und begleiter_id k�nnen 0 sein, wenn nur ein Namensteil
+		// pilot_id und begleiter_id können 0 sein, wenn nur ein Namensteil
 		// angegeben und vom Benutzer akzeptiert wurde.
 		// begleiter_id kann auch 0 sein, wenn einfach kein Begleiter angegeben
 		// wurde.
@@ -2617,7 +2616,7 @@ bool FlightWindow::accept_flight_data (bool spaeter)
 
 		// TODO ist begleiter_erlaubt das einzige/richtige Kritierium?
 		// TODO Vielleicht besser bei !begleiter_erlaubt so tun, als ob die
-		// Felder leer w�ren, aber hier nicht �berschreiben.
+		// Felder leer wären, aber hier nicht überschreiben.
 		if (begleiter_id>0)
 		{
 			// Begleiter angegeben und erkannt.
@@ -2679,7 +2678,7 @@ void FlightWindow::set_time (bool use_time, bool *use_ziel, Time *zeit_ziel, QDa
 	(*use_ziel)=use_time;
 	if (use_time)
 		zeit_ziel->set_to (datum, zeit, tz_utc, true);
-		// Ansonsten: nicht �ndern
+		// Ansonsten: nicht ändern
 //	else
 //		zeit_ziel->set_null ();
 }
@@ -2790,11 +2789,11 @@ void FlightWindow::flug_eintragen (Flight *f, bool repeat)
 		edit_towpilot_nn->setCurrentText (towpilot.nachname);
 	}
 
-	// Felder eintragen, abh�ngig von repeat
+	// Felder eintragen, abhängig von repeat
 	// Hier besteht die Wichtigkeit, dass das nach den Piloten geschieht, weil
-	// n�mlich sonst via slot_flugtyp in slot_begleiter_vn/nn der Begleiter in
-	// f �berschrieben wird, was auf das unglaublich schlechtes Design dieser
-	// Klasse zur�ckzuf�hren ist.
+	// nämlich sonst via slot_flugtyp in slot_begleiter_vn/nn der Begleiter in
+	// f überschrieben wird, was auf das unglaublich schlechtes Design dieser
+	// Klasse zurückzuführen ist.
 	edit_registration->setCurrentText (fz.registration);
 	edit_flugzeug_typ->setText (fz.typ);
 	edit_flug_typ->setCurrentItem (flugtyp_index (f->flugtyp));
@@ -2853,7 +2852,7 @@ void FlightWindow::flug_eintragen (Flight *f, bool repeat)
 
 	int mi=modus_index (f->modus);
 	if (mi<0) mi=modus_index (fmLocal);
-	// BUG: Der folgende Befehl �berschreibe selected_plane
+	// BUG: Der folgende Befehl überschreibe selected_plane
 	edit_modus->setCurrentItem (mi);
 
 	if (!repeat)

@@ -15,7 +15,7 @@ if [ -z "$loc" ]; then
         exit 1
 fi
 
-echo "Rufe METAR für $loc ab..."
+echo "Rufe METAR fÃ¼r $loc ab..."
 
 url="http://weather.noaa.gov/cgi-bin/mgetmetar.pl?cccc=$loc"
 #url="http://weather.noaa.gov/cgi-bin/mgettaf.pl?cccc=$loc"

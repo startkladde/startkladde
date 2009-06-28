@@ -124,13 +124,13 @@ extern "C" void flight_to_fields (const string &format, list<ObjectField> &field
 		{
 			switch (f.flugtyp)
 			{
-				case ftGuestExternal: flight_type="�"; break;
-				case ftGuestPrivate: flight_type="�"; break;
+				case ftGuestExternal: flight_type="Ü"; break;
+				case ftGuestPrivate: flight_type="Ü"; break;
 				case ftNone: flight_type=none_text; break;
 				case ftTow: flight_type="-"; break;
 				case ftTraining1: flight_type="E"; break;
 				case ftTraining2: flight_type="S"; break;
-				case ftNormal: flight_type="�"; break;
+				case ftNormal: flight_type="Ü"; break;
 			}
 		}
 
@@ -231,13 +231,13 @@ extern "C" void flight_to_fields (const string &format, list<ObjectField> &field
 			pilot_last_name=org_copilot_last_name;
 			// Lehrer Vorname
 			pilot_first_name=org_copilot_first_name;
-			// Sch�ler Code
+			// Schüler Code
 			pilot_club=org_pilot_club_id;
-			// Sch�ler Verein
+			// Schüler Verein
 			pilot_code=org_pilot_club;
-			// Sch�ler Nachname
+			// Schüler Nachname
 			copilot_last_name=org_pilot_last_name;
-			// Sch�ler Vorname
+			// Schüler Vorname
 			copilot_first_name=org_pilot_first_name;
 			// Lehrer Code
 			copilot_code=org_copilot_club_id;

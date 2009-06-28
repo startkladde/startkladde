@@ -296,7 +296,7 @@ void ArgumentList::test ()
 {
 	ArgumentList argl;
 	argl.set_value ("foo", "b a r");
-	argl.set_value ("m�ller", "I\nam\nnot\nwithout\nnewlines!");
+	argl.set_value ("müller", "I\nam\nnot\nwithout\nnewlines!");
 
 	argl.set_value ("hello", "world");
 	std::cout << argl << std::endl;

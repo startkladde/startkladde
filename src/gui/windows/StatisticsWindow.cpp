@@ -56,7 +56,7 @@ StatisticsWindow::StatisticsWindow (QWidget *parent, const char *name, bool moda
 
 	// Create and setup close button
 	but_close=new QPushButton (this);
-	but_close->setText ("&Schlie�en");
+	but_close->setText ("&Schließen");
 	QObject::connect (but_close, SIGNAL (clicked ()), this, SLOT (accept ()));
 
 	// Main layout for the Table
@@ -110,7 +110,7 @@ void StatisticsWindow::fill_sastat (QDate datum)
 		int *sa_fluege=new int[num_startarten];
 		for (int i=0; i<num_startarten; i++) sa_fluege[i]=0;
 
-		// Alle Fl�ge listen
+		// Alle Flüge listen
 		QList<Flight *> flights;
 		db->list_flights_date (flights, &datum); // TODO Fehlerbehandlung
 
@@ -126,7 +126,7 @@ void StatisticsWindow::fill_sastat (QDate datum)
 			}
 		}
 
-		// Startarten mit Anzahl ihrer Fl�ge eintragen
+		// Startarten mit Anzahl ihrer Flüge eintragen
 		int s=0;
 		foreach (LaunchType *sa, startarten)
 		{
@@ -201,7 +201,7 @@ void StatisticsWindow::planeLog (QDate datum)
 	tab->setColumn (tbl_bob_betriebszeit, "Betriebsdauer", 110);
 	tab->setColumn (tbl_bob_bemerkungen, "Bemerkungen", 200);
 
-	emit status ("Bordb�cher werden erzeugt, bitte warten...");
+	emit status ("Bordbücher werden erzeugt, bitte warten...");
 	emit long_operation_start ();
 
 	QList<PlaneLogEntry *> planeLog;
@@ -309,7 +309,7 @@ void StatisticsWindow::displayPlaneLogEntry (PlaneLogEntry *bbe)
 		add_parentheses (tbl_bob_betriebszeit)
 #undef add_parentheses
 
-		set_table_cell (row, tbl_bob_bemerkungen, "Eintrag ung�ltig, da noch offene Fl�ge");
+		set_table_cell (row, tbl_bob_bemerkungen, "Eintrag ungültig, da noch offene Flüge");
 	}
 }
 
@@ -348,7 +348,7 @@ void StatisticsWindow::display_pilot_log_entry (PilotLogEntry *fbe)
 #undef add_parentheses
 
 		if (!bemerkung.isEmpty ()) bemerkung+="; ";
-		bemerkung+="Eintrag ung�ltig, da noch offene Fl�ge";
+		bemerkung+="Eintrag ungültig, da noch offene Flüge";
 	}
 
 	set_table_cell (row, tbl_flb_bemerkung, bemerkung);

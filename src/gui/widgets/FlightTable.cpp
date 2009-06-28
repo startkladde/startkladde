@@ -297,7 +297,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	bool eff_starts_here=starts_here (eff_modus);
 	bool eff_lands_here=lands_here (eff_modus);
 
-	// Signale f�r die Buttons
+	// Signale für die Buttons
 	const char *start_signal=
 		SIGNAL (signal_button_start (db_id));
 	const char *landung_signal=set_schlepp?
@@ -310,7 +310,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	// Referenzitems
 	SkTableItem *id_item, *sref_item, *startzeit_item;
 
-	// Wenn gespeicherte Startzeit existiert, l�schen
+	// Wenn gespeicherte Startzeit existiert, löschen
 	startzeit_item=(SkTableItem *)item (row, tbl_idx_startzeit);
 	if (startzeit_item)
 	{
@@ -328,7 +328,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	// start/landung/dauer nimmt, dazu in jedem fall modus,schlepp/flug.
 	// TODO: every check of started must also check starts_here
 
-	// �bersichtstabelle:
+	// Übersichtstabelle:
 	// X: Flug {Start, Land, Dauer}, Schlepp {Start, Land, Dauer}
 	// Y: Lokal {-,/,\,/\}, Kommt {...}, Geht {...}
 
@@ -427,7 +427,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 				Person towpilot;
 				QString towpilot_eintrag;
 
-				// Eintrag f�r den Schlepppiloten festlegen
+				// Eintrag für den Schlepppiloten festlegen
 				if (id_invalid (f->towpilot))
 					towpilot_eintrag=f->unvollst_towpilot_name ();
 				else if (db->get_person (&towpilot, f->towpilot)!=0)
@@ -463,7 +463,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 		QString pilot_eintrag;
 		QString begleiter_eintrag;
 
-		// Eintrag f�r den Piloten festlegen
+		// Eintrag für den Piloten festlegen
 		if (id_invalid (f->pilot))
 			pilot_eintrag=f->unvollst_pilot_name ();
 		else if (db->get_person (&pilot, f->pilot)!=0)
@@ -479,7 +479,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 		else if (f->flugtyp==ftTraining1)
 			begleiter_eintrag="-";
 		else if (id_invalid (f->begleiter))
-			// TODO nicht unbedingt unvollst�ndig, vielleicht auch einfach nicht vorhanden.
+			// TODO nicht unbedingt unvollständig, vielleicht auch einfach nicht vorhanden.
 			begleiter_eintrag=f->unvollst_begleiter_name ();
 		else if (db->get_person (&begleiter, f->begleiter)!=0)
 			begleiter_eintrag="???";
@@ -522,7 +522,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 		set_cell (row, tbl_idx_id_display, QString::number (id), bg);
 	}
 
-	// Gemeinsames f�r Flug und Schleppflug
+	// Gemeinsames für Flug und Schleppflug
 	QString registration_string;
 	QString typ_string;
 	if (eff_plane_ok)
@@ -604,7 +604,7 @@ void FlightTable::update_flight (db_id id, Flight *f)
 
 	// ****** First, we determine whether the flight/tow is to be shown.
 	{
-		// Wenn schon gelandet oder weggeflogen und gestartet, gem��
+		// Wenn schon gelandet oder weggeflogen und gestartet, gemäß
 		// Einstellung nicht anzeigen.
 		if (gelandete_ausblenden)
 		{
@@ -614,13 +614,13 @@ void FlightTable::update_flight (db_id id, Flight *f)
 			}
 			if (f->modus==fmLeaving && f->gestartet)
 				flug_anzeigen=false;
-			// Bei gehenden Schleppfl�gen hat 'gelandet' die Bedeutung 'Schlepp
+			// Bei gehenden Schleppflügen hat 'gelandet' die Bedeutung 'Schlepp
 			// beendet', ansonsten 'Schleppflugzeug gelandet'
 			if (f->sfz_gelandet)
 				schlepp_anzeigen=false;
 		}
 
-		// Wenn geht oder kommt, gem�� Einstellung doch anzeigen
+		// Wenn geht oder kommt, gemäß Einstellung doch anzeigen
 		if (weggeflogene_gekommene_anzeigen)
 		{
 			if (f->modus==fmLeaving || f->modus==fmComing) flug_anzeigen=true;
@@ -634,13 +634,13 @@ void FlightTable::update_flight (db_id id, Flight *f)
 		if (!f->gestartet) schlepp_anzeigen=false;
 
 		// Wenn fehlerhaft, u. U. immer anzeigen (fehlerhafte_immer greift nur bei
-		// editierbaren Fl�gen)
+		// editierbaren Flügen)
 		if (fehlerhafte_immer && f->editierbar && f->fehlerhaft (&fz, &sfz, &startart)) flug_anzeigen=true;
 		if (fehlerhafte_immer && f->editierbar && f->schlepp_fehlerhaft (&fz, &sfz, &startart)) schlepp_anzeigen=true;
 
 		if (startart.is_airtow ())
 		{
-			// Pr�fung auf Fehler im Schlepp nur bei F-Schlepps
+			// Prüfung auf Fehler im Schlepp nur bei F-Schlepps
 			if (fehlerhafte_immer && f->editierbar && f->schlepp_fehlerhaft (&fz, &sfz, &startart)) schlepp_anzeigen=true;
 		}
 		else
@@ -663,7 +663,7 @@ void FlightTable::update_flight (db_id id, Flight *f)
 	// Table, depending on what we just found out and wheter it is already
 	// present.
 	{
-		// Pr�fen, ob der Flug bereits in der Tabelle steht.
+		// Prüfen, ob der Flug bereits in der Tabelle steht.
 		row=row_from_id (id);
 		//SkTableItem* item0 = (SkTableItem*)item (row, 0);
 		//bool timerActive = (item0 ? item0->isTimerActive() : false);
@@ -679,7 +679,7 @@ void FlightTable::update_flight (db_id id, Flight *f)
 			if (row>=0) removeRow (row);
 		}
 
-		// Pr�fen, ob der Schlepp bereits in der Tabelle steht
+		// Prüfen, ob der Schlepp bereits in der Tabelle steht
 		row=row_from_sref (id);
 		if (schlepp_anzeigen)
 		{

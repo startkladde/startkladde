@@ -2,32 +2,32 @@ Diese Liste ist veraltet. Neue TODOs sollten in Trac eingetragen werden.
 
 Diese TODOs auf Aktualität prüfen und in Trac eintragen.
 
-Bug: wenn keine Fl�ge vorhanden, wird keine Bordbuchseite erzeugt => Fehler
+Bug: wenn keine Flüge vorhanden, wird keine Bordbuchseite erzeugt => Fehler
 beim Aufruf von dvips
 
 Fieser 64-Bit-Bug: Positionen bei der Stringverarbeitung werden manchmal als
-unsigned int gespeichert. string::npos ist -1, daher schl�gt der Vergleich
+unsigned int gespeichert. string::npos ist -1, daher schlägt der Vergleich
 unsigned int/string::npos auf 64-Bit-Systemen fehl.
-L�sung: string::size_type verwenden.
+Lösung: string::size_type verwenden.
 
 - Regenradar: Nicht-quadratische Radarbilder werden nicht funktionieren ==>
   resizeable-Modus im Dialog/Widget und Breite anpassen im Widget
 - Release, Webseite, Screenshots
 
-Wetterplugin-Architektur f�r Shell-Plugins verwenden
+Wetterplugin-Architektur für Shell-Plugins verwenden
 ] in Wetterplugin-Texten erlauben
 
 Default-Config: Plugins (metar, regenrader) eintragen
 
-Startarten, die nicht mehr benutzt werden k�nnen (alte Winden...), aber noch angezeigt werden m�ssen
+Startarten, die nicht mehr benutzt werden könnnen (alte Winden...), aber noch angezeigt werden müssen
 
-Splash-Screen besser (fr�her?)
+Splash-Screen besser (früher?)
 
 Gastflug in Flugliste?
-Wenn der Pilot nachtr�glich entfernt wird, wird kein Fehler dargestellt (?)
+Wenn der Pilot nachträglich entfernt wird, wird kein Fehler dargestellt (?)
 
 add: flugzeuge, die nur eigenstart machen
-schleppfl�ge in hauptflugbuchpdf eigene zeile
+schleppflüge in hauptflugbuchpdf eigene zeile
 use tt2 (www.tt2.org) for output
 
 Problem: Anmeldung mit Internet Explorer klappt nicht. Problem liegt beim IE:
@@ -40,25 +40,25 @@ Flugbuch:
 > - In der Zeile Begleiter steht eine durch Kommas getrennte Liste aller Begleiter des Tages.
 > - Startzeit ist die erste Startzeit des Tages auf dem Kennzeichen.
 > - Landezeit ist die letzte Landezeit des Tages auf dem Kennzeichen.
-> - Anzahl Langungen = Anzahl in der Zeile zusammengefassten Fl�ge.
+> - Anzahl Langungen = Anzahl in der Zeile zusammengefassten Flüge.
 
-Als n�chstes:
-  - Benutzerrechtepr�fung in state_available
+Als nächstes:
+  - Benutzerrechteprüfung in state_available
   - sk_web: Flugbuch als HTML: Summe der Zeit
   - sk_web: personal status page
   - sk_web: program status page
   - Plugin-Makefile: Pfadanpassung
 
 sk_web: fehlermeldung auf stderr (siehe webserverlog)
-sk_web: nach Anmeldung zum vorherigen Zustand zur�ck
+sk_web: nach Anmeldung zum vorherigen Zustand zurück
 
 Features:
-  - Felder: Schlepph�he, Motorlaufzeit
+  - Felder: Schlepphöhe, Motorlaufzeit
   - Felder: beliebige Felder?
 
 
 Umschreiben:
-  - argument_list statt list<argument> �berall
+  - argument_list statt list<argument> überall
   - Initialisierung statt Zuweisung in Konstruktoren
   - Exceptions
   - arrays[] weg (am besten zu QList)
@@ -83,25 +83,25 @@ Zum Testprogramm:
   - Editieren (als admin) von editierbaren/nicht editierbaren
   - Merge Editierbar/Nicht editierbar etc., auch wenn in beiden Tabellen
 	vorhanden
-  - Pr�fen, ob �berschreiben sich auch in Bezug auf Benutzer korrekt verh�lt.
+  - Prüfen, ob überschreiben sich auch in Bezug auf Benutzer korrekt verhält.
   - Alle Escapes in
     - LaTeX-Ausgabe
 	- CVS-Ausgabe
 	- HTML-Ausgabe
 
-Funktionalit�t:
-  - Bordb�cher auf Hauptflugbuch drauf
+Funktionalität:
+  - Bordbücher auf Hauptflugbuch drauf
   - DB-Version
   - Flugsuche (==> 4119)
   - Pluginschnittstelle
 
 zeit direkt in hwclock schreiben
 
-Mit Datenbank�nderung:
+Mit Datenbankänderung:
 	Datenbankversion
 	flug macht nur zwischenlandungen 
 
-Die ganzen "fliegt noch"-Pr�fungen m�ssen eigentlich das Datum im
+Die ganzen "fliegt noch"-Prüfungen müssen eigentlich das Datum im
 Startzeit-Feld verwenden, falls vorhanden, statt current ().
 
 webinterface/scripts alle pfadeinstellungen in eine einzelne datei
@@ -110,40 +110,40 @@ motorflug/motorsegler nicht fehlerhaft, wenn kein pilot (?)
 
 INSTALL:
 8. Client einrichten
-  - F�r Datumseinstellung:
+  - Für Datumseinstellung:
     In /etc/sudoers eintragen:
       startkladde  ALL=NOPASSWD:/bin/date
       startkladde  ALL=NOPASSWD:/etc/init.d/hwclock.sh stop
 
 
-Normale Priorit�t:
+Normale Priorität:
   - Bugs:
     - repaint im splash screen
     - Mitternachtsproblem
     - anzeigedatum utc
     - Nachnamen eintragen, in Vornamenfeld wechseln, Text wird nicht selektiert.
-      Zur�ckwechseln, ebenfalls nicht. Wieder vor, dann wird er. Das Problem
+      Zurückwechseln, ebenfalls nicht. Wieder vor, dann wird er. Das Problem
 	  scheint immer dann aufzutreten, wenn die cbox im lbl_cbox umgestellt wird.
       In lbl_cbox::set_active_cbox (...) die selection mitzukopieren scheint
       nichts zu bringen.
     - segfault in sk_win_flight wenn populate_lists nicht aufgerufen wurd
-    - <user> als Benutzername f�hrt zu Fehlern
+    - <user> als Benutzername führt zu Fehlern
     - Wieso gibt das Plugin nix aus, wenn das Programm nicht existiert?
-  - Funktionalit�t:
-    - Starten/Landen r�ckg�ngig
-    - Versuchen, ein identisches FZ dazuzuf�gen?
-    - Tabellenupdate statt refresh, wenn etwas ge�ndert, zum Beispiel Flugzeuginfo
+  - Funktionalität:
+    - Starten/Landen rückgängig
+    - Versuchen, ein identisches FZ dazuzufügen?
+    - Tabellenupdate statt refresh, wenn etwas geändert, zum Beispiel Flugzeuginfo
     - Unterschidung zwischen "fliegt noch", "flog da" und "egal, startet
-	  sp�ter"
+	  später"
     - Anzeigedatum nach UTC einstellen, auch Datum in flugeditor
     - Unified Fehlerchecking: Flugeditor: Neues FZ aufgenommen: in selected_plane speichern
-    - Unix socket Name ausw�hlbar machen
+    - Unix socket Name auswählbar machen
     - ID->Datum suche
     - flugbuch etc. Fortschrittsanzeige
     - ausgetretene Personen
     - stammdatenschnittstelle --> vereinsid nicht mehr vom ss editierbar?
-	- Bei Anzahl fliegender auch Schleppfl�ge ber�cksichtigen
-	- Bordbuch ung�ltig bei �berlappenden Fl�gen
+	- Bei Anzahl fliegender auch Schleppflüge berücksichtigen
+	- Bordbuch ungültig bei überlappenden Flügen
 	- bessere Fehlerbehandlung bei Datenbankaufrufen
     - sk_web: Vereinsauswahlseite
     - sk_web: stylesheet in config
@@ -153,10 +153,10 @@ Normale Priorit�t:
     - Synchronisation Plugins mit Uhr
     - Grafische Winddarstellung
     - gescheites Quoting/Escaping in der Konfigurationsdatei
-    - DB: Rechte select,update,insert pr�fen
-    - �berlappungspr�fung bei Nachtragen
+    - DB: Rechte select,update,insert prüfen
+    - überlappungsprüfung bei Nachtragen
     - sk_web: Datenbank initialisieren
-    - sk_admin: f�r merge zum Beispiel braucht man kein root sondern nur sk_admin
+    - sk_admin: für merge zum Beispiel braucht man kein root sondern nur sk_admin
 
   - Implementation:
     - sk_db kein QObject
@@ -167,14 +167,14 @@ Normale Priorit�t:
     - beim zeilen entfernen muss die gespeicherte startzeit deleted werden (?)
     - Startartstatistik per Count-Query
 	- db_change events von der Datenbank emittieren
-	- sk_dump aufr�umen
+	- sk_dump aufräumen
 	- sk_dump Spaltenbreiten zentralisieren
 	- remove db_proxy
 	- handle gracefully old flights without a sfz_modus
 	- Fehlerchecking is called *often*
 	- Starten, Landen etc. per Query machen, statt RMW.
     - return 0 als id durch invalid_id ersetzen
-	- Personen/Flugzeuge, die mehrere Fl�ge haben, werden bei jedem
+	- Personen/Flugzeuge, die mehrere Flüge haben, werden bei jedem
 	  Tabellenupdate neu geladen ==> cache oder so
 	- "Fliegt noch" wenn Start in gleicher Minute wie Landung
 	- Bessere Behandlung der verschiedenen Modi, die so ein Flugeditor hat
@@ -192,13 +192,13 @@ Normale Priorit�t:
   - UI:
     - focus nach editieren von person/flugzeug
     - options: explizite Datumsangabe hat Vorrang, kein Fehler
-	- Netz�berwachung, alle Fenster disablen
+	- Netzüberwachung, alle Fenster disablen
     - F1: Hilfe
 	- im entity editor neuheiten in der richtigen sortierung eintragen
-    - fb/bb als unvollst�ndig markieren, wenn flug noch fliegt (besonders bb ist ung�ltig!)
+    - fb/bb als unvollständig markieren, wenn flug noch fliegt (besonders bb ist ungültig!)
     - Datumseinstellung: [X] Heute
     - Sortierung Kommt/Geht
-    - Einf�gen sortiert (Nachtragen!)
+    - Einfügen sortiert (Nachtragen!)
     - datum: heute gestern sonstige
     - ID bei "fliegt noch" anzeigen
     - Fehlermeldungen im Editor nur bei Anlegen, ansonsten gibts ja die Fehlerliste.
@@ -213,7 +213,7 @@ Normale Priorit�t:
     - =="" und .length ()==0 --> .empty ()
     - db_to und to_db: default!
   - Datenbank:
-    - Ungenutzte Spalten rausschmei�en
+    - Ungenutzte Spalten rausschmeißen
     - editierbar-Spalte in flug?
     - startart-Spalte in flug: Datentyp???
     - original_id-Spalte in flug?
@@ -225,15 +225,15 @@ Normale Priorit�t:
     - Beispielkonfig Ort etc.
 	- Codedoku sk_db
   - Webinterface
-    - �berall um input hidden span
-    - Nach Passwort�nderung Meldung "Passwort ge�ndert"
+    - überall um input hidden span
+    - Nach Passwortänderung Meldung "Passwort geändert"
     - In object_field, add display_state for getting details (for example,
       web_display_person for field_user_person).
     - Der FHS garantiert nicht, dass Dateien in /tmp zwischen zwei
       Programmaufrufen erhalten bleiben. Daher sollen die sessions wo anders
       hingeschrieben werden.
     - Sortierung der Listen nach verschiedenen Spalten
-    - Bei Fehlermeldungen: dazuschreiben, wo hin es zur�ck geht
+    - Bei Fehlermeldungen: dazuschreiben, wo hin es zurück geht
 	- Die praktische Wiedereintragung bei Fehlern wie bei Benutzer anlegen bei
 	  allen Forms
     - Benutzerzuordnung/-anzeige aus der Personentabelle
@@ -241,13 +241,13 @@ Normale Priorit�t:
     - /etc/startkladde.conf
     - ~/ in source cfgfile
   
-- Geringe Priorit�t:
+- Geringe Priorität:
   - Umgebung
     - Windows-Portierung
   - Bugs:
     - startzeit automatisch, landezeit manuell->fehlermeldung
     - Mitternachts-Zeitzonen-Problem
-  - Funktionalit�t:
+  - Funktionalität:
     - Was passiert bei date wrap? Anzeigedatum anpassen? Tabelle aktualisieren?
     - In allen Fenstern, die db_update machen, auch det_delete behandeln
 	- db_event: unterscheidung zwischen refresh/alle und refresh/(eine bestimmte)
@@ -255,22 +255,22 @@ Normale Priorit�t:
     - Gattung "2mot" und "heli" und dann ist_motorflugzeug (gattung)
     - sitze aus typ, evtl. auch nur flugzeuge nach typ listen
     - verein_aus_namen (vn, nn)
-    - fluege_aktuell: auch schleppfl�ge (?)
-    - Identischer Pilot wird dazugef�gt?
-    - liste_vornamen/liste_nachnamen: Pr�fix angeben (case insensitive)
-	- Editieren: Fliegt-noch-�berlappungscheck
-    - Begleiter im Einsitzer nicht mehr pr�fen, wenn 2Schulung im Einsitzer akzeptiert
+    - fluege_aktuell: auch schleppflüge (?)
+    - Identischer Pilot wird dazugefügt?
+    - liste_vornamen/liste_nachnamen: Präfix angeben (case insensitive)
+	- Editieren: Fliegt-noch-überlappungscheck
+    - Begleiter im Einsitzer nicht mehr prüfen, wenn 2Schulung im Einsitzer akzeptiert
 	- Schleppflugzeug Zwischenlandung
 	- ZWL bei Segelflugzeug zulassen (nach Warnung)
-	- Schlepppilot (�berhaupt mehr Schleppzeug...)
-    - Bei Flugzeugen vermerken, ob sie nur Selbststart k�nnen, und dann Selbststart
-      vorausw�hlen (auch beim Wiederholen), wenn es nur eine Selbststartstartart
+	- Schlepppilot (überhaupt mehr Schleppzeug...)
+    - Bei Flugzeugen vermerken, ob sie nur Selbststart könnnen, und dann Selbststart
+      vorauswählen (auch beim Wiederholen), wenn es nur eine Selbststartstartart
       gibt.
   - Implementation:
     - sk_db: Alle execute_query, wo das Ergebnis nicht gebraucht wird, umstellen.
-	- Man braucht einen vern�nftigen Weg, um Metadaten zur Erzeugung
+	- Man braucht einen vernünftigen Weg, um Metadaten zur Erzeugung
 	  von Queries zu speichern.  Wichtig dabei ist, dass die
-	  Objektklassen keine Information dar�ber enthalten sollen, in
+	  Objektklassen keine Information darüber enthalten sollen, in
 	  welcher Form die Daten in der Datenbank gespeichert sind.
     - Im entity Lister nicht nach EntityType unterscheiden sondern an
       die Datenbank weiterreichen (db->delete_object (type, id), db_object_type dort).
@@ -285,33 +285,33 @@ Normale Priorit�t:
 	  sk_flight_table::set_flight.
     - in sk_win_entity_list.cpp gibts einige funktionen, die in entity.cpp oder
 	  entity_functions.cpp oder so sollten
-    - wenn die Men�eintr�ge f�r Manipulationen deaktiviert werden, sind diese
+    - wenn die Menüeinträge für Manipulationen deaktiviert werden, sind diese
 	  Manipulationen Fehler und per log_error zu loggen
     - operationen auf den Schleppflug vereinheitlichen, fm_land_schlepp streichen
-    - aboutToShow f�r Men�s
-    - Pr�fen, ob die Listenbuttons wieder entladen werden
-    - list_flugtyp sollte nicht hardcoded nur die zur�ckgeben, die in den
+    - aboutToShow für Menüs
+    - Prüfen, ob die Listenbuttons wieder entladen werden
+    - list_flugtyp sollte nicht hardcoded nur die zurückgeben, die in den
 	  Flugeditor kommen. Am besten: Parameter an die Funktion und
 	  Auflistfunktion.
     - in check_flight: immer, wenn einer der parameter nicht gesetzt wird,
-	  false zur�ck
+	  false zurück
     - das data_id in der tabellenzelle sollte ein void * sein (anlegen/
-	  l�schen beachten!)
-    - dependencies pr�fen, makefile aktualisieren
-    - Strings, zum Beispiel f�r Tabellenheader, als Konstanten
-	  Nach M�glichkeit ein struct { Tabellenheader, Editorlabel,
+	  löschen beachten!)
+    - dependencies prüfen, makefile aktualisieren
+    - Strings, zum Beispiel für Tabellenheader, als Konstanten
+	  Nach Möglichkeit ein struct { Tabellenheader, Editorlabel,
 	  Tabellenkey (?), Tabellenposition, Editortyp, Editorposition }
-	- einheitliche plausibilit�tspr�fung, m�glichkeit zum Best�tigen im
+	- einheitliche plausibilitätsprüfung, möglichkeit zum Bestätigen im
 	  Hauptfenster. Idee: eine funktion sk_flight::flug_kann_das_machen (flug,
 	  flug_action), enum flug_action { starten, vorbereiten, landen ... },
-	  alle Funktion, die was machen wollen, legen einen tempor�ren sk_flight an
+	  alle Funktion, die was machen wollen, legen einen temporären sk_flight an
 	  und checken den.
 	  vorteil: ein flugzeug, das noch fliegt, darf vorbereitet werden.
 	  dann muss allerdings ein "user_approved" dazu, um z. B. mehrfaches "der
 	  Typ stimmt nicht" zu vermeiden.
-	- M�glichkeit, strings und QStrings automatisch ineinander zu konvertieren?
-	- sk_flight::fliegt () �berall verwenden statt gestartet ()/gelandet ()
-	- namespace std �berall
+	- Möglichkeit, strings und QStrings automatisch ineinander zu konvertieren?
+	- sk_flight::fliegt () überall verwenden statt gestartet ()/gelandet ()
+	- namespace std überall
     - Flug sollte eigentlich von entity inherited sein
     - Unified Fehlerchecking:
       - context menu slot
@@ -320,11 +320,11 @@ Normale Priorit�t:
       - accept flight
     - t_pilot_bezeichnung rausschmeissen, durch flug->pilot_bezeichnung ersetzen
     - entity selector so umbauen, dass immer die statische funktion benutzt wird,
-      auch zum listen der Eintr�ge (dann ists auch nur noch eine funktion). Dann
+      auch zum listen der Einträge (dann ists auch nur noch eine funktion). Dann
       kann man personen auch als entity listen.
       Alternative: enttemplatisieren, alles dynamisch machen. Hat das Problem,
-      dass bei einer leeren Liste die Spaltenk�pfe nicht festgestellt werden
-      k�nnen. evtl. kann man die zweite M�glichkeit zus�tzlich bieten.
+      dass bei einer leeren Liste die Spaltenköpfe nicht festgestellt werden
+      könnnen. evtl. kann man die zweite Möglichkeit zusätzlich bieten.
     - static function for entity selector
     - startartstatistik wie flugbuch/bordbuch
     - status dialog: eigene Klasse, basierend auf QSplash
@@ -332,32 +332,32 @@ Normale Priorit�t:
 
   - UI:
     - alle comboboxes insetionpolicy einstellen, speziell flugeditor
-    - Titelleiste im Statistikdialog: Flugbuch f�r $DATUM/$PERSON
+    - Titelleiste im Statistikdialog: Flugbuch für $DATUM/$PERSON
     - timeedit: kein text, wenn nicht gesetzt/eigene Implementation, ohne Sekunden
 	- Hilfe
 	- Easteregg
     - Fehlerfeld doppelklickbar, entsprechendes Feld fokussiert
     - Was-das-Programm-gerade-macht-Anzeige
-    - Nicht gestartete editieren: Jetzt starten/Sp�ter starten buttons
+    - Nicht gestartete editieren: Jetzt starten/Später starten buttons
     - Fliegenden editieren: Jetzt landen-Button
     - Im entity seelctor markieren, welche zum preselect-Verein passen, wenn nicht
       eindeutig
-    - Evtl. die Fehlerpr�fung beim Editieren einschr�nken, so dass das Zeug, was auch
+    - Evtl. die Fehlerprüfung beim Editieren einschränken, so dass das Zeug, was auch
       schon im error_control steht, nicht noch mal gefragt wird.
     - Makefile:
     - Makefile: siehe info makefile: include Dependencies, und Dependencies automatisch erstellen
     - Doppelklick auf Plugin label: Prozess neu starten
   - sk_web
-    - Bei "IP stimmt nicht" keine Hauptmen�-Links
+    - Bei "IP stimmt nicht" keine Hauptmenü-Links
 
 Probleme:
   - Refresh im entity lister: hide();show(); sonst focus im mainwindow
 
 Doku:
-  - fehlerchecking erkl�ren
-  - db_change erkl�ren
+  - fehlerchecking erklären
+  - db_change erklären
 
-- Konfiguration f�r Plugins. Beispiel: geographische L�nge, um
+- Konfiguration für Plugins. Beispiel: geographische Länge, um
   Sonnenuntergangszeiten zu korrigieren.
-- Nicht alle gelandeten Fl�ge ausblenden sondern nur die, die �lter sind als
+- Nicht alle gelandeten Flüge ausblenden sondern nur die, die älter sind als
   n Minuten

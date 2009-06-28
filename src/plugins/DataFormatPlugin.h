@@ -54,7 +54,7 @@ class DataFormatPlugin
 		class ex_plugin_invalid_format: public ex_plugin_internal_error
 		{
 			public:
-				ex_plugin_invalid_format (const QString &fmt=""): ex_plugin_internal_error (fmt.isEmpty ()?"Ung�ltiges Format":"Ung�ltiges Format \""+fmt+"\"") { fatal=true; }
+				ex_plugin_invalid_format (const QString &fmt=""): ex_plugin_internal_error (fmt.isEmpty ()?"Ungültiges Format":"Ungültiges Format \""+fmt+"\"") { fatal=true; }
 		};
 
 		// Construction

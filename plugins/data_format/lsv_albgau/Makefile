@@ -1,11 +1,11 @@
 
-# Diese beiden Variablen m�ssen auf die richten Verzeichnisse eingestellt sein
+# Diese beiden Variablen müssen auf die richten Verzeichnisse eingestellt sein
 # oder hier angepasst werden.
 #QTDIR    ?= /usr/share/qt3
 QTDIR    ?= /usr/share/qt4
 #MYSQLDIR ?= /usr/local/mysql
 
-# F�r abweichende Verzeichnisstrukturen k�nnen die folgenden Verzeichnisse
+# Für abweichende Verzeichnisstrukturen können die folgenden Verzeichnisse
 # explizit angegeben werden.
 QT_INCLUDE_DIR    ?= $(QTDIR)/include
 QT_LIB_DIR        ?= $(QTDIR)/lib

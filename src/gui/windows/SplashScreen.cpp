@@ -5,7 +5,7 @@
 #include "src/text.h"
 
 // TODO multiple lines in message area
-// TODO Klick auf labels schlie�en
+// TODO Klick auf labels schließen
 
 SplashScreen::SplashScreen (QWidget *parent, const char * const *logo)
 	:QDialog (parent, "splash screen", true, WStyle_Customize|Qt::WStyle_NoBorder|Qt::WStyle_StaysOnTop|Qt::WType_TopLevel)

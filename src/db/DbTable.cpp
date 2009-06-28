@@ -57,7 +57,7 @@ QString dbTable::mysql_create_query (bool force) const
 		{
 			const QString &kit=it.next();
 
-			// TODO: INDEX title (title(25)) f�r title type text, blob
+			// TODO: INDEX title (title(25)) für title type text, blob
 			r+=",\n";
 			r+="  UNIQUE KEY "+kit+" ("+kit+")";
 		}

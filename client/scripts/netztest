@@ -2,8 +2,8 @@
 # Netztest
 # Martin Herrmann
 # 2004-03-15
-# Pr�ft die Verf�gbarkeit einiger Rechner/APs im lokalen Netzwerk
-# Angepasst f�r die Installation Karlsruhe/Forchheim
+# Prüft die Verfügbarkeit einiger Rechner/APs im lokalen Netzwerk
+# Angepasst für die Installation Karlsruhe/Forchheim
 
 color=true
 

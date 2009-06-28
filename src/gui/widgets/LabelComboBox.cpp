@@ -37,7 +37,7 @@ lbl_cbox::lbl_cbox (const char *text, bool editable, QWidget *parent, const char
 	QObject::connect (full_cbox, SIGNAL (highlighted (const QString &)), this, SIGNAL (highlighted (const QString &)));
 	QObject::connect (full_cbox, SIGNAL (focus_out ()), this, SLOT (some_focus_out ()));
 
-	// Die volle Liste ist gr�n, die andere rot (Debug-Feature)
+	// Die volle Liste ist grün, die andere rot (Debug-Feature)
 	if (opts.colorful)
 	{
 		QPalette palette;

@@ -393,7 +393,7 @@ bool EntityEditWindow::check_data ()
 	 *   - false else.
 	 */
 {
-	// TODO: In eine tempor�re Instanz schreiben und �berpr�fung in die Klasse schieben
+	// TODO: In eine temporäre Instanz schreiben und überprüfung in die Klasse schieben
 	QString msg;
 
 	switch (type)
@@ -421,14 +421,14 @@ bool EntityEditWindow::check_data ()
 			// Kennzeichen ist leer
 			if (eintrag_ist_leer (edit_registration->text ()))
 			{
-				msg="F�r das Flugzeug wurde kein Kennzeichen angegeben.\n";
+				msg="Für das Flugzeug wurde kein Kennzeichen angegeben.\n";
 				if (!check_message (this, msg)) return false;
 			}
 
 			// Typ ist leer
 			if (eintrag_ist_leer (edit_typ->currentText ()))
 			{
-				msg="F�r das Flugzeug wurde kein Typ angegeben.\n";
+				msg="Für das Flugzeug wurde kein Typ angegeben.\n";
 				if (!check_message (this, msg)) return false;
 			}
 
@@ -639,7 +639,7 @@ void EntityEditWindow::slot_db_update (DbEvent *event)
 	 * Called when the database is changed. Update lists, if applicable.
 	 */
 {
-	// Vereine machen wir unabh�ngig vom Typ, Flugzeugtypen werden nur
+	// Vereine machen wir unabhängig vom Typ, Flugzeugtypen werden nur
 	// eingetragen, wenn edit_typ existiert.
 	if ((event->type==det_add||event->type==det_change) && event->id>0)
 	{

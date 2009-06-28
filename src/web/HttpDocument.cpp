@@ -51,7 +51,7 @@ void HttpDocument::output (const QString &document, const QString &mime_type, co
 
 void HttpDocument::output (const HtmlDocument &document)
 {
-	output_header ("text/html", "ISO-8859-1");
+	output_header ("text/html", "UTF-8");
 	output_buffer << document.text ();
 }
 

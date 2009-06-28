@@ -59,7 +59,7 @@ void initialize_database (Database &root_db, QString _username, QString _userpas
 	// get it, that means that we are not root (or something different).
 	output << "Opening mysql database" << std::endl;
 	try { root_db.use_db ("mysql"); }
-	catch (Database::ex_database_not_accessible) { throw Database::ex_init_failed ("root-Datenbankzugriff nicht m�glich"); }
+	catch (Database::ex_database_not_accessible) { throw Database::ex_init_failed ("root-Datenbankzugriff nicht möglich"); }
 	catch (Database::ex_database_not_found) { throw Database::ex_init_failed ("Datenbank \"mysql\" nicht gefunden"); }
 	catch (Database::ex_insufficient_access &e) { throw Database::ex_init_failed (e.description ()); }
 

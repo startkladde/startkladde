@@ -48,7 +48,7 @@ bool WeatherWidget::loadMovie (const QString &fileName)
 	// NB: wenn hier WordWrap=true ist (zum Beispiel, weil vorher ein Text
 	// gesetzt war), dann funktioniert die Movie-Darstellung nicht mehr, wenn
 	// einmal ein Text gesetzt war: das Fenster, das nur ein Layout mit diesem
-	// Widget enth�lt, wird auf H�he 0 gesetzt.
+	// Widget enthält, wird auf Höhe 0 gesetzt.
 	// Nach diesem Fehler kann man bequem 2 Stunden lang suchen.
 
 	setWordWrap (false);

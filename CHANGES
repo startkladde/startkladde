@@ -501,7 +501,7 @@
   -Bei Umschaltung auf komplette Flugliste wird an das Ende gescrollt
   -Anzeige des Batterie-Ladezustandes über ACPI; benötigt wird libacpi von:
    http://www.ngolde.de/libacpi.html
-  -Quote-Zeichen f�r CSV-Werte konfigurierbar: Option csv_quote in startkladde.conf
+  -Quote-Zeichen für CSV-Werte konfigurierbar: Option csv_quote in startkladde.conf
   -QCompleter in sk_combo_box implementiert
 
 1.6:

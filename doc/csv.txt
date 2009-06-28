@@ -1,7 +1,7 @@
-Beschreibung des CVS-Formats für die Verwendung mit startkladde
+Beschreibung des CVS-Formats fÃ¼r die Verwendung mit startkladde
 Martin Herrmann, 2004-03-12
 
-Für Datenaustausch mit anderen Programmen oder Benutzern wird das Dateiformat
+FÃ¼r Datenaustausch mit anderen Programmen oder Benutzern wird das Dateiformat
 CSV verwendet. Dies ist ein Standard-Format, das von praktisch allen
 Tabellenkalkulations- und Datenbankprogrammen gelesen bzw. geschrieben werden
 kann. Dieser Text beschreibt das genaue Dateiformat, das verwendet wird.
@@ -9,42 +9,42 @@ kann. Dieser Text beschreibt das genaue Dateiformat, das verwendet wird.
 Die wichtigsten Daten:
   - Zeichensatz: ISO-8859-1
   - Feldtrenner: , (Komma, Zeichen 44)
-  - Quote-Zeichen: " (Doppeltes Anführungszeichen, Zeichen 34)
+  - Quote-Zeichen: " (Doppeltes AnfÃ¼hrungszeichen, Zeichen 34)
   - Zeilentrenner: LF (Unix) oder CRLF (Windows)
 
-CSV steht für "comma separated values". Das Dateiformat ist Klartext
+CSV steht fÃ¼r "comma separated values". Das Dateiformat ist Klartext
 (Zeichensatz ISO-8859-1) mit einem Datensatz pro Zeile. Die einzelnen Felder des
 Datensatzes sind durch ein Komma getrennt.
 
-Wenn ein Datenfeld ein Komma enthält, dann wird das gesamte Feld in
-Anführungszeichen gesetzt, damit das Komma nicht als Datensatztrenner
+Wenn ein Datenfeld ein Komma enthÃ¤lt, dann wird das gesamte Feld in
+AnfÃ¼hrungszeichen gesetzt, damit das Komma nicht als Datensatztrenner
 interpretiert wird.
-Wenn ein Datenfeld ein Anführungszeichen enthält, dann wird das Feld ebenfalls
-in Anführungszeichen gesetzt, zusätzlich wird das Anführungszeichen, das in dem
+Wenn ein Datenfeld ein AnfÃ¼hrungszeichen enthÃ¤lt, dann wird das Feld ebenfalls
+in AnfÃ¼hrungszeichen gesetzt, zusÃ¤tzlich wird das AnfÃ¼hrungszeichen, das in dem
 Feld vorkommt, verdoppelt, damit es nicht als Feldende interpretiert wird.
-Leere Datenfelder können mit oder ohne Anführungszeichen angegeben werden.
+Leere Datenfelder kÃ¶nnnen mit oder ohne AnfÃ¼hrungszeichen angegeben werden.
 
-Die Bedeutung von Anführungszeichen in Feldern, die nicht von Anführungszeichen
+Die Bedeutung von AnfÃ¼hrungszeichen in Feldern, die nicht von AnfÃ¼hrungszeichen
 begrenzt sind, ist undefiniert. Dieser Fall darf nicht vorkommen.
-Es ist erlaubt, Felder ohne besondere Zeichen in Anführungszeichen zu setzen.
+Es ist erlaubt, Felder ohne besondere Zeichen in AnfÃ¼hrungszeichen zu setzen.
 
 Die erste Zeile der Datei ist eine Kopfzeile, die die Namen der einzelnen
 Datenfelder festlegt. Das Format der Kopfzeile ist das gleiche wie das von
 Datenzeilen.
-Die Datenfelder dürfen in beliebiger Reihenfolge vorkommen. Die Kopfzeile muss
+Die Datenfelder dÃ¼rfen in beliebiger Reihenfolge vorkommen. Die Kopfzeile muss
 die Feldnamen in der gleichen Reihenfolge enthalten.
 
 Beispiel zu Kopfzeilen:
 Eine Datei soll die Datenfelder "Vorname" und "Nachname" enthalten. Es sind drei
-Datensätze vorhanden. Folgende Darstellungen sind möglich:
+DatensÃ¤tze vorhanden. Folgende Darstellungen sind mÃ¶glich:
 ================
 Nachname,Vorname
-Müller,Hans
+MÃ¼ller,Hans
 Meier,Klaus
 Bauer,Franz
 ================
 Vorname,Nachname
-Hans,Müller
+Hans,MÃ¼ller
 Klaus,Meier
 Franz,Bauer
 ================
@@ -55,7 +55,7 @@ Beispiel zu Sonderzeichen:
 Name,Bemerkungen
 Hans,
 Kaus,"Fluglehrer, Flugleiter"
-Franz,"Bemerkung mit ""Anführungszeichen"""
+Franz,"Bemerkung mit ""AnfÃ¼hrungszeichen"""
 ================
 
 

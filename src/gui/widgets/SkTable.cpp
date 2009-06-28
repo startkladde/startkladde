@@ -61,7 +61,7 @@ void SkTable::keyPressEvent (QKeyEvent *e)
 		QTableWidget::keyPressEvent (e);
 
 	// Pfusch, weil MainWindow das Event auch braucht, weil das Hilfe->Info
-	// nicht den Eingabefocus erh�lt.
+	// nicht den Eingabefocus erhält.
 	e->ignore ();
 }
 

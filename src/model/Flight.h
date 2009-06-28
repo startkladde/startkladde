@@ -83,7 +83,7 @@ class Flight
 		bool editierbar;
 		FlightMode modus;
 		FlightMode modus_sfz;
-		QString pvn, pnn, bvn, bnn, tpvn, tpnn;			// Dumme Sache f�r den Fall, dass nur ein Nachname/Vorname bekannt ist.
+		QString pvn, pnn, bvn, bnn, tpvn, tpnn;			// Dumme Sache für den Fall, dass nur ein Nachname/Vorname bekannt ist.
 		db_id towplane;
 		bool gestartet, gelandet, sfz_gelandet;
 		// Whenn adding something here, add it to get_towflight ()

@@ -22,7 +22,7 @@ SkTimeEdit::SkTimeEdit (QWidget *parent, const char *name)
 	layout->add (tedit);
 	layout->add (pbut);
 
-	// OLDVERS: N�chste Zeile weg
+	// OLDVERS: Nächste Zeile weg
 	reset ();
 
 	QObject::connect (pbut, SIGNAL (clicked ()), this, SIGNAL (clicked ()));
@@ -117,8 +117,8 @@ void SkTimeEdit::set_time (const QTime &t)
 	 *   - t: the time to write
 	 */
 {
-	// MURX: W�hrend die Zeit gesetzt wird, das Signal disconnecten, damit nur
-	// �nderungen von der UI ein Signal ausl�sen.
+	// MURX: Während die Zeit gesetzt wird, das Signal disconnecten, damit nur
+	// Änderungen von der UI ein Signal auslösen.
 	// TODO: Timezone?
 	QObject::disconnect (tedit, SIGNAL (timeChanged (const QTime &)), this, SIGNAL (time_changed ()));
 	tedit->setTime (t);

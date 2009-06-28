@@ -107,7 +107,7 @@ QString HtmlDocument::text () const
 //		"    <link rev=\"made\" href=\"mailto:martin.herrmann@stud.uni-karlsruhe.de\">\n"
 		"    <link rel=\"stylesheet\" type=\"text/css\" href=\"sk_web.css\">\n"
 		// TODO synchronize this charset with the http header charset
-		"    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n"
+		"    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"
 		"  </head>\n"
 		"  <body>\n"
 		"    <h1>"+html_escape (title)+"</h1>\n"

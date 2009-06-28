@@ -13,8 +13,8 @@ Date Date::current ()
 
 	// Preset default values
 	unsigned int day=lt.tm_mday;
-	unsigned int month=lt.tm_mon+1;    //} Was hat denn struct tm f�r
-	unsigned int year=lt.tm_year+1900; //} eine saubl�de Codierung...
+	unsigned int month=lt.tm_mon+1;    //} Was hat denn struct tm für
+	unsigned int year=lt.tm_year+1900; //} eine saublöde Codierung...
 
 	return Date (year, month, day);
 }

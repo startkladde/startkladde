@@ -34,9 +34,9 @@
 // TODO mehr write_text
 
 // TODO: check all parameters from the user for validity
-//   - passw�rter: d�rfen keine "" enthalten (?)
+//   - passwörter: dürfen keine "" enthalten (?)
 
-// Person editieren: +Bemerkung +Vereinsid +L�schen
+// Person editieren: +Bemerkung +Vereinsid +Lüschen
 
 // TODO: When changing to the same state (login->do_login->login), preenter the
 // values like username (not password), like already done for some states.
@@ -729,7 +729,7 @@ void require_access (db_access_t req, const QString &message="")
 			throw ex_write_error_document (
 				"Unzureichender Datenbankzugriff"
 				" (vorhanden: "+db_access_string (session_access)+";"
-				" ben�tigt: "+db_access_string (req)+")"
+				" benötigt: "+db_access_string (req)+")"
 				);
 		else
 			throw ex_write_error_document (message);
@@ -747,14 +747,14 @@ void require_club_admin (const QString &message="")
 	switch (session_access)
 	{
 		case dba_access: case dba_none:
-			throw ex_write_error_document (message_or_default (message, "Vereinsadministratorrechte ben�tigt"));
+			throw ex_write_error_document (message_or_default (message, "Vereinsadministratorrechte benötigt"));
 		case dba_root: return; break;
 		case dba_sk_admin: return; break;
 		case dba_sk_user:
 			if (!session_user)
 				throw ex_write_error_document ("session_user nicht gesetzt").is_program_error ();
 			if (!session_user->perm_club_admin)
-				throw ex_write_error_document (message_or_default (message, "Vereinsadministratorrechte ben�tigt"));
+				throw ex_write_error_document (message_or_default (message, "Vereinsadministratorrechte benötigt"));
 			return;
 			break;
 	}
@@ -836,7 +836,7 @@ void require_not_self (const QString &username, const QString &message="")
 	 */
 {
 	if (session_username==username)
-		throw ex_write_error_document (message_or_default (message, "Diese Aktionen kann nicht mit sich selbst durchgef�hrt werden"));
+		throw ex_write_error_document (message_or_default (message, "Diese Aktionen kann nicht mit sich selbst durchgeführt werden"));
 }
 
 void require_sk_user (const QString &message="")
@@ -927,7 +927,7 @@ bool authenticate (const QString &username, const QString &password, QString &er
 		case uc_none:
 		{
 			// Now this is easy. The user is not allowed to log in.
-			LOGIN_ERROR ("Anmeldung f�r Benutzer "+username+" nicht erlaubt.");
+			LOGIN_ERROR ("Anmeldung für Benutzer "+username+" nicht erlaubt.");
 			session_access=dba_none;
 		} break;
 		case uc_mysql_user:
@@ -961,8 +961,8 @@ bool authenticate (const QString &username, const QString &password, QString &er
 			// to authenticate the user using Database User functions.
 
 			// Check whether we have sk_admin access data at all.
-			LOGIN_ERROR_IF (opts.sk_admin_name.isEmpty (), "Name f�r das Administratorkonta (sk_admin) nicht konfiguriert");
-			LOGIN_ERROR_IF (opts.sk_admin_password.isEmpty (), "Passwort f�r '"+opts.sk_admin_name+"' nicht konfiguriert");
+			LOGIN_ERROR_IF (opts.sk_admin_name.isEmpty (), "Name für das Administratorkonta (sk_admin) nicht konfiguriert");
+			LOGIN_ERROR_IF (opts.sk_admin_password.isEmpty (), "Passwort für '"+opts.sk_admin_name+"' nicht konfiguriert");
 
 			// Try to log in to the server as user sk_admin.
 			if (db.connected ()) db.disconnect ();
@@ -1168,7 +1168,7 @@ void write_document_footer ()
 	if (!current_state || current_state->get_label ()!=web_main_menu)
 		document
 			.write_br ()
-			.write_text_link (back_link_url (web_main_menu), "Zur�ck zum Hauptmen�")
+			.write_text_link (back_link_url (web_main_menu), "Zurück zum HauptMenü")
 			;
 
 	document.end_paragraph ();
@@ -1270,7 +1270,7 @@ QString make_anchor_name (db_id id)
 	 *     passed to CGI_READ, so arg_cgi_ is prepended to the name.
 	 */
 #define CHECK_AN_ID(ID, CGI_ARG)	\
-	do { if (id_invalid (ID)) return WhatNext::output_error ("Ung�ltige ID \""+CGI_READ (CGI_ARG)+"\""); } while (false)
+	do { if (id_invalid (ID)) return WhatNext::output_error ("Ungültige ID \""+CGI_READ (CGI_ARG)+"\""); } while (false)
 
 // CHECK_ID
 	/*
@@ -1322,7 +1322,7 @@ WhatNext csv_to_persons (const QString &csv, QList<Person *> &persons, const QSt
 		additional_args.set_value (arg_cgi_data_type, CGI_READ (data_type));
 		document
 			.start_paragraph ()
-			.write_text_link (back_link_url (web_master_data_import, additional_args), "Zur�ck")
+			.write_text_link (back_link_url (web_master_data_import, additional_args), "Zurück")
 			.end_paragraph ()
 			;
 		return WhatNext::output_document ();
@@ -1568,9 +1568,9 @@ void write_delete_links (const QString &delete_state, const QString &ident_arg, 
 	ArgumentList delete_args;
 	delete_args.set_value (ident_arg, ident_val);
 	document
-		.write_text_link (back_link_url (delete_state, delete_args), "Wirklich l�schen")
+		.write_text_link (back_link_url (delete_state, delete_args), "Wirklich löschen")
 		.write (" ")
-		.write_text_link (back_link_url (back_state, anchor), "Zur�ck");
+		.write_text_link (back_link_url (back_state, anchor), "Zurück");
 }
 
 void check_username (const QString &username)
@@ -1583,7 +1583,7 @@ void check_username (const QString &username)
 	 *   - ex_write_error_document: thrown when the user name is not valid.
 	 */
 {
-	if (!user_name_valid (username)) throw ex_write_error_document ("Benutzername \""+username+"\" enth�lt ung�ltige Zeichen");
+	if (!user_name_valid (username)) throw ex_write_error_document ("Benutzername \""+username+"\" enthält ungültige Zeichen");
 }
 
 
@@ -1825,7 +1825,7 @@ void treat_additional_fields (treatment_t treatment, const QList<Argument> &addi
 		case tm_write_edit:
 			document.write (
 				"<tr><td colspan=2>\n"
-				"  <input type=\"submit\" value=\""+QString ("�ndern")+"\">\n"
+				"  <input type=\"submit\" value=\""+QString ("ändern")+"\">\n"
 				"</td></tr>\n"
 				);
 			break;
@@ -1956,8 +1956,8 @@ WhatNext treat_person (Person *_p, treatment_t treatment, const QString &new_sta
 		if (args) fields.add (*args);
 		// TODO don't specify manually
 		fields.set_value ("Editieren", back_link_url (web_edit_person)+"&"+arg_cgi_id+"="+QString::number (p->id));
-		fields.set_value ("L�schen", back_link_url (web_delete_person)+"&"+arg_cgi_id+"="+QString::number (p->id));
-		fields.set_value ("�berschreiben", back_link_url (web_select_merge_person)+"&"+arg_cgi_id+"="+QString::number (p->id));
+		fields.set_value ("Löschen", back_link_url (web_delete_person)+"&"+arg_cgi_id+"="+QString::number (p->id));
+		fields.set_value ("überschreiben", back_link_url (web_select_merge_person)+"&"+arg_cgi_id+"="+QString::number (p->id));
 		treat_additional_fields (treatment, fields.get_list ());
 	}
 
@@ -2316,12 +2316,12 @@ void write_pilot_log (LatexDocument &ldoc, const QList<PilotLogEntry *> &pilotLo
 	// XXX
 {
 	// TODO code duplication with csv writing
-	setup_latex_headings (ldoc, "Flugbuch f�r "+latex_escape (person_name), date_text);
+	setup_latex_headings (ldoc, "Flugbuch für "+latex_escape (person_name), date_text);
 	ldoc.landscape=false;
 
 	if (pilotLog.isEmpty ())
 	{
-		ldoc.write_text ("Keine Fl�ge\n");
+		ldoc.write_text ("Keine Flüge\n");
 	}
 	else
 	{
@@ -2345,12 +2345,12 @@ void writePlaneLog (LatexDocument &ldoc, const QList<PlaneLogEntry *> &planeLog,
 	// XXX
 {
 	// TODO code duplication with csv writing
-	setup_latex_headings (ldoc, "Bordb�cher "+latex_escape (opts.ort), date_text);
+	setup_latex_headings (ldoc, "Bordbücher "+latex_escape (opts.ort), date_text);
 	ldoc.landscape=false;
 
 	if (planeLog.isEmpty ())
 	{
-		ldoc.write_text ("Keine Fl�ge\n");
+		ldoc.write_text ("Keine Flüge\n");
 	}
 	else
 	{
@@ -2380,7 +2380,7 @@ void write_flightlist (LatexDocument &ldoc, const QList<Flight *> &flights, cons
 
 	if (flights.isEmpty ())
 	{
-		ldoc.write_text ("Keine Fl�ge\n");
+		ldoc.write_text ("Keine Flüge\n");
 	}
 	else
 	{
@@ -2569,7 +2569,7 @@ void fields_write_edit_table (const QList<ObjectField> &fields, bool create_new,
 	document
 		.start_tag ("tr")
 		.start_tag ("td", "colspan=2")
-		.write_submit (create_new?"Anlegen":"�ndern")
+		.write_submit (create_new?"Anlegen":"ändern")
 		.end_tag ("td")
 		.end_tag ("tr")
 		;
@@ -2714,13 +2714,13 @@ WhatNext handler_do_login ()
 {
 	// We may only do this via POST requests.
 	if (request_method!=rm_post)
-		return WhatNext::output_error ("Aus Sicherheitsgr�nden ist dieser Zugang nicht m�glich. Bitte die Anmeldeseite verwenden.");
+		return WhatNext::output_error ("Aus Sicherheitsgründen ist dieser Zugang nicht möglich. Bitte die Anmeldeseite verwenden.");
 
 	// Check parameter: username. Must be present and non-empty.
 	if (!CGI_HAS (username)) return WhatNext::go_to_state (web_login, "Kein Benutzername angegeben", true);
 	QString username=CGI_READ (username);
 	if (username.isEmpty ()) return WhatNext::go_to_state (web_login, "Kein Benutzername angegeben", true);
-	if (!user_name_valid (username)) return WhatNext::go_to_state (web_login, "Benutzername enth�lt ung�ltige Zeichen", true);
+	if (!user_name_valid (username)) return WhatNext::go_to_state (web_login, "Benutzername enthält ungültige Zeichen", true);
 
 	// Check parameter password. Must be present and non-empty.
 	if (!CGI_HAS (password)) return WhatNext::go_to_state (web_login, "Kein Passwort angegeben", true);
@@ -2873,15 +2873,15 @@ WhatNext handler_change_password ()
 	switch (determine_user_class (SESSION_READ (login_name)))
 	{
 		case uc_none:
-			return WhatNext::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_none nicht m�glich");
+			return WhatNext::output_error ("Passwortänderung für Benutzer der Klasse uc_none nicht möglich");
 			break;
 		case uc_mysql_user:
-			return WhatNext::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_mysql_user nicht implementiert");
+			return WhatNext::output_error ("Passwortänderung für Benutzer der Klasse uc_mysql_user nicht implementiert");
 			// SET PASSWORD=PASSWORD ('foo');
 			break;
 		case uc_sk_user:
 		{
-			document.write_paragraph ("Passwort�nderung f�r Benutzer "+html_escape (SESSION_READ (login_name)));
+			document.write_paragraph ("Passwortänderung für Benutzer "+html_escape (SESSION_READ (login_name)));
 			// TODO use document methods
 			document.write (
 				"<form action=\""+relative_url+"\" method=\"POST\">\n"
@@ -2898,7 +2898,7 @@ WhatNext handler_change_password ()
 				"      <td>Neues Passwort (wiederholen):</td>\n"
 				"      <td><input type=\"password\" name=\""+arg_cgi_new_password_2+"\"></td>\n"
 				"    </tr>\n"
-				"    <tr><td colspan=2><input type=\"submit\" value=\"�ndern\"></td></tr>\n"
+				"    <tr><td colspan=2><input type=\"submit\" value=\"ändern\"></td></tr>\n"
 				"  </table>\n"
 				+back_form_hidden (web_do_change_password)+
 				"</form>\n"
@@ -2921,16 +2921,16 @@ WhatNext handler_do_change_password ()
 	switch (determine_user_class (user_name))
 	{
 		case uc_none:
-			return WhatNext::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_none nicht m�glich");
+			return WhatNext::output_error ("Passwortänderung für Benutzer der Klasse uc_none nicht möglich");
 			break;
 		case uc_mysql_user:
-			return WhatNext::output_error ("Passwort�nderung f�r Benutzer der Klasse uc_mysql_user nicht implementiert");
+			return WhatNext::output_error ("Passwortänderung für Benutzer der Klasse uc_mysql_user nicht implementiert");
 			// dann auch gespeichertes passwort (in session) aktualisieren
 			break;
 		case uc_sk_user:
 		{
 			if (user_name.isEmpty ()) return WhatNext::output_error ("login_name nicht gesetzt");
-			if (new_password_1!=new_password_2) return WhatNext::go_to_state (web_change_password, "Neue Passw�rter stimmen nicht �berein", true);
+			if (new_password_1!=new_password_2) return WhatNext::go_to_state (web_change_password, "Neue Passwörter stimmen nicht überein", true);
 			if (new_password_1.isEmpty ()) return WhatNext::go_to_state (web_change_password, "Neues Passwort nicht angegeben", true);
 			QString error_message;
 			if (!authenticate (user_name, old_password, error_message)) return WhatNext::go_to_state (web_change_password, error_message, true);
@@ -2938,7 +2938,7 @@ WhatNext handler_do_change_password ()
 			int ret=db.sk_user_change_password (user_name, new_password_1);
 			CHECK_DB_ERROR_ERROR;
 
-			return redirect_to_result ("Passwort�nderung erfolgt", false, web_main_menu);
+			return redirect_to_result ("Passwortänderung erfolgt", false, web_main_menu);
 		} break;
 	}
 
@@ -3068,7 +3068,7 @@ WhatNext handler_delete_person ()
 	CHECK_ID;
 
 	if (db.person_used (id))
-		return WhatNext::output_error ("Die Person kann nicht gel�scht werden, weil sie noch verwendet wird.");
+		return WhatNext::output_error ("Die Person kann nicht gelöscht werden, weil sie noch verwendet wird.");
 		// TODO where?
 
 	// Read the person
@@ -3076,7 +3076,7 @@ WhatNext handler_delete_person ()
 	int ret=db.get_person (&person, id);
 	CHECK_DB_ERROR_ERROR;
 
-	document.write_paragraph ("Die folgende Person wird gel�scht:");
+	document.write_paragraph ("Die folgende Person wird gelöscht:");
 
 	// Display the person
 	document.start_paragraph ();
@@ -3089,9 +3089,9 @@ WhatNext handler_delete_person ()
 	document
 		.write_paragraph ("OK?")
 		.start_paragraph ()
-		.write_text_link (back_link_url (web_do_delete_person, delete_args), "Wirklich l�schen")
+		.write_text_link (back_link_url (web_do_delete_person, delete_args), "Wirklich löschen")
 		.write (" ")
-		.write_text_link (back_link_url (web_list_persons, make_anchor_name (person.id)), "Zur�ck")
+		.write_text_link (back_link_url (web_list_persons, make_anchor_name (person.id)), "Zurück")
 		.end_paragraph ()
 		;
 
@@ -3109,7 +3109,7 @@ WhatNext handler_do_delete_person ()
 	CHECK_ID;
 
 	if (db.person_used (id))
-		return WhatNext::output_error ("Die Person kann nicht gel�scht werden, weil sie noch verwendet wird.");
+		return WhatNext::output_error ("Die Person kann nicht gelöscht werden, weil sie noch verwendet wird.");
 		// TODO where?
 
 	// Delete
@@ -3140,7 +3140,7 @@ WhatNext handler_result ()
 		}
 		catch (web_interface_state::ex_not_found)
 		{
-			document.write_paragraph ("(Ung�litiger Zustand "+next_state+")");
+			document.write_paragraph ("(Ungülitiger Zustand "+next_state+")");
 		}
 	}
 
@@ -3206,10 +3206,10 @@ WhatNext handler_select_merge_person ()
 	ret=db.get_person (&person, id);
 	CHECK_DB_ERROR_ERROR;
 
-	document.write_paragraph ("Die folgende (falsche) Person wird �berschrieben:");
+	document.write_paragraph ("Die folgende (falsche) Person wird überschrieben:");
 	DO_SUB_ACTION (treat_person (&person, tm_write_display));
 
-	document.write_paragraph ("Bitte die korrekte Person ausw�hlen:");
+	document.write_paragraph ("Bitte die korrekte Person auswählen:");
 
 	// For linking to the do_merge state, we need to pass the wrong person.
 	ArgumentList additional_args;
@@ -3220,7 +3220,7 @@ WhatNext handler_select_merge_person ()
 	CHECK_DB_ERROR_ERROR;
 	DO_SUB_ACTION (write_person_list (persons, false, web_merge_person, arg_cgi_correct_person, &additional_args, false, true));
 
-	document.write_paragraph (document.text_link (back_link_url (web_list_persons, make_anchor_name (person.id)), "Zur�ck zur Benutzerliste"));
+	document.write_paragraph (document.text_link (back_link_url (web_list_persons, make_anchor_name (person.id)), "Zurück zur Benutzerliste"));
 
 	foreach (Person *p, persons) delete p;
 
@@ -3238,7 +3238,7 @@ WhatNext handler_merge_person ()
 	CHECK_AN_ID (wrong_id, id);
 	CHECK_AN_ID (correct_id, correct_person);
 
-	if (correct_id==wrong_id) return WhatNext::go_to_state (web_select_merge_person, "Identische Person ausgew�hlt", true);
+	if (correct_id==wrong_id) return WhatNext::go_to_state (web_select_merge_person, "Identische Person ausgewählt", true);
 
 	// Write persons and get confirmation
 
@@ -3255,7 +3255,7 @@ WhatNext handler_merge_person ()
 	document.write_paragraph ("Die folgende (falsche) Person:");
 	DO_SUB_ACTION (treat_person (&wrong_person, tm_write_display));
 
-	document.write_paragraph ("wird durch folgende (korrekten) Person �berschrieben:");
+	document.write_paragraph ("wird durch folgende (korrekten) Person überschrieben:");
 	DO_SUB_ACTION (treat_person (&correct_person, tm_write_display));
 
 	document.write_paragraph ("OK?");
@@ -3264,24 +3264,24 @@ WhatNext handler_merge_person ()
 	ArgumentList merge_args;
 	merge_args.set_value (arg_cgi_id, QString::number (wrong_id));
 	merge_args.set_value (arg_cgi_correct_person, QString::number (correct_person.id));
-	QString merge_link_target=back_link_url (web_do_merge_person, merge_args);	//, "Neu ausw�hlen";
+	QString merge_link_target=back_link_url (web_do_merge_person, merge_args);	//, "Neu auswählen";
 
 	// Back to selection
 	ArgumentList back_select_args;
 	back_select_args.set_value (arg_cgi_id, QString::number (wrong_id));
-	QString back_select_link_target=back_link_url (web_select_merge_person, back_select_args); //, "Neu ausw�hlen");
+	QString back_select_link_target=back_link_url (web_select_merge_person, back_select_args); //, "Neu auswählen");
 
 	// Back to list
 	QString anchor=make_anchor_name (wrong_person.id);
-	QString back_list_link_target=back_link_url (web_list_persons, anchor);	//, "Zur�ck zur Personenliste");
+	QString back_list_link_target=back_link_url (web_list_persons, anchor);	//, "Zurück zur Personenliste");
 
 	document
 		.start_paragraph ()
-		.write_text_link (merge_link_target, "�berschreiben")
+		.write_text_link (merge_link_target, "überschreiben")
 		.write (" ")
-		.write_text_link (back_select_link_target, "Neu ausw�hlen")
+		.write_text_link (back_select_link_target, "Neu auswählen")
 		.write (" ")
-		.write_text_link (back_list_link_target, "Zur�ck zur Personenliste")
+		.write_text_link (back_list_link_target, "Zurück zur Personenliste")
 		.end_paragraph ()
 		;
 
@@ -3297,7 +3297,7 @@ WhatNext handler_do_merge_person ()
 	CHECK_AN_ID (wrong_id, id);
 	CHECK_AN_ID (correct_id, correct_person);
 
-	if (correct_id==wrong_id) return WhatNext::go_to_state (web_select_merge_person, "Identische Person ausgew�hlt", true);
+	if (correct_id==wrong_id) return WhatNext::go_to_state (web_select_merge_person, "Identische Person ausgewählt", true);
 
 	try
 	{
@@ -3312,7 +3312,7 @@ WhatNext handler_do_merge_person ()
 		return WhatNext::output_error (e.description ());
 	}
 
-	SESSION_WRITE (one_time_message, "Person �berschrieben");
+	SESSION_WRITE (one_time_message, "Person überschrieben");
 	return make_redirect (web_list_persons, make_anchor_name (correct_id));
 }
 //
@@ -3349,7 +3349,7 @@ WhatNext handler_user_list ()
 
 		// Write the edit and delete cells
 		user_row.push_back (make_link_cell (web_user_edit, "Editieren", arg_cgi_username, (*user).username));
-		user_row.push_back (make_link_cell (web_user_delete, "L�schen", arg_cgi_username, (*user).username));
+		user_row.push_back (make_link_cell (web_user_delete, "Löschen", arg_cgi_username, (*user).username));
 
 		// End of row
 		table.push_back (user_row);
@@ -3377,10 +3377,10 @@ WhatNext handler_user_delete ()
 	CHECK_DB_ERROR_ERROR;
 	sk_user_to_fields (user);
 
-	require_not_self (user.username, "Man kann sich nicht selbst l�schen");
-	require_matching_club_admin (user.club, "Es k�nnen nur Benutzer des eigenen Vereins gel�scht werden");
+	require_not_self (user.username, "Man kann sich nicht selbst löschen");
+	require_matching_club_admin (user.club, "Es könnnen nur Benutzer des eigenen Vereins gelöscht werden");
 
-	document.write_paragraph ("Der folgende Benutzer wird gel�scht:");
+	document.write_paragraph ("Der folgende Benutzer wird gelöscht:");
 
 	document.start_paragraph ();
 	write_fields_display (fields_sk_user);
@@ -3409,8 +3409,8 @@ WhatNext handler_user_do_delete ()
 	int ret=db.sk_user_get (user_to_delete, username);
 	CHECK_DB_ERROR_ERROR;
 
-	require_not_self (username, "Man kann sich nicht selbst l�schen");
-	require_matching_club_admin (user_to_delete.club, "Es k�nnen nur Benutzer des eigenen Vereins gel�scht werden");
+	require_not_self (username, "Man kann sich nicht selbst löschen");
+	require_matching_club_admin (user_to_delete.club, "Es könnnen nur Benutzer des eigenen Vereins gelöscht werden");
 
 	ret=db.sk_user_delete (username);
 	CHECK_DB_ERROR_ERROR;
@@ -3545,7 +3545,7 @@ WhatNext handler_user_do_edit ()
 		if (create_new) session.args.set_value (arg_session_create_new);
 
 		// Now we can safely go to the selection state
-		return WhatNext::go_to_state (web_person_select, "Person ausw�hlen");
+		return WhatNext::go_to_state (web_person_select, "Person auswählen");
 	}
 
 	require_club_admin ();
@@ -3567,7 +3567,7 @@ WhatNext handler_user_do_edit ()
 	{
 		// Create
 		username=user.username;
-		if (!user_name_valid (username)) return WhatNext::go_to_state (web_user_edit, "Benutzername enth�lt ung�ltige Zeichen", true);
+		if (!user_name_valid (username)) return WhatNext::go_to_state (web_user_edit, "Benutzername enthält ungültige Zeichen", true);
 
 		// TODO: handle these checks via lock_fields
 		if (user.perm_club_admin) require_sk_admin ("Nur der Startkladdenadministrator kann Vereinsadministratorrechte vergeben");
@@ -3584,13 +3584,13 @@ WhatNext handler_user_do_edit ()
 		CHECK_DB_ERROR_ERROR;
 
 		// TODO handle these checks via lock_fields
-		if (user.perm_club_admin!=org_user.perm_club_admin) require_sk_admin ("Nur der Startkladdenadministrator kann Vereinsadministratorrechte �ndern");
-		if (user.perm_read_flight_db!=org_user.perm_read_flight_db) require_sk_admin ("Nur der Startkladdenadministrator kann Datenbankleserechte �ndern");
+		if (user.perm_club_admin!=org_user.perm_club_admin) require_sk_admin ("Nur der Startkladdenadministrator kann Vereinsadministratorrechte ändern");
+		if (user.perm_read_flight_db!=org_user.perm_read_flight_db) require_sk_admin ("Nur der Startkladdenadministrator kann Datenbankleserechte ändern");
 	}
 
 
 	if (user.perm_club_admin && user.club.isEmpty ())
-		return WhatNext::go_to_state (web_user_edit, "F�r einen Vereinsadmin ist ein Verein n�tig", true);
+		return WhatNext::go_to_state (web_user_edit, "Für einen Vereinsadmin ist ein Verein nötig", true);
 
 	// Check the username
 	if (username.isEmpty ()) return WhatNext::go_to_state (web_user_edit, "Kein Benutzername angegeben", true);
@@ -3623,7 +3623,7 @@ WhatNext handler_user_do_edit ()
 		QString password_1=CGI_READ_F (field_user_password);
 		QString password_2=CGI_READ_F (field_user_password_repeat);
 		if (password_1.isEmpty ()) return WhatNext::go_to_state (web_user_edit, "Kein Passwort angegeben", true);
-		if (password_1!=password_2) return WhatNext::go_to_state (web_user_edit, "Passw�rter stimmen nicht �berein", true);
+		if (password_1!=password_2) return WhatNext::go_to_state (web_user_edit, "Passwörter stimmen nicht überein", true);
 
 		// Check if the user exists
 		ret=db.sk_user_exists (user.username);
@@ -3672,7 +3672,7 @@ WhatNext handler_user_change_password ()
 	if (determine_user_class (username)!=uc_sk_user) return WhatNext::output_error ("Der Benutzername \""+username+"\" liegt nicht in der Benutzerklasse uc_sk_user");
 	check_username (username);
 
-	document.write_paragraph ("Passwort�nderung f�r Benutzer "+username);
+	document.write_paragraph ("Passwortänderung für Benutzer "+username);
 
 	// Get the user
 	User user;
@@ -3680,7 +3680,7 @@ WhatNext handler_user_change_password ()
 	CHECK_DB_ERROR_ERROR;
 
 	// Permission checking
-	require_matching_club_admin (user.club, "Man kann nur Passw�rter von Benutzern des eigenen Vereins �ndern");
+	require_matching_club_admin (user.club, "Man kann nur Passwörter von Benutzern des eigenen Vereins ändern");
 
 	html_table table;
 
@@ -3695,7 +3695,7 @@ WhatNext handler_user_change_password ()
 	table.push_back (row);
 
 	row.clear ();
-	row.push_back (HtmlTableCell (document.make_submit ("�ndern"), false, 2));
+	row.push_back (HtmlTableCell (document.make_submit ("ändern"), false, 2));
 	table.push_back (row);
 
 	ArgumentList additional_args;
@@ -3729,7 +3729,7 @@ WhatNext handler_user_do_change_password ()
 
 	// TODO add fuction for password checks
 	if (new_password_1.isEmpty ()) return WhatNext::go_to_state (web_user_change_password, "Passwort nicht angegeben", true);
-	if (new_password_2!=new_password_1) return WhatNext::go_to_state (web_user_change_password, "Passw�rter stimmen nicht �berein", true);
+	if (new_password_2!=new_password_1) return WhatNext::go_to_state (web_user_change_password, "Passwörter stimmen nicht überein", true);
 
 	// Get the user
 	User user;
@@ -3737,13 +3737,13 @@ WhatNext handler_user_do_change_password ()
 	CHECK_DB_ERROR_ERROR;
 
 	// Permission checking
-	require_matching_club_admin (user.club, "Man kann nur Passw�rter von Benutzern des eigenen Vereins �ndern");
+	require_matching_club_admin (user.club, "Man kann nur Passwörter von Benutzern des eigenen Vereins ändern");
 
 	ret=db.sk_user_change_password (username, new_password_1);
 	CHECK_DB_ERROR_STATE (web_user_change_password);
 
 	// Success
-	SESSION_WRITE (one_time_message, "Passwort�nderung erfolgt");
+	SESSION_WRITE (one_time_message, "Passwortänderung erfolgt");
 
 	// For linking back
 	ArgumentList args;
@@ -3799,7 +3799,7 @@ WhatNext handler_master_data_import ()
 	row.push_back (HtmlTableCell (document.make_submit ("Absenden"), false, 2));
 	table.push_back (row);
 
-	document.write_paragraph ("Bitte den Datentyp und die Datei ausw�hlen. Die Daten werden dann eingelesen und �berpr�ft.");
+	document.write_paragraph ("Bitte den Datentyp und die Datei auswählen. Die Daten werden dann eingelesen und überprüft.");
 	document.write (table);
 	document.write (back_form_hidden (web_master_data_upload));
 
@@ -3814,7 +3814,7 @@ WhatNext handler_master_data_upload ()
 
 	// Don't check club admin here, this state does not need database access.
 	if (CGI_READ (data_type)!=arg_cgi_data_type_person)
-		return WhatNext::output_error ("Ung�ltiger Datentyp");
+		return WhatNext::output_error ("Ungültiger Datentyp");
 
 	SESSION_WRITE (master_data_file, CGI_READ (file));
 	SESSION_WRITE (master_data_filename, filenames.get_value (arg_cgi_file));
@@ -3830,7 +3830,7 @@ WhatNext handler_master_data_check ()
 	require_club_admin ();
 
 	if (CGI_READ (data_type)!=arg_cgi_data_type_person)
-		return WhatNext::output_error ("Ung�ltiger Datentyp");
+		return WhatNext::output_error ("Ungültiger Datentyp");
 
 	// If there is not data file, the page was probably reloaded after another
 	// state was activated. Silently redirect to the form.
@@ -3843,7 +3843,7 @@ WhatNext handler_master_data_check ()
 
 	QString filename=SESSION_READ (master_data_filename);
 	if (filename.isEmpty ())
-		// TODO besser zur�ck in den Auswahlzustand, aber Felder voreintragen
+		// TODO besser zurück in den Auswahlzustand, aber Felder voreintragen
 		return WhatNext::output_error ("Keine Datei angegeben");
 
 	QString csv=SESSION_READ (master_data_file);
@@ -3870,7 +3870,7 @@ WhatNext handler_master_data_check ()
 	// If there are errors, display them.
 	if (num_fatal_errors>0)
 	{
-		document.write_paragraph (html_escape ("Die Daten k�nnen nicht importiert werden, weil folgende Probleme bestehen:"), "error");
+		document.write_paragraph (html_escape ("Die Daten könnnen nicht importiert werden, weil folgende Probleme bestehen:"), "error");
 
 		DO_SUB_ACTION (write_message_list (messages));
 
@@ -3887,12 +3887,12 @@ WhatNext handler_master_data_check ()
 	// displayed to the user in a separate Table.
 	if (!messages.empty ())
 	{
-		document.write_paragraph (html_escape ("Bitte folgende Personen speziell �berpr�fen:"));
+		document.write_paragraph (html_escape ("Bitte folgende Personen speziell überprüfen:"));
 		DO_SUB_ACTION (write_message_list (messages));
 	}
 
 	// Display the list of persons
-	document.write_paragraph (html_escape ("Die folgenden Personen wurden aus der CSV-Datei \""+filename+"\" gelesen. Bitte �berpr�fen:"));
+	document.write_paragraph (html_escape ("Die folgenden Personen wurden aus der CSV-Datei \""+filename+"\" gelesen. Bitte überprüfen:"));
 	DO_SUB_ACTION (write_person_list (persons, false, "", "", NULL, true));
 
 	// Write a link to the next state for acepting or back to the selection state
@@ -3901,7 +3901,7 @@ WhatNext handler_master_data_check ()
 	document
 		.start_paragraph ()
 		.write_text_link (back_link_url (web_master_data_do_import, additional_args), "OK").endl ()
-		.write_text_link (back_link_url (web_master_data_import, additional_args), "Zur�ck").endl ()
+		.write_text_link (back_link_url (web_master_data_import, additional_args), "Zurück").endl ()
 		.end_paragraph ()
 		;
 
@@ -3925,7 +3925,7 @@ WhatNext handler_master_data_do_import ()
 		return WhatNext::output_error ("Keine Daten vorhanden");
 
 	if (CGI_READ (data_type)!=arg_cgi_data_type_person)
-		return WhatNext::output_error ("Ung�ltiger Datentyp");
+		return WhatNext::output_error ("Ungültiger Datentyp");
 
 	QString csv=SESSION_READ (master_data_file);
 	QList<Person *> persons;
@@ -3963,7 +3963,7 @@ WhatNext handler_person_logbook ()
 	CHECK_DB_ERROR_ERROR;
 	// TODO handle not found error explicitly
 
-	document.write_paragraph ("Flugbuchabfrage f�r "+person.text_name ());
+	document.write_paragraph ("Flugbuchabfrage für "+person.text_name ());
 
 	document.start_tag ("form", "action=\""+relative_url+"\" method=\"GET\"");
 
@@ -3997,9 +3997,9 @@ WhatNext handler_person_logbook ()
 
 	QStringList fi_mode_explanation;
 	// TODO: this list should be part of the logbook class
-	fi_mode_explanation.append ("Nein: Nur Fl�ge als Pilot werden verwendet.");
-	fi_mode_explanation.append ("Streng: Auch Fl�ge als Begleiter werden verwendet, wenn der Flugtyp \"Schulung\" ist.");
-	fi_mode_explanation.append ("Locker: Alle Fl�ge als Begleiter werden verwendet.");
+	fi_mode_explanation.append ("Nein: Nur Flüge als Pilot werden verwendet.");
+	fi_mode_explanation.append ("Streng: Auch Flüge als Begleiter werden verwendet, wenn der Flugtyp \"Schulung\" ist.");
+	fi_mode_explanation.append ("Locker: Alle Flüge als Begleiter werden verwendet.");
 
 	document
 		.start_paragraph ()
@@ -4073,7 +4073,7 @@ WhatNext handler_do_person_logbook ()
 	{
 		// Read and check the date.
 		Date date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
-		if (date.is_invalid ()) return WhatNext::output_error ("Das angegebene Datum ist ung�ltig.");
+		if (date.is_invalid ()) return WhatNext::output_error ("Das angegebene Datum ist ungültig.");
 		QDate q_date=(QDate)date;
 		date_text=date.text ();
 		filename.append (date.text ());
@@ -4085,12 +4085,12 @@ WhatNext handler_do_person_logbook ()
 	{
 		// Read and check the start date.
 		Date start_date=date_from_cgi (arg_cgi_date_start_year, arg_cgi_date_start_month, arg_cgi_date_start_day);
-		if (start_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Anfangsdatum ist ung�ltig.");
+		if (start_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Anfangsdatum ist ungültig.");
 		QDate q_start_date=(QDate)start_date;
 
 		// Read and check the end date.
 		Date end_date=date_from_cgi (arg_cgi_date_end_year, arg_cgi_date_end_month, arg_cgi_date_end_day);
-		if (end_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Enddatum ist ung�ltig.");
+		if (end_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Enddatum ist ungültig.");
 		QDate q_end_date=(QDate)end_date;
 
 		if (end_date<start_date) return WhatNext::output_error ("Das Enddatum liegt vor dem Anfangsdatum.");
@@ -4114,11 +4114,11 @@ WhatNext handler_do_person_logbook ()
 	// We have got a QList<PilotLogEntry>.
 	if (format==arg_cgi_format_html)
 	{
-		document.write_paragraph ("Flugbuchabfrage f�r "+person.text_name ()+", "+date_text);
+		document.write_paragraph ("Flugbuchabfrage für "+person.text_name ()+", "+date_text);
 
 		if (pilotLog.isEmpty ())
 		{
-			document.write_paragraph ("Keine Fl�ge");
+			document.write_paragraph ("Keine Flüge");
 		}
 		else
 		{
@@ -4139,7 +4139,7 @@ WhatNext handler_do_person_logbook ()
 			}
 
 			document.write (table);
-			document.write_paragraph (QString::number (pilotLog.count ())+" Eintr�ge");
+			document.write_paragraph (QString::number (pilotLog.count ())+" Einträge");
 		}
 
 		return WhatNext::output_document ();
@@ -4160,7 +4160,7 @@ WhatNext handler_do_person_logbook ()
 		}
 
 		filename.append (".csv");
-		return WhatNext::output_raw_document (tab.csv (opts.csv_quote), HttpDocument::mime_type_csv, filename, "Flugbuch f�r "+person.text_name ());
+		return WhatNext::output_raw_document (tab.csv (opts.csv_quote), HttpDocument::mime_type_csv, filename, "Flugbuch für "+person.text_name ());
 	}
 	else if (format==arg_cgi_format_latex)
 	{
@@ -4168,7 +4168,7 @@ WhatNext handler_do_person_logbook ()
 		write_pilot_log (ldoc, pilotLog, date_text, person.text_name ());
 
 		filename.append (".tex");
-		return WhatNext::output_raw_document (ldoc.get_string (), HttpDocument::mime_type_plaintext, filename, "Flugbuch f�r "+person.text_name ());
+		return WhatNext::output_raw_document (ldoc.get_string (), HttpDocument::mime_type_plaintext, filename, "Flugbuch für "+person.text_name ());
 	}
 	else if (format==arg_cgi_format_pdf)
 	{
@@ -4179,7 +4179,7 @@ WhatNext handler_do_person_logbook ()
 		try
 		{
 			QString pdf=ldoc.make_pdf ();
-			return WhatNext::output_raw_document (pdf, HttpDocument::mime_type_pdf, filename, "Flugbuch f�r "+person.text_name ());
+			return WhatNext::output_raw_document (pdf, HttpDocument::mime_type_pdf, filename, "Flugbuch für "+person.text_name ());
 		}
 		catch (LatexDocument::ex_command_failed &e)
 		{
@@ -4250,11 +4250,11 @@ WhatNext handler_do_plane_logbook ()
 		// Read and check the date.
 		date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
 		if (date.is_invalid ())
-			return WhatNext::output_error ("Das angegebene Datum ist ung�ltig.");
+			return WhatNext::output_error ("Das angegebene Datum ist ungültig.");
 	}
 	else if (date_spec==arg_cgi_date_spec_range)
 	{
-		return WhatNext::output_error ("Ung�ltiger Datumsmodus \""+date_spec+"\"");
+		return WhatNext::output_error ("Ungültiger Datumsmodus \""+date_spec+"\"");
 	}
 	else
 	{
@@ -4316,7 +4316,7 @@ WhatNext handler_do_plane_logbook ()
 	try
 	{
 		QString pdf=ldoc.make_pdf ();
-		return WhatNext::output_raw_document (pdf, HttpDocument::mime_type_pdf, filename, "Bordb�cher f�r "+date_text);
+		return WhatNext::output_raw_document (pdf, HttpDocument::mime_type_pdf, filename, "Bordbücher für "+date_text);
 	}
 	catch (LatexDocument::ex_command_failed &e)
 	{
@@ -4374,11 +4374,11 @@ WhatNext handler_do_flightlist ()
 	{
 		// Read and check the date.
 		date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
-		if (date.is_invalid ()) return WhatNext::output_error ("Das angegebene Datum ist ung�ltig.");
+		if (date.is_invalid ()) return WhatNext::output_error ("Das angegebene Datum ist ungültig.");
 	}
 	else if (date_spec==arg_cgi_date_spec_range)
 	{
-		return WhatNext::output_error ("Ung�ltiger Datumsmodus \""+date_spec+"\"");
+		return WhatNext::output_error ("Ungültiger Datumsmodus \""+date_spec+"\"");
 	}
 	else
 	{
@@ -4408,7 +4408,7 @@ WhatNext handler_do_flightlist ()
 	try
 	{
 		QString pdf=ldoc.make_pdf ();
-		return WhatNext::output_raw_document (pdf, HttpDocument::mime_type_pdf, filename, "Startliste f�r "+date_text);
+		return WhatNext::output_raw_document (pdf, HttpDocument::mime_type_pdf, filename, "Startliste für "+date_text);
 	}
 	catch (LatexDocument::ex_command_failed &e)
 	{
@@ -4432,7 +4432,7 @@ WhatNext handler_flight_db ()
 
 	// TODO remove today and single, is not needed
 	add_date_inputs (table, true);
-	add_bool_input (table, "Schleppfl�ge einzeln", arg_cgi_towflights_extra);
+	add_bool_input (table, "Schleppflüge einzeln", arg_cgi_towflights_extra);
 
 	// Make a list of data formats available.
 	ArgumentList data_formats;
@@ -4522,7 +4522,7 @@ WhatNext handler_do_flight_db ()
 	{
 		// Read and check the date.
 		Date date=date_from_cgi (arg_cgi_date_single_year, arg_cgi_date_single_month, arg_cgi_date_single_day);
-		if (date.is_invalid ()) return WhatNext::output_error ("Das angegebene Datum ist ung�ltig.");
+		if (date.is_invalid ()) return WhatNext::output_error ("Das angegebene Datum ist ungültig.");
 		QDate q_date=(QDate)date;
 		date_text=date.text ();
 		filename.append (date.text ());
@@ -4534,12 +4534,12 @@ WhatNext handler_do_flight_db ()
 	{
 		// Read and check the start date.
 		Date start_date=date_from_cgi (arg_cgi_date_start_year, arg_cgi_date_start_month, arg_cgi_date_start_day);
-		if (start_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Anfangsdatum ist ung�ltig.");
+		if (start_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Anfangsdatum ist ungültig.");
 		QDate q_start_date=(QDate)start_date;
 
 		// Read and check the end date.
 		Date end_date=date_from_cgi (arg_cgi_date_end_year, arg_cgi_date_end_month, arg_cgi_date_end_day);
-		if (end_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Enddatum ist ung�ltig.");
+		if (end_date.is_invalid ()) return WhatNext::output_error ("Das angegebene Enddatum ist ungültig.");
 		QDate q_end_date=(QDate)end_date;
 
 		if (end_date<start_date) return WhatNext::output_error ("Das Enddatum liegt vor dem Anfangsdatum.");
@@ -4706,7 +4706,7 @@ WhatNext handler_do_flight_db ()
 	}
 
 	filename.append (".csv");
-	return WhatNext::output_raw_document (tab.csv (opts.csv_quote), HttpDocument::mime_type_csv, filename, "Flugliste f�r "+date_text);
+	return WhatNext::output_raw_document (tab.csv (opts.csv_quote), HttpDocument::mime_type_csv, filename, "Flugliste für "+date_text);
 
 	foreach (Flight *f, flights) delete f;
 
@@ -4759,7 +4759,7 @@ WhatNext do_next (const WhatNext next, HttpDocument &http)
 			{
 				// Go to the output_error state, because wn_go_on may not be used
 				// as a program state.
-				return WhatNext::output_error ("Zustand wn_go_on ausgef�hrt (Programmfehler)");
+				return WhatNext::output_error ("Zustand wn_go_on ausgeführt (Programmfehler)");
 			} break;
 			case wn_output_error:
 			{
@@ -4774,7 +4774,7 @@ WhatNext do_next (const WhatNext next, HttpDocument &http)
 				document.write_error_paragraph (html_escape (next.get_message ()));
 				if (!next.get_explanation ().isEmpty ()) document.write_paragraph (next.get_explanation ());
 				if (session.is_ok ())
-					document.write_paragraph (document.text_link (back_link_url (web_main_menu), "Hauptmen�"));
+					document.write_paragraph (document.text_link (back_link_url (web_main_menu), "HauptMenü"));
 				else
 					document.write_paragraph (document.text_link (back_link_url (web_logout), "Anmeldeseite"));
 				return WhatNext::output_document ();
@@ -4820,7 +4820,7 @@ WhatNext do_next (const WhatNext next, HttpDocument &http)
 				}
 				catch (web_interface_state::ex_not_found)
 				{
-					return WhatNext::output_error ("Ung�ltiger Zustand "+next.get_state_label ());
+					return WhatNext::output_error ("Ungültiger Zustand "+next.get_state_label ());
 				}
 				const web_interface_state &state=*p_state;
 
@@ -4887,9 +4887,9 @@ WhatNext do_next (const WhatNext next, HttpDocument &http)
 					QString error_description;
 
 					if (state.get_allow_local ())
-						error_description="Diese Aktion kann nur von lokalen Rechnern oder nach erfolgter Anmeldung durchgef�hrt werden.";
+						error_description="Diese Aktion kann nur von lokalen Rechnern oder nach erfolgter Anmeldung durchgeführt werden.";
 					else
-						error_description="Diese Aktion kann nur nach erfolgter Anmeldung durchgef�hrt werden.";
+						error_description="Diese Aktion kann nur nach erfolgter Anmeldung durchgeführt werden.";
 
 					return WhatNext::output_error (error_message, error_description);
 				}
@@ -4906,7 +4906,7 @@ WhatNext do_next (const WhatNext next, HttpDocument &http)
 					return WhatNext::output_error (
 							"Unzureichender Datenbankzugriff"
 							" (vorhanden: "+db_access_string (session_access)+";"
-							" ben�tigt: "+db_access_string (db_access_needed)+")");
+							" benötigt: "+db_access_string (db_access_needed)+")");
 				}
 
 				// If a database connection is required, make sure it is
@@ -4951,7 +4951,7 @@ WhatNext do_next (const WhatNext next, HttpDocument &http)
 				SESSION_REMOVE (one_time_message);
 
 				state_handler handler=state.get_handler ();
-				if (!handler) return WhatNext::output_error ("Handler f�r Zustand \""+state.get_label ()+"\" nicht gesetzt (Programmfehler)");
+				if (!handler) return WhatNext::output_error ("Handler für Zustand \""+state.get_label ()+"\" nicht gesetzt (Programmfehler)");
 				current_state=p_state;
 				try
 				{
@@ -4991,7 +4991,7 @@ WhatNext do_next (const WhatNext next, HttpDocument &http)
 			{
 				// Go to the output_error state, because this function should not
 				// have been called when wn_end_program was commanded.
-				return WhatNext::output_error ("Zustand wn_end_program ausgef�hrt (Programmfehler)");
+				return WhatNext::output_error ("Zustand wn_end_program ausgeführt (Programmfehler)");
 			} break;
 		}
 	}
@@ -5003,7 +5003,7 @@ WhatNext do_next (const WhatNext next, HttpDocument &http)
 	catch (...)
 	{
 		// An unhandled std::exception. This is very, very bad.
-		return WhatNext::output_error ("Unbehandelte std::exception. Gro�er, b�ser Programmfehler. So kann ich nicht arbeiten.");
+		return WhatNext::output_error ("Unbehandelte std::exception. Groöer, böser Programmfehler. So kann ich nicht arbeiten.");
 	}
 
 	// It may happen that one of the WhatNextType cases has been handled above,
@@ -5013,7 +5013,7 @@ WhatNext do_next (const WhatNext next, HttpDocument &http)
 
 void setup_static_data ()
 {
-	// caption bei states ohne Ausgabe: Zum Beispiel f�r error-document verwendet
+	// caption bei states ohne Ausgabe: Zum Beispiel für error-document verwendet
 
 #define ADD_HANDLER(STATE, HAS_OUTPUT, DB_ACCESS_NEEDED, ALLOW_ANON, ALLOW_LOCAL, CAPTION) \
 	do	\
@@ -5031,32 +5031,32 @@ void setup_static_data ()
 	//           state                        output  db needed    anon   local    caption
 	ADD_HANDLER (login                      , true  , dba_none,    true , false,   "Anmelden"                  );
 	ADD_HANDLER (do_login                   , false , dba_access,  true , false,   "Anmelden"                  );
-	ADD_HANDLER (main_menu                  , true  , dba_none,    true , true,    "Hauptmen�"                 );
+	ADD_HANDLER (main_menu                  , true  , dba_none,    true , true,    "HauptMenü"                 );
 	ADD_HANDLER (logout                     , false , dba_none,    true , false,   "Abmelden"                  );
-	ADD_HANDLER (change_password            , true  , dba_none,    false, false,   "Passwort �ndern"           );
-	ADD_HANDLER (do_change_password         , false , dba_sk_user, false, false,   "Passwort �ndern"           );
+	ADD_HANDLER (change_password            , true  , dba_none,    false, false,   "Passwort ändern"           );
+	ADD_HANDLER (do_change_password         , false , dba_sk_user, false, false,   "Passwort ändern"           );
 	ADD_HANDLER (list_persons               , true  , dba_sk_user, false, false,   "Personen auflisten"        );
 	ADD_HANDLER (display_person             , true  , dba_sk_user, false, false,   "Person anzeigen"           );
 	ADD_HANDLER (edit_person                , true  , dba_sk_user, false, false,   "Person editieren"          );
 	ADD_HANDLER (do_edit_person             , false , dba_sk_user, false, false,   "Person editieren"          );
 	ADD_HANDLER (result                     , true  , dba_none,    true , false,   "Ergebnis"                  );
-	ADD_HANDLER (delete_person              , true  , dba_sk_user, false, false,   "Person l�schen"            );
-	ADD_HANDLER (do_delete_person           , false , dba_sk_user, false, false,   "Person l�schen"            );
+	ADD_HANDLER (delete_person              , true  , dba_sk_user, false, false,   "Person löschen"            );
+	ADD_HANDLER (do_delete_person           , false , dba_sk_user, false, false,   "Person löschen"            );
 	ADD_HANDLER (create_person              , true  , dba_sk_user, false, false,   "Person anlegen"            );
 	ADD_HANDLER (do_create_person           , true  , dba_sk_user, false, false,   "Person anlegen"            );
-	ADD_HANDLER (select_merge_person        , true  , dba_sk_user, false, false,   "Person �berschreiben"      );
-	ADD_HANDLER (merge_person               , true  , dba_sk_user, false, false,   "Person �berschreiben"      );
-	ADD_HANDLER (do_merge_person            , false , dba_sk_user, false, false,   "Person �berschreiben"      );
+	ADD_HANDLER (select_merge_person        , true  , dba_sk_user, false, false,   "Person überschreiben"      );
+	ADD_HANDLER (merge_person               , true  , dba_sk_user, false, false,   "Person überschreiben"      );
+	ADD_HANDLER (do_merge_person            , false , dba_sk_user, false, false,   "Person überschreiben"      );
 
 	ADD_HANDLER (user_list                  , true  , dba_sk_user, false, false,   "Benutzerliste"             );
-	ADD_HANDLER (user_delete                , true  , dba_sk_user, false, false,   "Benutzer l�schen"          );
-	ADD_HANDLER (user_do_delete             , false , dba_sk_user, false, false,   "Benutzer l�schen"          );
+	ADD_HANDLER (user_delete                , true  , dba_sk_user, false, false,   "Benutzer löschen"          );
+	ADD_HANDLER (user_do_delete             , false , dba_sk_user, false, false,   "Benutzer löschen"          );
 	ADD_HANDLER (user_add                   , false , dba_none,    false, false,   "Benutzer anlegen"          );
 	ADD_HANDLER (user_edit                  , true  , dba_sk_user, false, false,   "Benutzer editieren"        );
 	ADD_HANDLER (user_do_edit               , false , dba_sk_user, false, false,   "Benutzer editieren"        );
-	ADD_HANDLER (user_change_password       , true  , dba_sk_user, false, false,   "Benutzerpasswort �ndern"   );
-	ADD_HANDLER (user_do_change_password    , false , dba_sk_user, false, false,   "Benutzerpasswort �ndern"   );
-	ADD_HANDLER (person_select              , true  , dba_sk_user, false, false,   "Person ausw�hlen"          );
+	ADD_HANDLER (user_change_password       , true  , dba_sk_user, false, false,   "Benutzerpasswort ändern"   );
+	ADD_HANDLER (user_do_change_password    , false , dba_sk_user, false, false,   "Benutzerpasswort ändern"   );
+	ADD_HANDLER (person_select              , true  , dba_sk_user, false, false,   "Person auswählen"          );
 
 	ADD_HANDLER (master_data_import         , true  , dba_sk_user, false, false,   "Stammdaten einspielen"     );
 	ADD_HANDLER (master_data_upload         , false , dba_none,    false, false,   "Stammdaten einspielen"     );
@@ -5065,8 +5065,8 @@ void setup_static_data ()
 
 	ADD_HANDLER (person_logbook             , true  , dba_sk_user, false, false,   "Flugbuch abrufen"          );
 	ADD_HANDLER (do_person_logbook          , true  , dba_sk_user, false, false,   "Flugbuch abrufen"          );
-	ADD_HANDLER (plane_logbook              , true  , dba_access , false, true ,   "Bordb�cher abrufen"        );
-	ADD_HANDLER (do_plane_logbook           , true  , dba_access , false, true ,   "Bordb�cher abrufen"        );
+	ADD_HANDLER (plane_logbook              , true  , dba_access , false, true ,   "Bordbücher abrufen"        );
+	ADD_HANDLER (do_plane_logbook           , true  , dba_access , false, true ,   "Bordbücher abrufen"        );
     ADD_HANDLER (flightlist                 , true  , dba_access , false, true ,   "Startliste abrufen"        );
     ADD_HANDLER (do_flightlist              , true  , dba_access , false, true ,   "Startliste abrufen"        );
     ADD_HANDLER (flight_db                  , true  , dba_sk_user, false, false,   "Flugdatenbank abrufen"     );
@@ -5082,8 +5082,8 @@ void setup_static_data ()
 	//                                                                     list___ edit____________________________      create__________________________
 	//                            caption                 data_type        display display edit   state     caption      display edit   state     caption      label
 	fields_sk_user.push_back (OF ("Benutzername",         OF::dt_string,   true ,  true ,  false, "",       "",          false,  true,  "",       "",          field_user_username        ));
-	fields_sk_user.push_back (OF ("Person",               OF::dt_db_id,    true ,  false,  true,  CGI_SEL,  "Ausw�hlen", false,  true,  CGI_SEL,  "Ausw�hlen", field_user_person          ));
-	fields_sk_user.push_back (OF ("Passwort",             OF::dt_password, false,  false,  false, WEB_CHPW, "�ndern",    false,  true,  "",       "",          field_user_password        ));
+	fields_sk_user.push_back (OF ("Person",               OF::dt_db_id,    true ,  false,  true,  CGI_SEL,  "Auswählen", false,  true,  CGI_SEL,  "Auswählen", field_user_person          ));
+	fields_sk_user.push_back (OF ("Passwort",             OF::dt_password, false,  false,  false, WEB_CHPW, "ändern",    false,  true,  "",       "",          field_user_password        ));
 	fields_sk_user.push_back (OF ("Passwort wiederholen", OF::dt_password, false,  false,  false, "",       "",          false,  true,  "",       "",          field_user_password_repeat ));
 	fields_sk_user.push_back (OF ("Vereinsadmin",         OF::dt_bool,     true ,  false,  true , "",       "",          false,  true,  "",       "",          field_user_club_admin      ));
 	fields_sk_user.push_back (OF ("Flugdatenbank lesen",  OF::dt_bool,     true ,  false,  true , "",       "",          false,  true,  "",       "",          field_user_read_flight_db  ));
@@ -5095,7 +5095,7 @@ void setup_static_data ()
 	fields_pilot_log_entry.push_back (OOF ("Tag"            , field_pilot_log_tag             ).set_no_break ()); widths_pilot_log_entry.push_back (15);	// "Tag"
 	fields_pilot_log_entry.push_back (OOF ("Muster"         , field_pilot_log_muster          ));                 widths_pilot_log_entry.push_back (12);	// "Muster"
 	fields_pilot_log_entry.push_back (OOF ("Kennzeichen"    , field_pilot_log_kennzeichen     ));                 widths_pilot_log_entry.push_back (14);	// "Kennzeichen"
-	fields_pilot_log_entry.push_back (OOF ("Flugzeugf�hrer" , field_pilot_log_flugzeugfuehrer ));                 widths_pilot_log_entry.push_back (20);	// "Flugzeugf�hrer"
+	fields_pilot_log_entry.push_back (OOF ("Flugzeugführer" , field_pilot_log_flugzeugfuehrer ));                 widths_pilot_log_entry.push_back (20);	// "Flugzeugführer"
 	fields_pilot_log_entry.push_back (OOF ("Begleiter"      , field_pilot_log_begleiter       ));                 widths_pilot_log_entry.push_back (20);	// "Begleiter"
 	fields_pilot_log_entry.push_back (OOF ("Startart"       , field_pilot_log_startart        ));                 widths_pilot_log_entry.push_back (10);	// "Startart"
 	fields_pilot_log_entry.push_back (OOF ("Ort Start"      , field_pilot_log_ort_start       ));                 widths_pilot_log_entry.push_back (15);	// "Ort Start"
@@ -5295,7 +5295,7 @@ WhatNext setup_variables ()
 		// Request method POST, data is passed on stdin
 		// Format as determined by CONTENT_TYPE
 		QString content_type_string=get_environment ("CONTENT_TYPE");
-		if (content_type_string.isEmpty ()) return WhatNext::output_error ("CONTENT_TYPE f�r POST nicht angegeben");
+		if (content_type_string.isEmpty ()) return WhatNext::output_error ("CONTENT_TYPE für POST nicht angegeben");
 		// Make a mime header structure
 		MimeHeader content_type_header (content_type_string, MimeHeader::text_name_content_type);
 
@@ -5384,7 +5384,7 @@ WhatNext setup_variables ()
 								if (part_header.value!="form-data") return WhatNext::output_error ("Unbekannte Content-Disposition: "+part_header.value);
 
 								// Check and save the element name
-								if (!part_header.args.has_argument ("name")) return WhatNext::output_error ("Content-Disposition enth�lt keinen Namen");
+								if (!part_header.args.has_argument ("name")) return WhatNext::output_error ("Content-Disposition enthält keinen Namen");
 								current_key=part_header.args.get_value ("name");
 
 								current_filename=part_header.args.get_value ("filename");
@@ -5454,7 +5454,7 @@ WhatNext setup_variables ()
 			// Session ain't no good.
 			// Cannot use error_description of the session because that only
 			// works for creation.
-			return WhatNext::output_error ("Ung�ltige Sitzung \""+CGI_READ (session_id)+"\"");
+			return WhatNext::output_error ("Ungültige Sitzung \""+CGI_READ (session_id)+"\"");
 		}
 	}
 
@@ -5552,7 +5552,7 @@ WhatNext setup_variables ()
 		}
 		catch (web_interface_state::ex_not_found)
 		{
-			return WhatNext::output_error ("Ung�ltiger Zustand \""+state_string+"\"");
+			return WhatNext::output_error ("Ungültiger Zustand \""+state_string+"\"");
 		}
 	}
 	else
