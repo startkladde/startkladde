@@ -39,8 +39,8 @@ class LaunchType:public Entity
 
 		bool ok;
 
-#define rw_property(TYPE, NAME) private: TYPE NAME; public: const TYPE get_ ## NAME () const { return NAME; }; void set_ ## NAME (TYPE value) { NAME=value; };
-#define ro_property(TYPE, NAME) private: TYPE NAME; public: const TYPE get_ ## NAME () const { return NAME; };
+#define rw_property(TYPE, NAME) private: TYPE NAME; public: TYPE get_ ## NAME () const { return NAME; }; void set_ ## NAME (TYPE value) { NAME=value; };
+#define ro_property(TYPE, NAME) private: TYPE NAME; public: TYPE get_ ## NAME () const { return NAME; };
 		ro_property (db_id, id);			// 1, 4, 10, 7
 		ro_property (QString, towplane);				// "", "D-EIAV", "", ""
 		ro_property (QString, accelerator);			// A, V, G, E

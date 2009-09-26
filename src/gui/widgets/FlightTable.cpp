@@ -338,9 +338,9 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	QString landebutton_text="!";
 
 	if (
-			eff_modus==fmLocal && !set_schlepp	||
-			eff_modus==fmLocal && set_schlepp	||
-			eff_modus==fmLeaving && set_schlepp)
+			(eff_modus==fmLocal && !set_schlepp)	||
+			(eff_modus==fmLocal && set_schlepp)	||
+			(eff_modus==fmLeaving && set_schlepp))
 	{
 		/*
 		 * SL:	Start		Landung		Dauer
@@ -543,7 +543,7 @@ void FlightTable::set_flight (int row, Flight *f, db_id id, bool set_schlepp)
 	QDate dat=f->effdatum (tz_utc);
 	QString dat_string;
 	// MURX: isNull tut nicht. Man soll keine QT-Klassen verwenden.
-	if (!f->happened () || (dat.year ()==1970 && dat.month ()==dat.day ()==1))
+	if (!f->happened () || (dat.year ()==1970 && dat.month ()==1 && dat.day ()==1))
 		dat_string="-";
 	else
 	{

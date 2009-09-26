@@ -79,6 +79,7 @@ void AcpiWidget::slotTimer()
 			read_acpi_batt(i);
 
 			if(binfo->present)
+			{
 				if (ac->ac_state == P_BATT)
 					message += QString ("%1% %2:%3").arg(binfo->percentage).arg(binfo->remaining_time/60).arg(binfo->remaining_time%60, 2, 10, QChar('0'));
 				else
@@ -108,6 +109,7 @@ void AcpiWidget::slotTimer()
 						binfo->remaining_time / 60, binfo->remaining_time % 60);
 */
 				setToolTip (tooltip);
+			}
 		}
 	}
 	else
