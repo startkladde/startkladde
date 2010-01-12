@@ -1,4 +1,3 @@
-# 0wxxxxifind . -name Akbkb!!sh0xxi           A \j
 CONFIG += qt debug
 QT += qt3support
 TEMPLATE = app
