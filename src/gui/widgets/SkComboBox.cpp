@@ -2,137 +2,113 @@
 
 #include <iostream>
 
+#include <QLineEdit>
 #include <QCompleter>
-#include <QtDebug> // XXX
+#include <QFocusEvent>
+
+#include "src/text.h"
+
+
+static const QColor errorFieldColor (255, 127, 127);
 
 /**
-  * Constructs a SkComboBox instance.
-  * Parameters:
-  *   - rw, parent, name: passsed on to the QComboBox constructor.
-  */
-SkComboBox::SkComboBox (bool editable, QWidget *parent)
+ * Constructs a SkComboBox
+ *
+ * @param parent the parent widget, passed to the QComboBox constructor
+ */
+SkComboBox::SkComboBox (QWidget *parent)
 	:QComboBox (parent)
 {
-	setInsertPolicy (QComboBox::NoInsert);
-	setEditable (editable);
+	connect (this, SIGNAL (activated (const QString &)), this, SIGNAL (textEdited (const QString &)));
+	connect (this, SIGNAL (activated (const QString &)), this, SIGNAL (editingFinished (const QString &)));
 }
 
-void SkComboBox::setAutoCompletion (bool autocomplete) {
-	if (autocomplete) {
-		QCompleter* completer = this->completer();
-		if (completer) {
-        		completer->setCaseSensitivity (Qt::CaseInsensitive);
-        		completer->setCompletionMode (QCompleter::PopupCompletion);
-        		setCompleter (completer);
-		}
-	}
-	else
-		setCompleter (NULL);
-}
-
-/**
-  * Inserts an Item. Overloaded function taking a std::QString.
-  * Parameters:
-  *   - s, index: passed on to QComboBox::insertItem.
-  */
-void SkComboBox::insertItem (const QString &s, int index)
+void SkComboBox::setEditable (bool editable)
 {
-	QComboBox::insertItem (s, index);
-}
+	QLineEdit *oldLineEdit=lineEdit ();
+	if (oldLineEdit)
+		disconnect (this, NULL, oldLineEdit, NULL);
 
-QString SkComboBox::edit_text_string ()
-	/*
-	 * Returns a QString with the current contents of the editor field.
-	 * Return value:
-	 *   the contents of the editor field.
-	 */
-{
-	return currentText ();
-}
+	QComboBox::setEditable (editable);
 
-QString SkComboBox::current_text_string ()
-	/*
-	 * Returns a QString with the current item.
-	 * Return value:
-	 *   the item.
-	 */
-{
-	return currentText ();
-}
+	// Setup the lineEdit. Note that this cannot be done in setLineEdit because
+	// this method is not called (maybe because it is not virtual).
 
-/**
-  * Fills the box with an array of strings.
-  * Parameters:
-  *   - array: the array of strings.
-  *   - num: the number of entries in the array.
-  *   - del: whether to delete the array.
-  */
-void SkComboBox::fillStringArray (QString **array, int num, bool del)
-{
-	hide ();
-	clear ();
-	for (int i=0; i<num; i++)
+	QLineEdit *newLineEdit=lineEdit ();
+	if (newLineEdit)
 	{
-		insertItem (*(array[num]));
-		if (del) delete array[num];
-	}
-	if (del) if (num>0) delete[] array;
-	show ();
-}
-
-void SkComboBox::setCurrentItem (int index)
-	/*
-	 * Sets the current item and emit the activation signal.
-	 * Parameters:
-	 *   - index: the index of the item to be made current.
-	 */
-{
-	QComboBox::setCurrentItem (index);
-	emit activated (index);
-}
-
-void SkComboBox::insert_if_new (const QString &t)
-	/*
-	 * Insert an item to the list if it is new.
-	 * Parameters:
-	 *   - t: the text of the new item.
-	 */
-{
-	// TODO das sollte besser gehen. Insbesondere müsste das sortierbar sein.
-	//
-
-	bool is_new=true;
-	for (int i=0; i<count (); i++)
-	{
-		if (t==text (i)) is_new=false;
+		connect (newLineEdit, SIGNAL (textEdited (const QString &)), this, SIGNAL (textEdited (const QString &)));
+		connect (newLineEdit, SIGNAL (editingFinished ()), this, SLOT (lineEdit_editingFinished ()));
 	}
 
-	if (is_new)
-	{
-		// Wenn die Liste leer war, wird offenbar das Textfeld überschrieben
-		QString old_string=currentText ();
-		insertItem (t);
-		setCurrentText (old_string);
-	}
+	// Here, we can setup the completer. What we want is popup *and*
+	// inline completion (TODO).
+	// Here is an example:
+	// http://doc.trolltech.com/4.2/tools-customcompleter-textedit-cpp.html
+	// It goes like this: set popup completion, connect the activated signal
+	// and do inline yourself. However, in popup mode, activated doesn't
+	// seem to be emitted. (QT version: 4.3.4)
+	QCompleter *c=completer ();
+	c->setCaseSensitivity (Qt::CaseInsensitive);
+	c->setCompletionMode (QCompleter::PopupCompletion);
+	setCompleter (c);
+
+//	QObject::connect(c, SIGNAL(activated(const QString&)), this, SLOT(comp(const QString&)));
+//	QObject::connect(c, SIGNAL(highlighted(const QString&)), this, SLOT(comp(const QString&)));
+
+//	QObject::connect(this, SIGNAL(activated(const QString&)), this, SLOT(comp(const QString&)));
+//	QObject::connect(this, SIGNAL(highlighted(const QString&)), this, SLOT(comp(const QString&)));
+
 }
 
-void SkComboBox::cursor_to_end ()
-	/*
-	 * Moves the cursor to the end of the editing field.
-	 */
-{
-	QLineEdit *le=lineEdit ();
-	if (le) le->setSelection (le->text ().length (), 0);
-}
+//void SkComboBox::comp (const QString &text)
+//{
+//	std::cout << "da slot: " << text << std::endl;
+//}
 
-void SkComboBox::focusOutEvent (QFocusEvent *event)
-{
-	QComboBox::focusOutEvent (event);
-	emit focus_out ();
-}
 
 void SkComboBox::focusInEvent (QFocusEvent *event)
 {
 	QComboBox::focusInEvent (event);
-	emit focus_in ();
+
+	QLineEdit *le=lineEdit ();
+	if (le)
+	{
+		Qt::FocusReason reason=event->reason ();
+
+		// We don't always want to select the text:
+		//   - not when the window is activated
+		//   - not when the completion list is closed (typing D-X when no
+		//     D-X... is in the list)
+		if (reason==Qt::MouseFocusReason ||
+			reason==Qt::TabFocusReason ||
+			reason==Qt::BacktabFocusReason ||
+			reason==Qt::ShortcutFocusReason)
+		{
+			if (currentText ().startsWith (defaultPrefix))
+			{
+				le->setCursorPosition (defaultPrefix.length ());
+				le->end (true);
+			}
+		}
+	}
+}
+
+QVariant SkComboBox::currentItemData (int role)
+{
+	return itemData (currentIndex (), role);
+}
+
+bool SkComboBox::setCurrentItemByItemData (QVariant value)
+{
+	for (int i=0; i<count (); ++i)
+	{
+		if (itemData (i)==value)
+		{
+			setCurrentIndex (i);
+			return true;
+		}
+	}
+
+	return false;
 }

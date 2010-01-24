@@ -3,8 +3,13 @@
 #include <QStringList>
 
 #include <stdlib.h>
+#include <iostream>
+
+#include "config/Options.h"
 
 const QString whitespace=" \t\r\n";
+
+using std::cout; using std::cerr; using std::endl;
 
 bool eintrag_ist_leer (QString eintrag)
 	/*
@@ -19,21 +24,16 @@ bool eintrag_ist_leer (QString eintrag)
 	return (e=="" || e=="-");
 }
 
-bool check_message (QWidget *parent, const QString &msg)
-	/*
-	 * Displays a message and ask the user if he wishes to accept anyway.
-	 * Parameters:
-	 *   - parent: passed on to the QMessageBox constructor.
-	 *   - msg: the message.
-	 * Return value:
-	 *   - if the user accepted.
-	 */
+bool eintraege_sind_leer (QString eintrag1, QString eintrag2)
 {
-	int ret=QMessageBox::information (parent, "Warnung",
-			msg+"Trotzdem akzeptieren?", "&Ja", "&Nein", QString::null, 0, 1)
-			!=QDialog::Accepted;
-	return (ret==QDialog::Accepted);
+	return eintrag_ist_leer (eintrag1) && eintrag_ist_leer (eintrag2);
 }
+
+bool airfieldEntryCanBeChanged (QString airfield)
+{
+	return eintrag_ist_leer (airfield) || airfield.simplified () == opts.ort.simplified ();
+}
+
 
 QString t_pilot_bezeichnung (FlightType flugtyp, casus c)
 	/*
@@ -139,110 +139,6 @@ void trim (QStringList &strings)
 	}
 }
 
-bool is_date (const QString& s)
-	/*
-	 * Finds out if a QString can be parsed as date.
-	 * Parameters:
-	 *   - s: the QString to test.
-	 * Return value:
-	 *   - true if s is a date.
-	 *   - false else.
-	 */
-{
-	// TODO remove as the result is discarded.
-	return QDate::fromString (s, Qt::ISODate).isValid ();
-}
-
-QString latex_escape (const QString& o)
-	/*
-	 * Escape a QString for putting to a LaTeX document.
-	 * Parameters:
-	 *   - o: the QString to escape.
-	 * Return value:
-	 *   - the escaped QString.
-	 */
-{
-	QString result;
-
-	for (int i=0; i<o.length (); i++)
-	{
-		if      (o[i]=='$' ) result+="\\$";
-		else if (o[i]=='\\') result+="\\textbackslash{}";
-		else if (o[i]=='%' ) result+="\\%";
-		else if (o[i]=='_' ) result+="\\_";
-		else if (o[i]=='{' ) result+="\\{";
-		else if (o[i]=='&' ) result+="\\&";
-		else if (o[i]=='#' ) result+="\\#";
-		else if (o[i]=='}' ) result+="\\}";
-		else if (o[i]=='^' ) result+="\\textasciicircum{}";
-		else if (o[i]=='~' ) result+="\\textasciitilde{}";
-		else if (o[i]=='"' ) result+="\\textquotedbl{}";
-		// Seems like guilsingl{left,right} don't work properly
-		//case '<': oss << "\\guilsinglleft{}"; break;
-		//case '>': oss << "\\guilsinglright{}"; break;
-		else result+=o[i];
-	}
-
-	return result;
-}
-
-/**
-  * Escape a QString for putting to a LaTeX document.
-  * Parameters:
-  *   - o: the QString to escape.
-  * Return value:
-  *   - the escaped QString.
-  */
-QString csv_escape (const QString& o)
-{
-	// TODO werden ""en korrekt behandelt?
-	QString result;
-
-	QChar quote_char='"';
-
-	result+=quote_char;
-	for (int i=0; i<o.length (); i++)
-	{
-		if (o[i]==quote_char)
-			(result+=quote_char)+=quote_char;
-		else
-			result+=o[i];
-	}
-	result+=quote_char;
-
-	return result;
-}
-
-QString html_escape (const QString& s, bool also_escape_newlines)
-{
-	QString r;
-
-	QString::const_iterator end=s.end ();
-	for (QString::const_iterator ch=s.begin (); ch!=end; ++ch)
-	{
-		if (*ch=='<') r+="&lt;";
-		else if (*ch=='>') r+="&gt;";
-		else if (*ch=='"') r+="&quot;";
-		// Don't escape spaces because this will break (hidden) CGI arguments.
-//		else if (*ch==' ') r+="&nbsp;";
-		else if (*ch=='&') r+="&amp;";
-		else if (also_escape_newlines && *ch=='\n') r+="<br>";
-		else r+=QString (1, *ch);
-	}
-
-	return r;
-}
-
-QStringList html_escape (const QStringList &l, bool also_escape_newlines)
-{
-	QStringList r;
-	QStringListIterator it (l);
-	while (it.hasNext ())
-		r.append (html_escape (it.next(), also_escape_newlines));
-
-	return r;
-}
-
 QString get_environment (const QString& name)
 {
 	char *r=getenv (name.latin1());
@@ -252,125 +148,6 @@ QString get_environment (const QString& name)
 		return QString ();
 }
 
-
-char hex_digit_value (char digit)
-{
-	switch (digit)
-	{
-		case '0': return 0; break;
-		case '1': return 1; break;
-		case '2': return 2; break;
-		case '3': return 3; break;
-		case '4': return 4; break;
-		case '5': return 5; break;
-		case '6': return 6; break;
-		case '7': return 7; break;
-		case '8': return 8; break;
-		case '9': return 9; break;
-		case 'a': case 'A': return 10; break;
-		case 'b': case 'B': return 11; break;
-		case 'c': case 'C': return 12; break;
-		case 'd': case 'D': return 13; break;
-		case 'e': case 'E': return 14; break;
-		case 'f': case 'F': return 15; break;
-		default: return 0; break;
-	}
-}
-
-QString hex_digit (char value)
-{
-	switch (value%16)
-	{
-		case  0: return "0"; break;
-		case  1: return "1"; break;
-		case  2: return "2"; break;
-		case  3: return "3"; break;
-		case  4: return "4"; break;
-		case  5: return "5"; break;
-		case  6: return "6"; break;
-		case  7: return "7"; break;
-		case  8: return "8"; break;
-		case  9: return "9"; break;
-		case 10: return "A"; break;
-		case 11: return "B"; break;
-		case 12: return "C"; break;
-		case 13: return "D"; break;
-		case 14: return "E"; break;
-		case 15: return "F"; break;
-	}
-	return "?";
-}
-
-QString hex_string (unsigned char value)
-{
-	return hex_digit (value/16)+hex_digit (value%16);
-}
-
-QString cgi_unescape (const QString &text)
-{
-	enum state_t { st_normal, st_expect_first, st_expect_second };
-	state_t state=st_normal;
-
-	QString r;
-	char special;
-
-	QString::const_iterator e=text.end ();
-	for (QString::const_iterator it=text.begin (); it!=e; ++it)
-	{
-		switch (state)
-		{
-			case st_normal:
-				if (*it==' '|| *it=='\n'|| *it=='\t')
-					{}	// ignore
-				else if (*it=='%')
-					state=st_expect_first;
-				else if (*it=='+')
-					r+=" ";
-				else
-					r+=QString (1, *it);
-				break;
-			case st_expect_first:
-				special=16*hex_digit_value ((*it).toAscii());
-				state=st_expect_second;
-				break;
-			case st_expect_second:
-				special+=hex_digit_value ((*it).toAscii());
-				r+=QString (1, special);
-				state=st_normal;
-				break;
-		}
-	}
-
-	return r;
-}
-
-QString cgi_escape (const QString &text, bool leave_high)
-	// leave_high: leave alone characters>127. This is incompatible with CGI,
-	// but useful for using the escaping mechanism in other places.
-{
-	QString r;
-
-	QString::const_iterator e=text.end ();
-	for (QString::const_iterator it=text.begin (); it!=e; ++it)
-	{
-		unsigned char ch=(*it).toAscii();
-		if (ch==' ')
-			r+="+";
-		else if (
-			ch=='='||
-			ch=='+'||
-			ch=='&'||
-			ch=='%'||
-			ch=='#'||
-			(!leave_high && ch>127)||
-			ch<32)
-			r+="%"+hex_string (ch);
-		else
-			r+=QString (1, ch);
-	}
-
-	return r;
-}
 
 QString bool_to_string (bool val, const QString &true_value, const QString &false_value)
 {
@@ -405,8 +182,51 @@ QString make_string (const QSet<QString> s, const QString &separator)
 
 std::ostream &operator<< (std::ostream &s, const QString &c)
 {
-	return s << q2std (c);
+	return s << qPrintable (c);
+}
+
+std::ostream &operator<< (std::ostream &s, const QColor &c)
+{
+	return s << c.red () << "," <<  c.green () << "," << c.blue ();
 }
 
 
 
+
+bool yesNoQuestion (QWidget *parent, QString title, QString question)
+{
+	// TODO: Yes/No, but with ESC
+	QMessageBox::StandardButtons buttons=QMessageBox::Ok | QMessageBox::Cancel;
+	QMessageBox::StandardButton result=QMessageBox::question (parent, title, question, buttons, QMessageBox::Ok);
+	return result==QMessageBox::Ok;
+}
+
+bool confirmProblem (QWidget *parent, const QString title, const QString problem)
+	/*
+	 * Displays a message and ask the user if he wishes to accept anyway.
+	 * Parameters:
+	 *   - parent: passed on to the QMessageBox constructor.
+	 *   - msg: the message.
+	 * Return value:
+	 *   - if the user accepted.
+	 */
+{
+	// TODO: Buttons Yes/No, but with Esc handling
+	QString question=problem+" Trotzdem akzeptieren?";
+	return yesNoQuestion (parent, title, question);
+}
+
+bool confirmProblem (QWidget *parent, const QString problem)
+{
+	return confirmProblem (parent, "Warnung", problem);
+}
+
+QString firstToUpper (const QString &text)
+{
+	return text.left (1).toUpper ()+text.mid (1);
+}
+
+QString firstToLower (const QString &text)
+{
+	return text.left (1).toLower ()+text.mid (1);
+}

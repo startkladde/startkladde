@@ -63,7 +63,7 @@ QString dbTable::mysql_create_query (bool force) const
 		}
 
 		r+="\n";
-		r+=") TYPE=MyISAM CHARSET=latin1;";
+		r+=") TYPE=MyISAM CHARSET utf8 COLLATE utf8_unicode_ci;";
 	}
 	else
 	{

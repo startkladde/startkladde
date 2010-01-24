@@ -35,7 +35,7 @@ SkTimeEdit::SkTimeEdit (QWidget *parent, const char *name)
 
 void SkTimeEdit::set_mode (sk_te_mode p_mode)
 	/*
-	 * Sets the editor mode. There are the following modes:
+	 * Sets the editor mode. There are the following flightModes:
 	 *   - tm_time: time editor only
 	 *   - tm_box_time: a checkbox on the left and a time editor on the right
 	 *     (depending on the value of the check box)

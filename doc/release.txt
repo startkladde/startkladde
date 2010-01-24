@@ -1,8 +1,13 @@
+Alte Version für CVS
+TODO: aktualisieren für SVN
+TODO: Ubuntu-Paket
+
 Versionen: unmittelbar nach dem Release von 1.5 wird die Version im CVS auf 1.6
 erhöht (Version ist dann 1.6-cvs).
 
 Releases:
     (Beispiel: Version ist 1.5-cvs)
+  - Release-Checklist prüfen
   - Kontrollieren, dass alles korrekt compiliert (make all)
   - Tags anschauen: cvs history -T
   - cvs tag release-(version) (Beispiel: release-1_5)
@@ -19,5 +24,6 @@ Releases:
   - Hochladen auf frs.sourceforge.net/uploads
   - Release auf der Admin-Seite von SourceForge erstellen
   - ggf. Webseite anpassen: (benutzername),startkladde@web.sourceforge.net
+
 
 

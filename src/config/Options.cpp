@@ -77,14 +77,8 @@ Options::Options ()
 	style="";	// If this is empty, the defaults are tried.
 	colorful=false;
 
-	// Listing Options
-	dump_type=dt_liste;
-	dump_format=df_csv;
-	dump_columns=dc_standard;
-
 	// Database
 	record_towpilot=false;
-	csv_quote = false;
 
 	// Debugging
 	debug=false;
@@ -123,13 +117,6 @@ void Options::display_options (QString prefix)
 	std::cout << prefix << "--debug: display" << std::endl;
 	std::cout << prefix << "--display_queries: display all queries as they are executed" << std::endl;
 	std::cout << prefix << "--colorful: colorful display" << std::endl;
-	std::cout << prefix << "--club name, -C name (multi): include club name" << std::endl;
-	std::cout << prefix << "--type t, -t t: dump type t" << std::endl;
-	std::cout << prefix << "--format f, -f f: dump format f" << std::endl;
-	std::cout << prefix << "--columns c, -c c: dump columns c" << std::endl;
-	std::cout << prefix << "--date d, -D d: use date D" << std::endl;
-	std::cout << prefix << "--start_date s, -S s: start with date s" << std::endl;
-	std::cout << prefix << "--end_date e, -E e: end with date e" << std::endl;
 }
 
 bool Options::parse_arguments (int argc, char *argv[])
@@ -178,17 +165,6 @@ bool Options::parse_arguments (int argc, char *argv[])
 			{ "display_queries", no_argument,       NULL, opt_display_queries },
 			{ "colorful",        no_argument,       NULL, opt_colorful },
 
-			// Listing Options
-			{ "club",            required_argument, NULL, 'C' },
-			{ "type",            required_argument, NULL, 'y' },
-			{ "format",          required_argument, NULL, 'm' },
-			{ "columns",         required_argument, NULL, 'c' },
-
-			// Date Options
-			{ "date",            required_argument, NULL, 'D' },
-			{ "start_date",      required_argument, NULL, 'S' },
-			{ "end_date",        required_argument, NULL, 'E' },
-
 			{ 0, 0, 0, 0 }
 		};
 		static const char *short_options="f:hs:o:d:u:p:C:y:m:c:D:S:E:";
@@ -228,17 +204,6 @@ bool Options::parse_arguments (int argc, char *argv[])
 			case opt_display_queries: display_queries=true; break;
 			case opt_colorful: colorful=true; break;
 
-			// Listing Options
-			case 'C': club_list.push_back (optarg); break;
-			case 'y': if (!parse_type (optarg)) return false; break;
-			case 'm': if (!parse_format (optarg)) return false; break;
-			case 'c': if (!parse_columns (optarg)) return false; break;
-
-			// Date Options
-			case 'D': if (!parse_date (optarg, date, true)) return false; break;
-			case 'S': if (!parse_date (optarg, start_date, true)) return false; break;
-			case 'E': if (!parse_date (optarg, end_date, true)) return false; break;
-
 			// Errors
 			case '?': if (optopt=='?') display_help=true; else return false; break;
 			case ':': return false; break;
@@ -248,26 +213,17 @@ bool Options::parse_arguments (int argc, char *argv[])
 	} while (c>0);
 
 	non_options.clear ();
-	dates.clear ();
 
 	while (optind<argc)
 	{
-		QDate d;
-
-		if (parse_date (argv[optind], d, false))
-		{
-			dates.push_back (d);
-		}
-
 		non_options.push_back (argv[optind]);
-
 		optind++;
 	}
 
 	return true;
 }
 
-bool Options::read_config_files (Database *db, QList<ShellPlugin> *plugins, int argc, char *argv[])
+bool Options::read_config_files (Database *db, QList<ShellPlugin *> *plugins, int argc, char *argv[])
 	// db is only passed for startrten (TODO change something)
 	// Also reads command line arguments, if argc>0 (and a configuration file
 	// was read)
@@ -301,7 +257,7 @@ bool Options::read_config_files (Database *db, QList<ShellPlugin> *plugins, int 
 	return true;
 }
 
-bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugin> *plugins)
+bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugin *> *plugins)
 	// db is only passed for startarten (TODO change something)
 	// Returns whether the file existed.
 {
@@ -371,28 +327,17 @@ bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugi
 			if (key=="record_towpilot") record_towpilot=true;
 
 			// Plugin Entity
-			if (key=="plugin_data_format")
-			{
-				plugins_data_format.push_back (DataFormatPlugin (value));
-//				std::cerr << "Data format plugin: " << value << std::endl;
-			}
 			if (key=="plugin_path")
 			{
 				plugin_paths.push_back (value);
 //				std::cerr << "Plugin path: " << value << std::endl;
 			}
 
-			if (key=="csv_quote")
-			{
-				csv_quote = true;
-				std::cerr << "CSV quote: " << csv_quote << std::endl;
-			}
-
 			if (plugins && key=="shell_plugin")
 			{
 				ShellPlugin *p=new ShellPlugin (value);
-				plugins->push_back (*p);
-				if (!silent) std::cout << "Added shell plugin \"" << p->get_caption () << "\"" << std::endl;
+				plugins->push_back (p);
+//				if (!silent) std::cout << "Added shell plugin \"" << p->get_caption () << "\"" << std::endl;
 			}
 
 			// Weather plugins
@@ -447,132 +392,6 @@ bool Options::need_display ()
 {
 	// No display_help because this is handled by the caller.
 	return (show_version || show_short_version);
-}
-
-bool Options::parse_type (const QString &type_string)
-{
-	dump_type=dt_invalid;
-	if (type_string=="list" || type_string=="l") dump_type=dt_liste;
-	if (type_string=="liste" || type_string=="l") dump_type=dt_liste;
-	if (type_string=="flugbuch" || type_string=="f") dump_type=dt_pilot_log;
-	if (type_string=="bordbuch" || type_string=="b") dump_type=dt_plane_log;
-	if (type_string=="clubs" || type_string=="c") dump_type=dt_clublist;
-	if (type_string=="clublist" || type_string=="c") dump_type=dt_clublist;
-	if (type_string=="club_list" || type_string=="c") dump_type=dt_clublist;
-	if (dump_type==dt_invalid) std::cerr << "Invalid dump type specification \"" << type_string << "\"" << std::endl;
-	return (dump_type!=dt_invalid);
-}
-
-bool Options::parse_format (const QString &format_string)
-{
-	dump_format=df_invalid;
-	if (format_string=="latex" || format_string=="l") dump_format=df_latex;
-	if (format_string=="csv" || format_string=="c") dump_format=df_csv;
-	if (dump_format==df_invalid) std::cerr << "Invalid format type specification \"" << format_string << "\"" << std::endl;
-	return (dump_format!=df_invalid);
-}
-
-bool Options::parse_columns (const QString &columns_string)
-{
-	dump_columns=dc_invalid;
-	if (columns_string=="standard" || columns_string=="s") dump_columns=dc_standard;
-	if (columns_string=="albgau" || columns_string=="a") dump_columns=dc_albgau;
-	if (dump_columns==dc_invalid) std::cerr << "Invalid columns type specification \"" << columns_string << "\"" << std::endl;
-	return (dump_columns!=dc_invalid);
-}
-
-bool Options::parse_date (const QString &date_string, QDate &d, bool required)
-{
-	(void)required;
-	d=QDate::fromString (date_string, Qt::ISODate);
-	return d.isValid ();
-}
-
-bool Options::check_date () const
-	// Checks dates. Outputs an error message on error.
-	// Return value:
-	//   - false: error
-	//   - true: ok
-{
-	bool d=date.isValid ();        // A date was given
-	bool s=start_date.isValid ();  // A start date was given
-	bool e=end_date.isValid ();    // An end date was given
-	bool exp=e||s||e;              // Any date was explicitly given
-	int n=dates.size ();           // The number of non-option dates
-	bool imp=(n>0);                // Any date was implicityly given
-
-#define DATE_ERROR(condition, text) do { if ((condition)) { std::cerr << "Error: " << text << std::endl; return false; } } while (false);
-
-	DATE_ERROR (exp && imp, "There were both explicit and non-option dates given.");
-	DATE_ERROR (n>2, "There were more than 2 non-option dates given.");
-	DATE_ERROR (d && (s || e), "There were both a date and a start/end date given.");
-	DATE_ERROR (s && !e, "There was only a start date given.");
-	DATE_ERROR (!s && e, "There was only an end date given.");
-	return true;
-}
-
-bool Options::use_date_range () const
-	/*
-	 * Determines whether to use a date range or a single date.
-	 * Conditions:
-	 * Return value:
-	 *   - true: date range
-	 *   - false: single date
-	 *   - if there is an error condition (check_date returns false), the
-	 *     result is unspecified.
-	 */
-{
-	if (dates.size ()==2) return true;
-	if (start_date.isValid () && end_date.isValid ()) return true;
-	return false;
-}
-
-QDate Options::eff_date () const
-	/*
-	 * Determines the effictive date to use for single date.
-	 * Return value:
-	 *   - the effective date
-	 *   - if a date range is to be used (use_date_range returns true), the
-	 *     result is undefined.
-	 *   - if there is an error condition (check_date returns false), the
-	 *     result is unspecified.
-	 */
-{
-	if (!dates.empty ()) return dates.front ();
-	if (date.isValid ()) return date;
-	return QDate::currentDate ();
-}
-
-QDate Options::eff_start_date () const
-	/*
-	 * Determines the effective start date.
-	 * Return value:
-	 *   - the effective start date.
-	 *   - if a single date is to be used (use_date_range returns false), this
-	 *     is the same es eff_date.
-	 *   - if there is an error condition (check_date returns false), the
-	 *     result is unspecified.
-	 */
-{
-	if (!use_date_range ()) return eff_date ();
-	if (!dates.empty ()) return dates.front ();
-	return start_date;
-}
-
-QDate Options::eff_end_date () const
-	/*
-	 * Determines the effective end date.
-	 * Return value:
-	 *   - the effective end date.
-	 *   - if a single date is to be used (use_date_range returns false), this
-	 *     is the same es eff_date.
-	 *   - if there is an error condition (check_date returns false), the
-	 *     result is unspecified.
-	 */
-{
-	if (!use_date_range ()) return eff_date ();
-	if (!dates.empty ()) return dates.back ();
-	return end_date;
 }
 
 bool Options::address_is_local (const QString &address) const

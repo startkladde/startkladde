@@ -16,7 +16,6 @@ SplashScreen::SplashScreen (QWidget *parent, const char * const *logo)
 	 */
 {
 	QPixmap pixmap ((const char **)(logo));
-	QPainter painter (this);
 
 	display_status=true;
 	can_close=false;
@@ -76,14 +75,6 @@ void SplashScreen::try_close ()
 	 */
 {
 	if (can_close) close ();
-}
-
-void SplashScreen::close ()
-	/*
-	 * Close the window.
-	 */
-{
-	done (0);
 }
 
 void SplashScreen::info ()

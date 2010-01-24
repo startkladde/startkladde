@@ -6,25 +6,28 @@
 #include <QListView>
 #include <QLayout>
 #include <QTreeWidget>
+#include <QDialog>
 
 #include "src/dataTypes.h"
-#include "src/gui/windows/SkDialog.h"
 #include "src/gui/widgets/SkTreeWidgetItem.h"
 #include "src/model/Entity.h"
 
 enum selection_result { sr_cancelled, sr_ok, sr_new, sr_unknown, sr_none_selected };
 
+// TODO setRootDecorated (false)
+// TODO alternatingRowColors
+
 /*
  * The helper classes for using slots and signals with the template class
  * EntitySelectWindow.
  */
-class selector_base:public SkDialog
+class selector_base:public QDialog
 {
 	friend class selector_helper;
 
 	public:
-		selector_base (QWidget *parent, const char *name=NULL, bool modal=false, WFlags f=0)
-			:SkDialog (parent, name, modal, f) {};
+		selector_base (QWidget *parent, const char *name=NULL, bool modal=false, Qt::WindowFlags f=0)
+			:QDialog (parent, name, modal, f) {};
 
 		// Problem when there is a TYPE as parameter to one of our redirected slots.
 		virtual void slot_ok ()=0;
@@ -62,10 +65,10 @@ template<class TYPE> class EntitySelectWindow:public selector_base
 	// A template class cannot be a Q_OBJECT
 
 	public:
-		EntitySelectWindow (QWidget *parent, const char *name=NULL, WFlags f=0);
+		EntitySelectWindow (QWidget *parent, const char *name=NULL, Qt::WindowFlags f=0);
 		~EntitySelectWindow ();
 		void test ();
-		virtual selection_result do_selection (QString, QString, QList<TYPE *> &, db_id preselected=invalid_id);
+		virtual selection_result do_selection (QString, QString, QList<TYPE> &, db_id preselected=invalid_id);
 		static QString selection_result_text (selection_result sr);
 		db_id get_result_id ();
 		selector_helper *helper () { return _helper; }
@@ -81,7 +84,7 @@ template<class TYPE> class EntitySelectWindow:public selector_base
 
 	private:
 		int setup_columns ();
-		void set_entry (SkTreeWidgetItem *item, TYPE *entry, int num_columns);
+		void set_entry (SkTreeWidgetItem *item, const TYPE &entry, int num_columns);
 		selector_helper *_helper;
 
 //	private slots:
@@ -89,7 +92,7 @@ template<class TYPE> class EntitySelectWindow:public selector_base
 		void slot_double_click (QTreeWidgetItem *, int);
 };
 
-template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *parent, const char *name, WFlags f)
+template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *parent, const char *name, Qt::WindowFlags f)
 	:selector_base (parent, name, true, f)
 	/*
 	 * Creates a EntitySelectWindow class.
@@ -210,7 +213,7 @@ template<class TYPE> int EntitySelectWindow<TYPE>::setup_columns ()
 	return i;
 }
 
-template<class TYPE> void EntitySelectWindow<TYPE>::set_entry (SkTreeWidgetItem *item, TYPE *entry, int num_columns)
+template<class TYPE> void EntitySelectWindow<TYPE>::set_entry (SkTreeWidgetItem *item, const TYPE &entry, int num_columns)
 	/*
 	 * Writes an entry to the list.
 	 * Parameters:
@@ -221,11 +224,11 @@ template<class TYPE> void EntitySelectWindow<TYPE>::set_entry (SkTreeWidgetItem 
 {
 	for (int i=0; i<num_columns; i++)
 	{
-		item->setText (i, entry->get_selector_value (i));
+		item->setText (i, entry.get_selector_value (i));
 	}
 }
 
-template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QList<TYPE *> &entityList, db_id preselected)
+template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QList<TYPE> &entityList, db_id preselected)
 	/*
 	 * Displays the selector.
 	 * Parameters:
@@ -252,12 +255,12 @@ template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QS
 
 	list->setCurrentItem (unknown_item);
 
-	foreach (TYPE *it, entityList)
+	foreach (const TYPE &it, entityList)
 	{
 		last_item=new SkTreeWidgetItem (list, last_item);
-		last_item->id=it->id;
+		last_item->id=it.id;
 		set_entry (last_item, it, num_columns);
-		if (!id_invalid (preselected) && it->id==preselected)
+		if (!id_invalid (preselected) && it.id==preselected)
 			list->setCurrentItem (last_item);
 	}
 

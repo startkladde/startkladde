@@ -17,6 +17,8 @@
 #include "src/time/Time.h"
 #include "src/time/timeFunctions.h"
 
+class DataStorage;
+
 enum FlightError {
 	ff_ok,
 	ff_keine_id, ff_kein_flugzeug, ff_kein_pilot, ff_pilot_gleich_begleiter,
@@ -43,124 +45,132 @@ class Flight
 	public:
 		Flight ();
 
-		bool operator< (const Flight &o);
+		bool operator< (const Flight &o) const;
+		static bool lessThan (Flight *a, Flight *b) { return *a < *b; }
 
 		bool fliegt () const;	// Use with care
 		bool sfz_fliegt () const;
 		bool vorbereitet () const;
-		bool starten (bool force=true, bool interactive=false);
-		bool landen (bool force=true, bool interactive=false);
-		bool schlepp_landen (bool force=true, bool interactive=false);
-		bool zwischenlandung (bool force=true, bool interactive=false);
-		QString typ_string (lengthSpecification lenspec) const;
-		Time flugdauer () const;
-		Time schleppflugdauer () const;
-		bool fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const;
-		bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa) const;
-		FlightError fehlerchecking (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchType *startart) const;
-		QString fehler_string (FlightError code) const;
+
+		bool startNow (bool force=false);
+		bool landNow (bool force=false);
+		bool landTowflightNow (bool force=false);
+		bool performTouchngo (bool force=false);
+
+		QString typeString (lengthSpecification lenspec) const;
+		Time flightDuration () const;
+		Time towflightDuration () const;
+		bool fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa, QString *errorText=NULL) const;
+		bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa, QString *errorText=NULL) const;
+		FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchType *startart) const;
+		QString errorDescription (FlightError code) const;
 		void dump () const;
 		bool happened () const;
 		bool finished () const;
-		void get_towflight (Flight *towflight, db_id towplane_id, db_id sa_id) const;
+		Flight makeTowflight (db_id towplaneId, db_id towLaunchType) const;
+		void get_towflight (Flight *towflight, db_id towplaneId, db_id towLaunchType) const;
+		QString toString () const;
+		bool isExternal () const { return !lands_here (mode) || !starts_here (mode); }
 
 		db_id id;							// ID des Flugs in der Datenbank
-		db_id flugzeug;
+		db_id plane;
 		db_id pilot;						// ID des Piloten
-		db_id begleiter;					// ID des Begleiters
+		db_id copilot;					// ID des Begleiters
 		db_id towpilot;						// ID des Schleppiloten
-		Time startzeit;
-		Time landezeit;
-		Time landezeit_schleppflugzeug;
-		db_id startart;				// ID der Startart
-		FlightType flugtyp;					// Typ des Flugs
-		QString startort;
-		QString zielort;
-		QString zielort_sfz;
-		int landungen;
-		QString bemerkungen;
-		QString abrechnungshinweis;
-		bool editierbar;
-		FlightMode modus;
-		FlightMode modus_sfz;
+		Time launchTime;
+		Time landingTime;
+		Time landingTimeTowflight;
+		db_id launchType;				// ID der Startart
+		FlightType flightType;					// Typ des Flugs
+		QString departureAirfield;
+		QString destinationAirfield;
+		QString destinationAirfieldTowplane;
+		int numLandings;
+		QString comments;
+		QString accountingNote;
+		bool editable;
+		FlightMode mode;
+		FlightMode modeTowflight;
 		QString pvn, pnn, bvn, bnn, tpvn, tpnn;			// Dumme Sache für den Fall, dass nur ein Nachname/Vorname bekannt ist.
 		db_id towplane;
-		bool gestartet, gelandet, sfz_gelandet;
-		// Whenn adding something here, add it to get_towflight ()
+		bool started, landed, towflightLanded;
+		// Whenn adding something here, addObject it to get_towflight ()
 
-		Time efftime () const;
+
+		db_id get_id () const { return id; }
+
+		Time effectiveTime () const;
+		// TODO which one of these is right?
 		QDate effdatum (time_zone tz=tz_utc) const;
+		QDate getEffectiveDate (time_zone tz, QDate defaultDate) const;
 
+		QString pilotDescription () const;
+		QString copilotDescription () const;
+		QString towpilotDescription () const;
 
-		QString pilot_bezeichnung () const;
-		QString begleiter_bezeichnung () const;
-		QString towpilot_bezeichnung () const;
+		QString incompletePilotName () const;
+		QString incompleteCopilotName () const;
+		QString incompleteTowpilotName () const;
 
-		QString unvollst_pilot_name () const;
-		QString unvollst_begleiter_name () const;
-		QString unvollst_towpilot_name () const;
-
-		bool collective_bb_entry_possible (Flight *prev, const Plane &plane) const;
+		bool collective_bb_entry_possible (const Flight *prev, const Plane *plane) const;
 
 		bool flight_lands_here () const;
 		bool flight_starts_here () const;
 
 		int sort (const Flight *other) const;
 
+		// Convenience functions
+		bool pilotSpecified    () const { return id_valid (pilot)     || !eintraege_sind_leer (pvn , pnn ); }
+		bool copilotSpecified  () const { return id_valid (copilot) || !eintraege_sind_leer (bvn , bnn ); }
+		bool towpilotSpecified () const { return id_valid (towpilot)  || !eintraege_sind_leer (tpvn, tpnn); }
+
+		// TODO: this concept is bad - a flight in the database must never
+		// have the flight type "towflight", because that is reserved for
+		// "shadow" towflights created from flights from the database; when
+		// the user performs "land" on a towflight, it does not land the flight
+		// with that ID but its towflight.
+		bool isTowflight () const { return flightType==ftTow; }
+
+		bool hasCopilot () const { return flightTypeAlwaysHasCopilot (flightType) || (flightTypeCopilotRecorded (flightType) && copilotSpecified ()); }
+		int numPassengers () const { return hasCopilot ()?2:1; } // TODO: this is inaccurate for planes with >2 seats
+
+		bool startsHere () const { return starts_here (mode); }
+		bool landsHere () const { return lands_here (mode); }
+		bool towflightLandsHere () const { return lands_here (modeTowflight); }
+
+		bool canStart (QString *reason=NULL) const;
+		bool canLand (QString *reason=NULL) const;
+		bool canTouchngo (QString *reason=NULL) const;
+		bool canTowflightLand (QString *reason=NULL) const;
+
+		bool canHaveStartTime () const { return startsHere (); }
+		bool canHaveLandingTime () const { return landsHere () || isTowflight (); }
+		bool canHaveTowflightLandingTime () const { return true; } // Going towflights hava an end time
+
+		bool hasStartTime () const { return canHaveStartTime () && started; }
+		bool hasLandingTime () const { return canHaveLandingTime () && landed; }
+		bool hasTowflightLandingTime () const { return canHaveTowflightLandingTime () && towflightLanded; }
+
+		// TODO not good
+		bool hasDuration () const { return hasStartTime () && canHaveLandingTime (); }
+		bool hasTowflightDuration () const { return hasStartTime () && canHaveTowflightLandingTime (); }
+
+		// TODO this is certainly not correct
+		bool isFlying () const { return startsHere () && landsHere () && started && !landed; }
+		bool isTowplaneFlying () const { return startsHere () && towflightLandsHere () && started && !towflightLanded; }
+
+		static int countFlying (const QList<Flight> flights);
+		static int countHappened (const QList<Flight> flights);
+
+		static QString objectTypeDescription () { return "Flug"; }
+		static QString objectTypeDescriptionDefinite () { return "der Flug"; }
+		static QString objectTypeDescriptionPlural () { return QString::fromUtf8 ("Flüge"); }
+
+		bool isErroneous (DataStorage &dataStorage) const;
+
 	private:
-		QString unvollst_person_name (QString nn, QString vn) const;
+		QString incompletePersonName (QString nn, QString vn) const;
 };
-
-template<class T> class data_item
-{
-	// - data: A pointer to the data structure. Must be valid or NULL. Must be
-	//   non-NULL if (item_given && item_ok)
-	// - given: whether the item is present. Some items need not be present
-	//   regularly (copilot), others might not be present by error.
-	// - ok: whether the item could be retrieved from the database. Only
-	//   relevant if (item_given).
-	// - result: additional information, like a status from retrieving the item
-	//   from the database.
-	public:
-		T *data;
-		bool given;
-		bool ok;
-		int result;
-
-		data_item<T> ():data (NULL), given (false), ok (false), result (0), owner (false) {}
-		~data_item<T> () { if (owner) delete data; }
-		void set (T *_data, bool _given, bool _ok, int _result) { data=_data; given=_given; ok=_ok; result=_result; }
-		RW_ACCESSOR (bool, owner)
-
-	private:
-		bool owner;
-};
-
-// A container for the additional parts a flight consists of (plane,
-// persons...).
-class sk_flug_data
-{
-	public:
-		static sk_flug_data owner ()
-		{
-			sk_flug_data data;
-			data.pilot.set_owner (true);
-			data.copilot.set_owner (true);
-			data.towpilot.set_owner (true);
-			data.plane.set_owner (true);
-			data.towplane.set_owner (true);
-			data.startart.set_owner (true);
-			return data;
-		}
-
-		data_item<Person> pilot;
-		data_item<Person> copilot;
-		data_item<Person> towpilot;
-		data_item<Plane> plane;
-		data_item<Plane> towplane;
-		data_item<LaunchType> startart;
-};
-
 
 #endif
 

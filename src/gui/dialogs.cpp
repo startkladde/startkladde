@@ -1,6 +1,7 @@
 #include "dialogs.h"
 
-void show_warning (const QString &text, QWidget *parent)
+// TODO: this is sometimes used where an error or an info should be displayed instead;
+void show_warning (const QString &title, const QString &text, QWidget *parent)
 	/*
 	 * Displays a warning dialog with the given text.
 	 * Parameters:
@@ -8,7 +9,7 @@ void show_warning (const QString &text, QWidget *parent)
 	 *   - parent: the parent widget, passed on to the dialog constructor.
 	 */
 {
-	QMessageBox::warning (parent, "Warnung", text, QMessageBox::Ok, QMessageBox::NoButton);
+	QMessageBox::warning (parent, title, text, QMessageBox::Ok, QMessageBox::NoButton);
 }
 
 

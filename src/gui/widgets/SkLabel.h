@@ -4,35 +4,45 @@
 #include <QLabel>
 #include <QColor>
 
-class SkLabel:public QLabel
+#include "src/accessor.h"
+
+class SkLabel: public QLabel
 	// Not hidden by hide () because this messes up the QLayout.
 {
 	Q_OBJECT
 
 	public:
-		SkLabel (QColor _background_color, QColor _error_color, QWidget *parent=NULL, const char *name=NULL);
-		SkLabel (const QString &text, QWidget *parent=NULL, const char *name=NULL);
+		// Construction
+		SkLabel (QWidget *parent=0, Qt::WindowFlags f=0);
+		SkLabel (const QString &text, QWidget *parent=0, Qt::WindowFlags f=0);
+
+		// Property access
+		void setDefaultBackgroundColor (const QColor &color);
+		attr_accessor (QColor, ErrorColor, errorColor);
+		void resetDefaultBackgroundColor ();
+		QColor getDefaultBackgroundColor ();
 
 	public slots:
-		void set_error (bool _error);
-		void set_invisible (bool _invisible);
+		void setConcealed (bool concealed);
+		void setError (bool error);
+		void setNumber (int number);
+		void setNumber (float number);
+		void setNumber (double number);
 
 	signals:
-		void clicked ();
+		void doubleClicked (QMouseEvent *event);
 
 	protected:
-		void set_colors ();
-		// TODO implement this so these functions can be used to set the
-		// foreground/normal background colors.
-		// The inactive palette state might also be used to hide the widget.
-		//void paletteChange (const QPalette &oldPalette)
-		virtual void mouseDoubleClickEvent (QMouseEvent *e);
+		void updateColors ();
+		virtual void mouseDoubleClickEvent (QMouseEvent *event) { emit doubleClicked (event); }
 
 	private:
-		QColor background_color;
-		QColor error_color;
-		bool invisible;
+		bool concealed;
 		bool error;
+
+		QColor defaultBackgroundColor;
+		bool useDefaultBackgroundColor;
+		QColor errorColor;
 };
 
 #endif

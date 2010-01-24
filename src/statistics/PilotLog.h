@@ -2,45 +2,70 @@
 #define _PilotLog_h
 
 #include <QString>
-
 #include <QDateTime>
+#include <QAbstractTableModel>
+#include <QList>
 
-#include "src/db/Database.h"
-#include "src/model/Flight.h"
-#include "src/model/Plane.h"
-#include "src/model/Person.h"
 #include "src/time/Time.h"
+#include "src/db/dbTypes.h"
 
-class PilotLogEntry
+class DataStorage;
+class Flight;
+
+/*
+ * TODO: display guest as "(Guest)"
+ */
+class PilotLog: public QAbstractTableModel
 {
+	Q_OBJECT
+
+	protected:
+		PilotLog (QObject *parent=NULL);
+		~PilotLog ();
+
+		class Entry
+		{
+			public:
+				Entry ();
+				virtual ~Entry ();
+
+				static Entry create (const Flight *flight, DataStorage &dataStorage);
+
+				QDate date;
+				QString planeType;
+				QString planeRegistration;
+				QString pilot;
+				QString copilot;
+				QString launchType;
+				QString departureAirfield;
+				QString destinationAirfield;
+				Time departureTime;
+				Time landingTime;
+				Time flightDuration;
+				QString comments;
+
+				bool valid;
+
+				virtual QString dateText () const;
+				virtual QString departureTimeText (bool noLetters=false) const;
+				virtual QString landingTimeText (bool noLetters=false) const;
+				virtual QString flightDurationText () const;
+		};
+
 	public:
-		enum flight_instructor_mode { fim_no, fim_strict, fim_loose };
+		enum FlightInstructorMode { flightInstructorNone, flightInstructorStrict, flightInstructorLoose };
 
-		PilotLogEntry ();
+		static PilotLog *createNew (db_id personId, const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode=flightInstructorNone);
+		static PilotLog *createNew (const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode=flightInstructorNone);
 
-		QDate tag;
-		QString muster;
-		QString registration;
-		QString flugzeugfuehrer;
-		QString begleiter;
-		QString startart;
-		QString ort_start;
-		QString ort_landung;
-		Time zeit_start;
-		Time zeit_landung;
-		Time flugdauer;
-		QString bemerkung;
+		// QAbstractTableModel methods
+		virtual int rowCount (const QModelIndex &index) const;
+		virtual int columnCount (const QModelIndex &index) const;
+		virtual QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const;
+		virtual QVariant headerData (int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
 
-		bool invalid;
-
-		QString tag_string () const;
-		QString zeit_start_string (bool no_letters=false) const;
-		QString zeit_landung_string (bool no_letters=false) const;
-		QString flugdauer_string () const;
+	private:
+		QList<Entry> entries;
 };
 
-void makePilotLogsDay (QList<PilotLogEntry *> &fb, Database *db, QDate date);
-void makePilotLogPerson (QList<PilotLogEntry *> &fb, Database *db, QDate date, Person *person, QList<Flight *> &flights, PilotLogEntry::flight_instructor_mode fim=PilotLogEntry::fim_no);
-
 #endif
-

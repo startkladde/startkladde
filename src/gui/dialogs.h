@@ -3,7 +3,7 @@
 
 #include <QMessageBox>
 
-void show_warning (const QString &, QWidget *parent);
+void show_warning (const QString &title, const QString &text, QWidget *parent);
 
 
 

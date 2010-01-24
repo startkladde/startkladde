@@ -1,6 +1,7 @@
 #include "Person.h"
 
 #include <iostream>
+#include <cassert>
 
 #include "src/text.h"
 
@@ -39,6 +40,15 @@ Person::Person (QString vn, QString nn, QString ve, QString cid, QString lvnum, 
 	id=p_id;
 }
 
+bool Person::operator< (const Person &o) const
+{
+	if (nachname<o.nachname) return true;
+	if (nachname>o.nachname) return false;
+	if (vorname<o.vorname) return true;
+	if (vorname>o.vorname) return false;
+	return false;
+}
+
 QString Person::name () const
 	/*
 	 * Returns the name of the person in a form suitable for enumerations.
@@ -62,7 +72,7 @@ QString Person::pdf_name () const
 	return name ();
 }
 
-QString Person::tabelle_name () const
+QString Person::tableName () const
 	/*
 	 * Returns the name of the person in a form suitable for the Table.
 	 * Return value:
@@ -73,7 +83,7 @@ QString Person::tabelle_name () const
 	return name ()+" ("+club+")";
 }
 
-QString Person::text_name () const
+QString Person::textName () const
 	/*
 	 * Returns the name of the person in a form suitable for running text.
 	 * Return value:
@@ -86,7 +96,7 @@ QString Person::text_name () const
 	return vorname+" "+nachname;
 }
 
-QString Person::bezeichnung (casus c) const
+QString Person::getDescription (casus c) const
 	/*
 	 * Returns a text describing the fact that this is a plane.
 	 * Parameters:
@@ -115,7 +125,7 @@ QString Person::get_selector_value (int column_number) const
 		case 0: return nachname;
 		case 1: return vorname;
 		case 2: return club;
-		case 3: return bemerkungen;
+		case 3: return comments;
 		case 4: return QString::number (id);
 		default: return QString ();
 	}
@@ -144,3 +154,57 @@ void Person::output (std::ostream &stream, output_format_t format)
 	Entity::output (stream, format, true, "Landesverbandsnummer", landesverbands_nummer);
 }
 
+// ******************
+// ** ObjectModels **
+// ******************
+
+int Person::DefaultObjectModel::columnCount () const
+{
+	return 7;
+}
+
+QVariant Person::DefaultObjectModel::displayHeaderData (int column) const
+{
+	switch (column)
+	{
+		case 0: return "Nachname";
+		case 1: return "Vorname";
+		case 2: return "Verein";
+		case 3: return "Landesverbandsnummer";
+		case 4: return "Bemerkungen";
+		// TODO remove from DefaultItemModel?
+		case 5: return "ID";
+		case 6: return "Editierbar";
+	}
+
+	assert (false);
+	return QVariant ();
+}
+
+QVariant Person::DefaultObjectModel::displayData (const Person &object, int column) const
+{
+	switch (column)
+	{
+		case 0: return object.nachname;
+		case 1: return object.vorname;
+		case 2: return object.club;
+		case 3: return object.landesverbands_nummer;
+		case 4: return object.comments;
+		case 5: return object.id;
+		case 6: return object.editable;
+	}
+
+	assert (false);
+	return QVariant ();
+}
+
+QString Person::toString () const
+{
+	return QString ("id=%1, lastName=%2, firstName=%3, club=%4, clubId=%5")
+		.arg (id)
+		.arg (nachname)
+		.arg (vorname)
+		.arg (club)
+		.arg (club_id)
+		;
+}

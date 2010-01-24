@@ -6,7 +6,7 @@ Entity::Entity ()
 	 */
 {
 	id=0;
-	editierbar=true;
+	editable=true;
 }
 
 Entity::~Entity ()
@@ -85,7 +85,7 @@ QString Entity::get_selector_value (int column_number) const
 	switch (column_number)
 	{
 		case 0: return QString::number (id);
-		case 1: return bemerkungen;
+		case 1: return comments;
 		default: return QString ();
 	}
 }

@@ -33,6 +33,7 @@ class SkTable:public QTableWidget
 	private:
 
 	signals:
+		// TODO better
 		void key (int);
 };
 

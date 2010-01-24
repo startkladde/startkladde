@@ -22,7 +22,7 @@ DbEvent::DbEvent ()
 	id=0;
 }
 
-void DbEvent::dump ()
+void DbEvent::dump () const
 	/*
 	 * Displays a dump of the event on stdout. Used for debugging.
 	 */
@@ -50,4 +50,14 @@ void DbEvent::dump ()
 	} printf ("    ");
 	printf ("id: %llu\n", id);
 }
+
+// Specialize
+template<> db_event_table DbEvent::getDbEventTable<Flight> () { return db_flug; }
+template<> db_event_table DbEvent::getDbEventTable<Plane>  () { return db_flugzeug; }
+template<> db_event_table DbEvent::getDbEventTable<Person> () { return db_person; }
+
+// Instantiate
+template db_event_table DbEvent::getDbEventTable<Flight> ();
+template db_event_table DbEvent::getDbEventTable<Plane > ();
+template db_event_table DbEvent::getDbEventTable<Person> ();
 

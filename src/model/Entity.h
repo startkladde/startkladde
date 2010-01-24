@@ -17,12 +17,7 @@ class Entity
  */
 {
 	public:
-		// TODO: this concept needs work.
-		// Instead of specifying different output formats here, make a
-		// function that returns a list of key/value pairs
-		// (ArgumentList, for example) and use that for display.
-		// Then, this function can also be used in the web interface
-		// code.
+		// TODO: this should be replaced by ObjectItemModels
 		// Note: there are problems with passwords:
 		//   - when outputting to clear text, the password should not
 		//     be visible (usually, sometimes it should).
@@ -34,20 +29,21 @@ class Entity
 
 		Entity ();
 		virtual ~Entity ();
-		virtual QString bezeichnung (casus) const=0;
+		virtual QString getDescription (casus) const=0;
 		virtual QString name () const=0;
-		virtual QString text_name () const=0;
-		virtual QString tabelle_name () const=0;
+		virtual QString textName () const=0;
+		virtual QString tableName () const=0;
 		// TODO code duplication with dump
 		virtual void output (std::ostream &stream, output_format_t format)=0;
 
 		virtual QString get_selector_value (int column_number) const;
 		static QString get_selector_caption (int column_number);
 
+		db_id get_id () const { return id; }
 
 		db_id id;
-		bool editierbar;
-		QString bemerkungen;
+		bool editable;
+		QString comments;
 
 	protected:
 		void output (std::ostream &stream, output_format_t format, bool last, QString name, QString value);

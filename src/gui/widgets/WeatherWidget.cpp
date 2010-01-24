@@ -14,9 +14,7 @@ WeatherWidget::WeatherWidget (QWidget *parent, const char *name)
 	if (opts.colorful)
 	{
 		setAutoFillBackground (true);
-		QPalette palette=this->palette ();
-		palette.setColor (QPalette::Background, QColor (127, 127, 127));
-		setPalette (palette);
+		setPaletteBackgroundColor (QColor (127, 127, 127));
 	}
 
 	setAlignment (Qt::AlignHCenter | Qt::AlignVCenter | Qt::WordBreak);
@@ -34,11 +32,10 @@ bool WeatherWidget::loadImage (const QString &fileName)
 
 	//image.smoothScale (width(), height (), QImage::ScaleMin);
 	QPixmap pixmap (image);
-
-	resize (pixmap.width (), pixmap.height ());
-	// TODO Pfusch
-//	setFixedWidth (height ()*pixmap.width ()/pixmap.height ());
 	setPixmap (pixmap);
+
+	setFixedSize (opts.weather_height*pixmap.width()/pixmap.height(), opts.weather_height);
+
 
 	return true;
 }

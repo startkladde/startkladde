@@ -35,14 +35,6 @@ möglich, dass alle Personen mit eindeutigem Namen keine Vereins-ID haben und
 eine Vereins-ID lediglich bei Personen mit nicht eindeutigem Namen vorhanden
 ist.
 
-Vom Startschreiber aufgenommene Personen könnnen vom Startschreiber editiert
-werden, um Fehler korrigieren zu könnnen. Durch den Vereinsadministrator
-aufgenommene Personen könnnen vom Startschreiber nicht geändert werden. Diese
-beiden Zustände werden als "editierbar" und "nicht editierbar" bezeichnet.
-Der Vereinsadministrator kann Daten immer ändern, selbst, wenn sie im Zustand
-"nicht editierbar" sind. Außerdem kann er den Zustand "editierbar" in "nicht
-editierbar" und umgekehrt ändern.
-
 Neben dem manuellen Anlegen und Editieren von Personeneinträgen mit Hilfe des
 Webinterface gibt es noch die Möglichkeit, die Stammdaten gesammelt
 einzuspielen. Dazu wird, ebenfalls mit dem Webinterface eine CSV-Datei (Zum
@@ -63,8 +55,6 @@ Benutzer zur überprüfung angezeigt. Ist die Tabelle OK, werden die enthaltenen
 Personen in die Datenbank aufgenommen. Personen, die bereits vorhanden sind,
 werden ggf. aktualisiert (zum Beispiel, wenn sich der Name geändert hat),
 ansonsten nicht geändert. Flüge der Person bleiben erhalten.
-Auf diese Weise aufgenommene Personen werden automatisch auf "nicht editierbar"
-gesetzt.
 
 Das Feld "Vereins-ID_alt" spielt nur dann eine Rolle, wenn die Vereins-ID von
 Personen geändert werden soll. Dazu muss unter "Vereins-ID_alt" die alte und

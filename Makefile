@@ -11,7 +11,7 @@
 ##################
 
 # The programs (with an own .pro file) to be built
-PROGRAMS = startkladde sk_web sk_admin tests
+PROGRAMS = startkladde tests
 
 # The XPM images used by the program
 XPMS = build/kvkbd.xpm build/logo.xpm
@@ -37,7 +37,7 @@ all: $(PROGRAMS) plugins
 # The individual Makefiles are made from the corresponding project files by
 # invoking qmake
 Makefile_%: %.pro
-	qmake $<
+	qmake-qt4 $<
 
 # The programs are made by invoking the appropriate Makefile (see the note at
 # the beginning of the file)
@@ -84,13 +84,11 @@ plugins:
 #############
 
 .PHONY: clean
-clean: Makefile_startkladde Makefile_sk_web Makefile_sk_admin Makefile_tests build/logo.xpm build/kvkbd.xpm
+clean: Makefile_startkladde Makefile_tests build/logo.xpm build/kvkbd.xpm
 	$(MAKE) -f Makefile_startkladde distclean
-	$(MAKE) -f Makefile_sk_web distclean
-	$(MAKE) -f Makefile_sk_admin distclean
 	$(MAKE) -f Makefile_tests distclean
 	$(MAKE) -C plugins clean
-	rm -f Makefile_startkladde Makefile_sk_web Makefile_sk_admin Makefile_tests
+	rm -f Makefile_startkladde Makefile_tests
 	rm -f version/version.h
 	rm -rf build
 

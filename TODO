@@ -1,9 +1,24 @@
+Critical
+* No "land" button if display date is not today
+* Add a landing time to a flight of another date => date correct?
+* Always create all columns
+* Hide towpilot fields if towpilot not recorded
+* Towpilot not given is not an error without record_towpilot
+* Add indexes
+
+== Minor ==
+
+Editors:
+* Use QDataWidgetMapper for edit dialogs?
+
+
+
+
+
 Diese Liste ist veraltet. Neue TODOs sollten in Trac eingetragen werden. 
 
 Diese TODOs auf Aktualität prüfen und in Trac eintragen.
 
-Bug: wenn keine Flüge vorhanden, wird keine Bordbuchseite erzeugt => Fehler
-beim Aufruf von dvips
 
 Fieser 64-Bit-Bug: Positionen bei der Stringverarbeitung werden manchmal als
 unsigned int gespeichert. string::npos ist -1, daher schlägt der Vergleich
@@ -44,13 +59,7 @@ Flugbuch:
 
 Als nächstes:
   - Benutzerrechteprüfung in state_available
-  - sk_web: Flugbuch als HTML: Summe der Zeit
-  - sk_web: personal status page
-  - sk_web: program status page
   - Plugin-Makefile: Pfadanpassung
-
-sk_web: fehlermeldung auf stderr (siehe webserverlog)
-sk_web: nach Anmeldung zum vorherigen Zustand zurück
 
 Features:
   - Felder: Schlepphöhe, Motorlaufzeit
@@ -84,10 +93,6 @@ Zum Testprogramm:
   - Merge Editierbar/Nicht editierbar etc., auch wenn in beiden Tabellen
 	vorhanden
   - Prüfen, ob überschreiben sich auch in Bezug auf Benutzer korrekt verhält.
-  - Alle Escapes in
-    - LaTeX-Ausgabe
-	- CVS-Ausgabe
-	- HTML-Ausgabe
 
 Funktionalität:
   - Bordbücher auf Hauptflugbuch drauf
@@ -104,9 +109,6 @@ Mit Datenbankänderung:
 Die ganzen "fliegt noch"-Prüfungen müssen eigentlich das Datum im
 Startzeit-Feld verwenden, falls vorhanden, statt current ().
 
-webinterface/scripts alle pfadeinstellungen in eine einzelne datei
-motorflug/motorsegler nicht fehlerhaft, wenn kein pilot (?)
-
 
 INSTALL:
 8. Client einrichten
@@ -118,99 +120,46 @@ INSTALL:
 
 Normale Priorität:
   - Bugs:
-    - repaint im splash screen
     - Mitternachtsproblem
     - anzeigedatum utc
-    - Nachnamen eintragen, in Vornamenfeld wechseln, Text wird nicht selektiert.
-      Zurückwechseln, ebenfalls nicht. Wieder vor, dann wird er. Das Problem
-	  scheint immer dann aufzutreten, wenn die cbox im lbl_cbox umgestellt wird.
-      In lbl_cbox::set_active_cbox (...) die selection mitzukopieren scheint
-      nichts zu bringen.
-    - segfault in sk_win_flight wenn populate_lists nicht aufgerufen wurd
-    - <user> als Benutzername führt zu Fehlern
-    - Wieso gibt das Plugin nix aus, wenn das Programm nicht existiert?
   - Funktionalität:
     - Starten/Landen rückgängig
     - Versuchen, ein identisches FZ dazuzufügen?
-    - Tabellenupdate statt refresh, wenn etwas geändert, zum Beispiel Flugzeuginfo
-    - Unterschidung zwischen "fliegt noch", "flog da" und "egal, startet
+    - Flight: Unterschidung zwischen "fliegt noch", "flog da" und "egal, startet
 	  später"
-    - Anzeigedatum nach UTC einstellen, auch Datum in flugeditor
-    - Unified Fehlerchecking: Flugeditor: Neues FZ aufgenommen: in selected_plane speichern
+    - Anzeigedatum nach UTC einstellen, auch Datum in flugeditor (?)
     - Unix socket Name auswählbar machen
-    - ID->Datum suche
-    - flugbuch etc. Fortschrittsanzeige
+    - Kennzeichen->Datum suche
     - ausgetretene Personen
     - stammdatenschnittstelle --> vereinsid nicht mehr vom ss editierbar?
 	- Bei Anzahl fliegender auch Schleppflüge berücksichtigen
-	- Bordbuch ungültig bei überlappenden Flügen
-	- bessere Fehlerbehandlung bei Datenbankaufrufen
-    - sk_web: Vereinsauswahlseite
-    - sk_web: stylesheet in config
-    - sk_web: --version
-    - sk_web: LaTeX-Ausgabei bei LaTeX-Fehler
-    - sk_web: Benutzer wechseln
     - Synchronisation Plugins mit Uhr
     - Grafische Winddarstellung
     - gescheites Quoting/Escaping in der Konfigurationsdatei
     - DB: Rechte select,update,insert prüfen
     - überlappungsprüfung bei Nachtragen
-    - sk_web: Datenbank initialisieren
-    - sk_admin: für merge zum Beispiel braucht man kein root sondern nur sk_admin
 
   - Implementation:
-    - sk_db kein QObject
-    - db_event auch das alte und neue db-element aufnehmen (?)
-    - reset () im flugeditor teilweise ersetzen durch eintragen eines
-	  leeren flugs?
-	- context_row durch context_id ersetzen
-    - beim zeilen entfernen muss die gespeicherte startzeit deleted werden (?)
-    - Startartstatistik per Count-Query
-	- db_change events von der Datenbank emittieren
 	- sk_dump aufräumen
 	- sk_dump Spaltenbreiten zentralisieren
 	- remove db_proxy
 	- handle gracefully old flights without a sfz_modus
-	- Fehlerchecking is called *often*
-	- Starten, Landen etc. per Query machen, statt RMW.
     - return 0 als id durch invalid_id ersetzen
-	- Personen/Flugzeuge, die mehrere Flüge haben, werden bei jedem
-	  Tabellenupdate neu geladen ==> cache oder so
 	- "Fliegt noch" wenn Start in gleicher Minute wie Landung
-	- Bessere Behandlung der verschiedenen Modi, die so ein Flugeditor hat
-	  (nachtragen, editieren, anzeigen, anlegen) und Ankreuzfelder (gestartet),
-	  so dass definitiv immer alle Buttons, der Titel etc. richtig geetzt sind.
-    - const string &
-    - iteratoren: end cachen
-    - dialogs.o nach GUI_OBJS, nachdem es aus sk_flug raus ist.
-    - sk_db is way too large and should be split up some.
-    - link plugins only to GUI. That means, remove plugin list from options.
-    - sk_time deprecated in favor of sk_time_t??? unify sk_time, sk_date, sk_time_t
-    - auf table-Klasse umstellen
-    - replace QPtrList<sk_flug> with flight_list, add flight_list_iterator
 
   - UI:
     - focus nach editieren von person/flugzeug
     - options: explizite Datumsangabe hat Vorrang, kein Fehler
 	- Netzüberwachung, alle Fenster disablen
     - F1: Hilfe
-	- im entity editor neuheiten in der richtigen sortierung eintragen
     - fb/bb als unvollständig markieren, wenn flug noch fliegt (besonders bb ist ungültig!)
     - Datumseinstellung: [X] Heute
-    - Sortierung Kommt/Geht
-    - Einfügen sortiert (Nachtragen!)
     - datum: heute gestern sonstige
     - ID bei "fliegt noch" anzeigen
     - Fehlermeldungen im Editor nur bei Anlegen, ansonsten gibts ja die Fehlerliste.
     - Show output from creation
     - Wenn die Labels sehr lang werden, wird das Programmfenster verbreitert
-	- Wenn mal long_operation_start ohne long_operation_end kommt, ist die GUI
-	  nicht mehr benutzbar
   - Datenbankcode:
-    - Konvertierung zwischen QString und std::string: q2std (...)
-      und std2q (...), statt (const char *) und .c_str (), auch
-      .ascii ist nicht gut.
-    - =="" und .length ()==0 --> .empty ()
     - db_to und to_db: default!
   - Datenbank:
     - Ungenutzte Spalten rausschmeißen
@@ -224,19 +173,6 @@ Normale Priorität:
     - sample config file: ases/moobert
     - Beispielkonfig Ort etc.
 	- Codedoku sk_db
-  - Webinterface
-    - überall um input hidden span
-    - Nach Passwortänderung Meldung "Passwort geändert"
-    - In object_field, add display_state for getting details (for example,
-      web_display_person for field_user_person).
-    - Der FHS garantiert nicht, dass Dateien in /tmp zwischen zwei
-      Programmaufrufen erhalten bleiben. Daher sollen die sessions wo anders
-      hingeschrieben werden.
-    - Sortierung der Listen nach verschiedenen Spalten
-    - Bei Fehlermeldungen: dazuschreiben, wo hin es zurück geht
-	- Die praktische Wiedereintragung bei Fehlern wie bei Benutzer anlegen bei
-	  allen Forms
-    - Benutzerzuordnung/-anzeige aus der Personentabelle
   - options
     - /etc/startkladde.conf
     - ~/ in source cfgfile
@@ -249,8 +185,6 @@ Normale Priorität:
     - Mitternachts-Zeitzonen-Problem
   - Funktionalität:
     - Was passiert bei date wrap? Anzeigedatum anpassen? Tabelle aktualisieren?
-    - In allen Fenstern, die db_update machen, auch det_delete behandeln
-	- db_event: unterscheidung zwischen refresh/alle und refresh/(eine bestimmte)
 	- error_control im entity_editor
     - Gattung "2mot" und "heli" und dann ist_motorflugzeug (gattung)
     - sitze aus typ, evtl. auch nur flugzeuge nach typ listen
@@ -278,9 +212,6 @@ Normale Priorität:
 	  untereinander jede Menge Code- und Informationsduplikation. Besser: aus
 	  Tabelle einlesen (lenspec/item) und Zeug wie [...] automatisch
 	  generieren.
-    - Funktion bool flug_anzeigen (flug) statt "if (fl.datum ()==anzeigedatum
-	  || fl.vorbereitet ())" sk_win_main::slot_db_update (), beachten, dass
-	  auch Schlepp anzeigen?
 	- Sortierung vereinheitlichen zwischen refresh_table und
 	  sk_flight_table::set_flight.
     - in sk_win_entity_list.cpp gibts einige funktionen, die in entity.cpp oder
@@ -347,15 +278,9 @@ Normale Priorität:
     - Makefile:
     - Makefile: siehe info makefile: include Dependencies, und Dependencies automatisch erstellen
     - Doppelklick auf Plugin label: Prozess neu starten
-  - sk_web
-    - Bei "IP stimmt nicht" keine Hauptmenü-Links
 
 Probleme:
   - Refresh im entity lister: hide();show(); sonst focus im mainwindow
-
-Doku:
-  - fehlerchecking erklären
-  - db_change erklären
 
 - Konfiguration für Plugins. Beispiel: geographische Länge, um
   Sonnenuntergangszeiten zu korrigieren.

@@ -2,6 +2,7 @@
 #define _Database_h
 
 #include <iostream>
+#include <cassert>
 
 #include <mysql.h>
 
@@ -18,7 +19,6 @@
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
-#include "src/model/User.h"
 #include "src/model/LaunchType.h"
 
 // TODO replace cerr with debug_stream
@@ -43,6 +43,8 @@ const int db_err_not_editable=-110;
 const int db_err_multiple=-111;
 const int db_err_already_exists=-112;
 const int db_err_not_admin_db=-113;
+const int db_err_timeout=-114;
+const int db_err_connection_failed=-115; // TODO is this always due to a connect timeout?
 
 class Database:public QObject
 {
@@ -156,6 +158,26 @@ class Database:public QObject
 			QString message;
 	};
 
+	class ex_database_not_found:public SkException
+	{
+		public:
+			~ex_database_not_found () throw () {};
+			ex_database_not_found (QString _name) { name=_name; }
+			virtual QString description () const { return "Datenbank "+name+" nicht gefunden"; }
+			QString name;
+	};
+
+	// TODO handle all timeouts correctly: (a) throw the correct exception at
+	// each query/... (b) catch them correctly
+	class ex_timeout:public SkException
+	{
+		public:
+			~ex_timeout () throw () {};
+			ex_timeout () {};
+			virtual QString description () const { return "Timeout"; }
+	};
+
+
 
 	class ex_unusable:public SkException
 	{
@@ -197,15 +219,6 @@ class Database:public QObject
 			ex_insufficient_access (const QString &_target) { target=_target; }
 			virtual QString description () const { return "Ungenügende Zugriffsrechte auf "+target; }
 			QString target;
-	};
-
-	class ex_database_not_found:public ex_unusable
-	{
-		public:
-			~ex_database_not_found () throw () {};
-			ex_database_not_found (QString _name) { name=_name; }
-			virtual QString description () const { return "Datenbank "+name+" nicht gefunden"; }
-			QString name;
 	};
 
 
@@ -289,23 +302,24 @@ class Database:public QObject
 
 
 
+	Database (std::ostream &_debug_stream=std::cerr);
+	~Database ();
+
+
 		// Connection management
-		Database (std::ostream &_debug_stream=std::cerr);
-		~Database ();
-		void connect (QString _server, int _port, QString _username, QString _password) throw (ex_allocation_error, ex_connection_failed, ex_access_denied);
-		void connect () throw (ex_allocation_error, ex_connection_failed, ex_access_denied);
-		void use_db (QString _database) throw (ex_database_not_accessible, ex_parameter_error, ex_database_not_found, ex_insufficient_access);
-		void use_db () throw (ex_database_not_accessible, ex_parameter_error, ex_database_not_found, ex_insufficient_access);
-		void set_connection_data (QString _server, int _port, QString _username, QString _password);
-		void set_database (QString _database);
-		void set_user_data (QString _username, QString _password);
+		void connect (QString server, int port, QString username, QString password) throw (ex_allocation_error, ex_connection_failed, ex_access_denied);
+		void use_db (QString database) throw (ex_database_not_accessible, ex_parameter_error, ex_database_not_found, ex_insufficient_access, ex_timeout, ex_connection_failed);
 		int disconnect ();
+		bool connected () const;
+		bool alife () const;
+		int ping () const;
+
+		// Errors
 		QString get_last_error () const;
 		unsigned int get_last_errno () const;
 		QString db_error_description (int error, bool extended=false) const;
-		bool connected () const;
-		bool alife () const;
 		bool silent;
+
 		RO_ACCESSOR (QString, last_query)
 		RO_ACCESSOR (bool, last_query_success)
 		RW_ACCESSOR (bool, is_admin_db)
@@ -349,18 +363,18 @@ class Database:public QObject
 		void make_plane_editable (int id, bool editable) throw (ex_legacy_error, ex_operation_failed) { make_editable (ot_plane, id, editable); }
 
 		// Delete/write/check existance/get/count/test/list
-		int delete_flight (db_id id);
-		int delete_plane (db_id id);
-		int delete_person (db_id id);
-		db_id write_flight (Flight *p);
-		db_id write_plane (Plane *p);
-		db_id write_person (Person *p);
+
+		// Template functions, specialized in implementation
+		template<class T> db_id writeObject (T *);
+		template<class T> int getObject (T *, db_id);
+		template<class T> int deleteObject (db_id);
+		template<class T> bool objectUsed (db_id);
+
+
+		// TODO make templates
 		int flight_exists (db_id id);
 		int plane_exists (db_id id);
 		int person_exists (db_id id);
-		int get_flight (Flight *flight, db_id id);
-		int get_plane (Plane *plane, db_id id);
-		int get_person (Person *person, db_id id);
 		long long int count_flights (Condition c);
 		long long int count_planes (Condition c);
 		long long int count_persons (Condition c);
@@ -379,7 +393,7 @@ class Database:public QObject
 
 		// Listing frontends
 		int list_flights_prepared (QList<Flight *> &flights);
-		int list_flights_date (QList<Flight *> &flights, QDate *date);
+		int list_flights_date (QList<Flight *> &flights, const QDate *date);
 		int list_flights_date_range (QList<Flight *> &flights, QDate *start_date, QDate *end_date);
 		int list_persons_by_name (QList<Person *> &persons, QString vorname, QString nachname);
 		int list_persons_by_first_name (QList<Person*> &persons, QString vorname);
@@ -419,40 +433,12 @@ class Database:public QObject
 		// Blind queries
 		int flush_privileges () { return execute_query ("FLUSH PRIVILEGES"); }
 
-		// Accessors
-		RO_ACCESSOR (QString, server);
-		RO_ACCESSOR (QString, username);
-		RO_ACCESSOR (QString, password);
-		RO_ACCESSOR (QString, database);
-		RO_ACCESSOR (int, port);
 
-		// User management
-		int sk_user_exists (const QString &username);
-		int sk_user_authenticate (const QString &username, const QString &password);
-		int sk_user_change_password (const QString &username, const QString &password);
-
-		int sk_user_add (const User &user, const QString &password);
-		int sk_user_modify (const User &user, const QString &username="");
-		int sk_user_delete (const QString &username);
-
-		int sk_user_get (User &user, const QString &username);
-		int sk_user_list (QList<User> &users, const QString &username="");
-
-		int row_to_user (User &user, MYSQL_ROW row, int num_fields, MYSQL_FIELD *fields);
-		int result_to_user_list (QList<User> &users, MYSQL_RES *result);
-		QString user_value_list (const User &user);
-
-		// Data collection
-		void make_flight_data (sk_flug_data &flight_data, const Flight &flight);
-
-
-		static void test ();
 	private:
 		// Connection management
 		MYSQL *mysql;
 		bool connection_established;
 		QString server, username, password, database; int port;
-		QString current_server;
 		QString last_query;
 		bool last_query_success;
 		bool is_admin_db;
@@ -555,7 +541,7 @@ class Database:public QObject
 
 
 	signals:
-		void executing_query (QString *s);
+		void executing_query (QString s);
 
 };
 

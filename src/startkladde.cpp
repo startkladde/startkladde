@@ -34,8 +34,14 @@ int main (int argc, char **argv)
 {
 	opts.parse_arguments (argc, argv);
 
+	// DbEvents are used as parameters for signals emitted by tasks running on
+	// a background thread. These connections must be queued, so the parameter
+	// types must be registered.
+	qRegisterMetaType<DbEvent> ("DbEvent");
+	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
+
 	Database db;
-	QList<ShellPlugin> plugins;
+	QList<ShellPlugin *> plugins;
 
 	if (opts.need_display ())
 		opts.do_display ();
@@ -51,26 +57,25 @@ int main (int argc, char **argv)
 		//a.setStyle ("light, 3rd revision");
 		if (!opts.style.isEmpty ()) a.setStyle (opts.style);
 
-		// Testen des Wetterplugins
-		//ShellPlugin *weather_ani_plugin=new ShellPlugin ("Wettertitel", "plugins/weather/regenradar_wetteronline.de_ani", 600);	// Initialize to given values
-		//WeatherDialog *weatherDialog;
-		//weatherDialog=new WeatherDialog (weather_ani_plugin);
-		//weatherDialog->setCaption ("Moobert");
-		//weatherDialog->show ();
-		//return a.exec ();
+		db.display_queries=opts.display_queries;
 
-		MainWindow w (NULL, &db, &plugins, Qt::Window);
+		MainWindow w (NULL, &db, plugins);
 
 		// Let the plugins initialize
 		sched_yield ();
 
-		db.set_connection_data (opts.server, opts.port, opts.username, opts.password);
-		db.set_database (opts.database);
-		db.display_queries=opts.display_queries;
+
 
 		w.showMaximized ();
-		w.start_db ();
+//		w.show ();
 		int ret=a.exec();
+
+		foreach (ShellPlugin *plugin, plugins)
+		{
+//			std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
+			plugin->terminate ();
+			sched_yield ();
+		}
 
 		return ret;
 	}

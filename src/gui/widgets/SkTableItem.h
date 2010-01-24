@@ -5,10 +5,11 @@
 #include <QString>
 
 #include "src/dataTypes.h"
-#include "src/db/Database.h"
+#include "src/db/dbTypes.h"
 
 #include <QTableWidgetItem>
 
+// TODO probably remove after FlightTable has been removed
 class SkTableItem:public QTableWidgetItem
 {
 	public:

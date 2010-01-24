@@ -24,7 +24,7 @@
  * </p>
  * <p>
  * For debugging purposes class <code>TestRunnerClient</code> displays debug
- * messages on <code>std.cerr</code>. The debug modus is activated by specifying
+ * messages on <code>std.cerr</code>. The debug mode is activated by specifying
  * <code>debug</code> command line option. The command line is parsed by method
  * <code>Init()</code>.
  * </p>
@@ -60,7 +60,7 @@ public:
 	 * @param n The number of arguments.
 	 * @param args The argument values. Valid options are:
 	 * 			   <li><code>-debug</code> When present the TestRunnerClient
-	 * 				is run in debug modus and displays debug messages.</li>
+	 * 				is run in debug mode and displays debug messages.</li>
 	 * 			   <li><code>-port=number</code> Defines the port where
 	 * 			   CppUnitServer is listening for client connections.</li>
 	 */

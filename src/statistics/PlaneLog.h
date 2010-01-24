@@ -3,45 +3,67 @@
 
 #include <QString>
 #include <QDateTime>
+#include <QAbstractTableModel>
+#include <QList>
 
-#include "src/db/Database.h"
-#include "src/model/Flight.h"
-#include "src/model/Plane.h"
-#include "src/model/Person.h"
 #include "src/time/Time.h"
+#include "src/db/dbTypes.h"
 
-class PlaneLogEntry
+class DataStorage;
+class Flight;
+
+class PlaneLog: public QAbstractTableModel
 {
+	Q_OBJECT
+
+	protected:
+		PlaneLog (QObject *parent=NULL);
+		~PlaneLog ();
+
+		class Entry
+		{
+			public:
+				Entry ();
+				virtual ~Entry ();
+
+				static Entry create (const Flight *flight, DataStorage &dataStorage);
+				static Entry create (const QList<const Flight *> flights, DataStorage &dataStorage);
+
+				QString registration;
+
+				QDate date;
+				QString pilotName;
+				int minPassengers;
+				int maxPassengers;
+				QString departureAirfield;
+				QString destinationAirfield;
+				Time departureTime;
+				Time landingTime;
+				int numLandings;
+				Time operationTime;
+				QString comments;
+
+				bool valid;
+
+				virtual QString dateText () const;
+				virtual QString numPassengersString () const;
+				virtual QString departureTimeText (bool noLetters=false) const;
+				virtual QString landingTimeText (bool noLetters=false) const;
+				virtual QString operationTimeText () const;
+		};
+
 	public:
-		PlaneLogEntry ();
+		static PlaneLog *createNew (db_id planeId, const QList<Flight> &flights, DataStorage &dataStorage);
+		static PlaneLog *createNew (const QList<Flight> &flights, DataStorage &dataStorage);
 
-		QString club;
-		QString registration;
-		QString flugzeug_typ;
-		QDate datum;
-		QString name;
-		int insassen;
-		QString ort_von;
-		QString ort_nach;
-		Time zeit_start;
-		Time zeit_landung;
-		int anzahl_landungen;
-		Time betriebsdauer;
-		QString bemerkungen;
-		bool invalid;
+		// QAbstractTableModel methods
+		virtual int rowCount (const QModelIndex &index) const;
+		virtual int columnCount (const QModelIndex &index) const;
+		virtual QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const;
+		virtual QVariant headerData (int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
 
-		QString insassen_string () const;
-		QString datum_string () const;
-		QString zeit_start_string (bool no_letters=false) const;
-		QString zeit_landung_string (bool no_letters=false) const;
-		QString betriebsdauer_string () const;
-		QString anzahl_landungen_string () const;
+	private:
+		QList<Entry> entries;
 };
 
-bool makePlaneLogEntry (PlaneLogEntry *bb_entry, Database *db, QList<Flight *> &flights, Plane &fz, QDate date);
-void makePlaneLogPlane (QList<PlaneLogEntry *> &bb, Database *db, QDate date, Plane &fz, QList<Flight *> &flights);
-void makePlaneLogDay (QList<PlaneLogEntry *> &bb, Database *db, QDate date, QList<Plane *> planes, QList<Flight *> flights, QString *club=NULL);
-void makePlaneLogDay (QList<PlaneLogEntry *> &bb, Database *db, QDate date);
-
 #endif
-

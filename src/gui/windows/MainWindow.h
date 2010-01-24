@@ -1,258 +1,229 @@
-#ifndef _MainWindow_h
-#define _MainWindow_h
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
-#include <cstdio>
-#include <stdlib.h>
+/*
+ * Remake:
+ *   - TODO incoming motor flight without pilot is error in table, not in
+ *     editor
+ *   - TODO towplane type and registration not shown correctly
+ *   - TODO the weather widget is still made smaller if the window is resized.
+ *          Note that it will not get small than the fixed size set in the UI.
+ *   - TODO use QDate or date?
+ *   - TODO table sorting
+ *   - TODO fix unusable database
+ *   - TODO Retry failed connection on startup
+ *   - TODO change the display when the database does not reply to ping
+ *   - TODO task error handling
+ *   - TODO warn on edit if database not alive (recently responded)
+ *
+ * Tests:
+ *   - TODO context menu: correct flight used
+ *
+ * Further improvements:
+ *   - on repeating a towflight, ask if the towed flight should be repeated
+ *   - change menu entries for "jump to towflight/towed flight" and "land/
+ *     /end airtow" depending on the selected flight.
+ *   - update action state if the virtual keyboard is closed/killed externally
+ *   - reload weather plugin from context menu
+ *   - addObject the weather plugin in designer (need different initialization)
+ *   - addObject a menu entry for opening the weather dialog
+ *   - focus the weather dialog instead of hiding and showing it
+ *   - on date wrap, the display date label's color is not updated
+ *   - double click in free table space: create new flight
+ *   - make a script for date changing (set date and store to hardware clock)
+ *   - when performing a touchngo with a towflight, land and restart it
+ *   - allow repeating of towflights
+ */
 
-#include <QString>
-#include <QApplication>
-#include <QDateTime>
-#include <QFrame>
-#include <QLayout>
-#include <QMainWindow>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QSplitter>
-#include <QTextEdit>
-#include <QTimer>
+#include <QtGui/QMainWindow>
+#include <QList>
+#include <QPointer>
+#include <QModelIndex>
+#include <QPersistentModelIndex>
 
-#include "src/dataTypes.h"
-#include "src/db/dbTypes.h"
-#include "src/gui/settings.h"
-#include "src/gui/spacing.h"
-#include "src/gui/widgets/SkLabel.h"
-#include "src/gui/widgets/WeatherWidget.h"
-#include "src/gui/windows/WeatherDialog.h"
-#include "src/logging/messages.h"
-#include "src/plugins/ShellPlugin.h"
+#include "ui_MainWindow.h"
 
-class DbEvent;
-class flight;
-class Options;
+#include "src/db/DataStorage.h"
+#include "src/gui/windows/StatisticsWindow.h"
+#include "src/model/objectList/EntityList.h"
+#include "src/model/objectList/ObjectListModel.h"
+
+class FlightSortFilterProxyModel;
+class QWidget;
 class Database;
-class FlightTable;
-class Flight;
-class Plane;
-class DateWindow;
-class FlightWindow;
-class StatisticsWindow;
-class EntityListWindow;
-class SplashScreen;
+class ShellPlugin;
+class WeatherWidget;
+class WeatherDialog;
+class FlightModel;
+class FlightProxyList;
 
-using namespace Qt;
-
-// Info label IDs
-const int idx_info_time=0;
-const int idx_info_utc=1;
-const int idx_info_anzeige_datum=2;
-const int idx_info_fluege_luft=3;
-const int idx_info_fluege_gesamt=4;
-const int idx_info_datenbankverbindung=5;
-const int idx_info_acpi=6;
-const int num_info_labels=7;
-
-class MainWindow:public QMainWindow
+/*
+ * Notes:
+ *   - We don't enable/disable the flight manipulation menu entries depending
+ *     on whether the manipulation can be performed. It has to be checked when
+ *     it's performed anyway, and that way the user can be told why someting
+ *     is not possible.
+ */
+class MainWindow: public QMainWindow
 {
 	Q_OBJECT
 
 	public:
-		enum db_state_t { ds_uninitialized, ds_no_connection, ds_established, ds_unusable, ds_connection_lost };
-		MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin> *_plugins, Qt::WindowFlags f=0);
+		MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin *> &plugins);
 		~MainWindow ();
-		void start_db ();
 
 	protected:
+		// Startup/Shutdown
+		bool confirmAndExit (int returnCode, QString title, QString text);
+
+		// Setup
+		void setupPlugins ();
+		void setupPlugin (ShellPlugin *plugin, QGridLayout *pluginLayout);
+		void setupLabels ();
+		void setupLayout ();
+
+		// Actions
+		bool refreshFlights ();
+
+		// Data
+		QDate getNewFlightDate () { return ui.actionUseCurrentDateForNewFlights ? (QDate::currentDate ()) : displayDate; }
+		void setDisplayDate (QDate displayDate, bool force);
+		void setDisplayDateCurrent (bool force) { setDisplayDate (QDate::currentDate (), force); }
+		void updateFlight (const Flight &flight);
+
+		db_id currentFlightId (bool *isTowflight=NULL);
+		void sortCustom ();
+		void sortByColumn (int column);
+
+		// Settings
+		void writeSettings ();
+		void readSettings ();
+		void readColumnWidths ();
+
+		// Events
+		void closeEvent (QCloseEvent *event);
 		void keyPressEvent (QKeyEvent *);
 
-	private:
-		// Program menagement
-		bool startup_complete;
-		void shutdown ();
-		// UI
-		void update_checks ();
-		void menu_enables (bool cell_change=false);
-		bool display_log;
-		// Other windows
-		::SplashScreen *ss;
-		FlightWindow *flug_editor;
-		EntityListWindow *flugzeug_liste;
-		EntityListWindow *personen_liste;
-		WeatherDialog *weatherDialog;
-		// Database
-		Database *db;
-		db_state_t db_state;
-		QString db_error;
-		bool try_initialize_db (QString reason);
-		void set_connection_label (const QString &text, const QColor &color=QColor (0, 0, 0));
-		// FSM
-		void db_do_action ();
-		void db_set_state (db_state_t new_state);
-		db_state_t db_action_connect ();
-		db_state_t db_action_check_connection ();
-		bool db_available ();
-		// Flights
-		void edit_flight (Flight *);
-		void manipulate_flight (db_id, flight_manipulation, db_id sref=0);
-		void manipulate_flight_by_row (int, flight_manipulation);
-		void neuer_flug (Flight *vorlage=NULL);
-		void flug_wiederholen (Flight *vorlage=NULL);
-		// Table
-		FlightTable *tbl_fluege;
-		db_id get_flight_id (int);
-		void table_activated (int);
-		int context_row, context_col;
-		int old_row;
-		// Window I/O
-		void simulate_key (int);
-		void update_info ();
-		void dbase_connect (QObject *);
-		// Settings
-		void readSettings ();
-		void writeSettings ();
-		// Date management
-		QDate anzeigedatum;
-		bool display_new_flight_date;
-		bool always_use_current_date;
+		// Database connection management
+		void setDatabaseActionsEnabled (bool enabled);
 
-		// Layout
-		QSplitter *split_main;
-		QFrame *main_frame;
-		QVBoxLayout *main_layout;
-
-		QFrame *info_frame;
-		QFrame *weather_frame;
-		QLabel *lbl_info[num_info_labels];
-		QLabel *lbl_info_value[num_info_labels];
-		WeatherWidget *weather;
-		void initActions();
-		void initMenu();
-		void initContextMenu();
-		void initToolbar();
-
-		// Menus
-		QMenu *menu_programm;
-		QMenu *menu_flug, *menu_ansicht, *menu_statistik,
-			*menu_datenbank, *menu_ansicht_fluege, *menu_ansicht_datum, *menu_hilfe,
-			*menu_debug, *menu_demosystem;
-		QMenu *menu_ctx_flug, *menu_ctx_emptyrow;
-		QToolBar *toolBar;
-
-		QAction *actionSetTime;
-		QAction *actionQuit;
-		QAction *actionShutDown;
-		QAction *actionStart, *actionLanding, *actionCtxLanding, *actionGoAround;
-		QAction *actionEditFlight, *actionCopyFlight, *actionDeleteFlight, *actionSortTable;
-
-		QAction *actionRefreshTable;
-		QAction *toggleKeyboard;
-		QAction *actionNewFlight;
-		//QAction *toggleShowAll;
-		QAction *actionDemoWeb;
-		QAction *actionSetFont, *actionIncFont, *actionDecFont;
-		QAction *actionSchleppRef;
-		QAction *actionRestartPlugins;
-		QAction *actionSuppressLanded, *actionShowDeparted, *actionShowFaulty;
-		QAction *actionSetDate, *actionNewFlightNewDate, *actionNewFlightCurrDate;
-		QAction *actionPlaneLog, *actionPilotLog, *actionStartart;
-		QAction *actionEditPlanes, *actionEditPersons;
-		QAction *actionRefreshAll; // *actionWriteCSV;
-		QAction *actionInfo, *actionNetDiag;
-		QAction *actionSegfault, *actionPing, *actionDisplayLog;
-		// Timers
-		QTimer *timer_status;
-		QTimer *timer_db;
-
-
-		QTextEdit *log;
-		QList<ShellPlugin> *plugins;
-		ShellPlugin *weather_plugin;
-
-	public slots:
-		void slot_db_update (DbEvent *event);
-		void set_anzeigedatum (QDate);
-		void log_message (QString message);
-		void log_message (QString *message);
-		void restart_all_plugins ();
-		void openWeatherDialog ();
+	protected slots:
+		void dataStorageStatus (QString status, bool isError);
+		void dataStorageStateChanged (DataStorage::State state);
 
 	private slots:
-		void slotToggleKeyboard (bool);
-		// Flight menu slots
-		void slot_flight_new ();
-		// Program menu slots
-		void slot_close ();
-		void slot_shutdown ();
-		void slot_setdate ();
-		// View menu slots
-		void slot_menu_ansicht_flug_gelandete (bool);
-		void slot_menu_ansicht_flug_weggeflogene_gekommene (bool);
-		void slot_menu_ansicht_flug_fehlerhafte (bool);
-		void slot_menu_ansicht_display_new_flight_date ();
-		void slot_menu_ansicht_always_use_current_date ();
-		void slot_menu_ansicht_datum_einstellen ();
-		//ee
-		void slotSetFont ();
-		void slotIncFont ();
-		void slotDecFont ();
-		void slot_schleppref_springen ();
-		void slot_tabelle_sortieren ();
-		void slot_refresh_table ();
-		// Statistics menu slots
-		void slot_pilot_log ();
-		void slot_plane_log ();
-		void slot_sastat ();
-		// Database menu slots
-		void slot_flugzeugeditor ();
-		void slot_personeneditor ();
-		void slot_db_refresh_all ();
-		// Debug menu slots
-		void slot_display_log ();
-		void slot_ping_db ();
-		void slot_segfault ();
-		// Help menu slots
-		void slot_info ();
-		void slot_netztest ();
-		// Demo system menu slots
-		void slot_webinterface ();
+		// Menu: Program
+		void on_actionSetTime_triggered ();
+		void on_actionQuit_triggered ();
+		void on_actionShutdown_triggered ();
 
-		// Table slots
-		void slot_table_edit ();
-		void slot_table_land ();
-		void slot_table_start ();
-		void slot_table_delete ();
-		void slot_table_zwischenlandung ();
-		void slot_table_wiederholen ();
-		// Table button slots
-		void slot_tbut_start (db_id);
-		void slot_tbut_landung (db_id);
-		void slot_tbut_schlepplandung (db_id);
-		// Context menu slots
-		void slot_context_edit ();
-		void slot_context_land ();
-		void slot_context_start ();
-		void slot_context_delete ();
-		void slot_context_zwischenlandung ();
-		void slot_context_wiederholen ();
-		// Mouse/Keyboard event slots
-		void slot_table_context (const QPoint &);
-		void slot_table_double_click (int, int);
-		void slot_table_key (int);
-		void slot_current_changed ();
-//		void slot_plugin_clicked (int);
+		// Menu: Flight
+		void on_actionNew_triggered ();
+		void on_actionStart_triggered ();
+		void on_actionLand_triggered ();
+		void on_actionTouchngo_triggered ();
+		void on_actionEdit_triggered ();
+		void on_actionRepeat_triggered ();
+		void on_actionDelete_triggered ();
+		void on_actionDisplayError_triggered ();
 
-		void update_time ();
-//		void slot_menu (int);
-		void setdate (QDateTime);
-		void slot_timer_db ();
+		// Menu: View
+		void on_actionRefreshTable_triggered ();
+		//        void on_actionFont_triggered ();
+		void on_actionJumpToTow_triggered ();
+		void on_actionRestartPlugins_triggered ();
+		void on_actionShowVirtualKeyboard_triggered (bool checked);
 
-	signals:
-		void db_change (DbEvent *event);
-		void db_update (DbEvent *event);
-		void status (QString);
-		void progress (int, int);
-		void long_operation_start ();
-		void long_operation_end ();
+		// Menu: View - Font
+		void on_actionSelectFont_triggered ();
+		void on_actionIncrementFontSize_triggered ();
+		void on_actionDecrementFontSize_triggered ();
+
+		// Menu: View - Flights
+		// on_actionHideFinished_triggered (bool checked) - connected to proxyModel
+		// on_actionAlwaysShowExternal_triggered (bool checked) - connected to proxyModel
+		// on_actionAlwaysShowErroneous_triggered (bool checked) - connected to proxyModel
+		void on_actionSort_triggered () { sortCustom (); }
+		void on_actionResizeColumns_triggered () { ui.flightTable->resizeColumnsToContents (); }
+
+
+		// Menu: View - Date
+		void on_actionSetDisplayDate_triggered ();
+		//		void on_actionResetDisplayDateOnNewFlight_triggered ();
+		//		void on_actionUseCurrentDateForNewFlights_triggered ();
+
+		// Menu: Statistics
+		void on_actionPlaneLogs_triggered ();
+		void on_actionPersonLogs_triggered ();
+		void on_actionLaunchTypeStatistics_triggered ();
+
+		// Menu: Database
+		void on_actionConnect_triggered () { dataStorage.connect (); }
+		void on_actionDisconnect_triggered () { dataStorage.disconnect (); }
+		void on_actionEditPlanes_triggered ();
+		void on_actionEditPeople_triggered ();
+		//		void on_actionRefreshAll_triggered ();
+
+		// Menu: Debug
+		void on_actionSegfault_triggered () { *(int *)NULL = 0; } // For testing the automatic restart mechanism
+		//		void on_actionPingServer_triggered ();
+		void on_actionTest_triggered ();
+
+		// Menu: Demosystem
+		void on_actionWebinterface_triggered () { system ("firefox http://localhost/ &"); }
+
+		// Menu: Help
+		void on_actionInfo_triggered ();
+		void on_actionNetworkDiagnostics_triggered ();
+
+		// Flight Table
+		void on_flightTable_customContextMenuRequested (const QPoint &pos);
+		void on_flightTable_activated (const QModelIndex &index);
+		void flightTable_buttonClicked (QPersistentModelIndex proxyIndex);
+		void flightTable_horizontalHeader_sectionClicked (int index) { sortByColumn (index); }
+
+		// Flight manipulation
+		void startFlight (db_id id);
+		void landFlight (db_id id);
+		void landTowflight (db_id id);
+
+		// Plugins
+		void weatherWidget_doubleClicked ();
+
+		// Timers
+		void timeTimer_timeout ();
+
+		// Database
+		void dbEvent (DbEvent event);
+		bool initializeDatabase ();
+
+		void logMessage (QString message);
+
+		void flightListChanged ();
+
+	private:
+		Ui::MainWindowClass ui;
+
+		DataStorage dataStorage; // TODO create DataStorage externally, store reference
+		QDate displayDate;
+		QList<ShellPlugin *> &plugins;
+		WeatherWidget *weatherWidget;
+		ShellPlugin *weatherPlugin;
+		QPointer<WeatherDialog> weatherDialog;
+
+		EntityList<Flight> flightList;
+		FlightProxyList *proxyList;
+		FlightModel *flightModel;
+		ObjectListModel<Flight> *flightListModel;
+		FlightSortFilterProxyModel *proxyModel;
+
+		// The context menu is a property of the class rather than a local
+		// variable because it has to persist after the method opening it
+		// returns.
+		QMenu *contextMenu;
+
+		Qt::SortOrder sortOrder;
+		int sortColumn;
 };
 
-#endif
-
+#endif // MAINWINDOW_H

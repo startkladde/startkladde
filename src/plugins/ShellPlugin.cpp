@@ -8,6 +8,7 @@
 #include <signal.h>
 
 #include <QTimer>
+#include <QTextCodec>
 
 #include "src/text.h"
 #include "src/config/Options.h"
@@ -22,6 +23,11 @@ void ShellPlugin::init ()
 	value_display=NULL;
 	warn_on_death=false;
 	subprocess=NULL;
+
+	// The plugin output incoding is UTF8, but it is interpreted as latin1 and
+	// converted to UTF-8 by QProcess. It may not be obvious that this
+	// conversion (codec->toUnicode) will work, but it does.
+	codec=QTextCodec::codecForName ("UTF-8");
 }
 
 ShellPlugin::ShellPlugin ()
@@ -56,8 +62,6 @@ ShellPlugin::ShellPlugin (const QString desc)
 		if ((*it)=="warn_on_death") warn_on_death=true;
 		else if ((*it)=="rich_text") rich_text=true;
 	}
-
-	start ();
 }
 //
 
@@ -84,9 +88,6 @@ ShellPlugin &ShellPlugin::operator= (const ShellPlugin &o)
 
 ShellPlugin::~ShellPlugin ()
 {
-	// qt3
-	//if (subprocess) subprocess->tryTerminate ();
-	//qt4
 	if (subprocess) subprocess->terminate ();
 	sched_yield ();
 }
@@ -95,7 +96,13 @@ ShellPlugin::~ShellPlugin ()
 
 void ShellPlugin::start ()
 {
-	if (subprocess) delete subprocess;
+	if (subprocess)
+	{
+		subprocess->terminate ();
+		sched_yield ();
+		delete subprocess;
+	}
+
 	if (command.isEmpty ())
 	{
 		if (value_display)
@@ -168,18 +175,9 @@ void ShellPlugin::start ()
 		args.append ("-c");
 		args.append (complete_command);
 
-		// Qt3
-		//subprocess=new QProcess (args, this, "subprocess");
-//		subprocess->setWorkingDirectory (QDir (std2q (working_dir)));
-		// Qt4
 		subprocess=new QProcess (this);
 		subprocess->setWorkingDirectory (working_dir);
 
-		// Qt3
-		//QObject::connect (subprocess, SIGNAL (destroyed (QObject *)), subprocess, SLOT (kill ()));
-		//QObject::connect (subprocess, SIGNAL (readyReadStdout ()), this, SLOT (output_available ()));
-		//QObject::connect (subprocess, SIGNAL (processExited ()), this, SLOT (subprocess_died ()));
-		// Qt4
 //		QObject::connect (subprocess, SIGNAL (destroyed (QObject *)), subprocess, SLOT (kill ()));
 		QObject::connect (subprocess, SIGNAL (readyReadStandardOutput ()), this, SLOT (output_available ()));
 		QObject::connect (subprocess, SIGNAL (finished (int, QProcess::ExitStatus)), this, SLOT (subprocess_died ()));
@@ -188,14 +186,6 @@ void ShellPlugin::start ()
 
 		if (value_display)
 			value_display->setText ("");
-
-		// Qt3
-//		if (!subprocess->start ())
-//		{
-//			if (value_display)
-//				value_display->setText ("Fehler beim Starten");
-//		}
-//		subprocess->closeStdin ();
 
 		// Qt4
 		subprocess->start ("/bin/sh -c \""+complete_command+"\"", QIODevice::ReadOnly);
@@ -209,10 +199,7 @@ void ShellPlugin::output_available ()
 	if (!subprocess) return;
 
 	QString line;
-	// Qt3
-//	while (line=subprocess->readLineStdout (), !line.isNull ())
-	// Qt4
-	while (line=subprocess->readLine ().trimmed (), !line.isEmpty ())
+	while (line=codec->toUnicode (subprocess->readLine ().trimmed ().constData ()), !line.isEmpty ())
 	{
 		emit lineRead (line);
 
@@ -233,9 +220,6 @@ void ShellPlugin::subprocess_died ()
 
 void ShellPlugin::terminate ()
 {
-	// Qt3
-	//if (subprocess) subprocess->tryTerminate ();
-	// Qt4
 	if (subprocess) subprocess->terminate ();
 }
 

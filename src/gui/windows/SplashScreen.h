@@ -48,7 +48,6 @@ class SplashScreen:public QDialog
 		void set_status (QString);
 		void set_progress (int, int);
 		void try_close ();
-		void close ();
 
 	signals:
 		void clicked ();

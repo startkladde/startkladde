@@ -175,10 +175,10 @@ db_id SkTable::id_from_cell (int row, int col)
 	 *   - 0 else.
 	 */
 {
-	if (row<0) return 0;
-	if (row>=rowCount ()) return 0;
+	if (row<0) return invalid_id;
+	if (row>=rowCount ()) return invalid_id;
 	SkTableItem *id_item=(SkTableItem *)item (row, col);
-	if (id_item==NULL) return 0;
+	if (id_item==NULL) return invalid_id;
 	return id_item->id ();
 }
 

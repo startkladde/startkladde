@@ -76,17 +76,17 @@ QString LaunchType::name () const
 	return description;
 }
 
-QString LaunchType::tabelle_name () const
+QString LaunchType::tableName () const
 {
 	return short_description;
 }
 
-QString LaunchType::text_name () const
+QString LaunchType::textName () const
 {
 	return description;
 }
 
-QString LaunchType::bezeichnung (casus c) const
+QString LaunchType::getDescription (casus c) const
 {
 	return entityLabel (st_startart, c);
 }
@@ -98,7 +98,7 @@ QString LaunchType::get_selector_value (int column_number) const
 	switch (column_number)
 	{
 		case 0: return description;
-		case 1: return bemerkungen;
+		case 1: return comments;
 		case 2: return QString::number (id);
 		default: return QString ();
 	}

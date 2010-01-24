@@ -10,7 +10,7 @@ Plane::Plane ()
 	 * Constructs an empty Plane instance.
 	 */
 {
-	sitze=0;
+	numSeats=0;
 }
 
 Plane::Plane (QString p_registration, QString p_wettbewerbskennzeichen, QString p_typ, QString p_club, int p_sitze, db_id p_id)
@@ -23,10 +23,10 @@ Plane::Plane (QString p_registration, QString p_wettbewerbskennzeichen, QString 
 {
 	// TODO remove verein
 	registration=p_registration;
-	wettbewerbskennzeichen=p_wettbewerbskennzeichen;
-	typ=p_typ;
+	competitionId=p_wettbewerbskennzeichen;
+	type=p_typ;
 	club=p_club;
-	sitze=p_sitze;
+	numSeats=p_sitze;
 	id=p_id;
 }
 
@@ -43,14 +43,14 @@ void Plane::dump () const
 			"Sitze %d\n"
 			"ID %d\n",
 			registration.latin1(),
-			wettbewerbskennzeichen.latin1(),
-			typ.latin1(),
+			competitionId.latin1(),
+			type.latin1(),
 			club.latin1(),
-			sitze,
+			numSeats,
 			(int)id);
 }
 
-QString Plane::bezeichnung (casus c) const
+QString Plane::getDescription (casus c) const
 	/*
 	 * Returns a text describing the fact that this is a plane.
 	 * Parameters:
@@ -72,32 +72,13 @@ QString Plane::name () const
 	return registration;
 }
 
-QString Plane::tabelle_name () const
-	/*
-	 * Returns the name of the plane in a form suitable for the Table.
-	 * Return value:
-	 *   - the name.
-	 */
+QString Plane::tableName () const
 {
-	return tabelle_name (false);
+	if (eintrag_ist_leer (competitionId)) return registration;
+	return QString ("%1 (%2)").arg (registration).arg (competitionId);
 }
 
-QString Plane::tabelle_name (bool schlepp) const
-	/*
-	 * Returns the name of the plane in a form suitable for the Table.
-	 * Parameters:
-	 *   - schlepp: whether to return the name of the towplane
-	 * Return value:
-	 *   - the name.
-	 */
-
-{
-	// TODO: wk auch bei schlepps
-	if (schlepp||eintrag_ist_leer (wettbewerbskennzeichen)) return name ();
-	return name ()+" ("+wettbewerbskennzeichen+")";
-}
-
-QString Plane::text_name () const
+QString Plane::textName () const
 	/*
 	 * Returns the name of the plane in a form suitable for running text.
 	 * Return value:
@@ -111,8 +92,8 @@ void Plane::output (std::ostream &stream, output_format_t format)
 {
 	Entity::output (stream, format, false, "ID", id);
 	Entity::output (stream, format, false, "Kennzeichen", registration);
-	Entity::output (stream, format, false, "Wettbewerbskennzeichen", wettbewerbskennzeichen);
-	Entity::output (stream, format, false, "Sitze", sitze);
+	Entity::output (stream, format, false, "Wettbewerbskennzeichen", competitionId);
+	Entity::output (stream, format, false, "Sitze", numSeats);
 	Entity::output (stream, format, false, "Verein", club);
 	Entity::output (stream, format, true, "Gattung", categoryText (category, lsLong));
 }
@@ -164,16 +145,6 @@ QString Plane::categoryText (Plane::Category category, lengthSpecification lensp
 				case categoryOther:        return "Sonstige";
 				case categoryNone:         return "Keine";
 			}
-		case lsCsv:
-			switch (category)
-			{
-				case categorySingleEngine: return "Motorflugzeug";
-				case categoryGlider:       return "Segelflugzeug";
-				case categoryMotorglider:  return "Motorsegler";
-				case categoryUltralight:   return "Ultraleicht";
-				case categoryOther:        return "Sonstige";
-				case categoryNone:         return "Keine";
-			}
 		case lsWithShortcut:
 			switch (category)
 			{
@@ -219,4 +190,105 @@ Plane::Category Plane::categoryFromRegistration (QString registration)
 		return categoryMotorglider;
 	else
 		return categoryOther;
+}
+
+/**
+ * Returns the maximum number of seats in a plane of a given category, or -1
+ * if there is no maximum.
+ */
+int Plane::categoryMaxSeats (Plane::Category category)
+{
+	switch (category)
+	{
+		case categoryNone: return -1;
+		case categorySingleEngine: return -1;
+		case categoryGlider: return 2;
+		case categoryMotorglider: return 2;
+		case categoryUltralight: return 2;
+		case categoryOther: return -1;
+	}
+
+	assert (false);
+	return -1;
+}
+
+
+bool Plane::selfLaunchOnly ()
+{
+	// Note that motorgliders can be glieders; and there are even some TMGs
+	// which can do winch launch.
+	return category==categorySingleEngine || category==categoryUltralight;
+}
+
+bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)
+{
+	QString club1=simplify_club_name (p1.club);
+	QString club2=simplify_club_name (p2.club);
+
+	if (club1<club2) return true;
+	if (club1>club2) return false;
+	if (p1.registration<p2.registration) return true;
+	if (p1.registration>p2.registration) return false;
+	return false;
+}
+
+// ******************
+// ** ObjectModels **
+// ******************
+
+int Plane::DefaultObjectModel::columnCount () const
+{
+	return 9;
+}
+
+QVariant Plane::DefaultObjectModel::displayHeaderData (int column) const
+{
+	switch (column)
+	{
+		case 0: return "Kennzeichen";
+		case 1: return "Wettbewerbskennzeichen";
+		case 2: return "Typ";
+		case 3: return "Gattung";
+		case 4: return "Sitze";
+		case 5: return "Verein";
+		case 6: return "Bemerkungen";
+		// TODO remove from DefaultItemModel?
+		case 7: return "ID";
+		case 8: return "Editierbar";
+	}
+
+	assert (false);
+	return QVariant ();
+}
+
+QVariant Plane::DefaultObjectModel::displayData (const Plane &object, int column) const
+{
+	switch (column)
+	{
+		case 0: return object.registration;
+		case 1: return object.competitionId;
+		case 2: return object.type;
+		case 3: return categoryText(object.category, lsTable);
+		case 4: return object.numSeats>=0?QVariant (object.numSeats):QVariant ("?");
+		case 5: return object.club;
+		case 6: return object.comments;
+		case 7: return object.id;
+		case 8: return object.editable;
+	}
+
+	assert (false);
+	return QVariant ();
+}
+
+QString Plane::toString () const
+{
+	return QString ("id=%1, registration=%2, competitionId=%3, type=%4, club=%5, category=%6, seats=%7")
+		.arg (id)
+		.arg (registration)
+		.arg (competitionId)
+		.arg (type)
+		.arg (club)
+		.arg (numSeats)
+		.arg (categoryText (category, lsLong))
+		;
 }

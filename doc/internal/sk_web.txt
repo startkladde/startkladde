@@ -1,4 +1,0 @@
-Potentielle Race condition: Redirect geschickt, wenn session-Datei noch nicht
-geschlossen. 
-Lösung: session schließen, bevor man anfängt, das Dokument auszugeben.
-

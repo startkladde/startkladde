@@ -1,0 +1,5 @@
+0->1:
+  - convert to utf8/utf8_unicode_ci
+  - transfer from ... to ..._temp, then rename ..._temp to ...
+  - create towpilot columns
+   

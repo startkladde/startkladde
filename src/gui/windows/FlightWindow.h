@@ -1,197 +1,451 @@
 #ifndef _FlightWindow_h
 #define _FlightWindow_h
 
-#include <cstdio>
-#include <unistd.h>
+/*
+ * Remake:
+ *   - TODO Completer: complete to proper case; drop down and inline completion
+ *     Failing complete-to-proper-case: set the proper case on editing
+ *     finished.
+ *   - TODO Invalid launch type preserved.
+ *     - in flightToFields, create and set an "unknown" entry and store the
+ *       original
+ *     - in determineFlight, if the entry is unknown, use the original value
+ *     - in updateErrors, addObject as non-error
+ *     - in checkFlightPhase1, exclude from error check
+ *   - TODO Make sure modless dialogs work (and control returns immediately)
+ *   - TODO Handle simultaneous flight editing and manipulation from main window
+ *   - TODO Do we need to check the desktop size?
+ *     (QApplication::desktop ())->availableGeometry ().height ()
+ *   - TODO Leaving towflight with no end time should be OK
+ *   - TODO Create flight on day other than today => no "now"/"later" buttons
+ *   - TODO Towflight mode on non-airtow: set how? Different from stable.
+ *   - TODO Partial names working? Especially: error display
+ *   - TODO in updateErrors, set the focus to the uppermost error widget, not the
+ *     first one found
+ *   - TODO in updateErrors, the highlighed labels for person errors may be first
+ *     name, last name, or person
+ *   - TODO make time zone safe
+ *   - TODO determinePerson uses first/last name order, should be last/first
+ *   - TODO determinePerson: preselection based on the club of the plane or student
+ *     (if person unique within club); display text "Club of the plane" instead
+ *     of "Matching club"
+ *   - TODO Clean up method declarations
+ *   - TODO When adding a new plane/person on flight creation, immediately get it
+ *     from the database and show the registration/correct name (it might have
+ *     been changed), even if on a subsequent choice the user aborts
+ *   - TODO When there is only one first name or only one last name in the
+ *     database, it is always filled in when tabbing over the person fields,
+ *     even if the other field is empty
+ *
+ *
+ * Further improvements:
+ *   - improve buttons. For example, when editing a flight and removing the
+ *     "landed" flag, can there be a "land now" button? That way, there would
+ *     be no difference between editing and creating a flight, as long as the
+ *     fields are equal. Does it matter that the flight already has values for
+ *     these fields when editing?
+ *     One implication is that the mode is not sufficient to determine whether
+ *     the button should be "launch now" or "land now", resp. later.
+ *     Note that create mode *is* different from edit mode, for example the
+ *     automatic selection of launch type/airfields.
+ *   - addObject a calendar to the date input
+ *   - addObject a button to set the launch/landing time to the current time
+ *   - Add option to allow, but not require the towpilot
+ *   - The sizeHint for the timeEdits seems to be too low by 1 pixel. This is
+ *     solved by a hack in showEvent. It worked in the old version of this
+ *     dialog, where the row spacing was set instead of the label's height.
+ *   - "Launch now" should set the launch time, even if there are errors.
+ *   - On flight mode change, change the airfields only if they haven't been
+ *     manually edited.
+ *   - Read-only mode (modeDisplay) for non-editable flights
+ *   - If the plane is unknown and the user aborts, set the focus to the
+ *     appropriate registration input
+ *   - For the error checking on accepting a flight, use the error checking
+ *     method provieded by the Flight class (probably not all errors can be
+ *     checked that way).
+ *   - On editing, addObject a currently-flying test, at least for the case where
+ *     a launch time has been added
+ *   - Move more conditions to the Plane, for example canDoSelfLaunch, ...
+ *   - Launch type "Other": comment should not be empty (warning if it is)
+ *   - Warning, when date changed
+ *   - Allow new flights only for current date and displayed date
+ *   - Preserve unknown plane/person (e. g. hide input field, addObject "Unknown"
+ *     label and "Change" button)
+ *
+ * Fixed bugs:
+ *   - Edit prepared coming flight, activate "Landed" => destination set to
+ *     departure value.
+ *   - Edit flight, change plane to non-existent => error "no plane specified"
+ *   - Wrong copilot set on repeating flights
+ *
+ *
+ *
+ * Aktion Modus  Zeiten   |    Buttons (1)                   Zeitfelder      Bemerkung
+ * -----------------------+----------------------------------------------------------------------
+ * Neu    lokal  -        |    Jetzt/später starten          +Automatisch    Normal lokal
+ * Neu    lokal  Start    |    Jetzt/später landen oder OK   ±Automatisch    Start nachtragen (old: OK)
+ * Neu    lokal  Lande    |    OK                            ±Automatisch    Fehler
+ * Neu    lokal  Beide    |    OK                            -Automatisch    Nachtragen
+ *                        |
+ * Neu    kommt  -        |    Jetzt/später landen           +Automatisch    Normal kommt
+ * Neu    kommt  Lande    |    OK                            -Automatisch    Nachtragen kommt
+ *                        |
+ * Neu    geht   -        |    Jetzt/Später starten          +Automatisch    Normal geht
+ * Neu    geht   Start    |    OK                            -Automatisch    Nachtragen geht
+ * (1) Now/later only if date==today; determined by isNowActionPossible
+ *
+ * Aktion Modus  Flags    |    Buttons                       Zeitfelder      Bemerkung
+ * -----------------------+----------------------------------------------------------------------
+ * Edit   lokal  -        |    OK                            Gestartet/l     Vorbereitet
+ * Edit   lokal  Start    |    OK                            Gestartet/l     Fliegt
+ * Edit   lokal  Lande    |    OK                            Gestartet/l     Fehler
+ * Edit   lokal  Beide    |    OK                            Gestartet/l     Gelandet
+ *                        |
+ * Edit   kommt  -        |    OK                            -Gelandet       Angekündigt
+ * Edit   kommt  Lande    |    OK                            +Gelandet       Gekommen
+ *                        |
+ * Edit   geht   -        |    OK                            -Gestartet      Vorbereitet geht
+ * Edit   geht   Start    |    OK                            +Gestartet      Gegangen
+ */
 
-#include <QFrame>
-#include <QPushButton>
-#include <QDateTimeEdit>
-#include <QMessageBox>
-#include <QValidator>
-#include <QDateEdit>
-#include <QListWidget>
-#include <QScrollArea>
-#include <QDesktopWidget>
+#include <QDialog>
+#include <QDate>
+#include <QList>
+
+#include "ui_FlightWindow.h"
 
 #include "src/dataTypes.h"
-#include "src/text.h"
-#include "src/db/DbEvent.h"
-#include "src/db/dbProxy.h"
-#include "src/db/Database.h"
-#include "src/gui/settings.h"
-#include "src/gui/spacing.h"
-#include "src/gui/widgets/SkComboBox.h"
-#include "src/gui/widgets/SkLabel.h"
-#include "src/gui/widgets/SkListWidget.h"
-#include "src/gui/widgets/SkTextBox.h"
-#include "src/gui/widgets/LabelComboBox.h"
-#include "src/gui/widgets/SkTimeEdit.h"
-#include "src/gui/windows/SkDialog.h"
-#include "src/gui/windows/EntityEditWindow.h"
-#include "src/gui/windows/EntitySelectWindow.h"
-#include "src/logging/messages.h"
-#include "src/model/Flight.h"
-#include "src/model/Plane.h"
+#include "src/config/Options.h"
+#include "src/db/DataStorage.h"
+#include "src/db/dbTypes.h"
+#include "src/model/LaunchType.h"
 
-#define NUM_FIELDS 25
+class Flight;
 
-enum flight_editor_mode { fe_none, fe_create, fe_edit };
+// We want to use a switch so the compiler can warn us if we didn't handle a
+// value. We still provide a default value (outside of the switch statement!)
+// instead of throwing an assertion. We use a macro to be able to write in in
+// on line and still use a switch.
+#define EDITOR_MODE_RETURN(createValue, editValue, defaultValue) do { switch (mode) { \
+	case modeCreate: return createValue; \
+	case modeEdit: return editValue; \
+	} return defaultValue; } while (0)
 
-class FlightWindow:public SkDialog
+class FlightWindow: public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 	public:
-		FlightWindow (QWidget *parent, Database *_db, const char *name=0, bool modal=FALSE, WFlags f=0, QObject *status_dialog=NULL);
+		// *** Types
+		enum Mode { modeCreate, modeEdit };
+
+		class AbortedException: public std::exception {};
+
+
+		// *** Construction
+		FlightWindow (QWidget *parent, FlightWindow::Mode mode, DataStorage &dataStorage, Qt::WindowFlags flags=0);
 		~FlightWindow ();
 
-		// TODO das gehoert privat.
-		int go (flight_editor_mode, Flight *, QDate *);
+		// *** Setup
+		void fillData ();
 
-		void populate_lists ();
-		void read_db ();
-
-		int edit_flight (Flight *f);
-		int create_flight (QDate *date_to_use=NULL);
-		int duplicate_flight (Flight *vorlage);
-
-		flight_editor_mode get_mode () { return mode; }
-		Flight *get_flight_buffer () { return flight; }
-
-	private slots:
-		void slot_ok ();
-		void slot_later ();
-		void slot_cancel ();
-
-		void slot_registration ();
-		void slot_registration_in ();
-		void slot_flugtyp (int ind);
-		void slot_pilot_vn ();
-		void slot_pilot_nn ();
-		void slot_begleiter_vn ();
-		void slot_begleiter_nn ();
-		void slot_towpilot_vn ();
-		void slot_towpilot_nn ();
-		void slot_modus (int ind);
-		void slot_startart (int ind);
-		void slot_registration_sfz ();
-		void slot_registration_sfz_in ();
-		void slot_modus_sfz (int ind);
-		void slot_gestartet ();
-		void slot_startzeit ();
-		void slot_gelandet ();
-		void slot_landezeit ();
-		void slot_sfz_gelandet ();
-		void slot_landezeit_sfz ();
-		void slot_startort ();
-		void slot_zielort ();
-		void slot_zielort_sfz ();
-		void slot_landungen ();
-		void slot_datum ();
-		void slot_bemerkung ();
-		void slot_abrechnungshinweis ();
-
-		void setup_controls (bool init=false, bool read_only=false, bool repeat=false);
-		void accept_date ();
+		// *** Invocation
+		static void createFlight (QWidget *parent, DataStorage &dataStorage, QDate date);
+		static void repeatFlight (QWidget *parent, DataStorage &dataStorage, const Flight &original, QDate date);
+		static void editFlight   (QWidget *parent, DataStorage &dataStorage, Flight &flight);
 
 	protected:
-		virtual void done (int);
+		// Input field data
+		int fillNames (QStringList (DataStorage::*fullListMethod)(), QStringList (DataStorage::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget);
+		db_id fillFirstNames  (bool active, QComboBox *target, const QString &lastName, bool preserveTarget);
+		db_id fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget);
+
+
+		// *** Input values
+		// The values returned by this function are only meaningful if the
+		// corresponding field is active. This can be determined by the
+		// isXActive methods.
+		QString    getCurrentRegistration                 () { return ui.registrationInput->currentText (); }
+		FlightType getCurrentFlightType                   () { return (FlightType)ui.flightTypeInput->currentItemData ().toInt (); }
+		//
+		QString    getCurrentPilotLastName                () { return ui.pilotLastNameInput->currentText (); }
+		QString    getCurrentPilotFirstName               () { return ui.pilotFirstNameInput->currentText (); }
+		QString    getCurrentCopilotLastName              () { return ui.copilotLastNameInput->currentText (); }
+		QString    getCurrentCopilotFirstName             () { return ui.copilotFirstNameInput->currentText (); }
+		//
+		FlightMode getCurrentFlightMode                   () { return (FlightMode)ui.flightModeInput->currentItemData ().toInt(); }
+		db_id      getCurrentLaunchTypeId                 () { return ui.launchTypeInput->currentItemData ().toInt(); }
+		//
+		QString    getCurrentTowplaneRegistration         () { return ui.towplaneRegistrationInput->currentText (); }
+		QString    getCurrentTowpilotLastName             () { return ui.towpilotLastNameInput->currentText(); }
+		QString    getCurrentTowpilotFirstName            () { return ui.towpilotFirstNameInput->currentText (); }
+		FlightMode getCurrentTowflightMode                () { return (FlightMode)ui.towflightModeInput->currentItemData ().toInt(); }
+		//
+		QTime      getCurrentLaunchTime                   () { return ui.launchTimeInput->time (); }
+		QTime      getCurrentLandingTime                  () { return ui.landingTimeInput->time (); }
+		QTime      getCurrentTowflightLandingTime         () { return ui.towflightLandingTimeInput->time (); }
+		//
+		QString    getCurrentDepartureAirfield            () { return ui.departureAirfieldInput->currentText(); }
+		QString    getCurrentDestinationAirfield          () { return ui.destinationAirfieldInput->currentText (); }
+		QString    getCurrentTowflightDestinationAirfield () { return ui.towflightDestinationAirfieldInput->currentText(); }
+		int        getCurrentNumLandings                  () { return ui.numLandingsInput->value (); }
+		//
+		QString    getCurrentComment                      () { return ui.commentInput->text(); }
+		QString    getCurrentAccountingNote               () { return ui.accountingNoteInput->currentText(); }
+		QDate      getCurrentDate                         () { return ui.dateInput->date (); }
+
+		// *** Input value frontends
+		/*
+		 * The conditions for whether a field is active or not have to be
+		 * checked in several places, at least for field visiblilty and for
+		 * accepting the flight. In order to avoid code duplication, there are
+		 * methods to determine wheter the fields are active for the current
+		 * input values.
+		 * As several field visiblities depend on the same input value (e. g.
+		 * launch time and towplane depend on the launch type), values will be
+		 * read from the fields and/or data storage several times. This should
+		 * not be a problem, but could be solved by allowing the caller to pass
+		 * a parameter which will be used instead of calling getCurrentX.
+		 * Note that the copilot input is active even for single seated planes
+		 * because that information may be unreliable. There is a warning for
+		 * that, though.
+		 */
+
+		/**
+		 * Gets the currently selected launch type from the database.
+		 *
+		 * @return the currently selected launch type
+		 * @throw DataStorage::NotFoundException if there is no such launch
+		 *        type, or none is selected
+		 */
+		LaunchType getCurrentLaunchType () { return dataStorage.getObject<LaunchType> (getCurrentLaunchTypeId ()); }
+		bool isCurrentLaunchTypeValid () { return id_valid (getCurrentLaunchTypeId ()); }
+
+		bool currentStartsHere   () {       return isFlightModeActive    () && starts_here (getCurrentFlightMode ()); }
+		bool currentLandsHere    () {       return isFlightModeActive    () && lands_here (getCurrentFlightMode ()); }
+		bool currentTowLandsHere () {       return isTowflightModeActive () && lands_here (getCurrentTowflightMode ()); }
+		bool currentIsAirtow     ();
+
+
+
+		// *** Field active-ness
+		bool isRegistrationActive                 () { return true; }
+		bool isPlaneTypeActive                    () { return true; }
+		bool isFlightTypeActive                   () { return true; }
+		//
+		bool isPilotActive                        () { return true; }
+		bool isCopilotActive                      () { return flightTypeCopilotRecorded (getCurrentFlightType ()); } // Does not depend on plane, see comments above
+		//
+		bool isFlightModeActive                   () { return true; }
+		bool isLaunchTypeActive                   () { return currentStartsHere (); }
+		//
+		// No exception thrown because if the launch type is not valid,
+		bool isTowplaneRegistrationActive         ();
+		bool isTowplaneTypeActive                 () { return currentIsAirtow (); }
+		bool isTowpilotActive                     () { return currentIsAirtow () && opts.record_towpilot; }
+		bool isTowflightModeActive                () { return currentIsAirtow (); }
+		//
+		bool isLaunchActive                       () { return currentStartsHere (); }
+		bool isLaunchTimeActive                   () { return isLaunchActive () && getTimeFieldActive (ui.launchTimeCheckbox->isChecked ()); }
+		bool isLandingActive                      () { return currentLandsHere (); }
+		bool isLandingTimeActive                  () { return isLandingActive () && getTimeFieldActive (ui.landingTimeCheckbox->isChecked ()); }
+		bool isTowflightLandingActive             () { return currentIsAirtow (); } // Even if mode==leaving - it's the tow end time in that case.
+		bool isTowflightLandingTimeActive         () { return isTowflightLandingActive () && getTimeFieldActive (ui.towflightLandingTimeCheckbox->isChecked ()); }
+		//
+		bool isDepartureAirfieldActive            () { return true; }
+		bool isDestinationAirfildActive           () { return true; }
+		bool isTowflightDestinationAirfieldActive () { return currentIsAirtow (); }
+		bool isNumLandingsActive                  () { return true; } // (touch'n'gos are possible before leaving)
+		//
+		bool isCommentActive                      () { return true; }
+		bool isAccountingNodeActive               () { return true; }
+		bool isDateActive                         () { return true; }
+		//
+		// Error list is not active in create mode because there are invalid intermediate states during flight input
+		bool isErrorListActive                    () { EDITOR_MODE_RETURN (false, true, false); }
+
+
+		// Flight reading/writing
+		void personToFields (db_id id, SkComboBox *lastNameInput, SkComboBox *firstNameInput, QString incompleteLastName, QString incompleteFirstName);
+		void planeToFields (db_id id, SkComboBox *registrationInput, SkLabel *typeLabel);
+		void flightToFields (const Flight &flight, bool repeat);
+
+		Flight determineFlight (bool launchNow) throw (AbortedException);
+		Flight determineFlightBasic () throw ();
+		void determineFlightPlanes (Flight &flight) throw (AbortedException);
+		void determineFlightPeople (Flight &flight, const LaunchType *launchType) throw (AbortedException);
+		db_id determinePlane (QString registration, QString description, QWidget *widget) throw (AbortedException);
+		db_id determinePerson (bool active, QString firstName, QString lastName, QString description, bool required, QString &incompleteFirstName, QString &incompleteLastName, db_id originalId, QWidget *widget) throw (AbortedException);
+		db_id createNewPerson (QString lastName, QString firstName) throw (AbortedException);
+		void checkFlightPhase1 (const Flight &flight, bool launchNow) throw (AbortedException);
+		void checkFlightPhase2 (const Flight &flight, bool launchNow, const Plane *plane, const Plane *towplane, const LaunchType *launchType) throw (AbortedException);
+		void checkFlightPhase3 (const Flight &flight, bool launchNow, const Plane *plane, const Person *pilot, const Person *copilot, const Person *towpilot) throw (AbortedException);
+
+		void errorCheck (const QString &problem, QWidget *widget) throw (AbortedException);
+
+		bool checkBuffer ();
+
+		bool writeToDatabase (const Flight &flight);
+
+		// *** Input field setup
+		void  enableWidget (QWidget *widget, bool  enabled);
+		void disableWidget (QWidget *widget, bool disabled);
+		void  enableWidgets (QWidget *widget0, QWidget *widget1, bool  enabled);
+		void disableWidgets (QWidget *widget0, QWidget *widget1, bool disabled);
+
+		void updateSetupVisibility ();
+		void updateSetupLabels ();
+		void updateSetupButtons ();
+		void updateSetup ();
+
+		virtual void showEvent (QShowEvent *event);
+
+	private slots:
+		/*
+		 * Notes on change events:
+		 *   - Things to be done on a value change event:
+		 *       - Potentially change other fields' values
+		 *       - Update field states
+		 *       - Error checks
+		 *   - Errors may depend on multiple inputs and multiple errors may depend on
+		 *     the same input, so all errors are checked after each change
+		 *   - No data that requires user interaction (e. g. person selection if there
+		 *     are multiple people with the same name) is used in error checks (this
+		 *     does not apply to the error checks done after accepting).
+		 *   - All state updates are performed for all fields which may lead to any
+		 *     state change (see "Notes on field state updates")
+		 *   - Sometimes, a plane or person may be retrieved from the dataStorage by
+		 *     these function and then again by updateErrors. As dataStorage does not
+		 *     access the database, this should not be a performance problem.
+		 *   - A change can lead to several other fields being changed (e. g. mode ->
+		 *     departure, destination)
+		 *   - We don't want error checks/updates after every change
+		 *   - The user change slot calls xChanged and updateSetup and updateErrors
+		 */
+
+		// *** Input field value change events
+
+		// Use slots that are only called on user input if available (see above)
+
+		void on_registrationInput_editingFinished (const QString &text) { registrationChanged (text);  updateSetup (); updateErrors (); }
+		void on_flightTypeInput_activated         (int index)           { flightTypeChanged   (index); updateSetup (); updateErrors (); }
+		//
+		void on_pilotLastNameInput_editingFinished    (const QString &text) { pilotLastNameChanged    (text); updateSetup (); updateErrors (); }
+		void on_pilotFirstNameInput_editingFinished   (const QString &text) { pilotFirstNameChanged   (text); updateSetup (); updateErrors (); }
+		void on_copilotLastNameInput_editingFinished  (const QString &text) { copilotLastNameChanged  (text); updateSetup (); updateErrors (); }
+		void on_copilotFirstNameInput_editingFinished (const QString &text) { copilotFirstNameChanged (text); updateSetup (); updateErrors (); }
+		//
+		void on_flightModeInput_activated (int index) { flightModeChanged (index); updateSetup (); updateErrors (); }
+		void on_launchTypeInput_activated (int index) { launchTypeChanged (index); updateSetup (); updateErrors (); }
+		//
+		void on_towplaneRegistrationInput_editingFinished (const QString &text) { towplaneRegistrationChanged (text);  updateSetup (); updateErrors (); }
+		void on_towpilotLastNameInput_editingFinished     (const QString &text) { towpilotLastNameChanged     (text);  updateSetup (); updateErrors (); }
+		void on_towpilotFirstNameInput_editingFinished    (const QString &text) { towpilotFirstNameChanged    (text);  updateSetup (); updateErrors (); }
+		void on_towflightModeInput_activated              (int index)           { towflightModeChanged        (index); updateSetup (); updateErrors (); }
+		//
+		void on_launchTimeCheckbox_clicked            (bool checked)      { launchTimeCheckboxChanged           (checked); updateSetup (); updateErrors (); ui.launchTimeInput->setFocus (); }
+		void on_launchTimeInput_timeChanged           (const QTime &time) { launchTimeChanged                   (time);    updateSetup (); updateErrors (); } // This widget does not have a user-edit-only signal
+		void on_landingTimeCheckbox_clicked           (bool checked)      { landingTimeCheckboxChanged          (checked); updateSetup (); updateErrors (); ui.landingTimeInput->setFocus (); }
+		void on_landingTimeInput_timeChanged          (const QTime &time) { landingTimeChanged                  (time);    updateSetup (); updateErrors (); } // This widget does not have a user-edit-only signal
+		void on_towflightLandingTimeCheckbox_clicked  (bool checked)      { towflightLandingTimeCheckboxChanged (checked); updateSetup (); updateErrors (); ui.towflightLandingTimeInput->setFocus ();}
+		void on_towflightLandingTimeInput_timeChanged (const QTime &time) { towflightLandingTimeChanged         (time);    updateSetup (); updateErrors (); } // This widget does not have a user-edit-only signal
+		//
+		void on_departureAirfieldInput_editingFinished            (const QString &text) { departureAirfieldChanged            (text ); updateSetup (); updateErrors (); }
+		void on_destinationAirfieldInput_editingFinished          (const QString &text) { destinationAirfieldChanged          (text ); updateSetup (); updateErrors (); }
+		void on_towflightDestinationAirfieldInput_editingFinished (const QString &text) { towflightDestinationAirfieldChanged (text ); updateSetup (); updateErrors (); }
+		void on_numLandingsInput_valueChanged                     (int value)           { numLandingsChanged                  (value); updateSetup (); updateErrors (); } // This widget does not have a user-edit-only signal
+		//
+		void on_commentInput_editingFinished        ()                    { commentChanged        ();     updateSetup (); updateErrors (); }
+		void on_accountingNoteInput_editingFinished (const QString &text) { accountingNoteChanged (text); updateSetup (); updateErrors (); }
+		void on_dateInput_dateChanged               (const QDate   &date) { dateChanged           (date); updateSetup (); updateErrors (); }
+
+
+		// *** Value change handlers
+		void registrationChanged (const QString &text);
+		void flightTypeChanged (int index) { (void)index; }
+		//
+		void pilotLastNameChanged    (const QString &text) { selectedPilot  =fillFirstNames (isPilotActive (), ui.pilotFirstNameInput  , text, false); }
+		void pilotFirstNameChanged   (const QString &text) { selectedPilot  =fillLastNames  (isPilotActive (), ui.pilotLastNameInput   , text, false); }
+		void copilotLastNameChanged  (const QString &text) { selectedCopilot=fillFirstNames (isCopilotActive (), ui.copilotFirstNameInput, text, false); }
+		void copilotFirstNameChanged (const QString &text) { selectedCopilot=fillLastNames  (isCopilotActive (), ui.copilotLastNameInput , text, false); }
+		//
+		void flightModeChanged (int index);
+		void launchTypeChanged (int index);
+		//
+		void towplaneRegistrationChanged (const QString &text);
+		void towpilotLastNameChanged     (const QString &text) { selectedTowpilot=fillFirstNames (isTowpilotActive (), ui.towpilotFirstNameInput, text, false); }
+		void towpilotFirstNameChanged    (const QString &text) { selectedTowpilot=fillLastNames  (isTowpilotActive (), ui.towpilotLastNameInput , text, false); }
+		void towflightModeChanged        (int index) { (void)index; }
+		//
+		void launchTimeCheckboxChanged           (bool checked) { (void)checked; }
+		void launchTimeChanged                   (const QTime &time) { (void)time; }
+		void landingTimeCheckboxChanged          (bool checked);
+		void landingTimeChanged                  (const QTime &time) { (void)time; }
+		void towflightLandingTimeCheckboxChanged (bool checked);
+		void towflightLandingTimeChanged         (const QTime &time) { (void)time; }
+		//
+		void departureAirfieldChanged             (const QString &text) { (void)text; }
+		void destinationAirfieldChanged           (const QString &text) { (void)text; }
+		void towflightDestinationAirfieldChanged  (const QString &text) { (void)text; }
+		void numLandingsChanged                   (int value)           { (void)value; }
+		//
+		void commentChanged        ()                    { }
+		void accountingNoteChanged (const QString &text) { (void)text; }
+		void dateChanged           (const QDate   &date) { (void)date; }
+
+
+
+		// *** Button events
+		void on_okButton_clicked ();
+		void on_nowButton_clicked ();
+
 
 	private:
-		void set_time (bool use_time, bool *use_ziel, Time *zeit_ziel, QDate datum, QTime zeit);
-		void set_buttons (bool, QString aktion_text="", bool read_only=false);
-		bool person_anlegen (db_id *person_id, QString nachname, QString vorname, QString bezeichnung, bool force);
-		int widget_index (QWidget *w);
-		void enable_widget (int ind, bool en);
-		void enable_widget (QWidget *wid, bool en);
-		void fehler_eintragen (Flight *f, Plane *fz, Plane *sfz, bool move_focus=false);
-		void set_field_error (QWidget *, bool);
-		QColor get_default_color (QWidget *w);
-		QWidget *get_error_control (FlightError error);
+		QMultiMap<QWidget *, SkLabel *> widgetLabelMap;
 
-		flight_editor_mode mode;
-		Flight *flight;
-		Plane *selected_plane;
-		Plane *selected_towplane;
-		int anzahl_pilot, anzahl_begleiter, anzahl_towpilot;	// Kandidaten für Pilot/Begleiter/Schleppilot
-		db_id original_pilot_id, original_begleiter_id, original_towpilot_id;
-		QObject *status_dialog;
+		Ui::FlightWindowClass ui;
 
-		// TODO use list/QPtrList/...
-		SkLabel *label[NUM_FIELDS];
-		QWidget *edit_widget[NUM_FIELDS];
+		DataStorage &dataStorage;
+		const FlightWindow::Mode mode;
 
-		SkComboBox *edit_registration;
-		QLabel *edit_flugzeug_typ;
-		SkComboBox *edit_flug_typ;
-		lbl_cbox *edit_pilot_vn;
-		lbl_cbox *edit_pilot_nn;
-		lbl_cbox *edit_begleiter_vn;
-		lbl_cbox *edit_begleiter_nn;
-		lbl_cbox *edit_towpilot_vn;
-		lbl_cbox *edit_towpilot_nn;
-		SkComboBox *edit_startart;
-		SkComboBox *edit_registration_sfz;
-		QLabel *edit_typ_sfz;
-		SkComboBox *edit_modus;
-		SkComboBox *edit_modus_sfz;
-		SkTimeEdit *edit_startzeit;
-		SkTimeEdit *edit_landezeit;
-		SkTimeEdit *edit_landezeit_sfz;
-		SkComboBox *edit_startort;
-		SkComboBox *edit_zielort;
-		SkComboBox *edit_zielort_sfz;
-		QLineEdit *edit_landungen;
-		SkTextBox *edit_bemerkungen;
-		SkComboBox *edit_abrechnungshinweis;
-		QDateEdit *edit_datum;
-		QListWidget *edit_fehler;
-
-		QPushButton *but_ok, *but_cancel, *but_later;
-
-		bool lock_edit_slots;
-
-		bool accept_flight_data (bool spaeter=false);
-		void warning_message (const QString &);
-		bool check_flight (db_id *, db_id *, db_id *, db_id *, db_id *, bool, QWidget **error_control=NULL);
-		bool check_person (db_id *person_id, QString vorname, QString nachname, QString bezeichnung_n, QString bezeichnung_a, bool person_required=true, bool check_flying=true, db_id original_id=invalid_id, QString *preselection_club=NULL);
-		bool check_plane (db_id *plane_id, Plane *plane, QString registration, QString bezeichnung_n, QString bezeichnung_a, int seat_guess);
-		bool check_plane_flying (db_id plane_id, QString registration, QString description_n);
-
-		// TODO bessere Datenstrukturen...
-		QVector<db_id> startarten;	// Startart IDs, same indicies as in edit_startart
-		int startart_index (db_id sa);
-		int unknown_startart_index;
-		db_id original_startart;
-
-		QList <FlightMode> modi;
-		QList <FlightMode> sfz_modi;
-		int modus_index (FlightMode m);
-		int sfz_modus_index (FlightMode m);
-
-		QList<FlightType> flightTypes;
-		int flugtyp_index (FlightType t);
+		void updateErrors (bool setFocus=false);
+		QWidget *getErrorWidget (FlightError error);
 
 
-		void flug_eintragen (Flight *, bool);
-		void reset ();
-		void namen_aus_datenbank (lbl_cbox *vorname, lbl_cbox *nachname, lbl_cbox *vorname2=NULL, lbl_cbox *nachname2=NULL, lbl_cbox *vorname3=NULL, lbl_cbox *nachname3=NULL);
-		void namen_eintragen (lbl_cbox* vorname, lbl_cbox *nachname, NamePart quelle, int *, db_id *, bool preserve_target_text=false);
+		// In create mode, we have "Automatic" checkboxes which deativate the
+		// input fields, so they are active if the checkbox is not checked. In edit
+		// mode, we have "Departed"/"Landed" checkboxes which activate the input
+		// field.
+		bool getTimeFieldActive (bool checkboxValue) {	EDITOR_MODE_RETURN (!checkboxValue, checkboxValue, true); }
+		bool getTimeFieldCheckboxValue (bool active) { EDITOR_MODE_RETURN (!active, active, true); }
 
-		Database *db;
+		bool isNowActionPossible ();
 
-		bool disable_error_check;
+		bool labelHeightsSet;
 
-		QVBoxLayout *backgroundLayout;
-		QScrollArea *scrollArea;
-
-	public slots:
-		void slot_db_update (DbEvent *);
-
-	signals:
-		void dialog_finished (int);
+		// In addition to the data in the fields, we need to store some more
+		// values:
+		//   - the ID of the flight
+		//   - the ID of the planes
+		//   - the ID of the people
+		// The flight ID is required for updating the flight in the database
+		// after editing.
+		// The ID of the planes and people is required for error checks. They
+		// are updated on every change of the corresponding input fields. If a
+		// person is non-unique, the corresponding selectedX is set to invalid.
+		// Methods reading this value may want to look at the input fields to
+		// distinguish between unknown and unspecified people.
+		// Anyway, on accepting the flight, the correct values have to be
+		// determined, querying the user if necessary.
+		// The ID of the people is also required for preslection if there are
+		// multiple people with the same name.
+		// Note that a simpler implementation might be to use these values for
+		// preselection only (originalX instead of selectedX) and have
+		// determineFlightBasic read the values from the database if they are
+		// uniqe.
+		db_id originalFlightId;
+		db_id selectedPlane, selectedTowplane;
+		db_id selectedPilot, selectedCopilot, selectedTowpilot;
 };
 
-#endif
-
+#endif // FLIGHTWINDOW_H

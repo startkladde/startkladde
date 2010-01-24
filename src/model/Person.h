@@ -5,6 +5,7 @@
 
 #include "src/dataTypes.h"
 #include "src/model/Entity.h"
+#include "src/model/objectList/ObjectModel.h"
 
 // TODO: move to Person and change value names
 enum NamePart { nt_kein, nt_vorname, nt_nachname };
@@ -12,11 +13,21 @@ enum NamePart { nt_kein, nt_vorname, nt_nachname };
 class Person: public Entity
 {
 	public:
+		class DefaultObjectModel: public ObjectModel<Person>
+		{
+			virtual int columnCount () const;
+			virtual QVariant displayHeaderData (int column) const;
+			virtual QVariant displayData (const Person &object, int column) const;
+		};
+
 		Person ();
 		Person (QString, QString);
 		Person (QString, QString, QString, QString, QString, db_id p_id=0);
 		void dump () const;
 		virtual void output (std::ostream &stream, output_format_t format);
+
+		bool operator< (const Person &o) const;
+		bool operator== (const Person &o) const { return id==o.id; }
 
 		QString vorname;
 		QString nachname;
@@ -26,15 +37,20 @@ class Person: public Entity
 		QString landesverbands_nummer;
 
 
-		virtual QString bezeichnung (casus) const;
+		virtual QString getDescription (casus) const;
 		virtual QString name () const;
 		virtual QString pdf_name () const;
-		virtual QString text_name () const;
-		virtual QString tabelle_name () const;
+		virtual QString textName () const;
+		virtual QString tableName () const;
 
 		virtual QString get_selector_value (int column_number) const;
 		static QString get_selector_caption (int column_number);
+
+		static QString objectTypeDescription () { return "Person"; }
+		static QString objectTypeDescriptionDefinite () { return "die Person"; }
+		static QString objectTypeDescriptionPlural () { return "Personen"; }
+
+		QString toString () const;
 };
 
 #endif
-

@@ -23,10 +23,10 @@ class LaunchType:public Entity
 		void init ();
 		virtual void output (std::ostream &stream, output_format_t format);
 
-		virtual QString bezeichnung (casus) const;
+		virtual QString getDescription (casus) const;
 		virtual QString name () const;
-		virtual QString text_name () const;
-		virtual QString tabelle_name () const;
+		virtual QString textName () const;
+		virtual QString tableName () const;
 
 		virtual QString get_selector_value (int column_number) const;
 		static QString get_selector_caption (int column_number);
@@ -35,7 +35,8 @@ class LaunchType:public Entity
 		bool towplane_known () const { return !towplane.isEmpty (); }
 
 		QString list_text () const;
-		QString get_csv_string () const { return short_description; }
+
+		static bool nameLessThan (const LaunchType &l1, const LaunchType &l2) { return l1.description<l2.description; }
 
 		bool ok;
 
@@ -52,6 +53,10 @@ class LaunchType:public Entity
 		ro_property (startart_type, type);			// sat_winch, sat_airtow, sat_other, sat_self
 #undef rw_property
 #undef ro_property
+
+		static QString objectTypeDescription () { return "Startart"; }
+		static QString objectTypeDescriptionDefinite () { return "die Startart"; }
+		static QString objectTypeDescriptionPlural () { return "Startarten"; }
 };
 
 #endif

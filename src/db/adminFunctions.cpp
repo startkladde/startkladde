@@ -5,7 +5,7 @@
 #include "src/db/DbColumn.h"
 #include "src/db/DbTable.h"
 
-void initialize_database (Database &root_db, QString _username, QString _userpass, QString _database, QString _sk_admin_name, QString _sk_admin_password)
+void initialize_database (Database &root_db, QString server, int port, QString _username, QString _userpass, QString _database, QString _sk_admin_name, QString _sk_admin_password)
 	throw (Database::ex_init_failed, Database::ex_not_connected, Database::ex_access_denied, Database::ex_parameter_error)
 	// This function initializes the database for use with the program.
 	// This assumes that root_db has user data for root and is connected.
@@ -32,14 +32,10 @@ void initialize_database (Database &root_db, QString _username, QString _userpas
 	QString query;
 	// User database connection for testing.
 	Database user_db;
-	user_db.set_connection_data (root_db.get_server (), root_db.get_port (), _username, _userpass);
-	user_db.set_database (_database);
 	user_db.display_queries=root_db.display_queries;
 
 	// sk_admin database connection for testing.
 	Database sk_admin_db;
-	sk_admin_db.set_connection_data (root_db.get_server (), root_db.get_port (), _sk_admin_name, _sk_admin_password);
-	sk_admin_db.set_database (_database);
 	sk_admin_db.display_queries=root_db.display_queries;
 
 	// -1. Paramters
@@ -85,7 +81,7 @@ void initialize_database (Database &root_db, QString _username, QString _userpas
 	try
 	{
 		output << "Checking if the user can connect to the server" << std::endl;
-		user_db.connect ();
+		user_db.connect (server, port, _username, _userpass);
 	}
 	catch (Database::ex_allocation_error &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
 	catch (Database::ex_connection_failed &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
@@ -112,7 +108,7 @@ void initialize_database (Database &root_db, QString _username, QString _userpas
 	try
 	{
 		output << "Checking if the admin can connect to the server" << std::endl;
-		sk_admin_db.connect ();
+		sk_admin_db.connect (server, port, _sk_admin_name, _sk_admin_password);
 	}
 	catch (Database::ex_allocation_error &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
 	catch (Database::ex_connection_failed &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
@@ -134,7 +130,7 @@ void initialize_database (Database &root_db, QString _username, QString _userpas
 
 	// Now check if the user can use the database.
 	output << "2a. Checking if the user can use the database" << std::endl;
-	try { user_db.use_db (); }
+	try { user_db.use_db (_database); }
 	catch (Database::ex_database_not_accessible &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
 	catch (Database::ex_insufficient_access &e) { throw Database::ex_init_failed (e.description ()); }
 	catch (Database::ex_database_not_found &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
@@ -144,7 +140,7 @@ void initialize_database (Database &root_db, QString _username, QString _userpas
 	// It must be possible for the admin to access the database (use $database).
 	// We created the database in step 2a, so we only have to check.
 	output << "2b. Checking if the admin can use the database" << std::endl;
-	try { sk_admin_db.use_db (); }
+	try { sk_admin_db.use_db (_database); }
 	catch (Database::ex_database_not_accessible &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
 	catch (Database::ex_insufficient_access &e) { throw Database::ex_init_failed (e.description ()); }
 	catch (Database::ex_database_not_found &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
@@ -279,15 +275,15 @@ void initialize_database (Database &root_db, QString _username, QString _userpas
 	output << "Database initialization succeeded" << std::endl;
 }
 
-void initialize_database (Database &root_db)
+void initialize_database (Database &root_db, QString server, int port, QString rootName, QString rootPassword)
 	throw (Database::ex_init_failed, Database::ex_access_denied, Database::ex_allocation_error, Database::ex_connection_failed, Database::ex_parameter_error)
-	// root_pass is not read from opts but is passed because it usually needs
+	// rootPassword is not read from opts but is passed because it usually needs
 	// to be asked from the user.
 {
 	try
 	{
-		root_db.connect ();
-		initialize_database (root_db, opts.username, opts.password, opts.database, opts.sk_admin_name, opts.sk_admin_password);
+		root_db.connect (server, port, rootName, rootPassword);
+		initialize_database (root_db, server, port, opts.username, opts.password, opts.database, opts.sk_admin_name, opts.sk_admin_password);
 		root_db.disconnect ();
 	}
 	// TODO huh?
