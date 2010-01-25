@@ -62,6 +62,22 @@ QString Person::name () const
 	return nachname+", "+vorname;
 }
 
+QString Person::full_name () const
+{
+	QString l=nachname; if (l.isEmpty ()) l="?";
+	QString f= vorname; if (f.isEmpty ()) f="?";
+
+	return f+" "+l;
+}
+
+QString Person::formal_name () const
+{
+	QString l=nachname; if (l.isEmpty ()) l="?";
+	QString f= vorname; if (f.isEmpty ()) f="?";
+
+	return l+", "+f;
+}
+
 QString Person::pdf_name () const
 	/*
 	 * Returns the name of the person in a form suitable for the PDF document.
@@ -207,4 +223,66 @@ QString Person::toString () const
 		.arg (club)
 		.arg (club_id)
 		;
+}
+
+
+// *******************
+// ** SQL interface **
+// *******************
+
+QString Person::dbTableName ()
+{
+	return "person_temp";
+}
+
+QString Person::selectColumnList ()
+{
+	return "id,nachname,vorname,verein,vereins_id,bemerkung";
+}
+
+Person Person::createFromQuery (const QSqlQuery &q)
+{
+	//	int index_firstName=query.record ().indexOf ("vorname");
+	Person p (
+		q.value (2).toString (),
+		q.value (1).toString (),
+		q.value (3).toString (),
+		q.value (4).toString (),
+		"",
+		q.value (0).toLongLong ()
+		);
+
+	p.comments=q.value (5).toString ();
+
+	return p;
+}
+
+QString Person::insertValueList ()
+{
+	return "(nachname,vorname,verein,vereins_id,bemerkung) values (?,?,?,?,?)";
+}
+
+QString Person::updateValueList ()
+{
+	return "nachname=?, vorname=?, verein=?, vereins_id=?, bemerkung=?";
+}
+
+void Person::bindValues (QSqlQuery &q) const
+{
+	q.addBindValue (nachname);
+	q.addBindValue (vorname);
+	q.addBindValue (club);
+	q.addBindValue (club_id);
+	q.addBindValue (comments);
+}
+
+
+QList<Person> Person::createListFromQuery (QSqlQuery &q)
+{
+	QList<Person> list;
+
+	while (q.next ())
+		list.append (createFromQuery (q));
+
+	return list;
 }

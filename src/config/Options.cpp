@@ -8,7 +8,7 @@
 #include <QTextStream>
 
 #include "src/version.h"
-#include "src/db/Database.h"
+#include "src/db/OldDatabase.h"
 #include "src/plugins/ShellPlugin.h"
 
 const QString default_home_config_filename=".startkladde.conf";
@@ -223,7 +223,7 @@ bool Options::parse_arguments (int argc, char *argv[])
 	return true;
 }
 
-bool Options::read_config_files (Database *db, QList<ShellPlugin *> *plugins, int argc, char *argv[])
+bool Options::read_config_files (OldDatabase *db, QList<ShellPlugin *> *plugins, int argc, char *argv[])
 	// db is only passed for startrten (TODO change something)
 	// Also reads command line arguments, if argc>0 (and a configuration file
 	// was read)
@@ -257,7 +257,7 @@ bool Options::read_config_files (Database *db, QList<ShellPlugin *> *plugins, in
 	return true;
 }
 
-bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugin *> *plugins)
+bool Options::read_config_file (QString filename, OldDatabase *db, QList<ShellPlugin *> *plugins)
 	// db is only passed for startarten (TODO change something)
 	// Returns whether the file existed.
 {

@@ -2,4 +2,8 @@
   - convert to utf8/utf8_unicode_ci
   - transfer from ... to ..._temp, then rename ..._temp to ...
   - create towpilot columns
-   
+  - rename columns to english
+  - remove bwlv column
+  - add id to user
+  - add launch types
+  - ..., see tickets

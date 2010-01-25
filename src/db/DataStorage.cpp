@@ -111,7 +111,7 @@ using namespace std;
 // ** Construction **
 // ******************
 
-DataStorage::DataStorage (Database &db):
+DataStorage::DataStorage (OldDatabase &db):
 	db (db), //workerThread ("DataStorage worker"),
 	currentState (stateOffline), worker (*this, 1000)
 {
@@ -1084,8 +1084,8 @@ void DataStorage::doConnect ()
 			db.connect (opts.server, opts.port, opts.username, opts.password);
 			connected=true;
 		}
-		catch (Database::ex_access_denied      ) { unusable=true; }
-		catch (Database::ex_connection_failed  ) { /* Keep trying */ }
+		catch (OldDatabase::ex_access_denied      ) { unusable=true; }
+		catch (OldDatabase::ex_connection_failed  ) { /* Keep trying */ }
 		// TODO other exceptions
 
 		// If we are not connected, wait one second before retrying
@@ -1106,14 +1106,14 @@ void DataStorage::doConnect ()
 				db.check_usability ();
 				checked=true;
 			}
-			catch (Database::ex_access_denied          ) { unusable=true; }
-			catch (Database::ex_database_not_found     ) { unusable=true; }
-			catch (Database::ex_database_not_accessible) { unusable=true; }
-			catch (Database::ex_insufficient_access    ) { unusable=true; }
-			catch (Database::ex_unusable               ) { unusable=true; }
-			catch (Database::ex_query_failed           ) { /* Keep trying */ }
-			catch (Database::ex_timeout                ) { /* Keep trying */ }
-			catch (Database::ex_connection_failed      ) { /* Keep trying */ }
+			catch (OldDatabase::ex_access_denied          ) { unusable=true; }
+			catch (OldDatabase::ex_database_not_found     ) { unusable=true; }
+			catch (OldDatabase::ex_database_not_accessible) { unusable=true; }
+			catch (OldDatabase::ex_insufficient_access    ) { unusable=true; }
+			catch (OldDatabase::ex_unusable               ) { unusable=true; }
+			catch (OldDatabase::ex_query_failed           ) { /* Keep trying */ }
+			catch (OldDatabase::ex_timeout                ) { /* Keep trying */ }
+			catch (OldDatabase::ex_connection_failed      ) { /* Keep trying */ }
 			// TODO other exceptions
 		}
 

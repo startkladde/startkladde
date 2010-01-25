@@ -44,7 +44,7 @@
 
 // TODO pass DataStorage instead of Database (?, depending on thread)
 // TODO better plugin list passing
-MainWindow::MainWindow (QWidget *parent, Database *db, QList<ShellPlugin *> &plugins) :
+MainWindow::MainWindow (QWidget *parent, OldDatabase *db, QList<ShellPlugin *> &plugins) :
 	QMainWindow (parent), dataStorage (*db), plugins (plugins), weatherWidget (NULL), weatherPlugin (NULL),
 			weatherDialog (NULL), flightList (this), contextMenu (new QMenu (this))
 {
@@ -1341,18 +1341,18 @@ bool MainWindow::initializeDatabase ()
 			// OK pressed
 			try
 			{
-				Database rootDatabase;
+				OldDatabase rootDatabase;
 				rootDatabase.display_queries = opts.display_queries;
 				initialize_database (rootDatabase, opts.server, opts.port, opts.root_name, rootPassword);
 			}
-			catch (Database::ex_access_denied &e)
+			catch (OldDatabase::ex_access_denied &e)
 			{
 				retry=true;
 				text=QString::fromUtf8 ("%1. Passwort für %2:")
 					.arg (e.description (true))
 					.arg (userText);
 			}
-			catch (Database::ex_init_failed &e)
+			catch (OldDatabase::ex_init_failed &e)
 			{
 //				db_error = e.description (true);
 				QMessageBox::critical (this, e.description (true), e.description (true),

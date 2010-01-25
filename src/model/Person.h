@@ -2,6 +2,7 @@
 #define _Person_h
 
 #include <QString>
+#include <QSqlQuery>
 
 #include "src/dataTypes.h"
 #include "src/model/Entity.h"
@@ -42,6 +43,8 @@ class Person: public Entity
 		virtual QString pdf_name () const;
 		virtual QString textName () const;
 		virtual QString tableName () const;
+		virtual QString full_name () const;
+		virtual QString formal_name () const;
 
 		virtual QString get_selector_value (int column_number) const;
 		static QString get_selector_caption (int column_number);
@@ -51,6 +54,15 @@ class Person: public Entity
 		static QString objectTypeDescriptionPlural () { return "Personen"; }
 
 		QString toString () const;
+
+		// SQL interface
+		static QString dbTableName ();
+		static QString selectColumnList ();
+		static Person createFromQuery (const QSqlQuery &query);
+		static QString insertValueList ();
+		static QString updateValueList ();
+		void bindValues (QSqlQuery &q) const;
+		static QList<Person> createListFromQuery (QSqlQuery &query);
 };
 
 #endif

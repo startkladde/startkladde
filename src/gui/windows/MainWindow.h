@@ -50,7 +50,7 @@
 
 class FlightSortFilterProxyModel;
 class QWidget;
-class Database;
+class OldDatabase;
 class ShellPlugin;
 class WeatherWidget;
 class WeatherDialog;
@@ -69,7 +69,7 @@ class MainWindow: public QMainWindow
 	Q_OBJECT
 
 	public:
-		MainWindow (QWidget *parent, Database *_db, QList<ShellPlugin *> &plugins);
+		MainWindow (QWidget *parent, OldDatabase *_db, QList<ShellPlugin *> &plugins);
 		~MainWindow ();
 
 	protected:

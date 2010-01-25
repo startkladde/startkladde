@@ -1,6 +1,6 @@
 #include "dbProxy.h"
 
-db_id schleppmaschine_flog (Database *db, db_id sa_id, Time t)
+db_id schleppmaschine_flog (OldDatabase *db, db_id sa_id, Time t)
 	/*
 	 * Proxy for db->plane_flying, taking a launch type (which should designate
 	 * an airtow) instead of an ID.
@@ -26,7 +26,7 @@ db_id schleppmaschine_flog (Database *db, db_id sa_id, Time t)
 	}
 }
 
-int schleppflugzeug_aus_startart (Database *db, Plane *fz, int sa_num)
+int schleppflugzeug_aus_startart (OldDatabase *db, Plane *fz, int sa_num)
 	/*
 	 * Proxy for db->get_plane_registration, taking a launch type (which should designate
 	 * an airtow) instead of an ID.

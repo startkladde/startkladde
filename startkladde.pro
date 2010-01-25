@@ -1,5 +1,6 @@
 CONFIG += qt debug
 QT += qt3support
+QT += sql
 TEMPLATE = app
 TARGET = 
 DEPENDPATH += . version
@@ -34,6 +35,7 @@ HEADERS += \
            src/db/DbTable.h \
            src/db/dbTypes.h \
            src/db/Database.h \
+           src/db/OldDatabase.h \
            src/db/DataStorage.h \
            src/db/DataStorageMonitor.h \
            src/db/DataStorageWorker.h \
@@ -125,6 +127,7 @@ SOURCES += \
            src/db/DbTable.cpp \
            src/db/dbTypes.cpp \
            src/db/Database.cpp \
+           src/db/OldDatabase.cpp \
            src/db/DataStorage.cpp \
            src/db/DataStorageMonitor.cpp \
            src/db/DataStorageWorker.cpp \

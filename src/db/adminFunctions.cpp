@@ -5,8 +5,8 @@
 #include "src/db/DbColumn.h"
 #include "src/db/DbTable.h"
 
-void initialize_database (Database &root_db, QString server, int port, QString _username, QString _userpass, QString _database, QString _sk_admin_name, QString _sk_admin_password)
-	throw (Database::ex_init_failed, Database::ex_not_connected, Database::ex_access_denied, Database::ex_parameter_error)
+void initialize_database (OldDatabase &root_db, QString server, int port, QString _username, QString _userpass, QString _database, QString _sk_admin_name, QString _sk_admin_password)
+	throw (OldDatabase::ex_init_failed, OldDatabase::ex_not_connected, OldDatabase::ex_access_denied, OldDatabase::ex_parameter_error)
 	// This function initializes the database for use with the program.
 	// This assumes that root_db has user data for root and is connected.
 	// If the database is half-initialized, it will be finished.
@@ -31,33 +31,33 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 
 	QString query;
 	// User database connection for testing.
-	Database user_db;
+	OldDatabase user_db;
 	user_db.display_queries=root_db.display_queries;
 
 	// sk_admin database connection for testing.
-	Database sk_admin_db;
+	OldDatabase sk_admin_db;
 	sk_admin_db.display_queries=root_db.display_queries;
 
 	// -1. Paramters
-	if (_username.isEmpty ()) throw Database::ex_parameter_error ("Benutzername nicht angegeben");
+	if (_username.isEmpty ()) throw OldDatabase::ex_parameter_error ("Benutzername nicht angegeben");
 	// Passwords may not be empty.
-	if (_userpass.isEmpty ()) throw Database::ex_parameter_error ("Kein Benutzerpasswort angegeben");
-	if (_database.isEmpty ()) throw Database::ex_parameter_error ("Datenbank nicht angegeben");
-	if (_sk_admin_name.isEmpty ()) throw Database::ex_parameter_error ("Adminstratorname nicht angegeben");
-	if (_sk_admin_password.isEmpty ()) throw Database::ex_parameter_error ("Kein Administratorpasswort angegeben");
+	if (_userpass.isEmpty ()) throw OldDatabase::ex_parameter_error ("Kein Benutzerpasswort angegeben");
+	if (_database.isEmpty ()) throw OldDatabase::ex_parameter_error ("Datenbank nicht angegeben");
+	if (_sk_admin_name.isEmpty ()) throw OldDatabase::ex_parameter_error ("Adminstratorname nicht angegeben");
+	if (_sk_admin_password.isEmpty ()) throw OldDatabase::ex_parameter_error ("Kein Administratorpasswort angegeben");
 
 	// 0. root connection
 	// We must already have connected.
 	output << "0. Checking root connection..." << std::endl;
-	if (!root_db.connected ()) throw Database::ex_not_connected ();
+	if (!root_db.connected ()) throw OldDatabase::ex_not_connected ();
 
 	// Furthermore, we need to get access to the "mysql" database. If we can't
 	// get it, that means that we are not root (or something different).
 	output << "Opening mysql database" << std::endl;
 	try { root_db.use_db ("mysql"); }
-	catch (Database::ex_database_not_accessible) { throw Database::ex_init_failed ("root-Datenbankzugriff nicht möglich"); }
-	catch (Database::ex_database_not_found) { throw Database::ex_init_failed ("Datenbank \"mysql\" nicht gefunden"); }
-	catch (Database::ex_insufficient_access &e) { throw Database::ex_init_failed (e.description ()); }
+	catch (OldDatabase::ex_database_not_accessible) { throw OldDatabase::ex_init_failed ("root-Datenbankzugriff nicht möglich"); }
+	catch (OldDatabase::ex_database_not_found) { throw OldDatabase::ex_init_failed ("Datenbank \"mysql\" nicht gefunden"); }
+	catch (OldDatabase::ex_insufficient_access &e) { throw OldDatabase::ex_init_failed (e.description ()); }
 
 	// 1a. user connection possible
 	// ======================
@@ -74,8 +74,8 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 	// because the tables might not exist yet and MySQL does not allow this.
 
 	output << "1a. Granting the user access to the database..." << std::endl;
-	if (root_db.grant ("SELECT", _database+".*", _username, _userpass)!=db_ok) throw Database::ex_init_failed ("Fehler bei Query");
-	if (root_db.flush_privileges ()!=db_ok) throw Database::ex_init_failed ("Fehler bei Query");
+	if (root_db.grant ("SELECT", _database+".*", _username, _userpass)!=db_ok) throw OldDatabase::ex_init_failed ("Fehler bei Query");
+	if (root_db.flush_privileges ()!=db_ok) throw OldDatabase::ex_init_failed ("Fehler bei Query");
 
 	// Check if we succeeded
 	try
@@ -83,14 +83,14 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 		output << "Checking if the user can connect to the server" << std::endl;
 		user_db.connect (server, port, _username, _userpass);
 	}
-	catch (Database::ex_allocation_error &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
-	catch (Database::ex_connection_failed &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
-	catch (Database::ex_access_denied &e)
+	catch (OldDatabase::ex_allocation_error &e) { output << "failed" << std::endl; throw OldDatabase::ex_init_failed (e.description ()); }
+	catch (OldDatabase::ex_connection_failed &e) { output << "failed" << std::endl; throw OldDatabase::ex_init_failed (e.description ()); }
+	catch (OldDatabase::ex_access_denied &e)
 	{
 		// Access still is not possible. This means that something is majorly
 		// wrong.
 		output << "failed" << std::endl;
-		throw Database::ex_init_failed (e.description ());
+		throw OldDatabase::ex_init_failed (e.description ());
 	}
 
 	// 1b. admin connection possible
@@ -101,8 +101,8 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 	//   - grant ALL on $database.* to $admin_name identified by $userpass
 
 	output << "1b. Granting the admin access to the database..." << std::endl;
-	if (root_db.grant ("ALL", _database+".*", _sk_admin_name, _sk_admin_password)!=db_ok) throw Database::ex_init_failed ("Fehler bei Query");
-	if (root_db.flush_privileges ()!=db_ok) throw Database::ex_init_failed ("Fehler bei Query");
+	if (root_db.grant ("ALL", _database+".*", _sk_admin_name, _sk_admin_password)!=db_ok) throw OldDatabase::ex_init_failed ("Fehler bei Query");
+	if (root_db.flush_privileges ()!=db_ok) throw OldDatabase::ex_init_failed ("Fehler bei Query");
 
 	// Check if we succeeded
 	try
@@ -110,14 +110,14 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 		output << "Checking if the admin can connect to the server" << std::endl;
 		sk_admin_db.connect (server, port, _sk_admin_name, _sk_admin_password);
 	}
-	catch (Database::ex_allocation_error &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
-	catch (Database::ex_connection_failed &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
-	catch (Database::ex_access_denied &e)
+	catch (OldDatabase::ex_allocation_error &e) { output << "failed" << std::endl; throw OldDatabase::ex_init_failed (e.description ()); }
+	catch (OldDatabase::ex_connection_failed &e) { output << "failed" << std::endl; throw OldDatabase::ex_init_failed (e.description ()); }
+	catch (OldDatabase::ex_access_denied &e)
 	{
 		// Access still is not possible. This means that something is majorly
 		// wrong.
 		output << "failed" << std::endl;
-		throw Database::ex_init_failed (e.description ());
+		throw OldDatabase::ex_init_failed (e.description ());
 	}
 
 	// 2a. User database access possible
@@ -126,14 +126,14 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 	// We gave the user access in step 1. Now we have to create the Table if it
 	// does not exist.
 	output << "2. Ensuring the database exists..." << std::endl;
-	if (root_db.create_database (_database)!=db_ok) throw Database::ex_init_failed ("Fehler beim Anlegen der Datenbank "+_database);
+	if (root_db.create_database (_database)!=db_ok) throw OldDatabase::ex_init_failed ("Fehler beim Anlegen der Datenbank "+_database);
 
 	// Now check if the user can use the database.
 	output << "2a. Checking if the user can use the database" << std::endl;
 	try { user_db.use_db (_database); }
-	catch (Database::ex_database_not_accessible &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
-	catch (Database::ex_insufficient_access &e) { throw Database::ex_init_failed (e.description ()); }
-	catch (Database::ex_database_not_found &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
+	catch (OldDatabase::ex_database_not_accessible &e) { output << "failed" << std::endl; throw OldDatabase::ex_init_failed (e.description ()); }
+	catch (OldDatabase::ex_insufficient_access &e) { throw OldDatabase::ex_init_failed (e.description ()); }
+	catch (OldDatabase::ex_database_not_found &e) { output << "failed" << std::endl; throw OldDatabase::ex_init_failed (e.description ()); }
 
 	// 2b. Admin database access possible
 	// ==================================
@@ -141,9 +141,9 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 	// We created the database in step 2a, so we only have to check.
 	output << "2b. Checking if the admin can use the database" << std::endl;
 	try { sk_admin_db.use_db (_database); }
-	catch (Database::ex_database_not_accessible &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
-	catch (Database::ex_insufficient_access &e) { throw Database::ex_init_failed (e.description ()); }
-	catch (Database::ex_database_not_found &e) { output << "failed" << std::endl; throw Database::ex_init_failed (e.description ()); }
+	catch (OldDatabase::ex_database_not_accessible &e) { output << "failed" << std::endl; throw OldDatabase::ex_init_failed (e.description ()); }
+	catch (OldDatabase::ex_insufficient_access &e) { throw OldDatabase::ex_init_failed (e.description ()); }
+	catch (OldDatabase::ex_database_not_found &e) { output << "failed" << std::endl; throw OldDatabase::ex_init_failed (e.description ()); }
 
 	// 3. All tables exist
 	// There are a number of tables which have to exist for the database to be
@@ -160,7 +160,7 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 
 	// Get a list of tables that are present.
 	QStringList tables_present;
-	if (user_db.list_tables (tables_present)!=db_ok) throw Database::ex_init_failed ("Fehler beim Listen der Tabellen");
+	if (user_db.list_tables (tables_present)!=db_ok) throw OldDatabase::ex_init_failed ("Fehler beim Listen der Tabellen");
 	QStringList::const_iterator present_end=tables_present.end ();
 	QStringList::const_iterator present_begin=tables_present.begin ();
 
@@ -170,7 +170,7 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 		output << "Switching to the database" << std::endl;
 		root_db.use_db (_database);
 	}
-	catch (...) { throw Database::ex_init_failed ("Unbekannter Fehler (Schritt 3)"); }
+	catch (...) { throw OldDatabase::ex_init_failed ("Unbekannter Fehler (Schritt 3)"); }
 
 	// Create the missing tables
 	QStringList::const_iterator required_end=tables_required.end ();
@@ -182,7 +182,7 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 			output << "missing. Creating it." << std::endl;
 
 			dbTable tab=user_db.get_table_information (*it, true);
-			if (root_db.create_table (tab)!=db_ok) throw Database::ex_init_failed ("Fehler beim Anlegen der Tabelle "+tab.name);
+			if (root_db.create_table (tab)!=db_ok) throw OldDatabase::ex_init_failed ("Fehler beim Anlegen der Tabelle "+tab.name);
 		}
 		else
 		{
@@ -211,9 +211,9 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 		end=writeable.end ();
 		for (QStringList::const_iterator it=writeable.begin (); it!=end; ++it)
 			if (root_db.grant ("insert,update,delete", _database+"."+*it, _username)!=db_ok)
-				throw Database::ex_init_failed ("Fehler bei Query");
+				throw OldDatabase::ex_init_failed ("Fehler bei Query");
 
-		if (root_db.flush_privileges ()!=db_ok) throw Database::ex_init_failed ("Fehler bei Query");
+		if (root_db.flush_privileges ()!=db_ok) throw OldDatabase::ex_init_failed ("Fehler bei Query");
 	}
 	// ADD: check for success?
 
@@ -231,7 +231,7 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 
 		// columns_present/_begin/_end: the columns that we have
 		QList<DbColumn> columns_present;
-		if (user_db.list_columns (columns_present, *required_table_name)!=db_ok) throw Database::ex_init_failed ("Fehler beim Listen der Spalten in "+*required_table_name);
+		if (user_db.list_columns (columns_present, *required_table_name)!=db_ok) throw OldDatabase::ex_init_failed ("Fehler beim Listen der Spalten in "+*required_table_name);
 		QList<DbColumn>::const_iterator columns_present_begin=columns_present.begin ();
 		QList<DbColumn>::const_iterator columns_present_end=columns_present.end ();
 
@@ -260,14 +260,14 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 				// There is no column with that name
 				output << "Column missing: " << (*required_column).name << ". Adding it." << std::endl;
 
-				if (root_db.add_column (*required_table_name, *required_column)!=db_ok) throw Database::ex_init_failed ("Fehler bei Query");
+				if (root_db.add_column (*required_table_name, *required_column)!=db_ok) throw OldDatabase::ex_init_failed ("Fehler bei Query");
 			}
 			else if ((*col).type!=(*required_column).type || (*col).length<(*required_column).length)
 			{
 				// The type does not match or the field is too short
 				output << "Column type mismatch: " << (*required_column).name << " is of type " << (*col).type_string () << " but should be " << (*required_column).type_string () << ". Changing it." << std::endl;
 
-				if (root_db.modify_column (*required_table_name, *required_column)!=db_ok) throw Database::ex_init_failed ("Fehler bei Query");
+				if (root_db.modify_column (*required_table_name, *required_column)!=db_ok) throw OldDatabase::ex_init_failed ("Fehler bei Query");
 			}
 		}
 	}
@@ -275,8 +275,8 @@ void initialize_database (Database &root_db, QString server, int port, QString _
 	output << "Database initialization succeeded" << std::endl;
 }
 
-void initialize_database (Database &root_db, QString server, int port, QString rootName, QString rootPassword)
-	throw (Database::ex_init_failed, Database::ex_access_denied, Database::ex_allocation_error, Database::ex_connection_failed, Database::ex_parameter_error)
+void initialize_database (OldDatabase &root_db, QString server, int port, QString rootName, QString rootPassword)
+	throw (OldDatabase::ex_init_failed, OldDatabase::ex_access_denied, OldDatabase::ex_allocation_error, OldDatabase::ex_connection_failed, OldDatabase::ex_parameter_error)
 	// rootPassword is not read from opts but is passed because it usually needs
 	// to be asked from the user.
 {
@@ -287,9 +287,9 @@ void initialize_database (Database &root_db, QString server, int port, QString r
 		root_db.disconnect ();
 	}
 	// TODO huh?
-	catch (Database::ex_not_connected)
+	catch (OldDatabase::ex_not_connected)
 	{
-		throw Database::ex_connection_failed ();
+		throw OldDatabase::ex_connection_failed ();
 	}
 }
 

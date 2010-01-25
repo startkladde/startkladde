@@ -4,10 +4,11 @@
 
 #include "src/text.h"
 #include "src/config/Options.h"
-#include "src/db/Database.h"
+#include "src/db/OldDatabase.h"
 #include "src/gui/windows/MainWindow.h"
 #include "src/gui/windows/SplashScreen.h"
 #include "src/plugins/ShellPlugin.h"
+#include "src/db/Database.h"
 
 // Testen des Wetterplugins
 //#include "WeatherDialog.h"
@@ -23,6 +24,57 @@ void display_help ()
 	Options::display_options ("    ");
 }
 
+#include "src/model/Person.h"
+
+
+void test_database ()
+{
+	Database db;
+
+	bool ok=db.open ();
+
+	if (!ok)
+	{
+		std::cout << "Database failed to open: " << db.lastError ().text () << std::endl;
+		return;
+	}
+
+	std::cout << std::endl;
+	std::cout << "Count people: " << db.countObjects<Person> () << std::endl;
+
+	std::cout << std::endl;
+    Person p ("Eimer", "Laber", "EDV", "", "", invalid_id);
+    db_id create_id;
+    std::cout << "Create person: " << (create_id=db.createObject (p)) << std::endl;
+
+	std::cout << std::endl;
+    std::cout << "Get person" << std::endl;
+    Person person=db.getObject<Person> (1);
+   	std::cout << person.toString() << std::endl;
+
+   	std::cout << std::endl;
+   	QString temp=person.nachname;
+   	person.nachname=person.vorname;
+   	person.vorname=temp;
+   	std::cout << "Update person: " << db.updateObject (person) << std::endl;
+
+	std::cout << std::endl;
+	std::cout << "Count people: " << db.countObjects<Person> () << std::endl;
+
+	std::cout << std::endl;
+	std::cout << "Get people" << std::endl;
+    foreach (const Person &person, db.getObjects<Person> ())
+    	std::cout << person.toString () << std::endl;
+
+	std::cout << std::endl;
+    std::cout << "Delete person" << std::endl;
+    db.deleteObject<Person> (create_id);
+
+	std::cout << std::endl;
+	std::cout << "Person 1 exists: " << db.objectExists<Person> (1) << std::endl;
+	std::cout << "Person 2 exists: " << db.objectExists<Person> (2) << std::endl;
+}
+
 int main (int argc, char **argv)
 	/*
 	 * Starts the startkladde program.
@@ -33,6 +85,9 @@ int main (int argc, char **argv)
 	 */
 {
 	opts.parse_arguments (argc, argv);
+	opts.read_config_files (NULL, NULL, argc, argv);
+
+	test_database (); return 0;
 
 	// DbEvents are used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
@@ -40,7 +95,7 @@ int main (int argc, char **argv)
 	qRegisterMetaType<DbEvent> ("DbEvent");
 	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
 
-	Database db;
+	OldDatabase db;
 	QList<ShellPlugin *> plugins;
 
 	if (opts.need_display ())
