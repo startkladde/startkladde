@@ -9,6 +9,11 @@ Entity::Entity ()
 	editable=true;
 }
 
+Entity::Entity (db_id id)
+{
+	this->id=id;
+}
+
 Entity::~Entity ()
 	/*
 	 * Cleans up a Entity instance.

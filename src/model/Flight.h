@@ -44,6 +44,7 @@ class Flight
 {
 	public:
 		Flight ();
+		Flight (db_id id);
 
 		bool operator< (const Flight &o) const;
 		static bool lessThan (Flight *a, Flight *b) { return *a < *b; }
@@ -64,7 +65,6 @@ class Flight
 		bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa, QString *errorText=NULL) const;
 		FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchType *startart) const;
 		QString errorDescription (FlightError code) const;
-		void dump () const;
 		bool happened () const;
 		bool finished () const;
 		Flight makeTowflight (db_id towplaneId, db_id towLaunchType) const;
@@ -167,6 +167,23 @@ class Flight
 		static QString objectTypeDescriptionPlural () { return QString::fromUtf8 ("Flüge"); }
 
 		bool isErroneous (DataStorage &dataStorage) const;
+
+		// SQL interface
+		static QString dbTableName ();
+		static QString selectColumnList ();
+		static Flight createFromQuery (const QSqlQuery &query);
+		static QString insertValueList ();
+		static QString updateValueList ();
+		void bindValues (QSqlQuery &q) const;
+		static QList<Flight> createListFromQuery (QSqlQuery &query);
+		// Enum mappers
+		static QString    modeToDb   (FlightMode mode);
+		static FlightMode modeFromDb (QString    mode);
+		static int        typeToDb   (FlightType type);
+		static FlightType typeFromDb (int        type);
+		// Flag accessors
+		void setStatus (int status);
+		int getStatus () const;
 
 	private:
 		QString incompletePersonName (QString nn, QString vn) const;

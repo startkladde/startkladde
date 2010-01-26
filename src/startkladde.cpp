@@ -40,14 +40,22 @@ void test_database ()
 	}
 
 	std::cout << std::endl;
-	std::cout << "Count people: " << db.countObjects<Person> () << std::endl;
-
-	std::cout << std::endl;
 	std::cout << "Get people" << std::endl;
 	QList<Person> people=db.getObjects<Person> ();
     foreach (const Person &person, people)
     	std::cout << person.toString ().toUtf8 () << std::endl;
 
+	std::cout << std::endl;
+	std::cout << "Get planes" << std::endl;
+	QList<Plane> planes=db.getObjects<Plane> ();
+    foreach (const Plane &plane, planes)
+    	std::cout << plane.toString ().toUtf8 () << std::endl;
+
+	std::cout << std::endl;
+	std::cout << "Get flights" << std::endl;
+	QList<Flight> flights=db.getObjects<Flight> ();
+    foreach (const Flight &flight, flights)
+    	std::cout << flight.toString ().toUtf8 () << std::endl;
 }
 
 int main (int argc, char **argv)

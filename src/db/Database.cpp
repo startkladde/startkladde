@@ -1,13 +1,18 @@
 /*
  * Short term plan:
- *   - read/write flights, people (must be completed, see deconstruction) and planes
  *   - change DataStorage to use this class, it shouldn't use a lot of the fancy old functions
+ *   - remove all editable
  *   - remove old database
  *   - remove old db_proxy and admin_functions (check no longer needed)
- *   - reenable database checking (?)
+ *   - reenable database checking (?) (must show what to change)
  *   - add creating the database
+ *   - get rid of EntityType
+ *   - Clean up constructors: create empty (id 0), create with id
+ *   - Standardize enum handling: store the database value internally (or use the
+ *     numeric value in the database?); and have an "unknown" type (instead of "none")
  *
  * Medium term plan:
+ *   - add some abstraction to the query list generation
  *   - add a version number
  *   - add migrations
  *     - one possibility: with create 0, up/down, and create current
@@ -34,7 +39,6 @@
 #include "src/config/Options.h"
 #include "src/text.h"
 
-// TODO: objectExists
 // TODO: check if the slow part is the loop; if yes, add ProgressMonitor
 
 /*
@@ -80,8 +84,10 @@ Database::~Database()
 
 template<class T> QList<T> Database::getObjects ()
 {
-	QString q="select "+T::selectColumnList ()+" from "+T::dbTableName ();
-	QSqlQuery query (q, db);
+	QSqlQuery query (db);
+	query.setForwardOnly (true);
+	query.prepare("select "+T::selectColumnList ()+" from "+T::dbTableName ());
+	query.exec ();
 
     return T::createListFromQuery (query);
 }
@@ -159,15 +165,37 @@ template<class T> int Database::updateObject (const T &object)
 //   - ::createFromQuery (const QSqlQuery &query);
 //   - ::insertValueList ();
 //   - ::updateValueList ();
-//   - ::bindValues (QSqlQuery &q) const;
+//   - bindValues (QSqlQuery &q) const;
 //   - ::createListFromQuery (QSqlQuery &query);
 
 #include "src/model/Person.h"
+#include "src/model/Plane.h"
+#include "src/model/Flight.h"
 
 template QList<Person> Database::getObjects           ();
+template QList<Plane > Database::getObjects           ();
+template QList<Flight> Database::getObjects           ();
+
 template int           Database::countObjects<Person> ();
+template int           Database::countObjects<Plane > ();
+template int           Database::countObjects<Flight> ();
+
 template bool          Database::objectExists<Person> (db_id id);
+template bool          Database::objectExists<Plane > (db_id id);
+template bool          Database::objectExists<Flight> (db_id id);
+
 template Person        Database::getObject            (db_id id);
+template Plane         Database::getObject            (db_id id);
+template Flight        Database::getObject            (db_id id);
+
 template int           Database::deleteObject<Person> (db_id id);
+template int           Database::deleteObject<Plane > (db_id id);
+template int           Database::deleteObject<Flight> (db_id id);
+
 template db_id         Database::createObject         (Person &object);
+template db_id         Database::createObject         (Plane  &object);
+template db_id         Database::createObject         (Flight &object);
+
 template int           Database::updateObject         (const Person &object);
+template int           Database::updateObject         (const Plane  &object);
+template int           Database::updateObject         (const Flight &object);

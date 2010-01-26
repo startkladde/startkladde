@@ -37,6 +37,20 @@ Flight::Flight ()
 	towplane=invalid_id;
 }
 
+Flight::Flight (db_id id)
+	:id (id)
+{
+	plane=invalid_id;
+	numLandings=invalid_id;
+	pilot=copilot=towpilot=invalid_id;
+	launchType=invalid_id;
+	flightType=ftNone;
+	mode=modeTowflight=fmNone;
+	started=landed=towflightLanded=false;
+	editable=true;
+	towplane=invalid_id;
+}
+
 /**
  * Deprecated in favor of isFlying
  *
@@ -555,26 +569,6 @@ bool Flight::collective_bb_entry_possible (const Flight *prev, const Plane *plan
 	}
 }
 
-
-
-void Flight::dump () const
-{
-#define DUMP2(l, v) << " " #l ": " << v
-#define DUMP(v) DUMP2 (v, v)
-#define DUMP_BOOL(v) DUMP2 (v, (v?"true":"false"))
-	std::cout << "sk_flug dump:"
-		DUMP (id)
-		DUMP (plane)
-		DUMP (pilot)
-		DUMP (towpilot)
-		DUMP (copilot)
-		DUMP_BOOL (editable)
-		<< std::endl;
-#undef DUMP
-#undef BDUMP
-#undef DUMP2
-}
-
 QString personToString (db_id id, QString firstName, QString lastName)
 {
 	if (id_valid (id))
@@ -803,4 +797,237 @@ bool Flight::isErroneous (DataStorage &dataStorage) const
 	delete theLaunchType;
 
 	return erroneous;
+}
+
+// *******************
+// ** SQL interface **
+// *******************
+
+QString Flight::dbTableName ()
+{
+	return "flug_temp";
+}
+
+QString Flight::selectColumnList ()
+{
+	QString columnList=
+		"id,pilot,begleiter,flugzeug,typ,modus,status" // 7
+		",startart,startort,zielort,anzahl_landungen,startzeit,landezeit" // 6 Σ13
+		",pvn,pnn,bvn,bnn" // 4 Σ17
+		",land_schlepp,modus_sfz,zielort_sfz,towplane" // 4 Σ21
+		",abrechnungshinweis,bemerkung" // 2 Σ23
+		;
+
+	if (opts.record_towpilot)
+		columnList+=",towpilot,tpnn,tpvn"; // 3 Σ26
+
+	return columnList;
+}
+
+Flight Flight::createFromQuery (const QSqlQuery &q)
+{
+	Flight f (q.value (0).toLongLong ());
+
+	f.pilot      =q.value (1).toLongLong ();
+	f.copilot    =q.value (2).toLongLong ();
+	f.plane      =q.value (3).toLongLong ();
+	f.flightType =typeFromDb (
+	              q.value (4).toInt      ());
+	f.mode       =modeFromDb (
+	              q.value (5).toString   ());
+	f.setStatus  (q.value (6).toInt ());
+
+	f.launchType          =q.value ( 7).toLongLong ();
+	f.departureAirfield   =q.value ( 8).toString   ();
+	f.destinationAirfield =q.value ( 9).toString   ();
+	f.numLandings         =q.value (10).toInt      ();
+	f.launchTime          =Time::create (
+	                       q.value (11).toDateTime (), tz_utc);
+	f.landingTime         =Time::create (
+	                       q.value (12).toDateTime (), tz_utc);
+
+	f.pvn =q.value (13).toString ();
+	f.pnn =q.value (14).toString ();
+	f.bvn =q.value (15).toString ();
+	f.bnn =q.value (16).toString ();
+
+	f.landingTimeTowflight        =Time::create (
+	                               q.value (17).toDateTime (), tz_utc);
+	f.modeTowflight               =modeFromDb (
+	                               q.value (18).toString   ());
+	f.destinationAirfieldTowplane =q.value (19).toString   ();
+	f.towplane                    =q.value (20).toLongLong ();
+
+	f.accountingNote =q.value (21).toString ();
+	f.comments       =q.value (22).toString ();
+
+	if (opts.record_towpilot)
+	{
+		f.towpilot =q.value (23).toLongLong ();
+		f.tpvn     =q.value (24).toString ();
+		f.tpnn     =q.value (25).toString ();
+	}
+
+	return f;
+}
+
+QString Flight::insertValueList ()
+{
+	QString columnList=
+		"pilot,begleiter,flugzeug,typ,modus,status" // 6
+		",startart,startort,zielort,anzahl_landungen,startzeit,landezeit" // 6 Σ12
+		",pvn,pnn,bvn,bnn" // 4 Σ16
+		",land_schlepp,modus_sfz,zielort_sfz,towplane" // 4 Σ20
+		",abrechnungshinweis,bemerkung" // 2 Σ22
+		;
+
+	QString placeholderList="?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
+
+	if (opts.record_towpilot)
+	{
+		columnList+=",towpilot,tpnn,tpvn"; // 3 Σ25
+		placeholderList+=",?,?,?";
+	}
+
+	return QString ("(%1) values (%2)").arg (columnList).arg (placeholderList);
+}
+
+
+QString Flight::updateValueList ()
+{
+	QString columnList=
+		"pilot=?,begleiter=?,flugzeug=?,typ=?,modus=?,status=?" // 6
+		",startart=?,startort=?,zielort=?,anzahl_landungen=?,startzeit=?,landezeit=?" // 6 Σ12
+		",pvn=?,pnn=?,bvn=?,bnn=?" // 4 Σ16
+		",land_schlepp=?,modus_sfz=?,zielort_sfz=?,towplane=?" // 4 Σ20
+		",abrechnungshinweis=?,bemerkung=?" // 2 Σ22
+		;
+
+	if (opts.record_towpilot)
+		columnList+=",towpilot=?,tpnn=?,tpvn=?"; // 3 Σ25
+
+	return columnList;
+}
+
+void Flight::bindValues (QSqlQuery &q) const
+{
+	q.addBindValue (pilot);
+	q.addBindValue (copilot);
+	q.addBindValue (plane);
+	q.addBindValue (typeToDb (flightType));
+	q.addBindValue (modeToDb (mode));
+	q.addBindValue (getStatus ());
+
+	q.addBindValue (launchType);
+	q.addBindValue (departureAirfield);
+	q.addBindValue (destinationAirfield);
+	q.addBindValue (numLandings);
+	q.addBindValue (launchTime.toUtcQDateTime ());
+	q.addBindValue (landingTime.toUtcQDateTime ());
+
+	q.addBindValue (pvn);
+	q.addBindValue (pnn);
+	q.addBindValue (bvn);
+	q.addBindValue (bnn);
+
+	q.addBindValue (landingTimeTowflight.toUtcQDateTime ());
+	q.addBindValue (modeToDb (modeTowflight));
+	q.addBindValue (destinationAirfieldTowplane);
+	q.addBindValue (towplane);
+
+	q.addBindValue (accountingNote);
+	q.addBindValue (comments);
+
+	if (opts.record_towpilot)
+	{
+		q.addBindValue (towpilot);
+		q.addBindValue (tpnn);
+		q.addBindValue (tpvn);
+	}
+}
+
+QList<Flight> Flight::createListFromQuery (QSqlQuery &q)
+{
+	QList<Flight> list;
+
+	while (q.next ())
+		list.append (createFromQuery (q));
+
+	return list;
+}
+
+
+// *** Enum mappers
+QString Flight::modeToDb (FlightMode mode)
+{
+	switch (mode)
+	{
+		case fmLocal   : return "l";
+		case fmComing  : return "k";
+		case fmLeaving : return "g";
+		case fmNone    : return "?";
+		// no default
+	}
+
+	assert (false);
+	return "?";
+}
+
+FlightMode Flight::modeFromDb (QString mode)
+{
+	if      (mode=="l") return fmLocal;
+	else if (mode=="k") return fmComing;
+	else if (mode=="g") return fmLeaving;
+	else                return fmNone;
+}
+
+int Flight::typeToDb (FlightType type)
+{
+	switch (type)
+	{
+		case ftNone          : return 1;
+		case ftNormal        : return 2;
+		case ftTraining2     : return 3;
+		case ftTraining1     : return 4;
+		case ftTow           : return 7;
+		case ftGuestPrivate  : return 6;
+		case ftGuestExternal : return 8;
+		// no default
+	};
+
+	assert (false);
+	return 1;
+}
+
+FlightType Flight::typeFromDb (int type)
+{
+	if      (type==1) return ftNone;
+	else if (type==2) return ftNormal;
+	else if (type==3) return ftTraining2;
+	else if (type==4) return ftTraining1;
+	else if (type==7) return ftTow;
+	else if (type==6) return ftGuestPrivate;
+	else if (type==8) return ftGuestExternal;
+	else              return ftNone;
+}
+
+// *** Flag accessors
+const int STATUS_STARTED=1;
+const int STATUS_LANDED=2;
+const int STATUS_TOWFLIGHT_LANDED=4;
+
+void Flight::setStatus (int status)
+{
+	started         = (status & STATUS_STARTED         )!=0;
+	landed          = (status & STATUS_LANDED          )!=0;
+	towflightLanded = (status & STATUS_TOWFLIGHT_LANDED)!=0;
+}
+
+int Flight::getStatus () const
+{
+	int status=0;
+	if (started        ) status |= STATUS_STARTED         ;
+	if (landed         ) status |= STATUS_LANDED          ;
+	if (towflightLanded) status |= STATUS_TOWFLIGHT_LANDED;
+	return status;
 }

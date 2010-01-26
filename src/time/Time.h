@@ -17,7 +17,7 @@
 #include "src/logging/messages.h"
 #include "src/time/timeFunctions.h"
 
-// TODO: there should be a separate class for duration
+// TODO: there should be a separate class for duration. Also, this class sucks.
 class Time
 {
 	// TODO: make time_zone parameters non-default - it is important that they
@@ -25,6 +25,7 @@ class Time
 	public:
 		Time ();	// Default constructor, init to 0
 		Time (time_t);	// Contructor, init to given time
+		static Time create (const QDateTime &qDateTime, time_zone tz);
 
 		void set_to (const time_t, bool null_sec=false);	// Set to given time
 		void set_to (const int, bool null_sec=false);	// Set to given time
@@ -39,6 +40,7 @@ class Time
 		bool is_null () const;	// Check for 0
 		QTime get_qtime (time_zone tz=tz_utc) const;
 		QDate get_qdate (time_zone tz=tz_utc) const;
+		QDateTime toUtcQDateTime () const;
 
 		int secs_to (const Time *) const;
 		int secs_to (const Time &) const;

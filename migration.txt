@@ -11,6 +11,8 @@
   - landed/... as flag or as time!=null?
   - constraints (used person may not be deleted) in database
   - proper data types
+  - standardize enum types
+  - remove distinction between 1/2 seated training
   
 Later:
   - towflight as separate flight?

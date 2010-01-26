@@ -122,16 +122,6 @@ QString Person::getDescription (casus c) const
 	return entityLabel (st_person, c);
 }
 
-void Person::dump () const
-	/*
-	 * Print a description of the person to stdout. Used for debugging.
-	 */
-{
-	std::cout << "sk_person dump: " << id << ", " << nachname << ", " << vorname << ", " << club << std::endl;
-}
-
-
-
 QString Person::get_selector_value (int column_number) const
 {
 	switch (column_number)
@@ -241,6 +231,7 @@ QString Person::selectColumnList ()
 Person Person::createFromQuery (const QSqlQuery &q)
 {
 	Person p (
+			// TODO Set values using accessors
 		q.value (2).toString (),
 		q.value (1).toString (),
 		q.value (3).toString (),
@@ -280,6 +271,8 @@ QList<Person> Person::createListFromQuery (QSqlQuery &q)
 
 	while (q.next ())
 	{
+		std::cout << "get" << std::endl;
+
 		list.append (createFromQuery (q));
 	}
 

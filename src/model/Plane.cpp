@@ -13,6 +13,11 @@ Plane::Plane ()
 	numSeats=0;
 }
 
+Plane::Plane (db_id id)
+	:Entity (id)
+{
+}
+
 Plane::Plane (QString p_registration, QString p_wettbewerbskennzeichen, QString p_typ, QString p_club, int p_sitze, db_id p_id)
 	/*
 	 * Constructs an Plane instance with given data.
@@ -21,33 +26,12 @@ Plane::Plane (QString p_registration, QString p_wettbewerbskennzeichen, QString 
 	 *     p_id: the initial values for the fields.
 	 */
 {
-	// TODO remove verein
 	registration=p_registration;
 	competitionId=p_wettbewerbskennzeichen;
 	type=p_typ;
 	club=p_club;
 	numSeats=p_sitze;
 	id=p_id;
-}
-
-void Plane::dump () const
-	/*
-	 * Print a description of the plane to stdout. Used for debugging.
-	 */
-{
-	// TODO cout
-	printf("Kennzeichen %s\n"
-			"Wettbewerbskennzeichen %s\n"
-			"Typ %s\n"
-			"Verein %s\n"
-			"Sitze %d\n"
-			"ID %d\n",
-			registration.latin1(),
-			competitionId.latin1(),
-			type.latin1(),
-			club.latin1(),
-			numSeats,
-			(int)id);
 }
 
 QString Plane::getDescription (casus c) const
@@ -288,7 +272,97 @@ QString Plane::toString () const
 		.arg (competitionId)
 		.arg (type)
 		.arg (club)
-		.arg (numSeats)
 		.arg (categoryText (category, lsLong))
+		.arg (numSeats)
 		;
+}
+
+// *******************
+// ** SQL interface **
+// *******************
+
+QString Plane::dbTableName ()
+{
+	return "flugzeug_temp";
+}
+
+QString Plane::selectColumnList ()
+{
+	return "id,kennzeichen,verein,sitze,typ,gattung,wettbewerbskennzeichen,bemerkung";
+}
+
+
+Plane Plane::createFromQuery (const QSqlQuery &q)
+{
+	Plane p (q.value (0).toLongLong ());
+
+	p.registration  =q.value (1).toString ();
+	p.club          =q.value (2).toString ();
+	p.numSeats      =q.value (3).toInt    ();
+	p.type          =q.value (4).toString ();
+	p.category      =categoryFromDb (
+	                 q.value (5).toString ());
+	p.competitionId =q.value (6).toString ();
+	p.comments      =q.value (7).toString ();
+
+	return p;
+}
+
+QString Plane::insertValueList ()
+{
+	return "(kennzeichen,verein,sitze,typ,gattung,wettbewerbskennzeichen,bemerkung) values (?,?,?,?,?,?,?)";
+}
+
+QString Plane::updateValueList ()
+{
+	return "kennzeichen=?, verein=?, sitze=?, typ=?, gattung=?, wettbewerbskennzeichen=?, bemerkung=?";
+}
+
+void Plane::bindValues (QSqlQuery &q) const
+{
+	q.addBindValue (registration);
+	q.addBindValue (club);
+	q.addBindValue (numSeats);
+	q.addBindValue (type);
+	q.addBindValue (categoryToDb (category));
+	q.addBindValue (competitionId);
+	q.addBindValue (comments);
+}
+
+QList<Plane> Plane::createListFromQuery (QSqlQuery &q)
+{
+	QList<Plane> list;
+
+	while (q.next ())
+		list.append (createFromQuery (q));
+
+	return list;
+}
+
+// *** Enum mappers
+QString Plane::categoryToDb (Category category)
+{
+	switch (category)
+	{
+		case categoryNone         : return "?";
+		case categorySingleEngine : return "e";
+		case categoryGlider       : return "1";
+		case categoryMotorglider  : return "k";
+		case categoryUltralight   : return "m";
+		case categoryOther        : return "s";
+		// no default
+	}
+
+	assert (false);
+	return "?";
+}
+
+Plane::Category Plane::categoryFromDb (QString category)
+{
+	if      (category=="e") return categorySingleEngine;
+	else if (category=="1") return categoryGlider;
+	else if (category=="k") return categoryMotorglider;
+	else if (category=="m") return categoryUltralight;
+	else if (category=="s") return categoryOther;
+	else                    return categoryNone;
 }

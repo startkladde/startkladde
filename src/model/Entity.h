@@ -28,6 +28,7 @@ class Entity
 		enum output_format_t { of_single, of_table_header, of_table_data };
 
 		Entity ();
+		Entity (db_id id);
 		virtual ~Entity ();
 		virtual QString getDescription (casus) const=0;
 		virtual QString name () const=0;
@@ -56,3 +57,43 @@ QString entityLabel (EntityType t, casus c);
 
 #endif
 
+
+//#include <QHash>
+//template<EnumType, DatabaseType> class EnumMap
+//{
+//	public:
+//		EnumMap (EnumValue unknownEnum, DatabaseValue unknownDatabase)
+//		{
+//			self->unknownEnum     = unknownEnum    ;
+//			self->unknownDatabase = unknownDatabase;
+//		}
+//
+//		void addValue (EnumType enumValue, DatabaseType databaseValue)
+//		{
+//			databaseValues[    enumValue] = databaseValue;
+//			    enumValues[databaseValue] =     enumValue;
+//		}
+//
+//		void toEnum (DatabaseType databaseValue) const
+//		{
+//			if (enumValues.contains (databaseValue))
+//				return enumValues[databaseValue];
+//			else
+//				return unknownEnum;
+//		}
+//
+//		void toDatabase (EnumType enumValue) const
+//		{
+//			if (databaseValues.contains (enumValue))
+//				return databaseValues[enumValue];
+//			else
+//				return unknownDatabase;
+//		}
+//
+//	private:
+//		QHash<    EnumType, DatabaseType> databaseValues;
+//		QHash<DatabaseType,     EnumType>     enumValues;
+//
+//		EnumType unknownEnum;
+//		DatabaseType unknownDatabase;
+//};

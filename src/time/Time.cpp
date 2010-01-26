@@ -24,6 +24,16 @@ Time::Time (time_t tme)
 	null=false;
 }
 
+Time Time::create (const QDateTime &qDateTime, time_zone tz)
+{
+	const QDate &d=qDateTime.date ();
+	const QTime &t=qDateTime.time ();
+
+	Time time;
+	time.set_to (d.year (), d.month (), d.day (), t.hour (), t.minute (), t.second (), tz);
+	return time;
+}
+
 
 
 void Time::set_current (bool null_secs)
@@ -227,6 +237,11 @@ QDate Time::get_qdate (time_zone tz) const
 		default: gmtime_r (&t, &broken); break;
 	}
 	return QDate (broken.tm_year+1900, broken.tm_mon+1, broken.tm_mday);
+}
+
+QDateTime Time::toUtcQDateTime () const
+{
+	return QDateTime (get_qdate (tz_utc), get_qtime (tz_utc), Qt::UTC);
 }
 
 

@@ -9,9 +9,6 @@ using namespace std;
 //   - start_data
 //   - end_data
 
-const int STATUS_GESTARTET=1;
-const int STATUS_GELANDET=2;
-const int STATUS_SFZ_GELANDET=4;
 
 // The text used in the database for null dates.
 const QString db_null_time="0000-00-00 00:00:00";
@@ -149,29 +146,13 @@ dbTable OldDatabase::get_table_information (const QString table_name, bool resol
 //   - plane: kennzeichen
 //   - person: nachname,vorname,verein
 
-// Query column lists:
-//   - flight (with towpilot): "id,pilot,begleiter,towpilot,startort,zielort,anzahl_landungen,startzeit,landezeit,startart,land_schlepp,typ,bemerkung,flugzeug,status,modus,pvn,pnn,bvn,bnn,tpvn,tpnn,modus_sfz,zielort_sfz,abrechnungshinweis,towplane";
-//   - flight (without towpilot): "id,pilot,begleiter,startort,zielort,anzahl_landungen,startzeit,landezeit,startart,land_schlepp,typ,bemerkung,flugzeug,status,modus,pvn,pnn,bvn,bnn,modus_sfz,zielort_sfz,abrechnungshinweis,towplane";
-//   - plane: "id,kennzeichen,verein,sitze,typ,gattung,wettbewerbskennzeichen,bemerkung";
-//   - person: "id,nachname,vorname,verein,vereins_id,bwlv,bemerkung";
-
-// Query values flight: pilot, copilot, departure airfield, destination airfield, num landings,
-//   launch time, landing time, launch type, landing time towflight, flight type, comments,
-//   plane, status (started,landed,towflight landed), mode, pvn/pnn, bvn/bnn,
-//   (towpilot, tpvn/tpnn) if record_towpilot,
-//   towflight mode, towplane, accounting note
-// Query values plane: registration, club, seats, type, category, competitionid, comments
-// Query values people: last name, first name, club id, club, bwlv, comments
 
 
 // Time to string: to_string (db_time_format, tz_utc, 20, true);
 // String to time: parse (text, tz_utc, db_time_format);
 
 
-// Flight type: 2:normal, 3:training2, 4:training1, 6:guestprivate, 8:guestexternal, 7:tow, 1:none
 
-// FlightMode values: l:local, g:leaving, k:coming
-// Category: e:singleEnging, 1:glider, k:motorglider, m:ultralight, s:other
 
 
 // Database errors:

@@ -24,7 +24,6 @@ class Person: public Entity
 		Person ();
 		Person (QString, QString);
 		Person (QString, QString, QString, QString, QString, db_id p_id=0);
-		void dump () const;
 		virtual void output (std::ostream &stream, output_format_t format);
 
 		bool operator< (const Person &o) const;
