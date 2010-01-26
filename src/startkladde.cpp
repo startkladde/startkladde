@@ -4,7 +4,6 @@
 
 #include "src/text.h"
 #include "src/config/Options.h"
-#include "src/db/OldDatabase.h"
 #include "src/gui/windows/MainWindow.h"
 #include "src/gui/windows/SplashScreen.h"
 #include "src/plugins/ShellPlugin.h"
@@ -27,11 +26,9 @@ void display_help ()
 #include "src/model/Person.h"
 
 
-void test_database ()
+void test_database (Database &db)
 {
-	Database db;
-
-	bool ok=db.open ();
+	bool ok=db.open (opts.server, opts.port, opts.username, opts.password, opts.database);
 
 	if (!ok)
 	{
@@ -56,6 +53,30 @@ void test_database ()
 	QList<Flight> flights=db.getObjects<Flight> ();
     foreach (const Flight &flight, flights)
     	std::cout << flight.toString ().toUtf8 () << std::endl;
+
+	std::cout << std::endl;
+	std::cout << "Get launch types" << std::endl;
+	QList<LaunchType> launchTypes=db.getObjects<LaunchType> ();
+    foreach (const LaunchType &launchType, launchTypes)
+    	std::cout << launchType.toString ().toUtf8 () << std::endl;
+
+    std::cout << std::endl;
+	std::cout << "List airfields" << std::endl;
+	std::cout << db.listAirfields ().join (", ") << std::endl;
+
+    std::cout << std::endl;
+	std::cout << "List accounting notes" << std::endl;
+	std::cout << db.listAccountingNotes ().join (", ") << std::endl;
+
+    std::cout << std::endl;
+	std::cout << "List clubs" << std::endl;
+	std::cout << db.listClubs ().join (", ") << std::endl;
+
+    std::cout << std::endl;
+	std::cout << "List plane types" << std::endl;
+	std::cout << db.listPlaneTypes ().join (", ") << std::endl;
+
+
 }
 
 int main (int argc, char **argv)
@@ -67,55 +88,55 @@ int main (int argc, char **argv)
 	 *   the return value of the QApplication, and thus of the main window.
 	 */
 {
+	Database db;
 	opts.parse_arguments (argc, argv);
-	opts.read_config_files (NULL, NULL, argc, argv);
-
-	test_database (); return 0;
+	opts.read_config_files (&db, NULL, argc, argv);
+	test_database (db); return 0;
 
 	// DbEvents are used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
-	qRegisterMetaType<DbEvent> ("DbEvent");
-	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
+//	qRegisterMetaType<DbEvent> ("DbEvent");
+//	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
+//
+//	Database db;
+//	QList<ShellPlugin *> plugins;
 
-	OldDatabase db;
-	QList<ShellPlugin *> plugins;
-
-	if (opts.need_display ())
-		opts.do_display ();
-	else if (opts.display_help)
-		display_help ();
-	else
-	{
-		opts.read_config_files (&db, &plugins, argc, argv);
-		//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
-		QApplication a (argc, argv);
-
-		// Put light.{la,so} to styles/
-		//a.setStyle ("light, 3rd revision");
-		if (!opts.style.isEmpty ()) a.setStyle (opts.style);
-
-		db.display_queries=opts.display_queries;
-
-		MainWindow w (NULL, &db, plugins);
-
-		// Let the plugins initialize
-		sched_yield ();
-
-
-
-		w.showMaximized ();
-//		w.show ();
-		int ret=a.exec();
-
-		foreach (ShellPlugin *plugin, plugins)
-		{
-//			std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
-			plugin->terminate ();
-			sched_yield ();
-		}
-
-		return ret;
-	}
+//	if (opts.need_display ())
+//		opts.do_display ();
+//	else if (opts.display_help)
+//		display_help ();
+//	else
+//	{
+//		opts.read_config_files (&db, &plugins, argc, argv);
+//		//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
+//		QApplication a (argc, argv);
+//
+//		// Put light.{la,so} to styles/
+//		//a.setStyle ("light, 3rd revision");
+//		if (!opts.style.isEmpty ()) a.setStyle (opts.style);
+//
+//		db.display_queries=opts.display_queries;
+//
+//		MainWindow w (NULL, &db, plugins);
+//
+//		// Let the plugins initialize
+//		sched_yield ();
+//
+//
+//
+//		w.showMaximized ();
+////		w.show ();
+//		int ret=a.exec();
+//
+//		foreach (ShellPlugin *plugin, plugins)
+//		{
+////			std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
+//			plugin->terminate ();
+//			sched_yield ();
+//		}
+//
+//		return ret;
+//	}
 }
 

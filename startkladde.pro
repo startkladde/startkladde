@@ -31,7 +31,6 @@ HEADERS += \
            src/db/adminFunctions.h \
            src/db/DbColumn.h \
            src/db/DbEvent.h \
-           src/db/dbProxy.h \
            src/db/DbTable.h \
            src/db/dbTypes.h \
            src/db/Database.h \
@@ -123,7 +122,6 @@ SOURCES += \
            src/db/adminFunctions.cpp \
            src/db/DbColumn.cpp \
            src/db/DbEvent.cpp \
-           src/db/dbProxy.cpp \
            src/db/DbTable.cpp \
            src/db/dbTypes.cpp \
            src/db/Database.cpp \

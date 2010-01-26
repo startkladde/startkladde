@@ -270,11 +270,7 @@ QList<Person> Person::createListFromQuery (QSqlQuery &q)
 	QList<Person> list;
 
 	while (q.next ())
-	{
-		std::cout << "get" << std::endl;
-
 		list.append (createFromQuery (q));
-	}
 
 	return list;
 }

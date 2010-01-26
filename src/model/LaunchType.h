@@ -22,6 +22,7 @@ class LaunchType:public Entity
 		LaunchType (QString desc);
 		void init ();
 		virtual void output (std::ostream &stream, output_format_t format);
+		QString toString () const;
 
 		virtual QString getDescription (casus) const;
 		virtual QString name () const;

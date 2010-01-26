@@ -8,8 +8,10 @@
 #include <QTextStream>
 
 #include "src/version.h"
-#include "src/db/OldDatabase.h"
+#include "src/db/Database.h"
 #include "src/plugins/ShellPlugin.h"
+#include "src/text.h"
+#include "src/model/LaunchType.h"
 
 const QString default_home_config_filename=".startkladde.conf";
 const QString default_local_config_fielname="startkladde.conf";
@@ -223,7 +225,7 @@ bool Options::parse_arguments (int argc, char *argv[])
 	return true;
 }
 
-bool Options::read_config_files (OldDatabase *db, QList<ShellPlugin *> *plugins, int argc, char *argv[])
+bool Options::read_config_files (Database *db, QList<ShellPlugin *> *plugins, int argc, char *argv[])
 	// db is only passed for startrten (TODO change something)
 	// Also reads command line arguments, if argc>0 (and a configuration file
 	// was read)
@@ -257,7 +259,7 @@ bool Options::read_config_files (OldDatabase *db, QList<ShellPlugin *> *plugins,
 	return true;
 }
 
-bool Options::read_config_file (QString filename, OldDatabase *db, QList<ShellPlugin *> *plugins)
+bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugin *> *plugins)
 	// db is only passed for startarten (TODO change something)
 	// Returns whether the file existed.
 {
@@ -362,14 +364,11 @@ bool Options::read_config_file (QString filename, OldDatabase *db, QList<ShellPl
 			// Options not saved locally
 			if (db && key=="startart")
 			{
-				LaunchType *sa=new LaunchType (value);
-				if (id_invalid (sa->get_id ()))
-				{
-					std::cerr << "Error: startart with invalid ID " << sa->get_id () << " specified.";
-					delete sa;
-				}
+				LaunchType sa (value);
+				if (id_invalid (sa.get_id ()))
+					std::cerr << "Error: startart with invalid ID " << sa.get_id () << " specified.";
 				else
-					db->add_startart_to_list (sa);
+					db->addLaunchType (sa);
 			}
 
 		}

@@ -147,3 +147,12 @@ void LaunchType::output (std::ostream &stream, output_format_t format)
 }
 
 
+QString LaunchType::toString () const
+{
+	return QString ("id=%1, description=%2 (%3), type=%4")
+		.arg (id)
+		.arg (description)
+		.arg (short_description)
+		.arg (startart_type_string (type))
+		;
+}

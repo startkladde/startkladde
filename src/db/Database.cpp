@@ -1,6 +1,8 @@
 /*
  * Short term plan:
- *   - change DataStorage to use this class, it shouldn't use a lot of the fancy old functions
+ *   - add to Database:
+ *     - flights prepared and flights by date
+ *   - change DataStorage to use this class
  *   - remove all editable
  *   - remove old database
  *   - remove old db_proxy and admin_functions (check no longer needed)
@@ -10,6 +12,17 @@
  *   - Clean up constructors: create empty (id 0), create with id
  *   - Standardize enum handling: store the database value internally (or use the
  *     numeric value in the database?); and have an "unknown" type (instead of "none")
+ *   - do we really want to read the clubs etc. from the database in DataStorage?
+ *   - add "object used" to Database
+ *   - add ping to database
+ *
+ * Improvements:
+ *   - split this class into parts (generic, orm, specific)
+ *   - move (static) methods like selectDistinctColumnQuery to QueryGenerator (but see below)
+ *   - make a class Query, a la Query ("select * from foo where id=?") << 42
+ *   - allow specifying an "exclude" value to selectDistinctColumnQuery (requires
+ *     Query class)
+ *   - movee selectDistinctColumnQuery to Query
  *
  * Medium term plan:
  *   - add some abstraction to the query list generation
@@ -35,11 +48,14 @@
 #include "Database.h"
 
 #include <iostream>
+#include <cassert>
 
 #include "src/config/Options.h"
 #include "src/text.h"
 
 // TODO: check if the slow part is the loop; if yes, add ProgressMonitor
+
+// TODO: error when query fails
 
 /*
  * Here's an idea for specifying conditions, or parts thereof:
@@ -49,38 +65,99 @@
 Database::Database ()
 {
     db=QSqlDatabase::addDatabase ("QMYSQL");
-
-    db.setHostName (opts.server);
-    db.setDatabaseName (opts.database);
-    db.setUserName (opts.username);
-    db.setPassword (opts.password);
-    db.setPort (opts.port);
 }
 
-bool Database::open ()
+bool Database::open (QString server, int port, QString username, QString password, QString database)
 {
-	bool result=db.open ();
+    db.setHostName (server);
+    db.setUserName (username);
+    db.setPassword (password);
+    db.setPort (port);
+    db.setDatabaseName (database);
+
+    bool result=db.open ();
 	if (!result) return false;
 
-//	QSqlQuery q ("set names latin1", db);
-
-    QSqlQuery query (db);
-    query.prepare ("show variables like 'char%'");
-    query.exec ();
-
-    while (query.next())
-    {
-    	QString name=query.value(0).toString ();
-    	QString value=query.value(1).toString ();
-    	std::cout << QString ("%1=%2").arg (name).arg (value) << std::endl;
-    }
+//    QSqlQuery query (db);
+//    query.prepare ("show variables like 'char%'");
+//    query.exec ();
+//
+//    while (query.next())
+//    {
+//    	QString name=query.value(0).toString ();
+//    	QString value=query.value(1).toString ();
+//    	std::cout << QString ("%1=%2").arg (name).arg (value) << std::endl;
+//    }
 
 	return result;
+}
+
+void Database::close ()
+{
+	db.close ();
 }
 
 Database::~Database()
 {
 }
+
+
+// ******************
+// ** Very generic **
+// ******************
+
+QStringList Database::listStrings (QSqlQuery query)
+{
+	QStringList stringList;
+
+	while (query.next ())
+		stringList.append (query.value (0).toString ());
+
+	return stringList;
+}
+
+QStringList Database::listStrings (QString query)
+{
+	QSqlQuery q (query, db);
+	q.exec ();
+	return listStrings (q);
+}
+
+QString Database::selectDistinctColumnQuery (QString table, QString column, bool excludeEmpty)
+{
+	// "select distinct column from table"
+	QString query=QString ("select distinct %1 from %2").arg (column, table);
+
+	// ..." where column!=''"
+	if (excludeEmpty) query+=QString (" where %1!=''").arg (column);
+	return query;
+}
+
+QString Database::selectDistinctColumnQuery (QStringList tables, QStringList columns, bool excludeEmpty)
+{
+	QStringList parts;
+
+	foreach (QString table, tables)
+		foreach (QString column, columns)
+			parts << selectDistinctColumnQuery (table, column, excludeEmpty);
+
+	return parts.join (" union ");
+}
+
+QString Database::selectDistinctColumnQuery (QStringList tables, QString column, bool excludeEmpty)
+{
+	return selectDistinctColumnQuery (tables, QStringList (column), excludeEmpty);
+}
+
+QString Database::selectDistinctColumnQuery (QString table, QStringList columns, bool excludeEmpty)
+{
+	return selectDistinctColumnQuery (QStringList (table), columns, excludeEmpty);
+}
+
+
+// *********
+// ** ORM **
+// *********
 
 template<class T> QList<T> Database::getObjects ()
 {
@@ -171,6 +248,7 @@ template<class T> int Database::updateObject (const T &object)
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
+#include "src/model/LaunchType.h"
 
 template QList<Person> Database::getObjects           ();
 template QList<Plane > Database::getObjects           ();
@@ -199,3 +277,91 @@ template db_id         Database::createObject         (Flight &object);
 template int           Database::updateObject         (const Person &object);
 template int           Database::updateObject         (const Plane  &object);
 template int           Database::updateObject         (const Flight &object);
+
+// Legacy launch type
+template<> QList<LaunchType> Database::getObjects ()
+{
+	return launchTypes.values ();
+}
+
+template<> int Database::countObjects<LaunchType> ()
+{
+	return launchTypes.size ();
+}
+
+template<> bool Database::objectExists<LaunchType> (db_id id)
+{
+	return launchTypes.contains (id);
+}
+
+template<> LaunchType Database::getObject (db_id id)
+{
+	if (launchTypes.contains (id)) throw NotFoundException ();
+	return launchTypes[id];
+}
+
+template<> int Database::deleteObject<LaunchType> (db_id id)
+{
+	(void)id;
+	assert (!"Thou shalt not try to delete a launch type");
+	return 0;
+}
+
+template<> db_id Database::createObject (LaunchType &object)
+{
+	(void)object;
+	assert (!"Thou shalt not try to create a launch type");
+	return invalid_id;
+}
+
+template<> int Database::updateObject (const LaunchType &object)
+{
+	(void)object;
+	assert (!"Thou shalt not try to update a launch type");
+	return 0;
+}
+
+void Database::addLaunchType (const LaunchType &launchType)
+{
+	launchTypes.insert (launchType.get_id (), launchType);
+}
+
+
+// *******************
+// ** Very specific **
+// *******************
+
+QStringList Database::listAirfields ()
+{
+	QString query="select startort from %1 where startort!='' union select zielort from %1 where zielort!=''";
+	return listStrings (query.arg (Flight::dbTableName ()));
+
+	return listStrings (selectDistinctColumnQuery (
+		Flight::dbTableName (),
+		QStringList () << "startort" << "zielort"
+		));
+}
+
+QStringList Database::listAccountingNotes ()
+{
+	return listStrings (selectDistinctColumnQuery (
+		Flight::dbTableName (),
+		"abrechnungshinweis",
+		true));
+}
+
+QStringList Database::listClubs ()
+{
+	return listStrings (selectDistinctColumnQuery (
+		QStringList () << Plane::dbTableName() << Person::dbTableName (),
+		"verein",
+		true));
+}
+
+QStringList Database::listPlaneTypes ()
+{
+	return listStrings (selectDistinctColumnQuery (
+		Plane::dbTableName (),
+		"typ",
+		true));
+}
