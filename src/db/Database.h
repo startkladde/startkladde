@@ -17,7 +17,7 @@ class Database
 		Database ();
 		virtual ~Database ();
 
-		bool open () { return db.open (); }
+		bool open ();
 		QSqlError lastError () const { return db.lastError (); }
 
         // Template functions, instantiated for the relevant classes

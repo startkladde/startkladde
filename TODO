@@ -1,3 +1,5 @@
+Check and remove: admin_functions, db_proxy 
+
 Critical
 * No "land" button if display date is not today
 * Add a landing time to a flight of another date => date correct?

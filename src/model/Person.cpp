@@ -3,8 +3,6 @@
 #include <iostream>
 #include <cassert>
 
-#include "src/text.h"
-
 Person::Person ()
 	:Entity ()
 	/*
@@ -242,7 +240,6 @@ QString Person::selectColumnList ()
 
 Person Person::createFromQuery (const QSqlQuery &q)
 {
-	//	int index_firstName=query.record ().indexOf ("vorname");
 	Person p (
 		q.value (2).toString (),
 		q.value (1).toString (),
@@ -282,7 +279,9 @@ QList<Person> Person::createListFromQuery (QSqlQuery &q)
 	QList<Person> list;
 
 	while (q.next ())
+	{
 		list.append (createFromQuery (q));
+	}
 
 	return list;
 }

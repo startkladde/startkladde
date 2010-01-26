@@ -43,36 +43,11 @@ void test_database ()
 	std::cout << "Count people: " << db.countObjects<Person> () << std::endl;
 
 	std::cout << std::endl;
-    Person p ("Eimer", "Laber", "EDV", "", "", invalid_id);
-    db_id create_id;
-    std::cout << "Create person: " << (create_id=db.createObject (p)) << std::endl;
-
-	std::cout << std::endl;
-    std::cout << "Get person" << std::endl;
-    Person person=db.getObject<Person> (1);
-   	std::cout << person.toString() << std::endl;
-
-   	std::cout << std::endl;
-   	QString temp=person.nachname;
-   	person.nachname=person.vorname;
-   	person.vorname=temp;
-   	std::cout << "Update person: " << db.updateObject (person) << std::endl;
-
-	std::cout << std::endl;
-	std::cout << "Count people: " << db.countObjects<Person> () << std::endl;
-
-	std::cout << std::endl;
 	std::cout << "Get people" << std::endl;
-    foreach (const Person &person, db.getObjects<Person> ())
-    	std::cout << person.toString () << std::endl;
+	QList<Person> people=db.getObjects<Person> ();
+    foreach (const Person &person, people)
+    	std::cout << person.toString ().toUtf8 () << std::endl;
 
-	std::cout << std::endl;
-    std::cout << "Delete person" << std::endl;
-    db.deleteObject<Person> (create_id);
-
-	std::cout << std::endl;
-	std::cout << "Person 1 exists: " << db.objectExists<Person> (1) << std::endl;
-	std::cout << "Person 2 exists: " << db.objectExists<Person> (2) << std::endl;
 }
 
 int main (int argc, char **argv)

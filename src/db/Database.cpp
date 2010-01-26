@@ -1,12 +1,46 @@
+/*
+ * Short term plan:
+ *   - read/write flights, people (must be completed, see deconstruction) and planes
+ *   - change DataStorage to use this class, it shouldn't use a lot of the fancy old functions
+ *   - remove old database
+ *   - remove old db_proxy and admin_functions (check no longer needed)
+ *   - reenable database checking (?)
+ *   - add creating the database
+ *
+ * Medium term plan:
+ *   - add a version number
+ *   - add migrations
+ *     - one possibility: with create 0, up/down, and create current
+ *     - another: autogenerate current from 0 and ups
+ *     - look at rails (or other framework supporting migrations)
+ *
+ * Long term plan:
+ *   - use a memory SQLite for local storage (datastorage functionality)
+ *   - merge data storage and database methods, so we can use a (local)
+ *     database directly (w/o local cache)
+ *       - we'd probably have abstract DataStorage and inherited Database and
+ *         CachingDataStorage which uses ad Database for access and one (in
+ *         memory) for local caching
+ *       - question: can we afford using a query on a memory database e. g.
+ *         for list of first names rather than maintaining the list explicitly?
+ *         should be fast enough (does sqlite memory table have index?)
+ *   - local disk caching
+ */
+
 #include "Database.h"
 
 #include <iostream>
 
-#include "src/text.h"
 #include "src/config/Options.h"
+#include "src/text.h"
 
 // TODO: objectExists
 // TODO: check if the slow part is the loop; if yes, add ProgressMonitor
+
+/*
+ * Here's an idea for specifying conditions, or parts thereof:
+ * Condition ("foo=? and bar=?") << 42 << "baz";
+ */
 
 Database::Database ()
 {
@@ -17,6 +51,27 @@ Database::Database ()
     db.setUserName (opts.username);
     db.setPassword (opts.password);
     db.setPort (opts.port);
+}
+
+bool Database::open ()
+{
+	bool result=db.open ();
+	if (!result) return false;
+
+//	QSqlQuery q ("set names latin1", db);
+
+    QSqlQuery query (db);
+    query.prepare ("show variables like 'char%'");
+    query.exec ();
+
+    while (query.next())
+    {
+    	QString name=query.value(0).toString ();
+    	QString value=query.value(1).toString ();
+    	std::cout << QString ("%1=%2").arg (name).arg (value) << std::endl;
+    }
+
+	return result;
 }
 
 Database::~Database()
@@ -91,7 +146,6 @@ template<class T> int Database::updateObject (const T &object)
 	query.prepare ("update "+T::dbTableName ()+" set "+object.updateValueList ()+" where id=?");
 	object.bindValues (query);
 	query.addBindValue (object.id);
-	std::cout << query.executedQuery () << std::endl;
 
 	query.exec ();
 

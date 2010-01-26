@@ -7,3 +7,11 @@
   - add id to user
   - add launch types
   - ..., see tickets
+  - innodb instead of myisam (?)
+  - landed/... as flag or as time!=null?
+  - constraints (used person may not be deleted) in database
+  - proper data types
+  
+Later:
+  - towflight as separate flight?
+  

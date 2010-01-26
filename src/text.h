@@ -41,6 +41,7 @@ bool yesNoQuestion (QWidget *parent, QString title, QString question);
 
 std::ostream &operator<< (std::ostream &s, const QString &c);
 std::ostream &operator<< (std::ostream &s, const QColor &c);
+std::ostream &operator<< (std::ostream &s, const QByteArray &ba);
 
 #endif
 
