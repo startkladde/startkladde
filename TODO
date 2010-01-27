@@ -8,6 +8,9 @@ Critical
 * Towpilot not given is not an error without record_towpilot
 * Add indexes
 
+Tests
+* Flight: all combinations of mode, started, landed and check
+  properties calculated correctly
 == Minor ==
 
 Editors:

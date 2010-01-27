@@ -55,6 +55,18 @@ void test_database (Database &db)
     	std::cout << flight.toString ().toUtf8 () << std::endl;
 
 	std::cout << std::endl;
+	std::cout << "Get prepared flights" << std::endl;
+	flights=db.getPreparedFlights ();
+    foreach (const Flight &flight, flights)
+    	std::cout << flight.toString ().toUtf8 () << std::endl;
+
+	std::cout << std::endl;
+	std::cout << "Get flights of 2010-01-23" << std::endl;
+	flights=db.getFlightsDate (QDate (2010, 1, 23));
+    foreach (const Flight &flight, flights)
+    	std::cout << flight.toString ().toUtf8 () << std::endl;
+
+	std::cout << std::endl;
 	std::cout << "Get launch types" << std::endl;
 	QList<LaunchType> launchTypes=db.getObjects<LaunchType> ();
     foreach (const LaunchType &launchType, launchTypes)

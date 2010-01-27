@@ -10,6 +10,7 @@
 #include "src/db/dbTypes.h"
 
 class LaunchType;
+class Flight;
 
 class Database
 {
@@ -33,7 +34,7 @@ class Database
 
 		// ORM
         // Template functions, instantiated for the relevant classes
-        template<class T> QList<T> getObjects ();
+        template<class T> QList<T> getObjects (QString condition="", QList<QVariant> conditionValues=QList<QVariant> ());
         template<class T> int countObjects ();
         template<class T> bool objectExists (db_id id);
         template<class T> T getObject (db_id id);
@@ -46,6 +47,8 @@ class Database
         QStringList listAccountingNotes ();
         QStringList listClubs ();
         QStringList listPlaneTypes ();
+        QList<Flight> getPreparedFlights ();
+        QList<Flight> getFlightsDate (QDate date);
 
 
         // Database emulation (to be removed)

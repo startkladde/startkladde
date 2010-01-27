@@ -6,13 +6,18 @@
   - remove bwlv column
   - add id to user
   - add launch types
-  - ..., see tickets
   - innodb instead of myisam (?)
   - landed/... as flag or as time!=null?
+  - change 0 time to null?
+  - store date of flight and times instead of datetimes? time zone safety?
+    => no, b/c start and landing can be on different utc date
+       when effective date stored, updating trouble when mode changed 
+  - meaning of null values in general
   - constraints (used person may not be deleted) in database
   - proper data types
   - standardize enum types
   - remove distinction between 1/2 seated training
+  - ..., see tickets
   
 Later:
   - towflight as separate flight?

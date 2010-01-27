@@ -173,7 +173,7 @@ dbTable OldDatabase::get_table_information (const QString table_name, bool resol
 
 // Methods:
 //   - get pilots and copilots from flights satisfying (condition)
-//   - person/plane flyint [at time]
+//   - person/plane flying [at time]
 //   - get plane by registration
 //   - list airfields
 //   - list first names

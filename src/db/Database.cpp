@@ -22,7 +22,8 @@
  *   - make a class Query, a la Query ("select * from foo where id=?") << 42
  *   - allow specifying an "exclude" value to selectDistinctColumnQuery (requires
  *     Query class)
- *   - movee selectDistinctColumnQuery to Query
+ *   - move selectDistinctColumnQuery to Query
+ *   - move specialized queries generation to model classes (e. g. flight prepared)
  *
  * Medium term plan:
  *   - add some abstraction to the query list generation
@@ -49,6 +50,8 @@
 
 #include <iostream>
 #include <cassert>
+
+#include <QDateTime>
 
 #include "src/config/Options.h"
 #include "src/text.h"
@@ -159,11 +162,22 @@ QString Database::selectDistinctColumnQuery (QString table, QStringList columns,
 // ** ORM **
 // *********
 
-template<class T> QList<T> Database::getObjects ()
+template<class T> QList<T> Database::getObjects (QString condition, QList<QVariant> conditionValues)
 {
 	QSqlQuery query (db);
 	query.setForwardOnly (true);
-	query.prepare("select "+T::selectColumnList ()+" from "+T::dbTableName ());
+
+	QString queryString=QString ("select %1 from %2")
+		.arg (T::selectColumnList (), T::dbTableName ());
+
+	if (!condition.isEmpty ())
+		queryString+=" where "+condition;
+
+	query.prepare (queryString);
+
+	foreach (const QVariant &conditionValue, conditionValues)
+		query.addBindValue (conditionValue);
+
 	query.exec ();
 
     return T::createListFromQuery (query);
@@ -250,9 +264,9 @@ template<class T> int Database::updateObject (const T &object)
 #include "src/model/Flight.h"
 #include "src/model/LaunchType.h"
 
-template QList<Person> Database::getObjects           ();
-template QList<Plane > Database::getObjects           ();
-template QList<Flight> Database::getObjects           ();
+template QList<Person> Database::getObjects           (QString condition, QList<QVariant> conditionValues);
+template QList<Plane > Database::getObjects           (QString condition, QList<QVariant> conditionValues);
+template QList<Flight> Database::getObjects           (QString condition, QList<QVariant> conditionValues);
 
 template int           Database::countObjects<Person> ();
 template int           Database::countObjects<Plane > ();
@@ -279,8 +293,10 @@ template int           Database::updateObject         (const Plane  &object);
 template int           Database::updateObject         (const Flight &object);
 
 // Legacy launch type
-template<> QList<LaunchType> Database::getObjects ()
+template<> QList<LaunchType> Database::getObjects (QString condition, QList<QVariant> conditionValues)
 {
+	assert (condition.isEmpty ());
+	(void)conditionValues;
 	return launchTypes.values ();
 }
 
@@ -364,4 +380,35 @@ QStringList Database::listPlaneTypes ()
 		Plane::dbTableName (),
 		"typ",
 		true));
+}
+
+QList<Flight> Database::getPreparedFlights ()
+{
+	// TODO  Correct criterion is:
+	// happened=(starts here and started) or (lands here and lande)
+	//   -> maybe resolve with def's for starts/lands here
+	// prepared=!happened
+	return getObjects<Flight> ("status=?", QList<QVariant> () << 0);
+}
+
+QList<Flight> Database::getFlightsDate (QDate date)
+{
+//	QDateTime firstDate (date, QTime (0, 0, 0)); // Start of day
+//	QDateTime lastDate (date.addDays (1), QTime (0, 0, 0)); // Start of next day
+
+	// TODO make it right
+	// The decision can be partly implemented in the client.
+	// Old:
+	// on date = happened and effective date is that date
+	// effective date: (starts here and not (only landed))
+	//   startzeit
+	// else
+	//   landezeit
+
+
+	QString condition="true";
+	QList<QVariant> conditionValues;
+	QList<Flight> flights=getObjects<Flight> (condition, conditionValues);
+
+	return flights;
 }
