@@ -1,14 +1,8 @@
 /*
  * Short term plan:
- *   - change DataStorage to use this class
- *   - make Database thread safe
- *   - remove all editable
- *   - remove old database
- *   - remove old db_proxy and admin_functions (check no longer needed)
+ *   - think of a threading solution
  *   - reenable database checking (?) (must show what to change)
  *   - add creating the database (then remove admin_functions)
- *   - get rid of EntityType
- *   - Clean up constructors: create empty (id 0), create with id
  *   - Standardize enum handling: store the database value internally (or use the
  *     numeric value in the database?); and have an "unknown" type (instead of "none")
  *   - do we really want to read the clubs etc. from the database in DataStorage?
@@ -28,6 +22,7 @@
  *   - move specialized queries generation to model classes (e. g. flight prepared)
  *   - maybe we would like to select additional columns, like
  *     (landing_time-takeoff_time as duration) for some conditions
+ *   - Flight should be an entity
  *
  * Medium term plan:
  *   - add some abstraction to the query list generation

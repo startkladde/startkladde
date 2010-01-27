@@ -22,8 +22,7 @@ class Person: public Entity
 		};
 
 		Person ();
-		Person (QString, QString);
-		Person (QString, QString, QString, QString, QString, db_id p_id=0);
+		Person (db_id id);
 		virtual void output (std::ostream &stream, output_format_t format);
 
 		bool operator< (const Person &o) const;
@@ -37,7 +36,6 @@ class Person: public Entity
 		QString landesverbands_nummer;
 
 
-		virtual QString getDescription (casus) const;
 		virtual QString name () const;
 		virtual QString pdf_name () const;
 		virtual QString textName () const;
@@ -62,6 +60,9 @@ class Person: public Entity
 		static QString updateValueList ();
 		void bindValues (QSqlQuery &q) const;
 		static QList<Person> createListFromQuery (QSqlQuery &query);
+
+	private:
+		void initialize ();
 };
 
 #endif

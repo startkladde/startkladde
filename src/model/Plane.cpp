@@ -4,46 +4,21 @@
 
 #include "src/text.h"
 
-Plane::Plane ()
-	:Entity ()
-	/*
-	 * Constructs an empty Plane instance.
-	 */
+Plane::Plane ():
+	Entity ()
+{
+	initialize ();
+}
+
+Plane::Plane (db_id id):
+	Entity (id)
+{
+	initialize ();
+}
+
+void Plane::initialize ()
 {
 	numSeats=0;
-}
-
-Plane::Plane (db_id id)
-	:Entity (id)
-{
-}
-
-Plane::Plane (QString p_registration, QString p_wettbewerbskennzeichen, QString p_typ, QString p_club, int p_sitze, db_id p_id)
-	/*
-	 * Constructs an Plane instance with given data.
-	 * Parameters:
-	 *   - p_registration, p_wettbewerbskennzeichen, p_typ, p_verein, p_sitze,
-	 *     p_id: the initial values for the fields.
-	 */
-{
-	registration=p_registration;
-	competitionId=p_wettbewerbskennzeichen;
-	type=p_typ;
-	club=p_club;
-	numSeats=p_sitze;
-	id=p_id;
-}
-
-QString Plane::getDescription (casus c) const
-	/*
-	 * Returns a text describing the fact that this is a plane.
-	 * Parameters:
-	 *   - c: the grammatical case of the text.
-	 * Return value:
-	 *   the text.
-	 */
-{
-	return entityLabel (st_plane, c);
 }
 
 QString Plane::name () const
@@ -257,7 +232,6 @@ QVariant Plane::DefaultObjectModel::displayData (const Plane &object, int column
 		case 5: return object.club;
 		case 6: return object.comments;
 		case 7: return object.id;
-		case 8: return object.editable;
 	}
 
 	assert (false);

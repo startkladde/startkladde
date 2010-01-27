@@ -1,6 +1,7 @@
 #include "LaunchType.h"
 
 #include <cstdlib>
+#include <cassert>
 
 // Class management
 void LaunchType::init ()
@@ -85,13 +86,6 @@ QString LaunchType::textName () const
 {
 	return description;
 }
-
-QString LaunchType::getDescription (casus c) const
-{
-	return entityLabel (st_startart, c);
-}
-
-
 
 QString LaunchType::get_selector_value (int column_number) const
 {

@@ -57,7 +57,7 @@
  *   - "Launch now" should set the launch time, even if there are errors.
  *   - On flight mode change, change the airfields only if they haven't been
  *     manually edited.
- *   - Read-only mode (modeDisplay) for non-editable flights
+ *   - Read-only mode (modeDisplay)
  *   - If the plane is unknown and the user aborts, set the focus to the
  *     appropriate registration input
  *   - For the error checking on accepting a flight, use the error checking

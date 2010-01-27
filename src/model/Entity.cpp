@@ -6,7 +6,6 @@ Entity::Entity ()
 	 */
 {
 	id=0;
-	editable=true;
 }
 
 Entity::Entity (db_id id)
@@ -20,67 +19,6 @@ Entity::~Entity ()
 	 */
 {
 
-}
-
-QString entityLabel (EntityType t, casus c)
-	/*
-	 * Returns a word describing the type of Entity.
-	 * TODO: this function should be overridden in the base class instead of
-	 * using EntityType t.
-	 * Parameters:
-	 *   - t: the Entity type.
-	 *   - c: the (grammatical) case of the word.
-	 * Return value:
-	 *   the word.
-	 */
-{
-	switch (t)
-	{
-		case st_plane:
-		{
-			switch (c)
-			{
-				case cas_nominativ: return "Flugzeug"; break;
-				case cas_genitiv: return "Flugzeugs"; break;
-				case cas_dativ: return "Flugzeug"; break;
-				case cas_akkusativ: return "Flugzeug"; break;
-				default: return "[Flugzeug]"; break;
-			}
-		} break;
-		case st_person:
-		{
-			switch (c)
-			{
-				case cas_nominativ: return "Person"; break;
-				case cas_genitiv: return "Person"; break;
-				case cas_dativ: return "Person"; break;
-				case cas_akkusativ: return "Person"; break;
-				default: return "[Person]"; break;
-			}
-		} break;
-		case st_startart:
-		{
-			switch (c)
-			{
-				case cas_nominativ: return "Startart"; break;
-				case cas_genitiv: return "Startart"; break;
-				case cas_dativ: return "Startart"; break;
-				case cas_akkusativ: return "Startart"; break;
-				default: return "[Startart]"; break;
-			}
-		} break;
-		default:
-		{
-			switch (c)
-			{
-				case cas_nominativ: return "Zeug"; break;
-				case cas_genitiv: return "Zeugs"; break;
-				case cas_dativ: return "Zeug"; break;
-				case cas_akkusativ: return "Zeug"; break;
-				default: return "[Zeug]"; break;
-			}
-		} break;
-	}
 }
 
 

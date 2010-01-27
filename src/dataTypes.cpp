@@ -312,29 +312,6 @@ std::string q2std (QString s)
 	return std::string (s.toLatin1 ().constData ());
 }
 
-
-db_event_table TableFromEntityType (EntityType t)
-	/*
-	 * Finds out which Table to use in the db_change mechanism for a given
-	 * Entity type (see EntityEditWindow).
-	 * This is a workaround for the fact that there is some code duplication
-	 * between these two variable types.
-	 * Parameters:
-	 *   - t: the Entity type.
-	 * Return value:
-	 *   - the Table to use.
-	 */
-{
-	switch (t)
-	{
-		case st_none: return db_kein; break;
-		case st_plane: return db_flugzeug; break;
-		case st_person: return db_person; break;
-		default: return db_kein; break;
-	}
-}
-
-
 //// Specialize getDbObjectType templates
 //// We probably don't want to implement the generic one, as probably, any
 //// function that calls this, doesn't make much sense with classes for which

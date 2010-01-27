@@ -25,30 +25,33 @@
   */
 Flight::Flight ()
 {
-	id=invalid_id;
-	plane=invalid_id;
-	numLandings=invalid_id;
-	pilot=copilot=towpilot=invalid_id;
-	launchType=invalid_id;
-	flightType=ftNone;
-	mode=modeTowflight=fmNone;
-	started=landed=towflightLanded=false;
-	editable=true;
-	towplane=invalid_id;
+	initialize (invalid_id);
 }
 
 Flight::Flight (db_id id)
-	:id (id)
 {
-	plane=invalid_id;
-	numLandings=invalid_id;
-	pilot=copilot=towpilot=invalid_id;
-	launchType=invalid_id;
+	initialize (id);
+}
+
+void Flight::initialize (db_id id)
+{
+	this->id=id;
+
+	plane         =invalid_id;
+	numLandings   =invalid_id;
+	pilot         =invalid_id;
+	copilot       =invalid_id;
+	towpilot      =invalid_id;
+	launchType    =invalid_id;
+	towplane      =invalid_id;
+
 	flightType=ftNone;
-	mode=modeTowflight=fmNone;
-	started=landed=towflightLanded=false;
-	editable=true;
-	towplane=invalid_id;
+	mode          =fmNone;
+	modeTowflight =fmNone;
+
+	started         =false;
+	landed          =false;
+	towflightLanded =false;
 }
 
 /**
@@ -524,7 +527,6 @@ Flight Flight::makeTowflight (db_id towplaneId, db_id towLaunchType) const
 
 	towflight.comments=QString::fromUtf8 ("Schleppflug für Flug Nr. %1").arg (id);
 	towflight.accountingNote="";
-	towflight.editable=editable; // Required for landing it
 	towflight.mode=modeTowflight;
 	towflight.modeTowflight=fmNone;
 	towflight.pvn=tpvn;

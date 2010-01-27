@@ -18,13 +18,13 @@ class LaunchType:public Entity
 {
 	public:
 		LaunchType ();
+		// TODO cleanup: only () and (id) (after reading from db)
 		LaunchType (int _id, startart_type _type, QString _towplane, QString _description, QString _short_description, QString _accelerator, QString _logbook_string, bool _person_required);
 		LaunchType (QString desc);
 		void init ();
 		virtual void output (std::ostream &stream, output_format_t format);
 		QString toString () const;
 
-		virtual QString getDescription (casus) const;
 		virtual QString name () const;
 		virtual QString textName () const;
 		virtual QString tableName () const;

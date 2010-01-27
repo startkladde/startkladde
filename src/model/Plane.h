@@ -28,7 +28,6 @@ class Plane: public Entity
 
 		enum Category { categoryNone, categorySingleEngine, categoryGlider, categoryMotorglider, categoryUltralight, categoryOther };
 
-		Plane (QString, QString, QString, QString, int, db_id p_id=0);
 		Plane ();
 		Plane (db_id id);
 
@@ -47,7 +46,6 @@ class Plane: public Entity
 		virtual QString name () const;
 
 		virtual void output (std::ostream &stream, output_format_t format);
-		virtual QString getDescription (casus) const;
 		virtual QString textName () const;
 		virtual QString tableName () const;
 
@@ -76,6 +74,8 @@ class Plane: public Entity
 		static QString  categoryToDb   (Category category);
 		static Category categoryFromDb (QString  category);
 
+	private:
+		void initialize ();
 };
 
 #endif

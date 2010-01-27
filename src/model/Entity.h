@@ -30,7 +30,6 @@ class Entity
 		Entity ();
 		Entity (db_id id);
 		virtual ~Entity ();
-		virtual QString getDescription (casus) const=0;
 		virtual QString name () const=0;
 		virtual QString textName () const=0;
 		virtual QString tableName () const=0;
@@ -43,17 +42,12 @@ class Entity
 		db_id get_id () const { return id; }
 
 		db_id id;
-		bool editable;
 		QString comments;
 
 	protected:
 		void output (std::ostream &stream, output_format_t format, bool last, QString name, QString value);
 		void output (std::ostream &stream, output_format_t format, bool last, QString name, db_id value);
 };
-
-// TODO make this a static class function
-// TODO this should not be necessery but be implemented via inheritance
-QString entityLabel (EntityType t, casus c);
 
 #endif
 

@@ -101,7 +101,6 @@ QString FlightModel::columnName (int columnIndex) const
 		case 11: return "destinationAirfield";
 		case 12: return "comments";
 		case 13: return "accountingNote";
-		case 14: return "editable";
 		case 15: return "date";
 		case 16: return "id";
 	}
@@ -134,7 +133,6 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 			case 11: return flight.destinationAirfield;
 			case 12: return flight.comments;
 			case 13: return flight.isTowflight()?QString ("(Siehe geschleppter Flug)"):flight.accountingNote;
-			case 14: return flight.editable?"Ja":"Nein";
 			case 15: return flight.effdatum ();
 			case 16: return (flight.isTowflight ()?QString ("(%1)"):QString ("%1")).arg (flight.get_id ());
 		}

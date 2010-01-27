@@ -44,7 +44,7 @@ class Flight
 {
 	public:
 		Flight ();
-		Flight (db_id id);
+		Flight (db_id id); // TODO constructors taking id should be protected?
 
 		bool operator< (const Flight &o) const;
 		static bool lessThan (Flight *a, Flight *b) { return *a < *b; }
@@ -88,7 +88,6 @@ class Flight
 		int numLandings;
 		QString comments;
 		QString accountingNote;
-		bool editable;
 		FlightMode mode;
 		FlightMode modeTowflight;
 		QString pvn, pnn, bvn, bnn, tpvn, tpnn;			// Dumme Sache für den Fall, dass nur ein Nachname/Vorname bekannt ist.
@@ -190,6 +189,7 @@ class Flight
 		int getStatus () const;
 
 	private:
+		void initialize (db_id id);
 		QString incompletePersonName (QString nn, QString vn) const;
 };
 

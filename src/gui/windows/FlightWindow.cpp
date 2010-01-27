@@ -727,7 +727,6 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 Flight FlightWindow::determineFlightBasic () throw ()
 {
 	Flight flight;
-	flight.editable=true;
 
 	// Some of the data is taken from the stored data
 	flight.id        = originalFlightId;

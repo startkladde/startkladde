@@ -3,39 +3,20 @@
 #include <iostream>
 #include <cassert>
 
-Person::Person ()
-	:Entity ()
-	/*
-	 * Constructs an empty Person instance.
-	 */
+Person::Person ():
+	Entity ()
 {
+	initialize ();
 }
 
-Person::Person (QString vn, QString nn)
-	/*
-	 * Constructs an Person instance with given first and last name.
-	 * Parameters:
-	 *   - vn, nn: the initial values for the fields.
-	 */
+Person::Person (db_id id):
+	Entity (id)
 {
-	vorname=vn;
-	nachname=nn;
-	id=0;
+	initialize ();
 }
 
-Person::Person (QString vn, QString nn, QString ve, QString cid, QString lvnum, db_id p_id)
-	/*
-	 * Constructs an Person instance with given data.
-	 * Parameters:
-	 *   - vn, nn, ve, vid, lvnum, id: the initial values for the fields.
-	 */
+void Person::initialize ()
 {
-	vorname=vn;
-	nachname=nn;
-	club=ve;
-	club_id=cid;
-	landesverbands_nummer=lvnum;
-	id=p_id;
 }
 
 bool Person::operator< (const Person &o) const
@@ -108,18 +89,6 @@ QString Person::textName () const
 	if (eintrag_ist_leer (nachname)) return vorname;
 	if (eintrag_ist_leer (vorname)) return nachname;
 	return vorname+" "+nachname;
-}
-
-QString Person::getDescription (casus c) const
-	/*
-	 * Returns a text describing the fact that this is a plane.
-	 * Parameters:
-	 *   - c: the grammatical case of the text.
-	 * Return value:
-	 *   the text.
-	 */
-{
-	return entityLabel (st_person, c);
 }
 
 QString Person::get_selector_value (int column_number) const
@@ -195,7 +164,6 @@ QVariant Person::DefaultObjectModel::displayData (const Person &object, int colu
 		case 3: return object.landesverbands_nummer;
 		case 4: return object.comments;
 		case 5: return object.id;
-		case 6: return object.editable;
 	}
 
 	assert (false);
@@ -230,17 +198,13 @@ QString Person::selectColumnList ()
 
 Person Person::createFromQuery (const QSqlQuery &q)
 {
-	Person p (
-			// TODO Set values using accessors
-		q.value (2).toString (),
-		q.value (1).toString (),
-		q.value (3).toString (),
-		q.value (4).toString (),
-		"",
-		q.value (0).toLongLong ()
-		);
+	Person p (q.value (0).toLongLong ());
 
-	p.comments=q.value (5).toString ();
+	p.nachname =q.value (1).toString ();
+	p.vorname  =q.value (2).toString ();
+	p.club     =q.value (3).toString ();
+	p.club_id  =q.value (4).toString ();
+	p.comments =q.value (5).toString ();
 
 	return p;
 }

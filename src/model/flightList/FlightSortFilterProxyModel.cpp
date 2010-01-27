@@ -42,11 +42,9 @@ bool FlightSortFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIn
 	{
 		// Prepared flights are hidden if one of these is true:
 		//   - showPreparedFlights is false
-		//   - the flight is not editable
 		//   - the flight is a towflight
 
 		if (!showPreparedFlights) return false;
-		if (!flight.editable) return false;
 		if (flight.isTowflight ()) return false;
 
 		return true;

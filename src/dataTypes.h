@@ -25,9 +25,6 @@ enum db_event_table { db_kein, db_alle, db_person, db_flug, db_flugzeug };
 template<class T> db_event_table getDbEventTable ();
 
 
-// TODO remove
-enum EntityType { st_none, st_plane, st_person, st_startart };
-
 QList<FlightType> listFlightTypes (bool include_invalid);
 QString flightTypeText (FlightType flightType, lengthSpecification lenspec);
 bool flightTypeCopilotRecorded (FlightType flugtyp);
@@ -45,15 +42,8 @@ bool lands_here (FlightMode m);
 bool starts_here (FlightMode m);
 
 
-
-//QString flugstatus_string (flug_status, lengthSpecification lenspec);
-
 QString std2q (std::string);
 std::string q2std (QString);
-
-db_event_table TableFromEntityType (EntityType);
-
-#define deletePointerList(T, list) do { foreach (T *_pointer, list) delete _pointer; } while (0)
 
 #endif
 
