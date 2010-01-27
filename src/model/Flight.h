@@ -96,6 +96,10 @@ class Flight
 		bool started, landed, towflightLanded;
 		// Whenn adding something here, addObject it to get_towflight ()
 
+		static const int STATUS_STARTED;
+		static const int STATUS_LANDED;
+		static const int STATUS_TOWFLIGHT_LANDED;
+
 
 		db_id get_id () const { return id; }
 

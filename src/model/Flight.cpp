@@ -1012,9 +1012,9 @@ FlightType Flight::typeFromDb (int type)
 }
 
 // *** Flag accessors
-const int STATUS_STARTED=1;
-const int STATUS_LANDED=2;
-const int STATUS_TOWFLIGHT_LANDED=4;
+const int Flight::STATUS_STARTED=1;
+const int Flight::STATUS_LANDED=2;
+const int Flight::STATUS_TOWFLIGHT_LANDED=4;
 
 void Flight::setStatus (int status)
 {

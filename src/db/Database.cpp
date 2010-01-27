@@ -1,7 +1,5 @@
 /*
  * Short term plan:
- *   - add to Database:
- *     - flights prepared and flights by date
  *   - change DataStorage to use this class
  *   - remove all editable
  *   - remove old database
@@ -24,6 +22,8 @@
  *     Query class)
  *   - move selectDistinctColumnQuery to Query
  *   - move specialized queries generation to model classes (e. g. flight prepared)
+ *   - maybe we would like to select additional columns, like
+ *     (landing_time-takeoff_time as duration) for some conditions
  *
  * Medium term plan:
  *   - add some abstraction to the query list generation
@@ -384,31 +384,56 @@ QStringList Database::listPlaneTypes ()
 
 QList<Flight> Database::getPreparedFlights ()
 {
-	// TODO  Correct criterion is:
-	// happened=(starts here and started) or (lands here and lande)
-	//   -> maybe resolve with def's for starts/lands here
-	// prepared=!happened
-	return getObjects<Flight> ("status=?", QList<QVariant> () << 0);
+	// The correct criterion for prepared flights is:
+	// !((starts_here and started) or (lands_here and landed))
+	// Resolving the flight mode, we get:
+	// !( (local and (started or landed)) or (leaving and started) or (coming and landed) )
+
+	QString condition="!( (modus=? and status&?) or (modus=? and status&?) or (modus=? and status&?) )";
+	QList<QVariant> conditionValues; conditionValues
+		<< "l" << (Flight::STATUS_STARTED|Flight::STATUS_LANDED)
+		<< "g" << Flight::STATUS_STARTED
+		<< "k" << Flight::STATUS_LANDED
+		;
+
+	return getObjects<Flight> (condition, conditionValues);
 }
 
 QList<Flight> Database::getFlightsDate (QDate date)
 {
-//	QDateTime firstDate (date, QTime (0, 0, 0)); // Start of day
-//	QDateTime lastDate (date.addDays (1), QTime (0, 0, 0)); // Start of next day
+	// The correct criterion for flights on a given date is:
+	// (happened and effective_date=that_date)
+	// effective_date has to be calculated from takeoff time, landing time,
+	// status and mode, which is compilicated. Thus, we select a superset of
+	// the flights of that date and filter out the correct flights afterwards.
 
-	// TODO make it right
-	// The decision can be partly implemented in the client.
-	// Old:
-	// on date = happened and effective date is that date
-	// effective date: (starts here and not (only landed))
-	//   startzeit
-	// else
-	//   landezeit
+	// The superset criterion is:
+	// (launch_date=that_date or landing_date=that_date)
+	// Since the database stores the datetimes, we compare them agains the
+	// first and last datetime of the date.
 
+	QDateTime thisMidnight (date,             QTime (0, 0, 0)); // Start of day
+	QDateTime nextMidnight (date.addDays (1), QTime (0, 0, 0)); // Start of next day
 
-	QString condition="true";
-	QList<QVariant> conditionValues;
-	QList<Flight> flights=getObjects<Flight> (condition, conditionValues);
+	QString condition="(startzeit>=? and startzeit<?) or (landezeit>=? and landezeit<?)";
+	QList<QVariant> conditionValues; conditionValues
+		<< thisMidnight << nextMidnight
+		<< thisMidnight << nextMidnight
+		;
+
+	QList<Flight> candidates=getObjects<Flight> (condition, conditionValues);
+
+	// For some of the selected flights, the fact that the takeoff or landing
+	// time is on that day may not indicate that the flight actually happened
+	// on that day. For example, if a flight is prepared (i. e. not taken off
+	// nor landed), or leaving, the times may not be relevant.
+	// Thus, we only keep flights which happened and where the effective date
+	// is the given date.
+
+	QList<Flight> flights;
+	foreach (const Flight &flight, candidates)
+		if (flight.happened () && flight.effdatum ()==date)
+			flights.append (flight);
 
 	return flights;
 }

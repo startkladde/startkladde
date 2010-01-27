@@ -10,7 +10,11 @@ Critical
 
 Tests
 * Flight: all combinations of mode, started, landed and check
-  properties calculated correctly
+  * properties calculated correctly
+  * selects done properly
+* Flight: also test inactive times (e. g. landing time given but leaving or not
+  landed)
+
 == Minor ==
 
 Editors:
