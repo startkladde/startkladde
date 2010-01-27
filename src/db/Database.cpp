@@ -1,11 +1,12 @@
 /*
  * Short term plan:
  *   - change DataStorage to use this class
+ *   - make Database thread safe
  *   - remove all editable
  *   - remove old database
  *   - remove old db_proxy and admin_functions (check no longer needed)
  *   - reenable database checking (?) (must show what to change)
- *   - add creating the database
+ *   - add creating the database (then remove admin_functions)
  *   - get rid of EntityType
  *   - Clean up constructors: create empty (id 0), create with id
  *   - Standardize enum handling: store the database value internally (or use the
@@ -13,6 +14,9 @@
  *   - do we really want to read the clubs etc. from the database in DataStorage?
  *   - add "object used" to Database
  *   - add ping to database
+ *   - generate string lists from other data instead of explicity query (but still
+ *     store explicitly) note that we still have query for accounting notes and
+ *     airfields because we don't get a complete flight list
  *
  * Improvements:
  *   - split this class into parts (generic, orm, specific)
@@ -43,6 +47,7 @@
  *       - question: can we afford using a query on a memory database e. g.
  *         for list of first names rather than maintaining the list explicitly?
  *         should be fast enough (does sqlite memory table have index?)
+ *         airfields are more interesting, b/c there are many flights
  *   - local disk caching
  */
 

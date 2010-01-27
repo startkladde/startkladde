@@ -28,13 +28,11 @@ HEADERS += \
            src/concurrent/task/Task.h \
            src/concurrent/task/SleepTask.h \
            src/config/Options.h \
-           src/db/adminFunctions.h \
            src/db/DbColumn.h \
            src/db/DbEvent.h \
            src/db/DbTable.h \
            src/db/dbTypes.h \
            src/db/Database.h \
-           src/db/OldDatabase.h \
            src/db/DataStorage.h \
            src/db/DataStorageMonitor.h \
            src/db/DataStorageWorker.h \
@@ -119,13 +117,11 @@ SOURCES += \
            src/concurrent/task/Task.cpp \
            src/concurrent/task/SleepTask.cpp \
            src/config/Options.cpp \
-           src/db/adminFunctions.cpp \
            src/db/DbColumn.cpp \
            src/db/DbEvent.cpp \
            src/db/DbTable.cpp \
            src/db/dbTypes.cpp \
            src/db/Database.cpp \
-           src/db/OldDatabase.cpp \
            src/db/DataStorage.cpp \
            src/db/DataStorageMonitor.cpp \
            src/db/DataStorageWorker.cpp \

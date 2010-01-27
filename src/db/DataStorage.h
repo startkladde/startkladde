@@ -9,7 +9,7 @@
 #include <QString>
 #include <QMap>
 
-#include "src/db/OldDatabase.h"
+#include "src/db/Database.h"
 #include "src/time/Date.h"
 #include "src/db/DbEvent.h"
 #include "src/db/DataStorageWorker.h"
@@ -59,7 +59,7 @@ class DataStorage: public QObject
 
 		friend class DataStorageMonitor;
 
-		DataStorage (OldDatabase &db);
+		DataStorage (Database &db);
 		virtual ~DataStorage ();
 
 		int refreshPlanes ();
@@ -154,7 +154,7 @@ class DataStorage: public QObject
 		void executingQuery (QString query);
 
 	private:
-		OldDatabase &db;
+		Database &db;
 
 		// Note that we cannot use an AutomaticEntityList here because that
 		// accesses the database to retrieve the object identified by the ID

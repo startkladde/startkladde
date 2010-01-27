@@ -36,7 +36,8 @@
 #include "src/model/flightList/FlightProxyList.h"
 #include "src/model/flightList/FlightSortFilterProxyModel.h"
 #include "src/db/task/FetchFlightsTask.h"
-#include "src/db/adminFunctions.h"
+//#include "src/db/adminFunctions.h"
+#include "src/db/Database.h"
 
 // ******************
 // ** Construction **
@@ -44,7 +45,7 @@
 
 // TODO pass DataStorage instead of Database (?, depending on thread)
 // TODO better plugin list passing
-MainWindow::MainWindow (QWidget *parent, OldDatabase *db, QList<ShellPlugin *> &plugins) :
+MainWindow::MainWindow (QWidget *parent, Database *db, QList<ShellPlugin *> &plugins) :
 	QMainWindow (parent), dataStorage (*db), plugins (plugins), weatherWidget (NULL), weatherPlugin (NULL),
 			weatherDialog (NULL), flightList (this), contextMenu (new QMenu (this))
 {
@@ -1339,36 +1340,38 @@ bool MainWindow::initializeDatabase ()
 		if (ok)
 		{
 			// OK pressed
-			try
-			{
-				OldDatabase rootDatabase;
-				rootDatabase.display_queries = opts.display_queries;
-				initialize_database (rootDatabase, opts.server, opts.port, opts.root_name, rootPassword);
-			}
-			catch (OldDatabase::ex_access_denied &e)
-			{
-				retry=true;
-				text=QString::fromUtf8 ("%1. Passwort für %2:")
-					.arg (e.description (true))
-					.arg (userText);
-			}
-			catch (OldDatabase::ex_init_failed &e)
-			{
-//				db_error = e.description (true);
-				QMessageBox::critical (this, e.description (true), e.description (true),
-						QMessageBox::Ok, QMessageBox::NoButton);
-				return false;
-			}
-			// TODO show output from creation
-			catch (SkException &e)
-			{
-				// Database initialization failed. That means that there is no point in
-				// trying the connection again.
-//				db_error = "Datenbankfehler: " + e.getDescription ();
-				QMessageBox::critical (this, "Datenbankfehler", e.description (true),
-						QMessageBox::Ok, QMessageBox::NoButton);
-				return false;
-			}
+//			try
+//			{
+				Database rootDatabase;
+				// FIXME
+//				rootDatabase.display_queries = opts.display_queries;
+//				initialize_database (rootDatabase, opts.server, opts.port, opts.root_name, rootPassword);
+//			}
+			// FIXME
+//			catch (OldDatabase::ex_access_denied &e)
+//			{
+//				retry=true;
+//				text=QString::fromUtf8 ("%1. Passwort für %2:")
+//					.arg (e.description (true))
+//					.arg (userText);
+//			}
+//			catch (OldDatabase::ex_init_failed &e)
+//			{
+////				db_error = e.description (true);
+//				QMessageBox::critical (this, e.description (true), e.description (true),
+//						QMessageBox::Ok, QMessageBox::NoButton);
+//				return false;
+//			}
+//			// TODO show output from creation
+//			catch (SkException &e)
+//			{
+//				// Database initialization failed. That means that there is no point in
+//				// trying the connection again.
+////				db_error = "Datenbankfehler: " + e.getDescription ();
+//				QMessageBox::critical (this, "Datenbankfehler", e.description (true),
+//						QMessageBox::Ok, QMessageBox::NoButton);
+//				return false;
+//			}
 		}
 		else
 		{

@@ -12,8 +12,17 @@
 #include "src/concurrent/monitor/OperationMonitor.h"
 #include "src/concurrent/DefaultQThread.h"
 #include "src/concurrent/monitor/SimpleOperationMonitor.h"
+#include "src/config/Options.h"
 
 using namespace std;
+
+const int db_ok=0;
+
+// FIXME all methods accessing the database:
+//   - error handling
+//   - proper locking (database, then data)
+//   - return values
+
 
 /*
  * Thread safety note:
@@ -111,11 +120,12 @@ using namespace std;
 // ** Construction **
 // ******************
 
-DataStorage::DataStorage (OldDatabase &db):
+DataStorage::DataStorage (Database &db):
 	db (db), //workerThread ("DataStorage worker"),
 	currentState (stateOffline), worker (*this, 1000)
 {
-	QObject::connect (&db, SIGNAL (executing_query (QString)), this, SIGNAL (executingQuery (QString)));
+	// FIXME
+//	QObject::connect (&db, SIGNAL (executing_query (QString)), this, SIGNAL (executingQuery (QString)));
 	worker.start ();
 }
 
@@ -140,13 +150,15 @@ DataStorage::~DataStorage ()
 // ** Database reading **
 // **********************
 
+// FIXME can probably be removed
 #define copyList(T, source, target) do \
 { \
 	target.clear (); \
-	foreach (T *it, source) \
-		target.append (*it); \
+	foreach (T it, source) \
+		target.append (it); \
 } while (0)
 
+// FIXME can probably be removed
 #define copyListLocked(T, source, target) do \
 { \
 	QMutexLocker lock (&dataMutex); \
@@ -157,76 +169,56 @@ DataStorage::~DataStorage ()
 
 int DataStorage::refreshPlanes ()
 {
-	QList<Plane *> planeList;
 
 	QMutexLocker dbLock (&databaseMutex);
-	int result=db.list_planes_all (planeList);
+	QList<Plane> planeList=db.getObjects<Plane> ();
 	dbLock.unlock ();
 
-	if (db_ok==result)
-		copyListLocked (Plane, planeList, planes);
+	copyListLocked (Plane, planeList, planes);
 
-	deletePointerList (Plane, planeList);
-
-	return result;
+	return 0;
 }
 
 int DataStorage::refreshPeople ()
 {
-	QList<Person *> personList;
-
 	QMutexLocker dbLock (&databaseMutex);
-	int result=db.list_persons_all (personList);
+	QList<Person> personList=db.getObjects<Person> ();
 	dbLock.unlock ();
 
-	if (db_ok==result)
-		copyListLocked (Person, personList, people);
+	copyListLocked (Person, personList, people);
 
-	deletePointerList (Person, personList);
-
-	return result;
+	return 0;
 }
 
 int DataStorage::refreshLaunchTypes ()
 {
-	QList<LaunchType *> launchTypeList;
-
 	QMutexLocker dbLock (&databaseMutex);
-	int result=db.list_startarten_all (launchTypeList);
+	QList<LaunchType> launchTypeList=db.getObjects<LaunchType> ();
 	dbLock.unlock ();
 
-	if (db_ok==result)
-		copyListLocked (LaunchType, launchTypeList, launchTypes);
+	copyListLocked (LaunchType, launchTypeList, launchTypes);
 
-	deletePointerList (LaunchType, launchTypeList);
-
-	return result;
+	return 0;
 }
 
 int DataStorage::refreshFlights (QDate date, EntityList<Flight> &listTarget, QDate *dateTarget)
 {
-	QList<Flight *> flightList;
+	QList<Flight> flightList;
 
 	QMutexLocker dbLock (&databaseMutex);
-	int result;
 	if (date.isNull ())
-		result=db.list_flights_prepared (flightList);
+		flightList=db.getPreparedFlights ();
 	else
-		result=db.list_flights_date (flightList, &date);
+		flightList=db.getFlightsDate (date);
 	dbLock.unlock ();
 
-	if (db_ok==result)
-	{
-		if (dateTarget) *dateTarget=QDate ();
-		QMutexLocker lock (&dataMutex);
-		copyList (Flight, flightList, listTarget);
-		if (dateTarget) *dateTarget=date;
-		lock.unlock ();
-	}
+	if (dateTarget) *dateTarget=QDate ();
+	QMutexLocker lock (&dataMutex);
+	copyList (Flight, flightList, listTarget);
+	if (dateTarget) *dateTarget=date;
+	lock.unlock ();
 
-	deletePointerList (Flight, flightList);
-
-	return result;
+	return 0;
 }
 
 /**
@@ -247,82 +239,61 @@ int DataStorage::refreshPreparedFlights ()
 
 int DataStorage::refreshAirfields ()
 {
-	QStringList airfieldList;
-
 	QMutexLocker dbLock (&databaseMutex);
-	int result=db.list_airfields (airfieldList);
+	QStringList airfieldList=db.listAirfields ();
 	dbLock.unlock ();
 
-	if (db_ok==result)
-	{
-		QMutexLocker lock (&dataMutex);
-		airfields=airfieldList;
-		lock.unlock ();
-	}
+	QMutexLocker lock (&dataMutex);
+	airfields=airfieldList;
+	lock.unlock ();
 
-	return result;
+	return 0;
 }
 
 int DataStorage::refreshAccountingNotes ()
 {
-	QStringList accountingNoteList;
-
 	QMutexLocker dbLock (&databaseMutex);
-	int result=db.list_accounting_note (accountingNoteList);
+	QStringList accountingNoteList=db.listAccountingNotes ();
 	dbLock.unlock ();
 
-	if (db_ok==result)
-	{
-		QMutexLocker lock (&dataMutex);
-		accountingNotes=accountingNoteList;
-		lock.unlock ();
-	}
+	QMutexLocker lock (&dataMutex);
+	accountingNotes=accountingNoteList;
+	lock.unlock ();
 
-	return result;
+	return 0;
 }
 
 int DataStorage::refreshClubs ()
 {
-	QStringList clubList;
-
 	QMutexLocker dbLock (&databaseMutex);
-	int result=db.list_clubs (clubList);
+	QStringList clubList=db.listClubs ();
 	dbLock.unlock ();
 
-	// TODO generate from planes/people?
-	if (db_ok==result)
-	{
-		QMutexLocker lock (&dataMutex);
-		clubs=clubList;
-		lock.unlock ();
-	}
+	QMutexLocker lock (&dataMutex);
+	clubs=clubList;
+	lock.unlock ();
 
-	return result;
+	return 0;
 }
 
 int DataStorage::refreshPlaneTypes ()
 {
-	QStringList typeList;
-
 	QMutexLocker dbLock (&databaseMutex);
-	int result=db.list_types(typeList);
+	QStringList typeList=db.listPlaneTypes ();
 	dbLock.unlock ();
 
-	// TODO generate from planes?
-	if (db_ok==result)
-	{
-		QMutexLocker lock (&dataMutex);
-		planeTypes=typeList;
-		lock.unlock ();
-	}
+	QMutexLocker lock (&dataMutex);
+	planeTypes=typeList;
+	lock.unlock ();
 
-	return result;
+	return 0;
 }
 
+// FIXME
 bool retryOnResult (int result)
 {
-	if (result==db_err_timeout) return true;
-	if (result==db_err_connection_failed) return true;
+//	if (result==db_err_timeout) return true;
+//	if (result==db_err_connection_failed) return true;
 	return false;
 }
 
@@ -732,7 +703,7 @@ template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const 
 	// Write the object by using the database method
 	QMutexLocker dbLock (&databaseMutex);
 	// TODO error check
-	db_id newId=db.writeObject (&copy);
+	db_id newId=db.createObject (copy);
 	dbLock.unlock ();
 
 	// TODO when can we cancel? When the object has been added, the cache
@@ -760,7 +731,7 @@ template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const 
 	// Task completed
 	if (id) *id=newId;
 	if (success) *success=(id_valid (newId));
-	if (message) *message=db.get_last_error ();
+	if (message) *message=db.lastError ().text ();
 	return true;
 }
 
@@ -778,7 +749,7 @@ template<class T> bool DataStorage::deleteObject (OperationMonitor *monitor, db_
 	//	if (monitor->isCanceled ()) return false;
 
 	if (success) *success=(result==db_ok);
-	if (message) *message=db.get_last_error ();
+	if (message) *message=db.lastError ().text ();
 
 	if (result==db_ok)
 	{
@@ -800,7 +771,7 @@ template<class T> bool DataStorage::updateObject (OperationMonitor *monitor, con
 	T copy (object);
 
 	QMutexLocker dbLock (&databaseMutex);
-	db_id result=db.writeObject (&copy);
+	db_id result=db.updateObject (copy);
 	dbLock.unlock ();
 
 
@@ -809,7 +780,7 @@ template<class T> bool DataStorage::updateObject (OperationMonitor *monitor, con
 	//	if (monitor->isCanceled ()) return false;
 
 	if (success) *success=id_valid (result);
-	if (message) *message=db.get_last_error ();
+	if (message) *message=db.lastError ().text ();
 
 	if (id_valid (result))
 	{
@@ -966,7 +937,9 @@ template<class T> bool DataStorage::objectUsed (OperationMonitor *monitor, db_id
 	if (id_invalid (id)) return false; // TODO signal error
 
 	QMutexLocker dbLock (&databaseMutex);
-	if (result) *result=db.objectUsed<T> (id);
+	// FIXME
+//	if (result) *result=db.objectUsed<T> (id);
+	if (result) *result=false;
 	dbLock.unlock ();
 
 	if (monitor->isCanceled ()) return false;
@@ -1078,53 +1051,56 @@ void DataStorage::doConnect ()
 	// TODO allow cancelling
 	while (!connected && !unusable)
 	{
-		try
-		{
+//		try
+//		{
 			QMutexLocker dbLock (&databaseMutex);
-			db.connect (opts.server, opts.port, opts.username, opts.password);
+			db.open (opts.server, opts.port, opts.username, opts.password, opts.database);
 			connected=true;
-		}
-		catch (OldDatabase::ex_access_denied      ) { unusable=true; }
-		catch (OldDatabase::ex_connection_failed  ) { /* Keep trying */ }
+			dbLock.unlock ();
+//		}
+		// FIXME
+//		catch (OldDatabase::ex_access_denied      ) { unusable=true; }
+//		catch (OldDatabase::ex_connection_failed  ) { /* Keep trying */ }
 		// TODO other exceptions
 
 		// If we are not connected, wait one second before retrying
 		DefaultQThread::sleep (1);
 	}
 
-	// If the connection succeeded (i. e. we are connected now), try to use the
-	// database
-	bool checked=false;
-	while (!checked && !unusable)
-	{
-		if (connected)
-		{
-			try
-			{
-				QMutexLocker dbLock (&databaseMutex);
-				db.use_db (opts.database);
-				db.check_usability ();
-				checked=true;
-			}
-			catch (OldDatabase::ex_access_denied          ) { unusable=true; }
-			catch (OldDatabase::ex_database_not_found     ) { unusable=true; }
-			catch (OldDatabase::ex_database_not_accessible) { unusable=true; }
-			catch (OldDatabase::ex_insufficient_access    ) { unusable=true; }
-			catch (OldDatabase::ex_unusable               ) { unusable=true; }
-			catch (OldDatabase::ex_query_failed           ) { /* Keep trying */ }
-			catch (OldDatabase::ex_timeout                ) { /* Keep trying */ }
-			catch (OldDatabase::ex_connection_failed      ) { /* Keep trying */ }
-			// TODO other exceptions
-		}
-
-		// If checking failed, wait one second before retrying
-		DefaultQThread::sleep (1);
-	}
+	// FIXME
+//	// If the connection succeeded (i. e. we are connected now), try to use the
+//	// database
+//	bool checked=false;
+//	while (!checked && !unusable)
+//	{
+//		if (connected)
+//		{
+//			try
+//			{
+//				QMutexLocker dbLock (&databaseMutex);
+//				db.use_db (opts.database);
+//				db.check_usability ();
+//				checked=true;
+//			}
+//			catch (OldDatabase::ex_access_denied          ) { unusable=true; }
+//			catch (OldDatabase::ex_database_not_found     ) { unusable=true; }
+//			catch (OldDatabase::ex_database_not_accessible) { unusable=true; }
+//			catch (OldDatabase::ex_insufficient_access    ) { unusable=true; }
+//			catch (OldDatabase::ex_unusable               ) { unusable=true; }
+//			catch (OldDatabase::ex_query_failed           ) { /* Keep trying */ }
+//			catch (OldDatabase::ex_timeout                ) { /* Keep trying */ }
+//			catch (OldDatabase::ex_connection_failed      ) { /* Keep trying */ }
+//			// TODO other exceptions
+//		}
+//
+//		// If checking failed, wait one second before retrying
+//		DefaultQThread::sleep (1);
+//	}
 
 	if (unusable)
 	{
 		if (connected)
-			db.disconnect ();
+			db.close ();
 
 		setState (stateUnusable);
 	}
@@ -1150,7 +1126,7 @@ void DataStorage::doDisconnect ()
 	emit status ("Verbindung zur Datenbank wird getrennt...", false);
 
 	QMutexLocker dbLock (&databaseMutex);
-	db.disconnect ();
+	db.close ();
 	dbLock.unlock ();
 
 	setState (stateOffline);
@@ -1189,7 +1165,9 @@ bool DataStorage::stateIsError (DataStorage::State state)
 bool DataStorage::ping ()
 {
 	QMutexLocker dbLock (&databaseMutex);
-	int result=db.ping ();
+	// FIXME
+//	int result=db.ping ();
+	int result=0;
 	dbLock.unlock ();
 
 	return result==0;

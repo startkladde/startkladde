@@ -100,55 +100,55 @@ int main (int argc, char **argv)
 	 *   the return value of the QApplication, and thus of the main window.
 	 */
 {
-	Database db;
-	opts.parse_arguments (argc, argv);
-	opts.read_config_files (&db, NULL, argc, argv);
-	test_database (db); return 0;
+//	Database db;
+//	opts.parse_arguments (argc, argv);
+//	opts.read_config_files (&db, NULL, argc, argv);
+//	test_database (db); return 0;
 
 	// DbEvents are used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
-//	qRegisterMetaType<DbEvent> ("DbEvent");
-//	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
-//
-//	Database db;
-//	QList<ShellPlugin *> plugins;
+	qRegisterMetaType<DbEvent> ("DbEvent");
+	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
 
-//	if (opts.need_display ())
-//		opts.do_display ();
-//	else if (opts.display_help)
-//		display_help ();
-//	else
-//	{
-//		opts.read_config_files (&db, &plugins, argc, argv);
-//		//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
-//		QApplication a (argc, argv);
-//
-//		// Put light.{la,so} to styles/
-//		//a.setStyle ("light, 3rd revision");
-//		if (!opts.style.isEmpty ()) a.setStyle (opts.style);
-//
+	Database db;
+	QList<ShellPlugin *> plugins;
+
+	if (opts.need_display ())
+		opts.do_display ();
+	else if (opts.display_help)
+		display_help ();
+	else
+	{
+		opts.read_config_files (&db, &plugins, argc, argv);
+		//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
+		QApplication a (argc, argv);
+
+		// Put light.{la,so} to styles/
+		//a.setStyle ("light, 3rd revision");
+		if (!opts.style.isEmpty ()) a.setStyle (opts.style);
+
 //		db.display_queries=opts.display_queries;
-//
-//		MainWindow w (NULL, &db, plugins);
-//
-//		// Let the plugins initialize
-//		sched_yield ();
-//
-//
-//
-//		w.showMaximized ();
-////		w.show ();
-//		int ret=a.exec();
-//
-//		foreach (ShellPlugin *plugin, plugins)
-//		{
-////			std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
-//			plugin->terminate ();
-//			sched_yield ();
-//		}
-//
-//		return ret;
-//	}
+
+		MainWindow w (NULL, &db, plugins);
+
+		// Let the plugins initialize
+		sched_yield ();
+
+
+
+		w.showMaximized ();
+//		w.show ();
+		int ret=a.exec();
+
+		foreach (ShellPlugin *plugin, plugins)
+		{
+//			std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
+			plugin->terminate ();
+			sched_yield ();
+		}
+
+		return ret;
+	}
 }
 
