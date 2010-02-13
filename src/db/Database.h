@@ -11,7 +11,22 @@
 
 class LaunchType;
 class Flight;
+class DatabaseInfo;
 
+/**
+ * Methods for manipulating objects in the database (ORM).
+ *
+ * Defines template methods for retrieving, creating, counting, deleting,
+ * creating and updating objects, which are instantiated for the relevant
+ * classes in the .cpp file. Also provides some frontends for object selection
+ * (like getFlightsDate).
+ *
+ * This class uses a QSqlDatabase, and as such is NOT thread safe. More
+ * precisely, this class may only be used in the thread where it was created.
+ * This is a QtSql restriction, see [1].
+ *
+ * [1] http://doc.trolltech.com/4.5/threads.html#threads-and-the-sql-module
+ */
 class Database
 {
 	public:
@@ -21,7 +36,7 @@ class Database
 		virtual ~Database ();
 
 		// Connection management
-		bool open (QString server, int port, QString username, QString password, QString database);
+		bool open (const DatabaseInfo &dbInfo);
 		void close ();
 		QSqlError lastError () const { return db.lastError (); }
 
@@ -31,6 +46,13 @@ class Database
 		static QString selectDistinctColumnQuery (QStringList tables, QStringList columns, bool excludeEmpty=false);
 		static QString selectDistinctColumnQuery (QStringList tables, QString column, bool excludeEmpty=false);
 		static QString selectDistinctColumnQuery (QString table, QStringList columns, bool excludeEmpty=false);
+
+		// Database management (generic)
+		bool addTable (QString name);
+		bool addColumn (QString table, QString name, QString type);
+
+		// Database management (specific)
+		bool initializeDatabase ();
 
 		// ORM
         // Template functions, instantiated for the relevant classes
@@ -51,10 +73,25 @@ class Database
         QList<Flight> getFlightsDate (QDate date);
 
 
-        // Database emulation (to be removed)
+        // Database emulation (to be removed later)
         void addLaunchType (const LaunchType &launchType);
 
 	protected:
+    	// Data type names as in Rails (sk_web) (for MySQL)
+    	static const QString dataTypeBinary;
+    	static const QString dataTypeBoolean;
+    	static const QString dataTypeDate;
+    	static const QString dataTypeDatetime;
+    	static const QString dataTypeDecimal;
+    	static const QString dataTypeFloat;
+    	static const QString dataTypeInteger;
+    	static const QString dataTypeString;
+    	static const QString dataTypeText;
+    	static const QString dataTypeTime;
+    	static const QString dataTypeTimestamp;
+    	static const QString dataTypeCharacter; // Non-Rails
+    	static const QString dataTypeId;
+
 		QStringList listStrings (QSqlQuery query);
 
 	private:

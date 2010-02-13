@@ -9,6 +9,8 @@
 #include <qdatetime.h>
 #include <qfile.h>
 
+#include "src/db/DatabaseInfo.h"
+
 class Database;
 class ShellPlugin;
 
@@ -32,12 +34,8 @@ class Options
 		bool show_short_version;
 
 		// Connection
-		QString server;
+		DatabaseInfo databaseInfo;
 		QString server_display_name;
-		int port;
-		QString database;
-		QString username;
-		QString password;
 		QString root_name;
 		QString root_password;
 		QString sk_admin_name;
@@ -81,4 +79,3 @@ class Options
 extern Options opts;
 
 #endif
-

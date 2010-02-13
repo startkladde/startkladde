@@ -197,7 +197,7 @@ bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)
 
 int Plane::DefaultObjectModel::columnCount () const
 {
-	return 9;
+	return 8;
 }
 
 QVariant Plane::DefaultObjectModel::displayHeaderData (int column) const
@@ -213,7 +213,6 @@ QVariant Plane::DefaultObjectModel::displayHeaderData (int column) const
 		case 6: return "Bemerkungen";
 		// TODO remove from DefaultItemModel?
 		case 7: return "ID";
-		case 8: return "Editierbar";
 	}
 
 	assert (false);

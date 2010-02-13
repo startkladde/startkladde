@@ -1325,7 +1325,7 @@ bool MainWindow::initializeDatabase ()
 	QString text=QString::fromUtf8 (
 		"Die Datenbank %1 ist nicht benutzbar. Zur Korrektur"
 		" wird das Passwort von %2 benötigt.")
-		.arg (opts.database)
+		.arg (opts.databaseInfo.database)
 		.arg (userText);
 
 	bool retry=false;

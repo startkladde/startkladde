@@ -1,22 +1,29 @@
 0->1:
   - convert to utf8/utf8_unicode_ci
   - transfer from ... to ..._temp, then rename ..._temp to ...
-  - create towpilot columns
   - rename columns to english
-  - remove bwlv column
-  - add id to user
-  - add launch types
-  - innodb instead of myisam (?)
-  - landed/... as flag or as time!=null?
+  - innodb instead of myisam
   - change 0 time to null?
-  - store date of flight and times instead of datetimes? time zone safety?
-    => no, b/c start and landing can be on different utc date
-       when effective date stored, updating trouble when mode changed 
   - meaning of null values in general
   - constraints (used person may not be deleted) in database
-  - proper data types
+  - proper data types (and convert)
   - standardize enum types
-  - remove distinction between 1/2 seated training
+  - Flights:
+    - create towpilot columns
+    - landed/... as flag or as time!=null?
+    - store date of flight and times instead of datetimes? time zone safety?
+      => no, b/c start and landing can be on different utc date
+         when effective date stored, updating trouble when mode changed 
+    - remove distinction between 1/2 seated training
+    - remove column club, editierbar
+  - People:
+    - remove bwlv column
+  - Users:
+    - add id
+  - Launch types:
+    - add launch types
+  - Planes
+    - plane table: remove unique constraint from registration
   - ..., see tickets
   
 Later:

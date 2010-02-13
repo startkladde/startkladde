@@ -22,107 +22,7 @@ const char *db_time_format="%Y-%m-%d %H:%M:%S";
 //   - <50112: timeouts may not work correctly
 
 
-dbTable OldDatabase::get_table_information (const QString table_name, bool resolve_like) const
-{
-	// BLOB is used to get TEXT
-	dbTable r (table_name);
 
-	DbColumn id_column ("id", FIELD_TYPE_LONGLONG, 0, "");
-	id_column.auto_increment=true;
-	id_column.not_null=true;
-
-	if (table_name.length ()>5 && table_name.endsWith ("_temp"))
-	{
-		r.like_table=table_name.left (table_name.length ()-5);
-	}
-	else if (table_name=="flug")
-	{
-		//                              name,                 type,                  length, default
-		r.columns.push_back (id_column);
-		r.columns.push_back (DbColumn ("pilot",              FIELD_TYPE_LONGLONG,    0, "NULL"));
-		r.columns.push_back (DbColumn ("begleiter",          FIELD_TYPE_LONGLONG,    0, "NULL"));
-		if (opts.record_towpilot)
-		{
-			r.columns.push_back (DbColumn ("towpilot",          FIELD_TYPE_LONGLONG,    0, "NULL"));
-		}
-		r.columns.push_back (DbColumn ("startort",           FIELD_TYPE_BLOB,        0, ""));
-		r.columns.push_back (DbColumn ("zielort",            FIELD_TYPE_BLOB,        0, ""));
-		r.columns.push_back (DbColumn ("anzahl_landungen",   FIELD_TYPE_LONGLONG,    0, "0"));
-		r.columns.push_back (DbColumn ("startzeit",          FIELD_TYPE_DATETIME,    0, "NULL"));
-		r.columns.push_back (DbColumn ("landezeit",          FIELD_TYPE_DATETIME,    0, "NULL"));
-		r.columns.push_back (DbColumn ("startart",           FIELD_TYPE_LONGLONG,    0, "NULL"));
-		r.columns.push_back (DbColumn ("land_schlepp",       FIELD_TYPE_DATETIME,    0, "NULL"));
-		r.columns.push_back (DbColumn ("typ",                FIELD_TYPE_TINY,        0, "NULL"));
-		r.columns.push_back (DbColumn ("bemerkung",          FIELD_TYPE_BLOB,        0, ""));
-		r.columns.push_back (DbColumn ("editierbar",         FIELD_TYPE_TINY,        1, "NULL"));
-		r.columns.push_back (DbColumn ("verein",             FIELD_TYPE_BLOB,        0, ""));
-		r.columns.push_back (DbColumn ("flugzeug",           FIELD_TYPE_LONGLONG,    0, "NULL"));
-		r.columns.push_back (DbColumn ("status",             FIELD_TYPE_LONGLONG,    0, "NULL"));
-		r.columns.push_back (DbColumn ("modus",              FIELD_TYPE_STRING,      1, ""));
-		r.columns.push_back (DbColumn ("pvn",                FIELD_TYPE_BLOB,        0, ""));
-		r.columns.push_back (DbColumn ("pnn",                FIELD_TYPE_BLOB,        0, ""));
-		r.columns.push_back (DbColumn ("bvn",                FIELD_TYPE_BLOB,        0, ""));
-		r.columns.push_back (DbColumn ("bnn",                FIELD_TYPE_BLOB,        0, ""));
-		if (opts.record_towpilot)
-		{
-			r.columns.push_back (DbColumn ("tpvn",                FIELD_TYPE_BLOB,        0, ""));
-			r.columns.push_back (DbColumn ("tpnn",                FIELD_TYPE_BLOB,        0, ""));
-		}
-		r.columns.push_back (DbColumn ("modus_sfz",          FIELD_TYPE_STRING,      1, ""));
-		r.columns.push_back (DbColumn ("zielort_sfz",        FIELD_TYPE_BLOB,        0, ""));
-		r.columns.push_back (DbColumn ("abrechnungshinweis", FIELD_TYPE_BLOB,        0, ""));
-		r.columns.push_back (DbColumn ("towplane",           FIELD_TYPE_LONGLONG,    0, "NULL"));
-		r.primary_key="id";
-		r.unique_keys.push_back ("id");
-	}
-	else if (table_name=="flugzeug")
-	{
-		//                              name,                     type,               length, default
-		r.columns.push_back (id_column);
-		r.columns.push_back (DbColumn ("kennzeichen",            FIELD_TYPE_VAR_STRING, 255, ""));
-		r.columns.push_back (DbColumn ("verein",                 FIELD_TYPE_BLOB,         0, ""));
-		r.columns.push_back (DbColumn ("sitze",                  FIELD_TYPE_SHORT,        0, "0"));
-		r.columns.push_back (DbColumn ("typ",                    FIELD_TYPE_BLOB,         0, ""));
-		r.columns.push_back (DbColumn ("gattung",                FIELD_TYPE_STRING,       1, ""));
-		r.columns.push_back (DbColumn ("wettbewerbskennzeichen", FIELD_TYPE_BLOB,         0, ""));
-		r.columns.push_back (DbColumn ("bemerkung",              FIELD_TYPE_BLOB,         0, ""));
-		r.primary_key="id";
-		r.unique_keys.push_back ("id");
-		r.unique_keys.push_back ("kennzeichen");
-	}
-	else if (table_name=="person")
-	{
-		//                              name,         type,            length, default
-		r.columns.push_back (id_column);
-		r.columns.push_back (DbColumn ("nachname",   FIELD_TYPE_BLOB, 0,      ""));
-		r.columns.push_back (DbColumn ("vorname",    FIELD_TYPE_BLOB, 0,      ""));
-		r.columns.push_back (DbColumn ("verein",     FIELD_TYPE_BLOB, 0,      ""));
-		r.columns.push_back (DbColumn ("bwlv",       FIELD_TYPE_BLOB, 0,      ""));
-		r.columns.push_back (DbColumn ("spitzname",  FIELD_TYPE_BLOB, 0,      ""));
-		r.columns.push_back (DbColumn ("vereins_id", FIELD_TYPE_BLOB, 0,      ""));
-		r.columns.push_back (DbColumn ("bemerkung",  FIELD_TYPE_BLOB, 0,      ""));
-
-		r.primary_key="id";
-		r.unique_keys.push_back ("id");
-	}
-	else if (table_name=="user")
-	{
-		// TODO: the TEXT (BLOB) column can have length "0" (meaning
-		// "variable"), but it cannot be used as a key without specifying the
-		// key length. DbColumn does not support specifying a key length, so
-		// the field length must be used. Change this.
-		//                              name,                  type,            length, default .flags
-		r.columns.push_back (DbColumn ("username",            FIELD_TYPE_VAR_STRING,  255,   "" ).set_not_null (true));
-		r.columns.push_back (DbColumn ("password",            FIELD_TYPE_BLOB,        0,     "" ));
-		r.columns.push_back (DbColumn ("perm_club_admin",     FIELD_TYPE_TINY,        1,     "0"));	// bool is not supported by MySQL
-		r.columns.push_back (DbColumn ("perm_read_flight_db", FIELD_TYPE_TINY,        1,     "0"));	// bool is not supported by MySQL
-		r.columns.push_back (DbColumn ("club",                FIELD_TYPE_BLOB,        0,     ""));
-		r.columns.push_back (DbColumn ("person",              FIELD_TYPE_LONGLONG,    0,     "0"));
-
-		r.primary_key="username";
-		r.unique_keys.push_back ("username");
-	}
-}
 
 // Check usable (see also admin_functions):
 //   - connect
@@ -197,4 +97,51 @@ dbTable OldDatabase::get_table_information (const QString table_name, bool resol
 // Use database problems: access denied, database not found, server lost, connection error
 
 // Ping
+
+// DbTable:
+QString DbColumn::type_string () const
+	// Now why doesn't the MySQL library have function to do this?
+{
+	QString r="???";
+	switch (type)
+	{
+		case FIELD_TYPE_TINY: r="TINYINT"; break;
+		case FIELD_TYPE_SHORT: r="SMALLINT"; break;
+		case FIELD_TYPE_LONG: r="INTEGER"; break;
+		case FIELD_TYPE_INT24: r="MEDIUMINT"; break;
+		case FIELD_TYPE_LONGLONG: r="BIGINT"; break;
+		case FIELD_TYPE_DECIMAL: r="DECIMAL"; break;	// synonyms DEC, NUMERIC, FIXED
+		case FIELD_TYPE_FLOAT: r="FLOAT"; break;
+		case FIELD_TYPE_DOUBLE: r="DOUBLE"; break; // synonyms REAL, DOUBLE PRECISION
+		case FIELD_TYPE_TIMESTAMP: r="TIMESTAMP"; break;
+		case FIELD_TYPE_DATE: r="DATE"; break;
+		case FIELD_TYPE_TIME: r="TIME"; break;
+		case FIELD_TYPE_DATETIME: r="DATETIME"; break;
+		case FIELD_TYPE_YEAR: r="YEAR"; break;
+		case FIELD_TYPE_STRING: r="CHAR"; break;
+		case FIELD_TYPE_VAR_STRING: r="VARCHAR"; break;
+		case FIELD_TYPE_BLOB: r=binary?"BLOB":"TEXT"; break;
+		case FIELD_TYPE_TINY_BLOB: r=binary?"TINYBLOB":"TINYTEXT"; break;
+		case FIELD_TYPE_MEDIUM_BLOB: r=binary?"MEDIUMBLOB":"MEDIUMTEXT"; break;
+		case FIELD_TYPE_LONG_BLOB: r=binary?"LONGBLOB":"LONGTEXT"; break;
+		case FIELD_TYPE_SET: r="SET"; break;
+		case FIELD_TYPE_NULL: r="NULL"; break;
+
+		// The following are either not supported or not documented in the
+		// MySQL Documention section 14.2.6
+		case FIELD_TYPE_ENUM: r="ENUM"; break;
+		case FIELD_TYPE_NEWDATE: r="NEWDATE"; break;
+		case FIELD_TYPE_GEOMETRY: r="GEOMETRY"; break;
+		// no default to allow the compiler to warn
+
+		// More types we are not interested in
+		case MYSQL_TYPE_VARCHAR: r="VARCHAR"; break;
+		case MYSQL_TYPE_BIT: r="BIT"; break;
+		case MYSQL_TYPE_NEWDECIMAL: r="NEWDECIMAL"; break;
+	}
+
+	if (length>0) r+="("+QString::number (length)+")";
+
+	return r;
+}
 

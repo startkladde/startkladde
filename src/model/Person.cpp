@@ -133,7 +133,7 @@ void Person::output (std::ostream &stream, output_format_t format)
 
 int Person::DefaultObjectModel::columnCount () const
 {
-	return 7;
+	return 6;
 }
 
 QVariant Person::DefaultObjectModel::displayHeaderData (int column) const
@@ -147,7 +147,6 @@ QVariant Person::DefaultObjectModel::displayHeaderData (int column) const
 		case 4: return "Bemerkungen";
 		// TODO remove from DefaultItemModel?
 		case 5: return "ID";
-		case 6: return "Editierbar";
 	}
 
 	assert (false);

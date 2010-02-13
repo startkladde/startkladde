@@ -28,13 +28,18 @@ void display_help ()
 
 void test_database (Database &db)
 {
-	bool ok=db.open (opts.server, opts.port, opts.username, opts.password, opts.database);
+	bool ok=db.open (opts.databaseInfo);
 
 	if (!ok)
 	{
 		std::cout << "Database failed to open: " << db.lastError ().text () << std::endl;
 		return;
 	}
+
+	db.initializeDatabase ();
+	std::cout << "Count planes: " << db.countObjects<Plane> () << std::endl;
+
+	return;
 
 	std::cout << std::endl;
 	std::cout << "Get people" << std::endl;
@@ -100,10 +105,10 @@ int main (int argc, char **argv)
 	 *   the return value of the QApplication, and thus of the main window.
 	 */
 {
-//	Database db;
-//	opts.parse_arguments (argc, argv);
-//	opts.read_config_files (&db, NULL, argc, argv);
-//	test_database (db); return 0;
+	Database testDb;
+	opts.parse_arguments (argc, argv);
+	opts.read_config_files (&testDb, NULL, argc, argv);
+	test_database (testDb); return 0;
 
 	// DbEvents are used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter

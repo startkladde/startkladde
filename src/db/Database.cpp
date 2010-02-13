@@ -1,8 +1,8 @@
 /*
  * Short term plan:
- *   - think of a threading solution
+ *   - add a version to the database
+ *   - add migrations
  *   - reenable database checking (?) (must show what to change)
- *   - add creating the database (then remove admin_functions)
  *   - Standardize enum handling: store the database value internally (or use the
  *     numeric value in the database?); and have an "unknown" type (instead of "none")
  *   - do we really want to read the clubs etc. from the database in DataStorage?
@@ -11,6 +11,9 @@
  *   - generate string lists from other data instead of explicity query (but still
  *     store explicitly) note that we still have query for accounting notes and
  *     airfields because we don't get a complete flight list
+ *   - fix error reporting (db.lastError (), e. g. delete object)
+ *   - remove DbColumn, DbTable
+ *   - make sure "", 0 and NULL are read correctly
  *
  * Improvements:
  *   - split this class into parts (generic, orm, specific)
@@ -23,6 +26,9 @@
  *   - maybe we would like to select additional columns, like
  *     (landing_time-takeoff_time as duration) for some conditions
  *   - Flight should be an entity
+ *   - Allow tables without id column (e. g. habtm join tables), but tables
+ *     must have at least one column
+ *   - dbTableName as static constant instead of function
  *
  * Medium term plan:
  *   - add some abstraction to the query list generation
@@ -31,8 +37,12 @@
  *     - one possibility: with create 0, up/down, and create current
  *     - another: autogenerate current from 0 and ups
  *     - look at rails (or other framework supporting migrations)
+ *   - add support for sqlite
+ *   - add indexes
+ *   - add foreign key constraints
  *
  * Long term plan:
+ *   - Shold there be a thread safe database class?
  *   - use a memory SQLite for local storage (datastorage functionality)
  *   - merge data storage and database methods, so we can use a (local)
  *     database directly (w/o local cache)
@@ -53,8 +63,14 @@
 
 #include <QDateTime>
 
+#include "src/db/DatabaseInfo.h"
 #include "src/config/Options.h"
 #include "src/text.h"
+#include "src/model/Person.h"
+#include "src/model/Plane.h"
+#include "src/model/Flight.h"
+#include "src/model/LaunchType.h"
+
 
 // TODO: check if the slow part is the loop; if yes, add ProgressMonitor
 
@@ -65,18 +81,44 @@
  * Condition ("foo=? and bar=?") << 42 << "baz";
  */
 
+// ***************
+// ** Constants **
+// ***************
+
+const QString Database::dataTypeBinary    = "blob";
+const QString Database::dataTypeBoolean   = "tinyint(1)";
+const QString Database::dataTypeDate      = "date";
+const QString Database::dataTypeDatetime  = "datetime";
+const QString Database::dataTypeDecimal   = "decimal";
+const QString Database::dataTypeFloat     = "float";
+const QString Database::dataTypeInteger   = "int(11)";
+const QString Database::dataTypeString    = "varchar(255)";
+const QString Database::dataTypeText      = "text";
+const QString Database::dataTypeTime      = "time";
+const QString Database::dataTypeTimestamp = "datetime";
+const QString Database::dataTypeCharacter = "varchar(1)"; // Non-Rails
+const QString Database::dataTypeId        = dataTypeInteger;
+
+
+// ******************
+// ** Construction **
+// ******************
+
 Database::Database ()
 {
     db=QSqlDatabase::addDatabase ("QMYSQL");
 }
 
-bool Database::open (QString server, int port, QString username, QString password, QString database)
+bool Database::open (const DatabaseInfo &dbInfo)
 {
-    db.setHostName (server);
-    db.setUserName (username);
-    db.setPassword (password);
-    db.setPort (port);
-    db.setDatabaseName (database);
+	std::cout << QString ("Connecting to %1@%2:%3")
+		.arg (dbInfo.username, dbInfo.server, dbInfo.database) << std::endl;
+
+    db.setHostName     (dbInfo.server  );
+    db.setUserName     (dbInfo.username);
+    db.setPassword     (dbInfo.password);
+    db.setPort         (dbInfo.port    );
+    db.setDatabaseName (dbInfo.database);
 
     bool result=db.open ();
 	if (!result) return false;
@@ -155,6 +197,121 @@ QString Database::selectDistinctColumnQuery (QStringList tables, QString column,
 QString Database::selectDistinctColumnQuery (QString table, QStringList columns, bool excludeEmpty)
 {
 	return selectDistinctColumnQuery (QStringList (table), columns, excludeEmpty);
+}
+
+
+// ***********************************
+// ** Database management (generic) **
+// ***********************************
+
+bool Database::addTable (QString name)
+{
+	QString queryString=QString (
+		"CREATE TABLE %1 ("
+		"id int(11) NOT NULL AUTO_INCREMENT,"
+		"PRIMARY KEY (id)"
+		") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+		)
+		.arg (name);
+
+	std::cout << "Creating table " << name << "...";
+
+	QSqlQuery query (db);
+	query.prepare (queryString);
+	bool result=query.exec ();
+
+	if (result)
+		std::cout << "OK" << std::endl;
+	else
+		std::cout << "Error: " << query.lastError ().databaseText () << std::endl;
+
+	return result;
+}
+
+bool Database::addColumn (QString table, QString name, QString type)
+{
+	QString queryString=
+		QString ("ALTER TABLE %1 ADD COLUMN %2 %3")
+		.arg (table, name, type);
+
+	std::cout << QString ("Adding column %1.%2...").arg (table, name);
+
+	QSqlQuery query (db);
+	query.prepare (queryString);
+	bool result=query.exec ();
+
+	if (result)
+		std::cout << "OK" << std::endl;
+	else
+		std::cout << "Error: " << query.lastError ().databaseText () << std::endl;
+
+	return result;
+}
+
+
+// ************************************
+// ** Database management (specific) **
+// ************************************
+
+bool Database::initializeDatabase ()
+{
+	QString peopleTable=Person::dbTableName ();
+	addTable (peopleTable);
+	addColumn (peopleTable, "nachname"  , dataTypeString);
+	addColumn (peopleTable, "vorname"   , dataTypeString);
+	addColumn (peopleTable, "verein"    , dataTypeString);
+	addColumn (peopleTable, "spitzname" , dataTypeString);
+	addColumn (peopleTable, "vereins_id", dataTypeString);
+	addColumn (peopleTable, "bemerkung" , dataTypeString);
+
+	QString planesTable=Plane::dbTableName ();
+	addTable (planesTable);
+	addColumn (planesTable, "kennzeichen",            dataTypeString );
+	addColumn (planesTable, "verein",                 dataTypeString );
+	addColumn (planesTable, "sitze",                  dataTypeInteger);
+	addColumn (planesTable, "typ",                    dataTypeString );
+	addColumn (planesTable, "gattung",                "VARCHAR(1)"   );
+	addColumn (planesTable, "wettbewerbskennzeichen", dataTypeString );
+	addColumn (planesTable, "bemerkung",              dataTypeString );
+
+	QString flightsTable=Flight::dbTableName ();
+	addTable (flightsTable);
+	addColumn (flightsTable, "pilot",              dataTypeId       );
+	addColumn (flightsTable, "begleiter",          dataTypeId       );
+	addColumn (flightsTable, "towpilot",           dataTypeId       );
+	addColumn (flightsTable, "startort",           dataTypeString   );
+	addColumn (flightsTable, "zielort",            dataTypeString   );
+	addColumn (flightsTable, "anzahl_landungen",   dataTypeInteger  );
+	addColumn (flightsTable, "startzeit",          dataTypeDatetime );
+	addColumn (flightsTable, "landezeit",          dataTypeDatetime );
+	addColumn (flightsTable, "startart",           dataTypeId       );
+	addColumn (flightsTable, "land_schlepp",       dataTypeDatetime );
+	addColumn (flightsTable, "typ",                dataTypeInteger  );
+	addColumn (flightsTable, "bemerkung",          dataTypeString   );
+	addColumn (flightsTable, "flugzeug",           dataTypeId       );
+	addColumn (flightsTable, "status",             dataTypeInteger  );
+	addColumn (flightsTable, "modus",              dataTypeCharacter);
+	addColumn (flightsTable, "pvn",                dataTypeString   );
+	addColumn (flightsTable, "pnn",                dataTypeString   );
+	addColumn (flightsTable, "bvn",                dataTypeString   );
+	addColumn (flightsTable, "bnn",                dataTypeString   );
+	addColumn (flightsTable, "tpvn",               dataTypeString   );
+	addColumn (flightsTable, "tpnn",               dataTypeString   );
+	addColumn (flightsTable, "modus_sfz",          dataTypeCharacter);
+	addColumn (flightsTable, "zielort_sfz",        dataTypeString   );
+	addColumn (flightsTable, "abrechnungshinweis", dataTypeString   );
+	addColumn (flightsTable, "towplane",           dataTypeId       );
+
+	QString usersTable="users";
+	addTable (usersTable);
+	addColumn (usersTable, "username",            dataTypeString ); // TODO not null
+	addColumn (usersTable, "password",            dataTypeString ); // TODO long enough?
+	addColumn (usersTable, "perm_club_admin",     dataTypeBoolean);
+	addColumn (usersTable, "perm_read_flight_db", dataTypeBoolean);
+	addColumn (usersTable, "club",                dataTypeString );
+	addColumn (usersTable, "person",              dataTypeId     );
+
+	return true;
 }
 
 
@@ -258,11 +415,6 @@ template<class T> int Database::updateObject (const T &object)
 //   - ::updateValueList ();
 //   - bindValues (QSqlQuery &q) const;
 //   - ::createListFromQuery (QSqlQuery &query);
-
-#include "src/model/Person.h"
-#include "src/model/Plane.h"
-#include "src/model/Flight.h"
-#include "src/model/LaunchType.h"
 
 template QList<Person> Database::getObjects           (QString condition, QList<QVariant> conditionValues);
 template QList<Plane > Database::getObjects           (QString condition, QList<QVariant> conditionValues);
@@ -437,3 +589,4 @@ QList<Flight> Database::getFlightsDate (QDate date)
 
 	return flights;
 }
+

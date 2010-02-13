@@ -34,7 +34,6 @@ tbl_idx_startort,            100, "Rheinstetten"
 tbl_idx_zielort,             100, "Rheinstetten"
 tbl_idx_bemerkungen,         200, "Seilrissübung"
 tbl_idx_abrechnungshinweis,   50, "Landegebühr bezahlt"
-tbl_idx_editierbar,           50, "Nein"
 tbl_idx_datum,                50, "0000-00-00"
 tbl_idx_id_display,           50, "12345"
  *
@@ -51,7 +50,7 @@ FlightModel::~FlightModel ()
 
 int FlightModel::columnCount () const
 {
-	return 17;
+	return 16;
 }
 
 QVariant FlightModel::displayHeaderData (int column) const
@@ -72,9 +71,8 @@ QVariant FlightModel::displayHeaderData (int column) const
 		case 11: return "Zielort";
 		case 12: return "Bemerkungen";
 		case 13: return "Abrechnungshinweis";
-		case 14: return "Editierbar";
-		case 15: return "Datum";
-		case 16: return "ID";
+		case 14: return "Datum";
+		case 15: return "ID";
 	}
 
 	std::cout << "column is " << column << std::endl;
@@ -101,8 +99,8 @@ QString FlightModel::columnName (int columnIndex) const
 		case 11: return "destinationAirfield";
 		case 12: return "comments";
 		case 13: return "accountingNote";
-		case 15: return "date";
-		case 16: return "id";
+		case 14: return "date";
+		case 15: return "id";
 	}
 
 	assert (!"Unhandled column");
@@ -133,8 +131,8 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 			case 11: return flight.destinationAirfield;
 			case 12: return flight.comments;
 			case 13: return flight.isTowflight()?QString ("(Siehe geschleppter Flug)"):flight.accountingNote;
-			case 15: return flight.effdatum ();
-			case 16: return (flight.isTowflight ()?QString ("(%1)"):QString ("%1")).arg (flight.get_id ());
+			case 14: return flight.effdatum ();
+			case 15: return (flight.isTowflight ()?QString ("(%1)"):QString ("%1")).arg (flight.get_id ());
 		}
 
 		assert (false);

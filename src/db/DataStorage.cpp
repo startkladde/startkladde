@@ -741,17 +741,19 @@ template<class T> bool DataStorage::deleteObject (OperationMonitor *monitor, db_
 
 	// TODO error handling
 	QMutexLocker dbLock (&databaseMutex);
-	int result=db.deleteObject<T> (id);
+	int affectedRows=db.deleteObject<T> (id);
 	dbLock.unlock ();
 
 	// TODO when can we cancel? When the object has been deleted, the cache
 	// must be updated.
 	//	if (monitor->isCanceled ()) return false;
 
-	if (success) *success=(result==db_ok);
+	bool ok=(affectedRows>0);
+
+	if (success) *success=ok;
 	if (message) *message=db.lastError ().text ();
 
-	if (result==db_ok)
+	if (ok)
 	{
 		objectDeleted<T> (id);
 
@@ -1054,7 +1056,7 @@ void DataStorage::doConnect ()
 //		try
 //		{
 			QMutexLocker dbLock (&databaseMutex);
-			db.open (opts.server, opts.port, opts.username, opts.password, opts.database);
+			db.open (opts.databaseInfo);
 			connected=true;
 			dbLock.unlock ();
 //		}

@@ -60,12 +60,13 @@ Options::Options ()
 	show_short_version=false;
 
 	// Connection
-	server="localhost";
-	server_display_name=server;
-	port=3306;
-	database="startkladde";
-	username="startkladde";
-	password="";	// No default password as users are supposed to set their own.
+	databaseInfo.server="localhost";
+	databaseInfo.database="startkladde";
+	databaseInfo.username="startkladde";
+	databaseInfo.password="";	// No default password as users are supposed to set their own.
+	databaseInfo.port=3306;
+
+	server_display_name=databaseInfo.server;
 	root_name="root";
 	root_password="";	// No default password again.
 	sk_admin_name="sk_admin";
@@ -183,12 +184,12 @@ bool Options::parse_arguments (int argc, char *argv[])
 			case opt_short_version: show_short_version=true; break;
 
 			// Connection
-			case 's': server=optarg; server_display_name=server; break;
+			case 's': databaseInfo.server=optarg; server_display_name=optarg; break;
+			case 'o': databaseInfo.port=atoi (optarg); break;
+			case 'd': databaseInfo.database=optarg; break;
+			case 'u': databaseInfo.username=optarg; break;
+			case 'p': databaseInfo.password=optarg; break;
 			case opt_server_display_name: server_display_name=optarg; break;
-			case 'o': port=atoi (optarg); break;
-			case 'd': database=optarg; break;
-			case 'u': username=optarg; break;
-			case 'p': password=optarg; break;
 			case opt_root_name: root_name=optarg; break;
 			case opt_root_pasword: root_password=optarg; break;
 			case opt_sk_admin_name: sk_admin_name=optarg; break;
@@ -297,14 +298,14 @@ bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugi
 			}
 
 			// Connection
-			if (key=="server") { server=value; server_display_name=server; }
+			if (key=="server"   ) { databaseInfo.server=value; server_display_name=value; }
+			if (key=="port"     ) databaseInfo.port=value.toInt ();
+			if (key=="database" ) databaseInfo.database=value;
+			if (key=="username" ) databaseInfo.username=value;
+			if (key=="user_name") databaseInfo.username=value;
+			if (key=="password" ) databaseInfo.password=value;
 			if (key=="server_display_name") { server_display_name=value; }
-			if (key=="port") port=value.toInt ();
-			if (key=="database") database=value;
-			if (key=="username") username=value;
-			if (key=="user_name") username=value;
-			if (key=="password") password=value;
-			if (key=="user_password") password=value;
+			if (key=="user_password") databaseInfo.password=value;
 			if (key=="sk_admin_name") sk_admin_name=value;
 			if (key=="sk_admin_password") sk_admin_password=value;
 			if (key=="root_name") root_name=value;
