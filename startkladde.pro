@@ -28,14 +28,15 @@ HEADERS += \
            src/concurrent/task/Task.h \
            src/concurrent/task/SleepTask.h \
            src/config/Options.h \
-           src/db/DbColumn.h \
            src/db/DbEvent.h \
-           src/db/DbTable.h \
            src/db/dbTypes.h \
            src/db/Database.h \
            src/db/DataStorage.h \
            src/db/DataStorageMonitor.h \
            src/db/DataStorageWorker.h \
+           src/db/migration/Migration.h \
+           src/db/migration/MigrationFactory.h \
+           src/db/migration/Migrator.h \
            src/db/task/DataStorageSleepTask.h \
            src/db/task/AddObjectTask.h \
            src/db/task/UpdateObjectTask.h \
@@ -117,14 +118,15 @@ SOURCES += \
            src/concurrent/task/Task.cpp \
            src/concurrent/task/SleepTask.cpp \
            src/config/Options.cpp \
-           src/db/DbColumn.cpp \
            src/db/DbEvent.cpp \
-           src/db/DbTable.cpp \
            src/db/dbTypes.cpp \
            src/db/Database.cpp \
            src/db/DataStorage.cpp \
            src/db/DataStorageMonitor.cpp \
            src/db/DataStorageWorker.cpp \
+           src/db/migration/Migration.cpp \
+           src/db/migration/MigrationFactory.cpp \
+           src/db/migration/Migrator.cpp \
            src/db/task/DataStorageSleepTask.cpp \
            src/db/task/RefreshAllTask.cpp \
            src/db/task/FetchFlightsTask.cpp \
@@ -188,3 +190,12 @@ FORMS += \
            src/gui/windows/objectEditor/PlaneEditorPane.ui \
            src/gui/windows/objectEditor/PersonEditorPane.ui \
            # Empty line
+
+# Migrations
+HEADERS += \
+	src/db/migrations/Migration_20100214_140000_initial.h
+	# Empty line
+
+SOURCES += \
+	src/db/migrations/Migration_20100214_140000_initial.cpp
+	# Empty line

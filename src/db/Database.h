@@ -6,6 +6,8 @@
 #include <QtSql>
 #include <QHash>
 #include <QStringList>
+#include <QSqlError>
+#include <QSqlQuery>
 
 #include "src/db/dbTypes.h"
 
@@ -30,54 +32,18 @@ class DatabaseInfo;
 class Database
 {
 	public:
+		// *** Data types
 		class NotFoundException {};
+		class QueryFailedException
+		{
+			public:
+				QueryFailedException (QSqlError error): error (error) {}
+				QSqlError error;
+		};
 
-		Database ();
-		virtual ~Database ();
+    	// *** Constants
 
-		// Connection management
-		bool open (const DatabaseInfo &dbInfo);
-		void close ();
-		QSqlError lastError () const { return db.lastError (); }
-
-		// Very generic
-		QStringList listStrings (QString query);
-		static QString selectDistinctColumnQuery (QString table, QString column, bool excludeEmpty=false);
-		static QString selectDistinctColumnQuery (QStringList tables, QStringList columns, bool excludeEmpty=false);
-		static QString selectDistinctColumnQuery (QStringList tables, QString column, bool excludeEmpty=false);
-		static QString selectDistinctColumnQuery (QString table, QStringList columns, bool excludeEmpty=false);
-
-		// Database management (generic)
-		bool addTable (QString name);
-		bool addColumn (QString table, QString name, QString type);
-
-		// Database management (specific)
-		bool initializeDatabase ();
-
-		// ORM
-        // Template functions, instantiated for the relevant classes
-        template<class T> QList<T> getObjects (QString condition="", QList<QVariant> conditionValues=QList<QVariant> ());
-        template<class T> int countObjects ();
-        template<class T> bool objectExists (db_id id);
-        template<class T> T getObject (db_id id);
-        template<class T> int deleteObject (db_id id);
-        template<class T> db_id createObject (T &object);
-        template<class T> int updateObject (const T &object);
-
-        // Very specific
-        QStringList listAirfields ();
-        QStringList listAccountingNotes ();
-        QStringList listClubs ();
-        QStringList listPlaneTypes ();
-        QList<Flight> getPreparedFlights ();
-        QList<Flight> getFlightsDate (QDate date);
-
-
-        // Database emulation (to be removed later)
-        void addLaunchType (const LaunchType &launchType);
-
-	protected:
-    	// Data type names as in Rails (sk_web) (for MySQL)
+		// Data type names as in Rails (sk_web) (for MySQL)
     	static const QString dataTypeBinary;
     	static const QString dataTypeBoolean;
     	static const QString dataTypeDate;
@@ -92,6 +58,56 @@ class Database
     	static const QString dataTypeCharacter; // Non-Rails
     	static const QString dataTypeId;
 
+    	// *** Construction
+		Database ();
+		virtual ~Database ();
+
+		// *** Connection management
+		bool open (const DatabaseInfo &dbInfo);
+		void close ();
+		QSqlError lastError () const { return db.lastError (); }
+
+		// *** Very generic
+		QStringList listStrings (QString queryString);
+		static QString selectDistinctColumnQuery (QString table, QString column, bool excludeEmpty=false);
+		static QString selectDistinctColumnQuery (QStringList tables, QStringList columns, bool excludeEmpty=false);
+		static QString selectDistinctColumnQuery (QStringList tables, QString column, bool excludeEmpty=false);
+		static QString selectDistinctColumnQuery (QString table, QStringList columns, bool excludeEmpty=false);
+		QSqlQuery &executeQuery (QSqlQuery &query);
+		QSqlQuery executeQuery (QString queryString);
+		bool queryHasResult (QString queryString);
+
+
+		// *** Shema manipulation
+		void createTable (QString name);
+		void createTableLike (QString like, QString name);
+		void dropTable (QString name);
+		void addColumn (QString table, QString name, QString type);
+		bool tableExists (QString name);
+
+		// *** ORM
+        // Template functions, instantiated for the relevant classes
+        template<class T> QList<T> getObjects (QString condition="", QList<QVariant> conditionValues=QList<QVariant> ());
+        template<class T> int countObjects ();
+        template<class T> bool objectExists (db_id id);
+        template<class T> T getObject (db_id id);
+        template<class T> int deleteObject (db_id id);
+        template<class T> db_id createObject (T &object);
+        template<class T> int updateObject (const T &object);
+
+        // *** Very specific
+        QStringList listAirfields ();
+        QStringList listAccountingNotes ();
+        QStringList listClubs ();
+        QStringList listPlaneTypes ();
+        QList<Flight> getPreparedFlights ();
+        QList<Flight> getFlightsDate (QDate date);
+
+
+        // *** Database emulation (to be removed later)
+        void addLaunchType (const LaunchType &launchType);
+
+	protected:
 		QStringList listStrings (QSqlQuery query);
 
 	private:

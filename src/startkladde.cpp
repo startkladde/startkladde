@@ -8,6 +8,7 @@
 #include "src/gui/windows/SplashScreen.h"
 #include "src/plugins/ShellPlugin.h"
 #include "src/db/Database.h"
+#include "src/db/migration/Migrator.h"
 
 // Testen des Wetterplugins
 //#include "WeatherDialog.h"
@@ -26,7 +27,7 @@ void display_help ()
 #include "src/model/Person.h"
 
 
-void test_database (Database &db)
+void test_database (Database &db, int argc, char **argv)
 {
 	bool ok=db.open (opts.databaseInfo);
 
@@ -36,8 +37,34 @@ void test_database (Database &db)
 		return;
 	}
 
-	db.initializeDatabase ();
-	std::cout << "Count planes: " << db.countObjects<Plane> () << std::endl;
+	if (argc<2)
+	{
+		std::cout << "up, down, version" << std::endl;
+		return;
+	}
+
+	QString cmd (argv[1]);
+
+	if (cmd=="up")
+	{
+		Migrator m (db);
+		m.up ();
+	}
+	else if (cmd=="down")
+	{
+		Migrator m (db);
+		m.down ();
+	}
+	else if (cmd=="version")
+	{
+		Migrator m (db);
+		std::cout << "Version is " << m.getVersion () << std::endl;
+	}
+	else
+	{
+		std::cout << "Unrecognized" << std::endl;
+	}
+
 
 	return;
 
@@ -105,10 +132,19 @@ int main (int argc, char **argv)
 	 *   the return value of the QApplication, and thus of the main window.
 	 */
 {
-	Database testDb;
-	opts.parse_arguments (argc, argv);
-	opts.read_config_files (&testDb, NULL, argc, argv);
-	test_database (testDb); return 0;
+	try
+	{
+		Database testDb;
+		opts.parse_arguments (argc, argv);
+		opts.read_config_files (&testDb, NULL, argc, argv);
+		test_database (testDb, argc, argv);
+	}
+	catch (Database::QueryFailedException &ex)
+	{
+		std::cout << "QueryFailedException: " << ex.error.text () << std::endl;
+
+	}
+	return 0;
 
 	// DbEvents are used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter

@@ -7,7 +7,7 @@
   - meaning of null values in general
   - constraints (used person may not be deleted) in database
   - proper data types (and convert)
-  - standardize enum types
+  - standardize enum types (database enum types?)
   - Flights:
     - create towpilot columns
     - landed/... as flag or as time!=null?

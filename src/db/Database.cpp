@@ -1,19 +1,25 @@
 /*
  * Short term plan:
+ *   - integrate db creation into the gui
  *   - add a version to the database
  *   - add migrations
- *   - reenable database checking (?) (must show what to change)
+ *     - how to store migrations?
+ *     - can we do rails-like schema generation from migrations?
  *   - Standardize enum handling: store the database value internally (or use the
  *     numeric value in the database?); and have an "unknown" type (instead of "none")
- *   - do we really want to read the clubs etc. from the database in DataStorage?
+ *     - this should also allow preserving unknown types in the database
  *   - add "object used" to Database
- *   - add ping to database
- *   - generate string lists from other data instead of explicity query (but still
- *     store explicitly) note that we still have query for accounting notes and
+ *   - add ping to Database
+ *   - generate string lists from other data instead of explicit query (but still
+ *     cache explicitly) note that we still have to query for accounting notes and
  *     airfields because we don't get a complete flight list
- *   - fix error reporting (db.lastError (), e. g. delete object)
+ *   - fix error reporting (db.lastError (), e. g. delete objects)
  *   - remove DbColumn, DbTable
  *   - make sure "", 0 and NULL are read correctly
+ *   - Migration management:
+ *     - script to create migration
+ *     - autogenerate factory
+ *     - .pro file
  *
  * Improvements:
  *   - split this class into parts (generic, orm, specific)
@@ -29,6 +35,7 @@
  *   - Allow tables without id column (e. g. habtm join tables), but tables
  *     must have at least one column
  *   - dbTableName as static constant instead of function
+ *   - make sure (using a dump of an old db) that the migration path is OK
  *
  * Medium term plan:
  *   - add some abstraction to the query list generation
@@ -40,6 +47,9 @@
  *   - add support for sqlite
  *   - add indexes
  *   - add foreign key constraints
+ *   - database checks (?)
+ *     - show what is wrong/will be fixed
+ *     - rails migration like specification
  *
  * Long term plan:
  *   - Shold there be a thread safe database class?
@@ -125,7 +135,7 @@ bool Database::open (const DatabaseInfo &dbInfo)
 
 //    QSqlQuery query (db);
 //    query.prepare ("show variables like 'char%'");
-//    query.exec ();
+//    executeQuery (query);
 //
 //    while (query.next())
 //    {
@@ -164,7 +174,7 @@ QStringList Database::listStrings (QSqlQuery query)
 QStringList Database::listStrings (QString query)
 {
 	QSqlQuery q (query, db);
-	q.exec ();
+	executeQuery (q);
 	return listStrings (q);
 }
 
@@ -200,12 +210,35 @@ QString Database::selectDistinctColumnQuery (QString table, QStringList columns,
 }
 
 
-// ***********************************
-// ** Database management (generic) **
-// ***********************************
-
-bool Database::addTable (QString name)
+QSqlQuery &Database::executeQuery (QSqlQuery &query)
 {
+	if (!query.exec ())
+		throw QueryFailedException (query.lastError ());
+
+	return query;
+}
+
+QSqlQuery Database::executeQuery (QString queryString)
+{
+	QSqlQuery query (queryString, db);
+	return executeQuery (query);
+}
+
+bool Database::queryHasResult (QString queryString)
+{
+	QSqlQuery query=executeQuery (queryString);
+	return query.size()>0;
+}
+
+
+// *************************
+// ** Schema manipulation **
+// *************************
+
+void Database::createTable (QString name)
+{
+	std::cout << QString ("Creating table %1").arg (name);
+
 	QString queryString=QString (
 		"CREATE TABLE %1 ("
 		"id int(11) NOT NULL AUTO_INCREMENT,"
@@ -214,104 +247,50 @@ bool Database::addTable (QString name)
 		)
 		.arg (name);
 
-	std::cout << "Creating table " << name << "...";
-
-	QSqlQuery query (db);
-	query.prepare (queryString);
-	bool result=query.exec ();
-
-	if (result)
-		std::cout << "OK" << std::endl;
-	else
-		std::cout << "Error: " << query.lastError ().databaseText () << std::endl;
-
-	return result;
+	executeQuery (queryString);
 }
 
-bool Database::addColumn (QString table, QString name, QString type)
+void Database::createTableLike (QString like, QString name)
 {
+	std::cout << QString ("Creating table %1 like %2").arg (name, like);
+
+	QString queryString=
+		QString ("CREATE TABLE %1 LIKE %2")
+		.arg (name, like);
+
+	executeQuery (queryString);
+}
+
+void Database::dropTable (QString name)
+{
+	std::cout << QString ("Dropping table %1").arg (name);
+
+	QString queryString=
+		QString ("DROP TABLE %1")
+		.arg (name);
+
+	executeQuery (queryString);
+}
+
+void Database::addColumn (QString table, QString name, QString type)
+{
+	std::cout << QString ("Adding column %1.%2...").arg (table, name);
+
 	QString queryString=
 		QString ("ALTER TABLE %1 ADD COLUMN %2 %3")
 		.arg (table, name, type);
 
-	std::cout << QString ("Adding column %1.%2...").arg (table, name);
-
-	QSqlQuery query (db);
-	query.prepare (queryString);
-	bool result=query.exec ();
-
-	if (result)
-		std::cout << "OK" << std::endl;
-	else
-		std::cout << "Error: " << query.lastError ().databaseText () << std::endl;
-
-	return result;
+	executeQuery (queryString);
 }
 
-
-// ************************************
-// ** Database management (specific) **
-// ************************************
-
-bool Database::initializeDatabase ()
+bool Database::tableExists (QString name)
 {
-	QString peopleTable=Person::dbTableName ();
-	addTable (peopleTable);
-	addColumn (peopleTable, "nachname"  , dataTypeString);
-	addColumn (peopleTable, "vorname"   , dataTypeString);
-	addColumn (peopleTable, "verein"    , dataTypeString);
-	addColumn (peopleTable, "spitzname" , dataTypeString);
-	addColumn (peopleTable, "vereins_id", dataTypeString);
-	addColumn (peopleTable, "bemerkung" , dataTypeString);
+	// Using addBindValue does not seem to work here
+	QString queryString=
+		QString ("SHOW TABLES LIKE '%1'")
+		.arg (name);
 
-	QString planesTable=Plane::dbTableName ();
-	addTable (planesTable);
-	addColumn (planesTable, "kennzeichen",            dataTypeString );
-	addColumn (planesTable, "verein",                 dataTypeString );
-	addColumn (planesTable, "sitze",                  dataTypeInteger);
-	addColumn (planesTable, "typ",                    dataTypeString );
-	addColumn (planesTable, "gattung",                "VARCHAR(1)"   );
-	addColumn (planesTable, "wettbewerbskennzeichen", dataTypeString );
-	addColumn (planesTable, "bemerkung",              dataTypeString );
-
-	QString flightsTable=Flight::dbTableName ();
-	addTable (flightsTable);
-	addColumn (flightsTable, "pilot",              dataTypeId       );
-	addColumn (flightsTable, "begleiter",          dataTypeId       );
-	addColumn (flightsTable, "towpilot",           dataTypeId       );
-	addColumn (flightsTable, "startort",           dataTypeString   );
-	addColumn (flightsTable, "zielort",            dataTypeString   );
-	addColumn (flightsTable, "anzahl_landungen",   dataTypeInteger  );
-	addColumn (flightsTable, "startzeit",          dataTypeDatetime );
-	addColumn (flightsTable, "landezeit",          dataTypeDatetime );
-	addColumn (flightsTable, "startart",           dataTypeId       );
-	addColumn (flightsTable, "land_schlepp",       dataTypeDatetime );
-	addColumn (flightsTable, "typ",                dataTypeInteger  );
-	addColumn (flightsTable, "bemerkung",          dataTypeString   );
-	addColumn (flightsTable, "flugzeug",           dataTypeId       );
-	addColumn (flightsTable, "status",             dataTypeInteger  );
-	addColumn (flightsTable, "modus",              dataTypeCharacter);
-	addColumn (flightsTable, "pvn",                dataTypeString   );
-	addColumn (flightsTable, "pnn",                dataTypeString   );
-	addColumn (flightsTable, "bvn",                dataTypeString   );
-	addColumn (flightsTable, "bnn",                dataTypeString   );
-	addColumn (flightsTable, "tpvn",               dataTypeString   );
-	addColumn (flightsTable, "tpnn",               dataTypeString   );
-	addColumn (flightsTable, "modus_sfz",          dataTypeCharacter);
-	addColumn (flightsTable, "zielort_sfz",        dataTypeString   );
-	addColumn (flightsTable, "abrechnungshinweis", dataTypeString   );
-	addColumn (flightsTable, "towplane",           dataTypeId       );
-
-	QString usersTable="users";
-	addTable (usersTable);
-	addColumn (usersTable, "username",            dataTypeString ); // TODO not null
-	addColumn (usersTable, "password",            dataTypeString ); // TODO long enough?
-	addColumn (usersTable, "perm_club_admin",     dataTypeBoolean);
-	addColumn (usersTable, "perm_read_flight_db", dataTypeBoolean);
-	addColumn (usersTable, "club",                dataTypeString );
-	addColumn (usersTable, "person",              dataTypeId     );
-
-	return true;
+	return queryHasResult (queryString);
 }
 
 

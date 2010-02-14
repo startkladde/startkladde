@@ -2,8 +2,6 @@
 
 #include <algorithm>
 
-#include "src/db/DbColumn.h"
-#include "src/db/DbTable.h"
 
 void initialize_database (OldDatabase &root_db, QString server, int port, QString _username, QString _userpass, QString _database, QString _sk_admin_name, QString _sk_admin_password)
 	throw (OldDatabase::ex_init_failed, OldDatabase::ex_not_connected, OldDatabase::ex_access_denied, OldDatabase::ex_parameter_error)
