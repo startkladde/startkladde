@@ -1,15 +1,11 @@
-0->1:
-  - convert to utf8/utf8_unicode_ci
   - transfer from ... to ..._temp, then rename ..._temp to ...
   - rename columns to english
-  - innodb instead of myisam
   - change 0 time to null?
   - meaning of null values in general
   - constraints (used person may not be deleted) in database
   - proper data types (and convert)
   - standardize enum types (database enum types?)
   - Flights:
-    - create towpilot columns
     - landed/... as flag or as time!=null?
     - store date of flight and times instead of datetimes? time zone safety?
       => no, b/c start and landing can be on different utc date
@@ -25,7 +21,7 @@
   - Planes
     - plane table: remove unique constraint from registration
   - ..., see tickets
-  
+
 Later:
   - towflight as separate flight?
   

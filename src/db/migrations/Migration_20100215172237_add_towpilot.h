@@ -6,8 +6,10 @@
 /**
  * Adds the towpilot columns to the flight table, if they don't exist yet.
  *
- * The towpilot columns were optional before, so this migration creates a
- * defined status.
+ * The towpilot columns were optional before, so this migration transforms
+ * the schema to a defined state.
+ *
+ * This change is not undone by the down migration; see 20100214140000.
  */
 class Migration_20100215172237_add_towpilot: public Migration
 {

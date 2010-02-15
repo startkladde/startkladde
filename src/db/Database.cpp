@@ -1,8 +1,14 @@
 /*
  * Short term plan:
+ *   - Test the migrations
+ *     - make sure the migrations work
+ *     - make sure the old version and current sk_web work with "initial"
+ *
+ *   - Fixtures
+ *     - SQL dump or data file (CSV/YAML)?
+ *     - C++ or Ruby?
  *   - Migration: distinguish between "old" and "empty"
- *   - Autogenerate MigrationFactory
- *   - implement migrations from migrations.txt
+ *   - implement migrations from migration.txt
  *   - schema generation
  *   - integrate migration into the gui
  *   - Standardize enum handling: store the database value internally (or use the
@@ -295,7 +301,7 @@ void Database::addColumn (QString table, QString name, QString type, bool skipIf
 {
 	if (skipIfExists && columnExists (table, name))
 	{
-		std::cout << QString ("Skipping column %1.%2...").arg (table, name) << std::endl;
+		std::cout << QString ("Skipping existing column %1.%2...").arg (table, name) << std::endl;
 		return;
 	}
 
@@ -304,6 +310,23 @@ void Database::addColumn (QString table, QString name, QString type, bool skipIf
 	QString queryString=
 		QString ("ALTER TABLE %1 ADD COLUMN %2 %3")
 		.arg (table, name, type);
+
+	executeQuery (queryString);
+}
+
+void Database::dropColumn (QString table, QString name, bool skipIfNotExists)
+{
+	if (skipIfNotExists && !columnExists (table, name))
+	{
+		std::cout << QString ("Skipping non-existing column %1.%2...").arg (table, name) << std::endl;
+		return;
+	}
+
+	std::cout << QString ("Dropping column %1.%2...").arg (table, name) << std::endl;
+
+	QString queryString=
+		QString ("ALTER TABLE %1 DROP COLUMN %2")
+		.arg (table, name);
 
 	executeQuery (queryString);
 }

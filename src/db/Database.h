@@ -93,6 +93,7 @@ class Database
 		void createTableLike (QString like, QString name);
 		void dropTable (QString name);
 		void addColumn (QString table, QString name, QString type, bool skipIfExists=false);
+		void dropColumn (QString table, QString name, bool skipIfNotExists=false);
 		bool tableExists (QString name);
 		bool columnExists (QString table, QString name);
 
