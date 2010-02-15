@@ -1,0 +1,20 @@
+#ifndef <%= class_name.upcase %>_H_
+#define <%= class_name.upcase %>_H_
+
+#include "src/db/migration/Migration.h"
+
+/**
+ * TODO migration description
+ */
+class <%= class_name %>: public Migration
+{
+	public:
+		<%= class_name %> (Database &database);
+		virtual ~<%= class_name %> ();
+
+		virtual void up ();
+		virtual void down ();
+};
+
+#endif
+
