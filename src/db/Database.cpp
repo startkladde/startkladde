@@ -1,10 +1,10 @@
 /*
  * Short term plan:
- *   - add migrations
- *     - how to distinguish between "old" and "empty"?
- *     - can we do rails-like schema generation from migrations?
- *     - migrate: apply all pending (and create schema)
- *   - integrate db creation into the gui
+ *   - Migration: distinguish between "old" and "empty"
+ *   - Autogenerate MigrationFactory
+ *   - implement migrations from migrations.txt
+ *   - schema generation
+ *   - integrate migration into the gui
  *   - Standardize enum handling: store the database value internally (or use the
  *     numeric value in the database?); and have an "unknown" type (instead of "none")
  *     - this should also allow preserving unknown types in the database
