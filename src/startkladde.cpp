@@ -9,6 +9,7 @@
 #include "src/plugins/ShellPlugin.h"
 #include "src/db/Database.h"
 #include "src/db/migration/Migrator.h"
+#include "src/db/migration/MigrationFactory.h"
 
 // Testen des Wetterplugins
 //#include "WeatherDialog.h"
@@ -39,7 +40,7 @@ void test_database (Database &db, int argc, char **argv)
 
 	if (argc<2)
 	{
-		std::cout << "up, down, version" << std::endl;
+		std::cout << "up, down, migrate, version, list" << std::endl;
 		return;
 	}
 
@@ -55,10 +56,22 @@ void test_database (Database &db, int argc, char **argv)
 		Migrator m (db);
 		m.down ();
 	}
+	else if (cmd=="migrate")
+	{
+		Migrator m (db);
+		m.migrate ();
+	}
 	else if (cmd=="version")
 	{
 		Migrator m (db);
-		std::cout << "Version is " << m.getVersion () << std::endl;
+		std::cout << "Version is " << m.currentVersion () << std::endl;
+	}
+	else if (cmd=="list")
+	{
+		MigrationFactory factory;
+		foreach (quint64 version, factory.availableVersions ())
+			std::cout << version << " - " << factory.migrationName (version) << std::endl;
+
 	}
 	else
 	{
@@ -141,8 +154,9 @@ int main (int argc, char **argv)
 	}
 	catch (Database::QueryFailedException &ex)
 	{
-		std::cout << "QueryFailedException: " << ex.error.text () << std::endl;
-
+		std::cout << "QueryFailedException" << std::endl;
+		std::cout << "  Query: " << ex.query.lastQuery () << std::endl;
+		std::cout << "  Error: " << ex.query.lastError ().text () << std::endl;
 	}
 	return 0;
 

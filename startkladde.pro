@@ -191,11 +191,10 @@ FORMS += \
            src/gui/windows/objectEditor/PersonEditorPane.ui \
            # Empty line
 
-# Migrations
-HEADERS += \
-	src/db/migrations/Migration_20100214140000_initial.h
-	# Empty line
 
-SOURCES += \
-	src/db/migrations/Migration_20100214140000_initial.cpp
-	# Empty line
+!include( build/migrations.pro ) {
+error( "build/migrations.pro could not be included" )
+}
+
+
+

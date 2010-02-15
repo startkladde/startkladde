@@ -37,8 +37,8 @@ class Database
 		class QueryFailedException
 		{
 			public:
-				QueryFailedException (QSqlError error): error (error) {}
-				QSqlError error;
+				QueryFailedException (QSqlQuery query): query (query) {}
+				QSqlQuery query;
 		};
 
     	// *** Constants

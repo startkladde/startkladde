@@ -171,7 +171,7 @@ QSqlQuery Database::prepareQuery (QString queryString)
 QSqlQuery &Database::executeQuery (QSqlQuery &query)
 {
 	if (!query.exec ())
-		throw QueryFailedException (query.lastError ());
+		throw QueryFailedException (query);
 
 	return query;
 }

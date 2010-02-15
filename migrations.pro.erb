@@ -1,0 +1,12 @@
+<%
+	sources=Dir["src/db/migrations/Migration_*.cpp"]
+	headers=Dir["src/db/migrations/Migration_*.h"]
+%>
+	
+# Migrations
+HEADERS += \
+	<%= headers.join(" \\\n\t") %>
+
+SOURCES += \
+	<%= sources.join(" \\\n\t") %>
+

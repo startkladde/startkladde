@@ -61,6 +61,15 @@ startkladde: $(XPMS)
 ## Individual targets ##
 ########################
 
+Makefile_startkladde: build/migrations.pro
+
+build:
+	mkdir -p build
+
+build/migrations.pro: migrations.pro.erb build
+	erb $< >$@
+
+
 .PHONY: version
 version: version/version.h
 

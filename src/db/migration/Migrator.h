@@ -7,23 +7,48 @@
 
 class Database;
 
+/**
+ * A controller for managing migrations on a database.
+ *
+ * Migrations should not be run directly, but only through a Migrator, which
+ * will keep track of the applied migrations.
+ *
+ * The version numbers of all applied migrations are stored in a table
+ * (#migrationsTableName), similar to Rails.
+ */
 class Migrator
 {
 	public:
+		// *** Types
+		enum Direction { dirUp, dirDown };
+
+		// *** Constants
 		static const QString migrationsTableName, migrationsColumnName;
 
+		// *** Construction
 		Migrator (Database &database);
 		virtual ~Migrator ();
 
+		// *** Migration
 		void up ();
 		void down ();
+		void migrate ();
 
-		QString getVersion ();
-		void addMigration (QString name);
-		void removeMigration (QString name);
+		// *** Migration listing
+		QList<quint64> pendingMigrations ();
+		quint64 nextMigration ();
+
+		// *** Migrations table
+		quint64 currentVersion ();
+		void addMigration (quint64 version);
+		void removeMigration (quint64 version);
+		void createMigrationsTable ();
+		bool hasMigration (quint64 version);
+		QList<quint64> appliedMigrations ();
 
 	protected:
-		void applyMigration (QString name, bool up);
+		// *** Migration
+		void runMigration (quint64 version, Direction direction);
 
 	private:
 		Database &database;

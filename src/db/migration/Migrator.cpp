@@ -6,12 +6,22 @@
 #include "src/db/Database.h"
 #include "src/db/migration/MigrationFactory.h"
 
+
+// ***************
+// ** Constants **
+// ***************
+
 // If this is changed, things will break, like, horribly.
 const QString Migrator::migrationsTableName="schema_migrations";
 const QString Migrator::migrationsColumnName="version";
 
+/**
+ * Creates a Migrator for the given database
+ *
+ * @param database the database to access
+ */
 Migrator::Migrator (Database &database):
-	database (database), factory (database)
+	database (database)
 {
 }
 
@@ -19,27 +29,34 @@ Migrator::~Migrator ()
 {
 }
 
-void Migrator::applyMigration (QString name, bool up)
+
+// ****************
+// ** Migrations **
+// ****************
+
+void Migrator::runMigration (quint64 version, Direction direction)
 {
 	Migration *migration=NULL;
-
 	try
 	{
-		migration=factory.createMigration (name);
+		migration=factory.createMigration (database, version);
+		QString name=factory.migrationName (version);
 
-		if (up)
+		switch (direction)
 		{
-			std::cout << "Migrating up " << name << std::endl;
-			migration->up ();
-			addMigration (name);
+			case dirUp:
+				std::cout << "Migrating up " << name << std::endl;
+				migration->up ();
+				addMigration (version);
+				break;
+			case dirDown:
+				std::cout << "Migrating down " << name << std::endl;
+				migration->down ();
+				removeMigration (version);
+				break;
 		}
-		else
-		{
-			std::cout << "Migrating down " << name << std::endl;
-			migration->down ();
-			removeMigration (name);
-		}
-		std::cout << "Version is now " << getVersion () << std::endl;
+
+		std::cout << "Version is now " << currentVersion () << std::endl;
 
 		delete migration;
 	}
@@ -50,25 +67,76 @@ void Migrator::applyMigration (QString name, bool up)
 	}
 }
 
+/** Migrates one step up */
 void Migrator::up ()
 {
-	applyMigration (factory.latest (), true);
+	quint64 version=nextMigration ();
+
+	if (version==0) return;
+
+	runMigration (version, dirUp);
 }
 
+/** Migrates one step down */
 void Migrator::down ()
 {
-	applyMigration (factory.latest (), false);
+	quint64 version=currentVersion ();
+
+	if (version==0) return;
+
+	runMigration (currentVersion (), dirDown);
 }
 
-/**
- * Determines the version (the name of the lates migration) of the database
- *
- * @return a string containing the version, or an empty string if the version
- *         table does not exist or is empty
- */
-QString Migrator::getVersion ()
+/** Migrates to the latest version (runs pending migrations) */
+void Migrator::migrate ()
 {
-	if (!database.tableExists (migrationsTableName)) return "";
+	foreach (quint64 version, pendingMigrations ())
+		runMigration (version, dirUp);
+}
+
+
+// ***********************
+// ** Migration listing **
+// ***********************
+
+QList<quint64> Migrator::pendingMigrations ()
+{
+	QList<quint64> availableMigrations=factory.availableVersions ();
+	QList<quint64> appliedMigrations=this->appliedMigrations ();
+
+	QList<quint64> pending;
+	foreach (quint64 version, availableMigrations)
+		if (!appliedMigrations.contains (version))
+			pending << version;
+
+	return pending;
+}
+
+quint64 Migrator::nextMigration ()
+{
+	QList<quint64> availableMigrations=factory.availableVersions ();
+	QList<quint64> appliedMigrations=this->appliedMigrations ();
+
+	foreach (quint64 version, availableMigrations)
+		if (!appliedMigrations.contains (version))
+			return version;
+
+	return 0;
+}
+
+
+// **********************
+// ** Migrations table **
+// **********************
+
+/**
+ * Determines the version of the database (the version of the lates migration)
+ *
+ * @return the version, or an 0 if the version table does not exist or is empty
+ */
+quint64 Migrator::currentVersion ()
+{
+	if (!database.tableExists (migrationsTableName)) return 0;
 
 	QSqlQuery query=database.executeQuery (
 		QString ("SELECT %2 FROM %1 ORDER BY %2 DESC LIMIT 1")
@@ -76,40 +144,50 @@ QString Migrator::getVersion ()
 	);
 
 	if (query.next ())
-		return query.value (0).toString ();
+		return query.value (0).toLongLong ();
 	else
-		return "";
+		return 0;
 }
 
-void Migrator::addMigration (QString name)
+void Migrator::createMigrationsTable ()
 {
-	// If the migrations table does not exist, create it
-	if (!database.tableExists (migrationsTableName))
-	{
-		database.executeQuery (
-			QString ("CREATE TABLE %1 (%2 VARCHAR(255) NOT NULL PRIMARY KEY) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci")
-			.arg (migrationsTableName, migrationsColumnName)
-		);
-	}
+	database.executeQuery (
+		QString (
+			"CREATE TABLE %1 (%2 VARCHAR(255) NOT NULL PRIMARY KEY)"
+			" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+		).arg (migrationsTableName, migrationsColumnName)
+	);
+}
 
-	// If the migration name is already present in the migrations table, return
+bool Migrator::hasMigration (quint64 version)
+{
 	QSqlQuery query=database.prepareQuery (
 			QString ("SELECT %2 FROM %1 WHERE %2=?")
 			.arg (migrationsTableName, migrationsColumnName)
 			);
-	query.addBindValue (name);
-	if (database.queryHasResult (query)) return;
+	query.addBindValue (version);
+
+	return database.queryHasResult (query);
+}
+
+void Migrator::addMigration (quint64 version)
+{
+	// If the migrations table does not exist, create it
+	if (!database.tableExists (migrationsTableName)) createMigrationsTable ();
+
+	// If the migration name is already present in the migrations table, return
+	if (hasMigration (version)) return;
 
 	// Add the migration name to the migrations table
-	query=database.prepareQuery (
+	QSqlQuery query=database.prepareQuery (
 			QString ("INSERT INTO %1 (%2) VALUES (?)")
 			.arg (migrationsTableName, migrationsColumnName)
 			);
-	query.addBindValue (name);
+	query.addBindValue (version);
 	database.executeQuery (query);
 }
 
-void Migrator::removeMigration (QString name)
+void Migrator::removeMigration (quint64 version)
 {
 	// If the migrations table does not exist, return
 	if (!database.tableExists (migrationsTableName)) return;
@@ -119,7 +197,26 @@ void Migrator::removeMigration (QString name)
 			QString ("DELETE FROM %1 where %2=?")
 			.arg (migrationsTableName, migrationsColumnName)
 			);
-	query.addBindValue (name);
+	query.addBindValue (version);
 
 	database.executeQuery (query);
+}
+
+QList<quint64> Migrator::appliedMigrations ()
+{
+	QList<quint64> migrations;
+
+	if (!database.tableExists (migrationsTableName)) return migrations;
+
+	QSqlQuery query=database.prepareQuery (
+			QString ("SELECT %2 FROM %1")
+			.arg (migrationsTableName, migrationsColumnName)
+			);
+
+	database.executeQuery (query);
+
+	while (query.next ())
+		migrations << query.value (0).toLongLong ();
+
+	return migrations;
 }

@@ -7,19 +7,28 @@
 
 class Database;
 
+/**
+ * Determines available migrations, creates migrations and determines
+ * migration information.
+ */
 class MigrationFactory
 {
 	public:
-		MigrationFactory (Database &database);
+		class NoSuchMigrationException: public std::exception
+		{
+			public:
+				NoSuchMigrationException (quint64 version): version (version) {}
+				quint64 version;
+		};
+
+		MigrationFactory ();
 		virtual ~MigrationFactory ();
 
-		QStringList migrationNames ();
-		Migration *createMigration (const QString &name);
+		QList<quint64> availableVersions ();
+		quint64 latestVersion ();
 
-		QString latest ();
-
-	private:
-		Database &database;
+		Migration *createMigration (Database &database, quint64 version);
+		QString migrationName (quint64 version);
 };
 
 #endif /* MIGRATIONFACTORY_H_ */

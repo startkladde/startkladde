@@ -2,8 +2,12 @@
 
 #include "src/db/migrations/Migration_20100214140000_initial.h"
 
-MigrationFactory::MigrationFactory (Database &database):
-	database (database)
+// When autogenerating the migrations list:
+//   - make sure version is numeric
+//   - make sure name and version are unique
+//   - sort by version
+
+MigrationFactory::MigrationFactory ()
 {
 }
 
@@ -11,27 +15,73 @@ MigrationFactory::~MigrationFactory ()
 {
 }
 
-QStringList MigrationFactory::migrationNames ()
+
+
+/**
+ * Lists the versions of all available migrations, sorted in ascending order.
+ *
+ * @return a QList of migration versions
+ */
+QList<quint64> MigrationFactory::availableVersions ()
 {
-	QStringList names;
+	QList<quint64> versions;
 
-	names << "20100214140000_initial";
+	versions << 20100214140000ll;
 
-	return names;
+	return versions;
 }
 
-Migration *MigrationFactory::createMigration (const QString &name)
+/**
+ * Determines the latest available migration. This is the last entry of the
+ * list returned by #availableVersions, unless no migrations exist.
+ *
+ * @return the latest available migration, or 0 if no migrations exist
+ */
+quint64 MigrationFactory::latestVersion ()
 {
-	if (name=="20100214140000_initial")
+	QList<quint64> versions=availableVersions ();
+
+	if (versions.empty ())
+		return 0;
+	else
+		return versions.last ();
+}
+
+
+
+/**
+ * Creates a new Migration instance of the given version.
+ *
+ * The caller takes ownership of the Migration.
+ *
+ * @param database the database to create the migration for
+ * @param version the version of the migration to generate. Must have been
+ *                obtained from the same MigrationFactory instance.
+ * @return a newly allocated instance of Migration for the given version
+ * @throw NoSuchMigrationException if there is no migration with the given
+ *        version
+ */
+Migration *MigrationFactory::createMigration (Database &database, const quint64 version)
+{
+	if (version==20100214140000ll)
 		return new Migration_20100214140000_initial (database);
 
-	return NULL;
+	throw NoSuchMigrationException (version);
 }
 
-QString MigrationFactory::latest ()
+/**
+ * Determines the name of a given migration version.
+ *
+ * @param version the version of the migration to determine the name of. Must
+ *                have been obtained from the same MigrationFactory instance.
+ * @return the name of the migration with the given version
+ * @throw NoSuchMigrationException if there is no migration with the given
+ *        version
+ */
+QString MigrationFactory::migrationName (quint64 version)
 {
-	QStringList names=migrationNames ();
-	if (names.empty ()) return QString::null;
+	if (version==20100214140000ll)
+		return "initial";
 
-	return names.last ();
+	throw NoSuchMigrationException (version);
 }

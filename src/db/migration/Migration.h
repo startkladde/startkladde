@@ -3,6 +3,10 @@
 
 class Database;
 
+/**
+ * Migration are supposed to be called only through Migrator, which keeps track
+ * of which migrations have already been applied
+ */
 class Migration
 {
 	public:
