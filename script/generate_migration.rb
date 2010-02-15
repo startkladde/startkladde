@@ -41,6 +41,14 @@ end
 (puts "Template #{source_template} does not exist"; exit 1) if !File.file?(source_template)
 (puts "Template #{header_template} does not exist"; exit 1) if !File.file?(header_template)
 
+if !force && !Dir["#{dir}/Migration_*_#{name}.h"].empty?
+	puts "There is already a migration with the same name (#{name}) - specify --force to"
+	puts "generate the migration anyway (the existing migration will not be overwritten)."
+	puts "Note that the program will not compile if the migrations with the same name"
+	puts "exist, even if their versions are different."
+	exit 1
+end
+
 (puts "#{source} exists - specify --force to overwrite"; exit 1) if (File.exist?(source) && !force)
 (puts "#{header} exists - specify --force to overwrite"; exit 1) if (File.exist?(header) && !force)
 

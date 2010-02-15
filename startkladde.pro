@@ -13,6 +13,8 @@ MOC_DIR= build/
 
 # Input
 HEADERS += \
+           build/migrations_headers.h \
+           build/migrations.h \
            src/accessor.h \
            src/color.h \
            src/Condition.h \
