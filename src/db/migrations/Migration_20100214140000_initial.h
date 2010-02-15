@@ -18,11 +18,11 @@
  *   - The columns flight.editierbar, flight.vereinand person.bwlv (which
  *     did not contain any useful data) will not be created
  */
-class Migration_20100214_140000_initial: public Migration
+class Migration_20100214140000_initial: public Migration
 {
 	public:
-		Migration_20100214_140000_initial (Database &database);
-		virtual ~Migration_20100214_140000_initial ();
+		Migration_20100214140000_initial (Database &database);
+		virtual ~Migration_20100214140000_initial ();
 
 		virtual void up ();
 		virtual void down ();

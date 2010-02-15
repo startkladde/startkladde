@@ -16,6 +16,8 @@ class MigrationFactory
 		QStringList migrationNames ();
 		Migration *createMigration (const QString &name);
 
+		QString latest ();
+
 	private:
 		Database &database;
 };

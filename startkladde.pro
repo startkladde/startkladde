@@ -193,9 +193,9 @@ FORMS += \
 
 # Migrations
 HEADERS += \
-	src/db/migrations/Migration_20100214_140000_initial.h
+	src/db/migrations/Migration_20100214140000_initial.h
 	# Empty line
 
 SOURCES += \
-	src/db/migrations/Migration_20100214_140000_initial.cpp
+	src/db/migrations/Migration_20100214140000_initial.cpp
 	# Empty line

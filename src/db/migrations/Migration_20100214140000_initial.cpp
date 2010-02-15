@@ -1,17 +1,17 @@
-#include "Migration_20100214_140000_initial.h"
+#include "Migration_20100214140000_initial.h"
 
 #include "src/db/Database.h"
 
-Migration_20100214_140000_initial::Migration_20100214_140000_initial (Database &database):
+Migration_20100214140000_initial::Migration_20100214140000_initial (Database &database):
 	Migration (database)
 {
 }
 
-Migration_20100214_140000_initial::~Migration_20100214_140000_initial ()
+Migration_20100214140000_initial::~Migration_20100214140000_initial ()
 {
 }
 
-void Migration_20100214_140000_initial::up ()
+void Migration_20100214140000_initial::up ()
 {
 	database.createTable  ("person");
 	database.addColumn ("person", "nachname"  , Database::dataTypeString);
@@ -78,7 +78,7 @@ void Migration_20100214_140000_initial::up ()
 	database.addColumn ("user", "person",              Database::dataTypeId     );
 }
 
-void Migration_20100214_140000_initial::down ()
+void Migration_20100214140000_initial::down ()
 {
 	database.dropTable ("person"  ); database.dropTable ("person_temp"  );
 	database.dropTable ("flugzeug"); database.dropTable ("flugzeug_temp");

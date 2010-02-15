@@ -67,14 +67,24 @@ class Database
 		void close ();
 		QSqlError lastError () const { return db.lastError (); }
 
+		// *** Transactions
+		bool transaction () { return db.transaction (); }
+		bool commit      () { return db.commit      (); }
+		bool rollback    () { return db.rollback    (); }
+
+		// *** Queries
+		QSqlQuery prepareQuery (QString queryString);
+		QSqlQuery &executeQuery (QSqlQuery &query);
+		QSqlQuery executeQuery (QString queryString);
+
+
 		// *** Very generic
 		QStringList listStrings (QString queryString);
 		static QString selectDistinctColumnQuery (QString table, QString column, bool excludeEmpty=false);
 		static QString selectDistinctColumnQuery (QStringList tables, QStringList columns, bool excludeEmpty=false);
 		static QString selectDistinctColumnQuery (QStringList tables, QString column, bool excludeEmpty=false);
 		static QString selectDistinctColumnQuery (QString table, QStringList columns, bool excludeEmpty=false);
-		QSqlQuery &executeQuery (QSqlQuery &query);
-		QSqlQuery executeQuery (QString queryString);
+		bool queryHasResult (QSqlQuery &query);
 		bool queryHasResult (QString queryString);
 
 

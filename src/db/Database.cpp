@@ -1,10 +1,10 @@
 /*
  * Short term plan:
- *   - integrate db creation into the gui
- *   - add a version to the database
  *   - add migrations
- *     - how to store migrations?
+ *     - how to distinguish between "old" and "empty"?
  *     - can we do rails-like schema generation from migrations?
+ *     - migrate: apply all pending (and create schema)
+ *   - integrate db creation into the gui
  *   - Standardize enum handling: store the database value internally (or use the
  *     numeric value in the database?); and have an "unknown" type (instead of "none")
  *     - this should also allow preserving unknown types in the database
@@ -157,6 +157,33 @@ Database::~Database()
 }
 
 
+// *************
+// ** Queries **
+// *************
+
+QSqlQuery Database::prepareQuery (QString queryString)
+{
+	QSqlQuery query (db);
+	query.prepare (queryString);
+	return queryString;
+}
+
+QSqlQuery &Database::executeQuery (QSqlQuery &query)
+{
+	if (!query.exec ())
+		throw QueryFailedException (query.lastError ());
+
+	return query;
+}
+
+QSqlQuery Database::executeQuery (QString queryString)
+{
+	QSqlQuery query (db);
+	query.prepare (queryString);
+	return executeQuery (query);
+}
+
+
 // ******************
 // ** Very generic **
 // ******************
@@ -209,19 +236,10 @@ QString Database::selectDistinctColumnQuery (QString table, QStringList columns,
 	return selectDistinctColumnQuery (QStringList (table), columns, excludeEmpty);
 }
 
-
-QSqlQuery &Database::executeQuery (QSqlQuery &query)
+bool Database::queryHasResult (QSqlQuery &query)
 {
-	if (!query.exec ())
-		throw QueryFailedException (query.lastError ());
-
-	return query;
-}
-
-QSqlQuery Database::executeQuery (QString queryString)
-{
-	QSqlQuery query (queryString, db);
-	return executeQuery (query);
+	executeQuery (query);
+	return query.size()>0;
 }
 
 bool Database::queryHasResult (QString queryString)
@@ -229,6 +247,7 @@ bool Database::queryHasResult (QString queryString)
 	QSqlQuery query=executeQuery (queryString);
 	return query.size()>0;
 }
+
 
 
 // *************************
@@ -263,7 +282,7 @@ void Database::createTableLike (QString like, QString name)
 
 void Database::dropTable (QString name)
 {
-	std::cout << QString ("Dropping table %1").arg (name);
+	std::cout << QString ("Dropping table %1").arg (name) << std::endl;
 
 	QString queryString=
 		QString ("DROP TABLE %1")
@@ -274,7 +293,7 @@ void Database::dropTable (QString name)
 
 void Database::addColumn (QString table, QString name, QString type)
 {
-	std::cout << QString ("Adding column %1.%2...").arg (table, name);
+	std::cout << QString ("Adding column %1.%2...").arg (table, name) << std::endl;
 
 	QString queryString=
 		QString ("ALTER TABLE %1 ADD COLUMN %2 %3")
