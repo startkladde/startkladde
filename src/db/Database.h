@@ -92,8 +92,9 @@ class Database
 		void createTable (QString name);
 		void createTableLike (QString like, QString name);
 		void dropTable (QString name);
-		void addColumn (QString table, QString name, QString type);
+		void addColumn (QString table, QString name, QString type, bool skipIfExists=false);
 		bool tableExists (QString name);
+		bool columnExists (QString table, QString name);
 
 		// *** ORM
         // Template functions, instantiated for the relevant classes

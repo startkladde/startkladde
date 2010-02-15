@@ -291,8 +291,14 @@ void Database::dropTable (QString name)
 	executeQuery (queryString);
 }
 
-void Database::addColumn (QString table, QString name, QString type)
+void Database::addColumn (QString table, QString name, QString type, bool skipIfExists)
 {
+	if (skipIfExists && columnExists (table, name))
+	{
+		std::cout << QString ("Skipping column %1.%2...").arg (table, name) << std::endl;
+		return;
+	}
+
 	std::cout << QString ("Adding column %1.%2...").arg (table, name) << std::endl;
 
 	QString queryString=
@@ -308,6 +314,16 @@ bool Database::tableExists (QString name)
 	QString queryString=
 		QString ("SHOW TABLES LIKE '%1'")
 		.arg (name);
+
+	return queryHasResult (queryString);
+}
+
+bool Database::columnExists (QString table, QString name)
+{
+	// Using addBindValue does not seem to work here
+	QString queryString=
+		QString ("SHOW COLUMNS FROM %1 LIKE '%2'")
+		.arg (table, name);
 
 	return queryHasResult (queryString);
 }

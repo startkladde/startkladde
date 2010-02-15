@@ -1,6 +1,7 @@
 #include "MigrationFactory.h"
 
 #include "src/db/migrations/Migration_20100214140000_initial.h"
+#include "src/db/migrations/Migration_20100215172237_add_towpilot.h"
 
 // When autogenerating the migrations list:
 //   - make sure version is numeric
@@ -27,6 +28,7 @@ QList<quint64> MigrationFactory::availableVersions ()
 	QList<quint64> versions;
 
 	versions << 20100214140000ll;
+	versions << 20100215172237ll;
 
 	return versions;
 }
@@ -65,6 +67,8 @@ Migration *MigrationFactory::createMigration (Database &database, const quint64 
 {
 	if (version==20100214140000ll)
 		return new Migration_20100214140000_initial (database);
+	else if (version==20100215172237ll)
+		return new Migration_20100215172237_add_towpilot (database);
 
 	throw NoSuchMigrationException (version);
 }
@@ -82,6 +86,8 @@ QString MigrationFactory::migrationName (quint64 version)
 {
 	if (version==20100214140000ll)
 		return "initial";
+	else if (version==20100215172237ll)
+		return "add_towpilot";
 
 	throw NoSuchMigrationException (version);
 }
