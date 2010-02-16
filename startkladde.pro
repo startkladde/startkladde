@@ -87,7 +87,7 @@ HEADERS += \
            src/model/Flight.h \
            src/model/Plane.h \
            src/model/Person.h \
-           src/model/LaunchType.h \
+           src/model/LaunchMethod.h \
            src/model/Entity.h \
            src/model/objectList/AutomaticEntityList.h \
            src/model/objectList/ColumnInfo.h \
@@ -99,7 +99,7 @@ HEADERS += \
            src/plugins/ShellPlugin.h \
            src/statistics/PlaneLog.h \
            src/statistics/PilotLog.h \
-           src/statistics/LaunchTypeStatistics.h \
+           src/statistics/LaunchMethodStatistics.h \
            src/time/Date.h \
            src/time/Time.h \
            src/time/timeFunctions.h \
@@ -170,12 +170,12 @@ SOURCES += \
            src/model/Flight.cpp \
            src/model/Plane.cpp \
            src/model/Person.cpp \
-           src/model/LaunchType.cpp \
+           src/model/LaunchMethod.cpp \
            src/model/Entity.cpp \
            src/plugins/ShellPlugin.cpp \
            src/statistics/PlaneLog.cpp \
            src/statistics/PilotLog.cpp \
-           src/statistics/LaunchTypeStatistics.cpp \
+           src/statistics/LaunchMethodStatistics.cpp \
            src/time/Date.cpp \
            src/time/Time.cpp \
            src/time/timeFunctions.cpp \

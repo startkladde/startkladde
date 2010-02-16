@@ -26,7 +26,7 @@
 #include "src/db/task/RefreshAllTask.h"
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"
-#include "src/statistics/LaunchTypeStatistics.h"
+#include "src/statistics/LaunchMethodStatistics.h"
 #include "src/gui/windows/ObjectListWindow.h"
 #include "src/model/objectList/MutableObjectList.h"
 #include "src/model/objectList/AutomaticEntityList.h"
@@ -706,7 +706,7 @@ void MainWindow::on_actionTouchngo_triggered ()
 	try
 	{
 		// TODO warning if the plane is specified and a glider and the
-		// launch type is specified and not an unended airtow
+		// launch method is specified and not an unended airtow
 
 		Flight flight = dataStorage.getObject<Flight> (id);
 		QString reason;
@@ -820,14 +820,14 @@ void MainWindow::on_actionDisplayError_triggered ()
 		Flight flight = dataStorage.getObject<Flight> (id);
 
 		Plane *plane=dataStorage.getNewObject<Plane> (flight.plane);
-		LaunchType *launchType=dataStorage.getNewObject<LaunchType> (flight.launchType);
+		LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethod);
 		Plane *towplane=NULL;
 
 		db_id towplaneId=invalid_id;
-		if (launchType && launchType->is_airtow ())
+		if (launchMethod && launchMethod->is_airtow ())
 		{
-			if (launchType->towplane_known ())
-				towplaneId=dataStorage.getPlaneIdByRegistration (launchType->towplane);
+			if (launchMethod->towplane_known ())
+				towplaneId=dataStorage.getPlaneIdByRegistration (launchMethod->towplaneRegistration);
 			else
 				towplaneId=flight.towplane;
 
@@ -839,12 +839,12 @@ void MainWindow::on_actionDisplayError_triggered ()
 		// the FlightProxyList rather than schlepp_fehlerhaft, we do the same.
 		if (isTowflight)
 		{
-			db_id towLaunchType=dataStorage.getLaunchTypeByType (sat_self);
+			db_id towLaunchMethod=dataStorage.getLaunchMethodByType (LaunchMethod::typeSelf);
 
-			flight=flight.makeTowflight (towplaneId, towLaunchType);
+			flight=flight.makeTowflight (towplaneId, towLaunchMethod);
 
-			delete launchType;
-			launchType=dataStorage.getNewObject<LaunchType> (towLaunchType);
+			delete launchMethod;
+			launchMethod=dataStorage.getNewObject<LaunchMethod> (towLaunchMethod);
 
 			delete plane;
 			plane=towplane;
@@ -852,11 +852,11 @@ void MainWindow::on_actionDisplayError_triggered ()
 		}
 
 		QString errorText;
-		bool error=flight.fehlerhaft (plane, NULL, launchType, &errorText);
+		bool error=flight.fehlerhaft (plane, NULL, launchMethod, &errorText);
 
 		delete plane;
 		delete towplane;
-		delete launchType;
+		delete launchMethod;
 
 		QString flightText (isTowflight?"Schleppflug":"Flug");
 
@@ -1205,9 +1205,9 @@ void MainWindow::on_actionPersonLogs_triggered ()
 	StatisticsWindow::display (pilotLog, true, QString::fromUtf8 ("Flugbücher"), this);
 }
 
-void MainWindow::on_actionLaunchTypeStatistics_triggered ()
+void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 {
-	LaunchTypeStatistics *stats = LaunchTypeStatistics::createNew (flightList.getList (), dataStorage);
+	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (flightList.getList (), dataStorage);
 	StatisticsWindow::display (stats, true, "Startartstatistik", this);
 }
 
@@ -1245,7 +1245,7 @@ void MainWindow::dbEvent (DbEvent event)
 
 	try
 	{
-		// TODO when a plane, person or launch type is changed, the flight list
+		// TODO when a plane, person or launch method is changed, the flight list
 		// has to be updated, too. But that's a feature of the FlightListModel (?).
 		if (event.table == db_flug)
 		{
@@ -1390,23 +1390,23 @@ bool MainWindow::initializeDatabase ()
 
 void MainWindow::setDatabaseActionsEnabled (bool enabled)
 {
-	ui.actionDelete               ->setEnabled (enabled);
-	ui.actionEdit                 ->setEnabled (enabled);
-	ui.actionEditPeople           ->setEnabled (enabled);
-	ui.actionEditPlanes           ->setEnabled (enabled);
-	ui.actionJumpToTow            ->setEnabled (enabled);
-	ui.actionLand                 ->setEnabled (enabled);
-	ui.actionLaunchTypeStatistics ->setEnabled (enabled);
-	ui.actionNew                  ->setEnabled (enabled);
-	ui.actionPersonLogs           ->setEnabled (enabled);
-	ui.actionPingServer           ->setEnabled (enabled);
-	ui.actionPlaneLogs            ->setEnabled (enabled);
-	ui.actionRefreshAll           ->setEnabled (enabled);
-	ui.actionRefreshTable         ->setEnabled (enabled);
-	ui.actionRepeat               ->setEnabled (enabled);
-	ui.actionSetDisplayDate       ->setEnabled (enabled);
-	ui.actionStart                ->setEnabled (enabled);
-	ui.actionTouchngo             ->setEnabled (enabled);
+	ui.actionDelete                 ->setEnabled (enabled);
+	ui.actionEdit                   ->setEnabled (enabled);
+	ui.actionEditPeople             ->setEnabled (enabled);
+	ui.actionEditPlanes             ->setEnabled (enabled);
+	ui.actionJumpToTow              ->setEnabled (enabled);
+	ui.actionLand                   ->setEnabled (enabled);
+	ui.actionLaunchMethodStatistics ->setEnabled (enabled);
+	ui.actionNew                    ->setEnabled (enabled);
+	ui.actionPersonLogs             ->setEnabled (enabled);
+	ui.actionPingServer             ->setEnabled (enabled);
+	ui.actionPlaneLogs              ->setEnabled (enabled);
+	ui.actionRefreshAll             ->setEnabled (enabled);
+	ui.actionRefreshTable           ->setEnabled (enabled);
+	ui.actionRepeat                 ->setEnabled (enabled);
+	ui.actionSetDisplayDate         ->setEnabled (enabled);
+	ui.actionStart                  ->setEnabled (enabled);
+	ui.actionTouchngo               ->setEnabled (enabled);
 
 	// Connect/disconnect are special
 	ui.actionConnect    ->setEnabled (!enabled);

@@ -90,7 +90,7 @@ QString FlightModel::columnName (int columnIndex) const
 		case 2: return "flightType";
 		case 3: return "pilot";
 		case 4: return "copilot";
-		case 5: return "launchType";
+		case 5: return "launchMethod";
 		case 6: return "launchTime";
 		case 7: return "landingTime";
 		case 8: return "flightDuration";
@@ -122,7 +122,7 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 			case 2: return flightTypeText (flight.flightType, lsTable);
 			case 3: return pilotData (flight, role);
 			case 4: return copilotData (flight, role);
-			case 5: return launchTypeData (flight, role);
+			case 5: return launchMethodData (flight, role);
 			case 6: return launchTimeData (flight, role);
 			case 7: return landingTimeData (flight, role);
 			case 8: return durationData (flight, role);
@@ -141,12 +141,12 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 	else if (role==Qt::BackgroundRole)
 	{
 		Plane *plane=dataStorage.getNewObject<Plane> (flight.plane);
-		LaunchType *launchType=dataStorage.getNewObject<LaunchType> (flight.launchType);
+		LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethod);
 
-		bool error=flight.fehlerhaft (plane, NULL, launchType);
+		bool error=flight.fehlerhaft (plane, NULL, launchMethod);
 
 		delete plane;
-		delete launchType;
+		delete launchMethod;
 
 		QColor flightColor=flug_farbe (flight.mode, error, flight.isTowflight (), flight.started, flight.landed);
 		return QBrush (flightColor);
@@ -186,7 +186,7 @@ QVariant FlightModel::registrationData (const Flight &flight, int role) const
 	try
 	{
 		Plane plane=dataStorage.getObject<Plane> (flight.plane);
-		return plane.tableName ();
+		return plane.getTableName ();
 	}
 	catch (DataStorage::NotFoundException)
 	{
@@ -216,7 +216,7 @@ QVariant FlightModel::pilotData (const Flight &flight, int role) const
 	try
 	{
 		Person pilot=dataStorage.getObject<Person> (flight.pilot);
-		return pilot.tableName ();
+		return pilot.getTableName ();
 	}
 	catch (DataStorage::NotFoundException)
 	{
@@ -233,7 +233,7 @@ QVariant FlightModel::copilotData (const Flight &flight, int role) const
 		if (flightTypeCopilotRecorded (flight.flightType))
 		{
 			Person copilot=dataStorage.getObject<Person> (flight.copilot);
-			return copilot.tableName ();
+			return copilot.getTableName ();
 		}
 		else if (flightTypeIsGuest (flight.flightType))
 		{
@@ -250,7 +250,7 @@ QVariant FlightModel::copilotData (const Flight &flight, int role) const
 	}
 }
 
-QVariant FlightModel::launchTypeData (const Flight &flight, int role) const
+QVariant FlightModel::launchMethodData (const Flight &flight, int role) const
 {
 	(void)role;
 
@@ -258,11 +258,11 @@ QVariant FlightModel::launchTypeData (const Flight &flight, int role) const
 	{
 		if (!flight.startsHere ()) return "-";
 
-		LaunchType launchType=dataStorage.getObject<LaunchType> (flight.launchType);
+		LaunchMethod launchMethod=dataStorage.getObject<LaunchMethod> (flight.launchMethod);
 
-		return launchType.short_description;
+		return launchMethod.shortName;
 
-		// Alternative: if (launchType.is_airtow () && !launchType.towplaneKnown) return towplane.registraion or "???"
+		// Alternative: if (launchMethod.is_airtow () && !launchMethod.towplaneKnown) return towplane.registraion or "???"
 	}
 	catch (DataStorage::NotFoundException)
 	{

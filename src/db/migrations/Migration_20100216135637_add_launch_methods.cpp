@@ -2,7 +2,7 @@
 
 #include "src/db/Database.h"
 
-#include "src/model/LaunchType.h"
+#include "src/model/LaunchMethod.h"
 #include "src/config/Options.h"
 
 Migration_20100216135637_add_launch_methods::Migration_20100216135637_add_launch_methods (Database &database):
@@ -31,11 +31,11 @@ void Migration_20100216135637_add_launch_methods::up ()
 	{
 		database.transaction ();
 
-		foreach (LaunchType launchType, opts.configuredLaunchTypes)
+		foreach (LaunchMethod launchMethod, opts.configuredLaunchMethods)
 		{
-			// Don't use the methods of Database or LaunchType - they use the
+			// Don't use the methods of Database or LaunchMethod - they use the
 			// current schema, we need to use the schema after this migration.
-			std::cout << "Importing launch method: " << launchType.toString () << std::endl;
+			std::cout << "Importing launch method: " << launchMethod.toString () << std::endl;
 
 			QSqlQuery query=database.prepareQuery (
 				"INSERT INTO launch_methods"
@@ -43,15 +43,15 @@ void Migration_20100216135637_add_launch_methods::up ()
 				"values (?,?,?,?,?,?,?,?,?)"
 				);
 
-			query.addBindValue (launchType.id);
-			query.addBindValue (launchType.description);
-			query.addBindValue (launchType.short_description);
-			query.addBindValue (launchType.logbook_string);
-			query.addBindValue (launchType.accelerator);
-			query.addBindValue (LaunchType::typeToDb (launchType.type));
-			query.addBindValue (launchType.towplane);
-			query.addBindValue (launchType.person_required);
-			query.addBindValue (launchType.comments);
+			query.addBindValue (launchMethod.id);
+			query.addBindValue (launchMethod.name);
+			query.addBindValue (launchMethod.shortName);
+			query.addBindValue (launchMethod.logString);
+			query.addBindValue (launchMethod.keyboardShortcut);
+			query.addBindValue (LaunchMethod::typeToDb (launchMethod.type));
+			query.addBindValue (launchMethod.towplaneRegistration);
+			query.addBindValue (launchMethod.personRequired);
+			query.addBindValue (launchMethod.comments);
 
 			database.executeQuery (query);
 		}

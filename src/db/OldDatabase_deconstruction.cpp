@@ -84,8 +84,8 @@ const char *db_time_format="%Y-%m-%d %H:%M:%S";
 //   - list clubs (from flights and people)
 //   - person used: person has user or flight
 
-// Launch types: count, add, list all, get by id, get by type, get towplane
-// Method: get towplane (known from launch type or from flight's towplane id)
+// Launch methods: count, add, list all, get by id, get by type, get towplane
+// Method: get towplane (known from launch method or from flight's towplane id)
 
 // Merge person:
 //   - update flight pilot/copilot/towpilot, user person; should be in transaction

@@ -43,11 +43,11 @@ class Plane: public Entity
 		int numSeats;
 		Category category;
 
-		virtual QString name () const;
 
 		virtual void output (std::ostream &stream, output_format_t format);
-		virtual QString textName () const;
-		virtual QString tableName () const;
+		virtual QString getName () const;
+		virtual QString getTextName () const;
+		virtual QString getTableName () const;
 
 		virtual bool selfLaunchOnly ();
 

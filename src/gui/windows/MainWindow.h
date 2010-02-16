@@ -155,7 +155,7 @@ class MainWindow: public QMainWindow
 		// Menu: Statistics
 		void on_actionPlaneLogs_triggered ();
 		void on_actionPersonLogs_triggered ();
-		void on_actionLaunchTypeStatistics_triggered ();
+		void on_actionLaunchMethodStatistics_triggered ();
 
 		// Menu: Database
 		void on_actionConnect_triggered () { dataStorage.connect (); }

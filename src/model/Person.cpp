@@ -30,7 +30,7 @@ bool Person::operator< (const Person &o) const
 	return false;
 }
 
-QString Person::name () const
+QString Person::getName () const
 	/*
 	 * Returns the name of the person in a form suitable for enumerations.
 	 * Return value:
@@ -59,28 +59,18 @@ QString Person::formal_name () const
 	return l+", "+f;
 }
 
-QString Person::pdf_name () const
-	/*
-	 * Returns the name of the person in a form suitable for the PDF document.
-	 * Return value:
-	 *   - the name.
-	 */
-{
-	return name ();
-}
-
-QString Person::tableName () const
+QString Person::getTableName () const
 	/*
 	 * Returns the name of the person in a form suitable for the Table.
 	 * Return value:
 	 *   - the name.
 	 */
 {
-	if (eintrag_ist_leer (club)) return name ();
-	return name ()+" ("+club+")";
+	if (eintrag_ist_leer (club)) return getName ();
+	return getName ()+" ("+club+")";
 }
 
-QString Person::textName () const
+QString Person::getTextName () const
 	/*
 	 * Returns the name of the person in a form suitable for running text.
 	 * Return value:

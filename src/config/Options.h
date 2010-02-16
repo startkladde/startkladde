@@ -13,7 +13,7 @@
 
 class Database;
 class ShellPlugin;
-class LaunchType;
+class LaunchMethod;
 
 class Options
 {
@@ -76,7 +76,7 @@ class Options
 
 		static bool silent;
 
-		QList<LaunchType> configuredLaunchTypes;
+		QList<LaunchMethod> configuredLaunchMethods;
 };
 
 extern Options opts;

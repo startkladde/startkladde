@@ -21,7 +21,7 @@ void Plane::initialize ()
 	numSeats=0;
 }
 
-QString Plane::name () const
+QString Plane::getName () const
 	/*
 	 * Returns the name of the plane in a form suitable for enumerations.
 	 * Return value:
@@ -31,20 +31,20 @@ QString Plane::name () const
 	return registration;
 }
 
-QString Plane::tableName () const
+QString Plane::getTableName () const
 {
 	if (eintrag_ist_leer (competitionId)) return registration;
 	return QString ("%1 (%2)").arg (registration).arg (competitionId);
 }
 
-QString Plane::textName () const
+QString Plane::getTextName () const
 	/*
 	 * Returns the name of the plane in a form suitable for running text.
 	 * Return value:
 	 *   - the name.
 	 */
 {
-	return name ();
+	return getName ();
 }
 
 void Plane::output (std::ostream &stream, output_format_t format)

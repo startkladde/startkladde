@@ -205,17 +205,17 @@
            <widget class="SkComboBox" name="flightModeInput"/>
           </item>
           <item row="8" column="0">
-           <widget class="SkLabel" name="launchTypeLabel">
+           <widget class="SkLabel" name="launchMethodLabel">
             <property name="text">
              <string>Starta&amp;rt:</string>
             </property>
             <property name="buddy">
-             <cstring>launchTypeInput</cstring>
+             <cstring>launchMethodInput</cstring>
             </property>
            </widget>
           </item>
           <item row="8" column="1" colspan="2">
-           <widget class="SkComboBox" name="launchTypeInput"/>
+           <widget class="SkComboBox" name="launchMethodInput"/>
           </item>
           <item row="9" column="0">
            <widget class="SkLabel" name="towplaneRegistrationLabel">
@@ -744,7 +744,7 @@
   <tabstop>copilotLastNameInput</tabstop>
   <tabstop>copilotFirstNameInput</tabstop>
   <tabstop>flightModeInput</tabstop>
-  <tabstop>launchTypeInput</tabstop>
+  <tabstop>launchMethodInput</tabstop>
   <tabstop>towplaneRegistrationInput</tabstop>
   <tabstop>towpilotLastNameInput</tabstop>
   <tabstop>towpilotFirstNameInput</tabstop>

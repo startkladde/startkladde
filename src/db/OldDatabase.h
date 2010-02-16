@@ -19,7 +19,7 @@
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
-#include "src/model/LaunchType.h"
+#include "src/model/LaunchMethod.h"
 
 // TODO replace cerr with debug_stream
 
@@ -401,7 +401,7 @@ class OldDatabase:public QObject
 		int list_persons_by_club_club_id (QList<Person *> &persons, QString club, QString club_id);
 		int list_planes_all (QList<Plane *> &planes);
 		int list_persons_all (QList<Person *> &persons);
-		int list_startarten_all (QList<LaunchType *> &saen);
+		int list_startarten_all (QList<LaunchMethod *> &saen);
 		int list_planes_date (QList<Plane *> &planes, QDate *date);
 		int list_persons_date (QList<Person *> &persons, QDate *date);
 		int list_planes_registration (QList<Plane *> &planes, QString registration);
@@ -419,13 +419,13 @@ class OldDatabase:public QObject
 		int list_clubs (QStringList &clubs);
 
 		// Startarten
-		bool add_startart_to_list (LaunchType *sa);
-		int get_startart (LaunchType *sa, db_id id);
-		int get_startart_by_type (LaunchType *startart, startart_type sat);
-		db_id get_startart_id_by_type (startart_type sat);
+		bool add_startart_to_list (LaunchMethod *sa);
+		int get_startart (LaunchMethod *sa, db_id id);
+		int get_startart_by_type (LaunchMethod *startart, LaunchMethod::Type type);
+		db_id get_startart_id_by_type (LaunchMethod::Type type);
 		int count_startart ();
 
-		int get_towplane (Plane *towplane, const LaunchType &startart, const db_id towplane_id);
+		int get_towplane (Plane *towplane, const LaunchMethod &startart, const db_id towplane_id);
 
 		bool display_queries;
 		std::ostream &debug_stream;
@@ -444,7 +444,7 @@ class OldDatabase:public QObject
 		bool is_admin_db;
 
 		// Startart list
-		QList<LaunchType *> startarten;
+		QList<LaunchMethod *> startarten;
 
 		// Generic functions
 		QString escape (QString text);

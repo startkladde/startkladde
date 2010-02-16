@@ -37,10 +37,9 @@ class Person: public Entity
 		QString landesverbands_nummer;
 
 
-		virtual QString name () const;
-		virtual QString pdf_name () const;
-		virtual QString textName () const;
-		virtual QString tableName () const;
+		virtual QString getName () const;
+		virtual QString getTextName () const;
+		virtual QString getTableName () const;
 		virtual QString full_name () const;
 		virtual QString formal_name () const;
 

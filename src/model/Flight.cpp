@@ -16,7 +16,7 @@
 /*
  * Potential model changes:
  *   - for airtows, always store the towplane ID here and only store a generic
- *     "airtow" launch type
+ *     "airtow" launch method
  *   - store the towplane ID or the registration?
  */
 
@@ -42,7 +42,7 @@ void Flight::initialize (db_id id)
 	pilot         =invalid_id;
 	copilot       =invalid_id;
 	towpilot      =invalid_id;
-	launchType    =invalid_id;
+	launchMethod  =invalid_id;
 	towplane      =invalid_id;
 
 	flightType=ftNone;
@@ -153,7 +153,7 @@ Time Flight::towflightDuration () const
 	return t;
 }
 
-bool Flight::fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa, QString *errorText) const
+bool Flight::fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText) const
 	/*
 	 * Finds out if the flight contains an error.
 	 * Parameters:
@@ -174,7 +174,7 @@ bool Flight::fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa, QString *errorTe
 }
 
 // TODO replace by checking the towflight?
-bool Flight::schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa, QString *errorText) const
+bool Flight::schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText) const
 	/*
 	 * Finds out if the towflight for this flight (if any) contains an error.
 	 * Parameters:
@@ -253,7 +253,7 @@ QString Flight::errorDescription (FlightError code) const
 	return "Unbekannter Fehler";
 }
 
-FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchType *sa) const
+FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *sa) const
 	/*
 	 * Does the unified error checking.
 	 * Usage of this function:
@@ -288,7 +288,7 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	// this is a non-error (see there for an explanation).
 	CHECK_FEHLER (FLUG, id_invalid (id), ff_keine_id)
 	CHECK_FEHLER (FLUG, id_invalid (plane), ff_kein_flugzeug)
-	CHECK_FEHLER (FLUG, sa && sa->person_required && id_invalid (pilot) && pvn.isEmpty () && pnn.isEmpty (), ff_kein_pilot)
+	CHECK_FEHLER (FLUG, sa && sa->personRequired && id_invalid (pilot) && pvn.isEmpty () && pnn.isEmpty (), ff_kein_pilot)
 	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pvn.isEmpty () && pnn.isEmpty (), ff_pilot_nur_vorname);
 	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pnn.isEmpty () && pvn.isEmpty (), ff_pilot_nur_nachname);
 	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pnn.isEmpty () && !pvn.isEmpty (), ff_pilot_nicht_identifiziert);
@@ -305,7 +305,7 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	CHECK_FEHLER (FLUG, copilot!=0 && !flightTypeCopilotRecorded (flightType), ff_begleiter_nicht_erlaubt)
 	CHECK_FEHLER (FLUG, starts_here (mode) && lands_here (mode) && landed && !started, ff_nur_gelandet)
 	CHECK_FEHLER (FLUG, starts_here (mode) && lands_here (mode) && started && landed && launchTime>landingTime, ff_landung_vor_start)
-	CHECK_FEHLER (FLUG, id_invalid (launchType) && started && starts_here (mode), ff_keine_startart)
+	CHECK_FEHLER (FLUG, id_invalid (launchMethod) && started && starts_here (mode), ff_keine_startart)
 	CHECK_FEHLER (FLUG, mode==fmNone, ff_kein_modus)
 	CHECK_FEHLER (FLUG, flightType==ftNone, ff_kein_flugtyp)
 	CHECK_FEHLER (FLUG, numLandings<0, ff_landungen_negativ)
@@ -319,7 +319,7 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && flightTypeCopilotRecorded (flightType) && copilot!=0, ff_begleiter_in_einsitzer)
 	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && flightType==ftGuestPrivate, ff_gastflug_in_einsitzer)
 	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && flightType==ftGuestExternal, ff_gastflug_in_einsitzer)
-	//CHECK_FEHLER (FLUG, fz && fz->category==categoryGlider && sa && launchType==sa_ss, ff_segelflugzeug_selbststart)
+	//CHECK_FEHLER (FLUG, fz && fz->category==categoryGlider && sa && launchMethod==sa_ss, ff_segelflugzeug_selbststart)
 	CHECK_FEHLER (FLUG, starts_here (mode) && numLandings>0 && !started, ff_landungen_ohne_start)
 	CHECK_FEHLER (FLUG, starts_here (mode)!=lands_here (mode) && departureAirfield==destinationAirfield, ff_startort_gleich_zielort)
 	CHECK_FEHLER (SCHLEPP, sa && sa->is_airtow () && !sa->towplane_known () && id_invalid (towplane), ff_kein_schleppflugzeug)
@@ -492,7 +492,7 @@ bool Flight::flight_starts_here () const
 }
 
 
-Flight Flight::makeTowflight (db_id towplaneId, db_id towLaunchType) const
+Flight Flight::makeTowflight (db_id towplaneId, db_id towLaunchMethod) const
 {
 	Flight towflight;
 
@@ -502,7 +502,7 @@ Flight Flight::makeTowflight (db_id towplaneId, db_id towLaunchType) const
 	towflight.id=id;
 
 	// Always use the towplane ID passed by the caller, even if it is invalid -
-	// this means that the towplane specified in the launch type was not found.
+	// this means that the towplane specified in the launch method was not found.
 	towflight.plane=towplaneId;
 
 	// The towflight's pilot is our towpilot and there is not copilot and
@@ -515,8 +515,8 @@ Flight Flight::makeTowflight (db_id towplaneId, db_id towLaunchType) const
 	towflight.landingTime=landingTimeTowflight;			// The tow flight landing time is our landingTimeTowflight.
 	towflight.landingTimeTowflight=Time (); 			// The tow flight has no tow flight.
 
-	// The launchType of the tow flight is given as a parameter.
-	towflight.launchType=towLaunchType;
+	// The launchMethod of the tow flight is given as a parameter.
+	towflight.launchMethod=towLaunchMethod;
 
 	towflight.flightType=ftTow;
 	towflight.departureAirfield=departureAirfield;							// The tow flight started the same place as the towed flight.
@@ -543,9 +543,9 @@ Flight Flight::makeTowflight (db_id towplaneId, db_id towLaunchType) const
 	return towflight;
 }
 
-void Flight::get_towflight (Flight *towflight, db_id towplaneId, db_id towLaunchType) const
+void Flight::get_towflight (Flight *towflight, db_id towplaneId, db_id towLaunchMethod) const
 {
-	*towflight=makeTowflight (towplaneId, towLaunchType);
+	*towflight=makeTowflight (towplaneId, towLaunchMethod);
 }
 
 // TODO move to PlaneLog
@@ -596,7 +596,7 @@ QString Flight::toString () const
 
 
 	return QString ("id=%1, plane=%2, type=%3, pilot=%4, copilot=%5, mode=%6, "
-		"launchType=%7, towplane=%8, towpilot=%9, towFlightMode=%10, "
+		"launchMethod=%7, towplane=%8, towpilot=%9, towFlightMode=%10, "
 		"launchTime=%11, landingTime=%12, towflightLandingTime=%13, "
 		"departure='%14', destination='%15', towFlightDestination='%16', "
 		"numLandings=%17, comment='%18', accountingNote='%19'")
@@ -608,7 +608,7 @@ QString Flight::toString () const
 		.arg (personToString (copilot, bvn, bnn))
 		.arg (flightModeText (mode, lsTable))
 
-		.arg (launchType)
+		.arg (launchMethod)
 		.arg (towplane)
 		.arg (personToString (towpilot, tpvn, tpnn))
 		.arg (flightModeText (modeTowflight, lsTable))
@@ -791,12 +791,12 @@ bool Flight::canTowflightLand (QString *reason) const
 bool Flight::isErroneous (DataStorage &dataStorage) const
 {
 	Plane *thePlane=dataStorage.getNewObject<Plane> (plane);
-	LaunchType *theLaunchType=dataStorage.getNewObject<LaunchType> (launchType);
+	LaunchMethod *theLaunchMethod=dataStorage.getNewObject<LaunchMethod> (launchMethod);
 
-	bool erroneous=fehlerhaft (thePlane, NULL, theLaunchType);
+	bool erroneous=fehlerhaft (thePlane, NULL, theLaunchMethod);
 
 	delete thePlane;
-	delete theLaunchType;
+	delete theLaunchMethod;
 
 	return erroneous;
 }
@@ -835,7 +835,7 @@ Flight Flight::createFromQuery (const QSqlQuery &q)
 	              q.value (5).toString   ());
 	f.setStatus  (q.value (6).toInt ());
 
-	f.launchType          =q.value ( 7).toLongLong ();
+	f.launchMethod        =q.value ( 7).toLongLong ();
 	f.departureAirfield   =q.value ( 8).toString   ();
 	f.destinationAirfield =q.value ( 9).toString   ();
 	f.numLandings         =q.value (10).toInt      ();
@@ -907,7 +907,7 @@ void Flight::bindValues (QSqlQuery &q) const
 	q.addBindValue (modeToDb (mode));
 	q.addBindValue (getStatus ());
 
-	q.addBindValue (launchType);
+	q.addBindValue (launchMethod);
 	q.addBindValue (departureAirfield);
 	q.addBindValue (destinationAirfield);
 	q.addBindValue (numLandings);

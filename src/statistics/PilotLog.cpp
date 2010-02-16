@@ -2,7 +2,7 @@
 
 #include <QSet>
 
-#include "src/model/LaunchType.h"
+#include "src/model/LaunchMethod.h"
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
@@ -62,17 +62,17 @@ PilotLog::Entry PilotLog::Entry::create (const Flight *flight, DataStorage &data
 {
 	PilotLog::Entry entry;
 
-	Plane      *plane     =dataStorage.getNewObject<Plane     > (flight->plane );
-	Person     *pilot     =dataStorage.getNewObject<Person    > (flight->pilot    );
-	Person     *copilot   =dataStorage.getNewObject<Person    > (flight->copilot);
-	LaunchType *launchType=dataStorage.getNewObject<LaunchType> (flight->launchType );
+	Plane        *plane       =dataStorage.getNewObject<Plane       > (flight->plane        );
+	Person       *pilot       =dataStorage.getNewObject<Person      > (flight->pilot        );
+	Person       *copilot     =dataStorage.getNewObject<Person      > (flight->copilot      );
+	LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight->launchMethod );
 
 	entry.date=flight->effdatum ();
 	if (plane) entry.planeType=plane->type;
 	if (plane) entry.planeRegistration=plane->registration;
-	if (pilot) entry.pilot=pilot->name ();
-	if (copilot) entry.copilot=copilot->name ();
-	if (launchType) entry.launchType=launchType->logbook_string;
+	if (pilot) entry.pilot=pilot->getName ();
+	if (copilot) entry.copilot=copilot->getName ();
+	if (launchMethod) entry.launchMethod=launchMethod->logString;
 	entry.departureAirfield=flight->departureAirfield;
 	entry.destinationAirfield=flight->destinationAirfield;
 	entry.departureTime=flight->launchTime; // TODO: check flight mode
@@ -85,7 +85,7 @@ PilotLog::Entry PilotLog::Entry::create (const Flight *flight, DataStorage &data
 	delete plane;
 	delete pilot;
 	delete copilot;
-	delete launchType;
+	delete launchMethod;
 
 	return entry;
 }
@@ -235,7 +235,7 @@ QVariant PilotLog::data (const QModelIndex &index, int role) const
 			case 2: return entry.planeRegistration;
 			case 3: return entry.pilot;
 			case 4: return entry.copilot;
-			case 5: return entry.launchType;
+			case 5: return entry.launchMethod;
 			case 6: return entry.departureAirfield;
 			case 7: return entry.destinationAirfield;
 			case 8: return entry.departureTimeText ();

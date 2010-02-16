@@ -119,8 +119,8 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DataStorag
 	widgetLabelMap.insert (ui.copilotFirstNameInput, ui.copilotFirstNameLabel);
 	widgetLabelMap.insert (ui.copilotLastNameInput , ui.copilotLabel);
 	//
-	widgetLabelMap.insert (ui.flightModeInput, ui.flightModeLabel);
-	widgetLabelMap.insert (ui.launchTypeInput, ui.launchTypeLabel);
+	widgetLabelMap.insert (ui.flightModeInput  , ui.flightModeLabel);
+	widgetLabelMap.insert (ui.launchMethodInput, ui.launchMethodLabel);
 	//
 	widgetLabelMap.insert (ui.towplaneRegistrationInput, ui.towplaneRegistrationLabel);
 	widgetLabelMap.insert (ui.towplaneTypeWidget       , ui.towplaneTypeLabel);
@@ -169,7 +169,7 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DataStorag
 	ui.towpilotLabel             ->setDefaultBackgroundColor (requiredFieldColor);
 	ui.flightTypeLabel           ->setDefaultBackgroundColor (requiredFieldColor);
 	ui.flightModeLabel           ->setDefaultBackgroundColor (requiredFieldColor);
-	ui.launchTypeLabel           ->setDefaultBackgroundColor (requiredFieldColor);
+	ui.launchMethodLabel         ->setDefaultBackgroundColor (requiredFieldColor);
 	ui.towplaneRegistrationLabel ->setDefaultBackgroundColor (requiredFieldColor);
 
 	// Setup initial values
@@ -244,12 +244,12 @@ void FlightWindow::fillData ()
 		ui.towflightModeInput->addItem (flightModeText (towflightModes.at (i), lsWithShortcut), towflightModes.at (i));
 
 
-	// *** Launch types
-	QList<LaunchType> launchTypes=dataStorage.getLaunchTypes ();
-	if (!launchTypes.empty())
-		ui.launchTypeInput->addItem ("--", invalid_id);
-	for (int i=0; i<launchTypes.size (); ++i)
-		ui.launchTypeInput->addItem (launchTypes.at (i).list_text (), launchTypes.at (i).get_id ());
+	// *** Launch methods
+	QList<LaunchMethod> launchMethods=dataStorage.getLaunchMethods ();
+	if (!launchMethods.empty())
+		ui.launchMethodInput->addItem ("--", invalid_id);
+	for (int i=0; i<launchMethods.size (); ++i)
+		ui.launchMethodInput->addItem (launchMethods.at (i).list_text (), launchMethods.at (i).get_id ());
 
 
 	// *** Airfields
@@ -354,7 +354,7 @@ void FlightWindow::repeatFlight (QWidget *parent, DataStorage &dataStorage, cons
 	w->ui.dateInput->setDate (date);
 	w->updateSetup ();
 
-	w->ui.launchTypeInput->setFocus ();
+	w->ui.launchMethodInput->setFocus ();
 
 	w->exec ();
 }
@@ -465,9 +465,9 @@ void FlightWindow::updateErrors (bool setFocus)
 
 	Flight flight=determineFlightBasic ();
 
-	Plane *plane          =dataStorage.getNewObject<Plane     > (flight.plane );
-	Plane *towplane       =dataStorage.getNewObject<Plane     > (flight.towplane );
-	LaunchType *launchType=dataStorage.getNewObject<LaunchType> (flight.launchType );
+	Plane *plane              =dataStorage.getNewObject<Plane       > (flight.plane        );
+	Plane *towplane           =dataStorage.getNewObject<Plane       > (flight.towplane     );
+	LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethod );
 
 	FlightError error;
 	int errorIndex=0;
@@ -479,7 +479,7 @@ void FlightWindow::updateErrors (bool setFocus)
 		label->setError (false);
 
 	ui.errorList->clear ();
-	while ((error=flight.errorCheck (&errorIndex, true, launchType && launchType->is_airtow (), plane, towplane, launchType))!=ff_ok)
+	while ((error=flight.errorCheck (&errorIndex, true, launchMethod && launchMethod->is_airtow (), plane, towplane, launchMethod))!=ff_ok)
 	{
 		// In the cases of unknown or non-unique people, we don't want to query
 		// the user. So the determineFlightBasic method uses the buffered IDs
@@ -525,7 +525,7 @@ void FlightWindow::updateErrors (bool setFocus)
 
 	delete plane;
 	delete towplane;
-	delete launchType;
+	delete launchMethod;
 
 	if (setFocus && firstErrorWidget)
 		firstErrorWidget->setFocus ();
@@ -563,7 +563,7 @@ QWidget *FlightWindow::getErrorWidget (FlightError error)
 		case ff_begleiter_nicht_erlaubt:              return ui.copilotLastNameInput;
 		case ff_nur_gelandet:                         return ui.landingTimeInput;
 		case ff_landung_vor_start:                    return ui.landingTimeInput;
-		case ff_keine_startart:                       return ui.launchTypeInput;
+		case ff_keine_startart:                       return ui.launchMethodInput;
 		case ff_kein_modus:                           return ui.flightModeInput;
 		case ff_kein_sfz_modus:                       return ui.towflightModeInput;
 		case ff_kein_flugtyp:                         return ui.flightTypeInput;
@@ -575,7 +575,7 @@ QWidget *FlightWindow::getErrorWidget (FlightError error)
 		case ff_segelflugzeug_landungen:              return ui.numLandingsInput;
 		case ff_begleiter_in_einsitzer:               return ui.copilotLastNameInput;
 		case ff_gastflug_in_einsitzer:                return ui.flightTypeInput;
-		case ff_segelflugzeug_selbststart:            return ui.launchTypeInput;
+		case ff_segelflugzeug_selbststart:            return ui.launchMethodInput;
 		case ff_schlepp_nur_gelandet:                 return ui.towflightLandingTimeInput;
 		case ff_schlepp_landung_vor_start:            return ui.towflightLandingTimeInput;
 		case ff_landungen_null:                       return ui.numLandingsInput;
@@ -668,28 +668,28 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 
 	ui.flightModeInput->setCurrentItemByItemData (flight.mode);
 
-	// Lauch type: on repeating a flight, the launch type is not copied because
+	// Launch method: on repeating a flight, the launch method is not copied because
 	// it may be different from before (different winch). An exception is self
 	// launch becaus it is unlikely that a plane which did a self launch will
 	// use another type of launch later.
-	bool copyLaunchType=!repeat;
+	bool copyLaunchMethod=!repeat;
 
 	try
 	{
-		if (id_valid (flight.launchType))
-			if (dataStorage.getObject<LaunchType> (flight.launchType).type==sat_self)
-				copyLaunchType=true;
+		if (id_valid (flight.launchMethod))
+			if (dataStorage.getObject<LaunchMethod> (flight.launchMethod).type==LaunchMethod::typeSelf)
+				copyLaunchMethod=true;
 	}
 	catch (DataStorage::NotFoundException &ex)
 	{
-		log_error ("Launch type not found in FlightWindow::flightToFields");
+		log_error ("Launch method not found in FlightWindow::flightToFields");
 	}
 
-	if (copyLaunchType) ui.launchTypeInput->setCurrentItemByItemData (flight.launchType);
-	launchTypeChanged (ui.launchTypeInput->currentIndex ());
+	if (copyLaunchMethod) ui.launchMethodInput->setCurrentItemByItemData (flight.launchMethod);
+	launchMethodChanged (ui.launchMethodInput->currentIndex ());
 
 	// The towplane is set even if it's not an airtow in case the user selects
-	// an unknown airtow launchtype later.
+	// an unknown airtow launchMethod later.
 	planeToFields (flight.towplane, ui.towplaneRegistrationInput, ui.towplaneTypeWidget);
 	personToFields (flight.towpilot, ui.towpilotLastNameInput, ui.towpilotFirstNameInput, flight.tpnn, flight.tpvn);
 	ui.towflightModeInput->setCurrentItemByItemData (flight.modeTowflight);
@@ -745,7 +745,7 @@ Flight FlightWindow::determineFlightBasic () throw ()
 	// Copilot: may have to query user
 	//
 	if (isFlightModeActive                   ()) flight.mode              =getCurrentFlightMode ();
-	if (isLaunchTypeActive                   ()) flight.launchType           =getCurrentLaunchTypeId ();
+	if (isLaunchMethodActive                 ()) flight.launchMethod      =getCurrentLaunchMethodId ();
 	//
 	// Towplane registration: may have to query user
 	// Towpilot: may have to query user
@@ -798,9 +798,9 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool launchNow)
 	// Note that we use the values from the passed flight, not from the editor
 	// fields.
 
-	if ((launchNow || flight.started) && starts_here (flight.mode) && id_invalid (flight.launchType))
+	if ((launchNow || flight.started) && starts_here (flight.mode) && id_invalid (flight.launchMethod))
 		errorCheck ("Es wurde keine Startartart angegeben.",
-			ui.launchTypeInput);
+			ui.launchMethodInput);
 
 	if ((flight.started || !starts_here (flight.mode)) && eintrag_ist_leer (flight.departureAirfield))
 		errorCheck ("Es wurde kein Startort angegeben.",
@@ -839,7 +839,7 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool launchNow)
 			ui.towflightLandingTimeInput);
 }
 
-void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, const Plane *plane, const Plane *towplane, const LaunchType *launchType)
+void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, const Plane *plane, const Plane *towplane, const LaunchMethod *launchMethod)
 	throw (FlightWindow::AbortedException)
 {
 	// Phase 2: plane and towplane determined, people not determined
@@ -848,38 +848,38 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, cons
 		errorCheck ("Flugzeug und Schleppflugzeug sind identisch.",
 			ui.towplaneRegistrationInput);
 
-	if (plane && launchType &&
-		flight.numLandings>1 && plane->category==Plane::categoryGlider && !(launchType && launchType->type==sat_airtow))
+	if (plane && launchMethod &&
+		flight.numLandings>1 && plane->category==Plane::categoryGlider && !(launchMethod && launchMethod->type==LaunchMethod::typeAirtow))
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.\nEs wurde jedoch mehr als eine Landung angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.numLandingsInput);
 
 	if (plane &&
-		flight.numLandings>0 && !flight.landed && plane->category==Plane::categoryGlider && !(launchType && launchType->type==sat_airtow))
+		flight.numLandings>0 && !flight.landed && plane->category==Plane::categoryGlider && !(launchMethod && launchMethod->type==LaunchMethod::typeAirtow))
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.\nEs wurden jedoch eine Landung, aber keine Landezeit angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.numLandingsInput);
 
 	if (plane &&
-		plane->category==Plane::categoryGlider && launchType && launchType->type==sat_self)
+		plane->category==Plane::categoryGlider && launchMethod && launchMethod->type==LaunchMethod::typeSelf)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.\nEs wurden jedoch \"Selbststart\" als Startart angegeben.")
 			.arg (plane->registration).arg (plane->type),
-			ui.launchTypeInput);
+			ui.launchMethodInput);
 
-	if (plane && launchType &&
-		(plane->category==Plane::categorySingleEngine || plane->category==Plane::categoryUltralight) && launchType->type!=sat_self)
+	if (plane && launchMethod &&
+		(plane->category==Plane::categorySingleEngine || plane->category==Plane::categoryUltralight) && launchMethod->type!=LaunchMethod::typeSelf)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Motorflugzeug.\nEs wurden jedoch eine andere Startart als \"Selbststart\" angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.launchTimeInput);
 
-	if (plane && launchType &&
-		plane->numSeats==1 && (flight.flightType==ftGuestPrivate || flight.flightType==ftGuestExternal) && launchType->type!=sat_self)
+	if (plane && launchMethod &&
+		plane->numSeats==1 && (flight.flightType==ftGuestPrivate || flight.flightType==ftGuestExternal) && launchMethod->type!=LaunchMethod::typeSelf)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.\nEs wurden jedoch der Flugtyp \"Gastflug\" angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.registrationInput);
 
-	if (plane && launchType &&
-		plane->numSeats==1 && flight.flightType==ftTraining2 && launchType->type!=sat_self)
+	if (plane && launchMethod &&
+		plane->numSeats==1 && flight.flightType==ftTraining2 && launchMethod->type!=LaunchMethod::typeSelf)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.\nEs wurden jedoch der Flugtyp \"Doppelsitzige Schulung\" angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.registrationInput);
@@ -953,18 +953,18 @@ void FlightWindow::determineFlightPlanes (Flight &flight)
 		flight.plane=determinePlane (getCurrentRegistration (), "Flugzeug", ui.registrationInput);
 
 	// Determine the towplane
-	// TODO: for a known airtow launch type, we should give the user the
+	// TODO: for a known airtow launch method, we should give the user the
 	// possibility to enter the plane
 	if (isTowplaneRegistrationActive ())
 		flight.towplane=determinePlane (getCurrentTowplaneRegistration (), "Schleppflugzeug", ui.towplaneRegistrationInput);
 }
 
-void FlightWindow::determineFlightPeople (Flight &flight, const LaunchType *launchType)
+void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *launchMethod)
 	throw (FlightWindow::AbortedException)
 {
 	bool pilotRequired=true;
 	if (!starts_here (flight.mode)) pilotRequired=false;
-	if (launchType && launchType->type!=sat_self) pilotRequired=false;
+	if (launchMethod && launchMethod->type!=LaunchMethod::typeSelf) pilotRequired=false;
 
 	// Determine the pilot
 	selectedPilot=
@@ -1031,14 +1031,14 @@ Flight FlightWindow::determineFlight (bool launchNow)
 
 	Plane *plane=NULL, *towplane=NULL;
 	Person *pilot=NULL, *copilot=NULL, *towpilot=NULL;
-	LaunchType *launchType=NULL;
+	LaunchMethod *launchMethod=NULL;
 
 	try
 	{
 		// Phase 1: basic data
 		Flight flight=determineFlightBasic ();
 
-		launchType=dataStorage.getNewObject<LaunchType> (flight.launchType);
+		launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethod);
 
 		checkFlightPhase1 (flight, launchNow);
 
@@ -1048,10 +1048,10 @@ Flight FlightWindow::determineFlight (bool launchNow)
 		plane   =dataStorage.getNewObject<Plane> (flight.plane);
 		towplane=dataStorage.getNewObject<Plane> (flight.towplane);
 
-		checkFlightPhase2 (flight, launchNow, plane, towplane, launchType);
+		checkFlightPhase2 (flight, launchNow, plane, towplane, launchMethod);
 
 		// Phase 3: people
-		determineFlightPeople (flight, launchType);
+		determineFlightPeople (flight, launchMethod);
 
 		pilot   =dataStorage.getNewObject<Person> (flight.pilot    );
 		copilot =dataStorage.getNewObject<Person> (flight.copilot);
@@ -1070,7 +1070,7 @@ Flight FlightWindow::determineFlight (bool launchNow)
 		delete copilot;
 		delete towpilot;
 
-		delete launchType;
+		delete launchMethod;
 
 		throw;
 	}
@@ -1402,12 +1402,12 @@ bool FlightWindow::writeToDatabase (const Flight &flight)
 
 bool FlightWindow::currentIsAirtow ()
 {
-	if (!isLaunchTypeActive ()) return false;
-	if (id_invalid (getCurrentLaunchTypeId ())) return false;
+	if (!isLaunchMethodActive ()) return false;
+	if (id_invalid (getCurrentLaunchMethodId ())) return false;
 
 	try
 	{
-		return getCurrentLaunchType ().is_airtow ();
+		return getCurrentLaunchMethod ().is_airtow ();
 	}
 	catch (DataStorage::NotFoundException &ex)
 	{
@@ -1418,11 +1418,11 @@ bool FlightWindow::currentIsAirtow ()
 bool FlightWindow::isTowplaneRegistrationActive ()
 {
 	if (!currentIsAirtow ()) return false;
-	if (!id_valid (getCurrentLaunchTypeId ())) return false;
+	if (!id_valid (getCurrentLaunchMethodId ())) return false;
 
 	try
 	{
-		return !getCurrentLaunchType ().towplane_known ();
+		return !getCurrentLaunchMethod ().towplane_known ();
 	}
 	catch (DataStorage::NotFoundException &ex)
 	{
@@ -1528,7 +1528,7 @@ const QString textButtonLandLater   =QString::fromUtf8 ("S&päter landen");
  *     is probably not worth the work.
  *   - State updates are grouped by widget, not by cause, because some widgets
  *     are affected by multiple causes (e. g. tow flight landing time: by
- *     flightMode.startsHere and launchType.isAirtow)
+ *     flightMode.startsHere and launchMethod.isAirtow)
  */
 
 void FlightWindow::updateSetupVisibility ()
@@ -1541,7 +1541,7 @@ void FlightWindow::updateSetupVisibility ()
 	enableWidgets (ui.copilotLastNameInput, ui.copilotFirstNameInput   , isCopilotActive                      ());
 	//
 	//flightModeInput - always visible
-	enableWidget  (ui.launchTypeInput                                  , isLaunchTypeActive                   ());
+	enableWidget  (ui.launchMethodInput                                , isLaunchMethodActive                 ());
 	//
 	enableWidget  (ui.towplaneRegistrationInput                        , isTowplaneRegistrationActive         ());
 	enableWidget  (ui.towplaneTypeWidget                               , isTowplaneTypeActive                 ());
@@ -1655,10 +1655,10 @@ void FlightWindow::registrationChanged (const QString &text)
 			// Set the plane type widget
 			ui.planeTypeWidget->setText (plane.type);
 
-			// For planes that only do self launches, set the launch type to "self
+			// For planes that only do self launches, set the launch method to "self
 			// launch" if it is not currently set to anything else.
-			if (plane.selfLaunchOnly () && id_invalid (getCurrentLaunchTypeId ()))
-				ui.launchTypeInput->setCurrentItemByItemData (dataStorage.getLaunchTypeByType (sat_self));
+			if (plane.selfLaunchOnly () && id_invalid (getCurrentLaunchMethodId ()))
+				ui.launchMethodInput->setCurrentItemByItemData (dataStorage.getLaunchMethodByType (LaunchMethod::typeSelf));
 		}
 		catch (DataStorage::NotFoundException &ex)
 		{
@@ -1702,17 +1702,17 @@ void FlightWindow::flightModeChanged (int index)
 	}
 }
 
-void FlightWindow::launchTypeChanged (int index)
+void FlightWindow::launchMethodChanged (int index)
 {
-	db_id launchTypeId=(db_id)ui.launchTypeInput->itemData (index).toLongLong ();;
+	db_id launchMethodId=(db_id)ui.launchMethodInput->itemData (index).toLongLong ();;
 
-	if (id_valid (launchTypeId))
+	if (id_valid (launchMethodId))
 	{
-		LaunchType launchType=dataStorage.getObject<LaunchType> (launchTypeId);
+		LaunchMethod launchMethod=dataStorage.getObject<LaunchMethod> (launchMethodId);
 
-		if (launchType.is_airtow ())
+		if (launchMethod.is_airtow ())
 		{
-			QString towplaneRegistration=launchType.towplane_known () ? launchType.towplane : getCurrentTowplaneRegistration ();
+			QString towplaneRegistration=launchMethod.towplane_known () ? launchMethod.towplaneRegistration : getCurrentTowplaneRegistration ();
 			db_id towplaneId=dataStorage.getPlaneIdByRegistration (towplaneRegistration);
 			if (id_valid (towplaneId))
 			{

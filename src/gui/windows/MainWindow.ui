@@ -341,7 +341,7 @@
     </property>
     <addaction name="actionPlaneLogs"/>
     <addaction name="actionPersonLogs"/>
-    <addaction name="actionLaunchTypeStatistics"/>
+    <addaction name="actionLaunchMethodStatistics"/>
    </widget>
    <widget class="QMenu" name="menuDatabase">
     <property name="tearOffEnabled">
@@ -630,7 +630,7 @@
     <string>Ctrl+F</string>
    </property>
   </action>
-  <action name="actionLaunchTypeStatistics">
+  <action name="actionLaunchMethodStatistics">
    <property name="text">
     <string>Startartstatisti&amp;k</string>
    </property>

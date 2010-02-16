@@ -71,7 +71,7 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, DataStorage &data
 
 	if (plane) entry.registration=plane->registration;
 	entry.date=flight->effdatum ();
-	if (pilot) entry.pilotName=pilot->name ();
+	if (pilot) entry.pilotName=pilot->getName ();
 	entry.minPassengers=entry.maxPassengers=flight->numPassengers ();
 	entry.departureAirfield=flight->departureAirfield;
 	entry.destinationAirfield=flight->destinationAirfield;
@@ -105,7 +105,7 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Da
 	// Values directly determined
 	if (plane) entry.registration=plane->registration;
 	entry.date=flights.last ()->effdatum ();
-	if (pilot) entry.pilotName=pilot->name ();
+	if (pilot) entry.pilotName=pilot->getName ();
 	entry.departureAirfield=flights.first ()->departureAirfield;
 	entry.destinationAirfield=flights.last ()->destinationAirfield;
 	entry.departureTime=flights.first ()->launchTime;

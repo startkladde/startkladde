@@ -190,13 +190,13 @@ int DataStorage::refreshPeople ()
 	return 0;
 }
 
-int DataStorage::refreshLaunchTypes ()
+int DataStorage::refreshLaunchMethods ()
 {
 	QMutexLocker dbLock (&databaseMutex);
-	QList<LaunchType> launchTypeList=db.getObjects<LaunchType> ();
+	QList<LaunchMethod> launchMethodList=db.getObjects<LaunchMethod> ();
 	dbLock.unlock ();
 
-	copyListLocked (LaunchType, launchTypeList, launchTypes);
+	copyListLocked (LaunchMethod, launchMethodList, launchMethods);
 
 	return 0;
 }
@@ -308,7 +308,7 @@ bool DataStorage::refreshAll (OperationMonitor *monitor) throw ()
 	// TODO handle failing with !retryOnResult
 	step (0, "Flugzeuge aktualisieren"          , refreshPlanes          ());
 	step (1, "Personen aktualisieren"           , refreshPeople          ());
-	step (2, "Startarten aktualisieren"         , refreshLaunchTypes     ());
+	step (2, "Startarten aktualisieren"         , refreshLaunchMethods     ());
 	step (3, "Flüge aktualisieren"              , refreshFlightsToday    ());
 	step (4, "Vorbereitete Flüge aktualisieren" , refreshPreparedFlights ());
 	step (5, "Flugplätze aktualiseren"          , refreshAirfields       ());
@@ -321,7 +321,7 @@ bool DataStorage::refreshAll (OperationMonitor *monitor) throw ()
 
 //	if (monitor->isCanceled ()) return false; monitor->progress (0, 9); monitor->status("Flugzeuge aktualisieren");           refreshPlanes ();
 //	if (monitor->isCanceled ()) return false; monitor->progress (1, 9); monitor->status("Personen aktualisieren");            refreshPeople ();
-//	if (monitor->isCanceled ()) return false; monitor->progress (2, 9); monitor->status("Startarten aktualisieren");          refreshLaunchTypes ();
+//	if (monitor->isCanceled ()) return false; monitor->progress (2, 9); monitor->status("Startarten aktualisieren");          refreshLaunchMethods ();
 //	if (monitor->isCanceled ()) return false; monitor->progress (3, 9); monitor->status("Flüge aktualisieren");               refreshFlightsToday ();
 //	if (monitor->isCanceled ()) return false; monitor->progress (4, 9); monitor->status("Vorbereitete Flüge aktualisieren");  refreshPreparedFlights ();
 //	if (monitor->isCanceled ()) return false; monitor->progress (5, 9); monitor->status("Flugplätze aktualiseren");           refreshAirfields ();
@@ -380,10 +380,10 @@ QList<Person> DataStorage::getPeople ()
 	return people;
 }
 
-QList<LaunchType> DataStorage::getLaunchTypes ()
+QList<LaunchMethod> DataStorage::getLaunchMethods ()
 {
 	QMutexLocker lock (&dataMutex);
-	return launchTypes;
+	return launchMethods;
 }
 
 QStringList DataStorage::getAirfields ()
@@ -641,12 +641,12 @@ QList<Person> DataStorage::getPeople (const QList<db_id> &ids)
 	return result;
 }
 
-db_id DataStorage::getLaunchTypeByType (startart_type type)
+db_id DataStorage::getLaunchMethodByType (LaunchMethod::Type type)
 {
 	QMutexLocker lock (&dataMutex);
-	foreach (const LaunchType &launchType, launchTypes)
-		if (launchType.type==type)
-			return launchType.get_id ();
+	foreach (const LaunchMethod &launchMethod, launchMethods)
+		if (launchMethod.type==type)
+			return launchMethod.get_id ();
 	lock.unlock ();
 
 	return invalid_id;
@@ -656,12 +656,12 @@ db_id DataStorage::getLaunchTypeByType (startart_type type)
 template Flight     DataStorage::getObject (db_id id);
 template Plane      DataStorage::getObject (db_id id);
 template Person     DataStorage::getObject (db_id id);
-template LaunchType DataStorage::getObject (db_id id);
+template LaunchMethod DataStorage::getObject (db_id id);
 
 template Flight     *DataStorage::getNewObject (db_id id);
 template Plane      *DataStorage::getNewObject (db_id id);
 template Person     *DataStorage::getNewObject (db_id id);
-template LaunchType *DataStorage::getNewObject (db_id id);
+template LaunchMethod *DataStorage::getNewObject (db_id id);
 
 
 
@@ -673,7 +673,7 @@ template LaunchType *DataStorage::getNewObject (db_id id);
 // For Flight, there is no single list
 template<> QList<Plane     > *DataStorage::objectList<Plane     > () { return &planes      ; }
 template<> QList<Person    > *DataStorage::objectList<Person    > () { return &people      ; }
-template<> QList<LaunchType> *DataStorage::objectList<LaunchType> () { return &launchTypes ; }
+template<> QList<LaunchMethod> *DataStorage::objectList<LaunchMethod> () { return &launchMethods ; }
 
 
 

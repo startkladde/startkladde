@@ -13,7 +13,7 @@
 #include "src/gui/settings.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
-#include "src/model/LaunchType.h"
+#include "src/model/LaunchMethod.h"
 #include "src/time/Time.h"
 #include "src/time/timeFunctions.h"
 
@@ -61,14 +61,14 @@ class Flight
 		QString typeString (lengthSpecification lenspec) const;
 		Time flightDuration () const;
 		Time towflightDuration () const;
-		bool fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa, QString *errorText=NULL) const;
-		bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchType *sa, QString *errorText=NULL) const;
-		FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchType *startart) const;
+		bool fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
+		bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
+		FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *launchMethod) const;
 		QString errorDescription (FlightError code) const;
 		bool happened () const;
 		bool finished () const;
-		Flight makeTowflight (db_id towplaneId, db_id towLaunchType) const;
-		void get_towflight (Flight *towflight, db_id towplaneId, db_id towLaunchType) const;
+		Flight makeTowflight (db_id towplaneId, db_id towLaunchMethod) const;
+		void get_towflight (Flight *towflight, db_id towplaneId, db_id towLaunchMethod) const;
 		QString toString () const;
 		bool isExternal () const { return !lands_here (mode) || !starts_here (mode); }
 
@@ -80,7 +80,7 @@ class Flight
 		Time launchTime;
 		Time landingTime;
 		Time landingTimeTowflight;
-		db_id launchType;				// ID der Startart
+		db_id launchMethod;				// ID der Startart
 		FlightType flightType;					// Typ des Flugs
 		QString departureAirfield;
 		QString destinationAirfield;

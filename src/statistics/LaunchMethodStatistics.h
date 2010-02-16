@@ -1,12 +1,12 @@
 /*
- * LaunchTypeStatistics.h
+ * LaunchMethodStatistics.h
  *
  *  Created on: Aug 18, 2009
  *      Author: mherrman
  */
 
-#ifndef LAUNCHTYPESTATISTICS_H_
-#define LAUNCHTYPESTATISTICS_H_
+#ifndef LAUNCHMETHODSTATISTICS_H_
+#define LAUNCHMETHODSTATISTICS_H_
 
 #include <QString>
 #include <QList>
@@ -15,7 +15,7 @@
 class DataStorage;
 class Flight;
 
-class LaunchTypeStatistics: public QAbstractTableModel
+class LaunchMethodStatistics: public QAbstractTableModel
 {
 	Q_OBJECT;
 
@@ -30,10 +30,10 @@ class LaunchTypeStatistics: public QAbstractTableModel
 				int num;
 		};
 
-		LaunchTypeStatistics (QObject *parent=NULL);
-		virtual ~LaunchTypeStatistics ();
+		LaunchMethodStatistics (QObject *parent=NULL);
+		virtual ~LaunchMethodStatistics ();
 
-		static LaunchTypeStatistics *createNew (const QList<Flight> &flights, DataStorage &dataStorage);
+		static LaunchMethodStatistics *createNew (const QList<Flight> &flights, DataStorage &dataStorage);
 
 		// QAbstractTableModel methods
 		virtual int rowCount (const QModelIndex &index) const;
@@ -45,4 +45,4 @@ class LaunchTypeStatistics: public QAbstractTableModel
 		QList<Entry> entries;
 };
 
-#endif /* LAUNCHTYPESTATISTICS_H_ */
+#endif /* LAUNCHMETHODSTATISTICS_H_ */

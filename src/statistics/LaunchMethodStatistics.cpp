@@ -1,24 +1,24 @@
 /*
- * LaunchTypeStatistics.cpp
+ * LaunchMethodStatistics.cpp
  *
  *  Created on: Aug 18, 2009
  *      Author: mherrman
  */
 
-#include "LaunchTypeStatistics.h"
+#include "LaunchMethodStatistics.h"
 
-#include "src/model/LaunchType.h"
+#include "src/model/LaunchMethod.h"
 #include "src/db/DataStorage.h"
 
 // ************************
 // ** Entry construction **
 // ************************
 
-LaunchTypeStatistics::Entry::Entry ()
+LaunchMethodStatistics::Entry::Entry ()
 {
 }
 
-LaunchTypeStatistics::Entry::~Entry ()
+LaunchMethodStatistics::Entry::~Entry ()
 {
 }
 
@@ -26,12 +26,12 @@ LaunchTypeStatistics::Entry::~Entry ()
 // ** Construction **
 // ******************
 
-LaunchTypeStatistics::LaunchTypeStatistics (QObject *parent):
+LaunchMethodStatistics::LaunchMethodStatistics (QObject *parent):
 	QAbstractTableModel (parent)
 {
 }
 
-LaunchTypeStatistics::~LaunchTypeStatistics ()
+LaunchMethodStatistics::~LaunchMethodStatistics ()
 {
 }
 
@@ -39,7 +39,7 @@ LaunchTypeStatistics::~LaunchTypeStatistics ()
 // ** Creation **
 // **************
 
-LaunchTypeStatistics *LaunchTypeStatistics::createNew (const QList<Flight> &flights, DataStorage &dataStorage)
+LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &flights, DataStorage &dataStorage)
 {
 	QMap<db_id, int> map;
 
@@ -48,31 +48,31 @@ LaunchTypeStatistics *LaunchTypeStatistics::createNew (const QList<Flight> &flig
 		if (flight.happened ())
 		{
 			// Non-existing values are initialized to 0
-			++map[flight.launchType];
+			++map[flight.launchMethod];
 		}
 	}
 
-	// Make a list of launch types and sort it
-	QList<LaunchType> launchTypes;
+	// Make a list of launch methods and sort it
+	QList<LaunchMethod> launchMethods;
 	foreach (const db_id &id, map.keys ())
 	{
 		try
 		{
-			launchTypes.append (dataStorage.getObject<LaunchType> (id));
+			launchMethods.append (dataStorage.getObject<LaunchMethod> (id));
 		}
 		catch (...)
 		{
 			// TODO log error
 		}
 	}
-	qSort (launchTypes.begin (), launchTypes.end (), LaunchType::nameLessThan);
+	qSort (launchMethods.begin (), launchMethods.end (), LaunchMethod::nameLessThan);
 
-	LaunchTypeStatistics *result=new LaunchTypeStatistics ();
-	foreach (const LaunchType &launchType, launchTypes)
+	LaunchMethodStatistics *result=new LaunchMethodStatistics ();
+	foreach (const LaunchMethod &launchMethod, launchMethods)
 	{
 		Entry entry;
-		entry.name=launchType.description;
-		entry.num=map[launchType.get_id ()];
+		entry.name=launchMethod.name;
+		entry.num=map[launchMethod.get_id ()];
 		result->entries.append (entry);
 	}
 
@@ -83,7 +83,7 @@ LaunchTypeStatistics *LaunchTypeStatistics::createNew (const QList<Flight> &flig
 // ** QAbstractTableModel methods **
 // *********************************
 
-int LaunchTypeStatistics::rowCount (const QModelIndex &index) const
+int LaunchMethodStatistics::rowCount (const QModelIndex &index) const
 {
 	if (index.isValid ())
 		return 0;
@@ -91,7 +91,7 @@ int LaunchTypeStatistics::rowCount (const QModelIndex &index) const
 	return entries.size ();
 }
 
-int LaunchTypeStatistics::columnCount (const QModelIndex &index) const
+int LaunchMethodStatistics::columnCount (const QModelIndex &index) const
 {
 	if (index.isValid ())
 		return 0;
@@ -99,7 +99,7 @@ int LaunchTypeStatistics::columnCount (const QModelIndex &index) const
 	return 2;
 }
 
-QVariant LaunchTypeStatistics::data (const QModelIndex &index, int role) const
+QVariant LaunchMethodStatistics::data (const QModelIndex &index, int role) const
 {
 	const Entry &entry=entries[index.row ()];
 
@@ -116,7 +116,7 @@ QVariant LaunchTypeStatistics::data (const QModelIndex &index, int role) const
 		return QVariant ();
 }
 
-QVariant LaunchTypeStatistics::headerData (int section, Qt::Orientation orientation, int role) const
+QVariant LaunchMethodStatistics::headerData (int section, Qt::Orientation orientation, int role) const
 {
 	if (role==Qt::DisplayRole)
 	{

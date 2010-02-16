@@ -30,9 +30,9 @@ class Entity
 		Entity ();
 		Entity (db_id id);
 		virtual ~Entity ();
-		virtual QString name () const=0;
-		virtual QString textName () const=0;
-		virtual QString tableName () const=0;
+		virtual QString getName () const=0;
+		virtual QString getTextName () const=0;
+		virtual QString getTableName () const=0;
 		// TODO code duplication with dump
 		virtual void output (std::ostream &stream, output_format_t format)=0;
 

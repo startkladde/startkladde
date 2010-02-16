@@ -111,10 +111,10 @@ void test_database (Database &db, int argc, char **argv)
     	std::cout << flight.toString ().toUtf8 () << std::endl;
 
 	std::cout << std::endl;
-	std::cout << "Get launch types" << std::endl;
-	QList<LaunchType> launchTypes=db.getObjects<LaunchType> ();
-    foreach (const LaunchType &launchType, launchTypes)
-    	std::cout << launchType.toString ().toUtf8 () << std::endl;
+	std::cout << "Get launch methods" << std::endl;
+	QList<LaunchMethod> launchMethods=db.getObjects<LaunchMethod> ();
+    foreach (const LaunchMethod &launchMethod, launchMethods)
+    	std::cout << launchMethod.toString ().toUtf8 () << std::endl;
 
     std::cout << std::endl;
 	std::cout << "List airfields" << std::endl;

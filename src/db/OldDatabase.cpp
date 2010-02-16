@@ -151,10 +151,10 @@ const QString query_separator=";";
 // ** Specialize templates **
 // **************************
 
-template<> int OldDatabase::getObject<Flight    > (Flight     *object, db_id id) { return get_object (ot_flight, object, id); }
-template<> int OldDatabase::getObject<Plane     > (Plane      *object, db_id id) { return get_object (ot_plane,  object, id); }
-template<> int OldDatabase::getObject<Person    > (Person     *object, db_id id) { return get_object (ot_person, object, id); }
-template<> int OldDatabase::getObject<LaunchType> (LaunchType *object, db_id id) { return get_startart          (object, id); }
+template<> int OldDatabase::getObject<Flight      > (Flight       *object, db_id id) { return get_object (ot_flight, object, id); }
+template<> int OldDatabase::getObject<Plane       > (Plane        *object, db_id id) { return get_object (ot_plane,  object, id); }
+template<> int OldDatabase::getObject<Person      > (Person       *object, db_id id) { return get_object (ot_person, object, id); }
+template<> int OldDatabase::getObject<LaunchMethod> (LaunchMethod *object, db_id id) { return get_launch_method     (object, id); }
 
 template<> bool OldDatabase::objectUsed<Plane > (db_id id) { return  plane_used (id); }
 template<> bool OldDatabase::objectUsed<Person> (db_id id) { return person_used (id); }
@@ -250,7 +250,7 @@ OldDatabase::~OldDatabase ()
 {
 //	DEB ("database class destroyed");
 
-	foreach (LaunchType *s, startarten) delete s;
+	foreach (LaunchMethod *s, launchMethods) delete s;
 
 	disconnect ();
 }
@@ -775,7 +775,7 @@ QString OldDatabase::query_value_list (db_object_type type, void *object)
 			OUTPUT ("anzahl_landungen", flight->numLandings);
 			OUTPUT ("startzeit", to_string (&(flight->launchTime)));
 			OUTPUT ("landezeit", to_string (&(flight->landingTime)));
-			OUTPUT ("startart", flight->launchType);
+			OUTPUT ("startart", flight->launchMethod);
 			OUTPUT ("land_schlepp", to_string (&(flight->landingTimeTowflight)));
 			OUTPUT ("typ", flugtyp_to_db (flight->flightType));
 			OUTPUT ("bemerkung", flight->comments.latin1 ());
@@ -849,7 +849,7 @@ int OldDatabase::row_to_object (db_object_type otype, void *object, MYSQL_ROW ro
 			USE ("anzahl_landungen");   p->numLandings=atoi (value);
 			USE ("startzeit");          parse (&(p->launchTime), value);
 			USE ("landezeit");          parse (&(p->landingTime), value);
-			USE ("startart");           p->launchType=atol (value);
+			USE ("startart");           p->launchMethod=atol (value);
 			USE ("land_schlepp");       parse (&(p->landingTimeTowflight), value);
 			USE ("typ");                p->flightType=db_to_flugtyp (value);
 			USE ("bemerkung");          p->comments=(QString)value;
@@ -1353,7 +1353,7 @@ QString OldDatabase::make_condition (Condition c)
 #define _flight_pilot EQUALS (pilot, param_id)
 #define _flight_person START EQUALS (pilot, param_id) OR EQUALS (begleiter, param_id) END
 #define _flight_plane EQUALS (flugzeug, param_id)
-	// TODO: only if it is an airtow; also, if it is the plane of a launch type
+	// TODO: only if it is an airtow; also, if it is the plane of a launch method
 #define _flight_plane_or_towplane START EQUALS (flugzeug, param_id) OR EQUALS (towplane, param_id) END
 #define _flight_mode_local EQUALS (modus, modus_to_db (fmLocal))
 #define _flight_mode_coming EQUALS (modus, modus_to_db (fmComing))
@@ -2568,7 +2568,7 @@ int OldDatabase::count_startart ()
 	return startarten.count ();
 }
 
-bool OldDatabase::add_startart_to_list (LaunchType *sa)
+bool OldDatabase::add_startart_to_list (LaunchMethod *sa)
 {
 	// TODO some types must be unique, for example sat_self
 
@@ -2591,17 +2591,17 @@ bool OldDatabase::add_startart_to_list (LaunchType *sa)
 	}
 }
 
-int OldDatabase::list_startarten_all (QList<LaunchType *> &saen)
+int OldDatabase::list_startarten_all (QList<LaunchMethod *> &saen)
 {
-	foreach (LaunchType *sa, startarten)
-		saen.append (new LaunchType (*sa));
+	foreach (LaunchMethod *sa, startarten)
+		saen.append (new LaunchMethod (*sa));
 
 	return db_ok;
 }
 
-int OldDatabase::get_startart (LaunchType *startart, db_id id)
+int OldDatabase::get_startart (LaunchMethod *startart, db_id id)
 {
-	foreach (LaunchType *sa, startarten)
+	foreach (LaunchMethod *sa, startarten)
 	{
 		if (sa->get_id ()==id)
 		{
@@ -2617,11 +2617,11 @@ int OldDatabase::get_startart (LaunchType *startart, db_id id)
 	return db_err_not_found;
 }
 
-int OldDatabase::get_startart_by_type (LaunchType *startart, startart_type sat)
+int OldDatabase::get_startart_by_type (LaunchMethod *startart, LaunchMethod::Type type)
 {
 	bool found=false;
 
-	foreach (LaunchType *sa, startarten)
+	foreach (LaunchMethod *sa, startarten)
 	{
 		if (sa->get_type ()==sat)
 		{
@@ -2638,25 +2638,25 @@ int OldDatabase::get_startart_by_type (LaunchType *startart, startart_type sat)
 	return found?db_ok:db_err_not_found;
 }
 
-db_id OldDatabase::get_startart_id_by_type (startart_type sat)
+db_id OldDatabase::get_startart_id_by_type (LaunchMethod::Type type)
 {
-	foreach (LaunchType *sa, startarten)
+	foreach (LaunchMethod *sa, startarten)
 		if (sa->get_type ()==sat)
 			return sa->get_id ();
 
 	return invalid_id;
 }
 
-int OldDatabase::get_towplane (Plane *towplane, const LaunchType &startart, const db_id towplane_id)
+int OldDatabase::get_towplane (Plane *towplane, const LaunchMethod &startart, const db_id towplane_id)
 {
 	if (startart.ok && startart.is_airtow () && startart.towplane_known ())
 	{
-		// Get the tow plane from the launchType
+		// Get the tow plane from the launchMethod
 		return get_plane_registration (towplane, startart.get_towplane ());
 	}
 	else
 	{
-		// The tow plane is not known from the launchType, so we have to get
+		// The tow plane is not known from the launchMethod, so we have to get
 		// it from the explicitly given towplane_id.
 		return getObject (towplane, towplane_id);
 	}

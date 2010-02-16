@@ -12,7 +12,7 @@
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/model/Flight.h"
 #include "src/db/DataStorage.h"
-#include "src/model/LaunchType.h"
+#include "src/model/LaunchMethod.h"
 
 FlightSortFilterProxyModel::FlightSortFilterProxyModel (DataStorage &dataStorage, QObject *parent):
 	QSortFilterProxyModel (parent),

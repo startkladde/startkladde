@@ -15,11 +15,11 @@
 #include "src/model/Flight.h"
 #include "src/db/DataStorage.h"
 #include "src/model/Person.h"
-#include "src/model/LaunchType.h"
+#include "src/model/LaunchMethod.h"
 #include "src/model/objectList/ColumnInfo.h"
 
 /**
- * Unlike the models for Person, Plane and LaunchType, this is not part of the
+ * Unlike the models for Person, Plane and LaunchMethod, this is not part of the
  * respective class because it is much more complex.
  */
 class FlightModel: public ObjectModel<Flight>, public ColumnInfo
@@ -44,7 +44,7 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 		virtual QVariant planeTypeData (const Flight &flight, int role) const;
 		virtual QVariant pilotData (const Flight &flight, int role) const;
 		virtual QVariant copilotData (const Flight &flight, int role) const;
-		virtual QVariant launchTypeData (const Flight &flight, int role) const;
+		virtual QVariant launchMethodData (const Flight &flight, int role) const;
 		virtual QVariant launchTimeData (const Flight &flight, int role) const;
 		virtual QVariant landingTimeData (const Flight &flight, int role) const;
 		virtual QVariant durationData (const Flight &flight, int role) const;

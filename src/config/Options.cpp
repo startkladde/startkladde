@@ -11,7 +11,7 @@
 #include "src/db/Database.h"
 #include "src/plugins/ShellPlugin.h"
 #include "src/text.h"
-#include "src/model/LaunchType.h"
+#include "src/model/LaunchMethod.h"
 
 const QString default_home_config_filename=".startkladde.conf";
 const QString default_local_config_fielname="startkladde.conf";
@@ -261,7 +261,7 @@ bool Options::read_config_files (Database *db, QList<ShellPlugin *> *plugins, in
 }
 
 bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugin *> *plugins)
-	// db is only passed for startarten (TODO change something)
+	// db is only passed for launch methods (TODO change something)
 	// Returns whether the file existed.
 {
 	QFile configFile (filename);
@@ -365,11 +365,11 @@ bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugi
 			// Options not saved locally
 			if (db && key=="startart")
 			{
-				LaunchType sa (value);
+				LaunchMethod sa=LaunchMethod::parseConfigLine (value);
 				if (id_invalid (sa.get_id ()))
-					std::cerr << "Error: startart with invalid ID " << sa.get_id () << " specified." << std::endl;
+					std::cerr << "Error: launch method with invalid ID " << sa.get_id () << " specified." << std::endl;
 				else
-					configuredLaunchTypes.append (sa);
+					configuredLaunchMethods.append (sa);
 			}
 
 		}

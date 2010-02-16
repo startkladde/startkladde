@@ -6,7 +6,7 @@
  *   - TODO Completer: complete to proper case; drop down and inline completion
  *     Failing complete-to-proper-case: set the proper case on editing
  *     finished.
- *   - TODO Invalid launch type preserved.
+ *   - TODO Invalid launch method preserved.
  *     - in flightToFields, create and set an "unknown" entry and store the
  *       original
  *     - in determineFlight, if the entry is unknown, use the original value
@@ -47,7 +47,7 @@
  *     One implication is that the mode is not sufficient to determine whether
  *     the button should be "launch now" or "land now", resp. later.
  *     Note that create mode *is* different from edit mode, for example the
- *     automatic selection of launch type/airfields.
+ *     automatic selection of launch method/airfields.
  *   - addObject a calendar to the date input
  *   - addObject a button to set the launch/landing time to the current time
  *   - Add option to allow, but not require the towpilot
@@ -66,7 +66,7 @@
  *   - On editing, addObject a currently-flying test, at least for the case where
  *     a launch time has been added
  *   - Move more conditions to the Plane, for example canDoSelfLaunch, ...
- *   - Launch type "Other": comment should not be empty (warning if it is)
+ *   - Launch method "Other": comment should not be empty (warning if it is)
  *   - Warning, when date changed
  *   - Allow new flights only for current date and displayed date
  *   - Preserve unknown plane/person (e. g. hide input field, addObject "Unknown"
@@ -118,7 +118,7 @@
 #include "src/config/Options.h"
 #include "src/db/DataStorage.h"
 #include "src/db/dbTypes.h"
-#include "src/model/LaunchType.h"
+#include "src/model/LaunchMethod.h"
 
 class Flight;
 
@@ -174,7 +174,7 @@ class FlightWindow: public QDialog
 		QString    getCurrentCopilotFirstName             () { return ui.copilotFirstNameInput->currentText (); }
 		//
 		FlightMode getCurrentFlightMode                   () { return (FlightMode)ui.flightModeInput->currentItemData ().toInt(); }
-		db_id      getCurrentLaunchTypeId                 () { return ui.launchTypeInput->currentItemData ().toInt(); }
+		db_id      getCurrentLaunchMethodId               () { return ui.launchMethodInput->currentItemData ().toInt(); }
 		//
 		QString    getCurrentTowplaneRegistration         () { return ui.towplaneRegistrationInput->currentText (); }
 		QString    getCurrentTowpilotLastName             () { return ui.towpilotLastNameInput->currentText(); }
@@ -202,7 +202,7 @@ class FlightWindow: public QDialog
 		 * methods to determine wheter the fields are active for the current
 		 * input values.
 		 * As several field visiblities depend on the same input value (e. g.
-		 * launch time and towplane depend on the launch type), values will be
+		 * launch time and towplane depend on the launch method), values will be
 		 * read from the fields and/or data storage several times. This should
 		 * not be a problem, but could be solved by allowing the caller to pass
 		 * a parameter which will be used instead of calling getCurrentX.
@@ -212,14 +212,14 @@ class FlightWindow: public QDialog
 		 */
 
 		/**
-		 * Gets the currently selected launch type from the database.
+		 * Gets the currently selected launch method from the database.
 		 *
-		 * @return the currently selected launch type
+		 * @return the currently selected launch method
 		 * @throw DataStorage::NotFoundException if there is no such launch
 		 *        type, or none is selected
 		 */
-		LaunchType getCurrentLaunchType () { return dataStorage.getObject<LaunchType> (getCurrentLaunchTypeId ()); }
-		bool isCurrentLaunchTypeValid () { return id_valid (getCurrentLaunchTypeId ()); }
+		LaunchMethod getCurrentLaunchMethod () { return dataStorage.getObject<LaunchMethod> (getCurrentLaunchMethodId ()); }
+		bool isCurrentLaunchMethodValid () { return id_valid (getCurrentLaunchMethodId ()); }
 
 		bool currentStartsHere   () {       return isFlightModeActive    () && starts_here (getCurrentFlightMode ()); }
 		bool currentLandsHere    () {       return isFlightModeActive    () && lands_here (getCurrentFlightMode ()); }
@@ -237,9 +237,9 @@ class FlightWindow: public QDialog
 		bool isCopilotActive                      () { return flightTypeCopilotRecorded (getCurrentFlightType ()); } // Does not depend on plane, see comments above
 		//
 		bool isFlightModeActive                   () { return true; }
-		bool isLaunchTypeActive                   () { return currentStartsHere (); }
+		bool isLaunchMethodActive                 () { return currentStartsHere (); }
 		//
-		// No exception thrown because if the launch type is not valid,
+		// No exception thrown because if the launch method is not valid,
 		bool isTowplaneRegistrationActive         ();
 		bool isTowplaneTypeActive                 () { return currentIsAirtow (); }
 		bool isTowpilotActive                     () { return currentIsAirtow () && opts.record_towpilot; }
@@ -273,12 +273,12 @@ class FlightWindow: public QDialog
 		Flight determineFlight (bool launchNow) throw (AbortedException);
 		Flight determineFlightBasic () throw ();
 		void determineFlightPlanes (Flight &flight) throw (AbortedException);
-		void determineFlightPeople (Flight &flight, const LaunchType *launchType) throw (AbortedException);
+		void determineFlightPeople (Flight &flight, const LaunchMethod *launchMethod) throw (AbortedException);
 		db_id determinePlane (QString registration, QString description, QWidget *widget) throw (AbortedException);
 		db_id determinePerson (bool active, QString firstName, QString lastName, QString description, bool required, QString &incompleteFirstName, QString &incompleteLastName, db_id originalId, QWidget *widget) throw (AbortedException);
 		db_id createNewPerson (QString lastName, QString firstName) throw (AbortedException);
 		void checkFlightPhase1 (const Flight &flight, bool launchNow) throw (AbortedException);
-		void checkFlightPhase2 (const Flight &flight, bool launchNow, const Plane *plane, const Plane *towplane, const LaunchType *launchType) throw (AbortedException);
+		void checkFlightPhase2 (const Flight &flight, bool launchNow, const Plane *plane, const Plane *towplane, const LaunchMethod *launchMethod) throw (AbortedException);
 		void checkFlightPhase3 (const Flight &flight, bool launchNow, const Plane *plane, const Person *pilot, const Person *copilot, const Person *towpilot) throw (AbortedException);
 
 		void errorCheck (const QString &problem, QWidget *widget) throw (AbortedException);
@@ -335,8 +335,8 @@ class FlightWindow: public QDialog
 		void on_copilotLastNameInput_editingFinished  (const QString &text) { copilotLastNameChanged  (text); updateSetup (); updateErrors (); }
 		void on_copilotFirstNameInput_editingFinished (const QString &text) { copilotFirstNameChanged (text); updateSetup (); updateErrors (); }
 		//
-		void on_flightModeInput_activated (int index) { flightModeChanged (index); updateSetup (); updateErrors (); }
-		void on_launchTypeInput_activated (int index) { launchTypeChanged (index); updateSetup (); updateErrors (); }
+		void on_flightModeInput_activated   (int index) { flightModeChanged   (index); updateSetup (); updateErrors (); }
+		void on_launchMethodInput_activated (int index) { launchMethodChanged (index); updateSetup (); updateErrors (); }
 		//
 		void on_towplaneRegistrationInput_editingFinished (const QString &text) { towplaneRegistrationChanged (text);  updateSetup (); updateErrors (); }
 		void on_towpilotLastNameInput_editingFinished     (const QString &text) { towpilotLastNameChanged     (text);  updateSetup (); updateErrors (); }
@@ -369,8 +369,8 @@ class FlightWindow: public QDialog
 		void copilotLastNameChanged  (const QString &text) { selectedCopilot=fillFirstNames (isCopilotActive (), ui.copilotFirstNameInput, text, false); }
 		void copilotFirstNameChanged (const QString &text) { selectedCopilot=fillLastNames  (isCopilotActive (), ui.copilotLastNameInput , text, false); }
 		//
-		void flightModeChanged (int index);
-		void launchTypeChanged (int index);
+		void flightModeChanged   (int index);
+		void launchMethodChanged (int index);
 		//
 		void towplaneRegistrationChanged (const QString &text);
 		void towpilotLastNameChanged     (const QString &text) { selectedTowpilot=fillFirstNames (isTowpilotActive (), ui.towpilotFirstNameInput, text, false); }

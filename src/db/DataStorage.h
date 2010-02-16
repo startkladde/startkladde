@@ -20,7 +20,7 @@
 class Flight;
 class Person;
 class Plane;
-class LaunchType;
+class LaunchMethod;
 class OperationMonitor;
 
 /**
@@ -65,7 +65,7 @@ class DataStorage: public QObject
 
 		int refreshPlanes ();
 		int refreshPeople ();
-		int refreshLaunchTypes ();
+		int refreshLaunchMethods ();
 		int refreshFlights (QDate date, EntityList<Flight> &listTarget, QDate *dateTarget);
 		int refreshFlightsToday ();
 		int refreshFlightsOther ();
@@ -84,7 +84,7 @@ class DataStorage: public QObject
 		QStringList getPersonFirstNames (const QString &lastName);
 		QStringList getPersonLastNames ();
 		QStringList getPersonLastNames (const QString &firstName);
-		QList<LaunchType> getLaunchTypes ();
+		QList<LaunchMethod> getLaunchMethods ();
 		// TODO these methods should return EntityList instead of QList
 		QList<Flight> getFlightsToday ();
 		QList<Flight> getFlightsOther ();
@@ -107,7 +107,7 @@ class DataStorage: public QObject
 		QList<db_id> getPersonIdsByFirstName (const QString &firstName);
 		QList<db_id> getPersonIdsByLastName (const QString &lastName);
 		QList<Person> getPeople (const QList<db_id> &ids);
-		db_id getLaunchTypeByType (startart_type type);
+		db_id getLaunchMethodByType (LaunchMethod::Type type);
 
 		db_id planeFlying (db_id id);
 		db_id personFlying (db_id id);
@@ -165,7 +165,7 @@ class DataStorage: public QObject
 
 		QList<Plane> planes;
 		QList<Person> people;
-		QList<LaunchType> launchTypes;
+		QList<LaunchMethod> launchMethods;
 		QStringList airfields;
 		QStringList accountingNotes;
 		QStringList clubs; // TODO generate from planes+people
