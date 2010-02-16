@@ -1,11 +1,8 @@
 /*
  * Short term plan:
- *   - Add remaining migrations (migration.txt, tickets)
  *   - schema generation
- *   - Test the migrations
- *     - make sure the migrations work
- *     - make sure the old version and current sk_web work with "initial"
- *   - Remove code multiplication in Models
+ *   - Test the migrations: make sure the old version and current sk_web work
+ *     with "initial"
  *   - Fixtures
  *     - SQL dump or data file (CSV/YAML)?
  *     - C++ or Ruby?
@@ -43,8 +40,10 @@
  *   - dbTableName as static constant instead of function
  *   - make sure (using a dump of an old db) that the migration path is OK
  *   - Use low level methods in ORM methods (better: split class)
+ *   - Remove code multiplication in Models (SQL interface)
  *
  * Medium term plan:
+ *   - change flight status flags and flight mode columns (also towflight mode)
  *   - add some abstraction to the query list generation
  *   - add a version number
  *   - add migrations
@@ -88,8 +87,6 @@
 #include "src/model/Flight.h"
 #include "src/model/LaunchType.h"
 
-
-// TODO: check if the slow part is the loop; if yes, add ProgressMonitor
 
 /*
  * Here's an idea for specifying conditions, or parts thereof:

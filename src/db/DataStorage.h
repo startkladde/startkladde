@@ -20,6 +20,7 @@
 class Flight;
 class Person;
 class Plane;
+class LaunchType;
 class OperationMonitor;
 
 /**

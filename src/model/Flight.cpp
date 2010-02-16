@@ -830,7 +830,7 @@ Flight Flight::createFromQuery (const QSqlQuery &q)
 	f.copilot    =q.value (2).toLongLong ();
 	f.plane      =q.value (3).toLongLong ();
 	f.flightType =typeFromDb (
-	              q.value (4).toInt      ());
+	              q.value (4).toString   ());
 	f.mode       =modeFromDb (
 	              q.value (5).toString   ());
 	f.setStatus  (q.value (6).toInt ());
@@ -985,7 +985,7 @@ QString Flight::typeToDb (FlightType type)
 	};
 
 	assert (false);
-	return 1;
+	return "?";
 }
 
 FlightType Flight::typeFromDb (QString type)

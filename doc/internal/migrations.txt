@@ -1,16 +1,9 @@
-- add launch methods
-- ..., see tickets
-- add comments to users
-- proper strings for enums
-
 Possible changes:
 	- replace flight.status with individual flags (or as time!=null?)
 	- add users.id
 	- towflight as separate flight?
     - change 0 time to null?
 	- foreign key constraints?
-    - standardize enum types (database enum types? note that sqlite does not
-      support enums)
 	- remove distinction between 1/2 seated training
 	- remove unique constraint from plane.registration (and add active flag?)
 

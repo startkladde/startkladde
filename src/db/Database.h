@@ -26,6 +26,9 @@ class DatabaseInfo;
  * precisely, this class may only be used in the thread where it was created.
  * This is a QtSql restriction, see [1].
  *
+ * Note that we do not use the ENUM SQL type because it is not supported by
+ * SQLite.
+ *
  * [1] http://doc.trolltech.com/4.5/threads.html#threads-and-the-sql-module
  */
 class Database

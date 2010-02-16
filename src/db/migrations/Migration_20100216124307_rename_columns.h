@@ -3,8 +3,6 @@
 
 #include "src/db/migration/Migration.h"
 
-class QString;
-
 /**
  * Renames the columns to proper english names
  */

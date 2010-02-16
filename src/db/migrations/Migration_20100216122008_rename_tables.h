@@ -3,8 +3,6 @@
 
 #include "src/db/migration/Migration.h"
 
-class QString;
-
 /**
  * Renames the tables to pluralized english names
  */

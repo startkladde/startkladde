@@ -3,8 +3,6 @@
 
 #include "src/db/migration/Migration.h"
 
-class QString;
-
 /**
  * Changes the flights.type column from an integer to a string and updates the
  * values.

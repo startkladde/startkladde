@@ -3,8 +3,6 @@
 
 #include "src/db/migration/Migration.h"
 
-class QString;
-
 /**
  * Changes the planes.category column from a character to a string and updates
  * the values

@@ -31,7 +31,7 @@ void Migration_20100216135637_add_launch_methods::up ()
 	{
 		database.transaction ();
 
-		foreach (LaunchType launchType, opts.launchTypes)
+		foreach (LaunchType launchType, opts.configuredLaunchTypes)
 		{
 			// Don't use the methods of Database or LaunchType - they use the
 			// current schema, we need to use the schema after this migration.

@@ -76,7 +76,7 @@ class Options
 
 		static bool silent;
 
-		QList<LaunchType> launchTypes;
+		QList<LaunchType> configuredLaunchTypes;
 };
 
 extern Options opts;

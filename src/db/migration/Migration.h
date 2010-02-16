@@ -3,6 +3,9 @@
 
 class Database;
 
+class QString;
+class QVariant;
+
 /**
  * A new migration is created by creating the appropriate class in
  * src/db/migrations/. The migration is automatically included into the build
