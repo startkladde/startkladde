@@ -677,7 +677,7 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 	try
 	{
 		if (id_valid (flight.launchType))
-			if (dataStorage.getObject<LaunchType> (flight.launchType).get_type ()==sat_self)
+			if (dataStorage.getObject<LaunchType> (flight.launchType).type==sat_self)
 				copyLaunchType=true;
 	}
 	catch (DataStorage::NotFoundException &ex)
@@ -849,37 +849,37 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, cons
 			ui.towplaneRegistrationInput);
 
 	if (plane && launchType &&
-		flight.numLandings>1 && plane->category==Plane::categoryGlider && !(launchType && launchType->get_type ()==sat_airtow))
+		flight.numLandings>1 && plane->category==Plane::categoryGlider && !(launchType && launchType->type==sat_airtow))
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.\nEs wurde jedoch mehr als eine Landung angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.numLandingsInput);
 
 	if (plane &&
-		flight.numLandings>0 && !flight.landed && plane->category==Plane::categoryGlider && !(launchType && launchType->get_type ()==sat_airtow))
+		flight.numLandings>0 && !flight.landed && plane->category==Plane::categoryGlider && !(launchType && launchType->type==sat_airtow))
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.\nEs wurden jedoch eine Landung, aber keine Landezeit angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.numLandingsInput);
 
 	if (plane &&
-		plane->category==Plane::categoryGlider && launchType && launchType->get_type ()==sat_self)
+		plane->category==Plane::categoryGlider && launchType && launchType->type==sat_self)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.\nEs wurden jedoch \"Selbststart\" als Startart angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.launchTypeInput);
 
 	if (plane && launchType &&
-		(plane->category==Plane::categorySingleEngine || plane->category==Plane::categoryUltralight) && launchType->get_type ()!=sat_self)
+		(plane->category==Plane::categorySingleEngine || plane->category==Plane::categoryUltralight) && launchType->type!=sat_self)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Motorflugzeug.\nEs wurden jedoch eine andere Startart als \"Selbststart\" angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.launchTimeInput);
 
 	if (plane && launchType &&
-		plane->numSeats==1 && (flight.flightType==ftGuestPrivate || flight.flightType==ftGuestExternal) && launchType->get_type ()!=sat_self)
+		plane->numSeats==1 && (flight.flightType==ftGuestPrivate || flight.flightType==ftGuestExternal) && launchType->type!=sat_self)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.\nEs wurden jedoch der Flugtyp \"Gastflug\" angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.registrationInput);
 
 	if (plane && launchType &&
-		plane->numSeats==1 && flight.flightType==ftTraining2 && launchType->get_type ()!=sat_self)
+		plane->numSeats==1 && flight.flightType==ftTraining2 && launchType->type!=sat_self)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.\nEs wurden jedoch der Flugtyp \"Doppelsitzige Schulung\" angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.registrationInput);
@@ -964,7 +964,7 @@ void FlightWindow::determineFlightPeople (Flight &flight, const LaunchType *laun
 {
 	bool pilotRequired=true;
 	if (!starts_here (flight.mode)) pilotRequired=false;
-	if (launchType && launchType->get_type ()!=sat_self) pilotRequired=false;
+	if (launchType && launchType->type!=sat_self) pilotRequired=false;
 
 	// Determine the pilot
 	selectedPilot=
@@ -1712,7 +1712,7 @@ void FlightWindow::launchTypeChanged (int index)
 
 		if (launchType.is_airtow ())
 		{
-			QString towplaneRegistration=launchType.towplane_known () ? launchType.get_towplane () : getCurrentTowplaneRegistration ();
+			QString towplaneRegistration=launchType.towplane_known () ? launchType.towplane : getCurrentTowplaneRegistration ();
 			db_id towplaneId=dataStorage.getPlaneIdByRegistration (towplaneRegistration);
 			if (id_valid (towplaneId))
 			{

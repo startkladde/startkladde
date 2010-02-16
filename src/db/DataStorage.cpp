@@ -645,7 +645,7 @@ db_id DataStorage::getLaunchTypeByType (startart_type type)
 {
 	QMutexLocker lock (&dataMutex);
 	foreach (const LaunchType &launchType, launchTypes)
-		if (launchType.get_type ()==type)
+		if (launchType.type==type)
 			return launchType.get_id ();
 	lock.unlock ();
 

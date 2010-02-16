@@ -288,7 +288,7 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	// this is a non-error (see there for an explanation).
 	CHECK_FEHLER (FLUG, id_invalid (id), ff_keine_id)
 	CHECK_FEHLER (FLUG, id_invalid (plane), ff_kein_flugzeug)
-	CHECK_FEHLER (FLUG, sa && sa->get_person_required () && id_invalid (pilot) && pvn.isEmpty () && pnn.isEmpty (), ff_kein_pilot)
+	CHECK_FEHLER (FLUG, sa && sa->person_required && id_invalid (pilot) && pvn.isEmpty () && pnn.isEmpty (), ff_kein_pilot)
 	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pvn.isEmpty () && pnn.isEmpty (), ff_pilot_nur_vorname);
 	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pnn.isEmpty () && pvn.isEmpty (), ff_pilot_nur_nachname);
 	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pnn.isEmpty () && !pvn.isEmpty (), ff_pilot_nicht_identifiziert);
@@ -807,23 +807,19 @@ bool Flight::isErroneous (DataStorage &dataStorage) const
 
 QString Flight::dbTableName ()
 {
-	return "flug_temp";
+	return "flights";
 }
 
 QString Flight::selectColumnList ()
 {
-	QString columnList=
-		"id,pilot,begleiter,flugzeug,typ,modus,status" // 7
-		",startart,startort,zielort,anzahl_landungen,startzeit,landezeit" // 6 Σ13
-		",pvn,pnn,bvn,bnn" // 4 Σ17
-		",land_schlepp,modus_sfz,zielort_sfz,towplane" // 4 Σ21
-		",abrechnungshinweis,bemerkung" // 2 Σ23
+	return
+		"id,pilot_id,copilot_id,plane_id,type,mode,status" // 7
+		",launch_method_id,departure_location,landing_location,num_landings,departure_time,landing_time" // 6 Σ13
+		",pilot_first_name,pilot_last_name,copilot_first_name,copilot_last_name" // 4 Σ17
+		",towflight_landing_time,towflight_mode,towflight_landing_location,towplane_id" // 4 Σ21
+		",accounting_notes,comments" // 2 Σ23
+		",towpilot_id,towpilot_first_name,towpilot_last_name" // 3 Σ26
 		;
-
-	if (opts.record_towpilot)
-		columnList+=",towpilot,tpnn,tpvn"; // 3 Σ26
-
-	return columnList;
 }
 
 Flight Flight::createFromQuery (const QSqlQuery &q)
@@ -876,20 +872,15 @@ Flight Flight::createFromQuery (const QSqlQuery &q)
 QString Flight::insertValueList ()
 {
 	QString columnList=
-		"pilot,begleiter,flugzeug,typ,modus,status" // 6
-		",startart,startort,zielort,anzahl_landungen,startzeit,landezeit" // 6 Σ12
-		",pvn,pnn,bvn,bnn" // 4 Σ16
-		",land_schlepp,modus_sfz,zielort_sfz,towplane" // 4 Σ20
-		",abrechnungshinweis,bemerkung" // 2 Σ22
+		"pilot_id,copilot_id,plane_id,type,mode,status" // 6
+		",launch_method_id,departure_location,landing_location,num_landings,departure_time,landing_time" // 6 Σ12
+		",pilot_first_name,pilot_last_name,copilot_first_name,copilot_last_name" // 4 Σ16
+		",towflight_landing_time,towflight_mode,towflight_landing_location,towplane_id" // 4 Σ20
+		",accounting_notes,comments" // 2 Σ22
+		",towpilot_id,towpilot_first_name,towpilot_last_name" // 3 Σ25
 		;
 
-	QString placeholderList="?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
-
-	if (opts.record_towpilot)
-	{
-		columnList+=",towpilot,tpnn,tpvn"; // 3 Σ25
-		placeholderList+=",?,?,?";
-	}
+	QString placeholderList="?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
 
 	return QString ("(%1) values (%2)").arg (columnList).arg (placeholderList);
 }
@@ -897,18 +888,14 @@ QString Flight::insertValueList ()
 
 QString Flight::updateValueList ()
 {
-	QString columnList=
-		"pilot=?,begleiter=?,flugzeug=?,typ=?,modus=?,status=?" // 6
-		",startart=?,startort=?,zielort=?,anzahl_landungen=?,startzeit=?,landezeit=?" // 6 Σ12
-		",pvn=?,pnn=?,bvn=?,bnn=?" // 4 Σ16
-		",land_schlepp=?,modus_sfz=?,zielort_sfz=?,towplane=?" // 4 Σ20
-		",abrechnungshinweis=?,bemerkung=?" // 2 Σ22
+	return
+		"pilot_id=?,copilot_id=?,plane_id=?,type=?,mode=?,status=?" // 6
+		",launch_method_id=?,departure_location=?,landing_location=?,num_landings=?,departure_time=?,landing_time=?" // 6 Σ12
+		",pilot_first_name=?,pilot_last_name=?,copilot_first_name=?,copilot_last_name=?" // 4 Σ16
+		",towflight_landing_time=?,towflight_mode=?,towflight_landing_location=?,towplane_id=?" // 4 Σ20
+		",accounting_notes=?,comments=?" // 2 Σ22
+		",towpilot_id=?,towpilot_first_name=?,towpilot_last_name=?"; // 3 Σ25
 		;
-
-	if (opts.record_towpilot)
-		columnList+=",towpilot=?,tpnn=?,tpvn=?"; // 3 Σ25
-
-	return columnList;
 }
 
 void Flight::bindValues (QSqlQuery &q) const
@@ -943,8 +930,8 @@ void Flight::bindValues (QSqlQuery &q) const
 	if (opts.record_towpilot)
 	{
 		q.addBindValue (towpilot);
-		q.addBindValue (tpnn);
 		q.addBindValue (tpvn);
+		q.addBindValue (tpnn);
 	}
 }
 

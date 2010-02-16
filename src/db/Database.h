@@ -11,7 +11,7 @@
 
 #include "src/db/dbTypes.h"
 
-class LaunchType;
+//class LaunchType; // FIXME remove joah
 class Flight;
 class DatabaseInfo;
 
@@ -121,7 +121,7 @@ class Database
 
 
         // *** Database emulation (to be removed later)
-        void addLaunchType (const LaunchType &launchType);
+//        void addLaunchType (const LaunchType &launchType); // FIXME remove joah
 
 	protected:
 		QStringList listStrings (QSqlQuery query);
@@ -130,7 +130,7 @@ class Database
 		QSqlDatabase db;
 
 		// Legacy - the launch type list is not in the database
-		QHash<db_id, LaunchType> launchTypes;
+//		QHash<db_id, LaunchType> launchTypes; // FIXME remove joah
 };
 
 #endif

@@ -73,13 +73,12 @@ void test_database (Database &db, int argc, char **argv)
 			std::cout << version << " - " << factory.migrationName (version) << std::endl;
 
 	}
-	else
+	else if (cmd!="test")
 	{
 		std::cout << "Unrecognized" << std::endl;
 	}
 
-
-	return;
+	if (cmd!="test") return;
 
 	std::cout << std::endl;
 	std::cout << "Get people" << std::endl;

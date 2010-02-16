@@ -72,7 +72,7 @@ PilotLog::Entry PilotLog::Entry::create (const Flight *flight, DataStorage &data
 	if (plane) entry.planeRegistration=plane->registration;
 	if (pilot) entry.pilot=pilot->name ();
 	if (copilot) entry.copilot=copilot->name ();
-	if (launchType) entry.launchType=launchType->get_logbook_string ();
+	if (launchType) entry.launchType=launchType->logbook_string;
 	entry.departureAirfield=flight->departureAirfield;
 	entry.destinationAirfield=flight->destinationAirfield;
 	entry.departureTime=flight->launchTime; // TODO: check flight mode

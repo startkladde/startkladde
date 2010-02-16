@@ -71,7 +71,7 @@ LaunchTypeStatistics *LaunchTypeStatistics::createNew (const QList<Flight> &flig
 	foreach (const LaunchType &launchType, launchTypes)
 	{
 		Entry entry;
-		entry.name=launchType.get_description ();
+		entry.name=launchType.description;
 		entry.num=map[launchType.get_id ()];
 		result->entries.append (entry);
 	}

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cassert>
 
+#include <QSqlQuery>
+
 Person::Person ():
 	Entity ()
 {
@@ -187,12 +189,12 @@ QString Person::toString () const
 
 QString Person::dbTableName ()
 {
-	return "person_temp";
+	return "people";
 }
 
 QString Person::selectColumnList ()
 {
-	return "id,nachname,vorname,verein,vereins_id,bemerkung";
+	return "id,last_name,first_name,club,club_id,comments";
 }
 
 Person Person::createFromQuery (const QSqlQuery &q)
@@ -210,12 +212,12 @@ Person Person::createFromQuery (const QSqlQuery &q)
 
 QString Person::insertValueList ()
 {
-	return "(nachname,vorname,verein,vereins_id,bemerkung) values (?,?,?,?,?)";
+	return "(last_name,first_name,club,club_id,comments) values (?,?,?,?,?)";
 }
 
 QString Person::updateValueList ()
 {
-	return "nachname=?, vorname=?, verein=?, vereins_id=?, bemerkung=?";
+	return "last_name=?, first_name=?, club=?, club_id=?, comments=?";
 }
 
 void Person::bindValues (QSqlQuery &q) const

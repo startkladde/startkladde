@@ -3,10 +3,25 @@
 #include <cstdlib>
 #include <cassert>
 
+#include <QSqlQuery>
+#include <QVariant>
+
+
+LaunchType::LaunchType ()
+	:Entity ()
+{
+	init ();
+}
+
+LaunchType::LaunchType (db_id id):
+	Entity (id)
+{
+	init ();
+}
+
 // Class management
 void LaunchType::init ()
 {
-	id=invalid_id;
 	towplane="";
 	accelerator="";
 	description="---";
@@ -17,24 +32,18 @@ void LaunchType::init ()
 	ok=false;
 }
 
-LaunchType::LaunchType ()
-	:Entity ()
-{
-	init ();
-}
-
-LaunchType::LaunchType (int _id, startart_type _type, QString _towplane, QString _description, QString _short_description, QString _accelerator, QString _logbook_string, bool _person_required)
-	:Entity ()
-{
-	id=_id;
-	type=_type;
-	towplane=_towplane;
-	description=_description;
-	short_description=_short_description;
-	accelerator=_accelerator;
-	logbook_string=_logbook_string;
-	person_required=_person_required;
-}
+//LaunchType::LaunchType (int _id, startart_type _type, QString _towplane, QString _description, QString _short_description, QString _accelerator, QString _logbook_string, bool _person_required)
+//	:Entity ()
+//{
+//	id=_id;
+//	type=_type;
+//	towplane=_towplane;
+//	description=_description;
+//	short_description=_short_description;
+//	accelerator=_accelerator;
+//	logbook_string=_logbook_string;
+//	person_required=_person_required;
+//}
 
 LaunchType::LaunchType (QString desc)
 	:Entity ()
@@ -143,10 +152,96 @@ void LaunchType::output (std::ostream &stream, output_format_t format)
 
 QString LaunchType::toString () const
 {
-	return QString ("id=%1, description=%2 (%3), type=%4")
+	return QString ("id=%1, description=%2 (%3), type=%4, person %5required")
 		.arg (id)
 		.arg (description)
 		.arg (short_description)
 		.arg (startart_type_string (type))
+		.arg (person_required?"":"not ")
 		;
+}
+
+// *******************
+// ** SQL interface **
+// *******************
+
+QString LaunchType::dbTableName ()
+{
+	return "launch_methods";
+}
+
+QString LaunchType::selectColumnList ()
+{
+	return "id,name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments";
+}
+
+LaunchType LaunchType::createFromQuery (const QSqlQuery &q)
+{
+	LaunchType l (q.value (0).toLongLong ());
+
+	l.description       =q.value (1).toString ();
+	l.short_description =q.value (2).toString ();
+	l.logbook_string    =q.value (3).toString ();
+	l.accelerator       =q.value (4).toString ();
+	l.type              =typeFromDb (
+	                     q.value (5).toString ());
+	l.towplane          =q.value (6).toString ();
+	l.person_required   =q.value (7).toBool (); // FIXME ?
+	l.comments          =q.value (8).toString ();
+
+	return l;
+}
+
+QString LaunchType::insertValueList ()
+{
+	return "(name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments) values (?,?,?,?,?,?,?,?)";
+}
+
+QString LaunchType::updateValueList ()
+{
+	return "name=?, short_name=?, log_string=?, keyboard_shortcut=?, type=?, towplane_registration=?, person_required=?, comments=?";
+}
+
+void LaunchType::bindValues (QSqlQuery &q) const
+{
+	q.addBindValue (description);
+	q.addBindValue (short_description);
+	q.addBindValue (logbook_string);
+	q.addBindValue (accelerator);
+	q.addBindValue (typeToDb (type));
+	q.addBindValue (towplane);
+	q.addBindValue (person_required);
+	q.addBindValue (comments);
+}
+
+QList<LaunchType> LaunchType::createListFromQuery (QSqlQuery &q)
+{
+	QList<LaunchType> list;
+	while (q.next ()) list.append (createFromQuery (q));
+	return list;
+}
+
+// *** Enum mappers
+QString LaunchType::typeToDb (startart_type type)
+{
+	switch (type)
+	{
+		case sat_winch  : return "winch";
+		case sat_airtow : return "airtow";
+		case sat_self   : return "self";
+		case sat_other  : return "other";
+		// no default
+	}
+
+	assert (false);
+	return "?";
+}
+
+startart_type LaunchType::typeFromDb (QString type)
+{
+	if      (type=="winch" ) return sat_winch;
+	else if (type=="airtow") return sat_airtow;
+	else if (type=="self"  ) return sat_self;
+	else if (type=="other" ) return sat_other;
+	else                     return sat_other;
 }

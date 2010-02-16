@@ -2,13 +2,14 @@
 #define _LaunchType_h
 
 #include <QString>
-
-#include <QStringList> // XXX
+#include <QStringList>
 
 #include "src/text.h"
 #include "src/db/dbTypes.h"
 #include "src/logging/messages.h"
 #include "src/model/Entity.h"
+
+class QSqlQuery;
 
 // TODO: move to class (function static)
 enum startart_type { sat_winch, sat_airtow, sat_self, sat_other };
@@ -19,7 +20,9 @@ class LaunchType:public Entity
 	public:
 		LaunchType ();
 		// TODO cleanup: only () and (id) (after reading from db)
-		LaunchType (int _id, startart_type _type, QString _towplane, QString _description, QString _short_description, QString _accelerator, QString _logbook_string, bool _person_required);
+		LaunchType (db_id id);
+		// FIXME remove
+//		LaunchType (int _id, startart_type _type, QString _towplane, QString _description, QString _short_description, QString _accelerator, QString _logbook_string, bool _person_required);
 		LaunchType (QString desc);
 		void init ();
 		virtual void output (std::ostream &stream, output_format_t format);
@@ -41,23 +44,31 @@ class LaunchType:public Entity
 
 		bool ok;
 
-#define rw_property(TYPE, NAME) private: TYPE NAME; public: TYPE get_ ## NAME () const { return NAME; }; void set_ ## NAME (TYPE value) { NAME=value; };
-#define ro_property(TYPE, NAME) private: TYPE NAME; public: TYPE get_ ## NAME () const { return NAME; };
-		ro_property (db_id, id);			// 1, 4, 10, 7
-		ro_property (QString, towplane);				// "", "D-EIAV", "", ""
-		ro_property (QString, accelerator);			// A, V, G, E
-		ro_property (QString, description);			// Winde Akaflieg, D-EIAV, Gummiseil, Eigenstart
-		ro_property (QString, short_description);	// WA, AV, GS, ES
-		ro_property (QString, logbook_string);		// W, F, G, E
-		ro_property (bool, person_required);		// true, true, true, false
-		// This is for things that need to be treated differently by the program.
-		ro_property (startart_type, type);			// sat_winch, sat_airtow, sat_other, sat_self
-#undef rw_property
-#undef ro_property
+		//In Entity: db_id id;			// 1, 4, 10, 7
+		QString towplane;				// "", "D-EIAV", "", ""
+		QString accelerator;			// A, V, G, E
+		QString description;			// Winde Akaflieg, D-EIAV, Gummiseil, Eigenstart
+		QString short_description;	// WA, AV, GS, ES
+		QString logbook_string;		// W, F, G, E
+		bool person_required;		// true, true, true, false
+		startart_type type;			// sat_winch, sat_airtow, sat_other, sat_self
+		QString comments;
 
 		static QString objectTypeDescription () { return "Startart"; }
 		static QString objectTypeDescriptionDefinite () { return "die Startart"; }
 		static QString objectTypeDescriptionPlural () { return "Startarten"; }
+
+		// SQL interface
+		static QString dbTableName ();
+		static QString selectColumnList ();
+		static LaunchType createFromQuery (const QSqlQuery &query);
+		static QString insertValueList ();
+		static QString updateValueList ();
+		void bindValues (QSqlQuery &q) const;
+		static QList<LaunchType> createListFromQuery (QSqlQuery &query);
+		// Enum mappers
+		static QString       typeToDb   (startart_type category);
+		static startart_type typeFromDb (QString       category);
 };
 
 #endif

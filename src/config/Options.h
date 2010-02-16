@@ -5,7 +5,7 @@
 
 #include <QString>
 #include <QStringList>
-
+#include <QList>
 #include <qdatetime.h>
 #include <qfile.h>
 
@@ -13,6 +13,7 @@
 
 class Database;
 class ShellPlugin;
+class LaunchType;
 
 class Options
 {
@@ -74,6 +75,8 @@ class Options
 		QStringList non_options;
 
 		static bool silent;
+
+		QList<LaunchType> launchTypes;
 };
 
 extern Options opts;

@@ -260,7 +260,7 @@ QVariant FlightModel::launchTypeData (const Flight &flight, int role) const
 
 		LaunchType launchType=dataStorage.getObject<LaunchType> (flight.launchType);
 
-		return launchType.get_short_description ();
+		return launchType.short_description;
 
 		// Alternative: if (launchType.is_airtow () && !launchType.towplaneKnown) return towplane.registraion or "???"
 	}

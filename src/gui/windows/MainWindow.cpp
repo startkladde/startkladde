@@ -827,7 +827,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 		if (launchType && launchType->is_airtow ())
 		{
 			if (launchType->towplane_known ())
-				towplaneId=dataStorage.getPlaneIdByRegistration (launchType->get_towplane ());
+				towplaneId=dataStorage.getPlaneIdByRegistration (launchType->towplane);
 			else
 				towplaneId=flight.towplane;
 

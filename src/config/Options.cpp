@@ -367,9 +367,9 @@ bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugi
 			{
 				LaunchType sa (value);
 				if (id_invalid (sa.get_id ()))
-					std::cerr << "Error: startart with invalid ID " << sa.get_id () << " specified.";
+					std::cerr << "Error: startart with invalid ID " << sa.get_id () << " specified." << std::endl;
 				else
-					db->addLaunchType (sa);
+					launchTypes.append (sa);
 			}
 
 		}

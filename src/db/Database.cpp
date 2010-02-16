@@ -1,9 +1,11 @@
 /*
  * Short term plan:
+ *   - Add remaining migrations
+ *   - Use proper database methods in Database
  *   - Test the migrations
  *     - make sure the migrations work
  *     - make sure the old version and current sk_web work with "initial"
- *
+ *   - Remove code multiplication in Models
  *   - Fixtures
  *     - SQL dump or data file (CSV/YAML)?
  *     - C++ or Ruby?
@@ -167,6 +169,13 @@ Database::~Database()
 // ** Queries **
 // *************
 
+/**
+ * Do not execute the query retrieved by this method directly; pass it to
+ * #executeQuery for propper error handling and logging.
+ *
+ * @param queryString
+ * @return
+ */
 QSqlQuery Database::prepareQuery (QString queryString)
 {
 	QSqlQuery query (db);
@@ -178,6 +187,8 @@ QSqlQuery &Database::executeQuery (QSqlQuery &query)
 {
 	if (!query.exec ())
 		throw QueryFailedException (query);
+
+	std::cout << query.lastQuery () << std::endl;
 
 	return query;
 }
@@ -406,7 +417,7 @@ template<class T> QList<T> Database::getObjects (QString condition, QList<QVaria
 	foreach (const QVariant &conditionValue, conditionValues)
 		query.addBindValue (conditionValue);
 
-	query.exec ();
+	executeQuery (query);
 
     return T::createListFromQuery (query);
 }
@@ -425,7 +436,7 @@ template<class T> bool Database::objectExists (db_id id)
 	QSqlQuery query (db);
 	query.prepare ("select count(*) from "+T::dbTableName ()+" where id=?");
 	query.addBindValue (id);
-	query.exec ();
+	executeQuery (query);
 
 	query.next ();
 	return query.value (0).toInt ()>0;
@@ -436,7 +447,7 @@ template<class T> T Database::getObject (db_id id)
 	QSqlQuery query (db);
 	query.prepare ("select "+T::selectColumnList ()+" from "+T::dbTableName ()+" where id=?");
 	query.addBindValue (id);
-	query.exec ();
+	executeQuery (query);
 
 	if (!query.next ()) throw NotFoundException ();
 
@@ -448,7 +459,7 @@ template<class T> int Database::deleteObject (db_id id)
 	QSqlQuery query (db);
 	query.prepare ("delete from "+T::dbTableName ()+" where id=?");
 	query.addBindValue (id);
-	query.exec ();
+	executeQuery (query);
 
 	return query.numRowsAffected ();
 }
@@ -458,7 +469,7 @@ template<class T> db_id Database::createObject (T &object)
 	QSqlQuery query (db);
 	query.prepare ("insert into "+T::dbTableName ()+" "+T::insertValueList ());
 	object.bindValues (query);
-	query.exec ();
+	executeQuery (query);
 
 	object.id=query.lastInsertId ().toLongLong ();
 
@@ -472,7 +483,7 @@ template<class T> int Database::updateObject (const T &object)
 	object.bindValues (query);
 	query.addBindValue (object.id);
 
-	query.exec ();
+	executeQuery (query);
 
 	return query.numRowsAffected ();
 }
@@ -487,83 +498,91 @@ template<class T> int Database::updateObject (const T &object)
 //   - bindValues (QSqlQuery &q) const;
 //   - ::createListFromQuery (QSqlQuery &query);
 
-template QList<Person> Database::getObjects           (QString condition, QList<QVariant> conditionValues);
-template QList<Plane > Database::getObjects           (QString condition, QList<QVariant> conditionValues);
-template QList<Flight> Database::getObjects           (QString condition, QList<QVariant> conditionValues);
+template QList<Person    > Database::getObjects       (QString condition, QList<QVariant> conditionValues);
+template QList<Plane     > Database::getObjects       (QString condition, QList<QVariant> conditionValues);
+template QList<Flight    > Database::getObjects       (QString condition, QList<QVariant> conditionValues);
+template QList<LaunchType> Database::getObjects       (QString condition, QList<QVariant> conditionValues);
 
-template int           Database::countObjects<Person> ();
-template int           Database::countObjects<Plane > ();
-template int           Database::countObjects<Flight> ();
+template int           Database::countObjects<Person    > ();
+template int           Database::countObjects<Plane     > ();
+template int           Database::countObjects<Flight    > ();
+template int           Database::countObjects<LaunchType> ();
 
-template bool          Database::objectExists<Person> (db_id id);
-template bool          Database::objectExists<Plane > (db_id id);
-template bool          Database::objectExists<Flight> (db_id id);
+template bool          Database::objectExists<Person    > (db_id id);
+template bool          Database::objectExists<Plane     > (db_id id);
+template bool          Database::objectExists<Flight    > (db_id id);
+template bool          Database::objectExists<LaunchType> (db_id id);
 
 template Person        Database::getObject            (db_id id);
 template Plane         Database::getObject            (db_id id);
 template Flight        Database::getObject            (db_id id);
+template LaunchType    Database::getObject            (db_id id);
 
-template int           Database::deleteObject<Person> (db_id id);
-template int           Database::deleteObject<Plane > (db_id id);
-template int           Database::deleteObject<Flight> (db_id id);
+template int           Database::deleteObject<Person    > (db_id id);
+template int           Database::deleteObject<Plane     > (db_id id);
+template int           Database::deleteObject<Flight    > (db_id id);
+template int           Database::deleteObject<LaunchType> (db_id id);
 
-template db_id         Database::createObject         (Person &object);
-template db_id         Database::createObject         (Plane  &object);
-template db_id         Database::createObject         (Flight &object);
+template db_id         Database::createObject         (Person     &object);
+template db_id         Database::createObject         (Plane      &object);
+template db_id         Database::createObject         (Flight     &object);
+template db_id         Database::createObject         (LaunchType &object);
 
-template int           Database::updateObject         (const Person &object);
-template int           Database::updateObject         (const Plane  &object);
-template int           Database::updateObject         (const Flight &object);
+template int           Database::updateObject         (const Person     &object);
+template int           Database::updateObject         (const Plane      &object);
+template int           Database::updateObject         (const Flight     &object);
+template int           Database::updateObject         (const LaunchType &object);
 
-// Legacy launch type
-template<> QList<LaunchType> Database::getObjects (QString condition, QList<QVariant> conditionValues)
-{
-	assert (condition.isEmpty ());
-	(void)conditionValues;
-	return launchTypes.values ();
-}
-
-template<> int Database::countObjects<LaunchType> ()
-{
-	return launchTypes.size ();
-}
-
-template<> bool Database::objectExists<LaunchType> (db_id id)
-{
-	return launchTypes.contains (id);
-}
-
-template<> LaunchType Database::getObject (db_id id)
-{
-	if (launchTypes.contains (id)) throw NotFoundException ();
-	return launchTypes[id];
-}
-
-template<> int Database::deleteObject<LaunchType> (db_id id)
-{
-	(void)id;
-	assert (!"Thou shalt not try to delete a launch type");
-	return 0;
-}
-
-template<> db_id Database::createObject (LaunchType &object)
-{
-	(void)object;
-	assert (!"Thou shalt not try to create a launch type");
-	return invalid_id;
-}
-
-template<> int Database::updateObject (const LaunchType &object)
-{
-	(void)object;
-	assert (!"Thou shalt not try to update a launch type");
-	return 0;
-}
-
-void Database::addLaunchType (const LaunchType &launchType)
-{
-	launchTypes.insert (launchType.get_id (), launchType);
-}
+// FIXME remove joah
+//// Legacy launch type
+//template<> QList<LaunchType> Database::getObjects (QString condition, QList<QVariant> conditionValues)
+//{
+//	assert (condition.isEmpty ());
+//	(void)conditionValues;
+//	return launchTypes.values ();
+//}
+//
+//template<> int Database::countObjects<LaunchType> ()
+//{
+//	return launchTypes.size ();
+//}
+//
+//template<> bool Database::objectExists<LaunchType> (db_id id)
+//{
+//	return launchTypes.contains (id);
+//}
+//
+//template<> LaunchType Database::getObject (db_id id)
+//{
+//	if (launchTypes.contains (id)) throw NotFoundException ();
+//	return launchTypes[id];
+//}
+//
+//template<> int Database::deleteObject<LaunchType> (db_id id)
+//{
+//	(void)id;
+//	assert (!"Thou shalt not try to delete a launch type");
+//	return 0;
+//}
+//
+//template<> db_id Database::createObject (LaunchType &object)
+//{
+//	(void)object;
+//	assert (!"Thou shalt not try to create a launch type");
+//	return invalid_id;
+//}
+//
+//template<> int Database::updateObject (const LaunchType &object)
+//{
+//	(void)object;
+//	assert (!"Thou shalt not try to update a launch type");
+//	return 0;
+//}
+//
+//void Database::addLaunchType (const LaunchType &launchType)
+//{
+//	launchTypes.insert (launchType.get_id (), launchType);
+//}
 
 
 // *******************
@@ -572,20 +591,21 @@ void Database::addLaunchType (const LaunchType &launchType)
 
 QStringList Database::listAirfields ()
 {
-	QString query="select startort from %1 where startort!='' union select zielort from %1 where zielort!=''";
-	return listStrings (query.arg (Flight::dbTableName ()));
+	// FIXME remove
+//	QString query="select startort from %1 where startort!='' union select zielort from %1 where zielort!=''";
+//	return listStrings (query.arg (Flight::dbTableName ()));
 
 	return listStrings (selectDistinctColumnQuery (
 		Flight::dbTableName (),
-		QStringList () << "startort" << "zielort"
-		));
+		QStringList () << "departure_location" << "landing_location",
+		true));
 }
 
 QStringList Database::listAccountingNotes ()
 {
 	return listStrings (selectDistinctColumnQuery (
 		Flight::dbTableName (),
-		"abrechnungshinweis",
+		"accounting_notes",
 		true));
 }
 
@@ -593,7 +613,7 @@ QStringList Database::listClubs ()
 {
 	return listStrings (selectDistinctColumnQuery (
 		QStringList () << Plane::dbTableName() << Person::dbTableName (),
-		"verein",
+		"club",
 		true));
 }
 
@@ -601,7 +621,7 @@ QStringList Database::listPlaneTypes ()
 {
 	return listStrings (selectDistinctColumnQuery (
 		Plane::dbTableName (),
-		"typ",
+		"type",
 		true));
 }
 
@@ -612,7 +632,7 @@ QList<Flight> Database::getPreparedFlights ()
 	// Resolving the flight mode, we get:
 	// !( (local and (started or landed)) or (leaving and started) or (coming and landed) )
 
-	QString condition="!( (modus=? and status&?) or (modus=? and status&?) or (modus=? and status&?) )";
+	QString condition="!( (mode=? and status&?) or (mode=? and status&?) or (mode=? and status&?) )";
 	QList<QVariant> conditionValues; conditionValues
 		<< "l" << (Flight::STATUS_STARTED|Flight::STATUS_LANDED)
 		<< "g" << Flight::STATUS_STARTED
@@ -638,7 +658,7 @@ QList<Flight> Database::getFlightsDate (QDate date)
 	QDateTime thisMidnight (date,             QTime (0, 0, 0)); // Start of day
 	QDateTime nextMidnight (date.addDays (1), QTime (0, 0, 0)); // Start of next day
 
-	QString condition="(startzeit>=? and startzeit<?) or (landezeit>=? and landezeit<?)";
+	QString condition="(departure_time>=? and landing_time<?) or (departure_time>=? and landing_time<?)";
 	QList<QVariant> conditionValues; conditionValues
 		<< thisMidnight << nextMidnight
 		<< thisMidnight << nextMidnight

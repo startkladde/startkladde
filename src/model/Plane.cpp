@@ -256,12 +256,12 @@ QString Plane::toString () const
 
 QString Plane::dbTableName ()
 {
-	return "flugzeug_temp";
+	return "planes";
 }
 
 QString Plane::selectColumnList ()
 {
-	return "id,kennzeichen,verein,sitze,typ,gattung,wettbewerbskennzeichen,bemerkung";
+	return "id,registration,club,num_seats,type,category,competition_callsign,comments";
 }
 
 
@@ -283,12 +283,12 @@ Plane Plane::createFromQuery (const QSqlQuery &q)
 
 QString Plane::insertValueList ()
 {
-	return "(kennzeichen,verein,sitze,typ,gattung,wettbewerbskennzeichen,bemerkung) values (?,?,?,?,?,?,?)";
+	return "(registration,club,num_seats,type,category,competition_callsign,comments) values (?,?,?,?,?,?,?)";
 }
 
 QString Plane::updateValueList ()
 {
-	return "kennzeichen=?, verein=?, sitze=?, typ=?, gattung=?, wettbewerbskennzeichen=?, bemerkung=?";
+	return "registration=?, club=?, num_seats=?, type=?, category=?, competition_callsign=?, comments=?";
 }
 
 void Plane::bindValues (QSqlQuery &q) const

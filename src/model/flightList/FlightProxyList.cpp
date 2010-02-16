@@ -82,7 +82,7 @@ void FlightProxyList::addTowflightFor (const Flight &flight, const LaunchType &l
 	db_id towplaneId=invalid_id;
 
 	if (launchType.towplane_known ())
-		towplaneId=dataStorage.getPlaneIdByRegistration (launchType.get_towplane ());
+		towplaneId=dataStorage.getPlaneIdByRegistration (launchType.towplane);
 	else
 		towplaneId=flight.towplane;
 
@@ -110,7 +110,7 @@ void FlightProxyList::updateTowflight (db_id id, int towflightIndex)
 			db_id towplaneId=invalid_id;
 
 			if (launchType.towplane_known ())
-				towplaneId=dataStorage.getPlaneIdByRegistration (launchType.get_towplane ());
+				towplaneId=dataStorage.getPlaneIdByRegistration (launchType.towplane);
 			else
 				towplaneId=flight.towplane;
 
