@@ -24,8 +24,8 @@ class Migration_20100216105657_remove_temp_tables: public Migration
 		virtual void down ();
 
 	protected:
-		void removeTempTable (QString name);
-		void createTempTable (QString name);
+		void removeTempTable (const QString &name);
+		void createTempTable (const QString &name);
 };
 
 #endif

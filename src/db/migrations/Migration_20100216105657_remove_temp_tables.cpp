@@ -28,7 +28,7 @@ void Migration_20100216105657_remove_temp_tables::down ()
 	createTempTable ("flug");
 }
 
-void Migration_20100216105657_remove_temp_tables::removeTempTable (QString name)
+void Migration_20100216105657_remove_temp_tables::removeTempTable (const QString &name)
 {
 	QString temp_name=name+"_temp";
 
@@ -43,7 +43,7 @@ void Migration_20100216105657_remove_temp_tables::removeTempTable (QString name)
 	database.dropTable (temp_name);
 }
 
-void Migration_20100216105657_remove_temp_tables::createTempTable (QString name)
+void Migration_20100216105657_remove_temp_tables::createTempTable (const QString &name)
 {
 	// Rename the table to _temp and create an empty proper table, thus moving
 	// the entries to the _temp table.

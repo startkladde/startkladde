@@ -260,7 +260,7 @@ bool Database::queryHasResult (QString queryString)
 // ** Schema manipulation **
 // *************************
 
-void Database::createTable (QString name)
+void Database::createTable (const QString &name)
 {
 	std::cout << QString ("Creating table %1").arg (name) << std::endl;
 
@@ -275,7 +275,7 @@ void Database::createTable (QString name)
 	executeQuery (queryString);
 }
 
-void Database::createTableLike (QString like, QString name)
+void Database::createTableLike (const QString &like, const QString &name)
 {
 	std::cout << QString ("Creating table %1 like %2").arg (name, like) << std::endl;
 
@@ -286,7 +286,7 @@ void Database::createTableLike (QString like, QString name)
 	executeQuery (queryString);
 }
 
-void Database::dropTable (QString name)
+void Database::dropTable (const QString &name)
 {
 	std::cout << QString ("Dropping table %1").arg (name) << std::endl;
 
@@ -297,7 +297,7 @@ void Database::dropTable (QString name)
 	executeQuery (queryString);
 }
 
-void Database::renameTable (QString oldName, QString newName)
+void Database::renameTable (const QString &oldName, const QString &newName)
 {
 	std::cout << QString ("Renaming table %1 to %2").arg (oldName, newName) << std::endl;
 
@@ -308,7 +308,17 @@ void Database::renameTable (QString oldName, QString newName)
 	executeQuery (queryString);
 }
 
-void Database::addColumn (QString table, QString name, QString type, bool skipIfExists)
+bool Database::tableExists (const QString &name)
+{
+	// Using addBindValue does not seem to work here
+	QString queryString=
+		QString ("SHOW TABLES LIKE '%1'")
+		.arg (name);
+
+	return queryHasResult (queryString);
+}
+
+void Database::addColumn (const QString &table, const QString &name, const QString &type, bool skipIfExists)
 {
 	if (skipIfExists && columnExists (table, name))
 	{
@@ -325,7 +335,7 @@ void Database::addColumn (QString table, QString name, QString type, bool skipIf
 	executeQuery (queryString);
 }
 
-void Database::changeColumnType (QString table, QString name, QString type)
+void Database::changeColumnType (const QString &table, const QString &name, const QString &type)
 {
 	std::cout << QString ("Changing column %1.%2 type to %3...")
 		.arg (table, name, type) << std::endl;
@@ -337,7 +347,7 @@ void Database::changeColumnType (QString table, QString name, QString type)
 	executeQuery (queryString);
 }
 
-void Database::dropColumn (QString table, QString name, bool skipIfNotExists)
+void Database::dropColumn (const QString &table, const QString &name, bool skipIfNotExists)
 {
 	if (skipIfNotExists && !columnExists (table, name))
 	{
@@ -354,17 +364,18 @@ void Database::dropColumn (QString table, QString name, bool skipIfNotExists)
 	executeQuery (queryString);
 }
 
-bool Database::tableExists (QString name)
+void Database::renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type)
 {
-	// Using addBindValue does not seem to work here
-	QString queryString=
-		QString ("SHOW TABLES LIKE '%1'")
-		.arg (name);
+	std::cout << QString ("Renaming column %1.%2 to %3...").arg (table, oldName, newName) << std::endl;
 
-	return queryHasResult (queryString);
+	QString queryString=
+		QString ("ALTER TABLE %1 CHANGE %2 %3 %4")
+		.arg (table, oldName, newName, type);
+
+	executeQuery (queryString);
 }
 
-bool Database::columnExists (QString table, QString name)
+bool Database::columnExists (const QString &table, const QString &name)
 {
 	// Using addBindValue does not seem to work here
 	QString queryString=

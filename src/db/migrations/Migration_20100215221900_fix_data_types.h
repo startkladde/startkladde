@@ -20,10 +20,10 @@ class Migration_20100215221900_fix_data_types: public Migration
 		virtual void down ();
 
 	protected:
-		void changePeopleTable (QString name);
-		void changePlanesTable (QString name);
-		void changeFlightsTable (QString name);
-		void changeUsersTable (QString name);
+		void changePeopleTable (const QString &name);
+		void changePlanesTable (const QString &name);
+		void changeFlightsTable (const QString &name);
+		void changeUsersTable (const QString &name);
 };
 
 #endif

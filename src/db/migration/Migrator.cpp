@@ -34,7 +34,7 @@ Migrator::~Migrator ()
 // ** Migrations **
 // ****************
 
-void Migrator::runMigration (quint64 version, Direction direction)
+void Migrator::runMigration (quint64 version, Migration::Direction direction)
 {
 	Migration *migration=NULL;
 	try
@@ -44,12 +44,12 @@ void Migrator::runMigration (quint64 version, Direction direction)
 
 		switch (direction)
 		{
-			case dirUp:
+			case Migration::dirUp:
 				std::cout << "Migrating up " << name << std::endl;
 				migration->up ();
 				addMigration (version);
 				break;
-			case dirDown:
+			case Migration::dirDown:
 				std::cout << "Migrating down " << name << std::endl;
 				migration->down ();
 				removeMigration (version);
@@ -74,7 +74,7 @@ void Migrator::up ()
 
 	if (version==0) return;
 
-	runMigration (version, dirUp);
+	runMigration (version, Migration::dirUp);
 }
 
 /** Migrates one step down */
@@ -84,14 +84,14 @@ void Migrator::down ()
 
 	if (version==0) return;
 
-	runMigration (currentVersion (), dirDown);
+	runMigration (currentVersion (), Migration::dirDown);
 }
 
 /** Migrates to the latest version (runs pending migrations) */
 void Migrator::migrate ()
 {
 	foreach (quint64 version, pendingMigrations ())
-		runMigration (version, dirUp);
+		runMigration (version, Migration::dirUp);
 }
 
 

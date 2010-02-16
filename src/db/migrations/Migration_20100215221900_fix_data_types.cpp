@@ -27,7 +27,7 @@ void Migration_20100215221900_fix_data_types::down ()
 	// Don't change back
 }
 
-void Migration_20100215221900_fix_data_types::changePeopleTable (QString name)
+void Migration_20100215221900_fix_data_types::changePeopleTable (const QString &name)
 {
 	database.changeColumnType (name, "nachname"  , Database::dataTypeString);
 	database.changeColumnType (name, "vorname"   , Database::dataTypeString);
@@ -37,7 +37,7 @@ void Migration_20100215221900_fix_data_types::changePeopleTable (QString name)
 	database.changeColumnType (name, "bemerkung" , Database::dataTypeString);
 }
 
-void Migration_20100215221900_fix_data_types::changePlanesTable (QString name)
+void Migration_20100215221900_fix_data_types::changePlanesTable (const QString &name)
 {
 	database.changeColumnType (name, "kennzeichen",            Database::dataTypeString   );
 	database.changeColumnType (name, "verein",                 Database::dataTypeString   );
@@ -48,7 +48,7 @@ void Migration_20100215221900_fix_data_types::changePlanesTable (QString name)
 	database.changeColumnType (name, "bemerkung",              Database::dataTypeString   );
 }
 
-void Migration_20100215221900_fix_data_types::changeFlightsTable (QString name)
+void Migration_20100215221900_fix_data_types::changeFlightsTable (const QString &name)
 {
 	database.changeColumnType (name, "flugzeug",           Database::dataTypeId       );
 	database.changeColumnType (name, "pilot",              Database::dataTypeId       );
@@ -82,7 +82,7 @@ void Migration_20100215221900_fix_data_types::changeFlightsTable (QString name)
 	database.changeColumnType (name, "abrechnungshinweis", Database::dataTypeString   );
 }
 
-void Migration_20100215221900_fix_data_types::changeUsersTable (QString name)
+void Migration_20100215221900_fix_data_types::changeUsersTable (const QString &name)
 {
 	database.changeColumnType (name, "username",            Database::dataTypeString ); // TODO not null
 	database.changeColumnType (name, "password",            Database::dataTypeString ); // TODO long enough?

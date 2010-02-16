@@ -14,6 +14,9 @@ class Database;
 class Migration
 {
 	public:
+		// *** Types
+		enum Direction { dirUp, dirDown };
+
 		Migration (Database &database);
 		virtual ~Migration ();
 

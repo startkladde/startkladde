@@ -19,9 +19,6 @@ class Database;
 class Migrator
 {
 	public:
-		// *** Types
-		enum Direction { dirUp, dirDown };
-
 		// *** Constants
 		static const QString migrationsTableName, migrationsColumnName;
 
@@ -48,7 +45,7 @@ class Migrator
 
 	protected:
 		// *** Migration
-		void runMigration (quint64 version, Direction direction);
+		void runMigration (quint64 version, Migration::Direction direction);
 
 	private:
 		Database &database;

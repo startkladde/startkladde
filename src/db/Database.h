@@ -88,16 +88,18 @@ class Database
 		bool queryHasResult (QString queryString);
 
 
-		// *** Shema manipulation
-		void createTable (QString name);
-		void createTableLike (QString like, QString name);
-		void dropTable (QString name);
-		void renameTable (QString oldName, QString newName);
-		void addColumn (QString table, QString name, QString type, bool skipIfExists=false);
-		void changeColumnType (QString table, QString name, QString type);
-		void dropColumn (QString table, QString name, bool skipIfNotExists=false);
-		bool tableExists (QString name);
-		bool columnExists (QString table, QString name);
+		// *** Schema manipulation
+		void createTable (const QString &name);
+		void createTableLike (const QString &like, const QString &name);
+		void dropTable (const QString &name);
+		void renameTable (const QString &oldName, const QString &newName);
+		bool tableExists (const QString &name);
+
+		void addColumn (const QString &table, const QString &name, const QString &type, bool skipIfExists=false);
+		void changeColumnType (const QString &table, const QString &name, const QString &type);
+		void dropColumn (const QString &table, const QString &name, bool skipIfNotExists=false);
+		void renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type);
+		bool columnExists (const QString &table, const QString &name);
 
 		// *** ORM
         // Template functions, instantiated for the relevant classes
