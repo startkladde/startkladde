@@ -16,7 +16,7 @@ Migration_20100216135637_add_launch_methods::~Migration_20100216135637_add_launc
 
 void Migration_20100216135637_add_launch_methods::up ()
 {
-	database.createTable  ("launch_methods");
+	database.createTable  ("launch_methods"); // Creates the id column
 	database.addColumn ("launch_methods", "name"                 , Database::dataTypeString   );
 	database.addColumn ("launch_methods", "short_name"           , Database::dataTypeString   );
 	database.addColumn ("launch_methods", "log_string"           , Database::dataTypeString   );

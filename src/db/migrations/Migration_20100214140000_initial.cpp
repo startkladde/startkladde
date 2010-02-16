@@ -13,7 +13,7 @@ Migration_20100214140000_initial::~Migration_20100214140000_initial ()
 
 void Migration_20100214140000_initial::up ()
 {
-	database.createTable  ("person");
+	database.createTable  ("person"); // Creates the id column
 	database.addColumn ("person", "nachname"  , Database::dataTypeString);
 	database.addColumn ("person", "vorname"   , Database::dataTypeString);
 	database.addColumn ("person", "verein"    , Database::dataTypeString);
@@ -23,7 +23,7 @@ void Migration_20100214140000_initial::up ()
 
 	database.createTableLike ("person", "person_temp");
 
-	database.createTable ("flugzeug");
+	database.createTable ("flugzeug"); // Creates the id column
 	database.addColumn ("flugzeug", "kennzeichen",            Database::dataTypeString   );
 	database.addColumn ("flugzeug", "verein",                 Database::dataTypeString   );
 	database.addColumn ("flugzeug", "sitze",                  Database::dataTypeInteger  );
@@ -34,7 +34,7 @@ void Migration_20100214140000_initial::up ()
 
 	database.createTableLike ("flugzeug", "flugzeug_temp");
 
-	database.createTable ("flug");
+	database.createTable ("flug"); // Creates the id column
 	// Crew and plane
 	database.addColumn ("flug", "flugzeug",           Database::dataTypeId       );
 	database.addColumn ("flug", "pilot",              Database::dataTypeId       );
@@ -69,7 +69,7 @@ void Migration_20100214140000_initial::up ()
 
 	database.createTableLike ("flug", "flug_temp");
 
-	database.createTable ("user");
+	database.createTable ("user"); // Creates the id column
 	database.addColumn ("user", "username",            Database::dataTypeString ); // TODO not null
 	database.addColumn ("user", "password",            Database::dataTypeString ); // TODO long enough?
 	database.addColumn ("user", "perm_club_admin",     Database::dataTypeBoolean);

@@ -317,12 +317,12 @@ QString Plane::categoryToDb (Category category)
 {
 	switch (category)
 	{
-		case categoryNone         : return "?";
-		case categorySingleEngine : return "e";
-		case categoryGlider       : return "1";
-		case categoryMotorglider  : return "k";
-		case categoryUltralight   : return "m";
-		case categoryOther        : return "s";
+		case categoryNone         : return "?"            ;
+		case categorySingleEngine : return "single_engine";
+		case categoryGlider       : return "glider"       ;
+		case categoryMotorglider  : return "motorglider"  ;
+		case categoryUltralight   : return "ultralight"   ;
+		case categoryOther        : return "other"        ;
 		// no default
 	}
 
@@ -332,10 +332,10 @@ QString Plane::categoryToDb (Category category)
 
 Plane::Category Plane::categoryFromDb (QString category)
 {
-	if      (category=="e") return categorySingleEngine;
-	else if (category=="1") return categoryGlider;
-	else if (category=="k") return categoryMotorglider;
-	else if (category=="m") return categoryUltralight;
-	else if (category=="s") return categoryOther;
-	else                    return categoryNone;
+	if      (category=="single_engine") return categorySingleEngine;
+	else if (category=="glider"       ) return categoryGlider;
+	else if (category=="motorglider"  ) return categoryMotorglider;
+	else if (category=="ultralight"   ) return categoryUltralight;
+	else if (category=="other"        ) return categoryOther;
+	else                                return categoryNone;
 }

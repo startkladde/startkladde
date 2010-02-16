@@ -11,7 +11,6 @@
 
 #include "src/db/dbTypes.h"
 
-//class LaunchType; // FIXME remove joah
 class Flight;
 class DatabaseInfo;
 
@@ -52,6 +51,7 @@ class Database
     	static const QString dataTypeFloat;
     	static const QString dataTypeInteger;
     	static const QString dataTypeString;
+    	static const QString dataTypeString16; // Non-rails
     	static const QString dataTypeText;
     	static const QString dataTypeTime;
     	static const QString dataTypeTimestamp;
@@ -86,6 +86,7 @@ class Database
 		static QString selectDistinctColumnQuery (QString table, QStringList columns, bool excludeEmpty=false);
 		bool queryHasResult (QSqlQuery &query);
 		bool queryHasResult (QString queryString);
+		void updateColumnValues (const QString &tableName, const QString &columnName, const QVariant &oldValue, const QVariant &newValue);
 
 
 		// *** Schema manipulation
@@ -119,18 +120,11 @@ class Database
         QList<Flight> getPreparedFlights ();
         QList<Flight> getFlightsDate (QDate date);
 
-
-        // *** Database emulation (to be removed later)
-//        void addLaunchType (const LaunchType &launchType); // FIXME remove joah
-
 	protected:
 		QStringList listStrings (QSqlQuery query);
 
 	private:
 		QSqlDatabase db;
-
-		// Legacy - the launch type list is not in the database
-//		QHash<db_id, LaunchType> launchTypes; // FIXME remove joah
 };
 
 #endif

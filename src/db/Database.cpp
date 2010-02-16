@@ -100,6 +100,8 @@
 // ** Constants **
 // ***************
 
+// Note: these values are used in migrations. If they are changed, the
+// migrations should be updated to use the same values as before.
 const QString Database::dataTypeBinary    = "blob";
 const QString Database::dataTypeBoolean   = "tinyint(1)";
 const QString Database::dataTypeDate      = "date";
@@ -108,6 +110,7 @@ const QString Database::dataTypeDecimal   = "decimal";
 const QString Database::dataTypeFloat     = "float";
 const QString Database::dataTypeInteger   = "int(11)";
 const QString Database::dataTypeString    = "varchar(255)";
+//const QString Database::dataTypeString16  = "varchar(16)";
 const QString Database::dataTypeText      = "text";
 const QString Database::dataTypeTime      = "time";
 const QString Database::dataTypeTimestamp = "datetime";
@@ -185,7 +188,7 @@ QSqlQuery &Database::executeQuery (QSqlQuery &query)
 	if (!query.exec ())
 		throw QueryFailedException (query);
 
-	std::cout << query.lastQuery () << std::endl;
+//	std::cout << query.lastQuery () << std::endl;
 
 	return query;
 }
@@ -222,7 +225,7 @@ QStringList Database::listStrings (QString query)
 QString Database::selectDistinctColumnQuery (QString table, QString column, bool excludeEmpty)
 {
 	// "select distinct column from table"
-	QString query=QString ("SELECT DISTINGT %1 FROM %2").arg (column, table);
+	QString query=QString ("SELECT DISTINCT %1 FROM %2").arg (column, table);
 
 	// ..." where column!=''"
 	if (excludeEmpty) query+=QString (" WHERE %1!=''").arg (column);
@@ -260,6 +263,20 @@ bool Database::queryHasResult (QString queryString)
 {
 	QSqlQuery query=executeQuery (queryString);
 	return query.size()>0;
+}
+
+void Database::updateColumnValues (const QString &tableName, const QString &columnName,
+	const QVariant &oldValue, const QVariant &newValue)
+{
+	QSqlQuery query=prepareQuery (
+		QString ("UPDATE %1 SET %2=? WHERE %2=?")
+		.arg (tableName, columnName)
+	);
+
+	query.addBindValue (newValue);
+	query.addBindValue (oldValue);
+
+	executeQuery (query);
 }
 
 
@@ -530,57 +547,6 @@ template int           Database::updateObject         (const Plane      &object)
 template int           Database::updateObject         (const Flight     &object);
 template int           Database::updateObject         (const LaunchType &object);
 
-// FIXME remove joah
-//// Legacy launch type
-//template<> QList<LaunchType> Database::getObjects (QString condition, QList<QVariant> conditionValues)
-//{
-//	assert (condition.isEmpty ());
-//	(void)conditionValues;
-//	return launchTypes.values ();
-//}
-//
-//template<> int Database::countObjects<LaunchType> ()
-//{
-//	return launchTypes.size ();
-//}
-//
-//template<> bool Database::objectExists<LaunchType> (db_id id)
-//{
-//	return launchTypes.contains (id);
-//}
-//
-//template<> LaunchType Database::getObject (db_id id)
-//{
-//	if (launchTypes.contains (id)) throw NotFoundException ();
-//	return launchTypes[id];
-//}
-//
-//template<> int Database::deleteObject<LaunchType> (db_id id)
-//{
-//	(void)id;
-//	assert (!"Thou shalt not try to delete a launch type");
-//	return 0;
-//}
-//
-//template<> db_id Database::createObject (LaunchType &object)
-//{
-//	(void)object;
-//	assert (!"Thou shalt not try to create a launch type");
-//	return invalid_id;
-//}
-//
-//template<> int Database::updateObject (const LaunchType &object)
-//{
-//	(void)object;
-//	assert (!"Thou shalt not try to update a launch type");
-//	return 0;
-//}
-//
-//void Database::addLaunchType (const LaunchType &launchType)
-//{
-//	launchTypes.insert (launchType.get_id (), launchType);
-//}
-
 
 // *******************
 // ** Very specific **
@@ -588,10 +554,6 @@ template int           Database::updateObject         (const LaunchType &object)
 
 QStringList Database::listAirfields ()
 {
-	// FIXME remove
-//	QString query="select startort from %1 where startort!='' union select zielort from %1 where zielort!=''";
-//	return listStrings (query.arg (Flight::dbTableName ()));
-
 	return listStrings (selectDistinctColumnQuery (
 		Flight::dbTableName (),
 		QStringList () << "departure_location" << "landing_location",
@@ -631,9 +593,9 @@ QList<Flight> Database::getPreparedFlights ()
 
 	QString condition="!( (mode=? AND status&?) OR (mode=? AND status&?) OR (mode=? AND status&?) )";
 	QList<QVariant> conditionValues; conditionValues
-		<< "l" << (Flight::STATUS_STARTED|Flight::STATUS_LANDED)
-		<< "g" << Flight::STATUS_STARTED
-		<< "k" << Flight::STATUS_LANDED
+		<< Flight::modeToDb (fmLocal)   << (Flight::STATUS_STARTED|Flight::STATUS_LANDED)
+		<< Flight::modeToDb (fmLeaving) << Flight::STATUS_STARTED
+		<< Flight::modeToDb (fmComing)  << Flight::STATUS_LANDED
 		;
 
 	return getObjects<Flight> (condition, conditionValues);
