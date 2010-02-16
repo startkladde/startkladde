@@ -1,17 +1,17 @@
-#include "Migration_20100215225351_change_to_innodb.h"
+#include "Migration_20100215000000_change_to_innodb.h"
 
 #include "src/db/Database.h"
 
-Migration_20100215225351_change_to_innodb::Migration_20100215225351_change_to_innodb (Database &database):
+Migration_20100215000000_change_to_innodb::Migration_20100215000000_change_to_innodb (Database &database):
 	Migration (database)
 {
 }
 
-Migration_20100215225351_change_to_innodb::~Migration_20100215225351_change_to_innodb ()
+Migration_20100215000000_change_to_innodb::~Migration_20100215000000_change_to_innodb ()
 {
 }
 
-void Migration_20100215225351_change_to_innodb::up ()
+void Migration_20100215000000_change_to_innodb::up ()
 {
 	QStringList tables;
 	tables << "person" << "person_temp";
@@ -26,7 +26,8 @@ void Migration_20100215225351_change_to_innodb::up ()
 		);
 }
 
-void Migration_20100215225351_change_to_innodb::down ()
+void Migration_20100215000000_change_to_innodb::down ()
 {
 	// Don't change back
 }
+

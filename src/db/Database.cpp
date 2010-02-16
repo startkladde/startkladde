@@ -314,6 +314,18 @@ void Database::addColumn (QString table, QString name, QString type, bool skipIf
 	executeQuery (queryString);
 }
 
+void Database::changeColumnType (QString table, QString name, QString type)
+{
+	std::cout << QString ("Changing column %1.%2 type to %3...")
+		.arg (table, name, type) << std::endl;
+
+	QString queryString=
+		QString ("ALTER TABLE %1 MODIFY %2 %3")
+		.arg (table, name, type);
+
+	executeQuery (queryString);
+}
+
 void Database::dropColumn (QString table, QString name, bool skipIfNotExists)
 {
 	if (skipIfNotExists && !columnExists (table, name))

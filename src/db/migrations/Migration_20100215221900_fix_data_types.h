@@ -1,6 +1,8 @@
 #ifndef MIGRATION_20100215221900_FIX_DATA_TYPES_H_
 #define MIGRATION_20100215221900_FIX_DATA_TYPES_H_
 
+#include <QString>
+
 #include "src/db/migration/Migration.h"
 
 /**
@@ -16,6 +18,12 @@ class Migration_20100215221900_fix_data_types: public Migration
 
 		virtual void up ();
 		virtual void down ();
+
+	protected:
+		void changePeopleTable (QString name);
+		void changePlanesTable (QString name);
+		void changeFlightsTable (QString name);
+		void changeUsersTable (QString name);
 };
 
 #endif

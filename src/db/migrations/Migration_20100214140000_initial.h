@@ -20,8 +20,14 @@
  *     Note that these migrations will not undo their changes when migrating
  *     down, in order to be consistent on a freshly created (i. e. non-legacy)
  *     database.
+ *     Note that the fixes are the first migrations performed.
  *
  * The differences are:
+ *   - The storage engine will be InnoDB (was MyISAM before)
+ *       - Transparent because no MyISAM specific features were used
+ *       - Different because Database#addTable does not allow specifying the
+ *         storage engine
+ *       - Fixed in 20100215000000
  *   - The towpilot columns will be created (they were optional before).
  *       - Transparent because if the towpilot was not recorded, the towpilot
  *         columns were ignored
@@ -44,11 +50,6 @@
  *       - Different because these data types are more suitable (especially
  *         VARCHAR vs. BLOB)
  *       - Fixed in 20100215221900
- *   - The storage engine will be InnoDB (was MyISAM before)
- *       - Transparent because no MyISAM specific features were used
- *       - Different because Database#addTable does not allow specifying the
- *         storage engine
- *       - Fixed in 20100215225351
  *   - The order of the columns may be different
  *       - Transparent because the column order is not relied on
  *       - Different because it makes more sense that way
