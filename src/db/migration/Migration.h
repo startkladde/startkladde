@@ -8,6 +8,9 @@ class Database;
  * src/db/migrations/. The migration is automatically included into the build
  * and recognized by MigrationFactory.
  *
+ * A new migration class can be created automatically by using the script
+ * script/generate_migration.rb.
+ *
  * Migrations are supposed to be called only through Migrator, which keeps track
  * of which migrations have already been applied
  */

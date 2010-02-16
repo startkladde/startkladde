@@ -1,7 +1,7 @@
 /*
  * Short term plan:
- *   - Add remaining migrations
- *   - Use proper database methods in Database
+ *   - Add remaining migrations (migration.txt, tickets)
+ *   - schema generation
  *   - Test the migrations
  *     - make sure the migrations work
  *     - make sure the old version and current sk_web work with "initial"
@@ -10,8 +10,6 @@
  *     - SQL dump or data file (CSV/YAML)?
  *     - C++ or Ruby?
  *   - Migration: distinguish between "old" and "empty"
- *   - implement migrations from migration.txt
- *   - schema generation
  *   - integrate migration into the gui
  *   - Standardize enum handling: store the database value internally (or use the
  *     numeric value in the database?); and have an "unknown" type (instead of "none")
@@ -44,6 +42,7 @@
  *     must have at least one column
  *   - dbTableName as static constant instead of function
  *   - make sure (using a dump of an old db) that the migration path is OK
+ *   - Use low level methods in ORM methods (better: split class)
  *
  * Medium term plan:
  *   - add some abstraction to the query list generation
@@ -91,8 +90,6 @@
 
 
 // TODO: check if the slow part is the loop; if yes, add ProgressMonitor
-
-// TODO: error when query fails
 
 /*
  * Here's an idea for specifying conditions, or parts thereof:
@@ -225,10 +222,10 @@ QStringList Database::listStrings (QString query)
 QString Database::selectDistinctColumnQuery (QString table, QString column, bool excludeEmpty)
 {
 	// "select distinct column from table"
-	QString query=QString ("select distinct %1 from %2").arg (column, table);
+	QString query=QString ("SELECT DISTINGT %1 FROM %2").arg (column, table);
 
 	// ..." where column!=''"
-	if (excludeEmpty) query+=QString (" where %1!=''").arg (column);
+	if (excludeEmpty) query+=QString (" WHERE %1!=''").arg (column);
 	return query;
 }
 
@@ -240,7 +237,7 @@ QString Database::selectDistinctColumnQuery (QStringList tables, QStringList col
 		foreach (QString column, columns)
 			parts << selectDistinctColumnQuery (table, column, excludeEmpty);
 
-	return parts.join (" union ");
+	return parts.join (" UNION ");
 }
 
 QString Database::selectDistinctColumnQuery (QStringList tables, QString column, bool excludeEmpty)
@@ -406,11 +403,11 @@ template<class T> QList<T> Database::getObjects (QString condition, QList<QVaria
 	QSqlQuery query (db);
 	query.setForwardOnly (true);
 
-	QString queryString=QString ("select %1 from %2")
+	QString queryString=QString ("SELECT %1 FROM %2")
 		.arg (T::selectColumnList (), T::dbTableName ());
 
 	if (!condition.isEmpty ())
-		queryString+=" where "+condition;
+		queryString+=" WHERE "+condition;
 
 	query.prepare (queryString);
 
@@ -424,7 +421,7 @@ template<class T> QList<T> Database::getObjects (QString condition, QList<QVaria
 
 template<class T> int Database::countObjects ()
 {
-	QString q="select count(*) from "+T::dbTableName ();
+	QString q="SELECT COUNT(*) FROM "+T::dbTableName ();
 	QSqlQuery query (q, db);
 
 	query.next ();
@@ -434,7 +431,7 @@ template<class T> int Database::countObjects ()
 template<class T> bool Database::objectExists (db_id id)
 {
 	QSqlQuery query (db);
-	query.prepare ("select count(*) from "+T::dbTableName ()+" where id=?");
+	query.prepare ("SELECT COUNT(*) FROM "+T::dbTableName ()+" WHERE id=?");
 	query.addBindValue (id);
 	executeQuery (query);
 
@@ -445,7 +442,7 @@ template<class T> bool Database::objectExists (db_id id)
 template<class T> T Database::getObject (db_id id)
 {
 	QSqlQuery query (db);
-	query.prepare ("select "+T::selectColumnList ()+" from "+T::dbTableName ()+" where id=?");
+	query.prepare ("SELECT "+T::selectColumnList ()+" FROM "+T::dbTableName ()+" WHERE ID=?");
 	query.addBindValue (id);
 	executeQuery (query);
 
@@ -457,7 +454,7 @@ template<class T> T Database::getObject (db_id id)
 template<class T> int Database::deleteObject (db_id id)
 {
 	QSqlQuery query (db);
-	query.prepare ("delete from "+T::dbTableName ()+" where id=?");
+	query.prepare ("DELETE FROM "+T::dbTableName ()+" WHERE ID=?");
 	query.addBindValue (id);
 	executeQuery (query);
 
@@ -467,7 +464,7 @@ template<class T> int Database::deleteObject (db_id id)
 template<class T> db_id Database::createObject (T &object)
 {
 	QSqlQuery query (db);
-	query.prepare ("insert into "+T::dbTableName ()+" "+T::insertValueList ());
+	query.prepare ("INSERT INTO "+T::dbTableName ()+" "+T::insertValueList ());
 	object.bindValues (query);
 	executeQuery (query);
 
@@ -479,7 +476,7 @@ template<class T> db_id Database::createObject (T &object)
 template<class T> int Database::updateObject (const T &object)
 {
 	QSqlQuery query (db);
-	query.prepare ("update "+T::dbTableName ()+" set "+object.updateValueList ()+" where id=?");
+	query.prepare ("UPDATE "+T::dbTableName ()+" SET "+object.updateValueList ()+" WHERE id=?");
 	object.bindValues (query);
 	query.addBindValue (object.id);
 
@@ -632,7 +629,7 @@ QList<Flight> Database::getPreparedFlights ()
 	// Resolving the flight mode, we get:
 	// !( (local and (started or landed)) or (leaving and started) or (coming and landed) )
 
-	QString condition="!( (mode=? and status&?) or (mode=? and status&?) or (mode=? and status&?) )";
+	QString condition="!( (mode=? AND status&?) OR (mode=? AND status&?) OR (mode=? AND status&?) )";
 	QList<QVariant> conditionValues; conditionValues
 		<< "l" << (Flight::STATUS_STARTED|Flight::STATUS_LANDED)
 		<< "g" << Flight::STATUS_STARTED
@@ -658,7 +655,7 @@ QList<Flight> Database::getFlightsDate (QDate date)
 	QDateTime thisMidnight (date,             QTime (0, 0, 0)); // Start of day
 	QDateTime nextMidnight (date.addDays (1), QTime (0, 0, 0)); // Start of next day
 
-	QString condition="(departure_time>=? and landing_time<?) or (departure_time>=? and landing_time<?)";
+	QString condition="(departure_time>=? AND landing_time<?) OR (departure_time>=? AND landing_time<?)";
 	QList<QVariant> conditionValues; conditionValues
 		<< thisMidnight << nextMidnight
 		<< thisMidnight << nextMidnight
