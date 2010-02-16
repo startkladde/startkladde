@@ -20,7 +20,8 @@
  *     Note that these migrations will not undo their changes when migrating
  *     down, in order to be consistent on a freshly created (i. e. non-legacy)
  *     database.
- *     Note that the fixes are the first migrations performed.
+ *     Note that the fixes are the first migrations performed. This is why we
+ *     don't remove the _temp columns right away.
  *
  * The differences are:
  *   - The storage engine will be InnoDB (was MyISAM before)

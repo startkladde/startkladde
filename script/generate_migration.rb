@@ -3,24 +3,36 @@
 require 'erb'
 
 force=false
+timestamp=nil
 name=""
 
-ARGV.each do |arg|
+args=ARGV.dup
+#ARGV.each do |arg|
+
+while arg=args.shift
 	case arg
-	when "-f", "--force" then force=true
-	when /^-/            then puts "Unknown argument: #{arg}"; exit 1
+	when "-f", "--force"     then force=true
+	when "-t", "--timestamp" then timestamp=args.shift
+	when /^-/                then puts "Unknown argument: #{arg}"; exit 1
 	else name=arg
 	end
 end
 
 if name.empty?
-	puts "Usage: [-f|--force] #{$0} name"
+	puts "Usage: #{$0} [-f|--force] [-t|--timestamp timestamp] name"
 	puts "  name: the name of the migration, without the version"
+	puts "  timestamp: 14 digits; the current time is used if not specified"
 	puts "Example: #{$0} add_towpilot"
 	exit 1
 end
 
-timestamp=Time.now.utc.strftime "%Y%m%d%H%M%S"
+timestamp ||= Time.now.utc.strftime "%Y%m%d%H%M%S"
+
+unless timestamp =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d/
+	puts "Invalid timestamp #{timestamp} - must be 14 digits"
+	exit 1
+end
+
 
 dir="src/db/migrations"
 

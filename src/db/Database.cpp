@@ -262,7 +262,7 @@ bool Database::queryHasResult (QString queryString)
 
 void Database::createTable (QString name)
 {
-	std::cout << QString ("Creating table %1").arg (name);
+	std::cout << QString ("Creating table %1").arg (name) << std::endl;
 
 	QString queryString=QString (
 		"CREATE TABLE %1 ("
@@ -277,7 +277,7 @@ void Database::createTable (QString name)
 
 void Database::createTableLike (QString like, QString name)
 {
-	std::cout << QString ("Creating table %1 like %2").arg (name, like);
+	std::cout << QString ("Creating table %1 like %2").arg (name, like) << std::endl;
 
 	QString queryString=
 		QString ("CREATE TABLE %1 LIKE %2")
@@ -293,6 +293,17 @@ void Database::dropTable (QString name)
 	QString queryString=
 		QString ("DROP TABLE %1")
 		.arg (name);
+
+	executeQuery (queryString);
+}
+
+void Database::renameTable (QString oldName, QString newName)
+{
+	std::cout << QString ("Renaming table %1 to %2").arg (oldName, newName) << std::endl;
+
+	QString queryString=
+		QString ("RENAME TABLE %1 TO %2")
+		.arg (oldName, newName);
 
 	executeQuery (queryString);
 }

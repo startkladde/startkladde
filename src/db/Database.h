@@ -92,6 +92,7 @@ class Database
 		void createTable (QString name);
 		void createTableLike (QString like, QString name);
 		void dropTable (QString name);
+		void renameTable (QString oldName, QString newName);
 		void addColumn (QString table, QString name, QString type, bool skipIfExists=false);
 		void changeColumnType (QString table, QString name, QString type);
 		void dropColumn (QString table, QString name, bool skipIfNotExists=false);

@@ -1,9 +1,7 @@
-  - transfer from ... to ..._temp, then rename ..._temp to ...
-  - rename columns to english
+  - rename tables and columns
   - change 0 time to null?
   - meaning of null values in general
-  - constraints (used person may not be deleted) in database
-  - proper data types (and convert)
+  - constraints (used person may not be deleted) in database?
   - standardize enum types (database enum types?)
   - Flights:
     - landed/... as flag or as time!=null?
@@ -12,16 +10,13 @@
          when effective date stored, updating trouble when mode changed 
     - remove distinction between 1/2 seated training
     - remove column club, editierbar
-  - People:
-    - remove bwlv column
-  - Users:
-    - add id
-  - Launch types:
-    - add launch types
+  - Launch method:
+    - add launch methods
   - Planes
-    - plane table: remove unique constraint from registration
+    - remove unique constraint from plane.registration (and active flag?)
   - ..., see tickets
 
 Later:
-  - towflight as separate flight?
+	- add users.id
+	- towflight as separate flight?
   
