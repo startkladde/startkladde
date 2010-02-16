@@ -698,7 +698,7 @@ int Flight::countFlying (const QList<Flight> flights)
 
 	// TODO this is not correct - prepared coming flights should be counted
 	// here. Note that this means that flights flying may be greater than
-	// flights total - maybe use to "Flugbewegungen"/"Takeoffs/Landings",
+	// flights total - maybe use to "Flugbewegungen"/"Departures/Landings",
 	// "planes departed and/or landed" and "planes to land"
 	foreach (const Flight &flight, flights)
 		if (flight.isFlying ())
@@ -970,17 +970,17 @@ FlightMode Flight::modeFromDb (QString mode)
 	else                return fmNone;
 }
 
-int Flight::typeToDb (FlightType type)
+QString Flight::typeToDb (FlightType type)
 {
 	switch (type)
 	{
-		case ftNone          : return 1;
-		case ftNormal        : return 2;
-		case ftTraining2     : return 3;
-		case ftTraining1     : return 4;
-		case ftTow           : return 7;
-		case ftGuestPrivate  : return 6;
-		case ftGuestExternal : return 8;
+		case ftNone          : return "?";
+		case ftNormal        : return "normal";
+		case ftTraining2     : return "training_2";
+		case ftTraining1     : return "training_1";
+		case ftTow           : return "tow";
+		case ftGuestPrivate  : return "guest_private";
+		case ftGuestExternal : return "guest_external";
 		// no default
 	};
 
@@ -988,16 +988,15 @@ int Flight::typeToDb (FlightType type)
 	return 1;
 }
 
-FlightType Flight::typeFromDb (int type)
+FlightType Flight::typeFromDb (QString type)
 {
-	if      (type==1) return ftNone;
-	else if (type==2) return ftNormal;
-	else if (type==3) return ftTraining2;
-	else if (type==4) return ftTraining1;
-	else if (type==7) return ftTow;
-	else if (type==6) return ftGuestPrivate;
-	else if (type==8) return ftGuestExternal;
-	else              return ftNone;
+	if      (type=="normal"        ) return ftNormal;
+	else if (type=="training_2"    ) return ftTraining2;
+	else if (type=="training_1"    ) return ftTraining1;
+	else if (type=="tow"           ) return ftTow;
+	else if (type=="guest_private" ) return ftGuestPrivate;
+	else if (type=="guest_external") return ftGuestExternal;
+	else                             return ftNone;
 }
 
 // *** Flag accessors

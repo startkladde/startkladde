@@ -6,7 +6,8 @@
 class QString;
 
 /**
- * Changes the plane.category column from a character to a string
+ * Changes the planes.category column from a character to a string and updates
+ * the values
  */
 class Migration_20100216180053_full_plane_category: public Migration
 {

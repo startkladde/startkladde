@@ -182,8 +182,8 @@ class Flight
 		// Enum mappers
 		static QString    modeToDb   (FlightMode mode);
 		static FlightMode modeFromDb (QString    mode);
-		static int        typeToDb   (FlightType type);
-		static FlightType typeFromDb (int        type);
+		static QString    typeToDb   (FlightType type);
+		static FlightType typeFromDb (QString    type);
 		// Flag accessors
 		void setStatus (int status);
 		int getStatus () const;
