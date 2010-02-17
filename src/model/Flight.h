@@ -58,12 +58,6 @@ class Flight
 		enum Mode { modeNone, modeLocal, modeComing, modeLeaving };
 
 
-		// *** Constants
-		static const int STATUS_STARTED;
-		static const int STATUS_LANDED;
-		static const int STATUS_TOWFLIGHT_LANDED;
-
-
 		// *** Construction
 		Flight ();
 		Flight (db_id id); // TODO protected (friend Database)?
@@ -242,9 +236,6 @@ class Flight
 		static Mode       modeFromDb (QString    mode);
 		static QString    typeToDb   (Type       type);
 		static Type       typeFromDb (QString    type);
-		// Flag accessors
-		void setStatus (int status);
-		int getStatus () const;
 
 	private:
 		db_id id;

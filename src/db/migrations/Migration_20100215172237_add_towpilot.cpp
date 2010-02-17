@@ -13,13 +13,13 @@ Migration_20100215172237_add_towpilot::~Migration_20100215172237_add_towpilot ()
 
 void Migration_20100215172237_add_towpilot::up ()
 {
-	database.addColumn ("flug"     , "towpilot", Database::dataTypeId    , true);
-	database.addColumn ("flug"     , "tpvn",     Database::dataTypeString, true);
-	database.addColumn ("flug"     , "tpnn",     Database::dataTypeString, true);
+	database.addColumn ("flug"     , "towpilot", Database::dataTypeId    , "", true);
+	database.addColumn ("flug"     , "tpvn",     Database::dataTypeString, "", true);
+	database.addColumn ("flug"     , "tpnn",     Database::dataTypeString, "", true);
 
-	database.addColumn ("flug_temp", "towpilot", Database::dataTypeId    , true);
-	database.addColumn ("flug_temp", "tpvn",     Database::dataTypeString, true);
-	database.addColumn ("flug_temp", "tpnn",     Database::dataTypeString, true);
+	database.addColumn ("flug_temp", "towpilot", Database::dataTypeId    , "", true);
+	database.addColumn ("flug_temp", "tpvn",     Database::dataTypeString, "", true);
+	database.addColumn ("flug_temp", "tpnn",     Database::dataTypeString, "", true);
 }
 
 void Migration_20100215172237_add_towpilot::down ()

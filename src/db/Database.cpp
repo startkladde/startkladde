@@ -340,7 +340,7 @@ bool Database::tableExists (const QString &name)
 	return queryHasResult (queryString);
 }
 
-void Database::addColumn (const QString &table, const QString &name, const QString &type, bool skipIfExists)
+void Database::addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification, bool skipIfExists)
 {
 	if (skipIfExists && columnExists (table, name))
 	{
@@ -351,8 +351,8 @@ void Database::addColumn (const QString &table, const QString &name, const QStri
 	std::cout << QString ("Adding column %1.%2...").arg (table, name) << std::endl;
 
 	QString queryString=
-		QString ("ALTER TABLE %1 ADD COLUMN %2 %3")
-		.arg (table, name, type);
+		QString ("ALTER TABLE %1 ADD COLUMN %2 %3 %4")
+		.arg (table, name, type, extraSpecification);
 
 	executeQuery (queryString);
 }
@@ -594,11 +594,11 @@ QList<Flight> Database::getPreparedFlights ()
 	// Resolving the flight mode, we get:
 	// !( (local and (started or landed)) or (leaving and started) or (coming and landed) )
 
-	QString condition="!( (mode=? AND status&?) OR (mode=? AND status&?) OR (mode=? AND status&?) )";
+	QString condition="!( (mode=? AND (departed OR landed)) OR (mode=? AND departed) OR (mode=? AND landed) )";
 	QList<QVariant> conditionValues; conditionValues
-		<< Flight::modeToDb (Flight::modeLocal  ) << (Flight::STATUS_STARTED|Flight::STATUS_LANDED)
-		<< Flight::modeToDb (Flight::modeLeaving) << Flight::STATUS_STARTED
-		<< Flight::modeToDb (Flight::modeComing ) << Flight::STATUS_LANDED
+		<< Flight::modeToDb (Flight::modeLocal  )
+		<< Flight::modeToDb (Flight::modeLeaving)
+		<< Flight::modeToDb (Flight::modeComing )
 		;
 
 	return getObjects<Flight> (condition, conditionValues);

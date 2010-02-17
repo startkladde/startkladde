@@ -99,7 +99,7 @@ class Database
 		void renameTable (const QString &oldName, const QString &newName);
 		bool tableExists (const QString &name);
 
-		void addColumn (const QString &table, const QString &name, const QString &type, bool skipIfExists=false);
+		void addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="", bool skipIfExists=false);
 		void changeColumnType (const QString &table, const QString &name, const QString &type);
 		void dropColumn (const QString &table, const QString &name, bool skipIfNotExists=false);
 		void renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type);
