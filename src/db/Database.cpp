@@ -596,9 +596,9 @@ QList<Flight> Database::getPreparedFlights ()
 
 	QString condition="!( (mode=? AND status&?) OR (mode=? AND status&?) OR (mode=? AND status&?) )";
 	QList<QVariant> conditionValues; conditionValues
-		<< Flight::modeToDb (fmLocal)   << (Flight::STATUS_STARTED|Flight::STATUS_LANDED)
-		<< Flight::modeToDb (fmLeaving) << Flight::STATUS_STARTED
-		<< Flight::modeToDb (fmComing)  << Flight::STATUS_LANDED
+		<< Flight::modeToDb (Flight::modeLocal  ) << (Flight::STATUS_STARTED|Flight::STATUS_LANDED)
+		<< Flight::modeToDb (Flight::modeLeaving) << Flight::STATUS_STARTED
+		<< Flight::modeToDb (Flight::modeComing ) << Flight::STATUS_LANDED
 		;
 
 	return getObjects<Flight> (condition, conditionValues);

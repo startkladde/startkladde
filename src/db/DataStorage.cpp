@@ -843,7 +843,7 @@ template<> void DataStorage::objectAdded<Flight> (const Flight &flight)
 {
 	QMutexLocker lock (&dataMutex);
 
-	if (flight.vorbereitet ())
+	if (flight.isPrepared ())
 		preparedFlights.append (flight);
 	else if (flight.effdatum ()==todayDate)
 		flightsToday.append (flight);
@@ -873,7 +873,7 @@ template<> void DataStorage::objectUpdated<Flight> (const Flight &flight)
 
 	// Determine which list the flight should be in (or none). Replace it if
 	// it already exists, add it if not, and remove it from the other lists.
-	if (flight.vorbereitet ())
+	if (flight.isPrepared ())
 	{
 		preparedFlights.replaceOrAdd (flight.getId (), flight);
 		flightsToday.removeById (flight.getId ());
@@ -970,8 +970,8 @@ db_id DataStorage::planeFlying (db_id id)
 	// Only use the flights of today
 	foreach (const Flight &flight, flightsToday.getList ())
 		if (
-			(flight.isFlying         () && flight.plane==id) ||
-			(flight.isTowplaneFlying () && flight.towplane==id))
+			(flight.isFlying         () && flight.planeId==id) ||
+			(flight.isTowplaneFlying () && flight.towplaneId==id))
 			return flight.getId ();
 
 	return invalid_id;
@@ -983,9 +983,9 @@ db_id DataStorage::personFlying (db_id id)
 	// Only use the flights of today
 	foreach (const Flight &flight, flightsToday.getList ())
 		if (
-			(flight.isFlying         () && flight.pilot    ==id) ||
-			(flight.isFlying         () && flight.copilot==id) ||
-			(flight.isTowplaneFlying () && flight.towpilot ==id))
+			(flight.isFlying         () && flight.pilotId    ==id) ||
+			(flight.isFlying         () && flight.copilotId==id) ||
+			(flight.isTowplaneFlying () && flight.towpilotId ==id))
 			return flight.getId ();
 
 	return invalid_id;

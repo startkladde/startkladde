@@ -6,7 +6,6 @@
 
 #include "src/db/DataStorage.h"
 
-
 // TODO Vereinheitlichen der Statusfunktionen untereinander und mit den
 // condition-strings
 // TODO Errors in other places: for towflights, the landing time is meaningful
@@ -20,9 +19,11 @@
  *   - store the towplane ID or the registration?
  */
 
-/**
-  * Constructs an Flight instance with empty values.
-  */
+
+// ******************
+// ** Construction **
+// ******************
+
 Flight::Flight ()
 {
 	initialize (invalid_id);
@@ -37,70 +38,104 @@ void Flight::initialize (db_id id)
 {
 	this->id=id;
 
-	plane         =invalid_id;
-	numLandings   =invalid_id;
-	pilot         =invalid_id;
-	copilot       =invalid_id;
-	towpilot      =invalid_id;
-	launchMethod  =invalid_id;
-	towplane      =invalid_id;
+	planeId         =invalid_id;
+	numLandings     =invalid_id;
+	pilotId         =invalid_id;
+	copilotId       =invalid_id;
+	towpilotId      =invalid_id;
+	launchMethodId  =invalid_id;
+	towplaneId      =invalid_id;
 
-	flightType=ftNone;
-	mode          =fmNone;
-	modeTowflight =fmNone;
+	type          =typeNone;
+	mode          =modeNone;
+	towflightMode =modeNone;
 
-	started         =false;
+	departed        =false;
 	landed          =false;
 	towflightLanded =false;
 }
 
+
+// ****************
+// ** Comparison **
+// ****************
+
+bool Flight::operator< (const Flight &o) const
+{
+	return sort (&o)<0;
+}
+
 /**
- * Deprecated in favor of isFlying
+ * Compares the flight with another flight.
  *
- * @return
+ * @return >0 if this flight is later, <0 if this flight is earlier
  */
-bool Flight::fliegt () const
-	/*
-	 * Determines whether a flight has landed.
-	 * Return value:
-	 *   - true if the flight is flying
-	 *   - false else.
-	 */
+int Flight::sort (const Flight *other) const
 {
-	return happened () && !finished ();
+	// Both prepared
+	if (isPrepared () && other->isPrepared  ())
+	{
+		// Incoming prepared before local launching prepared
+		if (departsHere () && !other->departsHere ()) return 1;
+		if (!departsHere () && other->departsHere ()) return -1;
+
+		// Flights are equal
+		return 0;
+	}
+
+	// Prepared flights to the end
+	if (isPrepared ()) return 1;
+	if (other->isPrepared ()) return -1;
+
+	// Sort by effective time
+	Time t1=effectiveTime ();
+	Time t2=other->effectiveTime ();
+	if (t1>t2) return 1;
+	if (t1<t2) return -1;
+	return 0;
 }
 
-bool Flight::sfz_fliegt () const
-	/*
-	 * Determine if the towplane is flying.
-	 * Return value:
-	 *   - true if the towplane is flying.
-	 *   - false else.
-	 */
+
+// ************
+// ** Status **
+// ************
+
+int Flight::countFlying (const QList<Flight> flights)
 {
-	return happened () && !towflightLanded;
+	// TODO move to FlightList (to be created)
+	int result=0;
+
+	// TODO this is not correct - prepared coming flights should be counted
+	// here. Note that this means that flights flying may be greater than
+	// flights total - maybe use to "Flugbewegungen"/"Departures/Landings",
+	// "planes departed and/or landed" and "planes to land"
+	foreach (const Flight &flight, flights)
+		if (flight.isFlying ())
+			++result;
+
+	return result;
 }
 
-bool Flight::vorbereitet () const
-	/*
-	 * Check if the flight is prepared.
-	 * Return value:
-	 *   - true if the flight is prepared.
-	 *   - false else.
-	 */
+int Flight::countHappened (const QList<Flight> flights)
 {
-	return !happened ();
+	// TODO move to FlightList (to be created)
+	int result=0;
+
+	foreach (const Flight &flight, flights)
+		if (flight.happened ())
+			++result;
+
+	return result;
 }
 
 /**
  * Whether the flight either departed or landed; it need not have finished.
- * @return
  */
 // TODO: guarantee that any flight for which this is not true has an effectiveDate
 bool Flight::happened () const
 {
-	if (starts_here (mode) && started) return true;
-	if (lands_here (mode) && landed) return true;
+	if (departsHere () && departed) return true;
+	if (landsHere () && landed) return true;
 	return false;
 }
 
@@ -110,58 +145,276 @@ bool Flight::finished () const
 		// For leaving towflights, landed means ended.
 		return landed;
 	else
-		return (lands_here (mode)?landed:started);
+		return (landsHere ()?landed:departed);
+}
+
+
+// **********
+// ** Crew **
+// **********
+
+QString Flight::pilotDescription () const
+{
+	return typePilotDescription (type);
+}
+
+QString Flight::copilotDescription () const
+{
+	return typeCopilotDescription (type);
+}
+
+QString Flight::incompletePilotName () const
+{
+	return incompletePersonName (pilotLastName, pilotFirstName);
+}
+
+QString Flight::incompleteCopilotName () const
+{
+	return incompletePersonName (copilotLastName, copilotFirstName);
+}
+
+QString Flight::incompleteTowpilotName () const
+	/*
+	 * Makes the incomplete name of the towpilot.
+	 * Return value:
+	 *   - the name.
+	 */
+{
+	return incompletePersonName (towpilotLastName, towpilotFirstName);
+}
+
+QString Flight::incompletePersonName (QString nn, QString vn) const
+	/*
+	 * Makes the incomplete name of a person.
+	 * Parameters:
+	 *   - nn: the last name.
+	 *   - vn: the first name.
+	 * Return value:
+	 *   - the formatted name.
+	 */
+{
+	if (eintrag_ist_leer (nn) && eintrag_ist_leer (vn)) return ("-");
+	else if (eintrag_ist_leer (nn)) return QString ("(???, %1)").arg (vn);
+	else if (eintrag_ist_leer (vn)) return QString ("(%1, %2)").arg (nn).arg ("???"); // ??) would be a trigraph
+	else                            return QString ("%1, %2").arg (nn).arg (vn);
+}
+
+
+// ***********************
+// ** Departure/landing **
+// ***********************
+
+#define notPossibleIf(condition, reasonText) do { if (condition) { if (reason) *reason=reasonText; return false; } } while (0)
+
+bool Flight::canDepart (QString *reason) const
+{
+	// TODO only for flights of today
+
+	// Already landed
+	notPossibleIf (landsHere () && landed, "Der Flug ist bereits gelandet");
+
+	// Does not start here
+	notPossibleIf (!departsHere (), "Der Flug startet nicht hier.");
+
+	// Already started
+	notPossibleIf (departed, "Der Flug ist bereits gestartet.");
+
+	return true;
+}
+
+bool Flight::canLand (QString *reason) const
+{
+	// TODO only for flights of today
+
+	// Already landed
+	notPossibleIf (landed, "Der Flug ist bereits gelandet.");
+
+	// Does not land here (only applies to non-towflights)
+	notPossibleIf (!isTowflight () && !landsHere (), "Der Flug landet nicht hier.");
+
+	// Must start first
+	notPossibleIf (departsHere () && !departed, "Der Flug ist noch nicht gestartet.");
+
+	return true;
+}
+
+bool Flight::canTouchngo (QString *reason) const
+{
+	// TODO only for flights of today
+
+	// Towflight
+	notPossibleIf (isTowflight (), "Der Flug ist ein Schleppflug");
+
+	// Already landed
+	notPossibleIf (landed, "Der Flug ist bereits gelandet.");
+
+	// Must start first
+	notPossibleIf (departsHere () && !departed, "Der Flug ist noch nicht gestartet.");
+
+	return true;
+}
+
+bool Flight::canTowflightLand (QString *reason) const
+{
+	// Already landed
+	notPossibleIf (towflightLanded, "Der Schleppflug ist bereits gelandet.");
+
+	// Must start first
+	notPossibleIf (departsHere () && !departed, "Der Flug ist noch nicht gestartet.");
+
+	return true;
+}
+
+#undef notPossibleIf
+
+bool Flight::departNow (bool force)
+{
+	if (force || canDepart ())
+	{
+		departureTime.set_current (true);
+		departed=true;
+		return true;
+	}
+
+	return false;
+}
+
+bool Flight::landNow (bool force)
+{
+	if (force || canLand ())
+	{
+		landingTime.set_current (true);
+		numLandings++;
+		landed=true;
+
+		if (eintrag_ist_leer (landingLocation))
+			landingLocation=opts.ort;
+
+		return true;
+	}
+
+	return false;
+}
+
+bool Flight::landTowflightNow (bool force)
+{
+	if (force || canTowflightLand ())
+	{
+		towflightLandingTime.set_current (true);
+		towflightLanded=true;
+		if (towflightLandsHere () && eintrag_ist_leer (towflightLandingLocation)) towflightLandingLocation=opts.ort;
+		return true;
+	}
+
+	return false;
+}
+
+bool Flight::performTouchngo (bool force)
+{
+	if (force || canTouchngo ())
+	{
+		numLandings++;
+		return true;
+	}
+
+	return false;
+}
+
+
+// ***********
+// ** Times **
+// ***********
+
+QDate Flight::effdatum (time_zone tz) const
+{
+        return effectiveTime ().get_qdate (tz);
+}
+
+QDate Flight::getEffectiveDate (time_zone tz, QDate defaultDate) const
+{
+	// TODO this assumes that every flight at least starts or lands here.
+	if (departsHere () && departed)
+		return departureTime.get_qdate (tz);
+
+	if (landsHere () && landed)
+		return landingTime.get_qdate (tz);
+
+	return defaultDate;
+}
+
+Time Flight::effectiveTime () const
+{
+	// TODO this assumes that every flight at least starts or lands here.
+	if (departsHere () && departed) return departureTime;
+	if (landsHere () && landed) return landingTime;
+	return Time ();
 }
 
 Time Flight::flightDuration () const
-	/*
-	 * Calculate the flight time of the flight.
-	 * Return value:
-	 *   - the flight time.
-	 */
 {
 	Time t;
-	if (started && landed)
-		t.set_to (launchTime.secs_to (&landingTime));
+	if (departed && landed)
+		t.set_to (departureTime.secs_to (&landingTime));
 	else
 	{
 		Time now;
 		now.set_current(true);
-		t.set_to (launchTime.secs_to (&now));
+		t.set_to (departureTime.secs_to (&now));
 	}
 
 	return t;
 }
 
 Time Flight::towflightDuration () const
-	/*
-	 * Calculate the flight time of the towflight
-	 * Return value:
-	 *   - the flight time.
-	 */
 {
 	Time t;
-	if (started && towflightLanded)
-		t.set_to (launchTime.secs_to (&landingTimeTowflight));
+	if (departed && towflightLanded)
+		t.set_to (departureTime.secs_to (&towflightLandingTime));
 	else
 	{
 		Time now;
 		now.set_current(true);
-		t.set_to (launchTime.secs_to (&now));
+		t.set_to (departureTime.secs_to (&now));
 	}
 
 	return t;
 }
 
+
+// ********************
+// ** Error checking **
+// ********************
+
+/**
+ * This uses fehlerhaft, does not consider schlepp_fehlerhaft
+ *
+ * @param dataStorage
+ * @return
+ */
+bool Flight::isErroneous (DataStorage &dataStorage) const
+{
+	Plane *thePlane=dataStorage.getNewObject<Plane> (planeId);
+	LaunchMethod *theLaunchMethod=dataStorage.getNewObject<LaunchMethod> (launchMethodId);
+
+	bool erroneous=fehlerhaft (thePlane, NULL, theLaunchMethod);
+
+	delete thePlane;
+	delete theLaunchMethod;
+
+	return erroneous;
+}
+
+/**
+ * Determines whether the flight is erroneous
+ *
+ * @param fz the plane, if known, or NULL
+ * @param sfz the towplane, if any and known, or NULL
+ * @param sa the launch method, if known, or NULL
+ * @param errorText a description of the errors is written here if there is an
+ *                  error
+ * @return true if there is an error, false else
+ */
 bool Flight::fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText) const
-	/*
-	 * Finds out if the flight contains an error.
-	 * Parameters:
-	 *   - fz: the plane data structure for the flight.
-	 * Return value:
-	 *   - true if any error was found
-	 *   - false else.
-	 */
 {
 	int i=0;
 	FlightError error=errorCheck (&i, true, false, fz, sfz, sa);
@@ -195,13 +448,6 @@ bool Flight::schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QStrin
 }
 
 QString Flight::errorDescription (FlightError code) const
-	/*
-	 * Makes a text describing a flight error.
-	 * Parameters:
-	 *   code: an error code.
-	 * Return value:
-	 *   the description.
-	 */
 {
 	switch (code)
 	{
@@ -210,18 +456,18 @@ QString Flight::errorDescription (FlightError code) const
 		case ff_keine_id: return QString::fromUtf8 ("Flug hat keine ID");
 		case ff_kein_flugzeug: return QString::fromUtf8 ("Kein Flugzeug angegeben");
 		// TODO use person_bezeichnung (flightType) (oder wie die heißt) here
-		case ff_pilot_nur_nachname: return QString::fromUtf8 ("Für den "+QString (flightType==ftTraining2?"Flugschüler":"Piloten")+" ist nur ein Nachname angegeben");
-		case ff_pilot_nur_vorname: return  "Für den "+QString (flightType==ftTraining2?"Flugschüler":"Piloten")+" ist nur ein Vorname angegeben";
-		case ff_pilot_nicht_identifiziert: return  "Der "+QString (flightType==ftTraining2?"Flugschüler":"Pilot")+" ist nicht identifiziert";
-		case ff_begleiter_nur_nachname: return QString::fromUtf8 ("Für den "+QString (flightType==ftTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben");
-		case ff_begleiter_nur_vorname: return  "Für den "+QString (flightType==ftTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
-		case ff_begleiter_nicht_identifiziert: return  "Der "+QString (flightType==ftTraining2?"Fluglehrer":"Begleiter")+" ist nicht identifiziert";
+		case ff_pilot_nur_nachname: return QString::fromUtf8 ("Für den "+QString (type==typeTraining2?"Flugschüler":"Piloten")+" ist nur ein Nachname angegeben");
+		case ff_pilot_nur_vorname: return  "Für den "+QString (type==typeTraining2?"Flugschüler":"Piloten")+" ist nur ein Vorname angegeben";
+		case ff_pilot_nicht_identifiziert: return  "Der "+QString (type==typeTraining2?"Flugschüler":"Pilot")+" ist nicht identifiziert";
+		case ff_begleiter_nur_nachname: return QString::fromUtf8 ("Für den "+QString (type==typeTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben");
+		case ff_begleiter_nur_vorname: return  "Für den "+QString (type==typeTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
+		case ff_begleiter_nicht_identifiziert: return  "Der "+QString (type==typeTraining2?"Fluglehrer":"Begleiter")+" ist nicht identifiziert";
 		case ff_towpilot_nur_nachname: return QString::fromUtf8 ("Für den Schleppiloten ist nur ein Nachname angegeben");
 		case ff_towpilot_nur_vorname: return  "Für den Schleppiloten ist nur ein Vorname angegeben";
 		case ff_towpilot_nicht_identifiziert: return  "Der Schleppilot ist nicht identifiziert";
-		case ff_kein_pilot: return QString::fromUtf8 ("Kein "+QString (flightType==ftTraining2 || flightType==ftTraining1?"Flugschüler":"Pilot")+" angegeben");
-		case ff_pilot_gleich_begleiter: return QString (flightType==ftTraining2?"Flugschüler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
-		case ff_pilot_gleich_towpilot: return QString (flightType==ftTraining2?"Flugschüler":"Pilot")+" und Schlepppilot sind identisch";
+		case ff_kein_pilot: return QString::fromUtf8 ("Kein "+QString (type==typeTraining2 || type==typeTraining1?"Flugschüler":"Pilot")+" angegeben");
+		case ff_pilot_gleich_begleiter: return QString (type==typeTraining2?"Flugschüler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
+		case ff_pilot_gleich_towpilot: return QString (type==typeTraining2?"Flugschüler":"Pilot")+" und Schlepppilot sind identisch";
 		case ff_schulung_ohne_begleiter: return QString::fromUtf8 ("Doppelsitzige Schulung ohne Fluglehrer");
 		case ff_begleiter_nicht_erlaubt: return QString::fromUtf8 ("Begleiter ist nicht erlaubt");
 		case ff_nur_gelandet: return QString::fromUtf8 ("Flug ist gelandet, aber nicht gestartet");
@@ -253,26 +499,29 @@ QString Flight::errorDescription (FlightError code) const
 	return "Unbekannter Fehler";
 }
 
+/**
+ * Performes the unified error checking.
+ *
+ * Usage of this function:
+ *   - set *index=0.
+ *   - call in loop until return value is ff_ok.
+ *   - each call returns an error of ff_ok.
+ *   - don't change the data in the middle or the results *may* be invalid.
+ *   - you can stop the loop at any time.
+ *   - the function is reentrant, provided you use different '*index'es.
+ *   - you shouldn't use the value of the index variable, it is internal.
+ *   - you should not set index to anything but 0 manually or the result is
+ *     undefined.
+ *
+ * @param index the index of the first error to check
+ * @param check_flug whether to theck the flight proper
+ * @param check_schlepp whether to check the towflight
+ * @param fz the plane, if known, or NULL
+ * @param sfz the towplane, if any and known, or NULL
+ * @param sa the launch method, if any and known, or nULL
+ * @return an error code, or ff_ok
+ */
 FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *sa) const
-	/*
-	 * Does the unified error checking.
-	 * Usage of this function:
-	 *   - set *index=0.
-	 *   - call in loop until return value is ff_ok.
-	 *   - each call returns an error of ff_ok.
-	 *   - don't change the data in the middle or the results *may* be invalid.
-	 *   - you can stop the loop at any time.
-	 *   - the function is reentrant, provided you use different '*index'es.
-	 *   - you shouldn't use the value of the index variable, it is internal.
-	 *   - you should not set index to anything but 0 manually or the result is
-	 *     undefined.
-	 * Parameters:
-	 *   - index: the index of the first error to check.
-	 *   - check_flug: wheter to check the actual flight
-	 *   - check_schlepp: whether to check the tow flight
-	 * Return value:
-	 *   - error code, or ff_ok, if no more error is found.
-	 */
 {
 	// TODO return a QList instead
 	// TODO check_schlepp not used. Investigate.
@@ -287,42 +536,42 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	// specified to this list, FlightWindow::updateErrors should check if
 	// this is a non-error (see there for an explanation).
 	CHECK_FEHLER (FLUG, id_invalid (id), ff_keine_id)
-	CHECK_FEHLER (FLUG, id_invalid (plane), ff_kein_flugzeug)
-	CHECK_FEHLER (FLUG, sa && sa->personRequired && id_invalid (pilot) && pvn.isEmpty () && pnn.isEmpty (), ff_kein_pilot)
-	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pvn.isEmpty () && pnn.isEmpty (), ff_pilot_nur_vorname);
-	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pnn.isEmpty () && pvn.isEmpty (), ff_pilot_nur_nachname);
-	CHECK_FEHLER (FLUG, id_invalid (pilot) && !pnn.isEmpty () && !pvn.isEmpty (), ff_pilot_nicht_identifiziert);
-	CHECK_FEHLER (FLUG, flightTypeCopilotRecorded (flightType) && id_invalid (copilot) && !bvn.isEmpty () && bnn.isEmpty (), ff_begleiter_nur_vorname);
-	CHECK_FEHLER (FLUG, flightTypeCopilotRecorded (flightType) && id_invalid (copilot) && !bnn.isEmpty () && bvn.isEmpty (), ff_begleiter_nur_nachname);
-	CHECK_FEHLER (FLUG, flightTypeCopilotRecorded (flightType) && id_invalid (copilot) && !bnn.isEmpty () && !bvn.isEmpty (), ff_begleiter_nicht_identifiziert);
-	CHECK_FEHLER (FLUG, flightTypeCopilotRecorded (flightType) && pilot!=0 && pilot==copilot, ff_pilot_gleich_begleiter)
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilot) && !tpvn.isEmpty () && tpnn.isEmpty (), ff_towpilot_nur_vorname);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilot) && !tpnn.isEmpty () && tpvn.isEmpty (), ff_towpilot_nur_nachname);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilot) && !tpnn.isEmpty () && !tpvn.isEmpty (), ff_towpilot_nicht_identifiziert);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && towpilot!=0 && pilot==towpilot, ff_pilot_gleich_towpilot)
-	CHECK_FEHLER (FLUG, id_invalid (copilot) && (flightType==ftTraining2) && bnn.isEmpty () && bvn.isEmpty (), ff_schulung_ohne_begleiter)
+	CHECK_FEHLER (FLUG, id_invalid (planeId), ff_kein_flugzeug)
+	CHECK_FEHLER (FLUG, sa && sa->personRequired && id_invalid (pilotId) && pilotFirstName.isEmpty () && pilotLastName.isEmpty (), ff_kein_pilot)
+	CHECK_FEHLER (FLUG, id_invalid (pilotId) && !pilotFirstName.isEmpty () && pilotLastName.isEmpty (), ff_pilot_nur_vorname);
+	CHECK_FEHLER (FLUG, id_invalid (pilotId) && !pilotLastName.isEmpty () && pilotFirstName.isEmpty (), ff_pilot_nur_nachname);
+	CHECK_FEHLER (FLUG, id_invalid (pilotId) && !pilotLastName.isEmpty () && !pilotFirstName.isEmpty (), ff_pilot_nicht_identifiziert);
+	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && id_invalid (copilotId) && !copilotFirstName.isEmpty () && copilotLastName.isEmpty (), ff_begleiter_nur_vorname);
+	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && id_invalid (copilotId) && !copilotLastName.isEmpty () && copilotFirstName.isEmpty (), ff_begleiter_nur_nachname);
+	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && id_invalid (copilotId) && !copilotLastName.isEmpty () && !copilotFirstName.isEmpty (), ff_begleiter_nicht_identifiziert);
+	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && pilotId!=0 && pilotId==copilotId, ff_pilot_gleich_begleiter)
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilotId) && !towpilotFirstName.isEmpty () && towpilotLastName.isEmpty (), ff_towpilot_nur_vorname);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilotId) && !towpilotLastName.isEmpty () && towpilotFirstName.isEmpty (), ff_towpilot_nur_nachname);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilotId) && !towpilotLastName.isEmpty () && !towpilotFirstName.isEmpty (), ff_towpilot_nicht_identifiziert);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && towpilotId!=0 && pilotId==towpilotId, ff_pilot_gleich_towpilot)
+	CHECK_FEHLER (FLUG, id_invalid (copilotId) && (type==typeTraining2) && copilotLastName.isEmpty () && copilotFirstName.isEmpty (), ff_schulung_ohne_begleiter)
 	// TODO einsitzige Schulung mit Begleiter
-	CHECK_FEHLER (FLUG, copilot!=0 && !flightTypeCopilotRecorded (flightType), ff_begleiter_nicht_erlaubt)
-	CHECK_FEHLER (FLUG, starts_here (mode) && lands_here (mode) && landed && !started, ff_nur_gelandet)
-	CHECK_FEHLER (FLUG, starts_here (mode) && lands_here (mode) && started && landed && launchTime>landingTime, ff_landung_vor_start)
-	CHECK_FEHLER (FLUG, id_invalid (launchMethod) && started && starts_here (mode), ff_keine_startart)
-	CHECK_FEHLER (FLUG, mode==fmNone, ff_kein_modus)
-	CHECK_FEHLER (FLUG, flightType==ftNone, ff_kein_flugtyp)
+	CHECK_FEHLER (FLUG, copilotId!=0 && !typeCopilotRecorded (type), ff_begleiter_nicht_erlaubt)
+	CHECK_FEHLER (FLUG, departsHere () && landsHere () && landed && !departed, ff_nur_gelandet)
+	CHECK_FEHLER (FLUG, departsHere () && landsHere () && departed && landed && departureTime>landingTime, ff_landung_vor_start)
+	CHECK_FEHLER (FLUG, id_invalid (launchMethodId) && departed && departsHere (), ff_keine_startart)
+	CHECK_FEHLER (FLUG, mode==modeNone, ff_kein_modus)
+	CHECK_FEHLER (FLUG, type==typeNone, ff_kein_flugtyp)
 	CHECK_FEHLER (FLUG, numLandings<0, ff_landungen_negativ)
-	CHECK_FEHLER (FLUG, lands_here (mode) && numLandings==0 && landed, ff_landungen_null)
-	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && flightType==ftTraining2, ff_doppelsitzige_schulung_in_einsitzer)
-	CHECK_FEHLER (FLUG, (started || !starts_here (mode)) && eintrag_ist_leer (departureAirfield), ff_kein_startort)
-	CHECK_FEHLER (FLUG, (landed || !lands_here (mode)) && eintrag_ist_leer (destinationAirfield), ff_kein_zielort)
-	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow() && (towflightLanded || !lands_here (modeTowflight)) && eintrag_ist_leer (destinationAirfieldTowplane), ff_kein_zielort_sfz)
+	CHECK_FEHLER (FLUG, landsHere () && numLandings==0 && landed, ff_landungen_null)
+	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && type==typeTraining2, ff_doppelsitzige_schulung_in_einsitzer)
+	CHECK_FEHLER (FLUG, (departed || !departsHere ()) && eintrag_ist_leer (departureLocation), ff_kein_startort)
+	CHECK_FEHLER (FLUG, (landed || !landsHere ()) && eintrag_ist_leer (landingLocation), ff_kein_zielort)
+	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow() && (towflightLanded || !towflightLandsHere ()) && eintrag_ist_leer (towflightLandingLocation), ff_kein_zielort_sfz)
 	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && numLandings>1 && sa && !sa->isAirtow (), ff_segelflugzeug_landungen)
 	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && !landed && numLandings>0 && sa && !sa->isAirtow (), ff_segelflugzeug_landungen_ohne_landung)
-	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && flightTypeCopilotRecorded (flightType) && copilot!=0, ff_begleiter_in_einsitzer)
-	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && flightType==ftGuestPrivate, ff_gastflug_in_einsitzer)
-	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && flightType==ftGuestExternal, ff_gastflug_in_einsitzer)
+	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && typeCopilotRecorded (type) && copilotId!=0, ff_begleiter_in_einsitzer)
+	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && type==typeGuestPrivate, ff_gastflug_in_einsitzer)
+	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && type==typeGuestExternal, ff_gastflug_in_einsitzer)
 	//CHECK_FEHLER (FLUG, fz && fz->category==categoryGlider && sa && launchMethod==sa_ss, ff_segelflugzeug_selbststart)
-	CHECK_FEHLER (FLUG, starts_here (mode) && numLandings>0 && !started, ff_landungen_ohne_start)
-	CHECK_FEHLER (FLUG, starts_here (mode)!=lands_here (mode) && departureAirfield==destinationAirfield, ff_startort_gleich_zielort)
-	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow () && !sa->towplaneKnown () && id_invalid (towplane), ff_kein_schleppflugzeug)
+	CHECK_FEHLER (FLUG, departsHere () && numLandings>0 && !departed, ff_landungen_ohne_start)
+	CHECK_FEHLER (FLUG, departsHere ()!=landsHere () && departureLocation==landingLocation, ff_startort_gleich_zielort)
+	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow () && !sa->towplaneKnown () && id_invalid (towplaneId), ff_kein_schleppflugzeug)
 	CHECK_FEHLER (SCHLEPP, sa && sfz && sa->isAirtow () && !sa->towplaneKnown () && sfz->category==Plane::categoryGlider, ff_towplane_is_glider);
 
 	return ff_ok;
@@ -332,244 +581,9 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 }
 
 
-bool Flight::startNow (bool force)
-{
-	if (force || canStart ())
-	{
-		launchTime.set_current (true);
-		started=true;
-		return true;
-	}
-
-	return false;
-}
-
-bool Flight::landNow (bool force)
-{
-	if (force || canLand ())
-	{
-		landingTime.set_current (true);
-		numLandings++;
-		landed=true;
-
-		if (eintrag_ist_leer (destinationAirfield))
-			destinationAirfield=opts.ort;
-
-		return true;
-	}
-
-	return false;
-}
-
-bool Flight::landTowflightNow (bool force)
-{
-	if (force || canTowflightLand ())
-	{
-		landingTimeTowflight.set_current (true);
-		towflightLanded=true;
-		if (lands_here (modeTowflight) && eintrag_ist_leer (destinationAirfieldTowplane)) destinationAirfieldTowplane=opts.ort;
-		return true;
-	}
-
-	return false;
-}
-
-bool Flight::performTouchngo (bool force)
-{
-	if (force || canTouchngo ())
-	{
-		numLandings++;
-		return true;
-	}
-
-	return false;
-}
-
-
-
-// TODO remove
-QString Flight::typeString (lengthSpecification lenspec) const
-	/*
-	 * Generates a QString describing the type of the flight.
-	 * Parameters:
-	 *   - lenspec: the length to generate.
-	 * Return value:
-	 *   - the description.
-	 */
-{
-	return flightTypeText (flightType, lenspec);
-}
-
-
-
-Time Flight::effectiveTime () const
-{
-	// TODO this assumes that every flight at least starts or lands here.
-	if (starts_here (mode) && started) return launchTime;
-	if (lands_here (mode) && landed) return landingTime;
-	return Time ();
-}
-
-
-
-QString Flight::pilotDescription () const
-	/*
-	 * Return a description for the pilot.
-	 * Return value:
-	 *   - the description.
-	 */
-{
-	return t_pilot_bezeichnung (flightType);
-}
-
-QString Flight::copilotDescription () const
-	/*
-	 * Return a description for the copilot.
-	 * Return value:
-	 *   - the description.
-	 */
-{
-	return t_begleiter_bezeichnung (flightType);
-}
-
-
-QString Flight::incompletePilotName () const
-	/*
-	 * Makes the incomplete name of the pilot.
-	 * Return value:
-	 *   - the name.
-	 */
-{
-	return incompletePersonName (pnn, pvn);
-}
-
-QString Flight::incompleteCopilotName () const
-	/*
-	 * Makes the incomplete name of the copilot.
-	 * Return value:
-	 *   - the name.
-	 */
-{
-	return incompletePersonName (bnn, bvn);
-}
-
-QString Flight::incompleteTowpilotName () const
-	/*
-	 * Makes the incomplete name of the towpilot.
-	 * Return value:
-	 *   - the name.
-	 */
-{
-	return incompletePersonName (tpnn, tpvn);
-}
-
-QString Flight::incompletePersonName (QString nn, QString vn) const
-	/*
-	 * Makes the incomplete name of a person.
-	 * Parameters:
-	 *   - nn: the last name.
-	 *   - vn: the first name.
-	 * Return value:
-	 *   - the formatted name.
-	 */
-{
-	if (eintrag_ist_leer (nn) && eintrag_ist_leer (vn)) return ("-");
-	else if (eintrag_ist_leer (nn)) return QString ("(???, %1)").arg (vn);
-	else if (eintrag_ist_leer (vn)) return QString ("(%1, %2)").arg (nn).arg ("???"); // ??) would be a trigraph
-	else                            return QString ("%1, %2").arg (nn).arg (vn);
-}
-
-
-
-bool Flight::flight_lands_here () const
-{
-	return lands_here (mode);
-}
-
-bool Flight::flight_starts_here () const
-{
-	return starts_here (mode);
-}
-
-
-Flight Flight::makeTowflight (db_id towplaneId, db_id towLaunchMethod) const
-{
-	Flight towflight;
-
-	// The tow flight gets the same ID because there would be no way to get
-	// the ID for a given tow flight. The tow flight can be distinguished
-	// from the real flight by the flight type (by calling isTowflight ()).
-	towflight.id=id;
-
-	// Always use the towplane ID passed by the caller, even if it is invalid -
-	// this means that the towplane specified in the launch method was not found.
-	towflight.plane=towplaneId;
-
-	// The towflight's pilot is our towpilot and there is not copilot and
-	// towpilot
-	towflight.pilot=towpilot;
-	towflight.copilot=invalid_id;
-	towflight.towpilot=invalid_id;
-
-	towflight.launchTime=launchTime;							// The tow flight started the same time as the towed flight.
-	towflight.landingTime=landingTimeTowflight;			// The tow flight landing time is our landingTimeTowflight.
-	towflight.landingTimeTowflight=Time (); 			// The tow flight has no tow flight.
-
-	// The launchMethod of the tow flight is given as a parameter.
-	towflight.launchMethod=towLaunchMethod;
-
-	towflight.flightType=ftTow;
-	towflight.departureAirfield=departureAirfield;							// The tow flight started the same place as the towed flight.
-	towflight.destinationAirfield=destinationAirfieldTowplane;							// The tow flight landing place is our destinationAirfieldTowplane.
-	towflight.destinationAirfieldTowplane="";
-
-	towflight.numLandings=(towflightLandsHere () && towflightLanded)?1:0;
-
-	towflight.comments=QString::fromUtf8 ("Schleppflug für Flug Nr. %1").arg (id);
-	towflight.accountingNote="";
-	towflight.mode=modeTowflight;
-	towflight.modeTowflight=fmNone;
-	towflight.pvn=tpvn;
-	towflight.pnn=tpnn;
-	towflight.bvn="";
-	towflight.bnn="";
-	towflight.tpvn="";
-	towflight.tpnn="";
-	towflight.towplane=invalid_id;
-	towflight.started=started;
-	towflight.landed=towflightLanded;
-	towflight.towflightLanded=false;
-
-	return towflight;
-}
-
-void Flight::get_towflight (Flight *towflight, db_id towplaneId, db_id towLaunchMethod) const
-{
-	*towflight=makeTowflight (towplaneId, towLaunchMethod);
-}
-
-// TODO move to PlaneLog
-bool Flight::collective_bb_entry_possible (const Flight *prev, const Plane *plane) const
-{
-	// Only allow if the previous flight and the current flight start and land
-	// at the same place.
-	if (prev->mode!=fmLocal || mode!=fmLocal) return false;
-	if (prev->departureAirfield!=prev->destinationAirfield) return false;
-	if (prev->destinationAirfield!=departureAirfield) return false;
-	if (departureAirfield!=destinationAirfield) return false;
-
-	// For motor planes: only allow if the flights are towflights.
-	// Unknown planes are treated like motor planes.
-	if (plane && (plane->category==Plane::categoryGlider || plane->category==Plane::categoryMotorglider))
-	{
-		return true;
-	}
-	else
-	{
-		if (prev->isTowflight () && isTowflight ()) return true;
-		return false;
-	}
-}
+// ****************
+// ** Formatting **
+// ****************
 
 QString personToString (db_id id, QString firstName, QString lastName)
 {
@@ -593,8 +607,6 @@ QString timeToString (bool performed, Time time)
 
 QString Flight::toString () const
 {
-
-
 	return QString ("id=%1, plane=%2, type=%3, pilot=%4, copilot=%5, mode=%6, "
 		"launchMethod=%7, towplane=%8, towpilot=%9, towFlightMode=%10, "
 		"launchTime=%11, landingTime=%12, towflightLandingTime=%13, "
@@ -602,204 +614,110 @@ QString Flight::toString () const
 		"numLandings=%17, comment='%18', accountingNote='%19'")
 
 		.arg (id)
-		.arg (plane)
-		.arg (flightTypeText (flightType, lsTable))
-		.arg (personToString (pilot, pvn, pnn))
-		.arg (personToString (copilot, bvn, bnn))
-		.arg (flightModeText (mode, lsTable))
+		.arg (planeId)
+		.arg (typeText (type, lsTable))
+		.arg (personToString (pilotId, pilotFirstName, pilotLastName))
+		.arg (personToString (copilotId, copilotFirstName, copilotLastName))
+		.arg (modeText (mode, lsTable))
 
-		.arg (launchMethod)
-		.arg (towplane)
-		.arg (personToString (towpilot, tpvn, tpnn))
-		.arg (flightModeText (modeTowflight, lsTable))
+		.arg (launchMethodId)
+		.arg (towplaneId)
+		.arg (personToString (towpilotId, towpilotFirstName, towpilotLastName))
+		.arg (modeText (towflightMode, lsTable))
 
-		.arg (timeToString (started, launchTime))
+		.arg (timeToString (departed, departureTime))
 		.arg (timeToString (landed, landingTime))
-		.arg (timeToString (towflightLanded, landingTimeTowflight))
+		.arg (timeToString (towflightLanded, towflightLandingTime))
 
-		.arg (departureAirfield)
-		.arg (destinationAirfield)
-		.arg (destinationAirfieldTowplane)
+		.arg (departureLocation)
+		.arg (landingLocation)
+		.arg (towflightLandingLocation)
 
 		.arg (numLandings)
 		.arg (comments)
-		.arg (accountingNote)
+		.arg (accountingNotes)
 		;
 }
 
-bool Flight::operator< (const Flight &o) const
+
+// **********
+// ** Misc **
+// **********
+
+Flight Flight::makeTowflight (db_id theTowplaneId, db_id towLaunchMethod) const
 {
-	return sort (&o)<0;
+	Flight towflight;
+
+	// The tow flight gets the same ID because there would be no way to get
+	// the ID for a given tow flight. The tow flight can be distinguished
+	// from the real flight by the flight type (by calling isTowflight ()).
+	towflight.id=id;
+
+	// Always use the towplane ID passed by the caller, even if it is invalid -
+	// this means that the towplane specified in the launch method was not found.
+	towflight.planeId=theTowplaneId;
+
+	// The towflight's pilot is our towpilot and there is not copilot and
+	// towpilot
+	towflight.pilotId=towpilotId;
+	towflight.copilotId=invalid_id;
+	towflight.towpilotId=invalid_id;
+
+	towflight.departureTime=departureTime;							// The tow flight started the same time as the towed flight.
+	towflight.landingTime=towflightLandingTime;			// The tow flight landing time is our landingTimeTowflight.
+	towflight.towflightLandingTime=Time (); 			// The tow flight has no tow flight.
+
+	// The launchMethod of the tow flight is given as a parameter.
+	towflight.launchMethodId=towLaunchMethod;
+
+	towflight.type=typeTow;
+	towflight.departureLocation=departureLocation;							// The tow flight started the same place as the towed flight.
+	towflight.landingLocation=towflightLandingLocation;							// The tow flight landing place is our destinationAirfieldTowplane.
+	towflight.towflightLandingLocation="";
+
+	towflight.numLandings=(towflightLandsHere () && towflightLanded)?1:0;
+
+	towflight.comments=QString::fromUtf8 ("Schleppflug für Flug Nr. %1").arg (id);
+	towflight.accountingNotes="";
+	towflight.mode=towflightMode;
+	towflight.towflightMode=modeNone;
+	towflight.pilotFirstName=towpilotFirstName;
+	towflight.pilotLastName=towpilotLastName;
+	towflight.copilotFirstName="";
+	towflight.copilotLastName="";
+	towflight.towpilotFirstName="";
+	towflight.towpilotLastName="";
+	towflight.towplaneId=invalid_id;
+	towflight.departed=departed;
+	towflight.landed=towflightLanded;
+	towflight.towflightLanded=false;
+
+	return towflight;
 }
 
-int Flight::sort (const Flight *other) const
-	/*
-	 * Return value:
-	 *   - >0 if this flight is later
-	 *   - <0 if this flight is earlier
-	 *   - =0 if the flights are equal
-	 */
+// TODO move to PlaneLog
+bool Flight::collectiveLogEntryPossible (const Flight *prev, const Plane *plane) const
 {
-	// Both prepared
-	if (vorbereitet () && other->vorbereitet  ())
+	// Only allow if the previous flight and the current flight start and land
+	// at the same place.
+	if (prev->mode!=modeLocal || mode!=modeLocal) return false;
+	if (prev->departureLocation!=prev->landingLocation) return false;
+	if (prev->landingLocation!=departureLocation) return false;
+	if (departureLocation!=landingLocation) return false;
+
+	// For motor planes: only allow if the flights are towflights.
+	// Unknown planes are treated like motor planes.
+	if (plane && (plane->category==Plane::categoryGlider || plane->category==Plane::categoryMotorglider))
 	{
-		// Incoming prepared before local launching prepared
-		if (starts_here (mode) && !starts_here (other->mode)) return 1;
-		if (!starts_here (mode) && starts_here (other->mode)) return -1;
-
-		// Flights are equal
-		return 0;
+		return true;
 	}
-
-	// Prepared flights to the end
-	if (vorbereitet ()) return 1;
-	if (other->vorbereitet ()) return -1;
-
-	// Sort by effective time
-	Time t1=effectiveTime ();
-	Time t2=other->effectiveTime ();
-	if (t1>t2) return 1;
-	if (t1<t2) return -1;
-	return 0;
+	else
+	{
+		if (prev->isTowflight () && isTowflight ()) return true;
+		return false;
+	}
 }
 
-
-
-QDate Flight::effdatum (time_zone tz) const
-        /*
-         * Calculates the effective date, that is the date to use when sorting the
-         * Table.
-         * Parameters:
-         *   - tz: the time zone to use.
-         * Return value:
-         *   - the effective date.
-         */
-{
-        return effectiveTime ().get_qdate (tz);
-}
-
-QDate Flight::getEffectiveDate (time_zone tz, QDate defaultDate) const
-{
-	// TODO this assumes that every flight at least starts or lands here.
-	if (starts_here (mode) && started)
-		return launchTime.get_qdate (tz);
-
-	if (lands_here (mode) && landed)
-		return landingTime.get_qdate (tz);
-
-	return defaultDate;
-}
-
-
-int Flight::countFlying (const QList<Flight> flights)
-{
-	// TODO move to FlightList (to be created)
-	int result=0;
-
-	// TODO this is not correct - prepared coming flights should be counted
-	// here. Note that this means that flights flying may be greater than
-	// flights total - maybe use to "Flugbewegungen"/"Departures/Landings",
-	// "planes departed and/or landed" and "planes to land"
-	foreach (const Flight &flight, flights)
-		if (flight.isFlying ())
-			++result;
-
-	return result;
-}
-
-int Flight::countHappened (const QList<Flight> flights)
-{
-	// TODO move to FlightList (to be created)
-	int result=0;
-
-	foreach (const Flight &flight, flights)
-		if (flight.happened ())
-			++result;
-
-	return result;
-}
-
-#define notPossibleIf(condition, reasonText) do { if (condition) { if (reason) *reason=reasonText; return false; } } while (0)
-
-bool Flight::canStart (QString *reason) const
-{
-	// TODO only for flights of today
-
-	// Already landed
-	notPossibleIf (landsHere () && landed, "Der Flug ist bereits gelandet");
-
-	// Does not start here
-	notPossibleIf (!startsHere (), "Der Flug startet nicht hier.");
-
-	// Already started
-	notPossibleIf (started, "Der Flug ist bereits gestartet.");
-
-	return true;
-}
-
-bool Flight::canLand (QString *reason) const
-{
-	// TODO only for flights of today
-
-	// Already landed
-	notPossibleIf (landed, "Der Flug ist bereits gelandet.");
-
-	// Does not land here (only applies to non-towflights)
-	notPossibleIf (!isTowflight () && !landsHere (), "Der Flug landet nicht hier.");
-
-	// Must start first
-	notPossibleIf (startsHere () && !started, "Der Flug ist noch nicht gestartet.");
-
-	return true;
-}
-
-bool Flight::canTouchngo (QString *reason) const
-{
-	// TODO only for flights of today
-
-	// Towflight
-	notPossibleIf (isTowflight (), "Der Flug ist ein Schleppflug");
-
-	// Already landed
-	notPossibleIf (landed, "Der Flug ist bereits gelandet.");
-
-	// Must start first
-	notPossibleIf (startsHere () && !started, "Der Flug ist noch nicht gestartet.");
-
-	return true;
-}
-
-bool Flight::canTowflightLand (QString *reason) const
-{
-	// Already landed
-	notPossibleIf (towflightLanded, "Der Schleppflug ist bereits gelandet.");
-
-	// Must start first
-	notPossibleIf (startsHere () && !started, "Der Flug ist noch nicht gestartet.");
-
-	return true;
-}
-
-#undef notPossibleIf
-
-/**
- * This uses fehlerhaft, does not consider schlepp_fehlerhaft
- *
- * @param dataStorage
- * @return
- */
-bool Flight::isErroneous (DataStorage &dataStorage) const
-{
-	Plane *thePlane=dataStorage.getNewObject<Plane> (plane);
-	LaunchMethod *theLaunchMethod=dataStorage.getNewObject<LaunchMethod> (launchMethod);
-
-	bool erroneous=fehlerhaft (thePlane, NULL, theLaunchMethod);
-
-	delete thePlane;
-	delete theLaunchMethod;
-
-	return erroneous;
-}
 
 // *******************
 // ** SQL interface **
@@ -826,44 +744,44 @@ Flight Flight::createFromQuery (const QSqlQuery &q)
 {
 	Flight f (q.value (0).toLongLong ());
 
-	f.pilot      =q.value (1).toLongLong ();
-	f.copilot    =q.value (2).toLongLong ();
-	f.plane      =q.value (3).toLongLong ();
-	f.flightType =typeFromDb (
-	              q.value (4).toString   ());
-	f.mode       =modeFromDb (
-	              q.value (5).toString   ());
-	f.setStatus  (q.value (6).toInt ());
+	f.pilotId      =q.value (1).toLongLong ();
+	f.copilotId    =q.value (2).toLongLong ();
+	f.planeId      =q.value (3).toLongLong ();
+	f.type         =typeFromDb (
+	                q.value (4).toString   ());
+	f.mode         =modeFromDb (
+	                q.value (5).toString   ());
+	f.setStatus    (q.value (6).toInt      ());
 
-	f.launchMethod        =q.value ( 7).toLongLong ();
-	f.departureAirfield   =q.value ( 8).toString   ();
-	f.destinationAirfield =q.value ( 9).toString   ();
-	f.numLandings         =q.value (10).toInt      ();
-	f.launchTime          =Time::create (
-	                       q.value (11).toDateTime (), tz_utc);
-	f.landingTime         =Time::create (
-	                       q.value (12).toDateTime (), tz_utc);
+	f.launchMethodId    =q.value ( 7).toLongLong ();
+	f.departureLocation =q.value ( 8).toString   ();
+	f.landingLocation   =q.value ( 9).toString   ();
+	f.numLandings       =q.value (10).toInt      ();
+	f.departureTime     =Time::create (
+	                     q.value (11).toDateTime (), tz_utc);
+	f.landingTime       =Time::create (
+	                     q.value (12).toDateTime (), tz_utc);
 
-	f.pvn =q.value (13).toString ();
-	f.pnn =q.value (14).toString ();
-	f.bvn =q.value (15).toString ();
-	f.bnn =q.value (16).toString ();
+	f.pilotFirstName   =q.value (13).toString ();
+	f.pilotLastName    =q.value (14).toString ();
+	f.copilotFirstName =q.value (15).toString ();
+	f.copilotLastName  =q.value (16).toString ();
 
-	f.landingTimeTowflight        =Time::create (
-	                               q.value (17).toDateTime (), tz_utc);
-	f.modeTowflight               =modeFromDb (
-	                               q.value (18).toString   ());
-	f.destinationAirfieldTowplane =q.value (19).toString   ();
-	f.towplane                    =q.value (20).toLongLong ();
+	f.towflightLandingTime     =Time::create (
+	                            q.value (17).toDateTime (), tz_utc);
+	f.towflightMode            =modeFromDb (
+	                            q.value (18).toString   ());
+	f.towflightLandingLocation =q.value (19).toString   ();
+	f.towplaneId               =q.value (20).toLongLong ();
 
-	f.accountingNote =q.value (21).toString ();
-	f.comments       =q.value (22).toString ();
+	f.accountingNotes =q.value (21).toString ();
+	f.comments        =q.value (22).toString ();
 
 	if (opts.record_towpilot)
 	{
-		f.towpilot =q.value (23).toLongLong ();
-		f.tpvn     =q.value (24).toString ();
-		f.tpnn     =q.value (25).toString ();
+		f.towpilotId         =q.value (23).toLongLong ();
+		f.towpilotFirstName  =q.value (24).toString   ();
+		f.towpilotLastName   =q.value (25).toString   ();
 	}
 
 	return f;
@@ -900,38 +818,38 @@ QString Flight::updateValueList ()
 
 void Flight::bindValues (QSqlQuery &q) const
 {
-	q.addBindValue (pilot);
-	q.addBindValue (copilot);
-	q.addBindValue (plane);
-	q.addBindValue (typeToDb (flightType));
+	q.addBindValue (pilotId);
+	q.addBindValue (copilotId);
+	q.addBindValue (planeId);
+	q.addBindValue (typeToDb (type));
 	q.addBindValue (modeToDb (mode));
 	q.addBindValue (getStatus ());
 
-	q.addBindValue (launchMethod);
-	q.addBindValue (departureAirfield);
-	q.addBindValue (destinationAirfield);
+	q.addBindValue (launchMethodId);
+	q.addBindValue (departureLocation);
+	q.addBindValue (landingLocation);
 	q.addBindValue (numLandings);
-	q.addBindValue (launchTime.toUtcQDateTime ());
+	q.addBindValue (departureTime.toUtcQDateTime ());
 	q.addBindValue (landingTime.toUtcQDateTime ());
 
-	q.addBindValue (pvn);
-	q.addBindValue (pnn);
-	q.addBindValue (bvn);
-	q.addBindValue (bnn);
+	q.addBindValue (pilotFirstName);
+	q.addBindValue (pilotLastName);
+	q.addBindValue (copilotFirstName);
+	q.addBindValue (copilotLastName);
 
-	q.addBindValue (landingTimeTowflight.toUtcQDateTime ());
-	q.addBindValue (modeToDb (modeTowflight));
-	q.addBindValue (destinationAirfieldTowplane);
-	q.addBindValue (towplane);
+	q.addBindValue (towflightLandingTime.toUtcQDateTime ());
+	q.addBindValue (modeToDb (towflightMode));
+	q.addBindValue (towflightLandingLocation);
+	q.addBindValue (towplaneId);
 
-	q.addBindValue (accountingNote);
+	q.addBindValue (accountingNotes);
 	q.addBindValue (comments);
 
 	if (opts.record_towpilot)
 	{
-		q.addBindValue (towpilot);
-		q.addBindValue (tpvn);
-		q.addBindValue (tpnn);
+		q.addBindValue (towpilotId);
+		q.addBindValue (towpilotFirstName);
+		q.addBindValue (towpilotLastName);
 	}
 }
 
@@ -947,14 +865,15 @@ QList<Flight> Flight::createListFromQuery (QSqlQuery &q)
 
 
 // *** Enum mappers
-QString Flight::modeToDb (FlightMode mode)
+
+QString Flight::modeToDb (Flight::Mode mode)
 {
 	switch (mode)
 	{
-		case fmLocal   : return "l";
-		case fmComing  : return "k";
-		case fmLeaving : return "g";
-		case fmNone    : return "?";
+		case modeLocal   : return "l";
+		case modeComing  : return "k";
+		case modeLeaving : return "g";
+		case modeNone    : return "?";
 		// no default
 	}
 
@@ -962,25 +881,25 @@ QString Flight::modeToDb (FlightMode mode)
 	return "?";
 }
 
-FlightMode Flight::modeFromDb (QString mode)
+Flight::Mode Flight::modeFromDb (QString mode)
 {
-	if      (mode=="l") return fmLocal;
-	else if (mode=="k") return fmComing;
-	else if (mode=="g") return fmLeaving;
-	else                return fmNone;
+	if      (mode=="l") return modeLocal;
+	else if (mode=="k") return modeComing;
+	else if (mode=="g") return modeLeaving;
+	else                return modeNone;
 }
 
-QString Flight::typeToDb (FlightType type)
+QString Flight::typeToDb (Type type)
 {
 	switch (type)
 	{
-		case ftNone          : return "?";
-		case ftNormal        : return "normal";
-		case ftTraining2     : return "training_2";
-		case ftTraining1     : return "training_1";
-		case ftTow           : return "tow";
-		case ftGuestPrivate  : return "guest_private";
-		case ftGuestExternal : return "guest_external";
+		case typeNone          : return "?";
+		case typeNormal        : return "normal";
+		case typeTraining2     : return "training_2";
+		case typeTraining1     : return "training_1";
+		case typeTow           : return "tow";
+		case typeGuestPrivate  : return "guest_private";
+		case typeGuestExternal : return "guest_external";
 		// no default
 	};
 
@@ -988,25 +907,27 @@ QString Flight::typeToDb (FlightType type)
 	return "?";
 }
 
-FlightType Flight::typeFromDb (QString type)
+Flight::Type Flight::typeFromDb (QString type)
 {
-	if      (type=="normal"        ) return ftNormal;
-	else if (type=="training_2"    ) return ftTraining2;
-	else if (type=="training_1"    ) return ftTraining1;
-	else if (type=="tow"           ) return ftTow;
-	else if (type=="guest_private" ) return ftGuestPrivate;
-	else if (type=="guest_external") return ftGuestExternal;
-	else                             return ftNone;
+	if      (type=="normal"        ) return typeNormal;
+	else if (type=="training_2"    ) return typeTraining2;
+	else if (type=="training_1"    ) return typeTraining1;
+	else if (type=="tow"           ) return typeTow;
+	else if (type=="guest_private" ) return typeGuestPrivate;
+	else if (type=="guest_external") return typeGuestExternal;
+	else                             return typeNone;
 }
 
+
 // *** Flag accessors
+
 const int Flight::STATUS_STARTED=1;
 const int Flight::STATUS_LANDED=2;
 const int Flight::STATUS_TOWFLIGHT_LANDED=4;
 
 void Flight::setStatus (int status)
 {
-	started         = (status & STATUS_STARTED         )!=0;
+	departed        = (status & STATUS_STARTED         )!=0;
 	landed          = (status & STATUS_LANDED          )!=0;
 	towflightLanded = (status & STATUS_TOWFLIGHT_LANDED)!=0;
 }
@@ -1014,7 +935,7 @@ void Flight::setStatus (int status)
 int Flight::getStatus () const
 {
 	int status=0;
-	if (started        ) status |= STATUS_STARTED         ;
+	if (departed       ) status |= STATUS_STARTED         ;
 	if (landed         ) status |= STATUS_LANDED          ;
 	if (towflightLanded) status |= STATUS_TOWFLIGHT_LANDED;
 	return status;

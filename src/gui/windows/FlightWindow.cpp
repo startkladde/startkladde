@@ -206,9 +206,9 @@ void FlightWindow::fillData ()
 
 
 	// *** Flight types
-	const QList<FlightType> flightTypes=listFlightTypes (false);
+	const QList<Flight::Type> flightTypes=Flight::listTypes (false);
 	for (int i=0; i<flightTypes.size(); ++i)
-		ui.flightTypeInput->addItem (flightTypeText (flightTypes.at (i), lsWithShortcut), flightTypes.at (i));
+		ui.flightTypeInput->addItem (Flight::typeText (flightTypes.at (i), lsWithShortcut), flightTypes.at (i));
 
 
 	// *** Person names
@@ -233,15 +233,15 @@ void FlightWindow::fillData ()
 
 
 	// *** Flight flightModes
-	const QList<FlightMode> flightModes=listFlightModes (false);
+	const QList<Flight::Mode> flightModes=Flight::listModes (false);
 	for (int i=0; i<flightModes.size (); ++i)
-		ui.flightModeInput->addItem (flightModeText (flightModes.at (i), lsWithShortcut), flightModes.at (i));
+		ui.flightModeInput->addItem (Flight::modeText (flightModes.at (i), lsWithShortcut), flightModes.at (i));
 
 
 	// *** Towflight flightModes
-	const QList<FlightMode> towflightModes=listTowFlightModes (false);
+	const QList<Flight::Mode> towflightModes=Flight::listTowModes (false);
 	for (int i=0; i<towflightModes.size(); ++i)
-		ui.towflightModeInput->addItem (flightModeText (towflightModes.at (i), lsWithShortcut), towflightModes.at (i));
+		ui.towflightModeInput->addItem (Flight::modeText (towflightModes.at (i), lsWithShortcut), towflightModes.at (i));
 
 
 	// *** Launch methods
@@ -465,9 +465,9 @@ void FlightWindow::updateErrors (bool setFocus)
 
 	Flight flight=determineFlightBasic ();
 
-	Plane *plane              =dataStorage.getNewObject<Plane       > (flight.plane        );
-	Plane *towplane           =dataStorage.getNewObject<Plane       > (flight.towplane     );
-	LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethod );
+	Plane *plane              =dataStorage.getNewObject<Plane       > (flight.planeId        );
+	Plane *towplane           =dataStorage.getNewObject<Plane       > (flight.towplaneId     );
+	LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethodId );
 
 	FlightError error;
 	int errorIndex=0;
@@ -650,19 +650,19 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 	// Note that for repeating, some fields are not set or set differently.
 
 	originalFlightId = flight.getId ();
-	selectedPlane    = flight.plane;
-	selectedTowplane = flight.towplane;
-	selectedPilot    = flight.pilot;
-	selectedCopilot  = flight.copilot;
-	selectedTowpilot = flight.towpilot;
+	selectedPlane    = flight.planeId;
+	selectedTowplane = flight.towplaneId;
+	selectedPilot    = flight.pilotId;
+	selectedCopilot  = flight.copilotId;
+	selectedTowpilot = flight.towpilotId;
 
-	planeToFields (flight.plane, ui.registrationInput, ui.planeTypeWidget);
-	ui.flightTypeInput->setCurrentItemByItemData (flight.flightType);
+	planeToFields (flight.planeId, ui.registrationInput, ui.planeTypeWidget);
+	ui.flightTypeInput->setCurrentItemByItemData (flight.type);
 
 	// space
 
-	personToFields (flight.pilot    , ui.pilotLastNameInput  , ui.pilotFirstNameInput  , flight.pnn, flight.pvn);
-	personToFields (flight.copilot, ui.copilotLastNameInput, ui.copilotFirstNameInput, flight.bnn, flight.bvn);
+	personToFields (flight.pilotId    , ui.pilotLastNameInput  , ui.pilotFirstNameInput  , flight.pilotLastName, flight.pilotFirstName);
+	personToFields (flight.copilotId, ui.copilotLastNameInput, ui.copilotFirstNameInput, flight.copilotLastName, flight.copilotFirstName);
 
 	// space
 
@@ -676,8 +676,8 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 
 	try
 	{
-		if (id_valid (flight.launchMethod))
-			if (dataStorage.getObject<LaunchMethod> (flight.launchMethod).type==LaunchMethod::typeSelf)
+		if (id_valid (flight.launchMethodId))
+			if (dataStorage.getObject<LaunchMethod> (flight.launchMethodId).type==LaunchMethod::typeSelf)
 				copyLaunchMethod=true;
 	}
 	catch (DataStorage::NotFoundException &ex)
@@ -685,39 +685,39 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 		log_error ("Launch method not found in FlightWindow::flightToFields");
 	}
 
-	if (copyLaunchMethod) ui.launchMethodInput->setCurrentItemByItemData (flight.launchMethod);
+	if (copyLaunchMethod) ui.launchMethodInput->setCurrentItemByItemData (flight.launchMethodId);
 	launchMethodChanged (ui.launchMethodInput->currentIndex ());
 
 	// The towplane is set even if it's not an airtow in case the user selects
 	// an unknown airtow launchMethod later.
-	planeToFields (flight.towplane, ui.towplaneRegistrationInput, ui.towplaneTypeWidget);
-	personToFields (flight.towpilot, ui.towpilotLastNameInput, ui.towpilotFirstNameInput, flight.tpnn, flight.tpvn);
-	ui.towflightModeInput->setCurrentItemByItemData (flight.modeTowflight);
+	planeToFields (flight.towplaneId, ui.towplaneRegistrationInput, ui.towplaneTypeWidget);
+	personToFields (flight.towpilotId, ui.towpilotLastNameInput, ui.towpilotFirstNameInput, flight.towpilotLastName, flight.towpilotFirstName);
+	ui.towflightModeInput->setCurrentItemByItemData (flight.towflightMode);
 
 	// space
 
 	if (!repeat)
 	{
-		ui.          launchTimeCheckbox->setChecked (getTimeFieldCheckboxValue (flight.started   ));
+		ui.          launchTimeCheckbox->setChecked (getTimeFieldCheckboxValue (flight.departed   ));
 		ui.         landingTimeCheckbox->setChecked (getTimeFieldCheckboxValue (flight.landed    ));
 		ui.towflightLandingTimeCheckbox->setChecked (getTimeFieldCheckboxValue (flight.towflightLanded));
 
-		ui.          launchTimeInput->setTime (flight.launchTime                .get_qtime (tz_utc)); // Even if not active
+		ui.          launchTimeInput->setTime (flight.departureTime                .get_qtime (tz_utc)); // Even if not active
 		ui.         landingTimeInput->setTime (flight.landingTime                .get_qtime (tz_utc)); // Even if not active
-		ui.towflightLandingTimeInput->setTime (flight.landingTimeTowflight.get_qtime (tz_utc)); // Even if not active
+		ui.towflightLandingTimeInput->setTime (flight.towflightLandingTime.get_qtime (tz_utc)); // Even if not active
 	}
 
 	// space
 
-	ui.departureAirfieldInput->setCurrentText (flight.departureAirfield);
-	ui.destinationAirfieldInput->setCurrentText (flight.destinationAirfield);
-	ui.towflightDestinationAirfieldInput->setCurrentText (flight.destinationAirfield);
+	ui.departureAirfieldInput->setCurrentText (flight.departureLocation);
+	ui.destinationAirfieldInput->setCurrentText (flight.landingLocation);
+	ui.towflightDestinationAirfieldInput->setCurrentText (flight.landingLocation);
 	if (!repeat) ui.numLandingsInput->setValue (flight.numLandings);
 
 	// space
 
 	if (!repeat) ui.commentInput->setText (flight.comments);
-	ui.accountingNoteInput->setCurrentText (flight.accountingNote);
+	ui.accountingNoteInput->setCurrentText (flight.accountingNotes);
 	ui.dateInput->setDate (flight.getEffectiveDate (tz_utc, QDate::currentDate ()));
 
 #undef PLANE
@@ -730,50 +730,50 @@ Flight FlightWindow::determineFlightBasic () throw ()
 
 	// Some of the data is taken from the stored data
 	flight.setId (originalFlightId);
-	flight.plane     = isRegistrationActive         ()?selectedPlane   :invalid_id;
-	flight.towplane  = isTowplaneRegistrationActive ()?selectedTowplane:invalid_id;
-	flight.pilot     = isPilotActive                ()?selectedPilot   :invalid_id;
-	flight.copilot   = isCopilotActive              ()?selectedCopilot :invalid_id;
-	flight.towpilot  = isTowpilotActive             ()?selectedTowpilot:invalid_id;
+	flight.planeId     = isRegistrationActive         ()?selectedPlane   :invalid_id;
+	flight.towplaneId  = isTowplaneRegistrationActive ()?selectedTowplane:invalid_id;
+	flight.pilotId     = isPilotActive                ()?selectedPilot   :invalid_id;
+	flight.copilotId   = isCopilotActive              ()?selectedCopilot :invalid_id;
+	flight.towpilotId  = isTowpilotActive             ()?selectedTowpilot:invalid_id;
 
 
 	// Some of the data can just be copied to the flight.
 	// Registration: may have to query user
-	if (isFlightTypeActive                   ()) flight.flightType            =getCurrentFlightType ();
+	if (isFlightTypeActive                   ()) flight.type            =getCurrentFlightType ();
 	//
 	// Pilot: may have to query user
 	// Copilot: may have to query user
 	//
 	if (isFlightModeActive                   ()) flight.mode              =getCurrentFlightMode ();
-	if (isLaunchMethodActive                 ()) flight.launchMethod      =getCurrentLaunchMethodId ();
+	if (isLaunchMethodActive                 ()) flight.launchMethodId      =getCurrentLaunchMethodId ();
 	//
 	// Towplane registration: may have to query user
 	// Towpilot: may have to query user
-	if (isTowflightModeActive                ()) flight.modeTowflight          =getCurrentTowflightMode ();
+	if (isTowflightModeActive                ()) flight.towflightMode          =getCurrentTowflightMode ();
 	//
-	if (isLaunchActive                       ()) flight.started          =isLaunchTimeActive ();
+	if (isLaunchActive                       ()) flight.departed          =isLaunchTimeActive ();
 	if (isLandingActive                      ()) flight.landed           =isLandingTimeActive ();
 	if (isTowflightLandingActive             ()) flight.towflightLanded       =isTowflightLandingTimeActive ();
 	// Launch time: set with date
 	// Landing time: set with date
 	// Towflight landing time: set with date
 	//
-	if (isDepartureAirfieldActive            ()) flight.departureAirfield           =getCurrentDepartureAirfield ();
-	if (isDestinationAirfildActive           ()) flight.destinationAirfield            =getCurrentDestinationAirfield ();
-	if (isTowflightDestinationAirfieldActive ()) flight.destinationAirfieldTowplane        =getCurrentTowflightDestinationAirfield ();
+	if (isDepartureAirfieldActive            ()) flight.departureLocation           =getCurrentDepartureAirfield ();
+	if (isDestinationAirfildActive           ()) flight.landingLocation            =getCurrentDestinationAirfield ();
+	if (isTowflightDestinationAirfieldActive ()) flight.towflightLandingLocation        =getCurrentTowflightDestinationAirfield ();
 	if (isNumLandingsActive                  ()) flight.numLandings          =getCurrentNumLandings ();
 	//
 	if (isCommentActive                      ()) flight.comments        =getCurrentComment ();
-	if (isAccountingNodeActive               ()) flight.accountingNote =getCurrentAccountingNote ();
+	if (isAccountingNodeActive               ()) flight.accountingNotes =getCurrentAccountingNote ();
 	// getCurrentDate
 
 
 	// Setting the times requires combining the date and time fields
 	QDate date= (isDateActive()) ? (getCurrentDate ()) : QDate::currentDate ();
 #define SET_TIME(active, target, value) do { if (active) target.set_to (date, value, /*tz_utc, */true); else target.set_null (); } while (0)
-	SET_TIME (isLaunchTimeActive           (), flight.launchTime,                 getCurrentLaunchTime           ());
+	SET_TIME (isLaunchTimeActive           (), flight.departureTime,                 getCurrentLaunchTime           ());
 	SET_TIME (isLandingTimeActive          (), flight.landingTime,                 getCurrentLandingTime          ());
-	SET_TIME (isTowflightLandingTimeActive (), flight.landingTimeTowflight, getCurrentTowflightLandingTime ());
+	SET_TIME (isTowflightLandingTimeActive (), flight.towflightLandingTime, getCurrentTowflightLandingTime ());
 #undef SET_TIME
 
 
@@ -798,43 +798,43 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool launchNow)
 	// Note that we use the values from the passed flight, not from the editor
 	// fields.
 
-	if ((launchNow || flight.started) && starts_here (flight.mode) && id_invalid (flight.launchMethod))
+	if ((launchNow || flight.departed) && flight.departsHere () && id_invalid (flight.launchMethodId))
 		errorCheck ("Es wurde keine Startartart angegeben.",
 			ui.launchMethodInput);
 
-	if ((flight.started || !starts_here (flight.mode)) && eintrag_ist_leer (flight.departureAirfield))
+	if ((flight.departed || !flight.departsHere ()) && eintrag_ist_leer (flight.departureLocation))
 		errorCheck ("Es wurde kein Startort angegeben.",
 				ui.departureAirfieldInput);
 
-	if ((flight.landed || !lands_here (flight.mode)) && eintrag_ist_leer (flight.destinationAirfield))
+	if ((flight.landed || !flight.landsHere ()) && eintrag_ist_leer (flight.landingLocation))
 		errorCheck ("Es wurde kein Zielort angegeben.",
 			ui.destinationAirfieldInput);
 
-	if ((starts_here (flight.mode)!=lands_here (flight.mode)) && (flight.departureAirfield.simplified ()==flight.destinationAirfield.simplified ()))
+	if ((flight.departsHere ()!=flight.landsHere ()) && (flight.departureLocation.simplified ()==flight.landingLocation.simplified ()))
 		errorCheck ("Der Startort ist gleich dem Zielort.",
-			starts_here (flight.mode)?ui.destinationAirfieldInput:ui.departureAirfieldInput);
+			flight.departsHere ()?ui.destinationAirfieldInput:ui.departureAirfieldInput);
 
-	if (flight.landed && flight.started && flight.launchTime>flight.landingTime)
+	if (flight.landed && flight.departed && flight.departureTime>flight.landingTime)
 		errorCheck ("Die Landezeit des Flugs liegt vor der Startzeit.",
 			ui.landingTimeInput);
 
-	if (starts_here (flight.mode) && lands_here (flight.mode) && flight.landed && !flight.started)
+	if (flight.departsHere () && flight.landsHere () && flight.landed && !flight.departed)
 		errorCheck ("Es wurde eine Landezeit, aber keine Startzeit angegeben.",
 				ui.landingTimeInput);
 
-	if (lands_here (flight.mode) && flight.landed && flight.numLandings==0)
+	if (flight.landsHere () && flight.landed && flight.numLandings==0)
 		errorCheck ("Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0.",
 			ui.numLandingsInput);
 
-	if (flight.towflightLanded && !lands_here (flight.modeTowflight) && eintrag_ist_leer (flight.destinationAirfieldTowplane))
+	if (flight.towflightLanded && !flight.towflightLandsHere () && eintrag_ist_leer (flight.towflightLandingLocation))
 		errorCheck (QString::fromUtf8 ("Es wurde kein Zielort für das Schleppflugzeug angegeben."),
 			ui.towflightDestinationAirfieldInput);
 
-	if (flight.started && flight.towflightLanded && flight.launchTime>flight.landingTimeTowflight)
+	if (flight.departed && flight.towflightLanded && flight.departureTime>flight.towflightLandingTime)
 		errorCheck ("Die Landezeit des Schleppflugs liegt vor der Startzeit.",
 			ui.towflightLandingTimeInput);
 
-	if (flight.towflightLanded && !flight.started)
+	if (flight.towflightLanded && !flight.departed)
 		errorCheck ("Es wurde eine Landezeit des Schleppflugs, aber keine Startzeit angegeben.",
 			ui.towflightLandingTimeInput);
 }
@@ -844,7 +844,7 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, cons
 {
 	// Phase 2: plane and towplane determined, people not determined
 
-	if (id_valid (flight.plane) && flight.plane==flight.towplane)
+	if (id_valid (flight.planeId) && flight.planeId==flight.towplaneId)
 		errorCheck ("Flugzeug und Schleppflugzeug sind identisch.",
 			ui.towplaneRegistrationInput);
 
@@ -873,13 +873,13 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, cons
 			ui.launchTimeInput);
 
 	if (plane && launchMethod &&
-		plane->numSeats==1 && (flight.flightType==ftGuestPrivate || flight.flightType==ftGuestExternal) && launchMethod->type!=LaunchMethod::typeSelf)
+		plane->numSeats==1 && (flight.type==Flight::typeGuestPrivate || flight.type==Flight::typeGuestExternal) && launchMethod->type!=LaunchMethod::typeSelf)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.\nEs wurden jedoch der Flugtyp \"Gastflug\" angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.registrationInput);
 
 	if (plane && launchMethod &&
-		plane->numSeats==1 && flight.flightType==ftTraining2 && launchMethod->type!=LaunchMethod::typeSelf)
+		plane->numSeats==1 && flight.type==Flight::typeTraining2 && launchMethod->type!=LaunchMethod::typeSelf)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.\nEs wurden jedoch der Flugtyp \"Doppelsitzige Schulung\" angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.registrationInput);
@@ -908,19 +908,19 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool launchNow, cons
 
 	// Pilot und Begleiter identisch
 
-	if (id_valid (flight.pilot) && flight.pilot==flight.copilot)
+	if (id_valid (flight.pilotId) && flight.pilotId==flight.copilotId)
 		errorCheck ("Pilot und Begleiter sind identisch.",
 			ui.pilotLastNameInput);
 
-	if (id_valid (flight.pilot) && flight.pilot==flight.towpilot)
+	if (id_valid (flight.pilotId) && flight.pilotId==flight.towpilotId)
 		errorCheck ("Pilot und Schlepppilot sind identisch.",
 			ui.towpilotLastNameInput);
 
-	if (id_valid (flight.copilot) && flight.copilot==flight.towpilot)
+	if (id_valid (flight.copilotId) && flight.copilotId==flight.towpilotId)
 		errorCheck ("Begleiter und Schlepppilot sind identisch.",
 			ui.towpilotLastNameInput);
 
-	if (flight.flightType==ftTraining2 && !flight.copilotSpecified ())
+	if (flight.type==Flight::typeTraining2 && !flight.copilotSpecified ())
 		errorCheck ("Doppelsitzige Schulung ohne Fluglehrer.",
 			ui.copilotLastNameInput);
 
@@ -950,58 +950,58 @@ void FlightWindow::determineFlightPlanes (Flight &flight)
 {
 	// Determine the plane
 	if (isRegistrationActive ())
-		flight.plane=determinePlane (getCurrentRegistration (), "Flugzeug", ui.registrationInput);
+		flight.planeId=determinePlane (getCurrentRegistration (), "Flugzeug", ui.registrationInput);
 
 	// Determine the towplane
 	// TODO: for a known airtow launch method, we should give the user the
 	// possibility to enter the plane
 	if (isTowplaneRegistrationActive ())
-		flight.towplane=determinePlane (getCurrentTowplaneRegistration (), "Schleppflugzeug", ui.towplaneRegistrationInput);
+		flight.towplaneId=determinePlane (getCurrentTowplaneRegistration (), "Schleppflugzeug", ui.towplaneRegistrationInput);
 }
 
 void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *launchMethod)
 	throw (FlightWindow::AbortedException)
 {
 	bool pilotRequired=true;
-	if (!starts_here (flight.mode)) pilotRequired=false;
+	if (!flight.departsHere ()) pilotRequired=false;
 	if (launchMethod && launchMethod->type!=LaunchMethod::typeSelf) pilotRequired=false;
 
 	// Determine the pilot
 	selectedPilot=
-	flight.pilot=
+	flight.pilotId=
 		determinePerson (
 			isPilotActive(),
 			getCurrentPilotFirstName (),
 			getCurrentPilotLastName (),
-			flightTypePilotDescription (getCurrentFlightType ()),
+			Flight::typePilotDescription (getCurrentFlightType ()),
 			pilotRequired,
-			flight.pvn, flight.pnn,
+			flight.pilotFirstName, flight.pilotLastName,
 			selectedPilot,
 			ui.pilotLastNameInput);
 
 	// Determine the copilot
 	selectedCopilot=
-	flight.copilot=
+	flight.copilotId=
 		determinePerson (
 			isCopilotActive (),
 			getCurrentCopilotFirstName (),
 			getCurrentCopilotLastName (),
-			flightTypeCopilotDescription (getCurrentFlightType ()),
+			Flight::typeCopilotDescription (getCurrentFlightType ()),
 			false, // Copilot is never required; flight instructor is checked later
-			flight.bvn, flight.bnn,
+			flight.copilotFirstName, flight.copilotLastName,
 			selectedCopilot,
 			ui.copilotLastNameInput);
 
 	// Determine the towpilot
 	selectedTowpilot=
-	flight.towpilot=
+	flight.towpilotId=
 		determinePerson (
 			isTowpilotActive(),
 			getCurrentTowpilotFirstName(),
 			getCurrentTowpilotLastName(),
 			"Schlepppilot",
 			true, // required
-			flight.tpvn, flight.tpnn,
+			flight.towpilotFirstName, flight.towpilotLastName,
 			selectedTowpilot,
 			ui.towpilotLastNameInput);
 }
@@ -1038,24 +1038,24 @@ Flight FlightWindow::determineFlight (bool launchNow)
 		// Phase 1: basic data
 		Flight flight=determineFlightBasic ();
 
-		launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethod);
+		launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethodId);
 
 		checkFlightPhase1 (flight, launchNow);
 
 		// Phase 2: planes
 		determineFlightPlanes (flight);
 
-		plane   =dataStorage.getNewObject<Plane> (flight.plane);
-		towplane=dataStorage.getNewObject<Plane> (flight.towplane);
+		plane   =dataStorage.getNewObject<Plane> (flight.planeId);
+		towplane=dataStorage.getNewObject<Plane> (flight.towplaneId);
 
 		checkFlightPhase2 (flight, launchNow, plane, towplane, launchMethod);
 
 		// Phase 3: people
 		determineFlightPeople (flight, launchMethod);
 
-		pilot   =dataStorage.getNewObject<Person> (flight.pilot    );
-		copilot =dataStorage.getNewObject<Person> (flight.copilot);
-		towpilot=dataStorage.getNewObject<Person> (flight.towpilot );
+		pilot   =dataStorage.getNewObject<Person> (flight.pilotId    );
+		copilot =dataStorage.getNewObject<Person> (flight.copilotId);
+		towpilot=dataStorage.getNewObject<Person> (flight.towpilotId );
 
 		checkFlightPhase3 (flight, launchNow, plane, pilot, copilot, towpilot);
 
@@ -1586,8 +1586,8 @@ void FlightWindow::updateSetupLabels ()
 
 	ui.towflightLandingTimeLabel->setText (currentTowLandsHere ()?textTowflightLandingTime:textTowflightEnd);
 
-	ui.pilotLabel  ->setText (flightTypePilotDescription   (getCurrentFlightType ())+":");
-	ui.copilotLabel->setText (flightTypeCopilotDescription (getCurrentFlightType ())+":");
+	ui.pilotLabel  ->setText (Flight::typePilotDescription   (getCurrentFlightType ())+":");
+	ui.copilotLabel->setText (Flight::typeCopilotDescription (getCurrentFlightType ())+":");
 }
 
 void FlightWindow::updateSetupButtons ()
@@ -1674,14 +1674,14 @@ void FlightWindow::registrationChanged (const QString &text)
 
 void FlightWindow::flightModeChanged (int index)
 {
-	FlightMode flightMode=(FlightMode)ui.flightModeInput->itemData (index).toInt ();
+	Flight::Mode flightMode=(Flight::Mode)ui.flightModeInput->itemData (index).toInt ();
 
 	if (mode==modeCreate)
 	{
 		const QString   departureAirfield=ui.  departureAirfieldInput->currentText ();
 		const QString destinationAirfield=ui.destinationAirfieldInput->currentText ();
 
-		if (starts_here (flightMode))
+		if (Flight::departsHere (flightMode))
 		{
 			// Departure airfield is local airfield
 			if (airfieldEntryCanBeChanged (departureAirfield))
@@ -1835,8 +1835,8 @@ void FlightWindow::on_nowButton_clicked ()
 		// fields are not checked, the button is not visible at all.
 		if (currentStartsHere ())
 		{
-			flight.started=true;
-			flight.launchTime.set_current (true);
+			flight.departed=true;
+			flight.departureTime.set_current (true);
 		}
 		else
 		{

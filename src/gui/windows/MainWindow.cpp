@@ -589,11 +589,11 @@ void MainWindow::startFlight (db_id id)
 		Flight flight = dataStorage.getObject<Flight> (id);
 		QString reason;
 
-		if (flight.canStart (&reason))
+		if (flight.canDepart (&reason))
 		{
 			// TODO still flying checks if specified (3 people, 2 planes). Code is
 			// already in FlightWindow.
-			flight.startNow ();
+			flight.departNow ();
 			updateFlight (flight);
 		}
 		else
@@ -819,8 +819,8 @@ void MainWindow::on_actionDisplayError_triggered ()
 	{
 		Flight flight = dataStorage.getObject<Flight> (id);
 
-		Plane *plane=dataStorage.getNewObject<Plane> (flight.plane);
-		LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethod);
+		Plane *plane=dataStorage.getNewObject<Plane> (flight.planeId);
+		LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethodId);
 		Plane *towplane=NULL;
 
 		db_id towplaneId=invalid_id;
@@ -829,7 +829,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 			if (launchMethod->towplaneKnown ())
 				towplaneId=dataStorage.getPlaneIdByRegistration (launchMethod->towplaneRegistration);
 			else
-				towplaneId=flight.towplane;
+				towplaneId=flight.towplaneId;
 
 			if (id_valid (towplaneId))
 				towplane=dataStorage.getNewObject<Plane> (towplaneId);
@@ -1256,7 +1256,7 @@ void MainWindow::dbEvent (DbEvent event)
 				case det_add:
 				{
 					const Flight &flight=dataStorage.getObject<Flight> (event.id);
-					if (flight.vorbereitet () || flight.effdatum ()==displayDate)
+					if (flight.isPrepared () || flight.effdatum ()==displayDate)
 						flightList.append (flight);
 
 					// TODO: set the cursor position to the flight
@@ -1264,7 +1264,7 @@ void MainWindow::dbEvent (DbEvent event)
 					// TODO introduce Flight::hasDate (timeZone)
 					if (ui.actionResetDisplayDateOnNewFlight)
 					{
-						if (flight.vorbereitet ())
+						if (flight.isPrepared ())
 							setDisplayDateCurrent (false);
 						else
 							setDisplayDate (flight.effdatum (), false);
@@ -1277,7 +1277,7 @@ void MainWindow::dbEvent (DbEvent event)
 						const Flight &flight=dataStorage.getObject<Flight> (event.id);
 
 						std::cout << "effdatum: " << flight.effdatum ().toString () << std::endl;
-						if (flight.vorbereitet () || flight.effdatum ()==displayDate)
+						if (flight.isPrepared () || flight.effdatum ()==displayDate)
 							flightList.replaceOrAdd (event.id, flight);
 						else
 							flightList.removeById (event.id);

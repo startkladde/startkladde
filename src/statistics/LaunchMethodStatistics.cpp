@@ -48,7 +48,7 @@ LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &
 		if (flight.happened ())
 		{
 			// Non-existing values are initialized to 0
-			++map[flight.launchMethod];
+			++map[flight.launchMethodId];
 		}
 	}
 

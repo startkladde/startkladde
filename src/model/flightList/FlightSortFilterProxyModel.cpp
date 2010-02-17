@@ -38,7 +38,7 @@ bool FlightSortFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIn
 	// Get the flight from the model
 	const Flight &flight=flightList->at (sourceRow);
 
-	if (flight.vorbereitet ())
+	if (flight.isPrepared ())
 	{
 		// Prepared flights are hidden if one of these is true:
 		//   - showPreparedFlights is false

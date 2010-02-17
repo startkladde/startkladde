@@ -62,10 +62,10 @@ PilotLog::Entry PilotLog::Entry::create (const Flight *flight, DataStorage &data
 {
 	PilotLog::Entry entry;
 
-	Plane        *plane       =dataStorage.getNewObject<Plane       > (flight->plane        );
-	Person       *pilot       =dataStorage.getNewObject<Person      > (flight->pilot        );
-	Person       *copilot     =dataStorage.getNewObject<Person      > (flight->copilot      );
-	LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight->launchMethod );
+	Plane        *plane       =dataStorage.getNewObject<Plane       > (flight->planeId        );
+	Person       *pilot       =dataStorage.getNewObject<Person      > (flight->pilotId        );
+	Person       *copilot     =dataStorage.getNewObject<Person      > (flight->copilotId      );
+	LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight->launchMethodId );
 
 	entry.date=flight->effdatum ();
 	if (plane) entry.planeType=plane->type;
@@ -73,9 +73,9 @@ PilotLog::Entry PilotLog::Entry::create (const Flight *flight, DataStorage &data
 	if (pilot) entry.pilot=pilot->formalName ();
 	if (copilot) entry.copilot=copilot->formalName ();
 	if (launchMethod) entry.launchMethod=launchMethod->logString;
-	entry.departureAirfield=flight->departureAirfield;
-	entry.destinationAirfield=flight->destinationAirfield;
-	entry.departureTime=flight->launchTime; // TODO: check flight mode
+	entry.departureAirfield=flight->departureLocation;
+	entry.destinationAirfield=flight->landingLocation;
+	entry.departureTime=flight->departureTime; // TODO: check flight mode
 	entry.landingTime=flight->landingTime; // TODO: check flight mode
 	entry.flightDuration=flight->flightDuration (); // TODO: check flight mode
 	entry.comments=flight->comments;
@@ -130,9 +130,9 @@ PilotLog *PilotLog::createNew (db_id personId, const QList<Flight> &flights, Dat
 		{
 			// The person can be the pilot, or (depending on the flight instructor
 			// mode) the flight instructor, which is the copilot)
-			if (flight.pilot==personId ||
-				(mode==flightInstructorLoose && flight.copilot==personId) ||
-				(mode==flightInstructorStrict && flight.flightType==ftTraining2 && flight.copilot==personId))
+			if (flight.pilotId==personId ||
+				(mode==flightInstructorLoose && flight.copilotId==personId) ||
+				(mode==flightInstructorStrict && flight.type==Flight::typeTraining2 && flight.copilotId==personId))
 			{
 				interestingFlights.append (&flight);
 			}
@@ -165,8 +165,8 @@ PilotLog *PilotLog::createNew (const QList<Flight> &flights, DataStorage &dataSt
 	{
 		if (flight.finished ())
 		{
-			personIdSet.insert (flight.pilot);
-			personIdSet.insert (flight.copilot);
+			personIdSet.insert (flight.pilotId);
+			personIdSet.insert (flight.copilotId);
 		}
 	}
 

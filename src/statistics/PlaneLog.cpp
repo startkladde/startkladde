@@ -66,16 +66,16 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, DataStorage &data
 {
 	PlaneLog::Entry entry;
 
-	Plane      *plane     =dataStorage.getNewObject<Plane     > (flight->plane );
-	Person     *pilot     =dataStorage.getNewObject<Person    > (flight->pilot    );
+	Plane      *plane     =dataStorage.getNewObject<Plane     > (flight->planeId );
+	Person     *pilot     =dataStorage.getNewObject<Person    > (flight->pilotId    );
 
 	if (plane) entry.registration=plane->registration;
 	entry.date=flight->effdatum ();
 	if (pilot) entry.pilotName=pilot->formalName ();
 	entry.minPassengers=entry.maxPassengers=flight->numPassengers ();
-	entry.departureAirfield=flight->departureAirfield;
-	entry.destinationAirfield=flight->destinationAirfield;
-	entry.departureTime=flight->launchTime; // TODO: check flight mode
+	entry.departureAirfield=flight->departureLocation;
+	entry.destinationAirfield=flight->landingLocation;
+	entry.departureTime=flight->departureTime; // TODO: check flight mode
 	entry.landingTime=flight->landingTime; // TODO: check flight mode
 	entry.numLandings=flight->numLandings;
 	entry.operationTime=flight->flightDuration (); // TODO: check flight mode
@@ -99,16 +99,16 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Da
 
 	PlaneLog::Entry entry;
 
-	Plane      *plane     =dataStorage.getNewObject<Plane     > (flights.last ()->plane );
-	Person     *pilot     =dataStorage.getNewObject<Person    > (flights.last ()->pilot    );
+	Plane      *plane     =dataStorage.getNewObject<Plane     > (flights.last ()->planeId );
+	Person     *pilot     =dataStorage.getNewObject<Person    > (flights.last ()->pilotId    );
 
 	// Values directly determined
 	if (plane) entry.registration=plane->registration;
 	entry.date=flights.last ()->effdatum ();
 	if (pilot) entry.pilotName=pilot->formalName ();
-	entry.departureAirfield=flights.first ()->departureAirfield;
-	entry.destinationAirfield=flights.last ()->destinationAirfield;
-	entry.departureTime=flights.first ()->launchTime;
+	entry.departureAirfield=flights.first ()->departureLocation;
+	entry.destinationAirfield=flights.last ()->landingLocation;
+	entry.departureTime=flights.first ()->departureTime;
 	entry.landingTime=flights.last ()->landingTime;
 
 	// Values determined from all flights
@@ -183,7 +183,7 @@ PlaneLog *PlaneLog::createNew (db_id planeId, const QList<Flight> &flights, Data
 	// Make a list of flights for this plane
 	foreach (const Flight &flight, flights)
 		if (flight.finished ())
-			if (flight.plane==planeId)
+			if (flight.planeId==planeId)
 				interestingFlights.append (&flight);
 
 	qSort (interestingFlights);
@@ -202,7 +202,7 @@ PlaneLog *PlaneLog::createNew (db_id planeId, const QList<Flight> &flights, Data
 		// We accumulate in entryFlights as long as we can merge flights.
 		// Then we create an entry, append it to the list and clear
 		// entryFlights.
-		if (previousFlight && !flight->collective_bb_entry_possible (previousFlight, plane))
+		if (previousFlight && !flight->collectiveLogEntryPossible (previousFlight, plane))
 		{
 			// No further merging
 			result->entries.append (PlaneLog::Entry::create (entryFlights, dataStorage));
@@ -235,7 +235,7 @@ PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, DataStorage &dataSt
 	// Determine all planes which have flights
 	foreach (const Flight &flight, flights)
 		if (flight.finished ())
-			planeIdSet.insert (flight.plane);
+			planeIdSet.insert (flight.planeId);
 
 	QList<db_id> planeIds=planeIdSet.toList ();
 	planeIds.removeAll (0);

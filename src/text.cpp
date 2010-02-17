@@ -35,42 +35,6 @@ bool airfieldEntryCanBeChanged (QString airfield)
 }
 
 
-QString t_pilot_bezeichnung (FlightType flugtyp, casus c)
-	/*
-	 * Creates a description of the pilot's function (pilot, flight instructor...).
-	 * Parameters:
-	 *   - flugytp: the flight type.
-	 *   - casus c: the case (grammatical) to create the description with.
-	 * Return value:
-	 *   - the description.
-	 */
-{
-	// TODO diese hier in data_types.cpp
-	switch (flugtyp)
-	{
-		case ftTraining2: return c==cas_genitiv   ? QString::fromUtf8 ("Flugschülers") : QString::fromUtf8 ("Flugschüler");
-		default:         return c==cas_nominativ ? QString::fromUtf8 ("Pilot")        : QString::fromUtf8 ("Piloten");
-	}
-}
-
-QString t_begleiter_bezeichnung (FlightType flugtyp, casus c)
-	/*
-	 * Creates a description of the copilot's function (pilot, flight instructor...).
-	 * Parameters:
-	 *   - flugytp: the flight type.
-	 *   - casus c: the case (grammatical) to create the description with.
-	 * Return value:
-	 *   - the description.
-	 */
-{
-	switch (flugtyp)
-	{
-		case ftTraining2:                          return c==cas_genitiv ? "Fluglehrers": "Fluglehrer";
-		case ftGuestPrivate: case ftGuestExternal: return c==cas_genitiv ? "Gasts"      : "Gast";
-		default:                                  return c==cas_genitiv ? "Begleiters" : "Begleiter";
-	}
-}
-
 void replace_tabs (QString &s)
 {
 	s.replace ('\t', ' ');

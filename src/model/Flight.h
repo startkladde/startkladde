@@ -40,141 +40,196 @@ enum FlightError {
 	ff_startort_gleich_zielort, ff_kein_schleppflugzeug, ff_towplane_is_glider
 	};
 
+// TODO: inherit from Entity
 class Flight
 {
 	friend class Database;
 
 	public:
-		Flight ();
-		Flight (db_id id); // TODO constructors taking id should be protected?
+		// *** Types
+		enum Type {
+			typeNone,
+			typeNormal,
+			typeTraining2, typeTraining1,
+			typeGuestPrivate, typeGuestExternal,
+			typeTow
+		};
 
-		bool operator< (const Flight &o) const;
-		static bool lessThan (Flight *a, Flight *b) { return *a < *b; }
+		enum Mode { modeNone, modeLocal, modeComing, modeLeaving };
 
-		bool fliegt () const;	// Use with care
-		bool sfz_fliegt () const;
-		bool vorbereitet () const;
 
-		bool startNow (bool force=false);
-		bool landNow (bool force=false);
-		bool landTowflightNow (bool force=false);
-		bool performTouchngo (bool force=false);
-
-		QString typeString (lengthSpecification lenspec) const;
-		Time flightDuration () const;
-		Time towflightDuration () const;
-		bool fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
-		bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
-		FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *launchMethod) const;
-		QString errorDescription (FlightError code) const;
-		bool happened () const;
-		bool finished () const;
-		Flight makeTowflight (db_id towplaneId, db_id towLaunchMethod) const;
-		void get_towflight (Flight *towflight, db_id towplaneId, db_id towLaunchMethod) const;
-		QString toString () const;
-		bool isExternal () const { return !lands_here (mode) || !starts_here (mode); }
-
-		db_id getId () const { return id; }
-		void setId (db_id id) { this->id=id; } // TODO can we do without this?
-
-		db_id plane;
-		db_id pilot;						// ID des Piloten
-		db_id copilot;					// ID des Begleiters
-		db_id towpilot;						// ID des Schleppiloten
-		Time launchTime;
-		Time landingTime;
-		Time landingTimeTowflight;
-		db_id launchMethod;				// ID der Startart
-		FlightType flightType;					// Typ des Flugs
-		QString departureAirfield;
-		QString destinationAirfield;
-		QString destinationAirfieldTowplane;
-		int numLandings;
-		QString comments;
-		QString accountingNote;
-		FlightMode mode;
-		FlightMode modeTowflight;
-		QString pvn, pnn, bvn, bnn, tpvn, tpnn;			// Dumme Sache für den Fall, dass nur ein Nachname/Vorname bekannt ist.
-		db_id towplane;
-		bool started, landed, towflightLanded;
-		// Whenn adding something here, addObject it to get_towflight ()
-
+		// *** Constants
 		static const int STATUS_STARTED;
 		static const int STATUS_LANDED;
 		static const int STATUS_TOWFLIGHT_LANDED;
 
 
+		// *** Construction
+		Flight ();
+		Flight (db_id id); // TODO protected (friend Database)?
 
-		Time effectiveTime () const;
-		// TODO which one of these is right?
-		QDate effdatum (time_zone tz=tz_utc) const;
-		QDate getEffectiveDate (time_zone tz, QDate defaultDate) const;
 
+		// *** Data
+		db_id planeId, pilotId, copilotId;
+		Type type;
+		Mode mode;
+
+		bool departed, landed, towflightLanded;
+		db_id launchMethodId;
+		QString departureLocation;
+		QString landingLocation;
+
+		Time departureTime;
+		Time landingTime;
+		int numLandings;
+
+		db_id towplaneId;
+		Mode towflightMode;
+		QString towflightLandingLocation;
+		Time towflightLandingTime;
+		db_id towpilotId;
+
+		// Incomplete names
+		QString pilotFirstName   , pilotLastName   ;
+		QString copilotFirstName , copilotLastName ;
+		QString towpilotFirstName, towpilotLastName;
+
+		QString comments;
+		QString accountingNotes;
+
+
+		// *** Attribute accessors
+		db_id getId () const { return id; }
+		void setId (db_id id) { this->id=id; } // TODO can we do without this?
+
+
+		// *** Comparison
+		bool operator< (const Flight &o) const;
+		static bool lessThan (Flight *a, Flight *b) { return *a < *b; }
+		int sort (const Flight *other) const;
+
+
+		// *** Status
+		// TODO fliegt and isFlying are probably not correct
+		bool fliegt () const { return happened () && !finished (); }
+		bool isFlying () const { return departsHere () && landsHere () && departed && !landed; }
+		bool sfz_fliegt () const { return happened () && !towflightLanded; }
+//		TODO: !((starts_here and started) or (lands_here and landed))
+		bool isPrepared () const { return !happened (); }
+		// TODO this is certainly not correct
+		bool isTowplaneFlying () const { return departsHere () && towflightLandsHere () && departed && !towflightLanded; }
+
+		bool happened () const;
+		bool finished () const;
+
+		static int countFlying (const QList<Flight> flights);
+		static int countHappened (const QList<Flight> flights);
+
+
+		// *** Crew
 		QString pilotDescription () const;
 		QString copilotDescription () const;
 		QString towpilotDescription () const;
+
+		bool pilotSpecified    () const { return id_valid (pilotId)    || !eintraege_sind_leer (pilotFirstName   , pilotLastName   ); }
+		bool copilotSpecified  () const { return id_valid (copilotId)  || !eintraege_sind_leer (copilotFirstName , copilotLastName ); }
+		bool towpilotSpecified () const { return id_valid (towpilotId) || !eintraege_sind_leer (towpilotFirstName, towpilotLastName); }
 
 		QString incompletePilotName () const;
 		QString incompleteCopilotName () const;
 		QString incompleteTowpilotName () const;
 
-		bool collective_bb_entry_possible (const Flight *prev, const Plane *plane) const;
+		bool hasCopilot () const { return typeAlwaysHasCopilot (type) || (typeCopilotRecorded (type) && copilotSpecified ()); }
+		int numPassengers () const { return hasCopilot ()?2:1; } // TODO: this is inaccurate for planes with >2 seats
 
-		bool flight_lands_here () const;
-		bool flight_starts_here () const;
 
-		int sort (const Flight *other) const;
+		// *** Departure/landing
+		bool departsHere        () const { return departsHere (mode         ); }
+		bool landsHere          () const { return landsHere   (mode         ); }
+		bool towflightLandsHere () const { return landsHere   (towflightMode); }
 
-		// Convenience functions
-		bool pilotSpecified    () const { return id_valid (pilot)     || !eintraege_sind_leer (pvn , pnn ); }
-		bool copilotSpecified  () const { return id_valid (copilot) || !eintraege_sind_leer (bvn , bnn ); }
-		bool towpilotSpecified () const { return id_valid (towpilot)  || !eintraege_sind_leer (tpvn, tpnn); }
+		bool canDepart        (QString *reason=NULL) const;
+		bool canLand          (QString *reason=NULL) const;
+		bool canTouchngo      (QString *reason=NULL) const;
+		bool canTowflightLand (QString *reason=NULL) const;
+
+		bool departNow        (bool force=false);
+		bool landNow          (bool force=false);
+		bool landTowflightNow (bool force=false);
+		bool performTouchngo  (bool force=false);
+
+		// *** Times
+		Time effectiveTime () const;
+		// TODO which one of these is right?
+		QDate effdatum (time_zone tz=tz_utc) const;
+		QDate getEffectiveDate (time_zone tz, QDate defaultDate) const;
+
+		bool canHaveDepartureTime        () const { return departsHere (); }
+		bool canHaveLandingTime          () const { return landsHere () || isTowflight (); }
+		bool canHaveTowflightLandingTime () const { return true; } // Leaving towflights hava an end time
+
+		bool hasDepartureTime        () const { return canHaveDepartureTime        () && departed       ; }
+		bool hasLandingTime          () const { return canHaveLandingTime          () && landed         ; }
+		bool hasTowflightLandingTime () const { return canHaveTowflightLandingTime () && towflightLanded; }
+
+		Time flightDuration () const;
+		Time towflightDuration () const;
+
+		// TODO not good
+		bool hasDuration () const { return hasDepartureTime () && canHaveLandingTime (); }
+		bool hasTowflightDuration () const { return hasDepartureTime () && canHaveTowflightLandingTime (); }
+
+
+		// *** Error checking
+		FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *launchMethod) const;
+		QString errorDescription (FlightError code) const;
+		bool isErroneous (DataStorage &dataStorage) const;
+		bool fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
+		bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
+
+
+		// *** Formatting
+		QString toString () const;
+
+
+		// *** Misc
+		bool collectiveLogEntryPossible (const Flight *prev, const Plane *plane) const;
+		bool isExternal () const { return !landsHere () || !departsHere (); }
+		Flight makeTowflight (db_id theTowplaneId, db_id towLaunchMethod) const;
 
 		// TODO: this concept is bad - a flight in the database must never
 		// have the flight type "towflight", because that is reserved for
 		// "shadow" towflights created from flights from the database; when
 		// the user performs "land" on a towflight, it does not land the flight
 		// with that ID but its towflight.
-		bool isTowflight () const { return flightType==ftTow; }
+		bool isTowflight () const { return type==typeTow; }
 
-		bool hasCopilot () const { return flightTypeAlwaysHasCopilot (flightType) || (flightTypeCopilotRecorded (flightType) && copilotSpecified ()); }
-		int numPassengers () const { return hasCopilot ()?2:1; } // TODO: this is inaccurate for planes with >2 seats
 
-		bool startsHere () const { return starts_here (mode); }
-		bool landsHere () const { return lands_here (mode); }
-		bool towflightLandsHere () const { return lands_here (modeTowflight); }
+		// *** Type methods
+		static QList<Type> listTypes (bool includeInvalid);
+		static QString typeText (Type type, lengthSpecification lenspec);
+		static bool typeCopilotRecorded (Type type);
+		static bool typeAlwaysHasCopilot (Type type);
+		static QString typePilotDescription (Type type);
+		static QString typeCopilotDescription (Type type);
+		static bool typeIsGuest (Type type);
 
-		bool canStart (QString *reason=NULL) const;
-		bool canLand (QString *reason=NULL) const;
-		bool canTouchngo (QString *reason=NULL) const;
-		bool canTowflightLand (QString *reason=NULL) const;
 
-		bool canHaveStartTime () const { return startsHere (); }
-		bool canHaveLandingTime () const { return landsHere () || isTowflight (); }
-		bool canHaveTowflightLandingTime () const { return true; } // Going towflights hava an end time
+		// *** Mode methods
+		static QList<Mode> listModes (bool includeInvalid);
+		static QList<Mode> listTowModes (bool includeInvalid);
+		static QString modeText (Mode mode, lengthSpecification);
+		static bool landsHere (Mode mode);
+		static bool departsHere (Mode mode);
 
-		bool hasStartTime () const { return canHaveStartTime () && started; }
-		bool hasLandingTime () const { return canHaveLandingTime () && landed; }
-		bool hasTowflightLandingTime () const { return canHaveTowflightLandingTime () && towflightLanded; }
 
-		// TODO not good
-		bool hasDuration () const { return hasStartTime () && canHaveLandingTime (); }
-		bool hasTowflightDuration () const { return hasStartTime () && canHaveTowflightLandingTime (); }
-
-		// TODO this is certainly not correct
-		bool isFlying () const { return startsHere () && landsHere () && started && !landed; }
-		bool isTowplaneFlying () const { return startsHere () && towflightLandsHere () && started && !towflightLanded; }
-
-		static int countFlying (const QList<Flight> flights);
-		static int countHappened (const QList<Flight> flights);
-
+		// *** ObjectListWindow/ObjectEditorWindow helpers
 		static QString objectTypeDescription () { return "Flug"; }
 		static QString objectTypeDescriptionDefinite () { return "der Flug"; }
 		static QString objectTypeDescriptionPlural () { return QString::fromUtf8 ("Flüge"); }
 
-		bool isErroneous (DataStorage &dataStorage) const;
 
-		// SQL interface
+		// *** SQL interface
 		static QString dbTableName ();
 		static QString selectColumnList ();
 		static Flight createFromQuery (const QSqlQuery &query);
@@ -183,16 +238,16 @@ class Flight
 		void bindValues (QSqlQuery &q) const;
 		static QList<Flight> createListFromQuery (QSqlQuery &query);
 		// Enum mappers
-		static QString    modeToDb   (FlightMode mode);
-		static FlightMode modeFromDb (QString    mode);
-		static QString    typeToDb   (FlightType type);
-		static FlightType typeFromDb (QString    type);
+		static QString    modeToDb   (Mode       mode);
+		static Mode       modeFromDb (QString    mode);
+		static QString    typeToDb   (Type       type);
+		static Type       typeFromDb (QString    type);
 		// Flag accessors
 		void setStatus (int status);
 		int getStatus () const;
 
 	private:
-		db_id id;							// ID des Flugs in der Datenbank
+		db_id id;
 
 		void initialize (db_id id);
 		QString incompletePersonName (QString nn, QString vn) const;

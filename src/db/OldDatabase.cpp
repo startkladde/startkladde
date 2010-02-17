@@ -768,34 +768,34 @@ QString OldDatabase::query_value_list (db_object_type type, void *object)
 		case ot_flight:
 		{
 			Flight *flight=(Flight *)object;
-			OUTPUT ("pilot", flight->pilot);
-			OUTPUT ("begleiter", flight->copilot);
-			OUTPUT ("startort", flight->departureAirfield.latin1 ());
-			OUTPUT ("zielort", flight->destinationAirfield.latin1 ());
+			OUTPUT ("pilot", flight->pilotId);
+			OUTPUT ("begleiter", flight->copilotId);
+			OUTPUT ("startort", flight->departureLocation.latin1 ());
+			OUTPUT ("zielort", flight->landingLocation.latin1 ());
 			OUTPUT ("anzahl_landungen", flight->numLandings);
-			OUTPUT ("startzeit", to_string (&(flight->launchTime)));
+			OUTPUT ("startzeit", to_string (&(flight->departureTime)));
 			OUTPUT ("landezeit", to_string (&(flight->landingTime)));
-			OUTPUT ("startart", flight->launchMethod);
-			OUTPUT ("land_schlepp", to_string (&(flight->landingTimeTowflight)));
-			OUTPUT ("typ", flugtyp_to_db (flight->flightType));
+			OUTPUT ("startart", flight->launchMethodId);
+			OUTPUT ("land_schlepp", to_string (&(flight->towflightLandingTime)));
+			OUTPUT ("typ", flugtyp_to_db (flight->type));
 			OUTPUT ("bemerkung", flight->comments.latin1 ());
-			OUTPUT ("flugzeug", flight->plane);
-			OUTPUT ("status", make_status (flight->started, flight->landed, flight->towflightLanded));
+			OUTPUT ("flugzeug", flight->planeId);
+			OUTPUT ("status", make_status (flight->departed, flight->landed, flight->towflightLanded));
 			OUTPUT ("modus", modus_to_db (flight->mode));
-			OUTPUT ("pvn", flight->pvn.latin1 ());
-			OUTPUT ("pnn", flight->pnn.latin1 ());
-			OUTPUT ("bvn", flight->bvn.latin1 ());
-			OUTPUT ("bnn", flight->bnn.latin1 ());
+			OUTPUT ("pvn", flight->pilotFirstName.latin1 ());
+			OUTPUT ("pnn", flight->pilotLastName.latin1 ());
+			OUTPUT ("bvn", flight->copilotFirstName.latin1 ());
+			OUTPUT ("bnn", flight->copilotLastName.latin1 ());
 			if (opts.record_towpilot)
 			{
-				OUTPUT ("towpilot", flight->towpilot);
-				OUTPUT ("tpvn", flight->tpvn.latin1 ());
-				OUTPUT ("tpnn", flight->tpnn.latin1 ());
+				OUTPUT ("towpilot", flight->towpilotId);
+				OUTPUT ("tpvn", flight->towpilotFirstName.latin1 ());
+				OUTPUT ("tpnn", flight->towpilotLastName.latin1 ());
 			}
-			OUTPUT ("modus_sfz", modus_to_db (flight->modeTowflight));
-			OUTPUT ("zielort_sfz", flight->destinationAirfieldTowplane.latin1 ());
-			OUTPUT ("towplane", flight->towplane);
-			OUTPUTL ("abrechnungshinweis", flight->accountingNote.latin1 ());
+			OUTPUT ("modus_sfz", modus_to_db (flight->towflightMode));
+			OUTPUT ("zielort_sfz", flight->towflightLandingLocation.latin1 ());
+			OUTPUT ("towplane", flight->towplaneId);
+			OUTPUTL ("abrechnungshinweis", flight->accountingNotes.latin1 ());
 		} break;
 		case ot_plane:
 		{
@@ -842,37 +842,37 @@ int OldDatabase::row_to_object (db_object_type otype, void *object, MYSQL_ROW ro
 			Flight *p=(Flight *)object;
 			// TODO: hier prüfen, ob diese Felder existieren.
 			USE ("id");                 p->id=atoll (value);
-			USE ("pilot");              p->pilot=atol (value);
-			USE ("begleiter");          p->copilot=atol (value);
-			USE ("startort");           p->departureAirfield=(QString)value;
-			USE ("zielort");            p->destinationAirfield=(QString)value;
+			USE ("pilot");              p->pilotId=atol (value);
+			USE ("begleiter");          p->copilotId=atol (value);
+			USE ("startort");           p->departureLocation=(QString)value;
+			USE ("zielort");            p->landingLocation=(QString)value;
 			USE ("anzahl_landungen");   p->numLandings=atoi (value);
-			USE ("startzeit");          parse (&(p->launchTime), value);
+			USE ("startzeit");          parse (&(p->departureTime), value);
 			USE ("landezeit");          parse (&(p->landingTime), value);
-			USE ("startart");           p->launchMethod=atol (value);
-			USE ("land_schlepp");       parse (&(p->landingTimeTowflight), value);
-			USE ("typ");                p->flightType=db_to_flugtyp (value);
+			USE ("startart");           p->launchMethodId=atol (value);
+			USE ("land_schlepp");       parse (&(p->towflightLandingTime), value);
+			USE ("typ");                p->type=db_to_flugtyp (value);
 			USE ("bemerkung");          p->comments=(QString)value;
-			USE ("flugzeug");           p->plane=atol (value);
+			USE ("flugzeug");           p->planeId=atol (value);
 			USE ("status"); unsigned int status=atoi (value);
-			p->started=status_gestartet (status);
+			p->departed=status_gestartet (status);
 			p->landed=status_gelandet (status);
 			p->towflightLanded=status_sfz_gelandet (status);
 			USE ("modus");              p->mode=db_to_modus (value);
-			USE ("pvn");                p->pvn=(QString)value;
-			USE ("pnn");                p->pnn=(QString)value;
-			USE ("bvn");                p->bvn=(QString)value;
-			USE ("bnn");                p->bnn=(QString)value;
+			USE ("pvn");                p->pilotFirstName=(QString)value;
+			USE ("pnn");                p->pilotLastName=(QString)value;
+			USE ("bvn");                p->copilotFirstName=(QString)value;
+			USE ("bnn");                p->copilotLastName=(QString)value;
 			if (opts.record_towpilot)
 			{
-				USE ("towpilot");            p->towpilot=atol (value);
-				USE ("tpvn");                p->tpvn=(QString)value;
-				USE ("tpnn");                p->tpnn=(QString)value;
+				USE ("towpilot");            p->towpilotId=atol (value);
+				USE ("tpvn");                p->towpilotFirstName=(QString)value;
+				USE ("tpnn");                p->towpilotLastName=(QString)value;
 			}
-			USE ("modus_sfz");          p->modeTowflight=db_to_modus (value);
-			USE ("zielort_sfz");        p->destinationAirfieldTowplane=(QString)(value);
-			USE ("towplane"); 			p->towplane=atoi(value);
-			USE ("abrechnungshinweis"); p->accountingNote=(QString)(value);
+			USE ("modus_sfz");          p->towflightMode=db_to_modus (value);
+			USE ("zielort_sfz");        p->towflightLandingLocation=(QString)(value);
+			USE ("towplane"); 			p->towplaneId=atoi(value);
+			USE ("abrechnungshinweis"); p->accountingNotes=(QString)(value);
 			USE (column_name_editable.latin1()); p->editable=(atoi (value)>0);
 		} break;
 		case ot_plane:

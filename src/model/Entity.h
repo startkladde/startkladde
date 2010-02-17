@@ -21,7 +21,7 @@ class Entity
 	public:
 		// *** Construction
 		Entity ();
-		Entity (db_id id);
+		Entity (db_id id); // TODO protected (friend Database)?
 		virtual ~Entity ();
 
 

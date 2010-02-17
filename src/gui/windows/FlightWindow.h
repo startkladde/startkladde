@@ -166,20 +166,20 @@ class FlightWindow: public QDialog
 		// corresponding field is active. This can be determined by the
 		// isXActive methods.
 		QString    getCurrentRegistration                 () { return ui.registrationInput->currentText (); }
-		FlightType getCurrentFlightType                   () { return (FlightType)ui.flightTypeInput->currentItemData ().toInt (); }
+		Flight::Type getCurrentFlightType                   () { return (Flight::Type)ui.flightTypeInput->currentItemData ().toInt (); }
 		//
 		QString    getCurrentPilotLastName                () { return ui.pilotLastNameInput->currentText (); }
 		QString    getCurrentPilotFirstName               () { return ui.pilotFirstNameInput->currentText (); }
 		QString    getCurrentCopilotLastName              () { return ui.copilotLastNameInput->currentText (); }
 		QString    getCurrentCopilotFirstName             () { return ui.copilotFirstNameInput->currentText (); }
 		//
-		FlightMode getCurrentFlightMode                   () { return (FlightMode)ui.flightModeInput->currentItemData ().toInt(); }
+		Flight::Mode getCurrentFlightMode                   () { return (Flight::Mode)ui.flightModeInput->currentItemData ().toInt(); }
 		db_id      getCurrentLaunchMethodId               () { return ui.launchMethodInput->currentItemData ().toInt(); }
 		//
 		QString    getCurrentTowplaneRegistration         () { return ui.towplaneRegistrationInput->currentText (); }
 		QString    getCurrentTowpilotLastName             () { return ui.towpilotLastNameInput->currentText(); }
 		QString    getCurrentTowpilotFirstName            () { return ui.towpilotFirstNameInput->currentText (); }
-		FlightMode getCurrentTowflightMode                () { return (FlightMode)ui.towflightModeInput->currentItemData ().toInt(); }
+		Flight::Mode getCurrentTowflightMode                () { return (Flight::Mode)ui.towflightModeInput->currentItemData ().toInt(); }
 		//
 		QTime      getCurrentLaunchTime                   () { return ui.launchTimeInput->time (); }
 		QTime      getCurrentLandingTime                  () { return ui.landingTimeInput->time (); }
@@ -221,9 +221,9 @@ class FlightWindow: public QDialog
 		LaunchMethod getCurrentLaunchMethod () { return dataStorage.getObject<LaunchMethod> (getCurrentLaunchMethodId ()); }
 		bool isCurrentLaunchMethodValid () { return id_valid (getCurrentLaunchMethodId ()); }
 
-		bool currentStartsHere   () {       return isFlightModeActive    () && starts_here (getCurrentFlightMode ()); }
-		bool currentLandsHere    () {       return isFlightModeActive    () && lands_here (getCurrentFlightMode ()); }
-		bool currentTowLandsHere () {       return isTowflightModeActive () && lands_here (getCurrentTowflightMode ()); }
+		bool currentStartsHere   () {       return isFlightModeActive    () && Flight::departsHere (getCurrentFlightMode ()); }
+		bool currentLandsHere    () {       return isFlightModeActive    () && Flight::landsHere (getCurrentFlightMode ()); }
+		bool currentTowLandsHere () {       return isTowflightModeActive () && Flight::landsHere (getCurrentTowflightMode ()); }
 		bool currentIsAirtow     ();
 
 
@@ -234,7 +234,7 @@ class FlightWindow: public QDialog
 		bool isFlightTypeActive                   () { return true; }
 		//
 		bool isPilotActive                        () { return true; }
-		bool isCopilotActive                      () { return flightTypeCopilotRecorded (getCurrentFlightType ()); } // Does not depend on plane, see comments above
+		bool isCopilotActive                      () { return Flight::typeCopilotRecorded (getCurrentFlightType ()); } // Does not depend on plane, see comments above
 		//
 		bool isFlightModeActive                   () { return true; }
 		bool isLaunchMethodActive                 () { return currentStartsHere (); }
