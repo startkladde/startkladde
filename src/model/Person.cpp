@@ -126,8 +126,8 @@ QVariant Person::DefaultObjectModel::displayHeaderData (int column) const
 		case 0: return "Nachname";
 		case 1: return "Vorname";
 		case 2: return "Verein";
-		case 3: return "Landesverbandsnummer";
-		case 4: return "Bemerkungen";
+		case 3: return "Bemerkungen";
+		case 4: return "Vereins-ID";
 		// TODO remove from DefaultItemModel?
 		case 5: return "ID";
 	}
@@ -143,8 +143,8 @@ QVariant Person::DefaultObjectModel::displayData (const Person &object, int colu
 		case 0: return object.nachname;
 		case 1: return object.vorname;
 		case 2: return object.club;
-		case 3: return object.landesverbands_nummer;
-		case 4: return object.comments;
+		case 3: return object.comments;
+		case 4: return object.club_id;
 		case 5: return object.id;
 	}
 

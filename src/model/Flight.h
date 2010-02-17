@@ -93,110 +93,109 @@ class Flight
 
 
 		// *** Attribute accessors
-		db_id getId () const { return id; }
-		void setId (db_id id) { this->id=id; } // TODO can we do without this?
+		virtual db_id getId () const { return id; }
+		virtual void setId (db_id id) { this->id=id; } // TODO can we do without this?
 
 
 		// *** Comparison
-		bool operator< (const Flight &o) const;
+		virtual bool operator< (const Flight &o) const;
 		static bool lessThan (Flight *a, Flight *b) { return *a < *b; }
-		int sort (const Flight *other) const;
+		virtual int sort (const Flight *other) const;
 
 
 		// *** Status
 		// TODO fliegt and isFlying are probably not correct
-		bool fliegt () const { return happened () && !finished (); }
-		bool isFlying () const { return departsHere () && landsHere () && departed && !landed; }
-		bool sfz_fliegt () const { return happened () && !towflightLanded; }
+		virtual bool fliegt () const { return happened () && !finished (); }
+		virtual bool isFlying () const { return departsHere () && landsHere () && departed && !landed; }
+		virtual bool sfz_fliegt () const { return happened () && !towflightLanded; }
 //		TODO: !((starts_here and started) or (lands_here and landed))
-		bool isPrepared () const { return !happened (); }
+		virtual bool isPrepared () const { return !happened (); }
 		// TODO this is certainly not correct
-		bool isTowplaneFlying () const { return departsHere () && towflightLandsHere () && departed && !towflightLanded; }
+		virtual bool isTowplaneFlying () const { return departsHere () && towflightLandsHere () && departed && !towflightLanded; }
 
-		bool happened () const;
-		bool finished () const;
+		virtual bool happened () const;
+		virtual bool finished () const;
 
 		static int countFlying (const QList<Flight> flights);
 		static int countHappened (const QList<Flight> flights);
 
 
 		// *** Crew
-		QString pilotDescription () const;
-		QString copilotDescription () const;
-		QString towpilotDescription () const;
+		virtual QString pilotDescription () const;
+		virtual QString copilotDescription () const;
 
-		bool pilotSpecified    () const { return id_valid (pilotId)    || !eintraege_sind_leer (pilotFirstName   , pilotLastName   ); }
-		bool copilotSpecified  () const { return id_valid (copilotId)  || !eintraege_sind_leer (copilotFirstName , copilotLastName ); }
-		bool towpilotSpecified () const { return id_valid (towpilotId) || !eintraege_sind_leer (towpilotFirstName, towpilotLastName); }
+		virtual bool pilotSpecified    () const { return id_valid (pilotId)    || !eintraege_sind_leer (pilotFirstName   , pilotLastName   ); }
+		virtual bool copilotSpecified  () const { return id_valid (copilotId)  || !eintraege_sind_leer (copilotFirstName , copilotLastName ); }
+		virtual bool towpilotSpecified () const { return id_valid (towpilotId) || !eintraege_sind_leer (towpilotFirstName, towpilotLastName); }
 
-		QString incompletePilotName () const;
-		QString incompleteCopilotName () const;
-		QString incompleteTowpilotName () const;
+		virtual QString incompletePilotName () const;
+		virtual QString incompleteCopilotName () const;
+		virtual QString incompleteTowpilotName () const;
 
-		bool hasCopilot () const { return typeAlwaysHasCopilot (type) || (typeCopilotRecorded (type) && copilotSpecified ()); }
-		int numPassengers () const { return hasCopilot ()?2:1; } // TODO: this is inaccurate for planes with >2 seats
+		virtual bool hasCopilot () const { return typeAlwaysHasCopilot (type) || (typeCopilotRecorded (type) && copilotSpecified ()); }
+		virtual int numPassengers () const { return hasCopilot ()?2:1; } // TODO: this is inaccurate for planes with >2 seats
 
 
 		// *** Departure/landing
-		bool departsHere        () const { return departsHere (mode         ); }
-		bool landsHere          () const { return landsHere   (mode         ); }
-		bool towflightLandsHere () const { return landsHere   (towflightMode); }
+		virtual bool departsHere        () const { return departsHere (mode         ); }
+		virtual bool landsHere          () const { return landsHere   (mode         ); }
+		virtual bool towflightLandsHere () const { return landsHere   (towflightMode); }
 
-		bool canDepart        (QString *reason=NULL) const;
-		bool canLand          (QString *reason=NULL) const;
-		bool canTouchngo      (QString *reason=NULL) const;
-		bool canTowflightLand (QString *reason=NULL) const;
+		virtual bool canDepart        (QString *reason=NULL) const;
+		virtual bool canLand          (QString *reason=NULL) const;
+		virtual bool canTouchngo      (QString *reason=NULL) const;
+		virtual bool canTowflightLand (QString *reason=NULL) const;
 
-		bool departNow        (bool force=false);
-		bool landNow          (bool force=false);
-		bool landTowflightNow (bool force=false);
-		bool performTouchngo  (bool force=false);
+		virtual bool departNow        (bool force=false);
+		virtual bool landNow          (bool force=false);
+		virtual bool landTowflightNow (bool force=false);
+		virtual bool performTouchngo  (bool force=false);
 
 		// *** Times
-		Time effectiveTime () const;
+		virtual Time effectiveTime () const;
 		// TODO which one of these is right?
-		QDate effdatum (time_zone tz=tz_utc) const;
-		QDate getEffectiveDate (time_zone tz, QDate defaultDate) const;
+		virtual QDate effdatum (time_zone tz=tz_utc) const;
+		virtual QDate getEffectiveDate (time_zone tz, QDate defaultDate) const;
 
-		bool canHaveDepartureTime        () const { return departsHere (); }
-		bool canHaveLandingTime          () const { return landsHere () || isTowflight (); }
-		bool canHaveTowflightLandingTime () const { return true; } // Leaving towflights hava an end time
+		virtual bool canHaveDepartureTime        () const { return departsHere (); }
+		virtual bool canHaveLandingTime          () const { return landsHere () || isTowflight (); }
+		virtual bool canHaveTowflightLandingTime () const { return true; } // Leaving towflights hava an end time
 
-		bool hasDepartureTime        () const { return canHaveDepartureTime        () && departed       ; }
-		bool hasLandingTime          () const { return canHaveLandingTime          () && landed         ; }
-		bool hasTowflightLandingTime () const { return canHaveTowflightLandingTime () && towflightLanded; }
+		virtual bool hasDepartureTime        () const { return canHaveDepartureTime        () && departed       ; }
+		virtual bool hasLandingTime          () const { return canHaveLandingTime          () && landed         ; }
+		virtual bool hasTowflightLandingTime () const { return canHaveTowflightLandingTime () && towflightLanded; }
 
-		Time flightDuration () const;
-		Time towflightDuration () const;
+		virtual Time flightDuration () const;
+		virtual Time towflightDuration () const;
 
 		// TODO not good
-		bool hasDuration () const { return hasDepartureTime () && canHaveLandingTime (); }
-		bool hasTowflightDuration () const { return hasDepartureTime () && canHaveTowflightLandingTime (); }
+		virtual bool hasDuration () const { return hasDepartureTime () && canHaveLandingTime (); }
+		virtual bool hasTowflightDuration () const { return hasDepartureTime () && canHaveTowflightLandingTime (); }
 
 
 		// *** Error checking
-		FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *launchMethod) const;
-		QString errorDescription (FlightError code) const;
-		bool isErroneous (DataStorage &dataStorage) const;
-		bool fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
-		bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
+		virtual FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *launchMethod) const;
+		virtual QString errorDescription (FlightError code) const;
+		virtual bool isErroneous (DataStorage &dataStorage) const;
+		virtual bool fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
+		virtual bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
 
 
 		// *** Formatting
-		QString toString () const;
+		virtual QString toString () const;
 
 
 		// *** Misc
-		bool collectiveLogEntryPossible (const Flight *prev, const Plane *plane) const;
-		bool isExternal () const { return !landsHere () || !departsHere (); }
-		Flight makeTowflight (db_id theTowplaneId, db_id towLaunchMethod) const;
+		virtual bool collectiveLogEntryPossible (const Flight *prev, const Plane *plane) const;
+		virtual bool isExternal () const { return !landsHere () || !departsHere (); }
+		virtual Flight makeTowflight (db_id theTowplaneId, db_id towLaunchMethod) const;
 
 		// TODO: this concept is bad - a flight in the database must never
 		// have the flight type "towflight", because that is reserved for
 		// "shadow" towflights created from flights from the database; when
 		// the user performs "land" on a towflight, it does not land the flight
 		// with that ID but its towflight.
-		bool isTowflight () const { return type==typeTow; }
+		virtual bool isTowflight () const { return type==typeTow; }
 
 
 		// *** Type methods
@@ -229,7 +228,7 @@ class Flight
 		static Flight createFromQuery (const QSqlQuery &query);
 		static QString insertValueList ();
 		static QString updateValueList ();
-		void bindValues (QSqlQuery &q) const;
+		virtual void bindValues (QSqlQuery &q) const;
 		static QList<Flight> createListFromQuery (QSqlQuery &query);
 		// Enum mappers
 		static QString    modeToDb   (Mode       mode);
@@ -240,8 +239,8 @@ class Flight
 	private:
 		db_id id;
 
-		void initialize (db_id id);
-		QString incompletePersonName (QString nn, QString vn) const;
+		virtual void initialize (db_id id);
+		virtual QString incompletePersonName (QString nn, QString vn) const;
 };
 
 #endif

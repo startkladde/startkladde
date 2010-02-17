@@ -100,6 +100,8 @@ template<class T> void ObjectListWindow<T>::on_table_activated (const QModelInde
 // Instantiate the class templates
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
+#include "src/model/LaunchMethod.h"
 
 template class ObjectListWindow<Plane>;
 template class ObjectListWindow<Person>;
+template class ObjectListWindow<LaunchMethod>;

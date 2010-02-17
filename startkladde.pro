@@ -72,6 +72,7 @@ HEADERS += \
            src/gui/windows/TaskProgressDialog.h \
            src/gui/windows/ObjectListWindowBase.h \
            src/gui/windows/ObjectListWindow.h \
+           src/gui/windows/objectEditor/LaunchMethodEditorPane.h \
            src/gui/windows/objectEditor/ObjectEditorWindow.h \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.h \
            src/gui/windows/objectEditor/ObjectEditorPane.h \
@@ -157,6 +158,7 @@ SOURCES += \
            src/gui/windows/TaskProgressDialog.cpp \
            src/gui/windows/ObjectListWindowBase.cpp \
            src/gui/windows/ObjectListWindow.cpp \
+           src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.cpp \
            src/gui/windows/objectEditor/ObjectEditorPane.cpp \
            src/gui/windows/objectEditor/PlaneEditorPane.cpp \
@@ -168,6 +170,8 @@ SOURCES += \
            src/model/flightList/FlightProxyList.cpp \
            src/model/flightList/FlightSortFilterProxyModel.cpp \
            src/model/Flight.cpp \
+           src/model/Flight_Mode.cpp \
+           src/model/Flight_Type.cpp \
            src/model/Plane.cpp \
            src/model/Person.cpp \
            src/model/LaunchMethod.cpp \
@@ -188,6 +192,7 @@ FORMS += \
            src/gui/windows/TaskProgressDialog.ui \
            src/gui/windows/StatisticsWindow.ui \
            src/gui/windows/ObjectListWindowBase.ui \
+           src/gui/windows/objectEditor/LaunchMethodEditorPane.ui \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.ui \
            src/gui/windows/objectEditor/PlaneEditorPane.ui \
            src/gui/windows/objectEditor/PersonEditorPane.ui \
@@ -197,6 +202,3 @@ FORMS += \
 !include( build/migrations.pro ) {
 error( "build/migrations.pro could not be included" )
 }
-
-
-

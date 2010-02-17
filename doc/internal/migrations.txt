@@ -1,5 +1,4 @@
 Possible changes:
-	- replace flight.status with individual flags (or as time!=null?)
 	- add users.id
 	- towflight as separate flight?
     - change 0 time to null?

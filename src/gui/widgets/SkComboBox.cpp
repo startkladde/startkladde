@@ -50,7 +50,8 @@ void SkComboBox::setEditable (bool editable)
 	// seem to be emitted. (QT version: 4.3.4)
 	QCompleter *c=completer ();
 	c->setCaseSensitivity (Qt::CaseInsensitive);
-	c->setCompletionMode (QCompleter::PopupCompletion);
+	//c->setCompletionMode (QCompleter::PopupCompletion);
+	c->setCompletionMode (QCompleter::InlineCompletion);
 	setCompleter (c);
 
 //	QObject::connect(c, SIGNAL(activated(const QString&)), this, SLOT(comp(const QString&)));

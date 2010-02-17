@@ -162,6 +162,7 @@ class MainWindow: public QMainWindow
 		void on_actionDisconnect_triggered () { dataStorage.disconnect (); }
 		void on_actionEditPlanes_triggered ();
 		void on_actionEditPeople_triggered ();
+		void on_actionEditLaunchMethods_triggered ();
 		//		void on_actionRefreshAll_triggered ();
 
 		// Menu: Debug

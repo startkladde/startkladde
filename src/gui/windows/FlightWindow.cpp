@@ -246,8 +246,7 @@ void FlightWindow::fillData ()
 
 	// *** Launch methods
 	QList<LaunchMethod> launchMethods=dataStorage.getLaunchMethods ();
-	if (!launchMethods.empty())
-		ui.launchMethodInput->addItem ("--", invalid_id);
+	ui.launchMethodInput->addItem ("-", invalid_id);
 	for (int i=0; i<launchMethods.size (); ++i)
 		ui.launchMethodInput->addItem (launchMethods.at (i).nameWithShortcut (), launchMethods.at (i).getId ());
 

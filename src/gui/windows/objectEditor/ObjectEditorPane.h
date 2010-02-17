@@ -32,6 +32,7 @@ class ObjectEditorPaneBase: public QWidget
 
 	protected:
 		virtual void errorCheck (const QString &problem, QWidget *widget);
+		virtual void requiredField (const QString &value, QWidget *widget, const QString &problem);
 
 		DataStorage &dataStorage;
 		ObjectEditorWindowBase::Mode mode;

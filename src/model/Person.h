@@ -35,7 +35,6 @@ class Person: public Entity
 		QString club;
 		QString club_id;
 		QString club_id_old;
-		QString landesverbands_nummer;
 
 
 		// *** Comparison

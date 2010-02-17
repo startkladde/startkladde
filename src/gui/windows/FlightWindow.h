@@ -119,6 +119,7 @@
 #include "src/db/DataStorage.h"
 #include "src/db/dbTypes.h"
 #include "src/model/LaunchMethod.h"
+#include "src/model/Flight.h"
 
 class Flight;
 

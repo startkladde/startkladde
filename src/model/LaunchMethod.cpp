@@ -97,6 +97,11 @@ QString LaunchMethod::nameWithShortcut () const
 		return QString (keyboardShortcut)+QString (" - ")+name;
 }
 
+
+// ******************
+// ** Type methods **
+// ******************
+
 QString LaunchMethod::typeString (LaunchMethod::Type type)
 {
 	switch (type)
@@ -108,6 +113,16 @@ QString LaunchMethod::typeString (LaunchMethod::Type type)
 	}
 
 	return "???";
+}
+
+QList<LaunchMethod::Type> LaunchMethod::listTypes ()
+{
+	return QList<Type> ()
+		<< typeWinch
+		<< typeAirtow
+		<< typeSelf
+		<< typeOther
+		;
 }
 
 
@@ -135,6 +150,55 @@ QString LaunchMethod::get_selector_caption (int column_number)
 		case 2: return "(ID)";
 		default: return QString ();
 	}
+}
+
+
+// *****************
+// ** ObjectModel **
+// *****************
+
+int LaunchMethod::DefaultObjectModel::columnCount () const
+{
+	return 9;
+}
+
+QVariant LaunchMethod::DefaultObjectModel::displayHeaderData (int column) const
+{
+	switch (column)
+	{
+		case 0: return QString::fromUtf8 ("Name");
+		case 1: return QString::fromUtf8 ("Kürzel");
+		case 2: return QString::fromUtf8 ("Flugbuch-Bezeichnung");
+		case 3: return QString::fromUtf8 ("Tastenkürzel");
+		case 4: return QString::fromUtf8 ("Typ");
+		case 5: return QString::fromUtf8 ("Schleppflugzeug");
+		case 6: return QString::fromUtf8 ("Person erforderlich");
+		case 7: return QString::fromUtf8 ("Bemerkungen");
+		// TODO remove from DefaultObjectModel?
+		case 8: return "ID";
+	}
+
+	assert (false);
+	return QVariant ();
+}
+
+QVariant LaunchMethod::DefaultObjectModel::displayData (const LaunchMethod &object, int column) const
+{
+	switch (column)
+	{
+		case 0: return object.name;
+		case 1: return object.shortName;
+		case 2: return object.logString;
+		case 3: return object.keyboardShortcut;
+		case 4: return typeString (object.type);
+		case 5: return object.isAirtow ()?object.towplaneRegistration:"-";
+		case 6: return bool_to_string (object.personRequired);
+		case 7: return object.comments;
+		case 8: return object.id;
+	}
+
+	assert (false);
+	return QVariant ();
 }
 
 

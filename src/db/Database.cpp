@@ -8,8 +8,8 @@
  *     - C++ or Ruby?
  *   - Migration: distinguish between "old" and "empty"
  *   - integrate migration into the gui
- *   - Standardize enum handling: store the database value internally (or use the
- *     numeric value in the database?); and have an "unknown" type (instead of "none")
+ *   - Standardize enum handling: store the database value internally and have
+ *     an "unknown" type (instead of "none")
  *     - this should also allow preserving unknown types in the database
  *   - add "object used" to Database
  *   - add ping to Database
@@ -159,6 +159,8 @@ void Database::close ()
 
 Database::~Database()
 {
+	if (db.isOpen ())
+		close ();
 }
 
 

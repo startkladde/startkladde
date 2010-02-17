@@ -13,6 +13,7 @@
 #include "src/concurrent/DefaultQThread.h"
 #include "src/concurrent/monitor/SimpleOperationMonitor.h"
 #include "src/config/Options.h"
+#include "src/model/Flight.h"
 
 using namespace std;
 
@@ -786,17 +787,20 @@ template<class T> bool DataStorage::updateObject (OperationMonitor *monitor, con
 
 
 // Instantiate the write method templates
-template bool DataStorage::addObject (OperationMonitor *monitor, const Flight &, db_id *id, bool *success, QString *message);
-template bool DataStorage::addObject (OperationMonitor *monitor, const Plane  &, db_id *id, bool *success, QString *message);
-template bool DataStorage::addObject (OperationMonitor *monitor, const Person &, db_id *id, bool *success, QString *message);
+template bool DataStorage::addObject (OperationMonitor *monitor, const Flight       &, db_id *id, bool *success, QString *message);
+template bool DataStorage::addObject (OperationMonitor *monitor, const Plane        &, db_id *id, bool *success, QString *message);
+template bool DataStorage::addObject (OperationMonitor *monitor, const Person       &, db_id *id, bool *success, QString *message);
+template bool DataStorage::addObject (OperationMonitor *monitor, const LaunchMethod &, db_id *id, bool *success, QString *message);
 
-template bool DataStorage::updateObject (OperationMonitor *monitor, const Flight &, bool *success, QString *message);
-template bool DataStorage::updateObject (OperationMonitor *monitor, const Plane  &, bool *success, QString *message);
-template bool DataStorage::updateObject (OperationMonitor *monitor, const Person &, bool *success, QString *message);
+template bool DataStorage::updateObject (OperationMonitor *monitor, const Flight       &, bool *success, QString *message);
+template bool DataStorage::updateObject (OperationMonitor *monitor, const Plane        &, bool *success, QString *message);
+template bool DataStorage::updateObject (OperationMonitor *monitor, const Person       &, bool *success, QString *message);
+template bool DataStorage::updateObject (OperationMonitor *monitor, const LaunchMethod &, bool *success, QString *message);
 
-template bool DataStorage::deleteObject<Flight> (OperationMonitor *monitor, db_id id, bool *success, QString *message);
-template bool DataStorage::deleteObject<Plane>  (OperationMonitor *monitor, db_id id, bool *success, QString *message);
-template bool DataStorage::deleteObject<Person> (OperationMonitor *monitor, db_id id, bool *success, QString *message);
+template bool DataStorage::deleteObject<Flight      > (OperationMonitor *monitor, db_id id, bool *success, QString *message);
+template bool DataStorage::deleteObject<Plane       > (OperationMonitor *monitor, db_id id, bool *success, QString *message);
+template bool DataStorage::deleteObject<Person      > (OperationMonitor *monitor, db_id id, bool *success, QString *message);
+template bool DataStorage::deleteObject<LaunchMethod> (OperationMonitor *monitor, db_id id, bool *success, QString *message);
 
 
 // **********************
@@ -903,14 +907,17 @@ template<> void DataStorage::objectUpdated<Flight> (const Flight &flight)
 
 
 // Instantiate the change method templates (not for Flight - specialized)
-template void DataStorage::objectAdded<Plane > (const Plane  &object);
-template void DataStorage::objectAdded<Person> (const Person &object);
+template void DataStorage::objectAdded<Plane       > (const Plane        &object);
+template void DataStorage::objectAdded<Person      > (const Person       &object);
+template void DataStorage::objectAdded<LaunchMethod> (const LaunchMethod &object);
 
-template void DataStorage::objectDeleted<Plane > (db_id id);
-template void DataStorage::objectDeleted<Person> (db_id id);
+template void DataStorage::objectDeleted<Plane       > (db_id id);
+template void DataStorage::objectDeleted<Person      > (db_id id);
+template void DataStorage::objectDeleted<LaunchMethod> (db_id id);
 
-template void DataStorage::objectUpdated<Plane > (const Plane  &plane );
-template void DataStorage::objectUpdated<Person> (const Person &flight);
+template void DataStorage::objectUpdated<Plane       > (const Plane        &plane );
+template void DataStorage::objectUpdated<Person      > (const Person       &flight);
+template void DataStorage::objectUpdated<LaunchMethod> (const LaunchMethod &flight);
 
 
 // ***********************
@@ -940,8 +947,9 @@ template<class T> bool DataStorage::objectUsed (OperationMonitor *monitor, db_id
 }
 
 // Instantiate the query methods
-template bool DataStorage::objectUsed<Plane > (OperationMonitor *monitor, db_id id, bool *result);
-template bool DataStorage::objectUsed<Person> (OperationMonitor *monitor, db_id id, bool *result);
+template bool DataStorage::objectUsed<Plane       > (OperationMonitor *monitor, db_id id, bool *result);
+template bool DataStorage::objectUsed<Person      > (OperationMonitor *monitor, db_id id, bool *result);
+template bool DataStorage::objectUsed<LaunchMethod> (OperationMonitor *monitor, db_id id, bool *result);
 
 
 

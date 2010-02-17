@@ -8,6 +8,7 @@
 #include "src/db/dbTypes.h"
 #include "src/logging/messages.h"
 #include "src/model/Entity.h"
+#include "src/model/objectList/ObjectModel.h"
 
 class QSqlQuery;
 
@@ -16,6 +17,13 @@ class LaunchMethod: public Entity
 	public:
 		// *** Types
 		enum Type { typeWinch, typeAirtow, typeSelf, typeOther };
+
+		class DefaultObjectModel: public ObjectModel<LaunchMethod>
+		{
+			virtual int columnCount () const;
+			virtual QVariant displayHeaderData (int column) const;
+			virtual QVariant displayData (const LaunchMethod &object, int column) const;
+		};
 
 
 		// *** Construction
@@ -43,7 +51,11 @@ class LaunchMethod: public Entity
 		virtual QString toString () const;
 		virtual QString nameWithShortcut () const;
 		static bool nameLessThan (const LaunchMethod &l1, const LaunchMethod &l2) { return l1.name<l2.name; }
+
+
+		// *** Type methods
 		static QString typeString (Type type);
+		static QList<Type> listTypes ();
 
 
 		// *** EntitySelectWindow helpers

@@ -4,9 +4,10 @@
 #include "src/dataTypes.h"
 #include "src/db/dbTypes.h"
 
-#include "src/model/Plane.h"
-#include "src/model/Flight.h"
-#include "src/model/Person.h"
+//#include "src/model/Plane.h"
+//#include "src/model/Flight.h"
+//#include "src/model/Person.h"
+//#include "src/model/LaunchMethod.h"
 
 // XXX
 #define VALUE(x,z) case x: printf (z); break;

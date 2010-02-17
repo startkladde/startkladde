@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>238</width>
-    <height>119</height>
+    <width>190</width>
+    <height>113</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -63,26 +63,6 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>&amp;Landesverbandsnummer:</string>
-     </property>
-     <property name="buddy">
-      <cstring>regionalAssociationIdInput</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>&amp;Bemerkungen:</string>
-     </property>
-     <property name="buddy">
-      <cstring>commentsInput</cstring>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="1">
     <widget class="QLineEdit" name="lastNameInput"/>
    </item>
@@ -99,10 +79,17 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QLineEdit" name="regionalAssociationIdInput"/>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>&amp;Bemerkungen:</string>
+     </property>
+     <property name="buddy">
+      <cstring>commentsInput</cstring>
+     </property>
+    </widget>
    </item>
-   <item row="5" column="1">
+   <item row="4" column="1">
     <widget class="QLineEdit" name="commentsInput"/>
    </item>
   </layout>

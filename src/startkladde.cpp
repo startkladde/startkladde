@@ -10,6 +10,10 @@
 #include "src/db/Database.h"
 #include "src/db/migration/Migrator.h"
 #include "src/db/migration/MigrationFactory.h"
+#include "src/model/Plane.h"
+#include "src/model/Flight.h"
+#include "src/model/LaunchMethod.h"
+// TODO where the other models from?
 
 // Testen des Wetterplugins
 //#include "WeatherDialog.h"
@@ -28,57 +32,8 @@ void display_help ()
 #include "src/model/Person.h"
 
 
-void test_database (Database &db, int argc, char **argv)
+int test_database (Database &db)
 {
-	bool ok=db.open (opts.databaseInfo);
-
-	if (!ok)
-	{
-		std::cout << "Database failed to open: " << db.lastError ().text () << std::endl;
-		return;
-	}
-
-	if (argc<2)
-	{
-		std::cout << "up, down, migrate, version, list" << std::endl;
-		return;
-	}
-
-	QString cmd (argv[1]);
-
-	if (cmd=="up")
-	{
-		Migrator m (db);
-		m.up ();
-	}
-	else if (cmd=="down")
-	{
-		Migrator m (db);
-		m.down ();
-	}
-	else if (cmd=="migrate")
-	{
-		Migrator m (db);
-		m.migrate ();
-	}
-	else if (cmd=="version")
-	{
-		Migrator m (db);
-		std::cout << "Version is " << m.currentVersion () << std::endl;
-	}
-	else if (cmd=="list")
-	{
-		MigrationFactory factory;
-		foreach (quint64 version, factory.availableVersions ())
-			std::cout << version << " - " << factory.migrationName (version) << std::endl;
-
-	}
-	else if (cmd!="test")
-	{
-		std::cout << "Unrecognized" << std::endl;
-	}
-
-	if (cmd!="test") return;
 
 	std::cout << std::endl;
 	std::cout << "Get people" << std::endl;
@@ -132,77 +87,128 @@ void test_database (Database &db, int argc, char **argv)
 	std::cout << "List plane types" << std::endl;
 	std::cout << db.listPlaneTypes ().join (", ") << std::endl;
 
+	return 0;
+}
 
+int showGui (QApplication &a, Database &db, QList<ShellPlugin *> &plugins)
+{
+	//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
+
+	// Put light.{la,so} to styles/
+	//a.setStyle ("light, 3rd revision");
+	if (!opts.style.isEmpty ()) a.setStyle (opts.style);
+//		db.display_queries=opts.display_queries;
+
+	MainWindow w (NULL, &db, plugins);
+
+	// Let the plugins initialize
+	sched_yield ();
+
+	w.showMaximized ();
+	int ret=a.exec();
+
+	foreach (ShellPlugin *plugin, plugins)
+	{
+		//std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
+		plugin->terminate ();
+		sched_yield ();
+	}
+
+	return ret;
+}
+
+int doStuff (Database &db)
+{
+
+	// Tests ahead
+	bool ok=db.open (opts.databaseInfo);
+
+	if (!ok)
+	{
+		std::cout << "Database failed to open: " << db.lastError ().text () << std::endl;
+		return 1;
+	}
+
+	if (opts.non_options[0]=="db:up")
+	{
+		Migrator m (db);
+		m.up ();
+	}
+	else if (opts.non_options[0]=="db:down")
+	{
+		Migrator m (db);
+		m.down ();
+	}
+	else if (opts.non_options[0]=="db:migrate")
+	{
+		Migrator m (db);
+		m.migrate ();
+	}
+	else if (opts.non_options[0]=="db:version")
+	{
+		Migrator m (db);
+		std::cout << "Version is " << m.currentVersion () << std::endl;
+	}
+	else if (opts.non_options[0]=="db:migrations")
+	{
+		MigrationFactory factory;
+		foreach (quint64 version, factory.availableVersions ())
+			std::cout << version << " - " << factory.migrationName (version) << std::endl;
+	}
+	else if (opts.non_options[0]=="db:test")
+	{
+		test_database (db);
+	}
+	else if (opts.non_options[0]=="db:fail")
+	{
+		db.executeQuery ("bam!");
+	}
+	else
+	{
+		std::cout << "Unrecognized" << std::endl;
+		return 1;
+	}
+
+	return 0;
 }
 
 int main (int argc, char **argv)
-	/*
-	 * Starts the startkladde program.
-	 * Parameters:
-	 *   - argc, argv: the usual. Some of the Options can be passed here.
-	 * Return value:
-	 *   the return value of the QApplication, and thus of the main window.
-	 */
 {
-	try
-	{
-		Database testDb;
-		opts.parse_arguments (argc, argv);
-		opts.read_config_files (&testDb, NULL, argc, argv);
-		test_database (testDb, argc, argv);
-	}
-	catch (Database::QueryFailedException &ex)
-	{
-		std::cout << "QueryFailedException" << std::endl;
-		std::cout << "  Query: " << ex.query.lastQuery () << std::endl;
-		std::cout << "  Error: " << ex.query.lastError ().text () << std::endl;
-	}
-	return 0;
-
 	// DbEvents are used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
 	qRegisterMetaType<DbEvent> ("DbEvent");
 	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
 
-	Database db;
-	QList<ShellPlugin *> plugins;
+	int ret=0;
 
-	if (opts.need_display ())
-		opts.do_display ();
-	else if (opts.display_help)
-		display_help ();
-	else
+	try
 	{
-		opts.read_config_files (&db, &plugins, argc, argv);
-		//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
-		QApplication a (argc, argv);
-
-		// Put light.{la,so} to styles/
-		//a.setStyle ("light, 3rd revision");
-		if (!opts.style.isEmpty ()) a.setStyle (opts.style);
-
-//		db.display_queries=opts.display_queries;
-
-		MainWindow w (NULL, &db, plugins);
-
-		// Let the plugins initialize
-		sched_yield ();
-
-
-
-		w.showMaximized ();
-//		w.show ();
-		int ret=a.exec();
-
-		foreach (ShellPlugin *plugin, plugins)
+		if (opts.need_display ())
+			opts.do_display ();
+		else if (opts.display_help)
+			display_help ();
+		else
 		{
-//			std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
-			plugin->terminate ();
-			sched_yield ();
+			Database db;
+			QList<ShellPlugin *> plugins;
+
+			opts.read_config_files (&db, &plugins, argc, argv);
+			QApplication a (argc, argv); // Always
+
+			if (opts.non_options.empty ())
+				ret=showGui (a, db, plugins);
+			else
+				ret=doStuff (db);
 		}
-
-		return ret;
 	}
-}
+	catch (Database::QueryFailedException &ex)
+	{
+		std::cout << "QueryFailedException" << std::endl;
+		std::cout << "  Query: " << ex.query.lastQuery () << std::endl;
+		std::cout << "  Error: " << ex.query.lastError ().text () << std::endl;
+		return 1;
+	}
 
+	return ret;
+}

@@ -17,7 +17,7 @@ enum casus { cas_nominativ, cas_genitiv, cas_dativ, cas_akkusativ };
 // TODO move to DbEvent
 enum db_event_type { det_none, det_add, det_delete, det_change, det_refresh };
 // TODO replace with templates
-enum db_event_table { db_kein, db_alle, db_person, db_flug, db_flugzeug };
+enum db_event_table { db_kein, db_alle, db_person, db_flug, db_launch_method, db_flugzeug };
 
 // Hack for until we have replaced db_event_table with templates
 template<class T> db_event_table getDbEventTable ();

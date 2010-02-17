@@ -355,6 +355,7 @@
     <addaction name="separator"/>
     <addaction name="actionEditPlanes"/>
     <addaction name="actionEditPeople"/>
+    <addaction name="actionEditLaunchMethods"/>
     <addaction name="separator"/>
     <addaction name="actionRefreshAll"/>
    </widget>
@@ -742,6 +743,11 @@
   <action name="actionResizeColumns">
    <property name="text">
     <string>&amp;Spaltenbreiten anpassen</string>
+   </property>
+  </action>
+  <action name="actionEditLaunchMethods">
+   <property name="text">
+    <string>&amp;Startarten editieren</string>
    </property>
   </action>
  </widget>

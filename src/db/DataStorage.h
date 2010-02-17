@@ -16,11 +16,11 @@
 #include "src/concurrent/WorkerThread.h"
 #include "src/concurrent/task/Task.h"
 #include "src/model/objectList/EntityList.h"
+#include "src/model/LaunchMethod.h"
 
 class Flight;
 class Person;
 class Plane;
-class LaunchMethod;
 class OperationMonitor;
 
 /**

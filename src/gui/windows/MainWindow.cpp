@@ -36,7 +36,6 @@
 #include "src/model/flightList/FlightProxyList.h"
 #include "src/model/flightList/FlightSortFilterProxyModel.h"
 #include "src/db/task/FetchFlightsTask.h"
-//#include "src/db/adminFunctions.h"
 #include "src/db/Database.h"
 
 // ******************
@@ -1232,6 +1231,16 @@ void MainWindow::on_actionEditPeople_triggered ()
 	ObjectListWindowBase *window = new ObjectListWindow<Person> (dataStorage, listModel, true, this);
 	window->show ();
 }
+
+void MainWindow::on_actionEditLaunchMethods_triggered ()
+{
+	MutableObjectList<LaunchMethod> *list = new AutomaticEntityList<LaunchMethod> (dataStorage, dataStorage.getLaunchMethods (), this);
+	ObjectListModel<LaunchMethod> *listModel = new ObjectListModel<LaunchMethod> (list, true, new LaunchMethod::DefaultObjectModel (),
+			true, this);
+	ObjectListWindowBase *window = new ObjectListWindow<LaunchMethod> (dataStorage, listModel, true, this);
+	window->show ();
+}
+
 
 // **************
 // ** Database **

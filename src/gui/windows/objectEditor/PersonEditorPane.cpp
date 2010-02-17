@@ -55,7 +55,6 @@ void PersonEditorPane::objectToFields (const Person &person)
 	ui.lastNameInput->setText (person.nachname);
 	ui.firstNameInput->setText (person.vorname);
 	ui.clubInput->setCurrentText (person.club);
-	ui.regionalAssociationIdInput->setText (person.landesverbands_nummer);
 	ui.commentsInput->setText (person.comments);
 }
 
@@ -68,7 +67,6 @@ Person PersonEditorPane::determineObject ()
 	person.nachname=ui.lastNameInput->text ();
 	person.vorname=ui.firstNameInput->text ();
 	person.club=ui.clubInput->currentText ();
-	person.landesverbands_nummer=ui.regionalAssociationIdInput->text ();
 	person.comments=ui.commentsInput->text ();
 
 	// Error checks

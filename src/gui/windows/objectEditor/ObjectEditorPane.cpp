@@ -35,3 +35,10 @@ void ObjectEditorPaneBase::errorCheck (const QString &problem, QWidget *widget)
 		throw AbortedException ();
 	}
 }
+
+// TODO use more
+void ObjectEditorPaneBase::requiredField (const QString &value, QWidget *widget, const QString &problem)
+{
+	if (eintrag_ist_leer (value))
+		errorCheck (problem, widget);
+}

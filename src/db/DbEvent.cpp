@@ -1,5 +1,15 @@
 #include "DbEvent.h"
 
+//#include "src/model/Plane.h"
+//#include "src/model/Flight.h"
+//#include "src/model/Person.h"
+//#include "src/model/LaunchMethod.h"
+
+class Plane;
+class Flight;
+class Person;
+class LaunchMethod;
+
 DbEvent::DbEvent (db_event_type tp, db_event_table tb, db_id i)
 	/*
 	 * Initializes a DbEvent with given data.
@@ -41,23 +51,27 @@ void DbEvent::dump () const
 	printf ("table: ");
 	switch (table)
 	{
-		VALUE (db_kein,     "db_kein    ")
-		VALUE (db_person,   "db_person  ")
-		VALUE (db_flug,     "db_flug    ")
-		VALUE (db_flugzeug, "db_flugzeug")
-		VALUE (db_alle,     "db_alle    ")
+		VALUE (db_kein,          "db_kein         ")
+		VALUE (db_person,        "db_person       ")
+		VALUE (db_flug,          "db_flug         ")
+		VALUE (db_flugzeug,      "db_flugzeug     ")
+		VALUE (db_launch_method, "db_launch_method")
+		VALUE (db_alle,          "db_alle         ")
 		DEFAULT
 	} printf ("    ");
 	printf ("id: %llu\n", id);
 }
 
+// FIXME Not used lo ja, see data_types.cpp
+
 // Specialize
-template<> db_event_table DbEvent::getDbEventTable<Flight> () { return db_flug; }
-template<> db_event_table DbEvent::getDbEventTable<Plane>  () { return db_flugzeug; }
-template<> db_event_table DbEvent::getDbEventTable<Person> () { return db_person; }
+template<> db_event_table DbEvent::getDbEventTable<Flight>       () { return db_flug         ; }
+template<> db_event_table DbEvent::getDbEventTable<Plane>        () { return db_flugzeug     ; }
+template<> db_event_table DbEvent::getDbEventTable<Person>       () { return db_person       ; }
+template<> db_event_table DbEvent::getDbEventTable<LaunchMethod> () { return db_launch_method; }
 
 // Instantiate
-template db_event_table DbEvent::getDbEventTable<Flight> ();
-template db_event_table DbEvent::getDbEventTable<Plane > ();
-template db_event_table DbEvent::getDbEventTable<Person> ();
-
+template db_event_table DbEvent::getDbEventTable<Flight      > ();
+template db_event_table DbEvent::getDbEventTable<Plane       > ();
+template db_event_table DbEvent::getDbEventTable<Person      > ();
+template db_event_table DbEvent::getDbEventTable<LaunchMethod> ();
