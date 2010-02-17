@@ -489,7 +489,7 @@ db_id MainWindow::currentFlightId (bool *isTowflight)
 	const Flight &flight = flightListModel->at (flightListIndex);
 
 	if (isTowflight) (*isTowflight) = flight.isTowflight ();
-	return flight.get_id ();
+	return flight.getId ();
 }
 
 void MainWindow::sortCustom ()
@@ -824,9 +824,9 @@ void MainWindow::on_actionDisplayError_triggered ()
 		Plane *towplane=NULL;
 
 		db_id towplaneId=invalid_id;
-		if (launchMethod && launchMethod->is_airtow ())
+		if (launchMethod && launchMethod->isAirtow ())
 		{
-			if (launchMethod->towplane_known ())
+			if (launchMethod->towplaneKnown ())
 				towplaneId=dataStorage.getPlaneIdByRegistration (launchMethod->towplaneRegistration);
 			else
 				towplaneId=flight.towplane;
@@ -1084,13 +1084,13 @@ void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
 //		<< std::endl;
 
 	if (flightListIndex.column () == flightModel->launchButtonColumn ())
-		startFlight (flight.id);
+		startFlight (flight.getId ());
 	else if (flightListIndex.column () == flightModel->landButtonColumn ())
 	{
 		if (flight.isTowflight ())
-			landTowflight (flight.id);
+			landTowflight (flight.getId ());
 		else
-			landFlight (flight.id);
+			landFlight (flight.getId ());
 	}
 	else
 		std::cerr << "Unhandled button column in MainWindow::flightTable_buttonClicked" << std::endl;

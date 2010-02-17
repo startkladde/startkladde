@@ -201,6 +201,7 @@ template<class TYPE> int EntitySelectWindow<TYPE>::setup_columns ()
 
 	QStringList header;
 
+	// TODO should probably use an ObjectModel
 	while (title=TYPE::get_selector_caption (i), !title.isEmpty ())
 	{
 		header.append (title);
@@ -258,9 +259,9 @@ template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QS
 	foreach (const TYPE &it, entityList)
 	{
 		last_item=new SkTreeWidgetItem (list, last_item);
-		last_item->id=it.id;
+		last_item->id=it.getId ();
 		set_entry (last_item, it, num_columns);
-		if (!id_invalid (preselected) && it.id==preselected)
+		if (!id_invalid (preselected) && it.getId ()==preselected)
 			list->setCurrentItem (last_item);
 	}
 

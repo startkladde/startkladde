@@ -2649,7 +2649,7 @@ db_id OldDatabase::get_startart_id_by_type (LaunchMethod::Type type)
 
 int OldDatabase::get_towplane (Plane *towplane, const LaunchMethod &startart, const db_id towplane_id)
 {
-	if (startart.ok && startart.is_airtow () && startart.towplane_known ())
+	if (startart.ok && startart.isAirtow () && startart.towplaneKnown ())
 	{
 		// Get the tow plane from the launchMethod
 		return get_plane_registration (towplane, startart.get_towplane ());

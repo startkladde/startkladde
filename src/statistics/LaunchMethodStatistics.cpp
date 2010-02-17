@@ -72,7 +72,7 @@ LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &
 	{
 		Entry entry;
 		entry.name=launchMethod.name;
-		entry.num=map[launchMethod.get_id ()];
+		entry.num=map[launchMethod.getId ()];
 		result->entries.append (entry);
 	}
 

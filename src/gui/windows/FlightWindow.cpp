@@ -249,7 +249,7 @@ void FlightWindow::fillData ()
 	if (!launchMethods.empty())
 		ui.launchMethodInput->addItem ("--", invalid_id);
 	for (int i=0; i<launchMethods.size (); ++i)
-		ui.launchMethodInput->addItem (launchMethods.at (i).list_text (), launchMethods.at (i).get_id ());
+		ui.launchMethodInput->addItem (launchMethods.at (i).nameWithShortcut (), launchMethods.at (i).getId ());
 
 
 	// *** Airfields
@@ -479,7 +479,7 @@ void FlightWindow::updateErrors (bool setFocus)
 		label->setError (false);
 
 	ui.errorList->clear ();
-	while ((error=flight.errorCheck (&errorIndex, true, launchMethod && launchMethod->is_airtow (), plane, towplane, launchMethod))!=ff_ok)
+	while ((error=flight.errorCheck (&errorIndex, true, launchMethod && launchMethod->isAirtow (), plane, towplane, launchMethod))!=ff_ok)
 	{
 		// In the cases of unknown or non-unique people, we don't want to query
 		// the user. So the determineFlightBasic method uses the buffered IDs
@@ -649,7 +649,7 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 {
 	// Note that for repeating, some fields are not set or set differently.
 
-	originalFlightId = flight.id;
+	originalFlightId = flight.getId ();
 	selectedPlane    = flight.plane;
 	selectedTowplane = flight.towplane;
 	selectedPilot    = flight.pilot;
@@ -729,7 +729,7 @@ Flight FlightWindow::determineFlightBasic () throw ()
 	Flight flight;
 
 	// Some of the data is taken from the stored data
-	flight.id        = originalFlightId;
+	flight.setId (originalFlightId);
 	flight.plane     = isRegistrationActive         ()?selectedPlane   :invalid_id;
 	flight.towplane  = isTowplaneRegistrationActive ()?selectedTowplane:invalid_id;
 	flight.pilot     = isPilotActive                ()?selectedPilot   :invalid_id;
@@ -890,12 +890,12 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, cons
 			.arg (plane->registration).arg (plane->type),
 			ui.towplaneRegistrationInput);
 
-	if (plane && launchNow && id_valid (dataStorage.planeFlying (plane->id)))
+	if (plane && launchNow && id_valid (dataStorage.planeFlying (plane->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt das Flugzeug %1 noch.")
 			.arg (plane->registration),
 			ui.registrationInput);
 
-	if (towplane && launchNow && id_valid (dataStorage.planeFlying (towplane->id)))
+	if (towplane && launchNow && id_valid (dataStorage.planeFlying (towplane->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt das Schleppflugzeug %1 noch.")
 			.arg (towplane->registration),
 			ui.registrationInput);
@@ -929,17 +929,17 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool launchNow, cons
 		.arg (plane->registration).arg (plane->type),
 		ui.registrationInput);
 
-	if (pilot && launchNow && id_valid (dataStorage.personFlying (pilot->id)))
+	if (pilot && launchNow && id_valid (dataStorage.personFlying (pilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Pilot %1 %2 noch.")
 			.arg (pilot->vorname).arg (pilot->nachname),
 			ui.pilotLastNameInput);
 
-	if (copilot && launchNow && id_valid (dataStorage.personFlying (copilot->id)))
+	if (copilot && launchNow && id_valid (dataStorage.personFlying (copilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Begleiter %1 %2 noch.")
 			.arg (copilot->vorname).arg (copilot->nachname),
 			ui.copilotLastNameInput);
 
-	if (towpilot && launchNow && id_valid (dataStorage.personFlying (towpilot->id)))
+	if (towpilot && launchNow && id_valid (dataStorage.personFlying (towpilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Schlepppilot %1 %2 noch.")
 			.arg (towpilot->vorname).arg (towpilot->nachname),
 			ui.towpilotLastNameInput);
@@ -1407,7 +1407,7 @@ bool FlightWindow::currentIsAirtow ()
 
 	try
 	{
-		return getCurrentLaunchMethod ().is_airtow ();
+		return getCurrentLaunchMethod ().isAirtow ();
 	}
 	catch (DataStorage::NotFoundException &ex)
 	{
@@ -1422,7 +1422,7 @@ bool FlightWindow::isTowplaneRegistrationActive ()
 
 	try
 	{
-		return !getCurrentLaunchMethod ().towplane_known ();
+		return !getCurrentLaunchMethod ().towplaneKnown ();
 	}
 	catch (DataStorage::NotFoundException &ex)
 	{
@@ -1710,9 +1710,9 @@ void FlightWindow::launchMethodChanged (int index)
 	{
 		LaunchMethod launchMethod=dataStorage.getObject<LaunchMethod> (launchMethodId);
 
-		if (launchMethod.is_airtow ())
+		if (launchMethod.isAirtow ())
 		{
-			QString towplaneRegistration=launchMethod.towplane_known () ? launchMethod.towplaneRegistration : getCurrentTowplaneRegistration ();
+			QString towplaneRegistration=launchMethod.towplaneKnown () ? launchMethod.towplaneRegistration : getCurrentTowplaneRegistration ();
 			db_id towplaneId=dataStorage.getPlaneIdByRegistration (towplaneRegistration);
 			if (id_valid (towplaneId))
 			{

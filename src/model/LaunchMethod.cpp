@@ -7,20 +7,24 @@
 #include <QVariant>
 
 
+// ******************
+// ** Construction **
+// ******************
+
 LaunchMethod::LaunchMethod ()
 	:Entity ()
 {
-	init ();
+	initialize ();
 }
 
 LaunchMethod::LaunchMethod (db_id id):
 	Entity (id)
 {
-	init ();
+	initialize ();
 }
 
 // Class management
-void LaunchMethod::init ()
+void LaunchMethod::initialize ()
 {
 	towplaneRegistration="";
 	keyboardShortcut="";
@@ -33,55 +37,83 @@ void LaunchMethod::init ()
 
 LaunchMethod LaunchMethod::parseConfigLine (QString line)
 {
-	LaunchMethod l;
+	LaunchMethod launchMethod;
 
+	// Split the line and simplify whitespace
 	QStringList split=line.split (",");
 	for (int i=0; i<split.size (); ++i)
 		split[i]=split[i].simplifyWhiteSpace ();
-	int n=split.count ();
 
-	if (n>=0) l.id=split[0].toLongLong ();
+	// Set the attributes from the split parts
+	int n=split.count ();
+	if (n>=0) launchMethod.id=split[0].toLongLong ();
 	if (n>=1)
 	{
-		if      (split[1].lower ()=="winch" ) l.type=typeWinch;
-		else if (split[1].lower ()=="airtow") l.type=typeAirtow;
-		else if (split[1].lower ()=="self"  ) l.type=typeSelf;
-		else if (split[1].lower ()=="other" ) l.type=typeOther;
+		if      (split[1].lower ()=="winch" ) launchMethod.type=typeWinch;
+		else if (split[1].lower ()=="airtow") launchMethod.type=typeAirtow;
+		else if (split[1].lower ()=="self"  ) launchMethod.type=typeSelf;
+		else if (split[1].lower ()=="other" ) launchMethod.type=typeOther;
 		else
 		{
 			log_error ("Unknown launch method type in LaunchMethod::parseConfigLine (QString)");
-			l.type=typeOther;
+			launchMethod.type=typeOther;
 		}
 	}
 	else
 	{
-		l.type=typeOther;
+		launchMethod.type=typeOther;
 	}
-	if (n>=2) l.towplaneRegistration=split[2];
-	if (n>=3) l.name=split[3];
-	if (n>=4) l.shortName=split[4];
-	if (n>=5) l.keyboardShortcut=split[5];
-	if (n>=6) l.logString=split[6];
-	if (n>=7 && split[7].lower ()=="false") l.personRequired=false;
+	if (n>=2) launchMethod.towplaneRegistration=split[2];
+	if (n>=3) launchMethod.name=split[3];
+	if (n>=4) launchMethod.shortName=split[4];
+	if (n>=5) launchMethod.keyboardShortcut=split[5];
+	if (n>=6) launchMethod.logString=split[6];
+	if (n>=7 && split[7].lower ()=="false") launchMethod.personRequired=false;
 
-	return l;
+	return launchMethod;
 }
 
-// Class information
-QString LaunchMethod::getName () const
+
+// ****************
+// ** Formatting **
+// ****************
+
+QString LaunchMethod::toString () const
 {
-	return name;
+	return QString ("id=%1, description=%2 (%3), type=%4, person %5required")
+		.arg (id)
+		.arg (name)
+		.arg (shortName)
+		.arg (typeString (type))
+		.arg (personRequired?"":"not ")
+		;
 }
 
-QString LaunchMethod::getTableName () const
+QString LaunchMethod::nameWithShortcut () const
 {
-	return shortName;
+	if (keyboardShortcut.isEmpty ())
+		return QString (" ")+name;
+	else
+		return QString (keyboardShortcut)+QString (" - ")+name;
 }
 
-QString LaunchMethod::getTextName () const
+QString LaunchMethod::typeString (LaunchMethod::Type type)
 {
-	return name;
+	switch (type)
+	{
+		case typeWinch: return "Windenstart"; break;
+		case typeAirtow: return "F-Schlepp"; break;
+		case typeSelf: return "Eigenstart"; break;
+		case typeOther: return "Sonstige"; break;
+	}
+
+	return "???";
 }
+
+
+// ********************************
+// ** EntitySelectWindow helpers **
+// ********************************
 
 QString LaunchMethod::get_selector_value (int column_number) const
 {
@@ -105,48 +137,6 @@ QString LaunchMethod::get_selector_caption (int column_number)
 	}
 }
 
-
-
-QString LaunchMethod::list_text () const
-{
-	if (keyboardShortcut.isEmpty ())
-		return QString (" ")+name;
-	else
-		return QString (keyboardShortcut)+QString (" - ")+name;
-}
-
-
-QString LaunchMethod::typeString (LaunchMethod::Type type)
-{
-	switch (type)
-	{
-		case typeWinch: return "Windenstart"; break;
-		case typeAirtow: return "F-Schlepp"; break;
-		case typeSelf: return "Eigenstart"; break;
-		case typeOther: return "Sonstige"; break;
-	}
-
-	return "???";
-}
-
-void LaunchMethod::output (std::ostream &stream, output_format_t format)
-{
-	Entity::output (stream, format, false, "ID", id);
-	Entity::output (stream, format, false, "Bezeichnung", name);
-	Entity::output (stream, format, true, "Typ", typeString (type));
-}
-
-
-QString LaunchMethod::toString () const
-{
-	return QString ("id=%1, description=%2 (%3), type=%4, person %5required")
-		.arg (id)
-		.arg (name)
-		.arg (shortName)
-		.arg (typeString (type))
-		.arg (personRequired?"":"not ")
-		;
-}
 
 // *******************
 // ** SQL interface **

@@ -57,7 +57,7 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 {
 	QModelIndex listIndex=proxyModel->mapToSource (ui.table->currentIndex ());
 	const T &object=list->at (listIndex);
-	db_id id=object.get_id ();
+	db_id id=object.getId ();
 
 	ObjectUsedTask<T> checkTask (dataStorage, id);
 	dataStorage.addTask (&checkTask);

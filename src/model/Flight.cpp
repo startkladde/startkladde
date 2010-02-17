@@ -296,10 +296,10 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	CHECK_FEHLER (FLUG, flightTypeCopilotRecorded (flightType) && id_invalid (copilot) && !bnn.isEmpty () && bvn.isEmpty (), ff_begleiter_nur_nachname);
 	CHECK_FEHLER (FLUG, flightTypeCopilotRecorded (flightType) && id_invalid (copilot) && !bnn.isEmpty () && !bvn.isEmpty (), ff_begleiter_nicht_identifiziert);
 	CHECK_FEHLER (FLUG, flightTypeCopilotRecorded (flightType) && pilot!=0 && pilot==copilot, ff_pilot_gleich_begleiter)
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && id_invalid (towpilot) && !tpvn.isEmpty () && tpnn.isEmpty (), ff_towpilot_nur_vorname);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && id_invalid (towpilot) && !tpnn.isEmpty () && tpvn.isEmpty (), ff_towpilot_nur_nachname);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && id_invalid (towpilot) && !tpnn.isEmpty () && !tpvn.isEmpty (), ff_towpilot_nicht_identifiziert);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->is_airtow () && towpilot!=0 && pilot==towpilot, ff_pilot_gleich_towpilot)
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilot) && !tpvn.isEmpty () && tpnn.isEmpty (), ff_towpilot_nur_vorname);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilot) && !tpnn.isEmpty () && tpvn.isEmpty (), ff_towpilot_nur_nachname);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilot) && !tpnn.isEmpty () && !tpvn.isEmpty (), ff_towpilot_nicht_identifiziert);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && towpilot!=0 && pilot==towpilot, ff_pilot_gleich_towpilot)
 	CHECK_FEHLER (FLUG, id_invalid (copilot) && (flightType==ftTraining2) && bnn.isEmpty () && bvn.isEmpty (), ff_schulung_ohne_begleiter)
 	// TODO einsitzige Schulung mit Begleiter
 	CHECK_FEHLER (FLUG, copilot!=0 && !flightTypeCopilotRecorded (flightType), ff_begleiter_nicht_erlaubt)
@@ -313,17 +313,17 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && flightType==ftTraining2, ff_doppelsitzige_schulung_in_einsitzer)
 	CHECK_FEHLER (FLUG, (started || !starts_here (mode)) && eintrag_ist_leer (departureAirfield), ff_kein_startort)
 	CHECK_FEHLER (FLUG, (landed || !lands_here (mode)) && eintrag_ist_leer (destinationAirfield), ff_kein_zielort)
-	CHECK_FEHLER (SCHLEPP, sa && sa->is_airtow() && (towflightLanded || !lands_here (modeTowflight)) && eintrag_ist_leer (destinationAirfieldTowplane), ff_kein_zielort_sfz)
-	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && numLandings>1 && sa && !sa->is_airtow (), ff_segelflugzeug_landungen)
-	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && !landed && numLandings>0 && sa && !sa->is_airtow (), ff_segelflugzeug_landungen_ohne_landung)
+	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow() && (towflightLanded || !lands_here (modeTowflight)) && eintrag_ist_leer (destinationAirfieldTowplane), ff_kein_zielort_sfz)
+	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && numLandings>1 && sa && !sa->isAirtow (), ff_segelflugzeug_landungen)
+	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && !landed && numLandings>0 && sa && !sa->isAirtow (), ff_segelflugzeug_landungen_ohne_landung)
 	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && flightTypeCopilotRecorded (flightType) && copilot!=0, ff_begleiter_in_einsitzer)
 	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && flightType==ftGuestPrivate, ff_gastflug_in_einsitzer)
 	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && flightType==ftGuestExternal, ff_gastflug_in_einsitzer)
 	//CHECK_FEHLER (FLUG, fz && fz->category==categoryGlider && sa && launchMethod==sa_ss, ff_segelflugzeug_selbststart)
 	CHECK_FEHLER (FLUG, starts_here (mode) && numLandings>0 && !started, ff_landungen_ohne_start)
 	CHECK_FEHLER (FLUG, starts_here (mode)!=lands_here (mode) && departureAirfield==destinationAirfield, ff_startort_gleich_zielort)
-	CHECK_FEHLER (SCHLEPP, sa && sa->is_airtow () && !sa->towplane_known () && id_invalid (towplane), ff_kein_schleppflugzeug)
-	CHECK_FEHLER (SCHLEPP, sa && sfz && sa->is_airtow () && !sa->towplane_known () && sfz->category==Plane::categoryGlider, ff_towplane_is_glider);
+	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow () && !sa->towplaneKnown () && id_invalid (towplane), ff_kein_schleppflugzeug)
+	CHECK_FEHLER (SCHLEPP, sa && sfz && sa->isAirtow () && !sa->towplaneKnown () && sfz->category==Plane::categoryGlider, ff_towplane_is_glider);
 
 	return ff_ok;
 #undef CHECK_FEHLER

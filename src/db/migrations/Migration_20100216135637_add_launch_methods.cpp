@@ -43,7 +43,7 @@ void Migration_20100216135637_add_launch_methods::up ()
 				"values (?,?,?,?,?,?,?,?,?)"
 				);
 
-			query.addBindValue (launchMethod.id);
+			query.addBindValue (launchMethod.getId ());
 			query.addBindValue (launchMethod.name);
 			query.addBindValue (launchMethod.shortName);
 			query.addBindValue (launchMethod.logString);

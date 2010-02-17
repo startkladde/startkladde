@@ -50,7 +50,7 @@ void PersonEditorPane::fillData ()
 
 void PersonEditorPane::objectToFields (const Person &person)
 {
-	originalId=person.id;
+	originalId=person.getId ();
 
 	ui.lastNameInput->setText (person.nachname);
 	ui.firstNameInput->setText (person.vorname);
@@ -63,7 +63,7 @@ Person PersonEditorPane::determineObject ()
 {
 	Person person;
 
-	person.id=originalId;
+	person.setId (originalId);
 
 	person.nachname=ui.lastNameInput->text ();
 	person.vorname=ui.firstNameInput->text ();

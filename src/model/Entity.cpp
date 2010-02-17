@@ -1,9 +1,11 @@
 #include "Entity.h"
 
+
+// ******************
+// ** Construction **
+// ******************
+
 Entity::Entity ()
-	/*
-	 * Constructs an empty Entity instance.
-	 */
 {
 	id=0;
 }
@@ -14,14 +16,13 @@ Entity::Entity (db_id id)
 }
 
 Entity::~Entity ()
-	/*
-	 * Cleans up a Entity instance.
-	 */
 {
-
 }
 
 
+// ********************************
+// ** EntitySelectWindow helpers **
+// ********************************
 
 QString Entity::get_selector_value (int column_number) const
 {
@@ -42,37 +43,3 @@ QString Entity::get_selector_caption (int column_number)
 		default: return QString ();
 	}
 }
-
-
-void Entity::output (std::ostream &stream, output_format_t format, bool last, QString name, QString value)
-{
-	switch (format)
-	{
-		case of_single:
-		{
-			stream << name << "\t" << value << std::endl;
-		} break;
-		case of_table_data:
-		{
-			QString v=value;
-			replace_tabs (v);
-			stream << v;
-			if (!last) stream << "\t";
-			if (last) stream << std::endl;
-		} break;
-		case of_table_header:
-		{
-			QString n=name;
-			replace_tabs (n);
-			stream << n;
-			if (!last) stream << "\t";
-			if (last) stream << std::endl;
-		} break;
-	}
-}
-
-void Entity::output (std::ostream &stream, output_format_t format, bool last, QString name, db_id value)
-{
-	output (stream, format, last, name, QString::number (value));
-}
-

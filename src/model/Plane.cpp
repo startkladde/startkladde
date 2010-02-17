@@ -4,6 +4,11 @@
 
 #include "src/text.h"
 
+
+// ******************
+// ** Construction **
+// ******************
+
 Plane::Plane ():
 	Entity ()
 {
@@ -21,43 +26,58 @@ void Plane::initialize ()
 	numSeats=0;
 }
 
-QString Plane::getName () const
-	/*
-	 * Returns the name of the plane in a form suitable for enumerations.
-	 * Return value:
-	 *   - the name.
-	 */
+
+// *********************
+// ** Property access **
+// *********************
+
+bool Plane::selfLaunchOnly ()
 {
-	return registration;
+	// Note that motorgliders can be glieders; and there are even some TMGs
+	// which can do winch launch.
+	return category==categorySingleEngine || category==categoryUltralight;
 }
 
-QString Plane::getTableName () const
+
+// ****************
+// ** Formatting **
+// ****************
+
+QString Plane::toString () const
+{
+	return QString ("id=%1, registration=%2, competitionId=%3, type=%4, club=%5, category=%6, seats=%7")
+		.arg (id)
+		.arg (registration)
+		.arg (competitionId)
+		.arg (type)
+		.arg (club)
+		.arg (categoryText (category, lsLong))
+		.arg (numSeats)
+		;
+}
+
+QString Plane::fullRegistration () const
 {
 	if (eintrag_ist_leer (competitionId)) return registration;
 	return QString ("%1 (%2)").arg (registration).arg (competitionId);
 }
 
-QString Plane::getTextName () const
-	/*
-	 * Returns the name of the plane in a form suitable for running text.
-	 * Return value:
-	 *   - the name.
-	 */
+bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)
 {
-	return getName ();
-}
+	QString club1=simplify_club_name (p1.club);
+	QString club2=simplify_club_name (p2.club);
 
-void Plane::output (std::ostream &stream, output_format_t format)
-{
-	Entity::output (stream, format, false, "ID", id);
-	Entity::output (stream, format, false, "Kennzeichen", registration);
-	Entity::output (stream, format, false, "Wettbewerbskennzeichen", competitionId);
-	Entity::output (stream, format, false, "Sitze", numSeats);
-	Entity::output (stream, format, false, "Verein", club);
-	Entity::output (stream, format, true, "Gattung", categoryText (category, lsLong));
+	if (club1<club2) return true;
+	if (club1>club2) return false;
+	if (p1.registration<p2.registration) return true;
+	if (p1.registration>p2.registration) return false;
+	return false;
 }
 
 
+// **********************
+// ** Category methods **
+// **********************
 
 QList<Plane::Category> Plane::listCategories (bool includeInvalid)
 {
@@ -172,28 +192,9 @@ int Plane::categoryMaxSeats (Plane::Category category)
 }
 
 
-bool Plane::selfLaunchOnly ()
-{
-	// Note that motorgliders can be glieders; and there are even some TMGs
-	// which can do winch launch.
-	return category==categorySingleEngine || category==categoryUltralight;
-}
-
-bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)
-{
-	QString club1=simplify_club_name (p1.club);
-	QString club2=simplify_club_name (p2.club);
-
-	if (club1<club2) return true;
-	if (club1>club2) return false;
-	if (p1.registration<p2.registration) return true;
-	if (p1.registration>p2.registration) return false;
-	return false;
-}
-
-// ******************
-// ** ObjectModels **
-// ******************
+// *****************
+// ** ObjectModel **
+// *****************
 
 int Plane::DefaultObjectModel::columnCount () const
 {
@@ -237,18 +238,6 @@ QVariant Plane::DefaultObjectModel::displayData (const Plane &object, int column
 	return QVariant ();
 }
 
-QString Plane::toString () const
-{
-	return QString ("id=%1, registration=%2, competitionId=%3, type=%4, club=%5, category=%6, seats=%7")
-		.arg (id)
-		.arg (registration)
-		.arg (competitionId)
-		.arg (type)
-		.arg (club)
-		.arg (categoryText (category, lsLong))
-		.arg (numSeats)
-		;
-}
 
 // *******************
 // ** SQL interface **

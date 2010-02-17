@@ -475,6 +475,12 @@ template<class T> int Database::deleteObject (db_id id)
 	return query.numRowsAffected ();
 }
 
+/**
+ * The id of the object is ignored and overwritten.
+ *
+ * @param object
+ * @return
+ */
 template<class T> db_id Database::createObject (T &object)
 {
 	QSqlQuery query (db);

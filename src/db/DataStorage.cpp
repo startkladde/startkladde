@@ -508,7 +508,7 @@ db_id DataStorage::getPlaneIdByRegistration (const QString &registration)
 	QMutexLocker lock (&dataMutex);
 	foreach (const Plane &plane, planes)
 		if (plane.registration.toLower ()==registration.toLower ())
-			return plane.id;
+			return plane.getId ();
 
 	return invalid_id;
 }
@@ -521,7 +521,7 @@ QList<db_id> DataStorage::getPersonIdsByName (const QString &firstName, const QS
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
 		if (person.vorname.toLower ()==firstName.toLower () && person.nachname.toLower ()==lastName.toLower ())
-			result.append (person.id);
+			result.append (person.getId ());
 
 	return result;
 }
@@ -548,7 +548,7 @@ QList<db_id> DataStorage::getPersonIdsByFirstName (const QString &firstName)
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
 		if (person.vorname.toLower ()==firstName.toLower ())
-			result.append (person.id);
+			result.append (person.getId ());
 	lock.unlock ();
 
 	return result;
@@ -562,7 +562,7 @@ QList<db_id> DataStorage::getPersonIdsByLastName (const QString &lastName)
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
 		if (person.nachname.toLower ()==lastName.toLower ())
-			result.append (person.id);
+			result.append (person.getId ());
 	lock.unlock ();
 
 	return result;
@@ -585,7 +585,7 @@ template<class T> T DataStorage::getObject (db_id id)
 
 	QMutexLocker lock (&dataMutex);
 	foreach (const T &object, *objectList<T> ())
-		if (object.get_id ()==id)
+		if (object.getId ()==id)
 			return T (object);
 	lock.unlock ();
 
@@ -596,7 +596,7 @@ template<class T> bool DataStorage::objectExists (db_id id)
 {
 	QMutexLocker lock (&dataMutex);
 	foreach (const T &object, *objectList<T> ())
-		if (object.get_id ()==id)
+		if (object.getId ()==id)
 			return true;
 	lock.unlock ();
 
@@ -615,16 +615,16 @@ template<> Flight DataStorage::getObject (db_id id)
 
 	if (todayDate.isValid ())
 		foreach (const Flight &flight, flightsToday.getList ())
-			if (flight.id==id)
+			if (flight.getId ()==id)
 				return Flight (flight);
 
 	if (otherDate.isValid ())
 		foreach (const Flight &flight, flightsOther.getList ())
-		if (flight.id==id)
+		if (flight.getId ()==id)
 				return Flight (flight);
 
 	foreach (const Flight &flight, preparedFlights.getList ())
-		if (flight.id==id)
+		if (flight.getId ()==id)
 			return Flight (flight);
 std::cout << "not found" << std::endl;
 	throw NotFoundException (id);
@@ -646,7 +646,7 @@ db_id DataStorage::getLaunchMethodByType (LaunchMethod::Type type)
 	QMutexLocker lock (&dataMutex);
 	foreach (const LaunchMethod &launchMethod, launchMethods)
 		if (launchMethod.type==type)
-			return launchMethod.get_id ();
+			return launchMethod.getId ();
 	lock.unlock ();
 
 	return invalid_id;
@@ -682,6 +682,7 @@ template<> QList<LaunchMethod> *DataStorage::objectList<LaunchMethod> () { retur
 // **********************
 
 // These methods are a bit ugly because of the interface to Database
+// TODO Database is better now
 
 // TODO:
 //  - also addObject planeTypes, clubs, but unique => QSet?
@@ -695,10 +696,9 @@ template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const 
 	(void)monitor;
 	// TODO addObject duplicate check?
 
-	// Make a copy of the object and set its ID to 0 (bad Database::write_x
-	// interface)
+	// The copy will have the same id as the original, but the id will be
+	// overwritten.
 	T copy (object);
-	copy.id=0;
 
 	// Write the object by using the database method
 	QMutexLocker dbLock (&databaseMutex);
@@ -714,17 +714,7 @@ template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const 
 	// If adding succeeded, add the object to the cache and emit a event
 	if (id_valid (newId))
 	{
-		copy.id=newId;
-		// TODO: we should read the object back - but what if adding succeeds
-		// and reading back fails?
-		// Read the object back
-//		dbLock.relock ();
-//		db.getObject (&copy, newId);
-//		dbLock.unlock ();
-
 		objectAdded (copy);
-
-		// Emit a dbEvent
 		emit dbEvent (DbEvent (det_add, DbEvent::getDbEventTable<T> (), newId));
 	}
 
@@ -769,7 +759,7 @@ template<class T> bool DataStorage::updateObject (OperationMonitor *monitor, con
 {
 	(void)monitor;
 
-	if (id_invalid (object.id)) return true; // TODO signal error
+	if (id_invalid (object.getId ())) return true; // TODO signal error
 	T copy (object);
 
 	QMutexLocker dbLock (&databaseMutex);
@@ -787,7 +777,7 @@ template<class T> bool DataStorage::updateObject (OperationMonitor *monitor, con
 	if (id_valid (result))
 	{
 		objectUpdated (copy);
-		emit dbEvent (DbEvent (det_change, DbEvent::getDbEventTable<T> (), object.id));
+		emit dbEvent (DbEvent (det_change, DbEvent::getDbEventTable<T> (), object.getId ()));
 	}
 
 
@@ -829,7 +819,7 @@ template<class T> void DataStorage::objectDeleted (db_id id)
 	QList<T> *list=objectList<T> ();
 	QMutableListIterator<T> it (*list);
 	while (it.hasNext ())
-		if (it.next ().get_id ()==id)
+		if (it.next ().getId ()==id)
 			it.remove ();
 }
 
@@ -843,7 +833,7 @@ template<class T> void DataStorage::objectUpdated (const T &object)
 	QMutableListIterator<T> it (*list);
 
 	while (it.hasNext ())
-		if (it.next ().get_id ()==object.get_id ())
+		if (it.next ().getId ()==object.getId ())
 			it.setValue (object);
 }
 
@@ -885,29 +875,29 @@ template<> void DataStorage::objectUpdated<Flight> (const Flight &flight)
 	// it already exists, add it if not, and remove it from the other lists.
 	if (flight.vorbereitet ())
 	{
-		preparedFlights.replaceOrAdd (flight.id, flight);
-		flightsToday.removeById (flight.id);
-		flightsOther.removeById (flight.id);
+		preparedFlights.replaceOrAdd (flight.getId (), flight);
+		flightsToday.removeById (flight.getId ());
+		flightsOther.removeById (flight.getId ());
 	}
 	else if (flight.effdatum ()==todayDate)
 	{
-		preparedFlights.removeById (flight.id);
-		flightsToday.replaceOrAdd (flight.id, flight);
-		flightsOther.removeById (flight.id);
+		preparedFlights.removeById (flight.getId ());
+		flightsToday.replaceOrAdd (flight.getId (), flight);
+		flightsOther.removeById (flight.getId ());
 	}
 	else if (flight.effdatum ()==otherDate)
 	{
 		// If otherDate is the same as today, this is not reached.
-		preparedFlights.removeById (flight.id);
-		flightsToday.removeById (flight.id);
-		flightsOther.replaceOrAdd (flight.id, flight);
+		preparedFlights.removeById (flight.getId ());
+		flightsToday.removeById (flight.getId ());
+		flightsOther.replaceOrAdd (flight.getId (), flight);
 	}
 	else
 	{
 		// The flight should not be on any list - remove it from all lists
-		preparedFlights.removeById (flight.id);
-		flightsToday.removeById (flight.id);
-		flightsOther.removeById (flight.id);
+		preparedFlights.removeById (flight.getId ());
+		flightsToday.removeById (flight.getId ());
+		flightsOther.removeById (flight.getId ());
 	}
 }
 
@@ -982,7 +972,7 @@ db_id DataStorage::planeFlying (db_id id)
 		if (
 			(flight.isFlying         () && flight.plane==id) ||
 			(flight.isTowplaneFlying () && flight.towplane==id))
-			return flight.id;
+			return flight.getId ();
 
 	return invalid_id;
 }
@@ -996,7 +986,7 @@ db_id DataStorage::personFlying (db_id id)
 			(flight.isFlying         () && flight.pilot    ==id) ||
 			(flight.isFlying         () && flight.copilot==id) ||
 			(flight.isTowplaneFlying () && flight.towpilot ==id))
-			return flight.id;
+			return flight.getId ();
 
 	return invalid_id;
 }

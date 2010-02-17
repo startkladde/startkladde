@@ -132,7 +132,7 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 			case 12: return flight.comments;
 			case 13: return flight.isTowflight()?QString ("(Siehe geschleppter Flug)"):flight.accountingNote;
 			case 14: return flight.effdatum ();
-			case 15: return (flight.isTowflight ()?QString ("(%1)"):QString ("%1")).arg (flight.get_id ());
+			case 15: return (flight.isTowflight ()?QString ("(%1)"):QString ("%1")).arg (flight.getId ());
 		}
 
 		assert (false);
@@ -186,7 +186,7 @@ QVariant FlightModel::registrationData (const Flight &flight, int role) const
 	try
 	{
 		Plane plane=dataStorage.getObject<Plane> (flight.plane);
-		return plane.getTableName ();
+		return plane.fullRegistration ();
 	}
 	catch (DataStorage::NotFoundException)
 	{
@@ -216,7 +216,7 @@ QVariant FlightModel::pilotData (const Flight &flight, int role) const
 	try
 	{
 		Person pilot=dataStorage.getObject<Person> (flight.pilot);
-		return pilot.getTableName ();
+		return pilot.formalNameWithClub ();
 	}
 	catch (DataStorage::NotFoundException)
 	{
@@ -233,7 +233,7 @@ QVariant FlightModel::copilotData (const Flight &flight, int role) const
 		if (flightTypeCopilotRecorded (flight.flightType))
 		{
 			Person copilot=dataStorage.getObject<Person> (flight.copilot);
-			return copilot.getTableName ();
+			return copilot.formalNameWithClub ();
 		}
 		else if (flightTypeIsGuest (flight.flightType))
 		{

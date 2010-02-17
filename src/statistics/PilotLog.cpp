@@ -70,8 +70,8 @@ PilotLog::Entry PilotLog::Entry::create (const Flight *flight, DataStorage &data
 	entry.date=flight->effdatum ();
 	if (plane) entry.planeType=plane->type;
 	if (plane) entry.planeRegistration=plane->registration;
-	if (pilot) entry.pilot=pilot->getName ();
-	if (copilot) entry.copilot=copilot->getName ();
+	if (pilot) entry.pilot=pilot->formalName ();
+	if (copilot) entry.copilot=copilot->formalName ();
 	if (launchMethod) entry.launchMethod=launchMethod->logString;
 	entry.departureAirfield=flight->departureAirfield;
 	entry.destinationAirfield=flight->destinationAirfield;
@@ -191,7 +191,7 @@ PilotLog *PilotLog::createNew (const QList<Flight> &flights, DataStorage &dataSt
 	PilotLog *result=new PilotLog;
 	foreach (const Person &person, people)
 	{
-		PilotLog *personResult=createNew (person.id, flights, dataStorage, mode);
+		PilotLog *personResult=createNew (person.getId (), flights, dataStorage, mode);
 		result->entries+=personResult->entries;
 		delete personResult;
 	}

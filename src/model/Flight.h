@@ -42,6 +42,8 @@ enum FlightError {
 
 class Flight
 {
+	friend class Database;
+
 	public:
 		Flight ();
 		Flight (db_id id); // TODO constructors taking id should be protected?
@@ -72,7 +74,9 @@ class Flight
 		QString toString () const;
 		bool isExternal () const { return !lands_here (mode) || !starts_here (mode); }
 
-		db_id id;							// ID des Flugs in der Datenbank
+		db_id getId () const { return id; }
+		void setId (db_id id) { this->id=id; } // TODO can we do without this?
+
 		db_id plane;
 		db_id pilot;						// ID des Piloten
 		db_id copilot;					// ID des Begleiters
@@ -100,7 +104,6 @@ class Flight
 		static const int STATUS_TOWFLIGHT_LANDED;
 
 
-		db_id get_id () const { return id; }
 
 		Time effectiveTime () const;
 		// TODO which one of these is right?
@@ -189,6 +192,8 @@ class Flight
 		int getStatus () const;
 
 	private:
+		db_id id;							// ID des Flugs in der Datenbank
+
 		void initialize (db_id id);
 		QString incompletePersonName (QString nn, QString vn) const;
 };

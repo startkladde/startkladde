@@ -89,7 +89,7 @@ void PlaneEditorPane::on_registrationInput_editingFinished ()
 
 void PlaneEditorPane::objectToFields (const Plane &plane)
 {
-	originalId=plane.id;
+	originalId=plane.getId ();
 
 	ui.registrationInput->setText (plane.registration);
 	ui.competitionIdInput->setText (plane.competitionId);
@@ -105,7 +105,7 @@ Plane PlaneEditorPane::determineObject ()
 	// TODO: checks go here; throw AbortedException if aborted
 	Plane plane;
 
-	plane.id=originalId;
+	plane.setId (originalId);
 
 	plane.registration=ui.registrationInput->text ();
 	plane.competitionId=ui.competitionIdInput->text ();

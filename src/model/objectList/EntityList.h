@@ -20,12 +20,12 @@
  * A subclass of MutableObjectList which contains Entitys and allows acces based
  * on the entity id.
  *
- * T must provide a get_id method.
+ * T must provide a getId method.
  *
  * Note that for a typical use, there will not be two elements with the same ID
  * in the list - but EntityList does not require that.
  *
- * @see Entity::get_id
+ * @see Entity::getId
  */
 template<class T> class EntityList: public MutableObjectList<T>
 {
@@ -86,7 +86,7 @@ template<class T> int EntityList<T>::findById (db_id id)
 {
 	// TODO cache in a map?
 	for (int i=0; i<MutableObjectList<T>::size (); ++i)
-		if (MutableObjectList<T>::at (i).get_id ()==id)
+		if (MutableObjectList<T>::at (i).getId ()==id)
 			return i;
 
 	return -1;
@@ -102,7 +102,7 @@ template<class T> void EntityList<T>::removeById (db_id id)
 	// TODO cache in a map?
 	for (int i=0; i<MutableObjectList<T>::size (); ++i)
 	{
-		if (MutableObjectList<T>::at (i).get_id ()==id)
+		if (MutableObjectList<T>::at (i).getId ()==id)
 		{
 			MutableObjectList<T>::removeAt (i);
 			--i;
@@ -120,7 +120,7 @@ template<class T> void EntityList<T>::replaceById (db_id id, const T &object)
 {
 	// TODO cache in a map?
 	for (int i=0; i<MutableObjectList<T>::size (); ++i)
-		if (MutableObjectList<T>::at (i).get_id ()==id)
+		if (MutableObjectList<T>::at (i).getId ()==id)
 			replace (i, object);
 }
 

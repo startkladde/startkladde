@@ -66,7 +66,7 @@ bool FlightProxyList::isAirtow (const Flight &flight, LaunchMethod *launchMethod
 	{
 		LaunchMethod lt=dataStorage.getObject<LaunchMethod> (flight.launchMethod);
 		if (launchMethod) *launchMethod=lt;
-		return lt.is_airtow ();
+		return lt.isAirtow ();
 	}
 	catch (DataStorage::NotFoundException)
 	{
@@ -81,7 +81,7 @@ void FlightProxyList::addTowflightFor (const Flight &flight, const LaunchMethod 
 	// TODO code duplication with updateTowflight
 	db_id towplaneId=invalid_id;
 
-	if (launchMethod.towplane_known ())
+	if (launchMethod.towplaneKnown ())
 		towplaneId=dataStorage.getPlaneIdByRegistration (launchMethod.towplaneRegistration);
 	else
 		towplaneId=flight.towplane;
@@ -109,7 +109,7 @@ void FlightProxyList::updateTowflight (db_id id, int towflightIndex)
 			// TODO code duplication with addTowflightFor
 			db_id towplaneId=invalid_id;
 
-			if (launchMethod.towplane_known ())
+			if (launchMethod.towplaneKnown ())
 				towplaneId=dataStorage.getPlaneIdByRegistration (launchMethod.towplaneRegistration);
 			else
 				towplaneId=flight.towplane;
@@ -133,7 +133,7 @@ void FlightProxyList::updateTowflight (db_id id, int towflightIndex)
 int FlightProxyList::findFlight (db_id id) const
 {
 	for (int i=0; i<sourceModel.size (); ++i)
-		if (sourceModel.at (i).get_id ()==id)
+		if (sourceModel.at (i).getId ()==id)
 			return i;
 
 	return -1;
@@ -147,7 +147,7 @@ int FlightProxyList::findFlight (db_id id) const
 int FlightProxyList::findTowflight (db_id id) const
 {
 	for (int i=0; i<towflights.size (); ++i)
-		if (towflights[i].get_id ()==id)
+		if (towflights[i].getId ()==id)
 			return i;
 
 	return -1;
@@ -181,7 +181,7 @@ int FlightProxyList::modelIndexToTowflightIndex (int modelIndex) const
  */
 int FlightProxyList::findTowref (int index) const
 {
-	db_id id=at (index).get_id ();
+	db_id id=at (index).getId ();
 
 	if (modelIndexIsFlight (index))
 	{
@@ -250,7 +250,7 @@ void FlightProxyList::sourceModel_dataChanged (const QModelIndex &topLeft, const
 	for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
 	{
 		const Flight &flight=sourceModel.at (i);
-		db_id id=flight.get_id ();
+		db_id id=flight.getId ();
 
 		// Determine the launch method and whether the flight is an airtow
 		LaunchMethod launchMethod;
@@ -337,7 +337,7 @@ void FlightProxyList::sourceModel_rowsAboutToBeRemoved (const QModelIndex &paren
 	for (int i=start; i<=end; ++i)
 	{
 		// The towflight has the same ID as the flight
-		db_id id=sourceModel.at (i).get_id ();
+		db_id id=sourceModel.at (i).getId ();
 
 		int towflightIndex=findTowflight (id);
 		if (towflightIndex>=0)

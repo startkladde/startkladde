@@ -5,6 +5,11 @@
 
 #include <QSqlQuery>
 
+
+// ******************
+// ** Construction **
+// ******************
+
 Person::Person ():
 	Entity ()
 {
@@ -21,6 +26,11 @@ void Person::initialize ()
 {
 }
 
+
+// ****************
+// ** Comparison **
+// ****************
+
 bool Person::operator< (const Person &o) const
 {
 	if (nachname<o.nachname) return true;
@@ -30,20 +40,23 @@ bool Person::operator< (const Person &o) const
 	return false;
 }
 
-QString Person::getName () const
-	/*
-	 * Returns the name of the person in a form suitable for enumerations.
-	 * Return value:
-	 *   - the name.
-	 */
+
+// ****************
+// ** Formatting **
+// ****************
+
+QString Person::toString () const
 {
-	if (eintrag_ist_leer (nachname)&&eintrag_ist_leer (vorname)) return "-";
-	if (eintrag_ist_leer (nachname)) return vorname;
-	if (eintrag_ist_leer (vorname)) return nachname;
-	return nachname+", "+vorname;
+	return QString ("id=%1, lastName=%2, firstName=%3, club=%4, clubId=%5")
+		.arg (id)
+		.arg (nachname)
+		.arg (vorname)
+		.arg (club)
+		.arg (club_id)
+		;
 }
 
-QString Person::full_name () const
+QString Person::fullName () const
 {
 	QString l=nachname; if (l.isEmpty ()) l="?";
 	QString f= vorname; if (f.isEmpty ()) f="?";
@@ -51,7 +64,7 @@ QString Person::full_name () const
 	return f+" "+l;
 }
 
-QString Person::formal_name () const
+QString Person::formalName () const
 {
 	QString l=nachname; if (l.isEmpty ()) l="?";
 	QString f= vorname; if (f.isEmpty ()) f="?";
@@ -59,29 +72,16 @@ QString Person::formal_name () const
 	return l+", "+f;
 }
 
-QString Person::getTableName () const
-	/*
-	 * Returns the name of the person in a form suitable for the Table.
-	 * Return value:
-	 *   - the name.
-	 */
+QString Person::formalNameWithClub () const
 {
-	if (eintrag_ist_leer (club)) return getName ();
-	return getName ()+" ("+club+")";
+	if (eintrag_ist_leer (club)) return formalName ();
+	return formalName ()+" ("+club+")";
 }
 
-QString Person::getTextName () const
-	/*
-	 * Returns the name of the person in a form suitable for running text.
-	 * Return value:
-	 *   - the name.
-	 */
-{
-	if (eintrag_ist_leer (nachname)&&eintrag_ist_leer (vorname)) return "-";
-	if (eintrag_ist_leer (nachname)) return vorname;
-	if (eintrag_ist_leer (vorname)) return nachname;
-	return vorname+" "+nachname;
-}
+
+// ********************************
+// ** EntitySelectWindow helpers **
+// ********************************
 
 QString Person::get_selector_value (int column_number) const
 {
@@ -109,19 +109,10 @@ QString Person::get_selector_caption (int column_number)
 	}
 }
 
-void Person::output (std::ostream &stream, output_format_t format)
-{
-	Entity::output (stream, format, false, "ID", id);
-	Entity::output (stream, format, false, "Nachname", nachname);
-	Entity::output (stream, format, false, "Vorname", vorname);
-	Entity::output (stream, format, false, "Verein", club);
-	Entity::output (stream, format, false, "Vereins-ID", club_id);
-	Entity::output (stream, format, true, "Landesverbandsnummer", landesverbands_nummer);
-}
 
-// ******************
-// ** ObjectModels **
-// ******************
+// *****************
+// ** ObjectModel **
+// *****************
 
 int Person::DefaultObjectModel::columnCount () const
 {
@@ -159,17 +150,6 @@ QVariant Person::DefaultObjectModel::displayData (const Person &object, int colu
 
 	assert (false);
 	return QVariant ();
-}
-
-QString Person::toString () const
-{
-	return QString ("id=%1, lastName=%2, firstName=%3, club=%4, clubId=%5")
-		.arg (id)
-		.arg (nachname)
-		.arg (vorname)
-		.arg (club)
-		.arg (club_id)
-		;
 }
 
 
