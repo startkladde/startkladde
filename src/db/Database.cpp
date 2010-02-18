@@ -4,13 +4,12 @@
  *   - integrate schema loading/database migration into GUI
  *
  * Short term plan:
- *   - Test the migrations: make sure the old version and current sk_web work
- *     with "initial"
+ *   - Test the migrations:
+ *     - make sure the old version and current sk_web work with "initial"
+ *     - make sure we can migrate from both an empty and the legacy database
  *   - Fixtures
  *     - SQL dump or data file (CSV/YAML)?
  *     - C++ or Ruby?
- *   - Migration: distinguish between "old" and "empty"
- *   - integrate migration into the gui
  *   - Standardize enum handling: store the database value internally and have
  *     an "unknown" type (instead of "none")
  *     - this should also allow preserving unknown types in the database
@@ -118,6 +117,8 @@ Database::Database ()
 
 bool Database::open (const DatabaseInfo &dbInfo)
 {
+	info=dbInfo;
+
 	std::cout << QString ("Connecting to %1@%2:%3")
 		.arg (dbInfo.username, dbInfo.server, dbInfo.database) << std::endl;
 

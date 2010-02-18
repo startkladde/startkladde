@@ -131,38 +131,30 @@ int doStuff (Database &db)
 	}
 
 	if (opts.non_options[0]=="db:up")
-	{
-		Migrator m (db);
-		m.up ();
-	}
+		Migrator (db).up ();
 	else if (opts.non_options[0]=="db:down")
-	{
-		Migrator m (db);
-		m.down ();
-	}
+		Migrator (db).down ();
 	else if (opts.non_options[0]=="db:migrate")
-	{
-		Migrator m (db);
-		m.migrate ();
-	}
+		Migrator (db).migrate ();
 	else if (opts.non_options[0]=="db:version")
-	{
-		Migrator m (db);
-		std::cout << "Version is " << m.currentVersion () << std::endl;
-	}
+		std::cout << "Version is " << Migrator (db).currentVersion () << std::endl;
+	else if (opts.non_options[0]=="db:load")
+		Migrator (db).loadSchema ();
+	else if (opts.non_options[0]=="db:drop")
+		Migrator (db).drop ();
+	else if (opts.non_options[0]=="db:clear")
+		Migrator (db).clear ();
+	else if (opts.non_options[0]=="db:create")
+		Migrator (db).create ();
+	else if (opts.non_options[0]=="db:test")
+		test_database (db);
+	else if (opts.non_options[0]=="db:fail")
+		db.executeQuery ("bam!");
 	else if (opts.non_options[0]=="db:migrations")
 	{
 		MigrationFactory factory;
 		foreach (quint64 version, factory.availableVersions ())
 			std::cout << version << " - " << factory.migrationName (version) << std::endl;
-	}
-	else if (opts.non_options[0]=="db:test")
-	{
-		test_database (db);
-	}
-	else if (opts.non_options[0]=="db:fail")
-	{
-		db.executeQuery ("bam!");
 	}
 	else if (opts.non_options[0]=="db:dump")
 	{

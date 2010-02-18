@@ -5,7 +5,7 @@
 #include "src/text.h"
 #include "src/db/Database.h"
 #include "src/db/migration/MigrationFactory.h"
-
+#include "src/db/schema/CurrentSchema.h"
 
 // ***************
 // ** Constants **
@@ -94,6 +94,47 @@ void Migrator::migrate ()
 		runMigration (version, Migration::dirUp);
 }
 
+
+// ************
+// ** Schema **
+// ************
+
+void Migrator::loadSchema ()
+{
+	std::cout << "== Loading schema =============================================================" << std::endl;
+
+	CurrentSchema schema (database);
+
+	schema.up ();
+	assumeMigrated (schema.getVersions ());
+
+	std::cout << "== Version is now " << currentVersion () << " " << QString (79-19-14, '=') << std::endl << std::endl;
+}
+
+void Migrator::drop ()
+{
+	QString databaseName=database.getInfo ().database;
+	database.executeQuery (QString ("DROP DATABASE %1").arg (databaseName));
+}
+
+void Migrator::create ()
+{
+	QString databaseName=database.getInfo ().database;
+	database.executeQuery (QString ("CREATE DATABASE %1").arg (databaseName));
+}
+
+void Migrator::clear ()
+{
+	drop ();
+	create ();
+}
+
+void Migrator::reset ()
+{
+	drop ();
+	create ();
+	loadSchema ();
+}
 
 // ***********************
 // ** Migration listing **
@@ -223,8 +264,8 @@ QList<quint64> Migrator::appliedMigrations ()
 
 void Migrator::assumeMigrated (QList<quint64> versions)
 {
-	// If the migrations table does not exist, return
-	if (!database.tableExists (migrationsTableName)) return;
+	// If the migrations table does not exist, create it
+	if (!database.tableExists (migrationsTableName)) createMigrationsTable ();
 
 	// Remove all migrations
 	database.executeQuery (QString ("DELETE FROM %1").arg (migrationsTableName));

@@ -31,6 +31,14 @@ class Migrator
 		void down ();
 		void migrate ();
 
+		// *** Schema
+		void loadSchema ();
+		void reset ();
+		void clear ();
+		void drop ();
+		void create ();
+
+
 		// *** Migration listing
 		QList<quint64> pendingMigrations ();
 		quint64 nextMigration ();

@@ -10,9 +10,9 @@
 #include <QSqlQuery>
 
 #include "src/db/dbTypes.h"
+#include "src/db/DatabaseInfo.h"
 
 class Flight;
-class DatabaseInfo;
 
 /**
  * Methods for manipulating objects in the database (ORM).
@@ -69,6 +69,7 @@ class Database
 		bool open (const DatabaseInfo &dbInfo);
 		void close ();
 		QSqlError lastError () const { return db.lastError (); }
+		const DatabaseInfo &getInfo () const { return info; }
 
 		// *** Transactions
 		bool transaction () { return db.transaction (); }
@@ -128,6 +129,7 @@ class Database
 
 	private:
 		QSqlDatabase db;
+		DatabaseInfo info;
 };
 
 #endif

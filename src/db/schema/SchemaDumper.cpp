@@ -93,7 +93,9 @@ void SchemaDumper::dumpColumns (QStringList &output, const QString &table)
 		QString type=query.value (typeIndex).toString ();
 		QString null=query.value (nullIndex).toString ();
 
-		dumpColumn (output, name, type, null);
+		// The id columns created automatically, don't dump it
+		if (name!="id")
+			dumpColumn (output, name, type, null);
 	}
 }
 
@@ -106,6 +108,7 @@ void SchemaDumper::dumpColumn (QStringList &output, const QString &name, const Q
 
 void SchemaDumper::dumpVersions (QStringList &output)
 {
+	// TODO handle empty/nonexistant migrations table
 	output << "versions:";
 
 	QString table=Migrator::migrationsTableName;
