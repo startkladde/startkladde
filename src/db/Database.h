@@ -9,7 +9,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 
-#include "src/db/dbTypes.h"
+#include "src/db/dbId.h"
 #include "src/db/DatabaseInfo.h"
 
 class Flight;

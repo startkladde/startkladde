@@ -2,7 +2,7 @@
 #define _DbEvent_h
 
 #include "src/dataTypes.h"
-#include "src/db/dbTypes.h"
+#include "src/db/dbId.h"
 
 //#include "src/model/Plane.h"
 //#include "src/model/Flight.h"

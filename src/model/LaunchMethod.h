@@ -5,7 +5,6 @@
 #include <QStringList>
 
 #include "src/text.h"
-#include "src/db/dbTypes.h"
 #include "src/logging/messages.h"
 #include "src/model/Entity.h"
 #include "src/model/objectList/ObjectModel.h"

@@ -7,7 +7,7 @@
 #include <QList>
 
 #include "src/time/Time.h"
-#include "src/db/dbTypes.h"
+#include "src/db/dbId.h"
 
 class DataStorage;
 class Flight;

@@ -10,7 +10,6 @@
 #include "src/dataTypes.h"
 #include "src/text.h"
 #include "src/gui/dialogs.h"
-#include "src/gui/settings.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
 #include "src/model/LaunchMethod.h"

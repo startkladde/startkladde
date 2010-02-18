@@ -11,10 +11,18 @@ the migrator, which keeps track of applied migrations.
 
 Note: The migrations are implemented in a way similar to Rails.
 
+== Data types
+
+For boolean types, tinyint(1) is used (as in rails). 0 means false, everything
+else means true. An enum could be used with MySQL, but that is not supported by
+SQLite and the interpretation would be poorly defined.
+
+For enum types, string is used. Enum is not used as it is not supported by
+MySQL and prone to errors when values are added or changed. Integers are also
+error prone.
+
 
 == Migrations
-
-=== Description
 
 Changes in the database definition (the "schema") are defined by "migrations".
 Individual migrations, implementations of the abstract class Migration, are
@@ -64,10 +72,12 @@ The list of migrations known to the migration factory is automatically
 generated at compile time. It is stored in "build/migrations_headers.h" and
 "build/migrations.h", both of which are included by MigrationFactory.cpp. The
 generation is performed automatically on build by the Makefile, using the
-script ./script/build/generate_migration_headers.rb.
+script ./script/build/generate_migration_headers.rb. The Migration classes are
+added to the qmake project by generating the file build/migrations.pro which is
+included in startkladde.pro.
 
 
-== The current schema
+== Schema
 
 The "current schema" is used to create a fresh database. It is defined in the
 class CurrentSchema. This is an implementation of Schema, an abstract subclass

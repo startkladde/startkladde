@@ -9,7 +9,6 @@
 #include <QString>
 
 #include "src/dataTypes.h"
-#include "src/db/dbTypes.h"
 
 extern const QString whitespace;
 
@@ -40,6 +39,9 @@ bool yesNoQuestion (QWidget *parent, QString title, QString question);
 std::ostream &operator<< (std::ostream &s, const QString &c);
 std::ostream &operator<< (std::ostream &s, const QColor &c);
 std::ostream &operator<< (std::ostream &s, const QByteArray &ba);
+
+QString std2q (std::string);
+std::string q2std (QString);
 
 #endif
 

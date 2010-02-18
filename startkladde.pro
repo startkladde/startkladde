@@ -5,7 +5,8 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += . version
 INCLUDEPATH += . version /usr/include/mysql
-LIBS += -L/usr/lib64/mysql -lmysqlclient -lz -lacpi
+#LIBS += -L/usr/lib64/mysql -lmysqlclient -lz -lacpi
+LIBS += -lz -lacpi
 MAKEFILE = Makefile_startkladde
 OBJECTS_DIR = build/
 MOC_DIR= build/
@@ -17,7 +18,6 @@ HEADERS += \
            build/migrations.h \
            src/accessor.h \
            src/color.h \
-           src/Condition.h \
            src/dataTypes.h \
            src/SkException.h \
            src/text.h \
@@ -31,7 +31,7 @@ HEADERS += \
            src/concurrent/task/SleepTask.h \
            src/config/Options.h \
            src/db/DbEvent.h \
-           src/db/dbTypes.h \
+           src/db/dbId.h \
            src/db/Database.h \
            src/db/DataStorage.h \
            src/db/DataStorageMonitor.h \
@@ -50,20 +50,12 @@ HEADERS += \
            src/db/task/RefreshAllTask.h \
            src/db/task/FetchFlightsTask.h \
            src/gui/dialogs.h \
-           src/gui/settings.h \
-           src/gui/spacing.h \
            src/gui/widgets/AcpiWidget.h \
-           src/gui/widgets/SkButton.h \
            src/gui/widgets/SkComboBox.h \
            src/gui/widgets/SkLabel.h \
-           src/gui/widgets/SkListWidget.h \
-           src/gui/widgets/SkTable.h \
            src/gui/widgets/SkTableView.h \
-           src/gui/widgets/SkTableItem.h \
-           src/gui/widgets/SkTextBox.h \
            src/gui/widgets/WeatherWidget.h \
            src/gui/widgets/SkTreeWidgetItem.h \
-           src/gui/widgets/SkTimeEdit.h \
            src/gui/widgets/TableButton.h \
            src/gui/windows/DateInputDialog.h \
            src/gui/windows/MainWindow.h \
@@ -111,7 +103,6 @@ HEADERS += \
 
 SOURCES += \
            src/color.cpp \
-           src/Condition.cpp \
            src/dataTypes.cpp \
            src/startkladde.cpp \
            src/text.cpp \
@@ -125,7 +116,7 @@ SOURCES += \
            src/concurrent/task/SleepTask.cpp \
            src/config/Options.cpp \
            src/db/DbEvent.cpp \
-           src/db/dbTypes.cpp \
+           src/db/dbId.cpp \
            src/db/Database.cpp \
            src/db/DataStorage.cpp \
            src/db/DataStorageMonitor.cpp \
@@ -139,19 +130,12 @@ SOURCES += \
            src/db/task/RefreshAllTask.cpp \
            src/db/task/FetchFlightsTask.cpp \
            src/gui/dialogs.cpp \
-           src/gui/settings.cpp \
            src/gui/widgets/AcpiWidget.cpp \
-           src/gui/widgets/SkButton.cpp \
            src/gui/widgets/SkComboBox.cpp \
            src/gui/widgets/SkLabel.cpp \
            src/gui/widgets/SkTreeWidgetItem.cpp \
-           src/gui/widgets/SkListWidget.cpp \
-           src/gui/widgets/SkTable.cpp \
            src/gui/widgets/SkTableView.cpp \
-           src/gui/widgets/SkTableItem.cpp \
-           src/gui/widgets/SkTextBox.cpp \
            src/gui/widgets/WeatherWidget.cpp \
-           src/gui/widgets/SkTimeEdit.cpp \
            src/gui/widgets/TableButton.cpp \
            src/gui/windows/DateInputDialog.cpp \
            src/gui/windows/MainWindow.cpp \

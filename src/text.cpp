@@ -203,3 +203,16 @@ QString firstToLower (const QString &text)
 {
 	return text.left (1).toLower ()+text.mid (1);
 }
+
+/** Converts a std::string to a QString */
+QString std2q (std::string s)
+{
+	return QString (s.c_str ());
+}
+
+/** Converts a QString to a std::string */
+std::string q2std (QString s)
+{
+	if (s.isNull ()) return "";
+	return std::string (s.toLatin1 ().constData ());
+}

@@ -7,30 +7,6 @@ class Person;
 class Flight;
 class LaunchMethod;
 
-QString std2q (std::string s)
-	/*
-	 * Converts a std::QString to a QString.
-	 * Parameters:
-	 *   - s: the source.
-	 * Return value:
-	 *   the converted QString.
-	 */
-{
-	return QString (s.c_str ());
-}
-
-std::string q2std (QString s)
-	/*
-	 * Converts a QString to a std::QString
-	 * Parameters:
-	 *   - s: the source.
-	 * Return value:
-	 *   the converted QString.
-	 */
-{
-	if (s.isNull ()) return "";
-	return std::string (s.toLatin1 ().constData ());
-}
 
 //// Specialize getDbObjectType templates
 //// We probably don't want to implement the generic one, as probably, any

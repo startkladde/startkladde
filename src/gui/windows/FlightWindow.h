@@ -117,7 +117,7 @@
 #include "src/dataTypes.h"
 #include "src/config/Options.h"
 #include "src/db/DataStorage.h"
-#include "src/db/dbTypes.h"
+#include "src/db/dbId.h"
 #include "src/model/LaunchMethod.h"
 #include "src/model/Flight.h"
 

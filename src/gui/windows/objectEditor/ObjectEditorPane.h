@@ -10,7 +10,7 @@
 
 #include <QtGui/QWidget>
 
-#include "src/db/dbTypes.h"
+#include "src/db/dbId.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
 
 class DataStorage;
