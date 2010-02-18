@@ -39,6 +39,9 @@ HEADERS += \
            src/db/migration/Migration.h \
            src/db/migration/MigrationFactory.h \
            src/db/migration/Migrator.h \
+           src/db/schema/Schema.h \
+           src/db/schema/SchemaDumper.h \
+           src/db/schema/CurrentSchema.h \
            src/db/task/DataStorageSleepTask.h \
            src/db/task/AddObjectTask.h \
            src/db/task/UpdateObjectTask.h \
@@ -130,6 +133,8 @@ SOURCES += \
            src/db/migration/Migration.cpp \
            src/db/migration/MigrationFactory.cpp \
            src/db/migration/Migrator.cpp \
+           src/db/schema/Schema.cpp \
+           src/db/schema/SchemaDumper.cpp \
            src/db/task/DataStorageSleepTask.cpp \
            src/db/task/RefreshAllTask.cpp \
            src/db/task/FetchFlightsTask.cpp \
@@ -183,6 +188,7 @@ SOURCES += \
            src/time/Date.cpp \
            src/time/Time.cpp \
            src/time/timeFunctions.cpp \
+		   build/CurrentSchema.cpp
 		   # Empty line
 
 FORMS += \

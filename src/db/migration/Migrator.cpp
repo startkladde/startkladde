@@ -45,7 +45,7 @@ void Migrator::runMigration (quint64 version, Migration::Direction direction)
 		switch (direction)
 		{
 			case Migration::dirUp:
-				std::cout << "== Migrating: " << name << " " << QString (79-15-name.length (), '=') << std::endl;
+				std::cout << "== Applying: " << name << " " << QString (79-14-name.length (), '=') << std::endl;
 				migration->up ();
 				addMigration (version);
 				break;
@@ -219,4 +219,25 @@ QList<quint64> Migrator::appliedMigrations ()
 		migrations << query.value (0).toLongLong ();
 
 	return migrations;
+}
+
+void Migrator::assumeMigrated (QList<quint64> versions)
+{
+	// If the migrations table does not exist, return
+	if (!database.tableExists (migrationsTableName)) return;
+
+	// Remove all migrations
+	database.executeQuery (QString ("DELETE FROM %1").arg (migrationsTableName));
+
+	// Add all migrations
+	foreach (quint64 version, versions)
+	{
+		QSqlQuery query=database.prepareQuery (
+			QString ("INSERT INTO %1 (%2) VALUES (?)")
+			.arg (migrationsTableName, migrationsColumnName)
+			);
+
+		query.addBindValue (version);
+		database.executeQuery (query);
+	}
 }

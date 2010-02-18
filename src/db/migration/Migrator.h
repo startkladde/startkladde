@@ -34,6 +34,7 @@ class Migrator
 		// *** Migration listing
 		QList<quint64> pendingMigrations ();
 		quint64 nextMigration ();
+		bool isCurrent () { return nextMigration ()==0; }
 
 		// *** Migrations table
 		quint64 currentVersion ();
@@ -42,6 +43,8 @@ class Migrator
 		void createMigrationsTable ();
 		bool hasMigration (quint64 version);
 		QList<quint64> appliedMigrations ();
+		void assumeMigrated (QList<quint64> versions);
+		void clearMigrations ();
 
 	protected:
 		// *** Migration

@@ -12,10 +12,10 @@ class QVariant;
  * and recognized by MigrationFactory.
  *
  * A new migration class can be created automatically by using the script
- * script/generate_migration.rb.
+ * script/generate_migration.rb (see documentation).
  *
  * Migrations are supposed to be called only through Migrator, which keeps track
- * of which migrations have already been applied
+ * of which migrations have already been applied (see documentation).
  */
 class Migration
 {

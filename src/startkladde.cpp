@@ -10,10 +10,11 @@
 #include "src/db/Database.h"
 #include "src/db/migration/Migrator.h"
 #include "src/db/migration/MigrationFactory.h"
+#include "src/db/schema/SchemaDumper.h"
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
 #include "src/model/LaunchMethod.h"
-// TODO where the other models from?
+#include "src/model/Person.h"
 
 // Testen des Wetterplugins
 //#include "WeatherDialog.h"
@@ -162,6 +163,28 @@ int doStuff (Database &db)
 	else if (opts.non_options[0]=="db:fail")
 	{
 		db.executeQuery ("bam!");
+	}
+	else if (opts.non_options[0]=="db:dump")
+	{
+		Migrator m (db);
+		if (!m.isCurrent ())
+		{
+			// TODO require --force switch if not current
+			std::cerr << "Warning: the database is not current"  << std::endl;
+		}
+
+		SchemaDumper d (db);
+
+		if (opts.non_options.size ()>1)
+		{
+			QString filename=opts.non_options[1];
+			std::cout << QString ("Dumping schema to %1").arg (filename) << std::endl;
+			d.dumpSchemaToFile (filename);
+		}
+		else
+		{
+			std::cout << d.dumpSchema () << std::endl;
+		}
 	}
 	else
 	{

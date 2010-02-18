@@ -1,6 +1,6 @@
 /*
  * Next:
- *   - schema generation
+ *   - schema loading
  *   - integrate schema loading/database migration into GUI
  *
  * Short term plan:
