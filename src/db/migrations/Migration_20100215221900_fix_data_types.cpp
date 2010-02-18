@@ -84,8 +84,8 @@ void Migration_20100215221900_fix_data_types::changeFlightsTable (const QString 
 
 void Migration_20100215221900_fix_data_types::changeUsersTable (const QString &name)
 {
-	database.changeColumnType (name, "username",            Database::dataTypeString ); // TODO not null
-	database.changeColumnType (name, "password",            Database::dataTypeString ); // TODO long enough?
+	database.changeColumnType (name, "username",            Database::dataTypeString , "NOT NULL");
+	database.changeColumnType (name, "password",            Database::dataTypeString );
 	database.changeColumnType (name, "perm_club_admin",     Database::dataTypeBoolean);
 	database.changeColumnType (name, "perm_read_flight_db", Database::dataTypeBoolean);
 	database.changeColumnType (name, "club",                Database::dataTypeString );

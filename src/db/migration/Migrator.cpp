@@ -45,18 +45,18 @@ void Migrator::runMigration (quint64 version, Migration::Direction direction)
 		switch (direction)
 		{
 			case Migration::dirUp:
-				std::cout << "Migrating up " << name << std::endl;
+				std::cout << "== Migrating: " << name << " " << QString (79-15-name.length (), '=') << std::endl;
 				migration->up ();
 				addMigration (version);
 				break;
 			case Migration::dirDown:
-				std::cout << "Migrating down " << name << std::endl;
+				std::cout << "== Reverting: " << name << " " << QString (79-15-name.length (), '=') << std::endl;
 				migration->down ();
 				removeMigration (version);
 				break;
 		}
 
-		std::cout << "Version is now " << currentVersion () << std::endl;
+		std::cout << "== Version is now " << currentVersion () << " " << QString (79-19-14, '=') << std::endl << std::endl;
 
 		delete migration;
 	}

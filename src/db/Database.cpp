@@ -1,6 +1,9 @@
 /*
- * Short term plan:
+ * Next:
  *   - schema generation
+ *   - integrate schema loading/database migration into GUI
+ *
+ * Short term plan:
  *   - Test the migrations: make sure the old version and current sk_web work
  *     with "initial"
  *   - Fixtures
@@ -17,12 +20,7 @@
  *     cache explicitly) note that we still have to query for accounting notes and
  *     airfields because we don't get a complete flight list
  *   - fix error reporting (db.lastError (), e. g. delete objects)
- *   - remove DbColumn, DbTable
  *   - make sure "", 0 and NULL are read correctly
- *   - Migration management:
- *     - script to create migration
- *     - autogenerate factory
- *     - .pro file
  *
  * Improvements:
  *   - split this class into parts (generic, orm, specific)
@@ -41,21 +39,15 @@
  *   - make sure (using a dump of an old db) that the migration path is OK
  *   - Use low level methods in ORM methods (better: split class)
  *   - Remove code multiplication in Models (SQL interface)
+ *   - change flight mode (and towflight mode) column type
  *
  * Medium term plan:
- *   - change flight status flags and flight mode columns (also towflight mode)
  *   - add some abstraction to the query list generation
- *   - add a version number
- *   - add migrations
- *     - one possibility: with create 0, up/down, and create current
- *     - another: autogenerate current from 0 and ups
- *     - look at rails (or other framework supporting migrations)
  *   - add support for sqlite
  *   - add indexes
  *   - add foreign key constraints
  *   - database checks (?)
  *     - show what is wrong/will be fixed
- *     - rails migration like specification
  *
  * Long term plan:
  *   - Shold there be a thread safe database class?
@@ -284,28 +276,32 @@ void Database::updateColumnValues (const QString &tableName, const QString &colu
 // ** Schema manipulation **
 // *************************
 
-void Database::createTable (const QString &name)
+void Database::createTable (const QString &name, bool skipIfExists)
 {
-	std::cout << QString ("Creating table %1").arg (name) << std::endl;
+	std::cout << QString ("Creating table %1%2")
+		.arg (name, skipIfExists?" if it does not exist":"")
+		<< std::endl;
 
 	QString queryString=QString (
-		"CREATE TABLE %1 ("
+		"CREATE TABLE %1 %2 ("
 		"id int(11) NOT NULL AUTO_INCREMENT,"
 		"PRIMARY KEY (id)"
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		)
-		.arg (name);
+		.arg (skipIfExists?"IF NOT EXISTS":"", name);
 
 	executeQuery (queryString);
 }
 
-void Database::createTableLike (const QString &like, const QString &name)
+void Database::createTableLike (const QString &like, const QString &name, bool skipIfExists)
 {
-	std::cout << QString ("Creating table %1 like %2").arg (name, like) << std::endl;
+	std::cout << QString ("Creating table %1 like %2%3")
+		.arg (name, like, skipIfExists?" if it does not exist":"")
+		<< std::endl;
 
 	QString queryString=
-		QString ("CREATE TABLE %1 LIKE %2")
-		.arg (name, like);
+		QString ("CREATE TABLE %1 %2 LIKE %3")
+		.arg (skipIfExists?"IF NOT EXISTS":"", name, like);
 
 	executeQuery (queryString);
 }
@@ -346,11 +342,11 @@ void Database::addColumn (const QString &table, const QString &name, const QStri
 {
 	if (skipIfExists && columnExists (table, name))
 	{
-		std::cout << QString ("Skipping existing column %1.%2...").arg (table, name) << std::endl;
+		std::cout << QString ("Skipping existing column %1.%2").arg (table, name) << std::endl;
 		return;
 	}
 
-	std::cout << QString ("Adding column %1.%2...").arg (table, name) << std::endl;
+	std::cout << QString ("Adding column %1.%2").arg (table, name) << std::endl;
 
 	QString queryString=
 		QString ("ALTER TABLE %1 ADD COLUMN %2 %3 %4")
@@ -359,14 +355,14 @@ void Database::addColumn (const QString &table, const QString &name, const QStri
 	executeQuery (queryString);
 }
 
-void Database::changeColumnType (const QString &table, const QString &name, const QString &type)
+void Database::changeColumnType (const QString &table, const QString &name, const QString &type, const QString &extraSpecification)
 {
-	std::cout << QString ("Changing column %1.%2 type to %3...")
+	std::cout << QString ("Changing column %1.%2 type to %3")
 		.arg (table, name, type) << std::endl;
 
 	QString queryString=
-		QString ("ALTER TABLE %1 MODIFY %2 %3")
-		.arg (table, name, type);
+		QString ("ALTER TABLE %1 MODIFY %2 %3 %4")
+		.arg (table, name, type, extraSpecification);
 
 	executeQuery (queryString);
 }
@@ -375,11 +371,11 @@ void Database::dropColumn (const QString &table, const QString &name, bool skipI
 {
 	if (skipIfNotExists && !columnExists (table, name))
 	{
-		std::cout << QString ("Skipping non-existing column %1.%2...").arg (table, name) << std::endl;
+		std::cout << QString ("Skipping non-existing column %1.%2").arg (table, name) << std::endl;
 		return;
 	}
 
-	std::cout << QString ("Dropping column %1.%2...").arg (table, name) << std::endl;
+	std::cout << QString ("Dropping column %1.%2").arg (table, name) << std::endl;
 
 	QString queryString=
 		QString ("ALTER TABLE %1 DROP COLUMN %2")
@@ -388,13 +384,13 @@ void Database::dropColumn (const QString &table, const QString &name, bool skipI
 	executeQuery (queryString);
 }
 
-void Database::renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type)
+void Database::renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type, const QString &extraSpecification)
 {
-	std::cout << QString ("Renaming column %1.%2 to %3...").arg (table, oldName, newName) << std::endl;
+	std::cout << QString ("Renaming column %1.%2 to %3").arg (table, oldName, newName) << std::endl;
 
 	QString queryString=
-		QString ("ALTER TABLE %1 CHANGE %2 %3 %4")
-		.arg (table, oldName, newName, type);
+		QString ("ALTER TABLE %1 CHANGE %2 %3 %4 %5")
+		.arg (table, oldName, newName, type, extraSpecification);
 
 	executeQuery (queryString);
 }

@@ -7,11 +7,14 @@
  * Creates the database as it was created by pre-migration versions (legacy
  * database).
  *
+ * All of the tables and columns will only be created of they do not yet exist.
+ * This allows us to treat an empty table the same way as a legacy database.
+ *
  * Note that this migration will not exactly recreate the legacy schema. Each
  * of the differences
  *   - is transparent to the old version; that is, the old version of the
  *     software and the version of sk_web that uses the old table runs with
- *     the database
+ *     the database created by this migration
  *   - brings some advantage (such as ease of implementation)
  *   - will be fixed in a later migration to create a defined state (except the
  *     column order); that is, a migration will change the database such that

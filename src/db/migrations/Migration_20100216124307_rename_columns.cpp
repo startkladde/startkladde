@@ -35,6 +35,7 @@ void Migration_20100216124307_rename_columns::renameColumn (const QString &table
 void Migration_20100216124307_rename_columns::renameColumns (Direction direction)
 {
 	// *** People
+	// id is not changed
 	renameColumn ("people", "nachname"  , "last_name" , Database::dataTypeString, direction);
 	renameColumn ("people", "vorname"   , "first_name", Database::dataTypeString, direction);
 	renameColumn ("people", "verein"    , "club"      , Database::dataTypeString, direction);
@@ -43,6 +44,7 @@ void Migration_20100216124307_rename_columns::renameColumns (Direction direction
 	renameColumn ("people", "bemerkung" , "comments"  , Database::dataTypeString, direction);
 
 	// *** Planes
+	// id is not changed
 	renameColumn ("planes", "kennzeichen"           , "registration"              ,  Database::dataTypeString   , direction);
 	renameColumn ("planes", "verein"                , "club"                      ,  Database::dataTypeString   , direction);
 	renameColumn ("planes", "sitze"                 , "num_seats"                 ,  Database::dataTypeInteger  , direction);
@@ -52,6 +54,7 @@ void Migration_20100216124307_rename_columns::renameColumns (Direction direction
 	renameColumn ("planes", "bemerkung"             , "comments"                  ,  Database::dataTypeString   , direction);
 
 	// *** Flights
+	// id is not changed
 	renameColumn ("flights", "flugzeug"             , "plane_id"                  ,  Database::dataTypeId       , direction);
 	renameColumn ("flights", "pilot"                , "pilot_id"                  ,  Database::dataTypeId       , direction);
 	renameColumn ("flights", "begleiter"            , "copilot_id"                ,  Database::dataTypeId       , direction);
@@ -84,10 +87,6 @@ void Migration_20100216124307_rename_columns::renameColumns (Direction direction
 	renameColumn ("flights", "abrechnungshinweis"   , "accounting_notes" ,  Database::dataTypeString   , direction);
 
 	// *** Users
-	renameColumn ("users", "username"           , "username"           ,  Database::dataTypeString , direction); // TODO not null
-	renameColumn ("users", "password"           , "password"           ,  Database::dataTypeString , direction); // TODO long enough?
-	renameColumn ("users", "perm_club_admin"    , "perm_club_admin"    ,  Database::dataTypeBoolean, direction);
-	renameColumn ("users", "perm_read_flight_db", "perm_read_flight_db",  Database::dataTypeBoolean, direction);
-	renameColumn ("users", "club"               , "club"               ,  Database::dataTypeString , direction);
+	// username, password, perm_club_admin, perm_read_flight_db and club are not changed
 	renameColumn ("users", "person"             , "person_id"          ,  Database::dataTypeId     , direction);
 }

@@ -93,16 +93,16 @@ class Database
 
 
 		// *** Schema manipulation
-		void createTable (const QString &name);
-		void createTableLike (const QString &like, const QString &name);
+		void createTable (const QString &name, bool skipIfExists=false);
+		void createTableLike (const QString &like, const QString &name, bool skipIfExists=false);
 		void dropTable (const QString &name);
 		void renameTable (const QString &oldName, const QString &newName);
 		bool tableExists (const QString &name);
 
 		void addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="", bool skipIfExists=false);
-		void changeColumnType (const QString &table, const QString &name, const QString &type);
+		void changeColumnType (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="");
 		void dropColumn (const QString &table, const QString &name, bool skipIfNotExists=false);
-		void renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type);
+		void renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type, const QString &extraSpecification="");
 		bool columnExists (const QString &table, const QString &name);
 
 		// *** ORM

@@ -13,69 +13,69 @@ Migration_20100214140000_initial::~Migration_20100214140000_initial ()
 
 void Migration_20100214140000_initial::up ()
 {
-	database.createTable  ("person"); // Creates the id column
-	database.addColumn ("person", "nachname"  , Database::dataTypeString);
-	database.addColumn ("person", "vorname"   , Database::dataTypeString);
-	database.addColumn ("person", "verein"    , Database::dataTypeString);
-	database.addColumn ("person", "spitzname" , Database::dataTypeString);
-	database.addColumn ("person", "vereins_id", Database::dataTypeString);
-	database.addColumn ("person", "bemerkung" , Database::dataTypeString);
+	database.createTable  ("person", true); // Creates the id column
+	database.addColumn ("person", "nachname"  , Database::dataTypeString, "", true);
+	database.addColumn ("person", "vorname"   , Database::dataTypeString, "", true);
+	database.addColumn ("person", "verein"    , Database::dataTypeString, "", true);
+	database.addColumn ("person", "spitzname" , Database::dataTypeString, "", true);
+	database.addColumn ("person", "vereins_id", Database::dataTypeString, "", true);
+	database.addColumn ("person", "bemerkung" , Database::dataTypeString, "", true);
 
-	database.createTableLike ("person", "person_temp");
+	database.createTableLike ("person", "person_temp", true);
 
-	database.createTable ("flugzeug"); // Creates the id column
-	database.addColumn ("flugzeug", "kennzeichen",            Database::dataTypeString   );
-	database.addColumn ("flugzeug", "verein",                 Database::dataTypeString   );
-	database.addColumn ("flugzeug", "sitze",                  Database::dataTypeInteger  );
-	database.addColumn ("flugzeug", "typ",                    Database::dataTypeString   );
-	database.addColumn ("flugzeug", "gattung",                Database::dataTypeCharacter);
-	database.addColumn ("flugzeug", "wettbewerbskennzeichen", Database::dataTypeString   );
-	database.addColumn ("flugzeug", "bemerkung",              Database::dataTypeString   );
+	database.createTable ("flugzeug", true); // Creates the id column
+	database.addColumn ("flugzeug", "kennzeichen",            Database::dataTypeString   , "", true);
+	database.addColumn ("flugzeug", "verein",                 Database::dataTypeString   , "", true);
+	database.addColumn ("flugzeug", "sitze",                  Database::dataTypeInteger  , "", true);
+	database.addColumn ("flugzeug", "typ",                    Database::dataTypeString   , "", true);
+	database.addColumn ("flugzeug", "gattung",                Database::dataTypeCharacter, "", true);
+	database.addColumn ("flugzeug", "wettbewerbskennzeichen", Database::dataTypeString   , "", true);
+	database.addColumn ("flugzeug", "bemerkung",              Database::dataTypeString   , "", true);
 
-	database.createTableLike ("flugzeug", "flugzeug_temp");
+	database.createTableLike ("flugzeug", "flugzeug_temp", true);
 
-	database.createTable ("flug"); // Creates the id column
+	database.createTable ("flug", true); // Creates the id column
 	// Crew and plane
-	database.addColumn ("flug", "flugzeug",           Database::dataTypeId       );
-	database.addColumn ("flug", "pilot",              Database::dataTypeId       );
-	database.addColumn ("flug", "begleiter",          Database::dataTypeId       );
+	database.addColumn ("flug", "flugzeug",           Database::dataTypeId       , "", true);
+	database.addColumn ("flug", "pilot",              Database::dataTypeId       , "", true);
+	database.addColumn ("flug", "begleiter",          Database::dataTypeId       , "", true);
 	// Flight settings
-	database.addColumn ("flug", "typ",                Database::dataTypeInteger  );
-	database.addColumn ("flug", "modus",              Database::dataTypeCharacter);
+	database.addColumn ("flug", "typ",                Database::dataTypeInteger  , "", true);
+	database.addColumn ("flug", "modus",              Database::dataTypeCharacter, "", true);
 	// Takeoff and landing
-	database.addColumn ("flug", "status",             Database::dataTypeInteger  );
-	database.addColumn ("flug", "startart",           Database::dataTypeId       );
-	database.addColumn ("flug", "startort",           Database::dataTypeString   );
-	database.addColumn ("flug", "zielort",            Database::dataTypeString   );
-	database.addColumn ("flug", "anzahl_landungen",   Database::dataTypeInteger  );
-	database.addColumn ("flug", "startzeit",          Database::dataTypeDatetime );
-	database.addColumn ("flug", "landezeit",          Database::dataTypeDatetime );
+	database.addColumn ("flug", "status",             Database::dataTypeInteger  , "", true);
+	database.addColumn ("flug", "startart",           Database::dataTypeId       , "", true);
+	database.addColumn ("flug", "startort",           Database::dataTypeString   , "", true);
+	database.addColumn ("flug", "zielort",            Database::dataTypeString   , "", true);
+	database.addColumn ("flug", "anzahl_landungen",   Database::dataTypeInteger  , "", true);
+	database.addColumn ("flug", "startzeit",          Database::dataTypeDatetime , "", true);
+	database.addColumn ("flug", "landezeit",          Database::dataTypeDatetime , "", true);
 	// Towflight
-	database.addColumn ("flug", "towplane",           Database::dataTypeId       );
-	database.addColumn ("flug", "modus_sfz",          Database::dataTypeCharacter);
-	database.addColumn ("flug", "zielort_sfz",        Database::dataTypeString   );
-	database.addColumn ("flug", "land_schlepp",       Database::dataTypeDatetime );
-	database.addColumn ("flug", "towpilot",           Database::dataTypeId       );
+	database.addColumn ("flug", "towplane",           Database::dataTypeId       , "", true);
+	database.addColumn ("flug", "modus_sfz",          Database::dataTypeCharacter, "", true);
+	database.addColumn ("flug", "zielort_sfz",        Database::dataTypeString   , "", true);
+	database.addColumn ("flug", "land_schlepp",       Database::dataTypeDatetime , "", true);
+	database.addColumn ("flug", "towpilot",           Database::dataTypeId       , "", true);
 	// Incomplete names
-	database.addColumn ("flug", "pvn",                Database::dataTypeString   );
-	database.addColumn ("flug", "pnn",                Database::dataTypeString   );
-	database.addColumn ("flug", "bvn",                Database::dataTypeString   );
-	database.addColumn ("flug", "bnn",                Database::dataTypeString   );
-	database.addColumn ("flug", "tpvn",               Database::dataTypeString   );
-	database.addColumn ("flug", "tpnn",               Database::dataTypeString   );
+	database.addColumn ("flug", "pvn",                Database::dataTypeString   , "", true);
+	database.addColumn ("flug", "pnn",                Database::dataTypeString   , "", true);
+	database.addColumn ("flug", "bvn",                Database::dataTypeString   , "", true);
+	database.addColumn ("flug", "bnn",                Database::dataTypeString   , "", true);
+	database.addColumn ("flug", "tpvn",               Database::dataTypeString   , "", true);
+	database.addColumn ("flug", "tpnn",               Database::dataTypeString   , "", true);
 	// Comments
-	database.addColumn ("flug", "bemerkung",          Database::dataTypeString   );
-	database.addColumn ("flug", "abrechnungshinweis", Database::dataTypeString   );
+	database.addColumn ("flug", "bemerkung",          Database::dataTypeString   , "", true);
+	database.addColumn ("flug", "abrechnungshinweis", Database::dataTypeString   , "", true);
 
-	database.createTableLike ("flug", "flug_temp");
+	database.createTableLike ("flug", "flug_temp", true);
 
-	database.createTable ("user"); // Creates the id column
-	database.addColumn ("user", "username",            Database::dataTypeString ); // TODO not null
-	database.addColumn ("user", "password",            Database::dataTypeString ); // TODO long enough?
-	database.addColumn ("user", "perm_club_admin",     Database::dataTypeBoolean);
-	database.addColumn ("user", "perm_read_flight_db", Database::dataTypeBoolean);
-	database.addColumn ("user", "club",                Database::dataTypeString );
-	database.addColumn ("user", "person",              Database::dataTypeId     );
+	database.createTable ("user", true); // Creates the id column
+	database.addColumn ("user", "username",            Database::dataTypeString , "NOT NULL", true); // TODO not null
+	database.addColumn ("user", "password",            Database::dataTypeString , ""        , true);
+	database.addColumn ("user", "perm_club_admin",     Database::dataTypeBoolean, ""        , true);
+	database.addColumn ("user", "perm_read_flight_db", Database::dataTypeBoolean, ""        , true);
+	database.addColumn ("user", "club",                Database::dataTypeString , ""        , true);
+	database.addColumn ("user", "person",              Database::dataTypeId     , ""        , true);
 }
 
 void Migration_20100214140000_initial::down ()
