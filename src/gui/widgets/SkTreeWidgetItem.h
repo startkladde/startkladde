@@ -4,7 +4,7 @@
 #include <QTreeWidget>
 #include <QString>
 
-#include "src/db/dbTypes.h"
+#include "src/db/dbId.h"
 
 class SkTreeWidgetItem:public QTreeWidgetItem
 {

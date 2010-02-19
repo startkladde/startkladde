@@ -13,7 +13,7 @@ class WeatherDialog:public QDialog
 	Q_OBJECT
 
 	public:
-		WeatherDialog (ShellPlugin *_plugin, QWidget *parent=NULL, const char *name=NULL);
+		WeatherDialog (ShellPlugin *_plugin, QWidget *parent=NULL);
 		~WeatherDialog ();
 
 	protected:

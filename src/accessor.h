@@ -20,5 +20,22 @@
 		inline type *get_ ## var () const { return var; }	\
 		inline void set_ ## var (type * const _ ## var) { var=_ ## var; }
 
+
+#define attr_accessor(type, capitalName, name) \
+        attr_reader (type, capitalName, name) \
+        attr_writer (type, capitalName, name)
+
+#define virtual_attr_accessor(type, capitalName, name) \
+        virtual_attr_reader (type, capitalName, name) \
+        virtual attr_writer (type, capitalName, name)
+
+#define attr_reader(      type, capitalName, name) type       get ## capitalName ()                { return name; }
+#define const_attr_reader(type, capitalName, name) const type get ## capitalName ()          const { return name; }
+#define attr_writer(      type, capitalName, name) void       set ## capitalName (type name)       { this->name=name; }
+
+#define virtual_attr_reader(      type, capitalName, name) virtual attr_reader       (type, capitalName, name)
+#define virtual_const_attr_reader(type, capitalName, name) virtual const_attr_reader (type, capitalName, name)
+#define virtual_attr_writer(      type, capitalName, name) virtual attr_writer       (type, capitalName, name)
+
 #endif
 

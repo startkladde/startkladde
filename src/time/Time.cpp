@@ -24,6 +24,16 @@ Time::Time (time_t tme)
 	null=false;
 }
 
+Time Time::create (const QDateTime &qDateTime, time_zone tz)
+{
+	const QDate &d=qDateTime.date ();
+	const QTime &t=qDateTime.time ();
+
+	Time time;
+	time.set_to (d.year (), d.month (), d.day (), t.hour (), t.minute (), t.second (), tz);
+	return time;
+}
+
 
 
 void Time::set_current (bool null_secs)
@@ -102,17 +112,15 @@ void Time::set_to (const int year, const int month, const int day, const int hou
 	}
 }
 
-void Time::set_to (const QDate d, const QTime t, time_zone tz, bool null_sec)
+void Time::set_to (const QDate d, const QTime t, /*time_zone tz, */bool null_sec)
 	/*
 	 * Converts the time from a QDate and a QTime, given a timezone.
 	 * Parameters:
 	 *   - QDate, QTime: the date and time to set to.
-	 *   - tz: the timezome to interpret the time with.
+	 *  // - tz: the timezome to interpret the time with.
 	 *   - null_sec: if true, the seconds are set to 0.
 	 */
 {
-	// FIXME tz not used
-	(void)tz;
 	set_to (d.year (), d.month (), d.day (), t.hour (), t.minute (), null_sec?0:t.second ());
 }
 
@@ -172,7 +180,7 @@ void Time::add_time (Time tt)
 	/*
 	 * Adds another time.
 	 * Parameters:
-	 *   - tt: the time to add. This should be a time span rather that a time
+	 *   - tt: the time to addObject. This should be a time span rather that a time
 	 *     point or the result won't make much sense.
 	 */
 {
@@ -231,6 +239,11 @@ QDate Time::get_qdate (time_zone tz) const
 	return QDate (broken.tm_year+1900, broken.tm_mon+1, broken.tm_mday);
 }
 
+QDateTime Time::toUtcQDateTime () const
+{
+	return QDateTime (get_qdate (tz_utc), get_qtime (tz_utc), Qt::UTC);
+}
+
 
 
 int Time::secs_to (const Time *other) const
@@ -269,6 +282,9 @@ QString Time::to_string (const char *format, time_zone tz, int buf_size, bool no
 	 *   - the generated QString.
 	 */
 {
+	if (is_null ())
+		return "-";
+
 	// Break down time, according to local_time parameter
 	struct tm tm_time;
 	switch (tz)
@@ -287,6 +303,7 @@ QString Time::to_string (const char *format, time_zone tz, int buf_size, bool no
 	return t;
 }
 
+// TODO rename
 QString Time::csv_string (time_zone tz) const
 	/*
 	 * Makes a QString suitable for outputting CSV files.
@@ -322,7 +339,7 @@ QString Time::table_string (time_zone tz, bool gelandet, bool no_letters) const
 	 * Makes a QString suitable for displaying in a Table.
 	 * Parameters:
 	 *   - tz: the timezone to generate the QString for.
-	 *   - gelandet: whether the flight has landed.
+	 *   - landed: whether the flight has landed.
 	 */
 {
 	if (gelandet)

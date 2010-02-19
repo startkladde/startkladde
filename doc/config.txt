@@ -254,26 +254,6 @@ plugin_path path
 	Wenn (und nur wenn) kein Plugin-Pfad angegeben ist, werden Plugins im
 	aktuellen Verzeichnis gesucht; dies is äquivalent zu "plugin_path .".
 
-plugin_data_format filename
-  Beschreibung:
-    Fügt ein neues Plugin für die Konvertierung von Flugdaten dazu.
-	Diese Option kann mehrfach vorkommen.
-  Parameter:
-	filename: der Name der Datei, die das Plugin enthält, ohne
-	Dateinamenerweiterung. An den Dateinamen wird eine platformspezifische
-	Endung (".so") angehängt.
-	Für die Regeln, nach denen die Datei gesucht wird, siehe unter plugin_path.
-  Beispiele:
-    plugin_data_format format_lsv_albgau
-	  Die Datei format_lsv_albgau wird um Plugin-Suchpfad gesucht.
-	plugin_data_format ./format_lsv_albgau
-	  Die Datei format_lsv_albgau aus dem aktuellen Verzeichnis wird verwendet.
-	plugin_data_format /usr/local/lib/format_lsv_albgau
-	  Die Datei format_lsv_albgau aus dem Verzeichnis /usr/local/lib wird
-	  verwendet.
-  Standard:
-    Keine Plugins.
-
 shell_plugin <title>, <command>, <interval> [, warn_on_death] [, rich_text]
   Beschreibung:
     Fügt ein shell-Plugin dazu. Shell-Plugins werden im Informationsbereich des

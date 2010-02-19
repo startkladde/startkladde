@@ -32,12 +32,7 @@ Benötigte Software:
   	Seit Version 1.3 ist Qt Version 4 erforderlich.
   - Webserver (für die Webschnittstelle)
 	Für die Web-Schnittstelle wird ein Webserver benötigt. Empfohlen wird
-	Apache ab Version 1.3.
-  - LaTeX (für die Webschnittstelle)
-	Für die Erzeugung von PDF-Dateien werdem die Programme LaTeX, dvips und
-	ps2pdf benötigt. Die Programme müssen im Suchpfad liegen. Das Paket
-	koma-script wird benötigt. Es ist in praktisch allen LaTeX-Distributionen
-	enthalten, muss aber ggf. installiert werden.
+	Apache ab Version 2.0
   - libacpi (für die Batteriekontrolle)
 	
 
@@ -129,11 +124,8 @@ Makefile, zweiter Absatz).
 Zum suchen: qt.h bzw. mysql.h müssen in dem jeweiligen INCLUDE_DIR vorhanden
 sein.
 
-Wenn "make" fertig ist, werden folgende Dateien produziert:
+Wenn "make" fertig ist, wird die folgende Datei produziert:
   - startkladde: das Erfassungsprogramm mit grafischer Oberfläche
-  - sk_admin: ein Administrationsprogramm für die Kommandozeile
-  - sk_web: das Programm für das Webinterface
-  (sk_dump wurde durch sk_web ersetzt und wird nicht mehr erzeugt)
 
 Wenn make zu einem ungünstigen Zeitpunkt unterbrochen wird, kann es passieren,
 dass weitere Läufe mit folgender Fehlermeldung abbrechen:
@@ -210,91 +202,12 @@ vorhanden oder nicht vollständig sind, nach dem root-Passwort gefragt, um sie
 anzulegen. Wenn das Programm auf einem anderen Rechner läuft, muss dafür der
 Netzwerkzugriff für root freigeschaltet sein, wie in Abschnitt 3 beschrieben. 
 
-Alternativ kann auch das sk_admin-Programm verwendet werden:
-# sk_admin init_db
-Auch hier wird nach dem root-Passwort gefragt.
-
 
 6. Webserver einrichten
 =======================
-
-Für den Zugriff auf das Webinterface muss der Webserver entsprechend
-eingerichtet werden. Für den Betrieb des Programms ist dies nicht zwingend
-erforderlich, allerdings für die Auswertung empfehlenswert.
-
-Die folgende Anleitung bezieht sich auf Apache, Version 1.3. Außerdem wird in
-diesem und dem folgenden Abschnitt angenommen, dass das Skript in das
-systemweite Webseiten-Verzeichnis installiert werden soll. Selbstverständlich
-sind hier auch andere Varianten (zum Beispiel suExec) möglich.
-Unter Debian ist dieses Verzeichnis /var/www. Falls ein anderes Verzeichnis
-verwendet wird, sind die Optionen entsprechend anzupassen.
-
-Der Server muss so konfiguriert sein, dass er CGI-Skripte ausführt. Hierfür
-empfiehlt es sich in der Konfigurationsdatei (/etc/apache/httpd.conf) folgende
-Änderungen vorzunehmen:
-  - Dateien mit der Endung .cgi als CGI-Skripte behandeln: "AddHandler
-	cgi-script .cgi" einfügen.
-  - Für das Verzeichnis, wo das Webinterface-Programm liegt, die Ausführung von
-	CGI-Skripten aktivieren. Dazu unter <Directory /var/www/> (falls die
-	Dateien für die Webseite nicht unter /var/www/ gespeichert sind, heißt der
-	Abschnitt entsprechend anders) hinter "Options" "ExecCGI" anfügen.
-Außerdem muss der Server so konfiguriert sein, dass mittels der .htaccess-Datei
-der Zugriff auf Dateien eingeschränkt werden kann (siehe Abschnitt 7). Dazu ist
-muss in der Konfigurationsdatei in dem <Directory ...>-Abschnitt hinter
-"AllowOverride" "Limit" aufgeführt sein, also zum Beispiel "AllowOverride
-Limit".
-
-Nach den Änderungen muss der Server seine Konfigurationsdatei neu einlesen:
-# /etc/init.d/apache reload
 
 
 7. Webinterface einrichten
 ==========================
 
-In dem Webseiten-Verzeichnis (z. B. /var/www) wird ein Unterverzeichnis
-angelegt. 
-Das Verzeichnis "webinterface" wird unter dem Namen "startkladde" in das
-Webseiten-Verzeichnis (z. B. /var/www) kopiert. Außerdem wird das Programm
-sk_web in dieses Verzeichnis kopiert:
-# cp -av webinterface /var/www/startkladde
-# cp -av sk_web /var/www/startkladde/
-
-Wichtig ist hierbei, dass auch die (versteckte) Datei "webinterface/.htaccess"
-mitkopiert wird (siehe unten).
-
-Die Konfigurationsdatei, die die korrekten Einstellungen für den Server
-enthält, muss ebenfalls unter dem Namen "startkladde.conf" in dieses
-Verzeichnis kopiert werden.
-
-Die Dateien müssen für die Benutzerkennung, unter der der Webserver ausgeführt
-wird, lesbar, die Skripte auch ausführbar sein. Bei debian ist dies der
-Benutzer www-data:
-# chown -R www-data:www-data /var/www/startkladde
-# cd /var/www/startkladde/
-# chmod 640 *
-# chmod 750 *.cgi sk2* sk_dump sk_web
-
-Wenn der Benutzername nicht www-data ist, muss er in obigem Aufruf entsprechend
-angepasst werden.
-Da die Datei startkladde.conf Passwörter enthält, sollte der Zugriff nicht für
-alle Benutzer des Systems freigegeben werden, sofern es sich um ein
-Mehrbenutzersystem handelt. Ansonsten könnte jeder Benutzer, der sich einloggen
-kann, das Passwort lesen.
-
-Wichtig: die Datei startkladde.conf enthält Passwörter. Daher muss sie vor
-Zugriffen über den Webserver geschützt werden. Dies geschieht durch die Datei
-.htaccess, die schon vorbereitet ist. Damit dies funktioniert, muss die Datei
-mitkopiert worden sein (siehe oben), der Server muss entsprechend eingestellt
-sein (AllowOverride Limit, siehe Abschnitt 6), und die Datei muss lesbar sein.
-Auf jeden Fall sollte geprüft werden, ob die Datei tatsächlich nicht gelesen
-werden kann.
-
-Das Webinterface sollte jetzt unter der URL http://localhost/startkladde/sk.cgi
-erreichbar sein. Wenn der Webserver auch Zugriffe von anderen Rechner zulässt,
-kann der Zugriff auch über das Netzwerk erfolgen. Dazu wird die URL
-http://computername/startkladde/ verwendet. computername muss hierbei durch die
-IP-Adresse oder (sofern vorhanden) den Namen des Rechners ersetzt werden.
-
-Die Konfigurationsdatei http://localhost/startkladde/scripts/startkladde.conf
-darf nicht lesbar sein! Beim Aufruf muss eine Fehlermeldung erscheinen.
 

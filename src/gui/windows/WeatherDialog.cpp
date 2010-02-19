@@ -2,10 +2,12 @@
 
 #include <QMovie>
 
-WeatherDialog::WeatherDialog (ShellPlugin *_plugin, QWidget *parent, const char *name)
-	:QDialog (parent, name)
+WeatherDialog::WeatherDialog (ShellPlugin *_plugin, QWidget *parent)
+	:QDialog (parent)
 {
 	plugin=_plugin;
+
+	setAttribute (Qt::WA_DeleteOnClose, true);
 
 	ww=new WeatherWidget (this, "ww");
 
@@ -22,23 +24,24 @@ WeatherDialog::WeatherDialog (ShellPlugin *_plugin, QWidget *parent, const char 
 
 WeatherDialog::~WeatherDialog ()
 {
-	if (plugin) delete plugin; plugin=NULL;
+	delete plugin;
 }
 
 void WeatherDialog::resizeEvent (QResizeEvent *e)
 {
-	// Bei Größenänderung: so verschieben, dass das Zentrum des Dialogs an der
-	// gleichen Stelle bleibt.
-
-	// So oder so?
-	//int oldCenterX=geometry ().x ()+e->oldSize ().width ()/2;
-	//int oldCenterY=geometry ().y ()+e->oldSize ().height ()/2;
-	int oldCenterX=x ()+e->oldSize ().width ()/2;
-	int oldCenterY=y ()+e->oldSize ().height ()/2;
-
-	int newX=oldCenterX-frameGeometry ().width ()/2;
-	int newY=oldCenterY-frameGeometry ().height ()/2;
-
-	move (newX, newY);
+	(void)e;
+//	// Bei Größenänderung: so verschieben, dass das Zentrum des Dialogs an der
+//	// gleichen Stelle bleibt.
+//
+//	// So oder so?
+//	//int oldCenterX=geometry ().x ()+e->oldSize ().width ()/2;
+//	//int oldCenterY=geometry ().y ()+e->oldSize ().height ()/2;
+//	int oldCenterX=x ()+e->oldSize ().width ()/2;
+//	int oldCenterY=y ()+e->oldSize ().height ()/2;
+//
+//	int newX=oldCenterX-frameGeometry ().width ()/2;
+//	int newY=oldCenterY-frameGeometry ().height ()/2;
+//
+//	move (newX, newY);
 }
 

@@ -1,60 +1,142 @@
 #include "SkLabel.h"
 
-SkLabel::SkLabel (QColor _background_color, QColor _error_color, QWidget *parent, const char *name)
-	:QLabel (parent, name), background_color (_background_color), error_color (_error_color), invisible (false), error (false)
+#include <iostream>
+
+#include "src/text.h"
+
+// ******************
+// ** Construction **
+// ******************
+
+SkLabel::SkLabel (QWidget *parent, Qt::WindowFlags f):
+	QLabel (parent, f),
+	concealed (false),
+	error (false),
+	defaultBackgroundColor (255, 255, 255),
+	useDefaultBackgroundColor (false),
+	errorColor (255, 0, 0)
 {
 }
 
-SkLabel::SkLabel (const QString &text, QWidget *parent, const char *name)
-	:QLabel (text, parent, name)
+SkLabel::SkLabel (const QString &text, QWidget *parent, Qt::WindowFlags f):
+	QLabel (text, parent, f),
+	concealed (false),
+	error (false),
+	defaultBackgroundColor (255, 255, 255),
+	useDefaultBackgroundColor (false),
+	errorColor (255, 0, 0)
 {
 }
 
-void SkLabel::set_error (bool _error)
+
+// *********************
+// ** Property access **
+// *********************
+
+void SkLabel::setDefaultBackgroundColor (const QColor &color)
 {
-	error=_error;
-	set_colors ();
+	defaultBackgroundColor=color;
+	useDefaultBackgroundColor=true;
+
+	updateColors ();
 }
 
-void SkLabel::set_invisible (bool _invisible)
+void SkLabel::resetDefaultBackgroundColor ()
 {
-	invisible=_invisible;
-	set_colors ();
+	useDefaultBackgroundColor=false;
+
+	updateColors ();
 }
 
-void SkLabel::set_colors ()
+QColor SkLabel::getDefaultBackgroundColor ()
 {
-	if (invisible)
+	return defaultBackgroundColor;
+}
+
+void SkLabel::setConcealed (bool concealed)
+{
+	this->concealed=concealed;
+	updateColors ();
+}
+
+void SkLabel::setError (bool error)
+{
+	this->error=error;
+	updateColors ();
+}
+
+
+
+// ******************
+// ** State update **
+// ******************
+
+void SkLabel::updateColors ()
+{
+	QPalette p=palette ();
+
+	// TODO implement error state display
+	if (concealed)
 	{
-		setPalette (parentWidget ()->palette ());
+		// Concealed => foreground and background like parent background
 		setAutoFillBackground (true);
-
-		QPalette pal=palette ();
-		QColor color=parentWidget ()->palette ().color (QPalette::Background);
-		pal.setColor (QPalette::Foreground, color);
-		pal.setColor (QPalette::Background, color);
-
-		setPalette (pal);
+		p.setColor (QPalette::Foreground, parentWidget ()->backgroundColor ());
+		p.setColor (QPalette::Background, parentWidget ()->backgroundColor ());
+	}
+	else if (error)
+	{
+		// Error => given error background, same foreground as parent
+		setAutoFillBackground (true);
+		p.setColor (QPalette::Foreground, parentWidget ()->foregroundColor ());
+		p.setColor (QPalette::Background, errorColor);
+	}
+	else if (useDefaultBackgroundColor)
+	{
+		// Not concealed => given background, same foreground as parent
+		setAutoFillBackground (true);
+		p.setColor (QPalette::Foreground, parentWidget ()->foregroundColor ());
+		p.setColor (QPalette::Background, defaultBackgroundColor);
 	}
 	else
 	{
-		setAutoFillBackground (true);
-
-		QPalette pal=palette ();
-		pal.setColor (QPalette::Foreground, QColor (0, 0, 0));
-
-		if (error)
-			pal.setColor (QPalette::Background, error_color);
-		else
-			pal.setColor (QPalette::Background, background_color);
-
-		setPalette (pal);
+		// Not concealed, background color not used => same palette as parent
+		setAutoFillBackground (false);
+		p.setColor (QPalette::Foreground, parentWidget ()->foregroundColor ());
+		p.setColor (QPalette::Background, parentWidget ()->backgroundColor ());
 	}
+
+	setPalette (p);
 }
 
-void SkLabel::mouseDoubleClickEvent (QMouseEvent *e)
+
+// **************
+// ** Contents **
+// **************
+
+void SkLabel::setNumber (int number)
 {
-	(void)e;
-	emit (clicked ());
+	setText (QString::number (number));
 }
+
+void SkLabel::setNumber (float number)
+{
+	setText (QString::number (number));
+}
+
+void SkLabel::setNumber (double number)
+{
+	setText (QString::number (number));
+}
+
+// **********
+// ** Misc **
+// **********
+
+
+
+//void SkLabel::set_error (bool _error)
+//{
+//	error=_error;
+//	set_colors ();
+//}
 

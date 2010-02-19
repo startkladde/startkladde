@@ -17,16 +17,20 @@
 #include "src/logging/messages.h"
 #include "src/time/timeFunctions.h"
 
+// TODO: there should be a separate class for duration. Also, this class sucks.
 class Time
 {
+	// TODO: make time_zone parameters non-default - it is important that they
+	// are set to the correct values.
 	public:
 		Time ();	// Default constructor, init to 0
 		Time (time_t);	// Contructor, init to given time
+		static Time create (const QDateTime &qDateTime, time_zone tz);
 
 		void set_to (const time_t, bool null_sec=false);	// Set to given time
 		void set_to (const int, bool null_sec=false);	// Set to given time
 		void set_to (const int, const int, const int, const int, const int, const int, time_zone tz=tz_utc);
-		void set_to (const QDate, const QTime, time_zone tz=tz_utc, bool null_sec=false);
+		void set_to (const QDate, const QTime, /*time_zone tz=tz_utc,*/ bool null_sec=false);
 		void parse (const char *, time_zone, const char *);
 		void set_current (bool null_sec=false);	// Set to current time
 		void null_seconds ();
@@ -36,13 +40,14 @@ class Time
 		bool is_null () const;	// Check for 0
 		QTime get_qtime (time_zone tz=tz_utc) const;
 		QDate get_qdate (time_zone tz=tz_utc) const;
+		QDateTime toUtcQDateTime () const;
 
 		int secs_to (const Time *) const;
 		int secs_to (const Time &) const;
 
 		QString to_string (const char *format=NULL, time_zone tz=tz_utc, int buf_size=0, bool no_letters=false) const;	// Generate QString
 		QString table_string (const char *, time_zone tz=tz_utc, int buf_size=0, bool no_letters=false) const;
-		// TODO: gelandet ist MURX, no_letters ist schlecht so
+		// TODO: landed ist MURX, no_letters ist schlecht so
 		QString table_string (time_zone tz=tz_utc, bool gelandet=true, bool no_letters=false) const;
 		QString csv_string (time_zone tz=tz_utc) const;
 

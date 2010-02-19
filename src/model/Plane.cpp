@@ -4,120 +4,80 @@
 
 #include "src/text.h"
 
-Plane::Plane ()
-	:Entity ()
-	/*
-	 * Constructs an empty Plane instance.
-	 */
+
+// ******************
+// ** Construction **
+// ******************
+
+Plane::Plane ():
+	Entity ()
 {
-	sitze=0;
+	initialize ();
 }
 
-Plane::Plane (QString p_registration, QString p_wettbewerbskennzeichen, QString p_typ, QString p_club, int p_sitze, db_id p_id)
-	/*
-	 * Constructs an Plane instance with given data.
-	 * Parameters:
-	 *   - p_registration, p_wettbewerbskennzeichen, p_typ, p_verein, p_sitze,
-	 *     p_id: the initial values for the fields.
-	 */
+Plane::Plane (db_id id):
+	Entity (id)
 {
-	// TODO remove verein
-	registration=p_registration;
-	wettbewerbskennzeichen=p_wettbewerbskennzeichen;
-	typ=p_typ;
-	club=p_club;
-	sitze=p_sitze;
-	id=p_id;
+	initialize ();
 }
 
-void Plane::dump () const
-	/*
-	 * Print a description of the plane to stdout. Used for debugging.
-	 */
+void Plane::initialize ()
 {
-	// TODO cout
-	printf("Kennzeichen %s\n"
-			"Wettbewerbskennzeichen %s\n"
-			"Typ %s\n"
-			"Verein %s\n"
-			"Sitze %d\n"
-			"ID %d\n",
-			registration.latin1(),
-			wettbewerbskennzeichen.latin1(),
-			typ.latin1(),
-			club.latin1(),
-			sitze,
-			(int)id);
-}
-
-QString Plane::bezeichnung (casus c) const
-	/*
-	 * Returns a text describing the fact that this is a plane.
-	 * Parameters:
-	 *   - c: the grammatical case of the text.
-	 * Return value:
-	 *   the text.
-	 */
-{
-	return entityLabel (st_plane, c);
-}
-
-QString Plane::name () const
-	/*
-	 * Returns the name of the plane in a form suitable for enumerations.
-	 * Return value:
-	 *   - the name.
-	 */
-{
-	return registration;
-}
-
-QString Plane::tabelle_name () const
-	/*
-	 * Returns the name of the plane in a form suitable for the Table.
-	 * Return value:
-	 *   - the name.
-	 */
-{
-	return tabelle_name (false);
-}
-
-QString Plane::tabelle_name (bool schlepp) const
-	/*
-	 * Returns the name of the plane in a form suitable for the Table.
-	 * Parameters:
-	 *   - schlepp: whether to return the name of the towplane
-	 * Return value:
-	 *   - the name.
-	 */
-
-{
-	// TODO: wk auch bei schlepps
-	if (schlepp||eintrag_ist_leer (wettbewerbskennzeichen)) return name ();
-	return name ()+" ("+wettbewerbskennzeichen+")";
-}
-
-QString Plane::text_name () const
-	/*
-	 * Returns the name of the plane in a form suitable for running text.
-	 * Return value:
-	 *   - the name.
-	 */
-{
-	return name ();
-}
-
-void Plane::output (std::ostream &stream, output_format_t format)
-{
-	Entity::output (stream, format, false, "ID", id);
-	Entity::output (stream, format, false, "Kennzeichen", registration);
-	Entity::output (stream, format, false, "Wettbewerbskennzeichen", wettbewerbskennzeichen);
-	Entity::output (stream, format, false, "Sitze", sitze);
-	Entity::output (stream, format, false, "Verein", club);
-	Entity::output (stream, format, true, "Gattung", categoryText (category, lsLong));
+	numSeats=0;
 }
 
 
+// *********************
+// ** Property access **
+// *********************
+
+bool Plane::selfLaunchOnly ()
+{
+	// Note that motorgliders can be glieders; and there are even some TMGs
+	// which can do winch launch.
+	return category==categorySingleEngine || category==categoryUltralight;
+}
+
+
+// ****************
+// ** Formatting **
+// ****************
+
+QString Plane::toString () const
+{
+	return QString ("id=%1, registration=%2, competitionId=%3, type=%4, club=%5, category=%6, seats=%7")
+		.arg (id)
+		.arg (registration)
+		.arg (competitionId)
+		.arg (type)
+		.arg (club)
+		.arg (categoryText (category, lsLong))
+		.arg (numSeats)
+		;
+}
+
+QString Plane::fullRegistration () const
+{
+	if (eintrag_ist_leer (competitionId)) return registration;
+	return QString ("%1 (%2)").arg (registration).arg (competitionId);
+}
+
+bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)
+{
+	QString club1=simplify_club_name (p1.club);
+	QString club2=simplify_club_name (p2.club);
+
+	if (club1<club2) return true;
+	if (club1>club2) return false;
+	if (p1.registration<p2.registration) return true;
+	if (p1.registration>p2.registration) return false;
+	return false;
+}
+
+
+// **********************
+// ** Category methods **
+// **********************
 
 QList<Plane::Category> Plane::listCategories (bool includeInvalid)
 {
@@ -158,16 +118,6 @@ QString Plane::categoryText (Plane::Category category, lengthSpecification lensp
 			switch (category)
 			{
 				case categorySingleEngine: return "Motorflugzeug (einmotorig)";
-				case categoryGlider:       return "Segelflugzeug";
-				case categoryMotorglider:  return "Motorsegler";
-				case categoryUltralight:   return "Ultraleicht";
-				case categoryOther:        return "Sonstige";
-				case categoryNone:         return "Keine";
-			}
-		case lsCsv:
-			switch (category)
-			{
-				case categorySingleEngine: return "Motorflugzeug";
 				case categoryGlider:       return "Segelflugzeug";
 				case categoryMotorglider:  return "Motorsegler";
 				case categoryUltralight:   return "Ultraleicht";
@@ -219,4 +169,162 @@ Plane::Category Plane::categoryFromRegistration (QString registration)
 		return categoryMotorglider;
 	else
 		return categoryOther;
+}
+
+/**
+ * Returns the maximum number of seats in a plane of a given category, or -1
+ * if there is no maximum.
+ */
+int Plane::categoryMaxSeats (Plane::Category category)
+{
+	switch (category)
+	{
+		case categoryNone: return -1;
+		case categorySingleEngine: return -1;
+		case categoryGlider: return 2;
+		case categoryMotorglider: return 2;
+		case categoryUltralight: return 2;
+		case categoryOther: return -1;
+	}
+
+	assert (false);
+	return -1;
+}
+
+
+// *****************
+// ** ObjectModel **
+// *****************
+
+int Plane::DefaultObjectModel::columnCount () const
+{
+	return 8;
+}
+
+QVariant Plane::DefaultObjectModel::displayHeaderData (int column) const
+{
+	switch (column)
+	{
+		case 0: return "Kennzeichen";
+		case 1: return "Wettbewerbskennzeichen";
+		case 2: return "Typ";
+		case 3: return "Gattung";
+		case 4: return "Sitze";
+		case 5: return "Verein";
+		case 6: return "Bemerkungen";
+		// TODO remove from DefaultItemModel?
+		case 7: return "ID";
+	}
+
+	assert (false);
+	return QVariant ();
+}
+
+QVariant Plane::DefaultObjectModel::displayData (const Plane &object, int column) const
+{
+	switch (column)
+	{
+		case 0: return object.registration;
+		case 1: return object.competitionId;
+		case 2: return object.type;
+		case 3: return categoryText(object.category, lsTable);
+		case 4: return object.numSeats>=0?QVariant (object.numSeats):QVariant ("?");
+		case 5: return object.club;
+		case 6: return object.comments;
+		case 7: return object.id;
+	}
+
+	assert (false);
+	return QVariant ();
+}
+
+
+// *******************
+// ** SQL interface **
+// *******************
+
+QString Plane::dbTableName ()
+{
+	return "planes";
+}
+
+QString Plane::selectColumnList ()
+{
+	return "id,registration,club,num_seats,type,category,competition_callsign,comments";
+}
+
+
+Plane Plane::createFromQuery (const QSqlQuery &q)
+{
+	Plane p (q.value (0).toLongLong ());
+
+	p.registration  =q.value (1).toString ();
+	p.club          =q.value (2).toString ();
+	p.numSeats      =q.value (3).toInt    ();
+	p.type          =q.value (4).toString ();
+	p.category      =categoryFromDb (
+	                 q.value (5).toString ());
+	p.competitionId =q.value (6).toString ();
+	p.comments      =q.value (7).toString ();
+
+	return p;
+}
+
+QString Plane::insertValueList ()
+{
+	return "(registration,club,num_seats,type,category,competition_callsign,comments) values (?,?,?,?,?,?,?)";
+}
+
+QString Plane::updateValueList ()
+{
+	return "registration=?, club=?, num_seats=?, type=?, category=?, competition_callsign=?, comments=?";
+}
+
+void Plane::bindValues (QSqlQuery &q) const
+{
+	q.addBindValue (registration);
+	q.addBindValue (club);
+	q.addBindValue (numSeats);
+	q.addBindValue (type);
+	q.addBindValue (categoryToDb (category));
+	q.addBindValue (competitionId);
+	q.addBindValue (comments);
+}
+
+QList<Plane> Plane::createListFromQuery (QSqlQuery &q)
+{
+	QList<Plane> list;
+
+	while (q.next ())
+		list.append (createFromQuery (q));
+
+	return list;
+}
+
+// *** Enum mappers
+QString Plane::categoryToDb (Category category)
+{
+	switch (category)
+	{
+		case categoryNone         : return "?"            ;
+		case categorySingleEngine : return "single_engine";
+		case categoryGlider       : return "glider"       ;
+		case categoryMotorglider  : return "motorglider"  ;
+		case categoryUltralight   : return "ultralight"   ;
+		case categoryOther        : return "other"        ;
+		// no default
+	}
+
+	assert (false);
+	return "?";
+}
+
+Plane::Category Plane::categoryFromDb (QString category)
+{
+	if      (category=="single_engine") return categorySingleEngine;
+	else if (category=="glider"       ) return categoryGlider;
+	else if (category=="motorglider"  ) return categoryMotorglider;
+	else if (category=="ultralight"   ) return categoryUltralight;
+	else if (category=="other"        ) return categoryOther;
+	else                                return categoryNone;
 }

@@ -9,14 +9,12 @@
 #include <QString>
 
 #include "src/dataTypes.h"
-#include "src/db/dbTypes.h"
 
 extern const QString whitespace;
 
 bool eintrag_ist_leer (QString eintrag);
-bool check_message (QWidget *, const QString &);
-QString t_pilot_bezeichnung (FlightType, casus c=cas_nominativ);
-QString t_begleiter_bezeichnung (FlightType, casus c=cas_nominativ);
+bool eintraege_sind_leer (QString eintrag1, QString eintrag2);
+bool airfieldEntryCanBeChanged (QString airfield);
 void replace_substring (QString &, const QString&, const QString&);
 void replace_tabs (QString &s);
 QString simplify_club_name (const QString s);
@@ -25,21 +23,25 @@ QString concatenate_comments (const QString& s1, const QString& s2);
 QString string_or_none (const QString& text);
 bool parameter_matches (char *parameter, char *val1, char *val2);
 void trim (QStringList &strings);
-bool is_date (const QString& s);
-QString hex_string (unsigned char c);
-QString latex_escape (const QString& o);
-QString csv_escape (const QString& o);
 QString get_environment (const QString& name);
-QString cgi_escape (const QString &text, bool leave_high=false);
-QString cgi_unescape (const QString &text);
-QString html_escape (const QString& s, bool also_escape_newlines=true);
-QStringList html_escape (const QStringList &list, bool also_escape_newlines=true);
 QString bool_to_string (bool val, const QString &true_value="Ja", const QString &false_value="Nein");
 bool string_to_bool (const QString &text);
 QString make_string (const QSet<QString> s, const QString &separator=",");
 void split_string (QString &string1, QString &string2, QString separator, QString text);
 
+QString firstToUpper (const QString &text);
+QString firstToLower (const QString &text);
+
+bool confirmProblem (QWidget *, const QString);
+bool confirmProblem (QWidget *, const QString, const QString);
+bool yesNoQuestion (QWidget *parent, QString title, QString question);
+
 std::ostream &operator<< (std::ostream &s, const QString &c);
+std::ostream &operator<< (std::ostream &s, const QColor &c);
+std::ostream &operator<< (std::ostream &s, const QByteArray &ba);
+
+QString std2q (std::string);
+std::string q2std (QString);
 
 #endif
 

@@ -5,36 +5,72 @@
 
 #include "src/dataTypes.h"
 #include "src/model/Entity.h"
+#include "src/model/objectList/ObjectModel.h"
+
+class QSqlQuery;
 
 // TODO: move to Person and change value names
-enum NamePart { nt_kein, nt_vorname, nt_nachname };
+//enum NamePart { nt_kein, nt_vorname, nt_nachname };
 
 class Person: public Entity
 {
 	public:
-		Person ();
-		Person (QString, QString);
-		Person (QString, QString, QString, QString, QString, db_id p_id=0);
-		void dump () const;
-		virtual void output (std::ostream &stream, output_format_t format);
+		// *** Types
+		class DefaultObjectModel: public ObjectModel<Person>
+		{
+			virtual int columnCount () const;
+			virtual QVariant displayHeaderData (int column) const;
+			virtual QVariant displayData (const Person &object, int column) const;
+		};
 
+
+		// *** Construction
+		Person ();
+		Person (db_id id);
+
+
+		// *** Data
 		QString vorname;
 		QString nachname;
 		QString club;
 		QString club_id;
 		QString club_id_old;
-		QString landesverbands_nummer;
 
 
-		virtual QString bezeichnung (casus) const;
-		virtual QString name () const;
-		virtual QString pdf_name () const;
-		virtual QString text_name () const;
-		virtual QString tabelle_name () const;
+		// *** Comparison
+		virtual bool operator== (const Person &o) const { return id==o.id; }
+		virtual bool operator< (const Person &o) const;
 
+
+		// *** Formatting
+		virtual QString toString () const;
+		virtual QString fullName () const;
+		virtual QString formalName () const;
+		virtual QString formalNameWithClub () const;
+
+
+		// *** EntitySelectWindow helpers
 		virtual QString get_selector_value (int column_number) const;
 		static QString get_selector_caption (int column_number);
+
+
+		// *** ObjectListWindow/ObjectEditorWindow helpers
+		static QString objectTypeDescription () { return "Person"; }
+		static QString objectTypeDescriptionDefinite () { return "die Person"; }
+		static QString objectTypeDescriptionPlural () { return "Personen"; }
+
+
+		// SQL interface
+		static QString dbTableName ();
+		static QString selectColumnList ();
+		static Person createFromQuery (const QSqlQuery &query);
+		static QString insertValueList ();
+		static QString updateValueList ();
+		virtual void bindValues (QSqlQuery &q) const;
+		static QList<Person> createListFromQuery (QSqlQuery &query);
+
+	private:
+		void initialize ();
 };
 
 #endif
-

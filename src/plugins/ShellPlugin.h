@@ -13,6 +13,8 @@
 
 #include "src/accessor.h"
 
+class QTextCodec;
+
 class ShellPlugin: public QObject
 {
 		Q_OBJECT
@@ -59,6 +61,7 @@ class ShellPlugin: public QObject
 		QProcess *subprocess;
 
 		// UI
+		// TODO remove, use signals instead
 		QLabel *caption_display;
 		QLabel *value_display;
 
@@ -66,6 +69,8 @@ class ShellPlugin: public QObject
 		void output_available ();
 		void subprocess_died ();
 
+	private:
+		QTextCodec *codec;
 };
 
 // isRunning
