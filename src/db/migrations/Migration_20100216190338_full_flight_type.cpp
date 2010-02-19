@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include "src/db/Database.h"
-
 Migration_20100216190338_full_flight_type::Migration_20100216190338_full_flight_type (Database &database):
 	Migration (database)
 {
@@ -15,7 +13,7 @@ Migration_20100216190338_full_flight_type::~Migration_20100216190338_full_flight
 
 void Migration_20100216190338_full_flight_type::up ()
 {
-	database.changeColumnType ("flights", "type", Database::dataTypeString);
+	changeColumnType ("flights", "type", dataTypeString);
 	std::cout << "Updating flight type values" << std::endl;
 	updateValues (dirUp);
 }
@@ -24,15 +22,15 @@ void Migration_20100216190338_full_flight_type::down ()
 {
 	std::cout << "Updating flight type values" << std::endl;
 	updateValues (dirDown);
-	database.changeColumnType ("flights", "type", Database::dataTypeInteger);
+	changeColumnType ("flights", "type", dataTypeInteger);
 }
 
 void Migration_20100216190338_full_flight_type::updateValue (int oldValue, const QString &newValue, Migration::Direction direction)
 {
 	switch (direction)
 	{
-		case dirUp:   database.updateColumnValues ("flights", "type", oldValue, newValue); break;
-		case dirDown: database.updateColumnValues ("flights", "type", newValue, oldValue); break;
+		case dirUp:   updateColumnValues ("flights", "type", oldValue, newValue); break;
+		case dirDown: updateColumnValues ("flights", "type", newValue, oldValue); break;
 	}
 }
 

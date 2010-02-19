@@ -16,6 +16,7 @@ class Migration_20100216124307_rename_columns: public Migration
 		virtual void down ();
 
 	protected:
+		using Migration::renameColumn;
 		void renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type, Direction direction);
 		void renameColumns (Direction direction);
 };

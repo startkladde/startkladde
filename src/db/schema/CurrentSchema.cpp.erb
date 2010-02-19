@@ -14,8 +14,6 @@
 
 #include "src/db/schema/CurrentSchema.h"
 
-#include "src/db/Database.h"
-
 CurrentSchema::CurrentSchema (Database &database):
 	Schema (database)
 {
@@ -30,7 +28,7 @@ void CurrentSchema::up ()
 <% schema['tables'].each do |table| %>
 <% table_name=table['name'] %>
 <% %>
-	database.createTable ("<%= table['name'] %>");
+	createTable ("<%= table['name'] %>");
 		
 <% table['columns'].each do |column| %>
 <%
@@ -43,7 +41,7 @@ void CurrentSchema::up ()
 	column_extra=""
 	column_extra="NOT NULL" if column_null=="NO"
 %>
-	database.addColumn ("<%= table_name %>", "<%= column_name %>", "<%= column_type %>", "<%= column_extra %>");
+	addColumn ("<%= table_name %>", "<%= column_name %>", "<%= column_type %>", "<%= column_extra %>");
 <% end %>
 <% end %>
 }

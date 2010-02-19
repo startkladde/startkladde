@@ -70,3 +70,4 @@ class Migration_20100214140000_initial: public Migration
 };
 
 #endif /* MIGRATION_20100214_140000_H_ */
+

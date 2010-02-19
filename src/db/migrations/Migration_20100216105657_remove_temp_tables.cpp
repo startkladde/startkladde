@@ -3,8 +3,6 @@
 #include <iostream>
 #include "src/text.h"
 
-#include "src/db/Database.h"
-
 Migration_20100216105657_remove_temp_tables::Migration_20100216105657_remove_temp_tables (Database &database):
 	Migration (database)
 {
@@ -35,12 +33,12 @@ void Migration_20100216105657_remove_temp_tables::removeTempTable (const QString
 	std::cout << QString ("Copying entries from from %2 to %1")
 		.arg (name, temp_name) << std::endl;
 
-	database.executeQuery (
+	executeQuery (
 		QString ("INSERT IGNORE INTO %1 SELECT * FROM %2")
 		.arg (name, temp_name)
 		);
 
-	database.dropTable (temp_name);
+	dropTable (temp_name);
 }
 
 void Migration_20100216105657_remove_temp_tables::createTempTable (const QString &name)
@@ -53,6 +51,6 @@ void Migration_20100216105657_remove_temp_tables::createTempTable (const QString
 
 	QString temp_name=name+"_temp";
 
-	database.renameTable (name, temp_name);
-	database.createTableLike (temp_name, name);
+	renameTable (name, temp_name);
+	createTableLike (temp_name, name);
 }

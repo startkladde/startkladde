@@ -1,7 +1,5 @@
 #include "Migration_20100216180053_full_plane_category.h"
 
-#include "src/db/Database.h"
-
 Migration_20100216180053_full_plane_category::Migration_20100216180053_full_plane_category (Database &database):
 	Migration (database)
 {
@@ -13,22 +11,22 @@ Migration_20100216180053_full_plane_category::~Migration_20100216180053_full_pla
 
 void Migration_20100216180053_full_plane_category::up ()
 {
-	database.changeColumnType ("planes", "category", Database::dataTypeString);
+	changeColumnType ("planes", "category", dataTypeString);
 	updateValues (dirUp);
 }
 
 void Migration_20100216180053_full_plane_category::down ()
 {
 	updateValues (dirDown);
-	database.changeColumnType ("planes", "category", Database::dataTypeCharacter);
+	changeColumnType ("planes", "category", dataTypeCharacter);
 }
 
 void Migration_20100216180053_full_plane_category::updateValue (const QString &oldValue, const QString &newValue, Migration::Direction direction)
 {
 	switch (direction)
 	{
-		case dirUp:   database.updateColumnValues ("planes", "category", oldValue, newValue); break;
-		case dirDown: database.updateColumnValues ("planes", "category", newValue, oldValue); break;
+		case dirUp:   updateColumnValues ("planes", "category", oldValue, newValue); break;
+		case dirDown: updateColumnValues ("planes", "category", newValue, oldValue); break;
 	}
 }
 

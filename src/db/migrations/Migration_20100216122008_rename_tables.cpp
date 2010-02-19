@@ -1,9 +1,5 @@
 #include "Migration_20100216122008_rename_tables.h"
 
-#include <QString>
-
-#include "src/db/Database.h"
-
 Migration_20100216122008_rename_tables::Migration_20100216122008_rename_tables (Database &database):
 	Migration (database)
 {
@@ -27,8 +23,8 @@ void Migration_20100216122008_rename_tables::renameTable (const QString &oldName
 {
 	switch (direction)
 	{
-		case dirUp:   database.renameTable (oldName, newName); break;
-		case dirDown: database.renameTable (newName, oldName); break;
+		case dirUp:   renameTable (oldName, newName); break;
+		case dirDown: renameTable (newName, oldName); break;
 	}
 }
 

@@ -1,6 +1,6 @@
 #include "Migration_20100215000000_change_to_innodb.h"
 
-#include "src/db/Database.h"
+#include <QStringList>
 
 Migration_20100215000000_change_to_innodb::Migration_20100215000000_change_to_innodb (Database &database):
 	Migration (database)
@@ -20,7 +20,7 @@ void Migration_20100215000000_change_to_innodb::up ()
 	tables << "user";
 
 	foreach (QString table, tables)
-		database.executeQuery (
+		executeQuery (
 			QString ("ALTER TABLE %1 ENGINE=InnoDB")
 			.arg (table)
 		);

@@ -1,7 +1,5 @@
 #include "Migration_20100216135637_add_launch_methods.h"
 
-#include "src/db/Database.h"
-
 #include "src/model/LaunchMethod.h"
 #include "src/config/Options.h"
 
@@ -16,20 +14,20 @@ Migration_20100216135637_add_launch_methods::~Migration_20100216135637_add_launc
 
 void Migration_20100216135637_add_launch_methods::up ()
 {
-	database.createTable  ("launch_methods"); // Creates the id column
-	database.addColumn ("launch_methods", "name"                 , Database::dataTypeString   );
-	database.addColumn ("launch_methods", "short_name"           , Database::dataTypeString   );
-	database.addColumn ("launch_methods", "log_string"           , Database::dataTypeString   );
-	database.addColumn ("launch_methods", "keyboard_shortcut"    , Database::dataTypeCharacter);
+	createTable  ("launch_methods"); // Creates the id column
+	addColumn ("launch_methods", "name"                 , dataTypeString   );
+	addColumn ("launch_methods", "short_name"           , dataTypeString   );
+	addColumn ("launch_methods", "log_string"           , dataTypeString   );
+	addColumn ("launch_methods", "keyboard_shortcut"    , dataTypeCharacter);
 	// Use a string type because SQLite does not support enums
-	database.addColumn ("launch_methods", "type"                 , Database::dataTypeString   );
-	database.addColumn ("launch_methods", "towplane_registration", Database::dataTypeString   );
-	database.addColumn ("launch_methods", "person_required"      , Database::dataTypeBoolean  );
-	database.addColumn ("launch_methods", "comments"             , Database::dataTypeString   );
+	addColumn ("launch_methods", "type"                 , dataTypeString   );
+	addColumn ("launch_methods", "towplane_registration", dataTypeString   );
+	addColumn ("launch_methods", "person_required"      , dataTypeBoolean  );
+	addColumn ("launch_methods", "comments"             , dataTypeString   );
 
 	try
 	{
-		database.transaction ();
+		transaction ();
 
 		foreach (LaunchMethod launchMethod, opts.configuredLaunchMethods)
 		{
@@ -37,7 +35,7 @@ void Migration_20100216135637_add_launch_methods::up ()
 			// current schema, we need to use the schema after this migration.
 			std::cout << "Importing launch method: " << launchMethod.toString () << std::endl;
 
-			QSqlQuery query=database.prepareQuery (
+			QSqlQuery query=prepareQuery (
 				"INSERT INTO launch_methods"
 				"(id,name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments)"
 				"values (?,?,?,?,?,?,?,?,?)"
@@ -53,19 +51,19 @@ void Migration_20100216135637_add_launch_methods::up ()
 			query.addBindValue (launchMethod.personRequired);
 			query.addBindValue (launchMethod.comments);
 
-			database.executeQuery (query);
+			executeQuery (query);
 		}
 
-		database.commit ();
+		commit ();
 	}
 	catch (...)
 	{
-		database.rollback ();
+		rollback ();
 		throw;
 	}
 }
 
 void Migration_20100216135637_add_launch_methods::down ()
 {
-	database.dropTable ("launch_methods");
+	dropTable ("launch_methods");
 }
