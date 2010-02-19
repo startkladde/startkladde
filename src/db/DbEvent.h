@@ -9,9 +9,9 @@
 //#include "src/model/Person.h"
 //#include "src/model/LaunchMethod.h"
 
-// XXX
-#define VALUE(x,z) case x: printf (z); break;
-#define DEFAULT default: printf ("???"); break;
+// FIXME remove
+#define VALUE(x,z) case x: std::cout << (z); break;
+#define DEFAULT default: std::cout << ("???"); break;
 
 class DbEvent
 {

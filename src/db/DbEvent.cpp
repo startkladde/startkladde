@@ -5,6 +5,8 @@
 //#include "src/model/Person.h"
 //#include "src/model/LaunchMethod.h"
 
+#include <iostream>
+
 class Plane;
 class Flight;
 class Person;
@@ -32,13 +34,14 @@ DbEvent::DbEvent ()
 	id=0;
 }
 
+// FIXME remove
 void DbEvent::dump () const
 	/*
 	 * Displays a dump of the event on stdout. Used for debugging.
 	 */
 {
-	printf ("db_event dump:    ");
-	printf ("type: ");
+	std::cout << ("db_event dump:    ");
+	std::cout << ("type: ");
 	switch (type)
 	{
 		VALUE (det_none,    "det_none   ")
@@ -47,8 +50,8 @@ void DbEvent::dump () const
 		VALUE (det_change,  "det_change ")
 		VALUE (det_refresh, "det_refresh")
 		DEFAULT
-	} printf ("    ");
-	printf ("table: ");
+	} std::cout << ("    ");
+	std::cout << ("table: ");
 	switch (table)
 	{
 		VALUE (db_kein,          "db_kein         ")
@@ -58,8 +61,8 @@ void DbEvent::dump () const
 		VALUE (db_launch_method, "db_launch_method")
 		VALUE (db_alle,          "db_alle         ")
 		DEFAULT
-	} printf ("    ");
-	printf ("id: %llu\n", id);
+	} std::cout << ("    ");
+	std::cout << ("id: ") << id << std::endl;
 }
 
 // FIXME Not used lo ja, see data_types.cpp
