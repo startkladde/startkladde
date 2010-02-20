@@ -1005,7 +1005,7 @@ void MainWindow::on_actionInfo_triggered ()
 
 void MainWindow::on_actionNetworkDiagnostics_triggered ()
 {
-	if (!opts.diag_cmd.isEmpty ()) system (opts.diag_cmd.latin1 ());
+	if (!opts.diag_cmd.isEmpty ()) system (opts.diag_cmd.utf8 ().constData ());
 }
 
 // ************
@@ -1496,7 +1496,7 @@ void MainWindow::on_actionSetTime_triggered ()
 		QString command = QString ("sudo date -s '%1-%2-%3 %4:%5:%6'") .arg (date.year ()).arg (date.month ()).arg (
 				date.day ()) .arg (time.hour ()).arg (time.minute ()).arg (time.second ());
 
-		system (command.latin1 ());
+		system (command.utf8 ().constData ());
 
 		showWarning (QString::fromUtf8 ("Systemzeit geändert"),
 			QString::fromUtf8 ("Die Systemzeit wurde geändert. Um "

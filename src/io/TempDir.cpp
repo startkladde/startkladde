@@ -27,7 +27,7 @@ TempDir::TempDir (const QString &id)
 	// Need to copy to char * manually
 	int len=name_template.size ();
 	char *dirname_buffer=new char[len+1];
-	strcpy (dirname_buffer, name_template.latin1());
+	strcpy (dirname_buffer, name_template.utf8 ().constData ());
 
 	// Make the temporary directory
 	char *dirname_ret=mkdtemp (dirname_buffer);
@@ -60,7 +60,7 @@ TempDir::~TempDir ()
 		}
 		else
 		{
-			system ((QString ("rm -r ")+name).latin1());
+			system ((QString ("rm -r ")+name).utf8 ().constData ());
 			//system ((QString ("touch ")+name+QString (".delete")).c_str ());
 		}
 	}

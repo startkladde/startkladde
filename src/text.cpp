@@ -106,7 +106,7 @@ void trim (QStringList &strings)
 
 QString get_environment (const QString& name)
 {
-	char *r=getenv (name.latin1());
+	char *r=getenv (name.utf8 ().constData ());
 	if (r)
 		return QString (r);
 	else
@@ -215,5 +215,5 @@ QString std2q (std::string s)
 std::string q2std (QString s)
 {
 	if (s.isNull ()) return "";
-	return std::string (s.toLatin1 ().constData ());
+	return std::string (s.utf8 ().constData ());
 }
