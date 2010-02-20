@@ -8,7 +8,6 @@
 #include <mysql/errmsg.h>
 
 #include "src/text.h"
-#include "src/dataTypes.h"
 #include "src/config/Options.h"
 
 using namespace std;

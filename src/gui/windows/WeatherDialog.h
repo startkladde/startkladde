@@ -5,6 +5,7 @@
 #include <QLayout>
 #include <QResizeEvent>
 
+// TODO reduce dependencies
 #include "src/gui/widgets/WeatherWidget.h"
 #include "src/plugins/ShellPlugin.h"
 

@@ -9,11 +9,14 @@
 #include <QMutableListIterator>
 
 #include "src/concurrent/threadUtil.h"
-#include "src/concurrent/monitor/OperationMonitor.h"
 #include "src/concurrent/DefaultQThread.h"
 #include "src/concurrent/monitor/SimpleOperationMonitor.h"
-#include "src/config/Options.h"
+#include "src/config/Options.h" // TODO remove dependency
 #include "src/model/Flight.h"
+#include "src/db/Database.h"
+#include "src/db/DbEvent.h"
+#include "src/db/DataStorageWorker.h"
+#include "src/model/objectList/EntityList.h"
 
 using namespace std;
 
@@ -122,29 +125,38 @@ const int db_ok=0;
 // ******************
 
 DataStorage::DataStorage (Database &db):
-	db (db), //workerThread ("DataStorage worker"),
-	currentState (stateOffline), worker (*this, 1000)
+	db (db),
+	flightsToday (new EntityList<Flight> ()),
+	flightsOther (new EntityList<Flight> ()),
+	preparedFlights (new EntityList<Flight> ()),
+	currentState (stateOffline),
+	worker (new DataStorageWorker (*this, 1000))
 {
 	// FIXME
 //	QObject::connect (&db, SIGNAL (executing_query (QString)), this, SIGNAL (executingQuery (QString)));
-	worker.start ();
+	worker->start ();
 }
 
 DataStorage::~DataStorage ()
 {
 	// This causes the program to hang on quit when the server is unresponsive
-//	worker.stop (true);
+//	worker->stop (true);
 
 	// This is not nice, but it will have to do for now.
 	// TODO this should not be in the destructor, a terminate method would be
 	// better, so we can terminate all threads before waiting
-	worker.setTerminationEnabled (true);
-	worker.terminate ();
+	worker->setTerminationEnabled (true);
+	worker->terminate ();
 	std::cout << "Wating for data storage worker to terminate..."; std::cout.flush ();
-	if (worker.wait (1000))
+	if (worker->wait (1000))
 		std::cout << "done" << std::endl;
 	else
 		std::cout << "timeout" << std::endl;
+
+	delete worker;
+	delete flightsToday;
+	delete flightsOther;
+	delete preparedFlights;
 }
 
 // **********************
@@ -227,7 +239,7 @@ int DataStorage::refreshFlights (QDate date, EntityList<Flight> &listTarget, QDa
  */
 int DataStorage::refreshFlightsToday ()
 {
-	return refreshFlights (QDate::currentDate (), flightsToday, &todayDate);
+	return refreshFlights (QDate::currentDate (), *flightsToday, &todayDate);
 }
 
 /**
@@ -235,7 +247,7 @@ int DataStorage::refreshFlightsToday ()
  */
 int DataStorage::refreshPreparedFlights ()
 {
-	return refreshFlights (QDate (), preparedFlights, NULL);
+	return refreshFlights (QDate (), *preparedFlights, NULL);
 }
 
 int DataStorage::refreshAirfields ()
@@ -309,7 +321,7 @@ bool DataStorage::refreshAll (OperationMonitor *monitor) throw ()
 	// TODO handle failing with !retryOnResult
 	step (0, "Flugzeuge aktualisieren"          , refreshPlanes          ());
 	step (1, "Personen aktualisieren"           , refreshPeople          ());
-	step (2, "Startarten aktualisieren"         , refreshLaunchMethods     ());
+	step (2, "Startarten aktualisieren"         , refreshLaunchMethods   ());
 	step (3, "Flüge aktualisieren"              , refreshFlightsToday    ());
 	step (4, "Vorbereitete Flüge aktualisieren" , refreshPreparedFlights ());
 	step (5, "Flugplätze aktualiseren"          , refreshAirfields       ());
@@ -341,7 +353,7 @@ bool DataStorage::fetchFlightsDate (OperationMonitor *monitor, QDate date, bool 
 
 	if (monitor->isCanceled ()) return false;
 
-	int result=refreshFlights (date, flightsOther, &otherDate);
+	int result=refreshFlights (date, *flightsOther, &otherDate);
 	if (success) *success=(result==db_ok);
 
 	std::cout << "result from refrechFlights(date) is " << result << std::endl;
@@ -403,19 +415,19 @@ QList<Flight> DataStorage::getFlightsToday ()
 {
 	// TODO if today is not the real today, refresh today
 	QMutexLocker lock (&dataMutex);
-	return flightsToday.getList ();
+	return flightsToday->getList ();
 }
 
 QList<Flight> DataStorage::getFlightsOther ()
 {
 	QMutexLocker lock (&dataMutex);
-	return flightsOther.getList ();
+	return flightsOther->getList ();
 }
 
 QList<Flight> DataStorage::getPreparedFlights ()
 {
 	QMutexLocker lock (&dataMutex);
-	return preparedFlights.getList ();
+	return preparedFlights->getList ();
 }
 
 QStringList DataStorage::getPersonFirstNames ()
@@ -615,16 +627,16 @@ template<> Flight DataStorage::getObject (db_id id)
 	// TODO use EntityList methods
 
 	if (todayDate.isValid ())
-		foreach (const Flight &flight, flightsToday.getList ())
+		foreach (const Flight &flight, flightsToday->getList ())
 			if (flight.getId ()==id)
 				return Flight (flight);
 
 	if (otherDate.isValid ())
-		foreach (const Flight &flight, flightsOther.getList ())
+		foreach (const Flight &flight, flightsOther->getList ())
 		if (flight.getId ()==id)
 				return Flight (flight);
 
-	foreach (const Flight &flight, preparedFlights.getList ())
+	foreach (const Flight &flight, preparedFlights->getList ())
 		if (flight.getId ()==id)
 			return Flight (flight);
 std::cout << "not found" << std::endl;
@@ -716,7 +728,7 @@ template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const 
 	if (id_valid (newId))
 	{
 		objectAdded (copy);
-		emit dbEvent (DbEvent (det_add, DbEvent::getDbEventTable<T> (), newId));
+		emit dbEvent (DbEvent (DbEvent::typeAdd, DbEvent::getTable<T> (), newId));
 	}
 
 	// Task completed
@@ -749,7 +761,7 @@ template<class T> bool DataStorage::deleteObject (OperationMonitor *monitor, db_
 		objectDeleted<T> (id);
 
 		// Emit a dbEvent
-		emit dbEvent (DbEvent (det_delete, DbEvent::getDbEventTable<T> (), id));
+		emit dbEvent (DbEvent (DbEvent::typeDelete, DbEvent::getTable<T> (), id));
 	}
 
 	// Task completed
@@ -778,7 +790,7 @@ template<class T> bool DataStorage::updateObject (OperationMonitor *monitor, con
 	if (id_valid (result))
 	{
 		objectUpdated (copy);
-		emit dbEvent (DbEvent (det_change, DbEvent::getDbEventTable<T> (), object.getId ()));
+		emit dbEvent (DbEvent (DbEvent::typeChange, DbEvent::getTable<T> (), object.getId ()));
 	}
 
 
@@ -848,12 +860,12 @@ template<> void DataStorage::objectAdded<Flight> (const Flight &flight)
 	QMutexLocker lock (&dataMutex);
 
 	if (flight.isPrepared ())
-		preparedFlights.append (flight);
+		preparedFlights->append (flight);
 	else if (flight.effdatum ()==todayDate)
-		flightsToday.append (flight);
+		flightsToday->append (flight);
 	else if (flight.effdatum ()==otherDate)
 		// If otherDate is the same as today, this is not reached.
-		flightsOther.append (flight);
+		flightsOther->append (flight);
 	//else
 	//	we're not interested in this flight
 }
@@ -861,9 +873,9 @@ template<> void DataStorage::objectAdded<Flight> (const Flight &flight)
 template<> void DataStorage::objectDeleted<Flight> (db_id id)
 {
 	// If any of the lists contain this flight, remove it
-	preparedFlights.removeById (id);
-	flightsToday.removeById (id);
-	flightsOther.removeById (id);
+	preparedFlights->removeById (id);
+	flightsToday->removeById (id);
+	flightsOther->removeById (id);
 }
 
 template<> void DataStorage::objectUpdated<Flight> (const Flight &flight)
@@ -879,29 +891,29 @@ template<> void DataStorage::objectUpdated<Flight> (const Flight &flight)
 	// it already exists, add it if not, and remove it from the other lists.
 	if (flight.isPrepared ())
 	{
-		preparedFlights.replaceOrAdd (flight.getId (), flight);
-		flightsToday.removeById (flight.getId ());
-		flightsOther.removeById (flight.getId ());
+		preparedFlights->replaceOrAdd (flight.getId (), flight);
+		flightsToday->removeById (flight.getId ());
+		flightsOther->removeById (flight.getId ());
 	}
 	else if (flight.effdatum ()==todayDate)
 	{
-		preparedFlights.removeById (flight.getId ());
-		flightsToday.replaceOrAdd (flight.getId (), flight);
-		flightsOther.removeById (flight.getId ());
+		preparedFlights->removeById (flight.getId ());
+		flightsToday->replaceOrAdd (flight.getId (), flight);
+		flightsOther->removeById (flight.getId ());
 	}
 	else if (flight.effdatum ()==otherDate)
 	{
 		// If otherDate is the same as today, this is not reached.
-		preparedFlights.removeById (flight.getId ());
-		flightsToday.removeById (flight.getId ());
-		flightsOther.replaceOrAdd (flight.getId (), flight);
+		preparedFlights->removeById (flight.getId ());
+		flightsToday->removeById (flight.getId ());
+		flightsOther->replaceOrAdd (flight.getId (), flight);
 	}
 	else
 	{
 		// The flight should not be on any list - remove it from all lists
-		preparedFlights.removeById (flight.getId ());
-		flightsToday.removeById (flight.getId ());
-		flightsOther.removeById (flight.getId ());
+		preparedFlights->removeById (flight.getId ());
+		flightsToday->removeById (flight.getId ());
+		flightsOther->removeById (flight.getId ());
 	}
 }
 
@@ -976,7 +988,7 @@ db_id DataStorage::planeFlying (db_id id)
 {
 	QMutexLocker lock (&dataMutex);
 	// Only use the flights of today
-	foreach (const Flight &flight, flightsToday.getList ())
+	foreach (const Flight &flight, flightsToday->getList ())
 		if (
 			(flight.isFlying         () && flight.planeId==id) ||
 			(flight.isTowplaneFlying () && flight.towplaneId==id))
@@ -989,7 +1001,7 @@ db_id DataStorage::personFlying (db_id id)
 {
 	QMutexLocker lock (&dataMutex);
 	// Only use the flights of today
-	foreach (const Flight &flight, flightsToday.getList ())
+	foreach (const Flight &flight, flightsToday->getList ())
 		if (
 			(flight.isFlying         () && flight.pilotId    ==id) ||
 			(flight.isFlying         () && flight.copilotId==id) ||
@@ -1032,12 +1044,12 @@ void DataStorage::setState (DataStorage::State state)
 
 void DataStorage::connect ()
 {
-	worker.scheduleConnect ();
+	worker->scheduleConnect ();
 }
 
 void DataStorage::disconnect ()
 {
-	worker.scheduleDisconnect ();
+	worker->scheduleDisconnect ();
 }
 
 
@@ -1209,5 +1221,5 @@ bool DataStorage::sleep (OperationMonitor &monitor, int seconds)
 
 void DataStorage::addTask (Task *task)
 {
-	worker.addTask (task);
+	worker->addTask (task);
 }

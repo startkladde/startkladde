@@ -3,6 +3,7 @@
 
 #include <QDialog>
 
+// TODO reduce dependencies
 #include "ui_DateInputDialog.h"
 
 class DateInputDialog : public QDialog

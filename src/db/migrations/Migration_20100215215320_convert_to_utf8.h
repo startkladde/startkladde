@@ -1,6 +1,7 @@
 #ifndef MIGRATION_20100215215320_CONVERT_TO_UTF8_H_
 #define MIGRATION_20100215215320_CONVERT_TO_UTF8_H_
 
+// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

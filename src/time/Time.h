@@ -14,6 +14,7 @@
 
 #include <QDateTime>
 
+// TODO reduce dependencies
 #include "src/logging/messages.h"
 #include "src/time/timeFunctions.h"
 

@@ -8,6 +8,7 @@
 #ifndef OBJECTUSEDTASK_H_
 #define OBJECTUSEDTASK_H_
 
+// TODO reduce dependencies
 template<class T> class ObjectUsedTask: public Task
 {
 	public:

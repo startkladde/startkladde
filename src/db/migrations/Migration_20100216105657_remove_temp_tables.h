@@ -1,6 +1,7 @@
 #ifndef MIGRATION_20100216105657_REMOVE_TEMP_TABLES_H_
 #define MIGRATION_20100216105657_REMOVE_TEMP_TABLES_H_
 
+// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

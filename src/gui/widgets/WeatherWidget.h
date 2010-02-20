@@ -1,6 +1,7 @@
 #ifndef _WeatherWidget_h
 #define _WeatherWidget_h
 
+// TODO reduce dependencies
 #include <QLabel>
 #include <QImage>
 #include <QPixmap>

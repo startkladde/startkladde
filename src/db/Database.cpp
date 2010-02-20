@@ -69,8 +69,6 @@
 
 #include <QDateTime>
 
-#include "src/db/DatabaseInfo.h"
-#include "src/config/Options.h"
 #include "src/text.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
@@ -513,40 +511,22 @@ template<class T> int Database::updateObject (const T &object)
 //   - bindValues (QSqlQuery &q) const;
 //   - ::createListFromQuery (QSqlQuery &query);
 
-template QList<Person    > Database::getObjects       (QString condition, QList<QVariant> conditionValues);
-template QList<Plane     > Database::getObjects       (QString condition, QList<QVariant> conditionValues);
-template QList<Flight    > Database::getObjects       (QString condition, QList<QVariant> conditionValues);
-template QList<LaunchMethod> Database::getObjects       (QString condition, QList<QVariant> conditionValues);
+#define INSTANTIATE_TEMPLATES(Class) \
+	template QList<Class> Database::getObjects (QString condition, QList<QVariant> conditionValues); \
+	template int          Database::countObjects<Class> (); \
+	template bool         Database::objectExists<Class> (db_id id); \
+	template Class        Database::getObject           (db_id id); \
+	template int          Database::deleteObject<Class> (db_id id); \
+	template db_id        Database::createObject        (Class &object); \
+	template int          Database::updateObject        (const Class &object); \
+	// Empty line
 
-template int           Database::countObjects<Person    > ();
-template int           Database::countObjects<Plane     > ();
-template int           Database::countObjects<Flight    > ();
-template int           Database::countObjects<LaunchMethod> ();
+INSTANTIATE_TEMPLATES (Person      )
+INSTANTIATE_TEMPLATES (Plane       )
+INSTANTIATE_TEMPLATES (Flight      )
+INSTANTIATE_TEMPLATES (LaunchMethod)
 
-template bool          Database::objectExists<Person    > (db_id id);
-template bool          Database::objectExists<Plane     > (db_id id);
-template bool          Database::objectExists<Flight    > (db_id id);
-template bool          Database::objectExists<LaunchMethod> (db_id id);
-
-template Person        Database::getObject            (db_id id);
-template Plane         Database::getObject            (db_id id);
-template Flight        Database::getObject            (db_id id);
-template LaunchMethod    Database::getObject            (db_id id);
-
-template int           Database::deleteObject<Person    > (db_id id);
-template int           Database::deleteObject<Plane     > (db_id id);
-template int           Database::deleteObject<Flight    > (db_id id);
-template int           Database::deleteObject<LaunchMethod> (db_id id);
-
-template db_id         Database::createObject         (Person     &object);
-template db_id         Database::createObject         (Plane      &object);
-template db_id         Database::createObject         (Flight     &object);
-template db_id         Database::createObject         (LaunchMethod &object);
-
-template int           Database::updateObject         (const Person     &object);
-template int           Database::updateObject         (const Plane      &object);
-template int           Database::updateObject         (const Flight     &object);
-template int           Database::updateObject         (const LaunchMethod &object);
+#undef INSTANTIATE_TEMPLATES
 
 
 // *******************

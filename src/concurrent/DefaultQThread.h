@@ -8,6 +8,7 @@
 #ifndef DEFAULTQTHREAD_H_
 #define DEFAULTQTHREAD_H_
 
+// TODO reduce dependencies
 #include <QThread>
 
 class QObject;

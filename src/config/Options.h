@@ -9,6 +9,7 @@
 #include <qdatetime.h>
 #include <qfile.h>
 
+// TODO reduce dependencies
 #include "src/db/DatabaseInfo.h"
 
 class Database;

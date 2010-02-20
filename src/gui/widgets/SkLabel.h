@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QColor>
 
+// TODO reduce dependencies
 #include "src/accessor.h"
 
 class SkLabel: public QLabel

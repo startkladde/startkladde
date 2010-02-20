@@ -4,6 +4,7 @@
 #include <cstring>
 #include <QString>
 
+// TODO reduce dependencies
 #include "src/accessor.h"
 #include "src/SkException.h"
 

@@ -3,6 +3,7 @@
 
 #include <QtGui/QDialog>
 
+// TODO reduce dependencies
 #include "ui_TaskProgressDialog.h"
 
 class Task;

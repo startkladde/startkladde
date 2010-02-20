@@ -8,7 +8,9 @@
 #ifndef ADDOBJECTTASK_H_
 #define ADDOBJECTTASK_H_
 
+// TODO reduce dependencies
 #include "src/db/DataStorage.h"
+#include "src/concurrent/task/Task.h"
 
 template<class T> class AddObjectTask: public Task
 {

@@ -1,6 +1,7 @@
 #ifndef MIGRATION_20100214_140000_H_
 #define MIGRATION_20100214_140000_H_
 
+// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

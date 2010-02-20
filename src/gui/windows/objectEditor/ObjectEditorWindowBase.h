@@ -10,6 +10,7 @@
 
 #include <QtGui/QDialog>
 
+// TODO reduce dependencies
 #include "ui_ObjectEditorWindowBase.h"
 
 class DataStorage;

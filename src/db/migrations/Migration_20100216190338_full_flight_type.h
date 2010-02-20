@@ -1,6 +1,7 @@
 #ifndef MIGRATION_20100216190338_FULL_FLIGHT_TYPE_H_
 #define MIGRATION_20100216190338_FULL_FLIGHT_TYPE_H_
 
+// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

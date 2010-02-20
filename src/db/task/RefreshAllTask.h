@@ -8,6 +8,7 @@
 #ifndef REFRESHALLTASK_H_
 #define REFRESHALLTASK_H_
 
+// TODO reduce dependencies
 #include "src/concurrent/task/Task.h"
 
 class DataStorage;

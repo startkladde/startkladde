@@ -8,6 +8,7 @@
 #ifndef UPDATEOBJECTTASK_H_
 #define UPDATEOBJECTTASK_H_
 
+// TODO reduce dependencies
 #include "src/db/DataStorage.h"
 
 template<class T> class UpdateObjectTask: public Task

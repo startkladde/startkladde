@@ -1,6 +1,7 @@
 #ifndef MIGRATION_H_
 #define MIGRATION_H_
 
+// TODO reduce dependencies
 #include "QString"
 #include "QVariant"
 #include "QSqlQuery"

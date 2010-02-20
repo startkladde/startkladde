@@ -10,6 +10,7 @@
 
 #include <QDate>
 
+// TODO reduce dependencies
 #include "src/concurrent/task/Task.h"
 
 class DataStorage;

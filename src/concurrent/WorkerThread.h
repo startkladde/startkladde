@@ -8,6 +8,7 @@
 #ifndef WORKERTHREAD_H_
 #define WORKERTHREAD_H_
 
+// TODO reduce dependencies
 #include <QThread>
 #include <QMutex>
 #include <QWaitCondition>

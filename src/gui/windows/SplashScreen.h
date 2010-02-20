@@ -11,6 +11,7 @@
 #include <QPainter>
 #include <QPixmap>
 
+// TODO reduce dependencies
 #include "src/version.h"
 
 using namespace Qt;

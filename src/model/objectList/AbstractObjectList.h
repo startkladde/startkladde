@@ -8,6 +8,7 @@
 #ifndef ABSTRACTOBJECTLIST_H_
 #define ABSTRACTOBJECTLIST_H_
 
+// TODO reduce dependencies
 #include <QAbstractTableModel>
 
 /**

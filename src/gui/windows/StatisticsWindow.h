@@ -4,6 +4,7 @@
 #include <QtGui/QDialog>
 #include <QAbstractTableModel>
 
+// TODO reduce dependencies
 #include "ui_StatisticsWindow.h"
 
 class StatisticsWindow: public QDialog

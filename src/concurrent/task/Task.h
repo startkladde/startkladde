@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QMutex>
 
+// TODO reduce dependencies
 #include "src/concurrent/monitor/OperationMonitor.h"
 
 /*

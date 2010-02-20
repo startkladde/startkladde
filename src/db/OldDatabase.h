@@ -10,7 +10,6 @@
 
 #include "src/accessor.h"
 #include "src/Condition.h"
-#include "src/dataTypes.h"
 #include "src/SkException.h"
 #include "src/config/Options.h"
 #include "src/db/DbColumn.h"

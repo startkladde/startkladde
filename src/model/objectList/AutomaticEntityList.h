@@ -10,6 +10,7 @@
 
 #include "EntityList.h"
 
+// TODO reduce dependencies
 #include "src/db/DataStorage.h"
 #include "src/db/DataStorageMonitor.h"
 #include "src/db/DbEvent.h"
@@ -84,24 +85,24 @@ template<class T> void AutomaticEntityList<T>::dbEvent (DbEvent event)
 {
 	assert (isGuiThread());
 
-	if (event.table!=db_alle && event.table!=getDbEventTable<T> ()) return;
+	if (event.table!=DbEvent::tableAll && event.table!=DbEvent::getTable<T> ()) return;
 
 	DataStorage &ds=/*EntityList<T>::*/dataStorage;
 
 	switch (event.type)
 	{
-		case det_none:
+		case DbEvent::typeNone:
 			break;
-		case det_add:
+		case DbEvent::typeAdd:
 		{
 			EntityList<T>::append (ds.getObject<T> (event.id));
 		} break;
-		case det_delete:
+		case DbEvent::typeDelete:
 		{
 			int i=EntityList<T>::findById (event.id);
 			if (i>=0) EntityList<T>::removeAt (i);
 		} break;
-		case det_change:
+		case DbEvent::typeChange:
 		{
 			int i=EntityList<T>::findById (event.id);
 			if (i>=0)
@@ -110,7 +111,7 @@ template<class T> void AutomaticEntityList<T>::dbEvent (DbEvent event)
 				// Should not happen
 				EntityList<T>::append (ds.getObject<T> (event.id));
 		} break;
-		case det_refresh:
+		case DbEvent::typeRefresh:
 		{
 			EntityList<T>::replaceList (ds.getObjects<T> ());
 		} break;

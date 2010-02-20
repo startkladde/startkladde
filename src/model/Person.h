@@ -3,7 +3,7 @@
 
 #include <QString>
 
-#include "src/dataTypes.h"
+// TODO reduce dependencies
 #include "src/model/Entity.h"
 #include "src/model/objectList/ObjectModel.h"
 

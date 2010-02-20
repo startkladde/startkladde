@@ -114,7 +114,7 @@
 
 #include "ui_FlightWindow.h"
 
-#include "src/dataTypes.h"
+// TODO reduce dependencies
 #include "src/config/Options.h"
 #include "src/db/DataStorage.h"
 #include "src/db/dbId.h"

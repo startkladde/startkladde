@@ -8,9 +8,13 @@
 #include <QMessageBox>
 #include <QString>
 
-#include "src/dataTypes.h"
+// TODO reduce dependencies
 
 extern const QString whitespace;
+
+enum lengthSpecification { lsShort, lsTable, lsLong, lsWithShortcut, lsPrintout, lsPilotLog };
+
+
 
 bool eintrag_ist_leer (QString eintrag);
 bool eintraege_sind_leer (QString eintrag1, QString eintrag2);

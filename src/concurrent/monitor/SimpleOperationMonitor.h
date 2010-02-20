@@ -8,6 +8,7 @@
 #ifndef SIMPLEOPERATIONMONITOR_H_
 #define SIMPLEOPERATIONMONITOR_H_
 
+// TODO reduce dependencies
 #include "OperationMonitor.h"
 
 class SimpleOperationMonitor: public OperationMonitor

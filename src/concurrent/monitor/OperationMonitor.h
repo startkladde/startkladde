@@ -8,6 +8,7 @@
 #ifndef _OperationMonitor_h
 #define _OperationMonitor_h
 
+// TODO reduce dependencies
 #include <QString>
 
 /**

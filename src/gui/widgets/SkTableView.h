@@ -10,6 +10,7 @@
 
 #include <QTableView>
 
+// TODO reduce dependencies
 #include "src/accessor.h"
 
 class ColumnInfo;

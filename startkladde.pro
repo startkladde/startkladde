@@ -1,4 +1,5 @@
-CONFIG += qt debug
+CONFIG += qt
+CONFIG += debug
 QT += qt3support
 QT += sql
 TEMPLATE = app
@@ -18,7 +19,6 @@ HEADERS += \
            build/migrations.h \
            src/accessor.h \
            src/color.h \
-           src/dataTypes.h \
            src/SkException.h \
            src/text.h \
            src/version.h \
@@ -103,7 +103,6 @@ HEADERS += \
 
 SOURCES += \
            src/color.cpp \
-           src/dataTypes.cpp \
            src/startkladde.cpp \
            src/text.cpp \
            src/version.cpp \

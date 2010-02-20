@@ -8,20 +8,20 @@
 #include <QStringList>
 #include <QString>
 #include <QMap>
+#include <QMutexLocker>
 
-#include "src/db/Database.h"
-#include "src/time/Date.h"
+#include "src/db/dbId.h"
 #include "src/db/DbEvent.h"
-#include "src/db/DataStorageWorker.h"
-#include "src/concurrent/WorkerThread.h"
-#include "src/concurrent/task/Task.h"
-#include "src/model/objectList/EntityList.h"
-#include "src/model/LaunchMethod.h"
+#include "src/model/LaunchMethod.h" // Required for LaunchMethod::Type
 
+class Database;
+class Task;
 class Flight;
 class Person;
 class Plane;
 class OperationMonitor;
+class DataStorageWorker;
+template<class T> class EntityList;
 
 /**
  * A wrapper around Database
@@ -136,8 +136,8 @@ class DataStorage: public QObject
 
 
 		// *** Refreshing view
-		template<class T> void refreshViews () { emit dbEvent (DbEvent (det_refresh, getDbEventTable<T> (), invalid_id)); }
-		void refreshAllViews () { emit DbEvent (det_refresh, db_alle, invalid_id); }
+		template<class T> void refreshViews () { emit dbEvent (DbEvent (DbEvent::typeRefresh, DbEvent::getTable<T> (), invalid_id)); }
+		void refreshAllViews () { emit DbEvent (DbEvent::typeRefresh, DbEvent::tableAll, invalid_id); }
 
 		// *** Test methods
 		bool sleep (OperationMonitor &monitor, int seconds);
@@ -175,9 +175,9 @@ class DataStorage: public QObject
 		// one for the flights of another date, and one for prepared flights.
 		// The flights of today are required for planeFlying and personFlying.
 		// In the future, we may add lists for an arbitrary number of dates.
-		EntityList<Flight> flightsToday; QDate todayDate;
-		EntityList<Flight> flightsOther; QDate otherDate;
-		EntityList<Flight> preparedFlights;
+		EntityList<Flight> *flightsToday; QDate todayDate;
+		EntityList<Flight> *flightsOther; QDate otherDate;
+		EntityList<Flight> *preparedFlights;
 
 
 		// ***************************
@@ -221,7 +221,7 @@ class DataStorage: public QObject
 	private:
 		State currentState;
 		bool isAlive;
-		DataStorageWorker worker;
+		DataStorageWorker *worker;
 
 		mutable QMutex databaseMutex; // Locks accesses to db
 		mutable QMutex dataMutex; // Locks accesses to data of this DataStorage

@@ -8,6 +8,7 @@
 #ifndef SLEEPTASK_H_
 #define SLEEPTASK_H_
 
+// TODO reduce dependencies
 #include "Task.h"
 
 class SleepTask: public Task

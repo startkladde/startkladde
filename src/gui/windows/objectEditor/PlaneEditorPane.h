@@ -4,6 +4,7 @@
 #include "ObjectEditorPane.h"
 #include "ui_PlaneEditorPane.h"
 
+// TODO reduce dependencies
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
 
 class Plane;

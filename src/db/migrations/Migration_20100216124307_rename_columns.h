@@ -1,6 +1,7 @@
 #ifndef MIGRATION_20100216124307_RENAME_COLUMNS_H_
 #define MIGRATION_20100216124307_RENAME_COLUMNS_H_
 
+// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

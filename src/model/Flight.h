@@ -6,8 +6,9 @@
 
 #include <qdatetime.h>
 
+
+// TODO reduce dependencies
 #include "src/accessor.h"
-#include "src/dataTypes.h"
 #include "src/text.h"
 #include "src/gui/dialogs.h"
 #include "src/model/Plane.h"

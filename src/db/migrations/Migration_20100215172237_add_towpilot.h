@@ -1,6 +1,7 @@
 #ifndef MIGRATION_20100215172237_ADD_TOWPILOT_H_
 #define MIGRATION_20100215172237_ADD_TOWPILOT_H_
 
+// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

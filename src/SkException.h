@@ -1,6 +1,7 @@
 #ifndef _SkException_h
 #define _SkException_h
 
+// TODO reduce dependencies
 #include <QString>
 
 class SkException

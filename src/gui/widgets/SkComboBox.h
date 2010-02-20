@@ -6,6 +6,7 @@
 #include <QComboBox>
 #include <QString>
 
+// TODO reduce dependencies
 #include "src/accessor.h"
 
 //#include <QStringList>

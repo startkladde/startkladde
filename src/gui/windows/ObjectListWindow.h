@@ -3,6 +3,7 @@
 
 #include <QtGui/QMainWindow>
 
+// TODO reduce dependencies
 #include "ObjectListWindowBase.h"
 #include "src/gui/windows/objectEditor/ObjectEditorPane.h"
 #include "src/model/objectList/ObjectListModel.h"

@@ -3,6 +3,7 @@
 
 #include <QColor>
 
+// TODO reduce dependencies
 #include "src/model/Flight.h"
 
 QColor flug_farbe (Flight::Mode, bool, bool, bool, bool);

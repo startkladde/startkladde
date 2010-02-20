@@ -12,6 +12,7 @@
 
 #include <QAbstractTableModel>
 
+// TODO reduce dependencies
 #include "AbstractObjectList.h"
 #include "ObjectModel.h"
 

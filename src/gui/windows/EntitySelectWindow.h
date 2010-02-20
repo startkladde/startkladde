@@ -8,7 +8,7 @@
 #include <QTreeWidget>
 #include <QDialog>
 
-#include "src/dataTypes.h"
+// TODO reduce dependencies
 #include "src/gui/widgets/SkTreeWidgetItem.h"
 #include "src/model/Entity.h"
 #include "src/logging/messages.h"

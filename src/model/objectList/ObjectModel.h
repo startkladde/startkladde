@@ -8,6 +8,7 @@
 #ifndef OBJECTMODEL_H_
 #define OBJECTMODEL_H_
 
+// TODO reduce dependencies
 #include <QVariant>
 
 /**

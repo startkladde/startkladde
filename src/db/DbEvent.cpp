@@ -1,80 +1,77 @@
 #include "DbEvent.h"
 
-//#include "src/model/Plane.h"
-//#include "src/model/Flight.h"
-//#include "src/model/Person.h"
-//#include "src/model/LaunchMethod.h"
-
 #include <iostream>
+#include <cassert>
 
 class Plane;
 class Flight;
 class Person;
 class LaunchMethod;
 
-DbEvent::DbEvent (db_event_type tp, db_event_table tb, db_id i)
-	/*
-	 * Initializes a DbEvent with given data.
-	 * Parameters:
-	 *   the data to set
-	 */
+DbEvent::DbEvent (Type type, Table table, db_id id):
+	type (type), table (table), id (id)
 {
-	type=tp;
-	table=tb;
-	id=i;
 }
 
-DbEvent::DbEvent ()
-	/*
-	 * Initializes a DbEvent with default (empty/none) data.
-	 */
+// TODO remove?
+DbEvent::DbEvent ():
+	type (DbEvent::typeNone), table (DbEvent::tableNone), id (invalid_id)
 {
-	type=det_none;
-	table=db_kein;
-	id=0;
 }
+
 
 // FIXME remove
-void DbEvent::dump () const
-	/*
-	 * Displays a dump of the event on stdout. Used for debugging.
-	 */
+#define VALUE(x,z) case x: std::cout << (z); break;
+#define DEFAULT default: std::cout << ("???"); break;
+
+QString DbEvent::toString ()
 {
-	std::cout << ("db_event dump:    ");
-	std::cout << ("type: ");
-	switch (type)
-	{
-		VALUE (det_none,    "det_none   ")
-		VALUE (det_add,     "det_add    ")
-		VALUE (det_delete,  "det_delete ")
-		VALUE (det_change,  "det_change ")
-		VALUE (det_refresh, "det_refresh")
-		DEFAULT
-	} std::cout << ("    ");
-	std::cout << ("table: ");
-	switch (table)
-	{
-		VALUE (db_kein,          "db_kein         ")
-		VALUE (db_person,        "db_person       ")
-		VALUE (db_flug,          "db_flug         ")
-		VALUE (db_flugzeug,      "db_flugzeug     ")
-		VALUE (db_launch_method, "db_launch_method")
-		VALUE (db_alle,          "db_alle         ")
-		DEFAULT
-	} std::cout << ("    ");
-	std::cout << ("id: ") << id << std::endl;
+	return QString ("db_event (type: %1, table: %2, id: %3)")
+		.arg (typeString (type), tableString (table)).arg (id);
 }
 
-// FIXME Not used lo ja, see data_types.cpp
+QString DbEvent::typeString (DbEvent::Type type)
+{
+	switch (type)
+	{
+		case typeNone   : return "none";
+		case typeAdd    : return "add";
+		case typeDelete : return "delete";
+		case typeChange : return "change";
+		case typeRefresh: return "refresh";
+		// no default
+	}
+
+	assert (!"Unhandled type");
+	return "?";
+}
+
+QString DbEvent::tableString (DbEvent::Table table)
+{
+	switch (table)
+	{
+		case tableNone: return "none";
+		case tableAll: return "all";
+		case tablePeople: return "people";
+		case tableFlights: return "flights";
+		case tableLaunchMethods: return "launch methods";
+		case tablePlanes: return "planes";
+	}
+
+	assert (!"Unhandled table");
+	return "?";
+}
+
+
 
 // Specialize
-template<> db_event_table DbEvent::getDbEventTable<Flight>       () { return db_flug         ; }
-template<> db_event_table DbEvent::getDbEventTable<Plane>        () { return db_flugzeug     ; }
-template<> db_event_table DbEvent::getDbEventTable<Person>       () { return db_person       ; }
-template<> db_event_table DbEvent::getDbEventTable<LaunchMethod> () { return db_launch_method; }
+template<> DbEvent::Table DbEvent::getTable<Flight>       () { return tableFlights      ; }
+template<> DbEvent::Table DbEvent::getTable<Plane>        () { return tablePlanes       ; }
+template<> DbEvent::Table DbEvent::getTable<Person>       () { return tablePeople       ; }
+template<> DbEvent::Table DbEvent::getTable<LaunchMethod> () { return tableLaunchMethods; }
 
-// Instantiate
-template db_event_table DbEvent::getDbEventTable<Flight      > ();
-template db_event_table DbEvent::getDbEventTable<Plane       > ();
-template db_event_table DbEvent::getDbEventTable<Person      > ();
-template db_event_table DbEvent::getDbEventTable<LaunchMethod> ();
+//// Instantiate
+//template db_event_table DbEvent::getDbEventTable<Flight      > ();
+//template db_event_table DbEvent::getDbEventTable<Plane       > ();
+//template db_event_table DbEvent::getDbEventTable<Person      > ();
+//template db_event_table DbEvent::getDbEventTable<LaunchMethod> ();

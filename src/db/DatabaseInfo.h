@@ -1,12 +1,5 @@
-/*
- * DatabaseInfo.h
- *
- *  Created on: 13.02.2010
- *      Author: martin
- */
-
-#ifndef DATABASEINFO_H_
-#define DATABASEINFO_H_
+#ifndef _DatabaseInfo_h
+#define _DatabaseInfo_h
 
 class DatabaseInfo
 {
@@ -21,4 +14,4 @@ class DatabaseInfo
 		QString database;
 };
 
-#endif /* DATABASEINFO_H_ */
+#endif

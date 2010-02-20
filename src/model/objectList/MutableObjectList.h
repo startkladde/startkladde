@@ -10,6 +10,7 @@
 
 #include "AbstractObjectList.h"
 
+// TODO reduce dependencies
 #include "src/concurrent/threadUtil.h"
 
 // TODO: thread safety required?

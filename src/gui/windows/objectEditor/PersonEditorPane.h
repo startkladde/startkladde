@@ -4,6 +4,7 @@
 #include "ObjectEditorPane.h"
 #include "ui_PersonEditorPane.h"
 
+// TODO reduce dependencies
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
 
 class Person;

@@ -7,6 +7,7 @@
 
 #ifndef DELETEOBJECTTASK_H_
 #define DELETEOBJECTTASK_H_
+// TODO reduce dependencies
 
 template<class T> class DeleteObjectTask: public Task
 {

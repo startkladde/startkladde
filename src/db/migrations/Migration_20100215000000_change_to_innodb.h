@@ -1,6 +1,7 @@
 #ifndef MIGRATION_20100215000000_CHANGE_TO_INNODB_H_
 #define MIGRATION_20100215000000_CHANGE_TO_INNODB_H_
 
+// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

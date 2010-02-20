@@ -1,31 +1,31 @@
 #ifndef _DbEvent_h
 #define _DbEvent_h
 
-#include "src/dataTypes.h"
+#include <QString>
+
 #include "src/db/dbId.h"
-
-//#include "src/model/Plane.h"
-//#include "src/model/Flight.h"
-//#include "src/model/Person.h"
-//#include "src/model/LaunchMethod.h"
-
-// FIXME remove
-#define VALUE(x,z) case x: std::cout << (z); break;
-#define DEFAULT default: std::cout << ("???"); break;
 
 class DbEvent
 {
 	public:
+		// TODO replace with templates
+		enum Table { tableNone, tableAll, tablePeople, tableFlights, tableLaunchMethods, tablePlanes };
+		enum Type { typeNone, typeAdd, typeDelete, typeChange, typeRefresh };
+
 		DbEvent ();
-		DbEvent (db_event_type, db_event_table, db_id);
-		void dump () const;
+		DbEvent (Type type, Table table, db_id);
 
-		template<class T> static db_event_table getDbEventTable () { return db_kein; }
+		QString toString ();
+		static QString typeString (Type type);
+		static QString tableString (Table table);
 
-		db_event_type type;
-		db_event_table table;
+		// Hack for until we have replaced Table with templates
+		template<class T> static Table getTable () { return tableNone; } // TODO remove?
+//		template<class T> static Table getTable ();
+
+		Type type;
+		Table table;
 		db_id id;
 };
 
 #endif
-

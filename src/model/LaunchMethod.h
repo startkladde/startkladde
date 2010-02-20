@@ -4,6 +4,7 @@
 #include <QString>
 #include <QStringList>
 
+// TODO reduce dependencies
 #include "src/text.h"
 #include "src/logging/messages.h"
 #include "src/model/Entity.h"

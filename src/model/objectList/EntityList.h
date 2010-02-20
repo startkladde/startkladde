@@ -10,9 +10,7 @@
 
 #include "MutableObjectList.h"
 
-//#include "src/db/DataStorage.h"
-
-#include "src/dataTypes.h"
+// TODO reduce dependencies
 
 #include <QAbstractTableModel>
 

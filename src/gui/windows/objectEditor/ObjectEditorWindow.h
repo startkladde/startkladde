@@ -3,6 +3,7 @@
 
 #include <cassert>
 
+// TODO reduce dependencies
 #include "src/gui/windows/objectEditor/ObjectEditorPane.h"
 #include "src/concurrent/task/Task.h"
 #include "src/db/task/AddObjectTask.h"

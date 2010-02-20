@@ -1,6 +1,7 @@
 #ifndef _CurrentSchema_h
 #define _CurrentSchema_h
 
+// TODO reduce dependencies
 #include "src/db/schema/Schema.h"
 
 /**

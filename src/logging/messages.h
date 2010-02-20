@@ -5,6 +5,7 @@
 #include <ctime>
 #include <QString>
 
+// TODO reduce dependencies
 #include "src/io/colors.h"
 
 void log_message (QString message);

@@ -10,6 +10,7 @@
 
 #include <QVariant>
 
+// TODO reduce dependencies
 #include "src/model/objectList/ObjectModel.h"
 
 #include "src/model/Flight.h"

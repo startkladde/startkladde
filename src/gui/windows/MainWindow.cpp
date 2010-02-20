@@ -1250,19 +1250,19 @@ void MainWindow::dbEvent (DbEvent event)
 {
 	assert (isGuiThread ());
 
-	event.dump ();
+	std::cout << event.toString () << std::endl;
 
 	try
 	{
 		// TODO when a plane, person or launch method is changed, the flight list
 		// has to be updated, too. But that's a feature of the FlightListModel (?).
-		if (event.table == db_flug)
+		if (event.table == DbEvent::tableFlights)
 		{
 			switch (event.type)
 			{
-				case det_none:
+				case DbEvent::typeNone:
 					break;
-				case det_add:
+				case DbEvent::typeAdd:
 				{
 					const Flight &flight=dataStorage.getObject<Flight> (event.id);
 					if (flight.isPrepared () || flight.effdatum ()==displayDate)
@@ -1279,7 +1279,7 @@ void MainWindow::dbEvent (DbEvent event)
 							setDisplayDate (flight.effdatum (), false);
 					}
 				} break;
-				case det_change:
+				case DbEvent::typeChange:
 				{
 					try
 					{
@@ -1301,10 +1301,10 @@ void MainWindow::dbEvent (DbEvent event)
 						flightList.removeById (event.id);
 					}
 				} break;
-				case det_delete:
+				case DbEvent::typeDelete:
 					flightList.removeById (event.id);
 					break;
-				case det_refresh:
+				case DbEvent::typeRefresh:
 					refreshFlights ();
 					break;
 			}

@@ -3,6 +3,7 @@
 
 #include <QString>
 
+// TODO reduce dependencies
 #include "src/db/migration/MigrationFactory.h"
 
 class Database;

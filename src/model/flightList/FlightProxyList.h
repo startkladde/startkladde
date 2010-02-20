@@ -8,6 +8,7 @@
 #ifndef FLIGHTPROXYLIST_H_
 #define FLIGHTPROXYLIST_H_
 
+// TODO reduce dependencies
 #include "src/model/objectList/AbstractObjectList.h"
 #include "src/accessor.h"
 

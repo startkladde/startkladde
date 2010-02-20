@@ -4,7 +4,7 @@
 #include <iostream>
 #include <QString>
 
-#include "src/dataTypes.h"
+// TODO reduce dependencies
 #include "src/text.h"
 #include "src/db/dbId.h"
 

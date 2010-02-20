@@ -1,6 +1,7 @@
 #ifndef _SchemaDumper_h
 #define _SchemaDumper_h
 
+// TODO reduce dependencies
 #include <QString>
 
 class Database;

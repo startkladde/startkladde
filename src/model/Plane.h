@@ -6,6 +6,7 @@
 #include <QList>
 #include <QSqlQuery>
 
+// TODO reduce dependencies
 #include "src/model/objectList/ObjectModel.h"
 
 /*
@@ -13,7 +14,6 @@
  *   - addObject attribute "is towplane"
  */
 
-#include "src/dataTypes.h"
 #include "src/model/Entity.h"
 
 class Plane: public Entity

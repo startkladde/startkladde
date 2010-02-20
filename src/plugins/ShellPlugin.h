@@ -11,6 +11,7 @@
 #include <QToolTip>
 #include <QProcess>
 
+// TODO reduce dependencies
 #include "src/accessor.h"
 
 class QTextCodec;

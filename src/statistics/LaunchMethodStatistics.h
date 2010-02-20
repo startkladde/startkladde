@@ -8,6 +8,7 @@
 #ifndef LAUNCHMETHODSTATISTICS_H_
 #define LAUNCHMETHODSTATISTICS_H_
 
+// TODO reduce dependencies
 #include <QString>
 #include <QList>
 #include <QAbstractTableModel>

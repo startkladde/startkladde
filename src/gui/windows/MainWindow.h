@@ -43,6 +43,7 @@
 
 #include "ui_MainWindow.h"
 
+// TODO reduce dependencies
 #include "src/db/DataStorage.h"
 #include "src/gui/windows/StatisticsWindow.h"
 #include "src/model/objectList/EntityList.h"

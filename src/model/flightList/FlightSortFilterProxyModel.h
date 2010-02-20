@@ -8,6 +8,7 @@
 #ifndef FLIGHTSORTFILTERPROXYMODEL_H_
 #define FLIGHTSORTFILTERPROXYMODEL_H_
 
+// TODO reduce dependencies
 #include <QSortFilterProxyModel>
 
 class DataStorage;
