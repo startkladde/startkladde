@@ -36,27 +36,26 @@
  */
 
 #include <QtGui/QMainWindow>
-#include <QList>
 #include <QPointer>
-#include <QModelIndex>
 #include <QPersistentModelIndex>
 
 #include "ui_MainWindow.h"
 
-// TODO reduce dependencies
-#include "src/db/DataStorage.h"
-#include "src/gui/windows/StatisticsWindow.h"
-#include "src/model/objectList/EntityList.h"
-#include "src/model/objectList/ObjectListModel.h"
+#include "src/db/DataStorage.h" // Required for DataStorage::State (others can be resolved)
+
+class QWidget;
+template<class T> class QList;
+class QModelIndex;
 
 class FlightSortFilterProxyModel;
-class QWidget;
 class Database;
 class ShellPlugin;
 class WeatherWidget;
 class WeatherDialog;
 class FlightModel;
 class FlightProxyList;
+template<class T> class ObjectListModel;
+
 
 /*
  * Notes:
@@ -181,7 +180,7 @@ class MainWindow: public QMainWindow
 		// Flight Table
 		void on_flightTable_customContextMenuRequested (const QPoint &pos);
 		void on_flightTable_activated (const QModelIndex &index);
-		void flightTable_buttonClicked (QPersistentModelIndex proxyIndex);
+		void flightTable_buttonClicked (QPersistentModelIndex proxyIndex); // TODO const &, remove dependency
 		void flightTable_horizontalHeader_sectionClicked (int index) { sortByColumn (index); }
 
 		// Flight manipulation
@@ -213,7 +212,7 @@ class MainWindow: public QMainWindow
 		ShellPlugin *weatherPlugin;
 		QPointer<WeatherDialog> weatherDialog;
 
-		EntityList<Flight> flightList;
+		EntityList<Flight> *flightList;
 		FlightProxyList *proxyList;
 		FlightModel *flightModel;
 		ObjectListModel<Flight> *flightListModel;

@@ -1,10 +1,3 @@
-/*
- * ObjectEditorPane.cpp
- *
- *  Created on: Aug 22, 2009
- *      Author: mherrman
- */
-
 #include "ObjectEditorPane.h"
 
 #include "src/text.h"

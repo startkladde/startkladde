@@ -2,6 +2,7 @@
 
 #include "src/db/DataStorage.h"
 #include "src/model/Person.h"
+#include "src/text.h"
 
 /*
  * TODO: disallow person name changes; allow merges only

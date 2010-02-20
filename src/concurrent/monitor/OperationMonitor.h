@@ -2,13 +2,12 @@
  * OperationMonitor.h
  *
  *  Created on: Aug 2, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef _OperationMonitor_h
 #define _OperationMonitor_h
 
-// TODO reduce dependencies
 #include <QString>
 
 /**

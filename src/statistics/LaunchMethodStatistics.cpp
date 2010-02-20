@@ -1,15 +1,8 @@
-/*
- * LaunchMethodStatistics.cpp
- *
- *  Created on: Aug 18, 2009
- *      Author: mherrman
- */
-
 #include "LaunchMethodStatistics.h"
 
 #include "src/model/LaunchMethod.h"
-#include "src/db/DataStorage.h"
 #include "src/model/Flight.h"
+#include "src/db/DataStorage.h"
 
 // ************************
 // ** Entry construction **

@@ -1,7 +1,6 @@
 #ifndef MIGRATION_20100215221900_FIX_DATA_TYPES_H_
 #define MIGRATION_20100215221900_FIX_DATA_TYPES_H_
 
-// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

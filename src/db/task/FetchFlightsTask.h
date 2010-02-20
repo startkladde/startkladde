@@ -2,15 +2,14 @@
  * FetchFlightsTask.h
  *
  *  Created on: Sep 6, 2009
- *      Author: deffi
+ *      Author: Martin Herrmann
  */
 
-#ifndef FETCHFLIGHTSTASK_H_
-#define FETCHFLIGHTSTASK_H_
+#ifndef _FetchFlightsTask_h
+#define _FetchFlightsTask_h
 
 #include <QDate>
 
-// TODO reduce dependencies
 #include "src/concurrent/task/Task.h"
 
 class DataStorage;
@@ -29,4 +28,4 @@ class FetchFlightsTask: public Task
 		QDate date;
 };
 
-#endif /* FETCHFLIGHTSTASK_H_ */
+#endif

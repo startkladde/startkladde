@@ -2,7 +2,8 @@
 
 #include <QDebug> // XXX
 #include <QPalette>
-#include <QColor>
+//#include <QColor>
+#include <QTimer>
 
 extern "C"
 {

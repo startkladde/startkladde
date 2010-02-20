@@ -1,22 +1,15 @@
-/*
- * FlightModel.cpp
- *
- *  Created on: Aug 30, 2009
- *      Author: mherrman
- */
-
 #include "FlightModel.h"
 
 #include <cassert>
+#include <iostream>
 
-#include "src/model/Flight.h"
-#include "src/db/DataStorage.h"
-#include "src/model/Plane.h"
-#include "src/model/Person.h"
-#include "src/color.h"
-#include "src/gui/widgets/SkTableView.h"
-
+#include "src/color.h" // TODO remove after flug_farbe has been moved to Flight
 #include "src/itemDataRoles.h"
+#include "src/db/DataStorage.h"
+#include "src/model/Flight.h"
+#include "src/model/LaunchMethod.h"
+#include "src/model/Person.h"
+#include "src/model/Plane.h"
 
 /*
  * Default column widths for the flight table:

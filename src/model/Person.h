@@ -3,14 +3,10 @@
 
 #include <QString>
 
-// TODO reduce dependencies
 #include "src/model/Entity.h"
 #include "src/model/objectList/ObjectModel.h"
 
 class QSqlQuery;
-
-// TODO: move to Person and change value names
-//enum NamePart { nt_kein, nt_vorname, nt_nachname };
 
 class Person: public Entity
 {

@@ -1,9 +1,9 @@
 #include "text.h"
 
-#include <QStringList>
-
 #include <stdlib.h>
 #include <iostream>
+
+#include <QStringList>
 
 #include "config/Options.h"
 
@@ -29,6 +29,7 @@ bool eintraege_sind_leer (QString eintrag1, QString eintrag2)
 	return eintrag_ist_leer (eintrag1) && eintrag_ist_leer (eintrag2);
 }
 
+// TODO move somewhere more appropriate, then remove dependency on options.h
 bool airfieldEntryCanBeChanged (QString airfield)
 {
 	return eintrag_ist_leer (airfield) || airfield.simplified () == opts.ort.simplified ();

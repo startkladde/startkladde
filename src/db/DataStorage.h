@@ -9,6 +9,7 @@
 #include <QString>
 #include <QMap>
 #include <QMutexLocker>
+#include <QDate>
 
 #include "src/db/dbId.h"
 #include "src/db/DbEvent.h"

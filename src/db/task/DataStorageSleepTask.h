@@ -2,15 +2,15 @@
  * DataStorageSleepTask.h
  *
  *  Created on: Aug 15, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef DATASTORAGESLEEPTASK_H_
-#define DATASTORAGESLEEPTASK_H_
+#ifndef _DataStorageTask_h
+#define _DataStorageTask_h
 
-// TODO reduce dependencies
 #include "src/concurrent/task/Task.h"
-#include "src/db/DataStorage.h"
+
+class DataStorage;
 
 class DataStorageSleepTask: public Task
 {

@@ -1,6 +1,10 @@
 #ifndef _Time_h
 #define _Time_h
 
+// TODO Sucks! Replace!
+
+#include "src/time/timeFunctions.h"
+
 #ifndef _SVID_SOURCE
 	#define _SVID_SOURCE	// Required for timegm () and timelocal ()
 #endif
@@ -8,15 +12,10 @@
 	#define _XOPEN_SOURCE	// Requried for strptime ()
 #endif
 
-#include <cstdio>
 #include <ctime>
 #include <QString>
 
 #include <QDateTime>
-
-// TODO reduce dependencies
-#include "src/logging/messages.h"
-#include "src/time/timeFunctions.h"
 
 // TODO: there should be a separate class for duration. Also, this class sucks.
 class Time

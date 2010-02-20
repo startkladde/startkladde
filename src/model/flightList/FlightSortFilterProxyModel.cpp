@@ -1,18 +1,11 @@
-/*
- * FlightSortFilterProxyModel.cpp
- *
- *  Created on: Sep 3, 2009
- *      Author: deffi
- */
-
 #include "FlightSortFilterProxyModel.h"
 
 #include <cassert>
 
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/model/Flight.h"
-#include "src/db/DataStorage.h"
-#include "src/model/LaunchMethod.h"
+
+class DataStorage;
 
 FlightSortFilterProxyModel::FlightSortFilterProxyModel (DataStorage &dataStorage, QObject *parent):
 	QSortFilterProxyModel (parent),

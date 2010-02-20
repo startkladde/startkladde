@@ -2,19 +2,20 @@
  * ObjectList.h
  *
  *  Created on: Aug 18, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef OBJECTLISTMODEL_H_
-#define OBJECTLISTMODEL_H_
+#ifndef _ObjectListModel_h
+#define _ObjectListModel_h
 
 #include <iostream>
 
 #include <QAbstractTableModel>
 
-// TODO reduce dependencies
 #include "AbstractObjectList.h"
-#include "ObjectModel.h"
+//#include "ObjectModel.h"
+
+template<class T> class ObjectModel;
 
 /*
  * Potential improvements; this note should go to the proxy model

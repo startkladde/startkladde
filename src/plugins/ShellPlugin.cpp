@@ -1,14 +1,21 @@
 #include "ShellPlugin.h"
 
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <signal.h>
+#include <fstream>
 
+//#include <sys/types.h>
+//#include <unistd.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <fcntl.h>
+//#include <signal.h>
+
+#include <iostream>
+
+#include <QLabel>
 #include <QTimer>
 #include <QTextCodec>
+#include <QToolTip>
+#include <QProcess>
 
 #include "src/text.h"
 #include "src/config/Options.h"
@@ -24,7 +31,7 @@ void ShellPlugin::init ()
 	warn_on_death=false;
 	subprocess=NULL;
 
-	// The plugin output incoding is UTF8, but it is interpreted as latin1 and
+	// The plugin output encoding is UTF8, but it is interpreted as latin1 and
 	// converted to UTF-8 by QProcess. It may not be obvious that this
 	// conversion (codec->toUnicode) will work, but it does.
 	codec=QTextCodec::codecForName ("UTF-8");

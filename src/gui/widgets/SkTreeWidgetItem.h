@@ -4,7 +4,6 @@
 #include <QTreeWidget>
 #include <QString>
 
-// TODO reduce dependencies
 #include "src/db/dbId.h"
 
 class SkTreeWidgetItem:public QTreeWidgetItem

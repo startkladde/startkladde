@@ -1,17 +1,7 @@
-/*
- * DefaultQThread.h
- *
- *  Created on: Aug 8, 2009
- *      Author: mherrman
- */
+#ifndef _defaultQThread_h
+#define _defaultQThread_h
 
-#ifndef DEFAULTQTHREAD_H_
-#define DEFAULTQTHREAD_H_
-
-// TODO reduce dependencies
 #include <QThread>
-
-class QObject;
 
 class DefaultQThread: public QThread
 {

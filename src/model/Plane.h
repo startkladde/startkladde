@@ -6,8 +6,8 @@
 #include <QList>
 #include <QSqlQuery>
 
-// TODO reduce dependencies
 #include "src/model/objectList/ObjectModel.h"
+#include "src/text.h" // Required for lengthSpecification
 
 /*
  * Improvements:

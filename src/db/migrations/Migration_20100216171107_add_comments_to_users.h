@@ -1,7 +1,6 @@
 #ifndef MIGRATION_20100216171107_ADD_COMMENTS_TO_USERS_H_
 #define MIGRATION_20100216171107_ADD_COMMENTS_TO_USERS_H_
 
-// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

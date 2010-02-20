@@ -4,9 +4,13 @@
 #include <QLabel>
 #include <QColor>
 
-// TODO reduce dependencies
 #include "src/accessor.h"
 
+/**
+ * A QLabel which can be made invisible without changing the layout by setting
+ * the foreground color equal to the background color. This is called
+ * "concealing" the label.
+ */
 class SkLabel: public QLabel
 	// Not hidden by hide () because this messes up the QLayout.
 {

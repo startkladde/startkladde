@@ -8,11 +8,10 @@
 #include <QTreeWidget>
 #include <QDialog>
 
-// TODO reduce dependencies
 #include "src/gui/widgets/SkTreeWidgetItem.h"
-#include "src/model/Entity.h"
 #include "src/logging/messages.h"
 
+// TODO move to class
 enum selection_result { sr_cancelled, sr_ok, sr_new, sr_unknown, sr_none_selected };
 
 // TODO setRootDecorated (false)

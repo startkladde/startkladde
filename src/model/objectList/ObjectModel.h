@@ -2,13 +2,12 @@
  * ObjectModel.h
  *
  *  Created on: Aug 19, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef OBJECTMODEL_H_
-#define OBJECTMODEL_H_
+#ifndef _ObjectModel_h
+#define _ObjectModel_h
 
-// TODO reduce dependencies
 #include <QVariant>
 
 /**

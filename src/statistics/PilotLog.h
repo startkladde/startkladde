@@ -1,14 +1,12 @@
 #ifndef _PilotLog_h
 #define _PilotLog_h
 
-#include <QString>
-#include <QDateTime>
 #include <QAbstractTableModel>
+#include <QString>
 #include <QList>
 
-// TODO reduce dependencies
-#include "src/time/Time.h"
 #include "src/db/dbId.h"
+#include "src/time/Time.h"
 
 class DataStorage;
 class Flight;

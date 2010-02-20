@@ -1,7 +1,6 @@
 #ifndef MIGRATION_20100216135637_ADD_LAUNCH_METHODS_H_
 #define MIGRATION_20100216135637_ADD_LAUNCH_METHODS_H_
 
-// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

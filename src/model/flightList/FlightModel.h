@@ -2,22 +2,19 @@
  * FlightModel.h
  *
  *  Created on: Aug 30, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef FLIGHTMODEL_H_
-#define FLIGHTMODEL_H_
+#ifndef _FlightModel_h
+#define _FlightModel_h
 
 #include <QVariant>
 
-// TODO reduce dependencies
 #include "src/model/objectList/ObjectModel.h"
-
-#include "src/model/Flight.h"
-#include "src/db/DataStorage.h"
-#include "src/model/Person.h"
-#include "src/model/LaunchMethod.h"
 #include "src/model/objectList/ColumnInfo.h"
+
+class Flight;
+class DataStorage;
 
 /**
  * Unlike the models for Person, Plane and LaunchMethod, this is not part of the
@@ -54,4 +51,4 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 		DataStorage &dataStorage;
 };
 
-#endif /* FLIGHTMODEL_H_ */
+#endif

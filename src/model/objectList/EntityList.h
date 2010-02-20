@@ -2,17 +2,13 @@
  * EntityList.h
  *
  *  Created on: Aug 29, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef ENTITYLIST_H_
-#define ENTITYLIST_H_
+#ifndef _EntityList_h
+#define _EntityList_h
 
 #include "MutableObjectList.h"
-
-// TODO reduce dependencies
-
-#include <QAbstractTableModel>
 
 /**
  * A subclass of MutableObjectList which contains Entitys and allows acces based
@@ -139,4 +135,4 @@ template<class T> void EntityList<T>::replaceOrAdd (db_id id, const T &object)
 		append (object);
 }
 
-#endif /* ENTITYLIST_H_ */
+#endif

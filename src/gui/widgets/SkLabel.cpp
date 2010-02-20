@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include "src/text.h"
-
 // ******************
 // ** Construction **
 // ******************
@@ -127,16 +125,3 @@ void SkLabel::setNumber (double number)
 {
 	setText (QString::number (number));
 }
-
-// **********
-// ** Misc **
-// **********
-
-
-
-//void SkLabel::set_error (bool _error)
-//{
-//	error=_error;
-//	set_colors ();
-//}
-

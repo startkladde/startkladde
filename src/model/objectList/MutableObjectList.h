@@ -2,16 +2,13 @@
  * MutableObjectList.h
  *
  *  Created on: Sep 1, 2009
- *      Author: deffi
+ *      Author: Martin Herrmann
  */
 
-#ifndef MUTABLEOBJECTLIST_H_
-#define MUTABLEOBJECTLIST_H_
+#ifndef _MutableObjectList_h
+#define _MutableObjectList_h
 
 #include "AbstractObjectList.h"
-
-// TODO reduce dependencies
-#include "src/concurrent/threadUtil.h"
 
 // TODO: thread safety required?
 

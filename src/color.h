@@ -3,9 +3,9 @@
 
 #include <QColor>
 
-// TODO reduce dependencies
 #include "src/model/Flight.h"
 
+// TODO move to Flight
 QColor flug_farbe (Flight::Mode, bool, bool, bool, bool);
 
 QColor interpol (float position, const QColor &color0, const QColor &color1);

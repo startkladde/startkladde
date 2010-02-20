@@ -1,29 +1,19 @@
 #include "messages.h"
 
+#include <iostream>
+
+#include <QDateTime>
+#include <QString>
+
 #include "src/text.h"
+#include "src/io/colors.h"
 
-char datetime_buf[20];
-
-char *datetime ()
-	/*
-	 * Makes a QString containing the current date and time.
-	 * Return value:
-	 *   The QString. This QString is statically allocated.
-	 */
+QString timestamp ()
 {
-	time_t curtime;
-	struct tm *loctime;
-
-	curtime = time (NULL);
-	loctime = localtime (&curtime);
-	const char *format="%F %T";	// Pfui, aber sonst meckert -Wall
-	strftime (datetime_buf, 20, format, loctime);
-
-	return datetime_buf;
+	return QDateTime::currentDateTime ().toString (Qt::ISODate);
 }
 
-
-void log_message (QString message)
+void log_message (const QString &message)
 	/*
 	 * Writes a message, prefixed with date and time, to the log, whatever the
 	 * log is.
@@ -32,17 +22,19 @@ void log_message (QString message)
 	 *   - message: The message to write.
 	 */
 {
-	printf (c_message "%s: %s\n" c_default, datetime (), message.latin1());
+	std::cout << QString (c_message "%1: %2" c_default)
+		.arg (timestamp (), message) << std::endl;
 }
 
-void log_error (QString message)
+void log_error (const QString &message)
 	/*
 	 * Writes an error message, prefixed with date and time, to the log,
 	 * whatever the log is.
-	 * At the moment, it's stdout.
+	 * At the moment, it's stderr.
 	 * Parameters:
 	 *   - message: The message to write.
 	 */
 {
-	printf (c_error "%s: Error: %s\n" c_default, datetime (), message.latin1());
+	std::cerr << QString (c_error "%1: Error: %2" c_default)
+		.arg (timestamp (), message) << std::endl;
 }

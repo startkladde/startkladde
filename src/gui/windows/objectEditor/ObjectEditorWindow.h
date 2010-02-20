@@ -3,14 +3,14 @@
 
 #include <cassert>
 
-// TODO reduce dependencies
+// TODO many dependencies in header
+#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
 #include "src/gui/windows/objectEditor/ObjectEditorPane.h"
-#include "src/concurrent/task/Task.h"
 #include "src/db/task/AddObjectTask.h"
 #include "src/db/task/UpdateObjectTask.h"
 #include "src/gui/windows/TaskProgressDialog.h"
-#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
-#include "src/db/DataStorage.h"
+
+class DataStorage;
 
 /*
  * Improvements:

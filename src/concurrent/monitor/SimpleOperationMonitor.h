@@ -2,13 +2,12 @@
  * SimpleOperationMonitor.h
  *
  *  Created on: Aug 2, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef SIMPLEOPERATIONMONITOR_H_
-#define SIMPLEOPERATIONMONITOR_H_
+#ifndef _SimpleOperationMonitor_h
+#define _SimpleOperationMonitor_h
 
-// TODO reduce dependencies
 #include "OperationMonitor.h"
 
 class SimpleOperationMonitor: public OperationMonitor
@@ -23,4 +22,4 @@ class SimpleOperationMonitor: public OperationMonitor
 		virtual void progress (int progress, int maxProgress);
 };
 
-#endif /* SIMPLEOPERATIONMONITOR_H_ */
+#endif

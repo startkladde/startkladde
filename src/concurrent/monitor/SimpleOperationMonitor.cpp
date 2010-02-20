@@ -1,10 +1,3 @@
-/*
- * SimpleOperationMonitor.cpp
- *
- *  Created on: Aug 2, 2009
- *      Author: mherrman
- */
-
 #include "SimpleOperationMonitor.h"
 
 #include <iostream>

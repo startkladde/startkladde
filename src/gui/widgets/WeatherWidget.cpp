@@ -6,7 +6,7 @@
 #include <QRegExp>
 #include <QResizeEvent>
 
-#include "src/config/Options.h"
+#include "src/config/Options.h" // TOOD remove dependency, set color from MainWindow
 
 WeatherWidget::WeatherWidget (QWidget *parent, const char *name)
 	:QLabel (parent, name)

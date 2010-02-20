@@ -1,5 +1,9 @@
 #include "Migration_20100216135637_add_launch_methods.h"
 
+#include <iostream>
+
+#include "src/text.h"
+
 #include "src/model/LaunchMethod.h"
 #include "src/config/Options.h"
 
@@ -67,3 +71,4 @@ void Migration_20100216135637_add_launch_methods::down ()
 {
 	dropTable ("launch_methods");
 }
+

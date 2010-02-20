@@ -1,16 +1,8 @@
-/*
- * Task.cpp
- *
- *  Created on: Aug 8, 2009
- *      Author: mherrman
- */
-
 #include "Task.h"
 
 #include <iostream>
 
 #include <QMutexLocker>
-#include <QApplication>
 
 #include "src/text.h"
 

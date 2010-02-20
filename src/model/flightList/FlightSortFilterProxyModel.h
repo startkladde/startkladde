@@ -2,13 +2,12 @@
  * FlightSortFilterProxyModel.h
  *
  *  Created on: Sep 3, 2009
- *      Author: deffi
+ *      Author: Martin Herrmann
  */
 
-#ifndef FLIGHTSORTFILTERPROXYMODEL_H_
-#define FLIGHTSORTFILTERPROXYMODEL_H_
+#ifndef _FlightSortFilterProxyModel_h
+#define _FlightSortFilterProxyModel_h
 
-// TODO reduce dependencies
 #include <QSortFilterProxyModel>
 
 class DataStorage;

@@ -1,12 +1,11 @@
 #ifndef _PlaneLog_h
 #define _PlaneLog_h
 
-#include <QString>
-#include <QDateTime>
 #include <QAbstractTableModel>
+#include <QString>
+//#include <QDateTime>
 #include <QList>
 
-// TODO reduce dependencies
 #include "src/time/Time.h"
 #include "src/db/dbId.h"
 

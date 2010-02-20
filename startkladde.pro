@@ -141,7 +141,6 @@ SOURCES += \
            src/gui/windows/FlightWindow.cpp \
            src/gui/windows/SplashScreen.cpp \
            src/gui/windows/StatisticsWindow.cpp \
-           src/gui/windows/EntitySelectWindow.cpp \
            src/gui/windows/WeatherDialog.cpp \
            src/gui/windows/TaskProgressDialog.cpp \
            src/gui/windows/ObjectListWindowBase.cpp \

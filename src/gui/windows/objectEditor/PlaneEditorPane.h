@@ -1,13 +1,13 @@
-#ifndef PLANEEDITORPANE_H
-#define PLANEEDITORPANE_H
+#ifndef _PlaneEditorPane_h
+#define _PlaneEditorPane_h
 
 #include "ObjectEditorPane.h"
 #include "ui_PlaneEditorPane.h"
 
-// TODO reduce dependencies
-#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
+#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required for ObjectEditorWindowBase::Mode
 
 class Plane;
+class DataStorage;
 
 class PlaneEditorPane: public ObjectEditorPane<Plane>
 {

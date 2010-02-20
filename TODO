@@ -20,6 +20,8 @@ Tests
 Editors:
 * Use QDataWidgetMapper for edit dialogs?
 
+Nested types: move to separate file to reduce dependencies (see dependencie
+marked "Required for ...")
 
 
 

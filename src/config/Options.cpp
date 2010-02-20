@@ -1,16 +1,17 @@
 #include "Options.h"
 
-#include <cstdlib>
-#include <fstream>
+//#include <cstdlib>
+//#include <fstream>
+//
+#include <getopt.h> // TODO remove
 
-#include <getopt.h>
+#include <iostream>
 
 #include <QTextStream>
 
-#include "src/version.h"
-#include "src/db/Database.h"
-#include "src/plugins/ShellPlugin.h"
 #include "src/text.h"
+#include "src/version.h"
+#include "src/plugins/ShellPlugin.h"
 #include "src/model/LaunchMethod.h"
 
 const QString default_home_config_filename=".startkladde.conf";
@@ -26,7 +27,6 @@ const int opt_sk_admin_password=4004;
 
 // 3000 Configuration
 const int opt_version=3001;
-const int opt_short_version=3002;
 
 // 1000 Local Options
 const int opt_demosystem=1001;
@@ -57,7 +57,6 @@ Options::Options ()
 	config_file="";	// If this is empty, the defaults are tried.
 	display_help=false;
 	show_version=false;
-	show_short_version=false;
 
 	// Connection
 	databaseInfo.server="localhost";
@@ -101,7 +100,6 @@ void Options::display_options (QString prefix)
 	std::cout << prefix << "--config_file name, -f name: read config file name instead of the default" << std::endl;
 	std::cout << prefix << "--help, -h: display help" << std::endl;
 	std::cout << prefix << "--version: display version" << std::endl;
-	std::cout << prefix << "--short_version: display short version" << std::endl;
 	std::cout << prefix << "--server name, -s name: use database server name (IP/hostname)" << std::endl;
 	std::cout << prefix << "--server_display_name name: use name for display (e. g. when using a tunnel/proxy)" << std::endl;
 	std::cout << prefix << "--port num, -p num: connect to port num on the server" << std::endl;
@@ -140,7 +138,6 @@ bool Options::parse_arguments (int argc, char *argv[])
 			{ "config_file",     required_argument, NULL, 'f' },
 			{ "help",            no_argument,       NULL, 'h' },
 			{ "version",         no_argument,       NULL, opt_version },
-			{ "short_version",   no_argument,       NULL, opt_short_version },
 
 			// Connection
 			{ "server",              required_argument, NULL, 's' },
@@ -181,7 +178,6 @@ bool Options::parse_arguments (int argc, char *argv[])
 			case 'f': config_file=optarg; break;
 			case 'h': display_help=true; break;
 			case opt_version: show_version=true; break;
-			case opt_short_version: show_short_version=true; break;
 
 			// Connection
 			case 's': databaseInfo.server=optarg; server_display_name=optarg; break;
@@ -383,15 +379,13 @@ bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugi
 void Options::do_display ()
 {
 	if (show_version)
-		display_version ();
-	else if (show_short_version)
-		display_short_version ();
+		std::cout << getVersion () << std::endl;
 }
 
 bool Options::need_display ()
 {
 	// No display_help because this is handled by the caller.
-	return (show_version || show_short_version);
+	return show_version;
 }
 
 bool Options::address_is_local (const QString &address) const

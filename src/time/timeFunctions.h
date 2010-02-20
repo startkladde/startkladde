@@ -1,7 +1,6 @@
 #ifndef _timeFunctions_h
 #define _timeFunctions_h
 
-// TODO reduce dependencies
 #include <ctime>
 #include <QString>
 

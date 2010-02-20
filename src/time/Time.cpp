@@ -1,5 +1,7 @@
 #include "Time.h"
 
+#include "src/logging/messages.h"
+
 // The default format (what this is used for is not entirely clear).
 // TODO need this?
 const char *def_format="%0d.%0m.%0Y %0H:%0M:%0S";

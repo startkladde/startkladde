@@ -1,11 +1,6 @@
-/*
- * DataStorageSleepTask.cpp
- *
- *  Created on: Aug 15, 2009
- *      Author: mherrman
- */
-
 #include "DataStorageSleepTask.h"
+
+#include "src/db/DataStorage.h"
 
 DataStorageSleepTask::DataStorageSleepTask (DataStorage &dataStorage, int seconds):
 	dataStorage (dataStorage), seconds (seconds)

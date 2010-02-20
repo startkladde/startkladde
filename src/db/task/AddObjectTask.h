@@ -2,15 +2,14 @@
  * AddObjectTask.h
  *
  *  Created on: Aug 15, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef ADDOBJECTTASK_H_
-#define ADDOBJECTTASK_H_
+#ifndef _AddObjectTask_h
+#define _AddObjectTask_h
 
-// TODO reduce dependencies
-#include "src/db/DataStorage.h"
 #include "src/concurrent/task/Task.h"
+#include "src/db/DataStorage.h"
 
 template<class T> class AddObjectTask: public Task
 {
@@ -43,4 +42,4 @@ template<class T> class AddObjectTask: public Task
 		db_id id;
 };
 
-#endif /* ADDOBJECTTASK_H_ */
+#endif

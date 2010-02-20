@@ -1,10 +1,3 @@
-/*
- * RefreshAllTask.cpp
- *
- *  Created on: Aug 16, 2009
- *      Author: mherrman
- */
-
 #include "RefreshAllTask.h"
 
 #include "src/db/DataStorage.h"

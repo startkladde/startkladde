@@ -1,18 +1,10 @@
 #ifndef _messages_h
 #define _messages_h
 
-#include <cstdio>
-#include <ctime>
-#include <QString>
+class QString;
 
-// TODO reduce dependencies
-#include "src/io/colors.h"
-
-void log_message (QString message);
-void log_error (QString message);
-
-
-
+void log_message (const QString &message);
+void log_error (const QString &message);
 
 #endif
 

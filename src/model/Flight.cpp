@@ -3,8 +3,9 @@
 #include <iostream>
 
 #include "src/config/Options.h"
-
 #include "src/db/DataStorage.h"
+#include "src/model/Plane.h"
+#include "src/model/LaunchMethod.h"
 
 // TODO Vereinheitlichen der Statusfunktionen untereinander und mit den
 // condition-strings

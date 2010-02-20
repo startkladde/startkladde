@@ -11,11 +11,6 @@
 #include <QPainter>
 #include <QPixmap>
 
-// TODO reduce dependencies
-#include "src/version.h"
-
-using namespace Qt;
-
 /*
  * A SplashScreen screen capable of displaying a progress indicator
  */

@@ -3,10 +3,8 @@
 
 #include <QStringList>
 
-// TODO reduce dependencies
-#include "src/db/migration/Migration.h"
-
 class Database;
+class Migration;
 
 /**
  * Determines available migrations, creates migrations and determines

@@ -2,13 +2,12 @@
  * SleepTask.h
  *
  *  Created on: Aug 9, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef SLEEPTASK_H_
-#define SLEEPTASK_H_
+#ifndef _SleepTask_h
+#define _SleepTask_h
 
-// TODO reduce dependencies
 #include "Task.h"
 
 class SleepTask: public Task

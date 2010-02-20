@@ -13,6 +13,9 @@
 #include "src/concurrent/monitor/SimpleOperationMonitor.h"
 #include "src/config/Options.h" // TODO remove dependency
 #include "src/model/Flight.h"
+#include "src/model/Plane.h"
+#include "src/model/Person.h"
+#include "src/model/LaunchMethod.h"
 #include "src/db/Database.h"
 #include "src/db/DbEvent.h"
 #include "src/db/DataStorageWorker.h"

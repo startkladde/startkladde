@@ -2,19 +2,18 @@
  * FlightProxyList.h
  *
  *  Created on: Sep 1, 2009
- *      Author: deffi
+ *      Author: Martin Herrmann
  */
 
-#ifndef FLIGHTPROXYLIST_H_
-#define FLIGHTPROXYLIST_H_
-
-// TODO reduce dependencies
-#include "src/model/objectList/AbstractObjectList.h"
-#include "src/accessor.h"
+#ifndef _FlightProxyList_h
+#define _FlightProxyList_h
 
 #include "src/model/Flight.h"
+#include "src/model/objectList/AbstractObjectList.h"
+#include "src/db/dbId.h"
 
 class DataStorage;
+class LaunchMethod;
 
 class FlightProxyList: public AbstractObjectList<Flight>
 {
@@ -66,4 +65,4 @@ class FlightProxyList: public AbstractObjectList<Flight>
 		QList<Flight> towflights;
 };
 
-#endif /* FLIGHTPROXYLIST_H_ */
+#endif

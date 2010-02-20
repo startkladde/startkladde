@@ -8,35 +8,48 @@
 #include <QProgressDialog>
 #include <QHeaderView>
 #include <QInputDialog>
+#include <QList>
+#include <QModelIndex>
 
-#include "src/plugins/ShellPlugin.h"
-#include "src/gui/windows/FlightWindow.h"
-#include "src/gui/widgets/WeatherWidget.h"
-#include "src/gui/windows/WeatherDialog.h"
-#include "src/gui/windows/SplashScreen.h"
 #include "build/kvkbd.xpm"
 #include "build/logo.xpm"
-#include "src/gui/windows/DateInputDialog.h"
-#include "src/concurrent/task/SleepTask.h"
+
+// TODO many dependencies - split
 #include "src/concurrent/DefaultQThread.h"
-#include "src/gui/windows/TaskProgressDialog.h"
 #include "src/concurrent/threadUtil.h"
+#include "src/concurrent/task/SleepTask.h"
+#include "src/config/Options.h"
 #include "src/db/task/DeleteObjectTask.h"
-#include "src/db/task/UpdateObjectTask.h"
+#include "src/db/task/FetchFlightsTask.h"
 #include "src/db/task/RefreshAllTask.h"
-#include "src/statistics/PilotLog.h"
-#include "src/statistics/PlaneLog.h"
-#include "src/statistics/LaunchMethodStatistics.h"
+#include "src/db/task/UpdateObjectTask.h"
+#include "src/gui/widgets/WeatherWidget.h"
+#include "src/gui/windows/DateInputDialog.h"
+#include "src/gui/windows/FlightWindow.h"
 #include "src/gui/windows/ObjectListWindow.h"
-#include "src/model/objectList/MutableObjectList.h"
-#include "src/model/objectList/AutomaticEntityList.h"
-#include "src/model/objectList/EntityList.h"
-#include "src/model/objectList/ObjectListModel.h"
+#include "src/gui/windows/SplashScreen.h"
+#include "src/gui/windows/StatisticsWindow.h"
+#include "src/gui/windows/TaskProgressDialog.h"
+#include "src/gui/windows/WeatherDialog.h"
+#include "src/model/Plane.h"
+#include "src/model/Flight.h"
+#include "src/model/Person.h"
 #include "src/model/flightList/FlightModel.h"
 #include "src/model/flightList/FlightProxyList.h"
 #include "src/model/flightList/FlightSortFilterProxyModel.h"
-#include "src/db/task/FetchFlightsTask.h"
-#include "src/db/Database.h"
+#include "src/model/objectList/AutomaticEntityList.h"
+#include "src/model/objectList/EntityList.h"
+#include "src/model/objectList/ObjectListModel.h"
+#include "src/plugins/ShellPlugin.h"
+#include "src/statistics/LaunchMethodStatistics.h"
+#include "src/statistics/PilotLog.h"
+#include "src/statistics/PlaneLog.h"
+#include "src/gui/dialogs.h"
+#include "src/logging/messages.h"
+
+template <class T> class MutableObjectList;
+class Database;
+
 
 // ******************
 // ** Construction **
@@ -46,12 +59,13 @@
 // TODO better plugin list passing
 MainWindow::MainWindow (QWidget *parent, Database *db, QList<ShellPlugin *> &plugins) :
 	QMainWindow (parent), dataStorage (*db), plugins (plugins), weatherWidget (NULL), weatherPlugin (NULL),
-			weatherDialog (NULL), flightList (this), contextMenu (new QMenu (this))
+			weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
+			contextMenu (new QMenu (this))
 {
 	ui.setupUi (this);
 
 	flightModel = new FlightModel (dataStorage);
-	proxyList=new FlightProxyList (dataStorage, flightList, this); // TODO never deleted
+	proxyList=new FlightProxyList (dataStorage, *flightList, this); // TODO never deleted
 	flightListModel = new ObjectListModel<Flight> (proxyList, false, flightModel, true, this);
 
 	proxyModel = new FlightSortFilterProxyModel (dataStorage, this);
@@ -121,10 +135,10 @@ MainWindow::MainWindow (QWidget *parent, Database *db, QList<ShellPlugin *> &plu
 	connect (&dataStorage, SIGNAL (executingQuery (QString)), this, SLOT (logMessage (QString)));
 
 	// Signals
-	connect (&flightList, SIGNAL (rowsInserted (const QModelIndex &, int, int)), this, SLOT (flightListChanged ()));
-	connect (&flightList, SIGNAL (rowsRemoved (const QModelIndex &, int, int)), this, SLOT (flightListChanged ()));
-	connect (&flightList, SIGNAL (dataChanged (const QModelIndex &, const QModelIndex &)), this, SLOT (flightListChanged ()));
-	connect (&flightList, SIGNAL (modelReset ()), this, SLOT (flightListChanged ()));
+	connect (flightList, SIGNAL (rowsInserted (const QModelIndex &, int, int)), this, SLOT (flightListChanged ()));
+	connect (flightList, SIGNAL (rowsRemoved (const QModelIndex &, int, int)), this, SLOT (flightListChanged ()));
+	connect (flightList, SIGNAL (dataChanged (const QModelIndex &, const QModelIndex &)), this, SLOT (flightListChanged ()));
+	connect (flightList, SIGNAL (modelReset ()), this, SLOT (flightListChanged ()));
 
 	// Flight table
 	ui.flightTable->setAutoResizeRows (true);
@@ -158,6 +172,7 @@ MainWindow::MainWindow (QWidget *parent, Database *db, QList<ShellPlugin *> &plu
 MainWindow::~MainWindow ()
 {
 	// QObjects will be deleted automatically
+	// TODO make sure this also applies to flightList
 }
 
 void MainWindow::setupLabels ()
@@ -447,7 +462,7 @@ bool MainWindow::refreshFlights ()
 		flights=dataStorage.getFlightsOther ();
 	}
 
-	flightList.replaceList (flights);
+	flightList->replaceList (flights);
 	// TODO should be done automatically
 //	ui.flightTable->resizeColumnsToContents ();
 	//	ui.flightTable->resizeRowsToContents ();
@@ -530,7 +545,7 @@ void MainWindow::sortByColumn (int column)
 
 void MainWindow::flightListChanged ()
 {
-	QList<Flight> flights=flightList.getList ();
+	QList<Flight> flights=flightList->getList ();
 
 	// Note that there is a race condition if "refresh" is called before
 	// midnight and this function is called after midnight.
@@ -597,7 +612,7 @@ void MainWindow::startFlight (db_id id)
 		}
 		else
 		{
-			show_warning (QString::fromUtf8 ("Start nicht möglich"), reason, this);
+			showWarning (QString::fromUtf8 ("Start nicht möglich"), reason, this);
 		}
 	}
 	catch (DataStorage::NotFoundException &ex)
@@ -623,7 +638,7 @@ void MainWindow::landFlight (db_id id)
 		}
 		else
 		{
-			show_warning (QString::fromUtf8 ("Landung nicht möglich"), reason, this);
+			showWarning (QString::fromUtf8 ("Landung nicht möglich"), reason, this);
 		}
 	}
 	catch (DataStorage::NotFoundException &ex)
@@ -649,7 +664,7 @@ void MainWindow::landTowflight (db_id id)
 		}
 		else
 		{
-			show_warning (QString::fromUtf8 ("Landung nicht möglich"), reason, this);
+			showWarning (QString::fromUtf8 ("Landung nicht möglich"), reason, this);
 		}
 	}
 	catch (DataStorage::NotFoundException &ex)
@@ -693,7 +708,7 @@ void MainWindow::on_actionTouchngo_triggered ()
 
 	if (isTowflight)
 	{
-		show_warning (
+		showWarning (
 			QString::fromUtf8 ("Zwischenlandung nicht möglich"),
 			QString::fromUtf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können keine Zwischenlandung machen."),
 			this);
@@ -717,7 +732,7 @@ void MainWindow::on_actionTouchngo_triggered ()
 		}
 		else
 		{
-			show_warning (QString::fromUtf8 ("Zwischenlandung nicht möglich"), reason, this);
+			showWarning (QString::fromUtf8 ("Zwischenlandung nicht möglich"), reason, this);
 		}
 	}
 	catch (DataStorage::NotFoundException &ex)
@@ -754,7 +769,7 @@ void MainWindow::on_actionRepeat_triggered ()
 
 	else if (isTowflight)
 	{
-		show_warning (QString::fromUtf8 ("Wiederholen nicht möglich"),
+		showWarning (QString::fromUtf8 ("Wiederholen nicht möglich"),
 			QString::fromUtf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können nicht wiederholt werden."),
 			this);
 		return;
@@ -810,7 +825,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 
 	if (id_invalid (id))
 	{
-		show_warning ("Kein Flug ausgewählt", "Es ist kein Flug ausgewählt", this);
+		showWarning ("Kein Flug ausgewählt", "Es ist kein Flug ausgewählt", this);
 		return;
 	}
 
@@ -860,9 +875,9 @@ void MainWindow::on_actionDisplayError_triggered ()
 		QString flightText (isTowflight?"Schleppflug":"Flug");
 
 		if (error)
-			show_warning (QString ("%1 fehlerhaft").arg (flightText), QString ("Erster Fehler des %1s: %2").arg (flightText, errorText), this);
+			showWarning (QString ("%1 fehlerhaft").arg (flightText), QString ("Erster Fehler des %1s: %2").arg (flightText, errorText), this);
 		else
-			show_warning (QString ("%1 fehlerfrei").arg (flightText), QString ("Der %1 ist fehlerfrei.").arg (flightText), this);
+			showWarning (QString ("%1 fehlerfrei").arg (flightText), QString ("Der %1 ist fehlerfrei.").arg (flightText), this);
 	}
 	catch (DataStorage::NotFoundException &ex)
 	{
@@ -946,7 +961,7 @@ void MainWindow::on_actionJumpToTow_triggered ()
 
 	if (!currentIndex.isValid ())
 	{
-		show_warning (QString::fromUtf8 ("Kein Flug ausgewählt"), QString::fromUtf8 ("Es ist kein Flug ausgewählt."), this);
+		showWarning (QString::fromUtf8 ("Kein Flug ausgewählt"), QString::fromUtf8 ("Es ist kein Flug ausgewählt."), this);
 		return;
 	}
 
@@ -956,7 +971,7 @@ void MainWindow::on_actionJumpToTow_triggered ()
 
 	if (towref<0)
 	{
-		show_warning (QString::fromUtf8 ("Kein Schleppflug"), QString::fromUtf8 ("Der gewählte Flug ist entweder kein F-Schlepp und kein Schleppflug oder noch nicht gestartet."), this);
+		showWarning (QString::fromUtf8 ("Kein Schleppflug"), QString::fromUtf8 ("Der gewählte Flug ist entweder kein F-Schlepp und kein Schleppflug oder noch nicht gestartet."), this);
 		return;
 	}
 
@@ -1194,19 +1209,19 @@ void MainWindow::on_actionSetDisplayDate_triggered ()
 
 void MainWindow::on_actionPlaneLogs_triggered ()
 {
-	PlaneLog *planeLog = PlaneLog::createNew (flightList.getList (), dataStorage);
+	PlaneLog *planeLog = PlaneLog::createNew (flightList->getList (), dataStorage);
 	StatisticsWindow::display (planeLog, true, QString::fromUtf8 ("Bordbücher"), this);
 }
 
 void MainWindow::on_actionPersonLogs_triggered ()
 {
-	PilotLog *pilotLog = PilotLog::createNew (flightList.getList (), dataStorage);
+	PilotLog *pilotLog = PilotLog::createNew (flightList->getList (), dataStorage);
 	StatisticsWindow::display (pilotLog, true, QString::fromUtf8 ("Flugbücher"), this);
 }
 
 void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 {
-	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (flightList.getList (), dataStorage);
+	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (flightList->getList (), dataStorage);
 	StatisticsWindow::display (stats, true, "Startartstatistik", this);
 }
 
@@ -1266,7 +1281,7 @@ void MainWindow::dbEvent (DbEvent event)
 				{
 					const Flight &flight=dataStorage.getObject<Flight> (event.id);
 					if (flight.isPrepared () || flight.effdatum ()==displayDate)
-						flightList.append (flight);
+						flightList->append (flight);
 
 					// TODO: set the cursor position to the flight
 
@@ -1287,9 +1302,9 @@ void MainWindow::dbEvent (DbEvent event)
 
 						std::cout << "effdatum: " << flight.effdatum ().toString () << std::endl;
 						if (flight.isPrepared () || flight.effdatum ()==displayDate)
-							flightList.replaceOrAdd (event.id, flight);
+							flightList->replaceOrAdd (event.id, flight);
 						else
-							flightList.removeById (event.id);
+							flightList->removeById (event.id);
 					}
 					catch (DataStorage::NotFoundException)
 					{
@@ -1298,11 +1313,11 @@ void MainWindow::dbEvent (DbEvent event)
 						// Since the display date is always today or the "other"
 						// date, we can conclude that we have to remove the
 						// flight.
-						flightList.removeById (event.id);
+						flightList->removeById (event.id);
 					}
 				} break;
 				case DbEvent::typeDelete:
-					flightList.removeById (event.id);
+					flightList->removeById (event.id);
 					break;
 				case DbEvent::typeRefresh:
 					refreshFlights ();
@@ -1351,7 +1366,7 @@ bool MainWindow::initializeDatabase ()
 			// OK pressed
 //			try
 //			{
-				Database rootDatabase;
+//				Database rootDatabase;
 				// FIXME
 //				rootDatabase.display_queries = opts.display_queries;
 //				initialize_database (rootDatabase, opts.server, opts.port, opts.root_name, rootPassword);
@@ -1446,16 +1461,16 @@ void MainWindow::dataStorageStateChanged (DataStorage::State state)
 	switch (state)
 	{
 		case DataStorage::stateOffline:
-			flightList.clear ();
+			flightList->clear ();
 			break;
 		case DataStorage::stateConnecting:
-			flightList.clear ();
+			flightList->clear ();
 			break;
 		case DataStorage::stateConnected:
 			refreshFlights ();
 			break;
 		case DataStorage::stateUnusable:
-			flightList.clear ();
+			flightList->clear ();
 			if (initializeDatabase ())
 				dataStorage.connect ();
 			break;
@@ -1483,7 +1498,7 @@ void MainWindow::on_actionSetTime_triggered ()
 
 		system (command.latin1 ());
 
-		show_warning (QString::fromUtf8 ("Systemzeit geändert"),
+		showWarning (QString::fromUtf8 ("Systemzeit geändert"),
 			QString::fromUtf8 ("Die Systemzeit wurde geändert. Um "
 			"die Änderung dauerhaft zu speichern, muss der Rechner einmal "
 			"heruntergefahren werden, bevor er ausgeschaltet wird."), this);

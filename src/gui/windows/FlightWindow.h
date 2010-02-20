@@ -114,14 +114,12 @@
 
 #include "ui_FlightWindow.h"
 
-// TODO reduce dependencies
-#include "src/config/Options.h"
-#include "src/db/DataStorage.h"
 #include "src/db/dbId.h"
-#include "src/model/LaunchMethod.h"
-#include "src/model/Flight.h"
+#include "src/model/LaunchMethod.h" // TODO remove dependency
+#include "src/model/Flight.h" // Required for Flight::Mode and Flight::Type
+#include "src/config/Options.h" // TODO remove dependency
 
-class Flight;
+class Person;
 
 // We want to use a switch so the compiler can warn us if we didn't handle a
 // value. We still provide a default value (outside of the switch statement!)
@@ -219,7 +217,7 @@ class FlightWindow: public QDialog
 		 * @throw DataStorage::NotFoundException if there is no such launch
 		 *        type, or none is selected
 		 */
-		LaunchMethod getCurrentLaunchMethod () { return dataStorage.getObject<LaunchMethod> (getCurrentLaunchMethodId ()); }
+		LaunchMethod getCurrentLaunchMethod ();
 		bool isCurrentLaunchMethodValid () { return id_valid (getCurrentLaunchMethodId ()); }
 
 		bool currentStartsHere   () {       return isFlightModeActive    () && Flight::departsHere (getCurrentFlightMode ()); }
@@ -449,4 +447,4 @@ class FlightWindow: public QDialog
 		db_id selectedPilot, selectedCopilot, selectedTowpilot;
 };
 
-#endif // FLIGHTWINDOW_H
+#endif

@@ -2,19 +2,17 @@
  * ObjectEditorWindowBase.h
  *
  *  Created on: Aug 23, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef OBJECTEDITORWINDOWBASE_H_
-#define OBJECTEDITORWINDOWBASE_H_
+#ifndef _ObjectEditorWindowBase_h
+#define _ObjectEditorWindowBase_h
 
 #include <QtGui/QDialog>
 
-// TODO reduce dependencies
 #include "ui_ObjectEditorWindowBase.h"
 
 class DataStorage;
-
 
 /**
  * Base class for ObjectEditorWindow, because templates cannot be Q_OBJECTs
@@ -44,4 +42,4 @@ class ObjectEditorWindowBase: public QDialog
 };
 
 
-#endif /* OBJECTEDITORWINDOWBASE_H_ */
+#endif

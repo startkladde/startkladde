@@ -2,7 +2,7 @@
  * Schema.cpp
  *
  *  Created on: 18.02.2010
- *      Author: martin
+ *      Author: Martin Herrmann
  */
 
 #include "Schema.h"

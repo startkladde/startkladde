@@ -1,7 +1,6 @@
 #ifndef MIGRATION_20100215211913_DROP_OLD_COLUMNS_H_
 #define MIGRATION_20100215211913_DROP_OLD_COLUMNS_H_
 
-// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

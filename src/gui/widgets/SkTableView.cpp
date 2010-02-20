@@ -1,20 +1,10 @@
-/*
- * SkTableView.cpp
- *
- *  Created on: Aug 29, 2009
- *      Author: mherrman
- */
-
 #include "SkTableView.h"
 
 #include <QSettings>
 
-#include "src/text.h"
 #include "src/gui/widgets/TableButton.h"
-
 #include "src/itemDataRoles.h"
-#include "src/concurrent/threadUtil.h"
-
+#include "src/concurrent/threadUtil.h" // Required for assert (isGuiThread ());
 #include "src/model/objectList/ColumnInfo.h"
 
 #include <iostream>

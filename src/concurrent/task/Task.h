@@ -2,16 +2,15 @@
  * Task.h
  *
  *  Created on: Aug 8, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef TASK_H_
-#define TASK_H_
+#ifndef _Task_h
+#define _Task_h
 
 #include <QObject>
 #include <QMutex>
 
-// TODO reduce dependencies
 #include "src/concurrent/monitor/OperationMonitor.h"
 
 /*

@@ -2,10 +2,10 @@
 #define STATISTICSWINDOW_H
 
 #include <QtGui/QDialog>
-#include <QAbstractTableModel>
 
-// TODO reduce dependencies
 #include "ui_StatisticsWindow.h"
+
+class QAbstractTableModel;
 
 class StatisticsWindow: public QDialog
 {

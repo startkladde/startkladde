@@ -1,10 +1,3 @@
-/*
- * FetchFlightsTask.cpp
- *
- *  Created on: Sep 6, 2009
- *      Author: deffi
- */
-
 #include "FetchFlightsTask.h"
 
 #include "src/db/DataStorage.h"

@@ -2,13 +2,12 @@
  * ObjectUsedTask.h
  *
  *  Created on: Aug 30, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef OBJECTUSEDTASK_H_
-#define OBJECTUSEDTASK_H_
+#ifndef _ObjectUsedTask_h
+#define _ObjectUsedTask_h
 
-// TODO reduce dependencies
 template<class T> class ObjectUsedTask: public Task
 {
 	public:

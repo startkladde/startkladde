@@ -1,11 +1,10 @@
-#ifndef PERSONEDITORPANE_H
-#define PERSONEDITORPANE_H
+#ifndef _PersonEditorPane_h
+#define _PersonEditorPane_h
 
 #include "ObjectEditorPane.h"
 #include "ui_PersonEditorPane.h"
 
-// TODO reduce dependencies
-#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
+#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required for ObjectEditorWindowBase::Mode
 
 class Person;
 class DataStorage;

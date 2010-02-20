@@ -6,9 +6,6 @@
 #include <QCompleter>
 #include <QFocusEvent>
 
-#include "src/text.h"
-
-
 static const QColor errorFieldColor (255, 127, 127);
 
 /**

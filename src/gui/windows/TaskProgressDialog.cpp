@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include "src/concurrent/task/Task.h"
-#include "src/text.h"
 
 TaskProgressDialog::TaskProgressDialog (QWidget *parent, Task *task):
     QDialog(parent), task (task)

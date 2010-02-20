@@ -1,9 +1,10 @@
 #include "Person.h"
 
-#include <iostream>
 #include <cassert>
 
 #include <QSqlQuery>
+
+#include "src/text.h"
 
 
 // ******************

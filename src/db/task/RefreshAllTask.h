@@ -2,13 +2,12 @@
  * RefreshAllTask.h
  *
  *  Created on: Aug 16, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef REFRESHALLTASK_H_
-#define REFRESHALLTASK_H_
+#ifndef _RefreshAllTask_h
+#define _RefreshAllTask_h
 
-// TODO reduce dependencies
 #include "src/concurrent/task/Task.h"
 
 class DataStorage;

@@ -1,9 +1,8 @@
 #include "ObjectListWindowBase.h"
 
-#include <QKeyEvent>
-
 #include <iostream>
 
+#include <QKeyEvent>
 
 ObjectListWindowBase::ObjectListWindowBase(QWidget *parent):
 	QMainWindow(parent)

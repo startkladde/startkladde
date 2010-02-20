@@ -1,7 +1,6 @@
 #ifndef _ColumnInfo_h
 #define _ColumnInfo_h
 
-// TODO reduce dependencies
 #include <QString>
 
 class ColumnInfo

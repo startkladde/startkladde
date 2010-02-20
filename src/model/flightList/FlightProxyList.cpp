@@ -1,20 +1,10 @@
-/*
- * FlightProxyList.cpp
- *
- *  Created on: Sep 1, 2009
- *      Author: deffi
- */
-
 #include "FlightProxyList.h"
 
 #include <cassert>
 
-#include <QSet>
-
 #include "src/model/Flight.h"
 #include "src/db/DataStorage.h"
 #include "src/model/LaunchMethod.h"
-
 
 FlightProxyList::FlightProxyList (DataStorage &dataStorage, AbstractObjectList<Flight> &sourceModel, QObject *parent):
 	AbstractObjectList<Flight> (parent),
@@ -64,9 +54,9 @@ bool FlightProxyList::isAirtow (const Flight &flight, LaunchMethod *launchMethod
 
 	try
 	{
-		LaunchMethod lt=dataStorage.getObject<LaunchMethod> (flight.launchMethodId);
-		if (launchMethod) *launchMethod=lt;
-		return lt.isAirtow ();
+		LaunchMethod lm=dataStorage.getObject<LaunchMethod> (flight.launchMethodId);
+		if (launchMethod) *launchMethod=lm;
+		return lm.isAirtow ();
 	}
 	catch (DataStorage::NotFoundException)
 	{

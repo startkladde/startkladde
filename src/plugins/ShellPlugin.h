@@ -1,20 +1,14 @@
 #ifndef _ShellPlugin_h
 #define _ShellPlugin_h
 
-#include <QString>
-#include <iostream>
-#include <cstdio>
-#include <fstream>
-
-#include <QLabel>
 #include <QObject>
-#include <QToolTip>
-#include <QProcess>
+#include <QString>
 
-// TODO reduce dependencies
 #include "src/accessor.h"
 
 class QTextCodec;
+class QLabel;
+class QProcess;
 
 class ShellPlugin: public QObject
 {

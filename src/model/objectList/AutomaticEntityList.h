@@ -2,17 +2,16 @@
  * AutomaticEntityList.h
  *
  *  Created on: Aug 31, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef AUTOMATICENTITYLIST_H_
-#define AUTOMATICENTITYLIST_H_
+#ifndef _AutomaticEntityList_h
+#define _AutomaticEntityList_h
 
+// TODO may includes in header
 #include "EntityList.h"
-
-// TODO reduce dependencies
-#include "src/db/DataStorage.h"
 #include "src/db/DataStorageMonitor.h"
+#include "src/db/DataStorage.h"
 #include "src/db/DbEvent.h"
 #include "src/concurrent/threadUtil.h"
 
@@ -118,4 +117,4 @@ template<class T> void AutomaticEntityList<T>::dbEvent (DbEvent event)
 	}
 }
 
-#endif /* AUTOMATICENTITYLIST_H_ */
+#endif

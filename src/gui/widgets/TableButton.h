@@ -2,13 +2,12 @@
  * TableButton.h
  *
  *  Created on: Aug 30, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef TABLEBUTTON_H_
 #define TABLEBUTTON_H_
 
-// TODO reduce dependencies
 #include <QPushButton>
 #include <QPersistentModelIndex>
 

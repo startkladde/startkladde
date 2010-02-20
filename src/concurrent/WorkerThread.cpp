@@ -1,10 +1,3 @@
-/*
- * WorkerThread.cpp
- *
- *  Created on: Aug 9, 2009
- *      Author: mherrman
- */
-
 #include "WorkerThread.h"
 
 #include <iostream>

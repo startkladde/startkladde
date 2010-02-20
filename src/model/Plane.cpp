@@ -2,8 +2,7 @@
 
 #include <cassert>
 
-#include "src/text.h"
-
+//#include "src/text.h"
 
 // ******************
 // ** Construction **

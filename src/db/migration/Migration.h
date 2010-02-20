@@ -1,15 +1,11 @@
 #ifndef MIGRATION_H_
 #define MIGRATION_H_
 
-// TODO reduce dependencies
 #include "QString"
 #include "QVariant"
 #include "QSqlQuery"
 
 class Database;
-
-
-// FIXME add methods here to avoid recompiling all migrations on every Database change
 
 /**
  * A new migration is created by creating the appropriate class in

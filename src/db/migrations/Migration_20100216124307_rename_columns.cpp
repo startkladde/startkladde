@@ -1,7 +1,5 @@
 #include "Migration_20100216124307_rename_columns.h"
 
-#include <QString>
-
 Migration_20100216124307_rename_columns::Migration_20100216124307_rename_columns (Database &database):
 	Migration (database)
 {

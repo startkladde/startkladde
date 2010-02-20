@@ -2,17 +2,16 @@
  * ObjectEditorPane.h
  *
  *  Created on: Aug 22, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef OBJECTEDITORPANE_H_
-#define OBJECTEDITORPANE_H_
+#ifndef _ObjectEditorPane_h
+#define _ObjectEditorPane_h
 
 #include <QtGui/QWidget>
 
-// TODO reduce dependencies
 #include "src/db/dbId.h"
-#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
+#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required fro ObjectEditorWindowBase::Mode
 
 class DataStorage;
 

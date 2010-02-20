@@ -1,10 +1,3 @@
-/*
- * TableButton.cpp
- *
- *  Created on: Aug 30, 2009
- *      Author: mherrman
- */
-
 #include "TableButton.h"
 
 #include <iostream>

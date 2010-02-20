@@ -2,13 +2,12 @@
  * WorkerThread.h
  *
  *  Created on: Aug 9, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef WORKERTHREAD_H_
 #define WORKERTHREAD_H_
 
-// TODO reduce dependencies
 #include <QThread>
 #include <QMutex>
 #include <QWaitCondition>

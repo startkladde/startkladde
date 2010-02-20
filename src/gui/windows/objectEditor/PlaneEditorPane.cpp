@@ -1,8 +1,7 @@
 #include "PlaneEditorPane.h"
 
-#include "src/model/Plane.h"
-
 #include "src/db/DataStorage.h"
+#include "src/model/Plane.h"
 
 /*
  * Improvements:

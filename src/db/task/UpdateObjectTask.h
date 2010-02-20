@@ -2,13 +2,15 @@
  * UpdateobjectTask.h
  *
  *  Created on: Aug 15, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef UPDATEOBJECTTASK_H_
-#define UPDATEOBJECTTASK_H_
+#ifndef _UpdateObjectTask_h
+#define _UpdateObjectTask_h
 
-// TODO reduce dependencies
+// TODO many tasks depend on DataStorage, which is bad because everything that
+// depends on the task will have to be rebuilt when DataStorage.h is changed
+// (only applies to template classes with the implementation in the header).
 #include "src/db/DataStorage.h"
 
 template<class T> class UpdateObjectTask: public Task

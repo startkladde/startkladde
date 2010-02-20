@@ -1,7 +1,6 @@
 #ifndef MIGRATION_20100215000000_CHANGE_TO_INNODB_H_
 #define MIGRATION_20100215000000_CHANGE_TO_INNODB_H_
 
-// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**
@@ -23,6 +22,9 @@ class Migration_20100215000000_change_to_innodb: public Migration
 
 		virtual void up ();
 		virtual void down ();
+
+	protected:
+		virtual void changeTable (const QString &name);
 };
 
 #endif

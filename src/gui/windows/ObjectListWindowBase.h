@@ -1,8 +1,8 @@
 #ifndef OBJECTLISTWINDOWBASE_H
 #define OBJECTLISTWINDOWBASE_H
 
-// TODO reduce dependencies
 #include <QtGui/QMainWindow>
+
 #include "ui_ObjectListWindowBase.h"
 
 /*

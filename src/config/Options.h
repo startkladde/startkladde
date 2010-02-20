@@ -9,7 +9,6 @@
 #include <qdatetime.h>
 #include <qfile.h>
 
-// TODO reduce dependencies
 #include "src/db/DatabaseInfo.h"
 
 class Database;
@@ -33,7 +32,6 @@ class Options
 		QString config_file;
 		bool display_help;
 		bool show_version;
-		bool show_short_version;
 
 		// Connection
 		DatabaseInfo databaseInfo;

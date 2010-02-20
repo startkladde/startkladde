@@ -1,7 +1,6 @@
 #ifndef MIGRATION_20100216180053_FULL_PLANE_CATEGORY_H_
 #define MIGRATION_20100216180053_FULL_PLANE_CATEGORY_H_
 
-// TODO reduce dependencies
 #include "src/db/migration/Migration.h"
 
 /**

@@ -1,23 +1,17 @@
 #ifndef _Flight_h
 #define _Flight_h
 
-#include <sstream>
 #include <QString>
+#include <QDateTime>
+#include <QSqlQuery>
 
-#include <qdatetime.h>
-
-
-// TODO reduce dependencies
-#include "src/accessor.h"
-#include "src/text.h"
-#include "src/gui/dialogs.h"
-#include "src/model/Plane.h"
-#include "src/model/Person.h"
-#include "src/model/LaunchMethod.h"
+#include "src/db/dbId.h"
 #include "src/time/Time.h"
-#include "src/time/timeFunctions.h"
+#include "src/text.h" // TODO remove
 
 class DataStorage;
+class Plane;
+class LaunchMethod;
 
 enum FlightError {
 	ff_ok,

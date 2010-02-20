@@ -21,12 +21,14 @@ const QString Migrator::migrationsColumnName="version";
  * @param database the database to access
  */
 Migrator::Migrator (Database &database):
-	database (database)
+	database (database),
+	factory (new MigrationFactory ())
 {
 }
 
 Migrator::~Migrator ()
 {
+	delete factory;
 }
 
 
@@ -39,8 +41,8 @@ void Migrator::runMigration (quint64 version, Migration::Direction direction)
 	Migration *migration=NULL;
 	try
 	{
-		migration=factory.createMigration (database, version);
-		QString name=factory.migrationName (version);
+		migration=factory->createMigration (database, version);
+		QString name=factory->migrationName (version);
 
 		switch (direction)
 		{
@@ -142,7 +144,7 @@ void Migrator::reset ()
 
 QList<quint64> Migrator::pendingMigrations ()
 {
-	QList<quint64> availableMigrations=factory.availableVersions ();
+	QList<quint64> availableMigrations=factory->availableVersions ();
 	QList<quint64> appliedMigrations=this->appliedMigrations ();
 
 	QList<quint64> pending;
@@ -155,7 +157,7 @@ QList<quint64> Migrator::pendingMigrations ()
 
 quint64 Migrator::nextMigration ()
 {
-	QList<quint64> availableMigrations=factory.availableVersions ();
+	QList<quint64> availableMigrations=factory->availableVersions ();
 	QList<quint64> appliedMigrations=this->appliedMigrations ();
 
 	foreach (quint64 version, availableMigrations)

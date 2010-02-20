@@ -6,7 +6,7 @@
 #include <QFile>
 
 #include "src/db/Database.h"
-#include "src/db/migration/Migrator.h"
+#include "src/db/migration/Migrator.h" // Required for migrationsTableName/migrationsColumnName
 
 SchemaDumper::SchemaDumper (Database &database):
 	database (database)

@@ -1,13 +1,9 @@
 #ifndef _Entity_h
 #define _Entity_h
 
-#include <iostream>
 #include <QString>
 
-// TODO reduce dependencies
-#include "src/text.h"
 #include "src/db/dbId.h"
-
 
 /**
  * An object stored in the database

@@ -8,12 +8,11 @@
 #include <QMessageBox>
 #include <QString>
 
-// TODO reduce dependencies
+// TODO split
 
 extern const QString whitespace;
 
 enum lengthSpecification { lsShort, lsTable, lsLong, lsWithShortcut, lsPrintout, lsPilotLog };
-
 
 
 bool eintrag_ist_leer (QString eintrag);

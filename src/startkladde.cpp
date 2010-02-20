@@ -1,20 +1,24 @@
 #include <unistd.h>
 
+#include <iostream>
+
 #include <QApplication>
 
 #include "src/text.h"
 #include "src/config/Options.h"
 #include "src/gui/windows/MainWindow.h"
-#include "src/gui/windows/SplashScreen.h"
 #include "src/plugins/ShellPlugin.h"
 #include "src/db/Database.h"
 #include "src/db/migration/Migrator.h"
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/SchemaDumper.h"
-#include "src/model/Plane.h"
-#include "src/model/Flight.h"
-#include "src/model/LaunchMethod.h"
-#include "src/model/Person.h"
+
+// For test_database
+//#include "src/model/Plane.h"
+//#include "src/model/Flight.h"
+//#include "src/model/LaunchMethod.h"
+//#include "src/model/Person.h"
+
 
 // Testen des Wetterplugins
 //#include "WeatherDialog.h"
@@ -30,66 +34,64 @@ void display_help ()
 	Options::display_options ("    ");
 }
 
-#include "src/model/Person.h"
 
-
-int test_database (Database &db)
-{
-
-	std::cout << std::endl;
-	std::cout << "Get people" << std::endl;
-	QList<Person> people=db.getObjects<Person> ();
-    foreach (const Person &person, people)
-    	std::cout << person.toString ().toUtf8 () << std::endl;
-
-	std::cout << std::endl;
-	std::cout << "Get planes" << std::endl;
-	QList<Plane> planes=db.getObjects<Plane> ();
-    foreach (const Plane &plane, planes)
-    	std::cout << plane.toString ().toUtf8 () << std::endl;
-
-	std::cout << std::endl;
-	std::cout << "Get flights" << std::endl;
-	QList<Flight> flights=db.getObjects<Flight> ();
-    foreach (const Flight &flight, flights)
-    	std::cout << flight.toString ().toUtf8 () << std::endl;
-
-	std::cout << std::endl;
-	std::cout << "Get prepared flights" << std::endl;
-	flights=db.getPreparedFlights ();
-    foreach (const Flight &flight, flights)
-    	std::cout << flight.toString ().toUtf8 () << std::endl;
-
-	std::cout << std::endl;
-	std::cout << "Get flights of 2010-01-23" << std::endl;
-	flights=db.getFlightsDate (QDate (2010, 1, 23));
-    foreach (const Flight &flight, flights)
-    	std::cout << flight.toString ().toUtf8 () << std::endl;
-
-	std::cout << std::endl;
-	std::cout << "Get launch methods" << std::endl;
-	QList<LaunchMethod> launchMethods=db.getObjects<LaunchMethod> ();
-    foreach (const LaunchMethod &launchMethod, launchMethods)
-    	std::cout << launchMethod.toString ().toUtf8 () << std::endl;
-
-    std::cout << std::endl;
-	std::cout << "List airfields" << std::endl;
-	std::cout << db.listAirfields ().join (", ") << std::endl;
-
-    std::cout << std::endl;
-	std::cout << "List accounting notes" << std::endl;
-	std::cout << db.listAccountingNotes ().join (", ") << std::endl;
-
-    std::cout << std::endl;
-	std::cout << "List clubs" << std::endl;
-	std::cout << db.listClubs ().join (", ") << std::endl;
-
-    std::cout << std::endl;
-	std::cout << "List plane types" << std::endl;
-	std::cout << db.listPlaneTypes ().join (", ") << std::endl;
-
-	return 0;
-}
+//int test_database (Database &db)
+//{
+//
+//	std::cout << std::endl;
+//	std::cout << "Get people" << std::endl;
+//	QList<Person> people=db.getObjects<Person> ();
+//    foreach (const Person &person, people)
+//    	std::cout << person.toString ().toUtf8 () << std::endl;
+//
+//	std::cout << std::endl;
+//	std::cout << "Get planes" << std::endl;
+//	QList<Plane> planes=db.getObjects<Plane> ();
+//    foreach (const Plane &plane, planes)
+//    	std::cout << plane.toString ().toUtf8 () << std::endl;
+//
+//	std::cout << std::endl;
+//	std::cout << "Get flights" << std::endl;
+//	QList<Flight> flights=db.getObjects<Flight> ();
+//    foreach (const Flight &flight, flights)
+//    	std::cout << flight.toString ().toUtf8 () << std::endl;
+//
+//	std::cout << std::endl;
+//	std::cout << "Get prepared flights" << std::endl;
+//	flights=db.getPreparedFlights ();
+//    foreach (const Flight &flight, flights)
+//    	std::cout << flight.toString ().toUtf8 () << std::endl;
+//
+//	std::cout << std::endl;
+//	std::cout << "Get flights of 2010-01-23" << std::endl;
+//	flights=db.getFlightsDate (QDate (2010, 1, 23));
+//    foreach (const Flight &flight, flights)
+//    	std::cout << flight.toString ().toUtf8 () << std::endl;
+//
+//	std::cout << std::endl;
+//	std::cout << "Get launch methods" << std::endl;
+//	QList<LaunchMethod> launchMethods=db.getObjects<LaunchMethod> ();
+//    foreach (const LaunchMethod &launchMethod, launchMethods)
+//    	std::cout << launchMethod.toString ().toUtf8 () << std::endl;
+//
+//    std::cout << std::endl;
+//	std::cout << "List airfields" << std::endl;
+//	std::cout << db.listAirfields ().join (", ") << std::endl;
+//
+//    std::cout << std::endl;
+//	std::cout << "List accounting notes" << std::endl;
+//	std::cout << db.listAccountingNotes ().join (", ") << std::endl;
+//
+//    std::cout << std::endl;
+//	std::cout << "List clubs" << std::endl;
+//	std::cout << db.listClubs ().join (", ") << std::endl;
+//
+//    std::cout << std::endl;
+//	std::cout << "List plane types" << std::endl;
+//	std::cout << db.listPlaneTypes ().join (", ") << std::endl;
+//
+//	return 0;
+//}
 
 int showGui (QApplication &a, Database &db, QList<ShellPlugin *> &plugins)
 {
@@ -146,8 +148,8 @@ int doStuff (Database &db)
 		Migrator (db).clear ();
 	else if (opts.non_options[0]=="db:create")
 		Migrator (db).create ();
-	else if (opts.non_options[0]=="db:test")
-		test_database (db);
+//	else if (opts.non_options[0]=="db:test")
+//		test_database (db);
 	else if (opts.non_options[0]=="db:fail")
 		db.executeQuery ("bam!");
 	else if (opts.non_options[0]=="db:migrations")

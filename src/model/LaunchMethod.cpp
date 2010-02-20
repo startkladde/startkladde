@@ -1,10 +1,12 @@
 #include "LaunchMethod.h"
 
-#include <cstdlib>
 #include <cassert>
 
 #include <QSqlQuery>
 #include <QVariant>
+
+#include "src/text.h"
+#include "src/logging/messages.h"
 
 
 // ******************

@@ -1,6 +1,8 @@
 #include "Migration_20100215000000_change_to_innodb.h"
 
-#include <QStringList>
+#include <iostream>
+
+#include "src/text.h"
 
 Migration_20100215000000_change_to_innodb::Migration_20100215000000_change_to_innodb (Database &database):
 	Migration (database)
@@ -13,17 +15,13 @@ Migration_20100215000000_change_to_innodb::~Migration_20100215000000_change_to_i
 
 void Migration_20100215000000_change_to_innodb::up ()
 {
-	QStringList tables;
-	tables << "person" << "person_temp";
-	tables << "flugzeug" << "flugzeug_temp";
-	tables << "flug" << "flug_temp";
-	tables << "user";
-
-	foreach (QString table, tables)
-		executeQuery (
-			QString ("ALTER TABLE %1 ENGINE=InnoDB")
-			.arg (table)
-		);
+	changeTable ("person");
+	changeTable ("person_temp");
+	changeTable ("flugzeug");
+	changeTable ("flugzeug_temp");
+	changeTable ("flug");
+	changeTable ("flug_temp");
+	changeTable ("user");
 }
 
 void Migration_20100215000000_change_to_innodb::down ()
@@ -31,3 +29,12 @@ void Migration_20100215000000_change_to_innodb::down ()
 	// Don't change back
 }
 
+void Migration_20100215000000_change_to_innodb::changeTable (const QString &name)
+{
+	std::cout << "Changing table " << name << std::endl;
+
+	executeQuery (
+		QString ("ALTER TABLE %1 ENGINE=InnoDB")
+		.arg (name)
+	);
+}

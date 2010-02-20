@@ -2,12 +2,11 @@
  * DeleteObjectTask.h
  *
  *  Created on: Aug 15, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef DELETEOBJECTTASK_H_
-#define DELETEOBJECTTASK_H_
-// TODO reduce dependencies
+#ifndef _DeleteObjectTask_h
+#define _DeleteObjectTask_h
 
 template<class T> class DeleteObjectTask: public Task
 {

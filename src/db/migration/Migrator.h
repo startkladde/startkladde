@@ -3,10 +3,10 @@
 
 #include <QString>
 
-// TODO reduce dependencies
-#include "src/db/migration/MigrationFactory.h"
+#include "src/db/migration/Migration.h" // Required for Migration::Direction
 
 class Database;
+class MigrationFactory;
 
 /**
  * A controller for managing migrations on a database.
@@ -61,7 +61,7 @@ class Migrator
 
 	private:
 		Database &database;
-		MigrationFactory factory;
+		MigrationFactory *factory;
 };
 
 #endif /* MIGRATOR_H_ */

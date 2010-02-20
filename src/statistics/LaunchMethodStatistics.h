@@ -2,16 +2,15 @@
  * LaunchMethodStatistics.h
  *
  *  Created on: Aug 18, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef LAUNCHMETHODSTATISTICS_H_
-#define LAUNCHMETHODSTATISTICS_H_
+#ifndef _LaunchMethodStatistics_h
+#define _LaunchMethodStatistics_h
 
-// TODO reduce dependencies
+#include <QAbstractTableModel>
 #include <QString>
 #include <QList>
-#include <QAbstractTableModel>
 
 class DataStorage;
 class Flight;

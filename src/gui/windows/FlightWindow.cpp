@@ -13,8 +13,10 @@
 #include "src/gui/windows/EntitySelectWindow.h"
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
+#include "src/model/Person.h"
 #include "src/db/DataStorage.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
+#include "src/config/Options.h" // Required for opts.ort
 
 /*
  * On enabling/diabling widgets:
@@ -1429,6 +1431,15 @@ bool FlightWindow::isTowplaneRegistrationActive ()
 	}
 }
 
+// ***************************
+// ** Input value frontends **
+// ***************************
+
+LaunchMethod FlightWindow::getCurrentLaunchMethod ()
+{
+	db_id id=getCurrentLaunchMethodId ();
+	return dataStorage.getObject<LaunchMethod> (id);
+}
 
 
 // *******************************

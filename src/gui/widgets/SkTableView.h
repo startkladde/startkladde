@@ -2,15 +2,14 @@
  * SkTableView.h
  *
  *  Created on: Aug 29, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef SKTABLEVIEW_H_
-#define SKTABLEVIEW_H_
+#ifndef _SkTableView_h
+#define _SkTableView_h
 
 #include <QTableView>
 
-// TODO reduce dependencies
 #include "src/accessor.h"
 
 class ColumnInfo;

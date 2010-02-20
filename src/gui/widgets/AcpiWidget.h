@@ -7,9 +7,9 @@
   * 10.09.2008
   */
 
-// TODO reduce dependencies
 #include <QLabel>
-#include <QTimer>
+
+class QTimer;
 
 class AcpiWidget: public QLabel
 {

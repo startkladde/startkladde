@@ -2,13 +2,12 @@
  * AbstractObjectList.h
  *
  *  Created on: Sep 1, 2009
- *      Author: deffi
+ *      Author: Martin Herrmann
  */
 
-#ifndef ABSTRACTOBJECTLIST_H_
-#define ABSTRACTOBJECTLIST_H_
+#ifndef _AbstractObjectList_h
+#define _AbstractObjectList_h
 
-// TODO reduce dependencies
 #include <QAbstractTableModel>
 
 /**
@@ -130,4 +129,4 @@ template<class T> QVariant AbstractObjectList<T>::headerData (int section, Qt::O
 }
 
 
-#endif /* ABSTRACTOBJECTLIST_H_ */
+#endif
