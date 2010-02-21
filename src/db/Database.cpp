@@ -87,20 +87,19 @@
 
 // Note: these values are used in migrations. If they are changed, the
 // migrations should be updated to use the same values as before.
-const QString Database::dataTypeBinary    = "blob";
-const QString Database::dataTypeBoolean   = "tinyint(1)";
-const QString Database::dataTypeDate      = "date";
-const QString Database::dataTypeDatetime  = "datetime";
-const QString Database::dataTypeDecimal   = "decimal";
-const QString Database::dataTypeFloat     = "float";
-const QString Database::dataTypeInteger   = "int(11)";
-const QString Database::dataTypeString    = "varchar(255)";
-//const QString Database::dataTypeString16  = "varchar(16)";
-const QString Database::dataTypeText      = "text";
-const QString Database::dataTypeTime      = "time";
-const QString Database::dataTypeTimestamp = "datetime";
-const QString Database::dataTypeCharacter = "varchar(1)"; // Non-Rails
-const QString Database::dataTypeId        = dataTypeInteger;
+QString Database::dataTypeBinary    () { return "blob"            ; }
+QString Database::dataTypeBoolean   () { return "tinyint(1)"      ; }
+QString Database::dataTypeDate      () { return "date"            ; }
+QString Database::dataTypeDatetime  () { return "datetime"        ; }
+QString Database::dataTypeDecimal   () { return "decimal"         ; }
+QString Database::dataTypeFloat     () { return "float"           ; }
+QString Database::dataTypeInteger   () { return "int(11)"         ; }
+QString Database::dataTypeString    () { return "varchar(255)"    ; }
+QString Database::dataTypeText      () { return "text"            ; }
+QString Database::dataTypeTime      () { return "time"            ; }
+QString Database::dataTypeTimestamp () { return "datetime"        ; }
+QString Database::dataTypeCharacter () { return "varchar(1)"      ; } // Non-Rails
+QString Database::dataTypeId        () { return dataTypeInteger (); }
 
 
 // ******************

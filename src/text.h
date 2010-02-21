@@ -31,7 +31,7 @@ QString firstToUpper (const QString &text);
 QString firstToLower (const QString &text);
 
 std::ostream &operator<< (std::ostream &s, const QColor &c);
-std::ostream &operator<< (std::ostream &s, const QByteArray &ba);
+//std::ostream &operator<< (std::ostream &s, const QByteArray &ba);
 
 #endif
 

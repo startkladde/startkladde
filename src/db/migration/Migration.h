@@ -41,8 +41,8 @@ class Migration
 
 		// *** Constants
 
-		// Not implemented as static constants because this introduces the
-		// "static initialization order fiasco".
+		// Not implemented as static constants to avoid the static
+		// initialization order fiasco.
     	static QString dataTypeBinary    ();
     	static QString dataTypeBoolean   ();
     	static QString dataTypeDate      ();

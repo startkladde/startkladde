@@ -8,6 +8,7 @@
 #ifndef QSTRING_H_
 #define QSTRING_H_
 
+#include <iostream>
 #include <string>
 
 #include <QString>

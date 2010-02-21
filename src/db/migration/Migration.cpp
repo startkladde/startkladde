@@ -2,19 +2,19 @@
 
 #include "src/db/Database.h"
 
-QString Migration::dataTypeBinary    () { return Database::dataTypeBinary   ; }
-QString Migration::dataTypeBoolean   () { return Database::dataTypeBoolean  ; }
-QString Migration::dataTypeDate      () { return Database::dataTypeDate     ; }
-QString Migration::dataTypeDatetime  () { return Database::dataTypeDatetime ; }
-QString Migration::dataTypeDecimal   () { return Database::dataTypeDecimal  ; }
-QString Migration::dataTypeFloat     () { return Database::dataTypeFloat    ; }
-QString Migration::dataTypeInteger   () { return Database::dataTypeInteger  ; }
-QString Migration::dataTypeString    () { return Database::dataTypeString   ; }
-QString Migration::dataTypeText      () { return Database::dataTypeText     ; }
-QString Migration::dataTypeTime      () { return Database::dataTypeTime     ; }
-QString Migration::dataTypeTimestamp () { return Database::dataTypeTimestamp; }
-QString Migration::dataTypeCharacter () { return Database::dataTypeCharacter; }
-QString Migration::dataTypeId        () { return Database::dataTypeId       ; }
+QString Migration::dataTypeBinary    () { return Database::dataTypeBinary    (); }
+QString Migration::dataTypeBoolean   () { return Database::dataTypeBoolean   (); }
+QString Migration::dataTypeDate      () { return Database::dataTypeDate      (); }
+QString Migration::dataTypeDatetime  () { return Database::dataTypeDatetime  (); }
+QString Migration::dataTypeDecimal   () { return Database::dataTypeDecimal   (); }
+QString Migration::dataTypeFloat     () { return Database::dataTypeFloat     (); }
+QString Migration::dataTypeInteger   () { return Database::dataTypeInteger   (); }
+QString Migration::dataTypeString    () { return Database::dataTypeString    (); }
+QString Migration::dataTypeText      () { return Database::dataTypeText      (); }
+QString Migration::dataTypeTime      () { return Database::dataTypeTime      (); }
+QString Migration::dataTypeTimestamp () { return Database::dataTypeTimestamp (); }
+QString Migration::dataTypeCharacter () { return Database::dataTypeCharacter (); }
+QString Migration::dataTypeId        () { return Database::dataTypeId        (); }
 
 Migration::Migration (Database &database):
 	database (database)

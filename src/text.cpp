@@ -134,14 +134,14 @@ std::ostream &operator<< (std::ostream &s, const QColor &c)
 	return s << c.red () << "," <<  c.green () << "," << c.blue ();
 }
 
-std::ostream &operator<< (std::ostream &s, const QByteArray &ba)
-{
-	int l=ba.length ();
-	for (int i=0; i<l; ++i)
-		s << ba.at (i);
-
-	return s;
-}
+//std::ostream &operator<< (std::ostream &s, const QByteArray &ba)
+//{
+//	int l=ba.length ();
+//	for (int i=0; i<l; ++i)
+//		s << ba.at (i);
+//
+//	return s;
+//}
 
 
 

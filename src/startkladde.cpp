@@ -191,6 +191,8 @@ int doStuff (Database &db)
 
 int main (int argc, char **argv)
 {
+	std::cout << "main" << std::endl;
+
 	// DbEvents are used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
