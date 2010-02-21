@@ -13,7 +13,7 @@ class SkTreeWidgetItem:public QTreeWidgetItem
 		SkTreeWidgetItem (QTreeWidget *parent, QTreeWidgetItem *after);
 		SkTreeWidgetItem (QTreeWidget *parent, QString text);
 
-		db_id id;
+		dbId id;
 };
 
 #endif

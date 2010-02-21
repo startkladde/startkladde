@@ -1,11 +1,11 @@
 #include "dbId.h"
 
-bool id_valid (db_id id)
+bool idValid (dbId id)
 {
-	return !id_invalid (id);
+	return !idInvalid (id);
 }
 
-bool id_invalid (db_id id)
+bool idInvalid (dbId id)
 {
 	return (id==0);
 }

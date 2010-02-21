@@ -33,10 +33,10 @@ class FlightProxyList: public AbstractObjectList<Flight>
 	protected:
 		virtual bool isAirtow (const Flight &flight, LaunchMethod *launchMethod) const;
 		virtual void addTowflightFor (const Flight &flight, const LaunchMethod &launchMethod);
-		virtual void updateTowflight (db_id id, int towflightIndex);
+		virtual void updateTowflight (dbId id, int towflightIndex);
 
-		virtual int findFlight (db_id id) const;
-		virtual int findTowflight (db_id id) const;
+		virtual int findFlight (dbId id) const;
+		virtual int findTowflight (dbId id) const;
 
 		virtual bool modelIndexIsFlight (int index) const;
 		virtual bool modelIndexIsTowflight (int index) const;

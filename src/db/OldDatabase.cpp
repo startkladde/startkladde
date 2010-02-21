@@ -150,13 +150,13 @@ const QString query_separator=";";
 // ** Specialize templates **
 // **************************
 
-template<> int OldDatabase::getObject<Flight      > (Flight       *object, db_id id) { return get_object (ot_flight, object, id); }
-template<> int OldDatabase::getObject<Plane       > (Plane        *object, db_id id) { return get_object (ot_plane,  object, id); }
-template<> int OldDatabase::getObject<Person      > (Person       *object, db_id id) { return get_object (ot_person, object, id); }
-template<> int OldDatabase::getObject<LaunchMethod> (LaunchMethod *object, db_id id) { return get_launch_method     (object, id); }
+template<> int OldDatabase::getObject<Flight      > (Flight       *object, dbId id) { return get_object (ot_flight, object, id); }
+template<> int OldDatabase::getObject<Plane       > (Plane        *object, dbId id) { return get_object (ot_plane,  object, id); }
+template<> int OldDatabase::getObject<Person      > (Person       *object, dbId id) { return get_object (ot_person, object, id); }
+template<> int OldDatabase::getObject<LaunchMethod> (LaunchMethod *object, dbId id) { return get_launch_method     (object, id); }
 
-template<> bool OldDatabase::objectUsed<Plane > (db_id id) { return  plane_used (id); }
-template<> bool OldDatabase::objectUsed<Person> (db_id id) { return person_used (id); }
+template<> bool OldDatabase::objectUsed<Plane > (dbId id) { return  plane_used (id); }
+template<> bool OldDatabase::objectUsed<Person> (dbId id) { return person_used (id); }
 
 
 // ***** import_message
@@ -1518,7 +1518,7 @@ QString OldDatabase::make_condition (Condition c)
 
 
 // Direct access helper functions
-bool OldDatabase::object_exists_in (const QString &table, const db_id &id)
+bool OldDatabase::object_exists_in (const QString &table, const dbId &id)
 	throw (ex_legacy_error)
 	/*
 	 * Checks if an object with at given ID exists a a given Table.
@@ -1536,7 +1536,7 @@ bool OldDatabase::object_exists_in (const QString &table, const db_id &id)
 	return false;
 }
 
-void OldDatabase::object_delete_from (const QString &table, const db_id &id)
+void OldDatabase::object_delete_from (const QString &table, const dbId &id)
 	throw (ex_legacy_error)
 	/*
 	 * Deletes an object from a Table.
@@ -1551,7 +1551,7 @@ void OldDatabase::object_delete_from (const QString &table, const db_id &id)
 	if (ret<0) throw ex_legacy_error (ret, *this);
 }
 
-void OldDatabase::object_copy (const QString &source, const QString &target, db_id id)
+void OldDatabase::object_copy (const QString &source, const QString &target, dbId id)
 	throw (ex_legacy_error)
 	/*
 	 * Copies an object from one Table to another.
@@ -1582,7 +1582,7 @@ void OldDatabase::make_editable (db_object_type type, int id, bool editable)
 	 *   - editable: whether the object should be made editable or non-editable.
 	 */
 {
-	if (id_invalid (id)) throw ex_legacy_error (db_err_parameter_error, *this);
+	if (idInvalid (id)) throw ex_legacy_error (db_err_parameter_error, *this);
 	if (!is_admin_db) throw ex_legacy_error (db_err_not_admin_db, *this);
 
 	// The names of the tables.
@@ -1662,7 +1662,7 @@ void OldDatabase::make_editable (db_object_type type, int id, bool editable)
 
 
 // Writing
-db_id OldDatabase::write_object (db_object_type type, void *object)
+dbId OldDatabase::write_object (db_object_type type, void *object)
 {
 	// TODO this function is MURX.
 	//
@@ -1670,10 +1670,10 @@ db_id OldDatabase::write_object (db_object_type type, void *object)
 	// editable machen.
 	//
 	// TODO: Fehlerbeschreibung!
-	if (!connected ()) return invalid_id;	// Need to be connected to write
-	if (type==ot_none) return invalid_id;	// Need an object type
+	if (!connected ()) return invalidId;	// Need to be connected to write
+	if (type==ot_none) return invalidId;	// Need an object type
 
-	db_id object_id;
+	dbId object_id;
 	bool editable_flag;
 	// TODO: Das ist ziemlich unelegant...
 	switch (type)
@@ -1692,14 +1692,14 @@ db_id OldDatabase::write_object (db_object_type type, void *object)
 			break;
 		default:
 			debug_stream << "[db] Unhandled object type in sk_db::write_object ()" << std::endl;
-			return invalid_id;
+			return invalidId;
 			break;
 	}
 
 	QString query;
 	// If the object does not yet have an ID or this ID does not yet exist,
 	// we have to create it, else we have to modify it.
-	bool create=(id_invalid (object_id) || !object_exists (type, object_id));
+	bool create=(idInvalid (object_id) || !object_exists (type, object_id));
 
 	if (create)
 	{
@@ -1711,14 +1711,14 @@ db_id OldDatabase::write_object (db_object_type type, void *object)
 		MYSQL_RES *result;
 		if (execute_query (&result, query, true)==db_ok)
 		{
-			db_id r=mysql_insert_id (mysql);
+			dbId r=mysql_insert_id (mysql);
 			mysql_free_result (result);
 			return r;
 		}
 		else
 		{
 			debug_stream << "There was an error while executing the query in sk_db::write_object (): " << get_last_error () << std::endl;
-			return invalid_id;
+			return invalidId;
 		}
 	}
 	else
@@ -1729,25 +1729,25 @@ db_id OldDatabase::write_object (db_object_type type, void *object)
 		// Update the editable Table.
 		query=make_query (qt_update, type, make_condition (Condition (cond_id, object_id)), query_value_list (type, object), false, false, "", "", true);
 		ret=execute_query (query);
-		if (ret!=db_ok) return invalid_id;
+		if (ret!=db_ok) return invalidId;
 
 		// If this is an admin_db, we also need to update the fixed Table.
 		query=make_query (qt_update, type, make_condition (Condition (cond_id, object_id)), query_value_list (type, object), false, false, "", "", false);
 		ret=execute_query (query);
-		if (ret!=db_ok) return invalid_id;
+		if (ret!=db_ok) return invalidId;
 
 		return object_id;
 	}
 }
 
-template<> db_id OldDatabase::writeObject<Flight> (Flight *object) { return write_object (ot_flight, object); }
-template<> db_id OldDatabase::writeObject<Plane>   (Plane *object) { return write_object (ot_plane,  object); }
-template<> db_id OldDatabase::writeObject<Person> (Person *object) { return write_object (ot_person, object); }
+template<> dbId OldDatabase::writeObject<Flight> (Flight *object) { return write_object (ot_flight, object); }
+template<> dbId OldDatabase::writeObject<Plane>   (Plane *object) { return write_object (ot_plane,  object); }
+template<> dbId OldDatabase::writeObject<Person> (Person *object) { return write_object (ot_person, object); }
 
 
 
 // Deletion
-int OldDatabase::delete_object (db_object_type otype, db_id id)
+int OldDatabase::delete_object (db_object_type otype, dbId id)
 {
 	// TODO this function is a mess.
 
@@ -1808,17 +1808,17 @@ int OldDatabase::delete_object (db_object_type otype, db_id id)
 }
 
 // Specialize helper templates
-template<> int OldDatabase::deleteObject<Flight> (db_id id)
+template<> int OldDatabase::deleteObject<Flight> (dbId id)
 {
 	return delete_object (ot_flight, id);
 }
 
-template<> int OldDatabase::deleteObject<Person> (db_id id)
+template<> int OldDatabase::deleteObject<Person> (dbId id)
 {
 	return delete_object (ot_person, id);
 }
 
-template<> int OldDatabase::deleteObject<Plane> (db_id id)
+template<> int OldDatabase::deleteObject<Plane> (dbId id)
 {
 	return delete_object (ot_plane, id);
 }
@@ -1858,13 +1858,13 @@ int OldDatabase::rows_exist_query (QString query)
 		return 1;
 }
 
-int OldDatabase::object_exists (db_object_type type, db_id id)
+int OldDatabase::object_exists (db_object_type type, dbId id)
 {
 	// Try to get the (id of the) object. If that returns rows, the object
 	// exists.
 
 	if (!connected ()) return db_err_not_connected;
-	if (id_invalid (id)) return db_err_parameter_error;
+	if (idInvalid (id)) return db_err_parameter_error;
 
 	QString condition=make_condition (Condition (cond_id, id));
 	QString columns=query_column_list (type, true);
@@ -1873,17 +1873,17 @@ int OldDatabase::object_exists (db_object_type type, db_id id)
 	return rows_exist_query (query);
 }
 
-int OldDatabase::flight_exists (db_id id)
+int OldDatabase::flight_exists (dbId id)
 {
 	return object_exists (ot_flight, id);
 }
 
-int OldDatabase::plane_exists (db_id id)
+int OldDatabase::plane_exists (dbId id)
 {
 	return object_exists (ot_plane, id);
 }
 
-int OldDatabase::person_exists (db_id id)
+int OldDatabase::person_exists (dbId id)
 {
 	return object_exists (ot_person, id);
 }
@@ -1967,21 +1967,21 @@ int OldDatabase::result_to_string_list (QStringList &strings, MYSQL_RES *result,
 	return db_ok;
 }
 
-int OldDatabase::result_to_id_list (QList<db_id> &ids, MYSQL_RES *result)
+int OldDatabase::result_to_id_list (QList<dbId> &ids, MYSQL_RES *result)
 {
 	QList<long long int> temp_list;
 	// TODO "id" hardcoded
 	int r=result_to_num_list (temp_list, result, "id");
 	if (r<0) return r;
 
-	// Convert from long long int to db_id
-	foreach (db_id it, temp_list)
+	// Convert from long long int to dbId
+	foreach (dbId it, temp_list)
 		ids.append (it);
 
 	return db_ok;
 }
 
-int OldDatabase::list_id_data (db_object_type type, QList<db_id> &ids, QStringList &data_columns, Condition c)
+int OldDatabase::list_id_data (db_object_type type, QList<dbId> &ids, QStringList &data_columns, Condition c)
 	// This function returns IDs from multiple columns where the row matches
 	// a given condition c.
 	// Example: all values from "pilot" and "copilot" from flights that
@@ -2013,7 +2013,7 @@ int OldDatabase::list_id_data (db_object_type type, QList<db_id> &ids, QStringLi
 	return r;
 }
 
-int OldDatabase::list_ids (db_object_type type, QList<db_id> &ids, Condition c)
+int OldDatabase::list_ids (db_object_type type, QList<dbId> &ids, Condition c)
 	// This function returns the IDs of Table rows matching a given condition
 	// c.
 	// Example: the IDs of all flights that happened on a certain date.
@@ -2162,9 +2162,9 @@ int OldDatabase::list_flights_prepared (QList<Flight *> &flights)
 	return r;
 }
 
-db_id OldDatabase::object_flying (db_object_type otype, db_id id, Time *given_time)
+dbId OldDatabase::object_flying (db_object_type otype, dbId id, Time *given_time)
 {
-	if (id_invalid (id)) return invalid_id;
+	if (idInvalid (id)) return invalidId;
 
 	ConditionType cond;
 	switch (otype)
@@ -2179,24 +2179,24 @@ db_id OldDatabase::object_flying (db_object_type otype, db_id id, Time *given_ti
 	Condition c (cond, id);
 	c.given_time1=given_time;
 
-	QList<db_id> ids;
+	QList<dbId> ids;
 	int res=list_ids (ot_flight, ids, c);
 
 	if (res!=db_ok) return false;
 
 	if (ids.isEmpty ())
-		return invalid_id;
+		return invalidId;
 	else
 		// TODO newest...
 		return ids.first ();
 }
 
-db_id OldDatabase::person_flying (db_id id, Time *given_time)
+dbId OldDatabase::person_flying (dbId id, Time *given_time)
 {
 	return object_flying (ot_person, id, given_time);
 }
 
-db_id OldDatabase::plane_flying (db_id id, Time *given_time)
+dbId OldDatabase::plane_flying (dbId id, Time *given_time)
 {
 	return object_flying (ot_plane, id, given_time);
 }
@@ -2239,18 +2239,18 @@ int OldDatabase::list_planes_date (QList<Plane *> &planes, QDate *date)
 	// one returning actual objects. Probably put the copying code not in the
 	// latter but in a separate function (get_persons (person_list, id_list)).
 	Condition cond (cond_flight_happened_on_date, date);
-	QList<db_id> id_list;
+	QList<dbId> id_list;
 
 	QStringList column_list;
 	column_list.append (column_name_flug_flugzeug);
 
 	int r=list_id_data (ot_flight, id_list, column_list, cond);
 	// TODO error handling
-	foreach (db_id id, id_list)
+	foreach (dbId id, id_list)
 	{
 		// ID==0 is OK as the data column may continue this to signify "none".
 		// However, we don't want to include it in the output.
-		if (!id_invalid (id))
+		if (!idInvalid (id))
 		{
 			Plane *plane=new Plane;
 
@@ -2286,7 +2286,7 @@ int OldDatabase::list_persons_date (QList<Person *> &persons, QDate *date)
 	// one returning actual objects. Probably put the copying code not in the
 	// latter but in a separate function (get_persons (person_list, id_list)).
 	Condition cond (cond_flight_happened_on_date, date);
-	QList<db_id> id_list;
+	QList<dbId> id_list;
 
 	QStringList column_list;
 	column_list.append (column_name_flug_pilot);
@@ -2294,11 +2294,11 @@ int OldDatabase::list_persons_date (QList<Person *> &persons, QDate *date)
 
 	int r=list_id_data (ot_flight, id_list, column_list, cond);
 	// TODO error handling
-	foreach (db_id id, id_list)
+	foreach (dbId id, id_list)
 	{
 		// ID==0 is OK as the data column may continue this to signify "none".
 		// However, we don't want to include it in the output.
-		if (!id_invalid (id))
+		if (!idInvalid (id))
 		{
 			Person *person=new Person;
 
@@ -2449,7 +2449,7 @@ long long int OldDatabase::count_flights_today (QDate &date)
 }
 
 // TODO all these functions lack proper error handling
-bool OldDatabase::object_has_flight (db_object_type otype, db_id id)
+bool OldDatabase::object_has_flight (db_object_type otype, dbId id)
 {
 	ConditionType crit;
 
@@ -2466,12 +2466,12 @@ bool OldDatabase::object_has_flight (db_object_type otype, db_id id)
 	return (count_flights (Condition (crit, id))>0);
 }
 
-bool OldDatabase::person_has_flight (db_id id)
+bool OldDatabase::person_has_flight (dbId id)
 {
 	return object_has_flight (ot_person, id);
 }
 
-bool OldDatabase::person_has_user (db_id id)
+bool OldDatabase::person_has_user (dbId id)
 {
 	int ret=rows_exist_query ("select username from user where person="+QString::number (id));
 
@@ -2483,17 +2483,17 @@ bool OldDatabase::person_has_user (db_id id)
 		return false;
 }
 
-bool OldDatabase::plane_has_flight (db_id id)
+bool OldDatabase::plane_has_flight (dbId id)
 {
 	return object_has_flight (ot_plane, id);
 }
 
-bool OldDatabase::person_used (db_id id)
+bool OldDatabase::person_used (dbId id)
 {
 	return (person_has_flight (id) || person_has_user (id));
 }
 
-bool OldDatabase::plane_used (db_id id)
+bool OldDatabase::plane_used (dbId id)
 {
 	return (plane_has_flight (id));
 }
@@ -2502,11 +2502,11 @@ bool OldDatabase::plane_used (db_id id)
 
 
 // Get by ID
-int OldDatabase::get_object (db_object_type type, void *object, db_id id)
+int OldDatabase::get_object (db_object_type type, void *object, dbId id)
 	// type and the type of object must match!
 {
 	if (!connected ()) return db_err_not_connected;
-	if (id_invalid (id)) return db_err_parameter_error;
+	if (idInvalid (id)) return db_err_parameter_error;
 
 	if (object)
 	{
@@ -2541,7 +2541,7 @@ int OldDatabase::get_object (db_object_type type, void *object, db_id id)
 	else
 	{
 		// Check for existance only
-		QList<db_id> id_list;
+		QList<dbId> id_list;
 		int ret=list_ids (type, id_list, Condition (cond_id, id));
 		if (ret==db_ok)
 		{
@@ -2572,7 +2572,7 @@ bool OldDatabase::add_startart_to_list (LaunchMethod *sa)
 	// TODO some types must be unique, for example sat_self
 
 	// TODO Fehlermeldungen: Bezeichnung der Startart dazu.
-	if (id_invalid (sa->get_id ()))
+	if (idInvalid (sa->get_id ()))
 	{
 		log_error ("Invalid startart id in add_startart_to_list");
 		return false;
@@ -2598,7 +2598,7 @@ int OldDatabase::list_startarten_all (QList<LaunchMethod *> &saen)
 	return db_ok;
 }
 
-int OldDatabase::get_startart (LaunchMethod *startart, db_id id)
+int OldDatabase::get_startart (LaunchMethod *startart, dbId id)
 {
 	foreach (LaunchMethod *sa, startarten)
 	{
@@ -2637,16 +2637,16 @@ int OldDatabase::get_startart_by_type (LaunchMethod *startart, LaunchMethod::Typ
 	return found?db_ok:db_err_not_found;
 }
 
-db_id OldDatabase::get_startart_id_by_type (LaunchMethod::Type type)
+dbId OldDatabase::get_startart_id_by_type (LaunchMethod::Type type)
 {
 	foreach (LaunchMethod *sa, startarten)
 		if (sa->get_type ()==sat)
 			return sa->get_id ();
 
-	return invalid_id;
+	return invalidId;
 }
 
-int OldDatabase::get_towplane (Plane *towplane, const LaunchMethod &startart, const db_id towplane_id)
+int OldDatabase::get_towplane (Plane *towplane, const LaunchMethod &startart, const dbId towplane_id)
 {
 	if (startart.ok && startart.isAirtow () && startart.towplaneKnown ())
 	{
@@ -2664,19 +2664,19 @@ int OldDatabase::get_towplane (Plane *towplane, const LaunchMethod &startart, co
 
 
 // Merging persons
-QString merge_person_query (QString table, QString column, db_id correct, db_id wrong)
+QString merge_person_query (QString table, QString column, dbId correct, dbId wrong)
 {
 	// update Table set $column=$correct where $column=$wrong
 	return "update "+table+" set "+column+"="+QString::number (correct)+" where "+column+"="+QString::number (wrong);
 }
 
-void OldDatabase::merge_person (db_id correct_id, db_id wrong_id)
+void OldDatabase::merge_person (dbId correct_id, dbId wrong_id)
 	throw (ex_not_connected, ex_parameter_error, ex_query_failed, ex_operation_failed)
 {
 	// Check some preconditions.
 	if (!connected ()) throw ex_not_connected ();
-	if (id_invalid (correct_id)) throw ex_parameter_error ("Korrekte ID ist ungültig");
-	if (id_invalid (wrong_id)) throw ex_parameter_error ("Falsche ID ist ungültig");
+	if (idInvalid (correct_id)) throw ex_parameter_error ("Korrekte ID ist ungültig");
+	if (idInvalid (wrong_id)) throw ex_parameter_error ("Falsche ID ist ungültig");
 
 	// Change the person everywhere it occurs. This can be the flight tables,
 	// columns pilot and copilot.
@@ -2692,7 +2692,7 @@ void OldDatabase::merge_person (db_id correct_id, db_id wrong_id)
 	// Now check if there are still any persons with that ID
 	// Select flights which have that person.
 	if (!silent) std::cout << "Checking success" << std::endl;
-	QList<db_id> flight_ids;
+	QList<dbId> flight_ids;
 	Condition cond (cond_flight_person, wrong_id);
 	if (list_ids (ot_flight, flight_ids, cond)!=db_ok) throw ex_operation_failed (get_last_error ());
 	// This list better be empty.
@@ -2701,7 +2701,7 @@ void OldDatabase::merge_person (db_id correct_id, db_id wrong_id)
 		debug_stream << "Error: after changing the IDs, there are still flights with the wrong ID " << wrong_id <<":" << std::endl;
 
 		bool first=true;
-		foreach (db_id it, flight_ids)
+		foreach (dbId it, flight_ids)
 		{
 			if (!first) debug_stream << ", "; first=true;
 			debug_stream << it;
@@ -2798,7 +2798,7 @@ void OldDatabase::import_check (const QList<Person *> &persons, QList<import_mes
 	}
 }
 
-db_id OldDatabase::import_identify (const Person &p, QList<import_message> *non_fatal_messages)
+dbId OldDatabase::import_identify (const Person &p, QList<import_message> *non_fatal_messages)
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message)
 	/*
 	 * Identify a person for importing.
@@ -2808,7 +2808,7 @@ db_id OldDatabase::import_identify (const Person &p, QList<import_message> *non_
 	 *   - non_fatal_messages: If not NULL, non-fatal problems are added here.
 	 *     Fatal problems are thrown.
 	 * Return value:
-	 *   The ID of the person identified or invalid_id if the person is to be
+	 *   The ID of the person identified or invalidId if the person is to be
 	 *   created.
 	 * Exceptions:
 	 *   - import_message: A fatal problem occured. None-fatal problems are
@@ -2838,7 +2838,7 @@ db_id OldDatabase::import_identify (const Person &p, QList<import_message> *non_
 	//   - Otherwise, the person is selected according to its name. This is
 	//     quite complicated because many different cases have to be checked,
 	//     see below.
-	// When a person has been identified, its ID is returned (or invalid_id for
+	// When a person has been identified, its ID is returned (or invalidId for
 	// "create new").
 
 	bool club_id_old_given=!p.club_id_old.isEmpty ();
@@ -2865,7 +2865,7 @@ db_id OldDatabase::import_identify (const Person &p, QList<import_message> *non_
 		else if (persons.count ()==1)
 		{
 			// Exactly one person was found. Return it.
-			db_id id=persons[0]->id;
+			dbId id=persons[0]->id;
 			foreach (Person *p, persons) delete p;
 			return id;
 		}
@@ -2896,7 +2896,7 @@ db_id OldDatabase::import_identify (const Person &p, QList<import_message> *non_
 		else if (persons.count ()==1)
 		{
 			// Exactly one person was found. Return it.
-			db_id id=persons[0]->id;
+			dbId id=persons[0]->id;
 			foreach (Person *p, persons) delete p;
 			return id;
 		}
@@ -2927,7 +2927,7 @@ db_id OldDatabase::import_identify (const Person &p, QList<import_message> *non_
 			// No person with this name exists. This means that the person has
 			// to be newly created.
 			foreach (Person *p, persons) delete p;
-			return invalid_id;
+			return invalidId;
 		}
 		else
 		{
@@ -2947,7 +2947,7 @@ db_id OldDatabase::import_identify (const Person &p, QList<import_message> *non_
 			//      not, such a person is not used (to remove a club ID, the
 			//      person must be selected with club_id_old, in which case we
 			//      aren't here at all). It is removed as well.
-			//      // TODO if the list is empty now, return invalid_id.
+			//      // TODO if the list is empty now, return invalidId.
 			//   3. A fixed person of the own club without club ID.
 			//      If such a person is present, it is used. If there are
 			//      multiple such persons, a not-unique error is returned.
@@ -2966,9 +2966,9 @@ db_id OldDatabase::import_identify (const Person &p, QList<import_message> *non_
 			//   - fixed persons of the same club which have a club_id (type
 			//     2.)
 			// Also count the number of persons from categories 3, 4 and 4b.
-			int num_fixed_own_no_club_id=0; db_id id_fixed_own_no_club_id=invalid_id; QString club_fixed_own_no_club_id;
-			int num_editable=0;             db_id id_editable=invalid_id;             QString club_editable;
-			int num_editable_own=0;         db_id id_editable_own=invalid_id;         QString club_editable_own;
+			int num_fixed_own_no_club_id=0; dbId id_fixed_own_no_club_id=invalidId; QString club_fixed_own_no_club_id;
+			int num_editable=0;             dbId id_editable=invalidId;             QString club_editable;
+			int num_editable_own=0;         dbId id_editable_own=invalidId;         QString club_editable_own;
 			QMutableListIterator<Person *> it (persons);
 			while (it.hasNext ())
 			{
@@ -3042,7 +3042,7 @@ db_id OldDatabase::import_identify (const Person &p, QList<import_message> *non_
 			}
 			else if (num_editable==0)	// No cat. 4
 				// No editable persons with that name. Create the person.
-				return invalid_id;
+				return invalidId;
 			else if (num_editable_own==1)	// Multipe cat. 4, one cat. 4b
 			{
 				// Multiple editable persons with that name, but only one of
@@ -3076,7 +3076,7 @@ void OldDatabase::import_identify (QList<Person *> &persons, QList<import_messag
 		try
 		{
 			// Don't add the ID here as it is unclear what to do for errors.
-			db_id id=import_identify (*it, &messages);
+			dbId id=import_identify (*it, &messages);
 			it->id=id;
 		}
 		catch (import_message &n)
@@ -3088,7 +3088,7 @@ void OldDatabase::import_identify (QList<Person *> &persons, QList<import_messag
 	}
 }
 
-db_id OldDatabase::import_person (const Person &person)
+dbId OldDatabase::import_person (const Person &person)
 	throw (ex_not_connected, ex_legacy_error, ex_operation_failed)
 {
 	if (!connected ()) throw ex_not_connected ();
@@ -3103,7 +3103,7 @@ db_id OldDatabase::import_person (const Person &person)
 	//   2. Modify (or create) the person and set it to "not editable'.
 
 	// Step 1: Identify the person
-	db_id id=import_identify (person);
+	dbId id=import_identify (person);
 
 	// Step 2: Write the person to the database
 	// Make a copy so we don't have to overwrite the parameter.
@@ -3111,10 +3111,10 @@ db_id OldDatabase::import_person (const Person &person)
 	p.id=id;
 	// Write the person to the database
 	int result_id=writeObject (&p);
-	if (id_invalid (result_id)) throw ex_operation_failed ("Person schreiben, Ergebnis: "+QString::number (result_id));
+	if (idInvalid (result_id)) throw ex_operation_failed ("Person schreiben, Ergebnis: "+QString::number (result_id));
 
 	// If the person was written successfully, make it not editable
-	if (!id_invalid (result_id)) make_person_editable (result_id, false);
+	if (!idInvalid (result_id)) make_person_editable (result_id, false);
 
 	return result_id;
 }

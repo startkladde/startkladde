@@ -78,7 +78,7 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent=NULL);
 
 	protected:
-		db_id originalId;
+		dbId originalId;
 
 };
 
@@ -88,7 +88,7 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 
 template<class T> ObjectEditorPane<T>::ObjectEditorPane (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent):
 	ObjectEditorPaneBase (mode, dataStorage, parent),
-	originalId (invalid_id)
+	originalId (invalidId)
 {
 }
 

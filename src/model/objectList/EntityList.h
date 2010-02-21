@@ -31,13 +31,13 @@ template<class T> class EntityList: public MutableObjectList<T>
 
 		// Access
 		// TODO: addById which gets the data from the dataStorage (?); dito for replace
-		virtual int findById (db_id id);
+		virtual int findById (dbId id);
 		// TODO: have them return the number of entries removed/replaced and
 		// assert that it is 1 where applicable
-		virtual void removeById (db_id id);
+		virtual void removeById (dbId id);
 		// TODO: replace method which only takes the object and reads the ID from the object
-		virtual void replaceById (db_id id, const T &object);
-		virtual void replaceOrAdd (db_id id, const T &object);
+		virtual void replaceById (dbId id, const T &object);
+		virtual void replaceOrAdd (dbId id, const T &object);
 
 	protected:
 //		DataStorage &dataStorage;
@@ -76,7 +76,7 @@ template<class T> EntityList<T>::~EntityList ()
  * @param id the ID to look for
  * @return the index of an object with the specified ID, or -1
  */
-template<class T> int EntityList<T>::findById (db_id id)
+template<class T> int EntityList<T>::findById (dbId id)
 {
 	// TODO cache in a map?
 	for (int i=0; i<MutableObjectList<T>::size (); ++i)
@@ -91,7 +91,7 @@ template<class T> int EntityList<T>::findById (db_id id)
  *
  * @param id the ID of the object(s) to remove
  */
-template<class T> void EntityList<T>::removeById (db_id id)
+template<class T> void EntityList<T>::removeById (dbId id)
 {
 	// TODO cache in a map?
 	for (int i=0; i<MutableObjectList<T>::size (); ++i)
@@ -110,7 +110,7 @@ template<class T> void EntityList<T>::removeById (db_id id)
  * @param id the ID of the object(s) to replace
  * @param object the object to replace said objects with
  */
-template<class T> void EntityList<T>::replaceById (db_id id, const T &object)
+template<class T> void EntityList<T>::replaceById (dbId id, const T &object)
 {
 	// TODO cache in a map?
 	for (int i=0; i<MutableObjectList<T>::size (); ++i)
@@ -125,7 +125,7 @@ template<class T> void EntityList<T>::replaceById (db_id id, const T &object)
  * @param id the ID of the object(s) to replace
  * @param object the new object
  */
-template<class T> void EntityList<T>::replaceOrAdd (db_id id, const T &object)
+template<class T> void EntityList<T>::replaceOrAdd (dbId id, const T &object)
 {
 	int index=findById (id);
 

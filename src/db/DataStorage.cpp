@@ -518,7 +518,7 @@ QStringList DataStorage::getPlaneTypes ()
 // ** Hash access **
 // *****************
 
-db_id DataStorage::getPlaneIdByRegistration (const QString &registration)
+dbId DataStorage::getPlaneIdByRegistration (const QString &registration)
 {
 	// TODO implement with hash
 	QMutexLocker lock (&dataMutex);
@@ -526,13 +526,13 @@ db_id DataStorage::getPlaneIdByRegistration (const QString &registration)
 		if (plane.registration.toLower ()==registration.toLower ())
 			return plane.getId ();
 
-	return invalid_id;
+	return invalidId;
 }
 
-QList<db_id> DataStorage::getPersonIdsByName (const QString &firstName, const QString &lastName)
+QList<dbId> DataStorage::getPersonIdsByName (const QString &firstName, const QString &lastName)
 {
 	// TODO implement with hash?
-	QList<db_id> result;
+	QList<dbId> result;
 
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
@@ -542,24 +542,24 @@ QList<db_id> DataStorage::getPersonIdsByName (const QString &firstName, const QS
 	return result;
 }
 
-db_id DataStorage::getUniquePersonIdByName (const QString &firstName, const QString &lastName)
+dbId DataStorage::getUniquePersonIdByName (const QString &firstName, const QString &lastName)
 {
 	// TODO implement with hash?
 	// TODO: instead of getting all matching people, we could stop on the first
 	// duplicate.
-	const QList<db_id> personIds=getPersonIdsByName (firstName, lastName);
+	const QList<dbId> personIds=getPersonIdsByName (firstName, lastName);
 
 	if (personIds.size ()==1)
 		return personIds.at (0);
 	else
-		return invalid_id;
+		return invalidId;
 }
 
 
-QList<db_id> DataStorage::getPersonIdsByFirstName (const QString &firstName)
+QList<dbId> DataStorage::getPersonIdsByFirstName (const QString &firstName)
 {
 	// TODO implement with hash?
-	QList<db_id> result;
+	QList<dbId> result;
 
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
@@ -570,10 +570,10 @@ QList<db_id> DataStorage::getPersonIdsByFirstName (const QString &firstName)
 	return result;
 }
 
-QList<db_id> DataStorage::getPersonIdsByLastName (const QString &lastName)
+QList<dbId> DataStorage::getPersonIdsByLastName (const QString &lastName)
 {
 	// TODO implement with hash?
-	QList<db_id> result;
+	QList<dbId> result;
 
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
@@ -594,9 +594,9 @@ QList<db_id> DataStorage::getPersonIdsByLastName (const QString &lastName)
  * @return the object
  * @throw NotFoundException if the object is not found
  */
-template<class T> T DataStorage::getObject (db_id id)
+template<class T> T DataStorage::getObject (dbId id)
 {
-	if (id_invalid (id))
+	if (idInvalid (id))
 		throw NotFoundException (id);
 
 	QMutexLocker lock (&dataMutex);
@@ -608,7 +608,7 @@ template<class T> T DataStorage::getObject (db_id id)
 	throw NotFoundException (id);
 }
 
-template<class T> bool DataStorage::objectExists (db_id id)
+template<class T> bool DataStorage::objectExists (dbId id)
 {
 	QMutexLocker lock (&dataMutex);
 	foreach (const T &object, *objectList<T> ())
@@ -621,7 +621,7 @@ template<class T> bool DataStorage::objectExists (db_id id)
 
 
 // Different specialization for Flight
-template<> Flight DataStorage::getObject (db_id id)
+template<> Flight DataStorage::getObject (dbId id)
 {
 	// TODO search all flights if not found today/display date/prepared?
 
@@ -647,17 +647,17 @@ std::cout << "not found" << std::endl;
 }
 
 
-QList<Person> DataStorage::getPeople (const QList<db_id> &ids)
+QList<Person> DataStorage::getPeople (const QList<dbId> &ids)
 {
 	QList<Person> result;
 
-	foreach (db_id id, ids)
+	foreach (dbId id, ids)
 		result.append (getObject<Person> (id));
 
 	return result;
 }
 
-db_id DataStorage::getLaunchMethodByType (LaunchMethod::Type type)
+dbId DataStorage::getLaunchMethodByType (LaunchMethod::Type type)
 {
 	QMutexLocker lock (&dataMutex);
 	foreach (const LaunchMethod &launchMethod, launchMethods)
@@ -665,19 +665,19 @@ db_id DataStorage::getLaunchMethodByType (LaunchMethod::Type type)
 			return launchMethod.getId ();
 	lock.unlock ();
 
-	return invalid_id;
+	return invalidId;
 }
 
 // Instantiate the get method templates
-template Flight     DataStorage::getObject (db_id id);
-template Plane      DataStorage::getObject (db_id id);
-template Person     DataStorage::getObject (db_id id);
-template LaunchMethod DataStorage::getObject (db_id id);
+template Flight     DataStorage::getObject (dbId id);
+template Plane      DataStorage::getObject (dbId id);
+template Person     DataStorage::getObject (dbId id);
+template LaunchMethod DataStorage::getObject (dbId id);
 
-template Flight     *DataStorage::getNewObject (db_id id);
-template Plane      *DataStorage::getNewObject (db_id id);
-template Person     *DataStorage::getNewObject (db_id id);
-template LaunchMethod *DataStorage::getNewObject (db_id id);
+template Flight     *DataStorage::getNewObject (dbId id);
+template Plane      *DataStorage::getNewObject (dbId id);
+template Person     *DataStorage::getNewObject (dbId id);
+template LaunchMethod *DataStorage::getNewObject (dbId id);
 
 
 
@@ -707,7 +707,7 @@ template<> QList<LaunchMethod> *DataStorage::objectList<LaunchMethod> () { retur
 //  - when a database operation fails (due to a lost connection) after the
 //    query has been executed, the cache may be inconsistent.
 //  - should success and message be a method of monitor?
-template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const T &object, db_id *id, bool *success, QString *message)
+template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const T &object, dbId *id, bool *success, QString *message)
 {
 	(void)monitor;
 	// TODO addObject duplicate check?
@@ -719,7 +719,7 @@ template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const 
 	// Write the object by using the database method
 	QMutexLocker dbLock (&databaseMutex);
 	// TODO error check
-	db_id newId=db.createObject (copy);
+	dbId newId=db.createObject (copy);
 	dbLock.unlock ();
 
 	// TODO when can we cancel? When the object has been added, the cache
@@ -728,7 +728,7 @@ template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const 
 
 
 	// If adding succeeded, add the object to the cache and emit a event
-	if (id_valid (newId))
+	if (idValid (newId))
 	{
 		objectAdded (copy);
 		emit dbEvent (DbEvent (DbEvent::typeAdd, DbEvent::getTable<T> (), newId));
@@ -736,12 +736,12 @@ template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const 
 
 	// Task completed
 	if (id) *id=newId;
-	if (success) *success=(id_valid (newId));
+	if (success) *success=(idValid (newId));
 	if (message) *message=db.lastError ().text ();
 	return true;
 }
 
-template<class T> bool DataStorage::deleteObject (OperationMonitor *monitor, db_id id, bool *success, QString *message)
+template<class T> bool DataStorage::deleteObject (OperationMonitor *monitor, dbId id, bool *success, QString *message)
 {
 	(void)monitor;
 
@@ -775,11 +775,11 @@ template<class T> bool DataStorage::updateObject (OperationMonitor *monitor, con
 {
 	(void)monitor;
 
-	if (id_invalid (object.getId ())) return true; // TODO signal error
+	if (idInvalid (object.getId ())) return true; // TODO signal error
 	T copy (object);
 
 	QMutexLocker dbLock (&databaseMutex);
-	db_id result=db.updateObject (copy);
+	dbId result=db.updateObject (copy);
 	dbLock.unlock ();
 
 
@@ -787,10 +787,10 @@ template<class T> bool DataStorage::updateObject (OperationMonitor *monitor, con
 	// must be updated.
 	//	if (monitor->isCanceled ()) return false;
 
-	if (success) *success=id_valid (result);
+	if (success) *success=idValid (result);
 	if (message) *message=db.lastError ().text ();
 
-	if (id_valid (result))
+	if (idValid (result))
 	{
 		objectUpdated (copy);
 		emit dbEvent (DbEvent (DbEvent::typeChange, DbEvent::getTable<T> (), object.getId ()));
@@ -802,20 +802,20 @@ template<class T> bool DataStorage::updateObject (OperationMonitor *monitor, con
 
 
 // Instantiate the write method templates
-template bool DataStorage::addObject (OperationMonitor *monitor, const Flight       &, db_id *id, bool *success, QString *message);
-template bool DataStorage::addObject (OperationMonitor *monitor, const Plane        &, db_id *id, bool *success, QString *message);
-template bool DataStorage::addObject (OperationMonitor *monitor, const Person       &, db_id *id, bool *success, QString *message);
-template bool DataStorage::addObject (OperationMonitor *monitor, const LaunchMethod &, db_id *id, bool *success, QString *message);
+template bool DataStorage::addObject (OperationMonitor *monitor, const Flight       &, dbId *id, bool *success, QString *message);
+template bool DataStorage::addObject (OperationMonitor *monitor, const Plane        &, dbId *id, bool *success, QString *message);
+template bool DataStorage::addObject (OperationMonitor *monitor, const Person       &, dbId *id, bool *success, QString *message);
+template bool DataStorage::addObject (OperationMonitor *monitor, const LaunchMethod &, dbId *id, bool *success, QString *message);
 
 template bool DataStorage::updateObject (OperationMonitor *monitor, const Flight       &, bool *success, QString *message);
 template bool DataStorage::updateObject (OperationMonitor *monitor, const Plane        &, bool *success, QString *message);
 template bool DataStorage::updateObject (OperationMonitor *monitor, const Person       &, bool *success, QString *message);
 template bool DataStorage::updateObject (OperationMonitor *monitor, const LaunchMethod &, bool *success, QString *message);
 
-template bool DataStorage::deleteObject<Flight      > (OperationMonitor *monitor, db_id id, bool *success, QString *message);
-template bool DataStorage::deleteObject<Plane       > (OperationMonitor *monitor, db_id id, bool *success, QString *message);
-template bool DataStorage::deleteObject<Person      > (OperationMonitor *monitor, db_id id, bool *success, QString *message);
-template bool DataStorage::deleteObject<LaunchMethod> (OperationMonitor *monitor, db_id id, bool *success, QString *message);
+template bool DataStorage::deleteObject<Flight      > (OperationMonitor *monitor, dbId id, bool *success, QString *message);
+template bool DataStorage::deleteObject<Plane       > (OperationMonitor *monitor, dbId id, bool *success, QString *message);
+template bool DataStorage::deleteObject<Person      > (OperationMonitor *monitor, dbId id, bool *success, QString *message);
+template bool DataStorage::deleteObject<LaunchMethod> (OperationMonitor *monitor, dbId id, bool *success, QString *message);
 
 
 // **********************
@@ -832,7 +832,7 @@ template<class T> void DataStorage::objectAdded (const T &object)
 }
 
 // This template is specialized for T==Flight
-template<class T> void DataStorage::objectDeleted (db_id id)
+template<class T> void DataStorage::objectDeleted (dbId id)
 {
 	// Remove the object from the cache
 	QList<T> *list=objectList<T> ();
@@ -873,7 +873,7 @@ template<> void DataStorage::objectAdded<Flight> (const Flight &flight)
 	//	we're not interested in this flight
 }
 
-template<> void DataStorage::objectDeleted<Flight> (db_id id)
+template<> void DataStorage::objectDeleted<Flight> (dbId id)
 {
 	// If any of the lists contain this flight, remove it
 	preparedFlights->removeById (id);
@@ -926,9 +926,9 @@ template void DataStorage::objectAdded<Plane       > (const Plane        &object
 template void DataStorage::objectAdded<Person      > (const Person       &object);
 template void DataStorage::objectAdded<LaunchMethod> (const LaunchMethod &object);
 
-template void DataStorage::objectDeleted<Plane       > (db_id id);
-template void DataStorage::objectDeleted<Person      > (db_id id);
-template void DataStorage::objectDeleted<LaunchMethod> (db_id id);
+template void DataStorage::objectDeleted<Plane       > (dbId id);
+template void DataStorage::objectDeleted<Person      > (dbId id);
+template void DataStorage::objectDeleted<LaunchMethod> (dbId id);
 
 template void DataStorage::objectUpdated<Plane       > (const Plane        &plane );
 template void DataStorage::objectUpdated<Person      > (const Person       &flight);
@@ -946,9 +946,9 @@ template void DataStorage::objectUpdated<LaunchMethod> (const LaunchMethod &flig
  * @param result if not NULL, the result of the operation is written here
  * @return whether the operation completed, NOT the result of the operation!
  */
-template<class T> bool DataStorage::objectUsed (OperationMonitor *monitor, db_id id, bool *result)
+template<class T> bool DataStorage::objectUsed (OperationMonitor *monitor, dbId id, bool *result)
 {
-	if (id_invalid (id)) return false; // TODO signal error
+	if (idInvalid (id)) return false; // TODO signal error
 
 	QMutexLocker dbLock (&databaseMutex);
 	// FIXME
@@ -962,9 +962,9 @@ template<class T> bool DataStorage::objectUsed (OperationMonitor *monitor, db_id
 }
 
 // Instantiate the query methods
-template bool DataStorage::objectUsed<Plane       > (OperationMonitor *monitor, db_id id, bool *result);
-template bool DataStorage::objectUsed<Person      > (OperationMonitor *monitor, db_id id, bool *result);
-template bool DataStorage::objectUsed<LaunchMethod> (OperationMonitor *monitor, db_id id, bool *result);
+template bool DataStorage::objectUsed<Plane       > (OperationMonitor *monitor, dbId id, bool *result);
+template bool DataStorage::objectUsed<Person      > (OperationMonitor *monitor, dbId id, bool *result);
+template bool DataStorage::objectUsed<LaunchMethod> (OperationMonitor *monitor, dbId id, bool *result);
 
 
 
@@ -974,7 +974,7 @@ template bool DataStorage::objectUsed<LaunchMethod> (OperationMonitor *monitor, 
  * @return a newly allocated copy of the object (the caller takes ownership),
  *         or NULL if id is invalid or not found
  */
-template<class T> T* DataStorage::getNewObject (db_id id)
+template<class T> T* DataStorage::getNewObject (dbId id)
 {
 	try
 	{
@@ -987,7 +987,7 @@ template<class T> T* DataStorage::getNewObject (db_id id)
 }
 
 
-db_id DataStorage::planeFlying (db_id id)
+dbId DataStorage::planeFlying (dbId id)
 {
 	QMutexLocker lock (&dataMutex);
 	// Only use the flights of today
@@ -997,10 +997,10 @@ db_id DataStorage::planeFlying (db_id id)
 			(flight.isTowplaneFlying () && flight.towplaneId==id))
 			return flight.getId ();
 
-	return invalid_id;
+	return invalidId;
 }
 
-db_id DataStorage::personFlying (db_id id)
+dbId DataStorage::personFlying (dbId id)
 {
 	QMutexLocker lock (&dataMutex);
 	// Only use the flights of today
@@ -1011,7 +1011,7 @@ db_id DataStorage::personFlying (db_id id)
 			(flight.isTowplaneFlying () && flight.towpilotId ==id))
 			return flight.getId ();
 
-	return invalid_id;
+	return invalidId;
 }
 
 // ***************************

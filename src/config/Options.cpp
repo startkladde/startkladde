@@ -364,7 +364,7 @@ bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugi
 			if (db && key=="startart")
 			{
 				LaunchMethod sa=LaunchMethod::parseConfigLine (value);
-				if (id_invalid (sa.getId ()))
+				if (idInvalid (sa.getId ()))
 					std::cerr << "Error: launch method with invalid ID " << sa.getId () << " specified." << std::endl;
 				else
 					configuredLaunchMethods.append (sa);

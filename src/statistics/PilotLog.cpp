@@ -119,7 +119,7 @@ PilotLog::~PilotLog ()
  * @param mode
  * @return
  */
-PilotLog *PilotLog::createNew (db_id personId, const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode)
+PilotLog *PilotLog::createNew (dbId personId, const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode)
 {
 	QList<const Flight *> interestingFlights;
 
@@ -158,7 +158,7 @@ PilotLog *PilotLog::createNew (db_id personId, const QList<Flight> &flights, Dat
  */
 PilotLog *PilotLog::createNew (const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode)
 {
-	QSet<db_id> personIdSet;
+	QSet<dbId> personIdSet;
 
 	// Determine all people wo have flights
 	foreach (const Flight &flight, flights)
@@ -170,12 +170,12 @@ PilotLog *PilotLog::createNew (const QList<Flight> &flights, DataStorage &dataSt
 		}
 	}
 
-	QList<db_id> personIds=personIdSet.toList ();
+	QList<dbId> personIds=personIdSet.toList ();
 	personIds.removeAll (0);
 
 	// Make a list of the people and sort it
 	QList<Person> people;
-	foreach (const db_id &id, personIds)
+	foreach (const dbId &id, personIds)
 	{
 		try
 		{

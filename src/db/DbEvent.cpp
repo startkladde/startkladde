@@ -8,14 +8,14 @@ class Flight;
 class Person;
 class LaunchMethod;
 
-DbEvent::DbEvent (Type type, Table table, db_id id):
+DbEvent::DbEvent (Type type, Table table, dbId id):
 	type (type), table (table), id (id)
 {
 }
 
 // TODO remove?
 DbEvent::DbEvent ():
-	type (DbEvent::typeNone), table (DbEvent::tableNone), id (invalid_id)
+	type (DbEvent::typeNone), table (DbEvent::tableNone), id (invalidId)
 {
 }
 

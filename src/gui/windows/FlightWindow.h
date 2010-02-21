@@ -156,8 +156,8 @@ class FlightWindow: public QDialog
 	protected:
 		// Input field data
 		int fillNames (QStringList (DataStorage::*fullListMethod)(), QStringList (DataStorage::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget);
-		db_id fillFirstNames  (bool active, QComboBox *target, const QString &lastName, bool preserveTarget);
-		db_id fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget);
+		dbId fillFirstNames  (bool active, QComboBox *target, const QString &lastName, bool preserveTarget);
+		dbId fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget);
 
 
 		// *** Input values
@@ -173,7 +173,7 @@ class FlightWindow: public QDialog
 		QString    getCurrentCopilotFirstName             () { return ui.copilotFirstNameInput->currentText (); }
 		//
 		Flight::Mode getCurrentFlightMode                   () { return (Flight::Mode)ui.flightModeInput->currentItemData ().toInt(); }
-		db_id      getCurrentLaunchMethodId               () { return ui.launchMethodInput->currentItemData ().toInt(); }
+		dbId      getCurrentLaunchMethodId               () { return ui.launchMethodInput->currentItemData ().toInt(); }
 		//
 		QString    getCurrentTowplaneRegistration         () { return ui.towplaneRegistrationInput->currentText (); }
 		QString    getCurrentTowpilotLastName             () { return ui.towpilotLastNameInput->currentText(); }
@@ -218,7 +218,7 @@ class FlightWindow: public QDialog
 		 *        type, or none is selected
 		 */
 		LaunchMethod getCurrentLaunchMethod ();
-		bool isCurrentLaunchMethodValid () { return id_valid (getCurrentLaunchMethodId ()); }
+		bool isCurrentLaunchMethodValid () { return idValid (getCurrentLaunchMethodId ()); }
 
 		bool currentStartsHere   () {       return isFlightModeActive    () && Flight::departsHere (getCurrentFlightMode ()); }
 		bool currentLandsHere    () {       return isFlightModeActive    () && Flight::landsHere (getCurrentFlightMode ()); }
@@ -265,17 +265,17 @@ class FlightWindow: public QDialog
 
 
 		// Flight reading/writing
-		void personToFields (db_id id, SkComboBox *lastNameInput, SkComboBox *firstNameInput, QString incompleteLastName, QString incompleteFirstName);
-		void planeToFields (db_id id, SkComboBox *registrationInput, SkLabel *typeLabel);
+		void personToFields (dbId id, SkComboBox *lastNameInput, SkComboBox *firstNameInput, QString incompleteLastName, QString incompleteFirstName);
+		void planeToFields (dbId id, SkComboBox *registrationInput, SkLabel *typeLabel);
 		void flightToFields (const Flight &flight, bool repeat);
 
 		Flight determineFlight (bool launchNow) throw (AbortedException);
 		Flight determineFlightBasic () throw ();
 		void determineFlightPlanes (Flight &flight) throw (AbortedException);
 		void determineFlightPeople (Flight &flight, const LaunchMethod *launchMethod) throw (AbortedException);
-		db_id determinePlane (QString registration, QString description, QWidget *widget) throw (AbortedException);
-		db_id determinePerson (bool active, QString firstName, QString lastName, QString description, bool required, QString &incompleteFirstName, QString &incompleteLastName, db_id originalId, QWidget *widget) throw (AbortedException);
-		db_id createNewPerson (QString lastName, QString firstName) throw (AbortedException);
+		dbId determinePlane (QString registration, QString description, QWidget *widget) throw (AbortedException);
+		dbId determinePerson (bool active, QString firstName, QString lastName, QString description, bool required, QString &incompleteFirstName, QString &incompleteLastName, dbId originalId, QWidget *widget) throw (AbortedException);
+		dbId createNewPerson (QString lastName, QString firstName) throw (AbortedException);
 		void checkFlightPhase1 (const Flight &flight, bool launchNow) throw (AbortedException);
 		void checkFlightPhase2 (const Flight &flight, bool launchNow, const Plane *plane, const Plane *towplane, const LaunchMethod *launchMethod) throw (AbortedException);
 		void checkFlightPhase3 (const Flight &flight, bool launchNow, const Plane *plane, const Person *pilot, const Person *copilot, const Person *towpilot) throw (AbortedException);
@@ -442,9 +442,9 @@ class FlightWindow: public QDialog
 		// preselection only (originalX instead of selectedX) and have
 		// determineFlightBasic read the values from the database if they are
 		// uniqe.
-		db_id originalFlightId;
-		db_id selectedPlane, selectedTowplane;
-		db_id selectedPilot, selectedCopilot, selectedTowpilot;
+		dbId originalFlightId;
+		dbId selectedPlane, selectedTowplane;
+		dbId selectedPilot, selectedCopilot, selectedTowpilot;
 };
 
 #endif

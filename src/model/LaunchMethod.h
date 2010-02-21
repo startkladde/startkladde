@@ -25,7 +25,7 @@ class LaunchMethod: public Entity
 
 		// *** Construction
 		LaunchMethod ();
-		LaunchMethod (db_id id);
+		LaunchMethod (dbId id);
 		static LaunchMethod parseConfigLine (QString line);
 
 

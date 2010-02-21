@@ -68,9 +68,9 @@ template<class TYPE> class EntitySelectWindow:public selector_base
 		EntitySelectWindow (QWidget *parent, const char *name=NULL, Qt::WindowFlags f=0);
 		~EntitySelectWindow ();
 		void test ();
-		virtual selection_result do_selection (QString, QString, QList<TYPE> &, db_id preselected=invalid_id);
+		virtual selection_result do_selection (QString, QString, QList<TYPE> &, dbId preselected=invalidId);
 		static QString selection_result_text (selection_result sr);
-		db_id get_result_id ();
+		dbId get_result_id ();
 		selector_helper *helper () { return _helper; }
 
 	private:
@@ -80,7 +80,7 @@ template<class TYPE> class EntitySelectWindow:public selector_base
 		QPushButton *but_cancel;
 		SkTreeWidgetItem *new_item;
 		SkTreeWidgetItem *unknown_item;
-		db_id result_id;
+		dbId result_id;
 
 	private:
 		int setup_columns ();
@@ -102,7 +102,7 @@ template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *pare
 {
 	// Initialize variables
 	_helper=new selector_helper (this);
-	result_id=invalid_id;
+	result_id=invalidId;
 
 	// Create the controls
 	text=new QLabel ("", this, "text");
@@ -177,7 +177,7 @@ template<class TYPE> QString EntitySelectWindow<TYPE>::selection_result_text (se
 	}
 }
 
-template<class TYPE> db_id EntitySelectWindow<TYPE>::get_result_id ()
+template<class TYPE> dbId EntitySelectWindow<TYPE>::get_result_id ()
 	/*
 	 * Gets the selection result.
 	 * Return value:
@@ -229,7 +229,7 @@ template<class TYPE> void EntitySelectWindow<TYPE>::set_entry (SkTreeWidgetItem 
 	}
 }
 
-template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QList<TYPE> &entityList, db_id preselected)
+template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QList<TYPE> &entityList, dbId preselected)
 	/*
 	 * Displays the selector.
 	 * Parameters:
@@ -261,7 +261,7 @@ template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QS
 		last_item=new SkTreeWidgetItem (list, last_item);
 		last_item->id=it.getId ();
 		set_entry (last_item, it, num_columns);
-		if (!id_invalid (preselected) && it.getId ()==preselected)
+		if (!idInvalid (preselected) && it.getId ()==preselected)
 			list->setCurrentItem (last_item);
 	}
 

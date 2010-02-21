@@ -91,7 +91,7 @@ class MainWindow: public QMainWindow
 		void setDisplayDateCurrent (bool force) { setDisplayDate (QDate::currentDate (), force); }
 		void updateFlight (const Flight &flight);
 
-		db_id currentFlightId (bool *isTowflight=NULL);
+		dbId currentFlightId (bool *isTowflight=NULL);
 		void sortCustom ();
 		void sortByColumn (int column);
 
@@ -184,9 +184,9 @@ class MainWindow: public QMainWindow
 		void flightTable_horizontalHeader_sectionClicked (int index) { sortByColumn (index); }
 
 		// Flight manipulation
-		void startFlight (db_id id);
-		void landFlight (db_id id);
-		void landTowflight (db_id id);
+		void startFlight (dbId id);
+		void landFlight (dbId id);
+		void landTowflight (dbId id);
 
 		// Plugins
 		void weatherWidget_doubleClicked ();

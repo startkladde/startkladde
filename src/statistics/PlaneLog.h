@@ -53,7 +53,7 @@ class PlaneLog: public QAbstractTableModel
 		};
 
 	public:
-		static PlaneLog *createNew (db_id planeId, const QList<Flight> &flights, DataStorage &dataStorage);
+		static PlaneLog *createNew (dbId planeId, const QList<Flight> &flights, DataStorage &dataStorage);
 		static PlaneLog *createNew (const QList<Flight> &flights, DataStorage &dataStorage);
 
 		// QAbstractTableModel methods

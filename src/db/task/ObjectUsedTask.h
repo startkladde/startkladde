@@ -11,7 +11,7 @@
 template<class T> class ObjectUsedTask: public Task
 {
 	public:
-		ObjectUsedTask (DataStorage &dataStorage, db_id id):
+		ObjectUsedTask (DataStorage &dataStorage, dbId id):
 			dataStorage (dataStorage), id (id), result (true)
 		{
 		}
@@ -30,7 +30,7 @@ template<class T> class ObjectUsedTask: public Task
 
 	private:
 		DataStorage &dataStorage;
-		db_id id;
+		dbId id;
 		bool result;
 };
 

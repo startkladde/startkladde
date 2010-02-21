@@ -55,8 +55,8 @@ class DataStorage: public QObject
 		class NotFoundException: public std::exception
 		{
 			public:
-				NotFoundException (db_id id): id (id) {}
-				db_id id;
+				NotFoundException (dbId id): id (id) {}
+				dbId id;
 		};
 
 		friend class DataStorageMonitor;
@@ -102,43 +102,43 @@ class DataStorage: public QObject
 
 		// *** Hash Access
 		// TODO cache, sort, hashes
-		db_id getPlaneIdByRegistration (const QString &registration);
-		QList<db_id> getPersonIdsByName (const QString &firstName, const QString &lastName);
-		db_id getUniquePersonIdByName (const QString &firstName, const QString &lastName);
-		QList<db_id> getPersonIdsByFirstName (const QString &firstName);
-		QList<db_id> getPersonIdsByLastName (const QString &lastName);
-		QList<Person> getPeople (const QList<db_id> &ids);
-		db_id getLaunchMethodByType (LaunchMethod::Type type);
+		dbId getPlaneIdByRegistration (const QString &registration);
+		QList<dbId> getPersonIdsByName (const QString &firstName, const QString &lastName);
+		dbId getUniquePersonIdByName (const QString &firstName, const QString &lastName);
+		QList<dbId> getPersonIdsByFirstName (const QString &firstName);
+		QList<dbId> getPersonIdsByLastName (const QString &lastName);
+		QList<Person> getPeople (const QList<dbId> &ids);
+		dbId getLaunchMethodByType (LaunchMethod::Type type);
 
-		db_id planeFlying (db_id id);
-		db_id personFlying (db_id id);
+		dbId planeFlying (dbId id);
+		dbId personFlying (dbId id);
 
 		// *** Object getting
-		template<class T> T getObject (db_id id);
-		template<class T> T* getNewObject (db_id id);
-		template<class T> bool objectExists (db_id id);
+		template<class T> T getObject (dbId id);
+		template<class T> T* getNewObject (dbId id);
+		template<class T> bool objectExists (dbId id);
 		// TODO the cast should be in the non-const method
 		// TODO: make a copy of the list (synchronized) because the lists have to be locked for concurrent access
 		template<class T> const QList<T> getObjects () const { return *(const_cast<DataStorage *> (this))->objectList<T> (); }
 
 		// *** Database writing
-		template<class T> bool addObject (OperationMonitor *monitor, const T &object, db_id *id, bool *success, QString *message);
+		template<class T> bool addObject (OperationMonitor *monitor, const T &object, dbId *id, bool *success, QString *message);
 		template<class T> bool updateObject (OperationMonitor *monitor, const T &object, bool *success, QString *message);
-		template<class T> bool deleteObject (OperationMonitor *monitor, db_id id, bool *success, QString *message);
+		template<class T> bool deleteObject (OperationMonitor *monitor, dbId id, bool *success, QString *message);
 
 		// *** Database change handling
 		template<class T> void objectAdded (const T &object);
-		template<class T> void objectDeleted (db_id id);
+		template<class T> void objectDeleted (dbId id);
 		template<class T> void objectUpdated (const T &object);
 
 
 		// *** Database querying
-		template<class T> bool objectUsed (OperationMonitor *monitor, db_id id, bool *result);
+		template<class T> bool objectUsed (OperationMonitor *monitor, dbId id, bool *result);
 
 
 		// *** Refreshing view
-		template<class T> void refreshViews () { emit dbEvent (DbEvent (DbEvent::typeRefresh, DbEvent::getTable<T> (), invalid_id)); }
-		void refreshAllViews () { emit DbEvent (DbEvent::typeRefresh, DbEvent::tableAll, invalid_id); }
+		template<class T> void refreshViews () { emit dbEvent (DbEvent (DbEvent::typeRefresh, DbEvent::getTable<T> (), invalidId)); }
+		void refreshAllViews () { emit DbEvent (DbEvent::typeRefresh, DbEvent::tableAll, invalidId); }
 
 		// *** Test methods
 		bool sleep (OperationMonitor &monitor, int seconds);

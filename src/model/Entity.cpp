@@ -9,7 +9,7 @@ Entity::Entity ()
 	id=0;
 }
 
-Entity::Entity (db_id id)
+Entity::Entity (dbId id)
 {
 	this->id=id;
 }

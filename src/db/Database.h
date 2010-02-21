@@ -114,10 +114,10 @@ class Database
         // Template functions, instantiated for the relevant classes
         template<class T> QList<T> getObjects (QString condition="", QList<QVariant> conditionValues=QList<QVariant> ());
         template<class T> int countObjects ();
-        template<class T> bool objectExists (db_id id);
-        template<class T> T getObject (db_id id);
-        template<class T> int deleteObject (db_id id);
-        template<class T> db_id createObject (T &object);
+        template<class T> bool objectExists (dbId id);
+        template<class T> T getObject (dbId id);
+        template<class T> int deleteObject (dbId id);
+        template<class T> dbId createObject (T &object);
         template<class T> int updateObject (const T &object);
 
         // *** Very specific

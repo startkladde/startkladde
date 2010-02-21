@@ -341,7 +341,7 @@ class OldDatabase:public QObject
 		int modify_column (const QString &table, const DbColumn &column);
 
 		// Administration
-		void merge_person (db_id correct_id, db_id wrong_id) throw (ex_not_connected, ex_parameter_error, ex_query_failed, ex_operation_failed);
+		void merge_person (dbId correct_id, dbId wrong_id) throw (ex_not_connected, ex_parameter_error, ex_query_failed, ex_operation_failed);
 
 		// Importing
 		static void remove_editable_persons (QList<Person *> persons);
@@ -349,10 +349,10 @@ class OldDatabase:public QObject
 		void import_check (const Person &person) throw (import_message);
 		void import_check (const QList<Person *> &persons, QList<import_message> &notes);
 
-		db_id import_identify (const Person &p, QList<import_message> *notes=NULL) throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message);
+		dbId import_identify (const Person &p, QList<import_message> *notes=NULL) throw (ex_not_connected, ex_legacy_error, ex_operation_failed, import_message);
 		void import_identify (QList<Person *> &persons, QList<import_message> &notes) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
 
-		db_id import_person (const Person &person) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
+		dbId import_person (const Person &person) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
 		void import_persons (const QList<Person *> &persons) throw (ex_not_connected, ex_legacy_error, ex_operation_failed);
 
 		// Editable
@@ -364,28 +364,28 @@ class OldDatabase:public QObject
 		// Delete/write/check existance/get/count/test/list
 
 		// Template functions, specialized in implementation
-		template<class T> db_id writeObject (T *);
-		template<class T> int getObject (T *, db_id);
-		template<class T> int deleteObject (db_id);
-		template<class T> bool objectUsed (db_id);
+		template<class T> dbId writeObject (T *);
+		template<class T> int getObject (T *, dbId);
+		template<class T> int deleteObject (dbId);
+		template<class T> bool objectUsed (dbId);
 
 
 		// TODO make templates
-		int flight_exists (db_id id);
-		int plane_exists (db_id id);
-		int person_exists (db_id id);
+		int flight_exists (dbId id);
+		int plane_exists (dbId id);
+		int person_exists (dbId id);
 		long long int count_flights (Condition c);
 		long long int count_planes (Condition c);
 		long long int count_persons (Condition c);
 		long long int count_flights_current (QDate &date);
 		long long int count_flights_today (QDate &date);
-		db_id person_flying (db_id id, Time *given_time);
-		db_id plane_flying (db_id id, Time *given_time);
-		bool person_has_flight (db_id id);
-		bool person_has_user (db_id id);
-		bool plane_has_flight (db_id id);
-		bool person_used (db_id id);
-		bool plane_used (db_id id);
+		dbId person_flying (dbId id, Time *given_time);
+		dbId plane_flying (dbId id, Time *given_time);
+		bool person_has_flight (dbId id);
+		bool person_has_user (dbId id);
+		bool plane_has_flight (dbId id);
+		bool person_used (dbId id);
+		bool plane_used (dbId id);
 		int list_flights (QList<Flight *> &flights, Condition c);
 		int list_planes (QList<Plane *> &planes, Condition c);
 		int list_persons (QList<Person *> &persons, Condition c);
@@ -419,12 +419,12 @@ class OldDatabase:public QObject
 
 		// Startarten
 		bool add_startart_to_list (LaunchMethod *sa);
-		int get_startart (LaunchMethod *sa, db_id id);
+		int get_startart (LaunchMethod *sa, dbId id);
 		int get_startart_by_type (LaunchMethod *startart, LaunchMethod::Type type);
-		db_id get_startart_id_by_type (LaunchMethod::Type type);
+		dbId get_startart_id_by_type (LaunchMethod::Type type);
 		int count_startart ();
 
-		int get_towplane (Plane *towplane, const LaunchMethod &startart, const db_id towplane_id);
+		int get_towplane (Plane *towplane, const LaunchMethod &startart, const dbId towplane_id);
 
 		bool display_queries;
 		std::ostream &debug_stream;
@@ -488,9 +488,9 @@ class OldDatabase:public QObject
 		QString make_condition (Condition c);
 
 		// Direct access helper functions
-		void object_copy (const QString &source, const QString &target, db_id id) throw (ex_legacy_error);
-		void object_delete_from (const QString &table, const db_id &id) throw (ex_legacy_error);
-		bool object_exists_in (const QString &table, const db_id &id) throw (ex_legacy_error);
+		void object_copy (const QString &source, const QString &target, dbId id) throw (ex_legacy_error);
+		void object_delete_from (const QString &table, const dbId &id) throw (ex_legacy_error);
+		bool object_exists_in (const QString &table, const dbId &id) throw (ex_legacy_error);
 
 
 		// Result processing
@@ -498,13 +498,13 @@ class OldDatabase:public QObject
 		int result_to_num_list (QList<long long int> &num_list, MYSQL_RES *result, const char *field_name);
 		int result_to_string_list (QStringList &strings, MYSQL_RES *result, const char *field_name);
 		int result_to_string_list (QStringList &strings, MYSQL_RES *result, const unsigned int field_num);
-		int result_to_id_list (QList<db_id> &ids, MYSQL_RES *result);
+		int result_to_id_list (QList<dbId> &ids, MYSQL_RES *result);
 		char *named_field_value (MYSQL_ROW &row, int num_fields, MYSQL_FIELD *fields, const char *name);
 		const char *field_value (const MYSQL_ROW &row, const unsigned int num_fields, MYSQL_FIELD *fields, const unsigned int num);
 
 		// Listing
-		int list_id_data (db_object_type type, QList<db_id> &ids, QStringList &data_columns, Condition c);
-		int list_ids (db_object_type type, QList<db_id> &ids, Condition c);
+		int list_id_data (db_object_type type, QList<dbId> &ids, QStringList &data_columns, Condition c);
+		int list_ids (db_object_type type, QList<dbId> &ids, Condition c);
 		// TODO: custom query only supported for strings
 		int list_strings (db_object_type type, QString field_name, QStringList &strings, Condition c, QString custom_query="");
 		int list_objects (db_object_type type, QList<void *> &objects, Condition c);
@@ -514,22 +514,22 @@ class OldDatabase:public QObject
 		// Existance
 		int num_results_query (QString query);
 		int rows_exist_query (QString query);
-		int get_object (db_object_type type, void *object, db_id id);
-		int object_exists (db_object_type type, db_id id);
+		int get_object (db_object_type type, void *object, dbId id);
+		int object_exists (db_object_type type, dbId id);
 
 	// Editable
 	void make_editable (db_object_type type, int id, bool editable) throw (ex_legacy_error, ex_operation_failed);
 
 		// Writing, deleting
-		db_id write_object (db_object_type type, void *object);
-		int delete_object (db_object_type otype, db_id id);
+		dbId write_object (db_object_type type, void *object);
+		int delete_object (db_object_type otype, dbId id);
 
 		// Counting
 		long long int count_objects (db_object_type type, Condition c);
 
 		// Frontends
-		db_id object_flying (db_object_type otype, db_id id, Time *given_time);
-		bool object_has_flight (db_object_type otype, db_id id);
+		dbId object_flying (db_object_type otype, dbId id, Time *given_time);
+		bool object_has_flight (db_object_type otype, dbId id);
 
 		// Display alias
 		// This is used for display instead of the next real query, if

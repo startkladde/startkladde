@@ -90,12 +90,12 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DataStorag
 	dataStorage (dataStorage),
 	mode (mode),
 	labelHeightsSet (false),
-	originalFlightId (invalid_id),
-	selectedPlane (invalid_id),
-	selectedTowplane (invalid_id),
-	selectedPilot (invalid_id),
-	selectedCopilot (invalid_id),
-	selectedTowpilot (invalid_id)
+	originalFlightId (invalidId),
+	selectedPlane (invalidId),
+	selectedTowplane (invalidId),
+	selectedPilot (invalidId),
+	selectedCopilot (invalidId),
+	selectedTowpilot (invalidId)
 {
 	// *** Setup the window
 	ui.setupUi (this);
@@ -251,7 +251,7 @@ void FlightWindow::fillData ()
 
 	// *** Launch methods
 	QList<LaunchMethod> launchMethods=dataStorage.getLaunchMethods ();
-	ui.launchMethodInput->addItem ("-", invalid_id);
+	ui.launchMethodInput->addItem ("-", invalidId);
 	for (int i=0; i<launchMethods.size (); ++i)
 		ui.launchMethodInput->addItem (launchMethods.at (i).nameWithShortcut (), launchMethods.at (i).getId ());
 
@@ -431,9 +431,9 @@ int FlightWindow::fillNames (QStringList (DataStorage::*fullListMethod)(), QStri
 	return nameList.size ();
 }
 
-db_id FlightWindow::fillFirstNames  (bool active, QComboBox *target, const QString &lastName, bool preserveTarget)
+dbId FlightWindow::fillFirstNames  (bool active, QComboBox *target, const QString &lastName, bool preserveTarget)
 {
-	if (!active) return invalid_id;
+	if (!active) return invalidId;
 
 	fillNames (
 		&DataStorage::getPersonFirstNames,
@@ -445,9 +445,9 @@ db_id FlightWindow::fillFirstNames  (bool active, QComboBox *target, const QStri
 	return dataStorage.getUniquePersonIdByName (target->currentText (), lastName);
 }
 
-db_id FlightWindow::fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget)
+dbId FlightWindow::fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget)
 {
-	if (!active) return invalid_id;
+	if (!active) return invalidId;
 
 	fillNames (
 		&DataStorage::getPersonLastNames,
@@ -605,13 +605,13 @@ QWidget *FlightWindow::getErrorWidget (FlightError error)
 // ** Flight reading/writing **
 // ****************************
 
-void FlightWindow::personToFields (db_id id, SkComboBox *lastNameInput, SkComboBox *firstNameInput, QString incompleteLastName, QString incompleteFirstName)
+void FlightWindow::personToFields (dbId id, SkComboBox *lastNameInput, SkComboBox *firstNameInput, QString incompleteLastName, QString incompleteFirstName)
 {
 	// Note that filling the name parts is done here rather than from
 	// updateSetup because that function is called on every field change.
 	bool ok=false;
 
-	if (id_valid (id))
+	if (idValid (id))
 	{
 		try
 		{
@@ -633,11 +633,11 @@ void FlightWindow::personToFields (db_id id, SkComboBox *lastNameInput, SkComboB
 	fillLastNames  (true, lastNameInput , firstNameInput->currentText (), true);
 }
 
-void FlightWindow::planeToFields (db_id id, SkComboBox *registrationInput, SkLabel *typeLabel)
+void FlightWindow::planeToFields (dbId id, SkComboBox *registrationInput, SkLabel *typeLabel)
 {
 	// Note that filling the plane type is done here rather than from
 	// updateSetup because that function is called on every field change.
-	if (id_valid (id))
+	if (idValid (id))
 	{
 		try
 		{
@@ -680,7 +680,7 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 
 	try
 	{
-		if (id_valid (flight.launchMethodId))
+		if (idValid (flight.launchMethodId))
 			if (dataStorage.getObject<LaunchMethod> (flight.launchMethodId).type==LaunchMethod::typeSelf)
 				copyLaunchMethod=true;
 	}
@@ -734,11 +734,11 @@ Flight FlightWindow::determineFlightBasic () throw ()
 
 	// Some of the data is taken from the stored data
 	flight.setId (originalFlightId);
-	flight.planeId     = isRegistrationActive         ()?selectedPlane   :invalid_id;
-	flight.towplaneId  = isTowplaneRegistrationActive ()?selectedTowplane:invalid_id;
-	flight.pilotId     = isPilotActive                ()?selectedPilot   :invalid_id;
-	flight.copilotId   = isCopilotActive              ()?selectedCopilot :invalid_id;
-	flight.towpilotId  = isTowpilotActive             ()?selectedTowpilot:invalid_id;
+	flight.planeId     = isRegistrationActive         ()?selectedPlane   :invalidId;
+	flight.towplaneId  = isTowplaneRegistrationActive ()?selectedTowplane:invalidId;
+	flight.pilotId     = isPilotActive                ()?selectedPilot   :invalidId;
+	flight.copilotId   = isCopilotActive              ()?selectedCopilot :invalidId;
+	flight.towpilotId  = isTowpilotActive             ()?selectedTowpilot:invalidId;
 
 
 	// Some of the data can just be copied to the flight.
@@ -802,7 +802,7 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool launchNow)
 	// Note that we use the values from the passed flight, not from the editor
 	// fields.
 
-	if ((launchNow || flight.departed) && flight.departsHere () && id_invalid (flight.launchMethodId))
+	if ((launchNow || flight.departed) && flight.departsHere () && idInvalid (flight.launchMethodId))
 		errorCheck ("Es wurde keine Startartart angegeben.",
 			ui.launchMethodInput);
 
@@ -848,7 +848,7 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, cons
 {
 	// Phase 2: plane and towplane determined, people not determined
 
-	if (id_valid (flight.planeId) && flight.planeId==flight.towplaneId)
+	if (idValid (flight.planeId) && flight.planeId==flight.towplaneId)
 		errorCheck ("Flugzeug und Schleppflugzeug sind identisch.",
 			ui.towplaneRegistrationInput);
 
@@ -894,12 +894,12 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, cons
 			.arg (plane->registration).arg (plane->type),
 			ui.towplaneRegistrationInput);
 
-	if (plane && launchNow && id_valid (dataStorage.planeFlying (plane->getId ())))
+	if (plane && launchNow && idValid (dataStorage.planeFlying (plane->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt das Flugzeug %1 noch.")
 			.arg (plane->registration),
 			ui.registrationInput);
 
-	if (towplane && launchNow && id_valid (dataStorage.planeFlying (towplane->getId ())))
+	if (towplane && launchNow && idValid (dataStorage.planeFlying (towplane->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt das Schleppflugzeug %1 noch.")
 			.arg (towplane->registration),
 			ui.registrationInput);
@@ -912,15 +912,15 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool launchNow, cons
 
 	// Pilot und Begleiter identisch
 
-	if (id_valid (flight.pilotId) && flight.pilotId==flight.copilotId)
+	if (idValid (flight.pilotId) && flight.pilotId==flight.copilotId)
 		errorCheck ("Pilot und Begleiter sind identisch.",
 			ui.pilotLastNameInput);
 
-	if (id_valid (flight.pilotId) && flight.pilotId==flight.towpilotId)
+	if (idValid (flight.pilotId) && flight.pilotId==flight.towpilotId)
 		errorCheck ("Pilot und Schlepppilot sind identisch.",
 			ui.towpilotLastNameInput);
 
-	if (id_valid (flight.copilotId) && flight.copilotId==flight.towpilotId)
+	if (idValid (flight.copilotId) && flight.copilotId==flight.towpilotId)
 		errorCheck ("Begleiter und Schlepppilot sind identisch.",
 			ui.towpilotLastNameInput);
 
@@ -933,17 +933,17 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool launchNow, cons
 		.arg (plane->registration).arg (plane->type),
 		ui.registrationInput);
 
-	if (pilot && launchNow && id_valid (dataStorage.personFlying (pilot->getId ())))
+	if (pilot && launchNow && idValid (dataStorage.personFlying (pilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Pilot %1 %2 noch.")
 			.arg (pilot->vorname).arg (pilot->nachname),
 			ui.pilotLastNameInput);
 
-	if (copilot && launchNow && id_valid (dataStorage.personFlying (copilot->getId ())))
+	if (copilot && launchNow && idValid (dataStorage.personFlying (copilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Begleiter %1 %2 noch.")
 			.arg (copilot->vorname).arg (copilot->nachname),
 			ui.copilotLastNameInput);
 
-	if (towpilot && launchNow && id_valid (dataStorage.personFlying (towpilot->getId ())))
+	if (towpilot && launchNow && idValid (dataStorage.personFlying (towpilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Schlepppilot %1 %2 noch.")
 			.arg (towpilot->vorname).arg (towpilot->nachname),
 			ui.towpilotLastNameInput);
@@ -1100,11 +1100,11 @@ Flight FlightWindow::determineFlight (bool launchNow)
  *         confirmed by the user
  * @throw AbortedException if the user aborted the selection
  */
-db_id FlightWindow::determinePlane (QString registration, QString description, QWidget *widget)
+dbId FlightWindow::determinePlane (QString registration, QString description, QWidget *widget)
 	throw (FlightWindow::AbortedException)
 {
 	std::cout << "determine " << description << ": " << registration << std::endl;
-	db_id id=invalid_id;
+	dbId id=invalidId;
 
 	// Check if no registration is given. Return true if the user confirms or
 	// false else.
@@ -1117,19 +1117,19 @@ db_id FlightWindow::determinePlane (QString registration, QString description, Q
 			throw AbortedException ();
 
 		// User accepted
-		return invalid_id;
+		return invalidId;
 	}
 
 	// Try to get the ID for the plane with the given registration. Return if
 	// found.
 	id=dataStorage.getPlaneIdByRegistration (registration);
-	if (!id_invalid (id))
+	if (!idInvalid (id))
 		return id;
 
 	// Try to get the ID for the plane with the given registration with the
 	// registration prefix prepended. Return if found and the user confirms it.
 	id=dataStorage.getPlaneIdByRegistration (Plane::defaultRegistrationPrefix ()+registration);
-	if (id_valid (id))
+	if (idValid (id))
 	{
 		QString title=QString ("%1 nicht bekannt").arg (description);
 		QString question=QString (
@@ -1150,8 +1150,8 @@ db_id FlightWindow::determinePlane (QString registration, QString description, Q
 
 	if (yesNoQuestion (this, title, question))
 	{
-		db_id result=ObjectEditorWindow<Plane>::createObject (this, dataStorage);
-		if (id_valid (result))
+		dbId result=ObjectEditorWindow<Plane>::createObject (this, dataStorage);
+		if (idValid (result))
 			return result;
 		else
 		{
@@ -1165,15 +1165,15 @@ db_id FlightWindow::determinePlane (QString registration, QString description, Q
 	throw AbortedException ();
 }
 
-db_id FlightWindow::createNewPerson (QString lastName, QString firstName)
+dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
 	throw (AbortedException)
 {
 	Person person;
 	person.vorname=firstName;
 	person.nachname=lastName;
 
-	db_id result=ObjectEditorWindow<Person>::createObject (this, dataStorage);
-	if (id_valid (result))
+	dbId result=ObjectEditorWindow<Person>::createObject (this, dataStorage);
+	if (idValid (result))
 		return result;
 	else
 		throw AbortedException ();
@@ -1208,10 +1208,10 @@ db_id FlightWindow::createNewPerson (QString lastName, QString firstName)
  *         confirmed by the user
  * @throw AbortedException if the user aborted the selection
  */
-db_id FlightWindow::determinePerson (bool active, QString firstName, QString lastName, QString description, bool required, QString &incompleteFirstName, QString &incompleteLastName, db_id originalId, QWidget *widget)
+dbId FlightWindow::determinePerson (bool active, QString firstName, QString lastName, QString description, bool required, QString &incompleteFirstName, QString &incompleteLastName, dbId originalId, QWidget *widget)
 	throw (FlightWindow::AbortedException)
 {
-	if (!active) return invalid_id;
+	if (!active) return invalidId;
 
 	/*
 	 *  This is what can happen here:
@@ -1259,7 +1259,7 @@ db_id FlightWindow::determinePerson (bool active, QString firstName, QString las
 	{
 		// Case 8: no name required
 		if (!required)
-			return invalid_id;
+			return invalidId;
 
 		// Case 7: confirm that the name is not known
 		QString title=QString ("Kein %1 angegeben").arg (description);
@@ -1271,11 +1271,11 @@ db_id FlightWindow::determinePerson (bool active, QString firstName, QString las
 			throw AbortedException ();
 		}
 		else
-			return invalid_id;
+			return invalidId;
 	}
 
 	// Get a list of candidates, using all name information available.
-	QList<db_id> candidates;
+	QList<dbId> candidates;
 	if (firstNameGiven && lastNameGiven)
 		candidates=dataStorage.getPersonIdsByName (firstName, lastName);
 	else if (firstNameGiven)
@@ -1327,8 +1327,8 @@ db_id FlightWindow::determinePerson (bool active, QString firstName, QString las
 	QList<Person> people=dataStorage.getPeople (candidates);
 
 	// Determine the preselected person
-	db_id preselectionId=0;
-	if (id_valid (originalId))
+	dbId preselectionId=0;
+	if (idValid (originalId))
 		preselectionId=originalId;
 
 	// Do the selection
@@ -1407,7 +1407,7 @@ bool FlightWindow::writeToDatabase (const Flight &flight)
 bool FlightWindow::currentIsAirtow ()
 {
 	if (!isLaunchMethodActive ()) return false;
-	if (id_invalid (getCurrentLaunchMethodId ())) return false;
+	if (idInvalid (getCurrentLaunchMethodId ())) return false;
 
 	try
 	{
@@ -1422,7 +1422,7 @@ bool FlightWindow::currentIsAirtow ()
 bool FlightWindow::isTowplaneRegistrationActive ()
 {
 	if (!currentIsAirtow ()) return false;
-	if (!id_valid (getCurrentLaunchMethodId ())) return false;
+	if (!idValid (getCurrentLaunchMethodId ())) return false;
 
 	try
 	{
@@ -1440,7 +1440,7 @@ bool FlightWindow::isTowplaneRegistrationActive ()
 
 LaunchMethod FlightWindow::getCurrentLaunchMethod ()
 {
-	db_id id=getCurrentLaunchMethodId ();
+	dbId id=getCurrentLaunchMethodId ();
 	return dataStorage.getObject<LaunchMethod> (id);
 }
 
@@ -1655,10 +1655,10 @@ void FlightWindow::updateSetup ()
 void FlightWindow::registrationChanged (const QString &text)
 {
 	// Find out the plane ID
-	db_id id=dataStorage.getPlaneIdByRegistration (text);
+	dbId id=dataStorage.getPlaneIdByRegistration (text);
 	selectedPlane=id;
 
-	if (id_valid (id))
+	if (idValid (id))
 	{
 		// Get the plane
 		try
@@ -1670,7 +1670,7 @@ void FlightWindow::registrationChanged (const QString &text)
 
 			// For planes that only do self launches, set the launch method to "self
 			// launch" if it is not currently set to anything else.
-			if (plane.selfLaunchOnly () && id_invalid (getCurrentLaunchMethodId ()))
+			if (plane.selfLaunchOnly () && idInvalid (getCurrentLaunchMethodId ()))
 				ui.launchMethodInput->setCurrentItemByItemData (dataStorage.getLaunchMethodByType (LaunchMethod::typeSelf));
 		}
 		catch (DataStorage::NotFoundException &ex)
@@ -1717,17 +1717,17 @@ void FlightWindow::flightModeChanged (int index)
 
 void FlightWindow::launchMethodChanged (int index)
 {
-	db_id launchMethodId=(db_id)ui.launchMethodInput->itemData (index).toLongLong ();;
+	dbId launchMethodId=(dbId)ui.launchMethodInput->itemData (index).toLongLong ();;
 
-	if (id_valid (launchMethodId))
+	if (idValid (launchMethodId))
 	{
 		LaunchMethod launchMethod=dataStorage.getObject<LaunchMethod> (launchMethodId);
 
 		if (launchMethod.isAirtow ())
 		{
 			QString towplaneRegistration=launchMethod.towplaneKnown () ? launchMethod.towplaneRegistration : getCurrentTowplaneRegistration ();
-			db_id towplaneId=dataStorage.getPlaneIdByRegistration (towplaneRegistration);
-			if (id_valid (towplaneId))
+			dbId towplaneId=dataStorage.getPlaneIdByRegistration (towplaneRegistration);
+			if (idValid (towplaneId))
 			{
 				try
 				{
@@ -1749,10 +1749,10 @@ void FlightWindow::launchMethodChanged (int index)
 void FlightWindow::towplaneRegistrationChanged (const QString &text)
 {
 	// Find out the plane ID
-	db_id id=dataStorage.getPlaneIdByRegistration (text);
+	dbId id=dataStorage.getPlaneIdByRegistration (text);
 	selectedTowplane=id;
 
-	if (id_valid (id))
+	if (idValid (id))
 	{
 		try
 		{

@@ -14,7 +14,7 @@ Plane::Plane ():
 	initialize ();
 }
 
-Plane::Plane (db_id id):
+Plane::Plane (dbId id):
 	Entity (id)
 {
 	initialize ();

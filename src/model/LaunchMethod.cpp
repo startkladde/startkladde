@@ -20,7 +20,7 @@ LaunchMethod::LaunchMethod ()
 	initialize ();
 }
 
-LaunchMethod::LaunchMethod (db_id id):
+LaunchMethod::LaunchMethod (dbId id):
 	Entity (id)
 {
 	initialize ();

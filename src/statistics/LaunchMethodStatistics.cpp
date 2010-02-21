@@ -35,7 +35,7 @@ LaunchMethodStatistics::~LaunchMethodStatistics ()
 
 LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &flights, DataStorage &dataStorage)
 {
-	QMap<db_id, int> map;
+	QMap<dbId, int> map;
 
 	foreach (const Flight &flight, flights)
 	{
@@ -48,7 +48,7 @@ LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &
 
 	// Make a list of launch methods and sort it
 	QList<LaunchMethod> launchMethods;
-	foreach (const db_id &id, map.keys ())
+	foreach (const dbId &id, map.keys ())
 	{
 		try
 		{

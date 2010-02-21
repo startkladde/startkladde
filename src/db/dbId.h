@@ -10,10 +10,11 @@
 
 #include <QtGlobal>
 
-typedef quint32 db_id;
+typedef quint32 dbId;
 
-bool id_invalid (db_id id);
-bool id_valid (db_id id);
-static const db_id invalid_id=0;
+static const dbId invalidId=0;
+
+bool idInvalid (dbId id);
+bool idValid (dbId id);
 
 #endif

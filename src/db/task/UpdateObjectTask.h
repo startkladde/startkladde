@@ -36,12 +36,12 @@ template<class T> class UpdateObjectTask: public Task
 			return completed;
 		}
 
-		virtual db_id getId () const { return id; }
+		virtual dbId getId () const { return id; }
 
 	private:
 		DataStorage &dataStorage;
 		const T &object;
-		db_id id;
+		dbId id;
 };
 
 #endif

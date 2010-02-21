@@ -175,7 +175,7 @@ PlaneLog::~PlaneLog ()
  * @param dataStorage
  * @return
  */
-PlaneLog *PlaneLog::createNew (db_id planeId, const QList<Flight> &flights, DataStorage &dataStorage)
+PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, DataStorage &dataStorage)
 {
 	Plane *plane=dataStorage.getNewObject<Plane> (planeId);
 
@@ -231,19 +231,19 @@ PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, DataStorage &dataSt
 {
 	// TODO: should we consider tow flights here?
 
-	QSet<db_id> planeIdSet;
+	QSet<dbId> planeIdSet;
 
 	// Determine all planes which have flights
 	foreach (const Flight &flight, flights)
 		if (flight.finished ())
 			planeIdSet.insert (flight.planeId);
 
-	QList<db_id> planeIds=planeIdSet.toList ();
+	QList<dbId> planeIds=planeIdSet.toList ();
 	planeIds.removeAll (0);
 
 	// Make a list of the planes and sort it
 	QList<Plane> planes;
-	foreach (const db_id &id, planeIds)
+	foreach (const dbId &id, planeIds)
 	{
 		try
 		{

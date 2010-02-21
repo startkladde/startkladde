@@ -40,7 +40,7 @@ template<class T> class ObjectEditorWindow: public ObjectEditorWindowBase
 
 		// Invocation
 		// TODO: don't allow changing the registration/person name/...
-		static db_id createObject (QWidget *parent, DataStorage &dataStorage);
+		static dbId createObject (QWidget *parent, DataStorage &dataStorage);
 		static void displayObject (QWidget *parent, DataStorage &dataStorage, const T &object);
 		static int editObject (QWidget *parent, DataStorage &dataStorage, const T &object);
 
@@ -50,12 +50,12 @@ template<class T> class ObjectEditorWindow: public ObjectEditorWindowBase
 		// GUI events
 		virtual void on_okButton_clicked ();
 
-		db_id getId () const { return id; }
+		dbId getId () const { return id; }
 
 	private:
 		ObjectEditorPane<T> *editorPane;
 		Mode mode;
-		db_id id;
+		dbId id;
 
 };
 
@@ -100,7 +100,7 @@ template<class T> ObjectEditorWindow<T>::~ObjectEditorWindow ()
 
 // TODO: allow presetting the registration/name/..., probably by passing in a const T&
 // TODO: registration/name/... not editable
-template<class T> db_id ObjectEditorWindow<T>::createObject (QWidget *parent, DataStorage &dataStorage)
+template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, DataStorage &dataStorage)
 {
 	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeCreate, dataStorage, parent);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
@@ -108,7 +108,7 @@ template<class T> db_id ObjectEditorWindow<T>::createObject (QWidget *parent, Da
 	if (w->exec ()==QDialog::Accepted)
 		return w->getId ();
 	else
-		return invalid_id;
+		return invalidId;
 }
 
 // TODO: this should probably take an ID instead of a T&

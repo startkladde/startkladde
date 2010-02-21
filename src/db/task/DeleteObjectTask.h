@@ -11,7 +11,7 @@
 template<class T> class DeleteObjectTask: public Task
 {
 	public:
-		DeleteObjectTask (DataStorage &dataStorage, db_id id):
+		DeleteObjectTask (DataStorage &dataStorage, dbId id):
 			dataStorage (dataStorage), id (id)
 		{
 		}
@@ -33,7 +33,7 @@ template<class T> class DeleteObjectTask: public Task
 
 	private:
 		DataStorage &dataStorage;
-		db_id id;
+		dbId id;
 };
 
 #endif

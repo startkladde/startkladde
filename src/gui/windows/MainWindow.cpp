@@ -488,7 +488,7 @@ bool MainWindow::refreshFlights ()
 	return true;
 }
 
-db_id MainWindow::currentFlightId (bool *isTowflight)
+dbId MainWindow::currentFlightId (bool *isTowflight)
 {
 	// Get the currently selected index from the table; it refers to the
 	// proxy model
@@ -498,7 +498,7 @@ db_id MainWindow::currentFlightId (bool *isTowflight)
 	QModelIndex flightListIndex = proxyModel->mapToSource (proxyIndex);
 
 	// If there is not selection, return an invalid ID
-	if (!flightListIndex.isValid ()) return invalid_id;
+	if (!flightListIndex.isValid ()) return invalidId;
 
 	// Get the flight from the model
 	const Flight &flight = flightListModel->at (flightListIndex);
@@ -594,10 +594,10 @@ void MainWindow::updateFlight (const Flight &flight)
 	}
 }
 
-void MainWindow::startFlight (db_id id)
+void MainWindow::startFlight (dbId id)
 {
 	// TODO display message
-	if (id_invalid (id)) return;
+	if (idInvalid (id)) return;
 
 	try
 	{
@@ -622,10 +622,10 @@ void MainWindow::startFlight (db_id id)
 	}
 }
 
-void MainWindow::landFlight (db_id id)
+void MainWindow::landFlight (dbId id)
 {
 	// TODO display message
-	if (id_invalid (id)) return;
+	if (idInvalid (id)) return;
 
 	try
 	{
@@ -648,10 +648,10 @@ void MainWindow::landFlight (db_id id)
 	}
 }
 
-void MainWindow::landTowflight (db_id id)
+void MainWindow::landTowflight (dbId id)
 {
 	// TODO display message
-	if (id_invalid (id)) return;
+	if (idInvalid (id)) return;
 
 	try
 	{
@@ -693,7 +693,7 @@ void MainWindow::on_actionStart_triggered ()
 void MainWindow::on_actionLand_triggered ()
 {
 	bool isTowflight = false;
-	db_id id = currentFlightId (&isTowflight);
+	dbId id = currentFlightId (&isTowflight);
 
 	if (isTowflight)
 		// This will check canLand
@@ -705,7 +705,7 @@ void MainWindow::on_actionLand_triggered ()
 void MainWindow::on_actionTouchngo_triggered ()
 {
 	bool isTowflight=false;
-	db_id id = currentFlightId (&isTowflight);
+	dbId id = currentFlightId (&isTowflight);
 
 	if (isTowflight)
 	{
@@ -716,7 +716,7 @@ void MainWindow::on_actionTouchngo_triggered ()
 	}
 
 	// TODO display message
-	if (id_invalid (id)) return;
+	if (idInvalid (id)) return;
 
 	try
 	{
@@ -744,9 +744,9 @@ void MainWindow::on_actionTouchngo_triggered ()
 
 void MainWindow::on_actionEdit_triggered ()
 {
-	db_id id = currentFlightId ();
+	dbId id = currentFlightId ();
 
-	if (id_invalid (id)) return;
+	if (idInvalid (id)) return;
 
 	try
 	{
@@ -762,10 +762,10 @@ void MainWindow::on_actionEdit_triggered ()
 void MainWindow::on_actionRepeat_triggered ()
 {
 	bool isTowflight = false;
-	db_id id = currentFlightId (&isTowflight);
+	dbId id = currentFlightId (&isTowflight);
 
 	// TODO display message
-	if (id_invalid (id))
+	if (idInvalid (id))
 		return;
 
 	else if (isTowflight)
@@ -790,9 +790,9 @@ void MainWindow::on_actionRepeat_triggered ()
 void MainWindow::on_actionDelete_triggered ()
 {
 	bool isTowflight = false;
-	db_id id = currentFlightId (&isTowflight);
+	dbId id = currentFlightId (&isTowflight);
 
-	if (id_invalid (id))
+	if (idInvalid (id))
 	// TODO display message
 	return;
 
@@ -822,9 +822,9 @@ void MainWindow::on_actionDisplayError_triggered ()
 	// elsewhere - the towplane generation should be simplified
 
 	bool isTowflight;
-	db_id id = currentFlightId (&isTowflight);
+	dbId id = currentFlightId (&isTowflight);
 
-	if (id_invalid (id))
+	if (idInvalid (id))
 	{
 		showWarning ("Kein Flug ausgewählt", "Es ist kein Flug ausgewählt", this);
 		return;
@@ -838,7 +838,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 		LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethodId);
 		Plane *towplane=NULL;
 
-		db_id towplaneId=invalid_id;
+		dbId towplaneId=invalidId;
 		if (launchMethod && launchMethod->isAirtow ())
 		{
 			if (launchMethod->towplaneKnown ())
@@ -846,7 +846,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 			else
 				towplaneId=flight.towplaneId;
 
-			if (id_valid (towplaneId))
+			if (idValid (towplaneId))
 				towplane=dataStorage.getNewObject<Plane> (towplaneId);
 		}
 
@@ -854,7 +854,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 		// the FlightProxyList rather than schlepp_fehlerhaft, we do the same.
 		if (isTowflight)
 		{
-			db_id towLaunchMethod=dataStorage.getLaunchMethodByType (LaunchMethod::typeSelf);
+			dbId towLaunchMethod=dataStorage.getLaunchMethodByType (LaunchMethod::typeSelf);
 
 			flight=flight.makeTowflight (towplaneId, towLaunchMethod);
 

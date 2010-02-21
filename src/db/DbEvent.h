@@ -13,7 +13,7 @@ class DbEvent
 		enum Type { typeNone, typeAdd, typeDelete, typeChange, typeRefresh };
 
 		DbEvent ();
-		DbEvent (Type type, Table table, db_id);
+		DbEvent (Type type, Table table, dbId);
 
 		QString toString ();
 		static QString typeString (Type type);
@@ -25,7 +25,7 @@ class DbEvent
 
 		Type type;
 		Table table;
-		db_id id;
+		dbId id;
 };
 
 #endif

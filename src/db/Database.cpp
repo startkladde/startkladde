@@ -438,7 +438,7 @@ template<class T> int Database::countObjects ()
     return query.value (0).toInt ();
 }
 
-template<class T> bool Database::objectExists (db_id id)
+template<class T> bool Database::objectExists (dbId id)
 {
 	QSqlQuery query (db);
 	query.prepare ("SELECT COUNT(*) FROM "+T::dbTableName ()+" WHERE id=?");
@@ -449,7 +449,7 @@ template<class T> bool Database::objectExists (db_id id)
 	return query.value (0).toInt ()>0;
 }
 
-template<class T> T Database::getObject (db_id id)
+template<class T> T Database::getObject (dbId id)
 {
 	QSqlQuery query (db);
 	query.prepare ("SELECT "+T::selectColumnList ()+" FROM "+T::dbTableName ()+" WHERE ID=?");
@@ -461,7 +461,7 @@ template<class T> T Database::getObject (db_id id)
 	return T::createFromQuery (query);
 }
 
-template<class T> int Database::deleteObject (db_id id)
+template<class T> int Database::deleteObject (dbId id)
 {
 	QSqlQuery query (db);
 	query.prepare ("DELETE FROM "+T::dbTableName ()+" WHERE ID=?");
@@ -477,7 +477,7 @@ template<class T> int Database::deleteObject (db_id id)
  * @param object
  * @return
  */
-template<class T> db_id Database::createObject (T &object)
+template<class T> dbId Database::createObject (T &object)
 {
 	QSqlQuery query (db);
 	query.prepare ("INSERT INTO "+T::dbTableName ()+" "+T::insertValueList ());
@@ -514,10 +514,10 @@ template<class T> int Database::updateObject (const T &object)
 #define INSTANTIATE_TEMPLATES(Class) \
 	template QList<Class> Database::getObjects (QString condition, QList<QVariant> conditionValues); \
 	template int          Database::countObjects<Class> (); \
-	template bool         Database::objectExists<Class> (db_id id); \
-	template Class        Database::getObject           (db_id id); \
-	template int          Database::deleteObject<Class> (db_id id); \
-	template db_id        Database::createObject        (Class &object); \
+	template bool         Database::objectExists<Class> (dbId id); \
+	template Class        Database::getObject           (dbId id); \
+	template int          Database::deleteObject<Class> (dbId id); \
+	template dbId        Database::createObject        (Class &object); \
 	template int          Database::updateObject        (const Class &object); \
 	// Empty line
 

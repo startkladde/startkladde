@@ -22,7 +22,7 @@ class Person: public Entity
 
 		// *** Construction
 		Person ();
-		Person (db_id id);
+		Person (dbId id);
 
 
 		// *** Data

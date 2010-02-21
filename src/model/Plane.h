@@ -31,7 +31,7 @@ class Plane: public Entity
 
 		// *** Construction
 		Plane ();
-		Plane (db_id id);
+		Plane (dbId id);
 
 
 		// *** Data

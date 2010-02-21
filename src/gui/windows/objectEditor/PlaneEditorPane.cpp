@@ -120,7 +120,7 @@ Plane PlaneEditorPane::determineObject ()
 
 	// Error checks
 
-	if (mode==ObjectEditorWindowBase::modeCreate && id_valid (dataStorage.getPlaneIdByRegistration (plane.registration)))
+	if (mode==ObjectEditorWindowBase::modeCreate && idValid (dataStorage.getPlaneIdByRegistration (plane.registration)))
 	{
 		QString message=QString ("Es gibt bereits ein Flugzeug mit dem Kennzeichen %1").arg (plane.registration);
 		QMessageBox::critical (this, "Flugzeug existiert bereits", message, QMessageBox::Ok, QMessageBox::NoButton);

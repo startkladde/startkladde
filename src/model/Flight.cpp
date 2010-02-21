@@ -28,25 +28,25 @@
 
 Flight::Flight ()
 {
-	initialize (invalid_id);
+	initialize (invalidId);
 }
 
-Flight::Flight (db_id id)
+Flight::Flight (dbId id)
 {
 	initialize (id);
 }
 
-void Flight::initialize (db_id id)
+void Flight::initialize (dbId id)
 {
 	this->id=id;
 
-	planeId         =invalid_id;
-	numLandings     =invalid_id;
-	pilotId         =invalid_id;
-	copilotId       =invalid_id;
-	towpilotId      =invalid_id;
-	launchMethodId  =invalid_id;
-	towplaneId      =invalid_id;
+	planeId         =invalidId;
+	numLandings     =invalidId;
+	pilotId         =invalidId;
+	copilotId       =invalidId;
+	towpilotId      =invalidId;
+	launchMethodId  =invalidId;
+	towplaneId      =invalidId;
 
 	type          =typeNone;
 	mode          =modeNone;
@@ -167,19 +167,19 @@ QString Flight::copilotDescription () const
 
 bool Flight::pilotSpecified () const
 {
-	return id_valid (pilotId) ||
+	return idValid (pilotId) ||
 		!eintraege_sind_leer (pilotFirstName, pilotLastName);
 }
 
 bool Flight::copilotSpecified () const
 {
-	return id_valid (copilotId) ||
+	return idValid (copilotId) ||
 		!eintraege_sind_leer (copilotFirstName, copilotLastName);
 }
 
 bool Flight::towpilotSpecified () const
 {
-	return id_valid (towpilotId) ||
+	return idValid (towpilotId) ||
 		!eintraege_sind_leer (towpilotFirstName, towpilotLastName);
 }
 
@@ -556,26 +556,26 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	// Note: when adding an error check concerning people or planes not being
 	// specified to this list, FlightWindow::updateErrors should check if
 	// this is a non-error (see there for an explanation).
-	CHECK_FEHLER (FLUG, id_invalid (id), ff_keine_id)
-	CHECK_FEHLER (FLUG, id_invalid (planeId), ff_kein_flugzeug)
-	CHECK_FEHLER (FLUG, sa && sa->personRequired && id_invalid (pilotId) && pilotFirstName.isEmpty () && pilotLastName.isEmpty (), ff_kein_pilot)
-	CHECK_FEHLER (FLUG, id_invalid (pilotId) && !pilotFirstName.isEmpty () && pilotLastName.isEmpty (), ff_pilot_nur_vorname);
-	CHECK_FEHLER (FLUG, id_invalid (pilotId) && !pilotLastName.isEmpty () && pilotFirstName.isEmpty (), ff_pilot_nur_nachname);
-	CHECK_FEHLER (FLUG, id_invalid (pilotId) && !pilotLastName.isEmpty () && !pilotFirstName.isEmpty (), ff_pilot_nicht_identifiziert);
-	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && id_invalid (copilotId) && !copilotFirstName.isEmpty () && copilotLastName.isEmpty (), ff_begleiter_nur_vorname);
-	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && id_invalid (copilotId) && !copilotLastName.isEmpty () && copilotFirstName.isEmpty (), ff_begleiter_nur_nachname);
-	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && id_invalid (copilotId) && !copilotLastName.isEmpty () && !copilotFirstName.isEmpty (), ff_begleiter_nicht_identifiziert);
+	CHECK_FEHLER (FLUG, idInvalid (id), ff_keine_id)
+	CHECK_FEHLER (FLUG, idInvalid (planeId), ff_kein_flugzeug)
+	CHECK_FEHLER (FLUG, sa && sa->personRequired && idInvalid (pilotId) && pilotFirstName.isEmpty () && pilotLastName.isEmpty (), ff_kein_pilot)
+	CHECK_FEHLER (FLUG, idInvalid (pilotId) && !pilotFirstName.isEmpty () && pilotLastName.isEmpty (), ff_pilot_nur_vorname);
+	CHECK_FEHLER (FLUG, idInvalid (pilotId) && !pilotLastName.isEmpty () && pilotFirstName.isEmpty (), ff_pilot_nur_nachname);
+	CHECK_FEHLER (FLUG, idInvalid (pilotId) && !pilotLastName.isEmpty () && !pilotFirstName.isEmpty (), ff_pilot_nicht_identifiziert);
+	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && idInvalid (copilotId) && !copilotFirstName.isEmpty () && copilotLastName.isEmpty (), ff_begleiter_nur_vorname);
+	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && idInvalid (copilotId) && !copilotLastName.isEmpty () && copilotFirstName.isEmpty (), ff_begleiter_nur_nachname);
+	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && idInvalid (copilotId) && !copilotLastName.isEmpty () && !copilotFirstName.isEmpty (), ff_begleiter_nicht_identifiziert);
 	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && pilotId!=0 && pilotId==copilotId, ff_pilot_gleich_begleiter)
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilotId) && !towpilotFirstName.isEmpty () && towpilotLastName.isEmpty (), ff_towpilot_nur_vorname);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilotId) && !towpilotLastName.isEmpty () && towpilotFirstName.isEmpty (), ff_towpilot_nur_nachname);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && id_invalid (towpilotId) && !towpilotLastName.isEmpty () && !towpilotFirstName.isEmpty (), ff_towpilot_nicht_identifiziert);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotFirstName.isEmpty () && towpilotLastName.isEmpty (), ff_towpilot_nur_vorname);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotLastName.isEmpty () && towpilotFirstName.isEmpty (), ff_towpilot_nur_nachname);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotLastName.isEmpty () && !towpilotFirstName.isEmpty (), ff_towpilot_nicht_identifiziert);
 	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && towpilotId!=0 && pilotId==towpilotId, ff_pilot_gleich_towpilot)
-	CHECK_FEHLER (FLUG, id_invalid (copilotId) && (type==typeTraining2) && copilotLastName.isEmpty () && copilotFirstName.isEmpty (), ff_schulung_ohne_begleiter)
+	CHECK_FEHLER (FLUG, idInvalid (copilotId) && (type==typeTraining2) && copilotLastName.isEmpty () && copilotFirstName.isEmpty (), ff_schulung_ohne_begleiter)
 	// TODO einsitzige Schulung mit Begleiter
 	CHECK_FEHLER (FLUG, copilotId!=0 && !typeCopilotRecorded (type), ff_begleiter_nicht_erlaubt)
 	CHECK_FEHLER (FLUG, departsHere () && landsHere () && landed && !departed, ff_nur_gelandet)
 	CHECK_FEHLER (FLUG, departsHere () && landsHere () && departed && landed && departureTime>landingTime, ff_landung_vor_start)
-	CHECK_FEHLER (FLUG, id_invalid (launchMethodId) && departed && departsHere (), ff_keine_startart)
+	CHECK_FEHLER (FLUG, idInvalid (launchMethodId) && departed && departsHere (), ff_keine_startart)
 	CHECK_FEHLER (FLUG, mode==modeNone, ff_kein_modus)
 	CHECK_FEHLER (FLUG, type==typeNone, ff_kein_flugtyp)
 	CHECK_FEHLER (FLUG, numLandings<0, ff_landungen_negativ)
@@ -592,7 +592,7 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	//CHECK_FEHLER (FLUG, fz && fz->category==categoryGlider && sa && launchMethod==sa_ss, ff_segelflugzeug_selbststart)
 	CHECK_FEHLER (FLUG, departsHere () && numLandings>0 && !departed, ff_landungen_ohne_start)
 	CHECK_FEHLER (FLUG, departsHere ()!=landsHere () && departureLocation==landingLocation, ff_startort_gleich_zielort)
-	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow () && !sa->towplaneKnown () && id_invalid (towplaneId), ff_kein_schleppflugzeug)
+	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow () && !sa->towplaneKnown () && idInvalid (towplaneId), ff_kein_schleppflugzeug)
 	CHECK_FEHLER (SCHLEPP, sa && sfz && sa->isAirtow () && !sa->towplaneKnown () && sfz->category==Plane::categoryGlider, ff_towplane_is_glider);
 
 	return ff_ok;
@@ -606,9 +606,9 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 // ** Formatting **
 // ****************
 
-QString personToString (db_id id, QString firstName, QString lastName)
+QString personToString (dbId id, QString firstName, QString lastName)
 {
-	if (id_valid (id))
+	if (idValid (id))
 		return QString::number (id);
 	else if (eintrag_ist_leer(firstName) && eintrag_ist_leer(lastName))
 		return "-";
@@ -665,7 +665,7 @@ QString Flight::toString () const
 // ** Misc **
 // **********
 
-Flight Flight::makeTowflight (db_id theTowplaneId, db_id towLaunchMethod) const
+Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 {
 	Flight towflight;
 
@@ -681,8 +681,8 @@ Flight Flight::makeTowflight (db_id theTowplaneId, db_id towLaunchMethod) const
 	// The towflight's pilot is our towpilot and there is not copilot and
 	// towpilot
 	towflight.pilotId=towpilotId;
-	towflight.copilotId=invalid_id;
-	towflight.towpilotId=invalid_id;
+	towflight.copilotId=invalidId;
+	towflight.towpilotId=invalidId;
 
 	towflight.departureTime=departureTime;							// The tow flight started the same time as the towed flight.
 	towflight.landingTime=towflightLandingTime;			// The tow flight landing time is our landingTimeTowflight.
@@ -708,7 +708,7 @@ Flight Flight::makeTowflight (db_id theTowplaneId, db_id towLaunchMethod) const
 	towflight.copilotLastName="";
 	towflight.towpilotFirstName="";
 	towflight.towpilotLastName="";
-	towflight.towplaneId=invalid_id;
+	towflight.towplaneId=invalidId;
 	towflight.departed=departed;
 	towflight.landed=towflightLanded;
 	towflight.towflightLanded=false;

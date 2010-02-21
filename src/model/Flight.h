@@ -54,16 +54,16 @@ class Flight
 
 		// *** Construction
 		Flight ();
-		Flight (db_id id); // TODO protected (friend Database)?
+		Flight (dbId id); // TODO protected (friend Database)?
 
 
 		// *** Data
-		db_id planeId, pilotId, copilotId;
+		dbId planeId, pilotId, copilotId;
 		Type type;
 		Mode mode;
 
 		bool departed, landed, towflightLanded;
-		db_id launchMethodId;
+		dbId launchMethodId;
 		QString departureLocation;
 		QString landingLocation;
 
@@ -71,11 +71,11 @@ class Flight
 		Time landingTime;
 		int numLandings;
 
-		db_id towplaneId;
+		dbId towplaneId;
 		Mode towflightMode;
 		QString towflightLandingLocation;
 		Time towflightLandingTime;
-		db_id towpilotId;
+		dbId towpilotId;
 
 		// Incomplete names
 		QString pilotFirstName   , pilotLastName   ;
@@ -87,8 +87,8 @@ class Flight
 
 
 		// *** Attribute accessors
-		virtual db_id getId () const { return id; }
-		virtual void setId (db_id id) { this->id=id; } // TODO can we do without this?
+		virtual dbId getId () const { return id; }
+		virtual void setId (dbId id) { this->id=id; } // TODO can we do without this?
 
 
 		// *** Comparison
@@ -182,7 +182,7 @@ class Flight
 		// *** Misc
 		virtual bool collectiveLogEntryPossible (const Flight *prev, const Plane *plane) const;
 		virtual bool isExternal () const { return !landsHere () || !departsHere (); }
-		virtual Flight makeTowflight (db_id theTowplaneId, db_id towLaunchMethod) const;
+		virtual Flight makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const;
 
 		// TODO: this concept is bad - a flight in the database must never
 		// have the flight type "towflight", because that is reserved for
@@ -232,9 +232,9 @@ class Flight
 		static Type       typeFromDb (QString    type);
 
 	private:
-		db_id id;
+		dbId id;
 
-		virtual void initialize (db_id id);
+		virtual void initialize (dbId id);
 		virtual QString incompletePersonName (QString nn, QString vn) const;
 };
 

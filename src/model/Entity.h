@@ -17,7 +17,7 @@ class Entity
 	public:
 		// *** Construction
 		Entity ();
-		Entity (db_id id); // TODO protected (friend Database)?
+		Entity (dbId id); // TODO protected (friend Database)?
 		virtual ~Entity ();
 
 
@@ -26,8 +26,8 @@ class Entity
 
 
 		// *** Property access
-		virtual db_id getId () const { return id; }
-		virtual void setId (db_id id) { this->id=id; }
+		virtual dbId getId () const { return id; }
+		virtual void setId (dbId id) { this->id=id; }
 
 
 		// *** EntitySelectWindow helpers
@@ -35,7 +35,7 @@ class Entity
 		static QString get_selector_caption (int column_number);
 
 	protected:
-		db_id id;
+		dbId id;
 };
 
 #endif

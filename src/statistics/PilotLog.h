@@ -54,7 +54,7 @@ class PilotLog: public QAbstractTableModel
 	public:
 		enum FlightInstructorMode { flightInstructorNone, flightInstructorStrict, flightInstructorLoose };
 
-		static PilotLog *createNew (db_id personId, const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode=flightInstructorNone);
+		static PilotLog *createNew (dbId personId, const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode=flightInstructorNone);
 		static PilotLog *createNew (const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode=flightInstructorNone);
 
 		// QAbstractTableModel methods

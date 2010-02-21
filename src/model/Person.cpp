@@ -17,7 +17,7 @@ Person::Person ():
 	initialize ();
 }
 
-Person::Person (db_id id):
+Person::Person (dbId id):
 	Entity (id)
 {
 	initialize ();
