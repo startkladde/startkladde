@@ -34,7 +34,7 @@ bool Plane::selfLaunchOnly ()
 {
 	// Note that motorgliders can be glieders; and there are even some TMGs
 	// which can do winch launch.
-	return category==categoryAircraft || category==categoryUltralight;
+	return category==categoryAirplane || category==categoryUltralight;
 }
 
 
@@ -81,7 +81,7 @@ bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)
 QList<Plane::Category> Plane::listCategories (bool includeInvalid)
 {
 	QList<Category> result;
-	result << categoryAircraft << categoryGlider << categoryMotorglider << categoryUltralight << categoryOther;
+	result << categoryAirplane << categoryGlider << categoryMotorglider << categoryUltralight << categoryOther;
 
 	if (includeInvalid)
 		result << categoryNone;
@@ -93,7 +93,7 @@ QString Plane::categoryText (Plane::Category category)
 {
 	switch (category)
 	{
-		case categoryAircraft:     return "Motorflugzeug";
+		case categoryAirplane:     return "Motorflugzeug";
 		case categoryGlider:       return "Segelflugzeug";
 		case categoryMotorglider:  return "Motorsegler";
 		case categoryUltralight:   return "Ultraleicht";
@@ -129,7 +129,7 @@ Plane::Category Plane::categoryFromRegistration (QString registration)
 		return categoryGlider;
 	else if (kbu == 'e' || kbu == 'f' || kbu == 'g' || kbu == 'i'
 		|| kbu == 'c' || kbu == 'c' || kbu == 'c')
-		return categoryAircraft;
+		return categoryAirplane;
 	else if (kbu == 'm')
 		return categoryUltralight;
 	else if (kbu == 'k')
@@ -147,7 +147,7 @@ int Plane::categoryMaxSeats (Plane::Category category)
 	switch (category)
 	{
 		case categoryNone: return -1;
-		case categoryAircraft: return -1;
+		case categoryAirplane: return -1;
 		case categoryGlider: return 2;
 		case categoryMotorglider: return 2;
 		case categoryUltralight: return 2;
@@ -274,7 +274,7 @@ QString Plane::categoryToDb (Category category)
 	switch (category)
 	{
 		case categoryNone         : return "?"          ;
-		case categoryAircraft     : return "aircraft"   ;
+		case categoryAirplane     : return "airplane"   ;
 		case categoryGlider       : return "glider"     ;
 		case categoryMotorglider  : return "motorglider";
 		case categoryUltralight   : return "ultralight" ;
@@ -288,7 +288,7 @@ QString Plane::categoryToDb (Category category)
 
 Plane::Category Plane::categoryFromDb (QString category)
 {
-	if      (category=="aircraft"   ) return categoryAircraft;
+	if      (category=="airplane"   ) return categoryAirplane;
 	else if (category=="glider"     ) return categoryGlider;
 	else if (category=="motorglider") return categoryMotorglider;
 	else if (category=="ultralight" ) return categoryUltralight;

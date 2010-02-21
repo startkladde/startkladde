@@ -32,7 +32,7 @@ void Migration_20100216180053_full_plane_category::updateValue (const QString &o
 
 void Migration_20100216180053_full_plane_category::updateValues (Migration::Direction direction)
 {
-	updateValue ("e", "aircraft"    , direction);
+	updateValue ("e", "airplane"    , direction);
 	updateValue ("1", "glider"      , direction);
 	updateValue ("k", "motorglider" , direction);
 	updateValue ("m", "ultralight"  , direction);

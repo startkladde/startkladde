@@ -1038,7 +1038,7 @@ QString OldDatabase::category_to_db (Plane::Category g)
 {
 	switch (g)
 	{
-		case Plane::categoryAircraft: return "e"; break;
+		case Plane::categoryAirplane: return "e"; break;
 		case Plane::categoryGlider: return "1"; break;
 		case Plane::categoryMotorglider: return "k"; break;
 		case Plane::categoryUltralight: return "m"; break;
@@ -1092,7 +1092,7 @@ Plane::Category OldDatabase::db_to_category (char *in)
 {
 	switch (in[0])
 	{
-		case 'e': return Plane::categoryAircraft; break;
+		case 'e': return Plane::categoryAirplane; break;
 		case '1': return Plane::categoryGlider; break;
 		case 'k': return Plane::categoryMotorglider; break;
 		case 'm': return Plane::categoryUltralight; break;

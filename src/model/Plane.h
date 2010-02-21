@@ -24,7 +24,7 @@ class Plane: public Entity
 {
 	public:
 		// *** Types
-		enum Category { categoryNone, categoryAircraft, categoryGlider, categoryMotorglider, categoryUltralight, categoryOther };
+		enum Category { categoryNone, categoryAirplane, categoryGlider, categoryMotorglider, categoryUltralight, categoryOther };
 
 		class DefaultObjectModel: public ObjectModel<Plane>
 		{
