@@ -55,7 +55,7 @@ void PlaneEditorPane::fillData ()
 	ui.categoryInput->addItem ("", Plane::categoryNone);
 	const QList<Plane::Category> categories=Plane::listCategories (false);
 	for (int i=0; i<categories.size (); ++i)
-		ui.categoryInput->addItem (Plane::categoryText (categories.at (i), lsWithShortcut), categories.at (i));
+		ui.categoryInput->addItem (Plane::categoryText (categories.at (i)), categories.at (i));
 	ui.categoryInput->setCurrentItemByItemData (Plane::categoryNone);
 
 	// Types

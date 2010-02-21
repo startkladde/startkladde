@@ -46,6 +46,10 @@ class Database
     	// *** Constants
 
 		// Data type names as in Rails (sk_web) (for MySQL)
+		// TODO should not be static constants (although the static
+		// initialization order fiasco doesn't happen when they are not
+		// referenced by other static fields), make static methods (like in
+		// Migration)
     	static const QString dataTypeBinary;
     	static const QString dataTypeBoolean;
     	static const QString dataTypeDate;

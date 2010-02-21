@@ -40,20 +40,23 @@ class Migration
 		enum Direction { dirUp, dirDown };
 
 		// *** Constants
-    	static const QString dataTypeBinary;
-    	static const QString dataTypeBoolean;
-    	static const QString dataTypeDate;
-    	static const QString dataTypeDatetime;
-    	static const QString dataTypeDecimal;
-    	static const QString dataTypeFloat;
-    	static const QString dataTypeInteger;
-    	static const QString dataTypeString;
-    	static const QString dataTypeString16; // Non-rails
-    	static const QString dataTypeText;
-    	static const QString dataTypeTime;
-    	static const QString dataTypeTimestamp;
-    	static const QString dataTypeCharacter; // Non-Rails
-    	static const QString dataTypeId;
+
+		// Not implemented as static constants because this introduces the
+		// "static initialization order fiasco".
+    	static QString dataTypeBinary    ();
+    	static QString dataTypeBoolean   ();
+    	static QString dataTypeDate      ();
+    	static QString dataTypeDatetime  ();
+    	static QString dataTypeDecimal   ();
+    	static QString dataTypeFloat     ();
+    	static QString dataTypeInteger   ();
+    	static QString dataTypeString    ();
+    	static QString dataTypeString16  (); // Non-rails
+    	static QString dataTypeText      ();
+    	static QString dataTypeTime      ();
+    	static QString dataTypeTimestamp ();
+    	static QString dataTypeCharacter (); // Non-Rails
+    	static QString dataTypeId        ();
 
 
 		Migration (Database &database);

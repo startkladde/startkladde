@@ -13,7 +13,7 @@ Migration_20100216190338_full_flight_type::~Migration_20100216190338_full_flight
 
 void Migration_20100216190338_full_flight_type::up ()
 {
-	changeColumnType ("flights", "type", dataTypeString);
+	changeColumnType ("flights", "type", dataTypeString ());
 	std::cout << "Updating flight type values" << std::endl;
 	updateValues (dirUp);
 }
@@ -22,7 +22,7 @@ void Migration_20100216190338_full_flight_type::down ()
 {
 	std::cout << "Updating flight type values" << std::endl;
 	updateValues (dirDown);
-	changeColumnType ("flights", "type", dataTypeInteger);
+	changeColumnType ("flights", "type", dataTypeInteger ());
 }
 
 void Migration_20100216190338_full_flight_type::updateValue (int oldValue, const QString &newValue, Migration::Direction direction)

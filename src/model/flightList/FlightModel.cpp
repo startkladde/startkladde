@@ -112,7 +112,7 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 		{
 			case 0: return registrationData (flight, role);
 			case 1: return planeTypeData (flight, role);
-			case 2: return Flight::typeText (flight.type, lsTable);
+			case 2: return Flight::shortTypeText (flight.type);
 			case 3: return pilotData (flight, role);
 			case 4: return copilotData (flight, role);
 			case 5: return launchMethodData (flight, role);

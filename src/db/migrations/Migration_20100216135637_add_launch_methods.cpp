@@ -19,15 +19,15 @@ Migration_20100216135637_add_launch_methods::~Migration_20100216135637_add_launc
 void Migration_20100216135637_add_launch_methods::up ()
 {
 	createTable  ("launch_methods"); // Creates the id column
-	addColumn ("launch_methods", "name"                 , dataTypeString   );
-	addColumn ("launch_methods", "short_name"           , dataTypeString   );
-	addColumn ("launch_methods", "log_string"           , dataTypeString   );
-	addColumn ("launch_methods", "keyboard_shortcut"    , dataTypeCharacter);
+	addColumn ("launch_methods", "name"                 , dataTypeString    ());
+	addColumn ("launch_methods", "short_name"           , dataTypeString    ());
+	addColumn ("launch_methods", "log_string"           , dataTypeString    ());
+	addColumn ("launch_methods", "keyboard_shortcut"    , dataTypeCharacter ());
 	// Use a string type because SQLite does not support enums
-	addColumn ("launch_methods", "type"                 , dataTypeString   );
-	addColumn ("launch_methods", "towplane_registration", dataTypeString   );
-	addColumn ("launch_methods", "person_required"      , dataTypeBoolean  );
-	addColumn ("launch_methods", "comments"             , dataTypeString   );
+	addColumn ("launch_methods", "type"                 , dataTypeString    ());
+	addColumn ("launch_methods", "towplane_registration", dataTypeString    ());
+	addColumn ("launch_methods", "person_required"      , dataTypeBoolean   ());
+	addColumn ("launch_methods", "comments"             , dataTypeString    ());
 
 	try
 	{

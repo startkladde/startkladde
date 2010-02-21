@@ -57,7 +57,7 @@ class Plane: public Entity
 
 	    // *** Category methods
 		static QList<Category> listCategories (bool include_invalid);
-		static QString categoryText (Plane::Category category, lengthSpecification lenspec);
+		static QString categoryText (Plane::Category category);
 		static Plane::Category categoryFromRegistration (QString registration);
 		static int categoryMaxSeats (Plane::Category category);
 

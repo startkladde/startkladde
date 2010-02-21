@@ -13,9 +13,9 @@ Migration_20100217131516_flight_status_columns::~Migration_20100217131516_flight
 
 void Migration_20100217131516_flight_status_columns::up ()
 {
-	addColumn ("flights", "departed"        , dataTypeBoolean, "AFTER status");
-	addColumn ("flights", "landed"          , dataTypeBoolean, "AFTER departed");
-	addColumn ("flights", "towflight_landed", dataTypeBoolean, "AFTER landed");
+	addColumn ("flights", "departed"        , dataTypeBoolean (), "AFTER status");
+	addColumn ("flights", "landed"          , dataTypeBoolean (), "AFTER departed");
+	addColumn ("flights", "towflight_landed", dataTypeBoolean (), "AFTER landed");
 
 	std::cout << "Updating status flags" << std::endl;
 	executeQuery ("UPDATE flights SET "
@@ -28,7 +28,7 @@ void Migration_20100217131516_flight_status_columns::up ()
 
 void Migration_20100217131516_flight_status_columns::down ()
 {
-	addColumn ("flights", "status", dataTypeInteger, "AFTER departed");
+	addColumn ("flights", "status", dataTypeInteger (), "AFTER departed");
 
 	std::cout << "Updating status" << std::endl;
 	executeQuery ("UPDATE flights SET status="

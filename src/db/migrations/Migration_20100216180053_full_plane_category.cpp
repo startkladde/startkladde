@@ -11,14 +11,14 @@ Migration_20100216180053_full_plane_category::~Migration_20100216180053_full_pla
 
 void Migration_20100216180053_full_plane_category::up ()
 {
-	changeColumnType ("planes", "category", dataTypeString);
+	changeColumnType ("planes", "category", dataTypeString ());
 	updateValues (dirUp);
 }
 
 void Migration_20100216180053_full_plane_category::down ()
 {
 	updateValues (dirDown);
-	changeColumnType ("planes", "category", dataTypeCharacter);
+	changeColumnType ("planes", "category", dataTypeCharacter ());
 }
 
 void Migration_20100216180053_full_plane_category::updateValue (const QString &oldValue, const QString &newValue, Migration::Direction direction)

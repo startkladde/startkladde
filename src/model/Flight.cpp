@@ -616,15 +616,15 @@ QString Flight::toString () const
 
 		.arg (id)
 		.arg (planeId)
-		.arg (typeText (type, lsTable))
+		.arg (shortTypeText (type))
 		.arg (personToString (pilotId, pilotFirstName, pilotLastName))
 		.arg (personToString (copilotId, copilotFirstName, copilotLastName))
-		.arg (modeText (mode, lsTable))
+		.arg (modeText (mode))
 
 		.arg (launchMethodId)
 		.arg (towplaneId)
 		.arg (personToString (towpilotId, towpilotFirstName, towpilotLastName))
-		.arg (modeText (towflightMode, lsTable))
+		.arg (modeText (towflightMode))
 
 		.arg (timeToString (departed, departureTime))
 		.arg (timeToString (landed, landingTime))

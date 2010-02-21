@@ -210,7 +210,7 @@ void FlightWindow::fillData ()
 	// *** Flight types
 	const QList<Flight::Type> flightTypes=Flight::listTypes (false);
 	for (int i=0; i<flightTypes.size(); ++i)
-		ui.flightTypeInput->addItem (Flight::typeText (flightTypes.at (i), lsWithShortcut), flightTypes.at (i));
+		ui.flightTypeInput->addItem (Flight::typeText (flightTypes.at (i), true), flightTypes.at (i));
 
 
 	// *** Person names
@@ -237,13 +237,13 @@ void FlightWindow::fillData ()
 	// *** Flight flightModes
 	const QList<Flight::Mode> flightModes=Flight::listModes (false);
 	for (int i=0; i<flightModes.size (); ++i)
-		ui.flightModeInput->addItem (Flight::modeText (flightModes.at (i), lsWithShortcut), flightModes.at (i));
+		ui.flightModeInput->addItem (Flight::modeText (flightModes.at (i)), flightModes.at (i));
 
 
 	// *** Towflight flightModes
 	const QList<Flight::Mode> towflightModes=Flight::listTowModes (false);
 	for (int i=0; i<towflightModes.size(); ++i)
-		ui.towflightModeInput->addItem (Flight::modeText (towflightModes.at (i), lsWithShortcut), towflightModes.at (i));
+		ui.towflightModeInput->addItem (Flight::modeText (towflightModes.at (i)), towflightModes.at (i));
 
 
 	// *** Launch methods

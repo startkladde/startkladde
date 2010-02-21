@@ -11,7 +11,7 @@ Migration_20100216171107_add_comments_to_users::~Migration_20100216171107_add_co
 
 void Migration_20100216171107_add_comments_to_users::up ()
 {
-	addColumn ("users", "comments", dataTypeString);
+	addColumn ("users", "comments", dataTypeString ());
 }
 
 void Migration_20100216171107_add_comments_to_users::down ()

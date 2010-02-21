@@ -194,7 +194,8 @@ class Flight
 
 		// *** Type methods
 		static QList<Type> listTypes (bool includeInvalid);
-		static QString typeText (Type type, lengthSpecification lenspec);
+		static QString typeText (Type type, bool withShortcut=false);
+		static QString shortTypeText (Type type);
 		static bool typeCopilotRecorded (Type type);
 		static bool typeAlwaysHasCopilot (Type type);
 		static QString typePilotDescription (Type type);
@@ -205,7 +206,7 @@ class Flight
 		// *** Mode methods
 		static QList<Mode> listModes (bool includeInvalid);
 		static QList<Mode> listTowModes (bool includeInvalid);
-		static QString modeText (Mode mode, lengthSpecification);
+		static QString modeText (Mode mode);
 		static bool landsHere (Mode mode);
 		static bool departsHere (Mode mode);
 

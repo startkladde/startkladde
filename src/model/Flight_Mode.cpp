@@ -18,28 +18,18 @@ QList<Flight::Mode> Flight::listTowModes (bool includeInvalid)
 		return QList<Mode> () << modeLocal << modeLeaving;
 }
 
-QString Flight::modeText (Flight::Mode mode, lengthSpecification lenspec)
+QString Flight::modeText (Flight::Mode mode)
 {
-	// The text is the same for all length specifications. Use a switch
-	// statement anyway to enable compiler warnings in case another length
-	// specification is added.
-	switch (lenspec)
+	switch (mode)
 	{
-		case lsShort: case lsTable: case lsPrintout: case lsPilotLog: case lsLong: case lsWithShortcut:
-		{
-			switch (mode)
-			{
-				case modeNone:    return "-";
-				case modeLocal:   return "Lokal";
-				case modeComing:  return "Kommt";
-				case modeLeaving: return "Geht";
-			}
-		}
+		case modeNone:    return "-";
+		case modeLocal:   return "Lokal";
+		case modeComing:  return "Kommt";
+		case modeLeaving: return "Geht";
+		// no default
 	}
 
-	// We must have returned by now - the compiler should catch unhandled
-	// values.
-	assert (false);
+	assert (!"Unhandled mode");
 	return "?";
 }
 

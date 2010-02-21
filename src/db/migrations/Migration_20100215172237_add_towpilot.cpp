@@ -11,13 +11,13 @@ Migration_20100215172237_add_towpilot::~Migration_20100215172237_add_towpilot ()
 
 void Migration_20100215172237_add_towpilot::up ()
 {
-	addColumn ("flug"     , "towpilot", dataTypeId    , "", true);
-	addColumn ("flug"     , "tpvn",     dataTypeString, "", true);
-	addColumn ("flug"     , "tpnn",     dataTypeString, "", true);
+	addColumn ("flug"     , "towpilot", dataTypeId     (), "", true);
+	addColumn ("flug"     , "tpvn",     dataTypeString (), "", true);
+	addColumn ("flug"     , "tpnn",     dataTypeString (), "", true);
 
-	addColumn ("flug_temp", "towpilot", dataTypeId    , "", true);
-	addColumn ("flug_temp", "tpvn",     dataTypeString, "", true);
-	addColumn ("flug_temp", "tpnn",     dataTypeString, "", true);
+	addColumn ("flug_temp", "towpilot", dataTypeId     (), "", true);
+	addColumn ("flug_temp", "tpvn",     dataTypeString (), "", true);
+	addColumn ("flug_temp", "tpnn",     dataTypeString (), "", true);
 }
 
 void Migration_20100215172237_add_towpilot::down ()

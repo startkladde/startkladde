@@ -50,7 +50,7 @@ QString Plane::toString () const
 		.arg (competitionId)
 		.arg (type)
 		.arg (club)
-		.arg (categoryText (category, lsLong))
+		.arg (categoryText (category))
 		.arg (numSeats)
 		;
 }
@@ -89,55 +89,28 @@ QList<Plane::Category> Plane::listCategories (bool includeInvalid)
 	return result;
 }
 
-QString Plane::categoryText (Plane::Category category, lengthSpecification lenspec)
+QString Plane::categoryText (Plane::Category category)
 {
-	switch (lenspec)
+//	case categorySingleEngine: return "Einmot";
+//	case categoryGlider:       return "Segel";
+//	case categoryMotorglider:  return "MoSe";
+//	case categoryUltralight:   return "UL";
+//	case categoryOther:        return "Sonst";
+//	case categoryNone:         return "-";
+
+	switch (category)
 	{
-		case lsShort: case lsTable: case lsPilotLog:
-			switch (category)
-			{
-				case categorySingleEngine: return "Einmot";
-				case categoryGlider:       return "Segel";
-				case categoryMotorglider:  return "MoSe";
-				case categoryUltralight:   return "UL";
-				case categoryOther:        return "Sonst";
-				case categoryNone:         return "-";
-			}
-		case lsPrintout:
-			switch (category)
-			{
-				case categorySingleEngine: return "1-mot";
-				case categoryGlider:       return "Segel";
-				case categoryMotorglider:  return "MoSe";
-				case categoryUltralight:   return "UL";
-				case categoryOther:        return "Sonst";
-				case categoryNone:         return "-";
-			}
-		case lsLong:
-			switch (category)
-			{
-				case categorySingleEngine: return "Motorflugzeug (einmotorig)";
-				case categoryGlider:       return "Segelflugzeug";
-				case categoryMotorglider:  return "Motorsegler";
-				case categoryUltralight:   return "Ultraleicht";
-				case categoryOther:        return "Sonstige";
-				case categoryNone:         return "Keine";
-			}
-		case lsWithShortcut:
-			switch (category)
-			{
-				case categorySingleEngine: return "E - Motorflugzeug (einmotorig)";
-				case categoryGlider:       return "G - Segelflugzeug";
-				case categoryMotorglider:  return "K - Motorsegler";
-				case categoryUltralight:   return "M - Ultraleicht";
-				case categoryOther:        return "S - Sonstige";
-				case categoryNone:         return "- - Keine";
-			}
+		case categorySingleEngine: return "Motorflugzeug (einmotorig)";
+		case categoryGlider:       return "Segelflugzeug";
+		case categoryMotorglider:  return "Motorsegler";
+		case categoryUltralight:   return "Ultraleicht";
+		case categoryOther:        return "Sonstige";
+		case categoryNone:         return "Keine";
+		// no default
 	}
 
-	// We must have returned by now - the compiler should catch unhandled
-	// values.
-	assert (false);
+	assert (!"Unhandled category");
+	return "?";
 }
 
 /**
@@ -226,7 +199,7 @@ QVariant Plane::DefaultObjectModel::displayData (const Plane &object, int column
 		case 0: return object.registration;
 		case 1: return object.competitionId;
 		case 2: return object.type;
-		case 3: return categoryText(object.category, lsTable);
+		case 3: return categoryText(object.category);
 		case 4: return object.numSeats>=0?QVariant (object.numSeats):QVariant ("?");
 		case 5: return object.club;
 		case 6: return object.comments;

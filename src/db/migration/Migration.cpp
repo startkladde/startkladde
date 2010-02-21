@@ -2,19 +2,19 @@
 
 #include "src/db/Database.h"
 
-const QString Migration::dataTypeBinary    = Database::dataTypeBinary   ;
-const QString Migration::dataTypeBoolean   = Database::dataTypeBoolean  ;
-const QString Migration::dataTypeDate      = Database::dataTypeDate     ;
-const QString Migration::dataTypeDatetime  = Database::dataTypeDatetime ;
-const QString Migration::dataTypeDecimal   = Database::dataTypeDecimal  ;
-const QString Migration::dataTypeFloat     = Database::dataTypeFloat    ;
-const QString Migration::dataTypeInteger   = Database::dataTypeInteger  ;
-const QString Migration::dataTypeString    = Database::dataTypeString   ;
-const QString Migration::dataTypeText      = Database::dataTypeText     ;
-const QString Migration::dataTypeTime      = Database::dataTypeTime     ;
-const QString Migration::dataTypeTimestamp = Database::dataTypeTimestamp;
-const QString Migration::dataTypeCharacter = Database::dataTypeCharacter;
-const QString Migration::dataTypeId        = Database::dataTypeId       ;
+QString Migration::dataTypeBinary    () { return Database::dataTypeBinary   ; }
+QString Migration::dataTypeBoolean   () { return Database::dataTypeBoolean  ; }
+QString Migration::dataTypeDate      () { return Database::dataTypeDate     ; }
+QString Migration::dataTypeDatetime  () { return Database::dataTypeDatetime ; }
+QString Migration::dataTypeDecimal   () { return Database::dataTypeDecimal  ; }
+QString Migration::dataTypeFloat     () { return Database::dataTypeFloat    ; }
+QString Migration::dataTypeInteger   () { return Database::dataTypeInteger  ; }
+QString Migration::dataTypeString    () { return Database::dataTypeString   ; }
+QString Migration::dataTypeText      () { return Database::dataTypeText     ; }
+QString Migration::dataTypeTime      () { return Database::dataTypeTime     ; }
+QString Migration::dataTypeTimestamp () { return Database::dataTypeTimestamp; }
+QString Migration::dataTypeCharacter () { return Database::dataTypeCharacter; }
+QString Migration::dataTypeId        () { return Database::dataTypeId       ; }
 
 Migration::Migration (Database &database):
 	database (database)

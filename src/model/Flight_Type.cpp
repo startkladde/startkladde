@@ -12,71 +12,57 @@ QList<Flight::Type> Flight::listTypes (bool includeInvalid)
 			<< typeGuestPrivate << typeGuestExternal;
 }
 
-QString Flight::typeText (Flight::Type type, lengthSpecification lenspec)
+QString Flight::typeText (Type type, bool withShortcut)
 {
-	switch (lenspec)
+	if (withShortcut)
 	{
-		case lsShort:
-			switch (type)
-			{
-				case typeNone:          return "-";
-				case typeNormal:        return "N";
-				case typeTraining2:     return "S2";
-				case typeTraining1:     return "S1";
-				case typeTow:           return "F";
-				case typeGuestPrivate:  return "G";
-				case typeGuestExternal: return "E";
-			}
-		case lsPrintout:
-			switch (type)
-			{
-				case typeNone:          return "-";
-				case typeNormal:        return "N";
-				case typeTraining2:     return "S2";
-				case typeTraining1:     return "S1";
-				case typeTow:           return "F";
-				case typeGuestPrivate:  return "G";
-				case typeGuestExternal: return "E";
-			}
-		case lsTable: case lsPilotLog:
-			switch (type)
-			{
-				case typeNone:          return "-";
-				case typeNormal:        return "Normal";
-				case typeTraining2:     return "Schul (2)";
-				case typeTraining1:     return "Schul (1)";
-				case typeTow:           return "Schlepp";
-				case typeGuestPrivate:  return "Gast (P)";
-				case typeGuestExternal: return "Gast (E)";
-			}
-		case lsLong:
-			switch (type)
-			{
-				case typeNone:          return "---";
-				case typeNormal:        return "Normalflug";
-				case typeTraining2:     return "Schulungsflug (doppelsitzig)";
-				case typeTraining1:     return "Schulungsflug (einsitzig)";
-				case typeTow:           return "Schleppflug";
-				case typeGuestPrivate:  return "Gastflug (privat)";
-				case typeGuestExternal: return "Gastflug (extern)";
-			}
-		case lsWithShortcut:
-			switch (type)
-			{
-				case typeNone:          return "---";
-				case typeNormal:        return "N - Normalflug";
-				case typeTraining2:     return "2 - Schulungsflug (doppelsitzig)";
-				case typeTraining1:     return "1 - Schulungsflug (einsitzig)";
-				case typeTow:           return "S - Schleppflug";
-				case typeGuestPrivate:  return "G - Gastflug (privat)";
-				case typeGuestExternal: return "E - Gastflug (extern)";
-				default:              return "???";
-			}
+		switch (type)
+		{
+			case typeNone:          return          typeText (type, false);
+			case typeNormal:        return "N - " + typeText (type, false);
+			case typeTraining2:     return "2 - " + typeText (type, false);
+			case typeTraining1:     return "1 - " + typeText (type, false);
+			case typeTow:           return "S - " + typeText (type, false);
+			case typeGuestPrivate:  return "G - " + typeText (type, false);
+			case typeGuestExternal: return "E - " + typeText (type, false);
+			// No default
+		}
+	}
+	else
+	{
+		switch (type)
+		{
+			case typeNone:          return "-";
+			case typeNormal:        return "Normalflug";
+			case typeTraining2:     return "Schulungsflug (doppelsitzig)";
+			case typeTraining1:     return "Schulungsflug (einsitzig)";
+			case typeTow:           return "Schleppflug";
+			case typeGuestPrivate:  return "Gastflug (privat)";
+			case typeGuestExternal: return "Gastflug (extern)";
+			// No default
+		}
 	}
 
-	// We must have returned by now - the compiler should catch unhandled
-	// values.
-	assert (false);
+	assert (!"Unhandled type");
+	return "?";
+}
+
+QString Flight::shortTypeText (Type type)
+{
+	switch (type)
+	{
+		case typeNone:          return "-";
+		case typeNormal:        return "Normal";
+		case typeTraining2:     return "Schul (2)";
+		case typeTraining1:     return "Schul (1)";
+		case typeTow:           return "Schlepp";
+		case typeGuestPrivate:  return "Gast (P)";
+		case typeGuestExternal: return "Gast (E)";
+		// No default
+	}
+
+	assert (!"Unhandled type");
+	return "?";
 }
 
 // TODO rename allowed
