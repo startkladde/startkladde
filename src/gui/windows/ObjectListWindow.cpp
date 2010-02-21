@@ -9,12 +9,14 @@
  */
 #include <iostream>
 
+#include <QMessageBox>
 #include <QSortFilterProxyModel>
 
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 #include "src/db/task/ObjectUsedTask.h"
 #include "src/db/task/DeleteObjectTask.h"
 #include "src/model/objectList/ObjectListModel.h"
+#include "src/gui/dialogs.h"
 #include "src/text.h"
 
 template<class T> ObjectListWindow<T>::ObjectListWindow (DataStorage &dataStorage, ObjectListModel<T> *list, bool listOwned, QWidget *parent):

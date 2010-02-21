@@ -4,6 +4,7 @@
 //#include <fstream>
 //
 #include <getopt.h> // TODO remove
+#include <cstdlib> // for atoi, TODO remove
 
 #include <iostream>
 

@@ -1,12 +1,12 @@
 #ifndef TEXT_H_
 #define TEXT_H_
 
-#include <sstream>
+#include <iostream>
 
 #include <QSet>
 #include <QDateTime>
-#include <QMessageBox>
 #include <QString>
+#include <QColor>
 
 // TODO split
 
@@ -31,10 +31,6 @@ void split_string (QString &string1, QString &string2, QString separator, QStrin
 
 QString firstToUpper (const QString &text);
 QString firstToLower (const QString &text);
-
-bool confirmProblem (QWidget *, const QString);
-bool confirmProblem (QWidget *, const QString, const QString);
-bool yesNoQuestion (QWidget *parent, QString title, QString question);
 
 std::ostream &operator<< (std::ostream &s, const QString &c);
 std::ostream &operator<< (std::ostream &s, const QColor &c);

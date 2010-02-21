@@ -1,5 +1,7 @@
 #include "PlaneEditorPane.h"
 
+#include <QMessageBox>
+
 #include "src/db/DataStorage.h"
 #include "src/model/Plane.h"
 

@@ -3,6 +3,8 @@
 #include <cassert>
 #include <iostream>
 
+#include <QBrush>
+
 #include "src/color.h" // TODO remove after flug_farbe has been moved to Flight
 #include "src/itemDataRoles.h"
 #include "src/db/DataStorage.h"

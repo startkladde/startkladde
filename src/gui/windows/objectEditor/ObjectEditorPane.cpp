@@ -1,6 +1,7 @@
 #include "ObjectEditorPane.h"
 
 #include "src/text.h"
+#include "src/gui/dialogs.h"
 
 // ***************************************
 // ** ObjectEditorPaneBase construction **
