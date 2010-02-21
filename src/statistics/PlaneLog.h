@@ -1,5 +1,5 @@
-#ifndef _PlaneLog_h
-#define _PlaneLog_h
+#ifndef PLANELOG_H_
+#define PLANELOG_H_
 
 #include <QAbstractTableModel>
 #include <QString>

@@ -14,4 +14,4 @@ class Schema: public Migration
 		virtual QList<quint64> getVersions ()=0;
 };
 
-#endif /* SCHEMA_H_ */
+#endif

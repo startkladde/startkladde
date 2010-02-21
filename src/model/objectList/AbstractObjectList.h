@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _AbstractObjectList_h
-#define _AbstractObjectList_h
+#ifndef ABSTRACTOBJECTLIST_H_
+#define ABSTRACTOBJECTLIST_H_
 
 #include <QAbstractTableModel>
 

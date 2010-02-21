@@ -1,5 +1,5 @@
-#ifndef _messages_h
-#define _messages_h
+#ifndef MESSAGES_H_
+#define MESSAGES_H_
 
 class QString;
 

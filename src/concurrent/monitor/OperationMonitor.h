@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _OperationMonitor_h
-#define _OperationMonitor_h
+#ifndef OPERATIONMONITOR_H_
+#define OPERATIONMONITOR_H_
 
 #include <QString>
 

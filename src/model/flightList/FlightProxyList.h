@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _FlightProxyList_h
-#define _FlightProxyList_h
+#ifndef FLIGHTPROXYLIST_H_
+#define FLIGHTPROXYLIST_H_
 
 #include "src/model/Flight.h"
 #include "src/model/objectList/AbstractObjectList.h"

@@ -1,5 +1,5 @@
-#ifndef _WeatherWidget_h
-#define _WeatherWidget_h
+#ifndef WEATHERWIDGET_H_
+#define WEATHERWIDGET_H_
 
 #include <QLabel>
 #include <QImage>

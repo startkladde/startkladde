@@ -1,5 +1,5 @@
-#ifndef _DatabaseInfo_h
-#define _DatabaseInfo_h
+#ifndef DATABASEINFO_H_
+#define DATABASEINFO_H_
 
 class DatabaseInfo
 {

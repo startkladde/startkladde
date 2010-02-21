@@ -48,4 +48,4 @@ class DataStorageWorker: public QThread
 		QList<Task *> tasks; // All accesses to this list must be protected by mutex
 };
 
-#endif /* DATASTORAGEWORKER_H_ */
+#endif

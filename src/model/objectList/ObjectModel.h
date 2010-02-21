@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _ObjectModel_h
-#define _ObjectModel_h
+#ifndef OBJECTMODEL_H_
+#define OBJECTMODEL_H_
 
 #include <QVariant>
 
@@ -121,4 +121,4 @@ template<class T> QVariant ObjectModel<T>::displayData (const T &object, int col
 	return QVariant ();
 }
 
-#endif /* OBJECTMODEL_H_ */
+#endif

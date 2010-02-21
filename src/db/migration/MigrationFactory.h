@@ -30,4 +30,4 @@ class MigrationFactory
 		QString migrationName (quint64 version);
 };
 
-#endif /* MIGRATIONFACTORY_H_ */
+#endif

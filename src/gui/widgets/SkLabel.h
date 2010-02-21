@@ -1,5 +1,5 @@
-#ifndef _SkLabel_h
-#define _SkLabel_h
+#ifndef SKLABEL_H_
+#define SKLABEL_H_
 
 #include <QLabel>
 #include <QColor>

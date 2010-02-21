@@ -1,5 +1,5 @@
-#ifndef _Database_h
-#define _Database_h
+#ifndef DATABASE_H_
+#define DATABASE_H_
 
 #include <iostream>
 #include <cassert>

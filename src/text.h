@@ -1,5 +1,5 @@
-#ifndef _text_h
-#define _text_h
+#ifndef TEXT_H_
+#define TEXT_H_
 
 #include <sstream>
 

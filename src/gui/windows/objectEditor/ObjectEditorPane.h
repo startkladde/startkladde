@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _ObjectEditorPane_h
-#define _ObjectEditorPane_h
+#ifndef OBJECTEDITORPANE_H_
+#define OBJECTEDITORPANE_H_
 
 #include <QtGui/QWidget>
 
@@ -96,4 +96,4 @@ template<class T> ObjectEditorPane<T>::~ObjectEditorPane ()
 {
 }
 
-#endif /* OBJECTEDITORPANE_H_ */
+#endif

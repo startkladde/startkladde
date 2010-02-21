@@ -1,5 +1,5 @@
-#ifndef _threadUtil_h
-#define _threadUtil_h
+#ifndef THREADUTIL_H_
+#define THREADUTIL_H_
 
 class QThread;
 

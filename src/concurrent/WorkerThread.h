@@ -38,4 +38,4 @@ class WorkerThread: public QThread
 		QWaitCondition listChanged; // Wakes on this condition must be protected by listMutex.
 };
 
-#endif /* WORKERTHREAD_H_ */
+#endif

@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _AddObjectTask_h
-#define _AddObjectTask_h
+#ifndef ADDOBJECTTASK_H_
+#define ADDOBJECTTASK_H_
 
 #include "src/concurrent/task/Task.h"
 #include "src/db/DataStorage.h"

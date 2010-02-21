@@ -1,5 +1,5 @@
-#ifndef _TempDir_h
-#define _TempDir_h
+#ifndef TEMPDIR_H_
+#define TEMPDIR_H_
 
 #include <cstring>
 #include <QString>

@@ -1,5 +1,5 @@
-#ifndef _PilotLog_h
-#define _PilotLog_h
+#ifndef PILOTLOG_H_
+#define PILOTLOG_H_
 
 #include <QAbstractTableModel>
 #include <QString>

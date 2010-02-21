@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _ObjectListModel_h
-#define _ObjectListModel_h
+#ifndef OBJECTLISTMODEL_H_
+#define OBJECTLISTMODEL_H_
 
 #include <iostream>
 
@@ -234,4 +234,4 @@ template<class T> void ObjectListModel<T>::columnChanged (int column)
 }
 
 
-#endif /* OBJECTLIST_H_ */
+#endif

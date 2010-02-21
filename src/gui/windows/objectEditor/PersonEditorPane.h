@@ -1,5 +1,5 @@
-#ifndef _PersonEditorPane_h
-#define _PersonEditorPane_h
+#ifndef PERSONEDITORPANE_H_
+#define PERSONEDITORPANE_H_
 
 #include "ObjectEditorPane.h"
 #include "ui_PersonEditorPane.h"

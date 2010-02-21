@@ -1,5 +1,5 @@
-#ifndef _Options_h
-#define _Options_h
+#ifndef OPTIONS_H_
+#define OPTIONS_H_
 
 // Adding an option: see doc/internal/Options
 

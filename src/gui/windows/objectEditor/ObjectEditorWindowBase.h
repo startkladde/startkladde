@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _ObjectEditorWindowBase_h
-#define _ObjectEditorWindowBase_h
+#ifndef OBJECTEDITORWINDOWBASE_H_
+#define OBJECTEDITORWINDOWBASE_H_
 
 #include <QtGui/QDialog>
 

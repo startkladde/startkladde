@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _ObjectUsedTask_h
-#define _ObjectUsedTask_h
+#ifndef OBJECTUSEDTASK_H_
+#define OBJECTUSEDTASK_H_
 
 template<class T> class ObjectUsedTask: public Task
 {
@@ -34,4 +34,4 @@ template<class T> class ObjectUsedTask: public Task
 		bool result;
 };
 
-#endif /* OBJECTUSEDTASK_H_ */
+#endif

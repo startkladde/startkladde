@@ -1,5 +1,5 @@
-#ifndef _Person_h
-#define _Person_h
+#ifndef PERSON_H_
+#define PERSON_H_
 
 #include <QString>
 

@@ -1,5 +1,5 @@
-#ifndef _Time_h
-#define _Time_h
+#ifndef TIME_H_
+#define TIME_H_
 
 // TODO Sucks! Replace!
 

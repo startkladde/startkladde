@@ -1,5 +1,5 @@
-#ifndef _PlaneEditorPane_h
-#define _PlaneEditorPane_h
+#ifndef PLANEEDITORPANE_H_
+#define PLANEEDITORPANE_H_
 
 #include "ObjectEditorPane.h"
 #include "ui_PlaneEditorPane.h"

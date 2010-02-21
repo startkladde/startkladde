@@ -1,5 +1,5 @@
-#ifndef _FlightWindow_h
-#define _FlightWindow_h
+#ifndef FLIGHTWINDOW_H_
+#define FLIGHTWINDOW_H_
 
 /*
  * Remake:

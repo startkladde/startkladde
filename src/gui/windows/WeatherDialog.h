@@ -1,5 +1,5 @@
-#ifndef _WeatherDialog_h
-#define _WeatherDialog_h
+#ifndef WEATHERDIALOG_H_
+#define WEATHERDIALOG_H_
 
 #include <QDialog>
 

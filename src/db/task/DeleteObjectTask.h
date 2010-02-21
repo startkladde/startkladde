@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _DeleteObjectTask_h
-#define _DeleteObjectTask_h
+#ifndef DELETEOBJECTTASK_H_
+#define DELETEOBJECTTASK_H_
 
 template<class T> class DeleteObjectTask: public Task
 {
@@ -36,4 +36,4 @@ template<class T> class DeleteObjectTask: public Task
 		db_id id;
 };
 
-#endif /* DELETEOBJECTTASK_H_ */
+#endif

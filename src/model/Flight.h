@@ -1,5 +1,5 @@
-#ifndef _Flight_h
-#define _Flight_h
+#ifndef FLIGHT_H_
+#define FLIGHT_H_
 
 #include <QString>
 #include <QDateTime>

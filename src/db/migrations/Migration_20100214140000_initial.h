@@ -69,5 +69,5 @@ class Migration_20100214140000_initial: public Migration
 		virtual void down ();
 };
 
-#endif /* MIGRATION_20100214_140000_H_ */
+#endif
 

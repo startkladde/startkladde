@@ -87,4 +87,4 @@ class Migration
 		Database &database;
 };
 
-#endif /* MIGRATION_H_ */
+#endif

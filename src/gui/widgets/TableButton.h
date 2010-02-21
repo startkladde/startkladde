@@ -42,4 +42,4 @@ class TableButton: public QPushButton
 		QPersistentModelIndex index;
 };
 
-#endif /* TABLEBUTTON_H_ */
+#endif

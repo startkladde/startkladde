@@ -1,5 +1,5 @@
-#ifndef _Entity_h
-#define _Entity_h
+#ifndef ENTITY_H_
+#define ENTITY_H_
 
 #include <QString>
 

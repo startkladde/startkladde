@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _SkTableView_h
-#define _SkTableView_h
+#ifndef SKTABLEVIEW_H_
+#define SKTABLEVIEW_H_
 
 #include <QTableView>
 
@@ -58,4 +58,4 @@ class SkTableView: public QTableView
 		bool settingButtons;
 };
 
-#endif /* SKTABLEVIEW_H_ */
+#endif

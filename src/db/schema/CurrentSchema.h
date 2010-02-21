@@ -1,5 +1,5 @@
-#ifndef _CurrentSchema_h
-#define _CurrentSchema_h
+#ifndef CURRENTSCHEMA_H_
+#define CURRENTSCHEMA_H_
 
 #include "src/db/schema/Schema.h"
 

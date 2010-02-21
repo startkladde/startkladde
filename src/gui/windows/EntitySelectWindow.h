@@ -1,5 +1,5 @@
-#ifndef _EntitySelectWindow_h
-#define _EntitySelectWindow_h
+#ifndef ENTITYSELECTWINDOW_H_
+#define ENTITYSELECTWINDOW_H_
 
 #include <QPushButton>
 #include <QLabel>

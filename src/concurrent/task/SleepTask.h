@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _SleepTask_h
-#define _SleepTask_h
+#ifndef SLEEPTASK_H_
+#define SLEEPTASK_H_
 
 #include "Task.h"
 
@@ -25,4 +25,4 @@ class SleepTask: public Task
 		int seconds;
 };
 
-#endif /* SLEEPTASK_H_ */
+#endif

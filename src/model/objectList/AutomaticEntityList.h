@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _AutomaticEntityList_h
-#define _AutomaticEntityList_h
+#ifndef AUTOMATICENTITYLIST_H_
+#define AUTOMATICENTITYLIST_H_
 
 // TODO may includes in header
 #include "EntityList.h"

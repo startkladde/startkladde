@@ -1,5 +1,5 @@
-#ifndef _ShellPlugin_h
-#define _ShellPlugin_h
+#ifndef SHELLPLUGIN_H_
+#define SHELLPLUGIN_H_
 
 #include <QObject>
 #include <QString>

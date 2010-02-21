@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _FlightModel_h
-#define _FlightModel_h
+#ifndef FLIGHTMODEL_H_
+#define FLIGHTMODEL_H_
 
 #include <QVariant>
 

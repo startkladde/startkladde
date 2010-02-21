@@ -1,5 +1,5 @@
-#ifndef _test_h
-#define _test_h
+#ifndef TEST_H_
+#define TEST_H_
 
 #endif
 

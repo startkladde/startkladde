@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _DataStorageTask_h
-#define _DataStorageTask_h
+#ifndef DATASTORAGETASK_H_
+#define DATASTORAGETASK_H_
 
 #include "src/concurrent/task/Task.h"
 
@@ -26,4 +26,4 @@ class DataStorageSleepTask: public Task
 		int seconds;
 };
 
-#endif /* DATASTORAGESLEEPTASK_H_ */
+#endif

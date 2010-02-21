@@ -1,5 +1,5 @@
-#ifndef _LaunchMethod_h
-#define _LaunchMethod_h
+#ifndef LAUNCHMETHOD_H_
+#define LAUNCHMETHOD_H_
 
 #include <QString>
 #include <QStringList>

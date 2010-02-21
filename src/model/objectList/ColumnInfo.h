@@ -1,5 +1,5 @@
-#ifndef _ColumnInfo_h
-#define _ColumnInfo_h
+#ifndef COLUMNINFO_H_
+#define COLUMNINFO_H_
 
 #include <QString>
 

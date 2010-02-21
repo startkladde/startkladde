@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _Task_h
-#define _Task_h
+#ifndef TASK_H_
+#define TASK_H_
 
 #include <QObject>
 #include <QMutex>
@@ -110,4 +110,4 @@ class Task: public QObject, public OperationMonitor
 		bool autoDelete;
 };
 
-#endif /* TASK_H_ */
+#endif

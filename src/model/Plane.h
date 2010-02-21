@@ -1,5 +1,5 @@
-#ifndef _Plane_h
-#define _Plane_h
+#ifndef PLANE_H_
+#define PLANE_H_
 
 #include <cstdio>
 #include <QString>

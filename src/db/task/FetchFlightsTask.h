@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _FetchFlightsTask_h
-#define _FetchFlightsTask_h
+#ifndef FETCHFLIGHTSTASK_H_
+#define FETCHFLIGHTSTASK_H_
 
 #include <QDate>
 

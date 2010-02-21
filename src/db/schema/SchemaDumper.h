@@ -1,5 +1,5 @@
-#ifndef _SchemaDumper_h
-#define _SchemaDumper_h
+#ifndef SCHEMADUMPER_H_
+#define SCHEMADUMPER_H_
 
 #include <QString>
 

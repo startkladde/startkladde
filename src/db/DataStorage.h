@@ -1,5 +1,5 @@
-#ifndef _DataStorage_h
-#define _DataStorage_h
+#ifndef DATASTORAGE_H_
+#define DATASTORAGE_H_
 
 #include <cassert>
 
@@ -232,4 +232,4 @@ class DataStorage: public QObject
 
 };
 
-#endif /* DATASTORAGE_H_ */
+#endif

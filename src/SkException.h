@@ -1,5 +1,5 @@
-#ifndef _SkException_h
-#define _SkException_h
+#ifndef SKEXCEPTION_H_
+#define SKEXCEPTION_H_
 
 #include <QString>
 

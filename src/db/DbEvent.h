@@ -1,5 +1,5 @@
-#ifndef _DbEvent_h
-#define _DbEvent_h
+#ifndef DBEVENT_H_
+#define DBEVENT_H_
 
 #include <QString>
 

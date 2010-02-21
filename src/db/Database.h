@@ -1,5 +1,5 @@
-#ifndef _DATABASE_H
-#define _DATABASE_H
+#ifndef DATABASE_H_
+#define DATABASE_H_
 
 #include <QString>
 #include <QList>

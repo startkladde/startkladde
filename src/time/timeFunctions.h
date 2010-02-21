@@ -1,5 +1,5 @@
-#ifndef _timeFunctions_h
-#define _timeFunctions_h
+#ifndef TIMEFUNCTIONS_H_
+#define TIMEFUNCTIONS_H_
 
 #include <ctime>
 #include <QString>

@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _LaunchMethodStatistics_h
-#define _LaunchMethodStatistics_h
+#ifndef LAUNCHMETHODSTATISTICS_H_
+#define LAUNCHMETHODSTATISTICS_H_
 
 #include <QAbstractTableModel>
 #include <QString>
@@ -45,4 +45,4 @@ class LaunchMethodStatistics: public QAbstractTableModel
 		QList<Entry> entries;
 };
 
-#endif /* LAUNCHMETHODSTATISTICS_H_ */
+#endif

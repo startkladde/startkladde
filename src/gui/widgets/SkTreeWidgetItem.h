@@ -1,5 +1,5 @@
-#ifndef _SkTreeWidgetItem_h
-#define _SkTreeWidgetItem_h
+#ifndef SKTREEWIDGETITEM_H_
+#define SKTREEWIDGETITEM_H_
 
 #include <QTreeWidget>
 #include <QString>

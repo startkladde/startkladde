@@ -44,4 +44,4 @@ class DataStorageMonitor: public QObject
 		Listener &listener;
 };
 
-#endif /* DATASTORAGEMONITOR_H_ */
+#endif

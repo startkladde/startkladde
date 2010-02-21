@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _EntityList_h
-#define _EntityList_h
+#ifndef ENTITYLIST_H_
+#define ENTITYLIST_H_
 
 #include "MutableObjectList.h"
 

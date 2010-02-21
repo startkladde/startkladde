@@ -1,5 +1,5 @@
-#ifndef _dbId_h
-#define _dbId_h
+#ifndef DBID_H_
+#define DBID_H_
 
 /**
  * This is not part of Database because a lot of classes (e. g. all Entity
@@ -16,4 +16,4 @@ bool id_invalid (db_id id);
 bool id_valid (db_id id);
 static const db_id invalid_id=0;
 
-#endif /* DBID_H_ */
+#endif

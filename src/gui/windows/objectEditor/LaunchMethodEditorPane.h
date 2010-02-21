@@ -1,5 +1,5 @@
-#ifndef _LaunchMethodEditorPane_h
-#define _LaunchMethodEditorPane_h
+#ifndef LAUNCHMETHODEDITORPANE_H_
+#define LAUNCHMETHODEDITORPANE_H_
 
 #include "ObjectEditorPane.h"
 #include "ui_LaunchMethodEditorPane.h"

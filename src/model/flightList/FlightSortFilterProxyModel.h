@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _FlightSortFilterProxyModel_h
-#define _FlightSortFilterProxyModel_h
+#ifndef FLIGHTSORTFILTERPROXYMODEL_H_
+#define FLIGHTSORTFILTERPROXYMODEL_H_
 
 #include <QSortFilterProxyModel>
 
@@ -46,4 +46,4 @@ class FlightSortFilterProxyModel: public QSortFilterProxyModel
 		bool customSorting;
 };
 
-#endif /* FLIGHTSORTFILTERPROXYMODEL_H_ */
+#endif

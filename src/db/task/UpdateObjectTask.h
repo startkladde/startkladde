@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _UpdateObjectTask_h
-#define _UpdateObjectTask_h
+#ifndef UPDATEOBJECTTASK_H_
+#define UPDATEOBJECTTASK_H_
 
 // TODO many tasks depend on DataStorage, which is bad because everything that
 // depends on the task will have to be rebuilt when DataStorage.h is changed
@@ -44,4 +44,4 @@ template<class T> class UpdateObjectTask: public Task
 		db_id id;
 };
 
-#endif /* UPDATEOBJECTTASK_H_ */
+#endif

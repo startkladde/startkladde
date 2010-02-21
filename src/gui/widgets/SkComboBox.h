@@ -1,5 +1,5 @@
-#ifndef _SkComboBox_h
-#define _SkComboBox_h
+#ifndef SKCOMBOBOX_H_
+#define SKCOMBOBOX_H_
 
 #include <iostream>
 

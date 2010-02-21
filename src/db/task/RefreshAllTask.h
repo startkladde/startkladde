@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _RefreshAllTask_h
-#define _RefreshAllTask_h
+#ifndef REFRESHALLTASK_H_
+#define REFRESHALLTASK_H_
 
 #include "src/concurrent/task/Task.h"
 
@@ -25,4 +25,4 @@ class RefreshAllTask: public Task
 		DataStorage &dataStorage;
 };
 
-#endif /* REFRESHALLTASK_H_ */
+#endif

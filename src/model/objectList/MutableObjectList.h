@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _MutableObjectList_h
-#define _MutableObjectList_h
+#ifndef MUTABLEOBJECTLIST_H_
+#define MUTABLEOBJECTLIST_H_
 
 #include "AbstractObjectList.h"
 
@@ -201,4 +201,4 @@ template<class T> QList<T> MutableObjectList<T>::getList () const
 	return list;
 }
 
-#endif /* MUTABLEOBJECTLIST_H_ */
+#endif

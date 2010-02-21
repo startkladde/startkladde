@@ -1,5 +1,5 @@
-#ifndef _defaultQThread_h
-#define _defaultQThread_h
+#ifndef DEFAULTQTHREAD_H_
+#define DEFAULTQTHREAD_H_
 
 #include <QThread>
 
@@ -17,4 +17,4 @@ class DefaultQThread: public QThread
 		virtual void run ();
 };
 
-#endif /* DEFAULTQTHREAD_H_ */
+#endif

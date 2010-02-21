@@ -1,5 +1,5 @@
-#ifndef _SplashScreen_h
-#define _SplashScreen_h
+#ifndef SPLASHSCREEN_H_
+#define SPLASHSCREEN_H_
 
 #include <iostream>
 

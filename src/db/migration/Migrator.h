@@ -64,4 +64,4 @@ class Migrator
 		MigrationFactory *factory;
 };
 
-#endif /* MIGRATOR_H_ */
+#endif

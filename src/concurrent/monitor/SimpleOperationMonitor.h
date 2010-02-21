@@ -5,8 +5,8 @@
  *      Author: Martin Herrmann
  */
 
-#ifndef _SimpleOperationMonitor_h
-#define _SimpleOperationMonitor_h
+#ifndef SIMPLEOPERATIONMONITOR_H_
+#define SIMPLEOPERATIONMONITOR_H_
 
 #include "OperationMonitor.h"
 
