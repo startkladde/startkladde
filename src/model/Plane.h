@@ -7,7 +7,6 @@
 #include <QSqlQuery>
 
 #include "src/model/objectList/ObjectModel.h"
-#include "src/text.h" // Required for lengthSpecification
 
 /*
  * Improvements:

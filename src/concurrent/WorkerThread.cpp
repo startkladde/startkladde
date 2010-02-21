@@ -5,7 +5,7 @@
 #include <QMutexLocker>
 
 #include "src/concurrent/task/Task.h"
-#include "src/text.h"
+#include "src/util/qString.h"
 
 WorkerThread::WorkerThread (QString name):
 	name (name), stopped (false)

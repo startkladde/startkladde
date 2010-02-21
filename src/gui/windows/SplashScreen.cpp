@@ -2,8 +2,8 @@
 
 #include <QKeyEvent>
 
-#include "src/text.h"
 #include "src/version.h"
+#include "src/util/qString.h"
 
 // TODO multiple lines in message area
 // TODO Klick auf labels schließen

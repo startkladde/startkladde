@@ -114,22 +114,6 @@ QString get_environment (const QString& name)
 }
 
 
-QString bool_to_string (bool val, const QString &true_value, const QString &false_value)
-{
-	if (val)
-		return true_value;
-	else
-		return false_value;
-}
-
-bool string_to_bool (const QString &text)
-{
-	if (text.toInt ()==0)
-		return false;
-	else
-		return true;
-}
-
 QString make_string (const QSet<QString> s, const QString &separator)
 {
 	QString r;
@@ -144,11 +128,6 @@ QString make_string (const QSet<QString> s, const QString &separator)
 	return r;
 }
 
-
-std::ostream &operator<< (std::ostream &s, const QString &c)
-{
-	return s << qPrintable (c);
-}
 
 std::ostream &operator<< (std::ostream &s, const QColor &c)
 {
@@ -175,17 +154,4 @@ QString firstToUpper (const QString &text)
 QString firstToLower (const QString &text)
 {
 	return text.left (1).toLower ()+text.mid (1);
-}
-
-/** Converts a std::string to a QString */
-QString std2q (std::string s)
-{
-	return QString (s.c_str ());
-}
-
-/** Converts a QString to a std::string */
-std::string q2std (QString s)
-{
-	if (s.isNull ()) return "";
-	return std::string (s.utf8 ().constData ());
 }

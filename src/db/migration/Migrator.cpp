@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-#include "src/text.h"
 #include "src/db/Database.h"
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/CurrentSchema.h"
+#include "src/util/qString.h"
 
 // ***************
 // ** Constants **

@@ -24,20 +24,14 @@ QString string_or_none (const QString& text);
 bool parameter_matches (char *parameter, char *val1, char *val2);
 void trim (QStringList &strings);
 QString get_environment (const QString& name);
-QString bool_to_string (bool val, const QString &true_value="Ja", const QString &false_value="Nein");
-bool string_to_bool (const QString &text);
 QString make_string (const QSet<QString> s, const QString &separator=",");
 void split_string (QString &string1, QString &string2, QString separator, QString text);
 
 QString firstToUpper (const QString &text);
 QString firstToLower (const QString &text);
 
-std::ostream &operator<< (std::ostream &s, const QString &c);
 std::ostream &operator<< (std::ostream &s, const QColor &c);
 std::ostream &operator<< (std::ostream &s, const QByteArray &ba);
-
-QString std2q (std::string);
-std::string q2std (QString);
 
 #endif
 

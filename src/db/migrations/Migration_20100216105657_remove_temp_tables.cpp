@@ -1,7 +1,7 @@
 #include "Migration_20100216105657_remove_temp_tables.h"
 
 #include <iostream>
-#include "src/text.h"
+#include "src/util/qString.h"
 
 Migration_20100216105657_remove_temp_tables::Migration_20100216105657_remove_temp_tables (Database &database):
 	Migration (database)

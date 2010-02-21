@@ -99,6 +99,8 @@ HEADERS += \
            src/time/Date.h \
            src/time/Time.h \
            src/time/timeFunctions.h \
+           src/util/bool.h \
+           src/util/qString.h \
 		   # Empty line
 
 SOURCES += \
@@ -170,6 +172,8 @@ SOURCES += \
            src/time/Date.cpp \
            src/time/Time.cpp \
            src/time/timeFunctions.cpp \
+           src/util/bool.cpp \
+           src/util/qString.cpp \
 		   build/CurrentSchema.cpp
 		   # Empty line
 

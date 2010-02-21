@@ -4,7 +4,6 @@
 
 #include <QApplication>
 
-#include "src/text.h"
 #include "src/config/Options.h"
 #include "src/gui/windows/MainWindow.h"
 #include "src/plugins/ShellPlugin.h"
@@ -12,6 +11,7 @@
 #include "src/db/migration/Migrator.h"
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/SchemaDumper.h"
+#include "src/util/qString.h"
 
 // For test_database
 //#include "src/model/Plane.h"

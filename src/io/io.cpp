@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <termios.h>
 
-#include "src/text.h"
+#include "src/util/qString.h"
 
 QString read_password ()
 	/*

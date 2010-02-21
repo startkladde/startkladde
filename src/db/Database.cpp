@@ -69,11 +69,11 @@
 
 #include <QDateTime>
 
-#include "src/text.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
 #include "src/model/LaunchMethod.h"
+#include "src/util/qString.h"
 
 
 /*

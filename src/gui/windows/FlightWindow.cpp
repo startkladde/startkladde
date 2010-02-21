@@ -7,6 +7,7 @@
 #include <QShowEvent>
 
 #include "src/color.h"
+#include "src/text.h"
 #include "src/gui/windows/TaskProgressDialog.h"
 #include "src/gui/dialogs.h"
 #include "src/db/task/AddObjectTask.h"
@@ -18,6 +19,7 @@
 #include "src/db/DataStorage.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 #include "src/config/Options.h" // Required for opts.ort
+#include "src/util/qString.h"
 
 /*
  * On enabling/diabling widgets:

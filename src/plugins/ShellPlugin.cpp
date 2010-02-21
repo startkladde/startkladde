@@ -19,6 +19,7 @@
 
 #include "src/text.h"
 #include "src/config/Options.h"
+#include "src/util/qString.h"
 
 
 // Construction/destruction

@@ -6,6 +6,7 @@
 #include "src/db/DataStorage.h"
 #include "src/model/Plane.h"
 #include "src/model/LaunchMethod.h"
+#include "src/text.h"
 
 // TODO Vereinheitlichen der Statusfunktionen untereinander und mit den
 // condition-strings
@@ -163,6 +164,25 @@ QString Flight::copilotDescription () const
 {
 	return typeCopilotDescription (type);
 }
+
+bool Flight::pilotSpecified () const
+{
+	return id_valid (pilotId) ||
+		!eintraege_sind_leer (pilotFirstName, pilotLastName);
+}
+
+bool Flight::copilotSpecified () const
+{
+	return id_valid (copilotId) ||
+		!eintraege_sind_leer (copilotFirstName, copilotLastName);
+}
+
+bool Flight::towpilotSpecified () const
+{
+	return id_valid (towpilotId) ||
+		!eintraege_sind_leer (towpilotFirstName, towpilotLastName);
+}
+
 
 QString Flight::incompletePilotName () const
 {

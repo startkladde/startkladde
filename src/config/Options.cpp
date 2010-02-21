@@ -14,6 +14,7 @@
 #include "src/version.h"
 #include "src/plugins/ShellPlugin.h"
 #include "src/model/LaunchMethod.h"
+#include "src/util/qString.h"
 
 const QString default_home_config_filename=".startkladde.conf";
 const QString default_local_config_fielname="startkladde.conf";

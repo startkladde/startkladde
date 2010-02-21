@@ -1,5 +1,7 @@
 #include "Flight.h"
 
+#include <QList>
+
 #include <cassert>
 
 QList<Flight::Mode> Flight::listModes (bool includeInvalid)

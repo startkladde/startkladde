@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "src/text.h"
+#include "src/util/qString.h"
 
 Migration_20100215000000_change_to_innodb::Migration_20100215000000_change_to_innodb (Database &database):
 	Migration (database)

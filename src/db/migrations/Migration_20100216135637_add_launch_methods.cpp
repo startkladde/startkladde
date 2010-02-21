@@ -2,10 +2,9 @@
 
 #include <iostream>
 
-#include "src/text.h"
-
 #include "src/model/LaunchMethod.h"
 #include "src/config/Options.h"
+#include "src/util/qString.h"
 
 Migration_20100216135637_add_launch_methods::Migration_20100216135637_add_launch_methods (Database &database):
 	Migration (database)

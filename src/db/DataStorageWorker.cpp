@@ -11,9 +11,10 @@
 
 #include <QMutexLocker>
 
-#include "src/text.h"
+//#include "src/text.h"
 #include "src/db/DataStorage.h"
 #include "src/concurrent/task/Task.h"
+#include "src/util/qString.h"
 
 DataStorageWorker::DataStorageWorker (DataStorage &dataStorage, int pingInterval) :
 	dataStorage (dataStorage), pingInterval (pingInterval), connectScheduled (false), disconnectScheduled (false),

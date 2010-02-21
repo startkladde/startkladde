@@ -46,6 +46,7 @@
 #include "src/statistics/PlaneLog.h"
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
+#include "src/util/qString.h"
 
 template <class T> class MutableObjectList;
 class Database;

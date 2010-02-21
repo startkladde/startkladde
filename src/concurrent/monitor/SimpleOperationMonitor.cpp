@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "src/text.h"
+#include "src/util/qString.h"
 
 SimpleOperationMonitor::SimpleOperationMonitor ()
 {

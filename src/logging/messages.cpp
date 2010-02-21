@@ -5,8 +5,8 @@
 #include <QDateTime>
 #include <QString>
 
-#include "src/text.h"
 #include "src/io/colors.h"
+#include "src/util/qString.h"
 
 QString timestamp ()
 {

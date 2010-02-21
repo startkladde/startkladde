@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include <QList>
+
 QList<Flight::Type> Flight::listTypes (bool includeInvalid)
 {
 	if (includeInvalid)

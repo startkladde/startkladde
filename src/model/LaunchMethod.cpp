@@ -5,8 +5,9 @@
 #include <QSqlQuery>
 #include <QVariant>
 
-#include "src/text.h"
+//#include "src/text.h"
 #include "src/logging/messages.h"
+#include "src/util/bool.h"
 
 
 // ******************
@@ -194,7 +195,7 @@ QVariant LaunchMethod::DefaultObjectModel::displayData (const LaunchMethod &obje
 		case 3: return object.keyboardShortcut;
 		case 4: return typeString (object.type);
 		case 5: return object.isAirtow ()?object.towplaneRegistration:"-";
-		case 6: return bool_to_string (object.personRequired);
+		case 6: return boolToString (object.personRequired);
 		case 7: return object.comments;
 		case 8: return object.id;
 	}

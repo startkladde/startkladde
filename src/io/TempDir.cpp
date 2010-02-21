@@ -6,7 +6,7 @@
 #include "malloc.h"
 #include "stdlib.h"
 
-#include "src/text.h"
+#include "src/util/qString.h"
 
 TempDir::TempDir (const QString &id)
 	throw (ex_create_error)

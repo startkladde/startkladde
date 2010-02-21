@@ -7,7 +7,7 @@
 
 #include "src/db/dbId.h"
 #include "src/time/Time.h"
-#include "src/text.h" // TODO remove
+//#include "src/text.h" // TODO remove
 
 class DataStorage;
 class Plane;
@@ -118,9 +118,9 @@ class Flight
 		virtual QString pilotDescription () const;
 		virtual QString copilotDescription () const;
 
-		virtual bool pilotSpecified    () const { return id_valid (pilotId)    || !eintraege_sind_leer (pilotFirstName   , pilotLastName   ); }
-		virtual bool copilotSpecified  () const { return id_valid (copilotId)  || !eintraege_sind_leer (copilotFirstName , copilotLastName ); }
-		virtual bool towpilotSpecified () const { return id_valid (towpilotId) || !eintraege_sind_leer (towpilotFirstName, towpilotLastName); }
+		virtual bool pilotSpecified    () const;
+		virtual bool copilotSpecified  () const;
+		virtual bool towpilotSpecified () const;
 
 		virtual QString incompletePilotName () const;
 		virtual QString incompleteCopilotName () const;
