@@ -75,7 +75,7 @@ const char *db_time_format="%Y-%m-%d %H:%M:%S";
 //   - get pilots and copilots from flights satisfying (condition)
 //   - person/plane flying [at time]
 //   - get plane by registration
-//   - list airfields
+//   - list locations
 //   - list first names
 //   - list last names
 //   - list accounting notes

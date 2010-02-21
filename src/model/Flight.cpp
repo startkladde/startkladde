@@ -631,7 +631,7 @@ QString Flight::toString () const
 	return QString ("id=%1, plane=%2, type=%3, pilot=%4, copilot=%5, mode=%6, "
 		"launchMethod=%7, towplane=%8, towpilot=%9, towFlightMode=%10, "
 		"launchTime=%11, landingTime=%12, towflightLandingTime=%13, "
-		"departure='%14', destination='%15', towFlightDestination='%16', "
+		"departureLocation='%14', landingLocation='%15', towflightLandingLocation='%16', "
 		"numLandings=%17, comment='%18', accountingNote='%19'")
 
 		.arg (id)
@@ -693,7 +693,7 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 
 	towflight.type=typeTow;
 	towflight.departureLocation=departureLocation;							// The tow flight started the same place as the towed flight.
-	towflight.landingLocation=towflightLandingLocation;							// The tow flight landing place is our destinationAirfieldTowplane.
+	towflight.landingLocation=towflightLandingLocation;							// The tow flight landing place is our landingLocationTowplane.
 	towflight.towflightLandingLocation="";
 
 	towflight.numLandings=(towflightLandsHere () && towflightLanded)?1:0;

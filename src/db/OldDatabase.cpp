@@ -2338,14 +2338,14 @@ int OldDatabase::get_plane_registration (Plane *plane, QString registration)
 
 // String lists
 //	return list_strings (ot_, "(column name)", (QString list), Condition (cond_));
-int OldDatabase::list_airfields (QStringList &airfields)
+int OldDatabase::list_locations (QStringList &locations)
 {
 	QString custom_query;
 	custom_query+="select startort as ort from "+fixed_table_name (ot_flight);
 	custom_query+=" UNION select zielort as ort from "+fixed_table_name (ot_flight);
 	custom_query+=" UNION select startort as ort from "+editable_table_name (ot_flight);
 	custom_query+=" UNION select zielort as ort from "+editable_table_name (ot_flight)+" group by ort";
-	return list_strings (ot_none, "ort", airfields, Condition (), custom_query);
+	return list_strings (ot_none, "ort", locations, Condition (), custom_query);
 }
 
 int OldDatabase::list_first_names (QStringList &names, QString last_name)

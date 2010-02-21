@@ -120,7 +120,7 @@ class Database
         template<class T> int updateObject (const T &object);
 
         // *** Very specific
-        QStringList listAirfields ();
+        QStringList listLocations ();
         QStringList listAccountingNotes ();
         QStringList listClubs ();
         QStringList listPlaneTypes ();

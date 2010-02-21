@@ -71,7 +71,7 @@ class DataStorage: public QObject
 		int refreshFlightsToday ();
 		int refreshFlightsOther ();
 		int refreshPreparedFlights ();
-		int refreshAirfields ();
+		int refreshLocations ();
 		int refreshAccountingNotes ();
 		int refreshClubs ();
 		int refreshPlaneTypes ();
@@ -90,7 +90,7 @@ class DataStorage: public QObject
 		QList<Flight> getFlightsToday ();
 		QList<Flight> getFlightsOther ();
 		QList<Flight> getPreparedFlights ();
-		QStringList getAirfields ();
+		QStringList getLocations ();
 		QStringList getAccountingNotes ();
 		QStringList getPlaneTypes ();
 		QStringList getClubs ();
@@ -167,7 +167,7 @@ class DataStorage: public QObject
 		QList<Plane> planes;
 		QList<Person> people;
 		QList<LaunchMethod> launchMethods;
-		QStringList airfields;
+		QStringList locations;
 		QStringList accountingNotes;
 		QStringList clubs; // TODO generate from planes+people
 		QStringList planeTypes; // TODO generate from planes

@@ -16,7 +16,7 @@
  *   - add ping to Database
  *   - generate string lists from other data instead of explicit query (but still
  *     cache explicitly) note that we still have to query for accounting notes and
- *     airfields because we don't get a complete flight list
+ *     locations because we don't get a complete flight list
  *   - fix error reporting (db.lastError (), e. g. delete objects)
  *   - make sure "", 0 and NULL are read correctly
  *
@@ -58,7 +58,7 @@
  *       - question: can we afford using a query on a memory database e. g.
  *         for list of first names rather than maintaining the list explicitly?
  *         should be fast enough (does sqlite memory table have index?)
- *         airfields are more interesting, b/c there are many flights
+ *         locations are more interesting, b/c there are many flights
  *   - local disk caching
  */
 
@@ -532,7 +532,7 @@ INSTANTIATE_TEMPLATES (LaunchMethod)
 // ** Very specific **
 // *******************
 
-QStringList Database::listAirfields ()
+QStringList Database::listLocations ()
 {
 	return listStrings (selectDistinctColumnQuery (
 		Flight::dbTableName (),

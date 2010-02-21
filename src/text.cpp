@@ -30,9 +30,9 @@ bool eintraege_sind_leer (QString eintrag1, QString eintrag2)
 }
 
 // TODO move somewhere more appropriate, then remove dependency on options.h
-bool airfieldEntryCanBeChanged (QString airfield)
+bool locationEntryCanBeChanged (QString location)
 {
-	return eintrag_ist_leer (airfield) || airfield.simplified () == opts.ort.simplified ();
+	return eintrag_ist_leer (location) || location.simplified () == opts.ort.simplified ();
 }
 
 

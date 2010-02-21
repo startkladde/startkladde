@@ -141,10 +141,10 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DataStorag
 	widgetLabelMap.insert (ui.towflightLandingTimeCheckbox, ui.towflightLandingTimeLabel);
 	widgetLabelMap.insert (ui.towflightLandingTimeInput, ui.towflightLandingTimeLabel);
 	//
-	widgetLabelMap.insert (ui.departureAirfieldInput           , ui.departureAirfieldLabel);
-	widgetLabelMap.insert (ui.destinationAirfieldInput         , ui.destinationAirfieldLabel);
-	widgetLabelMap.insert (ui.towflightDestinationAirfieldInput, ui.towflightDestinationAirfieldLabel);
-	widgetLabelMap.insert (ui.numLandingsInput                 , ui.numLandingsLabel);
+	widgetLabelMap.insert (ui.departureLocationInput       , ui.departureLocationLabel);
+	widgetLabelMap.insert (ui.landingLocationInput         , ui.landingLocationLabel);
+	widgetLabelMap.insert (ui.towflightLandingLocationInput, ui.towflightLandingLocationLabel);
+	widgetLabelMap.insert (ui.numLandingsInput             , ui.numLandingsLabel);
 	//
 	widgetLabelMap.insert (ui.commentInput       , ui.commentLabel);
 	widgetLabelMap.insert (ui.accountingNoteInput, ui.accountingNoteLabel);
@@ -179,7 +179,7 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DataStorag
 
 	// Setup initial values
 	if (mode==modeCreate)
-		ui.departureAirfieldInput->setCurrentText (opts.ort);
+		ui.departureLocationInput->setCurrentText (opts.ort);
 
 	updateSetup ();
 	updateErrors (false);
@@ -256,23 +256,23 @@ void FlightWindow::fillData ()
 		ui.launchMethodInput->addItem (launchMethods.at (i).nameWithShortcut (), launchMethods.at (i).getId ());
 
 
-	// *** Airfields
-	const QStringList airfields=dataStorage.getAirfields ();
-	ui.           departureAirfieldInput -> insertItem ("");
-	ui.         destinationAirfieldInput -> insertItem ("");
-	ui.towflightDestinationAirfieldInput -> insertItem ("");
+	// *** Locations
+	const QStringList locations=dataStorage.getLocations ();
+	ui.       departureLocationInput -> insertItem ("");
+	ui.         landingLocationInput -> insertItem ("");
+	ui.towflightLandingLocationInput -> insertItem ("");
 
-	ui.           departureAirfieldInput -> insertStringList (airfields);
-	ui.         destinationAirfieldInput -> insertStringList (airfields);
-	ui.towflightDestinationAirfieldInput -> insertStringList (airfields);
+	ui.       departureLocationInput -> insertStringList (locations);
+	ui.         landingLocationInput -> insertStringList (locations);
+	ui.towflightLandingLocationInput -> insertStringList (locations);
 
 	// Make sure opts.ort is in the list
-	ui.           departureAirfieldInput ->setCurrentText (opts.ort);
-	ui.         destinationAirfieldInput ->setCurrentText (opts.ort);
-	ui.towflightDestinationAirfieldInput ->setCurrentText (opts.ort);
+	ui.       departureLocationInput ->setCurrentText (opts.ort);
+	ui.         landingLocationInput ->setCurrentText (opts.ort);
+	ui.towflightLandingLocationInput ->setCurrentText (opts.ort);
 
-	ui.         destinationAirfieldInput ->setCurrentText ("");
-	ui.towflightDestinationAirfieldInput ->setCurrentText ("");
+	ui.         landingLocationInput ->setCurrentText ("");
+	ui.towflightLandingLocationInput ->setCurrentText ("");
 
 
 	// *** Accounting notes
@@ -573,9 +573,9 @@ QWidget *FlightWindow::getErrorWidget (FlightError error)
 		case ff_kein_flugtyp:                         return ui.flightTypeInput;
 		case ff_landungen_negativ:                    return ui.numLandingsInput;
 		case ff_doppelsitzige_schulung_in_einsitzer:  return ui.copilotLastNameInput;
-		case ff_kein_startort:                        return ui.departureAirfieldInput;
-		case ff_kein_zielort:                         return ui.destinationAirfieldInput;
-		case ff_kein_zielort_sfz:                     return ui.towflightDestinationAirfieldInput;
+		case ff_kein_startort:                        return ui.departureLocationInput;
+		case ff_kein_zielort:                         return ui.landingLocationInput;
+		case ff_kein_zielort_sfz:                     return ui.towflightLandingLocationInput;
 		case ff_segelflugzeug_landungen:              return ui.numLandingsInput;
 		case ff_begleiter_in_einsitzer:               return ui.copilotLastNameInput;
 		case ff_gastflug_in_einsitzer:                return ui.flightTypeInput;
@@ -585,7 +585,7 @@ QWidget *FlightWindow::getErrorWidget (FlightError error)
 		case ff_landungen_null:                       return ui.numLandingsInput;
 		case ff_landungen_ohne_start:                 return ui.numLandingsInput;
 		case ff_segelflugzeug_landungen_ohne_landung: return ui.numLandingsInput;
-		case ff_startort_gleich_zielort:              return ui.destinationAirfieldInput;
+		case ff_startort_gleich_zielort:              return ui.landingLocationInput;
 		case ff_kein_schleppflugzeug:                 return ui.towplaneRegistrationInput;
 		case ff_towplane_is_glider:                   return ui.towplaneRegistrationInput;
 		case ff_pilot_gleich_towpilot:                return ui.pilotLastNameInput;
@@ -713,9 +713,9 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 
 	// space
 
-	ui.departureAirfieldInput->setCurrentText (flight.departureLocation);
-	ui.destinationAirfieldInput->setCurrentText (flight.landingLocation);
-	ui.towflightDestinationAirfieldInput->setCurrentText (flight.landingLocation);
+	ui.departureLocationInput->setCurrentText (flight.departureLocation);
+	ui.landingLocationInput->setCurrentText (flight.landingLocation);
+	ui.towflightLandingLocationInput->setCurrentText (flight.landingLocation);
 	if (!repeat) ui.numLandingsInput->setValue (flight.numLandings);
 
 	// space
@@ -762,10 +762,10 @@ Flight FlightWindow::determineFlightBasic () throw ()
 	// Landing time: set with date
 	// Towflight landing time: set with date
 	//
-	if (isDepartureAirfieldActive            ()) flight.departureLocation           =getCurrentDepartureAirfield ();
-	if (isDestinationAirfildActive           ()) flight.landingLocation            =getCurrentDestinationAirfield ();
-	if (isTowflightDestinationAirfieldActive ()) flight.towflightLandingLocation        =getCurrentTowflightDestinationAirfield ();
-	if (isNumLandingsActive                  ()) flight.numLandings          =getCurrentNumLandings ();
+	if (isDepartureLocationActive        ()) flight.departureLocation        =getCurrentDepartureLocation ();
+	if (isLandingLocationActive          ()) flight.landingLocation          =getCurrentLandingLocation ();
+	if (isTowflightLandingLocationActive ()) flight.towflightLandingLocation =getCurrentTowflightLandingLocation ();
+	if (isNumLandingsActive              ()) flight.numLandings              =getCurrentNumLandings ();
 	//
 	if (isCommentActive                      ()) flight.comments        =getCurrentComment ();
 	if (isAccountingNodeActive               ()) flight.accountingNotes =getCurrentAccountingNote ();
@@ -808,15 +808,15 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool launchNow)
 
 	if ((flight.departed || !flight.departsHere ()) && eintrag_ist_leer (flight.departureLocation))
 		errorCheck ("Es wurde kein Startort angegeben.",
-				ui.departureAirfieldInput);
+				ui.departureLocationInput);
 
 	if ((flight.landed || !flight.landsHere ()) && eintrag_ist_leer (flight.landingLocation))
 		errorCheck ("Es wurde kein Zielort angegeben.",
-			ui.destinationAirfieldInput);
+			ui.landingLocationInput);
 
 	if ((flight.departsHere ()!=flight.landsHere ()) && (flight.departureLocation.simplified ()==flight.landingLocation.simplified ()))
 		errorCheck ("Der Startort ist gleich dem Zielort.",
-			flight.departsHere ()?ui.destinationAirfieldInput:ui.departureAirfieldInput);
+			flight.departsHere ()?ui.landingLocationInput:ui.departureLocationInput);
 
 	if (flight.landed && flight.departed && flight.departureTime>flight.landingTime)
 		errorCheck ("Die Landezeit des Flugs liegt vor der Startzeit.",
@@ -832,7 +832,7 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool launchNow)
 
 	if (flight.towflightLanded && !flight.towflightLandsHere () && eintrag_ist_leer (flight.towflightLandingLocation))
 		errorCheck (QString::fromUtf8 ("Es wurde kein Zielort für das Schleppflugzeug angegeben."),
-			ui.towflightDestinationAirfieldInput);
+			ui.towflightLandingLocationInput);
 
 	if (flight.departed && flight.towflightLanded && flight.departureTime>flight.towflightLandingTime)
 		errorCheck ("Die Landezeit des Schleppflugs liegt vor der Startzeit.",
@@ -1568,9 +1568,9 @@ void FlightWindow::updateSetupVisibility ()
 	enableWidget (ui.towflightLandingTimeCheckbox                      , isTowflightLandingActive             ());
 	ui.towflightLandingTimeInput->setVisible                            (isTowflightLandingTimeActive         ());
 	//
-	//departureAirfieldInput - always visible
-	//destinationAirfieldInput - always visible
-	enableWidget (ui.towflightDestinationAirfieldInput,                  isTowflightDestinationAirfieldActive ());
+	//departureLocationInput - always visible
+	//landingLocationInput - always visible
+	enableWidget (ui.towflightLandingLocationInput,                      isTowflightLandingLocationActive ());
 	//numLandingsInput - always visible
 	//
 	//commentInput - always visible
@@ -1691,26 +1691,26 @@ void FlightWindow::flightModeChanged (int index)
 
 	if (mode==modeCreate)
 	{
-		const QString   departureAirfield=ui.  departureAirfieldInput->currentText ();
-		const QString destinationAirfield=ui.destinationAirfieldInput->currentText ();
+		const QString departureLocation=ui.departureLocationInput->currentText ();
+		const QString   landingLocation=ui.  landingLocationInput->currentText ();
 
 		if (Flight::departsHere (flightMode))
 		{
-			// Departure airfield is local airfield
-			if (airfieldEntryCanBeChanged (departureAirfield))
-				ui.departureAirfieldInput->setCurrentText (opts.ort);
+			// Departure location is local location
+			if (locationEntryCanBeChanged (departureLocation))
+				ui.departureLocationInput->setCurrentText (opts.ort);
 
-			// Clear destination airfield (leaving or set automatically on landing)
-			if (airfieldEntryCanBeChanged (destinationAirfield))
-				ui.destinationAirfieldInput->setCurrentText ("");
+			// Clear landing location (leaving or set automatically on landing)
+			if (locationEntryCanBeChanged (landingLocation))
+				ui.landingLocationInput->setCurrentText ("");
 		}
 		else
 		{
-			// Clear departure airfield (not departed here)
-			if (airfieldEntryCanBeChanged (departureAirfield))
-				ui.departureAirfieldInput->setCurrentText ("");
+			// Clear departure location (not departed here)
+			if (locationEntryCanBeChanged (departureLocation))
+				ui.departureLocationInput->setCurrentText ("");
 
-			// Destination will be set automatically on landing
+			// Landing location will be set automatically on landing
 		}
 	}
 }
@@ -1779,9 +1779,9 @@ void FlightWindow::landingTimeCheckboxChanged (bool checked)
 
 	if (landed)
 	{
-		// Landed => set destination airfield to local airfield
-		if (airfieldEntryCanBeChanged (ui.destinationAirfieldInput->currentText ()))
-			ui.destinationAirfieldInput->setCurrentText (opts.ort);
+		// Landed => set landing location to local location
+		if (locationEntryCanBeChanged (ui.landingLocationInput->currentText ()))
+			ui.landingLocationInput->setCurrentText (opts.ort);
 
 		// Set 1 landing if it was 0.
 		if (getCurrentNumLandings ()==0)
@@ -1789,9 +1789,9 @@ void FlightWindow::landingTimeCheckboxChanged (bool checked)
 	}
 	else
 	{
-		// Not landed => unset destination airfield input
-		if (airfieldEntryCanBeChanged (ui.destinationAirfieldInput->currentText ()))
-			ui.destinationAirfieldInput->setCurrentText ("");
+		// Not landed => unset landing location input
+		if (locationEntryCanBeChanged (ui.landingLocationInput->currentText ()))
+			ui.landingLocationInput->setCurrentText ("");
 	}
 }
 
@@ -1802,15 +1802,15 @@ void FlightWindow::towflightLandingTimeCheckboxChanged (bool checked)
 
 	if (currentTowLandsHere() && towflightLanded)
 	{
-		// Landed => set destination airfield to local airfield
-		if (airfieldEntryCanBeChanged (ui.towflightDestinationAirfieldInput->currentText ()))
-			ui.towflightDestinationAirfieldInput->setCurrentText (opts.ort);
+		// Landed => set landing location to local location
+		if (locationEntryCanBeChanged (ui.towflightLandingLocationInput->currentText ()))
+			ui.towflightLandingLocationInput->setCurrentText (opts.ort);
 	}
 	else
 	{
-		// Not landed => unset destination airfield input
-		if (airfieldEntryCanBeChanged (ui.towflightDestinationAirfieldInput->currentText ()))
-			ui.towflightDestinationAirfieldInput->setCurrentText ("");
+		// Not landed => unset landing location input
+		if (locationEntryCanBeChanged (ui.towflightLandingLocationInput->currentText ()))
+			ui.towflightLandingLocationInput->setCurrentText ("");
 	}
 }
 

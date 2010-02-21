@@ -36,8 +36,8 @@ class PilotLog: public QAbstractTableModel
 				QString pilot;
 				QString copilot;
 				QString launchMethod;
-				QString departureAirfield;
-				QString destinationAirfield;
+				QString departureLocation;
+				QString landingLocation;
 				Time departureTime;
 				Time landingTime;
 				Time flightDuration;

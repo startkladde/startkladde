@@ -453,17 +453,17 @@
            </widget>
           </item>
           <item row="17" column="0">
-           <widget class="SkLabel" name="departureAirfieldLabel">
+           <widget class="SkLabel" name="departureLocationLabel">
             <property name="text">
              <string>Sta&amp;rtort:</string>
             </property>
             <property name="buddy">
-             <cstring>departureAirfieldInput</cstring>
+             <cstring>departureLocationInput</cstring>
             </property>
            </widget>
           </item>
           <item row="17" column="1" colspan="2">
-           <widget class="SkComboBox" name="departureAirfieldInput">
+           <widget class="SkComboBox" name="departureLocationInput">
             <property name="editable">
              <bool>true</bool>
             </property>
@@ -473,17 +473,17 @@
            </widget>
           </item>
           <item row="18" column="0">
-           <widget class="SkLabel" name="destinationAirfieldLabel">
+           <widget class="SkLabel" name="landingLocationLabel">
             <property name="text">
              <string>Zie&amp;lort:</string>
             </property>
             <property name="buddy">
-             <cstring>destinationAirfieldInput</cstring>
+             <cstring>landingLocationInput</cstring>
             </property>
            </widget>
           </item>
           <item row="18" column="1" colspan="2">
-           <widget class="SkComboBox" name="destinationAirfieldInput">
+           <widget class="SkComboBox" name="landingLocationInput">
             <property name="editable">
              <bool>true</bool>
             </property>
@@ -493,17 +493,17 @@
            </widget>
           </item>
           <item row="19" column="0">
-           <widget class="SkLabel" name="towflightDestinationAirfieldLabel">
+           <widget class="SkLabel" name="towflightLandingLocationLabel">
             <property name="text">
              <string>&amp;Zielort Schleppflugzeug:</string>
             </property>
             <property name="buddy">
-             <cstring>towflightDestinationAirfieldInput</cstring>
+             <cstring>towflightLandingLocationInput</cstring>
             </property>
            </widget>
           </item>
           <item row="19" column="1" colspan="2">
-           <widget class="SkComboBox" name="towflightDestinationAirfieldInput">
+           <widget class="SkComboBox" name="towflightLandingLocationInput">
             <property name="editable">
              <bool>true</bool>
             </property>
@@ -755,9 +755,9 @@
   <tabstop>landingTimeInput</tabstop>
   <tabstop>towflightLandingTimeCheckbox</tabstop>
   <tabstop>towflightLandingTimeInput</tabstop>
-  <tabstop>departureAirfieldInput</tabstop>
-  <tabstop>destinationAirfieldInput</tabstop>
-  <tabstop>towflightDestinationAirfieldInput</tabstop>
+  <tabstop>departureLocationInput</tabstop>
+  <tabstop>landingLocationInput</tabstop>
+  <tabstop>towflightLandingLocationInput</tabstop>
   <tabstop>numLandingsInput</tabstop>
   <tabstop>commentInput</tabstop>
   <tabstop>accountingNoteInput</tabstop>

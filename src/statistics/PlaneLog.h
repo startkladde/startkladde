@@ -35,8 +35,8 @@ class PlaneLog: public QAbstractTableModel
 				QString pilotName;
 				int minPassengers;
 				int maxPassengers;
-				QString departureAirfield;
-				QString destinationAirfield;
+				QString departureLocation;
+				QString landingLocation;
 				Time departureTime;
 				Time landingTime;
 				int numLandings;

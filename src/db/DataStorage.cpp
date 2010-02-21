@@ -253,14 +253,14 @@ int DataStorage::refreshPreparedFlights ()
 	return refreshFlights (QDate (), *preparedFlights, NULL);
 }
 
-int DataStorage::refreshAirfields ()
+int DataStorage::refreshLocations ()
 {
 	QMutexLocker dbLock (&databaseMutex);
-	QStringList airfieldList=db.listAirfields ();
+	QStringList locationList=db.listLocations ();
 	dbLock.unlock ();
 
 	QMutexLocker lock (&dataMutex);
-	airfields=airfieldList;
+	locations=locationList;
 	lock.unlock ();
 
 	return 0;
@@ -327,7 +327,7 @@ bool DataStorage::refreshAll (OperationMonitor *monitor) throw ()
 	step (2, "Startarten aktualisieren"         , refreshLaunchMethods   ());
 	step (3, "Flüge aktualisieren"              , refreshFlightsToday    ());
 	step (4, "Vorbereitete Flüge aktualisieren" , refreshPreparedFlights ());
-	step (5, "Flugplätze aktualiseren"          , refreshAirfields       ());
+	step (5, "Flugplätze aktualiseren"          , refreshLocations       ());
 	step (6, "Abrechnungshinweise aktualisieren", refreshAccountingNotes ());
 	step (7, "Vereine aktualisieren"            , refreshClubs           ());
 	step (8, "Flugzeugtypen aktualisieren"      , refreshPlaneTypes      ());
@@ -340,7 +340,7 @@ bool DataStorage::refreshAll (OperationMonitor *monitor) throw ()
 //	if (monitor->isCanceled ()) return false; monitor->progress (2, 9); monitor->status("Startarten aktualisieren");          refreshLaunchMethods ();
 //	if (monitor->isCanceled ()) return false; monitor->progress (3, 9); monitor->status("Flüge aktualisieren");               refreshFlightsToday ();
 //	if (monitor->isCanceled ()) return false; monitor->progress (4, 9); monitor->status("Vorbereitete Flüge aktualisieren");  refreshPreparedFlights ();
-//	if (monitor->isCanceled ()) return false; monitor->progress (5, 9); monitor->status("Flugplätze aktualiseren");           refreshAirfields ();
+//	if (monitor->isCanceled ()) return false; monitor->progress (5, 9); monitor->status("Flugplätze aktualiseren");           refreshLocations ();
 //	if (monitor->isCanceled ()) return false; monitor->progress (6, 9); monitor->status("Abrechnungshinweise aktualisieren"); refreshAccountingNotes ();
 //	if (monitor->isCanceled ()) return false; monitor->progress (7, 9); monitor->status("Vereine aktualisieren");             refreshClubs ();
 //	if (monitor->isCanceled ()) return false; monitor->progress (8, 9); monitor->status("Flugzeugtypen aktualisieren");       refreshPlaneTypes ();
@@ -402,10 +402,10 @@ QList<LaunchMethod> DataStorage::getLaunchMethods ()
 	return launchMethods;
 }
 
-QStringList DataStorage::getAirfields ()
+QStringList DataStorage::getLocations ()
 {
 	QMutexLocker lock (&dataMutex);
-	return airfields;
+	return locations;
 }
 
 QStringList DataStorage::getAccountingNotes ()

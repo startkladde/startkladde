@@ -75,8 +75,8 @@ void display_help ()
 //    	std::cout << launchMethod.toString ().toUtf8 () << std::endl;
 //
 //    std::cout << std::endl;
-//	std::cout << "List airfields" << std::endl;
-//	std::cout << db.listAirfields ().join (", ") << std::endl;
+//	std::cout << "List locations" << std::endl;
+//	std::cout << db.listLocations ().join (", ") << std::endl;
 //
 //    std::cout << std::endl;
 //	std::cout << "List accounting notes" << std::endl;
@@ -191,8 +191,6 @@ int doStuff (Database &db)
 
 int main (int argc, char **argv)
 {
-	std::cout << "main" << std::endl;
-
 	// DbEvents are used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.

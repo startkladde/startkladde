@@ -90,8 +90,8 @@ QString FlightModel::columnName (int columnIndex) const
 		case 7: return "landingTime";
 		case 8: return "flightDuration";
 		case 9: return "numLandings";
-		case 10: return "departureAirfield";
-		case 11: return "destinationAirfield";
+		case 10: return "departureLocation";
+		case 11: return "landingLocation";
 		case 12: return "comments";
 		case 13: return "accountingNote";
 		case 14: return "date";

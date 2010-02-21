@@ -14,7 +14,7 @@ extern const QString whitespace;
 
 bool eintrag_ist_leer (QString eintrag);
 bool eintraege_sind_leer (QString eintrag1, QString eintrag2);
-bool airfieldEntryCanBeChanged (QString airfield);
+bool locationEntryCanBeChanged (QString location);
 void replace_substring (QString &, const QString&, const QString&);
 void replace_tabs (QString &s);
 QString simplify_club_name (const QString s);

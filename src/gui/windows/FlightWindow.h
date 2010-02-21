@@ -47,7 +47,7 @@
  *     One implication is that the mode is not sufficient to determine whether
  *     the button should be "launch now" or "land now", resp. later.
  *     Note that create mode *is* different from edit mode, for example the
- *     automatic selection of launch method/airfields.
+ *     automatic selection of launch method/locations.
  *   - addObject a calendar to the date input
  *   - addObject a button to set the launch/landing time to the current time
  *   - Add option to allow, but not require the towpilot
@@ -55,7 +55,7 @@
  *     solved by a hack in showEvent. It worked in the old version of this
  *     dialog, where the row spacing was set instead of the label's height.
  *   - "Launch now" should set the launch time, even if there are errors.
- *   - On flight mode change, change the airfields only if they haven't been
+ *   - On flight mode change, change the locations only if they haven't been
  *     manually edited.
  *   - Read-only mode (modeDisplay)
  *   - If the plane is unknown and the user aborts, set the focus to the
@@ -73,7 +73,7 @@
  *     label and "Change" button)
  *
  * Fixed bugs:
- *   - Edit prepared coming flight, activate "Landed" => destination set to
+ *   - Edit prepared coming flight, activate "Landed" => landing location set to
  *     departure value.
  *   - Edit flight, change plane to non-existent => error "no plane specified"
  *   - Wrong copilot set on repeating flights
@@ -165,28 +165,28 @@ class FlightWindow: public QDialog
 		// corresponding field is active. This can be determined by the
 		// isXActive methods.
 		QString    getCurrentRegistration                 () { return ui.registrationInput->currentText (); }
-		Flight::Type getCurrentFlightType                   () { return (Flight::Type)ui.flightTypeInput->currentItemData ().toInt (); }
+		Flight::Type getCurrentFlightType                 () { return (Flight::Type)ui.flightTypeInput->currentItemData ().toInt (); }
 		//
 		QString    getCurrentPilotLastName                () { return ui.pilotLastNameInput->currentText (); }
 		QString    getCurrentPilotFirstName               () { return ui.pilotFirstNameInput->currentText (); }
 		QString    getCurrentCopilotLastName              () { return ui.copilotLastNameInput->currentText (); }
 		QString    getCurrentCopilotFirstName             () { return ui.copilotFirstNameInput->currentText (); }
 		//
-		Flight::Mode getCurrentFlightMode                   () { return (Flight::Mode)ui.flightModeInput->currentItemData ().toInt(); }
-		dbId      getCurrentLaunchMethodId               () { return ui.launchMethodInput->currentItemData ().toInt(); }
+		Flight::Mode getCurrentFlightMode                 () { return (Flight::Mode)ui.flightModeInput->currentItemData ().toInt(); }
+		dbId      getCurrentLaunchMethodId                () { return ui.launchMethodInput->currentItemData ().toInt(); }
 		//
 		QString    getCurrentTowplaneRegistration         () { return ui.towplaneRegistrationInput->currentText (); }
 		QString    getCurrentTowpilotLastName             () { return ui.towpilotLastNameInput->currentText(); }
 		QString    getCurrentTowpilotFirstName            () { return ui.towpilotFirstNameInput->currentText (); }
-		Flight::Mode getCurrentTowflightMode                () { return (Flight::Mode)ui.towflightModeInput->currentItemData ().toInt(); }
+		Flight::Mode getCurrentTowflightMode              () { return (Flight::Mode)ui.towflightModeInput->currentItemData ().toInt(); }
 		//
 		QTime      getCurrentLaunchTime                   () { return ui.launchTimeInput->time (); }
 		QTime      getCurrentLandingTime                  () { return ui.landingTimeInput->time (); }
 		QTime      getCurrentTowflightLandingTime         () { return ui.towflightLandingTimeInput->time (); }
 		//
-		QString    getCurrentDepartureAirfield            () { return ui.departureAirfieldInput->currentText(); }
-		QString    getCurrentDestinationAirfield          () { return ui.destinationAirfieldInput->currentText (); }
-		QString    getCurrentTowflightDestinationAirfield () { return ui.towflightDestinationAirfieldInput->currentText(); }
+		QString    getCurrentDepartureLocation            () { return ui.departureLocationInput->currentText(); }
+		QString    getCurrentLandingLocation              () { return ui.landingLocationInput->currentText (); }
+		QString    getCurrentTowflightLandingLocation     () { return ui.towflightLandingLocationInput->currentText(); }
 		int        getCurrentNumLandings                  () { return ui.numLandingsInput->value (); }
 		//
 		QString    getCurrentComment                      () { return ui.commentInput->text(); }
@@ -251,9 +251,9 @@ class FlightWindow: public QDialog
 		bool isTowflightLandingActive             () { return currentIsAirtow (); } // Even if mode==leaving - it's the tow end time in that case.
 		bool isTowflightLandingTimeActive         () { return isTowflightLandingActive () && getTimeFieldActive (ui.towflightLandingTimeCheckbox->isChecked ()); }
 		//
-		bool isDepartureAirfieldActive            () { return true; }
-		bool isDestinationAirfildActive           () { return true; }
-		bool isTowflightDestinationAirfieldActive () { return currentIsAirtow (); }
+		bool isDepartureLocationActive            () { return true; }
+		bool isLandingLocationActive              () { return true; }
+		bool isTowflightLandingLocationActive     () { return currentIsAirtow (); }
 		bool isNumLandingsActive                  () { return true; } // (touch'n'gos are possible before leaving)
 		//
 		bool isCommentActive                      () { return true; }
@@ -317,7 +317,7 @@ class FlightWindow: public QDialog
 		 *     these function and then again by updateErrors. As dataStorage does not
 		 *     access the database, this should not be a performance problem.
 		 *   - A change can lead to several other fields being changed (e. g. mode ->
-		 *     departure, destination)
+		 *     departure, landing location)
 		 *   - We don't want error checks/updates after every change
 		 *   - The user change slot calls xChanged and updateSetup and updateErrors
 		 */
@@ -349,10 +349,10 @@ class FlightWindow: public QDialog
 		void on_towflightLandingTimeCheckbox_clicked  (bool checked)      { towflightLandingTimeCheckboxChanged (checked); updateSetup (); updateErrors (); ui.towflightLandingTimeInput->setFocus ();}
 		void on_towflightLandingTimeInput_timeChanged (const QTime &time) { towflightLandingTimeChanged         (time);    updateSetup (); updateErrors (); } // This widget does not have a user-edit-only signal
 		//
-		void on_departureAirfieldInput_editingFinished            (const QString &text) { departureAirfieldChanged            (text ); updateSetup (); updateErrors (); }
-		void on_destinationAirfieldInput_editingFinished          (const QString &text) { destinationAirfieldChanged          (text ); updateSetup (); updateErrors (); }
-		void on_towflightDestinationAirfieldInput_editingFinished (const QString &text) { towflightDestinationAirfieldChanged (text ); updateSetup (); updateErrors (); }
-		void on_numLandingsInput_valueChanged                     (int value)           { numLandingsChanged                  (value); updateSetup (); updateErrors (); } // This widget does not have a user-edit-only signal
+		void on_departureLocationInput_editingFinished        (const QString &text) { departureLocationChanged        (text ); updateSetup (); updateErrors (); }
+		void on_landingLocationInput_editingFinished          (const QString &text) { landingLocationChanged          (text ); updateSetup (); updateErrors (); }
+		void on_towflightLandingLocationInput_editingFinished (const QString &text) { towflightLandingLocationChanged (text ); updateSetup (); updateErrors (); }
+		void on_numLandingsInput_valueChanged                 (int value)           { numLandingsChanged              (value); updateSetup (); updateErrors (); } // This widget does not have a user-edit-only signal
 		//
 		void on_commentInput_editingFinished        ()                    { commentChanged        ();     updateSetup (); updateErrors (); }
 		void on_accountingNoteInput_editingFinished (const QString &text) { accountingNoteChanged (text); updateSetup (); updateErrors (); }
@@ -383,10 +383,10 @@ class FlightWindow: public QDialog
 		void towflightLandingTimeCheckboxChanged (bool checked);
 		void towflightLandingTimeChanged         (const QTime &time) { (void)time; }
 		//
-		void departureAirfieldChanged             (const QString &text) { (void)text; }
-		void destinationAirfieldChanged           (const QString &text) { (void)text; }
-		void towflightDestinationAirfieldChanged  (const QString &text) { (void)text; }
-		void numLandingsChanged                   (int value)           { (void)value; }
+		void departureLocationChanged         (const QString &text) { (void)text; }
+		void landingLocationChanged           (const QString &text) { (void)text; }
+		void towflightLandingLocationChanged  (const QString &text) { (void)text; }
+		void numLandingsChanged               (int value)           { (void)value; }
 		//
 		void commentChanged        ()                    { }
 		void accountingNoteChanged (const QString &text) { (void)text; }

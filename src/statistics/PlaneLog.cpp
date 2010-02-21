@@ -74,8 +74,8 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, DataStorage &data
 	entry.date=flight->effdatum ();
 	if (pilot) entry.pilotName=pilot->formalName ();
 	entry.minPassengers=entry.maxPassengers=flight->numPassengers ();
-	entry.departureAirfield=flight->departureLocation;
-	entry.destinationAirfield=flight->landingLocation;
+	entry.departureLocation=flight->departureLocation;
+	entry.landingLocation=flight->landingLocation;
 	entry.departureTime=flight->departureTime; // TODO: check flight mode
 	entry.landingTime=flight->landingTime; // TODO: check flight mode
 	entry.numLandings=flight->numLandings;
@@ -107,8 +107,8 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Da
 	if (plane) entry.registration=plane->registration;
 	entry.date=flights.last ()->effdatum ();
 	if (pilot) entry.pilotName=pilot->formalName ();
-	entry.departureAirfield=flights.first ()->departureLocation;
-	entry.destinationAirfield=flights.last ()->landingLocation;
+	entry.departureLocation=flights.first ()->departureLocation;
+	entry.landingLocation=flights.last ()->landingLocation;
 	entry.departureTime=flights.first ()->departureTime;
 	entry.landingTime=flights.last ()->landingTime;
 
@@ -292,7 +292,7 @@ QVariant PlaneLog::data (const QModelIndex &index, int role) const
 {
 	const Entry &entry=entries[index.row ()];
 
-	// TODO if invalid, add parentheses around name, passengers, 2*airfield,
+	// TODO if invalid, add parentheses around name, passengers, 2*location,
 	// 3*times, num landings
 
 	if (role==Qt::DisplayRole)
@@ -302,8 +302,8 @@ QVariant PlaneLog::data (const QModelIndex &index, int role) const
 			case 0: return entry.dateText ();
 			case 1: return entry.pilotName;
 			case 2: return entry.numPassengersString ();
-			case 3: return entry.departureAirfield;
-			case 4: return entry.destinationAirfield;
+			case 3: return entry.departureLocation;
+			case 4: return entry.landingLocation;
 			case 5: return entry.departureTimeText ();
 			case 6: return entry.landingTimeText ();
 			case 7: return entry.numLandings;

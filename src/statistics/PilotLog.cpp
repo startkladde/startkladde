@@ -73,8 +73,8 @@ PilotLog::Entry PilotLog::Entry::create (const Flight *flight, DataStorage &data
 	if (pilot) entry.pilot=pilot->formalName ();
 	if (copilot) entry.copilot=copilot->formalName ();
 	if (launchMethod) entry.launchMethod=launchMethod->logString;
-	entry.departureAirfield=flight->departureLocation;
-	entry.destinationAirfield=flight->landingLocation;
+	entry.departureLocation=flight->departureLocation;
+	entry.landingLocation=flight->landingLocation;
 	entry.departureTime=flight->departureTime; // TODO: check flight mode
 	entry.landingTime=flight->landingTime; // TODO: check flight mode
 	entry.flightDuration=flight->flightDuration (); // TODO: check flight mode
@@ -236,8 +236,8 @@ QVariant PilotLog::data (const QModelIndex &index, int role) const
 			case 3: return entry.pilot;
 			case 4: return entry.copilot;
 			case 5: return entry.launchMethod;
-			case 6: return entry.departureAirfield;
-			case 7: return entry.destinationAirfield;
+			case 6: return entry.departureLocation;
+			case 7: return entry.landingLocation;
 			case 8: return entry.departureTimeText ();
 			case 9: return entry.landingTimeText ();
 			case 10: return entry.flightDurationText ();

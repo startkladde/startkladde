@@ -409,7 +409,7 @@ class OldDatabase:public QObject
 
 		// List strings
 		// TODO UNIQUE
-		int list_airfields (QStringList &airfields);
+		int list_locations (QStringList &locations);
 		int list_first_names (QStringList &names, QString last_name="");
 		int list_last_names (QStringList &names, QString first_name="");
 		int list_accounting_note (QStringList &notes);
