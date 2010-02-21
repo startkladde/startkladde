@@ -14,12 +14,17 @@
  */
 
 #include "src/model/Entity.h"
-
+/*
+ * Aircraft: everything
+ * Airplanes: motorized fixed-wing
+ * Motorized aircraft: airplanes and helicopters
+ * So this class should be called Aircraft
+ */
 class Plane: public Entity
 {
 	public:
 		// *** Types
-		enum Category { categoryNone, categorySingleEngine, categoryGlider, categoryMotorglider, categoryUltralight, categoryOther };
+		enum Category { categoryNone, categoryAircraft, categoryGlider, categoryMotorglider, categoryUltralight, categoryOther };
 
 		class DefaultObjectModel: public ObjectModel<Plane>
 		{

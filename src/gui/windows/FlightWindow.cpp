@@ -871,7 +871,7 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, cons
 			ui.launchMethodInput);
 
 	if (plane && launchMethod &&
-		(plane->category==Plane::categorySingleEngine || plane->category==Plane::categoryUltralight) && launchMethod->type!=LaunchMethod::typeSelf)
+		(plane->category==Plane::categoryAircraft || plane->category==Plane::categoryUltralight) && launchMethod->type!=LaunchMethod::typeSelf)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Motorflugzeug.\nEs wurden jedoch eine andere Startart als \"Selbststart\" angegeben.")
 			.arg (plane->registration).arg (plane->type),
 			ui.launchTimeInput);

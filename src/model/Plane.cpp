@@ -34,7 +34,7 @@ bool Plane::selfLaunchOnly ()
 {
 	// Note that motorgliders can be glieders; and there are even some TMGs
 	// which can do winch launch.
-	return category==categorySingleEngine || category==categoryUltralight;
+	return category==categoryAircraft || category==categoryUltralight;
 }
 
 
@@ -81,7 +81,7 @@ bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)
 QList<Plane::Category> Plane::listCategories (bool includeInvalid)
 {
 	QList<Category> result;
-	result << categorySingleEngine << categoryGlider << categoryMotorglider << categoryUltralight << categoryOther;
+	result << categoryAircraft << categoryGlider << categoryMotorglider << categoryUltralight << categoryOther;
 
 	if (includeInvalid)
 		result << categoryNone;
@@ -91,16 +91,9 @@ QList<Plane::Category> Plane::listCategories (bool includeInvalid)
 
 QString Plane::categoryText (Plane::Category category)
 {
-//	case categorySingleEngine: return "Einmot";
-//	case categoryGlider:       return "Segel";
-//	case categoryMotorglider:  return "MoSe";
-//	case categoryUltralight:   return "UL";
-//	case categoryOther:        return "Sonst";
-//	case categoryNone:         return "-";
-
 	switch (category)
 	{
-		case categorySingleEngine: return "Motorflugzeug (einmotorig)";
+		case categoryAircraft:     return "Motorflugzeug";
 		case categoryGlider:       return "Segelflugzeug";
 		case categoryMotorglider:  return "Motorsegler";
 		case categoryUltralight:   return "Ultraleicht";
@@ -128,16 +121,18 @@ Plane::Category Plane::categoryFromRegistration (QString registration)
 	if (registration[0] != 'D') return categoryNone;
 	if (registration[1] != '-') return categoryNone;
 
-	QChar kbu = registration.at (2);
+	QChar kbu = registration.at (2).toLower ();
 
 	if (kbu == '0' || kbu == '1' || kbu == '2' || kbu == '3' || kbu == '4'
-		|| kbu == '5' || kbu == '6' || kbu == '7' || kbu == '8' || kbu == '9')
+		|| kbu == '5' || kbu == '6' || kbu == '7' || kbu == '8' || kbu == '9'
+		|| kbu == 'n')
 		return categoryGlider;
-	else if (kbu.toLower () == 'e')
-		return categorySingleEngine;
-	else if (kbu.toLower () == 'm')
+	else if (kbu == 'e' || kbu == 'f' || kbu == 'g' || kbu == 'i'
+		|| kbu == 'c' || kbu == 'c' || kbu == 'c')
+		return categoryAircraft;
+	else if (kbu == 'm')
 		return categoryUltralight;
-	else if (kbu.toLower () == 'k')
+	else if (kbu == 'k')
 		return categoryMotorglider;
 	else
 		return categoryOther;
@@ -152,7 +147,7 @@ int Plane::categoryMaxSeats (Plane::Category category)
 	switch (category)
 	{
 		case categoryNone: return -1;
-		case categorySingleEngine: return -1;
+		case categoryAircraft: return -1;
 		case categoryGlider: return 2;
 		case categoryMotorglider: return 2;
 		case categoryUltralight: return 2;
@@ -278,12 +273,12 @@ QString Plane::categoryToDb (Category category)
 {
 	switch (category)
 	{
-		case categoryNone         : return "?"            ;
-		case categorySingleEngine : return "single_engine";
-		case categoryGlider       : return "glider"       ;
-		case categoryMotorglider  : return "motorglider"  ;
-		case categoryUltralight   : return "ultralight"   ;
-		case categoryOther        : return "other"        ;
+		case categoryNone         : return "?"          ;
+		case categoryAircraft     : return "aircraft"   ;
+		case categoryGlider       : return "glider"     ;
+		case categoryMotorglider  : return "motorglider";
+		case categoryUltralight   : return "ultralight" ;
+		case categoryOther        : return "other"      ;
 		// no default
 	}
 
@@ -293,10 +288,10 @@ QString Plane::categoryToDb (Category category)
 
 Plane::Category Plane::categoryFromDb (QString category)
 {
-	if      (category=="single_engine") return categorySingleEngine;
-	else if (category=="glider"       ) return categoryGlider;
-	else if (category=="motorglider"  ) return categoryMotorglider;
-	else if (category=="ultralight"   ) return categoryUltralight;
-	else if (category=="other"        ) return categoryOther;
-	else                                return categoryNone;
+	if      (category=="aircraft"   ) return categoryAircraft;
+	else if (category=="glider"     ) return categoryGlider;
+	else if (category=="motorglider") return categoryMotorglider;
+	else if (category=="ultralight" ) return categoryUltralight;
+	else if (category=="other"      ) return categoryOther;
+	else                              return categoryNone;
 }
