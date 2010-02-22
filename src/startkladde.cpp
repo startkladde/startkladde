@@ -8,6 +8,7 @@
 #include "src/gui/windows/MainWindow.h"
 #include "src/plugins/ShellPlugin.h"
 #include "src/db/Database.h"
+#include "src/db/DatabaseInterface.h"
 #include "src/db/migration/Migrator.h"
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/SchemaDumper.h"
@@ -120,8 +121,10 @@ int showGui (QApplication &a, Database &db, QList<ShellPlugin *> &plugins)
 	return ret;
 }
 
-int doStuff (Database &db)
+int doStuff ()
 {
+	// No reason to be thread safe here
+	DatabaseInterface db;
 
 	// Tests ahead
 	bool ok=db.open (opts.databaseInfo);
@@ -150,8 +153,8 @@ int doStuff (Database &db)
 		Migrator (db).create ();
 //	else if (opts.non_options[0]=="db:test")
 //		test_database (db);
-	else if (opts.non_options[0]=="db:fail")
-		db.executeQuery ("bam!");
+//	else if (opts.non_options[0]=="db:fail") // TODO
+//		db.executeQuery ("bam!");
 	else if (opts.non_options[0]=="db:migrations")
 	{
 		MigrationFactory factory;
@@ -207,19 +210,23 @@ int main (int argc, char **argv)
 			display_help ();
 		else
 		{
-			Database db;
 			QList<ShellPlugin *> plugins;
 
-			opts.read_config_files (&db, &plugins, argc, argv);
+			opts.read_config_files (&plugins, argc, argv);
 			QApplication a (argc, argv); // Always
 
 			if (opts.non_options.empty ())
+			{
+				Database db;
 				ret=showGui (a, db, plugins);
+			}
 			else
-				ret=doStuff (db);
+			{
+				ret=doStuff ();
+			}
 		}
 	}
-	catch (Database::QueryFailedException &ex)
+	catch (DatabaseInterface::QueryFailedException &ex)
 	{
 		std::cout << "QueryFailedException" << std::endl;
 		std::cout << "  Query: " << ex.query.lastQuery () << std::endl;

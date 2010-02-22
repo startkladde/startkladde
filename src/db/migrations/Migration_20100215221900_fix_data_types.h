@@ -11,7 +11,7 @@
 class Migration_20100215221900_fix_data_types: public Migration
 {
 	public:
-		Migration_20100215221900_fix_data_types (Database &database);
+		Migration_20100215221900_fix_data_types (DatabaseInterface &databaseInterface);
 		virtual ~Migration_20100215221900_fix_data_types ();
 
 		virtual void up ();

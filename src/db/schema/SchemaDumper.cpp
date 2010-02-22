@@ -5,11 +5,11 @@
 #include <QtSql>
 #include <QFile>
 
-#include "src/db/Database.h"
+#include "src/db/DatabaseInterface.h"
 #include "src/db/migration/Migrator.h" // Required for migrationsTableName/migrationsColumnName
 
-SchemaDumper::SchemaDumper (Database &database):
-	database (database)
+SchemaDumper::SchemaDumper (DatabaseInterface &databaseInterface):
+	databaseInterface (databaseInterface)
 {
 }
 
@@ -61,7 +61,7 @@ void SchemaDumper::dumpTables (QStringList &output)
 	output << "tables:";
 
 	QString queryString="SHOW TABLES";
-	QSqlQuery query=database.executeQuery (queryString);
+	QSqlQuery query=databaseInterface.executeQuery (queryString);
 
 	while (query.next ())
 		dumpTable (output, query.value (0).toString ());
@@ -80,7 +80,7 @@ void SchemaDumper::dumpColumns (QStringList &output, const QString &table)
 	output << "  columns:";
 
 	QString queryString=QString ("SHOW COLUMNS FROM %1").arg (table);
-	QSqlQuery query=database.executeQuery (queryString);
+	QSqlQuery query=databaseInterface.executeQuery (queryString);
 
 	QSqlRecord record=query.record ();
 	int nameIndex=record.indexOf ("Field");
@@ -114,8 +114,8 @@ void SchemaDumper::dumpVersions (QStringList &output)
 	QString table=Migrator::migrationsTableName;
 	QString column=Migrator::migrationsColumnName;
 
-	QString queryString=database.selectDistinctColumnQuery (table, column);
-	QSqlQuery query=database.executeQuery (queryString);
+	QString queryString=databaseInterface.selectDistinctColumnQuery (table, column);
+	QSqlQuery query=databaseInterface.executeQuery (queryString);
 
 	while (query.next ())
 		output << QString ("- %1").arg (query.value (0).toString ());

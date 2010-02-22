@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-Migration_20100217131516_flight_status_columns::Migration_20100217131516_flight_status_columns (Database &database):
-	Migration (database)
+Migration_20100217131516_flight_status_columns::Migration_20100217131516_flight_status_columns (DatabaseInterface &databaseInterface):
+	Migration (databaseInterface)
 {
 }
 

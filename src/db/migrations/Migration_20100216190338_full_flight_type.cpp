@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-Migration_20100216190338_full_flight_type::Migration_20100216190338_full_flight_type (Database &database):
-	Migration (database)
+Migration_20100216190338_full_flight_type::Migration_20100216190338_full_flight_type (DatabaseInterface &databaseInterface):
+	Migration (databaseInterface)
 {
 }
 

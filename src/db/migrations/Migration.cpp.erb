@@ -1,7 +1,7 @@
 #include "<%= class_name %>.h"
 
-<%= class_name %>::<%= class_name %> (Database &database):
-	Migration (database)
+<%= class_name %>::<%= class_name %> (DatabaseInterface &databaseInterface):
+	Migration (databaseInterface)
 {
 }
 
@@ -12,13 +12,13 @@
 void <%= class_name %>::up ()
 {
 	// <%= "TO#{}DO" %> implement
-	// database.createTable  ("name");
-	// database.addColumn ("table", "name", Database::dataTypeString);
+	// createTable  ("name");
+	// addColumn ("table", "name", dataTypeString ());
 }
 
 void <%= class_name %>::down ()
 {
 	// <%= "TO#{}DO" %> implement
-	// database.dropTable ("name")
+	// dropTable ("name")
 }
 

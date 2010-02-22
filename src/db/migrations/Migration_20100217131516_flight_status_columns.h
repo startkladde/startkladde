@@ -10,7 +10,7 @@
 class Migration_20100217131516_flight_status_columns: public Migration
 {
 	public:
-		Migration_20100217131516_flight_status_columns (Database &database);
+		Migration_20100217131516_flight_status_columns (DatabaseInterface &databaseInterface);
 		virtual ~Migration_20100217131516_flight_status_columns ();
 
 		virtual void up ();

@@ -3,7 +3,7 @@
 
 #include <QStringList>
 
-class Database;
+class DatabaseInterface;
 class Migration;
 
 /**
@@ -26,7 +26,7 @@ class MigrationFactory
 		QList<quint64> availableVersions ();
 		quint64 latestVersion ();
 
-		Migration *createMigration (Database &database, quint64 version);
+		Migration *createMigration (DatabaseInterface &databaseInterface, quint64 version);
 		QString migrationName (quint64 version);
 };
 

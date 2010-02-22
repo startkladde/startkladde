@@ -8,7 +8,7 @@
 class Schema: public Migration
 {
 	public:
-		Schema (Database &database);
+		Schema (DatabaseInterface &databaseInterface);
 		virtual ~Schema ();
 
 		virtual QList<quint64> getVersions ()=0;

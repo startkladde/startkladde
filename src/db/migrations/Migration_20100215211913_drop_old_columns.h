@@ -12,7 +12,7 @@
 class Migration_20100215211913_drop_old_columns: public Migration
 {
 	public:
-		Migration_20100215211913_drop_old_columns (Database &database);
+		Migration_20100215211913_drop_old_columns (DatabaseInterface &databaseInterface);
 		virtual ~Migration_20100215211913_drop_old_columns ();
 
 		virtual void up ();

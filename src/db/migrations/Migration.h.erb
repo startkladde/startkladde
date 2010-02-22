@@ -9,7 +9,7 @@
 class <%= class_name %>: public Migration
 {
 	public:
-		<%= class_name %> (Database &database);
+		<%= class_name %> (DatabaseInterface &databaseInterface);
 		virtual ~<%= class_name %> ();
 
 		virtual void up ();

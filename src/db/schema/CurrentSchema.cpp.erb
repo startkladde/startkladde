@@ -14,8 +14,8 @@
 
 #include "src/db/schema/CurrentSchema.h"
 
-CurrentSchema::CurrentSchema (Database &database):
-	Schema (database)
+CurrentSchema::CurrentSchema (DatabaseInterface &databaseInterface):
+	Schema (databaseInterface)
 {
 }
 

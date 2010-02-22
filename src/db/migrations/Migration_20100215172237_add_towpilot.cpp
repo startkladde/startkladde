@@ -1,7 +1,7 @@
 #include "Migration_20100215172237_add_towpilot.h"
 
-Migration_20100215172237_add_towpilot::Migration_20100215172237_add_towpilot (Database &database):
-	Migration (database)
+Migration_20100215172237_add_towpilot::Migration_20100215172237_add_towpilot (DatabaseInterface &databaseInterface):
+	Migration (databaseInterface)
 {
 }
 

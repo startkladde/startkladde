@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "src/db/Database.h"
+#include "src/db/DatabaseInterface.h"
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/CurrentSchema.h"
 #include "src/util/qString.h"
@@ -16,12 +16,12 @@ const QString Migrator::migrationsTableName="schema_migrations";
 const QString Migrator::migrationsColumnName="version";
 
 /**
- * Creates a Migrator for the given database
+ * Creates a Migrator for the given databaseInterface
  *
- * @param database the database to access
+ * @param databaseInterface the databaseInterface to access
  */
-Migrator::Migrator (Database &database):
-	database (database),
+Migrator::Migrator (DatabaseInterface &databaseInterface):
+	databaseInterface (databaseInterface),
 	factory (new MigrationFactory ())
 {
 }
@@ -41,7 +41,7 @@ void Migrator::runMigration (quint64 version, Migration::Direction direction)
 	Migration *migration=NULL;
 	try
 	{
-		migration=factory->createMigration (database, version);
+		migration=factory->createMigration (databaseInterface, version);
 		QString name=factory->migrationName (version);
 
 		switch (direction)
@@ -105,7 +105,7 @@ void Migrator::loadSchema ()
 {
 	std::cout << "== Loading schema =============================================================" << std::endl;
 
-	CurrentSchema schema (database);
+	CurrentSchema schema (databaseInterface);
 
 	schema.up ();
 	assumeMigrated (schema.getVersions ());
@@ -115,14 +115,14 @@ void Migrator::loadSchema ()
 
 void Migrator::drop ()
 {
-	QString databaseName=database.getInfo ().database;
-	database.executeQuery (QString ("DROP DATABASE %1").arg (databaseName));
+	QString databaseName=databaseInterface.getInfo ().database;
+	databaseInterface.executeQuery (QString ("DROP DATABASE %1").arg (databaseName));
 }
 
 void Migrator::create ()
 {
-	QString databaseName=database.getInfo ().database;
-	database.executeQuery (QString ("CREATE DATABASE %1").arg (databaseName));
+	QString databaseName=databaseInterface.getInfo ().database;
+	databaseInterface.executeQuery (QString ("CREATE DATABASE %1").arg (databaseName));
 }
 
 void Migrator::clear ()
@@ -179,9 +179,9 @@ quint64 Migrator::nextMigration ()
  */
 quint64 Migrator::currentVersion ()
 {
-	if (!database.tableExists (migrationsTableName)) return 0;
+	if (!databaseInterface.tableExists (migrationsTableName)) return 0;
 
-	QSqlQuery query=database.executeQuery (
+	QSqlQuery query=databaseInterface.executeQuery (
 		QString ("SELECT %2 FROM %1 ORDER BY %2 DESC LIMIT 1")
 		.arg (migrationsTableName, migrationsColumnName)
 	);
@@ -194,7 +194,7 @@ quint64 Migrator::currentVersion ()
 
 void Migrator::createMigrationsTable ()
 {
-	database.executeQuery (
+	databaseInterface.executeQuery (
 		QString (
 			"CREATE TABLE %1 (%2 VARCHAR(255) NOT NULL PRIMARY KEY)"
 			" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
@@ -204,59 +204,59 @@ void Migrator::createMigrationsTable ()
 
 bool Migrator::hasMigration (quint64 version)
 {
-	QSqlQuery query=database.prepareQuery (
+	QSqlQuery query=databaseInterface.prepareQuery (
 			QString ("SELECT %2 FROM %1 WHERE %2=?")
 			.arg (migrationsTableName, migrationsColumnName)
 			);
 	query.addBindValue (version);
 
-	return database.queryHasResult (query);
+	return databaseInterface.queryHasResult (query);
 }
 
 void Migrator::addMigration (quint64 version)
 {
 	// If the migrations table does not exist, create it
-	if (!database.tableExists (migrationsTableName)) createMigrationsTable ();
+	if (!databaseInterface.tableExists (migrationsTableName)) createMigrationsTable ();
 
 	// If the migration name is already present in the migrations table, return
 	if (hasMigration (version)) return;
 
 	// Add the migration name to the migrations table
-	QSqlQuery query=database.prepareQuery (
+	QSqlQuery query=databaseInterface.prepareQuery (
 			QString ("INSERT INTO %1 (%2) VALUES (?)")
 			.arg (migrationsTableName, migrationsColumnName)
 			);
 	query.addBindValue (version);
-	database.executeQuery (query);
+	databaseInterface.executeQuery (query);
 }
 
 void Migrator::removeMigration (quint64 version)
 {
 	// If the migrations table does not exist, return
-	if (!database.tableExists (migrationsTableName)) return;
+	if (!databaseInterface.tableExists (migrationsTableName)) return;
 
 	// Remove the migration name from the migrations table
-	QSqlQuery query=database.prepareQuery (
+	QSqlQuery query=databaseInterface.prepareQuery (
 			QString ("DELETE FROM %1 where %2=?")
 			.arg (migrationsTableName, migrationsColumnName)
 			);
 	query.addBindValue (version);
 
-	database.executeQuery (query);
+	databaseInterface.executeQuery (query);
 }
 
 QList<quint64> Migrator::appliedMigrations ()
 {
 	QList<quint64> migrations;
 
-	if (!database.tableExists (migrationsTableName)) return migrations;
+	if (!databaseInterface.tableExists (migrationsTableName)) return migrations;
 
-	QSqlQuery query=database.prepareQuery (
+	QSqlQuery query=databaseInterface.prepareQuery (
 			QString ("SELECT %2 FROM %1")
 			.arg (migrationsTableName, migrationsColumnName)
 			);
 
-	database.executeQuery (query);
+	databaseInterface.executeQuery (query);
 
 	while (query.next ())
 		migrations << query.value (0).toLongLong ();
@@ -267,20 +267,20 @@ QList<quint64> Migrator::appliedMigrations ()
 void Migrator::assumeMigrated (QList<quint64> versions)
 {
 	// If the migrations table does not exist, create it
-	if (!database.tableExists (migrationsTableName)) createMigrationsTable ();
+	if (!databaseInterface.tableExists (migrationsTableName)) createMigrationsTable ();
 
 	// Remove all migrations
-	database.executeQuery (QString ("DELETE FROM %1").arg (migrationsTableName));
+	databaseInterface.executeQuery (QString ("DELETE FROM %1").arg (migrationsTableName));
 
 	// Add all migrations
 	foreach (quint64 version, versions)
 	{
-		QSqlQuery query=database.prepareQuery (
+		QSqlQuery query=databaseInterface.prepareQuery (
 			QString ("INSERT INTO %1 (%2) VALUES (?)")
 			.arg (migrationsTableName, migrationsColumnName)
 			);
 
 		query.addBindValue (version);
-		database.executeQuery (query);
+		databaseInterface.executeQuery (query);
 	}
 }

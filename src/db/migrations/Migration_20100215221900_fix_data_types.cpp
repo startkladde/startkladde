@@ -1,7 +1,7 @@
 #include "Migration_20100215221900_fix_data_types.h"
 
-Migration_20100215221900_fix_data_types::Migration_20100215221900_fix_data_types (Database &database):
-	Migration (database)
+Migration_20100215221900_fix_data_types::Migration_20100215221900_fix_data_types (DatabaseInterface &databaseInterface):
+	Migration (databaseInterface)
 {
 }
 

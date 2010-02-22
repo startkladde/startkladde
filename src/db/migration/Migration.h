@@ -5,7 +5,7 @@
 #include "QVariant"
 #include "QSqlQuery"
 
-class Database;
+class DatabaseInterface;
 
 /**
  * A new migration is created by creating the appropriate class in
@@ -18,20 +18,21 @@ class Database;
  * Migrations are supposed to be called only through Migrator, which keeps track
  * of which migrations have already been applied (see documentation).
  *
- * Note that we forward a lot of Database methods (and constants) to database
- * instead of having Migration implementations access the database directly.
+ * Note that we forward a lot of DatabaseInterface methods (and constants) to
+ * databaseInterface instead of having Migration implementations access the
+ * databaseInterface directly.
  * This is done in order to avoid a dependency of the individual migrations on
- * the Database, which would necessitate recompiling all migrations when the
- * database interface changes, even if the migrations are not affected by the
- * change.
+ * DatabaseInterface, which would necessitate recompiling all migrations when
+ * the database interface changes, even if the migrations are not affected by
+ * the change.
  *
  * Another potential use of this is that this can be used to change the
  * behavior of the database methods invoked by the migrations, for example to
  * add logging or accumulate changes before executing them.
  *
  * Notes for implementations:
- *   - do not include Database.h. Use the forwarder methods provided by this
- *     class instead. Add forwarder methods if required.
+ *   - do not include DatabaseInterface.h. Use the forwarder methods provided
+ *     by this class instead. Add forwarder methods if required.
  */
 class Migration
 {
@@ -59,7 +60,7 @@ class Migration
     	static QString dataTypeId        ();
 
 
-		Migration (Database &database);
+		Migration (DatabaseInterface &databaseInterface);
 		virtual ~Migration ();
 
 		virtual void up ()=0;
@@ -87,7 +88,7 @@ class Migration
 		void updateColumnValues (const QString &tableName, const QString &columnName, const QVariant &oldValue, const QVariant &newValue);
 
 	private:
-		Database &database;
+		DatabaseInterface &databaseInterface;
 };
 
 #endif

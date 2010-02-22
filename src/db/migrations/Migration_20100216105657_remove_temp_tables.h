@@ -15,7 +15,7 @@
 class Migration_20100216105657_remove_temp_tables: public Migration
 {
 	public:
-		Migration_20100216105657_remove_temp_tables (Database &database);
+		Migration_20100216105657_remove_temp_tables (DatabaseInterface &databaseInterface);
 		virtual ~Migration_20100216105657_remove_temp_tables ();
 
 		virtual void up ();

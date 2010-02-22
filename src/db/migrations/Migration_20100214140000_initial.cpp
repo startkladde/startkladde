@@ -1,7 +1,7 @@
 #include "Migration_20100214140000_initial.h"
 
-Migration_20100214140000_initial::Migration_20100214140000_initial (Database &database):
-	Migration (database)
+Migration_20100214140000_initial::Migration_20100214140000_initial (DatabaseInterface &databaseInterface):
+	Migration (databaseInterface)
 {
 }
 

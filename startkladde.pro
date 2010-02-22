@@ -33,6 +33,7 @@ HEADERS += \
            src/db/DbEvent.h \
            src/db/dbId.h \
            src/db/Database.h \
+           src/db/DatabaseInterface.h \
            src/db/DataStorage.h \
            src/db/DataStorageMonitor.h \
            src/db/DataStorageWorker.h \
@@ -119,6 +120,7 @@ SOURCES += \
            src/db/DbEvent.cpp \
            src/db/dbId.cpp \
            src/db/Database.cpp \
+           src/db/DatabaseInterface.cpp \
            src/db/DataStorage.cpp \
            src/db/DataStorageMonitor.cpp \
            src/db/DataStorageWorker.cpp \

@@ -11,7 +11,6 @@
 
 #include "src/db/DatabaseInfo.h"
 
-class Database;
 class ShellPlugin;
 class LaunchMethod;
 
@@ -20,8 +19,8 @@ class Options
 	public:
 		Options ();
 		bool parse_arguments (int argc, char *argv[]);
-		bool read_config_file (QString filename, Database *db, QList<ShellPlugin *> *plugins);
-		bool read_config_files (Database *db, QList<ShellPlugin *> *plugins, int argc, char *argv[]);
+		bool read_config_file (QString filename, QList<ShellPlugin *> *plugins);
+		bool read_config_files (QList<ShellPlugin *> *plugins, int argc, char *argv[]);
 		static void display_options (QString prefix);
 		void do_display ();
 		bool need_display ();

@@ -224,18 +224,17 @@ bool Options::parse_arguments (int argc, char *argv[])
 	return true;
 }
 
-bool Options::read_config_files (Database *db, QList<ShellPlugin *> *plugins, int argc, char *argv[])
-	// db is only passed for startrten (TODO change something)
+bool Options::read_config_files (QList<ShellPlugin *> *plugins, int argc, char *argv[])
 	// Also reads command line arguments, if argc>0 (and a configuration file
 	// was read)
 	// Returns whether a configuration file was read.
 {
 	if (config_file.isEmpty ())
 	{
-		if (!read_config_file (get_environment ("HOME")+"/"+default_home_config_filename, db, plugins))
+		if (!read_config_file (get_environment ("HOME")+"/"+default_home_config_filename, plugins))
 		{
 			// The first default was not found, try the second.
-			if (!read_config_file (default_local_config_fielname, db, plugins))
+			if (!read_config_file (default_local_config_fielname, plugins))
 			{
 				// The second default was't found either. We go on without a
 				// config file, but return false.
@@ -246,7 +245,7 @@ bool Options::read_config_files (Database *db, QList<ShellPlugin *> *plugins, in
 	else
 	{
 		// Read the given configuration file.
-		if (!read_config_file (config_file, db, plugins))
+		if (!read_config_file (config_file, plugins))
 		{
 			std::cerr << "Error: the specified configuration file " << config_file << " could not be read." << std::endl;
 			return false;
@@ -258,8 +257,7 @@ bool Options::read_config_files (Database *db, QList<ShellPlugin *> *plugins, in
 	return true;
 }
 
-bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugin *> *plugins)
-	// db is only passed for launch methods (TODO change something)
+bool Options::read_config_file (QString filename, QList<ShellPlugin *> *plugins)
 	// Returns whether the file existed.
 {
 	QFile configFile (filename);
@@ -356,12 +354,12 @@ bool Options::read_config_file (QString filename, Database *db, QList<ShellPlugi
 			// Actions
 			if (key=="source")
 			{
-				bool ret=read_config_file (value, db, plugins);
+				bool ret=read_config_file (value, plugins);
 				if (!ret) std::cerr << "Error: file \"" << value << "\" could not be read." << std::endl;
 			}
 
 			// Options not saved locally
-			if (db && key=="startart")
+			if (key=="startart")
 			{
 				LaunchMethod sa=LaunchMethod::parseConfigLine (value);
 				if (idInvalid (sa.getId ()))

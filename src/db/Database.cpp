@@ -21,7 +21,6 @@
  *   - make sure "", 0 and NULL are read correctly
  *
  * Improvements:
- *   - split this class into parts (generic, orm, specific)
  *   - move (static) methods like selectDistinctColumnQuery to QueryGenerator (but see below)
  *   - make a class Query, a la Query ("select * from foo where id=?") << 42
  *   - allow specifying an "exclude" value to selectDistinctColumnQuery (requires
@@ -81,326 +80,27 @@
  * Condition ("foo=? and bar=?") << 42 << "baz";
  */
 
-// ***************
-// ** Constants **
-// ***************
-
-// Note: these values are used in migrations. If they are changed, the
-// migrations should be updated to use the same values as before.
-QString Database::dataTypeBinary    () { return "blob"            ; }
-QString Database::dataTypeBoolean   () { return "tinyint(1)"      ; }
-QString Database::dataTypeDate      () { return "date"            ; }
-QString Database::dataTypeDatetime  () { return "datetime"        ; }
-QString Database::dataTypeDecimal   () { return "decimal"         ; }
-QString Database::dataTypeFloat     () { return "float"           ; }
-QString Database::dataTypeInteger   () { return "int(11)"         ; }
-QString Database::dataTypeString    () { return "varchar(255)"    ; }
-QString Database::dataTypeText      () { return "text"            ; }
-QString Database::dataTypeTime      () { return "time"            ; }
-QString Database::dataTypeTimestamp () { return "datetime"        ; }
-QString Database::dataTypeCharacter () { return "varchar(1)"      ; } // Non-Rails
-QString Database::dataTypeId        () { return dataTypeInteger (); }
 
 
 // ******************
 // ** Construction **
 // ******************
 
-Database::Database ()
+Database::Database ():
+	databaseInterface ()
 {
-    db=QSqlDatabase::addDatabase ("QMYSQL");
 }
 
-bool Database::open (const DatabaseInfo &dbInfo)
-{
-	info=dbInfo;
-
-	std::cout << QString ("Connecting to %1@%2:%3")
-		.arg (dbInfo.username, dbInfo.server, dbInfo.database) << std::endl;
-
-    db.setHostName     (dbInfo.server  );
-    db.setUserName     (dbInfo.username);
-    db.setPassword     (dbInfo.password);
-    db.setPort         (dbInfo.port    );
-    db.setDatabaseName (dbInfo.database);
-
-    bool result=db.open ();
-	if (!result) return false;
-
-//    QSqlQuery query (db);
-//    query.prepare ("show variables like 'char%'");
-//    executeQuery (query);
-//
-//    while (query.next())
-//    {
-//    	QString name=query.value(0).toString ();
-//    	QString value=query.value(1).toString ();
-//    	std::cout << QString ("%1=%2").arg (name).arg (value) << std::endl;
-//    }
-
-	return result;
-}
-
-void Database::close ()
-{
-	db.close ();
-}
 
 Database::~Database()
 {
-	if (db.isOpen ())
-		close ();
-}
-
-
-// *************
-// ** Queries **
-// *************
-
-/**
- * Do not execute the query retrieved by this method directly; pass it to
- * #executeQuery for propper error handling and logging.
- *
- * @param queryString
- * @return
- */
-QSqlQuery Database::prepareQuery (QString queryString)
-{
-	QSqlQuery query (db);
-	query.prepare (queryString);
-	return queryString;
-}
-
-QSqlQuery &Database::executeQuery (QSqlQuery &query)
-{
-	if (!query.exec ())
-		throw QueryFailedException (query);
-
-//	std::cout << query.lastQuery () << std::endl;
-
-	return query;
-}
-
-QSqlQuery Database::executeQuery (QString queryString)
-{
-	QSqlQuery query (db);
-	query.prepare (queryString);
-	return executeQuery (query);
-}
-
-
-// ******************
-// ** Very generic **
-// ******************
-
-QStringList Database::listStrings (QSqlQuery query)
-{
-	QStringList stringList;
-
-	while (query.next ())
-		stringList.append (query.value (0).toString ());
-
-	return stringList;
-}
-
-QStringList Database::listStrings (QString query)
-{
-	QSqlQuery q (query, db);
-	executeQuery (q);
-	return listStrings (q);
-}
-
-QString Database::selectDistinctColumnQuery (QString table, QString column, bool excludeEmpty)
-{
-	// "select distinct column from table"
-	QString query=QString ("SELECT DISTINCT %1 FROM %2").arg (column, table);
-
-	// ..." where column!=''"
-	if (excludeEmpty) query+=QString (" WHERE %1!=''").arg (column);
-	return query;
-}
-
-QString Database::selectDistinctColumnQuery (QStringList tables, QStringList columns, bool excludeEmpty)
-{
-	QStringList parts;
-
-	foreach (QString table, tables)
-		foreach (QString column, columns)
-			parts << selectDistinctColumnQuery (table, column, excludeEmpty);
-
-	return parts.join (" UNION ");
-}
-
-QString Database::selectDistinctColumnQuery (QStringList tables, QString column, bool excludeEmpty)
-{
-	return selectDistinctColumnQuery (tables, QStringList (column), excludeEmpty);
-}
-
-QString Database::selectDistinctColumnQuery (QString table, QStringList columns, bool excludeEmpty)
-{
-	return selectDistinctColumnQuery (QStringList (table), columns, excludeEmpty);
-}
-
-bool Database::queryHasResult (QSqlQuery &query)
-{
-	executeQuery (query);
-	return query.size()>0;
-}
-
-bool Database::queryHasResult (QString queryString)
-{
-	QSqlQuery query=executeQuery (queryString);
-	return query.size()>0;
-}
-
-void Database::updateColumnValues (const QString &tableName, const QString &columnName,
-	const QVariant &oldValue, const QVariant &newValue)
-{
-	QSqlQuery query=prepareQuery (
-		QString ("UPDATE %1 SET %2=? WHERE %2=?")
-		.arg (tableName, columnName)
-	);
-
-	query.addBindValue (newValue);
-	query.addBindValue (oldValue);
-
-	executeQuery (query);
 }
 
 
 
-// *************************
-// ** Schema manipulation **
-// *************************
 
-void Database::createTable (const QString &name, bool skipIfExists)
-{
-	std::cout << QString ("Creating table %1%2")
-		.arg (name, skipIfExists?" if it does not exist":"")
-		<< std::endl;
 
-	QString queryString=QString (
-		"CREATE TABLE %1 %2 ("
-		"id int(11) NOT NULL AUTO_INCREMENT,"
-		"PRIMARY KEY (id)"
-		") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
-		)
-		.arg (skipIfExists?"IF NOT EXISTS":"", name);
 
-	executeQuery (queryString);
-}
-
-void Database::createTableLike (const QString &like, const QString &name, bool skipIfExists)
-{
-	std::cout << QString ("Creating table %1 like %2%3")
-		.arg (name, like, skipIfExists?" if it does not exist":"")
-		<< std::endl;
-
-	QString queryString=
-		QString ("CREATE TABLE %1 %2 LIKE %3")
-		.arg (skipIfExists?"IF NOT EXISTS":"", name, like);
-
-	executeQuery (queryString);
-}
-
-void Database::dropTable (const QString &name)
-{
-	std::cout << QString ("Dropping table %1").arg (name) << std::endl;
-
-	QString queryString=
-		QString ("DROP TABLE %1")
-		.arg (name);
-
-	executeQuery (queryString);
-}
-
-void Database::renameTable (const QString &oldName, const QString &newName)
-{
-	std::cout << QString ("Renaming table %1 to %2").arg (oldName, newName) << std::endl;
-
-	QString queryString=
-		QString ("RENAME TABLE %1 TO %2")
-		.arg (oldName, newName);
-
-	executeQuery (queryString);
-}
-
-bool Database::tableExists (const QString &name)
-{
-	// Using addBindValue does not seem to work here
-	QString queryString=
-		QString ("SHOW TABLES LIKE '%1'")
-		.arg (name);
-
-	return queryHasResult (queryString);
-}
-
-void Database::addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification, bool skipIfExists)
-{
-	if (skipIfExists && columnExists (table, name))
-	{
-		std::cout << QString ("Skipping existing column %1.%2").arg (table, name) << std::endl;
-		return;
-	}
-
-	std::cout << QString ("Adding column %1.%2").arg (table, name) << std::endl;
-
-	QString queryString=
-		QString ("ALTER TABLE %1 ADD COLUMN %2 %3 %4")
-		.arg (table, name, type, extraSpecification);
-
-	executeQuery (queryString);
-}
-
-void Database::changeColumnType (const QString &table, const QString &name, const QString &type, const QString &extraSpecification)
-{
-	std::cout << QString ("Changing column %1.%2 type to %3")
-		.arg (table, name, type) << std::endl;
-
-	QString queryString=
-		QString ("ALTER TABLE %1 MODIFY %2 %3 %4")
-		.arg (table, name, type, extraSpecification);
-
-	executeQuery (queryString);
-}
-
-void Database::dropColumn (const QString &table, const QString &name, bool skipIfNotExists)
-{
-	if (skipIfNotExists && !columnExists (table, name))
-	{
-		std::cout << QString ("Skipping non-existing column %1.%2").arg (table, name) << std::endl;
-		return;
-	}
-
-	std::cout << QString ("Dropping column %1.%2").arg (table, name) << std::endl;
-
-	QString queryString=
-		QString ("ALTER TABLE %1 DROP COLUMN %2")
-		.arg (table, name);
-
-	executeQuery (queryString);
-}
-
-void Database::renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type, const QString &extraSpecification)
-{
-	std::cout << QString ("Renaming column %1.%2 to %3").arg (table, oldName, newName) << std::endl;
-
-	QString queryString=
-		QString ("ALTER TABLE %1 CHANGE %2 %3 %4 %5")
-		.arg (table, oldName, newName, type, extraSpecification);
-
-	executeQuery (queryString);
-}
-
-bool Database::columnExists (const QString &table, const QString &name)
-{
-	// Using addBindValue does not seem to work here
-	QString queryString=
-		QString ("SHOW COLUMNS FROM %1 LIKE '%2'")
-		.arg (table, name);
-
-	return queryHasResult (queryString);
-}
 
 
 // *********
@@ -409,29 +109,26 @@ bool Database::columnExists (const QString &table, const QString &name)
 
 template<class T> QList<T> Database::getObjects (QString condition, QList<QVariant> conditionValues)
 {
-	QSqlQuery query (db);
-	query.setForwardOnly (true);
-
 	QString queryString=QString ("SELECT %1 FROM %2")
 		.arg (T::selectColumnList (), T::dbTableName ());
 
 	if (!condition.isEmpty ())
 		queryString+=" WHERE "+condition;
 
-	query.prepare (queryString);
-
+	QSqlQuery query=databaseInterface.prepareQuery (queryString, true);
 	foreach (const QVariant &conditionValue, conditionValues)
 		query.addBindValue (conditionValue);
 
-	executeQuery (query);
+	databaseInterface.executeQuery (query);
 
     return T::createListFromQuery (query);
 }
 
 template<class T> int Database::countObjects ()
 {
-	QString q="SELECT COUNT(*) FROM "+T::dbTableName ();
-	QSqlQuery query (q, db);
+	QString queryString="SELECT COUNT(*) FROM "+T::dbTableName ();
+
+	QSqlQuery query=databaseInterface.executeQuery (queryString);
 
 	query.next ();
     return query.value (0).toInt ();
@@ -439,10 +136,12 @@ template<class T> int Database::countObjects ()
 
 template<class T> bool Database::objectExists (dbId id)
 {
-	QSqlQuery query (db);
-	query.prepare ("SELECT COUNT(*) FROM "+T::dbTableName ()+" WHERE id=?");
+	QString queryString=QString ("SELECT COUNT(*) FROM %1 WHERE id=?")
+		.arg (T::dbTableName ());
+
+	QSqlQuery query=databaseInterface.prepareQuery (queryString);
 	query.addBindValue (id);
-	executeQuery (query);
+	databaseInterface.executeQuery (query);
 
 	query.next ();
 	return query.value (0).toInt ()>0;
@@ -450,10 +149,12 @@ template<class T> bool Database::objectExists (dbId id)
 
 template<class T> T Database::getObject (dbId id)
 {
-	QSqlQuery query (db);
-	query.prepare ("SELECT "+T::selectColumnList ()+" FROM "+T::dbTableName ()+" WHERE ID=?");
+	QString queryString=QString ("SELECT %1 FROM %2 WHERE ID=?")
+		.arg (T::selectColumnList (), T::dbTableName ());
+
+	QSqlQuery query=databaseInterface.prepareQuery (queryString);
 	query.addBindValue (id);
-	executeQuery (query);
+	databaseInterface.executeQuery (query);
 
 	if (!query.next ()) throw NotFoundException ();
 
@@ -462,10 +163,12 @@ template<class T> T Database::getObject (dbId id)
 
 template<class T> int Database::deleteObject (dbId id)
 {
-	QSqlQuery query (db);
-	query.prepare ("DELETE FROM "+T::dbTableName ()+" WHERE ID=?");
+	QString queryString=QString ("DELETE FROM %1 WHERE ID=?")
+		.arg (T::dbTableName ());
+
+	QSqlQuery query=databaseInterface.prepareQuery (queryString);
 	query.addBindValue (id);
-	executeQuery (query);
+	databaseInterface.executeQuery (query);
 
 	return query.numRowsAffected ();
 }
@@ -478,10 +181,12 @@ template<class T> int Database::deleteObject (dbId id)
  */
 template<class T> dbId Database::createObject (T &object)
 {
-	QSqlQuery query (db);
-	query.prepare ("INSERT INTO "+T::dbTableName ()+" "+T::insertValueList ());
+	QString queryString=QString ("INSERT INTO %1 %2")
+		.arg (T::dbTableName (), T::insertValueList ());
+
+	QSqlQuery query=databaseInterface.prepareQuery (queryString);
 	object.bindValues (query);
-	executeQuery (query);
+	databaseInterface.executeQuery (query);
 
 	object.id=query.lastInsertId ().toLongLong ();
 
@@ -490,12 +195,14 @@ template<class T> dbId Database::createObject (T &object)
 
 template<class T> int Database::updateObject (const T &object)
 {
-	QSqlQuery query (db);
-	query.prepare ("UPDATE "+T::dbTableName ()+" SET "+object.updateValueList ()+" WHERE id=?");
+	QString queryString=QString ("UPDATE %1 SET %2 WHERE id=?")
+		.arg (T::dbTableName (), object.updateValueList ());
+
+	QSqlQuery query=databaseInterface.prepareQuery (queryString);
 	object.bindValues (query);
 	query.addBindValue (object.id);
 
-	executeQuery (query);
+	databaseInterface.executeQuery (query);
 
 	return query.numRowsAffected ();
 }
@@ -516,7 +223,7 @@ template<class T> int Database::updateObject (const T &object)
 	template bool         Database::objectExists<Class> (dbId id); \
 	template Class        Database::getObject           (dbId id); \
 	template int          Database::deleteObject<Class> (dbId id); \
-	template dbId        Database::createObject        (Class &object); \
+	template dbId         Database::createObject        (Class &object); \
 	template int          Database::updateObject        (const Class &object); \
 	// Empty line
 
@@ -534,7 +241,7 @@ INSTANTIATE_TEMPLATES (LaunchMethod)
 
 QStringList Database::listLocations ()
 {
-	return listStrings (selectDistinctColumnQuery (
+	return databaseInterface.listStrings (databaseInterface.selectDistinctColumnQuery (
 		Flight::dbTableName (),
 		QStringList () << "departure_location" << "landing_location",
 		true));
@@ -542,7 +249,7 @@ QStringList Database::listLocations ()
 
 QStringList Database::listAccountingNotes ()
 {
-	return listStrings (selectDistinctColumnQuery (
+	return databaseInterface.listStrings (databaseInterface.selectDistinctColumnQuery (
 		Flight::dbTableName (),
 		"accounting_notes",
 		true));
@@ -550,7 +257,7 @@ QStringList Database::listAccountingNotes ()
 
 QStringList Database::listClubs ()
 {
-	return listStrings (selectDistinctColumnQuery (
+	return databaseInterface.listStrings (databaseInterface.selectDistinctColumnQuery (
 		QStringList () << Plane::dbTableName() << Person::dbTableName (),
 		"club",
 		true));
@@ -558,7 +265,7 @@ QStringList Database::listClubs ()
 
 QStringList Database::listPlaneTypes ()
 {
-	return listStrings (selectDistinctColumnQuery (
+	return databaseInterface.listStrings (databaseInterface.selectDistinctColumnQuery (
 		Plane::dbTableName (),
 		"type",
 		true));
