@@ -10,8 +10,8 @@
 
 // TODO may includes in header
 #include "EntityList.h"
-#include "src/db/DataStorageMonitor.h"
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorageMonitor.h"
+#include "src/db/dataStorage/DataStorage.h"
 #include "src/db/DbEvent.h"
 #include "src/concurrent/threadUtil.h"
 

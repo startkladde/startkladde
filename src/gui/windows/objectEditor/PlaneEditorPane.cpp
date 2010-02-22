@@ -3,7 +3,7 @@
 #include <QMessageBox>
 
 #include "src/text.h"
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorage.h"
 #include "src/model/Plane.h"
 
 /*

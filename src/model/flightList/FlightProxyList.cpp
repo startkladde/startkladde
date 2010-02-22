@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include "src/model/Flight.h"
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorage.h"
 #include "src/model/LaunchMethod.h"
 
 FlightProxyList::FlightProxyList (DataStorage &dataStorage, AbstractObjectList<Flight> &sourceModel, QObject *parent):

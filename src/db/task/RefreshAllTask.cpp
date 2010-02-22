@@ -1,6 +1,6 @@
 #include "RefreshAllTask.h"
 
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorage.h"
 
 RefreshAllTask::RefreshAllTask (DataStorage &dataStorage):
 	dataStorage (dataStorage)

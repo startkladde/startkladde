@@ -12,7 +12,7 @@
 #include <QMutexLocker>
 
 //#include "src/text.h"
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorage.h"
 #include "src/concurrent/task/Task.h"
 #include "src/util/qString.h"
 

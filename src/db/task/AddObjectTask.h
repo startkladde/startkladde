@@ -9,7 +9,7 @@
 #define ADDOBJECTTASK_H_
 
 #include "src/concurrent/task/Task.h"
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorage.h"
 
 template<class T> class AddObjectTask: public Task
 {

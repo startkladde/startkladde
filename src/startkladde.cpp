@@ -123,7 +123,8 @@ int showGui (QApplication &a, Database &db, QList<ShellPlugin *> &plugins)
 
 int doStuff ()
 {
-	// No reason to be thread safe here
+	// No reason to be thread safe here - don't construct a Database, use a
+	// DatabaseInterface directly.
 	DatabaseInterface db;
 
 	// Tests ahead

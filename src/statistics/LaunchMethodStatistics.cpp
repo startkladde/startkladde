@@ -2,7 +2,7 @@
 
 #include "src/model/LaunchMethod.h"
 #include "src/model/Flight.h"
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorage.h"
 
 // ************************
 // ** Entry construction **

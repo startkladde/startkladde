@@ -1,6 +1,6 @@
 #include "PersonEditorPane.h"
 
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorage.h"
 #include "src/model/Person.h"
 #include "src/text.h"
 

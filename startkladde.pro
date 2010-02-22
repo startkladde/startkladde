@@ -34,9 +34,9 @@ HEADERS += \
            src/db/dbId.h \
            src/db/Database.h \
            src/db/DatabaseInterface.h \
-           src/db/DataStorage.h \
-           src/db/DataStorageMonitor.h \
-           src/db/DataStorageWorker.h \
+           src/db/dataStorage/DataStorage.h \
+           src/db/dataStorage/DataStorageMonitor.h \
+           src/db/dataStorage/DataStorageWorker.h \
            src/db/migration/Migration.h \
            src/db/migration/MigrationFactory.h \
            src/db/migration/Migrator.h \
@@ -121,9 +121,9 @@ SOURCES += \
            src/db/dbId.cpp \
            src/db/Database.cpp \
            src/db/DatabaseInterface.cpp \
-           src/db/DataStorage.cpp \
-           src/db/DataStorageMonitor.cpp \
-           src/db/DataStorageWorker.cpp \
+           src/db/dataStorage/DataStorage.cpp \
+           src/db/dataStorage/DataStorageMonitor.cpp \
+           src/db/dataStorage/DataStorageWorker.cpp \
            src/db/migration/Migration.cpp \
            src/db/migration/MigrationFactory.cpp \
            src/db/migration/Migrator.cpp \

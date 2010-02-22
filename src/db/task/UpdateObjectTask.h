@@ -11,7 +11,7 @@
 // TODO many tasks depend on DataStorage, which is bad because everything that
 // depends on the task will have to be rebuilt when DataStorage.h is changed
 // (only applies to template classes with the implementation in the header).
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorage.h"
 
 template<class T> class UpdateObjectTask: public Task
 {

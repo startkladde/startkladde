@@ -18,7 +18,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/db/Database.h"
 #include "src/db/DbEvent.h"
-#include "src/db/DataStorageWorker.h"
+#include "src/db/dataStorage/DataStorageWorker.h"
 #include "src/model/objectList/EntityList.h"
 
 using namespace std;

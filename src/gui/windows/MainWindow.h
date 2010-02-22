@@ -41,7 +41,7 @@
 
 #include "ui_MainWindow.h"
 
-#include "src/db/DataStorage.h" // Required for DataStorage::State (others can be resolved)
+#include "src/db/dataStorage/DataStorage.h" // Required for DataStorage::State (others can be resolved)
 
 class QWidget;
 template<class T> class QList;

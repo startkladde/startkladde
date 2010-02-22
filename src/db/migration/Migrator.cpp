@@ -74,7 +74,11 @@ void Migrator::up ()
 {
 	quint64 version=nextMigration ();
 
-	if (version==0) return;
+	if (version==0)
+	{
+		std::cout << "Already current" << std::endl;
+		return;
+	}
 
 	runMigration (version, Migration::dirUp);
 }

@@ -1,6 +1,6 @@
 #include "DataStorageSleepTask.h"
 
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorage.h"
 
 DataStorageSleepTask::DataStorageSleepTask (DataStorage &dataStorage, int seconds):
 	dataStorage (dataStorage), seconds (seconds)

@@ -1,6 +1,6 @@
 #include "FetchFlightsTask.h"
 
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorage.h"
 
 FetchFlightsTask::FetchFlightsTask (DataStorage &dataStorage, QDate date):
 	dataStorage (dataStorage),

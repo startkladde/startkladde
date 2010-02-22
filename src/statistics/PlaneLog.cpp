@@ -3,7 +3,7 @@
 #include <QSet>
 
 #include "src/model/Flight.h"
-#include "src/db/DataStorage.h"
+#include "src/db/dataStorage/DataStorage.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
 #include "src/text.h"
