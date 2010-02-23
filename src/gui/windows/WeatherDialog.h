@@ -11,8 +11,6 @@ class WeatherWidget;
 
 class WeatherDialog:public QDialog
 {
-	Q_OBJECT
-
 	public:
 		WeatherDialog (ShellPlugin *_plugin, QWidget *parent=NULL);
 		~WeatherDialog ();

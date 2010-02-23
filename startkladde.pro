@@ -34,6 +34,10 @@ HEADERS += \
            src/db/dbId.h \
            src/db/Database.h \
            src/db/DatabaseInterface.h \
+           src/db/ThreadSafeDatabase.h \
+           src/db/DatabaseWorker.h \
+           src/db/DatabaseThread.h \
+           src/db/DatabaseTask.h \
            src/db/dataStorage/DataStorage.h \
            src/db/dataStorage/DataStorageMonitor.h \
            src/db/dataStorage/DataStorageWorker.h \
@@ -121,6 +125,10 @@ SOURCES += \
            src/db/dbId.cpp \
            src/db/Database.cpp \
            src/db/DatabaseInterface.cpp \
+           src/db/ThreadSafeDatabase.cpp \
+           src/db/DatabaseWorker.cpp \
+           src/db/DatabaseThread.cpp \
+           src/db/DatabaseTask.cpp \
            src/db/dataStorage/DataStorage.cpp \
            src/db/dataStorage/DataStorageMonitor.cpp \
            src/db/dataStorage/DataStorageWorker.cpp \

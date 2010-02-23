@@ -36,9 +36,34 @@ void display_help ()
 }
 
 
-//int test_database (Database &db)
-//{
-//
+#include "src/concurrent/DefaultQThread.h"
+#include "src/model/Person.h"
+#include "src/db/ThreadSafeDatabase.h"
+//class DatabaseTask;
+#include "src/db/DatabaseTask.h"
+
+int test_database ()
+{
+//	Database db;
+	ThreadSafeDatabase db;
+	db.open (opts.databaseInfo);
+
+	std::cout << std::endl;
+	std::cout << "Get people" << std::endl;
+	QList<Person> people=db.getObjects<Person> ();
+    foreach (const Person &person, people)
+    	std::cout << person.toString () << std::endl;
+
+    DefaultQThread::sleep (1);
+
+	std::cout << std::endl;
+	std::cout << "Get people" << std::endl;
+	people=db.getObjects<Person> ();
+    foreach (const Person &person, people)
+    	std::cout << person.toString () << std::endl;
+
+
+
 //	std::cout << std::endl;
 //	std::cout << "Get people" << std::endl;
 //	QList<Person> people=db.getObjects<Person> ();
@@ -90,9 +115,9 @@ void display_help ()
 //    std::cout << std::endl;
 //	std::cout << "List plane types" << std::endl;
 //	std::cout << db.listPlaneTypes ().join (", ") << std::endl;
-//
-//	return 0;
-//}
+
+	return 0;
+}
 
 int showGui (QApplication &a, Database &db, QList<ShellPlugin *> &plugins)
 {
@@ -193,13 +218,22 @@ int doStuff ()
 	return 0;
 }
 
+void test ()
+{
+//	ThreadSafeDatabase tsdb;
+//	tsdb.wait ();
+}
+
 int main (int argc, char **argv)
 {
+	QApplication a (argc, argv); // Always
+
 	// DbEvents are used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
 	qRegisterMetaType<DbEvent> ("DbEvent");
 	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
+	qRegisterMetaType<DatabaseTask *> ("DatabaseTask&");
 
 	int ret=0;
 
@@ -214,7 +248,6 @@ int main (int argc, char **argv)
 			QList<ShellPlugin *> plugins;
 
 			opts.read_config_files (&plugins, argc, argv);
-			QApplication a (argc, argv); // Always
 
 			if (opts.non_options.empty ())
 			{
@@ -223,7 +256,10 @@ int main (int argc, char **argv)
 			}
 			else
 			{
-				ret=doStuff ();
+				if (opts.non_options[0]=="test_db")
+					ret=test_database ();
+				else
+					ret=doStuff ();
 			}
 		}
 	}

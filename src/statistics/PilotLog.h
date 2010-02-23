@@ -16,8 +16,6 @@ class Flight;
  */
 class PilotLog: public QAbstractTableModel
 {
-	Q_OBJECT
-
 	protected:
 		PilotLog (QObject *parent=NULL);
 		~PilotLog ();

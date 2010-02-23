@@ -11,8 +11,6 @@ class DataStorage;
 
 class PersonEditorPane: public ObjectEditorPane<Person>
 {
-    Q_OBJECT
-
 	public:
 		PersonEditorPane (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent=NULL);
 		virtual ~PersonEditorPane();

@@ -9,8 +9,6 @@ class QAbstractTableModel;
 
 class StatisticsWindow: public QDialog
 {
-    Q_OBJECT
-
 	public:
 		StatisticsWindow (QAbstractTableModel *model, bool modelOwned, QWidget *parent=0);
 		~StatisticsWindow ();

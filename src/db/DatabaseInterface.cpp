@@ -79,7 +79,11 @@ bool DatabaseInterface::open (const DatabaseInfo &dbInfo)
 
 void DatabaseInterface::close ()
 {
+	std::cout << "DatabaseInterface::close" << std::endl;
+
 	db.close ();
+	QSqlDatabase::removeDatabase (db.connectionName ());
+
 }
 
 

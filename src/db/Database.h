@@ -23,6 +23,9 @@ class Flight;
  * classes in the .cpp file. Also provides some frontends for object selection
  * (like getFlightsDate).
  *
+ * This class is NOT thread safe. It may only be used in the thread where it
+ * was created.
+ *
  * Note that we do not use the ENUM SQL type because it is not supported by
  * SQLite.
  */
@@ -40,7 +43,6 @@ class Database
 		bool open (const DatabaseInfo &dbInfo) { return databaseInterface.open (dbInfo); };
 		void close () { databaseInterface.close (); }
 		QSqlError lastError () { return databaseInterface.lastError (); }
-
 
 
 		// *** ORM

@@ -7,8 +7,6 @@
 
 class DateInputDialog : public QDialog
 {
-    Q_OBJECT
-
 	public:
 		DateInputDialog (QWidget *parent = 0, Qt::WindowFlags f=0);
 		~DateInputDialog();
