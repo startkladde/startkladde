@@ -34,6 +34,7 @@ HEADERS += \
            src/db/dbId.h \
            src/db/Database.h \
            src/db/DatabaseInterface.h \
+           src/db/AbstractDatabase.h \
            src/db/ThreadSafeDatabase.h \
            src/db/DatabaseWorker.h \
            src/db/DatabaseThread.h \
@@ -125,6 +126,7 @@ SOURCES += \
            src/db/dbId.cpp \
            src/db/Database.cpp \
            src/db/DatabaseInterface.cpp \
+           src/db/AbstractDatabase.cpp \
            src/db/ThreadSafeDatabase.cpp \
            src/db/DatabaseWorker.cpp \
            src/db/DatabaseThread.cpp \
