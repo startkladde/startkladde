@@ -32,6 +32,20 @@ void ThreadSafeDatabase::open (DatabaseInfo info)
 	task.wait ();
 }
 
+void ThreadSafeDatabase::close ()
+{
+	// FIXME: strictly speaking, we're not supposed to do this on this thread,
+	// and it might bite use in the rear
+	database->close ();
+}
+
+QSqlError ThreadSafeDatabase::lastError ()
+{
+	// FIXME: strictly speaking, we're not supposed to do this on this thread,
+	// and it might bite use in the rear
+	return database->lastError ();
+}
+
 
 // *********
 // ** ORM **
@@ -120,3 +134,21 @@ INSTANTIATE_TEMPLATES (Flight      )
 INSTANTIATE_TEMPLATES (LaunchMethod)
 
 #undef INSTANTIATE_TEMPLATES
+
+
+// *******************
+// ** Very specific **
+// *******************
+
+
+QStringList ThreadSafeDatabase::listStrings (const QString &queryString)
+{
+	DatabaseListStringsTask task (database, queryString);
+	thread.runTaskAndWait (task);
+	return task.result;
+}
+
+QList<Flight> ThreadSafeDatabase::getFlights (const QString &condition, const QList<QVariant> &conditionValues)
+{
+	return getObjects<Flight> (condition, conditionValues);
+}

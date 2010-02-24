@@ -129,7 +129,7 @@ int test_database ()
 	return 0;
 }
 
-int showGui (QApplication &a, Database &db, QList<ShellPlugin *> &plugins)
+int showGui (QApplication &a, ThreadSafeDatabase &db, QList<ShellPlugin *> &plugins)
 {
 	//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
 
@@ -261,7 +261,7 @@ int main (int argc, char **argv)
 
 			if (opts.non_options.empty ())
 			{
-				Database db;
+				ThreadSafeDatabase db;
 				ret=showGui (a, db, plugins);
 			}
 			else

@@ -10,6 +10,7 @@
 
 #include "src/db/dbId.h"
 #include "src/db/DatabaseThread.h"
+#include "src/db/AbstractDatabase.h"
 
 // *****
 
@@ -163,6 +164,23 @@ template<class T> class DatabaseUpdateObjectTask: public DatabaseTask
 		const T &object;
 };
 
+class DatabaseListStringsTask: public DatabaseTask
+{
+	public:
+		DatabaseListStringsTask (Database * &database, const QString &queryString):
+			DatabaseTask (database), queryString (queryString) {}
+
+		virtual void execute ()
+		{
+			result=database->listStrings (queryString);
+		}
+
+		QStringList result;
+
+	private:
+		const QString &queryString;
+};
+
 // *****
 
 /**
@@ -173,7 +191,7 @@ template<class T> class DatabaseUpdateObjectTask: public DatabaseTask
  * still blocking, that is, they only return after the operation finished in
  * the background thread.
  */
-class ThreadSafeDatabase
+class ThreadSafeDatabase: public AbstractDatabase
 {
 	public:
 		// *** Construction
@@ -182,6 +200,8 @@ class ThreadSafeDatabase
 
 		// *** Connection management
 		void open (DatabaseInfo info);
+		void close ();
+		QSqlError lastError ();
 
 		// *** ORM
         // Template functions, instantiated for the relevant classes
@@ -192,6 +212,10 @@ class ThreadSafeDatabase
         template<class T> bool deleteObject (dbId id);
         template<class T> dbId createObject (T &object);
         template<class T> bool updateObject (const T &object);
+
+        // *** Very specific
+        virtual QStringList listStrings (const QString &queryString);
+        virtual QList<Flight> getFlights (const QString &condition="", const QList<QVariant> &conditionValues=QList<QVariant> ());
 
 	private:
         DatabaseThread thread;

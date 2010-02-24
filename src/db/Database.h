@@ -12,6 +12,7 @@
 #include "src/db/dbId.h"
 #include "src/db/DatabaseInfo.h"
 #include "src/db/DatabaseInterface.h" // TODO remove (to worker)
+#include "src/db/AbstractDatabase.h"
 
 class Flight;
 
@@ -29,7 +30,7 @@ class Flight;
  * Note that we do not use the ENUM SQL type because it is not supported by
  * SQLite.
  */
-class Database
+class Database: public AbstractDatabase
 {
 	public:
 		// *** Data types
@@ -56,12 +57,8 @@ class Database
         template<class T> bool updateObject (const T &object);
 
         // *** Very specific
-        QStringList listLocations ();
-        QStringList listAccountingNotes ();
-        QStringList listClubs ();
-        QStringList listPlaneTypes ();
-        QList<Flight> getPreparedFlights ();
-        QList<Flight> getFlightsDate (QDate date);
+        virtual QStringList listStrings (const QString &queryString);
+        virtual QList<Flight> getFlights (const QString &condition="", const QList<QVariant> &conditionValues=QList<QVariant> ());
 
 	private:
 		DatabaseInterface databaseInterface;
