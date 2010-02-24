@@ -200,11 +200,11 @@ QString OldDatabase::import_message::description (bool extended) const
 	{
 		MESSAGE_S (imt_first_name_missing, 0, "Vorname nicht angegeben");
 		MESSAGE_S (imt_last_name_missing, 0, "Nachname nicht angegeben");
-		MESSAGE_A (imt_duplicate_club_id, 1, "Doppelte Vereins-ID", " \""+p1->club_id+"\"");
+		MESSAGE_A (imt_duplicate_club_id, 1, "Doppelte Vereins-ID", " \""+p1->clubId+"\"");
 		MESSAGE_A (imt_duplicate_name_without_club_id, 1, "Doppelter Name ohne Vereins-ID", " \""+p1->textName ()+"\"");
-		MESSAGE_D (imt_club_id_not_found, 1, "Vereins-ID nicht gefunden", "Vereins-ID \""+p1->club_id+"\" nicht gefunden");
+		MESSAGE_D (imt_club_id_not_found, 1, "Vereins-ID nicht gefunden", "Vereins-ID \""+p1->clubId+"\" nicht gefunden");
 		MESSAGE_D (imt_club_id_old_not_found, 1, "Alte Vereins-ID nicht gefunden", "Alte Vereins-ID \""+p1->club_id_old+"\" nicht gefunden");
-		MESSAGE_D (imt_club_id_not_unique, 1, "Vereins-ID mehrfach vorhanden", "Vereins-ID \""+p1->club_id+"\" nicht eindeutig");
+		MESSAGE_D (imt_club_id_not_unique, 1, "Vereins-ID mehrfach vorhanden", "Vereins-ID \""+p1->clubId+"\" nicht eindeutig");
 		MESSAGE_D (imt_multiple_own_persons_name, 1, "Mehrere eigene Personen mit diesem Namen gefunden", "Mehrere eigene Personen mit dem Namen \""+p1->textName ()+"\" gefunden");
 		MESSAGE_D (imt_multiple_own_editable_persons_name, 1, "Mehrere eigene editierbare Personen mit diesem Namen gefunden", "Mehrere eigene editierbare Personen mit dem Namen \""+p1->textName ()+"\" gefunden");
 		MESSAGE_D (imt_multiple_editable_persons_name, 1, "Mehrere editierbare Personen mit diesem Namen gefunden", "Mehrere editierbare Personen mit dem Namen \""+p1->textName ()+"\" gefunden");
@@ -804,15 +804,15 @@ QString OldDatabase::query_value_list (db_object_type type, void *object)
 			OUTPUT ("sitze", plane->numSeats);
 			OUTPUT ("typ", plane->type.latin1 ());
 			OUTPUT ("gattung", category_to_db (plane->category));
-			OUTPUT ("wettbewerbskennzeichen", plane->competitionId.latin1 ());
+			OUTPUT ("wettbewerbskennzeichen", plane->competitionCallsign.latin1 ());
 			OUTPUTL ("bemerkung", plane->comments.latin1 ());
 		} break;
 		case ot_person:
 		{
 			Person *person=(Person *)object;
-			OUTPUT ("nachname", person->nachname.latin1 ());
-			OUTPUT ("vorname", person->vorname.latin1 ());
-			OUTPUT ("vereins_id", person->club_id.latin1 ());
+			OUTPUT ("nachname", person->lastName.latin1 ());
+			OUTPUT ("vorname", person->firstName.latin1 ());
+			OUTPUT ("vereins_id", person->clubId.latin1 ());
 			OUTPUT ("verein", person->club.latin1 ());
 			OUTPUT ("bwlv", person->landesverbands_nummer.latin1 ());
 			OUTPUTL ("bemerkung", person->comments.latin1 ());
@@ -883,7 +883,7 @@ int OldDatabase::row_to_object (db_object_type otype, void *object, MYSQL_ROW ro
 			USE ("sitze");					p->numSeats=atoi (value);
 			USE ("typ");					p->type=value;
 			USE ("gattung");				p->category=db_to_category (value);
-			USE ("wettbewerbskennzeichen");	p->competitionId=value;
+			USE ("wettbewerbskennzeichen");	p->competitionCallsign=value;
 			USE ("bemerkung");				p->comments=value;
 			USE (column_name_editable.latin1()); p->editable=(atoi (value)>0);
 		} break;
@@ -891,10 +891,10 @@ int OldDatabase::row_to_object (db_object_type otype, void *object, MYSQL_ROW ro
 		{
 			Person *p=(Person *)object;
 			USE ("id");				p->id=atoll (value);
-			USE ("nachname");		p->nachname=value;
-			USE ("vorname");		p->vorname=value;
+			USE ("nachname");		p->lastName=value;
+			USE ("vorname");		p->firstName=value;
 			USE ("verein");			p->club=value;
-			USE ("vereins_id");		p->club_id=value;
+			USE ("vereins_id");		p->clubId=value;
 			USE ("bwlv");			p->landesverbands_nummer=value;
 			USE ("bemerkung");		p->comments=value;
 			USE (column_name_editable.latin1()); p->editable=(atoi (value)>0);
@@ -2743,10 +2743,10 @@ void OldDatabase::import_check (const Person &person)
 	throw (import_message)
 {
 	// First name is empty
-	if (person.vorname.isEmpty ()) throw import_message::first_name_missing ();
+	if (person.firstName.isEmpty ()) throw import_message::first_name_missing ();
 
 	// Last name is empty
-	if (person.nachname.isEmpty ()) throw import_message::last_name_missing ();
+	if (person.lastName.isEmpty ()) throw import_message::last_name_missing ();
 }
 
 void OldDatabase::import_check (const QList<Person *> &persons, QList<import_message> &messages)
@@ -2780,17 +2780,17 @@ void OldDatabase::import_check (const QList<Person *> &persons, QList<import_mes
 			{
 				// Same club and club ID (except "")
 				if (
-					!p1->club_id.isEmpty () &&
+					!p1->clubId.isEmpty () &&
 					p1->club == p2->club &&
-					p1->club_id == p2->club_id
+					p1->clubId == p2->clubId
 					)
 					messages.push_back (import_message::duplicate_club_id (p1, p2));
 
 				// Non-unique names without club_id
 				if (
-					p1->club_id.isEmpty () &&
-					p1->vorname == p2->vorname &&
-					p1->nachname == p2->nachname
+					p1->clubId.isEmpty () &&
+					p1->firstName == p2->firstName &&
+					p1->lastName == p2->lastName
 					)
 					messages.push_back (import_message::duplicate_name_without_club_id (p1, p2));
 			}
@@ -2842,7 +2842,7 @@ dbId OldDatabase::import_identify (const Person &p, QList<import_message> *non_f
 	// "create new").
 
 	bool club_id_old_given=!p.club_id_old.isEmpty ();
-	bool club_id_given=!p.club_id.isEmpty ();
+	bool club_id_given=!p.clubId.isEmpty ();
 
 	// Do we need to select the person by name?
 	bool select_by_name=false;
@@ -2882,7 +2882,7 @@ dbId OldDatabase::import_identify (const Person &p, QList<import_message> *non_f
 		// A club ID was given. If it does not exist, the person has to be
 		// created. If it does, the person with this club_id will be modified.
 		QList<Person *> persons;
-		int ret=list_persons_by_club_club_id (persons, p.club, p.club_id);
+		int ret=list_persons_by_club_club_id (persons, p.club, p.clubId);
 		if (ret!=0) throw ex_legacy_error (ret, *this);
 		remove_editable_persons (persons);
 
@@ -2919,7 +2919,7 @@ dbId OldDatabase::import_identify (const Person &p, QList<import_message> *non_f
 	{
 		// We need to select the person by name.
 		QList<Person *> persons;
-		int ret=list_persons_by_name (persons, p.vorname, p.nachname);
+		int ret=list_persons_by_name (persons, p.firstName, p.lastName);
 		if (ret!=0) throw ex_legacy_error (ret, *this);
 
 		if (persons.isEmpty ())
@@ -2976,7 +2976,7 @@ dbId OldDatabase::import_identify (const Person &p, QList<import_message> *non_f
 				// Remove the person if category 1. or 2.
 				if (
 						( !ip->editable       && ip->club!=p.club) ||	// 1.
-						( !ip->club_id.isEmpty () && ip->club==p.club)		// 2.
+						( !ip->clubId.isEmpty () && ip->club==p.club)		// 2.
 				   )
 				{
 					it.remove ();
@@ -2994,7 +2994,7 @@ dbId OldDatabase::import_identify (const Person &p, QList<import_message> *non_f
 					// Not removed.
 
 					// Category 3: fixed, own club, no club_id
-					if (!ip->editable && ip->club==p.club && ip->club_id.isEmpty ())
+					if (!ip->editable && ip->club==p.club && ip->clubId.isEmpty ())
 					{
 						num_fixed_own_no_club_id++;
 						id_fixed_own_no_club_id=ip->id;

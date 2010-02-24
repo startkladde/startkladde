@@ -53,8 +53,8 @@ void PersonEditorPane::objectToFields (const Person &person)
 {
 	originalId=person.getId ();
 
-	ui.lastNameInput->setText (person.nachname);
-	ui.firstNameInput->setText (person.vorname);
+	ui.lastNameInput->setText (person.lastName);
+	ui.firstNameInput->setText (person.firstName);
 	ui.clubInput->setCurrentText (person.club);
 	ui.commentsInput->setText (person.comments);
 }
@@ -65,18 +65,18 @@ Person PersonEditorPane::determineObject ()
 
 	person.setId (originalId);
 
-	person.nachname=ui.lastNameInput->text ();
-	person.vorname=ui.firstNameInput->text ();
+	person.lastName=ui.lastNameInput->text ();
+	person.firstName=ui.firstNameInput->text ();
 	person.club=ui.clubInput->currentText ();
 	person.comments=ui.commentsInput->text ();
 
 	// Error checks
 
-	if (eintrag_ist_leer (person.nachname))
+	if (eintrag_ist_leer (person.lastName))
 		errorCheck ("Es wurde kein Nachname angegeben.",
 			ui.lastNameInput);
 
-	if (eintrag_ist_leer (person.vorname))
+	if (eintrag_ist_leer (person.firstName))
 		errorCheck ("Es wurde kein Vorname angegeben.",
 			ui.firstNameInput);
 

@@ -47,7 +47,7 @@ QString Plane::toString () const
 	return QString ("id=%1, registration=%2, competitionId=%3, type=%4, club=%5, category=%6, seats=%7")
 		.arg (id)
 		.arg (registration)
-		.arg (competitionId)
+		.arg (competitionCallsign)
 		.arg (type)
 		.arg (club)
 		.arg (categoryText (category))
@@ -57,8 +57,8 @@ QString Plane::toString () const
 
 QString Plane::fullRegistration () const
 {
-	if (eintrag_ist_leer (competitionId)) return registration;
-	return QString ("%1 (%2)").arg (registration).arg (competitionId);
+	if (eintrag_ist_leer (competitionCallsign)) return registration;
+	return QString ("%1 (%2)").arg (registration).arg (competitionCallsign);
 }
 
 bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)
@@ -192,7 +192,7 @@ QVariant Plane::DefaultObjectModel::displayData (const Plane &object, int column
 	switch (column)
 	{
 		case 0: return object.registration;
-		case 1: return object.competitionId;
+		case 1: return object.competitionCallsign;
 		case 2: return object.type;
 		case 3: return categoryText(object.category);
 		case 4: return object.numSeats>=0?QVariant (object.numSeats):QVariant ("?");
@@ -231,7 +231,7 @@ Plane Plane::createFromQuery (const QSqlQuery &q)
 	p.type          =q.value (4).toString ();
 	p.category      =categoryFromDb (
 	                 q.value (5).toString ());
-	p.competitionId =q.value (6).toString ();
+	p.competitionCallsign =q.value (6).toString ();
 	p.comments      =q.value (7).toString ();
 
 	return p;
@@ -254,7 +254,7 @@ void Plane::bindValues (QSqlQuery &q) const
 	q.addBindValue (numSeats);
 	q.addBindValue (type);
 	q.addBindValue (categoryToDb (category));
-	q.addBindValue (competitionId);
+	q.addBindValue (competitionCallsign);
 	q.addBindValue (comments);
 }
 

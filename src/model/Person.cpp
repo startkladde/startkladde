@@ -34,10 +34,10 @@ void Person::initialize ()
 
 bool Person::operator< (const Person &o) const
 {
-	if (nachname<o.nachname) return true;
-	if (nachname>o.nachname) return false;
-	if (vorname<o.vorname) return true;
-	if (vorname>o.vorname) return false;
+	if (lastName<o.lastName) return true;
+	if (lastName>o.lastName) return false;
+	if (firstName<o.firstName) return true;
+	if (firstName>o.firstName) return false;
 	return false;
 }
 
@@ -50,25 +50,25 @@ QString Person::toString () const
 {
 	return QString ("id=%1, lastName=%2, firstName=%3, club=%4, clubId=%5")
 		.arg (id)
-		.arg (nachname)
-		.arg (vorname)
+		.arg (lastName)
+		.arg (firstName)
 		.arg (club)
-		.arg (club_id)
+		.arg (clubId)
 		;
 }
 
 QString Person::fullName () const
 {
-	QString l=nachname; if (l.isEmpty ()) l="?";
-	QString f= vorname; if (f.isEmpty ()) f="?";
+	QString l=lastName; if (l.isEmpty ()) l="?";
+	QString f= firstName; if (f.isEmpty ()) f="?";
 
 	return f+" "+l;
 }
 
 QString Person::formalName () const
 {
-	QString l=nachname; if (l.isEmpty ()) l="?";
-	QString f= vorname; if (f.isEmpty ()) f="?";
+	QString l=lastName; if (l.isEmpty ()) l="?";
+	QString f= firstName; if (f.isEmpty ()) f="?";
 
 	return l+", "+f;
 }
@@ -88,8 +88,8 @@ QString Person::get_selector_value (int column_number) const
 {
 	switch (column_number)
 	{
-		case 0: return nachname;
-		case 1: return vorname;
+		case 0: return lastName;
+		case 1: return firstName;
 		case 2: return club;
 		case 3: return comments;
 		case 4: return QString::number (id);
@@ -141,11 +141,11 @@ QVariant Person::DefaultObjectModel::displayData (const Person &object, int colu
 {
 	switch (column)
 	{
-		case 0: return object.nachname;
-		case 1: return object.vorname;
+		case 0: return object.lastName;
+		case 1: return object.firstName;
 		case 2: return object.club;
 		case 3: return object.comments;
-		case 4: return object.club_id;
+		case 4: return object.clubId;
 		case 5: return object.id;
 	}
 
@@ -172,10 +172,10 @@ Person Person::createFromQuery (const QSqlQuery &q)
 {
 	Person p (q.value (0).toLongLong ());
 
-	p.nachname =q.value (1).toString ();
-	p.vorname  =q.value (2).toString ();
+	p.lastName =q.value (1).toString ();
+	p.firstName  =q.value (2).toString ();
 	p.club     =q.value (3).toString ();
-	p.club_id  =q.value (4).toString ();
+	p.clubId  =q.value (4).toString ();
 	p.comments =q.value (5).toString ();
 
 	return p;
@@ -193,10 +193,10 @@ QString Person::updateValueList ()
 
 void Person::bindValues (QSqlQuery &q) const
 {
-	q.addBindValue (nachname);
-	q.addBindValue (vorname);
+	q.addBindValue (lastName);
+	q.addBindValue (firstName);
 	q.addBindValue (club);
-	q.addBindValue (club_id);
+	q.addBindValue (clubId);
 	q.addBindValue (comments);
 }
 

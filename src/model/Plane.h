@@ -41,11 +41,11 @@ class Plane: public Entity
 
 		// *** Data
 		QString registration;
-		QString competitionId;
-		QString type;
 		QString club;
 		int numSeats;
+		QString type;
 		Category category;
+		QString competitionCallsign;
 
 
 		// *** Property access

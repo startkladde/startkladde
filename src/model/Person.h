@@ -26,11 +26,10 @@ class Person: public Entity
 
 
 		// *** Data
-		QString vorname;
-		QString nachname;
+		QString firstName;
+		QString lastName;
 		QString club;
-		QString club_id;
-		QString club_id_old;
+		QString clubId;
 
 
 		// *** Comparison

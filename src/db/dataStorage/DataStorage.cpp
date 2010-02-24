@@ -441,7 +441,7 @@ QStringList DataStorage::getPersonFirstNames ()
 
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
-		firstNames.insert (person.vorname);
+		firstNames.insert (person.firstName);
 	lock.unlock ();
 
 	// TODO sort case insensitively
@@ -457,8 +457,8 @@ QStringList DataStorage::getPersonFirstNames (const QString &lastName)
 
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
-		if (person.nachname.toLower ()==lastName.toLower ())
-			firstNames.insert (person.vorname);
+		if (person.lastName.toLower ()==lastName.toLower ())
+			firstNames.insert (person.firstName);
 	lock.unlock ();
 
 	// TODO sort case insensitively
@@ -474,7 +474,7 @@ QStringList DataStorage::getPersonLastNames ()
 
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
-		lastNames.insert (person.nachname);
+		lastNames.insert (person.lastName);
 	lock.unlock ();
 
 	// TODO sort case insensitively
@@ -491,8 +491,8 @@ QStringList DataStorage::getPersonLastNames (const QString &firstName)
 
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
-		if (person.vorname.toLower ()==firstName.toLower ())
-			lastNames.insert (person.nachname);
+		if (person.firstName.toLower ()==firstName.toLower ())
+			lastNames.insert (person.lastName);
 	lock.unlock ();
 
 	// TODO sort case insensitively
@@ -536,7 +536,7 @@ QList<dbId> DataStorage::getPersonIdsByName (const QString &firstName, const QSt
 
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
-		if (person.vorname.toLower ()==firstName.toLower () && person.nachname.toLower ()==lastName.toLower ())
+		if (person.firstName.toLower ()==firstName.toLower () && person.lastName.toLower ()==lastName.toLower ())
 			result.append (person.getId ());
 
 	return result;
@@ -563,7 +563,7 @@ QList<dbId> DataStorage::getPersonIdsByFirstName (const QString &firstName)
 
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
-		if (person.vorname.toLower ()==firstName.toLower ())
+		if (person.firstName.toLower ()==firstName.toLower ())
 			result.append (person.getId ());
 	lock.unlock ();
 
@@ -577,7 +577,7 @@ QList<dbId> DataStorage::getPersonIdsByLastName (const QString &lastName)
 
 	QMutexLocker lock (&dataMutex);
 	foreach (const Person &person, people)
-		if (person.nachname.toLower ()==lastName.toLower ())
+		if (person.lastName.toLower ()==lastName.toLower ())
 			result.append (person.getId ());
 	lock.unlock ();
 

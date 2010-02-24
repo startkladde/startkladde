@@ -616,8 +616,8 @@ void FlightWindow::personToFields (dbId id, SkComboBox *lastNameInput, SkComboBo
 		try
 		{
 			Person person=dataStorage.getObject<Person> (id);
-			 lastNameInput->setCurrentText (person.nachname);
-			firstNameInput->setCurrentText (person.vorname );
+			 lastNameInput->setCurrentText (person.lastName);
+			firstNameInput->setCurrentText (person.firstName );
 			ok=true;
 		}
 		catch (DataStorage::NotFoundException &ex) {}
@@ -935,17 +935,17 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool launchNow, cons
 
 	if (pilot && launchNow && idValid (dataStorage.personFlying (pilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Pilot %1 %2 noch.")
-			.arg (pilot->vorname).arg (pilot->nachname),
+			.arg (pilot->firstName).arg (pilot->lastName),
 			ui.pilotLastNameInput);
 
 	if (copilot && launchNow && idValid (dataStorage.personFlying (copilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Begleiter %1 %2 noch.")
-			.arg (copilot->vorname).arg (copilot->nachname),
+			.arg (copilot->firstName).arg (copilot->lastName),
 			ui.copilotLastNameInput);
 
 	if (towpilot && launchNow && idValid (dataStorage.personFlying (towpilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Schlepppilot %1 %2 noch.")
-			.arg (towpilot->vorname).arg (towpilot->nachname),
+			.arg (towpilot->firstName).arg (towpilot->lastName),
 			ui.towpilotLastNameInput);
 }
 
@@ -1169,8 +1169,8 @@ dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
 	throw (AbortedException)
 {
 	Person person;
-	person.vorname=firstName;
-	person.nachname=lastName;
+	person.firstName=firstName;
+	person.lastName=lastName;
 
 	dbId result=ObjectEditorWindow<Person>::createObject (this, dataStorage);
 	if (idValid (result))
