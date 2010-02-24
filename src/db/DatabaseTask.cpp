@@ -2,8 +2,8 @@
 
 #include <QMutexLocker>
 
-DatabaseTask::DatabaseTask ():
-	isFinished (false)
+DatabaseTask::DatabaseTask (Database * &database):
+	database (database), isFinished (false)
 {
 }
 

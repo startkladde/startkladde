@@ -18,37 +18,21 @@
 #include "src/db/Database.h"
 #include "src/db/DatabaseInfo.h"
 
-class WaitTask: public DatabaseTask
-{
-	virtual void execute ()
-	{
-		std::cout << "Waiting on thread " << QThread::currentThreadId () << std::endl;
-		sleep (2);
-		std::cout << "Finished on thread " << QThread::currentThreadId () << std::endl;
-	}
-};
+//class WaitTask: public DatabaseTask
+//{
+//	virtual void execute ()
+//	{
+//		std::cout << "Waiting on thread " << QThread::currentThreadId () << std::endl;
+//		sleep (2);
+//		std::cout << "Finished on thread " << QThread::currentThreadId () << std::endl;
+//	}
+//};
 
-template<class T> class GetObjectsTask: public DatabaseTask
-{
-	public:
-		GetObjectsTask<T> (Database &database): database (database) {}
-
-		virtual void execute ()
-		{
-			result=database.getObjects<T> ();
-		}
-
-		QList<T> result;
-
-	private:
-		Database &database;
-};
-
-class OpenTask: public DatabaseTask
+class DatabaseOpenTask: public DatabaseTask
 {
 	public:
-		OpenTask (Database * &database, DatabaseInfo info):
-			database (database), info (info) {}
+		DatabaseOpenTask (Database * &database, DatabaseInfo info):
+			DatabaseTask (database), info (info) {}
 
 		virtual void execute ()
 		{
@@ -58,8 +42,125 @@ class OpenTask: public DatabaseTask
 		}
 
 	private:
-		Database * &database;
 		DatabaseInfo info;
+};
+
+template<class T> class DatabaseGetObjectsTask: public DatabaseTask
+{
+	public:
+		DatabaseGetObjectsTask<T> (Database * &database, const QString &condition="", const QList<QVariant> &conditionValues=QList<QVariant> ()):
+			DatabaseTask (database), condition (condition), conditionValues (conditionValues)
+			{}
+
+		virtual void execute ()
+		{
+			result=database->getObjects<T> (condition, conditionValues);
+		}
+
+		QList<T> result;
+
+	private:
+		const QString &condition;
+		const QList<QVariant> &conditionValues;
+};
+
+template<class T> class DatabaseCountObjectsTask: public DatabaseTask
+{
+	public:
+		DatabaseCountObjectsTask<T> (Database * &database):
+			DatabaseTask (database) {}
+
+		virtual void execute ()
+		{
+			result=database->countObjects<T> ();
+		}
+
+		int result;
+};
+
+template<class T> class DatabaseObjectExistsTask: public DatabaseTask
+{
+	public:
+		DatabaseObjectExistsTask<T> (Database * &database, dbId id):
+			DatabaseTask (database), id (id) {}
+
+		virtual void execute ()
+		{
+			result=database->objectExists<T> (id);
+		}
+
+		bool result;
+
+	private:
+		dbId id;
+};
+
+template<class T> class DatabaseGetObjectTask: public DatabaseTask
+{
+	public:
+		DatabaseGetObjectTask<T> (Database * &database, dbId id):
+			DatabaseTask (database), id (id) {}
+
+		virtual void execute ()
+		{
+			result=database->getObject<T> (id);
+		}
+
+		T result;
+
+	private:
+		dbId id;
+};
+
+template<class T> class DatabaseDeleteObjectTask: public DatabaseTask
+{
+	public:
+		DatabaseDeleteObjectTask<T> (Database * &database, dbId id):
+			DatabaseTask (database), result (false), id (id) {}
+
+		virtual void execute ()
+		{
+			result=database->deleteObject<T> (id);
+		}
+
+		bool result;
+
+	private:
+		dbId id;
+};
+
+template<class T> class DatabaseCreateObjectTask: public DatabaseTask
+{
+	public:
+		DatabaseCreateObjectTask<T> (Database * &database, T &object):
+			DatabaseTask (database), result (false), object (object) {}
+
+		virtual void execute ()
+		{
+			result=database->createObject<T> (object);
+		}
+
+		dbId result;
+
+	private:
+		T &object;
+};
+
+template<class T> class DatabaseUpdateObjectTask: public DatabaseTask
+{
+	public:
+		DatabaseUpdateObjectTask<T> (Database * &database, const T &object):
+			DatabaseTask (database), result (false), object (object) {}
+
+		virtual void execute ()
+		{
+			result=database->updateObject<T> (object);
+		}
+
+		bool result;
+
+	private:
+		const T &object;
 };
 
 // *****
@@ -75,12 +176,22 @@ class OpenTask: public DatabaseTask
 class ThreadSafeDatabase
 {
 	public:
+		// *** Construction
 		ThreadSafeDatabase ();
 		virtual ~ThreadSafeDatabase ();
 
+		// *** Connection management
 		void open (DatabaseInfo info);
 
-        template<class T> QList<T> getObjects ();
+		// *** ORM
+        // Template functions, instantiated for the relevant classes
+        template<class T> QList<T> getObjects (const QString &condition="", const QList<QVariant> &conditionValues=QList<QVariant> ());
+        template<class T> int countObjects ();
+        template<class T> bool objectExists (dbId id);
+        template<class T> T getObject (dbId id);
+        template<class T> bool deleteObject (dbId id);
+        template<class T> dbId createObject (T &object);
+        template<class T> bool updateObject (const T &object);
 
 	private:
         DatabaseThread thread;

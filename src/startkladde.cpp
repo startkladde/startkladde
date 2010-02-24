@@ -56,6 +56,16 @@ int test_database ()
 
     DefaultQThread::sleep (1);
 
+//    Person p;
+//    p.nachname=QString::fromUtf8 ("Müller");
+//    p.vorname="Busch";
+//    dbId newId=db.createObject (p);
+//
+//    db.deleteObject<Person> (newId-2);
+
+
+    DefaultQThread::sleep (1);
+
 	std::cout << std::endl;
 	std::cout << "Get people" << std::endl;
 	people=db.getObjects<Person> ();

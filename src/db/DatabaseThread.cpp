@@ -25,7 +25,7 @@ void DatabaseThread::run ()
 }
 
 /**
- * Emits a runTaskSignal which will be received by the database thread.
+ * Sends a runTaskSignal with the given task to the database thread.
  *
  * @param task the task to execute. The task may not be destroyed until it has
  *             finished!
@@ -33,4 +33,16 @@ void DatabaseThread::run ()
 void DatabaseThread::runTask (DatabaseTask &task)
 {
 	emit runTaskSignal (&task);
+}
+
+/**
+ * Runs the task and waits for it to finish.
+ *
+ * @param task the task to execute. The task can be destroyed after this method
+ *             returns.
+ */
+void DatabaseThread::runTaskAndWait (DatabaseTask &task)
+{
+	emit runTaskSignal (&task);
+	task.wait ();
 }

@@ -30,6 +30,7 @@ class DatabaseThread: public QThread
 		virtual ~DatabaseThread ();
 
 		void runTask (DatabaseTask &task);
+		void runTaskAndWait (DatabaseTask &task);
 
 	signals:
 		void runTaskSignal (DatabaseTask *task);

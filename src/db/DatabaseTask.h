@@ -11,6 +11,8 @@
 #include <QMutex>
 #include <QWaitCondition>
 
+class Database;
+
 /**
  * A functor that is intended to run in the database thread. Other thread can
  * wait for the task to finish.
@@ -18,7 +20,7 @@
 class DatabaseTask
 {
 	public:
-		DatabaseTask ();
+		DatabaseTask (Database * &database);
 		virtual ~DatabaseTask ();
 
 		virtual void run ();
@@ -28,6 +30,9 @@ class DatabaseTask
 	protected:
 		/** The method that does the actual work */
 		virtual void execute ()=0;
+
+	protected:
+		Database * &database;
 
 	private:
 		QMutex mutex;

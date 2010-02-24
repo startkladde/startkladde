@@ -51,9 +51,9 @@ class Database
         template<class T> int countObjects ();
         template<class T> bool objectExists (dbId id);
         template<class T> T getObject (dbId id);
-        template<class T> int deleteObject (dbId id);
+        template<class T> bool deleteObject (dbId id);
         template<class T> dbId createObject (T &object);
-        template<class T> int updateObject (const T &object);
+        template<class T> bool updateObject (const T &object);
 
         // *** Very specific
         QStringList listLocations ();

@@ -161,7 +161,7 @@ template<class T> T Database::getObject (dbId id)
 	return T::createFromQuery (query);
 }
 
-template<class T> int Database::deleteObject (dbId id)
+template<class T> bool Database::deleteObject (dbId id)
 {
 	QString queryString=QString ("DELETE FROM %1 WHERE ID=?")
 		.arg (T::dbTableName ());
@@ -170,7 +170,7 @@ template<class T> int Database::deleteObject (dbId id)
 	query.addBindValue (id);
 	databaseInterface.executeQuery (query);
 
-	return query.numRowsAffected ();
+	return query.numRowsAffected ()>0;
 }
 
 /**
@@ -193,7 +193,7 @@ template<class T> dbId Database::createObject (T &object)
 	return object.id;
 }
 
-template<class T> int Database::updateObject (const T &object)
+template<class T> bool Database::updateObject (const T &object)
 {
 	QString queryString=QString ("UPDATE %1 SET %2 WHERE id=?")
 		.arg (T::dbTableName (), object.updateValueList ());
@@ -204,7 +204,7 @@ template<class T> int Database::updateObject (const T &object)
 
 	databaseInterface.executeQuery (query);
 
-	return query.numRowsAffected ();
+	return query.numRowsAffected ()>0;
 }
 
 // Instantiate the class templates
@@ -222,9 +222,9 @@ template<class T> int Database::updateObject (const T &object)
 	template int          Database::countObjects<Class> (); \
 	template bool         Database::objectExists<Class> (dbId id); \
 	template Class        Database::getObject           (dbId id); \
-	template int          Database::deleteObject<Class> (dbId id); \
+	template bool         Database::deleteObject<Class> (dbId id); \
 	template dbId         Database::createObject        (Class &object); \
-	template int          Database::updateObject        (const Class &object); \
+	template bool         Database::updateObject        (const Class &object); \
 	// Empty line
 
 INSTANTIATE_TEMPLATES (Person      )
