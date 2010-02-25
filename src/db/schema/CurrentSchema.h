@@ -9,7 +9,7 @@
 class CurrentSchema: public Schema
 {
 	public:
-		CurrentSchema (DatabaseInterface &databaseInterface);
+		CurrentSchema (Db::Interface::DatabaseInterface &databaseInterface);
 		virtual ~CurrentSchema ();
 
 		virtual void up ();

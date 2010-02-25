@@ -9,7 +9,7 @@
 class Migration_20100216122008_rename_tables: public Migration
 {
 	public:
-		Migration_20100216122008_rename_tables (DatabaseInterface &databaseInterface);
+		Migration_20100216122008_rename_tables (Db::Interface::DatabaseInterface &databaseInterface);
 		virtual ~Migration_20100216122008_rename_tables ();
 
 		virtual void up ();

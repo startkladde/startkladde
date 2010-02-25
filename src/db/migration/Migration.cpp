@@ -2,21 +2,21 @@
 
 #include "src/db/Database.h"
 
-QString Migration::dataTypeBinary    () { return DatabaseInterface::dataTypeBinary    (); }
-QString Migration::dataTypeBoolean   () { return DatabaseInterface::dataTypeBoolean   (); }
-QString Migration::dataTypeDate      () { return DatabaseInterface::dataTypeDate      (); }
-QString Migration::dataTypeDatetime  () { return DatabaseInterface::dataTypeDatetime  (); }
-QString Migration::dataTypeDecimal   () { return DatabaseInterface::dataTypeDecimal   (); }
-QString Migration::dataTypeFloat     () { return DatabaseInterface::dataTypeFloat     (); }
-QString Migration::dataTypeInteger   () { return DatabaseInterface::dataTypeInteger   (); }
-QString Migration::dataTypeString    () { return DatabaseInterface::dataTypeString    (); }
-QString Migration::dataTypeText      () { return DatabaseInterface::dataTypeText      (); }
-QString Migration::dataTypeTime      () { return DatabaseInterface::dataTypeTime      (); }
-QString Migration::dataTypeTimestamp () { return DatabaseInterface::dataTypeTimestamp (); }
-QString Migration::dataTypeCharacter () { return DatabaseInterface::dataTypeCharacter (); }
-QString Migration::dataTypeId        () { return DatabaseInterface::dataTypeId        (); }
+QString Migration::dataTypeBinary    () { return Db::Interface::DatabaseInterface::dataTypeBinary    (); }
+QString Migration::dataTypeBoolean   () { return Db::Interface::DatabaseInterface::dataTypeBoolean   (); }
+QString Migration::dataTypeDate      () { return Db::Interface::DatabaseInterface::dataTypeDate      (); }
+QString Migration::dataTypeDatetime  () { return Db::Interface::DatabaseInterface::dataTypeDatetime  (); }
+QString Migration::dataTypeDecimal   () { return Db::Interface::DatabaseInterface::dataTypeDecimal   (); }
+QString Migration::dataTypeFloat     () { return Db::Interface::DatabaseInterface::dataTypeFloat     (); }
+QString Migration::dataTypeInteger   () { return Db::Interface::DatabaseInterface::dataTypeInteger   (); }
+QString Migration::dataTypeString    () { return Db::Interface::DatabaseInterface::dataTypeString    (); }
+QString Migration::dataTypeText      () { return Db::Interface::DatabaseInterface::dataTypeText      (); }
+QString Migration::dataTypeTime      () { return Db::Interface::DatabaseInterface::dataTypeTime      (); }
+QString Migration::dataTypeTimestamp () { return Db::Interface::DatabaseInterface::dataTypeTimestamp (); }
+QString Migration::dataTypeCharacter () { return Db::Interface::DatabaseInterface::dataTypeCharacter (); }
+QString Migration::dataTypeId        () { return Db::Interface::DatabaseInterface::dataTypeId        (); }
 
-Migration::Migration (DatabaseInterface &databaseInterface):
+Migration::Migration (Db::Interface::DatabaseInterface &databaseInterface):
 	databaseInterface (databaseInterface)
 {
 

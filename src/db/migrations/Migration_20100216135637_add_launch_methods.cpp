@@ -6,7 +6,7 @@
 #include "src/config/Options.h"
 #include "src/util/qString.h"
 
-Migration_20100216135637_add_launch_methods::Migration_20100216135637_add_launch_methods (DatabaseInterface &databaseInterface):
+Migration_20100216135637_add_launch_methods::Migration_20100216135637_add_launch_methods (Db::Interface::DatabaseInterface &databaseInterface):
 	Migration (databaseInterface)
 {
 }

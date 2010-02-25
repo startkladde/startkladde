@@ -5,7 +5,7 @@
 #include "QVariant"
 #include "QSqlQuery"
 
-class DatabaseInterface;
+namespace Db { namespace Interface { class DatabaseInterface; } }
 
 /**
  * A new migration is created by creating the appropriate class in
@@ -60,7 +60,7 @@ class Migration
     	static QString dataTypeId        ();
 
 
-		Migration (DatabaseInterface &databaseInterface);
+		Migration (Db::Interface::DatabaseInterface &databaseInterface);
 		virtual ~Migration ();
 
 		virtual void up ()=0;
@@ -88,7 +88,7 @@ class Migration
 		void updateColumnValues (const QString &tableName, const QString &columnName, const QVariant &oldValue, const QVariant &newValue);
 
 	private:
-		DatabaseInterface &databaseInterface;
+		Db::Interface::DatabaseInterface &databaseInterface;
 };
 
 #endif

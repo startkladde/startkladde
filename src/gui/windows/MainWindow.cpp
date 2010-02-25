@@ -49,7 +49,7 @@
 #include "src/util/qString.h"
 
 template <class T> class MutableObjectList;
-class ThreadSafeDatabase;
+class Db::ThreadSafeDatabase;
 
 
 // ******************
@@ -58,7 +58,7 @@ class ThreadSafeDatabase;
 
 // TODO pass DataStorage instead of Database (?, depending on thread)
 // TODO better plugin list passing
-MainWindow::MainWindow (QWidget *parent, ThreadSafeDatabase *db, QList<ShellPlugin *> &plugins) :
+MainWindow::MainWindow (QWidget *parent, Db::ThreadSafeDatabase *db, QList<ShellPlugin *> &plugins) :
 	QMainWindow (parent), dataStorage (*db), plugins (plugins), weatherWidget (NULL), weatherPlugin (NULL),
 			weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
 			contextMenu (new QMenu (this))

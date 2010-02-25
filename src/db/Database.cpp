@@ -81,20 +81,21 @@
  */
 
 
-
-// ******************
-// ** Construction **
-// ******************
-
-Database::Database ():
-	databaseInterface ()
+namespace Db
 {
-}
+	// ******************
+	// ** Construction **
+	// ******************
+
+	Database::Database ():
+		databaseInterface ()
+	{
+	}
 
 
-Database::~Database()
-{
-}
+	Database::~Database()
+	{
+	}
 
 
 
@@ -103,148 +104,149 @@ Database::~Database()
 
 
 
-// *********
-// ** ORM **
-// *********
+	// *********
+	// ** ORM **
+	// *********
 
-template<class T> QList<T> Database::getObjects (QString condition, QList<QVariant> conditionValues)
-{
-	QString queryString=QString ("SELECT %1 FROM %2")
-		.arg (T::selectColumnList (), T::dbTableName ());
+	template<class T> QList<T> Database::getObjects (QString condition, QList<QVariant> conditionValues)
+	{
+		QString queryString=QString ("SELECT %1 FROM %2")
+			.arg (T::selectColumnList (), T::dbTableName ());
 
-	if (!condition.isEmpty ())
-		queryString+=" WHERE "+condition;
+		if (!condition.isEmpty ())
+			queryString+=" WHERE "+condition;
 
-	QSqlQuery query=databaseInterface.prepareQuery (queryString, true);
-	foreach (const QVariant &conditionValue, conditionValues)
-		query.addBindValue (conditionValue);
+		QSqlQuery query=databaseInterface.prepareQuery (queryString, true);
+		foreach (const QVariant &conditionValue, conditionValues)
+			query.addBindValue (conditionValue);
 
-	databaseInterface.executeQuery (query);
+		databaseInterface.executeQuery (query);
 
-    return T::createListFromQuery (query);
-}
+		return T::createListFromQuery (query);
+	}
 
-template<class T> int Database::countObjects ()
-{
-	QString queryString="SELECT COUNT(*) FROM "+T::dbTableName ();
+	template<class T> int Database::countObjects ()
+	{
+		QString queryString="SELECT COUNT(*) FROM "+T::dbTableName ();
 
-	QSqlQuery query=databaseInterface.executeQuery (queryString);
+		QSqlQuery query=databaseInterface.executeQuery (queryString);
 
-	query.next ();
-    return query.value (0).toInt ();
-}
+		query.next ();
+		return query.value (0).toInt ();
+	}
 
-template<class T> bool Database::objectExists (dbId id)
-{
-	QString queryString=QString ("SELECT COUNT(*) FROM %1 WHERE id=?")
-		.arg (T::dbTableName ());
+	template<class T> bool Database::objectExists (dbId id)
+	{
+		QString queryString=QString ("SELECT COUNT(*) FROM %1 WHERE id=?")
+			.arg (T::dbTableName ());
 
-	QSqlQuery query=databaseInterface.prepareQuery (queryString);
-	query.addBindValue (id);
-	databaseInterface.executeQuery (query);
+		QSqlQuery query=databaseInterface.prepareQuery (queryString);
+		query.addBindValue (id);
+		databaseInterface.executeQuery (query);
 
-	query.next ();
-	return query.value (0).toInt ()>0;
-}
+		query.next ();
+		return query.value (0).toInt ()>0;
+	}
 
-template<class T> T Database::getObject (dbId id)
-{
-	QString queryString=QString ("SELECT %1 FROM %2 WHERE ID=?")
-		.arg (T::selectColumnList (), T::dbTableName ());
+	template<class T> T Database::getObject (dbId id)
+	{
+		QString queryString=QString ("SELECT %1 FROM %2 WHERE ID=?")
+			.arg (T::selectColumnList (), T::dbTableName ());
 
-	QSqlQuery query=databaseInterface.prepareQuery (queryString);
-	query.addBindValue (id);
-	databaseInterface.executeQuery (query);
+		QSqlQuery query=databaseInterface.prepareQuery (queryString);
+		query.addBindValue (id);
+		databaseInterface.executeQuery (query);
 
-	if (!query.next ()) throw NotFoundException ();
+		if (!query.next ()) throw NotFoundException ();
 
-	return T::createFromQuery (query);
-}
+		return T::createFromQuery (query);
+	}
 
-template<class T> bool Database::deleteObject (dbId id)
-{
-	QString queryString=QString ("DELETE FROM %1 WHERE ID=?")
-		.arg (T::dbTableName ());
+	template<class T> bool Database::deleteObject (dbId id)
+	{
+		QString queryString=QString ("DELETE FROM %1 WHERE ID=?")
+			.arg (T::dbTableName ());
 
-	QSqlQuery query=databaseInterface.prepareQuery (queryString);
-	query.addBindValue (id);
-	databaseInterface.executeQuery (query);
+		QSqlQuery query=databaseInterface.prepareQuery (queryString);
+		query.addBindValue (id);
+		databaseInterface.executeQuery (query);
 
-	return query.numRowsAffected ()>0;
-}
+		return query.numRowsAffected ()>0;
+	}
 
-/**
- * The id of the object is ignored and overwritten.
- *
- * @param object
- * @return
- */
-template<class T> dbId Database::createObject (T &object)
-{
-	QString queryString=QString ("INSERT INTO %1 %2")
-		.arg (T::dbTableName (), T::insertValueList ());
+	/**
+	 * The id of the object is ignored and overwritten.
+	 *
+	 * @param object
+	 * @return
+	 */
+	template<class T> dbId Database::createObject (T &object)
+	{
+		QString queryString=QString ("INSERT INTO %1 %2")
+			.arg (T::dbTableName (), T::insertValueList ());
 
-	QSqlQuery query=databaseInterface.prepareQuery (queryString);
-	object.bindValues (query);
-	databaseInterface.executeQuery (query);
+		QSqlQuery query=databaseInterface.prepareQuery (queryString);
+		object.bindValues (query);
+		databaseInterface.executeQuery (query);
 
-	object.id=query.lastInsertId ().toLongLong ();
+		object.id=query.lastInsertId ().toLongLong ();
 
-	return object.id;
-}
+		return object.id;
+	}
 
-template<class T> bool Database::updateObject (const T &object)
-{
-	QString queryString=QString ("UPDATE %1 SET %2 WHERE id=?")
-		.arg (T::dbTableName (), object.updateValueList ());
+	template<class T> bool Database::updateObject (const T &object)
+	{
+		QString queryString=QString ("UPDATE %1 SET %2 WHERE id=?")
+			.arg (T::dbTableName (), object.updateValueList ());
 
-	QSqlQuery query=databaseInterface.prepareQuery (queryString);
-	object.bindValues (query);
-	query.addBindValue (object.id);
+		QSqlQuery query=databaseInterface.prepareQuery (queryString);
+		object.bindValues (query);
+		query.addBindValue (object.id);
 
-	databaseInterface.executeQuery (query);
+		databaseInterface.executeQuery (query);
 
-	return query.numRowsAffected ()>0;
-}
+		return query.numRowsAffected ()>0;
+	}
 
-// Instantiate the class templates
-// Classes have to provide:
-//   - ::dbTableName ();
-//   - ::QString selectColumnList ();
-//   - ::createFromQuery (const QSqlQuery &query);
-//   - ::insertValueList ();
-//   - ::updateValueList ();
-//   - bindValues (QSqlQuery &q) const;
-//   - ::createListFromQuery (QSqlQuery &query);
+	// Instantiate the class templates
+	// Classes have to provide:
+	//   - ::dbTableName ();
+	//   - ::QString selectColumnList ();
+	//   - ::createFromQuery (const QSqlQuery &query);
+	//   - ::insertValueList ();
+	//   - ::updateValueList ();
+	//   - bindValues (QSqlQuery &q) const;
+	//   - ::createListFromQuery (QSqlQuery &query);
 
-#define INSTANTIATE_TEMPLATES(Class) \
-	template QList<Class> Database::getObjects (QString condition, QList<QVariant> conditionValues); \
-	template int          Database::countObjects<Class> (); \
-	template bool         Database::objectExists<Class> (dbId id); \
-	template Class        Database::getObject           (dbId id); \
-	template bool         Database::deleteObject<Class> (dbId id); \
-	template dbId         Database::createObject        (Class &object); \
-	template bool         Database::updateObject        (const Class &object); \
-	// Empty line
+	#define INSTANTIATE_TEMPLATES(Class) \
+		template QList<Class> Database::getObjects (QString condition, QList<QVariant> conditionValues); \
+		template int          Database::countObjects<Class> (); \
+		template bool         Database::objectExists<Class> (dbId id); \
+		template Class        Database::getObject           (dbId id); \
+		template bool         Database::deleteObject<Class> (dbId id); \
+		template dbId         Database::createObject        (Class &object); \
+		template bool         Database::updateObject        (const Class &object); \
+		// Empty line
 
-INSTANTIATE_TEMPLATES (Person      )
-INSTANTIATE_TEMPLATES (Plane       )
-INSTANTIATE_TEMPLATES (Flight      )
-INSTANTIATE_TEMPLATES (LaunchMethod)
+	INSTANTIATE_TEMPLATES (Person      )
+	INSTANTIATE_TEMPLATES (Plane       )
+	INSTANTIATE_TEMPLATES (Flight      )
+	INSTANTIATE_TEMPLATES (LaunchMethod)
 
-#undef INSTANTIATE_TEMPLATES
+	#undef INSTANTIATE_TEMPLATES
 
 
-// *******************
-// ** Very specific **
-// *******************
+	// *******************
+	// ** Very specific **
+	// *******************
 
-QStringList Database::listStrings (const QString &queryString)
-{
-	return databaseInterface.listStrings (queryString);
-}
+	QStringList Database::listStrings (const QString &queryString)
+	{
+		return databaseInterface.listStrings (queryString);
+	}
 
-QList<Flight> Database::getFlights (const QString &condition, const QList<QVariant> &conditionValues)
-{
-	getObjects<Flight> (condition, conditionValues);
+	QList<Flight> Database::getFlights (const QString &condition, const QList<QVariant> &conditionValues)
+	{
+		getObjects<Flight> (condition, conditionValues);
+	}
 }

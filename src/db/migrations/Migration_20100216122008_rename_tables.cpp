@@ -1,6 +1,6 @@
 #include "Migration_20100216122008_rename_tables.h"
 
-Migration_20100216122008_rename_tables::Migration_20100216122008_rename_tables (DatabaseInterface &databaseInterface):
+Migration_20100216122008_rename_tables::Migration_20100216122008_rename_tables (Db::Interface::DatabaseInterface &databaseInterface):
 	Migration (databaseInterface)
 {
 }

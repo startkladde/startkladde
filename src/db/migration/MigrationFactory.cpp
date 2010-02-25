@@ -77,7 +77,7 @@ quint64 MigrationFactory::latestVersion ()
  *        version
  */
 
-Migration *MigrationFactory::createMigration (DatabaseInterface &databaseInterface, const quint64 version)
+Migration *MigrationFactory::createMigration (Db::Interface::DatabaseInterface &databaseInterface, const quint64 version)
 {
 	switch (version)
 	{

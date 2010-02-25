@@ -10,37 +10,40 @@
 
 #include <QThread>
 
-class DatabaseTask;
-class DatabaseWorker;
-
-/**
- * Runs a worker in a background thread and delivers signals to it
- *
- * The methods of this class can be called from any thread. A corresponding
- * signal is delivered to the worker in the background thread.
- *
- * This class is thread safe.
- */
-class DatabaseThread: public QThread
+namespace Db
 {
-	Q_OBJECT;
+	class DatabaseTask;
+	class DatabaseWorker;
 
-	public:
-		DatabaseThread ();
-		virtual ~DatabaseThread ();
+	/**
+	 * Runs a worker in a background thread and delivers signals to it
+	 *
+	 * The methods of this class can be called from any thread. A corresponding
+	 * signal is delivered to the worker in the background thread.
+	 *
+	 * This class is thread safe.
+	 */
+	class DatabaseThread: public QThread
+	{
+		Q_OBJECT;
 
-		void runTask (DatabaseTask &task);
-		void runTaskAndWait (DatabaseTask &task);
+		public:
+			DatabaseThread ();
+			virtual ~DatabaseThread ();
 
-	signals:
-		void runTaskSignal (DatabaseTask *task);
+			void runTask (DatabaseTask &task);
+			void runTaskAndWait (DatabaseTask &task);
 
-	protected:
-		virtual void run ();
+		signals:
+			void runTaskSignal (DatabaseTask *task);
 
-	private:
-		DatabaseWorker *worker;
+		protected:
+			virtual void run ();
 
-};
+		private:
+			DatabaseWorker *worker;
+
+	};
+}
 
 #endif

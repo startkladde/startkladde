@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "src/db/DatabaseInterface.h"
+#include "src/db/interface/DatabaseInterface.h"
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/CurrentSchema.h"
 #include "src/util/qString.h"
@@ -20,7 +20,7 @@ const QString Migrator::migrationsColumnName="version";
  *
  * @param databaseInterface the databaseInterface to access
  */
-Migrator::Migrator (DatabaseInterface &databaseInterface):
+Migrator::Migrator (Db::Interface::DatabaseInterface &databaseInterface):
 	databaseInterface (databaseInterface),
 	factory (new MigrationFactory ())
 {

@@ -3,19 +3,19 @@
 
 #include <QString>
 
-class DatabaseInterface;
+namespace Db { namespace Interface { class DatabaseInterface; } }
 
 class SchemaDumper
 {
 	public:
-		SchemaDumper (DatabaseInterface &databaseInterface);
+		SchemaDumper (Db::Interface::DatabaseInterface &databaseInterface);
 		virtual ~SchemaDumper ();
 
 		QString dumpSchema ();
 		void dumpSchemaToFile (const QString &filename);
 
 	protected:
-		DatabaseInterface &databaseInterface;
+		Db::Interface::DatabaseInterface &databaseInterface;
 
 		void dumpTables   (QStringList &output);
 		void dumpTable    (QStringList &output, const QString &name);

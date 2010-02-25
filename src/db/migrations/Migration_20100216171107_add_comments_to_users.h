@@ -9,7 +9,7 @@
 class Migration_20100216171107_add_comments_to_users: public Migration
 {
 	public:
-		Migration_20100216171107_add_comments_to_users (DatabaseInterface &databaseInterface);
+		Migration_20100216171107_add_comments_to_users (Db::Interface::DatabaseInterface &databaseInterface);
 		virtual ~Migration_20100216171107_add_comments_to_users ();
 
 		virtual void up ();

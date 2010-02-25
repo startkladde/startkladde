@@ -48,7 +48,7 @@ template<class T> class QList;
 class QModelIndex;
 
 class FlightSortFilterProxyModel;
-class ThreadSafeDatabase;
+class Db::ThreadSafeDatabase;
 class ShellPlugin;
 class WeatherWidget;
 class WeatherDialog;
@@ -69,7 +69,7 @@ class MainWindow: public QMainWindow
 	Q_OBJECT
 
 	public:
-		MainWindow (QWidget *parent, ThreadSafeDatabase *_db, QList<ShellPlugin *> &plugins);
+		MainWindow (QWidget *parent, Db::ThreadSafeDatabase *_db, QList<ShellPlugin *> &plugins);
 		~MainWindow ();
 
 	protected:

@@ -10,7 +10,7 @@
 class Migration_20100216135637_add_launch_methods: public Migration
 {
 	public:
-		Migration_20100216135637_add_launch_methods (DatabaseInterface &databaseInterface);
+		Migration_20100216135637_add_launch_methods (Db::Interface::DatabaseInterface &databaseInterface);
 		virtual ~Migration_20100216135637_add_launch_methods ();
 
 		virtual void up ();

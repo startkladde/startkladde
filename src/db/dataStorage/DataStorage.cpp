@@ -127,7 +127,7 @@ const int db_ok=0;
 // ** Construction **
 // ******************
 
-DataStorage::DataStorage (ThreadSafeDatabase &db):
+DataStorage::DataStorage (Db::ThreadSafeDatabase &db):
 	db (db),
 	flightsToday (new EntityList<Flight> ()),
 	flightsOther (new EntityList<Flight> ()),

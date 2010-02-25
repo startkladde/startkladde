@@ -8,7 +8,7 @@
 #include "src/gui/windows/MainWindow.h"
 #include "src/plugins/ShellPlugin.h"
 #include "src/db/Database.h"
-#include "src/db/DatabaseInterface.h"
+#include "src/db/interface/DatabaseInterface.h"
 #include "src/db/migration/Migrator.h"
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/SchemaDumper.h"
@@ -45,7 +45,7 @@ void display_help ()
 int test_database ()
 {
 //	Database db;
-	ThreadSafeDatabase db;
+	Db::ThreadSafeDatabase db;
 	db.open (opts.databaseInfo);
 
 	std::cout << std::endl;
@@ -129,7 +129,7 @@ int test_database ()
 	return 0;
 }
 
-int showGui (QApplication &a, ThreadSafeDatabase &db, QList<ShellPlugin *> &plugins)
+int showGui (QApplication &a, Db::ThreadSafeDatabase &db, QList<ShellPlugin *> &plugins)
 {
 	//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
 
@@ -160,7 +160,7 @@ int doStuff ()
 {
 	// No reason to be thread safe here - don't construct a Database, use a
 	// DatabaseInterface directly.
-	DatabaseInterface db;
+	Db::Interface::DatabaseInterface db;
 
 	// Tests ahead
 	bool ok=db.open (opts.databaseInfo);
@@ -243,7 +243,7 @@ int main (int argc, char **argv)
 	// types must be registered.
 	qRegisterMetaType<DbEvent> ("DbEvent");
 	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
-	qRegisterMetaType<DatabaseTask *> ("DatabaseTask&");
+	qRegisterMetaType<Db::DatabaseTask *> ("Db::DatabaseTask *");
 
 	int ret=0;
 
@@ -261,7 +261,7 @@ int main (int argc, char **argv)
 
 			if (opts.non_options.empty ())
 			{
-				ThreadSafeDatabase db;
+				Db::ThreadSafeDatabase db;
 				ret=showGui (a, db, plugins);
 			}
 			else
@@ -273,7 +273,7 @@ int main (int argc, char **argv)
 			}
 		}
 	}
-	catch (DatabaseInterface::QueryFailedException &ex)
+	catch (Db::Interface::DatabaseInterface::QueryFailedException &ex)
 	{
 		std::cout << "QueryFailedException" << std::endl;
 		std::cout << "  Query: " << ex.query.lastQuery () << std::endl;

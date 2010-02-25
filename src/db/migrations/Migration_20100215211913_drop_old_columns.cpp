@@ -1,6 +1,6 @@
 #include "Migration_20100215211913_drop_old_columns.h"
 
-Migration_20100215211913_drop_old_columns::Migration_20100215211913_drop_old_columns (DatabaseInterface &databaseInterface):
+Migration_20100215211913_drop_old_columns::Migration_20100215211913_drop_old_columns (Db::Interface::DatabaseInterface &databaseInterface):
 	Migration (databaseInterface)
 {
 }

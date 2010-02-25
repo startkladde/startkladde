@@ -3,7 +3,7 @@
 #include <iostream>
 #include "src/util/qString.h"
 
-Migration_20100216105657_remove_temp_tables::Migration_20100216105657_remove_temp_tables (DatabaseInterface &databaseInterface):
+Migration_20100216105657_remove_temp_tables::Migration_20100216105657_remove_temp_tables (Db::Interface::DatabaseInterface &databaseInterface):
 	Migration (databaseInterface)
 {
 }

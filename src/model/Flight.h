@@ -34,10 +34,12 @@ enum FlightError {
 	ff_startort_gleich_zielort, ff_kein_schleppflugzeug, ff_towplane_is_glider
 	};
 
+namespace Db { class Database; }
+
 // TODO: inherit from Entity
 class Flight
 {
-	friend class Database;
+	friend class Db::Database;
 
 	public:
 		// *** Types

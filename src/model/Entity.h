@@ -5,6 +5,8 @@
 
 #include "src/db/dbId.h"
 
+namespace Db { class Database; }
+
 /**
  * An object stored in the database
  *
@@ -12,7 +14,7 @@
  */
 class Entity
 {
-	friend class Database;
+	friend class Db::Database;
 
 	public:
 		// *** Construction

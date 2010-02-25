@@ -62,7 +62,7 @@
 class Migration_20100214140000_initial: public Migration
 {
 	public:
-		Migration_20100214140000_initial (DatabaseInterface &databaseInterface);
+		Migration_20100214140000_initial (Db::Interface::DatabaseInterface &databaseInterface);
 		virtual ~Migration_20100214140000_initial ();
 
 		virtual void up ();

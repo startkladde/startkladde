@@ -5,10 +5,10 @@
 #include <QtSql>
 #include <QFile>
 
-#include "src/db/DatabaseInterface.h"
+#include "src/db/interface/DatabaseInterface.h"
 #include "src/db/migration/Migrator.h" // Required for migrationsTableName/migrationsColumnName
 
-SchemaDumper::SchemaDumper (DatabaseInterface &databaseInterface):
+SchemaDumper::SchemaDumper (Db::Interface::DatabaseInterface &databaseInterface):
 	databaseInterface (databaseInterface)
 {
 }

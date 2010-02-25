@@ -10,22 +10,25 @@
 
 #include <QObject>
 
-class DatabaseTask;
-
-/**
- * Receives signals in the background thread and performs work (such as
- * executing a task)
- */
-class DatabaseWorker: public QObject
+namespace Db
 {
-	Q_OBJECT;
+	class DatabaseTask;
 
-	public:
-		DatabaseWorker ();
-		virtual ~DatabaseWorker ();
+	/**
+	 * Receives signals in the background thread and performs work (such as
+	 * executing a task)
+	 */
+	class DatabaseWorker: public QObject
+	{
+		Q_OBJECT;
 
-	public slots:
-		virtual void runTask (DatabaseTask *task);
-};
+		public:
+			DatabaseWorker ();
+			virtual ~DatabaseWorker ();
+
+		public slots:
+			virtual void runTask (DatabaseTask *task);
+	};
+}
 
 #endif
