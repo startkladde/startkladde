@@ -3,7 +3,7 @@
 #include "src/model/Flight.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
-#include "src/db/interface/DefaultInterface.h"
+#include "src/db/interface/Interface.h"
 #include "src/db/Query.h"
 
 namespace Db

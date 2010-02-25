@@ -9,8 +9,7 @@
 #include <QSqlError>
 
 #include "src/db/dbId.h"
-#include "src/db/DatabaseInfo.h"
-#include "src/db/interface/DefaultInterface.h" // TODO remove (to worker)
+#include "src/db/interface/Interface.h"
 #include "src/db/AbstractDatabase.h"
 
 class Flight;
@@ -38,13 +37,13 @@ namespace Db
 			class NotFoundException {};
 
 			// *** Construction
-			Database (const DatabaseInfo &dbInfo);
+			Database (Interface::Interface &interface);
 			virtual ~Database ();
 
 			// *** Connection management
-			bool open () { return defaultInterface.open (); }
-			void close () { defaultInterface.close (); }
-			QSqlError lastError () { return defaultInterface.lastError (); }
+			bool open () { return interface.open (); }
+			void close () { interface.close (); }
+			QSqlError lastError () { return interface.lastError (); }
 
 
 			// *** ORM
@@ -62,7 +61,7 @@ namespace Db
 			virtual QList<Flight> getFlights (const QString &condition="", const QList<QVariant> &conditionValues=QList<QVariant> ());
 
 		private:
-			Interface::DefaultInterface defaultInterface;
+			Interface::Interface &interface;
 	};
 }
 

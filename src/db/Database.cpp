@@ -1,16 +1,13 @@
 /*
  * Next:
+ *   - ThreadSafeInterface
+ *   - Remove ThreadSafeDatabase
  *   - integrate schema loading/database migration into GUI
  *
  * Short term plan:
  *   - Is the Result solution really good? Add a ResultConsumer as alternative.
  *   - Instead of returning the result through the query, use a smart pointer
- *   - Test the migrations:
- *     - make sure the old version and current sk_web work with "initial"
- *     - make sure we can migrate from both an empty and the legacy database
- *   - Fixtures
- *     - SQL dump or data file (CSV/YAML)?
- *     - C++ or Ruby?
+ *     (QSharedPointer)
  *   - Standardize enum handling: store the database value internally and have
  *     an "unknown" type (instead of "none")
  *     - this should also allow preserving unknown types in the database
@@ -21,6 +18,14 @@
  *     locations because we don't get a complete flight list
  *   - fix error reporting (db.lastError (), e. g. delete objects)
  *   - make sure "", 0 and NULL are read correctly
+ *
+ * Tests:
+ *   - Test the migrations:
+ *     - make sure the old version and current sk_web work with "initial"
+ *     - make sure we can migrate from both an empty and the legacy database
+ *   - Fixtures
+ *     - SQL dump or data file (CSV/YAML)?
+ *     - C++ or Ruby?
  *
  * Improvements:
  *   - move (static) methods like selectDistinctColumnQuery to QueryGenerator (but see below)
@@ -90,8 +95,8 @@ namespace Db
 	// ** Construction **
 	// ******************
 
-	Database::Database (const DatabaseInfo &dbInfo):
-		defaultInterface (dbInfo)
+	Database::Database (Interface::Interface &interface):
+		interface (interface)
 	{
 	}
 
@@ -123,13 +128,13 @@ namespace Db
 		foreach (const QVariant &conditionValue, conditionValues)
 			query.bind (conditionValue);
 
-		return T::createListFromResult (*defaultInterface.executeQuery (query));
+		return T::createListFromResult (*interface.executeQuery (query));
 
-//		QSqlQuery query=defaultInterface.prepareQuery (queryString, true);
+//		QSqlQuery query=interface.prepareQuery (queryString, true);
 //		foreach (const QVariant &conditionValue, conditionValues)
 //			query.addBindValue (conditionValue);
 //
-//		defaultInterface.executeQuery (query);
+//		interface.executeQuery (query);
 //
 //		return T::createListFromQuery (query);
 	}
@@ -138,11 +143,11 @@ namespace Db
 	{
 		Query query=Query (QString ("SELECT COUNT(*) FROM %1"))
 			.arg (T::dbTableName ());
-		return defaultInterface.countQuery (query);
+		return interface.countQuery (query);
 
 //		QString queryString="SELECT COUNT(*) FROM "+T::dbTableName ();
 //
-//		QSqlQuery query=defaultInterface.executeQuery (queryString);
+//		QSqlQuery query=interface.executeQuery (queryString);
 //
 //		query.next ();
 //		return query.value (0).toInt ();
@@ -153,14 +158,14 @@ namespace Db
 		Query query=Query ("SELECT COUNT(*) FROM %1 WHERE id=?")
 			.arg (T::dbTableName ()).bind (id);
 
-		return defaultInterface.countQuery (query)>0;
+		return interface.countQuery (query)>0;
 
 //		QString queryString=QString ("SELECT COUNT(*) FROM %1 WHERE id=?")
 //			.arg (T::dbTableName ());
 //
-//		QSqlQuery query=defaultInterface.prepareQuery (queryString);
+//		QSqlQuery query=interface.prepareQuery (queryString);
 //		query.addBindValue (id);
-//		defaultInterface.executeQuery (query);
+//		interface.executeQuery (query);
 //
 //		query.next ();
 //		return query.value (0).toInt ()>0;
@@ -172,7 +177,7 @@ namespace Db
 			.arg (T::selectColumnList (), T::dbTableName ())
 			.bind (id);
 
-		defaultInterface.executeQuery (query);
+		interface.executeQuery (query);
 
 		if (!query.getResult ()->next ()) throw NotFoundException ();
 
@@ -181,9 +186,9 @@ namespace Db
 //		QString queryString=QString ("SELECT %1 FROM %2 WHERE ID=?")
 //			.arg (T::selectColumnList (), T::dbTableName ());
 //
-//		QSqlQuery query=defaultInterface.prepareQuery (queryString);
+//		QSqlQuery query=interface.prepareQuery (queryString);
 //		query.addBindValue (id);
-//		defaultInterface.executeQuery (query);
+//		interface.executeQuery (query);
 //
 //		if (!query.next ()) throw NotFoundException ();
 //
@@ -195,16 +200,16 @@ namespace Db
 		Query query=Query ("DELETE FROM %1 WHERE ID=?")
 			.arg (T::dbTableName ()).bind (id);
 
-		defaultInterface.executeQuery (query);
+		interface.executeQuery (query);
 
 		return query.getResult ()->numRowsAffected ()>0;
 
 //		QString queryString=QString ("DELETE FROM %1 WHERE ID=?")
 //			.arg (T::dbTableName ());
 //
-//		QSqlQuery query=defaultInterface.prepareQuery (queryString);
+//		QSqlQuery query=interface.prepareQuery (queryString);
 //		query.addBindValue (id);
-//		defaultInterface.executeQuery (query);
+//		interface.executeQuery (query);
 //
 //		return query.numRowsAffected ()>0;
 	}
@@ -219,7 +224,7 @@ namespace Db
 	{
 		Query query=Query ("INSERT INTO %1 %2").arg (T::dbTableName (), T::insertValueList ());
 		object.bindValues (query);
-		defaultInterface.executeQuery (query);
+		interface.executeQuery (query);
 
 		object.id=query.getResult ()->lastInsertId ().toLongLong ();
 
@@ -228,9 +233,9 @@ namespace Db
 //		QString queryString=QString ("INSERT INTO %1 %2")
 //			.arg (T::dbTableName (), T::insertValueList ());
 //
-//		QSqlQuery query=defaultInterface.prepareQuery (queryString);
+//		QSqlQuery query=interface.prepareQuery (queryString);
 //		object.bindValues (query);
-//		defaultInterface.executeQuery (query);
+//		interface.executeQuery (query);
 //
 //		object.id=query.lastInsertId ().toLongLong ();
 //
@@ -245,18 +250,18 @@ namespace Db
 		object.bindValues (query);
 		query.bind (object.id); // After the object values!
 
-		defaultInterface.executeQuery (query);
+		interface.executeQuery (query);
 
 		return query.getResult ()->numRowsAffected ();
 
 //		QString queryString=QString ("UPDATE %1 SET %2 WHERE id=?")
 //			.arg (T::dbTableName (), object.updateValueList ());
 //
-//		QSqlQuery query=defaultInterface.prepareQuery (queryString);
+//		QSqlQuery query=interface.prepareQuery (queryString);
 //		object.bindValues (query);
 //		query.addBindValue (object.id);
 //
-//		defaultInterface.executeQuery (query);
+//		interface.executeQuery (query);
 //
 //		return query.numRowsAffected ()>0;
 	}
@@ -295,7 +300,7 @@ namespace Db
 
 	QStringList Database::listStrings (const Query &query)
 	{
-		return defaultInterface.listStrings (query);
+		return interface.listStrings (query);
 	}
 
 	QList<Flight> Database::getFlights (const QString &condition, const QList<QVariant> &conditionValues)

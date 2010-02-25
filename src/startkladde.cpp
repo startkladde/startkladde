@@ -158,8 +158,7 @@ int showGui (QApplication &a, Db::ThreadSafeDatabase &db, QList<ShellPlugin *> &
 
 int doStuff ()
 {
-	// No reason to be thread safe here - don't construct a Database, use a
-	// DefaultInterface directly.
+	// We don't need the ORM or thread safety, so we use a DefaultInterface.
 	Db::Interface::DefaultInterface db (opts.databaseInfo);
 
 	// Tests ahead
@@ -273,7 +272,7 @@ int main (int argc, char **argv)
 			}
 		}
 	}
-	catch (Db::Interface::DefaultInterface::QueryFailedException &ex)
+	catch (Db::Interface::Interface::QueryFailedException &ex)
 	{
 		std::cout << "QueryFailedException" << std::endl;
 		std::cout << "  Query: " << ex.query.lastQuery () << std::endl;

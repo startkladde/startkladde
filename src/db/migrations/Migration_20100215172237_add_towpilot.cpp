@@ -1,6 +1,6 @@
 #include "Migration_20100215172237_add_towpilot.h"
 
-Migration_20100215172237_add_towpilot::Migration_20100215172237_add_towpilot (Db::Interface::DefaultInterface &interface):
+Migration_20100215172237_add_towpilot::Migration_20100215172237_add_towpilot (Db::Interface::Interface &interface):
 	Migration (interface)
 {
 }

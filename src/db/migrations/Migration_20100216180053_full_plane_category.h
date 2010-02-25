@@ -10,7 +10,7 @@
 class Migration_20100216180053_full_plane_category: public Migration
 {
 	public:
-		Migration_20100216180053_full_plane_category (Db::Interface::DefaultInterface &interface);
+		Migration_20100216180053_full_plane_category (Db::Interface::Interface &interface);
 		virtual ~Migration_20100216180053_full_plane_category ();
 
 		virtual void up ();

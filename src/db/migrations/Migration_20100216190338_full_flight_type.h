@@ -10,7 +10,7 @@
 class Migration_20100216190338_full_flight_type: public Migration
 {
 	public:
-		Migration_20100216190338_full_flight_type (Db::Interface::DefaultInterface &interface);
+		Migration_20100216190338_full_flight_type (Db::Interface::Interface &interface);
 		virtual ~Migration_20100216190338_full_flight_type ();
 
 		virtual void up ();

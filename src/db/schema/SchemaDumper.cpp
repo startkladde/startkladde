@@ -4,12 +4,13 @@
 
 #include <QFile>
 #include <QDateTime>
+#include <QStringList>
 
-#include "src/db/interface/DefaultInterface.h"
+#include "src/db/interface/Interface.h"
 #include "src/db/migration/Migrator.h" // Required for migrationsTableName/migrationsColumnName
 #include "src/db/result/Result.h"
 
-SchemaDumper::SchemaDumper (Db::Interface::DefaultInterface &interface):
+SchemaDumper::SchemaDumper (Db::Interface::Interface &interface):
 	interface (interface)
 {
 }
@@ -62,7 +63,7 @@ void SchemaDumper::dumpTables (QStringList &output)
 	output << "tables:";
 
 //	QString queryString="SHOW TABLES";
-//	QSqlQuery query=DefaultInterface.executeQuery (queryString);
+//	QSqlQuery query=Interface.executeQuery (queryString);
 //
 //	while (query.next ())
 //		dumpTable (output, query.value (0).toString ());

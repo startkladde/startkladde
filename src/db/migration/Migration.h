@@ -6,7 +6,7 @@
 
 #include "src/db/Query.h"
 
-namespace Db { namespace Interface { class DefaultInterface; } }
+namespace Db { namespace Interface { class Interface; } }
 
 /**
  * A new migration is created by creating the appropriate class in
@@ -19,11 +19,11 @@ namespace Db { namespace Interface { class DefaultInterface; } }
  * Migrations are supposed to be called only through Migrator, which keeps track
  * of which migrations have already been applied (see documentation).
  *
- * Note that we forward a lot of DefaultInterface methods (and constants) to
- * DefaultInterface instead of having Migration implementations access the
- * DefaultInterface directly.
+ * Note that we forward a lot of Interface methods (and constants) to
+ * Interface instead of having Migration implementations access the
+ * Interface directly.
  * This is done in order to avoid a dependency of the individual migrations on
- * DefaultInterface, which would necessitate recompiling all migrations when
+ * Interface, which would necessitate recompiling all migrations when
  * the database interface changes, even if the migrations are not affected by
  * the change.
  *
@@ -32,7 +32,7 @@ namespace Db { namespace Interface { class DefaultInterface; } }
  * add logging or accumulate changes before executing them.
  *
  * Notes for implementations:
- *   - do not include DefaultInterface.h. Use the forwarder methods provided
+ *   - do not include Interface.h. Use the forwarder methods provided
  *     by this class instead. Add forwarder methods if required.
  */
 class Migration
@@ -61,7 +61,7 @@ class Migration
     	static QString dataTypeId        ();
 
 
-		Migration (Db::Interface::DefaultInterface &interface);
+		Migration (Db::Interface::Interface &interface);
 		virtual ~Migration ();
 
 		virtual void up ()=0;
@@ -87,7 +87,7 @@ class Migration
 		void updateColumnValues (const QString &tableName, const QString &columnName, const QVariant &oldValue, const QVariant &newValue);
 
 	private:
-		Db::Interface::DefaultInterface &interface;
+		Db::Interface::Interface &interface;
 };
 
 #endif

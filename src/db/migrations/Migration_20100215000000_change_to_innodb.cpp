@@ -4,7 +4,7 @@
 
 #include "src/util/qString.h"
 
-Migration_20100215000000_change_to_innodb::Migration_20100215000000_change_to_innodb (Db::Interface::DefaultInterface &interface):
+Migration_20100215000000_change_to_innodb::Migration_20100215000000_change_to_innodb (Db::Interface::Interface &interface):
 	Migration (interface)
 {
 }

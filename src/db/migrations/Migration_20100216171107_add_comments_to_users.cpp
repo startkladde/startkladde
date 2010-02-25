@@ -1,6 +1,6 @@
 #include "Migration_20100216171107_add_comments_to_users.h"
 
-Migration_20100216171107_add_comments_to_users::Migration_20100216171107_add_comments_to_users (Db::Interface::DefaultInterface &interface):
+Migration_20100216171107_add_comments_to_users::Migration_20100216171107_add_comments_to_users (Db::Interface::Interface &interface):
 	Migration (interface)
 {
 }

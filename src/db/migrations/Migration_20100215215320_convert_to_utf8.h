@@ -15,7 +15,7 @@
 class Migration_20100215215320_convert_to_utf8: public Migration
 {
 	public:
-		Migration_20100215215320_convert_to_utf8 (Db::Interface::DefaultInterface &interface);
+		Migration_20100215215320_convert_to_utf8 (Db::Interface::Interface &interface);
 		virtual ~Migration_20100215215320_convert_to_utf8 ();
 
 		virtual void up ();

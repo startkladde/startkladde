@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Migration_20100217131516_flight_status_columns::Migration_20100217131516_flight_status_columns (Db::Interface::DefaultInterface &interface):
+Migration_20100217131516_flight_status_columns::Migration_20100217131516_flight_status_columns (Db::Interface::Interface &interface):
 	Migration (interface)
 {
 }

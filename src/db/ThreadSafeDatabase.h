@@ -18,6 +18,7 @@
 #include "src/db/DatabaseTask.h"
 #include "src/db/Database.h"
 #include "src/db/DatabaseInfo.h"
+#include "src/db/interface/DefaultInterface.h"
 
 //class WaitTask: public DatabaseTask
 //{
@@ -40,7 +41,8 @@ namespace Db
 			virtual void execute ()
 			{
 				// TODO leak
-				database=new Db::Database (info);
+				Interface::Interface *interface=new Interface::DefaultInterface (info);
+				database=new Db::Database (*interface);
 				database->open ();
 			}
 

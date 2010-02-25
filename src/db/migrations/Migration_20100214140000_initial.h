@@ -29,7 +29,7 @@
  * The differences are:
  *   - The storage engine will be InnoDB (was MyISAM before)
  *       - Transparent because no MyISAM specific features were used
- *       - Different because DefaultInterface#addTable does not allow
+ *       - Different because Interface#addTable does not allow
  *         specifying the storage engine
  *       - Fixed in 20100215000000
  *   - The towpilot columns will be created (they were optional before).
@@ -45,7 +45,7 @@
  *   - The character set will be utf8 (was latin1 before)
  *       - Transparent because the character set is automatically converted by
  *         MySQL
- *       - Different because DefaultInterface#addTable does not allow specifying the
+ *       - Different because Interface#addTable does not allow specifying the
  *         character set; also, no data is lost when migrating down
  *       - Fixed in 20100215215320
  *   - The data types may be different
@@ -62,7 +62,7 @@
 class Migration_20100214140000_initial: public Migration
 {
 	public:
-		Migration_20100214140000_initial (Db::Interface::DefaultInterface &interface);
+		Migration_20100214140000_initial (Db::Interface::Interface &interface);
 		virtual ~Migration_20100214140000_initial ();
 
 		virtual void up ();

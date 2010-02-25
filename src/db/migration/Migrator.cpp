@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "src/db/interface/DefaultInterface.h"
+#include "src/db/interface/Interface.h"
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/CurrentSchema.h"
 #include "src/util/qString.h"
@@ -17,11 +17,11 @@ const QString Migrator::migrationsTableName="schema_migrations";
 const QString Migrator::migrationsColumnName="version";
 
 /**
- * Creates a Migrator for the given DefaultInterface
+ * Creates a Migrator for the given Interface
  *
- * @param DefaultInterface the DefaultInterface to access
+ * @param interface the Interface to access
  */
-Migrator::Migrator (Db::Interface::DefaultInterface &interface):
+Migrator::Migrator (Db::Interface::Interface &interface):
 	interface (interface),
 	factory (new MigrationFactory ())
 {
