@@ -6,8 +6,6 @@
  *
  * Short term plan:
  *   - Is the Result solution really good? Add a ResultConsumer as alternative.
- *   - Instead of returning the result through the query, use a smart pointer
- *     (QSharedPointer)
  *   - Standardize enum handling: store the database value internally and have
  *     an "unknown" type (instead of "none")
  *     - this should also allow preserving unknown types in the database
@@ -124,7 +122,7 @@ namespace Db
 		foreach (const QVariant &conditionValue, conditionValues)
 			query.bind (conditionValue);
 
-		return T::createListFromResult (*interface.executeQuery (query));
+		return T::createListFromResult (*interface.executeQueryResult (query));
 
 //		QSqlQuery query=interface.prepareQuery (queryString, true);
 //		foreach (const QVariant &conditionValue, conditionValues)
@@ -173,11 +171,11 @@ namespace Db
 			.arg (T::selectColumnList (), T::dbTableName ())
 			.bind (id);
 
-		interface.executeQuery (query);
+		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
-		if (!query.getResult ()->next ()) throw NotFoundException ();
+		if (result->next ()) throw NotFoundException ();
 
-		return T::createFromResult (*query.getResult ());
+		return T::createFromResult (*result);
 
 //		QString queryString=QString ("SELECT %1 FROM %2 WHERE ID=?")
 //			.arg (T::selectColumnList (), T::dbTableName ());
@@ -196,9 +194,9 @@ namespace Db
 		Query query=Query ("DELETE FROM %1 WHERE ID=?")
 			.arg (T::dbTableName ()).bind (id);
 
-		interface.executeQuery (query);
+		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
-		return query.getResult ()->numRowsAffected ()>0;
+		return result->numRowsAffected ()>0;
 
 //		QString queryString=QString ("DELETE FROM %1 WHERE ID=?")
 //			.arg (T::dbTableName ());
@@ -220,9 +218,10 @@ namespace Db
 	{
 		Query query=Query ("INSERT INTO %1 %2").arg (T::dbTableName (), T::insertValueList ());
 		object.bindValues (query);
-		interface.executeQuery (query);
 
-		object.id=query.getResult ()->lastInsertId ().toLongLong ();
+		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
+
+		object.id=result->lastInsertId ().toLongLong ();
 
 		return object.id;
 
@@ -246,9 +245,9 @@ namespace Db
 		object.bindValues (query);
 		query.bind (object.id); // After the object values!
 
-		interface.executeQuery (query);
+		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
-		return query.getResult ()->numRowsAffected ();
+		return result->numRowsAffected ();
 
 //		QString queryString=QString ("UPDATE %1 SET %2 WHERE id=?")
 //			.arg (T::dbTableName (), object.updateValueList ());

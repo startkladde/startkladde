@@ -9,6 +9,7 @@
 #define ABSTRACTINTERFACE_H_
 
 #include <QSqlQuery> // TODO remove after fixing QueryFailedException
+#include <QSharedPointer>
 
 #include "src/db/DatabaseInfo.h"
 
@@ -54,7 +55,8 @@ namespace Db
 				virtual bool rollback ()=0;
 
 				// *** Queries
-				virtual Result::Result *executeQuery (const Query &query, bool forwardOnly=true)=0;
+				virtual void executeQuery (const Query &query, bool forwardOnly=true)=0;
+				virtual QSharedPointer<Result::Result> executeQueryResult (const Query &query, bool forwardOnly=true)=0;
 				virtual bool queryHasResult (const Query &query)=0;
 
 			private:

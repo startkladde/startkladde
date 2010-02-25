@@ -68,11 +68,11 @@ void SchemaDumper::dumpTables (QStringList &output)
 //	while (query.next ())
 //		dumpTable (output, query.value (0).toString ());
 
-	Db::Query query=Db::Query ("SHOW TABLES");
-	interface.executeQuery (query);
+//	Db::Query query=Db::Query ("SHOW TABLES");
+	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult ("SHOW TABLES");
 
-	while (query.getResult ()->next ())
-		dumpTable (output, query.getResult ()->value (0).toString ());
+	while (result->next ())
+		dumpTable (output, result->value (0).toString ());
 }
 
 void SchemaDumper::dumpTable (QStringList &output, const QString &name)
@@ -88,18 +88,18 @@ void SchemaDumper::dumpColumns (QStringList &output, const QString &table)
 	output << "  columns:";
 
 	Db::Query query=Db::Query ("SHOW COLUMNS FROM %1").arg (table);
-	interface.executeQuery (query);
+	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult (query);
 
-	QSqlRecord record=query.getResult ()->record ();
+	QSqlRecord record=result->record ();
 	int nameIndex=record.indexOf ("Field");
 	int typeIndex=record.indexOf ("Type");
 	int nullIndex=record.indexOf ("Null");
 
-	while (query.getResult ()->next ())
+	while (result->next ())
 	{
-		QString name=query.getResult ()->value (nameIndex).toString ();
-		QString type=query.getResult ()->value (typeIndex).toString ();
-		QString null=query.getResult ()->value (nullIndex).toString ();
+		QString name=result->value (nameIndex).toString ();
+		QString type=result->value (typeIndex).toString ();
+		QString null=result->value (nullIndex).toString ();
 
 		// The id columns created automatically, don't dump it
 		if (name!="id")
@@ -123,7 +123,7 @@ void SchemaDumper::dumpVersions (QStringList &output)
 	QString column=Migrator::migrationsColumnName;
 
 	Db::Query query=Db::Query::selectDistinctColumns (table, column);
-	Db::Result::Result *result=interface.executeQuery (query);
+	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult (query);
 
 	while (result->next ())
 		output << QString ("- %1").arg (result->value (0).toString ());

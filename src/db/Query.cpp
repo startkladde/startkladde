@@ -4,28 +4,36 @@
 #include <QSqlQuery>
 #include <QStringList>
 
-#include "src/db/result/Result.h"
-
 namespace Db
 {
 	// ******************
 	// ** Construction **
 	// ******************
 
-	Query::Query ():
-		result (NULL)
+	Query::Query ()
+	{
+	}
+
+	/**
+	 * Note that we could write Query ("...") without this constructor, but we
+	 * couldn't write interface.executeQuery ("...").
+	 *
+	 * @param queryString
+	 * @return
+	 */
+	Query::Query (const char *queryString):
+		queryString (queryString)
 	{
 	}
 
 	Query::Query (const QString &queryString):
-		queryString (queryString), result (NULL)
+		queryString (queryString)
 	{
 
 	}
 
 	Query::~Query ()
 	{
-		delete result;
 	}
 
 
@@ -147,21 +155,5 @@ namespace Db
 	{
 		foreach (const QVariant &value, bindValues)
 			query.addBindValue (value);
-	}
-
-
-	// ************
-	// ** Result **
-	// ************
-
-	void Query::setResult (Result::Result *result) const
-	{
-		delete this->result;
-		this->result=result;
-	}
-
-	Result::Result *Query::getResult () const
-	{
-		return result;
 	}
 }

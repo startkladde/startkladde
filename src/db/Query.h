@@ -16,13 +16,12 @@ class QVariant;
 
 namespace Db
 {
-	namespace Result { class Result; }
-
 	class Query
 	{
 		public:
 			// *** Construction
 			Query ();
+			Query (const char *queryString);
 			Query (const QString &queryString);
 			virtual ~Query ();
 
@@ -61,15 +60,9 @@ namespace Db
 			void prepare (QSqlQuery &query) const;
 			void bindTo (QSqlQuery &query) const;
 
-			// *** Result
-			void setResult (Result::Result *result) const;
-			Result::Result *getResult () const;
-
 		private:
 			QString queryString;
 			QList<QVariant> bindValues;
-
-			mutable Result::Result *result;
 	};
 }
 

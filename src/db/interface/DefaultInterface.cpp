@@ -93,12 +93,25 @@ namespace Db { namespace Interface
 	 * @return a pointer to the result of query; owned by query
 	 * @throw QueryFailedException if the query fails
 	 */
-	Result::Result *DefaultInterface::executeQuery (const Query &query, bool forwardOnly)
+	void DefaultInterface::executeQuery (const Query &query, bool forwardOnly)
+	{
+		executeQueryImpl (query, forwardOnly);
+	}
+
+	/**
+	 * Executes a query and returns the result
+	 *
+	 * @param query the query to execute
+	 * @param forwardOnly the forwardOnly flag to set on the query
+	 * @return TODO
+	 * @throw QueryFailedException if the query fails
+	 */
+	QSharedPointer<Result::Result> DefaultInterface::executeQueryResult (const Query &query, bool forwardOnly)
 	{
 		QSqlQuery sqlQuery=executeQueryImpl (query, forwardOnly);
-		Result::Result *result=new Result::DefaultResult (sqlQuery);
-		query.setResult (result);
-		return result;
+
+		return QSharedPointer<Result::Result> (
+			new Result::DefaultResult (sqlQuery));
 	}
 
 	/**
@@ -128,6 +141,4 @@ namespace Db { namespace Interface
 
 		return sqlQuery;
 	}
-
-
 } }

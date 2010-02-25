@@ -194,10 +194,10 @@ quint64 Migrator::currentVersion ()
 //		.arg (migrationsTableName, migrationsColumnName)
 //	);
 
-	interface.executeQuery (query);
+	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult (query);
 
-	if (query.getResult ()->next ())
-		return query.getResult ()->value (0).toLongLong ();
+	if (result->next ())
+		return result->value (0).toLongLong ();
 	else
 		return 0;
 }

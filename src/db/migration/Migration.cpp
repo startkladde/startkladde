@@ -1,6 +1,7 @@
 #include "Migration.h"
 
 #include "src/db/Database.h"
+#include "src/db/result/Result.h"
 
 QString Migration::dataTypeBinary    () { return Db::Interface::Interface::dataTypeBinary    (); }
 QString Migration::dataTypeBoolean   () { return Db::Interface::Interface::dataTypeBoolean   (); }
@@ -48,6 +49,12 @@ bool Migration::rollback ()
 void Migration::executeQuery (const Db::Query &query, bool forwardOnly)
 {
 	interface.executeQuery (query, forwardOnly);
+}
+
+/** Forwards to database#executeQueryResult */
+QSharedPointer<Db::Result::Result> Migration::executeQueryResult (const Db::Query &query, bool forwardOnly)
+{
+	return interface.executeQueryResult (query, forwardOnly);
 }
 
 /** Forwards to database#createTable */

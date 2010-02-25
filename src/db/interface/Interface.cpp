@@ -234,21 +234,20 @@ namespace Db { namespace Interface
 
 	QStringList Interface::listStrings (const Query &query)
 	{
-		executeQuery (query, true);
+		QSharedPointer<Result::Result> result=executeQueryResult (query, true);
 
 		QStringList stringList;
 
-		while (query.getResult ()->next ())
-			stringList.append (query.getResult ()->value (0).toString ());
+		while (result->next ())
+			stringList.append (result->value (0).toString ());
 
 		return stringList;
 	}
 
 	int Interface::countQuery (const Query &query)
 	{
-		executeQuery (query, true);
+		QSharedPointer<Result::Result> result=executeQueryResult (query, true);
 
-		Result::Result *result=query.getResult ();
 		result->next ();
 		return result->value (0).toInt ();
 	}

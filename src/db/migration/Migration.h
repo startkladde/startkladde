@@ -1,12 +1,16 @@
 #ifndef MIGRATION_H_
 #define MIGRATION_H_
 
-#include "QString"
-#include "QVariant"
+#include <QString>
+#include <QVariant>
+#include <QSharedPointer>
 
 #include "src/db/Query.h"
 
-namespace Db { namespace Interface { class Interface; } }
+namespace Db {
+	namespace Result { class Result; }
+	namespace Interface { class Interface; }
+}
 
 /**
  * A new migration is created by creating the appropriate class in
@@ -73,6 +77,7 @@ class Migration
 		bool rollback ();
 
 		void executeQuery (const Db::Query &query, bool forwardOnly=true);
+		QSharedPointer<Db::Result::Result> executeQueryResult (const Db::Query &query, bool forwardOnly=true);
 
 		void createTable (const QString &name, bool skipIfExists=false);
 		void createTableLike (const QString &like, const QString &name, bool skipIfExists=false);
