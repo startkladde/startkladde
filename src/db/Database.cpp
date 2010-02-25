@@ -29,19 +29,15 @@
  *
  * Improvements:
  *   - move (static) methods like selectDistinctColumnQuery to QueryGenerator (but see below)
- *   - make a class Query, a la Query ("select * from foo where id=?") << 42
  *   - allow specifying an "exclude" value to selectDistinctColumnQuery (requires
  *     Query class)
- *   - move selectDistinctColumnQuery to Query
  *   - move specialized queries generation to model classes (e. g. flight prepared)
  *   - maybe we would like to select additional columns, like
  *     (landing_time-takeoff_time as duration) for some conditions
  *   - Flight should be an entity
  *   - Allow tables without id column (e. g. habtm join tables), but tables
  *     must have at least one column
- *   - dbTableName as static constant instead of function
  *   - make sure (using a dump of an old db) that the migration path is OK
- *   - Use low level methods in ORM methods (better: split class)
  *   - Remove code multiplication in Models (SQL interface)
  *   - change flight mode (and towflight mode) column type
  *
