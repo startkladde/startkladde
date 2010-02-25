@@ -3,6 +3,8 @@
 #include <cassert>
 
 #include "src/text.h"
+#include "src/db/result/Result.h"
+#include "src/db/Query.h"
 
 // ******************
 // ** Construction **
@@ -221,18 +223,18 @@ QString Plane::selectColumnList ()
 }
 
 
-Plane Plane::createFromQuery (const QSqlQuery &q)
+Plane Plane::createFromResult (const Db::Result::Result &result)
 {
-	Plane p (q.value (0).toLongLong ());
+	Plane p (result.value (0).toLongLong ());
 
-	p.registration  =q.value (1).toString ();
-	p.club          =q.value (2).toString ();
-	p.numSeats      =q.value (3).toInt    ();
-	p.type          =q.value (4).toString ();
+	p.registration  =result.value (1).toString ();
+	p.club          =result.value (2).toString ();
+	p.numSeats      =result.value (3).toInt    ();
+	p.type          =result.value (4).toString ();
 	p.category      =categoryFromDb (
-	                 q.value (5).toString ());
-	p.competitionCallsign =q.value (6).toString ();
-	p.comments      =q.value (7).toString ();
+	                 result.value (5).toString ());
+	p.competitionCallsign =result.value (6).toString ();
+	p.comments      =result.value (7).toString ();
 
 	return p;
 }
@@ -247,23 +249,23 @@ QString Plane::updateValueList ()
 	return "registration=?, club=?, num_seats=?, type=?, category=?, competition_callsign=?, comments=?";
 }
 
-void Plane::bindValues (QSqlQuery &q) const
+void Plane::bindValues (Db::Query &q) const
 {
-	q.addBindValue (registration);
-	q.addBindValue (club);
-	q.addBindValue (numSeats);
-	q.addBindValue (type);
-	q.addBindValue (categoryToDb (category));
-	q.addBindValue (competitionCallsign);
-	q.addBindValue (comments);
+	q.bind (registration);
+	q.bind (club);
+	q.bind (numSeats);
+	q.bind (type);
+	q.bind (categoryToDb (category));
+	q.bind (competitionCallsign);
+	q.bind (comments);
 }
 
-QList<Plane> Plane::createListFromQuery (QSqlQuery &q)
+QList<Plane> Plane::createListFromResult (Db::Result::Result &result)
 {
 	QList<Plane> list;
 
-	while (q.next ())
-		list.append (createFromQuery (q));
+	while (result.next ())
+		list.append (createFromResult (result));
 
 	return list;
 }

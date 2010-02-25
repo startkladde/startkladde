@@ -1,10 +1,10 @@
 #include "AbstractDatabase.h"
 
 #include "src/model/Flight.h"
-#include "src/db/interface/DatabaseInterface.h"
-
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
+#include "src/db/interface/DefaultInterface.h"
+#include "src/db/Query.h"
 
 namespace Db
 {
@@ -18,7 +18,7 @@ namespace Db
 
 	QStringList AbstractDatabase::listLocations ()
 	{
-		return listStrings (Interface::DatabaseInterface::selectDistinctColumnQuery (
+		return listStrings (Query::selectDistinctColumns (
 			Flight::dbTableName (),
 			QStringList () << "departure_location" << "landing_location",
 			true));
@@ -26,7 +26,7 @@ namespace Db
 
 	QStringList AbstractDatabase::listAccountingNotes ()
 	{
-		return listStrings (Interface::DatabaseInterface::selectDistinctColumnQuery (
+		return listStrings (Query::selectDistinctColumns (
 			Flight::dbTableName (),
 			"accounting_notes",
 			true));
@@ -34,7 +34,7 @@ namespace Db
 
 	QStringList AbstractDatabase::listClubs ()
 	{
-		return listStrings (Interface::DatabaseInterface::selectDistinctColumnQuery (
+		return listStrings (Query::selectDistinctColumns (
 			QStringList () << Plane::dbTableName() << Person::dbTableName (),
 			"club",
 			true));
@@ -42,7 +42,7 @@ namespace Db
 
 	QStringList AbstractDatabase::listPlaneTypes ()
 	{
-		return listStrings (Interface::DatabaseInterface::selectDistinctColumnQuery (
+		return listStrings (Query::selectDistinctColumns (
 			Plane::dbTableName (),
 			"type",
 			true));

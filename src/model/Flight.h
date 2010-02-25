@@ -3,15 +3,18 @@
 
 #include <QString>
 #include <QDateTime>
-#include <QSqlQuery>
 
 #include "src/db/dbId.h"
 #include "src/time/Time.h"
-//#include "src/text.h" // TODO remove
 
 class DataStorage;
 class Plane;
 class LaunchMethod;
+
+namespace Db {
+	class Query;
+	namespace Result { class Result; }
+}
 
 enum FlightError {
 	ff_ok,
@@ -222,11 +225,12 @@ class Flight
 		// *** SQL interface
 		static QString dbTableName ();
 		static QString selectColumnList ();
-		static Flight createFromQuery (const QSqlQuery &query);
+		static Flight createFromResult (const Db::Result::Result &result);
 		static QString insertValueList ();
 		static QString updateValueList ();
-		virtual void bindValues (QSqlQuery &q) const;
-		static QList<Flight> createListFromQuery (QSqlQuery &query);
+		virtual void bindValues (Db::Query &q) const;
+		static QList<Flight> createListFromResult (Db::Result::Result &result);
+
 		// Enum mappers
 		static QString    modeToDb   (Mode       mode);
 		static Mode       modeFromDb (QString    mode);

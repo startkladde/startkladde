@@ -3,6 +3,8 @@
  *   - integrate schema loading/database migration into GUI
  *
  * Short term plan:
+ *   - Is the Result solution really good? Add a ResultConsumer as alternative.
+ *   - Instead of returning the result through the query, use a smart pointer
  *   - Test the migrations:
  *     - make sure the old version and current sk_web work with "initial"
  *     - make sure we can migrate from both an empty and the legacy database
@@ -73,7 +75,8 @@
 #include "src/model/Flight.h"
 #include "src/model/LaunchMethod.h"
 #include "src/util/qString.h"
-
+#include "src/db/Query.h"
+#include "src/db/result/Result.h"
 
 /*
  * Here's an idea for specifying conditions, or parts thereof:
@@ -87,8 +90,8 @@ namespace Db
 	// ** Construction **
 	// ******************
 
-	Database::Database ():
-		databaseInterface ()
+	Database::Database (const DatabaseInfo &dbInfo):
+		defaultInterface (dbInfo)
 	{
 	}
 
@@ -116,62 +119,94 @@ namespace Db
 		if (!condition.isEmpty ())
 			queryString+=" WHERE "+condition;
 
-		QSqlQuery query=databaseInterface.prepareQuery (queryString, true);
+		Query query (queryString);
 		foreach (const QVariant &conditionValue, conditionValues)
-			query.addBindValue (conditionValue);
+			query.bind (conditionValue);
 
-		databaseInterface.executeQuery (query);
+		return T::createListFromResult (*defaultInterface.executeQuery (query));
 
-		return T::createListFromQuery (query);
+//		QSqlQuery query=defaultInterface.prepareQuery (queryString, true);
+//		foreach (const QVariant &conditionValue, conditionValues)
+//			query.addBindValue (conditionValue);
+//
+//		defaultInterface.executeQuery (query);
+//
+//		return T::createListFromQuery (query);
 	}
 
 	template<class T> int Database::countObjects ()
 	{
-		QString queryString="SELECT COUNT(*) FROM "+T::dbTableName ();
+		Query query=Query (QString ("SELECT COUNT(*) FROM %1"))
+			.arg (T::dbTableName ());
+		return defaultInterface.countQuery (query);
 
-		QSqlQuery query=databaseInterface.executeQuery (queryString);
-
-		query.next ();
-		return query.value (0).toInt ();
+//		QString queryString="SELECT COUNT(*) FROM "+T::dbTableName ();
+//
+//		QSqlQuery query=defaultInterface.executeQuery (queryString);
+//
+//		query.next ();
+//		return query.value (0).toInt ();
 	}
 
 	template<class T> bool Database::objectExists (dbId id)
 	{
-		QString queryString=QString ("SELECT COUNT(*) FROM %1 WHERE id=?")
-			.arg (T::dbTableName ());
+		Query query=Query ("SELECT COUNT(*) FROM %1 WHERE id=?")
+			.arg (T::dbTableName ()).bind (id);
 
-		QSqlQuery query=databaseInterface.prepareQuery (queryString);
-		query.addBindValue (id);
-		databaseInterface.executeQuery (query);
+		return defaultInterface.countQuery (query)>0;
 
-		query.next ();
-		return query.value (0).toInt ()>0;
+//		QString queryString=QString ("SELECT COUNT(*) FROM %1 WHERE id=?")
+//			.arg (T::dbTableName ());
+//
+//		QSqlQuery query=defaultInterface.prepareQuery (queryString);
+//		query.addBindValue (id);
+//		defaultInterface.executeQuery (query);
+//
+//		query.next ();
+//		return query.value (0).toInt ()>0;
 	}
 
 	template<class T> T Database::getObject (dbId id)
 	{
-		QString queryString=QString ("SELECT %1 FROM %2 WHERE ID=?")
-			.arg (T::selectColumnList (), T::dbTableName ());
+		Query query=Query ("SELECT %1 FROM %2 WHERE ID=?")
+			.arg (T::selectColumnList (), T::dbTableName ())
+			.bind (id);
 
-		QSqlQuery query=databaseInterface.prepareQuery (queryString);
-		query.addBindValue (id);
-		databaseInterface.executeQuery (query);
+		defaultInterface.executeQuery (query);
 
-		if (!query.next ()) throw NotFoundException ();
+		if (!query.getResult ()->next ()) throw NotFoundException ();
 
-		return T::createFromQuery (query);
+		return T::createFromResult (*query.getResult ());
+
+//		QString queryString=QString ("SELECT %1 FROM %2 WHERE ID=?")
+//			.arg (T::selectColumnList (), T::dbTableName ());
+//
+//		QSqlQuery query=defaultInterface.prepareQuery (queryString);
+//		query.addBindValue (id);
+//		defaultInterface.executeQuery (query);
+//
+//		if (!query.next ()) throw NotFoundException ();
+//
+//		return T::createFromQuery (query);
 	}
 
 	template<class T> bool Database::deleteObject (dbId id)
 	{
-		QString queryString=QString ("DELETE FROM %1 WHERE ID=?")
-			.arg (T::dbTableName ());
+		Query query=Query ("DELETE FROM %1 WHERE ID=?")
+			.arg (T::dbTableName ()).bind (id);
 
-		QSqlQuery query=databaseInterface.prepareQuery (queryString);
-		query.addBindValue (id);
-		databaseInterface.executeQuery (query);
+		defaultInterface.executeQuery (query);
 
-		return query.numRowsAffected ()>0;
+		return query.getResult ()->numRowsAffected ()>0;
+
+//		QString queryString=QString ("DELETE FROM %1 WHERE ID=?")
+//			.arg (T::dbTableName ());
+//
+//		QSqlQuery query=defaultInterface.prepareQuery (queryString);
+//		query.addBindValue (id);
+//		defaultInterface.executeQuery (query);
+//
+//		return query.numRowsAffected ()>0;
 	}
 
 	/**
@@ -182,30 +217,48 @@ namespace Db
 	 */
 	template<class T> dbId Database::createObject (T &object)
 	{
-		QString queryString=QString ("INSERT INTO %1 %2")
-			.arg (T::dbTableName (), T::insertValueList ());
-
-		QSqlQuery query=databaseInterface.prepareQuery (queryString);
+		Query query=Query ("INSERT INTO %1 %2").arg (T::dbTableName (), T::insertValueList ());
 		object.bindValues (query);
-		databaseInterface.executeQuery (query);
+		defaultInterface.executeQuery (query);
 
-		object.id=query.lastInsertId ().toLongLong ();
+		object.id=query.getResult ()->lastInsertId ().toLongLong ();
 
 		return object.id;
+
+//		QString queryString=QString ("INSERT INTO %1 %2")
+//			.arg (T::dbTableName (), T::insertValueList ());
+//
+//		QSqlQuery query=defaultInterface.prepareQuery (queryString);
+//		object.bindValues (query);
+//		defaultInterface.executeQuery (query);
+//
+//		object.id=query.lastInsertId ().toLongLong ();
+//
+//		return object.id;
 	}
 
 	template<class T> bool Database::updateObject (const T &object)
 	{
-		QString queryString=QString ("UPDATE %1 SET %2 WHERE id=?")
+		Query query=Query ("UPDATE %1 SET %2 WHERE id=?")
 			.arg (T::dbTableName (), object.updateValueList ());
 
-		QSqlQuery query=databaseInterface.prepareQuery (queryString);
 		object.bindValues (query);
-		query.addBindValue (object.id);
+		query.bind (object.id); // After the object values!
 
-		databaseInterface.executeQuery (query);
+		defaultInterface.executeQuery (query);
 
-		return query.numRowsAffected ()>0;
+		return query.getResult ()->numRowsAffected ();
+
+//		QString queryString=QString ("UPDATE %1 SET %2 WHERE id=?")
+//			.arg (T::dbTableName (), object.updateValueList ());
+//
+//		QSqlQuery query=defaultInterface.prepareQuery (queryString);
+//		object.bindValues (query);
+//		query.addBindValue (object.id);
+//
+//		defaultInterface.executeQuery (query);
+//
+//		return query.numRowsAffected ()>0;
 	}
 
 	// Instantiate the class templates
@@ -240,13 +293,13 @@ namespace Db
 	// ** Very specific **
 	// *******************
 
-	QStringList Database::listStrings (const QString &queryString)
+	QStringList Database::listStrings (const Query &query)
 	{
-		return databaseInterface.listStrings (queryString);
+		return defaultInterface.listStrings (query);
 	}
 
 	QList<Flight> Database::getFlights (const QString &condition, const QList<QVariant> &conditionValues)
 	{
-		getObjects<Flight> (condition, conditionValues);
+		return getObjects<Flight> (condition, conditionValues);
 	}
 }

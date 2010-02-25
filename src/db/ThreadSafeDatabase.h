@@ -40,8 +40,8 @@ namespace Db
 			virtual void execute ()
 			{
 				// TODO leak
-				database=new Db::Database;
-				database->open (info);
+				database=new Db::Database (info);
+				database->open ();
 			}
 
 		private:
@@ -169,18 +169,18 @@ namespace Db
 	class DatabaseListStringsTask: public DatabaseTask
 	{
 		public:
-			DatabaseListStringsTask (Database * &database, const QString &queryString):
-				DatabaseTask (database), queryString (queryString) {}
+			DatabaseListStringsTask (Database * &database, const Query &query):
+				DatabaseTask (database), query (query) {}
 
 			virtual void execute ()
 			{
-				result=database->listStrings (queryString);
+				result=database->listStrings (query);
 			}
 
 			QStringList result;
 
 		private:
-			const QString &queryString;
+			const Query &query;
 	};
 
 	// *****
@@ -216,7 +216,7 @@ namespace Db
 			template<class T> bool updateObject (const T &object);
 
 			// *** Very specific
-			virtual QStringList listStrings (const QString &queryString);
+			virtual QStringList listStrings (const Query &query);
 			virtual QList<Flight> getFlights (const QString &condition="", const QList<QVariant> &conditionValues=QList<QVariant> ());
 
 		private:

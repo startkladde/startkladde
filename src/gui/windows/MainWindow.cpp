@@ -49,8 +49,6 @@
 #include "src/util/qString.h"
 
 template <class T> class MutableObjectList;
-class Db::ThreadSafeDatabase;
-
 
 // ******************
 // ** Construction **

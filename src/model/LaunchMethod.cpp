@@ -2,12 +2,12 @@
 
 #include <cassert>
 
-#include <QSqlQuery>
 #include <QVariant>
 
-//#include "src/text.h"
 #include "src/logging/messages.h"
 #include "src/util/bool.h"
+#include "src/db/result/Result.h"
+#include "src/db/Query.h"
 
 
 // ******************
@@ -219,19 +219,19 @@ QString LaunchMethod::selectColumnList ()
 	return "id,name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments";
 }
 
-LaunchMethod LaunchMethod::createFromQuery (const QSqlQuery &q)
+LaunchMethod LaunchMethod::createFromResult (const Db::Result::Result &result)
 {
-	LaunchMethod l (q.value (0).toLongLong ());
+	LaunchMethod l (result.value (0).toLongLong ());
 
-	l.name                 = q.value (1).toString ();
-	l.shortName            = q.value (2).toString ();
-	l.logString            = q.value (3).toString ();
-	l.keyboardShortcut     = q.value (4).toString ();
+	l.name                 = result.value (1).toString ();
+	l.shortName            = result.value (2).toString ();
+	l.logString            = result.value (3).toString ();
+	l.keyboardShortcut     = result.value (4).toString ();
 	l.type                 = typeFromDb (
-	                         q.value (5).toString ());
-	l.towplaneRegistration = q.value (6).toString ();
-	l.personRequired       = q.value (7).toBool   ();
-	l.comments             = q.value (8).toString ();
+	                         result.value (5).toString ());
+	l.towplaneRegistration = result.value (6).toString ();
+	l.personRequired       = result.value (7).toBool   ();
+	l.comments             = result.value (8).toString ();
 
 	return l;
 }
@@ -246,22 +246,22 @@ QString LaunchMethod::updateValueList ()
 	return "name=?, short_name=?, log_string=?, keyboard_shortcut=?, type=?, towplane_registration=?, person_required=?, comments=?";
 }
 
-void LaunchMethod::bindValues (QSqlQuery &q) const
+void LaunchMethod::bindValues (Db::Query &q) const
 {
-	q.addBindValue (name);
-	q.addBindValue (shortName);
-	q.addBindValue (logString);
-	q.addBindValue (keyboardShortcut);
-	q.addBindValue (typeToDb (type));
-	q.addBindValue (towplaneRegistration);
-	q.addBindValue (personRequired);
-	q.addBindValue (comments);
+	q.bind (name);
+	q.bind (shortName);
+	q.bind (logString);
+	q.bind (keyboardShortcut);
+	q.bind (typeToDb (type));
+	q.bind (towplaneRegistration);
+	q.bind (personRequired);
+	q.bind (comments);
 }
 
-QList<LaunchMethod> LaunchMethod::createListFromQuery (QSqlQuery &q)
+QList<LaunchMethod> LaunchMethod::createListFromResult (Db::Result::Result &result)
 {
 	QList<LaunchMethod> list;
-	while (q.next ()) list.append (createFromQuery (q));
+	while (result.next ()) list.append (createFromResult (result));
 	return list;
 }
 

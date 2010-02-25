@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-Migration_20100217131516_flight_status_columns::Migration_20100217131516_flight_status_columns (Db::Interface::DatabaseInterface &databaseInterface):
-	Migration (databaseInterface)
+Migration_20100217131516_flight_status_columns::Migration_20100217131516_flight_status_columns (Db::Interface::DefaultInterface &interface):
+	Migration (interface)
 {
 }
 
@@ -18,10 +18,10 @@ void Migration_20100217131516_flight_status_columns::up ()
 	addColumn ("flights", "towflight_landed", dataTypeBoolean (), "AFTER landed");
 
 	std::cout << "Updating status flags" << std::endl;
-	executeQuery ("UPDATE flights SET "
+	executeQuery (Db::Query ("UPDATE flights SET "
 		"departed        =IF(status&1, TRUE, FALSE),"
 		"landed          =IF(status&2, TRUE, FALSE),"
-		"towflight_landed=IF(status&4, TRUE, FALSE)");
+		"towflight_landed=IF(status&4, TRUE, FALSE)"));
 
 	dropColumn ("flights", "status");
 }
@@ -31,10 +31,10 @@ void Migration_20100217131516_flight_status_columns::down ()
 	addColumn ("flights", "status", dataTypeInteger (), "AFTER departed");
 
 	std::cout << "Updating status" << std::endl;
-	executeQuery ("UPDATE flights SET status="
+	executeQuery (Db::Query ("UPDATE flights SET status="
 		"IF(departed        , 1, 0)+"
 		"IF(landed          , 2, 0)+"
-		"IF(towflight_landed, 4, 0)");
+		"IF(towflight_landed, 4, 0)"));
 
 	dropColumn ("flights", "departed"        );
 	dropColumn ("flights", "landed"          );

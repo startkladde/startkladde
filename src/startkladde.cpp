@@ -8,7 +8,7 @@
 #include "src/gui/windows/MainWindow.h"
 #include "src/plugins/ShellPlugin.h"
 #include "src/db/Database.h"
-#include "src/db/interface/DatabaseInterface.h"
+#include "src/db/interface/DefaultInterface.h"
 #include "src/db/migration/Migrator.h"
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/SchemaDumper.h"
@@ -159,11 +159,11 @@ int showGui (QApplication &a, Db::ThreadSafeDatabase &db, QList<ShellPlugin *> &
 int doStuff ()
 {
 	// No reason to be thread safe here - don't construct a Database, use a
-	// DatabaseInterface directly.
-	Db::Interface::DatabaseInterface db;
+	// DefaultInterface directly.
+	Db::Interface::DefaultInterface db (opts.databaseInfo);
 
 	// Tests ahead
-	bool ok=db.open (opts.databaseInfo);
+	bool ok=db.open ();
 
 	if (!ok)
 	{
@@ -273,7 +273,7 @@ int main (int argc, char **argv)
 			}
 		}
 	}
-	catch (Db::Interface::DatabaseInterface::QueryFailedException &ex)
+	catch (Db::Interface::DefaultInterface::QueryFailedException &ex)
 	{
 		std::cout << "QueryFailedException" << std::endl;
 		std::cout << "  Query: " << ex.query.lastQuery () << std::endl;

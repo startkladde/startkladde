@@ -2,9 +2,9 @@
 
 #include <cassert>
 
-#include <QSqlQuery>
-
 #include "src/text.h"
+#include "src/db/result/Result.h"
+#include "src/db/Query.h"
 
 
 // ******************
@@ -168,15 +168,15 @@ QString Person::selectColumnList ()
 	return "id,last_name,first_name,club,club_id,comments";
 }
 
-Person Person::createFromQuery (const QSqlQuery &q)
+Person Person::createFromResult (const Db::Result::Result &result)
 {
-	Person p (q.value (0).toLongLong ());
+	Person p (result.value (0).toLongLong ());
 
-	p.lastName =q.value (1).toString ();
-	p.firstName  =q.value (2).toString ();
-	p.club     =q.value (3).toString ();
-	p.clubId  =q.value (4).toString ();
-	p.comments =q.value (5).toString ();
+	p.lastName =result.value (1).toString ();
+	p.firstName=result.value (2).toString ();
+	p.club     =result.value (3).toString ();
+	p.clubId   =result.value (4).toString ();
+	p.comments =result.value (5).toString ();
 
 	return p;
 }
@@ -191,22 +191,22 @@ QString Person::updateValueList ()
 	return "last_name=?, first_name=?, club=?, club_id=?, comments=?";
 }
 
-void Person::bindValues (QSqlQuery &q) const
+void Person::bindValues (Db::Query &q) const
 {
-	q.addBindValue (lastName);
-	q.addBindValue (firstName);
-	q.addBindValue (club);
-	q.addBindValue (clubId);
-	q.addBindValue (comments);
+	q.bind (lastName);
+	q.bind (firstName);
+	q.bind (club);
+	q.bind (clubId);
+	q.bind (comments);
 }
 
 
-QList<Person> Person::createListFromQuery (QSqlQuery &q)
+QList<Person> Person::createListFromResult (Db::Result::Result &result)
 {
 	QList<Person> list;
 
-	while (q.next ())
-		list.append (createFromQuery (q));
+	while (result.next ())
+		list.append (createFromResult (result));
 
 	return list;
 }

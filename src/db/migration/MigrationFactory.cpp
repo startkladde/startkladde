@@ -77,12 +77,12 @@ quint64 MigrationFactory::latestVersion ()
  *        version
  */
 
-Migration *MigrationFactory::createMigration (Db::Interface::DatabaseInterface &databaseInterface, const quint64 version)
+Migration *MigrationFactory::createMigration (Db::Interface::DefaultInterface &interface, const quint64 version)
 {
 	switch (version)
 	{
 #		define MIGRATION(m_version, m_name) case m_version ## ll: \
-			return new Migration_ ## m_version ## _ ## m_name (databaseInterface);
+			return new Migration_ ## m_version ## _ ## m_name (interface);
 #		include MIGRATION_LIST
 #		undef MIGRATION
 	}

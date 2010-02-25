@@ -2,10 +2,11 @@
 
 #include <iostream>
 
-#include "src/db/interface/DatabaseInterface.h"
+#include "src/db/interface/DefaultInterface.h"
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/CurrentSchema.h"
 #include "src/util/qString.h"
+#include "src/db/result/Result.h"
 
 // ***************
 // ** Constants **
@@ -16,12 +17,12 @@ const QString Migrator::migrationsTableName="schema_migrations";
 const QString Migrator::migrationsColumnName="version";
 
 /**
- * Creates a Migrator for the given databaseInterface
+ * Creates a Migrator for the given DefaultInterface
  *
- * @param databaseInterface the databaseInterface to access
+ * @param DefaultInterface the DefaultInterface to access
  */
-Migrator::Migrator (Db::Interface::DatabaseInterface &databaseInterface):
-	databaseInterface (databaseInterface),
+Migrator::Migrator (Db::Interface::DefaultInterface &interface):
+	interface (interface),
 	factory (new MigrationFactory ())
 {
 }
@@ -41,7 +42,7 @@ void Migrator::runMigration (quint64 version, Migration::Direction direction)
 	Migration *migration=NULL;
 	try
 	{
-		migration=factory->createMigration (databaseInterface, version);
+		migration=factory->createMigration (interface, version);
 		QString name=factory->migrationName (version);
 
 		switch (direction)
@@ -109,7 +110,7 @@ void Migrator::loadSchema ()
 {
 	std::cout << "== Loading schema =============================================================" << std::endl;
 
-	CurrentSchema schema (databaseInterface);
+	CurrentSchema schema (interface);
 
 	schema.up ();
 	assumeMigrated (schema.getVersions ());
@@ -119,14 +120,14 @@ void Migrator::loadSchema ()
 
 void Migrator::drop ()
 {
-	QString databaseName=databaseInterface.getInfo ().database;
-	databaseInterface.executeQuery (QString ("DROP DATABASE %1").arg (databaseName));
+	QString databaseName=interface.getInfo ().database;
+	interface.executeQuery (QString ("DROP DATABASE %1").arg (databaseName));
 }
 
 void Migrator::create ()
 {
-	QString databaseName=databaseInterface.getInfo ().database;
-	databaseInterface.executeQuery (QString ("CREATE DATABASE %1").arg (databaseName));
+	QString databaseName=interface.getInfo ().database;
+	interface.executeQuery (QString ("CREATE DATABASE %1").arg (databaseName));
 }
 
 void Migrator::clear ()
@@ -183,22 +184,27 @@ quint64 Migrator::nextMigration ()
  */
 quint64 Migrator::currentVersion ()
 {
-	if (!databaseInterface.tableExists (migrationsTableName)) return 0;
+	if (!interface.tableExists (migrationsTableName)) return 0;
 
-	QSqlQuery query=databaseInterface.executeQuery (
-		QString ("SELECT %2 FROM %1 ORDER BY %2 DESC LIMIT 1")
-		.arg (migrationsTableName, migrationsColumnName)
-	);
+	Db::Query query=Db::Query ("SELECT %2 FROM %1 ORDER BY %2 DESC LIMIT 1")
+		.arg (migrationsTableName, migrationsColumnName);
 
-	if (query.next ())
-		return query.value (0).toLongLong ();
+//	QSqlQuery query=interface.executeQuery (
+//		QString ("SELECT %2 FROM %1 ORDER BY %2 DESC LIMIT 1")
+//		.arg (migrationsTableName, migrationsColumnName)
+//	);
+
+	interface.executeQuery (query);
+
+	if (query.getResult ()->next ())
+		return query.getResult ()->value (0).toLongLong ();
 	else
 		return 0;
 }
 
 void Migrator::createMigrationsTable ()
 {
-	databaseInterface.executeQuery (
+	interface.executeQuery (
 		QString (
 			"CREATE TABLE %1 (%2 VARCHAR(255) NOT NULL PRIMARY KEY)"
 			" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
@@ -208,62 +214,83 @@ void Migrator::createMigrationsTable ()
 
 bool Migrator::hasMigration (quint64 version)
 {
-	QSqlQuery query=databaseInterface.prepareQuery (
-			QString ("SELECT %2 FROM %1 WHERE %2=?")
-			.arg (migrationsTableName, migrationsColumnName)
-			);
-	query.addBindValue (version);
+//	QSqlQuery query=interface.prepareQuery (
+//			QString ("SELECT %2 FROM %1 WHERE %2=?")
+//			.arg (migrationsTableName, migrationsColumnName)
+//			);
+//	query.addBindValue (version);
+//
+//	return interface.queryHasResult (query);
 
-	return databaseInterface.queryHasResult (query);
+	return interface.queryHasResult (
+		Db::Query ("SELECT %2 FROM %1 WHERE %2=?")
+		.arg (migrationsTableName, migrationsColumnName)
+		.bind (version)
+		);
 }
 
 void Migrator::addMigration (quint64 version)
 {
 	// If the migrations table does not exist, create it
-	if (!databaseInterface.tableExists (migrationsTableName)) createMigrationsTable ();
+	if (!interface.tableExists (migrationsTableName)) createMigrationsTable ();
 
 	// If the migration name is already present in the migrations table, return
 	if (hasMigration (version)) return;
 
-	// Add the migration name to the migrations table
-	QSqlQuery query=databaseInterface.prepareQuery (
-			QString ("INSERT INTO %1 (%2) VALUES (?)")
-			.arg (migrationsTableName, migrationsColumnName)
-			);
-	query.addBindValue (version);
-	databaseInterface.executeQuery (query);
+//	// Add the migration name to the migrations table
+//	QSqlQuery query=interface.prepareQuery (
+//			QString ("INSERT INTO %1 (%2) VALUES (?)")
+//			.arg (migrationsTableName, migrationsColumnName)
+//			);
+//	query.addBindValue (version);
+//	interface.executeQuery (query);
+
+	interface.executeQuery (
+		Db::Query ("INSERT INTO %1 (%2) VALUES (?)")
+		.arg (migrationsTableName, migrationsColumnName)
+		.bind (version)
+	);
 }
 
 void Migrator::removeMigration (quint64 version)
 {
 	// If the migrations table does not exist, return
-	if (!databaseInterface.tableExists (migrationsTableName)) return;
+	if (!interface.tableExists (migrationsTableName)) return;
 
-	// Remove the migration name from the migrations table
-	QSqlQuery query=databaseInterface.prepareQuery (
-			QString ("DELETE FROM %1 where %2=?")
+//	// Remove the migration name from the migrations table
+//	QSqlQuery query=interface.prepareQuery (
+//			QString ("DELETE FROM %1 where %2=?")
+//			.arg (migrationsTableName, migrationsColumnName)
+//			);
+//	query.addBindValue (version);
+//
+//	interface.executeQuery (query);
+
+	interface.executeQuery (
+		Db::Query ("DELETE FROM %1 where %2=?")
 			.arg (migrationsTableName, migrationsColumnName)
-			);
-	query.addBindValue (version);
-
-	databaseInterface.executeQuery (query);
+			.bind (version)
+	);
 }
 
 QList<quint64> Migrator::appliedMigrations ()
 {
 	QList<quint64> migrations;
 
-	if (!databaseInterface.tableExists (migrationsTableName)) return migrations;
+	if (!interface.tableExists (migrationsTableName)) return migrations;
 
-	QSqlQuery query=databaseInterface.prepareQuery (
-			QString ("SELECT %2 FROM %1")
-			.arg (migrationsTableName, migrationsColumnName)
-			);
+//	QSqlQuery query=interface.prepareQuery (
+//			QString ("SELECT %2 FROM %1")
+//			.arg (migrationsTableName, migrationsColumnName)
+//			);
+//
+//	interface.executeQuery (query);
+//
+//	while (query.next ())
+//		migrations << query.value (0).toLongLong ();
 
-	databaseInterface.executeQuery (query);
-
-	while (query.next ())
-		migrations << query.value (0).toLongLong ();
+	Db::Query query=Db::Query ("SELECT %2 FROM %1")
+		.arg (migrationsTableName, migrationsColumnName);
 
 	return migrations;
 }
@@ -271,20 +298,24 @@ QList<quint64> Migrator::appliedMigrations ()
 void Migrator::assumeMigrated (QList<quint64> versions)
 {
 	// If the migrations table does not exist, create it
-	if (!databaseInterface.tableExists (migrationsTableName)) createMigrationsTable ();
+	if (!interface.tableExists (migrationsTableName)) createMigrationsTable ();
 
 	// Remove all migrations
-	databaseInterface.executeQuery (QString ("DELETE FROM %1").arg (migrationsTableName));
+	interface.executeQuery (QString ("DELETE FROM %1").arg (migrationsTableName));
 
 	// Add all migrations
 	foreach (quint64 version, versions)
 	{
-		QSqlQuery query=databaseInterface.prepareQuery (
-			QString ("INSERT INTO %1 (%2) VALUES (?)")
-			.arg (migrationsTableName, migrationsColumnName)
-			);
+//		QSqlQuery query=interface.prepareQuery (
+//			QString ("INSERT INTO %1 (%2) VALUES (?)")
+//			.arg (migrationsTableName, migrationsColumnName)
+//			);
+//
+//		query.addBindValue (version);
+//		interface.executeQuery (query);
 
-		query.addBindValue (version);
-		databaseInterface.executeQuery (query);
+		Db::Query query=Db::Query ("INSERT INTO %1 (%2) VALUES (?)")
+			.arg (migrationsTableName, migrationsColumnName)
+			.bind (version);
 	}
 }

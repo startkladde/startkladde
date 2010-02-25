@@ -3,7 +3,7 @@
 
 #include <QStringList>
 
-namespace Db { namespace Interface { class DatabaseInterface; } }
+namespace Db { namespace Interface { class DefaultInterface; } }
 class Migration;
 
 /**
@@ -26,7 +26,7 @@ class MigrationFactory
 		QList<quint64> availableVersions ();
 		quint64 latestVersion ();
 
-		Migration *createMigration (Db::Interface::DatabaseInterface &databaseInterface, quint64 version);
+		Migration *createMigration (Db::Interface::DefaultInterface &interface, quint64 version);
 		QString migrationName (quint64 version);
 };
 

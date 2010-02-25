@@ -4,8 +4,8 @@
 
 #include "src/util/qString.h"
 
-Migration_20100215215320_convert_to_utf8::Migration_20100215215320_convert_to_utf8 (Db::Interface::DatabaseInterface &databaseInterface):
-	Migration (databaseInterface)
+Migration_20100215215320_convert_to_utf8::Migration_20100215215320_convert_to_utf8 (Db::Interface::DefaultInterface &interface):
+	Migration (interface)
 {
 }
 

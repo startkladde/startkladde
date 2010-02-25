@@ -17,7 +17,7 @@
 class Migration_20100215000000_change_to_innodb: public Migration
 {
 	public:
-		Migration_20100215000000_change_to_innodb (Db::Interface::DatabaseInterface &databaseInterface);
+		Migration_20100215000000_change_to_innodb (Db::Interface::DefaultInterface &interface);
 		virtual ~Migration_20100215000000_change_to_innodb ();
 
 		virtual void up ();

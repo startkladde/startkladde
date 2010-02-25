@@ -6,8 +6,8 @@
 #include "src/config/Options.h"
 #include "src/util/qString.h"
 
-Migration_20100216135637_add_launch_methods::Migration_20100216135637_add_launch_methods (Db::Interface::DatabaseInterface &databaseInterface):
-	Migration (databaseInterface)
+Migration_20100216135637_add_launch_methods::Migration_20100216135637_add_launch_methods (Db::Interface::DefaultInterface &interface):
+	Migration (interface)
 {
 }
 
@@ -38,21 +38,21 @@ void Migration_20100216135637_add_launch_methods::up ()
 			// current schema, we need to use the schema after this migration.
 			std::cout << "Importing launch method: " << launchMethod.toString () << std::endl;
 
-			QSqlQuery query=prepareQuery (
+			Db::Query query (
 				"INSERT INTO launch_methods"
 				"(id,name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments)"
 				"values (?,?,?,?,?,?,?,?,?)"
 				);
 
-			query.addBindValue (launchMethod.getId ());
-			query.addBindValue (launchMethod.name);
-			query.addBindValue (launchMethod.shortName);
-			query.addBindValue (launchMethod.logString);
-			query.addBindValue (launchMethod.keyboardShortcut);
-			query.addBindValue (LaunchMethod::typeToDb (launchMethod.type));
-			query.addBindValue (launchMethod.towplaneRegistration);
-			query.addBindValue (launchMethod.personRequired);
-			query.addBindValue (launchMethod.comments);
+			query.bind (launchMethod.getId ());
+			query.bind (launchMethod.name);
+			query.bind (launchMethod.shortName);
+			query.bind (launchMethod.logString);
+			query.bind (launchMethod.keyboardShortcut);
+			query.bind (LaunchMethod::typeToDb (launchMethod.type));
+			query.bind (launchMethod.towplaneRegistration);
+			query.bind (launchMethod.personRequired);
+			query.bind (launchMethod.comments);
 
 			executeQuery (query);
 		}

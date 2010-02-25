@@ -5,7 +5,7 @@
 
 #include "src/db/migration/Migration.h" // Required for Migration::Direction
 
-namespace Db { namespace Interface { class DatabaseInterface; } }
+namespace Db { namespace Interface { class DefaultInterface; } }
 class MigrationFactory;
 
 /**
@@ -24,7 +24,7 @@ class Migrator
 		static const QString migrationsTableName, migrationsColumnName;
 
 		// *** Construction
-		Migrator (Db::Interface::DatabaseInterface &databaseInterface);
+		Migrator (Db::Interface::DefaultInterface &interface);
 		virtual ~Migrator ();
 
 		// *** Migration
@@ -60,7 +60,7 @@ class Migrator
 		void runMigration (quint64 version, Migration::Direction direction);
 
 	private:
-		Db::Interface::DatabaseInterface &databaseInterface;
+		Db::Interface::DefaultInterface &interface;
 		MigrationFactory *factory;
 };
 

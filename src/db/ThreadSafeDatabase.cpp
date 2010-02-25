@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "src/db/Query.h"
+
 // Required for template instantion
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
@@ -144,9 +146,9 @@ namespace Db
 	// *******************
 
 
-	QStringList ThreadSafeDatabase::listStrings (const QString &queryString)
+	QStringList ThreadSafeDatabase::listStrings (const Query &query)
 	{
-		DatabaseListStringsTask task (database, queryString);
+		DatabaseListStringsTask task (database, query);
 		thread.runTaskAndWait (task);
 		return task.result;
 	}

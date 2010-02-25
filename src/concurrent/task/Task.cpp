@@ -16,11 +16,11 @@
  */
 
 Task::Task ():
-	success (false),
 	_canceled (false),
 	_running (false),
 	_ended (false),
-	_completed (false)
+	_completed (false),
+	success (false)
 {
 }
 

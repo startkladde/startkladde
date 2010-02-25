@@ -17,6 +17,8 @@ class Flight;
 
 namespace Db
 {
+	class Query;
+
 	/**
 	 * A common base class for Database and ThreadSafeDatabase.
 	 *
@@ -36,7 +38,7 @@ namespace Db
 			AbstractDatabase ();
 			virtual ~AbstractDatabase ();
 
-			virtual QStringList listStrings (const QString &queryString)=0;
+			virtual QStringList listStrings (const Query &query)=0;
 			virtual QList<Flight> getFlights (const QString &condition="", const QList<QVariant> &conditionValues=QList<QVariant> ())=0;
 
 			virtual QStringList listLocations ();

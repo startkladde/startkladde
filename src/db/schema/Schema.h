@@ -8,7 +8,7 @@
 class Schema: public Migration
 {
 	public:
-		Schema (Db::Interface::DatabaseInterface &databaseInterface);
+		Schema (Db::Interface::DefaultInterface &interface);
 		virtual ~Schema ();
 
 		virtual QList<quint64> getVersions ()=0;

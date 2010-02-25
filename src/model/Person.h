@@ -58,11 +58,11 @@ class Person: public Entity
 		// SQL interface
 		static QString dbTableName ();
 		static QString selectColumnList ();
-		static Person createFromQuery (const QSqlQuery &query);
+		static Person createFromResult (const Db::Result::Result &result);
 		static QString insertValueList ();
 		static QString updateValueList ();
-		virtual void bindValues (QSqlQuery &q) const;
-		static QList<Person> createListFromQuery (QSqlQuery &query);
+		virtual void bindValues (Db::Query &q) const;
+		static QList<Person> createListFromResult (Db::Result::Result &query);
 
 	private:
 		void initialize ();

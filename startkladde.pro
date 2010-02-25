@@ -36,15 +36,20 @@ HEADERS += \
            src/db/DatabaseThread.h \
            src/db/DatabaseWorker.h \
            src/db/DbEvent.h \
+           src/db/Query.h \
            src/db/ThreadSafeDatabase.h \
            src/db/dbId.h \
            src/db/dataStorage/DataStorage.h \
            src/db/dataStorage/DataStorageMonitor.h \
            src/db/dataStorage/DataStorageWorker.h \
-           src/db/interface/DatabaseInterface.h \
+           src/db/interface/AbstractInterface.h \
+           src/db/interface/DefaultInterface.h \
+           src/db/interface/Interface.h \
            src/db/migration/Migration.h \
            src/db/migration/MigrationFactory.h \
            src/db/migration/Migrator.h \
+           src/db/result/DefaultResult.h \
+           src/db/result/Result.h \
            src/db/schema/CurrentSchema.h \
            src/db/schema/Schema.h \
            src/db/schema/SchemaDumper.h \
@@ -129,15 +134,19 @@ SOURCES += \
            src/db/DatabaseThread.cpp \
            src/db/DatabaseWorker.cpp \
            src/db/DbEvent.cpp \
+           src/db/Query.cpp \
            src/db/ThreadSafeDatabase.cpp \
            src/db/dbId.cpp \
            src/db/dataStorage/DataStorage.cpp \
            src/db/dataStorage/DataStorageMonitor.cpp \
            src/db/dataStorage/DataStorageWorker.cpp \
-           src/db/interface/DatabaseInterface.cpp \
+           src/db/interface/AbstractInterface.cpp \
+           src/db/interface/DefaultInterface.cpp \
+           src/db/interface/Interface.cpp \
            src/db/migration/Migration.cpp \
            src/db/migration/MigrationFactory.cpp \
            src/db/migration/Migrator.cpp \
+           src/db/result/DefaultResult.cpp \
            src/db/schema/Schema.cpp \
            src/db/schema/SchemaDumper.cpp \
            src/db/task/DataStorageSleepTask.cpp \

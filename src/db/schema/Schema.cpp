@@ -7,8 +7,8 @@
 
 #include "Schema.h"
 
-Schema::Schema (Db::Interface::DatabaseInterface &databaseInterface):
-	Migration (databaseInterface)
+Schema::Schema (Db::Interface::DefaultInterface &interface):
+	Migration (interface)
 {
 }
 

@@ -1,7 +1,7 @@
 #include "Migration_20100216180053_full_plane_category.h"
 
-Migration_20100216180053_full_plane_category::Migration_20100216180053_full_plane_category (Db::Interface::DatabaseInterface &databaseInterface):
-	Migration (databaseInterface)
+Migration_20100216180053_full_plane_category::Migration_20100216180053_full_plane_category (Db::Interface::DefaultInterface &interface):
+	Migration (interface)
 {
 }
 

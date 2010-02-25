@@ -48,7 +48,6 @@ template<class T> class QList;
 class QModelIndex;
 
 class FlightSortFilterProxyModel;
-class Db::ThreadSafeDatabase;
 class ShellPlugin;
 class WeatherWidget;
 class WeatherDialog;

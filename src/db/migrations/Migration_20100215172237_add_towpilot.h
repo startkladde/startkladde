@@ -14,7 +14,7 @@
 class Migration_20100215172237_add_towpilot: public Migration
 {
 	public:
-		Migration_20100215172237_add_towpilot (Db::Interface::DatabaseInterface &databaseInterface);
+		Migration_20100215172237_add_towpilot (Db::Interface::DefaultInterface &interface);
 		virtual ~Migration_20100215172237_add_towpilot ();
 
 		virtual void up ();

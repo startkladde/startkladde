@@ -6,6 +6,8 @@
 #include "src/db/dbId.h"
 
 namespace Db { class Database; }
+namespace Db { class Query; }
+namespace Db { namespace Result { class Result; } }
 
 /**
  * An object stored in the database

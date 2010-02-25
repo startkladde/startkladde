@@ -4,7 +4,6 @@
 #include <cstdio>
 #include <QString>
 #include <QList>
-#include <QSqlQuery>
 
 #include "src/model/objectList/ObjectModel.h"
 
@@ -75,11 +74,11 @@ class Plane: public Entity
 		// SQL interface
 		static QString dbTableName ();
 		static QString selectColumnList ();
-		static Plane createFromQuery (const QSqlQuery &query);
+		static Plane createFromResult (const Db::Result::Result &result);
 		static QString insertValueList ();
 		static QString updateValueList ();
-		virtual void bindValues (QSqlQuery &q) const;
-		static QList<Plane> createListFromQuery (QSqlQuery &query);
+		virtual void bindValues (Db::Query &q) const;
+		static QList<Plane> createListFromResult (Db::Result::Result &query);
 		// Enum mappers
 		static QString  categoryToDb   (Category category);
 		static Category categoryFromDb (QString  category);

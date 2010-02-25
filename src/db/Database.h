@@ -7,11 +7,10 @@
 #include <QHash>
 #include <QStringList>
 #include <QSqlError>
-#include <QSqlQuery>
 
 #include "src/db/dbId.h"
 #include "src/db/DatabaseInfo.h"
-#include "src/db/interface/DatabaseInterface.h" // TODO remove (to worker)
+#include "src/db/interface/DefaultInterface.h" // TODO remove (to worker)
 #include "src/db/AbstractDatabase.h"
 
 class Flight;
@@ -39,13 +38,13 @@ namespace Db
 			class NotFoundException {};
 
 			// *** Construction
-			Database ();
+			Database (const DatabaseInfo &dbInfo);
 			virtual ~Database ();
 
 			// *** Connection management
-			bool open (const DatabaseInfo &dbInfo) { return databaseInterface.open (dbInfo); };
-			void close () { databaseInterface.close (); }
-			QSqlError lastError () { return databaseInterface.lastError (); }
+			bool open () { return defaultInterface.open (); }
+			void close () { defaultInterface.close (); }
+			QSqlError lastError () { return defaultInterface.lastError (); }
 
 
 			// *** ORM
@@ -59,11 +58,11 @@ namespace Db
 			template<class T> bool updateObject (const T &object);
 
 			// *** Very specific
-			virtual QStringList listStrings (const QString &queryString);
+			virtual QStringList listStrings (const Query &query);
 			virtual QList<Flight> getFlights (const QString &condition="", const QList<QVariant> &conditionValues=QList<QVariant> ());
 
 		private:
-			Interface::DatabaseInterface databaseInterface;
+			Interface::DefaultInterface defaultInterface;
 	};
 }
 

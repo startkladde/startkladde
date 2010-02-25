@@ -9,7 +9,7 @@
 class Migration_20100216124307_rename_columns: public Migration
 {
 	public:
-		Migration_20100216124307_rename_columns (Db::Interface::DatabaseInterface &databaseInterface);
+		Migration_20100216124307_rename_columns (Db::Interface::DefaultInterface &interface);
 		virtual ~Migration_20100216124307_rename_columns ();
 
 		virtual void up ();

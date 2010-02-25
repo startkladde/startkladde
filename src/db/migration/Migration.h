@@ -3,9 +3,10 @@
 
 #include "QString"
 #include "QVariant"
-#include "QSqlQuery"
 
-namespace Db { namespace Interface { class DatabaseInterface; } }
+#include "src/db/Query.h"
+
+namespace Db { namespace Interface { class DefaultInterface; } }
 
 /**
  * A new migration is created by creating the appropriate class in
@@ -18,11 +19,11 @@ namespace Db { namespace Interface { class DatabaseInterface; } }
  * Migrations are supposed to be called only through Migrator, which keeps track
  * of which migrations have already been applied (see documentation).
  *
- * Note that we forward a lot of DatabaseInterface methods (and constants) to
- * databaseInterface instead of having Migration implementations access the
- * databaseInterface directly.
+ * Note that we forward a lot of DefaultInterface methods (and constants) to
+ * DefaultInterface instead of having Migration implementations access the
+ * DefaultInterface directly.
  * This is done in order to avoid a dependency of the individual migrations on
- * DatabaseInterface, which would necessitate recompiling all migrations when
+ * DefaultInterface, which would necessitate recompiling all migrations when
  * the database interface changes, even if the migrations are not affected by
  * the change.
  *
@@ -31,7 +32,7 @@ namespace Db { namespace Interface { class DatabaseInterface; } }
  * add logging or accumulate changes before executing them.
  *
  * Notes for implementations:
- *   - do not include DatabaseInterface.h. Use the forwarder methods provided
+ *   - do not include DefaultInterface.h. Use the forwarder methods provided
  *     by this class instead. Add forwarder methods if required.
  */
 class Migration
@@ -60,7 +61,7 @@ class Migration
     	static QString dataTypeId        ();
 
 
-		Migration (Db::Interface::DatabaseInterface &databaseInterface);
+		Migration (Db::Interface::DefaultInterface &interface);
 		virtual ~Migration ();
 
 		virtual void up ()=0;
@@ -71,9 +72,7 @@ class Migration
 		bool commit ();
 		bool rollback ();
 
-		QSqlQuery prepareQuery (const QString &queryString);
-		QSqlQuery &executeQuery (QSqlQuery &query);
-		QSqlQuery executeQuery (const QString &queryString);
+		void executeQuery (const Db::Query &query, bool forwardOnly=true);
 
 		void createTable (const QString &name, bool skipIfExists=false);
 		void createTableLike (const QString &like, const QString &name, bool skipIfExists=false);
@@ -88,7 +87,7 @@ class Migration
 		void updateColumnValues (const QString &tableName, const QString &columnName, const QVariant &oldValue, const QVariant &newValue);
 
 	private:
-		Db::Interface::DatabaseInterface &databaseInterface;
+		Db::Interface::DefaultInterface &interface;
 };
 
 #endif

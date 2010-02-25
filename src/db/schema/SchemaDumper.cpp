@@ -2,14 +2,15 @@
 
 #include <iostream>
 
-#include <QtSql>
 #include <QFile>
+#include <QDateTime>
 
-#include "src/db/interface/DatabaseInterface.h"
+#include "src/db/interface/DefaultInterface.h"
 #include "src/db/migration/Migrator.h" // Required for migrationsTableName/migrationsColumnName
+#include "src/db/result/Result.h"
 
-SchemaDumper::SchemaDumper (Db::Interface::DatabaseInterface &databaseInterface):
-	databaseInterface (databaseInterface)
+SchemaDumper::SchemaDumper (Db::Interface::DefaultInterface &interface):
+	interface (interface)
 {
 }
 
@@ -60,11 +61,17 @@ void SchemaDumper::dumpTables (QStringList &output)
 {
 	output << "tables:";
 
-	QString queryString="SHOW TABLES";
-	QSqlQuery query=databaseInterface.executeQuery (queryString);
+//	QString queryString="SHOW TABLES";
+//	QSqlQuery query=DefaultInterface.executeQuery (queryString);
+//
+//	while (query.next ())
+//		dumpTable (output, query.value (0).toString ());
 
-	while (query.next ())
-		dumpTable (output, query.value (0).toString ());
+	Db::Query query=Db::Query ("SHOW TABLES");
+	interface.executeQuery (query);
+
+	while (query.getResult ()->next ())
+		dumpTable (output, query.getResult ()->value (0).toString ());
 }
 
 void SchemaDumper::dumpTable (QStringList &output, const QString &name)
@@ -79,19 +86,19 @@ void SchemaDumper::dumpColumns (QStringList &output, const QString &table)
 {
 	output << "  columns:";
 
-	QString queryString=QString ("SHOW COLUMNS FROM %1").arg (table);
-	QSqlQuery query=databaseInterface.executeQuery (queryString);
+	Db::Query query=Db::Query ("SHOW COLUMNS FROM %1").arg (table);
+	interface.executeQuery (query);
 
-	QSqlRecord record=query.record ();
+	QSqlRecord record=query.getResult ()->record ();
 	int nameIndex=record.indexOf ("Field");
 	int typeIndex=record.indexOf ("Type");
 	int nullIndex=record.indexOf ("Null");
 
-	while (query.next ())
+	while (query.getResult ()->next ())
 	{
-		QString name=query.value (nameIndex).toString ();
-		QString type=query.value (typeIndex).toString ();
-		QString null=query.value (nullIndex).toString ();
+		QString name=query.getResult ()->value (nameIndex).toString ();
+		QString type=query.getResult ()->value (typeIndex).toString ();
+		QString null=query.getResult ()->value (nullIndex).toString ();
 
 		// The id columns created automatically, don't dump it
 		if (name!="id")
@@ -114,9 +121,9 @@ void SchemaDumper::dumpVersions (QStringList &output)
 	QString table=Migrator::migrationsTableName;
 	QString column=Migrator::migrationsColumnName;
 
-	QString queryString=databaseInterface.selectDistinctColumnQuery (table, column);
-	QSqlQuery query=databaseInterface.executeQuery (queryString);
+	Db::Query query=Db::Query::selectDistinctColumns (table, column);
+	Db::Result::Result *result=interface.executeQuery (query);
 
-	while (query.next ())
-		output << QString ("- %1").arg (query.value (0).toString ());
+	while (result->next ())
+		output << QString ("- %1").arg (result->value (0).toString ());
 }
