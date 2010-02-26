@@ -105,7 +105,7 @@ MainWindow::MainWindow (QWidget *parent) :
 	// Do this before calling connect
 	dataStorageStateChanged (dataStorage.getState ());
 
-	QObject::connect (&dataStorage, SIGNAL (dbEvent (DbEvent)), this, SLOT (dbEvent (DbEvent)));
+	QObject::connect (&db, SIGNAL (dbEvent (DbEvent)), this, SLOT (dbEvent (DbEvent)));
 	QObject::connect (&dataStorage, SIGNAL (status (QString, bool)), this, SLOT (dataStorageStatus (QString, bool)));
 	QObject::connect (&dataStorage, SIGNAL (stateChanged (DataStorage::State)), this,
 			SLOT (dataStorageStateChanged (DataStorage::State)));

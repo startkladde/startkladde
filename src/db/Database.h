@@ -7,9 +7,11 @@
 #include <QHash>
 #include <QStringList>
 #include <QSqlError>
+#include <QObject>
 
 #include "src/db/dbId.h"
 #include "src/db/interface/Interface.h"
+#include "src/db/DbEvent.h"
 
 class Flight;
 
@@ -28,8 +30,10 @@ namespace Db
 	 * Note that we do not use the ENUM SQL type because it is not supported by
 	 * SQLite.
 	 */
-	class Database
+	class Database: public QObject
 	{
+		Q_OBJECT;
+
 		public:
 			// *** Data types
 			class NotFoundException {};
@@ -63,6 +67,9 @@ namespace Db
 			virtual QStringList listPlaneTypes ();
 			virtual QList<Flight> getPreparedFlights ();
 			virtual QList<Flight> getFlightsDate (QDate date);
+
+		signals:
+			void dbEvent (DbEvent event);
 
 		private:
 			Interface::Interface &interface;

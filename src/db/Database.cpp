@@ -140,6 +140,8 @@ namespace Db
 
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
+		emit dbEvent (DbEvent (DbEvent::typeDelete, DbEvent::getTable<T> (), id));
+
 		return result->numRowsAffected ()>0;
 	}
 
@@ -158,6 +160,9 @@ namespace Db
 
 		object.id=result->lastInsertId ().toLongLong ();
 
+		if (idValid (object.id))
+			emit dbEvent (DbEvent (DbEvent::typeAdd, DbEvent::getTable<T> (), object.id));
+
 		return object.id;
 	}
 
@@ -170,6 +175,8 @@ namespace Db
 		query.bind (object.id); // After the object values!
 
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
+
+		emit dbEvent (DbEvent (DbEvent::typeChange, DbEvent::getTable<T> (), object.getId ()));
 
 		return result->numRowsAffected ();
 	}

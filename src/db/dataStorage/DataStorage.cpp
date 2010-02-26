@@ -17,7 +17,6 @@
 #include "src/model/Person.h"
 #include "src/model/LaunchMethod.h"
 #include "src/db/Database.h"
-#include "src/db/DbEvent.h"
 #include "src/db/dataStorage/DataStorageWorker.h"
 #include "src/model/objectList/EntityList.h"
 
@@ -135,8 +134,6 @@ DataStorage::DataStorage (Db::Database &db):
 	currentState (stateOffline),
 	worker (new DataStorageWorker (*this, 1000))
 {
-	// FIXME
-//	QObject::connect (&db, SIGNAL (executing_query (QString)), this, SIGNAL (executingQuery (QString)));
 	worker->start ();
 }
 
@@ -731,7 +728,6 @@ template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const 
 //	if (idValid (newId))
 //	{
 //		objectAdded (copy);
-//		emit dbEvent (DbEvent (DbEvent::typeAdd, DbEvent::getTable<T> (), newId));
 //	}
 //
 //	// Task completed
@@ -762,9 +758,6 @@ template<class T> bool DataStorage::deleteObject (OperationMonitor *monitor, dbI
 //	if (ok)
 //	{
 //		objectDeleted<T> (id);
-//
-//		// Emit a dbEvent
-//		emit dbEvent (DbEvent (DbEvent::typeDelete, DbEvent::getTable<T> (), id));
 //	}
 //
 //	// Task completed
@@ -791,11 +784,7 @@ template<class T> bool DataStorage::updateObject (OperationMonitor *monitor, con
 //	if (message) *message=db.lastError ().text ();
 //
 //	if (idValid (result))
-//	{
 //		objectUpdated (copy);
-//		emit dbEvent (DbEvent (DbEvent::typeChange, DbEvent::getTable<T> (), object.getId ()));
-//	}
-//
 //
 //	return true;
 }

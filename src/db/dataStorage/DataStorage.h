@@ -12,7 +12,6 @@
 #include <QDate>
 
 #include "src/db/dbId.h"
-#include "src/db/DbEvent.h"
 #include "src/model/LaunchMethod.h" // Required for LaunchMethod::Type
 
 //namespace Db
@@ -141,8 +140,8 @@ class DataStorage: public QObject
 
 
 		// *** Refreshing view
-		template<class T> void refreshViews () { emit dbEvent (DbEvent (DbEvent::typeRefresh, DbEvent::getTable<T> (), invalidId)); }
-		void refreshAllViews () { emit DbEvent (DbEvent::typeRefresh, DbEvent::tableAll, invalidId); }
+		template<class T> void refreshViews () { /*emit dbEvent (DbEvent (DbEvent::typeRefresh, DbEvent::getTable<T> (), invalidId));*/ }
+		void refreshAllViews () { /*emit DbEvent (DbEvent::typeRefresh, DbEvent::tableAll, invalidId);*/ }
 
 		// *** Test methods
 		bool sleep (OperationMonitor &monitor, int seconds);
@@ -154,10 +153,6 @@ class DataStorage: public QObject
 	protected:
 		// Helper templates, specialized in implementation
 		template<class T> QList<T> *objectList ();
-
-	signals:
-		void dbEvent (DbEvent event);
-		void executingQuery (QString query);
 
 	private:
 		Db::Database &db;
