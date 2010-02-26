@@ -58,17 +58,9 @@ void Waiter::wait ()
 	// Lock the mutex
 	QMutexLocker locker (&mutex);
 
-	if (flag) std::cout << "Already finished" << std::endl;
-
-
 	// Return if notify has already been called
 	if (flag) return;
 
-	std::cout << "Wait" << std::endl;
-
 	// Wait until notify is called
 	waitCondition.wait (&mutex);
-
-	std::cout << "Finished" << std::endl;
-
 }

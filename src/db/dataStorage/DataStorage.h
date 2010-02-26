@@ -15,10 +15,10 @@
 #include "src/db/DbEvent.h"
 #include "src/model/LaunchMethod.h" // Required for LaunchMethod::Type
 
-namespace Db
-{
-	class ThreadSafeDatabase;
-}
+//namespace Db
+//{
+//	class ThreadSafeDatabase;
+//}
 
 class Task;
 class Flight;
@@ -65,7 +65,7 @@ class DataStorage: public QObject
 
 		friend class DataStorageMonitor;
 
-		DataStorage (Db::ThreadSafeDatabase &db);
+		DataStorage (Db::Database &db);
 		virtual ~DataStorage ();
 
 		int refreshPlanes ();
@@ -160,7 +160,7 @@ class DataStorage: public QObject
 		void executingQuery (QString query);
 
 	private:
-		Db::ThreadSafeDatabase &db;
+		Db::Database &db;
 
 		// Note that we cannot use an AutomaticEntityList here because that
 		// accesses the database to retrieve the object identified by the ID

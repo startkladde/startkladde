@@ -31,14 +31,9 @@ HEADERS += \
            src/concurrent/task/SleepTask.h \
            src/concurrent/task/Task.h \
            src/config/Options.h \
-           src/db/AbstractDatabase.h \
            src/db/Database.h \
-           src/db/DatabaseTask.h \
-           src/db/DatabaseThread.h \
-           src/db/DatabaseWorker.h \
            src/db/DbEvent.h \
            src/db/Query.h \
-           src/db/ThreadSafeDatabase.h \
            src/db/dbId.h \
            src/db/dataStorage/DataStorage.h \
            src/db/dataStorage/DataStorageMonitor.h \
@@ -133,14 +128,9 @@ SOURCES += \
            src/concurrent/task/SleepTask.cpp \
            src/concurrent/task/Task.cpp \
            src/config/Options.cpp \
-           src/db/AbstractDatabase.cpp \
            src/db/Database.cpp \
-           src/db/DatabaseTask.cpp \
-           src/db/DatabaseThread.cpp \
-           src/db/DatabaseWorker.cpp \
            src/db/DbEvent.cpp \
            src/db/Query.cpp \
-           src/db/ThreadSafeDatabase.cpp \
            src/db/dbId.cpp \
            src/db/dataStorage/DataStorage.cpp \
            src/db/dataStorage/DataStorageMonitor.cpp \

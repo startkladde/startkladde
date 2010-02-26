@@ -16,7 +16,7 @@
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
 #include "src/model/LaunchMethod.h"
-#include "src/db/ThreadSafeDatabase.h"
+#include "src/db/Database.h"
 #include "src/db/DbEvent.h"
 #include "src/db/dataStorage/DataStorageWorker.h"
 #include "src/model/objectList/EntityList.h"
@@ -127,7 +127,7 @@ const int db_ok=0;
 // ** Construction **
 // ******************
 
-DataStorage::DataStorage (Db::ThreadSafeDatabase &db):
+DataStorage::DataStorage (Db::Database &db):
 	db (db),
 	flightsToday (new EntityList<Flight> ()),
 	flightsOther (new EntityList<Flight> ()),
@@ -1069,7 +1069,7 @@ void DataStorage::doConnect ()
 //		try
 //		{
 			QMutexLocker dbLock (&databaseMutex);
-			db.open (opts.databaseInfo);
+			db.open ();
 			connected=true;
 			dbLock.unlock ();
 //		}

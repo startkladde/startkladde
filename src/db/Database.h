@@ -10,7 +10,6 @@
 
 #include "src/db/dbId.h"
 #include "src/db/interface/Interface.h"
-#include "src/db/AbstractDatabase.h"
 
 class Flight;
 
@@ -24,13 +23,12 @@ namespace Db
 	 * classes in the .cpp file. Also provides some frontends for object selection
 	 * (like getFlightsDate).
 	 *
-	 * This class is NOT thread safe. It may only be used in the thread where it
-	 * was created.
+	 * This class is not thread safe, but it may be used from any thread.
 	 *
 	 * Note that we do not use the ENUM SQL type because it is not supported by
 	 * SQLite.
 	 */
-	class Database: public AbstractDatabase
+	class Database
 	{
 		public:
 			// *** Data types
@@ -41,6 +39,7 @@ namespace Db
 			virtual ~Database ();
 
 			// *** Connection management
+			// FIXME remove
 			bool open () { return interface.open (); }
 			void close () { interface.close (); }
 			QSqlError lastError () { return interface.lastError (); }
@@ -57,8 +56,12 @@ namespace Db
 			template<class T> bool updateObject (const T &object);
 
 			// *** Very specific
-			virtual QStringList listStrings (const Query &query);
-			virtual QList<Flight> getFlights (const QString &condition="", const QList<QVariant> &conditionValues=QList<QVariant> ());
+			virtual QStringList listLocations ();
+			virtual QStringList listAccountingNotes ();
+			virtual QStringList listClubs ();
+			virtual QStringList listPlaneTypes ();
+			virtual QList<Flight> getPreparedFlights ();
+			virtual QList<Flight> getFlightsDate (QDate date);
 
 		private:
 			Interface::Interface &interface;

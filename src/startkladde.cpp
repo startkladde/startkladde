@@ -38,9 +38,6 @@ void display_help ()
 
 #include "src/concurrent/DefaultQThread.h"
 #include "src/model/Person.h"
-#include "src/db/ThreadSafeDatabase.h"
-//class DatabaseTask;
-#include "src/db/DatabaseTask.h"
 #include "src/db/interface/threadSafe/ThreadSafeInterface.h"
 
 int test_database ()
@@ -51,11 +48,6 @@ int test_database ()
 
 	if (!interface.open ())
 		std::cout << "Database could not be opened" << std::endl;
-
-
-//	Db::ThreadSafeDatabase db;
-
-//	db.open ();
 
 	std::cout << std::endl;
 	std::cout << "Get people" << std::endl;
@@ -138,7 +130,7 @@ int test_database ()
 	return 0;
 }
 
-int showGui (QApplication &a, Db::ThreadSafeDatabase &db, QList<ShellPlugin *> &plugins)
+int showGui (QApplication &a, Db::Database &db, QList<ShellPlugin *> &plugins)
 {
 	//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
 
@@ -238,8 +230,6 @@ int doStuff ()
 
 void test ()
 {
-//	ThreadSafeDatabase tsdb;
-//	tsdb.wait ();
 }
 
 #include "src/concurrent/Waiter.h"
@@ -253,9 +243,7 @@ int main (int argc, char **argv)
 	// types must be registered.
 	qRegisterMetaType<DbEvent> ("DbEvent");
 	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
-	qRegisterMetaType<Db::DatabaseTask *> ("Db::DatabaseTask *"); // TODO remove
 	qRegisterMetaType<Db::Query> ("Db::Query");
-//	qRegisterMetaType<Waiter &> ("Waiter &");
 
 	int ret=0;
 
@@ -273,7 +261,8 @@ int main (int argc, char **argv)
 
 			if (opts.non_options.empty ())
 			{
-				Db::ThreadSafeDatabase db;
+				Db::Interface::ThreadSafeInterface interface (opts.databaseInfo);
+				Db::Database db (interface);
 				ret=showGui (a, db, plugins);
 			}
 			else

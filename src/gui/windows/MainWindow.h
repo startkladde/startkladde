@@ -68,7 +68,7 @@ class MainWindow: public QMainWindow
 	Q_OBJECT
 
 	public:
-		MainWindow (QWidget *parent, Db::ThreadSafeDatabase *_db, QList<ShellPlugin *> &plugins);
+		MainWindow (QWidget *parent, Db::Database *_db, QList<ShellPlugin *> &plugins);
 		~MainWindow ();
 
 	protected:

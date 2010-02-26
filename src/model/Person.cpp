@@ -200,7 +200,6 @@ void Person::bindValues (Db::Query &q) const
 	q.bind (comments);
 }
 
-
 QList<Person> Person::createListFromResult (Db::Result::Result &result)
 {
 	QList<Person> list;

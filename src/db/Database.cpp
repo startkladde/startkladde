@@ -1,8 +1,8 @@
 /*
  * Next:
- *   - Database UML documentation
+ *   - Fix result passing from ThreadSafeInterface (must copy)
+ *   - Rename Database to ORM
  *   - Error reporting for ThreadSafeInterface
- *   - Remove ThreadSafeDatabase
  *   - integrate schema loading/database migration into GUI
  *
  * Short term plan:
@@ -78,12 +78,6 @@
 #include "src/util/qString.h"
 #include "src/db/Query.h"
 #include "src/db/result/Result.h"
-
-/*
- * Here's an idea for specifying conditions, or parts thereof:
- * Condition ("foo=? and bar=?") << 42 << "baz";
- */
-
 
 namespace Db
 {
@@ -295,13 +289,93 @@ namespace Db
 	// ** Very specific **
 	// *******************
 
-	QStringList Database::listStrings (const Query &query)
+	QStringList Database::listLocations ()
 	{
-		return interface.listStrings (query);
+		return interface.listStrings (Query::selectDistinctColumns (
+			Flight::dbTableName (),
+			QStringList () << "departure_location" << "landing_location",
+			true));
 	}
 
-	QList<Flight> Database::getFlights (const QString &condition, const QList<QVariant> &conditionValues)
+	QStringList Database::listAccountingNotes ()
 	{
+		return interface.listStrings (Query::selectDistinctColumns (
+			Flight::dbTableName (),
+			"accounting_notes",
+			true));
+	}
+
+	QStringList Database::listClubs ()
+	{
+		return interface.listStrings (Query::selectDistinctColumns (
+			QStringList () << Plane::dbTableName() << Person::dbTableName (),
+			"club",
+			true));
+	}
+
+	QStringList Database::listPlaneTypes ()
+	{
+		return interface.listStrings (Query::selectDistinctColumns (
+			Plane::dbTableName (),
+			"type",
+			true));
+	}
+
+
+	QList<Flight> Database::getPreparedFlights ()
+	{
+		// The correct criterion for prepared flights is:
+		// !((starts_here and started) or (lands_here and landed))
+		// Resolving the flight mode, we get:
+		// !( (local and (started or landed)) or (leaving and started) or (coming and landed) )
+
+		QString condition="!( (mode=? AND (departed OR landed)) OR (mode=? AND departed) OR (mode=? AND landed) )";
+		QList<QVariant> conditionValues; conditionValues
+			<< Flight::modeToDb (Flight::modeLocal  )
+			<< Flight::modeToDb (Flight::modeLeaving)
+			<< Flight::modeToDb (Flight::modeComing )
+			;
+
 		return getObjects<Flight> (condition, conditionValues);
 	}
+
+	QList<Flight> Database::getFlightsDate (QDate date)
+	{
+		// The correct criterion for flights on a given date is:
+		// (happened and effective_date=that_date)
+		// effective_date has to be calculated from takeoff time, landing time,
+		// status and mode, which is compilicated. Thus, we select a superset of
+		// the flights of that date and filter out the correct flights afterwards.
+
+		// The superset criterion is:
+		// (launch_date=that_date or landing_date=that_date)
+		// Since the database stores the datetimes, we compare them agains the
+		// first and last datetime of the date.
+
+		QDateTime thisMidnight (date,             QTime (0, 0, 0)); // Start of day
+		QDateTime nextMidnight (date.addDays (1), QTime (0, 0, 0)); // Start of next day
+
+		QString condition="(departure_time>=? AND landing_time<?) OR (departure_time>=? AND landing_time<?)";
+		QList<QVariant> conditionValues; conditionValues
+			<< thisMidnight << nextMidnight
+			<< thisMidnight << nextMidnight
+			;
+
+		QList<Flight> candidates=getObjects<Flight> (condition, conditionValues);
+
+		// For some of the selected flights, the fact that the takeoff or landing
+		// time is on that day may not indicate that the flight actually happened
+		// on that day. For example, if a flight is prepared (i. e. not taken off
+		// nor landed), or leaving, the times may not be relevant.
+		// Thus, we only keep flights which happened and where the effective date
+		// is the given date.
+
+		QList<Flight> flights;
+		foreach (const Flight &flight, candidates)
+			if (flight.happened () && flight.effdatum ()==date)
+				flights.append (flight);
+
+		return flights;
+	}
+
 }
