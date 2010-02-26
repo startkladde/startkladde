@@ -10,7 +10,7 @@
 
 #include <QObject>
 
-#include "src/db/interface/DefaultInterface.h"
+#include "src/db/interface/AbstractInterface.h"
 #include "src/db/Query.h"
 
 class Waiter;
@@ -59,7 +59,7 @@ namespace Db
 					virtual void queryHasResult     (Waiter *waiter, bool                           *result, Db::Query query);
 
 				private:
-					DefaultInterface interface;
+					AbstractInterface *interface;
 			};
 		}
 	}
