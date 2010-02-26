@@ -709,95 +709,95 @@ template<> QList<LaunchMethod> *DataStorage::objectList<LaunchMethod> () { retur
 //  - should success and message be a method of monitor?
 template<class T> bool DataStorage::addObject (OperationMonitor *monitor, const T &object, dbId *id, bool *success, QString *message)
 {
-	(void)monitor;
-	// TODO addObject duplicate check?
-
-	// The copy will have the same id as the original, but the id will be
-	// overwritten.
-	T copy (object);
-
-	// Write the object by using the database method
-	QMutexLocker dbLock (&databaseMutex);
-	// TODO error check
-	dbId newId=db.createObject (copy);
-	dbLock.unlock ();
-
-	// TODO when can we cancel? When the object has been added, the cache
-	// must be updated.
-	//	if (monitor->isCanceled ()) return false;
-
-
-	// If adding succeeded, add the object to the cache and emit a event
-	if (idValid (newId))
-	{
-		objectAdded (copy);
-		emit dbEvent (DbEvent (DbEvent::typeAdd, DbEvent::getTable<T> (), newId));
-	}
-
-	// Task completed
-	if (id) *id=newId;
-	if (success) *success=(idValid (newId));
-	if (message) *message=db.lastError ().text ();
-	return true;
+//	(void)monitor;
+//	// TODO addObject duplicate check?
+//
+//	// The copy will have the same id as the original, but the id will be
+//	// overwritten.
+//	T copy (object);
+//
+//	// Write the object by using the database method
+//	QMutexLocker dbLock (&databaseMutex);
+//	// TODO error check
+//	dbId newId=db.createObject (copy);
+//	dbLock.unlock ();
+//
+//	// TODO when can we cancel? When the object has been added, the cache
+//	// must be updated.
+//	//	if (monitor->isCanceled ()) return false;
+//
+//
+//	// If adding succeeded, add the object to the cache and emit a event
+//	if (idValid (newId))
+//	{
+//		objectAdded (copy);
+//		emit dbEvent (DbEvent (DbEvent::typeAdd, DbEvent::getTable<T> (), newId));
+//	}
+//
+//	// Task completed
+//	if (id) *id=newId;
+//	if (success) *success=(idValid (newId));
+//	if (message) *message=db.lastError ().text ();
+//	return true;
 }
 
 template<class T> bool DataStorage::deleteObject (OperationMonitor *monitor, dbId id, bool *success, QString *message)
 {
-	(void)monitor;
-
-	// TODO error handling
-	QMutexLocker dbLock (&databaseMutex);
-	int affectedRows=db.deleteObject<T> (id);
-	dbLock.unlock ();
-
-	// TODO when can we cancel? When the object has been deleted, the cache
-	// must be updated.
-	//	if (monitor->isCanceled ()) return false;
-
-	bool ok=(affectedRows>0);
-
-	if (success) *success=ok;
-	if (message) *message=db.lastError ().text ();
-
-	if (ok)
-	{
-		objectDeleted<T> (id);
-
-		// Emit a dbEvent
-		emit dbEvent (DbEvent (DbEvent::typeDelete, DbEvent::getTable<T> (), id));
-	}
-
-	// Task completed
-	return true;
+//	(void)monitor;
+//
+//	// TODO error handling
+//	QMutexLocker dbLock (&databaseMutex);
+//	int affectedRows=db.deleteObject<T> (id);
+//	dbLock.unlock ();
+//
+//	// TODO when can we cancel? When the object has been deleted, the cache
+//	// must be updated.
+//	//	if (monitor->isCanceled ()) return false;
+//
+//	bool ok=(affectedRows>0);
+//
+//	if (success) *success=ok;
+//	if (message) *message=db.lastError ().text ();
+//
+//	if (ok)
+//	{
+//		objectDeleted<T> (id);
+//
+//		// Emit a dbEvent
+//		emit dbEvent (DbEvent (DbEvent::typeDelete, DbEvent::getTable<T> (), id));
+//	}
+//
+//	// Task completed
+//	return true;
 }
 
 template<class T> bool DataStorage::updateObject (OperationMonitor *monitor, const T &object, bool *success, QString *message)
 {
-	(void)monitor;
-
-	if (idInvalid (object.getId ())) return true; // TODO signal error
-	T copy (object);
-
-	QMutexLocker dbLock (&databaseMutex);
-	dbId result=db.updateObject (copy);
-	dbLock.unlock ();
-
-
-	// TODO when can we cancel? When the object has been updated, the cache
-	// must be updated.
-	//	if (monitor->isCanceled ()) return false;
-
-	if (success) *success=idValid (result);
-	if (message) *message=db.lastError ().text ();
-
-	if (idValid (result))
-	{
-		objectUpdated (copy);
-		emit dbEvent (DbEvent (DbEvent::typeChange, DbEvent::getTable<T> (), object.getId ()));
-	}
-
-
-	return true;
+//	(void)monitor;
+//
+//	if (idInvalid (object.getId ())) return true; // TODO signal error
+//	T copy (object);
+//
+//	QMutexLocker dbLock (&databaseMutex);
+//	dbId result=db.updateObject (copy);
+//	dbLock.unlock ();
+//
+//
+//	// TODO when can we cancel? When the object has been updated, the cache
+//	// must be updated.
+//	//	if (monitor->isCanceled ()) return false;
+//
+//	if (success) *success=idValid (result);
+//	if (message) *message=db.lastError ().text ();
+//
+//	if (idValid (result))
+//	{
+//		objectUpdated (copy);
+//		emit dbEvent (DbEvent (DbEvent::typeChange, DbEvent::getTable<T> (), object.getId ()));
+//	}
+//
+//
+//	return true;
 }
 
 
@@ -1058,93 +1058,93 @@ void DataStorage::disconnect ()
 
 void DataStorage::doConnect ()
 {
-	setState (stateConnecting);
-
-	bool connected=false; // Whether a connection is established at the moment
-	bool unusable=false; // Whether the database has been found to be unusable
-
-	// TODO allow cancelling
-	while (!connected && !unusable)
-	{
-//		try
-//		{
-			QMutexLocker dbLock (&databaseMutex);
-			db.open ();
-			connected=true;
-			dbLock.unlock ();
-//		}
-		// FIXME
-//		catch (OldDatabase::ex_access_denied      ) { unusable=true; }
-//		catch (OldDatabase::ex_connection_failed  ) { /* Keep trying */ }
-		// TODO other exceptions
-
-		// If we are not connected, wait one second before retrying
-		DefaultQThread::sleep (1);
-	}
-
-	// FIXME
-//	// If the connection succeeded (i. e. we are connected now), try to use the
-//	// database
-//	bool checked=false;
-//	while (!checked && !unusable)
-//	{
-//		if (connected)
-//		{
-//			try
-//			{
-//				QMutexLocker dbLock (&databaseMutex);
-//				db.use_db (opts.database);
-//				db.check_usability ();
-//				checked=true;
-//			}
-//			catch (OldDatabase::ex_access_denied          ) { unusable=true; }
-//			catch (OldDatabase::ex_database_not_found     ) { unusable=true; }
-//			catch (OldDatabase::ex_database_not_accessible) { unusable=true; }
-//			catch (OldDatabase::ex_insufficient_access    ) { unusable=true; }
-//			catch (OldDatabase::ex_unusable               ) { unusable=true; }
-//			catch (OldDatabase::ex_query_failed           ) { /* Keep trying */ }
-//			catch (OldDatabase::ex_timeout                ) { /* Keep trying */ }
-//			catch (OldDatabase::ex_connection_failed      ) { /* Keep trying */ }
-//			// TODO other exceptions
-//		}
+//	setState (stateConnecting);
 //
-//		// If checking failed, wait one second before retrying
+//	bool connected=false; // Whether a connection is established at the moment
+//	bool unusable=false; // Whether the database has been found to be unusable
+//
+//	// TODO allow cancelling
+//	while (!connected && !unusable)
+//	{
+////		try
+////		{
+//			QMutexLocker dbLock (&databaseMutex);
+//			db.open ();
+//			connected=true;
+//			dbLock.unlock ();
+////		}
+//		// FIXME
+////		catch (OldDatabase::ex_access_denied      ) { unusable=true; }
+////		catch (OldDatabase::ex_connection_failed  ) { /* Keep trying */ }
+//		// TODO other exceptions
+//
+//		// If we are not connected, wait one second before retrying
 //		DefaultQThread::sleep (1);
 //	}
-
-	if (unusable)
-	{
-		if (connected)
-			db.close ();
-
-		setState (stateUnusable);
-	}
-	else if (connected)
-	{
-		emit status ("Daten werden gelesen...", false);
-		// TODO: pass an operation monitor to display the status in the main window
-		SimpleOperationMonitor monitor;
-
-		refreshAll (&monitor);
-
-		setState (stateConnected);
-	}
-	else
-	{
-		// Canceled
-	}
+//
+//	// FIXME
+////	// If the connection succeeded (i. e. we are connected now), try to use the
+////	// database
+////	bool checked=false;
+////	while (!checked && !unusable)
+////	{
+////		if (connected)
+////		{
+////			try
+////			{
+////				QMutexLocker dbLock (&databaseMutex);
+////				db.use_db (opts.database);
+////				db.check_usability ();
+////				checked=true;
+////			}
+////			catch (OldDatabase::ex_access_denied          ) { unusable=true; }
+////			catch (OldDatabase::ex_database_not_found     ) { unusable=true; }
+////			catch (OldDatabase::ex_database_not_accessible) { unusable=true; }
+////			catch (OldDatabase::ex_insufficient_access    ) { unusable=true; }
+////			catch (OldDatabase::ex_unusable               ) { unusable=true; }
+////			catch (OldDatabase::ex_query_failed           ) { /* Keep trying */ }
+////			catch (OldDatabase::ex_timeout                ) { /* Keep trying */ }
+////			catch (OldDatabase::ex_connection_failed      ) { /* Keep trying */ }
+////			// TODO other exceptions
+////		}
+////
+////		// If checking failed, wait one second before retrying
+////		DefaultQThread::sleep (1);
+////	}
+//
+//	if (unusable)
+//	{
+//		if (connected)
+//			db.close ();
+//
+//		setState (stateUnusable);
+//	}
+//	else if (connected)
+//	{
+//		emit status ("Daten werden gelesen...", false);
+//		// TODO: pass an operation monitor to display the status in the main window
+//		SimpleOperationMonitor monitor;
+//
+//		refreshAll (&monitor);
+//
+//		setState (stateConnected);
+//	}
+//	else
+//	{
+//		// Canceled
+//	}
 }
 
 
 void DataStorage::doDisconnect ()
 {
-	emit status ("Verbindung zur Datenbank wird getrennt...", false);
-
-	QMutexLocker dbLock (&databaseMutex);
-	db.close ();
-	dbLock.unlock ();
-
-	setState (stateOffline);
+//	emit status ("Verbindung zur Datenbank wird getrennt...", false);
+//
+//	QMutexLocker dbLock (&databaseMutex);
+//	db.close ();
+//	dbLock.unlock ();
+//
+//	setState (stateOffline);
 }
 
 QString DataStorage::stateGetText (DataStorage::State state)

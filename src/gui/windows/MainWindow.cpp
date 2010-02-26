@@ -56,12 +56,16 @@ template <class T> class MutableObjectList;
 
 // TODO pass DataStorage instead of Database (?, depending on thread)
 // TODO better plugin list passing
-MainWindow::MainWindow (QWidget *parent, Db::Database *db, QList<ShellPlugin *> &plugins) :
-	QMainWindow (parent), dataStorage (*db), plugins (plugins), weatherWidget (NULL), weatherPlugin (NULL),
+MainWindow::MainWindow (QWidget *parent) :
+	QMainWindow (parent),
+			dbInterface (opts.databaseInfo), db (dbInterface), dataStorage (db),
+			weatherWidget (NULL), weatherPlugin (NULL),
 			weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
 			contextMenu (new QMenu (this))
 {
 	ui.setupUi (this);
+
+	dbInterface.open ();
 
 	flightModel = new FlightModel (dataStorage);
 	proxyList=new FlightProxyList (dataStorage, *flightList, this); // TODO never deleted
@@ -284,9 +288,9 @@ void MainWindow::setupPlugin (ShellPlugin *plugin, QGridLayout *pluginLayout)
 
 void MainWindow::setupPlugins ()
 {
-	ui.pluginPane->setVisible (!plugins.isEmpty ());
+	ui.pluginPane->setVisible (!opts.shellPlugins.isEmpty ());
 
-	if (!plugins.isEmpty ())
+	if (!opts.shellPlugins.isEmpty ())
 	{
 		ui.pluginPane->setVisible (true);
 		QGridLayout *pluginLayout = dynamic_cast<QGridLayout *> (ui.pluginPane->layout ());
@@ -297,7 +301,7 @@ void MainWindow::setupPlugins ()
 			foreach (QObject *child, ui.pluginPane->children ())
 					if (dynamic_cast<QLabel *> (child)) delete child;
 
-			foreach (ShellPlugin *plugin, plugins)
+			foreach (ShellPlugin *plugin, opts.shellPlugins)
 					setupPlugin (plugin, pluginLayout);
 
 			pluginLayout->setRowStretch (pluginLayout->rowCount (), 1);
@@ -985,7 +989,7 @@ void MainWindow::on_actionRestartPlugins_triggered ()
 {
 	if (weatherPlugin) weatherPlugin->restart ();
 
-	foreach (ShellPlugin *plugin, plugins)
+	foreach (ShellPlugin *plugin, opts.shellPlugins)
 			plugin->restart ();
 }
 

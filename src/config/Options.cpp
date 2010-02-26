@@ -224,17 +224,17 @@ bool Options::parse_arguments (int argc, char *argv[])
 	return true;
 }
 
-bool Options::read_config_files (QList<ShellPlugin *> *plugins, int argc, char *argv[])
+bool Options::read_config_files (int argc, char *argv[])
 	// Also reads command line arguments, if argc>0 (and a configuration file
 	// was read)
 	// Returns whether a configuration file was read.
 {
 	if (config_file.isEmpty ())
 	{
-		if (!read_config_file (get_environment ("HOME")+"/"+default_home_config_filename, plugins))
+		if (!read_config_file (get_environment ("HOME")+"/"+default_home_config_filename))
 		{
 			// The first default was not found, try the second.
-			if (!read_config_file (default_local_config_fielname, plugins))
+			if (!read_config_file (default_local_config_fielname))
 			{
 				// The second default was't found either. We go on without a
 				// config file, but return false.
@@ -245,7 +245,7 @@ bool Options::read_config_files (QList<ShellPlugin *> *plugins, int argc, char *
 	else
 	{
 		// Read the given configuration file.
-		if (!read_config_file (config_file, plugins))
+		if (!read_config_file (config_file))
 		{
 			std::cerr << "Error: the specified configuration file " << config_file << " could not be read." << std::endl;
 			return false;
@@ -257,7 +257,7 @@ bool Options::read_config_files (QList<ShellPlugin *> *plugins, int argc, char *
 	return true;
 }
 
-bool Options::read_config_file (QString filename, QList<ShellPlugin *> *plugins)
+bool Options::read_config_file (QString filename)
 	// Returns whether the file existed.
 {
 	QFile configFile (filename);
@@ -325,17 +325,17 @@ bool Options::read_config_file (QString filename, QList<ShellPlugin *> *plugins)
 			// Database Options
 			if (key=="record_towpilot") record_towpilot=true;
 
-			// Plugin Entity
+			// Plugins
 			if (key=="plugin_path")
 			{
 				plugin_paths.push_back (value);
 //				std::cerr << "Plugin path: " << value << std::endl;
 			}
 
-			if (plugins && key=="shell_plugin")
+			if (key=="shell_plugin")
 			{
 				ShellPlugin *p=new ShellPlugin (value);
-				plugins->push_back (p);
+				shellPlugins.push_back (p);
 //				if (!silent) std::cout << "Added shell plugin \"" << p->get_caption () << "\"" << std::endl;
 			}
 
@@ -354,7 +354,7 @@ bool Options::read_config_file (QString filename, QList<ShellPlugin *> *plugins)
 			// Actions
 			if (key=="source")
 			{
-				bool ret=read_config_file (value, plugins);
+				bool ret=read_config_file (value);
 				if (!ret) std::cerr << "Error: file \"" << value << "\" could not be read." << std::endl;
 			}
 

@@ -141,7 +141,7 @@ int test_database ()
 	return 0;
 }
 
-int showGui (QApplication &a, Db::Database &db, QList<ShellPlugin *> &plugins)
+int showGui (QApplication &a)
 {
 	//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
 
@@ -150,7 +150,7 @@ int showGui (QApplication &a, Db::Database &db, QList<ShellPlugin *> &plugins)
 	if (!opts.style.isEmpty ()) a.setStyle (opts.style);
 //		db.display_queries=opts.display_queries;
 
-	MainWindow w (NULL, &db, plugins);
+	MainWindow w (NULL);
 
 	// Let the plugins initialize
 	sched_yield ();
@@ -158,7 +158,7 @@ int showGui (QApplication &a, Db::Database &db, QList<ShellPlugin *> &plugins)
 	w.showMaximized ();
 	int ret=a.exec();
 
-	foreach (ShellPlugin *plugin, plugins)
+	foreach (ShellPlugin *plugin, opts.shellPlugins)
 	{
 		//std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
 		plugin->terminate ();
@@ -266,15 +266,13 @@ int main (int argc, char **argv)
 			display_help ();
 		else
 		{
-			QList<ShellPlugin *> plugins;
-
-			opts.read_config_files (&plugins, argc, argv);
+			opts.read_config_files (argc, argv);
 
 			if (opts.non_options.empty ())
 			{
 				Db::Interface::ThreadSafeInterface interface (opts.databaseInfo);
 				Db::Database db (interface);
-				ret=showGui (a, db, plugins);
+				ret=showGui (a);
 			}
 			else
 			{

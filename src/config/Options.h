@@ -19,8 +19,8 @@ class Options
 	public:
 		Options ();
 		bool parse_arguments (int argc, char *argv[]);
-		bool read_config_file (QString filename, QList<ShellPlugin *> *plugins);
-		bool read_config_files (QList<ShellPlugin *> *plugins, int argc, char *argv[]);
+		bool read_config_file (QString filename);
+		bool read_config_files (int argc, char *argv[]);
 		static void display_options (QString prefix);
 		void do_display ();
 		bool need_display ();
@@ -58,8 +58,9 @@ class Options
 		// Database
 		bool record_towpilot;
 
-		// Plugin Entity
+		// Plugins
 		QStringList plugin_paths;
+		QList<ShellPlugin *> shellPlugins;
 
 		// Weather plugin
 		QString weather_plugin;

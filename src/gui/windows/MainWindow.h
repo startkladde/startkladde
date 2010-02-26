@@ -42,6 +42,8 @@
 #include "ui_MainWindow.h"
 
 #include "src/db/dataStorage/DataStorage.h" // Required for DataStorage::State (others can be resolved)
+#include "src/db/interface/threadSafe/ThreadSafeInterface.h"
+#include "src/db/Database.h"
 
 class QWidget;
 template<class T> class QList;
@@ -68,7 +70,7 @@ class MainWindow: public QMainWindow
 	Q_OBJECT
 
 	public:
-		MainWindow (QWidget *parent, Db::Database *_db, QList<ShellPlugin *> &plugins);
+		MainWindow (QWidget *parent);
 		~MainWindow ();
 
 	protected:
@@ -204,9 +206,11 @@ class MainWindow: public QMainWindow
 	private:
 		Ui::MainWindowClass ui;
 
-		DataStorage dataStorage; // TODO create DataStorage externally, store reference
+		Db::Interface::ThreadSafeInterface dbInterface;
+		Db::Database db;
+		DataStorage dataStorage;
+
 		QDate displayDate;
-		QList<ShellPlugin *> &plugins;
 		WeatherWidget *weatherWidget;
 		ShellPlugin *weatherPlugin;
 		QPointer<WeatherDialog> weatherDialog;

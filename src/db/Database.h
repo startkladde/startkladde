@@ -38,13 +38,6 @@ namespace Db
 			Database (Interface::Interface &interface);
 			virtual ~Database ();
 
-			// *** Connection management
-			// FIXME remove
-			bool open () { return interface.open (); }
-			void close () { interface.close (); }
-			QSqlError lastError () { return interface.lastError (); }
-
-
 			// *** ORM
 			// Template functions, instantiated for the relevant classes
 			template<class T> QList<T> getObjects (const Query &condition);
