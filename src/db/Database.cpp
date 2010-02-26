@@ -1,11 +1,13 @@
 /*
  * Next:
- *   - ThreadSafeInterface
+ *   - Database UML documentation
+ *   - Error reporting for ThreadSafeInterface
  *   - Remove ThreadSafeDatabase
  *   - integrate schema loading/database migration into GUI
  *
  * Short term plan:
- *   - Is the Result solution really good? Add a ResultConsumer as alternative.
+ *   - Add a ResultConsumer as alternative to passing a result (especially for
+ *     CopiedResult)
  *   - Standardize enum handling: store the database value internally and have
  *     an "unknown" type (instead of "none")
  *     - this should also allow preserving unknown types in the database

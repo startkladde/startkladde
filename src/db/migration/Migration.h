@@ -76,7 +76,7 @@ class Migration
 		bool commit ();
 		bool rollback ();
 
-		void executeQuery (const Db::Query &query, bool forwardOnly=true);
+		void executeQuery (const Db::Query &query);
 		QSharedPointer<Db::Result::Result> executeQueryResult (const Db::Query &query, bool forwardOnly=true);
 
 		void createTable (const QString &name, bool skipIfExists=false);

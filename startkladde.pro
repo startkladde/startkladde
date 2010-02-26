@@ -24,6 +24,7 @@ HEADERS += \
            src/version.h \
            src/concurrent/DefaultQThread.h \
            src/concurrent/ThreadUtil.h \
+           src/concurrent/Waiter.h \
            src/concurrent/WorkerThread.h \
            src/concurrent/monitor/OperationMonitor.h \
            src/concurrent/monitor/SimpleOperationMonitor.h \
@@ -45,6 +46,9 @@ HEADERS += \
            src/db/interface/AbstractInterface.h \
            src/db/interface/DefaultInterface.h \
            src/db/interface/Interface.h \
+           src/db/interface/threadSafe/Thread.h \
+           src/db/interface/threadSafe/ThreadSafeInterface.h \
+           src/db/interface/threadSafe/Worker.h \
            src/db/migration/Migration.h \
            src/db/migration/MigrationFactory.h \
            src/db/migration/Migrator.h \
@@ -122,6 +126,7 @@ SOURCES += \
            src/version.cpp \
            src/concurrent/DefaultQThread.cpp \
            src/concurrent/ThreadUtil.cpp \
+           src/concurrent/Waiter.cpp \
            src/concurrent/WorkerThread.cpp \
            src/concurrent/monitor/OperationMonitor.cpp \
            src/concurrent/monitor/SimpleOperationMonitor.cpp \
@@ -143,6 +148,9 @@ SOURCES += \
            src/db/interface/AbstractInterface.cpp \
            src/db/interface/DefaultInterface.cpp \
            src/db/interface/Interface.cpp \
+           src/db/interface/threadSafe/Thread.cpp \
+           src/db/interface/threadSafe/ThreadSafeInterface.cpp \
+           src/db/interface/threadSafe/Worker.cpp \
            src/db/migration/Migration.cpp \
            src/db/migration/MigrationFactory.cpp \
            src/db/migration/Migrator.cpp \

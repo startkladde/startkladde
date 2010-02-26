@@ -46,9 +46,9 @@ bool Migration::rollback ()
 }
 
 /** Forwards to database#executeQuery */
-void Migration::executeQuery (const Db::Query &query, bool forwardOnly)
+void Migration::executeQuery (const Db::Query &query)
 {
-	interface.executeQuery (query, forwardOnly);
+	interface.executeQuery (query);
 }
 
 /** Forwards to database#executeQueryResult */

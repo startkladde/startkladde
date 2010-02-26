@@ -19,22 +19,6 @@ namespace Db
 	 * A functor that is intended to run in the database thread. Other thread
 	 * can wait for the task to finish.
 	 *
-	 * On synchronization:
-	 * - bg: background thread (executing task)
-	 * - fg: foreground thread (waiting)
-	 * - flag: finished flag
-	 * - wc: wait condition
-	 * Here's and issue that necessitates synchronization:
-	 *
-	 *   bg  flag  wc  fg    background:    foreground:
-	 *   |   .     |   |
-	 *   |   .     |   |     task running
-	 *   |   .<----|---|                    flag checked (not finished yet)
-	 *   |   .     |   |     task finished
-	 *   |-->.     |   |     flag set
-	 *   `---|---->.   |     wait condition notified
-	 *       |     .<--'                    wait started (never finishes)
-	 *       |     .
 	 */
 	class DatabaseTask
 	{

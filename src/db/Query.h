@@ -11,8 +11,9 @@
 #include <QString>
 #include <QList>
 
+#include <QVariant>
 class QSqlQuery;
-class QVariant;
+//class QVariant;
 
 namespace Db
 {

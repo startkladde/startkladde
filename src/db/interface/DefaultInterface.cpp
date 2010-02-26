@@ -93,9 +93,9 @@ namespace Db { namespace Interface
 	 * @return a pointer to the result of query; owned by query
 	 * @throw QueryFailedException if the query fails
 	 */
-	void DefaultInterface::executeQuery (const Query &query, bool forwardOnly)
+	void DefaultInterface::executeQuery (const Query &query)
 	{
-		executeQueryImpl (query, forwardOnly);
+		executeQueryImpl (query);
 	}
 
 	/**

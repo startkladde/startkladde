@@ -55,8 +55,9 @@ namespace Db
 				virtual bool rollback ()=0;
 
 				// *** Queries
-				virtual void executeQuery (const Query &query, bool forwardOnly=true)=0;
+				virtual void executeQuery (const Query &query)=0;
 				virtual QSharedPointer<Result::Result> executeQueryResult (const Query &query, bool forwardOnly=true)=0;
+				/** Not implemented by means of executeQueryResult for efficiency reasons */
 				virtual bool queryHasResult (const Query &query)=0;
 
 			private:
