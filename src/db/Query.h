@@ -38,6 +38,9 @@ namespace Db
 			static Query selectDistinctColumns (const QStringList &tables, const QString     &column , bool excludeEmpty=false);
 			static Query selectDistinctColumns (const QString     &table , const QStringList &columns, bool excludeEmpty=false);
 
+			static Query select (const QString &table, const QString &columns="*");
+			static Query count (const QString &table);
+
 			// *** Manipulation
 			Query operator+ (const Query &other) const;
 			Query &operator+= (const Query &other);

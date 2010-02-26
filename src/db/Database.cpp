@@ -1,19 +1,18 @@
 /*
  * Next:
  *   - Find reconnect solution
- *   - Fix result passing from ThreadSafeInterface (must copy)
  *   - Rename Database to ORM
  *   - Error reporting for ThreadSafeInterface
+ *     - SkException with clone method?
  *   - integrate schema loading/database migration into GUI
  *
  * Short term plan:
- *   - Add a ResultConsumer as alternative to passing a result (especially for
- *     CopiedResult)
  *   - Standardize enum handling: store the database value internally and have
  *     an "unknown" type (instead of "none")
  *     - this should also allow preserving unknown types in the database
- *   - add "object used" to Database
+ *   - add "object used?" to Database
  *   - add ping to Database
+ *   - timeout: only when no data is transfered
  *   - generate string lists from other data instead of explicit query (but still
  *     cache explicitly) note that we still have to query for accounting notes and
  *     locations because we don't get a complete flight list
@@ -29,6 +28,8 @@
  *     - C++ or Ruby?
  *
  * Improvements:
+ *   - Add a ResultConsumer as alternative to passing a result (especially for
+ *     CopiedResult)
  *   - move (static) methods like selectDistinctColumnQuery to QueryGenerator (but see below)
  *   - allow specifying an "exclude" value to selectDistinctColumnQuery (requires
  *     Query class)
@@ -101,68 +102,29 @@ namespace Db
 	// ** ORM **
 	// *********
 
-	template<class T> QList<T> Database::getObjects (QString condition, QList<QVariant> conditionValues)
+	template<class T> QList<T> Database::getObjects (const Query &condition)
 	{
-		QString queryString=QString ("SELECT %1 FROM %2")
-			.arg (T::selectColumnList (), T::dbTableName ());
-
-//		if (!condition.isEmpty ())
-//			queryString+=" WHERE "+condition;
-
-		Query query (queryString);
-		query.condition (Query (condition, conditionValues));
-
-//		foreach (const QVariant &conditionValue, conditionValues)
-//			query.bind (conditionValue);
+		Query query=Query::select (T::dbTableName (), T::selectColumnList ())
+			.condition (condition);
 
 		return T::createListFromResult (*interface.executeQueryResult (query));
-
-//		QSqlQuery query=interface.prepareQuery (queryString, true);
-//		foreach (const QVariant &conditionValue, conditionValues)
-//			query.addBindValue (conditionValue);
-//
-//		interface.executeQuery (query);
-//
-//		return T::createListFromQuery (query);
 	}
 
-	template<class T> int Database::countObjects ()
+	template<class T> int Database::countObjects (const Query &condition)
 	{
-		Query query=Query (QString ("SELECT COUNT(*) FROM %1"))
-			.arg (T::dbTableName ());
+		Query query=Query::count (T::dbTableName ()).condition (condition);
 		return interface.countQuery (query);
-
-//		QString queryString="SELECT COUNT(*) FROM "+T::dbTableName ();
-//
-//		QSqlQuery query=interface.executeQuery (queryString);
-//
-//		query.next ();
-//		return query.value (0).toInt ();
 	}
 
 	template<class T> bool Database::objectExists (dbId id)
 	{
-		Query query=Query ("SELECT COUNT(*) FROM %1 WHERE id=?")
-			.arg (T::dbTableName ()).bind (id);
-
-		return interface.countQuery (query)>0;
-
-//		QString queryString=QString ("SELECT COUNT(*) FROM %1 WHERE id=?")
-//			.arg (T::dbTableName ());
-//
-//		QSqlQuery query=interface.prepareQuery (queryString);
-//		query.addBindValue (id);
-//		interface.executeQuery (query);
-//
-//		query.next ();
-//		return query.value (0).toInt ()>0;
+		return countObjects<T> (Query ("id=?").bind (id))>0;
 	}
 
 	template<class T> T Database::getObject (dbId id)
 	{
-		Query query=Query ("SELECT %1 FROM %2 WHERE ID=?")
-			.arg (T::selectColumnList (), T::dbTableName ())
-			.bind (id);
+		Query query=Query::select (T::dbTableName (), T::selectColumnList ())
+			.condition (Query ("id=?").bind (id));
 
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
@@ -179,15 +141,6 @@ namespace Db
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
 		return result->numRowsAffected ()>0;
-
-//		QString queryString=QString ("DELETE FROM %1 WHERE ID=?")
-//			.arg (T::dbTableName ());
-//
-//		QSqlQuery query=interface.prepareQuery (queryString);
-//		query.addBindValue (id);
-//		interface.executeQuery (query);
-//
-//		return query.numRowsAffected ()>0;
 	}
 
 	/**
@@ -206,17 +159,6 @@ namespace Db
 		object.id=result->lastInsertId ().toLongLong ();
 
 		return object.id;
-
-//		QString queryString=QString ("INSERT INTO %1 %2")
-//			.arg (T::dbTableName (), T::insertValueList ());
-//
-//		QSqlQuery query=interface.prepareQuery (queryString);
-//		object.bindValues (query);
-//		interface.executeQuery (query);
-//
-//		object.id=query.lastInsertId ().toLongLong ();
-//
-//		return object.id;
 	}
 
 	template<class T> bool Database::updateObject (const T &object)
@@ -230,37 +172,39 @@ namespace Db
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
 		return result->numRowsAffected ();
+	}
 
-//		QString queryString=QString ("UPDATE %1 SET %2 WHERE id=?")
-//			.arg (T::dbTableName (), object.updateValueList ());
-//
-//		QSqlQuery query=interface.prepareQuery (queryString);
-//		object.bindValues (query);
-//		query.addBindValue (object.id);
-//
-//		interface.executeQuery (query);
-//
-//		return query.numRowsAffected ()>0;
+	template<class T> QList<T> Database::getObjects ()
+	{
+		return getObjects<T> (Query ());
+	}
+
+	template<class T> int Database::countObjects ()
+	{
+		return countObjects<T> (Query ());
 	}
 
 	// Instantiate the class templates
 	// Classes have to provide:
 	//   - ::dbTableName ();
-	//   - ::QString selectColumnList ();
-	//   - ::createFromQuery (const QSqlQuery &query);
+	//   - ::QString selectColumnList (); // TODO return queries directly?
+	//   - ::createFromQuery (const Result &result); // TODO change to create
 	//   - ::insertValueList ();
 	//   - ::updateValueList ();
 	//   - bindValues (QSqlQuery &q) const;
-	//   - ::createListFromQuery (QSqlQuery &query);
+	//   - ::createListFromQuery (Result &result); // TODO change to createList
 
-	#define INSTANTIATE_TEMPLATES(Class) \
-		template QList<Class> Database::getObjects (QString condition, QList<QVariant> conditionValues); \
-		template int          Database::countObjects<Class> (); \
-		template bool         Database::objectExists<Class> (dbId id); \
-		template Class        Database::getObject           (dbId id); \
-		template bool         Database::deleteObject<Class> (dbId id); \
-		template dbId         Database::createObject        (Class &object); \
-		template bool         Database::updateObject        (const Class &object); \
+	#define INSTANTIATE_TEMPLATES(T) \
+		template QList<T> Database::getObjects      (const Query &condition); \
+		template int      Database::countObjects<T> (const Query &condition); \
+		template bool     Database::objectExists<T> (dbId id); \
+		template T        Database::getObject       (dbId id); \
+		template bool     Database::deleteObject<T> (dbId id); \
+		template dbId     Database::createObject    (T &object); \
+		template bool     Database::updateObject    (const T &object); \
+		template QList<T> Database::getObjects  <T> (); \
+		template int      Database::countObjects<T> (); \
+
 		// Empty line
 
 	INSTANTIATE_TEMPLATES (Person      )
@@ -315,14 +259,14 @@ namespace Db
 		// Resolving the flight mode, we get:
 		// !( (local and (started or landed)) or (leaving and started) or (coming and landed) )
 
-		QString condition="!( (mode=? AND (departed OR landed)) OR (mode=? AND departed) OR (mode=? AND landed) )";
-		QList<QVariant> conditionValues; conditionValues
-			<< Flight::modeToDb (Flight::modeLocal  )
-			<< Flight::modeToDb (Flight::modeLeaving)
-			<< Flight::modeToDb (Flight::modeComing )
-			;
+		// TODO to Flight
+		// TODO multi-bind
+		Query condition ("!( (mode=? AND (departed OR landed)) OR (mode=? AND departed) OR (mode=? AND landed) )");
+		condition.bind (Flight::modeLocal);
+		condition.bind (Flight::modeLeaving);
+		condition.bind (Flight::modeComing);
 
-		return getObjects<Flight> (condition, conditionValues);
+		return getObjects<Flight> (condition);
 	}
 
 	QList<Flight> Database::getFlightsDate (QDate date)
@@ -341,13 +285,13 @@ namespace Db
 		QDateTime thisMidnight (date,             QTime (0, 0, 0)); // Start of day
 		QDateTime nextMidnight (date.addDays (1), QTime (0, 0, 0)); // Start of next day
 
-		QString condition="(departure_time>=? AND landing_time<?) OR (departure_time>=? AND landing_time<?)";
-		QList<QVariant> conditionValues; conditionValues
-			<< thisMidnight << nextMidnight
-			<< thisMidnight << nextMidnight
-			;
+		// TODO to Flight
+		// TODO multi-bind
+		Query condition ("(departure_time>=? AND landing_time<?) OR (departure_time>=? AND landing_time<?)");
+		condition.bind (thisMidnight); condition.bind (nextMidnight);
+		condition.bind (thisMidnight); condition.bind (nextMidnight);
 
-		QList<Flight> candidates=getObjects<Flight> (condition, conditionValues);
+		QList<Flight> candidates=getObjects<Flight> (condition);
 
 		// For some of the selected flights, the fact that the takeoff or landing
 		// time is on that day may not indicate that the flight actually happened

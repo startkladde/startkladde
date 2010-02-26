@@ -50,8 +50,9 @@ int test_database ()
 		std::cout << "Database could not be opened" << std::endl;
 
 	std::cout << std::endl;
-	std::cout << "Get people" << std::endl;
-	QList<Person> people=db.getObjects<Person> ();
+	std::cout << "Get people>3" << std::endl;
+//	QList<Person> people=db.getObjects<Person> ("id>?", QList<QVariant> () << 3);
+	QList<Person> people=db.getObjects<Person> (Db::Query ("id>?").bind (3));
     foreach (const Person &person, people)
     	std::cout << person.toString () << std::endl;
 

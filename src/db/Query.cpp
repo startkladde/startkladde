@@ -113,6 +113,18 @@ namespace Db
 		return selectDistinctColumns (QStringList (table), columns, excludeEmpty);
 	}
 
+	Query Query::select (const QString &table, const QString &columns)
+	{
+		return Query ("SELECT %1 FROM %2")
+			.arg (columns, table);
+	}
+
+	Query Query::count (const QString &table)
+	{
+		return Query ("SELECT COUNT(*) FROM %1")
+			.arg (table);
+	}
+
 
 	// ******************
 	// ** Manipulation **

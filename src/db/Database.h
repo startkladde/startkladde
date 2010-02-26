@@ -47,13 +47,21 @@ namespace Db
 
 			// *** ORM
 			// Template functions, instantiated for the relevant classes
-			template<class T> QList<T> getObjects (QString condition="", QList<QVariant> conditionValues=QList<QVariant> ());
-			template<class T> int countObjects ();
+			template<class T> QList<T> getObjects (const Query &condition);
+			template<class T> int countObjects (const Query &condition);
 			template<class T> bool objectExists (dbId id);
 			template<class T> T getObject (dbId id);
 			template<class T> bool deleteObject (dbId id);
 			template<class T> dbId createObject (T &object);
 			template<class T> bool updateObject (const T &object);
+
+			// We could use a default parameter for the corresponding methods
+			// taking a Query&, but that would require all translation units
+			// using this method to include Db::Query, which introduces
+			// unnecessary dependencies.
+			template<class T> QList<T> getObjects ();
+			template<class T> int countObjects ();
+
 
 			// *** Very specific
 			virtual QStringList listLocations ();
