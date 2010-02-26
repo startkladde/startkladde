@@ -39,7 +39,7 @@ const int opt_style=1005;
 
 // 2000 Debugging
 const int opt_debug=2001;
-const int opt_display_queries=2002;
+//const int opt_display_queries=2002;
 const int opt_colorful=2003;
 
 // 5000 Database
@@ -118,7 +118,7 @@ void Options::display_options (QString prefix)
 	std::cout << prefix << "--ort o: the default value for Startort/Zielort" << std::endl;
 	std::cout << prefix << "--style s: use QT style s, if available" << std::endl;
 	std::cout << prefix << "--debug: display" << std::endl;
-	std::cout << prefix << "--display_queries: display all queries as they are executed" << std::endl;
+	std::cout << prefix << "--display_queries, -q: display all queries as they are executed" << std::endl;
 	std::cout << prefix << "--colorful: colorful display" << std::endl;
 }
 
@@ -164,12 +164,12 @@ bool Options::parse_arguments (int argc, char *argv[])
 
 			// Debugging
 			{ "debug",           no_argument,       NULL, opt_debug },
-			{ "display_queries", no_argument,       NULL, opt_display_queries },
+			{ "display_queries", no_argument,       NULL, 'q' },
 			{ "colorful",        no_argument,       NULL, opt_colorful },
 
 			{ 0, 0, 0, 0 }
 		};
-		static const char *short_options="f:hs:o:d:u:p:C:y:m:c:D:S:E:";
+		static const char *short_options="qf:hs:o:d:u:p:C:y:m:c:D:S:E:";
 
 		int option_index=0;
 		c=getopt_long (argc, argv, short_options, long_options, &option_index);
@@ -202,7 +202,7 @@ bool Options::parse_arguments (int argc, char *argv[])
 
 			// Debugging
 			case opt_debug: debug=true; break;
-			case opt_display_queries: display_queries=true; break;
+			case 'q': display_queries=true; break;
 			case opt_colorful: colorful=true; break;
 
 			// Errors

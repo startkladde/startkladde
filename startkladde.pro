@@ -47,6 +47,7 @@ HEADERS += \
            src/db/migration/Migration.h \
            src/db/migration/MigrationFactory.h \
            src/db/migration/Migrator.h \
+           src/db/result/CopiedResult.h \
            src/db/result/DefaultResult.h \
            src/db/result/Result.h \
            src/db/schema/CurrentSchema.h \
@@ -144,6 +145,7 @@ SOURCES += \
            src/db/migration/Migration.cpp \
            src/db/migration/MigrationFactory.cpp \
            src/db/migration/Migrator.cpp \
+           src/db/result/CopiedResult.cpp \
            src/db/result/DefaultResult.cpp \
            src/db/schema/Schema.cpp \
            src/db/schema/SchemaDumper.cpp \

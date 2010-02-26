@@ -7,6 +7,8 @@
 #include "src/util/qString.h"
 #include "src/db/result/DefaultResult.h"
 #include "src/db/Query.h"
+#include "src/config/Options.h"
+#include "src/text.h"
 
 namespace Db { namespace Interface
 {
@@ -131,14 +133,31 @@ namespace Db { namespace Interface
 	 */
 	QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOnly)
 	{
+		if (opts.display_queries)
+		{
+			std::cout << query.toString () << "...";
+			std::cout.flush ();
+		}
+
 		QSqlQuery sqlQuery (db);
 		sqlQuery.setForwardOnly (forwardOnly);
 		query.prepare (sqlQuery);
 		query.bindTo (sqlQuery);
 
 		if (!sqlQuery.exec ())
-			throw QueryFailedException (sqlQuery);
+		{
+			if (opts.display_queries)
+				std::cout << "Query failed" << std::endl;
 
-		return sqlQuery;
+			throw QueryFailedException (sqlQuery);
+		}
+		else
+		{
+			if (opts.display_queries)
+				std::cout << countText (sqlQuery.size (), "row", "rows") << std::endl;
+
+			return sqlQuery;
+		}
+
 	}
 } }

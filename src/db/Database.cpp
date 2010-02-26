@@ -1,5 +1,6 @@
 /*
  * Next:
+ *   - Find reconnect solution
  *   - Fix result passing from ThreadSafeInterface (must copy)
  *   - Rename Database to ORM
  *   - Error reporting for ThreadSafeInterface
@@ -96,12 +97,6 @@ namespace Db
 	}
 
 
-
-
-
-
-
-
 	// *********
 	// ** ORM **
 	// *********
@@ -111,12 +106,14 @@ namespace Db
 		QString queryString=QString ("SELECT %1 FROM %2")
 			.arg (T::selectColumnList (), T::dbTableName ());
 
-		if (!condition.isEmpty ())
-			queryString+=" WHERE "+condition;
+//		if (!condition.isEmpty ())
+//			queryString+=" WHERE "+condition;
 
 		Query query (queryString);
-		foreach (const QVariant &conditionValue, conditionValues)
-			query.bind (conditionValue);
+		query.condition (Query (condition, conditionValues));
+
+//		foreach (const QVariant &conditionValue, conditionValues)
+//			query.bind (conditionValue);
 
 		return T::createListFromResult (*interface.executeQueryResult (query));
 
@@ -169,20 +166,9 @@ namespace Db
 
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
-		if (result->next ()) throw NotFoundException ();
+		if (!result->next ()) throw NotFoundException ();
 
 		return T::createFromResult (*result);
-
-//		QString queryString=QString ("SELECT %1 FROM %2 WHERE ID=?")
-//			.arg (T::selectColumnList (), T::dbTableName ());
-//
-//		QSqlQuery query=interface.prepareQuery (queryString);
-//		query.addBindValue (id);
-//		interface.executeQuery (query);
-//
-//		if (!query.next ()) throw NotFoundException ();
-//
-//		return T::createFromQuery (query);
 	}
 
 	template<class T> bool Database::deleteObject (dbId id)

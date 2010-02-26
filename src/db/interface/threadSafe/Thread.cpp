@@ -57,8 +57,6 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	void Thread::open (Waiter *waiter, bool *result)
 	{
-		std::cout << "emit sig_open" << std::endl;
-
 		emit sig_open (waiter, result);
 	}
 
@@ -99,6 +97,7 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	void Thread::queryHasResult (Waiter *waiter, bool *result, const Query &query)
 	{
 		emit sig_queryHasResult (waiter, result, query);
+
 	}
 
 

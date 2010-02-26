@@ -16,12 +16,26 @@ namespace Db
 {
 	namespace Result
 	{
+		/**
+		 * A Result implementation that reads the values directly from a
+		 * QSqlQuery.
+		 *
+		 * The QSqlQuery is copied, so the original may be destroyed after
+		 * creating the Result.
+		 *
+		 * Since a QSqlQuery is used, this class may not be accessed in a
+		 * thread other than the one that created the QSqlQuery. This is a
+		 * restriction of QtSql.
+		 */
 		class DefaultResult: public Result
 		{
 			public:
 				// *** Construction
 				DefaultResult (QSqlQuery &query);
 				virtual ~DefaultResult ();
+
+				// *** Properties
+				QSqlQuery &getQuery ();
 
 				// *** Result methods
 				virtual int at () const;
@@ -38,9 +52,11 @@ namespace Db
 				virtual int size () const;
 				virtual QVariant value (int index) const;
 
+				virtual QString type () const { return "default"; }
+
 			private:
-				// Not a reference - the query will be destroyed after the
-				// query method returns
+				// Not a reference - make a copy of the query. The query will
+				// be destroyed after the query method returns.
 				QSqlQuery query;
 		};
 	}

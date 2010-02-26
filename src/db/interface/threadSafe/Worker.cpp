@@ -3,13 +3,15 @@
 // Not explicitly used, but required for destruction of the shared pointer in
 // #executeQueryResult
 #include "src/db/result/Result.h"
+#include "src/db/result/CopiedResult.h"
 #include "src/concurrent/Waiter.h"
 #include "src/db/Query.h"
 #include "src/db/interface/DefaultInterface.h"
+#include "src/util/qString.h" // TODO remove
 
 namespace Db { namespace Interface { namespace ThreadSafe
 {
-	// FIXME: finished and error reporting
+	// FIXME: error reporting
 
 	// ******************
 	// ** Construction **
@@ -84,7 +86,17 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	void Worker::executeQueryResult (Waiter *waiter, QSharedPointer<Result::Result> *result, Query query, bool forwardOnly)
 	{
-		if (result) *result=interface->executeQueryResult (query, forwardOnly);
+//		// Option 1: keep the DefaultResult (is it allowed to access the
+//		// QSqlQuery from the other thread? It seems to work.)
+//		if (result) *result=interface->executeQueryResult (query, forwardOnly);
+
+		// Option 2: create a CopiedResult
+		if (result) *result=QSharedPointer<Result::Result> (
+			new Result::CopiedResult (
+					*interface->executeQueryResult (query, forwardOnly)
+			)
+		);
+
 		if (waiter) waiter->notify ();
 	}
 

@@ -26,6 +26,7 @@ void trim (QStringList &strings);
 QString get_environment (const QString& name);
 QString make_string (const QSet<QString> s, const QString &separator=",");
 void split_string (QString &string1, QString &string2, QString separator, QString text);
+QString countText (int count, const QString &singular, const QString &plural);
 
 QString firstToUpper (const QString &text);
 QString firstToLower (const QString &text);

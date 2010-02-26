@@ -30,6 +30,6 @@ namespace Db
 		int        DefaultResult::size            ()          const          { return query.size            ();                }
 		QVariant   DefaultResult::value           (int index) const          { return query.value           (index);           }
 
+		QSqlQuery &DefaultResult::getQuery () { return query; }
 	}
-
 }

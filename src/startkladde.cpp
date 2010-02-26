@@ -55,7 +55,7 @@ int test_database ()
     foreach (const Person &person, people)
     	std::cout << person.toString () << std::endl;
 
-    DefaultQThread::sleep (1);
+//    DefaultQThread::sleep (1);
 
 //    Person p;
 //    p.lastName=QString::fromUtf8 ("Müller");
@@ -65,13 +65,23 @@ int test_database ()
 //    db.deleteObject<Person> (newId-2);
 
 
-    DefaultQThread::sleep (1);
+//    DefaultQThread::sleep (1);
 
 	std::cout << std::endl;
 	std::cout << "Get people" << std::endl;
 	people=db.getObjects<Person> ();
     foreach (const Person &person, people)
     	std::cout << person.toString () << std::endl;
+
+	std::cout << std::endl;
+	std::cout << "Get person 1" << std::endl;
+	Person p=db.getObject<Person> (1);
+	std::cout << p.toString () << std::endl;
+
+	std::cout << std::endl;
+	std::cout << "Get person 3" << std::endl;
+	p=db.getObject<Person> (3);
+	std::cout << p.toString () << std::endl;
 
 
 

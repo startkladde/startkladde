@@ -30,6 +30,8 @@ namespace Db
 				virtual bool seek (int index, bool relative=false)=0;
 				virtual int size () const=0;
 				virtual QVariant value (int index) const=0;
+
+				virtual QString type () const=0;
 		};
 	}
 }

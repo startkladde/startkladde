@@ -16,7 +16,8 @@ namespace Db
 
 	/**
 	 * Note that we could write Query ("...") without this constructor, but we
-	 * couldn't write interface.executeQuery ("...").
+	 * couldn't write interface.executeQuery ("...") (therefore, we don't need
+	 * a constructor taking a char* and a QList<QVariant>.
 	 *
 	 * @param queryString
 	 * @return
@@ -29,11 +30,49 @@ namespace Db
 	Query::Query (const QString &queryString):
 		queryString (queryString)
 	{
+	}
 
+	Query::Query (const QString &queryString, const QList<QVariant> &bindValues):
+		queryString (queryString), bindValues (bindValues)
+	{
 	}
 
 	Query::~Query ()
 	{
+	}
+
+
+	// ****************
+	// ** Properties **
+	// ****************
+
+	bool Query::isEmpty () const
+	{
+		return queryString.isEmpty ();
+	}
+
+	QString Query::toString () const
+	{
+		if (bindValues.isEmpty ())
+			return queryString;
+		else if (bindValues.size ()==1)
+			return QString ("%1 [%2]").arg (queryString, bindValues[0].toString ());
+		else
+		{
+			QString result (queryString);
+			result += " [";
+
+			bool first=true;
+			foreach (const QVariant &value, bindValues)
+			{
+				if (!first) result+=", ";
+				result+=value.toString ();
+				first=false;
+			}
+
+			result+="]";
+			return result;
+		}
 	}
 
 
@@ -72,6 +111,45 @@ namespace Db
 	Query Query::selectDistinctColumns (const QString &table, const QStringList &columns, bool excludeEmpty)
 	{
 		return selectDistinctColumns (QStringList (table), columns, excludeEmpty);
+	}
+
+
+	// ******************
+	// ** Manipulation **
+	// ******************
+
+	Query Query::operator+ (const Query &other) const
+	{
+		return Query (queryString+other.queryString, bindValues+other.bindValues);
+	}
+
+	Query &Query::operator+= (const Query &other)
+	{
+		queryString += other.queryString;
+		bindValues += other.bindValues;
+		return *this;
+	}
+
+	Query Query::operator+ (const QString &string) const
+	{
+		return Query (queryString+string, bindValues);
+	}
+
+	Query &Query::operator+= (const QString &string)
+	{
+		queryString+=string;
+		return *this;
+	}
+
+	Query &Query::condition (const Query &condition)
+	{
+		if (!condition.isEmpty ())
+		{
+			queryString+=" WHERE ";
+			(*this)+=condition;
+		}
+
+		return *this;
 	}
 
 

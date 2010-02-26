@@ -24,13 +24,27 @@ namespace Db
 			Query ();
 			Query (const char *queryString);
 			Query (const QString &queryString);
+			Query (const QString &queryString, const QList<QVariant> &bindValues);
+
 			virtual ~Query ();
+
+			// *** Properties
+			bool isEmpty () const;
+			QString toString () const;
 
 			// *** Generation
 			static Query selectDistinctColumns (const QString     &table , const QString     &column , bool excludeEmpty=false);
 			static Query selectDistinctColumns (const QStringList &tables, const QStringList &columns, bool excludeEmpty=false);
 			static Query selectDistinctColumns (const QStringList &tables, const QString     &column , bool excludeEmpty=false);
 			static Query selectDistinctColumns (const QString     &table , const QStringList &columns, bool excludeEmpty=false);
+
+			// *** Manipulation
+			Query operator+ (const Query &other) const;
+			Query &operator+= (const Query &other);
+			Query operator+ (const QString &string) const;
+			Query &operator+= (const QString &string);
+
+			Query &condition (const Query &condition);
 
 			// *** Arg
 			Query &arg (const QString &a1, const QString &a2);
