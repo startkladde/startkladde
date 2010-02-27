@@ -31,6 +31,7 @@ namespace Db
 			// *** Properties
 			bool isEmpty () const;
 			QString toString () const;
+			QString colorizedString () const;
 
 			// *** Generation
 			static Query selectDistinctColumns (const QString     &table , const QString     &column , bool excludeEmpty=false);

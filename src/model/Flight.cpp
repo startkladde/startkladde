@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "src/config/Options.h"
-#include "src/db/dataStorage/DataStorage.h"
+#include "src/db/cache/Cache.h"
 #include "src/model/Plane.h"
 #include "src/model/LaunchMethod.h"
 #include "src/text.h"
@@ -411,13 +411,13 @@ Time Flight::towflightDuration () const
 /**
  * This uses fehlerhaft, does not consider schlepp_fehlerhaft
  *
- * @param dataStorage
+ * @param cache
  * @return
  */
-bool Flight::isErroneous (DataStorage &dataStorage) const
+bool Flight::isErroneous (Db::Cache::Cache &cache) const
 {
-	Plane *thePlane=dataStorage.getNewObject<Plane> (planeId);
-	LaunchMethod *theLaunchMethod=dataStorage.getNewObject<LaunchMethod> (launchMethodId);
+	Plane *thePlane=cache.getNewObject<Plane> (planeId);
+	LaunchMethod *theLaunchMethod=cache.getNewObject<LaunchMethod> (launchMethodId);
 
 	bool erroneous=fehlerhaft (thePlane, NULL, theLaunchMethod);
 

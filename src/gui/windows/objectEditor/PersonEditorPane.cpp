@@ -1,6 +1,6 @@
 #include "PersonEditorPane.h"
 
-#include "src/db/dataStorage/DataStorage.h"
+#include "src/db/cache/Cache.h"
 #include "src/model/Person.h"
 #include "src/text.h"
 
@@ -12,8 +12,8 @@
 // ** Construction **
 // ******************
 
-PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent):
-	ObjectEditorPane<Person> (mode, dataStorage, parent)
+PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent):
+	ObjectEditorPane<Person> (mode, cache, parent)
 {
 	ui.setupUi(this);
 
@@ -27,9 +27,9 @@ PersonEditorPane::~PersonEditorPane()
 
 }
 
-template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent)
+template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent)
 {
-	return new PersonEditorPane (mode, dataStorage, parent);
+	return new PersonEditorPane (mode, cache, parent);
 }
 
 
@@ -40,7 +40,7 @@ template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEdi
 void PersonEditorPane::fillData ()
 {
 	// Clubs
-	ui.clubInput->addItems (dataStorage.getClubs ());
+	ui.clubInput->addItems (cache.getClubs ());
 	ui.clubInput->setCurrentText ("");
 }
 

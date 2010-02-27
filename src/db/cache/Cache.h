@@ -52,20 +52,21 @@ namespace Db
 		 */
 		class Cache
 		{
-			class NotFoundException: public std::exception
-			{
-				public:
-					NotFoundException (dbId id): id (id) {}
-					dbId id;
-			};
-
 			public:
+				class NotFoundException: public std::exception
+				{
+					public:
+						NotFoundException (dbId id): id (id) {}
+						dbId id;
+				};
+
 				// *** Construction
 				Cache (Database &db);
 				virtual ~Cache ();
 
-
 				// *** Properties
+				Database &getDatabase ();
+
 				QDate getTodayDate ();
 				QDate getOtherDate ();
 

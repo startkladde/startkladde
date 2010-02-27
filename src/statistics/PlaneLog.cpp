@@ -3,7 +3,7 @@
 #include <QSet>
 
 #include "src/model/Flight.h"
-#include "src/db/dataStorage/DataStorage.h"
+#include "src/db/cache/Cache.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
 #include "src/text.h"
@@ -63,12 +63,12 @@ QString PlaneLog::Entry::operationTimeText () const
 /**
  * Create a log entry from a single flight
  */
-PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, DataStorage &dataStorage)
+PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Db::Cache::Cache &cache)
 {
 	PlaneLog::Entry entry;
 
-	Plane      *plane     =dataStorage.getNewObject<Plane     > (flight->planeId );
-	Person     *pilot     =dataStorage.getNewObject<Person    > (flight->pilotId    );
+	Plane      *plane     =cache.getNewObject<Plane     > (flight->planeId );
+	Person     *pilot     =cache.getNewObject<Person    > (flight->pilotId    );
 
 	if (plane) entry.registration=plane->registration;
 	entry.date=flight->effdatum ();
@@ -94,14 +94,14 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, DataStorage &data
  * Create an entry for a non-empty, sorted list of flights which we know can
  * be merged. All flights must be of the same plane and on the same date.
  */
-PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, DataStorage &dataStorage)
+PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Db::Cache::Cache &cache)
 {
 	assert (!flights.isEmpty ());
 
 	PlaneLog::Entry entry;
 
-	Plane      *plane     =dataStorage.getNewObject<Plane     > (flights.last ()->planeId );
-	Person     *pilot     =dataStorage.getNewObject<Person    > (flights.last ()->pilotId    );
+	Plane      *plane     =cache.getNewObject<Plane     > (flights.last ()->planeId );
+	Person     *pilot     =cache.getNewObject<Person    > (flights.last ()->pilotId    );
 
 	// Values directly determined
 	if (plane) entry.registration=plane->registration;
@@ -172,12 +172,12 @@ PlaneLog::~PlaneLog ()
  *
  * @param planeId
  * @param flights
- * @param dataStorage
+ * @param cache
  * @return
  */
-PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, DataStorage &dataStorage)
+PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, Db::Cache::Cache &cache)
 {
-	Plane *plane=dataStorage.getNewObject<Plane> (planeId);
+	Plane *plane=cache.getNewObject<Plane> (planeId);
 
 	QList<const Flight *> interestingFlights;
 
@@ -206,14 +206,14 @@ PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, DataS
 		if (previousFlight && !flight->collectiveLogEntryPossible (previousFlight, plane))
 		{
 			// No further merging
-			result->entries.append (PlaneLog::Entry::create (entryFlights, dataStorage));
+			result->entries.append (PlaneLog::Entry::create (entryFlights, cache));
 			entryFlights.clear ();
 		}
 
 		entryFlights.append (flight);
 		previousFlight=flight;
 	}
-	result->entries.append (PlaneLog::Entry::create (entryFlights, dataStorage));
+	result->entries.append (PlaneLog::Entry::create (entryFlights, cache));
 
 	delete plane;
 
@@ -224,10 +224,10 @@ PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, DataS
  * Makes the logs for all pilots that have flights in a given flight list.
  *
  * @param flights
- * @param dataStorage
+ * @param cache
  * @return
  */
-PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, DataStorage &dataStorage)
+PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, Db::Cache::Cache &cache)
 {
 	// TODO: should we consider tow flights here?
 
@@ -247,7 +247,7 @@ PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, DataStorage &dataSt
 	{
 		try
 		{
-			planes.append (dataStorage.getObject<Plane> (id));
+			planes.append (cache.getObject<Plane> (id));
 		}
 		catch (...)
 		{
@@ -259,7 +259,7 @@ PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, DataStorage &dataSt
 	PlaneLog *result=new PlaneLog ();
 	foreach (const Plane &plane, planes)
 	{
-		PlaneLog *planeResult=createNew (plane.getId (), flights, dataStorage);
+		PlaneLog *planeResult=createNew (plane.getId (), flights, cache);
 		result->entries+=planeResult->entries;
 		delete planeResult;
 	}

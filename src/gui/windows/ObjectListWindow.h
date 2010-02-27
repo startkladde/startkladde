@@ -5,14 +5,14 @@
 
 #include "ObjectListWindowBase.h"
 
-class DataStorage;
+namespace Db { namespace Cache { class Cache; } }
 class QSortFilterProxyModel;
 template<class T> class ObjectListModel;
 
 template <class T> class ObjectListWindow: public ObjectListWindowBase
 {
 	public:
-		ObjectListWindow (DataStorage &dataStorage, ObjectListModel<T> *list, bool listOwned, QWidget *parent=NULL);
+		ObjectListWindow (Db::Cache::Cache &cache, ObjectListModel<T> *list, bool listOwned, QWidget *parent=NULL);
 		~ObjectListWindow();
 
 		virtual void on_actionNew_triggered ();
@@ -23,7 +23,7 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		virtual void on_table_activated (const QModelIndex &index);
 
 	private:
-		DataStorage &dataStorage;
+		Db::Cache::Cache &cache;
 		ObjectListModel<T> *list;
 		bool listOwned;
 		QSortFilterProxyModel *proxyModel;

@@ -2,7 +2,7 @@
 
 #include "src/model/LaunchMethod.h"
 #include "src/model/Flight.h"
-#include "src/db/dataStorage/DataStorage.h"
+#include "src/db/cache/Cache.h"
 
 // ************************
 // ** Entry construction **
@@ -33,7 +33,7 @@ LaunchMethodStatistics::~LaunchMethodStatistics ()
 // ** Creation **
 // **************
 
-LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &flights, DataStorage &dataStorage)
+LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &flights, Db::Cache::Cache &cache)
 {
 	QMap<dbId, int> map;
 
@@ -52,7 +52,7 @@ LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &
 	{
 		try
 		{
-			launchMethods.append (dataStorage.getObject<LaunchMethod> (id));
+			launchMethods.append (cache.getObject<LaunchMethod> (id));
 		}
 		catch (...)
 		{

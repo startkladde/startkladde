@@ -6,7 +6,7 @@
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
-#include "src/db/dataStorage/DataStorage.h"
+#include "src/db/cache/Cache.h"
 
 
 // ************************
@@ -55,17 +55,17 @@ QString PilotLog::Entry::flightDurationText () const
  * Makes a log entry from a flight
  *
  * @param flight
- * @param dataStorage
+ * @param cache
  * @return
  */
-PilotLog::Entry PilotLog::Entry::create (const Flight *flight, DataStorage &dataStorage)
+PilotLog::Entry PilotLog::Entry::create (const Flight *flight, Db::Cache::Cache &cache)
 {
 	PilotLog::Entry entry;
 
-	Plane        *plane       =dataStorage.getNewObject<Plane       > (flight->planeId        );
-	Person       *pilot       =dataStorage.getNewObject<Person      > (flight->pilotId        );
-	Person       *copilot     =dataStorage.getNewObject<Person      > (flight->copilotId      );
-	LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight->launchMethodId );
+	Plane        *plane       =cache.getNewObject<Plane       > (flight->planeId        );
+	Person       *pilot       =cache.getNewObject<Person      > (flight->pilotId        );
+	Person       *copilot     =cache.getNewObject<Person      > (flight->copilotId      );
+	LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (flight->launchMethodId );
 
 	entry.date=flight->effdatum ();
 	if (plane) entry.planeType=plane->type;
@@ -115,11 +115,11 @@ PilotLog::~PilotLog ()
  *
  * @param personId
  * @param flights
- * @param dataStorage
+ * @param cache
  * @param mode
  * @return
  */
-PilotLog *PilotLog::createNew (dbId personId, const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode)
+PilotLog *PilotLog::createNew (dbId personId, const QList<Flight> &flights, Db::Cache::Cache &cache, FlightInstructorMode mode)
 {
 	QList<const Flight *> interestingFlights;
 
@@ -144,7 +144,7 @@ PilotLog *PilotLog::createNew (dbId personId, const QList<Flight> &flights, Data
 	// Iterate over all interesting flights, generating logbook entries.
 	PilotLog *result=new PilotLog;
 	foreach (Flight const *flight, interestingFlights)
-		result->entries.append (PilotLog::Entry::create (flight, dataStorage));
+		result->entries.append (PilotLog::Entry::create (flight, cache));
 
 	return result;
 }
@@ -153,10 +153,10 @@ PilotLog *PilotLog::createNew (dbId personId, const QList<Flight> &flights, Data
  * Makes the logs for all pilots that have flights in a given flight list.
  *
  * @param flights
- * @param dataStorage
+ * @param cache
  * @return
  */
-PilotLog *PilotLog::createNew (const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode)
+PilotLog *PilotLog::createNew (const QList<Flight> &flights, Db::Cache::Cache &cache, FlightInstructorMode mode)
 {
 	QSet<dbId> personIdSet;
 
@@ -179,7 +179,7 @@ PilotLog *PilotLog::createNew (const QList<Flight> &flights, DataStorage &dataSt
 	{
 		try
 		{
-			people.append (dataStorage.getObject<Person> (id));
+			people.append (cache.getObject<Person> (id));
 		}
 		catch (...)
 		{
@@ -191,7 +191,7 @@ PilotLog *PilotLog::createNew (const QList<Flight> &flights, DataStorage &dataSt
 	PilotLog *result=new PilotLog;
 	foreach (const Person &person, people)
 	{
-		PilotLog *personResult=createNew (person.getId (), flights, dataStorage, mode);
+		PilotLog *personResult=createNew (person.getId (), flights, cache, mode);
 		result->entries+=personResult->entries;
 		delete personResult;
 	}

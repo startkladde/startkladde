@@ -10,7 +10,7 @@
  *   - Standardize enum handling: store the database value internally and have
  *     an "unknown" type (instead of "none")
  *     - this should also allow preserving unknown types in the database
- *   - add "object used?" to Database
+ *   - add "object used?" to Database (and use in ObjectListWindow)
  *   - add ping to Database
  *   - timeout: only when no data is transfered
  *   - generate string lists from other data instead of explicit query (but still
@@ -43,6 +43,8 @@
  *   - make sure (using a dump of an old db) that the migration path is OK
  *   - Remove code multiplication in Models (SQL interface)
  *   - change flight mode (and towflight mode) column type
+ *   - Add a Database::saveObject that creates or updates the object, depending
+ *     on whether it has a valid id
  *
  * Medium term plan:
  *   - add some abstraction to the query list generation
@@ -299,9 +301,9 @@ namespace Db
 		// TODO to Flight
 		// TODO multi-bind
 		Query condition ("!( (mode=? AND (departed OR landed)) OR (mode=? AND departed) OR (mode=? AND landed) )");
-		condition.bind (Flight::modeLocal);
-		condition.bind (Flight::modeLeaving);
-		condition.bind (Flight::modeComing);
+		condition.bind (Flight::modeToDb (Flight::modeLocal  ));
+		condition.bind (Flight::modeToDb (Flight::modeLeaving));
+		condition.bind (Flight::modeToDb (Flight::modeComing ));
 
 		return getObjects<Flight> (condition);
 	}

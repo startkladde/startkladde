@@ -38,6 +38,7 @@ void display_help ()
 
 #include "src/concurrent/DefaultQThread.h"
 #include "src/model/Person.h"
+#include "src/model/Plane.h"
 #include "src/db/interface/threadSafe/ThreadSafeInterface.h"
 
 int test_database ()
@@ -49,12 +50,12 @@ int test_database ()
 	if (!interface.open ())
 		std::cout << "Database could not be opened" << std::endl;
 
-	std::cout << std::endl;
-	std::cout << "Get people>3" << std::endl;
-//	QList<Person> people=db.getObjects<Person> ("id>?", QList<QVariant> () << 3);
-	QList<Person> people=db.getObjects<Person> (Db::Query ("id>?").bind (3));
-    foreach (const Person &person, people)
-    	std::cout << person.toString () << std::endl;
+//	std::cout << std::endl;
+//	std::cout << "Get people>3" << std::endl;
+////	QList<Person> people=db.getObjects<Person> ("id>?", QList<QVariant> () << 3);
+//	QList<Person> people=db.getObjects<Person> (Db::Query ("id>?").bind (3));
+//    foreach (const Person &person, people)
+//    	std::cout << person.toString () << std::endl;
 
 //    DefaultQThread::sleep (1);
 
@@ -70,19 +71,25 @@ int test_database ()
 
 	std::cout << std::endl;
 	std::cout << "Get people" << std::endl;
-	people=db.getObjects<Person> ();
+	QList<Person> people=db.getObjects<Person> ();
     foreach (const Person &person, people)
     	std::cout << person.toString () << std::endl;
 
 	std::cout << std::endl;
-	std::cout << "Get person 1" << std::endl;
-	Person p=db.getObject<Person> (1);
-	std::cout << p.toString () << std::endl;
+	std::cout << "Get planes" << std::endl;
+	QList<Plane> planes=db.getObjects<Plane> ();
+    foreach (const Plane &plane, planes)
+    	std::cout << plane.toString () << std::endl;
 
-	std::cout << std::endl;
-	std::cout << "Get person 3" << std::endl;
-	p=db.getObject<Person> (3);
-	std::cout << p.toString () << std::endl;
+//	std::cout << std::endl;
+//	std::cout << "Get person 1" << std::endl;
+//	Person p=db.getObject<Person> (1);
+//	std::cout << p.toString () << std::endl;
+//
+//	std::cout << std::endl;
+//	std::cout << "Get person 3" << std::endl;
+//	p=db.getObject<Person> (3);
+//	std::cout << p.toString () << std::endl;
 
 
 
@@ -253,7 +260,7 @@ int main (int argc, char **argv)
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
 	qRegisterMetaType<DbEvent> ("DbEvent");
-	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
+//	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
 	qRegisterMetaType<Db::Query> ("Db::Query");
 
 	int ret=0;

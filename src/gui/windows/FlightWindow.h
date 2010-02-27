@@ -120,6 +120,7 @@
 #include "src/config/Options.h" // TODO remove dependency
 
 class Person;
+namespace Db { namespace Cache { class Cache; } }
 
 // We want to use a switch so the compiler can warn us if we didn't handle a
 // value. We still provide a default value (outside of the switch statement!)
@@ -142,20 +143,20 @@ class FlightWindow: public QDialog
 
 
 		// *** Construction
-		FlightWindow (QWidget *parent, FlightWindow::Mode mode, DataStorage &dataStorage, Qt::WindowFlags flags=0);
+		FlightWindow (QWidget *parent, FlightWindow::Mode mode, Db::Cache::Cache &cache, Qt::WindowFlags flags=0);
 		~FlightWindow ();
 
 		// *** Setup
 		void fillData ();
 
 		// *** Invocation
-		static void createFlight (QWidget *parent, DataStorage &dataStorage, QDate date);
-		static void repeatFlight (QWidget *parent, DataStorage &dataStorage, const Flight &original, QDate date);
-		static void editFlight   (QWidget *parent, DataStorage &dataStorage, Flight &flight);
+		static void createFlight (QWidget *parent, Db::Cache::Cache &cache, QDate date);
+		static void repeatFlight (QWidget *parent, Db::Cache::Cache &cache, const Flight &original, QDate date);
+		static void editFlight   (QWidget *parent, Db::Cache::Cache &cache, Flight &flight);
 
 	protected:
 		// Input field data
-		int fillNames (QStringList (DataStorage::*fullListMethod)(), QStringList (DataStorage::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget);
+		int fillNames (QStringList (Db::Cache::Cache::*fullListMethod)(), QStringList (Db::Cache::Cache::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget);
 		dbId fillFirstNames  (bool active, QComboBox *target, const QString &lastName, bool preserveTarget);
 		dbId fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget);
 
@@ -214,7 +215,7 @@ class FlightWindow: public QDialog
 		 * Gets the currently selected launch method from the database.
 		 *
 		 * @return the currently selected launch method
-		 * @throw DataStorage::NotFoundException if there is no such launch
+		 * @throw Db::Cache::Cache::NotFoundException if there is no such launch
 		 *        type, or none is selected
 		 */
 		LaunchMethod getCurrentLaunchMethod ();
@@ -284,7 +285,7 @@ class FlightWindow: public QDialog
 
 		bool checkBuffer ();
 
-		bool writeToDatabase (const Flight &flight);
+		bool writeToDatabase (Flight &flight);
 
 		// *** Input field setup
 		void  enableWidget (QWidget *widget, bool  enabled);
@@ -313,8 +314,8 @@ class FlightWindow: public QDialog
 		 *     does not apply to the error checks done after accepting).
 		 *   - All state updates are performed for all fields which may lead to any
 		 *     state change (see "Notes on field state updates")
-		 *   - Sometimes, a plane or person may be retrieved from the dataStorage by
-		 *     these function and then again by updateErrors. As dataStorage does not
+		 *   - Sometimes, a plane or person may be retrieved from the cache by
+		 *     these function and then again by updateErrors. As cache does not
 		 *     access the database, this should not be a performance problem.
 		 *   - A change can lead to several other fields being changed (e. g. mode ->
 		 *     departure, landing location)
@@ -404,7 +405,7 @@ class FlightWindow: public QDialog
 
 		Ui::FlightWindowClass ui;
 
-		DataStorage &dataStorage;
+		Db::Cache::Cache &cache;
 		const FlightWindow::Mode mode;
 
 		void updateErrors (bool setFocus=false);

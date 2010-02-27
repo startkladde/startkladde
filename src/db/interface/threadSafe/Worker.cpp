@@ -7,7 +7,6 @@
 #include "src/concurrent/Waiter.h"
 #include "src/db/Query.h"
 #include "src/db/interface/DefaultInterface.h"
-#include "src/util/qString.h" // TODO remove
 
 namespace Db { namespace Interface { namespace ThreadSafe
 {
@@ -86,14 +85,14 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	void Worker::executeQueryResult (Waiter *waiter, QSharedPointer<Result::Result> *result, Query query, bool forwardOnly)
 	{
-//		// Option 1: keep the DefaultResult (is it allowed to access the
-//		// QSqlQuery from the other thread? It seems to work.)
+		// Option 1: copy the DefaultResult (is it allowed to access the
+		// QSqlQuery from the other thread? It seems to work.)
 //		if (result) *result=interface->executeQueryResult (query, forwardOnly);
 
 		// Option 2: create a CopiedResult
 		if (result) *result=QSharedPointer<Result::Result> (
 			new Result::CopiedResult (
-					*interface->executeQueryResult (query, forwardOnly)
+				*interface->executeQueryResult (query, forwardOnly)
 			)
 		);
 

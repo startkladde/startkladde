@@ -12,7 +12,7 @@
 #include <QString>
 #include <QList>
 
-class DataStorage;
+namespace Db { namespace Cache { class Cache; } }
 class Flight;
 
 class LaunchMethodStatistics: public QAbstractTableModel
@@ -31,7 +31,7 @@ class LaunchMethodStatistics: public QAbstractTableModel
 		LaunchMethodStatistics (QObject *parent=NULL);
 		virtual ~LaunchMethodStatistics ();
 
-		static LaunchMethodStatistics *createNew (const QList<Flight> &flights, DataStorage &dataStorage);
+		static LaunchMethodStatistics *createNew (const QList<Flight> &flights, Db::Cache::Cache &cache);
 
 		// QAbstractTableModel methods
 		virtual int rowCount (const QModelIndex &index) const;

@@ -18,10 +18,11 @@
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/gui/dialogs.h"
 #include "src/text.h"
+#include "src/db/cache/Cache.h"
 
-template<class T> ObjectListWindow<T>::ObjectListWindow (DataStorage &dataStorage, ObjectListModel<T> *list, bool listOwned, QWidget *parent):
+template<class T> ObjectListWindow<T>::ObjectListWindow (Db::Cache::Cache &cache, ObjectListModel<T> *list, bool listOwned, QWidget *parent):
 	ObjectListWindowBase (parent),
-    dataStorage (dataStorage), list (list), listOwned (listOwned)
+	cache (cache), list (list), listOwned (listOwned)
 {
 	// Set the list as the table's model with a sort proxy
 	proxyModel=new QSortFilterProxyModel (this);
@@ -47,13 +48,13 @@ template<class T> ObjectListWindow<T>::~ObjectListWindow()
 
 template<class T> void ObjectListWindow<T>::on_actionNew_triggered ()
 {
-	ObjectEditorWindow<T>::createObject (this, dataStorage);
+	ObjectEditorWindow<T>::createObject (this, cache);
 }
 
 template<class T> void ObjectListWindow<T>::on_actionEdit_triggered ()
 {
 	QModelIndex listIndex=proxyModel->mapToSource (ui.table->currentIndex ());
-	ObjectEditorWindow<T>::editObject (this, dataStorage, list->at (listIndex));
+	ObjectEditorWindow<T>::editObject (this, cache, list->at (listIndex));
 }
 
 template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
@@ -62,12 +63,15 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 	const T &object=list->at (listIndex);
 	dbId id=object.getId ();
 
-	ObjectUsedTask<T> checkTask (dataStorage, id);
-	dataStorage.addTask (&checkTask);
-	TaskProgressDialog::waitTask (this, &checkTask);
-	if (checkTask.isCanceled ()) return;
-	if (!checkTask.isCompleted ()) return; // TODO error check instead
-	bool objectUsed=checkTask.getResult ();
+	// FIXME object used check
+//	ObjectUsedTask<T> checkTask (cache, id);
+//	cache.addTask (&checkTask);
+//	TaskProgressDialog::waitTask (this, &checkTask);
+//	if (checkTask.isCanceled ()) return;
+//	if (!checkTask.isCompleted ()) return; // TODO error check instead
+//	bool objectUsed=checkTask.getResult ();
+
+	bool objectUsed=false;
 
 	if (objectUsed)
 	{
@@ -81,22 +85,25 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 		QString question=QString::fromUtf8 ("Soll %1 gelöscht werden?").arg (T::objectTypeDescriptionDefinite ());
 		if (yesNoQuestion (this, title, question))
 		{
-			DeleteObjectTask<T> deleteTask (dataStorage, id);
-			dataStorage.addTask (&deleteTask);
-			TaskProgressDialog::waitTask (this, &deleteTask);
+			// TODO background
+			cache.getDatabase ().deleteObject<T> (id);
+//			DeleteObjectTask<T> deleteTask (cache, id);
+//			cache.addTask (&deleteTask);
+//			TaskProgressDialog::waitTask (this, &deleteTask);
 		}
 	}
 }
 
 template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 {
-	dataStorage.refreshViews<T> ();
+		// TODO
+//	cache.refreshViews<T> ();
 }
 
 template<class T> void ObjectListWindow<T>::on_table_activated (const QModelIndex &index)
 {
 	QModelIndex listIndex=proxyModel->mapToSource (index);
-	ObjectEditorWindow<T>::editObject (this, dataStorage, list->at (listIndex));
+	ObjectEditorWindow<T>::editObject (this, cache, list->at (listIndex));
 }
 
 

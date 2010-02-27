@@ -193,7 +193,7 @@ namespace Db
 
 		QVariant CopiedResult::value (int index) const
 		{
-			if (index<0 || index>=records.size ())
+			if (current<0 || current>=records.size ())
 				return QVariant ();
 			else
 				return records.at (current).value (index);

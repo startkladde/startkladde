@@ -12,7 +12,7 @@ class LaunchMethodEditorPane: public ObjectEditorPane<LaunchMethod>
     Q_OBJECT
 
 	public:
-		LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent=NULL);
+		LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent=NULL);
 		virtual ~LaunchMethodEditorPane();
 
 		virtual void objectToFields (const LaunchMethod &launchMethod);

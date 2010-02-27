@@ -7,12 +7,11 @@
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required for ObjectEditorWindowBase::Mode
 
 class Person;
-class DataStorage;
 
 class PersonEditorPane: public ObjectEditorPane<Person>
 {
 	public:
-		PersonEditorPane (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent=NULL);
+		PersonEditorPane (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent=NULL);
 		virtual ~PersonEditorPane();
 
 		virtual void objectToFields (const Person &person);

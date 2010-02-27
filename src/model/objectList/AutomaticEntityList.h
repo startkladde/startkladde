@@ -10,8 +10,9 @@
 
 // TODO may includes in header
 #include "EntityList.h"
-#include "src/db/dataStorage/DataStorageMonitor.h"
-#include "src/db/dataStorage/DataStorage.h"
+//#include "src/db/dataStorage/DataStorageMonitor.h"
+//#include "src/db/dataStorage/DataStorage.h"
+#include "src/db/cache/Cache.h"
 #include "src/db/DbEvent.h"
 #include "src/concurrent/threadUtil.h"
 
@@ -19,49 +20,51 @@
 // ** Construction **
 // ******************
 
+// FIXME: adapt to Cache/Database
+
 /**
- * A subclass auf EntityList that receives dbChange events from a DataStorage
+ * A subclass auf EntityList that receives dbChange events from a Cache
  * and updates the list accordingly.
  */
-template<class T> class AutomaticEntityList: public EntityList<T>, DataStorageMonitor::Listener
+template<class T> class AutomaticEntityList: public EntityList<T>//, DataStorageMonitor::Listener
 {
 	public:
-		AutomaticEntityList (DataStorage &dataStorage, QObject *parent=NULL);
-		AutomaticEntityList (DataStorage &dataStorage, const QList<T> &list, QObject *parent=NULL);
+		AutomaticEntityList (Db::Cache::Cache &cache, QObject *parent=NULL);
+		AutomaticEntityList (Db::Cache::Cache &cache, const QList<T> &list, QObject *parent=NULL);
 		virtual ~AutomaticEntityList ();
 
 		// DataStorageMonitor::Listener methods
 		virtual void dbEvent (DbEvent event);
 
 	protected:
-		DataStorage &dataStorage;
-		DataStorageMonitor monitor;
+		Db::Cache::Cache &cache;
+//		DataStorageMonitor monitor;
 };
 
 /**
  * Creates an empty AutomaticEntityList
  *
- * @param dataStorage the DataStorage to monitor for changes
+ * @param cache the Db::Cache::Cache to monitor for changes
  * @param parent the Qt parent
  */
-template<class T> AutomaticEntityList<T>::AutomaticEntityList (DataStorage &dataStorage, QObject *parent):
+template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache &cache, QObject *parent):
 	EntityList<T> (parent),
-	dataStorage (dataStorage),
-	monitor (dataStorage, *this)
+	cache (cache)//,
+//	monitor (cache, *this)
 {
 }
 
 /**
  * Creates an AutomaticEntityList with entries from a given list
- * @param dataStorage
+ * @param cache
  * @param list
  * @param parent
  * @return
  */
-template<class T> AutomaticEntityList<T>::AutomaticEntityList (DataStorage &dataStorage, const QList<T> &list, QObject *parent):
+template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache &cache, const QList<T> &list, QObject *parent):
 	EntityList<T> (list, parent),
-	dataStorage (dataStorage),
-	monitor (dataStorage, *this)
+	cache (cache)//,
+//	monitor (cache, *this)
 {
 }
 
@@ -86,15 +89,13 @@ template<class T> void AutomaticEntityList<T>::dbEvent (DbEvent event)
 
 	if (event.table!=DbEvent::tableAll && event.table!=DbEvent::getTable<T> ()) return;
 
-	DataStorage &ds=/*EntityList<T>::*/dataStorage;
-
 	switch (event.type)
 	{
 		case DbEvent::typeNone:
 			break;
 		case DbEvent::typeAdd:
 		{
-			EntityList<T>::append (ds.getObject<T> (event.id));
+			EntityList<T>::append (cache.getObject<T> (event.id));
 		} break;
 		case DbEvent::typeDelete:
 		{
@@ -105,14 +106,15 @@ template<class T> void AutomaticEntityList<T>::dbEvent (DbEvent event)
 		{
 			int i=EntityList<T>::findById (event.id);
 			if (i>=0)
-				EntityList<T>::replace (i, ds.getObject<T> (event.id));
+				EntityList<T>::replace (i, cache.getObject<T> (event.id));
 			else
 				// Should not happen
-				EntityList<T>::append (ds.getObject<T> (event.id));
+				EntityList<T>::append (cache.getObject<T> (event.id));
 		} break;
 		case DbEvent::typeRefresh:
 		{
-			EntityList<T>::replaceList (ds.getObjects<T> ());
+			// TODO assignment?
+			EntityList<T>::replaceList (cache.getObjects<T> ().getList ());
 		} break;
 	}
 }

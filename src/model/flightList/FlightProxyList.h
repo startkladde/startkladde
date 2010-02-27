@@ -12,15 +12,15 @@
 #include "src/model/objectList/AbstractObjectList.h"
 #include "src/db/dbId.h"
 
-class DataStorage;
 class LaunchMethod;
+namespace Db { namespace Cache { class Cache; } }
 
 class FlightProxyList: public AbstractObjectList<Flight>
 {
 	Q_OBJECT
 
 	public:
-		FlightProxyList (DataStorage &dataStorage, AbstractObjectList<Flight> &, QObject *parent=NULL);
+		FlightProxyList (Db::Cache::Cache &cache, AbstractObjectList<Flight> &, QObject *parent=NULL);
 		virtual ~FlightProxyList ();
 
 		// AbstractObjectList<Flight> methods
@@ -56,7 +56,7 @@ class FlightProxyList: public AbstractObjectList<Flight>
 		virtual void sourceModel_rowsRemoved (const QModelIndex &parent, int start, int end);
 
 	private:
-		DataStorage &dataStorage;
+		Db::Cache::Cache &cache;
 
 		// The model that contains the flights
 		AbstractObjectList<Flight> &sourceModel;

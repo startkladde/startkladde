@@ -7,11 +7,12 @@
 
 #include "src/color.h" // TODO remove after flug_farbe has been moved to Flight
 #include "src/itemDataRoles.h"
-#include "src/db/dataStorage/DataStorage.h"
+//#include "src/db/dataStorage/DataStorage.h"
 #include "src/model/Flight.h"
 #include "src/model/LaunchMethod.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
+#include "src/db/cache/Cache.h"
 
 /*
  * Default column widths for the flight table:
@@ -34,8 +35,8 @@ tbl_idx_id_display,           50, "12345"
  *
  */
 
-FlightModel::FlightModel (DataStorage &dataStorage):
-	dataStorage (dataStorage)
+FlightModel::FlightModel (Db::Cache::Cache &cache):
+	cache (cache)
 {
 }
 
@@ -135,8 +136,8 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 	}
 	else if (role==Qt::BackgroundRole)
 	{
-		Plane *plane=dataStorage.getNewObject<Plane> (flight.planeId);
-		LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethodId);
+		Plane *plane=cache.getNewObject<Plane> (flight.planeId);
+		LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (flight.launchMethodId);
 
 		bool error=flight.fehlerhaft (plane, NULL, launchMethod);
 
@@ -180,10 +181,10 @@ QVariant FlightModel::registrationData (const Flight &flight, int role) const
 
 	try
 	{
-		Plane plane=dataStorage.getObject<Plane> (flight.planeId);
+		Plane plane=cache.getObject<Plane> (flight.planeId);
 		return plane.fullRegistration ();
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Db::Cache::Cache::NotFoundException)
 	{
 		return "???";
 	}
@@ -195,10 +196,10 @@ QVariant FlightModel::planeTypeData (const Flight &flight, int role) const
 
 	try
 	{
-		Plane plane=dataStorage.getObject<Plane> (flight.planeId);
+		Plane plane=cache.getObject<Plane> (flight.planeId);
 		return plane.type;
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Db::Cache::Cache::NotFoundException)
 	{
 		return "???";
 	}
@@ -210,10 +211,10 @@ QVariant FlightModel::pilotData (const Flight &flight, int role) const
 
 	try
 	{
-		Person pilot=dataStorage.getObject<Person> (flight.pilotId);
+		Person pilot=cache.getObject<Person> (flight.pilotId);
 		return pilot.formalNameWithClub ();
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Db::Cache::Cache::NotFoundException)
 	{
 		return flight.incompletePilotName ();
 	}
@@ -227,7 +228,7 @@ QVariant FlightModel::copilotData (const Flight &flight, int role) const
 	{
 		if (Flight::typeCopilotRecorded (flight.type))
 		{
-			Person copilot=dataStorage.getObject<Person> (flight.copilotId);
+			Person copilot=cache.getObject<Person> (flight.copilotId);
 			return copilot.formalNameWithClub ();
 		}
 		else if (Flight::typeIsGuest (flight.type))
@@ -239,7 +240,7 @@ QVariant FlightModel::copilotData (const Flight &flight, int role) const
 			return "-";
 		}
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Db::Cache::Cache::NotFoundException)
 	{
 		return flight.incompleteCopilotName ();
 	}
@@ -253,13 +254,13 @@ QVariant FlightModel::launchMethodData (const Flight &flight, int role) const
 	{
 		if (!flight.departsHere ()) return "-";
 
-		LaunchMethod launchMethod=dataStorage.getObject<LaunchMethod> (flight.launchMethodId);
+		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (flight.launchMethodId);
 
 		return launchMethod.shortName;
 
 		// Alternative: if (launchMethod.is_airtow () && !launchMethod.towplaneKnown) return towplane.registraion or "???"
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Db::Cache::Cache::NotFoundException)
 	{
 		return "?";
 	}

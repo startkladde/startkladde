@@ -10,14 +10,14 @@
 
 #include <QSortFilterProxyModel>
 
-class DataStorage;
+namespace Db { namespace Cache { class Cache; } }
 
 class FlightSortFilterProxyModel: public QSortFilterProxyModel
 {
 	Q_OBJECT
 
 	public:
-		FlightSortFilterProxyModel (DataStorage &dataStorage, QObject *parent);
+		FlightSortFilterProxyModel (Db::Cache::Cache &cache, QObject *parent);
 		virtual ~FlightSortFilterProxyModel ();
 
 	public slots:
@@ -34,7 +34,7 @@ class FlightSortFilterProxyModel: public QSortFilterProxyModel
 		virtual bool lessThan (const QModelIndex &left, const QModelIndex &right) const;
 
 	private:
-		DataStorage &dataStorage;
+		Db::Cache::Cache &cache;
 
 		// Filter options
 		bool showPreparedFlights; // TODO: remove this, the main window takes care of that

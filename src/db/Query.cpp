@@ -4,6 +4,8 @@
 #include <QSqlQuery>
 #include <QStringList>
 
+#include "src/io/colors.h"
+
 namespace Db
 {
 	// ******************
@@ -74,6 +76,16 @@ namespace Db
 			return result;
 		}
 	}
+
+	QString Query::colorizedString () const
+	{
+		return QString ("%1%2%3")
+			.arg (c_1 at_bold c_0)
+			.arg (toString ())
+			.arg (c_1 clr_default c_0)
+			;
+	}
+
 
 
 	// ****************

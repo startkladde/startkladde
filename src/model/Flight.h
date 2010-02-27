@@ -1,6 +1,8 @@
 #ifndef FLIGHT_H_
 #define FLIGHT_H_
 
+#include <cassert>
+
 #include <QString>
 #include <QDateTime>
 
@@ -14,6 +16,7 @@ class LaunchMethod;
 namespace Db {
 	class Query;
 	namespace Result { class Result; }
+	namespace Cache { class Cache; }
 }
 
 enum FlightError {
@@ -175,7 +178,7 @@ class Flight
 		// *** Error checking
 		virtual FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *launchMethod) const;
 		virtual QString errorDescription (FlightError code) const;
-		virtual bool isErroneous (DataStorage &dataStorage) const;
+		virtual bool isErroneous (Db::Cache::Cache &dataStorage) const;
 		virtual bool fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
 		virtual bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
 

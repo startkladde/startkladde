@@ -41,9 +41,10 @@
 
 #include "ui_MainWindow.h"
 
-#include "src/db/dataStorage/DataStorage.h" // Required for DataStorage::State (others can be resolved)
+//#include "src/db/dataStorage/DataStorage.h" // Required for DataStorage::State (others can be resolved)
 #include "src/db/interface/threadSafe/ThreadSafeInterface.h"
 #include "src/db/Database.h"
+#include "src/db/cache/Cache.h"
 
 class QWidget;
 template<class T> class QList;
@@ -57,6 +58,7 @@ class FlightModel;
 class FlightProxyList;
 template<class T> class ObjectListModel;
 
+using Db::Cache::Cache;
 
 /*
  * Notes:
@@ -109,8 +111,8 @@ class MainWindow: public QMainWindow
 		void setDatabaseActionsEnabled (bool enabled);
 
 	protected slots:
-		void dataStorageStatus (QString status, bool isError);
-		void dataStorageStateChanged (DataStorage::State state);
+//		void dataStorageStatus (QString status, bool isError);
+//		void dataStorageStateChanged (DataStorage::State state);
 
 	private slots:
 		// Menu: Program
@@ -159,8 +161,8 @@ class MainWindow: public QMainWindow
 		void on_actionLaunchMethodStatistics_triggered ();
 
 		// Menu: Database
-		void on_actionConnect_triggered () { dataStorage.connect (); }
-		void on_actionDisconnect_triggered () { dataStorage.disconnect (); }
+		void on_actionConnect_triggered () { dbInterface.open (); cache.refreshAll (); } // TODO replace with database manager
+		void on_actionDisconnect_triggered () { dbInterface.close (); }
 		void on_actionEditPlanes_triggered ();
 		void on_actionEditPeople_triggered ();
 		void on_actionEditLaunchMethods_triggered ();
@@ -208,7 +210,8 @@ class MainWindow: public QMainWindow
 
 		Db::Interface::ThreadSafeInterface dbInterface;
 		Db::Database db;
-		DataStorage dataStorage;
+		Db::Cache::Cache cache;
+//		DataStorage dataStorage;
 
 		QDate displayDate;
 		WeatherWidget *weatherWidget;

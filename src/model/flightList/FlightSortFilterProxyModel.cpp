@@ -5,11 +5,9 @@
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/model/Flight.h"
 
-class DataStorage;
-
-FlightSortFilterProxyModel::FlightSortFilterProxyModel (DataStorage &dataStorage, QObject *parent):
+FlightSortFilterProxyModel::FlightSortFilterProxyModel (Db::Cache::Cache &cache, QObject *parent):
 	QSortFilterProxyModel (parent),
-	dataStorage (dataStorage),
+	cache (cache),
 	showPreparedFlights (true),
 	hideFinishedFlights (false), alwaysShowExternalFlights (true), alwaysShowErroneousFlights (true),
 	customSorting (true)
@@ -53,7 +51,7 @@ bool FlightSortFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIn
 
 			if (!hideFinishedFlights) return true;
 			if (alwaysShowExternalFlights && flight.isExternal ()) return true;
-			if (alwaysShowErroneousFlights && flight.isErroneous (dataStorage)) return true;
+			if (alwaysShowErroneousFlights && flight.isErroneous (cache)) return true;
 
 			return false;
 		}

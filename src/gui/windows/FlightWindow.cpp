@@ -16,10 +16,11 @@
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
-#include "src/db/dataStorage/DataStorage.h"
+#include "src/db/cache/Cache.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 #include "src/config/Options.h" // Required for opts.ort
 #include "src/util/qString.h"
+#include "src/db/Database.h"
 
 /*
  * On enabling/diabling widgets:
@@ -79,15 +80,15 @@ static const QColor errorColor (255, 127, 127);
  *               class constructor.
  * @param mode the editor mode. This determines among other things, how flight
  *             is treated.
- * @param dataStorage the data storage to use for getting additional data
+ * @param cache the database cache to use for getting additional data
  * @param flight the flight to edit or to display in the editing fields
  *               initially, or NULL for none. The flight is copied by the
  *               constructor and not accessed any more later.
  * @param flags the window flags, passed to the base class constructor
  */
-FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DataStorage &dataStorage, Qt::WindowFlags flags)
+FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, Db::Cache::Cache &cache, Qt::WindowFlags flags)
 	:QDialog (parent, flags),
-	dataStorage (dataStorage),
+	cache (cache),
 	mode (mode),
 	labelHeightsSet (false),
 	originalFlightId (invalidId),
@@ -199,7 +200,7 @@ FlightWindow::~FlightWindow ()
 void FlightWindow::fillData ()
 {
 	// *** Plane registrations
-	const QStringList registrations=dataStorage.getPlaneRegistrations ();
+	const QStringList registrations=cache.getPlaneRegistrations ();
 
 	ui.registrationInput->addItems (registrations);
 	ui.registrationInput->setCurrentText (Plane::defaultRegistrationPrefix ());
@@ -217,8 +218,8 @@ void FlightWindow::fillData ()
 
 
 	// *** Person names
-	const QStringList firstNames=dataStorage.getPersonFirstNames();
-	const QStringList lastNames =dataStorage.getPersonLastNames ();
+	const QStringList firstNames=cache.getPersonFirstNames();
+	const QStringList lastNames =cache.getPersonLastNames ();
 
 	ui.   pilotFirstNameInput ->addItems (firstNames);
 	ui. copilotFirstNameInput ->addItems (firstNames);
@@ -250,14 +251,14 @@ void FlightWindow::fillData ()
 
 
 	// *** Launch methods
-	QList<LaunchMethod> launchMethods=dataStorage.getLaunchMethods ();
+	QList<LaunchMethod> launchMethods=cache.getLaunchMethods ().getList ();
 	ui.launchMethodInput->addItem ("-", invalidId);
 	for (int i=0; i<launchMethods.size (); ++i)
 		ui.launchMethodInput->addItem (launchMethods.at (i).nameWithShortcut (), launchMethods.at (i).getId ());
 
 
 	// *** Locations
-	const QStringList locations=dataStorage.getLocations ();
+	const QStringList locations=cache.getLocations ();
 	ui.       departureLocationInput -> insertItem ("");
 	ui.         landingLocationInput -> insertItem ("");
 	ui.towflightLandingLocationInput -> insertItem ("");
@@ -277,7 +278,7 @@ void FlightWindow::fillData ()
 
 	// *** Accounting notes
 	QStringList abhins;
-	ui.accountingNoteInput->addItems (dataStorage.getAccountingNotes ());
+	ui.accountingNoteInput->addItems (cache.getAccountingNotes ());
 	ui.accountingNoteInput->setCurrentText ("");
 }
 
@@ -338,9 +339,9 @@ void FlightWindow::showEvent (QShowEvent *event)
  *       by the accepting slot.
  */
 
-void FlightWindow::createFlight (QWidget *parent, DataStorage &dataStorage, QDate date)
+void FlightWindow::createFlight (QWidget *parent, Db::Cache::Cache &cache, QDate date)
 {
-	FlightWindow *w=new FlightWindow (parent, modeCreate, dataStorage, NULL);
+	FlightWindow *w=new FlightWindow (parent, modeCreate, cache, NULL);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 
 	w->ui.dateInput->setDate (date);
@@ -349,9 +350,9 @@ void FlightWindow::createFlight (QWidget *parent, DataStorage &dataStorage, QDat
 	w->exec ();
 }
 
-void FlightWindow::repeatFlight (QWidget *parent, DataStorage &dataStorage, const Flight &original, QDate date)
+void FlightWindow::repeatFlight (QWidget *parent, Db::Cache::Cache &cache, const Flight &original, QDate date)
 {
-	FlightWindow *w=new FlightWindow (parent, modeCreate, dataStorage);
+	FlightWindow *w=new FlightWindow (parent, modeCreate, cache);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 	w->flightToFields (original, true);
 
@@ -363,9 +364,9 @@ void FlightWindow::repeatFlight (QWidget *parent, DataStorage &dataStorage, cons
 	w->exec ();
 }
 
-void FlightWindow::editFlight (QWidget *parent, DataStorage &dataStorage, Flight &flight)
+void FlightWindow::editFlight (QWidget *parent, Db::Cache::Cache &cache, Flight &flight)
 {
-	FlightWindow *w=new FlightWindow (parent, modeEdit, dataStorage);
+	FlightWindow *w=new FlightWindow (parent, modeEdit, cache);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 	w->flightToFields (flight, false);
 
@@ -387,15 +388,15 @@ void FlightWindow::editFlight (QWidget *parent, DataStorage &dataStorage, Flight
  * matching a given last name) or all values for a name part, if the other name
  * part is empty.
  *
- * The name parts are read from the DataStorage.
+ * The name parts are read from the Db::Cache::Cache.
  *
  * Additionally, if the name part is unique, it is written to the target list
  * box's current text if that was empty before. This can be prevented using the
  * preserveTarget parameter.
  *
- * @param fullListMethod the method of DataStorage used to retrieve all values
+ * @param fullListMethod the method of Db::Cache::Cache used to retrieve all values
  *                       of the name part
- * @param partialListMethod the method of DataStorage used to retrieve all
+ * @param partialListMethod the method of Db::Cache::Cache used to retrieve all
  *                          values of the name part which match a given other
  *                          name part
  * @param target the combo box to write the name parts to
@@ -404,7 +405,7 @@ void FlightWindow::editFlight (QWidget *parent, DataStorage &dataStorage, Flight
  *                       combo box, even if it is empty
  * @return the number of matching names (not: people)
  */
-int FlightWindow::fillNames (QStringList (DataStorage::*fullListMethod)(), QStringList (DataStorage::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget)
+int FlightWindow::fillNames (QStringList (Db::Cache::Cache::*fullListMethod)(), QStringList (Db::Cache::Cache::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget)
 {
 	// Store the old value of the target field
 	QString oldValue=target->currentText ();
@@ -413,9 +414,9 @@ int FlightWindow::fillNames (QStringList (DataStorage::*fullListMethod)(), QStri
 	// or only the ones that match the other name part given.
 	QStringList nameList;
 	if (otherName.simplified ().isEmpty ())
-		nameList=(dataStorage.*fullListMethod)();
+		nameList=(cache.*fullListMethod)();
 	else
-		nameList=(dataStorage.*partialListMethod)(otherName);
+		nameList=(cache.*partialListMethod)(otherName);
 
 	// Write the name list to the target
 	target->clear ();
@@ -436,13 +437,13 @@ dbId FlightWindow::fillFirstNames  (bool active, QComboBox *target, const QStrin
 	if (!active) return invalidId;
 
 	fillNames (
-		&DataStorage::getPersonFirstNames,
-		&DataStorage::getPersonFirstNames,
+		&Db::Cache::Cache::getPersonFirstNames,
+		&Db::Cache::Cache::getPersonFirstNames,
 		target, lastName, preserveTarget);
 
 	// Even if there were multiple matching other name parts, the current
 	// combination may still be unique. If it is, return the person's ID.
-	return dataStorage.getUniquePersonIdByName (target->currentText (), lastName);
+	return cache.getUniquePersonIdByName (target->currentText (), lastName);
 }
 
 dbId FlightWindow::fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget)
@@ -450,13 +451,13 @@ dbId FlightWindow::fillLastNames  (bool active, QComboBox *target, const QString
 	if (!active) return invalidId;
 
 	fillNames (
-		&DataStorage::getPersonLastNames,
-		&DataStorage::getPersonLastNames,
+		&Db::Cache::Cache::getPersonLastNames,
+		&Db::Cache::Cache::getPersonLastNames,
 		target, firstName, preserveTarget);
 
 	// Even if there were multiple matching other name parts, the current
 	// combination may still be unique. If it is, return the person's ID.
-	return dataStorage.getUniquePersonIdByName (firstName, target->currentText ());
+	return cache.getUniquePersonIdByName (firstName, target->currentText ());
 }
 
 // ******************
@@ -469,9 +470,9 @@ void FlightWindow::updateErrors (bool setFocus)
 
 	Flight flight=determineFlightBasic ();
 
-	Plane *plane              =dataStorage.getNewObject<Plane       > (flight.planeId        );
-	Plane *towplane           =dataStorage.getNewObject<Plane       > (flight.towplaneId     );
-	LaunchMethod *launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethodId );
+	Plane *plane              =cache.getNewObject<Plane       > (flight.planeId        );
+	Plane *towplane           =cache.getNewObject<Plane       > (flight.towplaneId     );
+	LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (flight.launchMethodId );
 
 	FlightError error;
 	int errorIndex=0;
@@ -615,12 +616,12 @@ void FlightWindow::personToFields (dbId id, SkComboBox *lastNameInput, SkComboBo
 	{
 		try
 		{
-			Person person=dataStorage.getObject<Person> (id);
+			Person person=cache.getObject<Person> (id);
 			 lastNameInput->setCurrentText (person.lastName);
 			firstNameInput->setCurrentText (person.firstName );
 			ok=true;
 		}
-		catch (DataStorage::NotFoundException &ex) {}
+		catch (Db::Cache::Cache::NotFoundException &ex) {}
 	}
 
 	if (!ok)
@@ -641,11 +642,11 @@ void FlightWindow::planeToFields (dbId id, SkComboBox *registrationInput, SkLabe
 	{
 		try
 		{
-			Plane plane=dataStorage.getObject<Plane> (id);
+			Plane plane=cache.getObject<Plane> (id);
 			registrationInput->setCurrentText (plane.registration);
 			typeLabel->setText (plane.type);
 		}
-		catch (DataStorage::NotFoundException &ex) {}
+		catch (Db::Cache::Cache::NotFoundException &ex) {}
 	}
 }
 
@@ -681,10 +682,10 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 	try
 	{
 		if (idValid (flight.launchMethodId))
-			if (dataStorage.getObject<LaunchMethod> (flight.launchMethodId).type==LaunchMethod::typeSelf)
+			if (cache.getObject<LaunchMethod> (flight.launchMethodId).type==LaunchMethod::typeSelf)
 				copyLaunchMethod=true;
 	}
-	catch (DataStorage::NotFoundException &ex)
+	catch (Db::Cache::Cache::NotFoundException &ex)
 	{
 		log_error ("Launch method not found in FlightWindow::flightToFields");
 	}
@@ -894,12 +895,12 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, cons
 			.arg (plane->registration).arg (plane->type),
 			ui.towplaneRegistrationInput);
 
-	if (plane && launchNow && idValid (dataStorage.planeFlying (plane->getId ())))
+	if (plane && launchNow && idValid (cache.planeFlying (plane->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt das Flugzeug %1 noch.")
 			.arg (plane->registration),
 			ui.registrationInput);
 
-	if (towplane && launchNow && idValid (dataStorage.planeFlying (towplane->getId ())))
+	if (towplane && launchNow && idValid (cache.planeFlying (towplane->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt das Schleppflugzeug %1 noch.")
 			.arg (towplane->registration),
 			ui.registrationInput);
@@ -933,17 +934,17 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool launchNow, cons
 		.arg (plane->registration).arg (plane->type),
 		ui.registrationInput);
 
-	if (pilot && launchNow && idValid (dataStorage.personFlying (pilot->getId ())))
+	if (pilot && launchNow && idValid (cache.personFlying (pilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Pilot %1 %2 noch.")
 			.arg (pilot->firstName).arg (pilot->lastName),
 			ui.pilotLastNameInput);
 
-	if (copilot && launchNow && idValid (dataStorage.personFlying (copilot->getId ())))
+	if (copilot && launchNow && idValid (cache.personFlying (copilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Begleiter %1 %2 noch.")
 			.arg (copilot->firstName).arg (copilot->lastName),
 			ui.copilotLastNameInput);
 
-	if (towpilot && launchNow && idValid (dataStorage.personFlying (towpilot->getId ())))
+	if (towpilot && launchNow && idValid (cache.personFlying (towpilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Schlepppilot %1 %2 noch.")
 			.arg (towpilot->firstName).arg (towpilot->lastName),
 			ui.towpilotLastNameInput);
@@ -1013,7 +1014,7 @@ void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *la
 /**
  * Reads a flight from the input fields, querying the user for additional input
  * (unknown planes, multiple people) if necessary. Additional data is read from
- * the dataStorage as required.
+ * the cache as required.
  *
  * Also does some error checks and asks the user if he wants to accept anyway.
  *
@@ -1042,24 +1043,24 @@ Flight FlightWindow::determineFlight (bool launchNow)
 		// Phase 1: basic data
 		Flight flight=determineFlightBasic ();
 
-		launchMethod=dataStorage.getNewObject<LaunchMethod> (flight.launchMethodId);
+		launchMethod=cache.getNewObject<LaunchMethod> (flight.launchMethodId);
 
 		checkFlightPhase1 (flight, launchNow);
 
 		// Phase 2: planes
 		determineFlightPlanes (flight);
 
-		plane   =dataStorage.getNewObject<Plane> (flight.planeId);
-		towplane=dataStorage.getNewObject<Plane> (flight.towplaneId);
+		plane   =cache.getNewObject<Plane> (flight.planeId);
+		towplane=cache.getNewObject<Plane> (flight.towplaneId);
 
 		checkFlightPhase2 (flight, launchNow, plane, towplane, launchMethod);
 
 		// Phase 3: people
 		determineFlightPeople (flight, launchMethod);
 
-		pilot   =dataStorage.getNewObject<Person> (flight.pilotId    );
-		copilot =dataStorage.getNewObject<Person> (flight.copilotId);
-		towpilot=dataStorage.getNewObject<Person> (flight.towpilotId );
+		pilot   =cache.getNewObject<Person> (flight.pilotId    );
+		copilot =cache.getNewObject<Person> (flight.copilotId);
+		towpilot=cache.getNewObject<Person> (flight.towpilotId );
 
 		checkFlightPhase3 (flight, launchNow, plane, pilot, copilot, towpilot);
 
@@ -1122,13 +1123,13 @@ dbId FlightWindow::determinePlane (QString registration, QString description, QW
 
 	// Try to get the ID for the plane with the given registration. Return if
 	// found.
-	id=dataStorage.getPlaneIdByRegistration (registration);
+	id=cache.getPlaneIdByRegistration (registration);
 	if (!idInvalid (id))
 		return id;
 
 	// Try to get the ID for the plane with the given registration with the
 	// registration prefix prepended. Return if found and the user confirms it.
-	id=dataStorage.getPlaneIdByRegistration (Plane::defaultRegistrationPrefix ()+registration);
+	id=cache.getPlaneIdByRegistration (Plane::defaultRegistrationPrefix ()+registration);
 	if (idValid (id))
 	{
 		QString title=QString ("%1 nicht bekannt").arg (description);
@@ -1150,7 +1151,7 @@ dbId FlightWindow::determinePlane (QString registration, QString description, QW
 
 	if (yesNoQuestion (this, title, question))
 	{
-		dbId result=ObjectEditorWindow<Plane>::createObject (this, dataStorage);
+		dbId result=ObjectEditorWindow<Plane>::createObject (this, cache);
 		if (idValid (result))
 			return result;
 		else
@@ -1172,7 +1173,7 @@ dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
 	person.firstName=firstName;
 	person.lastName=lastName;
 
-	dbId result=ObjectEditorWindow<Person>::createObject (this, dataStorage);
+	dbId result=ObjectEditorWindow<Person>::createObject (this, cache);
 	if (idValid (result))
 		return result;
 	else
@@ -1277,11 +1278,11 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 	// Get a list of candidates, using all name information available.
 	QList<dbId> candidates;
 	if (firstNameGiven && lastNameGiven)
-		candidates=dataStorage.getPersonIdsByName (firstName, lastName);
+		candidates=cache.getPersonIdsByName (firstName, lastName);
 	else if (firstNameGiven)
-		candidates=dataStorage.getPersonIdsByFirstName (firstName);
+		candidates=cache.getPersonIdsByFirstName (firstName);
 	else if (lastNameGiven)
-		candidates=dataStorage.getPersonIdsByLastName (lastName);
+		candidates=cache.getPersonIdsByLastName (lastName);
 
 	// Case 1: complete name given, but no person found
 	if (firstNameGiven && lastNameGiven && candidates.empty ())
@@ -1324,7 +1325,7 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 	// (case 1)
 
 	// Get all matching people (candidates) from the database
-	QList<Person> people=dataStorage.getPeople (candidates);
+	QList<Person> people=cache.getPeople (candidates);
 
 	// Determine the preselected person
 	dbId preselectionId=0;
@@ -1359,38 +1360,43 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 // ** Database **
 // **************
 
-bool FlightWindow::writeToDatabase (const Flight &flight)
+bool FlightWindow::writeToDatabase (Flight &flight)
 {
-	Task *task=NULL;
+//	Task *task=NULL;
+
+	bool success=false;
 
 	switch (mode)
 	{
+		// TODO background
 		case modeCreate:
-			task=new AddObjectTask<Flight> (dataStorage, flight);
+			success=idValid (cache.getDatabase ().createObject (flight));
+//			task=new AddObjectTask<Flight> (cache, flight);
 			break;
 		case modeEdit:
-			task=new UpdateObjectTask<Flight> (dataStorage, flight);
+			success=cache.getDatabase ().updateObject (flight);
+//			task=new UpdateObjectTask<Flight> (cache, flight);
 			break;
 	}
 
 	// TODO error handling (adding failed)
-	dataStorage.addTask (task);
-	TaskProgressDialog::waitTask (this, task);
-	bool result=task->isCompleted ();
-	bool success=task->getSuccess ();
-	QString message=task->getMessage ();
-
-	delete task;
+//	cache.addTask (task);
+//	TaskProgressDialog::waitTask (this, task);
+//	bool result=task->isCompleted ();
+//	bool success=task->getSuccess ();
+//	QString message=task->getMessage ();
+//
+//	delete task;
 
 	// If the task was canceled, return false
-	if (!result) return false;
+	if (!success) return false;
 
 	// The task completed. But was it successful?
 	if (!success)
 	{
 		QMessageBox::message (
 			"Fehler beim Speichern",
-			QString ("Fehler beim Speichern: %1").arg (message),
+			QString ("Fehler beim Speichern"),
 			"&OK",
 			this
 			);
@@ -1413,7 +1419,7 @@ bool FlightWindow::currentIsAirtow ()
 	{
 		return getCurrentLaunchMethod ().isAirtow ();
 	}
-	catch (DataStorage::NotFoundException &ex)
+	catch (Db::Cache::Cache::NotFoundException &ex)
 	{
 		return false;
 	}
@@ -1428,7 +1434,7 @@ bool FlightWindow::isTowplaneRegistrationActive ()
 	{
 		return !getCurrentLaunchMethod ().towplaneKnown ();
 	}
-	catch (DataStorage::NotFoundException &ex)
+	catch (Db::Cache::Cache::NotFoundException &ex)
 	{
 		return false;
 	}
@@ -1441,7 +1447,7 @@ bool FlightWindow::isTowplaneRegistrationActive ()
 LaunchMethod FlightWindow::getCurrentLaunchMethod ()
 {
 	dbId id=getCurrentLaunchMethodId ();
-	return dataStorage.getObject<LaunchMethod> (id);
+	return cache.getObject<LaunchMethod> (id);
 }
 
 
@@ -1655,7 +1661,7 @@ void FlightWindow::updateSetup ()
 void FlightWindow::registrationChanged (const QString &text)
 {
 	// Find out the plane ID
-	dbId id=dataStorage.getPlaneIdByRegistration (text);
+	dbId id=cache.getPlaneIdByRegistration (text);
 	selectedPlane=id;
 
 	if (idValid (id))
@@ -1663,7 +1669,7 @@ void FlightWindow::registrationChanged (const QString &text)
 		// Get the plane
 		try
 		{
-			Plane plane=dataStorage.getObject<Plane> (id);
+			Plane plane=cache.getObject<Plane> (id);
 
 			// Set the plane type widget
 			ui.planeTypeWidget->setText (plane.type);
@@ -1671,9 +1677,9 @@ void FlightWindow::registrationChanged (const QString &text)
 			// For planes that only do self launches, set the launch method to "self
 			// launch" if it is not currently set to anything else.
 			if (plane.selfLaunchOnly () && idInvalid (getCurrentLaunchMethodId ()))
-				ui.launchMethodInput->setCurrentItemByItemData (dataStorage.getLaunchMethodByType (LaunchMethod::typeSelf));
+				ui.launchMethodInput->setCurrentItemByItemData (cache.getLaunchMethodByType (LaunchMethod::typeSelf));
 		}
-		catch (DataStorage::NotFoundException &ex)
+		catch (Db::Cache::Cache::NotFoundException &ex)
 		{
 			ui.planeTypeWidget->setText ("?");
 		}
@@ -1721,20 +1727,20 @@ void FlightWindow::launchMethodChanged (int index)
 
 	if (idValid (launchMethodId))
 	{
-		LaunchMethod launchMethod=dataStorage.getObject<LaunchMethod> (launchMethodId);
+		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (launchMethodId);
 
 		if (launchMethod.isAirtow ())
 		{
 			QString towplaneRegistration=launchMethod.towplaneKnown () ? launchMethod.towplaneRegistration : getCurrentTowplaneRegistration ();
-			dbId towplaneId=dataStorage.getPlaneIdByRegistration (towplaneRegistration);
+			dbId towplaneId=cache.getPlaneIdByRegistration (towplaneRegistration);
 			if (idValid (towplaneId))
 			{
 				try
 				{
-					Plane towplane=dataStorage.getObject<Plane> (towplaneId);
+					Plane towplane=cache.getObject<Plane> (towplaneId);
 					ui.towplaneTypeWidget->setText (towplane.type);
 				}
-				catch (DataStorage::NotFoundException &ex)
+				catch (Db::Cache::Cache::NotFoundException &ex)
 				{
 					ui.towplaneTypeWidget->setText ("?");
 				}
@@ -1749,7 +1755,7 @@ void FlightWindow::launchMethodChanged (int index)
 void FlightWindow::towplaneRegistrationChanged (const QString &text)
 {
 	// Find out the plane ID
-	dbId id=dataStorage.getPlaneIdByRegistration (text);
+	dbId id=cache.getPlaneIdByRegistration (text);
 	selectedTowplane=id;
 
 	if (idValid (id))
@@ -1757,12 +1763,12 @@ void FlightWindow::towplaneRegistrationChanged (const QString &text)
 		try
 		{
 			// Get the plane and set the type widget
-			Plane towplane=dataStorage.getObject<Plane> (id);
+			Plane towplane=cache.getObject<Plane> (id);
 
 			// Set the plane type widget
 			ui.towplaneTypeWidget->setText (towplane.type);
 		}
-		catch (DataStorage::NotFoundException &ex)
+		catch (Db::Cache::Cache::NotFoundException &ex)
 		{
 			ui.towplaneTypeWidget->setText ("?");
 		}

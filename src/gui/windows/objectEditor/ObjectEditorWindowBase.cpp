@@ -1,8 +1,8 @@
 #include "ObjectEditorWindowBase.h"
 
-ObjectEditorWindowBase::ObjectEditorWindowBase (DataStorage &dataStorage, QWidget *parent, Qt::WindowFlags flags):
+ObjectEditorWindowBase::ObjectEditorWindowBase (Db::Cache::Cache &cache, QWidget *parent, Qt::WindowFlags flags):
 	QDialog (parent, flags),
-	dataStorage (dataStorage)
+	cache (cache)
 {
 	ui.setupUi (this);
 }

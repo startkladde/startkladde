@@ -135,7 +135,7 @@ namespace Db { namespace Interface
 	{
 		if (opts.display_queries)
 		{
-			std::cout << query.toString () << "...";
+			std::cout << query.colorizedString () << "...";
 			std::cout.flush ();
 		}
 
@@ -154,7 +154,13 @@ namespace Db { namespace Interface
 		else
 		{
 			if (opts.display_queries)
-				std::cout << countText (sqlQuery.size (), "row", "rows") << std::endl;
+			{
+				if (sqlQuery.isSelect ())
+					std::cout << countText (sqlQuery.size (), "row", "rows") << " returned" << std::endl;
+				else
+					std::cout << countText (sqlQuery.numRowsAffected (), "row", "rows") << " affected" << std::endl;
+
+			}
 
 			return sqlQuery;
 		}

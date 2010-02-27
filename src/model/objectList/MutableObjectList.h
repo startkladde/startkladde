@@ -35,6 +35,8 @@ template<class T> class MutableObjectList: public AbstractObjectList<T>
 		virtual void replace (int index, const T &object);
 		virtual void clear ();
 		virtual void replaceList (const QList<T> &newList);
+//		virtual void appendList (const QList<T> &other);
+//		virtual void appendList (const AbstractObjectList<T> &other);
 
 
 		// AbstractObjectList methods
@@ -185,6 +187,24 @@ template<class T> void MutableObjectList<T>::replaceList (const QList<T> &newLis
 	list=newList;
 	QAbstractItemModel::reset ();
 }
+
+///**
+// * This is probably slow as a copy of the lists has to be made.
+// */
+//template<class T> void MutableObjectList<T>::appendList (const QList<T> &other)
+//{
+//	list+=other;
+//	QAbstractItemModel::reset ();
+//}
+
+///**
+// * This is probably slow as a copy of the lists has to be made.
+// */
+//template<class T> void MutableObjectList<T>::appendList (const AbstractObjectList<T> &other)
+//{
+//	list+=other.getList ();
+//	QAbstractItemModel::reset ();
+//}
 
 
 // ********************************

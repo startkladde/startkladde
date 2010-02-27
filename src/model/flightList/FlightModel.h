@@ -14,7 +14,7 @@
 #include "src/model/objectList/ColumnInfo.h"
 
 class Flight;
-class DataStorage;
+namespace Db { namespace Cache { class Cache; } }
 
 /**
  * Unlike the models for Person, Plane and LaunchMethod, this is not part of the
@@ -23,7 +23,7 @@ class DataStorage;
 class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 {
 	public:
-		FlightModel (DataStorage &dataStorage);
+		FlightModel (Db::Cache::Cache &cache);
 		virtual ~FlightModel ();
 
 		virtual int columnCount () const;
@@ -48,7 +48,7 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 		virtual QVariant durationData (const Flight &flight, int role) const;
 
 	private:
-		DataStorage &dataStorage;
+		Db::Cache::Cache &cache;
 };
 
 #endif

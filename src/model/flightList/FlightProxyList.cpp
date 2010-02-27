@@ -3,12 +3,12 @@
 #include <cassert>
 
 #include "src/model/Flight.h"
-#include "src/db/dataStorage/DataStorage.h"
+#include "src/db/cache/Cache.h"
 #include "src/model/LaunchMethod.h"
 
-FlightProxyList::FlightProxyList (DataStorage &dataStorage, AbstractObjectList<Flight> &sourceModel, QObject *parent):
+FlightProxyList::FlightProxyList (Db::Cache::Cache &cache, AbstractObjectList<Flight> &sourceModel, QObject *parent):
 	AbstractObjectList<Flight> (parent),
-	dataStorage (dataStorage),
+	cache (cache),
 	sourceModel (sourceModel)
 {
 	// TODO: if there is no self launch method, the flight will be red
@@ -54,11 +54,11 @@ bool FlightProxyList::isAirtow (const Flight &flight, LaunchMethod *launchMethod
 
 	try
 	{
-		LaunchMethod lm=dataStorage.getObject<LaunchMethod> (flight.launchMethodId);
+		LaunchMethod lm=cache.getObject<LaunchMethod> (flight.launchMethodId);
 		if (launchMethod) *launchMethod=lm;
 		return lm.isAirtow ();
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Db::Cache::Cache::NotFoundException)
 	{
 		// Launch method not found => no airtow
 		return false;
@@ -72,17 +72,18 @@ void FlightProxyList::addTowflightFor (const Flight &flight, const LaunchMethod 
 	dbId towplaneId=invalidId;
 
 	if (launchMethod.towplaneKnown ())
-		towplaneId=dataStorage.getPlaneIdByRegistration (launchMethod.towplaneRegistration);
+		towplaneId=cache.getPlaneIdByRegistration (launchMethod.towplaneRegistration);
 	else
 		towplaneId=flight.towplaneId;
 
 	// Determine the launch method (self launch) of the towplane
 	// TODO this should be cached, but the FlightProxyList may be constructed
-	// before the dataStorage has the launch methods, so we have to receive
+	// before the cache has the launch methods, so we have to receive
 	// DEvents and update the self launch ID on launch method changes. We will
 	// have to do that anyway to catch changes in the launch methods and
-	// potentially other things the towflights depend on.
-	dbId selfLaunchId=dataStorage.getLaunchMethodByType (LaunchMethod::typeSelf);
+	// potentially other things the towflights depend on (TODO still true with
+	// new cache?).
+	dbId selfLaunchId=cache.getLaunchMethodByType (LaunchMethod::typeSelf);
 
 	towflights.append (flight.makeTowflight (towplaneId, selfLaunchId));
 }
@@ -91,7 +92,7 @@ void FlightProxyList::updateTowflight (dbId id, int towflightIndex)
 {
 	try
 	{
-		Flight flight=dataStorage.getObject<Flight> (id);
+		Flight flight=cache.getObject<Flight> (id);
 		LaunchMethod launchMethod;
 		if (isAirtow (flight, &launchMethod)) // TODO log error if not
 		{
@@ -100,16 +101,16 @@ void FlightProxyList::updateTowflight (dbId id, int towflightIndex)
 			dbId towplaneId=invalidId;
 
 			if (launchMethod.towplaneKnown ())
-				towplaneId=dataStorage.getPlaneIdByRegistration (launchMethod.towplaneRegistration);
+				towplaneId=cache.getPlaneIdByRegistration (launchMethod.towplaneRegistration);
 			else
 				towplaneId=flight.towplaneId;
 
-			dbId selfLaunchId=dataStorage.getLaunchMethodByType (LaunchMethod::typeSelf);
+			dbId selfLaunchId=cache.getLaunchMethodByType (LaunchMethod::typeSelf);
 
 			towflights.replace (towflightIndex, flight.makeTowflight (towplaneId, selfLaunchId));
 		}
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Db::Cache::Cache::NotFoundException)
 	{
 		// Do nothing // TODO log error
 	}

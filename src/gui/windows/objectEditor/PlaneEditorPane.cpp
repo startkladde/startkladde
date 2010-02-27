@@ -3,7 +3,7 @@
 #include <QMessageBox>
 
 #include "src/text.h"
-#include "src/db/dataStorage/DataStorage.h"
+#include "src/db/cache/Cache.h"
 #include "src/model/Plane.h"
 
 /*
@@ -23,8 +23,8 @@
 // ** Construction **
 // ******************
 
-PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent):
-	ObjectEditorPane<Plane> (mode, dataStorage, parent)
+PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent):
+	ObjectEditorPane<Plane> (mode, cache, parent)
 {
 	ui.setupUi(this);
 
@@ -42,9 +42,9 @@ PlaneEditorPane::~PlaneEditorPane()
 
 }
 
-template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent)
+template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent)
 {
-	return new PlaneEditorPane (mode, dataStorage, parent);
+	return new PlaneEditorPane (mode, cache, parent);
 }
 
 
@@ -62,11 +62,11 @@ void PlaneEditorPane::fillData ()
 	ui.categoryInput->setCurrentItemByItemData (Plane::categoryNone);
 
 	// Types
-	ui.typeInput->addItems (dataStorage.getPlaneTypes ());
+	ui.typeInput->addItems (cache.getPlaneTypes ());
 	ui.typeInput->setCurrentText ("");
 
 	// Clubs
-	ui.clubInput->addItems (dataStorage.getClubs ());
+	ui.clubInput->addItems (cache.getClubs ());
 	ui.clubInput->setCurrentText ("");
 }
 
@@ -120,7 +120,7 @@ Plane PlaneEditorPane::determineObject ()
 
 	// Error checks
 
-	if (mode==ObjectEditorWindowBase::modeCreate && idValid (dataStorage.getPlaneIdByRegistration (plane.registration)))
+	if (mode==ObjectEditorWindowBase::modeCreate && idValid (cache.getPlaneIdByRegistration (plane.registration)))
 	{
 		QString message=QString ("Es gibt bereits ein Flugzeug mit dem Kennzeichen %1").arg (plane.registration);
 		QMessageBox::critical (this, "Flugzeug existiert bereits", message, QMessageBox::Ok, QMessageBox::NoButton);

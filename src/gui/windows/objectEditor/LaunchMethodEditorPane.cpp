@@ -1,15 +1,15 @@
 #include "LaunchMethodEditorPane.h"
 
 #include "src/model/LaunchMethod.h"
-#include "src/db/dataStorage/DataStorage.h"
+#include "src/db/cache/Cache.h"
 
 
 // ******************
 // ** Construction **
 // ******************
 
-LaunchMethodEditorPane::LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent):
-	ObjectEditorPane<LaunchMethod> (mode, dataStorage, parent)
+LaunchMethodEditorPane::LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent):
+	ObjectEditorPane<LaunchMethod> (mode, cache, parent)
 {
 	ui.setupUi(this);
 
@@ -23,9 +23,9 @@ LaunchMethodEditorPane::~LaunchMethodEditorPane()
 
 }
 
-template<> ObjectEditorPane<LaunchMethod> *ObjectEditorPane<LaunchMethod>::create (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent)
+template<> ObjectEditorPane<LaunchMethod> *ObjectEditorPane<LaunchMethod>::create (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent)
 {
-	return new LaunchMethodEditorPane (mode, dataStorage, parent);
+	return new LaunchMethodEditorPane (mode, cache, parent);
 }
 
 
@@ -47,7 +47,7 @@ void LaunchMethodEditorPane::fillData ()
 
 	// Registrations
 	ui.towplaneRegistrationInput->addItem ("");
-	ui.towplaneRegistrationInput->addItems (dataStorage.getPlaneRegistrations ());
+	ui.towplaneRegistrationInput->addItems (cache.getPlaneRegistrations ());
 	ui.towplaneRegistrationInput->setCurrentText ("");
 }
 

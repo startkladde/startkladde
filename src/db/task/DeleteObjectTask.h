@@ -8,6 +8,8 @@
 #ifndef DELETEOBJECTTASK_H_
 #define DELETEOBJECTTASK_H_
 
+#include "src/db/dataStorage/DataStorage.h"
+
 template<class T> class DeleteObjectTask: public Task
 {
 	public:

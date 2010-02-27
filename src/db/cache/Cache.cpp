@@ -64,6 +64,11 @@ namespace Db
 		// ** Properties **
 		// ****************
 
+		Database &Cache::getDatabase ()
+		{
+			return db;
+		}
+
 		QDate Cache::getTodayDate ()
 		{
 			synchronizedReturn (dataMutex, todayDate);
@@ -703,6 +708,11 @@ namespace Db
 		// ****************************
 		// ** Template instantiation **
 		// ****************************
+
+		template EntityList<Plane       > Cache::getObjects () const;
+		template EntityList<Person      > Cache::getObjects () const;
+		template EntityList<LaunchMethod> Cache::getObjects () const;
+
 
 		// Instantiate the get method templates
 		template Flight       Cache::getObject (dbId id);
