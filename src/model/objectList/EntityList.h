@@ -25,8 +25,8 @@ template<class T> class EntityList: public MutableObjectList<T>
 {
 	public:
 		// Construction
-		EntityList (/*DataStorage &dataStorage, */QObject *parent=NULL);
-		EntityList (/*DataStorage &dataStorage, */const QList<T> &list, QObject *parent=NULL);
+		EntityList (QObject *parent=NULL);
+		EntityList (const QList<T> &list, QObject *parent=NULL);
 		virtual ~EntityList ();
 
 		// Access
@@ -38,9 +38,6 @@ template<class T> class EntityList: public MutableObjectList<T>
 		// TODO: replace method which only takes the object and reads the ID from the object
 		virtual void replaceById (dbId id, const T &object);
 		virtual void replaceOrAdd (dbId id, const T &object);
-
-	protected:
-//		DataStorage &dataStorage;
 };
 
 
@@ -48,15 +45,13 @@ template<class T> class EntityList: public MutableObjectList<T>
 // ** Construction **
 // ******************
 
-template<class T> EntityList<T>::EntityList (/*DataStorage &dataStorage, */QObject *parent):
-	MutableObjectList<T> (parent)//,
-//	dataStorage (dataStorage)
+template<class T> EntityList<T>::EntityList (QObject *parent):
+	MutableObjectList<T> (parent)
 {
 }
 
-template<class T> EntityList<T>::EntityList (/*DataStorage &dataStorage, */const QList<T> &list, QObject *parent):
-	MutableObjectList<T> (list, parent)//,
-//	dataStorage (dataStorage)
+template<class T> EntityList<T>::EntityList (const QList<T> &list, QObject *parent):
+	MutableObjectList<T> (list, parent)
 {
 }
 
@@ -94,6 +89,7 @@ template<class T> int EntityList<T>::findById (dbId id)
 template<class T> void EntityList<T>::removeById (dbId id)
 {
 	// TODO cache in a map?
+	// TODO use iterator?
 	for (int i=0; i<MutableObjectList<T>::size (); ++i)
 	{
 		if (MutableObjectList<T>::at (i).getId ()==id)

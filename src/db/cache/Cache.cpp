@@ -11,7 +11,18 @@
  *       reason)
  */
 
-// FIXME all methods accessing the database:
+/*
+ * TODO:
+ *   - don't delete an entity that is still in use
+ *   - club list should not include ""/whitespace only; Locations dito
+ */
+
+/*
+ * Improvements:
+ *   - log an error if an invalid ID is passed to the get by ID functions
+ */
+
+// TODO all methods accessing the database:
 //   - error handling
 
 
@@ -32,7 +43,6 @@
 #include "src/model/Plane.h"
 
 #include "src/db/Database.h"
-#include "src/model/objectList/EntityList.h"
 #include "src/concurrent/synchronized.h"
 
 
@@ -41,10 +51,7 @@ namespace Db
 	namespace Cache
 	{
 		Cache::Cache (Database &db):
-			db (db),
-			flightsToday (new EntityList<Flight> ()),
-			flightsOther (new EntityList<Flight> ()),
-			preparedFlights (new EntityList<Flight> ())
+			db (db)
 		{
 		}
 
@@ -72,49 +79,58 @@ namespace Db
 		// ** Object lists **
 		// ******************
 
-		QList<Plane> Cache::getPlanes ()
+		EntityList<Plane> Cache::getPlanes ()
 		{
 			synchronizedReturn (dataMutex, planes);
 		}
 
-		QList<Person> Cache::getPeople ()
+		EntityList<Person> Cache::getPeople ()
 		{
 			synchronizedReturn (dataMutex, people);
 		}
 
-		QList<LaunchMethod> Cache::getLaunchMethods ()
+		EntityList<LaunchMethod> Cache::getLaunchMethods ()
 		{
 			synchronizedReturn (dataMutex, launchMethods);
 		}
 
-		QList<Flight> Cache::getFlightsToday ()
+		EntityList<Flight> Cache::getFlightsToday ()
 		{
-			// TODO handle date change?
-			synchronizedReturn (dataMutex, flightsToday->getList ());
+			synchronizedReturn (dataMutex, flightsToday.getList ());
 		}
 
-		QList<Flight> Cache::getFlightsOther ()
+		EntityList<Flight> Cache::getFlightsOther ()
 		{
-			synchronizedReturn (dataMutex, flightsOther->getList ());
+			synchronizedReturn (dataMutex, flightsOther.getList ());
 		}
 
-		QList<Flight> Cache::getPreparedFlights ()
+		EntityList<Flight> Cache::getPreparedFlights ()
 		{
-			synchronizedReturn (dataMutex, preparedFlights->getList ());
+			synchronizedReturn (dataMutex, preparedFlights.getList ());
 		}
 
-		template<class T> const QList<T> Cache::getObjects () const
+		/**
+		 * Makes a copy of the object list
+		 *
+		 * We don't return a (const) reference to the list because the list
+		 * itself is not thread safe and accesses to the list have to
+		 * synchronized. Copying the list is fast if the list is not modified
+		 * thanks to Qt implicit sharing.
+		 */
+		template<class T> EntityList<T> Cache::getObjects () const
 		{
-			// TODO the cast should be in the non-const method
-			// TODO: make a copy of the list (synchronized) because the lists
-			// have to be locked for concurrent access
-			Cache *nonConstCache=const_cast<Cache *> (this);
-			return *nonConstCache->objectList<T> ();
+			synchronizedReturn (dataMutex, *objectList<T> ());
 		}
 
-		template<> QList<Plane       > *Cache::objectList<Plane       > () { return &planes       ; }
-		template<> QList<Person      > *Cache::objectList<Person      > () { return &people       ; }
-		template<> QList<LaunchMethod> *Cache::objectList<LaunchMethod> () { return &launchMethods; }
+		// Specialize list getters (const)
+		template<> const EntityList<Plane       > *Cache::objectList<Plane       > () const { return &planes       ; }
+		template<> const EntityList<Person      > *Cache::objectList<Person      > () const { return &people       ; }
+		template<> const EntityList<LaunchMethod> *Cache::objectList<LaunchMethod> () const { return &launchMethods; }
+
+		// Specialize list getters (non-const)
+		template<> EntityList<Plane       > *Cache::objectList<Plane       > () { return &planes       ; }
+		template<> EntityList<Person      > *Cache::objectList<Person      > () { return &people       ; }
+		template<> EntityList<LaunchMethod> *Cache::objectList<LaunchMethod> () { return &launchMethods; }
 
 
 
@@ -135,7 +151,7 @@ namespace Db
 
 			// TODO use a hash/map
 			synchronized (dataMutex)
-				foreach (const T &object, *objectList<T> ())
+				foreach (const T &object, objectList<T> ()->getList ())
 					if (object.getId ()==id)
 						return T (object);
 
@@ -145,20 +161,20 @@ namespace Db
 		// Different specialization for Flight
 		template<> Flight Cache::getObject (dbId id)
 		{
-			// TODO use EntityList methods
+			// TODO use map
 			synchronized (dataMutex)
 			{
 				if (todayDate.isValid ())
-					foreach (const Flight &flight, flightsToday->getList ())
+					foreach (const Flight &flight, flightsToday.getList ())
 						if (flight.getId ()==id)
 							return Flight (flight);
 
 				if (otherDate.isValid ())
-					foreach (const Flight &flight, flightsOther->getList ())
+					foreach (const Flight &flight, flightsOther.getList ())
 						if (flight.getId ()==id)
 								return Flight (flight);
 
-				foreach (const Flight &flight, preparedFlights->getList ())
+				foreach (const Flight &flight, preparedFlights.getList ())
 					if (flight.getId ()==id)
 						return Flight (flight);
 			}
@@ -219,7 +235,7 @@ namespace Db
 		{
 			// TODO use hash/map
 			synchronized (dataMutex)
-				foreach (const Plane &plane, planes)
+				foreach (const Plane &plane, planes.getList ())
 					if (plane.registration.toLower ()==registration.toLower ())
 						return plane.getId ();
 
@@ -232,7 +248,7 @@ namespace Db
 			QList<dbId> result;
 
 			synchronized (dataMutex)
-				foreach (const Person &person, people)
+				foreach (const Person &person, people.getList ())
 					if (person.firstName.toLower ()==firstName.toLower () && person.lastName.toLower ()==lastName.toLower ())
 						result.append (person.getId ());
 
@@ -267,7 +283,7 @@ namespace Db
 			QList<dbId> result;
 
 			synchronized (dataMutex)
-				foreach (const Person &person, people)
+				foreach (const Person &person, people.getList ())
 					if (person.lastName.toLower ()==lastName.toLower ())
 						result.append (person.getId ());
 
@@ -280,7 +296,7 @@ namespace Db
 			QList<dbId> result;
 
 			synchronized (dataMutex)
-				foreach (const Person &person, people)
+				foreach (const Person &person, people.getList ())
 					if (person.firstName.toLower ()==firstName.toLower ())
 						result.append (person.getId ());
 
@@ -291,7 +307,7 @@ namespace Db
 		{
 			// TODO use hash/map
 			synchronized (dataMutex)
-				foreach (const LaunchMethod &launchMethod, launchMethods)
+				foreach (const LaunchMethod &launchMethod, launchMethods.getList ())
 					if (launchMethod.type==type)
 						return launchMethod.getId ();
 
@@ -309,7 +325,7 @@ namespace Db
 			QStringList result;
 
 			synchronized (dataMutex)
-				foreach (const Plane &plane, planes)
+				foreach (const Plane &plane, planes.getList ())
 					result.append (plane.registration);
 
 			result.sort ();
@@ -323,7 +339,7 @@ namespace Db
 			QSet<QString> firstNames;
 
 			synchronized (dataMutex)
-				foreach (const Person &person, people)
+				foreach (const Person &person, people.getList ())
 					firstNames.insert (person.firstName);
 
 			// TODO sort case insensitively
@@ -339,7 +355,7 @@ namespace Db
 			QSet<QString> firstNames;
 
 			synchronized (dataMutex)
-				foreach (const Person &person, people)
+				foreach (const Person &person, people.getList ())
 					if (person.lastName.toLower ()==lastName.toLower ())
 						firstNames.insert (person.firstName);
 
@@ -356,7 +372,7 @@ namespace Db
 			QSet<QString> lastNames;
 
 			synchronized (dataMutex)
-				foreach (const Person &person, people)
+				foreach (const Person &person, people.getList ())
 					lastNames.insert (person.lastName);
 
 			// TODO sort case insensitively
@@ -372,7 +388,7 @@ namespace Db
 			QSet<QString> lastNames;
 
 			synchronized (dataMutex)
-				foreach (const Person &person, people)
+				foreach (const Person &person, people.getList ())
 					if (person.firstName.toLower ()==firstName.toLower ())
 						lastNames.insert (person.lastName);
 
@@ -394,12 +410,40 @@ namespace Db
 
 		QStringList Cache::getPlaneTypes ()
 		{
-			synchronizedReturn (dataMutex, planeTypes);
+			QSet<QString> types;
+
+			synchronized (dataMutex)
+				foreach (const Plane &plane, planes.getList ())
+					types.insert (plane.type);
+
+			// TODO sort case insensitively
+			QStringList result=QStringList::fromSet (types);
+			result.sort ();
+			return result;
+
+			// TODO cache
+			//synchronizedReturn (dataMutex, planeTypes);
 		}
 
 		QStringList Cache::getClubs ()
 		{
-			synchronizedReturn (dataMutex, clubs);
+			QSet<QString> clubs;
+
+			synchronized (dataMutex)
+				foreach (const Plane &plane, planes.getList ())
+					clubs.insert (plane.club);
+
+			synchronized (dataMutex)
+				foreach (const Person &person, people.getList ())
+					clubs.insert (person.club);
+
+			// TODO sort case insensitively
+			QStringList result=QStringList::fromSet (clubs);
+			result.sort ();
+			return result;
+
+			// TODO cache
+			//synchronizedReturn (dataMutex, clubs);
 		}
 
 
@@ -408,7 +452,7 @@ namespace Db
 			synchronized (dataMutex)
 			{
 				// Only use the flights of today
-				foreach (const Flight &flight, flightsToday->getList ())
+				foreach (const Flight &flight, flightsToday.getList ())
 				{
 					if (
 						(flight.isFlying         () && flight.planeId==id) ||
@@ -425,7 +469,7 @@ namespace Db
 			synchronized (dataMutex)
 			{
 				// Only use the flights of today
-				foreach (const Flight &flight, flightsToday->getList ())
+				foreach (const Flight &flight, flightsToday.getList ())
 				{
 					if (
 						(flight.isFlying         () && flight.pilotId    ==id) ||
@@ -449,6 +493,7 @@ namespace Db
 			QList<Plane> newPlanes=db.getObjects<Plane> ();
 			synchronized (dataMutex) planes=newPlanes;
 			// TODO rebuild hashes
+			// TODO rebuild planeTypes, clubs
 
 			return 0;
 		}
@@ -458,6 +503,7 @@ namespace Db
 			QList<Person> newPeople=db.getObjects<Person> ();
 			synchronized (dataMutex) people=newPeople;
 			// TODO rebuild hashes
+			// TODO rebuild clubs
 
 			return 0;
 		}
@@ -471,14 +517,6 @@ namespace Db
 			return 0;
 		}
 
-
-#define copyList(T, source, target) do \
-{ \
-	(target).clear (); \
-	foreach (T it, (source)) \
-		(target).append (it); \
-} while (0)
-
 		int Cache::refreshFlightsToday ()
 		{
 			QDate today=QDate::currentDate ();
@@ -488,9 +526,7 @@ namespace Db
 			synchronized (dataMutex)
 			{
 				todayDate=today;
-				// TODO better copying
-				copyList (Flight, newFlights, *flightsToday);
-//				(*flightsToday)=newFlights;
+				flightsToday.replaceList (newFlights);
 			}
 
 			return 0;
@@ -501,12 +537,7 @@ namespace Db
 			if (otherDate.isNull ()) return 0;
 
 			QList<Flight> newFlights=db.getFlightsDate (otherDate);
-			synchronized (dataMutex)
-			{
-				// TODO better copying
-				copyList (Flight, newFlights, *flightsOther);
-//				(*flightsOther)=newFlights;
-			}
+			synchronized (dataMutex) flightsOther.replaceList (newFlights);
 
 			return 0;
 		}
@@ -520,9 +551,7 @@ namespace Db
 			synchronized (dataMutex)
 			{
 				otherDate=date;
-				// TODO better copying
-				copyList (Flight, newFlights, *flightsOther);
-//				(*flightsOther)=newFlights;
+				flightsOther.replaceList (newFlights);
 			}
 
 			return 0;
@@ -531,12 +560,7 @@ namespace Db
 		int Cache::refreshPreparedFlights ()
 		{
 			QList<Flight> newFlights=db.getPreparedFlights ();
-			synchronized (dataMutex)
-			{
-				// TODO better copying
-				copyList (Flight, newFlights, *preparedFlights);
-//				(*preparedFlights)=newFlights;
-			}
+			synchronized (dataMutex) preparedFlights.replaceList (newFlights);
 
 			return 0;
 		}
@@ -595,12 +619,12 @@ namespace Db
 			synchronized (dataMutex)
 			{
 				if (flight.isPrepared ())
-					preparedFlights->append (flight);
+					preparedFlights.append (flight);
 				else if (flight.effdatum ()==todayDate)
-					flightsToday->append (flight);
+					flightsToday.append (flight);
 				else if (flight.effdatum ()==otherDate)
 					// If otherDate is the same as today, this is not reached.
-					flightsOther->append (flight);
+					flightsOther.append (flight);
 				//else
 				//	we're not interested in this flight
 			}
@@ -610,22 +634,15 @@ namespace Db
 		template<class T> void Cache::objectDeleted (dbId id)
 		{
 			// Remove the object from the cache
-			// TODO use EntityList methods
-			synchronized (dataMutex)
-			{
-				QMutableListIterator<T> it (*(objectList<T> ()));
-				while (it.hasNext ())
-					if (it.next ().getId ()==id)
-						it.remove ();
-			}
+			synchronized (dataMutex) objectList<T> ()->removeById (id);
 		}
 
 		template<> void Cache::objectDeleted<Flight> (dbId id)
 		{
 			// If any of the lists contain this flight, remove it
-			preparedFlights->removeById (id);
-			flightsToday->removeById (id);
-			flightsOther->removeById (id);
+			preparedFlights.removeById (id);
+			flightsToday.removeById (id);
+			flightsOther.removeById (id);
 		}
 
 		// This template is specialized for T==Flight
@@ -634,15 +651,9 @@ namespace Db
 			// TODO if the object is not in the cache, add it and log an error
 			// TODO use EntityList methods
 
-			synchronized (dataMutex)
-			{
 				// Update the cache
-				QMutableListIterator<T> it (*(objectList<T> ()));
-
-				while (it.hasNext ())
-					if (it.next ().getId ()==object.getId ())
-						it.setValue (object);
-			}
+			synchronized (dataMutex)
+				objectList<T> ()->replaceById (object.getId (), object);
 		}
 
 		template<> void Cache::objectUpdated<Flight> (const Flight &flight)
@@ -661,29 +672,29 @@ namespace Db
 			{
 				if (flight.isPrepared ())
 				{
-					preparedFlights->replaceOrAdd (flight.getId (), flight);
-					flightsToday->removeById (flight.getId ());
-					flightsOther->removeById (flight.getId ());
+					preparedFlights.replaceOrAdd (flight.getId (), flight);
+					flightsToday.removeById (flight.getId ());
+					flightsOther.removeById (flight.getId ());
 				}
 				else if (flight.effdatum ()==todayDate)
 				{
-					preparedFlights->removeById (flight.getId ());
-					flightsToday->replaceOrAdd (flight.getId (), flight);
-					flightsOther->removeById (flight.getId ());
+					preparedFlights.removeById (flight.getId ());
+					flightsToday.replaceOrAdd (flight.getId (), flight);
+					flightsOther.removeById (flight.getId ());
 				}
 				else if (flight.effdatum ()==otherDate)
 				{
 					// If otherDate is the same as today, this is not reached.
-					preparedFlights->removeById (flight.getId ());
-					flightsToday->removeById (flight.getId ());
-					flightsOther->replaceOrAdd (flight.getId (), flight);
+					preparedFlights.removeById (flight.getId ());
+					flightsToday.removeById (flight.getId ());
+					flightsOther.replaceOrAdd (flight.getId (), flight);
 				}
 				else
 				{
 					// The flight should not be on any list - remove it from all lists
-					preparedFlights->removeById (flight.getId ());
-					flightsToday->removeById (flight.getId ());
-					flightsOther->removeById (flight.getId ());
+					preparedFlights.removeById (flight.getId ());
+					flightsToday.removeById (flight.getId ());
+					flightsOther.removeById (flight.getId ());
 				}
 			}
 		}

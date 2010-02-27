@@ -9,11 +9,13 @@
 #define CACHE_H_
 
 #include <QDate>
-#include <QMutexLocker> // remove
 #include <QList>
+#include <QMap>
+#include <QMutex>
 
 #include "src/db/dbId.h"
 #include "src/model/LaunchMethod.h" // Required for LaunchMethod::Type
+#include "src/model/objectList/EntityList.h"
 
 class Flight;
 class Person;
@@ -45,7 +47,8 @@ namespace Db
 		 * List<Plane>=dataStorage.getPlanes ()) to prevent accidental
 		 * modifications which would cause the list data to be copied.
 		 *
-		 * This class is thread safe.
+		 * This class is thread safe, provided that the database is thread safe
+		 * (that is, accesses to the database are not synchronized).
 		 */
 		class Cache
 		{
@@ -68,14 +71,13 @@ namespace Db
 
 
 				// *** Object lists
-				// TODO these methods should return EntityList instead of QList
-				QList<Plane> getPlanes ();
-				QList<Person> getPeople ();
-				QList<LaunchMethod> getLaunchMethods ();
-				QList<Flight> getFlightsToday ();
-				QList<Flight> getFlightsOther ();
-				QList<Flight> getPreparedFlights ();
-				template<class T> const QList<T> getObjects () const;
+				EntityList<Plane> getPlanes ();
+				EntityList<Person> getPeople ();
+				EntityList<LaunchMethod> getLaunchMethods ();
+				EntityList<Flight> getFlightsToday ();
+				EntityList<Flight> getFlightsOther ();
+				EntityList<Flight> getPreparedFlights ();
+				template<class T> EntityList<T> getObjects () const;
 
 
 				// *** Individual objects
@@ -88,7 +90,7 @@ namespace Db
 
 
 				// *** Object lookup
-				// TODO cache, sort, hashes
+				// TODO cache, sort, maps
 				dbId getPlaneIdByRegistration (const QString &registration);
 				QList<dbId> getPersonIdsByName (const QString &firstName, const QString &lastName);
 				dbId getUniquePersonIdByName (const QString &firstName, const QString &lastName);
@@ -138,7 +140,8 @@ namespace Db
 			protected:
 				// *** Object lists
 				// Helper templates, specialized in implementation
-				template<class T> QList<T> *objectList ();
+				template<class T> const EntityList<T> *objectList () const;
+				template<class T> EntityList<T> *objectList ();
 
 			private:
 				// *** Database
@@ -150,20 +153,18 @@ namespace Db
 				// accesses the database to retrieve the object identified by the ID
 				// from the dbEvent - so the object must be in the cache before the
 				// dbEvent is emitted!
-				// TODO but we could use EntityList here; but note that it's not
 
-				QList<Plane> planes;
-				QList<Person> people;
-				QList<LaunchMethod> launchMethods;
+				EntityList<Plane> planes;
+				EntityList<Person> people;
+				EntityList<LaunchMethod> launchMethods;
 
 				// For flights, we keep multiple lists - one for the flights of today,
 				// one for the flights of another date, and one for prepared flights.
 				// The flights of today are required for planeFlying and personFlying.
 				// In the future, we may add lists for an arbitrary number of dates.
-				// TODO why pointers?
-				EntityList<Flight> *flightsToday; QDate todayDate;
-				EntityList<Flight> *flightsOther; QDate otherDate;
-				EntityList<Flight> *preparedFlights;
+				EntityList<Flight> flightsToday; QDate todayDate;
+				EntityList<Flight> flightsOther; QDate otherDate;
+				EntityList<Flight> preparedFlights;
 
 				// *** Object data
 				QStringList locations;
@@ -171,8 +172,9 @@ namespace Db
 				QStringList clubs;
 				QStringList planeTypes;
 
+
 				// *** Concurrency
-				// TODO locks for different object classes?
+				// Improvement: use separate locks for flights, people...
 				/** Locks accesses to data of this Cache */
 				mutable QMutex dataMutex;
 

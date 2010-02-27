@@ -28,6 +28,8 @@ template<class T> class AbstractObjectList: public QAbstractTableModel
 		virtual ~AbstractObjectList ();
 
 		// Access
+		using QObject::parent; // Hidden by QAbstractItemModel::parent (const QModelIndex &)
+
 		/**
 		 * The number of objects in the list
 		 *

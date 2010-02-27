@@ -26,6 +26,7 @@
  *   - Fixtures
  *     - SQL dump or data file (CSV/YAML)?
  *     - C++ or Ruby?
+ *   - Port open, but connection not accepted
  *
  * Improvements:
  *   - Add a ResultConsumer as alternative to passing a result (especially for
@@ -64,6 +65,35 @@
  *         should be fast enough (does sqlite memory table have index?)
  *         locations are more interesting, b/c there are many flights
  *   - local disk caching
+ */
+
+/*
+ * Old DataStorage sez:
+ *
+ * On multithreaded database access:
+ *   - Some operations may take some time, especially over a slow network
+ *     connection. Examples:
+ *       - refresh cache, fetch flights for a given date (long operation even
+ *         with local storage)
+ *       - write to the database (create, update, delete)
+ *   - Some operations cannot be interrupted, for example a MySQL call waiting
+ *     for a timeout due to a non-working network connection
+ *   - We want to be able to cancel such operations. For this, we must have a
+ *     responsive GUI, so the GUI thread must be running
+ *   - Typically, the function initiating a long operation will not continue
+ *     (which also means that it will not return) until after the task is
+ *     completed (or failed or aborted), as the next action may depend on the
+ *     result of the task
+ *
+ * Implementation of multithreaded database access:
+ *   - operation are performed by a Task
+ *   - the DataStorage has a WorkerThread that performs Tasks sequentially on
+ *     a background thread
+ *   - the database access functionality is in DataStorage; the tasks call the
+ *     corresponding method of DataStorage, passing a pointer the Task as an
+ *     OperationMonitor
+ *   - a dialog for monitoring and canceling Tasks is provided by
+ *     TaskProgressDialog
  */
 
 #include "Database.h"

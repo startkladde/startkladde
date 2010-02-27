@@ -22,7 +22,10 @@ template<class T> class MutableObjectList: public AbstractObjectList<T>
 		// Construction
 		MutableObjectList (QObject *parent=NULL);
 		MutableObjectList (const QList<T> &list, QObject *parent=NULL);
+		MutableObjectList (const MutableObjectList<T> &other);
+		MutableObjectList<T> &operator= (const MutableObjectList<T> &other);
 		virtual ~MutableObjectList ();
+
 
 		// Object access
 		virtual void removeAt (int index);
@@ -69,6 +72,20 @@ template<class T> MutableObjectList<T>::MutableObjectList (const QList<T> &list,
 	AbstractObjectList<T> (parent),
 	list (list)
 {
+}
+
+template<class T> MutableObjectList<T>::MutableObjectList (const MutableObjectList<T> &other):
+	AbstractObjectList<T> (other.parent ()),
+	list (other.list)
+{
+
+}
+
+template<class T> MutableObjectList<T> &MutableObjectList<T>::operator= (const MutableObjectList<T> &other)
+{
+	setParent (other.parent ());
+	list=other.list;
+	return *this;
 }
 
 template<class T> MutableObjectList<T>::~MutableObjectList ()
