@@ -23,6 +23,7 @@ HEADERS += \
            src/text.h \
            src/version.h \
            src/concurrent/DefaultQThread.h \
+           src/concurrent/synchronized.h \
            src/concurrent/ThreadUtil.h \
            src/concurrent/Waiter.h \
            src/concurrent/WorkerThread.h \
@@ -35,6 +36,7 @@ HEADERS += \
            src/db/DbEvent.h \
            src/db/Query.h \
            src/db/dbId.h \
+           src/db/cache/Cache.h \
            src/db/dataStorage/DataStorage.h \
            src/db/dataStorage/DataStorageMonitor.h \
            src/db/dataStorage/DataStorageWorker.h \
@@ -121,6 +123,7 @@ SOURCES += \
            src/text.cpp \
            src/version.cpp \
            src/concurrent/DefaultQThread.cpp \
+           src/concurrent/synchronized.cpp \
            src/concurrent/ThreadUtil.cpp \
            src/concurrent/Waiter.cpp \
            src/concurrent/WorkerThread.cpp \
@@ -133,6 +136,7 @@ SOURCES += \
            src/db/DbEvent.cpp \
            src/db/Query.cpp \
            src/db/dbId.cpp \
+           src/db/cache/Cache.cpp \
            src/db/dataStorage/DataStorage.cpp \
            src/db/dataStorage/DataStorageMonitor.cpp \
            src/db/dataStorage/DataStorageWorker.cpp \

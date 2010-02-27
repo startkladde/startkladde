@@ -11,7 +11,7 @@
 #include "MutableObjectList.h"
 
 /**
- * A subclass of MutableObjectList which contains Entitys and allows acces based
+ * A subclass of MutableObjectList which contains Entities and allows access based
  * on the entity id.
  *
  * T must provide a getId method.
