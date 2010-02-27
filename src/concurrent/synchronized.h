@@ -11,7 +11,13 @@
 #include <QMutex>
 #include <QMutexLocker>
 
-#define synchronized(mutex) for (Synchronizer _sync_ (&(mutex)); !_sync_.done; _sync_.done=true)
+#define synchronized(mutex) for (Synchronizer _ ## mutex ## _sync_ (&(mutex)); !_ ## mutex ## _sync_.done; _ ## mutex ## _sync_.done=true)
+
+/**
+ * This can be used instead of synchronized (mutex) return value; the compiler
+ * will recognize that this will always return.
+ */
+#define synchronizedReturn(mutex, value) do { QMutexLocker _ ## mutex ## _locker_ (&mutex); return (value); } while (0)
 
 /**
  * A helper class to be used with the synchronized macro
@@ -31,6 +37,10 @@
  *
  * For single statements, this can be written as:
  *   synchronized (mutex) foo ();
+ *
+ * Note, however, that a return in the block will not be recognized as always
+ * executed, so the compiler may warn about control reaching the end of the
+ * function.
  */
 class Synchronizer: QMutexLocker
 {
