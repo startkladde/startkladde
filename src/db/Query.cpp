@@ -4,7 +4,8 @@
 #include <QSqlQuery>
 #include <QStringList>
 
-#include "src/io/colors.h"
+//#include "src/io/colors.h"
+#include "src/io/AnsiColors.h"
 
 namespace Db
 {
@@ -79,11 +80,36 @@ namespace Db
 
 	QString Query::colorizedString () const
 	{
-		return QString ("%1%2%3")
-			.arg (c_1 at_bold c_0)
-			.arg (toString ())
-			.arg (c_1 clr_default c_0)
+		QString result;
+		AnsiColors c;
+
+		result += c.blue ();
+
+		QStringList words=toString ().split (" ", QString::SkipEmptyParts);
+
+		bool first=true;
+		foreach (const QString &word, words)
+		{
+			if (!first) result+=" ";
+			first=false;
+
+			if (word.upper()==word)
+				result += c.bold ().cyan();
+			else
+				result += c.noBold ().blue();
+
+			result+=word;
+		}
+
+//		return QString ("%1%2%3")
+//			.arg (c.bold().blue())
+//			.arg (toString ())
+//			.arg (c.reset ())
 			;
+
+		result += c.reset ();
+
+		return result;
 	}
 
 
