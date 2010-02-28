@@ -11,13 +11,14 @@
 #include <QSqlError>
 #include <QString>
 
+#include "src/StorableException.h"
 #include "src/db/Query.h"
 
 namespace Db
 {
 	namespace Interface
 	{
-		class QueryFailedException
+		class QueryFailedException: public StorableException
 		{
 			public:
 				enum Phase { phasePrepare, phaseExecute };
@@ -25,6 +26,9 @@ namespace Db
 				QueryFailedException (QSqlError error, Query query, Phase phase);
 				static QueryFailedException prepare (QSqlError error, Query query);
 				static QueryFailedException execute (QSqlError error, Query query);
+
+				virtual QueryFailedException *clone () const;
+				virtual void deleteAndThrow () const;
 
 				QString toString () const;
 				static QString phaseString (Phase phase);

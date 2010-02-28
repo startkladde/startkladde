@@ -12,8 +12,9 @@
 
 #include "src/db/interface/AbstractInterface.h"
 #include "src/db/Query.h"
+#include "src/concurrent/Returner.h"
 
-class Waiter;
+class Waiter; // TODO remove
 
 namespace Db
 {
@@ -56,7 +57,8 @@ namespace Db
 					// Must use Db:: for Query for the signals
 					virtual void executeQuery       (Waiter *waiter,                                         Db::Query query);
 					virtual void executeQueryResult (Waiter *waiter, QSharedPointer<Result::Result> *result, Db::Query query, bool forwardOnly=true);
-					virtual void queryHasResult     (Waiter *waiter, bool                           *result, Db::Query query);
+//					virtual void queryHasResult     (Waiter *waiter, bool                           *result, Db::Query query);
+					virtual void queryHasResult     (Returner<bool> *returner        , Db::Query query);
 
 				private:
 					AbstractInterface *interface;

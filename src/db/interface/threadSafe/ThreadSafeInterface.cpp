@@ -5,7 +5,8 @@
 #include <QSqlError>
 
 #include "src/db/result/Result.h"
-#include "src/concurrent/Waiter.h"
+#include "src/concurrent/Waiter.h" // TODO remove
+#include "src/concurrent/Returner.h"
 
 namespace Db { namespace Interface { namespace ThreadSafe
 {
@@ -136,13 +137,17 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	bool ThreadSafeInterface::queryHasResult (const Query &query)
 	{
-		Waiter waiter;
-		bool result;
+		Returner<bool> returner;
+		thread.queryHasResult (&returner, query);
+		return returner.returnedValue ();
 
-		thread.queryHasResult (&waiter, &result, query);
-		waiter.wait ();
-
-		return result;
+//		Waiter waiter;
+//		bool result;
+//
+//		thread.queryHasResult (&waiter, &result, query);
+//		waiter.wait ();
+//
+//		return result;
 	}
 
 } } }

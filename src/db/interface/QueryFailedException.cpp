@@ -20,6 +20,18 @@ namespace Db { namespace Interface
 		return QueryFailedException (error, query, phaseExecute);
 	}
 
+	QueryFailedException *QueryFailedException::clone () const
+	{
+		return new QueryFailedException (error, query, phase);
+	}
+
+	void QueryFailedException::deleteAndThrow () const
+	{
+		QueryFailedException copy (error, query, phase);
+		delete this;
+		throw copy;
+	}
+
 	QString QueryFailedException::toString () const
 	{
 		return QString (

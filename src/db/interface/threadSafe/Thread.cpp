@@ -29,7 +29,8 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 		CONNECT (executeQuery       (Waiter *,                                   Db::Query));
 		CONNECT (executeQueryResult (Waiter *, QSharedPointer<Result::Result> *, Db::Query, bool));
-		CONNECT (queryHasResult     (Waiter *, bool                           *, Db::Query));
+//		CONNECT (queryHasResult     (Waiter *, bool                           *, Db::Query));
+		CONNECT (queryHasResult     (Returner<bool> *, Db::Query));
 
 #undef CONNECT
 
@@ -95,12 +96,15 @@ namespace Db { namespace Interface { namespace ThreadSafe
 		emit sig_executeQueryResult (waiter, result, query, forwardOnly);
 	}
 
-	void Thread::queryHasResult (Waiter *waiter, bool *result, const Query &query)
+	void Thread::queryHasResult (Returner<bool> *returner, const Query &query)
 	{
-		emit sig_queryHasResult (waiter, result, query);
-
+		emit sig_queryHasResult (returner, query);
 	}
 
-
+//	void Thread::queryHasResult (Waiter *waiter, bool *result, const Query &query)
+//	{
+//		emit sig_queryHasResult (waiter, result, query);
+//
+//	}
 
 } } }

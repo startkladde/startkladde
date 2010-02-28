@@ -4,9 +4,10 @@
 // #executeQueryResult
 #include "src/db/result/Result.h"
 #include "src/db/result/CopiedResult.h"
-#include "src/concurrent/Waiter.h"
+#include "src/concurrent/Waiter.h" // TODO remove
 #include "src/db/Query.h"
 #include "src/db/interface/DefaultInterface.h"
+#include "src/concurrent/Returner.h"
 
 namespace Db { namespace Interface { namespace ThreadSafe
 {
@@ -99,10 +100,22 @@ namespace Db { namespace Interface { namespace ThreadSafe
 		if (waiter) waiter->notify ();
 	}
 
-	void Worker::queryHasResult (Waiter *waiter, bool *result, Query query)
+	void Worker::queryHasResult (Returner<bool> *returner, Db::Query query)
 	{
-		if (result) *result=interface->queryHasResult (query);
-		if (waiter) waiter->notify ();
+		try
+		{
+			returner->returnValue (interface->queryHasResult (query));
+		}
+		catch (StorableException &ex)
+		{
+			returner->exception (ex);
+		}
 	}
+
+//	void Worker::queryHasResult (Waiter *waiter, bool *result, Query query)
+//	{
+//		if (result) *result=interface->queryHasResult (query);
+//		if (waiter) waiter->notify ();
+//	}
 
 } } }

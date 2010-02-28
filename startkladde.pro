@@ -20,6 +20,7 @@ HEADERS += \
            src/SkException.h \
            src/accessor.h \
            src/color.h \
+           src/StorableException.h \
            src/text.h \
            src/version.h \
            src/concurrent/DefaultQThread.h \
@@ -119,6 +120,7 @@ SOURCES += \
 		   build/CurrentSchema.cpp \
            src/color.cpp \
            src/startkladde.cpp \
+           src/StorableException.cpp \
            src/text.cpp \
            src/version.cpp \
            src/concurrent/DefaultQThread.cpp \

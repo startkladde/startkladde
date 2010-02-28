@@ -135,6 +135,8 @@ namespace Db { namespace Interface
 
 	/**
 	 * Executes a query and returns the QSqlQuery
+	 *
+	 * @throw QueryFailedException if the query fails
 	 */
 	QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOnly)
 	{

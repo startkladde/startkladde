@@ -12,13 +12,17 @@
 
 #include "src/db/interface/threadSafe/Worker.h"
 
-#include "src/concurrent/Waiter.h"
+#include "src/concurrent/Waiter.h" // TODO remove
 #include "src/db/Query.h"
+#include "src/concurrent/Returner.h"
+
 
 namespace Db
 {
 	namespace Interface
 	{
+		class QueryFailedException;
+
 		namespace ThreadSafe
 		{
 			/**
@@ -56,7 +60,8 @@ namespace Db
 					// *** Queries
 					virtual void executeQuery       (Waiter *waiter,                                         const Query &query);
 					virtual void executeQueryResult (Waiter *waiter, QSharedPointer<Result::Result> *result, const Query &query, bool forwardOnly=true);
-					virtual void queryHasResult     (Waiter *waiter, bool                           *result, const Query &query);
+//					virtual void queryHasResult     (Waiter *waiter, bool                           *result, const Query &query);
+					virtual void queryHasResult     (Returner<bool> *returner        , const Query &query);
 
 				signals:
 					// *** Connection management
@@ -73,8 +78,8 @@ namespace Db
 					// Must use Db:: for Query for the signals
 					virtual void sig_executeQuery       (Waiter *waiter,                                         Db::Query query);
 					virtual void sig_executeQueryResult (Waiter *waiter, QSharedPointer<Result::Result> *result, Db::Query query, bool forwardOnly=true);
-					virtual void sig_queryHasResult     (Waiter *waiter, bool                           *result, Db::Query query);
-
+//					virtual void sig_queryHasResult     (Waiter *waiter, bool                           *result, Db::Query query);
+					virtual void sig_queryHasResult     (Returner<bool> *returner,         Db::Query query);
 
 				protected:
 					virtual void run ();
