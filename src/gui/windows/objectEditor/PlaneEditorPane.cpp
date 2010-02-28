@@ -112,6 +112,7 @@ Plane PlaneEditorPane::determineObject ()
 	plane.registration=ui.registrationInput->text ();
 	plane.competitionCallsign=ui.competitionIdInput->text ();
 	plane.category=(Plane::Category)ui.categoryInput->currentItemData ().toInt ();
+
 	plane.type=ui.typeInput->currentText ();
 	plane.club=ui.clubInput->currentText ();
 	plane.numSeats=ui.seatsInput->value ();

@@ -1104,7 +1104,6 @@ Flight FlightWindow::determineFlight (bool launchNow)
 dbId FlightWindow::determinePlane (QString registration, QString description, QWidget *widget)
 	throw (FlightWindow::AbortedException)
 {
-	std::cout << "determine " << description << ": " << registration << std::endl;
 	dbId id=invalidId;
 
 	// Check if no registration is given. Return true if the user confirms or

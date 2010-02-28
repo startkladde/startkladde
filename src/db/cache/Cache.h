@@ -8,6 +8,7 @@
 #ifndef CACHE_H_
 #define CACHE_H_
 
+#include <QObject>
 #include <QDate>
 #include <QList>
 #include <QMap>
@@ -16,10 +17,12 @@
 #include "src/db/dbId.h"
 #include "src/model/LaunchMethod.h" // Required for LaunchMethod::Type
 #include "src/model/objectList/EntityList.h"
+#include "src/db/event/Event.h"
 
 class Flight;
 class Person;
 class Plane;
+
 template<class T> class EntityList;
 
 namespace Db
@@ -35,9 +38,9 @@ namespace Db
 		 * lists (e. g. the list of clubs) and other data explicitly read from
 		 * the database (e. g. the list of locations).
 		 *
-		 * The Cache tracks changes to the Database by the DbEvents emitted by
-		 * the database. It also emits DbEvents after the cache contents
-		 * change. Classes using the cache should listen for DbEvents from the
+		 * The Cache tracks changes to the Database by the Event::Events emitted by
+		 * the database. It also emits Event::Events after the cache contents
+		 * change. Classes using the cache should listen for Event::Events from the
 		 * cache rather than from the database.
 		 *
 		 * The QLists returned by the methods of this class are implicitly
@@ -50,8 +53,10 @@ namespace Db
 		 * This class is thread safe, provided that the database is thread safe
 		 * (that is, accesses to the database are not synchronized).
 		 */
-		class Cache
+		class Cache: public QObject
 		{
+			Q_OBJECT
+
 			public:
 				class NotFoundException: public std::exception
 				{
@@ -121,6 +126,7 @@ namespace Db
 				int refreshPlanes ();
 				int refreshPeople ();
 				int refreshLaunchMethods ();
+				int refreshFlights ();
 				int refreshFlightsToday ();
 				int refreshFlightsOther ();
 				int fetchFlightsOther (QDate date);
@@ -137,12 +143,24 @@ namespace Db
 				template<class T> void objectDeleted (dbId id);
 				template<class T> void objectUpdated (const T &object);
 
+				// TODO remove id methods after the object is passed in the
+				// event
+				template<class T> void objectAdded (dbId id);
+				template<class T> void objectUpdated (dbId id);
+
+			signals:
+				void changed (Db::Event::Event event);
+
 
 			protected:
 				// *** Object lists
 				// Helper templates, specialized in implementation
 				template<class T> const EntityList<T> *objectList () const;
 				template<class T> EntityList<T> *objectList ();
+
+			protected slots:
+				void dbChanged (Event::Event event);
+
 
 			private:
 				// *** Database

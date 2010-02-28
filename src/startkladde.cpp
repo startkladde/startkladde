@@ -256,10 +256,10 @@ int main (int argc, char **argv)
 {
 	QApplication a (argc, argv); // Always
 
-	// DbEvents are used as parameters for signals emitted by tasks running on
+	// Db::Event::Event is used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
-	qRegisterMetaType<DbEvent> ("DbEvent");
+//	qRegisterMetaType<DbEvent> ("DbEvent");
 //	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
 	qRegisterMetaType<Db::Query> ("Db::Query");
 

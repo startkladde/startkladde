@@ -10,10 +10,9 @@
 
 // TODO may includes in header
 #include "EntityList.h"
-//#include "src/db/dataStorage/DataStorageMonitor.h"
-//#include "src/db/dataStorage/DataStorage.h"
 #include "src/db/cache/Cache.h"
-#include "src/db/DbEvent.h"
+#include "src/db/event/Event.h"
+#include "src/db/event/Monitor.h"
 #include "src/concurrent/threadUtil.h"
 
 // ******************
@@ -26,19 +25,19 @@
  * A subclass auf EntityList that receives dbChange events from a Cache
  * and updates the list accordingly.
  */
-template<class T> class AutomaticEntityList: public EntityList<T>//, DataStorageMonitor::Listener
+template<class T> class AutomaticEntityList: public EntityList<T>, Db::Event::Monitor::Listener
 {
 	public:
 		AutomaticEntityList (Db::Cache::Cache &cache, QObject *parent=NULL);
 		AutomaticEntityList (Db::Cache::Cache &cache, const QList<T> &list, QObject *parent=NULL);
 		virtual ~AutomaticEntityList ();
 
-		// DataStorageMonitor::Listener methods
-		virtual void dbEvent (DbEvent event);
+		// Db::Event::Listener methods
+		virtual void dbEvent (Db::Event::Event event);
 
 	protected:
 		Db::Cache::Cache &cache;
-//		DataStorageMonitor monitor;
+		Db::Event::Monitor monitor;
 };
 
 /**
@@ -49,8 +48,8 @@ template<class T> class AutomaticEntityList: public EntityList<T>//, DataStorage
  */
 template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache &cache, QObject *parent):
 	EntityList<T> (parent),
-	cache (cache)//,
-//	monitor (cache, *this)
+	cache (cache),
+	monitor (cache, SIGNAL (changed (Db::Event::Event)), *this)
 {
 }
 
@@ -63,8 +62,8 @@ template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache 
  */
 template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache &cache, const QList<T> &list, QObject *parent):
 	EntityList<T> (list, parent),
-	cache (cache)//,
-//	monitor (cache, *this)
+	cache (cache),
+	monitor (cache, SIGNAL (changed (Db::Event::Event)), *this)
 {
 }
 
@@ -73,36 +72,34 @@ template<class T> AutomaticEntityList<T>::~AutomaticEntityList ()
 }
 
 
-// ******************************************
-// ** DataStorageMonitor::Listener methods **
-// ******************************************
+// *********************************
+// ** Db::Event::Listener methods **
+// *********************************
 
 /**
  * Called on database changes. Updates the list and emits the appropriate
  * signals.
  *
- * @param event the DbEvent describing the change
+ * @param event the Db::Event::Event describing the change
  */
-template<class T> void AutomaticEntityList<T>::dbEvent (DbEvent event)
+template<class T> void AutomaticEntityList<T>::dbEvent (Db::Event::Event event)
 {
 	assert (isGuiThread());
 
-	if (event.table!=DbEvent::tableAll && event.table!=DbEvent::getTable<T> ()) return;
+	if (event.table!=Db::Event::Event::tableAll && event.table!=Db::Event::Event::getTable<T> ()) return;
 
 	switch (event.type)
 	{
-		case DbEvent::typeNone:
-			break;
-		case DbEvent::typeAdd:
+		case Db::Event::Event::typeAdd:
 		{
 			EntityList<T>::append (cache.getObject<T> (event.id));
 		} break;
-		case DbEvent::typeDelete:
+		case Db::Event::Event::typeDelete:
 		{
 			int i=EntityList<T>::findById (event.id);
 			if (i>=0) EntityList<T>::removeAt (i);
 		} break;
-		case DbEvent::typeChange:
+		case Db::Event::Event::typeChange:
 		{
 			int i=EntityList<T>::findById (event.id);
 			if (i>=0)
@@ -111,7 +108,7 @@ template<class T> void AutomaticEntityList<T>::dbEvent (DbEvent event)
 				// Should not happen
 				EntityList<T>::append (cache.getObject<T> (event.id));
 		} break;
-		case DbEvent::typeRefresh:
+		case Db::Event::Event::typeRefresh:
 		{
 			// TODO assignment?
 			EntityList<T>::replaceList (cache.getObjects<T> ().getList ());

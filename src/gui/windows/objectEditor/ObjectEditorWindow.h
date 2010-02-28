@@ -164,7 +164,10 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 		{
 			std::cout << "Update object: " << object.toString () << std::endl;
 
-			return (cache.getDatabase ().updateObject<T> (object.getId ()));
+			// May return false if nothing changed
+			cache.getDatabase ().updateObject<T> (object);
+
+			return true;
 //			UpdateObjectTask<T> task (cache, object);
 //
 //			cache.addTask (&task);

@@ -172,7 +172,7 @@ namespace Db
 
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
-		emit dbEvent (DbEvent (DbEvent::typeDelete, DbEvent::getTable<T> (), id));
+		emit dbEvent (Event::Event (Event::Event::typeDelete, Event::Event::getTable<T> (), id));
 
 		return result->numRowsAffected ()>0;
 	}
@@ -193,7 +193,7 @@ namespace Db
 		object.id=result->lastInsertId ().toLongLong ();
 
 		if (idValid (object.id))
-			emit dbEvent (DbEvent (DbEvent::typeAdd, DbEvent::getTable<T> (), object.id));
+			emit dbEvent (Event::Event (Event::Event::typeAdd, Event::Event::getTable<T> (), object.id));
 
 		return object.id;
 	}
@@ -208,9 +208,9 @@ namespace Db
 
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
-		emit dbEvent (DbEvent (DbEvent::typeChange, DbEvent::getTable<T> (), object.getId ()));
+		emit dbEvent (Event::Event (Event::Event::typeChange, Event::Event::getTable<T> (), object.getId ()));
 
-		return result->numRowsAffected ();
+		return result->numRowsAffected ()>0;
 	}
 
 	template<class T> QList<T> Database::getObjects ()

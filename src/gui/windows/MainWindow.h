@@ -198,7 +198,7 @@ class MainWindow: public QMainWindow
 		void timeTimer_timeout ();
 
 		// Database
-		void dbEvent (DbEvent event);
+		void cacheChanged (Db::Event::Event event);
 		bool initializeDatabase ();
 
 		void logMessage (QString message);

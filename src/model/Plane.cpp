@@ -284,7 +284,7 @@ QString Plane::categoryToDb (Category category)
 		// no default
 	}
 
-	assert (false);
+	assert (!"Unhandled category");
 	return "?";
 }
 

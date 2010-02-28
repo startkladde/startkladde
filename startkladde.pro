@@ -33,13 +33,13 @@ HEADERS += \
            src/concurrent/task/Task.h \
            src/config/Options.h \
            src/db/Database.h \
-           src/db/DbEvent.h \
            src/db/Query.h \
            src/db/dbId.h \
            src/db/cache/Cache.h \
            src/db/dataStorage/DataStorage.h \
-           src/db/dataStorage/DataStorageMonitor.h \
            src/db/dataStorage/DataStorageWorker.h \
+           src/db/event/Event.h \
+           src/db/event/Monitor.h \
            src/db/interface/AbstractInterface.h \
            src/db/interface/DefaultInterface.h \
            src/db/interface/Interface.h \
@@ -131,13 +131,13 @@ SOURCES += \
            src/concurrent/task/Task.cpp \
            src/config/Options.cpp \
            src/db/Database.cpp \
-           src/db/DbEvent.cpp \
            src/db/Query.cpp \
            src/db/dbId.cpp \
            src/db/cache/Cache.cpp \
            src/db/dataStorage/DataStorage.cpp \
-           src/db/dataStorage/DataStorageMonitor.cpp \
            src/db/dataStorage/DataStorageWorker.cpp \
+           src/db/event/Event.cpp \
+           src/db/event/Monitor.cpp \
            src/db/interface/AbstractInterface.cpp \
            src/db/interface/DefaultInterface.cpp \
            src/db/interface/Interface.cpp \

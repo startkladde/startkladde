@@ -35,15 +35,17 @@
 
 #include "Cache.h"
 
+#include <iostream>
+
 #include <QSet>
 
 #include "src/model/Flight.h"
 #include "src/model/LaunchMethod.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
-
 #include "src/db/Database.h"
 #include "src/concurrent/synchronized.h"
+#include "src/util/qString.h"
 
 
 namespace Db
@@ -53,6 +55,7 @@ namespace Db
 		Cache::Cache (Database &db):
 			db (db)
 		{
+			connect (&db, SIGNAL (dbEvent (Event::Event)), this, SLOT (dbChanged (Event::Event)));
 		}
 
 		Cache::~Cache ()
@@ -522,6 +525,15 @@ namespace Db
 			return 0;
 		}
 
+		int Cache::refreshFlights ()
+		{
+			refreshFlightsToday ();
+			refreshFlightsOther ();
+			refreshPreparedFlights ();
+
+			return 0;
+		}
+
 		int Cache::refreshFlightsToday ()
 		{
 			QDate today=QDate::currentDate ();
@@ -635,6 +647,11 @@ namespace Db
 			}
 		}
 
+		template<class T> void Cache::objectAdded (dbId id)
+		{
+			objectAdded (db.getObject<T> (id));
+		}
+
 		// This template is specialized for T==Flight
 		template<class T> void Cache::objectDeleted (dbId id)
 		{
@@ -659,6 +676,11 @@ namespace Db
 				// Update the cache
 			synchronized (dataMutex)
 				objectList<T> ()->replaceById (object.getId (), object);
+		}
+
+		template<class T> void Cache::objectUpdated (dbId id)
+		{
+			objectUpdated (db.getObject<T> (id));
 		}
 
 		template<> void Cache::objectUpdated<Flight> (const Flight &flight)
@@ -702,6 +724,64 @@ namespace Db
 					flightsOther.removeById (flight.getId ());
 				}
 			}
+		}
+
+		void Cache::dbChanged (Event::Event event)
+		{
+			std::cout << "Cache: "<< event.toString () << std::endl;
+
+			// TODO: introduce refresh<T> and factorize this method:
+			// processDbEvent<T> (event)
+
+			// This is ugly, but we can't pass a template class instance as a
+			// signal parameter
+			switch (event.type)
+			{
+				case Event::Event::typeAdd:
+					switch (event.table)
+					{
+						case Event::Event::tableFlights      : objectAdded<Flight      > (event.id); break;
+						case Event::Event::tableLaunchMethods: objectAdded<LaunchMethod> (event.id); break;
+						case Event::Event::tablePeople       : objectAdded<Person      > (event.id); break;
+						case Event::Event::tablePlanes       : objectAdded<Plane       > (event.id); break;
+						case Event::Event::tableAll          : break;
+					}
+					break;
+				case Event::Event::typeChange:
+					switch (event.table)
+					{
+						case Event::Event::tableFlights      : objectUpdated<Flight      > (event.id); break;
+						case Event::Event::tableLaunchMethods: objectUpdated<LaunchMethod> (event.id); break;
+						case Event::Event::tablePeople       : objectUpdated<Person      > (event.id); break;
+						case Event::Event::tablePlanes       : objectUpdated<Plane       > (event.id); break;
+						case Event::Event::tableAll          : break;
+					}
+					break;
+				case Event::Event::typeDelete:
+					switch (event.table)
+					{
+						case Event::Event::tableFlights      : objectDeleted<Flight      > (event.id); break;
+						case Event::Event::tableLaunchMethods: objectDeleted<LaunchMethod> (event.id); break;
+						case Event::Event::tablePeople       : objectDeleted<Person      > (event.id); break;
+						case Event::Event::tablePlanes       : objectDeleted<Plane       > (event.id); break;
+						case Event::Event::tableAll          : break;
+					}
+					break;
+				case Event::Event::typeRefresh:
+					// FIXME remove refresh. This should happen in the background.
+					switch (event.table)
+					{
+						case Event::Event::tableFlights      : refreshFlights       (); break;
+						case Event::Event::tableLaunchMethods: refreshLaunchMethods (); break;
+						case Event::Event::tablePeople       : refreshPeople        (); break;
+						case Event::Event::tablePlanes       : refreshPlanes        (); break;
+						case Event::Event::tableAll          : refreshAll (); break;
+					}
+					break;
+				// no default
+			}
+
+			emit changed (event);
 		}
 
 

@@ -62,8 +62,6 @@ class DataStorage: public QObject
 				dbId id;
 		};
 
-		friend class DataStorageMonitor;
-
 		DataStorage (Db::Database &db);
 		virtual ~DataStorage ();
 
@@ -140,8 +138,8 @@ class DataStorage: public QObject
 
 
 		// *** Refreshing view
-		template<class T> void refreshViews () { /*emit dbEvent (DbEvent (DbEvent::typeRefresh, DbEvent::getTable<T> (), invalidId));*/ }
-		void refreshAllViews () { /*emit DbEvent (DbEvent::typeRefresh, DbEvent::tableAll, invalidId);*/ }
+		template<class T> void refreshViews () { /*emit dbEvent (Db::Event::Event (Db::Event::Event::typeRefresh, Db::Event::Event::getTable<T> (), invalidId));*/ }
+		void refreshAllViews () { /*emit Db::Event::Event (Db::Event::Event::typeRefresh, Db::Event::Event::tableAll, invalidId);*/ }
 
 		// *** Test methods
 		bool sleep (OperationMonitor &monitor, int seconds);

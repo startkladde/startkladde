@@ -11,7 +11,7 @@
 
 #include "src/db/dbId.h"
 #include "src/db/interface/Interface.h"
-#include "src/db/DbEvent.h"
+#include "src/db/event/Event.h"
 
 class Flight;
 
@@ -69,7 +69,7 @@ namespace Db
 			virtual QList<Flight> getFlightsDate (QDate date);
 
 		signals:
-			void dbEvent (DbEvent event);
+			void dbEvent (Event::Event event);
 
 		private:
 			Interface::Interface &interface;

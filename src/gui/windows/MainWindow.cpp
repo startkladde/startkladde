@@ -104,7 +104,7 @@ MainWindow::MainWindow (QWidget *parent) :
 	// Do this before calling connect
 //	dataStorageStateChanged (dataStorage.getState ());
 
-	QObject::connect (&db, SIGNAL (dbEvent (DbEvent)), this, SLOT (dbEvent (DbEvent)));
+	QObject::connect (&cache, SIGNAL (changed (Db::Event::Event)), this, SLOT (cacheChanged (Db::Event::Event)));
 //	QObject::connect (&dataStorage, SIGNAL (status (QString, bool)), this, SLOT (dataStorageStatus (QString, bool)));
 //	QObject::connect (&dataStorage, SIGNAL (stateChanged (DataStorage::State)), this,
 //			SLOT (dataStorageStateChanged (DataStorage::State)));
@@ -1273,23 +1273,21 @@ void MainWindow::on_actionEditLaunchMethods_triggered ()
 // ** Database **
 // **************
 
-void MainWindow::dbEvent (DbEvent event)
+void MainWindow::cacheChanged (Db::Event::Event event)
 {
 	assert (isGuiThread ());
 
-	std::cout << event.toString () << std::endl;
+	std::cout << "MainWindow: "<< event.toString () << std::endl;
 
 	try
 	{
 		// TODO when a plane, person or launch method is changed, the flight list
 		// has to be updated, too. But that's a feature of the FlightListModel (?).
-		if (event.table == DbEvent::tableFlights)
+		if (event.table == Db::Event::Event::tableFlights)
 		{
 			switch (event.type)
 			{
-				case DbEvent::typeNone:
-					break;
-				case DbEvent::typeAdd:
+				case Db::Event::Event::typeAdd:
 				{
 					const Flight &flight=cache.getObject<Flight> (event.id);
 					if (flight.isPrepared () || flight.effdatum ()==displayDate)
@@ -1306,7 +1304,7 @@ void MainWindow::dbEvent (DbEvent event)
 							setDisplayDate (flight.effdatum (), false);
 					}
 				} break;
-				case DbEvent::typeChange:
+				case Db::Event::Event::typeChange:
 				{
 					try
 					{
@@ -1328,10 +1326,10 @@ void MainWindow::dbEvent (DbEvent event)
 						flightList->removeById (event.id);
 					}
 				} break;
-				case DbEvent::typeDelete:
+				case Db::Event::Event::typeDelete:
 					flightList->removeById (event.id);
 					break;
-				case DbEvent::typeRefresh:
+				case Db::Event::Event::typeRefresh:
 					refreshFlights ();
 					break;
 			}
