@@ -19,13 +19,10 @@ namespace Db { namespace Interface
 	DefaultInterface::DefaultInterface (const DatabaseInfo &dbInfo):
 		Interface (dbInfo)
 	{
-		db=QSqlDatabase::addDatabase ("QMYSQL");
 	}
 
 	DefaultInterface::~DefaultInterface ()
 	{
-		if (db.isOpen ())
-			close ();
 	}
 
 
@@ -35,6 +32,8 @@ namespace Db { namespace Interface
 
 	bool DefaultInterface::open ()
 	{
+		db=QSqlDatabase::addDatabase ("QMYSQL");
+
 		const DatabaseInfo &info=getInfo ();
 
 		std::cout << QString ("Connecting to %1@%2:%3")
@@ -54,6 +53,9 @@ namespace Db { namespace Interface
 		std::cout << "Closing connection" << std::endl;
 
 		db.close ();
+
+		// Make sure the QSqlDatabase instance is destroyed before removing it
+		db=QSqlDatabase ();
 		QSqlDatabase::removeDatabase (db.connectionName ());
 	}
 

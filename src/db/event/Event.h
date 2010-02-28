@@ -18,8 +18,8 @@ namespace Db
 		class Event
 		{
 			public:
-				enum Table { tableAll, tablePeople, tableFlights, tableLaunchMethods, tablePlanes };
-				enum Type { typeAdd, typeDelete, typeChange, typeRefresh };
+				enum Table { tablePeople, tableFlights, tableLaunchMethods, tablePlanes };
+				enum Type { typeAdd, typeDelete, typeChange };
 
 				Event (Type type, Table table, dbId);
 
@@ -27,7 +27,6 @@ namespace Db
 				static QString typeString (Type type);
 				static QString tableString (Table table);
 
-				// Hack for until we have replaced Table with templates
 				template<class T> static Table getTable ();
 
 				Type type;

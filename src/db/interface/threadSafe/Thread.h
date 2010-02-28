@@ -31,6 +31,8 @@ namespace Db
 				Q_OBJECT
 
 				public:
+					static const int requestedExit=42;
+
 					Thread (const DatabaseInfo &dbInfo);
 					virtual ~Thread ();
 

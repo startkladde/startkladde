@@ -81,6 +81,9 @@ int test_database ()
     foreach (const Plane &plane, planes)
     	std::cout << plane.toString () << std::endl;
 
+    interface.close ();
+
+
 //	std::cout << std::endl;
 //	std::cout << "Get person 1" << std::endl;
 //	Person p=db.getObject<Person> (1);
@@ -277,8 +280,6 @@ int main (int argc, char **argv)
 
 			if (opts.non_options.empty ())
 			{
-				Db::Interface::ThreadSafeInterface interface (opts.databaseInfo);
-				Db::Database db (interface);
 				ret=showGui (a);
 			}
 			else

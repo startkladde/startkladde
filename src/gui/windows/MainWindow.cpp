@@ -63,8 +63,6 @@ MainWindow::MainWindow (QWidget *parent) :
 {
 	ui.setupUi (this);
 
-	dbInterface.open ();
-
 	flightModel = new FlightModel (cache);
 	proxyList=new FlightProxyList (cache, *flightList, this); // TODO never deleted
 	flightListModel = new ObjectListModel<Flight> (proxyList, false, flightModel, true, this);
@@ -348,6 +346,7 @@ bool MainWindow::confirmAndExit (int returnCode, QString title, QString text)
 {
 	if (yesNoQuestion (this, title, text))
 	{
+		closeDatabase ();
 		writeSettings ();
 		qApp->exit (returnCode);
 		return true;
@@ -1329,9 +1328,6 @@ void MainWindow::cacheChanged (Db::Event::Event event)
 				case Db::Event::Event::typeDelete:
 					flightList->removeById (event.id);
 					break;
-				case Db::Event::Event::typeRefresh:
-					refreshFlights ();
-					break;
 			}
 		}
 	}
@@ -1445,6 +1441,11 @@ void MainWindow::setDatabaseActionsEnabled (bool enabled)
 	// Connect/disconnect are special
 	ui.actionConnect    ->setEnabled (!enabled);
 	ui.actionDisconnect ->setEnabled ( enabled);
+}
+
+void MainWindow::closeDatabase ()
+{
+	dbInterface.close ();
 }
 
 //void MainWindow::dataStorageStatus (QString state, bool isError)

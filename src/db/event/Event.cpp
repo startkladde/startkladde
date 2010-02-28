@@ -4,7 +4,6 @@
  *     Db::Event::added (flight)
  *   - pass a copy of the object, via QSharedPointer (nb Thread safety,
  *     probably make a copy on get)
- *   - remove table all, add refreshall?
  *   - rename changed to updated
  */
 #include "Event.h"
@@ -24,16 +23,12 @@ namespace Db { namespace Event
 	{
 	}
 
-	//// TODO remove?
+	// We may need this when we want to use Event in Queued signals
 	//Event::Event ():
 	//	type (Event::typeNone), table (Event::tableNone), id (invalidId)
 	//{
 	//}
 
-
-	//// FIXME remove
-	//#define VALUE(x,z) case x: std::cout << (z); break;
-	//#define DEFAULT default: std::cout << ("???"); break;
 
 	QString Event::toString ()
 	{
@@ -48,7 +43,6 @@ namespace Db { namespace Event
 			case typeAdd    : return "add";
 			case typeDelete : return "delete";
 			case typeChange : return "change";
-			case typeRefresh: return "refresh";
 			// no default
 		}
 
@@ -60,7 +54,6 @@ namespace Db { namespace Event
 	{
 		switch (table)
 		{
-			case tableAll: return "all";
 			case tablePeople: return "people";
 			case tableFlights: return "flights";
 			case tableLaunchMethods: return "launch methods";
@@ -71,17 +64,9 @@ namespace Db { namespace Event
 		return "?";
 	}
 
-
-
 	// Specialize
 	template<> Event::Table Event::getTable<Flight>       () { return tableFlights      ; }
 	template<> Event::Table Event::getTable<Plane>        () { return tablePlanes       ; }
 	template<> Event::Table Event::getTable<Person>       () { return tablePeople       ; }
 	template<> Event::Table Event::getTable<LaunchMethod> () { return tableLaunchMethods; }
-
-	//// Instantiate
-	//template db_event_table Event::getEventTable<Flight      > ();
-	//template db_event_table Event::getEventTable<Plane       > ();
-	//template db_event_table Event::getEventTable<Person      > ();
-	//template db_event_table Event::getEventTable<LaunchMethod> ();
 } }

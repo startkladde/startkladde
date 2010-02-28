@@ -86,7 +86,8 @@ template<class T> void AutomaticEntityList<T>::dbEvent (Db::Event::Event event)
 {
 	assert (isGuiThread());
 
-	if (event.table!=Db::Event::Event::tableAll && event.table!=Db::Event::Event::getTable<T> ()) return;
+	// Return if the table does not match the type of this list
+	if (event.table!=Db::Event::Event::getTable<T> ()) return;
 
 	switch (event.type)
 	{
@@ -107,11 +108,6 @@ template<class T> void AutomaticEntityList<T>::dbEvent (Db::Event::Event event)
 			else
 				// Should not happen
 				EntityList<T>::append (cache.getObject<T> (event.id));
-		} break;
-		case Db::Event::Event::typeRefresh:
-		{
-			// TODO assignment?
-			EntityList<T>::replaceList (cache.getObjects<T> ().getList ());
 		} break;
 	}
 }

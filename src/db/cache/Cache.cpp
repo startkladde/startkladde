@@ -744,7 +744,6 @@ namespace Db
 						case Event::Event::tableLaunchMethods: objectAdded<LaunchMethod> (event.id); break;
 						case Event::Event::tablePeople       : objectAdded<Person      > (event.id); break;
 						case Event::Event::tablePlanes       : objectAdded<Plane       > (event.id); break;
-						case Event::Event::tableAll          : break;
 					}
 					break;
 				case Event::Event::typeChange:
@@ -754,7 +753,6 @@ namespace Db
 						case Event::Event::tableLaunchMethods: objectUpdated<LaunchMethod> (event.id); break;
 						case Event::Event::tablePeople       : objectUpdated<Person      > (event.id); break;
 						case Event::Event::tablePlanes       : objectUpdated<Plane       > (event.id); break;
-						case Event::Event::tableAll          : break;
 					}
 					break;
 				case Event::Event::typeDelete:
@@ -764,18 +762,6 @@ namespace Db
 						case Event::Event::tableLaunchMethods: objectDeleted<LaunchMethod> (event.id); break;
 						case Event::Event::tablePeople       : objectDeleted<Person      > (event.id); break;
 						case Event::Event::tablePlanes       : objectDeleted<Plane       > (event.id); break;
-						case Event::Event::tableAll          : break;
-					}
-					break;
-				case Event::Event::typeRefresh:
-					// FIXME remove refresh. This should happen in the background.
-					switch (event.table)
-					{
-						case Event::Event::tableFlights      : refreshFlights       (); break;
-						case Event::Event::tableLaunchMethods: refreshLaunchMethods (); break;
-						case Event::Event::tablePeople       : refreshPeople        (); break;
-						case Event::Event::tablePlanes       : refreshPlanes        (); break;
-						case Event::Event::tableAll          : refreshAll (); break;
 					}
 					break;
 				// no default

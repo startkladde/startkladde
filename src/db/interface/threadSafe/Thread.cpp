@@ -40,9 +40,10 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 		// Run the event loop, delivering the signals connected above to the
 		// worker
-		exec ();
+		int result=exec ();
 
-		std::cout << "Db::Interface::ThreadSafe::Thread exited" << std::endl;
+		if (result!=requestedExit)
+			std::cout << "Db::Interface::ThreadSafe::Thread exited" << std::endl;
 	}
 
 	void Thread::waitStartup ()

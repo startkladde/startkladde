@@ -1,5 +1,7 @@
 #include "ThreadSafeInterface.h"
 
+#include <iostream> // remove
+
 #include <QSqlError>
 
 #include "src/db/result/Result.h"
@@ -22,6 +24,17 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	ThreadSafeInterface::~ThreadSafeInterface ()
 	{
+		// Terminete the thread's event loop with the requestedExit exit code
+		// so it doesn't print a message.
+		thread.exit (Thread::requestedExit);
+
+		std::cout << "Waiting for database interface thread to terminate...";
+		std::cout.flush ();
+
+		if (thread.wait (1000))
+			std::cout << "OK" << std::endl;
+		else
+			std::cout << "Timeout" << std::endl;
 	}
 
 
@@ -31,6 +44,8 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	bool ThreadSafeInterface::open ()
 	{
+		std::cout << "ts open" << std::endl;
+
 		Waiter waiter;
 		bool result;
 

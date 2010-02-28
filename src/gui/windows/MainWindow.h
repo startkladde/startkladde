@@ -108,6 +108,7 @@ class MainWindow: public QMainWindow
 		void keyPressEvent (QKeyEvent *);
 
 		// Database connection management
+		void closeDatabase ();
 		void setDatabaseActionsEnabled (bool enabled);
 
 	protected slots:
