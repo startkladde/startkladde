@@ -46,15 +46,6 @@ namespace Db
 		class Interface: public AbstractInterface
 		{
 			public:
-				// *** Data types
-				class QueryFailedException
-				{
-					public:
-						// TODO we're probably not supposed to access the query from another thread
-						QueryFailedException (QSqlQuery query): query (query) {}
-						QSqlQuery query;
-				};
-
 				// *** Construction
 				Interface (const DatabaseInfo &dbInfo);
 				virtual ~Interface ();

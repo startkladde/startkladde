@@ -76,7 +76,7 @@ namespace Db
 			Query &bind (const QVariant &v);
 
 			// *** QSqlQuery interface
-			void prepare (QSqlQuery &query) const;
+			bool prepare (QSqlQuery &query) const;
 			void bindTo (QSqlQuery &query) const;
 
 		private:

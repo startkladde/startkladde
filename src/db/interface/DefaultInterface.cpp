@@ -9,6 +9,7 @@
 #include "src/db/Query.h"
 #include "src/config/Options.h"
 #include "src/text.h"
+#include "src/db/interface/QueryFailedException.h"
 
 namespace Db { namespace Interface
 {
@@ -48,6 +49,8 @@ namespace Db { namespace Interface
 		return db.open ();
 	}
 
+	// TODO should be RAII, but calling this in the destructor doesn't seem to
+	// work (specifically, destroying db)
 	void DefaultInterface::close ()
 	{
 		std::cout << "Closing connection" << std::endl;
@@ -143,15 +146,23 @@ namespace Db { namespace Interface
 
 		QSqlQuery sqlQuery (db);
 		sqlQuery.setForwardOnly (forwardOnly);
-		query.prepare (sqlQuery);
+
+		if (!query.prepare (sqlQuery))
+		{
+			if (opts.display_queries)
+				std::cout << "prepare failed" << std::endl;
+
+			throw QueryFailedException::prepare (sqlQuery.lastError (), query);
+		}
+
 		query.bindTo (sqlQuery);
 
 		if (!sqlQuery.exec ())
 		{
 			if (opts.display_queries)
-				std::cout << "Query failed" << std::endl;
+				std::cout << "execute failed" << std::endl;
 
-			throw QueryFailedException (sqlQuery);
+			throw QueryFailedException::execute (sqlQuery.lastError (), query);
 		}
 		else
 		{

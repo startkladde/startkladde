@@ -43,6 +43,7 @@ HEADERS += \
            src/db/interface/AbstractInterface.h \
            src/db/interface/DefaultInterface.h \
            src/db/interface/Interface.h \
+           src/db/interface/QueryFailedException.h \
            src/db/interface/threadSafe/Thread.h \
            src/db/interface/threadSafe/ThreadSafeInterface.h \
            src/db/interface/threadSafe/Worker.h \
@@ -141,6 +142,7 @@ SOURCES += \
            src/db/interface/AbstractInterface.cpp \
            src/db/interface/DefaultInterface.cpp \
            src/db/interface/Interface.cpp \
+           src/db/interface/QueryFailedException.cpp \
            src/db/interface/threadSafe/Thread.cpp \
            src/db/interface/threadSafe/ThreadSafeInterface.cpp \
            src/db/interface/threadSafe/Worker.cpp \

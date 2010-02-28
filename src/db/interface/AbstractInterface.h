@@ -20,14 +20,6 @@ namespace Db
 
 	namespace Interface
 	{
-		// TODO own file
-		class QueryFailedException
-		{
-			public:
-				QueryFailedException (QSqlQuery query): query (query) {}
-				QSqlQuery query; // FIXME: may not access query from other thread
-		};
-
 		/**
 		 * A low level interface to the database, capable of managing a
 		 * connection and executing queries.

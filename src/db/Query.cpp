@@ -265,9 +265,9 @@ namespace Db
 	// ** QSqlQuery interface **
 	// *************************
 
-	void Query::prepare (QSqlQuery &query) const
+	bool Query::prepare (QSqlQuery &query) const
 	{
-		query.prepare (queryString);
+		return query.prepare (queryString);
 	}
 
 

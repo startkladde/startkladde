@@ -44,8 +44,6 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	bool ThreadSafeInterface::open ()
 	{
-		std::cout << "ts open" << std::endl;
-
 		Waiter waiter;
 		bool result;
 

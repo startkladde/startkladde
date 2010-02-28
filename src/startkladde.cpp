@@ -13,6 +13,7 @@
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/SchemaDumper.h"
 #include "src/util/qString.h"
+#include "src/db/interface/QueryFailedException.h"
 
 // For test_database
 //#include "src/model/Plane.h"
@@ -43,12 +44,25 @@ void display_help ()
 
 int test_database ()
 {
-//	Db::Interface::DefaultInterface interface (opts.databaseInfo);
-	Db::Interface::ThreadSafeInterface interface (opts.databaseInfo);
+	Db::Interface::DefaultInterface interface (opts.databaseInfo);
+//	Db::Interface::ThreadSafeInterface interface (opts.databaseInfo);
 	Db::Database db (interface);
 
 	if (!interface.open ())
+	{
+		QSqlError error=interface.lastError ();
 		std::cout << "Database could not be opened" << std::endl;
+		std::cout << QString ("Type: %1, number: %2")
+			.arg (error.type ()).arg (error.number ()) << std::endl;
+		std::cout << QString ("Database text: %1").arg (error.databaseText ()) << std::endl;
+		std::cout << QString ("Driver text: %1").arg (error.driverText ()) << std::endl;
+
+		std::cout << "Database error: " << error.databaseText () << std::endl;
+
+		interface.close ();
+
+		return 1;
+	}
 
 //	std::cout << std::endl;
 //	std::cout << "Get people>3" << std::endl;
@@ -72,17 +86,18 @@ int test_database ()
 	std::cout << std::endl;
 	std::cout << "Get people" << std::endl;
 	QList<Person> people=db.getObjects<Person> ();
-    foreach (const Person &person, people)
-    	std::cout << person.toString () << std::endl;
+	foreach (const Person &person, people)
+		std::cout << person.toString () << std::endl;
+
+	DefaultQThread::sleep (1);
 
 	std::cout << std::endl;
 	std::cout << "Get planes" << std::endl;
 	QList<Plane> planes=db.getObjects<Plane> ();
-    foreach (const Plane &plane, planes)
-    	std::cout << plane.toString () << std::endl;
+	foreach (const Plane &plane, planes)
+		std::cout << plane.toString () << std::endl;
 
-    interface.close ();
-
+	interface.close ();
 
 //	std::cout << std::endl;
 //	std::cout << "Get person 1" << std::endl;
@@ -291,11 +306,9 @@ int main (int argc, char **argv)
 			}
 		}
 	}
-	catch (Db::Interface::Interface::QueryFailedException &ex)
+	catch (Db::Interface::QueryFailedException &ex)
 	{
-		std::cout << "QueryFailedException" << std::endl;
-		std::cout << "  Query: " << ex.query.lastQuery () << std::endl;
-		std::cout << "  Error: " << ex.query.lastError ().text () << std::endl;
+		std::cout << ex.toString () << std::endl;
 		return 1;
 	}
 
