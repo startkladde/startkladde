@@ -30,9 +30,9 @@ PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Db::Cache::
 
 	fillData ();
 
-	ui.registrationInput->setFocus ();
 
 	ui.registrationInput->setText (Plane::defaultRegistrationPrefix ());
+	ui.registrationInput->setFocus ();
 //	ui.registrationInput->setCursorPosition (ui.registrationInput->text ().length ());
 //	ui.registrationInput->end (false);
 }

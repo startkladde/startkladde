@@ -16,9 +16,10 @@
  * Implements the listener pattern for signals with a Db::Event::Event
  * parameter.
  *
- * This is useful for template classes which cannot be QObjects and thus
- * cannot define slots. An alternative solution may be to use a QObject base
- * class to the template class, but that usually involves diamond inheritance.
+ * This is useful for template classes which are to react to database events
+ * because template classes cannot be QObjects and thus cannot define slots.
+ * An alternative solution may be to use a QObject base class to the template
+ * class, but that usually involves diamond inheritance.
  */
 namespace Db
 {

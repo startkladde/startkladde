@@ -87,6 +87,7 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 		{
 			// TODO background
 			cache.getDatabase ().deleteObject<T> (id);
+			// TODO select "next" entry
 //			DeleteObjectTask<T> deleteTask (cache, id);
 //			cache.addTask (&deleteTask);
 //			TaskProgressDialog::waitTask (this, &deleteTask);

@@ -16,14 +16,6 @@ const QString db_null_time="0000-00-00 00:00:00";
 // database. Must be parsable, so don't use %0Y. This is the default anyway.
 const char *db_time_format="%Y-%m-%d %H:%M:%S";
 
-// Version:
-//   - mysql_get_client_version
-//   - mysql_thread_safe==1
-//   - <50112: timeouts may not work correctly
-
-
-
-
 // Check usable (see also admin_functions):
 //   - connect
 //   - use db
@@ -72,16 +64,7 @@ const char *db_time_format="%Y-%m-%d %H:%M:%S";
 
 
 // Methods:
-//   - get pilots and copilots from flights satisfying (condition)
 //   - person/plane flying [at time]
-//   - get plane by registration
-//   - list locations
-//   - list first names
-//   - list last names
-//   - list accounting notes
-//   - list registrations
-//   - list plane types
-//   - list clubs (from flights and people)
 //   - person used: person has user or flight
 
 // Launch methods: count, add, list all, get by id, get by type, get towplane
@@ -91,8 +74,6 @@ const char *db_time_format="%Y-%m-%d %H:%M:%S";
 //   - update flight pilot/copilot/towpilot, user person; should be in transaction
 //   - check if a flight or user still referencecs this user
 //   - delete "wrong" person
-
-// Importing: see sk_web, it's a bit complicated
 
 // Use database problems: access denied, database not found, server lost, connection error
 
