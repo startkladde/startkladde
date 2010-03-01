@@ -100,15 +100,8 @@ MainWindow::MainWindow (QWidget *parent) :
 	setupLayout ();
 
 	// Do this before calling connect
-//	dataStorageStateChanged (dataStorage.getState ());
-
 	QObject::connect (&cache, SIGNAL (changed (Db::Event::Event)), this, SLOT (cacheChanged (Db::Event::Event)));
-//	QObject::connect (&dataStorage, SIGNAL (status (QString, bool)), this, SLOT (dataStorageStatus (QString, bool)));
-//	QObject::connect (&dataStorage, SIGNAL (stateChanged (DataStorage::State)), this,
-//			SLOT (dataStorageStateChanged (DataStorage::State)));
 
-	// Do this after setting the initial state and connecting the signals
-//	dataStorage.connect ();
 	on_actionConnect_triggered ();
 
 	setDisplayDateCurrent (true);
@@ -133,7 +126,6 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	// Log
 	ui.logWidget->document ()->setMaximumBlockCount (100);
-//	connect (&dataStorage, SIGNAL (executingQuery (QString)), this, SLOT (logMessage (QString)));
 
 	// Signals
 	connect (flightList, SIGNAL (rowsInserted (const QModelIndex &, int, int)), this, SLOT (flightListChanged ()));

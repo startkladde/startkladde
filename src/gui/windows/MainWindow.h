@@ -41,7 +41,6 @@
 
 #include "ui_MainWindow.h"
 
-//#include "src/db/dataStorage/DataStorage.h" // Required for DataStorage::State (others can be resolved)
 #include "src/db/interface/threadSafe/ThreadSafeInterface.h"
 #include "src/db/Database.h"
 #include "src/db/cache/Cache.h"
@@ -112,8 +111,6 @@ class MainWindow: public QMainWindow
 		void setDatabaseActionsEnabled (bool enabled);
 
 	protected slots:
-//		void dataStorageStatus (QString status, bool isError);
-//		void dataStorageStateChanged (DataStorage::State state);
 
 	private slots:
 		// Menu: Program
@@ -212,7 +209,6 @@ class MainWindow: public QMainWindow
 		Db::Interface::ThreadSafeInterface dbInterface;
 		Db::Database db;
 		Db::Cache::Cache cache;
-//		DataStorage dataStorage;
 
 		QDate displayDate;
 		WeatherWidget *weatherWidget;

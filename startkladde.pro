@@ -41,8 +41,6 @@ HEADERS += \
            src/db/Query.h \
            src/db/dbId.h \
            src/db/cache/Cache.h \
-           src/db/dataStorage/DataStorage.h \
-           src/db/dataStorage/DataStorageWorker.h \
            src/db/event/Event.h \
            src/db/event/Monitor.h \
            src/db/interface/AbstractInterface.h \
@@ -63,13 +61,6 @@ HEADERS += \
            src/db/schema/CurrentSchema.h \
            src/db/schema/Schema.h \
            src/db/schema/SchemaDumper.h \
-           src/db/task/AddObjectTask.h \
-           src/db/task/DataStorageSleepTask.h \
-           src/db/task/DeleteObjectTask.h \
-           src/db/task/FetchFlightsTask.h \
-           src/db/task/ObjectUsedTask.h \
-           src/db/task/RefreshAllTask.h \
-           src/db/task/UpdateObjectTask.h \
            src/gui/dialogs.h \
            src/gui/widgets/AcpiWidget.h \
            src/gui/widgets/SkComboBox.h \
@@ -145,8 +136,6 @@ SOURCES += \
            src/db/Query.cpp \
            src/db/dbId.cpp \
            src/db/cache/Cache.cpp \
-           src/db/dataStorage/DataStorage.cpp \
-           src/db/dataStorage/DataStorageWorker.cpp \
            src/db/event/Event.cpp \
            src/db/event/Monitor.cpp \
            src/db/interface/AbstractInterface.cpp \
@@ -165,9 +154,6 @@ SOURCES += \
            src/db/result/DefaultResult.cpp \
            src/db/schema/Schema.cpp \
            src/db/schema/SchemaDumper.cpp \
-           src/db/task/DataStorageSleepTask.cpp \
-           src/db/task/FetchFlightsTask.cpp \
-           src/db/task/RefreshAllTask.cpp \
            src/gui/dialogs.cpp \
            src/gui/widgets/AcpiWidget.cpp \
            src/gui/widgets/SkComboBox.cpp \

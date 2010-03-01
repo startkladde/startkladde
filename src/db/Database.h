@@ -28,9 +28,12 @@ namespace Db
 	 * The CRUDLEC methods are templates which are instantiated for the
 	 * relevant classes in the .cpp file.
 	 *
-	 * Database uses an Interface for access to the database. This class is not
-	 * thread safe, but it may be used from any thread, provided that the
-	 * Interface can (ThreadSafeInterface can, DefaultInterface can not).
+	 * This class is thread safe, provided that the Interface used (by passing
+	 * to the constructor) is thread safe. This applies to ThreadSafeInterface,
+	 * but not to DefaultInterface).
+	 * Any restrictions applying to the Interface used also apply to this
+	 * class; for example, a Database instance using a DefaultInterface may
+	 * only be used in the thread that created the DefaultInterface.
 	 *
 	 * Note that we do not use the ENUM SQL type because it is not supported by
 	 * SQLite.
