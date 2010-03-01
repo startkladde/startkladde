@@ -14,17 +14,16 @@ Benutzer
 - Lesen nicht erlaubt                   k. P.       k. P.       k. P.   [3]
 - Schreiben nicht erlaubt               k. P.       k. P.       k. P.   [3]
 - Situation nach DB-Installation        ?           ?           ?
-- Query schlägt fehl                    ?           ?           ?
+- Query schlï¿½gt fehl                    ?           ?           ?
 Admin
 - Admin-Passwort falsch                 -           OK          OK
 - Admin hat keine Adminrechte           -           OK          OK
 - Adminbenutzer existiert nicht         -           OK          OK      [2]
 - Host nicht erlaubt                    -           OK          OK      [2]
-- Query schlägt fehl                    -           OK          OK
+- Query schlï¿½gt fehl                    -           OK          OK
 - Allgemeiner Init-Fehler               -           OK          OK
 
-[1] Die GUI blockiert. Aber um das zu verhindern müsste man wohl multithreaden.
 [2] Nicht unterscheidbar von nicht existierendem Benutzer
-[3] Wie Prüfen?
+[3] Wie Prï¿½fen?
 
 

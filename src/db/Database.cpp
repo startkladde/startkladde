@@ -1,9 +1,6 @@
 /*
  * Next:
  *   - Find reconnect solution
- *   - Rename Database to ORM
- *   - Error reporting for ThreadSafeInterface
- *     - SkException with clone method?
  *   - integrate schema loading/database migration into GUI
  *
  * Short term plan:
@@ -11,13 +8,8 @@
  *     an "unknown" type (instead of "none")
  *     - this should also allow preserving unknown types in the database
  *   - add "object used?" to Database (and use in ObjectListWindow)
- *   - add ping to Database
+ *   - add ping to Interface
  *   - timeout: only when no data is transfered
- *   - generate string lists from other data instead of explicit query (but still
- *     cache explicitly) note that we still have to query for accounting notes and
- *     locations because we don't get a complete flight list
- *   - fix error reporting (db.lastError (), e. g. delete objects)
- *   - make sure "", 0 and NULL are read correctly
  *
  * Tests:
  *   - Test the migrations:
@@ -27,26 +19,26 @@
  *     - SQL dump or data file (CSV/YAML)?
  *     - C++ or Ruby?
  *   - Port open, but connection not accepted
+ *   - make sure "", 0 and NULL are read correctly
+ *   - make sure (using a dump of an old db) that the migration path is OK
  *
  * Improvements:
  *   - Add a ResultConsumer as alternative to passing a result (especially for
  *     CopiedResult)
- *   - move (static) methods like selectDistinctColumnQuery to QueryGenerator (but see below)
- *   - allow specifying an "exclude" value to selectDistinctColumnQuery (requires
- *     Query class)
+ *   - allow specifying an "exclude" value to selectDistinctColumns (what for?)
  *   - move specialized queries generation to model classes (e. g. flight prepared)
- *   - maybe we would like to select additional columns, like
- *     (landing_time-takeoff_time as duration) for some conditions
+ *     (but need after-filter)
  *   - Flight should be an entity
  *   - Allow tables without id column (e. g. habtm join tables), but tables
  *     must have at least one column
- *   - make sure (using a dump of an old db) that the migration path is OK
  *   - Remove code multiplication in Models (SQL interface)
  *   - change flight mode (and towflight mode) column type
  *   - Add a Database::saveObject that creates or updates the object, depending
  *     on whether it has a valid id
+ *   - Allow a table name prefix (useful for testing)
  *
  * Medium term plan:
+ *   - rename planes.competition_callsign to planes.callsign
  *   - add some abstraction to the query list generation
  *   - add support for sqlite
  *   - add indexes
@@ -55,12 +47,11 @@
  *     - show what is wrong/will be fixed
  *
  * Long term plan:
- *   - Shold there be a thread safe database class?
  *   - use a memory SQLite for local storage (datastorage functionality)
  *   - merge data storage and database methods, so we can use a (local)
  *     database directly (w/o local cache)
  *       - we'd probably have abstract DataStorage and inherited Database and
- *         CachingDataStorage which uses ad Database for access and one (in
+ *         CachingDataStorage which uses a Database for access and one (in
  *         memory) for local caching
  *       - question: can we afford using a query on a memory database e. g.
  *         for list of first names rather than maintaining the list explicitly?

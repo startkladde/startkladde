@@ -18,14 +18,19 @@ class Flight;
 namespace Db
 {
 	/**
-	 * Methods for manipulating objects in the database (ORM).
+	 * Methods for object-level access to the database
 	 *
-	 * Defines template methods for retrieving, creating, counting, deleting,
-	 * creating and updating objects, which are instantiated for the relevant
-	 * classes in the .cpp file. Also provides some frontends for object selection
-	 * (like getFlightsDate).
+	 * This class implements the Greater ORM, which consists of:
+	 *   - Object CRUDLEC (create, read, update, delete, list, exists, count)
+	 *   - Selection frontends (e. g. getFlightsDate)
+	 *   (- additional methods, like objectUsed)
 	 *
-	 * This class is not thread safe, but it may be used from any thread.
+	 * The CRUDLEC methods are templates which are instantiated for the
+	 * relevant classes in the .cpp file.
+	 *
+	 * Database uses an Interface for access to the database. This class is not
+	 * thread safe, but it may be used from any thread, provided that the
+	 * Interface can (ThreadSafeInterface can, DefaultInterface can not).
 	 *
 	 * Note that we do not use the ENUM SQL type because it is not supported by
 	 * SQLite.

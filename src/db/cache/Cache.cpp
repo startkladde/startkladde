@@ -15,6 +15,10 @@
  * TODO:
  *   - don't delete an entity that is still in use
  *   - club list should not include ""/whitespace only; Locations dito
+ *   - Proper caching
+ *     - ID->Object, Registration->Plane, FirstName->People (?)
+ *     - Use maps: better insert; sorted
+ *
  */
 
 /*

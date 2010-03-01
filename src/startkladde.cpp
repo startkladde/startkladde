@@ -13,7 +13,7 @@
 #include "src/db/migration/MigrationFactory.h"
 #include "src/db/schema/SchemaDumper.h"
 #include "src/util/qString.h"
-#include "src/db/interface/QueryFailedException.h"
+#include "src/db/interface/exceptions/SqlException.h"
 
 // For test_database
 //#include "src/model/Plane.h"
@@ -48,139 +48,148 @@ int test_database ()
 	Db::Interface::ThreadSafeInterface interface (opts.databaseInfo);
 	Db::Database db (interface);
 
-	if (!interface.open ())
+	try
 	{
-		QSqlError error=interface.lastError ();
-		std::cout << "Database could not be opened" << std::endl;
-		std::cout << QString ("Type: %1, number: %2")
-			.arg (error.type ()).arg (error.number ()) << std::endl;
-		std::cout << QString ("Database text: %1").arg (error.databaseText ()) << std::endl;
-		std::cout << QString ("Driver text: %1").arg (error.driverText ()) << std::endl;
+//		if (!interface.open ())
+//		{
+//			QSqlError error=interface.lastError ();
+//			std::cout << "Database could not be opened" << std::endl;
+//			std::cout << QString ("Type: %1, number: %2")
+//				.arg (error.type ()).arg (error.number ()) << std::endl;
+//			std::cout << QString ("Database text: %1").arg (error.databaseText ()) << std::endl;
+//			std::cout << QString ("Driver text: %1").arg (error.driverText ()) << std::endl;
+//
+//			std::cout << "Database error: " << error.databaseText () << std::endl;
+//
+//			interface.close ();
+//
+//			return 1;
+//		}
 
-		std::cout << "Database error: " << error.databaseText () << std::endl;
+	//	std::cout << "Expect: 1" << std::endl;
+	//	std::cout << interface.queryHasResult ("select id from people where id=1") << std::endl;
+	//
+	//	std::cout << "Expect: 0" << std::endl;
+	//	std::cout << interface.queryHasResult ("select id from people where id=3") << std::endl;
+	//
+	//	std::cout << "Expect: caught exception" << std::endl;
+	//	std::cout << interface.queryHasResult ("bam") << std::endl;
+
+	//	std::cout << "Expect: OK" << std::endl;
+	//	interface.executeQuery ("select 0");
+	//	std::cout << "Expect: caught exception" << std::endl;
+	//	interface.executeQuery ("bam");
+
+	//	interface.close ();
+	//	return 0;
+
+
+
+	//	std::cout << std::endl;
+	//	std::cout << "Get people>3" << std::endl;
+	////	QList<Person> people=db.getObjects<Person> ("id>?", QList<QVariant> () << 3);
+	//	QList<Person> people=db.getObjects<Person> (Db::Query ("id>?").bind (3));
+	//    foreach (const Person &person, people)
+	//    	std::cout << person.toString () << std::endl;
+
+	//    DefaultQThread::sleep (1);
+
+	//    Person p;
+	//    p.lastName=QString::fromUtf8 ("Müller");
+	//    p.firstName="Busch";
+	//    dbId newId=db.createObject (p);
+	//
+	//    db.deleteObject<Person> (newId-2);
+
+
+	//    DefaultQThread::sleep (1);
+
+		std::cout << std::endl;
+		std::cout << "Get people" << std::endl;
+		QList<Person> people=db.getObjects<Person> ();
+		foreach (const Person &person, people)
+			std::cout << person.toString () << std::endl;
+
+		DefaultQThread::sleep (1);
+
+		std::cout << std::endl;
+		std::cout << "Get planes" << std::endl;
+		QList<Plane> planes=db.getObjects<Plane> ();
+		foreach (const Plane &plane, planes)
+			std::cout << plane.toString () << std::endl;
 
 		interface.close ();
 
+	//	std::cout << std::endl;
+	//	std::cout << "Get person 1" << std::endl;
+	//	Person p=db.getObject<Person> (1);
+	//	std::cout << p.toString () << std::endl;
+	//
+	//	std::cout << std::endl;
+	//	std::cout << "Get person 3" << std::endl;
+	//	p=db.getObject<Person> (3);
+	//	std::cout << p.toString () << std::endl;
+
+
+
+	//	std::cout << std::endl;
+	//	std::cout << "Get people" << std::endl;
+	//	QList<Person> people=db.getObjects<Person> ();
+	//    foreach (const Person &person, people)
+	//    	std::cout << person.toString ().toUtf8 () << std::endl;
+	//
+	//	std::cout << std::endl;
+	//	std::cout << "Get planes" << std::endl;
+	//	QList<Plane> planes=db.getObjects<Plane> ();
+	//    foreach (const Plane &plane, planes)
+	//    	std::cout << plane.toString ().toUtf8 () << std::endl;
+	//
+	//	std::cout << std::endl;
+	//	std::cout << "Get flights" << std::endl;
+	//	QList<Flight> flights=db.getObjects<Flight> ();
+	//    foreach (const Flight &flight, flights)
+	//    	std::cout << flight.toString ().toUtf8 () << std::endl;
+	//
+	//	std::cout << std::endl;
+	//	std::cout << "Get prepared flights" << std::endl;
+	//	flights=db.getPreparedFlights ();
+	//    foreach (const Flight &flight, flights)
+	//    	std::cout << flight.toString ().toUtf8 () << std::endl;
+	//
+	//	std::cout << std::endl;
+	//	std::cout << "Get flights of 2010-01-23" << std::endl;
+	//	flights=db.getFlightsDate (QDate (2010, 1, 23));
+	//    foreach (const Flight &flight, flights)
+	//    	std::cout << flight.toString ().toUtf8 () << std::endl;
+	//
+	//	std::cout << std::endl;
+	//	std::cout << "Get launch methods" << std::endl;
+	//	QList<LaunchMethod> launchMethods=db.getObjects<LaunchMethod> ();
+	//    foreach (const LaunchMethod &launchMethod, launchMethods)
+	//    	std::cout << launchMethod.toString ().toUtf8 () << std::endl;
+	//
+	//    std::cout << std::endl;
+	//	std::cout << "List locations" << std::endl;
+	//	std::cout << db.listLocations ().join (", ") << std::endl;
+	//
+	//    std::cout << std::endl;
+	//	std::cout << "List accounting notes" << std::endl;
+	//	std::cout << db.listAccountingNotes ().join (", ") << std::endl;
+	//
+	//    std::cout << std::endl;
+	//	std::cout << "List clubs" << std::endl;
+	//	std::cout << db.listClubs ().join (", ") << std::endl;
+	//
+	//    std::cout << std::endl;
+	//	std::cout << "List plane types" << std::endl;
+	//	std::cout << db.listPlaneTypes ().join (", ") << std::endl;
+	}
+	catch (Db::Interface::SqlException &ex)
+	{
+		std::cout << ex.colorizedString () << std::endl;
+		interface.close ();
 		return 1;
 	}
-
-//	std::cout << "Expect: 1" << std::endl;
-//	std::cout << interface.queryHasResult ("select id from people where id=1") << std::endl;
-//
-//	std::cout << "Expect: 0" << std::endl;
-//	std::cout << interface.queryHasResult ("select id from people where id=3") << std::endl;
-//
-//	std::cout << "Expect: caught exception" << std::endl;
-//	std::cout << interface.queryHasResult ("bam") << std::endl;
-
-//	std::cout << "Expect: OK" << std::endl;
-//	interface.executeQuery ("select 0");
-//	std::cout << "Expect: caught exception" << std::endl;
-//	interface.executeQuery ("bam");
-
-//	interface.close ();
-//	return 0;
-
-
-
-//	std::cout << std::endl;
-//	std::cout << "Get people>3" << std::endl;
-////	QList<Person> people=db.getObjects<Person> ("id>?", QList<QVariant> () << 3);
-//	QList<Person> people=db.getObjects<Person> (Db::Query ("id>?").bind (3));
-//    foreach (const Person &person, people)
-//    	std::cout << person.toString () << std::endl;
-
-//    DefaultQThread::sleep (1);
-
-//    Person p;
-//    p.lastName=QString::fromUtf8 ("Müller");
-//    p.firstName="Busch";
-//    dbId newId=db.createObject (p);
-//
-//    db.deleteObject<Person> (newId-2);
-
-
-//    DefaultQThread::sleep (1);
-
-	std::cout << std::endl;
-	std::cout << "Get people" << std::endl;
-	QList<Person> people=db.getObjects<Person> ();
-	foreach (const Person &person, people)
-		std::cout << person.toString () << std::endl;
-
-	DefaultQThread::sleep (1);
-
-	std::cout << std::endl;
-	std::cout << "Get planes" << std::endl;
-	QList<Plane> planes=db.getObjects<Plane> ();
-	foreach (const Plane &plane, planes)
-		std::cout << plane.toString () << std::endl;
-
-	interface.close ();
-
-//	std::cout << std::endl;
-//	std::cout << "Get person 1" << std::endl;
-//	Person p=db.getObject<Person> (1);
-//	std::cout << p.toString () << std::endl;
-//
-//	std::cout << std::endl;
-//	std::cout << "Get person 3" << std::endl;
-//	p=db.getObject<Person> (3);
-//	std::cout << p.toString () << std::endl;
-
-
-
-//	std::cout << std::endl;
-//	std::cout << "Get people" << std::endl;
-//	QList<Person> people=db.getObjects<Person> ();
-//    foreach (const Person &person, people)
-//    	std::cout << person.toString ().toUtf8 () << std::endl;
-//
-//	std::cout << std::endl;
-//	std::cout << "Get planes" << std::endl;
-//	QList<Plane> planes=db.getObjects<Plane> ();
-//    foreach (const Plane &plane, planes)
-//    	std::cout << plane.toString ().toUtf8 () << std::endl;
-//
-//	std::cout << std::endl;
-//	std::cout << "Get flights" << std::endl;
-//	QList<Flight> flights=db.getObjects<Flight> ();
-//    foreach (const Flight &flight, flights)
-//    	std::cout << flight.toString ().toUtf8 () << std::endl;
-//
-//	std::cout << std::endl;
-//	std::cout << "Get prepared flights" << std::endl;
-//	flights=db.getPreparedFlights ();
-//    foreach (const Flight &flight, flights)
-//    	std::cout << flight.toString ().toUtf8 () << std::endl;
-//
-//	std::cout << std::endl;
-//	std::cout << "Get flights of 2010-01-23" << std::endl;
-//	flights=db.getFlightsDate (QDate (2010, 1, 23));
-//    foreach (const Flight &flight, flights)
-//    	std::cout << flight.toString ().toUtf8 () << std::endl;
-//
-//	std::cout << std::endl;
-//	std::cout << "Get launch methods" << std::endl;
-//	QList<LaunchMethod> launchMethods=db.getObjects<LaunchMethod> ();
-//    foreach (const LaunchMethod &launchMethod, launchMethods)
-//    	std::cout << launchMethod.toString ().toUtf8 () << std::endl;
-//
-//    std::cout << std::endl;
-//	std::cout << "List locations" << std::endl;
-//	std::cout << db.listLocations ().join (", ") << std::endl;
-//
-//    std::cout << std::endl;
-//	std::cout << "List accounting notes" << std::endl;
-//	std::cout << db.listAccountingNotes ().join (", ") << std::endl;
-//
-//    std::cout << std::endl;
-//	std::cout << "List clubs" << std::endl;
-//	std::cout << db.listClubs ().join (", ") << std::endl;
-//
-//    std::cout << std::endl;
-//	std::cout << "List plane types" << std::endl;
-//	std::cout << db.listPlaneTypes ().join (", ") << std::endl;
 
 	return 0;
 }
@@ -325,9 +334,9 @@ int main (int argc, char **argv)
 			}
 		}
 	}
-	catch (Db::Interface::QueryFailedException &ex)
+	catch (Db::Interface::SqlException &ex)
 	{
-		std::cout << ex.toString () << std::endl;
+		std::cout << ex.colorizedString () << std::endl;
 		return 1;
 	}
 

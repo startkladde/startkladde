@@ -1,15 +1,29 @@
+/*
+ * FIXME:
+ *   - Throw correct exception on access denied etc.
+ *   - Allow canceling
+ *
+ * TODO:
+ *   - Handle all relevant errors from
+ *     http://dev.mysql.com/doc/refman/5.1/en/error-messages-client.html
+ *     http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html
+ *   - Solution for stalled connection
+ */
 #include "DefaultInterface.h"
 
 #include <iostream>
 
 #include <QVariant>
 
+#include <mysql/errmsg.h>
+
 #include "src/util/qString.h"
 #include "src/db/result/DefaultResult.h"
 #include "src/db/Query.h"
 #include "src/config/Options.h"
 #include "src/text.h"
-#include "src/db/interface/QueryFailedException.h"
+#include "src/db/interface/exceptions/QueryFailedException.h"
+#include "src/db/interface/exceptions/ConnectionFailedException.h"
 
 namespace Db { namespace Interface
 {
@@ -20,6 +34,13 @@ namespace Db { namespace Interface
 	DefaultInterface::DefaultInterface (const DatabaseInfo &dbInfo):
 		Interface (dbInfo)
 	{
+		db=QSqlDatabase::addDatabase ("QMYSQL");
+
+		db.setHostName     (dbInfo.server  );
+		db.setUserName     (dbInfo.username);
+		db.setPassword     (dbInfo.password);
+		db.setPort         (dbInfo.port    );
+		db.setDatabaseName (dbInfo.database);
 	}
 
 	DefaultInterface::~DefaultInterface ()
@@ -31,22 +52,45 @@ namespace Db { namespace Interface
 	// ** Connection management **
 	// ***************************
 
+	/**
+	 * Opens the connection to the database
+	 *
+	 * This is not required as it is done automatically when a query is
+	 * executed and the connection is not open; however, it can be used to
+	 * ensure that the database can be reached.
+	 *
+	 * @return true on success, false else
+	 */
 	bool DefaultInterface::open ()
 	{
-		db=QSqlDatabase::addDatabase ("QMYSQL");
+		while (true)
+		{
+			std::cout << QString ("Connecting to %1...").arg (getInfo ().toString ());
+			std::cout.flush ();
 
-		const DatabaseInfo &info=getInfo ();
+			if (db.open ())
+			{
+				std::cout << "OK" << std::endl;
+				return true;
+			}
+			else
+			{
+				QSqlError error=db.lastError ();
 
-		std::cout << QString ("Connecting to %1@%2:%3")
-			.arg (info.username, info.server, info.database) << std::endl;
+				std::cout << error.databaseText () << std::endl;
 
-		db.setHostName     (info.server  );
-		db.setUserName     (info.username);
-		db.setPassword     (info.password);
-		db.setPort         (info.port    );
-		db.setDatabaseName (info.database);
+				switch (error.number ())
+				{
+					case CR_CONN_HOST_ERROR: break;
+					case CR_UNKNOWN_HOST: break;
+					case CR_SERVER_LOST: break;
+					default: throw ConnectionFailedException (db.lastError ());
+				}
 
-		return db.open ();
+				sleep (1);
+				std::cout << "Retrying...";
+			}
+		}
 	}
 
 	// TODO should be RAII, but calling this in the destructor doesn't seem to
@@ -133,12 +177,39 @@ namespace Db { namespace Interface
 		return executeQueryImpl (query, true).size ()>0;
 	}
 
+	QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOnly)
+	{
+		while (true)
+		{
+			try
+			{
+				if (!db.isOpen ()) open ();
+
+				return doExecuteQuery (query, forwardOnly);
+			}
+			catch (QueryFailedException &ex)
+			{
+				switch (ex.error.number ())
+				{
+					case CR_SERVER_GONE_ERROR: break;
+					case CR_SERVER_LOST: break;
+					default: throw;
+				}
+
+				db.close ();
+
+				if (opts.display_queries) std::cout << "Retrying...";
+			}
+		}
+	}
+
+
 	/**
 	 * Executes a query and returns the QSqlQuery
 	 *
 	 * @throw QueryFailedException if the query fails
 	 */
-	QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOnly)
+	QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly)
 	{
 		if (opts.display_queries)
 		{
@@ -149,22 +220,30 @@ namespace Db { namespace Interface
 		QSqlQuery sqlQuery (db);
 		sqlQuery.setForwardOnly (forwardOnly);
 
+		//if (opts.display_queries) std::cout << "prepare..."; std::cout.flush ();
+
 		if (!query.prepare (sqlQuery))
 		{
-			if (opts.display_queries)
-				std::cout << "prepare failed" << std::endl;
+			QSqlError error=sqlQuery.lastError ();
 
-			throw QueryFailedException::prepare (sqlQuery.lastError (), query);
+			if (opts.display_queries)
+				std::cout << error.databaseText () << std::endl;
+
+			throw QueryFailedException::prepare (error, query);
 		}
 
 		query.bindTo (sqlQuery);
 
+		//if (opts.display_queries) std::cout << "exec..."; std::cout.flush ();
+
 		if (!sqlQuery.exec ())
 		{
-			if (opts.display_queries)
-				std::cout << "execute failed" << std::endl;
+			QSqlError error=sqlQuery.lastError ();
 
-			throw QueryFailedException::execute (sqlQuery.lastError (), query);
+			if (opts.display_queries)
+				std::cout << error.databaseText () << std::endl;
+
+			throw QueryFailedException::execute (error, query);
 		}
 		else
 		{

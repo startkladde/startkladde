@@ -24,27 +24,8 @@ namespace Db
 		 * Interface implementations should inherit from this class rather than
 		 * from AbstractInterface.
 		 *
-		 * Here's an inheritance diagram for Interface (not all of these
-		 * classes are currently implemented, though):
-		 *
-		 *                       -------------------
-		 *                       | AbstractInterface |<----------------.
-		 *                        -------------------                  |
-		 *                                 ^                           |
-		 *                                 |                           |
-		 *                            -----------                      |
-		 *                           | Interface |                     |
-		 *                            -----------                      |
-		 *                             ^       ^                       |
-		 *                            /         \                      |
-		 *             ------------------     ---------------------    |
-		 *            | DefaultInterface |   | ThreadSafeInterface |*--'
-		 *             ------------------     ---------------------
-		 *                  ^      ^
-		 *                 /        \
-		 *     ----------------    -----------------
-		 *    |(MySQLInterface)|  |(SQLiteInterface)|
-		 *     ----------------    -----------------
+		 * For further information about the Interface class hierarchy see,
+		 * doc/interal/databaseArchitecture.txt
 		 */
 		class Interface: public AbstractInterface
 		{

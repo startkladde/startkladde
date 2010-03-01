@@ -43,7 +43,6 @@ namespace Db
 				DefaultInterface (const DatabaseInfo &dbInfo);
 				virtual ~DefaultInterface ();
 
-
 				// *** Connection management
 				virtual bool open ();
 				virtual void close ();
@@ -63,6 +62,7 @@ namespace Db
 				QSqlDatabase db;
 
 				virtual QSqlQuery executeQueryImpl (const Query &query, bool forwardOnly=true);
+				virtual QSqlQuery doExecuteQuery (const Query &query, bool forwardOnly=true);
 		};
 	}
 }

@@ -2,20 +2,22 @@
 
 #include <cassert>
 
+#include "src/io/AnsiColors.h"
+
 namespace Db { namespace Interface
 {
-	QueryFailedException::QueryFailedException (QSqlError error, Query query,
+	QueryFailedException::QueryFailedException (const QSqlError &error, const Query &query,
 		QueryFailedException::Phase phase):
-		error (error), query (query), phase (phase)
+		SqlException (error), query (query), phase (phase)
 	{
 	}
 
-	QueryFailedException QueryFailedException::prepare (QSqlError error, Query query)
+	QueryFailedException QueryFailedException::prepare (const QSqlError &error, const Query &query)
 	{
 		return QueryFailedException (error, query, phasePrepare);
 	}
 
-	QueryFailedException QueryFailedException::execute (QSqlError error, Query query)
+	QueryFailedException QueryFailedException::execute (const QSqlError &error, const Query &query)
 	{
 		return QueryFailedException (error, query, phaseExecute);
 	}
@@ -32,17 +34,25 @@ namespace Db { namespace Interface
 
 	QString QueryFailedException::toString () const
 	{
-		return QString (
+		return makeString (QString (
 			"Query failed during %1:\n"
-			"    Number/type   : %2/%3\n"
-			"    Query         : %4\n"
-			"    Database error: %5\n"
-			"    Driver error  : %6")
+			"    Query         : %2\n")
 			.arg (phaseString (phase))
-			.arg (error.number ()).arg (error.type ())
 			.arg (query.toString ())
-			.arg (error.databaseText ())
-			.arg (error.driverText ());
+			);
+	}
+
+	QString QueryFailedException::colorizedString () const
+	{
+		AnsiColors c;
+
+		return makeColorizedString (QString (
+			"%1Query failed%2 during %3:\n"
+			"    Query         : %4")
+			.arg (c.red ()).arg (c.reset ())
+			.arg (phaseString (phase))
+			.arg (query.colorizedString ())
+			);
 	}
 
 	QString QueryFailedException::phaseString (QueryFailedException::Phase phase)

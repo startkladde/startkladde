@@ -1,0 +1,40 @@
+Architecture of the database layer:
+
+.------------------------------.
+|             GUI              |
+|-------.                      |
+| Cache |     .----------------| 
+|-------------| Migra-| Schema |
+| Greater ORM |  tor  | dumper | Greater ORM: Database class
+|------------------------------|
+|          Interface           | Uses ThreadSafeInterface
+|------------------------------|
+|            QtSql             |
+|------------------------------|
+|          DB Server           |
+'------------------------------'
+
+
+The Interface classes:
+                                           Uses
+                     -------------------   DefaultInterface       -------- 
+                    | AbstractInterface |---------------------<#>| Worker |--.
+                     ---------.---------                          --------   |
+                             /_\                                             |
+                              |                                              |
+                         -----------                                         |
+                        | Interface |                                        |
+                         -.-------.-                                         |
+                         /_\     /_\                                         |
+                          |       |                                          |
+          ------------------     ---------------------        --------       |
+         | DefaultInterface |   | ThreadSafeInterface |<#>---| Thread |<#>---'
+          ---.----------.---     ---------------------        --------
+            /_\        /_\
+             |          |
+ ----------------    -----------------
+|(MySQLInterface)|  |(SQLiteInterface)|
+ ----------------    -----------------
+ 
+MySQLInterface and SQLiteInterface are currently not implemented; the
+functionality (only for MySQL) is in DefaultInterface.

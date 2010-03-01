@@ -8,6 +8,9 @@ DEPENDPATH += . version
 INCLUDEPATH += . version /usr/include/mysql
 #LIBS += -L/usr/lib64/mysql -lmysqlclient -lz -lacpi
 LIBS += -lz -lacpi
+# Link agains mysqlclient explicitly to avoid "Error in my_thread_global_end():
+# 1 threads didn't exit" in specific situations (e. g. exception on open).
+LIBS += -lmysqlclient
 MAKEFILE = Makefile_startkladde
 OBJECTS_DIR = build/
 MOC_DIR= build/
@@ -45,7 +48,9 @@ HEADERS += \
            src/db/interface/AbstractInterface.h \
            src/db/interface/DefaultInterface.h \
            src/db/interface/Interface.h \
-           src/db/interface/QueryFailedException.h \
+           src/db/interface/exceptions/ConnectionFailedException.h \
+           src/db/interface/exceptions/QueryFailedException.h \
+           src/db/interface/exceptions/SqlException.h \
            src/db/interface/threadSafe/Thread.h \
            src/db/interface/threadSafe/ThreadSafeInterface.h \
            src/db/interface/threadSafe/Worker.h \
@@ -136,6 +141,7 @@ SOURCES += \
            src/concurrent/task/Task.cpp \
            src/config/Options.cpp \
            src/db/Database.cpp \
+           src/db/DatabaseInfo.cpp \
            src/db/Query.cpp \
            src/db/dbId.cpp \
            src/db/cache/Cache.cpp \
@@ -146,7 +152,9 @@ SOURCES += \
            src/db/interface/AbstractInterface.cpp \
            src/db/interface/DefaultInterface.cpp \
            src/db/interface/Interface.cpp \
-           src/db/interface/QueryFailedException.cpp \
+           src/db/interface/exceptions/ConnectionFailedException.cpp \
+           src/db/interface/exceptions/QueryFailedException.cpp \
+           src/db/interface/exceptions/SqlException.cpp \
            src/db/interface/threadSafe/Thread.cpp \
            src/db/interface/threadSafe/ThreadSafeInterface.cpp \
            src/db/interface/threadSafe/Worker.cpp \
