@@ -12,10 +12,11 @@
 
 #include "src/db/interface/threadSafe/Worker.h"
 
-#include "src/concurrent/Waiter.h" // TODO remove
+#include "src/concurrent/Waiter.h"
 #include "src/db/Query.h"
 #include "src/concurrent/Returner.h"
 
+class QSqlError;
 
 namespace Db
 {
@@ -42,44 +43,40 @@ namespace Db
 
 					void waitStartup ();
 
-					// These are slots, although you will likely want to call
-					// them directly.
 					// TODO: have the ThreadSafeInterface emit the signals, just
 					// connect them to the worker here
-				public slots:
+
 					// *** Connection management
-					virtual void open (Waiter *waiter, bool *result);
-					virtual void close (Waiter *waiter);
-					virtual void lastError (Waiter *waiter, QSqlError *result) const;
+					virtual void open      (Returner<bool>      *returner);
+					virtual void close     (Returner<void>      *returner);
+					virtual void lastError (Returner<QSqlError> *returner) const;
 
 					// *** Transactions
-					virtual void transaction (Waiter *waiter, bool *result);
-					virtual void commit      (Waiter *waiter, bool *result);
-					virtual void rollback    (Waiter *waiter, bool *result);
+					virtual void transaction (Returner<bool> *returner);
+					virtual void commit      (Returner<bool> *returner);
+					virtual void rollback    (Returner<bool> *returner);
 
 					// *** Queries
-					virtual void executeQuery       (Waiter *waiter,                                         const Query &query);
-					virtual void executeQueryResult (Waiter *waiter, QSharedPointer<Result::Result> *result, const Query &query, bool forwardOnly=true);
-//					virtual void queryHasResult     (Waiter *waiter, bool                           *result, const Query &query);
-					virtual void queryHasResult     (Returner<bool> *returner        , const Query &query);
+					virtual void executeQuery       (Returner<void>                            *returner, const Query &query);
+					virtual void executeQueryResult (Returner<QSharedPointer<Result::Result> > *returner, const Query &query, bool forwardOnly=true);
+					virtual void queryHasResult     (Returner<bool>                            *returner, const Query &query);
 
 				signals:
 					// *** Connection management
-					virtual void sig_open (Waiter *waiter, bool *result);
-					virtual void sig_close (Waiter *waiter);
-					virtual void sig_lastError (Waiter *waiter, QSqlError *result) const;
+					virtual void sig_open      (Returner<bool>      *returner);
+					virtual void sig_close     (Returner<void>      *returner);
+					virtual void sig_lastError (Returner<QSqlError> *returner) const;
 
 					// *** Transactions
-					virtual void sig_transaction (Waiter *waiter, bool *result);
-					virtual void sig_commit      (Waiter *waiter, bool *result);
-					virtual void sig_rollback    (Waiter *waiter, bool *result);
+					virtual void sig_transaction (Returner<bool> *returner);
+					virtual void sig_commit      (Returner<bool> *returner);
+					virtual void sig_rollback    (Returner<bool> *returner);
 
 					// *** Queries
-					// Must use Db:: for Query for the signals
-					virtual void sig_executeQuery       (Waiter *waiter,                                         Db::Query query);
-					virtual void sig_executeQueryResult (Waiter *waiter, QSharedPointer<Result::Result> *result, Db::Query query, bool forwardOnly=true);
-//					virtual void sig_queryHasResult     (Waiter *waiter, bool                           *result, Db::Query query);
-					virtual void sig_queryHasResult     (Returner<bool> *returner,         Db::Query query);
+					virtual void sig_executeQuery       (Returner<void>                            *returner, Db::Query query);
+					virtual void sig_executeQueryResult (Returner<QSharedPointer<Result::Result> > *returner, Db::Query query, bool forwardOnly=true);
+					virtual void sig_queryHasResult     (Returner<bool>                            *returner, Db::Query query);
+
 
 				protected:
 					virtual void run ();
@@ -88,8 +85,6 @@ namespace Db
 					Worker *worker;
 					DatabaseInfo dbInfo;
 					Waiter startupWaiter;
-//
-//					void connectSignal (const char *signal);
 			};
 		}
 	}

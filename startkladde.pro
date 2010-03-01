@@ -24,6 +24,7 @@ HEADERS += \
            src/text.h \
            src/version.h \
            src/concurrent/DefaultQThread.h \
+           src/concurrent/Returner.h \
            src/concurrent/synchronized.h \
            src/concurrent/ThreadUtil.h \
            src/concurrent/Waiter.h \
@@ -124,6 +125,7 @@ SOURCES += \
            src/text.cpp \
            src/version.cpp \
            src/concurrent/DefaultQThread.cpp \
+           src/concurrent/Returner.cpp \
            src/concurrent/synchronized.cpp \
            src/concurrent/ThreadUtil.cpp \
            src/concurrent/Waiter.cpp \

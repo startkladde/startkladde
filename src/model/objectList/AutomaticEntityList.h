@@ -19,8 +19,6 @@
 // ** Construction **
 // ******************
 
-// FIXME: adapt to Cache/Database
-
 /**
  * A subclass auf EntityList that receives dbChange events from a Cache
  * and updates the list accordingly.

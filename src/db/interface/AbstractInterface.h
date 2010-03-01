@@ -8,8 +8,8 @@
 #ifndef ABSTRACTINTERFACE_H_
 #define ABSTRACTINTERFACE_H_
 
-#include <QSqlQuery> // TODO remove after fixing QueryFailedException
 #include <QSharedPointer>
+#include <QSqlError>
 
 #include "src/db/DatabaseInfo.h"
 

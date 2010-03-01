@@ -14,7 +14,7 @@
 #include "src/db/Query.h"
 #include "src/concurrent/Returner.h"
 
-class Waiter; // TODO remove
+class QSqlError;
 
 namespace Db
 {
@@ -44,21 +44,20 @@ namespace Db
 
 				public slots:
 					// *** Connection management
-					virtual void open (Waiter *waiter, bool *result);
-					virtual void close (Waiter *waiter);
-					virtual void lastError (Waiter *waiter, QSqlError *result) const;
+					virtual void open      (Returner<bool>      *returner);
+					virtual void close     (Returner<void>      *returner);
+					virtual void lastError (Returner<QSqlError> *returner) const;
 
 					// *** Transactions
-					virtual void transaction (Waiter *waiter, bool *result);
-					virtual void commit      (Waiter *waiter, bool *result);
-					virtual void rollback    (Waiter *waiter, bool *result);
+					virtual void transaction (Returner<bool> *returner);
+					virtual void commit      (Returner<bool> *returner);
+					virtual void rollback    (Returner<bool> *returner);
 
 					// *** Queries
 					// Must use Db:: for Query for the signals
-					virtual void executeQuery       (Waiter *waiter,                                         Db::Query query);
-					virtual void executeQueryResult (Waiter *waiter, QSharedPointer<Result::Result> *result, Db::Query query, bool forwardOnly=true);
-//					virtual void queryHasResult     (Waiter *waiter, bool                           *result, Db::Query query);
-					virtual void queryHasResult     (Returner<bool> *returner        , Db::Query query);
+					virtual void executeQuery       (Returner<void>                            *returner, Db::Query query);
+					virtual void executeQueryResult (Returner<QSharedPointer<Result::Result> > *returner, Db::Query query, bool forwardOnly=true);
+					virtual void queryHasResult     (Returner<bool>                            *returner, Db::Query query);
 
 				private:
 					AbstractInterface *interface;

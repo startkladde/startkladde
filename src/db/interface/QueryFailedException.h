@@ -28,7 +28,7 @@ namespace Db
 				static QueryFailedException execute (QSqlError error, Query query);
 
 				virtual QueryFailedException *clone () const;
-				virtual void deleteAndThrow () const;
+				virtual void rethrow () const;
 
 				QString toString () const;
 				static QString phaseString (Phase phase);

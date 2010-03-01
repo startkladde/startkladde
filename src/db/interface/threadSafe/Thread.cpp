@@ -19,18 +19,17 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), worker, SLOT (definition))
 
-		CONNECT (open (Waiter *, bool *));
-		CONNECT (close (Waiter *));
-		CONNECT (lastError (Waiter *, QSqlError *));
+		CONNECT (open      (Returner<bool>      *));
+		CONNECT (close     (Returner<void>      *));
+		CONNECT (lastError (Returner<QSqlError> *));
 
-		CONNECT (transaction (Waiter *, bool *));
-		CONNECT (commit      (Waiter *, bool *));
-		CONNECT (rollback    (Waiter *, bool *));
+		CONNECT (transaction (Returner<bool> *));
+		CONNECT (commit      (Returner<bool> *));
+		CONNECT (rollback    (Returner<bool> *));
 
-		CONNECT (executeQuery       (Waiter *,                                   Db::Query));
-		CONNECT (executeQueryResult (Waiter *, QSharedPointer<Result::Result> *, Db::Query, bool));
-//		CONNECT (queryHasResult     (Waiter *, bool                           *, Db::Query));
-		CONNECT (queryHasResult     (Returner<bool> *, Db::Query));
+		CONNECT (executeQuery       (Returner<void>                            *, Db::Query));
+		CONNECT (executeQueryResult (Returner<QSharedPointer<Result::Result> > *, Db::Query, bool));
+		CONNECT (queryHasResult     (Returner<bool>                            *, Db::Query));
 
 #undef CONNECT
 
@@ -57,19 +56,19 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	// ** Connection management **
 	// ***************************
 
-	void Thread::open (Waiter *waiter, bool *result)
+	void Thread::open (Returner<bool> *returner)
 	{
-		emit sig_open (waiter, result);
+		emit sig_open (returner);
 	}
 
-	void Thread::close (Waiter *waiter)
+	void Thread::close (Returner<void> *returner)
 	{
-		emit sig_close (waiter);
+		emit sig_close (returner);
 	}
 
-	void Thread::lastError (Waiter *waiter, QSqlError *result) const
+	void Thread::lastError (Returner<QSqlError> *returner) const
 	{
-		emit sig_lastError (waiter, result);
+		emit sig_lastError (returner);
 	}
 
 
@@ -77,34 +76,28 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	// ** Transactions **
 	// ******************
 
-	void Thread::transaction (Waiter *waiter, bool *result) { emit sig_transaction (waiter, result); }
-	void Thread::commit      (Waiter *waiter, bool *result) { emit sig_commit      (waiter, result); }
-	void Thread::rollback    (Waiter *waiter, bool *result) { emit sig_rollback    (waiter, result); }
+	void Thread::transaction (Returner<bool> *returner) { emit sig_transaction (returner); }
+	void Thread::commit      (Returner<bool> *returner) { emit sig_commit      (returner); }
+	void Thread::rollback    (Returner<bool> *returner) { emit sig_rollback    (returner); }
 
 
 	// *************
 	// ** Queries **
 	// *************
 
-	void Thread::executeQuery (Waiter *waiter, const Query &query)
+	void Thread::executeQuery (Returner<void> *returner, const Query &query)
 	{
-		emit sig_executeQuery (waiter, query);
+		emit sig_executeQuery (returner, query);
 	}
 
-	void Thread::executeQueryResult (Waiter *waiter, QSharedPointer<Result::Result> *result, const Query &query, bool forwardOnly)
+	void Thread::executeQueryResult (Returner<QSharedPointer<Result::Result> > *returner, const Query &query, bool forwardOnly)
 	{
-		emit sig_executeQueryResult (waiter, result, query, forwardOnly);
+		emit sig_executeQueryResult (returner, query, forwardOnly);
 	}
 
 	void Thread::queryHasResult (Returner<bool> *returner, const Query &query)
 	{
 		emit sig_queryHasResult (returner, query);
 	}
-
-//	void Thread::queryHasResult (Waiter *waiter, bool *result, const Query &query)
-//	{
-//		emit sig_queryHasResult (waiter, result, query);
-//
-//	}
 
 } } }

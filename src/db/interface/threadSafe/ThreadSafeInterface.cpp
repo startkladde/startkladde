@@ -1,11 +1,10 @@
 #include "ThreadSafeInterface.h"
 
-#include <iostream> // remove
+#include <iostream>
 
 #include <QSqlError>
 
 #include "src/db/result/Result.h"
-#include "src/concurrent/Waiter.h" // TODO remove
 #include "src/concurrent/Returner.h"
 
 namespace Db { namespace Interface { namespace ThreadSafe
@@ -45,32 +44,23 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	bool ThreadSafeInterface::open ()
 	{
-		Waiter waiter;
-		bool result;
-
-		thread.open (&waiter, &result);
-		waiter.wait ();
-
-		return result;
+		Returner<bool> returner;
+		thread.open (&returner);
+		return returner.returnedValue ();
 	}
 
 	void ThreadSafeInterface::close ()
 	{
-		Waiter waiter;
-
-		thread.close (&waiter);
-		waiter.wait ();
+		Returner<void> returner;
+		thread.close (&returner);
+		returner.wait ();
 	}
 
 	QSqlError ThreadSafeInterface::lastError () const
 	{
-		Waiter waiter;
-		QSqlError result;
-
-		thread.lastError (&waiter, &result);
-		waiter.wait ();
-
-		return result;
+		Returner<QSqlError> returner;
+		thread.lastError (&returner);
+		return returner.returnedValue ();
 	}
 
 
@@ -80,35 +70,23 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	bool ThreadSafeInterface::transaction ()
 	{
-		Waiter waiter;
-		bool result;
-
-		thread.transaction (&waiter, &result);
-		waiter.wait ();
-
-		return result;
+		Returner<bool> returner;
+		thread.transaction (&returner);
+		return returner.returnedValue ();
 	}
 
 	bool ThreadSafeInterface::commit ()
 	{
-		Waiter waiter;
-		bool result;
-
-		thread.commit (&waiter, &result);
-		waiter.wait ();
-
-		return result;
+		Returner<bool> returner;
+		thread.commit (&returner);
+		return returner.returnedValue ();
 	}
 
 	bool ThreadSafeInterface::rollback ()
 	{
-		Waiter waiter;
-		bool result;
-
-		thread.rollback (&waiter, &result);
-		waiter.wait ();
-
-		return result;
+		Returner<bool> returner;
+		thread.rollback (&returner);
+		return returner.returnedValue ();
 	}
 
 
@@ -118,21 +96,16 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	void ThreadSafeInterface::executeQuery (const Query &query)
 	{
-		Waiter waiter;
-
-		thread.executeQuery (&waiter, query);
-		waiter.wait ();
+		Returner<void> returner;
+		thread.executeQuery (&returner, query);
+		returner.wait ();
 	}
 
 	QSharedPointer<Result::Result> ThreadSafeInterface::executeQueryResult (const Query &query, bool forwardOnly)
 	{
-		Waiter waiter;
-		QSharedPointer<Result::Result> result;
-
-		thread.executeQueryResult (&waiter, &result, query, forwardOnly);
-		waiter.wait ();
-
-		return result;
+		Returner<QSharedPointer<Result::Result> > returner;
+		thread.executeQueryResult (&returner, query, forwardOnly);
+		return returner.returnedValue ();
 	}
 
 	bool ThreadSafeInterface::queryHasResult (const Query &query)
@@ -140,14 +113,6 @@ namespace Db { namespace Interface { namespace ThreadSafe
 		Returner<bool> returner;
 		thread.queryHasResult (&returner, query);
 		return returner.returnedValue ();
-
-//		Waiter waiter;
-//		bool result;
-//
-//		thread.queryHasResult (&waiter, &result, query);
-//		waiter.wait ();
-//
-//		return result;
 	}
 
 } } }

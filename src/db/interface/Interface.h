@@ -10,6 +10,9 @@
 
 #include "src/db/interface/AbstractInterface.h"
 
+class QVariant;
+
+
 namespace Db
 {
 	namespace Interface

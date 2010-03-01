@@ -64,18 +64,22 @@ int test_database ()
 		return 1;
 	}
 
-	std::cout << "Expect: 1" << std::endl;
-	std::cout << interface.queryHasResult ("select id from people where id=1") << std::endl;
+//	std::cout << "Expect: 1" << std::endl;
+//	std::cout << interface.queryHasResult ("select id from people where id=1") << std::endl;
+//
+//	std::cout << "Expect: 0" << std::endl;
+//	std::cout << interface.queryHasResult ("select id from people where id=3") << std::endl;
+//
+//	std::cout << "Expect: caught exception" << std::endl;
+//	std::cout << interface.queryHasResult ("bam") << std::endl;
 
-	std::cout << "Expect: 0" << std::endl;
-	std::cout << interface.queryHasResult ("select id from people where id=3") << std::endl;
+//	std::cout << "Expect: OK" << std::endl;
+//	interface.executeQuery ("select 0");
+//	std::cout << "Expect: caught exception" << std::endl;
+//	interface.executeQuery ("bam");
 
-	std::cout << "Expect: caught exception" << std::endl;
-	std::cout << interface.queryHasResult ("bam") << std::endl;
-
-
-	interface.close ();
-	return 0;
+//	interface.close ();
+//	return 0;
 
 
 

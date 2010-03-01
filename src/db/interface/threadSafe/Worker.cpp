@@ -4,15 +4,12 @@
 // #executeQueryResult
 #include "src/db/result/Result.h"
 #include "src/db/result/CopiedResult.h"
-#include "src/concurrent/Waiter.h" // TODO remove
 #include "src/db/Query.h"
 #include "src/db/interface/DefaultInterface.h"
 #include "src/concurrent/Returner.h"
 
 namespace Db { namespace Interface { namespace ThreadSafe
 {
-	// FIXME: error reporting
-
 	// ******************
 	// ** Construction **
 	// ******************
@@ -32,22 +29,19 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	// ** Connection management **
 	// ***************************
 
-	void Worker::open (Waiter *waiter, bool *result)
+	void Worker::open (Returner<bool> *returner)
 	{
-		if (result) *result=interface->open ();
-		if (waiter) waiter->notify ();
+		returnOrException (returner, interface->open ());
 	}
 
-	void Worker::close (Waiter *waiter)
+	void Worker::close (Returner<void> *returner)
 	{
-		interface->close ();
-		if (waiter) waiter->notify ();
+		returnVoidOrException (returner, interface->close ());
 	}
 
-	void Worker::lastError (Waiter *waiter, QSqlError *result) const
+	void Worker::lastError (Returner<QSqlError> *returner) const
 	{
-		if (result) *result=interface->lastError ();
-		if (waiter) waiter->notify ();
+		returnOrException (returner, interface->lastError ());
 	}
 
 
@@ -55,22 +49,19 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	// ** Transactions **
 	// ******************
 
-	void Worker::transaction (Waiter *waiter, bool *result)
+	void Worker::transaction (Returner<bool> *returner)
 	{
-		if (result) *result=interface->transaction ();
-		if (waiter) waiter->notify ();
+		returnOrException (returner, interface->transaction ());
 	}
 
-	void Worker::commit (Waiter *waiter, bool *result)
+	void Worker::commit (Returner<bool> *returner)
 	{
-		if (result) *result=interface->commit ();
-		if (waiter) waiter->notify ();
+		returnOrException (returner, interface->commit ());
 	}
 
-	void Worker::rollback (Waiter *waiter, bool *result)
+	void Worker::rollback (Returner<bool> *returner)
 	{
-		if (result) *result=interface->rollback ();
-		if (waiter) waiter->notify ();
+		returnOrException (returner, interface->rollback ());
 	}
 
 
@@ -78,44 +69,29 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	// ** Queries **
 	// *************
 
-	void Worker::executeQuery (Waiter *waiter, Query query)
+	void Worker::executeQuery (Returner<void> *returner, Db::Query query)
 	{
-		interface->executeQuery (query);
-		if (waiter) waiter->notify ();
+		returnVoidOrException (returner, interface->executeQuery (query));
 	}
 
-	void Worker::executeQueryResult (Waiter *waiter, QSharedPointer<Result::Result> *result, Query query, bool forwardOnly)
+	void Worker::executeQueryResult (Returner<QSharedPointer<Result::Result> > *returner, Db::Query query, bool forwardOnly)
 	{
 		// Option 1: copy the DefaultResult (is it allowed to access the
 		// QSqlQuery from the other thread? It seems to work.)
-//		if (result) *result=interface->executeQueryResult (query, forwardOnly);
+//		returnOrException (returner, interface->executeQueryResult (query, forwardOnly));
 
 		// Option 2: create a CopiedResult
-		if (result) *result=QSharedPointer<Result::Result> (
+		(void)forwardOnly;
+		returnOrException (returner, QSharedPointer<Result::Result> (
 			new Result::CopiedResult (
-				*interface->executeQueryResult (query, forwardOnly)
+				// When copying, we can always set forwardOnly
+				*interface->executeQueryResult (query, true)
 			)
-		);
-
-		if (waiter) waiter->notify ();
+		));
 	}
 
 	void Worker::queryHasResult (Returner<bool> *returner, Db::Query query)
 	{
-		try
-		{
-			returner->returnValue (interface->queryHasResult (query));
-		}
-		catch (StorableException &ex)
-		{
-			returner->exception (ex);
-		}
+		returnOrException (returner, interface->queryHasResult (query));
 	}
-
-//	void Worker::queryHasResult (Waiter *waiter, bool *result, Query query)
-//	{
-//		if (result) *result=interface->queryHasResult (query);
-//		if (waiter) waiter->notify ();
-//	}
-
 } } }
