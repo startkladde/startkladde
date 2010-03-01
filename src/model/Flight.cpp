@@ -938,3 +938,21 @@ Flight::Type Flight::typeFromDb (QString type)
 	else if (type=="guest_external") return typeGuestExternal;
 	else                             return typeNone;
 }
+
+Db::Query Flight::referencesPersonCondition (dbId id)
+{
+	return Db::Query ("pilot_id=? OR copilot_id=? OR towpilot_id=?")
+		.bind (id).bind (id).bind (id);
+}
+
+Db::Query Flight::referencesPlaneCondition (dbId id)
+{
+	return Db::Query ("plane_id=? OR towplane_id=?")
+		.bind (id).bind (id);
+}
+
+Db::Query Flight::referencesLaunchMethodCondition (dbId id)
+{
+	return Db::Query ("launch_method_id=?")
+		.bind (id);
+}

@@ -159,8 +159,17 @@ namespace Db
 
 	Query Query::count (const QString &table)
 	{
+		// TODO default case of count(table, condition)
 		return Query ("SELECT COUNT(*) FROM %1")
 			.arg (table);
+	}
+
+	Query Query::count (const QString &table, const Query &condition)
+	{
+		if (condition.isEmpty ())
+			return Query ("SELECT COUNT(*) FROM %1").arg (table);
+		else
+			return Query ("SELECT COUNT(*) FROM %1 WHERE ").arg (table)+condition;
 	}
 
 

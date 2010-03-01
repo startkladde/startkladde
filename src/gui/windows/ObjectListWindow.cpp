@@ -63,7 +63,6 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 	const T &object=list->at (listIndex);
 	dbId id=object.getId ();
 
-	// FIXME object used check
 //	ObjectUsedTask<T> checkTask (cache, id);
 //	cache.addTask (&checkTask);
 //	TaskProgressDialog::waitTask (this, &checkTask);
@@ -71,7 +70,8 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 //	if (!checkTask.isCompleted ()) return; // TODO error check instead
 //	bool objectUsed=checkTask.getResult ();
 
-	bool objectUsed=false;
+	// TODO background
+	bool objectUsed=cache.getDatabase ().objectUsed<T> (id);
 
 	if (objectUsed)
 	{
@@ -81,6 +81,7 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 	}
 	else
 	{
+		// TODO include name in question
 		QString title=QString::fromUtf8 ("%1 löschen?").arg (T::objectTypeDescription ());
 		QString question=QString::fromUtf8 ("Soll %1 gelöscht werden?").arg (T::objectTypeDescriptionDefinite ());
 		if (yesNoQuestion (this, title, question))

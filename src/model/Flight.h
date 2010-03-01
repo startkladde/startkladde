@@ -240,6 +240,11 @@ class Flight
 		static QString    typeToDb   (Type       type);
 		static Type       typeFromDb (QString    type);
 
+		// Queries
+		static Db::Query referencesPersonCondition (dbId id);
+		static Db::Query referencesPlaneCondition (dbId id);
+		static Db::Query referencesLaunchMethodCondition (dbId id);
+
 	private:
 		dbId id;
 

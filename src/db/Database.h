@@ -51,6 +51,7 @@ namespace Db
 			// Template functions, instantiated for the relevant classes
 			template<class T> QList<T> getObjects (const Query &condition);
 			template<class T> int countObjects (const Query &condition);
+			template<class T> bool objectExists (const Query &condition);
 			template<class T> bool objectExists (dbId id);
 			template<class T> T getObject (dbId id);
 			template<class T> bool deleteObject (dbId id);
@@ -64,14 +65,18 @@ namespace Db
 			template<class T> QList<T> getObjects ();
 			template<class T> int countObjects ();
 
+			// *** Selection frontends
+			virtual QList<Flight> getPreparedFlights ();
+			virtual QList<Flight> getFlightsDate (QDate date);
 
-			// *** Very specific
+			// *** Value lists
 			virtual QStringList listLocations ();
 			virtual QStringList listAccountingNotes ();
 			virtual QStringList listClubs ();
 			virtual QStringList listPlaneTypes ();
-			virtual QList<Flight> getPreparedFlights ();
-			virtual QList<Flight> getFlightsDate (QDate date);
+
+			// Additional properties
+			template<class T> bool objectUsed (dbId id);
 
 		signals:
 			void dbEvent (Event::Event event);

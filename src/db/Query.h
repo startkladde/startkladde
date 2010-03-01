@@ -41,6 +41,7 @@ namespace Db
 
 			static Query select (const QString &table, const QString &columns="*");
 			static Query count (const QString &table);
+			static Query count (const QString &table, const Query &condition);
 
 			// *** Manipulation
 			Query operator+ (const Query &other) const;

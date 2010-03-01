@@ -1,6 +1,5 @@
 /*
  * Next:
- *   - Find reconnect solution
  *   - integrate schema loading/database migration into GUI
  *
  * Short term plan:
@@ -139,9 +138,14 @@ namespace Db
 		return interface.countQuery (query);
 	}
 
+	template<class T> bool Database::objectExists (const Query &query)
+	{
+		return countObjects<T> (query)>0;
+	}
+
 	template<class T> bool Database::objectExists (dbId id)
 	{
-		return countObjects<T> (Query ("id=?").bind (id))>0;
+		return objectExists<T> (Query ("id=?").bind (id));
 	}
 
 	template<class T> T Database::getObject (dbId id)
@@ -213,36 +217,6 @@ namespace Db
 	{
 		return countObjects<T> (Query ());
 	}
-
-	// Instantiate the class templates
-	// Classes have to provide:
-	//   - ::dbTableName ();
-	//   - ::QString selectColumnList (); // TODO return queries directly?
-	//   - ::createFromQuery (const Result &result); // TODO change to create
-	//   - ::insertValueList ();
-	//   - ::updateValueList ();
-	//   - bindValues (QSqlQuery &q) const;
-	//   - ::createListFromQuery (Result &result); // TODO change to createList
-
-	#define INSTANTIATE_TEMPLATES(T) \
-		template QList<T> Database::getObjects      (const Query &condition); \
-		template int      Database::countObjects<T> (const Query &condition); \
-		template bool     Database::objectExists<T> (dbId id); \
-		template T        Database::getObject       (dbId id); \
-		template bool     Database::deleteObject<T> (dbId id); \
-		template dbId     Database::createObject    (T &object); \
-		template bool     Database::updateObject    (const T &object); \
-		template QList<T> Database::getObjects  <T> (); \
-		template int      Database::countObjects<T> (); \
-
-		// Empty line
-
-	INSTANTIATE_TEMPLATES (Person      )
-	INSTANTIATE_TEMPLATES (Plane       )
-	INSTANTIATE_TEMPLATES (Flight      )
-	INSTANTIATE_TEMPLATES (LaunchMethod)
-
-	#undef INSTANTIATE_TEMPLATES
 
 
 	// *******************
@@ -337,5 +311,84 @@ namespace Db
 
 		return flights;
 	}
+
+	template<class T> bool Database::objectUsed (dbId id)
+	{
+		(void)id;
+		// Return true for safety; specialize for specific classes
+		return true;
+	}
+
+	template<> bool Database::objectUsed<Person> (dbId id)
+	{
+		// A person may be referenced by a flight
+		if (objectExists<Flight> (Flight::referencesPersonCondition (id))) return true;
+
+		// A person may be referenced by a user (although we don't have a user
+		// model here, only in sk_web)
+		if (interface.countQuery (
+			Query::count ("users", Query ("person_id=?").bind (id))
+		)) return true;
+
+		return false;
+	}
+
+	template<> bool Database::objectUsed<Plane> (dbId id)
+	{
+		// Launch methods reference planes by registration, which we don't have
+		// to check.
+
+		// A plane may be reference by a flight
+		return objectExists<Flight> (Flight::referencesPlaneCondition (id));
+	}
+
+	template<> bool Database::objectUsed<LaunchMethod> (dbId id)
+	{
+		// A launch method may be reference by a flight
+		return objectExists<Flight> (Flight::referencesLaunchMethodCondition (id));
+	}
+
+	template<> bool Database::objectUsed<Flight> (dbId id)
+	{
+		(void)id;
+
+		// Flights are never used
+		return false;
+	}
+
+	// ***************************
+	// ** Method instantiations **
+	// ***************************
+
+	// Instantiate the method templates
+	// Classes have to provide:
+	//   - ::dbTableName ();
+	//   - ::QString selectColumnList (); // TODO return queries directly?
+	//   - ::createFromQuery (const Result &result); // TODO change to create
+	//   - ::insertValueList ();
+	//   - ::updateValueList ();
+	//   - bindValues (QSqlQuery &q) const;
+	//   - ::createListFromQuery (Result &result); // TODO change to createList
+
+#	define INSTANTIATE_TEMPLATES(T) \
+		template QList<T> Database::getObjects      (const Query &condition); \
+		template int      Database::countObjects<T> (const Query &condition); \
+		template bool     Database::objectExists<T> (dbId id); \
+		template T        Database::getObject       (dbId id); \
+		template bool     Database::deleteObject<T> (dbId id); \
+		template dbId     Database::createObject    (T &object); \
+		template bool     Database::updateObject    (const T &object); \
+		template QList<T> Database::getObjects  <T> (); \
+		template int      Database::countObjects<T> (); \
+		template bool     Database::objectUsed<T>   (dbId id);
+
+		// Empty line
+
+	INSTANTIATE_TEMPLATES (Person      )
+	INSTANTIATE_TEMPLATES (Plane       )
+	INSTANTIATE_TEMPLATES (Flight      )
+	INSTANTIATE_TEMPLATES (LaunchMethod)
+
+#	undef INSTANTIATE_TEMPLATES
 
 }
