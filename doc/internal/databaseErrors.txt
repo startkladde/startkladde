@@ -1,3 +1,14 @@
+Database Exception hierarchy:
+
+SqlException
+  ConnectionFailedException
+    AccessDeniedException
+    DatabaseDoesNotExistException
+  QueryFailedException
+
+
+
+
 Database errors, as determined by Martin Herrmann, 2010-03-01:
 
 Condition                         | Num/Type | Message                      | Comments
@@ -32,4 +43,3 @@ Error in query                    | 1064/2   | syntax error                 |
 
 Reconnect on connect errors: 2003, 2005, 2013
 Retry on query errors: 2006, 2013
- 

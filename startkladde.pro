@@ -49,6 +49,8 @@ HEADERS += \
            src/db/interface/exceptions/ConnectionFailedException.h \
            src/db/interface/exceptions/QueryFailedException.h \
            src/db/interface/exceptions/SqlException.h \
+           src/db/interface/exceptions/AccessDeniedException.h \
+           src/db/interface/exceptions/DatabaseDoesNotExistException.h \
            src/db/interface/threadSafe/Thread.h \
            src/db/interface/threadSafe/ThreadSafeInterface.h \
            src/db/interface/threadSafe/Worker.h \
@@ -144,6 +146,8 @@ SOURCES += \
            src/db/interface/exceptions/ConnectionFailedException.cpp \
            src/db/interface/exceptions/QueryFailedException.cpp \
            src/db/interface/exceptions/SqlException.cpp \
+           src/db/interface/exceptions/AccessDeniedException.cpp \
+           src/db/interface/exceptions/DatabaseDoesNotExistException.cpp \
            src/db/interface/threadSafe/Thread.cpp \
            src/db/interface/threadSafe/ThreadSafeInterface.cpp \
            src/db/interface/threadSafe/Worker.cpp \

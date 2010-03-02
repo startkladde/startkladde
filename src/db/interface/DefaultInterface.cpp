@@ -16,6 +16,7 @@
 #include <QVariant>
 
 #include <mysql/errmsg.h>
+#include <mysql/mysqld_error.h>
 
 #include "src/util/qString.h"
 #include "src/db/result/DefaultResult.h"
@@ -24,6 +25,8 @@
 #include "src/text.h"
 #include "src/db/interface/exceptions/QueryFailedException.h"
 #include "src/db/interface/exceptions/ConnectionFailedException.h"
+#include "src/db/interface/exceptions/DatabaseDoesNotExistException.h"
+#include "src/db/interface/exceptions/AccessDeniedException.h"
 
 namespace Db { namespace Interface
 {
@@ -88,7 +91,10 @@ namespace Db { namespace Interface
 					case CR_CONN_HOST_ERROR: break;
 					case CR_UNKNOWN_HOST: break;
 					case CR_SERVER_LOST: break;
-					default: throw ConnectionFailedException (db.lastError ());
+					case ER_BAD_DB_ERROR: throw DatabaseDoesNotExistException (error);
+					case ER_ACCESS_DENIED_ERROR: throw AccessDeniedException (error);
+					case ER_DBACCESS_DENIED_ERROR: throw AccessDeniedException (error);
+					default: throw ConnectionFailedException (error);
 				}
 
 				sleep (1);

@@ -51,6 +51,8 @@
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
 #include "src/db/interface/exceptions/SqlException.h"
+#include "src/db/interface/exceptions/AccessDeniedException.h"
+#include "src/db/interface/exceptions/DatabaseDoesNotExistException.h"
 #include "src/db/interface/DefaultInterface.h"
 
 template <class T> class MutableObjectList;
@@ -1238,8 +1240,6 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 // ** Database **
 // **************
 
-// TODO no error codes should be here, throw specialized exceptions instead
-
 class ConnectCanceledException {};
 
 class ConnectFailedException
@@ -1293,11 +1293,8 @@ void MainWindow::grantPermissions ()
 			rootInterface.grantAll (info.database, info.username, info.password);
 			rootInterface.close ();
 		}
-		catch (Db::Interface::SqlException &ex)
+		catch (Db::Interface::AccessDeniedException) // Actually: only 1045
 		{
-			// Only "Permission denied" is handled
-			if (ex.error.number ()!=1045) throw;
-
 			text=QString::fromUtf8 (
 				"Anmeldung als root verweigert. Möglicherweise ist das\n"
 				"angegebene Kennwort nicht richtig.\n"
@@ -1322,6 +1319,7 @@ void MainWindow::createDatabase ()
 	}
 	catch (...)
 	{
+		// TODO use RAII
 		interface.close ();
 		throw;
 	}
@@ -1374,13 +1372,8 @@ void MainWindow::openInterface ()
 	{
 		dbInterface.open ();
 	}
-	catch (Db::Interface::SqlException &ex)
+	catch (Db::Interface::DatabaseDoesNotExistException)
 	{
-		// Only "Database does not exist" is handled; others are caught by
-		// an outer method, or not at all
-		// TODO exception hierarchy
-		if (ex.error.number ()!=1049) throw;
-
 		// The database does not exist. We have some permissions on the
 		// database, or we would get "access denied". Try to create it, and if
 		// that particular permission is missing, the enclosing routine will
@@ -1425,20 +1418,12 @@ void MainWindow::on_actionConnect_triggered ()
 		{
 			connectImpl ();
 		}
-		catch (Db::Interface::SqlException &ex)
+		catch (Db::Interface::AccessDeniedException)
 		{
-			switch (ex.error.number ())
-			{
-				// TODO exception hierarchy
-				case 1044: // Access denied to database
-				case 1045: // Access denied to server
-				case 1142: // Command denied
-					grantPermissions();
-					connectImpl ();
-					break;
-				default: throw;
-			}
+			grantPermissions ();
+			connectImpl ();
 		}
+		// TODO also for access denied during query (1142)
 	}
 	catch (ConnectCanceledException)
 	{
