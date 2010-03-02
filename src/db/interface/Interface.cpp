@@ -46,9 +46,36 @@ namespace Db { namespace Interface
 	QString Interface::dataTypeId        () { return dataTypeInteger (); }
 
 
+	// *********************
+	// ** User management **
+	// *********************
+
+	void Interface::grantAll (const QString &database, const QString &username, const QString &password)
+	{
+		Query query=Query ("GRANT ALL ON %1.* TO '%2'@'%'")
+			.arg (database).arg (username);
+
+		// FIXME do not display
+		// FIXME escaping: implement client side hash?
+		if (!password.isEmpty())
+			query+=Query ("IDENTIFIED BY '%1'").arg (password);
+
+		executeQuery (query);
+	}
+
 	// *************************
 	// ** Schema manipulation **
 	// *************************
+
+	void Interface::createDatabase (const QString &name, bool skipIfExists)
+	{
+		std::cout << QString ("Creating database %1%2")
+			.arg (name, skipIfExists?" if it does not exist":"")
+			<< std::endl;
+
+		executeQuery (Query ("CREATE DATABASE %1 %2")
+			.arg (skipIfExists?"IF NOT EXISTS":"").arg (name));
+	}
 
 	// TODO more queries in Query
 	void Interface::createTable (const QString &name, bool skipIfExists)
@@ -88,6 +115,11 @@ namespace Db { namespace Interface
 		std::cout << QString ("Renaming table %1 to %2").arg (oldName, newName) << std::endl;
 
 		executeQuery (Query ("RENAME TABLE %1 TO %2").arg (oldName, newName));
+	}
+
+	bool Interface::tableExists ()
+	{
+		return queryHasResult (Query ("SHOW TABLES"));
 	}
 
 	bool Interface::tableExists (const QString &name)

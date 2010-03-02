@@ -201,13 +201,9 @@ quint64 Migrator::currentVersion ()
 	Db::Query query=Db::Query ("SELECT %2 FROM %1 ORDER BY %2 DESC LIMIT 1")
 		.arg (migrationsTableName, migrationsColumnName);
 
-//	QSqlQuery query=interface.executeQuery (
-//		QString ("SELECT %2 FROM %1 ORDER BY %2 DESC LIMIT 1")
-//		.arg (migrationsTableName, migrationsColumnName)
-//	);
-
 	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult (query);
 
+	// TODO getValue query
 	if (result->next ())
 		return result->value (0).toLongLong ();
 	else
@@ -226,14 +222,6 @@ void Migrator::createMigrationsTable ()
 
 bool Migrator::hasMigration (quint64 version)
 {
-//	QSqlQuery query=interface.prepareQuery (
-//			QString ("SELECT %2 FROM %1 WHERE %2=?")
-//			.arg (migrationsTableName, migrationsColumnName)
-//			);
-//	query.addBindValue (version);
-//
-//	return interface.queryHasResult (query);
-
 	return interface.queryHasResult (
 		Db::Query ("SELECT %2 FROM %1 WHERE %2=?")
 		.arg (migrationsTableName, migrationsColumnName)
@@ -249,14 +237,7 @@ void Migrator::addMigration (quint64 version)
 	// If the migration name is already present in the migrations table, return
 	if (hasMigration (version)) return;
 
-//	// Add the migration name to the migrations table
-//	QSqlQuery query=interface.prepareQuery (
-//			QString ("INSERT INTO %1 (%2) VALUES (?)")
-//			.arg (migrationsTableName, migrationsColumnName)
-//			);
-//	query.addBindValue (version);
-//	interface.executeQuery (query);
-
+	// Add the migration name to the migrations table
 	interface.executeQuery (
 		Db::Query ("INSERT INTO %1 (%2) VALUES (?)")
 		.arg (migrationsTableName, migrationsColumnName)
@@ -269,15 +250,7 @@ void Migrator::removeMigration (quint64 version)
 	// If the migrations table does not exist, return
 	if (!interface.tableExists (migrationsTableName)) return;
 
-//	// Remove the migration name from the migrations table
-//	QSqlQuery query=interface.prepareQuery (
-//			QString ("DELETE FROM %1 where %2=?")
-//			.arg (migrationsTableName, migrationsColumnName)
-//			);
-//	query.addBindValue (version);
-//
-//	interface.executeQuery (query);
-
+	// Remove the migration name from the migrations table
 	interface.executeQuery (
 		Db::Query ("DELETE FROM %1 where %2=?")
 			.arg (migrationsTableName, migrationsColumnName)
@@ -291,21 +264,12 @@ QList<quint64> Migrator::appliedMigrations ()
 
 	if (!interface.tableExists (migrationsTableName)) return migrations;
 
-//	QSqlQuery query=interface.prepareQuery (
-//			QString ("SELECT %2 FROM %1")
-//			.arg (migrationsTableName, migrationsColumnName)
-//			);
-//
-//	interface.executeQuery (query);
-//
-//	while (query.next ())
-//		migrations << query.value (0).toLongLong ();
-
 	Db::Query query=Db::Query::selectDistinctColumns (
 		migrationsTableName, migrationsColumnName);
 
 	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult (query);
 
+	// TODO listValues method
 	while (result->next ())
 		migrations.append (result->value (0).toLongLong ());
 
@@ -321,18 +285,13 @@ void Migrator::assumeMigrated (QList<quint64> versions)
 	interface.executeQuery (QString ("DELETE FROM %1").arg (migrationsTableName));
 
 	// Add all migrations
+	// TODO one query
 	foreach (quint64 version, versions)
 	{
-//		QSqlQuery query=interface.prepareQuery (
-//			QString ("INSERT INTO %1 (%2) VALUES (?)")
-//			.arg (migrationsTableName, migrationsColumnName)
-//			);
-//
-//		query.addBindValue (version);
-//		interface.executeQuery (query);
-
 		Db::Query query=Db::Query ("INSERT INTO %1 (%2) VALUES (?)")
 			.arg (migrationsTableName, migrationsColumnName)
 			.bind (version);
+
+		interface.executeQuery (query);
 	}
 }

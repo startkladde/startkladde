@@ -1,3 +1,5 @@
+//	assert (isGuiThread ());
+
 #include "MainWindow.h"
 
 #include <QAction>
@@ -49,6 +51,7 @@
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
 #include "src/db/interface/exceptions/SqlException.h"
+#include "src/db/interface/DefaultInterface.h"
 
 template <class T> class MutableObjectList;
 
@@ -1194,7 +1197,8 @@ void MainWindow::setDisplayDate (QDate newDisplayDate, bool force)
 		// TODO: if refreshing fails or is canceled, we may not change the
 		// display date; this solution is crap
 		displayDate = newDisplayDate;
-		bool refreshFinished=refreshFlights ();
+		refreshFlights ();
+//		bool refreshFinished=refreshFlights ();
 
 //		if (!refreshFinished)
 //			setDisplayDateCurrent (false);
@@ -1234,6 +1238,8 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 // ** Database **
 // **************
 
+// TODO no error codes should be here, throw specialized exceptions instead
+
 class ConnectCanceledException {};
 
 class ConnectFailedException
@@ -1243,68 +1249,196 @@ class ConnectFailedException
 		QString message;
 };
 
-void MainWindow::openConnection ()
+void MainWindow::confirmOrCancel (const QString &title, const QString &question)
 {
-	// Open the interface. This would also be done automatically, but we want
-	// to check the connect permissions before checking the database version
-	// FIXME: if it fails, fix and retry
-	dbInterface.open ();
+	if (!yesNoQuestion (this, title, question))
+		throw ConnectCanceledException ();
+}
 
-	// FIXME handle error: permissions denied
-	// FIXME handle error: database does not exist
+void MainWindow::grantPermissions ()
+{
+	DatabaseInfo info=dbInterface.getInfo ();
 
+	// Get the root password from the user
+	QString title=QString::fromUtf8 ("Datenbank-Passwort benötigt");
+	QString text=QString::fromUtf8 (
+		"Der Datenbankbenutzer %1 existiert nicht, das angegebene Passwort\n"
+		"stimmt nicht oder der Benutzer hat unzureichende Zugriffsrechte auf\n"
+		"die Datenbank %2. Zur automatischen Korrektur wird das Passwort des\n"
+		"Datenbankbenutzers root benötigt.\n"
+		"Bitte das Kennwort für root eingeben:")
+		.arg (info.username, info.database);
+
+	bool retry=true;
+	while (retry)
+	{
+		retry=false;
+
+		bool ok;
+		QString rootPassword=QInputDialog::getText (this,
+			title, text, QLineEdit::Password, "", &ok);
+
+		if (!ok)
+			throw ConnectCanceledException ();
+
+		DatabaseInfo rootInfo=info;
+		rootInfo.database="";
+		rootInfo.username="root";
+		rootInfo.password=rootPassword;
+
+		try
+		{
+			Db::Interface::DefaultInterface rootInterface (rootInfo);
+			rootInterface.open ();
+			rootInterface.grantAll (info.database, info.username, info.password);
+			rootInterface.close ();
+		}
+		catch (Db::Interface::SqlException &ex)
+		{
+			// Only "Permission denied" is handled
+			if (ex.error.number ()!=1045) throw;
+
+			text=QString::fromUtf8 (
+				"Anmeldung als root verweigert. Möglicherweise ist das\n"
+				"angegebene Kennwort nicht richtig.\n"
+				"Bitte das Kennwort für root eingeben:");
+			retry=true;
+		}
+	}
+}
+
+void MainWindow::createDatabase ()
+{
+	// FIXME duplicate connection name
+	const DatabaseInfo &info=dbInterface.getInfo ();
+
+	DatabaseInfo createInfo=info;
+	createInfo.database="";
+	Db::Interface::DefaultInterface interface (createInfo);
+
+	try
+	{
+		interface.createDatabase (info.database);
+	}
+	catch (...)
+	{
+		interface.close ();
+		throw;
+	}
 }
 
 void MainWindow::checkVersion ()
 {
-	// TODO if the database is empty, load the schema instead of migrating
 	Migrator migrator (dbInterface);
-	if (!migrator.isCurrent ())
+
+	if (!dbInterface.tableExists ())
+	{
+		confirmOrCancel ("Datenbank leer",
+			"Die Datenbank ist leer. Soll sie jetzt erstellt werden?");
+
+		migrator.loadSchema ();
+
+		// After loading the schema, the database must be current.
+		if (!migrator.isCurrent ())
+			throw ConnectFailedException ("Datenbank ist nach Erstellen nicht aktuell.");
+	}
+	else if (!migrator.isCurrent ())
 	{
 		quint64 currentVersion=migrator.currentVersion ();
 		quint64 latestVersion=migrator.latestVersion ();
 		int numPendingMigrations=migrator.pendingMigrations ().size ();
 
-		QString question=QString (
-			"Die Datenbank ist nicht aktuell:\n"
-			"  - Momentane Version: %1\n"
-			"  - Aktuelle Version: %2\n"
-			"  - Anzahl ausstehender Migrationen: %3\n"
-			"\n"
-			"Achtung: vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden."
-			"\n"
-			"Soll die Datenbank jetzt aktualisiert werden?"
-			).arg (currentVersion).arg (latestVersion).arg (numPendingMigrations);
+		confirmOrCancel ("Datenbank nicht aktuell", QString::fromUtf8 (
+				"Die Datenbank ist nicht aktuell:\n"
+				"  - Momentane Version: %1\n"
+				"  - Aktuelle Version: %2\n"
+				"  - Anzahl ausstehender Migrationen: %3\n"
+				"\n"
+				"Achtung: vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden."
+				"\n"
+				"Soll die Datenbank jetzt aktualisiert werden?"
+			).arg (currentVersion).arg (latestVersion).arg (numPendingMigrations));
 
-		if (yesNoQuestion (this, "Datenbank nicht aktuell", question))
-		{
-			migrator.migrate ();
-
-			if (!migrator.isCurrent ())
-				throw ConnectFailedException ("Datenbank ist nach Migration nicht aktuell.");
-		}
-		else
-		{
-			throw ConnectCanceledException ();
-		}
+		migrator.migrate ();
+		// After migrating, the database must be current.
+		if (!migrator.isCurrent ())
+			throw ConnectFailedException ("Datenbank ist nach der Aktualisierung nicht aktuell.");
 	}
 }
 
-void MainWindow::readData ()
+void MainWindow::openInterface ()
 {
+	// Open the interface. This would also be done automatically, but this
+	// allows us to detect a missing database before checking the version.
+	try
+	{
+		dbInterface.open ();
+	}
+	catch (Db::Interface::SqlException &ex)
+	{
+		// Only "Database does not exist" is handled; others are caught by
+		// an outer method, or not at all
+		// TODO exception hierarchy
+		if (ex.error.number ()!=1049) throw;
+
+		// The database does not exist. We have some permissions on the
+		// database, or we would get "access denied". Try to create it, and if
+		// that particular permission is missing, the enclosing routine will
+		// have to pick up and grant us the permissions.
+
+		confirmOrCancel ("Datenbank erstellen?", QString (
+			"Die Datenbank %1 existiert nicht. Soll sie erstellt werden?")
+			.arg (dbInterface.getInfo ().database));
+
+		// Create the database, which involves opening a connection without a
+		// default database
+		createDatabase ();
+
+		// Since creating the database succeeded, we should now be able to open
+		// it and load the schema.
+		dbInterface.open ();
+		Migrator migrator (dbInterface);
+		migrator.loadSchema ();
+
+		// After loading the schema, the database must be current.
+		if (!migrator.isCurrent ())
+			throw ConnectFailedException ("Nach dem Laden ist die Datenbank nicht aktuell.");
+	}
+}
+
+void MainWindow::connectImpl ()
+{
+	openInterface ();
+	checkVersion ();
+
+	cache.clear ();
 	cache.refreshAll ();
+	refreshFlights (); // FIXME don't read from Db again, just load from cache
+	setDatabaseActionsEnabled (true);
 }
 
 void MainWindow::on_actionConnect_triggered ()
 {
 	try
 	{
-		openConnection ();
-		checkVersion ();
-		readData ();
-
-		refreshFlights (); // FIXME don't read from Db again, just load from cache
-		setDatabaseActionsEnabled (true);
+		try
+		{
+			connectImpl ();
+		}
+		catch (Db::Interface::SqlException &ex)
+		{
+			switch (ex.error.number ())
+			{
+				// TODO exception hierarchy
+				case 1044: // Access denied to database
+				case 1045: // Access denied to server
+				case 1142: // Command denied
+					grantPermissions();
+					connectImpl ();
+					break;
+				default: throw;
+			}
+		}
 	}
 	catch (ConnectCanceledException)
 	{
@@ -1434,82 +1568,6 @@ void MainWindow::cacheChanged (Db::Event::Event event)
 	}
 }
 
-bool MainWindow::initializeDatabase ()
-{
-	// TODO add reason, as parameter to this method, from
-	// Database::ex_unusable.description ()
-
-	// We need to initialize the database. Therefore, we ask the
-	// root password from the user.
-	QString title=QString::fromUtf8 ("Datenbank-Passwort benötigt");
-	QString userText=QString ("%1@%2").arg (opts.root_name).arg (opts.server_display_name);
-//	QString text=QString::fromUtf8 (
-//		"Die Datenbank %1 ist nicht benutzbar. Grund: %2. Zur Korrektur"
-//		" wird das Passwort von %3 benötigt.")
-//		.arg (opts.database)
-//		.arg (reason)
-//		.arg (userText);
-	QString text=QString::fromUtf8 (
-		"Die Datenbank %1 ist nicht benutzbar. Zur Korrektur"
-		" wird das Passwort von %2 benötigt.")
-		.arg (opts.databaseInfo.database)
-		.arg (userText);
-
-	bool retry=false;
-	do
-	{
-		retry=false;
-		bool ok;
-
-		QString rootPassword=QInputDialog::getText (
-			title, text, QLineEdit::Password, QString::null, &ok, this);
-
-		if (ok)
-		{
-			// OK pressed
-//			try
-//			{
-//				Database rootDatabase;
-				// FIXME
-//				rootDatabase.display_queries = opts.display_queries;
-//				initialize_database (rootDatabase, opts.server, opts.port, opts.root_name, rootPassword);
-//			}
-			// FIXME
-//			catch (OldDatabase::ex_access_denied &e)
-//			{
-//				retry=true;
-//				text=QString::fromUtf8 ("%1. Passwort für %2:")
-//					.arg (e.description (true))
-//					.arg (userText);
-//			}
-//			catch (OldDatabase::ex_init_failed &e)
-//			{
-////				db_error = e.description (true);
-//				QMessageBox::critical (this, e.description (true), e.description (true),
-//						QMessageBox::Ok, QMessageBox::NoButton);
-//				return false;
-//			}
-//			// TODO show output from creation
-//			catch (SkException &e)
-//			{
-//				// Database initialization failed. That means that there is no point in
-//				// trying the connection again.
-////				db_error = "Datenbankfehler: " + e.getDescription ();
-//				QMessageBox::critical (this, "Datenbankfehler", e.description (true),
-//						QMessageBox::Ok, QMessageBox::NoButton);
-//				return false;
-//			}
-		}
-		else
-		{
-			// Cancel pressed
-//			db_error = "Datenbank nicht benutzbar";
-			return false;
-		}
-	} while (retry);
-
-	return true;
-}
 
 // ************************************
 // ** Database connection management **
@@ -1547,47 +1605,6 @@ void MainWindow::closeDatabase ()
 	dbInterface.close ();
 }
 
-//void MainWindow::dataStorageStatus (QString state, bool isError)
-//{
-//	assert (isGuiThread ());
-//	ui.databaseStateLabel->setText (state);
-//	ui.databaseStateLabel->setError (isError);
-//}
-//
-//void MainWindow::dataStorageStateChanged (DataStorage::State state)
-//{
-//	assert (isGuiThread ());
-//
-//	ui.databaseStateLabel->setText (dataStorage.stateGetText (state));
-//	// stateOffline is not an error, but we colorize it red anyway to get the
-//	// user's attention.
-//	ui.databaseStateLabel->setError (
-//		state==DataStorage::stateOffline ||
-//		dataStorage.stateIsError (state)
-//	);
-//
-//	setDatabaseActionsEnabled (dataStorage.isConnectionEstablished ());
-//
-//	switch (state)
-//	{
-//		case DataStorage::stateOffline:
-//			flightList->clear ();
-//			break;
-//		case DataStorage::stateConnecting:
-//			flightList->clear ();
-//			break;
-//		case DataStorage::stateConnected:
-//			refreshFlights ();
-//			break;
-//		case DataStorage::stateUnusable:
-//			flightList->clear ();
-//			if (initializeDatabase ())
-//				dataStorage.connect ();
-//			break;
-//		case DataStorage::stateLost:
-//			break;
-//	}
-//}
 
 // **********
 // ** Misc **

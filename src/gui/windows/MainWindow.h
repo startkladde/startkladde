@@ -110,9 +110,12 @@ class MainWindow: public QMainWindow
 		void closeDatabase ();
 		void setDatabaseActionsEnabled (bool enabled);
 
-		void openConnection ();
+		void confirmOrCancel (const QString &title, const QString &question);
+		void grantPermissions ();
+		void createDatabase ();
 		void checkVersion ();
-		void readData ();
+		void openInterface ();
+		void connectImpl ();
 
 	protected slots:
 
@@ -201,7 +204,6 @@ class MainWindow: public QMainWindow
 
 		// Database
 		void cacheChanged (Db::Event::Event event);
-		bool initializeDatabase ();
 
 		void logMessage (QString message);
 

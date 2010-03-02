@@ -22,7 +22,8 @@ No data transfered after connect  | hangs    |                              |
 Host disconnected after connect   | hangs    |                              |
                                   |          |                              |
 Wrong username/password           | 1045/1   | access denied                |
-Database does not exist           | 1044/1   | access denied                |
+Database does not exist           | 1049/1   | unknown database             |
+No permissions for DB             | 1044/1   | access denied to db          |
 Lacking permissions on select     | 1142/2   | command denied               | mysql/db.select_priv (flush privileges)
 Table does not exist              | 1146/2   | table doesn't exist          |
 Column does not exist             | 1154/2   | unknown column               |

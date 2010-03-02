@@ -53,11 +53,16 @@ namespace Db
 		    	static QString dataTypeCharacter (); // Non-Rails
 		    	static QString dataTypeId        ();
 
+		    	// *** User management
+		    	void grantAll (const QString &database, const QString &username, const QString &password="");
+
 				// *** Schema manipulation
+		    	void createDatabase (const QString &name, bool skipIfExists=false);
 				void createTable (const QString &name, bool skipIfExists=false);
 				void createTableLike (const QString &like, const QString &name, bool skipIfExists=false);
 				void dropTable (const QString &name);
 				void renameTable (const QString &oldName, const QString &newName);
+				bool tableExists ();
 				bool tableExists (const QString &name);
 
 				void addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="", bool skipIfExists=false);
