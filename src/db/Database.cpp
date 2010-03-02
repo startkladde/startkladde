@@ -37,6 +37,8 @@
  *   - Allow a table name prefix (useful for testing)
  *
  * Medium term plan:
+ *   - allow backup and restore of database (even if not connected)
+ *     - offer backup when migrating on connect
  *   - rename planes.competition_callsign to planes.callsign
  *   - add some abstraction to the query list generation
  *   - add support for sqlite
@@ -46,7 +48,7 @@
  *     - show what is wrong/will be fixed
  *
  * Long term plan:
- *   - use a memory SQLite for local storage (datastorage functionality)
+ *   - use a memory SQLite for cache
  *   - merge data storage and database methods, so we can use a (local)
  *     database directly (w/o local cache)
  *       - we'd probably have abstract DataStorage and inherited Database and

@@ -34,13 +34,6 @@ namespace Db { namespace Interface
 	DefaultInterface::DefaultInterface (const DatabaseInfo &dbInfo):
 		Interface (dbInfo)
 	{
-		db=QSqlDatabase::addDatabase ("QMYSQL");
-
-		db.setHostName     (dbInfo.server  );
-		db.setUserName     (dbInfo.username);
-		db.setPassword     (dbInfo.password);
-		db.setPort         (dbInfo.port    );
-		db.setDatabaseName (dbInfo.database);
 	}
 
 	DefaultInterface::~DefaultInterface ()
@@ -63,9 +56,20 @@ namespace Db { namespace Interface
 	 */
 	bool DefaultInterface::open ()
 	{
+		DatabaseInfo info=getInfo ();
+
+		db=QSqlDatabase::addDatabase ("QMYSQL");
+
+		db.setHostName     (info.server  );
+		db.setUserName     (info.username);
+		db.setPassword     (info.password);
+		db.setPort         (info.port    );
+		db.setDatabaseName (info.database);
+
 		while (true)
 		{
-			std::cout << QString ("Connecting to %1...").arg (getInfo ().toString ());
+
+			std::cout << QString ("Connecting to %1...").arg (info.toString ());
 			std::cout.flush ();
 
 			if (db.open ())
@@ -196,7 +200,7 @@ namespace Db { namespace Interface
 					default: throw;
 				}
 
-				db.close ();
+				close ();
 
 				if (opts.display_queries) std::cout << "Retrying...";
 			}

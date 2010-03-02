@@ -208,7 +208,8 @@ int showGui (QApplication &a)
 	// Let the plugins initialize
 	sched_yield ();
 
-	w.showMaximized ();
+//	w.showMaximized ();
+	w.show ();
 	int ret=a.exec();
 
 	foreach (ShellPlugin *plugin, opts.shellPlugins)

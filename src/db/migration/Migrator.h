@@ -43,6 +43,7 @@ class Migrator
 		// *** Migration listing
 		QList<quint64> pendingMigrations ();
 		quint64 nextMigration ();
+		quint64 latestVersion ();
 		bool isCurrent () { return nextMigration ()==0; }
 
 		// *** Migrations table

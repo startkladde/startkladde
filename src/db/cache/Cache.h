@@ -68,6 +68,7 @@ namespace Db
 				// *** Construction
 				Cache (Database &db);
 				virtual ~Cache ();
+				void clear ();
 
 				// *** Properties
 				Database &getDatabase ();
@@ -168,19 +169,17 @@ namespace Db
 
 
 				// *** Object lists
+
+				// Note: when adding something here, also clear it in clear ().
+
 				// Note that we cannot use an AutomaticEntityList here because that
 				// accesses the database to retrieve the object identified by the ID
-				// from the dbEvent - so the object must be in the cache before the
-				// dbEvent is emitted!
-
+				// from the dbEvent, so the object must be in the cache before the
+				// dbEvent is emitted.
 				EntityList<Plane> planes;
 				EntityList<Person> people;
 				EntityList<LaunchMethod> launchMethods;
 
-				// For flights, we keep multiple lists - one for the flights of today,
-				// one for the flights of another date, and one for prepared flights.
-				// The flights of today are required for planeFlying and personFlying.
-				// In the future, we may add lists for an arbitrary number of dates.
 				EntityList<Flight> flightsToday; QDate todayDate;
 				EntityList<Flight> flightsOther; QDate otherDate;
 				EntityList<Flight> preparedFlights;

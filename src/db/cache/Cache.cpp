@@ -66,6 +66,24 @@ namespace Db
 		{
 		}
 
+		void Cache::clear ()
+		{
+			synchronized (dataMutex)
+			{
+				planes       .clear ();
+				people       .clear ();
+				launchMethods.clear ();
+
+				flightsToday.clear (); todayDate=QDate ();
+				flightsOther.clear (); otherDate=QDate ();
+				preparedFlights.clear ();
+
+				locations.clear ();
+				accountingNotes.clear ();
+				clubs.clear ();
+				planeTypes.clear ();
+			}
+		}
 
 		// ****************
 		// ** Properties **

@@ -1,6 +1,12 @@
+/*
+ * TODO:
+ *   - move to Db namespace
+ */
 #include "Migrator.h"
 
 #include <iostream>
+
+#include <QSharedPointer>
 
 #include "src/db/interface/Interface.h"
 #include "src/db/migration/MigrationFactory.h"
@@ -172,6 +178,12 @@ quint64 Migrator::nextMigration ()
 	return 0;
 }
 
+quint64 Migrator::latestVersion ()
+{
+	return factory->latestVersion ();
+}
+
+
 
 // **********************
 // ** Migrations table **
@@ -289,8 +301,13 @@ QList<quint64> Migrator::appliedMigrations ()
 //	while (query.next ())
 //		migrations << query.value (0).toLongLong ();
 
-	Db::Query query=Db::Query ("SELECT %2 FROM %1")
-		.arg (migrationsTableName, migrationsColumnName);
+	Db::Query query=Db::Query::selectDistinctColumns (
+		migrationsTableName, migrationsColumnName);
+
+	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult (query);
+
+	while (result->next ())
+		migrations.append (result->value (0).toLongLong ());
 
 	return migrations;
 }

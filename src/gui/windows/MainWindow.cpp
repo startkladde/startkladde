@@ -19,6 +19,7 @@
 #include "src/concurrent/threadUtil.h"
 #include "src/concurrent/task/SleepTask.h"
 #include "src/config/Options.h"
+#include "src/db/migration/Migrator.h"
 #include "src/db/task/DeleteObjectTask.h"
 #include "src/db/task/FetchFlightsTask.h"
 #include "src/db/task/RefreshAllTask.h"
@@ -47,6 +48,7 @@
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
+#include "src/db/interface/exceptions/SqlException.h"
 
 template <class T> class MutableObjectList;
 
@@ -59,7 +61,8 @@ MainWindow::MainWindow (QWidget *parent) :
 			dbInterface (opts.databaseInfo), db (dbInterface), cache (db),
 			weatherWidget (NULL), weatherPlugin (NULL),
 			weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
-			contextMenu (new QMenu (this))
+			contextMenu (new QMenu (this)),
+			databaseActionsEnabled (false)
 {
 	ui.setupUi (this);
 
@@ -73,8 +76,7 @@ MainWindow::MainWindow (QWidget *parent) :
 	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
 	proxyModel->setDynamicSortFilter (true);
 
-//	setDatabaseActionsEnabled (false);
-	setDatabaseActionsEnabled (true); // TODO should be false on startup
+	setDatabaseActionsEnabled (false);
 
 	readSettings ();
 
@@ -102,7 +104,7 @@ MainWindow::MainWindow (QWidget *parent) :
 	// Do this before calling connect
 	QObject::connect (&cache, SIGNAL (changed (Db::Event::Event)), this, SLOT (cacheChanged (Db::Event::Event)));
 
-	on_actionConnect_triggered ();
+	QTimer::singleShot (0, this, SLOT (on_actionConnect_triggered ()));
 
 	setDisplayDateCurrent (true);
 
@@ -1020,21 +1022,21 @@ void MainWindow::keyPressEvent (QKeyEvent *e)
 	switch (e->key ())
 	{
 		// The function keys trigger actions
-		case Qt::Key_F2:  ui.actionNew          ->trigger (); break;
-		case Qt::Key_F3:  ui.actionRepeat       ->trigger (); break;
-		case Qt::Key_F4:  ui.actionEdit         ->trigger (); break;
-		case Qt::Key_F5:  ui.actionStart        ->trigger (); break;
-		case Qt::Key_F6:  ui.actionLand         ->trigger (); break;
-		case Qt::Key_F7:  ui.actionTouchngo     ->trigger (); break;
-		case Qt::Key_F8:  ui.actionDelete       ->trigger (); break;
-		case Qt::Key_F9:  ui.actionSort         ->trigger (); break;
-		case Qt::Key_F10: ui.actionQuit         ->trigger (); break;
-		case Qt::Key_F11: ui.actionHideFinished ->trigger (); break;
-		case Qt::Key_F12: ui.actionRefreshTable ->trigger (); break;
+		case Qt::Key_F2:  if (databaseActionsEnabled) ui.actionNew          ->trigger (); break;
+		case Qt::Key_F3:  if (databaseActionsEnabled) ui.actionRepeat       ->trigger (); break;
+		case Qt::Key_F4:  if (databaseActionsEnabled) ui.actionEdit         ->trigger (); break;
+		case Qt::Key_F5:  if (databaseActionsEnabled) ui.actionStart        ->trigger (); break;
+		case Qt::Key_F6:  if (databaseActionsEnabled) ui.actionLand         ->trigger (); break;
+		case Qt::Key_F7:  if (databaseActionsEnabled) ui.actionTouchngo     ->trigger (); break;
+		case Qt::Key_F8:  if (databaseActionsEnabled) ui.actionDelete       ->trigger (); break;
+		case Qt::Key_F9:  if (databaseActionsEnabled) ui.actionSort         ->trigger (); break;
+		case Qt::Key_F10:                             ui.actionQuit         ->trigger (); break;
+		case Qt::Key_F11: if (databaseActionsEnabled) ui.actionHideFinished ->trigger (); break;
+		case Qt::Key_F12: if (databaseActionsEnabled) ui.actionRefreshTable ->trigger (); break;
 
 		// Flight manipulation
-		case Qt::Key_Insert: if (ui.flightTable->hasFocus ()) ui.actionNew    ->trigger (); break;
-		case Qt::Key_Delete: if (ui.flightTable->hasFocus ()) ui.actionDelete ->trigger (); break;
+		case Qt::Key_Insert: if (databaseActionsEnabled && ui.flightTable->hasFocus ()) ui.actionNew    ->trigger (); break;
+		case Qt::Key_Delete: if (databaseActionsEnabled && ui.flightTable->hasFocus ()) ui.actionDelete ->trigger (); break;
 
 		default: e->ignore (); break;
 	}
@@ -1232,6 +1234,109 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 // ** Database **
 // **************
 
+class ConnectCanceledException {};
+
+class ConnectFailedException
+{
+	public:
+		ConnectFailedException (const QString &message): message (message) {}
+		QString message;
+};
+
+void MainWindow::openConnection ()
+{
+	// Open the interface. This would also be done automatically, but we want
+	// to check the connect permissions before checking the database version
+	// FIXME: if it fails, fix and retry
+	dbInterface.open ();
+
+	// FIXME handle error: permissions denied
+	// FIXME handle error: database does not exist
+
+}
+
+void MainWindow::checkVersion ()
+{
+	// TODO if the database is empty, load the schema instead of migrating
+	Migrator migrator (dbInterface);
+	if (!migrator.isCurrent ())
+	{
+		quint64 currentVersion=migrator.currentVersion ();
+		quint64 latestVersion=migrator.latestVersion ();
+		int numPendingMigrations=migrator.pendingMigrations ().size ();
+
+		QString question=QString (
+			"Die Datenbank ist nicht aktuell:\n"
+			"  - Momentane Version: %1\n"
+			"  - Aktuelle Version: %2\n"
+			"  - Anzahl ausstehender Migrationen: %3\n"
+			"\n"
+			"Achtung: vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden."
+			"\n"
+			"Soll die Datenbank jetzt aktualisiert werden?"
+			).arg (currentVersion).arg (latestVersion).arg (numPendingMigrations);
+
+		if (yesNoQuestion (this, "Datenbank nicht aktuell", question))
+		{
+			migrator.migrate ();
+
+			if (!migrator.isCurrent ())
+				throw ConnectFailedException ("Datenbank ist nach Migration nicht aktuell.");
+		}
+		else
+		{
+			throw ConnectCanceledException ();
+		}
+	}
+}
+
+void MainWindow::readData ()
+{
+	cache.refreshAll ();
+}
+
+void MainWindow::on_actionConnect_triggered ()
+{
+	try
+	{
+		openConnection ();
+		checkVersion ();
+		readData ();
+
+		refreshFlights (); // FIXME don't read from Db again, just load from cache
+		setDatabaseActionsEnabled (true);
+	}
+	catch (ConnectCanceledException)
+	{
+		showWarning ("Verbindungsaufbau abgebrochen",
+			"Der Verbindungsaufbau wurde abgebrochen",
+			this);
+	}
+	catch (ConnectFailedException &ex)
+	{
+		showWarning ("Verbindungsaufbau fehlgeschlagen",
+			QString ("Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1").arg (ex.message),
+			this);
+	}
+	catch (Db::Interface::SqlException &ex)
+	{
+		QSqlError error=ex.error;
+
+		QString text=QString (
+			"Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1"
+			" (Fehlercode %2, Typ %3)"
+			).arg (error.databaseText ()).arg (error.number ()).arg (error.type ());
+		showWarning ("Fehler beim Verbindungsaufbau", text, this);
+	}
+}
+void MainWindow::on_actionDisconnect_triggered ()
+{
+	setDatabaseActionsEnabled (false);
+	cache.clear ();
+	flightList->clear ();
+	dbInterface.close ();
+}
+
 void MainWindow::on_actionEditPlanes_triggered ()
 {
 	MutableObjectList<Plane> *list = new AutomaticEntityList<Plane> (cache, cache.getPlanes ().getList (), this);
@@ -1412,6 +1517,8 @@ bool MainWindow::initializeDatabase ()
 
 void MainWindow::setDatabaseActionsEnabled (bool enabled)
 {
+	databaseActionsEnabled=enabled;
+
 	ui.actionDelete                 ->setEnabled (enabled);
 	ui.actionEdit                   ->setEnabled (enabled);
 	ui.actionEditPeople             ->setEnabled (enabled);

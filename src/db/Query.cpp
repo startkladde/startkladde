@@ -118,6 +118,7 @@ namespace Db
 	// ** Generation **
 	// ****************
 
+	// TODO rename selectDistinctValues
 	Query Query::selectDistinctColumns (const QString &table, const QString &column, bool excludeEmpty)
 	{
 		// "select distinct column from table"

@@ -110,6 +110,10 @@ class MainWindow: public QMainWindow
 		void closeDatabase ();
 		void setDatabaseActionsEnabled (bool enabled);
 
+		void openConnection ();
+		void checkVersion ();
+		void readData ();
+
 	protected slots:
 
 	private slots:
@@ -159,8 +163,8 @@ class MainWindow: public QMainWindow
 		void on_actionLaunchMethodStatistics_triggered ();
 
 		// Menu: Database
-		void on_actionConnect_triggered () { dbInterface.open (); cache.refreshAll (); } // TODO replace with database manager
-		void on_actionDisconnect_triggered () { dbInterface.close (); }
+		void on_actionConnect_triggered ();
+		void on_actionDisconnect_triggered ();
 		void on_actionEditPlanes_triggered ();
 		void on_actionEditPeople_triggered ();
 		void on_actionEditLaunchMethods_triggered ();
@@ -228,6 +232,8 @@ class MainWindow: public QMainWindow
 
 		Qt::SortOrder sortOrder;
 		int sortColumn;
+
+		bool databaseActionsEnabled;
 };
 
 #endif // MAINWINDOW_H

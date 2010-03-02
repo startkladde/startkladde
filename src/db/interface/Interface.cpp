@@ -166,6 +166,7 @@ namespace Db { namespace Interface
 			.arg (tableName, columnName).bind (newValue).bind (oldValue));
 	}
 
+	// TODO template: QList<T> listValues (const Query &query, (method pointer) QVariantMethod)
 	QStringList Interface::listStrings (const Query &query)
 	{
 		QSharedPointer<Result::Result> result=executeQueryResult (query, true);
