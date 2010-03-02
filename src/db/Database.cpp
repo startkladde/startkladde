@@ -1,12 +1,8 @@
 /*
- * Next:
- *   - integrate schema loading/database migration into GUI
- *
  * Short term plan:
  *   - Standardize enum handling: store the database value internally and have
  *     an "unknown" type (instead of "none")
  *     - this should also allow preserving unknown types in the database
- *   - add "object used?" to Database (and use in ObjectListWindow)
  *   - add ping to Interface
  *   - timeout: only when no data is transfered
  *
@@ -20,6 +16,7 @@
  *   - Port open, but connection not accepted
  *   - make sure "", 0 and NULL are read correctly
  *   - make sure (using a dump of an old db) that the migration path is OK
+ *   - Test all paths for database initialisation
  *
  * Improvements:
  *   - Add a ResultConsumer as alternative to passing a result (especially for
