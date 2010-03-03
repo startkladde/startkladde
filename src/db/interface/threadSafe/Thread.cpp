@@ -1,3 +1,7 @@
+/*
+ * Return Thread to InterfaceThread, Worker to InterfaceWorker
+ * Consider merging ThreadSafeInterface and InterfaceThread: emit directly
+ */
 #include "Thread.h"
 
 #include <iostream>

@@ -1,4 +1,10 @@
 /*
+ * TODO:
+ *   - consider creating and returning the Returner here, so we can write
+ *     return thread.queryHasResult (query).returnedValue () in
+ *     ThreadSafeInterface (requires copying Returner)
+ */
+/*
  * Thread.h
  *
  *  Created on: 26.02.2010
@@ -27,7 +33,6 @@ namespace Db
 		namespace ThreadSafe
 		{
 			/**
-			 *
 			 * Note that there is no way to retrieve the worker, as it may only
 			 * be used in the thread where it was created.
 			 */
@@ -42,9 +47,6 @@ namespace Db
 					virtual ~Thread ();
 
 					void waitStartup ();
-
-					// TODO: have the ThreadSafeInterface emit the signals, just
-					// connect them to the worker here
 
 					// *** Connection management
 					virtual void open      (Returner<bool>      *returner);

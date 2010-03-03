@@ -22,6 +22,7 @@
 #include "src/concurrent/task/SleepTask.h"
 #include "src/config/Options.h"
 #include "src/db/migration/Migrator.h"
+#include "src/db/migration/background/BackgroundMigrator.h"
 #include "src/db/task/DeleteObjectTask.h"
 #include "src/db/task/FetchFlightsTask.h"
 #include "src/db/task/RefreshAllTask.h"
@@ -54,6 +55,9 @@
 #include "src/db/interface/exceptions/AccessDeniedException.h"
 #include "src/db/interface/exceptions/DatabaseDoesNotExistException.h"
 #include "src/db/interface/DefaultInterface.h"
+#include "src/concurrent/monitor/SignalOperationMonitor.h"
+#include "src/concurrent/monitor/SimpleOperationMonitor.h" // remove
+#include "src/gui/windows/MonitorDialog.h"
 
 template <class T> class MutableObjectList;
 
@@ -1327,24 +1331,26 @@ void MainWindow::createDatabase ()
 
 void MainWindow::checkVersion ()
 {
-	Migrator migrator (dbInterface);
+	Db::Migration::Background::BackgroundMigrator migrator (dbInterface);
+//	Migrator migrator (dbInterface);
+	SignalOperationMonitor monitor;
 
 	if (!dbInterface.tableExists ())
 	{
 		confirmOrCancel ("Datenbank leer",
 			"Die Datenbank ist leer. Soll sie jetzt erstellt werden?");
 
-		migrator.loadSchema ();
+		migrator.loadSchema (monitor);
 
 		// After loading the schema, the database must be current.
-		if (!migrator.isCurrent ())
+		if (!migrator.isCurrent (monitor))
 			throw ConnectFailedException ("Datenbank ist nach Erstellen nicht aktuell.");
 	}
-	else if (!migrator.isCurrent ())
+	else if (!migrator.isCurrent (monitor))
 	{
-		quint64 currentVersion=migrator.currentVersion ();
-		quint64 latestVersion=migrator.latestVersion ();
-		int numPendingMigrations=migrator.pendingMigrations ().size ();
+		quint64 currentVersion=migrator.currentVersion (monitor);
+		quint64 latestVersion=Migrator::latestVersion ();
+		int numPendingMigrations=migrator.pendingMigrations (monitor).size ();
 
 		confirmOrCancel ("Datenbank nicht aktuell", QString::fromUtf8 (
 				"Die Datenbank ist nicht aktuell:\n"
@@ -1357,9 +1363,14 @@ void MainWindow::checkVersion ()
 				"Soll die Datenbank jetzt aktualisiert werden?"
 			).arg (currentVersion).arg (latestVersion).arg (numPendingMigrations));
 
-		migrator.migrate ();
+		Returner<void> returner;
+		migrator.migrate (returner, monitor);
+
+		MonitorDialog dialog (monitor, this);
+		dialog.exec ();
+
 		// After migrating, the database must be current.
-		if (!migrator.isCurrent ())
+		if (!migrator.isCurrent (monitor))
 			throw ConnectFailedException ("Datenbank ist nach der Aktualisierung nicht aktuell.");
 	}
 }
@@ -1374,6 +1385,8 @@ void MainWindow::openInterface ()
 	}
 	catch (Db::Interface::DatabaseDoesNotExistException)
 	{
+		SimpleOperationMonitor monitor;
+
 		// The database does not exist. We have some permissions on the
 		// database, or we would get "access denied". Try to create it, and if
 		// that particular permission is missing, the enclosing routine will
@@ -1390,11 +1403,11 @@ void MainWindow::openInterface ()
 		// Since creating the database succeeded, we should now be able to open
 		// it and load the schema.
 		dbInterface.open ();
-		Migrator migrator (dbInterface);
-		migrator.loadSchema ();
+		Db::Migration::Background::BackgroundMigrator migrator (dbInterface);
+		migrator.loadSchema (monitor);
 
 		// After loading the schema, the database must be current.
-		if (!migrator.isCurrent ())
+		if (!migrator.isCurrent (monitor))
 			throw ConnectFailedException ("Nach dem Laden ist die Datenbank nicht aktuell.");
 	}
 }

@@ -33,6 +33,7 @@ HEADERS += \
            src/concurrent/Waiter.h \
            src/concurrent/WorkerThread.h \
            src/concurrent/monitor/OperationMonitor.h \
+           src/concurrent/monitor/SignalOperationMonitor.h \
            src/concurrent/monitor/SimpleOperationMonitor.h \
            src/concurrent/task/SleepTask.h \
            src/concurrent/task/Task.h \
@@ -57,6 +58,9 @@ HEADERS += \
            src/db/migration/Migration.h \
            src/db/migration/MigrationFactory.h \
            src/db/migration/Migrator.h \
+           src/db/migration/background/BackgroundMigrator.h \
+           src/db/migration/background/MigratorThread.h \
+           src/db/migration/background/MigratorWorker.h \
            src/db/result/CopiedResult.h \
            src/db/result/DefaultResult.h \
            src/db/result/Result.h \
@@ -75,6 +79,7 @@ HEADERS += \
            src/gui/windows/EntitySelectWindow.h \
            src/gui/windows/FlightWindow.h \
            src/gui/windows/MainWindow.h \
+           src/gui/windows/MonitorDialog.h \
            src/gui/windows/ObjectListWindow.h \
            src/gui/windows/ObjectListWindowBase.h \
            src/gui/windows/SplashScreen.h \
@@ -129,6 +134,7 @@ SOURCES += \
            src/concurrent/Waiter.cpp \
            src/concurrent/WorkerThread.cpp \
            src/concurrent/monitor/OperationMonitor.cpp \
+           src/concurrent/monitor/SignalOperationMonitor.cpp \
            src/concurrent/monitor/SimpleOperationMonitor.cpp \
            src/concurrent/task/SleepTask.cpp \
            src/concurrent/task/Task.cpp \
@@ -154,6 +160,9 @@ SOURCES += \
            src/db/migration/Migration.cpp \
            src/db/migration/MigrationFactory.cpp \
            src/db/migration/Migrator.cpp \
+           src/db/migration/background/BackgroundMigrator.cpp \
+           src/db/migration/background/MigratorThread.cpp \
+           src/db/migration/background/MigratorWorker.cpp \
            src/db/result/CopiedResult.cpp \
            src/db/result/DefaultResult.cpp \
            src/db/schema/Schema.cpp \
@@ -169,6 +178,7 @@ SOURCES += \
            src/gui/windows/DateInputDialog.cpp \
            src/gui/windows/FlightWindow.cpp \
            src/gui/windows/MainWindow.cpp \
+           src/gui/windows/MonitorDialog.cpp \
            src/gui/windows/ObjectListWindow.cpp \
            src/gui/windows/ObjectListWindowBase.cpp \
            src/gui/windows/SplashScreen.cpp \
@@ -207,6 +217,7 @@ FORMS += \
            src/gui/windows/DateInputDialog.ui \
            src/gui/windows/FlightWindow.ui \
            src/gui/windows/MainWindow.ui \
+           src/gui/windows/MonitorDialog.ui \
            src/gui/windows/ObjectListWindowBase.ui \
            src/gui/windows/StatisticsWindow.ui \
            src/gui/windows/TaskProgressDialog.ui \

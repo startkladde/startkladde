@@ -13,6 +13,7 @@
 #include "src/db/schema/CurrentSchema.h"
 #include "src/util/qString.h"
 #include "src/db/result/Result.h"
+#include "src/concurrent/monitor/OperationMonitor.h"
 
 // ***************
 // ** Constants **
@@ -101,10 +102,20 @@ void Migrator::down ()
 }
 
 /** Migrates to the latest version (runs pending migrations) */
-void Migrator::migrate ()
+void Migrator::migrate (OperationMonitor *monitor)
 {
-	foreach (quint64 version, pendingMigrations ())
+	QList<quint64> versions=pendingMigrations ();
+
+	int progress=0, maxProgress=pendingMigrations ().size ();
+
+	// TODO better progress reporting interface
+	if (monitor) monitor->progress (progress, maxProgress);
+	foreach (quint64 version, versions)
+	{
 		runMigration (version, Migration::dirUp);
+		++progress;
+		if (monitor) monitor->progress (progress, maxProgress);
+	}
 }
 
 
@@ -126,12 +137,14 @@ void Migrator::loadSchema ()
 
 void Migrator::drop ()
 {
+	// TODO create and use db method
 	QString databaseName=interface.getInfo ().database;
 	interface.executeQuery (QString ("DROP DATABASE %1").arg (databaseName));
 }
 
 void Migrator::create ()
 {
+	// TODO use db method
 	QString databaseName=interface.getInfo ().database;
 	interface.executeQuery (QString ("CREATE DATABASE %1").arg (databaseName));
 }
@@ -180,7 +193,7 @@ quint64 Migrator::nextMigration ()
 
 quint64 Migrator::latestVersion ()
 {
-	return factory->latestVersion ();
+	return MigrationFactory ().latestVersion ();
 }
 
 

@@ -7,6 +7,7 @@
 
 namespace Db { namespace Interface { class Interface; } }
 class MigrationFactory;
+class OperationMonitor;
 
 /**
  * A controller for managing migrations on a database.
@@ -30,7 +31,8 @@ class Migrator
 		// *** Migration
 		void up ();
 		void down ();
-		void migrate ();
+		// FIXME: monitor for other methods; canceling
+		void migrate (OperationMonitor *monitor=NULL);
 
 		// *** Schema
 		void loadSchema ();
@@ -39,26 +41,28 @@ class Migrator
 		void drop ();
 		void create ();
 
-
 		// *** Migration listing
 		QList<quint64> pendingMigrations ();
 		quint64 nextMigration ();
-		quint64 latestVersion ();
+		static quint64 latestVersion ();
 		bool isCurrent () { return nextMigration ()==0; }
 
 		// *** Migrations table
 		quint64 currentVersion ();
-		void addMigration (quint64 version);
-		void removeMigration (quint64 version);
-		void createMigrationsTable ();
 		bool hasMigration (quint64 version);
 		QList<quint64> appliedMigrations ();
-		void assumeMigrated (QList<quint64> versions);
-		void clearMigrations ();
+
 
 	protected:
 		// *** Migration
 		void runMigration (quint64 version, Migration::Direction direction);
+
+		// *** Migrations table
+		void addMigration (quint64 version);
+		void removeMigration (quint64 version);
+		void createMigrationsTable ();
+		void assumeMigrated (QList<quint64> versions);
+		void clearMigrations ();
 
 	private:
 		Db::Interface::Interface &interface;
