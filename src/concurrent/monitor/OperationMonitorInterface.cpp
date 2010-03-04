@@ -76,6 +76,9 @@ void OperationMonitorInterface::progress (int progress, int maxProgress, bool ch
 	}
 }
 
+/**
+ * Can be called manuall, or is called automatically when only 1 reference is left.
+ */
 void OperationMonitorInterface::ended ()
 {
 	if (monitor)

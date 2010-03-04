@@ -37,6 +37,7 @@ namespace Db
 					virtual void loadSchema        (Returner<void>            *returner, OperationMonitor *monitor);
 					virtual void pendingMigrations (Returner<QList<quint64> > *returner, OperationMonitor *monitor);
 					virtual void isCurrent         (Returner<bool>            *returner, OperationMonitor *monitor);
+					virtual void isEmpty           (Returner<bool>            *returner, OperationMonitor *monitor);
 					virtual void currentVersion    (Returner<quint64>         *returner, OperationMonitor *monitor);
 
 				private:

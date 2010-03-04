@@ -5,6 +5,11 @@
 <%
 	require 'yaml'
 	schema=YAML.load_file('src/db/migrations/current_schema.yaml')
+	
+	tables=schema['tables']
+	numOperations=tables.size+tables.inject(0) { |num, table|
+		num+table['columns'].size
+	}
 %>
 
 /*
@@ -25,10 +30,11 @@ CurrentSchema::~CurrentSchema ()
 
 void CurrentSchema::up (OperationMonitorInterface monitor)
 {
+<% progress=-1 %>
 <% schema['tables'].each do |table| %>
 <% table_name=table['name'] %>
 <% %>
-	createTable ("<%= table['name'] %>");
+	monitor.progress (<%= progress+=1 %>, <%= numOperations %>); createTable ("<%= table['name'] %>");
 		
 <% table['columns'].each do |column| %>
 <%
@@ -42,18 +48,20 @@ void CurrentSchema::up (OperationMonitorInterface monitor)
 	column_extra=""
 	column_extra="NOT NULL" if column_null=="NO"
 %>
-	addColumn ("<%= table_name %>", "<%= column_name %>", "<%= column_type %>", "<%= column_extra %>");
+	monitor.progress (<%= progress+=1 %>, <%= numOperations %>); addColumn ("<%= table_name %>", "<%= column_name %>", "<%= column_type %>", "<%= column_extra %>");
 <% end %>
 <% end %>
+
+	monitor.progress (<%= numOperations %>, <%= numOperations %>);
 }
 
 void CurrentSchema::down (OperationMonitorInterface monitor)
 {
+	(void)monitor;
 }
 
 QList<quint64> CurrentSchema::getVersions ()
 {
-	// Add the versions
 	QList<quint64> versions;
 
 <% schema['versions'].each do |version| %>

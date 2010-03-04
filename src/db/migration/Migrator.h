@@ -35,20 +35,22 @@ class Migrator
 		void migrate (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 		// *** Schema
-		void loadSchema ();
+		void loadSchema (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void reset ();
 		void clear ();
 		void drop ();
 		void create ();
 
 		// *** Migration listing
-		QList<quint64> pendingMigrations ();
-		quint64 nextMigration ();
+		QList<quint64> pendingMigrations (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		quint64 nextMigration (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		static quint64 latestVersion ();
-		bool isCurrent () { return nextMigration ()==0; }
+		// TODO move to cpp and document: using nextMigration, not currentVersion, so it works with gaps
+		bool isCurrent (OperationMonitorInterface monitor=OperationMonitorInterface::null) { return nextMigration (monitor)==0; }
+		bool isEmpty (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 		// *** Migrations table
-		quint64 currentVersion ();
+		quint64 currentVersion (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		bool hasMigration (quint64 version);
 		QList<quint64> appliedMigrations ();
 

@@ -41,11 +41,12 @@ namespace Db
 					BackgroundMigrator (Interface::ThreadSafe::ThreadSafeInterface &interface);
 					virtual ~BackgroundMigrator ();
 
-					void migrate                     (Returner<void> &returner, OperationMonitor &monitor);
-					void loadSchema                  (OperationMonitor &monitor);
-					QList<quint64> pendingMigrations (OperationMonitor &monitor);
-					bool isCurrent                   (OperationMonitor &monitor);
-					quint64 currentVersion           (OperationMonitor &monitor);
+					void migrate           (Returner<void>            &returner, OperationMonitor &monitor);
+					void loadSchema        (Returner<void>            &returner, OperationMonitor &monitor);
+					void pendingMigrations (Returner<QList<quint64> > &returner, OperationMonitor &monitor);
+					void isCurrent         (Returner<bool>            &returner, OperationMonitor &monitor);
+					void isEmpty           (Returner<bool>            &returner, OperationMonitor &monitor);
+					void currentVersion    (Returner<quint64>         &returner, OperationMonitor &monitor);
 
 				private:
 					Db::Migration::Background::MigratorThread thread;

@@ -1329,29 +1329,60 @@ void MainWindow::createDatabase ()
 	}
 }
 
+bool MainWindow::isCurrent (Db::Migration::Background::BackgroundMigrator &migrator)
+{
+	Returner<bool> returner;
+	SignalOperationMonitor monitor;
+	migrator.isCurrent (returner, monitor);
+	MonitorDialog::monitor (monitor, this);
+	return returner.returnedValue ();
+}
+
+bool MainWindow::isEmpty (Db::Migration::Background::BackgroundMigrator &migrator)
+{
+	Returner<bool> returner;
+	SignalOperationMonitor monitor;
+	migrator.isEmpty (returner, monitor);
+	MonitorDialog::monitor (monitor, this);
+	return returner.returnedValue ();
+}
+
 void MainWindow::checkVersion ()
 {
 	Db::Migration::Background::BackgroundMigrator migrator (dbInterface);
-//	Migrator migrator (dbInterface);
-	SignalOperationMonitor monitor;
 
-	if (!dbInterface.tableExists ())
+	if (isEmpty (migrator)) // TODO in background
 	{
 		confirmOrCancel ("Datenbank leer",
 			"Die Datenbank ist leer. Soll sie jetzt erstellt werden?");
 
-		migrator.loadSchema (monitor);
+		Returner<void> returner;
+		SignalOperationMonitor monitor;
+		migrator.loadSchema (returner, monitor);
+		MonitorDialog::monitor (monitor, this);
+		returner.wait (); // Required so any exceptions are rethrown
 
 		// After loading the schema, the database must be current.
 		// TODO different message if canceled
-		if (!migrator.isCurrent (monitor))
+		if (!isCurrent (migrator))
 			throw ConnectFailedException ("Datenbank ist nach Erstellen nicht aktuell.");
 	}
-	else if (!migrator.isCurrent (monitor))
+	else if (!isCurrent (migrator))
 	{
-		quint64 currentVersion=migrator.currentVersion (monitor);
+		// TODO try to reuse monitor and dialog
+		Returner<quint64> currentVersionReturner;
+		SignalOperationMonitor currentVersionMonitor;
+		migrator.currentVersion (currentVersionReturner, currentVersionMonitor);
+		MonitorDialog::monitor (currentVersionMonitor);
+		quint64 currentVersion=currentVersionReturner.returnedValue ();
+
 		quint64 latestVersion=Migrator::latestVersion ();
-		int numPendingMigrations=migrator.pendingMigrations (monitor).size ();
+
+		Returner<QList<quint64> > pendingMigrationsReturner;
+		SignalOperationMonitor pendingMigrationsMonitor;
+		migrator.pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
+		MonitorDialog::monitor (pendingMigrationsMonitor);
+		quint64 numPendingMigrations=pendingMigrationsReturner.returnedValue ().size ();
 
 		confirmOrCancel ("Datenbank nicht aktuell", QString::fromUtf8 (
 				"Die Datenbank ist nicht aktuell:\n"
@@ -1366,16 +1397,14 @@ void MainWindow::checkVersion ()
 			).arg (currentVersion).arg (latestVersion).arg (numPendingMigrations));
 
 		Returner<void> returner;
+		SignalOperationMonitor monitor;
 		migrator.migrate (returner, monitor);
-
-		MonitorDialog dialog (monitor, this);
-		dialog.exec ();
+		MonitorDialog::monitor (monitor, this);
 		returner.wait (); // Required so any exceptions are rethrown
 
-
 		// After migrating, the database must be current.
-		if (!migrator.isCurrent (monitor))
-			// TODO different message if canceled
+		// TODO different message if canceled
+		if (!isCurrent (migrator))
 			throw ConnectFailedException ("Datenbank ist nach der Aktualisierung nicht aktuell.");
 	}
 }
@@ -1390,8 +1419,6 @@ void MainWindow::openInterface ()
 	}
 	catch (Db::Interface::DatabaseDoesNotExistException)
 	{
-		SimpleOperationMonitor monitor;
-
 		// The database does not exist. We have some permissions on the
 		// database, or we would get "access denied". Try to create it, and if
 		// that particular permission is missing, the enclosing routine will
@@ -1409,10 +1436,15 @@ void MainWindow::openInterface ()
 		// it and load the schema.
 		dbInterface.open ();
 		Db::Migration::Background::BackgroundMigrator migrator (dbInterface);
-		migrator.loadSchema (monitor);
+
+		Returner<void> returner;
+		SignalOperationMonitor monitor;
+		migrator.loadSchema (returner, monitor);
+		MonitorDialog::monitor (monitor, this);
+		returner.wait (); // Required so any exceptions are rethrown
 
 		// After loading the schema, the database must be current.
-		if (!migrator.isCurrent (monitor))
+		if (isCurrent (migrator))
 			// TODO different message if canceled
 			throw ConnectFailedException ("Nach dem Laden ist die Datenbank nicht aktuell.");
 	}
@@ -1420,13 +1452,22 @@ void MainWindow::openInterface ()
 
 void MainWindow::connectImpl ()
 {
-	openInterface ();
-	checkVersion ();
+	try
+	{
+		openInterface ();
+		checkVersion ();
 
-	cache.clear ();
-	cache.refreshAll ();
-	refreshFlights (); // FIXME don't read from Db again, just load from cache
-	setDatabaseActionsEnabled (true);
+		cache.clear ();
+		cache.refreshAll ();
+		refreshFlights (); // FIXME don't read from Db again, just load from cache
+		setDatabaseActionsEnabled (true);
+	}
+	catch (...)
+	{
+		// TODO check it works even if it's not open
+		dbInterface.close ();
+		throw;
+	}
 }
 
 void MainWindow::on_actionConnect_triggered ()

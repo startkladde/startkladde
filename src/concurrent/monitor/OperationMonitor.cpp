@@ -1,5 +1,7 @@
 #include "OperationMonitor.h"
 
+#include <iostream>
+
 #include "src/concurrent/synchronized.h"
 
 /*
@@ -42,10 +44,11 @@ OperationMonitorInterface OperationMonitor::interface ()
 	return theInterface;
 }
 
-//virtual operator Interface ()
-//{
-//	return interface ();
-//}
+// TODO use it (but it will be ambiguous with Interface::Interface(Monitor)
+OperationMonitor::operator OperationMonitorInterface ()
+{
+	return interface ();
+}
 
 void OperationMonitor::cancel ()
 {

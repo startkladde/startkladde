@@ -123,13 +123,13 @@ void Migrator::migrate (OperationMonitorInterface monitor)
 // ** Schema **
 // ************
 
-void Migrator::loadSchema ()
+void Migrator::loadSchema (OperationMonitorInterface monitor)
 {
 	std::cout << "== Loading schema =============================================================" << std::endl;
 
 	CurrentSchema schema (interface);
 
-	schema.up ();
+	schema.up (monitor);
 	assumeMigrated (schema.getVersions ());
 
 	std::cout << "== Version is now " << currentVersion () << " " << QString (79-19-14, '=') << std::endl << std::endl;
@@ -166,7 +166,7 @@ void Migrator::reset ()
 // ** Migration listing **
 // ***********************
 
-QList<quint64> Migrator::pendingMigrations ()
+QList<quint64> Migrator::pendingMigrations (OperationMonitorInterface monitor)
 {
 	QList<quint64> availableMigrations=factory->availableVersions ();
 	QList<quint64> appliedMigrations=this->appliedMigrations ();
@@ -179,7 +179,7 @@ QList<quint64> Migrator::pendingMigrations ()
 	return pending;
 }
 
-quint64 Migrator::nextMigration ()
+quint64 Migrator::nextMigration (OperationMonitorInterface monitor)
 {
 	QList<quint64> availableMigrations=factory->availableVersions ();
 	QList<quint64> appliedMigrations=this->appliedMigrations ();
@@ -196,6 +196,10 @@ quint64 Migrator::latestVersion ()
 	return MigrationFactory ().latestVersion ();
 }
 
+bool Migrator::isEmpty (OperationMonitorInterface monitor)
+{
+	return !interface.tableExists ();
+}
 
 
 // **********************
@@ -207,7 +211,7 @@ quint64 Migrator::latestVersion ()
  *
  * @return the version, or an 0 if the version table does not exist or is empty
  */
-quint64 Migrator::currentVersion ()
+quint64 Migrator::currentVersion (OperationMonitorInterface monitor)
 {
 	if (!interface.tableExists (migrationsTableName)) return 0;
 

@@ -58,6 +58,7 @@ class FlightProxyList;
 template<class T> class ObjectListModel;
 
 using Db::Cache::Cache;
+namespace Db { namespace Migration { namespace Background { class BackgroundMigrator; } } }
 
 /*
  * Notes:
@@ -109,6 +110,8 @@ class MainWindow: public QMainWindow
 		// Database connection management
 		void closeDatabase ();
 		void setDatabaseActionsEnabled (bool enabled);
+		bool isCurrent (Db::Migration::Background::BackgroundMigrator &migrator);
+		bool isEmpty (Db::Migration::Background::BackgroundMigrator &migrator);
 
 		void confirmOrCancel (const QString &title, const QString &question);
 		void grantPermissions ();

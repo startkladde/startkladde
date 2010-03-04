@@ -13,6 +13,7 @@ class MonitorDialog: public QDialog
 	public:
 		MonitorDialog (SignalOperationMonitor &monitor, QWidget *parent=NULL);
 		~MonitorDialog ();
+		static void monitor (SignalOperationMonitor &monitor, QWidget *parent=NULL);
 
 	protected slots:
 		void progress (int progress, int maxProgress);
@@ -20,7 +21,7 @@ class MonitorDialog: public QDialog
 		virtual void reject ();
 
 	private:
-		SignalOperationMonitor &monitor;
+		SignalOperationMonitor &theMonitor;
 		Ui::MonitorDialogClass ui;
 };
 

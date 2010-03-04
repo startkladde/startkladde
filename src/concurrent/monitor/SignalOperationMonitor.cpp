@@ -2,7 +2,8 @@
 
 #include <iostream>
 
-SignalOperationMonitor::SignalOperationMonitor ()
+SignalOperationMonitor::SignalOperationMonitor ():
+	hasEnded (false)
 {
 }
 
@@ -27,5 +28,11 @@ void SignalOperationMonitor::setProgress (int progress, int maxProgress)
 
 void SignalOperationMonitor::setEnded ()
 {
+	hasEnded=true;
 	emit ended ();
+}
+
+bool SignalOperationMonitor::getEnded () const
+{
+	return hasEnded;
 }

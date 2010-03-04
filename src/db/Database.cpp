@@ -8,6 +8,7 @@
  *     - No select query after update to update cache
  *   - timeout: only when no data is transfered
  *   - fix duplicate connection name when connect is canceled and restarted
+ *     (interface is not closed after connect canceled)
  *
  * Tests:
  *   - Test the migrations:

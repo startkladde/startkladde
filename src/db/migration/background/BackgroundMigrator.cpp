@@ -1,5 +1,8 @@
 /*
- * Consider merging BackgroundMigrator and MigratorThread.
+ * TODO:
+ *   - Consider merging BackgroundMigrator and MigratorThread.
+ *   - migrate(taking monitor, and returning result) and asynchronousMigrate
+ *     (taking monitor and result), so we can directly use a DialogMonitor
  *
  */
 #include "BackgroundMigrator.h"
@@ -35,37 +38,31 @@ namespace Db { namespace Migration { namespace Background
 
 	void BackgroundMigrator::migrate (Returner<void> &returner, OperationMonitor &monitor)
 	{
-//		Returner<void> returner;
-//		thread.migrate (&returner, &monitor);
-//		returner.wait ();
 		thread.migrate (&returner, &monitor);
 	}
 
-	void BackgroundMigrator::loadSchema (OperationMonitor &monitor)
+	void BackgroundMigrator::loadSchema (Returner<void> &returner, OperationMonitor &monitor)
 	{
-		Returner<void> returner;
 		thread.loadSchema (&returner, &monitor);
-		returner.wait ();
 	}
 
-	QList<quint64> BackgroundMigrator::pendingMigrations (OperationMonitor &monitor)
+	void BackgroundMigrator::pendingMigrations (Returner<QList<quint64> > &returner, OperationMonitor &monitor)
 	{
-		Returner<QList<quint64> > returner;
 		thread.pendingMigrations (&returner, &monitor);
-		return returner.returnedValue ();
 	}
 
-	bool BackgroundMigrator::isCurrent (OperationMonitor &monitor)
+	void BackgroundMigrator::isCurrent (Returner<bool> &returner, OperationMonitor &monitor)
 	{
-		Returner<bool> returner;
 		thread.isCurrent (&returner, &monitor);
-		return returner.returnedValue ();
 	}
 
-	quint64 BackgroundMigrator::currentVersion (OperationMonitor &monitor)
+	void BackgroundMigrator::isEmpty (Returner<bool> &returner, OperationMonitor &monitor)
 	{
-		Returner<quint64> returner;
+		thread.isEmpty (&returner, &monitor);
+	}
+
+	void BackgroundMigrator::currentVersion (Returner<quint64> &returner, OperationMonitor &monitor)
+	{
 		thread.currentVersion (&returner, &monitor);
-		return returner.returnedValue ();
 	}
 } } }

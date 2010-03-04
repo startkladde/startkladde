@@ -41,7 +41,7 @@ class OperationMonitor
 
 		// ** Getting the interface
 		virtual OperationMonitorInterface interface ();
-		//virtual operator Interface ();
+		virtual operator OperationMonitorInterface ();
 
 		// ** Operation control
 		/** Signals the operation to cancel */

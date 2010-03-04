@@ -25,6 +25,7 @@ namespace Db { namespace Migration { namespace Background
 		CONNECT (loadSchema        (Returner<void>            *, OperationMonitor *));
 		CONNECT (pendingMigrations (Returner<QList<quint64> > *, OperationMonitor *));
 		CONNECT (isCurrent         (Returner<bool>            *, OperationMonitor *));
+		CONNECT (isEmpty           (Returner<bool>            *, OperationMonitor *));
 		CONNECT (currentVersion    (Returner<quint64>         *, OperationMonitor *));
 #undef CONNECT
 
@@ -63,6 +64,11 @@ namespace Db { namespace Migration { namespace Background
 	void MigratorThread::isCurrent (Returner<bool> *returner, OperationMonitor *monitor)
 	{
 		emit sig_isCurrent (returner, monitor);
+	}
+
+	void MigratorThread::isEmpty (Returner<bool> *returner, OperationMonitor *monitor)
+	{
+		emit sig_isEmpty (returner, monitor);
 	}
 
 	void MigratorThread::currentVersion (Returner<quint64> *returner, OperationMonitor *monitor)
