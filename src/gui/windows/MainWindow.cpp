@@ -1415,7 +1415,11 @@ void MainWindow::openInterface ()
 	// allows us to detect a missing database before checking the version.
 	try
 	{
-		dbInterface.open ();
+		Returner<bool> returner;
+		SignalOperationMonitor monitor;
+		dbInterface.asyncOpen (returner, monitor);
+		MonitorDialog::monitor (monitor);
+		returner.wait ();
 	}
 	catch (Db::Interface::DatabaseDoesNotExistException)
 	{

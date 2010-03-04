@@ -49,6 +49,11 @@ namespace Db { namespace Interface { namespace ThreadSafe
 		return returner.returnedValue ();
 	}
 
+	void ThreadSafeInterface::asyncOpen (Returner<bool> &returner, OperationMonitor &monitor)
+	{
+		thread.asyncOpen (&returner, &monitor);
+	}
+
 	void ThreadSafeInterface::close ()
 	{
 		Returner<void> returner;

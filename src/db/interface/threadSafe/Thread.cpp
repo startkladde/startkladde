@@ -24,6 +24,7 @@ namespace Db { namespace Interface { namespace ThreadSafe
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), worker, SLOT (definition))
 
 		CONNECT (open      (Returner<bool>      *));
+		CONNECT (asyncOpen (Returner<bool>      *, OperationMonitor *));
 		CONNECT (close     (Returner<void>      *));
 		CONNECT (lastError (Returner<QSqlError> *));
 
@@ -63,6 +64,13 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	void Thread::open (Returner<bool> *returner)
 	{
 		emit sig_open (returner);
+	}
+
+	void Thread::asyncOpen (Returner<bool> *returner, OperationMonitor *monitor)
+	{
+		std::cout << "thread asyncOpen" << std::endl;
+
+		emit sig_asyncOpen (returner, monitor);
 	}
 
 	void Thread::close (Returner<void> *returner)

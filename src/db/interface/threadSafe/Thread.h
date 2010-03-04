@@ -24,6 +24,8 @@
 
 class QSqlError;
 
+class OperationMonitor;
+
 namespace Db
 {
 	namespace Interface
@@ -50,6 +52,7 @@ namespace Db
 
 					// *** Connection management
 					virtual void open      (Returner<bool>      *returner);
+					virtual void asyncOpen (Returner<bool>      *returner, OperationMonitor *monitor);
 					virtual void close     (Returner<void>      *returner);
 					virtual void lastError (Returner<QSqlError> *returner) const;
 
@@ -66,6 +69,7 @@ namespace Db
 				signals:
 					// *** Connection management
 					virtual void sig_open      (Returner<bool>      *returner);
+					virtual void sig_asyncOpen (Returner<bool>      *returner, OperationMonitor *monitor);
 					virtual void sig_close     (Returner<void>      *returner);
 					virtual void sig_lastError (Returner<QSqlError> *returner) const;
 

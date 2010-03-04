@@ -13,6 +13,9 @@
 
 class QSqlError;
 
+template<typename T> class Returner;
+class OperationMonitor;
+
 namespace Db
 {
 	namespace Interface
@@ -28,6 +31,7 @@ namespace Db
 
 					// *** Connection management
 					virtual bool open ();
+					virtual void asyncOpen (Returner<bool> &returner, OperationMonitor &monitor);
 					virtual void close ();
 					virtual QSqlError lastError () const;
 

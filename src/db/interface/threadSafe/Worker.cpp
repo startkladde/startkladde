@@ -1,5 +1,7 @@
 #include "Worker.h"
 
+#include <iostream>
+
 // Not explicitly used, but required for destruction of the shared pointer in
 // #executeQueryResult
 #include "src/db/result/Result.h"
@@ -7,6 +9,8 @@
 #include "src/db/Query.h"
 #include "src/db/interface/DefaultInterface.h"
 #include "src/concurrent/Returner.h"
+#include "src/concurrent/monitor/OperationMonitor.h"
+//#include "src/concurrent/monitor/OperationMonitorInterface.h"
 
 namespace Db { namespace Interface { namespace ThreadSafe
 {
@@ -32,6 +36,11 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	void Worker::open (Returner<bool> *returner)
 	{
 		returnOrException (returner, interface->open ());
+	}
+
+	void Worker::asyncOpen (Returner<bool> *returner, OperationMonitor *monitor)
+	{
+		returnOrException (returner, interface->open (monitor->interface ()));
 	}
 
 	void Worker::close (Returner<void> *returner)

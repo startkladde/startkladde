@@ -40,24 +40,25 @@ void ReturnerBase::waitAndRethrow ()
 		thrownException->rethrow ();
 }
 
+
+/**
+ * Waits for the notification by a client thread and rethrows the exception, if
+ * any
+ *
+ * If the notification has already happened, this method returns or throws
+ * immediately.
+ *
+ * @throw the exception passed to #exception, if #exception has been called
+ */
+void ReturnerBase::wait ()
+{
+	waitAndRethrow ();
+}
+
 /**
  * Notifies the threads waiting in #wait so they will return from #wait.
  */
 void Returner<void>::returnVoid ()
 {
 	waiter.notify ();
-}
-
-/**
- * Waits for another thread to call #returnVoid or #exception and either
- * returns or throws the exception passed to #exception
- *
- * If #returnVoid or #exception has already been called, this method returns
- * or throws immediately.
- *
- * @throw the exception passed to #exception, if #exception has been called
- */
-void Returner<void>::wait ()
-{
-	waitAndRethrow ();
 }

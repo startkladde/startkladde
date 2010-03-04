@@ -55,6 +55,8 @@ class ReturnerBase
 
 		void exception (const StorableException &thrownException);
 
+		void wait ();
+
 	protected:
 		void waitAndRethrow ();
 		Waiter waiter;
@@ -155,7 +157,6 @@ template<> class Returner<void>: public ReturnerBase
 {
 	public:
 		void returnVoid ();
-		void wait ();
 };
 
 #endif

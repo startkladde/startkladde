@@ -15,11 +15,16 @@
 #include "src/concurrent/Returner.h"
 
 class QSqlError;
+class OperationMonitor;
+
+
 
 namespace Db
 {
 	namespace Interface
 	{
+		class DefaultInterface;
+
 		namespace ThreadSafe
 		{
 			/**
@@ -45,6 +50,7 @@ namespace Db
 				public slots:
 					// *** Connection management
 					virtual void open      (Returner<bool>      *returner);
+					virtual void asyncOpen (Returner<bool>      *returner, OperationMonitor *monitor);
 					virtual void close     (Returner<void>      *returner);
 					virtual void lastError (Returner<QSqlError> *returner) const;
 
@@ -60,7 +66,9 @@ namespace Db
 					virtual void queryHasResult     (Returner<bool>                            *returner, Db::Query query);
 
 				private:
-					AbstractInterface *interface;
+					// FIXME should be Abstract; open with monitor is currently only defined in default
+//					AbstractInterface *interface;
+					DefaultInterface *interface;
 			};
 		}
 	}

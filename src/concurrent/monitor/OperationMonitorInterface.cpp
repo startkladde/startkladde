@@ -1,5 +1,7 @@
 #include "OperationMonitorInterface.h"
 
+#include <iostream>
+
 #include <QAtomicInt>
 
 
@@ -81,6 +83,8 @@ void OperationMonitorInterface::progress (int progress, int maxProgress, bool ch
  */
 void OperationMonitorInterface::ended ()
 {
+	std::cout << "ended called" << std::endl;
+
 	if (monitor)
 		monitor->setEnded ();
 }

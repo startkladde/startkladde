@@ -52,6 +52,8 @@ OperationMonitor::operator OperationMonitorInterface ()
 
 void OperationMonitor::cancel ()
 {
+	std::cout << "OperationMonitor::cancel ()" << std::endl;
+
 	synchronized (mutex)
 		canceled=true;
 }

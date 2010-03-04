@@ -57,7 +57,7 @@ namespace Db { namespace Interface
 	 *
 	 * @return true on success, false else
 	 */
-	bool DefaultInterface::open ()
+	bool DefaultInterface::open (OperationMonitorInterface monitor)
 	{
 		DatabaseInfo info=getInfo ();
 
@@ -71,6 +71,7 @@ namespace Db { namespace Interface
 
 		while (true)
 		{
+			monitor.checkCanceled ();
 
 			std::cout << QString ("Connecting to %1...").arg (info.toString ());
 			std::cout.flush ();

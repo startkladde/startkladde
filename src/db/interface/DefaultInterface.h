@@ -13,6 +13,7 @@
 
 #include "src/db/interface/Interface.h"
 #include "src/db/DatabaseInfo.h"
+#include "src/concurrent/monitor/OperationMonitorInterface.h"
 
 #ifndef DEFAULTINTERFACE_H_
 #define DEFAULTINTERFACE_H_
@@ -44,7 +45,8 @@ namespace Db
 				virtual ~DefaultInterface ();
 
 				// *** Connection management
-				virtual bool open ();
+				virtual bool open () { return open (OperationMonitorInterface::null); }
+				virtual bool open (OperationMonitorInterface monitor);
 				virtual void close ();
 				virtual QSqlError lastError () const;
 
