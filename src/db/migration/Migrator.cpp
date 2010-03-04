@@ -102,19 +102,22 @@ void Migrator::down ()
 }
 
 /** Migrates to the latest version (runs pending migrations) */
-void Migrator::migrate (OperationMonitor *monitor)
+void Migrator::migrate (OperationMonitor::Interface monitor)
 {
 	QList<quint64> versions=pendingMigrations ();
 
 	int progress=0, maxProgress=pendingMigrations ().size ();
 
 	// TODO better progress reporting interface
-	if (monitor) monitor->progress (progress, maxProgress);
+	monitor.progress (progress, maxProgress);
 	foreach (quint64 version, versions)
 	{
+		if (monitor.canceled ()) break;
+
 		runMigration (version, Migration::dirUp);
+
 		++progress;
-		if (monitor) monitor->progress (progress, maxProgress);
+		monitor.progress (progress, maxProgress);
 	}
 }
 

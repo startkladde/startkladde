@@ -17,8 +17,10 @@ class MonitorDialog: public QDialog
 	protected slots:
 		void progress (int progress, int maxProgress);
 		void status (QString status);
+		virtual void reject ();
 
 	private:
+		SignalOperationMonitor &monitor;
 		Ui::MonitorDialogClass ui;
 };
 

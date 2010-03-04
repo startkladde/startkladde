@@ -1,16 +1,16 @@
 /*
- * Monitor.h
+ * DbEventDbEventMonitor.h
  *
  *  Created on: 28.02.2010
  *      Author: Martin Herrmann
  */
 
-#ifndef MONITOR_H_
-#define MONITOR_H_
+#ifndef DBEVENTDbEventMonitor_H_
+#define DBEVENTDbEventMonitor_H_
 
 #include <QObject>
 
-#include "src/db/event/Event.h"
+#include "src/db/event/DbEvent.h"
 
 /**
  * Implements the listener pattern for signals with a Db::Event::Event
@@ -25,7 +25,7 @@ namespace Db
 {
 	namespace Event
 	{
-		class Monitor: public QObject
+		class DbEventMonitor: public QObject
 		{
 			Q_OBJECT
 
@@ -34,15 +34,15 @@ namespace Db
 				class Listener
 				{
 					public:
-						virtual void dbEvent (Event event)=0;
+						virtual void dbEvent (DbEvent event)=0;
 				};
 
 				// *** Construction
-				Monitor (QObject &source, const char *signal, Listener &listener);
-				virtual ~Monitor ();
+				DbEventMonitor (QObject &source, const char *signal, Listener &listener);
+				virtual ~DbEventMonitor ();
 
 			public slots:
-				virtual void dbEvent (Db::Event::Event event);
+				virtual void dbEvent (DbEvent event);
 
 			private:
 				Listener &listener;

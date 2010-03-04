@@ -11,7 +11,7 @@
 
 #include "src/db/dbId.h"
 #include "src/db/interface/Interface.h"
-#include "src/db/event/Event.h"
+#include "src/db/event/DbEvent.h"
 
 class Flight;
 
@@ -82,7 +82,7 @@ namespace Db
 			template<class T> bool objectUsed (dbId id);
 
 		signals:
-			void dbEvent (Event::Event event);
+			void dbEvent (Db::Event::DbEvent event); // full type name
 
 		private:
 			Interface::Interface &interface;

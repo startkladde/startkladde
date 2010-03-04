@@ -1,5 +1,7 @@
 #include "SignalOperationMonitor.h"
 
+#include <iostream>
+
 SignalOperationMonitor::SignalOperationMonitor ()
 {
 }
@@ -8,18 +10,22 @@ SignalOperationMonitor::~SignalOperationMonitor ()
 {
 }
 
-bool SignalOperationMonitor::isCanceled () const
+void SignalOperationMonitor::cancel ()
 {
-	// FIXME implement canceling
-	return false;
+	OperationMonitor::cancel ();
 }
 
-void SignalOperationMonitor::status (QString text)
+void SignalOperationMonitor::setStatus (const QString &text)
 {
 	emit statusChanged (text);
 }
 
-void SignalOperationMonitor::progress (int progress, int maxProgress)
+void SignalOperationMonitor::setProgress (int progress, int maxProgress)
 {
 	emit progressChanged (progress, maxProgress);
+}
+
+void SignalOperationMonitor::setEnded ()
+{
+	emit ended ();
 }

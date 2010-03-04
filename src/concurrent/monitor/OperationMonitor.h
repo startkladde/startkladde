@@ -9,33 +9,71 @@
 #define OPERATIONMONITOR_H_
 
 #include <QString>
+#include <QMutex>
+
+class QAtomicInt;
 
 /**
- * A abstract class for communicating with a function that may take some time
+ * A class that allows monitoring and canceling an operation, typically running
+ * in a different task
  *
- * An OperationMonitor can be passed into such a function. The function can
- * query the monitor for whether the operation should be canceled and use the
- * monitor to emit information about the status/progress.
+ * The operation accesses the task through its interface.
  */
 class OperationMonitor
 {
 	public:
+		class Interface
+		{
+			friend class OperationMonitor;
+			public:
+				~Interface ();
+				Interface (const Interface &other);
+				Interface &operator= (const Interface &other);
+
+				// Operation feedback
+				void status (const QString &text);
+				void progress (int progress, int maxProgress);
+				void ended ();
+
+				// Operation control
+				bool canceled ();
+
+			private:
+				Interface (OperationMonitor *monitor);
+				OperationMonitor *monitor;
+				QAtomicInt *refCount;
+		};
+
+		friend class Interface;
+
+		// ** Construction
 		OperationMonitor ();
 		virtual ~OperationMonitor ();
 
-		// ***** To task
+		// ** Getting the interface
+		virtual Interface interface ();
+		//virtual operator Interface ();
 
-		/** @brief returns true if the operation should be canceled */
-		virtual bool isCanceled () const=0;
+		// ** Operation control
+		/** Signals the operation to cancel */
+		virtual void cancel ();
 
-		// ***** From task
+	private:
+		/** The master copy of this monitor's interface */
+		Interface theInterface;
 
-		/** @brief what we are currently doing */
-		virtual void status (QString text)=0;
-		virtual void status (const char *text) { status (QString::fromUtf8 (text)); }
+		bool canceled;
+		mutable QMutex mutex;
 
-		/** @brief the progress of the operation */
-		virtual void progress (int progress, int maxProgress)=0;
+		// ** Operation feedback
+		virtual void setStatus (const QString &text)=0;
+		virtual void setProgress (int progress, int maxProgress)=0;
+
+		/** Signals that the operation ended (canceled or finished) */
+		virtual void setEnded ()=0;
+
+		// ** Operation control
+		virtual bool isCanceled ();
 };
 
 #endif

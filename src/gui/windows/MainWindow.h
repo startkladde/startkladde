@@ -203,7 +203,7 @@ class MainWindow: public QMainWindow
 		void timeTimer_timeout ();
 
 		// Database
-		void cacheChanged (Db::Event::Event event);
+		void cacheChanged (Db::Event::DbEvent event);
 
 		void logMessage (QString message);
 

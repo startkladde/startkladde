@@ -11,8 +11,8 @@
 // TODO may includes in header
 #include "EntityList.h"
 #include "src/db/cache/Cache.h"
-#include "src/db/event/Event.h"
-#include "src/db/event/Monitor.h"
+#include "src/db/event/DbEvent.h"
+#include "src/db/event/DbEventMonitor.h"
 #include "src/concurrent/threadUtil.h"
 
 // ******************
@@ -23,7 +23,7 @@
  * A subclass auf EntityList that receives dbChange events from a Cache
  * and updates the list accordingly.
  */
-template<class T> class AutomaticEntityList: public EntityList<T>, Db::Event::Monitor::Listener
+template<class T> class AutomaticEntityList: public EntityList<T>, Db::Event::DbEventMonitor::Listener
 {
 	public:
 		AutomaticEntityList (Db::Cache::Cache &cache, QObject *parent=NULL);
@@ -31,11 +31,11 @@ template<class T> class AutomaticEntityList: public EntityList<T>, Db::Event::Mo
 		virtual ~AutomaticEntityList ();
 
 		// Db::Event::Listener methods
-		virtual void dbEvent (Db::Event::Event event);
+		virtual void dbEvent (Db::Event::DbEvent event);
 
 	protected:
 		Db::Cache::Cache &cache;
-		Db::Event::Monitor monitor;
+		Db::Event::DbEventMonitor monitor;
 };
 
 /**
@@ -47,7 +47,7 @@ template<class T> class AutomaticEntityList: public EntityList<T>, Db::Event::Mo
 template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache &cache, QObject *parent):
 	EntityList<T> (parent),
 	cache (cache),
-	monitor (cache, SIGNAL (changed (Db::Event::Event)), *this)
+	monitor (cache, SIGNAL (changed (Db::DbEvent::DbEvent)), *this)
 {
 }
 
@@ -61,7 +61,7 @@ template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache 
 template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache &cache, const QList<T> &list, QObject *parent):
 	EntityList<T> (list, parent),
 	cache (cache),
-	monitor (cache, SIGNAL (changed (Db::Event::Event)), *this)
+	monitor (cache, SIGNAL (changed (Db::DbEvent::DbEvent)), *this)
 {
 }
 
@@ -78,27 +78,27 @@ template<class T> AutomaticEntityList<T>::~AutomaticEntityList ()
  * Called on database changes. Updates the list and emits the appropriate
  * signals.
  *
- * @param event the Db::Event::Event describing the change
+ * @param event the Db::Event::DbEvent describing the change
  */
-template<class T> void AutomaticEntityList<T>::dbEvent (Db::Event::Event event)
+template<class T> void AutomaticEntityList<T>::dbEvent (Db::Event::DbEvent event)
 {
 	assert (isGuiThread());
 
 	// Return if the table does not match the type of this list
-	if (event.table!=Db::Event::Event::getTable<T> ()) return;
+	if (event.table!=Db::Event::DbEvent::getTable<T> ()) return;
 
 	switch (event.type)
 	{
-		case Db::Event::Event::typeAdd:
+		case Db::Event::DbEvent::typeAdd:
 		{
 			EntityList<T>::append (cache.getObject<T> (event.id));
 		} break;
-		case Db::Event::Event::typeDelete:
+		case Db::Event::DbEvent::typeDelete:
 		{
 			int i=EntityList<T>::findById (event.id);
 			if (i>=0) EntityList<T>::removeAt (i);
 		} break;
-		case Db::Event::Event::typeChange:
+		case Db::Event::DbEvent::typeChange:
 		{
 			int i=EntityList<T>::findById (event.id);
 			if (i>=0)

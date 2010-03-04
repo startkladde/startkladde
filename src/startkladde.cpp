@@ -240,8 +240,8 @@ int doStuff ()
 		Migrator (db).up ();
 	else if (opts.non_options[0]=="db:down")
 		Migrator (db).down ();
-	else if (opts.non_options[0]=="db:migrate")
-		Migrator (db).migrate ();
+//	else if (opts.non_options[0]=="db:migrate")
+//		Migrator (db).migrate (); // FIXME migration without monitor
 	else if (opts.non_options[0]=="db:version")
 		std::cout << "Version is " << Migrator (db).currentVersion () << std::endl;
 	else if (opts.non_options[0]=="db:load")

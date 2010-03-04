@@ -42,8 +42,8 @@ HEADERS += \
            src/db/Query.h \
            src/db/dbId.h \
            src/db/cache/Cache.h \
-           src/db/event/Event.h \
-           src/db/event/Monitor.h \
+           src/db/event/DbEvent.h \
+           src/db/event/DbEventMonitor.h \
            src/db/interface/AbstractInterface.h \
            src/db/interface/DefaultInterface.h \
            src/db/interface/Interface.h \
@@ -144,8 +144,8 @@ SOURCES += \
            src/db/Query.cpp \
            src/db/dbId.cpp \
            src/db/cache/Cache.cpp \
-           src/db/event/Event.cpp \
-           src/db/event/Monitor.cpp \
+           src/db/event/DbEvent.cpp \
+           src/db/event/DbEventMonitor.cpp \
            src/db/interface/AbstractInterface.cpp \
            src/db/interface/DefaultInterface.cpp \
            src/db/interface/Interface.cpp \

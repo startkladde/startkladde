@@ -111,7 +111,7 @@ MainWindow::MainWindow (QWidget *parent) :
 	setupLayout ();
 
 	// Do this before calling connect
-	QObject::connect (&cache, SIGNAL (changed (Db::Event::Event)), this, SLOT (cacheChanged (Db::Event::Event)));
+	QObject::connect (&cache, SIGNAL (changed (Db::Event::DbEvent)), this, SLOT (cacheChanged (Db::Event::DbEvent)));
 
 	QTimer::singleShot (0, this, SLOT (on_actionConnect_triggered ()));
 
@@ -1343,6 +1343,7 @@ void MainWindow::checkVersion ()
 		migrator.loadSchema (monitor);
 
 		// After loading the schema, the database must be current.
+		// TODO different message if canceled
 		if (!migrator.isCurrent (monitor))
 			throw ConnectFailedException ("Datenbank ist nach Erstellen nicht aktuell.");
 	}
@@ -1371,6 +1372,7 @@ void MainWindow::checkVersion ()
 
 		// After migrating, the database must be current.
 		if (!migrator.isCurrent (monitor))
+			// TODO different message if canceled
 			throw ConnectFailedException ("Datenbank ist nach der Aktualisierung nicht aktuell.");
 	}
 }
@@ -1408,6 +1410,7 @@ void MainWindow::openInterface ()
 
 		// After loading the schema, the database must be current.
 		if (!migrator.isCurrent (monitor))
+			// TODO different message if canceled
 			throw ConnectFailedException ("Nach dem Laden ist die Datenbank nicht aktuell.");
 	}
 }
@@ -1501,7 +1504,7 @@ void MainWindow::on_actionEditLaunchMethods_triggered ()
 // ** Database **
 // **************
 
-void MainWindow::cacheChanged (Db::Event::Event event)
+void MainWindow::cacheChanged (Db::Event::DbEvent event)
 {
 	assert (isGuiThread ());
 
@@ -1511,11 +1514,11 @@ void MainWindow::cacheChanged (Db::Event::Event event)
 	{
 		// TODO when a plane, person or launch method is changed, the flight list
 		// has to be updated, too. But that's a feature of the FlightListModel (?).
-		if (event.table == Db::Event::Event::tableFlights)
+		if (event.table == Db::Event::DbEvent::tableFlights)
 		{
 			switch (event.type)
 			{
-				case Db::Event::Event::typeAdd:
+				case Db::Event::DbEvent::typeAdd:
 				{
 					const Flight &flight=cache.getObject<Flight> (event.id);
 					if (flight.isPrepared () || flight.effdatum ()==displayDate)
@@ -1532,7 +1535,7 @@ void MainWindow::cacheChanged (Db::Event::Event event)
 							setDisplayDate (flight.effdatum (), false);
 					}
 				} break;
-				case Db::Event::Event::typeChange:
+				case Db::Event::DbEvent::typeChange:
 				{
 					try
 					{
@@ -1554,7 +1557,7 @@ void MainWindow::cacheChanged (Db::Event::Event event)
 						flightList->removeById (event.id);
 					}
 				} break;
-				case Db::Event::Event::typeDelete:
+				case Db::Event::DbEvent::typeDelete:
 					flightList->removeById (event.id);
 					break;
 			}

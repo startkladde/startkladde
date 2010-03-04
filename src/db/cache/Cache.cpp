@@ -59,7 +59,7 @@ namespace Db
 		Cache::Cache (Database &db):
 			db (db)
 		{
-			connect (&db, SIGNAL (dbEvent (Event::Event)), this, SLOT (dbChanged (Event::Event)));
+			connect (&db, SIGNAL (dbEvent (Db::Event::DbEvent)), this, SLOT (dbChanged (Db::Event::DbEvent)));
 		}
 
 		Cache::~Cache ()
@@ -748,42 +748,41 @@ namespace Db
 			}
 		}
 
-		void Cache::dbChanged (Event::Event event)
+		void Cache::dbChanged (Event::DbEvent event)
 		{
 			std::cout << "Cache: "<< event.toString () << std::endl;
 
-			// TODO: introduce refresh<T> and factorize this method:
-			// processDbEvent<T> (event)
+			// factorize this method: processDbEvent<T> (event)
 
 			// This is ugly, but we can't pass a template class instance as a
 			// signal parameter
 			switch (event.type)
 			{
-				case Event::Event::typeAdd:
+				case Event::DbEvent::typeAdd:
 					switch (event.table)
 					{
-						case Event::Event::tableFlights      : objectAdded<Flight      > (event.id); break;
-						case Event::Event::tableLaunchMethods: objectAdded<LaunchMethod> (event.id); break;
-						case Event::Event::tablePeople       : objectAdded<Person      > (event.id); break;
-						case Event::Event::tablePlanes       : objectAdded<Plane       > (event.id); break;
+						case Event::DbEvent::tableFlights      : objectAdded<Flight      > (event.id); break;
+						case Event::DbEvent::tableLaunchMethods: objectAdded<LaunchMethod> (event.id); break;
+						case Event::DbEvent::tablePeople       : objectAdded<Person      > (event.id); break;
+						case Event::DbEvent::tablePlanes       : objectAdded<Plane       > (event.id); break;
 					}
 					break;
-				case Event::Event::typeChange:
+				case Event::DbEvent::typeChange:
 					switch (event.table)
 					{
-						case Event::Event::tableFlights      : objectUpdated<Flight      > (event.id); break;
-						case Event::Event::tableLaunchMethods: objectUpdated<LaunchMethod> (event.id); break;
-						case Event::Event::tablePeople       : objectUpdated<Person      > (event.id); break;
-						case Event::Event::tablePlanes       : objectUpdated<Plane       > (event.id); break;
+						case Event::DbEvent::tableFlights      : objectUpdated<Flight      > (event.id); break;
+						case Event::DbEvent::tableLaunchMethods: objectUpdated<LaunchMethod> (event.id); break;
+						case Event::DbEvent::tablePeople       : objectUpdated<Person      > (event.id); break;
+						case Event::DbEvent::tablePlanes       : objectUpdated<Plane       > (event.id); break;
 					}
 					break;
-				case Event::Event::typeDelete:
+				case Event::DbEvent::typeDelete:
 					switch (event.table)
 					{
-						case Event::Event::tableFlights      : objectDeleted<Flight      > (event.id); break;
-						case Event::Event::tableLaunchMethods: objectDeleted<LaunchMethod> (event.id); break;
-						case Event::Event::tablePeople       : objectDeleted<Person      > (event.id); break;
-						case Event::Event::tablePlanes       : objectDeleted<Plane       > (event.id); break;
+						case Event::DbEvent::tableFlights      : objectDeleted<Flight      > (event.id); break;
+						case Event::DbEvent::tableLaunchMethods: objectDeleted<LaunchMethod> (event.id); break;
+						case Event::DbEvent::tablePeople       : objectDeleted<Person      > (event.id); break;
+						case Event::DbEvent::tablePlanes       : objectDeleted<Plane       > (event.id); break;
 					}
 					break;
 				// no default

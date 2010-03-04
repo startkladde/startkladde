@@ -1,5 +1,5 @@
-#ifndef EVENT_H_
-#define EVENT_H_
+#ifndef DBEVENT_H_
+#define DBEVENT_H_
 
 #include <QString>
 
@@ -15,13 +15,13 @@ namespace Db
 		 * This is implemented with an Table Enum rather than as a template because it
 		 * is sent as a parameter as a signal and signals can't be templates.
 		 */
-		class Event
+		class DbEvent
 		{
 			public:
 				enum Table { tablePeople, tableFlights, tableLaunchMethods, tablePlanes };
 				enum Type { typeAdd, typeDelete, typeChange };
 
-				Event (Type type, Table table, dbId);
+				DbEvent (Type type, Table table, dbId);
 
 				QString toString ();
 				static QString typeString (Type type);

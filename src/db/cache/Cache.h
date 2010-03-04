@@ -17,7 +17,7 @@
 #include "src/db/dbId.h"
 #include "src/model/LaunchMethod.h" // Required for LaunchMethod::Type
 #include "src/model/objectList/EntityList.h"
-#include "src/db/event/Event.h"
+#include "src/db/event/DbEvent.h"
 
 class Flight;
 class Person;
@@ -150,7 +150,7 @@ namespace Db
 				template<class T> void objectUpdated (dbId id);
 
 			signals:
-				void changed (Db::Event::Event event);
+				void changed (Db::Event::DbEvent event);  // full type name
 
 
 			protected:
@@ -160,7 +160,7 @@ namespace Db
 				template<class T> EntityList<T> *objectList ();
 
 			protected slots:
-				void dbChanged (Event::Event event);
+				void dbChanged (Db::Event::DbEvent event); // full type name
 
 
 			private:

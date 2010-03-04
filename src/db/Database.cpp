@@ -1,9 +1,11 @@
 /*
  * Short term plan:
- *   - Standardize enum handling: store the database value internally and have
- *     an "unknown" type (instead of "none")
- *     - this should also allow preserving unknown types in the database
- *   - add ping to Interface
+ *   - Background ops
+ *   - Connection monitoring (ping? keepalive?)
+ *   - Proper caching
+ *   - Send object with DbEvent
+ *     - QVariant or similar
+ *     - No select query after update to update cache
  *   - timeout: only when no data is transfered
  *
  * Tests:
@@ -34,6 +36,9 @@
  *   - Allow a table name prefix (useful for testing)
  *
  * Medium term plan:
+ *   - Standardize enum handling: store the database value internally and have
+ *     an "unknown" type (instead of "none")
+ *     - this should also allow preserving unknown types in the database
  *   - allow backup and restore of database (even if not connected)
  *     - offer backup when migrating on connect
  *   - rename planes.competition_callsign to planes.callsign
@@ -166,7 +171,7 @@ namespace Db
 
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
-		emit dbEvent (Event::Event (Event::Event::typeDelete, Event::Event::getTable<T> (), id));
+		emit dbEvent (Event::DbEvent (Event::DbEvent::typeDelete, Event::DbEvent::getTable<T> (), id));
 
 		return result->numRowsAffected ()>0;
 	}
@@ -187,7 +192,7 @@ namespace Db
 		object.id=result->lastInsertId ().toLongLong ();
 
 		if (idValid (object.id))
-			emit dbEvent (Event::Event (Event::Event::typeAdd, Event::Event::getTable<T> (), object.id));
+			emit dbEvent (Event::DbEvent (Event::DbEvent::typeAdd, Event::DbEvent::getTable<T> (), object.id));
 
 		return object.id;
 	}
@@ -202,7 +207,7 @@ namespace Db
 
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
-		emit dbEvent (Event::Event (Event::Event::typeChange, Event::Event::getTable<T> (), object.getId ()));
+		emit dbEvent (Event::DbEvent (Event::DbEvent::typeChange, Event::DbEvent::getTable<T> (), object.getId ()));
 
 		return result->numRowsAffected ()>0;
 	}

@@ -30,7 +30,7 @@ namespace Db
 
 			void MigratorWorker::migrate (Returner<void> *returner, OperationMonitor *monitor)
 			{
-				returnVoidOrException (returner, migrator->migrate (monitor));
+				returnVoidOrException (returner, migrator->migrate (monitor->interface ()));
 			}
 
 			void MigratorWorker::loadSchema (Returner<void> *returner, OperationMonitor *monitor)

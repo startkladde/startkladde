@@ -4,10 +4,11 @@
 #include <QString>
 
 #include "src/db/migration/Migration.h" // Required for Migration::Direction
+#include "src/concurrent/monitor/OperationMonitor.h" // Required for OperationMonitor::Interface
 
 namespace Db { namespace Interface { class Interface; } }
 class MigrationFactory;
-class OperationMonitor;
+
 
 /**
  * A controller for managing migrations on a database.
@@ -32,7 +33,7 @@ class Migrator
 		void up ();
 		void down ();
 		// FIXME: monitor for other methods; canceling
-		void migrate (OperationMonitor *monitor=NULL);
+		void migrate (OperationMonitor::Interface monitor);
 
 		// *** Schema
 		void loadSchema ();
