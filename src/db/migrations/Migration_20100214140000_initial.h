@@ -65,8 +65,8 @@ class Migration_20100214140000_initial: public Migration
 		Migration_20100214140000_initial (Db::Interface::Interface &interface);
 		virtual ~Migration_20100214140000_initial ();
 
-		virtual void up ();
-		virtual void down ();
+		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 };
 
 #endif

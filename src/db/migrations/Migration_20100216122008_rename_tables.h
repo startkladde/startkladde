@@ -12,8 +12,8 @@ class Migration_20100216122008_rename_tables: public Migration
 		Migration_20100216122008_rename_tables (Db::Interface::Interface &interface);
 		virtual ~Migration_20100216122008_rename_tables ();
 
-		virtual void up ();
-		virtual void down ();
+		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 	protected:
 		using Migration::renameTable;

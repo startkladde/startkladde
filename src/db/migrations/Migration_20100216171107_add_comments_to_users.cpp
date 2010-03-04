@@ -9,12 +9,12 @@ Migration_20100216171107_add_comments_to_users::~Migration_20100216171107_add_co
 {
 }
 
-void Migration_20100216171107_add_comments_to_users::up ()
+void Migration_20100216171107_add_comments_to_users::up (OperationMonitorInterface monitor)
 {
 	addColumn ("users", "comments", dataTypeString ());
 }
 
-void Migration_20100216171107_add_comments_to_users::down ()
+void Migration_20100216171107_add_comments_to_users::down (OperationMonitorInterface monitor)
 {
 	dropColumn ("users", "comments");
 }

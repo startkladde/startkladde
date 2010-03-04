@@ -14,8 +14,8 @@ class CurrentSchema: public Schema
 		CurrentSchema (Db::Interface::Interface &interface);
 		virtual ~CurrentSchema ();
 
-		virtual void up ();
-		virtual void down ();
+		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 		virtual QList<quint64> getVersions ();
 };

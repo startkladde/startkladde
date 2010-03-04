@@ -44,7 +44,7 @@ Migrator::~Migrator ()
 // ** Migrations **
 // ****************
 
-void Migrator::runMigration (quint64 version, Migration::Direction direction)
+void Migrator::runMigration (quint64 version, Migration::Direction direction, OperationMonitorInterface monitor)
 {
 	Migration *migration=NULL;
 	try
@@ -56,12 +56,12 @@ void Migrator::runMigration (quint64 version, Migration::Direction direction)
 		{
 			case Migration::dirUp:
 				std::cout << "== Applying: " << name << " " << QString (79-14-name.length (), '=') << std::endl;
-				migration->up ();
+				migration->up (monitor);
 				addMigration (version);
 				break;
 			case Migration::dirDown:
 				std::cout << "== Reverting: " << name << " " << QString (79-15-name.length (), '=') << std::endl;
-				migration->down ();
+				migration->down (monitor);
 				removeMigration (version);
 				break;
 		}
@@ -102,7 +102,7 @@ void Migrator::down ()
 }
 
 /** Migrates to the latest version (runs pending migrations) */
-void Migrator::migrate (OperationMonitor::Interface monitor)
+void Migrator::migrate (OperationMonitorInterface monitor)
 {
 	QList<quint64> versions=pendingMigrations ();
 
@@ -112,10 +112,7 @@ void Migrator::migrate (OperationMonitor::Interface monitor)
 	monitor.progress (progress, maxProgress);
 	foreach (quint64 version, versions)
 	{
-		if (monitor.canceled ()) break;
-
-		runMigration (version, Migration::dirUp);
-
+		runMigration (version, Migration::dirUp, monitor);
 		++progress;
 		monitor.progress (progress, maxProgress);
 	}

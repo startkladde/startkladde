@@ -11,14 +11,14 @@ Migration_20100216190338_full_flight_type::~Migration_20100216190338_full_flight
 {
 }
 
-void Migration_20100216190338_full_flight_type::up ()
+void Migration_20100216190338_full_flight_type::up (OperationMonitorInterface monitor)
 {
 	changeColumnType ("flights", "type", dataTypeString ());
 	std::cout << "Updating flight type values" << std::endl;
 	updateValues (dirUp);
 }
 
-void Migration_20100216190338_full_flight_type::down ()
+void Migration_20100216190338_full_flight_type::down (OperationMonitorInterface monitor)
 {
 	std::cout << "Updating flight type values" << std::endl;
 	updateValues (dirDown);

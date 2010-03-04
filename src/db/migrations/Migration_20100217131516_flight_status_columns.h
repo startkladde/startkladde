@@ -13,8 +13,8 @@ class Migration_20100217131516_flight_status_columns: public Migration
 		Migration_20100217131516_flight_status_columns (Db::Interface::Interface &interface);
 		virtual ~Migration_20100217131516_flight_status_columns ();
 
-		virtual void up ();
-		virtual void down ();
+		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 };
 
 #endif

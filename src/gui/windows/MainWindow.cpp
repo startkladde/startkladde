@@ -1359,7 +1359,8 @@ void MainWindow::checkVersion ()
 				"  - Aktuelle Version: %2\n"
 				"  - Anzahl ausstehender Migrationen: %3\n"
 				"\n"
-				"Achtung: vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden."
+				"Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.\n"
+				"Vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden.\n"
 				"\n"
 				"Soll die Datenbank jetzt aktualisiert werden?"
 			).arg (currentVersion).arg (latestVersion).arg (numPendingMigrations));
@@ -1369,6 +1370,8 @@ void MainWindow::checkVersion ()
 
 		MonitorDialog dialog (monitor, this);
 		dialog.exec ();
+		returner.wait (); // Required so any exceptions are rethrown
+
 
 		// After migrating, the database must be current.
 		if (!migrator.isCurrent (monitor))
@@ -1442,6 +1445,12 @@ void MainWindow::on_actionConnect_triggered ()
 		// TODO also for access denied during query (1142)
 	}
 	catch (ConnectCanceledException)
+	{
+		showWarning ("Verbindungsaufbau abgebrochen",
+			"Der Verbindungsaufbau wurde abgebrochen",
+			this);
+	}
+	catch (OperationMonitor::CanceledException &ex)
 	{
 		showWarning ("Verbindungsaufbau abgebrochen",
 			"Der Verbindungsaufbau wurde abgebrochen",

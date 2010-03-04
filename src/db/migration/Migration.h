@@ -6,6 +6,7 @@
 #include <QSharedPointer>
 
 #include "src/db/Query.h"
+#include "src/concurrent/monitor/OperationMonitorInterface.h"
 
 namespace Db {
 	namespace Result { class Result; }
@@ -68,8 +69,8 @@ class Migration
 		Migration (Db::Interface::Interface &interface);
 		virtual ~Migration ();
 
-		virtual void up ()=0;
-		virtual void down ()=0;
+		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null)=0;
+		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null)=0;
 
 	protected:
 		bool transaction ();

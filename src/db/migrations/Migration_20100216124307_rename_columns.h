@@ -12,8 +12,8 @@ class Migration_20100216124307_rename_columns: public Migration
 		Migration_20100216124307_rename_columns (Db::Interface::Interface &interface);
 		virtual ~Migration_20100216124307_rename_columns ();
 
-		virtual void up ();
-		virtual void down ();
+		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 	protected:
 		using Migration::renameColumn;

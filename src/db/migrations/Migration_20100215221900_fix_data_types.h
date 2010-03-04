@@ -14,8 +14,8 @@ class Migration_20100215221900_fix_data_types: public Migration
 		Migration_20100215221900_fix_data_types (Db::Interface::Interface &interface);
 		virtual ~Migration_20100215221900_fix_data_types ();
 
-		virtual void up ();
-		virtual void down ();
+		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 	protected:
 		void changePeopleTable (const QString &name);

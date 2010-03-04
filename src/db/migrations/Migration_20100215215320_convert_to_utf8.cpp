@@ -13,7 +13,7 @@ Migration_20100215215320_convert_to_utf8::~Migration_20100215215320_convert_to_u
 {
 }
 
-void Migration_20100215215320_convert_to_utf8::up ()
+void Migration_20100215215320_convert_to_utf8::up (OperationMonitorInterface monitor)
 {
 	changeTable ("person");
 	changeTable ("person_temp");
@@ -24,7 +24,7 @@ void Migration_20100215215320_convert_to_utf8::up ()
 	changeTable ("user");
 }
 
-void Migration_20100215215320_convert_to_utf8::down ()
+void Migration_20100215215320_convert_to_utf8::down (OperationMonitorInterface monitor)
 {
 	// Don't change back
 }

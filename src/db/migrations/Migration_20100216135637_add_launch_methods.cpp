@@ -15,7 +15,7 @@ Migration_20100216135637_add_launch_methods::~Migration_20100216135637_add_launc
 {
 }
 
-void Migration_20100216135637_add_launch_methods::up ()
+void Migration_20100216135637_add_launch_methods::up (OperationMonitorInterface monitor)
 {
 	createTable  ("launch_methods"); // Creates the id column
 	addColumn ("launch_methods", "name"                 , dataTypeString    ());
@@ -66,7 +66,7 @@ void Migration_20100216135637_add_launch_methods::up ()
 	}
 }
 
-void Migration_20100216135637_add_launch_methods::down ()
+void Migration_20100216135637_add_launch_methods::down (OperationMonitorInterface monitor)
 {
 	dropTable ("launch_methods");
 }

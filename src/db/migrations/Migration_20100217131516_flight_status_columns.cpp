@@ -11,7 +11,7 @@ Migration_20100217131516_flight_status_columns::~Migration_20100217131516_flight
 {
 }
 
-void Migration_20100217131516_flight_status_columns::up ()
+void Migration_20100217131516_flight_status_columns::up (OperationMonitorInterface monitor)
 {
 	addColumn ("flights", "departed"        , dataTypeBoolean (), "AFTER status");
 	addColumn ("flights", "landed"          , dataTypeBoolean (), "AFTER departed");
@@ -26,7 +26,7 @@ void Migration_20100217131516_flight_status_columns::up ()
 	dropColumn ("flights", "status");
 }
 
-void Migration_20100217131516_flight_status_columns::down ()
+void Migration_20100217131516_flight_status_columns::down (OperationMonitorInterface monitor)
 {
 	addColumn ("flights", "status", dataTypeInteger (), "AFTER departed");
 

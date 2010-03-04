@@ -13,8 +13,8 @@ class Migration_20100216180053_full_plane_category: public Migration
 		Migration_20100216180053_full_plane_category (Db::Interface::Interface &interface);
 		virtual ~Migration_20100216180053_full_plane_category ();
 
-		virtual void up ();
-		virtual void down ();
+		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 	protected:
 		void updateValue (const QString &oldValue, const QString &newValue, Direction direction);

@@ -32,8 +32,7 @@ class Migrator
 		// *** Migration
 		void up ();
 		void down ();
-		// FIXME: monitor for other methods; canceling
-		void migrate (OperationMonitor::Interface monitor);
+		void migrate (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 		// *** Schema
 		void loadSchema ();
@@ -56,7 +55,7 @@ class Migrator
 
 	protected:
 		// *** Migration
-		void runMigration (quint64 version, Migration::Direction direction);
+		void runMigration (quint64 version, Migration::Direction direction, OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 		// *** Migrations table
 		void addMigration (quint64 version);

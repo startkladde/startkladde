@@ -9,7 +9,7 @@ Migration_20100215221900_fix_data_types::~Migration_20100215221900_fix_data_type
 {
 }
 
-void Migration_20100215221900_fix_data_types::up ()
+void Migration_20100215221900_fix_data_types::up (OperationMonitorInterface monitor)
 {
 	changePeopleTable ("person");
 	changePeopleTable ("person_temp");
@@ -20,7 +20,7 @@ void Migration_20100215221900_fix_data_types::up ()
 	changeUsersTable ("user");
 }
 
-void Migration_20100215221900_fix_data_types::down ()
+void Migration_20100215221900_fix_data_types::down (OperationMonitorInterface monitor)
 {
 	// Don't change back
 }

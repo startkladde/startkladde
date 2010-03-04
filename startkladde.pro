@@ -33,6 +33,7 @@ HEADERS += \
            src/concurrent/Waiter.h \
            src/concurrent/WorkerThread.h \
            src/concurrent/monitor/OperationMonitor.h \
+           src/concurrent/monitor/OperationMonitorInterface.h \
            src/concurrent/monitor/SignalOperationMonitor.h \
            src/concurrent/monitor/SimpleOperationMonitor.h \
            src/concurrent/task/SleepTask.h \
@@ -134,6 +135,7 @@ SOURCES += \
            src/concurrent/Waiter.cpp \
            src/concurrent/WorkerThread.cpp \
            src/concurrent/monitor/OperationMonitor.cpp \
+           src/concurrent/monitor/OperationMonitorInterface.cpp \
            src/concurrent/monitor/SignalOperationMonitor.cpp \
            src/concurrent/monitor/SimpleOperationMonitor.cpp \
            src/concurrent/task/SleepTask.cpp \

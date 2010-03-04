@@ -20,8 +20,8 @@ class Migration_20100215000000_change_to_innodb: public Migration
 		Migration_20100215000000_change_to_innodb (Db::Interface::Interface &interface);
 		virtual ~Migration_20100215000000_change_to_innodb ();
 
-		virtual void up ();
-		virtual void down ();
+		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 	protected:
 		virtual void changeTable (const QString &name);

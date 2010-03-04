@@ -9,13 +9,13 @@ Migration_20100216180053_full_plane_category::~Migration_20100216180053_full_pla
 {
 }
 
-void Migration_20100216180053_full_plane_category::up ()
+void Migration_20100216180053_full_plane_category::up (OperationMonitorInterface monitor)
 {
 	changeColumnType ("planes", "category", dataTypeString ());
 	updateValues (dirUp);
 }
 
-void Migration_20100216180053_full_plane_category::down ()
+void Migration_20100216180053_full_plane_category::down (OperationMonitorInterface monitor)
 {
 	updateValues (dirDown);
 	changeColumnType ("planes", "category", dataTypeCharacter ());

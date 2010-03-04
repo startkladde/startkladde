@@ -23,7 +23,7 @@ CurrentSchema::~CurrentSchema ()
 {
 }
 
-void CurrentSchema::up ()
+void CurrentSchema::up (OperationMonitorInterface monitor)
 {
 <% schema['tables'].each do |table| %>
 <% table_name=table['name'] %>
@@ -47,7 +47,7 @@ void CurrentSchema::up ()
 <% end %>
 }
 
-void CurrentSchema::down ()
+void CurrentSchema::down (OperationMonitorInterface monitor)
 {
 }
 

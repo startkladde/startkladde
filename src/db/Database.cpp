@@ -7,6 +7,7 @@
  *     - QVariant or similar
  *     - No select query after update to update cache
  *   - timeout: only when no data is transfered
+ *   - fix duplicate connection name when connect is canceled and restarted
  *
  * Tests:
  *   - Test the migrations:
@@ -34,6 +35,8 @@
  *   - Add a Database::saveObject that creates or updates the object, depending
  *     on whether it has a valid id
  *   - Allow a table name prefix (useful for testing)
+ *   - Consider storing the OperationMonitor in the migration instead of passing
+ *     to up/down, and/or calling checkCanceled in addColumn et. al.
  *
  * Medium term plan:
  *   - Standardize enum handling: store the database value internally and have

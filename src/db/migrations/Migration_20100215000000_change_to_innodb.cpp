@@ -13,7 +13,7 @@ Migration_20100215000000_change_to_innodb::~Migration_20100215000000_change_to_i
 {
 }
 
-void Migration_20100215000000_change_to_innodb::up ()
+void Migration_20100215000000_change_to_innodb::up (OperationMonitorInterface monitor)
 {
 	changeTable ("person");
 	changeTable ("person_temp");
@@ -24,7 +24,7 @@ void Migration_20100215000000_change_to_innodb::up ()
 	changeTable ("user");
 }
 
-void Migration_20100215000000_change_to_innodb::down ()
+void Migration_20100215000000_change_to_innodb::down (OperationMonitorInterface monitor)
 {
 	// Don't change back
 }

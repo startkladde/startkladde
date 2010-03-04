@@ -11,7 +11,11 @@
 #include <QString>
 #include <QMutex>
 
+#include "src/StorableException.h"
+#include "src/concurrent/monitor/OperationMonitorInterface.h"
+
 class QAtomicInt;
+
 
 /**
  * A class that allows monitoring and canceling an operation, typically running
@@ -22,36 +26,21 @@ class QAtomicInt;
 class OperationMonitor
 {
 	public:
-		class Interface
+		friend class OperationMonitorInterface;
+
+		class CanceledException: public StorableException
 		{
-			friend class OperationMonitor;
-			public:
-				~Interface ();
-				Interface (const Interface &other);
-				Interface &operator= (const Interface &other);
-
-				// Operation feedback
-				void status (const QString &text);
-				void progress (int progress, int maxProgress);
-				void ended ();
-
-				// Operation control
-				bool canceled ();
-
-			private:
-				Interface (OperationMonitor *monitor);
-				OperationMonitor *monitor;
-				QAtomicInt *refCount;
+			virtual CanceledException *clone   () const { return new CanceledException (); }
+			virtual void               rethrow () const { throw      CanceledException (); }
 		};
 
-		friend class Interface;
 
 		// ** Construction
 		OperationMonitor ();
 		virtual ~OperationMonitor ();
 
 		// ** Getting the interface
-		virtual Interface interface ();
+		virtual OperationMonitorInterface interface ();
 		//virtual operator Interface ();
 
 		// ** Operation control
@@ -60,7 +49,7 @@ class OperationMonitor
 
 	private:
 		/** The master copy of this monitor's interface */
-		Interface theInterface;
+		OperationMonitorInterface theInterface;
 
 		bool canceled;
 		mutable QMutex mutex;

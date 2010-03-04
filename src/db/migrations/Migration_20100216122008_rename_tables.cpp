@@ -9,12 +9,12 @@ Migration_20100216122008_rename_tables::~Migration_20100216122008_rename_tables 
 {
 }
 
-void Migration_20100216122008_rename_tables::up ()
+void Migration_20100216122008_rename_tables::up (OperationMonitorInterface monitor)
 {
 	renameTables (dirUp);
 }
 
-void Migration_20100216122008_rename_tables::down ()
+void Migration_20100216122008_rename_tables::down (OperationMonitorInterface monitor)
 {
 	renameTables (dirDown);
 }
