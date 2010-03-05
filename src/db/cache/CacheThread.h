@@ -42,6 +42,9 @@ namespace Db
 				void sig_refreshAll (Returner<bool> *returner, OperationMonitor *monitor);
 				void sig_fetchFlightsOther (Returner<void> *returner, OperationMonitor *monitor, QDate date);
 
+			protected slots:
+				virtual void slot_refreshAll       (Returner<bool> *returner, OperationMonitor *monitor);
+				virtual void slot_fetchFlightsOther (Returner<void> *returner, OperationMonitor *monitor, QDate date);
 
 			protected:
 				virtual void run ();

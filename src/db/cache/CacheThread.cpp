@@ -3,12 +3,18 @@
 #include <iostream>
 
 #include "src/concurrent/monitor/OperationMonitor.h"
-#include "src/db/cache/CacheWorker.h"
+//#include "src/db/cache/CacheWorker.h"
+
+#include "src/concurrent/Returner.h"
+#include "src/concurrent/monitor/OperationMonitor.h"
+#include "src/concurrent/monitor/OperationMonitorInterface.h"
+#include "src/db/cache/Cache.h"
 
 namespace Db { namespace Cache {
 	CacheThread::CacheThread (Cache &cache):
 		worker (NULL), cache (cache)
 	{
+		moveToThread (this);
 		start ();
 		waitStartup ();
 	}
@@ -30,9 +36,9 @@ namespace Db { namespace Cache {
 
 	void CacheThread::run ()
 	{
-		worker=new CacheWorker (cache);
+//		worker=new CacheWorker (cache);
 
-#define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), worker, SLOT (slot_ ## definition))
+#define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
 		CONNECT (refreshAll        (Returner<bool>            *, OperationMonitor *));
 		CONNECT (fetchFlightsOther (Returner<void>            *, OperationMonitor *, QDate));
 #undef CONNECT
@@ -59,4 +65,16 @@ namespace Db { namespace Cache {
 	{
 		emit sig_fetchFlightsOther (&returner, &monitor, date);
 	}
+
+	void CacheThread::slot_refreshAll (Returner<bool> *returner, OperationMonitor *monitor)
+	{
+		returnOrException (returner, cache.refreshAll (monitor->interface ()));
+	}
+
+	void CacheThread::slot_fetchFlightsOther (Returner<void> *returner, OperationMonitor *monitor, QDate date)
+	{
+		returnVoidOrException (returner, cache.fetchFlightsOther (date, monitor->interface ()));
+	}
+
 } }
+
