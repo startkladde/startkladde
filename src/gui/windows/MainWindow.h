@@ -119,7 +119,10 @@ class MainWindow: public QMainWindow
 		void checkVersion ();
 		void openInterface ();
 		void connectImpl ();
-		void fillCache ();
+
+		// Background operation
+		void refreshCache ();
+		void fetchFlights (QDate date);
 
 	protected slots:
 

@@ -1,8 +1,12 @@
 #include "CacheWorker.h"
 
+#include <iostream>
+
 #include "src/concurrent/monitor/OperationMonitor.h"
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/db/cache/Cache.h"
+
+#include "src/util/qString.h"
 
 namespace Db { namespace Cache
 {
@@ -22,8 +26,7 @@ namespace Db { namespace Cache
 
 	void CacheWorker::slot_fetchFlightsOther (Returner<void> *returner, OperationMonitor *monitor, QDate date)
 	{
-		OperationMonitorInterface interface=monitor->interface ();
-		returnVoidOrException (returner, cache.fetchFlightsOther (date)); // FIXME pass interface
+		returnVoidOrException (returner, cache.fetchFlightsOther (date, monitor->interface ()));
 	}
 
 } }

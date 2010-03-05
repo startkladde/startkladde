@@ -581,9 +581,10 @@ namespace Db
 			return 0;
 		}
 
-		int Cache::fetchFlightsOther (QDate date)
+		int Cache::fetchFlightsOther (QDate date, OperationMonitorInterface monitor)
 		{
-			if (otherDate.isNull ()) return 0;
+			if (date.isNull ())
+				return 0;
 
 			QList<Flight> newFlights=db.getFlightsDate (date);
 

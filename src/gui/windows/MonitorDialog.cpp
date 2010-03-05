@@ -1,9 +1,5 @@
 #include "MonitorDialog.h"
 
-#include <iostream> //remove
-
-#include "src/util/qString.h"
-
 // FIXME synchronization
 //  - for example, the first status may not be displayed if it was set before the dialog was displayed
 
@@ -56,8 +52,6 @@ void MonitorDialog::progress (int progress, int maxProgress)
 
 void MonitorDialog::status (QString status)
 {
-	std::cout << "status " << status << std::endl;
-
 	ui.statusLabel->setText (status);
 }
 

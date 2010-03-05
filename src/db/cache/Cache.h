@@ -131,7 +131,7 @@ namespace Db
 				int refreshFlights ();
 				int refreshFlightsToday ();
 				int refreshFlightsOther ();
-				int fetchFlightsOther (QDate date);
+				int fetchFlightsOther (QDate date, OperationMonitorInterface monitor=OperationMonitorInterface::null);
 				int refreshPreparedFlights ();
 
 				int refreshLocations ();

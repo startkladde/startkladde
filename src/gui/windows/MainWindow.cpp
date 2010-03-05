@@ -24,8 +24,6 @@
 #include "src/db/migration/Migrator.h"
 #include "src/db/migration/background/BackgroundMigrator.h"
 #include "src/db/task/DeleteObjectTask.h"
-#include "src/db/task/FetchFlightsTask.h"
-#include "src/db/task/RefreshAllTask.h"
 #include "src/db/task/UpdateObjectTask.h"
 #include "src/gui/widgets/WeatherWidget.h"
 #include "src/gui/windows/DateInputDialog.h"
@@ -423,74 +421,60 @@ void MainWindow::readSettings ()
 // *************
 
 /**
- * Refreshes both the flight table and the corresponding info labels, including
- * the display date label (text and color).
+ * Refreshes both the flight table and the corresponding info labels, from the
+ * cache, including the display date label (text and color). Does not access
+ * the database.
  */
 bool MainWindow::refreshFlights ()
 {
-//	int oldColumn = ui.flightTable->currentColumn ();
-	//	int oldRow   =ui.flightTable->currentRow    ();
-
-	// TODO: shold be local today (time zone safety)
-	bool displayDateIsToday=(displayDate == QDate::currentDate ());
-	proxyModel->setShowPreparedFlights (displayDateIsToday);
-
-	ui.displayDateLabel->setPaletteForegroundColor (displayDateIsToday?(Qt::black):(Qt::red));
-	ui.displayDateLabel->setText (displayDate.toString (Qt::LocaleDate));
+	// Fetch the current date to avoid it changing during the operation
+	// TODO time zone safety: should be local today
+	QDate today=QDate::currentDate ();
 
 	QList<Flight> flights;
-	if (displayDate == QDate::currentDate ())
+	if (displayDate==today)
 	{
+		// The display date is today's date - display today's flights and
+		// prepared flights
 		flights = cache.getFlightsToday ().getList ();
 		flights += cache.getPreparedFlights ().getList ();
+
+		ui.displayDateLabel->setPaletteForegroundColor (Qt::black);
+		ui.displayDateLabel->setText (today.toString (Qt::LocaleDate));
+
+		proxyModel->setShowPreparedFlights (true);
 	}
 	else
 	{
-		// Fetch the flights for the other date if we don't already have them
-		// TODO here be race conditions
-		if (cache.getOtherDate ()!=displayDate)
-		{
-			cache.fetchFlightsOther (displayDate);
-//			while (1)
-//			{
-//				FetchFlightsTask task (dataStorage, displayDate);
-//				dataStorage.addTask (&task);
-//				TaskProgressDialog::waitTask (this, &task);
-//
-//				// TODO distinguish between retry errors (timeout, no connection)
-//				// and failures (permissions, malformed query...)
-//				if (!task.isCompleted ()) return false;
-//				if (task.getSuccess ()) break;
-//				DefaultQThread::sleep (1);
-//			}
-
-		}
-
+		// The display date is not today's date - display the flights from the
+		// cache's "other" date
 		flights=cache.getFlightsOther ().getList ();
+
+		ui.displayDateLabel->setPaletteForegroundColor (Qt::red);
+		ui.displayDateLabel->setText (cache.getOtherDate ().toString (Qt::LocaleDate));
+
+		proxyModel->setShowPreparedFlights (false);
 	}
 
 	flightList->replaceList (flights);
-	// TODO should be done automatically
-//	ui.flightTable->resizeColumnsToContents ();
-	//	ui.flightTable->resizeRowsToContents ();
-
 	sortCustom ();
 
-//		std::cout << "Got " << flights.size () << " flights from the database" << std::endl;
+	// TODO should be done automatically
+	// ui.flightTable->resizeColumnsToContents ();
+	// ui.flightTable->resizeRowsToContents ();
 
-//	// Set the focus to the end of the table instead of the previously focussed
-//	// flight, it's better that way.
-//	int newRow = ui.flightTable->rowCount () - 1;
-//	ui.flightTable->setCurrentCell (newRow, oldColumn);
-//	// TODO make sure it's visible
-
-	// TODO: set cursor to last row, same column as before
-
-//	ui.flightTable->setFocus ();
+	// TODO: set the cursor to last row, same column as before (this is
+	// usually called after a date change, so the previous flight is
+	// meaningless)
+	//int oldColumn = ui.flightTable->currentColumn ();
+	//int newRow = ui.flightTable->rowCount () - 1;
+	//ui.flightTable->setCurrentCell (newRow, oldColumn);
+	// TODO make sure it's visible
 
 	// TODO
-	//	updateInfo ();
+	//updateInfo ();
 
+	// TODO void
 	return true;
 }
 
@@ -959,12 +943,11 @@ void MainWindow::on_actionShowVirtualKeyboard_triggered (bool checked)
 
 void MainWindow::on_actionRefreshTable_triggered ()
 {
-	cache.refreshAll ();
-
-//	// TODO refresh all is not refresh table!
-//	RefreshAllTask task (dataStorage);
-//	dataStorage.addTask (&task);
-//	TaskProgressDialog::waitTask (this, &task);
+	try
+	{
+		refreshCache ();
+	}
+	catch (OperationMonitor::CanceledException &ex) {}
 
 	refreshFlights ();
 }
@@ -1192,24 +1175,52 @@ void on_actionSort_triggered ()
  */
 void MainWindow::setDisplayDate (QDate newDisplayDate, bool force)
 {
+	// TODO this should be correct now, but it still sucks. The better solution
+	// would probably be just to have a flag "displayToday" here, and use the
+	// cache's "other" date as display date. This would avoid date==today
+	// comparisons, prevent inconsistencies and make handling date changes
+	// easier (prevent race conditions on date change).
+
+	// Fetch the current date to avoid it changing during the operation
+	QDate today=QDate::currentDate ();
+
 	// If the display date is null, use the current date
-	if (newDisplayDate.isNull ()) newDisplayDate = QDate::currentDate ();
+	if (newDisplayDate.isNull ()) newDisplayDate = today;
 
-	// TODO when setting the current date, don't refresh from the database -
-	// it's still in the cache
+	// If the display date is already current, don't do anything (unless force
+	// is true)
+	if (newDisplayDate==displayDate && !force) return;
 
-	// Change it only if it is different from the current one or force is true
-	if (displayDate!=newDisplayDate || force)
+	if (newDisplayDate==today)
 	{
-		// TODO: if refreshing fails or is canceled, we may not change the
-		// display date; this solution is crap
-		displayDate = newDisplayDate;
-		refreshFlights ();
-//		bool refreshFinished=refreshFlights ();
-
-//		if (!refreshFinished)
-//			setDisplayDateCurrent (false);
+		// Setting today's display date
+		// Since today's flights are always cached, we can do this
+		// unconditionally.
+		displayDate=newDisplayDate;
 	}
+	else
+	{
+		// Setting another date
+
+		try
+		{
+			// If the new display date is not in the cache, fetch it.
+			// TODO move that to fetchFlights() (with force flag)
+			if (newDisplayDate!=cache.getOtherDate ())
+				fetchFlights (newDisplayDate);
+
+			// Now the display date is the one in the cache (which should be
+			// newDisplayDate).
+			displayDate=cache.getOtherDate ();
+		}
+		catch (OperationMonitor::CanceledException &ex)
+		{
+			// The fetching was canceled. Don't change the display date.
+		}
+	}
+
+	// Update the display
+	refreshFlights ();
 }
 
 void MainWindow::on_actionSetDisplayDate_triggered ()
@@ -1455,7 +1466,7 @@ void MainWindow::openInterface ()
 	}
 }
 
-void MainWindow::fillCache ()
+void MainWindow::refreshCache ()
 {
 	cache.clear ();
 
@@ -1468,15 +1479,26 @@ void MainWindow::fillCache ()
 	returner.wait ();
 }
 
+void MainWindow::fetchFlights (QDate date)
+{
+	Db::Cache::CacheThread cacheThread (cache); // TODO to class
+
+	Returner<void> returner;
+	SignalOperationMonitor monitor;
+	cacheThread.fetchFlightsOther (returner, monitor, date);
+	MonitorDialog::monitor (monitor, this);
+	returner.wait ();
+}
+
 void MainWindow::connectImpl ()
 {
 	try
 	{
 		openInterface ();
 		checkVersion ();
-		fillCache ();
+		refreshCache ();
 
-		refreshFlights (); // FIXME don't read from Db again, just load from cache
+		refreshFlights ();
 		setDatabaseActionsEnabled (true);
 	}
 	catch (...)
