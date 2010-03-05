@@ -15,6 +15,9 @@
 // TODO Errors in other places: for towflights, the landing time is meaningful
 // even if !landsHere.
 // TODO consider an AbstractFlight and a TowFlightProxy
+// TODO: "Currently flying" should be named "still to land" (more flying than
+// total flights with prepared incoming flights)
+
 
 /*
  * Potential model changes:

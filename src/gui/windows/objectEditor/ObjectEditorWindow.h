@@ -6,9 +6,6 @@
 // TODO many dependencies in header, maybe move to .cpp and instantiate
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
 #include "src/gui/windows/objectEditor/ObjectEditorPane.h"
-#include "src/db/task/AddObjectTask.h"
-#include "src/db/task/UpdateObjectTask.h"
-#include "src/gui/windows/TaskProgressDialog.h"
 #include "src/db/Database.h"
 #include "src/db/cache/Cache.h"
 #include "src/db/DbWorker.h"

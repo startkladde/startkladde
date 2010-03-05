@@ -38,10 +38,6 @@ const char *db_time_format="%Y-%m-%d %H:%M:%S";
 //   - CR_CONN_HOST_ERROR, CR_CONNECTION_ERROR: connection failed
 //   - Query failed
 
-// "Currently flying" should be named "still to land" (more flying than total flights with prepared incoming flights)
-
-// Method: get towplane (known from launch method or from flight's towplane id)
-
 // Merge person:
 //   - update flight pilot/copilot/towpilot, user person; should be in transaction
 //   - check if a flight or user still referencecs this user

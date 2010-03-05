@@ -31,13 +31,10 @@ HEADERS += \
            src/concurrent/synchronized.h \
            src/concurrent/ThreadUtil.h \
            src/concurrent/Waiter.h \
-           src/concurrent/WorkerThread.h \
            src/concurrent/monitor/OperationMonitor.h \
            src/concurrent/monitor/OperationMonitorInterface.h \
            src/concurrent/monitor/SignalOperationMonitor.h \
            src/concurrent/monitor/SimpleOperationMonitor.h \
-           src/concurrent/task/SleepTask.h \
-           src/concurrent/task/Task.h \
            src/config/Options.h \
            src/db/Database.h \
            src/db/DbWorker.h \
@@ -87,7 +84,6 @@ HEADERS += \
            src/gui/windows/ObjectListWindowBase.h \
            src/gui/windows/SplashScreen.h \
            src/gui/windows/StatisticsWindow.h \
-           src/gui/windows/TaskProgressDialog.h \
            src/gui/windows/WeatherDialog.h \
            src/gui/windows/objectEditor/LaunchMethodEditorPane.h \
            src/gui/windows/objectEditor/ObjectEditorPane.h \
@@ -135,13 +131,10 @@ SOURCES += \
            src/concurrent/synchronized.cpp \
            src/concurrent/ThreadUtil.cpp \
            src/concurrent/Waiter.cpp \
-           src/concurrent/WorkerThread.cpp \
            src/concurrent/monitor/OperationMonitor.cpp \
            src/concurrent/monitor/OperationMonitorInterface.cpp \
            src/concurrent/monitor/SignalOperationMonitor.cpp \
            src/concurrent/monitor/SimpleOperationMonitor.cpp \
-           src/concurrent/task/SleepTask.cpp \
-           src/concurrent/task/Task.cpp \
            src/config/Options.cpp \
            src/db/Database.cpp \
            src/db/DatabaseInfo.cpp \
@@ -189,7 +182,6 @@ SOURCES += \
            src/gui/windows/ObjectListWindowBase.cpp \
            src/gui/windows/SplashScreen.cpp \
            src/gui/windows/StatisticsWindow.cpp \
-           src/gui/windows/TaskProgressDialog.cpp \
            src/gui/windows/WeatherDialog.cpp \
            src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp \
            src/gui/windows/objectEditor/ObjectEditorPane.cpp \

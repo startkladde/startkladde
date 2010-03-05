@@ -1,6 +1,7 @@
 /*
  * Short term plan:
- *   - Background ops
+ *   - Use background ops for flight
+ *   - Connection kicking
  *   - Connection monitoring (ping? keepalive?)
  *   - Proper caching
  *   - Send object with DbEvent
