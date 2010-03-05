@@ -10,11 +10,11 @@
  *          Note that it will not get small than the fixed size set in the UI.
  *   - TODO use QDate or date?
  *   - TODO table sorting
- *   - TODO fix unusable database
- *   - TODO Retry failed connection on startup
  *   - TODO change the display when the database does not reply to ping
  *   - TODO task error handling
  *   - TODO warn on edit if database not alive (recently responded)
+ *   - TODO on startup, display only one progress dialog with multiple items
+ *     which are checked after they are completed
  *
  * Tests:
  *   - TODO context menu: correct flight used

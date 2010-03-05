@@ -518,8 +518,10 @@ namespace Db
 		// *************
 
 		// TODO allow canceling (old OperationMonitor)
-		int Cache::refreshPlanes ()
+		int Cache::refreshPlanes (OperationMonitorInterface monitor)
 		{
+			monitor.status ("Flugzeuge abrufen");
+
 			QList<Plane> newPlanes=db.getObjects<Plane> ();
 			synchronized (dataMutex) planes=newPlanes;
 			// TODO rebuild hashes
@@ -528,8 +530,10 @@ namespace Db
 			return 0;
 		}
 
-		int Cache::refreshPeople ()
+		int Cache::refreshPeople (OperationMonitorInterface monitor)
 		{
+			monitor.status ("Personen abrufen");
+
 			QList<Person> newPeople=db.getObjects<Person> ();
 			synchronized (dataMutex) people=newPeople;
 			// TODO rebuild hashes
@@ -538,8 +542,10 @@ namespace Db
 			return 0;
 		}
 
-		int Cache::refreshLaunchMethods ()
+		int Cache::refreshLaunchMethods (OperationMonitorInterface monitor)
 		{
+			monitor.status ("Startarten abrufen");
+
 			QList<LaunchMethod> newLaunchMethods=db.getObjects<LaunchMethod> ();
 			synchronized (dataMutex) launchMethods=newLaunchMethods;
 			// TODO rebuild hashes
@@ -556,8 +562,10 @@ namespace Db
 			return 0;
 		}
 
-		int Cache::refreshFlightsToday ()
+		int Cache::refreshFlightsToday (OperationMonitorInterface monitor)
 		{
+			monitor.status ("Flüge von heute abrufen");
+
 			QDate today=QDate::currentDate ();
 
 			QList<Flight> newFlights=db.getFlightsDate (today);
@@ -571,9 +579,11 @@ namespace Db
 			return 0;
 		}
 
-		int Cache::refreshFlightsOther ()
+		int Cache::refreshFlightsOther (OperationMonitorInterface monitor)
 		{
 			if (otherDate.isNull ()) return 0;
+
+			monitor.status (trUtf8 ("Flüge von %1 abrufen").arg (otherDate.toString (Qt::LocaleDate)));
 
 			QList<Flight> newFlights=db.getFlightsDate (otherDate);
 			synchronized (dataMutex) flightsOther.replaceList (newFlights);
@@ -583,6 +593,8 @@ namespace Db
 
 		int Cache::fetchFlightsOther (QDate date, OperationMonitorInterface monitor)
 		{
+			monitor.status (trUtf8 ("Flüge für %1 werden abgerufen").arg (date.toString (Qt::LocaleDate)));
+
 			if (date.isNull ())
 				return 0;
 
@@ -597,24 +609,30 @@ namespace Db
 			return 0;
 		}
 
-		int Cache::refreshPreparedFlights ()
+		int Cache::refreshPreparedFlights (OperationMonitorInterface monitor)
 		{
+			monitor.status (trUtf8 ("Vorbereitete Flüge abrufen"));
+
 			QList<Flight> newFlights=db.getPreparedFlights ();
 			synchronized (dataMutex) preparedFlights.replaceList (newFlights);
 
 			return 0;
 		}
 
-		int Cache::refreshLocations ()
+		int Cache::refreshLocations (OperationMonitorInterface monitor)
 		{
+			monitor.status (trUtf8 ("Flugplätze abrufen"));
+
 			QStringList newLocations=db.listLocations ();
 			synchronized (dataMutex) locations=newLocations;
 
 			return 0;
 		}
 
-		int Cache::refreshAccountingNotes ()
+		int Cache::refreshAccountingNotes (OperationMonitorInterface monitor)
 		{
+			monitor.status (trUtf8 ("Abrechnungshinweise abrufen"));
+
 			QStringList newAccountingNotes=db.listAccountingNotes ();
 			synchronized (dataMutex) accountingNotes=newAccountingNotes;
 
@@ -624,22 +642,16 @@ namespace Db
 		bool Cache::refreshAll (OperationMonitorInterface monitor)
 		{
 			// Refresh planes and people before refreshing flights!
-			monitor.progress (0, 8, "Flugzeuge abrufen"          ); refreshPlanes          ();
-			monitor.progress (1, 8, "Personen abrufen"           ); refreshPeople          ();
-			monitor.progress (2, 8, "Startarten abrufen"         ); refreshLaunchMethods   ();
-			monitor.progress (3, 8, "Flüge von heute abrufen"    ); refreshFlightsToday    ();
-			monitor.progress (4, 8, "Flüge abrufen"              ); refreshFlightsOther    (); // TODO von ...
-			monitor.progress (5, 8, "Vorbereitete Flüge abrufen" ); refreshPreparedFlights ();
-			monitor.progress (6, 8, "Flugplätze abrufen"         ); refreshLocations       ();
-			monitor.progress (7, 8, "Abrechnungshinweise abrufen"); refreshAccountingNotes ();
+			monitor.progress (0, 8); refreshPlanes          (monitor);
+			monitor.progress (1, 8); refreshPeople          (monitor);
+			monitor.progress (2, 8); refreshLaunchMethods   (monitor);
+			monitor.progress (3, 8); refreshFlightsToday    (monitor);
+			monitor.progress (4, 8); refreshFlightsOther    (monitor);
+			monitor.progress (5, 8); refreshPreparedFlights (monitor);
+			monitor.progress (6, 8); refreshLocations       (monitor);
+			monitor.progress (7, 8); refreshAccountingNotes (monitor);
 			monitor.progress (8, 8, "Fertig");
 			return true;
-
-			// Old:
-			// if (monitor->isCanceled ()) return false;
-			// monitor->progress (3, 7);
-			// monitor->status ("Flüge aktualisieren")
-			// refreshFlights ();
 		}
 
 

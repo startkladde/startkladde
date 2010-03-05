@@ -11,6 +11,7 @@
 
 /*
  * TODO:
+ *   - generally improve it
  *   - allow suboperations
  *   - allow calling an operation without monitor (nullobject interface?)
  *   - integrate Monitor with Returner so we only need to pass one object
@@ -18,8 +19,8 @@
  *       receive (cancel) signals
  *     - Maybe use a Listener
  *     - Look at QFuture
- *   - make Returner copyable so we can write Retuner returner=operation ();
- *     and return operation ().returnedValue ();
+ *   - make Returner assignable so we can write Retuner returner=operation ();
+ *     and return operation ().returnedValue (); (?)
  *   - documentation
  *
  *

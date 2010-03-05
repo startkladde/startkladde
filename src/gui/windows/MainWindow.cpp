@@ -1346,7 +1346,7 @@ bool MainWindow::isCurrent (Db::Migration::Background::BackgroundMigrator &migra
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
 	migrator.isCurrent (returner, monitor);
-	MonitorDialog::monitor (monitor, this);
+	MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 	return returner.returnedValue ();
 }
 
@@ -1355,7 +1355,7 @@ bool MainWindow::isEmpty (Db::Migration::Background::BackgroundMigrator &migrato
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
 	migrator.isEmpty (returner, monitor);
-	MonitorDialog::monitor (monitor, this);
+	MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 	return returner.returnedValue ();
 }
 
@@ -1371,7 +1371,7 @@ void MainWindow::checkVersion ()
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
 		migrator.loadSchema (returner, monitor);
-		MonitorDialog::monitor (monitor, this);
+		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait (); // Required so any exceptions are rethrown
 
 		// After loading the schema, the database must be current.
@@ -1385,7 +1385,7 @@ void MainWindow::checkVersion ()
 		Returner<quint64> currentVersionReturner;
 		SignalOperationMonitor currentVersionMonitor;
 		migrator.currentVersion (currentVersionReturner, currentVersionMonitor);
-		MonitorDialog::monitor (currentVersionMonitor, this);
+		MonitorDialog::monitor (currentVersionMonitor, "Verbindungsaufbau", this);
 		quint64 currentVersion=currentVersionReturner.returnedValue ();
 
 		quint64 latestVersion=Migrator::latestVersion ();
@@ -1393,7 +1393,7 @@ void MainWindow::checkVersion ()
 		Returner<QList<quint64> > pendingMigrationsReturner;
 		SignalOperationMonitor pendingMigrationsMonitor;
 		migrator.pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
-		MonitorDialog::monitor (pendingMigrationsMonitor, this);
+		MonitorDialog::monitor (pendingMigrationsMonitor, "Verbindungsaufbau", this);
 		quint64 numPendingMigrations=pendingMigrationsReturner.returnedValue ().size ();
 
 		confirmOrCancel ("Datenbank nicht aktuell", QString::fromUtf8 (
@@ -1411,7 +1411,7 @@ void MainWindow::checkVersion ()
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
 		migrator.migrate (returner, monitor);
-		MonitorDialog::monitor (monitor, this);
+		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait (); // Required so any exceptions are rethrown
 
 		// After migrating, the database must be current.
@@ -1430,7 +1430,7 @@ void MainWindow::openInterface ()
 		Returner<bool> returner;
 		SignalOperationMonitor monitor;
 		dbInterface.asyncOpen (returner, monitor);
-		MonitorDialog::monitor (monitor, this);
+		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait ();
 	}
 	catch (Db::Interface::DatabaseDoesNotExistException)
@@ -1456,7 +1456,7 @@ void MainWindow::openInterface ()
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
 		migrator.loadSchema (returner, monitor);
-		MonitorDialog::monitor (monitor, this);
+		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait (); // Required so any exceptions are rethrown
 
 		// After loading the schema, the database must be current.
@@ -1468,14 +1468,12 @@ void MainWindow::openInterface ()
 
 void MainWindow::refreshCache ()
 {
-	cache.clear ();
-
 	Db::Cache::CacheThread cacheThread (cache); // TODO to class
 
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
 	cacheThread.refreshAll (returner, monitor);
-	MonitorDialog::monitor (monitor, this);
+	MonitorDialog::monitor (monitor, "Daten abrufen", this);
 	returner.wait ();
 }
 
@@ -1486,7 +1484,7 @@ void MainWindow::fetchFlights (QDate date)
 	Returner<void> returner;
 	SignalOperationMonitor monitor;
 	cacheThread.fetchFlightsOther (returner, monitor, date);
-	MonitorDialog::monitor (monitor, this);
+	MonitorDialog::monitor (monitor, trUtf8 ("Flüge abrufen"), this);
 	returner.wait ();
 }
 
@@ -1496,6 +1494,8 @@ void MainWindow::connectImpl ()
 	{
 		openInterface ();
 		checkVersion ();
+
+		cache.clear ();
 		refreshCache ();
 
 		refreshFlights ();

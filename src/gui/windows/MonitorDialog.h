@@ -13,7 +13,7 @@ class MonitorDialog: public QDialog
 	public:
 		MonitorDialog (SignalOperationMonitor &monitor, QWidget *parent=NULL);
 		~MonitorDialog ();
-		static void monitor (SignalOperationMonitor &monitor, QWidget *parent);
+		static void monitor (SignalOperationMonitor &monitor, const QString &title, QWidget *parent);
 
 	protected slots:
 		void progress (int progress, int maxProgress);

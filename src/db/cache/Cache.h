@@ -125,18 +125,18 @@ namespace Db
 				// *** Reading
 				// TODO allow canceling (old OperationMonitor)
 				// TODO void
-				int refreshPlanes ();
-				int refreshPeople ();
-				int refreshLaunchMethods ();
-				int refreshFlights ();
-				int refreshFlightsToday ();
-				int refreshFlightsOther ();
+				int refreshPlanes          (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+				int refreshPeople          (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+				int refreshLaunchMethods   (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+				int refreshFlightsToday    (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+				int refreshFlightsOther    (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+				int refreshPreparedFlights (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+				int refreshLocations       (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+				int refreshAccountingNotes (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+
 				int fetchFlightsOther (QDate date, OperationMonitorInterface monitor=OperationMonitorInterface::null);
-				int refreshPreparedFlights ();
 
-				int refreshLocations ();
-				int refreshAccountingNotes ();
-
+				int refreshFlights ();
 				bool refreshAll (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 

@@ -59,6 +59,8 @@ namespace Db { namespace Interface
 	 */
 	bool DefaultInterface::open (OperationMonitorInterface monitor)
 	{
+		monitor.status ("Verbindung wird hergestellt");
+
 		DatabaseInfo info=getInfo ();
 
 		db=QSqlDatabase::addDatabase ("QMYSQL");
@@ -71,8 +73,6 @@ namespace Db { namespace Interface
 
 		while (true)
 		{
-			monitor.checkCanceled ();
-
 			std::cout << QString ("Connecting to %1...").arg (info.toString ());
 			std::cout.flush ();
 
@@ -97,6 +97,8 @@ namespace Db { namespace Interface
 					case ER_DBACCESS_DENIED_ERROR: throw AccessDeniedException (error);
 					default: throw ConnectionFailedException (error);
 				}
+
+				monitor.status (QString ("Verbindung wird hergestellt\nFehler: %1").arg (error.databaseText ()));
 
 				sleep (1);
 				std::cout << "Retrying...";

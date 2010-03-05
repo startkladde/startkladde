@@ -46,6 +46,8 @@ Migrator::~Migrator ()
 
 void Migrator::runMigration (quint64 version, Migration::Direction direction, OperationMonitorInterface monitor)
 {
+	// FIXME use monitor: status (not progress)
+
 	Migration *migration=NULL;
 	try
 	{
@@ -125,6 +127,7 @@ void Migrator::migrate (OperationMonitorInterface monitor)
 
 void Migrator::loadSchema (OperationMonitorInterface monitor)
 {
+	// FIXME use monitor (status, already have progress)
 	std::cout << "== Loading schema =============================================================" << std::endl;
 
 	CurrentSchema schema (interface);

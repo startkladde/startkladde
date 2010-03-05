@@ -1,5 +1,10 @@
 #include "MonitorDialog.h"
 
+/*
+ * TODO:
+ *   - keeping the dialog open for multiple operations
+ */
+
 // FIXME synchronization
 //  - for example, the first status may not be displayed if it was set before the dialog was displayed
 
@@ -24,13 +29,17 @@ MonitorDialog::~MonitorDialog()
 
 }
 
-void MonitorDialog::monitor (SignalOperationMonitor &monitor, QWidget *parent)
+void MonitorDialog::monitor (SignalOperationMonitor &monitor, const QString &title, QWidget *parent)
 {
 	MonitorDialog dialog (monitor, parent);
+	dialog.setCaption (title);
 
 	// Check after the signals have been connected
-	if (monitor.getEnded ())
-		return;
+	if (monitor.getEnded ()) return;
+
+	const QString &status=monitor.getStatus ();
+	if (!status.isNull ())
+		dialog.ui.statusLabel->setText (status);
 
 	dialog.exec ();
 }

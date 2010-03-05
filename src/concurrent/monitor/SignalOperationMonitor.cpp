@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "src/util/qString.h"
+
 SignalOperationMonitor::SignalOperationMonitor ():
 	hasEnded (false)
 {
@@ -18,6 +20,9 @@ void SignalOperationMonitor::cancel ()
 
 void SignalOperationMonitor::setStatus (const QString &text)
 {
+	std::cout << "status: " << text << std::endl;
+
+	status=text;
 	emit statusChanged (text);
 }
 
@@ -35,4 +40,9 @@ void SignalOperationMonitor::setEnded ()
 bool SignalOperationMonitor::getEnded () const
 {
 	return hasEnded;
+}
+
+const QString &SignalOperationMonitor::getStatus () const
+{
+	return status;
 }

@@ -4,7 +4,7 @@
 
 #include <QAtomicInt>
 
-
+#include "src/util/qString.h"
 #include "src/concurrent/monitor/OperationMonitor.h"
 
 const OperationMonitorInterface OperationMonitorInterface::null (NULL);
@@ -65,6 +65,7 @@ void OperationMonitorInterface::status (const QString &text, bool checkCanceled)
 	if (monitor)
 	{
 		if (checkCanceled) this->checkCanceled ();
+
 		monitor->setStatus (text);
 	}
 }
