@@ -1,7 +1,3 @@
-/*
- * TODO:
- *   - move to Db namespace
- */
 #include "Migrator.h"
 
 #include <iostream>
@@ -46,8 +42,6 @@ Migrator::~Migrator ()
 
 void Migrator::runMigration (quint64 version, Migration::Direction direction, OperationMonitorInterface monitor)
 {
-	// FIXME use monitor: status (not progress)
-
 	Migration *migration=NULL;
 	try
 	{
@@ -58,11 +52,13 @@ void Migrator::runMigration (quint64 version, Migration::Direction direction, Op
 		{
 			case Migration::dirUp:
 				std::cout << "== Applying: " << name << " " << QString (79-14-name.length (), '=') << std::endl;
+				monitor.status (QString ("Wende Migration an: %1").arg (name));
 				migration->up (monitor);
 				addMigration (version);
 				break;
 			case Migration::dirDown:
 				std::cout << "== Reverting: " << name << " " << QString (79-15-name.length (), '=') << std::endl;
+				monitor.status (QString ("Mache Migration rückgängig: %1").arg (name));
 				migration->down (monitor);
 				removeMigration (version);
 				break;
@@ -127,12 +123,14 @@ void Migrator::migrate (OperationMonitorInterface monitor)
 
 void Migrator::loadSchema (OperationMonitorInterface monitor)
 {
-	// FIXME use monitor (status, already have progress)
 	std::cout << "== Loading schema =============================================================" << std::endl;
 
 	CurrentSchema schema (interface);
 
+	monitor.status ("Schema laden");
 	schema.up (monitor);
+
+	monitor.status ("Version speichern");
 	assumeMigrated (schema.getVersions ());
 
 	std::cout << "== Version is now " << currentVersion () << " " << QString (79-19-14, '=') << std::endl << std::endl;

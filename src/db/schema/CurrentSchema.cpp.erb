@@ -34,7 +34,8 @@ void CurrentSchema::up (OperationMonitorInterface monitor)
 <% schema['tables'].each do |table| %>
 <% table_name=table['name'] %>
 <% %>
-	monitor.progress (<%= progress+=1 %>, <%= numOperations %>); createTable ("<%= table['name'] %>");
+
+	monitor.progress (<%= progress+=1 %>, <%= numOperations %>, "<%= "Anlegen: #{table_name}" %>"); createTable ("<%= table['name'] %>");
 		
 <% table['columns'].each do |column| %>
 <%
@@ -48,11 +49,11 @@ void CurrentSchema::up (OperationMonitorInterface monitor)
 	column_extra=""
 	column_extra="NOT NULL" if column_null=="NO"
 %>
-	monitor.progress (<%= progress+=1 %>, <%= numOperations %>); addColumn ("<%= table_name %>", "<%= column_name %>", "<%= column_type %>", "<%= column_extra %>");
+	monitor.progress (<%= progress+=1 %>, <%= numOperations %>, "<%= "Anlegen: #{table_name}.#{column_name}" %>"); addColumn ("<%= table_name %>", "<%= column_name %>", "<%= column_type %>", "<%= column_extra %>");
 <% end %>
 <% end %>
 
-	monitor.progress (<%= numOperations %>, <%= numOperations %>);
+	monitor.progress (<%= numOperations %>, <%= numOperations %>, "Fertig");
 }
 
 void CurrentSchema::down (OperationMonitorInterface monitor)
