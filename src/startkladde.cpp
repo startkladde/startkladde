@@ -14,6 +14,7 @@
 #include "src/db/schema/SchemaDumper.h"
 #include "src/util/qString.h"
 #include "src/db/interface/exceptions/SqlException.h"
+#include "src/db/event/DbEvent.h" // For qRegisterMetaType
 
 // For test_database
 //#include "src/model/Plane.h"
@@ -306,7 +307,7 @@ int main (int argc, char **argv)
 	// Db::Event::Event is used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
-//	qRegisterMetaType<DbEvent> ("DbEvent");
+	qRegisterMetaType<Db::Event::DbEvent> ("Db::Event::DbEvent");
 //	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
 	qRegisterMetaType<Db::Query> ("Db::Query");
 

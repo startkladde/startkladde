@@ -59,7 +59,9 @@ namespace Db
 		Cache::Cache (Database &db):
 			db (db)
 		{
-			connect (&db, SIGNAL (dbEvent (Db::Event::DbEvent)), this, SLOT (dbChanged (Db::Event::DbEvent)));
+			// The cache database lives on the main thread, but methods may be
+			// called in a worker thread
+			connect (&db, SIGNAL (dbEvent (Db::Event::DbEvent)), this, SLOT (dbChanged (Db::Event::DbEvent)), Qt::QueuedConnection);
 		}
 
 		Cache::~Cache ()

@@ -1,22 +1,47 @@
+/*
+ * Improvements:
+ *   - this could be implemented without subclassing Thread (since Qt 4.4),
+ *     like so (see also DbWorker):
+ *     class Worker {
+ *       QThread thread;
+ *       Worker () {
+ *         this->moveToThread (&thread);
+ *         connect (this, sig_foo, this, slot_foo);
+ *         thread->start ();
+ *       }
+ *       ~Worker () {
+ *         thread.quit ();
+ *       }
+ *       foo () {
+ *         emit signal;
+ *       }
+ *       slot_foo () {
+ *         // actual work here
+ *       }
+ *     }
+ */
 #include "CacheThread.h"
 
 #include <iostream>
 
 #include "src/concurrent/monitor/OperationMonitor.h"
-//#include "src/db/cache/CacheWorker.h"
-
-#include "src/concurrent/Returner.h"
-#include "src/concurrent/monitor/OperationMonitor.h"
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/db/cache/Cache.h"
+#include "src/concurrent/Returner.h"
 
 namespace Db { namespace Cache {
 	CacheThread::CacheThread (Cache &cache):
-		worker (NULL), cache (cache)
+		cache (cache)
 	{
+		// First move, then connect
 		moveToThread (this);
+
+#define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
+		CONNECT (refreshAll        (Returner<bool>            *, OperationMonitor *));
+		CONNECT (fetchFlightsOther (Returner<void>            *, OperationMonitor *, QDate));
+#undef CONNECT
+
 		start ();
-		waitStartup ();
 	}
 
 	CacheThread::~CacheThread ()
@@ -36,35 +61,36 @@ namespace Db { namespace Cache {
 
 	void CacheThread::run ()
 	{
-//		worker=new CacheWorker (cache);
-
-#define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
-		CONNECT (refreshAll        (Returner<bool>            *, OperationMonitor *));
-		CONNECT (fetchFlightsOther (Returner<void>            *, OperationMonitor *, QDate));
-#undef CONNECT
-
-		startupWaiter.notify ();
 		int result=exec ();
 
 		if (result!=requestedExit)
 			std::cout << "Db::Cache::CacheThread exited" << std::endl;
 	}
 
-	void CacheThread::waitStartup ()
-	{
-		startupWaiter.wait ();
-	}
+	// ***********************
+	// ** Front-end methods **
+	// ***********************
 
-	// TODO emit signals
+	/**
+	 * Calls Cache#refreshAll
+	 */
 	void CacheThread::refreshAll (Returner<bool> &returner, OperationMonitor &monitor)
 	{
 		emit sig_refreshAll (&returner, &monitor);
 	}
 
+	/**
+	 * Cache Cache#fetchFlightsOther
+	 */
 	void CacheThread::fetchFlightsOther (Returner<void> &returner, OperationMonitor &monitor, const QDate &date)
 	{
 		emit sig_fetchFlightsOther (&returner, &monitor, date);
 	}
+
+
+	// ********************
+	// ** Back-end slots **
+	// ********************
 
 	void CacheThread::slot_refreshAll (Returner<bool> *returner, OperationMonitor *monitor)
 	{
@@ -75,6 +101,4 @@ namespace Db { namespace Cache {
 	{
 		returnVoidOrException (returner, cache.fetchFlightsOther (date, monitor->interface ()));
 	}
-
 } }
-

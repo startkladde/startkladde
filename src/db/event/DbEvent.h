@@ -21,6 +21,7 @@ namespace Db
 				enum Table { tablePeople, tableFlights, tableLaunchMethods, tablePlanes };
 				enum Type { typeAdd, typeDelete, typeChange };
 
+				DbEvent ();
 				DbEvent (Type type, Table table, dbId);
 
 				QString toString ();

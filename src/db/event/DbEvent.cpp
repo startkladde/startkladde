@@ -18,6 +18,16 @@ class LaunchMethod;
 
 namespace Db { namespace Event
 {
+	/**
+	 * This stinks, but sending signals across threads requires queued events,
+	 * queued events require qRegisterMetaType and qRegisterMetaType requires
+	 * a default constructor.
+	 */
+	DbEvent::DbEvent ():
+		type (typeChange), table (tablePeople), id (invalidId)
+	{
+	}
+
 	DbEvent::DbEvent (Type type, Table table, dbId id):
 		type (type), table (table), id (id)
 	{

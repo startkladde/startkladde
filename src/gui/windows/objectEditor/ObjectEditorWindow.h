@@ -3,7 +3,7 @@
 
 #include <cassert>
 
-// TODO many dependencies in header
+// TODO many dependencies in header, maybe move to .cpp and instantiate
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
 #include "src/gui/windows/objectEditor/ObjectEditorPane.h"
 #include "src/db/task/AddObjectTask.h"
@@ -11,6 +11,11 @@
 #include "src/gui/windows/TaskProgressDialog.h"
 #include "src/db/Database.h"
 #include "src/db/cache/Cache.h"
+#include "src/db/DbWorker.h"
+
+#include "src/concurrent/monitor/SignalOperationMonitor.h"
+#include "src/gui/windows/MonitorDialog.h"
+#include "src/concurrent/Returner.h"
 
 #include <iostream> // remove
 #include "src/util/qString.h" // remove
@@ -149,31 +154,30 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 		{
 			std::cout << "Create object: " << object.toString () << std::endl;
 
-			return idValid (cache.getDatabase ().createObject (object));
-//			AddObjectTask<T> task (cache, object);
-//
-//			cache.addTask (&task);
-//			TaskProgressDialog::waitTask (this, &task);
-//
-//			if (task.isCompleted ())
-//				id=task.getId ();
-//
-//			return task.isCompleted ();
+			// TODO pass, or get from Db
+			Db::DbWorker dbWorker (cache.getDatabase ());
+
+			Returner<dbId> returner;
+			SignalOperationMonitor monitor;
+			dbWorker.createObject (returner, monitor, object);
+			MonitorDialog::monitor (monitor, "Objekt anlegen", this); // FIXME Person anlegen
+			return idValid (returner.returnedValue ());
 		} break;
 		case modeEdit:
 		{
 			std::cout << "Update object: " << object.toString () << std::endl;
 
+			// TODO pass, or get from Db
+			Db::DbWorker dbWorker (cache.getDatabase ());
+
+			Returner<int> returner;
+			SignalOperationMonitor monitor;
+			dbWorker.updateObject (returner, monitor, object);
+			MonitorDialog::monitor (monitor, "Objekt aktualisieren", this); // FIXME Person aktualisieren
 			// May return false if nothing changed
-			cache.getDatabase ().updateObject<T> (object);
+			returner.wait ();
 
 			return true;
-//			UpdateObjectTask<T> task (cache, object);
-//
-//			cache.addTask (&task);
-//			TaskProgressDialog::waitTask (this, &task);
-//
-//			return task.isCompleted ();
 		} break;
 		case modeDisplay:
 			assert (false);

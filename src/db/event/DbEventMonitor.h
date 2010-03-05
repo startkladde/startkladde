@@ -42,7 +42,7 @@ namespace Db
 				virtual ~DbEventMonitor ();
 
 			public slots:
-				virtual void dbEvent (DbEvent event);
+				virtual void dbEvent (Db::Event::DbEvent event); // full type name
 
 			private:
 				Listener &listener;

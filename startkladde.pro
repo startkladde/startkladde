@@ -40,6 +40,7 @@ HEADERS += \
            src/concurrent/task/Task.h \
            src/config/Options.h \
            src/db/Database.h \
+           src/db/DbWorker.h \
            src/db/Query.h \
            src/db/dbId.h \
            src/db/cache/Cache.h \
@@ -144,6 +145,7 @@ SOURCES += \
            src/config/Options.cpp \
            src/db/Database.cpp \
            src/db/DatabaseInfo.cpp \
+           src/db/DbWorker.cpp \
            src/db/Query.cpp \
            src/db/dbId.cpp \
            src/db/cache/Cache.cpp \

@@ -19,6 +19,7 @@
 #include "src/gui/dialogs.h"
 #include "src/text.h"
 #include "src/db/cache/Cache.h"
+#include "src/db/DbWorker.h"
 
 template<class T> ObjectListWindow<T>::ObjectListWindow (Db::Cache::Cache &cache, ObjectListModel<T> *list, bool listOwned, QWidget *parent):
 	ObjectListWindowBase (parent),
@@ -70,8 +71,19 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 //	if (!checkTask.isCompleted ()) return; // TODO error check instead
 //	bool objectUsed=checkTask.getResult ();
 
-	// TODO background
-	bool objectUsed=cache.getDatabase ().objectUsed<T> (id);
+	// TODO pass, or get from Db
+	Db::DbWorker dbWorker (cache.getDatabase ());
+
+
+//	// TODO background
+//	bool objectUsed=cache.getDatabase ().objectUsed<T> (id);
+
+	Returner<bool> returner;
+	SignalOperationMonitor monitor;
+	dbWorker.objectUsed<T> (returner, monitor, id);
+	MonitorDialog::monitor (monitor, "Objekt prüfen", this); // FIXME Person prüfen
+	bool objectUsed=returner.returnedValue ();
+	// FIXME handle canceled
 
 	if (objectUsed)
 	{
@@ -86,12 +98,13 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 		QString question=QString::fromUtf8 ("Soll %1 gelöscht werden?").arg (T::objectTypeDescriptionDefinite ());
 		if (yesNoQuestion (this, title, question))
 		{
-			// TODO background
-			cache.getDatabase ().deleteObject<T> (id);
+			Returner<int> returner;
+			SignalOperationMonitor monitor;
+			dbWorker.deleteObject<T> (returner, monitor, id);
+			MonitorDialog::monitor (monitor, trUtf8 ("Objekt löschen"), this); // FIXME Person anlegen
+			returner.wait ();
+
 			// TODO select "next" entry
-//			DeleteObjectTask<T> deleteTask (cache, id);
-//			cache.addTask (&deleteTask);
-//			TaskProgressDialog::waitTask (this, &deleteTask);
 		}
 	}
 }

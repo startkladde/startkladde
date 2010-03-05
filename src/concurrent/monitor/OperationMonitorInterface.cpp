@@ -11,6 +11,8 @@ const OperationMonitorInterface OperationMonitorInterface::null (NULL);
 
 OperationMonitorInterface::~OperationMonitorInterface ()
 {
+//	std::cout << "-interface" << std::endl;
+
 	int newRefCount=refCount->fetchAndAddOrdered (-1)-1;
 
 	if (newRefCount==1)
@@ -27,6 +29,8 @@ OperationMonitorInterface::~OperationMonitorInterface ()
 OperationMonitorInterface::OperationMonitorInterface (const OperationMonitorInterface &other):
 	monitor (other.monitor), refCount (other.refCount)
 {
+//	std::cout << "+interface" << std::endl;
+
 	// FIXME: this is very similar to QFutureInterfaceBase, but isn't there a
 	// race condition in case the last instance is destroyed at this point?
 	other.refCount->ref ();
@@ -35,6 +39,8 @@ OperationMonitorInterface::OperationMonitorInterface (const OperationMonitorInte
 
 OperationMonitorInterface &OperationMonitorInterface::operator= (const OperationMonitorInterface &other)
 {
+//	std::cout << "=interface" << std::endl;
+
 	if (&other==this) return *this;
 
 	// FIXME: this is very similar to QFutureInterfaceBase, but isn't there a
@@ -57,7 +63,7 @@ OperationMonitorInterface &OperationMonitorInterface::operator= (const Operation
 OperationMonitorInterface::OperationMonitorInterface (OperationMonitor *monitor):
 	monitor (monitor), refCount (new QAtomicInt (1))
 {
-
+//	std::cout << "+interface" << std::endl;
 }
 
 void OperationMonitorInterface::status (const QString &text, bool checkCanceled)

@@ -47,7 +47,7 @@ template<class T> class AutomaticEntityList: public EntityList<T>, Db::Event::Db
 template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache &cache, QObject *parent):
 	EntityList<T> (parent),
 	cache (cache),
-	monitor (cache, SIGNAL (changed (Db::DbEvent::DbEvent)), *this)
+	monitor (cache, SIGNAL (changed (Db::Event::DbEvent)), *this)
 {
 }
 
@@ -61,7 +61,7 @@ template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache 
 template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache &cache, const QList<T> &list, QObject *parent):
 	EntityList<T> (list, parent),
 	cache (cache),
-	monitor (cache, SIGNAL (changed (Db::DbEvent::DbEvent)), *this)
+	monitor (cache, SIGNAL (changed (Db::Event::DbEvent)), *this)
 {
 }
 
