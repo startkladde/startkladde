@@ -58,6 +58,7 @@
 #include "src/concurrent/monitor/SignalOperationMonitor.h"
 #include "src/concurrent/monitor/SimpleOperationMonitor.h" // remove
 #include "src/gui/windows/MonitorDialog.h"
+#include "src/db/cache/CacheThread.h"
 
 template <class T> class MutableObjectList;
 
@@ -1373,7 +1374,7 @@ void MainWindow::checkVersion ()
 		Returner<quint64> currentVersionReturner;
 		SignalOperationMonitor currentVersionMonitor;
 		migrator.currentVersion (currentVersionReturner, currentVersionMonitor);
-		MonitorDialog::monitor (currentVersionMonitor);
+		MonitorDialog::monitor (currentVersionMonitor, this);
 		quint64 currentVersion=currentVersionReturner.returnedValue ();
 
 		quint64 latestVersion=Migrator::latestVersion ();
@@ -1381,7 +1382,7 @@ void MainWindow::checkVersion ()
 		Returner<QList<quint64> > pendingMigrationsReturner;
 		SignalOperationMonitor pendingMigrationsMonitor;
 		migrator.pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
-		MonitorDialog::monitor (pendingMigrationsMonitor);
+		MonitorDialog::monitor (pendingMigrationsMonitor, this);
 		quint64 numPendingMigrations=pendingMigrationsReturner.returnedValue ().size ();
 
 		confirmOrCancel ("Datenbank nicht aktuell", QString::fromUtf8 (
@@ -1418,7 +1419,7 @@ void MainWindow::openInterface ()
 		Returner<bool> returner;
 		SignalOperationMonitor monitor;
 		dbInterface.asyncOpen (returner, monitor);
-		MonitorDialog::monitor (monitor);
+		MonitorDialog::monitor (monitor, this);
 		returner.wait ();
 	}
 	catch (Db::Interface::DatabaseDoesNotExistException)
@@ -1454,15 +1455,27 @@ void MainWindow::openInterface ()
 	}
 }
 
+void MainWindow::fillCache ()
+{
+	cache.clear ();
+
+	Db::Cache::CacheThread cacheThread (cache); // TODO to class
+
+	Returner<bool> returner;
+	SignalOperationMonitor monitor;
+	cacheThread.refreshAll (returner, monitor);
+	MonitorDialog::monitor (monitor, this);
+	returner.wait ();
+}
+
 void MainWindow::connectImpl ()
 {
 	try
 	{
 		openInterface ();
 		checkVersion ();
+		fillCache ();
 
-		cache.clear ();
-		cache.refreshAll ();
 		refreshFlights (); // FIXME don't read from Db again, just load from cache
 		setDatabaseActionsEnabled (true);
 	}

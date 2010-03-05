@@ -23,11 +23,11 @@ namespace Db { namespace Migration { namespace Background
 
 	BackgroundMigrator::~BackgroundMigrator ()
 	{
-		// Terminete the thread's event loop with the requestedExit exit code
+		// Terminate the thread's event loop with the requestedExit exit code
 		// so it doesn't print a message.
 		thread.exit (MigratorThread::requestedExit);
 
-		std::cout << "Waiting for worker thread to terminate...";
+		std::cout << "Waiting for migrator worker thread to terminate...";
 		std::cout.flush ();
 
 		if (thread.wait (1000))

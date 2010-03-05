@@ -2,7 +2,10 @@
 
 #include <iostream> //remove
 
+#include "src/util/qString.h"
+
 // FIXME synchronization
+//  - for example, the first status may not be displayed if it was set before the dialog was displayed
 
 #include "src/concurrent/monitor/SignalOperationMonitor.h"
 
@@ -44,16 +47,17 @@ void MonitorDialog::reject ()
 
 void MonitorDialog::progress (int progress, int maxProgress)
 {
-	ui.progressBar->setValue (progress);
+	// It seems like we can get an erroneous "1%" indication if we set the
+	// value before the maximum.
 	if (maxProgress>=0)
 		ui.progressBar->setMaximum (maxProgress);
-
-	if (progress==maxProgress && progress>0)
-		accept ();
+	ui.progressBar->setValue (progress);
 }
 
 void MonitorDialog::status (QString status)
 {
+	std::cout << "status " << status << std::endl;
+
 	ui.statusLabel->setText (status);
 }
 

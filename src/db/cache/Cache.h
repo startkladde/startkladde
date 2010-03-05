@@ -18,6 +18,7 @@
 #include "src/model/LaunchMethod.h" // Required for LaunchMethod::Type
 #include "src/model/objectList/EntityList.h"
 #include "src/db/event/DbEvent.h"
+#include "src/concurrent/monitor/OperationMonitorInterface.h"
 
 class Flight;
 class Person;
@@ -136,7 +137,7 @@ namespace Db
 				int refreshLocations ();
 				int refreshAccountingNotes ();
 
-				bool refreshAll ();
+				bool refreshAll (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 
 				// *** Change handling

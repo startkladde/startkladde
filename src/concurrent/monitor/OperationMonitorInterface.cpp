@@ -69,22 +69,34 @@ void OperationMonitorInterface::status (const QString &text, bool checkCanceled)
 	}
 }
 
-void OperationMonitorInterface::progress (int progress, int maxProgress, bool checkCanceled)
+void OperationMonitorInterface::status (const char *text, bool checkCanceled)
+{
+	status (QString::fromUtf8 (text), checkCanceled);
+}
+
+void OperationMonitorInterface::progress (int progress, int maxProgress, const QString &status, bool checkCanceled)
 {
 	if (monitor)
 	{
 		if (checkCanceled) this->checkCanceled ();
 		monitor->setProgress (progress, maxProgress);
+		if (!status.isNull ()) monitor->setStatus (status);
 	}
 }
 
+void OperationMonitorInterface::progress (int progress, int maxProgress, const char *status, bool checkCanceled)
+{
+	if (status)
+		this->progress (progress, maxProgress, QString::fromUtf8 (status), checkCanceled);
+	else
+		this->progress (progress, maxProgress, QString (), checkCanceled);
+}
+
 /**
- * Can be called manuall, or is called automatically when only 1 reference is left.
+ * Can be called manually, or is called automatically when only 1 reference is left.
  */
 void OperationMonitorInterface::ended ()
 {
-	std::cout << "ended called" << std::endl;
-
 	if (monitor)
 		monitor->setEnded ();
 }

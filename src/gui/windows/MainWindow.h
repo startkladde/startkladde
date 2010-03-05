@@ -119,6 +119,7 @@ class MainWindow: public QMainWindow
 		void checkVersion ();
 		void openInterface ();
 		void connectImpl ();
+		void fillCache ();
 
 	protected slots:
 

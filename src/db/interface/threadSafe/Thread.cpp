@@ -68,8 +68,6 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	void Thread::asyncOpen (Returner<bool> *returner, OperationMonitor *monitor)
 	{
-		std::cout << "thread asyncOpen" << std::endl;
-
 		emit sig_asyncOpen (returner, monitor);
 	}
 

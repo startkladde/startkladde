@@ -224,14 +224,12 @@ namespace Db { namespace Interface
 	{
 		if (opts.display_queries)
 		{
-			std::cout << query.colorizedString () << "...";
+			std::cout << query.colorizedString ();
 			std::cout.flush ();
 		}
 
 		QSqlQuery sqlQuery (db);
 		sqlQuery.setForwardOnly (forwardOnly);
-
-		//if (opts.display_queries) std::cout << "prepare..."; std::cout.flush ();
 
 		if (!query.prepare (sqlQuery))
 		{
@@ -245,7 +243,8 @@ namespace Db { namespace Interface
 
 		query.bindTo (sqlQuery);
 
-		//if (opts.display_queries) std::cout << "exec..."; std::cout.flush ();
+		if (opts.display_queries)
+			std::cout << "..."; std::cout.flush ();
 
 		if (!sqlQuery.exec ())
 		{

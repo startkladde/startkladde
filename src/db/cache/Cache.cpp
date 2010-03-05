@@ -620,17 +620,18 @@ namespace Db
 			return 0;
 		}
 
-		bool Cache::refreshAll ()
+		bool Cache::refreshAll (OperationMonitorInterface monitor)
 		{
 			// Refresh planes and people before refreshing flights!
-			refreshPlanes ();
-			refreshPeople ();
-			refreshLaunchMethods ();
-			refreshFlightsToday ();
-			refreshFlightsOther ();
-			refreshPreparedFlights ();
-			refreshLocations ();
-			refreshAccountingNotes ();
+			monitor.progress (0, 8, "Flugzeuge abrufen"          ); refreshPlanes          ();
+			monitor.progress (1, 8, "Personen abrufen"           ); refreshPeople          ();
+			monitor.progress (2, 8, "Startarten abrufen"         ); refreshLaunchMethods   ();
+			monitor.progress (3, 8, "Flüge von heute abrufen"    ); refreshFlightsToday    ();
+			monitor.progress (4, 8, "Flüge abrufen"              ); refreshFlightsOther    (); // TODO von ...
+			monitor.progress (5, 8, "Vorbereitete Flüge abrufen" ); refreshPreparedFlights ();
+			monitor.progress (6, 8, "Flugplätze abrufen"         ); refreshLocations       ();
+			monitor.progress (7, 8, "Abrechnungshinweise abrufen"); refreshAccountingNotes ();
+			monitor.progress (8, 8, "Fertig");
 			return true;
 
 			// Old:
