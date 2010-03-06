@@ -420,8 +420,9 @@ int FlightWindow::fillNames (QStringList (Db::Cache::Cache::*fullListMethod)(), 
 	target->addItems (nameList);
 
 	// If there is exactly one name and the target field was empty before and
-	// doesn't have to be preserved, write the unique name to the target field.
-	if (oldValue.isEmpty () && !preserveTarget && nameList.size ()==1)
+	// doesn't have to be preserved, and the source name is not empty, write
+	// the unique name to the target field.
+	if (oldValue.isEmpty () && !preserveTarget && nameList.size ()==1 && !otherName.simplified ().isEmpty ())
 		target->setCurrentText (nameList.at (0));
 	else
 		target->setCurrentText (oldValue);
@@ -1358,34 +1359,36 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 
 bool FlightWindow::writeToDatabase (Flight &flight)
 {
-//	Task *task=NULL;
-
 	bool success=false;
 
 	switch (mode)
 	{
 		// TODO background
 		case modeCreate:
-			success=idValid (cache.getDatabase ().createObject (flight));
-//			task=new AddObjectTask<Flight> (cache, flight);
-			break;
+		{
+			// TODO pass, or get from Db
+			Db::DbWorker dbWorker (cache.getDatabase ());
+
+			Returner<dbId> returner;
+			SignalOperationMonitor monitor;
+			dbWorker.createObject (returner, monitor, flight);
+			MonitorDialog::monitor (monitor, "Flug anlegen", this);
+			success=idValid (returner.returnedValue ());
+		} break;
 		case modeEdit:
-			success=cache.getDatabase ().updateObject (flight);
-//			task=new UpdateObjectTask<Flight> (cache, flight);
-			break;
+		{
+			// TODO pass, or get from Db
+			Db::DbWorker dbWorker (cache.getDatabase ());
+
+			Returner<int> returner;
+			SignalOperationMonitor monitor;
+			dbWorker.updateObject (returner, monitor, flight);
+			MonitorDialog::monitor (monitor, "Flug speichern", this);
+			returner.wait (); // May return 0 if nothing changed
+
+			success=true;
+		} break;
 	}
-
-	// TODO error handling (adding failed)
-//	cache.addTask (task);
-//	TaskProgressDialog::waitTask (this, task);
-//	bool result=task->isCompleted ();
-//	bool success=task->getSuccess ();
-//	QString message=task->getMessage ();
-//
-//	delete task;
-
-	// If the task was canceled, return false
-	if (!success) return false;
 
 	// The task completed. But was it successful?
 	if (!success)

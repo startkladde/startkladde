@@ -218,7 +218,6 @@ FORMS += \
            src/gui/windows/MonitorDialog.ui \
            src/gui/windows/ObjectListWindowBase.ui \
            src/gui/windows/StatisticsWindow.ui \
-           src/gui/windows/TaskProgressDialog.ui \
            src/gui/windows/objectEditor/LaunchMethodEditorPane.ui \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.ui \
            src/gui/windows/objectEditor/PersonEditorPane.ui \

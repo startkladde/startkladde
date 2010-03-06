@@ -22,10 +22,17 @@ namespace Db { namespace Event
 	 * This stinks, but sending signals across threads requires queued events,
 	 * queued events require qRegisterMetaType and qRegisterMetaType requires
 	 * a default constructor.
+	 *
+	 * In order not to have to introduce "dummy" values for the enums, we
+	 * construct an arbitrary DbEvent here.
+	 *
+	 * But, as it turns out, that default contructor is never called. So we can
+	 * disallow use of this constructor by raising an assertion.
 	 */
 	DbEvent::DbEvent ():
 		type (typeChange), table (tablePeople), id (invalidId)
 	{
+		assert (!"DbEvent default constructor called");
 	}
 
 	DbEvent::DbEvent (Type type, Table table, dbId id):

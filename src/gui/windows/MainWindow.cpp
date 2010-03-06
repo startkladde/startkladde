@@ -53,6 +53,7 @@
 #include "src/concurrent/monitor/SimpleOperationMonitor.h" // remove
 #include "src/gui/windows/MonitorDialog.h"
 #include "src/db/cache/CacheThread.h"
+#include "src/db/DbWorker.h"
 
 template <class T> class MutableObjectList;
 
@@ -566,19 +567,15 @@ void MainWindow::flightListChanged ()
 
 void MainWindow::updateFlight (const Flight &flight)
 {
-	db.updateObject<Flight> (flight);
-//	UpdateObjectTask<Flight> task (dataStorage, flight);
-//	dataStorage.addTask (&task);
-//	TaskProgressDialog::waitTask (this, &task);
-//	if (!task.getSuccess ())
-//	{
-//		// TODO we should retry instead, and probably in the task
-//		QMessageBox::critical (
-//			this,
-//			"Fehler beim Speichern",
-//			QString ("Fehler beim Speichern des Flugs: %1").arg (task.getMessage ())
-//			);
-//	}
+	// TODO pass, or get from Db
+	// TODO error handling? required? What happens on uncaught exception?
+	Db::DbWorker dbWorker (cache.getDatabase ());
+
+	Returner<int> returner;
+	SignalOperationMonitor monitor;
+	dbWorker.updateObject (returner, monitor, flight);
+	MonitorDialog::monitor (monitor, "Flug speichern", this);
+	returner.wait ();
 }
 
 void MainWindow::startFlight (dbId id)
@@ -790,20 +787,16 @@ void MainWindow::on_actionDelete_triggered ()
 	if (isTowflight) if (!yesNoQuestion (this, QString::fromUtf8 ("Geschleppten Flug löschen?"), QString::fromUtf8 (
 			"Der gewählte Flug ist ein Schleppflug. Soll der dazu gehörige geschleppte Flug wirklich gelöscht werden?"))) return;
 
+	// TODO pass, or get from Db
+	// TODO error handling? required? What happens on uncaught exception?
+	Db::DbWorker dbWorker (cache.getDatabase ());
 
-//	DeleteObjectTask<Flight> task (dataStorage, id);
-//	dataStorage.addTask (&task);
-//	TaskProgressDialog::waitTask (this, &task);
-//
-//	if (!task.getSuccess ())
-	if (!db.deleteObject<Flight> (id))
-		QMessageBox::message (
-			QString::fromUtf8 ("Fehler beim Löschen"),
-			// TODO ": %message"
-			QString::fromUtf8 ("Fehler beim Löschen"),
-			"&OK",
-			this
-		);
+	Returner<int> returner;
+	SignalOperationMonitor monitor;
+	dbWorker.deleteObject<Flight> (returner, monitor, id);
+	MonitorDialog::monitor (monitor, trUtf8 ("Flug löschen"), this);
+	returner.wait ();
+
 }
 
 void MainWindow::on_actionDisplayError_triggered ()

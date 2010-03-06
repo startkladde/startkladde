@@ -308,7 +308,6 @@ int main (int argc, char **argv)
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
 	qRegisterMetaType<Db::Event::DbEvent> ("Db::Event::DbEvent");
-//	qRegisterMetaType<DataStorage::State> ("DataStorage::State");
 	qRegisterMetaType<Db::Query> ("Db::Query");
 
 	int ret=0;

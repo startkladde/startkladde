@@ -33,14 +33,12 @@ namespace Db { namespace Cache {
 	CacheThread::CacheThread (Cache &cache):
 		cache (cache)
 	{
-		// First move, then connect
-		moveToThread (this);
-
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
 		CONNECT (refreshAll        (Returner<bool>            *, OperationMonitor *));
 		CONNECT (fetchFlightsOther (Returner<void>            *, OperationMonitor *, QDate));
 #undef CONNECT
 
+		moveToThread (this);
 		start ();
 	}
 

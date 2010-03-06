@@ -106,13 +106,11 @@ namespace Db
 	DbWorker::DbWorker (Database &db):
 		db (db)
 	{
-		// First move, then connect
-		moveToThread (&thread);
-
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
 		CONNECT (executeAndDeleteTask (OperationMonitor *, Task *));
 #undef CONNECT
 
+		moveToThread (&thread);
 		thread.start ();
 	}
 
