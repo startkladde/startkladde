@@ -111,6 +111,7 @@ class MainWindow: public QMainWindow
 		void closeDatabase ();
 		void setDatabaseActionsEnabled (bool enabled);
 		bool isCurrent (Db::Migration::Background::BackgroundMigrator &migrator);
+		void ensureCurrent (Db::Migration::Background::BackgroundMigrator &migrator, const QString &message);
 		bool isEmpty (Db::Migration::Background::BackgroundMigrator &migrator);
 
 		void confirmOrCancel (const QString &title, const QString &question);

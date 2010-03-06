@@ -4,8 +4,6 @@
  *   - Connection monitoring (ping? keepalive?)
  *   - Proper caching
  *   - timeout: only when no data is transfered
- *   - fix duplicate connection name when connect is canceled and restarted
- *     (interface is not closed after connect canceled)
  *   - signal unhandled exceptions to main window
  *
  * Tests:

@@ -1337,6 +1337,14 @@ bool MainWindow::isCurrent (Db::Migration::Background::BackgroundMigrator &migra
 	return returner.returnedValue ();
 }
 
+void MainWindow::ensureCurrent (Db::Migration::Background::BackgroundMigrator &migrator, const QString &message)
+{
+	if (!isCurrent (migrator))
+		throw ConnectFailedException (utf8 (
+			"%1")
+			.arg (message));
+}
+
 bool MainWindow::isEmpty (Db::Migration::Background::BackgroundMigrator &migrator)
 {
 	Returner<bool> returner;
@@ -1363,8 +1371,7 @@ void MainWindow::checkVersion ()
 
 		// After loading the schema, the database must be current.
 		// TODO different message if canceled
-		if (!isCurrent (migrator))
-			throw ConnectFailedException ("Datenbank ist nach Erstellen nicht aktuell.");
+		ensureCurrent (migrator, "Datenbank ist nach Erstellen nicht aktuell.");
 	}
 	else if (!isCurrent (migrator))
 	{
@@ -1403,8 +1410,7 @@ void MainWindow::checkVersion ()
 
 		// After migrating, the database must be current.
 		// TODO different message if canceled
-		if (!isCurrent (migrator))
-			throw ConnectFailedException ("Datenbank ist nach der Aktualisierung nicht aktuell.");
+		ensureCurrent (migrator, "Datenbank ist nach der Aktualisierung nicht aktuell.");
 	}
 }
 
@@ -1447,9 +1453,8 @@ void MainWindow::openInterface ()
 		returner.wait (); // Required so any exceptions are rethrown
 
 		// After loading the schema, the database must be current.
-		if (isCurrent (migrator))
-			// TODO different message if canceled
-			throw ConnectFailedException ("Nach dem Laden ist die Datenbank nicht aktuell.");
+		// TODO different message if canceled
+		ensureCurrent (migrator, "Nach dem Laden ist die Datenbank nicht aktuell.");
 	}
 }
 
@@ -1667,7 +1672,8 @@ void MainWindow::setDatabaseActionsEnabled (bool enabled)
 
 void MainWindow::closeDatabase ()
 {
-	dbInterface.close ();
+	// No need, will be closed on destruction
+	//dbInterface.close ();
 }
 
 

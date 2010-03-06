@@ -10,6 +10,7 @@
 #include <QSqlError>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QAtomicInt>
 
 #include "src/db/interface/Interface.h"
 #include "src/db/DatabaseInfo.h"
@@ -62,6 +63,9 @@ namespace Db
 
 			private:
 				QSqlDatabase db;
+
+				static QAtomicInt freeNumber;
+				static int getFreeNumber () { return freeNumber.fetchAndAddOrdered (1); }
 
 				virtual QSqlQuery executeQueryImpl (const Query &query, bool forwardOnly=true);
 				virtual QSqlQuery doExecuteQuery (const Query &query, bool forwardOnly=true);

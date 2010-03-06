@@ -15,6 +15,7 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	Thread::~Thread ()
 	{
+		delete worker;
 	}
 
 	void Thread::run ()

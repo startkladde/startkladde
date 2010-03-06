@@ -1,8 +1,4 @@
 /*
- * FIXME:
- *   - Throw correct exception on access denied etc.
- *   - Allow canceling
- *
  * TODO:
  *   - Handle all relevant errors from
  *     http://dev.mysql.com/doc/refman/5.1/en/error-messages-client.html
@@ -28,8 +24,11 @@
 #include "src/db/interface/exceptions/DatabaseDoesNotExistException.h"
 #include "src/db/interface/exceptions/AccessDeniedException.h"
 
+
 namespace Db { namespace Interface
 {
+	QAtomicInt DefaultInterface::freeNumber=0;
+
 	// ******************
 	// ** Construction **
 	// ******************
@@ -37,10 +36,23 @@ namespace Db { namespace Interface
 	DefaultInterface::DefaultInterface (const DatabaseInfo &dbInfo):
 		Interface (dbInfo)
 	{
+		QString name=utf8 ("startkladde_defaultInterface_%1").arg (getFreeNumber ());
+		//std::cout << "Create db " << name << std::endl;
+
+		db=QSqlDatabase::addDatabase ("QMYSQL", name);
 	}
 
 	DefaultInterface::~DefaultInterface ()
 	{
+		if (db.isOpen ()) db.close ();
+
+		QString name=db.connectionName ();
+
+		// Make sure the QSqlDatabase instance is destroyed before removing it
+		db=QSqlDatabase ();
+
+		//std::cout << "remove db " << name << std::endl;
+		QSqlDatabase::removeDatabase (name);
 	}
 
 
@@ -63,8 +75,6 @@ namespace Db { namespace Interface
 
 		DatabaseInfo info=getInfo ();
 
-		db=QSqlDatabase::addDatabase ("QMYSQL");
-
 		db.setHostName     (info.server  );
 		db.setUserName     (info.username);
 		db.setPassword     (info.password);
@@ -73,7 +83,7 @@ namespace Db { namespace Interface
 
 		while (true)
 		{
-			std::cout << QString ("Connecting to %1...").arg (info.toString ());
+			std::cout << QString ("%1 connecting to %2...").arg (db.connectionName ()).arg (info.toString ());
 			std::cout.flush ();
 
 			if (db.open ())
@@ -106,17 +116,11 @@ namespace Db { namespace Interface
 		}
 	}
 
-	// TODO should be RAII, but calling this in the destructor doesn't seem to
-	// work (specifically, destroying db)
 	void DefaultInterface::close ()
 	{
 		std::cout << "Closing connection" << std::endl;
 
 		db.close ();
-
-		// Make sure the QSqlDatabase instance is destroyed before removing it
-		db=QSqlDatabase ();
-		QSqlDatabase::removeDatabase (db.connectionName ());
 	}
 
 	QSqlError DefaultInterface::lastError () const
