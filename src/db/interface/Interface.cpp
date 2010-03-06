@@ -1,3 +1,8 @@
+/*
+ * - listing columns: select * from table where false (or describe table/show
+ *   columns from table, but unclear column order)
+ *
+ */
 #include "Interface.h"
 
 #include <iostream>

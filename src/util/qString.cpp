@@ -1,5 +1,11 @@
 #include "qString.h"
 
+/**
+ * A shortcut for QString::fromUtf8
+ *
+ * We are currently not using tr due to unclear performance impact (this
+ * program is supposed to run smoothly even on slow (533 MHz) hardware).
+ */
 QString utf8 (const char *text)
 {
 	return QString::fromUtf8 (text);

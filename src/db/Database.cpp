@@ -63,6 +63,16 @@
  *         should be fast enough (does sqlite memory table have index?)
  *         locations are more interesting, b/c there are many flights
  *   - local disk caching
+ *
+ * Old comments:
+ *   - Time to string: to_string (db_time_format, tz_utc, 20, true);
+ *   - String to time: parse (text, tz_utc, db_time_format);
+ *   - Merge person:
+ *     - update flight pilot/copilot/towpilot, user person; should be in transaction
+ *     - check if a flight or user still referencecs this user
+ *     - delete "wrong" person
+ *   - old null time: "0000-00-00 00:00:00"
+ *   - old db time format: "%Y-%m-%d %H:%M:%S" (must be parseable, don't use %0Y)
  */
 
 #include "Database.h"

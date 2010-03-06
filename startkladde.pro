@@ -20,7 +20,6 @@ MOC_DIR= build/
 HEADERS += \
            build/migrations.h \
            build/migrations_headers.h \
-           src/SkException.h \
            src/accessor.h \
            src/color.h \
            src/StorableException.h \
