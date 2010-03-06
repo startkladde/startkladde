@@ -15,6 +15,7 @@
 #include "src/db/interface/Interface.h"
 #include "src/db/DatabaseInfo.h"
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
+#include "src/net/TcpProxy.h"
 
 #ifndef DEFAULTINTERFACE_H_
 #define DEFAULTINTERFACE_H_
@@ -50,6 +51,7 @@ namespace Db
 				virtual bool open (OperationMonitorInterface monitor);
 				virtual void close ();
 				virtual QSqlError lastError () const;
+				virtual void cancelConnection ();
 
 				// *** Transactions
 				virtual bool transaction ();
@@ -63,6 +65,7 @@ namespace Db
 
 			private:
 				QSqlDatabase db;
+				TcpProxy proxy;
 
 				static QAtomicInt freeNumber;
 				static int getFreeNumber () { return freeNumber.fetchAndAddOrdered (1); }

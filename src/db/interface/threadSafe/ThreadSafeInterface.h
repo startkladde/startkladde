@@ -8,6 +8,8 @@
 #ifndef THREADSAFEINTERFACE_H_
 #define THREADSAFEINTERFACE_H_
 
+#include <QObject>
+
 #include "src/db/interface/Interface.h"
 #include "src/db/interface/threadSafe/Thread.h"
 
@@ -22,18 +24,22 @@ namespace Db
 	{
 		namespace ThreadSafe
 		{
-			class ThreadSafeInterface: public Interface
+			class ThreadSafeInterface: public QObject, public Interface
 			{
+				Q_OBJECT
+
 				public:
 					// *** Construction
 					ThreadSafeInterface (const DatabaseInfo &info);
 					virtual ~ThreadSafeInterface ();
 
+				public slots:
 					// *** Connection management
 					virtual bool open ();
 					virtual void asyncOpen (Returner<bool> &returner, OperationMonitor &monitor);
 					virtual void close ();
 					virtual QSqlError lastError () const;
+					virtual void cancelConnection ();
 
 					// *** Transactions
 					virtual bool transaction ();

@@ -2,6 +2,7 @@ CONFIG += qt
 CONFIG += debug
 QT += qt3support
 QT += sql
+QT += network
 TEMPLATE = app
 TARGET = 
 DEPENDPATH += . version
@@ -107,6 +108,7 @@ HEADERS += \
            src/model/objectList/MutableObjectList.h \
            src/model/objectList/ObjectListModel.h \
            src/model/objectList/ObjectModel.h \
+           src/net/TcpProxy.h \
            src/plugins/ShellPlugin.h \
            src/statistics/LaunchMethodStatistics.h \
            src/statistics/PilotLog.h \
@@ -199,6 +201,7 @@ SOURCES += \
            src/model/flightList/FlightModel.cpp \
            src/model/flightList/FlightProxyList.cpp \
            src/model/flightList/FlightSortFilterProxyModel.cpp \
+           src/net/TcpProxy.cpp \
            src/plugins/ShellPlugin.cpp \
            src/statistics/LaunchMethodStatistics.cpp \
            src/statistics/PilotLog.cpp \

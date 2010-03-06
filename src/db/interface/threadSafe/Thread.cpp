@@ -82,6 +82,15 @@ namespace Db { namespace Interface { namespace ThreadSafe
 		emit sig_lastError (returner);
 	}
 
+	void Thread::cancelConnection ()
+	{
+		// Don't use the signal for this one: it would only be delivered after
+		// the current call is finished, but we want to cancel the current
+		// call. The cancelConnection method of DefaultInterface is thread
+		// safe, so we can call it directly.
+		if (worker) worker->cancelConnection ();
+	}
+
 
 	// ******************
 	// ** Transactions **

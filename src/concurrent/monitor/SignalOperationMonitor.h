@@ -27,6 +27,8 @@ class SignalOperationMonitor: public QObject, public OperationMonitor
 		virtual void cancel ();
 
 	signals:
+		void canceled ();
+
 		void statusChanged (QString text);
 		void progressChanged (int progress, int maxProgress);
 		void ended ();

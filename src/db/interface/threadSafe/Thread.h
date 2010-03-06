@@ -55,6 +55,7 @@ namespace Db
 					virtual void asyncOpen (Returner<bool>      *returner, OperationMonitor *monitor);
 					virtual void close     (Returner<void>      *returner);
 					virtual void lastError (Returner<QSqlError> *returner) const;
+					virtual void cancelConnection ();
 
 					// *** Transactions
 					virtual void transaction (Returner<bool> *returner);

@@ -52,6 +52,12 @@ namespace Db { namespace Interface { namespace ThreadSafe
 		returnOrException (returner, interface->lastError ());
 	}
 
+	void Worker::cancelConnection ()
+	{
+		// Called directly
+		if (interface) interface->cancelConnection ();
+	}
+
 
 	// ******************
 	// ** Transactions **

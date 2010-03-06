@@ -1,7 +1,9 @@
 #include <unistd.h>
 
 #include <iostream>
-
+#include <iomanip>
+#include <ios>
+#include <string>
 #include <QApplication>
 
 #include "src/config/Options.h"
@@ -15,6 +17,7 @@
 #include "src/util/qString.h"
 #include "src/db/interface/exceptions/SqlException.h"
 #include "src/db/event/DbEvent.h" // For qRegisterMetaType
+#include "src/net/TcpProxy.h" // remove
 
 // For test_database
 //#include "src/model/Plane.h"
@@ -42,6 +45,45 @@ void display_help ()
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
 #include "src/db/interface/threadSafe/ThreadSafeInterface.h"
+
+void ponder ()
+{
+	std::cout << utf8 ("Pondering on thread %1:  ").arg (QThread::currentThreadId ());
+	const int delay=200;
+
+	std::cout << "[" << std::flush;
+
+	for (int i=1; i<=10; ++i)
+	{
+		std::cout << i << std::flush;
+
+		std::cout << "."; std::cout.flush(); DefaultQThread::msleep (delay);
+		std::cout << "o"; std::cout.flush(); DefaultQThread::msleep (delay);
+		std::cout << "O"; std::cout.flush(); DefaultQThread::msleep (delay);
+		std::cout << "o"; std::cout.flush(); DefaultQThread::msleep (delay);
+	}
+
+	std::cout << "]" << std::endl;
+}
+
+void proxy_test (QApplication &a)
+{
+	std::cout << utf8 ("Creating proxy on thread %1").arg (QThread::currentThreadId ()) << std::endl;
+
+	TcpProxy proxy;
+//	proxy.open ("localhost", 3306);
+	proxy.open ("damogran.local", 3307);
+
+	while (true)
+	{
+//		ponder ();
+		std::cout << "Press enter to terminat0r" << std::endl;
+
+		char in[101];
+		std::cin.getline (in, 100);
+		proxy.close ();
+	}
+}
 
 int test_database ()
 {
@@ -330,6 +372,8 @@ int main (int argc, char **argv)
 			{
 				if (opts.non_options[0]=="test_db")
 					ret=test_database ();
+				else if (opts.non_options[0]=="proxy")
+					proxy_test (a);
 				else
 					ret=doStuff ();
 			}

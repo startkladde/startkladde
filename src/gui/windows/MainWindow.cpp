@@ -1422,6 +1422,7 @@ void MainWindow::openInterface ()
 	{
 		Returner<bool> returner;
 		SignalOperationMonitor monitor;
+		connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 		dbInterface.asyncOpen (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait ();

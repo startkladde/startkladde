@@ -41,6 +41,27 @@ namespace Db
 				virtual QSqlError lastError () const=0;
 				virtual const DatabaseInfo &getInfo () const;
 
+				/**
+				 * Makes the current database call terminate immediately, if
+				 * possible
+				 *
+				 * This is intended as a way to cancel operations over a slow
+				 * or broken network connection. It may not have any effect
+				 * with some Interface implementations, for example with an
+				 * on-disk database.
+				 *
+				 * It is up to the method that called the Interface method to
+				 * cancel the operation via a monitor, and the Interface method
+				 * to be cancelable.
+				 *
+				 * This method will generally not be called by the Interface's
+				 * thread's event loop as it is intended to be used when the
+				 * thread is blocking in a network call.
+				 *
+				 * Implementations of this method must be thread safe.
+				 */
+				virtual void cancelConnection ()=0;
+
 				// *** Transactions
 				virtual bool transaction ()=0;
 				virtual bool commit ()=0;

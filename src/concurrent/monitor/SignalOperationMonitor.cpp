@@ -15,6 +15,7 @@ SignalOperationMonitor::~SignalOperationMonitor ()
 
 void SignalOperationMonitor::cancel ()
 {
+	emit canceled ();
 	OperationMonitor::cancel ();
 }
 

@@ -68,6 +68,11 @@ namespace Db { namespace Interface { namespace ThreadSafe
 		return returner.returnedValue ();
 	}
 
+	void ThreadSafeInterface::cancelConnection ()
+	{
+		thread.cancelConnection ();
+	}
+
 
 	// ******************
 	// ** Transactions **

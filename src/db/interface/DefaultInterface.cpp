@@ -75,15 +75,19 @@ namespace Db { namespace Interface
 
 		DatabaseInfo info=getInfo ();
 
-		db.setHostName     (info.server  );
+		quint16 proxyPort=proxy.open (info.server, info.port);
+
+//		db.setHostName     (info.server  );
+		db.setHostName     ("127.0.0.1");
 		db.setUserName     (info.username);
 		db.setPassword     (info.password);
-		db.setPort         (info.port    );
+//		db.setPort         (info.port    );
+		db.setPort         (proxyPort);
 		db.setDatabaseName (info.database);
 
 		while (true)
 		{
-			std::cout << QString ("%1 connecting to %2...").arg (db.connectionName ()).arg (info.toString ());
+			std::cout << QString ("%1 connecting to %2 via localhost:%3...").arg (db.connectionName ()).arg (info.toString ()).arg (proxyPort);
 			std::cout.flush ();
 
 			if (db.open ())
@@ -128,6 +132,14 @@ namespace Db { namespace Interface
 		return db.lastError ();
 	}
 
+	/**
+	 * This method is thread safe.
+	 */
+	void DefaultInterface::cancelConnection ()
+	{
+		std::cout << "Canceling..." << std::endl;
+		proxy.close ();
+	}
 
 	// ******************
 	// ** Transactions **
