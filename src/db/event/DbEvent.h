@@ -14,7 +14,7 @@ namespace Db
 		 * A description of a change in the database
 		 *
 		 * This is implemented with an Table Enum rather than as a template because it
-		 * is sent as a parameter as a signal and signals can't be templates.
+		 * is sent as a parameter for a signal and signals can't be templates.
 		 */
 		class DbEvent
 		{
@@ -57,20 +57,20 @@ namespace Db
 //				FIXME: template<T> static added, deleted, changed
 
 				// ** Formatting
-				QString toString ();
+				QString toString () const;
 				static QString typeString (Type type);
 				static QString tableString (Table table);
 
 				// ** Property access
-				Table    getTable () { return table; }
-				Type     getType  () { return type ; }
-				dbId     getId    () { return id   ; }
-				QVariant getValue () { return type ; }
+				Table    getTable () const { return table; }
+				Type     getType  () const { return type ; }
+				dbId     getId    () const { return id   ; }
+				QVariant getValue () const { return type ; }
 
-				template <class T> T getValue () { return value.value<T> (); }
+				template <class T> T getValue () const { return value.value<T> (); }
 
 				// ** Table methods
-				template<class T> bool hasTable () { return table==getTable<T> (); }
+				template<class T> bool hasTable () const { return table==getTable<T> (); }
 				template<class T> static Table getTable ();
 
 			private:

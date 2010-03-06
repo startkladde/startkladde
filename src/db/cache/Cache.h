@@ -140,11 +140,6 @@ namespace Db
 				bool refreshAll (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 
-				// *** Change handling
-				template<class T> void objectAdded (const T &object);
-				template<class T> void objectDeleted (dbId id);
-				template<class T> void objectUpdated (const T &object);
-
 			signals:
 				void changed (Db::Event::DbEvent event);  // full type name
 
@@ -153,6 +148,14 @@ namespace Db
 				// Helper templates, specialized in implementation
 				template<class T> const EntityList<T> *objectList () const;
 				template<class T> EntityList<T> *objectList ();
+
+				// *** Change handling
+				template<class T> void handleDbChanged (const Event::DbEvent &event);
+
+				template<class T> void objectAdded (const T &object);
+				template<class T> void objectDeleted (dbId id);
+				template<class T> void objectUpdated (const T &object);
+
 
 			protected slots:
 				void dbChanged (Db::Event::DbEvent event); // full type name

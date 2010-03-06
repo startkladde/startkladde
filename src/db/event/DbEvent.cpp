@@ -42,7 +42,7 @@ namespace Db { namespace Event
 
 
 
-	QString DbEvent::toString ()
+	QString DbEvent::toString () const
 	{
 		return QString ("db_event (type: %1, table: %2, id: %3)")
 			.arg (typeString (type), tableString (table)).arg (id);

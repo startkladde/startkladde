@@ -752,49 +752,30 @@ namespace Db
 			}
 		}
 
-		void Cache::dbChanged (Event::DbEvent event)
+		template<class T> void Cache::handleDbChanged (const Event::DbEvent &event)
 		{
-			std::cout << "Cache: "<< event.toString () << std::endl;
-
-			// factorize this method: processDbEvent<T> (event)
-
-			// This is ugly, but we can't pass a template class instance as a
-			// signal parameter
 			switch (event.getType ())
 			{
-				case Event::DbEvent::typeAdd:
-					switch (event.getTable ())
-					{
-						case Event::DbEvent::tableFlights      : objectAdded (event.getValue<Flight>       ()); break;
-						case Event::DbEvent::tableLaunchMethods: objectAdded (event.getValue<LaunchMethod> ()); break;
-						case Event::DbEvent::tablePeople       : objectAdded (event.getValue<Person>       ()); break;
-						case Event::DbEvent::tablePlanes       : objectAdded (event.getValue<Plane>        ()); break;
-					}
-					break;
-				case Event::DbEvent::typeChange:
-					switch (event.getTable ())
-					{
-						case Event::DbEvent::tableFlights      : objectUpdated (event.getValue<Flight      > ()); break;
-						case Event::DbEvent::tableLaunchMethods: objectUpdated (event.getValue<LaunchMethod> ()); break;
-						case Event::DbEvent::tablePeople       : objectUpdated (event.getValue<Person      > ()); break;
-						case Event::DbEvent::tablePlanes       : objectUpdated (event.getValue<Plane       > ()); break;
-					}
-					break;
-				case Event::DbEvent::typeDelete:
-					switch (event.getTable ())
-					{
-						case Event::DbEvent::tableFlights      : objectDeleted<Flight      > (event.getId ()); break;
-						case Event::DbEvent::tableLaunchMethods: objectDeleted<LaunchMethod> (event.getId ()); break;
-						case Event::DbEvent::tablePeople       : objectDeleted<Person      > (event.getId ()); break;
-						case Event::DbEvent::tablePlanes       : objectDeleted<Plane       > (event.getId ()); break;
-					}
-					break;
+				case Event::DbEvent::typeAdd   : objectAdded      (event.getValue<T> ()); break;
+				case Event::DbEvent::typeChange: objectUpdated    (event.getValue<T> ()); break;
+				case Event::DbEvent::typeDelete: objectDeleted<T> (event.getId       ()); break;
+				// no default
+			}
+		}
+
+		void Cache::dbChanged (Event::DbEvent event)
+		{
+			// factorize this method: processDbEvent<T> (event)
+			switch (event.getTable ())
+			{
+				case Event::DbEvent::tableFlights       : handleDbChanged<Flight>       (event); break;
+				case Event::DbEvent::tableLaunchMethods : handleDbChanged<LaunchMethod> (event); break;
+				case Event::DbEvent::tablePeople        : handleDbChanged<Person>       (event); break;
+				case Event::DbEvent::tablePlanes        : handleDbChanged<Plane>        (event); break;
 				// no default
 			}
 
 			// Re-emit the event
-			std::cout << "Cache reemitting " << event.toString() << std::endl;
-
 			emit changed (event);
 		}
 
@@ -803,34 +784,28 @@ namespace Db
 		// ** Template instantiation **
 		// ****************************
 
-		template EntityList<Plane       > Cache::getObjects () const;
-		template EntityList<Person      > Cache::getObjects () const;
-		template EntityList<LaunchMethod> Cache::getObjects () const;
+		// Don't have to instantiate handleDbChanged, objectAdded,
+		// objectDeleted and objectUpdated as they are only used in this file
 
+#		define INSTANTIATE_TEMPLATES(T) \
+			template T  Cache::getObject    (dbId id); \
+			template T *Cache::getNewObject (dbId id); \
+			// Empty line
 
-		// Instantiate the get method templates
-		template Flight       Cache::getObject (dbId id);
-		template Plane        Cache::getObject (dbId id);
-		template Person       Cache::getObject (dbId id);
-		template LaunchMethod Cache::getObject (dbId id);
+#		define INSTANTIATE_NON_FLIGHT_TEMPLATES(T) \
+			template EntityList<T> Cache::getObjects () const; \
+			// Empty line
 
-		template Flight       *Cache::getNewObject (dbId id);
-		template Plane        *Cache::getNewObject (dbId id);
-		template Person       *Cache::getNewObject (dbId id);
-		template LaunchMethod *Cache::getNewObject (dbId id);
+		INSTANTIATE_TEMPLATES (Person      )
+		INSTANTIATE_TEMPLATES (Plane       )
+		INSTANTIATE_TEMPLATES (Flight      )
+		INSTANTIATE_TEMPLATES (LaunchMethod)
 
+		INSTANTIATE_NON_FLIGHT_TEMPLATES (Person      )
+		INSTANTIATE_NON_FLIGHT_TEMPLATES (Plane       )
+		INSTANTIATE_NON_FLIGHT_TEMPLATES (LaunchMethod)
 
-		// Instantiate the change method templates (not for Flight - specialized)
-		template void Cache::objectAdded<Plane       > (const Plane        &object);
-		template void Cache::objectAdded<Person      > (const Person       &object);
-		template void Cache::objectAdded<LaunchMethod> (const LaunchMethod &object);
-
-		template void Cache::objectDeleted<Plane       > (dbId id);
-		template void Cache::objectDeleted<Person      > (dbId id);
-		template void Cache::objectDeleted<LaunchMethod> (dbId id);
-
-		template void Cache::objectUpdated<Plane       > (const Plane        &plane );
-		template void Cache::objectUpdated<Person      > (const Person       &flight);
-		template void Cache::objectUpdated<LaunchMethod> (const LaunchMethod &flight);
+#		undef INSTANTIATE_TEMPLATES
+#		undef INSTANTIATE_NON_FLIGHT_TEMPLATES
 	}
 }
