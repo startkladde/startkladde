@@ -597,7 +597,7 @@ void MainWindow::startFlight (dbId id)
 		}
 		else
 		{
-			showWarning (QString::fromUtf8 ("Start nicht möglich"), reason, this);
+			showWarning (utf8 ("Start nicht möglich"), reason, this);
 		}
 	}
 	catch (Cache::NotFoundException &ex)
@@ -623,7 +623,7 @@ void MainWindow::landFlight (dbId id)
 		}
 		else
 		{
-			showWarning (QString::fromUtf8 ("Landung nicht möglich"), reason, this);
+			showWarning (utf8 ("Landung nicht möglich"), reason, this);
 		}
 	}
 	catch (Cache::NotFoundException &ex)
@@ -649,7 +649,7 @@ void MainWindow::landTowflight (dbId id)
 		}
 		else
 		{
-			showWarning (QString::fromUtf8 ("Landung nicht möglich"), reason, this);
+			showWarning (utf8 ("Landung nicht möglich"), reason, this);
 		}
 	}
 	catch (Cache::NotFoundException &ex)
@@ -694,8 +694,8 @@ void MainWindow::on_actionTouchngo_triggered ()
 	if (isTowflight)
 	{
 		showWarning (
-			QString::fromUtf8 ("Zwischenlandung nicht möglich"),
-			QString::fromUtf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können keine Zwischenlandung machen."),
+			utf8 ("Zwischenlandung nicht möglich"),
+			utf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können keine Zwischenlandung machen."),
 			this);
 	}
 
@@ -717,7 +717,7 @@ void MainWindow::on_actionTouchngo_triggered ()
 		}
 		else
 		{
-			showWarning (QString::fromUtf8 ("Zwischenlandung nicht möglich"), reason, this);
+			showWarning (utf8 ("Zwischenlandung nicht möglich"), reason, this);
 		}
 	}
 	catch (Cache::NotFoundException &ex)
@@ -754,8 +754,8 @@ void MainWindow::on_actionRepeat_triggered ()
 
 	else if (isTowflight)
 	{
-		showWarning (QString::fromUtf8 ("Wiederholen nicht möglich"),
-			QString::fromUtf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können nicht wiederholt werden."),
+		showWarning (utf8 ("Wiederholen nicht möglich"),
+			utf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können nicht wiederholt werden."),
 			this);
 		return;
 	}
@@ -780,9 +780,9 @@ void MainWindow::on_actionDelete_triggered ()
 	// TODO display message
 	return;
 
-	if (!yesNoQuestion (this, QString::fromUtf8 ("Flug löschen?"), QString::fromUtf8 ("Flug wirklich löschen?"))) return;
+	if (!yesNoQuestion (this, utf8 ("Flug löschen?"), utf8 ("Flug wirklich löschen?"))) return;
 
-	if (isTowflight) if (!yesNoQuestion (this, QString::fromUtf8 ("Geschleppten Flug löschen?"), QString::fromUtf8 (
+	if (isTowflight) if (!yesNoQuestion (this, utf8 ("Geschleppten Flug löschen?"), utf8 (
 			"Der gewählte Flug ist ein Schleppflug. Soll der dazu gehörige geschleppte Flug wirklich gelöscht werden?"))) return;
 
 	// TODO pass, or get from Db
@@ -792,7 +792,7 @@ void MainWindow::on_actionDelete_triggered ()
 	Returner<int> returner;
 	SignalOperationMonitor monitor;
 	dbWorker.deleteObject<Flight> (returner, monitor, id);
-	MonitorDialog::monitor (monitor, trUtf8 ("Flug löschen"), this);
+	MonitorDialog::monitor (monitor, utf8 ("Flug löschen"), this);
 	returner.wait ();
 
 }
@@ -946,7 +946,7 @@ void MainWindow::on_actionJumpToTow_triggered ()
 
 	if (!currentIndex.isValid ())
 	{
-		showWarning (QString::fromUtf8 ("Kein Flug ausgewählt"), QString::fromUtf8 ("Es ist kein Flug ausgewählt."), this);
+		showWarning (utf8 ("Kein Flug ausgewählt"), utf8 ("Es ist kein Flug ausgewählt."), this);
 		return;
 	}
 
@@ -956,7 +956,7 @@ void MainWindow::on_actionJumpToTow_triggered ()
 
 	if (towref<0)
 	{
-		showWarning (QString::fromUtf8 ("Kein Schleppflug"), QString::fromUtf8 ("Der gewählte Flug ist entweder kein F-Schlepp und kein Schleppflug oder noch nicht gestartet."), this);
+		showWarning (utf8 ("Kein Schleppflug"), utf8 ("Der gewählte Flug ist entweder kein F-Schlepp und kein Schleppflug oder noch nicht gestartet."), this);
 		return;
 	}
 
@@ -1224,13 +1224,13 @@ void MainWindow::on_actionSetDisplayDate_triggered ()
 void MainWindow::on_actionPlaneLogs_triggered ()
 {
 	PlaneLog *planeLog = PlaneLog::createNew (flightList->getList (), cache);
-	StatisticsWindow::display (planeLog, true, QString::fromUtf8 ("Bordbücher"), this);
+	StatisticsWindow::display (planeLog, true, utf8 ("Bordbücher"), this);
 }
 
 void MainWindow::on_actionPersonLogs_triggered ()
 {
 	PilotLog *pilotLog = PilotLog::createNew (flightList->getList (), cache);
-	StatisticsWindow::display (pilotLog, true, QString::fromUtf8 ("Flugbücher"), this);
+	StatisticsWindow::display (pilotLog, true, utf8 ("Flugbücher"), this);
 }
 
 void MainWindow::on_actionLaunchMethodStatistics_triggered ()
@@ -1263,8 +1263,8 @@ void MainWindow::grantPermissions ()
 	DatabaseInfo info=dbInterface.getInfo ();
 
 	// Get the root password from the user
-	QString title=QString::fromUtf8 ("Datenbank-Passwort benötigt");
-	QString text=QString::fromUtf8 (
+	QString title=utf8 ("Datenbank-Passwort benötigt");
+	QString text=utf8 (
 		"Der Datenbankbenutzer %1 existiert nicht, das angegebene Passwort\n"
 		"stimmt nicht oder der Benutzer hat unzureichende Zugriffsrechte auf\n"
 		"die Datenbank %2. Zur automatischen Korrektur wird das Passwort des\n"
@@ -1298,7 +1298,7 @@ void MainWindow::grantPermissions ()
 		}
 		catch (Db::Interface::AccessDeniedException) // Actually: only 1045
 		{
-			text=QString::fromUtf8 (
+			text=utf8 (
 				"Anmeldung als root verweigert. Möglicherweise ist das\n"
 				"angegebene Kennwort nicht richtig.\n"
 				"Bitte das Kennwort für root eingeben:");
@@ -1383,7 +1383,7 @@ void MainWindow::checkVersion ()
 		MonitorDialog::monitor (pendingMigrationsMonitor, "Verbindungsaufbau", this);
 		quint64 numPendingMigrations=pendingMigrationsReturner.returnedValue ().size ();
 
-		confirmOrCancel ("Datenbank nicht aktuell", QString::fromUtf8 (
+		confirmOrCancel ("Datenbank nicht aktuell", utf8 (
 				"Die Datenbank ist nicht aktuell:\n"
 				"  - Momentane Version: %1\n"
 				"  - Aktuelle Version: %2\n"
@@ -1471,7 +1471,7 @@ void MainWindow::fetchFlights (QDate date)
 	Returner<void> returner;
 	SignalOperationMonitor monitor;
 	cacheThread.fetchFlightsOther (returner, monitor, date);
-	MonitorDialog::monitor (monitor, trUtf8 ("Flüge abrufen"), this);
+	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), this);
 	returner.wait ();
 }
 
@@ -1690,8 +1690,8 @@ void MainWindow::on_actionSetTime_triggered ()
 
 		system (command.utf8 ().constData ());
 
-		showWarning (QString::fromUtf8 ("Systemzeit geändert"),
-			QString::fromUtf8 ("Die Systemzeit wurde geändert. Um "
+		showWarning (utf8 ("Systemzeit geändert"),
+			utf8 ("Die Systemzeit wurde geändert. Um "
 			"die Änderung dauerhaft zu speichern, muss der Rechner einmal "
 			"heruntergefahren werden, bevor er ausgeschaltet wird."), this);
 

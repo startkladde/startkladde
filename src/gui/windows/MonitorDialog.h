@@ -11,7 +11,6 @@ class MonitorDialog: public QDialog
     Q_OBJECT
 
 	public:
-		MonitorDialog (SignalOperationMonitor &monitor, QWidget *parent=NULL);
 		~MonitorDialog ();
 		static void monitor (SignalOperationMonitor &monitor, const QString &title, QWidget *parent);
 
@@ -19,6 +18,9 @@ class MonitorDialog: public QDialog
 		void progress (int progress, int maxProgress);
 		void status (QString status);
 		virtual void reject ();
+
+	protected:
+		MonitorDialog (SignalOperationMonitor &monitor, QWidget *parent=NULL);
 
 	private:
 		SignalOperationMonitor &theMonitor;

@@ -96,7 +96,7 @@ int test_database ()
 	//    DefaultQThread::sleep (1);
 
 	//    Person p;
-	//    p.lastName=QString::fromUtf8 ("Müller");
+	//    p.lastName=utf8 ("Müller");
 	//    p.firstName="Busch";
 	//    dbId newId=db.createObject (p);
 	//

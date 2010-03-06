@@ -9,6 +9,7 @@
 #include "src/text.h"
 #include "src/db/Query.h"
 #include "src/db/result/Result.h"
+#include "src/util/qString.h"
 
 // TODO Vereinheitlichen der Statusfunktionen untereinander und mit den
 // condition-strings
@@ -477,48 +478,48 @@ QString Flight::errorDescription (FlightError code) const
 {
 	switch (code)
 	{
-		// TODO Utf8 for all
-		case ff_ok: return QString::fromUtf8 ("Kein Fehler");
-		case ff_keine_id: return QString::fromUtf8 ("Flug hat keine ID");
-		case ff_kein_flugzeug: return QString::fromUtf8 ("Kein Flugzeug angegeben");
+		// TODO tr for all; .arg
+		case ff_ok: return utf8 ("Kein Fehler");
+		case ff_keine_id: return utf8 ("Flug hat keine ID");
+		case ff_kein_flugzeug: return utf8 ("Kein Flugzeug angegeben");
 		// TODO use person_bezeichnung (flightType) (oder wie die heißt) here
-		case ff_pilot_nur_nachname: return QString::fromUtf8 ("Für den "+QString (type==typeTraining2?"Flugschüler":"Piloten")+" ist nur ein Nachname angegeben");
+		case ff_pilot_nur_nachname: return utf8 ("Für den "+QString (type==typeTraining2?"Flugschüler":"Piloten")+" ist nur ein Nachname angegeben");
 		case ff_pilot_nur_vorname: return  "Für den "+QString (type==typeTraining2?"Flugschüler":"Piloten")+" ist nur ein Vorname angegeben";
 		case ff_pilot_nicht_identifiziert: return  "Der "+QString (type==typeTraining2?"Flugschüler":"Pilot")+" ist nicht identifiziert";
-		case ff_begleiter_nur_nachname: return QString::fromUtf8 ("Für den "+QString (type==typeTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben");
+		case ff_begleiter_nur_nachname: return utf8 ("Für den "+QString (type==typeTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Nachname angegeben");
 		case ff_begleiter_nur_vorname: return  "Für den "+QString (type==typeTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
 		case ff_begleiter_nicht_identifiziert: return  "Der "+QString (type==typeTraining2?"Fluglehrer":"Begleiter")+" ist nicht identifiziert";
-		case ff_towpilot_nur_nachname: return QString::fromUtf8 ("Für den Schleppiloten ist nur ein Nachname angegeben");
+		case ff_towpilot_nur_nachname: return utf8 ("Für den Schleppiloten ist nur ein Nachname angegeben");
 		case ff_towpilot_nur_vorname: return  "Für den Schleppiloten ist nur ein Vorname angegeben";
 		case ff_towpilot_nicht_identifiziert: return  "Der Schleppilot ist nicht identifiziert";
-		case ff_kein_pilot: return QString::fromUtf8 ("Kein "+QString (type==typeTraining2 || type==typeTraining1?"Flugschüler":"Pilot")+" angegeben");
+		case ff_kein_pilot: return utf8 ("Kein "+QString (type==typeTraining2 || type==typeTraining1?"Flugschüler":"Pilot")+" angegeben");
 		case ff_pilot_gleich_begleiter: return QString (type==typeTraining2?"Flugschüler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
 		case ff_pilot_gleich_towpilot: return QString (type==typeTraining2?"Flugschüler":"Pilot")+" und Schlepppilot sind identisch";
-		case ff_schulung_ohne_begleiter: return QString::fromUtf8 ("Doppelsitzige Schulung ohne Fluglehrer");
-		case ff_begleiter_nicht_erlaubt: return QString::fromUtf8 ("Begleiter ist nicht erlaubt");
-		case ff_nur_gelandet: return QString::fromUtf8 ("Flug ist gelandet, aber nicht gestartet");
-		case ff_landung_vor_start: return QString::fromUtf8 ("Landung liegt vor Start");
-		case ff_keine_startart: return QString::fromUtf8 ("Keine Startart angegeben");
-		case ff_kein_modus: return QString::fromUtf8 ("Kein Modus angegeben");
-		case ff_kein_sfz_modus: return QString::fromUtf8 ("Kein Modus für den Schleppflug angegeben");
-		case ff_kein_flugtyp: return QString::fromUtf8 ("Kein Flugtyp angegeben");
-		case ff_landungen_negativ: return QString::fromUtf8 ("Negative Anzahl Landungen");
-		case ff_landungen_null: return QString::fromUtf8 ("Flug ist gelandet, aber Anzahl der Landungen ist 0");
-		case ff_schlepp_nur_gelandet: return QString::fromUtf8 ("Schleppflug ist gelandet, aber nicht gestartet");
-		case ff_schlepp_landung_vor_start: return QString::fromUtf8 ("Landung des Schleppflugs liegt vor Start");
-		case ff_doppelsitzige_schulung_in_einsitzer: return QString::fromUtf8 ("Doppelsitzige Schulung in Einsitzer");
-		case ff_kein_startort: return QString::fromUtf8 ("Kein Startort angegeben");
-		case ff_kein_zielort: return QString::fromUtf8 ("Kein Zielort angegeben");
-		case ff_kein_zielort_sfz: return QString::fromUtf8 ("Kein Zielort für das Schleppflugzeug angegeben");
-		case ff_segelflugzeug_landungen: return QString::fromUtf8 ("Segelflugzeug macht mehr als eine Landung");
-		case ff_segelflugzeug_landungen_ohne_landung: return QString::fromUtf8 ("Segelflugzeug macht Landungen ohne Landezeit");
-		case ff_begleiter_in_einsitzer: return QString::fromUtf8 ("Begleiter in einsitzigem Flugzeug");
-		case ff_gastflug_in_einsitzer: return QString::fromUtf8 ("Gastflug in einsitzigem Flugzeug");
-		case ff_segelflugzeug_selbststart: return QString::fromUtf8 ("Segelflugzeug im Selbststart");
-		case ff_landungen_ohne_start: return QString::fromUtf8 ("Anzahl Landungen ungleich null ohne Start");
-		case ff_startort_gleich_zielort: return QString::fromUtf8 ("Startort gleich Zielort");
-		case ff_kein_schleppflugzeug: return QString::fromUtf8 ("Schleppflugzeug nicht angegeben");
-		case ff_towplane_is_glider: return QString::fromUtf8 ("Schleppflugzeug ist Segelflugzeug");
+		case ff_schulung_ohne_begleiter: return utf8 ("Doppelsitzige Schulung ohne Fluglehrer");
+		case ff_begleiter_nicht_erlaubt: return utf8 ("Begleiter ist nicht erlaubt");
+		case ff_nur_gelandet: return utf8 ("Flug ist gelandet, aber nicht gestartet");
+		case ff_landung_vor_start: return utf8 ("Landung liegt vor Start");
+		case ff_keine_startart: return utf8 ("Keine Startart angegeben");
+		case ff_kein_modus: return utf8 ("Kein Modus angegeben");
+		case ff_kein_sfz_modus: return utf8 ("Kein Modus für den Schleppflug angegeben");
+		case ff_kein_flugtyp: return utf8 ("Kein Flugtyp angegeben");
+		case ff_landungen_negativ: return utf8 ("Negative Anzahl Landungen");
+		case ff_landungen_null: return utf8 ("Flug ist gelandet, aber Anzahl der Landungen ist 0");
+		case ff_schlepp_nur_gelandet: return utf8 ("Schleppflug ist gelandet, aber nicht gestartet");
+		case ff_schlepp_landung_vor_start: return utf8 ("Landung des Schleppflugs liegt vor Start");
+		case ff_doppelsitzige_schulung_in_einsitzer: return utf8 ("Doppelsitzige Schulung in Einsitzer");
+		case ff_kein_startort: return utf8 ("Kein Startort angegeben");
+		case ff_kein_zielort: return utf8 ("Kein Zielort angegeben");
+		case ff_kein_zielort_sfz: return utf8 ("Kein Zielort für das Schleppflugzeug angegeben");
+		case ff_segelflugzeug_landungen: return utf8 ("Segelflugzeug macht mehr als eine Landung");
+		case ff_segelflugzeug_landungen_ohne_landung: return utf8 ("Segelflugzeug macht Landungen ohne Landezeit");
+		case ff_begleiter_in_einsitzer: return utf8 ("Begleiter in einsitzigem Flugzeug");
+		case ff_gastflug_in_einsitzer: return utf8 ("Gastflug in einsitzigem Flugzeug");
+		case ff_segelflugzeug_selbststart: return utf8 ("Segelflugzeug im Selbststart");
+		case ff_landungen_ohne_start: return utf8 ("Anzahl Landungen ungleich null ohne Start");
+		case ff_startort_gleich_zielort: return utf8 ("Startort gleich Zielort");
+		case ff_kein_schleppflugzeug: return utf8 ("Schleppflugzeug nicht angegeben");
+		case ff_towplane_is_glider: return utf8 ("Schleppflugzeug ist Segelflugzeug");
 		// No default to allow compiler warning
 	}
 
@@ -703,7 +704,7 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 
 	towflight.numLandings=(towflightLandsHere () && towflightLanded)?1:0;
 
-	towflight.comments=QString::fromUtf8 ("Schleppflug für Flug Nr. %1").arg (id);
+	towflight.comments=utf8 ("Schleppflug für Flug Nr. %1").arg (id);
 	towflight.accountingNotes="";
 	towflight.mode=towflightMode;
 	towflight.towflightMode=modeNone;

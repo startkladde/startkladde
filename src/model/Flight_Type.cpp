@@ -4,6 +4,8 @@
 
 #include <QList>
 
+#include "src/util/qString.h"
+
 QList<Flight::Type> Flight::listTypes (bool includeInvalid)
 {
 	if (includeInvalid)
@@ -108,7 +110,7 @@ QString Flight::typePilotDescription (Flight::Type type)
 	{
 		case typeTraining2:
 		case typeTraining1:
-			return QString::fromUtf8 ("Flugschüler");
+			return utf8 ("Flugschüler");
 		case typeNone:
 		case typeNormal:
 		case typeGuestPrivate:
@@ -127,7 +129,7 @@ QString Flight::typeCopilotDescription (Flight::Type type)
 	switch (type)
 	{
 		case typeTraining2:
-			return QString::fromUtf8 ("Fluglehrer");
+			return utf8 ("Fluglehrer");
 		case typeGuestPrivate:
 		case typeGuestExternal:
 			return QString ("Gast");

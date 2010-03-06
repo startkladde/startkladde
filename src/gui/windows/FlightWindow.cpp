@@ -830,7 +830,7 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool launchNow)
 			ui.numLandingsInput);
 
 	if (flight.towflightLanded && !flight.towflightLandsHere () && eintrag_ist_leer (flight.towflightLandingLocation))
-		errorCheck (QString::fromUtf8 ("Es wurde kein Zielort für das Schleppflugzeug angegeben."),
+		errorCheck (utf8 ("Es wurde kein Zielort für das Schleppflugzeug angegeben."),
 			ui.towflightLandingLocationInput);
 
 	if (flight.departed && flight.towflightLanded && flight.departureTime>flight.towflightLandingTime)
@@ -1245,8 +1245,8 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 	// Case 0: name is "+1"
 	if (firstName.simplified ()=="+1" || lastName.simplified ()=="+1")
 	{
-		QString title=QString::fromUtf8 ("+1 als Name angegeben");
-		QString problem=QString::fromUtf8 ("Es wurde \"+1\" als Name angegeben. Für Gastflüge sollte"
+		QString title=utf8 ("+1 als Name angegeben");
+		QString problem=utf8 ("Es wurde \"+1\" als Name angegeben. Für Gastflüge sollte"
 			" stattdessen der Flugtyp \"Gastflug\" verwendet werden.");
 		if (!confirmProblem (this, title, problem))
 			throw AbortedException ();
@@ -1311,13 +1311,13 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 	QString text;
 	if (firstNameGiven && lastNameGiven)
 		// Case 3: multiple candidates
-		text=QString::fromUtf8 ("Es kommen mehrere Personen in Frage. Bitte auswählen (%1):").arg (description);
+		text=utf8 ("Es kommen mehrere Personen in Frage. Bitte auswählen (%1):").arg (description);
 	else if (!firstNameGiven)
 		// Case 4-6: no first name given
-		text=QString::fromUtf8  ("Es wurde nur ein Nachname angegeben. Bitte auswählen (%1):").arg (description);
+		text=utf8 ("Es wurde nur ein Nachname angegeben. Bitte auswählen (%1):").arg (description);
 	else if (!lastNameGiven)
 		// Case 4-6: no last name given
-		text=QString::fromUtf8  ("Es wurde nur ein Vorname angegeben. Bitte auswählen (%1):").arg (description);
+		text=utf8 ("Es wurde nur ein Vorname angegeben. Bitte auswählen (%1):").arg (description);
 	// Note that (!firstNameGiven && !lastNameGiven) has already been handled
 	// (case 1)
 
@@ -1506,20 +1506,21 @@ void FlightWindow::disableWidgets (QWidget *widget0, QWidget *widget2, bool disa
 // ** Input field state update **
 // ******************************
 
-const QString textLaunchTimeAutomatic =QString::fromUtf8 ("Automati&sch");
-const QString textLaunchTimeLaunched  =QString::fromUtf8 ("Ge&startet"  );
-const QString textLandingTimeAutomatic =QString::fromUtf8 ("&Automatisch");
-const QString textLandingTimeLanded    =QString::fromUtf8 ("Gel&andet"   );
-const QString textTowflightLandingTimeAutomatic =QString::fromUtf8 ("Au&tomatisch");
-const QString textTowflightLandingTimeLanded    =QString::fromUtf8 ("Gelande&t"   );
-const QString textTowflightLandingTimeEnded     =QString::fromUtf8 ("Beende&t"    );
-const QString textTowflightLandingTime =QString::fromUtf8 ("Landezeit Schl&eppflugzeug:");
-const QString textTowflightEnd         =QString::fromUtf8 ("Schl&eppende:");
-const QString textButtonOk =QString::fromUtf8 ("&OK");
-const QString textButtonLaunchNow   =QString::fromUtf8 ( "&Jetzt starten");
-const QString textButtonLaunchLater =QString::fromUtf8 ("S&päter starten");
-const QString textButtonLandNow     =QString::fromUtf8 ( "&Jetzt landen");
-const QString textButtonLandLater   =QString::fromUtf8 ("S&päter landen");
+// TODO rename to departureTime
+const QString textLaunchTimeAutomatic           =utf8 ("Automati&sch");
+const QString textLaunchTimeLaunched            =utf8 ("Ge&startet"  );
+const QString textLandingTimeAutomatic          =utf8 ("&Automatisch");
+const QString textLandingTimeLanded             =utf8 ("Gel&andet"   );
+const QString textTowflightLandingTimeAutomatic =utf8 ("Au&tomatisch");
+const QString textTowflightLandingTimeLanded    =utf8 ("Gelande&t"   );
+const QString textTowflightLandingTimeEnded     =utf8 ("Beende&t"    );
+const QString textTowflightLandingTime          =utf8 ("Landezeit Schl&eppflugzeug:");
+const QString textTowflightEnd                  =utf8 ("Schl&eppende:");
+const QString textButtonOk                      =utf8 ("&OK");
+const QString textButtonLaunchNow               =utf8 ( "&Jetzt starten");
+const QString textButtonLaunchLater             =utf8 ("S&päter starten");
+const QString textButtonLandNow                 =utf8 ( "&Jetzt landen");
+const QString textButtonLandLater               =utf8 ("S&päter landen");
 
 
 /*

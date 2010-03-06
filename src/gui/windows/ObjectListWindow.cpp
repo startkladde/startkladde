@@ -85,21 +85,21 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 
 	if (objectUsed)
 	{
-		QString title=QString::fromUtf8 ("%1 benutzt").arg (T::objectTypeDescription ());
-		QString text=QString::fromUtf8 ("%1 wird verwendet und kann daher nicht gelöscht werden.").arg (T::objectTypeDescriptionDefinite ());
+		QString title=utf8 ("%1 benutzt").arg (T::objectTypeDescription ());
+		QString text=utf8 ("%1 wird verwendet und kann daher nicht gelöscht werden.").arg (T::objectTypeDescriptionDefinite ());
 		QMessageBox::critical (this, title, firstToUpper (text));
 	}
 	else
 	{
 		// TODO include name in question
-		QString title=QString::fromUtf8 ("%1 löschen?").arg (T::objectTypeDescription ());
-		QString question=QString::fromUtf8 ("Soll %1 gelöscht werden?").arg (T::objectTypeDescriptionDefinite ());
+		QString title=utf8 ("%1 löschen?").arg (T::objectTypeDescription ());
+		QString question=utf8 ("Soll %1 gelöscht werden?").arg (T::objectTypeDescriptionDefinite ());
 		if (yesNoQuestion (this, title, question))
 		{
 			Returner<int> returner;
 			SignalOperationMonitor monitor;
 			dbWorker.deleteObject<T> (returner, monitor, id);
-			MonitorDialog::monitor (monitor, trUtf8 ("Objekt löschen"), this); // FIXME Person anlegen
+			MonitorDialog::monitor (monitor, utf8 ("Objekt löschen"), this); // FIXME Person anlegen
 			returner.wait ();
 
 			// TODO select "next" entry

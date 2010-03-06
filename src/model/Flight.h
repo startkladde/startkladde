@@ -3,6 +3,7 @@
 
 #include <cassert>
 
+#include <QApplication>
 #include <QString>
 #include <QDateTime>
 #include <QMetaType>
@@ -222,7 +223,7 @@ class Flight
 		// *** ObjectListWindow/ObjectEditorWindow helpers
 		static QString objectTypeDescription () { return "Flug"; }
 		static QString objectTypeDescriptionDefinite () { return "der Flug"; }
-		static QString objectTypeDescriptionPlural () { return QString::fromUtf8 ("Flüge"); }
+		static QString objectTypeDescriptionPlural () { return qApp->translate ("Flight", "Flüge"); }
 
 
 		// *** SQL interface

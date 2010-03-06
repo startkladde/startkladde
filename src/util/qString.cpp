@@ -1,5 +1,10 @@
 #include "qString.h"
 
+QString utf8 (const char *text)
+{
+	return QString::fromUtf8 (text);
+}
+
 std::ostream &operator<< (std::ostream &s, const QString &c)
 {
 	return s << qPrintable (c);

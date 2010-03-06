@@ -583,7 +583,7 @@ namespace Db
 		{
 			if (otherDate.isNull ()) return 0;
 
-			monitor.status (trUtf8 ("Flüge von %1 abrufen").arg (otherDate.toString (Qt::LocaleDate)));
+			monitor.status (utf8 ("Flüge von %1 abrufen").arg (otherDate.toString (Qt::LocaleDate)));
 
 			QList<Flight> newFlights=db.getFlightsDate (otherDate);
 			synchronized (dataMutex) flightsOther.replaceList (newFlights);
@@ -593,7 +593,7 @@ namespace Db
 
 		int Cache::fetchFlightsOther (QDate date, OperationMonitorInterface monitor)
 		{
-			monitor.status (trUtf8 ("Flüge für %1 werden abgerufen").arg (date.toString (Qt::LocaleDate)));
+			monitor.status (utf8 ("Flüge für %1 werden abgerufen").arg (date.toString (Qt::LocaleDate)));
 
 			if (date.isNull ())
 				return 0;
@@ -611,7 +611,7 @@ namespace Db
 
 		int Cache::refreshPreparedFlights (OperationMonitorInterface monitor)
 		{
-			monitor.status (trUtf8 ("Vorbereitete Flüge abrufen"));
+			monitor.status (utf8 ("Vorbereitete Flüge abrufen"));
 
 			QList<Flight> newFlights=db.getPreparedFlights ();
 			synchronized (dataMutex) preparedFlights.replaceList (newFlights);
@@ -621,7 +621,7 @@ namespace Db
 
 		int Cache::refreshLocations (OperationMonitorInterface monitor)
 		{
-			monitor.status (trUtf8 ("Flugplätze abrufen"));
+			monitor.status (utf8 ("Flugplätze abrufen"));
 
 			QStringList newLocations=db.listLocations ();
 			synchronized (dataMutex) locations=newLocations;
@@ -631,7 +631,7 @@ namespace Db
 
 		int Cache::refreshAccountingNotes (OperationMonitorInterface monitor)
 		{
-			monitor.status (trUtf8 ("Abrechnungshinweise abrufen"));
+			monitor.status (utf8 ("Abrechnungshinweise abrufen"));
 
 			QStringList newAccountingNotes=db.listAccountingNotes ();
 			synchronized (dataMutex) accountingNotes=newAccountingNotes;

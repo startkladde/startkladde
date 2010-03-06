@@ -86,7 +86,7 @@ template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, Db::Cach
 		case modeDisplay:
 			setWindowTitle (QString ("%1 anzeigen").arg (T::objectTypeDescription ()));
 			ui.okButton->setVisible (false);
-			ui.cancelButton->setText (QString::fromUtf8 ("&Schließen"));
+			ui.cancelButton->setText (utf8 ("&Schließen"));
 			editorPane->setEnabled (false);
 			break;
 	}

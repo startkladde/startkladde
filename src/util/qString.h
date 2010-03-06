@@ -16,6 +16,6 @@
 std::ostream &operator<< (std::ostream &s, const QString &c);
 QString std2q (const std::string &string);
 std::string q2std (const QString &string);
-
+QString utf8 (const char *text);
 
 #endif

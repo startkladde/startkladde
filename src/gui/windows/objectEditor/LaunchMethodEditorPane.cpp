@@ -2,7 +2,7 @@
 
 #include "src/model/LaunchMethod.h"
 #include "src/db/cache/Cache.h"
-
+#include "src/util/qString.h"
 
 // ******************
 // ** Construction **
@@ -100,9 +100,9 @@ LaunchMethod LaunchMethodEditorPane::determineObject ()
 	// TODO error checks:
 	//   - towplane is glider
 	//   - create towplane if it does not exist
-	requiredField (launchMethod.name     , ui.nameInput     , QString::fromUtf8 ("Es wurde kein Name angegeben."                 ));
-	requiredField (launchMethod.shortName, ui.shortNameInput, QString::fromUtf8 ("Es wurde kein Kürzel angegeben."               ));
-	requiredField (launchMethod.logString, ui.logStringInput, QString::fromUtf8 ("Es wurde keine Flugbuch-Bezeichnung angegeben."));
+	requiredField (launchMethod.name     , ui.nameInput     , utf8 ("Es wurde kein Name angegeben."                 ));
+	requiredField (launchMethod.shortName, ui.shortNameInput, utf8 ("Es wurde kein Kürzel angegeben."               ));
+	requiredField (launchMethod.logString, ui.logStringInput, utf8 ("Es wurde keine Flugbuch-Bezeichnung angegeben."));
 
 	return launchMethod;
 }

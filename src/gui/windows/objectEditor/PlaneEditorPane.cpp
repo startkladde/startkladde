@@ -5,6 +5,7 @@
 #include "src/text.h"
 #include "src/db/cache/Cache.h"
 #include "src/model/Plane.h"
+#include "src/util/qString.h"
 
 /*
  * Improvements:
@@ -155,7 +156,7 @@ Plane PlaneEditorPane::determineObject ()
 
 	int maxSeats=Plane::categoryMaxSeats (plane.category);
 	if (maxSeats>=0 && plane.numSeats>maxSeats)
-		errorCheck (QString::fromUtf8 ("Es wurden zu viele Sitze für die gewählte Gattung angegeben."),
+		errorCheck (utf8 ("Es wurden zu viele Sitze für die gewählte Gattung angegeben."),
 			ui.seatsInput);
 
 

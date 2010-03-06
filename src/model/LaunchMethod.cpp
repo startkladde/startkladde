@@ -8,6 +8,7 @@
 #include "src/util/bool.h"
 #include "src/db/result/Result.h"
 #include "src/db/Query.h"
+#include "src/util/qString.h"
 
 
 // ******************
@@ -169,14 +170,14 @@ QVariant LaunchMethod::DefaultObjectModel::displayHeaderData (int column) const
 {
 	switch (column)
 	{
-		case 0: return QString::fromUtf8 ("Name");
-		case 1: return QString::fromUtf8 ("Kürzel");
-		case 2: return QString::fromUtf8 ("Flugbuch-Bezeichnung");
-		case 3: return QString::fromUtf8 ("Tastenkürzel");
-		case 4: return QString::fromUtf8 ("Typ");
-		case 5: return QString::fromUtf8 ("Schleppflugzeug");
-		case 6: return QString::fromUtf8 ("Person erforderlich");
-		case 7: return QString::fromUtf8 ("Bemerkungen");
+		case 0: return utf8 ("Name");
+		case 1: return utf8 ("Kürzel");
+		case 2: return utf8 ("Flugbuch-Bezeichnung");
+		case 3: return utf8 ("Tastenkürzel");
+		case 4: return utf8 ("Typ");
+		case 5: return utf8 ("Schleppflugzeug");
+		case 6: return utf8 ("Person erforderlich");
+		case 7: return utf8 ("Bemerkungen");
 		// TODO remove from DefaultObjectModel?
 		case 8: return "ID";
 	}

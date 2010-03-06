@@ -78,7 +78,7 @@ void OperationMonitorInterface::status (const QString &text, bool checkCanceled)
 
 void OperationMonitorInterface::status (const char *text, bool checkCanceled)
 {
-	status (QString::fromUtf8 (text), checkCanceled);
+	status (utf8 (text), checkCanceled);
 }
 
 void OperationMonitorInterface::progress (int progress, int maxProgress, const QString &status, bool checkCanceled)
@@ -94,7 +94,7 @@ void OperationMonitorInterface::progress (int progress, int maxProgress, const Q
 void OperationMonitorInterface::progress (int progress, int maxProgress, const char *status, bool checkCanceled)
 {
 	if (status)
-		this->progress (progress, maxProgress, QString::fromUtf8 (status), checkCanceled);
+		this->progress (progress, maxProgress, utf8 (status), checkCanceled);
 	else
 		this->progress (progress, maxProgress, QString (), checkCanceled);
 }
