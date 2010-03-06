@@ -9,7 +9,6 @@
 #include "src/db/dbId.h"
 #include "src/time/Time.h"
 
-class DataStorage;
 class Plane;
 class LaunchMethod;
 
@@ -178,7 +177,7 @@ class Flight
 		// *** Error checking
 		virtual FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *launchMethod) const;
 		virtual QString errorDescription (FlightError code) const;
-		virtual bool isErroneous (Db::Cache::Cache &dataStorage) const;
+		virtual bool isErroneous (Db::Cache::Cache &cache) const;
 		virtual bool fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
 		virtual bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
 

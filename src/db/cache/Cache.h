@@ -48,7 +48,7 @@ namespace Db
 		 * shared by Qt, so the data is not copied until the lists are modified
 		 * or accessed by operator[] or a non-const iterator. If a list is not
 		 * to be modified, it is recommended to declare it as const (e. g. const
-		 * List<Plane>=dataStorage.getPlanes ()) to prevent accidental
+		 * List<Plane>=cache.getPlanes ()) to prevent accidental
 		 * modifications which would cause the list data to be copied.
 		 *
 		 * This class is thread safe, provided that the database is thread safe

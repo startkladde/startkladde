@@ -1,6 +1,5 @@
 /*
  * Short term plan:
- *   - Use background ops for flight
  *   - Connection kicking
  *   - Connection monitoring (ping? keepalive?)
  *   - Proper caching
@@ -10,6 +9,7 @@
  *   - timeout: only when no data is transfered
  *   - fix duplicate connection name when connect is canceled and restarted
  *     (interface is not closed after connect canceled)
+ *   - signal unhandled exceptions to main window
  *
  * Tests:
  *   - Test the migrations:
@@ -58,43 +58,14 @@
  *   - use a memory SQLite for cache
  *   - merge data storage and database methods, so we can use a (local)
  *     database directly (w/o local cache)
- *       - we'd probably have abstract DataStorage and inherited Database and
- *         CachingDataStorage which uses a Database for access and one (in
+ *       - we'd probably have an abstract DataSource and inherited Database and
+ *         Cache which uses a Database for access and one (in
  *         memory) for local caching
  *       - question: can we afford using a query on a memory database e. g.
  *         for list of first names rather than maintaining the list explicitly?
  *         should be fast enough (does sqlite memory table have index?)
  *         locations are more interesting, b/c there are many flights
  *   - local disk caching
- */
-
-/*
- * Old DataStorage sez:
- *
- * On multithreaded database access:
- *   - Some operations may take some time, especially over a slow network
- *     connection. Examples:
- *       - refresh cache, fetch flights for a given date (long operation even
- *         with local storage)
- *       - write to the database (create, update, delete)
- *   - Some operations cannot be interrupted, for example a MySQL call waiting
- *     for a timeout due to a non-working network connection
- *   - We want to be able to cancel such operations. For this, we must have a
- *     responsive GUI, so the GUI thread must be running
- *   - Typically, the function initiating a long operation will not continue
- *     (which also means that it will not return) until after the task is
- *     completed (or failed or aborted), as the next action may depend on the
- *     result of the task
- *
- * Implementation of multithreaded database access:
- *   - operation are performed by a Task
- *   - the DataStorage has a WorkerThread that performs Tasks sequentially on
- *     a background thread
- *   - the database access functionality is in DataStorage; the tasks call the
- *     corresponding method of DataStorage, passing a pointer the Task as an
- *     OperationMonitor
- *   - a dialog for monitoring and canceling Tasks is provided by
- *     TaskProgressDialog
  */
 
 #include "Database.h"

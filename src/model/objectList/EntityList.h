@@ -30,7 +30,7 @@ template<class T> class EntityList: public MutableObjectList<T>
 		virtual ~EntityList ();
 
 		// Access
-		// TODO: addById which gets the data from the dataStorage (?); dito for replace
+		// TODO: addById which gets the data from the cache (?); dito for replace
 		virtual int findById (dbId id);
 		// TODO: have them return the number of entries removed/replaced and
 		// assert that it is 1 where applicable

@@ -585,7 +585,6 @@ void MainWindow::startFlight (dbId id)
 
 	try
 	{
-//		Flight flight = dataStorage.getObject<Flight> (id);
 		Flight flight=cache.getObject<Flight> (id);
 		QString reason;
 
@@ -614,7 +613,6 @@ void MainWindow::landFlight (dbId id)
 
 	try
 	{
-//		Flight flight = dataStorage.getObject<Flight> (id);
 		Flight flight = cache.getObject<Flight> (id);
 		QString reason;
 
@@ -1718,15 +1716,7 @@ void MainWindow::on_actionSetTime_triggered ()
 
 void MainWindow::on_actionTest_triggered ()
 {
-//	// Perform a sleep task in the background
-//	Task *task = new SleepTask (5);
-//	//	Task *task=new DataStorage::SleepTask (dataStorage, 5);
-//
-//
-//	dataStorage.addTask (task);
-//	TaskProgressDialog::waitTask (this, task);
-//
-//	delete task;
+	// Perform a sleep task in the background
 }
 
 void MainWindow::logMessage (QString message)

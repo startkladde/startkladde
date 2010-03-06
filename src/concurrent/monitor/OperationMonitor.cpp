@@ -11,9 +11,10 @@
 
 /*
  * TODO:
- *   - generally improve it
  *   - allow suboperations
- *   - allow calling an operation without monitor (nullobject interface?)
+ *   - documentation
+ *
+ * Improvements:
  *   - integrate Monitor with Returner so we only need to pass one object
  *     - NB: returner is a template, and we want to emit (progress, status) and
  *       receive (cancel) signals
@@ -21,12 +22,16 @@
  *     - Look at QFuture
  *   - make Returner assignable so we can write Retuner returner=operation ();
  *     and return operation ().returnedValue (); (?)
- *   - documentation
- *
- *
- * In actual class:
- *   if (monitor) monitor->setStatus ("...");
- *   if (monitor) monitor->setProgress (22, 100);
+ *   - ThreadSafeInterface open vs. asyncOpen: could have this for all methods
+ *     -> merge somehow? (e. g. pass Monitor::Synchronous ())
+ *   - Use a monitor with a method that does not take a monitor?
+ *   - The block for calling a background operation is quite long. Better would
+ *     be something like:
+ *     Monitor<T> monitor=asyncOperation (params...);
+ *     monitor.getResult (); // waits and rethrows
+ *     monitor.wait (); // rethrows
+ *     For specifying different kinds of monitors, we'll probably need
+ *     asyncOperation (new SignalMonitor<T> (), params...);
  */
 
 
@@ -63,4 +68,3 @@ bool OperationMonitor::isCanceled ()
 {
 	synchronizedReturn (mutex, canceled);
 }
-
