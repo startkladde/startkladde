@@ -683,11 +683,6 @@ namespace Db
 			}
 		}
 
-		template<class T> void Cache::objectAdded (dbId id)
-		{
-			objectAdded (db.getObject<T> (id));
-		}
-
 		// This template is specialized for T==Flight
 		template<class T> void Cache::objectDeleted (dbId id)
 		{
@@ -712,11 +707,6 @@ namespace Db
 				// Update the cache
 			synchronized (dataMutex)
 				objectList<T> ()->replaceById (object.getId (), object);
-		}
-
-		template<class T> void Cache::objectUpdated (dbId id)
-		{
-			objectUpdated (db.getObject<T> (id));
 		}
 
 		template<> void Cache::objectUpdated<Flight> (const Flight &flight)
@@ -770,37 +760,40 @@ namespace Db
 
 			// This is ugly, but we can't pass a template class instance as a
 			// signal parameter
-			switch (event.type)
+			switch (event.getType ())
 			{
 				case Event::DbEvent::typeAdd:
-					switch (event.table)
+					switch (event.getTable ())
 					{
-						case Event::DbEvent::tableFlights      : objectAdded<Flight      > (event.id); break;
-						case Event::DbEvent::tableLaunchMethods: objectAdded<LaunchMethod> (event.id); break;
-						case Event::DbEvent::tablePeople       : objectAdded<Person      > (event.id); break;
-						case Event::DbEvent::tablePlanes       : objectAdded<Plane       > (event.id); break;
+						case Event::DbEvent::tableFlights      : objectAdded (event.getValue<Flight>       ()); break;
+						case Event::DbEvent::tableLaunchMethods: objectAdded (event.getValue<LaunchMethod> ()); break;
+						case Event::DbEvent::tablePeople       : objectAdded (event.getValue<Person>       ()); break;
+						case Event::DbEvent::tablePlanes       : objectAdded (event.getValue<Plane>        ()); break;
 					}
 					break;
 				case Event::DbEvent::typeChange:
-					switch (event.table)
+					switch (event.getTable ())
 					{
-						case Event::DbEvent::tableFlights      : objectUpdated<Flight      > (event.id); break;
-						case Event::DbEvent::tableLaunchMethods: objectUpdated<LaunchMethod> (event.id); break;
-						case Event::DbEvent::tablePeople       : objectUpdated<Person      > (event.id); break;
-						case Event::DbEvent::tablePlanes       : objectUpdated<Plane       > (event.id); break;
+						case Event::DbEvent::tableFlights      : objectUpdated (event.getValue<Flight      > ()); break;
+						case Event::DbEvent::tableLaunchMethods: objectUpdated (event.getValue<LaunchMethod> ()); break;
+						case Event::DbEvent::tablePeople       : objectUpdated (event.getValue<Person      > ()); break;
+						case Event::DbEvent::tablePlanes       : objectUpdated (event.getValue<Plane       > ()); break;
 					}
 					break;
 				case Event::DbEvent::typeDelete:
-					switch (event.table)
+					switch (event.getTable ())
 					{
-						case Event::DbEvent::tableFlights      : objectDeleted<Flight      > (event.id); break;
-						case Event::DbEvent::tableLaunchMethods: objectDeleted<LaunchMethod> (event.id); break;
-						case Event::DbEvent::tablePeople       : objectDeleted<Person      > (event.id); break;
-						case Event::DbEvent::tablePlanes       : objectDeleted<Plane       > (event.id); break;
+						case Event::DbEvent::tableFlights      : objectDeleted<Flight      > (event.getId ()); break;
+						case Event::DbEvent::tableLaunchMethods: objectDeleted<LaunchMethod> (event.getId ()); break;
+						case Event::DbEvent::tablePeople       : objectDeleted<Person      > (event.getId ()); break;
+						case Event::DbEvent::tablePlanes       : objectDeleted<Plane       > (event.getId ()); break;
 					}
 					break;
 				// no default
 			}
+
+			// Re-emit the event
+			std::cout << "Cache reemitting " << event.toString() << std::endl;
 
 			emit changed (event);
 		}

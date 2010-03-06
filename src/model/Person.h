@@ -2,6 +2,7 @@
 #define PERSON_H_
 
 #include <QString>
+#include <QMetaType>
 
 #include "src/model/Entity.h"
 #include "src/model/objectList/ObjectModel.h"
@@ -67,5 +68,7 @@ class Person: public Entity
 	private:
 		void initialize ();
 };
+
+Q_DECLARE_METATYPE (Person);
 
 #endif

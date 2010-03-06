@@ -5,6 +5,7 @@
 
 #include <QString>
 #include <QDateTime>
+#include <QMetaType>
 
 #include "src/db/dbId.h"
 #include "src/time/Time.h"
@@ -250,6 +251,8 @@ class Flight
 		virtual void initialize (dbId id);
 		virtual QString incompletePersonName (QString nn, QString vn) const;
 };
+
+Q_DECLARE_METATYPE (Flight);
 
 #endif
 

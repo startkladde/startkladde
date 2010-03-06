@@ -145,14 +145,8 @@ namespace Db
 				template<class T> void objectDeleted (dbId id);
 				template<class T> void objectUpdated (const T &object);
 
-				// TODO remove id methods after the object is passed in the
-				// event
-				template<class T> void objectAdded (dbId id);
-				template<class T> void objectUpdated (dbId id);
-
 			signals:
 				void changed (Db::Event::DbEvent event);  // full type name
-
 
 			protected:
 				// *** Object lists

@@ -3,9 +3,6 @@
  *   - Connection kicking
  *   - Connection monitoring (ping? keepalive?)
  *   - Proper caching
- *   - Send object with DbEvent
- *     - QVariant or similar
- *     - No select query after update to update cache
  *   - timeout: only when no data is transfered
  *   - fix duplicate connection name when connect is canceled and restarted
  *     (interface is not closed after connect canceled)
@@ -147,7 +144,7 @@ namespace Db
 
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
-		emit dbEvent (Event::DbEvent (Event::DbEvent::typeDelete, Event::DbEvent::getTable<T> (), id));
+		emit dbEvent (Event::DbEvent::deleted<T> (id));
 
 		return result->numRowsAffected ()>0;
 	}
@@ -168,7 +165,7 @@ namespace Db
 		object.id=result->lastInsertId ().toLongLong ();
 
 		if (idValid (object.id))
-			emit dbEvent (Event::DbEvent (Event::DbEvent::typeAdd, Event::DbEvent::getTable<T> (), object.id));
+			emit dbEvent (Event::DbEvent::added (object));
 
 		return object.id;
 	}
@@ -183,7 +180,7 @@ namespace Db
 
 		QSharedPointer<Result::Result> result=interface.executeQueryResult (query);
 
-		emit dbEvent (Event::DbEvent (Event::DbEvent::typeChange, Event::DbEvent::getTable<T> (), object.getId ()));
+		emit dbEvent (Event::DbEvent::changed (object));
 
 		return result->numRowsAffected ()>0;
 	}

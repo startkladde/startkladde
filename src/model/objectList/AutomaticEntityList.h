@@ -10,7 +10,6 @@
 
 // TODO may includes in header
 #include "EntityList.h"
-#include "src/db/cache/Cache.h"
 #include "src/db/event/DbEvent.h"
 #include "src/db/event/DbEventMonitor.h"
 #include "src/concurrent/threadUtil.h"
@@ -20,48 +19,50 @@
 // ******************
 
 /**
- * A subclass auf EntityList that receives dbChange events from a Cache
- * and updates the list accordingly.
+ * A subclass auf EntityList that receives changed events from an object
+ * and updates the list accordingly
+ *
+ * The object must provide a changed (Db::Event::DbEvent) signal.
+ *
+ * This uses a DbEventMonitor rather than an AutomaticEntityListBase with a
+ * changed slot in order to avoid a diamon inheritance from QObject.
  */
 template<class T> class AutomaticEntityList: public EntityList<T>, Db::Event::DbEventMonitor::Listener
 {
 	public:
-		AutomaticEntityList (Db::Cache::Cache &cache, QObject *parent=NULL);
-		AutomaticEntityList (Db::Cache::Cache &cache, const QList<T> &list, QObject *parent=NULL);
+		AutomaticEntityList (QObject &source, QObject *parent=NULL);
+		AutomaticEntityList (QObject &source, const QList<T> &list, QObject *parent=NULL);
 		virtual ~AutomaticEntityList ();
 
 		// Db::Event::Listener methods
 		virtual void dbEvent (Db::Event::DbEvent event);
 
 	protected:
-		Db::Cache::Cache &cache;
 		Db::Event::DbEventMonitor monitor;
 };
 
 /**
  * Creates an empty AutomaticEntityList
  *
- * @param cache the Db::Cache::Cache to monitor for changes
+ * @param source the object to monitor for changes
  * @param parent the Qt parent
  */
-template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache &cache, QObject *parent):
+template<class T> AutomaticEntityList<T>::AutomaticEntityList (QObject &source, QObject *parent):
 	EntityList<T> (parent),
-	cache (cache),
-	monitor (cache, SIGNAL (changed (Db::Event::DbEvent)), *this)
+	monitor (source, SIGNAL (changed (Db::Event::DbEvent)), *this)
 {
 }
 
 /**
  * Creates an AutomaticEntityList with entries from a given list
- * @param cache
+ * @param source
  * @param list
  * @param parent
  * @return
  */
-template<class T> AutomaticEntityList<T>::AutomaticEntityList (Db::Cache::Cache &cache, const QList<T> &list, QObject *parent):
+template<class T> AutomaticEntityList<T>::AutomaticEntityList (QObject &source, const QList<T> &list, QObject *parent):
 	EntityList<T> (list, parent),
-	cache (cache),
-	monitor (cache, SIGNAL (changed (Db::Event::DbEvent)), *this)
+	monitor (source, SIGNAL (changed (Db::Event::DbEvent)), *this)
 {
 }
 
@@ -85,27 +86,27 @@ template<class T> void AutomaticEntityList<T>::dbEvent (Db::Event::DbEvent event
 	assert (isGuiThread());
 
 	// Return if the table does not match the type of this list
-	if (event.table!=Db::Event::DbEvent::getTable<T> ()) return;
+	if (!event.hasTable<T> ()) return;
 
-	switch (event.type)
+	switch (event.getType ())
 	{
 		case Db::Event::DbEvent::typeAdd:
 		{
-			EntityList<T>::append (cache.getObject<T> (event.id));
+			EntityList<T>::append (event.getValue<T> ());
 		} break;
 		case Db::Event::DbEvent::typeDelete:
 		{
-			int i=EntityList<T>::findById (event.id);
+			int i=EntityList<T>::findById (event.getId ());
 			if (i>=0) EntityList<T>::removeAt (i);
 		} break;
 		case Db::Event::DbEvent::typeChange:
 		{
-			int i=EntityList<T>::findById (event.id);
+			int i=EntityList<T>::findById (event.getId ());
 			if (i>=0)
-				EntityList<T>::replace (i, cache.getObject<T> (event.id));
+				EntityList<T>::replace (i, event.getValue<T> ());
 			else
 				// Should not happen
-				EntityList<T>::append (cache.getObject<T> (event.id));
+				EntityList<T>::append (event.getValue<T> ());
 		} break;
 	}
 }

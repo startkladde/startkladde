@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <QString>
 #include <QList>
+#include <QMetaType>
 
 #include "src/model/objectList/ObjectModel.h"
 
@@ -86,6 +87,8 @@ class Plane: public Entity
 	private:
 		void initialize ();
 };
+
+Q_DECLARE_METATYPE (Plane);
 
 #endif
 

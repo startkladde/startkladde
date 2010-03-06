@@ -35,16 +35,11 @@ namespace Db { namespace Event
 		assert (!"DbEvent default constructor called");
 	}
 
-	DbEvent::DbEvent (Type type, Table table, dbId id):
-		type (type), table (table), id (id)
+	DbEvent::DbEvent (Type type, Table table, dbId id, const QVariant &value):
+		type (type), table (table), id (id), value (value)
 	{
 	}
 
-	// We may need this when we want to use Event in Queued signals
-	//DbEvent::Event ():
-	//	type (DbEvent::typeNone), table (DbEvent::tableNone), id (invalidId)
-	//{
-	//}
 
 
 	QString DbEvent::toString ()

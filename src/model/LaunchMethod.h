@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QStringList>
+#include <QMetaType>
 
 #include "src/model/Entity.h"
 #include "src/model/objectList/ObjectModel.h"
@@ -82,5 +83,7 @@ class LaunchMethod: public Entity
 	private:
 		void initialize ();
 };
+
+Q_DECLARE_METATYPE (LaunchMethod);
 
 #endif

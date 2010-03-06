@@ -1590,13 +1590,13 @@ void MainWindow::cacheChanged (Db::Event::DbEvent event)
 	{
 		// TODO when a plane, person or launch method is changed, the flight list
 		// has to be updated, too. But that's a feature of the FlightListModel (?).
-		if (event.table == Db::Event::DbEvent::tableFlights)
+		if (event.hasTable<Flight> ())
 		{
-			switch (event.type)
+			switch (event.getType ())
 			{
 				case Db::Event::DbEvent::typeAdd:
 				{
-					const Flight &flight=cache.getObject<Flight> (event.id);
+					Flight flight=event.getValue<Flight> ();
 					if (flight.isPrepared () || flight.effdatum ()==displayDate)
 						flightList->append (flight);
 
@@ -1613,28 +1613,16 @@ void MainWindow::cacheChanged (Db::Event::DbEvent event)
 				} break;
 				case Db::Event::DbEvent::typeChange:
 				{
-					try
-					{
-						const Flight &flight=cache.getObject<Flight> (event.id);
+					Flight flight=event.getValue<Flight> ();
 
-						std::cout << "effdatum: " << flight.effdatum ().toString () << std::endl;
-						if (flight.isPrepared () || flight.effdatum ()==displayDate)
-							flightList->replaceOrAdd (event.id, flight);
-						else
-							flightList->removeById (event.id);
-					}
-					catch (Cache::NotFoundException)
-					{
-						// The flight was not found. This means that it didn't
-						// happen today or on the cache's "other" date.
-						// Since the display date is always today or the "other"
-						// date, we can conclude that we have to remove the
-						// flight.
-						flightList->removeById (event.id);
-					}
+					std::cout << "effdatum: " << flight.effdatum ().toString () << std::endl;
+					if (flight.isPrepared () || flight.effdatum ()==displayDate)
+						flightList->replaceOrAdd (flight.getId (), flight);
+					else
+						flightList->removeById (flight.getId ());
 				} break;
 				case Db::Event::DbEvent::typeDelete:
-					flightList->removeById (event.id);
+					flightList->removeById (event.getId ());
 					break;
 			}
 		}
