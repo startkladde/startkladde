@@ -62,23 +62,20 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 	const T &object=list->at (listIndex);
 	dbId id=object.getId ();
 
-//	ObjectUsedTask<T> checkTask (cache, id);
-//	cache.addTask (&checkTask);
-//	TaskProgressDialog::waitTask (this, &checkTask);
-//	if (checkTask.isCanceled ()) return;
-//	if (!checkTask.isCompleted ()) return; // TODO error check instead
-//	bool objectUsed=checkTask.getResult ();
-
+	bool objectUsed=true;
 	// TODO pass, or get from Db
 	Db::DbWorker dbWorker (cache.getDatabase ());
 
-	Returner<bool> returner;
-	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
-	dbWorker.objectUsed<T> (returner, monitor, id);
-	MonitorDialog::monitor (monitor, utf8 ("%1 prüfen").arg (T::objectTypeDescription ()), this);
-	bool objectUsed=returner.returnedValue ();
-	// FIXME handle OperationCanceledException
+	try
+	{
+		Returner<bool> returner;
+		SignalOperationMonitor monitor;
+		connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
+		dbWorker.objectUsed<T> (returner, monitor, id);
+		MonitorDialog::monitor (monitor, utf8 ("%1 prüfen").arg (T::objectTypeDescription ()), this);
+		objectUsed=returner.returnedValue ();
+	}
+	catch (OperationCanceledException) { }
 
 	if (objectUsed)
 	{
@@ -93,13 +90,19 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 		QString question=utf8 ("Soll %1 gelöscht werden?").arg (T::objectTypeDescriptionDefinite ());
 		if (yesNoQuestion (this, title, question))
 		{
-			Returner<int> returner;
-			SignalOperationMonitor monitor;
-			connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
-			dbWorker.deleteObject<T> (returner, monitor, id);
-			MonitorDialog::monitor (monitor, utf8 ("%1 löschen").arg (T::objectTypeDescription ()), this);
-			returner.wait ();
-			// FIXME handle OperationCanceledException
+			try
+			{
+				Returner<int> returner;
+				SignalOperationMonitor monitor;
+				connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
+				dbWorker.deleteObject<T> (returner, monitor, id);
+				MonitorDialog::monitor (monitor, utf8 ("%1 löschen").arg (T::objectTypeDescription ()), this);
+				returner.wait ();
+			}
+			catch (OperationCanceledException)
+			{
+				// TODO the cache may now be inconsistent
+			}
 
 			// TODO select "next" entry
 		}

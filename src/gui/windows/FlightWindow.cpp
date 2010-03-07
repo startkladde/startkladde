@@ -18,6 +18,7 @@
 #include "src/config/Options.h" // Required for opts.ort
 #include "src/util/qString.h"
 #include "src/db/Database.h"
+#include "src/concurrent/monitor/OperationCanceledException.h"
 
 /*
  * On enabling/diabling widgets:
@@ -1368,29 +1369,43 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 		// TODO background
 		case modeCreate:
 		{
-			// TODO pass, or get from Db
-			Db::DbWorker dbWorker (cache.getDatabase ());
+			try
+			{
+				// TODO pass, or get from Db
+				Db::DbWorker dbWorker (cache.getDatabase ());
 
-			Returner<dbId> returner;
-			SignalOperationMonitor monitor;
-			connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
-			dbWorker.createObject (returner, monitor, flight);
-			MonitorDialog::monitor (monitor, "Flug anlegen", this);
-			success=idValid (returner.returnedValue ());
+				Returner<dbId> returner;
+				SignalOperationMonitor monitor;
+				connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
+				dbWorker.createObject (returner, monitor, flight);
+				MonitorDialog::monitor (monitor, "Flug anlegen", this);
+				success=idValid (returner.returnedValue ());
+			}
+			catch (OperationCanceledException)
+			{
+				// TODO the cache may now be inconsistent
+			}
 		} break;
 		case modeEdit:
 		{
-			// TODO pass, or get from Db
-			Db::DbWorker dbWorker (cache.getDatabase ());
+			try
+			{
+				// TODO pass, or get from Db
+				Db::DbWorker dbWorker (cache.getDatabase ());
 
-			Returner<int> returner;
-			SignalOperationMonitor monitor;
-			connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
-			dbWorker.updateObject (returner, monitor, flight);
-			MonitorDialog::monitor (monitor, "Flug speichern", this);
-			returner.wait (); // May return 0 if nothing changed
+				Returner<int> returner;
+				SignalOperationMonitor monitor;
+				connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
+				dbWorker.updateObject (returner, monitor, flight);
+				MonitorDialog::monitor (monitor, "Flug speichern", this);
+				returner.wait (); // May return 0 if nothing changed
 
-			success=true;
+				success=true;
+			}
+			catch (OperationCanceledException)
+			{
+				// TODO the cache may now be inconsistent
+			}
 		} break;
 	}
 

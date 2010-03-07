@@ -9,13 +9,11 @@
 #include "src/db/Database.h"
 #include "src/db/cache/Cache.h"
 #include "src/db/DbWorker.h"
-
+#include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/concurrent/monitor/SignalOperationMonitor.h"
 #include "src/gui/windows/MonitorDialog.h"
 #include "src/concurrent/Returner.h"
-
-#include <iostream> // remove
-#include "src/util/qString.h" // remove
+#include "src/util/qString.h"
 
 /*
  * Improvements:
@@ -142,43 +140,54 @@ template<class T> int ObjectEditorWindow<T>::editObject (QWidget *parent, Db::Ca
 
 template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 {
-	// TODO error handling
-	// TODO background
-
-	// FIXME handle OperationCanceledException
-
 	switch (mode)
 	{
 		case modeCreate:
 		{
-			std::cout << "Create object: " << object.toString () << std::endl;
+			try
+			{
+				std::cout << "Create object: " << object.toString () << std::endl;
 
-			// TODO pass, or get from Db
-			Db::DbWorker dbWorker (cache.getDatabase ());
+				// TODO pass, or get from Db
+				Db::DbWorker dbWorker (cache.getDatabase ());
 
-			Returner<dbId> returner;
-			SignalOperationMonitor monitor;
-			connect (&monitor, SIGNAL (canceled ()), & cache.getDatabase(), SLOT (cancelConnection ()));
-			dbWorker.createObject (returner, monitor, object);
-			MonitorDialog::monitor (monitor, utf8 ("%1 anlegen").arg (T::objectTypeDescription ()), this);
-			return idValid (returner.returnedValue ());
+				Returner<dbId> returner;
+				SignalOperationMonitor monitor;
+				connect (&monitor, SIGNAL (canceled ()), & cache.getDatabase(), SLOT (cancelConnection ()));
+				dbWorker.createObject (returner, monitor, object);
+				MonitorDialog::monitor (monitor, utf8 ("%1 anlegen").arg (T::objectTypeDescription ()), this);
+				return idValid (returner.returnedValue ());
+			}
+			catch (OperationCanceledException)
+			{
+				// TODO the cache may now be inconsistent
+				return false;
+			}
 		} break;
 		case modeEdit:
 		{
-			std::cout << "Update object: " << object.toString () << std::endl;
+			try
+			{
+				std::cout << "Update object: " << object.toString () << std::endl;
 
-			// TODO pass, or get from Db
-			Db::DbWorker dbWorker (cache.getDatabase ());
+				// TODO pass, or get from Db
+				Db::DbWorker dbWorker (cache.getDatabase ());
 
-			Returner<int> returner;
-			SignalOperationMonitor monitor;
-			connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
-			dbWorker.updateObject (returner, monitor, object);
-			MonitorDialog::monitor (monitor, utf8 ("%1 aktualisieren").arg (T::objectTypeDescription ()), this);
-			// May return false if nothing changed
-			returner.wait ();
+				Returner<int> returner;
+				SignalOperationMonitor monitor;
+				connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
+				dbWorker.updateObject (returner, monitor, object);
+				MonitorDialog::monitor (monitor, utf8 ("%1 aktualisieren").arg (T::objectTypeDescription ()), this);
+				// May return false if nothing changed
+				returner.wait ();
 
-			return true;
+				return true;
+			}
+			catch (OperationCanceledException)
+			{
+				// TODO the cache may now be inconsistent
+				return false;
+			}
 		} break;
 		case modeDisplay:
 			assert (false);

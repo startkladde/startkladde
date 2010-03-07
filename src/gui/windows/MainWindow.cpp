@@ -797,18 +797,22 @@ void MainWindow::on_actionDelete_triggered ()
 	if (isTowflight) if (!yesNoQuestion (this, utf8 ("Geschleppten Flug löschen?"), utf8 (
 			"Der gewählte Flug ist ein Schleppflug. Soll der dazu gehörige geschleppte Flug wirklich gelöscht werden?"))) return;
 
-	// TODO error handling? required? What happens on uncaught exception?
-	// FIXME handle OperationCanceledException
-	// TODO pass, or get from Db
-	Db::DbWorker dbWorker (cache.getDatabase ());
+	try
+	{
+		// TODO pass, or get from Db
+		Db::DbWorker dbWorker (cache.getDatabase ());
 
-	Returner<int> returner;
-	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
-	dbWorker.deleteObject<Flight> (returner, monitor, id);
-	MonitorDialog::monitor (monitor, utf8 ("Flug löschen"), this);
-	returner.wait ();
-
+		Returner<int> returner;
+		SignalOperationMonitor monitor;
+		connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
+		dbWorker.deleteObject<Flight> (returner, monitor, id);
+		MonitorDialog::monitor (monitor, utf8 ("Flug löschen"), this);
+		returner.wait ();
+	}
+	catch (OperationCanceledException)
+	{
+		// TODO the cache may now be inconsistent
+	}
 }
 
 void MainWindow::on_actionDisplayError_triggered ()
