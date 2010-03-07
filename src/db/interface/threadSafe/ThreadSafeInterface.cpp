@@ -84,25 +84,25 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	// ** Transactions **
 	// ******************
 
-	bool ThreadSafeInterface::transaction ()
+	void ThreadSafeInterface::transaction ()
 	{
-		Returner<bool> returner;
+		Returner<void> returner;
 		thread.transaction (&returner);
-		return returner.returnedValue ();
+		returner.wait ();
 	}
 
-	bool ThreadSafeInterface::commit ()
+	void ThreadSafeInterface::commit ()
 	{
-		Returner<bool> returner;
+		Returner<void> returner;
 		thread.commit (&returner);
-		return returner.returnedValue ();
+		returner.wait ();
 	}
 
-	bool ThreadSafeInterface::rollback ()
+	void ThreadSafeInterface::rollback ()
 	{
-		Returner<bool> returner;
+		Returner<void> returner;
 		thread.rollback (&returner);
-		return returner.returnedValue ();
+		returner.wait ();
 	}
 
 

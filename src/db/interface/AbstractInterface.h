@@ -63,9 +63,9 @@ namespace Db
 				virtual void cancelConnection ()=0;
 
 				// *** Transactions
-				virtual bool transaction ()=0;
-				virtual bool commit ()=0;
-				virtual bool rollback ()=0;
+				virtual void transaction ()=0;
+				virtual void commit ()=0;
+				virtual void rollback ()=0;
 
 				// *** Queries
 				virtual void executeQuery (const Query &query)=0;

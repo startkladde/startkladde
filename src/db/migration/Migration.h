@@ -73,9 +73,9 @@ class Migration
 		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null)=0;
 
 	protected:
-		bool transaction ();
-		bool commit ();
-		bool rollback ();
+		void transaction ();
+		void commit ();
+		void rollback ();
 
 		void executeQuery (const Db::Query &query);
 		QSharedPointer<Db::Result::Result> executeQueryResult (const Db::Query &query, bool forwardOnly=true);

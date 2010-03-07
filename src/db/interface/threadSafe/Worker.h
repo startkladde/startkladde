@@ -56,9 +56,9 @@ namespace Db
 					virtual void cancelConnection ();
 
 					// *** Transactions
-					virtual void transaction (Returner<bool> *returner);
-					virtual void commit      (Returner<bool> *returner);
-					virtual void rollback    (Returner<bool> *returner);
+					virtual void transaction (Returner<void> *returner);
+					virtual void commit      (Returner<void> *returner);
+					virtual void rollback    (Returner<void> *returner);
 
 					// *** Queries
 					// Must use Db:: for Query for the signals

@@ -66,19 +66,19 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	// ** Transactions **
 	// ******************
 
-	void Worker::transaction (Returner<bool> *returner)
+	void Worker::transaction (Returner<void> *returner)
 	{
-		returnOrException (returner, interface->transaction ());
+		returnVoidOrException (returner, interface->transaction ());
 	}
 
-	void Worker::commit (Returner<bool> *returner)
+	void Worker::commit (Returner<void> *returner)
 	{
-		returnOrException (returner, interface->commit ());
+		returnVoidOrException (returner, interface->commit ());
 	}
 
-	void Worker::rollback (Returner<bool> *returner)
+	void Worker::rollback (Returner<void> *returner)
 	{
-		returnOrException (returner, interface->rollback ());
+		returnVoidOrException (returner, interface->rollback ());
 	}
 
 

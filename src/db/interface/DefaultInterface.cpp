@@ -195,19 +195,32 @@ namespace Db { namespace Interface
 	// ** Transactions **
 	// ******************
 
-	bool DefaultInterface::transaction ()
+	void DefaultInterface::transaction ()
 	{
-		return db.transaction ();
+		// Do not use the QSqlDatabase transaction methods because executeQuery
+		// already handles reconnecting and errors.
+		// It is possible that this will have to be changed to use the
+		// QSqlDatabase methods in the future. In that case, we have to handle
+		// errros and reconnect here (see #executeQueryImpl).
+		// For the time being, this could also be implemented in Interface, but
+		// if it is changed, this is no longer possible. Also, we already have
+		// the corresponding methods in ThreadSafeDatabase).
+
+		// Use BEGIN rather than BEGIN WORK or BEGIN TRANSACTION because that
+		// is understood by both MySQL and SQLite.
+		executeQuery ("BEGIN");
 	}
 
-	bool DefaultInterface::commit ()
+	void DefaultInterface::commit ()
 	{
-		return db.commit ();
+		// See #transaction
+		executeQuery ("COMMIT");
 	}
 
-	bool DefaultInterface::rollback ()
+	void DefaultInterface::rollback ()
 	{
-		return db.rollback ();
+		// See #transaction
+		executeQuery ("ROLLBACK");
 	}
 
 
@@ -256,6 +269,17 @@ namespace Db { namespace Interface
 		return executeQueryImpl (query, true).size ()>0;
 	}
 
+	bool DefaultInterface::retryOnQueryError (int number)
+	{
+		switch (number)
+		{
+			case CR_SERVER_GONE_ERROR: return true;
+			case CR_SERVER_LOST: return true;
+			default: return false;
+		}
+	}
+
+
 	QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOnly)
 	{
 		// Reset the canceled flag; make sure this is always done before
@@ -272,12 +296,7 @@ namespace Db { namespace Interface
 			}
 			catch (QueryFailedException &ex)
 			{
-				switch (ex.error.number ())
-				{
-					case CR_SERVER_GONE_ERROR: break; // Retry
-					case CR_SERVER_LOST: break; // Retry
-					default: throw;
-				}
+				if (!retryOnQueryError (ex.error.number ())) throw;
 
 				close ();
 
@@ -285,7 +304,6 @@ namespace Db { namespace Interface
 			}
 		}
 	}
-
 
 	/**
 	 * Executes a query and returns the QSqlQuery
@@ -369,4 +387,5 @@ namespace Db { namespace Interface
 		}
 
 	}
+
 } }

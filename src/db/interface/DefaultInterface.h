@@ -53,9 +53,9 @@ namespace Db
 				virtual void cancelConnection ();
 
 				// *** Transactions
-				virtual bool transaction ();
-				virtual bool commit ();
-				virtual bool rollback ();
+				virtual void transaction ();
+				virtual void commit ();
+				virtual void rollback ();
 
 				// *** Queries
 				virtual void executeQuery (const Query &query);
@@ -74,6 +74,8 @@ namespace Db
 
 				virtual QSqlQuery executeQueryImpl (const Query &query, bool forwardOnly=true);
 				virtual QSqlQuery doExecuteQuery (const Query &query, bool forwardOnly=true);
+
+				virtual bool retryOnQueryError (int number);
 		};
 	}
 }

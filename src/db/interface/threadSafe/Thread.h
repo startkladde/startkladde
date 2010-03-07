@@ -58,9 +58,9 @@ namespace Db
 					virtual void cancelConnection ();
 
 					// *** Transactions
-					virtual void transaction (Returner<bool> *returner);
-					virtual void commit      (Returner<bool> *returner);
-					virtual void rollback    (Returner<bool> *returner);
+					virtual void transaction (Returner<void> *returner);
+					virtual void commit      (Returner<void> *returner);
+					virtual void rollback    (Returner<void> *returner);
 
 					// *** Queries
 					virtual void executeQuery       (Returner<void>                            *returner, const Query &query);
@@ -75,9 +75,9 @@ namespace Db
 					virtual void sig_lastError (Returner<QSqlError> *returner) const;
 
 					// *** Transactions
-					virtual void sig_transaction (Returner<bool> *returner);
-					virtual void sig_commit      (Returner<bool> *returner);
-					virtual void sig_rollback    (Returner<bool> *returner);
+					virtual void sig_transaction (Returner<void> *returner);
+					virtual void sig_commit      (Returner<void> *returner);
+					virtual void sig_rollback    (Returner<void> *returner);
 
 					// *** Queries
 					virtual void sig_executeQuery       (Returner<void>                            *returner, Db::Query query);

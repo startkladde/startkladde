@@ -28,21 +28,21 @@ Migration::~Migration ()
 }
 
 /** Forwards to database#transaction */
-bool Migration::transaction ()
+void Migration::transaction ()
 {
-	return interface.transaction ();
+	interface.transaction ();
 }
 
 /** Forwards to database#commit */
-bool Migration::commit ()
+void Migration::commit ()
 {
-	return interface.commit ();
+	interface.commit ();
 }
 
 /** Forwards to database#rollback */
-bool Migration::rollback ()
+void Migration::rollback ()
 {
-	return interface.rollback ();
+	interface.rollback ();
 }
 
 /** Forwards to database#executeQuery */

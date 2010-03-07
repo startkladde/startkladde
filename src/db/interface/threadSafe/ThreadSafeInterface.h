@@ -42,9 +42,9 @@ namespace Db
 					virtual void cancelConnection ();
 
 					// *** Transactions
-					virtual bool transaction ();
-					virtual bool commit ();
-					virtual bool rollback ();
+					virtual void transaction ();
+					virtual void commit ();
+					virtual void rollback ();
 
 					// *** Queries
 					virtual void executeQuery (const Query &query);

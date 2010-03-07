@@ -29,9 +29,9 @@ namespace Db { namespace Interface { namespace ThreadSafe
 		CONNECT (close     (Returner<void>      *));
 		CONNECT (lastError (Returner<QSqlError> *));
 
-		CONNECT (transaction (Returner<bool> *));
-		CONNECT (commit      (Returner<bool> *));
-		CONNECT (rollback    (Returner<bool> *));
+		CONNECT (transaction (Returner<void> *));
+		CONNECT (commit      (Returner<void> *));
+		CONNECT (rollback    (Returner<void> *));
 
 		CONNECT (executeQuery       (Returner<void>                            *, Db::Query));
 		CONNECT (executeQueryResult (Returner<QSharedPointer<Result::Result> > *, Db::Query, bool));
@@ -96,9 +96,9 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	// ** Transactions **
 	// ******************
 
-	void Thread::transaction (Returner<bool> *returner) { emit sig_transaction (returner); }
-	void Thread::commit      (Returner<bool> *returner) { emit sig_commit      (returner); }
-	void Thread::rollback    (Returner<bool> *returner) { emit sig_rollback    (returner); }
+	void Thread::transaction (Returner<void> *returner) { emit sig_transaction (returner); }
+	void Thread::commit      (Returner<void> *returner) { emit sig_commit      (returner); }
+	void Thread::rollback    (Returner<void> *returner) { emit sig_rollback    (returner); }
 
 
 	// *************

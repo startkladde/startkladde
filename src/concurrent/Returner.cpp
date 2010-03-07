@@ -4,6 +4,8 @@
  * Improvements:
  *   - synchronize accesses to data (not strictly required if #returnValue and
  *     #exception are only called once)
+ *   - add a warning if this is destroyed without having been waited on (mainly
+ *     relevant for Returner<void> because we don't retrieve a result)
  */
 
 ReturnerBase::ReturnerBase ():

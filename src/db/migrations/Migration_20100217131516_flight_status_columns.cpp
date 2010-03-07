@@ -13,6 +13,9 @@ Migration_20100217131516_flight_status_columns::~Migration_20100217131516_flight
 
 void Migration_20100217131516_flight_status_columns::up (OperationMonitorInterface monitor)
 {
+	// Ideally, we would use transactions here, but the DDL statements
+	// (add column) terminate the transaction, so it's kind of useless.
+
 	addColumn ("flights", "departed"        , dataTypeBoolean (), "AFTER status");
 	addColumn ("flights", "landed"          , dataTypeBoolean (), "AFTER departed");
 	addColumn ("flights", "towflight_landed", dataTypeBoolean (), "AFTER landed");
@@ -28,6 +31,8 @@ void Migration_20100217131516_flight_status_columns::up (OperationMonitorInterfa
 
 void Migration_20100217131516_flight_status_columns::down (OperationMonitorInterface monitor)
 {
+	// See #up about transaction
+
 	addColumn ("flights", "status", dataTypeInteger (), "AFTER departed");
 
 	std::cout << "Updating status" << std::endl;

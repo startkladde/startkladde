@@ -1,6 +1,5 @@
 /*
  * Short term plan:
- *   - Connection kicking
  *   - Connection monitoring (ping? keepalive?)
  *   - Proper caching
  *   - timeout: only when no data is transfered
