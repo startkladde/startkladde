@@ -51,6 +51,9 @@ namespace Db
 					virtual QSharedPointer<Result::Result> executeQueryResult (const Query &query, bool forwardOnly=true);
 					virtual bool queryHasResult (const Query &query);
 
+				signals:
+					void databaseError (int number, QString message);
+
 				private:
 					Thread thread;
 			};

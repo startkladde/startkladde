@@ -21,6 +21,7 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	void Thread::run ()
 	{
 		worker=new Worker (dbInfo);
+		connect (worker, SIGNAL (databaseError (int, QString)), this, SIGNAL (databaseError (int, QString)));
 
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), worker, SLOT (definition))
 

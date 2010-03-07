@@ -84,6 +84,7 @@ namespace Db
 					virtual void sig_executeQueryResult (Returner<QSharedPointer<Result::Result> > *returner, Db::Query query, bool forwardOnly=true);
 					virtual void sig_queryHasResult     (Returner<bool>                            *returner, Db::Query query);
 
+					void databaseError (int number, QString message);
 
 				protected:
 					virtual void run ();

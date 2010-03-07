@@ -66,7 +66,7 @@ void ponder ()
 	std::cout << "]" << std::endl;
 }
 
-void proxy_test (QApplication &a)
+void proxy_test ()
 {
 	std::cout << utf8 ("Creating proxy on thread %1").arg (QThread::currentThreadId ()) << std::endl;
 
@@ -373,7 +373,7 @@ int main (int argc, char **argv)
 				if (opts.non_options[0]=="test_db")
 					ret=test_database ();
 				else if (opts.non_options[0]=="proxy")
-					proxy_test (a);
+					proxy_test ();
 				else
 					ret=doStuff ();
 			}

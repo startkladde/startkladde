@@ -5,6 +5,7 @@
  *      Author: Martin Herrmann
  */
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QSqlError>
@@ -39,8 +40,10 @@ namespace Db
 		 *
 		 * [1] http://doc.trolltech.com/4.5/threads.html#threads-and-the-sql-module
 		 */
-		class DefaultInterface: public Interface
+		class DefaultInterface: public QObject, public Interface
 		{
+			Q_OBJECT
+
 			public:
 		    	// *** Construction
 				DefaultInterface (const DatabaseInfo &dbInfo);
@@ -62,9 +65,12 @@ namespace Db
 				virtual QSharedPointer<Result::Result> executeQueryResult (const Query &query, bool forwardOnly=true);
 				virtual bool queryHasResult (const Query &query);
 
+			signals:
+				void databaseError (int number, QString message);
+
 			private:
 				QSqlDatabase db;
-				TcpProxy proxy;
+				TcpProxy *proxy;
 				QAtomicInt canceled; // There is no QAtomicBool. 0=false, others=true
 
 				static QAtomicInt freeNumber;

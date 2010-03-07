@@ -22,6 +22,7 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	ThreadSafeInterface::ThreadSafeInterface (const DatabaseInfo &info):
 		Interface (info), thread (info)
 	{
+		connect (&thread, SIGNAL (databaseError (int, QString)), this, SIGNAL (databaseError (int, QString)));
 		thread.start ();
 
 		// Wait for the thread to connect the signals to the worker

@@ -65,6 +65,8 @@ namespace Db { namespace Interface
 	DefaultInterface::DefaultInterface (const DatabaseInfo &dbInfo):
 		Interface (dbInfo)
 	{
+		proxy=new TcpProxy ();
+
 		QString name=utf8 ("startkladde_defaultInterface_%1").arg (getFreeNumber ());
 		//std::cout << "Create db " << name << std::endl;
 
@@ -82,6 +84,8 @@ namespace Db { namespace Interface
 
 		//std::cout << "remove db " << name << std::endl;
 		QSqlDatabase::removeDatabase (name);
+
+		delete proxy;
 	}
 
 
@@ -114,7 +118,7 @@ namespace Db { namespace Interface
 
 		// TODO handle proxy port=0: throw an exception, but we don't have an
 		// SqlError, so it's not an SqlException
-		quint16 proxyPort=proxy.open (info.server, info.port);
+		quint16 proxyPort=proxy->open (info.server, info.port);
 
 //		db.setHostName     (info.server  );
 		db.setHostName     ("127.0.0.1");
@@ -148,6 +152,7 @@ namespace Db { namespace Interface
 					// Failed due to error
 					QSqlError error=db.lastError ();
 					std::cout << error.databaseText () << std::endl;
+					emit databaseError (error.number (), error.databaseText ());
 
 					switch (error.number ())
 					{
@@ -188,7 +193,7 @@ namespace Db { namespace Interface
 		// a race condition if the blocking call returns with the canceled flag
 		// not yet set.
 		canceled=true;
-		proxy.close ();
+		proxy->close ();
 	}
 
 	// ******************
@@ -347,6 +352,8 @@ namespace Db { namespace Interface
 				QSqlError error=sqlQuery.lastError ();
 				if (opts.display_queries)
 					std::cout << error.databaseText () << std::endl;
+				emit databaseError (error.number (), error.databaseText ());
+
 				throw QueryFailedException::prepare (error, query);
 			}
 		}
@@ -369,6 +376,8 @@ namespace Db { namespace Interface
 				QSqlError error=sqlQuery.lastError ();
 				if (opts.display_queries)
 					std::cout << error.databaseText () << std::endl;
+				emit databaseError (error.number (), error.databaseText ());
+
 				throw QueryFailedException::execute (error, query);
 			}
 		}

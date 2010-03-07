@@ -18,8 +18,16 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	// ******************
 
 	Worker::Worker (const DatabaseInfo &dbInfo):
-		interface (new DefaultInterface (dbInfo))
+		interface (NULL)
 	{
+		// For connecting the signal, we need to know that it's a
+		// DefaultInterface. Afterwards, we assign it to the
+		// AbstractInterface *interface;
+		DefaultInterface *defaultInterface=new DefaultInterface (dbInfo);
+
+		connect (defaultInterface, SIGNAL (databaseError (int, QString)), this, SIGNAL (databaseError (int, QString)));
+
+		interface=defaultInterface;
 	}
 
 	Worker::~Worker ()

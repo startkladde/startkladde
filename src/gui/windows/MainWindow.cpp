@@ -12,6 +12,7 @@
 #include <QInputDialog>
 #include <QList>
 #include <QModelIndex>
+#include <QStatusBar>
 
 #include "build/kvkbd.xpm"
 #include "build/logo.xpm"
@@ -70,6 +71,9 @@ MainWindow::MainWindow (QWidget *parent) :
 			databaseActionsEnabled (false)
 {
 	ui.setupUi (this);
+
+	// Database
+	connect (&dbInterface, SIGNAL (databaseError (int, QString)), this, SLOT (databaseError (int, QString)));
 
 	flightModel = new FlightModel (cache);
 	proxyList=new FlightProxyList (cache, *flightList, this); // TODO never deleted
@@ -171,6 +175,13 @@ MainWindow::MainWindow (QWidget *parent) :
 
 MainWindow::~MainWindow ()
 {
+	// Hide the window to avoid trouble[tm].
+	// If we don't make the window invisible here, it will be done in the
+	// QWidget destructor. Then the flight table will access its model, which
+	// will in turn access the cache, which has already been deleted.
+	// In one case, this has been known to lead to a "QMutex::lock: mutex lock
+	// failure", but worse things can happen.
+	setVisible (false);
 	// QObjects will be deleted automatically
 	// TODO make sure this also applies to flightList
 }
@@ -1596,6 +1607,14 @@ void MainWindow::on_actionEditLaunchMethods_triggered ()
 // **************
 // ** Database **
 // **************
+
+void MainWindow::databaseError (int number, QString message)
+{
+	if (number==0)
+		statusBar ()->clearMessage ();
+	else
+		statusBar ()->showMessage (utf8 ("Datenbank: %2 (%1)").arg (number).arg (message), 2000);
+}
 
 void MainWindow::cacheChanged (Db::Event::DbEvent event)
 {

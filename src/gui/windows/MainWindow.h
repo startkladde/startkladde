@@ -126,6 +126,7 @@ class MainWindow: public QMainWindow
 		void fetchFlights (QDate date);
 
 	protected slots:
+		void databaseError (int number, QString message);
 
 	private slots:
 		// Menu: Program

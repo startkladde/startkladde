@@ -446,6 +446,7 @@
    <addaction name="actionDecrementFontSize"/>
    <addaction name="actionShowVirtualKeyboard"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSetTime">
    <property name="text">
     <string>&amp;Zeit einstellen</string>

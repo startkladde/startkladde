@@ -66,6 +66,9 @@ namespace Db
 					virtual void executeQueryResult (Returner<QSharedPointer<Result::Result> > *returner, Db::Query query, bool forwardOnly=true);
 					virtual void queryHasResult     (Returner<bool>                            *returner, Db::Query query);
 
+				signals:
+					void databaseError (int number, QString message);
+
 				private:
 					AbstractInterface *interface;
 			};

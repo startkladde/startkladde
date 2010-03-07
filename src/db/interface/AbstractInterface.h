@@ -12,11 +12,11 @@
 #include <QSqlError>
 
 #include "src/db/DatabaseInfo.h"
+#include "src/db/result/Result.h" // Required for deletion of QSharedPointer<Result::Result>
 
 namespace Db
 {
 	class Query;
-	namespace Result { class Result; }
 
 	namespace Interface
 	{
