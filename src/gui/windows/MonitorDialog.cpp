@@ -33,6 +33,7 @@ void MonitorDialog::monitor (SignalOperationMonitor &monitor, const QString &tit
 {
 	MonitorDialog dialog (monitor, parent);
 	dialog.setCaption (title);
+	dialog.ui.statusLabel->setText (title);
 
 	// Check after the signals have been connected
 	if (monitor.getEnded ()) return;
@@ -40,6 +41,9 @@ void MonitorDialog::monitor (SignalOperationMonitor &monitor, const QString &tit
 	const QString &status=monitor.getStatus ();
 	if (!status.isNull ())
 		dialog.ui.statusLabel->setText (status);
+
+	dialog.ui.progressBar->setMaximum (monitor.getMaxProgress ());
+	dialog.ui.progressBar->setValue (monitor.getProgress ());
 
 	dialog.exec ();
 }

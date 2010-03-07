@@ -22,6 +22,8 @@ class SignalOperationMonitor: public QObject, public OperationMonitor
 
 		bool getEnded () const;
 		const QString &getStatus () const;
+		int getProgress () const { return progress; }
+		int getMaxProgress () const { return maxProgress; }
 
 	public slots:
 		virtual void cancel ();
@@ -36,6 +38,7 @@ class SignalOperationMonitor: public QObject, public OperationMonitor
 	private:
 		bool hasEnded;
 		QString status;
+		int progress, maxProgress;
 
 		virtual void setStatus (const QString &text);
 		virtual void setProgress (int progress, int maxProgress);

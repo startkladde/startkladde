@@ -1,7 +1,7 @@
 #include "SignalOperationMonitor.h"
 
 SignalOperationMonitor::SignalOperationMonitor ():
-	hasEnded (false)
+	hasEnded (false), progress (0), maxProgress (0)
 {
 }
 
@@ -23,6 +23,8 @@ void SignalOperationMonitor::setStatus (const QString &text)
 
 void SignalOperationMonitor::setProgress (int progress, int maxProgress)
 {
+	this->progress=progress;
+	this->maxProgress=maxProgress;
 	emit progressChanged (progress, maxProgress);
 }
 
