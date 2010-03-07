@@ -18,7 +18,7 @@
 TcpProxy::TcpProxy ():
 	server (NULL), serverSocket (NULL), clientSocket (NULL)
 {
-	std::cout << "Creating a TcpProxy on thread " << QThread::currentThreadId () << std::endl;
+//	std::cout << "Creating a TcpProxy on thread " << QThread::currentThreadId () << std::endl;
 
 	connect (this, SIGNAL (sig_open (Returner<quint16> *, QString, quint16)), this, SLOT (slot_open (Returner<quint16> *, QString, quint16)));
 	connect (this, SIGNAL (sig_close ()), this, SLOT (slot_close ()));
@@ -73,7 +73,10 @@ void TcpProxy::slot_open (Returner<quint16> *returner, QString serverHost, quint
 
 quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
 {
-	std::cout << "Open server in thread " << QThread::currentThreadId () << std::endl;
+	// TODO only if host and port matches
+	if (server && server->isListening ()) return server->serverPort ();
+
+//	std::cout << "Open server in thread " << QThread::currentThreadId () << std::endl;
 
 	// Store the connection data
 	this->serverHost=serverHost;
@@ -87,9 +90,13 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
 	if (server->isListening ()) server->close ();
 
 	if (server->listen (QHostAddress::LocalHost, 0))
-		std::cout << "Ok, listening on port " << server->serverPort () << std::endl;
+	{
+//		std::cout << "Ok, listening on port " << server->serverPort () << std::endl;
+	}
 	else
-		std::cout << "Listen failed" << std::endl;
+	{
+//		std::cout << "Listen failed" << std::endl;
+	}
 
 	return server->serverPort ();
 }
@@ -99,14 +106,14 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
  */
 void TcpProxy::slot_close ()
 {
-	std::cout << "Close connection in thread " << QThread::currentThreadId () << std::endl;
+//	std::cout << "Close connection in thread " << QThread::currentThreadId () << std::endl;
 	closeClientSocket ();
 	closeServerSocket ();
 }
 
 void TcpProxy::closeClientSocket ()
 {
-	std::cout << "close client socket" << std::endl;
+//	std::cout << "close client socket" << std::endl;
 	if (!clientSocket) return;
 
 	clientSocket->disconnect(); // signals
@@ -117,7 +124,7 @@ void TcpProxy::closeClientSocket ()
 
 void TcpProxy::closeServerSocket ()
 {
-	std::cout << "close server socket" << std::endl;
+//	std::cout << "close server socket" << std::endl;
 	if (!serverSocket) return;
 
 	serverSocket->disconnect ();
@@ -128,15 +135,13 @@ void TcpProxy::closeServerSocket ()
 
 void TcpProxy::newConnection ()
 {
-	std::cout << "new connection on thread " << QThread::currentThreadId () << std::endl;
+//	std::cout << "new connection on thread " << QThread::currentThreadId () << std::endl;
 
-	std::cout << utf8 ("connecting to %1:%2").arg (serverHost).arg (serverPort) << std::endl;
+//	std::cout << utf8 ("connecting to %1:%2").arg (serverHost).arg (serverPort) << std::endl;
 
 	delete serverSocket;
 	serverSocket=new QTcpSocket (this);
 	serverSocket->connectToHost (serverHost, serverPort);
-
-	std::cout << "Returned from connect" << std::endl;
 
 	delete clientSocket;
 	clientSocket=server->nextPendingConnection ();

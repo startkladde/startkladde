@@ -33,6 +33,11 @@
  *     monitor.wait (); // rethrows
  *     For specifying different kinds of monitors, we'll probably need
  *     asyncOperation (new SignalMonitor<T> (), params...);
+ *   - Allow canceling before the operation has started; but beware the race
+ *     condition that may occur if the canceled flag is set right after it has
+ *     been reset and thus prematurely cancels the next operation
+ *   - Better integration with cancelConnection of a proxy; currently, the
+ *     class using the proxy has to be connected manually
  */
 
 

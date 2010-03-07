@@ -1,3 +1,9 @@
+/*
+ * Improvements:
+ *   - move asyncOpen to an interfaceWorker, we don't usually need to execute
+ *     interface operations asynchronously because they are already called from
+ *     an ansynchronous operation (like dbWorker, migrationWorker)
+ */
 #include "ThreadSafeInterface.h"
 
 #include <iostream>

@@ -48,7 +48,7 @@ namespace Db
 
 				// *** Connection management
 				virtual bool open () { return open (OperationMonitorInterface::null); }
-				virtual bool open (OperationMonitorInterface monitor);
+				virtual bool open (OperationMonitorInterface monitor); // TODO void
 				virtual void close ();
 				virtual QSqlError lastError () const;
 				virtual void cancelConnection ();
@@ -66,9 +66,12 @@ namespace Db
 			private:
 				QSqlDatabase db;
 				TcpProxy proxy;
+				QAtomicInt canceled; // There is no QAtomicBool. 0=false, others=true
 
 				static QAtomicInt freeNumber;
 				static int getFreeNumber () { return freeNumber.fetchAndAddOrdered (1); }
+
+				virtual void openImpl ();
 
 				virtual QSqlQuery executeQueryImpl (const Query &query, bool forwardOnly=true);
 				virtual QSqlQuery doExecuteQuery (const Query &query, bool forwardOnly=true);

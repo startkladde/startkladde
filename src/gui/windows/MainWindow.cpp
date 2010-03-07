@@ -573,6 +573,7 @@ void MainWindow::updateFlight (const Flight &flight)
 
 	Returner<int> returner;
 	SignalOperationMonitor monitor;
+	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 	dbWorker.updateObject (returner, monitor, flight);
 	MonitorDialog::monitor (monitor, "Flug speichern", this);
 	returner.wait ();
@@ -791,6 +792,7 @@ void MainWindow::on_actionDelete_triggered ()
 
 	Returner<int> returner;
 	SignalOperationMonitor monitor;
+	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 	dbWorker.deleteObject<Flight> (returner, monitor, id);
 	MonitorDialog::monitor (monitor, utf8 ("Flug löschen"), this);
 	returner.wait ();
@@ -1332,6 +1334,7 @@ bool MainWindow::isCurrent (Db::Migration::Background::BackgroundMigrator &migra
 {
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
+	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 	migrator.isCurrent (returner, monitor);
 	MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 	return returner.returnedValue ();
@@ -1349,6 +1352,7 @@ bool MainWindow::isEmpty (Db::Migration::Background::BackgroundMigrator &migrato
 {
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
+	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 	migrator.isEmpty (returner, monitor);
 	MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 	return returner.returnedValue ();
@@ -1365,6 +1369,7 @@ void MainWindow::checkVersion ()
 
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
+		connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 		migrator.loadSchema (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait (); // Required so any exceptions are rethrown
@@ -1378,6 +1383,7 @@ void MainWindow::checkVersion ()
 		// TODO try to reuse monitor and dialog
 		Returner<quint64> currentVersionReturner;
 		SignalOperationMonitor currentVersionMonitor;
+		connect (&currentVersionMonitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 		migrator.currentVersion (currentVersionReturner, currentVersionMonitor);
 		MonitorDialog::monitor (currentVersionMonitor, "Verbindungsaufbau", this);
 		quint64 currentVersion=currentVersionReturner.returnedValue ();
@@ -1386,6 +1392,7 @@ void MainWindow::checkVersion ()
 
 		Returner<QList<quint64> > pendingMigrationsReturner;
 		SignalOperationMonitor pendingMigrationsMonitor;
+		connect (&pendingMigrationsMonitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 		migrator.pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
 		MonitorDialog::monitor (pendingMigrationsMonitor, "Verbindungsaufbau", this);
 		quint64 numPendingMigrations=pendingMigrationsReturner.returnedValue ().size ();
@@ -1404,6 +1411,7 @@ void MainWindow::checkVersion ()
 
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
+		connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 		migrator.migrate (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait (); // Required so any exceptions are rethrown
@@ -1449,6 +1457,7 @@ void MainWindow::openInterface ()
 
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
+		connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 		migrator.loadSchema (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait (); // Required so any exceptions are rethrown
@@ -1465,6 +1474,7 @@ void MainWindow::refreshCache ()
 
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
+	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 	cacheThread.refreshAll (returner, monitor);
 	MonitorDialog::monitor (monitor, "Daten abrufen", this);
 	returner.wait ();
@@ -1476,6 +1486,7 @@ void MainWindow::fetchFlights (QDate date)
 
 	Returner<void> returner;
 	SignalOperationMonitor monitor;
+	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
 	cacheThread.fetchFlightsOther (returner, monitor, date);
 	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), this);
 	returner.wait ();

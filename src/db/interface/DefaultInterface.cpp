@@ -5,6 +5,29 @@
  *     http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html
  *   - Solution for stalled connection
  */
+
+/*
+ * On synchronization:
+ *   - The canceled flag is reset at the beginning of an operation. If the
+ *     canceled flag was reset right before the operation, cancelConnection
+ *     could be called again before the CanceledException has propagated to the
+ *     calling thread, thereby setting canceled again and causing the next
+ *     operation to cancel prematurely.
+ *     This means that a cancelConnection call *before* the start of the
+ *     operation will not cause the operation to cancel. This is consistent
+ *     with the fact that the connection (through the proxy) may not have been
+ *     established at this point and thus may not be canceled.
+ *     This is also plausible as the cancelation by the user is unlikely to
+ *     occur before the start of the operation, and even if it is, the user may
+ *     cancel again after the start of the operation.
+ *     Allowing the operation to be canceled before it has started would
+ *     certainly be an improvement, but it is probably quite hard to do without
+ *     getting a race condition.
+ *     Note that there is still a race condition when calling one method from
+ *     another (e. g. open from executeQueryImpl on reconnect) and the cancel
+ *     flag is set: the cancel will not be performed because there is no
+ *     connection. The use will have to cancel again in this case.
+ */
 #include "DefaultInterface.h"
 
 #include <iostream>
@@ -23,7 +46,7 @@
 #include "src/db/interface/exceptions/ConnectionFailedException.h"
 #include "src/db/interface/exceptions/DatabaseDoesNotExistException.h"
 #include "src/db/interface/exceptions/AccessDeniedException.h"
-
+#include "src/concurrent/monitor/OperationMonitor.h" // remove after OperationCanceledException moved out
 
 namespace Db { namespace Interface
 {
@@ -69,12 +92,22 @@ namespace Db { namespace Interface
 	 *
 	 * @return true on success, false else
 	 */
+	// TODO remove monitor
 	bool DefaultInterface::open (OperationMonitorInterface monitor)
 	{
-		monitor.status ("Verbindung wird hergestellt");
+		// Reset the canceled flag
+		canceled=0;
 
+		openImpl ();
+		return true;
+	}
+
+	void DefaultInterface::openImpl ()
+	{
 		DatabaseInfo info=getInfo ();
 
+		// TODO handle proxy port=0: throw an exception, but we don't have an
+		// SqlError, so it's not an SqlException
 		quint16 proxyPort=proxy.open (info.server, info.port);
 
 //		db.setHostName     (info.server  );
@@ -87,35 +120,43 @@ namespace Db { namespace Interface
 
 		while (true)
 		{
-			std::cout << QString ("%1 connecting to %2 via localhost:%3...").arg (db.connectionName ()).arg (info.toString ()).arg (proxyPort);
+			std::cout << QString ("%1 connecting to %2 via %3:%4...")
+				.arg (db.connectionName ()).arg (getInfo ().toString ()).arg (db.hostName ()).arg (db.port ());
 			std::cout.flush ();
 
 			if (db.open ())
 			{
 				std::cout << "OK" << std::endl;
-				return true;
+				return;
 			}
 			else
 			{
-				QSqlError error=db.lastError ();
-
-				std::cout << error.databaseText () << std::endl;
-
-				switch (error.number ())
+				if (canceled)
 				{
-					case CR_CONN_HOST_ERROR: break;
-					case CR_UNKNOWN_HOST: break;
-					case CR_SERVER_LOST: break;
-					case ER_BAD_DB_ERROR: throw DatabaseDoesNotExistException (error);
-					case ER_ACCESS_DENIED_ERROR: throw AccessDeniedException (error);
-					case ER_DBACCESS_DENIED_ERROR: throw AccessDeniedException (error);
-					default: throw ConnectionFailedException (error);
+					// Failed because canceled
+					std::cout << "canceled" << std::endl;
+					throw OperationMonitor::CanceledException ();
 				}
+				else
+				{
+					// Failed due to error
+					QSqlError error=db.lastError ();
+					std::cout << error.databaseText () << std::endl;
 
-				monitor.status (QString ("Verbindung wird hergestellt\nFehler: %1").arg (error.databaseText ()));
+					switch (error.number ())
+					{
+						case CR_CONN_HOST_ERROR: break; // Retry
+						case CR_UNKNOWN_HOST: break; // Retry
+						case CR_SERVER_LOST: break; // Retry
+						case ER_BAD_DB_ERROR: throw DatabaseDoesNotExistException (error);
+						case ER_ACCESS_DENIED_ERROR: throw AccessDeniedException (error);
+						case ER_DBACCESS_DENIED_ERROR: throw AccessDeniedException (error);
+						default: throw ConnectionFailedException (error);
+					}
 
-				sleep (1);
-				std::cout << "Retrying...";
+					sleep (1);
+					std::cout << "Retrying...";
+				}
 			}
 		}
 	}
@@ -138,6 +179,11 @@ namespace Db { namespace Interface
 	void DefaultInterface::cancelConnection ()
 	{
 		std::cout << "Canceling..." << std::endl;
+
+		// Set the flag before calling close, because otherwise, there would be
+		// a race condition if the blocking call returns with the canceled flag
+		// not yet set.
+		canceled=true;
 		proxy.close ();
 	}
 
@@ -208,11 +254,15 @@ namespace Db { namespace Interface
 
 	QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOnly)
 	{
+		// Reset the canceled flag; make sure this is always done before
+		// entering doExecuteQuery.
+		canceled=0;
+
 		while (true)
 		{
 			try
 			{
-				if (!db.isOpen ()) open ();
+				if (!db.isOpen ()) openImpl ();
 
 				return doExecuteQuery (query, forwardOnly);
 			}
@@ -220,8 +270,8 @@ namespace Db { namespace Interface
 			{
 				switch (ex.error.number ())
 				{
-					case CR_SERVER_GONE_ERROR: break;
-					case CR_SERVER_LOST: break;
+					case CR_SERVER_GONE_ERROR: break; // Retry
+					case CR_SERVER_LOST: break; // Retry
 					default: throw;
 				}
 
@@ -236,7 +286,20 @@ namespace Db { namespace Interface
 	/**
 	 * Executes a query and returns the QSqlQuery
 	 *
+	 * This method is blocking, but can be canceled by calling cancelConnection
+	 * from another thread. Unlike #open (and open may be changed), this method
+	 * does not use a monitor for a canceled check. This is because
+	 *   - the canceled check would be the only reason for the monitor (this
+	 *     method does not report progress)
+	 *   - passing a monitor here would require passing it through every single
+	 *     method that somehow ends up calling this, including most of the
+	 *     methods of Interface (and all implementations). Since the
+	 *     OperationMonitorInterface would have to be copied by every call,
+	 *     this is probably faster then with a monitor
+	 * See also the OperationMonitorInterface class.
+	 *
 	 * @throw QueryFailedException if the query fails
+	 * @throw OperationMonitor::CanceledException if cancelConnection was called
 	 */
 	QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly)
 	{
@@ -251,12 +314,19 @@ namespace Db { namespace Interface
 
 		if (!query.prepare (sqlQuery))
 		{
-			QSqlError error=sqlQuery.lastError ();
-
-			if (opts.display_queries)
-				std::cout << error.databaseText () << std::endl;
-
-			throw QueryFailedException::prepare (error, query);
+			if (canceled)
+			{
+				if (opts.display_queries)
+					std::cout << "canceled" << std::endl;
+				throw OperationMonitor::CanceledException ();
+			}
+			else
+			{
+				QSqlError error=sqlQuery.lastError ();
+				if (opts.display_queries)
+					std::cout << error.databaseText () << std::endl;
+				throw QueryFailedException::prepare (error, query);
+			}
 		}
 
 		query.bindTo (sqlQuery);
@@ -266,12 +336,19 @@ namespace Db { namespace Interface
 
 		if (!sqlQuery.exec ())
 		{
-			QSqlError error=sqlQuery.lastError ();
-
-			if (opts.display_queries)
-				std::cout << error.databaseText () << std::endl;
-
-			throw QueryFailedException::execute (error, query);
+			if (canceled)
+			{
+				if (opts.display_queries)
+					std::cout << "canceled" << std::endl;
+				throw OperationMonitor::CanceledException ();
+			}
+			else
+			{
+				QSqlError error=sqlQuery.lastError ();
+				if (opts.display_queries)
+					std::cout << error.databaseText () << std::endl;
+				throw QueryFailedException::execute (error, query);
+			}
 		}
 		else
 		{

@@ -14,6 +14,24 @@ class QAtomicInt;
 class OperationMonitor;
 
 
+/**
+ * The interface of an operation to an OperationMonitor
+ *
+ * This serves the following purposes:
+ *   - progress reporting
+ *   - status reporting
+ *   - cancelation: the #canceled method can be used. As an alternative,
+ *     checkCanceled can be called (this is also called by #status and
+ *     #progress by default). #checkCanceled throws an OperationMontior::
+ *     CanceledException if the canceled flag is set. Strictly speaking, this
+ *     is a misuse of exceptions for flow control, but it only happens in the
+ *     (rare) case of cancelation by the user, so usually, there is no
+ *     performance hit. Even more, for operations that can be canceled by some
+ *     other means, an OperationMontior::CanceledException can be thrown
+ *     manually, thereby avoiding the need to pass in (and copy) an
+ *     OperationMonitorInterface. An example is DefaultInterface::
+ *     doExecuteQuery.
+ */
 class OperationMonitorInterface
 {
 	friend class OperationMonitor;

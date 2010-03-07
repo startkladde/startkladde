@@ -21,13 +21,14 @@ class QAtomicInt;
  * A class that allows monitoring and canceling an operation, typically running
  * in a different task
  *
- * The operation accesses the task through its interface.
+ * The operation accesses the task through its OperationMonitorInterface.
  */
 class OperationMonitor
 {
 	public:
 		friend class OperationMonitorInterface;
 
+		// TODO: move outside of class, rename OperationCanceledException
 		class CanceledException: public StorableException
 		{
 			virtual CanceledException *clone   () const { return new CanceledException (); }
