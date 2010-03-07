@@ -1,299 +1,87 @@
-Check and remove: admin_functions, db_proxy 
+Neue TODOs sollten in Trac eingetragen werden. 
 
-Critical
+== Critical (before release) ==
+
 * No "land" button if display date is not today
 * Add a landing time to a flight of another date => date correct?
-* Always create all columns
 * Hide towpilot fields if towpilot not recorded
 * Towpilot not given is not an error without record_towpilot
-* Add indexes
+* List buttons deleted?
+* Splash screen (QSplashScreen)
 
-Tests
-* Flight: all combinations of mode, started, landed and check
-  * properties calculated correctly
-  * selects done properly
-* Flight: also test inactive times (e. g. landing time given but leaving or not
-  landed)
+Documentation:
+ INSTALL:
+ 8. Client einrichten
+   - Für Datumseinstellung:
+     In /etc/sudoers eintragen:
+       startkladde  ALL=NOPASSWD:/bin/date
+       startkladde  ALL=NOPASSWD:/etc/init.d/hwclock.sh stop
+
+Default-Config: Plugins (metar, regenrader) eintragen
+
+See also Database.cpp
+
+
+== Major (important) ==
+
+Plugin interface:
+* "Protocol" like for weather plugin for all plugins
+* Better escaping
+* Configuration for plugins, e. g. longitude for sunset time correction
+* Synchronize plugin update with clock
+* Graphical wind display
+
+Flugbuch (Vorschlag eines Fluglehrers):
+* Ausgabe Anzahl Landungen (Interessant bei Platzrunden mit dem Motorflieger)
+* Zusammenfassung von Fluglehrerstarts wie folgt: Alle Starts eines Tages mit
+  einem Flugzeugkennzeichen ergeben eine Zeile. In der Zeile Begleiter steht
+  eine durch Kommas getrennte Liste aller Begleiter des Tages. Startzeit ist
+  die erste Startzeit des Tages auf dem Kennzeichen. Landezeit ist die letzte
+  Landezeit des Tages auf dem Kennzeichen. Anzahl Langungen = Anzahl in der
+  Zeile zusammengefassten Flüge.
+
+UI:
+* keep landed flights visible for n minutes
+* undo for depart/land
+* Window with with long plugin labels
+
+Models:
+* Plane: can only do self launch (and select automatically, even on repeat)
+* Plane, person, launch method: inactive (not displayed in select)
+
+Config:
+* Use YAML
+* Config dialog
+* Make Unix socket Name configurable machen
+* Allow system wide config
+
+Other:
+* Time zone safety
+* Write time to hwclock after change (?)
+* Port to Windows
+* Number of flying flights: also consider towplanes
+
 
 == Minor ==
+
+UI:
+* Find flights (dates) by registration
+* Flight editor: double click error list, jump to widget
+* Show depart/land now/later when editing flight?
+
+Database:
+* Add indexes
 
 Editors:
 * Use QDataWidgetMapper for edit dialogs?
 
-Nested types: move to separate file to reduce dependencies (see dependencie
-marked "Required for ...")
+Implementation:
+* Nested types: move to separate file to reduce dependencies (see dependencies
+  marked "Required for ...")
 
 
+== Tests ==
 
-
-Diese Liste ist veraltet. Neue TODOs sollten in Trac eingetragen werden. 
-
-Diese TODOs auf Aktualität prüfen und in Trac eintragen.
-
-
-Fieser 64-Bit-Bug: Positionen bei der Stringverarbeitung werden manchmal als
-unsigned int gespeichert. string::npos ist -1, daher schlägt der Vergleich
-unsigned int/string::npos auf 64-Bit-Systemen fehl.
-Lösung: string::size_type verwenden.
-
-- Regenradar: Nicht-quadratische Radarbilder werden nicht funktionieren ==>
-  resizeable-Modus im Dialog/Widget und Breite anpassen im Widget
-- Release, Webseite, Screenshots
-
-Wetterplugin-Architektur für Shell-Plugins verwenden
-] in Wetterplugin-Texten erlauben
-
-Default-Config: Plugins (metar, regenrader) eintragen
-
-Startarten, die nicht mehr benutzt werden könnnen (alte Winden...), aber noch angezeigt werden müssen
-
-Splash-Screen besser (früher?)
-
-Gastflug in Flugliste?
-Wenn der Pilot nachträglich entfernt wird, wird kein Fehler dargestellt (?)
-
-add: flugzeuge, die nur eigenstart machen
-schleppflüge in hauptflugbuchpdf eigene zeile
-use tt2 (www.tt2.org) for output
-
-Problem: Anmeldung mit Internet Explorer klappt nicht. Problem liegt beim IE:
-Bei Buttons wird der Inhalt als Wert gesendet, nicht der "value" (?)
-
-Flugbuch:
-> 1. Ausgabe Anzahl Landungen (Interessant bei Platzrunden mit dem Motorflieger)
-> 2. Zusammenfassung von Fluglehrerstarts wie folgt:
-> - Alle Starts eines Tages mit einem Flugzeugkennzeichen ergeben eine Zeile.
-> - In der Zeile Begleiter steht eine durch Kommas getrennte Liste aller Begleiter des Tages.
-> - Startzeit ist die erste Startzeit des Tages auf dem Kennzeichen.
-> - Landezeit ist die letzte Landezeit des Tages auf dem Kennzeichen.
-> - Anzahl Langungen = Anzahl in der Zeile zusammengefassten Flüge.
-
-Als nächstes:
-  - Benutzerrechteprüfung in state_available
-  - Plugin-Makefile: Pfadanpassung
-
-Features:
-  - Felder: Schlepphöhe, Motorlaufzeit
-  - Felder: beliebige Felder?
-
-
-Umschreiben:
-  - argument_list statt list<argument> überall
-  - Initialisierung statt Zuweisung in Konstruktoren
-  - Exceptions
-  - arrays[] weg (am besten zu QList)
-  - QActions
-  - printf weg
-  - .clear statt =""
-  - skdate statt qdate/manuell
-
-Datenbank:
-  - gestartet, gelandet, sfz gelandet statt status
-  - BWLV --> Landesverband
-  - schlepppilot
-  - Spitzname
-  - "bemerkung" in db, "bemerkungen" im Programm
-
-Zum Testprogramm:
-  - Alle Kombinationen
-	{flug,schlepp}{lokal,kommt,geht}{gestartet}{gelandet}{editierbar} richtig
-	dargestellt
-  - Kommender Schlepp
-  - Fliegt noch
-  - Editieren (als admin) von editierbaren/nicht editierbaren
-  - Merge Editierbar/Nicht editierbar etc., auch wenn in beiden Tabellen
-	vorhanden
-  - Prüfen, ob überschreiben sich auch in Bezug auf Benutzer korrekt verhält.
-
-Funktionalität:
-  - Bordbücher auf Hauptflugbuch drauf
-  - DB-Version
-  - Flugsuche (==> 4119)
-  - Pluginschnittstelle
-
-zeit direkt in hwclock schreiben
-
-Mit Datenbankänderung:
-	Datenbankversion
-	flug macht nur zwischenlandungen 
-
-Die ganzen "fliegt noch"-Prüfungen müssen eigentlich das Datum im
-Startzeit-Feld verwenden, falls vorhanden, statt current ().
-
-
-INSTALL:
-8. Client einrichten
-  - Für Datumseinstellung:
-    In /etc/sudoers eintragen:
-      startkladde  ALL=NOPASSWD:/bin/date
-      startkladde  ALL=NOPASSWD:/etc/init.d/hwclock.sh stop
-
-
-Normale Priorität:
-  - Bugs:
-    - Mitternachtsproblem
-    - anzeigedatum utc
-  - Funktionalität:
-    - Starten/Landen rückgängig
-    - Versuchen, ein identisches FZ dazuzufügen?
-    - Flight: Unterschidung zwischen "fliegt noch", "flog da" und "egal, startet
-	  später"
-    - Anzeigedatum nach UTC einstellen, auch Datum in flugeditor (?)
-    - Unix socket Name auswählbar machen
-    - Kennzeichen->Datum suche
-    - ausgetretene Personen
-    - stammdatenschnittstelle --> vereinsid nicht mehr vom ss editierbar?
-	- Bei Anzahl fliegender auch Schleppflüge berücksichtigen
-    - Synchronisation Plugins mit Uhr
-    - Grafische Winddarstellung
-    - gescheites Quoting/Escaping in der Konfigurationsdatei
-    - DB: Rechte select,update,insert prüfen
-    - überlappungsprüfung bei Nachtragen
-
-  - Implementation:
-	- sk_dump aufräumen
-	- sk_dump Spaltenbreiten zentralisieren
-	- remove db_proxy
-	- handle gracefully old flights without a sfz_modus
-    - return 0 als id durch invalid_id ersetzen
-	- "Fliegt noch" wenn Start in gleicher Minute wie Landung
-
-  - UI:
-    - focus nach editieren von person/flugzeug
-    - options: explizite Datumsangabe hat Vorrang, kein Fehler
-	- Netzüberwachung, alle Fenster disablen
-    - F1: Hilfe
-    - fb/bb als unvollständig markieren, wenn flug noch fliegt (besonders bb ist ungültig!)
-    - Datumseinstellung: [X] Heute
-    - datum: heute gestern sonstige
-    - ID bei "fliegt noch" anzeigen
-    - Fehlermeldungen im Editor nur bei Anlegen, ansonsten gibts ja die Fehlerliste.
-    - Show output from creation
-    - Wenn die Labels sehr lang werden, wird das Programmfenster verbreitert
-  - Datenbankcode:
-    - db_to und to_db: default!
-  - Datenbank:
-    - Ungenutzte Spalten rausschmeißen
-    - editierbar-Spalte in flug?
-    - startart-Spalte in flug: Datentyp???
-    - original_id-Spalte in flug?
-    - sk_dump-Benutzer (read only)
-  - Makefile:
-    - Make dump fixen
-  - Doku
-    - sample config file: ases/moobert
-    - Beispielkonfig Ort etc.
-	- Codedoku sk_db
-  - options
-    - /etc/startkladde.conf
-    - ~/ in source cfgfile
-  
-- Geringe Priorität:
-  - Umgebung
-    - Windows-Portierung
-  - Bugs:
-    - startzeit automatisch, landezeit manuell->fehlermeldung
-    - Mitternachts-Zeitzonen-Problem
-  - Funktionalität:
-    - Was passiert bei date wrap? Anzeigedatum anpassen? Tabelle aktualisieren?
-	- error_control im entity_editor
-    - Gattung "2mot" und "heli" und dann ist_motorflugzeug (gattung)
-    - sitze aus typ, evtl. auch nur flugzeuge nach typ listen
-    - verein_aus_namen (vn, nn)
-    - fluege_aktuell: auch schleppflüge (?)
-    - Identischer Pilot wird dazugefügt?
-    - liste_vornamen/liste_nachnamen: Präfix angeben (case insensitive)
-	- Editieren: Fliegt-noch-überlappungscheck
-    - Begleiter im Einsitzer nicht mehr prüfen, wenn 2Schulung im Einsitzer akzeptiert
-	- Schleppflugzeug Zwischenlandung
-	- ZWL bei Segelflugzeug zulassen (nach Warnung)
-	- Schlepppilot (überhaupt mehr Schleppzeug...)
-    - Bei Flugzeugen vermerken, ob sie nur Selbststart könnnen, und dann Selbststart
-      vorauswählen (auch beim Wiederholen), wenn es nur eine Selbststartstartart
-      gibt.
-  - Implementation:
-    - sk_db: Alle execute_query, wo das Ergebnis nicht gebraucht wird, umstellen.
-	- Man braucht einen vernünftigen Weg, um Metadaten zur Erzeugung
-	  von Queries zu speichern.  Wichtig dabei ist, dass die
-	  Objektklassen keine Information darüber enthalten sollen, in
-	  welcher Form die Daten in der Datenbank gespeichert sind.
-    - Im entity Lister nicht nach EntityType unterscheiden sondern an
-      die Datenbank weiterreichen (db->delete_object (type, id), db_object_type dort).
-	- Die $irgendwas_string (...) Funktionen erhalten sowohl innerhalb als auch
-	  untereinander jede Menge Code- und Informationsduplikation. Besser: aus
-	  Tabelle einlesen (lenspec/item) und Zeug wie [...] automatisch
-	  generieren.
-	- Sortierung vereinheitlichen zwischen refresh_table und
-	  sk_flight_table::set_flight.
-    - in sk_win_entity_list.cpp gibts einige funktionen, die in entity.cpp oder
-	  entity_functions.cpp oder so sollten
-    - wenn die Menüeinträge für Manipulationen deaktiviert werden, sind diese
-	  Manipulationen Fehler und per log_error zu loggen
-    - operationen auf den Schleppflug vereinheitlichen, fm_land_schlepp streichen
-    - aboutToShow für Menüs
-    - Prüfen, ob die Listenbuttons wieder entladen werden
-    - list_flugtyp sollte nicht hardcoded nur die zurückgeben, die in den
-	  Flugeditor kommen. Am besten: Parameter an die Funktion und
-	  Auflistfunktion.
-    - in check_flight: immer, wenn einer der parameter nicht gesetzt wird,
-	  false zurück
-    - das data_id in der tabellenzelle sollte ein void * sein (anlegen/
-	  löschen beachten!)
-    - dependencies prüfen, makefile aktualisieren
-    - Strings, zum Beispiel für Tabellenheader, als Konstanten
-	  Nach Möglichkeit ein struct { Tabellenheader, Editorlabel,
-	  Tabellenkey (?), Tabellenposition, Editortyp, Editorposition }
-	- einheitliche plausibilitätsprüfung, möglichkeit zum Bestätigen im
-	  Hauptfenster. Idee: eine funktion sk_flight::flug_kann_das_machen (flug,
-	  flug_action), enum flug_action { starten, vorbereiten, landen ... },
-	  alle Funktion, die was machen wollen, legen einen temporären sk_flight an
-	  und checken den.
-	  vorteil: ein flugzeug, das noch fliegt, darf vorbereitet werden.
-	  dann muss allerdings ein "user_approved" dazu, um z. B. mehrfaches "der
-	  Typ stimmt nicht" zu vermeiden.
-	- Möglichkeit, strings und QStrings automatisch ineinander zu konvertieren?
-	- sk_flight::fliegt () überall verwenden statt gestartet ()/gelandet ()
-	- namespace std überall
-    - Flug sollte eigentlich von entity inherited sein
-    - Unified Fehlerchecking:
-      - context menu slot
-      - enable menus
-      - manipulate flight
-      - accept flight
-    - t_pilot_bezeichnung rausschmeissen, durch flug->pilot_bezeichnung ersetzen
-    - entity selector so umbauen, dass immer die statische funktion benutzt wird,
-      auch zum listen der Einträge (dann ists auch nur noch eine funktion). Dann
-      kann man personen auch als entity listen.
-      Alternative: enttemplatisieren, alles dynamisch machen. Hat das Problem,
-      dass bei einer leeren Liste die Spaltenköpfe nicht festgestellt werden
-      könnnen. evtl. kann man die zweite Möglichkeit zusätzlich bieten.
-    - static function for entity selector
-    - startartstatistik wie flugbuch/bordbuch
-    - status dialog: eigene Klasse, basierend auf QSplash
-    - sk_win_flight::fehler_eintragen wird zu oft aufgrufen durch slots
-
-  - UI:
-    - alle comboboxes insetionpolicy einstellen, speziell flugeditor
-    - Titelleiste im Statistikdialog: Flugbuch für $DATUM/$PERSON
-    - timeedit: kein text, wenn nicht gesetzt/eigene Implementation, ohne Sekunden
-	- Hilfe
-	- Easteregg
-    - Fehlerfeld doppelklickbar, entsprechendes Feld fokussiert
-    - Was-das-Programm-gerade-macht-Anzeige
-    - Nicht gestartete editieren: Jetzt starten/Später starten buttons
-    - Fliegenden editieren: Jetzt landen-Button
-    - Im entity seelctor markieren, welche zum preselect-Verein passen, wenn nicht
-      eindeutig
-    - Evtl. die Fehlerprüfung beim Editieren einschränken, so dass das Zeug, was auch
-      schon im error_control steht, nicht noch mal gefragt wird.
-    - Makefile:
-    - Makefile: siehe info makefile: include Dependencies, und Dependencies automatisch erstellen
-    - Doppelklick auf Plugin label: Prozess neu starten
-
-Probleme:
-  - Refresh im entity lister: hide();show(); sonst focus im mainwindow
-
-- Konfiguration für Plugins. Beispiel: geographische Länge, um
-  Sonnenuntergangszeiten zu korrigieren.
-- Nicht alle gelandeten Flüge ausblenden sondern nur die, die älter sind als
-  n Minuten
+* Flight: all combinations of mode, started, landed, towflight
+* Flight: also test inactive times (e. g. landing time given but leaving or not
+  landed)
