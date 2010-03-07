@@ -943,7 +943,7 @@ void MainWindow::on_actionRefreshTable_triggered ()
 {
 	try
 	{
-		refreshCache ();
+		dbManager.refreshCache (this);
 	}
 	catch (OperationCanceledException &ex) {}
 
@@ -1205,7 +1205,7 @@ void MainWindow::setDisplayDate (QDate newDisplayDate, bool force)
 			// If the new display date is not in the cache, fetch it.
 			// TODO move that to fetchFlights() (with force flag)
 			if (newDisplayDate!=dbManager.getCache ().getOtherDate ())
-				fetchFlights (newDisplayDate);
+				dbManager.fetchFlights (newDisplayDate, this);
 
 			// Now the display date is the one in the cache (which should be
 			// newDisplayDate).
@@ -1254,19 +1254,10 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 // ** Database **
 // **************
 
-class ConnectCanceledException {};
-
-class ConnectFailedException
-{
-	public:
-		ConnectFailedException (const QString &message): message (message) {}
-		QString message;
-};
-
 void MainWindow::confirmOrCancel (const QString &title, const QString &question)
 {
 	if (!yesNoQuestion (this, title, question))
-		throw ConnectCanceledException ();
+		throw DbManager::ConnectCanceledException ();
 }
 
 void MainWindow::grantPermissions ()
@@ -1293,7 +1284,7 @@ void MainWindow::grantPermissions ()
 			title, text, QLineEdit::Password, "", &ok);
 
 		if (!ok)
-			throw ConnectCanceledException ();
+			throw DbManager::ConnectCanceledException ();
 
 		DatabaseInfo rootInfo=info;
 		rootInfo.database="";
@@ -1338,37 +1329,10 @@ void MainWindow::createDatabase ()
 	}
 }
 
-bool MainWindow::isCurrent (Db::Migration::Background::BackgroundMigrator &migrator)
-{
-	Returner<bool> returner;
-	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
-	migrator.isCurrent (returner, monitor);
-	MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
-	return returner.returnedValue ();
-}
-
-void MainWindow::ensureCurrent (Db::Migration::Background::BackgroundMigrator &migrator, const QString &message)
-{
-	if (!isCurrent (migrator))
-		throw ConnectFailedException (utf8 (
-			"%1")
-			.arg (message));
-}
-
-bool MainWindow::isEmpty (Db::Migration::Background::BackgroundMigrator &migrator)
-{
-	Returner<bool> returner;
-	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
-	migrator.isEmpty (returner, monitor);
-	MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
-	return returner.returnedValue ();
-}
 
 void MainWindow::checkVersion ()
 {
-	if (isEmpty (dbManager.getBackgroundMigrator ()))
+	if (dbManager.isEmpty (this))
 	{
 		confirmOrCancel ("Datenbank leer",
 			"Die Datenbank ist leer. Soll sie jetzt erstellt werden?");
@@ -1382,9 +1346,9 @@ void MainWindow::checkVersion ()
 
 		// After loading the schema, the database must be current.
 		// TODO different message if canceled
-		ensureCurrent (dbManager.getBackgroundMigrator (), "Datenbank ist nach Erstellen nicht aktuell.");
+		dbManager.ensureCurrent ("Datenbank ist nach Erstellen nicht aktuell.", this);
 	}
-	else if (!isCurrent (dbManager.getBackgroundMigrator ()))
+	else if (!dbManager.isCurrent (this))
 	{
 		// TODO try to reuse monitor and dialog
 		Returner<quint64> currentVersionReturner;
@@ -1424,7 +1388,7 @@ void MainWindow::checkVersion ()
 
 		// After migrating, the database must be current.
 		// TODO different message if canceled
-		ensureCurrent (dbManager.getBackgroundMigrator (), "Datenbank ist nach der Aktualisierung nicht aktuell.");
+		dbManager.ensureCurrent ("Datenbank ist nach der Aktualisierung nicht aktuell.", this);
 	}
 }
 
@@ -1469,28 +1433,8 @@ void MainWindow::openInterface ()
 
 		// After loading the schema, the database must be current.
 		// TODO different message if canceled
-		ensureCurrent (dbManager.getBackgroundMigrator (), "Nach dem Laden ist die Datenbank nicht aktuell.");
+		dbManager.ensureCurrent ("Nach dem Laden ist die Datenbank nicht aktuell.", this);
 	}
-}
-
-void MainWindow::refreshCache ()
-{
-	Returner<bool> returner;
-	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
-	dbManager.getCacheThread ().refreshAll (returner, monitor);
-	MonitorDialog::monitor (monitor, "Daten abrufen", this);
-	returner.wait ();
-}
-
-void MainWindow::fetchFlights (QDate date)
-{
-	Returner<void> returner;
-	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
-	dbManager.getCacheThread ().fetchFlightsOther (returner, monitor, date);
-	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), this);
-	returner.wait ();
 }
 
 void MainWindow::connectImpl ()
@@ -1501,7 +1445,7 @@ void MainWindow::connectImpl ()
 		checkVersion ();
 
 		dbManager.getCache ().clear ();
-		refreshCache ();
+		dbManager.refreshCache (this);
 
 		refreshFlights ();
 		setDatabaseActionsEnabled (true);
@@ -1529,7 +1473,7 @@ void MainWindow::on_actionConnect_triggered ()
 		}
 		// TODO also for access denied during query (1142)
 	}
-	catch (ConnectCanceledException)
+	catch (DbManager::ConnectCanceledException)
 	{
 		showWarning ("Verbindungsaufbau abgebrochen",
 			"Der Verbindungsaufbau wurde abgebrochen",
@@ -1541,7 +1485,7 @@ void MainWindow::on_actionConnect_triggered ()
 			"Der Verbindungsaufbau wurde abgebrochen",
 			this);
 	}
-	catch (ConnectFailedException &ex)
+	catch (DbManager::ConnectFailedException &ex)
 	{
 		showWarning ("Verbindungsaufbau fehlgeschlagen",
 			QString ("Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1").arg (ex.message),
