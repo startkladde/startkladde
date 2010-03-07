@@ -109,13 +109,6 @@ class MainWindow: public QMainWindow
 		void closeDatabase ();
 		void setDatabaseActionsEnabled (bool enabled);
 
-		void confirmOrCancel (const QString &title, const QString &question);
-		void grantPermissions ();
-		void createDatabase ();
-		void checkVersion ();
-		void openInterface ();
-		void connectImpl ();
-
 
 	protected slots:
 		void databaseError (int number, QString message);

@@ -70,7 +70,13 @@ class DbManager
 
 
 		// *** Connection management
-
+		void confirmOrCancel (const QString &title, const QString &question, QWidget *parent);
+		void grantPermissions (QWidget *parent);
+		void createDatabase (QWidget *parent);
+		void checkVersion (QWidget *parent);
+		void openInterface (QWidget *parent);
+		void connectImpl (QWidget *parent);
+		void connect (QWidget *parent);
 
 		// *** Data management
 		void clearCache ();
