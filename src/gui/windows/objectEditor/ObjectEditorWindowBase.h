@@ -13,6 +13,7 @@
 #include "ui_ObjectEditorWindowBase.h"
 
 namespace Db { namespace Cache { class Cache; } }
+class DbManager;
 
 /**
  * Base class for ObjectEditorWindow, because templates cannot be Q_OBJECTs
@@ -30,7 +31,7 @@ class ObjectEditorWindowBase: public QDialog
 		// Types
 		enum Mode { modeCreate, modeEdit, modeDisplay };
 
-		ObjectEditorWindowBase (Db::Cache::Cache &cache, QWidget *parent=NULL, Qt::WindowFlags flags=0);
+		ObjectEditorWindowBase (DbManager &manager, QWidget *parent=NULL, Qt::WindowFlags flags=0);
 		virtual ~ObjectEditorWindowBase ();
 
 	public slots:
@@ -38,6 +39,7 @@ class ObjectEditorWindowBase: public QDialog
 
 	protected:
 		Ui::ObjectEditorWindowBaseClass ui;
+		DbManager &manager;
 		Db::Cache::Cache &cache;
 };
 

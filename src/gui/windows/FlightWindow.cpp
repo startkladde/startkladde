@@ -19,6 +19,7 @@
 #include "src/util/qString.h"
 #include "src/db/Database.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
+#include "src/db/DbManager.h"
 
 /*
  * On enabling/diabling widgets:
@@ -84,9 +85,10 @@ static const QColor errorColor (255, 127, 127);
  *               constructor and not accessed any more later.
  * @param flags the window flags, passed to the base class constructor
  */
-FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, Db::Cache::Cache &cache, Qt::WindowFlags flags)
+FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager &manager, Qt::WindowFlags flags)
 	:QDialog (parent, flags),
-	cache (cache),
+	manager (manager),
+	cache (manager.getCache ()),
 	mode (mode),
 	labelHeightsSet (false),
 	originalFlightId (invalidId),
@@ -337,9 +339,9 @@ void FlightWindow::showEvent (QShowEvent *event)
  *       by the accepting slot.
  */
 
-void FlightWindow::createFlight (QWidget *parent, Db::Cache::Cache &cache, QDate date)
+void FlightWindow::createFlight (QWidget *parent, DbManager &manager, QDate date)
 {
-	FlightWindow *w=new FlightWindow (parent, modeCreate, cache, NULL);
+	FlightWindow *w=new FlightWindow (parent, modeCreate, manager, NULL);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 
 	w->ui.dateInput->setDate (date);
@@ -348,9 +350,9 @@ void FlightWindow::createFlight (QWidget *parent, Db::Cache::Cache &cache, QDate
 	w->exec ();
 }
 
-void FlightWindow::repeatFlight (QWidget *parent, Db::Cache::Cache &cache, const Flight &original, QDate date)
+void FlightWindow::repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date)
 {
-	FlightWindow *w=new FlightWindow (parent, modeCreate, cache);
+	FlightWindow *w=new FlightWindow (parent, modeCreate, manager);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 	w->flightToFields (original, true);
 
@@ -362,9 +364,9 @@ void FlightWindow::repeatFlight (QWidget *parent, Db::Cache::Cache &cache, const
 	w->exec ();
 }
 
-void FlightWindow::editFlight (QWidget *parent, Db::Cache::Cache &cache, Flight &flight)
+void FlightWindow::editFlight (QWidget *parent, DbManager &manager, Flight &flight)
 {
-	FlightWindow *w=new FlightWindow (parent, modeEdit, cache);
+	FlightWindow *w=new FlightWindow (parent, modeEdit, manager);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 	w->flightToFields (flight, false);
 
@@ -1149,7 +1151,7 @@ dbId FlightWindow::determinePlane (QString registration, QString description, QW
 
 	if (yesNoQuestion (this, title, question))
 	{
-		dbId result=ObjectEditorWindow<Plane>::createObject (this, cache);
+		dbId result=ObjectEditorWindow<Plane>::createObject (this, manager);
 		if (idValid (result))
 			return result;
 		else
@@ -1171,7 +1173,7 @@ dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
 	person.firstName=firstName;
 	person.lastName=lastName;
 
-	dbId result=ObjectEditorWindow<Person>::createObject (this, cache);
+	dbId result=ObjectEditorWindow<Person>::createObject (this, manager);
 	if (idValid (result))
 		return result;
 	else

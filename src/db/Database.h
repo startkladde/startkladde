@@ -23,7 +23,7 @@ namespace Db
 	 * This class implements the Greater ORM, which consists of:
 	 *   - Object CRUDLEC (create, read, update, delete, list, exists, count)
 	 *   - Selection frontends (e. g. getFlightsDate)
-	 *   (- additional methods, like objectUsed)
+	 *   - additional methods, like objectUsed
 	 *
 	 * The CRUDLEC methods are templates which are instantiated for the
 	 * relevant classes in the .cpp file.
@@ -62,9 +62,8 @@ namespace Db
 			template<class T> bool updateObject (const T &object);
 
 			// We could use a default parameter for the corresponding methods
-			// taking a Query&, but that would require all translation units
-			// using this method to include Db::Query, which introduces
-			// unnecessary dependencies.
+			// taking a Query&, but that would require files using this method
+			// to include Db::Query, which introduces unnecessary dependencies.
 			template<class T> QList<T> getObjects ();
 			template<class T> int countObjects ();
 
@@ -78,7 +77,7 @@ namespace Db
 			virtual QStringList listClubs ();
 			virtual QStringList listPlaneTypes ();
 
-			// Additional properties
+			// *** Additional properties
 			template<class T> bool objectUsed (dbId id);
 
 		public slots:

@@ -18,10 +18,11 @@
 #include "src/text.h"
 #include "src/db/cache/Cache.h"
 #include "src/db/DbWorker.h"
+#include "src/db/DbManager.h"
 
-template<class T> ObjectListWindow<T>::ObjectListWindow (Db::Cache::Cache &cache, ObjectListModel<T> *list, bool listOwned, QWidget *parent):
+template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, ObjectListModel<T> *list, bool listOwned, QWidget *parent):
 	ObjectListWindowBase (parent),
-	cache (cache), list (list), listOwned (listOwned)
+	manager (manager), cache (manager.getCache ()), list (list), listOwned (listOwned)
 {
 	// Set the list as the table's model with a sort proxy
 	proxyModel=new QSortFilterProxyModel (this);
@@ -47,13 +48,13 @@ template<class T> ObjectListWindow<T>::~ObjectListWindow()
 
 template<class T> void ObjectListWindow<T>::on_actionNew_triggered ()
 {
-	ObjectEditorWindow<T>::createObject (this, cache);
+	ObjectEditorWindow<T>::createObject (this, manager);
 }
 
 template<class T> void ObjectListWindow<T>::on_actionEdit_triggered ()
 {
 	QModelIndex listIndex=proxyModel->mapToSource (ui.table->currentIndex ());
-	ObjectEditorWindow<T>::editObject (this, cache, list->at (listIndex));
+	ObjectEditorWindow<T>::editObject (this, manager, list->at (listIndex));
 }
 
 template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
@@ -63,15 +64,13 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 	dbId id=object.getId ();
 
 	bool objectUsed=true;
-	// TODO pass, or get from Db
-	Db::DbWorker dbWorker (cache.getDatabase ());
 
 	try
 	{
 		Returner<bool> returner;
 		SignalOperationMonitor monitor;
-		connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
-		dbWorker.objectUsed<T> (returner, monitor, id);
+		connect (&monitor, SIGNAL (canceled ()), &manager.getDb (), SLOT (cancelConnection ()));
+		manager.getDbWorker ().objectUsed<T> (returner, monitor, id);
 		MonitorDialog::monitor (monitor, utf8 ("%1 prüfen").arg (T::objectTypeDescription ()), this);
 		objectUsed=returner.returnedValue ();
 	}
@@ -94,8 +93,8 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 			{
 				Returner<int> returner;
 				SignalOperationMonitor monitor;
-				connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
-				dbWorker.deleteObject<T> (returner, monitor, id);
+				connect (&monitor, SIGNAL (canceled ()), &manager.getDb (), SLOT (cancelConnection ()));
+				manager.getDbWorker ().deleteObject<T> (returner, monitor, id);
 				MonitorDialog::monitor (monitor, utf8 ("%1 löschen").arg (T::objectTypeDescription ()), this);
 				returner.wait ();
 			}
@@ -118,7 +117,7 @@ template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 template<class T> void ObjectListWindow<T>::on_table_activated (const QModelIndex &index)
 {
 	QModelIndex listIndex=proxyModel->mapToSource (index);
-	ObjectEditorWindow<T>::editObject (this, cache, list->at (listIndex));
+	ObjectEditorWindow<T>::editObject (this, manager, list->at (listIndex));
 }
 
 

@@ -119,6 +119,7 @@
 #include "src/model/Flight.h" // Required for Flight::Mode and Flight::Type
 #include "src/config/Options.h" // TODO remove dependency
 
+class DbManager;
 class Person;
 namespace Db { namespace Cache { class Cache; } }
 
@@ -143,16 +144,16 @@ class FlightWindow: public QDialog
 
 
 		// *** Construction
-		FlightWindow (QWidget *parent, FlightWindow::Mode mode, Db::Cache::Cache &cache, Qt::WindowFlags flags=0);
+		FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager &manager, Qt::WindowFlags flags=0);
 		~FlightWindow ();
 
 		// *** Setup
 		void fillData ();
 
 		// *** Invocation
-		static void createFlight (QWidget *parent, Db::Cache::Cache &cache, QDate date);
-		static void repeatFlight (QWidget *parent, Db::Cache::Cache &cache, const Flight &original, QDate date);
-		static void editFlight   (QWidget *parent, Db::Cache::Cache &cache, Flight &flight);
+		static void createFlight (QWidget *parent, DbManager &manager, QDate date);
+		static void repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date);
+		static void editFlight   (QWidget *parent, DbManager &manager, Flight &flight);
 
 	protected:
 		// Input field data
@@ -405,6 +406,7 @@ class FlightWindow: public QDialog
 
 		Ui::FlightWindowClass ui;
 
+		DbManager &manager;
 		Db::Cache::Cache &cache;
 		const FlightWindow::Mode mode;
 

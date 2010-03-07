@@ -38,6 +38,7 @@ HEADERS += \
            src/concurrent/monitor/SimpleOperationMonitor.h \
            src/config/Options.h \
            src/db/Database.h \
+           src/db/DbManager.h \
            src/db/DbWorker.h \
            src/db/Query.h \
            src/db/dbId.h \
@@ -141,6 +142,7 @@ SOURCES += \
            src/config/Options.cpp \
            src/db/Database.cpp \
            src/db/DatabaseInfo.cpp \
+           src/db/DbManager.cpp \
            src/db/DbWorker.cpp \
            src/db/Query.cpp \
            src/db/dbId.cpp \

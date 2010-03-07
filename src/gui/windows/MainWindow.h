@@ -41,9 +41,7 @@
 
 #include "ui_MainWindow.h"
 
-#include "src/db/interface/threadSafe/ThreadSafeInterface.h"
-#include "src/db/Database.h"
-#include "src/db/cache/Cache.h"
+#include "src/db/DbManager.h"
 
 class QWidget;
 template<class T> class QList;
@@ -221,9 +219,7 @@ class MainWindow: public QMainWindow
 	private:
 		Ui::MainWindowClass ui;
 
-		Db::Interface::ThreadSafeInterface dbInterface;
-		Db::Database db;
-		Db::Cache::Cache cache;
+		DbManager dbManager;
 
 		QDate displayDate;
 		WeatherWidget *weatherWidget;

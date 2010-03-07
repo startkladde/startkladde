@@ -1,5 +1,81 @@
 Neue TODOs sollten in Trac eingetragen werden. 
 
+Database notes:
+/*
+ * Short term plan:
+ *   - Connection monitoring (ping? keepalive?)
+ *   - Proper caching
+ *   - timeout: only when no data is transfered
+ *   - signal unhandled exceptions to main window
+ *
+ * Tests:
+ *   - Test the migrations:
+ *     - make sure the old version and current sk_web work with "initial"
+ *     - make sure we can migrate from both an empty and the legacy database
+ *   - Fixtures
+ *     - SQL dump or data file (CSV/YAML)?
+ *     - C++ or Ruby?
+ *   - Port open, but connection not accepted
+ *   - make sure "", 0 and NULL are read correctly
+ *   - make sure (using a dump of an old db) that the migration path is OK
+ *   - Test all paths for database initialisation
+ *
+ * Improvements:
+ *   - Add a ResultConsumer as alternative to passing a result (especially for
+ *     CopiedResult)
+ *   - allow specifying an "exclude" value to selectDistinctColumns (what for?)
+ *   - move specialized queries generation to model classes (e. g. flight prepared)
+ *     (but need after-filter)
+ *   - Flight should be an entity
+ *   - Allow tables without id column (e. g. habtm join tables), but tables
+ *     must have at least one column
+ *   - Remove code multiplication in Models (SQL interface)
+ *   - change flight mode (and towflight mode) column type
+ *   - Add a Database::saveObject that creates or updates the object, depending
+ *     on whether it has a valid id
+ *   - Allow a table name prefix (useful for testing)
+ *   - Consider storing the OperationMonitor in the migration instead of passing
+ *     to up/down, and/or calling checkCanceled in addColumn et. al.
+ *
+ * Medium term plan:
+ *   - Standardize enum handling: store the database value internally and have
+ *     an "unknown" type (instead of "none")
+ *     - this should also allow preserving unknown types in the database
+ *   - allow backup and restore of database (even if not connected)
+ *     - offer backup when migrating on connect
+ *   - rename planes.competition_callsign to planes.callsign
+ *   - add some abstraction to the query list generation
+ *   - add support for sqlite
+ *   - add indexes
+ *   - add foreign key constraints
+ *   - database checks (?)
+ *     - show what is wrong/will be fixed
+ *
+ * Long term plan:
+ *   - use a memory SQLite for cache
+ *   - merge data storage and database methods, so we can use a (local)
+ *     database directly (w/o local cache)
+ *       - we'd probably have an abstract DataSource and inherited Database and
+ *         Cache which uses a Database for access and one (in
+ *         memory) for local caching
+ *       - question: can we afford using a query on a memory database e. g.
+ *         for list of first names rather than maintaining the list explicitly?
+ *         should be fast enough (does sqlite memory table have index?)
+ *         locations are more interesting, b/c there are many flights
+ *   - local disk caching
+ *
+ * Old comments:
+ *   - Time to string: to_string (db_time_format, tz_utc, 20, true);
+ *   - String to time: parse (text, tz_utc, db_time_format);
+ *   - Merge person:
+ *     - update flight pilot/copilot/towpilot, user person; should be in transaction
+ *     - check if a flight or user still referencecs this user
+ *     - delete "wrong" person
+ *   - old null time: "0000-00-00 00:00:00"
+ *   - old db time format: "%Y-%m-%d %H:%M:%S" (must be parseable, don't use %0Y)
+ */
+
+
 == Critical (before release) ==
 
 * No "land" button if display date is not today
@@ -18,8 +94,6 @@ Documentation:
        startkladde  ALL=NOPASSWD:/etc/init.d/hwclock.sh stop
 
 Default-Config: Plugins (metar, regenrader) eintragen
-
-See also Database.cpp
 
 
 == Major (important) ==

@@ -63,8 +63,7 @@ template <class T> class MutableObjectList;
 // ******************
 
 MainWindow::MainWindow (QWidget *parent) :
-	QMainWindow (parent),
-			dbInterface (opts.databaseInfo), db (dbInterface), cache (db),
+	QMainWindow (parent), dbManager (opts.databaseInfo),
 			weatherWidget (NULL), weatherPlugin (NULL),
 			weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
 			contextMenu (new QMenu (this)),
@@ -73,13 +72,13 @@ MainWindow::MainWindow (QWidget *parent) :
 	ui.setupUi (this);
 
 	// Database
-	connect (&dbInterface, SIGNAL (databaseError (int, QString)), this, SLOT (databaseError (int, QString)));
+	connect (&dbManager.getInterface (), SIGNAL (databaseError (int, QString)), this, SLOT (databaseError (int, QString)));
 
-	flightModel = new FlightModel (cache);
-	proxyList=new FlightProxyList (cache, *flightList, this); // TODO never deleted
+	flightModel = new FlightModel (dbManager.getCache ());
+	proxyList=new FlightProxyList (dbManager.getCache (), *flightList, this); // TODO never deleted
 	flightListModel = new ObjectListModel<Flight> (proxyList, false, flightModel, true, this);
 
-	proxyModel = new FlightSortFilterProxyModel (cache, this);
+	proxyModel = new FlightSortFilterProxyModel (dbManager.getCache (), this);
 	proxyModel->setSourceModel (flightListModel);
 
 	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
@@ -111,7 +110,7 @@ MainWindow::MainWindow (QWidget *parent) :
 	setupLayout ();
 
 	// Do this before calling connect
-	QObject::connect (&cache, SIGNAL (changed (Db::Event::DbEvent)), this, SLOT (cacheChanged (Db::Event::DbEvent)));
+	QObject::connect (&dbManager.getCache (), SIGNAL (changed (Db::Event::DbEvent)), this, SLOT (cacheChanged (Db::Event::DbEvent)));
 
 	QTimer::singleShot (0, this, SLOT (on_actionConnect_triggered ()));
 
@@ -444,8 +443,8 @@ bool MainWindow::refreshFlights ()
 	{
 		// The display date is today's date - display today's flights and
 		// prepared flights
-		flights = cache.getFlightsToday ().getList ();
-		flights += cache.getPreparedFlights ().getList ();
+		flights  = dbManager.getCache ().getFlightsToday ().getList ();
+		flights += dbManager.getCache ().getPreparedFlights ().getList ();
 
 		ui.displayDateLabel->setPaletteForegroundColor (Qt::black);
 		ui.displayDateLabel->setText (today.toString (Qt::LocaleDate));
@@ -456,10 +455,10 @@ bool MainWindow::refreshFlights ()
 	{
 		// The display date is not today's date - display the flights from the
 		// cache's "other" date
-		flights=cache.getFlightsOther ().getList ();
+		flights=dbManager.getCache ().getFlightsOther ().getList ();
 
 		ui.displayDateLabel->setPaletteForegroundColor (Qt::red);
-		ui.displayDateLabel->setText (cache.getOtherDate ().toString (Qt::LocaleDate));
+		ui.displayDateLabel->setText (dbManager.getCache ().getOtherDate ().toString (Qt::LocaleDate));
 
 		proxyModel->setShowPreparedFlights (false);
 	}
@@ -578,14 +577,11 @@ void MainWindow::flightListChanged ()
 
 void MainWindow::updateFlight (const Flight &flight)
 {
-	// TODO pass, or get from Db
 	// TODO error handling? required? What happens on uncaught exception?
-	Db::DbWorker dbWorker (cache.getDatabase ());
-
 	Returner<int> returner;
 	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
-	dbWorker.updateObject (returner, monitor, flight);
+	connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
+	dbManager.getDbWorker ().updateObject (returner, monitor, flight);
 	MonitorDialog::monitor (monitor, "Flug speichern", this);
 	returner.wait ();
 }
@@ -597,7 +593,7 @@ void MainWindow::startFlight (dbId id)
 
 	try
 	{
-		Flight flight=cache.getObject<Flight> (id);
+		Flight flight=dbManager.getCache ().getObject<Flight> (id);
 		QString reason;
 
 		if (flight.canDepart (&reason))
@@ -625,7 +621,7 @@ void MainWindow::landFlight (dbId id)
 
 	try
 	{
-		Flight flight = cache.getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
 		QString reason;
 
 		if (flight.canLand (&reason))
@@ -651,7 +647,7 @@ void MainWindow::landTowflight (dbId id)
 
 	try
 	{
-		Flight flight = cache.getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
 		QString reason;
 
 		if (flight.canTowflightLand (&reason))
@@ -676,7 +672,7 @@ void MainWindow::on_actionNew_triggered ()
 	//   - be closed when the database connection is closed (?)
 	//   - what about landing a flight that is open in the editor?
 	//   - there should be only one flight editor at a time
-	FlightWindow::createFlight (this, cache, getNewFlightDate ());
+	FlightWindow::createFlight (this, dbManager, getNewFlightDate ());
 
 }
 
@@ -719,7 +715,7 @@ void MainWindow::on_actionTouchngo_triggered ()
 		// TODO warning if the plane is specified and a glider and the
 		// launch method is specified and not an unended airtow
 
-		Flight flight = cache.getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
 		QString reason;
 
 		if (flight.canTouchngo (&reason))
@@ -746,8 +742,8 @@ void MainWindow::on_actionEdit_triggered ()
 
 	try
 	{
-		Flight flight = cache.getObject<Flight> (id);
-		FlightWindow::editFlight (this, cache, flight);
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
+		FlightWindow::editFlight (this, dbManager, flight);
 	}
 	catch (Cache::NotFoundException &ex)
 	{
@@ -774,8 +770,8 @@ void MainWindow::on_actionRepeat_triggered ()
 
 	try
 	{
-		Flight flight = cache.getObject<Flight> (id);
-		FlightWindow::repeatFlight (this, cache, flight, getNewFlightDate ());
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
+		FlightWindow::repeatFlight (this, dbManager, flight, getNewFlightDate ());
 	}
 	catch (Cache::NotFoundException &ex)
 	{
@@ -799,13 +795,10 @@ void MainWindow::on_actionDelete_triggered ()
 
 	try
 	{
-		// TODO pass, or get from Db
-		Db::DbWorker dbWorker (cache.getDatabase ());
-
 		Returner<int> returner;
 		SignalOperationMonitor monitor;
-		connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
-		dbWorker.deleteObject<Flight> (returner, monitor, id);
+		connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
+		dbManager.getDbWorker ().deleteObject<Flight> (returner, monitor, id);
 		MonitorDialog::monitor (monitor, utf8 ("Flug löschen"), this);
 		returner.wait ();
 	}
@@ -833,34 +826,34 @@ void MainWindow::on_actionDisplayError_triggered ()
 
 	try
 	{
-		Flight flight = cache.getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
 
-		Plane *plane=cache.getNewObject<Plane> (flight.planeId);
-		LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (flight.launchMethodId);
+		Plane *plane=dbManager.getCache ().getNewObject<Plane> (flight.planeId);
+		LaunchMethod *launchMethod=dbManager.getCache ().getNewObject<LaunchMethod> (flight.launchMethodId);
 		Plane *towplane=NULL;
 
 		dbId towplaneId=invalidId;
 		if (launchMethod && launchMethod->isAirtow ())
 		{
 			if (launchMethod->towplaneKnown ())
-				towplaneId=cache.getPlaneIdByRegistration (launchMethod->towplaneRegistration);
+				towplaneId=dbManager.getCache ().getPlaneIdByRegistration (launchMethod->towplaneRegistration);
 			else
 				towplaneId=flight.towplaneId;
 
 			if (idValid (towplaneId))
-				towplane=cache.getNewObject<Plane> (towplaneId);
+				towplane=dbManager.getCache ().getNewObject<Plane> (towplaneId);
 		}
 
 		// As the FlightModel uses fehlerhaft on the towflight generated by
 		// the FlightProxyList rather than schlepp_fehlerhaft, we do the same.
 		if (isTowflight)
 		{
-			dbId towLaunchMethod=cache.getLaunchMethodByType (LaunchMethod::typeSelf);
+			dbId towLaunchMethod=dbManager.getCache ().getLaunchMethodByType (LaunchMethod::typeSelf);
 
 			flight=flight.makeTowflight (towplaneId, towLaunchMethod);
 
 			delete launchMethod;
-			launchMethod=cache.getNewObject<LaunchMethod> (towLaunchMethod);
+			launchMethod=dbManager.getCache ().getNewObject<LaunchMethod> (towLaunchMethod);
 
 			delete plane;
 			plane=towplane;
@@ -1211,12 +1204,12 @@ void MainWindow::setDisplayDate (QDate newDisplayDate, bool force)
 		{
 			// If the new display date is not in the cache, fetch it.
 			// TODO move that to fetchFlights() (with force flag)
-			if (newDisplayDate!=cache.getOtherDate ())
+			if (newDisplayDate!=dbManager.getCache ().getOtherDate ())
 				fetchFlights (newDisplayDate);
 
 			// Now the display date is the one in the cache (which should be
 			// newDisplayDate).
-			displayDate=cache.getOtherDate ();
+			displayDate=dbManager.getCache ().getOtherDate ();
 		}
 		catch (OperationCanceledException &ex)
 		{
@@ -1241,19 +1234,19 @@ void MainWindow::on_actionSetDisplayDate_triggered ()
 
 void MainWindow::on_actionPlaneLogs_triggered ()
 {
-	PlaneLog *planeLog = PlaneLog::createNew (flightList->getList (), cache);
+	PlaneLog *planeLog = PlaneLog::createNew (flightList->getList (), dbManager.getCache ());
 	StatisticsWindow::display (planeLog, true, utf8 ("Bordbücher"), this);
 }
 
 void MainWindow::on_actionPersonLogs_triggered ()
 {
-	PilotLog *pilotLog = PilotLog::createNew (flightList->getList (), cache);
+	PilotLog *pilotLog = PilotLog::createNew (flightList->getList (), dbManager.getCache ());
 	StatisticsWindow::display (pilotLog, true, utf8 ("Flugbücher"), this);
 }
 
 void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 {
-	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (flightList->getList (), cache);
+	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (flightList->getList (), dbManager.getCache ());
 	StatisticsWindow::display (stats, true, "Startartstatistik", this);
 }
 
@@ -1278,7 +1271,7 @@ void MainWindow::confirmOrCancel (const QString &title, const QString &question)
 
 void MainWindow::grantPermissions ()
 {
-	DatabaseInfo info=dbInterface.getInfo ();
+	DatabaseInfo info=dbManager.getInterface ().getInfo ();
 
 	// Get the root password from the user
 	QString title=utf8 ("Datenbank-Passwort benötigt");
@@ -1327,7 +1320,7 @@ void MainWindow::grantPermissions ()
 
 void MainWindow::createDatabase ()
 {
-	const DatabaseInfo &info=dbInterface.getInfo ();
+	const DatabaseInfo &info=dbManager.getInterface ().getInfo ();
 
 	DatabaseInfo createInfo=info;
 	createInfo.database="";
@@ -1339,7 +1332,7 @@ void MainWindow::createDatabase ()
 	}
 	catch (...)
 	{
-		// TODO use RAII
+		// TODO required?
 		interface.close ();
 		throw;
 	}
@@ -1349,7 +1342,7 @@ bool MainWindow::isCurrent (Db::Migration::Background::BackgroundMigrator &migra
 {
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
+	connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
 	migrator.isCurrent (returner, monitor);
 	MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 	return returner.returnedValue ();
@@ -1367,7 +1360,7 @@ bool MainWindow::isEmpty (Db::Migration::Background::BackgroundMigrator &migrato
 {
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
+	connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
 	migrator.isEmpty (returner, monitor);
 	MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 	return returner.returnedValue ();
@@ -1375,31 +1368,29 @@ bool MainWindow::isEmpty (Db::Migration::Background::BackgroundMigrator &migrato
 
 void MainWindow::checkVersion ()
 {
-	Db::Migration::Background::BackgroundMigrator migrator (dbInterface);
-
-	if (isEmpty (migrator)) // TODO in background
+	if (isEmpty (dbManager.getBackgroundMigrator ()))
 	{
 		confirmOrCancel ("Datenbank leer",
 			"Die Datenbank ist leer. Soll sie jetzt erstellt werden?");
 
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
-		connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
-		migrator.loadSchema (returner, monitor);
+		connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
+		dbManager.getBackgroundMigrator ().loadSchema (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait (); // Required so any exceptions are rethrown
 
 		// After loading the schema, the database must be current.
 		// TODO different message if canceled
-		ensureCurrent (migrator, "Datenbank ist nach Erstellen nicht aktuell.");
+		ensureCurrent (dbManager.getBackgroundMigrator (), "Datenbank ist nach Erstellen nicht aktuell.");
 	}
-	else if (!isCurrent (migrator))
+	else if (!isCurrent (dbManager.getBackgroundMigrator ()))
 	{
 		// TODO try to reuse monitor and dialog
 		Returner<quint64> currentVersionReturner;
 		SignalOperationMonitor currentVersionMonitor;
-		connect (&currentVersionMonitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
-		migrator.currentVersion (currentVersionReturner, currentVersionMonitor);
+		connect (&currentVersionMonitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
+		dbManager.getBackgroundMigrator ().currentVersion (currentVersionReturner, currentVersionMonitor);
 		MonitorDialog::monitor (currentVersionMonitor, "Verbindungsaufbau", this);
 		quint64 currentVersion=currentVersionReturner.returnedValue ();
 
@@ -1407,8 +1398,8 @@ void MainWindow::checkVersion ()
 
 		Returner<QList<quint64> > pendingMigrationsReturner;
 		SignalOperationMonitor pendingMigrationsMonitor;
-		connect (&pendingMigrationsMonitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
-		migrator.pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
+		connect (&pendingMigrationsMonitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
+		dbManager.getBackgroundMigrator ().pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
 		MonitorDialog::monitor (pendingMigrationsMonitor, "Verbindungsaufbau", this);
 		quint64 numPendingMigrations=pendingMigrationsReturner.returnedValue ().size ();
 
@@ -1426,14 +1417,14 @@ void MainWindow::checkVersion ()
 
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
-		connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
-		migrator.migrate (returner, monitor);
+		connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
+		dbManager.getBackgroundMigrator ().migrate (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait (); // Required so any exceptions are rethrown
 
 		// After migrating, the database must be current.
 		// TODO different message if canceled
-		ensureCurrent (migrator, "Datenbank ist nach der Aktualisierung nicht aktuell.");
+		ensureCurrent (dbManager.getBackgroundMigrator (), "Datenbank ist nach der Aktualisierung nicht aktuell.");
 	}
 }
 
@@ -1445,8 +1436,8 @@ void MainWindow::openInterface ()
 	{
 		Returner<bool> returner;
 		SignalOperationMonitor monitor;
-		connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
-		dbInterface.asyncOpen (returner, monitor);
+		connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
+		dbManager.getInterface ().asyncOpen (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait ();
 	}
@@ -1459,7 +1450,7 @@ void MainWindow::openInterface ()
 
 		confirmOrCancel ("Datenbank erstellen?", QString (
 			"Die Datenbank %1 existiert nicht. Soll sie erstellt werden?")
-			.arg (dbInterface.getInfo ().database));
+			.arg (dbManager.getInterface ().getInfo ().database));
 
 		// Create the database, which involves opening a connection without a
 		// default database
@@ -1467,42 +1458,37 @@ void MainWindow::openInterface ()
 
 		// Since creating the database succeeded, we should now be able to open
 		// it and load the schema.
-		dbInterface.open ();
-		Db::Migration::Background::BackgroundMigrator migrator (dbInterface);
+		dbManager.getInterface ().open (); // FIXME background
 
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
-		connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
-		migrator.loadSchema (returner, monitor);
+		connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
+		dbManager.getBackgroundMigrator ().loadSchema (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", this);
 		returner.wait (); // Required so any exceptions are rethrown
 
 		// After loading the schema, the database must be current.
 		// TODO different message if canceled
-		ensureCurrent (migrator, "Nach dem Laden ist die Datenbank nicht aktuell.");
+		ensureCurrent (dbManager.getBackgroundMigrator (), "Nach dem Laden ist die Datenbank nicht aktuell.");
 	}
 }
 
 void MainWindow::refreshCache ()
 {
-	Db::Cache::CacheThread cacheThread (cache); // TODO to class
-
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
-	cacheThread.refreshAll (returner, monitor);
+	connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
+	dbManager.getCacheThread ().refreshAll (returner, monitor);
 	MonitorDialog::monitor (monitor, "Daten abrufen", this);
 	returner.wait ();
 }
 
 void MainWindow::fetchFlights (QDate date)
 {
-	Db::Cache::CacheThread cacheThread (cache); // TODO to class
-
 	Returner<void> returner;
 	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &dbInterface, SLOT (cancelConnection ()));
-	cacheThread.fetchFlightsOther (returner, monitor, date);
+	connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
+	dbManager.getCacheThread ().fetchFlightsOther (returner, monitor, date);
 	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), this);
 	returner.wait ();
 }
@@ -1514,7 +1500,7 @@ void MainWindow::connectImpl ()
 		openInterface ();
 		checkVersion ();
 
-		cache.clear ();
+		dbManager.getCache ().clear ();
 		refreshCache ();
 
 		refreshFlights ();
@@ -1523,7 +1509,7 @@ void MainWindow::connectImpl ()
 	catch (...)
 	{
 		// TODO check it works even if it's not open
-		dbInterface.close ();
+		dbManager.getInterface ().close ();
 		throw;
 	}
 }
@@ -1575,35 +1561,35 @@ void MainWindow::on_actionConnect_triggered ()
 void MainWindow::on_actionDisconnect_triggered ()
 {
 	setDatabaseActionsEnabled (false);
-	cache.clear ();
+	dbManager.getCache ().clear ();
 	flightList->clear ();
-	dbInterface.close ();
+	dbManager.getInterface ().close ();
 }
 
 void MainWindow::on_actionEditPlanes_triggered ()
 {
-	MutableObjectList<Plane> *list = new AutomaticEntityList<Plane> (cache, cache.getPlanes ().getList (), this);
+	MutableObjectList<Plane> *list = new AutomaticEntityList<Plane> (dbManager.getCache (), dbManager.getCache ().getPlanes ().getList (), this);
 	ObjectListModel<Plane> *listModel = new ObjectListModel<Plane> (list, true, new Plane::DefaultObjectModel (), true,
 			this);
-	ObjectListWindowBase *window = new ObjectListWindow<Plane> (cache, listModel, true, this);
+	ObjectListWindowBase *window = new ObjectListWindow<Plane> (dbManager, listModel, true, this);
 	window->show ();
 }
 
 void MainWindow::on_actionEditPeople_triggered ()
 {
-	MutableObjectList<Person> *list = new AutomaticEntityList<Person> (cache, cache.getPeople ().getList (), this);
+	MutableObjectList<Person> *list = new AutomaticEntityList<Person> (dbManager.getCache (), dbManager.getCache ().getPeople ().getList (), this);
 	ObjectListModel<Person> *listModel = new ObjectListModel<Person> (list, true, new Person::DefaultObjectModel (),
 			true, this);
-	ObjectListWindowBase *window = new ObjectListWindow<Person> (cache, listModel, true, this);
+	ObjectListWindowBase *window = new ObjectListWindow<Person> (dbManager, listModel, true, this);
 	window->show ();
 }
 
 void MainWindow::on_actionEditLaunchMethods_triggered ()
 {
-	MutableObjectList<LaunchMethod> *list = new AutomaticEntityList<LaunchMethod> (cache, cache.getLaunchMethods ().getList (), this);
+	MutableObjectList<LaunchMethod> *list = new AutomaticEntityList<LaunchMethod> (dbManager.getCache (), dbManager.getCache ().getLaunchMethods ().getList (), this);
 	ObjectListModel<LaunchMethod> *listModel = new ObjectListModel<LaunchMethod> (list, true, new LaunchMethod::DefaultObjectModel (),
 			true, this);
-	ObjectListWindowBase *window = new ObjectListWindow<LaunchMethod> (cache, listModel, true, this);
+	ObjectListWindowBase *window = new ObjectListWindow<LaunchMethod> (dbManager, listModel, true, this);
 	window->show ();
 }
 

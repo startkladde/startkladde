@@ -14,6 +14,8 @@
 #include "src/gui/windows/MonitorDialog.h"
 #include "src/concurrent/Returner.h"
 #include "src/util/qString.h"
+#include "src/db/DbManager.h"
+
 
 /*
  * Improvements:
@@ -38,14 +40,14 @@ template<class T> class ObjectEditorWindow: public ObjectEditorWindowBase
 {
 	public:
 		// Construction
-		ObjectEditorWindow (Mode mode, Db::Cache::Cache &cache, QWidget *parent=0, Qt::WindowFlags flags=0);
+		ObjectEditorWindow (Mode mode, DbManager &manager, QWidget *parent=0, Qt::WindowFlags flags=0);
 		virtual ~ObjectEditorWindow ();
 
 		// Invocation
 		// TODO: don't allow changing the registration/person name/...
-		static dbId createObject (QWidget *parent, Db::Cache::Cache &cache);
-		static void displayObject (QWidget *parent, Db::Cache::Cache &cache, const T &object);
-		static int editObject (QWidget *parent, Db::Cache::Cache &cache, const T &object);
+		static dbId createObject (QWidget *parent, DbManager &manager);
+		static void displayObject (QWidget *parent, DbManager &manager, const T &object);
+		static int editObject (QWidget *parent, DbManager &manager, const T &object);
 
 		// Database
 		bool writeToDatabase (T &object);
@@ -66,8 +68,8 @@ template<class T> class ObjectEditorWindow: public ObjectEditorWindowBase
 // ** Construction **
 // ******************
 
-template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, Db::Cache::Cache &cache, QWidget *parent, Qt::WindowFlags flags):
-	ObjectEditorWindowBase (cache, parent, flags),
+template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DbManager &manager, QWidget *parent, Qt::WindowFlags flags):
+	ObjectEditorWindowBase (manager, parent, flags),
 	mode (mode)
 {
 	editorPane = ObjectEditorPane<T>::create (mode, cache, ui.objectEditorPane);
@@ -103,9 +105,9 @@ template<class T> ObjectEditorWindow<T>::~ObjectEditorWindow ()
 
 // TODO: allow presetting the registration/name/..., probably by passing in a const T&
 // TODO: registration/name/... not editable
-template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, Db::Cache::Cache &cache)
+template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, DbManager &manager)
 {
-	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeCreate, cache, parent);
+	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeCreate, manager, parent);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 
 	if (w->exec ()==QDialog::Accepted)
@@ -116,18 +118,18 @@ template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, Db:
 
 // TODO: this should probably take an ID instead of a T&
 // TODO: only show a close button
-template<class T> void ObjectEditorWindow<T>::displayObject (QWidget *parent, Db::Cache::Cache &cache, const T &object)
+template<class T> void ObjectEditorWindow<T>::displayObject (QWidget *parent, DbManager &manager, const T &object)
 {
-	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeDisplay, cache, parent);
+	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeDisplay, manager, parent);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 	w->editorPane->objectToFields (object);
 	w->exec ();
 }
 
 // TODO: this should probably take an ID instead of a T&
-template<class T> int ObjectEditorWindow<T>::editObject (QWidget *parent, Db::Cache::Cache &cache, const T &object)
+template<class T> int ObjectEditorWindow<T>::editObject (QWidget *parent, DbManager &manager, const T &object)
 {
-	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeEdit, cache, parent);
+	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeEdit, manager, parent);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 	w->editorPane->objectToFields (object);
 	return w->exec ();

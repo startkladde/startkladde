@@ -1,8 +1,11 @@
 #include "ObjectEditorWindowBase.h"
 
-ObjectEditorWindowBase::ObjectEditorWindowBase (Db::Cache::Cache &cache, QWidget *parent, Qt::WindowFlags flags):
+#include "src/db/DbManager.h"
+
+ObjectEditorWindowBase::ObjectEditorWindowBase (DbManager &manager, QWidget *parent, Qt::WindowFlags flags):
 	QDialog (parent, flags),
-	cache (cache)
+	manager (manager),
+	cache (manager.getCache ())
 {
 	ui.setupUi (this);
 }
