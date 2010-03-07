@@ -72,16 +72,13 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 	// TODO pass, or get from Db
 	Db::DbWorker dbWorker (cache.getDatabase ());
 
-
-//	// TODO background
-//	bool objectUsed=cache.getDatabase ().objectUsed<T> (id);
-
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
+	connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
 	dbWorker.objectUsed<T> (returner, monitor, id);
-	MonitorDialog::monitor (monitor, "Objekt prüfen", this); // FIXME Person prüfen
+	MonitorDialog::monitor (monitor, utf8 ("%1 prüfen").arg (T::objectTypeDescription ()), this);
 	bool objectUsed=returner.returnedValue ();
-	// FIXME handle canceled
+	// FIXME handle OperationCanceledException
 
 	if (objectUsed)
 	{
@@ -98,9 +95,11 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 		{
 			Returner<int> returner;
 			SignalOperationMonitor monitor;
+			connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
 			dbWorker.deleteObject<T> (returner, monitor, id);
-			MonitorDialog::monitor (monitor, utf8 ("Objekt löschen"), this); // FIXME Person anlegen
+			MonitorDialog::monitor (monitor, utf8 ("%1 löschen").arg (T::objectTypeDescription ()), this);
 			returner.wait ();
+			// FIXME handle OperationCanceledException
 
 			// TODO select "next" entry
 		}

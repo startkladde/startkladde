@@ -67,9 +67,7 @@ namespace Db
 					virtual void queryHasResult     (Returner<bool>                            *returner, Db::Query query);
 
 				private:
-					// FIXME should be Abstract; open with monitor is currently only defined in default
-//					AbstractInterface *interface;
-					DefaultInterface *interface;
+					AbstractInterface *interface;
 			};
 		}
 	}

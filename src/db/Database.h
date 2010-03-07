@@ -81,6 +81,9 @@ namespace Db
 			// Additional properties
 			template<class T> bool objectUsed (dbId id);
 
+		public slots:
+			void cancelConnection ();
+
 		signals:
 			void dbEvent (Db::Event::DbEvent event); // full type name
 

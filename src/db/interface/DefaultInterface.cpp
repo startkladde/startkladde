@@ -6,6 +6,7 @@
  *   - Solution for stalled connection
  */
 
+
 /*
  * On synchronization:
  *   - The canceled flag is reset at the beginning of an operation. If the
@@ -27,6 +28,11 @@
  *     another (e. g. open from executeQueryImpl on reconnect) and the cancel
  *     flag is set: the cancel will not be performed because there is no
  *     connection. The use will have to cancel again in this case.
+ *
+ * On Reconnect:
+ *   - Test case: start, connect; low limit (30 Bytes/s) in ThrottleProxy;
+ *     disconnect in ThrottleProxy; refresh (connection must be reopened);
+ *     cancel (must cancel immediately)
  */
 #include "DefaultInterface.h"
 
@@ -46,7 +52,7 @@
 #include "src/db/interface/exceptions/ConnectionFailedException.h"
 #include "src/db/interface/exceptions/DatabaseDoesNotExistException.h"
 #include "src/db/interface/exceptions/AccessDeniedException.h"
-#include "src/concurrent/monitor/OperationMonitor.h" // remove after OperationCanceledException moved out
+#include "src/concurrent/monitor/OperationCanceledException.h"
 
 namespace Db { namespace Interface
 {
@@ -93,7 +99,7 @@ namespace Db { namespace Interface
 	 * @return true on success, false else
 	 */
 	// TODO remove monitor
-	bool DefaultInterface::open (OperationMonitorInterface monitor)
+	bool DefaultInterface::open ()
 	{
 		// Reset the canceled flag
 		canceled=0;
@@ -135,7 +141,7 @@ namespace Db { namespace Interface
 				{
 					// Failed because canceled
 					std::cout << "canceled" << std::endl;
-					throw OperationMonitor::CanceledException ();
+					throw OperationCanceledException ();
 				}
 				else
 				{
@@ -178,8 +184,6 @@ namespace Db { namespace Interface
 	 */
 	void DefaultInterface::cancelConnection ()
 	{
-		std::cout << "Canceling..." << std::endl;
-
 		// Set the flag before calling close, because otherwise, there would be
 		// a race condition if the blocking call returns with the canceled flag
 		// not yet set.
@@ -318,7 +322,7 @@ namespace Db { namespace Interface
 			{
 				if (opts.display_queries)
 					std::cout << "canceled" << std::endl;
-				throw OperationMonitor::CanceledException ();
+				throw OperationCanceledException ();
 			}
 			else
 			{
@@ -340,7 +344,7 @@ namespace Db { namespace Interface
 			{
 				if (opts.display_queries)
 					std::cout << "canceled" << std::endl;
-				throw OperationMonitor::CanceledException ();
+				throw OperationCanceledException ();
 			}
 			else
 			{

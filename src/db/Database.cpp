@@ -105,6 +105,15 @@ namespace Db
 	}
 
 
+	// ****************
+	// ** Connection **
+	// ****************
+
+	void Database::cancelConnection ()
+	{
+		interface.cancelConnection ();
+	}
+
 	// *********
 	// ** ORM **
 	// *********

@@ -31,6 +31,7 @@ HEADERS += \
            src/concurrent/synchronized.h \
            src/concurrent/ThreadUtil.h \
            src/concurrent/Waiter.h \
+           src/concurrent/monitor/OperationCanceledException.h \
            src/concurrent/monitor/OperationMonitor.h \
            src/concurrent/monitor/OperationMonitorInterface.h \
            src/concurrent/monitor/SignalOperationMonitor.h \
@@ -132,6 +133,7 @@ SOURCES += \
            src/concurrent/synchronized.cpp \
            src/concurrent/ThreadUtil.cpp \
            src/concurrent/Waiter.cpp \
+           src/concurrent/monitor/OperationCanceledException.cpp \
            src/concurrent/monitor/OperationMonitor.cpp \
            src/concurrent/monitor/OperationMonitorInterface.cpp \
            src/concurrent/monitor/SignalOperationMonitor.cpp \

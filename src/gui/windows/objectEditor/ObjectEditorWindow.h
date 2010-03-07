@@ -145,6 +145,8 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 	// TODO error handling
 	// TODO background
 
+	// FIXME handle OperationCanceledException
+
 	switch (mode)
 	{
 		case modeCreate:
@@ -156,8 +158,9 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 
 			Returner<dbId> returner;
 			SignalOperationMonitor monitor;
+			connect (&monitor, SIGNAL (canceled ()), & cache.getDatabase(), SLOT (cancelConnection ()));
 			dbWorker.createObject (returner, monitor, object);
-			MonitorDialog::monitor (monitor, "Objekt anlegen", this); // FIXME Person anlegen
+			MonitorDialog::monitor (monitor, utf8 ("%1 anlegen").arg (T::objectTypeDescription ()), this);
 			return idValid (returner.returnedValue ());
 		} break;
 		case modeEdit:
@@ -169,8 +172,9 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 
 			Returner<int> returner;
 			SignalOperationMonitor monitor;
+			connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
 			dbWorker.updateObject (returner, monitor, object);
-			MonitorDialog::monitor (monitor, "Objekt aktualisieren", this); // FIXME Person aktualisieren
+			MonitorDialog::monitor (monitor, utf8 ("%1 aktualisieren").arg (T::objectTypeDescription ()), this);
 			// May return false if nothing changed
 			returner.wait ();
 

@@ -39,7 +39,10 @@ namespace Db { namespace Interface { namespace ThreadSafe
 
 	void Worker::asyncOpen (Returner<bool> *returner, OperationMonitor *monitor)
 	{
-		returnOrException (returner, interface->open (monitor->interface ()));
+		// Signal end of operation when this method returns
+		OperationMonitorInterface monitorInterface=monitor->interface ();
+		monitorInterface.status ("Verbindung herstellen");
+		returnOrException (returner, interface->open ());
 	}
 
 	void Worker::close (Returner<void> *returner)

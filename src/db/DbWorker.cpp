@@ -39,7 +39,7 @@ namespace Db
 			virtual void run (Database &db, OperationMonitor *monitor)
 			{
 				OperationMonitorInterface interface=monitor->interface ();
-				returnOrException (returner, db.createObject (object)); // TODO pass monitor interface
+				returnOrException (returner, db.createObject (object));
 			}
 	};
 
@@ -57,7 +57,7 @@ namespace Db
 			virtual void run (Database &db, OperationMonitor *monitor)
 			{
 				OperationMonitorInterface interface=monitor->interface ();
-				returnOrException (returner, db.deleteObject<T> (id)); // TODO pass monitor interface
+				returnOrException (returner, db.deleteObject<T> (id));
 			}
 	};
 
@@ -75,7 +75,7 @@ namespace Db
 			virtual void run (Database &db, OperationMonitor *monitor)
 			{
 				OperationMonitorInterface interface=monitor->interface ();
-				returnOrException (returner, db.updateObject (object)); // TODO pass monitor interface
+				returnOrException (returner, db.updateObject (object));
 			}
 	};
 
@@ -93,7 +93,7 @@ namespace Db
 			virtual void run (Database &db, OperationMonitor *monitor)
 			{
 				OperationMonitorInterface interface=monitor->interface ();
-				returnOrException (returner, db.objectUsed<T> (id)); // TODO pass monitor interface
+				returnOrException (returner, db.objectUsed<T> (id));
 			}
 	};
 

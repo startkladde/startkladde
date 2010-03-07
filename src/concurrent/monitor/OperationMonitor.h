@@ -22,19 +22,30 @@ class QAtomicInt;
  * in a different task
  *
  * The operation accesses the task through its OperationMonitorInterface.
+ *
+ * How to use:
+ *   asyncOperation (Returner<T> *returner, OperationMonitor *monitor)
+ *   {
+ * 		returnOrException (returner, actualOperation (monitor->interface ()));
+ *   }
+ * The interface is passed by copy. After the last copy is destroyed, the end
+ * of the operation is signaled to the monitor, as if interface.ended () had
+ * been called.
+ *
+ * When using with an operation that does not take an OperationMonitorInterface,
+ * it still has to be fetched and destroyed at the correct time to signal the
+ * end of the operation:
+ *   asyncOperation (Returner<T> *returner, OperationMonitor *monitor)
+ *   {
+ * 		OperationMonitorInterface interface=monitor->interface ();
+ * 		returnOrException (returner, actualOperation);
+ *   }
+ * See, for example, ThreadSafeInterface::asyncOpen.
  */
 class OperationMonitor
 {
 	public:
 		friend class OperationMonitorInterface;
-
-		// TODO: move outside of class, rename OperationCanceledException
-		class CanceledException: public StorableException
-		{
-			virtual CanceledException *clone   () const { return new CanceledException (); }
-			virtual void               rethrow () const { throw      CanceledException (); }
-		};
-
 
 		// ** Construction
 		OperationMonitor ();

@@ -47,8 +47,7 @@ namespace Db
 				virtual ~DefaultInterface ();
 
 				// *** Connection management
-				virtual bool open () { return open (OperationMonitorInterface::null); }
-				virtual bool open (OperationMonitorInterface monitor); // TODO void
+				virtual bool open ();
 				virtual void close ();
 				virtual QSqlError lastError () const;
 				virtual void cancelConnection ();

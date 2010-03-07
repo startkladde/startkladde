@@ -50,9 +50,9 @@
 #include "src/db/interface/exceptions/DatabaseDoesNotExistException.h"
 #include "src/db/interface/DefaultInterface.h"
 #include "src/concurrent/monitor/SignalOperationMonitor.h"
-#include "src/concurrent/monitor/SimpleOperationMonitor.h" // remove
 #include "src/gui/windows/MonitorDialog.h"
 #include "src/db/cache/CacheThread.h"
+#include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/DbWorker.h"
 
 template <class T> class MutableObjectList;
@@ -786,8 +786,9 @@ void MainWindow::on_actionDelete_triggered ()
 	if (isTowflight) if (!yesNoQuestion (this, utf8 ("Geschleppten Flug löschen?"), utf8 (
 			"Der gewählte Flug ist ein Schleppflug. Soll der dazu gehörige geschleppte Flug wirklich gelöscht werden?"))) return;
 
-	// TODO pass, or get from Db
 	// TODO error handling? required? What happens on uncaught exception?
+	// FIXME handle OperationCanceledException
+	// TODO pass, or get from Db
 	Db::DbWorker dbWorker (cache.getDatabase ());
 
 	Returner<int> returner;
@@ -936,7 +937,7 @@ void MainWindow::on_actionRefreshTable_triggered ()
 	{
 		refreshCache ();
 	}
-	catch (OperationMonitor::CanceledException &ex) {}
+	catch (OperationCanceledException &ex) {}
 
 	refreshFlights ();
 }
@@ -1202,7 +1203,7 @@ void MainWindow::setDisplayDate (QDate newDisplayDate, bool force)
 			// newDisplayDate).
 			displayDate=cache.getOtherDate ();
 		}
-		catch (OperationMonitor::CanceledException &ex)
+		catch (OperationCanceledException &ex)
 		{
 			// The fetching was canceled. Don't change the display date.
 		}
@@ -1311,7 +1312,6 @@ void MainWindow::grantPermissions ()
 
 void MainWindow::createDatabase ()
 {
-	// FIXME duplicate connection name
 	const DatabaseInfo &info=dbInterface.getInfo ();
 
 	DatabaseInfo createInfo=info;
@@ -1534,7 +1534,7 @@ void MainWindow::on_actionConnect_triggered ()
 			"Der Verbindungsaufbau wurde abgebrochen",
 			this);
 	}
-	catch (OperationMonitor::CanceledException &ex)
+	catch (OperationCanceledException &ex)
 	{
 		showWarning ("Verbindungsaufbau abgebrochen",
 			"Der Verbindungsaufbau wurde abgebrochen",

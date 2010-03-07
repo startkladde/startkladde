@@ -1361,6 +1361,8 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 {
 	bool success=false;
 
+	// FIXME handle OperationCanceledException
+
 	switch (mode)
 	{
 		// TODO background
@@ -1371,6 +1373,7 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 
 			Returner<dbId> returner;
 			SignalOperationMonitor monitor;
+			connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
 			dbWorker.createObject (returner, monitor, flight);
 			MonitorDialog::monitor (monitor, "Flug anlegen", this);
 			success=idValid (returner.returnedValue ());
@@ -1382,6 +1385,7 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 
 			Returner<int> returner;
 			SignalOperationMonitor monitor;
+			connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
 			dbWorker.updateObject (returner, monitor, flight);
 			MonitorDialog::monitor (monitor, "Flug speichern", this);
 			returner.wait (); // May return 0 if nothing changed

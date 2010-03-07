@@ -46,7 +46,7 @@ class Migrator
 		quint64 nextMigration (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		static quint64 latestVersion ();
 		// TODO move to cpp and document: using nextMigration, not currentVersion, so it works with gaps
-		bool isCurrent (OperationMonitorInterface monitor=OperationMonitorInterface::null) { return nextMigration (monitor)==0; }
+		bool isCurrent (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		bool isEmpty (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 		// *** Migrations table

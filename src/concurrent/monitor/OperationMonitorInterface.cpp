@@ -6,6 +6,7 @@
 
 #include "src/util/qString.h"
 #include "src/concurrent/monitor/OperationMonitor.h"
+#include "src/concurrent/monitor/OperationCanceledException.h"
 
 const OperationMonitorInterface OperationMonitorInterface::null (NULL);
 
@@ -119,5 +120,5 @@ bool OperationMonitorInterface::canceled ()
 void OperationMonitorInterface::checkCanceled ()
 {
 	if (canceled ())
-		throw OperationMonitor::CanceledException ();
+		throw OperationCanceledException ();
 }

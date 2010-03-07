@@ -197,8 +197,15 @@ quint64 Migrator::latestVersion ()
 	return MigrationFactory ().latestVersion ();
 }
 
+bool Migrator::isCurrent (OperationMonitorInterface monitor)
+{
+	monitor.status (utf8 ("Datenbankversion prüfen"));
+	return nextMigration (monitor)==0;
+}
+
 bool Migrator::isEmpty (OperationMonitorInterface monitor)
 {
+	monitor.status (utf8 ("Datenbank prüfen"));
 	return !interface.tableExists ();
 }
 
