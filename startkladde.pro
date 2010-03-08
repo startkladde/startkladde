@@ -61,8 +61,6 @@ HEADERS += \
            src/db/migration/MigrationFactory.h \
            src/db/migration/Migrator.h \
            src/db/migration/background/BackgroundMigrator.h \
-           src/db/migration/background/MigratorThread.h \
-           src/db/migration/background/MigratorWorker.h \
            src/db/result/CopiedResult.h \
            src/db/result/DefaultResult.h \
            src/db/result/Result.h \
@@ -165,8 +163,6 @@ SOURCES += \
            src/db/migration/MigrationFactory.cpp \
            src/db/migration/Migrator.cpp \
            src/db/migration/background/BackgroundMigrator.cpp \
-           src/db/migration/background/MigratorThread.cpp \
-           src/db/migration/background/MigratorWorker.cpp \
            src/db/result/CopiedResult.cpp \
            src/db/result/DefaultResult.cpp \
            src/db/schema/Schema.cpp \

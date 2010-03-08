@@ -8,14 +8,17 @@
 #ifndef BACKGROUNDMIGRATOR_H_
 #define BACKGROUNDMIGRATOR_H_
 
-#include "src/db/interface/threadSafe/ThreadSafeInterface.h"
-#include "src/db/migration/background/MigratorThread.h"
+#include <QThread>
+
 #include "src/concurrent/Returner.h"
+#include "src/db/migration/Migrator.h"
 
 class OperationMonitor;
 
 namespace Db
 {
+	namespace Interface { namespace ThreadSafe { class ThreadSafeInterface; } }
+
 	namespace Migration
 	{
 		namespace Background
@@ -35,8 +38,10 @@ namespace Db
 			 * ThreadSafeInterface; there are more comments about the
 			 * implementation there.
 			 */
-			class BackgroundMigrator
+			class BackgroundMigrator: public QObject
 			{
+				Q_OBJECT
+
 				public:
 					BackgroundMigrator (Interface::ThreadSafe::ThreadSafeInterface &interface);
 					virtual ~BackgroundMigrator ();
@@ -48,8 +53,26 @@ namespace Db
 					void isEmpty           (Returner<bool>            &returner, OperationMonitor &monitor);
 					void currentVersion    (Returner<quint64>         &returner, OperationMonitor &monitor);
 
+				signals:
+					virtual void sig_migrate           (Returner<void>            *returner, OperationMonitor *monitor);
+					virtual void sig_loadSchema        (Returner<void>            *returner, OperationMonitor *monitor);
+					virtual void sig_pendingMigrations (Returner<QList<quint64> > *returner, OperationMonitor *monitor);
+					virtual void sig_isCurrent         (Returner<bool>            *returner, OperationMonitor *monitor);
+					virtual void sig_isEmpty           (Returner<bool>            *returner, OperationMonitor *monitor);
+					virtual void sig_currentVersion    (Returner<quint64>         *returner, OperationMonitor *monitor);
+
+				protected slots:
+					virtual void slot_migrate           (Returner<void>            *returner, OperationMonitor *monitor);
+					virtual void slot_loadSchema        (Returner<void>            *returner, OperationMonitor *monitor);
+					virtual void slot_pendingMigrations (Returner<QList<quint64> > *returner, OperationMonitor *monitor);
+					virtual void slot_isCurrent         (Returner<bool>            *returner, OperationMonitor *monitor);
+					virtual void slot_isEmpty           (Returner<bool>            *returner, OperationMonitor *monitor);
+					virtual void slot_currentVersion    (Returner<quint64>         *returner, OperationMonitor *monitor);
+
+
 				private:
-					Db::Migration::Background::MigratorThread thread;
+					QThread thread;
+					Migrator migrator;
 			};
 		}
 	}
