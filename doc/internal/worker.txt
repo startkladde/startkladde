@@ -60,7 +60,8 @@ with two methods:
 	// *** TestWorker.h
 	#include <QObject>
 	#include <QThread>
-	
+
+	class Test;	
 	template<typename T> class Returner;
 	class OperationMonitor;
 	

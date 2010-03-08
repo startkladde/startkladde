@@ -39,7 +39,6 @@ namespace Db
 			public:
 				// Connection management
 				virtual bool open ();
-				virtual void asyncOpen (Returner<bool> &returner, OperationMonitor &monitor);
 				virtual void close ();
 				virtual QSqlError lastError () const;
 				// Transactions
@@ -57,7 +56,6 @@ namespace Db
 			signals:
 				// Connection management
 				virtual void sig_open      (Returner<bool>      *returner);
-				virtual void sig_asyncOpen (Returner<bool>      *returner, OperationMonitor *monitor);
 				virtual void sig_close     (Returner<void>      *returner);
 				virtual void sig_lastError (Returner<QSqlError> *returner) const;
 				// Transactions
@@ -74,7 +72,6 @@ namespace Db
 			protected slots:
 				// *** Connection management
 				virtual void slot_open      (Returner<bool>      *returner);
-				virtual void slot_asyncOpen (Returner<bool>      *returner, OperationMonitor *monitor);
 				virtual void slot_close     (Returner<void>      *returner);
 				virtual void slot_lastError (Returner<QSqlError> *returner) const;
 				// *** Transactions

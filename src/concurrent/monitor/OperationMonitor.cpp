@@ -40,6 +40,8 @@
  *     and then discard the monitor instance
  *   - Storing and getting of status, progress etc. should be in the base class
  *     (or at least a DefaultOperationMonitor)
+ *   - Can we have an "AsynchronousInterface" which inherites Interface and
+ *     stores a Monitor? What about return values?
  */
 
 

@@ -1,9 +1,5 @@
 /*
  * Improvements:
- *   - move asyncOpen to an interfaceWorker, we don't usually need to execute
- *     interface operations asynchronously because they are already called from
- *     an ansynchronous operation (like dbWorker, migrationWorker); makes this
- *     class more consistent
  *   - consider passing a pointer to the query instead of copying the query
  */
 #include "ThreadSafeInterface.h"
@@ -16,7 +12,6 @@
 #include "src/concurrent/Returner.h"
 #include "src/db/interface/DefaultInterface.h"
 #include "src/db/result/CopiedResult.h"
-#include "src/concurrent/monitor/OperationMonitor.h" // required for asyncOpen
 
 namespace Db { namespace Interface
 {
@@ -37,7 +32,6 @@ namespace Db { namespace Interface
 
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
 		CONNECT (open      (Returner<bool>      *));
-		CONNECT (asyncOpen (Returner<bool>      *, OperationMonitor *));
 		CONNECT (close     (Returner<void>      *));
 		CONNECT (lastError (Returner<QSqlError> *));
 
@@ -74,11 +68,6 @@ namespace Db { namespace Interface
 		Returner<bool> returner;
 		emit sig_open (&returner);
 		return returner.returnedValue ();
-	}
-
-	void ThreadSafeInterface::asyncOpen (Returner<bool> &returner, OperationMonitor &monitor)
-	{
-		emit sig_asyncOpen (&returner, &monitor);
 	}
 
 	void ThreadSafeInterface::close ()
@@ -144,14 +133,6 @@ namespace Db { namespace Interface
 
 	void ThreadSafeInterface::slot_open (Returner<bool> *returner)
 	{
-		returnOrException (returner, interface->open ());
-	}
-
-	void ThreadSafeInterface::slot_asyncOpen (Returner<bool> *returner, OperationMonitor *monitor)
-	{
-		// Signal end of operation when this method returns
-		OperationMonitorInterface monitorInterface=monitor->interface ();
-		monitorInterface.status ("Verbindung herstellen");
 		returnOrException (returner, interface->open ());
 	}
 

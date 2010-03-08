@@ -1,3 +1,11 @@
+/*
+ * Improvements:
+ *   - have the whole creation procress run in the background. This would
+ *     remove a lot of monitor blocks (reducing code duplication) and interface
+ *     worker (thread) creations and make it
+ *     easier to leave the dialog open and provide progress feedback. But this
+ *     requires getting user input from a background thread.
+ */
 #include "DbManager.h"
 
 #include <QObject>
@@ -20,13 +28,13 @@
 
 DbManager::DbManager (const DatabaseInfo &info):
 	interface (info), db (interface), cache (db),
-	dbWorker (db), migratorWorker (interface), cacheWorker (cache)
+	interfaceWorker (interface), dbWorker (db), migratorWorker (interface), cacheWorker (cache)
 {
 }
 
 DbManager::DbManager (const DbManager &other):
 	interface (other.interface.getInfo ()), db (interface), cache (db),
-	dbWorker (db), migratorWorker (interface), cacheWorker (cache)
+	interfaceWorker (interface), dbWorker (db), migratorWorker (interface), cacheWorker (cache)
 {
 	assert (!"DbManager copied");
 }
@@ -34,7 +42,7 @@ DbManager::DbManager (const DbManager &other):
 DbManager &DbManager::operator= (const DbManager &other)
 {
 	(void)other;
-	assert (!"DbManager copied");
+	assert (!"DbManager assigned");
 }
 
 DbManager::~DbManager ()
@@ -115,9 +123,21 @@ void DbManager::grantPermissions (QWidget *parent)
 
 		try
 		{
-			Db::Interface::DefaultInterface rootInterface (rootInfo);
-			rootInterface.open ();
-			rootInterface.grantAll (info.database, info.username, info.password);
+			Db::Interface::ThreadSafeInterface rootInterface (rootInfo);
+			InterfaceWorker rootInterfaceWorker (rootInterface);
+
+			doOpenInterface (rootInterfaceWorker, parent);
+
+			Returner<void> returner;
+			SignalOperationMonitor monitor;
+			QObject::connect (&monitor, SIGNAL (canceled ()), &rootInterface, SLOT (cancelConnection ()), Qt::DirectConnection);
+
+			std::cout << "+gall" << std::endl;
+			rootInterfaceWorker.grantAll (returner, monitor, info.database, info.username, info.password);
+			MonitorDialog::monitor (monitor, "Benutzer anlegen", parent);
+			returner.wait ();
+			std::cout << "-gall" << std::endl;
+
 			rootInterface.close ();
 		}
 		catch (Db::Interface::AccessDeniedException) // Actually: only 1045
@@ -137,19 +157,19 @@ void DbManager::createDatabase (QWidget *parent)
 
 	DatabaseInfo createInfo=info;
 	createInfo.database="";
-	// FIXME background
-	Db::Interface::DefaultInterface createInterface (createInfo);
 
-	try
-	{
-		createInterface.createDatabase (info.database);
-	}
-	catch (...)
-	{
-		// FIXME required?
-		createInterface.close ();
-		throw;
-	}
+	Db::Interface::ThreadSafeInterface createInterface (createInfo);
+	InterfaceWorker createInterfaceWorker (createInterface);
+
+	doOpenInterface (createInterfaceWorker, parent);
+
+	Returner<void> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &createInterface, SLOT (cancelConnection ()), Qt::DirectConnection);
+	createInterfaceWorker.createDatabase (returner, monitor, info.database);
+	migratorWorker.loadSchema (returner, monitor);
+	MonitorDialog::monitor (monitor, "Datenbank anlegen", parent);
+	returner.wait ();
 }
 
 
@@ -215,18 +235,23 @@ void DbManager::checkVersion (QWidget *parent)
 	}
 }
 
+void DbManager::doOpenInterface (InterfaceWorker &worker, QWidget *parent)
+{
+	Returner<bool> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &worker.getInterface (), SLOT (cancelConnection ()), Qt::DirectConnection);
+	worker.open (returner, monitor);
+	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+	returner.wait ();
+}
+
 void DbManager::openInterface (QWidget *parent)
 {
 	// Open the interface. This would also be done automatically, but this
 	// allows us to detect a missing database before checking the version.
 	try
 	{
-		Returner<bool> returner;
-		SignalOperationMonitor monitor;
-		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
-		interface.asyncOpen (returner, monitor);
-		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
-		returner.wait ();
+		doOpenInterface (interfaceWorker, parent);
 	}
 	catch (Db::Interface::DatabaseDoesNotExistException)
 	{
@@ -245,7 +270,7 @@ void DbManager::openInterface (QWidget *parent)
 
 		// Since creating the database succeeded, we should now be able to open
 		// it and load the schema.
-		interface.open (); // FIXME background
+		doOpenInterface (interfaceWorker, parent);
 
 		Returner<void> returner;
 		SignalOperationMonitor monitor;

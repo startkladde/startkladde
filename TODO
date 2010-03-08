@@ -36,6 +36,9 @@ Database notes:
  *   - Allow a table name prefix (useful for testing)
  *   - Consider storing the OperationMonitor in the migration instead of passing
  *     to up/down, and/or calling checkCanceled in addColumn et. al.
+ *   - show current/latest version in "still not current" messages
+ *   - for actions without progress indication (e. g. connect, or update
+ *     object): show upstream/downstream bytes in monitor dialog
  *
  * Medium term plan:
  *   - Standardize enum handling: store the database value internally and have

@@ -10,6 +10,7 @@
 
 #include <cassert>
 
+// TODO may dependencies in header
 #include "src/db/DatabaseInfo.h"
 #include "src/db/interface/ThreadSafeInterface.h"
 #include "src/db/Database.h"
@@ -18,6 +19,7 @@
 #include "src/db/migration/MigratorWorker.h"
 #include "src/db/cache/CacheWorker.h"
 #include "src/db/dbId.h"
+#include "src/db/interface/InterfaceWorker.h"
 
 class QWidget;
 
@@ -107,9 +109,12 @@ class DbManager
 		Db::Database db;
 		Db::Cache::Cache cache;
 
+		InterfaceWorker interfaceWorker;
 		Db::DbWorker dbWorker;
 		Db::Migration::MigratorWorker migratorWorker;
 		Db::Cache::CacheWorker cacheWorker;
+
+		void doOpenInterface (InterfaceWorker &worker, QWidget *parent);
 };
 
 #endif
