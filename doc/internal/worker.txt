@@ -50,6 +50,8 @@ emitting signals and the slots are called non-concurrently by the thread's
 event loop. Of course, if the backend object is accessed concurrently by other
 threads, it has to be thread safe.
 
+Workers require Qt 4.4 because QThread is abstract up to Qt 4.3.
+
 Here is an example for a worker (TestWorker) for a backend object of class Test
 with two methods:
   - void foo (OperationMonitorInterface monitor) 

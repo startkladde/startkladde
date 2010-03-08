@@ -255,6 +255,9 @@ void FlightWindow::fillData ()
 	for (int i=0; i<launchMethods.size (); ++i)
 		ui.launchMethodInput->addItem (launchMethods.at (i).nameWithShortcut (), launchMethods.at (i).getId ());
 
+	// If there is exactly one launch method, select it
+	if (launchMethods.size ()==1)
+		ui.launchMethodInput->setCurrentIndex (1);
 
 	// *** Locations
 	const QStringList locations=cache.getLocations ();
