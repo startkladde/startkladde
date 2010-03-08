@@ -105,6 +105,9 @@ Plugin interface:
 * Synchronize plugin update with clock
 * Graphical wind display
 
+Plugins:
+* Sunset times: independend of year 
+
 Flugbuch (Vorschlag eines Fluglehrers):
 * Ausgabe Anzahl Landungen (Interessant bei Platzrunden mit dem Motorflieger)
 * Zusammenfassung von Fluglehrerstarts wie folgt: Alle Starts eines Tages mit

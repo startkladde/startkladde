@@ -36,8 +36,10 @@
  *     been reset and thus prematurely cancels the next operation
  *   - Better integration with cancelConnection of a proxy; currently, the
  *     class using the proxy has to be connected manually
- *   - OperationMonitor should be copied so we can cann a method with a monitor
+ *   - OperationMonitor should be copied so we can call a method with a monitor
  *     and then discard the monitor instance
+ *   - Storing and getting of status, progress etc. should be in the base class
+ *     (or at least a DefaultOperationMonitor)
  */
 
 

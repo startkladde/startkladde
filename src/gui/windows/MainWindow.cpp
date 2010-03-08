@@ -44,6 +44,7 @@
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
+#include "src/db/cache/Cache.h"
 
 template <class T> class MutableObjectList;
 
@@ -52,7 +53,7 @@ template <class T> class MutableObjectList;
 // ******************
 
 MainWindow::MainWindow (QWidget *parent) :
-	QMainWindow (parent), dbManager (opts.databaseInfo),
+	QMainWindow (parent), dbManager (opts.databaseInfo), cache (dbManager.getCache ()),
 			weatherWidget (NULL), weatherPlugin (NULL),
 			weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
 			contextMenu (new QMenu (this)),
@@ -571,6 +572,33 @@ void MainWindow::updateFlight (const Flight &flight)
 	dbManager.updateObject (flight, this);
 }
 
+bool MainWindow::checkPlaneFlying (dbId id, const QString &description)
+{
+	if (idValid (id) && cache.planeFlying (id))
+	{
+		Plane plane=cache.getObject<Plane> (id);
+		QString text=utf8 ("Laut Datenbank fliegt das %1 %2 noch. Trotzdem starten?")
+				.arg (description, plane.registration);
+		if (!yesNoQuestion (this, "Flugzeug fliegt noch", text))
+			return false;
+	}
+
+	return true;
+}
+
+bool MainWindow::checkPersonFlying (dbId id, const QString &description)
+{
+	if (idValid (id) && cache.personFlying (id))
+	{
+		Person person=cache.getObject<Person> (id);
+		QString text=utf8 ("Laut Datenbank fliegt der %1 %2 noch. Trotzdem starten?")
+				.arg (description, person.fullName ());
+		if (!yesNoQuestion (this, "Person fliegt noch", text)) return false;
+	}
+
+	return true;
+}
+
 void MainWindow::startFlight (dbId id)
 {
 	// TODO display message
@@ -583,8 +611,24 @@ void MainWindow::startFlight (dbId id)
 
 		if (flight.canDepart (&reason))
 		{
-			// TODO still flying checks if specified (3 people, 2 planes). Code is
-			// already in FlightWindow.
+			bool isAirtow=flight.isAirtow (cache);
+
+			// *** Check for planes flying
+			// Plane
+			if (!checkPlaneFlying (flight.planeId, "Flugzeug")) return;
+			if (isAirtow)
+				if (!checkPlaneFlying (flight.effectiveTowplaneId (cache), "Schleppflugzeug")) return;
+
+			// *** Check for people flying
+			// Pilot
+			if (!checkPersonFlying (flight.pilotId, flight.pilotDescription ())) return;
+			// Copilot (if recorded for this flight)
+			if (flight.copilotRecorded ())
+				if (!checkPersonFlying (flight.copilotId, flight.copilotDescription ())) return;
+			// Towpilot (if airtow)
+			if (isAirtow && opts.record_towpilot)
+				if (!checkPersonFlying (flight.towpilotId, flight.towpilotDescription ())) return;
+
 			flight.departNow ();
 			updateFlight (flight);
 		}

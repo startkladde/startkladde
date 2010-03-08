@@ -126,6 +126,7 @@ class Flight
 		// *** Crew
 		virtual QString pilotDescription () const;
 		virtual QString copilotDescription () const;
+		virtual QString towpilotDescription () const { return "Schlepppilot"; }
 
 		virtual bool pilotSpecified    () const;
 		virtual bool copilotSpecified  () const;
@@ -135,9 +136,14 @@ class Flight
 		virtual QString incompleteCopilotName () const;
 		virtual QString incompleteTowpilotName () const;
 
+		virtual bool copilotRecorded () const { return typeCopilotRecorded (type); }
 		virtual bool hasCopilot () const { return typeAlwaysHasCopilot (type) || (typeCopilotRecorded (type) && copilotSpecified ()); }
 		virtual int numPassengers () const { return hasCopilot ()?2:1; } // TODO: this is inaccurate for planes with >2 seats
 
+
+		// *** Launch method
+		virtual bool isAirtow (Db::Cache::Cache &cache) const;
+		virtual dbId effectiveTowplaneId (Db::Cache::Cache &cache) const;
 
 		// *** Departure/landing
 		virtual bool departsHere        () const { return departsHere (mode         ); }

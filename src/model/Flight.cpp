@@ -226,6 +226,47 @@ QString Flight::incompletePersonName (QString nn, QString vn) const
 	else                            return QString ("%1, %2").arg (nn).arg (vn);
 }
 
+// *******************
+// ** Launch method **
+// *******************
+
+bool Flight::isAirtow (Db::Cache::Cache &cache) const
+{
+	try
+	{
+		if (idInvalid (launchMethodId)) return false;
+
+		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (launchMethodId);
+		return launchMethod.isAirtow ();
+	}
+	catch (Db::Cache::Cache::NotFoundException)
+	{
+		return false;
+	}
+}
+
+dbId Flight::effectiveTowplaneId (Db::Cache::Cache &cache) const
+{
+	try
+	{
+		if (idInvalid (launchMethodId)) return invalidId;
+
+		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (launchMethodId);
+		if (!launchMethod.isAirtow ()) return invalidId;
+
+		if (launchMethod.towplaneKnown ())
+			return cache.getPlaneIdByRegistration (launchMethod.towplaneRegistration);
+		else
+			return towplaneId;
+	}
+	catch (Db::Cache::Cache::NotFoundException)
+	{
+		return false;
+	}
+}
+
+
+
 
 // ***********************
 // ** Departure/landing **

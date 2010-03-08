@@ -937,16 +937,19 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool launchNow, cons
 		.arg (plane->registration).arg (plane->type),
 		ui.registrationInput);
 
+	// TODO use Flight::pilotDescription and Person::fullName
 	if (pilot && launchNow && idValid (cache.personFlying (pilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Pilot %1 %2 noch.")
 			.arg (pilot->firstName).arg (pilot->lastName),
 			ui.pilotLastNameInput);
 
+	// TODO use Flight::copilotDescription and Person::fullName
 	if (copilot && launchNow && idValid (cache.personFlying (copilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Begleiter %1 %2 noch.")
 			.arg (copilot->firstName).arg (copilot->lastName),
 			ui.copilotLastNameInput);
 
+	// TODO use Flight::towpilotDescription and Person::fullName
 	if (towpilot && launchNow && idValid (cache.personFlying (towpilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Schlepppilot %1 %2 noch.")
 			.arg (towpilot->firstName).arg (towpilot->lastName),

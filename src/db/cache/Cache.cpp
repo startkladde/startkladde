@@ -57,7 +57,7 @@ namespace Db
 	namespace Cache
 	{
 		Cache::Cache (Database &db):
-			db (db)
+			db (db), dataMutex (QMutex::Recursive)
 		{
 			connect (&db, SIGNAL (dbEvent (Db::Event::DbEvent)), this, SLOT (dbChanged (Db::Event::DbEvent)));
 		}
@@ -484,9 +484,13 @@ namespace Db
 				// Only use the flights of today
 				foreach (const Flight &flight, flightsToday.getList ())
 				{
-					if (
-						(flight.isFlying         () && flight.planeId==id) ||
-						(flight.isTowplaneFlying () && flight.towplaneId==id))
+					// Plane is the plane of this flight?
+					if (flight.planeId==id && flight.isFlying ())
+						return flight.getId ();
+
+					// Plane is the towplane of this flight?
+					if (flight.isTowplaneFlying () && flight.isAirtow (*this) &&
+							flight.effectiveTowplaneId (*this)==id)
 						return flight.getId ();
 				}
 			}

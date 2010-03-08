@@ -52,7 +52,11 @@ namespace Db
 		 * modifications which would cause the list data to be copied.
 		 *
 		 * This class is thread safe, provided that the database is thread safe
-		 * (that is, accesses to the database are not synchronized).
+		 * (that is, accesses to the database are not synchronized). Note,
+		 * however, that the mutex used to protect access do the data is
+		 * recursive, that is, care should be taken when accessing the cache
+		 * from a function that is called by a method of the cache. This also
+		 * includes directly called signals.
 		 */
 		class Cache: public QObject
 		{

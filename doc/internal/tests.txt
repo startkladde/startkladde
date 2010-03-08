@@ -26,4 +26,17 @@ Admin
 [2] Nicht unterscheidbar von nicht existierendem Benutzer
 [3] Wie Pr�fen?
 
+== "Still flying" checks ==
+
+People (both with normal and training flight types):
+- Pilot flying as pilot
+- Pilot flying as copilot
+- Pilot flying as towpilot
+- Copilot flying as pilot
+- Towpilot flying as pilot
+
+Planes (both with known towplane and "other" towplane):
+- Plane flying as plane
+- Plane flying as towplane
+- Towplane flying as plane
 

@@ -186,6 +186,8 @@ class MainWindow: public QMainWindow
 		void flightTable_horizontalHeader_sectionClicked (int index) { sortByColumn (index); }
 
 		// Flight manipulation
+		bool checkPlaneFlying (dbId id, const QString &description);
+		bool checkPersonFlying (dbId id, const QString &description);
 		void startFlight (dbId id);
 		void landFlight (dbId id);
 		void landTowflight (dbId id);
@@ -207,6 +209,7 @@ class MainWindow: public QMainWindow
 		Ui::MainWindowClass ui;
 
 		DbManager dbManager;
+		Db::Cache::Cache &cache;
 
 		QDate displayDate;
 		WeatherWidget *weatherWidget;
