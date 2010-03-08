@@ -23,6 +23,10 @@ namespace Db
 {
 	namespace Interface
 	{
+		/**
+		 * The implementation of this class is similar to the one described in
+		 * doc/internal/worker.txt
+		 */
 		class ThreadSafeInterface: public QObject, public Interface
 		{
 			Q_OBJECT

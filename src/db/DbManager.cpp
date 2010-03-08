@@ -50,7 +50,7 @@ bool DbManager::isCurrent (QWidget *parent)
 {
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
-	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	migratorWorker.isCurrent (returner, monitor);
 	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 	return returner.returnedValue ();
@@ -66,7 +66,7 @@ bool DbManager::isEmpty (QWidget *parent)
 {
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
-	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	migratorWorker.isEmpty (returner, monitor);
 	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 	return returner.returnedValue ();
@@ -162,7 +162,7 @@ void DbManager::checkVersion (QWidget *parent)
 
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
-		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 		migratorWorker.loadSchema (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 		returner.wait (); // Required so any exceptions are rethrown
@@ -176,7 +176,7 @@ void DbManager::checkVersion (QWidget *parent)
 		// TODO try to reuse monitor and dialog
 		Returner<quint64> currentVersionReturner;
 		SignalOperationMonitor currentVersionMonitor;
-		QObject::connect (&currentVersionMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+		QObject::connect (&currentVersionMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 		migratorWorker.currentVersion (currentVersionReturner, currentVersionMonitor);
 		MonitorDialog::monitor (currentVersionMonitor, "Verbindungsaufbau", parent);
 		quint64 currentVersion=currentVersionReturner.returnedValue ();
@@ -185,7 +185,7 @@ void DbManager::checkVersion (QWidget *parent)
 
 		Returner<QList<quint64> > pendingMigrationsReturner;
 		SignalOperationMonitor pendingMigrationsMonitor;
-		QObject::connect (&pendingMigrationsMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+		QObject::connect (&pendingMigrationsMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 		migratorWorker.pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
 		MonitorDialog::monitor (pendingMigrationsMonitor, "Verbindungsaufbau", parent);
 		quint64 numPendingMigrations=pendingMigrationsReturner.returnedValue ().size ();
@@ -204,7 +204,7 @@ void DbManager::checkVersion (QWidget *parent)
 
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
-		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 		migratorWorker.migrate (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 		returner.wait (); // Required so any exceptions are rethrown
@@ -223,7 +223,7 @@ void DbManager::openInterface (QWidget *parent)
 	{
 		Returner<bool> returner;
 		SignalOperationMonitor monitor;
-		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 		interface.asyncOpen (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 		returner.wait ();
@@ -249,7 +249,7 @@ void DbManager::openInterface (QWidget *parent)
 
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
-		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 		migratorWorker.loadSchema (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 		returner.wait (); // Required so any exceptions are rethrown
@@ -342,7 +342,7 @@ void DbManager::refreshCache (QWidget *parent)
 {
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
-	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	cacheWorker.refreshAll (returner, monitor);
 	MonitorDialog::monitor (monitor, "Daten abrufen", parent);
 	returner.wait ();
@@ -352,7 +352,7 @@ void DbManager::fetchFlights (QDate date, QWidget *parent)
 {
 	Returner<void> returner;
 	SignalOperationMonitor monitor;
-	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	cacheWorker.fetchFlightsOther (returner, monitor, date);
 	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), parent);
 	returner.wait ();
@@ -362,7 +362,7 @@ template<class T> bool DbManager::objectUsed (dbId id, QWidget *parent)
 {
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
-	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.objectUsed<T> (returner, monitor, id);
 	MonitorDialog::monitor (monitor, utf8 ("%1 prüfen").arg (T::objectTypeDescription ()), parent);
 	return returner.returnedValue ();
@@ -372,7 +372,7 @@ template<class T> void DbManager::deleteObject (dbId id, QWidget *parent)
 {
 	Returner<int> returner;
 	SignalOperationMonitor monitor;
-	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.deleteObject<T> (returner, monitor, id);
 	MonitorDialog::monitor (monitor, utf8 ("%1 löschen").arg (T::objectTypeDescription ()), parent);
 	returner.wait ();
@@ -382,7 +382,7 @@ template<class T> bool DbManager::createObject (T &object, QWidget *parent)
 {
 	Returner<dbId> returner;
 	SignalOperationMonitor monitor;
-	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.createObject (returner, monitor, object);
 	MonitorDialog::monitor (monitor, utf8 ("%1 anlegen").arg (T::objectTypeDescription ()), parent);
 	return idValid (returner.returnedValue ());
@@ -392,7 +392,7 @@ template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
 {
 	Returner<int> returner;
 	SignalOperationMonitor monitor;
-	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.updateObject (returner, monitor, object);
 	MonitorDialog::monitor (monitor, utf8 ("%1 aktualisieren").arg (T::objectTypeDescription ()), parent);
 	return returner.returnedValue ();

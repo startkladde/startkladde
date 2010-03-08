@@ -31,6 +31,8 @@ namespace Db
 		 * returner after calling the method so exceptions are rethrown.
 		 *
 		 * This class is thread safe.
+		 *
+		 * See doc/internal/worker.txt
 		 */
 		class CacheWorker: public QObject
 		{

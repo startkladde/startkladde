@@ -29,12 +29,9 @@ namespace Db
 		 *
 		 * Note that this class does not share a common base class with
 		 * Migrator and only implements a subsets of its public methods.
-		 * This may be changed in the future. The method it implements have
-		 * the same interface as those of Migrator, though.
+		 * This may be changed in the future.
 		 *
-		 * The background thread implementation is similar to
-		 * ThreadSafeInterface; there are more comments about the
-		 * implementation there.
+		 * This class is thread safe.
 		 */
 		class MigratorWorker: public QObject
 		{

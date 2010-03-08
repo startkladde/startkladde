@@ -21,6 +21,11 @@ namespace Db
 {
 	class Database;
 
+	/**
+	 * This class is thread safe.
+	 *
+	 * See doc/internal/worker.txt
+	 */
 	class DbWorker: QObject
 	{
 		Q_OBJECT

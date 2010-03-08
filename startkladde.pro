@@ -49,12 +49,12 @@ HEADERS += \
            src/db/interface/AbstractInterface.h \
            src/db/interface/DefaultInterface.h \
            src/db/interface/Interface.h \
+           src/db/interface/ThreadSafeInterface.h \
            src/db/interface/exceptions/ConnectionFailedException.h \
            src/db/interface/exceptions/QueryFailedException.h \
            src/db/interface/exceptions/SqlException.h \
            src/db/interface/exceptions/AccessDeniedException.h \
            src/db/interface/exceptions/DatabaseDoesNotExistException.h \
-           src/db/interface/threadSafe/ThreadSafeInterface.h \
            src/db/migration/Migration.h \
            src/db/migration/MigrationFactory.h \
            src/db/migration/Migrator.h \
@@ -149,12 +149,12 @@ SOURCES += \
            src/db/interface/AbstractInterface.cpp \
            src/db/interface/DefaultInterface.cpp \
            src/db/interface/Interface.cpp \
+           src/db/interface/ThreadSafeInterface.cpp \
            src/db/interface/exceptions/ConnectionFailedException.cpp \
            src/db/interface/exceptions/QueryFailedException.cpp \
            src/db/interface/exceptions/SqlException.cpp \
            src/db/interface/exceptions/AccessDeniedException.cpp \
            src/db/interface/exceptions/DatabaseDoesNotExistException.cpp \
-           src/db/interface/threadSafe/ThreadSafeInterface.cpp \
            src/db/migration/Migration.cpp \
            src/db/migration/MigrationFactory.cpp \
            src/db/migration/Migrator.cpp \

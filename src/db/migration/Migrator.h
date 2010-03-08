@@ -18,6 +18,8 @@ class MigrationFactory;
  *
  * The version numbers of all applied migrations are stored in a table
  * (#migrationsTableName), similar to Rails.
+ *
+ * See doc/internal/worker.txt
  */
 class Migrator
 {
