@@ -2,7 +2,8 @@
  * Improvements:
  *   - move asyncOpen to an interfaceWorker, we don't usually need to execute
  *     interface operations asynchronously because they are already called from
- *     an ansynchronous operation (like dbWorker, migrationWorker)
+ *     an ansynchronous operation (like dbWorker, migrationWorker); makes this
+ *     class more consistent
  *   - consider passing a pointer to the query instead of copying the query
  */
 #include "ThreadSafeInterface.h"
@@ -17,7 +18,7 @@
 #include "src/db/result/CopiedResult.h"
 #include "src/concurrent/monitor/OperationMonitor.h" // required for asyncOpen
 
-namespace Db { namespace Interface { namespace ThreadSafe
+namespace Db { namespace Interface
 {
 	// ******************
 	// ** Construction **
@@ -220,4 +221,4 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	}
 
 
-} } }
+} }

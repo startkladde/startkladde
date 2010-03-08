@@ -11,7 +11,7 @@
 #include <cassert>
 
 #include "src/db/DatabaseInfo.h"
-#include "src/db/interface/threadSafe/ThreadSafeInterface.h"
+#include "src/db/interface/ThreadSafeInterface.h"
 #include "src/db/Database.h"
 #include "src/db/cache/Cache.h"
 #include "src/db/DbWorker.h"

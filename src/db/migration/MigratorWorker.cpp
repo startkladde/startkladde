@@ -4,11 +4,11 @@
 
 #include "src/db/migration/Migrator.h"
 #include "src/concurrent/monitor/OperationMonitor.h"
-#include "src/db/interface/threadSafe/ThreadSafeInterface.h" // required for Interface inheritance
+#include "src/db/interface/ThreadSafeInterface.h" // required for Interface inheritance
 
 namespace Db { namespace Migration
 {
-	MigratorWorker::MigratorWorker (Interface::ThreadSafe::ThreadSafeInterface &interface):
+	MigratorWorker::MigratorWorker (Interface::ThreadSafeInterface &interface):
 		migrator (interface)
 	{
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))

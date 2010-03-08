@@ -44,7 +44,7 @@ void display_help ()
 #include "src/concurrent/DefaultQThread.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
-#include "src/db/interface/threadSafe/ThreadSafeInterface.h"
+#include "src/db/interface/ThreadSafeInterface.h"
 
 void ponder ()
 {

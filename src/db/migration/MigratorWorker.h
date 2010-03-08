@@ -17,7 +17,7 @@ class OperationMonitor;
 
 namespace Db
 {
-	namespace Interface { namespace ThreadSafe { class ThreadSafeInterface; } }
+	namespace Interface { class ThreadSafeInterface; }
 
 	namespace Migration
 	{
@@ -41,7 +41,7 @@ namespace Db
 			Q_OBJECT
 
 			public:
-				MigratorWorker (Interface::ThreadSafe::ThreadSafeInterface &interface);
+				MigratorWorker (Interface::ThreadSafeInterface &interface);
 				virtual ~MigratorWorker ();
 
 				void migrate           (Returner<void>            &returner, OperationMonitor &monitor);
