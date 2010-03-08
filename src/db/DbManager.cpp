@@ -3,7 +3,6 @@
 #include <QObject>
 #include <QInputDialog>
 
-// TODO some of these can probably be removed from MainWindow and others
 #include "src/concurrent/monitor/SignalOperationMonitor.h"
 #include "src/gui/windows/MonitorDialog.h"
 #include "src/util/qString.h"
@@ -21,13 +20,13 @@
 
 DbManager::DbManager (const DatabaseInfo &info):
 	interface (info), db (interface), cache (db),
-	dbWorker (db), migrator (interface), cacheWorker (cache)
+	dbWorker (db), migratorWorker (interface), cacheWorker (cache)
 {
 }
 
 DbManager::DbManager (const DbManager &other):
 	interface (other.interface.getInfo ()), db (interface), cache (db),
-	dbWorker (db), migrator (interface), cacheWorker (cache)
+	dbWorker (db), migratorWorker (interface), cacheWorker (cache)
 {
 	assert (!"DbManager copied");
 }
@@ -52,7 +51,7 @@ bool DbManager::isCurrent (QWidget *parent)
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
-	migrator.isCurrent (returner, monitor);
+	migratorWorker.isCurrent (returner, monitor);
 	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 	return returner.returnedValue ();
 }
@@ -68,7 +67,7 @@ bool DbManager::isEmpty (QWidget *parent)
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
-	migrator.isEmpty (returner, monitor);
+	migratorWorker.isEmpty (returner, monitor);
 	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 	return returner.returnedValue ();
 }
@@ -164,7 +163,7 @@ void DbManager::checkVersion (QWidget *parent)
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
 		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
-		migrator.loadSchema (returner, monitor);
+		migratorWorker.loadSchema (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 		returner.wait (); // Required so any exceptions are rethrown
 
@@ -178,7 +177,7 @@ void DbManager::checkVersion (QWidget *parent)
 		Returner<quint64> currentVersionReturner;
 		SignalOperationMonitor currentVersionMonitor;
 		QObject::connect (&currentVersionMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
-		migrator.currentVersion (currentVersionReturner, currentVersionMonitor);
+		migratorWorker.currentVersion (currentVersionReturner, currentVersionMonitor);
 		MonitorDialog::monitor (currentVersionMonitor, "Verbindungsaufbau", parent);
 		quint64 currentVersion=currentVersionReturner.returnedValue ();
 
@@ -187,7 +186,7 @@ void DbManager::checkVersion (QWidget *parent)
 		Returner<QList<quint64> > pendingMigrationsReturner;
 		SignalOperationMonitor pendingMigrationsMonitor;
 		QObject::connect (&pendingMigrationsMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
-		migrator.pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
+		migratorWorker.pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
 		MonitorDialog::monitor (pendingMigrationsMonitor, "Verbindungsaufbau", parent);
 		quint64 numPendingMigrations=pendingMigrationsReturner.returnedValue ().size ();
 
@@ -206,7 +205,7 @@ void DbManager::checkVersion (QWidget *parent)
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
 		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
-		migrator.migrate (returner, monitor);
+		migratorWorker.migrate (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 		returner.wait (); // Required so any exceptions are rethrown
 
@@ -251,7 +250,7 @@ void DbManager::openInterface (QWidget *parent)
 		Returner<void> returner;
 		SignalOperationMonitor monitor;
 		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
-		migrator.loadSchema (returner, monitor);
+		migratorWorker.loadSchema (returner, monitor);
 		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 		returner.wait (); // Required so any exceptions are rethrown
 
@@ -270,10 +269,6 @@ void DbManager::connectImpl (QWidget *parent)
 
 		clearCache ();
 		refreshCache (parent);
-
-		// FIXME need this in MainWindow
-//		refreshFlights ();
-//		setDatabaseActionsEnabled (true);
 	}
 	catch (...)
 	{
@@ -283,18 +278,20 @@ void DbManager::connectImpl (QWidget *parent)
 	}
 }
 
-void DbManager::connect (QWidget *parent)
+bool DbManager::connect (QWidget *parent)
 {
 	try
 	{
 		try
 		{
 			connectImpl (parent);
+			return true;
 		}
 		catch (Db::Interface::AccessDeniedException)
 		{
 			grantPermissions (parent);
 			connectImpl (parent);
+			return true;
 		}
 		// TODO also for access denied during query (1142)
 	}
@@ -326,6 +323,8 @@ void DbManager::connect (QWidget *parent)
 			).arg (error.databaseText ()).arg (error.number ()).arg (error.type ());
 		showWarning ("Fehler beim Verbindungsaufbau", text, parent);
 	}
+
+	return false;
 }
 
 

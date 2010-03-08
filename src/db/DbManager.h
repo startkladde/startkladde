@@ -15,7 +15,7 @@
 #include "src/db/Database.h"
 #include "src/db/cache/Cache.h"
 #include "src/db/DbWorker.h"
-#include "src/db/migration/background/BackgroundMigrator.h"
+#include "src/db/migration/MigratorWorker.h"
 #include "src/db/cache/CacheWorker.h"
 #include "src/db/dbId.h"
 
@@ -64,14 +64,14 @@ class DbManager
 		virtual ~DbManager ();
 
 		virtual Db::Interface::ThreadSafeInterface
-		                               &getInterface          () { return interface;   }
-		virtual Db::Database           &getDb                 () { return db;          }
-		virtual Db::Cache::Cache       &getCache              () { return cache;       }
+		                               &getInterface      () { return interface;   }
+		virtual Db::Database           &getDb             () { return db;          }
+		virtual Db::Cache::Cache       &getCache          () { return cache;       }
 
-		virtual Db::DbWorker           &getDbWorker           () { return dbWorker;    }
-		virtual Db::Migration::Background::BackgroundMigrator
-		                               &getBackgroundMigrator () { return migrator;    }
-		virtual Db::Cache::CacheWorker &getCacheWorker        () { return cacheWorker; }
+		virtual Db::DbWorker           &getDbWorker       () { return dbWorker;       }
+		virtual Db::Migration::MigratorWorker
+		                               &getMigratorWorker () { return migratorWorker; }
+		virtual Db::Cache::CacheWorker &getCacheWorker    () { return cacheWorker;    }
 
 
 		// *** Schema management
@@ -87,7 +87,7 @@ class DbManager
 		void checkVersion (QWidget *parent);
 		void openInterface (QWidget *parent);
 		void connectImpl (QWidget *parent);
-		void connect (QWidget *parent);
+		bool connect (QWidget *parent);
 
 		// *** Data management
 		void clearCache ();
@@ -108,7 +108,7 @@ class DbManager
 		Db::Cache::Cache cache;
 
 		Db::DbWorker dbWorker;
-		Db::Migration::Background::BackgroundMigrator migrator;
+		Db::Migration::MigratorWorker migratorWorker;
 		Db::Cache::CacheWorker cacheWorker;
 };
 

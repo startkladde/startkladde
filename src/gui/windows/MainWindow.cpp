@@ -1236,7 +1236,11 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 
 void MainWindow::on_actionConnect_triggered ()
 {
-	dbManager.connect (this);
+	if (dbManager.connect (this))
+	{
+		refreshFlights ();
+		setDatabaseActionsEnabled (true);
+	}
 }
 
 void MainWindow::on_actionDisconnect_triggered ()

@@ -1,4 +1,4 @@
-#include "BackgroundMigrator.h"
+#include "MigratorWorker.h"
 
 #include <iostream>
 
@@ -6,9 +6,9 @@
 #include "src/concurrent/monitor/OperationMonitor.h"
 #include "src/db/interface/threadSafe/ThreadSafeInterface.h" // required for Interface inheritance
 
-namespace Db { namespace Migration { namespace Background
+namespace Db { namespace Migration
 {
-	BackgroundMigrator::BackgroundMigrator (Interface::ThreadSafe::ThreadSafeInterface &interface):
+	MigratorWorker::MigratorWorker (Interface::ThreadSafe::ThreadSafeInterface &interface):
 		migrator (interface)
 	{
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
@@ -24,7 +24,7 @@ namespace Db { namespace Migration { namespace Background
 		thread.start ();
 	}
 
-	BackgroundMigrator::~BackgroundMigrator ()
+	MigratorWorker::~MigratorWorker ()
 	{
 		thread.quit ();
 
@@ -37,32 +37,32 @@ namespace Db { namespace Migration { namespace Background
 	// ** Front-end methods **
 	// ***********************
 
-	void BackgroundMigrator::migrate (Returner<void> &returner, OperationMonitor &monitor)
+	void MigratorWorker::migrate (Returner<void> &returner, OperationMonitor &monitor)
 	{
 		emit sig_migrate (&returner, &monitor);
 	}
 
-	void BackgroundMigrator::loadSchema (Returner<void> &returner, OperationMonitor &monitor)
+	void MigratorWorker::loadSchema (Returner<void> &returner, OperationMonitor &monitor)
 	{
 		emit sig_loadSchema (&returner, &monitor);
 	}
 
-	void BackgroundMigrator::pendingMigrations (Returner<QList<quint64> > &returner, OperationMonitor &monitor)
+	void MigratorWorker::pendingMigrations (Returner<QList<quint64> > &returner, OperationMonitor &monitor)
 	{
 		emit sig_pendingMigrations (&returner, &monitor);
 	}
 
-	void BackgroundMigrator::isCurrent (Returner<bool> &returner, OperationMonitor &monitor)
+	void MigratorWorker::isCurrent (Returner<bool> &returner, OperationMonitor &monitor)
 	{
 		emit sig_isCurrent (&returner, &monitor);
 	}
 
-	void BackgroundMigrator::isEmpty (Returner<bool> &returner, OperationMonitor &monitor)
+	void MigratorWorker::isEmpty (Returner<bool> &returner, OperationMonitor &monitor)
 	{
 		emit sig_isEmpty (&returner, &monitor);
 	}
 
-	void BackgroundMigrator::currentVersion (Returner<quint64> &returner, OperationMonitor &monitor)
+	void MigratorWorker::currentVersion (Returner<quint64> &returner, OperationMonitor &monitor)
 	{
 		emit sig_currentVersion (&returner, &monitor);
 	}
@@ -72,34 +72,34 @@ namespace Db { namespace Migration { namespace Background
 	// ** Back-end slots **
 	// ********************
 
-	void BackgroundMigrator::slot_migrate (Returner<void> *returner, OperationMonitor *monitor)
+	void MigratorWorker::slot_migrate (Returner<void> *returner, OperationMonitor *monitor)
 	{
 		returnVoidOrException (returner, migrator.migrate (monitor->interface ()));
 	}
 
-	void BackgroundMigrator::slot_loadSchema (Returner<void> *returner, OperationMonitor *monitor)
+	void MigratorWorker::slot_loadSchema (Returner<void> *returner, OperationMonitor *monitor)
 	{
 		returnVoidOrException (returner, migrator.loadSchema (monitor->interface ()));
 	}
 
-	void BackgroundMigrator::slot_pendingMigrations (Returner<QList<quint64> > *returner, OperationMonitor *monitor)
+	void MigratorWorker::slot_pendingMigrations (Returner<QList<quint64> > *returner, OperationMonitor *monitor)
 	{
 		returnOrException (returner, migrator.pendingMigrations (monitor->interface ()));
 	}
 
-	void BackgroundMigrator::slot_isCurrent (Returner<bool> *returner, OperationMonitor *monitor)
+	void MigratorWorker::slot_isCurrent (Returner<bool> *returner, OperationMonitor *monitor)
 	{
 		returnOrException (returner, migrator.isCurrent (monitor->interface ()));
 	}
 
-	void BackgroundMigrator::slot_isEmpty (Returner<bool> *returner, OperationMonitor *monitor)
+	void MigratorWorker::slot_isEmpty (Returner<bool> *returner, OperationMonitor *monitor)
 	{
 		returnOrException (returner, migrator.isEmpty (monitor->interface ()));
 	}
 
-	void BackgroundMigrator::slot_currentVersion (Returner<quint64> *returner, OperationMonitor *monitor)
+	void MigratorWorker::slot_currentVersion (Returner<quint64> *returner, OperationMonitor *monitor)
 	{
 		returnOrException (returner, migrator.currentVersion (monitor->interface ()));
 	}
 
-} } }
+} }
