@@ -14,11 +14,13 @@
 #include "src/util/qString.h"
 #include "src/concurrent/Returner.h"
 
+//#define DEBUG(stuff) do { std::cout << stuff << std::endl; } while (0)
+#define DEBUG(stuff)
 
 TcpProxy::TcpProxy ():
 	server (NULL), serverSocket (NULL), clientSocket (NULL)
 {
-//	std::cout << "Creating a TcpProxy on thread " << QThread::currentThreadId () << std::endl;
+	DEBUG ("Creating a TcpProxy on thread " << QThread::currentThreadId ());
 
 	connect (this, SIGNAL (sig_open (Returner<quint16> *, QString, quint16)), this, SLOT (slot_open (Returner<quint16> *, QString, quint16)));
 	connect (this, SIGNAL (sig_close ()), this, SLOT (slot_close ()));
@@ -76,7 +78,7 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
 	// TODO only if host and port matches
 	if (server && server->isListening ()) return server->serverPort ();
 
-//	std::cout << "Open server in thread " << QThread::currentThreadId () << std::endl;
+	DEBUG ("Open server in thread " << QThread::currentThreadId ());
 
 	// Store the connection data
 	this->serverHost=serverHost;
@@ -91,11 +93,11 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
 
 	if (server->listen (QHostAddress::LocalHost, 0))
 	{
-//		std::cout << "Ok, listening on port " << server->serverPort () << std::endl;
+		DEBUG ("Ok, listening on port " << server->serverPort ());
 	}
 	else
 	{
-//		std::cout << "Listen failed" << std::endl;
+		DEBUG ("Listen failed");
 	}
 
 	return server->serverPort ();
@@ -106,15 +108,18 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
  */
 void TcpProxy::slot_close ()
 {
-//	std::cout << "Close connection in thread " << QThread::currentThreadId () << std::endl;
+	DEBUG ("Close connection in thread " << QThread::currentThreadId ());
 	closeClientSocket ();
 	closeServerSocket ();
 }
 
 void TcpProxy::closeClientSocket ()
 {
-//	std::cout << "close client socket" << std::endl;
+	DEBUG ("close client socket");
 	if (!clientSocket) return;
+
+	if (serverSocket) clientSocket->write (serverSocket->read (serverSocket->bytesAvailable ()));
+	clientSocket->flush ();
 
 	clientSocket->disconnect(); // signals
 	clientSocket->close ();
@@ -124,8 +129,12 @@ void TcpProxy::closeClientSocket ()
 
 void TcpProxy::closeServerSocket ()
 {
-//	std::cout << "close server socket" << std::endl;
+	DEBUG ("close server socket");
+
 	if (!serverSocket) return;
+
+	if (clientSocket) serverSocket->write (clientSocket->read (clientSocket->bytesAvailable ()));
+	serverSocket->flush ();
 
 	serverSocket->disconnect ();
 	serverSocket->close ();
@@ -135,9 +144,8 @@ void TcpProxy::closeServerSocket ()
 
 void TcpProxy::newConnection ()
 {
-//	std::cout << "new connection on thread " << QThread::currentThreadId () << std::endl;
-
-//	std::cout << utf8 ("connecting to %1:%2").arg (serverHost).arg (serverPort) << std::endl;
+	DEBUG ("new connection on thread " << QThread::currentThreadId ());
+	DEBUG (utf8 ("connecting to %1:%2").arg (serverHost).arg (serverPort));
 
 	delete serverSocket;
 	serverSocket=new QTcpSocket (this);
@@ -158,38 +166,42 @@ void TcpProxy::newConnection ()
 
 void TcpProxy::clientRead ()
 {
-//	std::cout << "write to server..." << std::flush;
+	DEBUG ("write to server...");
+
 	if (serverSocket) serverSocket->write (clientSocket->readAll ());
-//	std::cout << "done" << std::endl;
+
+	DEBUG ("done");
 }
 
 void TcpProxy::serverRead ()
 {
-//	std::cout << "write to client..." << std::flush;
+	DEBUG ("write to client...");
+
 	if (clientSocket) clientSocket->write (serverSocket->readAll ());
-//	std::cout << "done" << std::endl;
+
+	DEBUG ("done");
 }
 
 void TcpProxy::clientClosed ()
 {
-//	std::cout << "client closed" << std::endl;
+	DEBUG ("client closed");
 	slot_close ();
 }
 
 void TcpProxy::serverClosed ()
 {
-//	std::cout << "server closed" << std::endl;
+	DEBUG ("server closed");
 	slot_close ();
 }
 
 void TcpProxy::clientError ()
 {
-//	std::cout << "client error" << std::endl;
+	DEBUG ("client error");
 	slot_close ();
 }
 
 void TcpProxy::serverError ()
 {
-//	std::cout << "server error" << std::endl;
+	DEBUG ("server error");
 	slot_close ();
 }
