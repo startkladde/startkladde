@@ -21,13 +21,13 @@
 
 DbManager::DbManager (const DatabaseInfo &info):
 	interface (info), db (interface), cache (db),
-	dbWorker (db), migrator (interface), cacheThread (cache)
+	dbWorker (db), migrator (interface), cacheWorker (cache)
 {
 }
 
 DbManager::DbManager (const DbManager &other):
 	interface (other.interface.getInfo ()), db (interface), cache (db),
-	dbWorker (db), migrator (interface), cacheThread (cache)
+	dbWorker (db), migrator (interface), cacheWorker (cache)
 {
 	assert (!"DbManager copied");
 }
@@ -344,7 +344,7 @@ void DbManager::refreshCache (QWidget *parent)
 	Returner<bool> returner;
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
-	cacheThread.refreshAll (returner, monitor);
+	cacheWorker.refreshAll (returner, monitor);
 	MonitorDialog::monitor (monitor, "Daten abrufen", parent);
 	returner.wait ();
 }
@@ -354,7 +354,7 @@ void DbManager::fetchFlights (QDate date, QWidget *parent)
 	Returner<void> returner;
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
-	cacheThread.fetchFlightsOther (returner, monitor, date);
+	cacheWorker.fetchFlightsOther (returner, monitor, date);
 	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), parent);
 	returner.wait ();
 }

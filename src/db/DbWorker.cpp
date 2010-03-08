@@ -118,13 +118,9 @@ namespace Db
 	{
 		thread.quit ();
 
-		std::cout << "Waiting for ORM worker thread to terminate...";
-		std::cout.flush ();
-
-		if (thread.wait (1000))
-			std::cout << "OK" << std::endl;
-		else
-			std::cout << "Timeout" << std::endl;
+		std::cout << "Waiting for ORM worker thread to terminate..." << std::flush;
+		if (thread.wait (1000)) std::cout << "OK"      << std::endl;
+		else                    std::cout << "Timeout" << std::endl;
 	}
 
 	// ***********************

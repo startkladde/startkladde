@@ -16,7 +16,7 @@
 #include "src/db/cache/Cache.h"
 #include "src/db/DbWorker.h"
 #include "src/db/migration/background/BackgroundMigrator.h"
-#include "src/db/cache/CacheThread.h"
+#include "src/db/cache/CacheWorker.h"
 #include "src/db/dbId.h"
 
 class QWidget;
@@ -71,7 +71,7 @@ class DbManager
 		virtual Db::DbWorker           &getDbWorker           () { return dbWorker;    }
 		virtual Db::Migration::Background::BackgroundMigrator
 		                               &getBackgroundMigrator () { return migrator;    }
-		virtual Db::Cache::CacheThread &getCacheThread        () { return cacheThread; }
+		virtual Db::Cache::CacheWorker &getCacheWorker        () { return cacheWorker; }
 
 
 		// *** Schema management
@@ -109,7 +109,7 @@ class DbManager
 
 		Db::DbWorker dbWorker;
 		Db::Migration::Background::BackgroundMigrator migrator;
-		Db::Cache::CacheThread cacheThread;
+		Db::Cache::CacheWorker cacheWorker;
 };
 
 #endif

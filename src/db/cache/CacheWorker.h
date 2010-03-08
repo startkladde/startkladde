@@ -1,13 +1,14 @@
 /*
- * CacheThread.h
+ * CacheWorker.h
  *
  *  Created on: 05.03.2010
  *      Author: Martin Herrmann
  */
 
-#ifndef CACHETHREAD_H_
-#define CACHETHREAD_H_
+#ifndef CACHEWORKER_H_
+#define CACHEWORKER_H_
 
+#include <QObject>
 #include <QThread>
 #include <QDate>
 
@@ -31,13 +32,13 @@ namespace Db
 		 *
 		 * This class is thread safe.
 		 */
-		class CacheThread: public QThread
+		class CacheWorker: public QObject
 		{
 			Q_OBJECT
 
 			public:
-				CacheThread (Cache &cache);
-				virtual ~CacheThread ();
+				CacheWorker (Cache &cache);
+				virtual ~CacheWorker ();
 
 				void refreshAll        (Returner<bool> &returner, OperationMonitor &monitor);
 				void fetchFlightsOther (Returner<void> &returner, OperationMonitor &monitor, const QDate &date);
@@ -50,12 +51,8 @@ namespace Db
 				virtual void slot_refreshAll        (Returner<bool> *returner, OperationMonitor *monitor);
 				virtual void slot_fetchFlightsOther (Returner<void> *returner, OperationMonitor *monitor, QDate date);
 
-			protected:
-				static const int requestedExit=42;
-
-				virtual void run ();
-
 			private:
+				QThread thread;
 				Cache &cache;
 		};
 	}

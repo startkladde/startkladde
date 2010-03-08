@@ -43,7 +43,7 @@ HEADERS += \
            src/db/Query.h \
            src/db/dbId.h \
            src/db/cache/Cache.h \
-           src/db/cache/CacheThread.h \
+           src/db/cache/CacheWorker.h \
            src/db/event/DbEvent.h \
            src/db/event/DbEventMonitor.h \
            src/db/interface/AbstractInterface.h \
@@ -147,7 +147,7 @@ SOURCES += \
            src/db/Query.cpp \
            src/db/dbId.cpp \
            src/db/cache/Cache.cpp \
-           src/db/cache/CacheThread.cpp \
+           src/db/cache/CacheWorker.cpp \
            src/db/event/DbEvent.cpp \
            src/db/event/DbEventMonitor.cpp \
            src/db/interface/AbstractInterface.cpp \
