@@ -4,8 +4,7 @@
 
 ObjectEditorWindowBase::ObjectEditorWindowBase (DbManager &manager, QWidget *parent, Qt::WindowFlags flags):
 	QDialog (parent, flags),
-	manager (manager),
-	cache (manager.getCache ())
+	manager (manager)
 {
 	ui.setupUi (this);
 }

@@ -16,13 +16,11 @@
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/gui/dialogs.h"
 #include "src/text.h"
-#include "src/db/cache/Cache.h"
-#include "src/db/DbWorker.h"
 #include "src/db/DbManager.h"
 
 template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, ObjectListModel<T> *list, bool listOwned, QWidget *parent):
 	ObjectListWindowBase (parent),
-	manager (manager), cache (manager.getCache ()), list (list), listOwned (listOwned)
+	manager (manager), list (list), listOwned (listOwned)
 {
 	// Set the list as the table's model with a sort proxy
 	proxyModel=new QSortFilterProxyModel (this);
@@ -67,14 +65,12 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 
 	try
 	{
-		Returner<bool> returner;
-		SignalOperationMonitor monitor;
-		connect (&monitor, SIGNAL (canceled ()), &manager.getDb (), SLOT (cancelConnection ()));
-		manager.getDbWorker ().objectUsed<T> (returner, monitor, id);
-		MonitorDialog::monitor (monitor, utf8 ("%1 prüfen").arg (T::objectTypeDescription ()), this);
-		objectUsed=returner.returnedValue ();
+		objectUsed=manager.objectUsed<T> (id, this);
 	}
-	catch (OperationCanceledException) { }
+	catch (OperationCanceledException)
+	{
+		return;
+	}
 
 	if (objectUsed)
 	{
@@ -91,12 +87,7 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 		{
 			try
 			{
-				Returner<int> returner;
-				SignalOperationMonitor monitor;
-				connect (&monitor, SIGNAL (canceled ()), &manager.getDb (), SLOT (cancelConnection ()));
-				manager.getDbWorker ().deleteObject<T> (returner, monitor, id);
-				MonitorDialog::monitor (monitor, utf8 ("%1 löschen").arg (T::objectTypeDescription ()), this);
-				returner.wait ();
+				manager.deleteObject<T> (id, this);
 			}
 			catch (OperationCanceledException)
 			{
@@ -110,8 +101,7 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 
 template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 {
-		// TODO
-//	cache.refreshViews<T> ();
+	// TODO
 }
 
 template<class T> void ObjectListWindow<T>::on_table_activated (const QModelIndex &index)

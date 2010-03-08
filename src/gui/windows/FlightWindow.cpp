@@ -17,7 +17,6 @@
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 #include "src/config/Options.h" // Required for opts.ort
 #include "src/util/qString.h"
-#include "src/db/Database.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/DbManager.h"
 
@@ -79,7 +78,7 @@ static const QColor errorColor (255, 127, 127);
  *               class constructor.
  * @param mode the editor mode. This determines among other things, how flight
  *             is treated.
- * @param cache the database cache to use for getting additional data
+ * @param manager the database manager to use for reading and writing data
  * @param flight the flight to edit or to display in the editing fields
  *               initially, or NULL for none. The flight is copied by the
  *               constructor and not accessed any more later.
@@ -1373,15 +1372,7 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 		{
 			try
 			{
-				// TODO pass, or get from Db
-				Db::DbWorker dbWorker (cache.getDatabase ());
-
-				Returner<dbId> returner;
-				SignalOperationMonitor monitor;
-				connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
-				dbWorker.createObject (returner, monitor, flight);
-				MonitorDialog::monitor (monitor, "Flug anlegen", this);
-				success=idValid (returner.returnedValue ());
+				success=manager.createObject (flight, this);
 			}
 			catch (OperationCanceledException)
 			{
@@ -1392,16 +1383,8 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 		{
 			try
 			{
-				// TODO pass, or get from Db
-				Db::DbWorker dbWorker (cache.getDatabase ());
-
-				Returner<int> returner;
-				SignalOperationMonitor monitor;
-				connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
-				dbWorker.updateObject (returner, monitor, flight);
-				MonitorDialog::monitor (monitor, "Flug speichern", this);
-				returner.wait (); // May return 0 if nothing changed
-
+				// May return 0 if nothing changed
+				manager.updateObject (flight, this);
 				success=true;
 			}
 			catch (OperationCanceledException)

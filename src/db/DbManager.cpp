@@ -14,6 +14,10 @@
 #include "src/db/interface/exceptions/AccessDeniedException.h"
 #include "src/db/interface/exceptions/DatabaseDoesNotExistException.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
+#include "src/model/Person.h"
+#include "src/model/LaunchMethod.h"
+#include "src/model/Plane.h"
+#include "src/model/Flight.h"
 
 DbManager::DbManager (const DatabaseInfo &info):
 	interface (info), db (interface), cache (db),
@@ -355,3 +359,62 @@ void DbManager::fetchFlights (QDate date, QWidget *parent)
 	returner.wait ();
 }
 
+template<class T> bool DbManager::objectUsed (dbId id, QWidget *parent)
+{
+	Returner<bool> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	dbWorker.objectUsed<T> (returner, monitor, id);
+	MonitorDialog::monitor (monitor, utf8 ("%1 prüfen").arg (T::objectTypeDescription ()), parent);
+	return returner.returnedValue ();
+}
+
+template<class T> void DbManager::deleteObject (dbId id, QWidget *parent)
+{
+	Returner<int> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	dbWorker.deleteObject<T> (returner, monitor, id);
+	MonitorDialog::monitor (monitor, utf8 ("%1 löschen").arg (T::objectTypeDescription ()), parent);
+	returner.wait ();
+}
+
+template<class T> bool DbManager::createObject (T &object, QWidget *parent)
+{
+	Returner<dbId> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	dbWorker.createObject (returner, monitor, object);
+	MonitorDialog::monitor (monitor, utf8 ("%1 anlegen").arg (T::objectTypeDescription ()), parent);
+	return idValid (returner.returnedValue ());
+}
+
+template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
+{
+	Returner<int> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()));
+	dbWorker.updateObject (returner, monitor, object);
+	MonitorDialog::monitor (monitor, utf8 ("%1 aktualisieren").arg (T::objectTypeDescription ()), parent);
+	return returner.returnedValue ();
+}
+
+
+
+// ***************************
+// ** Method instantiations **
+// ***************************
+
+#	define INSTANTIATE_TEMPLATES(T) \
+		template bool DbManager::objectUsed  <T> (dbId id        , QWidget *parent); \
+		template void DbManager::deleteObject<T> (dbId id        , QWidget *parent); \
+		template bool DbManager::createObject<T> (T &object      , QWidget *parent); \
+		template int  DbManager::updateObject<T> (const T &object, QWidget *parent); \
+	// Empty line
+
+INSTANTIATE_TEMPLATES (Person      )
+INSTANTIATE_TEMPLATES (Plane       )
+INSTANTIATE_TEMPLATES (Flight      )
+INSTANTIATE_TEMPLATES (LaunchMethod)
+
+#	undef INSTANTIATE_TEMPLATES

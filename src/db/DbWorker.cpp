@@ -118,7 +118,7 @@ namespace Db
 	{
 		thread.quit ();
 
-		std::cout << "Waiting for cache worker thread to terminate...";
+		std::cout << "Waiting for ORM worker thread to terminate...";
 		std::cout.flush ();
 
 		if (thread.wait (1000))

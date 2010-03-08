@@ -18,11 +18,8 @@
 #include "build/logo.xpm"
 
 // TODO many dependencies - split
-#include "src/concurrent/DefaultQThread.h"
 #include "src/concurrent/threadUtil.h"
 #include "src/config/Options.h"
-#include "src/db/migration/Migrator.h"
-#include "src/db/migration/background/BackgroundMigrator.h"
 #include "src/gui/widgets/WeatherWidget.h"
 #include "src/gui/windows/DateInputDialog.h"
 #include "src/gui/windows/FlightWindow.h"
@@ -46,15 +43,7 @@
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
-#include "src/db/interface/exceptions/SqlException.h"
-#include "src/db/interface/exceptions/AccessDeniedException.h"
-#include "src/db/interface/exceptions/DatabaseDoesNotExistException.h"
-#include "src/db/interface/DefaultInterface.h"
-#include "src/concurrent/monitor/SignalOperationMonitor.h"
-#include "src/gui/windows/MonitorDialog.h"
-#include "src/db/cache/CacheThread.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
-#include "src/db/DbWorker.h"
 
 template <class T> class MutableObjectList;
 
@@ -577,13 +566,9 @@ void MainWindow::flightListChanged ()
 
 void MainWindow::updateFlight (const Flight &flight)
 {
-	// TODO error handling? required? What happens on uncaught exception?
-	Returner<int> returner;
-	SignalOperationMonitor monitor;
-	connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
-	dbManager.getDbWorker ().updateObject (returner, monitor, flight);
-	MonitorDialog::monitor (monitor, "Flug speichern", this);
-	returner.wait ();
+	// TODO error handling? required? What happens on uncaught exception? Then
+	// remove this method if it only calls dbManager.updateObject
+	dbManager.updateObject (flight, this);
 }
 
 void MainWindow::startFlight (dbId id)
@@ -673,7 +658,6 @@ void MainWindow::on_actionNew_triggered ()
 	//   - what about landing a flight that is open in the editor?
 	//   - there should be only one flight editor at a time
 	FlightWindow::createFlight (this, dbManager, getNewFlightDate ());
-
 }
 
 void MainWindow::on_actionStart_triggered ()
@@ -795,12 +779,7 @@ void MainWindow::on_actionDelete_triggered ()
 
 	try
 	{
-		Returner<int> returner;
-		SignalOperationMonitor monitor;
-		connect (&monitor, SIGNAL (canceled ()), &dbManager.getInterface (), SLOT (cancelConnection ()));
-		dbManager.getDbWorker ().deleteObject<Flight> (returner, monitor, id);
-		MonitorDialog::monitor (monitor, utf8 ("Flug löschen"), this);
-		returner.wait ();
+		dbManager.deleteObject<Flight> (id, this);
 	}
 	catch (OperationCanceledException)
 	{

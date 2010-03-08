@@ -17,6 +17,7 @@
 #include "src/db/DbWorker.h"
 #include "src/db/migration/background/BackgroundMigrator.h"
 #include "src/db/cache/CacheThread.h"
+#include "src/db/dbId.h"
 
 class QWidget;
 
@@ -26,15 +27,25 @@ class QWidget;
  *   - the Database (ORM)
  *   - the Cache
  * as well as various workers and some functionality related to database
- * management.
+ * management. Specifically, this class contains methods for running
+ * asynchronous methods (using a worker class) with a monitor dialog.
  *
- * One advantage to this class is that the workers can be reused; e. g. we
- * don't have to create DbWorker (and the associated thread) each time we want
- * to add or update an object.
+ * Advantages of this class:
+ *   - worker instances can be reused; e. g. we don't have to create DbWorker
+ *     (and the associated thread) each time we want to add or update an
+ *     object. Achieving this without a manager would require sharing workers
+ *     between several GUI classes, resulting in untidiness
+ *   - the setup for running asynchronous methods (which is relatively much
+ *     work at the moment) is encapsulated, keeping the GUI classes clean
  *
  * This class is quite heavyweight, so care should be taken in making other
  * classes depend on it. As a rule, non-GUI classes should not use a DbManager,
- * unless there is good reason.
+ * unless there is good reason. GUI classes should access the DbManager by
+ * reference.
+ *
+ * This class is intended to be used from the GUI (in the GUI thread) and as
+ * such is not thread safe. Some of the classes contained by the manager are
+ * thread safe, though.
  */
 class DbManager
 {
@@ -83,6 +94,10 @@ class DbManager
 		void refreshCache (QWidget *parent);
 		void fetchFlights (QDate date, QWidget *parent);
 
+		template<class T> bool objectUsed   (dbId id        , QWidget *parent);
+		template<class T> void deleteObject (dbId id        , QWidget *parent);
+		template<class T> bool createObject (      T &object, QWidget *parent);
+		template<class T> int  updateObject (const T &object, QWidget *parent);
 
 	private:
 		DbManager (const DbManager &other);
@@ -95,7 +110,6 @@ class DbManager
 		Db::DbWorker dbWorker;
 		Db::Migration::Background::BackgroundMigrator migrator;
 		Db::Cache::CacheThread cacheThread;
-
 };
 
 #endif

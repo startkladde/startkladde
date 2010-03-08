@@ -6,13 +6,7 @@
 // TODO many dependencies in header, maybe move to .cpp and instantiate
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
 #include "src/gui/windows/objectEditor/ObjectEditorPane.h"
-#include "src/db/Database.h"
-#include "src/db/cache/Cache.h"
-#include "src/db/DbWorker.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
-#include "src/concurrent/monitor/SignalOperationMonitor.h"
-#include "src/gui/windows/MonitorDialog.h"
-#include "src/concurrent/Returner.h"
 #include "src/util/qString.h"
 #include "src/db/DbManager.h"
 
@@ -72,7 +66,7 @@ template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DbManage
 	ObjectEditorWindowBase (manager, parent, flags),
 	mode (mode)
 {
-	editorPane = ObjectEditorPane<T>::create (mode, cache, ui.objectEditorPane);
+	editorPane = ObjectEditorPane<T>::create (mode, manager.getCache (), ui.objectEditorPane);
 	ui.objectEditorPane->layout ()->addWidget (editorPane);
 
 	switch (mode)
@@ -149,16 +143,7 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 			try
 			{
 				std::cout << "Create object: " << object.toString () << std::endl;
-
-				// TODO pass, or get from Db
-				Db::DbWorker dbWorker (cache.getDatabase ());
-
-				Returner<dbId> returner;
-				SignalOperationMonitor monitor;
-				connect (&monitor, SIGNAL (canceled ()), & cache.getDatabase(), SLOT (cancelConnection ()));
-				dbWorker.createObject (returner, monitor, object);
-				MonitorDialog::monitor (monitor, utf8 ("%1 anlegen").arg (T::objectTypeDescription ()), this);
-				return idValid (returner.returnedValue ());
+				manager.createObject (object, this);
 			}
 			catch (OperationCanceledException)
 			{
@@ -171,18 +156,7 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 			try
 			{
 				std::cout << "Update object: " << object.toString () << std::endl;
-
-				// TODO pass, or get from Db
-				Db::DbWorker dbWorker (cache.getDatabase ());
-
-				Returner<int> returner;
-				SignalOperationMonitor monitor;
-				connect (&monitor, SIGNAL (canceled ()), &cache.getDatabase (), SLOT (cancelConnection ()));
-				dbWorker.updateObject (returner, monitor, object);
-				MonitorDialog::monitor (monitor, utf8 ("%1 aktualisieren").arg (T::objectTypeDescription ()), this);
-				// May return false if nothing changed
-				returner.wait ();
-
+				manager.updateObject (object, this);
 				return true;
 			}
 			catch (OperationCanceledException)

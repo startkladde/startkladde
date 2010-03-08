@@ -6,7 +6,6 @@
 #include "ObjectListWindowBase.h"
 
 class DbManager;
-namespace Db { namespace Cache { class Cache; } }
 class QSortFilterProxyModel;
 template<class T> class ObjectListModel;
 
@@ -25,7 +24,6 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 
 	private:
 		DbManager &manager;
-		Db::Cache::Cache &cache;
 		ObjectListModel<T> *list;
 		bool listOwned;
 		QSortFilterProxyModel *proxyModel;

@@ -12,7 +12,6 @@
 
 #include "ui_ObjectEditorWindowBase.h"
 
-namespace Db { namespace Cache { class Cache; } }
 class DbManager;
 
 /**
@@ -40,7 +39,6 @@ class ObjectEditorWindowBase: public QDialog
 	protected:
 		Ui::ObjectEditorWindowBaseClass ui;
 		DbManager &manager;
-		Db::Cache::Cache &cache;
 };
 
 
