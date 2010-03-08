@@ -206,6 +206,7 @@ class MainWindow: public QMainWindow
 
 		// Database
 		void cacheChanged (Db::Event::DbEvent event);
+		void executingQuery (Db::Query);
 
 		void logMessage (QString message);
 

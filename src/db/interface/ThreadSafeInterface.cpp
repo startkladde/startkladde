@@ -28,6 +28,7 @@ namespace Db { namespace Interface
 		// in AbstractInterface?
 		DefaultInterface *defaultInterface=new DefaultInterface (info);
 		connect (defaultInterface, SIGNAL (databaseError (int, QString)), this, SIGNAL (databaseError (int, QString)));
+		connect (defaultInterface, SIGNAL (executingQuery (Db::Query)), this, SIGNAL (executingQuery (Db::Query)));
 		interface=defaultInterface;
 
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))

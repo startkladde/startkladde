@@ -54,8 +54,6 @@ namespace Db
 				}
 
 
-//				FIXME: template<T> static added, deleted, changed
-
 				// ** Formatting
 				QString toString () const;
 				static QString typeString (Type type);

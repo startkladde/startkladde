@@ -1369,8 +1369,6 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 {
 	bool success=false;
 
-	// FIXME handle OperationCanceledException
-
 	switch (mode)
 	{
 		// TODO background

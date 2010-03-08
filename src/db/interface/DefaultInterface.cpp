@@ -45,7 +45,6 @@
 
 #include "src/util/qString.h"
 #include "src/db/result/DefaultResult.h"
-#include "src/db/Query.h"
 #include "src/config/Options.h"
 #include "src/text.h"
 #include "src/db/interface/exceptions/QueryFailedException.h"
@@ -338,6 +337,8 @@ namespace Db { namespace Interface
 
 		QSqlQuery sqlQuery (db);
 		sqlQuery.setForwardOnly (forwardOnly);
+
+		emit executingQuery (query);
 
 		if (!query.prepare (sqlQuery))
 		{

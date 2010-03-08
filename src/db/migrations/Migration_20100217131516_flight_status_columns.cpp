@@ -22,9 +22,9 @@ void Migration_20100217131516_flight_status_columns::up (OperationMonitorInterfa
 
 	std::cout << "Updating status flags" << std::endl;
 	executeQuery (Db::Query ("UPDATE flights SET "
-		"departed        =IF(status&1, TRUE, FALSE),"
-		"landed          =IF(status&2, TRUE, FALSE),"
-		"towflight_landed=IF(status&4, TRUE, FALSE)"));
+		"departed"         "=IF(status&1, TRUE, FALSE),"
+		"landed"           "=IF(status&2, TRUE, FALSE),"
+		"towflight_landed" "=IF(status&4, TRUE, FALSE)"));
 
 	dropColumn ("flights", "status");
 }

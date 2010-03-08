@@ -17,6 +17,7 @@
 #include "src/db/DatabaseInfo.h"
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/net/TcpProxy.h"
+#include "src/db/Query.h"
 
 #ifndef DEFAULTINTERFACE_H_
 #define DEFAULTINTERFACE_H_
@@ -66,6 +67,7 @@ namespace Db
 				virtual bool queryHasResult (const Query &query);
 
 			signals:
+				void executingQuery (Db::Query query); // full type names
 				void databaseError (int number, QString message);
 
 			private:

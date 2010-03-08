@@ -63,6 +63,7 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	// Database
 	connect (&dbManager.getInterface (), SIGNAL (databaseError (int, QString)), this, SLOT (databaseError (int, QString)));
+	connect (&dbManager.getInterface (), SIGNAL (executingQuery (Db::Query)), this, SLOT (executingQuery (Db::Query)));
 
 	flightModel = new FlightModel (dbManager.getCache ());
 	proxyList=new FlightProxyList (dbManager.getCache (), *flightList, this); // TODO never deleted
@@ -73,6 +74,7 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
 	proxyModel->setDynamicSortFilter (true);
+
 
 
 	readSettings ();
@@ -430,7 +432,12 @@ bool MainWindow::refreshFlights ()
 	QDate today=QDate::currentDate ();
 
 	QList<Flight> flights;
-	if (displayDate==today)
+	if (!databaseActionsEnabled)
+	{
+		ui.displayDateLabel->setPaletteForegroundColor (Qt::black);
+		ui.displayDateLabel->setText ("-");
+	}
+	else if (displayDate==today)
 	{
 		// The display date is today's date - display today's flights and
 		// prepared flights
@@ -540,12 +547,15 @@ void MainWindow::flightListChanged ()
 	// midnight and this function is called after midnight.
 	// TODO store the todayness somewhere instead.
 
-	if (displayDate == QDate::currentDate ())
+	if (databaseActionsEnabled && displayDate == QDate::currentDate ())
 		ui.activeFlightsLabel->setNumber (Flight::countFlying (flights));
 	else
 		ui.activeFlightsLabel->setText ("-");
 
-	ui.totalFlightsLabel->setNumber (Flight::countHappened (flights));
+	if (databaseActionsEnabled)
+		ui.totalFlightsLabel->setNumber (Flight::countHappened (flights));
+	else
+		ui.totalFlightsLabel->setText ("-");
 }
 
 // *************************
@@ -1282,11 +1292,10 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 void MainWindow::on_actionConnect_triggered ()
 {
 	setConnecting ();
+
 	if (dbManager.connect (this))
 	{
-		refreshFlights ();
 		setConnected ();
-		setDatabaseActionsEnabled (true);
 	}
 	else
 	{
@@ -1296,10 +1305,10 @@ void MainWindow::on_actionConnect_triggered ()
 
 void MainWindow::on_actionDisconnect_triggered ()
 {
-	setNotConnected ();
 	dbManager.getCache ().clear ();
 	flightList->clear ();
 	dbManager.getInterface ().close ();
+	setNotConnected ();
 }
 
 void MainWindow::on_actionEditPlanes_triggered ()
@@ -1339,7 +1348,15 @@ void MainWindow::databaseError (int number, QString message)
 	if (number==0)
 		statusBar ()->clearMessage ();
 	else
+	{
+		logMessage (message);
 		statusBar ()->showMessage (utf8 ("Datenbank: %2 (%1)").arg (number).arg (message), 2000);
+	}
+}
+
+void MainWindow::executingQuery (Db::Query query)
+{
+	logMessage (query.toString ());
 }
 
 void MainWindow::cacheChanged (Db::Event::DbEvent event)
@@ -1437,18 +1454,22 @@ void MainWindow::setNotConnected ()
 	ui.flightTable->setEnabled (false);
 
 	ui.notConnectedPane->setVisible (true);
+
+	refreshFlights (); // Also sets the labels
 }
 
 void MainWindow::setConnected ()
 {
 	ui.databaseStateLabel->setText ("OK");
 
-	setDatabaseActionsEnabled (false);
+	setDatabaseActionsEnabled (true);
 
 	ui.flightTable->setVisible (true);
 	ui.flightTable->setEnabled (true);
 
 	ui.notConnectedPane->setVisible (false);
+
+	setDisplayDateCurrent (true); // Will also call refreshFlights
 }
 
 void MainWindow::setConnecting ()
@@ -1461,6 +1482,8 @@ void MainWindow::setConnecting ()
 	ui.flightTable->setEnabled (false);
 
 	ui.notConnectedPane->setVisible (false);
+
+	refreshFlights (); // Also sets the labels
 }
 
 
