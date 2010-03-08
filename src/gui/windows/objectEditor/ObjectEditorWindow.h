@@ -144,6 +144,7 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 			{
 				std::cout << "Create object: " << object.toString () << std::endl;
 				manager.createObject (object, this);
+				return true;
 			}
 			catch (OperationCanceledException)
 			{

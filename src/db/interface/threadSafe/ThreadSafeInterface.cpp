@@ -3,6 +3,7 @@
  *   - move asyncOpen to an interfaceWorker, we don't usually need to execute
  *     interface operations asynchronously because they are already called from
  *     an ansynchronous operation (like dbWorker, migrationWorker)
+ *   - consider passing a pointer to the query instead of copying the query
  */
 #include "ThreadSafeInterface.h"
 
@@ -12,6 +13,9 @@
 
 #include "src/db/result/Result.h"
 #include "src/concurrent/Returner.h"
+#include "src/db/interface/DefaultInterface.h"
+#include "src/db/result/CopiedResult.h"
+#include "src/concurrent/monitor/OperationMonitor.h" // required for asyncOpen
 
 namespace Db { namespace Interface { namespace ThreadSafe
 {
@@ -20,116 +24,200 @@ namespace Db { namespace Interface { namespace ThreadSafe
 	// ******************
 
 	ThreadSafeInterface::ThreadSafeInterface (const DatabaseInfo &info):
-		Interface (info), thread (info)
+		Interface (info), interface (NULL)
 	{
-		connect (&thread, SIGNAL (databaseError (int, QString)), this, SIGNAL (databaseError (int, QString)));
-		thread.start ();
+		// For connecting the signal, we need to know that it's a
+		// DefaultInterface. Afterwards, we assign it to the
+		// AbstractInterface *interface. TODO shouldn't the signal be declared
+		// in AbstractInterface?
+		DefaultInterface *defaultInterface=new DefaultInterface (info);
+		connect (defaultInterface, SIGNAL (databaseError (int, QString)), this, SIGNAL (databaseError (int, QString)));
+		interface=defaultInterface;
 
-		// Wait for the thread to connect the signals to the worker
-		thread.waitStartup ();
+#define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
+		CONNECT (open      (Returner<bool>      *));
+		CONNECT (asyncOpen (Returner<bool>      *, OperationMonitor *));
+		CONNECT (close     (Returner<void>      *));
+		CONNECT (lastError (Returner<QSqlError> *));
+
+		CONNECT (transaction (Returner<void> *));
+		CONNECT (commit      (Returner<void> *));
+		CONNECT (rollback    (Returner<void> *));
+
+		CONNECT (executeQuery       (Returner<void>                            *, Db::Query));
+		CONNECT (executeQueryResult (Returner<QSharedPointer<Result::Result> > *, Db::Query, bool));
+		CONNECT (queryHasResult     (Returner<bool>                            *, Db::Query));
+#undef CONNECT
+
+		moveToThread (&thread);
+		thread.start ();
 	}
 
 	ThreadSafeInterface::~ThreadSafeInterface ()
 	{
-		// Terminete the thread's event loop with the requestedExit exit code
-		// so it doesn't print a message.
-		thread.exit (Thread::requestedExit);
+		delete interface;
+		thread.quit ();
 
-		std::cout << "Waiting for database interface thread to terminate...";
-		std::cout.flush ();
-
-		if (thread.wait (1000))
-			std::cout << "OK" << std::endl;
-		else
-			std::cout << "Timeout" << std::endl;
+		std::cout << "Waiting for interface worker thread to terminate..." << std::flush;
+		if (thread.wait (1000)) std::cout << "OK"      << std::endl;
+		else                    std::cout << "Timeout" << std::endl;
 	}
 
 
-	// ***************************
-	// ** Connection management **
-	// ***************************
+	// ***********************
+	// ** Front-end methods **
+	// ***********************
 
 	bool ThreadSafeInterface::open ()
 	{
 		Returner<bool> returner;
-		thread.open (&returner);
+		emit sig_open (&returner);
 		return returner.returnedValue ();
 	}
 
 	void ThreadSafeInterface::asyncOpen (Returner<bool> &returner, OperationMonitor &monitor)
 	{
-		thread.asyncOpen (&returner, &monitor);
+		emit sig_asyncOpen (&returner, &monitor);
 	}
 
 	void ThreadSafeInterface::close ()
 	{
 		Returner<void> returner;
-		thread.close (&returner);
+		emit sig_close (&returner);
 		returner.wait ();
 	}
 
 	QSqlError ThreadSafeInterface::lastError () const
 	{
 		Returner<QSqlError> returner;
-		thread.lastError (&returner);
+		emit sig_lastError (&returner);
 		return returner.returnedValue ();
 	}
-
-	void ThreadSafeInterface::cancelConnection ()
-	{
-		thread.cancelConnection ();
-	}
-
-
-	// ******************
-	// ** Transactions **
-	// ******************
 
 	void ThreadSafeInterface::transaction ()
 	{
 		Returner<void> returner;
-		thread.transaction (&returner);
+		emit sig_transaction (&returner);
 		returner.wait ();
 	}
 
 	void ThreadSafeInterface::commit ()
 	{
 		Returner<void> returner;
-		thread.commit (&returner);
+		emit sig_commit (&returner);
 		returner.wait ();
 	}
 
 	void ThreadSafeInterface::rollback ()
 	{
 		Returner<void> returner;
-		thread.rollback (&returner);
+		emit sig_rollback (&returner);
 		returner.wait ();
 	}
-
-
-	// *************
-	// ** Queries **
-	// *************
 
 	void ThreadSafeInterface::executeQuery (const Query &query)
 	{
 		Returner<void> returner;
-		thread.executeQuery (&returner, query);
+		emit sig_executeQuery (&returner, query);
 		returner.wait ();
 	}
 
 	QSharedPointer<Result::Result> ThreadSafeInterface::executeQueryResult (const Query &query, bool forwardOnly)
 	{
 		Returner<QSharedPointer<Result::Result> > returner;
-		thread.executeQueryResult (&returner, query, forwardOnly);
+		emit sig_executeQueryResult (&returner, query, forwardOnly);
 		return returner.returnedValue ();
 	}
 
 	bool ThreadSafeInterface::queryHasResult (const Query &query)
 	{
 		Returner<bool> returner;
-		thread.queryHasResult (&returner, query);
+		emit sig_queryHasResult (&returner, query);
 		return returner.returnedValue ();
 	}
+
+
+	// ********************
+	// ** Back-end slots **
+	// ********************
+
+	void ThreadSafeInterface::slot_open (Returner<bool> *returner)
+	{
+		returnOrException (returner, interface->open ());
+	}
+
+	void ThreadSafeInterface::slot_asyncOpen (Returner<bool> *returner, OperationMonitor *monitor)
+	{
+		// Signal end of operation when this method returns
+		OperationMonitorInterface monitorInterface=monitor->interface ();
+		monitorInterface.status ("Verbindung herstellen");
+		returnOrException (returner, interface->open ());
+	}
+
+	void ThreadSafeInterface::slot_close (Returner<void> *returner)
+	{
+		returnVoidOrException (returner, interface->close ());
+	}
+
+	void ThreadSafeInterface::slot_lastError (Returner<QSqlError> *returner) const
+	{
+		returnOrException (returner, interface->lastError ());
+	}
+
+	void ThreadSafeInterface::slot_transaction (Returner<void> *returner)
+	{
+		returnVoidOrException (returner, interface->transaction ());
+	}
+
+	void ThreadSafeInterface::slot_commit (Returner<void> *returner)
+	{
+		returnVoidOrException (returner, interface->commit ());
+	}
+
+	void ThreadSafeInterface::slot_rollback (Returner<void> *returner)
+	{
+		returnVoidOrException (returner, interface->rollback ());
+	}
+
+	void ThreadSafeInterface::slot_executeQuery (Returner<void> *returner, Db::Query query)
+	{
+		returnVoidOrException (returner, interface->executeQuery (query));
+	}
+
+	void ThreadSafeInterface::slot_executeQueryResult (Returner<QSharedPointer<Result::Result> > *returner, Db::Query query, bool forwardOnly)
+	{
+		// Option 1: copy the DefaultResult (is it allowed to access the
+		// QSqlQuery from the other thread? It seems to work.)
+//		returnOrException (returner, interface->executeQueryResult (query, forwardOnly));
+
+		// Option 2: create a CopiedResult
+		(void)forwardOnly;
+		returnOrException (returner, QSharedPointer<Result::Result> (
+			new Result::CopiedResult (
+				// When copying, we can always set forwardOnly
+				*interface->executeQueryResult (query, true)
+			)
+		));
+	}
+
+	void ThreadSafeInterface::slot_queryHasResult (Returner<bool> *returner, Db::Query query)
+	{
+		returnOrException (returner, interface->queryHasResult (query));
+	}
+
+	// ************
+	// ** Others **
+	// ************
+
+	/**
+	 * Called directly, this method is not executed on the background thread.
+	 * When using as a slot, a DirectConnection should be used or the slot will
+	 * be invoked in the background thread where it won't be very useful.
+	 */
+	void ThreadSafeInterface::cancelConnection ()
+	{
+		interface->cancelConnection ();
+	}
+
 
 } } }

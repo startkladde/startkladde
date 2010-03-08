@@ -54,9 +54,7 @@ HEADERS += \
            src/db/interface/exceptions/SqlException.h \
            src/db/interface/exceptions/AccessDeniedException.h \
            src/db/interface/exceptions/DatabaseDoesNotExistException.h \
-           src/db/interface/threadSafe/Thread.h \
            src/db/interface/threadSafe/ThreadSafeInterface.h \
-           src/db/interface/threadSafe/Worker.h \
            src/db/migration/Migration.h \
            src/db/migration/MigrationFactory.h \
            src/db/migration/Migrator.h \
@@ -156,9 +154,7 @@ SOURCES += \
            src/db/interface/exceptions/SqlException.cpp \
            src/db/interface/exceptions/AccessDeniedException.cpp \
            src/db/interface/exceptions/DatabaseDoesNotExistException.cpp \
-           src/db/interface/threadSafe/Thread.cpp \
            src/db/interface/threadSafe/ThreadSafeInterface.cpp \
-           src/db/interface/threadSafe/Worker.cpp \
            src/db/migration/Migration.cpp \
            src/db/migration/MigrationFactory.cpp \
            src/db/migration/Migrator.cpp \
