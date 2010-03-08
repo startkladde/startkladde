@@ -9,6 +9,8 @@
 
 #include <QStringList>
 #include <QVariant>
+#include <QCryptographicHash>
+#include <QString>
 
 #include "src/db/result/Result.h"
 #include "src/db/Query.h"
@@ -60,10 +62,11 @@ namespace Db { namespace Interface
 		Query query=Query ("GRANT ALL ON %1.* TO '%2'@'%'")
 			.arg (database).arg (username);
 
-		// FIXME do not display
-		// FIXME escaping: implement client side hash?
+		// Client side hashing has the advantage that the password is never
+		// transmitted as part of a query, so we can display the query to the
+		// user in a log.
 		if (!password.isEmpty())
-			query+=Query ("IDENTIFIED BY '%1'").arg (password);
+			query+=Query ("IDENTIFIED BY PASSWORD '%1'").arg (mysqlPasswordHash (password));
 
 		executeQuery (query);
 	}
@@ -222,6 +225,20 @@ namespace Db { namespace Interface
 
 		result->next ();
 		return result->value (0).toInt ();
+	}
+
+
+	// **********
+	// ** Misc **
+	// **********
+
+	QString Interface::mysqlPasswordHash (const QString &password)
+	{
+		QByteArray data=password.toUtf8 ();
+		data=QCryptographicHash::hash (data, QCryptographicHash::Sha1);
+		data=QCryptographicHash::hash (data, QCryptographicHash::Sha1);
+
+		return QString ("*%1").arg (QString (data.toHex ()).toUpper ());
 	}
 
 } }

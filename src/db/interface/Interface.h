@@ -75,6 +75,9 @@ namespace Db
 				void updateColumnValues (const QString &tableName, const QString &columnName, const QVariant &oldValue, const QVariant &newValue);
 				QStringList listStrings (const Query &query);
 				int countQuery (const Query &query);
+
+				// *** Misc
+				QString mysqlPasswordHash (const QString &password);
 		};
 	}
 }

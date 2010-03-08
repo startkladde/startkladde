@@ -1,3 +1,8 @@
+/*
+ * Improvements:
+ *   - the log should also display queries from other database interfaces that
+ *     may be created during connect, such as the root interface
+ */
 //	assert (isGuiThread ());
 
 #include "MainWindow.h"

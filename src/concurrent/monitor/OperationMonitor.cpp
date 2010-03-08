@@ -3,16 +3,11 @@
 #include "src/concurrent/synchronized.h"
 
 /*
- * FIXME:
- *   - make thread safe
- */
-
-/*
  * TODO:
- *   - allow suboperations
  *   - documentation
  *
  * Improvements:
+ *   - allow suboperations
  *   - integrate Monitor with Returner so we only need to pass one object
  *     - NB: returner is a template, and we want to emit (progress, status) and
  *       receive (cancel) signals
@@ -42,8 +37,8 @@
  *     (or at least a DefaultOperationMonitor)
  *   - Can we have an "AsynchronousInterface" which inherites Interface and
  *     stores a Monitor? What about return values?
+ *   - The connection canceling should be in the interface, not in the caller
  */
-
 
 OperationMonitor::OperationMonitor ():
 	theInterface (this), canceled (false)
@@ -54,24 +49,40 @@ OperationMonitor::~OperationMonitor ()
 {
 }
 
+/**
+ * Returns a copy of the interface of the operation monitor
+ *
+ * When the last copy of the interface is destroyed, the end of the operation
+ * is signaled to the monitor by the interface.
+ *
+ * @return a copy of the interface
+ */
 OperationMonitorInterface OperationMonitor::interface ()
 {
 	// Make a copy of the interface
 	return theInterface;
 }
 
-// TODO use it (but it will be ambiguous with Interface::Interface(Monitor)
-OperationMonitor::operator OperationMonitorInterface ()
-{
-	return interface ();
-}
-
+/**
+ * Cancels the operation
+ *
+ * The operation must support cancelation by regularly checking the canceled
+ * flag or calling checkCanceled (potentially indirectly through one of the
+ * status/progress methods). If the operation does not support canelation, this
+ * has no effect. The operation may not be canceled immediately. Wait for the
+ * ended notification.
+ */
 void OperationMonitor::cancel ()
 {
 	synchronized (mutex)
 		canceled=true;
 }
 
+/**
+ * Determines whether the operation has been canceled.
+ *
+ * @return true if the operation has been canceled, false if not
+ */
 bool OperationMonitor::isCanceled ()
 {
 	synchronizedReturn (mutex, canceled);

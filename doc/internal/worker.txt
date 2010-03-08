@@ -28,7 +28,8 @@ In the slot, the OperationMonitorInterface for the monitor is created and
 passed to the backend method. The interface is destroyed when the method
 returns, signaling the monitor the end of the operation (RAII pattern). If the
 backend method does not take a monitor interface, the interface is created and
-stored in a local variable (otherwise, it would be destroyed immediately).
+stored in a local variable (otherwise, it would be destroyed immediately). See
+also the OperationMonitor class documentation.
 
 The caller of the asynchronous method must not destroy the returner and the
 monitor until the operation has finished. The operation can be canceled (if

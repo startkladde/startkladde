@@ -10,6 +10,13 @@
 
 const OperationMonitorInterface OperationMonitorInterface::null (NULL);
 
+/**
+ * Destroys the interface and decrements the reference count
+ *
+ * If the reference count is 1 (only the master copy is left), the end of the
+ * operation is signaled to the monitor. If the reference count is 0 (the
+ * master copy has been destroyed), the shared data is deleted.
+ */
 OperationMonitorInterface::~OperationMonitorInterface ()
 {
 //	std::cout << "-interface" << std::endl;
@@ -23,6 +30,8 @@ OperationMonitorInterface::~OperationMonitorInterface ()
 	}
 	else if (newRefCount==0)
 	{
+		// There may be a race condition here if a new instance is created at
+		// this point (see also #OperationMonitorInterface and operator=).
 		delete refCount;
 	}
 }
@@ -67,6 +76,13 @@ OperationMonitorInterface::OperationMonitorInterface (OperationMonitor *monitor)
 //	std::cout << "+interface" << std::endl;
 }
 
+/**
+ * Sets the status of the operation by calling the setStatus method of the
+ * monitor
+ *
+ * @param text the status
+ * @param checkCanceled whether to call checkCanceled
+ */
 void OperationMonitorInterface::status (const QString &text, bool checkCanceled)
 {
 	if (monitor)
@@ -77,11 +93,25 @@ void OperationMonitorInterface::status (const QString &text, bool checkCanceled)
 	}
 }
 
+/**
+ * An overloaded version of status(const QString&, bool). status is interpreted
+ * as utf8.
+ */
 void OperationMonitorInterface::status (const char *text, bool checkCanceled)
 {
 	status (utf8 (text), checkCanceled);
 }
 
+/**
+ * Sets the progress and the maximum progress of the operation by calling the
+ * setProgress method of the monitor
+ *
+ * @param progress the current progress of the operation; should not be larger
+ *                 than maxProgress
+ * @param maxProgress the maximum progress of the operation
+ * @param status the status of the operation (see #status) (optional)
+ * @param checkCanceled whether to call checkCanceled
+ */
 void OperationMonitorInterface::progress (int progress, int maxProgress, const QString &status, bool checkCanceled)
 {
 	if (monitor)
@@ -92,6 +122,10 @@ void OperationMonitorInterface::progress (int progress, int maxProgress, const Q
 	}
 }
 
+/**
+ * An overloaded version of progress(int, int, const QString&, bool). status
+ * is interpreted as utf8.
+ */
 void OperationMonitorInterface::progress (int progress, int maxProgress, const char *status, bool checkCanceled)
 {
 	if (status)
@@ -101,7 +135,11 @@ void OperationMonitorInterface::progress (int progress, int maxProgress, const c
 }
 
 /**
- * Can be called manually, or is called automatically when only 1 reference is left.
+ * Signals the end of the operation by calling the setEnded method of the
+ * monitor
+ *
+ * Can be called manually, or is called automatically when only 1 reference is
+ * left.
  */
 void OperationMonitorInterface::ended ()
 {
@@ -109,6 +147,11 @@ void OperationMonitorInterface::ended ()
 		monitor->setEnded ();
 }
 
+/**
+ * Determines whether the operation has been canceled
+ *
+ * @return true if the operation has been canceled, false if not
+ */
 bool OperationMonitorInterface::canceled ()
 {
 	if (monitor)
@@ -117,6 +160,11 @@ bool OperationMonitorInterface::canceled ()
 		return false;
 }
 
+/**
+ * Throws an OperationCanceledException if the operation has been canceled
+ *
+ * This is also called by #progress and #status by default
+ */
 void OperationMonitorInterface::checkCanceled ()
 {
 	if (canceled ())

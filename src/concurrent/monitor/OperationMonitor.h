@@ -21,6 +21,12 @@ class QAtomicInt;
  * A class that allows monitoring and canceling an operation, typically running
  * in a different task
  *
+ * An operation has:
+ *   - a status: a string
+ *   - a progress: a progress value and a maxProgress value; progress==
+ *     maxProgress==0 means "no progress information" - GUIs may display a
+ *     "busy" indicator in this case
+ *
  * The operation accesses the task through its OperationMonitorInterface.
  *
  * How to use:
@@ -28,9 +34,9 @@ class QAtomicInt;
  *   {
  * 		returnOrException (returner, actualOperation (monitor->interface ()));
  *   }
- * The interface is passed by copy. After the last copy is destroyed, the end
- * of the operation is signaled to the monitor, as if interface.ended () had
- * been called.
+ * The interface is passed by copy. After the last copy (except the master copy
+ * in the monitor) is destroyed, the end of the operation is signaled to the
+ * monitor, as if interface.ended () had been called.
  *
  * When using with an operation that does not take an OperationMonitorInterface,
  * it still has to be fetched and destroyed at the correct time to signal the
@@ -41,6 +47,8 @@ class QAtomicInt;
  * 		returnOrException (returner, actualOperation);
  *   }
  * See, for example, ThreadSafeInterface::asyncOpen.
+ *
+ * This class is thread safe.
  */
 class OperationMonitor
 {
@@ -53,7 +61,6 @@ class OperationMonitor
 
 		// ** Getting the interface
 		virtual OperationMonitorInterface interface ();
-		virtual operator OperationMonitorInterface ();
 
 		// ** Operation control
 		/** Signals the operation to cancel */
