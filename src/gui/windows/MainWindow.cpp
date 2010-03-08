@@ -74,7 +74,6 @@ MainWindow::MainWindow (QWidget *parent) :
 	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
 	proxyModel->setDynamicSortFilter (true);
 
-	setDatabaseActionsEnabled (false);
 
 	readSettings ();
 
@@ -102,6 +101,8 @@ MainWindow::MainWindow (QWidget *parent) :
 	// Do this before calling connect
 	QObject::connect (&dbManager.getCache (), SIGNAL (changed (Db::Event::DbEvent)), this, SLOT (cacheChanged (Db::Event::DbEvent)));
 
+	setNotConnected ();
+	// TODO to "shown"?
 	QTimer::singleShot (0, this, SLOT (on_actionConnect_triggered ()));
 
 	setDisplayDateCurrent (true);
@@ -1280,16 +1281,22 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 
 void MainWindow::on_actionConnect_triggered ()
 {
+	setConnecting ();
 	if (dbManager.connect (this))
 	{
 		refreshFlights ();
+		setConnected ();
 		setDatabaseActionsEnabled (true);
+	}
+	else
+	{
+		setNotConnected ();
 	}
 }
 
 void MainWindow::on_actionDisconnect_triggered ()
 {
-	setDatabaseActionsEnabled (false);
+	setNotConnected ();
 	dbManager.getCache ().clear ();
 	flightList->clear ();
 	dbManager.getInterface ().close ();
@@ -1419,6 +1426,44 @@ void MainWindow::setDatabaseActionsEnabled (bool enabled)
 	ui.actionConnect    ->setEnabled (!enabled);
 	ui.actionDisconnect ->setEnabled ( enabled);
 }
+
+void MainWindow::setNotConnected ()
+{
+	ui.databaseStateLabel->setText ("Getrennt");
+
+	setDatabaseActionsEnabled (false);
+
+	ui.flightTable->setVisible (false);
+	ui.flightTable->setEnabled (false);
+
+	ui.notConnectedPane->setVisible (true);
+}
+
+void MainWindow::setConnected ()
+{
+	ui.databaseStateLabel->setText ("OK");
+
+	setDatabaseActionsEnabled (false);
+
+	ui.flightTable->setVisible (true);
+	ui.flightTable->setEnabled (true);
+
+	ui.notConnectedPane->setVisible (false);
+}
+
+void MainWindow::setConnecting ()
+{
+	ui.databaseStateLabel->setText ("Verbindung wird aufgebaut...");
+
+	setDatabaseActionsEnabled (false);
+
+	ui.flightTable->setVisible (true);
+	ui.flightTable->setEnabled (false);
+
+	ui.notConnectedPane->setVisible (false);
+}
+
+
 
 void MainWindow::closeDatabase ()
 {

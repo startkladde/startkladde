@@ -108,6 +108,9 @@ class MainWindow: public QMainWindow
 		// Database connection management
 		void closeDatabase ();
 		void setDatabaseActionsEnabled (bool enabled);
+		void setNotConnected ();
+		void setConnected ();
+		void setConnecting ();
 
 
 	protected slots:
@@ -184,6 +187,9 @@ class MainWindow: public QMainWindow
 		void on_flightTable_activated (const QModelIndex &index);
 		void flightTable_buttonClicked (QPersistentModelIndex proxyIndex); // TODO const &, remove dependency
 		void flightTable_horizontalHeader_sectionClicked (int index) { sortByColumn (index); }
+
+		// Not connected pane
+		void on_connectButton_clicked () { on_actionConnect_triggered (); }
 
 		// Flight manipulation
 		bool checkPlaneFlying (dbId id, const QString &description);
