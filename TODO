@@ -23,7 +23,6 @@ Database notes:
  * Improvements:
  *   - Add a ResultConsumer as alternative to passing a result (especially for
  *     CopiedResult)
- *   - allow specifying an "exclude" value to selectDistinctColumns (what for?)
  *   - move specialized queries generation to model classes (e. g. flight prepared)
  *     (but need after-filter)
  *   - Flight should be an entity
@@ -148,6 +147,9 @@ UI:
 * Find flights (dates) by registration
 * Flight editor: double click error list, jump to widget
 * Show depart/land now/later when editing flight?
+* When there is no self launch, towflights are red (that's correct). When a
+  self launch is added, the flight table has to be refreshed before it
+  gets green
 
 Database:
 * Add indexes

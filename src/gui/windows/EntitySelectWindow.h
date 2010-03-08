@@ -1,3 +1,9 @@
+/*
+ * TODO: remake
+ *   - name ObjectSelectWindow
+ *   - use GUI designer (see ObjectListWindow for template vs. QObject)
+ *   - move implementation to .cpp and instantiate
+ */
 #ifndef ENTITYSELECTWINDOW_H_
 #define ENTITYSELECTWINDOW_H_
 
@@ -15,7 +21,6 @@
 enum selection_result { sr_cancelled, sr_ok, sr_new, sr_unknown, sr_none_selected };
 
 // TODO setRootDecorated (false)
-// TODO alternatingRowColors
 
 /*
  * The helper classes for using slots and signals with the template class
@@ -252,7 +257,9 @@ template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QS
 
 	SkTreeWidgetItem *last_item;
 	unknown_item=last_item=new SkTreeWidgetItem (list, "(Unbekannt)");
+	unknown_item->setFirstColumnSpanned (true);
 	new_item=last_item=new SkTreeWidgetItem (list, last_item, "(Neu anlegen)");
+	new_item->setFirstColumnSpanned (true);
 
 	list->setCurrentItem (unknown_item);
 
@@ -264,6 +271,13 @@ template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QS
 		if (!idInvalid (preselected) && it.getId ()==preselected)
 			list->setCurrentItem (last_item);
 	}
+
+	list->setAlternatingRowColors (true);
+
+	// Resize all columns to their contents
+	int numColumns=list->columnCount ();
+	for (int i=0; i<numColumns; ++i)
+		list->resizeColumnToContents (i);
 
 	int result=exec ();
 

@@ -53,7 +53,8 @@ namespace Db
 		 *
 		 * This class is thread safe, provided that the database is thread safe
 		 * (that is, accesses to the database are not synchronized). Note,
-		 * however, that the mutex used to protect access do the data is
+		 * however, that the mutex u *   - allow specifying an "exclude" value to selectDistinctColumns (what for?)
+		 * sed to protect access do the data is
 		 * recursive, that is, care should be taken when accessing the cache
 		 * from a function that is called by a method of the cache. This also
 		 * includes directly called signals.
@@ -96,9 +97,7 @@ namespace Db
 				template<class T> T getObject (dbId id);
 				template<class T> T* getNewObject (dbId id);
 				template<class T> bool objectExists (dbId id);
-
-				// TODO template
-				QList<Person> getPeople (const QList<dbId> &ids);
+				template<class T> QList<T> getObjects (const QList<dbId> &ids, bool ignoreNotFound);
 
 
 				// *** Object lookup

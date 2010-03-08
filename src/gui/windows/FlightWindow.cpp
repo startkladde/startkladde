@@ -1330,7 +1330,7 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 	// (case 1)
 
 	// Get all matching people (candidates) from the database
-	QList<Person> people=cache.getPeople (candidates);
+	QList<Person> people=cache.getObjects<Person> (candidates, true);
 
 	// Determine the preselected person
 	dbId preselectionId=0;

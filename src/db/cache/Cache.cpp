@@ -249,13 +249,21 @@ namespace Db
 			return false;
 		}
 
-		// TODO template
-		QList<Person> Cache::getPeople (const QList<dbId> &ids)
+		template<class T> QList<T> Cache::getObjects (const QList<dbId> &ids, bool ignoreNotFound)
 		{
-			QList<Person> result;
+			QList<T> result;
 
 			foreach (dbId id, ids)
-				result.append (getObject<Person> (id));
+			{
+				try
+				{
+					result.append (getObject<T> (id));
+				}
+				catch (NotFoundException)
+				{
+					if (!ignoreNotFound) throw;
+				}
+			}
 
 			return result;
 		}
@@ -794,6 +802,7 @@ namespace Db
 #		define INSTANTIATE_TEMPLATES(T) \
 			template T  Cache::getObject    (dbId id); \
 			template T *Cache::getNewObject (dbId id); \
+			template QList<T> Cache::getObjects (const QList<dbId> &ids, bool ignoreNotFound); \
 			// Empty line
 
 #		define INSTANTIATE_NON_FLIGHT_TEMPLATES(T) \
