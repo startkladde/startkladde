@@ -134,12 +134,12 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	widgetLabelMap.insert (ui.towpilotFirstNameInput   , ui.towpilotFirstNameLabel);
 	widgetLabelMap.insert (ui.towflightModeInput       , ui.towflightModeLabel);
 	//
-	widgetLabelMap.insert (ui.launchTimeCheckbox, ui.launchTimeLabel);
-	widgetLabelMap.insert (ui.launchTimeInput, ui.launchTimeLabel);
-	widgetLabelMap.insert (ui.landingTimeCheckbox, ui.landingTimeLabel);
-	widgetLabelMap.insert (ui.landingTimeInput, ui.landingTimeLabel);
+	widgetLabelMap.insert (ui.departureTimeCheckbox,        ui.departureTimeLabel);
+	widgetLabelMap.insert (ui.departureTimeInput,           ui.departureTimeLabel);
+	widgetLabelMap.insert (ui.landingTimeCheckbox,          ui.landingTimeLabel);
+	widgetLabelMap.insert (ui.landingTimeInput,             ui.landingTimeLabel);
 	widgetLabelMap.insert (ui.towflightLandingTimeCheckbox, ui.towflightLandingTimeLabel);
-	widgetLabelMap.insert (ui.towflightLandingTimeInput, ui.towflightLandingTimeLabel);
+	widgetLabelMap.insert (ui.towflightLandingTimeInput,    ui.towflightLandingTimeLabel);
 	//
 	widgetLabelMap.insert (ui.departureLocationInput       , ui.departureLocationLabel);
 	widgetLabelMap.insert (ui.landingLocationInput         , ui.landingLocationLabel);
@@ -669,7 +669,7 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 
 	// space
 
-	personToFields (flight.pilotId    , ui.pilotLastNameInput  , ui.pilotFirstNameInput  , flight.pilotLastName, flight.pilotFirstName);
+	personToFields (flight.pilotId  , ui.pilotLastNameInput  , ui.pilotFirstNameInput  , flight.pilotLastName  , flight.pilotFirstName  );
 	personToFields (flight.copilotId, ui.copilotLastNameInput, ui.copilotFirstNameInput, flight.copilotLastName, flight.copilotFirstName);
 
 	// space
@@ -678,8 +678,8 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 
 	// Launch method: on repeating a flight, the launch method is not copied because
 	// it may be different from before (different winch). An exception is self
-	// launch becaus it is unlikely that a plane which did a self launch will
-	// use another type of launch later.
+	// launch because it is unlikely that a plane which did a self launch will
+	// use another launch method later.
 	bool copyLaunchMethod=!repeat;
 
 	try
@@ -706,12 +706,12 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 
 	if (!repeat)
 	{
-		ui.          launchTimeCheckbox->setChecked (getTimeFieldCheckboxValue (flight.departed   ));
+		ui.       departureTimeCheckbox->setChecked (getTimeFieldCheckboxValue (flight.departed   ));
 		ui.         landingTimeCheckbox->setChecked (getTimeFieldCheckboxValue (flight.landed    ));
 		ui.towflightLandingTimeCheckbox->setChecked (getTimeFieldCheckboxValue (flight.towflightLanded));
 
-		ui.          launchTimeInput->setTime (flight.departureTime                .get_qtime (tz_utc)); // Even if not active
-		ui.         landingTimeInput->setTime (flight.landingTime                .get_qtime (tz_utc)); // Even if not active
+		ui.       departureTimeInput->setTime (flight.departureTime       .get_qtime (tz_utc)); // Even if not active
+		ui.         landingTimeInput->setTime (flight.landingTime         .get_qtime (tz_utc)); // Even if not active
 		ui.towflightLandingTimeInput->setTime (flight.towflightLandingTime.get_qtime (tz_utc)); // Even if not active
 	}
 
@@ -753,16 +753,16 @@ Flight FlightWindow::determineFlightBasic () throw ()
 	// Copilot: may have to query user
 	//
 	if (isFlightModeActive                   ()) flight.mode              =getCurrentFlightMode ();
-	if (isLaunchMethodActive                 ()) flight.launchMethodId      =getCurrentLaunchMethodId ();
+	if (isLaunchMethodActive                 ()) flight.launchMethodId    =getCurrentLaunchMethodId ();
 	//
 	// Towplane registration: may have to query user
 	// Towpilot: may have to query user
 	if (isTowflightModeActive                ()) flight.towflightMode          =getCurrentTowflightMode ();
 	//
-	if (isLaunchActive                       ()) flight.departed          =isLaunchTimeActive ();
+	if (isDepartureActive                    ()) flight.departed         =isDepartureTimeActive ();
 	if (isLandingActive                      ()) flight.landed           =isLandingTimeActive ();
-	if (isTowflightLandingActive             ()) flight.towflightLanded       =isTowflightLandingTimeActive ();
-	// Launch time: set with date
+	if (isTowflightLandingActive             ()) flight.towflightLanded  =isTowflightLandingTimeActive ();
+	// Departure time: set with date
 	// Landing time: set with date
 	// Towflight landing time: set with date
 	//
@@ -779,8 +779,8 @@ Flight FlightWindow::determineFlightBasic () throw ()
 	// Setting the times requires combining the date and time fields
 	QDate date= (isDateActive()) ? (getCurrentDate ()) : QDate::currentDate ();
 #define SET_TIME(active, target, value) do { if (active) target.set_to (date, value, /*tz_utc, */true); else target.set_null (); } while (0)
-	SET_TIME (isLaunchTimeActive           (), flight.departureTime,                 getCurrentLaunchTime           ());
-	SET_TIME (isLandingTimeActive          (), flight.landingTime,                 getCurrentLandingTime          ());
+	SET_TIME (isDepartureTimeActive        (), flight.departureTime,        getCurrentDepartureTime           ());
+	SET_TIME (isLandingTimeActive          (), flight.landingTime,          getCurrentLandingTime          ());
 	SET_TIME (isTowflightLandingTimeActive (), flight.towflightLandingTime, getCurrentTowflightLandingTime ());
 #undef SET_TIME
 
@@ -798,7 +798,7 @@ void FlightWindow::errorCheck (const QString &problem, QWidget *widget)
 	}
 }
 
-void FlightWindow::checkFlightPhase1 (const Flight &flight, bool launchNow)
+void FlightWindow::checkFlightPhase1 (const Flight &flight, bool departNow)
 	throw (FlightWindow::AbortedException)
 {
 	// Phase 1: plane determined, towplane and people not determined
@@ -806,7 +806,7 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool launchNow)
 	// Note that we use the values from the passed flight, not from the editor
 	// fields.
 
-	if ((launchNow || flight.departed) && flight.departsHere () && idInvalid (flight.launchMethodId))
+	if ((departNow || flight.departed) && flight.departsHere () && idInvalid (flight.launchMethodId))
 		errorCheck ("Es wurde keine Startartart angegeben.",
 			ui.launchMethodInput);
 
@@ -847,7 +847,7 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool launchNow)
 			ui.towflightLandingTimeInput);
 }
 
-void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, const Plane *plane, const Plane *towplane, const LaunchMethod *launchMethod)
+void FlightWindow::checkFlightPhase2 (const Flight &flight, bool departNow, const Plane *plane, const Plane *towplane, const LaunchMethod *launchMethod)
 	throw (FlightWindow::AbortedException)
 {
 	// Phase 2: plane and towplane determined, people not determined
@@ -878,7 +878,7 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, cons
 		(plane->category==Plane::categoryAirplane || plane->category==Plane::categoryUltralight) && launchMethod->type!=LaunchMethod::typeSelf)
 		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Motorflugzeug.\nEs wurden jedoch eine andere Startart als \"Selbststart\" angegeben.")
 			.arg (plane->registration).arg (plane->type),
-			ui.launchTimeInput);
+			ui.departureTimeInput);
 
 	if (plane && launchMethod &&
 		plane->numSeats==1 && (flight.type==Flight::typeGuestPrivate || flight.type==Flight::typeGuestExternal) && launchMethod->type!=LaunchMethod::typeSelf)
@@ -898,18 +898,18 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool launchNow, cons
 			.arg (plane->registration).arg (plane->type),
 			ui.towplaneRegistrationInput);
 
-	if (plane && launchNow && idValid (cache.planeFlying (plane->getId ())))
+	if (plane && departNow && idValid (cache.planeFlying (plane->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt das Flugzeug %1 noch.")
 			.arg (plane->registration),
 			ui.registrationInput);
 
-	if (towplane && launchNow && idValid (cache.planeFlying (towplane->getId ())))
+	if (towplane && departNow && idValid (cache.planeFlying (towplane->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt das Schleppflugzeug %1 noch.")
 			.arg (towplane->registration),
 			ui.registrationInput);
 }
 
-void FlightWindow::checkFlightPhase3 (const Flight &flight, bool launchNow, const Plane *plane, const Person *pilot, const Person *copilot, const Person *towpilot)
+void FlightWindow::checkFlightPhase3 (const Flight &flight, bool departNow, const Plane *plane, const Person *pilot, const Person *copilot, const Person *towpilot)
 	throw (FlightWindow::AbortedException)
 {
 	// Phase 3: plane, towplane and people determined
@@ -938,19 +938,19 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool launchNow, cons
 		ui.registrationInput);
 
 	// TODO use Flight::pilotDescription and Person::fullName
-	if (pilot && launchNow && idValid (cache.personFlying (pilot->getId ())))
+	if (pilot && departNow && idValid (cache.personFlying (pilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Pilot %1 %2 noch.")
 			.arg (pilot->firstName).arg (pilot->lastName),
 			ui.pilotLastNameInput);
 
 	// TODO use Flight::copilotDescription and Person::fullName
-	if (copilot && launchNow && idValid (cache.personFlying (copilot->getId ())))
+	if (copilot && departNow && idValid (cache.personFlying (copilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Begleiter %1 %2 noch.")
 			.arg (copilot->firstName).arg (copilot->lastName),
 			ui.copilotLastNameInput);
 
 	// TODO use Flight::towpilotDescription and Person::fullName
-	if (towpilot && launchNow && idValid (cache.personFlying (towpilot->getId ())))
+	if (towpilot && departNow && idValid (cache.personFlying (towpilot->getId ())))
 		errorCheck (QString ("Laut Datenbank fliegt der Schlepppilot %1 %2 noch.")
 			.arg (towpilot->firstName).arg (towpilot->lastName),
 			ui.towpilotLastNameInput);
@@ -1028,7 +1028,7 @@ void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *la
  *         been confirmed by the user
  * @throw AbortedException if the user aborts on data input or warning
  */
-Flight FlightWindow::determineFlight (bool launchNow)
+Flight FlightWindow::determineFlight (bool departNow)
 	throw (FlightWindow::AbortedException)
 {
 	/*
@@ -1051,7 +1051,7 @@ Flight FlightWindow::determineFlight (bool launchNow)
 
 		launchMethod=cache.getNewObject<LaunchMethod> (flight.launchMethodId);
 
-		checkFlightPhase1 (flight, launchNow);
+		checkFlightPhase1 (flight, departNow);
 
 		// Phase 2: planes
 		determineFlightPlanes (flight);
@@ -1059,7 +1059,7 @@ Flight FlightWindow::determineFlight (bool launchNow)
 		plane   =cache.getNewObject<Plane> (flight.planeId);
 		towplane=cache.getNewObject<Plane> (flight.towplaneId);
 
-		checkFlightPhase2 (flight, launchNow, plane, towplane, launchMethod);
+		checkFlightPhase2 (flight, departNow, plane, towplane, launchMethod);
 
 		// Phase 3: people
 		determineFlightPeople (flight, launchMethod);
@@ -1068,7 +1068,7 @@ Flight FlightWindow::determineFlight (bool launchNow)
 		copilot =cache.getNewObject<Person> (flight.copilotId);
 		towpilot=cache.getNewObject<Person> (flight.towpilotId );
 
-		checkFlightPhase3 (flight, launchNow, plane, pilot, copilot, towpilot);
+		checkFlightPhase3 (flight, departNow, plane, pilot, copilot, towpilot);
 
 		return flight;
 	}
@@ -1473,7 +1473,7 @@ bool FlightWindow::isNowActionPossible ()
 
 	if (mode!=modeCreate) return false;
 
-	if (isLaunchTimeActive ()) return false;
+	if (isDepartureTimeActive ()) return false;
 	if (isLandingTimeActive ()) return false;
 	if (isTowflightLandingTimeActive ()) return false;
 
@@ -1515,8 +1515,8 @@ void FlightWindow::disableWidgets (QWidget *widget0, QWidget *widget2, bool disa
 // ******************************
 
 // TODO rename to departureTime
-const QString textLaunchTimeAutomatic           =utf8 ("Automati&sch");
-const QString textLaunchTimeLaunched            =utf8 ("Ge&startet"  );
+const QString textDepartureTimeAutomatic        =utf8 ("Automati&sch");
+const QString textDepartureTimeDeparted         =utf8 ("Ge&startet"  );
 const QString textLandingTimeAutomatic          =utf8 ("&Automatisch");
 const QString textLandingTimeLanded             =utf8 ("Gel&andet"   );
 const QString textTowflightLandingTimeAutomatic =utf8 ("Au&tomatisch");
@@ -1525,8 +1525,8 @@ const QString textTowflightLandingTimeEnded     =utf8 ("Beende&t"    );
 const QString textTowflightLandingTime          =utf8 ("Landezeit Schl&eppflugzeug:");
 const QString textTowflightEnd                  =utf8 ("Schl&eppende:");
 const QString textButtonOk                      =utf8 ("&OK");
-const QString textButtonLaunchNow               =utf8 ( "&Jetzt starten");
-const QString textButtonLaunchLater             =utf8 ("S&päter starten");
+const QString textButtonDepartNow               =utf8 ( "&Jetzt starten");
+const QString textButtonDepartLater             =utf8 ("S&päter starten");
 const QString textButtonLandNow                 =utf8 ( "&Jetzt landen");
 const QString textButtonLandLater               =utf8 ("S&päter landen");
 
@@ -1555,7 +1555,7 @@ const QString textButtonLandLater               =utf8 ("S&päter landen");
  *     is probably not worth the work.
  *   - State updates are grouped by widget, not by cause, because some widgets
  *     are affected by multiple causes (e. g. tow flight landing time: by
- *     flightMode.startsHere and launchMethod.isAirtow)
+ *     flightMode.departsHere and launchMethod.isAirtow)
  */
 
 void FlightWindow::updateSetupVisibility ()
@@ -1575,8 +1575,8 @@ void FlightWindow::updateSetupVisibility ()
 	enableWidgets (ui.towpilotFirstNameInput, ui.towpilotLastNameInput , isTowpilotActive                     ());
 	enableWidget  (ui.towflightModeInput                               , isTowflightModeActive                ());
 	//
-	enableWidget (ui.launchTimeCheckbox                                , isLaunchActive                       ());
-	ui.launchTimeInput->setVisible                                      (isLaunchTimeActive                   ());
+	enableWidget (ui.departureTimeCheckbox                             , isDepartureActive                    ());
+	ui.departureTimeInput->setVisible                                   (isDepartureTimeActive                ());
 	enableWidget (ui.landingTimeCheckbox                               , isLandingActive                      ());
 	ui.landingTimeInput->setVisible                                     (isLandingTimeActive                  ());
 	enableWidget (ui.towflightLandingTimeCheckbox                      , isTowflightLandingActive             ());
@@ -1584,7 +1584,7 @@ void FlightWindow::updateSetupVisibility ()
 	//
 	//departureLocationInput - always visible
 	//landingLocationInput - always visible
-	enableWidget (ui.towflightLandingLocationInput,                      isTowflightLandingLocationActive ());
+	enableWidget (ui.towflightLandingLocationInput,                      isTowflightLandingLocationActive     ());
 	//numLandingsInput - always visible
 	//
 	//commentInput - always visible
@@ -1599,13 +1599,13 @@ void FlightWindow::updateSetupLabels ()
 	{
 		case modeCreate:
 			// In create mode, we have "Automatic" checkboxes
-			ui.          launchTimeCheckbox->setText (textLaunchTimeAutomatic);
+			ui.          departureTimeCheckbox->setText (textDepartureTimeAutomatic);
 			ui.         landingTimeCheckbox->setText (textLandingTimeAutomatic);
 			ui.towflightLandingTimeCheckbox->setText (textTowflightLandingTimeAutomatic);
 			break;
 		case modeEdit:
-			// In edit mode, we have "Launched"/"Landed" checkboxes
-			ui.          launchTimeCheckbox->setText (textLaunchTimeLaunched);
+			// In edit mode, we have "Departed"/"Landed" checkboxes
+			ui.          departureTimeCheckbox->setText (textDepartureTimeDeparted);
 			ui.         landingTimeCheckbox->setText (textLandingTimeLanded);
 			ui.towflightLandingTimeCheckbox->setText (currentTowLandsHere ()?textTowflightLandingTimeLanded:textTowflightLandingTimeEnded);
 			break;
@@ -1620,12 +1620,12 @@ void FlightWindow::updateSetupLabels ()
 void FlightWindow::updateSetupButtons ()
 {
 	bool nowPossible=isNowActionPossible ();
-	if (nowPossible && currentStartsHere ())
+	if (nowPossible && currentDepartsHere ())
 	{
-		// Launch now/later
+		// Depart now/later
 		ui.nowButton->setVisible(true);
-		ui.nowButton->setText (textButtonLaunchNow);
-		ui.okButton->setText (textButtonLaunchLater);
+		ui.nowButton->setText (textButtonDepartNow);
+		ui.okButton->setText (textButtonDepartLater);
 	}
 	else if (nowPossible && currentLandsHere ())
 	{
@@ -1837,8 +1837,8 @@ void FlightWindow::towflightLandingTimeCheckboxChanged (bool checked)
 
 void FlightWindow::on_okButton_clicked()
 {
-	// The "launch later"/"land later"/"ok" button was pressed. Check and store
-	// the flight without launching it.
+	// The "depart later"/"land later"/"ok" button was pressed. Check and store
+	// the flight without departing it.
 
 	try
 	{
@@ -1860,7 +1860,7 @@ void FlightWindow::on_nowButton_clicked ()
 
 		// If we are not in create mode, the date is not today or the auto
 		// fields are not checked, the button is not visible at all.
-		if (currentStartsHere ())
+		if (currentDepartsHere ())
 		{
 			flight.departed=true;
 			flight.departureTime.set_current (true);

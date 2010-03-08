@@ -368,7 +368,7 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="separator"/>
-    <addaction name="actionStart"/>
+    <addaction name="actionDepart"/>
     <addaction name="actionLand"/>
     <addaction name="actionTouchngo"/>
     <addaction name="separator"/>
@@ -572,7 +572,7 @@
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionStart">
+  <action name="actionDepart">
    <property name="text">
     <string>&amp;Starten</string>
    </property>

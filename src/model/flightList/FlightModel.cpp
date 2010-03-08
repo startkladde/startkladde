@@ -86,7 +86,7 @@ QString FlightModel::columnName (int columnIndex) const
 		case 3: return "pilot";
 		case 4: return "copilot";
 		case 5: return "launchMethod";
-		case 6: return "launchTime";
+		case 6: return "departureTime";
 		case 7: return "landingTime";
 		case 8: return "flightDuration";
 		case 9: return "numLandings";
@@ -118,7 +118,7 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 			case 3: return pilotData (flight, role);
 			case 4: return copilotData (flight, role);
 			case 5: return launchMethodData (flight, role);
-			case 6: return launchTimeData (flight, role);
+			case 6: return departureTimeData (flight, role);
 			case 7: return landingTimeData (flight, role);
 			case 8: return durationData (flight, role);
 			case 9: return flight.numLandings;
@@ -148,13 +148,13 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 	}
 	else if (role==isButtonRole)
 	{
-		if      (column==launchButtonColumn ()) { return flight.canDepart (); }
+		if      (column==departButtonColumn ()) { return flight.canDepart (); }
 		else if (column==  landButtonColumn ()) { return flight.canLand (); }
 		else return false;
 	}
 	else if (role==buttonTextRole)
 	{
-		if (column==launchButtonColumn ())
+		if (column==departButtonColumn ())
 			return "Starten";
 		else if (column==landButtonColumn ())
 		{
@@ -265,7 +265,7 @@ QVariant FlightModel::launchMethodData (const Flight &flight, int role) const
 	}
 }
 
-QVariant FlightModel::launchTimeData (const Flight &flight, int role) const
+QVariant FlightModel::departureTimeData (const Flight &flight, int role) const
 {
 	(void)role;
 

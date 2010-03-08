@@ -610,7 +610,7 @@ bool MainWindow::checkPersonFlying (dbId id, const QString &description)
 	return true;
 }
 
-void MainWindow::startFlight (dbId id)
+void MainWindow::departFlight (dbId id)
 {
 	// TODO display message
 	if (idInvalid (id)) return;
@@ -650,7 +650,7 @@ void MainWindow::startFlight (dbId id)
 	}
 	catch (Cache::NotFoundException &ex)
 	{
-		log_error (QString ("Flight %1 not found in MainWindow::startFlight").arg (ex.id));
+		log_error (QString ("Flight %1 not found in MainWindow::departFlight").arg (ex.id));
 	}
 }
 
@@ -715,10 +715,10 @@ void MainWindow::on_actionNew_triggered ()
 	FlightWindow::createFlight (this, dbManager, getNewFlightDate ());
 }
 
-void MainWindow::on_actionStart_triggered ()
+void MainWindow::on_actionDepart_triggered ()
 {
-	// This will check canStart
-	startFlight (currentFlightId ());
+	// This will check canDepart
+	departFlight (currentFlightId ());
 }
 
 void MainWindow::on_actionLand_triggered ()
@@ -1050,7 +1050,7 @@ void MainWindow::keyPressEvent (QKeyEvent *e)
 		case Qt::Key_F2:  if (databaseActionsEnabled) ui.actionNew          ->trigger (); break;
 		case Qt::Key_F3:  if (databaseActionsEnabled) ui.actionRepeat       ->trigger (); break;
 		case Qt::Key_F4:  if (databaseActionsEnabled) ui.actionEdit         ->trigger (); break;
-		case Qt::Key_F5:  if (databaseActionsEnabled) ui.actionStart        ->trigger (); break;
+		case Qt::Key_F5:  if (databaseActionsEnabled) ui.actionDepart       ->trigger (); break;
 		case Qt::Key_F6:  if (databaseActionsEnabled) ui.actionLand         ->trigger (); break;
 		case Qt::Key_F7:  if (databaseActionsEnabled) ui.actionTouchngo     ->trigger (); break;
 		case Qt::Key_F8:  if (databaseActionsEnabled) ui.actionDelete       ->trigger (); break;
@@ -1092,7 +1092,7 @@ void MainWindow::on_flightTable_customContextMenuRequested (const QPoint &pos)
 	{
 		contextMenu->addAction (ui.actionNew);
 		contextMenu->addSeparator ();
-		contextMenu->addAction (ui.actionStart);
+		contextMenu->addAction (ui.actionDepart);
 		contextMenu->addAction (ui.actionLand);
 		contextMenu->addAction (ui.actionTouchngo);
 		contextMenu->addSeparator ();
@@ -1127,8 +1127,8 @@ void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
 //		.arg (flight.id)
 //		<< std::endl;
 
-	if (flightListIndex.column () == flightModel->launchButtonColumn ())
-		startFlight (flight.getId ());
+	if (flightListIndex.column () == flightModel->departButtonColumn ())
+		departFlight (flight.getId ());
 	else if (flightListIndex.column () == flightModel->landButtonColumn ())
 	{
 		if (flight.isTowflight ())
@@ -1436,7 +1436,7 @@ void MainWindow::setDatabaseActionsEnabled (bool enabled)
 	ui.actionRefreshTable           ->setEnabled (enabled);
 	ui.actionRepeat                 ->setEnabled (enabled);
 	ui.actionSetDisplayDate         ->setEnabled (enabled);
-	ui.actionStart                  ->setEnabled (enabled);
+	ui.actionDepart                 ->setEnabled (enabled);
 	ui.actionTouchngo               ->setEnabled (enabled);
 
 	// Connect/disconnect are special

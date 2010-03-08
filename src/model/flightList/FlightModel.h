@@ -30,7 +30,7 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 		virtual QVariant displayHeaderData (int column) const;
 		virtual QVariant data (const Flight &flight, int column, int role=Qt::DisplayRole) const;
 
-		virtual int launchButtonColumn () const { return 6; }
+		virtual int departButtonColumn () const { return 6; }
 		virtual int landButtonColumn () const { return 7; }
 		virtual int durationColumn () const { return 8; }
 
@@ -43,7 +43,7 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 		virtual QVariant pilotData (const Flight &flight, int role) const;
 		virtual QVariant copilotData (const Flight &flight, int role) const;
 		virtual QVariant launchMethodData (const Flight &flight, int role) const;
-		virtual QVariant launchTimeData (const Flight &flight, int role) const;
+		virtual QVariant departureTimeData (const Flight &flight, int role) const;
 		virtual QVariant landingTimeData (const Flight &flight, int role) const;
 		virtual QVariant durationData (const Flight &flight, int role) const;
 

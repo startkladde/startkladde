@@ -178,9 +178,9 @@ namespace Db
 	QList<Flight> Database::getPreparedFlights ()
 	{
 		// The correct criterion for prepared flights is:
-		// !((starts_here and started) or (lands_here and landed))
+		// !((departs_here and departed) or (lands_here and landed))
 		// Resolving the flight mode, we get:
-		// !( (local and (started or landed)) or (leaving and started) or (coming and landed) )
+		// !( (local and (departed or landed)) or (leaving and departed) or (coming and landed) )
 
 		// TODO to Flight
 		// TODO multi-bind
@@ -196,12 +196,12 @@ namespace Db
 	{
 		// The correct criterion for flights on a given date is:
 		// (happened and effective_date=that_date)
-		// effective_date has to be calculated from takeoff time, landing time,
+		// effective_date has to be calculated from departure time, landing time,
 		// status and mode, which is compilicated. Thus, we select a superset of
 		// the flights of that date and filter out the correct flights afterwards.
 
 		// The superset criterion is:
-		// (launch_date=that_date or landing_date=that_date)
+		// (departure_date=that_date or landing_date=that_date)
 		// Since the database stores the datetimes, we compare them agains the
 		// first and last datetime of the date.
 
@@ -216,7 +216,7 @@ namespace Db
 
 		QList<Flight> candidates=getObjects<Flight> (condition);
 
-		// For some of the selected flights, the fact that the takeoff or landing
+		// For some of the selected flights, the fact that the departure or landing
 		// time is on that day may not indicate that the flight actually happened
 		// on that day. For example, if a flight is prepared (i. e. not taken off
 		// nor landed), or leaving, the times may not be relevant.

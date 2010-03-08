@@ -164,6 +164,10 @@ namespace Db { namespace Interface
 						default: throw ConnectionFailedException (error);
 					}
 
+					// Note that if the operation is canceled during this sleep
+					// call, it will only end after the sleep has finished.
+					// This is acceptable for a delay as short as 1 second. It
+					// could be circumvented by using a QWaitCondition.
 					sleep (1);
 					std::cout << "Retrying...";
 				}

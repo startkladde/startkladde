@@ -83,7 +83,7 @@ int Flight::sort (const Flight *other) const
 	// Both prepared
 	if (isPrepared () && other->isPrepared  ())
 	{
-		// Incoming prepared before local launching prepared
+		// Incoming prepared before local departing prepared
 		if (departsHere () && !other->departsHere ()) return 1;
 		if (!departsHere () && other->departsHere ()) return -1;
 
@@ -281,10 +281,10 @@ bool Flight::canDepart (QString *reason) const
 	// Already landed
 	notPossibleIf (landsHere () && landed, "Der Flug ist bereits gelandet");
 
-	// Does not start here
+	// Does not dpeart here
 	notPossibleIf (!departsHere (), "Der Flug startet nicht hier.");
 
-	// Already started
+	// Already departed
 	notPossibleIf (departed, "Der Flug ist bereits gestartet.");
 
 	return true;
@@ -300,7 +300,7 @@ bool Flight::canLand (QString *reason) const
 	// Does not land here (only applies to non-towflights)
 	notPossibleIf (!isTowflight () && !landsHere (), "Der Flug landet nicht hier.");
 
-	// Must start first
+	// Must depart first
 	notPossibleIf (departsHere () && !departed, "Der Flug ist noch nicht gestartet.");
 
 	return true;
@@ -316,7 +316,7 @@ bool Flight::canTouchngo (QString *reason) const
 	// Already landed
 	notPossibleIf (landed, "Der Flug ist bereits gelandet.");
 
-	// Must start first
+	// Must depart first
 	notPossibleIf (departsHere () && !departed, "Der Flug ist noch nicht gestartet.");
 
 	return true;
@@ -327,7 +327,7 @@ bool Flight::canTowflightLand (QString *reason) const
 	// Already landed
 	notPossibleIf (towflightLanded, "Der Schleppflug ist bereits gelandet.");
 
-	// Must start first
+	// Must depart first
 	notPossibleIf (departsHere () && !departed, "Der Flug ist noch nicht gestartet.");
 
 	return true;
@@ -400,7 +400,7 @@ QDate Flight::effdatum (time_zone tz) const
 
 QDate Flight::getEffectiveDate (time_zone tz, QDate defaultDate) const
 {
-	// TODO this assumes that every flight at least starts or lands here.
+	// TODO this assumes that every flight at least departs or lands here.
 	if (departsHere () && departed)
 		return departureTime.get_qdate (tz);
 
@@ -412,7 +412,7 @@ QDate Flight::getEffectiveDate (time_zone tz, QDate defaultDate) const
 
 Time Flight::effectiveTime () const
 {
-	// TODO this assumes that every flight at least starts or lands here.
+	// TODO this assumes that every flight at least departs or lands here.
 	if (departsHere () && departed) return departureTime;
 	if (landsHere () && landed) return landingTime;
 	return Time ();
@@ -677,7 +677,7 @@ QString Flight::toString () const
 {
 	return QString ("id=%1, plane=%2, type=%3, pilot=%4, copilot=%5, mode=%6, "
 		"launchMethod=%7, towplane=%8, towpilot=%9, towFlightMode=%10, "
-		"launchTime=%11, landingTime=%12, towflightLandingTime=%13, "
+		"departureTime=%11, landingTime=%12, towflightLandingTime=%13, "
 		"departureLocation='%14', landingLocation='%15', towflightLandingLocation='%16', "
 		"numLandings=%17, comment='%18', accountingNote='%19'")
 
@@ -731,7 +731,7 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 	towflight.copilotId=invalidId;
 	towflight.towpilotId=invalidId;
 
-	towflight.departureTime=departureTime;							// The tow flight started the same time as the towed flight.
+	towflight.departureTime=departureTime;              // The tow flight departed the same time as the towed flight.
 	towflight.landingTime=towflightLandingTime;			// The tow flight landing time is our landingTimeTowflight.
 	towflight.towflightLandingTime=Time (); 			// The tow flight has no tow flight.
 
@@ -739,8 +739,8 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 	towflight.launchMethodId=towLaunchMethod;
 
 	towflight.type=typeTow;
-	towflight.departureLocation=departureLocation;							// The tow flight started the same place as the towed flight.
-	towflight.landingLocation=towflightLandingLocation;							// The tow flight landing place is our landingLocationTowplane.
+	towflight.departureLocation=departureLocation;      // The tow flight departed the same location as the towed flight.
+	towflight.landingLocation=towflightLandingLocation; // The tow flight landing place is our landingLocationTowplane.
 	towflight.towflightLandingLocation="";
 
 	towflight.numLandings=(towflightLandsHere () && towflightLanded)?1:0;
@@ -766,7 +766,7 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 // TODO move to PlaneLog
 bool Flight::collectiveLogEntryPossible (const Flight *prev, const Plane *plane) const
 {
-	// Only allow if the previous flight and the current flight start and land
+	// Only allow if the previous flight and the current flight departs and lands
 	// at the same place.
 	if (prev->mode!=modeLocal || mode!=modeLocal) return false;
 	if (prev->departureLocation!=prev->landingLocation) return false;

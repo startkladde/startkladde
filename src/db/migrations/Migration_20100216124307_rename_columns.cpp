@@ -57,7 +57,7 @@ void Migration_20100216124307_rename_columns::renameColumns (Direction direction
 	// Flight settings
 	renameColumn ("flights", "typ"                  , "type"                      ,  dataTypeInteger   (), direction);
 	renameColumn ("flights", "modus"                , "mode"                      ,  dataTypeCharacter (), direction);
-	// Takeoff and landing
+	// Departure and landing
 	renameColumn ("flights", "status"               , "status"                    ,  dataTypeInteger   (), direction);
 	renameColumn ("flights", "startart"             , "launch_method_id"          ,  dataTypeId        (), direction);
 	renameColumn ("flights", "startort"             , "departure_location"        ,  dataTypeString    (), direction);

@@ -40,7 +40,7 @@ void Migration_20100214140000_initial::up (OperationMonitorInterface monitor)
 	// Flight settings
 	monitor.checkCanceled(); addColumn ("flug", "typ",                dataTypeInteger   (), "", true);
 	monitor.checkCanceled(); addColumn ("flug", "modus",              dataTypeCharacter (), "", true);
-	// Takeoff and landing
+	// Departure and landing
 	monitor.checkCanceled(); addColumn ("flug", "status",             dataTypeInteger   (), "", true);
 	monitor.checkCanceled(); addColumn ("flug", "startart",           dataTypeId        (), "", true);
 	monitor.checkCanceled(); addColumn ("flug", "startort",           dataTypeString    (), "", true);

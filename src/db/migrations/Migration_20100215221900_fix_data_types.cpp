@@ -54,7 +54,7 @@ void Migration_20100215221900_fix_data_types::changeFlightsTable (const QString 
 	// Flight settings
 	changeColumnType (name, "typ",                dataTypeInteger   ());
 	changeColumnType (name, "modus",              dataTypeCharacter ());
-	// Takeoff and landing
+	// Departure and landing
 	changeColumnType (name, "status",             dataTypeInteger   ());
 	changeColumnType (name, "startart",           dataTypeId        ());
 	changeColumnType (name, "startort",           dataTypeString    ());

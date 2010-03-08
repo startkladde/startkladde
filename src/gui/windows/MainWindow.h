@@ -31,7 +31,7 @@
  *   - on date wrap, the display date label's color is not updated
  *   - double click in free table space: create new flight
  *   - make a script for date changing (set date and store to hardware clock)
- *   - when performing a touchngo with a towflight, land and restart it
+ *   - when performing a touchngo with a towflight, land and depart it
  *   - allow repeating of towflights
  */
 
@@ -124,7 +124,7 @@ class MainWindow: public QMainWindow
 
 		// Menu: Flight
 		void on_actionNew_triggered ();
-		void on_actionStart_triggered ();
+		void on_actionDepart_triggered ();
 		void on_actionLand_triggered ();
 		void on_actionTouchngo_triggered ();
 		void on_actionEdit_triggered ();
@@ -194,7 +194,7 @@ class MainWindow: public QMainWindow
 		// Flight manipulation
 		bool checkPlaneFlying (dbId id, const QString &description);
 		bool checkPersonFlying (dbId id, const QString &description);
-		void startFlight (dbId id);
+		void departFlight (dbId id);
 		void landFlight (dbId id);
 		void landTowflight (dbId id);
 

@@ -40,7 +40,7 @@ QColor flug_farbe (Flight::Mode modus, bool fehler, bool schlepp, bool gestartet
 	 *   - mode: the mode of the flight.
 	 *   - fehler: whether the flight is erroneous.
 	 *   - schlepp: whether the flight is a towflight
-	 *   - gestarted: whether the flight has started.
+	 *   - gestarted: whether the flight has departed
 	 *   - landed: whether the flight has landed.
 	 * Return value:
 	 *   - the color for the flight.

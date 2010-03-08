@@ -45,16 +45,16 @@
  *     fields are equal. Does it matter that the flight already has values for
  *     these fields when editing?
  *     One implication is that the mode is not sufficient to determine whether
- *     the button should be "launch now" or "land now", resp. later.
+ *     the button should be "depart now" or "land now", resp. later.
  *     Note that create mode *is* different from edit mode, for example the
- *     automatic selection of launch method/locations.
+ *     automatic selection of launch method/departure locations.
  *   - addObject a calendar to the date input
- *   - addObject a button to set the launch/landing time to the current time
+ *   - addObject a button to set the departure/landing time to the current time
  *   - Add option to allow, but not require the towpilot
  *   - The sizeHint for the timeEdits seems to be too low by 1 pixel. This is
  *     solved by a hack in showEvent. It worked in the old version of this
  *     dialog, where the row spacing was set instead of the label's height.
- *   - "Launch now" should set the launch time, even if there are errors.
+ *   - "Depart now" should set the departure time, even if there are errors.
  *   - On flight mode change, change the locations only if they haven't been
  *     manually edited.
  *   - Read-only mode (modeDisplay)
@@ -64,7 +64,7 @@
  *     method provieded by the Flight class (probably not all errors can be
  *     checked that way).
  *   - On editing, addObject a currently-flying test, at least for the case where
- *     a launch time has been added
+ *     a departure time has been added
  *   - Move more conditions to the Plane, for example canDoSelfLaunch, ...
  *   - Launch method "Other": comment should not be empty (warning if it is)
  *   - Warning, when date changed
@@ -182,7 +182,7 @@ class FlightWindow: public QDialog
 		QString    getCurrentTowpilotFirstName            () { return ui.towpilotFirstNameInput->currentText (); }
 		Flight::Mode getCurrentTowflightMode              () { return (Flight::Mode)ui.towflightModeInput->currentItemData ().toInt(); }
 		//
-		QTime      getCurrentLaunchTime                   () { return ui.launchTimeInput->time (); }
+		QTime      getCurrentDepartureTime                () { return ui.departureTimeInput->time (); }
 		QTime      getCurrentLandingTime                  () { return ui.landingTimeInput->time (); }
 		QTime      getCurrentTowflightLandingTime         () { return ui.towflightLandingTimeInput->time (); }
 		//
@@ -203,7 +203,7 @@ class FlightWindow: public QDialog
 		 * methods to determine wheter the fields are active for the current
 		 * input values.
 		 * As several field visiblities depend on the same input value (e. g.
-		 * launch time and towplane depend on the launch method), values will be
+		 * departure time and towplane depend on the launch method), values will be
 		 * read from the fields and/or data storage several times. This should
 		 * not be a problem, but could be solved by allowing the caller to pass
 		 * a parameter which will be used instead of calling getCurrentX.
@@ -217,12 +217,12 @@ class FlightWindow: public QDialog
 		 *
 		 * @return the currently selected launch method
 		 * @throw Db::Cache::Cache::NotFoundException if there is no such launch
-		 *        type, or none is selected
+		 *        method, or none is selected
 		 */
 		LaunchMethod getCurrentLaunchMethod ();
 		bool isCurrentLaunchMethodValid () { return idValid (getCurrentLaunchMethodId ()); }
 
-		bool currentStartsHere   () {       return isFlightModeActive    () && Flight::departsHere (getCurrentFlightMode ()); }
+		bool currentDepartsHere  () {       return isFlightModeActive    () && Flight::departsHere (getCurrentFlightMode ()); }
 		bool currentLandsHere    () {       return isFlightModeActive    () && Flight::landsHere (getCurrentFlightMode ()); }
 		bool currentTowLandsHere () {       return isTowflightModeActive () && Flight::landsHere (getCurrentTowflightMode ()); }
 		bool currentIsAirtow     ();
@@ -238,7 +238,7 @@ class FlightWindow: public QDialog
 		bool isCopilotActive                      () { return Flight::typeCopilotRecorded (getCurrentFlightType ()); } // Does not depend on plane, see comments above
 		//
 		bool isFlightModeActive                   () { return true; }
-		bool isLaunchMethodActive                 () { return currentStartsHere (); }
+		bool isLaunchMethodActive                 () { return currentDepartsHere (); }
 		//
 		// No exception thrown because if the launch method is not valid,
 		bool isTowplaneRegistrationActive         ();
@@ -246,8 +246,8 @@ class FlightWindow: public QDialog
 		bool isTowpilotActive                     () { return currentIsAirtow () && opts.record_towpilot; }
 		bool isTowflightModeActive                () { return currentIsAirtow (); }
 		//
-		bool isLaunchActive                       () { return currentStartsHere (); }
-		bool isLaunchTimeActive                   () { return isLaunchActive () && getTimeFieldActive (ui.launchTimeCheckbox->isChecked ()); }
+		bool isDepartureActive                    () { return currentDepartsHere (); }
+		bool isDepartureTimeActive                () { return isDepartureActive () && getTimeFieldActive (ui.departureTimeCheckbox->isChecked ()); }
 		bool isLandingActive                      () { return currentLandsHere (); }
 		bool isLandingTimeActive                  () { return isLandingActive () && getTimeFieldActive (ui.landingTimeCheckbox->isChecked ()); }
 		bool isTowflightLandingActive             () { return currentIsAirtow (); } // Even if mode==leaving - it's the tow end time in that case.
@@ -271,16 +271,16 @@ class FlightWindow: public QDialog
 		void planeToFields (dbId id, SkComboBox *registrationInput, SkLabel *typeLabel);
 		void flightToFields (const Flight &flight, bool repeat);
 
-		Flight determineFlight (bool launchNow) throw (AbortedException);
+		Flight determineFlight (bool departNow) throw (AbortedException);
 		Flight determineFlightBasic () throw ();
 		void determineFlightPlanes (Flight &flight) throw (AbortedException);
 		void determineFlightPeople (Flight &flight, const LaunchMethod *launchMethod) throw (AbortedException);
 		dbId determinePlane (QString registration, QString description, QWidget *widget) throw (AbortedException);
 		dbId determinePerson (bool active, QString firstName, QString lastName, QString description, bool required, QString &incompleteFirstName, QString &incompleteLastName, dbId originalId, QWidget *widget) throw (AbortedException);
 		dbId createNewPerson (QString lastName, QString firstName) throw (AbortedException);
-		void checkFlightPhase1 (const Flight &flight, bool launchNow) throw (AbortedException);
-		void checkFlightPhase2 (const Flight &flight, bool launchNow, const Plane *plane, const Plane *towplane, const LaunchMethod *launchMethod) throw (AbortedException);
-		void checkFlightPhase3 (const Flight &flight, bool launchNow, const Plane *plane, const Person *pilot, const Person *copilot, const Person *towpilot) throw (AbortedException);
+		void checkFlightPhase1 (const Flight &flight, bool departNow) throw (AbortedException);
+		void checkFlightPhase2 (const Flight &flight, bool departNow, const Plane *plane, const Plane *towplane, const LaunchMethod *launchMethod) throw (AbortedException);
+		void checkFlightPhase3 (const Flight &flight, bool departNow, const Plane *plane, const Person *pilot, const Person *copilot, const Person *towpilot) throw (AbortedException);
 
 		void errorCheck (const QString &problem, QWidget *widget) throw (AbortedException);
 
@@ -344,8 +344,8 @@ class FlightWindow: public QDialog
 		void on_towpilotFirstNameInput_editingFinished    (const QString &text) { towpilotFirstNameChanged    (text);  updateSetup (); updateErrors (); }
 		void on_towflightModeInput_activated              (int index)           { towflightModeChanged        (index); updateSetup (); updateErrors (); }
 		//
-		void on_launchTimeCheckbox_clicked            (bool checked)      { launchTimeCheckboxChanged           (checked); updateSetup (); updateErrors (); ui.launchTimeInput->setFocus (); }
-		void on_launchTimeInput_timeChanged           (const QTime &time) { launchTimeChanged                   (time);    updateSetup (); updateErrors (); } // This widget does not have a user-edit-only signal
+		void on_departureTimeCheckbox_clicked         (bool checked)      { departureTimeCheckboxChanged           (checked); updateSetup (); updateErrors (); ui.departureTimeInput->setFocus (); }
+		void on_departureTimeInput_timeChanged        (const QTime &time) { departureTimeChanged                   (time);    updateSetup (); updateErrors (); } // This widget does not have a user-edit-only signal
 		void on_landingTimeCheckbox_clicked           (bool checked)      { landingTimeCheckboxChanged          (checked); updateSetup (); updateErrors (); ui.landingTimeInput->setFocus (); }
 		void on_landingTimeInput_timeChanged          (const QTime &time) { landingTimeChanged                  (time);    updateSetup (); updateErrors (); } // This widget does not have a user-edit-only signal
 		void on_towflightLandingTimeCheckbox_clicked  (bool checked)      { towflightLandingTimeCheckboxChanged (checked); updateSetup (); updateErrors (); ui.towflightLandingTimeInput->setFocus ();}
@@ -378,8 +378,8 @@ class FlightWindow: public QDialog
 		void towpilotFirstNameChanged    (const QString &text) { selectedTowpilot=fillLastNames  (isTowpilotActive (), ui.towpilotLastNameInput , text, false); }
 		void towflightModeChanged        (int index) { (void)index; }
 		//
-		void launchTimeCheckboxChanged           (bool checked) { (void)checked; }
-		void launchTimeChanged                   (const QTime &time) { (void)time; }
+		void departureTimeCheckboxChanged        (bool checked) { (void)checked; }
+		void departureTimeChanged                (const QTime &time) { (void)time; }
 		void landingTimeCheckboxChanged          (bool checked);
 		void landingTimeChanged                  (const QTime &time) { (void)time; }
 		void towflightLandingTimeCheckboxChanged (bool checked);

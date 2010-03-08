@@ -111,7 +111,7 @@ class Flight
 		virtual bool fliegt () const { return happened () && !finished (); }
 		virtual bool isFlying () const { return departsHere () && landsHere () && departed && !landed; }
 		virtual bool sfz_fliegt () const { return happened () && !towflightLanded; }
-//		TODO: !((starts_here and started) or (lands_here and landed))
+//		TODO: !((departs_here and departed) or (lands_here and landed))
 		virtual bool isPrepared () const { return !happened (); }
 		// TODO this is certainly not correct
 		virtual bool isTowplaneFlying () const { return departsHere () && towflightLandsHere () && departed && !towflightLanded; }

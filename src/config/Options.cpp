@@ -115,7 +115,7 @@ void Options::display_options (QString prefix)
 	std::cout << prefix << "--demosystem: show the demosystem menu" << std::endl;
 	std::cout << prefix << "--title text: show text in the window title (where applicable)" << std::endl;
 	std::cout << prefix << "--diag_cmd cmd: set the command for network diagnostics" << std::endl;
-	std::cout << prefix << "--ort o: the default value for Startort/Zielort" << std::endl;
+	std::cout << prefix << "--ort o: the default value for departure/destination locations" << std::endl;
 	std::cout << prefix << "--style s: use QT style s, if available" << std::endl;
 	std::cout << prefix << "--debug: display" << std::endl;
 	std::cout << prefix << "--display_queries, -q: display all queries as they are executed" << std::endl;
