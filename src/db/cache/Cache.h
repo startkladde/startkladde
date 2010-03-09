@@ -127,8 +127,8 @@ namespace Db
 
 				// *** Objects by propery
 				dbId getPlaneIdByRegistration (const QString &registration);
-				QList<dbId> getPersonIdsByName (const QString &firstName, const QString &lastName);
-				dbId getUniquePersonIdByName (const QString &firstName, const QString &lastName);
+				QList<dbId> getPersonIdsByName (const QString &lastName, const QString &firstName);
+				dbId getUniquePersonIdByName (const QString &lastName, const QString &firstName);
 				QList<dbId> getPersonIdsByFirstName (const QString &firstName);
 				QList<dbId> getPersonIdsByLastName (const QString &lastName);
 				dbId getLaunchMethodByType (LaunchMethod::Type type);
@@ -136,10 +136,10 @@ namespace Db
 
 				// *** String lists
 				QStringList getPlaneRegistrations ();
-				QStringList getPersonFirstNames ();
-				QStringList getPersonFirstNames (const QString &lastName);
 				QStringList getPersonLastNames ();
 				QStringList getPersonLastNames (const QString &firstName);
+				QStringList getPersonFirstNames ();
+				QStringList getPersonFirstNames (const QString &lastName);
 				QStringList getLocations ();
 				QStringList getAccountingNotes ();
 				QStringList getPlaneTypes ();
@@ -245,8 +245,8 @@ namespace Db
 				QMultiHash<LaunchMethod::Type, dbId> launchMethodIdsByType;
 				QMultiHash<QString, QString> lastNamesByFirstName; // key is lower case
 				QMultiHash<QString, QString> firstNamesByLastName; // key is lower case
-				QMultiHash<QString, dbId> personIdsByFirstName; // key is lower case
 				QMultiHash<QString, dbId> personIdsByLastName; // key is lower case
+				QMultiHash<QString, dbId> personIdsByFirstName; // key is lower case
 				QMultiHash<QPair<QString, QString>, dbId> personIdsByName; // key is lower case
 
 				// Concurrency

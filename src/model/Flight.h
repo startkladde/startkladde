@@ -87,9 +87,9 @@ class Flight
 		dbId towpilotId;
 
 		// Incomplete names
-		QString pilotFirstName   , pilotLastName   ;
-		QString copilotFirstName , copilotLastName ;
-		QString towpilotFirstName, towpilotLastName;
+		QString pilotLastName   , pilotFirstName   ;
+		QString copilotLastName , copilotFirstName ;
+		QString towpilotLastName, towpilotFirstName;
 
 		QString comments;
 		QString accountingNotes;

@@ -22,10 +22,9 @@
  *   - TODO Partial names working? Especially: error display
  *   - TODO in updateErrors, set the focus to the uppermost error widget, not the
  *     first one found
- *   - TODO in updateErrors, the highlighed labels for person errors may be first
- *     name, last name, or person
+ *   - TODO in updateErrors, the highlighed labels for person errors may be last
+ *     name, first name, or person
  *   - TODO make time zone safe
- *   - TODO determinePerson uses first/last name order, should be last/first
  *   - TODO determinePerson: preselection based on the club of the plane or student
  *     (if person unique within club); display text "Club of the plane" instead
  *     of "Matching club"
@@ -33,7 +32,7 @@
  *   - TODO When adding a new plane/person on flight creation, immediately get it
  *     from the database and show the registration/correct name (it might have
  *     been changed), even if on a subsequent choice the user aborts
- *   - TODO When there is only one first name or only one last name in the
+ *   - TODO When there is only one last name or only one first name in the
  *     database, it is always filled in when tabbing over the person fields,
  *     even if the other field is empty
  *
@@ -158,8 +157,8 @@ class FlightWindow: public QDialog
 	protected:
 		// Input field data
 		int fillNames (QStringList (Db::Cache::Cache::*fullListMethod)(), QStringList (Db::Cache::Cache::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget);
-		dbId fillFirstNames  (bool active, QComboBox *target, const QString &lastName, bool preserveTarget);
 		dbId fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget);
+		dbId fillFirstNames  (bool active, QComboBox *target, const QString &lastName, bool preserveTarget);
 
 
 		// *** Input values
@@ -276,7 +275,7 @@ class FlightWindow: public QDialog
 		void determineFlightPlanes (Flight &flight) throw (AbortedException);
 		void determineFlightPeople (Flight &flight, const LaunchMethod *launchMethod) throw (AbortedException);
 		dbId determinePlane (QString registration, QString description, QWidget *widget) throw (AbortedException);
-		dbId determinePerson (bool active, QString firstName, QString lastName, QString description, bool required, QString &incompleteFirstName, QString &incompleteLastName, dbId originalId, QWidget *widget) throw (AbortedException);
+		dbId determinePerson (bool active, QString lastName, QString firstName, QString description, bool required, QString &incompleteLastName, QString &incompleteFirstName, dbId originalId, QWidget *widget) throw (AbortedException);
 		dbId createNewPerson (QString lastName, QString firstName) throw (AbortedException);
 		void checkFlightPhase1 (const Flight &flight, bool departNow) throw (AbortedException);
 		void checkFlightPhase2 (const Flight &flight, bool departNow, const Plane *plane, const Plane *towplane, const LaunchMethod *launchMethod) throw (AbortedException);

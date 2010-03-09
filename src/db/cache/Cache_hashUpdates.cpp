@@ -16,6 +16,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
+#include "src/text.h"
 
 namespace Db
 {
@@ -59,10 +60,10 @@ namespace Db
 		{
 			synchronized (dataMutex)
 			{
-				planeTypes.insert (plane.type);
+				if (!blank (plane.type)) planeTypes.insert (plane.type);
 				planeRegistrations.insert (plane.registration);
 				planeIdsByRegistration.insert (plane.registration.toLower (), plane.getId ());
-				clubs.insert (plane.club);
+				if (!blank (plane.club)) clubs.insert (plane.club);
 			}
 		}
 
@@ -100,8 +101,8 @@ namespace Db
 				personFirstNames.clear ();
 				lastNamesByFirstName.clear ();
 				firstNamesByLastName.clear ();
-				personIdsByFirstName.clear ();
 				personIdsByLastName.clear ();
+				personIdsByFirstName.clear ();
 				personIdsByName.clear ();
 				// clubs is used by multiple types
 			}
@@ -119,10 +120,10 @@ namespace Db
 				personFirstNames.insert (first);
 				lastNamesByFirstName.insert (firstLower, last );
 				firstNamesByLastName.insert (lastLower , first);
-				personIdsByFirstName.insert (firstLower, id);
 				personIdsByLastName .insert (lastLower , id);
+				personIdsByFirstName.insert (firstLower, id);
 				personIdsByName.insert (QPair<QString, QString> (lastLower, firstLower), id);
-				clubs.insert (person.club);
+				if (!blank (person.club)) clubs.insert (person.club);
 			}
 		}
 
@@ -139,8 +140,8 @@ namespace Db
 					QString lastLower =oldPerson-> lastName.toLower ();
 					QString firstLower=oldPerson->firstName.toLower ();
 
-					if (oldPerson) personIdsByFirstName.remove (firstLower, id);
 					if (oldPerson) personIdsByLastName.remove (lastLower, id);
+					if (oldPerson) personIdsByFirstName.remove (firstLower, id);
 					if (oldPerson) personIdsByName.remove (QPair<QString, QString> (lastLower, firstLower), id);
 				}
 				// Leave clubs
@@ -212,9 +213,9 @@ namespace Db
 		{
 			synchronized (dataMutex)
 			{
-				locations.insert (flight.departureLocation);
-				locations.insert (flight.landingLocation);
-				accountingNotes.insert (flight.accountingNotes);
+				if (!blank (flight.departureLocation)) locations.insert (flight.departureLocation);
+				if (!blank (flight.landingLocation)) locations.insert (flight.landingLocation);
+				if (!blank (flight.accountingNotes)) accountingNotes.insert (flight.accountingNotes);
 			}
 		}
 

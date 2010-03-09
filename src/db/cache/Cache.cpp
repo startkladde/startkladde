@@ -14,9 +14,15 @@
  *   - log an error if an invalid ID is passed to the get by ID functions
  *   - case insensitive sorting for string lists
  *   - case insensitive uniqueness for string lists
+ *
+ * Here's the call schema for an added object:
+ *   DbEvent -> handleDbEvent<T> -.-> ObjectAdded<T> -.----> updateHashesObjectAdded<Person>
+ *                                |                   |----> updateHashesObjectAdded<Plane>
+ *                                |                   '----> updateHashesObjectAdded<LaunchMethod>
+ *                                '-> ObjectAdded<Flight> -> updateHashesObjectAdded<Flight>
+ * The branches are cause by (partial) template specialization. For an updated
+ * and a deleted object, the schema is similar.
  */
-
-
 
 #include "Cache.h"
 

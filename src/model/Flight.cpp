@@ -175,19 +175,19 @@ QString Flight::copilotDescription () const
 bool Flight::pilotSpecified () const
 {
 	return idValid (pilotId) ||
-		!eintraege_sind_leer (pilotFirstName, pilotLastName);
+		!eintraege_sind_leer (pilotLastName, pilotFirstName);
 }
 
 bool Flight::copilotSpecified () const
 {
 	return idValid (copilotId) ||
-		!eintraege_sind_leer (copilotFirstName, copilotLastName);
+		!eintraege_sind_leer (copilotLastName, copilotFirstName);
 }
 
 bool Flight::towpilotSpecified () const
 {
 	return idValid (towpilotId) ||
-		!eintraege_sind_leer (towpilotFirstName, towpilotLastName);
+		!eintraege_sind_leer (towpilotLastName, towpilotFirstName);
 }
 
 
@@ -606,16 +606,16 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	// this is a non-error (see there for an explanation).
 	CHECK_FEHLER (FLUG, idInvalid (id), ff_keine_id)
 	CHECK_FEHLER (FLUG, idInvalid (planeId), ff_kein_flugzeug)
-	CHECK_FEHLER (FLUG, sa && sa->personRequired && idInvalid (pilotId) && pilotFirstName.isEmpty () && pilotLastName.isEmpty (), ff_kein_pilot)
-	CHECK_FEHLER (FLUG, idInvalid (pilotId) && !pilotFirstName.isEmpty () && pilotLastName.isEmpty (), ff_pilot_nur_vorname);
+	CHECK_FEHLER (FLUG, sa && sa->personRequired && idInvalid (pilotId) && pilotLastName.isEmpty () && pilotFirstName.isEmpty (), ff_kein_pilot)
 	CHECK_FEHLER (FLUG, idInvalid (pilotId) && !pilotLastName.isEmpty () && pilotFirstName.isEmpty (), ff_pilot_nur_nachname);
+	CHECK_FEHLER (FLUG, idInvalid (pilotId) && !pilotLastName.isEmpty () && pilotFirstName.isEmpty (), ff_pilot_nur_vorname);
 	CHECK_FEHLER (FLUG, idInvalid (pilotId) && !pilotLastName.isEmpty () && !pilotFirstName.isEmpty (), ff_pilot_nicht_identifiziert);
-	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && idInvalid (copilotId) && !copilotFirstName.isEmpty () && copilotLastName.isEmpty (), ff_begleiter_nur_vorname);
 	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && idInvalid (copilotId) && !copilotLastName.isEmpty () && copilotFirstName.isEmpty (), ff_begleiter_nur_nachname);
+	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && idInvalid (copilotId) && !copilotLastName.isEmpty () && copilotFirstName.isEmpty (), ff_begleiter_nur_vorname);
 	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && idInvalid (copilotId) && !copilotLastName.isEmpty () && !copilotFirstName.isEmpty (), ff_begleiter_nicht_identifiziert);
 	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && pilotId!=0 && pilotId==copilotId, ff_pilot_gleich_begleiter)
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotFirstName.isEmpty () && towpilotLastName.isEmpty (), ff_towpilot_nur_vorname);
 	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotLastName.isEmpty () && towpilotFirstName.isEmpty (), ff_towpilot_nur_nachname);
+	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotLastName.isEmpty () && towpilotFirstName.isEmpty (), ff_towpilot_nur_vorname);
 	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotLastName.isEmpty () && !towpilotFirstName.isEmpty (), ff_towpilot_nicht_identifiziert);
 	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && towpilotId!=0 && pilotId==towpilotId, ff_pilot_gleich_towpilot)
 	CHECK_FEHLER (FLUG, idInvalid (copilotId) && (type==typeTraining2) && copilotLastName.isEmpty () && copilotFirstName.isEmpty (), ff_schulung_ohne_begleiter)
@@ -654,11 +654,11 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 // ** Formatting **
 // ****************
 
-QString personToString (dbId id, QString firstName, QString lastName)
+QString personToString (dbId id, QString lastName, QString firstName)
 {
 	if (idValid (id))
 		return QString::number (id);
-	else if (eintrag_ist_leer(firstName) && eintrag_ist_leer(lastName))
+	else if (eintrag_ist_leer(lastName) && eintrag_ist_leer(firstName))
 		return "-";
 	else
 		return QString ("(%1, %2)")
@@ -685,13 +685,13 @@ QString Flight::toString () const
 		.arg (id)
 		.arg (planeId)
 		.arg (shortTypeText (type))
-		.arg (personToString (pilotId, pilotFirstName, pilotLastName))
-		.arg (personToString (copilotId, copilotFirstName, copilotLastName))
+		.arg (personToString (pilotId, pilotLastName, pilotFirstName))
+		.arg (personToString (copilotId, copilotLastName, copilotFirstName))
 		.arg (modeText (mode))
 
 		.arg (launchMethodId)
 		.arg (towplaneId)
-		.arg (personToString (towpilotId, towpilotFirstName, towpilotLastName))
+		.arg (personToString (towpilotId, towpilotLastName, towpilotFirstName))
 		.arg (modeText (towflightMode))
 
 		.arg (timeToString (departed, departureTime))
@@ -750,12 +750,12 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 	towflight.accountingNotes="";
 	towflight.mode=towflightMode;
 	towflight.towflightMode=modeNone;
-	towflight.pilotFirstName=towpilotFirstName;
 	towflight.pilotLastName=towpilotLastName;
-	towflight.copilotFirstName="";
+	towflight.pilotFirstName=towpilotFirstName;
 	towflight.copilotLastName="";
-	towflight.towpilotFirstName="";
+	towflight.copilotFirstName="";
 	towflight.towpilotLastName="";
+	towflight.towpilotFirstName="";
 	towflight.towplaneId=invalidId;
 	towflight.departed=departed;
 	towflight.landed=towflightLanded;
@@ -802,10 +802,10 @@ QString Flight::selectColumnList ()
 	return
 		"id,pilot_id,copilot_id,plane_id,type,mode,departed,landed,towflight_landed" // 9
 		",launch_method_id,departure_location,landing_location,num_landings,departure_time,landing_time" // 6 Σ15
-		",pilot_first_name,pilot_last_name,copilot_first_name,copilot_last_name" // 4 Σ19
+		",pilot_last_name,pilot_first_name,copilot_last_name,copilot_first_name" // 4 Σ19
 		",towflight_landing_time,towflight_mode,towflight_landing_location,towplane_id" // 4 Σ23
 		",accounting_notes,comments" // 2 Σ25
-		",towpilot_id,towpilot_first_name,towpilot_last_name" // 3 Σ28
+		",towpilot_id,towpilot_last_name,towpilot_first_name" // 3 Σ28
 		;
 }
 
@@ -833,10 +833,10 @@ Flight Flight::createFromResult (const Db::Result::Result &result)
 	f.landingTime       =Time::create (
 	                     result.value (14).toDateTime (), tz_utc);
 
-	f.pilotFirstName   =result.value (15).toString ();
 	f.pilotLastName    =result.value (16).toString ();
-	f.copilotFirstName =result.value (17).toString ();
+	f.pilotFirstName   =result.value (15).toString ();
 	f.copilotLastName  =result.value (18).toString ();
+	f.copilotFirstName =result.value (17).toString ();
 
 	f.towflightLandingTime     =Time::create (
 	                            result.value (19).toDateTime (), tz_utc);
@@ -849,8 +849,8 @@ Flight Flight::createFromResult (const Db::Result::Result &result)
 	f.comments        =result.value (24).toString ();
 
 	f.towpilotId         =result.value (25).toLongLong ();
-	f.towpilotFirstName  =result.value (26).toString   ();
 	f.towpilotLastName   =result.value (27).toString   ();
+	f.towpilotFirstName  =result.value (26).toString   ();
 
 	return f;
 }
@@ -860,10 +860,10 @@ QString Flight::insertValueList ()
 	QString columnList=
 		"pilot_id,copilot_id,plane_id,type,mode,departed,landed,towflight_landed" // 8
 		",launch_method_id,departure_location,landing_location,num_landings,departure_time,landing_time" // 6 Σ14
-		",pilot_first_name,pilot_last_name,copilot_first_name,copilot_last_name" // 4 Σ18
+		",pilot_last_name,pilot_first_name,copilot_last_name,copilot_first_name" // 4 Σ18
 		",towflight_landing_time,towflight_mode,towflight_landing_location,towplane_id" // 4 Σ22
 		",accounting_notes,comments" // 2 Σ24
-		",towpilot_id,towpilot_first_name,towpilot_last_name" // 3 Σ27
+		",towpilot_id,towpilot_last_name,towpilot_first_name" // 3 Σ27
 		;
 
 	QString placeholderList="?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
@@ -877,10 +877,10 @@ QString Flight::updateValueList ()
 	return
 		"pilot_id=?,copilot_id=?,plane_id=?,type=?,mode=?,departed=?,landed=?,towflight_landed=?" // 8
 		",launch_method_id=?,departure_location=?,landing_location=?,num_landings=?,departure_time=?,landing_time=?" // 6 Σ14
-		",pilot_first_name=?,pilot_last_name=?,copilot_first_name=?,copilot_last_name=?" // 4 Σ18
+		",pilot_last_name=?,pilot_first_name=?,copilot_last_name=?,copilot_first_name=?" // 4 Σ18
 		",towflight_landing_time=?,towflight_mode=?,towflight_landing_location=?,towplane_id=?" // 4 Σ22
 		",accounting_notes=?,comments=?" // 2 Σ24
-		",towpilot_id=?,towpilot_first_name=?,towpilot_last_name=?"; // 3 Σ27
+		",towpilot_id=?,towpilot_last_name=?,towpilot_first_name=?"; // 3 Σ27
 		;
 }
 
@@ -902,10 +902,10 @@ void Flight::bindValues (Db::Query &q) const
 	q.bind (departureTime.toUtcQDateTime ());
 	q.bind (landingTime.toUtcQDateTime ());
 
-	q.bind (pilotFirstName);
 	q.bind (pilotLastName);
-	q.bind (copilotFirstName);
+	q.bind (pilotFirstName);
 	q.bind (copilotLastName);
+	q.bind (copilotFirstName);
 
 	q.bind (towflightLandingTime.toUtcQDateTime ());
 	q.bind (modeToDb (towflightMode));
@@ -916,8 +916,8 @@ void Flight::bindValues (Db::Query &q) const
 	q.bind (comments);
 
 	q.bind (towpilotId);
-	q.bind (towpilotFirstName);
 	q.bind (towpilotLastName);
+	q.bind (towpilotFirstName);
 }
 
 QList<Flight> Flight::createListFromResult (Db::Result::Result &result)

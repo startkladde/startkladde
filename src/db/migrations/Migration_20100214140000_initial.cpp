@@ -55,12 +55,12 @@ void Migration_20100214140000_initial::up (OperationMonitorInterface monitor)
 	monitor.checkCanceled(); addColumn ("flug", "land_schlepp",       dataTypeDatetime  (), "", true);
 	monitor.checkCanceled(); addColumn ("flug", "towpilot",           dataTypeId        (), "", true);
 	// Incomplete names
-	monitor.checkCanceled(); addColumn ("flug", "pvn",                dataTypeString    (), "", true);
 	monitor.checkCanceled(); addColumn ("flug", "pnn",                dataTypeString    (), "", true);
-	monitor.checkCanceled(); addColumn ("flug", "bvn",                dataTypeString    (), "", true);
+	monitor.checkCanceled(); addColumn ("flug", "pvn",                dataTypeString    (), "", true);
 	monitor.checkCanceled(); addColumn ("flug", "bnn",                dataTypeString    (), "", true);
-	monitor.checkCanceled(); addColumn ("flug", "tpvn",               dataTypeString    (), "", true);
+	monitor.checkCanceled(); addColumn ("flug", "bvn",                dataTypeString    (), "", true);
 	monitor.checkCanceled(); addColumn ("flug", "tpnn",               dataTypeString    (), "", true);
+	monitor.checkCanceled(); addColumn ("flug", "tpvn",               dataTypeString    (), "", true);
 	// Comments
 	monitor.checkCanceled(); addColumn ("flug", "bemerkung",          dataTypeString    (), "", true);
 	monitor.checkCanceled(); addColumn ("flug", "abrechnungshinweis", dataTypeString    (), "", true);

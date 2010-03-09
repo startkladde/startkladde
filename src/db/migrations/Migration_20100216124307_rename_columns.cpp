@@ -72,12 +72,12 @@ void Migration_20100216124307_rename_columns::renameColumns (Direction direction
 	renameColumn ("flights", "land_schlepp"         , "towflight_landing_time"    ,  dataTypeDatetime  (), direction);
 	renameColumn ("flights", "towpilot"             , "towpilot_id"               ,  dataTypeId        (), direction);
 	// Incomplete names
-	renameColumn ("flights", "pvn"                  , "pilot_first_name"          ,  dataTypeString    (), direction);
 	renameColumn ("flights", "pnn"                  , "pilot_last_name"           ,  dataTypeString    (), direction);
-	renameColumn ("flights", "bvn"                  , "copilot_first_name"        ,  dataTypeString    (), direction);
+	renameColumn ("flights", "pvn"                  , "pilot_first_name"          ,  dataTypeString    (), direction);
 	renameColumn ("flights", "bnn"                  , "copilot_last_name"         ,  dataTypeString    (), direction);
-	renameColumn ("flights", "tpvn"                 , "towpilot_first_name"       ,  dataTypeString    (), direction);
+	renameColumn ("flights", "bvn"                  , "copilot_first_name"        ,  dataTypeString    (), direction);
 	renameColumn ("flights", "tpnn"                 , "towpilot_last_name"        ,  dataTypeString    (), direction);
+	renameColumn ("flights", "tpvn"                 , "towpilot_first_name"       ,  dataTypeString    (), direction);
 	// Comments
 	renameColumn ("flights", "bemerkung"            , "comments"                  ,  dataTypeString    (), direction);
 	renameColumn ("flights", "abrechnungshinweis"   , "accounting_notes"          ,  dataTypeString    (), direction);

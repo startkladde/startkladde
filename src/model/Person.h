@@ -27,8 +27,8 @@ class Person: public Entity
 
 
 		// *** Data
-		QString firstName;
 		QString lastName;
+		QString firstName;
 		QString club;
 		QString clubId;
 

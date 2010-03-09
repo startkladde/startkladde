@@ -27,7 +27,7 @@
  *   - For each widget, one or more (for pilots) labels are associated via a
  *     QMultiMap.
  *   - We use the widget as indication of which widget to show/hide rather than
- *     the label (which would make sense for hiding people's first and last
+ *     the label (which would make sense for hiding people's last and first
  *     name simultaneously) because otherwise we would have to map to both
  *     QWidgets and SkLabels (needed explicitly because of setConcealed).
  *   - The labels are smaller than the widgets which means they have to be
@@ -110,7 +110,7 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	 * Notes:
 	 *   - the *pilotLabels are assigned to the corresponding last name widget.
 	 *     This is because the are in the same line and the information is also
-	 *     used for setting label heights. The first and last name widgets are
+	 *     used for setting label heights. The last and first name widgets are
 	 *     always shown and hidden together anyway.
 	 */
 	widgetLabelMap.insert (ui.registrationInput, ui.registrationLabel);
@@ -217,8 +217,8 @@ void FlightWindow::fillData ()
 
 
 	// *** Person names
-	const QStringList firstNames=cache.getPersonFirstNames();
 	const QStringList lastNames =cache.getPersonLastNames ();
+	const QStringList firstNames=cache.getPersonFirstNames();
 
 	ui.   pilotFirstNameInput ->addItems (firstNames);
 	ui. copilotFirstNameInput ->addItems (firstNames);
@@ -385,7 +385,7 @@ void FlightWindow::editFlight (QWidget *parent, DbManager &manager, Flight &flig
 // **********************
 
 /**
- * Write name parts (either first names or last names) to a list box - either
+ * Write name parts (either last names or first names) to a list box - either
  * only those which match another name part (for example, only the first names
  * matching a given last name) or all values for a name part, if the other name
  * part is empty.
@@ -435,20 +435,6 @@ int FlightWindow::fillNames (QStringList (Db::Cache::Cache::*fullListMethod)(), 
 	return nameList.size ();
 }
 
-dbId FlightWindow::fillFirstNames  (bool active, QComboBox *target, const QString &lastName, bool preserveTarget)
-{
-	if (!active) return invalidId;
-
-	fillNames (
-		&Db::Cache::Cache::getPersonFirstNames,
-		&Db::Cache::Cache::getPersonFirstNames,
-		target, lastName, preserveTarget);
-
-	// Even if there were multiple matching other name parts, the current
-	// combination may still be unique. If it is, return the person's ID.
-	return cache.getUniquePersonIdByName (target->currentText (), lastName);
-}
-
 dbId FlightWindow::fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget)
 {
 	if (!active) return invalidId;
@@ -461,6 +447,20 @@ dbId FlightWindow::fillLastNames  (bool active, QComboBox *target, const QString
 	// Even if there were multiple matching other name parts, the current
 	// combination may still be unique. If it is, return the person's ID.
 	return cache.getUniquePersonIdByName (firstName, target->currentText ());
+}
+
+dbId FlightWindow::fillFirstNames  (bool active, QComboBox *target, const QString &lastName, bool preserveTarget)
+{
+	if (!active) return invalidId;
+
+	fillNames (
+		&Db::Cache::Cache::getPersonFirstNames,
+		&Db::Cache::Cache::getPersonFirstNames,
+		target, lastName, preserveTarget);
+
+	// Even if there were multiple matching other name parts, the current
+	// combination may still be unique. If it is, return the person's ID.
+	return cache.getUniquePersonIdByName (target->currentText (), lastName);
 }
 
 // ******************
@@ -561,11 +561,11 @@ QWidget *FlightWindow::getErrorWidget (FlightError error)
 		case ff_kein_flugzeug:                        return ui.registrationInput;
 		case ff_kein_pilot:                           return ui.pilotLastNameInput;
 		case ff_pilot_gleich_begleiter:               return ui.copilotLastNameInput;
-		case ff_pilot_nur_vorname:                    return ui.pilotLastNameInput;
 		case ff_pilot_nur_nachname:                   return ui.pilotFirstNameInput;
+		case ff_pilot_nur_vorname:                    return ui.pilotLastNameInput;
 		case ff_pilot_nicht_identifiziert:            return ui.pilotLastNameInput;
-		case ff_begleiter_nur_vorname:                return ui.copilotLastNameInput;
 		case ff_begleiter_nur_nachname:               return ui.copilotFirstNameInput;
+		case ff_begleiter_nur_vorname:                return ui.copilotLastNameInput;
 		case ff_begleiter_nicht_identifiziert:        return ui.copilotLastNameInput;
 		case ff_schulung_ohne_begleiter:              return ui.copilotLastNameInput;
 		case ff_begleiter_nicht_erlaubt:              return ui.copilotLastNameInput;
@@ -593,8 +593,8 @@ QWidget *FlightWindow::getErrorWidget (FlightError error)
 		case ff_kein_schleppflugzeug:                 return ui.towplaneRegistrationInput;
 		case ff_towplane_is_glider:                   return ui.towplaneRegistrationInput;
 		case ff_pilot_gleich_towpilot:                return ui.pilotLastNameInput;
-		case ff_towpilot_nur_vorname:                 return ui.towpilotLastNameInput;
 		case ff_towpilot_nur_nachname:                return ui.towpilotFirstNameInput;
+		case ff_towpilot_nur_vorname:                 return ui.towpilotLastNameInput;
 		case ff_towpilot_nicht_identifiziert:         return ui.towpilotLastNameInput;
 		// No default to allow compiler warnings
 	}
@@ -633,8 +633,8 @@ void FlightWindow::personToFields (dbId id, SkComboBox *lastNameInput, SkComboBo
 		firstNameInput->setCurrentText (incompleteFirstName);
 	}
 
-	fillFirstNames (true, firstNameInput, lastNameInput->currentText  (), true);
 	fillLastNames  (true, lastNameInput , firstNameInput->currentText (), true);
+	fillFirstNames (true, firstNameInput, lastNameInput->currentText  (), true);
 }
 
 void FlightWindow::planeToFields (dbId id, SkComboBox *registrationInput, SkLabel *typeLabel)
@@ -937,22 +937,22 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool departNow, cons
 		.arg (plane->registration).arg (plane->type),
 		ui.registrationInput);
 
-	// TODO use Flight::pilotDescription and Person::fullName
+	// TODO use Flight::pilotDescription
 	if (pilot && departNow && idValid (cache.personFlying (pilot->getId ())))
-		errorCheck (QString ("Laut Datenbank fliegt der Pilot %1 %2 noch.")
-			.arg (pilot->firstName).arg (pilot->lastName),
+		errorCheck (QString ("Laut Datenbank fliegt der Pilot %1 noch.")
+			.arg (pilot->fullName ()),
 			ui.pilotLastNameInput);
 
-	// TODO use Flight::copilotDescription and Person::fullName
+	// TODO use Flight::copilotDescription
 	if (copilot && departNow && idValid (cache.personFlying (copilot->getId ())))
-		errorCheck (QString ("Laut Datenbank fliegt der Begleiter %1 %2 noch.")
-			.arg (copilot->firstName).arg (copilot->lastName),
+		errorCheck (QString ("Laut Datenbank fliegt der Begleiter %1 noch.")
+			.arg (copilot->fullName ()),
 			ui.copilotLastNameInput);
 
-	// TODO use Flight::towpilotDescription and Person::fullName
+	// TODO use Flight::towpilotDescription
 	if (towpilot && departNow && idValid (cache.personFlying (towpilot->getId ())))
-		errorCheck (QString ("Laut Datenbank fliegt der Schlepppilot %1 %2 noch.")
-			.arg (towpilot->firstName).arg (towpilot->lastName),
+		errorCheck (QString ("Laut Datenbank fliegt der Schlepppilot %2 noch.")
+			.arg (towpilot->fullName ()),
 			ui.towpilotLastNameInput);
 }
 
@@ -982,11 +982,11 @@ void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *la
 	flight.pilotId=
 		determinePerson (
 			isPilotActive(),
-			getCurrentPilotFirstName (),
 			getCurrentPilotLastName (),
+			getCurrentPilotFirstName (),
 			Flight::typePilotDescription (getCurrentFlightType ()),
 			pilotRequired,
-			flight.pilotFirstName, flight.pilotLastName,
+			flight.pilotLastName, flight.pilotFirstName,
 			selectedPilot,
 			ui.pilotLastNameInput);
 
@@ -995,11 +995,11 @@ void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *la
 	flight.copilotId=
 		determinePerson (
 			isCopilotActive (),
-			getCurrentCopilotFirstName (),
 			getCurrentCopilotLastName (),
+			getCurrentCopilotFirstName (),
 			Flight::typeCopilotDescription (getCurrentFlightType ()),
 			false, // Copilot is never required; flight instructor is checked later
-			flight.copilotFirstName, flight.copilotLastName,
+			flight.copilotLastName, flight.copilotFirstName,
 			selectedCopilot,
 			ui.copilotLastNameInput);
 
@@ -1008,11 +1008,11 @@ void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *la
 	flight.towpilotId=
 		determinePerson (
 			isTowpilotActive(),
-			getCurrentTowpilotFirstName(),
 			getCurrentTowpilotLastName(),
+			getCurrentTowpilotFirstName(),
 			"Schlepppilot",
 			true, // required
-			flight.towpilotFirstName, flight.towpilotLastName,
+			flight.towpilotLastName, flight.towpilotFirstName,
 			selectedTowpilot,
 			ui.towpilotLastNameInput);
 }
@@ -1175,8 +1175,8 @@ dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
 	throw (AbortedException)
 {
 	Person person;
-	person.firstName=firstName;
 	person.lastName=lastName;
+	person.firstName=firstName;
 
 	dbId result=ObjectEditorWindow<Person>::createObject (this, manager);
 	if (idValid (result))
@@ -1186,7 +1186,7 @@ dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
 }
 
 /**
- * Tries to determine the person for a given first name and last name by
+ * Tries to determine the person for a given last name and first name by
  * retrieving additional data from the dataSource and querying the user if
  * necessary.
  *
@@ -1203,8 +1203,8 @@ dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
  *
  * @param active whether the person is active at all; an invalid ID is returned
  *               if the person is not used
- * @param firstName the first name of the person given by the user
  * @param lastName the last name of the person given by the user
+ * @param firstName the first name of the person given by the user
  * @param description the description of the person for displaying to the user.
  *                    This can be used to distinguish between differen people.
  * @param required whether the person is required for a regular flight. If a
@@ -1214,7 +1214,7 @@ dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
  *         confirmed by the user
  * @throw AbortedException if the user aborted the selection
  */
-dbId FlightWindow::determinePerson (bool active, QString firstName, QString lastName, QString description, bool required, QString &incompleteFirstName, QString &incompleteLastName, dbId originalId, QWidget *widget)
+dbId FlightWindow::determinePerson (bool active, QString lastName, QString firstName, QString description, bool required, QString &incompleteLastName, QString &incompleteFirstName, dbId originalId, QWidget *widget)
 	throw (FlightWindow::AbortedException)
 {
 	if (!active) return invalidId;
@@ -1247,11 +1247,11 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 	 * This is a pragmatic approach and there may be better solutions.
 	 */
 
-	bool firstNameGiven=!eintrag_ist_leer (firstName);
 	bool lastNameGiven=!eintrag_ist_leer (lastName);
+	bool firstNameGiven=!eintrag_ist_leer (firstName);
 
 	// Case 0: name is "+1"
-	if (firstName.simplified ()=="+1" || lastName.simplified ()=="+1")
+	if (lastName.simplified ()=="+1" || firstName.simplified ()=="+1")
 	{
 		QString title=utf8 ("+1 als Name angegeben");
 		QString problem=utf8 ("Es wurde \"+1\" als Name angegeben. Für Gastflüge sollte"
@@ -1261,7 +1261,7 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 	}
 
 	// Case 7 and 8: no name was given
-	if (!firstNameGiven && !lastNameGiven)
+	if (!lastNameGiven && !firstNameGiven)
 	{
 		// Case 8: no name required
 		if (!required)
@@ -1282,15 +1282,15 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 
 	// Get a list of candidates, using all name information available.
 	QList<dbId> candidates;
-	if (firstNameGiven && lastNameGiven)
-		candidates=cache.getPersonIdsByName (firstName, lastName);
-	else if (firstNameGiven)
-		candidates=cache.getPersonIdsByFirstName (firstName);
+	if (lastNameGiven && firstNameGiven)
+		candidates=cache.getPersonIdsByName (lastName, firstName);
 	else if (lastNameGiven)
 		candidates=cache.getPersonIdsByLastName (lastName);
+	else if (firstNameGiven)
+		candidates=cache.getPersonIdsByFirstName (firstName);
 
 	// Case 1: complete name given, but no person found
-	if (firstNameGiven && lastNameGiven && candidates.empty ())
+	if (lastNameGiven && firstNameGiven && candidates.empty ())
 	{
 		// No person of that name was found in the database.
 		QString title=QString ("%1 nicht bekannt").arg (description);
@@ -1306,7 +1306,7 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 	}
 
 	// Case 2: complete name given and uniqe person found
-	if (firstNameGiven && lastNameGiven && candidates.size ()==1)
+	if (lastNameGiven && firstNameGiven && candidates.size ()==1)
 		return candidates.at (0);
 
 	// Case 3-6: show selection list with candidates, "Unknown" and "Create"
@@ -1317,7 +1317,7 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 
 	QString title ("Personenauswahl");
 	QString text;
-	if (firstNameGiven && lastNameGiven)
+	if (lastNameGiven && firstNameGiven)
 		// Case 3: multiple candidates
 		text=utf8 ("Es kommen mehrere Personen in Frage. Bitte auswählen (%1):").arg (description);
 	else if (!firstNameGiven)
@@ -1326,10 +1326,11 @@ dbId FlightWindow::determinePerson (bool active, QString firstName, QString last
 	else if (!lastNameGiven)
 		// Case 4-6: no last name given
 		text=utf8 ("Es wurde nur ein Vorname angegeben. Bitte auswählen (%1):").arg (description);
-	// Note that (!firstNameGiven && !lastNameGiven) has already been handled
+	// Note that (!lastNameGiven && !firstNameGiven) has already been handled
 	// (case 1)
 
-	// Get all matching people (candidates) from the database
+	// Get all matching people (candidates) from the database, ignoring missing
+	// ones
 	QList<Person> people=cache.getObjects<Person> (candidates, true);
 
 	// Determine the preselected person
@@ -1572,7 +1573,7 @@ void FlightWindow::updateSetupVisibility ()
 	//
 	enableWidget  (ui.towplaneRegistrationInput                        , isTowplaneRegistrationActive         ());
 	enableWidget  (ui.towplaneTypeWidget                               , isTowplaneTypeActive                 ());
-	enableWidgets (ui.towpilotFirstNameInput, ui.towpilotLastNameInput , isTowpilotActive                     ());
+	enableWidgets (ui.towpilotLastNameInput, ui.towpilotFirstNameInput , isTowpilotActive                     ());
 	enableWidget  (ui.towflightModeInput                               , isTowflightModeActive                ());
 	//
 	enableWidget (ui.departureTimeCheckbox                             , isDepartureActive                    ());

@@ -174,24 +174,24 @@ namespace Db
 			return invalidId;
 		}
 
-		QList<dbId> Cache::getPersonIdsByName (const QString &firstName, const QString &lastName)
+		QList<dbId> Cache::getPersonIdsByName (const QString &lastName, const QString &firstName)
 		{
 			QPair<QString, QString> pair (lastName.toLower (), firstName.toLower ());
 			synchronizedReturn (dataMutex, personIdsByName.values (pair));
 		}
 
 		/**
-		 * Returns the ID of the person with the given first and last name
+		 * Returns the ID of the person with the given last and first name
 		 * (case insensitively) if there is exactly one such person, or an
 		 * invalid id if threre are multiple or no such people
 		 *
-		 * @param firstName the first name of the person (the case is ignored)
 		 * @param lastName the last name of the person (the case is ignored)
+		 * @param firstName the first name of the person (the case is ignored)
 		 * @return the ID of the person, or an invalid ID
 		 */
-		dbId Cache::getUniquePersonIdByName (const QString &firstName, const QString &lastName)
+		dbId Cache::getUniquePersonIdByName (const QString &lastName, const QString &firstName)
 		{
-			const QList<dbId> personIds=getPersonIdsByName (firstName, lastName);
+			const QList<dbId> personIds=getPersonIdsByName (lastName, firstName);
 
 			if (personIds.size ()==1) return personIds.at (0);
 			return invalidId;

@@ -11,6 +11,11 @@ const QString whitespace=" \t\r\n";
 
 using std::cout; using std::cerr; using std::endl;
 
+bool blank (const QString &string)
+{
+	return string.simplified ().isEmpty ();
+}
+
 bool eintrag_ist_leer (QString eintrag)
 	/*
 	 * Finds out whether an entry is considered "empty".

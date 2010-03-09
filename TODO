@@ -4,7 +4,6 @@ Database notes:
 /*
  * Short term plan:
  *   - Connection monitoring (ping? keepalive?)
- *   - Proper caching
  *   - timeout: only when no data is transfered
  *   - signal unhandled exceptions to main window
  *

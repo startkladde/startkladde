@@ -9,9 +9,11 @@
 #include <QColor>
 
 // TODO split
+// TOOD use const QString & instead of QString where possible
 
 extern const QString whitespace;
 
+bool blank (const QString &string);
 bool eintrag_ist_leer (QString eintrag);
 bool eintraege_sind_leer (QString eintrag1, QString eintrag2);
 bool locationEntryCanBeChanged (QString location);
