@@ -13,7 +13,7 @@
 #include "src/db/dbId.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required fro ObjectEditorWindowBase::Mode
 
-namespace Db { namespace Cache { class Cache; } }
+class Cache;
 
 /**
  * A Q_OBJECT base for the template ObjectEditorPane so we can use signals and
@@ -25,14 +25,14 @@ class ObjectEditorPaneBase: public QWidget
 		// Types
 		class AbortedException: public std::exception {};
 
-		ObjectEditorPaneBase (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent=NULL);
+		ObjectEditorPaneBase (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 		virtual ~ObjectEditorPaneBase ();
 
 	protected:
 		virtual void errorCheck (const QString &problem, QWidget *widget);
 		virtual void requiredField (const QString &value, QWidget *widget, const QString &problem);
 
-		Db::Cache::Cache &cache;
+		Cache &cache;
 		ObjectEditorWindowBase::Mode mode;
 };
 
@@ -56,7 +56,7 @@ class ObjectEditorPaneBase: public QWidget
 template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 {
 	public:
-		ObjectEditorPane (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent=NULL);
+		ObjectEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 		virtual ~ObjectEditorPane ();
 
 		/**
@@ -73,7 +73,7 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		virtual T determineObject ()=0;
 
 		/** @brief Implementations of ObjectEditorPane should specialize this template method */
-		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent=NULL);
+		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 
 	protected:
 		dbId originalId;
@@ -84,7 +84,7 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 // ** ObjectEditorPane implementation **
 // *************************************
 
-template<class T> ObjectEditorPane<T>::ObjectEditorPane (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent):
+template<class T> ObjectEditorPane<T>::ObjectEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent):
 	ObjectEditorPaneBase (mode, cache, parent),
 	originalId (invalidId)
 {

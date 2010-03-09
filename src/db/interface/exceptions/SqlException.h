@@ -13,26 +13,20 @@
 
 #include "src/StorableException.h"
 
-namespace Db
+class SqlException: public StorableException
 {
-	namespace Interface
-	{
-		class SqlException: public StorableException
-		{
-			public:
-				SqlException (const QSqlError &error);
-				virtual ~SqlException ();
+	public:
+		SqlException (const QSqlError &error);
+		virtual ~SqlException ();
 
-				virtual QString toString () const=0;
-				virtual QString colorizedString () const=0;
+		virtual QString toString () const=0;
+		virtual QString colorizedString () const=0;
 
-				QSqlError error;
+		QSqlError error;
 
-			protected:
-				virtual QString makeString (const QString &message) const;
-				virtual QString makeColorizedString (const QString &message) const;
-		};
-	}
-}
+	protected:
+		virtual QString makeString (const QString &message) const;
+		virtual QString makeColorizedString (const QString &message) const;
+};
 
-#endif /* SQLEXCEPTION_H_ */
+#endif

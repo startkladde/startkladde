@@ -6,7 +6,7 @@
 #include "src/db/cache/Cache.h"
 #include "src/model/LaunchMethod.h"
 
-FlightProxyList::FlightProxyList (Db::Cache::Cache &cache, AbstractObjectList<Flight> &sourceModel, QObject *parent):
+FlightProxyList::FlightProxyList (Cache &cache, AbstractObjectList<Flight> &sourceModel, QObject *parent):
 	AbstractObjectList<Flight> (parent),
 	cache (cache),
 	sourceModel (sourceModel)
@@ -58,7 +58,7 @@ bool FlightProxyList::isAirtow (const Flight &flight, LaunchMethod *launchMethod
 		if (launchMethod) *launchMethod=lm;
 		return lm.isAirtow ();
 	}
-	catch (Db::Cache::Cache::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		// Launch method not found => no airtow
 		return false;
@@ -110,7 +110,7 @@ void FlightProxyList::updateTowflight (dbId id, int towflightIndex)
 			towflights.replace (towflightIndex, flight.makeTowflight (towplaneId, selfLaunchId));
 		}
 	}
-	catch (Db::Cache::Cache::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		// Do nothing // TODO log error
 	}

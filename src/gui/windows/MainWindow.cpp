@@ -68,7 +68,7 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	// Database
 	connect (&dbManager.getInterface (), SIGNAL (databaseError (int, QString)), this, SLOT (databaseError (int, QString)));
-	connect (&dbManager.getInterface (), SIGNAL (executingQuery (Db::Query)), this, SLOT (executingQuery (Db::Query)));
+	connect (&dbManager.getInterface (), SIGNAL (executingQuery (Query)), this, SLOT (executingQuery (Query)));
 
 	flightModel = new FlightModel (dbManager.getCache ());
 	proxyList=new FlightProxyList (dbManager.getCache (), *flightList, this); // TODO never deleted
@@ -106,7 +106,7 @@ MainWindow::MainWindow (QWidget *parent) :
 	setupLayout ();
 
 	// Do this before calling connect
-	QObject::connect (&dbManager.getCache (), SIGNAL (changed (Db::Event::DbEvent)), this, SLOT (cacheChanged (Db::Event::DbEvent)));
+	QObject::connect (&dbManager.getCache (), SIGNAL (changed (DbEvent)), this, SLOT (cacheChanged (DbEvent)));
 
 	setNotConnected ();
 	// TODO to "shown"?
@@ -1359,12 +1359,12 @@ void MainWindow::databaseError (int number, QString message)
 	}
 }
 
-void MainWindow::executingQuery (Db::Query query)
+void MainWindow::executingQuery (Query query)
 {
 	logMessage (query.toString ());
 }
 
-void MainWindow::cacheChanged (Db::Event::DbEvent event)
+void MainWindow::cacheChanged (DbEvent event)
 {
 	assert (isGuiThread ());
 
@@ -1378,7 +1378,7 @@ void MainWindow::cacheChanged (Db::Event::DbEvent event)
 		{
 			switch (event.getType ())
 			{
-				case Db::Event::DbEvent::typeAdd:
+				case DbEvent::typeAdd:
 				{
 					Flight flight=event.getValue<Flight> ();
 					if (flight.isPrepared () || flight.effdatum ()==displayDate)
@@ -1395,7 +1395,7 @@ void MainWindow::cacheChanged (Db::Event::DbEvent event)
 							setDisplayDate (flight.effdatum (), false);
 					}
 				} break;
-				case Db::Event::DbEvent::typeChange:
+				case DbEvent::typeChange:
 				{
 					Flight flight=event.getValue<Flight> ();
 
@@ -1405,7 +1405,7 @@ void MainWindow::cacheChanged (Db::Event::DbEvent event)
 					else
 						flightList->removeById (flight.getId ());
 				} break;
-				case Db::Event::DbEvent::typeDelete:
+				case DbEvent::typeDelete:
 					flightList->removeById (event.getId ());
 					break;
 			}

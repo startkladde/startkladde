@@ -58,7 +58,7 @@ QString PilotLog::Entry::flightDurationText () const
  * @param cache
  * @return
  */
-PilotLog::Entry PilotLog::Entry::create (const Flight *flight, Db::Cache::Cache &cache)
+PilotLog::Entry PilotLog::Entry::create (const Flight *flight, Cache &cache)
 {
 	PilotLog::Entry entry;
 
@@ -119,7 +119,7 @@ PilotLog::~PilotLog ()
  * @param mode
  * @return
  */
-PilotLog *PilotLog::createNew (dbId personId, const QList<Flight> &flights, Db::Cache::Cache &cache, FlightInstructorMode mode)
+PilotLog *PilotLog::createNew (dbId personId, const QList<Flight> &flights, Cache &cache, FlightInstructorMode mode)
 {
 	QList<const Flight *> interestingFlights;
 
@@ -156,7 +156,7 @@ PilotLog *PilotLog::createNew (dbId personId, const QList<Flight> &flights, Db::
  * @param cache
  * @return
  */
-PilotLog *PilotLog::createNew (const QList<Flight> &flights, Db::Cache::Cache &cache, FlightInstructorMode mode)
+PilotLog *PilotLog::createNew (const QList<Flight> &flights, Cache &cache, FlightInstructorMode mode)
 {
 	QSet<dbId> personIdSet;
 

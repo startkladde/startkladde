@@ -7,7 +7,7 @@
 // ** ObjectEditorPaneBase construction **
 // ***************************************
 
-ObjectEditorPaneBase::ObjectEditorPaneBase (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent):
+ObjectEditorPaneBase::ObjectEditorPaneBase (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent):
 	QWidget (parent),
 	cache (cache), mode (mode)
 {

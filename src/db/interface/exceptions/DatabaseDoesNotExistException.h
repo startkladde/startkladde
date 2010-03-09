@@ -10,19 +10,13 @@
 
 #include "src/db/interface/exceptions/ConnectionFailedException.h"
 
-namespace Db
+class DatabaseDoesNotExistException: public ConnectionFailedException
 {
-	namespace Interface
-	{
-		class DatabaseDoesNotExistException: public ConnectionFailedException
-		{
-			public:
-				DatabaseDoesNotExistException (const QSqlError &error);
+	public:
+		DatabaseDoesNotExistException (const QSqlError &error);
 
-				virtual DatabaseDoesNotExistException *clone () const;
-				virtual void rethrow () const;
-		};
-	}
-}
+		virtual DatabaseDoesNotExistException *clone () const;
+		virtual void rethrow () const;
+};
 
-#endif /* DATABASEDOESNOTEXISTEXCEPTION_H_ */
+#endif

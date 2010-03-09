@@ -57,7 +57,7 @@
  *     checking, the values are always read from the input widgets.
  */
 
-using namespace std;
+//using namespace std;
 
 // ***************
 // ** Constants **
@@ -390,15 +390,15 @@ void FlightWindow::editFlight (QWidget *parent, DbManager &manager, Flight &flig
  * matching a given last name) or all values for a name part, if the other name
  * part is empty.
  *
- * The name parts are read from the Db::Cache::Cache.
+ * The name parts are read from the Cache.
  *
  * Additionally, if the name part is unique, it is written to the target list
  * box's current text if that was empty before. This can be prevented using the
  * preserveTarget parameter.
  *
- * @param fullListMethod the method of Db::Cache::Cache used to retrieve all values
+ * @param fullListMethod the method of Cache used to retrieve all values
  *                       of the name part
- * @param partialListMethod the method of Db::Cache::Cache used to retrieve all
+ * @param partialListMethod the method of Cache used to retrieve all
  *                          values of the name part which match a given other
  *                          name part
  * @param target the combo box to write the name parts to
@@ -407,7 +407,7 @@ void FlightWindow::editFlight (QWidget *parent, DbManager &manager, Flight &flig
  *                       combo box, even if it is empty
  * @return the number of matching names (not: people)
  */
-int FlightWindow::fillNames (QStringList (Db::Cache::Cache::*fullListMethod)(), QStringList (Db::Cache::Cache::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget)
+int FlightWindow::fillNames (QStringList (Cache::*fullListMethod)(), QStringList (Cache::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget)
 {
 	// Store the old value of the target field
 	QString oldValue=target->currentText ();
@@ -440,8 +440,8 @@ dbId FlightWindow::fillLastNames  (bool active, QComboBox *target, const QString
 	if (!active) return invalidId;
 
 	fillNames (
-		&Db::Cache::Cache::getPersonLastNames,
-		&Db::Cache::Cache::getPersonLastNames,
+		&Cache::getPersonLastNames,
+		&Cache::getPersonLastNames,
 		target, firstName, preserveTarget);
 
 	// Even if there were multiple matching other name parts, the current
@@ -454,8 +454,8 @@ dbId FlightWindow::fillFirstNames  (bool active, QComboBox *target, const QStrin
 	if (!active) return invalidId;
 
 	fillNames (
-		&Db::Cache::Cache::getPersonFirstNames,
-		&Db::Cache::Cache::getPersonFirstNames,
+		&Cache::getPersonFirstNames,
+		&Cache::getPersonFirstNames,
 		target, lastName, preserveTarget);
 
 	// Even if there were multiple matching other name parts, the current
@@ -624,7 +624,7 @@ void FlightWindow::personToFields (dbId id, SkComboBox *lastNameInput, SkComboBo
 			firstNameInput->setCurrentText (person.firstName );
 			ok=true;
 		}
-		catch (Db::Cache::Cache::NotFoundException &ex) {}
+		catch (Cache::NotFoundException &ex) {}
 	}
 
 	if (!ok)
@@ -649,7 +649,7 @@ void FlightWindow::planeToFields (dbId id, SkComboBox *registrationInput, SkLabe
 			registrationInput->setCurrentText (plane.registration);
 			typeLabel->setText (plane.type);
 		}
-		catch (Db::Cache::Cache::NotFoundException &ex) {}
+		catch (Cache::NotFoundException &ex) {}
 	}
 }
 
@@ -688,7 +688,7 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 			if (cache.getObject<LaunchMethod> (flight.launchMethodId).type==LaunchMethod::typeSelf)
 				copyLaunchMethod=true;
 	}
-	catch (Db::Cache::Cache::NotFoundException &ex)
+	catch (Cache::NotFoundException &ex)
 	{
 		log_error ("Launch method not found in FlightWindow::flightToFields");
 	}
@@ -1427,7 +1427,7 @@ bool FlightWindow::currentIsAirtow ()
 	{
 		return getCurrentLaunchMethod ().isAirtow ();
 	}
-	catch (Db::Cache::Cache::NotFoundException &ex)
+	catch (Cache::NotFoundException &ex)
 	{
 		return false;
 	}
@@ -1442,7 +1442,7 @@ bool FlightWindow::isTowplaneRegistrationActive ()
 	{
 		return !getCurrentLaunchMethod ().towplaneKnown ();
 	}
-	catch (Db::Cache::Cache::NotFoundException &ex)
+	catch (Cache::NotFoundException &ex)
 	{
 		return false;
 	}
@@ -1688,7 +1688,7 @@ void FlightWindow::registrationChanged (const QString &text)
 			if (plane.selfLaunchOnly () && idInvalid (getCurrentLaunchMethodId ()))
 				ui.launchMethodInput->setCurrentItemByItemData (cache.getLaunchMethodByType (LaunchMethod::typeSelf));
 		}
-		catch (Db::Cache::Cache::NotFoundException &ex)
+		catch (Cache::NotFoundException &ex)
 		{
 			ui.planeTypeWidget->setText ("?");
 		}
@@ -1749,7 +1749,7 @@ void FlightWindow::launchMethodChanged (int index)
 					Plane towplane=cache.getObject<Plane> (towplaneId);
 					ui.towplaneTypeWidget->setText (towplane.type);
 				}
-				catch (Db::Cache::Cache::NotFoundException &ex)
+				catch (Cache::NotFoundException &ex)
 				{
 					ui.towplaneTypeWidget->setText ("?");
 				}
@@ -1777,7 +1777,7 @@ void FlightWindow::towplaneRegistrationChanged (const QString &text)
 			// Set the plane type widget
 			ui.towplaneTypeWidget->setText (towplane.type);
 		}
-		catch (Db::Cache::Cache::NotFoundException &ex)
+		catch (Cache::NotFoundException &ex)
 		{
 			ui.towplaneTypeWidget->setText ("?");
 		}

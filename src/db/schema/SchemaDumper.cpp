@@ -10,7 +10,7 @@
 #include "src/db/migration/Migrator.h" // Required for migrationsTableName/migrationsColumnName
 #include "src/db/result/Result.h"
 
-SchemaDumper::SchemaDumper (Db::Interface::Interface &interface):
+SchemaDumper::SchemaDumper (Interface &interface):
 	interface (interface)
 {
 }
@@ -68,8 +68,8 @@ void SchemaDumper::dumpTables (QStringList &output)
 //	while (query.next ())
 //		dumpTable (output, query.value (0).toString ());
 
-//	Db::Query query=Db::Query ("SHOW TABLES");
-	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult ("SHOW TABLES");
+//	Query query=Query ("SHOW TABLES");
+	QSharedPointer<Result> result=interface.executeQueryResult ("SHOW TABLES");
 
 	while (result->next ())
 		dumpTable (output, result->value (0).toString ());
@@ -87,8 +87,8 @@ void SchemaDumper::dumpColumns (QStringList &output, const QString &table)
 {
 	output << "  columns:";
 
-	Db::Query query=Db::Query ("SHOW COLUMNS FROM %1").arg (table);
-	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult (query);
+	Query query=Query ("SHOW COLUMNS FROM %1").arg (table);
+	QSharedPointer<Result> result=interface.executeQueryResult (query);
 
 	QSqlRecord record=result->record ();
 	int nameIndex=record.indexOf ("Field");
@@ -122,8 +122,8 @@ void SchemaDumper::dumpVersions (QStringList &output)
 	QString table=Migrator::migrationsTableName;
 	QString column=Migrator::migrationsColumnName;
 
-	Db::Query query=Db::Query::selectDistinctColumns (table, column);
-	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult (query);
+	Query query=Query::selectDistinctColumns (table, column);
+	QSharedPointer<Result> result=interface.executeQueryResult (query);
 
 	while (result->next ())
 		output << QString ("- %1").arg (result->value (0).toString ());

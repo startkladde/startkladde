@@ -10,30 +10,24 @@
 
 #include <QSqlRecord>
 
-namespace Db
+class Result
 {
-	namespace Result
-	{
-		class Result
-		{
-			public:
-				virtual int at () const=0;
-				virtual bool first ()=0;
-				virtual bool isNull (int field) const=0;
-				virtual bool last ()=0;
-				virtual QVariant lastInsertId () const=0;
-				virtual QString lastQuery () const=0;
-				virtual bool next ()=0;
-				virtual int numRowsAffected () const=0;
-				virtual bool previous ()=0;
-				virtual QSqlRecord record () const=0;
-				virtual bool seek (int index, bool relative=false)=0;
-				virtual int size () const=0;
-				virtual QVariant value (int index) const=0;
+	public:
+		virtual int at () const=0;
+		virtual bool first ()=0;
+		virtual bool isNull (int field) const=0;
+		virtual bool last ()=0;
+		virtual QVariant lastInsertId () const=0;
+		virtual QString lastQuery () const=0;
+		virtual bool next ()=0;
+		virtual int numRowsAffected () const=0;
+		virtual bool previous ()=0;
+		virtual QSqlRecord record () const=0;
+		virtual bool seek (int index, bool relative=false)=0;
+		virtual int size () const=0;
+		virtual QVariant value (int index) const=0;
 
-				virtual QString type () const=0;
-		};
-	}
-}
+		virtual QString type () const=0;
+};
 
 #endif

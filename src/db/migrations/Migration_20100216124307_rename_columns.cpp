@@ -1,6 +1,6 @@
 #include "Migration_20100216124307_rename_columns.h"
 
-Migration_20100216124307_rename_columns::Migration_20100216124307_rename_columns (Db::Interface::Interface &interface):
+Migration_20100216124307_rename_columns::Migration_20100216124307_rename_columns (Interface &interface):
 	Migration (interface)
 {
 }

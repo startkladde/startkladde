@@ -220,7 +220,7 @@ QString LaunchMethod::selectColumnList ()
 	return "id,name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments";
 }
 
-LaunchMethod LaunchMethod::createFromResult (const Db::Result::Result &result)
+LaunchMethod LaunchMethod::createFromResult (const Result &result)
 {
 	LaunchMethod l (result.value (0).toLongLong ());
 
@@ -247,7 +247,7 @@ QString LaunchMethod::updateValueList ()
 	return "name=?, short_name=?, log_string=?, keyboard_shortcut=?, type=?, towplane_registration=?, person_required=?, comments=?";
 }
 
-void LaunchMethod::bindValues (Db::Query &q) const
+void LaunchMethod::bindValues (Query &q) const
 {
 	q.bind (name);
 	q.bind (shortName);
@@ -259,7 +259,7 @@ void LaunchMethod::bindValues (Db::Query &q) const
 	q.bind (comments);
 }
 
-QList<LaunchMethod> LaunchMethod::createListFromResult (Db::Result::Result &result)
+QList<LaunchMethod> LaunchMethod::createListFromResult (Result &result)
 {
 	QList<LaunchMethod> list;
 	while (result.next ()) list.append (createFromResult (result));

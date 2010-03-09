@@ -168,7 +168,7 @@ QString Person::selectColumnList ()
 	return "id,last_name,first_name,club,club_id,comments";
 }
 
-Person Person::createFromResult (const Db::Result::Result &result)
+Person Person::createFromResult (const Result &result)
 {
 	Person p (result.value (0).toLongLong ());
 
@@ -191,7 +191,7 @@ QString Person::updateValueList ()
 	return "last_name=?, first_name=?, club=?, club_id=?, comments=?";
 }
 
-void Person::bindValues (Db::Query &q) const
+void Person::bindValues (Query &q) const
 {
 	q.bind (lastName);
 	q.bind (firstName);
@@ -200,7 +200,7 @@ void Person::bindValues (Db::Query &q) const
 	q.bind (comments);
 }
 
-QList<Person> Person::createListFromResult (Db::Result::Result &result)
+QList<Person> Person::createListFromResult (Result &result)
 {
 	QList<Person> list;
 

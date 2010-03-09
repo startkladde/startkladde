@@ -231,7 +231,7 @@ QString Flight::incompletePersonName (QString nn, QString vn) const
 // ** Launch method **
 // *******************
 
-bool Flight::isAirtow (Db::Cache::Cache &cache) const
+bool Flight::isAirtow (Cache &cache) const
 {
 	try
 	{
@@ -240,13 +240,13 @@ bool Flight::isAirtow (Db::Cache::Cache &cache) const
 		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (launchMethodId);
 		return launchMethod.isAirtow ();
 	}
-	catch (Db::Cache::Cache::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return false;
 	}
 }
 
-dbId Flight::effectiveTowplaneId (Db::Cache::Cache &cache) const
+dbId Flight::effectiveTowplaneId (Cache &cache) const
 {
 	try
 	{
@@ -260,7 +260,7 @@ dbId Flight::effectiveTowplaneId (Db::Cache::Cache &cache) const
 		else
 			return towplaneId;
 	}
-	catch (Db::Cache::Cache::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return false;
 	}
@@ -460,7 +460,7 @@ Time Flight::towflightDuration () const
  * @param cache
  * @return
  */
-bool Flight::isErroneous (Db::Cache::Cache &cache) const
+bool Flight::isErroneous (Cache &cache) const
 {
 	Plane *thePlane=cache.getNewObject<Plane> (planeId);
 	LaunchMethod *theLaunchMethod=cache.getNewObject<LaunchMethod> (launchMethodId);
@@ -809,7 +809,7 @@ QString Flight::selectColumnList ()
 		;
 }
 
-Flight Flight::createFromResult (const Db::Result::Result &result)
+Flight Flight::createFromResult (const Result &result)
 {
 	Flight f (result.value (0).toLongLong ());
 
@@ -884,7 +884,7 @@ QString Flight::updateValueList ()
 		;
 }
 
-void Flight::bindValues (Db::Query &q) const
+void Flight::bindValues (Query &q) const
 {
 	q.bind (pilotId);
 	q.bind (copilotId);
@@ -920,7 +920,7 @@ void Flight::bindValues (Db::Query &q) const
 	q.bind (towpilotFirstName);
 }
 
-QList<Flight> Flight::createListFromResult (Db::Result::Result &result)
+QList<Flight> Flight::createListFromResult (Result &result)
 {
 	QList<Flight> list;
 
@@ -985,20 +985,20 @@ Flight::Type Flight::typeFromDb (QString type)
 	else                             return typeNone;
 }
 
-Db::Query Flight::referencesPersonCondition (dbId id)
+Query Flight::referencesPersonCondition (dbId id)
 {
-	return Db::Query ("pilot_id=? OR copilot_id=? OR towpilot_id=?")
+	return Query ("pilot_id=? OR copilot_id=? OR towpilot_id=?")
 		.bind (id).bind (id).bind (id);
 }
 
-Db::Query Flight::referencesPlaneCondition (dbId id)
+Query Flight::referencesPlaneCondition (dbId id)
 {
-	return Db::Query ("plane_id=? OR towplane_id=?")
+	return Query ("plane_id=? OR towplane_id=?")
 		.bind (id).bind (id);
 }
 
-Db::Query Flight::referencesLaunchMethodCondition (dbId id)
+Query Flight::referencesLaunchMethodCondition (dbId id)
 {
-	return Db::Query ("launch_method_id=?")
+	return Query ("launch_method_id=?")
 		.bind (id);
 }

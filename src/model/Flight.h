@@ -14,11 +14,9 @@
 class Plane;
 class LaunchMethod;
 
-namespace Db {
-	class Query;
-	namespace Result { class Result; }
-	namespace Cache { class Cache; }
-}
+class Query;
+class Result;
+class Cache;
 
 enum FlightError {
 	ff_ok,
@@ -41,12 +39,12 @@ enum FlightError {
 	ff_startort_gleich_zielort, ff_kein_schleppflugzeug, ff_towplane_is_glider
 	};
 
-namespace Db { class Database; }
+class Database;
 
 // TODO: inherit from Entity
 class Flight
 {
-	friend class Db::Database;
+	friend class Database;
 
 	public:
 		// *** Types
@@ -142,8 +140,8 @@ class Flight
 
 
 		// *** Launch method
-		virtual bool isAirtow (Db::Cache::Cache &cache) const;
-		virtual dbId effectiveTowplaneId (Db::Cache::Cache &cache) const;
+		virtual bool isAirtow (Cache &cache) const;
+		virtual dbId effectiveTowplaneId (Cache &cache) const;
 
 		// *** Departure/landing
 		virtual bool departsHere        () const { return departsHere (mode         ); }
@@ -185,7 +183,7 @@ class Flight
 		// *** Error checking
 		virtual FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *launchMethod) const;
 		virtual QString errorDescription (FlightError code) const;
-		virtual bool isErroneous (Db::Cache::Cache &cache) const;
+		virtual bool isErroneous (Cache &cache) const;
 		virtual bool fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
 		virtual bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
 
@@ -235,11 +233,11 @@ class Flight
 		// *** SQL interface
 		static QString dbTableName ();
 		static QString selectColumnList ();
-		static Flight createFromResult (const Db::Result::Result &result);
+		static Flight createFromResult (const Result &result);
 		static QString insertValueList ();
 		static QString updateValueList ();
-		virtual void bindValues (Db::Query &q) const;
-		static QList<Flight> createListFromResult (Db::Result::Result &result);
+		virtual void bindValues (Query &q) const;
+		static QList<Flight> createListFromResult (Result &result);
 
 		// Enum mappers
 		static QString    modeToDb   (Mode       mode);
@@ -248,9 +246,9 @@ class Flight
 		static Type       typeFromDb (QString    type);
 
 		// Queries
-		static Db::Query referencesPersonCondition (dbId id);
-		static Db::Query referencesPlaneCondition (dbId id);
-		static Db::Query referencesLaunchMethodCondition (dbId id);
+		static Query referencesPersonCondition (dbId id);
+		static Query referencesPlaneCondition (dbId id);
+		static Query referencesLaunchMethodCondition (dbId id);
 
 	private:
 		dbId id;

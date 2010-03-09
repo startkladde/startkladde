@@ -17,46 +17,43 @@
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 
 // FIXME: test deleting of tasks
-namespace Db
+class Database;
+
+/**
+ * This class is thread safe.
+ *
+ * See doc/internal/worker.txt
+ */
+class DbWorker: QObject
 {
-	class Database;
+	Q_OBJECT
 
-	/**
-	 * This class is thread safe.
-	 *
-	 * See doc/internal/worker.txt
-	 */
-	class DbWorker: QObject
-	{
-		Q_OBJECT
+	public:
+		/** Implementation detail, please disregard */
+		class Task { public:
+			virtual void run (Database &db, OperationMonitor *monitor)=0; };
 
-		public:
-			/** Implementation detail, please disregard */
-			class Task { public:
-				virtual void run (Database &db, OperationMonitor *monitor)=0; };
+		DbWorker (Database &db);
+		virtual ~DbWorker ();
 
-			DbWorker (Database &db);
-			virtual ~DbWorker ();
+		template<class T> void createObject (Returner<dbId> &returner, OperationMonitor &monitor, T &object);
+		template<class T> void deleteObject (Returner<int > &returner, OperationMonitor &monitor, dbId id);
+		template<class T> void updateObject (Returner<int > &returner, OperationMonitor &monitor, const T &object);
+		template<class T> void objectUsed   (Returner<bool> &returner, OperationMonitor &monitor, dbId id);
 
-			template<class T> void createObject (Returner<dbId> &returner, OperationMonitor &monitor, T &object);
-			template<class T> void deleteObject (Returner<int > &returner, OperationMonitor &monitor, dbId id);
-			template<class T> void updateObject (Returner<int > &returner, OperationMonitor &monitor, const T &object);
-			template<class T> void objectUsed   (Returner<bool> &returner, OperationMonitor &monitor, dbId id);
+	protected:
+		virtual void executeAndDeleteTask (OperationMonitor *monitor, Task *task);
 
-		protected:
-			virtual void executeAndDeleteTask (OperationMonitor *monitor, Task *task);
+	signals:
+		virtual void sig_executeAndDeleteTask (OperationMonitor *monitor, Task *task);
 
-		signals:
-			virtual void sig_executeAndDeleteTask (OperationMonitor *monitor, Task *task);
-
-		protected slots:
-			virtual void slot_executeAndDeleteTask (OperationMonitor *monitor, Task *task);
+	protected slots:
+		virtual void slot_executeAndDeleteTask (OperationMonitor *monitor, Task *task);
 
 
-		private:
-			QThread thread;
-			Database &db;
-	};
-}
+	private:
+		QThread thread;
+		Database &db;
+};
 
 #endif

@@ -24,7 +24,7 @@ const QString Migrator::migrationsColumnName="version";
  *
  * @param interface the Interface to access
  */
-Migrator::Migrator (Db::Interface::Interface &interface):
+Migrator::Migrator (Interface &interface):
 	interface (interface),
 	factory (new MigrationFactory ())
 {
@@ -223,10 +223,10 @@ quint64 Migrator::currentVersion (OperationMonitorInterface monitor)
 {
 	if (!interface.tableExists (migrationsTableName)) return 0;
 
-	Db::Query query=Db::Query ("SELECT %2 FROM %1 ORDER BY %2 DESC LIMIT 1")
+	Query query=Query ("SELECT %2 FROM %1 ORDER BY %2 DESC LIMIT 1")
 		.arg (migrationsTableName, migrationsColumnName);
 
-	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult (query);
+	QSharedPointer<Result> result=interface.executeQueryResult (query);
 
 	// TODO getValue query
 	if (result->next ())
@@ -248,7 +248,7 @@ void Migrator::createMigrationsTable ()
 bool Migrator::hasMigration (quint64 version)
 {
 	return interface.queryHasResult (
-		Db::Query ("SELECT %2 FROM %1 WHERE %2=?")
+		Query ("SELECT %2 FROM %1 WHERE %2=?")
 		.arg (migrationsTableName, migrationsColumnName)
 		.bind (version)
 		);
@@ -264,7 +264,7 @@ void Migrator::addMigration (quint64 version)
 
 	// Add the migration name to the migrations table
 	interface.executeQuery (
-		Db::Query ("INSERT INTO %1 (%2) VALUES (?)")
+		Query ("INSERT INTO %1 (%2) VALUES (?)")
 		.arg (migrationsTableName, migrationsColumnName)
 		.bind (version)
 	);
@@ -277,7 +277,7 @@ void Migrator::removeMigration (quint64 version)
 
 	// Remove the migration name from the migrations table
 	interface.executeQuery (
-		Db::Query ("DELETE FROM %1 where %2=?")
+		Query ("DELETE FROM %1 where %2=?")
 			.arg (migrationsTableName, migrationsColumnName)
 			.bind (version)
 	);
@@ -289,10 +289,10 @@ QList<quint64> Migrator::appliedMigrations ()
 
 	if (!interface.tableExists (migrationsTableName)) return migrations;
 
-	Db::Query query=Db::Query::selectDistinctColumns (
+	Query query=Query::selectDistinctColumns (
 		migrationsTableName, migrationsColumnName);
 
-	QSharedPointer<Db::Result::Result> result=interface.executeQueryResult (query);
+	QSharedPointer<Result> result=interface.executeQueryResult (query);
 
 	// TODO listValues method
 	while (result->next ())
@@ -313,7 +313,7 @@ void Migrator::assumeMigrated (QList<quint64> versions)
 	// TODO one query
 	foreach (quint64 version, versions)
 	{
-		Db::Query query=Db::Query ("INSERT INTO %1 (%2) VALUES (?)")
+		Query query=Query ("INSERT INTO %1 (%2) VALUES (?)")
 			.arg (migrationsTableName, migrationsColumnName)
 			.bind (version);
 

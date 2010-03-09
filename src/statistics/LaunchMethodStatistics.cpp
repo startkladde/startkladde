@@ -33,7 +33,7 @@ LaunchMethodStatistics::~LaunchMethodStatistics ()
 // ** Creation **
 // **************
 
-LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &flights, Db::Cache::Cache &cache)
+LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &flights, Cache &cache)
 {
 	QMap<dbId, int> map;
 

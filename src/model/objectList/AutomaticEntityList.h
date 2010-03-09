@@ -22,23 +22,23 @@
  * A subclass auf EntityList that receives changed events from an object
  * and updates the list accordingly
  *
- * The object must provide a changed (Db::Event::DbEvent) signal.
+ * The object must provide a changed (DbEvent) signal.
  *
  * This uses a DbEventMonitor rather than an AutomaticEntityListBase with a
  * changed slot in order to avoid a diamon inheritance from QObject.
  */
-template<class T> class AutomaticEntityList: public EntityList<T>, Db::Event::DbEventMonitor::Listener
+template<class T> class AutomaticEntityList: public EntityList<T>, DbEventMonitor::Listener
 {
 	public:
 		AutomaticEntityList (QObject &source, QObject *parent=NULL);
 		AutomaticEntityList (QObject &source, const QList<T> &list, QObject *parent=NULL);
 		virtual ~AutomaticEntityList ();
 
-		// Db::Event::Listener methods
-		virtual void dbEvent (Db::Event::DbEvent event);
+		// Listener methods
+		virtual void dbEvent (DbEvent event);
 
 	protected:
-		Db::Event::DbEventMonitor monitor;
+		DbEventMonitor monitor;
 };
 
 /**
@@ -49,7 +49,7 @@ template<class T> class AutomaticEntityList: public EntityList<T>, Db::Event::Db
  */
 template<class T> AutomaticEntityList<T>::AutomaticEntityList (QObject &source, QObject *parent):
 	EntityList<T> (parent),
-	monitor (source, SIGNAL (changed (Db::Event::DbEvent)), *this)
+	monitor (source, SIGNAL (changed (DbEvent)), *this)
 {
 }
 
@@ -62,7 +62,7 @@ template<class T> AutomaticEntityList<T>::AutomaticEntityList (QObject &source, 
  */
 template<class T> AutomaticEntityList<T>::AutomaticEntityList (QObject &source, const QList<T> &list, QObject *parent):
 	EntityList<T> (list, parent),
-	monitor (source, SIGNAL (changed (Db::Event::DbEvent)), *this)
+	monitor (source, SIGNAL (changed (DbEvent)), *this)
 {
 }
 
@@ -71,17 +71,17 @@ template<class T> AutomaticEntityList<T>::~AutomaticEntityList ()
 }
 
 
-// *********************************
-// ** Db::Event::Listener methods **
-// *********************************
+// **********************
+// ** Listener methods **
+// **********************
 
 /**
  * Called on database changes. Updates the list and emits the appropriate
  * signals.
  *
- * @param event the Db::Event::DbEvent describing the change
+ * @param event the DbEvent describing the change
  */
-template<class T> void AutomaticEntityList<T>::dbEvent (Db::Event::DbEvent event)
+template<class T> void AutomaticEntityList<T>::dbEvent (DbEvent event)
 {
 	assert (isGuiThread());
 
@@ -90,16 +90,16 @@ template<class T> void AutomaticEntityList<T>::dbEvent (Db::Event::DbEvent event
 
 	switch (event.getType ())
 	{
-		case Db::Event::DbEvent::typeAdd:
+		case DbEvent::typeAdd:
 		{
 			EntityList<T>::append (event.getValue<T> ());
 		} break;
-		case Db::Event::DbEvent::typeDelete:
+		case DbEvent::typeDelete:
 		{
 			int i=EntityList<T>::findById (event.getId ());
 			if (i>=0) EntityList<T>::removeAt (i);
 		} break;
-		case Db::Event::DbEvent::typeChange:
+		case DbEvent::typeChange:
 		{
 			int i=EntityList<T>::findById (event.getId ());
 			if (i>=0)

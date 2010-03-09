@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Migration_20100216190338_full_flight_type::Migration_20100216190338_full_flight_type (Db::Interface::Interface &interface):
+Migration_20100216190338_full_flight_type::Migration_20100216190338_full_flight_type (Interface &interface):
 	Migration (interface)
 {
 }

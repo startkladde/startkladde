@@ -13,7 +13,7 @@ class PlaneEditorPane: public ObjectEditorPane<Plane>
     Q_OBJECT
 
 	public:
-		PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent=NULL);
+		PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 		virtual ~PlaneEditorPane();
 
 		virtual void objectToFields (const Plane &plane);

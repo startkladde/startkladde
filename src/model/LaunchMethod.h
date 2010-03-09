@@ -70,11 +70,11 @@ class LaunchMethod: public Entity
 		// *** SQL interface
 		static QString dbTableName ();
 		static QString selectColumnList ();
-		static LaunchMethod createFromResult (const Db::Result::Result &result);
+		static LaunchMethod createFromResult (const Result &result);
 		static QString insertValueList ();
 		static QString updateValueList ();
-		virtual void bindValues (Db::Query &q) const;
-		static QList<LaunchMethod> createListFromResult (Db::Result::Result &query);
+		virtual void bindValues (Query &q) const;
+		static QList<LaunchMethod> createListFromResult (Result &query);
 
 		// Enum mappers
 		static QString typeToDb   (Type    type);

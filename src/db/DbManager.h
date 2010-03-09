@@ -65,15 +65,15 @@ class DbManager
 		DbManager (const DatabaseInfo &info);
 		virtual ~DbManager ();
 
-		virtual Db::Interface::ThreadSafeInterface
-		                               &getInterface      () { return interface;   }
-		virtual Db::Database           &getDb             () { return db;          }
-		virtual Db::Cache::Cache       &getCache          () { return cache;       }
+		virtual ThreadSafeInterface
+		                       &getInterface      () { return interface;   }
+		virtual Database       &getDb             () { return db;          }
+		virtual Cache          &getCache          () { return cache;       }
 
-		virtual Db::DbWorker           &getDbWorker       () { return dbWorker;       }
-		virtual Db::Migration::MigratorWorker
-		                               &getMigratorWorker () { return migratorWorker; }
-		virtual Db::Cache::CacheWorker &getCacheWorker    () { return cacheWorker;    }
+		virtual DbWorker       &getDbWorker       () { return dbWorker;       }
+		virtual MigratorWorker
+		                       &getMigratorWorker () { return migratorWorker; }
+		virtual CacheWorker    &getCacheWorker    () { return cacheWorker;    }
 
 
 		// *** Schema management
@@ -105,14 +105,14 @@ class DbManager
 		DbManager (const DbManager &other);
 		DbManager &operator= (const DbManager &other);
 
-		Db::Interface::ThreadSafeInterface interface;
-		Db::Database db;
-		Db::Cache::Cache cache;
+		ThreadSafeInterface interface;
+		Database db;
+		Cache cache;
 
 		InterfaceWorker interfaceWorker;
-		Db::DbWorker dbWorker;
-		Db::Migration::MigratorWorker migratorWorker;
-		Db::Cache::CacheWorker cacheWorker;
+		DbWorker dbWorker;
+		MigratorWorker migratorWorker;
+		CacheWorker cacheWorker;
 
 		void doOpenInterface (InterfaceWorker &worker, QWidget *parent);
 };

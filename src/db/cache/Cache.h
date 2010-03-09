@@ -28,233 +28,227 @@ class Plane;
 
 template<class T> class EntityList;
 
-namespace Db
+class Database;
+
+/**
+ * A cache for a Database
+ *
+ * Caches the raw object as well as data generated from the object
+ * lists (e. g. the list of clubs) and other data explicitly read from
+ * the database (e. g. the list of locations).
+ *
+ * The Cache tracks changes to the Database by the Event::Events emitted by
+ * the database. It also emits Event::Events after the cache contents
+ * change. Classes using the cache should listen for Event::Events from the
+ * cache rather than from the database.
+ *
+ * The QLists returned by the methods of this class are implicitly
+ * shared by Qt, so the data is not copied until the lists are modified
+ * or accessed by operator[] or a non-const iterator. If a list is not
+ * to be modified, it is recommended to declare it as const (e. g. const
+ * List<Plane>=cache.getPlanes ()) to prevent accidental
+ * modifications which would cause the list data to be copied.
+ *
+ * This class is thread safe, provided that the database is thread safe
+ * (that is, accesses to the database are not synchronized). Note,
+ * however, that the mutex u *   - allow specifying an "exclude" value to selectDistinctColumns (what for?)
+ * sed to protect access do the data is
+ * recursive, that is, care should be taken when accessing the cache
+ * from a function that is called by a method of the cache. This also
+ * includes directly called signals.
+ */
+class Cache: public QObject
 {
-	class Database;
+	Q_OBJECT
 
-	namespace Cache
-	{
-		/**
-		 * A cache for a Database
-		 *
-		 * Caches the raw object as well as data generated from the object
-		 * lists (e. g. the list of clubs) and other data explicitly read from
-		 * the database (e. g. the list of locations).
-		 *
-		 * The Cache tracks changes to the Database by the Event::Events emitted by
-		 * the database. It also emits Event::Events after the cache contents
-		 * change. Classes using the cache should listen for Event::Events from the
-		 * cache rather than from the database.
-		 *
-		 * The QLists returned by the methods of this class are implicitly
-		 * shared by Qt, so the data is not copied until the lists are modified
-		 * or accessed by operator[] or a non-const iterator. If a list is not
-		 * to be modified, it is recommended to declare it as const (e. g. const
-		 * List<Plane>=cache.getPlanes ()) to prevent accidental
-		 * modifications which would cause the list data to be copied.
-		 *
-		 * This class is thread safe, provided that the database is thread safe
-		 * (that is, accesses to the database are not synchronized). Note,
-		 * however, that the mutex u *   - allow specifying an "exclude" value to selectDistinctColumns (what for?)
-		 * sed to protect access do the data is
-		 * recursive, that is, care should be taken when accessing the cache
-		 * from a function that is called by a method of the cache. This also
-		 * includes directly called signals.
-		 */
-		class Cache: public QObject
+	public:
+		class NotFoundException: public std::exception
 		{
-			Q_OBJECT
-
 			public:
-				class NotFoundException: public std::exception
-				{
-					public:
-						NotFoundException (dbId id): id (id) {}
-						dbId id;
-				};
-
-
-				// *** Construction
-				Cache (Database &db);
-				virtual ~Cache ();
-
-
-				// *** Properties
-				Database &getDatabase ();
-
-
-				// *** Specific refreshing
-				void refreshPlanes          (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-				void refreshPeople          (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-				void refreshLaunchMethods   (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-				void refreshFlightsToday    (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-				void refreshFlightsOther    (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-				void refreshPreparedFlights (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-				void refreshLocations       (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-				void refreshAccountingNotes (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-				void refreshAll (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-
-				void fetchFlightsOther (QDate date, OperationMonitorInterface monitor=OperationMonitorInterface::null);
-
-
-				// *** Misc
-				void clear ();
-
-
-
-				// ***** Lookup (implemented in Cache_lookup.cpp)
-
-				// *** Object lists
-				template<class T> EntityList<T> getObjects () const;
-
-				EntityList<Plane> getPlanes ();
-				EntityList<Person> getPeople ();
-				EntityList<LaunchMethod> getLaunchMethods ();
-
-				EntityList<Flight> getFlightsToday ();
-				EntityList<Flight> getFlightsOther ();
-				EntityList<Flight> getPreparedFlights ();
-				QDate getTodayDate ();
-				QDate getOtherDate ();
-
-
-				// *** Individual objects
-				template<class T> T getObject (dbId id);
-				template<class T> T* getNewObject (dbId id);
-				template<class T> bool objectExists (dbId id);
-				template<class T> QList<T> getObjects (const QList<dbId> &ids, bool ignoreNotFound);
-
-
-				// *** Objects by propery
-				dbId getPlaneIdByRegistration (const QString &registration);
-				QList<dbId> getPersonIdsByName (const QString &lastName, const QString &firstName);
-				dbId getUniquePersonIdByName (const QString &lastName, const QString &firstName);
-				QList<dbId> getPersonIdsByFirstName (const QString &firstName);
-				QList<dbId> getPersonIdsByLastName (const QString &lastName);
-				dbId getLaunchMethodByType (LaunchMethod::Type type);
-
-
-				// *** String lists
-				QStringList getPlaneRegistrations ();
-				QStringList getPersonLastNames ();
-				QStringList getPersonLastNames (const QString &firstName);
-				QStringList getPersonFirstNames ();
-				QStringList getPersonFirstNames (const QString &lastName);
-				QStringList getLocations ();
-				QStringList getAccountingNotes ();
-				QStringList getPlaneTypes ();
-				QStringList getClubs ();
-
-
-				// *** Object flying
-				dbId planeFlying (dbId id);
-				dbId personFlying (dbId id);
-
-
-			signals:
-				void changed (Db::Event::DbEvent event);  // full type name
-
-			protected:
-				// *** Data access helpers
-				template<class T> const EntityList<T> &objectList () const; // TODO & instead of *
-				template<class T>       EntityList<T> &objectList ()      ; // TODO & instead of *
-				template<class T> const QHash<dbId, T> &objectsByIdHash () const;
-				template<class T>       QHash<dbId, T> &objectsByIdHash ()      ;
-
-
-				// *** Generic refreshing
-				template<class T> void refreshObjects (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-				void refreshFlightsOf (const QString &description, const QDate &date, EntityList<Flight> &targetList, QDate *targetDate, OperationMonitorInterface monitor);
-
-
-				// *** Change handling - generic
-				template<class T> void handleDbChanged (const Event::DbEvent &event);
-
-				template<class T> void objectAdded (const T &object);
-				template<class T> void objectDeleted (dbId id);
-				template<class T> void objectUpdated (const T &object);
-
-				// ***** Hash updates (implemented in Cache_hashUpdates.cpp)
-
-				void clearMultiTypeHashes ();
-
-				// These methods have to be specialized
-				// A pointer to the old object is passed because it is possible
-				// that it does not exist in the cache (it shouldn't happen,
-				// but we cannot rule it out and we still want to perform the
-				// operation); this is also the reason why we still pass the
-				// ID.
-				template<class T> void clearHashes ();
-				template<class T> void updateHashesObjectAdded   (const T &object                    );
-				template<class T> void updateHashesObjectDeleted (dbId id        , const T *oldObject);
-				template<class T> void updateHashesObjectUpdated (const T &object, const T *oldObject);
-
-
-			protected slots:
-				// *** Change handling - generic
-				void dbChanged (Db::Event::DbEvent event); // full type name
-
-
-			private:
-				// *** Database
-				Database &db;
-
-
-				// *** Data
-				// Note: when adding something here, also handle it in the
-				// methods defined in Cache_hashUpdates.
-
-				// Object lists - could also use AutomaticEntityList (but
-				// updating methods would have to be changed)
-				EntityList<Plane> planes;
-				EntityList<Person> people;
-				EntityList<LaunchMethod> launchMethods;
-
-				// Flight lists - several lists, therefore cannot use
-				// AutomaticEntityList (should have AutomaticFlightList which
-				// stores a date)
-				EntityList<Flight> flightsToday; QDate todayDate;
-				EntityList<Flight> flightsOther; QDate otherDate;
-				EntityList<Flight> preparedFlights;
-
-				// String lists
-				// Clubs and plane types are generated from other data.
-				// Locations and accounting notes are retrieved directly from
-				// the database, but will still be added individually when a
-				// flight is created.
-				SortedSet<QString> locations;
-				SortedSet<QString> accountingNotes;
-				SortedSet<QString> clubs;
-				SortedSet<QString> planeTypes;
-				SortedSet<QString> planeRegistrations;
-				SortedSet<QString> personLastNames;
-				SortedSet<QString> personFirstNames;
-
-				// Hashes by ID
-				// QHash is used rather than QMap because it provides
-				// "significantly faster lookups" which is important here
-				QHash<dbId, Plane       >        planesById;
-				QHash<dbId, Person      >        peopleById;
-				QHash<dbId, LaunchMethod> launchMethodsById;
-				QHash<dbId, Flight      >       flightsById;
-
-				// Specific hashes
-				// The keys of these hashes are lower case; names are QPair
-				// (lastName, firstName) (also in lower case).
-				QMultiHash<QString           , dbId> planeIdsByRegistration; // key is lower case
-				QMultiHash<LaunchMethod::Type, dbId> launchMethodIdsByType;
-				QMultiHash<QString, QString> lastNamesByFirstName; // key is lower case
-				QMultiHash<QString, QString> firstNamesByLastName; // key is lower case
-				QMultiHash<QString, dbId> personIdsByLastName; // key is lower case
-				QMultiHash<QString, dbId> personIdsByFirstName; // key is lower case
-				QMultiHash<QPair<QString, QString>, dbId> personIdsByName; // key is lower case
-
-				// Concurrency
-				// Improvement: use separate locks for flights, people...
-				/** Locks accesses to data of this Cache */
-				mutable QMutex dataMutex;
+				NotFoundException (dbId id): id (id) {}
+				dbId id;
 		};
-	}
-}
+
+
+		// *** Construction
+		Cache (Database &db);
+		virtual ~Cache ();
+
+
+		// *** Properties
+		Database &getDatabase ();
+
+
+		// *** Specific refreshing
+		void refreshPlanes          (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		void refreshPeople          (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		void refreshLaunchMethods   (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		void refreshFlightsToday    (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		void refreshFlightsOther    (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		void refreshPreparedFlights (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		void refreshLocations       (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		void refreshAccountingNotes (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		void refreshAll (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+
+		void fetchFlightsOther (QDate date, OperationMonitorInterface monitor=OperationMonitorInterface::null);
+
+
+		// *** Misc
+		void clear ();
+
+
+
+		// ***** Lookup (implemented in Cache_lookup.cpp)
+
+		// *** Object lists
+		template<class T> EntityList<T> getObjects () const;
+
+		EntityList<Plane> getPlanes ();
+		EntityList<Person> getPeople ();
+		EntityList<LaunchMethod> getLaunchMethods ();
+
+		EntityList<Flight> getFlightsToday ();
+		EntityList<Flight> getFlightsOther ();
+		EntityList<Flight> getPreparedFlights ();
+		QDate getTodayDate ();
+		QDate getOtherDate ();
+
+
+		// *** Individual objects
+		template<class T> T getObject (dbId id);
+		template<class T> T* getNewObject (dbId id);
+		template<class T> bool objectExists (dbId id);
+		template<class T> QList<T> getObjects (const QList<dbId> &ids, bool ignoreNotFound);
+
+
+		// *** Objects by propery
+		dbId getPlaneIdByRegistration (const QString &registration);
+		QList<dbId> getPersonIdsByName (const QString &lastName, const QString &firstName);
+		dbId getUniquePersonIdByName (const QString &lastName, const QString &firstName);
+		QList<dbId> getPersonIdsByFirstName (const QString &firstName);
+		QList<dbId> getPersonIdsByLastName (const QString &lastName);
+		dbId getLaunchMethodByType (LaunchMethod::Type type);
+
+
+		// *** String lists
+		QStringList getPlaneRegistrations ();
+		QStringList getPersonLastNames ();
+		QStringList getPersonLastNames (const QString &firstName);
+		QStringList getPersonFirstNames ();
+		QStringList getPersonFirstNames (const QString &lastName);
+		QStringList getLocations ();
+		QStringList getAccountingNotes ();
+		QStringList getPlaneTypes ();
+		QStringList getClubs ();
+
+
+		// *** Object flying
+		dbId planeFlying (dbId id);
+		dbId personFlying (dbId id);
+
+
+	signals:
+		void changed (DbEvent event);
+
+	protected:
+		// *** Data access helpers
+		template<class T> const EntityList<T> &objectList () const;
+		template<class T>       EntityList<T> &objectList ()      ;
+		template<class T> const QHash<dbId, T> &objectsByIdHash () const;
+		template<class T>       QHash<dbId, T> &objectsByIdHash ()      ;
+
+
+		// *** Generic refreshing
+		template<class T> void refreshObjects (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		void refreshFlightsOf (const QString &description, const QDate &date, EntityList<Flight> &targetList, QDate *targetDate, OperationMonitorInterface monitor);
+
+
+		// *** Change handling - generic
+		template<class T> void handleDbChanged (const DbEvent &event);
+
+		template<class T> void objectAdded (const T &object);
+		template<class T> void objectDeleted (dbId id);
+		template<class T> void objectUpdated (const T &object);
+
+		// ***** Hash updates (implemented in Cache_hashUpdates.cpp)
+
+		void clearMultiTypeHashes ();
+
+		// These methods have to be specialized
+		// A pointer to the old object is passed because it is possible
+		// that it does not exist in the cache (it shouldn't happen,
+		// but we cannot rule it out and we still want to perform the
+		// operation); this is also the reason why we still pass the
+		// ID.
+		template<class T> void clearHashes ();
+		template<class T> void updateHashesObjectAdded   (const T &object                    );
+		template<class T> void updateHashesObjectDeleted (dbId id        , const T *oldObject);
+		template<class T> void updateHashesObjectUpdated (const T &object, const T *oldObject);
+
+
+	protected slots:
+		// *** Change handling - generic
+		void dbChanged (DbEvent event);
+
+
+	private:
+		// *** Database
+		Database &db;
+
+
+		// *** Data
+		// Note: when adding something here, also handle it in the
+		// methods defined in Cache_hashUpdates.
+
+		// Object lists - could also use AutomaticEntityList (but
+		// updating methods would have to be changed)
+		EntityList<Plane> planes;
+		EntityList<Person> people;
+		EntityList<LaunchMethod> launchMethods;
+
+		// Flight lists - several lists, therefore cannot use
+		// AutomaticEntityList (should have AutomaticFlightList which
+		// stores a date)
+		EntityList<Flight> flightsToday; QDate todayDate;
+		EntityList<Flight> flightsOther; QDate otherDate;
+		EntityList<Flight> preparedFlights;
+
+		// String lists
+		// Clubs and plane types are generated from other data.
+		// Locations and accounting notes are retrieved directly from
+		// the database, but will still be added individually when a
+		// flight is created.
+		SortedSet<QString> locations;
+		SortedSet<QString> accountingNotes;
+		SortedSet<QString> clubs;
+		SortedSet<QString> planeTypes;
+		SortedSet<QString> planeRegistrations;
+		SortedSet<QString> personLastNames;
+		SortedSet<QString> personFirstNames;
+
+		// Hashes by ID
+		// QHash is used rather than QMap because it provides
+		// "significantly faster lookups" which is important here
+		QHash<dbId, Plane       >        planesById;
+		QHash<dbId, Person      >        peopleById;
+		QHash<dbId, LaunchMethod> launchMethodsById;
+		QHash<dbId, Flight      >       flightsById;
+
+		// Specific hashes
+		// The keys of these hashes are lower case; names are QPair
+		// (lastName, firstName) (also in lower case).
+		QMultiHash<QString           , dbId> planeIdsByRegistration; // key is lower case
+		QMultiHash<LaunchMethod::Type, dbId> launchMethodIdsByType;
+		QMultiHash<QString, QString> lastNamesByFirstName; // key is lower case
+		QMultiHash<QString, QString> firstNamesByLastName; // key is lower case
+		QMultiHash<QString, dbId> personIdsByLastName; // key is lower case
+		QMultiHash<QString, dbId> personIdsByFirstName; // key is lower case
+		QMultiHash<QPair<QString, QString>, dbId> personIdsByName; // key is lower case
+
+		// Concurrency
+		// Improvement: use separate locks for flights, people...
+		/** Locks accesses to data of this Cache */
+		mutable QMutex dataMutex;
+};
 
 #endif

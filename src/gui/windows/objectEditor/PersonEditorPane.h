@@ -11,7 +11,7 @@ class Person;
 class PersonEditorPane: public ObjectEditorPane<Person>
 {
 	public:
-		PersonEditorPane (ObjectEditorWindowBase::Mode mode, Db::Cache::Cache &cache, QWidget *parent=NULL);
+		PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 		virtual ~PersonEditorPane();
 
 		virtual void objectToFields (const Person &person);

@@ -3,21 +3,21 @@
 #include "src/db/Database.h"
 #include "src/db/result/Result.h"
 
-QString Migration::dataTypeBinary    () { return Db::Interface::Interface::dataTypeBinary    (); }
-QString Migration::dataTypeBoolean   () { return Db::Interface::Interface::dataTypeBoolean   (); }
-QString Migration::dataTypeDate      () { return Db::Interface::Interface::dataTypeDate      (); }
-QString Migration::dataTypeDatetime  () { return Db::Interface::Interface::dataTypeDatetime  (); }
-QString Migration::dataTypeDecimal   () { return Db::Interface::Interface::dataTypeDecimal   (); }
-QString Migration::dataTypeFloat     () { return Db::Interface::Interface::dataTypeFloat     (); }
-QString Migration::dataTypeInteger   () { return Db::Interface::Interface::dataTypeInteger   (); }
-QString Migration::dataTypeString    () { return Db::Interface::Interface::dataTypeString    (); }
-QString Migration::dataTypeText      () { return Db::Interface::Interface::dataTypeText      (); }
-QString Migration::dataTypeTime      () { return Db::Interface::Interface::dataTypeTime      (); }
-QString Migration::dataTypeTimestamp () { return Db::Interface::Interface::dataTypeTimestamp (); }
-QString Migration::dataTypeCharacter () { return Db::Interface::Interface::dataTypeCharacter (); }
-QString Migration::dataTypeId        () { return Db::Interface::Interface::dataTypeId        (); }
+QString Migration::dataTypeBinary    () { return Interface::dataTypeBinary    (); }
+QString Migration::dataTypeBoolean   () { return Interface::dataTypeBoolean   (); }
+QString Migration::dataTypeDate      () { return Interface::dataTypeDate      (); }
+QString Migration::dataTypeDatetime  () { return Interface::dataTypeDatetime  (); }
+QString Migration::dataTypeDecimal   () { return Interface::dataTypeDecimal   (); }
+QString Migration::dataTypeFloat     () { return Interface::dataTypeFloat     (); }
+QString Migration::dataTypeInteger   () { return Interface::dataTypeInteger   (); }
+QString Migration::dataTypeString    () { return Interface::dataTypeString    (); }
+QString Migration::dataTypeText      () { return Interface::dataTypeText      (); }
+QString Migration::dataTypeTime      () { return Interface::dataTypeTime      (); }
+QString Migration::dataTypeTimestamp () { return Interface::dataTypeTimestamp (); }
+QString Migration::dataTypeCharacter () { return Interface::dataTypeCharacter (); }
+QString Migration::dataTypeId        () { return Interface::dataTypeId        (); }
 
-Migration::Migration (Db::Interface::Interface &interface):
+Migration::Migration (Interface &interface):
 	interface (interface)
 {
 
@@ -46,13 +46,13 @@ void Migration::rollback ()
 }
 
 /** Forwards to database#executeQuery */
-void Migration::executeQuery (const Db::Query &query)
+void Migration::executeQuery (const Query &query)
 {
 	interface.executeQuery (query);
 }
 
 /** Forwards to database#executeQueryResult */
-QSharedPointer<Db::Result::Result> Migration::executeQueryResult (const Db::Query &query, bool forwardOnly)
+QSharedPointer<Result> Migration::executeQueryResult (const Query &query, bool forwardOnly)
 {
 	return interface.executeQueryResult (query, forwardOnly);
 }

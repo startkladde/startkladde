@@ -13,7 +13,7 @@
 #include "src/model/Plane.h"
 #include "src/db/cache/Cache.h"
 
-FlightModel::FlightModel (Db::Cache::Cache &cache):
+FlightModel::FlightModel (Cache &cache):
 	cache (cache)
 {
 }
@@ -189,7 +189,7 @@ QVariant FlightModel::registrationData (const Flight &flight, int role) const
 		Plane plane=cache.getObject<Plane> (flight.planeId);
 		return plane.fullRegistration ();
 	}
-	catch (Db::Cache::Cache::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return "???";
 	}
@@ -204,7 +204,7 @@ QVariant FlightModel::planeTypeData (const Flight &flight, int role) const
 		Plane plane=cache.getObject<Plane> (flight.planeId);
 		return plane.type;
 	}
-	catch (Db::Cache::Cache::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return "???";
 	}
@@ -219,7 +219,7 @@ QVariant FlightModel::pilotData (const Flight &flight, int role) const
 		Person pilot=cache.getObject<Person> (flight.pilotId);
 		return pilot.formalNameWithClub ();
 	}
-	catch (Db::Cache::Cache::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return flight.incompletePilotName ();
 	}
@@ -245,7 +245,7 @@ QVariant FlightModel::copilotData (const Flight &flight, int role) const
 			return "-";
 		}
 	}
-	catch (Db::Cache::Cache::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return flight.incompleteCopilotName ();
 	}
@@ -265,7 +265,7 @@ QVariant FlightModel::launchMethodData (const Flight &flight, int role) const
 
 		// Alternative: if (launchMethod.is_airtow () && !launchMethod.towplaneKnown) return towplane.registraion or "???"
 	}
-	catch (Db::Cache::Cache::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return "?";
 	}

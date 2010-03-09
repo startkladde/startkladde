@@ -75,11 +75,11 @@ class Plane: public Entity
 		// SQL interface
 		static QString dbTableName ();
 		static QString selectColumnList ();
-		static Plane createFromResult (const Db::Result::Result &result);
+		static Plane createFromResult (const Result &result);
 		static QString insertValueList ();
 		static QString updateValueList ();
-		virtual void bindValues (Db::Query &q) const;
-		static QList<Plane> createListFromResult (Db::Result::Result &query);
+		virtual void bindValues (Query &q) const;
+		static QList<Plane> createListFromResult (Result &query);
 		// Enum mappers
 		static QString  categoryToDb   (Category category);
 		static Category categoryFromDb (QString  category);

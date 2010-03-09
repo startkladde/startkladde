@@ -46,7 +46,6 @@
 class QWidget;
 template<class T> class QList;
 class QModelIndex;
-
 class FlightSortFilterProxyModel;
 class ShellPlugin;
 class WeatherWidget;
@@ -54,9 +53,6 @@ class WeatherDialog;
 class FlightModel;
 class FlightProxyList;
 template<class T> class ObjectListModel;
-
-using Db::Cache::Cache;
-namespace Db { namespace Migration { namespace Background { class BackgroundMigrator; } } }
 
 /*
  * Notes:
@@ -205,8 +201,8 @@ class MainWindow: public QMainWindow
 		void timeTimer_timeout ();
 
 		// Database
-		void cacheChanged (Db::Event::DbEvent event);
-		void executingQuery (Db::Query);
+		void cacheChanged (DbEvent event);
+		void executingQuery (Query);
 
 		void logMessage (QString message);
 
@@ -216,7 +212,7 @@ class MainWindow: public QMainWindow
 		Ui::MainWindowClass ui;
 
 		DbManager dbManager;
-		Db::Cache::Cache &cache;
+		Cache &cache;
 
 		QDate displayDate;
 		WeatherWidget *weatherWidget;

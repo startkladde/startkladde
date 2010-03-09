@@ -120,7 +120,7 @@
 
 class DbManager;
 class Person;
-namespace Db { namespace Cache { class Cache; } }
+class Cache;
 
 // We want to use a switch so the compiler can warn us if we didn't handle a
 // value. We still provide a default value (outside of the switch statement!)
@@ -156,7 +156,7 @@ class FlightWindow: public QDialog
 
 	protected:
 		// Input field data
-		int fillNames (QStringList (Db::Cache::Cache::*fullListMethod)(), QStringList (Db::Cache::Cache::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget);
+		int fillNames (QStringList (Cache::*fullListMethod)(), QStringList (Cache::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget);
 		dbId fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget);
 		dbId fillFirstNames  (bool active, QComboBox *target, const QString &lastName, bool preserveTarget);
 
@@ -215,7 +215,7 @@ class FlightWindow: public QDialog
 		 * Gets the currently selected launch method from the database.
 		 *
 		 * @return the currently selected launch method
-		 * @throw Db::Cache::Cache::NotFoundException if there is no such launch
+		 * @throw Cache::NotFoundException if there is no such launch
 		 *        method, or none is selected
 		 */
 		LaunchMethod getCurrentLaunchMethod ();
@@ -406,7 +406,7 @@ class FlightWindow: public QDialog
 		Ui::FlightWindowClass ui;
 
 		DbManager &manager;
-		Db::Cache::Cache &cache;
+		Cache &cache;
 		const FlightWindow::Mode mode;
 
 		void updateErrors (bool setFocus=false);

@@ -7,20 +7,17 @@
 
 #include "AccessDeniedException.h"
 
-namespace Db { namespace Interface
+AccessDeniedException::AccessDeniedException (const QSqlError &error):
+	ConnectionFailedException (error)
 {
-	AccessDeniedException::AccessDeniedException (const QSqlError &error):
-		ConnectionFailedException (error)
-	{
-	}
+}
 
-	AccessDeniedException *AccessDeniedException::clone () const
-	{
-		return new AccessDeniedException (error);
-	}
+AccessDeniedException *AccessDeniedException::clone () const
+{
+	return new AccessDeniedException (error);
+}
 
-	void AccessDeniedException::rethrow () const
-	{
-		throw AccessDeniedException (error);
-	}
-} }
+void AccessDeniedException::rethrow () const
+{
+	throw AccessDeniedException (error);
+}

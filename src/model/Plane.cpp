@@ -223,7 +223,7 @@ QString Plane::selectColumnList ()
 }
 
 
-Plane Plane::createFromResult (const Db::Result::Result &result)
+Plane Plane::createFromResult (const Result &result)
 {
 	Plane p (result.value (0).toLongLong ());
 
@@ -249,7 +249,7 @@ QString Plane::updateValueList ()
 	return "registration=?, club=?, num_seats=?, type=?, category=?, competition_callsign=?, comments=?";
 }
 
-void Plane::bindValues (Db::Query &q) const
+void Plane::bindValues (Query &q) const
 {
 	q.bind (registration);
 	q.bind (club);
@@ -260,7 +260,7 @@ void Plane::bindValues (Db::Query &q) const
 	q.bind (comments);
 }
 
-QList<Plane> Plane::createListFromResult (Db::Result::Result &result)
+QList<Plane> Plane::createListFromResult (Result &result)
 {
 	QList<Plane> list;
 

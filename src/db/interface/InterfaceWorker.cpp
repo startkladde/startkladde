@@ -13,7 +13,7 @@
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/concurrent/Returner.h"
 
-InterfaceWorker::InterfaceWorker (Db::Interface::ThreadSafeInterface &interface):
+InterfaceWorker::InterfaceWorker (ThreadSafeInterface &interface):
 	interface (interface)
 {
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))

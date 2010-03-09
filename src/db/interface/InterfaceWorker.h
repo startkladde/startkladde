@@ -11,20 +11,19 @@
 #include <QObject>
 #include <QThread>
 
-
 template<typename T> class Returner;
 class OperationMonitor;
-namespace Db { namespace Interface { class ThreadSafeInterface; } }
+class ThreadSafeInterface;
 
 class InterfaceWorker: public QObject
 {
 	Q_OBJECT
 
 	public:
-		InterfaceWorker (Db::Interface::ThreadSafeInterface &interface);
+		InterfaceWorker (ThreadSafeInterface &interface);
 		virtual ~InterfaceWorker ();
 
-		virtual Db::Interface::ThreadSafeInterface &getInterface () { return interface; }
+		virtual ThreadSafeInterface &getInterface () { return interface; }
 
 		virtual void open           (Returner<bool> &returner, OperationMonitor &monitor);
 		virtual void createDatabase (Returner<void> &returner, OperationMonitor &monitor, const QString &name, bool skipIfExists=false);
@@ -42,7 +41,7 @@ class InterfaceWorker: public QObject
 
 	private:
 		QThread thread;
-		Db::Interface::ThreadSafeInterface &interface;
+		ThreadSafeInterface &interface;
 };
 
 #endif

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Migration_20100217131516_flight_status_columns::Migration_20100217131516_flight_status_columns (Db::Interface::Interface &interface):
+Migration_20100217131516_flight_status_columns::Migration_20100217131516_flight_status_columns (Interface &interface):
 	Migration (interface)
 {
 }
@@ -21,7 +21,7 @@ void Migration_20100217131516_flight_status_columns::up (OperationMonitorInterfa
 	addColumn ("flights", "towflight_landed", dataTypeBoolean (), "AFTER landed");
 
 	std::cout << "Updating status flags" << std::endl;
-	executeQuery (Db::Query ("UPDATE flights SET "
+	executeQuery (Query ("UPDATE flights SET "
 		"departed"         "=IF(status&1, TRUE, FALSE),"
 		"landed"           "=IF(status&2, TRUE, FALSE),"
 		"towflight_landed" "=IF(status&4, TRUE, FALSE)"));
@@ -36,7 +36,7 @@ void Migration_20100217131516_flight_status_columns::down (OperationMonitorInter
 	addColumn ("flights", "status", dataTypeInteger (), "AFTER departed");
 
 	std::cout << "Updating status" << std::endl;
-	executeQuery (Db::Query ("UPDATE flights SET status="
+	executeQuery (Query ("UPDATE flights SET status="
 		"IF(departed        , 1, 0)+"
 		"IF(landed          , 2, 0)+"
 		"IF(towflight_landed, 4, 0)"));

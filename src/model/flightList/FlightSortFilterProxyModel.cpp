@@ -5,7 +5,7 @@
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/model/Flight.h"
 
-FlightSortFilterProxyModel::FlightSortFilterProxyModel (Db::Cache::Cache &cache, QObject *parent):
+FlightSortFilterProxyModel::FlightSortFilterProxyModel (Cache &cache, QObject *parent):
 	QSortFilterProxyModel (parent),
 	cache (cache),
 	showPreparedFlights (true),

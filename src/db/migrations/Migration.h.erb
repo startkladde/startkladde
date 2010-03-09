@@ -9,7 +9,7 @@
 class <%= class_name %>: public Migration
 {
 	public:
-		<%= class_name %> (Db::Interface::Interface &interface);
+		<%= class_name %> (Interface &interface);
 		virtual ~<%= class_name %> ();
 
 		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);

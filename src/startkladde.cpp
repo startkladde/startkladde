@@ -87,9 +87,9 @@ void proxy_test ()
 
 int test_database ()
 {
-//	Db::Interface::DefaultInterface interface (opts.databaseInfo);
-	Db::Interface::ThreadSafeInterface interface (opts.databaseInfo);
-	Db::Database db (interface);
+//	DefaultInterface interface (opts.databaseInfo);
+	ThreadSafeInterface interface (opts.databaseInfo);
+	Database db (interface);
 
 	try
 	{
@@ -131,7 +131,7 @@ int test_database ()
 	//	std::cout << std::endl;
 	//	std::cout << "Get people>3" << std::endl;
 	////	QList<Person> people=db.getObjects<Person> ("id>?", QList<QVariant> () << 3);
-	//	QList<Person> people=db.getObjects<Person> (Db::Query ("id>?").bind (3));
+	//	QList<Person> people=db.getObjects<Person> (Query ("id>?").bind (3));
 	//    foreach (const Person &person, people)
 	//    	std::cout << person.toString () << std::endl;
 
@@ -227,7 +227,7 @@ int test_database ()
 	//	std::cout << "List plane types" << std::endl;
 	//	std::cout << db.listPlaneTypes ().join (", ") << std::endl;
 	}
-	catch (Db::Interface::SqlException &ex)
+	catch (SqlException &ex)
 	{
 		std::cout << ex.colorizedString () << std::endl;
 		interface.close ();
@@ -268,7 +268,7 @@ int showGui (QApplication &a)
 int doStuff ()
 {
 	// We don't need the ORM or thread safety, so we use a DefaultInterface.
-	Db::Interface::DefaultInterface db (opts.databaseInfo);
+	DefaultInterface db (opts.databaseInfo);
 
 	// Tests ahead
 	bool ok=db.open ();
@@ -346,11 +346,11 @@ int main (int argc, char **argv)
 {
 	QApplication a (argc, argv); // Always
 
-	// Db::Event::Event is used as parameters for signals emitted by tasks running on
+	// Event is used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
-	qRegisterMetaType<Db::Event::DbEvent> ("Db::Event::DbEvent");
-	qRegisterMetaType<Db::Query> ("Db::Query");
+	qRegisterMetaType<DbEvent> ("DbEvent");
+	qRegisterMetaType<Query> ("Query");
 
 	int ret=0;
 
@@ -379,7 +379,7 @@ int main (int argc, char **argv)
 			}
 		}
 	}
-	catch (Db::Interface::SqlException &ex)
+	catch (SqlException &ex)
 	{
 		std::cout << ex.colorizedString () << std::endl;
 		return 1;

@@ -16,48 +16,42 @@ class QSqlQuery;
 
 #include "src/db/result/Result.h"
 
-namespace Db
+/**
+ * A Result implementation that makes a copy of the data.
+ *
+ * While this class is not thread safe, it may be accessed from a
+ * thread other than the one that executed the query.
+ */
+class CopiedResult: public Result
 {
-	namespace Result
-	{
-		/**
-		 * A Result implementation that makes a copy of the data.
-		 *
-		 * While this class is not thread safe, it may be accessed from a
-		 * thread other than the one that executed the query.
-		 */
-		class CopiedResult: public Result
-		{
-			public:
-				CopiedResult (Result &result);
-				virtual ~CopiedResult ();
+	public:
+		CopiedResult (Result &result);
+		virtual ~CopiedResult ();
 
-				// *** Result methods
-				virtual int at () const;
-				virtual bool first ();
-				virtual bool isNull (int field) const;
-				virtual bool last ();
-				virtual QVariant lastInsertId () const;
-				virtual QString lastQuery () const;
-				virtual bool next ();
-				virtual int numRowsAffected () const;
-				virtual bool previous ();
-				virtual QSqlRecord record () const;
-				virtual bool seek (int index, bool relative=false);
-				virtual int size () const;
-				virtual QVariant value (int index) const;
+		// *** Result methods
+		virtual int at () const;
+		virtual bool first ();
+		virtual bool isNull (int field) const;
+		virtual bool last ();
+		virtual QVariant lastInsertId () const;
+		virtual QString lastQuery () const;
+		virtual bool next ();
+		virtual int numRowsAffected () const;
+		virtual bool previous ();
+		virtual QSqlRecord record () const;
+		virtual bool seek (int index, bool relative=false);
+		virtual int size () const;
+		virtual QVariant value (int index) const;
 
-				virtual QString type () const { return "copied"; }
+		virtual QString type () const { return "copied"; }
 
-			private:
-				QList<QSqlRecord> records;
-				QString _lastQuery;
-				int _numRowsAffected;
-				QVariant _lastInsertId;
+	private:
+		QList<QSqlRecord> records;
+		QString _lastQuery;
+		int _numRowsAffected;
+		QVariant _lastInsertId;
 
-				int current;
-		};
-	}
-}
+		int current;
+};
 
 #endif

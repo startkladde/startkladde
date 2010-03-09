@@ -10,22 +10,16 @@
 
 #include "src/db/interface/exceptions/SqlException.h"
 
-namespace Db
+class ConnectionFailedException: public SqlException
 {
-	namespace Interface
-	{
-		class ConnectionFailedException: public SqlException
-		{
-			public:
-				ConnectionFailedException (const QSqlError &error);
+	public:
+		ConnectionFailedException (const QSqlError &error);
 
-				virtual ConnectionFailedException *clone () const;
-				virtual void rethrow () const;
+		virtual ConnectionFailedException *clone () const;
+		virtual void rethrow () const;
 
-				QString toString () const;
-				QString colorizedString () const;
-		};
-	}
-}
+		QString toString () const;
+		QString colorizedString () const;
+};
 
 #endif

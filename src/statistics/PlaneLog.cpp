@@ -63,7 +63,7 @@ QString PlaneLog::Entry::operationTimeText () const
 /**
  * Create a log entry from a single flight
  */
-PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Db::Cache::Cache &cache)
+PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Cache &cache)
 {
 	PlaneLog::Entry entry;
 
@@ -94,7 +94,7 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Db::Cache::Cache 
  * Create an entry for a non-empty, sorted list of flights which we know can
  * be merged. All flights must be of the same plane and on the same date.
  */
-PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Db::Cache::Cache &cache)
+PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Cache &cache)
 {
 	assert (!flights.isEmpty ());
 
@@ -175,7 +175,7 @@ PlaneLog::~PlaneLog ()
  * @param cache
  * @return
  */
-PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, Db::Cache::Cache &cache)
+PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, Cache &cache)
 {
 	Plane *plane=cache.getNewObject<Plane> (planeId);
 
@@ -227,7 +227,7 @@ PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, Db::C
  * @param cache
  * @return
  */
-PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, Db::Cache::Cache &cache)
+PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, Cache &cache)
 {
 	// TODO: should we consider tow flights here?
 

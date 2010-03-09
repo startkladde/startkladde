@@ -8,7 +8,7 @@
 #include "src/db/dbId.h"
 #include "src/time/Time.h"
 
-namespace Db { namespace Cache { class Cache; } }
+class Cache;
 class Flight;
 
 /*
@@ -26,7 +26,7 @@ class PilotLog: public QAbstractTableModel
 				Entry ();
 				virtual ~Entry ();
 
-				static Entry create (const Flight *flight, Db::Cache::Cache &cache);
+				static Entry create (const Flight *flight, Cache &cache);
 
 				QDate date;
 				QString planeType;
@@ -52,8 +52,8 @@ class PilotLog: public QAbstractTableModel
 	public:
 		enum FlightInstructorMode { flightInstructorNone, flightInstructorStrict, flightInstructorLoose };
 
-		static PilotLog *createNew (dbId personId, const QList<Flight> &flights, Db::Cache::Cache &cache, FlightInstructorMode mode=flightInstructorNone);
-		static PilotLog *createNew (const QList<Flight> &flights, Db::Cache::Cache &cache, FlightInstructorMode mode=flightInstructorNone);
+		static PilotLog *createNew (dbId personId, const QList<Flight> &flights, Cache &cache, FlightInstructorMode mode=flightInstructorNone);
+		static PilotLog *createNew (const QList<Flight> &flights, Cache &cache, FlightInstructorMode mode=flightInstructorNone);
 
 		// QAbstractTableModel methods
 		virtual int rowCount (const QModelIndex &index) const;

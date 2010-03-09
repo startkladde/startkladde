@@ -8,10 +8,8 @@
 #include "src/db/Query.h"
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 
-namespace Db {
-	namespace Result { class Result; }
-	namespace Interface { class Interface; }
-}
+class Result;
+class Interface;
 
 /**
  * A new migration is created by creating the appropriate class in
@@ -66,7 +64,7 @@ class Migration
     	static QString dataTypeId        ();
 
 
-		Migration (Db::Interface::Interface &interface);
+		Migration (Interface &interface);
 		virtual ~Migration ();
 
 		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null)=0;
@@ -77,8 +75,8 @@ class Migration
 		void commit ();
 		void rollback ();
 
-		void executeQuery (const Db::Query &query);
-		QSharedPointer<Db::Result::Result> executeQueryResult (const Db::Query &query, bool forwardOnly=true);
+		void executeQuery (const Query &query);
+		QSharedPointer<Result> executeQueryResult (const Query &query, bool forwardOnly=true);
 
 		void createTable (const QString &name, bool skipIfExists=false);
 		void createTableLike (const QString &like, const QString &name, bool skipIfExists=false);
@@ -93,7 +91,7 @@ class Migration
 		void updateColumnValues (const QString &tableName, const QString &columnName, const QVariant &oldValue, const QVariant &newValue);
 
 	private:
-		Db::Interface::Interface &interface;
+		Interface &interface;
 };
 
 #endif

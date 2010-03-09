@@ -6,9 +6,8 @@
 #include "src/db/migration/Migration.h" // Required for Migration::Direction
 #include "src/concurrent/monitor/OperationMonitor.h" // Required for OperationMonitor::Interface
 
-namespace Db { namespace Interface { class Interface; } }
+class Interface;
 class MigrationFactory;
-
 
 /**
  * A controller for managing migrations on a database.
@@ -28,7 +27,7 @@ class Migrator
 		static const QString migrationsTableName, migrationsColumnName;
 
 		// *** Construction
-		Migrator (Db::Interface::Interface &interface);
+		Migrator (Interface &interface);
 		virtual ~Migrator ();
 
 		// *** Migration
@@ -69,7 +68,7 @@ class Migrator
 		void clearMigrations ();
 
 	private:
-		Db::Interface::Interface &interface;
+		Interface &interface;
 		MigrationFactory *factory;
 };
 

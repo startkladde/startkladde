@@ -6,7 +6,7 @@
 #include "src/config/Options.h"
 #include "src/util/qString.h"
 
-Migration_20100216135637_add_launch_methods::Migration_20100216135637_add_launch_methods (Db::Interface::Interface &interface):
+Migration_20100216135637_add_launch_methods::Migration_20100216135637_add_launch_methods (Interface &interface):
 	Migration (interface)
 {
 }
@@ -38,7 +38,7 @@ void Migration_20100216135637_add_launch_methods::up (OperationMonitorInterface 
 			// current schema, we need to use the schema after this migration.
 			std::cout << "Importing launch method: " << launchMethod.toString () << std::endl;
 
-			Db::Query query (
+			Query query (
 				"INSERT INTO launch_methods"
 				"(id,name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments)"
 				"values (?,?,?,?,?,?,?,?,?)"

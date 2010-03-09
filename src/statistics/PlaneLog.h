@@ -9,7 +9,7 @@
 #include "src/time/Time.h"
 #include "src/db/dbId.h"
 
-namespace Db { namespace Cache { class Cache; } }
+class Cache;
 class Flight;
 
 class PlaneLog: public QAbstractTableModel
@@ -24,8 +24,8 @@ class PlaneLog: public QAbstractTableModel
 				Entry ();
 				virtual ~Entry ();
 
-				static Entry create (const Flight *flight, Db::Cache::Cache &cache);
-				static Entry create (const QList<const Flight *> flights, Db::Cache::Cache &cache);
+				static Entry create (const Flight *flight, Cache &cache);
+				static Entry create (const QList<const Flight *> flights, Cache &cache);
 
 				QString registration;
 
@@ -51,8 +51,8 @@ class PlaneLog: public QAbstractTableModel
 		};
 
 	public:
-		static PlaneLog *createNew (dbId planeId, const QList<Flight> &flights, Db::Cache::Cache &cache);
-		static PlaneLog *createNew (const QList<Flight> &flights, Db::Cache::Cache &cache);
+		static PlaneLog *createNew (dbId planeId, const QList<Flight> &flights, Cache &cache);
+		static PlaneLog *createNew (const QList<Flight> &flights, Cache &cache);
 
 		// QAbstractTableModel methods
 		virtual int rowCount (const QModelIndex &index) const;

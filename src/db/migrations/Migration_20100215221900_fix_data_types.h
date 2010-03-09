@@ -11,7 +11,7 @@
 class Migration_20100215221900_fix_data_types: public Migration
 {
 	public:
-		Migration_20100215221900_fix_data_types (Db::Interface::Interface &interface);
+		Migration_20100215221900_fix_data_types (Interface &interface);
 		virtual ~Migration_20100215221900_fix_data_types ();
 
 		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);

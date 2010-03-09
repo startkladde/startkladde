@@ -123,7 +123,7 @@ void DbManager::grantPermissions (QWidget *parent)
 
 		try
 		{
-			Db::Interface::ThreadSafeInterface rootInterface (rootInfo);
+			ThreadSafeInterface rootInterface (rootInfo);
 			InterfaceWorker rootInterfaceWorker (rootInterface);
 
 			doOpenInterface (rootInterfaceWorker, parent);
@@ -140,7 +140,7 @@ void DbManager::grantPermissions (QWidget *parent)
 
 			rootInterface.close ();
 		}
-		catch (Db::Interface::AccessDeniedException) // Actually: only 1045
+		catch (AccessDeniedException) // Actually: only 1045
 		{
 			text=utf8 (
 				"Anmeldung als root verweigert. Möglicherweise ist das\n"
@@ -158,7 +158,7 @@ void DbManager::createDatabase (QWidget *parent)
 	DatabaseInfo createInfo=info;
 	createInfo.database="";
 
-	Db::Interface::ThreadSafeInterface createInterface (createInfo);
+	ThreadSafeInterface createInterface (createInfo);
 	InterfaceWorker createInterfaceWorker (createInterface);
 
 	doOpenInterface (createInterfaceWorker, parent);
@@ -253,7 +253,7 @@ void DbManager::openInterface (QWidget *parent)
 	{
 		doOpenInterface (interfaceWorker, parent);
 	}
-	catch (Db::Interface::DatabaseDoesNotExistException)
+	catch (DatabaseDoesNotExistException)
 	{
 		// The database does not exist. We have some permissions on the
 		// database, or we would get "access denied". Try to create it, and if
@@ -312,7 +312,7 @@ bool DbManager::connect (QWidget *parent)
 			connectImpl (parent);
 			return true;
 		}
-		catch (Db::Interface::AccessDeniedException)
+		catch (AccessDeniedException)
 		{
 			grantPermissions (parent);
 			connectImpl (parent);
@@ -338,7 +338,7 @@ bool DbManager::connect (QWidget *parent)
 			QString ("Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1").arg (ex.message),
 			parent);
 	}
-	catch (Db::Interface::SqlException &ex)
+	catch (SqlException &ex)
 	{
 		QSqlError error=ex.error;
 

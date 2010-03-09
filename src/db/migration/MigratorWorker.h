@@ -14,62 +14,55 @@
 #include "src/db/migration/Migrator.h"
 
 class OperationMonitor;
+class ThreadSafeInterface;
 
-namespace Db
+/**
+ * A class for running migrations in the background, using a Migrator
+ * in a background thread.
+ *
+ * Calls to methods of this class are not blocking.
+ *
+ * Note that this class does not share a common base class with
+ * Migrator and only implements a subsets of its public methods.
+ * This may be changed in the future.
+ *
+ * This class is thread safe.
+ */
+class MigratorWorker: public QObject
 {
-	namespace Interface { class ThreadSafeInterface; }
+	Q_OBJECT
 
-	namespace Migration
-	{
-		/**
-		 * A class for running migrations in the background, using a Migrator
-		 * in a background thread.
-		 *
-		 * Calls to methods of this class are not blocking.
-		 *
-		 * Note that this class does not share a common base class with
-		 * Migrator and only implements a subsets of its public methods.
-		 * This may be changed in the future.
-		 *
-		 * This class is thread safe.
-		 */
-		class MigratorWorker: public QObject
-		{
-			Q_OBJECT
+	public:
+		MigratorWorker (ThreadSafeInterface &interface);
+		virtual ~MigratorWorker ();
 
-			public:
-				MigratorWorker (Interface::ThreadSafeInterface &interface);
-				virtual ~MigratorWorker ();
+		void migrate           (Returner<void>            &returner, OperationMonitor &monitor);
+		void loadSchema        (Returner<void>            &returner, OperationMonitor &monitor);
+		void pendingMigrations (Returner<QList<quint64> > &returner, OperationMonitor &monitor);
+		void isCurrent         (Returner<bool>            &returner, OperationMonitor &monitor);
+		void isEmpty           (Returner<bool>            &returner, OperationMonitor &monitor);
+		void currentVersion    (Returner<quint64>         &returner, OperationMonitor &monitor);
 
-				void migrate           (Returner<void>            &returner, OperationMonitor &monitor);
-				void loadSchema        (Returner<void>            &returner, OperationMonitor &monitor);
-				void pendingMigrations (Returner<QList<quint64> > &returner, OperationMonitor &monitor);
-				void isCurrent         (Returner<bool>            &returner, OperationMonitor &monitor);
-				void isEmpty           (Returner<bool>            &returner, OperationMonitor &monitor);
-				void currentVersion    (Returner<quint64>         &returner, OperationMonitor &monitor);
+	signals:
+		virtual void sig_migrate           (Returner<void>            *returner, OperationMonitor *monitor);
+		virtual void sig_loadSchema        (Returner<void>            *returner, OperationMonitor *monitor);
+		virtual void sig_pendingMigrations (Returner<QList<quint64> > *returner, OperationMonitor *monitor);
+		virtual void sig_isCurrent         (Returner<bool>            *returner, OperationMonitor *monitor);
+		virtual void sig_isEmpty           (Returner<bool>            *returner, OperationMonitor *monitor);
+		virtual void sig_currentVersion    (Returner<quint64>         *returner, OperationMonitor *monitor);
 
-			signals:
-				virtual void sig_migrate           (Returner<void>            *returner, OperationMonitor *monitor);
-				virtual void sig_loadSchema        (Returner<void>            *returner, OperationMonitor *monitor);
-				virtual void sig_pendingMigrations (Returner<QList<quint64> > *returner, OperationMonitor *monitor);
-				virtual void sig_isCurrent         (Returner<bool>            *returner, OperationMonitor *monitor);
-				virtual void sig_isEmpty           (Returner<bool>            *returner, OperationMonitor *monitor);
-				virtual void sig_currentVersion    (Returner<quint64>         *returner, OperationMonitor *monitor);
-
-			protected slots:
-				virtual void slot_migrate           (Returner<void>            *returner, OperationMonitor *monitor);
-				virtual void slot_loadSchema        (Returner<void>            *returner, OperationMonitor *monitor);
-				virtual void slot_pendingMigrations (Returner<QList<quint64> > *returner, OperationMonitor *monitor);
-				virtual void slot_isCurrent         (Returner<bool>            *returner, OperationMonitor *monitor);
-				virtual void slot_isEmpty           (Returner<bool>            *returner, OperationMonitor *monitor);
-				virtual void slot_currentVersion    (Returner<quint64>         *returner, OperationMonitor *monitor);
+	protected slots:
+		virtual void slot_migrate           (Returner<void>            *returner, OperationMonitor *monitor);
+		virtual void slot_loadSchema        (Returner<void>            *returner, OperationMonitor *monitor);
+		virtual void slot_pendingMigrations (Returner<QList<quint64> > *returner, OperationMonitor *monitor);
+		virtual void slot_isCurrent         (Returner<bool>            *returner, OperationMonitor *monitor);
+		virtual void slot_isEmpty           (Returner<bool>            *returner, OperationMonitor *monitor);
+		virtual void slot_currentVersion    (Returner<quint64>         *returner, OperationMonitor *monitor);
 
 
-			private:
-				QThread thread;
-				Migrator migrator;
-		};
-	}
-}
+	private:
+		QThread thread;
+		Migrator migrator;
+};
 
 #endif

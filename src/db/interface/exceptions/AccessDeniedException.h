@@ -10,19 +10,13 @@
 
 #include "src/db/interface/exceptions/ConnectionFailedException.h"
 
-namespace Db
+class AccessDeniedException: public ConnectionFailedException
 {
-	namespace Interface
-	{
-		class AccessDeniedException: public ConnectionFailedException
-		{
-			public:
-				AccessDeniedException (const QSqlError &error);
+	public:
+		AccessDeniedException (const QSqlError &error);
 
-				virtual AccessDeniedException *clone () const;
-				virtual void rethrow () const;
-		};
-	}
-}
+		virtual AccessDeniedException *clone () const;
+		virtual void rethrow () const;
+};
 
 #endif
