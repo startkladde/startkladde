@@ -225,8 +225,8 @@ namespace Db
 			{
 				(void)id;
 				(void)oldFlight;
-				// Leave locations
-				// Leave accountingNotes
+				// Leave locations (must include values from all flights)
+				// Leave accountingNotes (must include values from all flights)
 			}
 		}
 

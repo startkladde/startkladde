@@ -145,11 +145,8 @@ namespace Db
 			refreshObjects<LaunchMethod> (monitor);
 		}
 
-		void Cache::refreshFlightsOf (const QString &description,
-			const QDate &date,
-			EntityList<Flight> targetList,
-			QDate *targetDate,
-			OperationMonitorInterface monitor)
+		void Cache::refreshFlightsOf (const QString &description, const QDate &date,
+			EntityList<Flight> &targetList, QDate *targetDate, OperationMonitorInterface monitor)
 		{
 			monitor.status (utf8 ("%1 abrufen").arg (description));
 
@@ -164,7 +161,10 @@ namespace Db
 			{
 				// Remove the old flights from the hashes
 				foreach (const Flight &flight, targetList.getList ())
+				{
 					flightsById.remove (flight.getId ());
+					updateHashesObjectDeleted<Flight> (flight.getId (), &flight);
+				}
 
 				// Store the date and the new flights
 				if (targetDate) (*targetDate)=date;
@@ -172,7 +172,10 @@ namespace Db
 
 				// Add the new flights to the hashes
 				foreach (const Flight &flight, newFlights)
+				{
 					flightsById.insert (flight.getId (), flight);
+					updateHashesObjectAdded<Flight> (flight);
+				}
 			}
 		}
 

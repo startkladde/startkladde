@@ -1,6 +1,11 @@
 #include "SkTableView.h"
 
 #include <QSettings>
+#include <QFont>
+#include <QFontMetrics>
+#include <QHeaderView>
+#include <QApplication>
+#include <QStyle>
 
 #include "src/gui/widgets/TableButton.h"
 #include "src/itemDataRoles.h"
@@ -10,7 +15,7 @@
 #include <iostream>
 #include <cassert>
 
-// TODO: make sure that all buttons are deleted
+// TODO: verify that all buttons are deleted
 
 SkTableView::SkTableView (QWidget *parent):
 	QTableView (parent),
@@ -137,9 +142,17 @@ void SkTableView::readColumnWidths (QSettings &settings, const ColumnInfo &colum
 		QString columnName=columnInfo.columnName (i);
 		QString key=QString ("columnWidth_%1").arg (columnName);
 
-		// TODO use a default width or (better) a sample text
+		const QFont &font=horizontalHeader ()->font ();
+		QFontMetrics metrics (font);
+		QStyle *style=horizontalHeader ()->style ();
+		if (!style) style=QApplication::style ();
+		// Similar to QItemDelegate::textRectangle
+		const int margin=style->pixelMetric (QStyle::PM_FocusFrameHMargin)+1;
+
 		if (settings.contains (key))
 			setColumnWidth (i, settings.value (key).toInt ());
+		else
+			setColumnWidth (i, metrics.boundingRect (columnInfo.sampleText (i)).width ()+2*margin+2);
 	}
 }
 

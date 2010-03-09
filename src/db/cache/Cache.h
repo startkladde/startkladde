@@ -164,7 +164,7 @@ namespace Db
 
 				// *** Generic refreshing
 				template<class T> void refreshObjects (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-				void refreshFlightsOf (const QString &description, const QDate &date, EntityList<Flight> targetList, QDate *targetDate, OperationMonitorInterface monitor);
+				void refreshFlightsOf (const QString &description, const QDate &date, EntityList<Flight> &targetList, QDate *targetDate, OperationMonitorInterface monitor);
 
 
 				// *** Change handling - generic

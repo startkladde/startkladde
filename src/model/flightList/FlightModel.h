@@ -34,8 +34,9 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 		virtual int landButtonColumn () const { return 7; }
 		virtual int durationColumn () const { return 8; }
 
-		// ColumnNames methods
+		// ColumnInfo methods
 		virtual QString columnName (int columnIndex) const;
+		virtual QString sampleText (int columnIndex) const;
 
 	protected:
 		virtual QVariant registrationData (const Flight &flight, int role) const;

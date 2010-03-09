@@ -13,27 +13,6 @@
 #include "src/model/Plane.h"
 #include "src/db/cache/Cache.h"
 
-/*
- * Default column widths for the flight table:
-tbl_idx_registration,         95, "D-WWWW (WW)"
-tbl_idx_flugzeug_typ,         75, "DR-400/180"
-tbl_idx_flug_typ,             50, "Normal"
-tbl_idx_pilot,               150, "XXXXXXXX, YYYYYY"
-tbl_idx_begleiter,           150, "XXXXXXXX, YYYYYY"
-tbl_idx_startart,             70, "SOF"
-tbl_idx_startzeit,            60, "  Starten  "
-tbl_idx_landezeit,            60, "  Landen  "
-tbl_idx_flugdauer,            50, "00:00"
-tbl_idx_landungen,            50, "00"
-tbl_idx_startort,            100, "Rheinstetten"
-tbl_idx_zielort,             100, "Rheinstetten"
-tbl_idx_bemerkungen,         200, "Seilrissübung"
-tbl_idx_abrechnungshinweis,   50, "Landegebühr bezahlt"
-tbl_idx_datum,                50, "0000-00-00"
-tbl_idx_id_display,           50, "12345"
- *
- */
-
 FlightModel::FlightModel (Db::Cache::Cache &cache):
 	cache (cache)
 {
@@ -96,6 +75,33 @@ QString FlightModel::columnName (int columnIndex) const
 		case 13: return "accountingNote";
 		case 14: return "date";
 		case 15: return "id";
+	}
+
+	assert (!"Unhandled column");
+	return QString ();
+}
+
+QString FlightModel::sampleText (int columnIndex) const
+{
+	switch (columnIndex)
+	{
+		case 0: return "D-1234 (WW)";
+		case 1: return "DR-400/180";
+		case 2: return "Schul (2)";
+		case 3: return "Xxxxxxxx, Yyyyyy (FSV Ding";
+		case 4: return "Xxxxxxxx, Yyyyyy (FSV Ding";
+		case 5: return "Startart"; // Header text is longer than content
+		// Improvement: use QStyle::PM_ButtonMargin for buttons
+		case 6: return "  Starten  ";
+		case 7: return "  Landen  ";
+		case 8: return "00:00";
+		case 9: return "Ldg."; // Header text is longer than content
+		case 10: return "Rheinstetten";
+		case 11: return "Rheinstetten";
+		case 12: return "Seilrissübung";
+		case 13: return "Landegebühr bezahlt";
+		case 14: return "12.34.5678";
+		case 15: return "12345";
 	}
 
 	assert (!"Unhandled column");
