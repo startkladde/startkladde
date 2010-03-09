@@ -18,6 +18,7 @@
 // TODO consider an AbstractFlight and a TowFlightProxy
 // TODO: "Currently flying" should be named "still to land" (more flying than
 // total flights with prepared incoming flights)
+// TODO: should not depend on Cache - move methods to Cache
 
 
 /*

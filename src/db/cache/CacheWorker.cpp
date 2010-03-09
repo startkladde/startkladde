@@ -12,7 +12,7 @@ namespace Db { namespace Cache {
 		cache (cache)
 	{
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
-		CONNECT (refreshAll        (Returner<bool>            *, OperationMonitor *));
+		CONNECT (refreshAll        (Returner<void>            *, OperationMonitor *));
 		CONNECT (fetchFlightsOther (Returner<void>            *, OperationMonitor *, QDate));
 #undef CONNECT
 
@@ -37,7 +37,7 @@ namespace Db { namespace Cache {
 	/**
 	 * Calls Cache#refreshAll
 	 */
-	void CacheWorker::refreshAll (Returner<bool> &returner, OperationMonitor &monitor)
+	void CacheWorker::refreshAll (Returner<void> &returner, OperationMonitor &monitor)
 	{
 		emit sig_refreshAll (&returner, &monitor);
 	}
@@ -55,9 +55,9 @@ namespace Db { namespace Cache {
 	// ** Back-end slots **
 	// ********************
 
-	void CacheWorker::slot_refreshAll (Returner<bool> *returner, OperationMonitor *monitor)
+	void CacheWorker::slot_refreshAll (Returner<void> *returner, OperationMonitor *monitor)
 	{
-		returnOrException (returner, cache.refreshAll (monitor->interface ()));
+		returnVoidOrException (returner, cache.refreshAll (monitor->interface ()));
 	}
 
 	void CacheWorker::slot_fetchFlightsOther (Returner<void> *returner, OperationMonitor *monitor, QDate date)

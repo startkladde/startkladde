@@ -42,15 +42,15 @@ namespace Db
 				CacheWorker (Cache &cache);
 				virtual ~CacheWorker ();
 
-				void refreshAll        (Returner<bool> &returner, OperationMonitor &monitor);
+				void refreshAll        (Returner<void> &returner, OperationMonitor &monitor);
 				void fetchFlightsOther (Returner<void> &returner, OperationMonitor &monitor, const QDate &date);
 
 			signals:
-				void sig_refreshAll        (Returner<bool> *returner, OperationMonitor *monitor);
+				void sig_refreshAll        (Returner<void> *returner, OperationMonitor *monitor);
 				void sig_fetchFlightsOther (Returner<void> *returner, OperationMonitor *monitor, QDate date);
 
 			protected slots:
-				virtual void slot_refreshAll        (Returner<bool> *returner, OperationMonitor *monitor);
+				virtual void slot_refreshAll        (Returner<void> *returner, OperationMonitor *monitor);
 				virtual void slot_fetchFlightsOther (Returner<void> *returner, OperationMonitor *monitor, QDate date);
 
 			private:

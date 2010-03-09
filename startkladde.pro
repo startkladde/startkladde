@@ -37,6 +37,7 @@ HEADERS += \
            src/concurrent/monitor/SignalOperationMonitor.h \
            src/concurrent/monitor/SimpleOperationMonitor.h \
            src/config/Options.h \
+           src/container/SortedSet.h \
            src/db/Database.h \
            src/db/DbManager.h \
            src/db/DbWorker.h \
@@ -144,6 +145,8 @@ SOURCES += \
            src/db/Query.cpp \
            src/db/dbId.cpp \
            src/db/cache/Cache.cpp \
+           src/db/cache/Cache_hashUpdates.cpp \
+           src/db/cache/Cache_lookup.cpp \
            src/db/cache/CacheWorker.cpp \
            src/db/event/DbEvent.cpp \
            src/db/event/DbEventMonitor.cpp \

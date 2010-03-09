@@ -365,7 +365,7 @@ void DbManager::clearCache ()
 
 void DbManager::refreshCache (QWidget *parent)
 {
-	Returner<bool> returner;
+	Returner<void> returner;
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	cacheWorker.refreshAll (returner, monitor);

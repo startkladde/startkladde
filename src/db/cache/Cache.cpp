@@ -9,33 +9,14 @@
  *     - QMutexLocker (&dataMutex) otherwise
  *     - dataMutex.lock () only when there's good reason (and document the
  *       reason)
- */
-
-/*
- * TODO:
- *   - don't delete an entity that is still in use
- *   - club list should not include ""/whitespace only; Locations dito
- *   - Proper caching
- *     - ID->Object, Registration->Plane, FirstName->People (?)
- *     - Use maps: better insert; sorted
  *
- */
-
-/*
  * Improvements:
  *   - log an error if an invalid ID is passed to the get by ID functions
+ *   - case insensitive sorting for string lists
+ *   - case insensitive uniqueness for string lists
  */
 
-// TODO all methods accessing the database:
-//   - error handling
 
-
-/*
- * Cache.cpp
- *
- *  Created on: 26.02.2010
- *      Author: Martin Herrmann
- */
 
 #include "Cache.h"
 
@@ -56,6 +37,10 @@ namespace Db
 {
 	namespace Cache
 	{
+		// ******************
+		// ** Construction **
+		// ******************
+
 		Cache::Cache (Database &db):
 			db (db), dataMutex (QMutex::Recursive)
 		{
@@ -66,24 +51,6 @@ namespace Db
 		{
 		}
 
-		void Cache::clear ()
-		{
-			synchronized (dataMutex)
-			{
-				planes       .clear ();
-				people       .clear ();
-				launchMethods.clear ();
-
-				flightsToday.clear (); todayDate=QDate ();
-				flightsOther.clear (); otherDate=QDate ();
-				preparedFlights.clear ();
-
-				locations.clear ();
-				accountingNotes.clear ();
-				clubs.clear ();
-				planeTypes.clear ();
-			}
-		}
 
 		// ****************
 		// ** Properties **
@@ -94,565 +61,163 @@ namespace Db
 			return db;
 		}
 
-		QDate Cache::getTodayDate ()
-		{
-			synchronizedReturn (dataMutex, todayDate);
-		}
 
-		QDate Cache::getOtherDate ()
-		{
-			synchronizedReturn (dataMutex, otherDate);
-		}
+		// *************************
+		// ** Data access helpers **
+		// *************************
 
-
-		// ******************
-		// ** Object lists **
-		// ******************
-
-		EntityList<Plane> Cache::getPlanes ()
-		{
-			synchronizedReturn (dataMutex, planes);
-		}
-
-		EntityList<Person> Cache::getPeople ()
-		{
-			synchronizedReturn (dataMutex, people);
-		}
-
-		EntityList<LaunchMethod> Cache::getLaunchMethods ()
-		{
-			synchronizedReturn (dataMutex, launchMethods);
-		}
-
-		EntityList<Flight> Cache::getFlightsToday ()
-		{
-			synchronizedReturn (dataMutex, flightsToday.getList ());
-		}
-
-		EntityList<Flight> Cache::getFlightsOther ()
-		{
-			synchronizedReturn (dataMutex, flightsOther.getList ());
-		}
-
-		EntityList<Flight> Cache::getPreparedFlights ()
-		{
-			synchronizedReturn (dataMutex, preparedFlights.getList ());
-		}
-
-		/**
-		 * Makes a copy of the object list
-		 *
-		 * We don't return a (const) reference to the list because the list
-		 * itself is not thread safe and accesses to the list have to
-		 * synchronized. Copying the list is fast if the list is not modified
-		 * thanks to Qt implicit sharing.
-		 */
-		template<class T> EntityList<T> Cache::getObjects () const
-		{
-			synchronizedReturn (dataMutex, *objectList<T> ());
-		}
+		// These template methods return a reference to concrete data for a
+		// given type. They must be specialized before they are used.
 
 		// Specialize list getters (const)
-		template<> const EntityList<Plane       > *Cache::objectList<Plane       > () const { return &planes       ; }
-		template<> const EntityList<Person      > *Cache::objectList<Person      > () const { return &people       ; }
-		template<> const EntityList<LaunchMethod> *Cache::objectList<LaunchMethod> () const { return &launchMethods; }
+		template<> const EntityList<Plane       > &Cache::objectList<Plane       > () const { return planes       ; }
+		template<> const EntityList<Person      > &Cache::objectList<Person      > () const { return people       ; }
+		template<> const EntityList<LaunchMethod> &Cache::objectList<LaunchMethod> () const { return launchMethods; }
 
 		// Specialize list getters (non-const)
-		template<> EntityList<Plane       > *Cache::objectList<Plane       > () { return &planes       ; }
-		template<> EntityList<Person      > *Cache::objectList<Person      > () { return &people       ; }
-		template<> EntityList<LaunchMethod> *Cache::objectList<LaunchMethod> () { return &launchMethods; }
+		template<> EntityList<Plane       > &Cache::objectList<Plane       > () { return planes       ; }
+		template<> EntityList<Person      > &Cache::objectList<Person      > () { return people       ; }
+		template<> EntityList<LaunchMethod> &Cache::objectList<LaunchMethod> () { return launchMethods; }
 
+		// Specialize hash getters (const)
+		template<> const QHash<dbId, Plane       > &Cache::objectsByIdHash<Plane       > () const { return        planesById; }
+		template<> const QHash<dbId, Person      > &Cache::objectsByIdHash<Person      > () const { return        peopleById; }
+		template<> const QHash<dbId, Flight      > &Cache::objectsByIdHash<Flight      > () const { return       flightsById; }
+		template<> const QHash<dbId, LaunchMethod> &Cache::objectsByIdHash<LaunchMethod> () const { return launchMethodsById; }
+
+		// Specialize hash getters (non-const)
+		template<> QHash<dbId, Plane       > &Cache::objectsByIdHash<Plane       > () { return        planesById; }
+		template<> QHash<dbId, Person      > &Cache::objectsByIdHash<Person      > () { return        peopleById; }
+		template<> QHash<dbId, Flight      > &Cache::objectsByIdHash<Flight      > () { return       flightsById; }
+		template<> QHash<dbId, LaunchMethod> &Cache::objectsByIdHash<LaunchMethod> () { return launchMethodsById; }
 
 
 		// ************************
-		// ** Individual objects **
+		// ** Generic refreshing **
 		// ************************
 
-		/**
-		 * Gets an object from the cache; the database is not accessed.
-		 *
-		 * @param id the ID of the object
-		 * @return a copy of the object
-		 * @throw NotFoundException if the object is not found or id is invalid
-		 */
-		template<class T> T Cache::getObject (dbId id)
+		template<class T> void Cache::refreshObjects (OperationMonitorInterface monitor)
 		{
-			if (idInvalid (id)) throw NotFoundException (id);
+			monitor.status (utf8 ("%1 abrufen").arg (T::objectTypeDescriptionPlural ()));
 
-			// TODO use a hash/map
-			synchronized (dataMutex)
-				foreach (const T &object, objectList<T> ()->getList ())
-					if (object.getId ()==id)
-						return T (object);
+			// Get the list from the database
+			QList<T> newObjects=db.getObjects<T> ();
 
-			throw NotFoundException (id);
-		}
-
-		// Different specialization for Flight
-		template<> Flight Cache::getObject (dbId id)
-		{
-			// TODO use map
 			synchronized (dataMutex)
 			{
-				if (todayDate.isValid ())
-					foreach (const Flight &flight, flightsToday.getList ())
-						if (flight.getId ()==id)
-							return Flight (flight);
+				// Store the object list
+				objectList<T> ()=newObjects;
 
-				if (otherDate.isValid ())
-					foreach (const Flight &flight, flightsOther.getList ())
-						if (flight.getId ()==id)
-								return Flight (flight);
-
-				foreach (const Flight &flight, preparedFlights.getList ())
-					if (flight.getId ()==id)
-						return Flight (flight);
-			}
-
-			throw NotFoundException (id);
-		}
-
-		/**
-		 * Gets an object from the cache; the database is not accessed.
-		 *
-		 * @param id the ID of the object
-		 * @return a newly allocated copy of the object (the caller takes
-		 *         ownership) or NULL the object is not found or id is invalid
-		 */
-		template<class T> T* Cache::getNewObject (dbId id)
-		{
-			try
-			{
-				return new T (getObject<T> (id));
-			}
-			catch (NotFoundException &ex)
-			{
-				return NULL;
-			}
-		}
-
-		/**
-		 * Determines if an object exists in the cache; the database is not
-		 * accessed.
-		 *
-		 * @param id the ID of the object
-		 * @return true if the object exists, or false if not
-		 */
-		template<class T> bool Cache::objectExists (dbId id)
-		{
-			// TODO use hash/map
-			synchronized (dataMutex)
-				foreach (const T &object, *objectList<T> ())
-					if (object.getId ()==id)
-						return true;
-
-			return false;
-		}
-
-		template<class T> QList<T> Cache::getObjects (const QList<dbId> &ids, bool ignoreNotFound)
-		{
-			QList<T> result;
-
-			foreach (dbId id, ids)
-			{
-				try
+				// Update hashes
+				QHash<dbId, T> &byIdHash=objectsByIdHash<T> ();
+				byIdHash.clear ();
+				clearHashes<T> ();
+				foreach (const T &object, newObjects)
 				{
-					result.append (getObject<T> (id));
-				}
-				catch (NotFoundException)
-				{
-					if (!ignoreNotFound) throw;
+					byIdHash.insert (object.getId (), object);
+					updateHashesObjectAdded<T> (object);
 				}
 			}
-
-			return result;
 		}
 
-		// *** Object lookup
-		dbId Cache::getPlaneIdByRegistration (const QString &registration)
-		{
-			// TODO use hash/map
-			synchronized (dataMutex)
-				foreach (const Plane &plane, planes.getList ())
-					if (plane.registration.toLower ()==registration.toLower ())
-						return plane.getId ();
+		// *************************
+		// ** Specific refreshing **
+		// *************************
 
-			return invalidId;
+		void Cache::refreshPlanes (OperationMonitorInterface monitor)
+		{
+			refreshObjects<Plane> (monitor);
 		}
 
-		QList<dbId> Cache::getPersonIdsByName (const QString &firstName, const QString &lastName)
+		void Cache::refreshPeople (OperationMonitorInterface monitor)
 		{
-			// TODO use hash/map
-			QList<dbId> result;
-
-			synchronized (dataMutex)
-				foreach (const Person &person, people.getList ())
-					if (person.firstName.toLower ()==firstName.toLower () && person.lastName.toLower ()==lastName.toLower ())
-						result.append (person.getId ());
-
-			return result;
+			refreshObjects<Person> (monitor);
 		}
 
-		/**
-		 * Returns the ID of the person with the given first and last name
-		 * (case insensitively) if there is exactly one such person, or an
-		 * invalid id if threre are multiple or no such people
-		 *
-		 * @param firstName the first name of the person (the case is ignored)
-		 * @param lastName the last name of the person (the case is ignored)
-		 * @return the ID of the person, or an invalid ID
-		 */
-		dbId Cache::getUniquePersonIdByName (const QString &firstName, const QString &lastName)
+		void Cache::refreshLaunchMethods (OperationMonitorInterface monitor)
 		{
-			// TODO use hash/map
-			// TODO: instead of getting all matching people, we could stop on the first
-			// duplicate.
-			const QList<dbId> personIds=getPersonIdsByName (firstName, lastName);
-
-			if (personIds.size ()==1)
-				return personIds.at (0);
-			else
-				return invalidId;
+			refreshObjects<LaunchMethod> (monitor);
 		}
 
-		QList<dbId> Cache::getPersonIdsByLastName (const QString &lastName)
+		void Cache::refreshFlightsOf (const QString &description,
+			const QDate &date,
+			EntityList<Flight> targetList,
+			QDate *targetDate,
+			OperationMonitorInterface monitor)
 		{
-			// TODO use hash/map
-			QList<dbId> result;
+			monitor.status (utf8 ("%1 abrufen").arg (description));
 
-			synchronized (dataMutex)
-				foreach (const Person &person, people.getList ())
-					if (person.lastName.toLower ()==lastName.toLower ())
-						result.append (person.getId ());
-
-			return result;
-		}
-
-		QList<dbId> Cache::getPersonIdsByFirstName (const QString &firstName)
-		{
-			// TODO use hash/map
-			QList<dbId> result;
-
-			synchronized (dataMutex)
-				foreach (const Person &person, people.getList ())
-					if (person.firstName.toLower ()==firstName.toLower ())
-						result.append (person.getId ());
-
-			return result;
-		}
-
-		dbId Cache::getLaunchMethodByType (LaunchMethod::Type type)
-		{
-			// TODO use hash/map
-			synchronized (dataMutex)
-				foreach (const LaunchMethod &launchMethod, launchMethods.getList ())
-					if (launchMethod.type==type)
-						return launchMethod.getId ();
-
-			return invalidId;
-		}
-
-
-		// *****************
-		// ** Object data **
-		// *****************
-
-		QStringList Cache::getPlaneRegistrations ()
-		{
-			// TODO cache
-			QStringList result;
-
-			synchronized (dataMutex)
-				foreach (const Plane &plane, planes.getList ())
-					result.append (plane.registration);
-
-			result.sort ();
-			return result;
-		}
-
-		QStringList Cache::getPersonFirstNames ()
-		{
-			// TODO cache
-			// TODO case insensitive unique
-			QSet<QString> firstNames;
-
-			synchronized (dataMutex)
-				foreach (const Person &person, people.getList ())
-					firstNames.insert (person.firstName);
-
-			// TODO sort case insensitively
-			QStringList result=QStringList::fromSet (firstNames);
-			result.sort ();
-			return result;
-		}
-
-		QStringList Cache::getPersonFirstNames (const QString &lastName)
-		{
-			// TODO cache
-			// TODO case insensitive unique
-			QSet<QString> firstNames;
-
-			synchronized (dataMutex)
-				foreach (const Person &person, people.getList ())
-					if (person.lastName.toLower ()==lastName.toLower ())
-						firstNames.insert (person.firstName);
-
-			// TODO sort case insensitively
-			QStringList result=QStringList::fromSet (firstNames);
-			result.sort ();
-			return result;
-		}
-
-		QStringList Cache::getPersonLastNames ()
-		{
-			// TODO cache
-			// TODO case insensitive unique
-			QSet<QString> lastNames;
-
-			synchronized (dataMutex)
-				foreach (const Person &person, people.getList ())
-					lastNames.insert (person.lastName);
-
-			// TODO sort case insensitively
-			QStringList result=QStringList::fromSet (lastNames);
-			result.sort ();
-			return result;
-		}
-
-		QStringList Cache::getPersonLastNames (const QString &firstName)
-		{
-			// TODO cache
-			// TODO case insensitive unique
-			QSet<QString> lastNames;
-
-			synchronized (dataMutex)
-				foreach (const Person &person, people.getList ())
-					if (person.firstName.toLower ()==firstName.toLower ())
-						lastNames.insert (person.lastName);
-
-			// TODO sort case insensitively
-			QStringList result=QStringList::fromSet (lastNames);
-			result.sort ();
-			return result;
-		}
-
-		QStringList Cache::getLocations ()
-		{
-			synchronizedReturn (dataMutex, locations);
-		}
-
-		QStringList Cache::getAccountingNotes ()
-		{
-			synchronizedReturn (dataMutex, accountingNotes);
-		}
-
-		QStringList Cache::getPlaneTypes ()
-		{
-			QSet<QString> types;
-
-			synchronized (dataMutex)
-				foreach (const Plane &plane, planes.getList ())
-					types.insert (plane.type);
-
-			// TODO sort case insensitively
-			QStringList result=QStringList::fromSet (types);
-			result.sort ();
-			return result;
-
-			// TODO cache
-			//synchronizedReturn (dataMutex, planeTypes);
-		}
-
-		QStringList Cache::getClubs ()
-		{
-			QSet<QString> clubs;
-
-			synchronized (dataMutex)
-				foreach (const Plane &plane, planes.getList ())
-					clubs.insert (plane.club);
-
-			synchronized (dataMutex)
-				foreach (const Person &person, people.getList ())
-					clubs.insert (person.club);
-
-			// TODO sort case insensitively
-			QStringList result=QStringList::fromSet (clubs);
-			result.sort ();
-			return result;
-
-			// TODO cache
-			//synchronizedReturn (dataMutex, clubs);
-		}
-
-
-		dbId Cache::planeFlying (dbId id)
-		{
-			synchronized (dataMutex)
-			{
-				// Only use the flights of today
-				foreach (const Flight &flight, flightsToday.getList ())
-				{
-					// Plane is the plane of this flight?
-					if (flight.planeId==id && flight.isFlying ())
-						return flight.getId ();
-
-					// Plane is the towplane of this flight?
-					if (flight.isTowplaneFlying () && flight.isAirtow (*this) &&
-							flight.effectiveTowplaneId (*this)==id)
-						return flight.getId ();
-				}
-			}
-
-			return invalidId;
-		}
-
-		dbId Cache::personFlying (dbId id)
-		{
-			synchronized (dataMutex)
-			{
-				// Only use the flights of today
-				foreach (const Flight &flight, flightsToday.getList ())
-				{
-					if (
-						(flight.isFlying         () && flight.pilotId    ==id) ||
-						(flight.isFlying         () && flight.copilotId  ==id) ||
-						(flight.isTowplaneFlying () && flight.towpilotId ==id))
-						return flight.getId ();
-				}
-			}
-
-			return invalidId;
-		}
-
-
-		// *************
-		// ** Reading **
-		// *************
-
-		// TODO allow canceling (old OperationMonitor)
-		int Cache::refreshPlanes (OperationMonitorInterface monitor)
-		{
-			monitor.status ("Flugzeuge abrufen");
-
-			QList<Plane> newPlanes=db.getObjects<Plane> ();
-			synchronized (dataMutex) planes=newPlanes;
-			// TODO rebuild hashes
-			// TODO rebuild planeTypes, clubs
-
-			return 0;
-		}
-
-		int Cache::refreshPeople (OperationMonitorInterface monitor)
-		{
-			monitor.status ("Personen abrufen");
-
-			QList<Person> newPeople=db.getObjects<Person> ();
-			synchronized (dataMutex) people=newPeople;
-			// TODO rebuild hashes
-			// TODO rebuild clubs
-
-			return 0;
-		}
-
-		int Cache::refreshLaunchMethods (OperationMonitorInterface monitor)
-		{
-			monitor.status ("Startarten abrufen");
-
-			QList<LaunchMethod> newLaunchMethods=db.getObjects<LaunchMethod> ();
-			synchronized (dataMutex) launchMethods=newLaunchMethods;
-			// TODO rebuild hashes
-
-			return 0;
-		}
-
-		int Cache::refreshFlights ()
-		{
-			refreshFlightsToday ();
-			refreshFlightsOther ();
-			refreshPreparedFlights ();
-
-			return 0;
-		}
-
-		int Cache::refreshFlightsToday (OperationMonitorInterface monitor)
-		{
-			monitor.status ("Flüge von heute abrufen");
-
-			QDate today=QDate::currentDate ();
-
-			QList<Flight> newFlights=db.getFlightsDate (today);
-
-			synchronized (dataMutex)
-			{
-				todayDate=today;
-				flightsToday.replaceList (newFlights);
-			}
-
-			return 0;
-		}
-
-		int Cache::refreshFlightsOther (OperationMonitorInterface monitor)
-		{
-			if (otherDate.isNull ()) return 0;
-
-			monitor.status (utf8 ("Flüge von %1 abrufen").arg (otherDate.toString (Qt::LocaleDate)));
-
-			QList<Flight> newFlights=db.getFlightsDate (otherDate);
-			synchronized (dataMutex) flightsOther.replaceList (newFlights);
-
-			return 0;
-		}
-
-		int Cache::fetchFlightsOther (QDate date, OperationMonitorInterface monitor)
-		{
-			monitor.status (utf8 ("Flüge für %1 werden abgerufen").arg (date.toString (Qt::LocaleDate)));
-
+			// Get the list from the database
+			QList<Flight> newFlights;
 			if (date.isNull ())
-				return 0;
-
-			QList<Flight> newFlights=db.getFlightsDate (date);
+				newFlights=db.getPreparedFlights ();
+			else
+				newFlights=db.getFlightsDate (date);
 
 			synchronized (dataMutex)
 			{
-				otherDate=date;
-				flightsOther.replaceList (newFlights);
+				// Remove the old flights from the hashes
+				foreach (const Flight &flight, targetList.getList ())
+					flightsById.remove (flight.getId ());
+
+				// Store the date and the new flights
+				if (targetDate) (*targetDate)=date;
+				targetList.replaceList (newFlights);
+
+				// Add the new flights to the hashes
+				foreach (const Flight &flight, newFlights)
+					flightsById.insert (flight.getId (), flight);
 			}
-
-			return 0;
 		}
 
-		int Cache::refreshPreparedFlights (OperationMonitorInterface monitor)
+		void Cache::refreshFlightsToday (OperationMonitorInterface monitor)
 		{
-			monitor.status (utf8 ("Vorbereitete Flüge abrufen"));
-
-			QList<Flight> newFlights=db.getPreparedFlights ();
-			synchronized (dataMutex) preparedFlights.replaceList (newFlights);
-
-			return 0;
+			refreshFlightsOf (utf8 ("Flüge von heute"),
+				QDate::currentDate (), flightsToday, &todayDate, monitor);
 		}
 
-		int Cache::refreshLocations (OperationMonitorInterface monitor)
+		void Cache::refreshFlightsOther (OperationMonitorInterface monitor)
+		{
+			if (otherDate.isNull ()) return;
+			refreshFlightsOf (utf8 ("Flüge von %1").arg (otherDate.toString (Qt::LocaleDate)),
+				otherDate, flightsOther, NULL, monitor);
+		}
+
+		void Cache::fetchFlightsOther (QDate date, OperationMonitorInterface monitor)
+		{
+			if (date.isNull ()) return;
+			refreshFlightsOf (utf8 ("Flüge von %1").arg (date.toString (Qt::LocaleDate)),
+				date, flightsOther, &otherDate, monitor);
+		}
+
+		void Cache::refreshPreparedFlights (OperationMonitorInterface monitor)
+		{
+			refreshFlightsOf (utf8 ("Vorbereitete Flüge"),
+				QDate (), preparedFlights, NULL, monitor);
+		}
+
+		void Cache::refreshLocations (OperationMonitorInterface monitor)
 		{
 			monitor.status (utf8 ("Flugplätze abrufen"));
 
 			QStringList newLocations=db.listLocations ();
 			synchronized (dataMutex) locations=newLocations;
-
-			return 0;
 		}
 
-		int Cache::refreshAccountingNotes (OperationMonitorInterface monitor)
+		void Cache::refreshAccountingNotes (OperationMonitorInterface monitor)
 		{
 			monitor.status (utf8 ("Abrechnungshinweise abrufen"));
 
 			QStringList newAccountingNotes=db.listAccountingNotes ();
 			synchronized (dataMutex) accountingNotes=newAccountingNotes;
-
-			return 0;
 		}
 
-		bool Cache::refreshAll (OperationMonitorInterface monitor)
+		void Cache::refreshAll (OperationMonitorInterface monitor)
 		{
+			// The other hashes will be cleared by the refresh methods
+			clearMultiTypeHashes ();
+			clearHashes<Flight> ();
+
 			// Refresh planes and people before refreshing flights!
 			monitor.progress (0, 8); refreshPlanes          (monitor);
 			monitor.progress (1, 8); refreshPeople          (monitor);
@@ -663,8 +228,8 @@ namespace Db
 			monitor.progress (6, 8); refreshLocations       (monitor);
 			monitor.progress (7, 8); refreshAccountingNotes (monitor);
 			monitor.progress (8, 8, "Fertig");
-			return true;
 		}
+
 
 
 		// *********************
@@ -675,14 +240,23 @@ namespace Db
 		template<class T> void Cache::objectAdded (const T &object)
 		{
 			// Add the object to the cache
-			synchronized (dataMutex) objectList<T> ()->append (object);
-			// TODO update hashes
+			synchronized (dataMutex)
+			{
+				// Object list
+				objectList<T> ().append (object);
+
+				// By-ID and specific hashes
+				objectsByIdHash<T> ().insert (object.getId (), object);
+				updateHashesObjectAdded<T> (object);
+			}
 		}
 
 		template<> void Cache::objectAdded<Flight> (const Flight &flight)
 		{
 			synchronized (dataMutex)
 			{
+				bool interested=true;
+
 				if (flight.isPrepared ())
 					preparedFlights.append (flight);
 				else if (flight.effdatum ()==todayDate)
@@ -690,8 +264,16 @@ namespace Db
 				else if (flight.effdatum ()==otherDate)
 					// If otherDate is the same as today, this is not reached.
 					flightsOther.append (flight);
-				//else
-				//	we're not interested in this flight
+				else
+					// We're not interested in this flight
+					interested=false;
+
+				if (interested)
+				{
+					// By-ID and specific hashes
+					objectsByIdHash<Flight> ().insert (flight.getId (), flight);
+					updateHashesObjectAdded<Flight> (flight);
+				}
 			}
 		}
 
@@ -699,26 +281,53 @@ namespace Db
 		template<class T> void Cache::objectDeleted (dbId id)
 		{
 			// Remove the object from the cache
-			synchronized (dataMutex) objectList<T> ()->removeById (id);
+			synchronized (dataMutex)
+			{
+				const T *old=getNewObject<T> (id);
+
+				// Object list
+				objectList<T> ().removeById (id);
+
+				// By-ID and specific hashes
+				objectsByIdHash<T> ().remove (id);
+				updateHashesObjectDeleted<T> (id, old);
+			}
 		}
 
 		template<> void Cache::objectDeleted<Flight> (dbId id)
 		{
-			// If any of the lists contain this flight, remove it
-			preparedFlights.removeById (id);
-			flightsToday.removeById (id);
-			flightsOther.removeById (id);
+			synchronized (dataMutex)
+			{
+				const Flight *old=getNewObject<Flight> (id);
+
+				// If any of the lists contain this flight, remove it
+				preparedFlights.removeById (id);
+				flightsToday.removeById (id);
+				flightsOther.removeById (id);
+
+				// By-ID and specific hashes
+				objectsByIdHash<Flight> ().remove (id);
+				updateHashesObjectDeleted<Flight> (id, old);
+			}
 		}
 
 		// This template is specialized for T==Flight
 		template<class T> void Cache::objectUpdated (const T &object)
 		{
 			// TODO if the object is not in the cache, add it and log an error
-			// TODO use EntityList methods
 
-				// Update the cache
+			// Update the cache
 			synchronized (dataMutex)
-				objectList<T> ()->replaceById (object.getId (), object);
+			{
+				const T *old=getNewObject<T> (object.getId ());
+
+				// Object list
+				objectList<T> ().replaceById (object.getId (), object);
+
+				// By-ID and specific hashes
+				objectsByIdHash<T> ().insert (object.getId (), object);
+				updateHashesObjectUpdated<T> (object, old);
+			}
 		}
 
 		template<> void Cache::objectUpdated<Flight> (const Flight &flight)
@@ -735,6 +344,10 @@ namespace Db
 
 			synchronized (dataMutex)
 			{
+				bool interested=true;
+
+				const Flight *old=getNewObject<Flight> (flight.getId ());
+
 				if (flight.isPrepared ())
 				{
 					preparedFlights.replaceOrAdd (flight.getId (), flight);
@@ -760,6 +373,14 @@ namespace Db
 					preparedFlights.removeById (flight.getId ());
 					flightsToday.removeById (flight.getId ());
 					flightsOther.removeById (flight.getId ());
+					interested=false;
+				}
+
+				if (interested)
+				{
+					// By-ID and specific hashes
+					objectsByIdHash<Flight> ().insert (flight.getId (), flight);
+					updateHashesObjectUpdated<Flight> (flight, old);
 				}
 			}
 		}
@@ -777,7 +398,6 @@ namespace Db
 
 		void Cache::dbChanged (Event::DbEvent event)
 		{
-			// factorize this method: processDbEvent<T> (event)
 			switch (event.getTable ())
 			{
 				case Event::DbEvent::tableFlights       : handleDbChanged<Flight>       (event); break;
@@ -792,33 +412,41 @@ namespace Db
 		}
 
 
-		// ****************************
-		// ** Template instantiation **
-		// ****************************
+		// **********
+		// ** Misc **
+		// **********
+
+		void Cache::clear ()
+		{
+			synchronized (dataMutex)
+			{
+				// Object lists
+				planes       .clear ();
+				people       .clear ();
+				launchMethods.clear ();
+
+				flightsToday.clear (); todayDate=QDate ();
+				flightsOther.clear (); otherDate=QDate ();
+				preparedFlights.clear ();
+
+				// By-ID hashes
+				planesById        .clear ();
+				peopleById        .clear ();
+				launchMethodsById .clear ();
+				flightsById       .clear ();
+
+				// Specific hashes
+				clearMultiTypeHashes ();
+				clearHashes<Plane> ();
+				clearHashes<Person> ();
+				clearHashes<LaunchMethod> ();
+				clearHashes<Flight> ();
+			}
+		}
+
 
 		// Don't have to instantiate handleDbChanged, objectAdded,
 		// objectDeleted and objectUpdated as they are only used in this file
 
-#		define INSTANTIATE_TEMPLATES(T) \
-			template T  Cache::getObject    (dbId id); \
-			template T *Cache::getNewObject (dbId id); \
-			template QList<T> Cache::getObjects (const QList<dbId> &ids, bool ignoreNotFound); \
-			// Empty line
-
-#		define INSTANTIATE_NON_FLIGHT_TEMPLATES(T) \
-			template EntityList<T> Cache::getObjects () const; \
-			// Empty line
-
-		INSTANTIATE_TEMPLATES (Person      )
-		INSTANTIATE_TEMPLATES (Plane       )
-		INSTANTIATE_TEMPLATES (Flight      )
-		INSTANTIATE_TEMPLATES (LaunchMethod)
-
-		INSTANTIATE_NON_FLIGHT_TEMPLATES (Person      )
-		INSTANTIATE_NON_FLIGHT_TEMPLATES (Plane       )
-		INSTANTIATE_NON_FLIGHT_TEMPLATES (LaunchMethod)
-
-#		undef INSTANTIATE_TEMPLATES
-#		undef INSTANTIATE_NON_FLIGHT_TEMPLATES
 	}
 }
