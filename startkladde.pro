@@ -38,6 +38,7 @@ HEADERS += \
            src/concurrent/monitor/SimpleOperationMonitor.h \
            src/config/Options.h \
            src/container/SortedSet.h \
+           src/container/SortedSet_impl.h \
            src/db/Database.h \
            src/db/DbManager.h \
            src/db/DbWorker.h \

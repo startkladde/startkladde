@@ -1,5 +1,7 @@
 #include "Cache.h"
 
+#include "src/container/SortedSet_impl.h"
+
 /*
  * Currently, the update methods call the removed and added methods. This may
  * or may not be optimal or even correct.
@@ -68,8 +70,15 @@ template<> void Cache::updateHashesObjectDeleted<Plane> (dbId id, const Plane *o
 	synchronized (dataMutex)
 	{
 		// Leave planeTypes
-		// Leave planeRegistrations - it may have been a duplicate
-		if (oldPlane) planeIdsByRegistration.remove (oldPlane->registration.toLower (), id);
+		if (oldPlane)
+		{
+			QString registration=oldPlane->registration;
+			QString registrationLower=registration.toLower ();
+
+			planeIdsByRegistration.remove (registrationLower, id);
+			if (!planeIdsByRegistration.contains (registrationLower))
+				planeRegistrations.remove (registration);
+		}
 		// Leave clubs
 	}
 }

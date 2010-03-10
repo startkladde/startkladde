@@ -11,6 +11,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
+#include "src/container/SortedSet_impl.h"
 
 // ******************
 // ** Object lists **

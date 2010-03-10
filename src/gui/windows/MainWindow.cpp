@@ -123,7 +123,7 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	// TODO not working
 	ui.menuDebug->setVisible (opts.debug);
-	ui.menuDemosystem->setVisible (opts.demosystem);
+	ui.menuDemosystem->menuAction()->setVisible (opts.demosystem);
 
 	ui.actionNetworkDiagnostics->setVisible (!opts.diag_cmd.isEmpty ());
 

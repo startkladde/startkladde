@@ -37,7 +37,7 @@
 #include "src/db/Database.h"
 #include "src/concurrent/synchronized.h"
 #include "src/util/qString.h"
-
+#include "src/container/SortedSet_impl.h"
 
 // ******************
 // ** Construction **
