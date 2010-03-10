@@ -177,6 +177,30 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	ui.launchMethodLabel         ->setDefaultBackgroundColor (requiredFieldColor);
 	ui.towplaneRegistrationLabel ->setDefaultBackgroundColor (requiredFieldColor);
 
+	// Hide the towpilot fields (so they don't take up space, not just
+	// concealed - that is decided in #isTowpilotActive) if
+	// opts.record_towpilot is false. If record_towpilot is true, but the
+	// selected launch method is not an airtow, the fields will still be
+	// concealed.
+	if (!opts.record_towpilot)
+	{
+		ui.towpilotLastNameInput->setVisible (false);
+		ui.towpilotFirstNameInput->setVisible (false);
+
+		ui.towpilotLabel->setVisible (false);
+		ui.towpilotLastNameLabel->setVisible (false);
+		ui.towpilotFirstNameLabel->setVisible (false);
+	}
+
+	// Similarly, hide the error fields if the mode is create, so we don't get
+	// a scroll bar.
+	if (mode==modeCreate)
+	{
+		ui.errorList->setVisible (false);
+		ui.errorLabel->setVisible (false);
+	}
+
+
 	// Setup initial values
 	if (mode==modeCreate)
 		ui.departureLocationInput->setCurrentText (opts.ort);
@@ -780,7 +804,7 @@ Flight FlightWindow::determineFlightBasic () throw ()
 	// Setting the times requires combining the date and time fields
 	QDate date= (isDateActive()) ? (getCurrentDate ()) : QDate::currentDate ();
 #define SET_TIME(active, target, value) do { if (active) target.set_to (date, value, /*tz_utc, */true); else target.set_null (); } while (0)
-	SET_TIME (isDepartureTimeActive        (), flight.departureTime,        getCurrentDepartureTime           ());
+	SET_TIME (isDepartureTimeActive        (), flight.departureTime,        getCurrentDepartureTime        ());
 	SET_TIME (isLandingTimeActive          (), flight.landingTime,          getCurrentLandingTime          ());
 	SET_TIME (isTowflightLandingTimeActive (), flight.towflightLandingTime, getCurrentTowflightLandingTime ());
 #undef SET_TIME

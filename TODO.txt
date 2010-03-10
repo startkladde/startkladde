@@ -1,5 +1,18 @@
 Siehe auch Trac (startkladde.sf.net) 
 
+== Critical (before release) ==
+
+Documentation:
+ INSTALL:
+ 8. Client einrichten
+   - Für Datumseinstellung:
+     In /etc/sudoers eintragen:
+       startkladde  ALL=NOPASSWD:/bin/date
+       startkladde  ALL=NOPASSWD:/etc/init.d/hwclock.sh stop
+
+Default-Config: Plugins (metar, regenrader) eintragen; +record_towpilot
+
+
 Database notes:
 /*
  * Short term plan:
@@ -79,23 +92,6 @@ Database notes:
  */
 
 
-== Critical (before release) ==
-
-* No "land" button if display date is not today
-* Add a landing time to a flight of another date => date correct?
-* Hide towpilot fields if towpilot not recorded
-* Towpilot not given is not an error without record_towpilot
-* List buttons deleted?
-
-Documentation:
- INSTALL:
- 8. Client einrichten
-   - Für Datumseinstellung:
-     In /etc/sudoers eintragen:
-       startkladde  ALL=NOPASSWD:/bin/date
-       startkladde  ALL=NOPASSWD:/etc/init.d/hwclock.sh stop
-
-Default-Config: Plugins (metar, regenrader) eintragen
 
 
 == Major (important) ==

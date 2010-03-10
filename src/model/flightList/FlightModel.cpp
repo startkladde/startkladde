@@ -154,6 +154,10 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 	}
 	else if (role==isButtonRole)
 	{
+		// Only show buttons for prepared flights and today's flights
+		if (!flight.isPrepared() && flight.departureTime.get_qdate (tz_local)!=QDate::currentDate ())
+			return false;
+
 		if      (column==departButtonColumn ()) { return flight.canDepart (); }
 		else if (column==  landButtonColumn ()) { return flight.canLand (); }
 		else return false;

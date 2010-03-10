@@ -293,8 +293,6 @@ bool Flight::canDepart (QString *reason) const
 
 bool Flight::canLand (QString *reason) const
 {
-	// TODO only for flights of today
-
 	// Already landed
 	notPossibleIf (landed, "Der Flug ist bereits gelandet.");
 

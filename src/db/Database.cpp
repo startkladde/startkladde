@@ -218,9 +218,9 @@ QList<Flight> Database::getFlightsDate (QDate date)
 	QDateTime thisMidnight (date,             QTime (0, 0, 0)); // Start of day
 	QDateTime nextMidnight (date.addDays (1), QTime (0, 0, 0)); // Start of next day
 
-	// TODO to Flight
+	// TODO to Flight (but need after-filter)
 	// TODO multi-bind
-	Query condition ("(departure_time>=? AND landing_time<?) OR (departure_time>=? AND landing_time<?)");
+	Query condition ("(departure_time>=? AND departure_time<?) OR (landing_time>=? AND landing_time<?)");
 	condition.bind (thisMidnight); condition.bind (nextMidnight);
 	condition.bind (thisMidnight); condition.bind (nextMidnight);
 
