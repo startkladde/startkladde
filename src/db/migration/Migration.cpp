@@ -1,3 +1,10 @@
+/*
+ * TODO
+ *   - migration descriptions (for display in progress dialog instead of name)
+ *   - method that returns whether a migration leads to data loss
+ *
+ */
+
 #include "Migration.h"
 
 #include "src/db/Database.h"

@@ -80,12 +80,13 @@ class DbManager
 		bool isCurrent (QWidget *parent);
 		void ensureCurrent (const QString &message, QWidget *parent);
 		bool isEmpty (QWidget *parent);
+		void grantPermissions (QWidget *parent);
+		void createDatabase (QWidget *parent);
+		void createSampleLaunchMethods (QWidget *parent);
 
 
 		// *** Connection management
 		void confirmOrCancel (const QString &title, const QString &question, QWidget *parent);
-		void grantPermissions (QWidget *parent);
-		void createDatabase (QWidget *parent);
 		void checkVersion (QWidget *parent);
 		void openInterface (QWidget *parent);
 		void connectImpl (QWidget *parent);

@@ -110,6 +110,18 @@ template<class T> dbId Database::createObject (T &object)
 	return object.id;
 }
 
+template<class T> void Database::createObjects (QList<T> &objects, OperationMonitorInterface monitor)
+{
+	int num=objects.size ();
+	monitor.progress (0, num);
+
+	for (int i=0; i<num; ++i)
+	{
+		createObject (objects[i]);
+		monitor.progress (i+1, num);
+	}
+}
+
 template<class T> bool Database::updateObject (const T &object)
 {
 	Query query=Query ("UPDATE %1 SET %2 WHERE id=?")
@@ -294,6 +306,7 @@ template<> bool Database::objectUsed<Flight> (dbId id)
 	template T        Database::getObject       (dbId id); \
 	template bool     Database::deleteObject<T> (dbId id); \
 	template dbId     Database::createObject    (T &object); \
+	template void     Database::createObjects   (QList<T> &objects, OperationMonitorInterface monitor); \
 	template bool     Database::updateObject    (const T &object); \
 	template QList<T> Database::getObjects  <T> (); \
 	template int      Database::countObjects<T> (); \

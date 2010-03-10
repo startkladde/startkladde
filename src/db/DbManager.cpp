@@ -26,6 +26,8 @@
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
 
+#include "src/concurrent/DefaultQThread.h" //remove
+
 DbManager::DbManager (const DatabaseInfo &info):
 	interface (info), db (interface), cache (db),
 	interfaceWorker (interface), dbWorker (db), migratorWorker (interface), cacheWorker (cache)
@@ -167,8 +169,76 @@ void DbManager::createDatabase (QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &createInterface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	createInterfaceWorker.createDatabase (returner, monitor, info.database);
-	migratorWorker.loadSchema (returner, monitor);
 	MonitorDialog::monitor (monitor, "Datenbank anlegen", parent);
+	returner.wait ();
+}
+
+void DbManager::createSampleLaunchMethods (QWidget *parent)
+{
+	QList<LaunchMethod> sampleLaunchMethods;
+
+	LaunchMethod winchA;
+	winchA.name="Winde Verein A";
+	winchA.shortName="WA";
+	winchA.logString="W";
+	winchA.keyboardShortcut="A";
+	winchA.type=LaunchMethod::typeWinch;
+	winchA.personRequired=true;
+	sampleLaunchMethods.append (winchA);
+
+	LaunchMethod winchB;
+	winchB.name="Winde Verein B";
+	winchB.shortName="WB";
+	winchB.logString="W";
+	winchB.keyboardShortcut="B";
+	winchB.type=LaunchMethod::typeWinch;
+	winchB.personRequired=true;
+	sampleLaunchMethods.append (winchB);
+
+	LaunchMethod airtowEfgh;
+	airtowEfgh.name="D-EFGH";
+	airtowEfgh.shortName="GH";
+	airtowEfgh.logString="F";
+	airtowEfgh.keyboardShortcut="G";
+	airtowEfgh.type=LaunchMethod::typeAirtow;
+	airtowEfgh.towplaneRegistration="D-EFGH";
+	airtowEfgh.personRequired=true;
+	sampleLaunchMethods.append (airtowEfgh);
+
+	LaunchMethod airtowMnop;
+	airtowMnop.name="D-MNOP";
+	airtowMnop.shortName="OP";
+	airtowMnop.logString="F";
+	airtowMnop.keyboardShortcut="O";
+	airtowMnop.type=LaunchMethod::typeAirtow;
+	airtowMnop.towplaneRegistration="D-MNOP";
+	airtowMnop.personRequired=true;
+	sampleLaunchMethods.append (airtowMnop);
+
+	LaunchMethod airtowOther;
+	airtowOther.name="F-Schlepp (sonstige)";
+	airtowOther.shortName="FS";
+	airtowOther.logString="F";
+	airtowOther.keyboardShortcut="F";
+	airtowOther.type=LaunchMethod::typeAirtow;
+	airtowOther.personRequired=true;
+	sampleLaunchMethods.append (airtowOther);
+
+	LaunchMethod selfLaunch;
+	selfLaunch.name="Eigenstart";
+	selfLaunch.shortName="ES";
+	selfLaunch.logString="E";
+	selfLaunch.keyboardShortcut="E";
+	selfLaunch.type=LaunchMethod::typeSelf;
+	selfLaunch.personRequired=false;
+	sampleLaunchMethods.append (selfLaunch);
+
+
+	Returner<void> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+	dbWorker.createObjects (returner, monitor, sampleLaunchMethods);
+	MonitorDialog::monitor (monitor, "Beispielstartarten erstellen", parent);
 	returner.wait ();
 }
 
@@ -190,6 +260,8 @@ void DbManager::checkVersion (QWidget *parent)
 		// After loading the schema, the database must be current.
 		// TODO different message if canceled
 		ensureCurrent ("Datenbank ist nach Erstellen nicht aktuell.", parent);
+
+		createSampleLaunchMethods (parent);
 	}
 	else if (!isCurrent (parent))
 	{
@@ -282,6 +354,8 @@ void DbManager::openInterface (QWidget *parent)
 		// After loading the schema, the database must be current.
 		// TODO different message if canceled
 		ensureCurrent ("Nach dem Laden ist die Datenbank nicht aktuell.", parent);
+
+		createSampleLaunchMethods (parent);
 	}
 }
 

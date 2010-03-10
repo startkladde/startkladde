@@ -11,30 +11,12 @@ Architecture of the database layer:
 |------------------------------|
 |            QtSql             |
 |------------------------------|
+|          TCP proxy           | Allows canceling during query
+|------------------------------|
 |          DB Server           |
 '------------------------------'
 
+See also database.xmi
 
-The Interface classes:
-                                           Uses
-                     -------------------   DefaultInterface       -------- 
-                    | AbstractInterface |---------------------<#>| Worker |--.
-                     ---------.---------                          --------   |
-                             /_\                                             |
-                              |                                              |
-                         -----------                                         |
-                        | Interface |                                        |
-                         -.-------.-                                         |
-                         /_\     /_\                                         |
-                          |       |                                          |
-          ------------------     ---------------------        --------       |
-         | DefaultInterface |   | ThreadSafeInterface |<#>---| Thread |<#>---'
-          ---.----------.---     ---------------------        --------
-            /_\        /_\
-             |          |
- ----------------    -----------------
-|(MySQLInterface)|  |(SQLiteInterface)|
- ----------------    -----------------
- 
 MySQLInterface and SQLiteInterface are currently not implemented; the
 functionality (only for MySQL) is in DefaultInterface.

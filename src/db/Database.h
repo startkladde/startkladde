@@ -12,8 +12,10 @@
 #include "src/db/dbId.h"
 #include "src/db/interface/Interface.h"
 #include "src/db/event/DbEvent.h"
+#include "src/concurrent/monitor/OperationMonitorInterface.h"
 
 class Flight;
+
 
 /**
  * Methods for object-level access to the database
@@ -57,6 +59,7 @@ class Database: public QObject
 		template<class T> T getObject (dbId id);
 		template<class T> bool deleteObject (dbId id);
 		template<class T> dbId createObject (T &object);
+		template<class T> void createObjects (QList<T> &objects, OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		template<class T> bool updateObject (const T &object);
 
 		// We could use a default parameter for the corresponding methods

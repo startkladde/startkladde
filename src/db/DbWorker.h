@@ -22,6 +22,9 @@ class Database;
 /**
  * This class is thread safe.
  *
+ * All methods taking a reference to an object may access the object
+ * asynchronously. The object must not be destroyed until the task has ended.
+ *
  * See doc/internal/worker.txt
  */
 class DbWorker: QObject
@@ -36,10 +39,11 @@ class DbWorker: QObject
 		DbWorker (Database &db);
 		virtual ~DbWorker ();
 
-		template<class T> void createObject (Returner<dbId> &returner, OperationMonitor &monitor, T &object);
-		template<class T> void deleteObject (Returner<int > &returner, OperationMonitor &monitor, dbId id);
-		template<class T> void updateObject (Returner<int > &returner, OperationMonitor &monitor, const T &object);
-		template<class T> void objectUsed   (Returner<bool> &returner, OperationMonitor &monitor, dbId id);
+		template<class T> void createObject  (Returner<dbId> &returner, OperationMonitor &monitor, T &object);
+		template<class T> void createObjects (Returner<void> &returner, OperationMonitor &monitor, QList<T> &objects);
+		template<class T> void deleteObject  (Returner<int > &returner, OperationMonitor &monitor, dbId id);
+		template<class T> void updateObject  (Returner<int > &returner, OperationMonitor &monitor, const T &object);
+		template<class T> void objectUsed    (Returner<bool> &returner, OperationMonitor &monitor, dbId id);
 
 	protected:
 		virtual void executeAndDeleteTask (OperationMonitor *monitor, Task *task);

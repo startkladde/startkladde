@@ -122,6 +122,8 @@ void DefaultInterface::openImpl ()
 	quint16 proxyPort=proxy->open (info.server, info.port);
 
 //		db.setHostName     (info.server  );
+	// Note that this may not be "localhost" because the MySQL library uses a
+	// unix domain socket and ignores the port in this case.
 	db.setHostName     ("127.0.0.1");
 	db.setUserName     (info.username);
 	db.setPassword     (info.password);

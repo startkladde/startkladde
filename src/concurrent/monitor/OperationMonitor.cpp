@@ -3,11 +3,10 @@
 #include "src/concurrent/synchronized.h"
 
 /*
- * TODO:
- *   - documentation
- *
  * Improvements:
  *   - allow suboperations
+ *   - better progress reporting (e. g. with foreach loop): maxProgress() and
+ *     next()
  *   - integrate Monitor with Returner so we only need to pass one object
  *     - NB: returner is a template, and we want to emit (progress, status) and
  *       receive (cancel) signals
@@ -38,6 +37,7 @@
  *   - Can we have an "AsynchronousInterface" which inherites Interface and
  *     stores a Monitor? What about return values?
  *   - The connection canceling should be in the interface, not in the caller
+ *   - Warning if an operation tries to use a monitor which is already in use
  */
 
 OperationMonitor::OperationMonitor ():
