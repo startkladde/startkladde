@@ -71,6 +71,8 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Cache &cache)
 	Person     *pilot     =cache.getNewObject<Person    > (flight->pilotId    );
 
 	if (plane) entry.registration=plane->registration;
+	if (plane) entry.type=plane->type;
+
 	entry.date=flight->effdatum ();
 	if (pilot) entry.pilotName=pilot->formalName ();
 	entry.minPassengers=entry.maxPassengers=flight->numPassengers ();
@@ -105,6 +107,8 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Ca
 
 	// Values directly determined
 	if (plane) entry.registration=plane->registration;
+	if (plane) entry.type=plane->type;
+
 	entry.date=flights.last ()->effdatum ();
 	if (pilot) entry.pilotName=pilot->formalName ();
 	entry.departureLocation=flights.first ()->departureLocation;
@@ -285,7 +289,7 @@ int PlaneLog::columnCount (const QModelIndex &index) const
 	if (index.isValid ())
 		return 0;
 
-	return 10;
+	return 12;
 }
 
 QVariant PlaneLog::data (const QModelIndex &index, int role) const
@@ -299,16 +303,18 @@ QVariant PlaneLog::data (const QModelIndex &index, int role) const
 	{
 		switch (index.column ())
 		{
-			case 0: return entry.dateText ();
-			case 1: return entry.pilotName;
-			case 2: return entry.numPassengersString ();
-			case 3: return entry.departureLocation;
-			case 4: return entry.landingLocation;
-			case 5: return entry.departureTimeText ();
-			case 6: return entry.landingTimeText ();
-			case 7: return entry.numLandings;
-			case 8: return entry.operationTimeText ();
-			case 9: return entry.comments;
+			case 0: return entry.registration;
+			case 1: return entry.type;
+			case 2: return entry.dateText ();
+			case 3: return entry.pilotName;
+			case 4: return entry.numPassengersString ();
+			case 5: return entry.departureLocation;
+			case 6: return entry.landingLocation;
+			case 7: return entry.departureTimeText ();
+			case 8: return entry.landingTimeText ();
+			case 9: return entry.numLandings;
+			case 10: return entry.operationTimeText ();
+			case 11: return entry.comments;
 			default: assert (false); return QVariant ();
 		}
 	}
@@ -324,16 +330,18 @@ QVariant PlaneLog::headerData (int section, Qt::Orientation orientation, int rol
 		{
 			switch (section)
 			{
-				case 0: return "Datum"; break;
-				case 1: return "Pilot"; break;
-				case 2: return "Insassen"; break;
-				case 3: return "Startort"; break;
-				case 4: return "Zielort"; break;
-				case 5: return "Startzeit"; break;
-				case 6: return "Landezeit"; break;
-				case 7: return "Landungen"; break;
-				case 8: return "Betriebsdauer"; break;
-				case 9: return "Bemerkungen"; break;
+				case 0: return "Kennzeichen"; break;
+				case 1: return "Typ"; break;
+				case 2: return "Datum"; break;
+				case 3: return "Pilot"; break;
+				case 4: return "Insassen"; break;
+				case 5: return "Startort"; break;
+				case 6: return "Zielort"; break;
+				case 7: return "Startzeit"; break;
+				case 8: return "Landezeit"; break;
+				case 9: return "Landungen"; break;
+				case 10: return "Betriebsdauer"; break;
+				case 11: return "Bemerkungen"; break;
 			}
 		}
 		else
