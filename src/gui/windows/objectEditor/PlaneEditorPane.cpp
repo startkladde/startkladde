@@ -71,6 +71,16 @@ void PlaneEditorPane::fillData ()
 	ui.clubInput->setCurrentText ("");
 }
 
+void PlaneEditorPane::setNameObject (const Plane &nameObject)
+{
+	if (!blank (nameObject.registration))
+	{
+		ui.registrationInput->setText (nameObject.registration);
+		ui.registrationInput->setEnabled (false);
+		on_registrationInput_editingFinished ();
+	}
+}
+
 // ****************
 // ** GUI events **
 // ****************

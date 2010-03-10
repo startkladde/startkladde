@@ -477,14 +477,14 @@ template<class T> void DbManager::deleteObject (dbId id, QWidget *parent)
 	returner.wait ();
 }
 
-template<class T> bool DbManager::createObject (T &object, QWidget *parent)
+template<class T> dbId DbManager::createObject (T &object, QWidget *parent)
 {
 	Returner<dbId> returner;
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.createObject (returner, monitor, object);
 	MonitorDialog::monitor (monitor, utf8 ("%1 anlegen").arg (T::objectTypeDescription ()), parent);
-	return idValid (returner.returnedValue ());
+	return returner.returnedValue ();
 }
 
 template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
@@ -506,7 +506,7 @@ template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
 #	define INSTANTIATE_TEMPLATES(T) \
 		template bool DbManager::objectUsed  <T> (dbId id        , QWidget *parent); \
 		template void DbManager::deleteObject<T> (dbId id        , QWidget *parent); \
-		template bool DbManager::createObject<T> (T &object      , QWidget *parent); \
+		template dbId DbManager::createObject<T> (T &object      , QWidget *parent); \
 		template int  DbManager::updateObject<T> (const T &object, QWidget *parent); \
 	// Empty line
 

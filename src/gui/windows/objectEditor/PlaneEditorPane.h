@@ -18,6 +18,7 @@ class PlaneEditorPane: public ObjectEditorPane<Plane>
 
 		virtual void objectToFields (const Plane &plane);
 		virtual Plane determineObject ();
+		virtual void setNameObject (const Plane &nameObject);
 
 	public slots:
 		virtual void on_registrationInput_editingFinished ();

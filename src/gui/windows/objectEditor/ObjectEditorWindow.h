@@ -38,8 +38,8 @@ template<class T> class ObjectEditorWindow: public ObjectEditorWindowBase
 		virtual ~ObjectEditorWindow ();
 
 		// Invocation
-		// TODO: don't allow changing the registration/person name/...
 		static dbId createObject (QWidget *parent, DbManager &manager);
+		static dbId createObject (QWidget *parent, DbManager &manager, const T &nameObject);
 		static void displayObject (QWidget *parent, DbManager &manager, const T &object);
 		static int editObject (QWidget *parent, DbManager &manager, const T &object);
 
@@ -51,12 +51,13 @@ template<class T> class ObjectEditorWindow: public ObjectEditorWindowBase
 
 		dbId getId () const { return id; }
 
-	private:
+	protected:
 		ObjectEditorPane<T> *editorPane;
 		Mode mode;
 		dbId id;
 
 };
+
 
 // ******************
 // ** Construction **
@@ -110,6 +111,19 @@ template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, DbM
 		return invalidId;
 }
 
+template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, DbManager &manager, const T &nameObject)
+{
+	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeCreate, manager, parent);
+	w->setAttribute (Qt::WA_DeleteOnClose, true);
+
+	w->editorPane->setNameObject (nameObject);
+
+	if (w->exec ()==QDialog::Accepted)
+		return w->getId ();
+	else
+		return invalidId;
+}
+
 // TODO: this should probably take an ID instead of a T&
 // TODO: only show a close button
 template<class T> void ObjectEditorWindow<T>::displayObject (QWidget *parent, DbManager &manager, const T &object)
@@ -143,7 +157,7 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 			try
 			{
 				std::cout << "Create object: " << object.toString () << std::endl;
-				manager.createObject (object, this);
+				id=manager.createObject (object, this);
 				return true;
 			}
 			catch (OperationCanceledException)

@@ -168,3 +168,8 @@ QString countText (int count, const QString &singular, const QString &plural)
 	else
 		return QString ("%1 %2").arg (count).arg (plural);
 }
+
+QString capitalize (const QString &string)
+{
+	return string.left (1).toUpper() + string.mid (1).toLower ();
+}

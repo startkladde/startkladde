@@ -1,4 +1,4 @@
-Neue TODOs sollten in Trac eingetragen werden. 
+Siehe auch Trac (startkladde.sf.net) 
 
 Database notes:
 /*
@@ -86,7 +86,6 @@ Database notes:
 * Hide towpilot fields if towpilot not recorded
 * Towpilot not given is not an error without record_towpilot
 * List buttons deleted?
-* Splash screen (QSplashScreen)
 
 Documentation:
  INSTALL:

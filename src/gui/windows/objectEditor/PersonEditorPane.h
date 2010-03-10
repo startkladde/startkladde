@@ -17,6 +17,8 @@ class PersonEditorPane: public ObjectEditorPane<Person>
 		virtual void objectToFields (const Person &person);
 		virtual Person determineObject ();
 
+		void setNameObject (const Person &nameObject);
+
 	protected:
 		virtual void fillData ();
 

@@ -961,13 +961,20 @@ void FlightWindow::determineFlightPlanes (Flight &flight)
 {
 	// Determine the plane
 	if (isRegistrationActive ())
-		flight.planeId=determinePlane (getCurrentRegistration (), "Flugzeug", ui.registrationInput);
+		flight.planeId=determineAndEnterPlane (getCurrentRegistration (), "Flugzeug", ui.registrationInput, ui.planeTypeWidget);
 
-	// Determine the towplane
-	// TODO: for a known airtow launch method, we should give the user the
-	// possibility to enter the plane
+	// For an unknown airtow, determine the towplane
 	if (isTowplaneRegistrationActive ())
-		flight.towplaneId=determinePlane (getCurrentTowplaneRegistration (), "Schleppflugzeug", ui.towplaneRegistrationInput);
+		flight.towplaneId=determineAndEnterPlane (getCurrentTowplaneRegistration (), "Schleppflugzeug", ui.towplaneRegistrationInput, ui.towplaneTypeWidget);
+
+	// For a known airtow, determine the towplane (lets the user add it to the
+	// database)
+	if (currentIsAirtow () && idValid (getCurrentLaunchMethodId ()))
+	{
+		LaunchMethod launchMethod=getCurrentLaunchMethod ();
+		if (launchMethod.towplaneKnown ())
+			determineAndEnterPlane (launchMethod.towplaneRegistration, "Schleppflugzeug", NULL, ui.towplaneTypeWidget);
+	}
 }
 
 void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *launchMethod)
@@ -980,7 +987,7 @@ void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *la
 	// Determine the pilot
 	selectedPilot=
 	flight.pilotId=
-		determinePerson (
+		determineAndEnterPerson (
 			isPilotActive(),
 			getCurrentPilotLastName (),
 			getCurrentPilotFirstName (),
@@ -988,12 +995,13 @@ void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *la
 			pilotRequired,
 			flight.pilotLastName, flight.pilotFirstName,
 			selectedPilot,
-			ui.pilotLastNameInput);
+			ui.pilotLastNameInput,
+			ui.pilotFirstNameInput);
 
 	// Determine the copilot
 	selectedCopilot=
 	flight.copilotId=
-		determinePerson (
+		determineAndEnterPerson (
 			isCopilotActive (),
 			getCurrentCopilotLastName (),
 			getCurrentCopilotFirstName (),
@@ -1001,12 +1009,13 @@ void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *la
 			false, // Copilot is never required; flight instructor is checked later
 			flight.copilotLastName, flight.copilotFirstName,
 			selectedCopilot,
-			ui.copilotLastNameInput);
+			ui.copilotLastNameInput,
+			ui.copilotFirstNameInput);
 
 	// Determine the towpilot
 	selectedTowpilot=
 	flight.towpilotId=
-		determinePerson (
+		determineAndEnterPerson (
 			isTowpilotActive(),
 			getCurrentTowpilotLastName(),
 			getCurrentTowpilotFirstName(),
@@ -1014,7 +1023,8 @@ void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *la
 			true, // required
 			flight.towpilotLastName, flight.towpilotFirstName,
 			selectedTowpilot,
-			ui.towpilotLastNameInput);
+			ui.towpilotLastNameInput,
+			ui.towpilotFirstNameInput);
 }
 
 /**
@@ -1152,11 +1162,14 @@ dbId FlightWindow::determinePlane (QString registration, QString description, QW
 	QString question=QString (
 		"Das %1 %2 ist nicht bekannt.\n"
 		"Soll es in die Datenbank aufgenommen werden?")
-		.arg (description, registration);
+		.arg (description, registration.toUpper ());
 
 	if (yesNoQuestion (this, title, question))
 	{
-		dbId result=ObjectEditorWindow<Plane>::createObject (this, manager);
+		Plane nameObject;
+		nameObject.registration=registration.toUpper ();
+
+		dbId result=ObjectEditorWindow<Plane>::createObject (this, manager, nameObject);
 		if (idValid (result))
 			return result;
 		else
@@ -1171,14 +1184,35 @@ dbId FlightWindow::determinePlane (QString registration, QString description, QW
 	throw AbortedException ();
 }
 
+dbId FlightWindow::determineAndEnterPlane (QString registration, QString description, SkComboBox *registrationInput, SkLabel *typeLabel)
+	throw (FlightWindow::AbortedException)
+{
+	dbId result=determinePlane (registration, description, registrationInput);
+
+	if (idValid (result))
+	{
+		try
+		{
+			Plane resultPlane=cache.getObject<Plane> (result);
+			if (registrationInput) registrationInput->setCurrentText (resultPlane.registration);
+			std::cout << "plane type is " << resultPlane.type << std::endl;
+
+			if (typeLabel) typeLabel->setText (resultPlane.type);
+		}
+		catch (Cache::NotFoundException) {}
+	}
+
+	return result;
+}
+
 dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
 	throw (AbortedException)
 {
-	Person person;
-	person.lastName=lastName;
-	person.firstName=firstName;
+	Person nameObject;
+	nameObject.lastName=lastName;
+	nameObject.firstName=firstName;
 
-	dbId result=ObjectEditorWindow<Person>::createObject (this, manager);
+	dbId result=ObjectEditorWindow<Person>::createObject (this, manager, nameObject);
 	if (idValid (result))
 		return result;
 	else
@@ -1297,10 +1331,10 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 		QString question=QString (
 			"Die Person %1 %2 (%3) ist nicht bekannt.\n"
 			"Soll sie in die Datenbank aufgenommen werden?")
-			.arg (firstName, lastName, description);
+			.arg (capitalize (firstName), capitalize (lastName), description);
 
 		if (yesNoQuestion (this, title, question))
-			return createNewPerson (lastName, firstName);
+			return createNewPerson (capitalize (lastName), capitalize (firstName));
 		else
 			throw AbortedException ();
 	}
@@ -1352,13 +1386,31 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 			return 0;
 		case sr_new:
 			// Create new
-			return createNewPerson (lastName, firstName);
+			return createNewPerson (capitalize (lastName), capitalize (firstName));
 		case sr_cancelled: case sr_none_selected:
 			throw AbortedException ();
 	}
 
 	log_error ("Unhandled case in FlightWindow::determinePerson");
 	return 0;
+}
+
+dbId FlightWindow::determineAndEnterPerson (bool active, QString lastName, QString firstName, QString description, bool required, QString &incompleteLastName, QString &incompleteFirstName, dbId originalId, SkComboBox *lastNameWidget, SkComboBox *firstNameWidget) throw (AbortedException)
+{
+	dbId result=determinePerson (active, lastName, firstName, description, required, incompleteLastName, incompleteFirstName, originalId, lastNameWidget);
+
+	if (idValid (result))
+	{
+		try
+		{
+			Person resultPerson=cache.getObject<Person> (result);
+			if (lastNameWidget) lastNameWidget->setCurrentText (resultPerson.lastName);
+			if (firstNameWidget) firstNameWidget->setCurrentText (resultPerson.firstName);
+		}
+		catch (Cache::NotFoundException) {}
+	}
+
+	return result;
 }
 
 
@@ -1377,7 +1429,7 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 		{
 			try
 			{
-				success=manager.createObject (flight, this);
+				success=idValid (manager.createObject (flight, this));
 			}
 			catch (OperationCanceledException)
 			{

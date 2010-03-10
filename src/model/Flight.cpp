@@ -833,10 +833,10 @@ Flight Flight::createFromResult (const Result &result)
 	f.landingTime       =Time::create (
 	                     result.value (14).toDateTime (), tz_utc);
 
-	f.pilotLastName    =result.value (16).toString ();
-	f.pilotFirstName   =result.value (15).toString ();
-	f.copilotLastName  =result.value (18).toString ();
-	f.copilotFirstName =result.value (17).toString ();
+	f.pilotLastName    =result.value (15).toString ();
+	f.pilotFirstName   =result.value (16).toString ();
+	f.copilotLastName  =result.value (17).toString ();
+	f.copilotFirstName =result.value (18).toString ();
 
 	f.towflightLandingTime     =Time::create (
 	                            result.value (19).toDateTime (), tz_utc);
@@ -849,8 +849,8 @@ Flight Flight::createFromResult (const Result &result)
 	f.comments        =result.value (24).toString ();
 
 	f.towpilotId         =result.value (25).toLongLong ();
-	f.towpilotLastName   =result.value (27).toString   ();
-	f.towpilotFirstName  =result.value (26).toString   ();
+	f.towpilotLastName   =result.value (26).toString   ();
+	f.towpilotFirstName  =result.value (27).toString   ();
 
 	return f;
 }

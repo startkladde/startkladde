@@ -44,6 +44,21 @@ void PersonEditorPane::fillData ()
 	ui.clubInput->setCurrentText ("");
 }
 
+void PersonEditorPane::setNameObject (const Person &nameObject)
+{
+	if (!blank (nameObject.lastName))
+	{
+		ui.lastNameInput->setText (nameObject.lastName);
+		ui.lastNameInput->setEnabled (false);
+	}
+
+	if (!blank (nameObject.firstName))
+	{
+		ui.firstNameInput->setText (nameObject.firstName);
+		ui.firstNameInput->setEnabled (false);
+	}
+}
+
 
 // ******************************
 // ** ObjectEditorPane methods **

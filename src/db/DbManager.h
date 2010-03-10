@@ -99,7 +99,7 @@ class DbManager
 
 		template<class T> bool objectUsed   (dbId id        , QWidget *parent);
 		template<class T> void deleteObject (dbId id        , QWidget *parent);
-		template<class T> bool createObject (      T &object, QWidget *parent);
+		template<class T> dbId createObject (      T &object, QWidget *parent);
 		template<class T> int  updateObject (const T &object, QWidget *parent);
 
 	private:

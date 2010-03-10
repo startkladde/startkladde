@@ -72,6 +72,15 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		 */
 		virtual T determineObject ()=0;
 
+		/**
+		 * Sets the "name" fields (e. g. last and first name for people, or
+		 * registration for planes) to the values of the given object and makes
+		 * them read-only, if supported by the implementation.
+		 *
+		 * @param nameObject
+		 */
+		virtual void setNameObject (const T &nameObject) { (void)nameObject; }
+
 		/** @brief Implementations of ObjectEditorPane should specialize this template method */
 		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 

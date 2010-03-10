@@ -275,7 +275,9 @@ class FlightWindow: public QDialog
 		void determineFlightPlanes (Flight &flight) throw (AbortedException);
 		void determineFlightPeople (Flight &flight, const LaunchMethod *launchMethod) throw (AbortedException);
 		dbId determinePlane (QString registration, QString description, QWidget *widget) throw (AbortedException);
+		dbId determineAndEnterPlane (QString registration, QString description, SkComboBox *registrationInput, SkLabel *typeLabel) throw (AbortedException);
 		dbId determinePerson (bool active, QString lastName, QString firstName, QString description, bool required, QString &incompleteLastName, QString &incompleteFirstName, dbId originalId, QWidget *widget) throw (AbortedException);
+		dbId determineAndEnterPerson (bool active, QString lastName, QString firstName, QString description, bool required, QString &incompleteLastName, QString &incompleteFirstName, dbId originalId, SkComboBox *lastNameWidget, SkComboBox *firstNameWidget) throw (AbortedException);
 		dbId createNewPerson (QString lastName, QString firstName) throw (AbortedException);
 		void checkFlightPhase1 (const Flight &flight, bool departNow) throw (AbortedException);
 		void checkFlightPhase2 (const Flight &flight, bool departNow, const Plane *plane, const Plane *towplane, const LaunchMethod *launchMethod) throw (AbortedException);
