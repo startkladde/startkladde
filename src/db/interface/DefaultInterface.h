@@ -79,6 +79,9 @@ class DefaultInterface: public QObject, public Interface
 		virtual QSqlQuery executeQueryImpl (const Query &query, bool forwardOnly=true);
 		virtual QSqlQuery doExecuteQuery (const Query &query, bool forwardOnly=true);
 
+		virtual void transactionStatementImpl (TransactionStatement statement);
+		virtual bool doTransactionStatement (TransactionStatement statement);
+
 		virtual bool retryOnQueryError (int number);
 };
 

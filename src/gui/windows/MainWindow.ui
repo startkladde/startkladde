@@ -544,6 +544,7 @@
    <addaction name="actionIncrementFontSize"/>
    <addaction name="actionDecrementFontSize"/>
    <addaction name="actionShowVirtualKeyboard"/>
+   <addaction name="actionResizeColumns"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSetTime">
@@ -853,14 +854,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>SkLabel</class>
-   <extends>QLabel</extends>
-   <header>src/gui/widgets/SkLabel.h</header>
-  </customwidget>
-  <customwidget>
    <class>SkTableView</class>
    <extends>QTableView</extends>
    <header>src/gui/widgets/SkTableView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>SkLabel</class>
+   <extends>QLabel</extends>
+   <header>src/gui/widgets/SkLabel.h</header>
   </customwidget>
   <customwidget>
    <class>AcpiWidget</class>

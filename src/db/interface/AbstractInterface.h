@@ -28,6 +28,8 @@ class Query;
 class AbstractInterface
 {
 	public:
+		enum TransactionStatement { transactionBegin, transactionCommit, transactionRollback };
+
 		AbstractInterface (const DatabaseInfo &info);
 		virtual ~AbstractInterface ();
 
@@ -62,12 +64,15 @@ class AbstractInterface
 		virtual void transaction ()=0;
 		virtual void commit ()=0;
 		virtual void rollback ()=0;
+		static QString transactionStatementString (TransactionStatement statement);
 
 		// *** Queries
 		virtual void executeQuery (const Query &query)=0;
 		virtual QSharedPointer<Result> executeQueryResult (const Query &query, bool forwardOnly=true)=0;
 		/** Not implemented by means of executeQueryResult for efficiency reasons */
 		virtual bool queryHasResult (const Query &query)=0;
+
+
 
 	private:
 		DatabaseInfo info;

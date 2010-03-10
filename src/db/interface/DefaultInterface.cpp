@@ -3,7 +3,10 @@
  *   - Handle all relevant errors from
  *     http://dev.mysql.com/doc/refman/5.1/en/error-messages-client.html
  *     http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html
- *   - Solution for stalled connection
+ *   - Allow retrying (like canceling, kicks the connection, but sets a retry
+ *     flag instead of canceled)
+ *   - Transactions don't emit an executingQuery signal
+ *   - Colorized transaction output
  */
 
 
@@ -51,6 +54,7 @@
 #include "src/db/interface/exceptions/ConnectionFailedException.h"
 #include "src/db/interface/exceptions/DatabaseDoesNotExistException.h"
 #include "src/db/interface/exceptions/AccessDeniedException.h"
+#include "src/db/interface/exceptions/TransactionFailedException.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 
 QAtomicInt DefaultInterface::freeNumber=0;
@@ -124,6 +128,8 @@ void DefaultInterface::openImpl ()
 //		db.setPort         (info.port    );
 	db.setPort         (proxyPort);
 	db.setDatabaseName (info.database);
+
+	db.setConnectOptions ("CLIENT_COMPRESS");
 
 	while (true)
 	{
@@ -203,30 +209,71 @@ void DefaultInterface::cancelConnection ()
 
 void DefaultInterface::transaction ()
 {
-	// Do not use the QSqlDatabase transaction methods because executeQuery
-	// already handles reconnecting and errors.
-	// It is possible that this will have to be changed to use the
-	// QSqlDatabase methods in the future. In that case, we have to handle
-	// errros and reconnect here (see #executeQueryImpl).
-	// For the time being, this could also be implemented in Interface, but
-	// if it is changed, this is no longer possible. Also, we already have
-	// the corresponding methods in ThreadSafeDatabase).
-
-	// Use BEGIN rather than BEGIN WORK or BEGIN TRANSACTION because that
-	// is understood by both MySQL and SQLite.
-	executeQuery ("BEGIN");
+	transactionStatementImpl (transactionBegin);
 }
 
 void DefaultInterface::commit ()
 {
-	// See #transaction
-	executeQuery ("COMMIT");
+	transactionStatementImpl (transactionCommit);
 }
 
 void DefaultInterface::rollback ()
 {
-	// See #transaction
-	executeQuery ("ROLLBACK");
+	transactionStatementImpl (transactionRollback);
+}
+
+void DefaultInterface::transactionStatementImpl (AbstractInterface::TransactionStatement statement)
+{
+	// Reset the canceled flag; make sure this is always done before
+	// entering doTransactionStatement.
+	canceled=0;
+
+	while (true)
+	{
+		if (!db.isOpen ()) openImpl ();
+
+		if (doTransactionStatement (statement)) return;
+
+		if (opts.display_queries) std::cout << "Retrying...";
+	}
+}
+
+bool DefaultInterface::doTransactionStatement (TransactionStatement statement)
+{
+	if (opts.display_queries) std::cout << transactionStatementString (statement) << "..." << std::flush;
+
+	bool result=false;
+	switch (statement)
+	{
+		case transactionBegin   : result=db.transaction (); break;
+		case transactionCommit  : result=db.commit      (); break;
+		case transactionRollback: result=db.rollback    (); break;
+		// no default
+	}
+
+	if (result)
+	{
+		if (opts.display_queries) std::cout << "OK" << std::endl;
+		return true;
+	}
+	else if (canceled)
+	{
+		// Failed because canceled
+		if (opts.display_queries) std::cout << "canceled" << std::endl;
+		throw OperationCanceledException ();
+	}
+	else
+	{
+		// Failed due to error
+		QSqlError error=db.lastError ();
+		if (opts.display_queries) std::cout << error.databaseText () << std::endl;
+		emit databaseError (error.number (), error.databaseText ());
+
+		if (!retryOnQueryError (error.number ()))
+			throw TransactionFailedException (error, statement);
+
+		return false;
+	}
 }
 
 
@@ -304,6 +351,7 @@ QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOn
 		{
 			if (!retryOnQueryError (ex.error.number ())) throw;
 
+			// FIXME close?
 			close ();
 
 			if (opts.display_queries) std::cout << "Retrying...";
@@ -315,8 +363,8 @@ QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOn
  * Executes a query and returns the QSqlQuery
  *
  * This method is blocking, but can be canceled by calling cancelConnection
- * from another thread. Unlike #open (and open may be changed), this method
- * does not use a monitor for a canceled check. This is because
+ * from another thread. This method does not use a monitor for a canceled
+ * check. This is because
  *   - the canceled check would be the only reason for the monitor (this
  *     method does not report progress)
  *   - passing a monitor here would require passing it through every single

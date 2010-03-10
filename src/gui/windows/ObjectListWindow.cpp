@@ -6,6 +6,7 @@
  *   - add a way to refresh the list from the database
  *   - on deletion: add identification (plane: registration; person: formatted
  *     name)
+ *   - display centered
  */
 #include <iostream>
 

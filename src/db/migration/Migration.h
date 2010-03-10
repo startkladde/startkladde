@@ -78,14 +78,14 @@ class Migration
 		void executeQuery (const Query &query);
 		QSharedPointer<Result> executeQueryResult (const Query &query, bool forwardOnly=true);
 
-		void createTable (const QString &name, bool skipIfExists=false);
-		void createTableLike (const QString &like, const QString &name, bool skipIfExists=false);
+		void createTable (const QString &name, bool skipIfExists=true);
+		void createTableLike (const QString &like, const QString &name, bool skipIfExists=true);
 		void dropTable (const QString &name);
 		void renameTable (const QString &oldName, const QString &newName);
 
-		void addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="", bool skipIfExists=false);
+		void addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="", bool skipIfExists=true);
 		void changeColumnType (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="");
-		void dropColumn (const QString &table, const QString &name, bool skipIfNotExists=false);
+		void dropColumn (const QString &table, const QString &name, bool skipIfNotExists=true);
 		void renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type, const QString &extraSpecification="");
 
 		void updateColumnValues (const QString &tableName, const QString &columnName, const QVariant &oldValue, const QVariant &newValue);

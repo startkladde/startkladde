@@ -51,6 +51,8 @@ Database notes:
  *   - add foreign key constraints
  *   - database checks (?)
  *     - show what is wrong/will be fixed
+ *   - find out whether the full string lenth (255 characters) is transfered,
+ *     even if the string is shorter. If yes, make shorter.
  *
  * Long term plan:
  *   - use a memory SQLite for cache
