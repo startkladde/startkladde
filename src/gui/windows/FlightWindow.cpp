@@ -1174,7 +1174,7 @@ dbId FlightWindow::determinePlane (QString registration, QString description, QW
 			return result;
 		else
 		{
-			widget->setFocus ();
+			if (widget) widget->setFocus ();
 			throw AbortedException ();
 		}
 	}
@@ -1195,7 +1195,6 @@ dbId FlightWindow::determineAndEnterPlane (QString registration, QString descrip
 		{
 			Plane resultPlane=cache.getObject<Plane> (result);
 			if (registrationInput) registrationInput->setCurrentText (resultPlane.registration);
-			std::cout << "plane type is " << resultPlane.type << std::endl;
 
 			if (typeLabel) typeLabel->setText (resultPlane.type);
 		}
