@@ -6,6 +6,13 @@
 
 class SignalOperationMonitor;
 
+/**
+ * When using this class, beware of race conditions: when the monitor emits end
+ * before the signal is connected, the signal may never be received. The
+ * #monitor method is properly synchronized and is currently the only method
+ * that should be used (without further work). That's why the constructor is
+ * private.
+ */
 class MonitorDialog: public QDialog
 {
     Q_OBJECT

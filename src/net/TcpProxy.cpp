@@ -44,6 +44,14 @@ TcpProxy::~TcpProxy ()
 	// server, serverSocket and clientSocket will be deleted automatically
 }
 
+// ****************
+// ** Properties **
+// ****************
+
+quint16 TcpProxy::getProxyPort ()
+{
+	synchronizedReturn (mutex, proxyPort);
+}
 
 // ***************
 // ** Frontends **
@@ -81,8 +89,11 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
 	DEBUG ("Open server in thread " << QThread::currentThreadId ());
 
 	// Store the connection data
-	this->serverHost=serverHost;
-	this->serverPort=serverPort;
+	synchronized (mutex)
+	{
+		this->serverHost=serverHost;
+		this->serverPort=serverPort;
+	}
 
 	delete server;
 	server=new QTcpServer (this);
@@ -93,6 +104,8 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
 
 	if (server->listen (QHostAddress::LocalHost, 0))
 	{
+		synchronized (mutex) this->proxyPort=server->serverPort ();
+
 		DEBUG ("Ok, listening on port " << server->serverPort ());
 	}
 	else

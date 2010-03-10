@@ -13,6 +13,9 @@
 #include <QTcpSocket>
 #include <QString>
 #include <QThread>
+#include <QMutex>
+
+#include "src/concurrent/synchronized.h"
 
 template<class T> class Returner;
 
@@ -26,6 +29,8 @@ class TcpProxy: public QObject
 
 		quint16 open (const QString &serverHost, quint16 serverPort);
 		void close ();
+
+		quint16 getProxyPort ();
 
 	signals:
 		void sig_open (Returner<quint16> *returner, QString serverHost, quint16 serverPort);
@@ -53,6 +58,8 @@ class TcpProxy: public QObject
 		void closeClientSocket ();
 
 	private:
+		QMutex mutex;
+
 		QTcpServer *server;
 		QTcpSocket *serverSocket;
 		QTcpSocket *clientSocket;
@@ -61,6 +68,7 @@ class TcpProxy: public QObject
 
 		QString serverHost;
 		quint16 serverPort;
+		quint16 proxyPort;
 };
 
 #endif

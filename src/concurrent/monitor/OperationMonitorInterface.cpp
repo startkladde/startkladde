@@ -16,6 +16,9 @@ const OperationMonitorInterface OperationMonitorInterface::null (NULL);
  * If the reference count is 1 (only the master copy is left), the end of the
  * operation is signaled to the monitor. If the reference count is 0 (the
  * master copy has been destroyed), the shared data is deleted.
+ *
+ * This is only thread safe as long as there is at least one copy (e. g. the
+ * master copy in the OperationMonitor) left.
  */
 OperationMonitorInterface::~OperationMonitorInterface ()
 {
@@ -30,8 +33,8 @@ OperationMonitorInterface::~OperationMonitorInterface ()
 	}
 	else if (newRefCount==0)
 	{
-		// There may be a race condition here if a new instance is created at
-		// this point (see also #OperationMonitorInterface and operator=).
+		// There is a race condition here that makes the class non-thread-safe
+		// when the last copy is deleted.
 		delete refCount;
 	}
 }
@@ -41,8 +44,9 @@ OperationMonitorInterface::OperationMonitorInterface (const OperationMonitorInte
 {
 //	std::cout << "+interface" << std::endl;
 
-	// FIXME: this is very similar to QFutureInterfaceBase, but isn't there a
-	// race condition in case the last instance is destroyed at this point?
+	// There is a race condition here that makes the class non-thread-safe
+	// when the last copy is deleted.
+	// This is very similar to QFutureInterfaceBase.
 	other.refCount->ref ();
 }
 
@@ -53,8 +57,9 @@ OperationMonitorInterface &OperationMonitorInterface::operator= (const Operation
 
 	if (&other==this) return *this;
 
-	// FIXME: this is very similar to QFutureInterfaceBase, but isn't there a
-	// race condition in case the last instance is destroyed at this point?
+	// There is a race condition here that makes the class non-thread-safe
+	// when the last copy is deleted.
+	// This is very similar to QFutureInterfaceBase.
 	other.refCount->ref ();
 
 	int newRefCount=refCount->fetchAndAddOrdered (-1)-1;

@@ -165,3 +165,6 @@ several places by DbManager):
 	testWorker.bar (returner, monitor, "baz");
 	MonitorDialog::monitor (monitor, utf8 ("Doing bar"), this);
 	returner.wait;
+
+Note: if an uncaught exception is thrown from the worker slot, it propagates to
+the thread's event loop and terminates the program. 

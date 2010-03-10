@@ -133,6 +133,7 @@ Config:
 * Config dialog
 * Make Unix socket Name configurable machen
 * Allow system wide config
+* Make compression configurable
 
 Other:
 * Time zone safety

@@ -6,6 +6,10 @@
  *   - Allow retrying (like canceling, kicks the connection, but sets a retry
  *     flag instead of canceled)
  *   - Transactions don't emit an executingQuery signal
+ *
+ * Improvements:
+ *   - On reconnect, don't print "closing" and "connecting" messages (but do
+ *     keep printing "Retrying...connecting to ..." on #open
  *   - Colorized transaction output
  */
 
@@ -103,18 +107,11 @@ DefaultInterface::~DefaultInterface ()
  *
  * @return true on success, false else
  */
-// TODO remove monitor
 bool DefaultInterface::open ()
 {
 	// Reset the canceled flag
 	canceled=0;
 
-	openImpl ();
-	return true;
-}
-
-void DefaultInterface::openImpl ()
-{
 	DatabaseInfo info=getInfo ();
 
 	// TODO handle proxy port=0: throw an exception, but we don't have an
@@ -133,6 +130,14 @@ void DefaultInterface::openImpl ()
 
 	db.setConnectOptions ("CLIENT_COMPRESS");
 
+
+	openImpl ();
+
+	return true;
+}
+
+void DefaultInterface::openImpl ()
+{
 	while (true)
 	{
 		std::cout << QString ("%1 connecting to %2 via %3:%4...")
@@ -234,7 +239,13 @@ void DefaultInterface::transactionStatementImpl (AbstractInterface::TransactionS
 	{
 		if (!db.isOpen ()) openImpl ();
 
+		// Keep calling doTransactionStatement until it succeeds. If it failes
+		// terminally, it will throw an exception instead of returning false.
 		if (doTransactionStatement (statement)) return;
+
+		// The socket may alreday be closed - close the connection so it
+		// can be reopened.
+		close ();
 
 		if (opts.display_queries) std::cout << "Retrying...";
 	}
@@ -301,7 +312,7 @@ void DefaultInterface::executeQuery (const Query &query)
  *
  * @param query the query to execute
  * @param forwardOnly the forwardOnly flag to set on the query
- * @return TODO
+ * @return a QSharedPointer to a DefaultResult encapsulating the QSqlQuery
  * @throw QueryFailedException if the query fails
  */
 QSharedPointer<Result> DefaultInterface::executeQueryResult (const Query &query, bool forwardOnly)
@@ -353,7 +364,8 @@ QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOn
 		{
 			if (!retryOnQueryError (ex.error.number ())) throw;
 
-			// FIXME close?
+			// The socket may alreday be closed - close the connection so it
+			// can be reopened.
 			close ();
 
 			if (opts.display_queries) std::cout << "Retrying...";

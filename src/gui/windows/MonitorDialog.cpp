@@ -5,9 +5,6 @@
  *   - keeping the dialog open for multiple operations
  */
 
-// FIXME synchronization
-//  - for example, the first status may not be displayed if it was set before the dialog was displayed
-
 #include "src/concurrent/monitor/SignalOperationMonitor.h"
 
 MonitorDialog::MonitorDialog (SignalOperationMonitor &monitor, QWidget *parent):
@@ -29,6 +26,19 @@ MonitorDialog::~MonitorDialog()
 
 }
 
+/**
+ * Displays the dialog, shows the progress and status and displays a button to
+ * cancel the operation.
+ *
+ * This method is properly synchronized. It will return immediately (without
+ * showing the dialog) if the task already ended; it will also display the
+ * current progress and status on startup if they have been set previously.
+ *
+ * @param monitor the operation monitor to monitor
+ * @param title the title of the window; if no status has been set yet, this is
+ *              also used as the initial status
+ * @param parent the parent window
+ */
 void MonitorDialog::monitor (SignalOperationMonitor &monitor, const QString &title, QWidget *parent)
 {
 	MonitorDialog dialog (monitor, parent);

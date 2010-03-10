@@ -16,7 +16,7 @@
 #include "src/concurrent/monitor/OperationMonitor.h"
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 
-// FIXME: test deleting of tasks
+
 class Database;
 
 /**

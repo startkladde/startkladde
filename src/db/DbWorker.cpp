@@ -9,9 +9,6 @@
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
 
-// FIXME: what happens if an exception is not caught?
-// TODO: this requires Qt 4.4 (Hardy has 4.3)
-
 /*
  * Now, the implementation of this here worker class is a bit more complicated
  * than that of other worker classes, due to the fact that we need template

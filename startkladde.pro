@@ -114,7 +114,6 @@ HEADERS += \
            src/statistics/LaunchMethodStatistics.h \
            src/statistics/PilotLog.h \
            src/statistics/PlaneLog.h \
-           src/time/Date.h \
            src/time/Time.h \
            src/time/timeFunctions.h \
            src/util/bool.h \
@@ -209,7 +208,6 @@ SOURCES += \
            src/statistics/LaunchMethodStatistics.cpp \
            src/statistics/PilotLog.cpp \
            src/statistics/PlaneLog.cpp \
-           src/time/Date.cpp \
            src/time/Time.cpp \
            src/time/timeFunctions.cpp \
            src/util/bool.cpp \
