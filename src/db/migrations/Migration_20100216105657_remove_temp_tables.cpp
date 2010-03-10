@@ -12,14 +12,14 @@ Migration_20100216105657_remove_temp_tables::~Migration_20100216105657_remove_te
 {
 }
 
-void Migration_20100216105657_remove_temp_tables::up (OperationMonitorInterface monitor)
+void Migration_20100216105657_remove_temp_tables::up ()
 {
 	removeTempTable ("person");
 	removeTempTable ("flugzeug");
 	removeTempTable ("flug");
 }
 
-void Migration_20100216105657_remove_temp_tables::down (OperationMonitorInterface monitor)
+void Migration_20100216105657_remove_temp_tables::down ()
 {
 	createTempTable ("person");
 	createTempTable ("flugzeug");

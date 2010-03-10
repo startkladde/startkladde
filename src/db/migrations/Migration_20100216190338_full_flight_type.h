@@ -13,8 +13,8 @@ class Migration_20100216190338_full_flight_type: public Migration
 		Migration_20100216190338_full_flight_type (Interface &interface);
 		virtual ~Migration_20100216190338_full_flight_type ();
 
-		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void up ();
+		virtual void down ();
 
 	protected:
 		void updateValue (int oldValue, const QString &newValue, Direction direction);

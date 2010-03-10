@@ -15,8 +15,8 @@ class Migration_20100215211913_drop_old_columns: public Migration
 		Migration_20100215211913_drop_old_columns (Interface &interface);
 		virtual ~Migration_20100215211913_drop_old_columns ();
 
-		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void up ();
+		virtual void down ();
 
 	protected:
 		void dropColumnAndTemp (const QString &table, const QString &name);

@@ -18,8 +18,8 @@ class Migration_20100216105657_remove_temp_tables: public Migration
 		Migration_20100216105657_remove_temp_tables (Interface &interface);
 		virtual ~Migration_20100216105657_remove_temp_tables ();
 
-		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void up ();
+		virtual void down ();
 
 	protected:
 		void removeTempTable (const QString &name);

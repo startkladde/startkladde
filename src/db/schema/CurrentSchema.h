@@ -14,8 +14,13 @@ class CurrentSchema: public Schema
 		CurrentSchema (Interface &interface);
 		virtual ~CurrentSchema ();
 
-		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		// Default parameters, but to implement Schema, we need to declare the
+		// methods without parameters
+		virtual void up () { up (OperationMonitorInterface::null); }
+		virtual void down () { down (OperationMonitorInterface::null); }
+
+		virtual void up (OperationMonitorInterface monitor);
+		virtual void down (OperationMonitorInterface monitor);
 
 		virtual QList<quint64> getVersions ();
 };

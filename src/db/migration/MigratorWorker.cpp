@@ -82,7 +82,8 @@ void MigratorWorker::slot_loadSchema (Returner<void> *returner, OperationMonitor
 
 void MigratorWorker::slot_pendingMigrations (Returner<QList<quint64> > *returner, OperationMonitor *monitor)
 {
-	returnOrException (returner, migrator.pendingMigrations (monitor->interface ()));
+	OperationMonitorInterface interface=monitor->interface ();
+	returnOrException (returner, migrator.pendingMigrations ());
 }
 
 void MigratorWorker::slot_isCurrent (Returner<bool> *returner, OperationMonitor *monitor)
@@ -97,5 +98,6 @@ void MigratorWorker::slot_isEmpty (Returner<bool> *returner, OperationMonitor *m
 
 void MigratorWorker::slot_currentVersion (Returner<quint64> *returner, OperationMonitor *monitor)
 {
-	returnOrException (returner, migrator.currentVersion (monitor->interface ()));
+	OperationMonitorInterface interface=monitor->interface ();
+	returnOrException (returner, migrator.currentVersion ());
 }

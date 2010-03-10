@@ -17,8 +17,8 @@ class Migration_20100215172237_add_towpilot: public Migration
 		Migration_20100215172237_add_towpilot (Interface &interface);
 		virtual ~Migration_20100215172237_add_towpilot ();
 
-		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void up ();
+		virtual void down ();
 };
 
 #endif

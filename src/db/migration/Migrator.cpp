@@ -53,13 +53,13 @@ void Migrator::runMigration (quint64 version, Migration::Direction direction, Op
 			case Migration::dirUp:
 				std::cout << "== Applying: " << name << " " << QString (79-14-name.length (), '=') << std::endl;
 				monitor.status (QString ("Migration anwenden: %1").arg (name));
-				migration->up (monitor);
+				migration->up ();
 				addMigration (version);
 				break;
 			case Migration::dirDown:
 				std::cout << "== Reverting: " << name << " " << QString (79-15-name.length (), '=') << std::endl;
 				monitor.status (QString ("Migration rückgängig machen: %1").arg (name));
-				migration->down (monitor);
+				migration->down ();
 				removeMigration (version);
 				break;
 		}
@@ -167,7 +167,7 @@ void Migrator::reset ()
 // ** Migration listing **
 // ***********************
 
-QList<quint64> Migrator::pendingMigrations (OperationMonitorInterface monitor)
+QList<quint64> Migrator::pendingMigrations ()
 {
 	QList<quint64> availableMigrations=factory->availableVersions ();
 	QList<quint64> appliedMigrations=this->appliedMigrations ();
@@ -180,7 +180,7 @@ QList<quint64> Migrator::pendingMigrations (OperationMonitorInterface monitor)
 	return pending;
 }
 
-quint64 Migrator::nextMigration (OperationMonitorInterface monitor)
+quint64 Migrator::nextMigration ()
 {
 	QList<quint64> availableMigrations=factory->availableVersions ();
 	QList<quint64> appliedMigrations=this->appliedMigrations ();
@@ -200,7 +200,9 @@ quint64 Migrator::latestVersion ()
 bool Migrator::isCurrent (OperationMonitorInterface monitor)
 {
 	monitor.status (utf8 ("Datenbankversion prüfen"));
-	return nextMigration (monitor)==0;
+
+	// Use nextMigration, not currentVersion, so it works with gaps
+	return nextMigration ()==0;
 }
 
 bool Migrator::isEmpty (OperationMonitorInterface monitor)
@@ -219,7 +221,7 @@ bool Migrator::isEmpty (OperationMonitorInterface monitor)
  *
  * @return the version, or an 0 if the version table does not exist or is empty
  */
-quint64 Migrator::currentVersion (OperationMonitorInterface monitor)
+quint64 Migrator::currentVersion ()
 {
 	if (!interface.tableExists (migrationsTableName)) return 0;
 

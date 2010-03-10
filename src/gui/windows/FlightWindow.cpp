@@ -318,7 +318,8 @@ void FlightWindow::showEvent (QShowEvent *event)
 
 				// There may be multiple widgets associated with one label, for
 				// example for the time fields.
-				label->setMinimumHeight (1+qMax (widget->sizeHint ().height (), label->sizeHint ().height ()));
+				if (widget && label)
+					label->setMinimumHeight (1+qMax (widget->sizeHint ().height (), label->sizeHint ().height ()));
 			}
 
 			labelHeightsSet=true;
@@ -1306,7 +1307,7 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 
 		if (!confirmProblem (this, title, problem))
 		{
-			widget->setFocus ();
+			if (widget) widget->setFocus ();
 			throw AbortedException ();
 		}
 		else

@@ -37,6 +37,12 @@ class Interface;
  * Notes for implementations:
  *   - do not include Interface.h. Use the forwarder methods provided
  *     by this class instead. Add forwarder methods if required.
+ *
+ * Note that the monitor is not required for cancelation, since the only long
+ * operations the migrations do are queries, and queries can be canceled by
+ * using the interface's cancelConnection method. We also don't do progress
+ * reporting (except currentSchema) because that would only make sense with
+ * suboperations, which are not implemented, so we don't use a monitor at all.
  */
 class Migration
 {
@@ -67,8 +73,8 @@ class Migration
 		Migration (Interface &interface);
 		virtual ~Migration ();
 
-		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null)=0;
-		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null)=0;
+		virtual void up ()=0;
+		virtual void down ()=0;
 
 	protected:
 		void transaction ();

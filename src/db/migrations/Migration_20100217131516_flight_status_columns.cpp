@@ -11,7 +11,7 @@ Migration_20100217131516_flight_status_columns::~Migration_20100217131516_flight
 {
 }
 
-void Migration_20100217131516_flight_status_columns::up (OperationMonitorInterface monitor)
+void Migration_20100217131516_flight_status_columns::up ()
 {
 	// Ideally, we would use transactions here, but the DDL statements
 	// (add column) terminate the transaction, so it's kind of useless.
@@ -29,7 +29,7 @@ void Migration_20100217131516_flight_status_columns::up (OperationMonitorInterfa
 	dropColumn ("flights", "status");
 }
 
-void Migration_20100217131516_flight_status_columns::down (OperationMonitorInterface monitor)
+void Migration_20100217131516_flight_status_columns::down ()
 {
 	// See #up about transaction
 

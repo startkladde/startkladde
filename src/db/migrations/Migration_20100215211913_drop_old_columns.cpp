@@ -9,14 +9,14 @@ Migration_20100215211913_drop_old_columns::~Migration_20100215211913_drop_old_co
 {
 }
 
-void Migration_20100215211913_drop_old_columns::up (OperationMonitorInterface monitor)
+void Migration_20100215211913_drop_old_columns::up ()
 {
 	dropColumnAndTemp ("flug"       , "editierbar");
 	dropColumnAndTemp ("flug"       , "verein"    );
 	dropColumnAndTemp ("person"     , "bwlv"      );
 }
 
-void Migration_20100215211913_drop_old_columns::down (OperationMonitorInterface monitor)
+void Migration_20100215211913_drop_old_columns::down ()
 {
 	// Don't change back
 }

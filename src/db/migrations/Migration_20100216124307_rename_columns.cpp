@@ -9,12 +9,12 @@ Migration_20100216124307_rename_columns::~Migration_20100216124307_rename_column
 {
 }
 
-void Migration_20100216124307_rename_columns::up (OperationMonitorInterface monitor)
+void Migration_20100216124307_rename_columns::up ()
 {
 	renameColumns (dirUp);
 }
 
-void Migration_20100216124307_rename_columns::down (OperationMonitorInterface monitor)
+void Migration_20100216124307_rename_columns::down ()
 {
 	renameColumns (dirDown);
 }

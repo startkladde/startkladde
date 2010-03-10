@@ -9,7 +9,7 @@ Migration_20100215172237_add_towpilot::~Migration_20100215172237_add_towpilot ()
 {
 }
 
-void Migration_20100215172237_add_towpilot::up (OperationMonitorInterface monitor)
+void Migration_20100215172237_add_towpilot::up ()
 {
 	addColumn ("flug"     , "towpilot", dataTypeId     (), "", true);
 	addColumn ("flug"     , "tpvn",     dataTypeString (), "", true);
@@ -20,7 +20,7 @@ void Migration_20100215172237_add_towpilot::up (OperationMonitorInterface monito
 	addColumn ("flug_temp", "tpnn",     dataTypeString (), "", true);
 }
 
-void Migration_20100215172237_add_towpilot::down (OperationMonitorInterface monitor)
+void Migration_20100215172237_add_towpilot::down ()
 {
 	// Since the towpilot columns were allowed, we don't remove them
 }

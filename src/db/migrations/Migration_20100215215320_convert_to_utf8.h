@@ -18,8 +18,8 @@ class Migration_20100215215320_convert_to_utf8: public Migration
 		Migration_20100215215320_convert_to_utf8 (Interface &interface);
 		virtual ~Migration_20100215215320_convert_to_utf8 ();
 
-		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void up ();
+		virtual void down ();
 
 	protected:
 		virtual void changeTable (const QString &name);

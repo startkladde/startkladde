@@ -12,8 +12,8 @@ class Migration_20100216171107_add_comments_to_users: public Migration
 		Migration_20100216171107_add_comments_to_users (Interface &interface);
 		virtual ~Migration_20100216171107_add_comments_to_users ();
 
-		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void up ();
+		virtual void down ();
 };
 
 #endif

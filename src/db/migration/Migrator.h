@@ -43,15 +43,14 @@ class Migrator
 		void create ();
 
 		// *** Migration listing
-		QList<quint64> pendingMigrations (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-		quint64 nextMigration (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		QList<quint64> pendingMigrations ();
+		quint64 nextMigration ();
 		static quint64 latestVersion ();
-		// TODO move to cpp and document: using nextMigration, not currentVersion, so it works with gaps
 		bool isCurrent (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		bool isEmpty (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 		// *** Migrations table
-		quint64 currentVersion (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		quint64 currentVersion ();
 		bool hasMigration (quint64 version);
 		QList<quint64> appliedMigrations ();
 

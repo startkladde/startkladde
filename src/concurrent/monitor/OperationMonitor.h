@@ -48,6 +48,12 @@ class QAtomicInt;
  *   }
  * See, for example, ThreadSafeInterface::asyncOpen.
  *
+ * Note that the query methods of DefaultInterface can be canceled by an own
+ * mechanism and will throw an OperationCanceledException directly. Using said
+ * mechanism is less convenient, but necessary because the connection has to be
+ * kicked (using TcpProxy). Thus, the monitor is only necessary for status and
+ * progress reporting.
+ *
  * This class is thread safe.
  */
 class OperationMonitor

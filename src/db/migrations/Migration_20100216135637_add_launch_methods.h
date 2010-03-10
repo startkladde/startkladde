@@ -13,8 +13,8 @@ class Migration_20100216135637_add_launch_methods: public Migration
 		Migration_20100216135637_add_launch_methods (Interface &interface);
 		virtual ~Migration_20100216135637_add_launch_methods ();
 
-		virtual void up (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-		virtual void down (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		virtual void up ();
+		virtual void down ();
 };
 
 #endif
