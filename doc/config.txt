@@ -84,25 +84,6 @@ password <pass>
   Standard:
 
 
-sk_admin_name <name>
-  Beschreibung:
-    Legt den Benutzer für den Startkladdenadministrationsaccount fest. Dieser
-    Account wird zum Beispiel vom Webinterface verwendet.
-  Parameter:
-    - name: der Benutzername für den Admin-Account
-  Beispiele:
-    sk_admin_name sk_admin
-  Standard: sk_admin
-
-sk_admin_password <pass>
-  Beschreibung:
-    Legt das Passwort für den Administrationsbenutzer fest
-  Paramter:
-    - pass: das Passwort, im Klartext
-  Beispiele:
-    sk_admin_password moobertshausen
-  Standard:
-
 debug
   Beschreibung:
     Aktiviert diverse Optionen die zum Debugging hilfreich sind.
@@ -168,7 +149,7 @@ record_towpilot
   Parameter: keine
   Beispiele:
     record_towpilot
-  Standard: Schlepppilot wird nicht erfasst
+  Standard: Schlepppilot wird erfasst
 
 protect_launch_methods
   Beschreibung:
@@ -210,26 +191,6 @@ startart <id>, <type>, <registration>, <name>, <shortname>, <shortcut>, <logbook
     - startart 12, airtow,       , Sonstige (F-Schlepp), SOF, F, F, true
     - startart 13, other,        , Gummiseilstart,       GS,  G, G, true
   Standard: keine
-
-local_hosts hostspec [, hostspec [, ...]]
-  Beschreibung:
-	Fügt eine neue Adresse oder einen Adressbereich zur Liste der lokalen
-	Adressen dazu. Von lokalen Adressen aus könnnen bestimmte
-	Webinterface-Funktionen verwendet werden, ohne dass eine Anmeldung nötig
-	ist. Zum Beispiel könnnen so Startlisten abgerufen werden.
-	Diese Option kann mehrfach vorkommen.
-  Parameter:
-    - hostspec: eine Angabe über eine IP-Adresse oder einen Adressbereich.
-	  Adressen werden explizit in Dotted-Quad-Notation angegeben, also zum
-	  Beispiel "192.168.1.1".
-	  Wenn das letzte Zeichen (abgesehen von Leerzeichen) ein * ist, handelt es
-	  sich um einen Adressbereich. Alle Adressen, die mit diesem Text anfangen,
-	  werden als lokal behandelt. Wird zum Beispiel 192.168.1.* verwendet, dann
-	  gelten unter anderem die Adressen 192.168.1.1 und 192.168.1.42 als lokal.
-  Beispiele:
-    local_hosts 127.0.0.1, 192.168.1.*
-  Standard:
-    Keine Adresse wird als lokal behandelt.
 
 plugin_path path
   Beschreibung:

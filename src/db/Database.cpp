@@ -1,3 +1,11 @@
+/*
+ * Notes:
+ *   - the write operations (create, update, delete) are wrapped in a
+ *     transaction because when the operation is canceled forcefully (by using
+ *     interface#cancelConnection), we cannot determine whether the operation
+ *     was performed or not, so the cache may be invalid. Using a transaction
+ *     hopefully reduces the "critical" time where this may happen.
+ */
 #include "Database.h"
 
 #include <iostream>
@@ -82,7 +90,10 @@ template<class T> bool Database::deleteObject (dbId id)
 	Query query=Query ("DELETE FROM %1 WHERE ID=?")
 		.arg (T::dbTableName ()).bind (id);
 
+	// Wrap the operation into a transaction, see top of file
+	interface.transaction ();
 	QSharedPointer<Result> result=interface.executeQueryResult (query);
+	interface.commit ();
 
 	emit dbEvent (DbEvent::deleted<T> (id));
 
@@ -100,9 +111,14 @@ template<class T> dbId Database::createObject (T &object)
 	Query query=Query ("INSERT INTO %1 %2").arg (T::dbTableName (), T::insertValueList ());
 	object.bindValues (query);
 
+	// Wrap the operation into a transaction, see top of file
+	interface.transaction ();
 	QSharedPointer<Result> result=interface.executeQueryResult (query);
+	interface.commit ();
 
 	object.id=result->lastInsertId ().toLongLong ();
+
+	std::cout << "new id is " << object.id << std::endl;
 
 	if (idValid (object.id))
 		emit dbEvent (DbEvent::added (object));
@@ -130,7 +146,10 @@ template<class T> bool Database::updateObject (const T &object)
 	object.bindValues (query);
 	query.bind (object.id); // After the object values!
 
+	// Wrap the operation into a transaction, see top of file
+	interface.transaction ();
 	QSharedPointer<Result> result=interface.executeQueryResult (query);
+	interface.commit ();
 
 	emit dbEvent (DbEvent::changed (object));
 

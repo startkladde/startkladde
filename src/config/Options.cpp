@@ -21,10 +21,6 @@ const QString default_local_config_fielname="startkladde.conf";
 
 // 4000 Connection
 const int opt_server_display_name=4005;
-const int opt_root_name=4001;
-const int opt_root_pasword=4002;
-const int opt_sk_admin_name=4003;
-const int opt_sk_admin_password=4004;
 
 
 // 3000 Configuration
@@ -68,10 +64,6 @@ Options::Options ()
 	databaseInfo.port=3306;
 
 	server_display_name=databaseInfo.server;
-	root_name="root";
-	root_password="";	// No default password again.
-	sk_admin_name="sk_admin";
-	sk_admin_password="";	// No default password given.
 
 	// Local Options
 	demosystem=false;
@@ -109,10 +101,6 @@ void Options::display_options (QString prefix)
 	std::cout << prefix << "--database name, -d name: use database name" << std::endl;
 	std::cout << prefix << "--username name, -u name: log in as user name" << std::endl;
 	std::cout << prefix << "--password pw, -p pw: log in with password pw" << std::endl;
-	std::cout << prefix << "--root_name name: use user name for root access (default: root)" << std::endl;
-	std::cout << prefix << "--root_password pw: use pw as root password instead of prompting" << std::endl;
-	std::cout << prefix << "--sk_admin_name name: use name for administration (default: sk_admin)" << std::endl;
-	std::cout << prefix << "--sk_admin_password pw: use pw as sk_admin password instead of prompting" << std::endl;
 	std::cout << prefix << "--demosystem: show the demosystem menu" << std::endl;
 	std::cout << prefix << "--title text: show text in the window title (where applicable)" << std::endl;
 	std::cout << prefix << "--diag_cmd cmd: set the command for network diagnostics" << std::endl;
@@ -151,10 +139,6 @@ bool Options::parse_arguments (int argc, char *argv[])
 			{ "user_name",           required_argument, NULL, 'u' },
 			{ "password",            required_argument, NULL, 'p' },
 			{ "user_password",       required_argument, NULL, 'p' },
-			{ "root_name",           required_argument, NULL, opt_root_name },
-			{ "root_password",       required_argument, NULL, opt_root_pasword },
-			{ "sk_admin_name",       required_argument, NULL, opt_sk_admin_name },
-			{ "sk_admin_password",   required_argument, NULL, opt_sk_admin_password },
 
 			// Local Options
 			{ "demosystem",      no_argument,       NULL, opt_demosystem },
@@ -189,10 +173,6 @@ bool Options::parse_arguments (int argc, char *argv[])
 			case 'u': databaseInfo.username=optarg; break;
 			case 'p': databaseInfo.password=optarg; break;
 			case opt_server_display_name: server_display_name=optarg; break;
-			case opt_root_name: root_name=optarg; break;
-			case opt_root_pasword: root_password=optarg; break;
-			case opt_sk_admin_name: sk_admin_name=optarg; break;
-			case opt_sk_admin_password: sk_admin_password=optarg; break;
 
 			// Local Options
 			case opt_demosystem: demosystem=true; break;
@@ -303,10 +283,6 @@ bool Options::read_config_file (QString filename)
 			if (key=="password" ) databaseInfo.password=value;
 			if (key=="server_display_name") { server_display_name=value; }
 			if (key=="user_password") databaseInfo.password=value;
-			if (key=="sk_admin_name") sk_admin_name=value;
-			if (key=="sk_admin_password") sk_admin_password=value;
-			if (key=="root_name") root_name=value;
-			if (key=="root_password") root_password=value;
 
 			// Local Options
 			if (key=="demosystem") demosystem=true;
@@ -314,14 +290,6 @@ bool Options::read_config_file (QString filename)
 			if (key=="diag_cmd") diag_cmd=value;
 			if (key=="ort") ort=value;
 			if (key=="style") style=value;
-
-			// Networking Options
-			if (key=="local_hosts")
-			{
-				QStringList split=value.split (',');
-				trim (split);
-				local_hosts+=split;
-			}
 
 			// Database Options
 			if (key=="record_towpilot") record_towpilot=true;
@@ -388,41 +356,6 @@ bool Options::need_display ()
 {
 	// No display_help because this is handled by the caller.
 	return show_version;
-}
-
-bool Options::address_is_local (const QString &address) const
-	/*
-	 * Checks whether an address is to be regarded local.
-	 * Parameters:
-	 *   - address: the address to be checked. No further whitespace removal is
-	 *     done.
-	 * Return value:
-	 *   - true if address is local
-	 *   - false else.
-	 */
-{
-	QStringListIterator it (local_hosts);
-
-	while (it.hasNext ())
-	{
-		QString l=it.next();
-		if (l.at (l.length ()-1)=='*')
-		{
-			// The local address specifcation ends with a *, thus is an address
-			// range. Check if the given address starts with the local address
-			// specification (without the *).
-			int relevant_length=l.length ()-1;
-			if (l.left (relevant_length)==address.left (relevant_length)) return true;
-		}
-		else
-		{
-			// The local address specification is a single address. Check if it
-			// matches exactly.
-			if (l==address) return true;
-		}
-	}
-
-	return false;
 }
 
 QString Options::find_plugin_file (const QString &filename, QString *dir, QString *basename) const

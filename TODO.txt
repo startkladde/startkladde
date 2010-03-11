@@ -18,7 +18,6 @@ Database notes:
  * Short term plan:
  *   - Connection monitoring (ping? keepalive?)
  *   - timeout: only when no data is transfered
- *   - signal unhandled exceptions to main window
  *
  * Tests:
  *   - Test the migrations:
@@ -50,6 +49,12 @@ Database notes:
  *   - show current/latest version in "still not current" messages
  *   - for actions without progress indication (e. g. connect, or update
  *     object): show upstream/downstream bytes in monitor dialog
+ *   - plane should be called aircraft
+ *   - the column name type is reserved in rails and should not be used
+ *     - aircraft: model
+ *     - launch method: category?
+ *     - flight: flight_type?
+ *   - signal unhandled exceptions to main window
  *
  * Medium term plan:
  *   - Standardize enum handling: store the database value internally and have

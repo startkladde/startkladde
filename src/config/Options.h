@@ -24,7 +24,6 @@ class Options
 		static void display_options (QString prefix);
 		void do_display ();
 		bool need_display ();
-		bool address_is_local (const QString &address) const;
 		QString find_plugin_file (const QString &filename, QString *dir=NULL, QString *basename=NULL) const;
 
 		// Configuration
@@ -35,10 +34,6 @@ class Options
 		// Connection
 		DatabaseInfo databaseInfo;
 		QString server_display_name;
-		QString root_name;
-		QString root_password;
-		QString sk_admin_name;
-		QString sk_admin_password;
 
 		// Local Options
 		bool demosystem;
@@ -46,9 +41,6 @@ class Options
 		QString diag_cmd;
 		QString ort;
 		QString style;
-
-		// Networking Options
-		QStringList local_hosts;
 
 		// Debugging
 		bool debug;
