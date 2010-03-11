@@ -83,6 +83,7 @@ Options::Options ()
 
 	// Database
 	record_towpilot=false;
+	protect_launch_methods=false;
 
 	// Debugging
 	debug=false;
@@ -324,6 +325,7 @@ bool Options::read_config_file (QString filename)
 
 			// Database Options
 			if (key=="record_towpilot") record_towpilot=true;
+			if (key=="protect_launch_methods") protect_launch_methods=true;
 
 			// Plugins
 			if (key=="plugin_path")

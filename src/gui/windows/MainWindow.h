@@ -208,6 +208,8 @@ class MainWindow: public QMainWindow
 
 		void flightListChanged ();
 
+		bool getPassword (bool required, const QString &correctPassword, QString message);
+
 	private:
 		Ui::MainWindowClass ui;
 

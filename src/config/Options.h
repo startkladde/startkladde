@@ -57,6 +57,7 @@ class Options
 
 		// Database
 		bool record_towpilot;
+		bool protect_launch_methods;
 
 		// Plugins
 		QStringList plugin_paths;

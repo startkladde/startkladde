@@ -170,6 +170,14 @@ record_towpilot
     record_towpilot
   Standard: Schlepppilot wird nicht erfasst
 
+protect_launch_methods
+  Beschreibung:
+    Um Startarten zu editieren, muss das Datenbankpasswort eingegeben werden 
+  Parameter: keine
+  Beispiele:
+    protect_launch_methods
+  Standard: Startarten sind frei editierbar
+
 startart <id>, <type>, <registration>, <name>, <shortname>, <shortcut>, <logbook_string>, <person_required>
   Beschreibung:
     Fügt eine Startart zur Startartliste dazu.

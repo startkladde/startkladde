@@ -75,6 +75,7 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 
 	if (objectUsed)
 	{
+		// TODO include name in message
 		QString title=utf8 ("%1 benutzt").arg (T::objectTypeDescription ());
 		QString text=utf8 ("%1 wird verwendet und kann daher nicht gelöscht werden.").arg (T::objectTypeDescriptionDefinite ());
 		QMessageBox::critical (this, title, firstToUpper (text));

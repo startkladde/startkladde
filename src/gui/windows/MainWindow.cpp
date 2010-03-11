@@ -1334,13 +1334,39 @@ void MainWindow::on_actionEditPeople_triggered ()
 	window->show ();
 }
 
+bool MainWindow::getPassword (bool required, const QString &correctPassword, QString message)
+{
+	if (!required) return true;
+
+	while (true)
+	{
+		bool ok=false;
+		QString enteredPassword=QInputDialog::getText (this, "Passwort erforderlich",
+			utf8 ("%1 Bitte Passwort eingeben:").arg (message), QLineEdit::Password, QString (), &ok);
+
+		// Canceled
+		if (!ok) return false;
+
+		if (enteredPassword==correctPassword) return true;
+
+		message="Das eingegebene Passwort ist nicht korrekt.";
+	}
+}
+
 void MainWindow::on_actionEditLaunchMethods_triggered ()
 {
-	MutableObjectList<LaunchMethod> *list = new AutomaticEntityList<LaunchMethod> (dbManager.getCache (), dbManager.getCache ().getLaunchMethods ().getList (), this);
-	ObjectListModel<LaunchMethod> *listModel = new ObjectListModel<LaunchMethod> (list, true, new LaunchMethod::DefaultObjectModel (),
-			true, this);
-	ObjectListWindowBase *window = new ObjectListWindow<LaunchMethod> (dbManager, listModel, true, this);
-	window->show ();
+	if (getPassword (opts.protect_launch_methods, opts.databaseInfo.password,
+		"Um Startarten zu editieren, ist das Datenbankpasswort erforderlich."))
+	{
+		MutableObjectList<LaunchMethod> *list = new AutomaticEntityList<LaunchMethod> (
+				dbManager.getCache (), dbManager.getCache ().getLaunchMethods ().getList (), this);
+		ObjectListModel<LaunchMethod> *listModel = new ObjectListModel<LaunchMethod> (
+			list, true, new LaunchMethod::DefaultObjectModel (), true, this);
+
+		ObjectListWindowBase *window = new ObjectListWindow<LaunchMethod> (dbManager, listModel, true, this);
+
+		window->show ();
+	}
 }
 
 
@@ -1430,6 +1456,7 @@ void MainWindow::setDatabaseActionsEnabled (bool enabled)
 	ui.actionEdit                   ->setEnabled (enabled);
 	ui.actionEditPeople             ->setEnabled (enabled);
 	ui.actionEditPlanes             ->setEnabled (enabled);
+	ui.actionEditLaunchMethods      ->setEnabled (enabled);
 	ui.actionJumpToTow              ->setEnabled (enabled);
 	ui.actionLand                   ->setEnabled (enabled);
 	ui.actionLaunchMethodStatistics ->setEnabled (enabled);
