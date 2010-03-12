@@ -45,15 +45,15 @@ void MonitorDialog::monitor (SignalOperationMonitor &monitor, const QString &tit
 	dialog.setCaption (title);
 	dialog.ui.statusLabel->setText (title);
 
-	// Check after the signals have been connected
+	// Check after the signals have been connected - the monitor may be updated
+	// from a different thread
 	if (monitor.getEnded ()) return;
 
 	const QString &status=monitor.getStatus ();
 	if (!status.isNull ())
 		dialog.ui.statusLabel->setText (status);
 
-	dialog.ui.progressBar->setMaximum (monitor.getMaxProgress ());
-	dialog.ui.progressBar->setValue (monitor.getProgress ());
+	dialog.progress (monitor.getProgress (), monitor.getMaxProgress ());
 
 	dialog.exec ();
 }
@@ -66,6 +66,10 @@ void MonitorDialog::reject ()
 
 void MonitorDialog::progress (int progress, int maxProgress)
 {
+	// For progress 0/1, show the busy indicator
+	if (maxProgress==1 && progress==0)
+		maxProgress=0;
+
 	// It seems like we can get an erroneous "1%" indication if we set the
 	// value before the maximum.
 	if (maxProgress>=0)
@@ -77,4 +81,3 @@ void MonitorDialog::status (QString status)
 {
 	ui.statusLabel->setText (status);
 }
-
