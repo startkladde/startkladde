@@ -32,9 +32,12 @@ DbManager::DbManager (const DatabaseInfo &info):
 	interface (info), db (interface), cache (db),
 	interfaceWorker (interface), dbWorker (db), migratorWorker (interface), cacheWorker (cache)
 {
+	QObject::connect (&interface, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()));
+	QObject::connect (&interface, SIGNAL (readResumed ()), this, SIGNAL (readResumed ()));
 }
 
 DbManager::DbManager (const DbManager &other):
+	QObject (),
 	interface (other.interface.getInfo ()), db (interface), cache (db),
 	interfaceWorker (interface), dbWorker (db), migratorWorker (interface), cacheWorker (cache)
 {

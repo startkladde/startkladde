@@ -10,7 +10,9 @@
 
 #include <cassert>
 
-// TODO may dependencies in header
+#include <QObject>
+
+// TODO many dependencies in header
 #include "src/db/DatabaseInfo.h"
 #include "src/db/interface/ThreadSafeInterface.h"
 #include "src/db/Database.h"
@@ -49,8 +51,10 @@ class QWidget;
  * such is not thread safe. Some of the classes contained by the manager are
  * thread safe, though.
  */
-class DbManager
+class DbManager: public QObject
 {
+	Q_OBJECT
+
 	public:
 		class ConnectCanceledException {};
 
@@ -101,6 +105,10 @@ class DbManager
 		template<class T> void deleteObject (dbId id        , QWidget *parent);
 		template<class T> dbId createObject (      T &object, QWidget *parent);
 		template<class T> int  updateObject (const T &object, QWidget *parent);
+
+	signals:
+		void readTimeout ();
+		void readResumed ();
 
 	private:
 		DbManager (const DbManager &other);

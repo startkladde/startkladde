@@ -66,6 +66,9 @@ class ThreadSafeInterface: public QObject, public Interface
 		void executingQuery (Query query);
 		void databaseError (int number, QString message);
 
+		void readTimeout ();
+		void readResumed ();
+
 	protected slots:
 		// *** Connection management
 		virtual void slot_open      (Returner<bool>      *returner);

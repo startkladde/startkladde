@@ -71,6 +71,10 @@ DefaultInterface::DefaultInterface (const DatabaseInfo &dbInfo):
 	Interface (dbInfo)
 {
 	proxy=new TcpProxy ();
+	proxy->setReadTimeout (2000);
+
+	connect (proxy, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()), Qt::DirectConnection);
+	connect (proxy, SIGNAL (readResumed ()), this, SIGNAL (readResumed ()), Qt::DirectConnection);
 
 	QString name=utf8 ("startkladde_defaultInterface_%1").arg (getFreeNumber ());
 	//std::cout << "Create db " << name << std::endl;

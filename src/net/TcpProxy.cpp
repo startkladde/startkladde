@@ -11,6 +11,7 @@
 
 #include <iostream>
 
+#include "src/concurrent/synchronized.h"
 #include "src/util/qString.h"
 #include "src/concurrent/Returner.h"
 
@@ -18,7 +19,8 @@
 #define DEBUG(stuff)
 
 TcpProxy::TcpProxy ():
-	server (NULL), serverSocket (NULL), clientSocket (NULL)
+	server (NULL), serverSocket (NULL), clientSocket (NULL),
+	readTimeoutMs (0), readTimedOut (false)
 {
 	DEBUG ("Creating a TcpProxy on thread " << QThread::currentThreadId ());
 
@@ -51,6 +53,15 @@ TcpProxy::~TcpProxy ()
 quint16 TcpProxy::getProxyPort ()
 {
 	synchronizedReturn (mutex, proxyPort);
+}
+
+/**
+ * This may only be called before the proxy has been opened.
+ * @param timeout
+ */
+void TcpProxy::setReadTimeout (int timeout)
+{
+	readTimeoutMs=timeout;
 }
 
 // ***************
@@ -122,6 +133,7 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
 void TcpProxy::slot_close ()
 {
 	DEBUG ("Close connection in thread " << QThread::currentThreadId ());
+	readTimer.stop ();
 	closeClientSocket ();
 	closeServerSocket ();
 }
@@ -175,11 +187,13 @@ void TcpProxy::newConnection ()
 
 	connect (serverSocket, SIGNAL (error (QAbstractSocket::SocketError)), this, SLOT (serverError ()));
 	connect (clientSocket, SIGNAL (error (QAbstractSocket::SocketError)), this, SLOT (clientError ()));
+
+	resetTimer ();
 }
 
 void TcpProxy::clientRead ()
 {
-	DEBUG ("write to server...");
+	DEBUG ("write to server..." << clientSocket->bytesAvailable ());
 
 	if (serverSocket) serverSocket->write (clientSocket->readAll ());
 
@@ -188,9 +202,18 @@ void TcpProxy::clientRead ()
 
 void TcpProxy::serverRead ()
 {
-	DEBUG ("write to client...");
+	DEBUG ("write to client..." << serverSocket->bytesAvailable ());
+
+	if (readTimedOut)
+	{
+		readTimedOut=false;
+		emit readResumed ();
+	}
+
+	resetTimer ();
 
 	if (clientSocket) clientSocket->write (serverSocket->readAll ());
+
 
 	DEBUG ("done");
 }
@@ -217,4 +240,29 @@ void TcpProxy::serverError ()
 {
 	DEBUG ("server error");
 	slot_close ();
+}
+
+// **************
+// ** Timeouts **
+// **************
+
+void TcpProxy::timerEvent (QTimerEvent *event)
+{
+	// Multiple timers: event->timerId == readTimer.timerId ()
+	(void)event;
+
+	if (!readTimedOut)
+	{
+		readTimedOut=true;
+		emit readTimeout ();
+	}
+}
+
+void TcpProxy::resetTimer ()
+{
+	readTimer.stop ();
+	readTimedOut=false;
+
+	if (readTimeoutMs!=0)
+		readTimer.start (readTimeoutMs, this);
 }

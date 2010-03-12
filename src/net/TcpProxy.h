@@ -14,6 +14,7 @@
 #include <QString>
 #include <QThread>
 #include <QMutex>
+#include <QBasicTimer>
 
 #include "src/concurrent/synchronized.h"
 
@@ -32,9 +33,14 @@ class TcpProxy: public QObject
 
 		quint16 getProxyPort ();
 
+		void setReadTimeout (int timeout);
+
 	signals:
 		void sig_open (Returner<quint16> *returner, QString serverHost, quint16 serverPort);
 		void sig_close ();
+
+		void readTimeout ();
+		void readResumed ();
 
 	protected slots:
 		void slot_open (Returner<quint16> *returner, QString serverHost, quint16 serverPort);
@@ -42,20 +48,23 @@ class TcpProxy: public QObject
 
 		quint16 openImpl (QString serverHost, quint16 serverPort);
 
-		void newConnection ();
+		virtual void newConnection ();
 
-		void clientRead ();
-		void serverRead ();
+		virtual void clientRead ();
+		virtual void serverRead ();
 
-		void clientClosed ();
-		void serverClosed ();
+		virtual void clientClosed ();
+		virtual void serverClosed ();
 
-		void clientError ();
-		void serverError ();
+		virtual void clientError ();
+		virtual void serverError ();
 
 	protected:
-		void closeServerSocket ();
-		void closeClientSocket ();
+		virtual void closeServerSocket ();
+		virtual void closeClientSocket ();
+
+		void timerEvent (QTimerEvent *event);
+		void resetTimer ();
 
 	private:
 		QMutex mutex;
@@ -69,6 +78,10 @@ class TcpProxy: public QObject
 		QString serverHost;
 		quint16 serverPort;
 		quint16 proxyPort;
+
+		QBasicTimer readTimer;
+		bool readTimedOut;
+		int readTimeoutMs;
 };
 
 #endif

@@ -20,13 +20,15 @@
 ThreadSafeInterface::ThreadSafeInterface (const DatabaseInfo &info):
 	Interface (info), interface (NULL)
 {
-	// For connecting the signal, we need to know that it's a
+	// For connecting the signals, we need to know that it's a
 	// DefaultInterface. Afterwards, we assign it to the
 	// AbstractInterface *interface. TODO shouldn't the signal be declared
 	// in AbstractInterface?
 	DefaultInterface *defaultInterface=new DefaultInterface (info);
 	connect (defaultInterface, SIGNAL (databaseError (int, QString)), this, SIGNAL (databaseError (int, QString)));
 	connect (defaultInterface, SIGNAL (executingQuery (Query)), this, SIGNAL (executingQuery (Query)));
+	connect (defaultInterface, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()), Qt::DirectConnection);
+	connect (defaultInterface, SIGNAL (readResumed ()), this, SIGNAL (readResumed ()), Qt::DirectConnection);
 	interface=defaultInterface;
 
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))

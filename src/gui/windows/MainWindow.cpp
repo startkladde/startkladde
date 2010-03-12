@@ -70,6 +70,9 @@ MainWindow::MainWindow (QWidget *parent) :
 	connect (&dbManager.getInterface (), SIGNAL (databaseError (int, QString)), this, SLOT (databaseError (int, QString)));
 	connect (&dbManager.getInterface (), SIGNAL (executingQuery (Query)), this, SLOT (executingQuery (Query)));
 
+	connect (&dbManager, SIGNAL (readTimeout ()), this, SLOT (readTimeout ()));
+	connect (&dbManager, SIGNAL (readResumed ()), this, SLOT (readResumed ()));
+
 	flightModel = new FlightModel (dbManager.getCache ());
 	proxyList=new FlightProxyList (dbManager.getCache (), *flightList, this); // TODO never deleted
 	flightListModel = new ObjectListModel<Flight> (proxyList, false, flightModel, true, this);
@@ -1524,6 +1527,22 @@ void MainWindow::closeDatabase ()
 {
 	// No need, will be closed on destruction
 	//dbInterface.close ();
+}
+
+// ***************************
+// ** Connection monitoring **
+// ***************************
+
+void MainWindow::readTimeout ()
+{
+	ui.databaseStateLabel->setPaletteForegroundColor (Qt::red);
+	ui.databaseStateLabel->setText ("Keine Antwort");
+}
+
+void MainWindow::readResumed ()
+{
+	ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+	ui.databaseStateLabel->setText ("OK");
 }
 
 

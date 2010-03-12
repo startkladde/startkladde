@@ -66,6 +66,9 @@ class DefaultInterface: public QObject, public Interface
 		void executingQuery (Query query);
 		void databaseError (int number, QString message);
 
+		void readTimeout ();
+		void readResumed ();
+
 	private:
 		QSqlDatabase db;
 		TcpProxy *proxy;

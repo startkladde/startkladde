@@ -111,6 +111,8 @@ class MainWindow: public QMainWindow
 
 	protected slots:
 		void databaseError (int number, QString message);
+		void readTimeout ();
+		void readResumed ();
 
 	private slots:
 		// Menu: Program
