@@ -76,16 +76,9 @@ void FlightProxyList::addTowflightFor (const Flight &flight, const LaunchMethod 
 	else
 		towplaneId=flight.towplaneId;
 
-	// Determine the launch method (self launch) of the towplane
-	// TODO this should be cached, but the FlightProxyList may be constructed
-	// before the cache has the launch methods, so we have to receive
-	// DEvents and update the self launch ID on launch method changes. We will
-	// have to do that anyway to catch changes in the launch methods and
-	// potentially other things the towflights depend on (TODO still true with
-	// new cache?).
-	dbId selfLaunchId=cache.getLaunchMethodByType (LaunchMethod::typeSelf);
-
-	towflights.append (flight.makeTowflight (towplaneId, selfLaunchId));
+	// For the launch method, use an invalid ID. The FlightModel recognizes
+	// towflights by their type and displays the launch method as self launch
+	towflights.append (flight.makeTowflight (towplaneId, invalidId));
 }
 
 void FlightProxyList::updateTowflight (dbId id, int towflightIndex)

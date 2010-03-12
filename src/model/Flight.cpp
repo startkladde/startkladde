@@ -621,7 +621,7 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	CHECK_FEHLER (FLUG, copilotId!=0 && !typeCopilotRecorded (type), ff_begleiter_nicht_erlaubt)
 	CHECK_FEHLER (FLUG, departsHere () && landsHere () && landed && !departed, ff_nur_gelandet)
 	CHECK_FEHLER (FLUG, departsHere () && landsHere () && departed && landed && departureTime>landingTime, ff_landung_vor_start)
-	CHECK_FEHLER (FLUG, idInvalid (launchMethodId) && departed && departsHere (), ff_keine_startart)
+	CHECK_FEHLER (FLUG, idInvalid (launchMethodId) && departsHere () && departed && !isTowflight (), ff_keine_startart)
 	CHECK_FEHLER (FLUG, mode==modeNone, ff_kein_modus)
 	CHECK_FEHLER (FLUG, type==typeNone, ff_kein_flugtyp)
 	CHECK_FEHLER (FLUG, numLandings<0, ff_landungen_negativ)
@@ -711,6 +711,17 @@ QString Flight::toString () const
 // ** Misc **
 // **********
 
+/**
+ * Creates the towflight for the current flights. Assumes that the flight is an
+ * airtow.
+ *
+ * @param theTowplaneId the ID of the towplane
+ * @param towLaunchMethod the ID of the launch method for the towflight. May be
+ *                        an invalid ID if the methods processing the towflight
+ *                        recognize the towflight by its type and assume a self
+ *                        launch in this case.
+ * @return
+ */
 Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 {
 	Flight towflight;

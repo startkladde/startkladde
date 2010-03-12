@@ -263,6 +263,9 @@ QVariant FlightModel::launchMethodData (const Flight &flight, int role) const
 	{
 		if (!flight.departsHere ()) return "-";
 
+		// For towflights without launch method, assume self launch
+		if (idInvalid (flight.launchMethodId) && flight.isTowflight ()) return "ES";
+
 		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (flight.launchMethodId);
 
 		return launchMethod.shortName;

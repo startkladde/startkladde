@@ -1289,7 +1289,7 @@ void MainWindow::on_actionPersonLogs_triggered ()
 
 void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 {
-	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (flightList->getList (), dbManager.getCache ());
+	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (proxyList->getList (), dbManager.getCache ());
 	StatisticsWindow::display (stats, true, "Startartstatistik", this);
 }
 

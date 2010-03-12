@@ -3,6 +3,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Flight.h"
 #include "src/db/cache/Cache.h"
+#include "src/util/qString.h"
 
 // ************************
 // ** Entry construction **
@@ -36,31 +37,25 @@ LaunchMethodStatistics::~LaunchMethodStatistics ()
 LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &flights, Cache &cache)
 {
 	QMap<dbId, int> map;
+	int numTowFlights=0;
 
 	foreach (const Flight &flight, flights)
 	{
 		if (flight.happened ())
 		{
-			// Non-existing values are initialized to 0
-			++map[flight.launchMethodId];
+			if (flight.isTowflight ())
+				++numTowFlights;
+			else
+				// Non-existing values are initialized to 0
+				++map[flight.launchMethodId];
 		}
 	}
 
-	// Make a list of launch methods and sort it
-	QList<LaunchMethod> launchMethods;
-	foreach (const dbId &id, map.keys ())
-	{
-		try
-		{
-			launchMethods.append (cache.getObject<LaunchMethod> (id));
-		}
-		catch (...)
-		{
-			// TODO log error
-		}
-	}
+	// Get and sort the launch methods
+	QList<LaunchMethod> launchMethods=cache.getObjects<LaunchMethod> (map.keys (), true);
 	qSort (launchMethods.begin (), launchMethods.end (), LaunchMethod::nameLessThan);
 
+	// Create the entries for the launch methods
 	LaunchMethodStatistics *result=new LaunchMethodStatistics ();
 	foreach (const LaunchMethod &launchMethod, launchMethods)
 	{
@@ -69,6 +64,12 @@ LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &
 		entry.num=map[launchMethod.getId ()];
 		result->entries.append (entry);
 	}
+
+	// Add the entry for the towflights
+	Entry towflightsEntry;
+	towflightsEntry.name=utf8 ("Schleppflüge");
+	towflightsEntry.num=numTowFlights;
+	result->entries.append (towflightsEntry);
 
 	return result;
 }
