@@ -125,5 +125,5 @@ clean: Makefile_startkladde Makefile_tests build/logo.xpm build/kvkbd.xpm
 
 .PHONY: run
 run: startkladde
-	./startkladde
+	./startkladde -q
 

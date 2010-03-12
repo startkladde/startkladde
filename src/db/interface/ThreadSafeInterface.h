@@ -48,6 +48,7 @@ class ThreadSafeInterface: public QObject, public Interface
 		virtual void executeQuery (const Query &query);
 		virtual QSharedPointer<Result> executeQueryResult (const Query &query, bool forwardOnly=true);
 		virtual bool queryHasResult (const Query &query);
+		virtual void ping ();
 
 	public slots:
 		virtual void cancelConnection ();
@@ -63,6 +64,7 @@ class ThreadSafeInterface: public QObject, public Interface
 		virtual void sig_executeQuery       (Returner<void>                    *returner, Query query);
 		virtual void sig_executeQueryResult (Returner<QSharedPointer<Result> > *returner, Query query, bool forwardOnly=true);
 		virtual void sig_queryHasResult     (Returner<bool>                    *returner, Query query);
+		virtual void sig_ping               (Returner<void>                    *returner);
 
 
 		void executingQuery (Query query);
@@ -88,8 +90,7 @@ class ThreadSafeInterface: public QObject, public Interface
 		virtual void slot_executeQuery       (Returner<void>                    *returner, Query query);
 		virtual void slot_executeQueryResult (Returner<QSharedPointer<Result> > *returner, Query query, bool forwardOnly=true);
 		virtual void slot_queryHasResult     (Returner<bool>                    *returner, Query query);
-
-		void noop () {};
+		virtual void slot_ping               (Returner<void>                    *returner);
 
 	private:
 		int keepaliveInterval; // milliseconds

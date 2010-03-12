@@ -11,6 +11,8 @@
  *   - On reconnect, don't print "closing" and "connecting" messages (but do
  *     keep printing "Retrying...connecting to ..." on #open
  *   - Colorized transaction output
+ *   - Colorized ping output
+ *   - Ping could emit a "pinging" signal
  */
 
 
@@ -56,6 +58,7 @@
 #include "src/text.h"
 #include "src/db/interface/exceptions/QueryFailedException.h"
 #include "src/db/interface/exceptions/ConnectionFailedException.h"
+#include "src/db/interface/exceptions/PingFailedException.h"
 #include "src/db/interface/exceptions/DatabaseDoesNotExistException.h"
 #include "src/db/interface/exceptions/AccessDeniedException.h"
 #include "src/db/interface/exceptions/TransactionFailedException.h"
@@ -453,5 +456,56 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 		}
 
 		return sqlQuery;
+	}
+}
+
+void DefaultInterface::ping ()
+{
+	// Don't flood stdout with ping messages
+	bool display=false;
+	//bool display=opts.display_queries;
+
+	// Reset the canceled flag
+	canceled=0;
+
+	while (true)
+	{
+		if (!db.isOpen ()) openImpl ();
+
+		// Keep calling doTransactionStatement until it succeeds. If it failes
+		// terminally, it will throw an exception instead of returning false.
+		if (display) std::cout << "Ping..." << std::flush;
+
+
+
+		QSqlQuery sqlQuery (db);
+
+		if (sqlQuery.prepare ("SELECT 0")) // Up: 36 bytes, down: 52 bytes
+		{
+			if (display) std::cout << "OK" << std::endl;
+			return;
+		}
+		else if (canceled)
+		{
+			// Failed because canceled
+			if (display) std::cout << "canceled" << std::endl;
+			throw OperationCanceledException ();
+		}
+		else
+		{
+			// Failed due to error
+			QSqlError error=sqlQuery.lastError ();
+			if (display) std::cout << error.databaseText () << std::endl;
+			emit databaseError (error.number (), error.databaseText ());
+
+			if (!retryOnQueryError (error.number ()))
+				throw PingFailedException (error);
+		}
+
+		// The socket may alreday be closed - close the connection so it
+		// can be reopened.
+		close ();
+
+		if (display) std::cout << "Retrying...";
 	}
 }

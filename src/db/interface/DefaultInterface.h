@@ -57,6 +57,7 @@ class DefaultInterface: public QObject, public Interface
 		virtual void executeQuery (const Query &query);
 		virtual QSharedPointer<Result> executeQueryResult (const Query &query, bool forwardOnly=true);
 		virtual bool queryHasResult (const Query &query);
+		virtual void ping ();
 
 	signals:
 		void executingQuery (Query query);

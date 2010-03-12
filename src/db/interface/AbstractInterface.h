@@ -71,6 +71,7 @@ class AbstractInterface
 		virtual QSharedPointer<Result> executeQueryResult (const Query &query, bool forwardOnly=true)=0;
 		/** Not implemented by means of executeQueryResult for efficiency reasons */
 		virtual bool queryHasResult (const Query &query)=0;
+		virtual void ping ()=0;
 
 
 

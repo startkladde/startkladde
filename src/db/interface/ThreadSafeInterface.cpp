@@ -16,6 +16,7 @@
 #include "src/db/interface/DefaultInterface.h"
 #include "src/db/result/CopiedResult.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
+#include "src/db/interface/exceptions/PingFailedException.h"
 
 // ******************
 // ** Construction **
@@ -57,6 +58,7 @@ ThreadSafeInterface::ThreadSafeInterface (const DatabaseInfo &info, int readTime
 	CONNECT (executeQuery       (Returner<void>                    *, Query));
 	CONNECT (executeQueryResult (Returner<QSharedPointer<Result> > *, Query, bool));
 	CONNECT (queryHasResult     (Returner<bool>                    *, Query));
+	CONNECT (ping               (Returner<void>                    *));
 #undef CONNECT
 
 	moveToThread (&thread);
@@ -88,6 +90,11 @@ bool ThreadSafeInterface::open ()
 
 void ThreadSafeInterface::close ()
 {
+	// Hack: The thread may currently be blocked in a non-responding keepalive,
+	// so the event won't be deleviered. TODO: keepalive should be a
+	// functionality of DefaultInterface (?), and remove this.
+	cancelConnection ();
+
 	Returner<void> returner;
 	emit sig_close (&returner);
 	returner.wait ();
@@ -140,6 +147,13 @@ bool ThreadSafeInterface::queryHasResult (const Query &query)
 	Returner<bool> returner;
 	emit sig_queryHasResult (&returner, query);
 	return returner.returnedValue ();
+}
+
+void ThreadSafeInterface::ping ()
+{
+	Returner<void> returner;
+	emit sig_ping (&returner);
+	returner.wait ();
 }
 
 
@@ -205,6 +219,12 @@ void ThreadSafeInterface::slot_queryHasResult (Returner<bool> *returner, Query q
 	dontReturnOrException (returner, interface->queryHasResult (query));
 }
 
+void ThreadSafeInterface::slot_ping (Returner<void> *returner)
+{
+	dontReturnVoidOrException (returner, interface->ping ());
+}
+
+
 // ************
 // ** Others **
 // ************
@@ -268,9 +288,10 @@ void ThreadSafeInterface::keepalive ()
 	// have to use a returner.
 	try
 	{
-		interface->executeQuery ("SELECT 0");
+		interface->ping ();
 	}
 	catch (OperationCanceledException) {}
+	catch (PingFailedException) {}
 
 	startKeepaliveTimer ();
 }

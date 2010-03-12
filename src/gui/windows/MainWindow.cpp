@@ -1314,9 +1314,9 @@ void MainWindow::on_actionConnect_triggered ()
 
 void MainWindow::on_actionDisconnect_triggered ()
 {
+	dbManager.getInterface ().close ();
 	dbManager.getCache ().clear ();
 	flightList->clear ();
-	dbManager.getInterface ().close ();
 	setNotConnected ();
 }
 

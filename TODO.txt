@@ -50,7 +50,7 @@ Database notes:
  *     - aircraft: model
  *     - launch method: category?
  *     - flight: flight_type?
- *   - signal unhandled exceptions to main window
+ *   - signal unhandled exceptions to main window (QApplication::notify)
  *   - currently, when canceling during a ping, the actual operation will not be
  *     canceled, so the user has to cancel it again. The problem is described in
  *     DefaultInterface.cpp under "On synchronization".
@@ -123,6 +123,9 @@ UI:
 * keep landed flights visible for n minutes
 * undo for depart/land
 * Window with with long plugin labels
+* The whole database connection should be managed by the manger and the status
+  be signaled to the main window (open/close methods in manager, and signals
+  like ok/timeout)
 
 Models:
 * Plane: can only do self launch (and select automatically, even on repeat)
@@ -142,7 +145,7 @@ Other:
 * Write time to hwclock after change (?)
 * Port to Windows
 * Number of flying flights: also consider towplanes
-* Keepalive should be a feature of DefaultInterface, not ThreadSafeInterface
+* Keepalive should be a feature of DefaultInterface, not ThreadSafeInterface (?)
 
 
 == Minor ==

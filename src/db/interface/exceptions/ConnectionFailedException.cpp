@@ -1,10 +1,3 @@
-/*
-* ConnectionFailedException.cpp
-*
-*  Created on: 01.03.2010
-*      Author: Martin Herrmann
-*/
-
 #include "ConnectionFailedException.h"
 
 #include "src/io/AnsiColors.h"
