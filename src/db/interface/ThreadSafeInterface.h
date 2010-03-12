@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <QThread>
+#include <QBasicTimer>
 
 #include "src/db/interface/Interface.h"
 #include "src/db/Query.h" // required for passing a query by copy in a signal
@@ -29,19 +30,21 @@ class ThreadSafeInterface: public QObject, public Interface
 
 	public:
 		// *** Construction
-		ThreadSafeInterface (const DatabaseInfo &info);
+		ThreadSafeInterface (const DatabaseInfo &info, int readTimeout=0, int keepaliveInterval=0);
 		virtual ~ThreadSafeInterface ();
 
+		// *** Monitoring
+		virtual bool event (QEvent *e);
+
+
 	public:
-		// Connection management
+		// *** Frontend methods
 		virtual bool open ();
 		virtual void close ();
 		virtual QSqlError lastError () const;
-		// Transactions
 		virtual void transaction ();
 		virtual void commit ();
 		virtual void rollback ();
-		// Queries
 		virtual void executeQuery (const Query &query);
 		virtual QSharedPointer<Result> executeQueryResult (const Query &query, bool forwardOnly=true);
 		virtual bool queryHasResult (const Query &query);
@@ -50,18 +53,17 @@ class ThreadSafeInterface: public QObject, public Interface
 		virtual void cancelConnection ();
 
 	signals:
-		// Connection management
+		// *** Worker signals
 		virtual void sig_open      (Returner<bool>      *returner);
 		virtual void sig_close     (Returner<void>      *returner);
 		virtual void sig_lastError (Returner<QSqlError> *returner) const;
-		// Transactions
 		virtual void sig_transaction (Returner<void> *returner);
 		virtual void sig_commit      (Returner<void> *returner);
 		virtual void sig_rollback    (Returner<void> *returner);
-		// Queries
 		virtual void sig_executeQuery       (Returner<void>                    *returner, Query query);
 		virtual void sig_executeQueryResult (Returner<QSharedPointer<Result> > *returner, Query query, bool forwardOnly=true);
 		virtual void sig_queryHasResult     (Returner<bool>                    *returner, Query query);
+
 
 		void executingQuery (Query query);
 		void databaseError (int number, QString message);
@@ -69,23 +71,32 @@ class ThreadSafeInterface: public QObject, public Interface
 		void readTimeout ();
 		void readResumed ();
 
+	protected:
+		virtual void timerEvent (QTimerEvent *event);
+		void startKeepaliveTimer ();
+		void stopKeepaliveTimer ();
+		void keepalive ();
+
 	protected slots:
-		// *** Connection management
+		// *** Backend slots
 		virtual void slot_open      (Returner<bool>      *returner);
 		virtual void slot_close     (Returner<void>      *returner);
 		virtual void slot_lastError (Returner<QSqlError> *returner) const;
-		// *** Transactions
 		virtual void slot_transaction (Returner<void> *returner);
 		virtual void slot_commit      (Returner<void> *returner);
 		virtual void slot_rollback    (Returner<void> *returner);
-		// *** Queries
 		virtual void slot_executeQuery       (Returner<void>                    *returner, Query query);
 		virtual void slot_executeQueryResult (Returner<QSharedPointer<Result> > *returner, Query query, bool forwardOnly=true);
 		virtual void slot_queryHasResult     (Returner<bool>                    *returner, Query query);
 
+		void noop () {};
+
 	private:
+		int keepaliveInterval; // milliseconds
+		QBasicTimer keepaliveTimer;
 		QThread thread;
 		AbstractInterface *interface;
+		bool isOpen;
 };
 
 #endif

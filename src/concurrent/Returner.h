@@ -29,12 +29,30 @@
 } while (0)
 
 /**
+ * Like returnOrException, but does not actually return from the current
+ * function.
+ */
+#define dontReturnOrException(_returner, _value) do { \
+	try { _returner->returnValue (_value); } \
+	catch (StorableException &ex) { _returner->exception (ex); } \
+} while (0)
+
+/**
  * Like returnOrException, but with a Returner<void>
  *
  * _returner is a pointer to a Returner<void>. _call is of any type.
  */
 #define returnVoidOrException(_returner, _call) do { \
 	try { _call; _returner->returnVoid (); return; } \
+	catch (StorableException &ex) { _returner->exception (ex); } \
+} while (0)
+
+/**
+ * Like returnVoidOrException, but does not actually return from the current
+ * function.
+ */
+#define dontReturnVoidOrException(_returner, _call) do { \
+	try { _call; _returner->returnVoid (); } \
 	catch (StorableException &ex) { _returner->exception (ex); } \
 } while (0)
 

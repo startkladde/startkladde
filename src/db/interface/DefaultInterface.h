@@ -43,21 +43,17 @@ class DefaultInterface: public QObject, public Interface
 
 	public:
 		// *** Construction
-		DefaultInterface (const DatabaseInfo &dbInfo);
+		DefaultInterface (const DatabaseInfo &dbInfo, int readTimeout=0);
 		virtual ~DefaultInterface ();
 
-		// *** Connection management
+		// *** AbstractInterface methods
 		virtual bool open ();
 		virtual void close ();
 		virtual QSqlError lastError () const;
 		virtual void cancelConnection ();
-
-		// *** Transactions
 		virtual void transaction ();
 		virtual void commit ();
 		virtual void rollback ();
-
-		// *** Queries
 		virtual void executeQuery (const Query &query);
 		virtual QSharedPointer<Result> executeQueryResult (const Query &query, bool forwardOnly=true);
 		virtual bool queryHasResult (const Query &query);

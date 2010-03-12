@@ -66,6 +66,8 @@ class TcpProxy: public QObject
 		void timerEvent (QTimerEvent *event);
 		void resetTimer ();
 
+		void doClose ();
+
 	private:
 		QMutex mutex;
 

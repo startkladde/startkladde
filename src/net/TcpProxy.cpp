@@ -20,7 +20,7 @@
 
 TcpProxy::TcpProxy ():
 	server (NULL), serverSocket (NULL), clientSocket (NULL),
-	readTimeoutMs (0), readTimedOut (false)
+	readTimedOut (false), readTimeoutMs (0)
 {
 	DEBUG ("Creating a TcpProxy on thread " << QThread::currentThreadId ());
 
@@ -117,7 +117,7 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
 	{
 		synchronized (mutex) this->proxyPort=server->serverPort ();
 
-		DEBUG ("Ok, listening on port " << server->serverPort ());
+		DEBUG ("OK, listening on port " << server->serverPort ());
 	}
 	else
 	{
@@ -132,8 +132,16 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
  */
 void TcpProxy::slot_close ()
 {
-	DEBUG ("Close connection in thread " << QThread::currentThreadId ());
 	readTimer.stop ();
+	doClose ();
+}
+
+/**
+ * Close the sockets, but don't stop the read timer.
+ */
+void TcpProxy::doClose ()
+{
+	DEBUG ("Close connection in thread " << QThread::currentThreadId ());
 	closeClientSocket ();
 	closeServerSocket ();
 }
@@ -221,26 +229,27 @@ void TcpProxy::serverRead ()
 void TcpProxy::clientClosed ()
 {
 	DEBUG ("client closed");
-	slot_close ();
+	doClose ();
 }
 
 void TcpProxy::serverClosed ()
 {
 	DEBUG ("server closed");
-	slot_close ();
+	doClose ();
 }
 
 void TcpProxy::clientError ()
 {
 	DEBUG ("client error");
-	slot_close ();
+	doClose ();
 }
 
 void TcpProxy::serverError ()
 {
 	DEBUG ("server error");
-	slot_close ();
+	doClose ();
 }
+
 
 // **************
 // ** Timeouts **
@@ -261,7 +270,6 @@ void TcpProxy::timerEvent (QTimerEvent *event)
 void TcpProxy::resetTimer ()
 {
 	readTimer.stop ();
-	readTimedOut=false;
 
 	if (readTimeoutMs!=0)
 		readTimer.start (readTimeoutMs, this);

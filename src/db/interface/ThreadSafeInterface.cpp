@@ -5,31 +5,45 @@
 #include "ThreadSafeInterface.h"
 
 #include <iostream>
+#include <cassert>
 
 #include <QSqlError>
+#include <QEvent>
+#include <QTimer> // remove
 
 #include "src/db/result/Result.h"
 #include "src/concurrent/Returner.h"
 #include "src/db/interface/DefaultInterface.h"
 #include "src/db/result/CopiedResult.h"
+#include "src/concurrent/monitor/OperationCanceledException.h"
 
 // ******************
 // ** Construction **
 // ******************
 
-ThreadSafeInterface::ThreadSafeInterface (const DatabaseInfo &info):
-	Interface (info), interface (NULL)
+/**
+ *
+ * @param info
+ * @param readTimeout the read timeout, in milliseconds
+ * @param keepaliveInterval the keepalive interval, in milliseconds; should be
+ *                          shorter than the read timeout
+ * @return
+ */
+ThreadSafeInterface::ThreadSafeInterface (const DatabaseInfo &info, int readTimeout, int keepaliveInterval):
+	Interface (info),
+	keepaliveInterval (keepaliveInterval), interface (NULL), isOpen (false)
 {
 	// For connecting the signals, we need to know that it's a
 	// DefaultInterface. Afterwards, we assign it to the
 	// AbstractInterface *interface. TODO shouldn't the signal be declared
 	// in AbstractInterface?
-	DefaultInterface *defaultInterface=new DefaultInterface (info);
+	DefaultInterface *defaultInterface=new DefaultInterface (info, readTimeout);
 	connect (defaultInterface, SIGNAL (databaseError (int, QString)), this, SIGNAL (databaseError (int, QString)));
 	connect (defaultInterface, SIGNAL (executingQuery (Query)), this, SIGNAL (executingQuery (Query)));
 	connect (defaultInterface, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()), Qt::DirectConnection);
 	connect (defaultInterface, SIGNAL (readResumed ()), this, SIGNAL (readResumed ()), Qt::DirectConnection);
 	interface=defaultInterface;
+
 
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
 	CONNECT (open      (Returner<bool>      *));
@@ -58,6 +72,7 @@ ThreadSafeInterface::~ThreadSafeInterface ()
 	if (thread.wait (1000)) std::cout << "OK"      << std::endl;
 	else                    std::cout << "Timeout" << std::endl;
 }
+
 
 
 // ***********************
@@ -134,48 +149,50 @@ bool ThreadSafeInterface::queryHasResult (const Query &query)
 
 void ThreadSafeInterface::slot_open (Returner<bool> *returner)
 {
-	returnOrException (returner, interface->open ());
+	dontReturnOrException (returner, interface->open ());
+	isOpen=true;
 }
 
 void ThreadSafeInterface::slot_close (Returner<void> *returner)
 {
-	returnVoidOrException (returner, interface->close ());
+	isOpen=false;
+	dontReturnVoidOrException (returner, interface->close ());
 }
 
 void ThreadSafeInterface::slot_lastError (Returner<QSqlError> *returner) const
 {
-	returnOrException (returner, interface->lastError ());
+	dontReturnOrException (returner, interface->lastError ());
 }
 
 void ThreadSafeInterface::slot_transaction (Returner<void> *returner)
 {
-	returnVoidOrException (returner, interface->transaction ());
+	dontReturnVoidOrException (returner, interface->transaction ());
 }
 
 void ThreadSafeInterface::slot_commit (Returner<void> *returner)
 {
-	returnVoidOrException (returner, interface->commit ());
+	dontReturnVoidOrException (returner, interface->commit ());
 }
 
 void ThreadSafeInterface::slot_rollback (Returner<void> *returner)
 {
-	returnVoidOrException (returner, interface->rollback ());
+	dontReturnVoidOrException (returner, interface->rollback ());
 }
 
 void ThreadSafeInterface::slot_executeQuery (Returner<void> *returner, Query query)
 {
-	returnVoidOrException (returner, interface->executeQuery (query));
+	dontReturnVoidOrException (returner, interface->executeQuery (query));
 }
 
 void ThreadSafeInterface::slot_executeQueryResult (Returner<QSharedPointer<Result> > *returner, Query query, bool forwardOnly)
 {
 	// Option 1: copy the DefaultResult (is it allowed to access the
 	// QSqlQuery from the other thread? It seems to work.)
-//		returnOrException (returner, interface->executeQueryResult (query, forwardOnly));
+//		dontReturnOrException (returner, interface->executeQueryResult (query, forwardOnly));
 
 	// Option 2: create a CopiedResult
 	(void)forwardOnly;
-	returnOrException (returner, QSharedPointer<Result> (
+	dontReturnOrException (returner, QSharedPointer<Result> (
 		new CopiedResult (
 			// When copying, we can always set forwardOnly
 			*interface->executeQueryResult (query, true)
@@ -185,7 +202,7 @@ void ThreadSafeInterface::slot_executeQueryResult (Returner<QSharedPointer<Resul
 
 void ThreadSafeInterface::slot_queryHasResult (Returner<bool> *returner, Query query)
 {
-	returnOrException (returner, interface->queryHasResult (query));
+	dontReturnOrException (returner, interface->queryHasResult (query));
 }
 
 // ************
@@ -200,4 +217,60 @@ void ThreadSafeInterface::slot_queryHasResult (Returner<bool> *returner, Query q
 void ThreadSafeInterface::cancelConnection ()
 {
 	interface->cancelConnection ();
+}
+
+
+
+// ****************
+// ** Monitoring **
+// ****************
+
+bool ThreadSafeInterface::event (QEvent *e)
+{
+	bool isSignal=(e->type ()==QEvent::MetaCall);
+
+	if (isSignal) stopKeepaliveTimer ();
+	bool result=QObject::event (e);
+	if (isSignal) startKeepaliveTimer ();
+
+	return result;
+}
+
+void ThreadSafeInterface::timerEvent (QTimerEvent *event)
+{
+	if (event->timerId ()==keepaliveTimer.timerId ())
+		keepalive ();
+}
+
+void ThreadSafeInterface::startKeepaliveTimer ()
+{
+	if (isOpen && keepaliveInterval>0)
+		keepaliveTimer.start (keepaliveInterval, this);
+}
+
+void ThreadSafeInterface::stopKeepaliveTimer ()
+{
+	keepaliveTimer.stop ();
+}
+
+/*
+ * This is not implemented as a slot for now because the keepalive timer
+ * mechanism is not finished yet
+ */
+void ThreadSafeInterface::keepalive ()
+{
+	assert (QThread::currentThread ()==&thread);
+
+	stopKeepaliveTimer ();
+
+	// We're on the background thread, so we're allowed to use the interface
+	// directly. We want this to happen synchronously, and this way we don't
+	// have to use a returner.
+	try
+	{
+		interface->executeQuery ("SELECT 0");
+	}
+	catch (OperationCanceledException) {}
+
+	startKeepaliveTimer ();
 }

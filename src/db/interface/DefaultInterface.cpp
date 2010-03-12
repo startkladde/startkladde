@@ -67,11 +67,11 @@ QAtomicInt DefaultInterface::freeNumber=0;
 // ** Construction **
 // ******************
 
-DefaultInterface::DefaultInterface (const DatabaseInfo &dbInfo):
+DefaultInterface::DefaultInterface (const DatabaseInfo &dbInfo, int readTimeout):
 	Interface (dbInfo)
 {
 	proxy=new TcpProxy ();
-	proxy->setReadTimeout (2000);
+	proxy->setReadTimeout (readTimeout);
 
 	connect (proxy, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()), Qt::DirectConnection);
 	connect (proxy, SIGNAL (readResumed ()), this, SIGNAL (readResumed ()), Qt::DirectConnection);
@@ -98,9 +98,9 @@ DefaultInterface::~DefaultInterface ()
 }
 
 
-// ***************************
-// ** Connection management **
-// ***************************
+// *******************************
+// ** AbstractInterface methods **
+// *******************************
 
 /**
  * Opens the connection to the database
@@ -195,6 +195,7 @@ void DefaultInterface::close ()
 	std::cout << "Closing connection" << std::endl;
 
 	db.close ();
+	proxy->close ();
 }
 
 QSqlError DefaultInterface::lastError () const
@@ -213,10 +214,6 @@ void DefaultInterface::cancelConnection ()
 	canceled=true;
 	proxy->close ();
 }
-
-// ******************
-// ** Transactions **
-// ******************
 
 void DefaultInterface::transaction ()
 {
@@ -293,11 +290,6 @@ bool DefaultInterface::doTransactionStatement (TransactionStatement statement)
 	}
 }
 
-
-// *************
-// ** Queries **
-// *************
-
 /**
  * Executes a query
  *
@@ -348,7 +340,6 @@ bool DefaultInterface::retryOnQueryError (int number)
 		default: return false;
 	}
 }
-
 
 QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOnly)
 {
@@ -463,5 +454,4 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 
 		return sqlQuery;
 	}
-
 }

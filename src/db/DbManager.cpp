@@ -29,7 +29,7 @@
 #include "src/concurrent/DefaultQThread.h" //remove
 
 DbManager::DbManager (const DatabaseInfo &info):
-	interface (info), db (interface), cache (db),
+	interface (info, 2000, 1000), db (interface), cache (db),
 	interfaceWorker (interface), dbWorker (db), migratorWorker (interface), cacheWorker (cache)
 {
 	QObject::connect (&interface, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()));
@@ -499,8 +499,6 @@ template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
 	MonitorDialog::monitor (monitor, utf8 ("%1 aktualisieren").arg (T::objectTypeDescription ()), parent);
 	return returner.returnedValue ();
 }
-
-
 
 // ***************************
 // ** Method instantiations **

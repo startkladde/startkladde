@@ -10,15 +10,11 @@ Documentation:
        startkladde  ALL=NOPASSWD:/bin/date
        startkladde  ALL=NOPASSWD:/etc/init.d/hwclock.sh stop
 
-Default-Config: Plugins (metar, regenrader) eintragen; +record_towpilot
+Default-Config: plugins (metar, regenrader) eintragen; +record_towpilot
 
 
 Database notes:
 /*
- * Short term plan:
- *   - Connection monitoring (ping? keepalive?)
- *   - timeout: only when no data is transfered
- *
  * Tests:
  *   - Test the migrations:
  *     - make sure the old version and current sk_web work with "initial"
@@ -29,7 +25,7 @@ Database notes:
  *   - Port open, but connection not accepted
  *   - make sure "", 0 and NULL are read correctly
  *   - make sure (using a dump of an old db) that the migration path is OK
- *   - Test all paths for database initialisation
+ *   - Test all paths for database initialization
  *
  * Improvements:
  *   - Add a ResultConsumer as alternative to passing a result (especially for
@@ -55,6 +51,9 @@ Database notes:
  *     - launch method: category?
  *     - flight: flight_type?
  *   - signal unhandled exceptions to main window
+ *   - currently, when canceling during a ping, the actual operation will not be
+ *     canceled, so the user has to cancel it again. The problem is described in
+ *     DefaultInterface.cpp under "On synchronization".
  *
  * Medium term plan:
  *   - Standardize enum handling: store the database value internally and have
@@ -135,12 +134,15 @@ Config:
 * Make Unix socket Name configurable machen
 * Allow system wide config
 * Make compression configurable
+* Make read timeout and keepalive interval configurable
+* Configurable autoconnect
 
 Other:
 * Time zone safety
 * Write time to hwclock after change (?)
 * Port to Windows
 * Number of flying flights: also consider towplanes
+* Keepalive should be a feature of DefaultInterface, not ThreadSafeInterface
 
 
 == Minor ==
