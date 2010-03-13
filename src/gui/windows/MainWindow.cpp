@@ -38,7 +38,7 @@
 #include "src/model/flightList/FlightModel.h"
 #include "src/model/flightList/FlightProxyList.h"
 #include "src/model/flightList/FlightSortFilterProxyModel.h"
-#include "src/model/objectList/AutomaticEntityList.h"
+#include "src/model/objectList/AutomaticEntityList.h" // TODO remove some?
 #include "src/model/objectList/EntityList.h"
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/plugins/ShellPlugin.h"
@@ -1304,58 +1304,19 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 // ** Database **
 // **************
 
-bool MainWindow::getPassword (bool required, const QString &correctPassword, QString message)
-{
-	if (!required) return true;
-
-	while (true)
-	{
-		bool ok=false;
-		QString enteredPassword=QInputDialog::getText (this, "Passwort erforderlich",
-			utf8 ("%1 Bitte Passwort eingeben:").arg (message), QLineEdit::Password, QString (), &ok);
-
-		// Canceled
-		if (!ok) return false;
-
-		if (enteredPassword==correctPassword) return true;
-
-		message="Das eingegebene Passwort ist nicht korrekt.";
-	}
-}
-
-
 void MainWindow::on_actionEditPlanes_triggered ()
 {
-	MutableObjectList<Plane> *list = new AutomaticEntityList<Plane> (dbManager.getCache (), dbManager.getCache ().getObjects<Plane> ().getList (), this);
-	ObjectListModel<Plane> *listModel = new ObjectListModel<Plane> (list, true, new Plane::DefaultObjectModel (), true,
-			this);
-	ObjectListWindowBase *window = new ObjectListWindow<Plane> (dbManager, listModel, true, this);
-	window->show ();
+	ObjectListWindow<Plane>::show (dbManager, this);
 }
 
 void MainWindow::on_actionEditPeople_triggered ()
 {
-	MutableObjectList<Person> *list = new AutomaticEntityList<Person> (dbManager.getCache (), dbManager.getCache ().getObjects<Person> ().getList (), this);
-	ObjectListModel<Person> *listModel = new ObjectListModel<Person> (list, true, new Person::DefaultObjectModel (),
-			true, this);
-	ObjectListWindowBase *window = new ObjectListWindow<Person> (dbManager, listModel, true, this);
-	window->show ();
+	ObjectListWindow<Person>::show (dbManager, this);
 }
 
 void MainWindow::on_actionEditLaunchMethods_triggered ()
 {
-	if (getPassword (opts.protect_launch_methods, opts.databaseInfo.password,
-		"Um Startarten zu editieren, ist das Datenbankpasswort erforderlich."))
-	{
-		MutableObjectList<LaunchMethod> *list = new AutomaticEntityList<LaunchMethod> (
-				dbManager.getCache (), dbManager.getCache ().getObjects<LaunchMethod> ().getList (), this);
-		ObjectListModel<LaunchMethod> *listModel = new ObjectListModel<LaunchMethod> (
-			list, true, new LaunchMethod::DefaultObjectModel (), true, this);
-
-		ObjectListWindowBase *window = new ObjectListWindow<LaunchMethod> (dbManager, listModel, true, this);
-
-		window->show ();
-	}
+	ObjectListWindow<LaunchMethod>::show (dbManager, opts.protect_launch_methods, opts.databaseInfo.password, this);
 }
 
 

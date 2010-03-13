@@ -19,6 +19,8 @@ class ObjectListWindowBase : public QMainWindow
 		ObjectListWindowBase (DbManager &manager, QWidget *parent = 0);
 		~ObjectListWindowBase ();
 
+		virtual void requireEditPassword (const QString &password);
+
 	public slots:
 		virtual void on_actionNew_triggered ()=0;
 		virtual void on_actionEdit_triggered ()=0;
@@ -35,6 +37,12 @@ class ObjectListWindowBase : public QMainWindow
 		DbManager &manager;
 		void keyPressEvent (QKeyEvent *e);
 		Ui::ObjectListWindowBaseClass ui;
+
+		bool allowEdit (QString message);
+
+		bool editPasswordRequired;
+		QString editPassword;
+		bool editPasswordOk;
 };
 
 #endif // OBJECTLISTWINDOWBASE_H

@@ -17,6 +17,9 @@
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/gui/dialogs.h"
 #include "src/text.h"
+#include "src/model/objectList/AutomaticEntityList.h"
+#include "src/model/objectList/ObjectModel.h"
+
 
 template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, ObjectListModel<T> *list, bool listOwned, QWidget *parent):
 	ObjectListWindowBase (manager, parent),
@@ -43,20 +46,58 @@ template<class T> ObjectListWindow<T>::~ObjectListWindow()
 		delete list;
 }
 
+template<class T> void ObjectListWindow<T>::show (DbManager &manager, QWidget *parent)
+{
+	show (manager, false, "", parent);
+}
+
+template<class T> void ObjectListWindow<T>::show (DbManager &manager, const QString &password, QWidget *parent)
+{
+	show (manager, true, password, parent);
+}
+
+template<class T> void ObjectListWindow<T>::show (DbManager &manager, bool editPasswordRequired, const QString &editPassword, QWidget *parent)
+{
+	// Create the object list
+	MutableObjectList<T> *list = new AutomaticEntityList<T>
+		(manager.getCache (), manager.getCache ().getObjects<T> ().getList (), parent);
+
+	// Create the object model and object list model
+	ObjectModel<T> *objectModel=new typename T::DefaultObjectModel ();
+	ObjectListModel<T> *listModel = new ObjectListModel<T>
+		(list, true, objectModel, true, parent);
+
+	// Create the window
+	ObjectListWindowBase *window = new ObjectListWindow<T> (manager, listModel, true, parent);
+	window->setAttribute (Qt::WA_DeleteOnClose, true);
+
+	if (editPasswordRequired)
+		window->requireEditPassword (editPassword);
+
+	// Show the window
+	window->show ();
+}
+
 
 template<class T> void ObjectListWindow<T>::on_actionNew_triggered ()
 {
+	if (!allowEdit (makePasswordMessage ())) return;
+
 	ObjectEditorWindow<T>::createObject (this, manager);
 }
 
 template<class T> void ObjectListWindow<T>::on_actionEdit_triggered ()
 {
+	if (!allowEdit (makePasswordMessage ())) return;
+
 	QModelIndex listIndex=proxyModel->mapToSource (ui.table->currentIndex ());
 	ObjectEditorWindow<T>::editObject (this, manager, list->at (listIndex));
 }
 
 template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 {
+	if (!allowEdit (makePasswordMessage ())) return;
+
 	QModelIndex listIndex=proxyModel->mapToSource (ui.table->currentIndex ());
 	const T &object=list->at (listIndex);
 	dbId id=object.getId ();
@@ -113,10 +154,16 @@ template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 
 template<class T> void ObjectListWindow<T>::on_table_activated (const QModelIndex &index)
 {
+	if (!allowEdit (makePasswordMessage ())) return;
+
 	QModelIndex listIndex=proxyModel->mapToSource (index);
 	ObjectEditorWindow<T>::editObject (this, manager, list->at (listIndex));
 }
 
+template<class T> QString ObjectListWindow<T>::makePasswordMessage ()
+{
+	return utf8 ("Zum Editieren der %1 ist das Datenbankpasswort erforderlich.").arg (T::objectTypeDescriptionPlural ());
+}
 
 // Instantiate the class templates
 #include "src/model/Plane.h"

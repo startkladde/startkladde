@@ -15,12 +15,19 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		ObjectListWindow (DbManager &manager, ObjectListModel<T> *list, bool listOwned, QWidget *parent=NULL);
 		~ObjectListWindow();
 
+		static void show (DbManager &manager, QWidget *parent=NULL);
+		static void show (DbManager &manager, const QString &password, QWidget *parent=NULL);
+		static void show (DbManager &manager, bool editPasswordRequired, const QString &editPassword, QWidget *parent=NULL);
+
 		virtual void on_actionNew_triggered ();
 		virtual void on_actionEdit_triggered ();
 		virtual void on_actionDelete_triggered ();
 		virtual void on_actionRefresh_triggered ();
 
 		virtual void on_table_activated (const QModelIndex &index);
+
+	protected:
+		virtual QString makePasswordMessage ();
 
 	private:
 		ObjectListModel<T> *list;
