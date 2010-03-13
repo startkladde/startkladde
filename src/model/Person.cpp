@@ -79,6 +79,11 @@ QString Person::formalNameWithClub () const
 	return formalName ()+" ("+club+")";
 }
 
+QString Person::getDisplayName () const
+{
+	return fullName ();
+}
+
 
 // ********************************
 // ** EntitySelectWindow helpers **

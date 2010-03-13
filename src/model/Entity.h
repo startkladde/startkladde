@@ -32,6 +32,7 @@ class Entity
 		// *** Property access
 		virtual dbId getId () const { return id; }
 		virtual void setId (dbId id) { this->id=id; }
+		virtual QString getDisplayName () const=0;
 
 
 		// *** EntitySelectWindow helpers

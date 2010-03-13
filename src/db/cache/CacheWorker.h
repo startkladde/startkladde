@@ -38,16 +38,30 @@ class CacheWorker: public QObject
 		CacheWorker (Cache &cache);
 		virtual ~CacheWorker ();
 
-		void refreshAll        (Returner<void> &returner, OperationMonitor &monitor);
-		void fetchFlightsOther (Returner<void> &returner, OperationMonitor &monitor, const QDate &date);
+		void refreshAll           (Returner<void> &returner, OperationMonitor &monitor);
+		void fetchFlightsOther    (Returner<void> &returner, OperationMonitor &monitor, const QDate &date);
+		void refreshPeople        (Returner<void> &returner, OperationMonitor &monitor);
+		void refreshPlanes        (Returner<void> &returner, OperationMonitor &monitor);
+		void refreshFlights       (Returner<void> &returner, OperationMonitor &monitor);
+		void refreshLaunchMethods (Returner<void> &returner, OperationMonitor &monitor);
+
+		template<class T> void refreshObjects (Returner<void> &returner, OperationMonitor &monitor);
 
 	signals:
-		void sig_refreshAll        (Returner<void> *returner, OperationMonitor *monitor);
-		void sig_fetchFlightsOther (Returner<void> *returner, OperationMonitor *monitor, QDate date);
+		void sig_refreshAll           (Returner<void> *returner, OperationMonitor *monitor);
+		void sig_fetchFlightsOther    (Returner<void> *returner, OperationMonitor *monitor, QDate date);
+		void sig_refreshPeople        (Returner<void> *returner, OperationMonitor *monitor);
+		void sig_refreshPlanes        (Returner<void> *returner, OperationMonitor *monitor);
+		void sig_refreshFlights       (Returner<void> *returner, OperationMonitor *monitor);
+		void sig_refreshLaunchMethods (Returner<void> *returner, OperationMonitor *monitor);
 
 	protected slots:
-		virtual void slot_refreshAll        (Returner<void> *returner, OperationMonitor *monitor);
-		virtual void slot_fetchFlightsOther (Returner<void> *returner, OperationMonitor *monitor, QDate date);
+		virtual void slot_refreshAll           (Returner<void> *returner, OperationMonitor *monitor);
+		virtual void slot_fetchFlightsOther    (Returner<void> *returner, OperationMonitor *monitor, QDate date);
+		virtual void slot_refreshPeople        (Returner<void> *returner, OperationMonitor *monitor);
+		virtual void slot_refreshPlanes        (Returner<void> *returner, OperationMonitor *monitor);
+		virtual void slot_refreshFlights       (Returner<void> *returner, OperationMonitor *monitor);
+		virtual void slot_refreshLaunchMethods (Returner<void> *returner, OperationMonitor *monitor);
 
 	private:
 		QThread thread;

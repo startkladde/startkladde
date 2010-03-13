@@ -57,6 +57,7 @@ class Plane: public Entity
 		virtual QString toString () const;
 		virtual QString fullRegistration () const;
 	    static bool clubAwareLessThan (const Plane &p1, const Plane &p2);
+		virtual QString getDisplayName () const;
 
 
 	    // *** Category methods

@@ -78,6 +78,8 @@ class Cache: public QObject
 		// *** Properties
 		Database &getDatabase ();
 
+		// *** Generic refreshing
+		template<class T> void refreshObjects (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 		// *** Specific refreshing
 		void refreshPlanes          (OperationMonitorInterface monitor=OperationMonitorInterface::null);
@@ -90,6 +92,7 @@ class Cache: public QObject
 		void refreshAccountingNotes (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void refreshAll (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
+		void refreshFlights (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void fetchFlightsOther (QDate date, OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 
@@ -159,7 +162,6 @@ class Cache: public QObject
 
 
 		// *** Generic refreshing
-		template<class T> void refreshObjects (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void refreshFlightsOf (const QString &description, const QDate &date, EntityList<Flight> &targetList, QDate *targetDate, OperationMonitorInterface monitor);
 
 

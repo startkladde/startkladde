@@ -43,6 +43,7 @@ class Person: public Entity
 		virtual QString fullName () const;
 		virtual QString formalName () const;
 		virtual QString formalNameWithClub () const;
+		virtual QString getDisplayName () const;
 
 
 		// *** EntitySelectWindow helpers

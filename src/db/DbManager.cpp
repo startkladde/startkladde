@@ -478,6 +478,16 @@ void DbManager::fetchFlights (QDate date, QWidget *parent)
 	returner.wait ();
 }
 
+template<class T> void DbManager::refreshObjects (QWidget *parent)
+{
+	Returner<void> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+	cacheWorker.refreshObjects<T> (returner, monitor);
+	MonitorDialog::monitor (monitor, "Daten aktualisieren", parent);
+	returner.wait ();
+}
+
 template<class T> bool DbManager::objectUsed (dbId id, QWidget *parent)
 {
 	Returner<bool> returner;
@@ -527,7 +537,8 @@ template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
 		template void DbManager::deleteObject<T> (dbId id        , QWidget *parent); \
 		template dbId DbManager::createObject<T> (T &object      , QWidget *parent); \
 		template int  DbManager::updateObject<T> (const T &object, QWidget *parent); \
-	// Empty line
+		template void DbManager::refreshObjects<T> (QWidget *parent);
+		// Empty line
 
 INSTANTIATE_TEMPLATES (Person      )
 INSTANTIATE_TEMPLATES (Plane       )

@@ -75,6 +75,11 @@ bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)
 	return false;
 }
 
+QString Plane::getDisplayName () const
+{
+	return registration;
+}
+
 
 // **********************
 // ** Category methods **

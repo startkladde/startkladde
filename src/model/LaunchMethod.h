@@ -49,6 +49,7 @@ class LaunchMethod: public Entity
 		virtual QString toString () const;
 		virtual QString nameWithShortcut () const;
 		static bool nameLessThan (const LaunchMethod &l1, const LaunchMethod &l2) { return l1.name<l2.name; }
+		virtual QString getDisplayName () const;
 
 
 		// *** Type methods

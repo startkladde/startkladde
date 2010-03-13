@@ -235,6 +235,17 @@ void Cache::refreshAll (OperationMonitorInterface monitor)
 	monitor.progress (8, 8, "Fertig");
 }
 
+void Cache::refreshFlights (OperationMonitorInterface monitor)
+{
+	clearHashes<Flight> ();
+
+	// Refresh planes and people before refreshing flights!
+	monitor.progress (0, 3); refreshFlightsToday    (monitor);
+	monitor.progress (1, 3); refreshFlightsOther    (monitor);
+	monitor.progress (2, 3); refreshPreparedFlights (monitor);
+	monitor.progress (3, 3, "Fertig");
+}
+
 
 
 // *********************

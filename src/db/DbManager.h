@@ -106,6 +106,7 @@ class DbManager: public QObject
 		void clearCache ();
 		void refreshCache (QWidget *parent);
 		void fetchFlights (QDate date, QWidget *parent);
+		template<class T> void refreshObjects (QWidget *parent);
 
 		template<class T> bool objectUsed   (dbId id        , QWidget *parent);
 		template<class T> void deleteObject (dbId id        , QWidget *parent);

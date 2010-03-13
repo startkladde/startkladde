@@ -12,7 +12,8 @@ template<class T> class ObjectListModel;
 template <class T> class ObjectListWindow: public ObjectListWindowBase
 {
 	public:
-		ObjectListWindow (DbManager &manager, ObjectListModel<T> *list, bool listOwned, QWidget *parent=NULL);
+//		ObjectListWindow (DbManager &manager, ObjectListModel<T> *listModel, bool listModelOwned, QWidget *parent=NULL);
+		ObjectListWindow (DbManager &manager, QWidget *parent=NULL);
 		~ObjectListWindow();
 
 		static void show (DbManager &manager, QWidget *parent=NULL);
@@ -30,8 +31,11 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		virtual QString makePasswordMessage ();
 
 	private:
-		ObjectListModel<T> *list;
-		bool listOwned;
+		MutableObjectList<T> *list;
+		ObjectModel<T> *objectModel;
+		ObjectListModel<T> *listModel;
+//		bool listModelOwned;
+
 		QSortFilterProxyModel *proxyModel;
 };
 

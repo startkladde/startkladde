@@ -101,6 +101,11 @@ QString LaunchMethod::nameWithShortcut () const
 		return QString (keyboardShortcut)+QString (" - ")+name;
 }
 
+QString LaunchMethod::getDisplayName () const
+{
+	return name;
+}
+
 
 // ******************
 // ** Type methods **

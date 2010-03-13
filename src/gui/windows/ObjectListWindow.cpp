@@ -21,13 +21,24 @@
 #include "src/model/objectList/ObjectModel.h"
 
 
-template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, ObjectListModel<T> *list, bool listOwned, QWidget *parent):
-	ObjectListWindowBase (manager, parent),
-	list (list), listOwned (listOwned)
+//template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, ObjectListModel<T> *listModel, bool listModelOwned, QWidget *parent):
+//	ObjectListWindowBase (manager, parent),
+//	listModel (listModel), listModelOwned (listModelOwned)
+template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWidget *parent):
+	ObjectListWindowBase (manager, parent)
 {
-	// Set the list as the table's model with a sort proxy
+	// Create the object listModel
+	list = new AutomaticEntityList<T>
+		(manager.getCache (), manager.getCache ().getObjects<T> ().getList (), this);
+
+	// Create the object model and object list model
+	objectModel=new typename T::DefaultObjectModel ();
+	listModel = new ObjectListModel<T> (list, false, objectModel, true, this);
+
+
+	// Set the list model as the table's model with a sort proxy
 	proxyModel=new QSortFilterProxyModel (this);
-	proxyModel->setSourceModel (list);
+	proxyModel->setSourceModel (listModel);
 	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
 	proxyModel->setDynamicSortFilter (true);
 	ui.table->setModel (proxyModel);
@@ -42,8 +53,8 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, Obj
 
 template<class T> ObjectListWindow<T>::~ObjectListWindow()
 {
-	if (listOwned)
-		delete list;
+	// list, listModel and proxyModel are deleted automatically by QWidget
+	// objectModel ist deleted automatically be objectListModel
 }
 
 template<class T> void ObjectListWindow<T>::show (DbManager &manager, QWidget *parent)
@@ -58,17 +69,8 @@ template<class T> void ObjectListWindow<T>::show (DbManager &manager, const QStr
 
 template<class T> void ObjectListWindow<T>::show (DbManager &manager, bool editPasswordRequired, const QString &editPassword, QWidget *parent)
 {
-	// Create the object list
-	MutableObjectList<T> *list = new AutomaticEntityList<T>
-		(manager.getCache (), manager.getCache ().getObjects<T> ().getList (), parent);
-
-	// Create the object model and object list model
-	ObjectModel<T> *objectModel=new typename T::DefaultObjectModel ();
-	ObjectListModel<T> *listModel = new ObjectListModel<T>
-		(list, true, objectModel, true, parent);
-
 	// Create the window
-	ObjectListWindowBase *window = new ObjectListWindow<T> (manager, listModel, true, parent);
+	ObjectListWindowBase *window = new ObjectListWindow<T> (manager, parent);
 	window->setAttribute (Qt::WA_DeleteOnClose, true);
 
 	if (editPasswordRequired)
@@ -91,7 +93,7 @@ template<class T> void ObjectListWindow<T>::on_actionEdit_triggered ()
 	if (!allowEdit (makePasswordMessage ())) return;
 
 	QModelIndex listIndex=proxyModel->mapToSource (ui.table->currentIndex ());
-	ObjectEditorWindow<T>::editObject (this, manager, list->at (listIndex));
+	ObjectEditorWindow<T>::editObject (this, manager, listModel->at (listIndex));
 }
 
 template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
@@ -99,7 +101,7 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 	if (!allowEdit (makePasswordMessage ())) return;
 
 	QModelIndex listIndex=proxyModel->mapToSource (ui.table->currentIndex ());
-	const T &object=list->at (listIndex);
+	const T &object=listModel->at (listIndex);
 	dbId id=object.getId ();
 
 	bool objectUsed=true;
@@ -115,16 +117,14 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 
 	if (objectUsed)
 	{
-		// TODO include name in message
 		QString title=utf8 ("%1 benutzt").arg (T::objectTypeDescription ());
-		QString text=utf8 ("%1 wird verwendet und kann daher nicht gelöscht werden.").arg (T::objectTypeDescriptionDefinite ());
+		QString text=utf8 ("%1 %2 wird verwendet und kann daher nicht gelöscht werden.").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
 		QMessageBox::critical (this, title, firstToUpper (text));
 	}
 	else
 	{
-		// TODO include name in question
 		QString title=utf8 ("%1 löschen?").arg (T::objectTypeDescription ());
-		QString question=utf8 ("Soll %1 gelöscht werden?").arg (T::objectTypeDescriptionDefinite ());
+		QString question=utf8 ("Soll %1 %2 gelöscht werden?").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
 		if (yesNoQuestion (this, title, question))
 		{
 			try
@@ -145,11 +145,12 @@ template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 {
 	try
 	{
-		manager.refreshCache (this);
+//		manager.refreshCache (this);
+		manager.refreshObjects<T> (this);
 	}
 	catch (OperationCanceledException &ex) {}
 
-//	list->
+	list->replaceList (manager.getCache ().getObjects<T> ().getList ());
 }
 
 template<class T> void ObjectListWindow<T>::on_table_activated (const QModelIndex &index)
@@ -157,7 +158,7 @@ template<class T> void ObjectListWindow<T>::on_table_activated (const QModelInde
 	if (!allowEdit (makePasswordMessage ())) return;
 
 	QModelIndex listIndex=proxyModel->mapToSource (index);
-	ObjectEditorWindow<T>::editObject (this, manager, list->at (listIndex));
+	ObjectEditorWindow<T>::editObject (this, manager, listModel->at (listIndex));
 }
 
 template<class T> QString ObjectListWindow<T>::makePasswordMessage ()
