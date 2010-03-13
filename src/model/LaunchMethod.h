@@ -71,8 +71,8 @@ class LaunchMethod: public Entity
 		static QString dbTableName ();
 		static QString selectColumnList ();
 		static LaunchMethod createFromResult (const Result &result);
-		static QString insertValueList ();
-		static QString updateValueList ();
+		static QString insertColumnList ();
+		static QString insertPlaceholderList ();
 		virtual void bindValues (Query &q) const;
 		static QList<LaunchMethod> createListFromResult (Result &query);
 

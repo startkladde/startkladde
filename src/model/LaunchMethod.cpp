@@ -237,14 +237,14 @@ LaunchMethod LaunchMethod::createFromResult (const Result &result)
 	return l;
 }
 
-QString LaunchMethod::insertValueList ()
+QString LaunchMethod::insertColumnList ()
 {
-	return "(name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments) values (?,?,?,?,?,?,?,?)";
+	return "name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments";
 }
 
-QString LaunchMethod::updateValueList ()
+QString LaunchMethod::insertPlaceholderList ()
 {
-	return "name=?, short_name=?, log_string=?, keyboard_shortcut=?, type=?, towplane_registration=?, person_required=?, comments=?";
+	return "?,?,?,?,?,?,?,?";
 }
 
 void LaunchMethod::bindValues (Query &q) const

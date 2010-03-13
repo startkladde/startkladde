@@ -76,8 +76,8 @@ class Plane: public Entity
 		static QString dbTableName ();
 		static QString selectColumnList ();
 		static Plane createFromResult (const Result &result);
-		static QString insertValueList ();
-		static QString updateValueList ();
+		static QString insertColumnList ();
+		static QString insertPlaceholderList ();
 		virtual void bindValues (Query &q) const;
 		static QList<Plane> createListFromResult (Result &query);
 		// Enum mappers

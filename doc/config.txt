@@ -98,8 +98,8 @@ title <text>
   Parameter: 
     text: der Text für den Titel
   Beispiele:
-    title Hauptflugbuch Rheinstetten (startkladde)
-  Standard: Startkladde
+    title Hauptflugbuch Rheinstetten
+  Standard: Startkladde Dingenskirchen
 
 diag_cmd <cmd>
   Beschreibung:

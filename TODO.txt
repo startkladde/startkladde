@@ -2,6 +2,8 @@ Siehe auch Trac (startkladde.sf.net)
 
 == Critical (before release) ==
 
+* Default config: remove launch methods
+
 Documentation:
  INSTALL:
  8. Client einrichten
@@ -139,6 +141,7 @@ Config:
 * Make compression configurable
 * Make read timeout and keepalive interval configurable
 * Configurable autoconnect
+* Rename title to window_title or remove 
 
 Other:
 * Time zone safety

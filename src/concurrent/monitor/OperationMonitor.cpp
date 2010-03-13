@@ -38,6 +38,8 @@
  *     stores a Monitor? What about return values?
  *   - The connection canceling should be in the interface, not in the caller
  *   - Warning if an operation tries to use a monitor which is already in use
+ *   - Indicate if the operation has not started yet (because another operation
+ *     is currently performed by that thread)
  */
 
 OperationMonitor::OperationMonitor ():

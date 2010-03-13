@@ -864,9 +864,9 @@ Flight Flight::createFromResult (const Result &result)
 	return f;
 }
 
-QString Flight::insertValueList ()
+QString Flight::insertColumnList ()
 {
-	QString columnList=
+	return
 		"pilot_id,copilot_id,plane_id,type,mode,departed,landed,towflight_landed" // 8
 		",launch_method_id,departure_location,landing_location,num_landings,departure_time,landing_time" // 6 Σ14
 		",pilot_last_name,pilot_first_name,copilot_last_name,copilot_first_name" // 4 Σ18
@@ -874,22 +874,17 @@ QString Flight::insertValueList ()
 		",accounting_notes,comments" // 2 Σ24
 		",towpilot_id,towpilot_last_name,towpilot_first_name" // 3 Σ27
 		;
-
-	QString placeholderList="?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
-
-	return QString ("(%1) values (%2)").arg (columnList).arg (placeholderList);
 }
 
-
-QString Flight::updateValueList ()
+QString Flight::insertPlaceholderList ()
 {
 	return
-		"pilot_id=?,copilot_id=?,plane_id=?,type=?,mode=?,departed=?,landed=?,towflight_landed=?" // 8
-		",launch_method_id=?,departure_location=?,landing_location=?,num_landings=?,departure_time=?,landing_time=?" // 6 Σ14
-		",pilot_last_name=?,pilot_first_name=?,copilot_last_name=?,copilot_first_name=?" // 4 Σ18
-		",towflight_landing_time=?,towflight_mode=?,towflight_landing_location=?,towplane_id=?" // 4 Σ22
-		",accounting_notes=?,comments=?" // 2 Σ24
-		",towpilot_id=?,towpilot_last_name=?,towpilot_first_name=?"; // 3 Σ27
+		"?,?,?,?,?,?,?,?"
+		",?,?,?,?,?,?"
+		",?,?,?,?"
+		",?,?,?,?"
+		",?,?"
+		",?,?,?"
 		;
 }
 

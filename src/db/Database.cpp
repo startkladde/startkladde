@@ -108,7 +108,8 @@ template<class T> bool Database::deleteObject (dbId id)
  */
 template<class T> dbId Database::createObject (T &object)
 {
-	Query query=Query ("INSERT INTO %1 %2").arg (T::dbTableName (), T::insertValueList ());
+	Query query=Query ("INSERT INTO %1 (%2) values (%3)")
+		.arg (T::dbTableName (), T::insertColumnList (), T::insertPlaceholderList ());
 	object.bindValues (query);
 
 	// Wrap the operation into a transaction, see top of file
@@ -140,11 +141,12 @@ template<class T> void Database::createObjects (QList<T> &objects, OperationMoni
 
 template<class T> bool Database::updateObject (const T &object)
 {
-	Query query=Query ("UPDATE %1 SET %2 WHERE id=?")
-		.arg (T::dbTableName (), object.updateValueList ());
-
+	// Use REPLACE INTO instead of UPDATE so in case the object does not exist
+	// (e. g. because of an inconsistent cache), it will be created.
+	Query query=Query ("REPLACE INTO %1 (id,%2) values (?,%3)")
+		.arg (T::dbTableName (), T::insertColumnList (), T::insertPlaceholderList ());
+	query.bind (object.getId ());
 	object.bindValues (query);
-	query.bind (object.id); // After the object values!
 
 	// Wrap the operation into a transaction, see top of file
 	interface.transaction ();
@@ -313,8 +315,8 @@ template<> bool Database::objectUsed<Flight> (dbId id)
 //   - ::dbTableName ();
 //   - ::QString selectColumnList (); // TODO return queries directly?
 //   - ::createFromQuery (const Result &result); // TODO change to create
-//   - ::insertValueList ();
-//   - ::updateValueList ();
+//   - ::insertColumnList ();
+//   - ::insertPlaceholderList ();
 //   - bindValues (QSqlQuery &q) const;
 //   - ::createListFromQuery (Result &result); // TODO change to createList
 

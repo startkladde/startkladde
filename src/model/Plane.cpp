@@ -239,14 +239,14 @@ Plane Plane::createFromResult (const Result &result)
 	return p;
 }
 
-QString Plane::insertValueList ()
+QString Plane::insertColumnList ()
 {
-	return "(registration,club,num_seats,type,category,competition_callsign,comments) values (?,?,?,?,?,?,?)";
+	return "registration,club,num_seats,type,category,competition_callsign,comments";
 }
 
-QString Plane::updateValueList ()
+QString Plane::insertPlaceholderList ()
 {
-	return "registration=?, club=?, num_seats=?, type=?, category=?, competition_callsign=?, comments=?";
+	return "?,?,?,?,?,?,?";
 }
 
 void Plane::bindValues (Query &q) const

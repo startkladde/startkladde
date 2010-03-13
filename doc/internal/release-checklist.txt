@@ -1,2 +1,7 @@
-- Alle Strings (zumindest alle mit Umlauten) als QString::fromUtf8
+Code:
+- All strings (at least those with non-ASCII-characters) as  utf8 ("...")
 
+
+
+Tests:
+- Empty or non-existing database: schema loaded, not migrated

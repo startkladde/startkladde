@@ -1,3 +1,7 @@
+== Release Checklist ==
+
+
+
 Testen DBINIT:
   Fehler                                check_db    init_db     GUI     Bemerkungen
 Datenbank

@@ -60,8 +60,8 @@ class Person: public Entity
 		static QString dbTableName ();
 		static QString selectColumnList ();
 		static Person createFromResult (const Result &result);
-		static QString insertValueList ();
-		static QString updateValueList ();
+		static QString insertColumnList ();
+		static QString insertPlaceholderList ();
 		virtual void bindValues (Query &q) const;
 		static QList<Person> createListFromResult (Result &query);
 

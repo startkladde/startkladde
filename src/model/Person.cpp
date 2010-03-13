@@ -181,14 +181,14 @@ Person Person::createFromResult (const Result &result)
 	return p;
 }
 
-QString Person::insertValueList ()
+QString Person::insertColumnList ()
 {
-	return "(last_name,first_name,club,club_id,comments) values (?,?,?,?,?)";
+	return "last_name,first_name,club,club_id,comments";
 }
 
-QString Person::updateValueList ()
+QString Person::insertPlaceholderList ()
 {
-	return "last_name=?, first_name=?, club=?, club_id=?, comments=?";
+	return "?,?,?,?,?";
 }
 
 void Person::bindValues (Query &q) const

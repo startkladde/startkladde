@@ -234,8 +234,8 @@ class Flight
 		static QString dbTableName ();
 		static QString selectColumnList ();
 		static Flight createFromResult (const Result &result);
-		static QString insertValueList ();
-		static QString updateValueList ();
+		static QString insertColumnList ();
+		static QString insertPlaceholderList ();
 		virtual void bindValues (Query &q) const;
 		static QList<Flight> createListFromResult (Result &result);
 
