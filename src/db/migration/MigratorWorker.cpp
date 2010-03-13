@@ -10,12 +10,13 @@ MigratorWorker::MigratorWorker (ThreadSafeInterface &interface):
 	migrator (interface)
 {
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
-	CONNECT (migrate           (Returner<void>            *, OperationMonitor *));
-	CONNECT (loadSchema        (Returner<void>            *, OperationMonitor *));
-	CONNECT (pendingMigrations (Returner<QList<quint64> > *, OperationMonitor *));
-	CONNECT (isCurrent         (Returner<bool>            *, OperationMonitor *));
-	CONNECT (isEmpty           (Returner<bool>            *, OperationMonitor *));
-	CONNECT (currentVersion    (Returner<quint64>         *, OperationMonitor *));
+	CONNECT (migrate           (Returner<void>             *, OperationMonitor *));
+	CONNECT (loadSchema        (Returner<void>             *, OperationMonitor *));
+	CONNECT (pendingMigrations (Returner<QList<quint64> >  *, OperationMonitor *));
+	CONNECT (isCurrent         (Returner<bool>             *, OperationMonitor *));
+	CONNECT (isEmpty           (Returner<bool>             *, OperationMonitor *));
+	CONNECT (currentVersion    (Returner<quint64>          *, OperationMonitor *));
+	CONNECT (getRequiredAction (Returner<Migrator::Action> *, OperationMonitor *, quint64 *, int *));
 #undef CONNECT
 
 	moveToThread (&thread);
@@ -65,6 +66,11 @@ void MigratorWorker::currentVersion (Returner<quint64> &returner, OperationMonit
 	emit sig_currentVersion (&returner, &monitor);
 }
 
+void MigratorWorker::getRequiredAction (Returner<Migrator::Action> &returner, OperationMonitor &monitor, quint64 *currentVersion, int *numPendingMigrations)
+{
+	emit sig_getRequiredAction (&returner, &monitor, currentVersion, numPendingMigrations);
+}
+
 
 // ********************
 // ** Back-end slots **
@@ -100,4 +106,9 @@ void MigratorWorker::slot_currentVersion (Returner<quint64> *returner, Operation
 {
 	OperationMonitorInterface interface=monitor->interface ();
 	returnOrException (returner, migrator.currentVersion ());
+}
+
+void MigratorWorker::slot_getRequiredAction (Returner<Migrator::Action> *returner, OperationMonitor *monitor, quint64 *currentVersion, int *numPendingMigrations)
+{
+	returnOrException (returner, migrator.getRequiredAction (currentVersion, numPendingMigrations, monitor->interface ()));
 }

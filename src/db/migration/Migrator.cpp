@@ -106,7 +106,6 @@ void Migrator::migrate (OperationMonitorInterface monitor)
 
 	int progress=0, maxProgress=pendingMigrations ().size ();
 
-	// TODO better progress reporting interface
 	monitor.progress (progress, maxProgress);
 	foreach (quint64 version, versions)
 	{
@@ -126,6 +125,19 @@ void Migrator::loadSchema (OperationMonitorInterface monitor)
 	std::cout << "== Loading schema =============================================================" << std::endl;
 
 	CurrentSchema schema (interface);
+
+	// Create the migrations table before loading the schema so we can
+	// distinguish "load canceled" (migrations table and some tables exists)
+	// from "old database" (migrations table does not exist, some tables
+	// exist).
+	monitor.status ("Versionstabelle einrichten");
+	createMigrationsTable ();
+	// Clear the table because if the migrations table is non-empty, but no
+	// other tables exist, loadScheme will be called. If the loading is
+	// canceled, the resulting state could not be distinguished from a
+	// regular (current or non-current) database, but the scheme would be
+	// wrong, so using or migrating the database would fail.
+	clearMigrationsTable ();
 
 	monitor.status ("Schema laden");
 	schema.up (monitor);
@@ -162,6 +174,73 @@ void Migrator::reset ()
 	create ();
 	loadSchema ();
 }
+
+
+// *************
+// ** Version **
+// *************
+
+/**
+ * @param currentVersion set to the current schema verison if the result is actionMigrate
+ * @param monitor
+ * @return
+ */
+Migrator::Action Migrator::getRequiredAction (quint64 *currentVersion, int *numPendingMigrations, OperationMonitorInterface monitor)
+{
+	// # | Migrations table | Other tables || Empty | Action  | Comments
+	// --+------------------+--------------++-------+---------+---------------------------------------
+	// 1 | not existing     | no           || yes   | load    | Regular creating
+	// 2 | not existing     | yes          || no    | migrate | Old (pre-migration) database
+	// 3 | empty            | no           || no    | load    | Load canceled (before creating tables)
+	// 4 | empty            | yes          || no    | load    | Load canceled (while creating tables)
+	// 5 | not current      | no           || no    | load    | Error: non-current, but tables missing
+	// 6 | not current      | yes          || no    | migrate | Regular migration
+	// 7 | current          | no           || no    | load    | Error: current, but tables missing
+	// 8 | current          | yes          || no    | none    | Regular current
+	//
+	//                          Other tables:
+	//                          no    yes
+	//                         ,-------------
+	//            not existing |load  migrate
+	// Migrations empty        |load  load
+	// table:     not current  |load  migrate
+	//            current      |load  none
+
+	monitor.status  (utf8 ("Datenbank prüfen"));
+	QStringList tables=interface.showTables ();
+
+	bool migrationsTableExists=tables.contains (migrationsTableName);
+
+	tables.remove (migrationsTableName);
+	bool otherTablesExist=!tables.empty ();
+
+	// # 1,3,5,6 - no other tables exist
+	if (!otherTablesExist) return actionLoad;
+
+	// #2 - old database
+	if (!migrationsTableExists)
+	{
+		if (currentVersion) *currentVersion=0;
+		if (numPendingMigrations) *numPendingMigrations=factory->availableVersions ().size ();
+		return actionMigrate;
+	}
+
+	// #4 - load canceled
+	monitor.status ("Datenbankversion prüfen");
+	quint64 current=this->currentVersion ();
+	if (current==0) return actionLoad;
+
+	// #8 - current
+	quint64 latest=this->latestVersion ();
+	if (current==latest) return actionNone;
+
+	// #6 - not current
+	if (currentVersion) *currentVersion=current;
+	if (numPendingMigrations) *numPendingMigrations=pendingMigrations ().size ();
+	return actionMigrate;
+}
+
+
 
 // ***********************
 // ** Migration listing **
@@ -241,10 +320,15 @@ void Migrator::createMigrationsTable ()
 {
 	interface.executeQuery (
 		QString (
-			"CREATE TABLE %1 (%2 VARCHAR(255) NOT NULL PRIMARY KEY)"
+			"CREATE TABLE IF NOT EXISTS %1 (%2 VARCHAR(255) NOT NULL PRIMARY KEY)"
 			" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		).arg (migrationsTableName, migrationsColumnName)
 	);
+}
+
+void Migrator::clearMigrationsTable ()
+{
+	interface.executeQuery (Query ("DELETE FROM %1").arg (migrationsTableName));
 }
 
 bool Migrator::hasMigration (quint64 version)
@@ -303,22 +387,29 @@ QList<quint64> Migrator::appliedMigrations ()
 	return migrations;
 }
 
+/**
+ * Assumes that the migrations table exists and is empty
+ *
+ * @param versions
+ */
 void Migrator::assumeMigrated (QList<quint64> versions)
 {
-	// If the migrations table does not exist, create it
-	if (!interface.tableExists (migrationsTableName)) createMigrationsTable ();
-
-	// Remove all migrations
-	interface.executeQuery (QString ("DELETE FROM %1").arg (migrationsTableName));
-
 	// Add all migrations
-	// TODO one query
-	foreach (quint64 version, versions)
-	{
-		Query query=Query ("INSERT INTO %1 (%2) VALUES (?)")
-			.arg (migrationsTableName, migrationsColumnName)
-			.bind (version);
 
-		interface.executeQuery (query);
-	}
+	// Add all migrations in one single query because the database would be
+	// inconsistent if the process was interrupted with only some migrations
+	// inserted.
+
+	// Create a list of placeholders: "(?),(?),...,(?)"
+	QStringList placeholders;
+	for (int i=0; i<versions.size (); ++i)
+		placeholders << "(?)";
+
+	Query query=Query ("INSERT INTO %1 (%2) VALUES %3")
+		.arg (migrationsTableName, migrationsColumnName, placeholders.join (","));
+
+	foreach (quint64 version, versions)
+		query.bind (version);
+
+	interface.executeQuery (query);
 }

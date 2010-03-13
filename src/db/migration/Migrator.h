@@ -23,6 +23,9 @@ class MigrationFactory;
 class Migrator
 {
 	public:
+		// *** Types
+		enum Action { actionNone, actionMigrate, actionLoad };
+
 		// *** Constants
 		static const QString migrationsTableName, migrationsColumnName;
 
@@ -41,6 +44,9 @@ class Migrator
 		void clear ();
 		void drop ();
 		void create ();
+
+		// *** Version
+		Action getRequiredAction (quint64 *currentVersion=NULL, int *numPendingMigrations=NULL, OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 		// *** Migration listing
 		QList<quint64> pendingMigrations ();
@@ -63,8 +69,8 @@ class Migrator
 		void addMigration (quint64 version);
 		void removeMigration (quint64 version);
 		void createMigrationsTable ();
+		void clearMigrationsTable ();
 		void assumeMigrated (QList<quint64> versions);
-		void clearMigrations ();
 
 	private:
 		Interface &interface;

@@ -113,7 +113,6 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	setNotConnected ();
 	// TODO to "shown"?
-	// FIXME enable
 	QTimer::singleShot (0, this, SLOT (on_actionConnect_triggered ()));
 
 	setDisplayDateCurrent (true);

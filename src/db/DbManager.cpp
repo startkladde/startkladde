@@ -75,15 +75,15 @@ void DbManager::ensureCurrent (const QString &message, QWidget *parent)
 		throw ConnectFailedException (message);
 }
 
-bool DbManager::isEmpty (QWidget *parent)
-{
-	Returner<bool> returner;
-	SignalOperationMonitor monitor;
-	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
-	migratorWorker.isEmpty (returner, monitor);
-	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
-	return returner.returnedValue ();
-}
+//bool DbManager::isEmpty (QWidget *parent)
+//{
+//	Returner<bool> returner;
+//	SignalOperationMonitor monitor;
+//	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+//	migratorWorker.isEmpty (returner, monitor);
+//	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+//	return returner.returnedValue ();
+//}
 
 // ***************************
 // ** Connection management **
@@ -248,66 +248,127 @@ void DbManager::createSampleLaunchMethods (QWidget *parent)
 
 void DbManager::checkVersion (QWidget *parent)
 {
-	if (isEmpty (parent))
+	quint64 currentVersion;
+	int numPendingMigrations;
+
+	Returner<Migrator::Action> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+	migratorWorker.getRequiredAction (returner, monitor, &currentVersion, &numPendingMigrations);
+	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+	Migrator::Action action=returner.returnedValue ();
+
+	switch (action)
 	{
-		confirmOrCancel ("Datenbank leer",
-			"Die Datenbank ist leer. Soll sie jetzt erstellt werden?", parent);
+		case Migrator::actionLoad:
+		{
+			confirmOrCancel ("Datenbank leer",
+				utf8 ("Die Datenbank ist leer oder unvollständig. Soll sie jetzt erstellt werden?"), parent);
 
-		Returner<void> returner;
-		SignalOperationMonitor monitor;
-		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
-		migratorWorker.loadSchema (returner, monitor);
-		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
-		returner.wait (); // Required so any exceptions are rethrown
+			Returner<void> returner;
+			SignalOperationMonitor monitor;
+			QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+			migratorWorker.loadSchema (returner, monitor);
+			MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+			returner.wait (); // Required so any exceptions are rethrown
 
-		// After loading the schema, the database must be current.
-		// TODO different message if canceled
-		ensureCurrent ("Datenbank ist nach Erstellen nicht aktuell.", parent);
+			// After loading the schema, the database must be current.
+			ensureCurrent ("Datenbank ist nach Erstellen nicht aktuell.", parent);
 
-		createSampleLaunchMethods (parent);
+			createSampleLaunchMethods (parent);
+		} break;
+		case Migrator::actionMigrate:
+		{
+			quint64 latestVersion=Migrator::latestVersion ();
+
+			confirmOrCancel ("Datenbank nicht aktuell", utf8 (
+					"Die Datenbank ist nicht aktuell:\n"
+					"  - Momentane Version: %1\n"
+					"  - Aktuelle Version: %2\n"
+					"  - Anzahl ausstehender Migrationen: %3\n"
+					"\n"
+					"Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.\n"
+					"Vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden.\n"
+					"\n"
+					"Soll die Datenbank jetzt aktualisiert werden?"
+				).arg (currentVersion).arg (latestVersion).arg (numPendingMigrations), parent);
+
+			Returner<void> returner;
+			SignalOperationMonitor monitor;
+			QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+			migratorWorker.migrate (returner, monitor);
+			MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+			returner.wait (); // Required so any exceptions are rethrown
+
+			// After migrating, the database must be current.
+			ensureCurrent ("Datenbank ist nach der Aktualisierung nicht aktuell.", parent);
+		} break;
+		case Migrator::actionNone:
+			// Nothing to do, the database is current
+			break;
+		// no default
 	}
-	else if (!isCurrent (parent))
-	{
-		// TODO try to reuse monitor and dialog
-		Returner<quint64> currentVersionReturner;
-		SignalOperationMonitor currentVersionMonitor;
-		QObject::connect (&currentVersionMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
-		migratorWorker.currentVersion (currentVersionReturner, currentVersionMonitor);
-		MonitorDialog::monitor (currentVersionMonitor, "Verbindungsaufbau", parent);
-		quint64 currentVersion=currentVersionReturner.returnedValue ();
 
-		quint64 latestVersion=Migrator::latestVersion ();
-
-		Returner<QList<quint64> > pendingMigrationsReturner;
-		SignalOperationMonitor pendingMigrationsMonitor;
-		QObject::connect (&pendingMigrationsMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
-		migratorWorker.pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
-		MonitorDialog::monitor (pendingMigrationsMonitor, "Verbindungsaufbau", parent);
-		quint64 numPendingMigrations=pendingMigrationsReturner.returnedValue ().size ();
-
-		confirmOrCancel ("Datenbank nicht aktuell", utf8 (
-				"Die Datenbank ist nicht aktuell:\n"
-				"  - Momentane Version: %1\n"
-				"  - Aktuelle Version: %2\n"
-				"  - Anzahl ausstehender Migrationen: %3\n"
-				"\n"
-				"Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.\n"
-				"Vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden.\n"
-				"\n"
-				"Soll die Datenbank jetzt aktualisiert werden?"
-			).arg (currentVersion).arg (latestVersion).arg (numPendingMigrations), parent);
-
-		Returner<void> returner;
-		SignalOperationMonitor monitor;
-		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
-		migratorWorker.migrate (returner, monitor);
-		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
-		returner.wait (); // Required so any exceptions are rethrown
-
-		// After migrating, the database must be current.
-		// TODO different message if canceled
-		ensureCurrent ("Datenbank ist nach der Aktualisierung nicht aktuell.", parent);
-	}
+//	if (isEmpty (parent))
+//	{
+//		confirmOrCancel ("Datenbank leer",
+//			"Die Datenbank ist leer. Soll sie jetzt erstellt werden?", parent);
+//
+//		Returner<void> returner;
+//		SignalOperationMonitor monitor;
+//		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+//		migratorWorker.loadSchema (returner, monitor);
+//		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+//		returner.wait (); // Required so any exceptions are rethrown
+//
+//		// After loading the schema, the database must be current.
+//		// TODO different message if canceled
+//		ensureCurrent ("Datenbank ist nach Erstellen nicht aktuell.", parent);
+//
+//		createSampleLaunchMethods (parent);
+//	}
+//	else if (!isCurrent (parent))
+//	{
+//		// TODO try to reuse monitor and dialog
+//		Returner<quint64> currentVersionReturner;
+//		SignalOperationMonitor currentVersionMonitor;
+//		QObject::connect (&currentVersionMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+//		migratorWorker.currentVersion (currentVersionReturner, currentVersionMonitor);
+//		MonitorDialog::monitor (currentVersionMonitor, "Verbindungsaufbau", parent);
+//		quint64 currentVersion=currentVersionReturner.returnedValue ();
+//
+//		quint64 latestVersion=Migrator::latestVersion ();
+//
+//		Returner<QList<quint64> > pendingMigrationsReturner;
+//		SignalOperationMonitor pendingMigrationsMonitor;
+//		QObject::connect (&pendingMigrationsMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+//		migratorWorker.pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
+//		MonitorDialog::monitor (pendingMigrationsMonitor, "Verbindungsaufbau", parent);
+//		quint64 numPendingMigrations=pendingMigrationsReturner.returnedValue ().size ();
+//
+//		confirmOrCancel ("Datenbank nicht aktuell", utf8 (
+//				"Die Datenbank ist nicht aktuell:\n"
+//				"  - Momentane Version: %1\n"
+//				"  - Aktuelle Version: %2\n"
+//				"  - Anzahl ausstehender Migrationen: %3\n"
+//				"\n"
+//				"Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.\n"
+//				"Vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden.\n"
+//				"\n"
+//				"Soll die Datenbank jetzt aktualisiert werden?"
+//			).arg (currentVersion).arg (latestVersion).arg (numPendingMigrations), parent);
+//
+//		Returner<void> returner;
+//		SignalOperationMonitor monitor;
+//		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+//		migratorWorker.migrate (returner, monitor);
+//		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+//		returner.wait (); // Required so any exceptions are rethrown
+//
+//		// After migrating, the database must be current.
+//		// TODO different message if canceled
+//		ensureCurrent ("Datenbank ist nach der Aktualisierung nicht aktuell.", parent);
+//	}
 }
 
 void DbManager::doOpenInterface (InterfaceWorker &worker, QWidget *parent)

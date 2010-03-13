@@ -59,6 +59,7 @@ class Interface: public AbstractInterface
 		void renameTable (const QString &oldName, const QString &newName);
 		bool tableExists ();
 		bool tableExists (const QString &name);
+		QStringList showTables ();
 
 		void addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="", bool skipIfExists=false);
 		void changeColumnType (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="");

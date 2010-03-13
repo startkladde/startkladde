@@ -134,6 +134,11 @@ bool Interface::tableExists (const QString &name)
 	return queryHasResult (Query ("SHOW TABLES LIKE '%1'").arg (name));
 }
 
+QStringList Interface::showTables ()
+{
+	return listStrings ("SHOW TABLES");
+}
+
 void Interface::addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification, bool skipIfExists)
 {
 	if (skipIfExists && columnExists (table, name))
