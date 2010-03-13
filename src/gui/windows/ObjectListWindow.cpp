@@ -17,11 +17,10 @@
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/gui/dialogs.h"
 #include "src/text.h"
-#include "src/db/DbManager.h"
 
 template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, ObjectListModel<T> *list, bool listOwned, QWidget *parent):
-	ObjectListWindowBase (parent),
-	manager (manager), list (list), listOwned (listOwned)
+	ObjectListWindowBase (manager, parent),
+	list (list), listOwned (listOwned)
 {
 	// Set the list as the table's model with a sort proxy
 	proxyModel=new QSortFilterProxyModel (this);
@@ -103,7 +102,13 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 
 template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 {
-	// TODO
+	try
+	{
+		manager.refreshCache (this);
+	}
+	catch (OperationCanceledException &ex) {}
+
+//	list->
 }
 
 template<class T> void ObjectListWindow<T>::on_table_activated (const QModelIndex &index)

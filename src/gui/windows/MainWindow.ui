@@ -631,9 +631,6 @@
    <property name="text">
     <string>Tabelle aktualisie&amp;ren</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+R</string>
-   </property>
   </action>
   <action name="actionJumpToTow">
    <property name="text">
@@ -759,6 +756,9 @@
   <action name="actionRefreshAll">
    <property name="text">
     <string>Alle &amp;aktualisieren</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionSegfault">

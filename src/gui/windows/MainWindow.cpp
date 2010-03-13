@@ -66,13 +66,6 @@ MainWindow::MainWindow (QWidget *parent) :
 {
 	ui.setupUi (this);
 
-	// Database
-	connect (&dbManager.getInterface (), SIGNAL (databaseError (int, QString)), this, SLOT (databaseError (int, QString)));
-	connect (&dbManager.getInterface (), SIGNAL (executingQuery (Query)), this, SLOT (executingQuery (Query)));
-
-	connect (&dbManager, SIGNAL (readTimeout ()), this, SLOT (readTimeout ()));
-	connect (&dbManager, SIGNAL (readResumed ()), this, SLOT (readResumed ()));
-
 	flightModel = new FlightModel (dbManager.getCache ());
 	proxyList=new FlightProxyList (dbManager.getCache (), *flightList, this); // TODO never deleted
 	flightListModel = new ObjectListModel<Flight> (proxyList, false, flightModel, true, this);
@@ -111,8 +104,7 @@ MainWindow::MainWindow (QWidget *parent) :
 	// Do this before calling connect
 	QObject::connect (&dbManager.getCache (), SIGNAL (changed (DbEvent)), this, SLOT (cacheChanged (DbEvent)));
 
-	setNotConnected ();
-	// TODO to "shown"?
+	// TODO to showEvent?
 	QTimer::singleShot (0, this, SLOT (on_actionConnect_triggered ()));
 
 	setDisplayDateCurrent (true);
@@ -122,7 +114,8 @@ MainWindow::MainWindow (QWidget *parent) :
 	// Menu bar
 	QAction *logAction = ui.logDockWidget->toggleViewAction ();
 	logAction->setText ("Protoko&ll anzeigen");
-	ui.menuDebug->addAction (logAction);
+	ui.menuDatabase->addSeparator ();
+	ui.menuDatabase->addAction (logAction);
 
 	// TODO not working
 	ui.menuDebug->setVisible (opts.debug);
@@ -171,6 +164,16 @@ MainWindow::MainWindow (QWidget *parent) :
 	proxyModel->setCustomSorting (true);
 
 	ui.flightTable->setFocus ();
+
+	// Database
+	connect (&dbManager.getInterface (), SIGNAL (databaseError (int, QString)), this, SLOT (databaseError (int, QString)));
+	connect (&dbManager.getInterface (), SIGNAL (executingQuery (Query)), this, SLOT (executingQuery (Query)));
+
+	connect (&dbManager, SIGNAL (readTimeout ()), this, SLOT (readTimeout ()));
+	connect (&dbManager, SIGNAL (readResumed ()), this, SLOT (readResumed ()));
+
+	connect (&dbManager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
+	databaseStateChanged (dbManager.getState ());
 }
 
 MainWindow::~MainWindow ()
@@ -981,7 +984,7 @@ void MainWindow::on_actionShowVirtualKeyboard_triggered (bool checked)
 	}
 }
 
-void MainWindow::on_actionRefreshTable_triggered ()
+void MainWindow::on_actionRefreshAll_triggered ()
 {
 	try
 	{
@@ -989,6 +992,11 @@ void MainWindow::on_actionRefreshTable_triggered ()
 	}
 	catch (OperationCanceledException &ex) {}
 
+	refreshFlights ();
+}
+
+void MainWindow::on_actionRefreshTable_triggered ()
+{
 	refreshFlights ();
 }
 
@@ -1065,7 +1073,7 @@ void MainWindow::keyPressEvent (QKeyEvent *e)
 		case Qt::Key_F9:  if (databaseActionsEnabled) ui.actionSort         ->trigger (); break;
 		case Qt::Key_F10:                             ui.actionQuit         ->trigger (); break;
 		case Qt::Key_F11: if (databaseActionsEnabled) ui.actionHideFinished ->trigger (); break;
-		case Qt::Key_F12: if (databaseActionsEnabled) ui.actionRefreshTable ->trigger (); break;
+		case Qt::Key_F12: if (databaseActionsEnabled) ui.actionRefreshAll   ->trigger (); break;
 
 		// Flight manipulation
 		case Qt::Key_Insert: if (databaseActionsEnabled && ui.flightTable->hasFocus ()) ui.actionNew    ->trigger (); break;
@@ -1296,47 +1304,6 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 // ** Database **
 // **************
 
-
-void MainWindow::on_actionConnect_triggered ()
-{
-	setConnecting ();
-
-	if (dbManager.connect (this))
-	{
-		setConnected ();
-	}
-	else
-	{
-		setNotConnected ();
-	}
-}
-
-void MainWindow::on_actionDisconnect_triggered ()
-{
-	dbManager.getInterface ().close ();
-	dbManager.getCache ().clear ();
-	flightList->clear ();
-	setNotConnected ();
-}
-
-void MainWindow::on_actionEditPlanes_triggered ()
-{
-	MutableObjectList<Plane> *list = new AutomaticEntityList<Plane> (dbManager.getCache (), dbManager.getCache ().getPlanes ().getList (), this);
-	ObjectListModel<Plane> *listModel = new ObjectListModel<Plane> (list, true, new Plane::DefaultObjectModel (), true,
-			this);
-	ObjectListWindowBase *window = new ObjectListWindow<Plane> (dbManager, listModel, true, this);
-	window->show ();
-}
-
-void MainWindow::on_actionEditPeople_triggered ()
-{
-	MutableObjectList<Person> *list = new AutomaticEntityList<Person> (dbManager.getCache (), dbManager.getCache ().getPeople ().getList (), this);
-	ObjectListModel<Person> *listModel = new ObjectListModel<Person> (list, true, new Person::DefaultObjectModel (),
-			true, this);
-	ObjectListWindowBase *window = new ObjectListWindow<Person> (dbManager, listModel, true, this);
-	window->show ();
-}
-
 bool MainWindow::getPassword (bool required, const QString &correctPassword, QString message)
 {
 	if (!required) return true;
@@ -1356,13 +1323,32 @@ bool MainWindow::getPassword (bool required, const QString &correctPassword, QSt
 	}
 }
 
+
+void MainWindow::on_actionEditPlanes_triggered ()
+{
+	MutableObjectList<Plane> *list = new AutomaticEntityList<Plane> (dbManager.getCache (), dbManager.getCache ().getObjects<Plane> ().getList (), this);
+	ObjectListModel<Plane> *listModel = new ObjectListModel<Plane> (list, true, new Plane::DefaultObjectModel (), true,
+			this);
+	ObjectListWindowBase *window = new ObjectListWindow<Plane> (dbManager, listModel, true, this);
+	window->show ();
+}
+
+void MainWindow::on_actionEditPeople_triggered ()
+{
+	MutableObjectList<Person> *list = new AutomaticEntityList<Person> (dbManager.getCache (), dbManager.getCache ().getObjects<Person> ().getList (), this);
+	ObjectListModel<Person> *listModel = new ObjectListModel<Person> (list, true, new Person::DefaultObjectModel (),
+			true, this);
+	ObjectListWindowBase *window = new ObjectListWindow<Person> (dbManager, listModel, true, this);
+	window->show ();
+}
+
 void MainWindow::on_actionEditLaunchMethods_triggered ()
 {
 	if (getPassword (opts.protect_launch_methods, opts.databaseInfo.password,
 		"Um Startarten zu editieren, ist das Datenbankpasswort erforderlich."))
 	{
 		MutableObjectList<LaunchMethod> *list = new AutomaticEntityList<LaunchMethod> (
-				dbManager.getCache (), dbManager.getCache ().getLaunchMethods ().getList (), this);
+				dbManager.getCache (), dbManager.getCache ().getObjects<LaunchMethod> ().getList (), this);
 		ObjectListModel<LaunchMethod> *listModel = new ObjectListModel<LaunchMethod> (
 			list, true, new LaunchMethod::DefaultObjectModel (), true, this);
 
@@ -1446,6 +1432,68 @@ void MainWindow::cacheChanged (DbEvent event)
 	}
 }
 
+void MainWindow::databaseStateChanged (DbManager::State state)
+{
+	switch (state)
+	{
+		case DbManager::stateDisconnected:
+			ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+			ui.databaseStateLabel->setText ("Getrennt");
+
+			ui.flightTable->setVisible (false);
+			ui.notConnectedPane->setVisible (true);
+			setDatabaseActionsEnabled (false);
+
+			refreshFlights (); // Also sets the labels
+
+			break;
+		case DbManager::stateConnecting:
+			databaseOkText="Verbindung wird aufgebaut...";
+			ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+			ui.databaseStateLabel->setText (databaseOkText);
+
+			ui.flightTable->setVisible (true);
+			ui.notConnectedPane->setVisible (false);
+			setDatabaseActionsEnabled (false);
+
+			refreshFlights (); // Also sets the labels
+
+			break;
+		case DbManager::stateConnected:
+			databaseOkText="OK";
+			ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+			ui.databaseStateLabel->setText (databaseOkText);
+
+			ui.flightTable->setVisible (true);
+			ui.notConnectedPane->setVisible (false);
+			setDatabaseActionsEnabled (true);
+
+			setDisplayDateCurrent (true); // Will also call refreshFlights
+
+			break;
+		// no default
+	}
+}
+
+
+// ***************************
+// ** Connection monitoring **
+// ***************************
+
+void MainWindow::readTimeout ()
+{
+	ui.databaseStateLabel->setPaletteForegroundColor (Qt::red);
+	ui.databaseStateLabel->setText ("Keine Antwort");
+}
+
+void MainWindow::readResumed ()
+{
+	ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+	ui.databaseStateLabel->setText (databaseOkText);
+}
+
+
+
 
 // ************************************
 // ** Database connection management **
@@ -1474,75 +1522,17 @@ void MainWindow::setDatabaseActionsEnabled (bool enabled)
 	ui.actionDepart                 ->setEnabled (enabled);
 	ui.actionTouchngo               ->setEnabled (enabled);
 
+	ui.flightTable->setEnabled (enabled);
+
 	// Connect/disconnect are special
 	ui.actionConnect    ->setEnabled (!enabled);
 	ui.actionDisconnect ->setEnabled ( enabled);
 }
 
-void MainWindow::setNotConnected ()
-{
-	ui.databaseStateLabel->setText ("Getrennt");
-
-	setDatabaseActionsEnabled (false);
-
-	ui.flightTable->setVisible (false);
-	ui.flightTable->setEnabled (false);
-
-	ui.notConnectedPane->setVisible (true);
-
-	refreshFlights (); // Also sets the labels
-}
-
-void MainWindow::setConnected ()
-{
-	ui.databaseStateLabel->setText ("OK");
-
-	setDatabaseActionsEnabled (true);
-
-	ui.flightTable->setVisible (true);
-	ui.flightTable->setEnabled (true);
-
-	ui.notConnectedPane->setVisible (false);
-
-	setDisplayDateCurrent (true); // Will also call refreshFlights
-}
-
-void MainWindow::setConnecting ()
-{
-	ui.databaseStateLabel->setText ("Verbindung wird aufgebaut...");
-
-	setDatabaseActionsEnabled (false);
-
-	ui.flightTable->setVisible (true);
-	ui.flightTable->setEnabled (false);
-
-	ui.notConnectedPane->setVisible (false);
-
-	refreshFlights (); // Also sets the labels
-}
-
-
-
 void MainWindow::closeDatabase ()
 {
 	// No need, will be closed on destruction
 	//dbInterface.close ();
-}
-
-// ***************************
-// ** Connection monitoring **
-// ***************************
-
-void MainWindow::readTimeout ()
-{
-	ui.databaseStateLabel->setPaletteForegroundColor (Qt::red);
-	ui.databaseStateLabel->setText ("Keine Antwort");
-}
-
-void MainWindow::readResumed ()
-{
-	ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
-	ui.databaseStateLabel->setText ("OK");
 }
 
 

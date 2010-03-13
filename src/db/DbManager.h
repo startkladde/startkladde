@@ -56,6 +56,8 @@ class DbManager: public QObject
 	Q_OBJECT
 
 	public:
+		enum State { stateDisconnected, stateConnecting, stateConnected };
+
 		class ConnectCanceledException {};
 
 		class ConnectFailedException
@@ -79,6 +81,8 @@ class DbManager: public QObject
 		                       &getMigratorWorker () { return migratorWorker; }
 		virtual CacheWorker    &getCacheWorker    () { return cacheWorker;    }
 
+		virtual State getState () { return state; }
+
 
 		// *** Schema management
 		bool isCurrent (QWidget *parent);
@@ -94,7 +98,9 @@ class DbManager: public QObject
 		void checkVersion (QWidget *parent);
 		void openInterface (QWidget *parent);
 		void connectImpl (QWidget *parent);
+
 		bool connect (QWidget *parent);
+		void disconnect ();
 
 		// *** Data management
 		void clearCache ();
@@ -109,10 +115,16 @@ class DbManager: public QObject
 	signals:
 		void readTimeout ();
 		void readResumed ();
+		void stateChanged (DbManager::State state);
+
+	protected:
+		void setState (State newState);
 
 	private:
 		DbManager (const DbManager &other);
 		DbManager &operator= (const DbManager &other);
+
+		State state;
 
 		ThreadSafeInterface interface;
 		Database db;

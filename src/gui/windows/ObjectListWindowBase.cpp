@@ -4,11 +4,13 @@
 
 #include <QKeyEvent>
 
-ObjectListWindowBase::ObjectListWindowBase(QWidget *parent):
-	QMainWindow(parent)
+ObjectListWindowBase::ObjectListWindowBase (DbManager &manager, QWidget *parent):
+	QMainWindow(parent), manager (manager)
 {
 	ui.setupUi(this);
 	setAttribute (Qt::WA_DeleteOnClose, true);
+
+	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 }
 
 ObjectListWindowBase::~ObjectListWindowBase()
@@ -36,4 +38,10 @@ void ObjectListWindowBase::keyPressEvent (QKeyEvent *e)
 	}
 
 	if (!e->isAccepted ()) QMainWindow::keyPressEvent (e);
+}
+
+void ObjectListWindowBase::databaseStateChanged (DbManager::State state)
+{
+	if (state==DbManager::stateDisconnected)
+		close ();
 }

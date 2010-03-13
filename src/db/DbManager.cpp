@@ -29,6 +29,7 @@
 #include "src/concurrent/DefaultQThread.h" //remove
 
 DbManager::DbManager (const DatabaseInfo &info):
+	state (stateDisconnected),
 	interface (info, 2000, 1000), db (interface), cache (db),
 	interfaceWorker (interface), dbWorker (db), migratorWorker (interface), cacheWorker (cache)
 {
@@ -52,6 +53,12 @@ DbManager &DbManager::operator= (const DbManager &other)
 
 DbManager::~DbManager ()
 {
+}
+
+void DbManager::setState (State newState)
+{
+	state=newState;
+	emit stateChanged (state);
 }
 
 
@@ -308,67 +315,6 @@ void DbManager::checkVersion (QWidget *parent)
 			break;
 		// no default
 	}
-
-//	if (isEmpty (parent))
-//	{
-//		confirmOrCancel ("Datenbank leer",
-//			"Die Datenbank ist leer. Soll sie jetzt erstellt werden?", parent);
-//
-//		Returner<void> returner;
-//		SignalOperationMonitor monitor;
-//		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
-//		migratorWorker.loadSchema (returner, monitor);
-//		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
-//		returner.wait (); // Required so any exceptions are rethrown
-//
-//		// After loading the schema, the database must be current.
-//		// TODO different message if canceled
-//		ensureCurrent ("Datenbank ist nach Erstellen nicht aktuell.", parent);
-//
-//		createSampleLaunchMethods (parent);
-//	}
-//	else if (!isCurrent (parent))
-//	{
-//		// TODO try to reuse monitor and dialog
-//		Returner<quint64> currentVersionReturner;
-//		SignalOperationMonitor currentVersionMonitor;
-//		QObject::connect (&currentVersionMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
-//		migratorWorker.currentVersion (currentVersionReturner, currentVersionMonitor);
-//		MonitorDialog::monitor (currentVersionMonitor, "Verbindungsaufbau", parent);
-//		quint64 currentVersion=currentVersionReturner.returnedValue ();
-//
-//		quint64 latestVersion=Migrator::latestVersion ();
-//
-//		Returner<QList<quint64> > pendingMigrationsReturner;
-//		SignalOperationMonitor pendingMigrationsMonitor;
-//		QObject::connect (&pendingMigrationsMonitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
-//		migratorWorker.pendingMigrations (pendingMigrationsReturner, pendingMigrationsMonitor);
-//		MonitorDialog::monitor (pendingMigrationsMonitor, "Verbindungsaufbau", parent);
-//		quint64 numPendingMigrations=pendingMigrationsReturner.returnedValue ().size ();
-//
-//		confirmOrCancel ("Datenbank nicht aktuell", utf8 (
-//				"Die Datenbank ist nicht aktuell:\n"
-//				"  - Momentane Version: %1\n"
-//				"  - Aktuelle Version: %2\n"
-//				"  - Anzahl ausstehender Migrationen: %3\n"
-//				"\n"
-//				"Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.\n"
-//				"Vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden.\n"
-//				"\n"
-//				"Soll die Datenbank jetzt aktualisiert werden?"
-//			).arg (currentVersion).arg (latestVersion).arg (numPendingMigrations), parent);
-//
-//		Returner<void> returner;
-//		SignalOperationMonitor monitor;
-//		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
-//		migratorWorker.migrate (returner, monitor);
-//		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
-//		returner.wait (); // Required so any exceptions are rethrown
-//
-//		// After migrating, the database must be current.
-//		// TODO different message if canceled
-//		ensureCurrent ("Datenbank ist nach der Aktualisierung nicht aktuell.", parent);
-//	}
 }
 
 void DbManager::doOpenInterface (InterfaceWorker &worker, QWidget *parent)
@@ -443,17 +389,21 @@ void DbManager::connectImpl (QWidget *parent)
 
 bool DbManager::connect (QWidget *parent)
 {
+	setState (stateConnecting);
+
 	try
 	{
 		try
 		{
 			connectImpl (parent);
+			setState (stateConnected);
 			return true;
 		}
 		catch (AccessDeniedException)
 		{
 			grantPermissions (parent);
 			connectImpl (parent);
+			setState (stateConnected);
 			return true;
 		}
 		// TODO also for access denied during query (1142)
@@ -487,9 +437,16 @@ bool DbManager::connect (QWidget *parent)
 		showWarning ("Fehler beim Verbindungsaufbau", text, parent);
 	}
 
+	setState (stateDisconnected);
 	return false;
 }
 
+void DbManager::disconnect ()
+{
+	interface.close ();
+	cache.clear ();
+	setState (stateDisconnected);
+}
 
 
 // *********************

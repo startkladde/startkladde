@@ -23,7 +23,6 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		virtual void on_table_activated (const QModelIndex &index);
 
 	private:
-		DbManager &manager;
 		ObjectListModel<T> *list;
 		bool listOwned;
 		QSortFilterProxyModel *proxyModel;

@@ -104,13 +104,11 @@ class MainWindow: public QMainWindow
 		// Database connection management
 		void closeDatabase ();
 		void setDatabaseActionsEnabled (bool enabled);
-		void setNotConnected ();
-		void setConnected ();
-		void setConnecting ();
 
 
 	protected slots:
 		void databaseError (int number, QString message);
+		void databaseStateChanged (DbManager::State state);
 		void readTimeout ();
 		void readResumed ();
 
@@ -161,12 +159,12 @@ class MainWindow: public QMainWindow
 		void on_actionLaunchMethodStatistics_triggered ();
 
 		// Menu: Database
-		void on_actionConnect_triggered ();
-		void on_actionDisconnect_triggered ();
+		void on_actionConnect_triggered () { dbManager.connect (this); }
+		void on_actionDisconnect_triggered () { dbManager.disconnect (); }
 		void on_actionEditPlanes_triggered ();
 		void on_actionEditPeople_triggered ();
 		void on_actionEditLaunchMethods_triggered ();
-		//		void on_actionRefreshAll_triggered ();
+		void on_actionRefreshAll_triggered ();
 
 		// Menu: Debug
 		void on_actionSegfault_triggered () { *(int *)NULL = 0; } // For testing the automatic restart mechanism
@@ -238,6 +236,7 @@ class MainWindow: public QMainWindow
 		int sortColumn;
 
 		bool databaseActionsEnabled;
+		QString databaseOkText;
 };
 
 #endif // MAINWINDOW_H

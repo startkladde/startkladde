@@ -5,6 +5,8 @@
 
 #include "ui_ObjectListWindowBase.h"
 
+#include "src/db/DbManager.h" // Required for DbManager::State
+
 /*
  * TODO: Menu View->Sort and hotkey
  */
@@ -14,8 +16,8 @@ class ObjectListWindowBase : public QMainWindow
     Q_OBJECT
 
 	public:
-		ObjectListWindowBase(QWidget *parent = 0);
-		~ObjectListWindowBase();
+		ObjectListWindowBase (DbManager &manager, QWidget *parent = 0);
+		~ObjectListWindowBase ();
 
 	public slots:
 		virtual void on_actionNew_triggered ()=0;
@@ -26,7 +28,11 @@ class ObjectListWindowBase : public QMainWindow
 
 		virtual void on_table_activated (const QModelIndex &index)=0;
 
+	protected slots:
+		virtual void databaseStateChanged (DbManager::State state);
+
 	protected:
+		DbManager &manager;
 		void keyPressEvent (QKeyEvent *e);
 		Ui::ObjectListWindowBaseClass ui;
 };
