@@ -159,39 +159,6 @@ protect_launch_methods
     protect_launch_methods
   Standard: Startarten sind frei editierbar
 
-startart <id>, <type>, <registration>, <name>, <shortname>, <shortcut>, <logbook_string>, <person_required>
-  Beschreibung:
-    Fügt eine Startart zur Startartliste dazu.
-    Achtung: die IDs in dieser Liste sollten nicht mehr geändert werden, sobald
-    sie in der Datenbank verwendet wurden, da sonst die falschen Startarten
-    angezeigt und eingetragen werden.
-	Diese Option kann mehrfach vorkommen.
-  Parameter:
-	- id: die Datenbankkennung, unter der die Startart identifiziert wird. Darf
-	  nicht 0 sein.
-    - type: einer der folgenden Werte, der angibt, um welche Sorte Startart es
-      sich handelt:
-      - winch: Windenstart
-      - airtow: F-Schlepp
-      - self: Eigenstart
-      - other: Sonstige
-    - registration: Für type=airtow das Kennzeichen des Schleppflugzeugs. Sonst
-      wird dieser Paramter ignoriert und kann leer gelassen werden.
-    - name: Der Name, der im Auswahlfeld angezeigt wird
-    - shortname: Die Bezeichnung, die in der Tabelle angezeigt wird
-    - shortcut: das Tastenkürzel für die Startart
-    - logbook_string: Die Bezeichnung, die im Flugbuch erscheint
-    - person_required: true oder false. Wenn true, dann gilt es als Fehler,
-      wenn für einen Flug mit dieser Startart kein Pilot angegeben wurde.
-  Beispiele:
-    - startart  1, winch,        , Winde Akaflieg,       WA,  A, W, true
-    - startart  4, airtow, D-EIAV, D-EIAV,               AV,  V, F, true
-    - startart  7, self,         , Eigenstart,           ES,  E, E, false
-    - startart  8, other,        , Sonstige,             SO,  S, ?, true
-    - startart 12, airtow,       , Sonstige (F-Schlepp), SOF, F, F, true
-    - startart 13, other,        , Gummiseilstart,       GS,  G, G, true
-  Standard: keine
-
 plugin_path path
   Beschreibung:
 	Fügt einen Suchpfad für Plugins dazu.
@@ -333,6 +300,11 @@ weather_dialog_interval interval
   Standard: 600
 
 
+"startart"-Einträge werden ausschließlich zum Eintragen der Startarten in die
+Datenbank bei der Migration verwendet und können anschließend entfernt werden: 
+startart <id>, (winch|airtow|self|other), <towplane_registration>, <name>, <short_name>, <keyboard_shortcut>, <log_string>, <person_required>
+
+
 =========================
 
 (option) <arg> ...
@@ -344,4 +316,5 @@ weather_dialog_interval interval
     (option) <arg> ...
 	...
   Standard: <default>
+
 
