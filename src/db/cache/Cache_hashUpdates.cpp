@@ -171,7 +171,7 @@ template<> void Cache::clearHashes<LaunchMethod> ()
 {
 	synchronized (dataMutex)
 	{
-		launchMethodIdsByType.clear ();
+//		launchMethodIdsByType.clear ();
 	}
 }
 
@@ -179,7 +179,7 @@ template<> void Cache::updateHashesObjectAdded<LaunchMethod> (const LaunchMethod
 {
 	synchronized (dataMutex)
 	{
-		launchMethodIdsByType.insert (launchMethod.type, launchMethod.getId ());
+//		launchMethodIdsByType.insert (launchMethod.type, launchMethod.getId ());
 	}
 }
 
@@ -187,7 +187,7 @@ template<> void Cache::updateHashesObjectDeleted<LaunchMethod> (dbId id, const L
 {
 	synchronized (dataMutex)
 	{
-		if (oldLaunchMethod) launchMethodIdsByType.remove (oldLaunchMethod->type, id);
+//		if (oldLaunchMethod) launchMethodIdsByType.remove (oldLaunchMethod->type, id);
 	}
 }
 

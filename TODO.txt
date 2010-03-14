@@ -6,75 +6,8 @@ Release checks:
 == Critical (before release) ==
 
 * install.txt: describe database setup
-
-
-Database notes:
-/*
- * Improvements:
- *   - Add a ResultConsumer as alternative to passing a result (especially for
- *     CopiedResult)
- *   - move specialized queries generation to model classes (e. g. flight prepared)
- *     (but need after-filter)
- *   - Flight should be an entity
- *   - Remove code multiplication in Models (SQL interface)
- *   - change flight mode (and towflight mode) column type
- *   - Add a Database::saveObject that creates or updates the object, depending
- *     on whether it has a valid id
- *   - Allow a table name prefix (useful for testing)
- *   - show current/latest version in "still not current" messages
- *   - for actions without progress indication (e. g. connect, or update
- *     object): show upstream/downstream bytes in monitor dialog
- *   - plane should be called aircraft
- *   - the column name type is reserved in rails and should not be used
- *     - aircraft: model
- *     - launch method: category?
- *     - flight: flight_type?
- *   - signal unhandled exceptions to main window (QApplication::notify)
- *   - currently, when canceling while waiting for a ping to return, the actual
- *     operation will not be canceled, so the user has to cancel it again. The
- *     problem is described in DefaultInterface.cpp under "On synchronization".
- *   - "Should the database be initialized?" may be asked twice 
- *
- * Medium term plan:
- *   - Standardize enum handling: store the database value internally and have
- *     an "unknown" type (instead of "none")
- *     - this should also allow preserving unknown types in the database
- *   - allow backup and restore of database (even if not connected)
- *     - offer backup when migrating on connect
- *   - rename planes.competition_callsign to planes.callsign
- *   - add some abstraction to the query list generation
- *   - add support for sqlite
- *   - add indexes
- *   - add foreign key constraints
- *   - database checks (?)
- *     - show what is wrong/will be fixed
- *   - find out whether the full string lenth (255 characters) is transfered,
- *     even if the string is shorter. If yes, make shorter.
- *
- * Long term plan:
- *   - use a memory SQLite for cache
- *   - merge data storage and database methods, so we can use a (local)
- *     database directly (w/o local cache)
- *       - we'd probably have an abstract DataSource and inherited Database and
- *         Cache which uses a Database for access and one (in
- *         memory) for local caching
- *       - question: can we afford using a query on a memory database e. g.
- *         for list of first names rather than maintaining the list explicitly?
- *         should be fast enough (does sqlite memory table have index?)
- *         locations are more interesting, b/c there are many flights
- *   - local disk caching
- *
- * Old comments:
- *   - Time to string: to_string (db_time_format, tz_utc, 20, true);
- *   - String to time: parse (text, tz_utc, db_time_format);
- *   - Merge person:
- *     - update flight pilot/copilot/towpilot, user person; should be in transaction
- *     - check if a flight or user still referencecs this user
- *     - delete "wrong" person
- *   - old null time: "0000-00-00 00:00:00"
- *   - old db time format: "%Y-%m-%d %H:%M:%S" (must be parseable, don't use %0Y)
- */
-
+* rename planes.competition_callsign to planes.callsign
+* change flight/towflight mode column types/values
 
 
 
@@ -106,6 +39,7 @@ UI:
 * The whole database connection should be managed by the manger and the status
   be signaled to the main window (open/close methods in manager, and signals
   like ok/timeout)
+* signal unhandled exceptions to main window (QApplication::notify)
 
 Models:
 * Plane: can only do self launch (and select automatically, even on repeat)
@@ -120,6 +54,18 @@ Config:
 * Make read timeout and keepalive interval configurable
 * Configurable autoconnect
 * Rename title to window_title or remove 
+
+Database:
+* SQLite support
+* Standardize enum handling: store the database value internally and have an
+  "unknown" type (instead of "none"). Also allows preserving unknown values in
+  the database
+* allow backup and restore of database (even if not connected)
+* offer backup before migration on connect
+* find out whether the full string lenth (255 characters) is transfered, even
+  if the string is shorter. If yes, make shorter.
+* local disk caching
+* show upstream/downstream bytes in monitor dialog
 
 Other:
 * Time zone safety
@@ -140,7 +86,27 @@ UI:
   gets green
 
 Database:
+* Add foreign key constraints
 * Add indexes
+* Database checks (compare schema with database)
+* using SQLite database without cache: either inherit from common base class or
+  use a DummyCache
+* consider using a memory SQLite for cache (is that fast enough?)
+* improve models SQL interface
+* Add a ResultConsumer as alternative to passing a result (especially for
+  CopiedResult)
+* move specialized queries generation to model classes (e. g. flight prepared)
+  (but need after-filter)
+* Flight should be an entity
+* Allow a table name prefix
+* show current/latest version in "still not current" messages
+* plane should be called aircraft
+* the column name type is reserved in rails and should not be used (aircraft:
+  model, launch method: category?, flight: flight_type?)
+* currently, when canceling while waiting for a ping to return, the actual
+* operation will not be canceled, so the user has to cancel it again. The
+* problem is described in DefaultInterface.cpp under "On synchronization".
+* "Should the database be initialized?" may be asked twice 
 
 Editors:
 * Use QDataWidgetMapper for edit dialogs?
