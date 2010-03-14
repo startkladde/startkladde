@@ -1653,11 +1653,11 @@ void FlightWindow::updateSetupVisibility ()
 	enableWidget  (ui.towflightModeInput                               , isTowflightModeActive                ());
 	//
 	enableWidget (ui.departureTimeCheckbox                             , isDepartureActive                    ());
-	ui.departureTimeInput->setVisible                                   (isDepartureTimeActive                ());
+	ui.departureTimeWidget->setVisible                                   (isDepartureTimeActive                ());
 	enableWidget (ui.landingTimeCheckbox                               , isLandingActive                      ());
-	ui.landingTimeInput->setVisible                                     (isLandingTimeActive                  ());
+	ui.landingTimeWidget->setVisible                                     (isLandingTimeActive                  ());
 	enableWidget (ui.towflightLandingTimeCheckbox                      , isTowflightLandingActive             ());
-	ui.towflightLandingTimeInput->setVisible                            (isTowflightLandingTimeActive         ());
+	ui.towflightLandingTimeWidget->setVisible                            (isTowflightLandingTimeActive         ());
 	//
 	//departureLocationInput - always visible
 	//landingLocationInput - always visible

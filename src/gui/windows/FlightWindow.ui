@@ -329,7 +329,7 @@
            </widget>
           </item>
           <item row="14" column="2">
-           <widget class="QWidget" name="widget" native="true">
+           <widget class="QWidget" name="departureTimeWidgetX" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <property name="spacing">
               <number>0</number>
@@ -338,7 +338,23 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QTimeEdit" name="departureTimeInput"/>
+              <widget class="QWidget" name="departureTimeWidget" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <property name="margin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QTimeEdit" name="departureTimeInput"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label">
+                  <property name="text">
+                   <string>UTC</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_2">
@@ -377,7 +393,7 @@
            </widget>
           </item>
           <item row="15" column="2">
-           <widget class="QWidget" name="widget_2" native="true">
+           <widget class="QWidget" name="landingTimeWidgetX" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <property name="spacing">
               <number>0</number>
@@ -386,7 +402,23 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QTimeEdit" name="landingTimeInput"/>
+              <widget class="QWidget" name="landingTimeWidget" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <property name="margin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QTimeEdit" name="landingTimeInput"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>UTC</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_3">
@@ -425,7 +457,7 @@
            </widget>
           </item>
           <item row="16" column="2">
-           <widget class="QWidget" name="widget_3" native="true">
+           <widget class="QWidget" name="towflightLandingTimeWidgetX" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <property name="spacing">
               <number>0</number>
@@ -434,7 +466,23 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QTimeEdit" name="towflightLandingTimeInput"/>
+              <widget class="QWidget" name="towflightLandingTimeWidget" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <property name="margin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QTimeEdit" name="towflightLandingTimeInput"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_3">
+                  <property name="text">
+                   <string>UTC</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_4">
@@ -750,11 +798,8 @@
   <tabstop>towpilotFirstNameInput</tabstop>
   <tabstop>towflightModeInput</tabstop>
   <tabstop>departureTimeCheckbox</tabstop>
-  <tabstop>departureTimeInput</tabstop>
   <tabstop>landingTimeCheckbox</tabstop>
-  <tabstop>landingTimeInput</tabstop>
   <tabstop>towflightLandingTimeCheckbox</tabstop>
-  <tabstop>towflightLandingTimeInput</tabstop>
   <tabstop>departureLocationInput</tabstop>
   <tabstop>landingLocationInput</tabstop>
   <tabstop>towflightLandingLocationInput</tabstop>

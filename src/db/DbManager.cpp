@@ -397,9 +397,7 @@ bool DbManager::connect (QWidget *parent)
 	{
 		try
 		{
-			std::cout << "here" << std::endl;
 			connectImpl (parent);
-			std::cout << "there" << std::endl;
 			setState (stateConnected);
 			return true;
 		}
