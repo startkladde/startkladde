@@ -56,8 +56,8 @@ void Flight::initialize (dbId id)
 	towplaneId      =invalidId;
 
 	type          =typeNone;
-	mode          =modeNone;
-	towflightMode =modeNone;
+	mode          =modeLocal;
+	towflightMode =modeLocal;
 
 	departed        =false;
 	landed          =false;
@@ -622,7 +622,6 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	CHECK_FEHLER (FLUG, departsHere () && landsHere () && landed && !departed, ff_nur_gelandet)
 	CHECK_FEHLER (FLUG, departsHere () && landsHere () && departed && landed && departureTime>landingTime, ff_landung_vor_start)
 	CHECK_FEHLER (FLUG, idInvalid (launchMethodId) && departsHere () && departed && !isTowflight (), ff_keine_startart)
-	CHECK_FEHLER (FLUG, mode==modeNone, ff_kein_modus)
 	CHECK_FEHLER (FLUG, type==typeNone, ff_kein_flugtyp)
 	CHECK_FEHLER (FLUG, numLandings<0, ff_landungen_negativ)
 	CHECK_FEHLER (FLUG, landsHere () && numLandings==0 && landed, ff_landungen_null)
@@ -758,7 +757,7 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 	towflight.comments=utf8 ("Schleppflug für Flug Nr. %1").arg (id);
 	towflight.accountingNotes="";
 	towflight.mode=towflightMode;
-	towflight.towflightMode=modeNone;
+	towflight.towflightMode=modeLocal;
 	towflight.pilotLastName=towpilotLastName;
 	towflight.pilotFirstName=towpilotFirstName;
 	towflight.copilotLastName="";
@@ -941,10 +940,9 @@ QString Flight::modeToDb (Flight::Mode mode)
 {
 	switch (mode)
 	{
-		case modeLocal   : return "l";
-		case modeComing  : return "k";
-		case modeLeaving : return "g";
-		case modeNone    : return "?";
+		case modeLocal   : return "local";
+		case modeComing  : return "coming";
+		case modeLeaving : return "leaving";
 		// no default
 	}
 
@@ -954,10 +952,10 @@ QString Flight::modeToDb (Flight::Mode mode)
 
 Flight::Mode Flight::modeFromDb (QString mode)
 {
-	if      (mode=="l") return modeLocal;
-	else if (mode=="k") return modeComing;
-	else if (mode=="g") return modeLeaving;
-	else                return modeNone;
+	if      (mode=="local"  ) return modeLocal;
+	else if (mode=="coming" ) return modeComing;
+	else if (mode=="leaving") return modeLeaving;
+	else                      return modeLocal;
 }
 
 QString Flight::typeToDb (Type type)

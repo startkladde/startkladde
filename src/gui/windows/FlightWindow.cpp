@@ -262,13 +262,13 @@ void FlightWindow::fillData ()
 
 
 	// *** Flight flightModes
-	const QList<Flight::Mode> flightModes=Flight::listModes (false);
+	const QList<Flight::Mode> flightModes=Flight::listModes ();
 	for (int i=0; i<flightModes.size (); ++i)
 		ui.flightModeInput->addItem (Flight::modeText (flightModes.at (i)), flightModes.at (i));
 
 
 	// *** Towflight flightModes
-	const QList<Flight::Mode> towflightModes=Flight::listTowModes (false);
+	const QList<Flight::Mode> towflightModes=Flight::listTowModes ();
 	for (int i=0; i<towflightModes.size(); ++i)
 		ui.towflightModeInput->addItem (Flight::modeText (towflightModes.at (i)), towflightModes.at (i));
 

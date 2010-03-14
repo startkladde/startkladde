@@ -4,27 +4,20 @@
 
 #include <cassert>
 
-QList<Flight::Mode> Flight::listModes (bool includeInvalid)
+QList<Flight::Mode> Flight::listModes ()
 {
-	if (includeInvalid)
-		return listModes (false) << modeNone;
-	else
-		return QList<Mode> () << modeLocal << modeComing << modeLeaving;
+	return QList<Mode> () << modeLocal << modeComing << modeLeaving;
 }
 
-QList<Flight::Mode> Flight::listTowModes (bool includeInvalid)
+QList<Flight::Mode> Flight::listTowModes ()
 {
-	if (includeInvalid)
-		return listModes (false) << modeNone;
-	else
-		return QList<Mode> () << modeLocal << modeLeaving;
+	return QList<Mode> () << modeLocal << modeLeaving;
 }
 
 QString Flight::modeText (Flight::Mode mode)
 {
 	switch (mode)
 	{
-		case modeNone:    return "-";
 		case modeLocal:   return "Lokal";
 		case modeComing:  return "Kommt";
 		case modeLeaving: return "Geht";

@@ -130,7 +130,7 @@ class Cache: public QObject
 		dbId getUniquePersonIdByName (const QString &lastName, const QString &firstName);
 		QList<dbId> getPersonIdsByFirstName (const QString &firstName);
 		QList<dbId> getPersonIdsByLastName (const QString &lastName);
-//		dbId getLaunchMethodByType (LaunchMethod::Type type);
+		dbId getLaunchMethodByType (LaunchMethod::Type type);
 
 
 		// *** String lists
@@ -240,7 +240,7 @@ class Cache: public QObject
 		// The keys of these hashes are lower case; names are QPair
 		// (lastName, firstName) (also in lower case).
 		QMultiHash<QString           , dbId> planeIdsByRegistration; // key is lower case
-//		QMultiHash<LaunchMethod::Type, dbId> launchMethodIdsByType;
+		QMultiHash<LaunchMethod::Type, dbId> launchMethodIdsByType;
 		QMultiHash<QString, QString> lastNamesByFirstName; // key is lower case
 		QMultiHash<QString, QString> firstNamesByLastName; // key is lower case
 		QMultiHash<QString, dbId> personIdsByLastName; // key is lower case

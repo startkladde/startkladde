@@ -5,11 +5,6 @@ Release checks:
 
 == Critical (before release) ==
 
-* install.txt: describe database setup
-* rename planes.competition_callsign to planes.callsign
-* change flight/towflight mode column types/values
-
-
 
 == Major (important) ==
 
@@ -40,6 +35,8 @@ UI:
   be signaled to the main window (open/close methods in manager, and signals
   like ok/timeout)
 * signal unhandled exceptions to main window (QApplication::notify)
+* show log while migrating
+* warning message before aborting migration
 
 Models:
 * Plane: can only do self launch (and select automatically, even on repeat)
@@ -66,6 +63,7 @@ Database:
   if the string is shorter. If yes, make shorter.
 * local disk caching
 * show upstream/downstream bytes in monitor dialog
+* preserve unknown values for enum types and launch methods
 
 Other:
 * Time zone safety

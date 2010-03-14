@@ -74,6 +74,7 @@ end
 write source_template, source
 write header_template, header
 
-
+puts "All done. You will now have to use 'make update_current_schema' with a"
+puts "configured datebase to update the schema definition."
 
 

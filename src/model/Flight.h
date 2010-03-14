@@ -56,7 +56,7 @@ class Flight
 			typeTow
 		};
 
-		enum Mode { modeNone, modeLocal, modeComing, modeLeaving };
+		enum Mode { modeLocal, modeComing, modeLeaving };
 
 
 		// *** Construction
@@ -217,8 +217,8 @@ class Flight
 
 
 		// *** Mode methods
-		static QList<Mode> listModes (bool includeInvalid);
-		static QList<Mode> listTowModes (bool includeInvalid);
+		static QList<Mode> listModes ();
+		static QList<Mode> listTowModes ();
 		static QString modeText (Mode mode);
 		static bool landsHere (Mode mode);
 		static bool departsHere (Mode mode);

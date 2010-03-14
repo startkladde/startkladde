@@ -46,10 +46,10 @@ bool Plane::selfLaunchOnly ()
 
 QString Plane::toString () const
 {
-	return QString ("id=%1, registration=%2, competitionId=%3, type=%4, club=%5, category=%6, seats=%7")
+	return QString ("id=%1, registration=%2, callsign=%3, type=%4, club=%5, category=%6, seats=%7")
 		.arg (id)
 		.arg (registration)
-		.arg (competitionCallsign)
+		.arg (callsign)
 		.arg (type)
 		.arg (club)
 		.arg (categoryText (category))
@@ -59,8 +59,8 @@ QString Plane::toString () const
 
 QString Plane::fullRegistration () const
 {
-	if (eintrag_ist_leer (competitionCallsign)) return registration;
-	return QString ("%1 (%2)").arg (registration).arg (competitionCallsign);
+	if (eintrag_ist_leer (callsign)) return registration;
+	return QString ("%1 (%2)").arg (registration).arg (callsign);
 }
 
 bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)
@@ -199,7 +199,7 @@ QVariant Plane::DefaultObjectModel::displayData (const Plane &object, int column
 	switch (column)
 	{
 		case 0: return object.registration;
-		case 1: return object.competitionCallsign;
+		case 1: return object.callsign;
 		case 2: return object.type;
 		case 3: return categoryText(object.category);
 		case 4: return object.numSeats>=0?QVariant (object.numSeats):QVariant ("?");
@@ -224,7 +224,7 @@ QString Plane::dbTableName ()
 
 QString Plane::selectColumnList ()
 {
-	return "id,registration,club,num_seats,type,category,competition_callsign,comments";
+	return "id,registration,club,num_seats,type,category,callsign,comments";
 }
 
 
@@ -238,7 +238,7 @@ Plane Plane::createFromResult (const Result &result)
 	p.type          =result.value (4).toString ();
 	p.category      =categoryFromDb (
 	                 result.value (5).toString ());
-	p.competitionCallsign =result.value (6).toString ();
+	p.callsign      =result.value (6).toString ();
 	p.comments      =result.value (7).toString ();
 
 	return p;
@@ -246,7 +246,7 @@ Plane Plane::createFromResult (const Result &result)
 
 QString Plane::insertColumnList ()
 {
-	return "registration,club,num_seats,type,category,competition_callsign,comments";
+	return "registration,club,num_seats,type,category,callsign,comments";
 }
 
 QString Plane::insertPlaceholderList ()
@@ -261,7 +261,7 @@ void Plane::bindValues (Query &q) const
 	q.bind (numSeats);
 	q.bind (type);
 	q.bind (categoryToDb (category));
-	q.bind (competitionCallsign);
+	q.bind (callsign);
 	q.bind (comments);
 }
 

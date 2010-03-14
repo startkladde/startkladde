@@ -46,7 +46,7 @@ void Migration_20100216124307_rename_columns::renameColumns (Direction direction
 	renameColumn ("planes", "sitze"                 , "num_seats"                 ,  dataTypeInteger   (), direction);
 	renameColumn ("planes", "typ"                   , "type"                      ,  dataTypeString    (), direction);
 	renameColumn ("planes", "gattung"               , "category"                  ,  dataTypeCharacter (), direction);
-	renameColumn ("planes", "wettbewerbskennzeichen", "competition_callsign"      ,  dataTypeString    (), direction);
+	renameColumn ("planes", "wettbewerbskennzeichen", "callsign"                  ,  dataTypeString    (), direction);
 	renameColumn ("planes", "bemerkung"             , "comments"                  ,  dataTypeString    (), direction);
 
 	// *** Flights

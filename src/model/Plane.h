@@ -45,7 +45,7 @@ class Plane: public Entity
 		int numSeats;
 		QString type;
 		Category category;
-		QString competitionCallsign;
+		QString callsign;
 
 
 		// *** Property access

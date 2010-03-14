@@ -204,16 +204,16 @@ QList<dbId> Cache::getPersonIdsByFirstName (const QString &firstName)
 	synchronizedReturn (dataMutex, personIdsByFirstName.values (firstName.toLower ()));
 }
 
-//dbId Cache::getLaunchMethodByType (LaunchMethod::Type type)
-//{
-//	synchronized (dataMutex)
-//	{
-//		const QList<dbId> ids=launchMethodIdsByType.values (type);
-//		if (ids.size ()>0) return ids.at (0);
-//	}
-//
-//	return invalidId;
-//}
+dbId Cache::getLaunchMethodByType (LaunchMethod::Type type)
+{
+	synchronized (dataMutex)
+	{
+		const QList<dbId> ids=launchMethodIdsByType.values (type);
+		if (ids.size ()>0) return ids.at (0);
+	}
+
+	return invalidId;
+}
 
 
 // ******************

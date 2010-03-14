@@ -105,7 +105,7 @@ void PlaneEditorPane::objectToFields (const Plane &plane)
 	originalId=plane.getId ();
 
 	ui.registrationInput->setText (plane.registration);
-	ui.competitionIdInput->setText (plane.competitionCallsign);
+	ui.callsignInput->setText (plane.callsign);
 	ui.categoryInput->setCurrentItemByItemData (plane.category);
 	ui.typeInput->setCurrentText (plane.type);
 	ui.clubInput->setCurrentText (plane.club);
@@ -121,7 +121,7 @@ Plane PlaneEditorPane::determineObject ()
 	plane.setId (originalId);
 
 	plane.registration=ui.registrationInput->text ();
-	plane.competitionCallsign=ui.competitionIdInput->text ();
+	plane.callsign=ui.callsignInput->text ();
 	plane.category=(Plane::Category)ui.categoryInput->currentItemData ().toInt ();
 
 	plane.type=ui.typeInput->currentText ();

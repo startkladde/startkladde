@@ -318,6 +318,7 @@ quint64 Migrator::currentVersion ()
 
 void Migrator::createMigrationsTable ()
 {
+	// TODO use interface.createTable
 	interface.executeQuery (
 		QString (
 			"CREATE TABLE IF NOT EXISTS %1 (%2 VARCHAR(255) NOT NULL PRIMARY KEY)"
