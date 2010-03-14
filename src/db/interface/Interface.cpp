@@ -15,6 +15,7 @@
 #include "src/db/result/Result.h"
 #include "src/db/Query.h"
 #include "src/util/qString.h"
+#include "src/db/interface/ColumnSpec.h"
 
 // ******************
 // ** Construction **
@@ -83,8 +84,18 @@ void Interface::createDatabase (const QString &name, bool skipIfExists)
 		.arg (skipIfExists?"IF NOT EXISTS":"").arg (name));
 }
 
-// TODO more queries in Query
+/**
+ * Creates a table with and ID column
+ *
+ * @param name
+ * @param skipIfExists
+ */
 void Interface::createTable (const QString &name, bool skipIfExists)
+{
+	createTable (name, QList<ColumnSpec> () << idColumn (), skipIfExists);
+}
+
+void Interface::createTable (const QString &name, const QList<ColumnSpec> &columns, bool skipIfExists)
 {
 	std::cout << QString ("Creating table %1%2")
 		.arg (name, skipIfExists?" if it does not exist":"")
@@ -92,11 +103,11 @@ void Interface::createTable (const QString &name, bool skipIfExists)
 
 	executeQuery (Query (
 		"CREATE TABLE %1 %2 ("
-		"id int(11) NOT NULL AUTO_INCREMENT,"
-		"PRIMARY KEY (id)"
+		"%3"
+//		"PRIMARY KEY (id)"
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		)
-		.arg (skipIfExists?"IF NOT EXISTS":"", name));
+		.arg (skipIfExists?"IF NOT EXISTS":"", name, ColumnSpec::createClause (columns)));
 }
 
 void Interface::createTableLike (const QString &like, const QString &name, bool skipIfExists)
@@ -194,6 +205,11 @@ bool Interface::columnExists (const QString &table, const QString &name)
 	return queryHasResult (
 		Query ("SHOW COLUMNS FROM %1 LIKE '%2'")
 		.arg (table, name));
+}
+
+ColumnSpec Interface::idColumn ()
+{
+	return ColumnSpec ("id", dataTypeId (), "NOT NULL AUTO_INCREMENT PRIMARY KEY");
 }
 
 

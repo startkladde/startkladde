@@ -21,12 +21,8 @@ Database notes:
  *   - Test the migrations:
  *     - make sure the old version and current sk_web work with "initial"
  *     - make sure we can migrate from both an empty and the legacy database
- *   - Fixtures
- *     - SQL dump or data file (CSV/YAML)?
- *     - C++ or Ruby?
  *   - Port open, but connection not accepted
  *   - make sure "", 0 and NULL are read correctly
- *   - make sure (using a dump of an old db) that the migration path is OK
  *   - Test all paths for database initialization
  *
  * Improvements:
@@ -35,15 +31,11 @@ Database notes:
  *   - move specialized queries generation to model classes (e. g. flight prepared)
  *     (but need after-filter)
  *   - Flight should be an entity
- *   - Allow tables without id column (e. g. habtm join tables), but tables
- *     must have at least one column
  *   - Remove code multiplication in Models (SQL interface)
  *   - change flight mode (and towflight mode) column type
  *   - Add a Database::saveObject that creates or updates the object, depending
  *     on whether it has a valid id
  *   - Allow a table name prefix (useful for testing)
- *   - Consider storing the OperationMonitor in the migration instead of passing
- *     to up/down, and/or calling checkCanceled in addColumn et. al.
  *   - show current/latest version in "still not current" messages
  *   - for actions without progress indication (e. g. connect, or update
  *     object): show upstream/downstream bytes in monitor dialog
@@ -53,9 +45,9 @@ Database notes:
  *     - launch method: category?
  *     - flight: flight_type?
  *   - signal unhandled exceptions to main window (QApplication::notify)
- *   - currently, when canceling during a ping, the actual operation will not be
- *     canceled, so the user has to cancel it again. The problem is described in
- *     DefaultInterface.cpp under "On synchronization".
+ *   - currently, when canceling while waiting for a ping to return, the actual
+ *     operation will not be canceled, so the user has to cancel it again. The
+ *     problem is described in DefaultInterface.cpp under "On synchronization".
  *
  * Medium term plan:
  *   - Standardize enum handling: store the database value internally and have

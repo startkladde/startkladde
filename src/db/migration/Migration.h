@@ -7,6 +7,9 @@
 
 #include "src/db/Query.h"
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
+#include "src/db/interface/ColumnSpec.h"
+
+template<class T> class QList;
 
 class Result;
 class Interface;
@@ -85,6 +88,7 @@ class Migration
 		QSharedPointer<Result> executeQueryResult (const Query &query, bool forwardOnly=true);
 
 		void createTable (const QString &name, bool skipIfExists=true);
+		void createTable (const QString &name, const QList<ColumnSpec> &columns, bool skipIfExists=true);
 		void createTableLike (const QString &like, const QString &name, bool skipIfExists=true);
 		void dropTable (const QString &name);
 		void renameTable (const QString &oldName, const QString &newName);
@@ -93,6 +97,8 @@ class Migration
 		void changeColumnType (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="");
 		void dropColumn (const QString &table, const QString &name, bool skipIfNotExists=true);
 		void renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type, const QString &extraSpecification="");
+
+		ColumnSpec idColumn ();
 
 		void updateColumnValues (const QString &tableName, const QString &columnName, const QVariant &oldValue, const QVariant &newValue);
 

@@ -62,13 +62,6 @@ void SchemaDumper::dumpTables (QStringList &output)
 {
 	output << "tables:";
 
-//	QString queryString="SHOW TABLES";
-//	QSqlQuery query=Interface.executeQuery (queryString);
-//
-//	while (query.next ())
-//		dumpTable (output, query.value (0).toString ());
-
-//	Query query=Query ("SHOW TABLES");
 	QSharedPointer<Result> result=interface.executeQueryResult ("SHOW TABLES");
 
 	while (result->next ())

@@ -34,87 +34,98 @@ Migration::~Migration ()
 {
 }
 
-/** Forwards to database#transaction */
+/** Forwards to interface#transaction */
 void Migration::transaction ()
 {
 	interface.transaction ();
 }
 
-/** Forwards to database#commit */
+/** Forwards to interface#commit */
 void Migration::commit ()
 {
 	interface.commit ();
 }
 
-/** Forwards to database#rollback */
+/** Forwards to interface#rollback */
 void Migration::rollback ()
 {
 	interface.rollback ();
 }
 
-/** Forwards to database#executeQuery */
+/** Forwards to interface#executeQuery */
 void Migration::executeQuery (const Query &query)
 {
 	interface.executeQuery (query);
 }
 
-/** Forwards to database#executeQueryResult */
+/** Forwards to interface#executeQueryResult */
 QSharedPointer<Result> Migration::executeQueryResult (const Query &query, bool forwardOnly)
 {
 	return interface.executeQueryResult (query, forwardOnly);
 }
 
-/** Forwards to database#createTable */
+/** Forwards to interface#createTable */
 void Migration::createTable (const QString &name, bool skipIfExists)
 {
 	interface.createTable (name, skipIfExists);
 }
 
-/** Forwards to database#createTableLike */
+/** Forwards to interface#createTable */
+void Migration::createTable (const QString &name, const QList<ColumnSpec> &columns, bool skipIfExists)
+{
+	interface.createTable (name, columns, skipIfExists);
+}
+
+/** Forwards to interface#createTableLike */
 void Migration::createTableLike (const QString &like, const QString &name, bool skipIfExists)
 {
 	interface.createTableLike (like, name, skipIfExists);
 }
 
-/** Forwards to database#dropTable */
+/** Forwards to interface#dropTable */
 void Migration::dropTable (const QString &name)
 {
 	interface.dropTable (name);
 }
 
-/** Forwards to database#renameTable */
+/** Forwards to interface#renameTable */
 void Migration::renameTable (const QString &oldName, const QString &newName)
 {
 	interface.renameTable (oldName, newName);
 }
 
 
-/** Forwards to database#addColumn */
+/** Forwards to interface#addColumn */
 void Migration::addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification, bool skipIfExists)
 {
 	interface.addColumn (table, name, type, extraSpecification, skipIfExists);
 }
 
-/** Forwards to database#changeColumnType */
+/** Forwards to interface#changeColumnType */
 void Migration::changeColumnType (const QString &table, const QString &name, const QString &type, const QString &extraSpecification)
 {
 	interface.changeColumnType (table, name, type, extraSpecification);
 }
 
-/** Forwards to database#dropColumn */
+/** Forwards to interface#dropColumn */
 void Migration::dropColumn (const QString &table, const QString &name, bool skipIfNotExists)
 {
 	interface.dropColumn (table, name, skipIfNotExists);
 }
 
-/** Forwards to database#renameColumn */
+/** Forwards to interface#renameColumn */
 void Migration::renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type, const QString &extraSpecification)
 {
 	interface.renameColumn (table, oldName, newName, type, extraSpecification);
 }
 
+/** Forwards to interface#idColumn */
+ColumnSpec Migration::idColumn ()
+{
+	return interface.idColumn ();
+}
 
-/** Forwards to database#updateColumnValues */
+/** Forwards to interface#updateColumnValues */
 void Migration::updateColumnValues (const QString &tableName, const QString &columnName, const QVariant &oldValue, const QVariant &newValue)
 {
 	interface.updateColumnValues (tableName, columnName, oldValue, newValue);

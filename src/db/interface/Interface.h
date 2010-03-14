@@ -12,6 +12,8 @@
 
 class QVariant;
 
+class ColumnSpec;
+
 /**
  * An abstract class that adds some functionality (like schema
  * manipulation and generic data manipulation) to AbstractInterface.
@@ -54,12 +56,14 @@ class Interface: public AbstractInterface
 		// *** Schema manipulation
 		void createDatabase (const QString &name, bool skipIfExists=false);
 		void createTable (const QString &name, bool skipIfExists=false);
+		void createTable (const QString &name, const QList<ColumnSpec> &columns, bool skipIfExists=false);
 		void createTableLike (const QString &like, const QString &name, bool skipIfExists=false);
 		void dropTable (const QString &name);
 		void renameTable (const QString &oldName, const QString &newName);
 		bool tableExists ();
 		bool tableExists (const QString &name);
 		QStringList showTables ();
+		ColumnSpec idColumn ();
 
 		void addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="", bool skipIfExists=false);
 		void changeColumnType (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="");
