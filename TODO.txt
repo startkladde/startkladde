@@ -16,7 +16,9 @@ Plugin interface:
 * Graphical wind display
 
 Plugins:
-* Sunset times: independend of year 
+* Sunset times: independend of year
+* Sunset: allow configuration of longitude
+* Plugin description file, GUI editing of parameters  
 
 Flugbuch (Vorschlag eines Fluglehrers):
 * Ausgabe Anzahl Landungen (Interessant bei Platzrunden mit dem Motorflieger)
