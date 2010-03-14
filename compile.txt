@@ -1,0 +1,20 @@
+Compilieren von startkladde
+Stand: 14.3.2010
+
+Benötigte Bibliotheken (jeweils mit Headern):
+  - Qt ab Version 4.4
+  - libacpi ab Version 0.2
+  - libmysqlclient (wird benötigt, obwohl QtSql verwendet wird; siehe
+    startkladde.pro)
+
+Compilieren des Programms:
+  - make
+  
+
+
+Falls die libacpi nicht in der Distribution vorhanden ist, kann sie aus dem
+Quellcode installiert werden:
+  - http://www.ngolde.de/libacpi.html
+  - libacpi-0.2.tar.gz (oder höhere Versionen) herunterladen und entpacken
+  - make
+  - sudo make install

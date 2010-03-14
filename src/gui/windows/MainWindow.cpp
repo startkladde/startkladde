@@ -1511,20 +1511,25 @@ void MainWindow::on_actionSetTime_triggered ()
 
 	if (DateInputDialog::editDate (this, &date, &time, "Systemdatum einstellen", "Datum:", false, false, false))
 	{
-		QString command = QString ("sudo date -s '%1-%2-%3 %4:%5:%6'") .arg (date.year ()).arg (date.month ()).arg (
-				date.day ()) .arg (time.hour ()).arg (time.minute ()).arg (time.second ());
+		QString timeString=QString ("%1-%2-%3 %4:%5:%6")
+			.arg (date.year ()).arg (date.month ()).arg (date.day ())
+			.arg (time.hour ()).arg (time.minute ()).arg (time.second ());
 
-		system (command.utf8 ().constData ());
+		int result=QProcess::execute ("sudo", QStringList () << "-n" << "date" << "-s" << timeString);
 
-		showWarning (utf8 ("Systemzeit geändert"),
-			utf8 ("Die Systemzeit wurde geändert. Um "
-			"die Änderung dauerhaft zu speichern, muss der Rechner einmal "
-			"heruntergefahren werden, bevor er ausgeschaltet wird."), this);
-
-		//	s="sudo /etc/init.d/hwclock.sh stop &";
-		//	r=system (s.c_str ());
-		//	if (r!=0) show_warning ("Zurückschreiben der Zeit fehlgeschlagen. Bitte den Rechner\n"
-		//	                        "herunterfahren, um die Zeiteinstellung dauerhaft zu speichern.", this);
+		if (result==0)
+		{
+			showWarning (utf8 ("Systemzeit geändert"),
+				utf8 ("Die Systemzeit wurde geändert. Gegebenenfalls"
+				" wird die Änderung erst beim nächsten Herunterfahren"
+				" dauerhaft gespeichert."), this);
+		}
+		else
+		{
+			showWarning (utf8 ("Fehler"),
+				utf8 ("Beim Ändern der Systemzeit ist ein Fehler aufgetreten."
+				" Möglicherweise sind die Berechtigungen nicht ausreichen."), this);
+		}
 	}
 }
 

@@ -32,7 +32,8 @@
  */
 ThreadSafeInterface::ThreadSafeInterface (const DatabaseInfo &info, int readTimeout, int keepaliveInterval):
 	Interface (info),
-	keepaliveInterval (keepaliveInterval), interface (NULL), isOpen (false)
+	keepaliveEnabled (false), keepaliveInterval (keepaliveInterval),
+	interface (NULL), isOpen (false)
 {
 	// For connecting the signals, we need to know that it's a
 	// DefaultInterface. Afterwards, we assign it to the
@@ -264,7 +265,7 @@ void ThreadSafeInterface::timerEvent (QTimerEvent *event)
 
 void ThreadSafeInterface::startKeepaliveTimer ()
 {
-	if (isOpen && keepaliveInterval>0)
+	if (isOpen && keepaliveEnabled && keepaliveInterval>0)
 		keepaliveTimer.start (keepaliveInterval, this);
 }
 
@@ -294,4 +295,14 @@ void ThreadSafeInterface::keepalive ()
 	catch (PingFailedException) {}
 
 	startKeepaliveTimer ();
+}
+
+void ThreadSafeInterface::setKeepaliveEnabled (bool enabled)
+{
+	keepaliveEnabled=enabled;
+
+	if (keepaliveEnabled)
+		startKeepaliveTimer ();
+	else
+		stopKeepaliveTimer ();
 }

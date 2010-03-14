@@ -179,6 +179,7 @@ void DefaultInterface::openImpl ()
 					case ER_BAD_DB_ERROR: throw DatabaseDoesNotExistException (error);
 					case ER_ACCESS_DENIED_ERROR: throw AccessDeniedException (error);
 					case ER_DBACCESS_DENIED_ERROR: throw AccessDeniedException (error);
+					case ER_TABLEACCESS_DENIED_ERROR: throw AccessDeniedException (error);
 					default: throw ConnectionFailedException (error);
 				}
 
@@ -360,7 +361,16 @@ QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOn
 		}
 		catch (QueryFailedException &ex)
 		{
-			if (!retryOnQueryError (ex.error.number ())) throw;
+			if (!retryOnQueryError (ex.error.number ()))
+			{
+				switch (ex.error.number ())
+				{
+					case ER_ACCESS_DENIED_ERROR: throw AccessDeniedException (ex.error);
+					case ER_DBACCESS_DENIED_ERROR: throw AccessDeniedException (ex.error);
+					case ER_TABLEACCESS_DENIED_ERROR: throw AccessDeniedException (ex.error);
+					default: throw;
+				}
+			}
 
 			// The socket may alreday be closed - close the connection so it
 			// can be reopened.

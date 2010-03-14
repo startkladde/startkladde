@@ -1,0 +1,83 @@
+Installationsanleitung für startkladde
+Stand: 14.3.2010
+
+Voraussetzungen
+===============
+
+Benötigte Software:
+  - MySQL (Ab Version 5; ältere Versionen ab 4.1.5 könnten funktionieren)
+  - Für die virtuelle Tastatur: kvkbd und dcop (Bestandteil von KDE). Sind
+    diese Programme nicht vorhanden, so wird der betreffende Eintrag in der
+    Toolbar nicht angezeigt.
+
+
+Datenbankserver einrichten
+==========================
+
+Zuerst sollte ein Passwort für den root-Benutzer des MySQL-Servers vergeben
+werden (dieser root-Benutzer hat mit dem Systembenutzer "root" nichts zu tun):
+# mysql -u root mysql
+> update user set password=password ("neues_password") where user="root";
+> flush privileges;
+
+Soll der Benutzer "root" von anderen Rechner aus zugreifen könnnen, dann muss
+man dies noch freischalten:
+> update user set host="%" where user="root";
+> flush privileges;
+
+In der Standardinstallation des MySQL-Servers (auch der MySQL-Installation von
+Debian) ist keine Anmeldung möglich. Dies wird folgendermaßen korrigiert:
+# mysql -u root -p mysql
+> delete from user where user='';
+> flush privileges;
+Nach dem ersten Befehl muss das oben definierte Passwort eingegeben werden.
+Wurde kein Passwort vergeben, lässt man die Option "-p" weg.
+
+Bei Debian sind außerdem nur Verbindungen von localhost erlaubt. Wenn die
+Verbindung von einem anderen Rechner stattfinden soll, muss in
+/etc/mysql/my.cnf in der Zeile "bind-address = 127.0.0.1" die Adresse durch
+0.0.0.0 ersetzt werden. Danach den Server mit "/etc/ini.d/mysql restart" neu
+starten.
+
+Bei älteren Debian-Version ist stattdessen der Netzwerkzugriff vollständig
+deaktiviert. Zum Aktivieren muss in /etc/mysql/my.cnf die Zeile mit
+"skip-networking" entfernt werden. Danach den Server mit "/etc/init.d/mysql
+restart" neu starten.
+
+
+4. Programm einrichten
+======================
+
+Das Programm wird über eine Konfigurationsdatei konfiguriert. Diese wird zuerst
+im Homeverzeichnis unter dem Namen .startkladde.conf (mit Punkt am Anfang)
+gesucht. Existiert diese Datei nicht, wird startkladde.conf (ohne Punkt am
+Anfang) aus dem aktuellen Verzeichnis verwendet. Es liegt eine
+Beispielkonfiguration mit diesem Namen bei, die als .startkladde.conf ins
+Homeverzeichnis des Benutzers kopiert werden sollte. Die folgenden Werte sind
+anzupassen:
+  - die Passwörter
+  - ggf. der Server
+  - der Ort (Standardwert für Start- und Zielortfelder)
+Alle weiteren Felder könnnen geändert werden, um zum Beispiel eine andere
+Datenbank oder einen anderen Benutzernamen zu verwenden.
+
+Achtung: da die Datei Passwörter enthält, sollte sie nicht für jedermann lesbar
+sein. Auf einem Mehrbenutzersystem sollten die Zugriffsrechte entsprechend
+restriktiv eingestellt werden.
+
+Für Datumseinstellung:
+In /etc/sudoers eintragen:
+  startkladde  ALL=NOPASSWD:/bin/date
+
+
+Datenbank initialisieren
+========================
+
+Um die Datenbank benutzen zu könnnen, muss ein MySQL-Benutzer vorhanden sein,
+außerdem müssen einige Tabellen existieren. Dies wird vom dem Programm
+erledigt, eine manuelle Einrichtung ist hier in der Regel nicht erforderlich.
+
+Beim Start des Programms werden die Tabellen überprüft und, falls sie nicht
+vorhanden oder nicht vollständig sind, nach dem root-Passwort gefragt, um sie
+anzulegen. Wenn das Programm auf einem anderen Rechner läuft, muss dafür der
+Netzwerkzugriff für root freigeschaltet sein, wie in Abschnitt 3 beschrieben. 

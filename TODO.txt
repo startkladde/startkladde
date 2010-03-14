@@ -1,30 +1,15 @@
 Siehe auch Trac (startkladde.sf.net) 
 
+Release checks:
+  - test all situations for database initialization
+
 == Critical (before release) ==
 
-* Default config: remove launch methods
-
-Documentation:
- INSTALL:
- 8. Client einrichten
-   - Für Datumseinstellung:
-     In /etc/sudoers eintragen:
-       startkladde  ALL=NOPASSWD:/bin/date
-       startkladde  ALL=NOPASSWD:/etc/init.d/hwclock.sh stop
-
-Default-Config: plugins (metar, regenrader) eintragen; +record_towpilot
+* install.txt: describe database setup
 
 
 Database notes:
 /*
- * Tests:
- *   - Test the migrations:
- *     - make sure the old version and current sk_web work with "initial"
- *     - make sure we can migrate from both an empty and the legacy database
- *   - Port open, but connection not accepted
- *   - make sure "", 0 and NULL are read correctly
- *   - Test all paths for database initialization
- *
  * Improvements:
  *   - Add a ResultConsumer as alternative to passing a result (especially for
  *     CopiedResult)
@@ -48,6 +33,7 @@ Database notes:
  *   - currently, when canceling while waiting for a ping to return, the actual
  *     operation will not be canceled, so the user has to cancel it again. The
  *     problem is described in DefaultInterface.cpp under "On synchronization".
+ *   - "Should the database be initialized?" may be asked twice 
  *
  * Medium term plan:
  *   - Standardize enum handling: store the database value internally and have

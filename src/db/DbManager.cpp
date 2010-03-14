@@ -30,7 +30,7 @@
 
 DbManager::DbManager (const DatabaseInfo &info):
 	state (stateDisconnected),
-	interface (info, 2000, 1000), db (interface), cache (db),
+	interface (info, 5000, 2000), db (interface), cache (db),
 	interfaceWorker (interface), dbWorker (db), migratorWorker (interface), cacheWorker (cache)
 {
 	QObject::connect (&interface, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()));
@@ -325,6 +325,9 @@ void DbManager::doOpenInterface (InterfaceWorker &worker, QWidget *parent)
 	worker.open (returner, monitor);
 	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
 	returner.wait ();
+
+	// Now that the interface is open, we can start the keepalive
+	worker.getInterface ().setKeepaliveEnabled (true);
 }
 
 void DbManager::openInterface (QWidget *parent)
@@ -362,7 +365,6 @@ void DbManager::openInterface (QWidget *parent)
 		returner.wait (); // Required so any exceptions are rethrown
 
 		// After loading the schema, the database must be current.
-		// TODO different message if canceled
 		ensureCurrent ("Nach dem Laden ist die Datenbank nicht aktuell.", parent);
 
 		createSampleLaunchMethods (parent);
@@ -395,7 +397,9 @@ bool DbManager::connect (QWidget *parent)
 	{
 		try
 		{
+			std::cout << "here" << std::endl;
 			connectImpl (parent);
+			std::cout << "there" << std::endl;
 			setState (stateConnected);
 			return true;
 		}

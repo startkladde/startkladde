@@ -46,9 +46,9 @@ An error not caught here will be passed to the enclosing procedure.
                                  .                                             .
 +----------------+               .   +----------------+        +-----------+   .
 | Open Interface |---(Create DB?)--->| Connect w/o DB |------->| Create DB |   .
-+----------------+               .   +----------------+        +-----------+   .
-        |                        .                                   |         .
-        | OK                     .                                   v         .
++----------------+ database      .   +----------------+        +-----------+   .
+        |          does not      .                                   |         .
+        | OK       exist         .                                   v         .
         |                        .  +----------------+         +------------+  .
         |                        .  | Open Interface |<--------| Disconnect |  .
         |                        .  +----------------+         +------------+  .

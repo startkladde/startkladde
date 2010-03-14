@@ -49,6 +49,7 @@ class ThreadSafeInterface: public QObject, public Interface
 		virtual QSharedPointer<Result> executeQueryResult (const Query &query, bool forwardOnly=true);
 		virtual bool queryHasResult (const Query &query);
 		virtual void ping ();
+		virtual void setKeepaliveEnabled (bool enabled);
 
 	public slots:
 		virtual void cancelConnection ();
@@ -93,6 +94,7 @@ class ThreadSafeInterface: public QObject, public Interface
 		virtual void slot_ping               (Returner<void>                    *returner);
 
 	private:
+		bool keepaliveEnabled;
 		int keepaliveInterval; // milliseconds
 		QBasicTimer keepaliveTimer;
 		QThread thread;
