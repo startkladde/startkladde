@@ -119,6 +119,7 @@ template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *pare
 	list->setAllColumnsShowFocus (true);
 	list->setSortingEnabled (false);
 	list->setSelectionMode (QAbstractItemView::SingleSelection);
+	list->setRootIsDecorated (false);
 	but_ok->setDefault (true);
 
 	// Connect the signals

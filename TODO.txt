@@ -3,7 +3,8 @@ Siehe auch Trac (startkladde.sf.net)
 Release checks:
   - test all situations for database initialization
   - start maximzed
-  - tab order
+  - dialogs: tab order; first tabs active
+  
 
 == Critical (before release) ==
 

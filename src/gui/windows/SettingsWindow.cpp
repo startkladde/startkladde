@@ -3,10 +3,13 @@
  *   - pluginPathList: after dragging, select the dragged item in the new
  *     position
  *   - pluginPathList: when double-clicking in the empty area, add an item
+ *   - pluginPathList: context menu
  */
 #include "SettingsWindow.h"
 
 #include <iostream>
+
+#include <QStandardItemModel> //remove?
 
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
@@ -22,12 +25,68 @@ shell_plugin <title>, <command>, <interval not 0> [, warn_on_death] [, rich_text
 	shell_plugin System:, /bin/uname -a, -1
 */
 
+
 SettingsWindow::SettingsWindow (QWidget *parent):
 	QDialog (parent)
 {
 	ui.setupUi (this);
 
 	ui.dbTypePane->setVisible (false);
+
+	// QTreeWidget
+	// Has different editors, depending on data type
+	// Problem: cannot set the checkbox column to not editable
+	QTreeWidgetItem *item=new QTreeWidgetItem ((QTreeWidget *)NULL, QStringList () << "foo" << "bar");
+	item->setData (1, Qt::DisplayRole, 20);
+	item->setData (1, Qt::DisplayRole, QVariant ());
+	item->setCheckState (2, Qt::Checked);
+//	item->setFlags (item->flags () | Qt::ItemIsEditable/* | Qt::ItemIsUserCheckable*/);
+	item->setFlags (item->flags () &~ Qt::ItemIsEditable);
+	ui.infoPluginList->addTopLevelItem (item);
+
+
+	// QTreeView with QStandardItemModel
+	// Has different editors, depending on data type
+	// Problem: is either not editable (and not checkable) or can still edit
+	// the value beside the checkbox
+	QStandardItemModel *model=new QStandardItemModel (4, 4); // leak leak leak
+	QStandardItem *xitem=NULL;
+
+	xitem=new QStandardItem ("moo");
+	xitem->setData ("hasd", Qt::DisplayRole);
+	model->setItem (0, 0, xitem);
+
+	xitem=new QStandardItem ("moo");
+	xitem->setData (20, Qt::DisplayRole);
+	model->setItem (0, 1, xitem);
+
+	xitem=new QStandardItem ("moo");
+//	xitem->setData (QVariant (), Qt::DisplayRole);
+	xitem->setFlags ((xitem->flags () | Qt::ItemIsUserCheckable) /*& Qt::ItemIsEditable*/);
+//	xitem->setCheckState (Qt::Checked);
+	xitem->setData(Qt::Checked, Qt::CheckStateRole);
+	model->setItem (0, 1, xitem);
+
+	// http://www.qtforum.de/forum/viewtopic.php?t=7425&sid=770807a79253bf7914fe994b4d6ce5c2
+
+//	 for (int row = 0; row < 4; ++row) {
+//	     for (int column = 0; column < 4; ++column) {
+//	         QStandardItem *item = new QStandardItem(QString("row %0, column %1").arg(row).arg(column));
+//	         model->setItem(row, column, item);
+//	     }
+//	 }
+	 ui.infoPluginListView->setModel (model);
+
+		// Try this:
+	//	QItemEditorFactory *factory = new QItemEditorFactory;
+	//	QItemEditorCreatorBase *nullEditorCreator=new QStandardItemEditorCreator<ColorListEditor> ();
+	//	factory->registerEditor(QVariant::Color, colorListCreator);
+	//	QItemEditorFactory::setDefaultFactory(factory);
+	//	http://doc.trolltech.com/4.3/itemviews-coloreditorfactory.html
+
+	 // e. g. don't use the checkbox at all, but create a drop down box with
+	 // proper yes/no entries instead (maybe use QItemEditorCreator instead of StandardItemEditorCreator)
+	 // maybe use a QTreeWidget instead of a QTreeView in this case
 
 	readSettings ();
 	updateWidgets ();
