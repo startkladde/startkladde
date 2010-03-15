@@ -24,7 +24,8 @@
 
 // TODO many dependencies - split
 #include "src/concurrent/threadUtil.h"
-#include "src/config/Options.h"
+#include "src/config/Options.h" // TODO remove joah
+#include "src/config/Settings.h"
 #include "src/gui/widgets/WeatherWidget.h"
 #include "src/gui/windows/DateInputDialog.h"
 #include "src/gui/windows/FlightWindow.h"
@@ -32,6 +33,7 @@
 #include "src/gui/windows/SplashScreen.h"
 #include "src/gui/windows/StatisticsWindow.h"
 #include "src/gui/windows/WeatherDialog.h"
+#include "src/gui/windows/SettingsWindow.h"
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
 #include "src/model/Person.h"
@@ -50,6 +52,7 @@
 #include "src/util/qString.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/cache/Cache.h"
+#include "src/text.h"
 
 template <class T> class MutableObjectList;
 
@@ -81,9 +84,6 @@ MainWindow::MainWindow (QWidget *parent) :
 	readSettings ();
 
 	setupLabels ();
-
-	// Fenstereinstellungen
-	setCaption (opts.title);
 
 	// Info frame
 	bool acpiValid = AcpiWidget::valid ();
@@ -392,7 +392,9 @@ void MainWindow::on_actionShutdown_triggered ()
 
 void MainWindow::writeSettings ()
 {
-	QSettings settings ("startkladde", "startkladde");
+	QSettings settings;
+
+	settings.beginGroup ("gui");
 
 	settings.beginGroup ("fonts");
 	QFont font = QApplication::font ();
@@ -403,28 +405,43 @@ void MainWindow::writeSettings ()
 	ui.flightTable->writeColumnWidths (settings, *flightModel);
 	settings.endGroup ();
 
+	settings.endGroup ();
+
 	settings.sync ();
 }
 
 void MainWindow::readColumnWidths ()
 {
-	QSettings settings ("startkladde", "startkladde");
+	QSettings settings;
 
+	settings.beginGroup ("gui");
     settings.beginGroup ("flightTable");
     ui.flightTable->readColumnWidths (settings, *flightModel);
+    settings.endGroup ();
     settings.endGroup ();
 }
 
 void MainWindow::readSettings ()
 {
-	QSettings settings ("startkladde", "startkladde");
+	QSettings settings;
 
+	settings.beginGroup ("gui");
 	settings.beginGroup ("fonts");
 	QString fontDescription = settings.value ("font").toString ();
+	settings.endGroup ();
 	settings.endGroup ();
 
 	QFont font;
 	if (font.fromString (fontDescription)) QApplication::setFont (font);
+
+
+	Settings &s=Settings::instance ();
+
+	// Fenstereinstellungen
+	if (blank (s.location))
+		setCaption ("Startkladde");
+	else
+		setCaption (utf8 ("Hauptflugbuch %1 - Startkladde").arg (s.location));
 }
 
 // *************
@@ -1500,6 +1517,13 @@ void MainWindow::closeDatabase ()
 // **********
 // ** Misc **
 // **********
+
+void MainWindow::on_actionSettings_triggered ()
+{
+	SettingsWindow w (this);
+	w.setModal (true); // TODO non-model and auto delete
+	w.exec ();
+}
 
 void MainWindow::on_actionSetTime_triggered ()
 {

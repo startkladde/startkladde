@@ -114,6 +114,7 @@ class MainWindow: public QMainWindow
 
 	private slots:
 		// Menu: Program
+		void on_actionSettings_triggered ();
 		void on_actionSetTime_triggered ();
 		void on_actionQuit_triggered ();
 		void on_actionShutdown_triggered ();

@@ -352,6 +352,12 @@ int main (int argc, char **argv)
 	qRegisterMetaType<DbEvent> ("DbEvent");
 	qRegisterMetaType<Query> ("Query");
 
+	// For QSettings
+	QCoreApplication::setOrganizationName ("startkladde");
+	QCoreApplication::setOrganizationDomain("startkladde.sf.net");
+	QCoreApplication::setApplicationName("startkladde");
+
+
 	int ret=0;
 
 	try

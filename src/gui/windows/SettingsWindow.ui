@@ -6,21 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>398</width>
-    <height>370</height>
+    <width>426</width>
+    <height>426</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SettingsWindow</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QTabWidget" name="tabWidget">
+  <layout class="QGridLayout" name="gridLayout_4">
+   <item row="2" column="0">
+    <widget class="QTabWidget" name="settingsTabWidget">
      <property name="tabPosition">
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -31,198 +31,148 @@
      <property name="movable">
       <bool>false</bool>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="dbTab">
       <attribute name="title">
        <string>&amp;Datenbank</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Typ:</string>
-         </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QWidget" name="dbTypePane" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="dbTypeLabel">
+            <property name="text">
+             <string>Typ:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="dbTypeInput"/>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="comboBox"/>
-       </item>
-       <item row="0" column="2">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0" colspan="3">
-        <widget class="QGroupBox" name="groupBox_3">
+       <item>
+        <widget class="QGroupBox" name="dbConnectionBox">
          <property name="title">
-          <string>Einstellungen</string>
+          <string>Verbindung</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QStackedWidget" name="stackedWidget">
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <widget class="QWidget" name="page">
-             <layout class="QGridLayout" name="gridLayout">
-              <property name="margin">
-               <number>0</number>
-              </property>
-              <item row="0" column="1" colspan="3">
-               <widget class="QLineEdit" name="lineEdit_2"/>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>Port:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QCheckBox" name="checkBox">
-                <property name="text">
-                 <string>Standard</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QSpinBox" name="spinBox"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Benutzer:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1" colspan="3">
-               <widget class="QLineEdit" name="lineEdit_3"/>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>Passwort:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1" colspan="3">
-               <widget class="QLineEdit" name="lineEdit_4"/>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>Datenbank:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1" colspan="3">
-               <widget class="QLineEdit" name="lineEdit_5"/>
-              </item>
-              <item row="5" column="1">
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="3">
-               <spacer name="horizontalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>Server:</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="page_2">
-             <layout class="QGridLayout" name="gridLayout_3">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label">
-                <property name="text">
-                 <string>Dateiname:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="lineEdit"/>
-              </item>
-              <item row="1" column="0">
-               <spacer name="verticalSpacer_3">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>181</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
+         <layout class="QGridLayout" name="gridLayout_13">
+          <item row="0" column="0">
+           <widget class="QWidget" name="mysqlSettingsPane" native="true">
+            <layout class="QGridLayout" name="gridLayout">
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="mysqlServerLabel">
+               <property name="text">
+                <string>Server:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1" colspan="4">
+              <widget class="QLineEdit" name="mysqlServerInput"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="mysqlPortLabel">
+               <property name="text">
+                <string>Port:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QSpinBox" name="mysqlPortInput">
+               <property name="maximum">
+                <number>65535</number>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="mysqlUserLabel">
+               <property name="text">
+                <string>Benutzer:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1" colspan="4">
+              <widget class="QLineEdit" name="mysqlUserInput"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="mysqlPasswordLabel">
+               <property name="text">
+                <string>Passwort:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1" colspan="4">
+              <widget class="QLineEdit" name="mysqlPasswordInput">
+               <property name="echoMode">
+                <enum>QLineEdit::Password</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="mysqlDatabaseLabel">
+               <property name="text">
+                <string>Datenbank:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1" colspan="4">
+              <widget class="QLineEdit" name="mysqlDatabaseInput"/>
+             </item>
+             <item row="1" column="4">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="mysqlDefaultPortCheckBox">
+               <property name="text">
+                <string>Standard</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>(Standard: 3306)</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>&amp;Einstellungen</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="tab_3">
-      <attribute name="title">
-       <string>&amp;Plugins</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QGroupBox" name="groupBox">
-         <property name="title">
-          <string>Info-Plugins</string>
-         </property>
-         <property name="checkable">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Wettergrafik</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_2">
+        <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -236,18 +186,629 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="settingsTab">
+      <attribute name="title">
+       <string>&amp;Einstellungen</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QGroupBox" name="dataBox">
+         <property name="title">
+          <string>Erfassung</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="0">
+           <widget class="QLabel" name="locationLabel">
+            <property name="text">
+             <string>Ort:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="locationInput"/>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="recordTowpilotCheckbox">
+            <property name="text">
+             <string>Schlepppilot speichern</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="permissionsBox">
+         <property name="title">
+          <string>Berechtigungen</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="protectSettingsCheckbox">
+            <property name="text">
+             <string>Passwort zum Ändern von Einstellungen</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="protectLaunchMethodsCheckbox">
+            <property name="text">
+             <string>Passwort zum Ändern von Startarten erforderlich</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="diagnosticsBox">
+         <property name="title">
+          <string>Diagnose</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="debugCheckbox">
+            <property name="text">
+             <string>Diagnoseoptionen aktivieren</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="diagCommandInput"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="diagCommandLabel">
+            <property name="text">
+             <string>Kommando für
+Schnelldiagnose:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="pluginsTab">
+      <attribute name="title">
+       <string>&amp;Plugins</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QTabWidget" name="pluginsTabWidget">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="infoPluginsTab">
+          <attribute name="title">
+           <string>Info-Plugins</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <widget class="QWidget" name="infoPluginsListPane" native="true">
+             <layout class="QGridLayout" name="gridLayout_9">
+              <property name="margin">
+               <number>0</number>
+              </property>
+              <item row="5" column="1">
+               <spacer name="verticalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="1">
+               <widget class="QToolButton" name="addInfoPluginButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>+</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QToolButton" name="removeInfoPluginButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QToolButton" name="infoPluginDownButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="arrowType">
+                 <enum>Qt::DownArrow</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QToolButton" name="infoPluginUpButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="arrowType">
+                 <enum>Qt::UpArrow</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" rowspan="6">
+               <widget class="QTreeView" name="infoPluginsList"/>
+              </item>
+              <item row="0" column="1">
+               <spacer name="verticalSpacer_8">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="infoPluginSettingsPane" native="true">
+             <layout class="QGridLayout" name="gridLayout_10">
+              <property name="margin">
+               <number>0</number>
+              </property>
+              <item row="3" column="1" colspan="2">
+               <widget class="QLineEdit" name="infoPluginCommandInput"/>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="infoPluginCommandCheckbox">
+                <property name="text">
+                 <string>Kommando:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="infoPluginIntervalCheckbox">
+                <property name="text">
+                 <string>Intervall:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QSpinBox" name="infoPluginIntervalInput">
+                <property name="suffix">
+                 <string> s</string>
+                </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>65535</number>
+                </property>
+                <property name="value">
+                 <number>60</number>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="5" column="0" colspan="3">
+               <widget class="QCheckBox" name="infoPluginRichTextCheckbox">
+                <property name="text">
+                 <string>Rich Text</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0" colspan="3">
+               <widget class="QCheckBox" name="infoPluginWarnOnDeathCheckbox">
+                <property name="text">
+                 <string>Warnung beim Beenden</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" colspan="2">
+               <widget class="QLineEdit" name="infoPluginTitleInput"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="infoPluginTitleCheckbox">
+                <property name="text">
+                 <string>Titel:</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_7">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>75</width>
+               <height>177</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="weatherPluginTab">
+          <attribute name="title">
+           <string>Wettergrafik</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <widget class="QGroupBox" name="weatherPluginBox">
+             <property name="title">
+              <string>Wettergrafik</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_12">
+              <item row="1" column="2" colspan="2">
+               <widget class="QLineEdit" name="weatherPluginCommandInput"/>
+              </item>
+              <item row="5" column="0" colspan="2">
+               <widget class="QLabel" name="weatherPluginHeightLabel">
+                <property name="text">
+                 <string>Höhe:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="2">
+               <widget class="QSpinBox" name="weatherPluginHeightInput">
+                <property name="suffix">
+                 <string> Pixel</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="3">
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>298</width>
+                  <height>25</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="weatherPluginIntervalLabel">
+                <property name="text">
+                 <string>Intervall:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="weatherPluginCommandLabel">
+                <property name="text">
+                 <string>Kommando:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QSpinBox" name="weatherPluginIntervalInput">
+                <property name="suffix">
+                 <string> s</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="3">
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>172</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="weatherWindowBox">
+             <property name="title">
+              <string>Wetterdialog</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_11">
+              <item row="0" column="0">
+               <widget class="QLabel" name="weatherWindowCommandLabel">
+                <property name="text">
+                 <string>Kommando:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1" colspan="2">
+               <widget class="QLineEdit" name="weatherWindowCommandInput"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="weatherWindowTitleLabel">
+                <property name="text">
+                 <string>Titel:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" colspan="2">
+               <widget class="QLineEdit" name="weatherWindowTitleInput"/>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="weatherWindowIntervalLabel">
+                <property name="text">
+                 <string>Intervall:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QSpinBox" name="weatherWindowIntervalInput"/>
+              </item>
+              <item row="2" column="2">
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>328</width>
+                  <height>25</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_10">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pluginPathTab">
+          <attribute name="title">
+           <string>Plugin-Pfade</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QWidget" name="pluginPathListPane" native="true">
+             <layout class="QGridLayout" name="gridLayout_5">
+              <property name="margin">
+               <number>0</number>
+              </property>
+              <item row="0" column="0" rowspan="6">
+               <widget class="QListWidget" name="pluginPathList"/>
+              </item>
+              <item row="5" column="1">
+               <spacer name="verticalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="1">
+               <widget class="QToolButton" name="addPluginButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>+</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QToolButton" name="removePluginButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QToolButton" name="pluginDownButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="arrowType">
+                 <enum>Qt::DownArrow</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QToolButton" name="pluginUpButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="arrowType">
+                 <enum>Qt::UpArrow</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <spacer name="verticalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
-   <item>
+   <item row="3" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>settingsTabWidget</tabstop>
+  <tabstop>dbTypeInput</tabstop>
+  <tabstop>mysqlServerInput</tabstop>
+  <tabstop>mysqlDefaultPortCheckBox</tabstop>
+  <tabstop>mysqlPortInput</tabstop>
+  <tabstop>mysqlUserInput</tabstop>
+  <tabstop>mysqlPasswordInput</tabstop>
+  <tabstop>mysqlDatabaseInput</tabstop>
+  <tabstop>locationInput</tabstop>
+  <tabstop>recordTowpilotCheckbox</tabstop>
+  <tabstop>protectSettingsCheckbox</tabstop>
+  <tabstop>protectLaunchMethodsCheckbox</tabstop>
+  <tabstop>debugCheckbox</tabstop>
+  <tabstop>diagCommandInput</tabstop>
+  <tabstop>pluginsTabWidget</tabstop>
+  <tabstop>infoPluginsList</tabstop>
+  <tabstop>addInfoPluginButton</tabstop>
+  <tabstop>removeInfoPluginButton</tabstop>
+  <tabstop>infoPluginUpButton</tabstop>
+  <tabstop>infoPluginDownButton</tabstop>
+  <tabstop>infoPluginTitleInput</tabstop>
+  <tabstop>infoPluginCommandInput</tabstop>
+  <tabstop>infoPluginIntervalInput</tabstop>
+  <tabstop>infoPluginRichTextCheckbox</tabstop>
+  <tabstop>infoPluginWarnOnDeathCheckbox</tabstop>
+  <tabstop>weatherPluginCommandInput</tabstop>
+  <tabstop>weatherPluginIntervalInput</tabstop>
+  <tabstop>weatherPluginHeightInput</tabstop>
+  <tabstop>weatherWindowCommandInput</tabstop>
+  <tabstop>weatherWindowTitleInput</tabstop>
+  <tabstop>weatherWindowIntervalInput</tabstop>
+  <tabstop>pluginPathList</tabstop>
+  <tabstop>addPluginButton</tabstop>
+  <tabstop>removePluginButton</tabstop>
+  <tabstop>pluginUpButton</tabstop>
+  <tabstop>pluginDownButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

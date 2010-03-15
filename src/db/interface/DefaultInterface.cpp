@@ -123,15 +123,13 @@ bool DefaultInterface::open ()
 
 	// TODO handle proxy port=0: throw an exception, but we don't have an
 	// SqlError, so it's not an SqlException
-	quint16 proxyPort=proxy->open (info.server, info.port);
+	quint16 proxyPort=proxy->open (info.server, info.effectivePort ());
 
-//		db.setHostName     (info.server  );
 	// Note that this may not be "localhost" because the MySQL library uses a
 	// unix domain socket and ignores the port in this case.
 	db.setHostName     ("127.0.0.1");
 	db.setUserName     (info.username);
 	db.setPassword     (info.password);
-//		db.setPort         (info.port    );
 	db.setPort         (proxyPort);
 	db.setDatabaseName (info.database);
 

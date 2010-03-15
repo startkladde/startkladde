@@ -37,6 +37,7 @@ HEADERS += \
            src/concurrent/monitor/SignalOperationMonitor.h \
            src/concurrent/monitor/SimpleOperationMonitor.h \
            src/config/Options.h \
+           src/config/Settings.h \
            src/container/SortedSet.h \
            src/container/SortedSet_impl.h \
            src/db/Database.h \
@@ -87,6 +88,7 @@ HEADERS += \
            src/gui/windows/ObjectListWindow.h \
            src/gui/windows/ObjectListWindowBase.h \
            src/gui/windows/SplashScreen.h \
+           src/gui/windows/SettingsWindow.h \
            src/gui/windows/StatisticsWindow.h \
            src/gui/windows/WeatherDialog.h \
            src/gui/windows/objectEditor/LaunchMethodEditorPane.h \
@@ -141,6 +143,7 @@ SOURCES += \
            src/concurrent/monitor/SignalOperationMonitor.cpp \
            src/concurrent/monitor/SimpleOperationMonitor.cpp \
            src/config/Options.cpp \
+           src/config/Settings.cpp \
            src/db/Database.cpp \
            src/db/DatabaseInfo.cpp \
            src/db/DbManager.cpp \
@@ -189,6 +192,7 @@ SOURCES += \
            src/gui/windows/ObjectListWindow.cpp \
            src/gui/windows/ObjectListWindowBase.cpp \
            src/gui/windows/SplashScreen.cpp \
+           src/gui/windows/SettingsWindow.cpp \
            src/gui/windows/StatisticsWindow.cpp \
            src/gui/windows/WeatherDialog.cpp \
            src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp \
@@ -225,6 +229,7 @@ FORMS += \
            src/gui/windows/MainWindow.ui \
            src/gui/windows/MonitorDialog.ui \
            src/gui/windows/ObjectListWindowBase.ui \
+           src/gui/windows/SettingsWindow.ui \
            src/gui/windows/StatisticsWindow.ui \
            src/gui/windows/objectEditor/LaunchMethodEditorPane.ui \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.ui \

@@ -14,6 +14,9 @@
 class ShellPlugin;
 class LaunchMethod;
 
+/**
+ * The old settings class, to be replaced by Settings
+ */
 class Options
 {
 	public:

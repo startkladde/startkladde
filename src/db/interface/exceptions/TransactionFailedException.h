@@ -8,8 +8,7 @@
 #ifndef TRANSACTIONFAILEDEXCEPTION_H_
 #define TRANSACTIONFAILEDEXCEPTION_H_
 
-#include "src/db/interface/AbstractInterface.h"
-#include "src/db/Query.h"
+#include "src/db/interface/AbstractInterface.h" // required for AbstractInterface::TransactionStatement
 #include "src/db/interface/exceptions/SqlException.h"
 
 class TransactionFailedException: public SqlException

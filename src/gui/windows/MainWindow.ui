@@ -354,6 +354,7 @@
     <property name="title">
      <string>&amp;Programm</string>
     </property>
+    <addaction name="actionSettings"/>
     <addaction name="actionSetTime"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
@@ -549,7 +550,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSetTime">
    <property name="text">
-    <string>&amp;Zeit einstellen</string>
+    <string>&amp;Zeit einstellen...</string>
    </property>
   </action>
   <action name="actionQuit">
@@ -819,9 +820,6 @@
    <property name="text">
     <string>&amp;Test</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+T</string>
-   </property>
   </action>
   <action name="actionConnect">
    <property name="text">
@@ -851,17 +849,25 @@
     <string>&amp;Startarten editieren</string>
    </property>
   </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>&amp;Einstellungen...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>SkTableView</class>
-   <extends>QTableView</extends>
-   <header>src/gui/widgets/SkTableView.h</header>
-  </customwidget>
   <customwidget>
    <class>SkLabel</class>
    <extends>QLabel</extends>
    <header>src/gui/widgets/SkLabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>SkTableView</class>
+   <extends>QTableView</extends>
+   <header>src/gui/widgets/SkTableView.h</header>
   </customwidget>
   <customwidget>
    <class>AcpiWidget</class>
