@@ -9,6 +9,8 @@
 #define SETTINGS_H_
 
 #include <QObject>
+#include <QString>
+#include <QStringList>
 
 #include "src/db/DatabaseInfo.h"
 
@@ -30,49 +32,44 @@ class Settings: public QObject
 
 	public:
 		// *** Database
-
 		// Connection
 		DatabaseInfo databaseInfo;
 
 		// *** Settings
-
 		// Data
 		QString location;
 		bool recordTowpilot;
+		// Permissions
+		bool protectSettings;
+		bool protectLaunchMethods;
+		// Diagnostics
+		bool enableDebug;
+		QString diagCommand;
+
+		// *** Plugins - Info
+
+		// *** Plugins - Weather
+		// Weather plugin
+		QString weatherPluginCommand;
+		int weatherPluginHeight;
+		int weatherPluginInterval;
+		// Weather dialog
+		QString weatherWindowCommand;
+		int weatherWindowInterval;
+		QString weatherWindowTitle;
+
+		// *** Plugins - Paths
+		QStringList pluginPaths;
 
 
-//		// Local Options
 //		bool demosystem;
-//		QString title;
-//		QString diag_cmd;
-//		QString ort;
-//		QString style;
-//
-//		// Debugging
-//		bool debug;
 //		bool display_queries;
 //		bool colorful;
-//
-//		// Database
-//		bool record_towpilot;
-//		bool protect_launch_methods;
+//		style <name> (-)
+//		source <filename> (multi)
 //
 //		// Plugins
-//		QStringList plugin_paths;
 //		QList<ShellPlugin *> shellPlugins;
-//
-//		// Weather plugin
-//		QString weather_plugin;
-//		int weather_height;
-//		int weather_interval;
-//		QString weather_dialog_plugin;
-//		QString weather_dialog_title;
-//		int weather_dialog_interval;
-//
-//		// Non-Options
-//		QStringList non_options;
-//
-//		static bool silent;
 //
 //		QList<LaunchMethod> configuredLaunchMethods;
 

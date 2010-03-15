@@ -32,8 +32,6 @@ DatabaseInfo::operator QString () const
 
 void DatabaseInfo::load (QSettings &settings)
 {
-	std::cout << "read db info from settings: " << settings.contains ("server") << std::endl;
-
 	server     =settings.value ("server"     , "localhost"  ).toString ();
 	defaultPort=settings.value ("defaultPort", true         ).toBool   ();
 	port       =settings.value ("port"       , 3306         ).toInt    ();

@@ -2,6 +2,8 @@ Siehe auch Trac (startkladde.sf.net)
 
 Release checks:
   - test all situations for database initialization
+  - start maximzed
+  - tab order
 
 == Critical (before release) ==
 
@@ -45,14 +47,13 @@ Models:
 * Plane, person, launch method: inactive (not displayed in select)
 
 Config:
-* Use YAML
+* Use QSettings
 * Config dialog
-* Make Unix socket Name configurable machen
-* Allow system wide config
+* Make Unix socket Name configurable
 * Make compression configurable
+* Make configurable if it starts in full screen
 * Make read timeout and keepalive interval configurable
 * Configurable autoconnect
-* Rename title to window_title or remove 
 
 Database:
 * SQLite support

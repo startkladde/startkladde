@@ -17,12 +17,20 @@ class SettingsWindow: public QDialog
 		void readSettings ();
 		void writeSettings ();
 
+		void makeItemEditable (QListWidgetItem *item);
+
 	private slots:
 		void on_mysqlDefaultPortCheckBox_toggled () { updateWidgets (); }
+
+		void on_addPluginPathButton_clicked ();
+		void on_removePluginPathButton_clicked ();
+		void on_pluginPathUpButton_clicked ();
+		void on_pluginPathDownButton_clicked ();
 
 		void updateWidgets ();
 
 		void on_buttonBox_accepted ();
+
 	private:
 		Ui::SettingsWindowClass ui;
 };

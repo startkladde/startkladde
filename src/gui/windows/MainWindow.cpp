@@ -2,6 +2,8 @@
  * Improvements:
  *   - the log should also display queries from other database interfaces that
  *     may be created during connect, such as the root interface
+ *   - when double-clicking in the empty area of the flight table, create a new
+ *     flight
  */
 //	assert (isGuiThread ());
 
