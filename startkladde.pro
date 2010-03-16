@@ -74,6 +74,8 @@ HEADERS += \
            src/db/schema/SchemaDumper.h \
            src/gui/dialogs.h \
            src/gui/views/ReadOnlyItemDelegate.h \
+           src/gui/views/SpecialIntDelegate.h \
+           src/gui/views/SpinBoxCreator.h \
            src/gui/widgets/AcpiWidget.h \
            src/gui/widgets/SkComboBox.h \
            src/gui/widgets/SkLabel.h \
@@ -181,6 +183,8 @@ SOURCES += \
            src/db/schema/SchemaDumper.cpp \
            src/gui/dialogs.cpp \
            src/gui/views/ReadOnlyItemDelegate.cpp \
+           src/gui/views/SpecialIntDelegate.cpp \
+           src/gui/views/SpinBoxCreator.cpp \
            src/gui/widgets/AcpiWidget.cpp \
            src/gui/widgets/SkComboBox.cpp \
            src/gui/widgets/SkLabel.cpp \

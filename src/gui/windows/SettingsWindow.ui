@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -431,11 +431,12 @@ Plugins als Qt-Rich-Text interpretiert.</string>
                  </property>
                  <property name="toolTip">
                   <string>Dauer (in Sekunden) bis das Plugin wieder gestartet
-wird, nachdem es beendet ist. Für Plugins, die dauerhaft
-laufen, sollte dieser Wert wenige Sekunden betragen.
-Für Plugins, die nach dem Abrufen von Daten beendet
-werden, ist dies die Zeit zwischen aufeinanderfolgenden
-Aktualisierungen.</string>
+wird, nachdem es beendet ist. Wenn 0, wird das Plugin
+nicht neu gestartet.
+Für Plugins, die dauerhaft laufen, sollte dieser Wert wenige
+Sekunden betragen. Für Plugins, die nach dem Abrufen von
+Daten beendet werden, ist dies die Zeit zwischen
+aufeinanderfolgenden Aktualisierungen.</string>
                  </property>
                 </column>
                 <column>

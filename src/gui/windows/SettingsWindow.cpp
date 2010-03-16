@@ -13,10 +13,14 @@
 
 #include <iostream>
 
+#include <QItemEditorFactory>
+
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
 #include "src/plugins/ShellPluginInfo.h"
 #include "src/gui/views/ReadOnlyItemDelegate.h"
+#include "src/gui/views/SpinBoxCreator.h"
+#include "src/gui/views/SpecialIntDelegate.h"
 
 SettingsWindow::SettingsWindow (QWidget *parent):
 	QDialog (parent)
@@ -28,6 +32,14 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	// Make boolean columns read-only
 	ui.infoPluginList->setItemDelegateForColumn (2, new ReadOnlyItemDelegate (ui.infoPluginList));
 	ui.infoPluginList->setItemDelegateForColumn (4, new ReadOnlyItemDelegate (ui.infoPluginList));
+
+	// Setup the integer colum
+	QStyledItemDelegate *intervalDelegate=new SpecialIntDelegate (0, "Nicht neu starten", " s", ui.infoPluginList);
+	SpinBoxCreator *spinBoxCreator=new SpinBoxCreator (0, "Nicht neu starten", " s");
+	QItemEditorFactory *factory=new QItemEditorFactory;
+	factory->registerEditor (QVariant::Int, spinBoxCreator);
+	intervalDelegate->setItemEditorFactory (factory);
+	ui.infoPluginList->setItemDelegateForColumn (3, intervalDelegate);
 
 	readSettings ();
 	updateWidgets ();
