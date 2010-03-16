@@ -14,6 +14,8 @@
 #include <iostream>
 
 #include <QItemEditorFactory>
+#include <QSettings>
+#include <QInputDialog>
 
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
@@ -21,9 +23,12 @@
 #include "src/gui/views/ReadOnlyItemDelegate.h"
 #include "src/gui/views/SpinBoxCreator.h"
 #include "src/gui/views/SpecialIntDelegate.h"
+#include "src/util/qString.h"
+#include "src/gui/dialogs.h"
 
 SettingsWindow::SettingsWindow (QWidget *parent):
-	QDialog (parent)
+	QDialog (parent),
+	warned (false)
 {
 	ui.setupUi (this);
 
@@ -41,6 +46,8 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	intervalDelegate->setItemEditorFactory (factory);
 	ui.infoPluginList->setItemDelegateForColumn (3, intervalDelegate);
 
+	ui.passwordMessageLabel->setText (ui.passwordMessageLabel->text ().arg (QSettings ().fileName ()));
+
 	readSettings ();
 	updateWidgets ();
 }
@@ -52,8 +59,11 @@ SettingsWindow::~SettingsWindow()
 
 void SettingsWindow::on_buttonBox_accepted ()
 {
-	writeSettings ();
-	close ();
+	if (allowEdit ())
+	{
+		writeSettings ();
+		close ();
+	}
 }
 
 void SettingsWindow::readSettings ()
@@ -140,7 +150,7 @@ void SettingsWindow::writeSettings ()
 	info.port       =ui.mysqlPortInput          ->value ();
 	info.username   =ui.mysqlUserInput          ->text ();
 	info.password   =ui.mysqlPasswordInput      ->text ();
-	info.password   =ui.mysqlDatabaseInput      ->text ();
+	info.database   =ui.mysqlDatabaseInput      ->text ();
 
 	// *** Settings
 	// Data
@@ -194,6 +204,7 @@ void SettingsWindow::updateWidgets ()
 
 void SettingsWindow::on_addPluginPathButton_clicked ()
 {
+	warnEdit ();
 	QListWidget *list=ui.pluginPathList;
 
 	list->addItem ("");
@@ -204,6 +215,7 @@ void SettingsWindow::on_addPluginPathButton_clicked ()
 
 void SettingsWindow::on_removePluginPathButton_clicked ()
 {
+	warnEdit ();
 	QListWidget *list=ui.pluginPathList;
 
 	int row=list->currentRow ();
@@ -215,6 +227,7 @@ void SettingsWindow::on_removePluginPathButton_clicked ()
 
 void SettingsWindow::on_pluginPathUpButton_clicked ()
 {
+	warnEdit ();
 	QListWidget *list=ui.pluginPathList;
 
 	int row=list->currentRow ();
@@ -227,6 +240,7 @@ void SettingsWindow::on_pluginPathUpButton_clicked ()
 
 void SettingsWindow::on_pluginPathDownButton_clicked ()
 {
+	warnEdit ();
 	QListWidget *list=ui.pluginPathList;
 
 	int row=list->currentRow ();
@@ -243,6 +257,7 @@ void SettingsWindow::on_pluginPathDownButton_clicked ()
 
 void SettingsWindow::on_addInfoPluginButton_clicked ()
 {
+	warnEdit ();
 	QTreeWidget *list=ui.infoPluginList;
 
 	QTreeWidgetItem *item=new QTreeWidgetItem (list);
@@ -254,6 +269,7 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 
 void SettingsWindow::on_removeInfoPluginButton_clicked ()
 {
+	warnEdit ();
 	QTreeWidget *list=ui.infoPluginList;
 
 	int row=list->indexOfTopLevelItem (list->currentItem ());
@@ -265,6 +281,7 @@ void SettingsWindow::on_removeInfoPluginButton_clicked ()
 
 void SettingsWindow::on_infoPluginUpButton_clicked ()
 {
+	warnEdit ();
 	QTreeWidget *list=ui.infoPluginList;
 
 	int row=list->indexOfTopLevelItem (list->currentItem ());
@@ -277,6 +294,7 @@ void SettingsWindow::on_infoPluginUpButton_clicked ()
 
 void SettingsWindow::on_infoPluginDownButton_clicked ()
 {
+	warnEdit ();
 	QTreeWidget *list=ui.infoPluginList;
 
 	int row=list->indexOfTopLevelItem (list->currentItem ());
@@ -285,4 +303,50 @@ void SettingsWindow::on_infoPluginDownButton_clicked ()
 
 	list->insertTopLevelItem (row+1, list->takeTopLevelItem (row));
 	list->setCurrentItem (list->topLevelItem (row+1));
+}
+
+bool SettingsWindow::allowEdit ()
+{
+	QString message;
+
+	if (Settings::instance ().protectSettings)
+		message=utf8 ("Zum Speichern der Einstellungen ist das Datenbankpasswort\n"
+			"erforderlich.");
+	else if (ui.protectSettingsCheckbox->isChecked ())
+		message=utf8 ("Der Passwortschutz der Einstellungen wird aktiviert. Dazu\n"
+			"ist das Datenbankpasswort erforderlich. Fall der Schutz nicht aktiviert\n"
+			"werden soll, kann jetzt abgebrochen und die entsprechende Option\n"
+			"deaktiviert werden."
+			);
+	else
+		return true;
+
+
+	while (true)
+	{
+		bool ok=false;
+		QString enteredPassword=QInputDialog::getText (this, "Passwort erforderlich",
+			utf8 ("%1 Bitte Passwort eingeben:").arg (message), QLineEdit::Password, QString (), &ok);
+
+		// Canceled
+		if (!ok) return false;
+
+		if (enteredPassword==Settings::instance ().databaseInfo.password)
+			return true;
+
+		message="Das eingegebene Passwort ist nicht korrekt.";
+	}
+}
+
+void SettingsWindow::warnEdit ()
+{
+	if (!Settings::instance ().protectSettings) return;
+	if (warned) return;
+
+	showWarning (utf8 ("Einstellungen geschützt"), utf8 (
+		"Achtung: Die Einstellungen sind geschützt. Die Einstellungen\n"
+		"können geändert werden, aber zum Speichern ist das\n"
+		"Datenbankpasswort erforderlich."), this);
+
+	warned=true;
 }

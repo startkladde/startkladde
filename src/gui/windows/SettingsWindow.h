@@ -22,6 +22,9 @@ class SettingsWindow: public QDialog
 		void readItem (QTreeWidgetItem *item, const ShellPluginInfo &plugin);
 		void makeItemEditable (QListWidgetItem *item);
 
+		bool allowEdit ();
+		void warnEdit ();
+
 	private slots:
 		void on_mysqlDefaultPortCheckBox_toggled () { updateWidgets (); }
 
@@ -41,6 +44,7 @@ class SettingsWindow: public QDialog
 
 	private:
 		Ui::SettingsWindowClass ui;
+		bool warned;
 };
 
 #endif
