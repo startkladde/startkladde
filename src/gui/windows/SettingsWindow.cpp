@@ -308,16 +308,28 @@ void SettingsWindow::on_infoPluginDownButton_clicked ()
 bool SettingsWindow::allowEdit ()
 {
 	QString message;
+	QString requiredPassword;
+
+	QString oldPassword=Settings::instance ().databaseInfo.password;
+	QString newPassword=ui.mysqlPasswordInput->text ();
+	bool passwordChanged=(newPassword!=oldPassword);
 
 	if (Settings::instance ().protectSettings)
-		message=utf8 ("Zum Speichern der Einstellungen ist das Datenbankpasswort\n"
-			"erforderlich.");
+	{
+		message=utf8 ("Zum Speichern der Einstellungen ist das %1Datenbankpasswort\n"
+			"erforderlich.").arg (passwordChanged?"(alte) ":"");
+		requiredPassword=oldPassword;
+	}
 	else if (ui.protectSettingsCheckbox->isChecked ())
-		message=utf8 ("Der Passwortschutz der Einstellungen wird aktiviert. Dazu\n"
-			"ist das Datenbankpasswort erforderlich. Fall der Schutz nicht aktiviert\n"
+	{
+		message=utf8 (
+			"Der Passwortschutz der Einstellungen wird aktiviert. Dazu ist das\n"
+			"%1Datenbankpasswort erforderlich. Fall der Schutz nicht aktiviert\n"
 			"werden soll, kann jetzt abgebrochen und die entsprechende Option\n"
 			"deaktiviert werden."
-			);
+			).arg (passwordChanged?"(neue) ":"");
+		requiredPassword=newPassword;
+	}
 	else
 		return true;
 
@@ -331,7 +343,7 @@ bool SettingsWindow::allowEdit ()
 		// Canceled
 		if (!ok) return false;
 
-		if (enteredPassword==Settings::instance ().databaseInfo.password)
+		if (enteredPassword==requiredPassword)
 			return true;
 
 		message="Das eingegebene Passwort ist nicht korrekt.";
