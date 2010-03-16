@@ -73,6 +73,7 @@ HEADERS += \
            src/db/schema/Schema.h \
            src/db/schema/SchemaDumper.h \
            src/gui/dialogs.h \
+           src/gui/views/ReadOnlyItemDelegate.h \
            src/gui/widgets/AcpiWidget.h \
            src/gui/widgets/SkComboBox.h \
            src/gui/widgets/SkLabel.h \
@@ -116,6 +117,7 @@ HEADERS += \
            src/model/objectList/ObjectModel.h \
            src/net/TcpProxy.h \
            src/plugins/ShellPlugin.h \
+           src/plugins/ShellPluginInfo.h \
            src/statistics/LaunchMethodStatistics.h \
            src/statistics/PilotLog.h \
            src/statistics/PlaneLog.h \
@@ -178,6 +180,7 @@ SOURCES += \
            src/db/schema/Schema.cpp \
            src/db/schema/SchemaDumper.cpp \
            src/gui/dialogs.cpp \
+           src/gui/views/ReadOnlyItemDelegate.cpp \
            src/gui/widgets/AcpiWidget.cpp \
            src/gui/widgets/SkComboBox.cpp \
            src/gui/widgets/SkLabel.cpp \
@@ -214,6 +217,7 @@ SOURCES += \
            src/model/flightList/FlightSortFilterProxyModel.cpp \
            src/net/TcpProxy.cpp \
            src/plugins/ShellPlugin.cpp \
+           src/plugins/ShellPluginInfo.cpp \
            src/statistics/LaunchMethodStatistics.cpp \
            src/statistics/PilotLog.cpp \
            src/statistics/PlaneLog.cpp \

@@ -2,29 +2,21 @@
  * Improvements:
  *   - pluginPathList: after dragging, select the dragged item in the new
  *     position
- *   - pluginPathList: when double-clicking in the empty area, add an item
- *   - pluginPathList: context menu
+ *   - infoPluginList: enable internal dragging
+ *   - pluginPathList/infoPluginList:
+ *     - contextmenu
+ *     - swapping with alt+up/alt+down
+ *     - when double-clicking in the empty area, add an item
+ *   - reset all to default
  */
 #include "SettingsWindow.h"
 
 #include <iostream>
 
-#include <QStandardItemModel> //remove?
-
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
-
-#include "src/util/qString.h" //remove
-
-/*
-plugin_path path (.) (multi)
-shell_plugin <title>, <command>, <interval not 0> [, warn_on_death] [, rich_text (see doc/plugins)]
-    shell_plugin Sunset:, sunset_time sunsets, -1
-    shell_plugin Zeit bis sunset:, sunset_countdown sunsets, 60, rich_text
-    shell_plugin Wind:, wind /tmp/wind, 1, warn_on_death
-	shell_plugin System:, /bin/uname -a, -1
-*/
-
+#include "src/plugins/ShellPluginInfo.h"
+#include "src/gui/views/ReadOnlyItemDelegate.h"
 
 SettingsWindow::SettingsWindow (QWidget *parent):
 	QDialog (parent)
@@ -33,60 +25,9 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 
 	ui.dbTypePane->setVisible (false);
 
-	// QTreeWidget
-	// Has different editors, depending on data type
-	// Problem: cannot set the checkbox column to not editable
-	QTreeWidgetItem *item=new QTreeWidgetItem ((QTreeWidget *)NULL, QStringList () << "foo" << "bar");
-	item->setData (1, Qt::DisplayRole, 20);
-	item->setData (1, Qt::DisplayRole, QVariant ());
-	item->setCheckState (2, Qt::Checked);
-//	item->setFlags (item->flags () | Qt::ItemIsEditable/* | Qt::ItemIsUserCheckable*/);
-	item->setFlags (item->flags () &~ Qt::ItemIsEditable);
-	ui.infoPluginList->addTopLevelItem (item);
-
-
-	// QTreeView with QStandardItemModel
-	// Has different editors, depending on data type
-	// Problem: is either not editable (and not checkable) or can still edit
-	// the value beside the checkbox
-	QStandardItemModel *model=new QStandardItemModel (4, 4); // leak leak leak
-	QStandardItem *xitem=NULL;
-
-	xitem=new QStandardItem ("moo");
-	xitem->setData ("hasd", Qt::DisplayRole);
-	model->setItem (0, 0, xitem);
-
-	xitem=new QStandardItem ("moo");
-	xitem->setData (20, Qt::DisplayRole);
-	model->setItem (0, 1, xitem);
-
-	xitem=new QStandardItem ("moo");
-//	xitem->setData (QVariant (), Qt::DisplayRole);
-	xitem->setFlags ((xitem->flags () | Qt::ItemIsUserCheckable) /*& Qt::ItemIsEditable*/);
-//	xitem->setCheckState (Qt::Checked);
-	xitem->setData(Qt::Checked, Qt::CheckStateRole);
-	model->setItem (0, 1, xitem);
-
-	// http://www.qtforum.de/forum/viewtopic.php?t=7425&sid=770807a79253bf7914fe994b4d6ce5c2
-
-//	 for (int row = 0; row < 4; ++row) {
-//	     for (int column = 0; column < 4; ++column) {
-//	         QStandardItem *item = new QStandardItem(QString("row %0, column %1").arg(row).arg(column));
-//	         model->setItem(row, column, item);
-//	     }
-//	 }
-	 ui.infoPluginListView->setModel (model);
-
-		// Try this:
-	//	QItemEditorFactory *factory = new QItemEditorFactory;
-	//	QItemEditorCreatorBase *nullEditorCreator=new QStandardItemEditorCreator<ColorListEditor> ();
-	//	factory->registerEditor(QVariant::Color, colorListCreator);
-	//	QItemEditorFactory::setDefaultFactory(factory);
-	//	http://doc.trolltech.com/4.3/itemviews-coloreditorfactory.html
-
-	 // e. g. don't use the checkbox at all, but create a drop down box with
-	 // proper yes/no entries instead (maybe use QItemEditorCreator instead of StandardItemEditorCreator)
-	 // maybe use a QTreeWidget instead of a QTreeView in this case
+	// Make boolean columns read-only
+	ui.infoPluginList->setItemDelegateForColumn (2, new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (4, new ReadOnlyItemDelegate (ui.infoPluginList));
 
 	readSettings ();
 	updateWidgets ();
@@ -127,6 +68,17 @@ void SettingsWindow::readSettings ()
 	ui.enableDebugCheckbox->setChecked (s.enableDebug);
 	ui.diagCommandInput   ->setText    (s.diagCommand);
 
+	// *** Plugins - Info
+	ui.infoPluginList->clear ();
+	foreach (const ShellPluginInfo &plugin, s.infoPlugins)
+	{
+		QTreeWidgetItem *item=new QTreeWidgetItem (ui.infoPluginList);
+		readItem (item, plugin);
+	}
+	for (int i=0; i<ui.infoPluginList->columnCount (); ++i)
+		ui.infoPluginList->resizeColumnToContents (i);
+
+
 	// *** Plugins - Weather
 	// Weather plugin
 	ui.weatherPluginCommandInput ->setText  (s.weatherPluginCommand );
@@ -147,6 +99,17 @@ void SettingsWindow::readSettings ()
 		makeItemEditable (ui.pluginPathList->item (i));
 
 	updateWidgets ();
+}
+
+void SettingsWindow::readItem (QTreeWidgetItem *item, const ShellPluginInfo &plugin)
+{
+	item->setData       (0, Qt::DisplayRole, plugin.caption);
+	item->setData       (1, Qt::DisplayRole, plugin.command);
+	item->setCheckState (2, plugin.richText?Qt::Checked:Qt::Unchecked);
+	item->setData       (3, Qt::DisplayRole, plugin.restartInterval);
+	item->setCheckState (4, plugin.warnOnDeath?Qt::Checked:Qt::Unchecked);
+
+	item->setFlags (item->flags () | Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
 }
 
 void SettingsWindow::makeItemEditable (QListWidgetItem *item)
@@ -178,6 +141,21 @@ void SettingsWindow::writeSettings ()
 	s.enableDebug=ui.enableDebugCheckbox->isChecked ();
 	s.diagCommand=ui.diagCommandInput   ->text ();
 
+	// *** Plugins - Info
+	s.infoPlugins.clear ();
+	int numInfoPlugins=ui.infoPluginList->topLevelItemCount ();
+	for (int i=0; i<numInfoPlugins; ++i)
+	{
+		QTreeWidgetItem &item=*ui.infoPluginList->topLevelItem (i);
+		s.infoPlugins << ShellPluginInfo (
+			item.data (0, Qt::DisplayRole).toString (), // caption
+			item.data (1, Qt::DisplayRole).toString (), // command
+			item.checkState (2)==Qt::Checked,           // richText
+			item.data (3, Qt::DisplayRole).toInt    (), // restartInterval
+			item.checkState (4)==Qt::Checked            // warnOnDeath
+			);
+	}
+
 	// *** Plugins - Weather
 	// Weather plugin
 	s.weatherPluginCommand =ui.weatherPluginCommandInput ->text ();
@@ -190,8 +168,8 @@ void SettingsWindow::writeSettings ()
 
 	// *** Plugins - Paths
 	s.pluginPaths.clear ();
-	int n=ui.pluginPathList->count ();
-	for (int i=0; i<n; ++i)
+	int numPluginPaths=ui.pluginPathList->count ();
+	for (int i=0; i<numPluginPaths; ++i)
 		s.pluginPaths << ui.pluginPathList->item (i)->text ();
 
 	s.save ();
@@ -245,4 +223,54 @@ void SettingsWindow::on_pluginPathDownButton_clicked ()
 
 	list->insertItem (row+1, list->takeItem (row));
 	list->setCurrentRow (row+1);
+}
+
+
+
+
+
+void SettingsWindow::on_addInfoPluginButton_clicked ()
+{
+	QTreeWidget *list=ui.infoPluginList;
+
+	QTreeWidgetItem *item=new QTreeWidgetItem (list);
+	readItem (item, ShellPluginInfo ());
+
+	list->setCurrentItem (item);
+	list->editItem (item, 0);
+}
+
+void SettingsWindow::on_removeInfoPluginButton_clicked ()
+{
+	QTreeWidget *list=ui.infoPluginList;
+
+	int row=list->indexOfTopLevelItem (list->currentItem ());
+	if (row<0 || row>=list->topLevelItemCount ()) return;
+	delete list->takeTopLevelItem (row);
+	if (row>=list->topLevelItemCount ()) --row;
+	if (row>=0) list->setCurrentItem (list->topLevelItem (row));
+}
+
+void SettingsWindow::on_infoPluginUpButton_clicked ()
+{
+	QTreeWidget *list=ui.infoPluginList;
+
+	int row=list->indexOfTopLevelItem (list->currentItem ());
+	if (row<0 || row>=list->topLevelItemCount ()) return;
+	if (row==0) return;
+
+	list->insertTopLevelItem (row-1, list->takeTopLevelItem (row));
+	list->setCurrentItem (list->topLevelItem (row-1));
+}
+
+void SettingsWindow::on_infoPluginDownButton_clicked ()
+{
+	QTreeWidget *list=ui.infoPluginList;
+
+	int row=list->indexOfTopLevelItem (list->currentItem ());
+	if (row<0 || row>=list->topLevelItemCount ()) return;
+	if (row==list->topLevelItemCount ()-1) return;
+
+	list->insertTopLevelItem (row+1, list->takeTopLevelItem (row));
+	list->setCurrentItem (list->topLevelItem (row+1));
 }

@@ -13,6 +13,7 @@
 #include <QStringList>
 
 #include "src/db/DatabaseInfo.h"
+#include "src/plugins/ShellPluginInfo.h"
 
 /**
  * The new configuration class, to replace Options
@@ -47,6 +48,7 @@ class Settings: public QObject
 		QString diagCommand;
 
 		// *** Plugins - Info
+		QList<ShellPluginInfo> infoPlugins;
 
 		// *** Plugins - Weather
 		// Weather plugin
@@ -60,18 +62,6 @@ class Settings: public QObject
 
 		// *** Plugins - Paths
 		QStringList pluginPaths;
-
-
-//		bool demosystem;
-//		bool display_queries;
-//		bool colorful;
-//		style <name> (-)
-//		source <filename> (multi)
-//
-//		// Plugins
-//		QList<ShellPlugin *> shellPlugins;
-//
-//		QList<LaunchMethod> configuredLaunchMethods;
 
 
 	protected:

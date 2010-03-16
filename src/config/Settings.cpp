@@ -1,3 +1,13 @@
+/*
+ * TODO:
+ *   - demosystem
+ *   - displayQueries
+ *   - colorful
+ *   - configuredLaunchMethods;
+ */
+
+
+
 #include "Settings.h"
 
 #include <iostream>
@@ -15,13 +25,8 @@ Settings *Settings::theInstance=NULL;
  *     documentation) and QSettings is only reentrant, not thread safe.
  */
 
-/*
- * int size=settings.beginReadArray ("logins"); settings.setArrayIndex (i); settings.value (...)
- * beginWriteArray ("logins"), setArrayIndex, setValue
- * endArray ()
- *
- *
- */
+
+
 Settings::Settings ()
 {
 	readSettings ();
@@ -40,6 +45,11 @@ Settings &Settings::instance ()
 void Settings::save ()
 {
 	writeSettings ();
+
+	// Read back the changes so we can be sure we have the same state as when
+	// reading the setups on startup.
+	readSettings ();
+
 	emit changed ();
 }
 
@@ -64,6 +74,31 @@ void Settings::readSettings ()
 	enableDebug=s.value ("enableDebug", false                  ).toBool ();
 	diagCommand=s.value ("diagCommand", "xterm -e ./netztest &").toString ();
 
+	// *** Plugins - Info
+	infoPlugins.clear ();
+	if (s.contains ("infoPlugins/size"))
+	{
+		int n=s.beginReadArray ("infoPlugins");
+		for (int i=0; i<n; ++i)
+		{
+			s.setArrayIndex (i);
+			infoPlugins << ShellPluginInfo (s);
+		}
+		s.endArray ();
+	}
+	else
+	{
+		infoPlugins
+			<< ShellPluginInfo ("Sunset:"         , "sunset_time sunsets"     , false, 0  , false)
+			<< ShellPluginInfo ("Zeit bis sunset:", "sunset_countdown sunsets", true , 60 , false)
+			<< ShellPluginInfo ("Wetter:"         , "metar EDDS"              , false, 600, false)
+			<< ShellPluginInfo (""                , "metar EDDF"              , false, 600, false)
+			<< ShellPluginInfo (""                , "metar EDFM"              , false, 600, false)
+			<< ShellPluginInfo (""                , "metar EDRT"              , false, 600, false)
+			;
+	}
+
+
 	// *** Plugins - Weather
 	// Weather plugin
 	weatherPluginCommand =s.value ("weatherPluginCommand" , "plugins/weather/regenradar_wetter.com").toString ();
@@ -76,11 +111,14 @@ void Settings::readSettings ()
 
 	// *** Plugins - Paths
 	pluginPaths.clear ();
-	if (s.contains ("pluginPaths"))
+	if (s.contains ("pluginPaths/size"))
 	{
 		int n=s.beginReadArray ("pluginPaths");
 		for (int i=0; i<n; ++i)
+		{
+			s.setArrayIndex (i);
 			pluginPaths << s.value ("path").toString ();
+		}
 		s.endArray ();
 	}
 	else
@@ -113,6 +151,16 @@ void Settings::writeSettings ()
 	// Diagnostics
 	s.setValue ("enableDebug", enableDebug);
 	s.setValue ("diagCommand", diagCommand);
+
+	// *** Plugins - Info
+	s.beginWriteArray ("infoPlugins");
+	for (int i=0; i<infoPlugins.size (); ++i)
+	{
+		s.setArrayIndex (i);
+		infoPlugins.at (i).save (s);
+	}
+	s.endArray ();
+
 
 	// *** Plugins - Weather
 	// Weather plugin

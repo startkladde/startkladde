@@ -5,6 +5,8 @@
 
 #include "ui_SettingsWindow.h"
 
+class ShellPluginInfo;
+
 class SettingsWindow: public QDialog
 {
     Q_OBJECT
@@ -17,6 +19,7 @@ class SettingsWindow: public QDialog
 		void readSettings ();
 		void writeSettings ();
 
+		void readItem (QTreeWidgetItem *item, const ShellPluginInfo &plugin);
 		void makeItemEditable (QListWidgetItem *item);
 
 	private slots:
@@ -26,6 +29,11 @@ class SettingsWindow: public QDialog
 		void on_removePluginPathButton_clicked ();
 		void on_pluginPathUpButton_clicked ();
 		void on_pluginPathDownButton_clicked ();
+
+		void on_addInfoPluginButton_clicked ();
+		void on_removeInfoPluginButton_clicked ();
+		void on_infoPluginUpButton_clicked ();
+		void on_infoPluginDownButton_clicked ();
 
 		void updateWidgets ();
 
