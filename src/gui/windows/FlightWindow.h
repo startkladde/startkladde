@@ -116,7 +116,7 @@
 #include "src/db/dbId.h"
 #include "src/model/LaunchMethod.h" // TODO remove dependency
 #include "src/model/Flight.h" // Required for Flight::Mode and Flight::Type
-#include "src/config/Options.h" // TODO remove dependency
+#include "src/config/Settings.h" // TODO remove dependency
 
 class DbManager;
 class Person;
@@ -242,7 +242,7 @@ class FlightWindow: public QDialog
 		// No exception thrown because if the launch method is not valid,
 		bool isTowplaneRegistrationActive         ();
 		bool isTowplaneTypeActive                 () { return currentIsAirtow (); }
-		bool isTowpilotActive                     () { return currentIsAirtow () && opts.record_towpilot; }
+		bool isTowpilotActive                     () { return currentIsAirtow () && Settings::instance ().recordTowpilot; }
 		bool isTowflightModeActive                () { return currentIsAirtow (); }
 		//
 		bool isDepartureActive                    () { return currentDepartsHere (); }

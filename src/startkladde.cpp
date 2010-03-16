@@ -6,9 +6,8 @@
 #include <string>
 #include <QApplication>
 
-#include "src/config/Options.h"
+#include "src/config/Settings.h"
 #include "src/gui/windows/MainWindow.h"
-#include "src/plugins/ShellPlugin.h"
 #include "src/db/Database.h"
 #include "src/db/interface/DefaultInterface.h"
 #include "src/db/migration/Migrator.h"
@@ -30,15 +29,15 @@
 //#include "WeatherDialog.h"
 //#include "ShellPlugin.h"
 
-void display_help ()
-	/*
-	 * Displays a brief parameter information.
-	 */
-{
-	std::cout << "usage: startkladde [options]" << std::endl;
-	std::cout << "  options:" << std::endl;
-	Options::display_options ("    ");
-}
+//void display_help ()
+//	/*
+//	 * Displays a brief parameter information.
+//	 */
+//{
+//	std::cout << "usage: startkladde [options]" << std::endl;
+//	std::cout << "  options:" << std::endl;
+//	Options::display_options ("    ");
+//}
 
 
 #include "src/concurrent/DefaultQThread.h"
@@ -87,8 +86,8 @@ void proxy_test ()
 
 int test_database ()
 {
-//	DefaultInterface interface (opts.databaseInfo);
-	ThreadSafeInterface interface (opts.databaseInfo);
+//	DefaultInterface interface (Settings::instance ().databaseInfo);
+	ThreadSafeInterface interface (Settings::instance ().databaseInfo);
 	Database db (interface);
 
 	try
@@ -243,8 +242,7 @@ int showGui (QApplication &a)
 
 	// Put light.{la,so} to styles/
 	//a.setStyle ("light, 3rd revision");
-	if (!opts.style.isEmpty ()) a.setStyle (opts.style);
-//		db.display_queries=opts.display_queries;
+//	if (!style.isEmpty ()) a.setStyle (style);
 
 	MainWindow w (NULL);
 
@@ -255,20 +253,15 @@ int showGui (QApplication &a)
 	w.show ();
 	int ret=a.exec();
 
-	foreach (ShellPlugin *plugin, opts.shellPlugins)
-	{
-		//std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
-		plugin->terminate ();
-		sched_yield ();
-	}
-
 	return ret;
 }
 
-int doStuff ()
+int doStuff (const QStringList &nonOptions)
 {
+	Settings &s=Settings::instance ();
+
 	// We don't need the ORM or thread safety, so we use a DefaultInterface.
-	DefaultInterface db (opts.databaseInfo);
+	DefaultInterface db (s.databaseInfo);
 
 	// Tests ahead
 	bool ok=db.open ();
@@ -279,33 +272,33 @@ int doStuff ()
 		return 1;
 	}
 
-	if (opts.non_options[0]=="db:up")
+	if (nonOptions[0]=="db:up")
 		Migrator (db).up ();
-	else if (opts.non_options[0]=="db:down")
+	else if (nonOptions[0]=="db:down")
 		Migrator (db).down ();
-	else if (opts.non_options[0]=="db:migrate")
+	else if (nonOptions[0]=="db:migrate")
 		Migrator (db).migrate ();
-	else if (opts.non_options[0]=="db:version")
+	else if (nonOptions[0]=="db:version")
 		std::cout << "Version is " << Migrator (db).currentVersion () << std::endl;
-	else if (opts.non_options[0]=="db:load")
+	else if (nonOptions[0]=="db:load")
 		Migrator (db).loadSchema ();
-	else if (opts.non_options[0]=="db:drop")
+	else if (nonOptions[0]=="db:drop")
 		Migrator (db).drop ();
-	else if (opts.non_options[0]=="db:clear")
+	else if (nonOptions[0]=="db:clear")
 		Migrator (db).clear ();
-	else if (opts.non_options[0]=="db:create")
+	else if (nonOptions[0]=="db:create")
 		Migrator (db).create ();
-//	else if (opts.non_options[0]=="db:test")
+//	else if (nonOptions[0]=="db:test")
 //		test_database (db);
-//	else if (opts.non_options[0]=="db:fail") // TODO
+//	else if (nonOptions[0]=="db:fail") // TODO
 //		db.executeQuery ("bam!");
-	else if (opts.non_options[0]=="db:migrations")
+	else if (nonOptions[0]=="db:migrations")
 	{
 		MigrationFactory factory;
 		foreach (quint64 version, factory.availableVersions ())
 			std::cout << version << " - " << factory.migrationName (version) << std::endl;
 	}
-	else if (opts.non_options[0]=="db:dump")
+	else if (nonOptions[0]=="db:dump")
 	{
 		Migrator m (db);
 		if (!m.isCurrent ())
@@ -316,9 +309,9 @@ int doStuff ()
 
 		SchemaDumper d (db);
 
-		if (opts.non_options.size ()>1)
+		if (nonOptions.size ()>1)
 		{
-			QString filename=opts.non_options[1];
+			QString filename=nonOptions[1];
 			std::cout << QString ("Dumping schema to %1").arg (filename) << std::endl;
 			d.dumpSchemaToFile (filename);
 		}
@@ -357,32 +350,31 @@ int main (int argc, char **argv)
 	QCoreApplication::setOrganizationDomain("startkladde.sf.net");
 	QCoreApplication::setApplicationName("startkladde");
 
+	QStringList args;
+	for (int i=0; i<argc; ++i) args << argv[i];
+
+	// FIXME
+	QStringList nonOptions;//=args.mid (1);
+
+	std::cout << nonOptions.join (" - ") << std::endl;
+
 
 	int ret=0;
 
 	try
 	{
-		if (opts.need_display ())
-			opts.do_display ();
-		else if (opts.display_help)
-			display_help ();
+		if (nonOptions.empty ())
+		{
+			ret=showGui (a);
+		}
 		else
 		{
-			opts.read_config_files (argc, argv);
-
-			if (opts.non_options.empty ())
-			{
-				ret=showGui (a);
-			}
+			if (nonOptions[0]=="test_db")
+				ret=test_database ();
+			else if (nonOptions[0]=="proxy")
+				proxy_test ();
 			else
-			{
-				if (opts.non_options[0]=="test_db")
-					ret=test_database ();
-				else if (opts.non_options[0]=="proxy")
-					proxy_test ();
-				else
-					ret=doStuff ();
-			}
+				ret=doStuff (nonOptions);
 		}
 	}
 	catch (SqlException &ex)

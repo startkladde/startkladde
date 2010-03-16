@@ -26,7 +26,6 @@
 
 // TODO many dependencies - split
 #include "src/concurrent/threadUtil.h"
-#include "src/config/Options.h" // TODO remove joah
 #include "src/config/Settings.h"
 #include "src/gui/widgets/WeatherWidget.h"
 #include "src/gui/windows/DateInputDialog.h"
@@ -46,6 +45,7 @@
 #include "src/model/objectList/EntityList.h"
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/plugins/ShellPlugin.h"
+#include "src/plugins/ShellPluginInfo.h"
 #include "src/statistics/LaunchMethodStatistics.h"
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"
@@ -63,11 +63,12 @@ template <class T> class MutableObjectList;
 // ******************
 
 MainWindow::MainWindow (QWidget *parent) :
-	QMainWindow (parent), dbManager (opts.databaseInfo), cache (dbManager.getCache ()),
-			weatherWidget (NULL), weatherPlugin (NULL),
-			weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
-			contextMenu (new QMenu (this)),
-			databaseActionsEnabled (false)
+	QMainWindow (parent), dbManager (Settings::instance ().databaseInfo),
+		cache (dbManager.getCache ()),
+		weatherWidget (NULL), weatherPlugin (NULL),
+		weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
+		contextMenu (new QMenu (this)),
+		databaseActionsEnabled (false)
 {
 	ui.setupUi (this);
 
@@ -120,12 +121,18 @@ MainWindow::MainWindow (QWidget *parent) :
 	ui.menuDatabase->addAction (logAction);
 
 	// TODO not working
-	ui.menuDebug->setVisible (opts.debug);
-	ui.menuDemosystem->menuAction()->setVisible (opts.demosystem);
+	ui.menuDebug     ->menuAction ()->setVisible (Settings::instance ().debug);
+	ui.menuDemosystem->menuAction ()->setVisible (false);
+	ui.actionNetworkDiagnostics     ->setVisible (!blank (Settings::instance ().diagCommand));
 
-	ui.actionNetworkDiagnostics->setVisible (!opts.diag_cmd.isEmpty ());
+#ifdef SK_DEMOSYSTEM
+	ui.menuDemosystem->menuAction ()->setVisible (true);
+#endif
 
-	bool virtualKeyboardEnabled = (system ("which kvkbd >/dev/null") == 0 && system ("which dcop >/dev/null") == 0);
+	bool virtualKeyboardEnabled = (
+		system ("which kvkbd >/dev/null") == 0 &&
+		system ("which dcop >/dev/null") == 0);
+
 	ui.actionShowVirtualKeyboard->setVisible (virtualKeyboardEnabled);
 	// TODO Qt way for icons?
 	ui.actionShowVirtualKeyboard->setIcon (QIcon ((const QPixmap&)QPixmap (kvkbd)));
@@ -189,11 +196,18 @@ MainWindow::~MainWindow ()
 	setVisible (false);
 	// QObjects will be deleted automatically
 	// TODO make sure this also applies to flightList
+
+	foreach (ShellPlugin *plugin, infoPlugins)
+	{
+		//std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
+		plugin->terminate ();
+		sched_yield ();
+	}
 }
 
 void MainWindow::setupLabels ()
 {
-	if (opts.colorful)
+	if (Settings::instance ().coloredLabels)
 	{
 		QObjectList labels = ui.infoPane->children ();
 
@@ -255,14 +269,16 @@ void MainWindow::setupLayout ()
 	pluginPaneLayout->setColumnStretch (1, 1);
 }
 
-void MainWindow::setupPlugin (ShellPlugin *plugin, QGridLayout *pluginLayout)
+void MainWindow::setupPlugin (const ShellPluginInfo &pluginInfo, QGridLayout *pluginLayout)
 {
+	ShellPlugin *plugin=new ShellPlugin (pluginInfo);
+
 	SkLabel *captionLabel = new SkLabel ("", ui.pluginPane);
 	SkLabel *valueLabel = new SkLabel ("...", ui.pluginPane);
 
 	valueLabel->setWordWrap (true);
 
-	if (plugin->get_rich_text ())
+	if (pluginInfo.richText)
 	{
 		captionLabel->setTextFormat (Qt::RichText);
 		valueLabel->setTextFormat (Qt::RichText);
@@ -281,7 +297,7 @@ void MainWindow::setupPlugin (ShellPlugin *plugin, QGridLayout *pluginLayout)
 	pluginLayout->addWidget (captionLabel, row, 0, Qt::AlignTop);
 	pluginLayout->addWidget (valueLabel, row, 1, Qt::AlignTop);
 
-	if (opts.colorful)
+	if (Settings::instance ().coloredLabels)
 	{
 		captionLabel->setPaletteBackgroundColor (QColor (255, 63, 127));
 		valueLabel ->setPaletteBackgroundColor (QColor (255, 255, 127));
@@ -301,9 +317,11 @@ void MainWindow::setupPlugin (ShellPlugin *plugin, QGridLayout *pluginLayout)
 
 void MainWindow::setupPlugins ()
 {
-	ui.pluginPane->setVisible (!opts.shellPlugins.isEmpty ());
+	Settings &s=Settings::instance ();
 
-	if (!opts.shellPlugins.isEmpty ())
+	ui.pluginPane->setVisible (!s.infoPlugins.isEmpty ());
+
+	if (!s.infoPlugins.isEmpty ())
 	{
 		ui.pluginPane->setVisible (true);
 		QGridLayout *pluginLayout = dynamic_cast<QGridLayout *> (ui.pluginPane->layout ());
@@ -314,8 +332,8 @@ void MainWindow::setupPlugins ()
 			foreach (QObject *child, ui.pluginPane->children ())
 					if (dynamic_cast<QLabel *> (child)) delete child;
 
-			foreach (ShellPlugin *plugin, opts.shellPlugins)
-					setupPlugin (plugin, pluginLayout);
+			foreach (const ShellPluginInfo &pluginInfo, s.infoPlugins)
+				setupPlugin (pluginInfo, pluginLayout);
 
 			pluginLayout->setRowStretch (pluginLayout->rowCount (), 1);
 		}
@@ -326,25 +344,20 @@ void MainWindow::setupPlugins ()
 		}
 	}
 
-	ui.weatherFrame->setVisible (!opts.weather_plugin.isEmpty ());
+	ui.weatherFrame->setVisible (!blank (s.weatherPluginCommand));
 
-	if (!opts.weather_plugin.isEmpty ())
+	if (!blank (s.weatherPluginCommand))
 	{
 		// Create and setup the weather widget. The weather widget is located to
 		// the right of the info frame.
 		weatherWidget = new WeatherWidget (ui.weatherFrame, "weather");
 		ui.weatherFrame->layout ()->add (weatherWidget);
-		//		std::cout << opts.weather_height << std::endl;
-		//		weatherWidget->setMinimumSize (opts.weather_height, opts.weather_height);
-		weatherWidget->setFixedSize (opts.weather_height, opts.weather_height);
-		//		weatherWidget->setSizePolicy (Qt::);
-		//		weatherWidget->setFixedHeight (opts.weather_height);
-		//		weatherWidget->setFixedWidth (opts.weather_height); // Wird bei Laden eines Bildes angepasst
+		weatherWidget->setFixedSize (s.weatherPluginHeight, s.weatherPluginHeight);
 		weatherWidget->setText ("[Wetter]");
 
 		// Create and setup the weather plugin and connect it to the weather widget
-		std::cout << "Weather plugin is " << opts.weather_plugin << std::endl;
-		weatherPlugin = new ShellPlugin ("Wetter", opts.weather_plugin, opts.weather_interval); // Initialize to given values
+		std::cout << "Weather plugin is " << s.weatherPluginCommand << std::endl;
+		weatherPlugin = new ShellPlugin ("Wetter", s.weatherPluginCommand, s.weatherPluginInterval);
 		QObject::connect (weatherPlugin, SIGNAL (lineRead (QString)), weatherWidget, SLOT (inputLine (QString)));
 		QObject::connect (weatherPlugin, SIGNAL (pluginNotFound ()), weatherWidget, SLOT (pluginNotFound ()));
 		QObject::connect (weatherWidget, SIGNAL (doubleClicked ()), this, SLOT (weatherWidget_doubleClicked ()));
@@ -667,7 +680,7 @@ void MainWindow::departFlight (dbId id)
 			if (flight.copilotRecorded ())
 				if (!checkPersonFlying (flight.copilotId, flight.copilotDescription ())) return;
 			// Towpilot (if airtow)
-			if (isAirtow && opts.record_towpilot)
+			if (isAirtow && Settings::instance ().recordTowpilot)
 				if (!checkPersonFlying (flight.towpilotId, flight.towpilotDescription ())) return;
 
 			flight.departNow ();
@@ -1051,8 +1064,8 @@ void MainWindow::on_actionRestartPlugins_triggered ()
 {
 	if (weatherPlugin) weatherPlugin->restart ();
 
-	foreach (ShellPlugin *plugin, opts.shellPlugins)
-			plugin->restart ();
+	foreach (ShellPlugin *plugin, infoPlugins)
+		plugin->restart ();
 }
 
 // **********
@@ -1070,7 +1083,9 @@ void MainWindow::on_actionInfo_triggered ()
 
 void MainWindow::on_actionNetworkDiagnostics_triggered ()
 {
-	if (!opts.diag_cmd.isEmpty ()) system (opts.diag_cmd.utf8 ().constData ());
+	QString command=Settings::instance ().diagCommand;
+	if (!blank (command))
+		system (command.utf8 ().constData ());
 }
 
 // ************
@@ -1199,6 +1214,8 @@ void MainWindow::timeTimer_timeout ()
 
 void MainWindow::weatherWidget_doubleClicked ()
 {
+	Settings &s=Settings::instance ();
+
 	if (weatherDialog)
 	{
 		// How to focus a QDialog?
@@ -1207,16 +1224,16 @@ void MainWindow::weatherWidget_doubleClicked ()
 	}
 	else
 	{
-		if (!opts.weather_dialog_plugin.isEmpty ())
+		if (!blank (s.weatherWindowCommand))
 		{
 			// The weather animation plugin will be deleted by the weather dialog
-			ShellPlugin *weatherAnimationPlugin = new ShellPlugin (opts.weather_dialog_title,
-					opts.weather_dialog_plugin, opts.weather_dialog_interval);
+			ShellPlugin *weatherAnimationPlugin = new ShellPlugin (
+					s.weatherWindowTitle, s.weatherWindowCommand, s.weatherPluginInterval);
 
 			// The weather dialog will be deleted when it's closed, and
 			// weatherDialog is a QPointer, so it will be set to NULL.
 			weatherDialog = new WeatherDialog (weatherAnimationPlugin, this);
-			weatherDialog->setCaption (opts.weather_dialog_title);
+			weatherDialog->setCaption (s.weatherWindowTitle);
 			weatherDialog->show ();
 		}
 	}
@@ -1335,7 +1352,10 @@ void MainWindow::on_actionEditPeople_triggered ()
 
 void MainWindow::on_actionEditLaunchMethods_triggered ()
 {
-	ObjectListWindow<LaunchMethod>::show (dbManager, opts.protect_launch_methods, opts.databaseInfo.password, this);
+	ObjectListWindow<LaunchMethod>::show (dbManager,
+		Settings::instance ().protectLaunchMethods,
+		Settings::instance ().databaseInfo.password,
+		this);
 }
 
 

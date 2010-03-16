@@ -27,7 +27,8 @@ Settings *Settings::theInstance=NULL;
 
 
 
-Settings::Settings ()
+Settings::Settings ():
+	debug (false), coloredLabels (false), displayQueries (false)
 {
 	readSettings ();
 }

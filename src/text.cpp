@@ -5,7 +5,7 @@
 
 #include <QStringList>
 
-#include "config/Options.h"
+#include "config/Settings.h"
 
 const QString whitespace=" \t\r\n";
 
@@ -34,10 +34,12 @@ bool eintraege_sind_leer (QString eintrag1, QString eintrag2)
 	return eintrag_ist_leer (eintrag1) && eintrag_ist_leer (eintrag2);
 }
 
-// TODO move somewhere more appropriate, then remove dependency on options.h
+// TODO move somewhere more appropriate, then remove dependency on Settings.h
 bool locationEntryCanBeChanged (QString location)
 {
-	return eintrag_ist_leer (location) || location.simplified () == opts.ort.simplified ();
+	return
+		eintrag_ist_leer (location) ||
+		location.simplified () == Settings::instance ().location.simplified ();
 }
 
 

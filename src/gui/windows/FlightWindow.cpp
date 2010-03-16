@@ -15,7 +15,7 @@
 #include "src/model/Person.h"
 #include "src/db/cache/Cache.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
-#include "src/config/Options.h" // Required for opts.ort
+#include "src/config/Settings.h" // Required for location
 #include "src/util/qString.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/DbManager.h"
@@ -178,11 +178,10 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	ui.towplaneRegistrationLabel ->setDefaultBackgroundColor (requiredFieldColor);
 
 	// Hide the towpilot fields (so they don't take up space, not just
-	// concealed - that is decided in #isTowpilotActive) if
-	// opts.record_towpilot is false. If record_towpilot is true, but the
-	// selected launch method is not an airtow, the fields will still be
-	// concealed.
-	if (!opts.record_towpilot)
+	// concealed - that is decided in #isTowpilotActive) if recordTowpilot is
+	// false. If recordTowpilot is true, but the selected launch method is not
+	// an airtow, the fields will still be concealed.
+	if (Settings::instance ().recordTowpilot)
 	{
 		ui.towpilotLastNameInput->setVisible (false);
 		ui.towpilotFirstNameInput->setVisible (false);
@@ -200,10 +199,9 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 		ui.errorLabel->setVisible (false);
 	}
 
-
 	// Setup initial values
 	if (mode==modeCreate)
-		ui.departureLocationInput->setCurrentText (opts.ort);
+		ui.departureLocationInput->setCurrentText (Settings::instance ().location);
 
 	updateSetup ();
 	updateErrors (false);
@@ -293,10 +291,11 @@ void FlightWindow::fillData ()
 	ui.         landingLocationInput -> insertStringList (locations);
 	ui.towflightLandingLocationInput -> insertStringList (locations);
 
-	// Make sure opts.ort is in the list
-	ui.       departureLocationInput ->setCurrentText (opts.ort);
-	ui.         landingLocationInput ->setCurrentText (opts.ort);
-	ui.towflightLandingLocationInput ->setCurrentText (opts.ort);
+	// Make sure our location is in the list
+	const QString &location=Settings::instance ().location;
+	ui.       departureLocationInput ->setCurrentText (location);
+	ui.         landingLocationInput ->setCurrentText (location);
+	ui.towflightLandingLocationInput ->setCurrentText (location);
 
 	ui.         landingLocationInput ->setCurrentText ("");
 	ui.towflightLandingLocationInput ->setCurrentText ("");
@@ -1789,7 +1788,7 @@ void FlightWindow::flightModeChanged (int index)
 		{
 			// Departure location is local location
 			if (locationEntryCanBeChanged (departureLocation))
-				ui.departureLocationInput->setCurrentText (opts.ort);
+				ui.departureLocationInput->setCurrentText (Settings::instance ().location);
 
 			// Clear landing location (leaving or set automatically on landing)
 			if (locationEntryCanBeChanged (landingLocation))
@@ -1872,7 +1871,7 @@ void FlightWindow::landingTimeCheckboxChanged (bool checked)
 	{
 		// Landed => set landing location to local location
 		if (locationEntryCanBeChanged (ui.landingLocationInput->currentText ()))
-			ui.landingLocationInput->setCurrentText (opts.ort);
+			ui.landingLocationInput->setCurrentText (Settings::instance ().location);
 
 		// Set 1 landing if it was 0.
 		if (getCurrentNumLandings ()==0)
@@ -1895,7 +1894,7 @@ void FlightWindow::towflightLandingTimeCheckboxChanged (bool checked)
 	{
 		// Landed => set landing location to local location
 		if (locationEntryCanBeChanged (ui.towflightLandingLocationInput->currentText ()))
-			ui.towflightLandingLocationInput->setCurrentText (opts.ort);
+			ui.towflightLandingLocationInput->setCurrentText (Settings::instance ().location);
 	}
 	else
 	{

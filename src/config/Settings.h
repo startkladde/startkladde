@@ -46,6 +46,9 @@ class Settings: public QObject
 		// Diagnostics
 		bool enableDebug;
 		QString diagCommand;
+		bool debug;
+		bool coloredLabels;
+		bool displayQueries;
 
 		// *** Plugins - Info
 		QList<ShellPluginInfo> infoPlugins;

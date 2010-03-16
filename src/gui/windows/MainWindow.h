@@ -48,6 +48,7 @@ template<class T> class QList;
 class QModelIndex;
 class FlightSortFilterProxyModel;
 class ShellPlugin;
+class ShellPluginInfo;
 class WeatherWidget;
 class WeatherDialog;
 class FlightModel;
@@ -75,7 +76,7 @@ class MainWindow: public QMainWindow
 
 		// Setup
 		void setupPlugins ();
-		void setupPlugin (ShellPlugin *plugin, QGridLayout *pluginLayout);
+		void setupPlugin (const ShellPluginInfo &pluginInfo, QGridLayout *pluginLayout);
 		void setupLabels ();
 		void setupLayout ();
 
@@ -216,6 +217,8 @@ class MainWindow: public QMainWindow
 		Cache &cache;
 
 		QDate displayDate;
+
+		QList<ShellPlugin *> infoPlugins;
 		WeatherWidget *weatherWidget;
 		ShellPlugin *weatherPlugin;
 		QPointer<WeatherDialog> weatherDialog;
@@ -236,6 +239,7 @@ class MainWindow: public QMainWindow
 
 		bool databaseActionsEnabled;
 		QString databaseOkText;
+
 };
 
 #endif // MAINWINDOW_H

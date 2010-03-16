@@ -771,6 +771,9 @@
    <property name="text">
     <string>&amp;Ping Server</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionInfo">
    <property name="text">
@@ -819,6 +822,9 @@
   <action name="actionTest">
    <property name="text">
     <string>&amp;Test</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionConnect">

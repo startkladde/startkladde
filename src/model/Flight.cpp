@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "src/config/Options.h"
+#include "src/config/Settings.h"
 #include "src/db/cache/Cache.h"
 #include "src/model/Plane.h"
 #include "src/model/LaunchMethod.h"
@@ -355,7 +355,7 @@ bool Flight::landNow (bool force)
 		landed=true;
 
 		if (eintrag_ist_leer (landingLocation))
-			landingLocation=opts.ort;
+			landingLocation=Settings::instance ().location;
 
 		return true;
 	}
@@ -369,7 +369,8 @@ bool Flight::landTowflightNow (bool force)
 	{
 		towflightLandingTime.set_current (true);
 		towflightLanded=true;
-		if (towflightLandsHere () && eintrag_ist_leer (towflightLandingLocation)) towflightLandingLocation=opts.ort;
+		if (towflightLandsHere () && eintrag_ist_leer (towflightLandingLocation))
+			towflightLandingLocation=Settings::instance ().location;
 		return true;
 	}
 
@@ -590,6 +591,8 @@ QString Flight::errorDescription (FlightError code) const
  */
 FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *sa) const
 {
+	bool recordTowpilot=Settings::instance ().recordTowpilot;
+
 	// TODO return a QList instead
 	// TODO check_schlepp not used. Investigate.
 	(void)check_schlepp;
@@ -612,10 +615,10 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && idInvalid (copilotId) && !copilotLastName.isEmpty () && copilotFirstName.isEmpty (), ff_begleiter_nur_vorname);
 	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && idInvalid (copilotId) && !copilotLastName.isEmpty () && !copilotFirstName.isEmpty (), ff_begleiter_nicht_identifiziert);
 	CHECK_FEHLER (FLUG, typeCopilotRecorded (type) && pilotId!=0 && pilotId==copilotId, ff_pilot_gleich_begleiter)
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotLastName.isEmpty () && towpilotFirstName.isEmpty (), ff_towpilot_nur_nachname);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotLastName.isEmpty () && towpilotFirstName.isEmpty (), ff_towpilot_nur_vorname);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotLastName.isEmpty () && !towpilotFirstName.isEmpty (), ff_towpilot_nicht_identifiziert);
-	CHECK_FEHLER (FLUG, opts.record_towpilot && sa && sa->isAirtow () && towpilotId!=0 && pilotId==towpilotId, ff_pilot_gleich_towpilot)
+	CHECK_FEHLER (FLUG, recordTowpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotLastName.isEmpty () && towpilotFirstName.isEmpty (), ff_towpilot_nur_nachname);
+	CHECK_FEHLER (FLUG, recordTowpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotLastName.isEmpty () && towpilotFirstName.isEmpty (), ff_towpilot_nur_vorname);
+	CHECK_FEHLER (FLUG, recordTowpilot && sa && sa->isAirtow () && idInvalid (towpilotId) && !towpilotLastName.isEmpty () && !towpilotFirstName.isEmpty (), ff_towpilot_nicht_identifiziert);
+	CHECK_FEHLER (FLUG, recordTowpilot && sa && sa->isAirtow () && towpilotId!=0 && pilotId==towpilotId, ff_pilot_gleich_towpilot)
 	CHECK_FEHLER (FLUG, idInvalid (copilotId) && (type==typeTraining2) && copilotLastName.isEmpty () && copilotFirstName.isEmpty (), ff_schulung_ohne_begleiter)
 	// TODO einsitzige Schulung mit Begleiter
 	CHECK_FEHLER (FLUG, copilotId!=0 && !typeCopilotRecorded (type), ff_begleiter_nicht_erlaubt)

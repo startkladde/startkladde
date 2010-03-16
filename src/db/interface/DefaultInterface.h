@@ -70,6 +70,7 @@ class DefaultInterface: public QObject, public Interface
 		QSqlDatabase db;
 		TcpProxy *proxy;
 		QAtomicInt canceled; // There is no QAtomicBool. 0=false, others=true
+		bool displayQueries;
 
 		static QAtomicInt freeNumber;
 		static int getFreeNumber () { return freeNumber.fetchAndAddOrdered (1); }

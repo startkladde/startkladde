@@ -54,7 +54,6 @@
 
 #include "src/util/qString.h"
 #include "src/db/result/DefaultResult.h"
-#include "src/config/Options.h"
 #include "src/text.h"
 #include "src/db/interface/exceptions/QueryFailedException.h"
 #include "src/db/interface/exceptions/ConnectionFailedException.h"
@@ -63,6 +62,7 @@
 #include "src/db/interface/exceptions/AccessDeniedException.h"
 #include "src/db/interface/exceptions/TransactionFailedException.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
+#include "src/config/Settings.h"
 
 QAtomicInt DefaultInterface::freeNumber=0;
 
@@ -71,7 +71,8 @@ QAtomicInt DefaultInterface::freeNumber=0;
 // ******************
 
 DefaultInterface::DefaultInterface (const DatabaseInfo &dbInfo, int readTimeout):
-	Interface (dbInfo)
+	Interface (dbInfo),
+	displayQueries (Settings::instance ().displayQueries)
 {
 	proxy=new TcpProxy ();
 	proxy->setReadTimeout (readTimeout);
@@ -250,13 +251,13 @@ void DefaultInterface::transactionStatementImpl (AbstractInterface::TransactionS
 		// can be reopened.
 		close ();
 
-		if (opts.display_queries) std::cout << "Retrying...";
+		if (displayQueries) std::cout << "Retrying...";
 	}
 }
 
 bool DefaultInterface::doTransactionStatement (TransactionStatement statement)
 {
-	if (opts.display_queries) std::cout << transactionStatementString (statement) << "..." << std::flush;
+	if (displayQueries) std::cout << transactionStatementString (statement) << "..." << std::flush;
 
 	bool result=false;
 	switch (statement)
@@ -269,20 +270,20 @@ bool DefaultInterface::doTransactionStatement (TransactionStatement statement)
 
 	if (result)
 	{
-		if (opts.display_queries) std::cout << "OK" << std::endl;
+		if (displayQueries) std::cout << "OK" << std::endl;
 		return true;
 	}
 	else if (canceled)
 	{
 		// Failed because canceled
-		if (opts.display_queries) std::cout << "canceled" << std::endl;
+		if (displayQueries) std::cout << "canceled" << std::endl;
 		throw OperationCanceledException ();
 	}
 	else
 	{
 		// Failed due to error
 		QSqlError error=db.lastError ();
-		if (opts.display_queries) std::cout << error.databaseText () << std::endl;
+		if (displayQueries) std::cout << error.databaseText () << std::endl;
 		emit databaseError (error.number (), error.databaseText ());
 
 		if (!retryOnQueryError (error.number ()))
@@ -374,7 +375,7 @@ QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOn
 			// can be reopened.
 			close ();
 
-			if (opts.display_queries) std::cout << "Retrying...";
+			if (displayQueries) std::cout << "Retrying...";
 		}
 	}
 }
@@ -399,7 +400,7 @@ QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOn
  */
 QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly)
 {
-	if (opts.display_queries)
+	if (displayQueries)
 	{
 		std::cout << query.colorizedString ();
 		std::cout.flush ();
@@ -414,14 +415,14 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 	{
 		if (canceled)
 		{
-			if (opts.display_queries)
+			if (displayQueries)
 				std::cout << "canceled" << std::endl;
 			throw OperationCanceledException ();
 		}
 		else
 		{
 			QSqlError error=sqlQuery.lastError ();
-			if (opts.display_queries)
+			if (displayQueries)
 				std::cout << error.databaseText () << std::endl;
 			emit databaseError (error.number (), error.databaseText ());
 
@@ -431,21 +432,21 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 
 	query.bindTo (sqlQuery);
 
-	if (opts.display_queries)
+	if (displayQueries)
 		std::cout << "..."; std::cout.flush ();
 
 	if (!sqlQuery.exec ())
 	{
 		if (canceled)
 		{
-			if (opts.display_queries)
+			if (displayQueries)
 				std::cout << "canceled" << std::endl;
 			throw OperationCanceledException ();
 		}
 		else
 		{
 			QSqlError error=sqlQuery.lastError ();
-			if (opts.display_queries)
+			if (displayQueries)
 				std::cout << error.databaseText () << std::endl;
 			emit databaseError (error.number (), error.databaseText ());
 
@@ -454,7 +455,7 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 	}
 	else
 	{
-		if (opts.display_queries)
+		if (displayQueries)
 		{
 			if (sqlQuery.isSelect ())
 				std::cout << countText (sqlQuery.size (), "row", "rows") << " returned" << std::endl;
@@ -471,7 +472,7 @@ void DefaultInterface::ping ()
 {
 	// Don't flood stdout with ping messages
 	bool display=false;
-	//bool display=opts.display_queries;
+	//bool display=displayQueries;
 
 	// Reset the canceled flag
 	canceled=0;
