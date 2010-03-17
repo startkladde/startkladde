@@ -26,6 +26,7 @@ class Settings: public QObject
 		virtual ~Settings ();
 		static Settings &instance ();
 
+		QStringList readArgs (const QStringList &args);
 		void save ();
 
 	signals:
@@ -46,7 +47,6 @@ class Settings: public QObject
 		// Diagnostics
 		bool enableDebug;
 		QString diagCommand;
-		bool debug;
 		bool coloredLabels;
 		bool displayQueries;
 

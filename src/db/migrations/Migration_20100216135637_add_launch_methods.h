@@ -1,7 +1,12 @@
 #ifndef MIGRATION_20100216135637_ADD_LAUNCH_METHODS_H_
 #define MIGRATION_20100216135637_ADD_LAUNCH_METHODS_H_
 
+#include <QString>
+#include <QList>
+
 #include "src/db/migration/Migration.h"
+
+class LaunchMethod;
 
 /**
  * Adds the launch methods table (and imports the launch methods from the
@@ -15,6 +20,10 @@ class Migration_20100216135637_add_launch_methods: public Migration
 
 		virtual void up ();
 		virtual void down ();
+
+	private:
+		static QString effectiveConfigFileName ();
+		static QList<LaunchMethod> readConfiguredLaunchMethods ();
 };
 
 #endif

@@ -2,9 +2,13 @@
 
 #include <iostream>
 
+#include <QFile>
+#include <QTextStream>
+
 #include "src/model/LaunchMethod.h"
-#include "src/config/Options.h"
 #include "src/util/qString.h"
+
+#include "src/text.h"
 
 Migration_20100216135637_add_launch_methods::Migration_20100216135637_add_launch_methods (Interface &interface):
 	Migration (interface)
@@ -32,7 +36,7 @@ void Migration_20100216135637_add_launch_methods::up ()
 	{
 		transaction ();
 
-		foreach (LaunchMethod launchMethod, Options::readConfiguredLaunchMethods ())
+		foreach (LaunchMethod launchMethod, readConfiguredLaunchMethods ())
 		{
 			// Don't use the methods of Database or LaunchMethod - they use the
 			// current schema, we need to use the schema after this migration.
@@ -71,3 +75,72 @@ void Migration_20100216135637_add_launch_methods::down ()
 	dropTable ("launch_methods");
 }
 
+const QString default_home_config_filename=".startkladde.conf";
+const QString default_local_config_fielname="startkladde.conf";
+
+QString Migration_20100216135637_add_launch_methods::effectiveConfigFileName ()
+{
+	QString homeConfigFileName=get_environment ("HOME")+"/"+default_home_config_filename;
+	if (QFile::exists (homeConfigFileName)) return homeConfigFileName;
+
+	if (QFile::exists (default_local_config_fielname))
+		return default_local_config_fielname;
+
+	return "";
+}
+
+// Old code from Options class
+QList<LaunchMethod> Migration_20100216135637_add_launch_methods::readConfiguredLaunchMethods ()
+{
+	QList<LaunchMethod> launchMethods;
+
+	QString filename=effectiveConfigFileName ();
+	if (filename.isEmpty ()) return launchMethods;
+
+	QFile configFile (filename);
+
+	if (!configFile.open (IO_ReadOnly))
+	{
+		std::cout << "Configuration file " << filename << " could not be opened" << std::endl;
+		return launchMethods;
+	}
+
+	QTextStream stream (&configFile);
+
+	while (!stream.atEnd ())
+	{
+		std::string line=q2std (stream.readLine ().trimmed());
+
+		if (line.length ()>0 && line[0]!='#')
+		{
+			QString key, value;
+			// We use std::string here because it has find_first_of and find_first_not_of
+			std::string::size_type pos=line.find_first_of (q2std (whitespace)); // TODO conversion is done for every line
+
+			if (pos!=std::string::npos)
+			{
+				key=std2q (line.substr (0, pos));
+				pos=line.find_first_not_of (q2std (whitespace), pos); // TODO conversion is done for every line
+				value=std2q (line.substr (pos)).trimmed();
+			}
+			else
+			{
+				key=std2q (line);
+			}
+
+			if (key=="startart")
+			{
+				LaunchMethod sa=LaunchMethod::parseConfigLine (value);
+				if (idInvalid (sa.getId ()))
+					std::cerr << "Error: launch method with invalid ID " << sa.getId () << " specified." << std::endl;
+				else
+					launchMethods.append (sa);
+			}
+
+		}
+	}
+
+	configFile.close ();
+
+	return launchMethods;
+}

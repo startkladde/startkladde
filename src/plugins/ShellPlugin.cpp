@@ -1,3 +1,15 @@
+/**
+ * TODO:
+ *   - clean up
+ *   - plugin finding: search recursively in paths
+ *   - better "protocol" - determine rich text automatically
+ *   - allow deactivating plugins
+ *   - react to changed plugin path (unless recreated on settings change
+ *     anyway)
+ *   - improve plugins
+ *   - allow browsing for plugins
+ *   - Plugin description file with parameter description
+ */
 #include "ShellPlugin.h"
 
 #include <fstream>
@@ -236,7 +248,7 @@ void ShellPlugin::output_available ()
 void ShellPlugin::subprocess_died ()
 {
 	if (warn_on_death) std::cout << "The process for '" << caption << "' died." << std::endl;
-	if (restart_interval>=0) QTimer::singleShot (restart_interval*1000, this, SLOT (start ()));
+	if (restart_interval>0) QTimer::singleShot (restart_interval*1000, this, SLOT (start ()));
 }
 
 void ShellPlugin::terminate ()
@@ -300,6 +312,7 @@ QString ShellPlugin::findFile (const QString &filename, QString *dir, QString *b
 		while (it.hasNext ())
 		{
 			QString path_entry=it.next ();
+
 			if (QFile::exists (path_entry+"/"+filename))
 			{
 				if (dir) *dir=path_entry;

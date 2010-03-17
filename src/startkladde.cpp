@@ -17,6 +17,7 @@
 #include "src/db/interface/exceptions/SqlException.h"
 #include "src/db/event/DbEvent.h" // For qRegisterMetaType
 #include "src/net/TcpProxy.h" // remove
+#include "src/version.h"
 
 // For test_database
 //#include "src/model/Plane.h"
@@ -334,6 +335,8 @@ void test ()
 }
 
 #include "src/concurrent/Waiter.h"
+#include "src/model/LaunchMethod.h" //remove
+#include "src/db/migrations/Migration_20100216135637_add_launch_methods.h"
 
 int main (int argc, char **argv)
 {
@@ -353,10 +356,14 @@ int main (int argc, char **argv)
 	QStringList args;
 	for (int i=0; i<argc; ++i) args << argv[i];
 
-	// FIXME
-	QStringList nonOptions;//=args.mid (1);
+	if (args.size ()>=2 && args[1]=="--version")
+	{
+		std::cout << getVersion () << std::endl;
 
-	std::cout << nonOptions.join (" - ") << std::endl;
+		return 0;
+	}
+
+	QStringList nonOptions=Settings::instance ().readArgs (args);
 
 
 	int ret=0;

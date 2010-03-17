@@ -1,9 +1,7 @@
 /*
  * TODO:
  *   - demosystem
- *   - displayQueries
- *   - colorful
- *   - configuredLaunchMethods;
+ *   - allow setting some settings by both the config file and the command line
  */
 
 
@@ -28,7 +26,7 @@ Settings *Settings::theInstance=NULL;
 
 
 Settings::Settings ():
-	debug (false), coloredLabels (false), displayQueries (false)
+	enableDebug (false), coloredLabels (false), displayQueries (false)
 {
 	readSettings ();
 }
@@ -41,6 +39,35 @@ Settings &Settings::instance ()
 {
 	if (!theInstance) theInstance=new Settings ();
 	return *theInstance;
+}
+
+QStringList Settings::readArgs (const QStringList &args)
+{
+	QStringList unprocessed=args;
+	unprocessed.removeFirst (); // remove argv[0]
+
+	while (!unprocessed.isEmpty ())
+	{
+		QString arg=unprocessed.first ();
+
+		if (arg.startsWith ("-"))
+		{
+			unprocessed.removeFirst ();
+
+			if (arg=="-q")
+				displayQueries=true;
+			if (arg=="--colored-labels")
+				coloredLabels=true;
+			else
+				std::cout << "Unrecognized option " << arg << std::endl;
+		}
+		else
+		{
+			return unprocessed;
+		}
+	}
+
+	return unprocessed;
 }
 
 void Settings::save ()
@@ -95,14 +122,13 @@ void Settings::readSettings ()
 			<< ShellPluginInfo ("Wetter:"         , "metar EDDS"              , false, 600, false)
 			<< ShellPluginInfo (""                , "metar EDDF"              , false, 600, false)
 			<< ShellPluginInfo (""                , "metar EDFM"              , false, 600, false)
-			<< ShellPluginInfo (""                , "metar EDRT"              , false, 600, false)
 			;
 	}
 
 
 	// *** Plugins - Weather
 	// Weather plugin
-	weatherPluginCommand =s.value ("weatherPluginCommand" , "plugins/weather/regenradar_wetter.com").toString ();
+	weatherPluginCommand =s.value ("weatherPluginCommand" , "plugins/weather/regenradar_wetteronline.de").toString ();
 	weatherPluginHeight  =s.value ("weatherPluginHeight"  , 200).toInt ();
 	weatherPluginInterval=s.value ("weatherPluginInterval", 600).toInt ();
 	// Weather dialog
@@ -127,6 +153,8 @@ void Settings::readSettings ()
 		pluginPaths
 			<< "./.startkladde/plugins"
 			<< "./plugins"
+			<< "./plugins/shell_info"
+			<< "./plugins/shell_info/sunset"
 			<< "/var/lib/startkladde/plugins"
 			;
 	}

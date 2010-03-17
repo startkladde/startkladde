@@ -121,7 +121,7 @@ MainWindow::MainWindow (QWidget *parent) :
 	ui.menuDatabase->addAction (logAction);
 
 	// TODO not working
-	ui.menuDebug     ->menuAction ()->setVisible (Settings::instance ().debug);
+	ui.menuDebug     ->menuAction ()->setVisible (Settings::instance ().enableDebug);
 	ui.menuDemosystem->menuAction ()->setVisible (false);
 	ui.actionNetworkDiagnostics     ->setVisible (!blank (Settings::instance ().diagCommand));
 

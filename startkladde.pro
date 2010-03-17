@@ -36,7 +36,6 @@ HEADERS += \
            src/concurrent/monitor/OperationMonitorInterface.h \
            src/concurrent/monitor/SignalOperationMonitor.h \
            src/concurrent/monitor/SimpleOperationMonitor.h \
-           src/config/Options.h \
            src/config/Settings.h \
            src/container/SortedSet.h \
            src/container/SortedSet_impl.h \
@@ -146,7 +145,6 @@ SOURCES += \
            src/concurrent/monitor/OperationMonitorInterface.cpp \
            src/concurrent/monitor/SignalOperationMonitor.cpp \
            src/concurrent/monitor/SimpleOperationMonitor.cpp \
-           src/config/Options.cpp \
            src/config/Settings.cpp \
            src/db/Database.cpp \
            src/db/DatabaseInfo.cpp \
