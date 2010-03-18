@@ -53,6 +53,7 @@ class WeatherWidget;
 class WeatherDialog;
 class FlightModel;
 class FlightProxyList;
+class FlightWindow;
 template<class T> class ObjectListModel;
 
 /*
@@ -219,6 +220,9 @@ class MainWindow: public QMainWindow
 		Cache &cache;
 
 		QDate displayDate;
+
+		QPointer<FlightWindow> createFlightWindow;
+		QPointer<FlightWindow> editFlightWindow;
 
 		QList<ShellPlugin *> infoPlugins;
 		WeatherWidget *weatherWidget;

@@ -117,6 +117,8 @@
 #include "src/model/LaunchMethod.h" // TODO remove dependency
 #include "src/model/Flight.h" // Required for Flight::Mode and Flight::Type
 #include "src/config/Settings.h" // TODO remove dependency
+#include "src/db/DbManager.h" // Required for DbManager::State
+#include "src/db/event/DbEvent.h"
 
 class DbManager;
 class Person;
@@ -150,9 +152,12 @@ class FlightWindow: public QDialog
 		void fillData ();
 
 		// *** Invocation
-		static void createFlight (QWidget *parent, DbManager &manager, QDate date);
-		static void repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date);
-		static void editFlight   (QWidget *parent, DbManager &manager, Flight &flight);
+		static FlightWindow *createFlight (QWidget *parent, DbManager &manager, QDate date);
+		static FlightWindow *repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date);
+		static FlightWindow *editFlight   (QWidget *parent, DbManager &manager, Flight &flight);
+
+		// *** Properties
+		dbId getEditedId () { return originalFlightId; }
 
 	protected:
 		// Input field data
@@ -302,6 +307,11 @@ class FlightWindow: public QDialog
 
 		virtual void showEvent (QShowEvent *event);
 
+	protected slots:
+		virtual void settingsChanged ();
+		virtual void databaseStateChanged (DbManager::State state);
+		virtual void cacheChanged (DbEvent event);
+
 	private slots:
 		/*
 		 * Notes on change events:
@@ -446,6 +456,7 @@ class FlightWindow: public QDialog
 		// preselection only (originalX instead of selectedX) and have
 		// determineFlightBasic read the values from the database if they are
 		// uniqe.
+		Flight originalFlight; // Only meaningful after flightToFields has been called, e. g. when editing a flight
 		dbId originalFlightId;
 		dbId selectedPlane, selectedTowplane;
 		dbId selectedPilot, selectedCopilot, selectedTowpilot;

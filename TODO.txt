@@ -4,6 +4,7 @@ Release checks:
   - test all situations for database initialization
   - start maximzed
   - dialogs: tab order; first tabs active
+  - no two flight windows can be opened
   
 
 == Critical (before release) ==

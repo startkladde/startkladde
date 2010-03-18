@@ -65,6 +65,7 @@ template <class T> class MutableObjectList;
 MainWindow::MainWindow (QWidget *parent) :
 	QMainWindow (parent), dbManager (Settings::instance ().databaseInfo),
 		cache (dbManager.getCache ()),
+		createFlightWindow (NULL), editFlightWindow (NULL),
 		weatherWidget (NULL), weatherPlugin (NULL),
 		weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
 		contextMenu (new QMenu (this)),
@@ -752,11 +753,8 @@ void MainWindow::landTowflight (dbId id)
 
 void MainWindow::on_actionNew_triggered ()
 {
-	// TODO: the window should be modeless, but
-	//   - be closed when the database connection is closed (?)
-	//   - what about landing a flight that is open in the editor?
-	//   - there should be only one flight editor at a time
-	FlightWindow::createFlight (this, dbManager, getNewFlightDate ());
+	delete createFlightWindow; // noop if NULL
+	createFlightWindow=FlightWindow::createFlight (this, dbManager, getNewFlightDate ());
 }
 
 void MainWindow::on_actionDepart_triggered ()
@@ -826,7 +824,26 @@ void MainWindow::on_actionEdit_triggered ()
 	try
 	{
 		Flight flight = dbManager.getCache ().getObject<Flight> (id);
-		FlightWindow::editFlight (this, dbManager, flight);
+
+		if (editFlightWindow && editFlightWindow->getEditedId ()==id)
+		{
+			// The flight is already being edited
+
+			// How to raise a QDialog?
+			// How to move to center? editFlightWindow->move does not seem to
+			// have any effect (regardless of what - show or move - is done
+			// first). Currently, it's done in FlightWindow#showEvent which
+			// causes it to be shown in the top-left position first and then
+			// moved.
+			editFlightWindow->hide ();
+			editFlightWindow->show ();
+		}
+		else
+		{
+			// Another flight may be being edited
+			delete editFlightWindow; // noop if NULL
+			editFlightWindow=FlightWindow::editFlight (this, dbManager, flight);
+		}
 	}
 	catch (Cache::NotFoundException &ex)
 	{
@@ -854,7 +871,8 @@ void MainWindow::on_actionRepeat_triggered ()
 	try
 	{
 		Flight flight = dbManager.getCache ().getObject<Flight> (id);
-		FlightWindow::repeatFlight (this, dbManager, flight, getNewFlightDate ());
+		delete createFlightWindow; // noop if NULL
+		createFlightWindow=FlightWindow::repeatFlight (this, dbManager, flight, getNewFlightDate ());
 	}
 	catch (Cache::NotFoundException &ex)
 	{
@@ -1219,7 +1237,7 @@ void MainWindow::weatherWidget_doubleClicked ()
 
 	if (weatherDialog)
 	{
-		// How to focus a QDialog?
+		// How to raise a QDialog?
 		weatherDialog->hide ();
 		weatherDialog->show ();
 	}

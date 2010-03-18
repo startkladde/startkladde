@@ -100,6 +100,13 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	// *** Setup the window
 	ui.setupUi (this);
 
+	// *** Database
+	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
+	QObject::connect (&manager.getCache (), SIGNAL (changed (DbEvent)), this, SLOT (cacheChanged (DbEvent)));
+
+	// *** Settings
+	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
+	settingsChanged ();
 
 	// *** Setup the data
 	fillData ();
@@ -177,22 +184,8 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	ui.launchMethodLabel         ->setDefaultBackgroundColor (requiredFieldColor);
 	ui.towplaneRegistrationLabel ->setDefaultBackgroundColor (requiredFieldColor);
 
-	// Hide the towpilot fields (so they don't take up space, not just
-	// concealed - that is decided in #isTowpilotActive) if recordTowpilot is
-	// false. If recordTowpilot is true, but the selected launch method is not
-	// an airtow, the fields will still be concealed.
-	if (Settings::instance ().recordTowpilot)
-	{
-		ui.towpilotLastNameInput->setVisible (false);
-		ui.towpilotFirstNameInput->setVisible (false);
-
-		ui.towpilotLabel->setVisible (false);
-		ui.towpilotLastNameLabel->setVisible (false);
-		ui.towpilotFirstNameLabel->setVisible (false);
-	}
-
-	// Similarly, hide the error fields if the mode is create, so we don't get
-	// a scroll bar.
+	// Hide (not just conceal, see #settingsChanged) the error fields if the
+	// mode is create, so we don't get a scroll bar.
 	if (mode==modeCreate)
 	{
 		ui.errorList->setVisible (false);
@@ -213,10 +206,31 @@ FlightWindow::~FlightWindow ()
 {
 }
 
+void FlightWindow::databaseStateChanged (DbManager::State state)
+{
+	if (state==DbManager::stateDisconnected)
+		close ();
+}
 
 // ***********
 // ** Setup **
 // ***********
+
+void FlightWindow::settingsChanged ()
+{
+	// Hide the towpilot fields (so they don't take up space, not just
+	// concealed - that is decided in #isTowpilotActive) if recordTowpilot is
+	// false. If recordTowpilot is true, but the selected launch method is not
+	// an airtow, the fields will still be concealed.
+	bool tp=Settings::instance ().recordTowpilot;
+
+	ui.towpilotLastNameInput->setVisible (tp);
+	ui.towpilotFirstNameInput->setVisible (tp);
+
+	ui.towpilotLabel->setVisible (tp);
+	ui.towpilotLastNameLabel->setVisible (tp);
+	ui.towpilotFirstNameLabel->setVisible (tp);
+}
 
 void FlightWindow::fillData ()
 {
@@ -309,7 +323,15 @@ void FlightWindow::fillData ()
 
 void FlightWindow::showEvent (QShowEvent *event)
 {
-	QDialog::showEvent (event);
+	QWidget *parentWidget=dynamic_cast<QWidget *> (parent ());
+	if (parentWidget)
+	{
+		// TODO: causes flicker - the window is shown in the top left corner
+		// before being moved.
+		move (
+			parentWidget->x ()+(parentWidget->width  ()-width  ())/2,
+			parentWidget->y ()+(parentWidget->height ()-height ())/2);
+	}
 
 	// We dont't set the label heights on spantaneous show events (generated
 	// by the window system, e. g. after the window has been minimized).
@@ -348,6 +370,8 @@ void FlightWindow::showEvent (QShowEvent *event)
 			labelHeightsSet=true;
 		}
 	}
+
+	QDialog::showEvent (event);
 }
 
 
@@ -365,7 +389,7 @@ void FlightWindow::showEvent (QShowEvent *event)
  *       by the accepting slot.
  */
 
-void FlightWindow::createFlight (QWidget *parent, DbManager &manager, QDate date)
+FlightWindow *FlightWindow::createFlight (QWidget *parent, DbManager &manager, QDate date)
 {
 	FlightWindow *w=new FlightWindow (parent, modeCreate, manager, NULL);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
@@ -373,10 +397,12 @@ void FlightWindow::createFlight (QWidget *parent, DbManager &manager, QDate date
 	w->ui.dateInput->setDate (date);
 	w->updateSetup ();
 
-	w->exec ();
+	w->show ();
+
+	return w;
 }
 
-void FlightWindow::repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date)
+FlightWindow *FlightWindow::repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date)
 {
 	FlightWindow *w=new FlightWindow (parent, modeCreate, manager);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
@@ -387,10 +413,12 @@ void FlightWindow::repeatFlight (QWidget *parent, DbManager &manager, const Flig
 
 	w->ui.launchMethodInput->setFocus ();
 
-	w->exec ();
+	w->show ();
+
+	return w;
 }
 
-void FlightWindow::editFlight (QWidget *parent, DbManager &manager, Flight &flight)
+FlightWindow *FlightWindow::editFlight (QWidget *parent, DbManager &manager, Flight &flight)
 {
 	FlightWindow *w=new FlightWindow (parent, modeEdit, manager);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
@@ -399,7 +427,9 @@ void FlightWindow::editFlight (QWidget *parent, DbManager &manager, Flight &flig
 	w->updateSetup ();
 	w->updateErrors (true);
 
-	w->exec ();
+	w->show ();
+
+	return w;
 }
 
 
@@ -679,6 +709,8 @@ void FlightWindow::planeToFields (dbId id, SkComboBox *registrationInput, SkLabe
 
 void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 {
+	originalFlight=flight;
+
 	// Note that for repeating, some fields are not set or set differently.
 
 	originalFlightId = flight.getId ();
@@ -1440,6 +1472,90 @@ dbId FlightWindow::determineAndEnterPerson (bool active, QString lastName, QStri
 // **************
 // ** Database **
 // **************
+
+void FlightWindow::cacheChanged (DbEvent event)
+{
+	if (mode==modeEdit && event.hasTable<Flight> () && event.getId ()==originalFlightId)
+	{
+		// The flight we are currently editing...
+		if (event.getType ()==DbEvent::typeChange)
+		{
+			// ...has changed.
+
+			// The only things that can change outside of this editor (since we
+			// only allow one editor at a time) are the departure and landing
+			// values. See if they changed, and update the editor (only the
+			// changed fields)
+
+			Flight newFlight=event.getValue<Flight> ();
+
+			// The flight departed
+			if (newFlight.departed!=originalFlight.departed)
+			{
+				// FIXME are changeds called?
+				ui.departureTimeCheckbox->setChecked (getTimeFieldCheckboxValue (newFlight.departed));
+				ui.departureTimeInput->setTime (newFlight.departureTime.get_qtime (tz_utc)); // Even if not active
+
+				originalFlight.departed=newFlight.departed;
+				originalFlight.departureTime=newFlight.departureTime;
+			}
+
+			// The flight landed
+			if (newFlight.landed!=originalFlight.landed)
+			{
+				ui.landingTimeCheckbox->setChecked (getTimeFieldCheckboxValue (newFlight.landed));
+				ui.landingTimeInput->setTime (newFlight.landingTime.get_qtime (tz_utc)); // Even if not active
+
+				originalFlight.landed=newFlight.landed;
+				originalFlight.landingTime=newFlight.landingTime;
+			}
+
+			// The towflight landed
+			if (newFlight.towflightLanded!=originalFlight.towflightLanded)
+			{
+				ui.towflightLandingTimeCheckbox->setChecked (getTimeFieldCheckboxValue (newFlight.towflightLanded));
+				ui.towflightLandingTimeInput->setTime (newFlight.towflightLandingTime.get_qtime (tz_utc)); // Even if not active
+
+				originalFlight.towflightLanded=newFlight.landed;
+				originalFlight.towflightLandingTime=newFlight.towflightLandingTime;
+			}
+
+			// The flight performed a landing (final landing or touch-n-go)
+			if (newFlight.numLandings!=originalFlight.numLandings)
+			{
+				ui.numLandingsInput->setValue (newFlight.numLandings);
+				originalFlight.numLandings=newFlight.numLandings;
+			}
+
+			// Landing locations may be set automatically on landing
+			if (newFlight.landingLocation!=originalFlight.landingLocation)
+			{
+				ui.landingLocationInput->setCurrentText (newFlight.landingLocation);
+				originalFlight.landingLocation=newFlight.landingLocation;
+
+				// For the text fields, the changes are only processed
+				// automatically on user input
+				on_landingLocationInput_editingFinished (newFlight.landingLocation);
+			}
+
+			if (newFlight.towflightLandingLocation!=originalFlight.towflightLandingLocation)
+			{
+				ui.towflightLandingLocationInput->setCurrentText (newFlight.towflightLandingLocation);
+				originalFlight.towflightLandingLocation=newFlight.towflightLandingLocation;
+
+				// For the text fields, the changes are only processed
+				// automatically on user input
+				on_towflightLandingLocationInput_editingFinished (newFlight.towflightLandingLocation);
+			}
+		}
+		else if (event.getType ()==DbEvent::typeDelete)
+		{
+			// ...was deleted.
+			reject ();
+		}
+	}
+
+}
 
 bool FlightWindow::writeToDatabase (Flight &flight)
 {
