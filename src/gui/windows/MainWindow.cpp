@@ -83,8 +83,9 @@ MainWindow::MainWindow (QWidget *parent) :
 	proxyModel->setDynamicSortFilter (true);
 
 
-
+	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 	readSettings ();
+	settingsChanged ();
 
 	setupLabels ();
 
@@ -99,8 +100,6 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	timeTimer_timeout ();
 
-	// Plugins
-	setupPlugins ();
 
 	setupLayout ();
 
@@ -120,11 +119,7 @@ MainWindow::MainWindow (QWidget *parent) :
 	ui.menuDatabase->addSeparator ();
 	ui.menuDatabase->addAction (logAction);
 
-	// TODO not working
-	ui.menuDebug     ->menuAction ()->setVisible (Settings::instance ().enableDebug);
 	ui.menuDemosystem->menuAction ()->setVisible (false);
-	ui.actionNetworkDiagnostics     ->setVisible (!blank (Settings::instance ().diagCommand));
-
 #ifdef SK_DEMOSYSTEM
 	ui.menuDemosystem->menuAction ()->setVisible (true);
 #endif
@@ -319,30 +314,28 @@ void MainWindow::setupPlugins ()
 {
 	Settings &s=Settings::instance ();
 
+
+	// Remove the old labels from the plugin pane
+	foreach (QObject *child, ui.pluginPane->children ())
+		delete child;
+
+	// Delete the old layout manager and create a new one, or the layout
+	// will be wrong: pluginLayout->rowCount will continue to grow, even
+	// though pluginLayout->count will return the correct value.
+	delete ui.pluginPane->layout ();
+	QGridLayout *pluginLayout=new QGridLayout (ui.pluginPane);
+	pluginLayout->setMargin (4);
+	pluginLayout->setVerticalSpacing (4);
+
 	ui.pluginPane->setVisible (!s.infoPlugins.isEmpty ());
 
-	if (!s.infoPlugins.isEmpty ())
-	{
-		ui.pluginPane->setVisible (true);
-		QGridLayout *pluginLayout = dynamic_cast<QGridLayout *> (ui.pluginPane->layout ());
+	foreach (const ShellPluginInfo &pluginInfo, s.infoPlugins)
+		setupPlugin (pluginInfo, pluginLayout);
 
-		if (pluginLayout)
-		{
-			// Remove the dummy labels from the plugin pane
-			foreach (QObject *child, ui.pluginPane->children ())
-					if (dynamic_cast<QLabel *> (child)) delete child;
+	pluginLayout->setColStretch (0, 0);
+	pluginLayout->setColStretch (1, 1);
+	pluginLayout->setRowStretch (pluginLayout->rowCount (), 1);
 
-			foreach (const ShellPluginInfo &pluginInfo, s.infoPlugins)
-				setupPlugin (pluginInfo, pluginLayout);
-
-			pluginLayout->setRowStretch (pluginLayout->rowCount (), 1);
-		}
-		else
-		{
-			log_error ("Invalid plugin layout in MainWindow::setupPlugins, not using shell plugins");
-			return;
-		}
-	}
 
 	ui.weatherFrame->setVisible (!blank (s.weatherPluginCommand));
 
@@ -448,8 +441,10 @@ void MainWindow::readSettings ()
 
 	QFont font;
 	if (font.fromString (fontDescription)) QApplication::setFont (font);
+}
 
-
+void MainWindow::settingsChanged ()
+{
 	Settings &s=Settings::instance ();
 
 	// Fenstereinstellungen
@@ -457,6 +452,12 @@ void MainWindow::readSettings ()
 		setCaption ("Startkladde");
 	else
 		setCaption (utf8 ("Hauptflugbuch %1 - Startkladde").arg (s.location));
+
+	ui.menuDebug     ->menuAction ()->setVisible (Settings::instance ().enableDebug);
+	ui.actionNetworkDiagnostics     ->setVisible (!blank (Settings::instance ().diagCommand));
+
+	// Plugins
+	setupPlugins ();
 }
 
 // *************

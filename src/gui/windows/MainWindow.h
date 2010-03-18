@@ -113,6 +113,8 @@ class MainWindow: public QMainWindow
 		void readTimeout ();
 		void readResumed ();
 
+		void settingsChanged ();
+
 	private slots:
 		// Menu: Program
 		void on_actionSettings_triggered ();

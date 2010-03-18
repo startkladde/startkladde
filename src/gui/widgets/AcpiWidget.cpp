@@ -23,7 +23,7 @@ static global_t global_acpi;
 AcpiWidget::AcpiWidget (QWidget* parent)
 	:QLabel (parent)
 {
-	setAutoFillBackground (true);
+//	setAutoFillBackground (true);
 	timer = new QTimer (this);
 	// 10 second period
 	timer->start (10000);
