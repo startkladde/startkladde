@@ -347,6 +347,7 @@ int main (int argc, char **argv)
 	// types must be registered.
 	qRegisterMetaType<DbEvent> ("DbEvent");
 	qRegisterMetaType<Query> ("Query");
+	qRegisterMetaType<DatabaseInfo> ("DatabaseInfo");
 
 	// For QSettings
 	QCoreApplication::setOrganizationName ("startkladde");

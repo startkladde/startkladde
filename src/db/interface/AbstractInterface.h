@@ -37,7 +37,9 @@ class AbstractInterface
 		virtual bool open ()=0;
 		virtual void close ()=0;
 		virtual QSqlError lastError () const=0;
+
 		virtual const DatabaseInfo &getInfo () const;
+		virtual void setInfo (const DatabaseInfo &info);
 
 		/**
 		 * Makes the current database call terminate immediately, if

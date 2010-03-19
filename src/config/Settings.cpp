@@ -56,7 +56,7 @@ QStringList Settings::readArgs (const QStringList &args)
 
 			if (arg=="-q")
 				displayQueries=true;
-			if (arg=="--colored-labels")
+			else if (arg=="--colored-labels")
 				coloredLabels=true;
 			else
 				std::cout << "Unrecognized option " << arg << std::endl;

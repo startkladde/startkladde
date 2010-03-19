@@ -9,6 +9,8 @@ Release checks:
 
 == Critical (before release) ==
 
+Apply database settings
+
 
 == Major (important) ==
 

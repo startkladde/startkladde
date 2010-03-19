@@ -25,6 +25,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
+#include "src/config/Settings.h"
 
 #include "src/concurrent/DefaultQThread.h" //remove
 
@@ -35,6 +36,7 @@ DbManager::DbManager (const DatabaseInfo &info):
 {
 	QObject::connect (&interface, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()));
 	QObject::connect (&interface, SIGNAL (readResumed ()), this, SIGNAL (readResumed ()));
+	QObject::connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 }
 
 DbManager::DbManager (const DbManager &other):
@@ -144,11 +146,9 @@ void DbManager::grantPermissions (QWidget *parent)
 			SignalOperationMonitor monitor;
 			QObject::connect (&monitor, SIGNAL (canceled ()), &rootInterface, SLOT (cancelConnection ()), Qt::DirectConnection);
 
-			std::cout << "+gall" << std::endl;
 			rootInterfaceWorker.grantAll (returner, monitor, info.database, info.username, info.password);
 			MonitorDialog::monitor (monitor, "Benutzer anlegen", parent);
 			returner.wait ();
-			std::cout << "-gall" << std::endl;
 
 			rootInterface.close ();
 		}
@@ -530,6 +530,16 @@ template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
 	return returner.returnedValue ();
 }
 
+
+// **************
+// ** Settings **
+// **************
+
+void DbManager::settingsChanged ()
+{
+	interface.setInfo (Settings::instance ().databaseInfo);
+}
+
 // ***************************
 // ** Method instantiations **
 // ***************************
@@ -548,3 +558,4 @@ INSTANTIATE_TEMPLATES (Flight      )
 INSTANTIATE_TEMPLATES (LaunchMethod)
 
 #	undef INSTANTIATE_TEMPLATES
+

@@ -1,6 +1,9 @@
 #include "AbstractInterface.h"
 
 #include <cassert>
+#include <iostream>
+
+#include "src/util/qString.h"
 
 AbstractInterface::AbstractInterface (const DatabaseInfo &info):
 	info (info)
@@ -11,9 +14,16 @@ AbstractInterface::~AbstractInterface ()
 {
 }
 
+
+
 const DatabaseInfo &AbstractInterface::getInfo () const
 {
 	return info;
+}
+
+void AbstractInterface::setInfo (const DatabaseInfo &info)
+{
+	this->info=info;
 }
 
 QString AbstractInterface::transactionStatementString (TransactionStatement statement)

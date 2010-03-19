@@ -121,6 +121,9 @@ class DbManager: public QObject
 	protected:
 		void setState (State newState);
 
+	protected slots:
+		void settingsChanged ();
+
 	private:
 		DbManager (const DbManager &other);
 		DbManager &operator= (const DbManager &other);

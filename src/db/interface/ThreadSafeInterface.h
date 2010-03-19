@@ -33,12 +33,14 @@ class ThreadSafeInterface: public QObject, public Interface
 		ThreadSafeInterface (const DatabaseInfo &info, int readTimeout=0, int keepaliveInterval=0);
 		virtual ~ThreadSafeInterface ();
 
+
 		// *** Monitoring
 		virtual bool event (QEvent *e);
 
 
 	public:
 		// *** Frontend methods
+		virtual void setInfo (const DatabaseInfo &info);
 		virtual bool open ();
 		virtual void close ();
 		virtual QSqlError lastError () const;
@@ -56,6 +58,7 @@ class ThreadSafeInterface: public QObject, public Interface
 
 	signals:
 		// *** Worker signals
+		virtual void sig_setInfo   (Returner<void>      *returner, DatabaseInfo info);
 		virtual void sig_open      (Returner<bool>      *returner);
 		virtual void sig_close     (Returner<void>      *returner);
 		virtual void sig_lastError (Returner<QSqlError> *returner) const;
@@ -82,6 +85,7 @@ class ThreadSafeInterface: public QObject, public Interface
 
 	protected slots:
 		// *** Backend slots
+		virtual void slot_setInfo   (Returner<void>      *returner, DatabaseInfo info);
 		virtual void slot_open      (Returner<bool>      *returner);
 		virtual void slot_close     (Returner<void>      *returner);
 		virtual void slot_lastError (Returner<QSqlError> *returner) const;

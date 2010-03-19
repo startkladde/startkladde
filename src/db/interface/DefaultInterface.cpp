@@ -46,6 +46,7 @@
 #include "DefaultInterface.h"
 
 #include <iostream>
+#include <cassert>
 
 #include <QVariant>
 
@@ -196,6 +197,7 @@ void DefaultInterface::openImpl ()
 void DefaultInterface::close ()
 {
 	std::cout << "Closing connection" << std::endl;
+	std::cout << "close info " << getInfo().toString() << std::endl;
 
 	db.close ();
 	proxy->close ();

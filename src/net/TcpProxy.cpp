@@ -95,7 +95,17 @@ void TcpProxy::slot_open (Returner<quint16> *returner, QString serverHost, quint
 quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
 {
 	// TODO only if host and port matches
-	if (server && server->isListening ()) return server->serverPort ();
+	if (server && server->isListening ())
+	{
+		// Proxy already running
+
+		if (this->serverHost==serverHost && this->serverPort==serverPort)
+			// Correct server
+			return server->serverPort ();
+		else
+			// Wrong server
+			server->close ();
+	}
 
 	DEBUG ("Open server in thread " << QThread::currentThreadId ());
 

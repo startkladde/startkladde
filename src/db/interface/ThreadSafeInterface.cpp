@@ -48,6 +48,7 @@ ThreadSafeInterface::ThreadSafeInterface (const DatabaseInfo &info, int readTime
 
 
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
+	CONNECT (setInfo   (Returner<void>      *, DatabaseInfo));
 	CONNECT (open      (Returner<bool>      *));
 	CONNECT (close     (Returner<void>      *));
 	CONNECT (lastError (Returner<QSqlError> *));
@@ -81,6 +82,15 @@ ThreadSafeInterface::~ThreadSafeInterface ()
 // ***********************
 // ** Front-end methods **
 // ***********************
+
+void ThreadSafeInterface::setInfo (const DatabaseInfo &info)
+{
+	Returner<void> returner;
+	emit sig_setInfo (&returner, info);
+	returner.wait ();
+
+	AbstractInterface::setInfo (info);
+}
 
 bool ThreadSafeInterface::open ()
 {
@@ -162,6 +172,11 @@ void ThreadSafeInterface::ping ()
 // ** Back-end slots **
 // ********************
 
+void ThreadSafeInterface::slot_setInfo (Returner<void> *returner, DatabaseInfo info)
+{
+	dontReturnVoidOrException (returner, interface->setInfo (info));
+}
+
 void ThreadSafeInterface::slot_open (Returner<bool> *returner)
 {
 	dontReturnOrException (returner, interface->open ());
@@ -224,7 +239,6 @@ void ThreadSafeInterface::slot_ping (Returner<void> *returner)
 {
 	dontReturnVoidOrException (returner, interface->ping ());
 }
-
 
 // ************
 // ** Others **

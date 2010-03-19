@@ -248,7 +248,7 @@ class Cache: public QObject
 		QMultiHash<QPair<QString, QString>, dbId> personIdsByName; // key is lower case
 
 		// Concurrency
-		// Improvement: use separate locks for flights, people...
+		// Improvement: use rw mutex and separate locks for flights, people...
 		/** Locks accesses to data of this Cache */
 		mutable QMutex dataMutex;
 };
