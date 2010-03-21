@@ -47,26 +47,8 @@ beliebige Hosts) hinzugefügt (oder einer der bestehenden Einträge angepasst)
 wird. Schritt 2 kann dann von einem beliebigen Host stattfinden).
 
 
-Einrichtung des Programms
-=========================
-
-Das Programm wird über eine Konfigurationsdatei konfiguriert (in einer
-zukünftigen Version soll stattdessen ein Konfigurationsdialog verwendet
-werden).
-
-Die Konfiguration wird entweder aus ~/.startkladde.conf oder, falls diese Datei
-nicht existiert, aus startkladde.conf im aktuellen Verzeichnis gelesen. Eine
-beispielhafte Konfigurationsdatei liegt dem Quellcode unter dem Namen
-startkladde.conf bei.
-
-Die folgenden Werte sind in der Konfigurationsdatei anzupassen: 
-  - Benutzername und Passwort für die Datenbankverbindung
-  - ggf. die Namen des Servers und der Datenbank
-  - der Ort (Standardwert für Start- und Zielortfelder)
-
-Achtung: da die Datei Passwörter enthält, sollte sie nicht für jedermann lesbar
-sein. Auf einem Mehrbenutzersystem sollten die Zugriffsrechte entsprechend
-restriktiv eingestellt werden.
+Systemeinrichtung
+=================
 
 Soll die Einstellung des Systemdatums aus dem Programm heraus verwendet werden,
 muss die entsprechende Berechtigung für den Benutzer freigeschaltet werden.
