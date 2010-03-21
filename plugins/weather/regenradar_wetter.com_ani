@@ -2,6 +2,12 @@
 
 imagefile=/tmp/radar_ani.gif
 
+num=0
+while [ -e "$imagefile" -a ! -w "$imagefile" ]; do
+	imagefile="/tmp/radar-${num}.gif"
+	num=$(($num+1))
+done
+
 echo "[MSG] [Radarfilm wird heruntergeladen]"
 
 # Wetterradarfilm herunterladen (4 h)
