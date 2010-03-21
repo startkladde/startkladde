@@ -128,11 +128,11 @@ void Settings::readSettings ()
 
 	// *** Plugins - Weather
 	// Weather plugin
-	weatherPluginCommand =s.value ("weatherPluginCommand" , "plugins/weather/regenradar_wetteronline.de").toString ();
+	weatherPluginCommand =s.value ("weatherPluginCommand" , "regenradar_wetteronline.de").toString ();
 	weatherPluginHeight  =s.value ("weatherPluginHeight"  , 200).toInt ();
 	weatherPluginInterval=s.value ("weatherPluginInterval", 600).toInt ();
 	// Weather dialog
-	weatherWindowCommand =s.value ("weatherWindowCommand" , "plugins/weather/regenradar_wetteronline.de_ani").toString ();
+	weatherWindowCommand =s.value ("weatherWindowCommand" , "regenradar_wetteronline.de_ani").toString ();
 	weatherWindowInterval=s.value ("weatherWindowInterval", 300).toInt ();
 	weatherWindowTitle   =s.value ("weatherWindowTitle"   , "Regenradar (4 Stunden)").toInt ();
 
@@ -155,6 +155,7 @@ void Settings::readSettings ()
 			<< "./plugins"
 			<< "./plugins/shell_info"
 			<< "./plugins/shell_info/sunset"
+			<< "./plugins/weather"
 			<< "/var/lib/startkladde/plugins"
 			;
 	}

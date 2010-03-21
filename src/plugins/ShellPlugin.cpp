@@ -1,6 +1,7 @@
 /**
  * TODO:
  *   - clean up
+ *   - make platform independent by using QFile, QFileInfo, QDir
  *   - plugin finding: search recursively in paths
  *   - better "protocol" - determine rich text automatically
  *   - allow deactivating plugins
@@ -29,6 +30,7 @@
 #include <QToolTip>
 #include <QProcess>
 #include <QFile>
+#include <QFileInfo>
 
 #include "src/text.h"
 #include "src/util/qString.h"
@@ -307,17 +309,41 @@ QString ShellPlugin::findFile (const QString &filename, QString *dir, QString *b
 	else
 	{
 		// So we have to search the plugin path.
-		QStringListIterator it (Settings::instance ().pluginPaths);
-
-		while (it.hasNext ())
 		{
-			QString path_entry=it.next ();
-
-			if (QFile::exists (path_entry+"/"+filename))
+			QStringListIterator it (Settings::instance ().pluginPaths);
+			while (it.hasNext ())
 			{
-				if (dir) *dir=path_entry;
-				if (basename) *basename=filename;
-				return *path_entry+"/"+filename;
+				QString path_entry=it.next ();
+
+				if (QFile::exists (path_entry+"/"+filename))
+				{
+					if (dir) *dir=path_entry;
+					if (basename) *basename=filename;
+					return *path_entry+"/"+filename;
+				}
+			}
+		}
+
+		{
+			// Still not found - try prepending the program path directory
+			QFileInfo programFile (Settings::instance ().programPath);
+			QString programDir=programFile.path ();
+
+			QStringListIterator it (Settings::instance ().pluginPaths);
+			while (it.hasNext ())
+			{
+				QString path_entry=it.next ();
+
+				if (!path_entry.startsWith ("/"))
+				{
+					path_entry=programDir+"/"+path_entry;
+					if (QFile::exists (path_entry+"/"+filename))
+					{
+						if (dir) *dir=path_entry;
+						if (basename) *basename=filename;
+						return *path_entry+"/"+filename;
+					}
+				}
 			}
 		}
 	}

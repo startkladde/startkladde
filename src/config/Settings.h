@@ -66,6 +66,8 @@ class Settings: public QObject
 		// *** Plugins - Paths
 		QStringList pluginPaths;
 
+		// *** Other
+		QString programPath;
 
 	protected:
 		void readSettings ();

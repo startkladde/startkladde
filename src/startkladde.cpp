@@ -364,6 +364,7 @@ int main (int argc, char **argv)
 		return 0;
 	}
 
+	Settings::instance ().programPath=argv[0];
 	QStringList nonOptions=Settings::instance ().readArgs (args);
 
 
