@@ -5,6 +5,7 @@
 
 #include <QCompleter>
 #include <QShowEvent>
+#include <QPushButton>
 
 #include "src/color.h"
 #include "src/text.h"
@@ -99,6 +100,15 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 {
 	// *** Setup the window
 	ui.setupUi (this);
+
+	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
+
+	nowButton=new QPushButton ("Jetzt");
+	ui.buttonBox->addButton (nowButton, QDialogButtonBox::AcceptRole);
+	QObject::connect (nowButton, SIGNAL (clicked ()), this, SLOT (on_nowButton_clicked ()));
+
+	QPushButton *okButton=ui.buttonBox->button (QDialogButtonBox::Ok);
+	QObject::connect (okButton, SIGNAL (clicked ()), this, SLOT (on_okButton_clicked ()));
 
 	// *** Database
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
@@ -1811,25 +1821,27 @@ void FlightWindow::updateSetupLabels ()
 
 void FlightWindow::updateSetupButtons ()
 {
+	QPushButton *okButton=ui.buttonBox->button (QDialogButtonBox::Ok);
+
 	bool nowPossible=isNowActionPossible ();
 	if (nowPossible && currentDepartsHere ())
 	{
 		// Depart now/later
-		ui.nowButton->setVisible(true);
-		ui.nowButton->setText (textButtonDepartNow);
-		ui.okButton->setText (textButtonDepartLater);
+		nowButton->setVisible(true);
+		nowButton->setText (textButtonDepartNow);
+		okButton->setText (textButtonDepartLater);
 	}
 	else if (nowPossible && currentLandsHere ())
 	{
 		// Land now/later
-		ui.nowButton->setVisible(true);
-		ui.nowButton->setText (textButtonLandNow);
-		ui.okButton->setText (textButtonLandLater);
+		nowButton->setVisible(true);
+		nowButton->setText (textButtonLandNow);
+		okButton->setText (textButtonLandLater);
 	}
 	else
 	{
-		ui.nowButton->setVisible (false);
-		ui.okButton->setText (textButtonOk);
+		nowButton->setVisible (false);
+		okButton->setText (textButtonOk);
 	}
 }
 

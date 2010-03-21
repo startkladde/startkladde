@@ -66,10 +66,13 @@ LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &
 	}
 
 	// Add the entry for the towflights
-	Entry towflightsEntry;
-	towflightsEntry.name=utf8 ("Schleppflüge");
-	towflightsEntry.num=numTowFlights;
-	result->entries.append (towflightsEntry);
+	if (numTowFlights>0)
+	{
+		Entry towflightsEntry;
+		towflightsEntry.name=utf8 ("Schleppflüge");
+		towflightsEntry.num=numTowFlights;
+		result->entries.append (towflightsEntry);
+	}
 
 	return result;
 }

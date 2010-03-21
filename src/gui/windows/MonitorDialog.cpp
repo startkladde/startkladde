@@ -1,5 +1,7 @@
 #include "MonitorDialog.h"
 
+#include <QPushButton>
+
 /*
  * TODO:
  *   - keeping the dialog open for multiple operations
@@ -11,14 +13,13 @@ MonitorDialog::MonitorDialog (SignalOperationMonitor &monitor, QWidget *parent):
 	QDialog (parent), theMonitor (monitor)
 {
 	ui.setupUi (this);
+	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
 //	setModal (true);
 
 	QObject::connect (&theMonitor, SIGNAL (ended ())                  , this, SLOT (accept ()          ));
 	QObject::connect (&theMonitor, SIGNAL (progressChanged (int, int)), this, SLOT (progress (int, int)));
 	QObject::connect (&theMonitor, SIGNAL (statusChanged (QString))   , this, SLOT (status (QString)   ));
-
-	QObject::connect (ui.cancelButton, SIGNAL (clicked ()), this, SLOT (reject ()));
 }
 
 MonitorDialog::~MonitorDialog()

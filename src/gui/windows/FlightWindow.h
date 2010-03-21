@@ -120,6 +120,8 @@
 #include "src/db/DbManager.h" // Required for DbManager::State
 #include "src/db/event/DbEvent.h"
 
+class QPushButton;
+
 class DbManager;
 class Person;
 class Cache;
@@ -416,6 +418,7 @@ class FlightWindow: public QDialog
 		QMultiMap<QWidget *, SkLabel *> widgetLabelMap;
 
 		Ui::FlightWindowClass ui;
+		QPushButton *nowButton;
 
 		DbManager &manager;
 		Cache &cache;

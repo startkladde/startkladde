@@ -16,6 +16,7 @@
 #include <QItemEditorFactory>
 #include <QSettings>
 #include <QInputDialog>
+#include <QPushButton>
 
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
@@ -31,6 +32,7 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	warned (false)
 {
 	ui.setupUi (this);
+	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
 	ui.dbTypePane->setVisible (false);
 

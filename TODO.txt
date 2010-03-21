@@ -5,6 +5,7 @@ Release checks:
   - start maximzed
   - dialogs: tab order; first tabs active
   - no two flight windows can be opened
+  - all äüöß in utf8 ()
   
 
 == Critical (before release) ==

@@ -4,6 +4,7 @@
 
 #include <QKeyEvent>
 #include <QInputDialog>
+#include <QPushButton>
 
 #include "src/util/qString.h"
 
@@ -13,6 +14,7 @@ ObjectListWindowBase::ObjectListWindowBase (DbManager &manager, QWidget *parent)
 {
 	ui.setupUi(this);
 	setAttribute (Qt::WA_DeleteOnClose, true);
+	ui.buttonBox->button (QDialogButtonBox::Close)->setText (utf8 ("&Schließen"));
 
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 }
@@ -23,7 +25,7 @@ ObjectListWindowBase::~ObjectListWindowBase()
 
 void ObjectListWindowBase::on_actionClose_triggered ()
 {
-	ui.closeButton->click ();
+	close ();
 }
 
 void ObjectListWindowBase::keyPressEvent (QKeyEvent *e)
@@ -79,4 +81,3 @@ bool ObjectListWindowBase::allowEdit (QString message)
 		message="Das eingegebene Passwort ist nicht korrekt.";
 	}
 }
-
