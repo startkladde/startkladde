@@ -340,6 +340,9 @@ void MainWindow::setupPlugins ()
 
 	ui.weatherFrame->setVisible (!blank (s.weatherPluginCommand));
 
+	delete weatherWidget;
+	weatherWidget=NULL;
+
 	if (!blank (s.weatherPluginCommand))
 	{
 		// Create and setup the weather widget. The weather widget is located to
