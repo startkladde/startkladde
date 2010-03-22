@@ -2,7 +2,7 @@
  * ObjectEditorPane.h
  *
  *  Created on: Aug 22, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef OBJECTEDITORPANE_H_
@@ -10,10 +10,10 @@
 
 #include <QtGui/QWidget>
 
-#include "src/db/dbTypes.h"
-#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
+#include "src/db/dbId.h"
+#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required fro ObjectEditorWindowBase::Mode
 
-class DataStorage;
+class Cache;
 
 /**
  * A Q_OBJECT base for the template ObjectEditorPane so we can use signals and
@@ -21,19 +21,18 @@ class DataStorage;
  */
 class ObjectEditorPaneBase: public QWidget
 {
-	Q_OBJECT
-
 	public:
 		// Types
 		class AbortedException: public std::exception {};
 
-		ObjectEditorPaneBase (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent=NULL);
+		ObjectEditorPaneBase (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 		virtual ~ObjectEditorPaneBase ();
 
 	protected:
 		virtual void errorCheck (const QString &problem, QWidget *widget);
+		virtual void requiredField (const QString &value, QWidget *widget, const QString &problem);
 
-		DataStorage &dataStorage;
+		Cache &cache;
 		ObjectEditorWindowBase::Mode mode;
 };
 
@@ -57,7 +56,7 @@ class ObjectEditorPaneBase: public QWidget
 template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 {
 	public:
-		ObjectEditorPane (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent=NULL);
+		ObjectEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 		virtual ~ObjectEditorPane ();
 
 		/**
@@ -73,11 +72,20 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		 */
 		virtual T determineObject ()=0;
 
+		/**
+		 * Sets the "name" fields (e. g. last and first name for people, or
+		 * registration for planes) to the values of the given object and makes
+		 * them read-only, if supported by the implementation.
+		 *
+		 * @param nameObject
+		 */
+		virtual void setNameObject (const T &nameObject) { (void)nameObject; }
+
 		/** @brief Implementations of ObjectEditorPane should specialize this template method */
-		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent=NULL);
+		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 
 	protected:
-		db_id originalId;
+		dbId originalId;
 
 };
 
@@ -85,9 +93,9 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 // ** ObjectEditorPane implementation **
 // *************************************
 
-template<class T> ObjectEditorPane<T>::ObjectEditorPane (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent):
-	ObjectEditorPaneBase (mode, dataStorage, parent),
-	originalId (invalid_id)
+template<class T> ObjectEditorPane<T>::ObjectEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent):
+	ObjectEditorPaneBase (mode, cache, parent),
+	originalId (invalidId)
 {
 }
 
@@ -95,4 +103,4 @@ template<class T> ObjectEditorPane<T>::~ObjectEditorPane ()
 {
 }
 
-#endif /* OBJECTEDITORPANE_H_ */
+#endif

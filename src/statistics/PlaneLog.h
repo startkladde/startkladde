@@ -1,21 +1,19 @@
-#ifndef _PlaneLog_h
-#define _PlaneLog_h
+#ifndef PLANELOG_H_
+#define PLANELOG_H_
 
-#include <QString>
-#include <QDateTime>
 #include <QAbstractTableModel>
+#include <QString>
+//#include <QDateTime>
 #include <QList>
+#include <QDate>
 
-#include "src/time/Time.h"
-#include "src/db/dbTypes.h"
+#include "src/db/dbId.h"
 
-class DataStorage;
+class Cache;
 class Flight;
 
 class PlaneLog: public QAbstractTableModel
 {
-	Q_OBJECT
-
 	protected:
 		PlaneLog (QObject *parent=NULL);
 		~PlaneLog ();
@@ -26,35 +24,36 @@ class PlaneLog: public QAbstractTableModel
 				Entry ();
 				virtual ~Entry ();
 
-				static Entry create (const Flight *flight, DataStorage &dataStorage);
-				static Entry create (const QList<const Flight *> flights, DataStorage &dataStorage);
+				static Entry create (const Flight *flight, Cache &cache);
+				static Entry create (const QList<const Flight *> flights, Cache &cache);
 
 				QString registration;
+				QString type;
 
 				QDate date;
 				QString pilotName;
 				int minPassengers;
 				int maxPassengers;
-				QString departureAirfield;
-				QString destinationAirfield;
-				Time departureTime;
-				Time landingTime;
+				QString departureLocation;
+				QString landingLocation;
+				QDateTime departureTime;
+				QDateTime  landingTime;
 				int numLandings;
-				Time operationTime;
+				QTime operationTime;
 				QString comments;
 
 				bool valid;
 
 				virtual QString dateText () const;
 				virtual QString numPassengersString () const;
-				virtual QString departureTimeText (bool noLetters=false) const;
-				virtual QString landingTimeText (bool noLetters=false) const;
+				virtual QString departureTimeText () const;
+				virtual QString landingTimeText () const;
 				virtual QString operationTimeText () const;
 		};
 
 	public:
-		static PlaneLog *createNew (db_id planeId, const QList<Flight> &flights, DataStorage &dataStorage);
-		static PlaneLog *createNew (const QList<Flight> &flights, DataStorage &dataStorage);
+		static PlaneLog *createNew (dbId planeId, const QList<Flight> &flights, Cache &cache);
+		static PlaneLog *createNew (const QList<Flight> &flights, Cache &cache);
 
 		// QAbstractTableModel methods
 		virtual int rowCount (const QModelIndex &index) const;

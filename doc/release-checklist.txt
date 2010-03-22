@@ -1,2 +1,0 @@
-- Alle Strings (zumindest alle mit Umlauten) als QString::fromUtf8
-

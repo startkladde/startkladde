@@ -2,13 +2,14 @@
 
 #include <QKeyEvent>
 
-#include "src/text.h"
+#include "src/version.h"
+#include "src/util/qString.h"
 
 // TODO multiple lines in message area
 // TODO Klick auf labels schließen
 
 SplashScreen::SplashScreen (QWidget *parent, const char * const *logo)
-	:QDialog (parent, "splash screen", true, WStyle_Customize|Qt::WStyle_NoBorder|Qt::WStyle_StaysOnTop|Qt::WType_TopLevel)
+	:QDialog (parent, "splash screen", true, Qt::WStyle_Customize|Qt::WStyle_NoBorder|Qt::WStyle_StaysOnTop|Qt::WType_TopLevel)
 	/*
 	 * Creates a SplashScreen instance.
 	 * Parameters:
@@ -44,7 +45,7 @@ SplashScreen::SplashScreen (QWidget *parent, const char * const *logo)
 	palette.setColor (QPalette::Foreground, QColor (255, 255, 255));
 	lbl_version->setPalette (palette);
 	}
-	lbl_version->setText (version_info ());
+	lbl_version->setText (getVersion ());
 	lbl_version->move (0, lbl_picture->height ());
 	lbl_version->adjustSize ();
 	lbl_version->resize (lbl_picture->width (), lbl_version->height ());

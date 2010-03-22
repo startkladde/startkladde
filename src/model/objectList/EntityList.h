@@ -2,7 +2,7 @@
  * EntityList.h
  *
  *  Created on: Aug 29, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef ENTITYLIST_H_
@@ -10,43 +10,34 @@
 
 #include "MutableObjectList.h"
 
-//#include "src/db/DataStorage.h"
-
-#include "src/dataTypes.h"
-
-#include <QAbstractTableModel>
-
 /**
- * A subclass of MutableObjectList which contains Entitys and allows acces based
+ * A subclass of MutableObjectList which contains Entities and allows access based
  * on the entity id.
  *
- * T must provide a get_id method.
+ * T must provide a getId method.
  *
  * Note that for a typical use, there will not be two elements with the same ID
  * in the list - but EntityList does not require that.
  *
- * @see Entity::get_id
+ * @see Entity::getId
  */
 template<class T> class EntityList: public MutableObjectList<T>
 {
 	public:
 		// Construction
-		EntityList (/*DataStorage &dataStorage, */QObject *parent=NULL);
-		EntityList (/*DataStorage &dataStorage, */const QList<T> &list, QObject *parent=NULL);
+		EntityList (QObject *parent=NULL);
+		EntityList (const QList<T> &list, QObject *parent=NULL);
 		virtual ~EntityList ();
 
 		// Access
-		// TODO: addById which gets the data from the dataStorage (?); dito for replace
-		virtual int findById (db_id id);
+		// TODO: addById which gets the data from the cache (?); dito for replace
+		virtual int findById (dbId id);
 		// TODO: have them return the number of entries removed/replaced and
 		// assert that it is 1 where applicable
-		virtual void removeById (db_id id);
+		virtual void removeById (dbId id);
 		// TODO: replace method which only takes the object and reads the ID from the object
-		virtual void replaceById (db_id id, const T &object);
-		virtual void replaceOrAdd (db_id id, const T &object);
-
-	protected:
-//		DataStorage &dataStorage;
+		virtual void replaceById (dbId id, const T &object);
+		virtual void replaceOrAdd (dbId id, const T &object);
 };
 
 
@@ -54,15 +45,13 @@ template<class T> class EntityList: public MutableObjectList<T>
 // ** Construction **
 // ******************
 
-template<class T> EntityList<T>::EntityList (/*DataStorage &dataStorage, */QObject *parent):
-	MutableObjectList<T> (parent)//,
-//	dataStorage (dataStorage)
+template<class T> EntityList<T>::EntityList (QObject *parent):
+	MutableObjectList<T> (parent)
 {
 }
 
-template<class T> EntityList<T>::EntityList (/*DataStorage &dataStorage, */const QList<T> &list, QObject *parent):
-	MutableObjectList<T> (list, parent)//,
-//	dataStorage (dataStorage)
+template<class T> EntityList<T>::EntityList (const QList<T> &list, QObject *parent):
+	MutableObjectList<T> (list, parent)
 {
 }
 
@@ -82,11 +71,11 @@ template<class T> EntityList<T>::~EntityList ()
  * @param id the ID to look for
  * @return the index of an object with the specified ID, or -1
  */
-template<class T> int EntityList<T>::findById (db_id id)
+template<class T> int EntityList<T>::findById (dbId id)
 {
 	// TODO cache in a map?
 	for (int i=0; i<MutableObjectList<T>::size (); ++i)
-		if (MutableObjectList<T>::at (i).get_id ()==id)
+		if (MutableObjectList<T>::at (i).getId ()==id)
 			return i;
 
 	return -1;
@@ -97,12 +86,13 @@ template<class T> int EntityList<T>::findById (db_id id)
  *
  * @param id the ID of the object(s) to remove
  */
-template<class T> void EntityList<T>::removeById (db_id id)
+template<class T> void EntityList<T>::removeById (dbId id)
 {
 	// TODO cache in a map?
+	// TODO use iterator?
 	for (int i=0; i<MutableObjectList<T>::size (); ++i)
 	{
-		if (MutableObjectList<T>::at (i).get_id ()==id)
+		if (MutableObjectList<T>::at (i).getId ()==id)
 		{
 			MutableObjectList<T>::removeAt (i);
 			--i;
@@ -116,11 +106,11 @@ template<class T> void EntityList<T>::removeById (db_id id)
  * @param id the ID of the object(s) to replace
  * @param object the object to replace said objects with
  */
-template<class T> void EntityList<T>::replaceById (db_id id, const T &object)
+template<class T> void EntityList<T>::replaceById (dbId id, const T &object)
 {
 	// TODO cache in a map?
 	for (int i=0; i<MutableObjectList<T>::size (); ++i)
-		if (MutableObjectList<T>::at (i).get_id ()==id)
+		if (MutableObjectList<T>::at (i).getId ()==id)
 			replace (i, object);
 }
 
@@ -131,7 +121,7 @@ template<class T> void EntityList<T>::replaceById (db_id id, const T &object)
  * @param id the ID of the object(s) to replace
  * @param object the new object
  */
-template<class T> void EntityList<T>::replaceOrAdd (db_id id, const T &object)
+template<class T> void EntityList<T>::replaceOrAdd (dbId id, const T &object)
 {
 	int index=findById (id);
 
@@ -141,4 +131,4 @@ template<class T> void EntityList<T>::replaceOrAdd (db_id id, const T &object)
 		append (object);
 }
 
-#endif /* ENTITYLIST_H_ */
+#endif

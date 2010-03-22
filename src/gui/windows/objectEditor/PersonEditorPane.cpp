@@ -1,7 +1,8 @@
 #include "PersonEditorPane.h"
 
-#include "src/db/DataStorage.h"
+#include "src/db/cache/Cache.h"
 #include "src/model/Person.h"
+#include "src/text.h"
 
 /*
  * TODO: disallow person name changes; allow merges only
@@ -11,8 +12,8 @@
 // ** Construction **
 // ******************
 
-PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent):
-	ObjectEditorPane<Person> (mode, dataStorage, parent)
+PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent):
+	ObjectEditorPane<Person> (mode, cache, parent)
 {
 	ui.setupUi(this);
 
@@ -26,9 +27,9 @@ PersonEditorPane::~PersonEditorPane()
 
 }
 
-template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent)
+template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent)
 {
-	return new PersonEditorPane (mode, dataStorage, parent);
+	return new PersonEditorPane (mode, cache, parent);
 }
 
 
@@ -39,8 +40,23 @@ template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEdi
 void PersonEditorPane::fillData ()
 {
 	// Clubs
-	ui.clubInput->addItems (dataStorage.getClubs ());
+	ui.clubInput->addItems (cache.getClubs ());
 	ui.clubInput->setCurrentText ("");
+}
+
+void PersonEditorPane::setNameObject (const Person &nameObject)
+{
+	if (!blank (nameObject.lastName))
+	{
+		ui.lastNameInput->setText (nameObject.lastName);
+		ui.lastNameInput->setEnabled (false);
+	}
+
+	if (!blank (nameObject.firstName))
+	{
+		ui.firstNameInput->setText (nameObject.firstName);
+		ui.firstNameInput->setEnabled (false);
+	}
 }
 
 
@@ -50,12 +66,11 @@ void PersonEditorPane::fillData ()
 
 void PersonEditorPane::objectToFields (const Person &person)
 {
-	originalId=person.id;
+	originalId=person.getId ();
 
-	ui.lastNameInput->setText (person.nachname);
-	ui.firstNameInput->setText (person.vorname);
+	ui.lastNameInput->setText (person.lastName);
+	ui.firstNameInput->setText (person.firstName);
 	ui.clubInput->setCurrentText (person.club);
-	ui.regionalAssociationIdInput->setText (person.landesverbands_nummer);
 	ui.commentsInput->setText (person.comments);
 }
 
@@ -63,21 +78,20 @@ Person PersonEditorPane::determineObject ()
 {
 	Person person;
 
-	person.id=originalId;
+	person.setId (originalId);
 
-	person.nachname=ui.lastNameInput->text ();
-	person.vorname=ui.firstNameInput->text ();
+	person.lastName=ui.lastNameInput->text ();
+	person.firstName=ui.firstNameInput->text ();
 	person.club=ui.clubInput->currentText ();
-	person.landesverbands_nummer=ui.regionalAssociationIdInput->text ();
 	person.comments=ui.commentsInput->text ();
 
 	// Error checks
 
-	if (eintrag_ist_leer (person.nachname))
+	if (eintrag_ist_leer (person.lastName))
 		errorCheck ("Es wurde kein Nachname angegeben.",
 			ui.lastNameInput);
 
-	if (eintrag_ist_leer (person.vorname))
+	if (eintrag_ist_leer (person.firstName))
 		errorCheck ("Es wurde kein Vorname angegeben.",
 			ui.firstNameInput);
 

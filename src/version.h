@@ -1,13 +1,9 @@
-#ifndef _version_h
-#define _version_h
+#ifndef VERSION_H_
+#define VERSION_H_
 
 #include <QString>
 
-#include "version/version.h"
-
-void display_version ();
-void display_short_version ();
-QString version_info ();
+QString getVersion ();
 
 #endif
 

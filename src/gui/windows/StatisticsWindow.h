@@ -2,14 +2,13 @@
 #define STATISTICSWINDOW_H
 
 #include <QtGui/QDialog>
-#include <QAbstractTableModel>
 
 #include "ui_StatisticsWindow.h"
 
+class QAbstractTableModel;
+
 class StatisticsWindow: public QDialog
 {
-    Q_OBJECT
-
 	public:
 		StatisticsWindow (QAbstractTableModel *model, bool modelOwned, QWidget *parent=0);
 		~StatisticsWindow ();

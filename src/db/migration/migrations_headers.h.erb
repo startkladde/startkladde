@@ -1,0 +1,3 @@
+<% migrations.each do |migration| %>
+#include "src/db/migrations/Migration_<%= migration[:version] %>_<%= migration[:name] %>.h"
+<% end %>

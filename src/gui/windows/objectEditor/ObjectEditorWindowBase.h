@@ -2,7 +2,7 @@
  * ObjectEditorWindowBase.h
  *
  *  Created on: Aug 23, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef OBJECTEDITORWINDOWBASE_H_
@@ -12,8 +12,7 @@
 
 #include "ui_ObjectEditorWindowBase.h"
 
-class DataStorage;
-
+class DbManager;
 
 /**
  * Base class for ObjectEditorWindow, because templates cannot be Q_OBJECTs
@@ -31,7 +30,7 @@ class ObjectEditorWindowBase: public QDialog
 		// Types
 		enum Mode { modeCreate, modeEdit, modeDisplay };
 
-		ObjectEditorWindowBase (DataStorage &dataStorage, QWidget *parent=NULL, Qt::WindowFlags flags=0);
+		ObjectEditorWindowBase (DbManager &manager, QWidget *parent=NULL, Qt::WindowFlags flags=0);
 		virtual ~ObjectEditorWindowBase ();
 
 	public slots:
@@ -39,8 +38,8 @@ class ObjectEditorWindowBase: public QDialog
 
 	protected:
 		Ui::ObjectEditorWindowBaseClass ui;
-		DataStorage &dataStorage;
+		DbManager &manager;
 };
 
 
-#endif /* OBJECTEDITORWINDOWBASE_H_ */
+#endif

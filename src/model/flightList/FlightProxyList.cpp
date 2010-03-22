@@ -1,27 +1,17 @@
-/*
- * FlightProxyList.cpp
- *
- *  Created on: Sep 1, 2009
- *      Author: deffi
- */
-
 #include "FlightProxyList.h"
 
 #include <cassert>
 
-#include <QSet>
-
 #include "src/model/Flight.h"
-#include "src/db/DataStorage.h"
-#include "src/model/LaunchType.h"
+#include "src/db/cache/Cache.h"
+#include "src/model/LaunchMethod.h"
 
-
-FlightProxyList::FlightProxyList (DataStorage &dataStorage, AbstractObjectList<Flight> &sourceModel, QObject *parent):
+FlightProxyList::FlightProxyList (Cache &cache, AbstractObjectList<Flight> &sourceModel, QObject *parent):
 	AbstractObjectList<Flight> (parent),
-	dataStorage (dataStorage),
+	cache (cache),
 	sourceModel (sourceModel)
 {
-	// TODO: if there is no self launch launch type, the flight will be red
+	// TODO: if there is no self launch method, the flight will be red
 	// in the table, but not show an error in the editor
 
 	// Some signals from the source model can be re-emitted without change
@@ -56,70 +46,64 @@ FlightProxyList::~FlightProxyList ()
 // **************************
 
 // TODO should be in Flight
-bool FlightProxyList::isAirtow (const Flight &flight, LaunchType *launchType) const
+bool FlightProxyList::isAirtow (const Flight &flight, LaunchMethod *launchMethod) const
 {
-	// No launch type => no airtow
-	if (!id_valid (flight.launchType))
+	// No launch method => no airtow
+	if (!idValid (flight.launchMethodId))
 		return false;
 
 	try
 	{
-		LaunchType lt=dataStorage.getObject<LaunchType> (flight.launchType);
-		if (launchType) *launchType=lt;
-		return lt.is_airtow ();
+		LaunchMethod lm=cache.getObject<LaunchMethod> (flight.launchMethodId);
+		if (launchMethod) *launchMethod=lm;
+		return lm.isAirtow ();
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
-		// Launch type not found => no airtow
+		// Launch method not found => no airtow
 		return false;
 	}
 }
 
-void FlightProxyList::addTowflightFor (const Flight &flight, const LaunchType &launchType)
+void FlightProxyList::addTowflightFor (const Flight &flight, const LaunchMethod &launchMethod)
 {
 	// Determine the ID of the towplane
 	// TODO code duplication with updateTowflight
-	db_id towplaneId=invalid_id;
+	dbId towplaneId=invalidId;
 
-	if (launchType.towplane_known ())
-		towplaneId=dataStorage.getPlaneIdByRegistration (launchType.get_towplane ());
+	if (launchMethod.towplaneKnown ())
+		towplaneId=cache.getPlaneIdByRegistration (launchMethod.towplaneRegistration);
 	else
-		towplaneId=flight.towplane;
+		towplaneId=flight.towplaneId;
 
-	// Determine the launch type (self launch) of the towplane
-	// TODO this should be cached, but the FlightProxyList may be constructed
-	// before the dataStorage has the launch types, so we have to receive
-	// DEvents and update the self launch ID on launch type changes. We will
-	// have to do that anyway to catch changes in the launch types and
-	// potentially other things the towflights depend on.
-	db_id selfLaunchId=dataStorage.getLaunchTypeByType (sat_self);
-
-	towflights.append (flight.makeTowflight (towplaneId, selfLaunchId));
+	// For the launch method, use an invalid ID. The FlightModel recognizes
+	// towflights by their type and displays the launch method as self launch
+	towflights.append (flight.makeTowflight (towplaneId, invalidId));
 }
 
-void FlightProxyList::updateTowflight (db_id id, int towflightIndex)
+void FlightProxyList::updateTowflight (dbId id, int towflightIndex)
 {
 	try
 	{
-		Flight flight=dataStorage.getObject<Flight> (id);
-		LaunchType launchType;
-		if (isAirtow (flight, &launchType)) // TODO log error if not
+		Flight flight=cache.getObject<Flight> (id);
+		LaunchMethod launchMethod;
+		if (isAirtow (flight, &launchMethod)) // TODO log error if not
 		{
 			// Determine the ID of the towplane
 			// TODO code duplication with addTowflightFor
-			db_id towplaneId=invalid_id;
+			dbId towplaneId=invalidId;
 
-			if (launchType.towplane_known ())
-				towplaneId=dataStorage.getPlaneIdByRegistration (launchType.get_towplane ());
+			if (launchMethod.towplaneKnown ())
+				towplaneId=cache.getPlaneIdByRegistration (launchMethod.towplaneRegistration);
 			else
-				towplaneId=flight.towplane;
+				towplaneId=flight.towplaneId;
 
-			db_id selfLaunchId=dataStorage.getLaunchTypeByType (sat_self);
+			dbId selfLaunchId=cache.getLaunchMethodByType (LaunchMethod::typeSelf);
 
 			towflights.replace (towflightIndex, flight.makeTowflight (towplaneId, selfLaunchId));
 		}
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		// Do nothing // TODO log error
 	}
@@ -130,10 +114,10 @@ void FlightProxyList::updateTowflight (db_id id, int towflightIndex)
  * @param id
  * @return a flight index
  */
-int FlightProxyList::findFlight (db_id id) const
+int FlightProxyList::findFlight (dbId id) const
 {
 	for (int i=0; i<sourceModel.size (); ++i)
-		if (sourceModel.at (i).get_id ()==id)
+		if (sourceModel.at (i).getId ()==id)
 			return i;
 
 	return -1;
@@ -144,10 +128,10 @@ int FlightProxyList::findFlight (db_id id) const
  * @param id
  * @return a towflight index
  */
-int FlightProxyList::findTowflight (db_id id) const
+int FlightProxyList::findTowflight (dbId id) const
 {
 	for (int i=0; i<towflights.size (); ++i)
-		if (towflights[i].get_id ()==id)
+		if (towflights[i].getId ()==id)
 			return i;
 
 	return -1;
@@ -181,7 +165,7 @@ int FlightProxyList::modelIndexToTowflightIndex (int modelIndex) const
  */
 int FlightProxyList::findTowref (int index) const
 {
-	db_id id=at (index).get_id ();
+	dbId id=at (index).getId ();
 
 	if (modelIndexIsFlight (index))
 	{
@@ -250,11 +234,11 @@ void FlightProxyList::sourceModel_dataChanged (const QModelIndex &topLeft, const
 	for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
 	{
 		const Flight &flight=sourceModel.at (i);
-		db_id id=flight.get_id ();
+		dbId id=flight.getId ();
 
-		// Determine the launch type and whether the flight is an airtow
-		LaunchType launchType;
-		bool flightIsAirtow=isAirtow (sourceModel.at (i), &launchType);
+		// Determine the launch method and whether the flight is an airtow
+		LaunchMethod launchMethod;
+		bool flightIsAirtow=isAirtow (sourceModel.at (i), &launchMethod);
 
 		// We may or may not have a towflight with that ID, regardless of
 		// whether the flight is an airtow, because that may have changed.
@@ -284,7 +268,7 @@ void FlightProxyList::sourceModel_dataChanged (const QModelIndex &topLeft, const
 				int modelIndex=towflightIndexToModelIndex (towflightIndex);
 
 				beginInsertRows (QModelIndex (), modelIndex, modelIndex);
-				addTowflightFor (flight, launchType);
+				addTowflightFor (flight, launchMethod);
 				endInsertRows ();
 			}
 
@@ -309,12 +293,12 @@ void FlightProxyList::sourceModel_modelReset ()
 {
 	towflights.clear ();
 
-	LaunchType launchType;
+	LaunchMethod launchMethod;
 
 	const QList<Flight> flights=sourceModel.getList ();
 	foreach (const Flight &flight, flights)	// For each flight in the source model
-		if (isAirtow (flight, &launchType))	// Is it an airtow?
-			addTowflightFor (flight, launchType);	// Add the towflight to the towflight list (don't notify listeners, we'll reset later)
+		if (isAirtow (flight, &launchMethod))	// Is it an airtow?
+			addTowflightFor (flight, launchMethod);	// Add the towflight to the towflight list (don't notify listeners, we'll reset later)
 
 	reset ();
 }
@@ -337,7 +321,7 @@ void FlightProxyList::sourceModel_rowsAboutToBeRemoved (const QModelIndex &paren
 	for (int i=start; i<=end; ++i)
 	{
 		// The towflight has the same ID as the flight
-		db_id id=sourceModel.at (i).get_id ();
+		dbId id=sourceModel.at (i).getId ();
 
 		int towflightIndex=findTowflight (id);
 		if (towflightIndex>=0)
@@ -365,8 +349,8 @@ void FlightProxyList::sourceModel_rowsInserted (const QModelIndex &parent, int s
 	{
 		const Flight &flight=sourceModel.at (i);
 
-		LaunchType launchType;
-		if (isAirtow (flight, &launchType))
+		LaunchMethod launchMethod;
+		if (isAirtow (flight, &launchMethod))
 		{
 			// TODO code duplication with sourceModel_dataChanged - this should
 			// be in addTowflightFor
@@ -374,7 +358,7 @@ void FlightProxyList::sourceModel_rowsInserted (const QModelIndex &parent, int s
 			int modelIndex=towflightIndexToModelIndex (towflightIndex);
 
 			beginInsertRows (parent, modelIndex, modelIndex);
-			addTowflightFor (flight, launchType);
+			addTowflightFor (flight, launchMethod);
 			endInsertRows ();
 		}
 	}

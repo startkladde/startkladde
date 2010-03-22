@@ -1,7 +1,7 @@
-#ifndef _colors_h
-#define _colors_h
+#ifndef COLORS_H_
+#define COLORS_H_
 
-// TODO rename to ansiColors.h
+// TODO remove
 
 
 #define c_1 "\033["

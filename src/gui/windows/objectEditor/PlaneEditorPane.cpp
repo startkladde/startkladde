@@ -1,8 +1,11 @@
 #include "PlaneEditorPane.h"
 
-#include "src/model/Plane.h"
+#include <QMessageBox>
 
-#include "src/db/DataStorage.h"
+#include "src/text.h"
+#include "src/db/cache/Cache.h"
+#include "src/model/Plane.h"
+#include "src/util/qString.h"
 
 /*
  * Improvements:
@@ -21,16 +24,16 @@
 // ** Construction **
 // ******************
 
-PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent):
-	ObjectEditorPane<Plane> (mode, dataStorage, parent)
+PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent):
+	ObjectEditorPane<Plane> (mode, cache, parent)
 {
 	ui.setupUi(this);
 
 	fillData ();
 
-	ui.registrationInput->setFocus ();
 
 	ui.registrationInput->setText (Plane::defaultRegistrationPrefix ());
+	ui.registrationInput->setFocus ();
 //	ui.registrationInput->setCursorPosition (ui.registrationInput->text ().length ());
 //	ui.registrationInput->end (false);
 }
@@ -40,9 +43,9 @@ PlaneEditorPane::~PlaneEditorPane()
 
 }
 
-template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent)
+template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent)
 {
-	return new PlaneEditorPane (mode, dataStorage, parent);
+	return new PlaneEditorPane (mode, cache, parent);
 }
 
 
@@ -56,16 +59,26 @@ void PlaneEditorPane::fillData ()
 	ui.categoryInput->addItem ("", Plane::categoryNone);
 	const QList<Plane::Category> categories=Plane::listCategories (false);
 	for (int i=0; i<categories.size (); ++i)
-		ui.categoryInput->addItem (Plane::categoryText (categories.at (i), lsWithShortcut), categories.at (i));
+		ui.categoryInput->addItem (Plane::categoryText (categories.at (i)), categories.at (i));
 	ui.categoryInput->setCurrentItemByItemData (Plane::categoryNone);
 
 	// Types
-	ui.typeInput->addItems (dataStorage.getPlaneTypes ());
+	ui.typeInput->addItems (cache.getPlaneTypes ());
 	ui.typeInput->setCurrentText ("");
 
 	// Clubs
-	ui.clubInput->addItems (dataStorage.getClubs ());
+	ui.clubInput->addItems (cache.getClubs ());
 	ui.clubInput->setCurrentText ("");
+}
+
+void PlaneEditorPane::setNameObject (const Plane &nameObject)
+{
+	if (!blank (nameObject.registration))
+	{
+		ui.registrationInput->setText (nameObject.registration);
+		ui.registrationInput->setEnabled (false);
+		on_registrationInput_editingFinished ();
+	}
 }
 
 // ****************
@@ -89,10 +102,10 @@ void PlaneEditorPane::on_registrationInput_editingFinished ()
 
 void PlaneEditorPane::objectToFields (const Plane &plane)
 {
-	originalId=plane.id;
+	originalId=plane.getId ();
 
 	ui.registrationInput->setText (plane.registration);
-	ui.competitionIdInput->setText (plane.competitionId);
+	ui.callsignInput->setText (plane.callsign);
 	ui.categoryInput->setCurrentItemByItemData (plane.category);
 	ui.typeInput->setCurrentText (plane.type);
 	ui.clubInput->setCurrentText (plane.club);
@@ -105,11 +118,12 @@ Plane PlaneEditorPane::determineObject ()
 	// TODO: checks go here; throw AbortedException if aborted
 	Plane plane;
 
-	plane.id=originalId;
+	plane.setId (originalId);
 
 	plane.registration=ui.registrationInput->text ();
-	plane.competitionId=ui.competitionIdInput->text ();
+	plane.callsign=ui.callsignInput->text ();
 	plane.category=(Plane::Category)ui.categoryInput->currentItemData ().toInt ();
+
 	plane.type=ui.typeInput->currentText ();
 	plane.club=ui.clubInput->currentText ();
 	plane.numSeats=ui.seatsInput->value ();
@@ -118,7 +132,7 @@ Plane PlaneEditorPane::determineObject ()
 
 	// Error checks
 
-	if (mode==ObjectEditorWindowBase::modeCreate && id_valid (dataStorage.getPlaneIdByRegistration (plane.registration)))
+	if (mode==ObjectEditorWindowBase::modeCreate && idValid (cache.getPlaneIdByRegistration (plane.registration)))
 	{
 		QString message=QString ("Es gibt bereits ein Flugzeug mit dem Kennzeichen %1").arg (plane.registration);
 		QMessageBox::critical (this, "Flugzeug existiert bereits", message, QMessageBox::Ok, QMessageBox::NoButton);
@@ -152,7 +166,7 @@ Plane PlaneEditorPane::determineObject ()
 
 	int maxSeats=Plane::categoryMaxSeats (plane.category);
 	if (maxSeats>=0 && plane.numSeats>maxSeats)
-		errorCheck (QString::fromUtf8 ("Es wurden zu viele Sitze für die gewählte Gattung angegeben."),
+		errorCheck (utf8 ("Es wurden zu viele Sitze für die gewählte Gattung angegeben."),
 			ui.seatsInput);
 
 

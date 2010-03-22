@@ -2,15 +2,13 @@
  * MutableObjectList.h
  *
  *  Created on: Sep 1, 2009
- *      Author: deffi
+ *      Author: Martin Herrmann
  */
 
 #ifndef MUTABLEOBJECTLIST_H_
 #define MUTABLEOBJECTLIST_H_
 
 #include "AbstractObjectList.h"
-
-#include "src/concurrent/threadUtil.h"
 
 // TODO: thread safety required?
 
@@ -24,7 +22,10 @@ template<class T> class MutableObjectList: public AbstractObjectList<T>
 		// Construction
 		MutableObjectList (QObject *parent=NULL);
 		MutableObjectList (const QList<T> &list, QObject *parent=NULL);
+		MutableObjectList (const MutableObjectList<T> &other);
+		MutableObjectList<T> &operator= (const MutableObjectList<T> &other);
 		virtual ~MutableObjectList ();
+
 
 		// Object access
 		virtual void removeAt (int index);
@@ -34,6 +35,8 @@ template<class T> class MutableObjectList: public AbstractObjectList<T>
 		virtual void replace (int index, const T &object);
 		virtual void clear ();
 		virtual void replaceList (const QList<T> &newList);
+//		virtual void appendList (const QList<T> &other);
+//		virtual void appendList (const AbstractObjectList<T> &other);
 
 
 		// AbstractObjectList methods
@@ -71,6 +74,20 @@ template<class T> MutableObjectList<T>::MutableObjectList (const QList<T> &list,
 	AbstractObjectList<T> (parent),
 	list (list)
 {
+}
+
+template<class T> MutableObjectList<T>::MutableObjectList (const MutableObjectList<T> &other):
+	AbstractObjectList<T> (other.parent ()),
+	list (other.list)
+{
+
+}
+
+template<class T> MutableObjectList<T> &MutableObjectList<T>::operator= (const MutableObjectList<T> &other)
+{
+	setParent (other.parent ());
+	list=other.list;
+	return *this;
 }
 
 template<class T> MutableObjectList<T>::~MutableObjectList ()
@@ -171,6 +188,24 @@ template<class T> void MutableObjectList<T>::replaceList (const QList<T> &newLis
 	QAbstractItemModel::reset ();
 }
 
+///**
+// * This is probably slow as a copy of the lists has to be made.
+// */
+//template<class T> void MutableObjectList<T>::appendList (const QList<T> &other)
+//{
+//	list+=other;
+//	QAbstractItemModel::reset ();
+//}
+
+///**
+// * This is probably slow as a copy of the lists has to be made.
+// */
+//template<class T> void MutableObjectList<T>::appendList (const AbstractObjectList<T> &other)
+//{
+//	list+=other.getList ();
+//	QAbstractItemModel::reset ();
+//}
+
 
 // ********************************
 // ** AbstractObjectList methods **
@@ -203,4 +238,4 @@ template<class T> QList<T> MutableObjectList<T>::getList () const
 	return list;
 }
 
-#endif /* MUTABLEOBJECTLIST_H_ */
+#endif

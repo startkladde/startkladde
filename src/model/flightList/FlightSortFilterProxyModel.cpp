@@ -1,22 +1,13 @@
-/*
- * FlightSortFilterProxyModel.cpp
- *
- *  Created on: Sep 3, 2009
- *      Author: deffi
- */
-
 #include "FlightSortFilterProxyModel.h"
 
 #include <cassert>
 
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/model/Flight.h"
-#include "src/db/DataStorage.h"
-#include "src/model/LaunchType.h"
 
-FlightSortFilterProxyModel::FlightSortFilterProxyModel (DataStorage &dataStorage, QObject *parent):
+FlightSortFilterProxyModel::FlightSortFilterProxyModel (Cache &cache, QObject *parent):
 	QSortFilterProxyModel (parent),
-	dataStorage (dataStorage),
+	cache (cache),
 	showPreparedFlights (true),
 	hideFinishedFlights (false), alwaysShowExternalFlights (true), alwaysShowErroneousFlights (true),
 	customSorting (true)
@@ -38,15 +29,13 @@ bool FlightSortFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIn
 	// Get the flight from the model
 	const Flight &flight=flightList->at (sourceRow);
 
-	if (flight.vorbereitet ())
+	if (flight.isPrepared ())
 	{
 		// Prepared flights are hidden if one of these is true:
 		//   - showPreparedFlights is false
-		//   - the flight is not editable
 		//   - the flight is a towflight
 
 		if (!showPreparedFlights) return false;
-		if (!flight.editable) return false;
 		if (flight.isTowflight ()) return false;
 
 		return true;
@@ -62,7 +51,7 @@ bool FlightSortFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIn
 
 			if (!hideFinishedFlights) return true;
 			if (alwaysShowExternalFlights && flight.isExternal ()) return true;
-			if (alwaysShowErroneousFlights && flight.isErroneous (dataStorage)) return true;
+			if (alwaysShowErroneousFlights && flight.isErroneous (cache)) return true;
 
 			return false;
 		}

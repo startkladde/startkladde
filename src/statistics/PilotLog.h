@@ -1,15 +1,15 @@
-#ifndef _PilotLog_h
-#define _PilotLog_h
+#ifndef PILOTLOG_H_
+#define PILOTLOG_H_
 
-#include <QString>
-#include <QDateTime>
 #include <QAbstractTableModel>
+#include <QString>
 #include <QList>
+#include <QDate>
+#include <QDateTime>
 
-#include "src/time/Time.h"
-#include "src/db/dbTypes.h"
+#include "src/db/dbId.h"
 
-class DataStorage;
+class Cache;
 class Flight;
 
 /*
@@ -17,8 +17,6 @@ class Flight;
  */
 class PilotLog: public QAbstractTableModel
 {
-	Q_OBJECT
-
 	protected:
 		PilotLog (QObject *parent=NULL);
 		~PilotLog ();
@@ -29,34 +27,34 @@ class PilotLog: public QAbstractTableModel
 				Entry ();
 				virtual ~Entry ();
 
-				static Entry create (const Flight *flight, DataStorage &dataStorage);
+				static Entry create (const Flight *flight, Cache &cache);
 
 				QDate date;
 				QString planeType;
 				QString planeRegistration;
 				QString pilot;
 				QString copilot;
-				QString launchType;
-				QString departureAirfield;
-				QString destinationAirfield;
-				Time departureTime;
-				Time landingTime;
-				Time flightDuration;
+				QString launchMethod;
+				QString departureLocation;
+				QString landingLocation;
+				QDateTime departureTime;
+				QDateTime landingTime;
+				QTime flightDuration;
 				QString comments;
 
 				bool valid;
 
 				virtual QString dateText () const;
-				virtual QString departureTimeText (bool noLetters=false) const;
-				virtual QString landingTimeText (bool noLetters=false) const;
+				virtual QString departureTimeText () const;
+				virtual QString landingTimeText () const;
 				virtual QString flightDurationText () const;
 		};
 
 	public:
 		enum FlightInstructorMode { flightInstructorNone, flightInstructorStrict, flightInstructorLoose };
 
-		static PilotLog *createNew (db_id personId, const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode=flightInstructorNone);
-		static PilotLog *createNew (const QList<Flight> &flights, DataStorage &dataStorage, FlightInstructorMode mode=flightInstructorNone);
+		static PilotLog *createNew (dbId personId, const QList<Flight> &flights, Cache &cache, FlightInstructorMode mode=flightInstructorNone);
+		static PilotLog *createNew (const QList<Flight> &flights, Cache &cache, FlightInstructorMode mode=flightInstructorNone);
 
 		// QAbstractTableModel methods
 		virtual int rowCount (const QModelIndex &index) const;

@@ -1,129 +1,100 @@
 #include "Person.h"
 
-#include <iostream>
 #include <cassert>
 
 #include "src/text.h"
+#include "src/db/result/Result.h"
+#include "src/db/Query.h"
 
-Person::Person ()
-	:Entity ()
-	/*
-	 * Constructs an empty Person instance.
-	 */
+
+// ******************
+// ** Construction **
+// ******************
+
+Person::Person ():
+	Entity ()
+{
+	initialize ();
+}
+
+Person::Person (dbId id):
+	Entity (id)
+{
+	initialize ();
+}
+
+void Person::initialize ()
 {
 }
 
-Person::Person (QString vn, QString nn)
-	/*
-	 * Constructs an Person instance with given first and last name.
-	 * Parameters:
-	 *   - vn, nn: the initial values for the fields.
-	 */
-{
-	vorname=vn;
-	nachname=nn;
-	id=0;
-}
 
-Person::Person (QString vn, QString nn, QString ve, QString cid, QString lvnum, db_id p_id)
-	/*
-	 * Constructs an Person instance with given data.
-	 * Parameters:
-	 *   - vn, nn, ve, vid, lvnum, id: the initial values for the fields.
-	 */
-{
-	vorname=vn;
-	nachname=nn;
-	club=ve;
-	club_id=cid;
-	landesverbands_nummer=lvnum;
-	id=p_id;
-}
+// ****************
+// ** Comparison **
+// ****************
 
 bool Person::operator< (const Person &o) const
 {
-	if (nachname<o.nachname) return true;
-	if (nachname>o.nachname) return false;
-	if (vorname<o.vorname) return true;
-	if (vorname>o.vorname) return false;
+	if (lastName<o.lastName) return true;
+	if (lastName>o.lastName) return false;
+	if (firstName<o.firstName) return true;
+	if (firstName>o.firstName) return false;
 	return false;
 }
 
-QString Person::name () const
-	/*
-	 * Returns the name of the person in a form suitable for enumerations.
-	 * Return value:
-	 *   - the name.
-	 */
+
+// ****************
+// ** Formatting **
+// ****************
+
+QString Person::toString () const
 {
-	if (eintrag_ist_leer (nachname)&&eintrag_ist_leer (vorname)) return "-";
-	if (eintrag_ist_leer (nachname)) return vorname;
-	if (eintrag_ist_leer (vorname)) return nachname;
-	return nachname+", "+vorname;
+	return QString ("id=%1, lastName=%2, firstName=%3, club=%4, clubId=%5")
+		.arg (id)
+		.arg (lastName)
+		.arg (firstName)
+		.arg (club)
+		.arg (clubId)
+		;
 }
 
-QString Person::pdf_name () const
-	/*
-	 * Returns the name of the person in a form suitable for the PDF document.
-	 * Return value:
-	 *   - the name.
-	 */
+QString Person::fullName () const
 {
-	return name ();
+	QString l=lastName; if (l.isEmpty ()) l="?";
+	QString f= firstName; if (f.isEmpty ()) f="?";
+
+	return f+" "+l;
 }
 
-QString Person::tableName () const
-	/*
-	 * Returns the name of the person in a form suitable for the Table.
-	 * Return value:
-	 *   - the name.
-	 */
+QString Person::formalName () const
 {
-	if (eintrag_ist_leer (club)) return name ();
-	return name ()+" ("+club+")";
+	QString l=lastName; if (l.isEmpty ()) l="?";
+	QString f= firstName; if (f.isEmpty ()) f="?";
+
+	return l+", "+f;
 }
 
-QString Person::textName () const
-	/*
-	 * Returns the name of the person in a form suitable for running text.
-	 * Return value:
-	 *   - the name.
-	 */
+QString Person::formalNameWithClub () const
 {
-	if (eintrag_ist_leer (nachname)&&eintrag_ist_leer (vorname)) return "-";
-	if (eintrag_ist_leer (nachname)) return vorname;
-	if (eintrag_ist_leer (vorname)) return nachname;
-	return vorname+" "+nachname;
+	if (eintrag_ist_leer (club)) return formalName ();
+	return formalName ()+" ("+club+")";
 }
 
-QString Person::getDescription (casus c) const
-	/*
-	 * Returns a text describing the fact that this is a plane.
-	 * Parameters:
-	 *   - c: the grammatical case of the text.
-	 * Return value:
-	 *   the text.
-	 */
+QString Person::getDisplayName () const
 {
-	return entityLabel (st_person, c);
-}
-
-void Person::dump () const
-	/*
-	 * Print a description of the person to stdout. Used for debugging.
-	 */
-{
-	std::cout << "sk_person dump: " << id << ", " << nachname << ", " << vorname << ", " << club << std::endl;
+	return fullName ();
 }
 
 
+// ********************************
+// ** EntitySelectWindow helpers **
+// ********************************
 
 QString Person::get_selector_value (int column_number) const
 {
 	switch (column_number)
 	{
-		case 0: return nachname;
-		case 1: return vorname;
+		case 0: return lastName;
+		case 1: return firstName;
 		case 2: return club;
 		case 3: return comments;
 		case 4: return QString::number (id);
@@ -144,23 +115,14 @@ QString Person::get_selector_caption (int column_number)
 	}
 }
 
-void Person::output (std::ostream &stream, output_format_t format)
-{
-	Entity::output (stream, format, false, "ID", id);
-	Entity::output (stream, format, false, "Nachname", nachname);
-	Entity::output (stream, format, false, "Vorname", vorname);
-	Entity::output (stream, format, false, "Verein", club);
-	Entity::output (stream, format, false, "Vereins-ID", club_id);
-	Entity::output (stream, format, true, "Landesverbandsnummer", landesverbands_nummer);
-}
 
-// ******************
-// ** ObjectModels **
-// ******************
+// *****************
+// ** ObjectModel **
+// *****************
 
 int Person::DefaultObjectModel::columnCount () const
 {
-	return 7;
+	return 6;
 }
 
 QVariant Person::DefaultObjectModel::displayHeaderData (int column) const
@@ -170,11 +132,10 @@ QVariant Person::DefaultObjectModel::displayHeaderData (int column) const
 		case 0: return "Nachname";
 		case 1: return "Vorname";
 		case 2: return "Verein";
-		case 3: return "Landesverbandsnummer";
-		case 4: return "Bemerkungen";
+		case 3: return "Bemerkungen";
+		case 4: return "Vereins-ID";
 		// TODO remove from DefaultItemModel?
 		case 5: return "ID";
-		case 6: return "Editierbar";
 	}
 
 	assert (false);
@@ -185,26 +146,71 @@ QVariant Person::DefaultObjectModel::displayData (const Person &object, int colu
 {
 	switch (column)
 	{
-		case 0: return object.nachname;
-		case 1: return object.vorname;
+		case 0: return object.lastName;
+		case 1: return object.firstName;
 		case 2: return object.club;
-		case 3: return object.landesverbands_nummer;
-		case 4: return object.comments;
+		case 3: return object.comments;
+		case 4: return object.clubId;
 		case 5: return object.id;
-		case 6: return object.editable;
 	}
 
 	assert (false);
 	return QVariant ();
 }
 
-QString Person::toString () const
+
+// *******************
+// ** SQL interface **
+// *******************
+
+QString Person::dbTableName ()
 {
-	return QString ("id=%1, lastName=%2, firstName=%3, club=%4, clubId=%5")
-		.arg (id)
-		.arg (nachname)
-		.arg (vorname)
-		.arg (club)
-		.arg (club_id)
-		;
+	return "people";
+}
+
+QString Person::selectColumnList ()
+{
+	return "id,last_name,first_name,club,club_id,comments";
+}
+
+Person Person::createFromResult (const Result &result)
+{
+	Person p (result.value (0).toLongLong ());
+
+	p.lastName =result.value (1).toString ();
+	p.firstName=result.value (2).toString ();
+	p.club     =result.value (3).toString ();
+	p.clubId   =result.value (4).toString ();
+	p.comments =result.value (5).toString ();
+
+	return p;
+}
+
+QString Person::insertColumnList ()
+{
+	return "last_name,first_name,club,club_id,comments";
+}
+
+QString Person::insertPlaceholderList ()
+{
+	return "?,?,?,?,?";
+}
+
+void Person::bindValues (Query &q) const
+{
+	q.bind (lastName);
+	q.bind (firstName);
+	q.bind (club);
+	q.bind (clubId);
+	q.bind (comments);
+}
+
+QList<Person> Person::createListFromResult (Result &result)
+{
+	QList<Person> list;
+
+	while (result.next ())
+		list.append (createFromResult (result));
+
+	return list;
 }

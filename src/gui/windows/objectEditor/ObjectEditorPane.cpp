@@ -1,21 +1,15 @@
-/*
- * ObjectEditorPane.cpp
- *
- *  Created on: Aug 22, 2009
- *      Author: mherrman
- */
-
 #include "ObjectEditorPane.h"
 
 #include "src/text.h"
+#include "src/gui/dialogs.h"
 
 // ***************************************
 // ** ObjectEditorPaneBase construction **
 // ***************************************
 
-ObjectEditorPaneBase::ObjectEditorPaneBase (ObjectEditorWindowBase::Mode mode, DataStorage &dataStorage, QWidget *parent):
+ObjectEditorPaneBase::ObjectEditorPaneBase (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent):
 	QWidget (parent),
-	dataStorage (dataStorage), mode (mode)
+	cache (cache), mode (mode)
 {
 }
 
@@ -34,4 +28,11 @@ void ObjectEditorPaneBase::errorCheck (const QString &problem, QWidget *widget)
 		if (widget) widget->setFocus ();
 		throw AbortedException ();
 	}
+}
+
+// TODO use more
+void ObjectEditorPaneBase::requiredField (const QString &value, QWidget *widget, const QString &problem)
+{
+	if (eintrag_ist_leer (value))
+		errorCheck (problem, widget);
 }

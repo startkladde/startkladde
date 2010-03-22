@@ -1,15 +1,20 @@
 #include "text.h"
 
-#include <QStringList>
-
 #include <stdlib.h>
 #include <iostream>
 
-#include "config/Options.h"
+#include <QStringList>
+
+#include "config/Settings.h"
 
 const QString whitespace=" \t\r\n";
 
 using std::cout; using std::cerr; using std::endl;
+
+bool blank (const QString &string)
+{
+	return string.simplified ().isEmpty ();
+}
 
 bool eintrag_ist_leer (QString eintrag)
 	/*
@@ -29,47 +34,14 @@ bool eintraege_sind_leer (QString eintrag1, QString eintrag2)
 	return eintrag_ist_leer (eintrag1) && eintrag_ist_leer (eintrag2);
 }
 
-bool airfieldEntryCanBeChanged (QString airfield)
+// TODO move somewhere more appropriate, then remove dependency on Settings.h
+bool locationEntryCanBeChanged (QString location)
 {
-	return eintrag_ist_leer (airfield) || airfield.simplified () == opts.ort.simplified ();
+	return
+		eintrag_ist_leer (location) ||
+		location.simplified () == Settings::instance ().location.simplified ();
 }
 
-
-QString t_pilot_bezeichnung (FlightType flugtyp, casus c)
-	/*
-	 * Creates a description of the pilot's function (pilot, flight instructor...).
-	 * Parameters:
-	 *   - flugytp: the flight type.
-	 *   - casus c: the case (grammatical) to create the description with.
-	 * Return value:
-	 *   - the description.
-	 */
-{
-	// TODO diese hier in data_types.cpp
-	switch (flugtyp)
-	{
-		case ftTraining2: return c==cas_genitiv   ? QString::fromUtf8 ("Flugschülers") : QString::fromUtf8 ("Flugschüler");
-		default:         return c==cas_nominativ ? QString::fromUtf8 ("Pilot")        : QString::fromUtf8 ("Piloten");
-	}
-}
-
-QString t_begleiter_bezeichnung (FlightType flugtyp, casus c)
-	/*
-	 * Creates a description of the copilot's function (pilot, flight instructor...).
-	 * Parameters:
-	 *   - flugytp: the flight type.
-	 *   - casus c: the case (grammatical) to create the description with.
-	 * Return value:
-	 *   - the description.
-	 */
-{
-	switch (flugtyp)
-	{
-		case ftTraining2:                          return c==cas_genitiv ? "Fluglehrers": "Fluglehrer";
-		case ftGuestPrivate: case ftGuestExternal: return c==cas_genitiv ? "Gasts"      : "Gast";
-		default:                                  return c==cas_genitiv ? "Begleiters" : "Begleiter";
-	}
-}
 
 void replace_tabs (QString &s)
 {
@@ -141,29 +113,13 @@ void trim (QStringList &strings)
 
 QString get_environment (const QString& name)
 {
-	char *r=getenv (name.latin1());
+	char *r=getenv (name.utf8 ().constData ());
 	if (r)
 		return QString (r);
 	else
 		return QString ();
 }
 
-
-QString bool_to_string (bool val, const QString &true_value, const QString &false_value)
-{
-	if (val)
-		return true_value;
-	else
-		return false_value;
-}
-
-bool string_to_bool (const QString &text)
-{
-	if (text.toInt ()==0)
-		return false;
-	else
-		return true;
-}
 
 QString make_string (const QSet<QString> s, const QString &separator)
 {
@@ -180,46 +136,22 @@ QString make_string (const QSet<QString> s, const QString &separator)
 }
 
 
-std::ostream &operator<< (std::ostream &s, const QString &c)
-{
-	return s << qPrintable (c);
-}
-
 std::ostream &operator<< (std::ostream &s, const QColor &c)
 {
 	return s << c.red () << "," <<  c.green () << "," << c.blue ();
 }
 
+//std::ostream &operator<< (std::ostream &s, const QByteArray &ba)
+//{
+//	int l=ba.length ();
+//	for (int i=0; i<l; ++i)
+//		s << ba.at (i);
+//
+//	return s;
+//}
 
 
 
-bool yesNoQuestion (QWidget *parent, QString title, QString question)
-{
-	// TODO: Yes/No, but with ESC
-	QMessageBox::StandardButtons buttons=QMessageBox::Ok | QMessageBox::Cancel;
-	QMessageBox::StandardButton result=QMessageBox::question (parent, title, question, buttons, QMessageBox::Ok);
-	return result==QMessageBox::Ok;
-}
-
-bool confirmProblem (QWidget *parent, const QString title, const QString problem)
-	/*
-	 * Displays a message and ask the user if he wishes to accept anyway.
-	 * Parameters:
-	 *   - parent: passed on to the QMessageBox constructor.
-	 *   - msg: the message.
-	 * Return value:
-	 *   - if the user accepted.
-	 */
-{
-	// TODO: Buttons Yes/No, but with Esc handling
-	QString question=problem+" Trotzdem akzeptieren?";
-	return yesNoQuestion (parent, title, question);
-}
-
-bool confirmProblem (QWidget *parent, const QString problem)
-{
-	return confirmProblem (parent, "Warnung", problem);
-}
 
 QString firstToUpper (const QString &text)
 {
@@ -229,4 +161,17 @@ QString firstToUpper (const QString &text)
 QString firstToLower (const QString &text)
 {
 	return text.left (1).toLower ()+text.mid (1);
+}
+
+QString countText (int count, const QString &singular, const QString &plural)
+{
+	if (count==1)
+		return QString ("%1 %2").arg (count).arg (singular);
+	else
+		return QString ("%1 %2").arg (count).arg (plural);
+}
+
+QString capitalize (const QString &string)
+{
+	return string.left (1).toUpper() + string.mid (1).toLower ();
 }

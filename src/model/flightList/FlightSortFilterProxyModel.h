@@ -2,7 +2,7 @@
  * FlightSortFilterProxyModel.h
  *
  *  Created on: Sep 3, 2009
- *      Author: deffi
+ *      Author: Martin Herrmann
  */
 
 #ifndef FLIGHTSORTFILTERPROXYMODEL_H_
@@ -10,14 +10,14 @@
 
 #include <QSortFilterProxyModel>
 
-class DataStorage;
+class Cache;
 
 class FlightSortFilterProxyModel: public QSortFilterProxyModel
 {
 	Q_OBJECT
 
 	public:
-		FlightSortFilterProxyModel (DataStorage &dataStorage, QObject *parent);
+		FlightSortFilterProxyModel (Cache &cache, QObject *parent);
 		virtual ~FlightSortFilterProxyModel ();
 
 	public slots:
@@ -34,7 +34,7 @@ class FlightSortFilterProxyModel: public QSortFilterProxyModel
 		virtual bool lessThan (const QModelIndex &left, const QModelIndex &right) const;
 
 	private:
-		DataStorage &dataStorage;
+		Cache &cache;
 
 		// Filter options
 		bool showPreparedFlights; // TODO: remove this, the main window takes care of that
@@ -46,4 +46,4 @@ class FlightSortFilterProxyModel: public QSortFilterProxyModel
 		bool customSorting;
 };
 
-#endif /* FLIGHTSORTFILTERPROXYMODEL_H_ */
+#endif

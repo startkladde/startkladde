@@ -1,8 +1,28 @@
+Hauptfenster:
+
+HJKL
+
+F2 Neu
+F3 Wiederholen
+F4 Editieren
+
+F5 Starten
+F6 Landen
+F7 Zwischenlandung
+F8 Lï¿½schen
+
+F9 Sortieren
+//F10 Quit
+F11 Gelandete ein/ausblenden
+F12 Refresh
+
+
+
 Hotkeys im Flugeditor:
 
 Es gibt zu viele Labels/Buttons, um eindeutige Hotkeys zu vergeben (25).
 Ansatz: Alles, was direkt etwas schaltet, bekommt einen eindeutigen Hotkey
-(außer Schließen/Abbrechen, weil disjunkt).
+(auï¿½er Schlieï¿½en/Abbrechen, weil disjunkt).
 Alles, was nur Felder anspringt, darf doppelt belegt werden.
 OK bekommt O
 
@@ -32,11 +52,11 @@ Fehler									EFHLR						E
 Automatisch/Gestartet					AST				S	       	S		
 Automatisch/Gelandet					AT				A	       	A		
 Automatisch/Gelandet/Beendet			T				T			T      	
-Später starten/Später landen			AENPRST						P	  	
+Spï¿½ter starten/Spï¿½ter landen			AENPRST						P	  	
 Jetzt starten/Jetzt landen				AEJNTZ			J			J      	
 OK										O				O			O      	
 Abbrechen								C				C			C      	
-Schließen								CEHILNS						C
+Schlieï¿½en								CEHILNS						C
 
 
 

@@ -2,25 +2,25 @@
  * FlightProxyList.h
  *
  *  Created on: Sep 1, 2009
- *      Author: deffi
+ *      Author: Martin Herrmann
  */
 
 #ifndef FLIGHTPROXYLIST_H_
 #define FLIGHTPROXYLIST_H_
 
-#include "src/model/objectList/AbstractObjectList.h"
-#include "src/accessor.h"
-
 #include "src/model/Flight.h"
+#include "src/model/objectList/AbstractObjectList.h"
+#include "src/db/dbId.h"
 
-class DataStorage;
+class LaunchMethod;
+class Cache;
 
 class FlightProxyList: public AbstractObjectList<Flight>
 {
 	Q_OBJECT
 
 	public:
-		FlightProxyList (DataStorage &dataStorage, AbstractObjectList<Flight> &, QObject *parent=NULL);
+		FlightProxyList (Cache &cache, AbstractObjectList<Flight> &, QObject *parent=NULL);
 		virtual ~FlightProxyList ();
 
 		// AbstractObjectList<Flight> methods
@@ -31,12 +31,12 @@ class FlightProxyList: public AbstractObjectList<Flight>
 		virtual int findTowref (int index) const;
 
 	protected:
-		virtual bool isAirtow (const Flight &flight, LaunchType *launchType) const;
-		virtual void addTowflightFor (const Flight &flight, const LaunchType &launchType);
-		virtual void updateTowflight (db_id id, int towflightIndex);
+		virtual bool isAirtow (const Flight &flight, LaunchMethod *launchMethod) const;
+		virtual void addTowflightFor (const Flight &flight, const LaunchMethod &launchMethod);
+		virtual void updateTowflight (dbId id, int towflightIndex);
 
-		virtual int findFlight (db_id id) const;
-		virtual int findTowflight (db_id id) const;
+		virtual int findFlight (dbId id) const;
+		virtual int findTowflight (dbId id) const;
 
 		virtual bool modelIndexIsFlight (int index) const;
 		virtual bool modelIndexIsTowflight (int index) const;
@@ -56,7 +56,7 @@ class FlightProxyList: public AbstractObjectList<Flight>
 		virtual void sourceModel_rowsRemoved (const QModelIndex &parent, int start, int end);
 
 	private:
-		DataStorage &dataStorage;
+		Cache &cache;
 
 		// The model that contains the flights
 		AbstractObjectList<Flight> &sourceModel;
@@ -65,4 +65,4 @@ class FlightProxyList: public AbstractObjectList<Flight>
 		QList<Flight> towflights;
 };
 
-#endif /* FLIGHTPROXYLIST_H_ */
+#endif

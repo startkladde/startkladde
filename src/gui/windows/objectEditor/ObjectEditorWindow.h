@@ -3,13 +3,13 @@
 
 #include <cassert>
 
-#include "src/gui/windows/objectEditor/ObjectEditorPane.h"
-#include "src/concurrent/task/Task.h"
-#include "src/db/task/AddObjectTask.h"
-#include "src/db/task/UpdateObjectTask.h"
-#include "src/gui/windows/TaskProgressDialog.h"
+// TODO many dependencies in header, maybe move to .cpp and instantiate
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
-#include "src/db/DataStorage.h"
+#include "src/gui/windows/objectEditor/ObjectEditorPane.h"
+#include "src/concurrent/monitor/OperationCanceledException.h"
+#include "src/util/qString.h"
+#include "src/db/DbManager.h"
+
 
 /*
  * Improvements:
@@ -34,39 +34,40 @@ template<class T> class ObjectEditorWindow: public ObjectEditorWindowBase
 {
 	public:
 		// Construction
-		ObjectEditorWindow (Mode mode, DataStorage &dataStorage, QWidget *parent=0, Qt::WindowFlags flags=0);
+		ObjectEditorWindow (Mode mode, DbManager &manager, QWidget *parent=0, Qt::WindowFlags flags=0);
 		virtual ~ObjectEditorWindow ();
 
 		// Invocation
-		// TODO: don't allow changing the registration/person name/...
-		static db_id createObject (QWidget *parent, DataStorage &dataStorage);
-		static void displayObject (QWidget *parent, DataStorage &dataStorage, const T &object);
-		static int editObject (QWidget *parent, DataStorage &dataStorage, const T &object);
+		static dbId createObject (QWidget *parent, DbManager &manager);
+		static dbId createObject (QWidget *parent, DbManager &manager, const T &nameObject);
+		static void displayObject (QWidget *parent, DbManager &manager, const T &object);
+		static int editObject (QWidget *parent, DbManager &manager, const T &object);
 
 		// Database
-		bool writeToDatabase (const T &object);
+		bool writeToDatabase (T &object);
 
 		// GUI events
 		virtual void on_okButton_clicked ();
 
-		db_id getId () const { return id; }
+		dbId getId () const { return id; }
 
-	private:
+	protected:
 		ObjectEditorPane<T> *editorPane;
 		Mode mode;
-		db_id id;
+		dbId id;
 
 };
+
 
 // ******************
 // ** Construction **
 // ******************
 
-template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DataStorage &dataStorage, QWidget *parent, Qt::WindowFlags flags):
-	ObjectEditorWindowBase (dataStorage, parent, flags),
+template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DbManager &manager, QWidget *parent, Qt::WindowFlags flags):
+	ObjectEditorWindowBase (manager, parent, flags),
 	mode (mode)
 {
-	editorPane = ObjectEditorPane<T>::create (mode, dataStorage, ui.objectEditorPane);
+	editorPane = ObjectEditorPane<T>::create (mode, manager.getCache (), ui.objectEditorPane);
 	ui.objectEditorPane->layout ()->addWidget (editorPane);
 
 	switch (mode)
@@ -80,7 +81,7 @@ template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DataStor
 		case modeDisplay:
 			setWindowTitle (QString ("%1 anzeigen").arg (T::objectTypeDescription ()));
 			ui.okButton->setVisible (false);
-			ui.cancelButton->setText (QString::fromUtf8 ("&Schließen"));
+			ui.cancelButton->setText (utf8 ("&Schließen"));
 			editorPane->setEnabled (false);
 			break;
 	}
@@ -99,31 +100,44 @@ template<class T> ObjectEditorWindow<T>::~ObjectEditorWindow ()
 
 // TODO: allow presetting the registration/name/..., probably by passing in a const T&
 // TODO: registration/name/... not editable
-template<class T> db_id ObjectEditorWindow<T>::createObject (QWidget *parent, DataStorage &dataStorage)
+template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, DbManager &manager)
 {
-	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeCreate, dataStorage, parent);
+	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeCreate, manager, parent);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 
 	if (w->exec ()==QDialog::Accepted)
 		return w->getId ();
 	else
-		return invalid_id;
+		return invalidId;
+}
+
+template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, DbManager &manager, const T &nameObject)
+{
+	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeCreate, manager, parent);
+	w->setAttribute (Qt::WA_DeleteOnClose, true);
+
+	w->editorPane->setNameObject (nameObject);
+
+	if (w->exec ()==QDialog::Accepted)
+		return w->getId ();
+	else
+		return invalidId;
 }
 
 // TODO: this should probably take an ID instead of a T&
 // TODO: only show a close button
-template<class T> void ObjectEditorWindow<T>::displayObject (QWidget *parent, DataStorage &dataStorage, const T &object)
+template<class T> void ObjectEditorWindow<T>::displayObject (QWidget *parent, DbManager &manager, const T &object)
 {
-	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeDisplay, dataStorage, parent);
+	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeDisplay, manager, parent);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 	w->editorPane->objectToFields (object);
 	w->exec ();
 }
 
 // TODO: this should probably take an ID instead of a T&
-template<class T> int ObjectEditorWindow<T>::editObject (QWidget *parent, DataStorage &dataStorage, const T &object)
+template<class T> int ObjectEditorWindow<T>::editObject (QWidget *parent, DbManager &manager, const T &object)
 {
-	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeEdit, dataStorage, parent);
+	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeEdit, manager, parent);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 	w->editorPane->objectToFields (object);
 	return w->exec ();
@@ -134,32 +148,37 @@ template<class T> int ObjectEditorWindow<T>::editObject (QWidget *parent, DataSt
 // ** Database **
 // **************
 
-template<class T> bool ObjectEditorWindow<T>::writeToDatabase (const T &object)
+template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 {
-	// TODO error handling
-
 	switch (mode)
 	{
 		case modeCreate:
 		{
-			AddObjectTask<T> task (dataStorage, object);
-
-			dataStorage.addTask (&task);
-			TaskProgressDialog::waitTask (this, &task);
-
-			if (task.isCompleted ())
-				id=task.getId ();
-
-			return task.isCompleted ();
+			try
+			{
+				std::cout << "Create object: " << object.toString () << std::endl;
+				id=manager.createObject (object, this);
+				return true;
+			}
+			catch (OperationCanceledException)
+			{
+				// TODO the cache may now be inconsistent
+				return false;
+			}
 		} break;
 		case modeEdit:
 		{
-			UpdateObjectTask<T> task (dataStorage, object);
-
-			dataStorage.addTask (&task);
-			TaskProgressDialog::waitTask (this, &task);
-
-			return task.isCompleted ();
+			try
+			{
+				std::cout << "Update object: " << object.toString () << std::endl;
+				manager.updateObject (object, this);
+				return true;
+			}
+			catch (OperationCanceledException)
+			{
+				// TODO the cache may now be inconsistent
+				return false;
+			}
 		} break;
 		case modeDisplay:
 			assert (false);

@@ -1,47 +1,20 @@
-/*
- * FlightModel.cpp
- *
- *  Created on: Aug 30, 2009
- *      Author: mherrman
- */
-
 #include "FlightModel.h"
 
 #include <cassert>
+#include <iostream>
 
-#include "src/model/Flight.h"
-#include "src/db/DataStorage.h"
-#include "src/model/Plane.h"
-#include "src/model/Person.h"
-#include "src/color.h"
-#include "src/gui/widgets/SkTableView.h"
+#include <QBrush>
 
+#include "src/color.h" // TODO remove after flug_farbe has been moved to Flight
 #include "src/itemDataRoles.h"
+#include "src/model/Flight.h"
+#include "src/model/LaunchMethod.h"
+#include "src/model/Person.h"
+#include "src/model/Plane.h"
+#include "src/db/cache/Cache.h"
 
-/*
- * Default column widths for the flight table:
-tbl_idx_registration,         95, "D-WWWW (WW)"
-tbl_idx_flugzeug_typ,         75, "DR-400/180"
-tbl_idx_flug_typ,             50, "Normal"
-tbl_idx_pilot,               150, "XXXXXXXX, YYYYYY"
-tbl_idx_begleiter,           150, "XXXXXXXX, YYYYYY"
-tbl_idx_startart,             70, "SOF"
-tbl_idx_startzeit,            60, "  Starten  "
-tbl_idx_landezeit,            60, "  Landen  "
-tbl_idx_flugdauer,            50, "00:00"
-tbl_idx_landungen,            50, "00"
-tbl_idx_startort,            100, "Rheinstetten"
-tbl_idx_zielort,             100, "Rheinstetten"
-tbl_idx_bemerkungen,         200, "Seilrissübung"
-tbl_idx_abrechnungshinweis,   50, "Landegebühr bezahlt"
-tbl_idx_editierbar,           50, "Nein"
-tbl_idx_datum,                50, "0000-00-00"
-tbl_idx_id_display,           50, "12345"
- *
- */
-
-FlightModel::FlightModel (DataStorage &dataStorage):
-	dataStorage (dataStorage)
+FlightModel::FlightModel (Cache &cache):
+	cache (cache)
 {
 }
 
@@ -51,7 +24,7 @@ FlightModel::~FlightModel ()
 
 int FlightModel::columnCount () const
 {
-	return 17;
+	return 16;
 }
 
 QVariant FlightModel::displayHeaderData (int column) const
@@ -72,9 +45,8 @@ QVariant FlightModel::displayHeaderData (int column) const
 		case 11: return "Zielort";
 		case 12: return "Bemerkungen";
 		case 13: return "Abrechnungshinweis";
-		case 14: return "Editierbar";
-		case 15: return "Datum";
-		case 16: return "ID";
+		case 14: return "Datum";
+		case 15: return "ID";
 	}
 
 	std::cout << "column is " << column << std::endl;
@@ -92,18 +64,44 @@ QString FlightModel::columnName (int columnIndex) const
 		case 2: return "flightType";
 		case 3: return "pilot";
 		case 4: return "copilot";
-		case 5: return "launchType";
-		case 6: return "launchTime";
+		case 5: return "launchMethod";
+		case 6: return "departureTime";
 		case 7: return "landingTime";
 		case 8: return "flightDuration";
 		case 9: return "numLandings";
-		case 10: return "departureAirfield";
-		case 11: return "destinationAirfield";
+		case 10: return "departureLocation";
+		case 11: return "landingLocation";
 		case 12: return "comments";
 		case 13: return "accountingNote";
-		case 14: return "editable";
-		case 15: return "date";
-		case 16: return "id";
+		case 14: return "date";
+		case 15: return "id";
+	}
+
+	assert (!"Unhandled column");
+	return QString ();
+}
+
+QString FlightModel::sampleText (int columnIndex) const
+{
+	switch (columnIndex)
+	{
+		case 0: return "D-1234 (WW)";
+		case 1: return "DR-400/180";
+		case 2: return "Schul (2)";
+		case 3: return "Xxxxxxxx, Yyyyyy (FSV Ding";
+		case 4: return "Xxxxxxxx, Yyyyyy (FSV Ding";
+		case 5: return "Startart"; // Header text is longer than content
+		// Improvement: use QStyle::PM_ButtonMargin for buttons
+		case 6: return "  Starten  ";
+		case 7: return "  Landen  ";
+		case 8: return "00:00";
+		case 9: return "Ldg."; // Header text is longer than content
+		case 10: return "Rheinstetten";
+		case 11: return "Rheinstetten";
+		case 12: return "Seilrissübung";
+		case 13: return "Landegebühr bezahlt";
+		case 14: return "12.34.5678";
+		case 15: return "12345";
 	}
 
 	assert (!"Unhandled column");
@@ -122,21 +120,20 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 		{
 			case 0: return registrationData (flight, role);
 			case 1: return planeTypeData (flight, role);
-			case 2: return flightTypeText (flight.flightType, lsTable);
+			case 2: return Flight::shortTypeText (flight.type);
 			case 3: return pilotData (flight, role);
 			case 4: return copilotData (flight, role);
-			case 5: return launchTypeData (flight, role);
-			case 6: return launchTimeData (flight, role);
+			case 5: return launchMethodData (flight, role);
+			case 6: return departureTimeData (flight, role);
 			case 7: return landingTimeData (flight, role);
 			case 8: return durationData (flight, role);
 			case 9: return flight.numLandings;
-			case 10: return flight.departureAirfield;
-			case 11: return flight.destinationAirfield;
+			case 10: return flight.departureLocation;
+			case 11: return flight.landingLocation;
 			case 12: return flight.comments;
-			case 13: return flight.isTowflight()?QString ("(Siehe geschleppter Flug)"):flight.accountingNote;
-			case 14: return flight.editable?"Ja":"Nein";
-			case 15: return flight.effdatum ();
-			case 16: return (flight.isTowflight ()?QString ("(%1)"):QString ("%1")).arg (flight.get_id ());
+			case 13: return flight.isTowflight()?QString ("(Siehe geschleppter Flug)"):flight.accountingNotes;
+			case 14: return flight.effdatum ();
+			case 15: return (flight.isTowflight ()?QString ("(%1)"):QString ("%1")).arg (flight.getId ());
 		}
 
 		assert (false);
@@ -144,26 +141,30 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 	}
 	else if (role==Qt::BackgroundRole)
 	{
-		Plane *plane=dataStorage.getNewObject<Plane> (flight.plane);
-		LaunchType *launchType=dataStorage.getNewObject<LaunchType> (flight.launchType);
+		Plane *plane=cache.getNewObject<Plane> (flight.planeId);
+		LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (flight.launchMethodId);
 
-		bool error=flight.fehlerhaft (plane, NULL, launchType);
+		bool error=flight.fehlerhaft (plane, NULL, launchMethod);
 
 		delete plane;
-		delete launchType;
+		delete launchMethod;
 
-		QColor flightColor=flug_farbe (flight.mode, error, flight.isTowflight (), flight.started, flight.landed);
+		QColor flightColor=flug_farbe (flight.mode, error, flight.isTowflight (), flight.departed, flight.landed);
 		return QBrush (flightColor);
 	}
 	else if (role==isButtonRole)
 	{
-		if      (column==launchButtonColumn ()) { return flight.canStart (); }
+		// Only show buttons for prepared flights and today's flights
+		if (!flight.isPrepared() && flight.departureTime.toLocalTime ().date ()!=QDate::currentDate ())
+			return false;
+
+		if      (column==departButtonColumn ()) { return flight.canDepart (); }
 		else if (column==  landButtonColumn ()) { return flight.canLand (); }
 		else return false;
 	}
 	else if (role==buttonTextRole)
 	{
-		if (column==launchButtonColumn ())
+		if (column==departButtonColumn ())
 			return "Starten";
 		else if (column==landButtonColumn ())
 		{
@@ -189,10 +190,10 @@ QVariant FlightModel::registrationData (const Flight &flight, int role) const
 
 	try
 	{
-		Plane plane=dataStorage.getObject<Plane> (flight.plane);
-		return plane.tableName ();
+		Plane plane=cache.getObject<Plane> (flight.planeId);
+		return plane.fullRegistration ();
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return "???";
 	}
@@ -204,10 +205,10 @@ QVariant FlightModel::planeTypeData (const Flight &flight, int role) const
 
 	try
 	{
-		Plane plane=dataStorage.getObject<Plane> (flight.plane);
+		Plane plane=cache.getObject<Plane> (flight.planeId);
 		return plane.type;
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return "???";
 	}
@@ -219,10 +220,10 @@ QVariant FlightModel::pilotData (const Flight &flight, int role) const
 
 	try
 	{
-		Person pilot=dataStorage.getObject<Person> (flight.pilot);
-		return pilot.tableName ();
+		Person pilot=cache.getObject<Person> (flight.pilotId);
+		return pilot.formalNameWithClub ();
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return flight.incompletePilotName ();
 	}
@@ -234,12 +235,12 @@ QVariant FlightModel::copilotData (const Flight &flight, int role) const
 
 	try
 	{
-		if (flightTypeCopilotRecorded (flight.flightType))
+		if (Flight::typeCopilotRecorded (flight.type))
 		{
-			Person copilot=dataStorage.getObject<Person> (flight.copilot);
-			return copilot.tableName ();
+			Person copilot=cache.getObject<Person> (flight.copilotId);
+			return copilot.formalNameWithClub ();
 		}
-		else if (flightTypeIsGuest (flight.flightType))
+		else if (Flight::typeIsGuest (flight.type))
 		{
 			return "(Gast)";
 		}
@@ -248,42 +249,45 @@ QVariant FlightModel::copilotData (const Flight &flight, int role) const
 			return "-";
 		}
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return flight.incompleteCopilotName ();
 	}
 }
 
-QVariant FlightModel::launchTypeData (const Flight &flight, int role) const
+QVariant FlightModel::launchMethodData (const Flight &flight, int role) const
 {
 	(void)role;
 
 	try
 	{
-		if (!flight.startsHere ()) return "-";
+		if (!flight.departsHere ()) return "-";
 
-		LaunchType launchType=dataStorage.getObject<LaunchType> (flight.launchType);
+		// For towflights without launch method, assume self launch
+		if (idInvalid (flight.launchMethodId) && flight.isTowflight ()) return "ES";
 
-		return launchType.get_short_description ();
+		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (flight.launchMethodId);
 
-		// Alternative: if (launchType.is_airtow () && !launchType.towplaneKnown) return towplane.registraion or "???"
+		return launchMethod.shortName;
+
+		// Alternative: if (launchMethod.is_airtow () && !launchMethod.towplaneKnown) return towplane.registraion or "???"
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		return "?";
 	}
 }
 
-QVariant FlightModel::launchTimeData (const Flight &flight, int role) const
+QVariant FlightModel::departureTimeData (const Flight &flight, int role) const
 {
 	(void)role;
 
-	if (!flight.canHaveStartTime ())
+	if (!flight.canHaveDepartureTime ())
 		return "-";
-	else if  (!flight.hasStartTime ())
+	else if  (!flight.hasDepartureTime ())
 		return "";
 	else
-		return flight.launchTime.table_string ();
+		return flight.departureTime.toUTC ().time ().toString ("hh:mm")+"Z";
 }
 
 QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
@@ -295,7 +299,7 @@ QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
 	else if (!flight.hasLandingTime ())
 		return "";
 	else
-		return flight.landingTime.table_string ();
+		return flight.landingTime.toUTC ().time ().toString ("hh:mm")+"Z";
 }
 
 QVariant FlightModel::durationData (const Flight &flight, int role) const
@@ -305,5 +309,5 @@ QVariant FlightModel::durationData (const Flight &flight, int role) const
 	if (!flight.hasDuration ())
 		return "-";
 	else
-		return flight.flightDuration ().table_string (tz_none);
+		return flight.flightDuration ().toString ("h:mm");
 }

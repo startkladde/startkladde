@@ -1,18 +1,18 @@
-#ifndef _Person_h
-#define _Person_h
+#ifndef PERSON_H_
+#define PERSON_H_
 
 #include <QString>
+#include <QMetaType>
 
-#include "src/dataTypes.h"
 #include "src/model/Entity.h"
 #include "src/model/objectList/ObjectModel.h"
 
-// TODO: move to Person and change value names
-enum NamePart { nt_kein, nt_vorname, nt_nachname };
+class QSqlQuery;
 
 class Person: public Entity
 {
 	public:
+		// *** Types
 		class DefaultObjectModel: public ObjectModel<Person>
 		{
 			virtual int columnCount () const;
@@ -20,37 +20,56 @@ class Person: public Entity
 			virtual QVariant displayData (const Person &object, int column) const;
 		};
 
+
+		// *** Construction
 		Person ();
-		Person (QString, QString);
-		Person (QString, QString, QString, QString, QString, db_id p_id=0);
-		void dump () const;
-		virtual void output (std::ostream &stream, output_format_t format);
+		Person (dbId id);
 
-		bool operator< (const Person &o) const;
-		bool operator== (const Person &o) const { return id==o.id; }
 
-		QString vorname;
-		QString nachname;
+		// *** Data
+		QString lastName;
+		QString firstName;
 		QString club;
-		QString club_id;
-		QString club_id_old;
-		QString landesverbands_nummer;
+		QString clubId;
 
 
-		virtual QString getDescription (casus) const;
-		virtual QString name () const;
-		virtual QString pdf_name () const;
-		virtual QString textName () const;
-		virtual QString tableName () const;
+		// *** Comparison
+		virtual bool operator== (const Person &o) const { return id==o.id; }
+		virtual bool operator< (const Person &o) const;
 
+
+		// *** Formatting
+		virtual QString toString () const;
+		virtual QString fullName () const;
+		virtual QString formalName () const;
+		virtual QString formalNameWithClub () const;
+		virtual QString getDisplayName () const;
+
+
+		// *** EntitySelectWindow helpers
 		virtual QString get_selector_value (int column_number) const;
 		static QString get_selector_caption (int column_number);
 
+
+		// *** ObjectListWindow/ObjectEditorWindow helpers
 		static QString objectTypeDescription () { return "Person"; }
 		static QString objectTypeDescriptionDefinite () { return "die Person"; }
 		static QString objectTypeDescriptionPlural () { return "Personen"; }
 
-		QString toString () const;
+
+		// SQL interface
+		static QString dbTableName ();
+		static QString selectColumnList ();
+		static Person createFromResult (const Result &result);
+		static QString insertColumnList ();
+		static QString insertPlaceholderList ();
+		virtual void bindValues (Query &q) const;
+		static QList<Person> createListFromResult (Result &query);
+
+	private:
+		void initialize ();
 };
+
+Q_DECLARE_METATYPE (Person);
 
 #endif

@@ -1,15 +1,10 @@
-/*
- * ObjectEditorWindowBase.cpp
- *
- *  Created on: Aug 23, 2009
- *      Author: mherrman
- */
-
 #include "ObjectEditorWindowBase.h"
 
-ObjectEditorWindowBase::ObjectEditorWindowBase (DataStorage &dataStorage, QWidget *parent, Qt::WindowFlags flags):
+#include "src/db/DbManager.h"
+
+ObjectEditorWindowBase::ObjectEditorWindowBase (DbManager &manager, QWidget *parent, Qt::WindowFlags flags):
 	QDialog (parent, flags),
-	dataStorage (dataStorage)
+	manager (manager)
 {
 	ui.setupUi (this);
 }

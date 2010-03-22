@@ -1,11 +1,12 @@
 #include "PlaneLog.h"
 
+#include <QSet>
+
 #include "src/model/Flight.h"
-#include "src/db/DataStorage.h"
+#include "src/db/cache/Cache.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
 #include "src/text.h"
-
 
 // ************************
 // ** Entry construction **
@@ -40,19 +41,19 @@ QString PlaneLog::Entry::numPassengersString () const
 		return QString ("%1-%2").arg (minPassengers).arg (maxPassengers);
 }
 
-QString PlaneLog::Entry::departureTimeText (bool noLetters) const
+QString PlaneLog::Entry::departureTimeText () const
 {
-	return departureTime.to_string ("%H:%M", tz_utc, 0, noLetters);
+	return departureTime.toUTC ().toString ("hh:mm")+"Z";
 }
 
-QString PlaneLog::Entry::landingTimeText (bool noLetters) const
+QString PlaneLog::Entry::landingTimeText () const
 {
-	return landingTime.to_string ("%H:%M", tz_utc, 0, noLetters);
+	return landingTime.toUTC ().toString ("hh:mm")+"Z";
 }
 
 QString PlaneLog::Entry::operationTimeText () const
 {
-	return operationTime.to_string ("%H:%M", tz_timespan);
+	return operationTime.toString ("h:mm");
 }
 
 // ********************
@@ -62,20 +63,22 @@ QString PlaneLog::Entry::operationTimeText () const
 /**
  * Create a log entry from a single flight
  */
-PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, DataStorage &dataStorage)
+PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Cache &cache)
 {
 	PlaneLog::Entry entry;
 
-	Plane      *plane     =dataStorage.getNewObject<Plane     > (flight->plane );
-	Person     *pilot     =dataStorage.getNewObject<Person    > (flight->pilot    );
+	Plane      *plane     =cache.getNewObject<Plane     > (flight->planeId );
+	Person     *pilot     =cache.getNewObject<Person    > (flight->pilotId    );
 
 	if (plane) entry.registration=plane->registration;
+	if (plane) entry.type=plane->type;
+
 	entry.date=flight->effdatum ();
-	if (pilot) entry.pilotName=pilot->name ();
+	if (pilot) entry.pilotName=pilot->formalName ();
 	entry.minPassengers=entry.maxPassengers=flight->numPassengers ();
-	entry.departureAirfield=flight->departureAirfield;
-	entry.destinationAirfield=flight->destinationAirfield;
-	entry.departureTime=flight->launchTime; // TODO: check flight mode
+	entry.departureLocation=flight->departureLocation;
+	entry.landingLocation=flight->landingLocation;
+	entry.departureTime=flight->departureTime; // TODO: check flight mode
 	entry.landingTime=flight->landingTime; // TODO: check flight mode
 	entry.numLandings=flight->numLandings;
 	entry.operationTime=flight->flightDuration (); // TODO: check flight mode
@@ -93,22 +96,24 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, DataStorage &data
  * Create an entry for a non-empty, sorted list of flights which we know can
  * be merged. All flights must be of the same plane and on the same date.
  */
-PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, DataStorage &dataStorage)
+PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Cache &cache)
 {
 	assert (!flights.isEmpty ());
 
 	PlaneLog::Entry entry;
 
-	Plane      *plane     =dataStorage.getNewObject<Plane     > (flights.last ()->plane );
-	Person     *pilot     =dataStorage.getNewObject<Person    > (flights.last ()->pilot    );
+	Plane      *plane     =cache.getNewObject<Plane     > (flights.last ()->planeId );
+	Person     *pilot     =cache.getNewObject<Person    > (flights.last ()->pilotId    );
 
 	// Values directly determined
 	if (plane) entry.registration=plane->registration;
+	if (plane) entry.type=plane->type;
+
 	entry.date=flights.last ()->effdatum ();
-	if (pilot) entry.pilotName=pilot->name ();
-	entry.departureAirfield=flights.first ()->departureAirfield;
-	entry.destinationAirfield=flights.last ()->destinationAirfield;
-	entry.departureTime=flights.first ()->launchTime;
+	if (pilot) entry.pilotName=pilot->formalName ();
+	entry.departureLocation=flights.first ()->departureLocation;
+	entry.landingLocation=flights.last ()->landingLocation;
+	entry.departureTime=flights.first ()->departureTime;
 	entry.landingTime=flights.last ()->landingTime;
 
 	// Values determined from all flights
@@ -126,7 +131,8 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Da
 		if (entry.maxPassengers==0 || numPassengers>entry.maxPassengers) entry.maxPassengers=numPassengers;
 
 		entry.numLandings+=flight->numLandings;
-		entry.operationTime.add_time (flight->flightDuration ()); // TODO: check flight mode
+		entry.operationTime=entry.operationTime.addSecs (QTime ().secsTo (flight->flightDuration ())); // TODO: check flight mode
+
 		if (!eintrag_ist_leer (flight->comments)) comments << flight->comments;
 		if (!flight->finished ()) entry.valid=false;
 
@@ -171,19 +177,19 @@ PlaneLog::~PlaneLog ()
  *
  * @param planeId
  * @param flights
- * @param dataStorage
+ * @param cache
  * @return
  */
-PlaneLog *PlaneLog::createNew (db_id planeId, const QList<Flight> &flights, DataStorage &dataStorage)
+PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, Cache &cache)
 {
-	Plane *plane=dataStorage.getNewObject<Plane> (planeId);
+	Plane *plane=cache.getNewObject<Plane> (planeId);
 
 	QList<const Flight *> interestingFlights;
 
 	// Make a list of flights for this plane
 	foreach (const Flight &flight, flights)
 		if (flight.finished ())
-			if (flight.plane==planeId)
+			if (flight.planeId==planeId)
 				interestingFlights.append (&flight);
 
 	qSort (interestingFlights);
@@ -202,17 +208,17 @@ PlaneLog *PlaneLog::createNew (db_id planeId, const QList<Flight> &flights, Data
 		// We accumulate in entryFlights as long as we can merge flights.
 		// Then we create an entry, append it to the list and clear
 		// entryFlights.
-		if (previousFlight && !flight->collective_bb_entry_possible (previousFlight, plane))
+		if (previousFlight && !flight->collectiveLogEntryPossible (previousFlight, plane))
 		{
 			// No further merging
-			result->entries.append (PlaneLog::Entry::create (entryFlights, dataStorage));
+			result->entries.append (PlaneLog::Entry::create (entryFlights, cache));
 			entryFlights.clear ();
 		}
 
 		entryFlights.append (flight);
 		previousFlight=flight;
 	}
-	result->entries.append (PlaneLog::Entry::create (entryFlights, dataStorage));
+	result->entries.append (PlaneLog::Entry::create (entryFlights, cache));
 
 	delete plane;
 
@@ -223,30 +229,30 @@ PlaneLog *PlaneLog::createNew (db_id planeId, const QList<Flight> &flights, Data
  * Makes the logs for all pilots that have flights in a given flight list.
  *
  * @param flights
- * @param dataStorage
+ * @param cache
  * @return
  */
-PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, DataStorage &dataStorage)
+PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, Cache &cache)
 {
 	// TODO: should we consider tow flights here?
 
-	QSet<db_id> planeIdSet;
+	QSet<dbId> planeIdSet;
 
 	// Determine all planes which have flights
 	foreach (const Flight &flight, flights)
 		if (flight.finished ())
-			planeIdSet.insert (flight.plane);
+			planeIdSet.insert (flight.planeId);
 
-	QList<db_id> planeIds=planeIdSet.toList ();
+	QList<dbId> planeIds=planeIdSet.toList ();
 	planeIds.removeAll (0);
 
 	// Make a list of the planes and sort it
 	QList<Plane> planes;
-	foreach (const db_id &id, planeIds)
+	foreach (const dbId &id, planeIds)
 	{
 		try
 		{
-			planes.append (dataStorage.getObject<Plane> (id));
+			planes.append (cache.getObject<Plane> (id));
 		}
 		catch (...)
 		{
@@ -258,7 +264,7 @@ PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, DataStorage &dataSt
 	PlaneLog *result=new PlaneLog ();
 	foreach (const Plane &plane, planes)
 	{
-		PlaneLog *planeResult=createNew (plane.id, flights, dataStorage);
+		PlaneLog *planeResult=createNew (plane.getId (), flights, cache);
 		result->entries+=planeResult->entries;
 		delete planeResult;
 	}
@@ -284,30 +290,32 @@ int PlaneLog::columnCount (const QModelIndex &index) const
 	if (index.isValid ())
 		return 0;
 
-	return 10;
+	return 12;
 }
 
 QVariant PlaneLog::data (const QModelIndex &index, int role) const
 {
 	const Entry &entry=entries[index.row ()];
 
-	// TODO if invalid, add parentheses around name, passengers, 2*airfield,
+	// TODO if invalid, add parentheses around name, passengers, 2*location,
 	// 3*times, num landings
 
 	if (role==Qt::DisplayRole)
 	{
 		switch (index.column ())
 		{
-			case 0: return entry.dateText ();
-			case 1: return entry.pilotName;
-			case 2: return entry.numPassengersString ();
-			case 3: return entry.departureAirfield;
-			case 4: return entry.destinationAirfield;
-			case 5: return entry.departureTimeText ();
-			case 6: return entry.landingTimeText ();
-			case 7: return entry.numLandings;
-			case 8: return entry.operationTimeText ();
-			case 9: return entry.comments;
+			case 0: return entry.registration;
+			case 1: return entry.type;
+			case 2: return entry.dateText ();
+			case 3: return entry.pilotName;
+			case 4: return entry.numPassengersString ();
+			case 5: return entry.departureLocation;
+			case 6: return entry.landingLocation;
+			case 7: return entry.departureTimeText ();
+			case 8: return entry.landingTimeText ();
+			case 9: return entry.numLandings;
+			case 10: return entry.operationTimeText ();
+			case 11: return entry.comments;
 			default: assert (false); return QVariant ();
 		}
 	}
@@ -323,16 +331,18 @@ QVariant PlaneLog::headerData (int section, Qt::Orientation orientation, int rol
 		{
 			switch (section)
 			{
-				case 0: return "Datum"; break;
-				case 1: return "Pilot"; break;
-				case 2: return "Insassen"; break;
-				case 3: return "Startort"; break;
-				case 4: return "Zielort"; break;
-				case 5: return "Startzeit"; break;
-				case 6: return "Landezeit"; break;
-				case 7: return "Landungen"; break;
-				case 8: return "Betriebsdauer"; break;
-				case 9: return "Bemerkungen"; break;
+				case 0: return "Kennzeichen"; break;
+				case 1: return "Typ"; break;
+				case 2: return "Datum"; break;
+				case 3: return "Pilot"; break;
+				case 4: return "Insassen"; break;
+				case 5: return "Startort"; break;
+				case 6: return "Zielort"; break;
+				case 7: return "Startzeit"; break;
+				case 8: return "Landezeit"; break;
+				case 9: return "Landungen"; break;
+				case 10: return "Betriebsdauer"; break;
+				case 11: return "Bemerkungen"; break;
 			}
 		}
 		else

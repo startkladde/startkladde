@@ -13,7 +13,6 @@ QMAKE_CXXFLAGS += -Werror -DCPPUNIT_MAIN=main
 # Input
 HEADERS += \
            test/TestRunnerClient.h \
-           src/dataTypes.h \
            src/text.h \
            src/db/dbTypes.h \
            src/io/colors.h \
@@ -23,7 +22,6 @@ HEADERS += \
 
 SOURCES += \
            test/TestRunnerClient.cpp \
-           src/dataTypes.cpp \
            src/text.cpp \
            src/db/dbTypes.cpp \
 		   src/logging/messages.cpp \

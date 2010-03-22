@@ -1,10 +1,13 @@
-#ifndef _dialogs_h
-#define _dialogs_h
+#ifndef DIALOGS_H_
+#define DIALOGS_H_
 
 #include <QMessageBox>
 
-void show_warning (const QString &title, const QString &text, QWidget *parent);
+void showWarning (const QString &title, const QString &text, QWidget *parent);
 
+bool confirmProblem (QWidget *, const QString);
+bool confirmProblem (QWidget *, const QString, const QString);
+bool yesNoQuestion (QWidget *parent, QString title, QString question);
 
 
 #endif

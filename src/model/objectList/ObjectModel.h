@@ -2,7 +2,7 @@
  * ObjectModel.h
  *
  *  Created on: Aug 19, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef OBJECTMODEL_H_
@@ -121,4 +121,4 @@ template<class T> QVariant ObjectModel<T>::displayData (const T &object, int col
 	return QVariant ();
 }
 
-#endif /* OBJECTMODEL_H_ */
+#endif

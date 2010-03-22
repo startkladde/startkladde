@@ -2,7 +2,7 @@
  * AbstractObjectList.h
  *
  *  Created on: Sep 1, 2009
- *      Author: deffi
+ *      Author: Martin Herrmann
  */
 
 #ifndef ABSTRACTOBJECTLIST_H_
@@ -28,6 +28,8 @@ template<class T> class AbstractObjectList: public QAbstractTableModel
 		virtual ~AbstractObjectList ();
 
 		// Access
+		using QObject::parent; // Hidden by QAbstractItemModel::parent (const QModelIndex &)
+
 		/**
 		 * The number of objects in the list
 		 *
@@ -129,4 +131,4 @@ template<class T> QVariant AbstractObjectList<T>::headerData (int section, Qt::O
 }
 
 
-#endif /* ABSTRACTOBJECTLIST_H_ */
+#endif

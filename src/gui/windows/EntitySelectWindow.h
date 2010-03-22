@@ -1,5 +1,11 @@
-#ifndef _EntitySelectWindow_h
-#define _EntitySelectWindow_h
+/*
+ * TODO: remake
+ *   - name ObjectSelectWindow
+ *   - use GUI designer (see ObjectListWindow for template vs. QObject)
+ *   - move implementation to .cpp and instantiate
+ */
+#ifndef ENTITYSELECTWINDOW_H_
+#define ENTITYSELECTWINDOW_H_
 
 #include <QPushButton>
 #include <QLabel>
@@ -8,14 +14,13 @@
 #include <QTreeWidget>
 #include <QDialog>
 
-#include "src/dataTypes.h"
 #include "src/gui/widgets/SkTreeWidgetItem.h"
-#include "src/model/Entity.h"
+#include "src/logging/messages.h"
 
+// TODO move to class
 enum selection_result { sr_cancelled, sr_ok, sr_new, sr_unknown, sr_none_selected };
 
 // TODO setRootDecorated (false)
-// TODO alternatingRowColors
 
 /*
  * The helper classes for using slots and signals with the template class
@@ -68,9 +73,9 @@ template<class TYPE> class EntitySelectWindow:public selector_base
 		EntitySelectWindow (QWidget *parent, const char *name=NULL, Qt::WindowFlags f=0);
 		~EntitySelectWindow ();
 		void test ();
-		virtual selection_result do_selection (QString, QString, QList<TYPE> &, db_id preselected=invalid_id);
+		virtual selection_result do_selection (QString, QString, QList<TYPE> &, dbId preselected=invalidId);
 		static QString selection_result_text (selection_result sr);
-		db_id get_result_id ();
+		dbId get_result_id ();
 		selector_helper *helper () { return _helper; }
 
 	private:
@@ -80,7 +85,7 @@ template<class TYPE> class EntitySelectWindow:public selector_base
 		QPushButton *but_cancel;
 		SkTreeWidgetItem *new_item;
 		SkTreeWidgetItem *unknown_item;
-		db_id result_id;
+		dbId result_id;
 
 	private:
 		int setup_columns ();
@@ -102,7 +107,7 @@ template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *pare
 {
 	// Initialize variables
 	_helper=new selector_helper (this);
-	result_id=invalid_id;
+	result_id=invalidId;
 
 	// Create the controls
 	text=new QLabel ("", this, "text");
@@ -114,6 +119,7 @@ template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *pare
 	list->setAllColumnsShowFocus (true);
 	list->setSortingEnabled (false);
 	list->setSelectionMode (QAbstractItemView::SingleSelection);
+	list->setRootIsDecorated (false);
 	but_ok->setDefault (true);
 
 	// Connect the signals
@@ -177,7 +183,7 @@ template<class TYPE> QString EntitySelectWindow<TYPE>::selection_result_text (se
 	}
 }
 
-template<class TYPE> db_id EntitySelectWindow<TYPE>::get_result_id ()
+template<class TYPE> dbId EntitySelectWindow<TYPE>::get_result_id ()
 	/*
 	 * Gets the selection result.
 	 * Return value:
@@ -201,6 +207,7 @@ template<class TYPE> int EntitySelectWindow<TYPE>::setup_columns ()
 
 	QStringList header;
 
+	// TODO should probably use an ObjectModel
 	while (title=TYPE::get_selector_caption (i), !title.isEmpty ())
 	{
 		header.append (title);
@@ -228,7 +235,7 @@ template<class TYPE> void EntitySelectWindow<TYPE>::set_entry (SkTreeWidgetItem 
 	}
 }
 
-template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QList<TYPE> &entityList, db_id preselected)
+template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QString caption_text, QString label_text, QList<TYPE> &entityList, dbId preselected)
 	/*
 	 * Displays the selector.
 	 * Parameters:
@@ -251,18 +258,27 @@ template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QS
 
 	SkTreeWidgetItem *last_item;
 	unknown_item=last_item=new SkTreeWidgetItem (list, "(Unbekannt)");
+	unknown_item->setFirstColumnSpanned (true);
 	new_item=last_item=new SkTreeWidgetItem (list, last_item, "(Neu anlegen)");
+	new_item->setFirstColumnSpanned (true);
 
 	list->setCurrentItem (unknown_item);
 
 	foreach (const TYPE &it, entityList)
 	{
 		last_item=new SkTreeWidgetItem (list, last_item);
-		last_item->id=it.id;
+		last_item->id=it.getId ();
 		set_entry (last_item, it, num_columns);
-		if (!id_invalid (preselected) && it.id==preselected)
+		if (!idInvalid (preselected) && it.getId ()==preselected)
 			list->setCurrentItem (last_item);
 	}
+
+	list->setAlternatingRowColors (true);
+
+	// Resize all columns to their contents
+	int numColumns=list->columnCount ();
+	for (int i=0; i<numColumns; ++i)
+		list->resizeColumnToContents (i);
 
 	int result=exec ();
 

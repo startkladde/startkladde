@@ -1,3 +1,12 @@
+/*
+ * Improvements:
+ *   - the log should also display queries from other database interfaces that
+ *     may be created during connect, such as the root interface
+ *   - when double-clicking in the empty area of the flight table, create a new
+ *     flight
+ */
+//	assert (isGuiThread ());
+
 #include "MainWindow.h"
 
 #include <QAction>
@@ -8,66 +17,78 @@
 #include <QProgressDialog>
 #include <QHeaderView>
 #include <QInputDialog>
+#include <QList>
+#include <QModelIndex>
+#include <QStatusBar>
 
-#include "src/plugins/ShellPlugin.h"
-#include "src/gui/windows/FlightWindow.h"
-#include "src/gui/widgets/WeatherWidget.h"
-#include "src/gui/windows/WeatherDialog.h"
-#include "src/gui/windows/SplashScreen.h"
 #include "build/kvkbd.xpm"
 #include "build/logo.xpm"
-#include "src/gui/windows/DateInputDialog.h"
-#include "src/concurrent/task/SleepTask.h"
-#include "src/concurrent/DefaultQThread.h"
-#include "src/gui/windows/TaskProgressDialog.h"
+
+// TODO many dependencies - split
 #include "src/concurrent/threadUtil.h"
-#include "src/db/task/DeleteObjectTask.h"
-#include "src/db/task/UpdateObjectTask.h"
-#include "src/db/task/RefreshAllTask.h"
-#include "src/statistics/PilotLog.h"
-#include "src/statistics/PlaneLog.h"
-#include "src/statistics/LaunchTypeStatistics.h"
+#include "src/config/Settings.h"
+#include "src/gui/widgets/WeatherWidget.h"
+#include "src/gui/windows/DateInputDialog.h"
+#include "src/gui/windows/FlightWindow.h"
 #include "src/gui/windows/ObjectListWindow.h"
-#include "src/model/objectList/MutableObjectList.h"
-#include "src/model/objectList/AutomaticEntityList.h"
-#include "src/model/objectList/EntityList.h"
-#include "src/model/objectList/ObjectListModel.h"
+#include "src/gui/windows/SplashScreen.h"
+#include "src/gui/windows/StatisticsWindow.h"
+#include "src/gui/windows/WeatherDialog.h"
+#include "src/gui/windows/SettingsWindow.h"
+#include "src/model/Plane.h"
+#include "src/model/Flight.h"
+#include "src/model/Person.h"
 #include "src/model/flightList/FlightModel.h"
 #include "src/model/flightList/FlightProxyList.h"
 #include "src/model/flightList/FlightSortFilterProxyModel.h"
-#include "src/db/task/FetchFlightsTask.h"
-#include "src/db/adminFunctions.h"
+#include "src/model/objectList/AutomaticEntityList.h" // TODO remove some?
+#include "src/model/objectList/EntityList.h"
+#include "src/model/objectList/ObjectListModel.h"
+#include "src/plugins/ShellPlugin.h"
+#include "src/plugins/ShellPluginInfo.h"
+#include "src/statistics/LaunchMethodStatistics.h"
+#include "src/statistics/PilotLog.h"
+#include "src/statistics/PlaneLog.h"
+#include "src/gui/dialogs.h"
+#include "src/logging/messages.h"
+#include "src/util/qString.h"
+#include "src/concurrent/monitor/OperationCanceledException.h"
+#include "src/db/cache/Cache.h"
+#include "src/text.h"
+
+template <class T> class MutableObjectList;
 
 // ******************
 // ** Construction **
 // ******************
 
-// TODO pass DataStorage instead of Database (?, depending on thread)
-// TODO better plugin list passing
-MainWindow::MainWindow (QWidget *parent, Database *db, QList<ShellPlugin *> &plugins) :
-	QMainWindow (parent), dataStorage (*db), plugins (plugins), weatherWidget (NULL), weatherPlugin (NULL),
-			weatherDialog (NULL), flightList (this), contextMenu (new QMenu (this))
+MainWindow::MainWindow (QWidget *parent) :
+	QMainWindow (parent), dbManager (Settings::instance ().databaseInfo),
+		cache (dbManager.getCache ()),
+		createFlightWindow (NULL), editFlightWindow (NULL),
+		weatherWidget (NULL), weatherPlugin (NULL),
+		weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
+		contextMenu (new QMenu (this)),
+		databaseActionsEnabled (false)
 {
 	ui.setupUi (this);
 
-	flightModel = new FlightModel (dataStorage);
-	proxyList=new FlightProxyList (dataStorage, flightList, this); // TODO never deleted
+	flightModel = new FlightModel (dbManager.getCache ());
+	proxyList=new FlightProxyList (dbManager.getCache (), *flightList, this); // TODO never deleted
 	flightListModel = new ObjectListModel<Flight> (proxyList, false, flightModel, true, this);
 
-	proxyModel = new FlightSortFilterProxyModel (dataStorage, this);
+	proxyModel = new FlightSortFilterProxyModel (dbManager.getCache (), this);
 	proxyModel->setSourceModel (flightListModel);
 
 	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
 	proxyModel->setDynamicSortFilter (true);
 
-	setDatabaseActionsEnabled (false);
 
+	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 	readSettings ();
+	settingsChanged ();
 
 	setupLabels ();
-
-	// Fenstereinstellungen
-	setCaption (opts.title);
 
 	// Info frame
 	bool acpiValid = AcpiWidget::valid ();
@@ -80,21 +101,14 @@ MainWindow::MainWindow (QWidget *parent, Database *db, QList<ShellPlugin *> &plu
 
 	timeTimer_timeout ();
 
-	// Plugins
-	setupPlugins ();
 
 	setupLayout ();
 
 	// Do this before calling connect
-	dataStorageStateChanged (dataStorage.getState ());
+	QObject::connect (&dbManager.getCache (), SIGNAL (changed (DbEvent)), this, SLOT (cacheChanged (DbEvent)));
 
-	QObject::connect (&dataStorage, SIGNAL (dbEvent (DbEvent)), this, SLOT (dbEvent (DbEvent)));
-	QObject::connect (&dataStorage, SIGNAL (status (QString, bool)), this, SLOT (dataStorageStatus (QString, bool)));
-	QObject::connect (&dataStorage, SIGNAL (stateChanged (DataStorage::State)), this,
-			SLOT (dataStorageStateChanged (DataStorage::State)));
-
-	// Do this after setting the initial state and connecting the signals
-	dataStorage.connect ();
+	// TODO to showEvent?
+	QTimer::singleShot (0, this, SLOT (on_actionConnect_triggered ()));
 
 	setDisplayDateCurrent (true);
 
@@ -103,28 +117,30 @@ MainWindow::MainWindow (QWidget *parent, Database *db, QList<ShellPlugin *> &plu
 	// Menu bar
 	QAction *logAction = ui.logDockWidget->toggleViewAction ();
 	logAction->setText ("Protoko&ll anzeigen");
-	ui.menuDebug->addAction (logAction);
+	ui.menuDatabase->addSeparator ();
+	ui.menuDatabase->addAction (logAction);
 
-	// TODO not working
-	ui.menuDebug->setVisible (opts.debug);
-	ui.menuDemosystem->setVisible (opts.demosystem);
+	ui.menuDemosystem->menuAction ()->setVisible (false);
+#ifdef SK_DEMOSYSTEM
+	ui.menuDemosystem->menuAction ()->setVisible (true);
+#endif
 
-	ui.actionNetworkDiagnostics->setVisible (!opts.diag_cmd.isEmpty ());
+	bool virtualKeyboardEnabled = (
+		system ("which kvkbd >/dev/null") == 0 &&
+		system ("which dcop >/dev/null") == 0);
 
-	bool virtualKeyboardEnabled = (system ("which kvkbd >/dev/null") == 0 && system ("which dcop >/dev/null") == 0);
 	ui.actionShowVirtualKeyboard->setVisible (virtualKeyboardEnabled);
 	// TODO Qt way for icons?
 	ui.actionShowVirtualKeyboard->setIcon (QIcon ((const QPixmap&)QPixmap (kvkbd)));
 
 	// Log
 	ui.logWidget->document ()->setMaximumBlockCount (100);
-	connect (&dataStorage, SIGNAL (executingQuery (QString)), this, SLOT (logMessage (QString)));
 
 	// Signals
-	connect (&flightList, SIGNAL (rowsInserted (const QModelIndex &, int, int)), this, SLOT (flightListChanged ()));
-	connect (&flightList, SIGNAL (rowsRemoved (const QModelIndex &, int, int)), this, SLOT (flightListChanged ()));
-	connect (&flightList, SIGNAL (dataChanged (const QModelIndex &, const QModelIndex &)), this, SLOT (flightListChanged ()));
-	connect (&flightList, SIGNAL (modelReset ()), this, SLOT (flightListChanged ()));
+	connect (flightList, SIGNAL (rowsInserted (const QModelIndex &, int, int)), this, SLOT (flightListChanged ()));
+	connect (flightList, SIGNAL (rowsRemoved (const QModelIndex &, int, int)), this, SLOT (flightListChanged ()));
+	connect (flightList, SIGNAL (dataChanged (const QModelIndex &, const QModelIndex &)), this, SLOT (flightListChanged ()));
+	connect (flightList, SIGNAL (modelReset ()), this, SLOT (flightListChanged ()));
 
 	// Flight table
 	ui.flightTable->setAutoResizeRows (true);
@@ -153,16 +169,41 @@ MainWindow::MainWindow (QWidget *parent, Database *db, QList<ShellPlugin *> &plu
 	proxyModel->setCustomSorting (true);
 
 	ui.flightTable->setFocus ();
+
+	// Database
+	connect (&dbManager.getInterface (), SIGNAL (databaseError (int, QString)), this, SLOT (databaseError (int, QString)));
+	connect (&dbManager.getInterface (), SIGNAL (executingQuery (Query)), this, SLOT (executingQuery (Query)));
+
+	connect (&dbManager, SIGNAL (readTimeout ()), this, SLOT (readTimeout ()));
+	connect (&dbManager, SIGNAL (readResumed ()), this, SLOT (readResumed ()));
+
+	connect (&dbManager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
+	databaseStateChanged (dbManager.getState ());
 }
 
 MainWindow::~MainWindow ()
 {
+	// Hide the window to avoid trouble[tm].
+	// If we don't make the window invisible here, it will be done in the
+	// QWidget destructor. Then the flight table will access its model, which
+	// will in turn access the cache, which has already been deleted.
+	// In one case, this has been known to lead to a "QMutex::lock: mutex lock
+	// failure", but worse things can happen.
+	setVisible (false);
 	// QObjects will be deleted automatically
+	// TODO make sure this also applies to flightList
+
+	foreach (ShellPlugin *plugin, infoPlugins)
+	{
+		//std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
+		plugin->terminate ();
+		QThread::yieldCurrentThread ();
+	}
 }
 
 void MainWindow::setupLabels ()
 {
-	if (opts.colorful)
+	if (Settings::instance ().coloredLabels)
 	{
 		QObjectList labels = ui.infoPane->children ();
 
@@ -224,14 +265,16 @@ void MainWindow::setupLayout ()
 	pluginPaneLayout->setColumnStretch (1, 1);
 }
 
-void MainWindow::setupPlugin (ShellPlugin *plugin, QGridLayout *pluginLayout)
+void MainWindow::setupPlugin (const ShellPluginInfo &pluginInfo, QGridLayout *pluginLayout)
 {
+	ShellPlugin *plugin=new ShellPlugin (pluginInfo);
+
 	SkLabel *captionLabel = new SkLabel ("", ui.pluginPane);
 	SkLabel *valueLabel = new SkLabel ("...", ui.pluginPane);
 
 	valueLabel->setWordWrap (true);
 
-	if (plugin->get_rich_text ())
+	if (pluginInfo.richText)
 	{
 		captionLabel->setTextFormat (Qt::RichText);
 		valueLabel->setTextFormat (Qt::RichText);
@@ -250,7 +293,7 @@ void MainWindow::setupPlugin (ShellPlugin *plugin, QGridLayout *pluginLayout)
 	pluginLayout->addWidget (captionLabel, row, 0, Qt::AlignTop);
 	pluginLayout->addWidget (valueLabel, row, 1, Qt::AlignTop);
 
-	if (opts.colorful)
+	if (Settings::instance ().coloredLabels)
 	{
 		captionLabel->setPaletteBackgroundColor (QColor (255, 63, 127));
 		valueLabel ->setPaletteBackgroundColor (QColor (255, 255, 127));
@@ -270,50 +313,48 @@ void MainWindow::setupPlugin (ShellPlugin *plugin, QGridLayout *pluginLayout)
 
 void MainWindow::setupPlugins ()
 {
-	ui.pluginPane->setVisible (!plugins.isEmpty ());
+	Settings &s=Settings::instance ();
 
-	if (!plugins.isEmpty ())
-	{
-		ui.pluginPane->setVisible (true);
-		QGridLayout *pluginLayout = dynamic_cast<QGridLayout *> (ui.pluginPane->layout ());
 
-		if (pluginLayout)
-		{
-			// Remove the dummy labels from the plugin pane
-			foreach (QObject *child, ui.pluginPane->children ())
-					if (dynamic_cast<QLabel *> (child)) delete child;
+	// Remove the old labels from the plugin pane
+	foreach (QObject *child, ui.pluginPane->children ())
+		delete child;
 
-			foreach (ShellPlugin *plugin, plugins)
-					setupPlugin (plugin, pluginLayout);
+	// Delete the old layout manager and create a new one, or the layout
+	// will be wrong: pluginLayout->rowCount will continue to grow, even
+	// though pluginLayout->count will return the correct value.
+	delete ui.pluginPane->layout ();
+	QGridLayout *pluginLayout=new QGridLayout (ui.pluginPane);
+	pluginLayout->setMargin (4);
+	pluginLayout->setVerticalSpacing (4);
 
-			pluginLayout->setRowStretch (pluginLayout->rowCount (), 1);
-		}
-		else
-		{
-			log_error ("Invalid plugin layout in MainWindow::setupPlugins, not using shell plugins");
-			return;
-		}
-	}
+	ui.pluginPane->setVisible (!s.infoPlugins.isEmpty ());
 
-	ui.weatherFrame->setVisible (!opts.weather_plugin.isEmpty ());
+	foreach (const ShellPluginInfo &pluginInfo, s.infoPlugins)
+		setupPlugin (pluginInfo, pluginLayout);
 
-	if (!opts.weather_plugin.isEmpty ())
+	pluginLayout->setColStretch (0, 0);
+	pluginLayout->setColStretch (1, 1);
+	pluginLayout->setRowStretch (pluginLayout->rowCount (), 1);
+
+
+	ui.weatherFrame->setVisible (!blank (s.weatherPluginCommand));
+
+	delete weatherWidget;
+	weatherWidget=NULL;
+
+	if (!blank (s.weatherPluginCommand))
 	{
 		// Create and setup the weather widget. The weather widget is located to
 		// the right of the info frame.
 		weatherWidget = new WeatherWidget (ui.weatherFrame, "weather");
 		ui.weatherFrame->layout ()->add (weatherWidget);
-		//		std::cout << opts.weather_height << std::endl;
-		//		weatherWidget->setMinimumSize (opts.weather_height, opts.weather_height);
-		weatherWidget->setFixedSize (opts.weather_height, opts.weather_height);
-		//		weatherWidget->setSizePolicy (Qt::);
-		//		weatherWidget->setFixedHeight (opts.weather_height);
-		//		weatherWidget->setFixedWidth (opts.weather_height); // Wird bei Laden eines Bildes angepasst
+		weatherWidget->setFixedSize (s.weatherPluginHeight, s.weatherPluginHeight);
 		weatherWidget->setText ("[Wetter]");
 
 		// Create and setup the weather plugin and connect it to the weather widget
-		std::cout << "Weather plugin is " << opts.weather_plugin << std::endl;
-		weatherPlugin = new ShellPlugin ("Wetter", opts.weather_plugin, opts.weather_interval); // Initialize to given values
+		std::cout << "Weather plugin is " << s.weatherPluginCommand << std::endl;
+		weatherPlugin = new ShellPlugin ("Wetter", s.weatherPluginCommand, s.weatherPluginInterval);
 		QObject::connect (weatherPlugin, SIGNAL (lineRead (QString)), weatherWidget, SLOT (inputLine (QString)));
 		QObject::connect (weatherPlugin, SIGNAL (pluginNotFound ()), weatherWidget, SLOT (pluginNotFound ()));
 		QObject::connect (weatherWidget, SIGNAL (doubleClicked ()), this, SLOT (weatherWidget_doubleClicked ()));
@@ -330,6 +371,7 @@ bool MainWindow::confirmAndExit (int returnCode, QString title, QString text)
 {
 	if (yesNoQuestion (this, title, text))
 	{
+		closeDatabase ();
 		writeSettings ();
 		qApp->exit (returnCode);
 		return true;
@@ -362,7 +404,9 @@ void MainWindow::on_actionShutdown_triggered ()
 
 void MainWindow::writeSettings ()
 {
-	QSettings settings ("startkladde", "startkladde");
+	QSettings settings;
+
+	settings.beginGroup ("gui");
 
 	settings.beginGroup ("fonts");
 	QFont font = QApplication::font ();
@@ -373,28 +417,51 @@ void MainWindow::writeSettings ()
 	ui.flightTable->writeColumnWidths (settings, *flightModel);
 	settings.endGroup ();
 
+	settings.endGroup ();
+
 	settings.sync ();
 }
 
 void MainWindow::readColumnWidths ()
 {
-	QSettings settings ("startkladde", "startkladde");
+	QSettings settings;
 
+	settings.beginGroup ("gui");
     settings.beginGroup ("flightTable");
     ui.flightTable->readColumnWidths (settings, *flightModel);
+    settings.endGroup ();
     settings.endGroup ();
 }
 
 void MainWindow::readSettings ()
 {
-	QSettings settings ("startkladde", "startkladde");
+	QSettings settings;
 
+	settings.beginGroup ("gui");
 	settings.beginGroup ("fonts");
 	QString fontDescription = settings.value ("font").toString ();
+	settings.endGroup ();
 	settings.endGroup ();
 
 	QFont font;
 	if (font.fromString (fontDescription)) QApplication::setFont (font);
+}
+
+void MainWindow::settingsChanged ()
+{
+	Settings &s=Settings::instance ();
+
+	// Fenstereinstellungen
+	if (blank (s.location))
+		setCaption ("Startkladde");
+	else
+		setCaption (utf8 ("Hauptflugbuch %1 - Startkladde").arg (s.location));
+
+	ui.menuDebug     ->menuAction ()->setVisible (Settings::instance ().enableDebug);
+	ui.actionNetworkDiagnostics     ->setVisible (!blank (Settings::instance ().diagCommand));
+
+	// Plugins
+	setupPlugins ();
 }
 
 // *************
@@ -402,77 +469,69 @@ void MainWindow::readSettings ()
 // *************
 
 /**
- * Refreshes both the flight table and the corresponding info labels, including
- * the display date label (text and color).
+ * Refreshes both the flight table and the corresponding info labels, from the
+ * cache, including the display date label (text and color). Does not access
+ * the database.
  */
 bool MainWindow::refreshFlights ()
 {
-//	int oldColumn = ui.flightTable->currentColumn ();
-	//	int oldRow   =ui.flightTable->currentRow    ();
-
-	// TODO: shold be local today (time zone safety)
-	bool displayDateIsToday=(displayDate == QDate::currentDate ());
-	proxyModel->setShowPreparedFlights (displayDateIsToday);
-
-	ui.displayDateLabel->setPaletteForegroundColor (displayDateIsToday?(Qt::black):(Qt::red));
-	ui.displayDateLabel->setText (displayDate.toString (Qt::LocaleDate));
+	// Fetch the current date to avoid it changing during the operation
+	// TODO time zone safety: should be local today
+	QDate today=QDate::currentDate ();
 
 	QList<Flight> flights;
-	if (displayDate == QDate::currentDate ())
+	if (!databaseActionsEnabled)
 	{
-		flights = dataStorage.getFlightsToday ();
-		flights += dataStorage.getPreparedFlights ();
+		ui.displayDateLabel->setPaletteForegroundColor (Qt::black);
+		ui.displayDateLabel->setText ("-");
+	}
+	else if (displayDate==today)
+	{
+		// The display date is today's date - display today's flights and
+		// prepared flights
+		flights  = dbManager.getCache ().getFlightsToday ().getList ();
+		flights += dbManager.getCache ().getPreparedFlights ().getList ();
+
+		ui.displayDateLabel->setPaletteForegroundColor (Qt::black);
+		ui.displayDateLabel->setText (today.toString (Qt::LocaleDate));
+
+		proxyModel->setShowPreparedFlights (true);
 	}
 	else
 	{
-		// Fetch the flights for the other date if we don't already have them
-		// TODO here be race conditions
-		if (dataStorage.getOtherDate ()!=displayDate)
-		{
-			while (1)
-			{
-				FetchFlightsTask task (dataStorage, displayDate);
-				dataStorage.addTask (&task);
-				TaskProgressDialog::waitTask (this, &task);
+		// The display date is not today's date - display the flights from the
+		// cache's "other" date
+		flights=dbManager.getCache ().getFlightsOther ().getList ();
 
-				// TODO distinguish between retry errors (timeout, no connection)
-				// and failures (permissions, malformed query...)
-				if (!task.isCompleted ()) return false;
-				if (task.getSuccess ()) break;
-				DefaultQThread::sleep (1);
-			}
+		ui.displayDateLabel->setPaletteForegroundColor (Qt::red);
+		ui.displayDateLabel->setText (dbManager.getCache ().getOtherDate ().toString (Qt::LocaleDate));
 
-		}
-
-		flights=dataStorage.getFlightsOther ();
+		proxyModel->setShowPreparedFlights (false);
 	}
 
-	flightList.replaceList (flights);
-	// TODO should be done automatically
-//	ui.flightTable->resizeColumnsToContents ();
-	//	ui.flightTable->resizeRowsToContents ();
-
+	flightList->replaceList (flights);
 	sortCustom ();
 
-//		std::cout << "Got " << flights.size () << " flights from the database" << std::endl;
+	// TODO should be done automatically
+	// ui.flightTable->resizeColumnsToContents ();
+	// ui.flightTable->resizeRowsToContents ();
 
-//	// Set the focus to the end of the table instead of the previously focussed
-//	// flight, it's better that way.
-//	int newRow = ui.flightTable->rowCount () - 1;
-//	ui.flightTable->setCurrentCell (newRow, oldColumn);
-//	// TODO make sure it's visible
-
-	// TODO: set cursor to last row, same column as before
-
-//	ui.flightTable->setFocus ();
+	// TODO: set the cursor to last row, same column as before (this is
+	// usually called after a date change, so the previous flight is
+	// meaningless)
+	//int oldColumn = ui.flightTable->currentColumn ();
+	//int newRow = ui.flightTable->rowCount () - 1;
+	//ui.flightTable->setCurrentCell (newRow, oldColumn);
+	// TODO make sure it's visible
 
 	// TODO
-	//	updateInfo ();
+	//updateInfo ();
 
+	// TODO void
 	return true;
 }
 
-db_id MainWindow::currentFlightId (bool *isTowflight)
+dbId MainWindow::currentFlightId (bool *isTowflight)
 {
 	// Get the currently selected index from the table; it refers to the
 	// proxy model
@@ -482,13 +541,13 @@ db_id MainWindow::currentFlightId (bool *isTowflight)
 	QModelIndex flightListIndex = proxyModel->mapToSource (proxyIndex);
 
 	// If there is not selection, return an invalid ID
-	if (!flightListIndex.isValid ()) return invalid_id;
+	if (!flightListIndex.isValid ()) return invalidId;
 
 	// Get the flight from the model
 	const Flight &flight = flightListModel->at (flightListIndex);
 
 	if (isTowflight) (*isTowflight) = flight.isTowflight ();
-	return flight.get_id ();
+	return flight.getId ();
 }
 
 void MainWindow::sortCustom ()
@@ -530,18 +589,21 @@ void MainWindow::sortByColumn (int column)
 
 void MainWindow::flightListChanged ()
 {
-	QList<Flight> flights=flightList.getList ();
+	QList<Flight> flights=flightList->getList ();
 
 	// Note that there is a race condition if "refresh" is called before
 	// midnight and this function is called after midnight.
 	// TODO store the todayness somewhere instead.
 
-	if (displayDate == QDate::currentDate ())
+	if (databaseActionsEnabled && displayDate == QDate::currentDate ())
 		ui.activeFlightsLabel->setNumber (Flight::countFlying (flights));
 	else
 		ui.activeFlightsLabel->setText ("-");
 
-	ui.totalFlightsLabel->setNumber (Flight::countHappened (flights));
+	if (databaseActionsEnabled)
+		ui.totalFlightsLabel->setNumber (Flight::countHappened (flights));
+	else
+		ui.totalFlightsLabel->setText ("-");
 }
 
 // *************************
@@ -564,56 +626,90 @@ void MainWindow::flightListChanged ()
 
 void MainWindow::updateFlight (const Flight &flight)
 {
-	UpdateObjectTask<Flight> task (dataStorage, flight);
-	dataStorage.addTask (&task);
-	TaskProgressDialog::waitTask (this, &task);
-	if (!task.getSuccess ())
-	{
-		// TODO we should retry instead, and probably in the task
-		QMessageBox::critical (
-			this,
-			"Fehler beim Speichern",
-			QString ("Fehler beim Speichern des Flugs: %1").arg (task.getMessage ())
-			);
-	}
+	// TODO error handling? required? What happens on uncaught exception? Then
+	// remove this method if it only calls dbManager.updateObject
+	dbManager.updateObject (flight, this);
 }
 
-void MainWindow::startFlight (db_id id)
+bool MainWindow::checkPlaneFlying (dbId id, const QString &description)
+{
+	if (idValid (id) && cache.planeFlying (id))
+	{
+		Plane plane=cache.getObject<Plane> (id);
+		QString text=utf8 ("Laut Datenbank fliegt das %1 %2 noch. Trotzdem starten?")
+				.arg (description, plane.registration);
+		if (!yesNoQuestion (this, "Flugzeug fliegt noch", text))
+			return false;
+	}
+
+	return true;
+}
+
+bool MainWindow::checkPersonFlying (dbId id, const QString &description)
+{
+	if (idValid (id) && cache.personFlying (id))
+	{
+		Person person=cache.getObject<Person> (id);
+		QString text=utf8 ("Laut Datenbank fliegt der %1 %2 noch. Trotzdem starten?")
+				.arg (description, person.fullName ());
+		if (!yesNoQuestion (this, "Person fliegt noch", text)) return false;
+	}
+
+	return true;
+}
+
+void MainWindow::departFlight (dbId id)
 {
 	// TODO display message
-	if (id_invalid (id)) return;
+	if (idInvalid (id)) return;
 
 	try
 	{
-		Flight flight = dataStorage.getObject<Flight> (id);
+		Flight flight=dbManager.getCache ().getObject<Flight> (id);
 		QString reason;
 
-		if (flight.canStart (&reason))
+		if (flight.canDepart (&reason))
 		{
-			// TODO still flying checks if specified (3 people, 2 planes). Code is
-			// already in FlightWindow.
-			flight.startNow ();
+			bool isAirtow=flight.isAirtow (cache);
+
+			// *** Check for planes flying
+			// Plane
+			if (!checkPlaneFlying (flight.planeId, "Flugzeug")) return;
+			if (isAirtow)
+				if (!checkPlaneFlying (flight.effectiveTowplaneId (cache), "Schleppflugzeug")) return;
+
+			// *** Check for people flying
+			// Pilot
+			if (!checkPersonFlying (flight.pilotId, flight.pilotDescription ())) return;
+			// Copilot (if recorded for this flight)
+			if (flight.copilotRecorded ())
+				if (!checkPersonFlying (flight.copilotId, flight.copilotDescription ())) return;
+			// Towpilot (if airtow)
+			if (isAirtow && Settings::instance ().recordTowpilot)
+				if (!checkPersonFlying (flight.towpilotId, flight.towpilotDescription ())) return;
+
+			flight.departNow ();
 			updateFlight (flight);
 		}
 		else
 		{
-			show_warning (QString::fromUtf8 ("Start nicht möglich"), reason, this);
+			showWarning (utf8 ("Start nicht möglich"), reason, this);
 		}
 	}
-	catch (DataStorage::NotFoundException &ex)
+	catch (Cache::NotFoundException &ex)
 	{
-		log_error (QString ("Flight %1 not found in MainWindow::startFlight").arg (ex.id));
+		log_error (QString ("Flight %1 not found in MainWindow::departFlight").arg (ex.id));
 	}
 }
 
-void MainWindow::landFlight (db_id id)
+void MainWindow::landFlight (dbId id)
 {
 	// TODO display message
-	if (id_invalid (id)) return;
+	if (idInvalid (id)) return;
 
 	try
 	{
-		Flight flight = dataStorage.getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
 		QString reason;
 
 		if (flight.canLand (&reason))
@@ -623,23 +719,23 @@ void MainWindow::landFlight (db_id id)
 		}
 		else
 		{
-			show_warning (QString::fromUtf8 ("Landung nicht möglich"), reason, this);
+			showWarning (utf8 ("Landung nicht möglich"), reason, this);
 		}
 	}
-	catch (DataStorage::NotFoundException &ex)
+	catch (Cache::NotFoundException &ex)
 	{
 		log_error (QString ("Flight not found in MainWindow::landFlight").arg (ex.id));
 	}
 }
 
-void MainWindow::landTowflight (db_id id)
+void MainWindow::landTowflight (dbId id)
 {
 	// TODO display message
-	if (id_invalid (id)) return;
+	if (idInvalid (id)) return;
 
 	try
 	{
-		Flight flight = dataStorage.getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
 		QString reason;
 
 		if (flight.canTowflightLand (&reason))
@@ -649,10 +745,10 @@ void MainWindow::landTowflight (db_id id)
 		}
 		else
 		{
-			show_warning (QString::fromUtf8 ("Landung nicht möglich"), reason, this);
+			showWarning (utf8 ("Landung nicht möglich"), reason, this);
 		}
 	}
-	catch (DataStorage::NotFoundException &ex)
+	catch (Cache::NotFoundException &ex)
 	{
 		log_error (QString ("Flight %1 not found in MainWindow::landTowFlight").arg (ex.id));
 	}
@@ -660,24 +756,20 @@ void MainWindow::landTowflight (db_id id)
 
 void MainWindow::on_actionNew_triggered ()
 {
-	// TODO: the window should be modeless, but
-	//   - be closed when the database connection is closed (?)
-	//   - what about landing a flight that is open in the editor?
-	//   - there should be only one flight editor at a time
-	FlightWindow::createFlight (this, dataStorage, getNewFlightDate ());
-
+	delete createFlightWindow; // noop if NULL
+	createFlightWindow=FlightWindow::createFlight (this, dbManager, getNewFlightDate ());
 }
 
-void MainWindow::on_actionStart_triggered ()
+void MainWindow::on_actionDepart_triggered ()
 {
-	// This will check canStart
-	startFlight (currentFlightId ());
+	// This will check canDepart
+	departFlight (currentFlightId ());
 }
 
 void MainWindow::on_actionLand_triggered ()
 {
 	bool isTowflight = false;
-	db_id id = currentFlightId (&isTowflight);
+	dbId id = currentFlightId (&isTowflight);
 
 	if (isTowflight)
 		// This will check canLand
@@ -689,25 +781,25 @@ void MainWindow::on_actionLand_triggered ()
 void MainWindow::on_actionTouchngo_triggered ()
 {
 	bool isTowflight=false;
-	db_id id = currentFlightId (&isTowflight);
+	dbId id = currentFlightId (&isTowflight);
 
 	if (isTowflight)
 	{
-		show_warning (
-			QString::fromUtf8 ("Zwischenlandung nicht möglich"),
-			QString::fromUtf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können keine Zwischenlandung machen."),
+		showWarning (
+			utf8 ("Zwischenlandung nicht möglich"),
+			utf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können keine Zwischenlandung machen."),
 			this);
 	}
 
 	// TODO display message
-	if (id_invalid (id)) return;
+	if (idInvalid (id)) return;
 
 	try
 	{
 		// TODO warning if the plane is specified and a glider and the
-		// launch type is specified and not an unended airtow
+		// launch method is specified and not an unended airtow
 
-		Flight flight = dataStorage.getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
 		QString reason;
 
 		if (flight.canTouchngo (&reason))
@@ -717,10 +809,10 @@ void MainWindow::on_actionTouchngo_triggered ()
 		}
 		else
 		{
-			show_warning (QString::fromUtf8 ("Zwischenlandung nicht möglich"), reason, this);
+			showWarning (utf8 ("Zwischenlandung nicht möglich"), reason, this);
 		}
 	}
-	catch (DataStorage::NotFoundException &ex)
+	catch (Cache::NotFoundException &ex)
 	{
 		log_error (QString ("Flight %1 not found in MainWindow::on_actionTouchngo_triggered").arg (ex.id));
 	}
@@ -728,16 +820,35 @@ void MainWindow::on_actionTouchngo_triggered ()
 
 void MainWindow::on_actionEdit_triggered ()
 {
-	db_id id = currentFlightId ();
+	dbId id = currentFlightId ();
 
-	if (id_invalid (id)) return;
+	if (idInvalid (id)) return;
 
 	try
 	{
-		Flight flight = dataStorage.getObject<Flight> (id);
-		FlightWindow::editFlight (this, dataStorage, flight);
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
+
+		if (editFlightWindow && editFlightWindow->getEditedId ()==id)
+		{
+			// The flight is already being edited
+
+			// How to raise a QDialog?
+			// How to move to center? editFlightWindow->move does not seem to
+			// have any effect (regardless of what - show or move - is done
+			// first). Currently, it's done in FlightWindow#showEvent which
+			// causes it to be shown in the top-left position first and then
+			// moved.
+			editFlightWindow->hide ();
+			editFlightWindow->show ();
+		}
+		else
+		{
+			// Another flight may be being edited
+			delete editFlightWindow; // noop if NULL
+			editFlightWindow=FlightWindow::editFlight (this, dbManager, flight);
+		}
 	}
-	catch (DataStorage::NotFoundException &ex)
+	catch (Cache::NotFoundException &ex)
 	{
 		log_error (QString ("Flight not found in MainWindow::on_actionEdit_triggered").arg (ex.id));
 	}
@@ -746,26 +857,27 @@ void MainWindow::on_actionEdit_triggered ()
 void MainWindow::on_actionRepeat_triggered ()
 {
 	bool isTowflight = false;
-	db_id id = currentFlightId (&isTowflight);
+	dbId id = currentFlightId (&isTowflight);
 
 	// TODO display message
-	if (id_invalid (id))
+	if (idInvalid (id))
 		return;
 
 	else if (isTowflight)
 	{
-		show_warning (QString::fromUtf8 ("Wiederholen nicht möglich"),
-			QString::fromUtf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können nicht wiederholt werden."),
+		showWarning (utf8 ("Wiederholen nicht möglich"),
+			utf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können nicht wiederholt werden."),
 			this);
 		return;
 	}
 
 	try
 	{
-		Flight flight = dataStorage.getObject<Flight> (id);
-		FlightWindow::repeatFlight (this, dataStorage, flight, getNewFlightDate ());
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
+		delete createFlightWindow; // noop if NULL
+		createFlightWindow=FlightWindow::repeatFlight (this, dbManager, flight, getNewFlightDate ());
 	}
-	catch (DataStorage::NotFoundException &ex)
+	catch (Cache::NotFoundException &ex)
 	{
 		log_error (QString ("Flight %1 not found in MainWindow::on_actionRepeat_triggered").arg (id));
 	}
@@ -774,28 +886,25 @@ void MainWindow::on_actionRepeat_triggered ()
 void MainWindow::on_actionDelete_triggered ()
 {
 	bool isTowflight = false;
-	db_id id = currentFlightId (&isTowflight);
+	dbId id = currentFlightId (&isTowflight);
 
-	if (id_invalid (id))
+	if (idInvalid (id))
 	// TODO display message
 	return;
 
-	if (!yesNoQuestion (this, QString::fromUtf8 ("Flug löschen?"), QString::fromUtf8 ("Flug wirklich löschen?"))) return;
+	if (!yesNoQuestion (this, utf8 ("Flug löschen?"), utf8 ("Flug wirklich löschen?"))) return;
 
-	if (isTowflight) if (!yesNoQuestion (this, QString::fromUtf8 ("Geschleppten Flug löschen?"), QString::fromUtf8 (
+	if (isTowflight) if (!yesNoQuestion (this, utf8 ("Geschleppten Flug löschen?"), utf8 (
 			"Der gewählte Flug ist ein Schleppflug. Soll der dazu gehörige geschleppte Flug wirklich gelöscht werden?"))) return;
 
-	DeleteObjectTask<Flight> task (dataStorage, id);
-	dataStorage.addTask (&task);
-	TaskProgressDialog::waitTask (this, &task);
-
-	if (!task.getSuccess ())
-		QMessageBox::message (
-			QString::fromUtf8 ("Fehler beim Löschen"),
-			QString::fromUtf8 ("Fehler beim Löschen: %1").arg (task.getMessage ()),
-			"&OK",
-			this
-		);
+	try
+	{
+		dbManager.deleteObject<Flight> (id, this);
+	}
+	catch (OperationCanceledException)
+	{
+		// TODO the cache may now be inconsistent
+	}
 }
 
 void MainWindow::on_actionDisplayError_triggered ()
@@ -806,44 +915,44 @@ void MainWindow::on_actionDisplayError_triggered ()
 	// elsewhere - the towplane generation should be simplified
 
 	bool isTowflight;
-	db_id id = currentFlightId (&isTowflight);
+	dbId id = currentFlightId (&isTowflight);
 
-	if (id_invalid (id))
+	if (idInvalid (id))
 	{
-		show_warning ("Kein Flug ausgewählt", "Es ist kein Flug ausgewählt", this);
+		showWarning ("Kein Flug ausgewählt", "Es ist kein Flug ausgewählt", this);
 		return;
 	}
 
 	try
 	{
-		Flight flight = dataStorage.getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
 
-		Plane *plane=dataStorage.getNewObject<Plane> (flight.plane);
-		LaunchType *launchType=dataStorage.getNewObject<LaunchType> (flight.launchType);
+		Plane *plane=dbManager.getCache ().getNewObject<Plane> (flight.planeId);
+		LaunchMethod *launchMethod=dbManager.getCache ().getNewObject<LaunchMethod> (flight.launchMethodId);
 		Plane *towplane=NULL;
 
-		db_id towplaneId=invalid_id;
-		if (launchType && launchType->is_airtow ())
+		dbId towplaneId=invalidId;
+		if (launchMethod && launchMethod->isAirtow ())
 		{
-			if (launchType->towplane_known ())
-				towplaneId=dataStorage.getPlaneIdByRegistration (launchType->get_towplane ());
+			if (launchMethod->towplaneKnown ())
+				towplaneId=dbManager.getCache ().getPlaneIdByRegistration (launchMethod->towplaneRegistration);
 			else
-				towplaneId=flight.towplane;
+				towplaneId=flight.towplaneId;
 
-			if (id_valid (towplaneId))
-				towplane=dataStorage.getNewObject<Plane> (towplaneId);
+			if (idValid (towplaneId))
+				towplane=dbManager.getCache ().getNewObject<Plane> (towplaneId);
 		}
 
 		// As the FlightModel uses fehlerhaft on the towflight generated by
 		// the FlightProxyList rather than schlepp_fehlerhaft, we do the same.
 		if (isTowflight)
 		{
-			db_id towLaunchType=dataStorage.getLaunchTypeByType (sat_self);
+			dbId towLaunchMethod=dbManager.getCache ().getLaunchMethodByType (LaunchMethod::typeSelf);
 
-			flight=flight.makeTowflight (towplaneId, towLaunchType);
+			flight=flight.makeTowflight (towplaneId, towLaunchMethod);
 
-			delete launchType;
-			launchType=dataStorage.getNewObject<LaunchType> (towLaunchType);
+			delete launchMethod;
+			launchMethod=dbManager.getCache ().getNewObject<LaunchMethod> (towLaunchMethod);
 
 			delete plane;
 			plane=towplane;
@@ -851,20 +960,20 @@ void MainWindow::on_actionDisplayError_triggered ()
 		}
 
 		QString errorText;
-		bool error=flight.fehlerhaft (plane, NULL, launchType, &errorText);
+		bool error=flight.fehlerhaft (plane, NULL, launchMethod, &errorText);
 
 		delete plane;
 		delete towplane;
-		delete launchType;
+		delete launchMethod;
 
 		QString flightText (isTowflight?"Schleppflug":"Flug");
 
 		if (error)
-			show_warning (QString ("%1 fehlerhaft").arg (flightText), QString ("Erster Fehler des %1s: %2").arg (flightText, errorText), this);
+			showWarning (QString ("%1 fehlerhaft").arg (flightText), QString ("Erster Fehler des %1s: %2").arg (flightText, errorText), this);
 		else
-			show_warning (QString ("%1 fehlerfrei").arg (flightText), QString ("Der %1 ist fehlerfrei.").arg (flightText), this);
+			showWarning (QString ("%1 fehlerfrei").arg (flightText), QString ("Der %1 ist fehlerfrei.").arg (flightText), this);
 	}
-	catch (DataStorage::NotFoundException &ex)
+	catch (Cache::NotFoundException &ex)
 	{
 		log_error (QString ("Flight %1 not found in MainWindow::on_actionDisplayError_triggered").arg (ex.id));
 	}
@@ -929,13 +1038,19 @@ void MainWindow::on_actionShowVirtualKeyboard_triggered (bool checked)
 	}
 }
 
+void MainWindow::on_actionRefreshAll_triggered ()
+{
+	try
+	{
+		dbManager.refreshCache (this);
+	}
+	catch (OperationCanceledException &ex) {}
+
+	refreshFlights ();
+}
+
 void MainWindow::on_actionRefreshTable_triggered ()
 {
-	// TODO refresh all is not refresh table!
-	RefreshAllTask task (dataStorage);
-	dataStorage.addTask (&task);
-	TaskProgressDialog::waitTask (this, &task);
-
 	refreshFlights ();
 }
 
@@ -946,7 +1061,7 @@ void MainWindow::on_actionJumpToTow_triggered ()
 
 	if (!currentIndex.isValid ())
 	{
-		show_warning (QString::fromUtf8 ("Kein Flug ausgewählt"), QString::fromUtf8 ("Es ist kein Flug ausgewählt."), this);
+		showWarning (utf8 ("Kein Flug ausgewählt"), utf8 ("Es ist kein Flug ausgewählt."), this);
 		return;
 	}
 
@@ -956,7 +1071,7 @@ void MainWindow::on_actionJumpToTow_triggered ()
 
 	if (towref<0)
 	{
-		show_warning (QString::fromUtf8 ("Kein Schleppflug"), QString::fromUtf8 ("Der gewählte Flug ist entweder kein F-Schlepp und kein Schleppflug oder noch nicht gestartet."), this);
+		showWarning (utf8 ("Kein Schleppflug"), utf8 ("Der gewählte Flug ist entweder kein F-Schlepp und kein Schleppflug oder noch nicht gestartet."), this);
 		return;
 	}
 
@@ -971,8 +1086,8 @@ void MainWindow::on_actionRestartPlugins_triggered ()
 {
 	if (weatherPlugin) weatherPlugin->restart ();
 
-	foreach (ShellPlugin *plugin, plugins)
-			plugin->restart ();
+	foreach (ShellPlugin *plugin, infoPlugins)
+		plugin->restart ();
 }
 
 // **********
@@ -990,7 +1105,9 @@ void MainWindow::on_actionInfo_triggered ()
 
 void MainWindow::on_actionNetworkDiagnostics_triggered ()
 {
-	if (!opts.diag_cmd.isEmpty ()) system (opts.diag_cmd.latin1 ());
+	QString command=Settings::instance ().diagCommand;
+	if (!blank (command))
+		system (command.utf8 ().constData ());
 }
 
 // ************
@@ -1002,21 +1119,21 @@ void MainWindow::keyPressEvent (QKeyEvent *e)
 	switch (e->key ())
 	{
 		// The function keys trigger actions
-		case Qt::Key_F2:  ui.actionNew          ->trigger (); break;
-		case Qt::Key_F3:  ui.actionRepeat       ->trigger (); break;
-		case Qt::Key_F4:  ui.actionEdit         ->trigger (); break;
-		case Qt::Key_F5:  ui.actionStart        ->trigger (); break;
-		case Qt::Key_F6:  ui.actionLand         ->trigger (); break;
-		case Qt::Key_F7:  ui.actionTouchngo     ->trigger (); break;
-		case Qt::Key_F8:  ui.actionDelete       ->trigger (); break;
-		case Qt::Key_F9:  ui.actionSort         ->trigger (); break;
-		case Qt::Key_F10: ui.actionQuit         ->trigger (); break;
-		case Qt::Key_F11: ui.actionHideFinished ->trigger (); break;
-		case Qt::Key_F12: ui.actionRefreshTable ->trigger (); break;
+		case Qt::Key_F2:  if (databaseActionsEnabled) ui.actionNew          ->trigger (); break;
+		case Qt::Key_F3:  if (databaseActionsEnabled) ui.actionRepeat       ->trigger (); break;
+		case Qt::Key_F4:  if (databaseActionsEnabled) ui.actionEdit         ->trigger (); break;
+		case Qt::Key_F5:  if (databaseActionsEnabled) ui.actionDepart       ->trigger (); break;
+		case Qt::Key_F6:  if (databaseActionsEnabled) ui.actionLand         ->trigger (); break;
+		case Qt::Key_F7:  if (databaseActionsEnabled) ui.actionTouchngo     ->trigger (); break;
+		case Qt::Key_F8:  if (databaseActionsEnabled) ui.actionDelete       ->trigger (); break;
+		case Qt::Key_F9:  if (databaseActionsEnabled) ui.actionSort         ->trigger (); break;
+		case Qt::Key_F10:                             ui.actionQuit         ->trigger (); break;
+		case Qt::Key_F11: if (databaseActionsEnabled) ui.actionHideFinished ->trigger (); break;
+		case Qt::Key_F12: if (databaseActionsEnabled) ui.actionRefreshAll   ->trigger (); break;
 
 		// Flight manipulation
-		case Qt::Key_Insert: if (ui.flightTable->hasFocus ()) ui.actionNew    ->trigger (); break;
-		case Qt::Key_Delete: if (ui.flightTable->hasFocus ()) ui.actionDelete ->trigger (); break;
+		case Qt::Key_Insert: if (databaseActionsEnabled && ui.flightTable->hasFocus ()) ui.actionNew    ->trigger (); break;
+		case Qt::Key_Delete: if (databaseActionsEnabled && ui.flightTable->hasFocus ()) ui.actionDelete ->trigger (); break;
 
 		default: e->ignore (); break;
 	}
@@ -1047,7 +1164,7 @@ void MainWindow::on_flightTable_customContextMenuRequested (const QPoint &pos)
 	{
 		contextMenu->addAction (ui.actionNew);
 		contextMenu->addSeparator ();
-		contextMenu->addAction (ui.actionStart);
+		contextMenu->addAction (ui.actionDepart);
 		contextMenu->addAction (ui.actionLand);
 		contextMenu->addAction (ui.actionTouchngo);
 		contextMenu->addSeparator ();
@@ -1082,24 +1199,31 @@ void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
 //		.arg (flight.id)
 //		<< std::endl;
 
-	if (flightListIndex.column () == flightModel->launchButtonColumn ())
-		startFlight (flight.id);
+	if (flightListIndex.column () == flightModel->departButtonColumn ())
+		departFlight (flight.getId ());
 	else if (flightListIndex.column () == flightModel->landButtonColumn ())
 	{
 		if (flight.isTowflight ())
-			landTowflight (flight.id);
+			landTowflight (flight.getId ());
 		else
-			landFlight (flight.id);
+			landFlight (flight.getId ());
 	}
 	else
 		std::cerr << "Unhandled button column in MainWindow::flightTable_buttonClicked" << std::endl;
 }
 
+QString formatDateTime (const QDateTime &dateTime)
+{
+	// xx.yy.zzzz aa:bb:cc
+	return dateTime.date ().toString (Qt::DefaultLocaleShortDate)+" "+
+		dateTime.time ().toString (Qt::DefaultLocaleLongDate);
+}
+
 void MainWindow::timeTimer_timeout ()
 {
-	// TODO: note the race condition, and remove it
-	ui.utcTimeLabel->setText (get_current_time_text (tz_utc));
-	ui.localTimeLabel->setText (get_current_time_text (tz_local));
+	QDateTime now=QDateTime::currentDateTime ();
+	ui.utcTimeLabel->setText (formatDateTime (now.toUTC ()));
+	ui.localTimeLabel->setText (formatDateTime (now.toLocalTime ()));
 
 	// TODO: on the beginning of a minute, update the fliht duration (probably
 	// call from here rather than from a timer in the model so it's
@@ -1119,24 +1243,26 @@ void MainWindow::timeTimer_timeout ()
 
 void MainWindow::weatherWidget_doubleClicked ()
 {
+	Settings &s=Settings::instance ();
+
 	if (weatherDialog)
 	{
-		// How to focus a QDialog?
+		// How to raise a QDialog?
 		weatherDialog->hide ();
 		weatherDialog->show ();
 	}
 	else
 	{
-		if (!opts.weather_dialog_plugin.isEmpty ())
+		if (!blank (s.weatherWindowCommand))
 		{
 			// The weather animation plugin will be deleted by the weather dialog
-			ShellPlugin *weatherAnimationPlugin = new ShellPlugin (opts.weather_dialog_title,
-					opts.weather_dialog_plugin, opts.weather_dialog_interval);
+			ShellPlugin *weatherAnimationPlugin = new ShellPlugin (
+					s.weatherWindowTitle, s.weatherWindowCommand, s.weatherPluginInterval);
 
 			// The weather dialog will be deleted when it's closed, and
 			// weatherDialog is a QPointer, so it will be set to NULL.
 			weatherDialog = new WeatherDialog (weatherAnimationPlugin, this);
-			weatherDialog->setCaption (opts.weather_dialog_title);
+			weatherDialog->setCaption (s.weatherWindowTitle);
 			weatherDialog->show ();
 		}
 	}
@@ -1162,23 +1288,52 @@ void on_actionSort_triggered ()
  */
 void MainWindow::setDisplayDate (QDate newDisplayDate, bool force)
 {
+	// TODO this should be correct now, but it still sucks. The better solution
+	// would probably be just to have a flag "displayToday" here, and use the
+	// cache's "other" date as display date. This would avoid date==today
+	// comparisons, prevent inconsistencies and make handling date changes
+	// easier (prevent race conditions on date change).
+
+	// Fetch the current date to avoid it changing during the operation
+	QDate today=QDate::currentDate ();
+
 	// If the display date is null, use the current date
-	if (newDisplayDate.isNull ()) newDisplayDate = QDate::currentDate ();
+	if (newDisplayDate.isNull ()) newDisplayDate = today;
 
-	// TODO when setting the current date, don't refresh from the database -
-	// it's still in the cache
+	// If the display date is already current, don't do anything (unless force
+	// is true)
+	if (newDisplayDate==displayDate && !force) return;
 
-	// Change it only if it is different from the current one or force is true
-	if (displayDate!=newDisplayDate || force)
+	if (newDisplayDate==today)
 	{
-		// TODO: if refreshing fails or is canceled, we may not change the
-		// display date; this solution is crap
-		displayDate = newDisplayDate;
-		bool refreshFinished=refreshFlights ();
-
-//		if (!refreshFinished)
-//			setDisplayDateCurrent (false);
+		// Setting today's display date
+		// Since today's flights are always cached, we can do this
+		// unconditionally.
+		displayDate=newDisplayDate;
 	}
+	else
+	{
+		// Setting another date
+
+		try
+		{
+			// If the new display date is not in the cache, fetch it.
+			// TODO move that to fetchFlights() (with force flag)
+			if (newDisplayDate!=dbManager.getCache ().getOtherDate ())
+				dbManager.fetchFlights (newDisplayDate, this);
+
+			// Now the display date is the one in the cache (which should be
+			// newDisplayDate).
+			displayDate=dbManager.getCache ().getOtherDate ();
+		}
+		catch (OperationCanceledException &ex)
+		{
+			// The fetching was canceled. Don't change the display date.
+		}
+	}
+
+	// Update the display
+	refreshFlights ();
 }
 
 void MainWindow::on_actionSetDisplayDate_triggered ()
@@ -1194,19 +1349,19 @@ void MainWindow::on_actionSetDisplayDate_triggered ()
 
 void MainWindow::on_actionPlaneLogs_triggered ()
 {
-	PlaneLog *planeLog = PlaneLog::createNew (flightList.getList (), dataStorage);
-	StatisticsWindow::display (planeLog, true, QString::fromUtf8 ("Bordbücher"), this);
+	PlaneLog *planeLog = PlaneLog::createNew (flightList->getList (), dbManager.getCache ());
+	StatisticsWindow::display (planeLog, true, utf8 ("Bordbücher"), this);
 }
 
 void MainWindow::on_actionPersonLogs_triggered ()
 {
-	PilotLog *pilotLog = PilotLog::createNew (flightList.getList (), dataStorage);
-	StatisticsWindow::display (pilotLog, true, QString::fromUtf8 ("Flugbücher"), this);
+	PilotLog *pilotLog = PilotLog::createNew (flightList->getList (), dbManager.getCache ());
+	StatisticsWindow::display (pilotLog, true, utf8 ("Flugbücher"), this);
 }
 
-void MainWindow::on_actionLaunchTypeStatistics_triggered ()
+void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 {
-	LaunchTypeStatistics *stats = LaunchTypeStatistics::createNew (flightList.getList (), dataStorage);
+	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (proxyList->getList (), dbManager.getCache ());
 	StatisticsWindow::display (stats, true, "Startartstatistik", this);
 }
 
@@ -1216,170 +1371,158 @@ void MainWindow::on_actionLaunchTypeStatistics_triggered ()
 
 void MainWindow::on_actionEditPlanes_triggered ()
 {
-	MutableObjectList<Plane> *list = new AutomaticEntityList<Plane> (dataStorage, dataStorage.getPlanes (), this);
-	ObjectListModel<Plane> *listModel = new ObjectListModel<Plane> (list, true, new Plane::DefaultObjectModel (), true,
-			this);
-	ObjectListWindowBase *window = new ObjectListWindow<Plane> (dataStorage, listModel, true, this);
-	window->show ();
+	ObjectListWindow<Plane>::show (dbManager, this);
 }
 
 void MainWindow::on_actionEditPeople_triggered ()
 {
-	MutableObjectList<Person> *list = new AutomaticEntityList<Person> (dataStorage, dataStorage.getPeople (), this);
-	ObjectListModel<Person> *listModel = new ObjectListModel<Person> (list, true, new Person::DefaultObjectModel (),
-			true, this);
-	ObjectListWindowBase *window = new ObjectListWindow<Person> (dataStorage, listModel, true, this);
-	window->show ();
+	ObjectListWindow<Person>::show (dbManager, this);
 }
+
+void MainWindow::on_actionEditLaunchMethods_triggered ()
+{
+	ObjectListWindow<LaunchMethod>::show (dbManager,
+		Settings::instance ().protectLaunchMethods,
+		Settings::instance ().databaseInfo.password,
+		this);
+}
+
 
 // **************
 // ** Database **
 // **************
 
-void MainWindow::dbEvent (DbEvent event)
+void MainWindow::databaseError (int number, QString message)
+{
+	if (number==0)
+		statusBar ()->clearMessage ();
+	else
+	{
+		logMessage (message);
+		statusBar ()->showMessage (utf8 ("Datenbank: %2 (%1)").arg (number).arg (message), 2000);
+	}
+}
+
+void MainWindow::executingQuery (Query query)
+{
+	logMessage (query.toString ());
+}
+
+void MainWindow::cacheChanged (DbEvent event)
 {
 	assert (isGuiThread ());
 
-	event.dump ();
+	std::cout << "MainWindow: "<< event.toString () << std::endl;
 
 	try
 	{
-		// TODO when a plane, person or launch type is changed, the flight list
+		// TODO when a plane, person or launch method is changed, the flight list
 		// has to be updated, too. But that's a feature of the FlightListModel (?).
-		if (event.table == db_flug)
+		if (event.hasTable<Flight> ())
 		{
-			switch (event.type)
+			switch (event.getType ())
 			{
-				case det_none:
-					break;
-				case det_add:
+				case DbEvent::typeAdd:
 				{
-					const Flight &flight=dataStorage.getObject<Flight> (event.id);
-					if (flight.vorbereitet () || flight.effdatum ()==displayDate)
-						flightList.append (flight);
+					Flight flight=event.getValue<Flight> ();
+					if (flight.isPrepared () || flight.effdatum ()==displayDate)
+						flightList->append (flight);
 
 					// TODO: set the cursor position to the flight
 
 					// TODO introduce Flight::hasDate (timeZone)
 					if (ui.actionResetDisplayDateOnNewFlight)
 					{
-						if (flight.vorbereitet ())
+						if (flight.isPrepared ())
 							setDisplayDateCurrent (false);
 						else
 							setDisplayDate (flight.effdatum (), false);
 					}
 				} break;
-				case det_change:
+				case DbEvent::typeChange:
 				{
-					try
-					{
-						const Flight &flight=dataStorage.getObject<Flight> (event.id);
+					Flight flight=event.getValue<Flight> ();
 
-						std::cout << "effdatum: " << flight.effdatum ().toString () << std::endl;
-						if (flight.vorbereitet () || flight.effdatum ()==displayDate)
-							flightList.replaceOrAdd (event.id, flight);
-						else
-							flightList.removeById (event.id);
-					}
-					catch (DataStorage::NotFoundException)
-					{
-						// The flight was not found. This means that it didn't
-						// happen today or on the dataStorage's "other" date.
-						// Since the display date is always today or the "other"
-						// date, we can conclude that we have to remove the
-						// flight.
-						flightList.removeById (event.id);
-					}
+					std::cout << "effdatum: " << flight.effdatum ().toString () << std::endl;
+					if (flight.isPrepared () || flight.effdatum ()==displayDate)
+						flightList->replaceOrAdd (flight.getId (), flight);
+					else
+						flightList->removeById (flight.getId ());
 				} break;
-				case det_delete:
-					flightList.removeById (event.id);
-					break;
-				case det_refresh:
-					refreshFlights ();
+				case DbEvent::typeDelete:
+					flightList->removeById (event.getId ());
 					break;
 			}
 		}
 	}
-	catch (DataStorage::NotFoundException)
+	catch (Cache::NotFoundException)
 	{
 		// TODO log error
 	}
 }
 
-bool MainWindow::initializeDatabase ()
+void MainWindow::databaseStateChanged (DbManager::State state)
 {
-	// TODO add reason, as parameter to this method, from
-	// Database::ex_unusable.description ()
-
-	// We need to initialize the database. Therefore, we ask the
-	// root password from the user.
-	QString title=QString::fromUtf8 ("Datenbank-Passwort benötigt");
-	QString userText=QString ("%1@%2").arg (opts.root_name).arg (opts.server_display_name);
-//	QString text=QString::fromUtf8 (
-//		"Die Datenbank %1 ist nicht benutzbar. Grund: %2. Zur Korrektur"
-//		" wird das Passwort von %3 benötigt.")
-//		.arg (opts.database)
-//		.arg (reason)
-//		.arg (userText);
-	QString text=QString::fromUtf8 (
-		"Die Datenbank %1 ist nicht benutzbar. Zur Korrektur"
-		" wird das Passwort von %2 benötigt.")
-		.arg (opts.database)
-		.arg (userText);
-
-	bool retry=false;
-	do
+	switch (state)
 	{
-		retry=false;
-		bool ok;
+		case DbManager::stateDisconnected:
+			ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+			ui.databaseStateLabel->setText ("Getrennt");
 
-		QString rootPassword=QInputDialog::getText (
-			title, text, QLineEdit::Password, QString::null, &ok, this);
+			ui.flightTable->setVisible (false);
+			ui.notConnectedPane->setVisible (true);
+			setDatabaseActionsEnabled (false);
 
-		if (ok)
-		{
-			// OK pressed
-			try
-			{
-				Database rootDatabase;
-				rootDatabase.display_queries = opts.display_queries;
-				initialize_database (rootDatabase, opts.server, opts.port, opts.root_name, rootPassword);
-			}
-			catch (Database::ex_access_denied &e)
-			{
-				retry=true;
-				text=QString::fromUtf8 ("%1. Passwort für %2:")
-					.arg (e.description (true))
-					.arg (userText);
-			}
-			catch (Database::ex_init_failed &e)
-			{
-//				db_error = e.description (true);
-				QMessageBox::critical (this, e.description (true), e.description (true),
-						QMessageBox::Ok, QMessageBox::NoButton);
-				return false;
-			}
-			// TODO show output from creation
-			catch (SkException &e)
-			{
-				// Database initialization failed. That means that there is no point in
-				// trying the connection again.
-//				db_error = "Datenbankfehler: " + e.getDescription ();
-				QMessageBox::critical (this, "Datenbankfehler", e.description (true),
-						QMessageBox::Ok, QMessageBox::NoButton);
-				return false;
-			}
-		}
-		else
-		{
-			// Cancel pressed
-//			db_error = "Datenbank nicht benutzbar";
-			return false;
-		}
-	} while (retry);
+			refreshFlights (); // Also sets the labels
 
-	return true;
+			break;
+		case DbManager::stateConnecting:
+			databaseOkText="Verbindung wird aufgebaut...";
+			ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+			ui.databaseStateLabel->setText (databaseOkText);
+
+			ui.flightTable->setVisible (true);
+			ui.notConnectedPane->setVisible (false);
+			setDatabaseActionsEnabled (false);
+
+			refreshFlights (); // Also sets the labels
+
+			break;
+		case DbManager::stateConnected:
+			databaseOkText="OK";
+			ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+			ui.databaseStateLabel->setText (databaseOkText);
+
+			ui.flightTable->setVisible (true);
+			ui.notConnectedPane->setVisible (false);
+			setDatabaseActionsEnabled (true);
+
+			setDisplayDateCurrent (true); // Will also call refreshFlights
+
+			break;
+		// no default
+	}
 }
+
+
+// ***************************
+// ** Connection monitoring **
+// ***************************
+
+void MainWindow::readTimeout ()
+{
+	ui.databaseStateLabel->setPaletteForegroundColor (Qt::red);
+	ui.databaseStateLabel->setText ("Keine Antwort");
+}
+
+void MainWindow::readResumed ()
+{
+	ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+	ui.databaseStateLabel->setText (databaseOkText);
+}
+
+
+
 
 // ************************************
 // ** Database connection management **
@@ -1387,74 +1530,51 @@ bool MainWindow::initializeDatabase ()
 
 void MainWindow::setDatabaseActionsEnabled (bool enabled)
 {
-	ui.actionDelete               ->setEnabled (enabled);
-	ui.actionEdit                 ->setEnabled (enabled);
-	ui.actionEditPeople           ->setEnabled (enabled);
-	ui.actionEditPlanes           ->setEnabled (enabled);
-	ui.actionJumpToTow            ->setEnabled (enabled);
-	ui.actionLand                 ->setEnabled (enabled);
-	ui.actionLaunchTypeStatistics ->setEnabled (enabled);
-	ui.actionNew                  ->setEnabled (enabled);
-	ui.actionPersonLogs           ->setEnabled (enabled);
-	ui.actionPingServer           ->setEnabled (enabled);
-	ui.actionPlaneLogs            ->setEnabled (enabled);
-	ui.actionRefreshAll           ->setEnabled (enabled);
-	ui.actionRefreshTable         ->setEnabled (enabled);
-	ui.actionRepeat               ->setEnabled (enabled);
-	ui.actionSetDisplayDate       ->setEnabled (enabled);
-	ui.actionStart                ->setEnabled (enabled);
-	ui.actionTouchngo             ->setEnabled (enabled);
+	databaseActionsEnabled=enabled;
+
+	ui.actionDelete                 ->setEnabled (enabled);
+	ui.actionEdit                   ->setEnabled (enabled);
+	ui.actionEditPeople             ->setEnabled (enabled);
+	ui.actionEditPlanes             ->setEnabled (enabled);
+	ui.actionEditLaunchMethods      ->setEnabled (enabled);
+	ui.actionJumpToTow              ->setEnabled (enabled);
+	ui.actionLand                   ->setEnabled (enabled);
+	ui.actionLaunchMethodStatistics ->setEnabled (enabled);
+	ui.actionNew                    ->setEnabled (enabled);
+	ui.actionPersonLogs             ->setEnabled (enabled);
+	ui.actionPingServer             ->setEnabled (enabled);
+	ui.actionPlaneLogs              ->setEnabled (enabled);
+	ui.actionRefreshAll             ->setEnabled (enabled);
+	ui.actionRefreshTable           ->setEnabled (enabled);
+	ui.actionRepeat                 ->setEnabled (enabled);
+	ui.actionSetDisplayDate         ->setEnabled (enabled);
+	ui.actionDepart                 ->setEnabled (enabled);
+	ui.actionTouchngo               ->setEnabled (enabled);
+
+	ui.flightTable->setEnabled (enabled);
 
 	// Connect/disconnect are special
 	ui.actionConnect    ->setEnabled (!enabled);
 	ui.actionDisconnect ->setEnabled ( enabled);
 }
 
-void MainWindow::dataStorageStatus (QString state, bool isError)
+void MainWindow::closeDatabase ()
 {
-	assert (isGuiThread ());
-	ui.databaseStateLabel->setText (state);
-	ui.databaseStateLabel->setError (isError);
+	// No need, will be closed on destruction
+	//dbInterface.close ();
 }
 
-void MainWindow::dataStorageStateChanged (DataStorage::State state)
-{
-	assert (isGuiThread ());
-
-	ui.databaseStateLabel->setText (dataStorage.stateGetText (state));
-	// stateOffline is not an error, but we colorize it red anyway to get the
-	// user's attention.
-	ui.databaseStateLabel->setError (
-		state==DataStorage::stateOffline ||
-		dataStorage.stateIsError (state)
-	);
-
-	setDatabaseActionsEnabled (dataStorage.isConnectionEstablished ());
-
-	switch (state)
-	{
-		case DataStorage::stateOffline:
-			flightList.clear ();
-			break;
-		case DataStorage::stateConnecting:
-			flightList.clear ();
-			break;
-		case DataStorage::stateConnected:
-			refreshFlights ();
-			break;
-		case DataStorage::stateUnusable:
-			flightList.clear ();
-			if (initializeDatabase ())
-				dataStorage.connect ();
-			break;
-		case DataStorage::stateLost:
-			break;
-	}
-}
 
 // **********
 // ** Misc **
 // **********
+
+void MainWindow::on_actionSettings_triggered ()
+{
+	SettingsWindow w (this);
+	w.setModal (true); // TODO non-model and auto delete
+	w.exec ();
+}
 
 void MainWindow::on_actionSetTime_triggered ()
 {
@@ -1466,34 +1586,31 @@ void MainWindow::on_actionSetTime_triggered ()
 
 	if (DateInputDialog::editDate (this, &date, &time, "Systemdatum einstellen", "Datum:", false, false, false))
 	{
-		QString command = QString ("sudo date -s '%1-%2-%3 %4:%5:%6'") .arg (date.year ()).arg (date.month ()).arg (
-				date.day ()) .arg (time.hour ()).arg (time.minute ()).arg (time.second ());
+		QString timeString=QString ("%1-%2-%3 %4:%5:%6")
+			.arg (date.year ()).arg (date.month ()).arg (date.day ())
+			.arg (time.hour ()).arg (time.minute ()).arg (time.second ());
 
-		system (command.latin1 ());
+		int result=QProcess::execute ("sudo", QStringList () << "-n" << "date" << "-s" << timeString);
 
-		show_warning (QString::fromUtf8 ("Systemzeit geändert"),
-			QString::fromUtf8 ("Die Systemzeit wurde geändert. Um "
-			"die Änderung dauerhaft zu speichern, muss der Rechner einmal "
-			"heruntergefahren werden, bevor er ausgeschaltet wird."), this);
-
-		//	s="sudo /etc/init.d/hwclock.sh stop &";
-		//	r=system (s.c_str ());
-		//	if (r!=0) show_warning ("Zurückschreiben der Zeit fehlgeschlagen. Bitte den Rechner\n"
-		//	                        "herunterfahren, um die Zeiteinstellung dauerhaft zu speichern.", this);
+		if (result==0)
+		{
+			showWarning (utf8 ("Systemzeit geändert"),
+				utf8 ("Die Systemzeit wurde geändert. Gegebenenfalls"
+				" wird die Änderung erst beim nächsten Herunterfahren"
+				" dauerhaft gespeichert."), this);
+		}
+		else
+		{
+			showWarning (utf8 ("Fehler"),
+				utf8 ("Beim Ändern der Systemzeit ist ein Fehler aufgetreten."
+				" Möglicherweise sind die Berechtigungen nicht ausreichen."), this);
+		}
 	}
 }
 
 void MainWindow::on_actionTest_triggered ()
 {
 	// Perform a sleep task in the background
-	Task *task = new SleepTask (5);
-	//	Task *task=new DataStorage::SleepTask (dataStorage, 5);
-
-
-	dataStorage.addTask (task);
-	TaskProgressDialog::waitTask (this, task);
-
-	delete task;
 }
 
 void MainWindow::logMessage (QString message)

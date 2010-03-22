@@ -1,19 +1,15 @@
-#ifndef _ShellPlugin_h
-#define _ShellPlugin_h
+#ifndef SHELLPLUGIN_H_
+#define SHELLPLUGIN_H_
 
-#include <QString>
-#include <iostream>
-#include <cstdio>
-#include <fstream>
-
-#include <QLabel>
 #include <QObject>
-#include <QToolTip>
-#include <QProcess>
+#include <QString>
 
 #include "src/accessor.h"
 
 class QTextCodec;
+class QLabel;
+class QProcess;
+class ShellPluginInfo;
 
 class ShellPlugin: public QObject
 {
@@ -24,10 +20,14 @@ class ShellPlugin: public QObject
 		void init ();
 		ShellPlugin ();	// Initialize to default values
 		ShellPlugin (const ShellPlugin &o);	// Copy constructor
-		ShellPlugin (const QString desc);	// Initialize from config file QString
+		ShellPlugin (const ShellPluginInfo &info);
+//		ShellPlugin (const QString desc);	// Initialize from config file QString
 		ShellPlugin (const QString &_caption, const QString &_command, int interval);	// Initialize to given values
 		virtual ~ShellPlugin ();
 		ShellPlugin &operator= (const ShellPlugin &o);
+
+		static QString findFile (const QString &filename, QString *dir, QString *basename);
+
 
 		// Display
 		RO_ACCESSOR (QString, caption)

@@ -6,12 +6,12 @@
 #include <QRegExp>
 #include <QResizeEvent>
 
-#include "src/config/Options.h"
+#include "src/config/Settings.h" // TOOD remove dependency, set size from MainWindow
 
 WeatherWidget::WeatherWidget (QWidget *parent, const char *name)
 	:QLabel (parent, name)
 {
-	if (opts.colorful)
+	if (Settings::instance ().coloredLabels)
 	{
 		setAutoFillBackground (true);
 		setPaletteBackgroundColor (QColor (127, 127, 127));
@@ -34,7 +34,8 @@ bool WeatherWidget::loadImage (const QString &fileName)
 	QPixmap pixmap (image);
 	setPixmap (pixmap);
 
-	setFixedSize (opts.weather_height*pixmap.width()/pixmap.height(), opts.weather_height);
+	int height=Settings::instance ().weatherPluginHeight;
+	setFixedSize (height*pixmap.width()/pixmap.height(), height);
 
 
 	return true;

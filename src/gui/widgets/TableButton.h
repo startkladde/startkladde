@@ -2,7 +2,7 @@
  * TableButton.h
  *
  *  Created on: Aug 30, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef TABLEBUTTON_H_
@@ -42,4 +42,4 @@ class TableButton: public QPushButton
 		QPersistentModelIndex index;
 };
 
-#endif /* TABLEBUTTON_H_ */
+#endif

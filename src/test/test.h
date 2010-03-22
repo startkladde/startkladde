@@ -1,11 +1,5 @@
-#ifndef _test_h
-#define _test_h
-
-#include <cstdio>
-#include <unistd.h>
-
-#include "src/time/sk_time_t.h"
-
+#ifndef TEST_H_
+#define TEST_H_
 
 #endif
 

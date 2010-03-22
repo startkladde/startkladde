@@ -3,6 +3,12 @@
 indexfile=/tmp/index.html
 imagefile=/tmp/radar.gif
 
+num=0
+while [ -e "$imagefile" -a ! -w "$imagefile" ]; do
+	imagefile="/tmp/radar-${num}.gif"
+	num=$(($num+1))
+done
+
 echo "[MSG] [Radarbild wird heruntergeladen]"
 
 # Wetterseite herunterladen

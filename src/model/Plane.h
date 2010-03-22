@@ -1,9 +1,10 @@
-#ifndef _Plane_h
-#define _Plane_h
+#ifndef PLANE_H_
+#define PLANE_H_
 
 #include <cstdio>
 #include <QString>
 #include <QList>
+#include <QMetaType>
 
 #include "src/model/objectList/ObjectModel.h"
 
@@ -12,12 +13,19 @@
  *   - addObject attribute "is towplane"
  */
 
-#include "src/dataTypes.h"
 #include "src/model/Entity.h"
-
+/*
+ * Aircraft: everything
+ * Airplanes: motorized fixed-wing
+ * Motorized aircraft: airplanes and helicopters
+ * So this class should be called Aircraft
+ */
 class Plane: public Entity
 {
 	public:
+		// *** Types
+		enum Category { categoryNone, categoryAirplane, categoryGlider, categoryMotorglider, categoryUltralight, categoryOther };
+
 		class DefaultObjectModel: public ObjectModel<Plane>
 		{
 			virtual int columnCount () const;
@@ -25,44 +33,63 @@ class Plane: public Entity
 			virtual QVariant displayData (const Plane &object, int column) const;
 		};
 
-		enum Category { categoryNone, categorySingleEngine, categoryGlider, categoryMotorglider, categoryUltralight, categoryOther };
 
-		Plane (QString, QString, QString, QString, int, db_id p_id=0);
+		// *** Construction
 		Plane ();
+		Plane (dbId id);
 
+
+		// *** Data
+		QString registration;
+		QString club;
+		int numSeats;
+		QString type;
+		Category category;
+		QString callsign;
+
+
+		// *** Property access
+		virtual bool selfLaunchOnly ();
+	    static QString defaultRegistrationPrefix () { return "D-"; }
+
+
+		// *** Formatting
+		virtual QString toString () const;
+		virtual QString fullRegistration () const;
+	    static bool clubAwareLessThan (const Plane &p1, const Plane &p2);
+		virtual QString getDisplayName () const;
+
+
+	    // *** Category methods
 		static QList<Category> listCategories (bool include_invalid);
-		static QString categoryText (Plane::Category category, lengthSpecification lenspec);
+		static QString categoryText (Plane::Category category);
 		static Plane::Category categoryFromRegistration (QString registration);
 		static int categoryMaxSeats (Plane::Category category);
 
-		QString registration;
-		QString competitionId;
-		QString type;
-		QString club;
-		int numSeats;
-		Category category;
 
-		virtual QString name () const;
-
-		void dump () const;
-		virtual void output (std::ostream &stream, output_format_t format);
-		virtual QString getDescription (casus) const;
-		virtual QString textName () const;
-		virtual QString tableName () const;
-
-		virtual bool selfLaunchOnly ();
-
-		// TODO replace with a class Noun;
+		// *** ObjectListWindow/ObjectEditorWindow helpers
 		static QString objectTypeDescription () { return "Flugzeug"; }
 		static QString objectTypeDescriptionDefinite () { return "das Flugzeug"; }
 		static QString objectTypeDescriptionPlural () { return "Flugzeuge"; }
 
-	    static bool clubAwareLessThan (const Plane &p1, const Plane &p2);
 
-	    static QString defaultRegistrationPrefix () { return "D-"; }
+		// SQL interface
+		static QString dbTableName ();
+		static QString selectColumnList ();
+		static Plane createFromResult (const Result &result);
+		static QString insertColumnList ();
+		static QString insertPlaceholderList ();
+		virtual void bindValues (Query &q) const;
+		static QList<Plane> createListFromResult (Result &query);
+		// Enum mappers
+		static QString  categoryToDb   (Category category);
+		static Category categoryFromDb (QString  category);
 
-		QString toString () const;
+	private:
+		void initialize ();
 };
+
+Q_DECLARE_METATYPE (Plane);
 
 #endif
 

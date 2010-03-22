@@ -1,9 +1,0 @@
-Kochrezept Datenbankspalte dazufügen:
-
-  - in sk_flug.h: Eintrag dazufügen
-  - sk_flug::sk_flug: Initialisieren
-  - sk_flug::fehlerchecking (neue Fehler in sk_flug.h zu enum flug_fehler
-	dazufügen, außerdem fehler_string () und sk_win_flight::get_error_control)
-  - in sk_db: query_column_list (), query_value_list () und row_to_object ()
-    get_table_information
-#  - scripts/sql/tabelle_anlegen aktualisieren

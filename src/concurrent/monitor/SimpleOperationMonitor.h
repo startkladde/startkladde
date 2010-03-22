@@ -2,7 +2,7 @@
  * SimpleOperationMonitor.h
  *
  *  Created on: Aug 2, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef SIMPLEOPERATIONMONITOR_H_
@@ -16,10 +16,13 @@ class SimpleOperationMonitor: public OperationMonitor
 		SimpleOperationMonitor ();
 		virtual ~SimpleOperationMonitor ();
 
-		virtual bool isCanceled () const;
+		virtual void cancel ();
 
-		virtual void status (QString text);
-		virtual void progress (int progress, int maxProgress);
+	private:
+		// ** Operation feedback
+		virtual void setStatus (const QString &text);
+		virtual void setProgress (int progress, int maxProgress);
+		virtual void setEnded ();
 };
 
-#endif /* SIMPLEOPERATIONMONITOR_H_ */
+#endif

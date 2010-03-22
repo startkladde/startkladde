@@ -25,32 +25,10 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="margin">
-       <number>0</number>
-      </property>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>296</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="closeButton">
-        <property name="text">
-         <string>&amp;Schließen</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
+     </property>
     </widget>
    </item>
   </layout>
@@ -59,18 +37,18 @@
  <resources/>
  <connections>
   <connection>
-   <sender>closeButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>StatisticsWindowClass</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>337</x>
-     <y>277</y>
+     <x>688</x>
+     <y>474</y>
     </hint>
     <hint type="destinationlabel">
-     <x>277</x>
-     <y>260</y>
+     <x>603</x>
+     <y>460</y>
     </hint>
    </hints>
   </connection>

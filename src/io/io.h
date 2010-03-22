@@ -1,9 +1,9 @@
-#ifndef _io_h
-#define _io_h
-
-#include <QString>
-
-QString read_password ();
-
-#endif
+//#ifndef IO_H_
+//#define IO_H_
+//
+//#include <QString>
+//
+//QString read_password ();
+//
+//#endif
 

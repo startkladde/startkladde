@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>243</width>
-    <height>165</height>
+    <width>274</width>
+    <height>201</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,7 +46,7 @@
       <string>&amp;Wettbewerbskennzeichen:</string>
      </property>
      <property name="buddy">
-      <cstring>competitionIdInput</cstring>
+      <cstring>callsignInput</cstring>
      </property>
     </widget>
    </item>
@@ -107,7 +107,7 @@
     <widget class="QLineEdit" name="registrationInput"/>
    </item>
    <item row="1" column="2">
-    <widget class="QLineEdit" name="competitionIdInput"/>
+    <widget class="QLineEdit" name="callsignInput"/>
    </item>
    <item row="2" column="2">
     <widget class="SkComboBox" name="categoryInput"/>
@@ -185,7 +185,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>registrationInput</tabstop>
-  <tabstop>competitionIdInput</tabstop>
+  <tabstop>callsignInput</tabstop>
   <tabstop>categoryInput</tabstop>
   <tabstop>typeInput</tabstop>
   <tabstop>clubInput</tabstop>

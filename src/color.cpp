@@ -6,9 +6,9 @@
 #define ist_true(x) ((x)==true)
 #define ist_false(x) ((x)==false)
 #define ist_egal(x) (true)
-#define ist_lokal(x) ((x)==fmLocal)
-#define ist_kommt(x) ((x)==fmComing)
-#define ist_geht(x) ((x)==fmLeaving)
+#define ist_lokal(x) ((x)==Flight::modeLocal)
+#define ist_kommt(x) ((x)==Flight::modeComing)
+#define ist_geht(x) ((x)==Flight::modeLeaving)
 #define farbe(mod, sch, sta, lan, feh, far)	\
 	if (mod(modus) && sch(schlepp) && sta(gestartet) && lan(gelandet) && feh(fehler)) return QColor (far);
 #define fargb(mod, sch, sta, lan, feh, rot, gru, bla)	\
@@ -33,14 +33,14 @@
 #define white 255,255,255
 
 // TODO move to flight
-QColor flug_farbe (FlightMode modus, bool fehler, bool schlepp, bool gestartet, bool gelandet)
+QColor flug_farbe (Flight::Mode modus, bool fehler, bool schlepp, bool gestartet, bool gelandet)
 	/*
 	 * Finds out which color to use for a given flight.
 	 * Parameters:
 	 *   - mode: the mode of the flight.
 	 *   - fehler: whether the flight is erroneous.
 	 *   - schlepp: whether the flight is a towflight
-	 *   - gestarted: whether the flight has started.
+	 *   - gestarted: whether the flight has departed
 	 *   - landed: whether the flight has landed.
 	 * Return value:
 	 *   - the color for the flight.

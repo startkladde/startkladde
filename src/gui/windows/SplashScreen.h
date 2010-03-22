@@ -1,5 +1,5 @@
-#ifndef _SplashScreen_h
-#define _SplashScreen_h
+#ifndef SPLASHSCREEN_H_
+#define SPLASHSCREEN_H_
 
 #include <iostream>
 
@@ -10,10 +10,6 @@
 #include <QLabel>
 #include <QPainter>
 #include <QPixmap>
-
-#include "src/version.h"
-
-using namespace Qt;
 
 /*
  * A SplashScreen screen capable of displaying a progress indicator

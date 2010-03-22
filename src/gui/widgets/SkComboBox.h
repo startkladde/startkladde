@@ -1,5 +1,5 @@
-#ifndef _SkComboBox_h
-#define _SkComboBox_h
+#ifndef SKCOMBOBOX_H_
+#define SKCOMBOBOX_H_
 
 #include <iostream>
 
@@ -7,12 +7,6 @@
 #include <QString>
 
 #include "src/accessor.h"
-
-//#include <QStringList>
-//#include <QLineEdit>
-//#include <QStringListModel>
-//
-//#include "src/text.h"
 
 /**
  * A QComboBox with some additional functionality.
@@ -74,8 +68,6 @@ class SkComboBox:public QComboBox
 
 	protected slots:
 		void lineEdit_editingFinished () { emit editingFinished (currentText ()); }
-
-//		void comp (const QString &text);
 
 	protected:
 		virtual void focusInEvent (QFocusEvent *event);

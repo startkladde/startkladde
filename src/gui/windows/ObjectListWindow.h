@@ -4,17 +4,21 @@
 #include <QtGui/QMainWindow>
 
 #include "ObjectListWindowBase.h"
-#include "src/gui/windows/objectEditor/ObjectEditorPane.h"
-#include "src/model/objectList/ObjectListModel.h"
 
-class DataStorage;
+class DbManager;
 class QSortFilterProxyModel;
+template<class T> class ObjectListModel;
 
 template <class T> class ObjectListWindow: public ObjectListWindowBase
 {
 	public:
-		ObjectListWindow (DataStorage &dataStorage, ObjectListModel<T> *list, bool listOwned, QWidget *parent=NULL);
+//		ObjectListWindow (DbManager &manager, ObjectListModel<T> *listModel, bool listModelOwned, QWidget *parent=NULL);
+		ObjectListWindow (DbManager &manager, QWidget *parent=NULL);
 		~ObjectListWindow();
+
+		static void show (DbManager &manager, QWidget *parent=NULL);
+		static void show (DbManager &manager, const QString &password, QWidget *parent=NULL);
+		static void show (DbManager &manager, bool editPasswordRequired, const QString &editPassword, QWidget *parent=NULL);
 
 		virtual void on_actionNew_triggered ();
 		virtual void on_actionEdit_triggered ();
@@ -23,10 +27,15 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 
 		virtual void on_table_activated (const QModelIndex &index);
 
+	protected:
+		virtual QString makePasswordMessage ();
+
 	private:
-		DataStorage &dataStorage;
-		ObjectListModel<T> *list;
-		bool listOwned;
+		MutableObjectList<T> *list;
+		ObjectModel<T> *objectModel;
+		ObjectListModel<T> *listModel;
+//		bool listModelOwned;
+
 		QSortFilterProxyModel *proxyModel;
 };
 

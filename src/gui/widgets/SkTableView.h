@@ -2,7 +2,7 @@
  * SkTableView.h
  *
  *  Created on: Aug 29, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef SKTABLEVIEW_H_
@@ -58,4 +58,4 @@ class SkTableView: public QTableView
 		bool settingButtons;
 };
 
-#endif /* SKTABLEVIEW_H_ */
+#endif

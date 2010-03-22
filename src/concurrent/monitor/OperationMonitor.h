@@ -2,40 +2,92 @@
  * OperationMonitor.h
  *
  *  Created on: Aug 2, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
-#ifndef _OperationMonitor_h
-#define _OperationMonitor_h
+#ifndef OPERATIONMONITOR_H_
+#define OPERATIONMONITOR_H_
 
 #include <QString>
+#include <QMutex>
+
+#include "src/StorableException.h"
+#include "src/concurrent/monitor/OperationMonitorInterface.h"
+
+class QAtomicInt;
+
 
 /**
- * A abstract class for communicating with a function that may take some time
+ * A class that allows monitoring and canceling an operation, typically running
+ * in a different task
  *
- * An OperationMonitor can be passed into such a function. The function can
- * query the monitor for whether the operation should be canceled and use the
- * monitor to emit information about the status/progress.
+ * An operation has:
+ *   - a status: a string
+ *   - a progress: a progress value and a maxProgress value; progress==
+ *     maxProgress==0 means "no progress information" - GUIs may display a
+ *     "busy" indicator in this case
+ *
+ * The operation accesses the task through its OperationMonitorInterface.
+ *
+ * How to use:
+ *   asyncOperation (Returner<T> *returner, OperationMonitor *monitor)
+ *   {
+ * 		returnOrException (returner, actualOperation (monitor->interface ()));
+ *   }
+ * The interface is passed by copy. After the last copy (except the master copy
+ * in the monitor) is destroyed, the end of the operation is signaled to the
+ * monitor, as if interface.ended () had been called.
+ *
+ * When using with an operation that does not take an OperationMonitorInterface,
+ * it still has to be fetched and destroyed at the correct time to signal the
+ * end of the operation:
+ *   asyncOperation (Returner<T> *returner, OperationMonitor *monitor)
+ *   {
+ * 		OperationMonitorInterface interface=monitor->interface ();
+ * 		returnOrException (returner, actualOperation);
+ *   }
+ * See, for example, ThreadSafeInterface::asyncOpen.
+ *
+ * Note that the query methods of DefaultInterface can be canceled by an own
+ * mechanism and will throw an OperationCanceledException directly. Using said
+ * mechanism is less convenient, but necessary because the connection has to be
+ * kicked (using TcpProxy). Thus, the monitor is only necessary for status and
+ * progress reporting.
+ *
+ * This class is thread safe.
  */
 class OperationMonitor
 {
 	public:
+		friend class OperationMonitorInterface;
+
+		// ** Construction
 		OperationMonitor ();
 		virtual ~OperationMonitor ();
 
-		// ***** To task
+		// ** Getting the interface
+		virtual OperationMonitorInterface interface ();
 
-		/** @brief returns true if the operation should be canceled */
-		virtual bool isCanceled () const=0;
+		// ** Operation control
+		/** Signals the operation to cancel */
+		virtual void cancel ();
 
-		// ***** From task
+	private:
+		/** The master copy of this monitor's interface */
+		OperationMonitorInterface theInterface;
 
-		/** @brief what we are currently doing */
-		virtual void status (QString text)=0;
-		virtual void status (const char *text) { status (QString::fromUtf8 (text)); }
+		bool canceled;
+		mutable QMutex mutex;
 
-		/** @brief the progress of the operation */
-		virtual void progress (int progress, int maxProgress)=0;
+		// ** Operation feedback
+		virtual void setStatus (const QString &text)=0;
+		virtual void setProgress (int progress, int maxProgress)=0;
+
+		/** Signals that the operation ended (canceled or finished) */
+		virtual void setEnded ()=0;
+
+		// ** Operation control
+		virtual bool isCanceled ();
 };
 
 #endif

@@ -1,10 +1,10 @@
-#ifndef _SkTreeWidgetItem_h
-#define _SkTreeWidgetItem_h
+#ifndef SKTREEWIDGETITEM_H_
+#define SKTREEWIDGETITEM_H_
 
 #include <QTreeWidget>
 #include <QString>
 
-#include "src/db/dbTypes.h"
+#include "src/db/dbId.h"
 
 class SkTreeWidgetItem:public QTreeWidgetItem
 {
@@ -13,7 +13,7 @@ class SkTreeWidgetItem:public QTreeWidgetItem
 		SkTreeWidgetItem (QTreeWidget *parent, QTreeWidgetItem *after);
 		SkTreeWidgetItem (QTreeWidget *parent, QString text);
 
-		db_id id;
+		dbId id;
 };
 
 #endif

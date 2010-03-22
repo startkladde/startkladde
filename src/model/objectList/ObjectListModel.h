@@ -2,7 +2,7 @@
  * ObjectList.h
  *
  *  Created on: Aug 18, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef OBJECTLISTMODEL_H_
@@ -13,7 +13,9 @@
 #include <QAbstractTableModel>
 
 #include "AbstractObjectList.h"
-#include "ObjectModel.h"
+//#include "ObjectModel.h"
+
+template<class T> class ObjectModel;
 
 /*
  * Potential improvements; this note should go to the proxy model
@@ -232,4 +234,4 @@ template<class T> void ObjectListModel<T>::columnChanged (int column)
 }
 
 
-#endif /* OBJECTLIST_H_ */
+#endif

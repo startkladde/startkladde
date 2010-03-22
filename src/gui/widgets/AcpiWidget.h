@@ -1,5 +1,5 @@
-#ifndef _AcpiWidget_h
-#define _AcpiWidget_h
+#ifndef ACPIWIDGET_H_
+#define ACPIWIDGET_H_
 
 /**
   * wrapper class for libacpi
@@ -8,7 +8,8 @@
   */
 
 #include <QLabel>
-#include <QTimer>
+
+class QTimer;
 
 class AcpiWidget: public QLabel
 {

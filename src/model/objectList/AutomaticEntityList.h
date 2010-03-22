@@ -2,17 +2,16 @@
  * AutomaticEntityList.h
  *
  *  Created on: Aug 31, 2009
- *      Author: mherrman
+ *      Author: Martin Herrmann
  */
 
 #ifndef AUTOMATICENTITYLIST_H_
 #define AUTOMATICENTITYLIST_H_
 
+// TODO may includes in header
 #include "EntityList.h"
-
-#include "src/db/DataStorage.h"
-#include "src/db/DataStorageMonitor.h"
-#include "src/db/DbEvent.h"
+#include "src/db/event/DbEvent.h"
+#include "src/db/event/DbEventMonitor.h"
 #include "src/concurrent/threadUtil.h"
 
 // ******************
@@ -20,48 +19,50 @@
 // ******************
 
 /**
- * A subclass auf EntityList that receives dbChange events from a DataStorage
- * and updates the list accordingly.
+ * A subclass auf EntityList that receives changed events from an object
+ * and updates the list accordingly
+ *
+ * The object must provide a changed (DbEvent) signal.
+ *
+ * This uses a DbEventMonitor rather than an AutomaticEntityListBase with a
+ * changed slot in order to avoid a diamon inheritance from QObject.
  */
-template<class T> class AutomaticEntityList: public EntityList<T>, DataStorageMonitor::Listener
+template<class T> class AutomaticEntityList: public EntityList<T>, DbEventMonitor::Listener
 {
 	public:
-		AutomaticEntityList (DataStorage &dataStorage, QObject *parent=NULL);
-		AutomaticEntityList (DataStorage &dataStorage, const QList<T> &list, QObject *parent=NULL);
+		AutomaticEntityList (QObject &source, QObject *parent=NULL);
+		AutomaticEntityList (QObject &source, const QList<T> &list, QObject *parent=NULL);
 		virtual ~AutomaticEntityList ();
 
-		// DataStorageMonitor::Listener methods
+		// Listener methods
 		virtual void dbEvent (DbEvent event);
 
 	protected:
-		DataStorage &dataStorage;
-		DataStorageMonitor monitor;
+		DbEventMonitor monitor;
 };
 
 /**
  * Creates an empty AutomaticEntityList
  *
- * @param dataStorage the DataStorage to monitor for changes
+ * @param source the object to monitor for changes
  * @param parent the Qt parent
  */
-template<class T> AutomaticEntityList<T>::AutomaticEntityList (DataStorage &dataStorage, QObject *parent):
+template<class T> AutomaticEntityList<T>::AutomaticEntityList (QObject &source, QObject *parent):
 	EntityList<T> (parent),
-	dataStorage (dataStorage),
-	monitor (dataStorage, *this)
+	monitor (source, SIGNAL (changed (DbEvent)), *this)
 {
 }
 
 /**
  * Creates an AutomaticEntityList with entries from a given list
- * @param dataStorage
+ * @param source
  * @param list
  * @param parent
  * @return
  */
-template<class T> AutomaticEntityList<T>::AutomaticEntityList (DataStorage &dataStorage, const QList<T> &list, QObject *parent):
+template<class T> AutomaticEntityList<T>::AutomaticEntityList (QObject &source, const QList<T> &list, QObject *parent):
 	EntityList<T> (list, parent),
-	dataStorage (dataStorage),
-	monitor (dataStorage, *this)
+	monitor (source, SIGNAL (changed (DbEvent)), *this)
 {
 }
 
@@ -70,9 +71,9 @@ template<class T> AutomaticEntityList<T>::~AutomaticEntityList ()
 }
 
 
-// ******************************************
-// ** DataStorageMonitor::Listener methods **
-// ******************************************
+// **********************
+// ** Listener methods **
+// **********************
 
 /**
  * Called on database changes. Updates the list and emits the appropriate
@@ -84,37 +85,30 @@ template<class T> void AutomaticEntityList<T>::dbEvent (DbEvent event)
 {
 	assert (isGuiThread());
 
-	if (event.table!=db_alle && event.table!=getDbEventTable<T> ()) return;
+	// Return if the table does not match the type of this list
+	if (!event.hasTable<T> ()) return;
 
-	DataStorage &ds=/*EntityList<T>::*/dataStorage;
-
-	switch (event.type)
+	switch (event.getType ())
 	{
-		case det_none:
-			break;
-		case det_add:
+		case DbEvent::typeAdd:
 		{
-			EntityList<T>::append (ds.getObject<T> (event.id));
+			EntityList<T>::append (event.getValue<T> ());
 		} break;
-		case det_delete:
+		case DbEvent::typeDelete:
 		{
-			int i=EntityList<T>::findById (event.id);
+			int i=EntityList<T>::findById (event.getId ());
 			if (i>=0) EntityList<T>::removeAt (i);
 		} break;
-		case det_change:
+		case DbEvent::typeChange:
 		{
-			int i=EntityList<T>::findById (event.id);
+			int i=EntityList<T>::findById (event.getId ());
 			if (i>=0)
-				EntityList<T>::replace (i, ds.getObject<T> (event.id));
+				EntityList<T>::replace (i, event.getValue<T> ());
 			else
 				// Should not happen
-				EntityList<T>::append (ds.getObject<T> (event.id));
-		} break;
-		case det_refresh:
-		{
-			EntityList<T>::replaceList (ds.getObjects<T> ());
+				EntityList<T>::append (event.getValue<T> ());
 		} break;
 	}
 }
 
-#endif /* AUTOMATICENTITYLIST_H_ */
+#endif

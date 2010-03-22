@@ -1,16 +1,7 @@
-/*
- * DefaultQThread.h
- *
- *  Created on: Aug 8, 2009
- *      Author: mherrman
- */
-
 #ifndef DEFAULTQTHREAD_H_
 #define DEFAULTQTHREAD_H_
 
 #include <QThread>
-
-class QObject;
 
 class DefaultQThread: public QThread
 {
@@ -26,4 +17,4 @@ class DefaultQThread: public QThread
 		virtual void run ();
 };
 
-#endif /* DEFAULTQTHREAD_H_ */
+#endif
