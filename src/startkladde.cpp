@@ -48,7 +48,8 @@
 
 void ponder ()
 {
-	std::cout << utf8 ("Pondering on thread %1:  ").arg (QThread::currentThreadId ());
+//	std::cout << utf8 ("Pondering on thread %1: ").arg (QThread::currentThreadId ());
+	std::cout << "Pondering: ";
 	const int delay=200;
 
 	std::cout << "[" << std::flush;
@@ -68,7 +69,8 @@ void ponder ()
 
 void proxy_test ()
 {
-	std::cout << utf8 ("Creating proxy on thread %1").arg (QThread::currentThreadId ()) << std::endl;
+//	std::cout << utf8 ("Creating proxy on thread %1").arg (QThread::currentThreadId ()) << std::endl;
+	std::cout << "Creating proxy" << std::endl;
 
 	TcpProxy proxy;
 //	proxy.open ("localhost", 3306);
