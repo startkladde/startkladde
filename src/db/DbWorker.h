@@ -49,7 +49,7 @@ class DbWorker: QObject
 		virtual void executeAndDeleteTask (OperationMonitor *monitor, Task *task);
 
 	signals:
-		virtual void sig_executeAndDeleteTask (OperationMonitor *monitor, Task *task);
+		void sig_executeAndDeleteTask (OperationMonitor *monitor, Task *task);
 
 	protected slots:
 		virtual void slot_executeAndDeleteTask (OperationMonitor *monitor, Task *task);

@@ -30,9 +30,9 @@ class InterfaceWorker: public QObject
     	virtual void grantAll       (Returner<void> &returner, OperationMonitor &monitor, const QString &database, const QString &username, const QString &password="");
 
 	signals:
-		virtual void sig_open           (Returner<bool> *returner, OperationMonitor *monitor);
-		virtual void sig_createDatabase (Returner<void> *returner, OperationMonitor *monitor, QString name, bool skipIfExists);
-    	virtual void sig_grantAll       (Returner<void> *returner, OperationMonitor *monitor, QString database, QString username, QString password);
+		void sig_open           (Returner<bool> *returner, OperationMonitor *monitor);
+		void sig_createDatabase (Returner<void> *returner, OperationMonitor *monitor, QString name, bool skipIfExists);
+    	void sig_grantAll       (Returner<void> *returner, OperationMonitor *monitor, QString database, QString username, QString password);
 
 	protected slots:
 		virtual void slot_open           (Returner<bool> *returner, OperationMonitor *monitor);

@@ -58,17 +58,17 @@ class ThreadSafeInterface: public QObject, public Interface
 
 	signals:
 		// *** Worker signals
-		virtual void sig_setInfo   (Returner<void>      *returner, DatabaseInfo info);
-		virtual void sig_open      (Returner<bool>      *returner);
-		virtual void sig_close     (Returner<void>      *returner);
-		virtual void sig_lastError (Returner<QSqlError> *returner) const;
-		virtual void sig_transaction (Returner<void> *returner);
-		virtual void sig_commit      (Returner<void> *returner);
-		virtual void sig_rollback    (Returner<void> *returner);
-		virtual void sig_executeQuery       (Returner<void>                    *returner, Query query);
-		virtual void sig_executeQueryResult (Returner<QSharedPointer<Result> > *returner, Query query, bool forwardOnly=true);
-		virtual void sig_queryHasResult     (Returner<bool>                    *returner, Query query);
-		virtual void sig_ping               (Returner<void>                    *returner);
+		void sig_setInfo   (Returner<void>      *returner, DatabaseInfo info);
+		void sig_open      (Returner<bool>      *returner);
+		void sig_close     (Returner<void>      *returner);
+		void sig_lastError (Returner<QSqlError> *returner) const;
+		void sig_transaction (Returner<void> *returner);
+		void sig_commit      (Returner<void> *returner);
+		void sig_rollback    (Returner<void> *returner);
+		void sig_executeQuery       (Returner<void>                    *returner, Query query);
+		void sig_executeQueryResult (Returner<QSharedPointer<Result> > *returner, Query query, bool forwardOnly=true);
+		void sig_queryHasResult     (Returner<bool>                    *returner, Query query);
+		void sig_ping               (Returner<void>                    *returner);
 
 
 		void executingQuery (Query query);

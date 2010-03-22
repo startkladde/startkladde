@@ -45,13 +45,13 @@ class MigratorWorker: public QObject
 		void getRequiredAction (Returner<Migrator::Action> &returner, OperationMonitor &monitor, quint64 *currentVersion, int *numPendingMigrations);
 
 	signals:
-		virtual void sig_migrate           (Returner<void>             *returner, OperationMonitor *monitor);
-		virtual void sig_loadSchema        (Returner<void>             *returner, OperationMonitor *monitor);
-		virtual void sig_pendingMigrations (Returner<QList<quint64> >  *returner, OperationMonitor *monitor);
-		virtual void sig_isCurrent         (Returner<bool>             *returner, OperationMonitor *monitor);
-		virtual void sig_isEmpty           (Returner<bool>             *returner, OperationMonitor *monitor);
-		virtual void sig_currentVersion    (Returner<quint64>          *returner, OperationMonitor *monitor);
-		virtual void sig_getRequiredAction (Returner<Migrator::Action> *returner, OperationMonitor *monitor, quint64 *currentVersion, int *numPendingMigrations);
+		void sig_migrate           (Returner<void>             *returner, OperationMonitor *monitor);
+		void sig_loadSchema        (Returner<void>             *returner, OperationMonitor *monitor);
+		void sig_pendingMigrations (Returner<QList<quint64> >  *returner, OperationMonitor *monitor);
+		void sig_isCurrent         (Returner<bool>             *returner, OperationMonitor *monitor);
+		void sig_isEmpty           (Returner<bool>             *returner, OperationMonitor *monitor);
+		void sig_currentVersion    (Returner<quint64>          *returner, OperationMonitor *monitor);
+		void sig_getRequiredAction (Returner<Migrator::Action> *returner, OperationMonitor *monitor, quint64 *currentVersion, int *numPendingMigrations);
 
 	protected slots:
 		virtual void slot_migrate           (Returner<void>             *returner, OperationMonitor *monitor);
