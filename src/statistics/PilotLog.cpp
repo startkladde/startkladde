@@ -31,19 +31,19 @@ QString PilotLog::Entry::dateText () const
 	return date.toString (Qt::LocaleDate);
 }
 
-QString PilotLog::Entry::departureTimeText (bool noLetters) const
+QString PilotLog::Entry::departureTimeText () const
 {
-	return departureTime.to_string ("%H:%M", tz_utc, 0, noLetters);
+	return departureTime.toUTC ().toString ("hh:mm")+"Z";
 }
 
-QString PilotLog::Entry::landingTimeText (bool noLetters) const
+QString PilotLog::Entry::landingTimeText () const
 {
-	return landingTime.to_string ("%H:%M", tz_utc, 0, noLetters);
+	return landingTime.toUTC ().toString ("hh:mm")+"Z";
 }
 
 QString PilotLog::Entry::flightDurationText () const
 {
-	return flightDuration.to_string ("%H:%M", tz_timespan);
+	return flightDuration.toString ("h:mm");
 }
 
 

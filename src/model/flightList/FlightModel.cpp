@@ -155,7 +155,7 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 	else if (role==isButtonRole)
 	{
 		// Only show buttons for prepared flights and today's flights
-		if (!flight.isPrepared() && flight.departureTime.get_qdate (tz_local)!=QDate::currentDate ())
+		if (!flight.isPrepared() && flight.departureTime.toLocalTime ().date ()!=QDate::currentDate ())
 			return false;
 
 		if      (column==departButtonColumn ()) { return flight.canDepart (); }
@@ -287,7 +287,7 @@ QVariant FlightModel::departureTimeData (const Flight &flight, int role) const
 	else if  (!flight.hasDepartureTime ())
 		return "";
 	else
-		return flight.departureTime.table_string ();
+		return flight.departureTime.toUTC ().time ().toString ("hh:mm")+"Z";
 }
 
 QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
@@ -299,7 +299,7 @@ QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
 	else if (!flight.hasLandingTime ())
 		return "";
 	else
-		return flight.landingTime.table_string ();
+		return flight.landingTime.toUTC ().time ().toString ("hh:mm")+"Z";
 }
 
 QVariant FlightModel::durationData (const Flight &flight, int role) const
@@ -309,5 +309,5 @@ QVariant FlightModel::durationData (const Flight &flight, int role) const
 	if (!flight.hasDuration ())
 		return "-";
 	else
-		return flight.flightDuration ().table_string (tz_none);
+		return flight.flightDuration ().toString ("h:mm");
 }

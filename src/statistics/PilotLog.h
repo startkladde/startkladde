@@ -4,9 +4,10 @@
 #include <QAbstractTableModel>
 #include <QString>
 #include <QList>
+#include <QDate>
+#include <QDateTime>
 
 #include "src/db/dbId.h"
-#include "src/time/Time.h"
 
 class Cache;
 class Flight;
@@ -36,16 +37,16 @@ class PilotLog: public QAbstractTableModel
 				QString launchMethod;
 				QString departureLocation;
 				QString landingLocation;
-				Time departureTime;
-				Time landingTime;
-				Time flightDuration;
+				QDateTime departureTime;
+				QDateTime landingTime;
+				QTime flightDuration;
 				QString comments;
 
 				bool valid;
 
 				virtual QString dateText () const;
-				virtual QString departureTimeText (bool noLetters=false) const;
-				virtual QString landingTimeText (bool noLetters=false) const;
+				virtual QString departureTimeText () const;
+				virtual QString landingTimeText () const;
 				virtual QString flightDurationText () const;
 		};
 

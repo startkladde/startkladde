@@ -9,7 +9,6 @@
 #include <QMetaType>
 
 #include "src/db/dbId.h"
-#include "src/time/Time.h"
 
 class Plane;
 class LaunchMethod;
@@ -74,14 +73,14 @@ class Flight
 		QString departureLocation;
 		QString landingLocation;
 
-		Time departureTime;
-		Time landingTime;
+		QDateTime departureTime;
+		QDateTime landingTime;
 		int numLandings;
 
 		dbId towplaneId;
 		Mode towflightMode;
 		QString towflightLandingLocation;
-		Time towflightLandingTime;
+		QDateTime towflightLandingTime;
 		dbId towpilotId;
 
 		// Incomplete names
@@ -159,10 +158,10 @@ class Flight
 		virtual bool performTouchngo  (bool force=false);
 
 		// *** Times
-		virtual Time effectiveTime () const;
+		virtual QDateTime effectiveTime () const;
 		// TODO which one of these is right?
-		virtual QDate effdatum (time_zone tz=tz_utc) const;
-		virtual QDate getEffectiveDate (time_zone tz, QDate defaultDate) const;
+		virtual QDate effdatum (Qt::TimeSpec spec=Qt::UTC) const;
+		virtual QDate getEffectiveDate (Qt::TimeSpec spec, QDate defaultDate) const;
 
 		virtual bool canHaveDepartureTime        () const { return departsHere (); }
 		virtual bool canHaveLandingTime          () const { return landsHere () || isTowflight (); }
@@ -172,8 +171,8 @@ class Flight
 		virtual bool hasLandingTime          () const { return canHaveLandingTime          () && landed         ; }
 		virtual bool hasTowflightLandingTime () const { return canHaveTowflightLandingTime () && towflightLanded; }
 
-		virtual Time flightDuration () const;
-		virtual Time towflightDuration () const;
+		virtual QTime flightDuration () const;
+		virtual QTime towflightDuration () const;
 
 		// TODO not good
 		virtual bool hasDuration () const { return hasDepartureTime () && canHaveLandingTime (); }

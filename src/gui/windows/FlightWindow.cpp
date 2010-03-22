@@ -105,10 +105,10 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 
 	nowButton=new QPushButton ("Jetzt");
 	ui.buttonBox->addButton (nowButton, QDialogButtonBox::AcceptRole);
-	QObject::connect (nowButton, SIGNAL (clicked ()), this, SLOT (on_nowButton_clicked ()));
+	QObject::connect (nowButton, SIGNAL (clicked ()), this, SLOT (nowButton_clicked ()));
 
 	QPushButton *okButton=ui.buttonBox->button (QDialogButtonBox::Ok);
-	QObject::connect (okButton, SIGNAL (clicked ()), this, SLOT (on_okButton_clicked ()));
+	QObject::connect (okButton, SIGNAL (clicked ()), this, SLOT (okButton_clicked ()));
 
 	// *** Database
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
@@ -776,9 +776,9 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 		ui.         landingTimeCheckbox->setChecked (getTimeFieldCheckboxValue (flight.landed    ));
 		ui.towflightLandingTimeCheckbox->setChecked (getTimeFieldCheckboxValue (flight.towflightLanded));
 
-		ui.       departureTimeInput->setTime (flight.departureTime       .get_qtime (tz_utc)); // Even if not active
-		ui.         landingTimeInput->setTime (flight.landingTime         .get_qtime (tz_utc)); // Even if not active
-		ui.towflightLandingTimeInput->setTime (flight.towflightLandingTime.get_qtime (tz_utc)); // Even if not active
+		ui.       departureTimeInput->setTime (flight.departureTime       .toUTC ().time ()); // Even if not active
+		ui.         landingTimeInput->setTime (flight.landingTime         .toUTC ().time ()); // Even if not active
+		ui.towflightLandingTimeInput->setTime (flight.towflightLandingTime.toUTC ().time ()); // Even if not active
 	}
 
 	// space
@@ -792,7 +792,7 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 
 	if (!repeat) ui.commentInput->setText (flight.comments);
 	ui.accountingNoteInput->setCurrentText (flight.accountingNotes);
-	ui.dateInput->setDate (flight.getEffectiveDate (tz_utc, QDate::currentDate ()));
+	ui.dateInput->setDate (flight.getEffectiveDate (Qt::UTC, QDate::currentDate ()));
 
 #undef PLANE
 #undef PERSON
@@ -844,7 +844,8 @@ Flight FlightWindow::determineFlightBasic () throw ()
 
 	// Setting the times requires combining the date and time fields
 	QDate date= (isDateActive()) ? (getCurrentDate ()) : QDate::currentDate ();
-#define SET_TIME(active, target, value) do { if (active) target.set_to (date, value, /*tz_utc, */true); else target.set_null (); } while (0)
+	// TODO secs=0
+#define SET_TIME(active, target, value) do { if (active) target=QDateTime (date, value, Qt::UTC); else target=QDateTime (); } while (0)
 	SET_TIME (isDepartureTimeActive        (), flight.departureTime,        getCurrentDepartureTime        ());
 	SET_TIME (isLandingTimeActive          (), flight.landingTime,          getCurrentLandingTime          ());
 	SET_TIME (isTowflightLandingTimeActive (), flight.towflightLandingTime, getCurrentTowflightLandingTime ());
@@ -1504,7 +1505,7 @@ void FlightWindow::cacheChanged (DbEvent event)
 			{
 				// FIXME are changeds called?
 				ui.departureTimeCheckbox->setChecked (getTimeFieldCheckboxValue (newFlight.departed));
-				ui.departureTimeInput->setTime (newFlight.departureTime.get_qtime (tz_utc)); // Even if not active
+				ui.departureTimeInput->setTime (newFlight.departureTime.toUTC ().time ()); // Even if not active
 
 				originalFlight.departed=newFlight.departed;
 				originalFlight.departureTime=newFlight.departureTime;
@@ -1514,7 +1515,7 @@ void FlightWindow::cacheChanged (DbEvent event)
 			if (newFlight.landed!=originalFlight.landed)
 			{
 				ui.landingTimeCheckbox->setChecked (getTimeFieldCheckboxValue (newFlight.landed));
-				ui.landingTimeInput->setTime (newFlight.landingTime.get_qtime (tz_utc)); // Even if not active
+				ui.landingTimeInput->setTime (newFlight.landingTime.toUTC ().time ()); // Even if not active
 
 				originalFlight.landed=newFlight.landed;
 				originalFlight.landingTime=newFlight.landingTime;
@@ -1524,7 +1525,7 @@ void FlightWindow::cacheChanged (DbEvent event)
 			if (newFlight.towflightLanded!=originalFlight.towflightLanded)
 			{
 				ui.towflightLandingTimeCheckbox->setChecked (getTimeFieldCheckboxValue (newFlight.towflightLanded));
-				ui.towflightLandingTimeInput->setTime (newFlight.towflightLandingTime.get_qtime (tz_utc)); // Even if not active
+				ui.towflightLandingTimeInput->setTime (newFlight.towflightLandingTime.toUTC ().time ()); // Even if not active
 
 				originalFlight.towflightLanded=newFlight.landed;
 				originalFlight.towflightLandingTime=newFlight.towflightLandingTime;
@@ -2039,7 +2040,7 @@ void FlightWindow::towflightLandingTimeCheckboxChanged (bool checked)
 // ** Button events **
 // *******************
 
-void FlightWindow::on_okButton_clicked()
+void FlightWindow::okButton_clicked()
 {
 	// The "depart later"/"land later"/"ok" button was pressed. Check and store
 	// the flight without departing it.
@@ -2056,7 +2057,7 @@ void FlightWindow::on_okButton_clicked()
 	}
 }
 
-void FlightWindow::on_nowButton_clicked ()
+void FlightWindow::nowButton_clicked ()
 {
 	try
 	{
@@ -2065,15 +2066,9 @@ void FlightWindow::on_nowButton_clicked ()
 		// If we are not in create mode, the date is not today or the auto
 		// fields are not checked, the button is not visible at all.
 		if (currentDepartsHere ())
-		{
-			flight.departed=true;
-			flight.departureTime.set_current (true);
-		}
+			flight.departNow (true);
 		else
-		{
-			flight.landed=true;
-			flight.landingTime.set_current (true);
-		}
+			flight.landNow (true);
 
 		if (writeToDatabase (flight))
 			accept (); // Close the dialog

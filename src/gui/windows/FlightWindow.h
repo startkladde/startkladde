@@ -410,8 +410,8 @@ class FlightWindow: public QDialog
 
 
 		// *** Button events
-		void on_okButton_clicked ();
-		void on_nowButton_clicked ();
+		void okButton_clicked (); // not automatically connected
+		void nowButton_clicked (); // not automatically connected
 
 
 	private:

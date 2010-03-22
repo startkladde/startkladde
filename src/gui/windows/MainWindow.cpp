@@ -1212,11 +1212,18 @@ void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
 		std::cerr << "Unhandled button column in MainWindow::flightTable_buttonClicked" << std::endl;
 }
 
+QString formatDateTime (const QDateTime &dateTime)
+{
+	// xx.yy.zzzz aa:bb:cc
+	return dateTime.date ().toString (Qt::DefaultLocaleShortDate)+" "+
+		dateTime.time ().toString (Qt::DefaultLocaleLongDate);
+}
+
 void MainWindow::timeTimer_timeout ()
 {
-	// TODO: note the race condition, and remove it
-	ui.utcTimeLabel->setText (get_current_time_text (tz_utc));
-	ui.localTimeLabel->setText (get_current_time_text (tz_local));
+	QDateTime now=QDateTime::currentDateTime ();
+	ui.utcTimeLabel->setText (formatDateTime (now.toUTC ()));
+	ui.localTimeLabel->setText (formatDateTime (now.toLocalTime ()));
 
 	// TODO: on the beginning of a minute, update the fliht duration (probably
 	// call from here rather than from a timer in the model so it's

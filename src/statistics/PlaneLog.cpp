@@ -41,19 +41,19 @@ QString PlaneLog::Entry::numPassengersString () const
 		return QString ("%1-%2").arg (minPassengers).arg (maxPassengers);
 }
 
-QString PlaneLog::Entry::departureTimeText (bool noLetters) const
+QString PlaneLog::Entry::departureTimeText () const
 {
-	return departureTime.to_string ("%H:%M", tz_utc, 0, noLetters);
+	return departureTime.toUTC ().toString ("hh:mm")+"Z";
 }
 
-QString PlaneLog::Entry::landingTimeText (bool noLetters) const
+QString PlaneLog::Entry::landingTimeText () const
 {
-	return landingTime.to_string ("%H:%M", tz_utc, 0, noLetters);
+	return landingTime.toUTC ().toString ("hh:mm")+"Z";
 }
 
 QString PlaneLog::Entry::operationTimeText () const
 {
-	return operationTime.to_string ("%H:%M", tz_timespan);
+	return operationTime.toString ("h:mm");
 }
 
 // ********************
@@ -131,7 +131,8 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Ca
 		if (entry.maxPassengers==0 || numPassengers>entry.maxPassengers) entry.maxPassengers=numPassengers;
 
 		entry.numLandings+=flight->numLandings;
-		entry.operationTime.add_time (flight->flightDuration ()); // TODO: check flight mode
+		entry.operationTime=entry.operationTime.addSecs (QTime ().secsTo (flight->flightDuration ())); // TODO: check flight mode
+
 		if (!eintrag_ist_leer (flight->comments)) comments << flight->comments;
 		if (!flight->finished ()) entry.valid=false;
 

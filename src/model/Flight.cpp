@@ -10,6 +10,7 @@
 #include "src/db/Query.h"
 #include "src/db/result/Result.h"
 #include "src/util/qString.h"
+#include "src/util/time.h"
 
 // TODO Vereinheitlichen der Statusfunktionen untereinander und mit den
 // condition-strings
@@ -97,8 +98,8 @@ int Flight::sort (const Flight *other) const
 	if (other->isPrepared ()) return -1;
 
 	// Sort by effective time
-	Time t1=effectiveTime ();
-	Time t2=other->effectiveTime ();
+	QDateTime t1=effectiveTime ();
+	QDateTime t2=other->effectiveTime ();
 	if (t1>t2) return 1;
 	if (t1<t2) return -1;
 	return 0;
@@ -338,7 +339,7 @@ bool Flight::departNow (bool force)
 {
 	if (force || canDepart ())
 	{
-		departureTime.set_current (true);
+		departureTime=nullSeconds (QDateTime::currentDateTime (Qt::UTC));
 		departed=true;
 		return true;
 	}
@@ -350,7 +351,7 @@ bool Flight::landNow (bool force)
 {
 	if (force || canLand ())
 	{
-		landingTime.set_current (true);
+		landingTime=nullSeconds (QDateTime::currentDateTime (Qt::UTC));
 		numLandings++;
 		landed=true;
 
@@ -367,7 +368,7 @@ bool Flight::landTowflightNow (bool force)
 {
 	if (force || canTowflightLand ())
 	{
-		towflightLandingTime.set_current (true);
+		towflightLandingTime=nullSeconds (QDateTime::currentDateTime (Qt::UTC));
 		towflightLanded=true;
 		if (towflightLandsHere () && eintrag_ist_leer (towflightLandingLocation))
 			towflightLandingLocation=Settings::instance ().location;
@@ -393,59 +394,51 @@ bool Flight::performTouchngo (bool force)
 // ** Times **
 // ***********
 
-QDate Flight::effdatum (time_zone tz) const
+// TODO remove
+QDate Flight::effdatum (Qt::TimeSpec spec) const
 {
-        return effectiveTime ().get_qdate (tz);
+	// TODO this assumes that every flight at least departs or lands here.
+	return effectiveTime ().toTimeSpec (spec).date ();
 }
 
-QDate Flight::getEffectiveDate (time_zone tz, QDate defaultDate) const
+QDate Flight::getEffectiveDate (Qt::TimeSpec spec, QDate defaultDate) const
 {
 	// TODO this assumes that every flight at least departs or lands here.
 	if (departsHere () && departed)
-		return departureTime.get_qdate (tz);
+		return departureTime.toTimeSpec (spec).date ();
 
 	if (landsHere () && landed)
-		return landingTime.get_qdate (tz);
+		return landingTime.toTimeSpec (spec).date ();
 
 	return defaultDate;
 }
 
-Time Flight::effectiveTime () const
+QDateTime Flight::effectiveTime () const
 {
 	// TODO this assumes that every flight at least departs or lands here.
 	if (departsHere () && departed) return departureTime;
 	if (landsHere () && landed) return landingTime;
-	return Time ();
+	return QDateTime ();
 }
 
-Time Flight::flightDuration () const
+QTime Flight::flightDuration () const
 {
-	Time t;
 	if (departed && landed)
-		t.set_to (departureTime.secs_to (&landingTime));
+		return QTime ().addSecs (departureTime.secsTo (landingTime));
+	else if (departed)
+		return QTime ().addSecs (departureTime.secsTo (QDateTime::currentDateTime (Qt::UTC)));
 	else
-	{
-		Time now;
-		now.set_current(true);
-		t.set_to (departureTime.secs_to (&now));
-	}
-
-	return t;
+		return QTime ();
 }
 
-Time Flight::towflightDuration () const
+QTime Flight::towflightDuration () const
 {
-	Time t;
 	if (departed && towflightLanded)
-		t.set_to (departureTime.secs_to (&towflightLandingTime));
+		return QTime ().addSecs (departureTime.secsTo (towflightLandingTime));
+	else if (departed)
+		return QTime ().addSecs (departureTime.secsTo (QDateTime::currentDateTime (Qt::UTC)));
 	else
-	{
-		Time now;
-		now.set_current(true);
-		t.set_to (departureTime.secs_to (&now));
-	}
-
-	return t;
+		return QTime ();
 }
 
 
@@ -666,10 +659,10 @@ QString personToString (dbId id, QString lastName, QString firstName)
 			.arg (eintrag_ist_leer (firstName)?QString ("?"):firstName);
 }
 
-QString timeToString (bool performed, Time time)
+QString timeToString (bool performed, QDateTime time)
 {
 	if (performed)
-		return time.csv_string(tz_utc)+"Z";
+		return time.toUTC ().time ().toString ("h:mm") +"Z";
 	else
 		return "-";
 }
@@ -744,8 +737,8 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 	towflight.towpilotId=invalidId;
 
 	towflight.departureTime=departureTime;              // The tow flight departed the same time as the towed flight.
-	towflight.landingTime=towflightLandingTime;			// The tow flight landing time is our landingTimeTowflight.
-	towflight.towflightLandingTime=Time (); 			// The tow flight has no tow flight.
+	towflight.landingTime=towflightLandingTime;         // The tow flight landing time is our landingTimeTowflight.
+	towflight.towflightLandingTime=QDateTime ();        // The tow flight has no tow flight.
 
 	// The launchMethod of the tow flight is given as a parameter.
 	towflight.launchMethodId=towLaunchMethod;
@@ -839,18 +832,15 @@ Flight Flight::createFromResult (const Result &result)
 	f.departureLocation =result.value (10).toString   ();
 	f.landingLocation   =result.value (11).toString   ();
 	f.numLandings       =result.value (12).toInt      ();
-	f.departureTime     =Time::create (
-	                     result.value (13).toDateTime (), tz_utc);
-	f.landingTime       =Time::create (
-	                     result.value (14).toDateTime (), tz_utc);
+	f.departureTime     =result.value (13).toDateTime (); f.departureTime.setTimeSpec (Qt::UTC); // not toUTC
+	f.landingTime       =result.value (14).toDateTime (); f.landingTime.setTimeSpec (Qt::UTC); // not toUTC
 
 	f.pilotLastName    =result.value (15).toString ();
 	f.pilotFirstName   =result.value (16).toString ();
 	f.copilotLastName  =result.value (17).toString ();
 	f.copilotFirstName =result.value (18).toString ();
 
-	f.towflightLandingTime     =Time::create (
-	                            result.value (19).toDateTime (), tz_utc);
+	f.towflightLandingTime     =result.value (19).toDateTime (); f.towflightLandingTime.setTimeSpec (Qt::UTC); // not toUTC
 	f.towflightMode            =modeFromDb (
 	                            result.value (20).toString   ());
 	f.towflightLandingLocation =result.value (21).toString   ();
@@ -905,15 +895,15 @@ void Flight::bindValues (Query &q) const
 	q.bind (departureLocation);
 	q.bind (landingLocation);
 	q.bind (numLandings);
-	q.bind (departureTime.toUtcQDateTime ());
-	q.bind (landingTime.toUtcQDateTime ());
+	q.bind (departureTime.toUTC ());
+	q.bind (landingTime.toUTC ());
 
 	q.bind (pilotLastName);
 	q.bind (pilotFirstName);
 	q.bind (copilotLastName);
 	q.bind (copilotFirstName);
 
-	q.bind (towflightLandingTime.toUtcQDateTime ());
+	q.bind (towflightLandingTime.toUTC ());
 	q.bind (modeToDb (towflightMode));
 	q.bind (towflightLandingLocation);
 	q.bind (towplaneId);

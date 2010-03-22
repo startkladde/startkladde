@@ -5,8 +5,8 @@
 #include <QString>
 //#include <QDateTime>
 #include <QList>
+#include <QDate>
 
-#include "src/time/Time.h"
 #include "src/db/dbId.h"
 
 class Cache;
@@ -36,18 +36,18 @@ class PlaneLog: public QAbstractTableModel
 				int maxPassengers;
 				QString departureLocation;
 				QString landingLocation;
-				Time departureTime;
-				Time landingTime;
+				QDateTime departureTime;
+				QDateTime  landingTime;
 				int numLandings;
-				Time operationTime;
+				QTime operationTime;
 				QString comments;
 
 				bool valid;
 
 				virtual QString dateText () const;
 				virtual QString numPassengersString () const;
-				virtual QString departureTimeText (bool noLetters=false) const;
-				virtual QString landingTimeText (bool noLetters=false) const;
+				virtual QString departureTimeText () const;
+				virtual QString landingTimeText () const;
 				virtual QString operationTimeText () const;
 		};
 
