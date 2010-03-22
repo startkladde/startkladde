@@ -14,14 +14,6 @@
 #include "ShellPlugin.h"
 
 #include <fstream>
-
-//#include <sys/types.h>
-//#include <unistd.h>
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <fcntl.h>
-//#include <signal.h>
-
 #include <iostream>
 
 #include <QLabel>
@@ -31,6 +23,7 @@
 #include <QProcess>
 #include <QFile>
 #include <QFileInfo>
+#include <QThread>
 
 #include "src/text.h"
 #include "src/util/qString.h"
@@ -124,17 +117,15 @@ ShellPlugin &ShellPlugin::operator= (const ShellPlugin &o)
 ShellPlugin::~ShellPlugin ()
 {
 	if (subprocess) subprocess->terminate ();
-	sched_yield ();
+	QThread::yieldCurrentThread ();
 }
-//
-
 
 void ShellPlugin::start ()
 {
 	if (subprocess)
 	{
 		subprocess->terminate ();
-		sched_yield ();
+		QThread::yieldCurrentThread ();
 		delete subprocess;
 	}
 

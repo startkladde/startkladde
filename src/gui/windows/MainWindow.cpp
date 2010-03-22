@@ -197,7 +197,7 @@ MainWindow::~MainWindow ()
 	{
 		//std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
 		plugin->terminate ();
-		sched_yield ();
+		QThread::yieldCurrentThread ();
 	}
 }
 

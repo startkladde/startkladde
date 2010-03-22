@@ -250,7 +250,7 @@ int showGui (QApplication &a)
 	MainWindow w (NULL);
 
 	// Let the plugins initialize
-	sched_yield ();
+	QThread::yieldCurrentThread ();
 
 //	w.showMaximized ();
 	w.show ();
