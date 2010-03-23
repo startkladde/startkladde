@@ -8,8 +8,7 @@
 
 #include "src/config/Settings.h" // TOOD remove dependency, set size from MainWindow
 
-// TODO remove name
-WeatherWidget::WeatherWidget (QWidget *parent, const char *name):
+WeatherWidget::WeatherWidget (QWidget *parent):
 	SkLabel (parent)
 {
 	if (Settings::instance ().coloredLabels)

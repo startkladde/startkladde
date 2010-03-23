@@ -49,6 +49,7 @@ class Settings: public QObject
 		QString diagCommand;
 		bool coloredLabels;
 		bool displayQueries;
+		bool noFullScreen;
 
 		// *** Plugins - Info
 		QList<ShellPluginInfo> infoPlugins;

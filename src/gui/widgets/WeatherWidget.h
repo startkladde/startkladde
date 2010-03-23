@@ -12,7 +12,7 @@ class WeatherWidget:public SkLabel
 	Q_OBJECT
 
 	public:
-		WeatherWidget (QWidget *parent=NULL, const char *name=NULL);
+		WeatherWidget (QWidget *parent=NULL);
 		virtual bool loadImage (const QString&);
 		virtual bool loadMovie (const QString&);
 		virtual void setText (const QString&);

@@ -58,6 +58,8 @@ QStringList Settings::readArgs (const QStringList &args)
 				displayQueries=true;
 			else if (arg=="--colored-labels")
 				coloredLabels=true;
+			else if (arg=="--no-full-screen")
+				noFullScreen=true;
 			else
 				std::cout << "Unrecognized option " << arg << std::endl;
 		}

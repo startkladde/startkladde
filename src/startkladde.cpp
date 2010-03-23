@@ -252,8 +252,11 @@ int showGui (QApplication &a)
 	// Let the plugins initialize
 	QThread::yieldCurrentThread ();
 
-//	w.showMaximized ();
-	w.show ();
+	if (Settings::instance ().noFullScreen)
+		w.show ();
+	else
+		w.showMaximized ();
+
 	int ret=a.exec();
 
 	return ret;
