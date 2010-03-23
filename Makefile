@@ -71,6 +71,7 @@ build/migrations.h build/migrations_headers.h: build/%.h: src/db/migration/%.h.e
 	./script/build/generate_migration_headers.rb
 
 build/CurrentSchema.cpp: src/db/schema/CurrentSchema.cpp.erb src/db/migrations/current_schema.yaml
+	mkdir -p build
 	erb -T 1 src/db/schema/CurrentSchema.cpp.erb >$@
 
 # Use a temporary file in build/, so if the dumping fails, we don't overwrite
