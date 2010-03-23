@@ -5,7 +5,7 @@
   */
 
 AcpiWidget::AcpiWidget (QWidget* parent):
-	QLabel (parent)
+	SkLabel (parent)
 {
 }
 

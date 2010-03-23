@@ -64,6 +64,7 @@
 #include "src/db/interface/exceptions/TransactionFailedException.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/config/Settings.h"
+#include "src/concurrent/DefaultQThread.h"
 
 QAtomicInt DefaultInterface::freeNumber=0;
 
@@ -187,7 +188,7 @@ void DefaultInterface::openImpl ()
 				// call, it will only end after the sleep has finished.
 				// This is acceptable for a delay as short as 1 second. It
 				// could be circumvented by using a QWaitCondition.
-				sleep (1);
+				DefaultQThread::sleep (1);
 				std::cout << "Retrying...";
 			}
 		}
