@@ -8,8 +8,9 @@
 
 #include "src/config/Settings.h" // TOOD remove dependency, set size from MainWindow
 
-WeatherWidget::WeatherWidget (QWidget *parent, const char *name)
-	:QLabel (parent, name)
+// TODO remove name
+WeatherWidget::WeatherWidget (QWidget *parent, const char *name):
+	SkLabel (parent)
 {
 	if (Settings::instance ().coloredLabels)
 	{
@@ -17,7 +18,8 @@ WeatherWidget::WeatherWidget (QWidget *parent, const char *name)
 		setPaletteBackgroundColor (QColor (127, 127, 127));
 	}
 
-	setAlignment (Qt::AlignHCenter | Qt::AlignVCenter | Qt::WordBreak);
+	setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
+	setWordWrap (true);
 	setScaledContents (true);
 	setTextFormat (Qt::RichText);
 }
@@ -31,7 +33,7 @@ bool WeatherWidget::loadImage (const QString &fileName)
 	if (!image.load (fileName)) return false;
 
 	//image.smoothScale (width(), height (), QImage::ScaleMin);
-	QPixmap pixmap (image);
+	QPixmap pixmap=QPixmap::fromImage (image);
 	setPixmap (pixmap);
 
 	int height=Settings::instance ().weatherPluginHeight;
@@ -67,10 +69,10 @@ void WeatherWidget::setText (const QString &text)
 
 void WeatherWidget::inputLine (QString line)
 {
-	if (line.startsWith ("[MSG]", false))
+	if (line.startsWith ("[MSG]", Qt::CaseInsensitive))
 	{
 		QRegExp rx ("\\[MSG\\]\\s*\\[(.*)\\]" );
-		rx.search (line);
+		rx.indexIn (line);
 		if (rx.numCaptures ()>0)
 		{
 			QString text=rx.cap (1);
@@ -80,10 +82,10 @@ void WeatherWidget::inputLine (QString line)
 			setText (text.replace (QRegExp ("(\\\\\\\\)*\\\\n"), "\n").replace ("\\\\", "\\"));
 		}
 	}
-	else if (line.startsWith ("[IMG]", false))
+	else if (line.startsWith ("[IMG]", Qt::CaseInsensitive))
 	{
 		QRegExp rx ("\\[IMG\\]\\s*\\[(.*)\\]" );
-		rx.search (line);
+		rx.indexIn (line);
 		if (rx.numCaptures ()>0)
 		{
 			QString filename=rx.cap (1);
@@ -93,10 +95,10 @@ void WeatherWidget::inputLine (QString line)
 			}
 		}
 	}
-	else if (line.startsWith ("[MOV]", false))
+	else if (line.startsWith ("[MOV]", Qt::CaseInsensitive))
 	{
 		QRegExp rx ("\\[MOV\\]\\s*\\[(.*)\\]" );
-		rx.search (line);
+		rx.indexIn (line);
 		if (rx.numCaptures ()>0)
 		{
 			QString filename=rx.cap (1);

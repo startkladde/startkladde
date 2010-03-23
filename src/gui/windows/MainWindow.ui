@@ -55,7 +55,7 @@
               <number>4</number>
              </property>
              <item row="0" column="0">
-              <widget class="QLabel" name="localTimeCaptionLabel">
+              <widget class="SkLabel" name="localTimeCaptionLabel">
                <property name="text">
                 <string>Lokalzeit:</string>
                </property>
@@ -69,42 +69,42 @@
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="utcTimeCaptionLabel">
+              <widget class="SkLabel" name="utcTimeCaptionLabel">
                <property name="text">
                 <string>UTC:</string>
                </property>
               </widget>
              </item>
              <item row="2" column="0">
-              <widget class="QLabel" name="displayDateCaptionLabel">
+              <widget class="SkLabel" name="displayDateCaptionLabel">
                <property name="text">
                 <string>Anzeigedatum:</string>
                </property>
               </widget>
              </item>
              <item row="3" column="0">
-              <widget class="QLabel" name="activeFlightsCaptionLabel">
+              <widget class="SkLabel" name="activeFlightsCaptionLabel">
                <property name="text">
                 <string>Flüge in der Luft:</string>
                </property>
               </widget>
              </item>
              <item row="4" column="0">
-              <widget class="QLabel" name="totalFlightsCaptionLabel">
+              <widget class="SkLabel" name="totalFlightsCaptionLabel">
                <property name="text">
                 <string>Flüge gesamt:</string>
                </property>
               </widget>
              </item>
              <item row="6" column="0">
-              <widget class="QLabel" name="databaseStateCaptionLabel">
+              <widget class="SkLabel" name="databaseStateCaptionLabel">
                <property name="text">
                 <string>Datenbankverbindung:</string>
                </property>
               </widget>
              </item>
              <item row="7" column="0">
-              <widget class="QLabel" name="powerStateCaptionLabel">
+              <widget class="SkLabel" name="powerStateCaptionLabel">
                <property name="text">
                 <string>Stromversorgung:</string>
                </property>

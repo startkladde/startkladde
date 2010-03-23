@@ -27,6 +27,9 @@ class SkLabel: public QLabel
 		void resetDefaultBackgroundColor ();
 		QColor getDefaultBackgroundColor ();
 
+		void setPaletteForegroundColor (const QColor &color);
+		void setPaletteBackgroundColor (const QColor &color);
+
 	public slots:
 		void setConcealed (bool concealed);
 		void setError (bool error);

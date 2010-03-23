@@ -3,6 +3,7 @@
 #include <QVariant>
 #include <QSqlQuery>
 #include <QStringList>
+#include <QString>
 
 #include "src/io/AnsiColors.h"
 
@@ -90,7 +91,7 @@ QString Query::colorizedString () const
 		if (!first) result+=" ";
 		first=false;
 
-		if (word.upper()==word)
+		if (word.toUpper ()==word)
 			result += c.bold ().cyan();
 		else
 			result += c.noBold ().blue();

@@ -63,12 +63,14 @@ void PlaneEditorPane::fillData ()
 	ui.categoryInput->setCurrentItemByItemData (Plane::categoryNone);
 
 	// Types
+	ui.typeInput->addItem ("");
 	ui.typeInput->addItems (cache.getPlaneTypes ());
-	ui.typeInput->setCurrentText ("");
+	ui.typeInput->setEditText ("");
 
 	// Clubs
+	ui.clubInput->addItem ("");
 	ui.clubInput->addItems (cache.getClubs ());
-	ui.clubInput->setCurrentText ("");
+	ui.clubInput->setEditText ("");
 }
 
 void PlaneEditorPane::setNameObject (const Plane &nameObject)
@@ -107,8 +109,8 @@ void PlaneEditorPane::objectToFields (const Plane &plane)
 	ui.registrationInput->setText (plane.registration);
 	ui.callsignInput->setText (plane.callsign);
 	ui.categoryInput->setCurrentItemByItemData (plane.category);
-	ui.typeInput->setCurrentText (plane.type);
-	ui.clubInput->setCurrentText (plane.club);
+	ui.typeInput->setEditText (plane.type);
+	ui.clubInput->setEditText (plane.club);
 	ui.seatsInput->setValue (plane.numSeats);
 	ui.commentsInput->setText (plane.comments);
 }

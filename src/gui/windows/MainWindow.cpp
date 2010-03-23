@@ -20,6 +20,7 @@
 #include <QList>
 #include <QModelIndex>
 #include <QStatusBar>
+#include <QCloseEvent>
 
 #include "build/kvkbd.xpm"
 #include "build/logo.xpm"
@@ -95,9 +96,9 @@ MainWindow::MainWindow (QWidget *parent) :
 	ui.powerStateLabel->setVisible (acpiValid);
 	ui.powerStateCaptionLabel->setVisible (acpiValid);
 
-	QTimer *timeTimer = new QTimer (this, "timeTimer");
+	QTimer *timeTimer = new QTimer (this);
 	connect (timeTimer, SIGNAL (timeout ()), this, SLOT (timeTimer_timeout ()));
-	timeTimer->start (1000, false);
+	timeTimer->start (1000);
 
 	timeTimer_timeout ();
 
@@ -209,10 +210,10 @@ void MainWindow::setupLabels ()
 
 		foreach (QObject *object, labels)
 		{
-			QLabel *label = dynamic_cast<QLabel *> (object);
+			SkLabel *label = dynamic_cast<SkLabel *> (object);
 			if (label)
 			{
-				if (label->objectName ().contains ("Caption", true))
+				if (label->objectName ().contains ("Caption", Qt::CaseSensitive))
 					label->setPaletteBackgroundColor (QColor (0, 255, 127));
 				else
 					label->setPaletteBackgroundColor (QColor (0, 127, 255));
@@ -333,8 +334,8 @@ void MainWindow::setupPlugins ()
 	foreach (const ShellPluginInfo &pluginInfo, s.infoPlugins)
 		setupPlugin (pluginInfo, pluginLayout);
 
-	pluginLayout->setColStretch (0, 0);
-	pluginLayout->setColStretch (1, 1);
+	pluginLayout->setColumnStretch (0, 0);
+	pluginLayout->setColumnStretch (1, 1);
 	pluginLayout->setRowStretch (pluginLayout->rowCount (), 1);
 
 
@@ -348,7 +349,7 @@ void MainWindow::setupPlugins ()
 		// Create and setup the weather widget. The weather widget is located to
 		// the right of the info frame.
 		weatherWidget = new WeatherWidget (ui.weatherFrame, "weather");
-		ui.weatherFrame->layout ()->add (weatherWidget);
+		ui.weatherFrame->layout ()->addWidget (weatherWidget);
 		weatherWidget->setFixedSize (s.weatherPluginHeight, s.weatherPluginHeight);
 		weatherWidget->setText ("[Wetter]");
 
@@ -453,9 +454,9 @@ void MainWindow::settingsChanged ()
 
 	// Fenstereinstellungen
 	if (blank (s.location))
-		setCaption ("Startkladde");
+		setWindowTitle ("Startkladde");
 	else
-		setCaption (utf8 ("Hauptflugbuch %1 - Startkladde").arg (s.location));
+		setWindowTitle (utf8 ("Hauptflugbuch %1 - Startkladde").arg (s.location));
 
 	ui.menuDebug     ->menuAction ()->setVisible (Settings::instance ().enableDebug);
 	ui.actionNetworkDiagnostics     ->setVisible (!blank (Settings::instance ().diagCommand));
@@ -1107,7 +1108,7 @@ void MainWindow::on_actionNetworkDiagnostics_triggered ()
 {
 	QString command=Settings::instance ().diagCommand;
 	if (!blank (command))
-		system (command.utf8 ().constData ());
+		system (command.toUtf8 ().constData ());
 }
 
 // ************
@@ -1262,7 +1263,7 @@ void MainWindow::weatherWidget_doubleClicked ()
 			// The weather dialog will be deleted when it's closed, and
 			// weatherDialog is a QPointer, so it will be set to NULL.
 			weatherDialog = new WeatherDialog (weatherAnimationPlugin, this);
-			weatherDialog->setCaption (s.weatherWindowTitle);
+			weatherDialog->setWindowTitle (s.weatherWindowTitle);
 			weatherDialog->show ();
 		}
 	}

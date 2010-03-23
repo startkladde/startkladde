@@ -172,10 +172,10 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	switch (mode)
 	{
 		case modeCreate:
-			setCaption ("Flug anlegen");
+			setWindowTitle ("Flug anlegen");
 			break;
 		case modeEdit:
-			setCaption ("Flug editieren");
+			setWindowTitle ("Flug editieren");
 			break;
 	}
 
@@ -184,7 +184,7 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 		label->setErrorColor (errorColor);
 
 	// Setup the required field label colors
-	const QColor requiredFieldColor=interpol (0.75, backgroundColor(), Qt::white);
+	const QColor requiredFieldColor=interpol (0.75, palette ().background ().color (), Qt::white);
 	ui.registrationLabel         ->setDefaultBackgroundColor (requiredFieldColor);
 	ui.pilotLabel                ->setDefaultBackgroundColor (requiredFieldColor);
 	ui.copilotLabel              ->setDefaultBackgroundColor (requiredFieldColor);
@@ -204,7 +204,7 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 
 	// Setup initial values
 	if (mode==modeCreate)
-		ui.departureLocationInput->setCurrentText (Settings::instance ().location);
+		ui.departureLocationInput->setEditText (Settings::instance ().location);
 
 	updateSetup ();
 	updateErrors (false);
@@ -247,12 +247,14 @@ void FlightWindow::fillData ()
 	// *** Plane registrations
 	const QStringList registrations=cache.getPlaneRegistrations ();
 
+	ui.registrationInput->addItem (Plane::defaultRegistrationPrefix ());
 	ui.registrationInput->addItems (registrations);
-	ui.registrationInput->setCurrentText (Plane::defaultRegistrationPrefix ());
+	ui.registrationInput->setEditText (Plane::defaultRegistrationPrefix ());
 	ui.registrationInput->setDefaultPrefix (Plane::defaultRegistrationPrefix ());
 
+	ui.towplaneRegistrationInput->addItem (Plane::defaultRegistrationPrefix ());
 	ui.towplaneRegistrationInput->addItems (registrations);
-	ui.towplaneRegistrationInput->setCurrentText (Plane::defaultRegistrationPrefix ());
+	ui.towplaneRegistrationInput->setEditText (Plane::defaultRegistrationPrefix ());
 	ui.towplaneRegistrationInput->setDefaultPrefix (Plane::defaultRegistrationPrefix ());
 
 
@@ -266,6 +268,14 @@ void FlightWindow::fillData ()
 	const QStringList lastNames =cache.getPersonLastNames ();
 	const QStringList firstNames=cache.getPersonFirstNames();
 
+	ui.   pilotFirstNameInput ->addItem ("");
+	ui. copilotFirstNameInput ->addItem ("");
+	ui.towpilotFirstNameInput ->addItem ("");
+
+	ui.   pilotLastNameInput ->addItem ("");
+	ui. copilotLastNameInput ->addItem ("");
+	ui.towpilotLastNameInput ->addItem ("");
+
 	ui.   pilotFirstNameInput ->addItems (firstNames);
 	ui. copilotFirstNameInput ->addItems (firstNames);
 	ui.towpilotFirstNameInput ->addItems (firstNames);
@@ -274,13 +284,13 @@ void FlightWindow::fillData ()
 	ui. copilotLastNameInput ->addItems (lastNames);
 	ui.towpilotLastNameInput ->addItems (lastNames);
 
-	ui.   pilotFirstNameInput ->setCurrentText("");
-	ui. copilotFirstNameInput ->setCurrentText("");
-	ui.towpilotFirstNameInput ->setCurrentText("");
+	ui.   pilotFirstNameInput ->setEditText ("");
+	ui. copilotFirstNameInput ->setEditText ("");
+	ui.towpilotFirstNameInput ->setEditText ("");
 
-	ui.   pilotLastNameInput ->setCurrentText("");
-	ui. copilotLastNameInput ->setCurrentText("");
-	ui.towpilotLastNameInput ->setCurrentText("");
+	ui.   pilotLastNameInput ->setEditText ("");
+	ui. copilotLastNameInput ->setEditText ("");
+	ui.towpilotLastNameInput ->setEditText ("");
 
 
 	// *** Flight flightModes
@@ -307,28 +317,28 @@ void FlightWindow::fillData ()
 
 	// *** Locations
 	const QStringList locations=cache.getLocations ();
-	ui.       departureLocationInput -> insertItem ("");
-	ui.         landingLocationInput -> insertItem ("");
-	ui.towflightLandingLocationInput -> insertItem ("");
+	ui.       departureLocationInput -> addItem ("");
+	ui.         landingLocationInput -> addItem ("");
+	ui.towflightLandingLocationInput -> addItem ("");
 
-	ui.       departureLocationInput -> insertStringList (locations);
-	ui.         landingLocationInput -> insertStringList (locations);
-	ui.towflightLandingLocationInput -> insertStringList (locations);
+	ui.       departureLocationInput -> addItems (locations);
+	ui.         landingLocationInput -> addItems (locations);
+	ui.towflightLandingLocationInput -> addItems (locations);
 
 	// Make sure our location is in the list
 	const QString &location=Settings::instance ().location;
-	ui.       departureLocationInput ->setCurrentText (location);
-	ui.         landingLocationInput ->setCurrentText (location);
-	ui.towflightLandingLocationInput ->setCurrentText (location);
+	ui.       departureLocationInput ->setEditText (location);
+	ui.         landingLocationInput ->setEditText (location);
+	ui.towflightLandingLocationInput ->setEditText (location);
 
-	ui.         landingLocationInput ->setCurrentText ("");
-	ui.towflightLandingLocationInput ->setCurrentText ("");
+	ui.         landingLocationInput ->setEditText ("");
+	ui.towflightLandingLocationInput ->setEditText ("");
 
 
 	// *** Accounting notes
-	QStringList abhins;
+	ui.accountingNoteInput->addItem ("");
 	ui.accountingNoteInput->addItems (cache.getAccountingNotes ());
-	ui.accountingNoteInput->setCurrentText ("");
+	ui.accountingNoteInput->setEditText ("");
 }
 
 void FlightWindow::showEvent (QShowEvent *event)
@@ -486,15 +496,16 @@ int FlightWindow::fillNames (QStringList (Cache::*fullListMethod)(), QStringList
 
 	// Write the name list to the target
 	target->clear ();
+	target->addItem ("");
 	target->addItems (nameList);
 
 	// If there is exactly one name and the target field was empty before and
 	// doesn't have to be preserved, and the source name is not empty, write
 	// the unique name to the target field.
 	if (oldValue.isEmpty () && !preserveTarget && nameList.size ()==1 && !otherName.simplified ().isEmpty ())
-		target->setCurrentText (nameList.at (0));
+		target->setEditText (nameList.at (0));
 	else
-		target->setCurrentText (oldValue);
+		target->setEditText (oldValue);
 
 	return nameList.size ();
 }
@@ -684,8 +695,8 @@ void FlightWindow::personToFields (dbId id, SkComboBox *lastNameInput, SkComboBo
 		try
 		{
 			Person person=cache.getObject<Person> (id);
-			 lastNameInput->setCurrentText (person.lastName);
-			firstNameInput->setCurrentText (person.firstName );
+			 lastNameInput->setEditText (person.lastName);
+			firstNameInput->setEditText (person.firstName );
 			ok=true;
 		}
 		catch (Cache::NotFoundException &ex) {}
@@ -693,8 +704,8 @@ void FlightWindow::personToFields (dbId id, SkComboBox *lastNameInput, SkComboBo
 
 	if (!ok)
 	{
-		 lastNameInput->setCurrentText (incompleteLastName );
-		firstNameInput->setCurrentText (incompleteFirstName);
+		 lastNameInput->setEditText (incompleteLastName );
+		firstNameInput->setEditText (incompleteFirstName);
 	}
 
 	fillLastNames  (true, lastNameInput , firstNameInput->currentText (), true);
@@ -710,7 +721,7 @@ void FlightWindow::planeToFields (dbId id, SkComboBox *registrationInput, SkLabe
 		try
 		{
 			Plane plane=cache.getObject<Plane> (id);
-			registrationInput->setCurrentText (plane.registration);
+			registrationInput->setEditText (plane.registration);
 			typeLabel->setText (plane.type);
 		}
 		catch (Cache::NotFoundException &ex) {}
@@ -783,15 +794,15 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 
 	// space
 
-	ui.departureLocationInput->setCurrentText (flight.departureLocation);
-	ui.landingLocationInput->setCurrentText (flight.landingLocation);
-	ui.towflightLandingLocationInput->setCurrentText (flight.landingLocation);
+	ui.departureLocationInput->setEditText (flight.departureLocation);
+	ui.landingLocationInput->setEditText (flight.landingLocation);
+	ui.towflightLandingLocationInput->setEditText (flight.landingLocation);
 	if (!repeat) ui.numLandingsInput->setValue (flight.numLandings);
 
 	// space
 
 	if (!repeat) ui.commentInput->setText (flight.comments);
-	ui.accountingNoteInput->setCurrentText (flight.accountingNotes);
+	ui.accountingNoteInput->setEditText (flight.accountingNotes);
 	ui.dateInput->setDate (flight.getEffectiveDate (Qt::UTC, QDate::currentDate ()));
 
 #undef PLANE
@@ -1261,7 +1272,7 @@ dbId FlightWindow::determineAndEnterPlane (QString registration, QString descrip
 		try
 		{
 			Plane resultPlane=cache.getObject<Plane> (result);
-			if (registrationInput) registrationInput->setCurrentText (resultPlane.registration);
+			if (registrationInput) registrationInput->setEditText (resultPlane.registration);
 
 			if (typeLabel) typeLabel->setText (resultPlane.type);
 		}
@@ -1470,8 +1481,8 @@ dbId FlightWindow::determineAndEnterPerson (bool active, QString lastName, QStri
 		try
 		{
 			Person resultPerson=cache.getObject<Person> (result);
-			if (lastNameWidget) lastNameWidget->setCurrentText (resultPerson.lastName);
-			if (firstNameWidget) firstNameWidget->setCurrentText (resultPerson.firstName);
+			if (lastNameWidget) lastNameWidget->setEditText (resultPerson.lastName);
+			if (firstNameWidget) firstNameWidget->setEditText (resultPerson.firstName);
 		}
 		catch (Cache::NotFoundException) {}
 	}
@@ -1541,7 +1552,7 @@ void FlightWindow::cacheChanged (DbEvent event)
 			// Landing locations may be set automatically on landing
 			if (newFlight.landingLocation!=originalFlight.landingLocation)
 			{
-				ui.landingLocationInput->setCurrentText (newFlight.landingLocation);
+				ui.landingLocationInput->setEditText (newFlight.landingLocation);
 				originalFlight.landingLocation=newFlight.landingLocation;
 
 				// For the text fields, the changes are only processed
@@ -1551,7 +1562,7 @@ void FlightWindow::cacheChanged (DbEvent event)
 
 			if (newFlight.towflightLandingLocation!=originalFlight.towflightLandingLocation)
 			{
-				ui.towflightLandingLocationInput->setCurrentText (newFlight.towflightLandingLocation);
+				ui.towflightLandingLocationInput->setEditText (newFlight.towflightLandingLocation);
 				originalFlight.towflightLandingLocation=newFlight.towflightLandingLocation;
 
 				// For the text fields, the changes are only processed
@@ -1574,7 +1585,6 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 
 	switch (mode)
 	{
-		// TODO background
 		case modeCreate:
 		{
 			try
@@ -1604,11 +1614,10 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 	// The task completed. But was it successful?
 	if (!success)
 	{
-		QMessageBox::message (
+		QMessageBox::critical (
+			this,
 			"Fehler beim Speichern",
-			QString ("Fehler beim Speichern"),
-			"&OK",
-			this
+			QString ("Fehler beim Speichern")
 			);
 	}
 
@@ -1917,17 +1926,17 @@ void FlightWindow::flightModeChanged (int index)
 		{
 			// Departure location is local location
 			if (locationEntryCanBeChanged (departureLocation))
-				ui.departureLocationInput->setCurrentText (Settings::instance ().location);
+				ui.departureLocationInput->setEditText (Settings::instance ().location);
 
 			// Clear landing location (leaving or set automatically on landing)
 			if (locationEntryCanBeChanged (landingLocation))
-				ui.landingLocationInput->setCurrentText ("");
+				ui.landingLocationInput->setEditText ("");
 		}
 		else
 		{
 			// Clear departure location (not departed here)
 			if (locationEntryCanBeChanged (departureLocation))
-				ui.departureLocationInput->setCurrentText ("");
+				ui.departureLocationInput->setEditText ("");
 
 			// Landing location will be set automatically on landing
 		}
@@ -2000,7 +2009,7 @@ void FlightWindow::landingTimeCheckboxChanged (bool checked)
 	{
 		// Landed => set landing location to local location
 		if (locationEntryCanBeChanged (ui.landingLocationInput->currentText ()))
-			ui.landingLocationInput->setCurrentText (Settings::instance ().location);
+			ui.landingLocationInput->setEditText (Settings::instance ().location);
 
 		// Set 1 landing if it was 0.
 		if (getCurrentNumLandings ()==0)
@@ -2010,7 +2019,7 @@ void FlightWindow::landingTimeCheckboxChanged (bool checked)
 	{
 		// Not landed => unset landing location input
 		if (locationEntryCanBeChanged (ui.landingLocationInput->currentText ()))
-			ui.landingLocationInput->setCurrentText ("");
+			ui.landingLocationInput->setEditText ("");
 	}
 }
 
@@ -2023,13 +2032,13 @@ void FlightWindow::towflightLandingTimeCheckboxChanged (bool checked)
 	{
 		// Landed => set landing location to local location
 		if (locationEntryCanBeChanged (ui.towflightLandingLocationInput->currentText ()))
-			ui.towflightLandingLocationInput->setCurrentText (Settings::instance ().location);
+			ui.towflightLandingLocationInput->setEditText (Settings::instance ().location);
 	}
 	else
 	{
 		// Not landed => unset landing location input
 		if (locationEntryCanBeChanged (ui.towflightLandingLocationInput->currentText ()))
-			ui.towflightLandingLocationInput->setCurrentText ("");
+			ui.towflightLandingLocationInput->setEditText ("");
 	}
 }
 

@@ -211,7 +211,7 @@ Migrator::Action Migrator::getRequiredAction (quint64 *currentVersion, int *numP
 
 	bool migrationsTableExists=tables.contains (migrationsTableName);
 
-	tables.remove (migrationsTableName);
+	tables.removeAll (migrationsTableName);
 	bool otherTablesExist=!tables.empty ();
 
 	// # 1,3,5,6 - no other tables exist

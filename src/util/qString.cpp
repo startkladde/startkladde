@@ -26,5 +26,5 @@ QString std2q (const std::string &s)
 std::string q2std (const QString &s)
 {
 	if (s.isNull ()) return "";
-	return std::string (s.utf8 ().constData ());
+	return std::string (s.toUtf8 ().constData ());
 }

@@ -1,15 +1,13 @@
 CONFIG += qt
 CONFIG += debug
-QT += qt3support
+#QT += qt3support
 QT += sql
 QT += network
 TEMPLATE = app
 TARGET = 
 DEPENDPATH += . version
 INCLUDEPATH += . version /usr/include/mysql
-#LIBS += -L/usr/lib64/mysql -lmysqlclient -lz -lacpi
-LIBS += -lz -lacpi
-# Link agains mysqlclient explicitly to avoid "Error in my_thread_global_end():
+# Link against mysqlclient explicitly to avoid "Error in my_thread_global_end():
 # 1 threads didn't exit" in specific situations (e. g. exception on open).
 LIBS += -lmysqlclient
 MAKEFILE = Makefile_startkladde
@@ -182,7 +180,6 @@ SOURCES += \
            src/gui/views/ReadOnlyItemDelegate.cpp \
            src/gui/views/SpecialIntDelegate.cpp \
            src/gui/views/SpinBoxCreator.cpp \
-           src/gui/widgets/AcpiWidget.cpp \
            src/gui/widgets/SkComboBox.cpp \
            src/gui/widgets/SkLabel.cpp \
            src/gui/widgets/SkTableView.cpp \
@@ -243,5 +240,15 @@ FORMS += \
 
 !include( build/migrations.pro ) {
 error( "build/migrations.pro could not be included" )
+}
+
+
+# ACPI widget
+win32 {
+	SOURCES += src/gui/widgets/AcpiWidget_dummy.cpp
+}
+unix {
+	SOURCES += src/gui/widgets/AcpiWidget_libacpi.cpp
+	LIBS += -lacpi
 }
 

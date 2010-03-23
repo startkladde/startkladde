@@ -46,17 +46,17 @@ LaunchMethod LaunchMethod::parseConfigLine (QString line)
 	// Split the line and simplify whitespace
 	QStringList split=line.split (",");
 	for (int i=0; i<split.size (); ++i)
-		split[i]=split[i].simplifyWhiteSpace ();
+		split[i]=split[i].simplified ();
 
 	// Set the attributes from the split parts
 	int n=split.count ();
 	if (n>=0) launchMethod.id=split[0].toLongLong ();
 	if (n>=1)
 	{
-		if      (split[1].lower ()=="winch" ) launchMethod.type=typeWinch;
-		else if (split[1].lower ()=="airtow") launchMethod.type=typeAirtow;
-		else if (split[1].lower ()=="self"  ) launchMethod.type=typeSelf;
-		else if (split[1].lower ()=="other" ) launchMethod.type=typeOther;
+		if      (split[1].toLower ()=="winch" ) launchMethod.type=typeWinch;
+		else if (split[1].toLower ()=="airtow") launchMethod.type=typeAirtow;
+		else if (split[1].toLower ()=="self"  ) launchMethod.type=typeSelf;
+		else if (split[1].toLower ()=="other" ) launchMethod.type=typeOther;
 		else
 		{
 			log_error ("Unknown launch method type in LaunchMethod::parseConfigLine (QString)");
@@ -72,7 +72,7 @@ LaunchMethod LaunchMethod::parseConfigLine (QString line)
 	if (n>=4) launchMethod.shortName=split[4];
 	if (n>=5) launchMethod.keyboardShortcut=split[5];
 	if (n>=6) launchMethod.logString=split[6];
-	if (n>=7 && split[7].lower ()=="false") launchMethod.personRequired=false;
+	if (n>=7 && split[7].toLower ()=="false") launchMethod.personRequired=false;
 
 	return launchMethod;
 }

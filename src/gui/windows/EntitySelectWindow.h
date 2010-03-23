@@ -32,7 +32,11 @@ class selector_base:public QDialog
 
 	public:
 		selector_base (QWidget *parent, const char *name=NULL, bool modal=false, Qt::WindowFlags f=0)
-			:QDialog (parent, name, modal, f) {};
+			:QDialog (parent, f)
+		{
+			setObjectName (name);
+			setModal (modal);
+		};
 
 		// Problem when there is a TYPE as parameter to one of our redirected slots.
 		virtual void slot_ok ()=0;
@@ -110,10 +114,10 @@ template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *pare
 	result_id=invalidId;
 
 	// Create the controls
-	text=new QLabel ("", this, "text");
+	text=new QLabel (this);
 	list=new QTreeWidget (this);
-	but_ok=new QPushButton ("&OK", this, "but_ok");
-	but_cancel=new QPushButton ("&Abbrechen", this, "but_cancel");
+	but_ok=new QPushButton ("&OK", this);
+	but_cancel=new QPushButton ("&Abbrechen", this);
 
 	// Setup the controls
 	list->setAllColumnsShowFocus (true);
@@ -128,11 +132,13 @@ template<class TYPE> EntitySelectWindow<TYPE>::EntitySelectWindow (QWidget *pare
 	QObject::connect (list, SIGNAL (itemActivated (QTreeWidgetItem *, int)), helper (), SLOT (slot_double_click (QTreeWidgetItem *, int)));
 
 	// Arrange the controls
-	QVBoxLayout *main_layout=new QVBoxLayout (this, 4, -1, "main_layout");
+	QVBoxLayout *main_layout=new QVBoxLayout (this);
+	main_layout->setMargin (4);
 	main_layout->addWidget (text);
 	main_layout->addWidget (list);
 
-	QHBoxLayout *button_layout=new QHBoxLayout (main_layout, -1, "button_layout");
+	QHBoxLayout *button_layout=new QHBoxLayout (this);
+	main_layout->addLayout (button_layout);
 	button_layout->addStretch ();
 	button_layout->addWidget (but_ok);
 	button_layout->addWidget (but_cancel);
@@ -248,7 +254,7 @@ template<class TYPE> selection_result EntitySelectWindow<TYPE>::do_selection (QS
 	 *   - the selection result.
 	 */
 {
-	setCaption (caption_text);
+	setWindowTitle (caption_text);
 	text->setText (label_text);
 	if (label_text.isEmpty ()) text->hide ();
 

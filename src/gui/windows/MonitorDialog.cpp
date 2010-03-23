@@ -43,7 +43,7 @@ MonitorDialog::~MonitorDialog()
 void MonitorDialog::monitor (SignalOperationMonitor &monitor, const QString &title, QWidget *parent)
 {
 	MonitorDialog dialog (monitor, parent);
-	dialog.setCaption (title);
+	dialog.setWindowTitle (title);
 	dialog.ui.statusLabel->setText (title);
 
 	// Check after the signals have been connected - the monitor may be updated

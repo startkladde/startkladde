@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <iostream>
 
+#include <QString>
 #include <QStringList>
 
 #include "config/Settings.h"
@@ -111,9 +112,9 @@ void trim (QStringList &strings)
 	}
 }
 
-QString get_environment (const QString& name)
+QString get_environment (const QString &name)
 {
-	char *r=getenv (name.utf8 ().constData ());
+	char *r=getenv (name.toUtf8 ().constData ());
 	if (r)
 		return QString (r);
 	else

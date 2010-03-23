@@ -11,7 +11,7 @@ extern "C"
 }
 
 /**
-  * Wrapper class for libacpi
+  * AcpiWidget implementation using libacpi
   */
 
 
@@ -21,7 +21,7 @@ extern "C"
 static global_t global_acpi;
 
 AcpiWidget::AcpiWidget (QWidget* parent)
-	:QLabel (parent)
+	:SkLabel (parent)
 {
 //	setAutoFillBackground (true);
 	timer = new QTimer (this);

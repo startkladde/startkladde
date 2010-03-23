@@ -99,7 +99,7 @@ QList<LaunchMethod> Migration_20100216135637_add_launch_methods::readConfiguredL
 
 	QFile configFile (filename);
 
-	if (!configFile.open (IO_ReadOnly))
+	if (!configFile.open (QIODevice::ReadOnly))
 	{
 		std::cout << "Configuration file " << filename << " could not be opened" << std::endl;
 		return launchMethods;

@@ -63,6 +63,19 @@ void SkLabel::setError (bool error)
 	updateColors ();
 }
 
+void SkLabel::setPaletteForegroundColor (const QColor &color)
+{
+	QPalette palette;
+	palette.setColor (foregroundRole (), color);
+	setPalette(palette);
+}
+
+void SkLabel::setPaletteBackgroundColor (const QColor &color)
+{
+	QPalette palette;
+	palette.setColor (backgroundRole (), color);
+	setPalette(palette);
+}
 
 
 // ******************
@@ -78,29 +91,29 @@ void SkLabel::updateColors ()
 	{
 		// Concealed => foreground and background like parent background
 		setAutoFillBackground (true);
-		p.setColor (QPalette::Foreground, parentWidget ()->backgroundColor ());
-		p.setColor (QPalette::Background, parentWidget ()->backgroundColor ());
+		p.setColor (QPalette::Foreground, parentWidget ()->palette ().background ().color ());
+		p.setColor (QPalette::Background, parentWidget ()->palette ().background ().color ());
 	}
 	else if (error)
 	{
 		// Error => given error background, same foreground as parent
 		setAutoFillBackground (true);
-		p.setColor (QPalette::Foreground, parentWidget ()->foregroundColor ());
+		p.setColor (QPalette::Foreground, parentWidget ()->palette ().foreground ().color ());
 		p.setColor (QPalette::Background, errorColor);
 	}
 	else if (useDefaultBackgroundColor)
 	{
 		// Not concealed => given background, same foreground as parent
 		setAutoFillBackground (true);
-		p.setColor (QPalette::Foreground, parentWidget ()->foregroundColor ());
+		p.setColor (QPalette::Foreground, parentWidget ()->palette ().foreground ().color ());
 		p.setColor (QPalette::Background, defaultBackgroundColor);
 	}
 	else
 	{
 		// Not concealed, background color not used => same palette as parent
 		setAutoFillBackground (false);
-		p.setColor (QPalette::Foreground, parentWidget ()->foregroundColor ());
-		p.setColor (QPalette::Background, parentWidget ()->backgroundColor ());
+		p.setColor (QPalette::Foreground, parentWidget ()->palette ().foreground ().color ());
+		p.setColor (QPalette::Background, parentWidget ()->palette ().background ().color ());
 	}
 
 	setPalette (p);

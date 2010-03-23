@@ -135,7 +135,7 @@ void ShellPlugin::start ()
 		{
 			value_display->setTextFormat (Qt::PlainText);
 			value_display->setText ("Keine Plugin-Datei angegeben.");
-			QToolTip::remove (value_display);
+			value_display->setToolTip ("");
 		}
 		return;
 	}
@@ -167,7 +167,7 @@ void ShellPlugin::start ()
 		{
 			value_display->setTextFormat (Qt::PlainText);
 			value_display->setText ("Plugin-Datei \""+command_file+"\" nicht gefunden.");
-			QToolTip::remove (value_display);
+			value_display->setToolTip ("");
 		}
 	}
 	else
@@ -192,9 +192,7 @@ void ShellPlugin::start ()
 		QString complete_command=binary_file+" "+command_parameters;
 
 		if (value_display)
-		{
-			QToolTip::add (value_display, complete_command+" ["+working_dir+"]");
-		}
+			value_display->setToolTip (complete_command+" ["+working_dir+"]");
 
 		QStringList args;
 		args.append ("/bin/sh");
@@ -310,7 +308,7 @@ QString ShellPlugin::findFile (const QString &filename, QString *dir, QString *b
 				{
 					if (dir) *dir=path_entry;
 					if (basename) *basename=filename;
-					return *path_entry+"/"+filename;
+					return path_entry+"/"+filename;
 				}
 			}
 		}
@@ -332,7 +330,7 @@ QString ShellPlugin::findFile (const QString &filename, QString *dir, QString *b
 					{
 						if (dir) *dir=path_entry;
 						if (basename) *basename=filename;
-						return *path_entry+"/"+filename;
+						return path_entry+"/"+filename;
 					}
 				}
 			}

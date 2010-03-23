@@ -1,12 +1,13 @@
 #ifndef WEATHERWIDGET_H_
 #define WEATHERWIDGET_H_
 
-#include <QLabel>
 #include <QImage>
 #include <QPixmap>
 #include <QImageReader>
 
-class WeatherWidget:public QLabel
+#include "src/gui/widgets/SkLabel.h"
+
+class WeatherWidget:public SkLabel
 {
 	Q_OBJECT
 

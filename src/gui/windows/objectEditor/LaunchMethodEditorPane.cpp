@@ -48,7 +48,7 @@ void LaunchMethodEditorPane::fillData ()
 	// Registrations
 	ui.towplaneRegistrationInput->addItem ("");
 	ui.towplaneRegistrationInput->addItems (cache.getPlaneRegistrations ());
-	ui.towplaneRegistrationInput->setCurrentText ("");
+	ui.towplaneRegistrationInput->setEditText ("");
 }
 
 // ****************
@@ -76,7 +76,7 @@ void LaunchMethodEditorPane::objectToFields (const LaunchMethod &launchMethod)
 	ui.logStringInput           ->setText                  (launchMethod.logString);
 	ui.keyboardShortcutInput    ->setText                  (launchMethod.keyboardShortcut);
 	ui.typeInput                ->setCurrentItemByItemData (launchMethod.type);
-	ui.towplaneRegistrationInput->setCurrentText           (launchMethod.towplaneRegistration);
+	ui.towplaneRegistrationInput->setEditText              (launchMethod.towplaneRegistration);
 	ui.personRequiredInput      ->setCurrentItemByItemData (launchMethod.personRequired);
 	ui.commentsInput            ->setText                  (launchMethod.comments);
 

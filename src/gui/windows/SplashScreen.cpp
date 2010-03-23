@@ -8,15 +8,12 @@
 // TODO multiple lines in message area
 // TODO Klick auf labels schließen
 
-SplashScreen::SplashScreen (QWidget *parent, const char * const *logo)
-	:QDialog (parent, "splash screen", true, Qt::WStyle_Customize|Qt::WStyle_NoBorder|Qt::WStyle_StaysOnTop|Qt::WType_TopLevel)
-	/*
-	 * Creates a SplashScreen instance.
-	 * Parameters:
-	 *   - parent: passed to the base class constructor.
-	 */
+SplashScreen::SplashScreen (QWidget *parent, const char * const *logo):
+	QDialog (parent, Qt::CustomizeWindowHint|Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::Window)
 {
 	QPixmap pixmap ((const char **)(logo));
+
+	setModal(true);
 
 	display_status=true;
 	can_close=false;

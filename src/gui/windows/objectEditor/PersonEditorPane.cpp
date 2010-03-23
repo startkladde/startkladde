@@ -40,8 +40,9 @@ template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEdi
 void PersonEditorPane::fillData ()
 {
 	// Clubs
+	ui.clubInput->addItem ("");
 	ui.clubInput->addItems (cache.getClubs ());
-	ui.clubInput->setCurrentText ("");
+	ui.clubInput->setEditText ("");
 }
 
 void PersonEditorPane::setNameObject (const Person &nameObject)
@@ -70,7 +71,7 @@ void PersonEditorPane::objectToFields (const Person &person)
 
 	ui.lastNameInput->setText (person.lastName);
 	ui.firstNameInput->setText (person.firstName);
-	ui.clubInput->setCurrentText (person.club);
+	ui.clubInput->setEditText (person.club);
 	ui.commentsInput->setText (person.comments);
 }
 
