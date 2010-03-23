@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../../startkladde.qrc">
+    <normaloff>:/graphics/icon.png</normaloff>:/graphics/icon.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" stretch="0,1,1">
     <property name="margin">

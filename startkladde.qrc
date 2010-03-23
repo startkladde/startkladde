@@ -1,5 +1,7 @@
 <RCC>
   <qresource>
+    <file>graphics/icon.png</file>
+    <file>graphics/icon.svg</file>
     <file>graphics/kvkbd.png</file>
     <file>graphics/logo.png</file>
   </qresource>
