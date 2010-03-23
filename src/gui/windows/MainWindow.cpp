@@ -348,7 +348,7 @@ void MainWindow::setupPlugins ()
 	{
 		// Create and setup the weather widget. The weather widget is located to
 		// the right of the info frame.
-		weatherWidget = new WeatherWidget (ui.weatherFrame, "weather");
+		weatherWidget = new WeatherWidget (ui.weatherFrame);
 		ui.weatherFrame->layout ()->addWidget (weatherWidget);
 		weatherWidget->setFixedSize (s.weatherPluginHeight, s.weatherPluginHeight);
 		weatherWidget->setText ("[Wetter]");

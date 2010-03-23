@@ -12,7 +12,7 @@ WeatherDialog::WeatherDialog (ShellPlugin *_plugin, QWidget *parent)
 
 	setAttribute (Qt::WA_DeleteOnClose, true);
 
-	ww=new WeatherWidget (this, "ww");
+	ww=new WeatherWidget (this);
 
 	QObject::connect (plugin, SIGNAL (lineRead (QString)), ww, SLOT (inputLine (QString)));
 	QObject::connect (plugin, SIGNAL (pluginNotFound ()), ww, SLOT (pluginNotFound ()));
