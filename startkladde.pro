@@ -81,12 +81,13 @@ HEADERS += \
            src/gui/widgets/TableButton.h \
            src/gui/widgets/WeatherWidget.h \
            src/gui/windows/DateInputDialog.h \
-           src/gui/windows/EntitySelectWindow.h \
            src/gui/windows/FlightWindow.h \
            src/gui/windows/MainWindow.h \
            src/gui/windows/MonitorDialog.h \
            src/gui/windows/ObjectListWindow.h \
            src/gui/windows/ObjectListWindowBase.h \
+           src/gui/windows/ObjectSelectWindow.h \
+           src/gui/windows/ObjectSelectWindowBase.h \
            src/gui/windows/SplashScreen.h \
            src/gui/windows/SettingsWindow.h \
            src/gui/windows/StatisticsWindow.h \
@@ -192,6 +193,8 @@ SOURCES += \
            src/gui/windows/MonitorDialog.cpp \
            src/gui/windows/ObjectListWindow.cpp \
            src/gui/windows/ObjectListWindowBase.cpp \
+           src/gui/windows/ObjectSelectWindow.cpp \
+           src/gui/windows/ObjectSelectWindowBase.cpp \
            src/gui/windows/SplashScreen.cpp \
            src/gui/windows/SettingsWindow.cpp \
            src/gui/windows/StatisticsWindow.cpp \
@@ -230,6 +233,7 @@ FORMS += \
            src/gui/windows/MainWindow.ui \
            src/gui/windows/MonitorDialog.ui \
            src/gui/windows/ObjectListWindowBase.ui \
+           src/gui/windows/ObjectSelectWindowBase.ui \
            src/gui/windows/SettingsWindow.ui \
            src/gui/windows/StatisticsWindow.ui \
            src/gui/windows/objectEditor/LaunchMethodEditorPane.ui \

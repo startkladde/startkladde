@@ -10,7 +10,7 @@
 #include "src/color.h"
 #include "src/text.h"
 #include "src/gui/dialogs.h"
-#include "src/gui/windows/EntitySelectWindow.h"
+#include "src/gui/windows/ObjectSelectWindow.h"
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
@@ -20,6 +20,7 @@
 #include "src/util/qString.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/DbManager.h"
+#include "src/logging/messages.h"
 
 /*
  * On enabling/diabling widgets:
@@ -1423,9 +1424,6 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 	// Case 3-6: show selection list with candidates, "Unknown" and "Create"
 	// options and cancel button
 
-	// There were multiple persons. Let the user select one.
-	EntitySelectWindow<Person> selector (this, "selector");
-
 	QString title ("Personenauswahl");
 	QString text;
 	if (lastNameGiven && firstNameGiven)
@@ -1450,25 +1448,31 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 		preselectionId=originalId;
 
 	// Do the selection
-	selection_result res=selector.do_selection (title, text, people, preselectionId);
+	// There were multiple persons. Let the user select one.
+//	EntitySelectWindow<Person> selector (this, "selector");
+//	selection_result res=selector.do_selection (title, text, people, preselectionId);
 
-	switch (res)
+	dbId selectedPerson=invalidId;
+	ObjectSelectWindowBase::Result selectionResult=
+		ObjectSelectWindow<Person>::select (&selectedPerson, title, text, people, preselectionId, this);
+
+	switch (selectionResult)
 	{
-		case sr_ok:
-			return selector.get_result_id ();
-		case sr_unknown:
+		case ObjectSelectWindowBase::resultOk:
+			return selectedPerson;
+		case ObjectSelectWindowBase::resultUnknown:
 			// Unknown person
 			incompleteLastName=lastName;
 			incompleteFirstName=firstName;
 			return 0;
-		case sr_new:
+		case ObjectSelectWindowBase::resultNew:
 			// Create new
 			return createNewPerson (capitalize (lastName), capitalize (firstName));
-		case sr_cancelled: case sr_none_selected:
+		case ObjectSelectWindowBase::resultCancelled: case ObjectSelectWindowBase::resultNoneSelected:
 			throw AbortedException ();
 	}
 
-	log_error ("Unhandled case in FlightWindow::determinePerson");
+	assert (!"Unhandled case in FlightWindow::determinePerson");
 	return 0;
 }
 

@@ -18,3 +18,7 @@ SkTreeWidgetItem::SkTreeWidgetItem (QTreeWidget *parent, QString text)
 	setText (0, text);
 }
 
+SkTreeWidgetItem::SkTreeWidgetItem (QTreeWidget *parent)
+	:QTreeWidgetItem (parent)
+{
+}
