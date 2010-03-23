@@ -125,7 +125,8 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	bool virtualKeyboardEnabled = (
 		system ("which kvkbd >/dev/null") == 0 &&
-		system ("which dcop >/dev/null") == 0);
+		system ("which dbus-send >/dev/null") == 0);
+		//system ("which dcop >/dev/null") == 0);
 
 	ui.actionShowVirtualKeyboard->setVisible (virtualKeyboardEnabled);
 //	ui.actionShowVirtualKeyboard->setIcon (QIcon ((const QPixmap&)QPixmap (kvkbd)));
@@ -1022,17 +1023,21 @@ void MainWindow::on_actionShowVirtualKeyboard_triggered (bool checked)
 	{
 		// This call may fail (when the progran is not running), don't display
 		// stderr. If it fails, it will be run again.
-		int result = system ("dcop kvkbd kvkbd show >/dev/null 2>/dev/null");
+		// Note that without --print-reply, it doesn't seem to work
+		//int result = system ("dcop kvkbd kvkbd show >/dev/null 2>/dev/null");
+		int result=system ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:true >/dev/null");
 		if (result != 0)
 		{
 			// failed to show; try launch
 			system ("kvkbd >/dev/null");
-			system ("dcop kvkbd kvkbd show >/dev/null");
+			//system ("dcop kvkbd kvkbd show >/dev/null");
+			system ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:true  >/dev/null");
 		}
 	}
 	else
 	{
-		system ("/usr/bin/dcop kvkbd kvkbd hide >/dev/null");
+		//system ("/usr/bin/dcop kvkbd kvkbd hide >/dev/null");
+		system ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:false >/dev/null");
 	}
 }
 

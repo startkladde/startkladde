@@ -6,8 +6,8 @@ Voraussetzungen
 
 Benötigte Software:
   - MySQL (Ab Version 5; ältere Versionen ab 4.1.5 könnten funktionieren)
-  - Für die virtuelle Tastatur (optional): kvkbd und dcop (Bestandteil von
-    KDE (kdelibs)). Sind diese Programme nicht vorhanden, so wird der
+  - Für die virtuelle Tastatur (optional): kvkbd und dbus (Paket
+    dbus). Sind diese Programme nicht vorhanden, so wird der
     betreffende Eintrag in der Toolbar nicht angezeigt.
 
 
