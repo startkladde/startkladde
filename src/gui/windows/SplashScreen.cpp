@@ -8,10 +8,10 @@
 // TODO multiple lines in message area
 // TODO Klick auf labels schließen
 
-SplashScreen::SplashScreen (QWidget *parent, const char * const *logo):
+SplashScreen::SplashScreen (QWidget *parent):
 	QDialog (parent, Qt::CustomizeWindowHint|Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::Window)
 {
-	QPixmap pixmap ((const char **)(logo));
+	QPixmap pixmap (":/graphics/logo.png");
 
 	setModal(true);
 

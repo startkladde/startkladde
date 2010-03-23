@@ -238,6 +238,10 @@ FORMS += \
            src/gui/windows/objectEditor/PlaneEditorPane.ui \
            # Empty line
 
+RESOURCES += \
+           startkladde.qrc \
+           # Empty line
+
 !include( build/migrations.pro ) {
 error( "build/migrations.pro could not be included" )
 }

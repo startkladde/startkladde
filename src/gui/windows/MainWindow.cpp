@@ -22,9 +22,6 @@
 #include <QStatusBar>
 #include <QCloseEvent>
 
-#include "build/kvkbd.xpm"
-#include "build/logo.xpm"
-
 // TODO many dependencies - split
 #include "src/concurrent/threadUtil.h"
 #include "src/config/Settings.h"
@@ -131,8 +128,8 @@ MainWindow::MainWindow (QWidget *parent) :
 		system ("which dcop >/dev/null") == 0);
 
 	ui.actionShowVirtualKeyboard->setVisible (virtualKeyboardEnabled);
-	// TODO Qt way for icons?
-	ui.actionShowVirtualKeyboard->setIcon (QIcon ((const QPixmap&)QPixmap (kvkbd)));
+//	ui.actionShowVirtualKeyboard->setIcon (QIcon ((const QPixmap&)QPixmap (kvkbd)));
+	ui.actionShowVirtualKeyboard->setIcon (QIcon (":/graphics/kvkbd.png"));
 
 	// Log
 	ui.logWidget->document ()->setMaximumBlockCount (100);
@@ -1098,7 +1095,7 @@ void MainWindow::on_actionRestartPlugins_triggered ()
 void MainWindow::on_actionInfo_triggered ()
 {
 
-	::SplashScreen *splashScreen = new ::SplashScreen (this, logo);
+	::SplashScreen *splashScreen = new ::SplashScreen (this);
 	splashScreen->setAttribute (Qt::WA_DeleteOnClose, true);
 	splashScreen->show_version ();
 

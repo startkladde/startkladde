@@ -881,6 +881,8 @@
    <header>src/gui/widgets/AcpiWidget.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../startkladde.qrc"/>
+ </resources>
  <connections/>
 </ui>

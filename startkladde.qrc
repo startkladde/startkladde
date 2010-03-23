@@ -1,0 +1,6 @@
+<RCC>
+  <qresource>
+    <file>graphics/kvkbd.png</file>
+    <file>graphics/logo.png</file>
+  </qresource>
+</RCC>

@@ -20,7 +20,7 @@ class SplashScreen:public QDialog
 	Q_OBJECT
 
 	public:
-		SplashScreen (QWidget *, const char * const *logo);
+		SplashScreen (QWidget *parent);
 		void info ();
 
 	private:
