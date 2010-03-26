@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>434</width>
-    <height>418</height>
+    <width>438</width>
+    <height>494</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -283,6 +283,17 @@ Datenbankpasswort eingegeben werden.</string>
             </property>
            </widget>
           </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="protectSettingsCheckbox">
+            <property name="toolTip">
+             <string>Wenn aktiviert, muss zum Speichern von Einstellungen
+das Datenbankpasswort eingegeben werden.</string>
+            </property>
+            <property name="text">
+             <string>Passwort zum Ändern von E&amp;instellungen erforderlich</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <widget class="QWidget" name="widget_3" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -309,17 +320,6 @@ Datenbankpasswort eingegeben werden.</string>
               </widget>
              </item>
             </layout>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="protectSettingsCheckbox">
-            <property name="toolTip">
-             <string>Wenn aktiviert, muss zum Speichern von Einstellungen
-das Datenbankpasswort eingegeben werden.</string>
-            </property>
-            <property name="text">
-             <string>Passwort zum Ändern von E&amp;instellungen erforderlich</string>
-            </property>
            </widget>
           </item>
          </layout>

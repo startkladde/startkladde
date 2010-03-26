@@ -14,6 +14,7 @@ class DatabaseInfo
 
 		virtual QString toString () const;
 		virtual operator QString () const;
+		virtual QString serverText () const;
 
 		virtual void load (QSettings &settings);
 		virtual void save (QSettings &settings);

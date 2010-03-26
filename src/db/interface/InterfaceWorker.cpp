@@ -12,6 +12,7 @@
 #include "src/concurrent/monitor/OperationMonitor.h"
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/concurrent/Returner.h"
+#include "src/util/qString.h"
 
 InterfaceWorker::InterfaceWorker (ThreadSafeInterface &interface):
 	interface (interface)
@@ -63,7 +64,7 @@ void InterfaceWorker::grantAll (Returner<void> &returner, OperationMonitor &moni
 void InterfaceWorker::slot_open (Returner<bool> *returner, OperationMonitor *monitor)
 {
 	OperationMonitorInterface monitorInterface=monitor->interface ();
-	monitorInterface.status ("Verbindung herstellen");
+	monitorInterface.status (utf8 ("Verbindung zu %1 herstellen").arg (interface.getInfo ().serverText ()));
 	returnOrException (returner, interface.open ());
 }
 

@@ -918,7 +918,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 
 	if (idInvalid (id))
 	{
-		showWarning ("Kein Flug ausgewählt", "Es ist kein Flug ausgewählt", this);
+		showWarning (utf8 ("Kein Flug ausgewählt"), utf8 ("Es ist kein Flug ausgewählt"), this);
 		return;
 	}
 
@@ -1553,6 +1553,7 @@ void MainWindow::setDatabaseActionsEnabled (bool enabled)
 	ui.actionSetDisplayDate         ->setEnabled (enabled);
 	ui.actionDepart                 ->setEnabled (enabled);
 	ui.actionTouchngo               ->setEnabled (enabled);
+	ui.actionDisplayError           ->setEnabled (enabled);
 
 	ui.flightTable->setEnabled (enabled);
 

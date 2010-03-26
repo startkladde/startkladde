@@ -136,7 +136,7 @@ void Settings::readSettings ()
 	// Weather dialog
 	weatherWindowCommand =s.value ("weatherWindowCommand" , "regenradar_wetteronline.de_ani").toString ();
 	weatherWindowInterval=s.value ("weatherWindowInterval", 300).toInt ();
-	weatherWindowTitle   =s.value ("weatherWindowTitle"   , "Regenradar (4 Stunden)").toInt ();
+	weatherWindowTitle   =s.value ("weatherWindowTitle"   , "Regenradar (3 Stunden)").toString ();
 
 	// *** Plugins - Paths
 	pluginPaths.clear ();

@@ -30,6 +30,14 @@ DatabaseInfo::operator QString () const
 	return toString ();
 }
 
+QString DatabaseInfo::serverText () const
+{
+	if (defaultPort)
+		return server;
+	else
+		return QString ("%1:%2").arg (server).arg (port);
+}
+
 void DatabaseInfo::load (QSettings &settings)
 {
 	server     =settings.value ("server"     , "localhost"  ).toString ();

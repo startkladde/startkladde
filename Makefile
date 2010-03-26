@@ -123,5 +123,5 @@ clean: Makefile_startkladde Makefile_tests
 
 .PHONY: run
 run: startkladde
-	./startkladde -q
+	./startkladde -q --no-full-screen
 
