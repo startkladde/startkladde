@@ -185,7 +185,13 @@ template<class T> void MutableObjectList<T>::clear ()
 template<class T> void MutableObjectList<T>::replaceList (const QList<T> &newList)
 {
 	list=newList;
-	QAbstractItemModel::reset ();
+
+	// Using QAbstractItemModel::reset seems to cause a segfault in some
+	// cases when the list is reloaded (potentially only immediately after
+	// startup). Using QAbstractItemModel::dataChanged is functionally
+	// equivalent, but seems to work.
+	//QAbstractItemModel::reset ();
+	QAbstractItemModel::dataChanged (QAbstractItemModel::createIndex (0, 0), QAbstractItemModel::createIndex (size ()-1, 0));
 }
 
 ///**
@@ -228,8 +234,7 @@ template<class T> const T &MutableObjectList<T>::at (int index) const
 }
 
 /**
- * Makes a copy of the list, which is fast due to Qt implicit sharing as long
- * as the returned list and this list is not modified.
+ * Makes a copy of the list, which is fast due to Qt implicit sharing as lon * as the returned list and this list is not modified.
  *
  * @return a QList containing all the objects of this list
  */

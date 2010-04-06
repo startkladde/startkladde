@@ -1,10 +1,10 @@
 CONFIG += qt
 CONFIG += debug
+#CONFIG += release
 #QT += qt3support
 QT += sql
 QT += network
 TEMPLATE = app
-TARGET = 
 DEPENDPATH += . version
 INCLUDEPATH += . version /usr/include/mysql
 # Link against mysqlclient explicitly to avoid "Error in my_thread_global_end():
@@ -14,6 +14,12 @@ MAKEFILE = Makefile_startkladde
 OBJECTS_DIR = build/
 MOC_DIR= build/
 #QMAKE_CXXFLAGS += -Werror
+
+CONFIG(debug, debug|release) {
+    TARGET = startkladde
+} else {
+    TARGET = startkladde_release
+}
 
 # Input
 HEADERS += \
