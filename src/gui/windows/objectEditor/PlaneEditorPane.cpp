@@ -122,14 +122,14 @@ Plane PlaneEditorPane::determineObject ()
 
 	plane.setId (originalId);
 
-	plane.registration=ui.registrationInput->text ();
-	plane.callsign=ui.callsignInput->text ();
+	plane.registration=ui.registrationInput->text ().simplified ();
+	plane.callsign=ui.callsignInput->text ().simplified ();
 	plane.category=(Plane::Category)ui.categoryInput->currentItemData ().toInt ();
 
-	plane.type=ui.typeInput->currentText ();
-	plane.club=ui.clubInput->currentText ();
+	plane.type=ui.typeInput->currentText ().simplified ();
+	plane.club=ui.clubInput->currentText ().simplified ();
 	plane.numSeats=ui.seatsInput->value ();
-	plane.comments=ui.commentsInput->text ();
+	plane.comments=ui.commentsInput->text ().simplified ();
 
 
 	// Error checks

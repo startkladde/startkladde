@@ -844,13 +844,13 @@ Flight FlightWindow::determineFlightBasic () throw ()
 	// Landing time: set with date
 	// Towflight landing time: set with date
 	//
-	if (isDepartureLocationActive        ()) flight.departureLocation        =getCurrentDepartureLocation ();
-	if (isLandingLocationActive          ()) flight.landingLocation          =getCurrentLandingLocation ();
-	if (isTowflightLandingLocationActive ()) flight.towflightLandingLocation =getCurrentTowflightLandingLocation ();
+	if (isDepartureLocationActive        ()) flight.departureLocation        =getCurrentDepartureLocation ().simplified ();
+	if (isLandingLocationActive          ()) flight.landingLocation          =getCurrentLandingLocation ().simplified ();
+	if (isTowflightLandingLocationActive ()) flight.towflightLandingLocation =getCurrentTowflightLandingLocation ().simplified ();
 	if (isNumLandingsActive              ()) flight.numLandings              =getCurrentNumLandings ();
 	//
-	if (isCommentActive                      ()) flight.comments        =getCurrentComment ();
-	if (isAccountingNodeActive               ()) flight.accountingNotes =getCurrentAccountingNote ();
+	if (isCommentActive                      ()) flight.comments        =getCurrentComment ().simplified ();
+	if (isAccountingNodeActive               ()) flight.accountingNotes =getCurrentAccountingNote ().simplified ();
 	// getCurrentDate
 
 

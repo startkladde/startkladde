@@ -81,10 +81,10 @@ Person PersonEditorPane::determineObject ()
 
 	person.setId (originalId);
 
-	person.lastName=ui.lastNameInput->text ();
-	person.firstName=ui.firstNameInput->text ();
-	person.club=ui.clubInput->currentText ();
-	person.comments=ui.commentsInput->text ();
+	person.lastName=ui.lastNameInput->text ().simplified ();
+	person.firstName=ui.firstNameInput->text ().simplified ();
+	person.club=ui.clubInput->currentText ().simplified ();
+	person.comments=ui.commentsInput->text ().simplified ();
 
 	// Error checks
 

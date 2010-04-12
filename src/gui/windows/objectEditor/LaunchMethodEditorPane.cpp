@@ -87,14 +87,14 @@ LaunchMethod LaunchMethodEditorPane::determineObject ()
 {
 	LaunchMethod launchMethod (originalId);
 
-	launchMethod.name                 = ui.nameInput                     ->text ();
-	launchMethod.shortName            = ui.shortNameInput                ->text ();
-	launchMethod.logString            = ui.logStringInput                ->text ();
-	launchMethod.keyboardShortcut     = ui.keyboardShortcutInput         ->text ();
+	launchMethod.name                 = ui.nameInput                     ->text ().simplified ();
+	launchMethod.shortName            = ui.shortNameInput                ->text ().simplified ();
+	launchMethod.logString            = ui.logStringInput                ->text ().simplified ();
+	launchMethod.keyboardShortcut     = ui.keyboardShortcutInput         ->text ().simplified ();
 	launchMethod.type                 = (LaunchMethod::Type)ui.typeInput ->currentItemData ().toInt ();
-	launchMethod.towplaneRegistration = ui.towplaneRegistrationInput     ->currentText ();
+	launchMethod.towplaneRegistration = ui.towplaneRegistrationInput     ->currentText ().simplified ();
 	launchMethod.personRequired       = ui.personRequiredInput           ->currentItemData ().toBool ();
-	launchMethod.comments             = ui.commentsInput                 ->text ();
+	launchMethod.comments             = ui.commentsInput                 ->text ().simplified ();
 
 	// Error checks
 	// TODO error checks:
