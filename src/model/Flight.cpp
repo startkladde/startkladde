@@ -774,9 +774,9 @@ bool Flight::collectiveLogEntryPossible (const Flight *prev, const Plane *plane)
 	// Only allow if the previous flight and the current flight departs and lands
 	// at the same place.
 	if (prev->mode!=modeLocal || mode!=modeLocal) return false;
-	if (prev->departureLocation!=prev->landingLocation) return false;
-	if (prev->landingLocation!=departureLocation) return false;
-	if (departureLocation!=landingLocation) return false;
+	if (prev->departureLocation.trimmed ().toLower ()!=prev->landingLocation.trimmed ().toLower ()) return false;
+	if (prev->  landingLocation.trimmed ().toLower ()!=    departureLocation.trimmed ().toLower ()) return false;
+	if (      departureLocation.trimmed ().toLower ()!=      landingLocation.trimmed ().toLower ()) return false;
 
 	// For motor planes: only allow if the flights are towflights.
 	// Unknown planes are treated like motor planes.

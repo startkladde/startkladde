@@ -70,19 +70,19 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Cache &cache)
 	Plane      *plane     =cache.getNewObject<Plane     > (flight->planeId );
 	Person     *pilot     =cache.getNewObject<Person    > (flight->pilotId    );
 
-	if (plane) entry.registration=plane->registration;
-	if (plane) entry.type=plane->type;
+	if (plane) entry.registration=plane->registration.trimmed ();
+	if (plane) entry.type=plane->type.trimmed ();
 
 	entry.date=flight->effdatum ();
 	if (pilot) entry.pilotName=pilot->formalName ();
 	entry.minPassengers=entry.maxPassengers=flight->numPassengers ();
-	entry.departureLocation=flight->departureLocation;
-	entry.landingLocation=flight->landingLocation;
+	entry.departureLocation=flight->departureLocation.trimmed ();
+	entry.landingLocation=flight->landingLocation.trimmed ();
 	entry.departureTime=flight->departureTime; // TODO: check flight mode
 	entry.landingTime=flight->landingTime; // TODO: check flight mode
 	entry.numLandings=flight->numLandings;
 	entry.operationTime=flight->flightDuration (); // TODO: check flight mode
-	entry.comments=flight->comments;
+	entry.comments=flight->comments.trimmed ();
 
 	entry.valid=flight->finished ();
 
@@ -111,8 +111,8 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Ca
 
 	entry.date=flights.last ()->effdatum ();
 	if (pilot) entry.pilotName=pilot->formalName ();
-	entry.departureLocation=flights.first ()->departureLocation;
-	entry.landingLocation=flights.last ()->landingLocation;
+	entry.departureLocation=flights.first ()->departureLocation.trimmed ();
+	entry.landingLocation=flights.last ()->landingLocation.trimmed ();
 	entry.departureTime=flights.first ()->departureTime;
 	entry.landingTime=flights.last ()->landingTime;
 
@@ -133,7 +133,7 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Ca
 		entry.numLandings+=flight->numLandings;
 		entry.operationTime=entry.operationTime.addSecs (QTime ().secsTo (flight->flightDuration ())); // TODO: check flight mode
 
-		if (!eintrag_ist_leer (flight->comments)) comments << flight->comments;
+		if (!eintrag_ist_leer (flight->comments)) comments << flight->comments.trimmed ();
 		if (!flight->finished ()) entry.valid=false;
 
 		if (flight->isTowflight ()) ++numTowFlights;
