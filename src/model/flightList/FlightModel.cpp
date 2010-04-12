@@ -49,7 +49,6 @@ QVariant FlightModel::displayHeaderData (int column) const
 		case 15: return "ID";
 	}
 
-	std::cout << "column is " << column << std::endl;
 	// Apparantly, an unhandled column can happen when the last flight is deleted
 	return QVariant ();
 }
