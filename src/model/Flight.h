@@ -174,7 +174,7 @@ class Flight
 		virtual QTime flightDuration () const;
 		virtual QTime towflightDuration () const;
 
-		// TODO not good
+		// TODO not good - hasDepartureTime and canHaveLandingTime; flying flights already have a duration!
 		virtual bool hasDuration () const { return hasDepartureTime () && canHaveLandingTime (); }
 		virtual bool hasTowflightDuration () const { return hasDepartureTime () && canHaveTowflightLandingTime (); }
 

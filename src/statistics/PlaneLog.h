@@ -37,7 +37,7 @@ class PlaneLog: public QAbstractTableModel
 				QString departureLocation;
 				QString landingLocation;
 				QDateTime departureTime;
-				QDateTime  landingTime;
+				QDateTime landingTime;
 				int numLandings;
 				QTime operationTime;
 				QString comments;
@@ -48,6 +48,7 @@ class PlaneLog: public QAbstractTableModel
 				virtual QString numPassengersString () const;
 				virtual QString departureTimeText () const;
 				virtual QString landingTimeText () const;
+				virtual QVariant numLandingsText () const;
 				virtual QString operationTimeText () const;
 		};
 

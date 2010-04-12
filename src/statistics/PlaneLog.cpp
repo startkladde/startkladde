@@ -43,17 +43,35 @@ QString PlaneLog::Entry::numPassengersString () const
 
 QString PlaneLog::Entry::departureTimeText () const
 {
-	return departureTime.toUTC ().toString ("hh:mm")+"Z";
+	if (departureTime.isValid ())
+		return departureTime.toUTC ().toString ("hh:mm")+"Z";
+	else
+		return "-";
 }
 
 QString PlaneLog::Entry::landingTimeText () const
 {
-	return landingTime.toUTC ().toString ("hh:mm")+"Z";
+	if (landingTime.isValid ())
+		return landingTime.toUTC ().toString ("hh:mm")+"Z";
+	else
+		return "-";
+}
+
+QVariant PlaneLog::Entry::numLandingsText () const
+{
+	if (numLandings>0)
+		return numLandings;
+	else
+		return "-";
 }
 
 QString PlaneLog::Entry::operationTimeText () const
 {
-	return operationTime.toString ("h:mm");
+	// Operation times >24h may be valid, so use isNull rather than isValid
+	if (!operationTime.isNull ())
+		return operationTime.toString ("h:mm");
+	else
+		return "-";
 }
 
 // ********************
@@ -78,10 +96,10 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Cache &cache)
 	entry.minPassengers=entry.maxPassengers=flight->numPassengers ();
 	entry.departureLocation=flight->departureLocation.trimmed ();
 	entry.landingLocation=flight->landingLocation.trimmed ();
-	entry.departureTime=flight->departureTime; // TODO: check flight mode
-	entry.landingTime=flight->landingTime; // TODO: check flight mode
-	entry.numLandings=flight->numLandings;
-	entry.operationTime=flight->flightDuration (); // TODO: check flight mode
+	entry.departureTime=flight->hasDepartureTime ()?flight->departureTime:QDateTime ();
+	entry.  landingTime=flight->hasLandingTime   ()?flight->  landingTime:QDateTime ();
+	entry.numLandings  =flight->landsHere ()?flight->numLandings:0;
+	entry.operationTime=flight->hasDuration ()?flight->flightDuration ():QTime ();
 	entry.comments=flight->comments.trimmed ();
 
 	entry.valid=flight->finished ();
@@ -131,7 +149,9 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Ca
 		if (entry.maxPassengers==0 || numPassengers>entry.maxPassengers) entry.maxPassengers=numPassengers;
 
 		entry.numLandings+=flight->numLandings;
-		entry.operationTime=entry.operationTime.addSecs (QTime ().secsTo (flight->flightDuration ())); // TODO: check flight mode
+
+		if (flight->hasDuration ())
+			entry.operationTime=entry.operationTime.addSecs (QTime ().secsTo (flight->flightDuration ())); // TODO: check flight mode
 
 		if (!eintrag_ist_leer (flight->comments)) comments << flight->comments.trimmed ();
 		if (!flight->finished ()) entry.valid=false;
@@ -313,7 +333,7 @@ QVariant PlaneLog::data (const QModelIndex &index, int role) const
 			case 6: return entry.landingLocation;
 			case 7: return entry.departureTimeText ();
 			case 8: return entry.landingTimeText ();
-			case 9: return entry.numLandings;
+			case 9: return entry.numLandingsText ();
 			case 10: return entry.operationTimeText ();
 			case 11: return entry.comments;
 			default: assert (false); return QVariant ();
