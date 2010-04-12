@@ -27,7 +27,7 @@ PlaneLog::Entry::~Entry ()
 
 QString PlaneLog::Entry::dateText () const
 {
-	return date.toString (Qt::LocaleDate);
+	return date.toString (Qt::DefaultLocaleShortDate);
 }
 
 QString PlaneLog::Entry::numPassengersString () const

@@ -4,6 +4,7 @@
  *     may be created during connect, such as the root interface
  *   - when double-clicking in the empty area of the flight table, create a new
  *     flight
+ *   - when double-clicking on the display date label, change the display date
  */
 //	assert (isGuiThread ());
 
@@ -492,7 +493,7 @@ bool MainWindow::refreshFlights ()
 		flights += dbManager.getCache ().getPreparedFlights ().getList ();
 
 		ui.displayDateLabel->setPaletteForegroundColor (Qt::black);
-		ui.displayDateLabel->setText (today.toString (Qt::LocaleDate));
+		ui.displayDateLabel->setText (utf8 ("Heute (%1)").arg (today.toString (Qt::DefaultLocaleShortDate)));
 
 		proxyModel->setShowPreparedFlights (true);
 	}
@@ -503,7 +504,7 @@ bool MainWindow::refreshFlights ()
 		flights=dbManager.getCache ().getFlightsOther ().getList ();
 
 		ui.displayDateLabel->setPaletteForegroundColor (Qt::red);
-		ui.displayDateLabel->setText (dbManager.getCache ().getOtherDate ().toString (Qt::LocaleDate));
+		ui.displayDateLabel->setText (dbManager.getCache ().getOtherDate ().toString (Qt::DefaultLocaleLongDate));
 
 		proxyModel->setShowPreparedFlights (false);
 	}

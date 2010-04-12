@@ -28,7 +28,7 @@ PilotLog::Entry::~Entry ()
 
 QString PilotLog::Entry::dateText () const
 {
-	return date.toString (Qt::LocaleDate);
+	return date.toString (Qt::DefaultLocaleShortDate);
 }
 
 QString PilotLog::Entry::departureTimeText () const
