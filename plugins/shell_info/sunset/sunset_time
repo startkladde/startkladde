@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Plasma (from KDE) has sunset time calculation code
+
 datafile=$1
 if [ -z "$1" ]; then
 	datafile=sunsets
