@@ -76,7 +76,7 @@ bool Flight::operator< (const Flight &o) const
 }
 
 /**
- * Compares the flight with another flight.
+ * Compares the flight with another flight (custom sorting).
  *
  * @return >0 if this flight is later, <0 if this flight is earlier
  */
@@ -85,7 +85,7 @@ int Flight::sort (const Flight *other) const
 	// Both prepared
 	if (isPrepared () && other->isPrepared  ())
 	{
-		// Incoming prepared before local departing prepared
+		// Incoming prepared before locally departing prepared
 		if (departsHere () && !other->departsHere ()) return 1;
 		if (!departsHere () && other->departsHere ()) return -1;
 

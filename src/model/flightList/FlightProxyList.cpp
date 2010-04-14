@@ -12,7 +12,7 @@ FlightProxyList::FlightProxyList (Cache &cache, AbstractObjectList<Flight> &sour
 	sourceModel (sourceModel)
 {
 	// TODO: if there is no self launch method, the flight will be red
-	// in the table, but not show an error in the editor
+	// in the table, but not show an error in the editor (no longer true?)
 
 	// Some signals from the source model can be re-emitted without change
 #define reemitSignal(signal) do { QObject::connect (&sourceModel, SIGNAL (signal), this, SIGNAL (signal)); } while (0)
@@ -263,7 +263,7 @@ void FlightProxyList::sourceModel_dataChanged (const QModelIndex &topLeft, const
 			{
 				// No towflight yet - add it
 
-				// TODO code duplication with rows_inserted - should be in addTowflightFor
+				// TODO code duplication with rowsInserted - should be in addTowflightFor
 				int towflightIndex=towflights.size ();
 				int modelIndex=towflightIndexToModelIndex (towflightIndex);
 

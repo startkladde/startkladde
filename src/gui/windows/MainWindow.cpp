@@ -4,7 +4,7 @@
  *     may be created during connect, such as the root interface
  *   - when double-clicking in the empty area of the flight table, create a new
  *     flight
- *   - when double-clicking on the display date label, change the display date
+ *   - when double-clicking the display date label, change the display date
  */
 //	assert (isGuiThread ());
 
@@ -473,7 +473,7 @@ void MainWindow::settingsChanged ()
  * cache, including the display date label (text and color). Does not access
  * the database.
  */
-bool MainWindow::refreshFlights ()
+void MainWindow::refreshFlights ()
 {
 	// Fetch the current date to avoid it changing during the operation
 	// TODO time zone safety: should be local today
@@ -517,7 +517,7 @@ bool MainWindow::refreshFlights ()
 	// ui.flightTable->resizeRowsToContents ();
 
 	// TODO: set the cursor to last row, same column as before (this is
-	// usually called after a date change, so the previous flight is
+	// usually called after a date change, so the previous row is
 	// meaningless)
 	//int oldColumn = ui.flightTable->currentColumn ();
 	//int newRow = ui.flightTable->rowCount () - 1;
@@ -526,9 +526,6 @@ bool MainWindow::refreshFlights ()
 
 	// TODO
 	//updateInfo ();
-
-	// TODO void
-	return true;
 }
 
 dbId MainWindow::currentFlightId (bool *isTowflight)
@@ -553,7 +550,7 @@ dbId MainWindow::currentFlightId (bool *isTowflight)
 void MainWindow::sortCustom ()
 {
 	// Use custom sorting
-	proxyModel->setCustomSorting (true);
+	proxyModel->sortCustom ();
 
 	// Show the sort status in the header view
 	ui.flightTable->setSortingEnabled (false); // Make sure it is off

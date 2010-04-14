@@ -80,6 +80,15 @@ bool FlightSortFilterProxyModel::lessThan (const QModelIndex &left, const QModel
 		return QSortFilterProxyModel::lessThan (left, right);
 }
 
+/**
+ * Enables custom sorting
+ *
+ * Note that this only sets the custom sorting flag that will be evaluated by
+ * lessThan. The model will only be sorted when calling #sort (and the column
+ * will be ignored if custom sorting is enabled).
+ *
+ * @param customSorting
+ */
 void FlightSortFilterProxyModel::setCustomSorting (bool customSorting)
 {
 	this->customSorting=customSorting;

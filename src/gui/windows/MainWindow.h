@@ -82,7 +82,7 @@ class MainWindow: public QMainWindow
 		void setupLayout ();
 
 		// Actions
-		bool refreshFlights ();
+		void refreshFlights ();
 
 		// Data
 		QDate getNewFlightDate () { return ui.actionUseCurrentDateForNewFlights ? (QDate::currentDate ()) : displayDate; }
