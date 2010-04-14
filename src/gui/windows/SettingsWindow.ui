@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>438</width>
-    <height>494</height>
+    <width>439</width>
+    <height>466</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -312,10 +312,10 @@ das Datenbankpasswort eingegeben werden.</string>
              <item>
               <widget class="QLabel" name="passwordMessageLabel">
                <property name="text">
-                <string>Der Passwortschutz kann durch Löschen bzw. Editieren der Konfigurationsdatei bzw. des Registry-Schlüssels %1 aufgehoben werden.</string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
+                <string>Der Passwortschutz kann durch Löschen bzw. Editieren
+der Konfigurationsdatei bzw. des Registry-Schlüssels
+%1
+aufgehoben werden.</string>
                </property>
               </widget>
              </item>

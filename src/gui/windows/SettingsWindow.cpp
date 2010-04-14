@@ -48,6 +48,8 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	intervalDelegate->setItemEditorFactory (factory);
 	ui.infoPluginList->setItemDelegateForColumn (3, intervalDelegate);
 
+	// Note that this label does not use wordWrap because it causes the minimum
+	// size of the label not to work properly.
 	ui.passwordMessageLabel->setText (ui.passwordMessageLabel->text ().arg (QSettings ().fileName ()));
 
 	readSettings ();
