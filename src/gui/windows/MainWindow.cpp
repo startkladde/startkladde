@@ -1283,6 +1283,23 @@ void on_actionSort_triggered ()
 // **********
 
 /**
+ * Determines the date to use for new flights
+ *
+ * This is, depending on the current setting, either the current date (today)
+ * or the current display date.
+ *
+ * @return the date to use for new flights
+ */
+QDate MainWindow::getNewFlightDate ()
+{
+	if (ui.actionUseCurrentDateForNewFlights->isChecked ())
+		return QDate::currentDate ();
+	else
+		return displayDate;
+}
+
+
+/**
  *
  * @param displayDate null means current
  * @param force true means even if already that date
@@ -1432,7 +1449,7 @@ void MainWindow::cacheChanged (DbEvent event)
 					// TODO: set the cursor position to the flight
 
 					// TODO introduce Flight::hasDate (timeZone)
-					if (ui.actionResetDisplayDateOnNewFlight)
+					if (ui.actionResetDisplayDateOnNewFlight->isChecked ())
 					{
 						if (flight.isPrepared ())
 							setDisplayDateCurrent (false);

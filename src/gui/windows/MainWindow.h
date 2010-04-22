@@ -85,7 +85,7 @@ class MainWindow: public QMainWindow
 		void refreshFlights ();
 
 		// Data
-		QDate getNewFlightDate () { return ui.actionUseCurrentDateForNewFlights ? (QDate::currentDate ()) : displayDate; }
+		QDate getNewFlightDate ();
 		void setDisplayDate (QDate displayDate, bool force);
 		void setDisplayDateCurrent (bool force) { setDisplayDate (QDate::currentDate (), force); }
 		void updateFlight (const Flight &flight);
