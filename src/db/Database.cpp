@@ -209,13 +209,27 @@ QStringList Database::listPlaneTypes ()
 QList<Flight> Database::getPreparedFlights ()
 {
 	// The correct criterion for prepared flights is:
+	// !(happened)
+	// or
 	// !((departs_here and departed) or (lands_here and landed))
+	//
 	// Resolving the flight mode, we get:
 	// !( (local and (departed or landed)) or (leaving and departed) or (coming and landed) )
+	//
+	// Applying de Morgan (the MySQL query optimizer has a better chance of
+	// using an index with AND clauses):
+	// !( (local and !(!departed AND !landed)) or (leaving and departed) or (coming and landed) )
+	//
+	// Applying de Morgan to the outer clause (may not be necessary):
+	// !(local and !(!departed AND !landed)) and !(leaving and departed) and !(coming and landed)
+	//
+	// Note that we test for =0 or !=0 explicitly rather than evaluating the
+	// values as booleans (i. e. 'where departed=0' instead of 'where
+	// departed') because evaluating as booleans prevents using the index
 
 	// TODO to Flight
 	// TODO multi-bind
-	Query condition ("!( (mode=? AND (departed OR landed)) OR (mode=? AND departed) OR (mode=? AND landed) )");
+	Query condition ("!(mode=? AND !(departed=0 AND landed=0)) AND !(mode=? AND departed!=0) AND !(mode=? AND landed!=0)");
 	condition.bind (Flight::modeToDb (Flight::modeLocal  ));
 	condition.bind (Flight::modeToDb (Flight::modeLeaving));
 	condition.bind (Flight::modeToDb (Flight::modeComing ));
