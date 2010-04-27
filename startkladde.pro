@@ -53,7 +53,6 @@ HEADERS += \
            src/db/event/DbEvent.h \
            src/db/event/DbEventMonitor.h \
            src/db/interface/AbstractInterface.h \
-           src/db/interface/ColumnSpec.h \
            src/db/interface/DefaultInterface.h \
            src/db/interface/Interface.h \
            src/db/interface/InterfaceWorker.h \
@@ -75,6 +74,7 @@ HEADERS += \
            src/db/schema/CurrentSchema.h \
            src/db/schema/Schema.h \
            src/db/schema/SchemaDumper.h \
+           src/db/schema/spec/ColumnSpec.h \
            src/gui/dialogs.h \
            src/gui/views/ReadOnlyItemDelegate.h \
            src/gui/views/SpecialIntDelegate.h \
@@ -163,7 +163,6 @@ SOURCES += \
            src/db/event/DbEvent.cpp \
            src/db/event/DbEventMonitor.cpp \
            src/db/interface/AbstractInterface.cpp \
-           src/db/interface/ColumnSpec.cpp \
            src/db/interface/DefaultInterface.cpp \
            src/db/interface/Interface.cpp \
            src/db/interface/InterfaceWorker.cpp \
@@ -183,6 +182,7 @@ SOURCES += \
            src/db/result/DefaultResult.cpp \
            src/db/schema/Schema.cpp \
            src/db/schema/SchemaDumper.cpp \
+           src/db/schema/spec/ColumnSpec.cpp \
            src/gui/dialogs.cpp \
            src/gui/views/ReadOnlyItemDelegate.cpp \
            src/gui/views/SpecialIntDelegate.cpp \

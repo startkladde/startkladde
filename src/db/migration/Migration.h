@@ -7,7 +7,7 @@
 
 #include "src/db/Query.h"
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
-#include "src/db/interface/ColumnSpec.h"
+#include "src/db/schema/spec/ColumnSpec.h"
 
 template<class T> class QList;
 

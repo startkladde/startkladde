@@ -15,7 +15,7 @@
 #include "src/db/result/Result.h"
 #include "src/db/Query.h"
 #include "src/util/qString.h"
-#include "src/db/interface/ColumnSpec.h"
+#include "src/db/schema/spec/ColumnSpec.h"
 
 // ******************
 // ** Construction **
