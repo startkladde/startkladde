@@ -292,6 +292,8 @@ int doStuff (const QStringList &nonOptions)
 		Migrator (db).drop ();
 	else if (nonOptions[0]=="db:clear")
 		Migrator (db).clear ();
+	else if (nonOptions[0]=="db:ensure_empty")
+		return db.tableExists ()?1:0;
 	else if (nonOptions[0]=="db:create")
 		Migrator (db).create ();
 //	else if (nonOptions[0]=="db:test")

@@ -79,9 +79,11 @@ build/CurrentSchema.cpp: src/db/schema/CurrentSchema.cpp.erb src/db/migrations/c
 .PHONY: update_current_schema
 update_current_schema: startkladde
 	mkdir -p build
+	./startkladde db:ensure_empty || (echo "Error: database is not empty - use ./startkladde db:clear"; false)
 	./startkladde db:migrate
 	./startkladde db:dump build/current_schema.yaml
 	mv build/current_schema.yaml src/db/migrations/current_schema.yaml
+	echo "Schema definition updated successfully"
 
 
 
