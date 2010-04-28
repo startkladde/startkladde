@@ -177,7 +177,7 @@ QStringList Database::listLocations ()
 {
 	return interface.listStrings (Query::selectDistinctColumns (
 		Flight::dbTableName (),
-		QStringList () << "departure_location" << "landing_location",
+		QStringList () << "departure_location" << "landing_location" << "towflight_landing_location",
 		true));
 }
 

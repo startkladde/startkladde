@@ -798,7 +798,7 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 
 	ui.departureLocationInput->setEditText (flight.departureLocation);
 	ui.landingLocationInput->setEditText (flight.landingLocation);
-	ui.towflightLandingLocationInput->setEditText (flight.landingLocation);
+	ui.towflightLandingLocationInput->setEditText (flight.towflightLandingLocation);
 	if (!repeat) ui.numLandingsInput->setValue (flight.numLandings);
 
 	// space
