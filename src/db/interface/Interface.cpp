@@ -268,6 +268,10 @@ QList<IndexSpec> Interface::showIndexes (const QString &table)
 
 void Interface::createIndex (const IndexSpec &index, bool skipIfExists)
 {
+	std::cout << QString ("Creating index %1.%2%3")
+		.arg (index.getTable (), index.getName (), skipIfExists?" if it does not exist":"")
+		<< std::endl;
+
 	// TODO: the MySQL specific stuff should not be here
 	try
 	{
@@ -286,9 +290,23 @@ void Interface::createIndex (const IndexSpec &index, bool skipIfExists)
 	}
 }
 
-void Interface::dropIndex (const QString &table, const QString &name)
+void Interface::dropIndex (const QString &table, const QString &name, bool skipIfNotExists)
 {
-	executeQuery (QString ("DROP INDEX %1 ON %2").arg (name, table));
+	std::cout << QString ("Dropping index %1.%2%3")
+		.arg (table, name, skipIfNotExists?" if it exists":"")
+		<< std::endl;
+
+	try
+	{
+		executeQuery (QString ("DROP INDEX %1 ON %2").arg (name, table));
+	}
+	catch (QueryFailedException &ex)
+	{
+		if (skipIfNotExists && ex.error.number ()==ER_CANT_DROP_FIELD_OR_KEY)
+			std::cout << QString ("Skipping non-existing index %1.%2").arg (table, name) << std::endl;
+		else
+			throw;
+	}
 }
 
 

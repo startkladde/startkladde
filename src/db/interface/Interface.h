@@ -73,7 +73,7 @@ class Interface: public AbstractInterface
 		bool columnExists (const QString &table, const QString &name);
 		QList<IndexSpec> showIndexes (const QString &table);
 		void createIndex (const IndexSpec &index, bool skipIfExists=false);
-		void dropIndex (const QString &table, const QString &name);
+		void dropIndex (const QString &table, const QString &name, bool skipIfNotExists=false);
 
 
 		// *** Generic data manipulation

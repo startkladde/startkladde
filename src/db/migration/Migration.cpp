@@ -126,9 +126,9 @@ void Migration::createIndex (const IndexSpec &index, bool skipIfExists)
 }
 
 /** Forwards to interface#dropIndex */
-void Migration::dropIndex (const QString &table, const QString &name)
+void Migration::dropIndex (const QString &table, const QString &name, bool skipIfNotExists)
 {
-	interface.dropIndex (table, name);
+	interface.dropIndex (table, name, skipIfNotExists);
 }
 
 /** Forwards to interface#idColumn */

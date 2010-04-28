@@ -99,7 +99,7 @@ class Migration
 		void dropColumn (const QString &table, const QString &name, bool skipIfNotExists=true);
 		void renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type, const QString &extraSpecification="");
 		void createIndex (const IndexSpec &index, bool skipIfExists=true);
-		void dropIndex (const QString &table, const QString &name);
+		void dropIndex (const QString &table, const QString &name, bool skipIfNotExists=true);
 
 		ColumnSpec idColumn ();
 
