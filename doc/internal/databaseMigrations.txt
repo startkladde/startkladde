@@ -98,6 +98,9 @@ compile time and the current_schema.yaml is placed under version control.
 
 The current_schema.yaml can be updated by using "make update_current_schema".
 This compiles the program, applies all pending migrations and dumps the schema.
+Note that before doing this, you must clear the database (./startkladde
+db:clear) or the schema may be inconsistent with the migrations.
+ 
 The schema can also be dumped manually (without applying the migrations) by
 ./startkladde db:dump.
  

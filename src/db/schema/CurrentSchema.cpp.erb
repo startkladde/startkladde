@@ -58,6 +58,10 @@ void CurrentSchema::up (OperationMonitorInterface monitor)
 
 	createTable ("<%= table['name'] %>", columns);
 
+<% table['indexes'].each do |index| %>
+	createIndex (IndexSpec ("<%= table['name'] %>", "<%= index['name'] %>", "<%= index['columns'] %>"));
+<% end if table['indexes'] %>
+
 <% end %>
 
 	monitor.progress (<%= numOperations %>, <%= numOperations %>, "Fertig");

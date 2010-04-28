@@ -75,6 +75,7 @@ void SchemaDumper::dumpTable (QStringList &output, const QString &name)
 
 	output << QString ("- name: \"%1\"").arg (name);
 	dumpColumns (output, name);
+	dumpIndexes (output, name);
 }
 void SchemaDumper::dumpColumns (QStringList &output, const QString &table)
 {
@@ -84,6 +85,7 @@ void SchemaDumper::dumpColumns (QStringList &output, const QString &table)
 	QSharedPointer<Result> result=interface.executeQueryResult (query);
 
 	QSqlRecord record=result->record ();
+	// TODO: handle index not found. Also, this is backend specific and should be in Interface
 	int nameIndex=record.indexOf ("Field");
 	int typeIndex=record.indexOf ("Type");
 	int nullIndex=record.indexOf ("Null");
@@ -94,7 +96,7 @@ void SchemaDumper::dumpColumns (QStringList &output, const QString &table)
 		QString type=result->value (typeIndex).toString ();
 		QString null=result->value (nullIndex).toString ();
 
-		// The id columns created automatically, don't dump it
+		// The id columns created automatically, don't dump it (TODO: this needs work)
 		if (name!="id")
 			dumpColumn (output, name, type, null);
 	}
@@ -105,6 +107,24 @@ void SchemaDumper::dumpColumn (QStringList &output, const QString &name, const Q
 	output << QString ("  - name: \"%1\"").arg (name);
 	output << QString ("    type: \"%1\"").arg (type);
 	output << QString ("    nullok: \"%1\"").arg (null);
+}
+
+void SchemaDumper::dumpIndexes (QStringList &output, const QString &table)
+{
+	QList<IndexSpec> indexes=interface.showIndexes (table);
+
+	// Don't output anything if there are no indexes
+	if (indexes.isEmpty ()) return;
+
+	output << "  indexes:";
+	foreach (const IndexSpec &index, indexes)
+		dumpIndex (output, index);
+}
+
+void SchemaDumper::dumpIndex (QStringList &output, const IndexSpec &index)
+{
+	output << QString ("  - name: \"%1\"").arg (index.getName ());
+	output << QString ("    columns: \"%1\"").arg (index.getColumns ());
 }
 
 void SchemaDumper::dumpVersions (QStringList &output)

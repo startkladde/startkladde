@@ -8,6 +8,7 @@
 #include "src/db/Query.h"
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/db/schema/spec/ColumnSpec.h"
+#include "src/db/schema/spec/IndexSpec.h"
 
 template<class T> class QList;
 
@@ -97,6 +98,8 @@ class Migration
 		void changeColumnType (const QString &table, const QString &name, const QString &type, const QString &extraSpecification="");
 		void dropColumn (const QString &table, const QString &name, bool skipIfNotExists=true);
 		void renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type, const QString &extraSpecification="");
+		void createIndex (const IndexSpec &index, bool skipIfExists=true);
+		void dropIndex (const QString &table, const QString &name);
 
 		ColumnSpec idColumn ();
 

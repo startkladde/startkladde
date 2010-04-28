@@ -30,7 +30,7 @@ QString AbstractInterface::transactionStatementString (TransactionStatement stat
 {
 	switch (statement)
 	{
-		case transactionBegin   : return "Transaction";;
+		case transactionBegin   : return "Transaction";
 		case transactionCommit  : return "Commit";
 		case transactionRollback: return "Rollback";
 		// no default

@@ -13,6 +13,7 @@
 class QVariant;
 
 class ColumnSpec;
+class IndexSpec;
 
 /**
  * An abstract class that adds some functionality (like schema
@@ -70,6 +71,10 @@ class Interface: public AbstractInterface
 		void dropColumn (const QString &table, const QString &name, bool skipIfNotExists=false);
 		void renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type, const QString &extraSpecification="");
 		bool columnExists (const QString &table, const QString &name);
+		QList<IndexSpec> showIndexes (const QString &table);
+		void createIndex (const IndexSpec &index, bool skipIfExists=false);
+		void dropIndex (const QString &table, const QString &name);
+
 
 		// *** Generic data manipulation
 		void updateColumnValues (const QString &tableName, const QString &columnName, const QVariant &oldValue, const QVariant &newValue);

@@ -4,6 +4,7 @@
 #include <QString>
 
 class Interface;
+class IndexSpec;
 
 class SchemaDumper
 {
@@ -21,6 +22,8 @@ class SchemaDumper
 		void dumpTable    (QStringList &output, const QString &name);
 		void dumpColumns  (QStringList &output, const QString &table);
 		void dumpColumn   (QStringList &output, const QString &name, const QString &type, const QString &null);
+		void dumpIndexes  (QStringList &output, const QString &table);
+		void dumpIndex    (QStringList &output, const IndexSpec &index);
 		void dumpVersions (QStringList &output);
 };
 

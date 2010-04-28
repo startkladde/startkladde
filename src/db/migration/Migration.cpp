@@ -119,6 +119,18 @@ void Migration::renameColumn (const QString &table, const QString &oldName, cons
 	interface.renameColumn (table, oldName, newName, type, extraSpecification);
 }
 
+/** Forwards to interface#createIndex */
+void Migration::createIndex (const IndexSpec &index, bool skipIfExists)
+{
+	interface.createIndex (index, skipIfExists);
+}
+
+/** Forwards to interface#dropIndex */
+void Migration::dropIndex (const QString &table, const QString &name)
+{
+	interface.dropIndex (table, name);
+}
+
 /** Forwards to interface#idColumn */
 ColumnSpec Migration::idColumn ()
 {

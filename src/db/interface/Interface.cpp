@@ -11,11 +11,18 @@
 #include <QVariant>
 #include <QCryptographicHash>
 #include <QString>
+#include <QSqlError>
+
+// TODO should go to DefaultInterface/MySQLInterface
+#include <mysql/errmsg.h>
+#include <mysql/mysqld_error.h>
 
 #include "src/db/result/Result.h"
 #include "src/db/Query.h"
 #include "src/util/qString.h"
 #include "src/db/schema/spec/ColumnSpec.h"
+#include "src/db/schema/spec/IndexSpec.h"
+#include "src/db/interface/exceptions/QueryFailedException.h" // TODO remove
 
 // ******************
 // ** Construction **
@@ -207,11 +214,89 @@ bool Interface::columnExists (const QString &table, const QString &name)
 		.arg (table, name));
 }
 
+// TODO: this is backend specific
+QList<IndexSpec> Interface::showIndexes (const QString &table)
+{
+	QList<IndexSpec> indexes;
+
+	Query query=Query ("SHOW INDEXES FROM %1").arg (table);
+	QSharedPointer<Result> result=executeQueryResult (query);
+
+	QSqlRecord record=result->record ();
+	// TODO: handle index not found
+	int     nameIndex=record.indexOf ("Key_name");
+	int   columnIndex=record.indexOf ("Column_name");
+	int sequenceIndex=record.indexOf ("Seq_in_index");
+
+	// First, create a nested map:
+	// name -> (sequence -> column)
+	// Use a QMap rather than a QHash because the values are sorted by key.
+	// Note that performance is not an issue.
+
+	// Example:
+	// name             sequence    column
+	// ---------------------------------------------
+	// pilot_id_index   1           pilot_id
+	// status_index     1           departed
+	// status_index     2           landed
+	// status_index     3           towflight_landed
+
+	QMap<QString, QMap <int, QString> > map;
+
+	while (result->next ())
+	{
+		QString name    =result->value (    nameIndex).toString ();
+		QString column  =result->value (  columnIndex).toString ();
+		int     sequence=result->value (sequenceIndex).toInt ();
+
+		if (name!="PRIMARY")
+			map[name][sequence]=column;
+	}
+
+	// Second, create the indexes from the map
+	foreach (const QString &name, map.keys ())
+	{
+		QMap <int, QString> sequenceColumnMap=map[name];
+
+		QStringList columnList (sequenceColumnMap.values ());
+
+		indexes.append (IndexSpec (table, name, columnList.join (",")));
+	}
+
+	return indexes;
+}
+
+void Interface::createIndex (const IndexSpec &index, bool skipIfExists)
+{
+	// TODO: the MySQL specific stuff should not be here
+	try
+	{
+		executeQuery (QString ("CREATE INDEX %1 ON %2 (%3)")
+			.arg (index.getName (), index.getTable (), index.getColumns ()));
+	}
+	catch (QueryFailedException &ex)
+	{
+		// TODO: better check if the index exists before creating, don't
+		// execute the query at all in this case (also, this currently emits
+		// an error message)
+		if (skipIfExists && ex.error.number ()==ER_DUP_KEYNAME)
+			std::cout << QString ("Skipping existing index %1.%2").arg (index.getTable (), index.getName ()) << std::endl;
+		else
+			throw;
+	}
+}
+
+void Interface::dropIndex (const QString &table, const QString &name)
+{
+	executeQuery (QString ("DROP INDEX %1 ON %2").arg (name, table));
+}
+
+
+
 ColumnSpec Interface::idColumn ()
 {
 	return ColumnSpec ("id", dataTypeId (), "NOT NULL AUTO_INCREMENT PRIMARY KEY");
 }
-
 
 // *******************************
 // ** Generic data manipulation **
@@ -220,7 +305,6 @@ ColumnSpec Interface::idColumn ()
 void Interface::updateColumnValues (const QString &tableName, const QString &columnName,
 	const QVariant &oldValue, const QVariant &newValue)
 {
-	// TODO multi-bind or <<
 	executeQuery (Query ("UPDATE %1 SET %2=? WHERE %2=?")
 		.arg (tableName, columnName).bind (newValue).bind (oldValue));
 }

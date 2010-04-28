@@ -75,6 +75,7 @@ HEADERS += \
            src/db/schema/Schema.h \
            src/db/schema/SchemaDumper.h \
            src/db/schema/spec/ColumnSpec.h \
+           src/db/schema/spec/IndexSpec.h \
            src/gui/dialogs.h \
            src/gui/views/ReadOnlyItemDelegate.h \
            src/gui/views/SpecialIntDelegate.h \
@@ -183,6 +184,7 @@ SOURCES += \
            src/db/schema/Schema.cpp \
            src/db/schema/SchemaDumper.cpp \
            src/db/schema/spec/ColumnSpec.cpp \
+           src/db/schema/spec/IndexSpec.cpp \
            src/gui/dialogs.cpp \
            src/gui/views/ReadOnlyItemDelegate.cpp \
            src/gui/views/SpecialIntDelegate.cpp \
