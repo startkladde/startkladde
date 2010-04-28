@@ -12,6 +12,7 @@
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
 #include "src/db/cache/Cache.h"
+#include "src/util/qString.h"
 
 FlightModel::FlightModel (Cache &cache):
 	cache (cache)
@@ -97,8 +98,8 @@ QString FlightModel::sampleText (int columnIndex) const
 		case 9: return "Ldg."; // Header text is longer than content
 		case 10: return "Rheinstetten";
 		case 11: return "Rheinstetten";
-		case 12: return "Seilrissübung";
-		case 13: return "Landegebühr bezahlt";
+		case 12: return utf8 ("Seilrissübung");
+		case 13: return utf8 ("Landegebühr bezahlt");
 		case 14: return "12.34.5678";
 		case 15: return "12345";
 	}

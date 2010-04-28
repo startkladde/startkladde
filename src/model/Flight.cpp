@@ -517,18 +517,18 @@ QString Flight::errorDescription (FlightError code) const
 		case ff_keine_id: return utf8 ("Flug hat keine ID");
 		case ff_kein_flugzeug: return utf8 ("Kein Flugzeug angegeben");
 		// TODO use person_bezeichnung (flightType) (oder wie die heißt) here
-		case ff_pilot_nur_nachname: return utf8 ("Für den %1 ist nur ein Nachname angegeben").arg (QString (type==typeTraining2?"Flugschüler":"Piloten"));
-		case ff_pilot_nur_vorname: return  "Für den "+QString (type==typeTraining2?"Flugschüler":"Piloten")+" ist nur ein Vorname angegeben";
-		case ff_pilot_nicht_identifiziert: return  "Der "+QString (type==typeTraining2?"Flugschüler":"Pilot")+" ist nicht identifiziert";
+		case ff_pilot_nur_nachname: return utf8 ("Für den %1 ist nur ein Nachname angegeben").arg (utf8 (type==typeTraining2?"Flugschüler":"Piloten"));
+		case ff_pilot_nur_vorname: return  utf8 ("Für den ")+utf8 (type==typeTraining2?"Flugschüler":"Piloten")+" ist nur ein Vorname angegeben";
+		case ff_pilot_nicht_identifiziert: return  "Der "+utf8 (type==typeTraining2?"Flugschüler":"Pilot")+" ist nicht identifiziert";
 		case ff_begleiter_nur_nachname: return utf8 ("Für den %1 ist nur ein Nachname angegeben").arg (QString (type==typeTraining2?"Fluglehrer":"Begleiter"));
-		case ff_begleiter_nur_vorname: return  "Für den "+QString (type==typeTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
+		case ff_begleiter_nur_vorname: return  utf8 ("Für den ")+QString (type==typeTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
 		case ff_begleiter_nicht_identifiziert: return  "Der "+QString (type==typeTraining2?"Fluglehrer":"Begleiter")+" ist nicht identifiziert";
 		case ff_towpilot_nur_nachname: return utf8 ("Für den Schleppiloten ist nur ein Nachname angegeben");
-		case ff_towpilot_nur_vorname: return  "Für den Schleppiloten ist nur ein Vorname angegeben";
+		case ff_towpilot_nur_vorname: return  utf8 ("Für den Schleppiloten ist nur ein Vorname angegeben");
 		case ff_towpilot_nicht_identifiziert: return  "Der Schleppilot ist nicht identifiziert";
-		case ff_kein_pilot: return utf8 ("Kein %1 angegeben").arg (QString (type==typeTraining2 || type==typeTraining1?"Flugschüler":"Pilot"));
-		case ff_pilot_gleich_begleiter: return QString (type==typeTraining2?"Flugschüler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
-		case ff_pilot_gleich_towpilot: return QString (type==typeTraining2?"Flugschüler":"Pilot")+" und Schlepppilot sind identisch";
+		case ff_kein_pilot: return utf8 ("Kein %1 angegeben").arg (utf8 (type==typeTraining2 || type==typeTraining1?"Flugschüler":"Pilot"));
+		case ff_pilot_gleich_begleiter: return utf8 (type==typeTraining2?"Flugschüler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
+		case ff_pilot_gleich_towpilot: return utf8 (type==typeTraining2?"Flugschüler":"Pilot")+" und Schlepppilot sind identisch";
 		case ff_schulung_ohne_begleiter: return utf8 ("Doppelsitzige Schulung ohne Fluglehrer");
 		case ff_begleiter_nicht_erlaubt: return utf8 ("Begleiter ist nicht erlaubt");
 		case ff_nur_gelandet: return utf8 ("Flug ist gelandet, aber nicht gestartet");

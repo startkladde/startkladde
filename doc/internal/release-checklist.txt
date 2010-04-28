@@ -1,5 +1,8 @@
 Code:
-- All strings (at least those with non-ASCII-characters) as  utf8 ("...")
+* All strings (at least those with non-ASCII-characters) as  utf8 ("...") (does
+  not apply to functions which interpret char* as utf8 such as monitor.status)
+* No default clauses in switch statements where all values should be handled
+* No compiler warnings
 
 
 

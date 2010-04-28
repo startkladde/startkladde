@@ -7,6 +7,7 @@
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
 #include "src/text.h"
+#include "src/util/qString.h"
 
 // ************************
 // ** Entry construction **
@@ -160,9 +161,9 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Ca
 	}
 
 	if (numTowFlights==1)
-		comments << "Schleppflug";
+		comments << utf8 ("Schleppflug");
 	else if (numTowFlights>1)
-		comments << "Schleppflüge";
+		comments << utf8 ("Schleppflüge");
 
 	entry.comments=comments.join ("; ");
 

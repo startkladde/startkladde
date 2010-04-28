@@ -52,13 +52,13 @@ void Migrator::runMigration (quint64 version, Migration::Direction direction, Op
 		{
 			case Migration::dirUp:
 				std::cout << "== Applying: " << name << " " << QString (79-14-name.length (), '=') << std::endl;
-				monitor.status (QString ("Migration anwenden: %1").arg (name));
+				monitor.status (utf8 ("Migration anwenden: %1").arg (name));
 				migration->up ();
 				addMigration (version);
 				break;
 			case Migration::dirDown:
 				std::cout << "== Reverting: " << name << " " << QString (79-15-name.length (), '=') << std::endl;
-				monitor.status (QString ("Migration rückgängig machen: %1").arg (name));
+				monitor.status (utf8 ("Migration rückgängig machen: %1").arg (name));
 				migration->down ();
 				removeMigration (version);
 				break;

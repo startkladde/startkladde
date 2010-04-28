@@ -2,6 +2,7 @@
 
 #include "src/db/cache/Cache.h"
 #include "src/gui/dialogs.h"
+#include "src/util/qString.h"
 
 LaunchMethodSelectionWindow::LaunchMethodSelectionWindow (QWidget *parent):
 	QDialog (parent)
@@ -18,7 +19,7 @@ bool LaunchMethodSelectionWindow::select (Cache &cache, dbId &value, QWidget *pa
 {
 	if (cache.getLaunchMethods ().getList ().isEmpty ())
 	{
-		showWarning ("Keine Startarten definiert", "Es kann keine Startart vorausgewählt werden, da keine Startarten definiert sind.", parent);
+		showWarning (utf8 ("Keine Startarten definiert"), utf8 ("Es kann keine Startart vorausgewählt werden, da keine Startarten definiert sind."), parent);
 		return false;
 	}
 
