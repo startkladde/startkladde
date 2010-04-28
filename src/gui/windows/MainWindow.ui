@@ -372,6 +372,7 @@
      <string>&amp;Flug</string>
     </property>
     <addaction name="actionNew"/>
+    <addaction name="actionLaunchMethodPreselection"/>
     <addaction name="separator"/>
     <addaction name="actionDepart"/>
     <addaction name="actionLand"/>
@@ -865,6 +866,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionLaunchMethodPreselection">
+   <property name="text">
+    <string>Starta&amp;rt-Vorauswahl...</string>
    </property>
   </action>
  </widget>

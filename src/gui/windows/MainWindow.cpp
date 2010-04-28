@@ -29,6 +29,7 @@
 #include "src/gui/widgets/WeatherWidget.h"
 #include "src/gui/windows/DateInputDialog.h"
 #include "src/gui/windows/FlightWindow.h"
+#include "src/gui/windows/LaunchMethodSelectionWindow.h"
 #include "src/gui/windows/ObjectListWindow.h"
 #include "src/gui/windows/SplashScreen.h"
 #include "src/gui/windows/StatisticsWindow.h"
@@ -64,6 +65,7 @@ template <class T> class MutableObjectList;
 MainWindow::MainWindow (QWidget *parent) :
 	QMainWindow (parent), dbManager (Settings::instance ().databaseInfo),
 		cache (dbManager.getCache ()),
+		preselectedLaunchMethod (invalidId),
 		createFlightWindow (NULL), editFlightWindow (NULL),
 		weatherWidget (NULL), weatherPlugin (NULL),
 		weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
@@ -754,7 +756,12 @@ void MainWindow::landTowflight (dbId id)
 void MainWindow::on_actionNew_triggered ()
 {
 	delete createFlightWindow; // noop if NULL
-	createFlightWindow=FlightWindow::createFlight (this, dbManager, getNewFlightDate ());
+	createFlightWindow=FlightWindow::createFlight (this, dbManager, getNewFlightDate (), preselectedLaunchMethod);
+}
+
+void MainWindow::on_actionLaunchMethodPreselection_triggered ()
+{
+	LaunchMethodSelectionWindow::select (cache, preselectedLaunchMethod, this);
 }
 
 void MainWindow::on_actionDepart_triggered ()
@@ -1550,25 +1557,26 @@ void MainWindow::setDatabaseActionsEnabled (bool enabled)
 {
 	databaseActionsEnabled=enabled;
 
-	ui.actionDelete                 ->setEnabled (enabled);
-	ui.actionEdit                   ->setEnabled (enabled);
-	ui.actionEditPeople             ->setEnabled (enabled);
-	ui.actionEditPlanes             ->setEnabled (enabled);
-	ui.actionEditLaunchMethods      ->setEnabled (enabled);
-	ui.actionJumpToTow              ->setEnabled (enabled);
-	ui.actionLand                   ->setEnabled (enabled);
-	ui.actionLaunchMethodStatistics ->setEnabled (enabled);
-	ui.actionNew                    ->setEnabled (enabled);
-	ui.actionPersonLogs             ->setEnabled (enabled);
-	ui.actionPingServer             ->setEnabled (enabled);
-	ui.actionPlaneLogs              ->setEnabled (enabled);
-	ui.actionRefreshAll             ->setEnabled (enabled);
-	ui.actionRefreshTable           ->setEnabled (enabled);
-	ui.actionRepeat                 ->setEnabled (enabled);
-	ui.actionSetDisplayDate         ->setEnabled (enabled);
-	ui.actionDepart                 ->setEnabled (enabled);
-	ui.actionTouchngo               ->setEnabled (enabled);
-	ui.actionDisplayError           ->setEnabled (enabled);
+	ui.actionDelete                  ->setEnabled (enabled);
+	ui.actionEdit                    ->setEnabled (enabled);
+	ui.actionEditPeople              ->setEnabled (enabled);
+	ui.actionEditPlanes              ->setEnabled (enabled);
+	ui.actionEditLaunchMethods       ->setEnabled (enabled);
+	ui.actionJumpToTow               ->setEnabled (enabled);
+	ui.actionLand                    ->setEnabled (enabled);
+	ui.actionLaunchMethodStatistics  ->setEnabled (enabled);
+	ui.actionNew                     ->setEnabled (enabled);
+	ui.actionLaunchMethodPreselection->setEnabled (enabled);
+	ui.actionPersonLogs              ->setEnabled (enabled);
+	ui.actionPingServer              ->setEnabled (enabled);
+	ui.actionPlaneLogs               ->setEnabled (enabled);
+	ui.actionRefreshAll              ->setEnabled (enabled);
+	ui.actionRefreshTable            ->setEnabled (enabled);
+	ui.actionRepeat                  ->setEnabled (enabled);
+	ui.actionSetDisplayDate          ->setEnabled (enabled);
+	ui.actionDepart                  ->setEnabled (enabled);
+	ui.actionTouchngo                ->setEnabled (enabled);
+	ui.actionDisplayError            ->setEnabled (enabled);
 
 	ui.flightTable->setEnabled (enabled);
 

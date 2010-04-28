@@ -125,6 +125,7 @@ class MainWindow: public QMainWindow
 
 		// Menu: Flight
 		void on_actionNew_triggered ();
+		void on_actionLaunchMethodPreselection_triggered ();
 		void on_actionDepart_triggered ();
 		void on_actionLand_triggered ();
 		void on_actionTouchngo_triggered ();
@@ -220,6 +221,7 @@ class MainWindow: public QMainWindow
 		Cache &cache;
 
 		QDate displayDate;
+		dbId preselectedLaunchMethod;
 
 		QPointer<FlightWindow> createFlightWindow;
 		QPointer<FlightWindow> editFlightWindow;

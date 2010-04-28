@@ -410,13 +410,14 @@ void FlightWindow::showEvent (QShowEvent *event)
  *       by the accepting slot.
  */
 
-FlightWindow *FlightWindow::createFlight (QWidget *parent, DbManager &manager, QDate date)
+FlightWindow *FlightWindow::createFlight (QWidget *parent, DbManager &manager, QDate date, dbId preselectedLaunchMethod)
 {
 	FlightWindow *w=new FlightWindow (parent, modeCreate, manager, NULL);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
 
 	w->ui.dateInput->setDate (date);
 	w->updateSetup ();
+	if (idValid (preselectedLaunchMethod)) w->ui.launchMethodInput->setCurrentItemByItemData (preselectedLaunchMethod);
 
 	w->show ();
 

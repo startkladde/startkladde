@@ -94,7 +94,9 @@ void SkComboBox::focusInEvent (QFocusEvent *event)
 
 QVariant SkComboBox::currentItemData (int role)
 {
-	return itemData (currentIndex (), role);
+	int index=currentIndex ();
+	if (index<0) return QVariant ();
+	return itemData (index, role);
 }
 
 bool SkComboBox::setCurrentItemByItemData (QVariant value)

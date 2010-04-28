@@ -154,7 +154,7 @@ class FlightWindow: public QDialog
 		void fillData ();
 
 		// *** Invocation
-		static FlightWindow *createFlight (QWidget *parent, DbManager &manager, QDate date);
+		static FlightWindow *createFlight (QWidget *parent, DbManager &manager, QDate date, dbId preselectedLaunchMethod);
 		static FlightWindow *repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date);
 		static FlightWindow *editFlight   (QWidget *parent, DbManager &manager, Flight &flight);
 

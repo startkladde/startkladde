@@ -1,0 +1,43 @@
+#include "LaunchMethodSelectionWindow.h"
+
+#include "src/db/cache/Cache.h"
+#include "src/gui/dialogs.h"
+
+LaunchMethodSelectionWindow::LaunchMethodSelectionWindow (QWidget *parent):
+	QDialog (parent)
+{
+	ui.setupUi (this);
+}
+
+LaunchMethodSelectionWindow::~LaunchMethodSelectionWindow ()
+{
+
+}
+
+bool LaunchMethodSelectionWindow::select (Cache &cache, dbId &value, QWidget *parent)
+{
+	if (cache.getLaunchMethods ().getList ().isEmpty ())
+	{
+		showWarning ("Keine Startarten definiert", "Es kann keine Startart vorausgewählt werden, da keine Startarten definiert sind.", parent);
+		return false;
+	}
+
+	LaunchMethodSelectionWindow *window=new LaunchMethodSelectionWindow (parent);
+	window->setModal (true);
+
+	foreach (const LaunchMethod &launchMethod, cache.getLaunchMethods ().getList ())
+		window->ui.launchMethodInput->addItem (launchMethod.name, launchMethod.getId ());
+
+	window->ui.preselectionCheckbox->setChecked (idValid (value));
+	if (idValid (value))
+		window->ui.launchMethodInput->setCurrentItemByItemData (value);
+
+	if (window->exec ()!=QDialog::Accepted) return false;
+
+	if (window->ui.preselectionCheckbox->isChecked ())
+		value=window->ui.launchMethodInput->currentItemData ().toLongLong ();
+	else
+		value=invalidId;
+
+	return true;
+}

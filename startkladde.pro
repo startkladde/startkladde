@@ -89,6 +89,7 @@ HEADERS += \
            src/gui/widgets/WeatherWidget.h \
            src/gui/windows/DateInputDialog.h \
            src/gui/windows/FlightWindow.h \
+           src/gui/windows/LaunchMethodSelectionWindow.h \
            src/gui/windows/MainWindow.h \
            src/gui/windows/MonitorDialog.h \
            src/gui/windows/ObjectListWindow.h \
@@ -197,6 +198,7 @@ SOURCES += \
            src/gui/widgets/WeatherWidget.cpp \
            src/gui/windows/DateInputDialog.cpp \
            src/gui/windows/FlightWindow.cpp \
+           src/gui/windows/LaunchMethodSelectionWindow.cpp \
            src/gui/windows/MainWindow.cpp \
            src/gui/windows/MonitorDialog.cpp \
            src/gui/windows/ObjectListWindow.cpp \
@@ -238,6 +240,7 @@ SOURCES += \
 FORMS += \
            src/gui/windows/DateInputDialog.ui \
            src/gui/windows/FlightWindow.ui \
+           src/gui/windows/LaunchMethodSelectionWindow.ui \
            src/gui/windows/MainWindow.ui \
            src/gui/windows/MonitorDialog.ui \
            src/gui/windows/ObjectListWindowBase.ui \
