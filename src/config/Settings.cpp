@@ -135,7 +135,7 @@ void Settings::readSettings ()
 	weatherPluginHeight  =s.value ("weatherPluginHeight"  , 200).toInt ();
 	weatherPluginInterval=s.value ("weatherPluginInterval", 600).toInt ();
 	// Weather dialog
-	weatherWindowCommand =s.value ("weatherWindowCommand" , "regenradar_wetteronline.de_ani").toString ();
+	weatherWindowCommand =s.value ("weatherWindowCommand" , "regenradar_wetteronline.de_animation").toString ();
 	weatherWindowEnabled =s.value ("weatherWindowEnabled" , true).toBool ();
 	weatherWindowInterval=s.value ("weatherWindowInterval", 300).toInt ();
 	weatherWindowTitle   =s.value ("weatherWindowTitle"   , "Regenradar (3 Stunden)").toString ();
