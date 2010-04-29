@@ -119,11 +119,11 @@ void Settings::readSettings ()
 	else
 	{
 		infoPlugins
-			<< ShellPluginInfo ("Sunset:"         , "sunset_time sunsets"     , false, 0  , false)
-			<< ShellPluginInfo ("Zeit bis sunset:", "sunset_countdown sunsets", true , 60 , false)
-			<< ShellPluginInfo ("Wetter:"         , "metar EDDS"              , false, 600, false)
-			<< ShellPluginInfo (""                , "metar EDDF"              , false, 600, false)
-			<< ShellPluginInfo (""                , "metar EDFM"              , false, 600, false)
+			<< ShellPluginInfo ("Sunset:"         , "sunset_time sunsets"     , true, false, 0  , false)
+			<< ShellPluginInfo ("Zeit bis sunset:", "sunset_countdown sunsets", true, true , 60 , false)
+			<< ShellPluginInfo ("Wetter:"         , "metar EDDS"              , true, false, 600, false)
+			<< ShellPluginInfo (""                , "metar EDDF"              , true, false, 600, false)
+			<< ShellPluginInfo (""                , "metar EDFM"              , true, false, 600, false)
 			;
 	}
 
@@ -131,10 +131,12 @@ void Settings::readSettings ()
 	// *** Plugins - Weather
 	// Weather plugin
 	weatherPluginCommand =s.value ("weatherPluginCommand" , "regenradar_wetteronline.de").toString ();
+	weatherPluginEnabled =s.value ("weatherPluginEnabled" , true).toBool ();
 	weatherPluginHeight  =s.value ("weatherPluginHeight"  , 200).toInt ();
 	weatherPluginInterval=s.value ("weatherPluginInterval", 600).toInt ();
 	// Weather dialog
 	weatherWindowCommand =s.value ("weatherWindowCommand" , "regenradar_wetteronline.de_ani").toString ();
+	weatherWindowEnabled =s.value ("weatherWindowEnabled" , true).toBool ();
 	weatherWindowInterval=s.value ("weatherWindowInterval", 300).toInt ();
 	weatherWindowTitle   =s.value ("weatherWindowTitle"   , "Regenradar (3 Stunden)").toString ();
 
@@ -197,10 +199,12 @@ void Settings::writeSettings ()
 	// *** Plugins - Weather
 	// Weather plugin
 	s.setValue ("weatherPluginCommand" , weatherPluginCommand);
+	s.setValue ("weatherPluginEnabled" , weatherPluginEnabled);
 	s.setValue ("weatherPluginHeight"  , weatherPluginHeight);
 	s.setValue ("weatherPluginInterval", weatherPluginInterval);
 	// Weather dialog
 	s.setValue ("weatherWindowCommand" , weatherWindowCommand);
+	s.setValue ("weatherWindowEnabled" , weatherWindowEnabled);
 	s.setValue ("weatherWindowInterval", weatherWindowInterval);
 	s.setValue ("weatherWindowTitle"   , weatherWindowTitle);
 

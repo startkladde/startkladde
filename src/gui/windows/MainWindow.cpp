@@ -333,19 +333,21 @@ void MainWindow::setupPlugins ()
 	ui.pluginPane->setVisible (!s.infoPlugins.isEmpty ());
 
 	foreach (const ShellPluginInfo &pluginInfo, s.infoPlugins)
-		setupPlugin (pluginInfo, pluginLayout);
+		if (pluginInfo.enabled)
+			setupPlugin (pluginInfo, pluginLayout);
 
 	pluginLayout->setColumnStretch (0, 0);
 	pluginLayout->setColumnStretch (1, 1);
 	pluginLayout->setRowStretch (pluginLayout->rowCount (), 1);
 
 
-	ui.weatherFrame->setVisible (!blank (s.weatherPluginCommand));
 
 	delete weatherWidget;
 	weatherWidget=NULL;
 
-	if (!blank (s.weatherPluginCommand))
+	bool showWeatherPlugin=(s.weatherPluginEnabled && !blank (s.weatherPluginCommand));
+	ui.weatherFrame->setVisible (showWeatherPlugin);
+	if (showWeatherPlugin)
 	{
 		// Create and setup the weather widget. The weather widget is located to
 		// the right of the info frame.
@@ -355,7 +357,6 @@ void MainWindow::setupPlugins ()
 		weatherWidget->setText ("[Wetter]");
 
 		// Create and setup the weather plugin and connect it to the weather widget
-		std::cout << "Weather plugin is " << s.weatherPluginCommand << std::endl;
 		weatherPlugin = new ShellPlugin ("Wetter", s.weatherPluginCommand, s.weatherPluginInterval);
 		QObject::connect (weatherPlugin, SIGNAL (lineRead (QString)), weatherWidget, SLOT (inputLine (QString)));
 		QObject::connect (weatherPlugin, SIGNAL (pluginNotFound ()), weatherWidget, SLOT (pluginNotFound ()));
@@ -1261,7 +1262,7 @@ void MainWindow::weatherWidget_doubleClicked ()
 	}
 	else
 	{
-		if (!blank (s.weatherWindowCommand))
+		if (s.weatherWindowEnabled && !blank (s.weatherWindowCommand))
 		{
 			// The weather animation plugin will be deleted by the weather dialog
 			ShellPlugin *weatherAnimationPlugin = new ShellPlugin (

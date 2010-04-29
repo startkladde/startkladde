@@ -17,7 +17,7 @@ class ShellPluginInfo
 	public:
 		ShellPluginInfo ();
 		ShellPluginInfo (QSettings &settings);
-		ShellPluginInfo (const QString &caption, const QString &command, bool richText, int restartInterval, bool warnOnDeath);
+		ShellPluginInfo (const QString &caption, const QString &command, bool enabled, bool richText, int restartInterval, bool warnOnDeath);
 		virtual ~ShellPluginInfo ();
 
 		virtual QString toString () const;
@@ -28,6 +28,7 @@ class ShellPluginInfo
 
 		QString caption;
 		QString command;
+		bool enabled;
 		bool richText;
 		int restartInterval;	// Restart interval in seconds, 0 for no restart
 		bool warnOnDeath;

@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -394,7 +394,7 @@ Schnelldiagnose:</string>
           <string/>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="infoPluginsTab">
           <attribute name="title">
@@ -442,6 +442,11 @@ Berech des Hauptfensters angezeigt.</string>
                  </property>
                  <property name="toolTip">
                   <string>Plugin-Kommando (mit eventuellen Parametern)</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Aktiv</string>
                  </property>
                 </column>
                 <column>
@@ -618,6 +623,9 @@ Option ist nur für Plugins sinnvoll, die dauerhaft laufen.</string>
              <property name="title">
               <string>Wettergrafik</string>
              </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
              <layout class="QGridLayout" name="gridLayout_12">
               <item row="1" column="2" colspan="2">
                <widget class="QLineEdit" name="weatherPluginCommandInput">
@@ -718,8 +726,11 @@ angezeigt.</string>
              <property name="title">
               <string>Wetterfenster</string>
              </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
              <layout class="QGridLayout" name="gridLayout_11">
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QLabel" name="weatherWindowCommandLabel">
                 <property name="text">
                  <string>&amp;Kommando:</string>
@@ -729,7 +740,7 @@ angezeigt.</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1" colspan="2">
+              <item row="1" column="1" colspan="2">
                <widget class="QLineEdit" name="weatherWindowCommandInput">
                 <property name="toolTip">
                  <string>Plugin-Kommando (mit eventuellen Parametern), das die
@@ -739,7 +750,7 @@ leer, wird keine Wetterfenster angezeigt.</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="2" column="0">
                <widget class="QLabel" name="weatherWindowTitleLabel">
                 <property name="text">
                  <string>Tite&amp;l:</string>
@@ -749,14 +760,14 @@ leer, wird keine Wetterfenster angezeigt.</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1" colspan="2">
+              <item row="2" column="1" colspan="2">
                <widget class="QLineEdit" name="weatherWindowTitleInput">
                 <property name="toolTip">
                  <string>Titel des Wetterfensters</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
+              <item row="3" column="0">
                <widget class="QLabel" name="weatherWindowIntervalLabel">
                 <property name="text">
                  <string>I&amp;ntervall:</string>
@@ -766,7 +777,7 @@ leer, wird keine Wetterfenster angezeigt.</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="3" column="1">
                <widget class="QSpinBox" name="weatherWindowIntervalInput">
                 <property name="toolTip">
                  <string>Dauer (in Sekunden) zwischen Aktualisierungen der Grafik im Wetterfenster</string>
@@ -779,7 +790,7 @@ leer, wird keine Wetterfenster angezeigt.</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="2">
+              <item row="3" column="2">
                <spacer name="horizontalSpacer_4">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -791,6 +802,16 @@ leer, wird keine Wetterfenster angezeigt.</string>
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item row="0" column="0" colspan="3">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Das Wetterfenster wird durch Doppelklick auf die Wettergrafik geöffnet, sofern diese aktiv ist.</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>

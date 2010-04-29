@@ -27,6 +27,13 @@
 #include "src/util/qString.h"
 #include "src/gui/dialogs.h"
 
+const int columnTitle=0;
+const int columnCommand=1;
+const int columnEnabled=2;
+const int columnRichText=3;
+const int columnInterval=4;
+const int columnWarnOnDeath=5;
+
 SettingsWindow::SettingsWindow (QWidget *parent):
 	QDialog (parent),
 	warned (false)
@@ -37,16 +44,17 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	ui.dbTypePane->setVisible (false);
 
 	// Make boolean columns read-only
-	ui.infoPluginList->setItemDelegateForColumn (2, new ReadOnlyItemDelegate (ui.infoPluginList));
-	ui.infoPluginList->setItemDelegateForColumn (4, new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (columnEnabled    , new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (columnRichText   , new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (columnWarnOnDeath, new ReadOnlyItemDelegate (ui.infoPluginList));
 
 	// Setup the integer colum
-	QStyledItemDelegate *intervalDelegate=new SpecialIntDelegate (0, "Nicht neu starten", " s", ui.infoPluginList);
-	SpinBoxCreator *spinBoxCreator=new SpinBoxCreator (0, "Nicht neu starten", " s");
+	QStyledItemDelegate *intervalDelegate=new SpecialIntDelegate (columnTitle, "Nicht neu starten", " s", ui.infoPluginList);
+	SpinBoxCreator *spinBoxCreator=new SpinBoxCreator (columnTitle, "Nicht neu starten", " s");
 	QItemEditorFactory *factory=new QItemEditorFactory;
 	factory->registerEditor (QVariant::Int, spinBoxCreator);
 	intervalDelegate->setItemEditorFactory (factory);
-	ui.infoPluginList->setItemDelegateForColumn (3, intervalDelegate);
+	ui.infoPluginList->setItemDelegateForColumn (columnInterval, intervalDelegate);
 
 	// Note that this label does not use wordWrap because it causes the minimum
 	// size of the label not to work properly.
@@ -107,13 +115,15 @@ void SettingsWindow::readSettings ()
 
 	// *** Plugins - Weather
 	// Weather plugin
-	ui.weatherPluginCommandInput ->setText  (s.weatherPluginCommand );
-	ui.weatherPluginHeightInput  ->setValue (s.weatherPluginHeight  );
-	ui.weatherPluginIntervalInput->setValue (s.weatherPluginInterval);
+	ui.weatherPluginBox          ->setChecked (s.weatherPluginEnabled);
+	ui.weatherPluginCommandInput ->setText    (s.weatherPluginCommand );
+	ui.weatherPluginHeightInput  ->setValue   (s.weatherPluginHeight  );
+	ui.weatherPluginIntervalInput->setValue   (s.weatherPluginInterval);
 	// Weather dialog
-	ui.weatherWindowCommandInput ->setText  (s.weatherWindowCommand );
-	ui.weatherWindowIntervalInput->setValue (s.weatherWindowInterval);
-	ui.weatherWindowTitleInput   ->setText  (s.weatherWindowTitle   );
+	ui.weatherWindowBox          ->setChecked (s.weatherWindowEnabled);
+	ui.weatherWindowCommandInput ->setText    (s.weatherWindowCommand );
+	ui.weatherWindowIntervalInput->setValue   (s.weatherWindowInterval);
+	ui.weatherWindowTitleInput   ->setText    (s.weatherWindowTitle   );
 
 	// *** Plugins - Paths
 	ui.pluginPathList->clear ();
@@ -129,11 +139,12 @@ void SettingsWindow::readSettings ()
 
 void SettingsWindow::readItem (QTreeWidgetItem *item, const ShellPluginInfo &plugin)
 {
-	item->setData       (0, Qt::DisplayRole, plugin.caption);
-	item->setData       (1, Qt::DisplayRole, plugin.command);
-	item->setCheckState (2, plugin.richText?Qt::Checked:Qt::Unchecked);
-	item->setData       (3, Qt::DisplayRole, plugin.restartInterval);
-	item->setCheckState (4, plugin.warnOnDeath?Qt::Checked:Qt::Unchecked);
+	item->setData       (columnTitle      , Qt::DisplayRole, plugin.caption);
+	item->setData       (columnCommand    , Qt::DisplayRole, plugin.command);
+	item->setCheckState (columnEnabled    , plugin.enabled?Qt::Checked:Qt::Unchecked);
+	item->setCheckState (columnRichText   , plugin.richText?Qt::Checked:Qt::Unchecked);
+	item->setData       (columnInterval   , Qt::DisplayRole, plugin.restartInterval);
+	item->setCheckState (columnWarnOnDeath, plugin.warnOnDeath?Qt::Checked:Qt::Unchecked);
 
 	item->setFlags (item->flags () | Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
 }
@@ -174,20 +185,23 @@ void SettingsWindow::writeSettings ()
 	{
 		QTreeWidgetItem &item=*ui.infoPluginList->topLevelItem (i);
 		s.infoPlugins << ShellPluginInfo (
-			item.data (0, Qt::DisplayRole).toString (), // caption
-			item.data (1, Qt::DisplayRole).toString (), // command
-			item.checkState (2)==Qt::Checked,           // richText
-			item.data (3, Qt::DisplayRole).toInt    (), // restartInterval
-			item.checkState (4)==Qt::Checked            // warnOnDeath
+			item.data       (columnTitle      , Qt::DisplayRole).toString (),
+			item.data       (columnCommand    , Qt::DisplayRole).toString (),
+			item.checkState (columnEnabled                     )==Qt::Checked,
+			item.checkState (columnRichText                    )==Qt::Checked,
+			item.data       (columnInterval   , Qt::DisplayRole).toInt    (),
+			item.checkState (columnWarnOnDeath                 )==Qt::Checked
 			);
 	}
 
 	// *** Plugins - Weather
 	// Weather plugin
+	s.weatherPluginEnabled =ui.weatherPluginBox          ->isChecked ();
 	s.weatherPluginCommand =ui.weatherPluginCommandInput ->text ();
 	s.weatherPluginHeight  =ui.weatherPluginHeightInput  ->value ();
 	s.weatherPluginInterval=ui.weatherPluginIntervalInput->value ();
 	// Weather dialog
+	s.weatherWindowEnabled =ui.weatherWindowBox          ->isChecked ();
 	s.weatherWindowCommand =ui.weatherWindowCommandInput ->text ();
 	s.weatherWindowInterval=ui.weatherWindowIntervalInput->value ();
 	s.weatherWindowTitle   =ui.weatherWindowTitleInput   ->text ();
