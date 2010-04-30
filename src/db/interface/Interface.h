@@ -24,6 +24,10 @@ class IndexSpec;
  *
  * For further information about the Interface class hierarchy see,
  * doc/interal/databaseArchitecture.txt
+ *
+ * Note: the methods of this class are used by the migrations. If any if the
+ * methods are changed, the migrations have to be updated to retain their
+ * original functionality.
  */
 class Interface: public AbstractInterface
 {

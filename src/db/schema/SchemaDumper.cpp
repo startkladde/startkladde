@@ -9,6 +9,7 @@
 #include "src/db/interface/Interface.h"
 #include "src/db/migration/Migrator.h" // Required for migrationsTableName/migrationsColumnName
 #include "src/db/result/Result.h"
+#include "src/text.h"
 
 SchemaDumper::SchemaDumper (Interface &interface):
 	interface (interface)
@@ -81,7 +82,7 @@ void SchemaDumper::dumpColumns (QStringList &output, const QString &table)
 {
 	output << "  columns:";
 
-	Query query=Query ("SHOW COLUMNS FROM %1").arg (table);
+	Query query=Query ("SHOW FULL COLUMNS FROM %1").arg (table);
 	QSharedPointer<Result> result=interface.executeQueryResult (query);
 
 	QSqlRecord record=result->record ();
@@ -89,24 +90,30 @@ void SchemaDumper::dumpColumns (QStringList &output, const QString &table)
 	int nameIndex=record.indexOf ("Field");
 	int typeIndex=record.indexOf ("Type");
 	int nullIndex=record.indexOf ("Null");
+	int keyIndex=record.indexOf ("Key");
+	int extraIndex=record.indexOf ("Extra");
 
 	while (result->next ())
 	{
 		QString name=result->value (nameIndex).toString ();
 		QString type=result->value (typeIndex).toString ();
 		QString null=result->value (nullIndex).toString ();
+		QString key=result->value (keyIndex).toString ();
+		QString extra=result->value (extraIndex).toString ();
 
-		// The id columns created automatically, don't dump it (TODO: this needs work)
-		if (name!="id")
-			dumpColumn (output, name, type, null);
+		dumpColumn (output, name, type, null, key, extra);
 	}
 }
 
-void SchemaDumper::dumpColumn (QStringList &output, const QString &name, const QString &type, const QString &null)
+void SchemaDumper::dumpColumn (QStringList &output, const QString &name, const QString &type, const QString &null, const QString &key, const QString &extra)
 {
 	output << QString ("  - name: \"%1\"").arg (name);
 	output << QString ("    type: \"%1\"").arg (type);
 	output << QString ("    nullok: \"%1\"").arg (null);
+	if (key=="PRI")
+		output << QString ("    primary_key: true");
+	if (!blank (extra))
+		output << QString ("    extra: \"%1\"").arg (extra);
 }
 
 void SchemaDumper::dumpIndexes (QStringList &output, const QString &table)

@@ -21,7 +21,7 @@ class SchemaDumper
 		void dumpTables   (QStringList &output);
 		void dumpTable    (QStringList &output, const QString &name);
 		void dumpColumns  (QStringList &output, const QString &table);
-		void dumpColumn   (QStringList &output, const QString &name, const QString &type, const QString &null);
+		void dumpColumn   (QStringList &output, const QString &name, const QString &type, const QString &null, const QString &key, const QString &extra);
 		void dumpIndexes  (QStringList &output, const QString &table);
 		void dumpIndex    (QStringList &output, const IndexSpec &index);
 		void dumpVersions (QStringList &output);

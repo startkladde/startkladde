@@ -40,7 +40,6 @@ void CurrentSchema::up (OperationMonitorInterface monitor)
 	monitor.progress (<%= progress+=1 %>, <%= numOperations %>, "<%= "Anlegen: #{table_name}" %>");
 
 	columns.clear ();
-	columns << idColumn ();
 <% table['columns'].each do |column| %>
 <%
 	# TODO create all columns at once
@@ -50,10 +49,15 @@ void CurrentSchema::up (OperationMonitorInterface monitor)
 	if !["YES", "NO"].include? column_null;
 		raise "Unknown value for column.null: #{column_null}";
 	end;
-	column_extra=""
-	column_extra="NOT NULL" if column_null=="NO"
+	column_extra=column['extra'] || ""
+	column_primary_key=column['primary_key']
+	
+	column_attributes=[]
+	column_attributes << column_extra  unless column_extra.strip==""
+	column_attributes << "NOT NULL"    if     column_null=="NO"
+	column_attributes << "PRIMARY KEY" if     column_primary_key
 %>
-	columns << ColumnSpec ("<%= column_name %>", "<%= column_type %>", "<%= column_extra %>");
+	columns << ColumnSpec ("<%= column_name %>", "<%= column_type %>", "<%= column_attributes.join(' ') %>");
 <% end %>
 
 	createTable ("<%= table['name'] %>", columns);

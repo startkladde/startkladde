@@ -92,10 +92,14 @@ void Interface::createDatabase (const QString &name, bool skipIfExists)
 }
 
 /**
- * Creates a table with and ID column
+ * Creates a table with an ID column
+ *
+ * A table without columns is not allowed, so this methods creates an ID column
+ * (see #idColumn).
  *
  * @param name
  * @param skipIfExists
+ * @see #createTable
  */
 void Interface::createTable (const QString &name, bool skipIfExists)
 {
@@ -111,7 +115,6 @@ void Interface::createTable (const QString &name, const QList<ColumnSpec> &colum
 	executeQuery (Query (
 		"CREATE TABLE %1 %2 ("
 		"%3"
-//		"PRIMARY KEY (id)"
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		)
 		.arg (skipIfExists?"IF NOT EXISTS":"", name, ColumnSpec::createClause (columns)));

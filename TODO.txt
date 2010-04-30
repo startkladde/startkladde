@@ -72,7 +72,6 @@ Database:
 * local disk caching
 * show upstream/downstream bytes in monitor dialog
 * preserve unknown values for enum types and launch methods
-* handling of the id column in schema dumper/current schema
 * Add an ID column to users - it's only present if the database has been newly
   created, not if it has been migrated
 
