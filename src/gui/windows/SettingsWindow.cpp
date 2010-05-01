@@ -36,7 +36,8 @@ const int columnWarnOnDeath=5;
 
 SettingsWindow::SettingsWindow (QWidget *parent):
 	QDialog (parent),
-	warned (false)
+	warned (false),
+	databaseSettingsChanged (false)
 {
 	ui.setupUi (this);
 	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
@@ -159,6 +160,8 @@ void SettingsWindow::writeSettings ()
 	Settings &s=Settings::instance ();
 	DatabaseInfo &info=s.databaseInfo;
 
+	DatabaseInfo oldInfo=info;
+
 	// *** Database
 	info.server     =ui.mysqlServerInput        ->text ();
 	info.defaultPort=ui.mysqlDefaultPortCheckBox->isChecked ();
@@ -213,6 +216,8 @@ void SettingsWindow::writeSettings ()
 		s.pluginPaths << ui.pluginPathList->item (i)->text ();
 
 	s.save ();
+
+	databaseSettingsChanged=oldInfo.different (info);
 }
 
 void SettingsWindow::updateWidgets ()

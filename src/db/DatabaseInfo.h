@@ -19,8 +19,11 @@ class DatabaseInfo
 		virtual void load (QSettings &settings);
 		virtual void save (QSettings &settings);
 
-		virtual int effectivePort () { return defaultPort ? 3306 : port; }
+		virtual int effectivePort () const { return defaultPort ? 3306 : port; }
 
+		virtual bool different (const DatabaseInfo &other);
+
+		// Update: toString, serverText, load, save, different
 		QString server;
 		bool defaultPort;
 		int port;

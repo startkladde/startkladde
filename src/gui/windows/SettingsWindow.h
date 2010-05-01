@@ -45,6 +45,9 @@ class SettingsWindow: public QDialog
 	private:
 		Ui::SettingsWindowClass ui;
 		bool warned;
+
+	public:
+		bool databaseSettingsChanged;
 };
 
 #endif

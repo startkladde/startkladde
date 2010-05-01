@@ -1519,7 +1519,6 @@ void FlightWindow::cacheChanged (DbEvent event)
 			// The flight departed
 			if (newFlight.departed!=originalFlight.departed)
 			{
-				// FIXME are changeds called?
 				ui.departureTimeCheckbox->setChecked (getTimeFieldCheckboxValue (newFlight.departed));
 				ui.departureTimeInput->setTime (newFlight.departureTime.toUTC ().time ()); // Even if not active
 
@@ -1616,7 +1615,6 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 		} break;
 	}
 
-	// The task completed. But was it successful?
 	if (!success)
 	{
 		QMessageBox::critical (

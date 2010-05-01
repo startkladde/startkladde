@@ -57,3 +57,25 @@ void DatabaseInfo::save (QSettings &settings)
 	settings.setValue ("password"   , password   );
 	settings.setValue ("database"   , database   );
 }
+
+/**
+ * Determines whether this databaseInfo refers to a different database than
+ * another one
+ *
+ * The databases can be identical (i. e. this method returns false) even if
+ * some values are different, for example, if they are not active because they
+ * belong to a different database type than selected.
+ *
+ * @param other
+ * @return
+ */
+bool DatabaseInfo::different (const DatabaseInfo &other)
+{
+	if (server          !=other.server          ) return true;
+	if (effectivePort ()!=other.effectivePort ()) return true;
+	if (username        !=other.username        ) return true;
+	if (password        !=other.password        ) return true;
+	if (database        !=other.database        ) return true;
+
+	return false;
+}

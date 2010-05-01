@@ -273,7 +273,7 @@ void DbManager::checkVersion (QWidget *parent)
 		case Migrator::actionLoad:
 		{
 			confirmOrCancel ("Datenbank leer",
-				utf8 ("Die Datenbank ist leer oder unvollständig. Soll sie jetzt erstellt werden?"), parent);
+				utf8 ("Die Datenbank %1 ist leer oder unvollständig. Soll sie jetzt erstellt werden?").arg (interface.getInfo ().toString ()), parent);
 
 			Returner<void> returner;
 			SignalOperationMonitor monitor;

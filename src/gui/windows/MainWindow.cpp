@@ -1606,6 +1606,24 @@ void MainWindow::on_actionSettings_triggered ()
 	SettingsWindow w (this);
 	w.setModal (true); // TODO non-model and auto delete
 	w.exec ();
+
+
+	// Check if the database changed
+	if (dbManager.getState ()==DbManager::stateConnected && w.databaseSettingsChanged)
+	{
+		QString title=utf8 ("Datenbankeinstellungen geändert");
+
+		QString text=utf8 (
+			"Die Datenbankeinstellungen wurden geändert."
+			" Die Änderungen werden beim nächsten Verbindungsaufbau wirksam."
+			" Soll die Verbindung jetzt neu aufgebaut werden?");
+
+		if (yesNoQuestion (this, title, text))
+		{
+			on_actionDisconnect_triggered ();
+			on_actionConnect_triggered ();
+		}
+	}
 }
 
 void MainWindow::on_actionSetTime_triggered ()
