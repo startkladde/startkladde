@@ -37,6 +37,9 @@ DbManager::DbManager (const DatabaseInfo &info):
 	QObject::connect (&interface, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()));
 	QObject::connect (&interface, SIGNAL (readResumed ()), this, SIGNAL (readResumed ()));
 	QObject::connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
+
+	QObject::connect (&migratorWorker, SIGNAL (migrationStarted ()), this, SIGNAL (migrationStarted ()));
+	QObject::connect (&migratorWorker, SIGNAL (migrationEnded   ()), this, SIGNAL (migrationEnded   ()));
 }
 
 DbManager::DbManager (const DbManager &other):

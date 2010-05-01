@@ -114,6 +114,9 @@ class MainWindow: public QMainWindow
 		void readTimeout ();
 		void readResumed ();
 
+		void migrationStarted () { oldLogVisible=ui.logDockWidget->isVisible (); ui.logDockWidget->setVisible (true); }
+		void migrationEnded () { ui.logDockWidget->setVisible (oldLogVisible); }
+
 		void settingsChanged ();
 
 	private slots:
@@ -216,6 +219,7 @@ class MainWindow: public QMainWindow
 
 	private:
 		Ui::MainWindowClass ui;
+		bool oldLogVisible;
 
 		DbManager dbManager;
 		Cache &cache;

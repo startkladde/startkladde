@@ -45,6 +45,9 @@ class MigratorWorker: public QObject
 		void getRequiredAction (Returner<Migrator::Action> &returner, OperationMonitor &monitor, quint64 *currentVersion, int *numPendingMigrations);
 
 	signals:
+		void migrationStarted ();
+		void migrationEnded ();
+
 		void sig_migrate           (Returner<void>             *returner, OperationMonitor *monitor);
 		void sig_loadSchema        (Returner<void>             *returner, OperationMonitor *monitor);
 		void sig_pendingMigrations (Returner<QList<quint64> >  *returner, OperationMonitor *monitor);

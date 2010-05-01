@@ -117,6 +117,9 @@ class DbManager: public QObject
 		void readTimeout ();
 		void readResumed ();
 		void stateChanged (DbManager::State state);
+		void migrationStarted ();
+		void migrationEnded ();
+
 
 	protected:
 		void setState (State newState);

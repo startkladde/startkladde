@@ -78,7 +78,9 @@ void MigratorWorker::getRequiredAction (Returner<Migrator::Action> &returner, Op
 
 void MigratorWorker::slot_migrate (Returner<void> *returner, OperationMonitor *monitor)
 {
-	returnVoidOrException (returner, migrator.migrate (monitor->interface ()));
+	emit migrationStarted ();
+	dontReturnVoidOrException (returner, migrator.migrate (monitor->interface ()));
+	emit migrationEnded ();
 }
 
 void MigratorWorker::slot_loadSchema (Returner<void> *returner, OperationMonitor *monitor)

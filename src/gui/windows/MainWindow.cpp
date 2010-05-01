@@ -63,7 +63,8 @@ template <class T> class MutableObjectList;
 // ******************
 
 MainWindow::MainWindow (QWidget *parent) :
-	QMainWindow (parent), dbManager (Settings::instance ().databaseInfo),
+	QMainWindow (parent), oldLogVisible (false),
+		dbManager (Settings::instance ().databaseInfo),
 		cache (dbManager.getCache ()),
 		preselectedLaunchMethod (invalidId),
 		createFlightWindow (NULL), editFlightWindow (NULL),
@@ -107,6 +108,9 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	// Do this before calling connect
 	QObject::connect (&dbManager.getCache (), SIGNAL (changed (DbEvent)), this, SLOT (cacheChanged (DbEvent)));
+
+	QObject::connect (&dbManager, SIGNAL (migrationStarted ()), this, SLOT (migrationStarted ()));
+	QObject::connect (&dbManager, SIGNAL (migrationEnded   ()), this, SLOT (migrationEnded   ()));
 
 	// TODO to showEvent?
 	QTimer::singleShot (0, this, SLOT (on_actionConnect_triggered ()));
