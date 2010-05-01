@@ -120,6 +120,28 @@ void Interface::createTable (const QString &name, const QList<ColumnSpec> &colum
 		.arg (skipIfExists?"IF NOT EXISTS":"", name, ColumnSpec::createClause (columns)));
 }
 
+void Interface::createTable (const QString &name, const QList<ColumnSpec> &columns, const QList<IndexSpec> &indexes, bool skipIfExists)
+{
+	std::cout << QString ("Creating table %1%2")
+		.arg (name, skipIfExists?" if it does not exist":"")
+		<< std::endl;
+
+	QString createColumnsClause=ColumnSpec::createClause (columns);
+
+	QString createIndexesClause;
+	if (!indexes.isEmpty ())
+		createIndexesClause=QString (", %1").arg (IndexSpec::createClause (indexes));
+
+	executeQuery (Query (
+		"CREATE TABLE %1 %2 ("
+		"%3%4"
+		") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+		)
+		.arg (skipIfExists?"IF NOT EXISTS":"", name, createColumnsClause, createIndexesClause));
+}
+
+
+
 void Interface::createTableLike (const QString &like, const QString &name, bool skipIfExists)
 {
 	std::cout << QString ("Creating table %1 like %2%3")

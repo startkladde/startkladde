@@ -62,6 +62,7 @@ class Interface: public AbstractInterface
 		void createDatabase (const QString &name, bool skipIfExists=false);
 		void createTable (const QString &name, bool skipIfExists=false);
 		void createTable (const QString &name, const QList<ColumnSpec> &columns, bool skipIfExists=false);
+		void createTable (const QString &name, const QList<ColumnSpec> &columns, const QList<IndexSpec> &indexes, bool skipIfExists=false);
 		void createTableLike (const QString &like, const QString &name, bool skipIfExists=false);
 		void dropTable (const QString &name);
 		void renameTable (const QString &oldName, const QString &newName);

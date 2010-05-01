@@ -12,7 +12,7 @@ ColumnSpec::~ColumnSpec ()
 {
 }
 
-QString ColumnSpec::createClause ()
+QString ColumnSpec::createClause () const
 {
 	if (extra.isEmpty ())
 		return QString ("%1 %2").arg (name, type);
@@ -24,7 +24,7 @@ QString ColumnSpec::createClause (const QList<ColumnSpec> &list)
 {
 	QStringList createClauses;
 
-	foreach (ColumnSpec columnSpec, list)
+	foreach (const ColumnSpec &columnSpec, list)
 		createClauses.append (columnSpec.createClause ());
 
 	return createClauses.join (", ");

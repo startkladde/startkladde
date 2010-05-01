@@ -76,6 +76,12 @@ void Migration::createTable (const QString &name, const QList<ColumnSpec> &colum
 	interface.createTable (name, columns, skipIfExists);
 }
 
+/** Forwards to interface#createTable */
+void Migration::createTable (const QString &name, const QList<ColumnSpec> &columns, const QList<IndexSpec> &indexes, bool skipIfExists)
+{
+	interface.createTable (name, columns, indexes, skipIfExists);
+}
+
 /** Forwards to interface#createTableLike */
 void Migration::createTableLike (const QString &like, const QString &name, bool skipIfExists)
 {

@@ -90,6 +90,7 @@ class Migration
 
 		void createTable (const QString &name, bool skipIfExists=true);
 		void createTable (const QString &name, const QList<ColumnSpec> &columns, bool skipIfExists=true);
+		void createTable (const QString &name, const QList<ColumnSpec> &columns, const QList<IndexSpec> &indexes, bool skipIfExists=true);
 		void createTableLike (const QString &like, const QString &name, bool skipIfExists=true);
 		void dropTable (const QString &name);
 		void renameTable (const QString &oldName, const QString &newName);

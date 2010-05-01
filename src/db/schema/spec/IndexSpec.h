@@ -9,6 +9,7 @@
 #define INDEXSPEC_H_
 
 #include <QString>
+#include <QList>
 
 class IndexSpec
 {
@@ -20,6 +21,9 @@ class IndexSpec
 		const QString &getTable   () const { return table  ; }
 		const QString &getName    () const { return name   ; }
 		const QString &getColumns () const { return columns; }
+
+		virtual QString createClause () const;
+		static QString createClause (const QList<IndexSpec> &list);
 
 	private:
 		QString table;

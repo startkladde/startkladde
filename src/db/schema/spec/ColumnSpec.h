@@ -18,7 +18,7 @@ class ColumnSpec
 		ColumnSpec (const QString &name, const QString &type, const QString &extra=QString ());
 		virtual ~ColumnSpec ();
 
-		virtual QString createClause ();
+		virtual QString createClause () const;
 		static QString createClause (const QList<ColumnSpec> &list);
 
 	private:

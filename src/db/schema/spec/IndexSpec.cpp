@@ -1,5 +1,7 @@
 #include "IndexSpec.h"
 
+#include <QStringList>
+
 IndexSpec::IndexSpec (const QString &table, const QString &name, const QString &columns):
 	table (table), name (name), columns (columns)
 {
@@ -14,3 +16,17 @@ IndexSpec::~IndexSpec ()
 {
 }
 
+QString IndexSpec::createClause () const
+{
+	return QString ("INDEX %1 (%2)").arg (name, columns);
+}
+
+QString IndexSpec::createClause (const QList<IndexSpec> &list)
+{
+	QStringList createClauses;
+
+	foreach (const IndexSpec &indexSpec, list)
+		createClauses.append (indexSpec.createClause ());
+
+	return createClauses.join (", ");
+}

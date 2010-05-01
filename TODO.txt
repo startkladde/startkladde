@@ -73,7 +73,7 @@ Database:
 * show upstream/downstream bytes in monitor dialog
 * preserve unknown values for enum types and launch methods
 * Add an ID column to users - it's only present if the database has been newly
-  created, not if it has been migrated
+  created, not if it has been migrated from the legacy database
 
 Other:
 * Time zone safety
