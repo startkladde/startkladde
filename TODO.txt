@@ -73,7 +73,13 @@ Database:
 * show upstream/downstream bytes in monitor dialog
 * preserve unknown values for enum types and launch methods
 * Add an ID column to users - it's only present if the database has been newly
-  created, not if it has been migrated from the legacy database
+  created, not if it has been migrated from the legacy database; the migration
+  will probably have to remove the old primary key (username) *if* it exists.
+* Create all columns at once in the initial migration and remove the id column
+  from the users table (safe???)
+* When a table already exists on create, create the columns and indexes
+  individually.
+* Check for missing columns/indexes when checking the database version 
 
 Other:
 * Time zone safety

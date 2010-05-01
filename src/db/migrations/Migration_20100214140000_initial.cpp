@@ -11,6 +11,13 @@ Migration_20100214140000_initial::~Migration_20100214140000_initial ()
 
 void Migration_20100214140000_initial::up ()
 {
+	// The columns are created individually, not in the createTable statement.
+	// This has the advantage that a table will have the required columns even
+	// if it already existed with some or all of the columns missing. It has
+	// the disadvantage that we have to create the users table with an id
+	// column which is different from the legacy database where the users table
+	// had no id column and the primary key was username.
+
 	createTable  ("person", true); // Creates the id column
 	addColumn ("person", "nachname"  , dataTypeString (), "", true);
 	addColumn ("person", "vorname"   , dataTypeString (), "", true);
@@ -67,7 +74,9 @@ void Migration_20100214140000_initial::up ()
 
 	createTableLike ("flug", "flug_temp", true);
 
-	createTable ("user", true); // Creates the id column
+	// Creates the id column; note that the legacy database did not contain an
+	// index column
+	createTable ("user", true);
 	addColumn ("user", "username",            dataTypeString  (), "NOT NULL", true); // TODO not null
 	addColumn ("user", "password",            dataTypeString  (), ""        , true);
 	addColumn ("user", "perm_club_admin",     dataTypeBoolean (), ""        , true);
