@@ -48,13 +48,14 @@ class Plane: public Entity
 
 
 		// *** Property access
-		virtual bool selfLaunchOnly ();
+		virtual bool selfLaunchOnly () const;
 	    static QString defaultRegistrationPrefix () { return "D-"; }
+	    virtual QString fullRegistration () const;
+	    virtual QString registrationWithType () const;
 
 
 		// *** Formatting
 		virtual QString toString () const;
-		virtual QString fullRegistration () const;
 	    static bool clubAwareLessThan (const Plane &p1, const Plane &p2);
 		virtual QString getDisplayName () const;
 

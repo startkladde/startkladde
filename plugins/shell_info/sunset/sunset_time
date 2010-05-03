@@ -7,8 +7,9 @@ if [ -z "$1" ]; then
 	datafile=sunsets
 fi
 
-date=`date -I`
-sunset=`grep $date $datafile |cut -f 2`
+#date=`date -I`
+date=`date +%m-%d`
+sunset=`grep "^$date" $datafile |head -n 1 |cut -f 2`
 
 if [ -z "$sunset" ]; then
 	echo "Datum $date nicht in Datendatei vorhanden"

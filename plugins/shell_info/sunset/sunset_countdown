@@ -26,7 +26,8 @@ if [ ! -r "$datafile" ]; then
 fi
 
 # Find the sunset
-sunset=$(grep $(date -I) $datafile |cut -s -f 2 |head -n 1)
+date=`date +%m-%d`
+sunset=$(grep "^$date" $datafile |cut -s -f 2 |head -n 1)
 
 # Check if the sunset was found
 if [ -z "$sunset" ]; then

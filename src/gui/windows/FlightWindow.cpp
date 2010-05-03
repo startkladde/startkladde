@@ -950,14 +950,14 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool departNow, cons
 
 	if (plane &&
 		plane->category==Plane::categoryGlider && launchMethod && launchMethod->type==LaunchMethod::typeSelf)
-		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.\nEs wurden jedoch \"Selbststart\" als Startart angegeben.")
-			.arg (plane->registration).arg (plane->type),
+		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 ein Segelflugzeug.\nEs wurden jedoch \"Eigenstart\" als Startart angegeben.")
+			.arg (plane->registrationWithType ()),
 			ui.launchMethodInput);
 
 	if (plane && launchMethod &&
 		(plane->category==Plane::categoryAirplane || plane->category==Plane::categoryUltralight) && launchMethod->type!=LaunchMethod::typeSelf)
-		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Motorflugzeug.\nEs wurden jedoch eine andere Startart als \"Selbststart\" angegeben.")
-			.arg (plane->registration).arg (plane->type),
+		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 ein Motorflugzeug.\nEs wurden jedoch eine andere Startart als \"Eigenstart\" angegeben.")
+			.arg (plane->registrationWithType ()),
 			ui.departureTimeInput);
 
 	if (plane && launchMethod &&

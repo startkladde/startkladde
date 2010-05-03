@@ -32,11 +32,31 @@ void Plane::initialize ()
 // ** Property access **
 // *********************
 
-bool Plane::selfLaunchOnly ()
+bool Plane::selfLaunchOnly () const
 {
-	// Note that motorgliders can be glieders; and there are even some TMGs
+	// Note that motorgliders can be gliders; and there are even some TMGs
 	// which can do winch launch.
 	return category==categoryAirplane || category==categoryUltralight;
+}
+
+QString Plane::fullRegistration () const
+{
+	if (blank (callsign))
+		return registration;
+	else if (blank (registration))
+		return callsign;
+	else
+		return QString ("%1 (%2)").arg (registration, callsign);
+}
+
+QString Plane::registrationWithType () const
+{
+	if (blank (type))
+		return registration;
+	else if (blank (registration))
+		return type;
+	else
+		return QString ("%1 (%2)").arg (registration, type);
 }
 
 
@@ -55,12 +75,6 @@ QString Plane::toString () const
 		.arg (categoryText (category))
 		.arg (numSeats)
 		;
-}
-
-QString Plane::fullRegistration () const
-{
-	if (eintrag_ist_leer (callsign)) return registration;
-	return QString ("%1 (%2)").arg (registration).arg (callsign);
 }
 
 bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)

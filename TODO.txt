@@ -10,20 +10,17 @@ Release checks:
 
 == Critical (before release) ==
 
-Apply database settings
-
 
 == Major (important) ==
 
 Plugin interface:
-* "Protocol" like for weather plugin for all plugins
+* "Protocol" (like for weather plugin) for all plugins
 * Better escaping
 * Configuration for plugins, e. g. longitude for sunset time correction
 * Synchronize plugin update with clock
 * Graphical wind display
 
 Plugins:
-* Sunset times: independend of year
 * Sunset: allow configuration of longitude
 * Plugin description file, GUI editing of parameters  
 
@@ -40,11 +37,7 @@ UI:
 * keep landed flights visible for n minutes
 * undo for depart/land
 * Window with with long plugin labels
-* The whole database connection should be managed by the manger and the status
-  be signaled to the main window (open/close methods in manager, and signals
-  like ok/timeout)
 * signal unhandled exceptions to main window (QApplication::notify)
-* show log while migrating
 * warning message before aborting migration
 
 Models:
@@ -52,13 +45,10 @@ Models:
 * Plane, person, launch method: inactive (not displayed in select)
 
 Config:
-* Use QSettings
-* Config dialog
-* Make Unix socket Name configurable
+* Allow connection through unix socket
 * Make compression configurable
 * Make configurable if it starts in full screen
 * Make read timeout and keepalive interval configurable
-* Configurable autoconnect
 
 Database:
 * SQLite support
@@ -101,7 +91,6 @@ UI:
 
 Database:
 * Add foreign key constraints
-* Add indexes
 * Database checks (compare schema with database)
 * using SQLite database without cache: either inherit from common base class or
   use a DummyCache
