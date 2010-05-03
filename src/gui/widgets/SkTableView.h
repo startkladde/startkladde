@@ -47,6 +47,7 @@ class SkTableView: public QTableView
 
 	protected:
 		void updateButtons (int row);
+		void keyPressEvent (QKeyEvent *e);
 
 		bool autoResizeRows;
 

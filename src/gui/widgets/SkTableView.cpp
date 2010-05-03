@@ -6,6 +6,7 @@
 #include <QHeaderView>
 #include <QApplication>
 #include <QStyle>
+#include <QKeyEvent>
 
 #include "src/gui/widgets/TableButton.h"
 #include "src/itemDataRoles.h"
@@ -167,5 +168,19 @@ void SkTableView::writeColumnWidths (QSettings &settings, const ColumnInfo &colu
 		int value=columnWidth (i);
 
 		settings.setValue (key, value);
+	}
+}
+
+void SkTableView::keyPressEvent (QKeyEvent *e)
+{
+	// Hack: it seems that as of Qt 4.6.2 (Ubuntu Lucid), QTableView consumes
+	// the delete key, which is not passed to the parent widget (the containing
+	// window). This only seems to happen with the delete key proper, not the
+	// keypad delete key, even though both have a value of Qt::Key_Delete.
+	// Ignore the delete key here to propagate it to the parent widget.
+	switch (e->key ())
+	{
+		case Qt::Key_Delete: e->ignore (); break;
+		default: QTableView::keyPressEvent (e);
 	}
 }
