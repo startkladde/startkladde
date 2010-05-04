@@ -7,8 +7,8 @@
 
 # Ohne build
 #echo "Build `date -Iminute`, `hostname`">>build.log
-if [ -e CVS ]; then
-	echo "#define VERSION \"Version `head -n 1 major`.`head -n 1 minor`-cvs (`date -I`)\"">version.h
+if [ -e .svn ]; then
+	echo "#define VERSION \"Version `head -n 1 major`.`head -n 1 minor`-`svnversion ..` (`date -I`)\"">version.h
 else
 	echo "#define VERSION \"Version `head -n 1 major`.`head -n 1 minor` (`date -I`)\"">version.h
 fi

@@ -90,7 +90,7 @@ update_current_schema: startkladde
 .PHONY: version
 version: version/version.h
 
-version/version.h: version/major version/minor
+version/version.h: version/major version/minor version/make_version
 	cd version; ./make_version; cd ..
 
 programs: $(PROGRAMS)
