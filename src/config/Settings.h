@@ -50,6 +50,7 @@ class Settings: public QObject
 		bool coloredLabels;
 		bool displayQueries;
 		bool noFullScreen;
+		bool enableShutdown;
 
 		// *** Plugins - Info
 		QList<ShellPluginInfo> infoPlugins;

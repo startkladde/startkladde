@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -327,9 +327,6 @@ aufgehoben werden.</string>
        </item>
        <item>
         <widget class="QGroupBox" name="diagnosticsBox">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
          <property name="title">
           <string>Diagnose</string>
          </property>
@@ -340,7 +337,7 @@ aufgehoben werden.</string>
              <string>Aktiviert einige Menüeinträge zur Fehlerdiagnose</string>
             </property>
             <property name="text">
-             <string>Dia&amp;gnoseoptionen aktivieren</string>
+             <string>Optionen zur Fehlersuche (Debu&amp;gging) aktivieren</string>
             </property>
            </widget>
           </item>
@@ -355,7 +352,7 @@ aufgehoben werden.</string>
            <widget class="QLabel" name="diagCommandLabel">
             <property name="text">
              <string>Ko&amp;mmando für
-Schnelldiagnose:</string>
+Netzwerkdiagnose:</string>
             </property>
             <property name="buddy">
              <cstring>diagCommandInput</cstring>

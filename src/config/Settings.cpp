@@ -26,7 +26,7 @@ Settings *Settings::theInstance=NULL;
 
 
 Settings::Settings ():
-	enableDebug (false), coloredLabels (false), displayQueries (false)
+	enableDebug (false), coloredLabels (false), displayQueries (false), enableShutdown (false)
 {
 	readSettings ();
 }
@@ -60,6 +60,8 @@ QStringList Settings::readArgs (const QStringList &args)
 				coloredLabels=true;
 			else if (arg=="--no-full-screen")
 				noFullScreen=true;
+			else if (arg=="--enable-shutdown")
+				enableShutdown=true;
 			else
 				std::cout << "Unrecognized option " << arg << std::endl;
 		}
@@ -101,8 +103,8 @@ void Settings::readSettings ()
 	protectSettings     =s.value ("protectSettings"     , false).toBool ();
 	protectLaunchMethods=s.value ("protectLaunchMethods", false).toBool ();
 	// Diagnostics
-	enableDebug=s.value ("enableDebug", false                  ).toBool ();
-	diagCommand=s.value ("diagCommand", "xterm -e ./netztest &").toString ();
+	enableDebug=s.value ("enableDebug", false       ).toBool ();
+	diagCommand=s.value ("diagCommand", "./netztest").toString (); // xterm -e ./netztest &
 
 	// *** Plugins - Info
 	infoPlugins.clear ();

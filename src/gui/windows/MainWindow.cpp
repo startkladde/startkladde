@@ -130,6 +130,8 @@ MainWindow::MainWindow (QWidget *parent) :
 	ui.menuDemosystem->menuAction ()->setVisible (true);
 #endif
 
+	ui.actionShutdown->setVisible (Settings::instance ().enableShutdown);
+
 	bool virtualKeyboardEnabled = (
 		system ("which kvkbd >/dev/null") == 0 &&
 		system ("which dbus-send >/dev/null") == 0);
@@ -1119,8 +1121,12 @@ void MainWindow::on_actionInfo_triggered ()
 void MainWindow::on_actionNetworkDiagnostics_triggered ()
 {
 	QString command=Settings::instance ().diagCommand;
-	if (!blank (command))
-		system (command.toUtf8 ().constData ());
+	if (blank (command)) return;
+
+	// TODO: use QProcess and make sure it's in the background
+	if (system (command.toUtf8 ().constData ())!=0)
+		showWarning (utf8 ("Fehler"),
+			utf8 ("Beim Ausführen der Netzwerkdiagnose ist ein Fehler aufgetreten."), this);
 }
 
 // ************
@@ -1628,17 +1634,21 @@ void MainWindow::on_actionSettings_triggered ()
 
 void MainWindow::on_actionSetTime_triggered ()
 {
-	// Get an intermediate QDateTime to avoid a midnight race condition
+	// Store the current time to avoid a midnight race condition
 	QDateTime oldDateTime = QDateTime::currentDateTime ();
 
 	QDate date = oldDateTime.date ();
 	QTime time = oldDateTime.time ();
+
 
 	if (DateInputDialog::editDate (this, &date, &time, "Systemdatum einstellen", "Datum:", false, false, false))
 	{
 		QString timeString=QString ("%1-%2-%3 %4:%5:%6")
 			.arg (date.year ()).arg (date.month ()).arg (date.day ())
 			.arg (time.hour ()).arg (time.minute ()).arg (time.second ());
+
+		// sudo -n: non-interactive (don't propmt for password)
+		// sudoers entry: deffi ALL=NOPASSWD: /bin/date
 
 		int result=QProcess::execute ("sudo", QStringList () << "-n" << "date" << "-s" << timeString);
 
@@ -1652,8 +1662,8 @@ void MainWindow::on_actionSetTime_triggered ()
 		else
 		{
 			showWarning (utf8 ("Fehler"),
-				utf8 ("Beim Ändern der Systemzeit ist ein Fehler aufgetreten."
-				" Möglicherweise sind die Berechtigungen nicht ausreichen."), this);
+				utf8 ("Die Änderung der Systemzeit ist fehlgeschlagen."
+				" Möglicherweise sind die Berechtigungen nicht ausreichend."), this);
 		}
 	}
 }
