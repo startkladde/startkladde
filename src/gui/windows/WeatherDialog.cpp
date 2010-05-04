@@ -48,3 +48,9 @@ void WeatherDialog::resizeEvent (QResizeEvent *e)
 //	move (newX, newY);
 }
 
+void WeatherDialog::restartPlugin ()
+{
+	 if (plugin)
+		 plugin->restart ();
+}
+

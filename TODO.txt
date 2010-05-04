@@ -14,16 +14,19 @@ Release checks:
 
 == Major (important) ==
 
-Plugin interface:
+Plugin system:
 * "Protocol" (like for weather plugin) for all plugins
 * Better escaping
 * Configuration for plugins, e. g. longitude for sunset time correction
 * Synchronize plugin update with clock
 * Graphical wind display
+* Better plugin termination: delete plugin after the process dies (rewrite
+  ShellPlugin)
 
 Plugins:
 * Sunset: allow configuration of longitude
-* Plugin description file, GUI editing of parameters  
+* Plugin description file, GUI editing of parameters
+ 
 
 Flugbuch (Vorschlag eines Fluglehrers):
 * Ausgabe Anzahl Landungen (Interessant bei Platzrunden mit dem Motorflieger)

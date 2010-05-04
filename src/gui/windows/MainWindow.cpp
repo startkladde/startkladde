@@ -201,12 +201,7 @@ MainWindow::~MainWindow ()
 	// QObjects will be deleted automatically
 	// TODO make sure this also applies to flightList
 
-	foreach (ShellPlugin *plugin, infoPlugins)
-	{
-		//std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
-		plugin->terminate ();
-		QThread::yieldCurrentThread ();
-	}
+	terminatePlugins ();
 }
 
 void MainWindow::setupLabels ()
@@ -276,6 +271,7 @@ void MainWindow::setupLayout ()
 void MainWindow::setupPlugin (const ShellPluginInfo &pluginInfo, QGridLayout *pluginLayout)
 {
 	ShellPlugin *plugin=new ShellPlugin (pluginInfo);
+	infoPlugins.append (plugin);
 
 	SkLabel *captionLabel = new SkLabel ("", ui.pluginPane);
 	SkLabel *valueLabel = new SkLabel ("...", ui.pluginPane);
@@ -323,6 +319,9 @@ void MainWindow::setupPlugins ()
 {
 	Settings &s=Settings::instance ();
 
+	// First, terminate the plugins to make sure they won't access the labels
+	// any more.
+	terminatePlugins ();
 
 	// Remove the old labels from the plugin pane
 	foreach (QObject *child, ui.pluginPane->children ())
@@ -371,6 +370,27 @@ void MainWindow::setupPlugins ()
 	}
 
 }
+
+void MainWindow::terminatePlugins ()
+{
+	foreach (ShellPlugin *plugin, infoPlugins)
+	{
+		//std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
+		plugin->terminate ();
+		QThread::yieldCurrentThread ();
+	}
+
+	while (!infoPlugins.empty ())
+		delete infoPlugins.takeLast ();
+
+	if (weatherPlugin)
+	{
+		weatherPlugin->terminate ();
+		delete weatherPlugin;
+		weatherPlugin=NULL;
+	}
+}
+
 
 // *************
 // ** Closing **
@@ -1100,6 +1120,7 @@ void MainWindow::on_actionJumpToTow_triggered ()
 void MainWindow::on_actionRestartPlugins_triggered ()
 {
 	if (weatherPlugin) weatherPlugin->restart ();
+	if (weatherDialog) weatherDialog->restartPlugin ();
 
 	foreach (ShellPlugin *plugin, infoPlugins)
 		plugin->restart ();

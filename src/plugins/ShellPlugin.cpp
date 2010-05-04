@@ -244,12 +244,17 @@ void ShellPlugin::subprocess_died ()
 
 void ShellPlugin::terminate ()
 {
+	// Set the labels to NULL to make sure they are not used any more
+	caption_display=NULL;
+	value_display=NULL;
+
 	if (subprocess) subprocess->terminate ();
 }
 
 void ShellPlugin::restart ()
 {
-	terminate ();
+	// Don't call #terminate here, as it will set the labels to NULL
+	if (subprocess) subprocess->terminate ();
 	start ();
 }
 

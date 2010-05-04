@@ -77,7 +77,6 @@ class MainWindow: public QMainWindow
 
 		// Setup
 		void setupPlugins ();
-		void setupPlugin (const ShellPluginInfo &pluginInfo, QGridLayout *pluginLayout);
 		void setupLabels ();
 		void setupLayout ();
 
@@ -106,6 +105,10 @@ class MainWindow: public QMainWindow
 		// Database connection management
 		void closeDatabase ();
 		void setDatabaseActionsEnabled (bool enabled);
+
+		// Plugins
+		void setupPlugin (const ShellPluginInfo &pluginInfo, QGridLayout *pluginLayout);
+		void terminatePlugins ();
 
 
 	protected slots:

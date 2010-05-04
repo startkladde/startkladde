@@ -15,6 +15,8 @@ class WeatherDialog:public QDialog
 		WeatherDialog (ShellPlugin *_plugin, QWidget *parent=NULL);
 		~WeatherDialog ();
 
+		void restartPlugin ();
+
 	protected:
 		virtual void resizeEvent (QResizeEvent *);
 
