@@ -117,8 +117,9 @@ void DbManager::grantPermissions (QWidget *parent)
 		"Der Datenbankbenutzer %1 existiert nicht, das angegebene Passwort\n"
 		"stimmt nicht oder der Benutzer hat unzureichende Zugriffsrechte auf\n"
 		"die Datenbank %2. Zur automatischen Korrektur wird das Passwort des\n"
-		"Datenbankbenutzers root benötigt.\n"
-		"Bitte das Kennwort für root eingeben:")
+		"Datenbankbenutzers root benötigt (dieses Passwort kann ein anderes\n"
+		"als das für den Systembenutzer root sein)\n"
+		"Bitte das Kennwort für den Datenbankbenutzer root eingeben:")
 		.arg (info.username, info.database);
 
 	bool retry=true;

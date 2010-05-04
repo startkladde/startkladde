@@ -884,7 +884,7 @@ void MainWindow::on_actionRepeat_triggered ()
 	{
 		Flight flight = dbManager.getCache ().getObject<Flight> (id);
 		delete createFlightWindow; // noop if NULL
-		createFlightWindow=FlightWindow::repeatFlight (this, dbManager, flight, getNewFlightDate ());
+		createFlightWindow=FlightWindow::repeatFlight (this, dbManager, flight, getNewFlightDate (), preselectedLaunchMethod);
 	}
 	catch (Cache::NotFoundException &ex)
 	{

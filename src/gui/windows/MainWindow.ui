@@ -2,14 +2,6 @@
 <ui version="4.0">
  <class>MainWindowClass</class>
  <widget class="QMainWindow" name="MainWindowClass">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>776</width>
-    <height>649</height>
-   </rect>
-  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -347,7 +339,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>776</width>
+     <width>828</width>
      <height>25</height>
     </rect>
    </property>
@@ -550,7 +542,6 @@
    <addaction name="actionIncrementFontSize"/>
    <addaction name="actionDecrementFontSize"/>
    <addaction name="actionShowVirtualKeyboard"/>
-   <addaction name="actionResizeColumns"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSetTime">

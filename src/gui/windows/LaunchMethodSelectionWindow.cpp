@@ -27,7 +27,7 @@ bool LaunchMethodSelectionWindow::select (Cache &cache, dbId &value, QWidget *pa
 	window->setModal (true);
 
 	foreach (const LaunchMethod &launchMethod, cache.getLaunchMethods ().getList ())
-		window->ui.launchMethodInput->addItem (launchMethod.name, launchMethod.getId ());
+		window->ui.launchMethodInput->addItem (launchMethod.nameWithShortcut (), launchMethod.getId ());
 
 	window->ui.preselectionCheckbox->setChecked (idValid (value));
 	if (idValid (value))

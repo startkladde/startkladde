@@ -424,11 +424,11 @@ FlightWindow *FlightWindow::createFlight (QWidget *parent, DbManager &manager, Q
 	return w;
 }
 
-FlightWindow *FlightWindow::repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date)
+FlightWindow *FlightWindow::repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date, dbId preselectedLaunchMethod)
 {
 	FlightWindow *w=new FlightWindow (parent, modeCreate, manager);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
-	w->flightToFields (original, true);
+	w->flightToFields (original, true, preselectedLaunchMethod);
 
 	w->ui.dateInput->setDate (date);
 	w->updateSetup ();
@@ -730,7 +730,16 @@ void FlightWindow::planeToFields (dbId id, SkComboBox *registrationInput, SkLabe
 	}
 }
 
-void FlightWindow::flightToFields (const Flight &flight, bool repeat)
+/**
+ * Sets up the edit fields to contain the data of a given flight
+ *
+ * @param flight
+ * @param repeat whether to setup the fields for repeating (true) or editing
+ *        (false) a flight; this affects only some of the fields
+ * @param preselectedLaunchMethod the preselected launch method; only relevant
+ *        if repeat is true
+ */
+void FlightWindow::flightToFields (const Flight &flight, bool repeat, dbId preselectedLaunchMethod)
 {
 	originalFlight=flight;
 
@@ -763,6 +772,7 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 
 	try
 	{
+		// If the launch method is a self launch, copy it
 		if (idValid (flight.launchMethodId))
 			if (cache.getObject<LaunchMethod> (flight.launchMethodId).type==LaunchMethod::typeSelf)
 				copyLaunchMethod=true;
@@ -772,7 +782,13 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat)
 		log_error ("Launch method not found in FlightWindow::flightToFields");
 	}
 
-	if (copyLaunchMethod) ui.launchMethodInput->setCurrentItemByItemData (flight.launchMethodId);
+	// If the launch method is to be copied, use the launch method from the
+	// flight. Otherwise, if a launch method is preselected, use it.
+	if (copyLaunchMethod)
+		ui.launchMethodInput->setCurrentItemByItemData (flight.launchMethodId);
+	else if (idValid (preselectedLaunchMethod))
+		ui.launchMethodInput->setCurrentItemByItemData (preselectedLaunchMethod);
+
 	launchMethodChanged (ui.launchMethodInput->currentIndex ());
 
 	// The towplane is set even if it's not an airtow in case the user selects

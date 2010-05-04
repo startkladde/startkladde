@@ -155,7 +155,7 @@ class FlightWindow: public QDialog
 
 		// *** Invocation
 		static FlightWindow *createFlight (QWidget *parent, DbManager &manager, QDate date, dbId preselectedLaunchMethod);
-		static FlightWindow *repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date);
+		static FlightWindow *repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date, dbId preselectedLaunchMethod);
 		static FlightWindow *editFlight   (QWidget *parent, DbManager &manager, Flight &flight);
 
 		// *** Properties
@@ -275,7 +275,7 @@ class FlightWindow: public QDialog
 		// Flight reading/writing
 		void personToFields (dbId id, SkComboBox *lastNameInput, SkComboBox *firstNameInput, QString incompleteLastName, QString incompleteFirstName);
 		void planeToFields (dbId id, SkComboBox *registrationInput, SkLabel *typeLabel);
-		void flightToFields (const Flight &flight, bool repeat);
+		void flightToFields (const Flight &flight, bool repeat, dbId preselectedLaunchMethod=invalidId);
 
 		Flight determineFlight (bool departNow) throw (AbortedException);
 		Flight determineFlightBasic () throw ();
