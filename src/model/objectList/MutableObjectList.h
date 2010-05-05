@@ -186,10 +186,6 @@ template<class T> void MutableObjectList<T>::replaceList (const QList<T> &newLis
 {
 
 	list=newList;
-	// Note: this seems to have, in one instance, caused a segfault when
-	// reloading the list right after startup. It may be necessary to remove
-	// and add the elements manually. Note that we cannot simply use
-	// dataChanged because the number of items may have changed.
 	QAbstractItemModel::reset ();
 }
 

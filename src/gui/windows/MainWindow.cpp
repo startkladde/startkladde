@@ -1106,7 +1106,8 @@ void MainWindow::on_actionJumpToTow_triggered ()
 
 	if (towref<0)
 	{
-		showWarning (utf8 ("Kein Schleppflug"), utf8 ("Der gewählte Flug ist entweder kein F-Schlepp und kein Schleppflug oder noch nicht gestartet."), this);
+		QString text=utf8 ("Entweder der gewählte Flug ist weder ein geschleppter Flug noch ein Schleppflug, oder er ist noch nicht gestartet.");
+		showWarning (utf8 ("Kein Schleppflug"), text, this);
 		return;
 	}
 
@@ -1500,7 +1501,6 @@ void MainWindow::cacheChanged (DbEvent event)
 				{
 					Flight flight=event.getValue<Flight> ();
 
-					std::cout << "effdatum: " << flight.effdatum ().toString () << std::endl;
 					if (flight.isPrepared () || flight.effdatum ()==displayDate)
 						flightList->replaceOrAdd (flight.getId (), flight);
 					else

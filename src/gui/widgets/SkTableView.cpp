@@ -16,8 +16,6 @@
 #include <iostream>
 #include <cassert>
 
-// TODO: verify that all buttons are deleted
-
 SkTableView::SkTableView (QWidget *parent):
 	QTableView (parent),
 	autoResizeRows (false),
@@ -50,7 +48,6 @@ void SkTableView::updateButtons (int row)
 	// editor, it sometimes does (note that the models have no buttons in this
 	// case).
 //	assert (!settingButtons);
-
 	if (settingButtons) return;
 
 	QAbstractItemModel *m=model ();
@@ -65,7 +62,6 @@ void SkTableView::updateButtons (int row)
 			QString buttonText=m->data (index, buttonTextRole).toString ();
 			TableButton *button=new TableButton (index, buttonText);
 			QObject::connect (button, SIGNAL (clicked (QPersistentModelIndex)), this, SIGNAL (buttonClicked (QPersistentModelIndex)));
-
 
 			// Avoid recursive calls, see above
 			settingButtons=true;
@@ -123,7 +119,27 @@ void SkTableView::dataChanged (const QModelIndex &topLeft, const QModelIndex &bo
 
 void SkTableView::reset ()
 {
-	QTableView::reset ();
+	// Strange things happening here:
+	// Calling QTableView::reset here seems to *sometimes* cause a segfault
+	// (when refreshing), probably related to the table buttons, like so:
+	//
+	// #0  0x01098b9c in QObject::disconnect(QObject const*, char const*, QObject const*, char const*)
+	// #1  0x00a4b1f9 in QAbstractItemView::reset() [the following call]
+	// #2  0x080ac6ed in SkTableView::reset [this method]
+	//
+	// This problem is hard to reproduce. On some runs of the program, it does
+	// not appear at all. Restarting the program may help in reproducing the
+	// problem.
+	//
+	// Note that this is the case even if the button signal is not connected.
+	// Note also that (in Qt 4.5.3) QAbstractItemView::reset does not call
+	// QObject::disconnect at all.
+	//
+	// Now, the funny thing is: calling QTableView::reset does not even seem to
+	// be necessary here, the table is still refreshed and all of the buttons
+	// are deleted. Also, not calling QTableView::reset seems to fix the
+	// problem.
+//	QTableView::reset (); // DO NOT CALL!
 
 	// Set up the buttons
 	int rows=model ()->rowCount ();

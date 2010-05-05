@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>MainWindowClass</class>
  <widget class="QMainWindow" name="MainWindowClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>652</width>
+    <height>810</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -339,7 +347,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>828</width>
+     <width>652</width>
      <height>25</height>
     </rect>
    </property>
@@ -680,7 +688,7 @@
   </action>
   <action name="actionSort">
    <property name="text">
-    <string>Sor&amp;tieren</string>
+    <string>Nach effektiver Zeit Sor&amp;tieren</string>
    </property>
   </action>
   <action name="actionSetDisplayDate">
