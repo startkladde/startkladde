@@ -115,25 +115,25 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Cache &cache)
  * Create an entry for a non-empty, sorted list of flights which we know can
  * be merged. All flights must be of the same plane and on the same date.
  */
-PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Cache &cache)
+PlaneLog::Entry PlaneLog::Entry::create (const QList<Flight> &flights, Cache &cache)
 {
 	assert (!flights.isEmpty ());
 
 	PlaneLog::Entry entry;
 
-	Plane      *plane     =cache.getNewObject<Plane     > (flights.last ()->planeId );
-	Person     *pilot     =cache.getNewObject<Person    > (flights.last ()->pilotId    );
+	Plane      *plane     =cache.getNewObject<Plane     > (flights.last ().planeId );
+	Person     *pilot     =cache.getNewObject<Person    > (flights.last ().pilotId    );
 
 	// Values directly determined
 	if (plane) entry.registration=plane->registration;
 	if (plane) entry.type=plane->type;
 
-	entry.date=flights.last ()->effdatum ();
+	entry.date=flights.last ().effdatum ();
 	if (pilot) entry.pilotName=pilot->formalName ();
-	entry.departureLocation=flights.first ()->departureLocation.trimmed ();
-	entry.landingLocation=flights.last ()->landingLocation.trimmed ();
-	entry.departureTime=flights.first ()->departureTime;
-	entry.landingTime=flights.last ()->landingTime;
+	entry.departureLocation=flights.first ().departureLocation.trimmed ();
+	entry.landingLocation=flights.last ().landingLocation.trimmed ();
+	entry.departureTime=flights.first ().departureTime;
+	entry.landingTime=flights.last ().landingTime;
 
 	// Values determined from all flights
 	entry.minPassengers=entry.maxPassengers=0;
@@ -143,21 +143,21 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<const Flight *> flights, Ca
 
 	int numTowFlights=0;
 
-	foreach (const Flight *flight, flights)
+	foreach (const Flight &flight, flights)
 	{
-		int numPassengers=flight->numPassengers ();
+		int numPassengers=flight.numPassengers ();
 		if (entry.minPassengers==0 || numPassengers<entry.minPassengers) entry.minPassengers=numPassengers;
 		if (entry.maxPassengers==0 || numPassengers>entry.maxPassengers) entry.maxPassengers=numPassengers;
 
-		entry.numLandings+=flight->numLandings;
+		entry.numLandings+=flight.numLandings;
 
-		if (flight->hasDuration ())
-			entry.operationTime=entry.operationTime.addSecs (QTime ().secsTo (flight->flightDuration ())); // TODO: check flight mode
+		if (flight.hasDuration ())
+			entry.operationTime=entry.operationTime.addSecs (QTime ().secsTo (flight.flightDuration ())); // TODO: check flight mode
 
-		if (!eintrag_ist_leer (flight->comments)) comments << flight->comments.trimmed ();
-		if (!flight->finished ()) entry.valid=false;
+		if (!eintrag_ist_leer (flight.comments)) comments << flight.comments.trimmed ();
+		if (!flight.finished ()) entry.valid=false;
 
-		if (flight->isTowflight ()) ++numTowFlights;
+		if (flight.isTowflight ()) ++numTowFlights;
 	}
 
 	if (numTowFlights==1)
@@ -205,13 +205,13 @@ PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, Cache
 {
 	Plane *plane=cache.getNewObject<Plane> (planeId);
 
-	QList<const Flight *> interestingFlights;
+	QList<Flight> interestingFlights;
 
 	// Make a list of flights for this plane
 	foreach (const Flight &flight, flights)
 		if (flight.finished ())
 			if (flight.planeId==planeId)
-				interestingFlights.append (&flight);
+				interestingFlights.append (flight);
 
 	qSort (interestingFlights);
 
@@ -220,16 +220,16 @@ PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, Cache
 	// flights are in entryFlights.
 	PlaneLog *result=new PlaneLog ();
 
-	QList<const Flight *> entryFlights;
+	QList<Flight> entryFlights;
 	const Flight *previousFlight=NULL;
-	foreach (const Flight *flight, interestingFlights)
+	foreach (const Flight &flight, interestingFlights)
 	{
-		assert (flight->finished ());
+		assert (flight.finished ());
 
 		// We accumulate in entryFlights as long as we can merge flights.
 		// Then we create an entry, append it to the list and clear
 		// entryFlights.
-		if (previousFlight && !flight->collectiveLogEntryPossible (previousFlight, plane))
+		if (previousFlight && !flight.collectiveLogEntryPossible (previousFlight, plane))
 		{
 			// No further merging
 			result->entries.append (PlaneLog::Entry::create (entryFlights, cache));
@@ -237,7 +237,7 @@ PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, Cache
 		}
 
 		entryFlights.append (flight);
-		previousFlight=flight;
+		previousFlight=&flight;
 	}
 	result->entries.append (PlaneLog::Entry::create (entryFlights, cache));
 

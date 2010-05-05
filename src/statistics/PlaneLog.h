@@ -25,7 +25,7 @@ class PlaneLog: public QAbstractTableModel
 				virtual ~Entry ();
 
 				static Entry create (const Flight *flight, Cache &cache);
-				static Entry create (const QList<const Flight *> flights, Cache &cache);
+				static Entry create (const QList<Flight> &flights, Cache &cache);
 
 				QString registration;
 				QString type;

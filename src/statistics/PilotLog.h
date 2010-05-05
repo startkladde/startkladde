@@ -27,7 +27,7 @@ class PilotLog: public QAbstractTableModel
 				Entry ();
 				virtual ~Entry ();
 
-				static Entry create (const Flight *flight, Cache &cache);
+				static Entry create (const Flight &flight, Cache &cache);
 
 				QDate date;
 				QString planeType;

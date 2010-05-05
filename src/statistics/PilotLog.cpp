@@ -58,29 +58,29 @@ QString PilotLog::Entry::flightDurationText () const
  * @param cache
  * @return
  */
-PilotLog::Entry PilotLog::Entry::create (const Flight *flight, Cache &cache)
+PilotLog::Entry PilotLog::Entry::create (const Flight &flight, Cache &cache)
 {
 	PilotLog::Entry entry;
 
-	Plane        *plane       =cache.getNewObject<Plane       > (flight->planeId        );
-	Person       *pilot       =cache.getNewObject<Person      > (flight->pilotId        );
-	Person       *copilot     =cache.getNewObject<Person      > (flight->copilotId      );
-	LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (flight->launchMethodId );
+	Plane        *plane       =cache.getNewObject<Plane       > (flight.planeId        );
+	Person       *pilot       =cache.getNewObject<Person      > (flight.pilotId        );
+	Person       *copilot     =cache.getNewObject<Person      > (flight.copilotId      );
+	LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (flight.launchMethodId );
 
-	entry.date=flight->effdatum ();
+	entry.date=flight.effdatum ();
 	if (plane) entry.planeType=plane->type;
 	if (plane) entry.planeRegistration=plane->registration;
 	if (pilot) entry.pilot=pilot->formalName ();
 	if (copilot) entry.copilot=copilot->formalName ();
 	if (launchMethod) entry.launchMethod=launchMethod->logString;
-	entry.departureLocation=flight->departureLocation;
-	entry.landingLocation=flight->landingLocation;
-	entry.departureTime=flight->departureTime; // TODO: check flight mode
-	entry.landingTime=flight->landingTime; // TODO: check flight mode
-	entry.flightDuration=flight->flightDuration (); // TODO: check flight mode
-	entry.comments=flight->comments;
+	entry.departureLocation=flight.departureLocation;
+	entry.landingLocation=flight.landingLocation;
+	entry.departureTime=flight.departureTime; // TODO: check flight mode
+	entry.landingTime=flight.landingTime; // TODO: check flight mode
+	entry.flightDuration=flight.flightDuration (); // TODO: check flight mode
+	entry.comments=flight.comments;
 
-	entry.valid=flight->finished ();
+	entry.valid=flight.finished ();
 
 	delete plane;
 	delete pilot;
@@ -121,7 +121,7 @@ PilotLog::~PilotLog ()
  */
 PilotLog *PilotLog::createNew (dbId personId, const QList<Flight> &flights, Cache &cache, FlightInstructorMode mode)
 {
-	QList<const Flight *> interestingFlights;
+	QList<Flight> interestingFlights;
 
 	// Make a list of flights for this person
 	foreach (const Flight &flight, flights)
@@ -134,7 +134,7 @@ PilotLog *PilotLog::createNew (dbId personId, const QList<Flight> &flights, Cach
 				(mode==flightInstructorLoose && flight.copilotId==personId) ||
 				(mode==flightInstructorStrict && flight.type==Flight::typeTraining2 && flight.copilotId==personId))
 			{
-				interestingFlights.append (&flight);
+				interestingFlights.append (flight);
 			}
 		}
 	}
@@ -143,7 +143,7 @@ PilotLog *PilotLog::createNew (dbId personId, const QList<Flight> &flights, Cach
 
 	// Iterate over all interesting flights, generating logbook entries.
 	PilotLog *result=new PilotLog;
-	foreach (Flight const *flight, interestingFlights)
+	foreach (const Flight &flight, interestingFlights)
 		result->entries.append (PilotLog::Entry::create (flight, cache));
 
 	return result;
