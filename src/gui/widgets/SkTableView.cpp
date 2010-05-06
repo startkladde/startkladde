@@ -132,7 +132,7 @@ void SkTableView::reset ()
 	// problem.
 	//
 	// Note that this is the case even if the button signal is not connected.
-	// Note also that (in Qt 4.5.3) QAbstractItemView::reset does not call
+	// Note also that QAbstractItemView::reset does not seem to call
 	// QObject::disconnect at all.
 	//
 	// Now, the funny thing is: calling QTableView::reset does not even seem to

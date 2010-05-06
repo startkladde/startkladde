@@ -66,6 +66,9 @@ LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &
 	}
 
 	// Add the entry for the towflights
+	// Towflights do not have a stored launch method and there can be more than
+	// one self launch method. Thus, we display an extra entry for the
+	// towflights.
 	if (numTowFlights>0)
 	{
 		Entry towflightsEntry;

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Startet ein xterm mit dem Diagnoseskript im Hintergrund
+xterm -T "Netzwerkschnelldiagnose" -e bash -c ./netztest &
+

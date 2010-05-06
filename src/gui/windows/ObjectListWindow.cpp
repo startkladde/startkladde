@@ -129,7 +129,9 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 		{
 			try
 			{
+				QModelIndex previousIndex=ui.table->currentIndex ();
 				manager.deleteObject<T> (id, this);
+				ui.table->setCurrentIndex (previousIndex); // Handles deletion of last item correctly
 			}
 			catch (OperationCanceledException)
 			{

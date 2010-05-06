@@ -930,7 +930,10 @@ void MainWindow::on_actionDelete_triggered ()
 
 	try
 	{
+		// Get the current index
+		QModelIndex previousIndex=ui.flightTable->currentIndex ();
 		dbManager.deleteObject<Flight> (id, this);
+		ui.flightTable->setCurrentIndex (previousIndex); // Handles deletion of last item correctly
 	}
 	catch (OperationCanceledException)
 	{
