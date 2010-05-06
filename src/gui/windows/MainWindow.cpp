@@ -22,6 +22,7 @@
 #include <QModelIndex>
 #include <QStatusBar>
 #include <QCloseEvent>
+#include <QScrollBar>
 
 // TODO many dependencies - split
 #include "src/concurrent/threadUtil.h"
@@ -1702,5 +1703,9 @@ void MainWindow::logMessage (QString message)
 	QString timeString = QTime::currentTime ().toString ();
 
 	ui.logWidget->append (QString ("[%1] %2").arg (timeString).arg (message));
-}
 
+	// Scroll the log widget to the bottom. Note that ensurecursorVisible
+	// may scroll to the bottom right, which is undesirable.
+	QScrollBar *scrollBar=ui.logWidget->verticalScrollBar ();
+	scrollBar->setValue (scrollBar->maximum ());
+}
