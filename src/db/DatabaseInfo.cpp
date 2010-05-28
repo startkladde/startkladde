@@ -44,7 +44,7 @@ void DatabaseInfo::load (QSettings &settings)
 	defaultPort=settings.value ("defaultPort", true         ).toBool   ();
 	port       =settings.value ("port"       , 3306         ).toInt    ();
 	username   =settings.value ("username"   , "startkladde").toString ();
-	password   =settings.value ("password"   , "moobert"    ).toString ();
+	password   =settings.value ("password"   , "sk"         ).toString ();
 	database   =settings.value ("database"   , "startkladde").toString ();
 }
 
