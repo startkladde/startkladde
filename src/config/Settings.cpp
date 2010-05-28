@@ -1,6 +1,5 @@
 /*
  * TODO:
- *   - demosystem
  *   - allow setting some settings by both the config file and the command line
  */
 
@@ -104,7 +103,7 @@ void Settings::readSettings ()
 	protectLaunchMethods=s.value ("protectLaunchMethods", false).toBool ();
 	// Diagnostics
 	enableDebug=s.value ("enableDebug", false       ).toBool ();
-	diagCommand=s.value ("diagCommand", "./netztest_xterm").toString (); // xterm -e ./netztest &
+	diagCommand=s.value ("diagCommand", "./script/netztest_xterm").toString (); // xterm -e ./netztest &
 
 	// *** Plugins - Info
 	infoPlugins.clear ();
