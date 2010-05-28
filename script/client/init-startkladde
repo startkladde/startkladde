@@ -1,6 +1,7 @@
 #!/bin/sh
-# startkladde
-# Startet die Startkladde.
+
+# Script for /etc/init.d/startkladde which allows to start the X server and the
+# startkladde program automatically. This requires more setup, see readme.txt.
 
 case "$1" in
   start)
@@ -12,12 +13,12 @@ case "$1" in
 	su - startkladde ~startkladde/startkladde-down
 	;;
   restart|force-reload)
-	echo "Neustarte Startkladdensystem"
+	echo "Start Startkladdensystem neu"
 	$0 stop
 	$0 start
 	;;
   reload)
-	echo "Neustarte Startkladde"
+	echo "Starte Startkladde neu"
 	killall startkladde
 	;;
   *)

@@ -1,5 +1,0 @@
-#!/bin/bash
-
-host=$1
-exec ssh -N -L 3307:localhost:3306 $host
-
