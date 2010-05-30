@@ -1,8 +1,8 @@
 WINDOWS_MYSQL_INCLUDE_PATH = c:/programme/mysql/5.1/include
 
 CONFIG += qt
-#CONFIG += debug
-CONFIG += release
+CONFIG += debug
+#CONFIG += release
 #QT += qt3support
 QT += sql
 QT += network
