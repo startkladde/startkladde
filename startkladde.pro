@@ -281,3 +281,6 @@ unix {
 # To compile without ACPI support, remove the block above and
 # enable the following line: 
 #SOURCES += src/gui/widgets/AcpiWidget_dummy.cpp
+
+RC_FILE = startkladde.rc
+

@@ -349,6 +349,8 @@ int main (int argc, char **argv)
 {
 	QApplication a (argc, argv); // Always
 
+	qApp->addLibraryPath (qApp->applicationDirPath () + "/plugins");
+
 	// Event is used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
