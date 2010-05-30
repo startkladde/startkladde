@@ -150,15 +150,33 @@ void SkTableView::reset ()
 		resizeRowsToContents ();
 }
 
+/**
+ * Reads the column widths from the settings or uses defaults from a columnInfo
+ *
+ * The settings object has to be set to the correct section. The widths are
+ * read from the value columnWidth_(name) where name is the column name from
+ * columnInfo.
+ *
+ * If no width is stored in settings for a given column, the sample text from
+ * columnInfo and the column title from the model are used to determine a
+ * default width.
+ *
+ * @param settings the QSettings to read the widths from
+ * @param columnInfo the ColumnInfo to read the default widths from
+ */
 void SkTableView::readColumnWidths (QSettings &settings, const ColumnInfo &columnInfo)
 {
+	// The column info set must have the sam number of columns as the model of
+	// this table.
 	assert (columnInfo.columnCount ()==model ()->columnCount ());
 
 	for (int i=0; i<columnInfo.columnCount (); ++i)
 	{
+		// Determine the column name and the settings key
 		QString columnName=columnInfo.columnName (i);
 		QString key=QString ("columnWidth_%1").arg (columnName);
 
+		// Determine the font metrics and the frame margin
 		const QFont &font=horizontalHeader ()->font ();
 		QFontMetrics metrics (font);
 		QStyle *style=horizontalHeader ()->style ();
@@ -167,9 +185,21 @@ void SkTableView::readColumnWidths (QSettings &settings, const ColumnInfo &colum
 		const int margin=style->pixelMetric (QStyle::PM_FocusFrameHMargin)+1;
 
 		if (settings.contains (key))
+		{
+			// The settings contain a width for this column
 			setColumnWidth (i, settings.value (key).toInt ());
+		}
 		else
-			setColumnWidth (i, metrics.boundingRect (columnInfo.sampleText (i)).width ()+2*margin+2);
+		{
+			// No width for this column in the settings. Determine the default.
+			QString sampleText=columnInfo.sampleText (i);
+			QString headerText=model ()->headerData (i, Qt::Horizontal).toString ();
+
+			int sampleWidth=metrics.boundingRect (sampleText).width ()+2*margin+2;
+			int headerWidth=metrics.boundingRect (headerText).width ()+2*margin+2;
+
+			setColumnWidth (i, qMax (sampleWidth, headerWidth));
+		}
 	}
 }
 

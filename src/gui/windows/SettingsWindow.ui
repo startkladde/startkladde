@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>439</width>
-    <height>466</height>
+    <height>472</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1018,9 +1018,11 @@ leer, wird keine Wetterfenster angezeigt.</string>
   <tabstop>removeInfoPluginButton</tabstop>
   <tabstop>infoPluginUpButton</tabstop>
   <tabstop>infoPluginDownButton</tabstop>
+  <tabstop>weatherPluginBox</tabstop>
   <tabstop>weatherPluginCommandInput</tabstop>
   <tabstop>weatherPluginIntervalInput</tabstop>
   <tabstop>weatherPluginHeightInput</tabstop>
+  <tabstop>weatherWindowBox</tabstop>
   <tabstop>weatherWindowCommandInput</tabstop>
   <tabstop>weatherWindowTitleInput</tabstop>
   <tabstop>weatherWindowIntervalInput</tabstop>
