@@ -14,8 +14,8 @@
 #include <QSqlError>
 
 // TODO should go to DefaultInterface/MySQLInterface
-#include <mysql/errmsg.h>
-#include <mysql/mysqld_error.h>
+#include <errmsg.h>
+#include <mysqld_error.h>
 
 #include "src/db/result/Result.h"
 #include "src/db/Query.h"

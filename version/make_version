@@ -8,7 +8,13 @@
 # Ohne build
 #echo "Build `date -Iminute`, `hostname`">>build.log
 if [ -e .svn ]; then
-	echo "#define VERSION \"Version `head -n 1 major`.`head -n 1 minor`-`svnversion ..` (`date -I`)\"">version.h
+	if [ -n "`which svnversion`" ]; then
+		svnstring=`svnversion ..`
+	else
+		svnstring="svn"
+	fi
+
+	echo "#define VERSION \"Version `head -n 1 major`.`head -n 1 minor`-${svnstring} (`date -I`)\"">version.h
 else
 	echo "#define VERSION \"Version `head -n 1 major`.`head -n 1 minor` (`date -I`)\"">version.h
 fi
