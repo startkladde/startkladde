@@ -1,15 +1,23 @@
+WINDOWS_MYSQL_INCLUDE_PATH = c:/programme/mysql/5.1/include
+
 CONFIG += qt
-CONFIG += debug
-#CONFIG += release
+#CONFIG += debug
+CONFIG += release
 #QT += qt3support
 QT += sql
 QT += network
 TEMPLATE = app
 DEPENDPATH += . version
-INCLUDEPATH += . version /usr/include/mysql
-# Link against mysqlclient explicitly to avoid "Error in my_thread_global_end():
-# 1 threads didn't exit" in specific situations (e. g. exception on open).
-LIBS += -lmysqlclient
+INCLUDEPATH += . version
+unix {
+	INCLUDEPATH += /usr/include/mysql
+	# Link against mysqlclient explicitly to avoid "Error in my_thread_global_end():
+	# 1 threads didn't exit" in specific situations (e. g. exception on open).
+	LIBS += -lmysqlclient
+}
+win32 {
+	INCLUDEPATH += $$WINDOWS_MYSQL_INCLUDE_PATH
+}
 MAKEFILE = Makefile_startkladde
 OBJECTS_DIR = build/
 MOC_DIR= build/
