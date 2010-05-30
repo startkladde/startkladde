@@ -220,3 +220,24 @@ void Settings::writeSettings ()
 
 	s.sync ();
 }
+
+bool Settings::anyPluginsEnabled ()
+{
+	if (weatherPluginEnabled) return true;
+	if (weatherWindowEnabled) return true;
+
+	foreach (const ShellPluginInfo &plugin, infoPlugins)
+		if (plugin.enabled)
+			return true;
+
+	return false;
+}
+
+void Settings::disableAllPlugins ()
+{
+	weatherPluginEnabled=false;
+	weatherWindowEnabled=false;
+
+	for (int i=0; i<infoPlugins.size (); ++i)
+		infoPlugins[i].enabled=false;
+}

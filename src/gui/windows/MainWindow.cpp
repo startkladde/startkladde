@@ -351,6 +351,15 @@ void MainWindow::setupPlugins ()
 	delete weatherWidget;
 	weatherWidget=NULL;
 
+#ifdef WIN32
+	if (s.anyPluginsEnabled ())
+	{
+		s.disableAllPlugins ();
+		s.save ();
+		showWarning (utf8 ("Plugins deaktiviert"), utf8 ("Plugins werden unter Windows zur Zeit nicht unterstützt. Alle Plugins wurden deaktiviert."), this);
+	}
+#endif
+
 	bool showWeatherPlugin=(s.weatherPluginEnabled && !blank (s.weatherPluginCommand));
 	ui.weatherFrame->setVisible (showWeatherPlugin);
 	if (showWeatherPlugin)

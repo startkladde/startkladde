@@ -1,12 +1,7 @@
 #!/bin/bash
 
-#echo $((`head -n 1 build`+1)) >build
-#echo Build: `head -n 1 build`
-#echo "Build `head -n 1 build`, `date -Iminute`, `hostname`">>build.log
-#echo "#define VERSION \"Version `head -n 1 major`.`head -n 1 minor` (build `head -n 1 build`) (`date -I`)\"">version.h
+versionstring=`head -n 1 version`
 
-# Ohne build
-#echo "Build `date -Iminute`, `hostname`">>build.log
 if [ -e .svn ]; then
 	if [ -n "`which svnversion`" ]; then
 		svnstring=`svnversion ..`
@@ -14,8 +9,8 @@ if [ -e .svn ]; then
 		svnstring="svn"
 	fi
 
-	echo "#define VERSION \"Version `head -n 1 major`.`head -n 1 minor`-${svnstring} (`date -I`)\"">version.h
+	echo "#define VERSION \"Version ${versionstring}-${svnstring} (`date -I`)\"">version.h
 else
-	echo "#define VERSION \"Version `head -n 1 major`.`head -n 1 minor` (`date -I`)\"">version.h
+	echo "#define VERSION \"Version ${versionstring} (`date -I`)\"">version.h
 fi
 

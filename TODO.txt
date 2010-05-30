@@ -14,7 +14,15 @@ Release checks:
 
 == Major (important) ==
 
+Build system:
+* Way to build debug/release on demand
+* Add debug/release to version?
+
 Plugin system:
+* Make platform independent
+* Search plugins and data files in current directory, application directory,
+  system directory
+
 * "Protocol" (like for weather plugin) for all plugins
 * Better escaping
 * Configuration for plugins, e. g. longitude for sunset time correction

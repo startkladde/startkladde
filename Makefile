@@ -71,7 +71,7 @@ build/migrations.h build/migrations_headers.h: build/%.h: src/db/migration/%.h.e
 build/CurrentSchema.cpp: src/db/schema/CurrentSchema.cpp.erb src/db/migrations/current_schema.yaml build
 	erb -T 1 src/db/schema/CurrentSchema.cpp.erb >$@ || rm $@
 
-version/version.h: version/major version/minor version/make_version
+version/version.h: version/version version/make_version
 	cd version; ./make_version; cd ..
 
 

@@ -29,6 +29,9 @@ class Settings: public QObject
 		QStringList readArgs (const QStringList &args);
 		void save ();
 
+		bool anyPluginsEnabled ();
+		void disableAllPlugins ();
+
 	signals:
 		void changed ();
 
