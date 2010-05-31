@@ -120,11 +120,11 @@ void Settings::readSettings ()
 	else
 	{
 		infoPlugins
-			<< ShellPluginInfo ("Sunset:"         , "sunset_time sunsets"     , true, false, 0  , false)
-			<< ShellPluginInfo ("Zeit bis sunset:", "sunset_countdown sunsets", true, true , 60 , false)
-			<< ShellPluginInfo ("Wetter:"         , "metar EDDS"              , true, false, 600, false)
-			<< ShellPluginInfo (""                , "metar EDDF"              , true, false, 600, false)
-			<< ShellPluginInfo (""                , "metar EDFM"              , true, false, 600, false)
+			<< ShellPluginInfo ("Sunset:"         , "sunset_time.rb"     , true, false, 0  , false)
+			<< ShellPluginInfo ("Zeit bis sunset:", "sunset_countdown.rb", true, true , 60 , false)
+			<< ShellPluginInfo ("Wetter:"         , "metar EDDS"         , true, false, 600, false)
+			<< ShellPluginInfo (""                , "metar EDDF"         , true, false, 600, false)
+			<< ShellPluginInfo (""                , "metar EDFM"         , true, false, 600, false)
 			;
 	}
 
@@ -158,8 +158,7 @@ void Settings::readSettings ()
 		pluginPaths
 			<< "./.startkladde/plugins"
 			<< "./plugins"
-			<< "./plugins/shell_info"
-			<< "./plugins/shell_info/sunset"
+			<< "./plugins/info"
 			<< "./plugins/weather"
 			<< "/var/lib/startkladde/plugins"
 			;

@@ -1,8 +1,12 @@
+# Sunset-Zeiten in UTC
+
 # Quelle: FTK 2008 (4/2008-3/2009)
 
 # Mögliche Quellen:
 #   - AIP, GEN 2-27
 #   - FTK, KAL
+#   - http://www.timeanddate.com/worldclock/astronomy.html?n=964&obj=sun&month=Jan&year=2010&day=10"
+#   - Plasma (aus KDE) berechnet die Sunset-Zeit
 
 01-01	15:25
 01-02	15:26
