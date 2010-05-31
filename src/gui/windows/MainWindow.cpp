@@ -72,7 +72,8 @@ MainWindow::MainWindow (QWidget *parent) :
 		weatherWidget (NULL), weatherPlugin (NULL),
 		weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
 		contextMenu (new QMenu (this)),
-		databaseActionsEnabled (false)
+		databaseActionsEnabled (false),
+		fontSet (false)
 {
 	ui.setupUi (this);
 
@@ -447,10 +448,13 @@ void MainWindow::writeSettings ()
 
 	settings.beginGroup ("gui");
 
-	settings.beginGroup ("fonts");
-	QFont font = QApplication::font ();
-	settings.setValue ("font", font.toString ());
-	settings.endGroup ();
+	if (fontSet)
+	{
+		settings.beginGroup ("fonts");
+		QFont font = QApplication::font ();
+		settings.setValue ("font", font.toString ());
+		settings.endGroup ();
+	}
 
 	settings.beginGroup ("flightTable");
 	ui.flightTable->writeColumnWidths (settings, *flightModel);
@@ -478,12 +482,21 @@ void MainWindow::readSettings ()
 
 	settings.beginGroup ("gui");
 	settings.beginGroup ("fonts");
-	QString fontDescription = settings.value ("font").toString ();
+
+	if (settings.contains ("font"))
+	{
+		QString fontDescription = settings.value ("font").toString ();
+		QFont font;
+		if (font.fromString (fontDescription))
+		{
+			QApplication::setFont (font);
+			fontSet=true;
+		}
+	}
+
 	settings.endGroup ();
 	settings.endGroup ();
 
-	QFont font;
-	if (font.fromString (fontDescription)) QApplication::setFont (font);
 }
 
 void MainWindow::settingsChanged ()
@@ -1035,8 +1048,11 @@ void MainWindow::on_actionSelectFont_triggered ()
 	font = QFontDialog::getFont (&ok, font, this);
 
 	if (ok)
-	// The user pressed OK and font is set to the font the user selected
-	QApplication::setFont (font);
+	{
+		// The user pressed OK and font is set to the font the user selected
+		QApplication::setFont (font);
+		fontSet=true;
+	}
 }
 
 void MainWindow::on_actionIncrementFontSize_triggered ()
@@ -1045,6 +1061,7 @@ void MainWindow::on_actionIncrementFontSize_triggered ()
 	int size = font.pointSize ();
 	font.setPointSize (size + 1);
 	QApplication::setFont (font);
+	fontSet=true;
 }
 
 void MainWindow::on_actionDecrementFontSize_triggered ()
@@ -1055,6 +1072,7 @@ void MainWindow::on_actionDecrementFontSize_triggered ()
 	{
 		font.setPointSize (size - 1);
 		QApplication::setFont (font);
+		fontSet=true;
 	}
 }
 

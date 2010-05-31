@@ -520,8 +520,6 @@
    <addaction name="actionNew"/>
    <addaction name="actionRepeat"/>
    <addaction name="actionHideFinished"/>
-   <addaction name="actionIncrementFontSize"/>
-   <addaction name="actionDecrementFontSize"/>
    <addaction name="actionShowVirtualKeyboard"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

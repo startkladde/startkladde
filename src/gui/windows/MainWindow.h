@@ -255,6 +255,9 @@ class MainWindow: public QMainWindow
 		bool databaseActionsEnabled;
 		QString databaseOkText;
 
+		/** Whether the font was set explicitly */
+		bool fontSet;
+
 };
 
 #endif // MAINWINDOW_H
