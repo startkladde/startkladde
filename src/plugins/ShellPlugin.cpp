@@ -194,11 +194,6 @@ void ShellPlugin::start ()
 		if (value_display)
 			value_display->setToolTip (complete_command+" ["+working_dir+"]");
 
-		QStringList args;
-		args.append ("/bin/sh");
-		args.append ("-c");
-		args.append (complete_command);
-
 		subprocess=new QProcess (this);
 		subprocess->setWorkingDirectory (working_dir);
 
@@ -206,13 +201,21 @@ void ShellPlugin::start ()
 		QObject::connect (subprocess, SIGNAL (readyReadStandardOutput ()), this, SLOT (output_available ()));
 		QObject::connect (subprocess, SIGNAL (finished (int, QProcess::ExitStatus)), this, SLOT (subprocess_died ()));
 
-
-
 		if (value_display)
 			value_display->setText ("");
 
-		// Qt4
-		subprocess->start ("/bin/sh -c \""+complete_command+"\"", QIODevice::ReadOnly);
+#ifdef WIN32
+		// Windows does not obey the shebang and cannot launch .rb files (even
+		// though they are associated with the interpreter and can be launched
+		// directly from the command line). So we have add ruby to the command
+		// explicitly.
+		// We do this only on Windows because this enables us to use non-ruby
+		// plugins on other platforms (although this is not portable).
+		complete_command="ruby "+complete_command;
+#endif
+		//complete_command="ruby pwd.rb";
+		//std::cout << "launching: " << complete_command << " in " << working_dir << std::endl;
+		subprocess->start (complete_command, QIODevice::ReadOnly);
 		subprocess->closeWriteChannel ();
 
 	}
