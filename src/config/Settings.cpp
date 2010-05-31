@@ -131,12 +131,12 @@ void Settings::readSettings ()
 
 	// *** Plugins - Weather
 	// Weather plugin
-	weatherPluginCommand =s.value ("weatherPluginCommand" , "regenradar_wetteronline.de").toString ();
+	weatherPluginCommand =s.value ("weatherPluginCommand" , "regenradar_wetteronline.de.rb").toString ();
 	weatherPluginEnabled =s.value ("weatherPluginEnabled" , true).toBool ();
 	weatherPluginHeight  =s.value ("weatherPluginHeight"  , 200).toInt ();
 	weatherPluginInterval=s.value ("weatherPluginInterval", 600).toInt ();
 	// Weather dialog
-	weatherWindowCommand =s.value ("weatherWindowCommand" , "regenradar_wetteronline.de_animation").toString ();
+	weatherWindowCommand =s.value ("weatherWindowCommand" , "regenradar_wetteronline.de_animation.rb").toString ();
 	weatherWindowEnabled =s.value ("weatherWindowEnabled" , true).toBool ();
 	weatherWindowInterval=s.value ("weatherWindowInterval", 300).toInt ();
 	weatherWindowTitle   =s.value ("weatherWindowTitle"   , "Regenradar (3 Stunden)").toString ();
