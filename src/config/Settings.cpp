@@ -122,9 +122,9 @@ void Settings::readSettings ()
 		infoPlugins
 			<< ShellPluginInfo ("Sunset:"         , "sunset_time.rb"     , true, false, 0  , false)
 			<< ShellPluginInfo ("Zeit bis sunset:", "sunset_countdown.rb", true, true , 60 , false)
-			<< ShellPluginInfo ("Wetter:"         , "metar EDDS"         , true, false, 600, false)
-			<< ShellPluginInfo (""                , "metar EDDF"         , true, false, 600, false)
-			<< ShellPluginInfo (""                , "metar EDFM"         , true, false, 600, false)
+			<< ShellPluginInfo ("Wetter:"         , "metar.rb EDDS"      , true, false, 600, false)
+			<< ShellPluginInfo (""                , "metar.rb EDDF"      , true, false, 600, false)
+			<< ShellPluginInfo (""                , "metar.rb EDFM"      , true, false, 600, false)
 			;
 	}
 

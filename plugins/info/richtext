@@ -1,6 +1,0 @@
-#!/bin/bash
-#echo "{{\cf6\ul0 Rot} {\cf4\ul0 Gr\'fcn} {\cf2\ul0 Blau}}"
-
-echo '<font color="#FF0000">Rot</font><br><font color="#00FF00">Grün</font><br><font color="#0000FF">Blau</font>'
-#echo '<font color="#FF0000">Rot</font> <font color="#00FF00">Grün</font> <font color="#0000FF">Blau</font>'
-
