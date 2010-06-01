@@ -119,8 +119,6 @@ template<class T> dbId Database::createObject (T &object)
 
 	object.id=result->lastInsertId ().toLongLong ();
 
-	std::cout << "new id is " << object.id << std::endl;
-
 	if (idValid (object.id))
 		emit dbEvent (DbEvent::added (object));
 

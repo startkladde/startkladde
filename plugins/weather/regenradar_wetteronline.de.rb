@@ -3,8 +3,7 @@
 $: << File.dirname($0) # Load files from the script directory
 
 require 'weather_common'
-
-
+require 'tmpdir'
 
 begin
 	index_url="http://www.wetteronline.de/daten/radarhtml/de/dwddg/radarf.htm"
@@ -22,7 +21,8 @@ begin
 		image=download(image_url)
 		raise "Fehler beim Abrufen der Wettergrafik" if !image
 
-		image_file_name=temp_file_name("radar", "gif")
+		# Use a fixed name - don't clutter the directory.
+		image_file_name="#{Dir::tmpdir}/regenradar_wetteronline.de.gif"
 		File.open(image_file_name, "wb") { |file| file.print image }
 		output_image image_file_name
 	else

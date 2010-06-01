@@ -3,6 +3,7 @@
 $: << File.dirname($0) # Load files from the script directory
 
 require 'weather_common'
+require 'tmpdir'
 
 begin
 	navigation_page_url='http://www.wetteronline.de/include/radar_dldl_00_dwddgf.htm'
@@ -38,7 +39,8 @@ begin
 	raise "Fehler beim Abrufen der Wettergrafik" if !image
 
 	# Store the animation
-	image_file_name=temp_file_name("radar_animation", "gif")
+	# Use a fixed name - don't clutter the directory.
+	image_file_name="#{Dir::tmpdir}/regenradar_wetteronline.de_animation.gif"
 	File.open(image_file_name, "wb") { |file| file.print image }
 
 	# Speed up the animation

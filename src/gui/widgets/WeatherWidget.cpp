@@ -105,6 +105,8 @@ void WeatherWidget::inputLine (QString line)
 			{
 				setText ("Film kann nicht\ngeladen werden:\n"+filename);
 			}
+			// Note that we cannot delete the file at this point because Qt
+			// reads from the file when the animation starts over.
 		}
 	}
 }
