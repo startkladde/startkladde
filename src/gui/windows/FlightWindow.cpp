@@ -364,13 +364,15 @@ void FlightWindow::showEvent (QShowEvent *event)
 //		// qApp->desktop ()->availableGeometry () may be useful.
 //	}
 
-	// On Windows XP (and other environments?) it is possible that the window
-	// overlaps the task bar if the screen resolution is low. If this is the
-	// case, resize it so it fits on the screen.
+	// On Windows XP (and other environments?) with low screen resolutions,
+	// (800x600), it is possible that the window is too large and the buttons
+	// are hidden behind the task bar. Resize the window so it fits the
+	// available geometry at the bottom.
 	// Note that according to the documentation, availableGeometry should
-	// exclude the task bar on Windows, but apparently, this does not work
-	// correctly. This does help, but the window may still overlap the task bar
-	// a bit.
+	// exclude the task bar on Windows, so the window should be entirely
+	// visible. However, this does not seem to work and the buttons may still
+	// be partly occluded by the task bar (but at least they are partially
+	// visible).
 	int availableHeight=qApp->desktop ()->availableGeometry ().height ();
 	if (height ()>availableHeight-y ())
 		resize (width (), availableHeight-y ());

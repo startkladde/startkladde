@@ -25,7 +25,12 @@ Settings *Settings::theInstance=NULL;
 
 
 Settings::Settings ():
-	enableDebug (false), coloredLabels (false), displayQueries (false), enableShutdown (false)
+	// Settings which are read from the configuration file do not have to be
+	// initialized at this point because they are set to default values in
+	// readSettings. All settings which are only set by command line have to be
+	// initialized.
+	enableDebug (false), coloredLabels (false), displayQueries (false),
+	enableShutdown (false), noFullScreen (false)
 {
 	readSettings ();
 }
