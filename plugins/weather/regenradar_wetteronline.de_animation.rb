@@ -39,7 +39,7 @@ begin
 
 	# Store the animation
 	image_file_name=temp_file_name("radar_animation", "gif")
-	File.open(image_file_name, "w") { |file| file.print image }
+	File.open(image_file_name, "wb") { |file| file.print image }
 
 	# Speed up the animation
 	output_message "Radarfilm wird konvertiert"
