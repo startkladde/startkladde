@@ -95,6 +95,8 @@ clean: Makefile_startkladde Makefile_tests
 	rm -f Makefile_startkladde Makefile_tests
 	rm -f version/version.h
 	rm -rf build
+	rm -rf debug release # For Windows
+	rm object_script.startkladde.Debug object_script.startkladde.Release # For Windows
 
 
 ##########
