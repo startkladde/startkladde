@@ -6,6 +6,7 @@
 #include <QCompleter>
 #include <QShowEvent>
 #include <QPushButton>
+#include <QDesktopWidget>
 
 #include "src/color.h"
 #include "src/text.h"
@@ -344,15 +345,27 @@ void FlightWindow::fillData ()
 
 void FlightWindow::showEvent (QShowEvent *event)
 {
-	QWidget *parentWidget=dynamic_cast<QWidget *> (parent ());
-	if (parentWidget)
-	{
-		// TODO: causes flicker - the window is shown in the top left corner
-		// before being moved.
-		move (
-			parentWidget->x ()+(parentWidget->width  ()-width  ())/2,
-			parentWidget->y ()+(parentWidget->height ()-height ())/2);
-	}
+	// We used to manually center the window on its parent widget here.
+	// However, both Gnome and Windows XP seem to do that automatically anyway.
+	// If this is enabled, the window may be partly outside of the screen on
+	// Windows. Make sure to move it back inside so it is completely visible.
+//	QWidget *parentWidget=dynamic_cast<QWidget *> (parent ());
+//	if (parentWidget)
+//	{
+//		// Move to the center of the parent widget
+//		// TODO: causes flicker - the window is shown in the top left corner
+//		// before being moved.
+//		move (
+//			parentWidget->x ()+(parentWidget->width  ()-width  ())/2,
+//			parentWidget->y ()+(parentWidget->height ()-height ())/2);
+//
+//		// Attention: make sure it is on the screen completely!
+//		// qApp->desktop ()->availableGeometry () may be useful.
+//	}
+
+	int availableHeight=qApp->desktop ()->availableGeometry ().height ();
+	if (height ()>availableHeight-y ())
+		resize (width (), availableHeight-y ());
 
 	// We dont't set the label heights on spantaneous show events (generated
 	// by the window system, e. g. after the window has been minimized).
