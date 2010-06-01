@@ -166,7 +166,7 @@ void ShellPlugin::start ()
 		if (value_display)
 		{
 			value_display->setTextFormat (Qt::PlainText);
-			value_display->setText ("Plugin-Datei \""+command_file+"\" nicht gefunden.");
+			value_display->setText ("Plugin \""+command_file+"\" nicht gefunden.");
 			value_display->setToolTip ("");
 		}
 	}
@@ -213,9 +213,22 @@ void ShellPlugin::start ()
 		// plugins on other platforms (although this is not portable).
 		complete_command="ruby "+complete_command;
 #endif
-		//complete_command="ruby pwd.rb";
 		//std::cout << "launching: " << complete_command << " in " << working_dir << std::endl;
 		subprocess->start (complete_command, QIODevice::ReadOnly);
+
+		if (!subprocess->waitForStarted ())
+		{
+#ifdef WIN32
+			// On Windows, we call ruby explicitly, so most probably it was not
+			// found
+			QString message="Fehler: Ruby nicht installiert oder nicht im Suchpfad";
+#else
+			// On other platforms, the plugin ist called directly
+			QString message="Fehler beim Starten des Plugins";
+#endif
+			if (value_display) value_display->setText (message);
+		}
+
 		subprocess->closeWriteChannel ();
 
 	}
