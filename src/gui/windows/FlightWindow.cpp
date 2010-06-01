@@ -355,6 +355,7 @@ void FlightWindow::showEvent (QShowEvent *event)
 //		// Move to the center of the parent widget
 //		// TODO: causes flicker - the window is shown in the top left corner
 //		// before being moved.
+//		// Also: using rect ().center () is probably better.
 //		move (
 //			parentWidget->x ()+(parentWidget->width  ()-width  ())/2,
 //			parentWidget->y ()+(parentWidget->height ()-height ())/2);
@@ -363,6 +364,13 @@ void FlightWindow::showEvent (QShowEvent *event)
 //		// qApp->desktop ()->availableGeometry () may be useful.
 //	}
 
+	// On Windows XP (and other environments?) it is possible that the window
+	// overlaps the task bar if the screen resolution is low. If this is the
+	// case, resize it so it fits on the screen.
+	// Note that according to the documentation, availableGeometry should
+	// exclude the task bar on Windows, but apparently, this does not work
+	// correctly. This does help, but the window may still overlap the task bar
+	// a bit.
 	int availableHeight=qApp->desktop ()->availableGeometry ().height ();
 	if (height ()>availableHeight-y ())
 		resize (width (), availableHeight-y ());
