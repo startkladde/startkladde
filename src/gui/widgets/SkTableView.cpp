@@ -195,8 +195,11 @@ void SkTableView::readColumnWidths (QSettings &settings, const ColumnInfo &colum
 			QString sampleText=columnInfo.sampleText (i);
 			QString headerText=model ()->headerData (i, Qt::Horizontal).toString ();
 
+			// The 2/4 were determined experimentally. Probably, some metric
+			// should be used. For headerWidth, +2 is enough on Linux/Gnome,
+			// but not on Windows XP.
 			int sampleWidth=metrics.boundingRect (sampleText).width ()+2*margin+2;
-			int headerWidth=metrics.boundingRect (headerText).width ()+2*margin+2;
+			int headerWidth=metrics.boundingRect (headerText).width ()+2*margin+4;
 
 			setColumnWidth (i, qMax (sampleWidth, headerWidth));
 		}
