@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Startkladde
+Comment=Starterfassung für den Vereinsflugbetrieb
+Exec=startkladde
+Terminal=false
+Type=Application
+Categories=Other;Qt;
+Icon=startkladde.png
+

@@ -342,5 +342,11 @@ target.path +=  /usr/bin/
 plugins.path += /usr/lib/startkladde/
 plugins.files += plugins
 
-INSTALLS += target plugins
+menu.path += /usr/share/applications/
+menu.files += startkladde.desktop
+
+icon.path += /usr/share/pixmaps
+icon.files += graphics/startkladde.png
+
+INSTALLS += target plugins menu icon
 
