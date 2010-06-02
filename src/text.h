@@ -8,6 +8,9 @@
 #include <QString>
 #include <QColor>
 
+#define STRINGIFY_INDIR(arg) #arg
+#define STRINGIFY(arg) STRINGIFY_INDIR(arg)
+
 // TODO split
 // TOOD use const QString & instead of QString where possible
 
