@@ -2,33 +2,60 @@
 ## Settings ##
 ##############
 
-win32 {
-	MYSQL_INCLUDE_PATH = c:/programme/mysql/5.1/include
-}
+win32: MYSQL_INCLUDE_PATH = c:/programme/mysql/5.1/include
 
 
 #########################
 ## Build configuration ##
 #########################
 
-# If nothing is specified, release will be used.
-# The value can also be specified on the command line: 'qmake "CONFIG=debug"
-# startkladde.pro', but will be overridden here.
-CONFIG += debug
-#CONFIG += release
-
-CONFIG += qt
 TEMPLATE = app
+CONFIG += qt thread resources
+QT += network sql
 
+# Do not overwrite the to level Makefile
 MAKEFILE = Makefile_startkladde
-OBJECTS_DIR = build/
-MOC_DIR= build/
 
-QT += sql
-QT += network
+# On Windows, build an application without console
+win32:CONFIG += windows
 
-DEPENDPATH += . version
-INCLUDEPATH += . version 
+# Build in both debug and release mode and set the SK_BUILD variable
+CONFIG -= debug_and_release_target
+CONFIG += debug_and_release
+CONFIG(debug, debug|release) {
+	SK_BUILD=debug
+} else {
+	SK_BUILD=release
+}
+
+# qmake stinkage: we cannot install the target with a different name from the
+# one it was created with. Specifically, we would like to install
+# startkladde_release as /usr/bin/startkladde. Using target.extra to make a
+# copy of the file before installing fails as the install command is not
+# performed.
+# This is what we would like to do:
+# TARGET = startkladde_$${SK_BUILD}
+CONFIG(debug, debug|release) {
+	TARGET = startkladde_debug
+} else {
+	TARGET = startkladde
+}
+
+DEFINES += SK_BUILD=$${SK_BUILD}
+
+#QMAKE_CXXFLAGS += -Werror
+
+
+###########
+## Paths ##
+###########
+
+MOC_DIR= build
+UI_DIR= build
+RCC_DIR= build
+
+#DEPENDPATH += . version
+#INCLUDEPATH += . version 
 
 unix {
 	INCLUDEPATH += /usr/include/mysql
@@ -40,18 +67,6 @@ win32 {
 	INCLUDEPATH += $$MYSQL_INCLUDE_PATH
 }
 
-#QMAKE_CXXFLAGS += -Werror
-
-TARGET = startkladde
-# "If debug is the last one of (debug and release)"
-# Otherwise this would also trigger on "CONFIG = debug release" where release
-# is the effective setting
-# If nothing is selected, the default (release) will be used.
-#CONFIG(debug, debug|release) {
-#    TARGET = startkladde
-#} else {
-#    TARGET = startkladde_release
-#}
 
 
 #################
@@ -313,4 +328,19 @@ unix {
 !include( build/migrations.pro ) {
 error( "build/migrations.pro could not be included" )
 }
+
+
+##################
+## Installation ##
+##################
+
+# CONFIG += copy_dir_files
+
+target.path +=  /usr/bin/
+# target.files does not have to be specified explicitly
+
+plugins.path += /usr/lib/startkladde/
+plugins.files += plugins
+
+INSTALLS += target plugins
 

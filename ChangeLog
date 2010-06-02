@@ -1,3 +1,5 @@
+  - Cleaned up the build system
+  
 2.0.3 (2010-06-01)
   - Ported plugins to Ruby
   - Enabled plugins on Windows

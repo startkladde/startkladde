@@ -30,7 +30,7 @@ Settings::Settings ():
 	// readSettings. All settings which are only set by command line have to be
 	// initialized.
 	enableDebug (false), coloredLabels (false), displayQueries (false),
-	enableShutdown (false), noFullScreen (false)
+	noFullScreen (false), enableShutdown (false)
 {
 	readSettings ();
 }
@@ -165,7 +165,9 @@ void Settings::readSettings ()
 			<< "./plugins"
 			<< "./plugins/info"
 			<< "./plugins/weather"
-			<< "/var/lib/startkladde/plugins"
+			<< "/usr/lib/startkladde/plugins"
+			<< "/usr/lib/startkladde/plugins/info"
+			<< "/usr/lib/startkladde/plugins/weather"
 			;
 	}
 }

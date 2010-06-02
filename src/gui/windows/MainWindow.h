@@ -184,7 +184,7 @@ class MainWindow: public QMainWindow
 		void on_actionTest_triggered ();
 
 		// Menu: Demosystem
-		void on_actionWebinterface_triggered () { system ("firefox http://localhost/ &"); }
+		void on_actionWebinterface_triggered () { (void)system ("firefox http://localhost/ &"); }
 
 		// Menu: Help
 		void on_actionInfo_triggered ();
