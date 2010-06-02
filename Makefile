@@ -114,9 +114,12 @@ clean: Makefile_startkladde
 ## Misc ##
 ##########
 
-.PHONY: run
+.PHONY: run run-debug
 run: startkladde
 	./startkladde -q --no-full-screen
+
+run-debug: startkladde_debug
+	./startkladde_debug -q --no-full-screen
 
 # Use a temporary file in build/, so if the dumping fails, we don't overwrite
 # the schema
