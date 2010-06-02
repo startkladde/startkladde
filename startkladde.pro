@@ -55,7 +55,7 @@ UI_DIR= build
 RCC_DIR= build
 
 #DEPENDPATH += . version
-#INCLUDEPATH += . version 
+INCLUDEPATH += .
 
 unix {
 	INCLUDEPATH += /usr/include/mysql
