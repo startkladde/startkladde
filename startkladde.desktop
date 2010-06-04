@@ -5,6 +5,6 @@ Comment=Starterfassung für den Vereinsflugbetrieb
 Exec=startkladde
 Terminal=false
 Type=Application
-Categories=Other;Qt;
+Categories=Office;Database;Qt;
 Icon=startkladde.png
 
