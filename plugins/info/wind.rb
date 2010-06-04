@@ -1,4 +1,4 @@
-#!/user/bin/env ruby
+#!/usr/bin/env ruby
 
 puts "Winddaten sind nicht verfügbar"
 
