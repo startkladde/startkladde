@@ -1,4 +1,7 @@
-2.0.4 (2010-06-01)
+2.0.5 (2010-06-04)
+    - Added Ubuntu package
+    
+2.0.4 (2010-06-04)
 	- Cleaned up the build system
 
 2.0.3 (2010-06-01)
