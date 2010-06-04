@@ -1,0 +1,18 @@
+Source: startkladde
+Section: misc
+Priority: optional
+Maintainer: Martin Herrmann <martin@famherrmann.de>
+Build-Depends: debhelper (>= 7), docbook-to-man, ruby, libacpi-dev, libqt4-dev, libmysqlclient-dev
+Standards-Version: 3.8.3
+Homepage: http://startkladde.sourceforge.net
+
+Package: startkladde
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ruby, libacpi0, libqt4-sql-mysql
+Recommends: mysql-server
+Description: launch logging for flying clubs
+ startkladde is a program for logging launches at airfields or glider sites.
+ Its main audience are flying clubs which need to record the data for legal
+ reasons and for billing.
+ A web interface (called sk_web) is available to allow pilots and clubs to
+ access the data.
