@@ -33,7 +33,7 @@ startkladde: release
 
 startkladde_debug: debug
 
-all: startkladde plugins
+all: startkladde #plugins
 
 
 #########################
@@ -90,9 +90,9 @@ version/version.h: version/version version/make_version
 ## Subdirectories ##
 ####################
 
-.PHONY: plugins
-plugins:
-	$(MAKE) -C $@
+#.PHONY: plugins
+#plugins:
+#	$(MAKE) -C $@
 
 
 #############
@@ -102,12 +102,12 @@ plugins:
 .PHONY: clean
 clean: Makefile_startkladde
 	$(MAKE) -f Makefile_startkladde distclean
-	$(MAKE) -C plugins clean
 	rm -f Makefile_startkladde Makefile_startkladde.Debug Makefile_startkladde.Release
 	rm -f version/version.h
 	rm -rf build debug release
 	rm -f object_script.startkladde.Debug object_script.startkladde.Release # For Windows
 	rm -f startkladde startkladde_release startkladde_debug
+#	$(MAKE) -C plugins clean
 
 
 ##########
