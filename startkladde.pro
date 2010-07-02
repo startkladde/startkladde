@@ -336,17 +336,19 @@ error( "build/migrations.pro could not be included" )
 
 # CONFIG += copy_dir_files
 
-target.path +=  /usr/bin/
-# target.files does not have to be specified explicitly
+unix {
+	target.path +=  /usr/bin/
+	# target.files does not have to be specified explicitly
 
-plugins.path += /usr/lib/startkladde/
-plugins.files += plugins
+	plugins.path += /usr/lib/startkladde/
+	plugins.files += plugins
 
-menu.path += /usr/share/applications/
-menu.files += startkladde.desktop
+	menu.path += /usr/share/applications/
+	menu.files += startkladde.desktop
 
-icon.path += /usr/share/pixmaps
-icon.files += graphics/startkladde.png
+	icon.path += /usr/share/pixmaps
+	icon.files += graphics/startkladde.png
 
-INSTALLS += target plugins menu icon
+	INSTALLS += target plugins menu icon
+}
 

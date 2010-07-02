@@ -1,15 +1,18 @@
-2.0.5 (2010-06-04)
-    - Added Ubuntu package
-    
-2.0.4 (2010-06-04)
+	- Made installation target in .pro Unix-only
+	- Renamed ChangeLog to changelog.txt (consistent with sk_web)
+
+2.0.5 (2010-06-04):
+	- Added Ubuntu package
+
+2.0.4 (2010-06-04):
 	- Cleaned up the build system
 
-2.0.3 (2010-06-01)
+2.0.3 (2010-06-01):
 	- Ported plugins to Ruby
 	- Enabled plugins on Windows
 	- Minor bugfixes
 
-2.0.2 (2010-05-31)
+2.0.2 (2010-05-31):
 	- Improved font handling
 
 2.0.1 (2010-05-31):
