@@ -1,3 +1,5 @@
+	- Removed demosystem code
+	- Checked return values of kvkbd system calls
 	- Made installation target in .pro Unix-only
 	- Renamed ChangeLog to changelog.txt (consistent with sk_web)
 

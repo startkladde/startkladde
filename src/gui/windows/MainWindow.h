@@ -183,9 +183,6 @@ class MainWindow: public QMainWindow
 		//		void on_actionPingServer_triggered ();
 		void on_actionTest_triggered ();
 
-		// Menu: Demosystem
-		void on_actionWebinterface_triggered () { (void)system ("firefox http://localhost/ &"); }
-
 		// Menu: Help
 		void on_actionInfo_triggered ();
 		void on_actionNetworkDiagnostics_triggered ();

@@ -455,18 +455,11 @@
     <addaction name="actionInfo"/>
     <addaction name="actionNetworkDiagnostics"/>
    </widget>
-   <widget class="QMenu" name="menuDemosystem">
-    <property name="title">
-     <string>D&amp;emosystem</string>
-    </property>
-    <addaction name="actionWebinterface"/>
-   </widget>
    <addaction name="menuProgram"/>
    <addaction name="menuFlight"/>
    <addaction name="menuView"/>
    <addaction name="menuStatistics"/>
    <addaction name="menuDatabase"/>
-   <addaction name="menuDemosystem"/>
    <addaction name="menuDebug"/>
    <addaction name="menuHelp"/>
   </widget>

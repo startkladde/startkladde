@@ -127,11 +127,6 @@ MainWindow::MainWindow (QWidget *parent) :
 	ui.menuDatabase->addSeparator ();
 	ui.menuDatabase->addAction (logAction);
 
-	ui.menuDemosystem->menuAction ()->setVisible (false);
-#ifdef SK_DEMOSYSTEM
-	ui.menuDemosystem->menuAction ()->setVisible (true);
-#endif
-
 	ui.actionShutdown->setVisible (Settings::instance ().enableShutdown);
 
 	bool virtualKeyboardEnabled = (
@@ -1093,15 +1088,31 @@ void MainWindow::on_actionShowVirtualKeyboard_triggered (bool checked)
 		if (result != 0)
 		{
 			// failed to show; try launch
-			system ("kvkbd >/dev/null");
-			//system ("dcop kvkbd kvkbd show >/dev/null");
-			system ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:true  >/dev/null");
+			if (system ("kvkbd >/dev/null")==0)
+			{
+				//system ("dcop kvkbd kvkbd show >/dev/null");
+				if (system ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:true  >/dev/null")!=0)
+					showWarning ("DBus-Aufruf fehlgeschlagen",
+						"Der Aufruf von dbus-send zum Anzeigen der Bildschirmtastatur ist fehlgeschlagen.",
+						this);
+			}
+			else
+			{
+				showWarning ("Bildschirmtastatur konnte nicht angezeigt werden",
+					"Die Bildschirmtastatur konnte nicht angezeigt werden. Möglicherweise is kvkbd nicht installiert.",
+					this);
+			}
+
 		}
 	}
 	else
 	{
 		//system ("/usr/bin/dcop kvkbd kvkbd hide >/dev/null");
-		system ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:false >/dev/null");
+		if (system ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:false >/dev/null")!=0)
+			showWarning ("DBus-Aufruf fehlgeschlagen",
+				"Der Aufruf von dbus-send zum Ausblenden der Bildschirmtastatur ist fehlgeschlagen.",
+				this);
+
 	}
 }
 
