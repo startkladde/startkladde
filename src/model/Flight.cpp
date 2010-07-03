@@ -12,6 +12,8 @@
 #include "src/util/qString.h"
 #include "src/util/time.h"
 
+template<class T> class QList;
+
 // TODO Vereinheitlichen der Statusfunktionen untereinander und mit den
 // condition-strings
 // TODO Errors in other places: for towflights, the landing time is meaningful
@@ -767,6 +769,22 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 
 	return towflight;
 }
+
+QList<Flight> Flight::makeTowflights (const QList<Flight> &flights, Cache &cache)
+{
+	QList<Flight> towflights;
+
+	// The launch method is the same for all tow flights
+	dbId towLaunchMethod=cache.getLaunchMethodByType (LaunchMethod::typeSelf);
+
+	// Create a towflight for each flight which is an airtow
+	foreach (const Flight &flight, flights)
+		if (flight.isAirtow (cache))
+			towflights.append (flight.makeTowflight (flight.effectiveTowplaneId (cache), towLaunchMethod));
+
+	return towflights;
+}
+
 
 // TODO move to PlaneLog
 bool Flight::collectiveLogEntryPossible (const Flight *prev, const Plane *plane) const

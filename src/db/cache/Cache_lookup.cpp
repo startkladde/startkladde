@@ -204,7 +204,7 @@ QList<dbId> Cache::getPersonIdsByFirstName (const QString &firstName)
 	synchronizedReturn (dataMutex, personIdsByFirstName.values (firstName.toLower ()));
 }
 
-dbId Cache::getLaunchMethodByType (LaunchMethod::Type type)
+dbId Cache::getLaunchMethodByType (LaunchMethod::Type type) const
 {
 	synchronized (dataMutex)
 	{

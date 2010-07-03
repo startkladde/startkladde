@@ -1450,13 +1450,24 @@ void MainWindow::on_actionSetDisplayDate_triggered ()
 
 void MainWindow::on_actionPlaneLogs_triggered ()
 {
-	PlaneLog *planeLog = PlaneLog::createNew (flightList->getList (), dbManager.getCache ());
+	// Get the list of flights and add the towflights
+	QList<Flight> flights=flightList->getList ();
+	flights+=Flight::makeTowflights (flights, dbManager.getCache ());
+
+	PlaneLog *planeLog = PlaneLog::createNew (flights, dbManager.getCache ());
 	StatisticsWindow::display (planeLog, true, utf8 ("Bordbücher"), this);
 }
 
-void MainWindow::on_actionPersonLogs_triggered ()
+void MainWindow::on_actionPilotLogs_triggered ()
 {
-	PilotLog *pilotLog = PilotLog::createNew (flightList->getList (), dbManager.getCache ());
+	// Get the list of flights and add the towflights
+	QList<Flight> flights=flightList->getList ();
+	flights+=Flight::makeTowflights (flights, dbManager.getCache ());
+
+	// Create the pilots' log
+	PilotLog *pilotLog = PilotLog::createNew (flights, dbManager.getCache ());
+
+	// Display the pilots' log
 	StatisticsWindow::display (pilotLog, true, utf8 ("Flugbücher"), this);
 }
 
@@ -1642,7 +1653,7 @@ void MainWindow::setDatabaseActionsEnabled (bool enabled)
 	ui.actionLaunchMethodStatistics  ->setEnabled (enabled);
 	ui.actionNew                     ->setEnabled (enabled);
 	ui.actionLaunchMethodPreselection->setEnabled (enabled);
-	ui.actionPersonLogs              ->setEnabled (enabled);
+	ui.actionPilotLogs               ->setEnabled (enabled);
 	ui.actionPingServer              ->setEnabled (enabled);
 	ui.actionPlaneLogs               ->setEnabled (enabled);
 	ui.actionRefreshAll              ->setEnabled (enabled);

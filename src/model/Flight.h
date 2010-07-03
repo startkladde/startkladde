@@ -195,6 +195,7 @@ class Flight
 		virtual bool collectiveLogEntryPossible (const Flight *prev, const Plane *plane) const;
 		virtual bool isExternal () const { return !landsHere () || !departsHere (); }
 		virtual Flight makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const;
+		static QList<Flight> makeTowflights (const QList<Flight> &flights, Cache &cache);
 
 		// TODO: this concept is bad - a flight in the database must never
 		// have the flight type "towflight", because that is reserved for

@@ -130,7 +130,7 @@ class Cache: public QObject
 		dbId getUniquePersonIdByName (const QString &lastName, const QString &firstName);
 		QList<dbId> getPersonIdsByFirstName (const QString &firstName);
 		QList<dbId> getPersonIdsByLastName (const QString &lastName);
-		dbId getLaunchMethodByType (LaunchMethod::Type type);
+		dbId getLaunchMethodByType (LaunchMethod::Type type) const;
 
 
 		// *** String lists

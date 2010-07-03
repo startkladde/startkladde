@@ -424,7 +424,7 @@
      <string>&amp;Statistik</string>
     </property>
     <addaction name="actionPlaneLogs"/>
-    <addaction name="actionPersonLogs"/>
+    <addaction name="actionPilotLogs"/>
     <addaction name="actionLaunchMethodStatistics"/>
    </widget>
    <widget class="QMenu" name="menuDatabase">
@@ -690,7 +690,7 @@
     <string>Ctrl+B</string>
    </property>
   </action>
-  <action name="actionPersonLogs">
+  <action name="actionPilotLogs">
    <property name="text">
     <string>&amp;Flugbücher</string>
    </property>
