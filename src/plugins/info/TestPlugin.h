@@ -16,6 +16,8 @@ class TestPlugin: public InfoPlugin
 		TestPlugin ();
 		virtual ~TestPlugin ();
 
+		virtual void start ();
+
 		static QString getName             ();
 		static QString getShortDescription ();
 		static QString getLongDescription  ();

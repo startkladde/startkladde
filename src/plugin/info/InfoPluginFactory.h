@@ -11,20 +11,45 @@
 class InfoPluginFactory
 {
 	public:
+		// ***********
+		// ** Types **
+		// ***********
+
 		class Registration
 		{
 			public:
 				Registration (InfoPlugin::Descriptor *descriptor);
 		};
 
-		virtual ~InfoPluginFactory ();
+		// ******************
+		// ** Construction **
+		// ******************
 
-		static InfoPluginFactory &getInstance ();
+	public:
+		virtual ~InfoPluginFactory ();
 
 	private:
 		InfoPluginFactory ();
+
+		// ***************
+		// ** Singleton **
+		// ***************
+
+	public:
+		static InfoPluginFactory &getInstance ();
+
+	private:
 		static InfoPluginFactory *instance;
 
+
+		// *****************
+		// ** Descriptors **
+		// *****************
+
+	public:
+		const QList<InfoPlugin::Descriptor *> &getDescriptors ();
+
+	private:
 		void addDescriptor (InfoPlugin::Descriptor *descriptor);
 		QList<InfoPlugin::Descriptor *> descriptors;
 };

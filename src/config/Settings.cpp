@@ -18,7 +18,7 @@ Settings *Settings::theInstance=NULL;
 /*
  * Notes:
  *   - don't store a QSettings instance in the class. Constructing and
- *     destructing QSettings instances is "very fast" (according to the
+ *     destroying QSettings instances is "very fast" (according to the
  *     documentation) and QSettings is only reentrant, not thread safe.
  */
 

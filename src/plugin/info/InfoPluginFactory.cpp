@@ -8,9 +8,11 @@
 #include "InfoPluginFactory.h"
 
 #include <QList>
-#include <QDebug>
 
-InfoPluginFactory *InfoPluginFactory::instance;
+
+// ******************
+// ** Construction **
+// ******************
 
 InfoPluginFactory::InfoPluginFactory ()
 {
@@ -22,6 +24,13 @@ InfoPluginFactory::~InfoPluginFactory ()
 		delete descriptor;
 }
 
+
+// ***************
+// ** Singleton **
+// ***************
+
+InfoPluginFactory *InfoPluginFactory::instance;
+
 InfoPluginFactory &InfoPluginFactory::getInstance ()
 {
 	if (!InfoPluginFactory::instance)
@@ -30,12 +39,24 @@ InfoPluginFactory &InfoPluginFactory::getInstance ()
 	return *InfoPluginFactory::instance;
 }
 
+// *****************
+// ** Descriptors **
+// *****************
+
 void InfoPluginFactory::addDescriptor (InfoPlugin::Descriptor *descriptor)
 {
-	qDebug () << QString ("Registering plugin %1").arg (descriptor->getName ());
-
 	descriptors.append (descriptor);
 }
+
+const QList<InfoPlugin::Descriptor *> &InfoPluginFactory::getDescriptors ()
+{
+	return descriptors;
+}
+
+
+// *************************************
+// ** InfoPluginFactory::Registration **
+// *************************************
 
 InfoPluginFactory::Registration::Registration (InfoPlugin::Descriptor *descriptor)
 {

@@ -16,7 +16,6 @@ REGISTER_INFO_PLUGIN (TestPlugin)
 TestPlugin::TestPlugin ()
 {
 	qDebug () << "Creating test plugin";
-	outputText ("Hello TestPlugin!");
 }
 
 TestPlugin::~TestPlugin ()
@@ -52,4 +51,9 @@ void TestPlugin::loadSettings (const QSettings &settings)
 void TestPlugin::saveSettings (const QSettings &settings)
 {
 	(void)settings;
+}
+
+void TestPlugin::start ()
+{
+	outputText ("Hello TestPlugin!");
 }

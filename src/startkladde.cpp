@@ -341,6 +341,24 @@ void test ()
 {
 }
 
+#include "src/plugin/info/InfoPlugin.h"
+#include "src/plugin/info/InfoPluginFactory.h"
+
+void plugins_test ()
+{
+	std::cout << "Begin plugin test" << std::endl;
+
+	foreach (InfoPlugin::Descriptor *descriptor, InfoPluginFactory::getInstance ().getDescriptors ())
+	{
+		std::cout << QString ("Registered plugin %1 (%2)").arg (descriptor->getName (), descriptor->getShortDescription ()) << std::endl;
+		InfoPlugin *plugin=descriptor->create ();
+		std::cout << "Plugin sez: " << plugin->getText () << std::endl;
+		delete plugin;
+	}
+
+	std::cout << "End plugin test" << std::endl;
+}
+
 #include "src/concurrent/Waiter.h"
 #include "src/model/LaunchMethod.h" //remove
 #include "src/db/migrations/Migration_20100216135637_add_launch_methods.h"
@@ -391,6 +409,8 @@ int main (int argc, char **argv)
 				ret=test_database ();
 			else if (nonOptions[0]=="proxy")
 				proxy_test ();
+			else if (nonOptions[0]=="plugins")
+				plugins_test ();
 			else
 				ret=doStuff (nonOptions);
 		}

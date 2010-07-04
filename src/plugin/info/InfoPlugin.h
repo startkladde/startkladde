@@ -46,11 +46,14 @@ class InfoPlugin: public Plugin
 		virtual ~InfoPlugin ();
 
 
-		// *****************
-		// ** Text output **
-		// *****************
+		// **********************
+		// ** Property Acceess **
+		// **********************
 
-		const QString &getText ();
+		const QString &getTitle () const;
+		void setTitle (const QString &title);
+
+		const QString &getText () const;
 
 	signals:
 		void textOutput (const QString &);
@@ -59,6 +62,7 @@ class InfoPlugin: public Plugin
 		void outputText (const QString &text);
 
 	private:
+		QString title;
 		QString text;
 };
 

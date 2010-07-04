@@ -24,6 +24,8 @@ class Plugin: public QObject
 		Plugin ();
 		virtual ~Plugin ();
 
+		virtual void start ()=0;
+
 		virtual QWidget *createSettingsPane ()=0;
 
 		virtual void loadSettings (const QSettings &settings)=0;
