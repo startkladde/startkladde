@@ -8,6 +8,7 @@
 #include "TestPlugin.h"
 
 #include <QDebug>
+#include <QTime>
 
 #include "src/plugin/info/InfoPluginFactory.h"
 
@@ -23,19 +24,19 @@ TestPlugin::~TestPlugin ()
 	qDebug () << "Destroying test plugin";
 }
 
-QString TestPlugin::getName ()
+QString TestPlugin::getId () const
+{
+	return "test";
+}
+
+QString TestPlugin::getName () const
 {
 	return "Test";
 }
 
-QString TestPlugin::getShortDescription ()
+QString TestPlugin::getDescription () const
 {
-	return "Test-Plugin";
-}
-
-QString TestPlugin::getLongDescription ()
-{
-	return "Ein Plugin zum Testen";
+	return "Gibt eine Begrüßung und die Startzeit aus";
 }
 
 QWidget *TestPlugin::createSettingsPane ()
@@ -45,15 +46,20 @@ QWidget *TestPlugin::createSettingsPane ()
 
 void TestPlugin::loadSettings (const QSettings &settings)
 {
-	(void)settings;
+	InfoPlugin::loadSettings (settings);
 }
 
-void TestPlugin::saveSettings (const QSettings &settings)
+void TestPlugin::saveSettings (QSettings &settings)
 {
-	(void)settings;
+	InfoPlugin::saveSettings (settings);
 }
 
 void TestPlugin::start ()
 {
-	outputText ("Hello TestPlugin!");
+	outputText (QString ("Hello TestPlugin at %1!").arg (QTime::currentTime ().toString ()));
+}
+
+void TestPlugin::terminate ()
+{
+
 }

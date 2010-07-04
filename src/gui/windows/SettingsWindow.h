@@ -5,6 +5,7 @@
 
 #include "ui_SettingsWindow.h"
 
+class InfoPlugin;
 class ShellPluginInfo;
 
 class SettingsWindow: public QDialog
@@ -19,7 +20,7 @@ class SettingsWindow: public QDialog
 		void readSettings ();
 		void writeSettings ();
 
-		void readItem (QTreeWidgetItem *item, const ShellPluginInfo &plugin);
+		void readItem (QTreeWidgetItem *item, const InfoPlugin *plugin);
 		void makeItemEditable (QListWidgetItem *item);
 
 		bool allowEdit ();
@@ -45,6 +46,7 @@ class SettingsWindow: public QDialog
 	private:
 		Ui::SettingsWindowClass ui;
 		bool warned;
+		QList<InfoPlugin *> infoPlugins;
 
 	public:
 		bool databaseSettingsChanged;

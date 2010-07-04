@@ -12,6 +12,8 @@
 #include <QSettings>
 
 #include "src/util/qString.h"
+#include "src/plugin/info/InfoPlugin.h"
+#include "src/plugin/info/InfoPluginFactory.h"
 
 Settings *Settings::theInstance=NULL;
 
@@ -89,6 +91,85 @@ void Settings::save ()
 	emit changed ();
 }
 
+QList<InfoPlugin *> Settings::readInfoPlugins ()
+{
+	QList<InfoPlugin *> plugins;
+
+	QSettings s;
+	s.beginGroup ("settings");
+
+	InfoPluginFactory &factory=InfoPluginFactory::getInstance ();
+
+	if (s.contains ("infoPlugins/size"))
+	{
+		int n=s.beginReadArray ("infoPlugins");
+		for (int i=0; i<n; ++i)
+		{
+			s.setArrayIndex (i);
+
+			// FIXME handle not found
+			QString id=s.value ("id").toString ();
+			const InfoPlugin::Descriptor *descriptor=factory.find (id);
+
+			if (descriptor)
+			{
+				InfoPlugin *plugin=descriptor->create ();
+				plugin->loadSettings (s);
+				plugins << plugin;
+			}
+		}
+		s.endArray ();
+	}
+	else
+	{
+		// FIXME we use the factory so we know we get the same as when reading them on the next run
+		const InfoPlugin::Descriptor *descriptor=factory.find ("test");
+
+		if (descriptor)
+		{
+			InfoPlugin *plugin;
+
+			plugin=descriptor->create ();
+			plugin->setCaption ("Foo:");
+			plugins << plugin;
+
+			plugin=descriptor->create ();
+			plugin->setCaption ("Bar:");
+			plugins << plugin;
+		}
+
+		// FIXME
+//		infoPlugins
+//			<< ShellPluginInfo ("Sunset:"         , "sunset_time.rb"     , true, false, 0  , false)
+//			<< ShellPluginInfo ("Zeit bis sunset:", "sunset_countdown.rb", true, true , 60 , false)
+//			<< ShellPluginInfo ("Wetter:"         , "metar.rb EDDS"      , true, false, 600, false)
+//			<< ShellPluginInfo (""                , "metar.rb EDDF"      , true, false, 600, false)
+//			<< ShellPluginInfo (""                , "metar.rb EDFM"      , true, false, 600, false)
+//			;
+	}
+
+	return plugins;
+}
+
+void Settings::writeInfoPlugins (const QList<InfoPlugin *> &plugins)
+{
+	QSettings s;
+	s.beginGroup ("settings");
+
+	// *** Plugins - Info
+	s.beginWriteArray ("infoPlugins");
+	for (int i=0; i<plugins.size (); ++i)
+	{
+		s.setArrayIndex (i);
+
+		InfoPlugin *plugin=plugins[i];
+		s.setValue ("id", plugin->getId ());
+		plugin->saveSettings (s);
+	}
+	s.endArray ();
+
+}
+
 void Settings::readSettings ()
 {
 	QSettings s;
@@ -109,30 +190,6 @@ void Settings::readSettings ()
 	// Diagnostics
 	enableDebug=s.value ("enableDebug", false       ).toBool ();
 	diagCommand=s.value ("diagCommand", "./script/netztest_xterm").toString (); // xterm -e ./netztest &
-
-	// *** Plugins - Info
-	infoPlugins.clear ();
-	if (s.contains ("infoPlugins/size"))
-	{
-		int n=s.beginReadArray ("infoPlugins");
-		for (int i=0; i<n; ++i)
-		{
-			s.setArrayIndex (i);
-			infoPlugins << ShellPluginInfo (s);
-		}
-		s.endArray ();
-	}
-	else
-	{
-		infoPlugins
-			<< ShellPluginInfo ("Sunset:"         , "sunset_time.rb"     , true, false, 0  , false)
-			<< ShellPluginInfo ("Zeit bis sunset:", "sunset_countdown.rb", true, true , 60 , false)
-			<< ShellPluginInfo ("Wetter:"         , "metar.rb EDDS"      , true, false, 600, false)
-			<< ShellPluginInfo (""                , "metar.rb EDDF"      , true, false, 600, false)
-			<< ShellPluginInfo (""                , "metar.rb EDFM"      , true, false, 600, false)
-			;
-	}
-
 
 	// *** Plugins - Weather
 	// Weather plugin
@@ -193,15 +250,6 @@ void Settings::writeSettings ()
 	s.setValue ("enableDebug", enableDebug);
 	s.setValue ("diagCommand", diagCommand);
 
-	// *** Plugins - Info
-	s.beginWriteArray ("infoPlugins");
-	for (int i=0; i<infoPlugins.size (); ++i)
-	{
-		s.setArrayIndex (i);
-		infoPlugins.at (i).save (s);
-	}
-	s.endArray ();
-
 
 	// *** Plugins - Weather
 	// Weather plugin
@@ -227,23 +275,23 @@ void Settings::writeSettings ()
 	s.sync ();
 }
 
-bool Settings::anyPluginsEnabled ()
-{
-	if (weatherPluginEnabled) return true;
-	if (weatherWindowEnabled) return true;
+//bool Settings::anyPluginsEnabled ()
+//{
+//	if (weatherPluginEnabled) return true;
+//	if (weatherWindowEnabled) return true;
+//
+//	foreach (const ShellPluginInfo &plugin, infoPlugins)
+//		if (plugin.enabled)
+//			return true;
+//
+//	return false;
+//}
 
-	foreach (const ShellPluginInfo &plugin, infoPlugins)
-		if (plugin.enabled)
-			return true;
-
-	return false;
-}
-
-void Settings::disableAllPlugins ()
-{
-	weatherPluginEnabled=false;
-	weatherWindowEnabled=false;
-
-	for (int i=0; i<infoPlugins.size (); ++i)
-		infoPlugins[i].enabled=false;
-}
+//void Settings::disableAllPlugins ()
+//{
+//	weatherPluginEnabled=false;
+//	weatherWindowEnabled=false;
+//
+//	for (int i=0; i<infoPlugins.size (); ++i)
+//		infoPlugins[i].enabled=false;
+//}

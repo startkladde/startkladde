@@ -17,15 +17,16 @@ class TestPlugin: public InfoPlugin
 		virtual ~TestPlugin ();
 
 		virtual void start ();
+		virtual void terminate ();
 
-		static QString getName             ();
-		static QString getShortDescription ();
-		static QString getLongDescription  ();
+		virtual QString getId          () const;
+		virtual QString getName        () const;
+		virtual QString getDescription () const;
 
 		virtual QWidget *createSettingsPane ();
 
 		virtual void loadSettings (const QSettings &settings);
-		virtual void saveSettings (const QSettings &settings);
+		virtual void saveSettings (QSettings &settings);
 };
 
 #endif

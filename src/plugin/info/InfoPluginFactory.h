@@ -48,6 +48,7 @@ class InfoPluginFactory
 
 	public:
 		const QList<InfoPlugin::Descriptor *> &getDescriptors ();
+		const InfoPlugin::Descriptor *find (const QString &id);
 
 	private:
 		void addDescriptor (InfoPlugin::Descriptor *descriptor);

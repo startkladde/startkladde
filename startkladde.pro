@@ -175,12 +175,17 @@ HEADERS += \
            src/model/objectList/ObjectListModel.h \
            src/model/objectList/ObjectModel.h \
            src/net/TcpProxy.h \
-           src/plugins/ShellPlugin.h \
-           src/plugins/ShellPluginInfo.h \
+           src/plugin/Plugin.h \
+           src/plugin/ShellPlugin.h \
+           src/plugin/ShellPluginInfo.h \
+           src/plugin/info/InfoPlugin.h \
+           src/plugin/info/InfoPluginFactory.h \
+           src/plugins/info/TestPlugin.h \
            src/statistics/LaunchMethodStatistics.h \
            src/statistics/PilotLog.h \
            src/statistics/PlaneLog.h \
            src/util/bool.h \
+           src/util/qList.h \
            src/util/qString.h \
            src/util/time.h \
 		   # Empty line
@@ -278,12 +283,17 @@ SOURCES += \
            src/model/flightList/FlightProxyList.cpp \
            src/model/flightList/FlightSortFilterProxyModel.cpp \
            src/net/TcpProxy.cpp \
-           src/plugins/ShellPlugin.cpp \
-           src/plugins/ShellPluginInfo.cpp \
+           src/plugin/Plugin.cpp \
+           src/plugin/ShellPlugin.cpp \
+           src/plugin/ShellPluginInfo.cpp \
+           src/plugin/info/InfoPlugin.cpp \
+           src/plugin/info/InfoPluginFactory.cpp \
+           src/plugins/info/TestPlugin.cpp \
            src/statistics/LaunchMethodStatistics.cpp \
            src/statistics/PilotLog.cpp \
            src/statistics/PlaneLog.cpp \
            src/util/bool.cpp \
+           src/util/qList.cpp \
            src/util/qString.cpp \
            src/util/time.cpp \
 		   # Empty line

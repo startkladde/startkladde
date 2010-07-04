@@ -12,27 +12,36 @@
 #include "SettingsWindow.h"
 
 #include <iostream>
+#include <cassert>
 
 #include <QItemEditorFactory>
 #include <QSettings>
 #include <QInputDialog>
 #include <QPushButton>
+#include <QDebug>
 
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
+#include "src/plugin/info/InfoPlugin.h"
+#include "src/plugin/info/InfoPluginFactory.h"
 #include "src/plugin/ShellPluginInfo.h"
 #include "src/gui/views/ReadOnlyItemDelegate.h"
 #include "src/gui/views/SpinBoxCreator.h"
 #include "src/gui/views/SpecialIntDelegate.h"
 #include "src/util/qString.h"
+#include "src/util/qList.h"
 #include "src/gui/dialogs.h"
 
-const int columnTitle=0;
-const int columnCommand=1;
+//const int columnTitle=0;
+//const int columnCommand=1;
+//const int columnEnabled=2;
+//const int columnRichText=3;
+//const int columnInterval=4;
+//const int columnWarnOnDeath=5;
+
+const int columnCaption=0;
+const int columnName=1;
 const int columnEnabled=2;
-const int columnRichText=3;
-const int columnInterval=4;
-const int columnWarnOnDeath=5;
 
 SettingsWindow::SettingsWindow (QWidget *parent):
 	QDialog (parent),
@@ -44,18 +53,9 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 
 	ui.dbTypePane->setVisible (false);
 
-	// Make boolean columns read-only
+	// Make boolean columns and some other columns read-only
+	ui.infoPluginList->setItemDelegateForColumn (columnName       , new ReadOnlyItemDelegate (ui.infoPluginList));
 	ui.infoPluginList->setItemDelegateForColumn (columnEnabled    , new ReadOnlyItemDelegate (ui.infoPluginList));
-	ui.infoPluginList->setItemDelegateForColumn (columnRichText   , new ReadOnlyItemDelegate (ui.infoPluginList));
-	ui.infoPluginList->setItemDelegateForColumn (columnWarnOnDeath, new ReadOnlyItemDelegate (ui.infoPluginList));
-
-	// Setup the integer colum
-	QStyledItemDelegate *intervalDelegate=new SpecialIntDelegate (columnTitle, "Nicht neu starten", " s", ui.infoPluginList);
-	SpinBoxCreator *spinBoxCreator=new SpinBoxCreator (columnTitle, "Nicht neu starten", " s");
-	QItemEditorFactory *factory=new QItemEditorFactory;
-	factory->registerEditor (QVariant::Int, spinBoxCreator);
-	intervalDelegate->setItemEditorFactory (factory);
-	ui.infoPluginList->setItemDelegateForColumn (columnInterval, intervalDelegate);
 
 	// Note that this label does not use wordWrap because it causes the minimum
 	// size of the label not to work properly.
@@ -67,7 +67,7 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 
 SettingsWindow::~SettingsWindow()
 {
-
+	deleteList (infoPlugins);
 }
 
 void SettingsWindow::on_buttonBox_accepted ()
@@ -104,8 +104,11 @@ void SettingsWindow::readSettings ()
 	ui.diagCommandInput   ->setText    (s.diagCommand);
 
 	// *** Plugins - Info
+	deleteList (infoPlugins);
+	infoPlugins=s.readInfoPlugins ();
+
 	ui.infoPluginList->clear ();
-	foreach (const ShellPluginInfo &plugin, s.infoPlugins)
+	foreach (InfoPlugin *plugin, infoPlugins)
 	{
 		QTreeWidgetItem *item=new QTreeWidgetItem (ui.infoPluginList);
 		readItem (item, plugin);
@@ -138,14 +141,12 @@ void SettingsWindow::readSettings ()
 	updateWidgets ();
 }
 
-void SettingsWindow::readItem (QTreeWidgetItem *item, const ShellPluginInfo &plugin)
+void SettingsWindow::readItem (QTreeWidgetItem *item, const InfoPlugin *plugin)
 {
-	item->setData       (columnTitle      , Qt::DisplayRole, plugin.caption);
-	item->setData       (columnCommand    , Qt::DisplayRole, plugin.command);
-	item->setCheckState (columnEnabled    , plugin.enabled?Qt::Checked:Qt::Unchecked);
-	item->setCheckState (columnRichText   , plugin.richText?Qt::Checked:Qt::Unchecked);
-	item->setData       (columnInterval   , Qt::DisplayRole, plugin.restartInterval);
-	item->setCheckState (columnWarnOnDeath, plugin.warnOnDeath?Qt::Checked:Qt::Unchecked);
+	// FIXME use a model (InfoPluginList)?
+	item->setData       (columnCaption, Qt::DisplayRole, plugin->getCaption ());
+	item->setData       (columnName,    Qt::DisplayRole, plugin->getName ());
+	item->setCheckState (columnEnabled, true?Qt::Checked:Qt::Unchecked); // FIXME
 
 	item->setFlags (item->flags () | Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
 }
@@ -182,20 +183,15 @@ void SettingsWindow::writeSettings ()
 	s.diagCommand=ui.diagCommandInput   ->text ();
 
 	// *** Plugins - Info
-	s.infoPlugins.clear ();
-	int numInfoPlugins=ui.infoPluginList->topLevelItemCount ();
+	int numInfoPlugins=infoPlugins.size ();
+	assert (numInfoPlugins==ui.infoPluginList->topLevelItemCount ());
 	for (int i=0; i<numInfoPlugins; ++i)
 	{
 		QTreeWidgetItem &item=*ui.infoPluginList->topLevelItem (i);
-		s.infoPlugins << ShellPluginInfo (
-			item.data       (columnTitle      , Qt::DisplayRole).toString (),
-			item.data       (columnCommand    , Qt::DisplayRole).toString (),
-			item.checkState (columnEnabled                     )==Qt::Checked,
-			item.checkState (columnRichText                    )==Qt::Checked,
-			item.data       (columnInterval   , Qt::DisplayRole).toInt    (),
-			item.checkState (columnWarnOnDeath                 )==Qt::Checked
-			);
+		infoPlugins[i]->setCaption (item.data (columnCaption, Qt::DisplayRole).toString ());
 	}
+	s.writeInfoPlugins (infoPlugins);
+
 
 	// *** Plugins - Weather
 	// Weather plugin
@@ -283,8 +279,12 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 	warnEdit ();
 	QTreeWidget *list=ui.infoPluginList;
 
+	// FIXME
+	InfoPlugin *plugin=InfoPluginFactory::getInstance ().find ("test")->create ();
+	infoPlugins.append (plugin);
+
 	QTreeWidgetItem *item=new QTreeWidgetItem (list);
-	readItem (item, ShellPluginInfo ());
+	readItem (item, plugin);
 
 	list->setCurrentItem (item);
 	list->editItem (item, 0);
@@ -293,11 +293,14 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 void SettingsWindow::on_removeInfoPluginButton_clicked ()
 {
 	warnEdit ();
-	QTreeWidget *list=ui.infoPluginList;
+ 	QTreeWidget *list=ui.infoPluginList;
 
 	int row=list->indexOfTopLevelItem (list->currentItem ());
 	if (row<0 || row>=list->topLevelItemCount ()) return;
+
 	delete list->takeTopLevelItem (row);
+	delete infoPlugins.takeAt (row);
+
 	if (row>=list->topLevelItemCount ()) --row;
 	if (row>=0) list->setCurrentItem (list->topLevelItem (row));
 }
@@ -312,6 +315,8 @@ void SettingsWindow::on_infoPluginUpButton_clicked ()
 	if (row==0) return;
 
 	list->insertTopLevelItem (row-1, list->takeTopLevelItem (row));
+	infoPlugins.insert (row-1, infoPlugins.takeAt (row));
+
 	list->setCurrentItem (list->topLevelItem (row-1));
 }
 
@@ -325,6 +330,8 @@ void SettingsWindow::on_infoPluginDownButton_clicked ()
 	if (row==list->topLevelItemCount ()-1) return;
 
 	list->insertTopLevelItem (row+1, list->takeTopLevelItem (row));
+	infoPlugins.insert (row+1, infoPlugins.takeAt (row));
+
 	list->setCurrentItem (list->topLevelItem (row+1));
 }
 

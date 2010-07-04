@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>439</width>
-    <height>472</height>
+    <width>515</width>
+    <height>523</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -435,7 +435,7 @@ Berech des Hauptfensters angezeigt.</string>
                 </column>
                 <column>
                  <property name="text">
-                  <string>Kommando</string>
+                  <string>Plugin</string>
                  </property>
                  <property name="toolTip">
                   <string>Plugin-Kommando (mit eventuellen Parametern)</string>
@@ -444,39 +444,6 @@ Berech des Hauptfensters angezeigt.</string>
                 <column>
                  <property name="text">
                   <string>Aktiv</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Rich text</string>
-                 </property>
-                 <property name="toolTip">
-                  <string>Wenn aktiviert, wird die Ausgabe des
-Plugins als Qt-Rich-Text interpretiert.</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Intervall</string>
-                 </property>
-                 <property name="toolTip">
-                  <string>Dauer (in Sekunden) bis das Plugin wieder gestartet
-wird, nachdem es beendet ist. Wenn 0, wird das Plugin
-nicht neu gestartet.
-Für Plugins, die dauerhaft laufen, sollte dieser Wert wenige
-Sekunden betragen. Für Plugins, die nach dem Abrufen von
-Daten beendet werden, ist dies die Zeit zwischen
-aufeinanderfolgenden Aktualisierungen.</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Warnung beim Beenden</string>
-                 </property>
-                 <property name="toolTip">
-                  <string>Wenn aktiviert, wird eine Warnung auf der Standardausgabe
-(stdout) ausgegeben, wenn das Plugin beendet wird. Diese
-Option ist nur für Plugins sinnvoll, die dauerhaft laufen.</string>
                  </property>
                 </column>
                </widget>
@@ -587,16 +554,6 @@ Option ist nur für Plugins sinnvoll, die dauerhaft laufen.</string>
                </widget>
               </item>
              </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Achtung: ein zu niedriger Wert bei &quot;Intervall&quot; kann zu einer hohen Systemlast und dadurch zu langsamen Reaktionen führen.</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
             </widget>
            </item>
            <item>
@@ -1013,7 +970,6 @@ leer, wird keine Wetterfenster angezeigt.</string>
   <tabstop>enableDebugCheckbox</tabstop>
   <tabstop>diagCommandInput</tabstop>
   <tabstop>pluginsTabWidget</tabstop>
-  <tabstop>infoPluginList</tabstop>
   <tabstop>addInfoPluginButton</tabstop>
   <tabstop>removeInfoPluginButton</tabstop>
   <tabstop>infoPluginUpButton</tabstop>

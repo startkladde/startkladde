@@ -7,6 +7,8 @@
 
 #include "InfoPlugin.h"
 
+#include <QSettings>
+
 InfoPlugin::InfoPlugin ()
 {
 }
@@ -26,12 +28,23 @@ void InfoPlugin::outputText (const QString &text)
 	emit textOutput (text);
 }
 
-const QString &InfoPlugin::getTitle () const
+const QString &InfoPlugin::getCaption () const
 {
-	return title;
+	return caption;
 }
 
-void InfoPlugin::setTitle (const QString &title)
+void InfoPlugin::setCaption (const QString &caption)
 {
-	this->title=title;
+	this->caption=caption;
+}
+
+
+void InfoPlugin::loadSettings (const QSettings &settings)
+{
+	caption=settings.value ("caption").toString ();
+}
+
+void InfoPlugin::saveSettings (QSettings &settings)
+{
+	settings.setValue ("caption", caption);
 }

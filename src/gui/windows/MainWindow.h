@@ -25,8 +25,8 @@
  *     /end airtow" depending on the selected flight.
  *   - update action state if the virtual keyboard is closed/killed externally
  *   - reload weather plugin from context menu
- *   - addObject the weather plugin in designer (need different initialization)
- *   - addObject a menu entry for opening the weather dialog
+ *   - add the weather plugin in designer (need different initialization)
+ *   - add a menu entry for opening the weather dialog
  *   - focus the weather dialog instead of hiding and showing it
  *   - on date wrap, the display date label's color is not updated
  *   - double click in free table space: create new flight
@@ -47,6 +47,7 @@ class QWidget;
 template<class T> class QList;
 class QModelIndex;
 class FlightSortFilterProxyModel;
+class InfoPlugin;
 class ShellPlugin;
 class ShellPluginInfo;
 class WeatherWidget;
@@ -107,7 +108,7 @@ class MainWindow: public QMainWindow
 		void setDatabaseActionsEnabled (bool enabled);
 
 		// Plugins
-		void setupPlugin (const ShellPluginInfo &pluginInfo, QGridLayout *pluginLayout);
+		void setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout);
 		void terminatePlugins ();
 
 
@@ -230,7 +231,7 @@ class MainWindow: public QMainWindow
 		QPointer<FlightWindow> createFlightWindow;
 		QPointer<FlightWindow> editFlightWindow;
 
-		QList<ShellPlugin *> infoPlugins;
+		QList<InfoPlugin *> infoPlugins;
 		WeatherWidget *weatherWidget;
 		ShellPlugin *weatherPlugin;
 		QPointer<WeatherDialog> weatherDialog;

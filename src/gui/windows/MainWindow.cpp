@@ -45,6 +45,7 @@
 #include "src/model/objectList/AutomaticEntityList.h" // TODO remove some?
 #include "src/model/objectList/EntityList.h"
 #include "src/model/objectList/ObjectListModel.h"
+#include "src/plugin/info/InfoPlugin.h"
 #include "src/plugin/ShellPlugin.h"
 #include "src/plugin/ShellPluginInfo.h"
 #include "src/statistics/LaunchMethodStatistics.h"
@@ -265,30 +266,31 @@ void MainWindow::setupLayout ()
 	pluginPaneLayout->setColumnStretch (1, 1);
 }
 
-void MainWindow::setupPlugin (const ShellPluginInfo &pluginInfo, QGridLayout *pluginLayout)
+void MainWindow::setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout)
 {
-	ShellPlugin *plugin=new ShellPlugin (pluginInfo);
-	infoPlugins.append (plugin);
+//	ShellPlugin *plugin=new ShellPlugin (pluginInfo);
+//	infoPlugins.append (plugin);
 
 	SkLabel *captionLabel = new SkLabel ("", ui.pluginPane);
 	SkLabel *valueLabel = new SkLabel ("...", ui.pluginPane);
 
 	valueLabel->setWordWrap (true);
 
-	if (pluginInfo.richText)
-	{
-		captionLabel->setTextFormat (Qt::RichText);
-		valueLabel->setTextFormat (Qt::RichText);
-
-		captionLabel->setText ("<nobr>" + plugin->get_caption () + "</nobr>");
-	}
-	else
-	{
-		captionLabel->setTextFormat (Qt::PlainText);
-		valueLabel->setTextFormat (Qt::PlainText);
-
-		captionLabel->setText (plugin->get_caption ());
-	}
+	// FIXME
+//	if (pluginInfo.richText)
+//	{
+//		captionLabel->setTextFormat (Qt::RichText);
+//		valueLabel->setTextFormat (Qt::RichText);
+//
+//		captionLabel->setText ("<nobr>" + plugin->get_caption () + "</nobr>");
+//	}
+//	else
+//	{
+//		captionLabel->setTextFormat (Qt::PlainText);
+//		valueLabel->setTextFormat (Qt::PlainText);
+//
+		captionLabel->setText (plugin->getCaption ());
+//	}
 
 	int row = pluginLayout->rowCount ();
 	pluginLayout->addWidget (captionLabel, row, 0, Qt::AlignTop);
@@ -303,11 +305,14 @@ void MainWindow::setupPlugin (const ShellPluginInfo &pluginInfo, QGridLayout *pl
 		valueLabel ->setAutoFillBackground (true);
 	}
 
-	plugin->set_caption_display (captionLabel);
-	plugin->set_value_display (valueLabel);
+//	plugin->set_caption_display (captionLabel);
+//	plugin->set_value_display (valueLabel);
 
-	QObject::connect (captionLabel, SIGNAL (doubleClicked (QMouseEvent *)), plugin, SLOT (restart ()));
-	QObject::connect (valueLabel, SIGNAL (doubleClicked (QMouseEvent *)), plugin, SLOT (restart ()));
+	connect (plugin, SIGNAL (textOutput (QString)), valueLabel, SLOT (setText (QString)));
+
+	// FIXME
+//	QObject::connect (captionLabel, SIGNAL (doubleClicked (QMouseEvent *)), plugin, SLOT (restart ()));
+//	QObject::connect (valueLabel, SIGNAL (doubleClicked (QMouseEvent *)), plugin, SLOT (restart ()));
 
 	plugin->start ();
 }
@@ -332,11 +337,16 @@ void MainWindow::setupPlugins ()
 	pluginLayout->setMargin (4);
 	pluginLayout->setVerticalSpacing (4);
 
-	ui.pluginPane->setVisible (!s.infoPlugins.isEmpty ());
+	// FIXME
+//	ui.pluginPane->setVisible (!s.infoPlugins.isEmpty ());
 
-	foreach (const ShellPluginInfo &pluginInfo, s.infoPlugins)
-		if (pluginInfo.enabled)
-			setupPlugin (pluginInfo, pluginLayout);
+	while (!infoPlugins.isEmpty ())
+		delete infoPlugins.takeLast ();
+
+	infoPlugins=s.readInfoPlugins ();
+	foreach (InfoPlugin *plugin, infoPlugins)
+//		if (pluginInfo.enabled) // FIXME
+			setupPlugin (plugin, pluginLayout);
 
 	pluginLayout->setColumnStretch (0, 0);
 	pluginLayout->setColumnStretch (1, 1);
@@ -380,7 +390,7 @@ void MainWindow::setupPlugins ()
 
 void MainWindow::terminatePlugins ()
 {
-	foreach (ShellPlugin *plugin, infoPlugins)
+	foreach (InfoPlugin *plugin, infoPlugins)
 	{
 		//std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
 		plugin->terminate ();
@@ -1166,8 +1176,11 @@ void MainWindow::on_actionRestartPlugins_triggered ()
 	if (weatherPlugin) weatherPlugin->restart ();
 	if (weatherDialog) weatherDialog->restartPlugin ();
 
-	foreach (ShellPlugin *plugin, infoPlugins)
-		plugin->restart ();
+	foreach (InfoPlugin *plugin, infoPlugins)
+	{
+		plugin->terminate ();
+		plugin->start ();
+	}
 }
 
 // **********

@@ -53,6 +53,15 @@ const QList<InfoPlugin::Descriptor *> &InfoPluginFactory::getDescriptors ()
 	return descriptors;
 }
 
+const InfoPlugin::Descriptor *InfoPluginFactory::find (const QString &id)
+{
+	foreach (InfoPlugin::Descriptor *descriptor, descriptors)
+		if (descriptor->getId ()==id)
+			return descriptor;
+
+	return NULL;
+}
+
 
 // *************************************
 // ** InfoPluginFactory::Registration **

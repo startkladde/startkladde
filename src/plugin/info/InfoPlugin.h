@@ -23,18 +23,19 @@ class InfoPlugin: public Plugin
 		{
 			public:
 				virtual InfoPlugin *create () const=0;
-				virtual QString getName             () const=0;
-				virtual QString getShortDescription () const=0;
-				virtual QString getLongDescription  () const=0;
+				virtual QString getId          () const=0;
+				virtual QString getName        () const=0;
+				virtual QString getDescription () const=0;
 		};
 
 		template<class T> class DefaultDescriptor: public Descriptor
 		{
 			public:
 				virtual InfoPlugin *create () const { return new T (); }
-				virtual QString getName             () const { return T::getName (); }
-				virtual QString getShortDescription () const { return T::getShortDescription (); }
-				virtual QString getLongDescription  () const { return T::getLongDescription (); }
+				// FIXME read all at once
+				virtual QString getId          () const { return T ().getId          (); }
+				virtual QString getName        () const { return T ().getName        (); }
+				virtual QString getDescription () const { return T ().getDescription (); }
 		};
 
 
@@ -50,10 +51,18 @@ class InfoPlugin: public Plugin
 		// ** Property Acceess **
 		// **********************
 
-		const QString &getTitle () const;
-		void setTitle (const QString &title);
+		const QString &getCaption () const;
+		void setCaption (const QString &caption);
 
 		const QString &getText () const;
+
+
+		// **************
+		// ** Settings **
+		// **************
+
+		virtual void loadSettings (const QSettings &settings);
+		virtual void saveSettings (QSettings &settings);
 
 	signals:
 		void textOutput (const QString &);
@@ -62,7 +71,7 @@ class InfoPlugin: public Plugin
 		void outputText (const QString &text);
 
 	private:
-		QString title;
+		QString caption;
 		QString text;
 };
 
