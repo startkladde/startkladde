@@ -45,8 +45,8 @@
 #include "src/model/objectList/AutomaticEntityList.h" // TODO remove some?
 #include "src/model/objectList/EntityList.h"
 #include "src/model/objectList/ObjectListModel.h"
-#include "src/plugins/ShellPlugin.h"
-#include "src/plugins/ShellPluginInfo.h"
+#include "src/plugin/ShellPlugin.h"
+#include "src/plugin/ShellPluginInfo.h"
 #include "src/statistics/LaunchMethodStatistics.h"
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"

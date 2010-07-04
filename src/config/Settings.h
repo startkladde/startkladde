@@ -13,7 +13,7 @@
 #include <QStringList>
 
 #include "src/db/DatabaseInfo.h"
-#include "src/plugins/ShellPluginInfo.h"
+#include "src/plugin/ShellPluginInfo.h"
 
 /**
  * The new configuration class, to replace Options

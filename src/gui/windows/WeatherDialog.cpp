@@ -3,7 +3,7 @@
 #include <QLayout>
 
 #include "src/gui/widgets/WeatherWidget.h"
-#include "src/plugins/ShellPlugin.h"
+#include "src/plugin/ShellPlugin.h"
 
 WeatherDialog::WeatherDialog (ShellPlugin *_plugin, QWidget *parent)
 	:QDialog (parent)

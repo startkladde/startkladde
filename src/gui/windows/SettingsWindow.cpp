@@ -20,7 +20,7 @@
 
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
-#include "src/plugins/ShellPluginInfo.h"
+#include "src/plugin/ShellPluginInfo.h"
 #include "src/gui/views/ReadOnlyItemDelegate.h"
 #include "src/gui/views/SpinBoxCreator.h"
 #include "src/gui/views/SpecialIntDelegate.h"

@@ -28,8 +28,7 @@
 #include "src/text.h"
 #include "src/util/qString.h"
 #include "src/config/Settings.h"
-#include "src/plugins/ShellPluginInfo.h"
-
+#include "src/plugin/ShellPluginInfo.h"
 
 // Construction/destruction
 void ShellPlugin::init ()
