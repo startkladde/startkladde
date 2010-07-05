@@ -39,9 +39,9 @@ InfoPluginFactory &InfoPluginFactory::getInstance ()
 	return *InfoPluginFactory::instance;
 }
 
-// *****************
-// ** Descriptors **
-// *****************
+// *************
+// ** Factory **
+// *************
 
 void InfoPluginFactory::addDescriptor (InfoPlugin::Descriptor *descriptor)
 {
@@ -53,13 +53,27 @@ const QList<InfoPlugin::Descriptor *> &InfoPluginFactory::getDescriptors ()
 	return descriptors;
 }
 
-const InfoPlugin::Descriptor *InfoPluginFactory::find (const QString &id)
+const InfoPlugin::Descriptor *InfoPluginFactory::find (const QString &id) const
 {
+	// FIXME use a hash/map
 	foreach (InfoPlugin::Descriptor *descriptor, descriptors)
 		if (descriptor->getId ()==id)
 			return descriptor;
 
 	return NULL;
+}
+
+InfoPlugin *InfoPluginFactory::create (const QString &id, const QString &caption) const
+{
+	const InfoPlugin::Descriptor *descriptor=find (id);
+	if (!descriptor) return NULL;
+
+	InfoPlugin *plugin=descriptor->create ();
+	if (!plugin) return NULL;
+
+	plugin->setCaption (caption);
+
+	return plugin;
 }
 
 

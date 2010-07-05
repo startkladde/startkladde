@@ -12,6 +12,7 @@
 #include <QSettings>
 
 #include "src/util/qString.h"
+#include "src/util/qList.h"
 #include "src/plugin/info/InfoPlugin.h"
 #include "src/plugin/info/InfoPluginFactory.h"
 
@@ -100,6 +101,9 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 
 	InfoPluginFactory &factory=InfoPluginFactory::getInstance ();
 
+	// If no entry for infoPlugins exists, create a default set of plugins.
+	// Note that if no plugins are used, there is still an entry with 0
+	// elements.
 	if (s.contains ("infoPlugins/size"))
 	{
 		int n=s.beginReadArray ("infoPlugins");
@@ -123,20 +127,8 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 	else
 	{
 		// FIXME we use the factory so we know we get the same as when reading them on the next run
-		const InfoPlugin::Descriptor *descriptor=factory.find ("test");
-
-		if (descriptor)
-		{
-			InfoPlugin *plugin;
-
-			plugin=descriptor->create ();
-			plugin->setCaption ("Foo:");
-			plugins << plugin;
-
-			plugin=descriptor->create ();
-			plugin->setCaption ("Bar:");
-			plugins << plugin;
-		}
+		appendUnlessNull (plugins, factory.create ("test", "Foo:"));
+		appendUnlessNull (plugins, factory.create ("test", "Bar:"));
 
 		// FIXME
 //		infoPlugins

@@ -14,3 +14,9 @@ Plugin::Plugin ()
 Plugin::~Plugin ()
 {
 }
+
+void Plugin::restart ()
+{
+	terminate ();
+	start ();
+}

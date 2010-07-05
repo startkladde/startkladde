@@ -14,7 +14,8 @@ class QSettings;
  */
 class Plugin: public QObject
 {
-		// FIXME Q_OBJECT with start, terminate and restart slot
+		Q_OBJECT
+
 	public:
 		Plugin ();
 		virtual ~Plugin ();
@@ -25,8 +26,10 @@ class Plugin: public QObject
 		virtual QString getName        () const=0;
 		virtual QString getDescription () const=0;
 
+	public slots:
 		virtual void start ()=0;
 		virtual void terminate ()=0;
+		virtual void restart ();
 
 		virtual QWidget *createSettingsPane ()=0;
 
