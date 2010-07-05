@@ -38,6 +38,7 @@ class SettingsWindow: public QDialog
 		void on_removeInfoPluginButton_clicked ();
 		void on_infoPluginUpButton_clicked ();
 		void on_infoPluginDownButton_clicked ();
+		void on_infoPluginSettingsButton_clicked ();
 
 		void updateWidgets ();
 

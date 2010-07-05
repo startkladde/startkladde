@@ -24,13 +24,13 @@ void InfoPlugin::outputText (const QString &text)
 	emit textOutput (text);
 }
 
-void InfoPlugin::loadSettings (const QSettings &settings)
+void InfoPlugin::readSettings (const QSettings &settings)
 {
 	caption=settings.value ("caption", getName ()).toString ();
 	enabled=settings.value ("enabled", true).toBool ();
 }
 
-void InfoPlugin::saveSettings (QSettings &settings)
+void InfoPlugin::writeSettings (QSettings &settings)
 {
 	settings.setValue ("caption", caption);
 	settings.setValue ("enabled", enabled);

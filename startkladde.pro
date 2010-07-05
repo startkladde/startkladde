@@ -180,7 +180,10 @@ HEADERS += \
            src/plugin/ShellPluginInfo.h \
            src/plugin/info/InfoPlugin.h \
            src/plugin/info/InfoPluginFactory.h \
+           src/plugin/settings/PluginSettingsPane.h \
+           src/plugin/settings/PluginSettingsDialog.h \
            src/plugins/info/TestPlugin.h \
+           src/plugins/info/TestPluginSettingsPane.h \
            src/statistics/LaunchMethodStatistics.h \
            src/statistics/PilotLog.h \
            src/statistics/PlaneLog.h \
@@ -288,7 +291,10 @@ SOURCES += \
            src/plugin/ShellPluginInfo.cpp \
            src/plugin/info/InfoPlugin.cpp \
            src/plugin/info/InfoPluginFactory.cpp \
+           src/plugin/settings/PluginSettingsPane.cpp \
+           src/plugin/settings/PluginSettingsDialog.cpp \
            src/plugins/info/TestPlugin.cpp \
+           src/plugins/info/TestPluginSettingsPane.cpp \
            src/statistics/LaunchMethodStatistics.cpp \
            src/statistics/PilotLog.cpp \
            src/statistics/PlaneLog.cpp \
@@ -312,6 +318,8 @@ FORMS += \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.ui \
            src/gui/windows/objectEditor/PersonEditorPane.ui \
            src/gui/windows/objectEditor/PlaneEditorPane.ui \
+           src/plugin/settings/PluginSettingsDialog.ui \
+           src/plugins/info/TestPluginSettingsPane.ui \
            # Empty line
 
 RESOURCES += \

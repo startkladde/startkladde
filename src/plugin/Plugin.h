@@ -4,6 +4,7 @@
 #include <qobject.h>
 
 class QWidget;
+class PluginSettingsPane;
 class QSettings;
 
 /**
@@ -20,7 +21,6 @@ class Plugin: public QObject
 		Plugin ();
 		virtual ~Plugin ();
 
-		// FIXME const
 		// FIXME use a guid for Id?
 		virtual QString getId          () const=0;
 		virtual QString getName        () const=0;
@@ -31,11 +31,10 @@ class Plugin: public QObject
 		virtual void terminate ()=0;
 		virtual void restart ();
 
-		virtual QWidget *createSettingsPane ()=0;
+		virtual PluginSettingsPane *createSettingsPane (QWidget *parent=NULL)=0;
 
-		// FIXME rename read/write
-		virtual void loadSettings (const QSettings &settings)=0;
-		virtual void saveSettings (QSettings &settings)=0;
+		virtual void readSettings (const QSettings &settings)=0;
+		virtual void writeSettings (QSettings &settings)=0;
 };
 
 #endif

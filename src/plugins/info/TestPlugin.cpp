@@ -9,12 +9,16 @@
 
 #include <QDebug>
 #include <QTime>
+#include <QSettings>
 
 #include "src/plugin/info/InfoPluginFactory.h"
+#include "TestPluginSettingsPane.h"
+#include "src/text.h"
 
 REGISTER_INFO_PLUGIN (TestPlugin)
 
-TestPlugin::TestPlugin ()
+TestPlugin::TestPlugin ():
+	greetingName ("TestPlugin")
 {
 	qDebug () << "Creating test plugin";
 }
@@ -39,24 +43,29 @@ QString TestPlugin::getDescription () const
 	return "Gibt eine Begrüßung und die Startzeit aus";
 }
 
-QWidget *TestPlugin::createSettingsPane ()
+PluginSettingsPane *TestPlugin::createSettingsPane (QWidget *parent)
 {
-	return NULL;
+	return new TestPluginSettingsPane (this, parent);
 }
 
-void TestPlugin::loadSettings (const QSettings &settings)
+void TestPlugin::readSettings (const QSettings &settings)
 {
-	InfoPlugin::loadSettings (settings);
+	InfoPlugin::readSettings (settings);
+	greetingName=settings.value ("greetingName").toString ();
 }
 
-void TestPlugin::saveSettings (QSettings &settings)
+void TestPlugin::writeSettings (QSettings &settings)
 {
-	InfoPlugin::saveSettings (settings);
+	InfoPlugin::writeSettings (settings);
+	settings.setValue ("greetingName", greetingName);
 }
 
 void TestPlugin::start ()
 {
-	outputText (QString ("Hello TestPlugin at %1!").arg (QTime::currentTime ().toString ()));
+	if (blank (greetingName))
+		outputText (QString ("Hallo um %1!").arg (QTime::currentTime ().toString ()));
+	else
+		outputText (QString ("Hallo %1 um %2!").arg (greetingName, QTime::currentTime ().toString ()));
 }
 
 void TestPlugin::terminate ()

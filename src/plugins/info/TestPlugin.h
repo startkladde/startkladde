@@ -23,10 +23,15 @@ class TestPlugin: public InfoPlugin
 		virtual QString getName        () const;
 		virtual QString getDescription () const;
 
-		virtual QWidget *createSettingsPane ();
+		virtual PluginSettingsPane *createSettingsPane (QWidget *parent=NULL);
 
-		virtual void loadSettings (const QSettings &settings);
-		virtual void saveSettings (QSettings &settings);
+		virtual void readSettings (const QSettings &settings);
+		virtual void writeSettings (QSettings &settings);
+
+		value_accessor (QString, GreetingName, greetingName);
+
+	private:
+		QString greetingName;
 };
 
 #endif

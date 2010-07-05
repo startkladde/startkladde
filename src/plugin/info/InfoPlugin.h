@@ -60,8 +60,8 @@ class InfoPlugin: public Plugin
 		// ** Settings **
 		// **************
 
-		virtual void loadSettings (const QSettings &settings);
-		virtual void saveSettings (QSettings &settings);
+		virtual void readSettings (const QSettings &settings);
+		virtual void writeSettings (QSettings &settings);
 
 	signals:
 		void textOutput (const QString &);

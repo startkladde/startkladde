@@ -118,7 +118,11 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 			if (descriptor)
 			{
 				InfoPlugin *plugin=descriptor->create ();
-				plugin->loadSettings (s);
+
+				s.beginGroup ("settings");
+				plugin->readSettings (s);
+				s.endGroup ();
+
 				plugins << plugin;
 			}
 		}
@@ -156,7 +160,10 @@ void Settings::writeInfoPlugins (const QList<InfoPlugin *> &plugins)
 
 		InfoPlugin *plugin=plugins[i];
 		s.setValue ("id", plugin->getId ());
-		plugin->saveSettings (s);
+
+		s.beginGroup ("settings");
+		plugin->writeSettings (s);
+		s.endGroup ();
 	}
 	s.endArray ();
 

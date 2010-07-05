@@ -24,6 +24,7 @@
 #include "src/db/DatabaseInfo.h"
 #include "src/plugin/info/InfoPlugin.h"
 #include "src/plugin/info/InfoPluginFactory.h"
+#include "src/plugin/settings/PluginSettingsDialog.h"
 #include "src/plugin/ShellPluginInfo.h"
 #include "src/gui/views/ReadOnlyItemDelegate.h"
 #include "src/gui/views/SpinBoxCreator.h"
@@ -334,6 +335,20 @@ void SettingsWindow::on_infoPluginDownButton_clicked ()
 	infoPlugins.insert (row+1, infoPlugins.takeAt (row));
 
 	list->setCurrentItem (list->topLevelItem (row+1));
+}
+
+void SettingsWindow::on_infoPluginSettingsButton_clicked ()
+{
+	warnEdit ();
+	QTreeWidget *list=ui.infoPluginList;
+
+	int row=list->indexOfTopLevelItem (list->currentItem ());
+	if (row<0 || row>=list->topLevelItemCount ()) return;
+
+	PluginSettingsDialog *dialog=new PluginSettingsDialog (infoPlugins[row], this);
+	dialog->setModal (true);
+	dialog->exec ();
+	delete dialog;
 }
 
 bool SettingsWindow::allowEdit ()
