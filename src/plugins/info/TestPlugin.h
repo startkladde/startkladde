@@ -29,9 +29,11 @@ class TestPlugin: public InfoPlugin
 		virtual void writeSettings (QSettings &settings);
 
 		value_accessor (QString, GreetingName, greetingName);
+		value_accessor (bool   , RichText    , richText    );
 
 	private:
 		QString greetingName;
+		bool richText;
 };
 
 #endif

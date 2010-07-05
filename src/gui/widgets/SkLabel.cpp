@@ -138,3 +138,9 @@ void SkLabel::setNumber (double number)
 {
 	setText (QString::number (number));
 }
+
+void SkLabel::setText (const QString &text, Qt::TextFormat format)
+{
+	setTextFormat (format);
+	setText (text);
+}

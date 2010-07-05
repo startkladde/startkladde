@@ -306,7 +306,7 @@ void MainWindow::setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout)
 		valueLabel ->setAutoFillBackground (true);
 	}
 
-	connect (plugin, SIGNAL (textOutput (QString)), valueLabel, SLOT (setText (QString)));
+	connect (plugin, SIGNAL (textOutput (QString, Qt::TextFormat)), valueLabel, SLOT (setText (QString, Qt::TextFormat)));
 
 	QObject::connect (captionLabel, SIGNAL (doubleClicked (QMouseEvent *)), plugin, SLOT (restart ()));
 	QObject::connect (valueLabel, SIGNAL (doubleClicked (QMouseEvent *)), plugin, SLOT (restart ()));

@@ -18,7 +18,7 @@
 REGISTER_INFO_PLUGIN (TestPlugin)
 
 TestPlugin::TestPlugin ():
-	greetingName ("TestPlugin")
+	greetingName ("TestPlugin"), richText (false)
 {
 	qDebug () << "Creating test plugin";
 }
@@ -51,21 +51,43 @@ PluginSettingsPane *TestPlugin::createSettingsPane (QWidget *parent)
 void TestPlugin::readSettings (const QSettings &settings)
 {
 	InfoPlugin::readSettings (settings);
-	greetingName=settings.value ("greetingName").toString ();
+	greetingName=settings.value ("greetingName", greetingName).toString ();
+	richText    =settings.value ("richText"    , richText    ).toBool   ();
 }
 
 void TestPlugin::writeSettings (QSettings &settings)
 {
 	InfoPlugin::writeSettings (settings);
 	settings.setValue ("greetingName", greetingName);
+	settings.setValue ("richText"    , richText    );
 }
 
 void TestPlugin::start ()
 {
+	// Construct the text parts
+	QString helloText="Hallo";
+
+	QString greetingText;
 	if (blank (greetingName))
-		outputText (QString ("Hallo um %1!").arg (QTime::currentTime ().toString ()));
+		greetingText="";
 	else
-		outputText (QString ("Hallo %1 um %2!").arg (greetingName, QTime::currentTime ().toString ()));
+		greetingText=QString (" %1").arg (greetingName);
+
+	QString timeText=QString ("um %1").arg (QTime::currentTime ().toString ());
+
+	// Add color if rich text is set
+	if (richText)
+	{
+		   helloText=QString ("<font color=\"#FF3F00\">%1</font>").arg (   helloText);
+		greetingText=QString ("<font color=\"#3F7F00\">%1</font>").arg (greetingText);
+		    timeText=QString ("<font color=\"#003FFF\">%1</font>").arg (    timeText);
+	}
+
+	// Construct the final text
+	QString text=QString ("%1%2 %3").arg (helloText, greetingText, timeText);
+
+	// Output the text
+	outputText (text, richText?Qt::RichText:Qt::PlainText);
 }
 
 void TestPlugin::terminate ()

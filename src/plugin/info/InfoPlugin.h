@@ -64,10 +64,10 @@ class InfoPlugin: public Plugin
 		virtual void writeSettings (QSettings &settings);
 
 	signals:
-		void textOutput (const QString &);
+		void textOutput (const QString &text, Qt::TextFormat format);
 
 	protected:
-		void outputText (const QString &text);
+		void outputText (const QString &text, Qt::TextFormat format=Qt::PlainText);
 
 	private:
 		QString caption;

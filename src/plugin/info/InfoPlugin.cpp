@@ -19,9 +19,9 @@ InfoPlugin::~InfoPlugin ()
 {
 }
 
-void InfoPlugin::outputText (const QString &text)
+void InfoPlugin::outputText (const QString &text, Qt::TextFormat format)
 {
-	emit textOutput (text);
+	emit textOutput (text, format);
 }
 
 void InfoPlugin::readSettings (const QSettings &settings)
