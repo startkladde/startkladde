@@ -146,7 +146,7 @@ void SettingsWindow::readItem (QTreeWidgetItem *item, const InfoPlugin *plugin)
 	// FIXME use a model (InfoPluginList)?
 	item->setData       (columnCaption, Qt::DisplayRole, plugin->getCaption ());
 	item->setData       (columnName,    Qt::DisplayRole, plugin->getName ());
-	item->setCheckState (columnEnabled, true?Qt::Checked:Qt::Unchecked); // FIXME
+	item->setCheckState (columnEnabled, plugin->isEnabled ()?Qt::Checked:Qt::Unchecked);
 
 	item->setFlags (item->flags () | Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
 }
@@ -188,7 +188,8 @@ void SettingsWindow::writeSettings ()
 	for (int i=0; i<numInfoPlugins; ++i)
 	{
 		QTreeWidgetItem &item=*ui.infoPluginList->topLevelItem (i);
-		infoPlugins[i]->setCaption (item.data (columnCaption, Qt::DisplayRole).toString ());
+		infoPlugins[i]->setCaption (item.data       (columnCaption, Qt::DisplayRole).toString ());
+		infoPlugins[i]->setEnabled (item.checkState (columnEnabled                 )==Qt::Checked);
 	}
 	s.writeInfoPlugins (infoPlugins);
 

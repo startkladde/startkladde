@@ -9,6 +9,7 @@
 #define INFOPLUGIN_H_
 
 #include "src/plugin/Plugin.h"
+#include "src/accessor.h"
 
 class InfoPlugin: public Plugin
 {
@@ -32,7 +33,7 @@ class InfoPlugin: public Plugin
 		{
 			public:
 				virtual InfoPlugin *create () const { return new T (); }
-				// FIXME read all at once
+				// FIXME read all at once, or only when required?
 				virtual QString getId          () const { return T ().getId          (); }
 				virtual QString getName        () const { return T ().getName        (); }
 				virtual QString getDescription () const { return T ().getDescription (); }
@@ -51,10 +52,8 @@ class InfoPlugin: public Plugin
 		// ** Property Acceess **
 		// **********************
 
-		const QString &getCaption () const;
-		void setCaption (const QString &caption);
-
-		const QString &getText () const;
+		value_accessor (QString, Caption, caption)
+		bool_accessor (Enabled, enabled)
 
 
 		// **************
@@ -72,7 +71,7 @@ class InfoPlugin: public Plugin
 
 	private:
 		QString caption;
-		QString text;
+		bool enabled;
 };
 
 #endif

@@ -8,8 +8,10 @@
 #include "InfoPlugin.h"
 
 #include <QSettings>
+#include <QDebug>
 
-InfoPlugin::InfoPlugin ()
+InfoPlugin::InfoPlugin ():
+	enabled (true)
 {
 }
 
@@ -17,34 +19,19 @@ InfoPlugin::~InfoPlugin ()
 {
 }
 
-const QString &InfoPlugin::getText () const
-{
-	return text;
-}
-
 void InfoPlugin::outputText (const QString &text)
 {
-	this->text=text;
 	emit textOutput (text);
 }
 
-const QString &InfoPlugin::getCaption () const
-{
-	return caption;
-}
-
-void InfoPlugin::setCaption (const QString &caption)
-{
-	this->caption=caption;
-}
-
-
 void InfoPlugin::loadSettings (const QSettings &settings)
 {
-	caption=settings.value ("caption").toString ();
+	caption=settings.value ("caption", getName ()).toString ();
+	enabled=settings.value ("enabled", true).toBool ();
 }
 
 void InfoPlugin::saveSettings (QSettings &settings)
 {
 	settings.setValue ("caption", caption);
+	settings.setValue ("enabled", enabled);
 }

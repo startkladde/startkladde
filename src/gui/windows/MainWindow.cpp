@@ -54,6 +54,7 @@
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
+#include "src/util/qList.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
@@ -337,15 +338,14 @@ void MainWindow::setupPlugins ()
 	pluginLayout->setMargin (4);
 	pluginLayout->setVerticalSpacing (4);
 
-	// FIXME
-//	ui.pluginPane->setVisible (!s.infoPlugins.isEmpty ());
-
-	while (!infoPlugins.isEmpty ())
-		delete infoPlugins.takeLast ();
+	deleteList (infoPlugins);
 
 	infoPlugins=s.readInfoPlugins ();
+
+	ui.pluginPane->setVisible (!infoPlugins.isEmpty ());
+
 	foreach (InfoPlugin *plugin, infoPlugins)
-//		if (pluginInfo.enabled) // FIXME
+		if (plugin->isEnabled ())
 			setupPlugin (plugin, pluginLayout);
 
 	pluginLayout->setColumnStretch (0, 0);
