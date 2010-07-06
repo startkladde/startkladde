@@ -11,6 +11,9 @@ class QLabel;
 class QProcess;
 class ShellPluginInfo;
 
+/**
+ * Obsolete - old plugin architecture
+ */
 class ShellPlugin: public QObject
 {
 		Q_OBJECT

@@ -10,6 +10,16 @@
 
 #include "src/plugin/info/InfoPlugin.h"
 
+/**
+ * A simple info plugin which displays a greeting message, either as plain text
+ * or as rich text
+ *
+ * This plugin serves as a sample implementation of info plugins.
+ *
+ * Settings:
+ *  - greetingName: the name of the entity to greet
+ *  - richText: whether to use rich text or plain text
+ */
 class TestPlugin: public InfoPlugin
 {
 	public:

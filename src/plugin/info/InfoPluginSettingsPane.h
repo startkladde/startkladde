@@ -9,6 +9,13 @@
 class InfoPlugin;
 class PluginSettingsPane;
 
+/**
+ * The PluginSettingsPane implementation for an InfoPlugin
+ *
+ * This pane contains fields for the common properties of all InfoPlugins
+ * as well as another PluginSettingsPane created by the
+ * infoPluginCreateSettingsPane method of the plugin.
+ */
 class InfoPluginSettingsPane: public PluginSettingsPane
 {
 		Q_OBJECT
@@ -19,7 +26,7 @@ class InfoPluginSettingsPane: public PluginSettingsPane
 
 	public slots:
 		virtual void readSettings ();
-		virtual void writeSettings ();
+		virtual bool writeSettings ();
 
 	private:
 		Ui::InfoPluginSettingsPaneClass ui;

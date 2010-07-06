@@ -1,5 +1,8 @@
 #include "TestPluginSettingsPane.h"
 
+#include "src/util/qString.h"
+#include "src/gui/dialogs.h"
+
 TestPluginSettingsPane::TestPluginSettingsPane (TestPlugin *plugin, QWidget *parent):
 	PluginSettingsPane (parent),
 	plugin (plugin)
@@ -18,8 +21,18 @@ void TestPluginSettingsPane::readSettings ()
 	ui.richTextCheckbox ->setChecked (plugin->getRichText     ());
 }
 
-void TestPluginSettingsPane::writeSettings ()
+bool TestPluginSettingsPane::writeSettings ()
 {
+	if (ui.failCheckbox->isChecked ())
+	{
+		showWarning ("Fehler",
+			utf8 ("Test-Fehler („Fehler beim Speichern“ is aktiv)"),
+			this);
+
+		return false;
+	}
+
 	plugin->setGreetingName (ui.greetingNameInput->text      ());
 	plugin->setRichText     (ui.richTextCheckbox ->isChecked ());
+	return true;
 }

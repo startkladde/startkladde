@@ -2,6 +2,12 @@
 
 #include "src/plugin/info/InfoPlugin.h"
 
+/**
+ * Creates an InfoPluginSettingsPane instance for the given info plugin
+ *
+ * @param plugin the InfoPlugin instance to be configured
+ * @param parent the parent widget
+ */
 InfoPluginSettingsPane::InfoPluginSettingsPane (InfoPlugin *plugin, QWidget *parent):
     PluginSettingsPane (parent),
     plugin (plugin)
@@ -19,6 +25,12 @@ InfoPluginSettingsPane::~InfoPluginSettingsPane()
 
 }
 
+/**
+ * Reads the common settings from the plugin and sets up the input fields
+ * accordingly. Calls readSettings on the wrapped  PluginSettingsPane.
+ *
+ * @see PluginSettingsPane::readSettings
+ */
 void InfoPluginSettingsPane::readSettings ()
 {
 
@@ -27,8 +39,17 @@ void InfoPluginSettingsPane::readSettings ()
 	ui.captionInput->setFocus ();
 }
 
-void InfoPluginSettingsPane::writeSettings ()
+/**
+ * Writes the common settings from the plugin and sets up the input fields
+ * accordingly, and calls readSettings on the wrapped PluginSettingsPane.
+ *
+ * @see PluginSettingsPane::readSettings
+ */
+bool InfoPluginSettingsPane::writeSettings ()
 {
+	if (!infoPluginSettingsPane->writeSettings ()) return false;
+
 	plugin->setCaption (ui.captionInput->text ());
-	infoPluginSettingsPane->writeSettings ();
+
+	return true;
 }

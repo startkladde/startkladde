@@ -8,6 +8,10 @@ class Plugin;
 class QWidget;
 class PluginSettingsPane;
 
+/**
+ * A dialog which allows editing the settings of a plugin by means of its
+ * PluginSettingsPane
+ */
 class PluginSettingsDialog : public QDialog
 {
 		Q_OBJECT

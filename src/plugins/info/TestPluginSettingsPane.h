@@ -18,7 +18,7 @@ class TestPluginSettingsPane: public PluginSettingsPane
 
 	public slots:
 		virtual void readSettings ();
-		virtual void writeSettings ();
+		virtual bool writeSettings ();
 
 	private:
 		Ui::TestPluginSettingsPaneClass ui;

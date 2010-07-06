@@ -12,6 +12,9 @@
 
 class QSettings;
 
+/**
+ * Obsolete - old plugin architecture
+ */
 class ShellPluginInfo
 {
 	public:
