@@ -63,14 +63,13 @@ class InfoPluginFactory
 		// *************
 
 	public:
-		const QList<InfoPlugin::Descriptor *> &getDescriptors ();
-		const InfoPlugin::Descriptor *find (const QString &id) const;
-		InfoPlugin *create (const QString &id, const QString &caption="") const;
+		const QList<const InfoPlugin::Descriptor *> &getDescriptors ();
+		InfoPlugin *create (const QString &id) const;
 
 	private:
 		void addDescriptor (InfoPlugin::Descriptor *descriptor);
-		// FIXME use const pointers? And update the comment for getDescriptors
-		QList<InfoPlugin::Descriptor *> descriptors;
+		QList<const InfoPlugin::Descriptor *> descriptors;
+		const InfoPlugin::Descriptor *find (const QString &id) const;
 };
 
 #endif

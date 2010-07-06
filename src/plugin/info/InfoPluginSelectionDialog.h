@@ -13,18 +13,18 @@ class InfoPluginSelectionDialog: public QDialog
 		Q_OBJECT
 
 	public:
-		InfoPluginSelectionDialog (const QList<InfoPlugin::Descriptor *> &plugins, QWidget *parent=NULL);
+		InfoPluginSelectionDialog (const QList<const InfoPlugin::Descriptor *> &plugins, QWidget *parent=NULL);
 		~InfoPluginSelectionDialog ();
 
 		void setup ();
 		const InfoPlugin::Descriptor *getCurrentPluginDescriptor ();
 
-		static const InfoPlugin::Descriptor *select (const QList<InfoPlugin::Descriptor *> &plugins, QWidget *parent=NULL);
+		static const InfoPlugin::Descriptor *select (const QList<const InfoPlugin::Descriptor *> &plugins, QWidget *parent=NULL);
 
 	private:
 		Ui::InfoPluginSelectionDialogClass ui;
 
-		QList<InfoPlugin::Descriptor *> plugins;
+		QList<const InfoPlugin::Descriptor *> plugins;
 };
 
 #endif

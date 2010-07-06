@@ -23,7 +23,8 @@
 class TestPlugin: public InfoPlugin
 {
 	public:
-		TestPlugin ();
+		// FIXME should be const QString &
+		TestPlugin (QString caption=QString (), bool enabled=true);
 		virtual ~TestPlugin ();
 
 		virtual void start ();
@@ -35,8 +36,8 @@ class TestPlugin: public InfoPlugin
 
 		virtual PluginSettingsPane *infoPluginCreateSettingsPane (QWidget *parent=NULL);
 
-		virtual void readSettings (const QSettings &settings);
-		virtual void writeSettings (QSettings &settings);
+		virtual void infoPluginReadSettings (const QSettings &settings);
+		virtual void infoPluginWriteSettings (QSettings &settings);
 
 		value_accessor (QString, GreetingName, greetingName);
 		value_accessor (bool   , RichText    , richText    );

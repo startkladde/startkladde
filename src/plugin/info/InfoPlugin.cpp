@@ -12,8 +12,8 @@
 
 #include "src/plugin/info/InfoPluginSettingsPane.h"
 
-InfoPlugin::InfoPlugin ():
-	enabled (true)
+InfoPlugin::InfoPlugin (QString caption, bool enabled):
+	caption (caption), enabled (enabled)
 {
 }
 
@@ -41,28 +41,22 @@ PluginSettingsPane *InfoPlugin::createSettingsPane (QWidget *parent)
 }
 
 /**
- * Reads the common settings for this info plugin
- *
- * Implementations of this class will generally want to override this method.
- * The overridden method must call this method so the common settings will be
- * read.
+ * Reads the common settings for this info plugin and calls
+ * infoPluginReadSettings to read the plugin specific settings
  *
  * @param settings the QSettings to read the settings from
  * @see Plugin::readSettings
  */
 void InfoPlugin::readSettings (const QSettings &settings)
 {
-	// FIXME use a infoPluginReadSettings instead?
 	caption=settings.value ("caption", getName ()).toString ();
 	enabled=settings.value ("enabled", true).toBool ();
+	infoPluginReadSettings (settings);
 }
 
 /**
- * Writes the common settings for this info plugin
- *
- * Implementations of this class will generally want to override this method.
- * The overridden method must call this method so the common settings will be
- * written.
+ * Writes the common settings for this info plugin and calls
+ * infoPluginWriteSettings to write the plugin specific settings
  *
  * @param settings the QSettings to write the settings to
  * @see Plugin::writeSettings
@@ -71,4 +65,5 @@ void InfoPlugin::writeSettings (QSettings &settings)
 {
 	settings.setValue ("caption", caption);
 	settings.setValue ("enabled", enabled);
+	infoPluginWriteSettings (settings);
 }

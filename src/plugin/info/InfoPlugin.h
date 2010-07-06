@@ -50,7 +50,7 @@ class InfoPlugin: public Plugin
 		// ** Construction **
 		// ******************
 
-		InfoPlugin ();
+		InfoPlugin (QString caption=QString (), bool enabled=true);
 		virtual ~InfoPlugin ();
 
 
@@ -85,6 +85,9 @@ class InfoPlugin: public Plugin
 
 		virtual void readSettings (const QSettings &settings);
 		virtual void writeSettings (QSettings &settings);
+
+		virtual void infoPluginReadSettings (const QSettings &settings)=0;
+		virtual void infoPluginWriteSettings (QSettings &settings)=0;
 
 	signals:
 		/**

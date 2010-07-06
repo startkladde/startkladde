@@ -1,5 +1,7 @@
 /*
  * Improvements:
+ *   - for the plugins, we should use a model and QTreeView instead of
+ *     QTreeWidget and manual syncing between plugin list and view
  *   - pluginPathList: after dragging, select the dragged item in the new
  *     position
  *   - infoPluginList: enable internal dragging
@@ -92,7 +94,7 @@ void SettingsWindow::readSettings ()
 
 	// *** Database
 	ui.mysqlServerInput        ->setText    (info.server);
-	ui.mysqlDefaultPortCheckBox->setChecked (info.defaultPort); // TODO enable port
+	ui.mysqlDefaultPortCheckBox->setChecked (info.defaultPort);
 	ui.mysqlPortInput          ->setValue   (info.port);
 	ui.mysqlUserInput          ->setText    (info.username);
 	ui.mysqlPasswordInput      ->setText    (info.password);
@@ -149,7 +151,6 @@ void SettingsWindow::readSettings ()
 
 void SettingsWindow::readItem (QTreeWidgetItem *item, const InfoPlugin *plugin)
 {
-	// FIXME use a model (InfoPluginList)?
 	item->setData       (columnCaption, Qt::DisplayRole, plugin->getCaption ());
 	item->setData       (columnName,    Qt::DisplayRole, plugin->getName ());
 	item->setCheckState (columnEnabled, plugin->isEnabled ()?Qt::Checked:Qt::Unchecked);
@@ -286,7 +287,8 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 	warnEdit ();
 	QTreeWidget *list=ui.infoPluginList;
 
-	const InfoPlugin::Descriptor *descriptor=InfoPluginSelectionDialog::select (InfoPluginFactory::getInstance ().getDescriptors (), this);
+	QList<const InfoPlugin::Descriptor *> descriptors=InfoPluginFactory::getInstance ().getDescriptors ();
+	const InfoPlugin::Descriptor *descriptor=InfoPluginSelectionDialog::select (descriptors, this);
 
 	if (!descriptor) return;
 	qDebug () << descriptor->getId ();

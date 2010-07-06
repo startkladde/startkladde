@@ -5,7 +5,7 @@
 const int nameColumn=0;
 const int descriptionColumn=1;
 
-InfoPluginSelectionDialog::InfoPluginSelectionDialog (const QList<InfoPlugin::Descriptor *> &plugins, QWidget *parent):
+InfoPluginSelectionDialog::InfoPluginSelectionDialog (const QList<const InfoPlugin::Descriptor *> &plugins, QWidget *parent):
     QDialog (parent),
     plugins (plugins)
 {
@@ -32,7 +32,7 @@ void InfoPluginSelectionDialog::setup ()
 	}
 	else
 	{
-		foreach (InfoPlugin::Descriptor *descriptor, plugins)
+		foreach (const InfoPlugin::Descriptor *descriptor, plugins)
 		{
 			QTreeWidgetItem *item=new QTreeWidgetItem (ui.pluginList);
 			item->setData (nameColumn       , Qt::DisplayRole, descriptor->getName        ());
@@ -55,7 +55,7 @@ const InfoPlugin::Descriptor *InfoPluginSelectionDialog::getCurrentPluginDescrip
 		return plugins[row];
 }
 
-const InfoPlugin::Descriptor *InfoPluginSelectionDialog::select (const QList<InfoPlugin::Descriptor *> &plugins, QWidget *parent)
+const InfoPlugin::Descriptor *InfoPluginSelectionDialog::select (const QList<const InfoPlugin::Descriptor *> &plugins, QWidget *parent)
 {
 	InfoPluginSelectionDialog *dialog=new InfoPluginSelectionDialog (plugins, parent);
 	dialog->setModal (true);

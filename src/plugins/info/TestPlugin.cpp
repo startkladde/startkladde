@@ -18,7 +18,8 @@
 
 REGISTER_INFO_PLUGIN (TestPlugin)
 
-TestPlugin::TestPlugin ():
+TestPlugin::TestPlugin (QString caption, bool enabled):
+	InfoPlugin (caption, enabled),
 	greetingName ("TestPlugin"), richText (false)
 {
 	qDebug () << "Creating test plugin";
@@ -49,16 +50,14 @@ PluginSettingsPane *TestPlugin::infoPluginCreateSettingsPane (QWidget *parent)
 	return new TestPluginSettingsPane (this, parent);
 }
 
-void TestPlugin::readSettings (const QSettings &settings)
+void TestPlugin::infoPluginReadSettings (const QSettings &settings)
 {
-	InfoPlugin::readSettings (settings);
 	greetingName=settings.value ("greetingName", greetingName).toString ();
 	richText    =settings.value ("richText"    , richText    ).toBool   ();
 }
 
-void TestPlugin::writeSettings (QSettings &settings)
+void TestPlugin::infoPluginWriteSettings (QSettings &settings)
 {
-	InfoPlugin::writeSettings (settings);
 	settings.setValue ("greetingName", greetingName);
 	settings.setValue ("richText"    , richText    );
 }

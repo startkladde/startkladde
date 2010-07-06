@@ -65,7 +65,7 @@ void InfoPluginFactory::addDescriptor (InfoPlugin::Descriptor *descriptor)
  * @return a list of pointers to info plugin descriptors. The caller may not
  *         delete any of the pointers.
  */
-const QList<InfoPlugin::Descriptor *> &InfoPluginFactory::getDescriptors ()
+const QList<const InfoPlugin::Descriptor *> &InfoPluginFactory::getDescriptors ()
 {
 	return descriptors;
 }
@@ -76,7 +76,9 @@ const QList<InfoPlugin::Descriptor *> &InfoPluginFactory::getDescriptors ()
  * If no plugin with the given ID has been registered, NULL is returned. If
  * multiple plugins with the same ID have been registered, an arbitrary one of
  * them is returned.
- * FIXME prevent this
+ *
+ * This method is private in order to minimize the chance of accidently
+ * deleting a descriptor. #create should be used instead where applicable.
  *
  * @param id the ID of the plugin to find
  * @return a pointer to the descriptor for the plugin, or NULL
@@ -84,7 +86,7 @@ const QList<InfoPlugin::Descriptor *> &InfoPluginFactory::getDescriptors ()
 const InfoPlugin::Descriptor *InfoPluginFactory::find (const QString &id) const
 {
 	// FIXME use a hash/map
-	foreach (InfoPlugin::Descriptor *descriptor, descriptors)
+	foreach (const InfoPlugin::Descriptor *descriptor, descriptors)
 		if (descriptor->getId ()==id)
 			return descriptor;
 
@@ -92,33 +94,22 @@ const InfoPlugin::Descriptor *InfoPluginFactory::find (const QString &id) const
 }
 
 /**
- * Creates an info plugin with a given ID and caption
- *
- * This is a shortcut for retrieving the descriptor, calling its create method
- * and setting the caption. Usually, the caption will be read from the settings
- * along with other settings of the plugin, so this method is only useful for
- * creating a sample plugin instance.
+ * Creates an info plugin with a given ID
  *
  * If no plugin with the given ID has been registered, NULL is returned.
  *
  * The caller takes ownership of the returned InfoPlugin instance.
  *
  * @param id the ID of the plugin to create
- * @param caption the caption of the plugin to set
  * @return an InfoPlugin instance, or NULL
  * @see #find
  */
-InfoPlugin *InfoPluginFactory::create (const QString &id, const QString &caption) const
+InfoPlugin *InfoPluginFactory::create (const QString &id) const
 {
 	const InfoPlugin::Descriptor *descriptor=find (id);
 	if (!descriptor) return NULL;
 
-	InfoPlugin *plugin=descriptor->create ();
-	if (!plugin) return NULL;
-
-	plugin->setCaption (caption);
-
-	return plugin;
+	return descriptor->create ();
 }
 
 

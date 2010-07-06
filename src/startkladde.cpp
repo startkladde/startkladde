@@ -348,7 +348,7 @@ void plugins_test ()
 {
 	std::cout << "Begin plugin test" << std::endl;
 
-	foreach (InfoPlugin::Descriptor *descriptor, InfoPluginFactory::getInstance ().getDescriptors ())
+	foreach (const InfoPlugin::Descriptor *descriptor, InfoPluginFactory::getInstance ().getDescriptors ())
 	{
 		std::cout << QString ("Registered plugin %1 (%2)").arg (descriptor->getName (), descriptor->getDescription ()) << std::endl;
 		InfoPlugin *plugin=descriptor->create ();

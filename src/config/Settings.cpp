@@ -15,6 +15,8 @@
 #include "src/util/qList.h"
 #include "src/plugin/info/InfoPlugin.h"
 #include "src/plugin/info/InfoPluginFactory.h"
+#include "src/plugins/info/TestPlugin.h"
+
 
 Settings *Settings::theInstance=NULL;
 
@@ -113,12 +115,10 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 
 			// FIXME handle not found
 			QString id=s.value ("id").toString ();
-			const InfoPlugin::Descriptor *descriptor=factory.find (id);
+			InfoPlugin *plugin=factory.create (id);
 
-			if (descriptor)
+			if (plugin)
 			{
-				InfoPlugin *plugin=descriptor->create ();
-
 				s.beginGroup ("settings");
 				plugin->readSettings (s);
 				s.endGroup ();
@@ -130,9 +130,8 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 	}
 	else
 	{
-		// FIXME we use the factory so we know we get the same as when reading them on the next run
-		appendUnlessNull (plugins, factory.create ("test", "Foo:"));
-		appendUnlessNull (plugins, factory.create ("test", "Bar:"));
+		plugins.append (new TestPlugin ("Foo:"));
+		plugins.append (new TestPlugin ("Bar:")); // FIXME constructor with richtext
 
 		// FIXME
 //		infoPlugins
