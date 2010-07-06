@@ -55,7 +55,11 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	ui.dbTypePane->setVisible (false);
 
 	// Make boolean columns and some other columns read-only
+	// The title column is read-only because we would have to write back the
+	// value to the plugin after editing it so the plugin settings dialog show
+	// it correctly.
 	ui.infoPluginList->setItemDelegateForColumn (columnName       , new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (columnCaption    , new ReadOnlyItemDelegate (ui.infoPluginList));
 	ui.infoPluginList->setItemDelegateForColumn (columnEnabled    , new ReadOnlyItemDelegate (ui.infoPluginList));
 
 	// Note that this label does not use wordWrap because it causes the minimum
@@ -357,11 +361,16 @@ void SettingsWindow::on_infoPluginSettingsButton_clicked ()
 	if (row<0 || row>=list->topLevelItemCount ()) return;
 
 	PluginSettingsDialog::invoke (infoPlugins[row], this);
+	readItem (ui.infoPluginList->topLevelItem (row), infoPlugins[row]);
+}
 
-//	PluginSettingsDialog *dialog=new PluginSettingsDialog (infoPlugins[row], this);
-//	dialog->setModal (true);
-//	dialog->exec ();
-//	delete dialog;
+void SettingsWindow::on_infoPluginList_itemDoubleClicked (QTreeWidgetItem *item, int column)
+{
+	(void)column;
+	if (!item) return;
+
+	ui.infoPluginList->setCurrentItem (item);
+	on_infoPluginSettingsButton_clicked ();
 }
 
 bool SettingsWindow::allowEdit ()

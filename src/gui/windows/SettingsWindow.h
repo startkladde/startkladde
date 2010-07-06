@@ -40,6 +40,8 @@ class SettingsWindow: public QDialog
 		void on_infoPluginDownButton_clicked ();
 		void on_infoPluginSettingsButton_clicked ();
 
+		void on_infoPluginList_itemDoubleClicked (QTreeWidgetItem *item, int column);
+
 		void updateWidgets ();
 
 		void on_buttonBox_accepted ();

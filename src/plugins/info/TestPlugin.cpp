@@ -43,7 +43,7 @@ QString TestPlugin::getDescription () const
 	return "Gibt eine Begrüßung und die Startzeit aus";
 }
 
-PluginSettingsPane *TestPlugin::createSettingsPane (QWidget *parent)
+PluginSettingsPane *TestPlugin::infoPluginCreateSettingsPane (QWidget *parent)
 {
 	return new TestPluginSettingsPane (this, parent);
 }

@@ -60,6 +60,9 @@ class InfoPlugin: public Plugin
 		// ** Settings **
 		// **************
 
+		virtual PluginSettingsPane *createSettingsPane (QWidget *parent=NULL);
+		virtual PluginSettingsPane *infoPluginCreateSettingsPane (QWidget *parent=NULL)=0;
+
 		virtual void readSettings (const QSettings &settings);
 		virtual void writeSettings (QSettings &settings);
 
