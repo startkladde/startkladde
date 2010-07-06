@@ -6,33 +6,50 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>194</width>
+    <width>200</width>
     <height>51</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PluginSettingsDialog</string>
+   <string>Plugin-Einstellungen</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QWidget" name="pluginSettingsPane" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="margin">
-       <number>0</number>
-      </property>
-     </layout>
-    </widget>
-   </item>
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QWidget" name="pluginSettingsPane" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="margin">
+       <number>0</number>
+      </property>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>PluginSettingsDialogClass</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>62</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>94</x>
+     <y>8</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

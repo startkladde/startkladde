@@ -281,15 +281,26 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 	warnEdit ();
 	QTreeWidget *list=ui.infoPluginList;
 
-	// FIXME
+	// FIXME list
 	InfoPlugin *plugin=InfoPluginFactory::getInstance ().find ("test")->create ();
-	infoPlugins.append (plugin);
 
-	QTreeWidgetItem *item=new QTreeWidgetItem (list);
-	readItem (item, plugin);
+	if (plugin)
+	{
+		if (PluginSettingsDialog::invoke (plugin, this)==QDialog::Accepted)
+		{
+			infoPlugins.append (plugin);
 
-	list->setCurrentItem (item);
-	list->editItem (item, 0);
+			QTreeWidgetItem *item=new QTreeWidgetItem (list);
+			readItem (item, plugin);
+
+			list->setCurrentItem (item);
+			//list->editItem (item, 0);
+		}
+		else
+		{
+			delete plugin;
+		}
+	}
 }
 
 void SettingsWindow::on_removeInfoPluginButton_clicked ()
@@ -345,10 +356,12 @@ void SettingsWindow::on_infoPluginSettingsButton_clicked ()
 	int row=list->indexOfTopLevelItem (list->currentItem ());
 	if (row<0 || row>=list->topLevelItemCount ()) return;
 
-	PluginSettingsDialog *dialog=new PluginSettingsDialog (infoPlugins[row], this);
-	dialog->setModal (true);
-	dialog->exec ();
-	delete dialog;
+	PluginSettingsDialog::invoke (infoPlugins[row], this);
+
+//	PluginSettingsDialog *dialog=new PluginSettingsDialog (infoPlugins[row], this);
+//	dialog->setModal (true);
+//	dialog->exec ();
+//	delete dialog;
 }
 
 bool SettingsWindow::allowEdit ()
