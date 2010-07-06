@@ -41,9 +41,13 @@ class TestPlugin: public InfoPlugin
 		value_accessor (QString, GreetingName, greetingName);
 		value_accessor (bool   , RichText    , richText    );
 
+		virtual void minuteChanged ();
+
 	private:
 		QString greetingName;
 		bool richText;
+
+		void trigger ();
 };
 
 #endif

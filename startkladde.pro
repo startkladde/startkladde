@@ -180,6 +180,7 @@ HEADERS += \
            src/plugin/ShellPluginInfo.h \
            src/plugin/info/InfoPlugin.h \
            src/plugin/info/InfoPluginFactory.h \
+           src/plugin/info/InfoPluginSelectionDialog.h \
            src/plugin/info/InfoPluginSettingsPane.h \
            src/plugin/settings/PluginSettingsPane.h \
            src/plugin/settings/PluginSettingsDialog.h \
@@ -292,6 +293,7 @@ SOURCES += \
            src/plugin/ShellPluginInfo.cpp \
            src/plugin/info/InfoPlugin.cpp \
            src/plugin/info/InfoPluginFactory.cpp \
+           src/plugin/info/InfoPluginSelectionDialog.cpp \
            src/plugin/info/InfoPluginSettingsPane.cpp \
            src/plugin/settings/PluginSettingsPane.cpp \
            src/plugin/settings/PluginSettingsDialog.cpp \
@@ -320,6 +322,7 @@ FORMS += \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.ui \
            src/gui/windows/objectEditor/PersonEditorPane.ui \
            src/gui/windows/objectEditor/PlaneEditorPane.ui \
+           src/plugin/info/InfoPluginSelectionDialog.ui \
            src/plugin/info/InfoPluginSettingsPane.ui \
            src/plugin/settings/PluginSettingsDialog.ui \
            src/plugins/info/TestPluginSettingsPane.ui \

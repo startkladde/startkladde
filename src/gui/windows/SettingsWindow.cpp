@@ -24,6 +24,7 @@
 #include "src/db/DatabaseInfo.h"
 #include "src/plugin/info/InfoPlugin.h"
 #include "src/plugin/info/InfoPluginFactory.h"
+#include "src/plugin/info/InfoPluginSelectionDialog.h"
 #include "src/plugin/settings/PluginSettingsDialog.h"
 #include "src/plugin/ShellPluginInfo.h"
 #include "src/gui/views/ReadOnlyItemDelegate.h"
@@ -285,12 +286,19 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 	warnEdit ();
 	QTreeWidget *list=ui.infoPluginList;
 
-	// FIXME list
-	InfoPlugin *plugin=InfoPluginFactory::getInstance ().find ("test")->create ();
+	const InfoPlugin::Descriptor *descriptor=InfoPluginSelectionDialog::select (InfoPluginFactory::getInstance ().getDescriptors (), this);
+
+	if (!descriptor) return;
+	qDebug () << descriptor->getId ();
+
+	InfoPlugin *plugin=descriptor->create ();
 
 	if (plugin)
 	{
-		if (PluginSettingsDialog::invoke (plugin, this)==QDialog::Accepted)
+		plugin->setCaption (plugin->getName ()+":");
+		int settingsDialogResult=PluginSettingsDialog::invoke (plugin, this);
+
+		if (settingsDialogResult==QDialog::Accepted)
 		{
 			infoPlugins.append (plugin);
 
@@ -298,7 +306,6 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 			readItem (item, plugin);
 
 			list->setCurrentItem (item);
-			//list->editItem (item, 0);
 		}
 		else
 		{

@@ -111,6 +111,8 @@ class MainWindow: public QMainWindow
 		void setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout);
 		void terminatePlugins ();
 
+	signals:
+		void minuteChanged ();
 
 	protected slots:
 		void databaseError (int number, QString message);

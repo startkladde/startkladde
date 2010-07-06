@@ -14,6 +14,7 @@
 #include "src/plugin/info/InfoPluginFactory.h"
 #include "TestPluginSettingsPane.h"
 #include "src/text.h"
+#include "src/util/qString.h"
 
 REGISTER_INFO_PLUGIN (TestPlugin)
 
@@ -40,7 +41,7 @@ QString TestPlugin::getName () const
 
 QString TestPlugin::getDescription () const
 {
-	return "Gibt eine Begrüßung und die Startzeit aus";
+	return utf8 ("Gibt eine Begrüßung und die aktuelle Uhrzeit aus");
 }
 
 PluginSettingsPane *TestPlugin::infoPluginCreateSettingsPane (QWidget *parent)
@@ -63,6 +64,21 @@ void TestPlugin::writeSettings (QSettings &settings)
 }
 
 void TestPlugin::start ()
+{
+	trigger ();
+}
+
+void TestPlugin::terminate ()
+{
+
+}
+
+void TestPlugin::minuteChanged ()
+{
+	trigger ();
+}
+
+void TestPlugin::trigger ()
 {
 	// Construct the text parts
 	QString helloText="Hallo";
@@ -88,9 +104,4 @@ void TestPlugin::start ()
 
 	// Output the text
 	outputText (text, richText?Qt::RichText:Qt::PlainText);
-}
-
-void TestPlugin::terminate ()
-{
-
 }

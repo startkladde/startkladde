@@ -269,6 +269,8 @@ void MainWindow::setupLayout ()
 
 void MainWindow::setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout)
 {
+	connect (this, SIGNAL (minuteChanged ()), plugin, SLOT (minuteChanged ()));
+
 //	ShellPlugin *plugin=new ShellPlugin (pluginInfo);
 //	infoPlugins.append (plugin);
 
@@ -276,22 +278,7 @@ void MainWindow::setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout)
 	SkLabel *valueLabel = new SkLabel ("...", ui.pluginPane);
 
 	valueLabel->setWordWrap (true);
-
-	// FIXME
-//	if (pluginInfo.richText)
-//	{
-//		captionLabel->setTextFormat (Qt::RichText);
-//		valueLabel->setTextFormat (Qt::RichText);
-//
-//		captionLabel->setText ("<nobr>" + plugin->get_caption () + "</nobr>");
-//	}
-//	else
-//	{
-//		captionLabel->setTextFormat (Qt::PlainText);
-//		valueLabel->setTextFormat (Qt::PlainText);
-//
-		captionLabel->setText (plugin->getCaption ());
-//	}
+	captionLabel->setText (plugin->getCaption ());
 
 	int row = pluginLayout->rowCount ();
 	pluginLayout->addWidget (captionLabel, row, 0, Qt::AlignTop);
@@ -1318,17 +1305,16 @@ void MainWindow::timeTimer_timeout ()
 	ui.utcTimeLabel->setText (formatDateTime (now.toUTC ()));
 	ui.localTimeLabel->setText (formatDateTime (now.toLocalTime ()));
 
-	// TODO: on the beginning of a minute, update the fliht duration (probably
-	// call from here rather than from a timer in the model so it's
-	// synchronized to the minutes)
-
 	static int lastSecond=0;
 	int second=QTime::currentTime ().second ();
 
+	// Some things are done on the beginning of a new minute.
 	if (second<lastSecond)
 	{
 		int durationColumn=flightModel->durationColumn ();
 		flightListModel->columnChanged (durationColumn);
+
+		emit minuteChanged ();
 	}
 
 	lastSecond=second;
