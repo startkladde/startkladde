@@ -15,7 +15,8 @@
 #include "src/util/qList.h"
 #include "src/plugin/info/InfoPlugin.h"
 #include "src/plugin/info/InfoPluginFactory.h"
-#include "src/plugins/info/TestPlugin.h"
+#include "src/plugins/info/test/TestPlugin.h"
+#include "src/plugins/info/metar/MetarPlugin.h"
 
 
 Settings *Settings::theInstance=NULL;
@@ -131,7 +132,11 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 	else
 	{
 		plugins.append (new TestPlugin ("Foo:"));
-		plugins.append (new TestPlugin ("Bar:")); // FIXME constructor with richtext
+		plugins.append (new TestPlugin ("Bar:", true, "TestPlugin", true)); // FIXME constructor with richtext
+
+		plugins.append (new MetarPlugin ("Wetter:", true, "EDDF", 15));
+		plugins.append (new MetarPlugin (""       , true, "EDDS", 15));
+		plugins.append (new MetarPlugin (""       , true, "EDDM", 15));
 
 		// FIXME
 //		infoPlugins

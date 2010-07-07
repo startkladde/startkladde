@@ -24,7 +24,7 @@ class TestPlugin: public InfoPlugin
 {
 	public:
 		// FIXME should be const QString &
-		TestPlugin (QString caption=QString (), bool enabled=true);
+		TestPlugin (QString caption=QString (), bool enabled=true, const QString &greetingName="TestPlugin", bool richText=false);
 		virtual ~TestPlugin ();
 
 		virtual void start ();

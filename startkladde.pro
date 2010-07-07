@@ -184,8 +184,10 @@ HEADERS += \
            src/plugin/info/InfoPluginSettingsPane.h \
            src/plugin/settings/PluginSettingsPane.h \
            src/plugin/settings/PluginSettingsDialog.h \
-           src/plugins/info/TestPlugin.h \
-           src/plugins/info/TestPluginSettingsPane.h \
+           src/plugins/info/metar/MetarPlugin.h \
+           src/plugins/info/metar/MetarPluginSettingsPane.h \
+           src/plugins/info/test/TestPlugin.h \
+           src/plugins/info/test/TestPluginSettingsPane.h \
            src/statistics/LaunchMethodStatistics.h \
            src/statistics/PilotLog.h \
            src/statistics/PlaneLog.h \
@@ -297,8 +299,10 @@ SOURCES += \
            src/plugin/info/InfoPluginSettingsPane.cpp \
            src/plugin/settings/PluginSettingsPane.cpp \
            src/plugin/settings/PluginSettingsDialog.cpp \
-           src/plugins/info/TestPlugin.cpp \
-           src/plugins/info/TestPluginSettingsPane.cpp \
+           src/plugins/info/metar/MetarPlugin.cpp \
+           src/plugins/info/metar/MetarPluginSettingsPane.cpp \
+           src/plugins/info/test/TestPlugin.cpp \
+           src/plugins/info/test/TestPluginSettingsPane.cpp \
            src/statistics/LaunchMethodStatistics.cpp \
            src/statistics/PilotLog.cpp \
            src/statistics/PlaneLog.cpp \
@@ -325,7 +329,8 @@ FORMS += \
            src/plugin/info/InfoPluginSelectionDialog.ui \
            src/plugin/info/InfoPluginSettingsPane.ui \
            src/plugin/settings/PluginSettingsDialog.ui \
-           src/plugins/info/TestPluginSettingsPane.ui \
+           src/plugins/info/metar/MetarPluginSettingsPane.ui \
+           src/plugins/info/test/TestPluginSettingsPane.ui \
            # Empty line
 
 RESOURCES += \
