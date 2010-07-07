@@ -4,7 +4,8 @@
 #include "src/plugin/settings/PluginSettingsPane.h"
 #include "ui_SunsetPluginSettingsPane.h"
 
-#include "src/plugins/info/sunset/SunsetPlugin.h"
+// FIXME forward declaration sufficient? (also other plugins)
+#include "src/plugins/info/sunset/SunsetPluginBase.h"
 
 #include <QtGui/QWidget>
 
@@ -13,7 +14,7 @@ class SunsetPluginSettingsPane: public PluginSettingsPane
 		Q_OBJECT
 
 	public:
-		SunsetPluginSettingsPane (SunsetPlugin *plugin, QWidget *parent=NULL);
+		SunsetPluginSettingsPane (SunsetPluginBase *plugin, QWidget *parent=NULL);
 		~SunsetPluginSettingsPane();
 
 	public slots:
@@ -27,7 +28,7 @@ class SunsetPluginSettingsPane: public PluginSettingsPane
 	private:
 		Ui::SunsetPluginSettingsPaneClass ui;
 
-		SunsetPlugin *plugin;
+		SunsetPluginBase *plugin;
 };
 
 #endif

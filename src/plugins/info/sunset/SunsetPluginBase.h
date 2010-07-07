@@ -1,12 +1,5 @@
-/*
- * SunsetPlugin.h
- *
- *  Created on: 04.07.2010
- *      Author: Martin Herrmann
- */
-
-#ifndef SunsetPlugin_H_
-#define SunsetPlugin_H_
+#ifndef SunsetPluginBase_H_
+#define SunsetPluginBase_H_
 
 #include <QTime>
 
@@ -19,20 +12,13 @@
  * Settings:
  *  - filename: the name of the file to read the data from
  */
-class SunsetPlugin: public InfoPlugin
+class SunsetPluginBase: public InfoPlugin
 {
 	public:
 		friend class SunsetPluginSettingsPane;
 
-		SunsetPlugin (QString caption=QString (), bool enabled=true, const QString &filename="sunsets.txt");
-		virtual ~SunsetPlugin ();
-
-		virtual void start ();
-		virtual void terminate ();
-
-		virtual QString getId          () const;
-		virtual QString getName        () const;
-		virtual QString getDescription () const;
+		SunsetPluginBase (QString caption=QString (), bool enabled=true, const QString &filename="sunsets.txt");
+		virtual ~SunsetPluginBase ();
 
 		virtual PluginSettingsPane *infoPluginCreateSettingsPane (QWidget *parent=NULL);
 
@@ -43,10 +29,16 @@ class SunsetPlugin: public InfoPlugin
 
 		virtual QString configText () const;
 
+		virtual void start ();
+		virtual void terminate ();
+
+	protected:
 		virtual QString findSunset ();
 
-	private:
+		QString sunset;
+		bool sunsetValid;
 
+	private:
 		QString filename;
 };
 

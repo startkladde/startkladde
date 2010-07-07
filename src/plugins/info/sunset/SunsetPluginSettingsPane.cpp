@@ -8,7 +8,7 @@
 #include "src/text.h"
 #include "src/gui/dialogs.h"
 
-SunsetPluginSettingsPane::SunsetPluginSettingsPane (SunsetPlugin *plugin, QWidget *parent):
+SunsetPluginSettingsPane::SunsetPluginSettingsPane (SunsetPluginBase *plugin, QWidget *parent):
 	PluginSettingsPane (parent),
 	plugin (plugin)
 {
