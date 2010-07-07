@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Einstellungen - Startkladde</string>
+   <string>Einstellungen</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
    <item row="2" column="0">
@@ -444,6 +444,11 @@ Berech des Hauptfensters angezeigt.</string>
                 <column>
                  <property name="text">
                   <string>Aktiv</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Konfiguration</string>
                  </property>
                 </column>
                </widget>

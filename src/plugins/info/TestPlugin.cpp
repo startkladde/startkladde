@@ -104,3 +104,8 @@ void TestPlugin::trigger ()
 	// Output the text
 	outputText (text, richText?Qt::RichText:Qt::PlainText);
 }
+
+QString TestPlugin::configText () const
+{
+	return utf8 ("„%1“, %2 text").arg (greetingName, richText?"rich":"plain");
+}

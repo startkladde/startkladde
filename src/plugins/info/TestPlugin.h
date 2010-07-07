@@ -44,6 +44,8 @@ class TestPlugin: public InfoPlugin
 
 		virtual void minuteChanged ();
 
+		virtual QString configText () const;
+
 	private:
 		QString greetingName;
 		bool richText;

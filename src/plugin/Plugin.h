@@ -76,6 +76,8 @@ class Plugin: public QObject
 		virtual PluginSettingsPane *createSettingsPane (QWidget *parent=NULL)=0;
 
 		virtual void minuteChanged () {}
+
+		virtual QString configText () const=0;
 };
 
 #endif

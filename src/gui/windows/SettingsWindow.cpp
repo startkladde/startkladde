@@ -43,9 +43,10 @@
 //const int columnInterval=4;
 //const int columnWarnOnDeath=5;
 
-const int columnCaption=0;
-const int columnName=1;
-const int columnEnabled=2;
+const int captionColumn=0;
+const int    nameColumn=1;
+const int enabledColumn=2;
+const int  configColumn=3;
 
 SettingsWindow::SettingsWindow (QWidget *parent):
 	QDialog (parent),
@@ -61,9 +62,10 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	// The title column is read-only because we would have to write back the
 	// value to the plugin after editing it so the plugin settings dialog show
 	// it correctly.
-	ui.infoPluginList->setItemDelegateForColumn (columnName       , new ReadOnlyItemDelegate (ui.infoPluginList));
-	ui.infoPluginList->setItemDelegateForColumn (columnCaption    , new ReadOnlyItemDelegate (ui.infoPluginList));
-	ui.infoPluginList->setItemDelegateForColumn (columnEnabled    , new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (   nameColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (captionColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (enabledColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn ( configColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
 
 	// Note that this label does not use wordWrap because it causes the minimum
 	// size of the label not to work properly.
@@ -151,9 +153,10 @@ void SettingsWindow::readSettings ()
 
 void SettingsWindow::readItem (QTreeWidgetItem *item, const InfoPlugin *plugin)
 {
-	item->setData       (columnCaption, Qt::DisplayRole, plugin->getCaption ());
-	item->setData       (columnName,    Qt::DisplayRole, plugin->getName ());
-	item->setCheckState (columnEnabled, plugin->isEnabled ()?Qt::Checked:Qt::Unchecked);
+	item->setData       (captionColumn, Qt::DisplayRole, plugin->getCaption ());
+	item->setData       (   nameColumn, Qt::DisplayRole, plugin->getName ());
+	item->setCheckState (enabledColumn, plugin->isEnabled ()?Qt::Checked:Qt::Unchecked);
+	item->setData       ( configColumn, Qt::DisplayRole, plugin->configText ());
 
 	item->setFlags (item->flags () | Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
 }
@@ -195,8 +198,8 @@ void SettingsWindow::writeSettings ()
 	for (int i=0; i<numInfoPlugins; ++i)
 	{
 		QTreeWidgetItem &item=*ui.infoPluginList->topLevelItem (i);
-		infoPlugins[i]->setCaption (item.data       (columnCaption, Qt::DisplayRole).toString ());
-		infoPlugins[i]->setEnabled (item.checkState (columnEnabled                 )==Qt::Checked);
+		infoPlugins[i]->setCaption (item.data       (captionColumn, Qt::DisplayRole).toString ());
+		infoPlugins[i]->setEnabled (item.checkState (enabledColumn                 )==Qt::Checked);
 	}
 	s.writeInfoPlugins (infoPlugins);
 

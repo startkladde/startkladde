@@ -17,6 +17,9 @@ PluginSettingsDialog::PluginSettingsDialog (Plugin *plugin, QWidget *parent):
 	ui.setupUi(this);
 	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
+	ui.nameLabel       ->setText (plugin->getName        ());
+	ui.descriptionLabel->setText (plugin->getDescription ());
+
 	settingsPane=plugin->createSettingsPane (ui.pluginSettingsPane);
 	ui.pluginSettingsPane->layout ()->addWidget (settingsPane);
 	settingsPane->readSettings ();
