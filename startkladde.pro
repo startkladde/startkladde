@@ -186,12 +186,15 @@ HEADERS += \
            src/plugin/settings/PluginSettingsDialog.h \
            src/plugins/info/metar/MetarPlugin.h \
            src/plugins/info/metar/MetarPluginSettingsPane.h \
+           src/plugins/info/sunset/SunsetPlugin.h \
+           src/plugins/info/sunset/SunsetPluginSettingsPane.h \
            src/plugins/info/test/TestPlugin.h \
            src/plugins/info/test/TestPluginSettingsPane.h \
            src/statistics/LaunchMethodStatistics.h \
            src/statistics/PilotLog.h \
            src/statistics/PlaneLog.h \
            src/util/bool.h \
+           src/util/file.h \
            src/util/qList.h \
            src/util/qString.h \
            src/util/time.h \
@@ -301,12 +304,15 @@ SOURCES += \
            src/plugin/settings/PluginSettingsDialog.cpp \
            src/plugins/info/metar/MetarPlugin.cpp \
            src/plugins/info/metar/MetarPluginSettingsPane.cpp \
+           src/plugins/info/sunset/SunsetPlugin.cpp \
+           src/plugins/info/sunset/SunsetPluginSettingsPane.cpp \
            src/plugins/info/test/TestPlugin.cpp \
            src/plugins/info/test/TestPluginSettingsPane.cpp \
            src/statistics/LaunchMethodStatistics.cpp \
            src/statistics/PilotLog.cpp \
            src/statistics/PlaneLog.cpp \
            src/util/bool.cpp \
+           src/util/file.cpp \
            src/util/qList.cpp \
            src/util/qString.cpp \
            src/util/time.cpp \
@@ -330,6 +336,7 @@ FORMS += \
            src/plugin/info/InfoPluginSettingsPane.ui \
            src/plugin/settings/PluginSettingsDialog.ui \
            src/plugins/info/metar/MetarPluginSettingsPane.ui \
+           src/plugins/info/sunset/SunsetPluginSettingsPane.ui \
            src/plugins/info/test/TestPluginSettingsPane.ui \
            # Empty line
 

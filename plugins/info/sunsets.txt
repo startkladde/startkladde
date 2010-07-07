@@ -8,6 +8,8 @@
 #   - http://www.timeanddate.com/worldclock/astronomy.html?n=964&obj=sun&month=Jan&year=2010&day=10"
 #   - Plasma (aus KDE) berechnet die Sunset-Zeit
 
+Source: Flieger-Taschenkalender 2008
+
 01-01	15:25
 01-02	15:26
 01-03	15:27

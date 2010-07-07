@@ -135,6 +135,7 @@ QString MetarPlugin::extractMetar (const QString &reply)
 	//EDDF 311920Z 26009KT 9999 FEW012 SCT019 BKN023 13/11 Q1015 NOSIG
 	//
 	//</font>
+	// FIXME use IODevice.readLine?
 	foreach (const QString &line, reply.split ("\n"))
 		if (line.startsWith (airport.trimmed ().toUpper ()))
 			return line;

@@ -78,6 +78,9 @@ class Plugin: public QObject
 		virtual void minuteChanged () {}
 
 		virtual QString configText () const=0;
+
+		virtual bool filenameIsAbsolute (const QString &filename) const;
+		virtual QString resolveFilename (const QString &filename) const;
 };
 
 #endif

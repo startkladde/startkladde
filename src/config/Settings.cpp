@@ -17,6 +17,7 @@
 #include "src/plugin/info/InfoPluginFactory.h"
 #include "src/plugins/info/test/TestPlugin.h"
 #include "src/plugins/info/metar/MetarPlugin.h"
+#include "src/plugins/info/sunset/SunsetPlugin.h"
 
 
 Settings *Settings::theInstance=NULL;
@@ -131,8 +132,10 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 	}
 	else
 	{
-		plugins.append (new TestPlugin ("Foo:"));
-		plugins.append (new TestPlugin ("Bar:", true, "TestPlugin", true)); // FIXME constructor with richtext
+//		plugins.append (new TestPlugin ("Foo:"));
+//		plugins.append (new TestPlugin ("Bar:", true, "TestPlugin", true));
+
+		plugins.append (new SunsetPlugin ("Sunset:", true, "sunsets.txt"));
 
 		plugins.append (new MetarPlugin ("Wetter:", true, "EDDF", 15));
 		plugins.append (new MetarPlugin (""       , true, "EDDS", 15));
