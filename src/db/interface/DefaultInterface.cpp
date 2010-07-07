@@ -405,7 +405,7 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 {
 	if (displayQueries)
 	{
-		std::cout << query.colorizedString ();
+		std::cout << query.colorizedString () << "...";
 		std::cout.flush ();
 	}
 
