@@ -47,8 +47,10 @@ void SunsetTimePlugin::start ()
 {
 	SunsetPluginBase::start ();
 
-	if (sunsetValid)
-		outputText (sunset);
+	QTime sunsetTime=getEffectiveSunset ();
+
+	if (sunsetTime.isValid ())
+		outputText (sunsetTime.toString ("hh:mm"));
 }
 
 void SunsetTimePlugin::infoPluginReadSettings (const QSettings &settings)

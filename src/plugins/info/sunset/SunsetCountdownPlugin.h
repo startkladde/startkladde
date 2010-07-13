@@ -19,7 +19,6 @@ class SunsetCountdownPlugin: public SunsetPluginBase
 
 	private:
 		virtual void update ();
-		QTime sunsetTime; // UTC
 };
 
 #endif

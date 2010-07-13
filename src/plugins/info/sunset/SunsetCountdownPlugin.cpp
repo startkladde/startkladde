@@ -47,9 +47,6 @@ void SunsetCountdownPlugin::start ()
 {
 	SunsetPluginBase::start ();
 
-	if (sunsetValid)
-		sunsetTime=QTime::fromString (sunset, "hh:mm");
-
 	update ();
 }
 
@@ -60,31 +57,32 @@ void SunsetCountdownPlugin::minuteChanged ()
 
 void SunsetCountdownPlugin::update ()
 {
-	if (sunsetTime.isValid ())
-	{
-		QTime currentTime=QDateTime::currentDateTime ().toUTC ().time ();
-		currentTime.setHMS (currentTime.hour (), currentTime.minute (), 0);
-		int seconds=currentTime.secsTo (sunsetTime);
+	QTime sunsetTime=getEffectiveSunset ();
+	if (!sunsetTime.isValid ()) return;
+	sunsetTime.setHMS (sunsetTime.hour (),sunsetTime.minute (), 0);
 
-		bool negative=(seconds<0);
-		seconds=std::abs (seconds);
+	QTime currentTime=QDateTime::currentDateTime ().toUTC ().time ();
+	currentTime.setHMS (currentTime.hour (), currentTime.minute (), 0);
+	int seconds=currentTime.secsTo (sunsetTime);
 
-		uint minutes=seconds/60;
-		seconds=seconds%60;
+	bool negative=(seconds<0);
+	seconds=std::abs (seconds);
 
-		uint hours=minutes/60;
-		minutes=minutes%60;
+	uint minutes=seconds/60;
+	seconds=seconds%60;
 
-		QString formatedDt=QString ("%1:%2")
-			.arg (hours, 2, 10, QChar ('0'))
-			.arg (minutes, 2, 10, QChar ('0'));
+	uint hours=minutes/60;
+	minutes=minutes%60;
 
-		QString output;
-		if (negative)
-			output=QString ("<font color=\"#FF0000\">-%1</font>").arg (formatedDt);
-		else
-			output=QString ("<font color=\"#000000\">%1</font>").arg (formatedDt);
+	QString formatedDt=QString ("%1:%2")
+		.arg (hours, 2, 10, QChar ('0'))
+		.arg (minutes, 2, 10, QChar ('0'));
 
-		outputText (output, Qt::RichText);
-	}
+	QString output;
+	if (negative)
+		output=QString ("<font color=\"#FF0000\">-%1</font>").arg (formatedDt);
+	else
+		output=QString ("<font color=\"#000000\">%1</font>").arg (formatedDt);
+
+	outputText (output, Qt::RichText);
 }

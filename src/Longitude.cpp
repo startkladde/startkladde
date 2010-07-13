@@ -139,3 +139,12 @@ Longitude Longitude::normalized () const
 		return Longitude (deg, min, sec, !positive);
 	}
 }
+
+double Longitude::minusDegrees (const Longitude &other) const
+{
+	// Note the conversion from uint to int
+	return
+		((int)degrees-(int)other.degrees)
+		+((int)minutes-(int)other.minutes)/60.0
+		+((int)seconds-(int)other.seconds)/3600.0;
+}

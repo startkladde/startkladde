@@ -35,19 +35,30 @@ class SunsetPluginBase: public InfoPlugin
 		virtual void start ();
 		virtual void terminate ();
 
-		static Longitude findReferenceLongitude (const QString &filename, bool *ok=NULL);
+		// FIXME rename read...
 		static QString findSource (const QString &filename);
+		static Longitude findReferenceLongitude (const QString &filename, bool *ok=NULL);
 
 	protected:
-		virtual QString findSunset ();
+		value_reader (QTime, RawSunset, rawSunset);
+		value_reader (QTime, CorrectedSunset, correctedSunset);
+		virtual QTime getEffectiveSunset ();
 
-		QString sunset;
-		bool sunsetValid;
+		virtual QString readSource ();
+		virtual Longitude readReferenceLongitude (bool *ok=NULL);
 
 	private:
+		virtual QString findSunsetString ();
+
 		QString filename;
-		Longitude longitude;
 		bool longitudeCorrection;
+		Longitude longitude;
+
+		QString resolvedFilename;
+		Longitude referenceLongitude;
+		bool referenceLongitudeValid;
+		QTime rawSunset; // UTC
+		QTime correctedSunset; // UTC
 };
 
 #endif

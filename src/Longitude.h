@@ -24,6 +24,8 @@ class Longitude
 
 		Longitude normalized () const;
 
+		double minusDegrees (const Longitude &other) const;
+
 	private:
 		unsigned int degrees;
 		unsigned int minutes;
