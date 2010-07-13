@@ -16,6 +16,7 @@
 #include "src/text.h"
 #include "src/util/file.h"
 #include "src/util/qString.h"
+#include "src/util/time.h"
 
 // FIXME use longitude
 
@@ -69,51 +70,39 @@ QString SunsetPluginBase::configText () const
 		return filename;
 }
 
+#define OUTPUT_AND_RETURN(text) do { outputText (utf8 (text)); return; } while (0)
+
 void SunsetPluginBase::start ()
 {
 	QString filename=getFilename ();
 
+	resolvedFilename=QString ();
+	rawSunset=correctedSunset=QTime ();
+	referenceLongitudeValid=false;
+
+	if (blank (filename)) OUTPUT_AND_RETURN ("Keine Datei angegeben");
+
+	resolvedFilename=resolveFilename (filename);
+	if (blank (resolvedFilename)) OUTPUT_AND_RETURN ("Datei nicht gefunden");
+	if (!QFile::exists (resolvedFilename)) OUTPUT_AND_RETURN ("Datei existiert nicht");
+
 	try
 	{
-		if (blank (filename))
-			outputText ("Keine Datei angegeben");
-		else
+		// The file is OK
+
+		// Find the sunset for today
+		QString sunsetString=readSunsetString (resolvedFilename);
+		if (blank (sunsetString)) OUTPUT_AND_RETURN ("Zeit für aktuelles Datum nicht in Datendatei vorhanden");
+
+		rawSunset=QTime::fromString (sunsetString, "hh:mm");
+		if (!rawSunset.isValid ()) OUTPUT_AND_RETURN ("Ungültiges Zeitformat");
+
+		if (longitudeCorrection)
 		{
-			resolvedFilename=resolveFilename (filename);
-			if (blank (resolvedFilename))
-				outputText ("Datei nicht gefunden");
-			else if (!QFile::exists (resolvedFilename))
-				outputText ("Datei nicht gefunden");
-			else
-			{
-				// The file is OK
+			referenceLongitude=readReferenceLongitude (resolvedFilename, &referenceLongitudeValid);
+			if (!referenceLongitudeValid) OUTPUT_AND_RETURN ("Kein Bezugslängengrad in Datendatei gefunden");
 
-				// Find the sunset for today
-				QString ss=findSunsetString ();
-				if (blank (ss))
-					outputText ("Datum nicht in Datendatei vorhanden");
-				else
-					rawSunset=QTime::fromString (ss, "hh:mm");
-
-				if (longitudeCorrection)
-				{
-					referenceLongitude=readReferenceLongitude (&referenceLongitudeValid);
-
-					if (!referenceLongitudeValid)
-					{
-						outputText (utf8 ("Kein Bezugslängengrad in Datendatei gefunden"));
-					}
-					else
-					{
-						double relativeLongitude=longitude.minusDegrees (referenceLongitude);
-						int timeDifferenceSeconds=(24*3600)*relativeLongitude/360;
-
-
-						// Bigger (easterner) longitude means earlier sunset
-						correctedSunset=rawSunset.addSecs (-timeDifferenceSeconds);
-					}
-				}
-			}
+			correctedSunset=localSunset (longitude, referenceLongitude, rawSunset);
 		}
 	}
 	catch (FileOpenError &ex)
@@ -136,29 +125,20 @@ void SunsetPluginBase::terminate ()
 /**
  * Throws FileOpenError
  */
-QString SunsetPluginBase::findSunsetString ()
+QString SunsetPluginBase::readSunsetString (const QString &filename)
 {
 	QString dateString=QDate::currentDate ().toString ("MM-dd");
-
 	QRegExp regexp (QString ("^%1\\s*(\\S*)").arg (dateString));
-	if (findInFile (resolvedFilename, regexp))
-		return regexp.cap (1);
-	else
-		return QString ();
+
+	return findInFile (filename, regexp, 1);
 }
 
 /**
  * Throws FileOpenError
  */
-Longitude SunsetPluginBase::findReferenceLongitude (const QString &filename, bool *ok)
+Longitude SunsetPluginBase::readReferenceLongitude (const QString &filename, bool *ok)
 {
 	QString refLon=findInFile (filename, QRegExp ("^ReferenceLongitude: (.*)"), 1);
-
-	if (refLon.isEmpty ())
-	{
-		if (ok) *ok=false;
-		return Longitude ();
-	}
 
 	return Longitude::fromString (refLon, ok);
 }
@@ -166,25 +146,11 @@ Longitude SunsetPluginBase::findReferenceLongitude (const QString &filename, boo
 /**
  * Throws FileOpenError
  */
-QString SunsetPluginBase::findSource (const QString &filename)
+QString SunsetPluginBase::readSource (const QString &filename)
 {
-	return findInFile (filename, QRegExp ("^Source: (.*)"), 1);
-}
+	QRegExp regexp ("^Source: (.*)");
 
-/**
- * Throws FileOpenError
- */
-QString SunsetPluginBase::readSource ()
-{
-	return findSource (resolvedFilename);
-}
-
-/**
- * Throws FileOpenError
- */
-Longitude SunsetPluginBase::readReferenceLongitude (bool *ok)
-{
-	return findReferenceLongitude (resolvedFilename, ok);
+	return findInFile (filename, regexp, 1);
 }
 
 

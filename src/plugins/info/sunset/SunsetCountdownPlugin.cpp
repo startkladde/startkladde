@@ -14,9 +14,15 @@
 #include "src/plugin/info/InfoPluginFactory.h"
 #include "src/util/qString.h"
 #include "src/util/file.h"
+#include "src/util/time.h"
 #include "src/text.h"
 
 REGISTER_INFO_PLUGIN (SunsetCountdownPlugin)
+
+
+// ******************
+// ** Construction **
+// ******************
 
 SunsetCountdownPlugin::SunsetCountdownPlugin (QString caption, bool enabled, const QString &filename):
 	SunsetPluginBase (caption, enabled, filename)
@@ -26,6 +32,11 @@ SunsetCountdownPlugin::SunsetCountdownPlugin (QString caption, bool enabled, con
 SunsetCountdownPlugin::~SunsetCountdownPlugin ()
 {
 }
+
+
+// ********************
+// ** Plugin methods **
+// ********************
 
 QString SunsetCountdownPlugin::getId () const
 {
@@ -42,11 +53,9 @@ QString SunsetCountdownPlugin::getDescription () const
 	return utf8 ("Zeigt die verbleibende Zeit bis Sonnenuntergang an");
 }
 
-
 void SunsetCountdownPlugin::start ()
 {
 	SunsetPluginBase::start ();
-
 	update ();
 }
 
@@ -55,34 +64,23 @@ void SunsetCountdownPlugin::minuteChanged ()
 	update ();
 }
 
+
+// *******************
+// ** Functionality **
+// *******************
+
 void SunsetCountdownPlugin::update ()
 {
-	QTime sunsetTime=getEffectiveSunset ();
+	QTime sunsetTime=nullSeconds (getEffectiveSunset ());
 	if (!sunsetTime.isValid ()) return;
-	sunsetTime.setHMS (sunsetTime.hour (),sunsetTime.minute (), 0);
 
-	QTime currentTime=QDateTime::currentDateTime ().toUTC ().time ();
-	currentTime.setHMS (currentTime.hour (), currentTime.minute (), 0);
+	QTime currentTime=nullSeconds (currentTimeUtc ());
+
 	int seconds=currentTime.secsTo (sunsetTime);
 
-	bool negative=(seconds<0);
-	seconds=std::abs (seconds);
-
-	uint minutes=seconds/60;
-	seconds=seconds%60;
-
-	uint hours=minutes/60;
-	minutes=minutes%60;
-
-	QString formatedDt=QString ("%1:%2")
-		.arg (hours, 2, 10, QChar ('0'))
-		.arg (minutes, 2, 10, QChar ('0'));
-
-	QString output;
-	if (negative)
-		output=QString ("<font color=\"#FF0000\">-%1</font>").arg (formatedDt);
-	else
-		output=QString ("<font color=\"#000000\">%1</font>").arg (formatedDt);
+	QString color=(seconds<0)?"#FF0000":"#000000";
+	QString duration=formatDuration (seconds, false);
+	QString output=QString ("<font color=\"%1\">%2</font>").arg (color, duration);
 
 	outputText (output, Qt::RichText);
 }

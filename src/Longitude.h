@@ -4,6 +4,7 @@
 #include "src/accessor.h"
 
 #include <QString>
+#include <QTime>
 
 class Longitude
 {

@@ -13,11 +13,15 @@
 #include "src/plugin/info/InfoPluginFactory.h"
 #include "src/util/qString.h"
 #include "src/util/file.h"
+#include "src/util/time.h"
 #include "src/text.h"
 
 REGISTER_INFO_PLUGIN (SunsetTimePlugin)
 
-// FIXME use time zone setting
+
+// ******************
+// ** Construction **
+// ******************
 
 SunsetTimePlugin::SunsetTimePlugin (QString caption, bool enabled, const QString &filename):
 	SunsetPluginBase (caption, enabled, filename)
@@ -27,6 +31,11 @@ SunsetTimePlugin::SunsetTimePlugin (QString caption, bool enabled, const QString
 SunsetTimePlugin::~SunsetTimePlugin ()
 {
 }
+
+
+// ********************
+// ** Plugin methods **
+// ********************
 
 QString SunsetTimePlugin::getId () const
 {
@@ -43,20 +52,25 @@ QString SunsetTimePlugin::getDescription () const
 	return utf8 ("Zeigt die Sonnenuntergangszeit an");
 }
 
+const QString timeFormat="hh:mm";
+
 void SunsetTimePlugin::start ()
 {
 	SunsetPluginBase::start ();
 
 	QTime sunsetTime=getEffectiveSunset ();
+	if (!sunsetTime.isValid ()) return;
 
-	if (sunsetTime.isValid ())
-	{
-		if (displayUtc)
-			outputText (sunsetTime.toString ("hh:mm")+" UTC");
-		else
-			outputText (QDateTime (QDate::currentDate (), sunsetTime, Qt::UTC).toLocalTime ().time ().toString ("hh:mm"));
-	}
+	if (displayUtc)
+		outputText (sunsetTime.toString (timeFormat)+" UTC");
+	else
+		outputText (utcToLocal (sunsetTime).toString (timeFormat));
 }
+
+
+// ************************
+// ** InfoPlugin methods **
+// ************************
 
 void SunsetTimePlugin::infoPluginReadSettings (const QSettings &settings)
 {

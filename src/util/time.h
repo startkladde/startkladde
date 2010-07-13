@@ -10,7 +10,20 @@
 
 #include <QTime>
 
+class Longitude;
+
 QTime nullSeconds (const QTime &time);
-QDateTime nullSeconds (const QDateTime &time);
+QDateTime nullSeconds (const QDateTime &dateTime);
+
+QTime currentTimeUtc ();
+QTime utcToLocal (const QTime &time);
+//QTime localToUtc (const QTime &time); // Not tested
+
+
+QString formatDuration (int seconds, bool includeSeconds=true);
+
+QTime localSunset (const Longitude &longitude, const Longitude &referenceLongitude, const QTime &sunsetAtReference);
+
+
 
 #endif

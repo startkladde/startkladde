@@ -14,6 +14,7 @@
 #include <QDebug>
 
 #include "src/util/qString.h"
+#include "src/text.h"
 
 Longitude::Longitude ():
 	degrees (0), minutes (0), seconds (0), positive (true)
@@ -50,6 +51,7 @@ QString Longitude::toString () const
 Longitude Longitude::fromString (const QString &string, bool *ok)
 {
 #define STOP do { if (ok) *ok=false; return Longitude (); } while (0)
+	if (blank (string)) STOP;
 
 	QRegExp re ("^([+-]?)\\s*(\\d*)\\s+(\\d*)\\s+(\\d*)$");
 	bool numOk=true;

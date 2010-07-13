@@ -85,8 +85,8 @@ void SunsetPluginSettingsPane::on_filenameInput_editingFinished ()
 
 				try
 				{
-					source            =SunsetPluginBase::findSource             (resolved);
-					referenceLongitude=SunsetPluginBase::findReferenceLongitude (resolved, &referenceLongitudeOk);
+					source            =SunsetPluginBase::readSource             (resolved);
+					referenceLongitude=SunsetPluginBase::readReferenceLongitude (resolved, &referenceLongitudeOk);
 					fileOk=true;
 				}
 				catch (FileOpenError &ex)

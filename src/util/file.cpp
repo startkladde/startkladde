@@ -31,6 +31,9 @@ bool findInFile (const QString &filename, QRegExp &regexp)
 }
 
 /**
+ * The passed QRegExp is copied. Use the other findInFile function to access
+ * the RegExp.
+ *
  * Throws FileOpenError
  *
  * @param filename
@@ -39,9 +42,8 @@ bool findInFile (const QString &filename, QRegExp &regexp)
  */
 QString findInFile (const QString &filename, const QRegExp &regexp, int group)
 {
-	// Make a copy because we cannot capture in a const QRegExp (but we want
-	// to pass a const& so we can use an anonymous value in calls)
-
+	// Make a copy because apparenly we cannot capture in a const QRegExp (but
+	// we want to pass a const& so we can use an anonymous value in calls).
 	QRegExp re (regexp);
 
 	QFile file (filename);
