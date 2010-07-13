@@ -16,6 +16,8 @@
 #include "src/text.h"
 #include "src/util/file.h"
 
+// FIXME use longitude
+
 SunsetPluginBase::SunsetPluginBase (QString caption, bool enabled, const QString &filename):
 	InfoPlugin (caption, enabled),
 	sunsetValid (false),
@@ -35,16 +37,24 @@ PluginSettingsPane *SunsetPluginBase::infoPluginCreateSettingsPane (QWidget *par
 void SunsetPluginBase::infoPluginReadSettings (const QSettings &settings)
 {
 	filename=settings.value ("filename", filename).toString ();
+	bool longitudeOk=false;
+	longitude=Longitude::fromString (settings.value ("longitude").toString (), &longitudeOk);
+	longitudeCorrection=longitudeOk && settings.value ("longitudeCorrection", false).toBool ();
 }
 
 void SunsetPluginBase::infoPluginWriteSettings (QSettings &settings)
 {
 	settings.setValue ("filename", filename);
+	settings.setValue ("longitude", longitude.toString ());
+	settings.setValue ("longitudeCorrection", longitudeCorrection);
 }
 
 QString SunsetPluginBase::configText () const
 {
-	return filename;
+	if (longitudeCorrection)
+		return QString ("%1, %2").arg (longitude.format (), filename);
+	else
+		return filename;
 }
 
 void SunsetPluginBase::start ()
@@ -102,4 +112,22 @@ QString SunsetPluginBase::findSunset ()
 		return regexp.cap (1);
 	else
 		return QString ();
+}
+
+Longitude SunsetPluginBase::findReferenceLongitude (const QString &filename, bool *ok)
+{
+	QString refLon=findInFile (filename, QRegExp ("^ReferenceLongitude: (.*)"), 1);
+
+	if (refLon.isEmpty ())
+	{
+		if (ok) *ok=false;
+		return Longitude ();
+	}
+
+	return Longitude::fromString (refLon, ok);
+}
+
+QString SunsetPluginBase::findSource (const QString &filename)
+{
+	return findInFile (filename, QRegExp ("^Source: (.*)"), 1);
 }

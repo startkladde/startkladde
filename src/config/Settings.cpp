@@ -17,7 +17,8 @@
 #include "src/plugin/info/InfoPluginFactory.h"
 #include "src/plugins/info/test/TestPlugin.h"
 #include "src/plugins/info/metar/MetarPlugin.h"
-#include "src/plugins/info/sunset/SunsetPlugin.h"
+#include "src/plugins/info/sunset/SunsetTimePlugin.h"
+#include "src/plugins/info/sunset/SunsetCountdownPlugin.h"
 
 
 Settings *Settings::theInstance=NULL;
@@ -135,7 +136,8 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 //		plugins.append (new TestPlugin ("Foo:"));
 //		plugins.append (new TestPlugin ("Bar:", true, "TestPlugin", true));
 
-		plugins.append (new SunsetPlugin ("Sunset:", true, "sunsets.txt"));
+		plugins.append (new SunsetTimePlugin      ("Sunset:"         , true, "sunsets.txt"));
+		plugins.append (new SunsetCountdownPlugin ("Zeit bis sunset:", true, "sunsets.txt"));
 
 		plugins.append (new MetarPlugin ("Wetter:", true, "EDDF", 15));
 		plugins.append (new MetarPlugin (""       , true, "EDDS", 15));

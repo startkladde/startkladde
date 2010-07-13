@@ -4,6 +4,7 @@
 #include <QTime>
 
 #include "src/plugin/info/InfoPlugin.h"
+#include "src/Longitude.h"
 
 /**
  * A plugin which displays the sunset time for the current date, read from a
@@ -26,11 +27,16 @@ class SunsetPluginBase: public InfoPlugin
 		virtual void infoPluginWriteSettings (QSettings &settings);
 
 		value_accessor (QString, Filename, filename);
+		value_accessor (Longitude, Longitude, longitude);
+		value_accessor (bool, LongitudeCorrection, longitudeCorrection);
 
 		virtual QString configText () const;
 
 		virtual void start ();
 		virtual void terminate ();
+
+		static Longitude findReferenceLongitude (const QString &filename, bool *ok=NULL);
+		static QString findSource (const QString &filename);
 
 	protected:
 		virtual QString findSunset ();
@@ -40,6 +46,8 @@ class SunsetPluginBase: public InfoPlugin
 
 	private:
 		QString filename;
+		Longitude longitude;
+		bool longitudeCorrection;
 };
 
 #endif

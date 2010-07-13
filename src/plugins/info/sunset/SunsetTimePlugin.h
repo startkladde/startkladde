@@ -14,6 +14,15 @@ class SunsetTimePlugin: public SunsetPluginBase
 		virtual QString getDescription () const;
 
 		virtual void start ();
+
+		value_accessor (bool, DisplayUtc, displayUtc);
+
+		virtual void infoPluginReadSettings (const QSettings &settings);
+		virtual void infoPluginWriteSettings (QSettings &settings);
+
+
+	private:
+		bool displayUtc;
 };
 
 #endif

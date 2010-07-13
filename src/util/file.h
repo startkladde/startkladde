@@ -22,6 +22,7 @@ class FileOpenError
 };
 
 bool findInFile (const QString &filename, QRegExp &regexp);
+QString findInFile (const QString &filename, const QRegExp &regexp, int group);
 
 
 #endif

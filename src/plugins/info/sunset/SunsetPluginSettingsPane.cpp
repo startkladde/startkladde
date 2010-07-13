@@ -2,17 +2,24 @@
 
 #include <QFile>
 #include <QFileDialog>
+#include <QDebug>
 
 #include "src/util/qString.h"
 #include "src/util/file.h"
 #include "src/text.h"
 #include "src/gui/dialogs.h"
+#include "src/plugins/info/sunset/SunsetTimePlugin.h"
 
 SunsetPluginSettingsPane::SunsetPluginSettingsPane (SunsetPluginBase *plugin, QWidget *parent):
 	PluginSettingsPane (parent),
-	plugin (plugin)
+	plugin (plugin),
+	fileOk (false), referenceLongitudeOk (false)
 {
 	ui.setupUi (this);
+
+	SunsetTimePlugin *sunsetTimePlugin=dynamic_cast<SunsetTimePlugin *> (plugin);
+	ui.timeZoneLabel->setVisible (sunsetTimePlugin!=NULL);
+	ui.timeZoneInput->setVisible (sunsetTimePlugin!=NULL);
 }
 
 SunsetPluginSettingsPane::~SunsetPluginSettingsPane()
@@ -24,53 +31,78 @@ void SunsetPluginSettingsPane::readSettings ()
 {
 	ui.filenameInput->setText (plugin->getFilename ());
 	on_filenameInput_editingFinished ();
+	ui.longitudeInput->setLongitude (plugin->getLongitude ());
+	ui.longitudeCorrectionCheckbox->setChecked (plugin->getLongitudeCorrection ());
+
+	SunsetTimePlugin *sunsetTimePlugin=dynamic_cast<SunsetTimePlugin *> (plugin);
+	if (sunsetTimePlugin)
+		ui.timeZoneInput->setCurrentIndex (sunsetTimePlugin->getDisplayUtc ()?0:1);
 }
 
 bool SunsetPluginSettingsPane::writeSettings ()
 {
 	plugin->setFilename (ui.filenameInput->text ());
+	plugin->setLongitude (ui.longitudeInput->getLongitude ());
+	plugin->setLongitudeCorrection (ui.longitudeCorrectionCheckbox->isChecked ());
+
+	SunsetTimePlugin *sunsetTimePlugin=dynamic_cast<SunsetTimePlugin *> (plugin);
+	if (sunsetTimePlugin)
+		sunsetTimePlugin->setDisplayUtc (ui.timeZoneInput->currentIndex ()==0);
+
 	return true;
+}
+
+void SunsetPluginSettingsPane::on_longitudeCorrectionCheckbox_toggled ()
+{
+	updateReferenceLongitudeNoteLabel ();
 }
 
 void SunsetPluginSettingsPane::on_filenameInput_editingFinished ()
 {
 	QString filename=ui.filenameInput->text ().trimmed ();
 
-	if (blank (filename))
-		ui.filenameLabel->setText ("-");
-	else
+	fileSpecified=false;
+	fileResolved=false;
+	fileExists=false;
+	fileOk=false;
+
+	referenceLongitudeOk=false;
+
+	if (!blank (filename))
 	{
+		fileSpecified=true;
+
 		QString resolved=plugin->resolveFilename (filename);
 
-		if (resolved.isEmpty ())
+		if (!resolved.isEmpty ())
 		{
-			ui.filenameLabel->setText ("nicht gefunden");
-			ui.  sourceLabel->setText ("-");
-		}
-		else if (!QFile::exists (resolved))
-		{
-			ui.filenameLabel->setText ("existiert nicht");
-			ui.  sourceLabel->setText ("-");
-		}
-		else
-		{
-			ui.filenameLabel->setText (QFileInfo (resolved).absoluteFilePath ());
+			fileResolved=true;
+			resolvedFilename=QFileInfo (resolved).absoluteFilePath ();
 
-			QRegExp re ("^Source: (.*)");
-			try
+			if (QFile::exists (resolved))
 			{
-				if (findInFile (resolved, re))
-					ui.sourceLabel->setText (re.cap (1));
-				else
-					ui.sourceLabel->setText ("unbekannt");
-			}
-			catch (FileOpenError &ex)
-			{
-				ui.sourceLabel->setText (QString ("Fehler: %1").arg (ex.errorString));
+				fileExists=true;
+
+				try
+				{
+					source            =SunsetPluginBase::findSource             (resolved);
+					referenceLongitude=SunsetPluginBase::findReferenceLongitude (resolved, &referenceLongitudeOk);
+					fileOk=true;
+				}
+				catch (FileOpenError &ex)
+				{
+					fileError=ex.errorString;
+				}
 			}
 		}
 	}
+
+	updateFilenameLabel ();
+	updateSourceLabel ();
+	updateReferenceLongitudeLabel ();
+	updateReferenceLongitudeNoteLabel ();
 }
+
 
 void SunsetPluginSettingsPane::on_findFileButton_clicked ()
 {
@@ -98,3 +130,66 @@ void SunsetPluginSettingsPane::on_findFileButton_clicked ()
 		on_filenameInput_editingFinished ();
 	}
 }
+
+
+// ************
+// ** Labels **
+// ************
+
+void SunsetPluginSettingsPane::updateFilenameLabel ()
+{
+	if (!fileSpecified)
+		ui.filenameLabel->setText ("-");
+	else if (!fileResolved)
+		ui.filenameLabel->setText ("nicht gefunden");
+	else if (!fileExists)
+		ui.filenameLabel->setText ("existiert nicht");
+	else if (!fileOk)
+		ui.filenameLabel->setText (QString ("%1\nFehler: %2").arg (resolvedFilename, fileError));
+	else
+		ui.filenameLabel->setText (resolvedFilename);
+}
+
+void SunsetPluginSettingsPane::updateSourceLabel ()
+{
+	if (!fileOk)
+		ui.sourceLabel->setText ("-");
+	else if (source.isEmpty ())
+		ui.sourceLabel->setText ("unbekannt");
+	else
+		ui.sourceLabel->setText (source);
+}
+
+void SunsetPluginSettingsPane::updateReferenceLongitudeLabel ()
+{
+	if (!fileOk)
+		ui.referenceLongitudeLabel->setText ("-");
+	else if (!referenceLongitudeOk)
+		ui.referenceLongitudeLabel->setText ("unbekannt");
+	else
+		ui.referenceLongitudeLabel->setText (referenceLongitude.format ());
+}
+
+const QString referenceLongitudeNoteRegular=
+	utf8 ("Längengradkorrektur ist nur dann möglich, wenn in\nder Datendatei ein Bezugslängengrad angegeben ist.");
+const QString referenceLongitudeNoteError=
+	utf8 ("Längengradkorrektur ist nicht möglich, weil in\nder Datendatei kein Bezugslängengrad angegeben ist.");
+
+void SunsetPluginSettingsPane::updateReferenceLongitudeNoteLabel ()
+{
+	if (fileOk && !referenceLongitudeOk)
+		ui.referenceLongitudeNoteLabel->setText (referenceLongitudeNoteError);
+	else
+		ui.referenceLongitudeNoteLabel->setText (referenceLongitudeNoteRegular);
+
+	QPalette palette=ui.referenceLongitudeNoteLabel->palette ();
+
+	if (fileOk && !referenceLongitudeOk && ui.longitudeCorrectionCheckbox->isChecked ())
+		palette.setColor (foregroundRole (), Qt::red);
+	else
+		palette.setColor (foregroundRole (), Qt::black);
+
+	ui.referenceLongitudeNoteLabel->setPalette (palette);
+}
+
+

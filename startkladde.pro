@@ -78,6 +78,7 @@ HEADERS += \
            build/migrations_headers.h \
            src/accessor.h \
            src/color.h \
+           src/Longitude.h \
            src/StorableException.h \
            src/text.h \
            src/version.h \
@@ -132,6 +133,7 @@ HEADERS += \
            src/gui/views/SpecialIntDelegate.h \
            src/gui/views/SpinBoxCreator.h \
            src/gui/widgets/AcpiWidget.h \
+           src/gui/widgets/LongitudeInput.h \
            src/gui/widgets/SkComboBox.h \
            src/gui/widgets/SkLabel.h \
            src/gui/widgets/SkTableView.h \
@@ -186,7 +188,9 @@ HEADERS += \
            src/plugin/settings/PluginSettingsDialog.h \
            src/plugins/info/metar/MetarPlugin.h \
            src/plugins/info/metar/MetarPluginSettingsPane.h \
-           src/plugins/info/sunset/SunsetPlugin.h \
+           src/plugins/info/sunset/SunsetPluginBase.h \
+           src/plugins/info/sunset/SunsetCountdownPlugin.h \
+           src/plugins/info/sunset/SunsetTimePlugin.h \
            src/plugins/info/sunset/SunsetPluginSettingsPane.h \
            src/plugins/info/test/TestPlugin.h \
            src/plugins/info/test/TestPluginSettingsPane.h \
@@ -203,6 +207,7 @@ HEADERS += \
 SOURCES += \
 		   build/CurrentSchema.cpp \
            src/color.cpp \
+           src/Longitude.cpp \
            src/startkladde.cpp \
            src/StorableException.cpp \
            src/text.cpp \
@@ -256,6 +261,7 @@ SOURCES += \
            src/gui/views/ReadOnlyItemDelegate.cpp \
            src/gui/views/SpecialIntDelegate.cpp \
            src/gui/views/SpinBoxCreator.cpp \
+           src/gui/widgets/LongitudeInput.cpp \
            src/gui/widgets/SkComboBox.cpp \
            src/gui/widgets/SkLabel.cpp \
            src/gui/widgets/SkTableView.cpp \
@@ -304,7 +310,9 @@ SOURCES += \
            src/plugin/settings/PluginSettingsDialog.cpp \
            src/plugins/info/metar/MetarPlugin.cpp \
            src/plugins/info/metar/MetarPluginSettingsPane.cpp \
-           src/plugins/info/sunset/SunsetPlugin.cpp \
+           src/plugins/info/sunset/SunsetPluginBase.cpp \
+           src/plugins/info/sunset/SunsetCountdownPlugin.cpp \
+           src/plugins/info/sunset/SunsetTimePlugin.cpp \
            src/plugins/info/sunset/SunsetPluginSettingsPane.cpp \
            src/plugins/info/test/TestPlugin.cpp \
            src/plugins/info/test/TestPluginSettingsPane.cpp \
@@ -319,6 +327,7 @@ SOURCES += \
 		   # Empty line
 
 FORMS += \
+           src/gui/widgets/LongitudeInput.ui \
            src/gui/windows/DateInputDialog.ui \
            src/gui/windows/FlightWindow.ui \
            src/gui/windows/LaunchMethodSelectionWindow.ui \

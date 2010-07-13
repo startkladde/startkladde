@@ -8,6 +8,7 @@
 #include "SunsetTimePlugin.h"
 
 #include <QFile>
+#include <QSettings>
 
 #include "src/plugin/info/InfoPluginFactory.h"
 #include "src/util/qString.h"
@@ -15,6 +16,8 @@
 #include "src/text.h"
 
 REGISTER_INFO_PLUGIN (SunsetTimePlugin)
+
+// FIXME use time zone setting
 
 SunsetTimePlugin::SunsetTimePlugin (QString caption, bool enabled, const QString &filename):
 	SunsetPluginBase (caption, enabled, filename)
@@ -46,4 +49,18 @@ void SunsetTimePlugin::start ()
 
 	if (sunsetValid)
 		outputText (sunset);
+}
+
+void SunsetTimePlugin::infoPluginReadSettings (const QSettings &settings)
+{
+	SunsetPluginBase::infoPluginReadSettings (settings);
+
+	displayUtc=settings.value ("displayUtc", true).toBool ();
+}
+
+void SunsetTimePlugin::infoPluginWriteSettings (QSettings &settings)
+{
+	SunsetPluginBase::infoPluginWriteSettings (settings);
+
+	settings.setValue ("displayUtc", displayUtc);
 }
