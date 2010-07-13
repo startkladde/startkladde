@@ -50,7 +50,12 @@ void SunsetTimePlugin::start ()
 	QTime sunsetTime=getEffectiveSunset ();
 
 	if (sunsetTime.isValid ())
-		outputText (sunsetTime.toString ("hh:mm"));
+	{
+		if (displayUtc)
+			outputText (sunsetTime.toString ("hh:mm")+" UTC");
+		else
+			outputText (QDateTime (QDate::currentDate (), sunsetTime, Qt::UTC).toLocalTime ().time ().toString ("hh:mm"));
+	}
 }
 
 void SunsetTimePlugin::infoPluginReadSettings (const QSettings &settings)
