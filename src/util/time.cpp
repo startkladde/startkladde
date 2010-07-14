@@ -56,7 +56,8 @@ QString formatDuration (int seconds, bool includeSeconds)
 
 QTime localSunset (const Longitude &longitude, const Longitude &referenceLongitude, const QTime &sunsetAtReference)
 {
-	double dLon=longitude.minusDegrees (referenceLongitude);
+	// FIXME cache that value
+	double dLon=longitude.normalized ().getValue ()-referenceLongitude.normalized ().getValue ();
 
 	// 360° -- 1 day
 	//   1° -- 4 min = 240 sec

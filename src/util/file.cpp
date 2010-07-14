@@ -24,8 +24,11 @@ bool findInFile (const QString &filename, QRegExp &regexp)
 		throw FileOpenError (filename, file.error (), file.errorString ());
 
 	while (!file.atEnd ())
-    	if (QString (file.readLine ()).trimmed ().contains (regexp))
+	{
+		QString line=QString::fromUtf8 (file.readLine ().constData ());
+		if (line.trimmed ().contains (regexp))
     		return true;
+	}
 
 	return false;
 }
@@ -51,8 +54,11 @@ QString findInFile (const QString &filename, const QRegExp &regexp, int group)
 		throw FileOpenError (filename, file.error (), file.errorString ());
 
 	while (!file.atEnd ())
-    	if (QString (file.readLine ()).trimmed ().contains (re))
+	{
+		QString line=QString::fromUtf8 (file.readLine ().constData ());
+    	if (line.trimmed ().contains (re))
     		return re.cap (group);
+	}
 
 	return QString ();
 }

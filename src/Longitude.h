@@ -6,45 +6,51 @@
 #include <QString>
 #include <QTime>
 
+class QRegExp;
+
 /**
  * A longitude
  *
- * A longitude is represented as degrees, arc minutes, arc seconds and a sign.
- * The sign is positiv if the longitude is eastern and negative if the
- * longitude is western.
- *
- * The degree value can assume arbitrary values. The minute and second values
- * are in the 0..59 range.
+ * The longitude is stored as a double value internally. It can assume
+ * arbitrary values, even outside the regular range. Positive values represent
+ * eastern longitudes, negative values represent western longitudes.
  */
 class Longitude
 {
 	public:
+		// *** Construction
 		Longitude ();
+		Longitude (double value);
 		Longitude (unsigned int degrees, unsigned int minutes, unsigned int seconds, bool positive);
 		virtual ~Longitude ();
 
-		value_reader (unsigned int, Degrees, degrees);
-		value_reader (unsigned int, Minutes, minutes);
-		value_reader (unsigned int, Seconds, seconds);
-		bool_reader (Positive, positive);
 
-		QString format (const QString &eastString="E", const QString &westString="W") const;
+		// *** Property access
+		value_reader (double, Value, value);
+		bool_reader (Valid, valid);
+		void setValue (double value) { this->value=value; valid=true; }
 
-		QString toString () const;
-		static Longitude fromString (const QString &string, bool *ok=NULL);
 
+		// *** Data processing
 		Longitude normalized () const;
 
-		double toDegrees () const;
-		static Longitude fromDegrees (double deg);
 
-		double minusDegrees (const Longitude &other) const;
+		// *** Conversion
+		void toDms (unsigned int &degrees, unsigned int &minutes, unsigned int &seconds, bool &positive) const;
+		void toDms (unsigned int &degrees, unsigned int &minutes, unsigned int &seconds, bool &positive, double &remainder) const;
+
+
+		QString format (const QString &eastString="E", const QString &westString="W") const;
+		static Longitude parse (const QString &string);
+
+	protected:
+		static Longitude parse (const QString &degrees, const QString &minutes, const QString &seconds, bool positive);
+		static Longitude parse (const QRegExp &re, int degreesCap, int minutesCap, int secondsCap, bool positive);
+
 
 	private:
-		unsigned int degrees;
-		unsigned int minutes;
-		unsigned int seconds;
-		bool positive;
+		double value;
+		bool valid;
 };
 
 #endif

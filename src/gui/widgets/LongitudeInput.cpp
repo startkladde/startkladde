@@ -16,10 +16,16 @@ LongitudeInput::~LongitudeInput ()
 void LongitudeInput::setLongitude (const Longitude &longitude)
 {
 	Longitude lon=longitude.normalized ();
-	ui.degreesInput->setValue (lon.getDegrees ());
-	ui.minutesInput->setValue (lon.getMinutes ());
-	ui.secondsInput->setValue (lon.getSeconds ());
-	ui.signInput->setCurrentIndex (lon.isPositive ()?0:1);
+
+	unsigned int degrees, minutes, seconds;
+	bool positive;
+
+	lon.toDms (degrees, minutes, seconds, positive);
+
+	ui.degreesInput->setValue (degrees);
+	ui.minutesInput->setValue (minutes);
+	ui.secondsInput->setValue (seconds);
+	ui.signInput->setCurrentIndex (positive?0:1);
 }
 
 Longitude LongitudeInput::getLongitude () const

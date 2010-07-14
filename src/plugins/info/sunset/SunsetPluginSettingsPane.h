@@ -44,8 +44,8 @@ class SunsetPluginSettingsPane: public PluginSettingsPane
 		QString fileError;
 
 		QString source;
+		bool referenceLongitudeFound;
 		Longitude referenceLongitude;
-		bool referenceLongitudeOk;
 };
 
 #endif

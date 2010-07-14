@@ -38,7 +38,7 @@ class SunsetPluginBase: public InfoPlugin
 
 		static QString readSunsetString (const QString &filename);
 		static QString readSource (const QString &filename);
-		static Longitude readReferenceLongitude (const QString &filename, bool *ok=NULL);
+		static QString readReferenceLongitudeString (const QString &filename);
 
 	protected:
 		value_reader (QTime, RawSunset, rawSunset);
@@ -54,7 +54,6 @@ class SunsetPluginBase: public InfoPlugin
 		// Runtime data
 		QString resolvedFilename;
 		Longitude referenceLongitude;
-		bool referenceLongitudeValid;
 		QTime rawSunset; // UTC
 		QTime correctedSunset; // UTC
 };

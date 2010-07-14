@@ -26,8 +26,7 @@
 SunsetPluginBase::SunsetPluginBase (QString caption, bool enabled, const QString &filename):
 	InfoPlugin (caption, enabled),
 	filename (filename),
-	longitudeCorrection (false),
-	referenceLongitudeValid (false)
+	longitudeCorrection (false)
 {
 }
 
@@ -48,15 +47,14 @@ PluginSettingsPane *SunsetPluginBase::infoPluginCreateSettingsPane (QWidget *par
 void SunsetPluginBase::infoPluginReadSettings (const QSettings &settings)
 {
 	filename=settings.value ("filename", filename).toString ();
-	bool longitudeOk=false;
-	longitude=Longitude::fromString (settings.value ("longitude", "9 27 0").toString (), &longitudeOk);
-	longitudeCorrection=longitudeOk && settings.value ("longitudeCorrection", false).toBool ();
+	longitude=Longitude (settings.value ("longitude", Longitude (9, 27, 0, true).getValue ()).toDouble ());
+	longitudeCorrection=settings.value ("longitudeCorrection", false).toBool ();
 }
 
 void SunsetPluginBase::infoPluginWriteSettings (QSettings &settings)
 {
 	settings.setValue ("filename", filename);
-	settings.setValue ("longitude", longitude.toString ());
+	settings.setValue ("longitude", longitude.getValue ());
 	settings.setValue ("longitudeCorrection", longitudeCorrection);
 }
 
@@ -87,7 +85,7 @@ void SunsetPluginBase::start ()
 
 	resolvedFilename=QString ();
 	rawSunset=correctedSunset=QTime ();
-	referenceLongitudeValid=false;
+	referenceLongitude=Longitude ();
 
 	if (blank (filename)) OUTPUT_AND_RETURN ("Keine Datei angegeben");
 
@@ -108,8 +106,12 @@ void SunsetPluginBase::start ()
 
 		if (longitudeCorrection)
 		{
-			referenceLongitude=readReferenceLongitude (resolvedFilename, &referenceLongitudeValid);
-			if (!referenceLongitudeValid) OUTPUT_AND_RETURN ("Kein Bezugslängengrad in Datendatei gefunden");
+			// FIXME distinguish not found/parse error
+			QString referenceLongitudeString=readReferenceLongitudeString (resolvedFilename);
+			if (referenceLongitudeString.isEmpty ()) OUTPUT_AND_RETURN ("Kein Bezugslängengrad in Datendatei gefunden");
+
+			referenceLongitude=Longitude::parse (referenceLongitudeString);
+			if (!referenceLongitude.isValid ()) OUTPUT_AND_RETURN ("Ungültiger Bezugslängengrad");
 
 			correctedSunset=localSunset (longitude, referenceLongitude, rawSunset);
 		}
@@ -162,8 +164,8 @@ QString SunsetPluginBase::readSunsetString (const QString &filename)
  * The file must contain a line with the following format:
  *   ReferenceLongitude: +9 27 00
  *
- * If there is no entry for the reference longitude in the file, an empty
- * string is returned.
+ * If there is no entry for the reference longitude in the file, an invalid
+ * Longitude is returned.
  *
  * @param filename the file to read from
  * @param ok set to true on success or false if there was no reference
@@ -171,11 +173,9 @@ QString SunsetPluginBase::readSunsetString (const QString &filename)
  * @return the reference longitude
  * @throw FileOpenError if the file cannot be opened
  */
-Longitude SunsetPluginBase::readReferenceLongitude (const QString &filename, bool *ok)
+QString SunsetPluginBase::readReferenceLongitudeString (const QString &filename)
 {
-	QString refLon=findInFile (filename, QRegExp ("^ReferenceLongitude: (.*)"), 1);
-
-	return Longitude::fromString (refLon, ok);
+	return findInFile (filename, QRegExp ("^ReferenceLongitude: (.*)"), 1);
 }
 
 /**

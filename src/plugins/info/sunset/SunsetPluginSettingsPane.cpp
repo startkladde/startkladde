@@ -13,7 +13,8 @@
 SunsetPluginSettingsPane::SunsetPluginSettingsPane (SunsetPluginBase *plugin, QWidget *parent):
 	PluginSettingsPane (parent),
 	plugin (plugin),
-	fileOk (false), referenceLongitudeOk (false)
+	fileSpecified (false), fileResolved (false), fileExists (false), fileOk (false),
+	referenceLongitudeFound (false)
 {
 	ui.setupUi (this);
 
@@ -66,7 +67,7 @@ void SunsetPluginSettingsPane::on_filenameInput_editingFinished ()
 	fileExists=false;
 	fileOk=false;
 
-	referenceLongitudeOk=false;
+	referenceLongitude=Longitude ();
 
 	if (!blank (filename))
 	{
@@ -86,7 +87,11 @@ void SunsetPluginSettingsPane::on_filenameInput_editingFinished ()
 				try
 				{
 					source            =SunsetPluginBase::readSource             (resolved);
-					referenceLongitude=SunsetPluginBase::readReferenceLongitude (resolved, &referenceLongitudeOk);
+
+					QString referenceLongitudeString=SunsetPluginBase::readReferenceLongitudeString (resolved);
+					referenceLongitudeFound=!referenceLongitudeString.isEmpty ();
+					referenceLongitude=Longitude::parse (referenceLongitudeString);
+
 					fileOk=true;
 				}
 				catch (FileOpenError &ex)
@@ -164,8 +169,10 @@ void SunsetPluginSettingsPane::updateReferenceLongitudeLabel ()
 {
 	if (!fileOk)
 		ui.referenceLongitudeLabel->setText ("-");
-	else if (!referenceLongitudeOk)
-		ui.referenceLongitudeLabel->setText ("unbekannt");
+	else if (!referenceLongitudeFound)
+		ui.referenceLongitudeLabel->setText (utf8 ("unbekannt"));
+	else if (!referenceLongitude.isValid ())
+		ui.referenceLongitudeLabel->setText (utf8 ("ungültig"));
 	else
 		ui.referenceLongitudeLabel->setText (referenceLongitude.format ());
 }
@@ -177,14 +184,14 @@ const QString referenceLongitudeNoteError=
 
 void SunsetPluginSettingsPane::updateReferenceLongitudeNoteLabel ()
 {
-	if (fileOk && !referenceLongitudeOk)
+	if (fileOk && !referenceLongitude.isValid ())
 		ui.referenceLongitudeNoteLabel->setText (referenceLongitudeNoteError);
 	else
 		ui.referenceLongitudeNoteLabel->setText (referenceLongitudeNoteRegular);
 
 	QPalette palette=ui.referenceLongitudeNoteLabel->palette ();
 
-	if (fileOk && !referenceLongitudeOk && ui.longitudeCorrectionCheckbox->isChecked ())
+	if (fileOk && !referenceLongitude.isValid () && ui.longitudeCorrectionCheckbox->isChecked ())
 		palette.setColor (foregroundRole (), Qt::red);
 	else
 		palette.setColor (foregroundRole (), Qt::black);
