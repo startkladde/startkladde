@@ -16,11 +16,19 @@
 #include "src/util/qString.h"
 #include "src/text.h"
 
+/**
+ * Creates a longitude representing
+ *
+ * @return
+ */
 Longitude::Longitude ():
 	degrees (0), minutes (0), seconds (0), positive (true)
 {
 }
 
+/**
+ * Creates a longitude with given values
+ */
 Longitude::Longitude (unsigned int degrees, unsigned int minutes, unsigned int seconds, bool positive):
 	degrees (degrees), minutes (minutes), seconds (seconds), positive (positive)
 {
@@ -30,6 +38,13 @@ Longitude::~Longitude ()
 {
 }
 
+/**
+ * Creates a string suitable for display to the user
+ *
+ * @param positiveString the designator to add for eastern longitudes
+ * @param negativeString the designator to add for western longitudes
+ * @return a QString containing a representation of this longitude
+ */
 QString Longitude::format (const QString &positiveString, const QString &negativeString) const
 {
 	return QString (utf8 ("%1° %2' %3\" %4"))
@@ -39,6 +54,15 @@ QString Longitude::format (const QString &positiveString, const QString &negativ
 		.arg (positive?positiveString:negativeString);
 }
 
+/**
+ * Creates a string suitable for storage
+ *
+ * Consider using toDegrees instead
+ *
+ * @return a string suitable for storage
+ * @see fromString
+ * @see toDegrees
+ */
 QString Longitude::toString () const
 {
 	return QString ("%1%2 %3 %4")
@@ -48,6 +72,16 @@ QString Longitude::toString () const
 		.arg (seconds);
 }
 
+/**
+ * Creates a longitude by parsing a string created by toString
+ *
+ * @param string the string to parse. Leading and trailing whitespace is
+ *        ignored.
+ * @param ok if not NULL, set to true if the operation succeds and false else
+ * @return the parse longitude, or a null longitude if the parsing failed
+ * @see toString
+ * @see fromDegrees
+ */
 Longitude Longitude::fromString (const QString &string, bool *ok)
 {
 #define STOP do { if (ok) *ok=false; return Longitude (); } while (0)
@@ -71,6 +105,18 @@ Longitude Longitude::fromString (const QString &string, bool *ok)
 	return Longitude (degrees, minutes, seconds, positive);
 }
 
+
+/**
+ * Determines the complement of the given angle, that is, the angle that adds
+ * up to 360° with the original angle
+ *
+ * The angle must be larger than 180° and smaller than 360°. The given values
+ * are overridden.
+ *
+ * @param deg 180..359 (not 180 if min==0 and sec==0)
+ * @param min 0..59
+ * @param sec 0..59
+ */
 void complementAngle (unsigned int &deg, unsigned int &min, unsigned int &sec)
 {
 	// deg in 180..359
@@ -106,9 +152,19 @@ void complementAngle (unsigned int &deg, unsigned int &min, unsigned int &sec)
 }
 
 
-// TODO this needs a unit test
+
+/**
+ * Normalizes the longitude
+ *
+ * A normalized longitude is in the range -179°59'59" to +180°0'0". The
+ * normalized longitude of 0°0'0" has a positive sign.
+ *
+ * @return a new Longitude representing the same longitude, but normalized
+ */
 Longitude Longitude::normalized () const
 {
+	// TODO this needs a unit test
+
 	unsigned int deg=degrees;
 	unsigned int min=minutes;
 	unsigned int sec=seconds;
@@ -124,7 +180,12 @@ Longitude Longitude::normalized () const
 	// Normalize degrees (deg in 0..359)
 	deg=deg%360;
 
-	if (deg<180)
+	if (deg==0 && min==0 && sec==0)
+	{
+		// Angles of exactly 0° are returned with a positive sign
+		return Longitude (0, 0, 0, true);
+	}
+	else if (deg<180)
 	{
 		// Angles less than to 180° are returned with the same sign
 		return Longitude (deg, min, sec, positive);
@@ -136,17 +197,60 @@ Longitude Longitude::normalized () const
 	}
 	else
 	{
-		// Other angles have to be mirrored (complement and invert sign)
+		// Other angles are complemented and the sign is inverted
 		complementAngle (deg, min, sec);
 		return Longitude (deg, min, sec, !positive);
 	}
 }
 
+/**
+ * Converts the longitude to a double value, representing the degrees
+ *
+ * @return a double representation of this longitude
+ */
+double Longitude::toDegrees () const
+{
+	double value = (double)degrees + minutes/(double)60 + seconds/(double)3600;
+
+	if (positive)
+		return value;
+	else
+		return -value;
+}
+
+
+/**
+ * Creates a longitude from a double
+ *
+ * @return a new Longitude
+ */
+Longitude Longitude::fromDegrees (double deg)
+{
+	Longitude longitude;
+
+	longitude.positive=(deg>0);
+
+	longitude.degrees=(int)(deg);
+
+	deg-=longitude.degrees;
+	deg*=60;
+	longitude.minutes=(int)(deg);
+
+	deg-=longitude.minutes;
+	deg*=60;
+	longitude.seconds=(int)deg;
+
+	return longitude;
+}
+
+
+
+/**
+ *
+ * @param other
+ * @return
+ */
 double Longitude::minusDegrees (const Longitude &other) const
 {
-	// Note the conversion from uint to int
-	return
-		((int)degrees-(int)other.degrees)
-		+((int)minutes-(int)other.minutes)/60.0
-		+((int)seconds-(int)other.seconds)/3600.0;
+	return toDegrees ()-other.toDegrees ();
 }

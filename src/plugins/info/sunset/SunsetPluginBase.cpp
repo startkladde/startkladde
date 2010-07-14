@@ -18,8 +18,6 @@
 #include "src/util/qString.h"
 #include "src/util/time.h"
 
-// FIXME use longitude
-
 
 // ******************
 // ** Construction **
@@ -72,6 +70,17 @@ QString SunsetPluginBase::configText () const
 
 #define OUTPUT_AND_RETURN(text) do { outputText (utf8 (text)); return; } while (0)
 
+/**
+ * Reads the required data from the data file
+ *
+ * Resolves the file name. The following data is read:
+ *   - the sunset for the current date
+ *   - the reference longitude, if longitude correction is activated
+ *
+ * If the reading fails, the correspondig values are set to invalid
+ * (invalid sunset to or referenceLongitudeOk=false) and an error message
+ * is output.
+ */
 void SunsetPluginBase::start ()
 {
 	QString filename=getFilename ();
@@ -111,6 +120,9 @@ void SunsetPluginBase::start ()
 	}
 }
 
+/**
+ * Discards the values read from the time
+ */
 void SunsetPluginBase::terminate ()
 {
 	rawSunset=QTime ();
@@ -123,7 +135,18 @@ void SunsetPluginBase::terminate ()
 // ******************
 
 /**
- * Throws FileOpenError
+ * Reads the sunset from a file as a string
+ *
+ * The file must contain a line with the current date and the sunset time,
+ * separated by whitespace. Example
+ *   08-15  18:43
+ *
+ * If there is no entry for the current date in the file, an empty string is
+ * returned.
+ *
+ * @param filename the file to read from
+ * @return the sunset string
+ * @throw FileOpenError if the file cannot be opened
  */
 QString SunsetPluginBase::readSunsetString (const QString &filename)
 {
@@ -134,7 +157,19 @@ QString SunsetPluginBase::readSunsetString (const QString &filename)
 }
 
 /**
- * Throws FileOpenError
+ * Reads the reference longitude from a file
+ *
+ * The file must contain a line with the following format:
+ *   ReferenceLongitude: +9 27 00
+ *
+ * If there is no entry for the reference longitude in the file, an empty
+ * string is returned.
+ *
+ * @param filename the file to read from
+ * @param ok set to true on success or false if there was no reference
+ *           longitude entry or it could not be parsed
+ * @return the reference longitude
+ * @throw FileOpenError if the file cannot be opened
  */
 Longitude SunsetPluginBase::readReferenceLongitude (const QString &filename, bool *ok)
 {
@@ -144,7 +179,17 @@ Longitude SunsetPluginBase::readReferenceLongitude (const QString &filename, boo
 }
 
 /**
- * Throws FileOpenError
+ * Reads the source from a file
+ *
+ * The file must contain a line with the following format:
+ *   Source: xyz
+ *
+ * If there is no entry for the source in the file, an empty
+ * string is returned.
+ *
+ * @param filename the file to read from
+ * @return the source
+ * @throw FileOpenError if the file cannot be opened
  */
 QString SunsetPluginBase::readSource (const QString &filename)
 {
@@ -158,6 +203,12 @@ QString SunsetPluginBase::readSource (const QString &filename)
 // ** Misc **
 // **********
 
+/**
+ * Returns the raw or corrected sunset time, depending on the longitude
+ * correction setting
+ *
+ * @return the sunset time to use
+ */
 QTime SunsetPluginBase::getEffectiveSunset ()
 {
 	if (longitudeCorrection)

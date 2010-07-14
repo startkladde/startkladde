@@ -54,6 +54,10 @@ QString SunsetTimePlugin::getDescription () const
 
 const QString timeFormat="hh:mm";
 
+/**
+ * Calls SunsetPluginBase::start and outputs the sunset time in local time or
+ * UTC, depending on the configuration
+ */
 void SunsetTimePlugin::start ()
 {
 	SunsetPluginBase::start ();

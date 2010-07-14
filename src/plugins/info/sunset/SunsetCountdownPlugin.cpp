@@ -53,6 +53,9 @@ QString SunsetCountdownPlugin::getDescription () const
 	return utf8 ("Zeigt die verbleibende Zeit bis Sonnenuntergang an");
 }
 
+/**
+ * Calls SunsetPluginBase::start and update
+ */
 void SunsetCountdownPlugin::start ()
 {
 	SunsetPluginBase::start ();
@@ -69,6 +72,9 @@ void SunsetCountdownPlugin::minuteChanged ()
 // ** Functionality **
 // *******************
 
+/**
+ * Outputs the time until sunset, in red color if negative
+ */
 void SunsetCountdownPlugin::update ()
 {
 	QTime sunsetTime=nullSeconds (getEffectiveSunset ());
