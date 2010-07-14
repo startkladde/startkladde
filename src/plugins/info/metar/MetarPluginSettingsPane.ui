@@ -41,6 +41,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QSpinBox" name="refreshIntervalInput">
+       <property name="toolTip">
+        <string>Zeit zwischen Aktualiserungen der METER-Meldung</string>
+       </property>
        <property name="suffix">
         <string> Minuten</string>
        </property>
@@ -86,7 +89,11 @@
    <item row="1" column="2">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QLineEdit" name="airportInput"/>
+      <widget class="QLineEdit" name="airportInput">
+       <property name="toolTip">
+        <string>ICAO-Code des Flughafens, dessen METAR-Meldung angezeigt werden</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="label_2">

@@ -35,7 +35,12 @@
      <item row="0" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLineEdit" name="filenameInput"/>
+        <widget class="QLineEdit" name="filenameInput">
+         <property name="toolTip">
+          <string>Der Name der Datendatei, aus der die Sonnenuntergangszeiten gelesen werden.
+Der Dateiname kann absolut oder relativ angegeben werden. Relative Dateinamen werden im Plugin-Pfad gesucht.</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="findFileButton">
@@ -66,6 +71,9 @@ sofern sich die Datei im Plugin-Pfad befindet.</string>
      </item>
      <item row="2" column="1">
       <widget class="QLabel" name="filenameLabel">
+       <property name="toolTip">
+        <string>Der vollständige Name der Datendatei</string>
+       </property>
        <property name="text">
         <string>-</string>
        </property>
@@ -80,6 +88,9 @@ sofern sich die Datei im Plugin-Pfad befindet.</string>
      </item>
      <item row="3" column="1">
       <widget class="QLabel" name="sourceLabel">
+       <property name="toolTip">
+        <string>Die Quelle für die Daten laut Datendatei</string>
+       </property>
        <property name="text">
         <string>unbekannt</string>
        </property>
@@ -94,6 +105,9 @@ sofern sich die Datei im Plugin-Pfad befindet.</string>
      </item>
      <item row="4" column="1">
       <widget class="QLabel" name="referenceLongitudeLabel">
+       <property name="toolTip">
+        <string>Der Längengrad, für den die Zeiten der Datei gelten</string>
+       </property>
        <property name="text">
         <string>unbekannt</string>
        </property>
@@ -111,6 +125,9 @@ sofern sich die Datei im Plugin-Pfad befindet.</string>
      </item>
      <item row="5" column="1">
       <widget class="QCheckBox" name="longitudeCorrectionCheckbox">
+       <property name="toolTip">
+        <string>Korrektur der Sonnenuntergangszeiten für den tatsächlichen Längengrad</string>
+       </property>
        <property name="text">
         <string>&amp;Korrektur aktivieren</string>
        </property>
@@ -142,6 +159,9 @@ der Datendatei ein Bezugslängengrad angegeben ist.</string>
          </property>
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="toolTip">
+          <string>Der tatsächliche Längengrad</string>
          </property>
         </widget>
        </item>
@@ -177,6 +197,9 @@ der Datendatei ein Bezugslängengrad angegeben ist.</string>
        </property>
        <item>
         <widget class="QComboBox" name="timeZoneInput">
+         <property name="toolTip">
+          <string>Zeitzone für die Anzeige</string>
+         </property>
          <item>
           <property name="text">
            <string>UTC</string>

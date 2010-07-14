@@ -76,7 +76,7 @@ QString SunsetPluginBase::configText () const
  *   - the reference longitude, if longitude correction is activated
  *
  * If the reading fails, the correspondig values are set to invalid
- * (invalid sunset to or referenceLongitudeOk=false) and an error message
+ * (invalid sunset to or referenceLongitude) and an error message
  * is output.
  */
 void SunsetPluginBase::start ()

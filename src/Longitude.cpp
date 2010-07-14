@@ -195,6 +195,11 @@ Longitude Longitude::parse (const QString &string)
 	return invalid;
 }
 
+/**
+ * Creates a longitude by parsing strings for degrees, minutes and seconds
+ *
+ * This is a helper method for the parse (const QString &) method.
+ */
 Longitude Longitude::parse (const QString &degrees, const QString &minutes, const QString &seconds, bool positive)
 {
 	bool numOk=false;
@@ -206,6 +211,12 @@ Longitude Longitude::parse (const QString &degrees, const QString &minutes, cons
 	return Longitude (deg, min, sec, positive);
 }
 
+/**
+ * Creates a longitude by parsing captured text of a regular expression for
+ * degrees, minutes and seconds
+ *
+ * This is a helper method for the parse (const QString &) method.
+ */
 Longitude Longitude::parse (const QRegExp &re, int degreesCap, int minutesCap, int secondsCap, bool positive)
 {
 	return parse (re.cap (degreesCap), re.cap (minutesCap), re.cap (secondsCap), positive);

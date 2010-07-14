@@ -4,6 +4,9 @@
 
 #include "src/Longitude.h"
 
+/**
+ * Returns a copy of a time with the seconds set to 0
+ */
 QTime nullSeconds (const QTime &time)
 {
 	if (!time.isValid ())
@@ -12,6 +15,9 @@ QTime nullSeconds (const QTime &time)
 	return QTime (time.hour (), time.minute (), 0);
 }
 
+/**
+ * Returns a copy of a datetime with the seconds set to 0
+ */
 QDateTime nullSeconds (const QDateTime &dateTime)
 {
 	if (!dateTime.isValid ())
@@ -23,11 +29,24 @@ QDateTime nullSeconds (const QDateTime &dateTime)
 		dateTime.timeSpec ());
 }
 
+/**
+ * Returns the current time in the UTC time zone
+ *
+ * Note that QTime does not store time zone information.
+ */
 QTime currentTimeUtc ()
 {
 	return QDateTime::currentDateTime ().toUTC ().time ();
 }
 
+/**
+ * Formats a duration
+ *
+ * @param seconds the duration in seconds
+ * @param includeSeconds whether to include the seconds part
+ * @return a string in the form "hhh:mm:ss" or "hhh:mm", depending on include
+ *         Seconds
+ */
 QString formatDuration (int seconds, bool includeSeconds)
 {
 	bool negative=(seconds<0);
@@ -67,6 +86,16 @@ QTime localSunset (const Longitude &longitude, const Longitude &referenceLongitu
 	return sunsetAtReference.addSecs (-dT);
 }
 
+/**
+ * Converts a UTC time of the current date to local time
+ *
+ * Note that QTime does not store time zone information.
+ *
+ * The results of this function may be unexpected on clock change day.
+ *
+ * @param time a UTC time
+ * @return the corresponding local time
+ */
 QTime utcToLocal (const QTime &time)
 {
 	// TODO: currentDate probably returns local date
@@ -75,6 +104,16 @@ QTime utcToLocal (const QTime &time)
 }
 
 // This function can be used, it's just not tested yet
+///**
+// * Converts a local time of the current date to UTC time
+// *
+// * Note that QTime does not store time zone information.
+// *
+// * The results of this function may be unexpected on clock change day.
+// *
+// * @param time a local time
+// * @return the corresponding UTC time
+// */
 //QTime localToUtc (const QTime &time)
 //{
 //	// TODO: currentDate probably returns local date
