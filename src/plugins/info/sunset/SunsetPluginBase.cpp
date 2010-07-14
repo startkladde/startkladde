@@ -87,10 +87,10 @@ void SunsetPluginBase::start ()
 	rawSunset=correctedSunset=QTime ();
 	referenceLongitude=Longitude ();
 
-	if (blank (filename)) OUTPUT_AND_RETURN ("Keine Datei angegeben");
+	if (isBlank (filename)) OUTPUT_AND_RETURN ("Keine Datei angegeben");
 
 	resolvedFilename=resolveFilename (filename);
-	if (blank (resolvedFilename)) OUTPUT_AND_RETURN ("Datei nicht gefunden");
+	if (isBlank (resolvedFilename)) OUTPUT_AND_RETURN ("Datei nicht gefunden");
 	if (!QFile::exists (resolvedFilename)) OUTPUT_AND_RETURN ("Datei existiert nicht");
 
 	try
@@ -99,7 +99,7 @@ void SunsetPluginBase::start ()
 
 		// Find the sunset for today
 		QString sunsetString=readSunsetString (resolvedFilename);
-		if (blank (sunsetString)) OUTPUT_AND_RETURN ("Zeit für aktuelles Datum nicht in Datendatei vorhanden");
+		if (isBlank (sunsetString)) OUTPUT_AND_RETURN ("Zeit für aktuelles Datum nicht in Datendatei vorhanden");
 
 		rawSunset=QTime::fromString (sunsetString, "hh:mm");
 		if (!rawSunset.isValid ()) OUTPUT_AND_RETURN ("Ungültiges Zeitformat");

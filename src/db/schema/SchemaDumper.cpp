@@ -112,7 +112,7 @@ void SchemaDumper::dumpColumn (QStringList &output, const QString &name, const Q
 	output << QString ("    nullok: \"%1\"").arg (null);
 	if (key=="PRI")
 		output << QString ("    primary_key: true");
-	if (!blank (extra))
+	if (!isBlank (extra))
 		output << QString ("    extra: \"%1\"").arg (extra);
 }
 

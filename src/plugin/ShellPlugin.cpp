@@ -283,7 +283,7 @@ void ShellPlugin::restart ()
  */
 QString ShellPlugin::findFile (const QString &filename, QString *dir, QString *basename)
 {
-	if (blank (filename)) return "";
+	if (isBlank (filename)) return "";
 
 	if (filename.indexOf ('/')>=0)
 	{

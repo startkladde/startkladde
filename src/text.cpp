@@ -1,8 +1,5 @@
 #include "text.h"
 
-#include <stdlib.h>
-#include <iostream>
-
 #include <QString>
 #include <QStringList>
 
@@ -10,98 +7,47 @@
 
 const QString whitespace=" \t\r\n";
 
-using std::cout; using std::cerr; using std::endl;
-
-bool blank (const QString &string)
+/**
+ * Determines whether a string consists only of whitespace
+ */
+bool isBlank (const QString &string)
 {
-	return string.simplified ().isEmpty ();
+	return string.trimmed ().isEmpty ();
 }
 
-bool eintrag_ist_leer (QString eintrag)
-	/*
-	 * Finds out whether an entry is considered "empty".
-	 * Parameters:
-	 *   - eintrag: the QString.
-	 * Return value:
-	 *   if eintrag is to be considered "empty".
-	 */
+/**
+ * Determines whether string designates "none"
+ *
+ * An entry is considered "none" if it is blank or "-".
+ *
+ * @param string a string
+ * @return true if the string designates "none"
+ */
+bool isNone (const QString &string)
 {
-	QString e=eintrag.simplified ();
-	return (e=="" || e=="-");
+	QString trimmed=string.trimmed ();
+	return (trimmed.isEmpty () || string=="-");
 }
 
-bool eintraege_sind_leer (QString eintrag1, QString eintrag2)
+/**
+ * Determines whether two strings designate "none", as determined by isNone
+ * (const QString &)
+ *
+ * @param eintrag1 a string
+ * @param eintrag2 another string
+ * @return true if both strings designates "none"
+ */
+bool isNone (const QString &string1, const QString &string2)
 {
-	return eintrag_ist_leer (eintrag1) && eintrag_ist_leer (eintrag2);
+	return isNone (string1) && isNone (string2);
 }
 
-// TODO move somewhere more appropriate, then remove dependency on Settings.h
-bool locationEntryCanBeChanged (QString location)
-{
-	return
-		eintrag_ist_leer (location) ||
-		location.simplified () == Settings::instance ().location.simplified ();
-}
-
-
-void replace_tabs (QString &s)
-{
-	s.replace ('\t', ' ');
-}
-
-QString simplify_club_name (const QString s)
-{
-	QString r=s.simplified ().toLower ();
-	if (eintrag_ist_leer (r))
-		return "-";
-	else
-		return r;
-}
-
-bool club_name_identical (const QString s1, const QString s2)
-{
-	return simplify_club_name (s1)==simplify_club_name (s2);
-}
-
-QString concatenate_comments (const QString& s1, const QString& s2)
-{
-	if (eintrag_ist_leer (s1)) return s2;
-	if (eintrag_ist_leer (s2)) return s1;
-	return s1+"; "+s2;
-}
-
-QString string_or_none (const QString& text)
-{
-	if (eintrag_ist_leer (text))
-		return "-";
-	else
-		return text;
-}
-
-bool parameter_matches (char *parameter, char *val1, char *val2)
-{
-	return ((strcmp (parameter, val1)==0) || (strcmp (parameter, val2)==0));
-}
-
-#include <iostream>
-
-void split_string (QString &string1, QString &string2, QString separator, QString text)
-	// Splits a QString at the first occurence of one of separators. Results in string1 and string2
-{
-	if (text.contains (separator))
-	{
-		int pos=text.indexOf (separator);
-
-		string1=text.mid (0, pos);
-		string2=text.mid (pos+1);
-	}
-	else
-	{
-		string1=text;
-		string2="";
-	}
-}
-
+/**
+ * Trims all strings of a list
+ *
+ * More precisely, replaces all strings of a list with the result of their
+ * trimmed method.
+ */
 void trim (QStringList &strings)
 {
 	QMutableStringListIterator it (strings);
@@ -112,58 +58,39 @@ void trim (QStringList &strings)
 	}
 }
 
-QString get_environment (const QString &name)
+/**
+ * Converts the first character of a string to upper case
+ */
+QString firstToUpper (const QString &string)
 {
-	char *r=getenv (name.toUtf8 ().constData ());
-	if (r)
-		return QString (r);
-	else
-		return QString ();
+	return string.left (1).toUpper ()+string.mid (1);
 }
 
-
-QString make_string (const QSet<QString> s, const QString &separator)
-{
-	QString r;
-
-	QSet<QString>::const_iterator end=s.end ();
-	for (QSet<QString>::const_iterator it=s.begin (); it!=end; ++it)
-	{
-		if (it!=s.begin ()) r.append (separator);
-		r.append (*it);
-	}
-
-	return r;
-}
-
-
-std::ostream &operator<< (std::ostream &s, const QColor &c)
-{
-	return s << c.red () << "," <<  c.green () << "," << c.blue ();
-}
-
-//std::ostream &operator<< (std::ostream &s, const QByteArray &ba)
-//{
-//	int l=ba.length ();
-//	for (int i=0; i<l; ++i)
-//		s << ba.at (i);
-//
-//	return s;
-//}
-
-
-
-
-QString firstToUpper (const QString &text)
-{
-	return text.left (1).toUpper ()+text.mid (1);
-}
-
+/**
+ * Converts the first character of a string to lower case
+ */
 QString firstToLower (const QString &text)
 {
 	return text.left (1).toLower ()+text.mid (1);
 }
 
+/**
+ * Converts the first character of a string to upper case and the rest of the
+ * string to lower case
+ */
+QString capitalize (const QString &string)
+{
+	return string.left (1).toUpper() + string.mid (1).toLower ();
+}
+
+/**
+ * Generates a string describing a number of objects
+ *
+ * @param count the number of objects
+ * @param singular the singular of the object name
+ * @param plural the plural of the object name
+ * @return a string of the form "1 object" or "n objects"
+ */
 QString countText (int count, const QString &singular, const QString &plural)
 {
 	if (count==1)
@@ -172,7 +99,26 @@ QString countText (int count, const QString &singular, const QString &plural)
 		return QString ("%1 %2").arg (count).arg (plural);
 }
 
-QString capitalize (const QString &string)
+/**
+ * Creates a canonical form of a club name useful for comparison
+ *
+ * The club name is simplified and converted to lower case.
+ */
+QString simplifyClubName (const QString &clubName)
 {
-	return string.left (1).toUpper() + string.mid (1).toLower ();
+	return clubName.simplified ().toLower ();
+}
+
+/**
+ * Determines whether it is OK to overwrite a location entry in an input field
+ *
+ * @param location the location entry
+ * @return true if it may be overwritten
+ */
+// TODO move somewhere more appropriate, then remove dependency on Settings.h
+bool locationEntryCanBeChanged (const QString &location)
+{
+	return
+		isNone (location) ||
+		location.simplified ().toLower () == Settings::instance ().location.simplified ().toLower ();
 }

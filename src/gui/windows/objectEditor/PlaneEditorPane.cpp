@@ -75,7 +75,7 @@ void PlaneEditorPane::fillData ()
 
 void PlaneEditorPane::setNameObject (const Plane &nameObject)
 {
-	if (!blank (nameObject.registration))
+	if (!isBlank (nameObject.registration))
 	{
 		ui.registrationInput->setText (nameObject.registration);
 		ui.registrationInput->setEnabled (false);
@@ -141,7 +141,7 @@ Plane PlaneEditorPane::determineObject ()
 		throw AbortedException ();
 	}
 
-	if (eintrag_ist_leer (plane.registration))
+	if (isNone (plane.registration))
 		errorCheck ("Es wurde kein Kennzeichen angegeben.",
 			ui.registrationInput);
 
@@ -154,7 +154,7 @@ Plane PlaneEditorPane::determineObject ()
 		errorCheck ("Die angegebene Gattung passt nicht zum Kennzeichen.",
 			ui.categoryInput);
 
-	if (eintrag_ist_leer (plane.type))
+	if (isNone (plane.type))
 		errorCheck ("Es wurde kein Typ angegeben.",
 			ui.typeInput);
 

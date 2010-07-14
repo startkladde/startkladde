@@ -178,19 +178,19 @@ QString Flight::copilotDescription () const
 bool Flight::pilotSpecified () const
 {
 	return idValid (pilotId) ||
-		!eintraege_sind_leer (pilotLastName, pilotFirstName);
+		!isNone (pilotLastName, pilotFirstName);
 }
 
 bool Flight::copilotSpecified () const
 {
 	return idValid (copilotId) ||
-		!eintraege_sind_leer (copilotLastName, copilotFirstName);
+		!isNone (copilotLastName, copilotFirstName);
 }
 
 bool Flight::towpilotSpecified () const
 {
 	return idValid (towpilotId) ||
-		!eintraege_sind_leer (towpilotLastName, towpilotFirstName);
+		!isNone (towpilotLastName, towpilotFirstName);
 }
 
 
@@ -224,9 +224,9 @@ QString Flight::incompletePersonName (QString nn, QString vn) const
 	 *   - the formatted name.
 	 */
 {
-	if (eintrag_ist_leer (nn) && eintrag_ist_leer (vn)) return ("-");
-	else if (eintrag_ist_leer (nn)) return QString ("(???, %1)").arg (vn);
-	else if (eintrag_ist_leer (vn)) return QString ("(%1, %2)").arg (nn).arg ("???"); // ??) would be a trigraph
+	if (isNone (nn) && isNone (vn)) return ("-");
+	else if (isNone (nn)) return QString ("(???, %1)").arg (vn);
+	else if (isNone (vn)) return QString ("(%1, %2)").arg (nn).arg ("???"); // ??) would be a trigraph
 	else                            return QString ("%1, %2").arg (nn).arg (vn);
 }
 
@@ -357,7 +357,7 @@ bool Flight::landNow (bool force)
 		numLandings++;
 		landed=true;
 
-		if (eintrag_ist_leer (landingLocation))
+		if (isNone (landingLocation))
 			landingLocation=Settings::instance ().location;
 
 		return true;
@@ -372,7 +372,7 @@ bool Flight::landTowflightNow (bool force)
 	{
 		towflightLandingTime=nullSeconds (QDateTime::currentDateTime ().toUTC ());
 		towflightLanded=true;
-		if (towflightLandsHere () && eintrag_ist_leer (towflightLandingLocation))
+		if (towflightLandsHere () && isNone (towflightLandingLocation))
 			towflightLandingLocation=Settings::instance ().location;
 		return true;
 	}
@@ -624,9 +624,9 @@ FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp,
 	CHECK_FEHLER (FLUG, numLandings<0, ff_landungen_negativ)
 	CHECK_FEHLER (FLUG, landsHere () && numLandings==0 && landed, ff_landungen_null)
 	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && type==typeTraining2, ff_doppelsitzige_schulung_in_einsitzer)
-	CHECK_FEHLER (FLUG, (departed || !departsHere ()) && eintrag_ist_leer (departureLocation), ff_kein_startort)
-	CHECK_FEHLER (FLUG, (landed || !landsHere ()) && eintrag_ist_leer (landingLocation), ff_kein_zielort)
-	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow() && (towflightLanded || !towflightLandsHere ()) && eintrag_ist_leer (towflightLandingLocation), ff_kein_zielort_sfz)
+	CHECK_FEHLER (FLUG, (departed || !departsHere ()) && isNone (departureLocation), ff_kein_startort)
+	CHECK_FEHLER (FLUG, (landed || !landsHere ()) && isNone (landingLocation), ff_kein_zielort)
+	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow() && (towflightLanded || !towflightLandsHere ()) && isNone (towflightLandingLocation), ff_kein_zielort_sfz)
 	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && numLandings>1 && sa && !sa->isAirtow (), ff_segelflugzeug_landungen)
 	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && !landed && numLandings>0 && sa && !sa->isAirtow (), ff_segelflugzeug_landungen_ohne_landung)
 	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && typeCopilotRecorded (type) && copilotId!=0, ff_begleiter_in_einsitzer)
@@ -653,12 +653,12 @@ QString personToString (dbId id, QString lastName, QString firstName)
 {
 	if (idValid (id))
 		return QString::number (id);
-	else if (eintrag_ist_leer(lastName) && eintrag_ist_leer(firstName))
+	else if (isNone(lastName) && isNone(firstName))
 		return "-";
 	else
 		return QString ("(%1, %2)")
-			.arg (eintrag_ist_leer (lastName)?QString ("?"):lastName)
-			.arg (eintrag_ist_leer (firstName)?QString ("?"):firstName);
+			.arg (isNone (lastName)?QString ("?"):lastName)
+			.arg (isNone (firstName)?QString ("?"):firstName);
 }
 
 QString timeToString (bool performed, QDateTime time)

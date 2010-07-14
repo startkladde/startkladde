@@ -38,7 +38,7 @@ QString Plugin::resolveFilename (const QString &filename) const
 {
 	// FIXME Windows
 
-	if (blank (filename))
+	if (isBlank (filename))
 		return "";
 
 	// Absolute file names are not changed

@@ -77,7 +77,7 @@ HEADERS += \
            build/migrations.h \
            build/migrations_headers.h \
            src/accessor.h \
-           src/color.h \
+           src/flightColor.h \
            src/Longitude.h \
            src/StorableException.h \
            src/text.h \
@@ -198,6 +198,8 @@ HEADERS += \
            src/statistics/PilotLog.h \
            src/statistics/PlaneLog.h \
            src/util/bool.h \
+           src/util/color.h \
+           src/util/environment.h \
            src/util/file.h \
            src/util/qList.h \
            src/util/qString.h \
@@ -206,7 +208,7 @@ HEADERS += \
 
 SOURCES += \
 		   build/CurrentSchema.cpp \
-           src/color.cpp \
+           src/flightColor.cpp \
            src/Longitude.cpp \
            src/startkladde.cpp \
            src/StorableException.cpp \
@@ -320,6 +322,8 @@ SOURCES += \
            src/statistics/PilotLog.cpp \
            src/statistics/PlaneLog.cpp \
            src/util/bool.cpp \
+           src/util/color.cpp \
+           src/util/environment.cpp \
            src/util/file.cpp \
            src/util/qList.cpp \
            src/util/qString.cpp \

@@ -61,7 +61,7 @@ template<class T> ObjectSelectWindowBase::Result ObjectSelectWindow<T>::select
 	window.setWindowTitle (title);
 
 	window.ui.textLabel->setText (text);
-	if (blank (text)) window.ui.textLabel->setVisible (false);
+	if (isBlank (text)) window.ui.textLabel->setVisible (false);
 
 
 	int result=window.exec ();

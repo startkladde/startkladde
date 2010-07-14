@@ -83,7 +83,7 @@ void TestPlugin::trigger ()
 	QString helloText="Hallo";
 
 	QString greetingText;
-	if (blank (greetingName))
+	if (isBlank (greetingName))
 		greetingText="";
 	else
 		greetingText=QString (" %1").arg (greetingName);

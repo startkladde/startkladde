@@ -47,13 +47,13 @@ void PersonEditorPane::fillData ()
 
 void PersonEditorPane::setNameObject (const Person &nameObject)
 {
-	if (!blank (nameObject.lastName))
+	if (!isBlank (nameObject.lastName))
 	{
 		ui.lastNameInput->setText (nameObject.lastName);
 		ui.lastNameInput->setEnabled (false);
 	}
 
-	if (!blank (nameObject.firstName))
+	if (!isBlank (nameObject.firstName))
 	{
 		ui.firstNameInput->setText (nameObject.firstName);
 		ui.firstNameInput->setEnabled (false);
@@ -88,11 +88,11 @@ Person PersonEditorPane::determineObject ()
 
 	// Error checks
 
-	if (eintrag_ist_leer (person.lastName))
+	if (isNone (person.lastName))
 		errorCheck ("Es wurde kein Nachname angegeben.",
 			ui.lastNameInput);
 
-	if (eintrag_ist_leer (person.firstName))
+	if (isNone (person.firstName))
 		errorCheck ("Es wurde kein Vorname angegeben.",
 			ui.firstNameInput);
 

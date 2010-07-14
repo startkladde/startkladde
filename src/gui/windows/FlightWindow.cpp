@@ -8,7 +8,7 @@
 #include <QPushButton>
 #include <QDesktopWidget>
 
-#include "src/color.h"
+#include "src/util/color.h"
 #include "src/text.h"
 #include "src/gui/dialogs.h"
 #include "src/gui/windows/ObjectSelectWindow.h"
@@ -598,11 +598,11 @@ void FlightWindow::updateErrors (bool setFocus)
 
 		bool skipError=false;
 
-		bool    planeSpecified=!(eintrag_ist_leer (getCurrentRegistration         ()) || getCurrentRegistration         ()==Plane::defaultRegistrationPrefix ());
-		bool towplaneSpecified=!(eintrag_ist_leer (getCurrentTowplaneRegistration ()) || getCurrentTowplaneRegistration ()==Plane::defaultRegistrationPrefix ());
-		bool    pilotSpecified=!eintraege_sind_leer (getCurrentPilotLastName    (), getCurrentPilotFirstName    ());
-		bool  copilotSpecified=!eintraege_sind_leer (getCurrentCopilotLastName  (), getCurrentCopilotFirstName  ());
-		//bool towpilotSpecified=!eintraege_sind_leer (getCurrentTowpilotLastName (), getCurrentTowpilotFirstName ());
+		bool    planeSpecified=!(isNone (getCurrentRegistration         ()) || getCurrentRegistration         ()==Plane::defaultRegistrationPrefix ());
+		bool towplaneSpecified=!(isNone (getCurrentTowplaneRegistration ()) || getCurrentTowplaneRegistration ()==Plane::defaultRegistrationPrefix ());
+		bool    pilotSpecified=!isNone (getCurrentPilotLastName    (), getCurrentPilotFirstName    ());
+		bool  copilotSpecified=!isNone (getCurrentCopilotLastName  (), getCurrentCopilotFirstName  ());
+		//bool towpilotSpecified=!isNone (getCurrentTowpilotLastName (), getCurrentTowpilotFirstName ());
 
 		// Potential non-error: something has been specified but is unknown or
 		// non-unique, so the ID is invalid.
@@ -929,11 +929,11 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool departNow)
 		errorCheck ("Es wurde keine Startartart angegeben.",
 			ui.launchMethodInput);
 
-	if ((flight.departed || !flight.departsHere ()) && eintrag_ist_leer (flight.departureLocation))
+	if ((flight.departed || !flight.departsHere ()) && isNone (flight.departureLocation))
 		errorCheck ("Es wurde kein Startort angegeben.",
 				ui.departureLocationInput);
 
-	if ((flight.landed || !flight.landsHere ()) && eintrag_ist_leer (flight.landingLocation))
+	if ((flight.landed || !flight.landsHere ()) && isNone (flight.landingLocation))
 		errorCheck ("Es wurde kein Zielort angegeben.",
 			ui.landingLocationInput);
 
@@ -953,7 +953,7 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool departNow)
 		errorCheck ("Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0.",
 			ui.numLandingsInput);
 
-	if (flight.towflightLanded && !flight.towflightLandsHere () && eintrag_ist_leer (flight.towflightLandingLocation))
+	if (flight.towflightLanded && !flight.towflightLandsHere () && isNone (flight.towflightLandingLocation))
 		errorCheck (utf8 ("Es wurde kein Zielort für das Schleppflugzeug angegeben."),
 			ui.towflightLandingLocationInput);
 
@@ -1243,7 +1243,7 @@ dbId FlightWindow::determinePlane (QString registration, QString description, QW
 
 	// Check if no registration is given. Return true if the user confirms or
 	// false else.
-	if (eintrag_ist_leer (registration) || registration.simplified ().toLower()==Plane::defaultRegistrationPrefix ().simplified ().toLower ())
+	if (isNone (registration) || registration.simplified ().toLower()==Plane::defaultRegistrationPrefix ().simplified ().toLower ())
 	{
 		// No registration given. Query the user to accept this.
 		if (!confirmProblem (this,
@@ -1399,8 +1399,8 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 	 * This is a pragmatic approach and there may be better solutions.
 	 */
 
-	bool lastNameGiven=!eintrag_ist_leer (lastName);
-	bool firstNameGiven=!eintrag_ist_leer (firstName);
+	bool lastNameGiven=!isNone (lastName);
+	bool firstNameGiven=!isNone (firstName);
 
 	// Case 0: name is "+1"
 	if (lastName.simplified ()=="+1" || firstName.simplified ()=="+1")

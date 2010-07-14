@@ -350,7 +350,7 @@ void MainWindow::setupPlugins ()
 //	}
 //#endif
 
-	bool showWeatherPlugin=(s.weatherPluginEnabled && !blank (s.weatherPluginCommand));
+	bool showWeatherPlugin=(s.weatherPluginEnabled && !isBlank (s.weatherPluginCommand));
 	ui.weatherFrame->setVisible (showWeatherPlugin);
 	if (showWeatherPlugin)
 	{
@@ -493,13 +493,13 @@ void MainWindow::settingsChanged ()
 	Settings &s=Settings::instance ();
 
 	// Fenstereinstellungen
-	if (blank (s.location))
+	if (isBlank (s.location))
 		setWindowTitle ("Startkladde");
 	else
 		setWindowTitle (utf8 ("Hauptflugbuch %1 - Startkladde").arg (s.location));
 
 	ui.menuDebug     ->menuAction ()->setVisible (Settings::instance ().enableDebug);
-	ui.actionNetworkDiagnostics     ->setVisible (!blank (Settings::instance ().diagCommand));
+	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (Settings::instance ().diagCommand));
 
 	// Plugins
 	setupPlugins ();
@@ -1182,7 +1182,7 @@ void MainWindow::on_actionInfo_triggered ()
 void MainWindow::on_actionNetworkDiagnostics_triggered ()
 {
 	QString command=Settings::instance ().diagCommand;
-	if (blank (command)) return;
+	if (isBlank (command)) return;
 
 	// TODO: use QProcess and make sure it's in the background
 	if (system (command.toUtf8 ().constData ())!=0)
@@ -1332,7 +1332,7 @@ void MainWindow::weatherWidget_doubleClicked ()
 	}
 	else
 	{
-		if (s.weatherWindowEnabled && !blank (s.weatherWindowCommand))
+		if (s.weatherWindowEnabled && !isBlank (s.weatherWindowCommand))
 		{
 			// The weather animation plugin will be deleted by the weather dialog
 			ShellPlugin *weatherAnimationPlugin = new ShellPlugin (

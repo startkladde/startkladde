@@ -69,7 +69,7 @@ void SunsetPluginSettingsPane::on_filenameInput_editingFinished ()
 
 	referenceLongitude=Longitude ();
 
-	if (!blank (filename))
+	if (!isBlank (filename))
 	{
 		fileSpecified=true;
 

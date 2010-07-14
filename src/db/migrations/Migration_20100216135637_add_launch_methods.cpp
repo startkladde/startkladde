@@ -7,7 +7,7 @@
 
 #include "src/model/LaunchMethod.h"
 #include "src/util/qString.h"
-
+#include "src/util/environment.h"
 #include "src/text.h"
 
 Migration_20100216135637_add_launch_methods::Migration_20100216135637_add_launch_methods (Interface &interface):
@@ -80,7 +80,7 @@ const QString default_local_config_fielname="startkladde.conf";
 
 QString Migration_20100216135637_add_launch_methods::effectiveConfigFileName ()
 {
-	QString homeConfigFileName=get_environment ("HOME")+"/"+default_home_config_filename;
+	QString homeConfigFileName=getEnvironmentVariable ("HOME")+"/"+default_home_config_filename;
 	if (QFile::exists (homeConfigFileName)) return homeConfigFileName;
 
 	if (QFile::exists (default_local_config_fielname))
