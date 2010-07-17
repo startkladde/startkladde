@@ -33,12 +33,13 @@ class Longitude
 
 		// *** Data processing
 		Longitude normalized () const;
+		double solarTimeOffsetTo (const Longitude &other);
+		double clockTimeOffsetTo (const Longitude &other);
 
 
 		// *** Conversion
 		void toDms (unsigned int &degrees, unsigned int &minutes, unsigned int &seconds, bool &positive) const;
 		void toDms (unsigned int &degrees, unsigned int &minutes, unsigned int &seconds, bool &positive, double &remainder) const;
-
 
 		QString format (const QString &eastString="E", const QString &westString="W") const;
 		static Longitude parse (const QString &string);
@@ -49,6 +50,7 @@ class Longitude
 
 
 	private:
+		/** The longitude in degrees */
 		double value;
 		bool valid;
 };

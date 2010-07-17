@@ -22,8 +22,6 @@ QTime utcToLocal (const QTime &time);
 
 QString formatDuration (int seconds, bool includeSeconds=true);
 
-QTime localSunset (const Longitude &longitude, const Longitude &referenceLongitude, const QTime &sunsetAtReference);
-
 
 
 #endif

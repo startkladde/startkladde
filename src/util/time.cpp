@@ -73,18 +73,6 @@ QString formatDuration (int seconds, bool includeSeconds)
 			.arg (minutes, 2, 10, QChar ('0'));
 }
 
-QTime localSunset (const Longitude &longitude, const Longitude &referenceLongitude, const QTime &sunsetAtReference)
-{
-	// FIXME cache that value
-	double dLon=longitude.normalized ().getValue ()-referenceLongitude.normalized ().getValue ();
-
-	// 360° -- 1 day
-	//   1° -- 4 min = 240 sec
-	int dT=240*dLon;
-
-	// Bigger (easterner) longitude means earlier sunset
-	return sunsetAtReference.addSecs (-dT);
-}
 
 /**
  * Converts a UTC time of the current date to local time

@@ -106,14 +106,14 @@ void SunsetPluginBase::start ()
 
 		if (longitudeCorrection)
 		{
-			// FIXME distinguish not found/parse error
 			QString referenceLongitudeString=readReferenceLongitudeString (resolvedFilename);
 			if (referenceLongitudeString.isEmpty ()) OUTPUT_AND_RETURN ("Kein Bezugslängengrad in Datendatei gefunden");
 
 			referenceLongitude=Longitude::parse (referenceLongitudeString);
 			if (!referenceLongitude.isValid ()) OUTPUT_AND_RETURN ("Ungültiger Bezugslängengrad");
 
-			correctedSunset=localSunset (longitude, referenceLongitude, rawSunset);
+			// Add the difference in clock time for the same solar time
+			correctedSunset=rawSunset.addSecs (longitude.clockTimeOffsetTo (referenceLongitude));
 		}
 	}
 	catch (FileOpenError &ex)

@@ -77,6 +77,42 @@ Longitude Longitude::normalized () const
 	return Longitude (newValue);
 }
 
+/**
+ * Determines the difference in solar time between two longitudes at the same
+ * clock time (expressed in the same time zone), that is, at the same point in
+ * time
+ *
+ * For a longitude east of the other longitude, the solar time is later, thus,
+ * the returned value is positive.
+ *
+ * @param other another longitude
+ * @return the difference in solar time, in seconds
+ * @see clockTimeOffsetTo
+ */
+double Longitude::solarTimeOffsetTo (const Longitude &other)
+{
+	double dLon=normalized ().getValue ()-other.normalized ().getValue ();
+
+	// 360° -- 1 day (86400 s)
+	return dLon/360*86400;
+}
+
+/**
+ * Determines the difference in clock time (expressed in the same time zone)
+ * between two longitudes at the same solar time
+ *
+ * For a longitude east of the other longitude, the same solar time corresponds
+ * to an earlier clock time, so the returned value is negative.
+ *
+ * @param other another longitude
+ * @return the difference in clock time, in seconds
+ * @see solarTimeOffsetTo
+ */
+double Longitude::clockTimeOffsetTo (const Longitude &other)
+{
+	return -solarTimeOffsetTo (other);
+}
+
 
 // ****************
 // ** Conversion **
