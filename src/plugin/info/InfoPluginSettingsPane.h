@@ -28,6 +28,9 @@ class InfoPluginSettingsPane: public PluginSettingsPane
 		virtual void readSettings ();
 		virtual bool writeSettings ();
 
+	protected:
+		virtual void setSettingsWindow (SettingsWindow *settingsWindow);
+
 	private:
 		Ui::InfoPluginSettingsPaneClass ui;
 

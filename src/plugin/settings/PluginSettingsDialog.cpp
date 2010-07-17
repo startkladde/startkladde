@@ -1,6 +1,7 @@
 #include "PluginSettingsDialog.h"
 
 #include <QPushButton>
+#include <QDebug>
 
 #include "src/plugin/Plugin.h"
 #include "src/plugin/settings/PluginSettingsPane.h"
@@ -11,7 +12,7 @@
  * @param plugin the Plugin instance to be configured
  * @param parent the parent widget
  */
-PluginSettingsDialog::PluginSettingsDialog (Plugin *plugin, QWidget *parent):
+PluginSettingsDialog::PluginSettingsDialog (Plugin *plugin, QWidget *parent, SettingsWindow *settingsWindow):
 	QDialog (parent)
 {
 	ui.setupUi(this);
@@ -22,6 +23,7 @@ PluginSettingsDialog::PluginSettingsDialog (Plugin *plugin, QWidget *parent):
 
 	settingsPane=plugin->createSettingsPane (ui.pluginSettingsPane);
 	ui.pluginSettingsPane->layout ()->addWidget (settingsPane);
+	settingsPane->setSettingsWindow (settingsWindow);
 	settingsPane->readSettings ();
 }
 
@@ -47,9 +49,9 @@ void PluginSettingsDialog::on_buttonBox_accepted ()
  * @param parent the parent widget
  * @return the result of the dialog execution
  */
-int PluginSettingsDialog::invoke (Plugin *plugin, QWidget *parent)
+int PluginSettingsDialog::invoke (Plugin *plugin, QWidget *parent, SettingsWindow *settingsWindow)
 {
-	PluginSettingsDialog *dialog=new PluginSettingsDialog (plugin, parent);
+	PluginSettingsDialog *dialog=new PluginSettingsDialog (plugin, parent, settingsWindow);
 	dialog->setModal (true);
 	int result=dialog->exec ();
 	delete dialog;

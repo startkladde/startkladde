@@ -16,6 +16,8 @@ class SettingsWindow: public QDialog
 		SettingsWindow (QWidget *parent=0);
 		~SettingsWindow ();
 
+		QStringList getPluginPaths ();
+
 	protected:
 		void readSettings ();
 		void writeSettings ();

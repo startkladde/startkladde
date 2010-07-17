@@ -29,9 +29,14 @@ class SkLabel: public QLabel
 
 		// Property access
 		void setDefaultBackgroundColor (const QColor &color);
-		attr_accessor (QColor, ErrorColor, errorColor);
 		void resetDefaultBackgroundColor ();
 		QColor getDefaultBackgroundColor ();
+
+		void setDefaultForegroundColor (const QColor &color);
+		void resetDefaultForegroundColor ();
+		QColor getDefaultForegroundColor ();
+
+		attr_accessor (QColor, ErrorColor, errorColor);
 
 		void setPaletteForegroundColor (const QColor &color);
 		void setPaletteBackgroundColor (const QColor &color);
@@ -46,6 +51,8 @@ class SkLabel: public QLabel
 		void setNumber (double number);
 
 		void setText (const QString &text, Qt::TextFormat format);
+		void setTextAndColor (const QString &text, const QColor &color);
+		void setTextAndDefaultColor (const QString &text);
 
 	signals:
 		void doubleClicked (QMouseEvent *event);
@@ -58,8 +65,9 @@ class SkLabel: public QLabel
 		bool concealed;
 		bool error;
 
+		QColor defaultForegroundColor;
 		QColor defaultBackgroundColor;
-		bool useDefaultBackgroundColor;
+		bool useDefaultBackgroundColor; // TODO use defaultBackgroundColor.isValid instead
 		QColor errorColor;
 };
 

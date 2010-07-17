@@ -3,6 +3,10 @@
 
 #include <QtGui/QWidget>
 
+#include "src/accessor.h"
+
+class SettingsWindow;
+
 /**
  * A QWidget with fields for configuring a plugin instance
  *
@@ -41,6 +45,16 @@ class PluginSettingsPane: public QWidget
 		 * @return true on success, false if canceled
 		 */
 		virtual bool writeSettings ()=0;
+
+	public:
+		// TODO virtual attribute accessors
+		virtual void setSettingsWindow (SettingsWindow *settingsWindow) { this->settingsWindow=settingsWindow; }
+
+	protected:
+		QStringList getEffectivePluginPaths ();
+
+		// TODO: it would be better to pass a temporary Settings instance
+		SettingsWindow *settingsWindow;
 };
 
 #endif

@@ -217,14 +217,23 @@ void SettingsWindow::writeSettings ()
 	s.weatherWindowTitle   =ui.weatherWindowTitleInput   ->text ();
 
 	// *** Plugins - Paths
-	s.pluginPaths.clear ();
-	int numPluginPaths=ui.pluginPathList->count ();
-	for (int i=0; i<numPluginPaths; ++i)
-		s.pluginPaths << ui.pluginPathList->item (i)->text ();
+	s.pluginPaths=getPluginPaths ();
 
 	s.save ();
 
 	databaseSettingsChanged=oldInfo.different (info);
+}
+
+QStringList SettingsWindow::getPluginPaths ()
+{
+	QStringList pluginPaths;
+
+	int numPluginPaths=ui.pluginPathList->count ();
+
+	for (int i=0; i<numPluginPaths; ++i)
+		pluginPaths << ui.pluginPathList->item (i)->text ();
+
+	return pluginPaths;
 }
 
 void SettingsWindow::updateWidgets ()
@@ -294,14 +303,13 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 	const InfoPlugin::Descriptor *descriptor=InfoPluginSelectionDialog::select (descriptors, this);
 
 	if (!descriptor) return;
-	qDebug () << descriptor->getId ();
 
 	InfoPlugin *plugin=descriptor->create ();
 
 	if (plugin)
 	{
 		plugin->setCaption (plugin->getName ()+":");
-		int settingsDialogResult=PluginSettingsDialog::invoke (plugin, this);
+		int settingsDialogResult=PluginSettingsDialog::invoke (plugin, this, this);
 
 		if (settingsDialogResult==QDialog::Accepted)
 		{
@@ -372,7 +380,7 @@ void SettingsWindow::on_infoPluginSettingsButton_clicked ()
 	int row=list->indexOfTopLevelItem (list->currentItem ());
 	if (row<0 || row>=list->topLevelItemCount ()) return;
 
-	PluginSettingsDialog::invoke (infoPlugins[row], this);
+	PluginSettingsDialog::invoke (infoPlugins[row], this, this);
 	readItem (ui.infoPluginList->topLevelItem (row), infoPlugins[row]);
 }
 

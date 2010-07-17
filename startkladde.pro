@@ -176,6 +176,7 @@ HEADERS += \
            src/model/objectList/MutableObjectList.h \
            src/model/objectList/ObjectListModel.h \
            src/model/objectList/ObjectModel.h \
+           src/net/Network.h \
            src/net/TcpProxy.h \
            src/plugin/Plugin.h \
            src/plugin/ShellPlugin.h \
@@ -301,6 +302,7 @@ SOURCES += \
            src/model/flightList/FlightModel.cpp \
            src/model/flightList/FlightProxyList.cpp \
            src/model/flightList/FlightSortFilterProxyModel.cpp \
+           src/net/Network.cpp \
            src/net/TcpProxy.cpp \
            src/plugin/Plugin.cpp \
            src/plugin/ShellPlugin.cpp \

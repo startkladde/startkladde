@@ -18,6 +18,7 @@
 #include "MetarPluginSettingsPane.h"
 #include "src/util/qString.h"
 #include "src/util/io.h"
+#include "src/net/Network.h"
 
 REGISTER_INFO_PLUGIN (MetarPlugin)
 
@@ -113,8 +114,7 @@ void MetarPlugin::refresh ()
 
 		QString url=QString ("http://weather.noaa.gov/mgetmetar.php?cccc=%1").arg (icao);
 
-		// FIXME global manager
-		QNetworkAccessManager *manager=new QNetworkAccessManager (this);
+		QNetworkAccessManager *manager=Network::getNetworkAccessManager ();
 
 		QNetworkRequest request;
 		request.setUrl (QUrl (url));

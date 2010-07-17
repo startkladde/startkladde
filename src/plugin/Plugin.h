@@ -3,6 +3,8 @@
 
 #include <qobject.h>
 
+#include "src/config/Settings.h"
+
 class QWidget;
 class PluginSettingsPane;
 class QSettings;
@@ -80,7 +82,7 @@ class Plugin: public QObject
 		virtual QString configText () const=0;
 
 		virtual bool filenameIsAbsolute (const QString &filename) const;
-		virtual QString resolveFilename (const QString &filename) const;
+		virtual QString resolveFilename (const QString &filename, const QStringList &pluginPaths=Settings::instance ().pluginPaths) const;
 };
 
 #endif

@@ -9,7 +9,6 @@
 
 #include <QFile>
 
-#include "src/config/Settings.h"
 #include "src/text.h"
 
 Plugin::Plugin ()
@@ -34,7 +33,8 @@ bool Plugin::filenameIsAbsolute (const QString &filename) const
 		filename.trimmed ().startsWith ("./");
 }
 
-QString Plugin::resolveFilename (const QString &filename) const
+// FIXME no default
+QString Plugin::resolveFilename (const QString &filename, const QStringList &pluginPaths) const
 {
 	// FIXME Windows
 
@@ -46,8 +46,7 @@ QString Plugin::resolveFilename (const QString &filename) const
 		return filename;
 
 	// Search in the plugin paths
-	// FIXME will not reflect current changes
-	foreach (const QString &path, Settings::instance ().pluginPaths)
+	foreach (const QString &path, pluginPaths)
 	{
 		QString full=path+"/"+filename;
 		if (QFile::exists (full))

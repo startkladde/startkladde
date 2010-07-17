@@ -1,5 +1,7 @@
 #include "InfoPluginSettingsPane.h"
 
+#include <QDebug>
+
 #include "src/plugin/info/InfoPlugin.h"
 
 /**
@@ -53,3 +55,10 @@ bool InfoPluginSettingsPane::writeSettings ()
 
 	return true;
 }
+
+void InfoPluginSettingsPane::setSettingsWindow (SettingsWindow *settingsWindow)
+{
+	PluginSettingsPane::setSettingsWindow (settingsWindow);
+	infoPluginSettingsPane->setSettingsWindow (settingsWindow);
+}
+
