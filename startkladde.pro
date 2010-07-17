@@ -201,6 +201,7 @@ HEADERS += \
            src/util/color.h \
            src/util/environment.h \
            src/util/file.h \
+           src/util/io.h \
            src/util/qList.h \
            src/util/qString.h \
            src/util/time.h \
@@ -325,6 +326,7 @@ SOURCES += \
            src/util/color.cpp \
            src/util/environment.cpp \
            src/util/file.cpp \
+           src/util/io.cpp \
            src/util/qList.cpp \
            src/util/qString.cpp \
            src/util/time.cpp \

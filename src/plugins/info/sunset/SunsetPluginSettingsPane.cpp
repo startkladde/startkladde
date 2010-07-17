@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QDebug>
 
+#include "src/plugins/info/sunset/SunsetPluginBase.h"
 #include "src/util/qString.h"
 #include "src/util/file.h"
 #include "src/text.h"

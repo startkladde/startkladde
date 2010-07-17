@@ -18,7 +18,7 @@
 
 REGISTER_INFO_PLUGIN (TestPlugin)
 
-TestPlugin::TestPlugin (QString caption, bool enabled, const QString &greetingName, bool richText):
+TestPlugin::TestPlugin (const QString &caption, bool enabled, const QString &greetingName, bool richText):
 	InfoPlugin (caption, enabled),
 	greetingName (greetingName), richText (richText)
 {

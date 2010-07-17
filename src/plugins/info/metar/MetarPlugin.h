@@ -44,7 +44,8 @@ class MetarPlugin: public InfoPlugin
 		QNetworkReply *reply;
 		QTimer *timer;
 
-		QString extractMetar (const QString &reply);
+//		QString extractMetar (const QString &reply);
+		QString extractMetar (QIODevice &reply);
 
 	private slots:
 		void refresh ();

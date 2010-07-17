@@ -10,6 +10,9 @@
 #include <QRegExp>
 #include <QDebug>
 
+#include "src/util/io.h"
+
+
 /**
  * Throws FileOpenError
  *
@@ -23,14 +26,7 @@ bool findInFile (const QString &filename, QRegExp &regexp)
 	if (!file.open (QIODevice::ReadOnly))
 		throw FileOpenError (filename, file.error (), file.errorString ());
 
-	while (!file.atEnd ())
-	{
-		QString line=QString::fromUtf8 (file.readLine ().constData ());
-		if (line.trimmed ().contains (regexp))
-    		return true;
-	}
-
-	return false;
+	return findInIoDevice (file, regexp);
 }
 
 /**
@@ -49,16 +45,8 @@ QString findInFile (const QString &filename, const QRegExp &regexp, int group)
 	// we want to pass a const& so we can use an anonymous value in calls).
 	QRegExp re (regexp);
 
-	QFile file (filename);
-	if (!file.open (QIODevice::ReadOnly))
-		throw FileOpenError (filename, file.error (), file.errorString ());
-
-	while (!file.atEnd ())
-	{
-		QString line=QString::fromUtf8 (file.readLine ().constData ());
-    	if (line.trimmed ().contains (re))
-    		return re.cap (group);
-	}
-
-	return QString ();
+	if (findInFile (filename, re))
+		return re.cap (group);
+	else
+		return QString ();
 }

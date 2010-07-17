@@ -2,6 +2,7 @@
 
 #include "src/util/qString.h"
 #include "src/gui/dialogs.h"
+#include "src/plugins/info/metar/MetarPlugin.h"
 
 MetarPluginSettingsPane::MetarPluginSettingsPane (MetarPlugin *plugin, QWidget *parent):
 	PluginSettingsPane (parent),

@@ -2,6 +2,7 @@
 
 #include "src/util/qString.h"
 #include "src/gui/dialogs.h"
+#include "src/plugins/info/test/TestPlugin.h"
 
 TestPluginSettingsPane::TestPluginSettingsPane (TestPlugin *plugin, QWidget *parent):
 	PluginSettingsPane (parent),

@@ -10,8 +10,6 @@
 
 extern const QString whitespace;
 
-// FIXME use const QString & instead of QString where possible
-
 bool isBlank (const QString &string);
 bool isNone (const QString &eintrag);
 bool isNone (const QString &eintrag1, const QString &eintrag2);

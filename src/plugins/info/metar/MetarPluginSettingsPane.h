@@ -4,9 +4,9 @@
 #include "src/plugin/settings/PluginSettingsPane.h"
 #include "ui_MetarPluginSettingsPane.h"
 
-#include "src/plugins/info/metar/MetarPlugin.h"
-
 #include <QtGui/QWidget>
+
+class MetarPlugin;
 
 class MetarPluginSettingsPane: public PluginSettingsPane
 {

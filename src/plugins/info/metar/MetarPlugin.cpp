@@ -17,6 +17,7 @@
 #include "src/plugin/info/InfoPluginFactory.h"
 #include "MetarPluginSettingsPane.h"
 #include "src/util/qString.h"
+#include "src/util/io.h"
 
 REGISTER_INFO_PLUGIN (MetarPlugin)
 
@@ -127,7 +128,8 @@ void MetarPlugin::refresh ()
 	}
 }
 
-QString MetarPlugin::extractMetar (const QString &reply)
+//QString MetarPlugin::extractMetar (const QString &reply)
+QString MetarPlugin::extractMetar (QIODevice &reply)
 {
 	// The relevant section of the page:
 	//
@@ -135,12 +137,8 @@ QString MetarPlugin::extractMetar (const QString &reply)
 	//EDDF 311920Z 26009KT 9999 FEW012 SCT019 BKN023 13/11 Q1015 NOSIG
 	//
 	//</font>
-	// FIXME use IODevice.readLine?
-	foreach (const QString &line, reply.split ("\n"))
-		if (line.startsWith (airport.trimmed ().toUpper ()))
-			return line;
-
-	return QString ();
+	QString re=QString ("^%1.*$").arg (airport.trimmed ().toUpper ());
+	return findInIoDevice (reply, QRegExp (re), 0);
 }
 
 void MetarPlugin::replyFinished ()
@@ -148,7 +146,7 @@ void MetarPlugin::replyFinished ()
 	if (!reply) return; // May happen if the plugin is terminated while the request is still active
 	if (sender ()!=reply) return;
 
-	QString metar=extractMetar (reply->readAll ());
+	QString metar=extractMetar (*reply);
 
 	if (metar.isEmpty ())
 		outputText (utf8 ("Fehler: Keine Wettermeldung für %1 gefunden").arg (airport));

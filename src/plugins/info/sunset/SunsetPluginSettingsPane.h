@@ -4,10 +4,9 @@
 #include "src/plugin/settings/PluginSettingsPane.h"
 #include "ui_SunsetPluginSettingsPane.h"
 
-// FIXME forward declaration sufficient? (also other plugins)
-#include "src/plugins/info/sunset/SunsetPluginBase.h"
-
 #include <QtGui/QWidget>
+
+class SunsetPluginBase;
 
 class SunsetPluginSettingsPane: public PluginSettingsPane
 {
