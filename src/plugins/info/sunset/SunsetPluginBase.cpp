@@ -17,6 +17,7 @@
 #include "src/util/file.h"
 #include "src/util/qString.h"
 #include "src/util/time.h"
+#include "src/config/Settings.h"
 
 
 // ******************
@@ -89,7 +90,7 @@ void SunsetPluginBase::start ()
 
 	if (isBlank (filename)) OUTPUT_AND_RETURN ("Keine Datei angegeben");
 
-	resolvedFilename=resolveFilename (filename);
+	resolvedFilename=resolveFilename (filename, Settings::instance ().pluginPaths);
 	if (isBlank (resolvedFilename)) OUTPUT_AND_RETURN ("Datei nicht gefunden");
 	if (!QFile::exists (resolvedFilename)) OUTPUT_AND_RETURN ("Datei existiert nicht");
 

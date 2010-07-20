@@ -8,6 +8,7 @@
 #include "Plugin.h"
 
 #include <QFile>
+#include <QStringList>
 
 #include "src/text.h"
 
@@ -33,7 +34,12 @@ bool Plugin::filenameIsAbsolute (const QString &filename) const
 		filename.trimmed ().startsWith ("./");
 }
 
-// FIXME no default
+/**
+ *
+ * @param filename
+ * @param pluginPaths usually, use Settings::instance ().pluginPaths
+ * @return
+ */
 QString Plugin::resolveFilename (const QString &filename, const QStringList &pluginPaths) const
 {
 	// FIXME Windows

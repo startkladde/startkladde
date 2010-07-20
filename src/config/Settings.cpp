@@ -116,10 +116,10 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 		{
 			s.setArrayIndex (i);
 
-			// FIXME handle not found
 			QString id=s.value ("id").toString ();
 			InfoPlugin *plugin=factory.create (id);
 
+			// TODO better handling if not found
 			if (plugin)
 			{
 				s.beginGroup ("settings");
@@ -142,15 +142,6 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 		plugins.append (new MetarPlugin ("Wetter:", true, "EDDF", 15));
 		plugins.append (new MetarPlugin (""       , true, "EDDS", 15));
 		plugins.append (new MetarPlugin (""       , true, "EDDM", 15));
-
-		// FIXME
-//		infoPlugins
-//			<< ShellPluginInfo ("Sunset:"         , "sunset_time.rb"     , true, false, 0  , false)
-//			<< ShellPluginInfo ("Zeit bis sunset:", "sunset_countdown.rb", true, true , 60 , false)
-//			<< ShellPluginInfo ("Wetter:"         , "metar.rb EDDS"      , true, false, 600, false)
-//			<< ShellPluginInfo (""                , "metar.rb EDDF"      , true, false, 600, false)
-//			<< ShellPluginInfo (""                , "metar.rb EDFM"      , true, false, 600, false)
-//			;
 	}
 
 	return plugins;
