@@ -18,7 +18,7 @@
 #include "src/text.h"
 
 REGISTER_INFO_PLUGIN (SunsetCountdownPlugin)
-
+SK_PLUGIN_DEFINITION (SunsetCountdownPlugin, "sunset_countdown", "Sunset-Countdown", utf8 ("Zeigt die verbleibende Zeit bis Sonnenuntergang an"))
 
 // ******************
 // ** Construction **
@@ -37,21 +37,6 @@ SunsetCountdownPlugin::~SunsetCountdownPlugin ()
 // ********************
 // ** Plugin methods **
 // ********************
-
-QString SunsetCountdownPlugin::getId () const
-{
-	return "sunset_countdown";
-}
-
-QString SunsetCountdownPlugin::getName () const
-{
-	return "Sunset-Countdown";
-}
-
-QString SunsetCountdownPlugin::getDescription () const
-{
-	return utf8 ("Zeigt die verbleibende Zeit bis Sonnenuntergang an");
-}
 
 /**
  * Calls SunsetPluginBase::start and update

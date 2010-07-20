@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QList>
+#include <QHash>
 
 #include "src/plugin/info/InfoPlugin.h" // required for InfoPlugin::Descriptor
 
@@ -12,7 +13,8 @@
  *
  * Use this macro in the cpp file of the plugin implementation.
  */
-#define REGISTER_INFO_PLUGIN(klass) InfoPluginFactory::Registration klass ## Descriptor (new InfoPlugin::DefaultDescriptor<klass> ());
+#define REGISTER_INFO_PLUGIN(klass) InfoPluginFactory::Registration klass ## Descriptor \
+	(new InfoPlugin::DefaultDescriptor<klass> ());
 
 /**
  * A factory for creating InfoPlugin instances
@@ -63,13 +65,14 @@ class InfoPluginFactory
 		// *************
 
 	public:
-		const QList<const InfoPlugin::Descriptor *> &getDescriptors ();
+		const QList<const InfoPlugin::Descriptor *> getDescriptors ();
 		InfoPlugin *create (const QString &id) const;
 
 	private:
 		void addDescriptor (InfoPlugin::Descriptor *descriptor);
-		QList<const InfoPlugin::Descriptor *> descriptors;
 		const InfoPlugin::Descriptor *find (const QString &id) const;
+
+		QHash<QString, const InfoPlugin::Descriptor *> descriptors;
 };
 
 #endif

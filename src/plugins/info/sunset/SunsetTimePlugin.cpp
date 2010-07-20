@@ -17,7 +17,7 @@
 #include "src/text.h"
 
 REGISTER_INFO_PLUGIN (SunsetTimePlugin)
-
+SK_PLUGIN_DEFINITION (SunsetTimePlugin, "sunset", "Sunset", utf8 ("Zeigt die Sonnenuntergangszeit an"))
 
 // ******************
 // ** Construction **
@@ -36,21 +36,6 @@ SunsetTimePlugin::~SunsetTimePlugin ()
 // ********************
 // ** Plugin methods **
 // ********************
-
-QString SunsetTimePlugin::getId () const
-{
-	return "sunset";
-}
-
-QString SunsetTimePlugin::getName () const
-{
-	return "Sunset";
-}
-
-QString SunsetTimePlugin::getDescription () const
-{
-	return utf8 ("Zeigt die Sonnenuntergangszeit an");
-}
 
 const QString timeFormat="hh:mm";
 

@@ -21,6 +21,7 @@
 #include "src/net/Network.h"
 
 REGISTER_INFO_PLUGIN (MetarPlugin)
+SK_PLUGIN_DEFINITION (MetarPlugin, "metar", "METAR", "Zeigt METAR-Meldungen in (Internetverbindung erforderlich)")
 
 MetarPlugin::MetarPlugin (const QString &caption, bool enabled, const QString &airport, int refreshInterval):
 	InfoPlugin (caption, enabled),
@@ -32,21 +33,6 @@ MetarPlugin::MetarPlugin (const QString &caption, bool enabled, const QString &a
 
 MetarPlugin::~MetarPlugin ()
 {
-}
-
-QString MetarPlugin::getId () const
-{
-	return "metar";
-}
-
-QString MetarPlugin::getName () const
-{
-	return "METAR";
-}
-
-QString MetarPlugin::getDescription () const
-{
-	return utf8 ("Zeigt METAR-Meldungen an (Internetverbindung erforderlich)");
 }
 
 PluginSettingsPane *MetarPlugin::infoPluginCreateSettingsPane (QWidget *parent)

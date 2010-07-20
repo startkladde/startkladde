@@ -33,16 +33,18 @@ class InfoPlugin: public Plugin
 				virtual QString getId          () const=0;
 				virtual QString getName        () const=0;
 				virtual QString getDescription () const=0;
+
+			private:
+				QString id, name, description;
 		};
 
 		template<class T> class DefaultDescriptor: public Descriptor
 		{
 			public:
 				virtual InfoPlugin *create () const { return new T (); }
-				// FIXME read all at once, or only when required?
-				virtual QString getId          () const { return T ().getId          (); }
-				virtual QString getName        () const { return T ().getName        (); }
-				virtual QString getDescription () const { return T ().getDescription (); }
+				virtual QString getId          () const { return T::_getId          (); }
+				virtual QString getName        () const { return T::_getName        (); }
+				virtual QString getDescription () const { return T::_getDescription (); }
 		};
 
 
@@ -108,6 +110,8 @@ class InfoPlugin: public Plugin
 		 * retained.
 		 */
 		bool enabled;
+
+		Descriptor *descriptor;
 };
 
 #endif

@@ -5,13 +5,11 @@
 
 class SunsetTimePlugin: public SunsetPluginBase
 {
+	SK_PLUGIN
+
 	public:
 		SunsetTimePlugin (QString caption=QString (), bool enabled=true, const QString &filename="sunsets.txt");
 		virtual ~SunsetTimePlugin ();
-
-		virtual QString getId          () const;
-		virtual QString getName        () const;
-		virtual QString getDescription () const;
 
 		virtual void start ();
 

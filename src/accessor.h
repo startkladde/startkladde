@@ -60,6 +60,7 @@
         bool_reader (capitalName, name) \
         bool_writer (capitalName, name)
 
+// TODO: read value as const &
 
 
 

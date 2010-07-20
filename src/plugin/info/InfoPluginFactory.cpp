@@ -21,7 +21,8 @@ InfoPluginFactory::InfoPluginFactory ()
 
 InfoPluginFactory::~InfoPluginFactory ()
 {
-	deleteList (descriptors);
+	QList<const InfoPlugin::Descriptor *> list=descriptors.values ();
+	deleteList (list);
 }
 
 
@@ -56,7 +57,7 @@ InfoPluginFactory &InfoPluginFactory::getInstance ()
  */
 void InfoPluginFactory::addDescriptor (InfoPlugin::Descriptor *descriptor)
 {
-	descriptors.append (descriptor);
+	descriptors.insert (descriptor->getId (), descriptor);
 }
 
 /**
@@ -65,9 +66,9 @@ void InfoPluginFactory::addDescriptor (InfoPlugin::Descriptor *descriptor)
  * @return a list of pointers to info plugin descriptors. The caller may not
  *         delete any of the pointers.
  */
-const QList<const InfoPlugin::Descriptor *> &InfoPluginFactory::getDescriptors ()
+const QList<const InfoPlugin::Descriptor *> InfoPluginFactory::getDescriptors ()
 {
-	return descriptors;
+	return descriptors.values ();
 }
 
 /**
@@ -85,12 +86,7 @@ const QList<const InfoPlugin::Descriptor *> &InfoPluginFactory::getDescriptors (
  */
 const InfoPlugin::Descriptor *InfoPluginFactory::find (const QString &id) const
 {
-	// FIXME use a hash/map
-	foreach (const InfoPlugin::Descriptor *descriptor, descriptors)
-		if (descriptor->getId ()==id)
-			return descriptor;
-
-	return NULL;
+	return descriptors.value (id);
 }
 
 /**

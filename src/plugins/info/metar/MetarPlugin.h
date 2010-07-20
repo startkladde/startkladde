@@ -16,6 +16,7 @@
 class MetarPlugin: public InfoPlugin
 {
 		Q_OBJECT
+		SK_PLUGIN
 
 	public:
 		MetarPlugin (const QString &caption=QString (), bool enabled=true, const QString &airport="EDDF", int refreshInterval=15);
@@ -23,10 +24,6 @@ class MetarPlugin: public InfoPlugin
 
 		virtual void start ();
 		virtual void terminate ();
-
-		virtual QString getId          () const;
-		virtual QString getName        () const;
-		virtual QString getDescription () const;
 
 		virtual PluginSettingsPane *infoPluginCreateSettingsPane (QWidget *parent=NULL);
 

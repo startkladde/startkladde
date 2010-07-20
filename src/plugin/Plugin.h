@@ -9,6 +9,24 @@ class QWidget;
 class PluginSettingsPane;
 class QSettings;
 
+#define SK_PLUGIN \
+	public: \
+		virtual QString getId          () const; \
+		virtual QString getName        () const; \
+		virtual QString getDescription () const; \
+		static QString _getId          (); \
+		static QString _getName        (); \
+		static QString _getDescription ();
+
+#define SK_PLUGIN_DEFINITION(klass, id, name, description) \
+	QString klass::getId           () const { return id;          } \
+	QString klass::getName         () const { return name;        } \
+	QString klass::getDescription  () const { return description; } \
+	QString klass::_getId          ()       { return id;          } \
+	QString klass::_getName        ()       { return name;        } \
+	QString klass::_getDescription ()       { return description; }
+
+
 /**
  * A common base class for all plugins
  *

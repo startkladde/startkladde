@@ -22,16 +22,14 @@
  */
 class TestPlugin: public InfoPlugin
 {
+		SK_PLUGIN
+
 	public:
 		TestPlugin (const QString &caption=QString (), bool enabled=true, const QString &greetingName="TestPlugin", bool richText=false);
 		virtual ~TestPlugin ();
 
 		virtual void start ();
 		virtual void terminate ();
-
-		virtual QString getId          () const;
-		virtual QString getName        () const;
-		virtual QString getDescription () const;
 
 		virtual PluginSettingsPane *infoPluginCreateSettingsPane (QWidget *parent=NULL);
 

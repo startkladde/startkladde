@@ -17,6 +17,7 @@
 #include "src/util/qString.h"
 
 REGISTER_INFO_PLUGIN (TestPlugin)
+SK_PLUGIN_DEFINITION (TestPlugin, "test", "Test", utf8 ("Gibt eine Begrüßung und die aktuelle Uhrzeit aus"))
 
 TestPlugin::TestPlugin (const QString &caption, bool enabled, const QString &greetingName, bool richText):
 	InfoPlugin (caption, enabled),
@@ -30,20 +31,20 @@ TestPlugin::~TestPlugin ()
 	qDebug () << "Destroying test plugin";
 }
 
-QString TestPlugin::getId () const
-{
-	return "test";
-}
-
-QString TestPlugin::getName () const
-{
-	return "Test";
-}
-
-QString TestPlugin::getDescription () const
-{
-	return utf8 ("Gibt eine Begrüßung und die aktuelle Uhrzeit aus");
-}
+//QString TestPlugin::getId () const
+//{
+//	return "test";
+//}
+//
+//QString TestPlugin::getName () const
+//{
+//	return "Test";
+//}
+//
+//QString TestPlugin::getDescription () const
+//{
+//	return utf8 ("Gibt eine Begrüßung und die aktuelle Uhrzeit aus");
+//}
 
 PluginSettingsPane *TestPlugin::infoPluginCreateSettingsPane (QWidget *parent)
 {
