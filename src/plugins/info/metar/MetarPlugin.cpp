@@ -21,7 +21,7 @@
 #include "src/net/Network.h"
 
 REGISTER_INFO_PLUGIN (MetarPlugin)
-SK_PLUGIN_DEFINITION (MetarPlugin, "metar", "METAR", "Zeigt METAR-Meldungen in (Internetverbindung erforderlich)")
+SK_PLUGIN_DEFINITION (MetarPlugin, "{4a6c7218-42ae-475d-8fd9-a2a131c1aa90}", "METAR", "Zeigt METAR-Meldungen in (Internetverbindung erforderlich)")
 
 MetarPlugin::MetarPlugin (const QString &caption, bool enabled, const QString &airport, int refreshInterval):
 	InfoPlugin (caption, enabled),

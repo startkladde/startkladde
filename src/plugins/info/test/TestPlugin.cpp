@@ -17,7 +17,8 @@
 #include "src/util/qString.h"
 
 REGISTER_INFO_PLUGIN (TestPlugin)
-SK_PLUGIN_DEFINITION (TestPlugin, "test", "Test", utf8 ("Gibt eine Begrüßung und die aktuelle Uhrzeit aus"))
+SK_PLUGIN_DEFINITION (TestPlugin, "{80e116f8-06d5-44ce-802a-e1b727b98af2}", "Test",
+	utf8 ("Gibt eine Begrüßung und die aktuelle Uhrzeit aus"))
 
 TestPlugin::TestPlugin (const QString &caption, bool enabled, const QString &greetingName, bool richText):
 	InfoPlugin (caption, enabled),

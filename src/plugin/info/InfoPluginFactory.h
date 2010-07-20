@@ -4,6 +4,7 @@
 #include <QString>
 #include <QList>
 #include <QHash>
+#include <QUuid>
 
 #include "src/plugin/info/InfoPlugin.h" // required for InfoPlugin::Descriptor
 
@@ -66,13 +67,13 @@ class InfoPluginFactory
 
 	public:
 		const QList<const InfoPlugin::Descriptor *> getDescriptors ();
-		InfoPlugin *create (const QString &id) const;
+		InfoPlugin *create (const QUuid &id) const;
 
 	private:
 		void addDescriptor (InfoPlugin::Descriptor *descriptor);
-		const InfoPlugin::Descriptor *find (const QString &id) const;
+		const InfoPlugin::Descriptor *find (const QUuid &id) const;
 
-		QHash<QString, const InfoPlugin::Descriptor *> descriptors;
+		QHash<QUuid, const InfoPlugin::Descriptor *> descriptors;
 };
 
 #endif

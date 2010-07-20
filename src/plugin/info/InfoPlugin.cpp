@@ -67,3 +67,18 @@ void InfoPlugin::writeSettings (QSettings &settings)
 	settings.setValue ("enabled", enabled);
 	infoPluginWriteSettings (settings);
 }
+
+
+// ****************
+// ** Descriptor **
+// ****************
+
+bool InfoPlugin::Descriptor::nameLessThan (const InfoPlugin::Descriptor &d1, const InfoPlugin::Descriptor &d2)
+{
+	return d1.getName () < d2.getName ();
+}
+
+bool InfoPlugin::Descriptor::nameLessThanP (const InfoPlugin::Descriptor *d1, const InfoPlugin::Descriptor *d2)
+{
+	return nameLessThan (*d1, *d2);
+}

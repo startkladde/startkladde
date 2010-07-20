@@ -17,7 +17,7 @@
 #include "src/text.h"
 
 REGISTER_INFO_PLUGIN (SunsetTimePlugin)
-SK_PLUGIN_DEFINITION (SunsetTimePlugin, "sunset", "Sunset", utf8 ("Zeigt die Sonnenuntergangszeit an"))
+SK_PLUGIN_DEFINITION (SunsetTimePlugin, "{1998d604-e819-4aee-af3d-f0c5cee4c508}", "Sunset", utf8 ("Zeigt die Sonnenuntergangszeit an"))
 
 // ******************
 // ** Construction **

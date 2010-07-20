@@ -8,6 +8,8 @@
 #ifndef INFOPLUGIN_H_
 #define INFOPLUGIN_H_
 
+#include <QUuid>
+
 #include "src/plugin/Plugin.h"
 #include "src/accessor.h"
 
@@ -30,9 +32,12 @@ class InfoPlugin: public Plugin
 		{
 			public:
 				virtual InfoPlugin *create () const=0;
-				virtual QString getId          () const=0;
+				virtual QUuid   getId          () const=0;
 				virtual QString getName        () const=0;
 				virtual QString getDescription () const=0;
+
+				static bool nameLessThan (const InfoPlugin::Descriptor &d1, const InfoPlugin::Descriptor &d2);
+				static bool nameLessThanP (const InfoPlugin::Descriptor *d1, const InfoPlugin::Descriptor *d2);
 
 			private:
 				QString id, name, description;
@@ -42,7 +47,7 @@ class InfoPlugin: public Plugin
 		{
 			public:
 				virtual InfoPlugin *create () const { return new T (); }
-				virtual QString getId          () const { return T::_getId          (); }
+				virtual QUuid   getId          () const { return T::_getId          (); }
 				virtual QString getName        () const { return T::_getName        (); }
 				virtual QString getDescription () const { return T::_getDescription (); }
 		};

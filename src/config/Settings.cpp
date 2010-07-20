@@ -159,7 +159,7 @@ void Settings::writeInfoPlugins (const QList<InfoPlugin *> &plugins)
 		s.setArrayIndex (i);
 
 		InfoPlugin *plugin=plugins[i];
-		s.setValue ("id", plugin->getId ());
+		s.setValue ("id", plugin->getId ().toString ());
 
 		s.beginGroup ("settings");
 		plugin->writeSettings (s);

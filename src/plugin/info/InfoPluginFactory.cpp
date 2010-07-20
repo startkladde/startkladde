@@ -7,9 +7,12 @@
 
 #include "InfoPluginFactory.h"
 
+#include <iostream>
+
 #include <QList>
 
 #include "src/util/qList.h"
+#include "src/util/qString.h"
 
 // ******************
 // ** Construction **
@@ -57,7 +60,24 @@ InfoPluginFactory &InfoPluginFactory::getInstance ()
  */
 void InfoPluginFactory::addDescriptor (InfoPlugin::Descriptor *descriptor)
 {
-	descriptors.insert (descriptor->getId (), descriptor);
+	if (descriptor->getId ().isNull ())
+	{
+		QString message=QString ("Error: invalid UUID for plugin %1").arg (descriptor->getName ());
+		std::cerr << message << std::endl;
+	}
+	else if (descriptors.contains (descriptor->getId ()))
+	{
+		QString message=QString ("Error: duplicate UUID %1 for plugins %2 and %3").arg (
+				descriptor->getId (),
+				descriptor->getName (),
+				descriptors.value (descriptor->getId ())->getName ());
+
+		std::cerr << message << std::endl;
+	}
+	else
+	{
+		descriptors.insert (descriptor->getId (), descriptor);
+	}
 }
 
 /**
@@ -84,7 +104,7 @@ const QList<const InfoPlugin::Descriptor *> InfoPluginFactory::getDescriptors ()
  * @param id the ID of the plugin to find
  * @return a pointer to the descriptor for the plugin, or NULL
  */
-const InfoPlugin::Descriptor *InfoPluginFactory::find (const QString &id) const
+const InfoPlugin::Descriptor *InfoPluginFactory::find (const QUuid &id) const
 {
 	return descriptors.value (id);
 }
@@ -100,7 +120,7 @@ const InfoPlugin::Descriptor *InfoPluginFactory::find (const QString &id) const
  * @return an InfoPlugin instance, or NULL
  * @see #find
  */
-InfoPlugin *InfoPluginFactory::create (const QString &id) const
+InfoPlugin *InfoPluginFactory::create (const QUuid &id) const
 {
 	const InfoPlugin::Descriptor *descriptor=find (id);
 	if (!descriptor) return NULL;
