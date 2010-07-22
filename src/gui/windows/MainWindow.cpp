@@ -131,10 +131,16 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	ui.actionShutdown->setVisible (Settings::instance ().enableShutdown);
 
+#if defined(Q_OS_WIN32)
+	bool virtualKeyboardEnabled=false;
+#elif defined(Q_OS_WIN64)
+	bool virtualKeyboardEnabled=false;
+#else
 	bool virtualKeyboardEnabled = (
 		system ("which kvkbd >/dev/null") == 0 &&
 		system ("which dbus-send >/dev/null") == 0);
 		//system ("which dcop >/dev/null") == 0);
+#endif
 
 	ui.actionShowVirtualKeyboard->setVisible (virtualKeyboardEnabled);
 //	ui.actionShowVirtualKeyboard->setIcon (QIcon ((const QPixmap&)QPixmap (kvkbd)));

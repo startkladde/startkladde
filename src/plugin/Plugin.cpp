@@ -8,9 +8,13 @@
 #include "Plugin.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QStringList>
+#include <QDebug>
+#include <QDir>
 
 #include "src/text.h"
+#include "src/util/qString.h"
 
 Plugin::Plugin ()
 {
@@ -26,12 +30,23 @@ void Plugin::restart ()
 	start ();
 }
 
+/**
+ * Determines whether a file name is absolute
+ *
+ * A file name is considered absolute if QFileInfo::isAbsolute returns true, or
+ * if the file name starts with "./" (or ".\\").
+ *
+ * @param filename a file name
+ * @return true if filename is absolute, false if not
+ */
 bool Plugin::filenameIsAbsolute (const QString &filename) const
 {
-	// FIXME Windows
-	return
-		filename.trimmed ().startsWith ("/") ||
-		filename.trimmed ().startsWith ("./");
+	// We treat file names with the explicit directory ./ as absolute
+	if (filename.startsWith ("./")) return true;
+	if (filename.startsWith (".\\")) return true;
+	if (QFileInfo (filename).isAbsolute ()) return true;
+
+	return false;
 }
 
 /**
@@ -42,8 +57,6 @@ bool Plugin::filenameIsAbsolute (const QString &filename) const
  */
 QString Plugin::resolveFilename (const QString &filename, const QStringList &pluginPaths) const
 {
-	// FIXME Windows
-
 	if (isBlank (filename))
 		return "";
 

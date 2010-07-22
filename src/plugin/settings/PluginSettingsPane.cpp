@@ -25,13 +25,7 @@ PluginSettingsPane::~PluginSettingsPane ()
 QStringList PluginSettingsPane::getEffectivePluginPaths ()
 {
 	if (settingsWindow)
-	{
-		std::cout << "using settings window" << std::endl;
 		return settingsWindow->getPluginPaths ();
-	}
 	else
-	{
-		std::cout << "using settings instance" << std::endl;
 		return Settings::instance ().pluginPaths;
-	}
 }
