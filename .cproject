@@ -138,7 +138,7 @@
 						<parser enabled="true"/>
 					</scannerInfoProvider>
 				</profile>
-				<scannerConfigBuildInfo instanceId="0.189254767.1799277531.2115467724">
+				<scannerConfigBuildInfo instanceId="0.189254767.1799277531">
 					<autodiscovery enabled="true" problemReportingEnabled="false" selectedProfileId="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
@@ -221,7 +221,7 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="0.189254767.1799277531">
+				<scannerConfigBuildInfo instanceId="0.189254767.1799277531.2115467724">
 					<autodiscovery enabled="true" problemReportingEnabled="false" selectedProfileId="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>

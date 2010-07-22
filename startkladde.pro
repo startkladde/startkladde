@@ -187,6 +187,8 @@ HEADERS += \
            src/plugin/info/InfoPluginSettingsPane.h \
            src/plugin/settings/PluginSettingsPane.h \
            src/plugin/settings/PluginSettingsDialog.h \
+           src/plugins/info/external/ExternalPlugin.h \
+           src/plugins/info/external/ExternalPluginSettingsPane.h \
            src/plugins/info/metar/MetarPlugin.h \
            src/plugins/info/metar/MetarPluginSettingsPane.h \
            src/plugins/info/sunset/SunsetPluginBase.h \
@@ -313,6 +315,8 @@ SOURCES += \
            src/plugin/info/InfoPluginSettingsPane.cpp \
            src/plugin/settings/PluginSettingsPane.cpp \
            src/plugin/settings/PluginSettingsDialog.cpp \
+           src/plugins/info/external/ExternalPlugin.cpp \
+           src/plugins/info/external/ExternalPluginSettingsPane.cpp \
            src/plugins/info/metar/MetarPlugin.cpp \
            src/plugins/info/metar/MetarPluginSettingsPane.cpp \
            src/plugins/info/sunset/SunsetPluginBase.cpp \
@@ -352,6 +356,7 @@ FORMS += \
            src/plugin/info/InfoPluginSelectionDialog.ui \
            src/plugin/info/InfoPluginSettingsPane.ui \
            src/plugin/settings/PluginSettingsDialog.ui \
+           src/plugins/info/external/ExternalPluginSettingsPane.ui \
            src/plugins/info/metar/MetarPluginSettingsPane.ui \
            src/plugins/info/sunset/SunsetPluginSettingsPane.ui \
            src/plugins/info/test/TestPluginSettingsPane.ui \
