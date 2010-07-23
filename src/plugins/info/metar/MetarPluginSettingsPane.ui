@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>451</width>
-    <height>70</height>
+    <height>74</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>TestPluginSettingsPane</string>
+   <string>MetarPluginSettingsPane</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="margin">

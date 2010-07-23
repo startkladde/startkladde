@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>513</width>
-    <height>269</height>
+    <width>679</width>
+    <height>291</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>TestPluginSettingsPane</string>
+   <string>SunsetPluginSettingsPane</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -55,7 +55,7 @@ Der Dateiname kann absolut oder relativ angegeben werden. Relative Dateinamen we
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Der Dateiname kann ohne Verzeichnis angegeben werden,
-sofern sich die Datei im Plugin-Pfad befindet.</string>
+sofern sich die Datei im Plugin-Pfad oder im Sytempfad befindet.</string>
        </property>
        <property name="wordWrap">
         <bool>false</bool>

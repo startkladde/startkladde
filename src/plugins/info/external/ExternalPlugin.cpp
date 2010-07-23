@@ -93,7 +93,6 @@ void ExternalPlugin::start ()
 	// subprocess->setWorkingDirectory (...);
 
 	connect (subprocess, SIGNAL (readyReadStandardOutput ()), this, SLOT (outputAvailable ()));
-	//connect (subprocess, SIGNAL (finished (int, QProcess::ExitStatus)), this, SLOT (subprocess_died ()));
 	connect (subprocess, SIGNAL (finished (int, QProcess::ExitStatus)), this, SLOT (processFinished ()));
 
 	subprocess->start (resolved+" "+parameters, QIODevice::ReadOnly);
@@ -115,12 +114,8 @@ void ExternalPlugin::terminate ()
 		}
 		else
 		{
-			// The process may still be running. Disconnect the regular
-			// termination signal and connect the "delete on finished" signal.
-			// The process may be deleted at any time (when it is finished), so
-			// it is important to set the pointer to NULL.
-			subprocess->disconnect (this);
-			connect (subprocess, SIGNAL (finished ()), this, SLOT (deleteAfterFinished ()));
+			// The process may still be running. Terminate it, it will be
+			// delete after it finishes.
 			subprocess->terminate ();
 		}
 

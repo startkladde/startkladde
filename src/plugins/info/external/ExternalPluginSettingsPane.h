@@ -20,6 +20,9 @@ class ExternalPluginSettingsPane: public PluginSettingsPane
 		virtual void readSettings ();
 		virtual bool writeSettings ();
 
+	private slots:
+		virtual void on_browseButton_clicked ();
+
 	private:
 		Ui::ExternalPluginSettingsPaneClass ui;
 
