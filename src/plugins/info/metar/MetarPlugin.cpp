@@ -57,7 +57,7 @@ void MetarPlugin::start ()
 	refresh ();
 
 	if (timer->isActive ()) timer->stop ();
-	timer->start (60*1000*refreshInterval);
+	timer->start (1000*refreshInterval);
 }
 
 void MetarPlugin::terminate ()
@@ -68,7 +68,7 @@ void MetarPlugin::terminate ()
 
 QString MetarPlugin::configText () const
 {
-	return utf8 ("%1 (%2 Minuten)").arg (airport).arg (refreshInterval);
+	return utf8 ("%1 (%2 Minuten)").arg (airport).arg (refreshInterval/60);
 }
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

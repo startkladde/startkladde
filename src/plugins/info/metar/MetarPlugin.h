@@ -19,7 +19,7 @@ class MetarPlugin: public InfoPlugin
 		SK_PLUGIN
 
 	public:
-		MetarPlugin (const QString &caption=QString (), bool enabled=true, const QString &airport="EDDF", int refreshInterval=15);
+		MetarPlugin (const QString &caption=QString (), bool enabled=true, const QString &airport="EDDF", int refreshInterval=15*60);
 		virtual ~MetarPlugin ();
 
 		virtual void start ();
@@ -37,7 +37,7 @@ class MetarPlugin: public InfoPlugin
 
 	private:
 		QString airport;
-		int refreshInterval;
+		int refreshInterval; // seconds
 		QNetworkReply *reply;
 		QTimer *timer;
 

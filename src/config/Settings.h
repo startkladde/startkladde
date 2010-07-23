@@ -68,11 +68,11 @@ class Settings: public QObject
 		QString weatherPluginCommand;
 		bool weatherPluginEnabled;
 		int weatherPluginHeight;
-		int weatherPluginInterval;
+		int weatherPluginInterval; // in seconds
 		// Weather dialog
 		QString weatherWindowCommand;
 		bool weatherWindowEnabled;
-		int weatherWindowInterval;
+		int weatherWindowInterval; // in seconds
 		QString weatherWindowTitle;
 
 		// *** Plugins - Paths

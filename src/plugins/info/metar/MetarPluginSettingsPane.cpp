@@ -20,13 +20,13 @@ MetarPluginSettingsPane::~MetarPluginSettingsPane()
 
 void MetarPluginSettingsPane::readSettings ()
 {
-	ui.airportInput         ->setText  (plugin->getAirport         ());
-	ui.refreshIntervalInput ->setValue (plugin->getRefreshInterval ());
+	ui.airportInput         ->setText  (plugin->getAirport         ()   );
+	ui.refreshIntervalInput ->setValue (plugin->getRefreshInterval ()/60);
 }
 
 bool MetarPluginSettingsPane::writeSettings ()
 {
-	plugin->setAirport         (ui.airportInput        ->text  ());
-	plugin->setRefreshInterval (ui.refreshIntervalInput->value ());
+	plugin->setAirport         (ui.airportInput        ->text  ()   );
+	plugin->setRefreshInterval (ui.refreshIntervalInput->value ()*60);
 	return true;
 }
