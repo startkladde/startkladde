@@ -23,6 +23,12 @@ WeatherWidget::WeatherWidget (QWidget *parent):
 	setTextFormat (Qt::RichText);
 }
 
+void WeatherWidget::setImage (const QImage &image)
+{
+	QPixmap pixmap=QPixmap::fromImage (image);
+	setPixmap (pixmap);
+}
+
 bool WeatherWidget::loadImage (const QString &fileName)
 {
 	setWordWrap (false);
@@ -37,7 +43,6 @@ bool WeatherWidget::loadImage (const QString &fileName)
 
 	int height=Settings::instance ().weatherPluginHeight;
 	setFixedSize (height*pixmap.width()/pixmap.height(), height);
-
 
 	return true;
 }

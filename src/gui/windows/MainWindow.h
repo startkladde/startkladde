@@ -48,6 +48,7 @@ template<class T> class QList;
 class QModelIndex;
 class FlightSortFilterProxyModel;
 class InfoPlugin;
+class WeatherPlugin;
 class ShellPlugin;
 class ShellPluginInfo;
 class WeatherWidget;
@@ -235,7 +236,7 @@ class MainWindow: public QMainWindow
 
 		QList<InfoPlugin *> infoPlugins;
 		WeatherWidget *weatherWidget;
-		ShellPlugin *weatherPlugin;
+		WeatherPlugin *weatherPlugin;
 		QPointer<WeatherDialog> weatherDialog;
 
 		EntityList<Flight> *flightList;

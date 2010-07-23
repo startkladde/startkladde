@@ -14,7 +14,7 @@
 #include "src/util/qString.h"
 #include "src/util/qList.h"
 #include "src/plugin/info/InfoPlugin.h"
-#include "src/plugin/info/InfoPluginFactory.h"
+#include "src/plugin/factory/PluginFactory.h"
 #include "src/plugins/info/test/TestPlugin.h"
 #include "src/plugins/info/metar/MetarPlugin.h"
 #include "src/plugins/info/sunset/SunsetTimePlugin.h"
@@ -104,7 +104,7 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 	QSettings s;
 	s.beginGroup ("settings");
 
-	InfoPluginFactory &factory=InfoPluginFactory::getInstance ();
+	PluginFactory &factory=PluginFactory::getInstance ();
 
 	// If no entry for infoPlugins exists, create a default set of plugins.
 	// Note that if no plugins are used, there is still an entry with 0
@@ -117,7 +117,7 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 			s.setArrayIndex (i);
 
 			QString id=s.value ("id").toString ();
-			InfoPlugin *plugin=factory.create (id);
+			InfoPlugin *plugin=factory.createInfoPlugin (id);
 
 			// TODO better handling if not found
 			if (plugin)

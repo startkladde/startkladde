@@ -27,6 +27,9 @@ class QUuid;
 	QString klass::_getName        ()       { return name;        } \
 	QString klass::_getDescription ()       { return description; }
 
+#define OUTPUT_AND_RETURN(text) do { outputText (utf8 (text)); return; } while (0)
+
+
 
 /**
  * A common base class for all plugins

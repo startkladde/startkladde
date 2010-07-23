@@ -48,6 +48,7 @@
 #include "src/plugin/info/InfoPlugin.h"
 #include "src/plugin/ShellPlugin.h"
 #include "src/plugin/ShellPluginInfo.h"
+#include "src/plugin/weather/WeatherPlugin.h"
 #include "src/statistics/LaunchMethodStatistics.h"
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"
@@ -58,6 +59,8 @@
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
+
+#include "src/plugins/weather/WetterOnlineImagePlugin.h" // FIXME REMOVE
 
 template <class T> class MutableObjectList;
 
@@ -349,15 +352,6 @@ void MainWindow::setupPlugins ()
 	delete weatherWidget;
 	weatherWidget=NULL;
 
-	// No longer required, plugins work now (with ruby)
-//#ifdef WIN32
-//	if (s.anyPluginsEnabled ())
-//	{
-//		s.disableAllPlugins ();
-//		s.save ();
-//		showWarning (utf8 ("Plugins deaktiviert"), utf8 ("Plugins werden unter Windows zur Zeit nicht unterstützt. Alle Plugins wurden deaktiviert."), this);
-//	}
-//#endif
 
 	bool showWeatherPlugin=(s.weatherPluginEnabled && !isBlank (s.weatherPluginCommand));
 	ui.weatherFrame->setVisible (showWeatherPlugin);
@@ -368,14 +362,21 @@ void MainWindow::setupPlugins ()
 		weatherWidget = new WeatherWidget (ui.weatherFrame);
 		ui.weatherFrame->layout ()->addWidget (weatherWidget);
 		weatherWidget->setFixedSize (s.weatherPluginHeight, s.weatherPluginHeight);
-		weatherWidget->setText ("[Wetter]");
+		weatherWidget->setText ("Wetter");
 
-		// Create and setup the weather plugin and connect it to the weather widget
-		weatherPlugin = new ShellPlugin ("Wetter", s.weatherPluginCommand, s.weatherPluginInterval);
-		QObject::connect (weatherPlugin, SIGNAL (lineRead (QString)), weatherWidget, SLOT (inputLine (QString)));
-		QObject::connect (weatherPlugin, SIGNAL (pluginNotFound ()), weatherWidget, SLOT (pluginNotFound ()));
-		QObject::connect (weatherWidget, SIGNAL (doubleClicked ()), this, SLOT (weatherWidget_doubleClicked ()));
+		// FIXME work in progress
+		weatherPlugin=new WetterOnlineImagePlugin ();
+		connect (weatherPlugin, SIGNAL (textOutput (const QString &, Qt::TextFormat)), weatherWidget, SLOT (setText (const QString &, Qt::TextFormat)));
+		connect (weatherPlugin, SIGNAL (imageOutput (const QImage &)), weatherWidget, SLOT (setImage (const QImage &)));
+		connect (weatherWidget, SIGNAL (doubleClicked ()), this, SLOT (weatherWidget_doubleClicked ()));
 		weatherPlugin->start ();
+
+//		// Create and setup the weather plugin and connect it to the weather widget
+//		weatherPlugin = new ShellPlugin ("Wetter", s.weatherPluginCommand, s.weatherPluginInterval);
+//		QObject::connect (weatherPlugin, SIGNAL (lineRead (QString)), weatherWidget, SLOT (inputLine (QString)));
+//		QObject::connect (weatherPlugin, SIGNAL (pluginNotFound ()), weatherWidget, SLOT (pluginNotFound ()));
+//		QObject::connect (weatherWidget, SIGNAL (doubleClicked ()), this, SLOT (weatherWidget_doubleClicked ()));
+//		weatherPlugin->start ();
 	}
 
 }

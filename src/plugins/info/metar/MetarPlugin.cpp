@@ -7,6 +7,8 @@
 
 #include "MetarPlugin.h"
 
+// FIXME use Downloader
+
 //#include <QDebug>
 #include <QSettings>
 #include <QRegExp>
@@ -14,7 +16,7 @@
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
 
-#include "src/plugin/info/InfoPluginFactory.h"
+#include "src/plugin/factory/PluginFactory.h"
 #include "MetarPluginSettingsPane.h"
 #include "src/util/qString.h"
 #include "src/util/io.h"

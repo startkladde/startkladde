@@ -10,7 +10,7 @@
 #include <QFile>
 #include <QSettings>
 
-#include "src/plugin/info/InfoPluginFactory.h"
+#include "src/plugin/factory/PluginFactory.h"
 #include "src/util/qString.h"
 #include "src/util/file.h"
 #include "src/util/time.h"

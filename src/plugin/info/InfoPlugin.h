@@ -115,8 +115,6 @@ class InfoPlugin: public Plugin
 		 * retained.
 		 */
 		bool enabled;
-
-		Descriptor *descriptor;
 };
 
 #endif

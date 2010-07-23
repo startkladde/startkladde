@@ -179,17 +179,19 @@ HEADERS += \
            src/model/objectList/MutableObjectList.h \
            src/model/objectList/ObjectListModel.h \
            src/model/objectList/ObjectModel.h \
+           src/net/Downloader.h \
            src/net/Network.h \
            src/net/TcpProxy.h \
            src/plugin/Plugin.h \
            src/plugin/ShellPlugin.h \
            src/plugin/ShellPluginInfo.h \
+           src/plugin/factory/PluginFactory.h \
            src/plugin/info/InfoPlugin.h \
-           src/plugin/info/InfoPluginFactory.h \
            src/plugin/info/InfoPluginSelectionDialog.h \
            src/plugin/info/InfoPluginSettingsPane.h \
            src/plugin/settings/PluginSettingsPane.h \
            src/plugin/settings/PluginSettingsDialog.h \
+           src/plugin/weather/WeatherPlugin.h \
            src/plugins/info/external/ExternalPlugin.h \
            src/plugins/info/external/ExternalPluginSettingsPane.h \
            src/plugins/info/metar/MetarPlugin.h \
@@ -200,6 +202,7 @@ HEADERS += \
            src/plugins/info/sunset/SunsetPluginSettingsPane.h \
            src/plugins/info/test/TestPlugin.h \
            src/plugins/info/test/TestPluginSettingsPane.h \
+           src/plugins/weather/WetterOnlineImagePlugin.h \
            src/statistics/LaunchMethodStatistics.h \
            src/statistics/PilotLog.h \
            src/statistics/PlaneLog.h \
@@ -307,17 +310,19 @@ SOURCES += \
            src/model/flightList/FlightModel.cpp \
            src/model/flightList/FlightProxyList.cpp \
            src/model/flightList/FlightSortFilterProxyModel.cpp \
+           src/net/Downloader.cpp \
            src/net/Network.cpp \
            src/net/TcpProxy.cpp \
            src/plugin/Plugin.cpp \
            src/plugin/ShellPlugin.cpp \
            src/plugin/ShellPluginInfo.cpp \
+           src/plugin/factory/PluginFactory.cpp \
            src/plugin/info/InfoPlugin.cpp \
-           src/plugin/info/InfoPluginFactory.cpp \
            src/plugin/info/InfoPluginSelectionDialog.cpp \
            src/plugin/info/InfoPluginSettingsPane.cpp \
            src/plugin/settings/PluginSettingsPane.cpp \
            src/plugin/settings/PluginSettingsDialog.cpp \
+           src/plugin/weather/WeatherPlugin.cpp \
            src/plugins/info/external/ExternalPlugin.cpp \
            src/plugins/info/external/ExternalPluginSettingsPane.cpp \
            src/plugins/info/metar/MetarPlugin.cpp \
@@ -328,6 +333,7 @@ SOURCES += \
            src/plugins/info/sunset/SunsetPluginSettingsPane.cpp \
            src/plugins/info/test/TestPlugin.cpp \
            src/plugins/info/test/TestPluginSettingsPane.cpp \
+           src/plugins/weather/WetterOnlineImagePlugin.cpp \
            src/statistics/LaunchMethodStatistics.cpp \
            src/statistics/PilotLog.cpp \
            src/statistics/PlaneLog.cpp \

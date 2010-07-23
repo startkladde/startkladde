@@ -25,7 +25,7 @@
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
 #include "src/plugin/info/InfoPlugin.h"
-#include "src/plugin/info/InfoPluginFactory.h"
+#include "src/plugin/factory/PluginFactory.h"
 #include "src/plugin/info/InfoPluginSelectionDialog.h"
 #include "src/plugin/settings/PluginSettingsDialog.h"
 #include "src/plugin/ShellPluginInfo.h"
@@ -299,7 +299,7 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 	warnEdit ();
 	QTreeWidget *list=ui.infoPluginList;
 
-	QList<const InfoPlugin::Descriptor *> descriptors=InfoPluginFactory::getInstance ().getDescriptors ();
+	QList<const InfoPlugin::Descriptor *> descriptors=PluginFactory::getInstance ().getInfoPluginDescriptors ();
 	const InfoPlugin::Descriptor *descriptor=InfoPluginSelectionDialog::select (descriptors, this);
 
 	if (!descriptor) return;

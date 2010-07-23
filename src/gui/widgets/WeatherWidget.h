@@ -7,6 +7,8 @@
 
 #include "src/gui/widgets/SkLabel.h"
 
+class QImage;
+
 class WeatherWidget:public SkLabel
 {
 	Q_OBJECT
@@ -19,6 +21,7 @@ class WeatherWidget:public SkLabel
 
 	public slots:
 		virtual void inputLine (QString line);
+		virtual void setImage (const QImage &image);
 
 	signals:
 		void doubleClicked ();

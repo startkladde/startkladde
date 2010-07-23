@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>439</width>
-    <height>466</height>
+    <width>522</width>
+    <height>496</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -781,7 +781,7 @@ leer, wird keine Wetterfenster angezeigt.</string>
               <item row="0" column="0" colspan="3">
                <widget class="QLabel" name="label_4">
                 <property name="text">
-                 <string>Das Wetterfenster wird durch Doppelklick auf die Wettergrafik geöffnet, sofern diese aktiv ist.</string>
+                 <string>Das Wetterfenster wird durch Doppelklick auf die Wettergrafik geöffnet.</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>

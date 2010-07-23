@@ -11,7 +11,7 @@
 #include <QTime>
 #include <QSettings>
 
-#include "src/plugin/info/InfoPluginFactory.h"
+#include "src/plugin/factory/PluginFactory.h"
 #include "TestPluginSettingsPane.h"
 #include "src/text.h"
 #include "src/util/qString.h"

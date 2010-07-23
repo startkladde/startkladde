@@ -33,7 +33,7 @@
 #include <QFile>
 #include <QString>
 
-#include "src/plugin/info/InfoPluginFactory.h"
+#include "src/plugin/factory/PluginFactory.h"
 #include "ExternalPluginSettingsPane.h"
 #include "src/text.h"
 #include "src/util/qString.h"
