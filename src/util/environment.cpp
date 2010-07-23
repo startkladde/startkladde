@@ -24,3 +24,12 @@ QString getEnvironmentVariable (const QString &name)
 	else
 		return QString ();
 }
+
+QStringList getSystemPath (const QString &environmentVariable)
+{
+#ifdef SK_WINDOWS
+	return getEnvironmentVariable (environmentVariable).split (";");
+#else
+	return getEnvironmentVariable (environmentVariable).split (":");
+#endif
+}

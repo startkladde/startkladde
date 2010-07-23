@@ -6,6 +6,7 @@
 class QIODevice;
 class QRegExp;
 
+QString readLineUtf8 (QIODevice &device);
 bool findInIoDevice (QIODevice &device, QRegExp &regexp);
 QString findInIoDevice (QIODevice &device, const QRegExp &regexp, int group);
 

@@ -11,11 +11,16 @@
 #include <QIODevice>
 #include <QString>
 
+QString readLineUtf8 (QIODevice &device)
+{
+	return QString::fromUtf8 (device.readLine ().constData ());
+}
+
 bool findInIoDevice (QIODevice &device, QRegExp &regexp)
 {
 	while (!device.atEnd ())
 	{
-		QString line=QString::fromUtf8 (device.readLine ().constData ());
+		QString line=readLineUtf8 (device);
 		if (line.trimmed ().contains (regexp))
     		return true;
 	}

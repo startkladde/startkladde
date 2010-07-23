@@ -45,6 +45,9 @@ DEFINES += SK_BUILD=$${SK_BUILD}
 
 #QMAKE_CXXFLAGS += -Werror
 
+win32:DEFINES += SK_WINDOWS
+unix:DEFINES += SK_UNIX
+
 
 ###########
 ## Paths ##

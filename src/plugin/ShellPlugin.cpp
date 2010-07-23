@@ -11,6 +11,10 @@
  *   - allow browsing for plugins
  *   - Plugin description file with parameter description
  */
+
+// FIXME remove (also ShellPluginInfo) when ExternalPlugin and the new weather
+// plugin work
+
 #include "ShellPlugin.h"
 
 #include <fstream>

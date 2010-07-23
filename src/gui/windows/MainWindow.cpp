@@ -283,8 +283,11 @@ void MainWindow::setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout)
 	SkLabel *captionLabel = new SkLabel ("", ui.pluginPane);
 	SkLabel *valueLabel = new SkLabel ("...", ui.pluginPane);
 
-	valueLabel->setWordWrap (true);
 	captionLabel->setText (plugin->getCaption ());
+
+	valueLabel->setWordWrap (true);
+	valueLabel->setToolTip (QString ("%1\nKonfiguration: %2").arg (plugin->getDescription (), plugin->configText ()));
+	captionLabel->setToolTip (valueLabel->toolTip ());
 
 	int row = pluginLayout->rowCount ();
 	pluginLayout->addWidget (captionLabel, row, 0, Qt::AlignTop);

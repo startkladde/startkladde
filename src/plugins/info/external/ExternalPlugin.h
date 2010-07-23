@@ -3,8 +3,14 @@
 
 #include "src/plugin/info/InfoPlugin.h"
 
+class QProcess;
+
+/**
+ * Example command: "date +%H:%M"
+ */
 class ExternalPlugin: public InfoPlugin
 {
+		Q_OBJECT
 		SK_PLUGIN
 
 	public:
@@ -24,9 +30,18 @@ class ExternalPlugin: public InfoPlugin
 
 		virtual QString configText () const;
 
+	protected slots:
+		void outputAvailable ();
+		void processFinished ();
+
+	protected:
+		static void splitCommand (QString &commandProper, QString &parameters, const QString &commandWithParameters);
+
 	private:
 		QString command;
 		bool richText;
+
+		QProcess *subprocess;
 };
 
 #endif

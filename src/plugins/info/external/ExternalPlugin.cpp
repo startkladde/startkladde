@@ -5,16 +5,40 @@
  *      Author: Martin Herrmann
  */
 
+/*
+ * On process termination:
+ *   - The process may finish spontaneously or because we terminated it.
+ *   - When terminating the plugin, we want to terminate the process. Thus, we
+ *     need to store a pointer to the QProcess as long as it is running
+ *   - In the finished slot, the stored pointer may alredy have been
+ *     overwritten (by restarting the plugin). In this case, we may not use it
+ *     for deletion.
+ */
+
+/*
+ * TODO:
+ *   - parameters as a separate field (allow spaces!)
+ *   - browse
+ *   - restart behavior: no action, notify, restart (with interval), print message
+ *   - working directory: current, program, plugin, other
+ *   - allow specifying interpreter
+ */
+
 #include "ExternalPlugin.h"
 
 //#include <QDebug>
-//#include <QTime>
 #include <QSettings>
+//#include <QTimer>
+#include <QProcess>
+#include <QFile>
+#include <QString>
 
 #include "src/plugin/info/InfoPluginFactory.h"
 #include "ExternalPluginSettingsPane.h"
-//#include "src/text.h"
+#include "src/text.h"
 #include "src/util/qString.h"
+#include "src/util/io.h"
+#include "src/config/Settings.h"
 
 REGISTER_INFO_PLUGIN (ExternalPlugin)
 SK_PLUGIN_DEFINITION (ExternalPlugin, "{2fbb91be-bde5-4fba-a3c7-69d7caf827a5}", "Extern",
@@ -22,12 +46,14 @@ SK_PLUGIN_DEFINITION (ExternalPlugin, "{2fbb91be-bde5-4fba-a3c7-69d7caf827a5}", 
 
 ExternalPlugin::ExternalPlugin (const QString &caption, bool enabled, const QString &command, bool richText):
 	InfoPlugin (caption, enabled),
-	command (command), richText (richText)
+	command (command), richText (richText),
+	subprocess (NULL)
 {
 }
 
 ExternalPlugin::~ExternalPlugin ()
 {
+	terminate ();
 }
 
 PluginSettingsPane *ExternalPlugin::infoPluginCreateSettingsPane (QWidget *parent)
@@ -47,15 +73,59 @@ void ExternalPlugin::infoPluginWriteSettings (QSettings &settings)
 	settings.setValue ("richText", richText);
 }
 
+#define OUTPUT_AND_RETURN(text) do { outputText (utf8 (text)); return; } while (0)
+
 void ExternalPlugin::start ()
 {
-	outputText ("Command is "+command, richText?Qt::RichText:Qt::PlainText);
-	// FIXME
+	terminate ();
+
+	if (isBlank (command)) OUTPUT_AND_RETURN ("Kein Kommando angegeben");
+
+	QString commandProper;
+	QString parameters;
+	splitCommand (commandProper, parameters, command);
+
+	QString resolved=resolveFilename (commandProper, Settings::instance ().pluginPaths);
+	if (isBlank (resolved)) OUTPUT_AND_RETURN ("Kommando nicht gefunden");
+	if (!QFile::exists (resolved)) OUTPUT_AND_RETURN ("Kommando existiert nicht");
+
+	subprocess=new QProcess (this);
+	// subprocess->setWorkingDirectory (...);
+
+	connect (subprocess, SIGNAL (readyReadStandardOutput ()), this, SLOT (outputAvailable ()));
+	//connect (subprocess, SIGNAL (finished (int, QProcess::ExitStatus)), this, SLOT (subprocess_died ()));
+	connect (subprocess, SIGNAL (finished (int, QProcess::ExitStatus)), this, SLOT (processFinished ()));
+
+	subprocess->start (resolved+" "+parameters, QIODevice::ReadOnly);
+	if (!subprocess->waitForStarted ()) OUTPUT_AND_RETURN ("Fehler beim Starten des Prozesses");
+	outputText ("Prozess gestartet");
+	subprocess->closeWriteChannel ();
+
+	// Note that on Windows, we may have to add the interpreter explicitly.
 }
 
 void ExternalPlugin::terminate ()
 {
-	// FIXME
+	if (subprocess)
+	{
+		if (subprocess->state ()==QProcess::NotRunning)
+		{
+			// The process is not running. We can delete it right away.
+			delete subprocess;
+		}
+		else
+		{
+			// The process may still be running. Disconnect the regular
+			// termination signal and connect the "delete on finished" signal.
+			// The process may be deleted at any time (when it is finished), so
+			// it is important to set the pointer to NULL.
+			subprocess->disconnect (this);
+			connect (subprocess, SIGNAL (finished ()), this, SLOT (deleteAfterFinished ()));
+			subprocess->terminate ();
+		}
+
+		subprocess=NULL;
+	}
 }
 
 QString ExternalPlugin::configText () const
@@ -63,289 +133,63 @@ QString ExternalPlugin::configText () const
 	return utf8 ("„%1“, %2 text").arg (command, richText?"rich":"plain");
 }
 
+void ExternalPlugin::outputAvailable ()
+{
+	// Might happen if the process finished or was restarted in the meantime
+	if (!subprocess) return;
 
-//#include <QLabel>
-//#include <QTimer>
-//#include <QTextCodec>
-//#include <QToolTip>
-//#include <QProcess>
-//#include <QFile>
-//#include <QFileInfo>
-//#include <QThread>
-//
-//#include "src/text.h"
-//#include "src/util/qString.h"
-//#include "src/config/Settings.h"
-//#include "src/plugin/ShellPluginInfo.h"
-//
-//// Construction/destruction
-//void ShellPlugin::init ()
-//{
-//	restart_interval=-1;
-//	rich_text=false;
-//	caption_display=NULL;
-//	value_display=NULL;
-//	warn_on_death=false;
-//	subprocess=NULL;
-//
-//	// The plugin output encoding is UTF8, but it is interpreted as latin1 and
-//	// converted to UTF-8 by QProcess. It may not be obvious that this
-//	// conversion (codec->toUnicode) will work, but it does.
-//	codec=QTextCodec::codecForName ("UTF-8");
-//}
-//
-//ShellPlugin::ShellPlugin ()
-//{
-//	init ();
-//	caption="Time:";
-//	command="date +%H:%M";
-//	restart_interval=-1;
-//}
-//
-//ShellPlugin::~ShellPlugin ()
-//{
-//	if (subprocess) subprocess->terminate ();
-//	QThread::yieldCurrentThread ();
-//}
-//
-//void ShellPlugin::start ()
-//{
-//	if (subprocess)
-//	{
-//		subprocess->terminate ();
-//		QThread::yieldCurrentThread ();
-//		delete subprocess;
-//	}
-//
-//	if (command.isEmpty ())
-//	{
-//		if (value_display)
-//		{
-//			value_display->setTextFormat (Qt::PlainText);
-//			value_display->setText ("Keine Plugin-Datei angegeben.");
-//			value_display->setToolTip ("");
-//		}
-//		return;
-//	}
-//
-//	// Separate the command in a file name and paramters at the first ' '
-//	QString command_file, command_parameters;
-//	int first_space=command.indexOf (' ');
-//	if (first_space<0)
-//	{
-//		command_file=command;
-//		command_parameters.clear ();
-//	}
-//	else
-//	{
-//		// foo bar
-//		// 0123456
-//		command_file=command.left (first_space);
-//		command_parameters=command.mid (first_space+1);
-//	}
-//
-//	// Find the plugin file from the plugin path list.
-//	QString command_file_dir, command_file_basename;
-//	if (ShellPlugin::findFile (command_file, &command_file_dir, &command_file_basename).isEmpty ())
-//	{
-//		// The plugin file was not found.
-//		emit pluginNotFound ();
-//
-//		if (value_display)
-//		{
-//			value_display->setTextFormat (Qt::PlainText);
-//			value_display->setText ("Plugin \""+command_file+"\" nicht gefunden.");
-//			value_display->setToolTip ("");
-//		}
-//	}
-//	else
-//	{
-//		// If the plugin path was explicitly given (either relative or
-//		// absolute), we execute the process from the current directory. If
-//		// not, it was found in the plugin_path and we execute it from there.
-//		QString working_dir;
-//		QString binary_file;
-//		if (!command_file.contains ('/'))
-//		{
-//			// Found in path
-//			working_dir=command_file_dir;
-//			binary_file="./"+command_file_basename;
-//		}
-//		else
-//		{
-//			working_dir=".";
-//			binary_file=command_file;
-//		}
-//
-//		QString complete_command=binary_file+" "+command_parameters;
-//
-//		if (value_display)
-//			value_display->setToolTip (complete_command+" ["+working_dir+"]");
-//
-//		subprocess=new QProcess (this);
-//		subprocess->setWorkingDirectory (working_dir);
-//
-////		QObject::connect (subprocess, SIGNAL (destroyed (QObject *)), subprocess, SLOT (kill ()));
-//		QObject::connect (subprocess, SIGNAL (readyReadStandardOutput ()), this, SLOT (output_available ()));
-//		QObject::connect (subprocess, SIGNAL (finished (int, QProcess::ExitStatus)), this, SLOT (subprocess_died ()));
-//
-//		if (value_display)
-//			value_display->setText ("");
-//
-//#ifdef WIN32
-//		// Windows does not obey the shebang and cannot launch .rb files (even
-//		// though they are associated with the interpreter and can be launched
-//		// directly from the command line). So we have add ruby to the command
-//		// explicitly.
-//		// We do this only on Windows because this enables us to use non-ruby
-//		// plugins on other platforms (although this is not portable).
-//		complete_command="ruby "+complete_command;
-//#endif
-//		//std::cout << "launching: " << complete_command << " in " << working_dir << std::endl;
-//		subprocess->start (complete_command, QIODevice::ReadOnly);
-//
-//		if (!subprocess->waitForStarted ())
-//		{
-//#ifdef WIN32
-//			// On Windows, we call ruby explicitly, so most probably it was not
-//			// found
-//			QString message="Fehler: Ruby nicht installiert oder nicht im Suchpfad";
-//#else
-//			// On other platforms, the plugin ist called directly
-//			QString message="Fehler beim Starten des Plugins";
-//#endif
-//			if (value_display) value_display->setText (message);
-//		}
-//
-//		subprocess->closeWriteChannel ();
-//
-//	}
-//}
-//
-//void ShellPlugin::output_available ()
-//{
-//	if (!subprocess) return;
-//
-//	QString line;
-//	while (line=codec->toUnicode (subprocess->readLine ().trimmed ().constData ()), !line.isEmpty ())
-//	{
-//		emit lineRead (line);
-//
-//		if (value_display)
-//		{
-//			// Let the plugins wrap, or else the window might get wider than the screen
-////			if (rich_text) line="<nobr>"+line+"</nobr>";
-//			value_display->setText (line);
-//		}
-//	}
-//}
-//
-//void ShellPlugin::subprocess_died ()
-//{
-//	if (warn_on_death) std::cout << "The process for '" << caption << "' died." << std::endl;
-//	if (restart_interval>0) QTimer::singleShot (restart_interval*1000, this, SLOT (start ()));
-//}
-//
-//void ShellPlugin::terminate ()
-//{
-//	// Set the labels to NULL to make sure they are not used any more
-//	caption_display=NULL;
-//	value_display=NULL;
-//
-//	if (subprocess) subprocess->terminate ();
-//}
-//
-//void ShellPlugin::restart ()
-//{
-//	// Don't call #terminate here, as it will set the labels to NULL
-//	if (subprocess) subprocess->terminate ();
-//	start ();
-//}
-//
-///**
-// * Finds the absolute location of a plugin
-// *
-// * @param filename
-// * @param dir set to the directory if the file is found
-// * @param basename ?
-// * @return the (existing) file, or an empty string if not found
-// */
-//QString ShellPlugin::findFile (const QString &filename, QString *dir, QString *basename)
-//{
-//	if (isBlank (filename)) return "";
-//
-//	if (filename.indexOf ('/')>=0)
-//	{
-//		// The name contains a '/' which means that it is an absolute or relative
-//		if (QFile::exists (filename))
-//		{
-//			// Find the last slash: it separates the path from the basename
-//			// Absolute: /foo/bar/baz
-//			// Relative: bar/baz
-//			//           0123456
-//			unsigned int last_slash_pos=filename.lastIndexOf ('/');
-//			// last_slash_pos cannot be npos becase there is a slash
-//			if (dir) *dir=filename.left (last_slash_pos);
-//			if (basename) *basename=filename.mid (last_slash_pos+4);
-//			return filename;
-//		}
-//		else
-//			return "";
-//	}
-//	else if (Settings::instance ().pluginPaths.isEmpty ())
-//	{
-//		// Pugin path is empty
-//		if (QFile::exists (QString ("./")+filename))
-//		{
-//			if (dir) *dir=".";
-//			if (basename) *basename=filename;
-//			return "./"+filename;
-//		}
-//		else
-//			return "";
-//	}
-//	else
-//	{
-//		// So we have to search the plugin path.
-//		{
-//			QStringListIterator it (Settings::instance ().pluginPaths);
-//			while (it.hasNext ())
-//			{
-//				QString path_entry=it.next ();
-//
-//				if (QFile::exists (path_entry+"/"+filename))
-//				{
-//					if (dir) *dir=path_entry;
-//					if (basename) *basename=filename;
-//					return path_entry+"/"+filename;
-//				}
-//			}
-//		}
-//
-//		{
-//			// Still not found - try prepending the program path directory
-//			QFileInfo programFile (Settings::instance ().programPath);
-//			QString programDir=programFile.path ();
-//
-//			QStringListIterator it (Settings::instance ().pluginPaths);
-//			while (it.hasNext ())
-//			{
-//				QString path_entry=it.next ();
-//
-//				if (!path_entry.startsWith ("/"))
-//				{
-//					path_entry=programDir+"/"+path_entry;
-//					if (QFile::exists (path_entry+"/"+filename))
-//					{
-//						if (dir) *dir=path_entry;
-//						if (basename) *basename=filename;
-//						return path_entry+"/"+filename;
-//					}
-//				}
-//			}
-//		}
-//	}
-//
-//	// Nothing found.
-//	return "";
-//}
+	QString line;
+	while (line=readLineUtf8 (*subprocess).trimmed (), !line.isEmpty ())
+	{
+		// FIXME: for the weather plugin, we must emit lineRead
+		outputText (line, richText?Qt::RichText:Qt::PlainText);
+	}
+}
+
+void ExternalPlugin::processFinished ()
+{
+	// The stored subprocess pointer may already have been overwritten, for
+	// example, if the plugin has been restarted and this slot is called for
+	// the "old" QProcess instance. Thus, we cannot use the stored pointer for
+	// accessing the process and have to use the sender() instead.
+	QProcess *p=dynamic_cast<QProcess *> (sender ());
+
+	// In any case, whether the process was terminated or finished
+	// spontaneously, we delete the QProcess instance. It may not be wise to
+	// delete the sender of the signal that invoked a slot, so we defer
+	// deletion to the event loop.
+	p->deleteLater ();
+
+	if (subprocess==p)
+	{
+		// We have a pointer to the process stored. This means that probably
+		// the process finished spontaneously. Set the pointer to NULL so it
+		// is not accessed later.
+		// If the stored pointer points to something other than the finished
+		// process, it is not touched.
+		subprocess=NULL;
+	}
+
+	// Restarting (old code)
+	// if (warn_on_death) std::cout << "The process for '" << caption << "' died." << std::endl;
+	// if (restart_interval>0) QTimer::singleShot (restart_interval*1000, this, SLOT (start ()));
+}
+
+void ExternalPlugin::splitCommand (QString &commandProper, QString &parameters, const QString &commandWithParameters)
+{
+	int firstSpace=commandWithParameters.indexOf (' ');
+
+	if (firstSpace<0)
+	{
+		// No space
+		commandProper=commandWithParameters;
+		parameters.clear ();
+	}
+	else
+	{
+		// foo bar
+		// 0123456
+		commandProper=commandWithParameters.left (firstSpace);
+		parameters=commandWithParameters.mid (firstSpace+1);
+	}
+}

@@ -15,6 +15,7 @@
 
 #include "src/text.h"
 #include "src/util/qString.h"
+#include "src/util/environment.h"
 
 Plugin::Plugin ()
 {
@@ -75,6 +76,16 @@ QString Plugin::resolveFilename (const QString &filename, const QStringList &plu
 	// Search in the current directory
 	if (QFile::exists (filename))
 		return filename;
+
+	// Search in the system path
+	QStringList systemPath=getSystemPath ();
+	foreach (const QString &path, systemPath)
+	{
+		QString full=path+"/"+filename;
+		if (QFile::exists (full))
+			return full;
+	}
+
 
 	// Not found
 	return QString ();
