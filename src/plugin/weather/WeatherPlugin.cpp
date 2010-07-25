@@ -7,8 +7,13 @@
 
 #include "WeatherPlugin.h"
 
-WeatherPlugin::WeatherPlugin ()
+#include <QTimer>
+
+WeatherPlugin::WeatherPlugin ():
+	refreshTimer (new QTimer (this)),
+	refreshEnabled (true), refreshInterval (0)
 {
+	connect (refreshTimer, SIGNAL (timeout ()), this, SLOT (refresh ()));
 }
 
 WeatherPlugin::~WeatherPlugin ()
@@ -25,6 +30,45 @@ void WeatherPlugin::outputImage (const QImage &image)
 	emit imageOutput (image);
 }
 
+void WeatherPlugin::start ()
+{
+	refresh ();
+	updateRefreshTimer ();
+}
+
+void WeatherPlugin::terminate ()
+{
+	abort ();
+
+	// Don't call disableRefresh - keep the refresh interval
+	if (refreshTimer->isActive ())
+		refreshTimer->stop ();
+}
+
+void WeatherPlugin::enableRefresh (unsigned int seconds)
+{
+	refreshEnabled=true;
+	refreshInterval=seconds;
+}
+
+void WeatherPlugin::disableRefresh ()
+{
+	refreshEnabled=false;
+}
+
+void WeatherPlugin::updateRefreshTimer ()
+{
+	if (refreshEnabled)
+	{
+		if (refreshInterval>0)
+			refreshTimer->start (refreshInterval*1000);
+	}
+	else
+	{
+		if (refreshTimer->isActive ())
+			refreshTimer->stop ();
+	}
+}
 
 // ****************
 // ** Descriptor **

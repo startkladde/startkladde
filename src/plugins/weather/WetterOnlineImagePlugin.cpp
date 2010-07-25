@@ -24,24 +24,15 @@ enum State { stateIndexPage, stateImage };
 
 const QString indexUrl ("http://www.wetteronline.de/daten/radarhtml/de/dwddg/radarf.htm");
 
-// FIXME: automatic refreshing (interval)
+// FIXME "Operation canceled" output when network is disconnected
 
 WetterOnlineImagePlugin::WetterOnlineImagePlugin ():
-	state (-1), downloader (new Downloader (this))
+	downloader (new Downloader (this))
 {
-	downloader->connect (this);
+	downloader->connectSignals (this);
 }
 
 WetterOnlineImagePlugin::~WetterOnlineImagePlugin ()
-{
-}
-
-void WetterOnlineImagePlugin::start ()
-{
-	refresh ();
-}
-
-void WetterOnlineImagePlugin::terminate ()
 {
 }
 
@@ -49,6 +40,11 @@ void WetterOnlineImagePlugin::refresh ()
 {
 	outputText (utf8 ("Radarbild herunterladen (1)..."));
 	downloader->startDownload (stateIndexPage, indexUrl);
+}
+
+void WetterOnlineImagePlugin::abort ()
+{
+	downloader->abort ();
 }
 
 void WetterOnlineImagePlugin::downloadSucceeded (int state, QNetworkReply *reply)

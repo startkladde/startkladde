@@ -7,8 +7,6 @@
 
 #include "MetarPlugin.h"
 
-// FIXME use Downloader
-
 //#include <QDebug>
 #include <QSettings>
 #include <QRegExp>
@@ -20,7 +18,7 @@
 #include "MetarPluginSettingsPane.h"
 #include "src/util/qString.h"
 #include "src/util/io.h"
-#include "src/net/Network.h"
+#include "src/net/Downloader.h"
 
 REGISTER_INFO_PLUGIN (MetarPlugin)
 SK_PLUGIN_DEFINITION (MetarPlugin, "{4a6c7218-42ae-475d-8fd9-a2a131c1aa90}", "METAR", "Zeigt METAR-Meldungen in (Internetverbindung erforderlich)")
@@ -28,8 +26,9 @@ SK_PLUGIN_DEFINITION (MetarPlugin, "{4a6c7218-42ae-475d-8fd9-a2a131c1aa90}", "ME
 MetarPlugin::MetarPlugin (const QString &caption, bool enabled, const QString &airport, int refreshInterval):
 	InfoPlugin (caption, enabled),
 	airport (airport), refreshInterval (refreshInterval),
-	reply (NULL), timer (new QTimer (this))
+	timer (new QTimer (this)), downloader (new Downloader (this))
 {
+	downloader->connectSignals (this);
 	connect (timer, SIGNAL (timeout ()), this, SLOT (refresh ()));
 }
 
@@ -64,7 +63,7 @@ void MetarPlugin::start ()
 
 void MetarPlugin::terminate ()
 {
-	abortRequest ();
+	downloader->abort ();
 	timer->stop ();
 }
 
@@ -72,24 +71,9 @@ QString MetarPlugin::configText () const
 {
 	return utf8 ("%1 (%2 Minuten)").arg (airport).arg (refreshInterval/60);
 }
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-
-void MetarPlugin::abortRequest ()
-{
-	if (reply)
-	{
-		reply->abort ();
-		reply->deleteLater ();
-		reply=NULL;
-	}
-}
 
 void MetarPlugin::refresh ()
 {
-	abortRequest ();
-
 	QString icao=airport.trimmed ().toUpper ();
 
 	if (icao.isEmpty ())
@@ -98,25 +82,12 @@ void MetarPlugin::refresh ()
 		outputText (utf8 ("%1 ist kein gültiger ICAO-Code").arg (airport));
 	else
 	{
-		outputText (utf8 ("Rufe METAR für %1 ab...").arg (icao));
-
 		QString url=QString ("http://weather.noaa.gov/mgetmetar.php?cccc=%1").arg (icao);
-
-		QNetworkAccessManager *manager=Network::getNetworkAccessManager ();
-
-		QNetworkRequest request;
-		request.setUrl (QUrl (url));
-		//request.setRawHeader("User-Agent", "MyOwnBrowser 1.0");
-
-		reply=manager->get (request);
-		connect (reply, SIGNAL (finished ()), this, SLOT (replyFinished ()));
-		connect(
-			reply, SIGNAL (error (QNetworkReply::NetworkError)),
-			this, SLOT(replyError (QNetworkReply::NetworkError)));
+		outputText (utf8 ("Rufe METAR für %1 ab...").arg (icao));
+		downloader->startDownload (0, url);
 	}
 }
 
-//QString MetarPlugin::extractMetar (const QString &reply)
 QString MetarPlugin::extractMetar (QIODevice &reply)
 {
 	// The relevant section of the page:
@@ -129,10 +100,9 @@ QString MetarPlugin::extractMetar (QIODevice &reply)
 	return findInIoDevice (reply, QRegExp (re), 0);
 }
 
-void MetarPlugin::replyFinished ()
+void MetarPlugin::downloadSucceeded (int state, QNetworkReply *reply)
 {
-	if (!reply) return; // May happen if the plugin is terminated while the request is still active
-	if (sender ()!=reply) return;
+	(void)state; // There is only one download
 
 	QString metar=extractMetar (*reply);
 
@@ -140,21 +110,14 @@ void MetarPlugin::replyFinished ()
 		outputText (utf8 ("Fehler: Keine Wettermeldung für %1 gefunden").arg (airport));
 	else
 		outputText (metar);
-
-	reply->deleteLater ();
-	reply=NULL;
 }
 
-void MetarPlugin::replyError (QNetworkReply::NetworkError code)
+void MetarPlugin::downloadFailed (int state, QNetworkReply *reply, QNetworkReply::NetworkError code)
 {
-	if (!reply) return; // May happen if the plugin is terminated while the request is still active
-	if (sender ()!=reply) return;
+	(void)state; // There is only one download
 
 	if (code==QNetworkReply::ContentNotFoundError)
 		outputText (utf8 ("Fehler: Wetterseite nicht gefunden (404)"));
 	else
 		outputText (reply->errorString ());
-
-	reply->deleteLater ();
-	reply=NULL;
 }

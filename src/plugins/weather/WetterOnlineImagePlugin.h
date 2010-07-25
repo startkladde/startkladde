@@ -16,20 +16,12 @@ class WetterOnlineImagePlugin: public WeatherPlugin
 		WetterOnlineImagePlugin ();
 		virtual ~WetterOnlineImagePlugin ();
 
-		virtual void start ();
-		virtual void terminate ();
-
-		virtual void readSettings (const QSettings &settings) { (void)settings; }
-		virtual void writeSettings (QSettings &settings) { (void)settings; }
-		virtual PluginSettingsPane *createSettingsPane (QWidget *parent=NULL) { (void)parent; return NULL; }
-		virtual QString configText () const { return QString (); }
-
 	private:
-		int state;
 		Downloader *downloader;
 
 	public slots:
-		void refresh ();
+		virtual void refresh ();
+		virtual void abort ();
 
 		void downloadSucceeded (int state, QNetworkReply *reply);
 		void downloadFailed    (int state, QNetworkReply *reply, QNetworkReply::NetworkError code);

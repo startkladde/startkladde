@@ -7,6 +7,7 @@
 #include "src/accessor.h"
 
 class QImage;
+class QTimer;
 
 /**
  * A plugin which displays a weather image (or an error message text)
@@ -53,6 +54,22 @@ class WeatherPlugin: public Plugin
 		virtual ~WeatherPlugin ();
 
 
+	public:
+		virtual void start ();
+		virtual void terminate ();
+
+		virtual void readSettings (const QSettings &settings) { (void)settings; }
+		virtual void writeSettings (QSettings &settings) { (void)settings; }
+		virtual PluginSettingsPane *createSettingsPane (QWidget *parent=NULL) { (void)parent; return NULL; }
+		virtual QString configText () const { return QString (); }
+
+		virtual void enableRefresh (unsigned int seconds);
+		virtual void disableRefresh ();
+
+	public slots:
+		virtual void refresh ()=0;
+		virtual void abort ()=0;
+
 	signals:
 		void textOutput (const QString &text, Qt::TextFormat format);
 		void imageOutput (const QImage &image);
@@ -60,6 +77,14 @@ class WeatherPlugin: public Plugin
 	protected:
 		void outputText (const QString &text, Qt::TextFormat format=Qt::PlainText);
 		void outputImage (const QImage &image);
+
+	private:
+		QTimer *refreshTimer;
+
+		bool refreshEnabled;
+		unsigned int refreshInterval; // In seconds
+
+		void updateRefreshTimer ();
 };
 
 #endif

@@ -6,6 +6,8 @@
 #include <QNetworkReply> // Required for QNetworkReply::NetworkError
 #include <QTimer>
 
+class Downloader;
+
 /**
  * An info plugin which displays METAR messages downloaded from the internet
  *
@@ -38,18 +40,18 @@ class MetarPlugin: public InfoPlugin
 	private:
 		QString airport;
 		int refreshInterval; // seconds
-		QNetworkReply *reply;
 		QTimer *timer;
 
-//		QString extractMetar (const QString &reply);
+		Downloader *downloader;
+
 		QString extractMetar (QIODevice &reply);
+
+	public slots:
+		void downloadSucceeded (int state, QNetworkReply *reply);
+		void downloadFailed    (int state, QNetworkReply *reply, QNetworkReply::NetworkError code);
 
 	private slots:
 		void refresh ();
-		void abortRequest ();
-
-		void replyFinished ();
-		void replyError (QNetworkReply::NetworkError code);
 };
 
 #endif

@@ -1,9 +1,15 @@
 #include "Downloader.h"
 
+#include <QUrl>
+
 #include "src/net/Network.h"
 #include "src/util/qString.h"
 
-// FIXME cleanup
+/*
+ * Improvements:
+ *   - add a downloadProgress signal
+ *   - add a downloadAborted signal
+ */
 
 Downloader::Downloader (QObject *parent):
 	QObject (parent),
@@ -16,23 +22,37 @@ Downloader::~Downloader ()
 	abort ();
 }
 
-void Downloader::connect (QObject *receiver)
+/**
+ * A convenience method to connect the necessary signals to corresponding
+ * slots of a receiver
+ *
+ * The receiver must have the downloadSucceeded and downloadFailed slots.
+ *
+ * The signals can also be connected manually.
+ *
+ * @param receiver the receiver of the signals
+ */
+void Downloader::connectSignals (QObject *receiver)
 {
-	QObject::connect (
-		this    , SIGNAL (downloadFailed (int, QNetworkReply *, QNetworkReply::NetworkError)),
-		receiver, SLOT   (downloadFailed (int, QNetworkReply *, QNetworkReply::NetworkError))
-		);
-
 	QObject::connect (
 		this    , SIGNAL (downloadSucceeded (int, QNetworkReply *)),
 		receiver, SLOT   (downloadSucceeded (int, QNetworkReply *))
 		);
+
+	QObject::connect (
+		this    , SIGNAL (downloadFailed (int, QNetworkReply *, QNetworkReply::NetworkError)),
+		receiver, SLOT   (downloadFailed (int, QNetworkReply *, QNetworkReply::NetworkError))
+		);
 }
 
-void Downloader::startDownload (int state, const QString &url)
+/**
+ * Starts a download
+ *
+ * @param state the state, passed back in the signals
+ * @param url the URL to download
+ */
+void Downloader::startDownload (int state, const QUrl &url)
 {
-	std::cout << "Start download from " << url << std::endl;
-
 	// Cancel any running downloads
 	abort ();
 
@@ -57,11 +77,19 @@ void Downloader::startDownload (int state, const QString &url)
 
 	// Set the state
 	currentState=state;
-
-	std::cout << "reply is now " << reply << std::endl;
 }
 
+/**
+ * Like #startDownload(int, const QUrl &), but takes the URL as string
+ */
+void Downloader::startDownload (int state, const QString &url)
+{
+	startDownload (state, QUrl (url));
+}
 
+/**
+ * Aborts the current download, if any
+ */
 void Downloader::abort ()
 {
 	if (reply)
@@ -72,6 +100,9 @@ void Downloader::abort ()
 	}
 }
 
+/**
+ * Invoked when a download is finished
+ */
 void Downloader::replyFinished ()
 {
 	QNetworkReply *r=reply;
@@ -92,6 +123,9 @@ void Downloader::replyFinished ()
 	emit downloadSucceeded (currentState, r);
 }
 
+/**
+ * Invoked when a download error occurs
+ */
 void Downloader::replyError (QNetworkReply::NetworkError code)
 {
 	QNetworkReply *r=reply;
