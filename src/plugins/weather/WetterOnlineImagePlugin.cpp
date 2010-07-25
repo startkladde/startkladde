@@ -7,7 +7,6 @@
 
 #include "WetterOnlineImagePlugin.h"
 
-#include <QTime>
 #include <QImage>
 #include <QRegExp>
 

@@ -202,6 +202,7 @@ HEADERS += \
            src/plugins/info/sunset/SunsetPluginSettingsPane.h \
            src/plugins/info/test/TestPlugin.h \
            src/plugins/info/test/TestPluginSettingsPane.h \
+           src/plugins/weather/WetterOnlineAnimationPlugin.h \
            src/plugins/weather/WetterOnlineImagePlugin.h \
            src/statistics/LaunchMethodStatistics.h \
            src/statistics/PilotLog.h \
@@ -333,6 +334,7 @@ SOURCES += \
            src/plugins/info/sunset/SunsetPluginSettingsPane.cpp \
            src/plugins/info/test/TestPlugin.cpp \
            src/plugins/info/test/TestPluginSettingsPane.cpp \
+           src/plugins/weather/WetterOnlineAnimationPlugin.cpp \
            src/plugins/weather/WetterOnlineImagePlugin.cpp \
            src/statistics/LaunchMethodStatistics.cpp \
            src/statistics/PilotLog.cpp \

@@ -1,15 +1,18 @@
 #include "WeatherWidget.h"
 
 #include <QEvent>
+#include <QImage>
 #include <QMovie>
 #include <QPainter>
 #include <QRegExp>
 #include <QResizeEvent>
 
 #include "src/config/Settings.h" // TOOD remove dependency, set size from MainWindow
+#include "src/util/qString.h" // remove
 
 WeatherWidget::WeatherWidget (QWidget *parent):
-	SkLabel (parent)
+	SkLabel (parent),
+	movie (NULL)
 {
 	if (Settings::instance ().coloredLabels)
 	{
@@ -23,10 +26,47 @@ WeatherWidget::WeatherWidget (QWidget *parent):
 	setTextFormat (Qt::RichText);
 }
 
+WeatherWidget::~WeatherWidget ()
+{
+}
+
 void WeatherWidget::setImage (const QImage &image)
 {
 	QPixmap pixmap=QPixmap::fromImage (image);
 	setPixmap (pixmap);
+}
+
+void WeatherWidget::loadMovie (QSharedPointer<QTemporaryFile> file)
+{
+	// Clear the contents so we can delete the movie
+	setText ("");
+
+	// Delete the old movie (if any), so it does not try to access the file
+	// any more.
+	delete movie;
+
+	// Store a shared pointer to the temporary file. The temporary file will
+	// be deleted when all shared pointers have been deleted. If there is an
+	// old file, this will probably happen right now.
+	movieFile=file;
+
+	movie=new QMovie (movieFile->fileName (), QByteArray (), this);
+
+	// FIXME: the valid check and the setSpeed should be in the plugin;
+	// we probably need an SkMovie which stores the reference to the temporary
+	// file
+	if (!movie->isValid ())
+	{
+		setText ("Fehler beim Laden des Videos");
+	}
+	else
+	{
+		movie->setSpeed (200);
+
+		// Set the movie
+		setMovie (movie);
+		movie->start ();
+	}
 }
 
 bool WeatherWidget::loadImage (const QString &fileName)
@@ -57,6 +97,7 @@ bool WeatherWidget::loadMovie (const QString &fileName)
 
 	setWordWrap (false);
 
+	// FIXME leak
 	QMovie *movie=new QMovie (fileName);
 	setMovie (movie);
 	movie->start ();

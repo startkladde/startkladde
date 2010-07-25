@@ -60,6 +60,7 @@
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
 
+#include "src/plugins/weather/WetterOnlineAnimationPlugin.h" // FIXME REMOVE
 #include "src/plugins/weather/WetterOnlineImagePlugin.h" // FIXME REMOVE
 
 template <class T> class MutableObjectList;
@@ -1347,13 +1348,14 @@ void MainWindow::weatherWidget_doubleClicked ()
 	{
 		if (s.weatherWindowEnabled && !isBlank (s.weatherWindowCommand))
 		{
-			// The weather animation plugin will be deleted by the weather dialog
-			ShellPlugin *weatherAnimationPlugin = new ShellPlugin (
-					s.weatherWindowTitle, s.weatherWindowCommand, s.weatherPluginInterval);
+			// The plugin will be deleted by the weather dialog
+			// FIXME load from configuration
+			WeatherPlugin *weatherDialogPlugin=new WetterOnlineAnimationPlugin ();
+			weatherDialogPlugin->enableRefresh (s.weatherWindowInterval);
 
 			// The weather dialog will be deleted when it's closed, and
 			// weatherDialog is a QPointer, so it will be set to NULL.
-			weatherDialog = new WeatherDialog (weatherAnimationPlugin, this);
+			weatherDialog = new WeatherDialog (weatherDialogPlugin, this);
 			weatherDialog->setWindowTitle (s.weatherWindowTitle);
 			weatherDialog->show ();
 		}
