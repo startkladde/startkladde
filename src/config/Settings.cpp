@@ -19,6 +19,8 @@
 #include "src/plugins/info/metar/MetarPlugin.h"
 #include "src/plugins/info/sunset/SunsetTimePlugin.h"
 #include "src/plugins/info/sunset/SunsetCountdownPlugin.h"
+#include "src/plugins/weather/WetterOnlineImagePlugin.h"
+#include "src/plugins/weather/WetterOnlineAnimationPlugin.h"
 
 
 Settings *Settings::theInstance=NULL;
@@ -192,12 +194,14 @@ void Settings::readSettings ()
 
 	// *** Plugins - Weather
 	// Weather plugin
-	weatherPluginCommand =s.value ("weatherPluginCommand" , "regenradar_wetteronline.de.rb").toString ();
+	weatherPluginId      =s.value ("weatherPluginId"      , WetterOnlineImagePlugin::_getId ().toString ()).toString ();
+//	weatherPluginCommand =s.value ("weatherPluginCommand" , "regenradar_wetteronline.de.rb").toString ();
 	weatherPluginEnabled =s.value ("weatherPluginEnabled" , true).toBool ();
 	weatherPluginHeight  =s.value ("weatherPluginHeight"  , 200).toInt ();
 	weatherPluginInterval=s.value ("weatherPluginInterval", 600).toInt ();
 	// Weather dialog
-	weatherWindowCommand =s.value ("weatherWindowCommand" , "regenradar_wetteronline.de_animation.rb").toString ();
+	weatherWindowPluginId=s.value ("weatherWindowPluginId", WetterOnlineAnimationPlugin::_getId ().toString ()).toString ();
+//	weatherWindowCommand =s.value ("weatherWindowCommand" , "regenradar_wetteronline.de_animation.rb").toString ();
 	weatherWindowEnabled =s.value ("weatherWindowEnabled" , true).toBool ();
 	weatherWindowInterval=s.value ("weatherWindowInterval", 300).toInt ();
 	weatherWindowTitle   =s.value ("weatherWindowTitle"   , "Regenradar (3 Stunden)").toString ();
@@ -252,12 +256,14 @@ void Settings::writeSettings ()
 
 	// *** Plugins - Weather
 	// Weather plugin
-	s.setValue ("weatherPluginCommand" , weatherPluginCommand);
+	s.setValue ("weatherPluginId"      , weatherPluginId);
+//	s.setValue ("weatherPluginCommand" , weatherPluginCommand);
 	s.setValue ("weatherPluginEnabled" , weatherPluginEnabled);
 	s.setValue ("weatherPluginHeight"  , weatherPluginHeight);
 	s.setValue ("weatherPluginInterval", weatherPluginInterval);
 	// Weather dialog
-	s.setValue ("weatherWindowCommand" , weatherWindowCommand);
+	s.setValue ("weatherWindowPluginId", weatherWindowPluginId);
+//	s.setValue ("weatherWindowCommand" , weatherWindowCommand);
 	s.setValue ("weatherWindowEnabled" , weatherWindowEnabled);
 	s.setValue ("weatherWindowInterval", weatherWindowInterval);
 	s.setValue ("weatherWindowTitle"   , weatherWindowTitle);

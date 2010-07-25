@@ -49,6 +49,7 @@
 #include "src/plugin/ShellPlugin.h"
 #include "src/plugin/ShellPluginInfo.h"
 #include "src/plugin/weather/WeatherPlugin.h"
+#include "src/plugin/factory/PluginFactory.h"
 #include "src/statistics/LaunchMethodStatistics.h"
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"
@@ -59,9 +60,6 @@
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
-
-#include "src/plugins/weather/WetterOnlineAnimationPlugin.h" // FIXME REMOVE
-#include "src/plugins/weather/WetterOnlineImagePlugin.h" // FIXME REMOVE
 
 template <class T> class MutableObjectList;
 
@@ -354,7 +352,9 @@ void MainWindow::setupPlugins ()
 	weatherWidget=NULL;
 
 
-	bool showWeatherPlugin=(s.weatherPluginEnabled && !isBlank (s.weatherPluginCommand));
+	bool showWeatherPlugin=(s.weatherPluginEnabled && !isBlank (s.weatherPluginId));
+	weatherPlugin=PluginFactory::getInstance ().createWeatherPlugin (s.weatherPluginId);
+	if (!weatherPlugin) showWeatherPlugin=false;
 	ui.weatherFrame->setVisible (showWeatherPlugin);
 	if (showWeatherPlugin)
 	{
@@ -365,23 +365,12 @@ void MainWindow::setupPlugins ()
 		weatherWidget->setFixedSize (s.weatherPluginHeight, s.weatherPluginHeight);
 		weatherWidget->setText ("Wetter");
 
-		// FIXME work in progress
-		// FIXME load plugin from configuration
-		// FIXME handle plugin not found
-		weatherPlugin=new WetterOnlineImagePlugin ();
 		weatherPlugin->enableRefresh (s.weatherPluginInterval);
 		connect (weatherPlugin, SIGNAL (textOutput (const QString &, Qt::TextFormat)), weatherWidget, SLOT (setText (const QString &, Qt::TextFormat)));
 		connect (weatherPlugin, SIGNAL (imageOutput (const QImage &)), weatherWidget, SLOT (setImage (const QImage &)));
 		connect (weatherPlugin, SIGNAL (movieOutput (SkMovie &)), weatherWidget, SLOT (setMovie (SkMovie &)));
 		connect (weatherWidget, SIGNAL (doubleClicked ()), this, SLOT (weatherWidget_doubleClicked ()));
 		weatherPlugin->start ();
-
-//		// Create and setup the weather plugin and connect it to the weather widget
-//		weatherPlugin = new ShellPlugin ("Wetter", s.weatherPluginCommand, s.weatherPluginInterval);
-//		QObject::connect (weatherPlugin, SIGNAL (lineRead (QString)), weatherWidget, SLOT (inputLine (QString)));
-//		QObject::connect (weatherPlugin, SIGNAL (pluginNotFound ()), weatherWidget, SLOT (pluginNotFound ()));
-//		QObject::connect (weatherWidget, SIGNAL (doubleClicked ()), this, SLOT (weatherWidget_doubleClicked ()));
-//		weatherPlugin->start ();
 	}
 
 }
@@ -1347,18 +1336,21 @@ void MainWindow::weatherWidget_doubleClicked ()
 	}
 	else
 	{
-		if (s.weatherWindowEnabled && !isBlank (s.weatherWindowCommand))
+		if (s.weatherWindowEnabled && !isBlank (s.weatherWindowPluginId))
 		{
 			// The plugin will be deleted by the weather dialog
-			// FIXME load from configuration
-			WeatherPlugin *weatherDialogPlugin=new WetterOnlineAnimationPlugin ();
-			weatherDialogPlugin->enableRefresh (s.weatherWindowInterval);
+			WeatherPlugin *weatherDialogPlugin=PluginFactory::getInstance ().createWeatherPlugin (s.weatherWindowPluginId);
 
-			// The weather dialog will be deleted when it's closed, and
-			// weatherDialog is a QPointer, so it will be set to NULL.
-			weatherDialog = new WeatherDialog (weatherDialogPlugin, this);
-			weatherDialog->setWindowTitle (s.weatherWindowTitle);
-			weatherDialog->show ();
+			if (weatherDialogPlugin)
+			{
+				weatherDialogPlugin->enableRefresh (s.weatherWindowInterval);
+
+				// The weather dialog will be deleted when it's closed, and
+				// weatherDialog is a QPointer, so it will be set to NULL.
+				weatherDialog = new WeatherDialog (weatherDialogPlugin, this);
+				weatherDialog->setWindowTitle (s.weatherWindowTitle);
+				weatherDialog->show ();
+			}
 		}
 	}
 }

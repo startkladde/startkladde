@@ -128,16 +128,29 @@ void SettingsWindow::readSettings ()
 
 
 	// *** Plugins - Weather
+	// Plugin selection lists
+	ui.weatherPluginInput      ->addItem ("-", QString ());
+	ui.weatherWindowPluginInput->addItem ("-", QString ());
+	foreach (const WeatherPlugin::Descriptor *descriptor, PluginFactory::getInstance ().getWeatherPluginDescriptors ())
+	{
+		QString name=descriptor->getName ();
+		QString id  =descriptor->getId   ();
+		ui.weatherPluginInput      ->addItem (name, id);
+		ui.weatherWindowPluginInput->addItem (name, id);
+	}
+
 	// Weather plugin
-	ui.weatherPluginBox          ->setChecked (s.weatherPluginEnabled);
-	ui.weatherPluginCommandInput ->setText    (s.weatherPluginCommand );
-	ui.weatherPluginHeightInput  ->setValue   (s.weatherPluginHeight  );
-	ui.weatherPluginIntervalInput->setValue   (s.weatherPluginInterval/60);
+	ui.weatherPluginBox          ->setChecked               (s.weatherPluginEnabled);
+	ui.weatherPluginInput        ->setCurrentItemByItemData (s.weatherPluginId, 0);
+//	ui.weatherPluginCommandInput ->setText                  (s.weatherPluginCommand );
+	ui.weatherPluginHeightInput  ->setValue                 (s.weatherPluginHeight  );
+	ui.weatherPluginIntervalInput->setValue                 (s.weatherPluginInterval/60);
 	// Weather dialog
-	ui.weatherWindowBox          ->setChecked (s.weatherWindowEnabled);
-	ui.weatherWindowCommandInput ->setText    (s.weatherWindowCommand );
-	ui.weatherWindowIntervalInput->setValue   (s.weatherWindowInterval/60);
-	ui.weatherWindowTitleInput   ->setText    (s.weatherWindowTitle   );
+	ui.weatherWindowBox          ->setChecked               (s.weatherWindowEnabled);
+	ui.weatherWindowPluginInput  ->setCurrentItemByItemData (s.weatherWindowPluginId, 0);
+//	ui.weatherWindowCommandInput ->setText                  (s.weatherWindowCommand );
+	ui.weatherWindowIntervalInput->setValue                 (s.weatherWindowInterval/60);
+	ui.weatherWindowTitleInput   ->setText                  (s.weatherWindowTitle   );
 
 	// *** Plugins - Paths
 	ui.pluginPathList->clear ();
@@ -207,12 +220,14 @@ void SettingsWindow::writeSettings ()
 	// *** Plugins - Weather
 	// Weather plugin
 	s.weatherPluginEnabled =ui.weatherPluginBox          ->isChecked ();
-	s.weatherPluginCommand =ui.weatherPluginCommandInput ->text ();
+	s.weatherPluginId      =ui.weatherPluginInput        ->currentItemData ().toString ();
+//	s.weatherPluginCommand =ui.weatherPluginCommandInput ->text ();
 	s.weatherPluginHeight  =ui.weatherPluginHeightInput  ->value ();
 	s.weatherPluginInterval=ui.weatherPluginIntervalInput->value ()*60;
 	// Weather dialog
 	s.weatherWindowEnabled =ui.weatherWindowBox          ->isChecked ();
-	s.weatherWindowCommand =ui.weatherWindowCommandInput ->text ();
+	s.weatherWindowPluginId=ui.weatherWindowPluginInput  ->currentItemData ().toString ();
+//	s.weatherWindowCommand =ui.weatherWindowCommandInput ->text ();
 	s.weatherWindowInterval=ui.weatherWindowIntervalInput->value ()*60;
 	s.weatherWindowTitle   =ui.weatherWindowTitleInput   ->text ();
 

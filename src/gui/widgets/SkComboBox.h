@@ -45,6 +45,7 @@ class SkComboBox:public QComboBox
 		attr_accessor (QString, DefaultPrefix, defaultPrefix);
 
 		bool setCurrentItemByItemData (QVariant itemData);
+		void setCurrentItemByItemData (QVariant itemData, int defaultIndex);
 		QVariant currentItemData (int role=Qt::UserRole);
 
 		void setEditable (bool editable);

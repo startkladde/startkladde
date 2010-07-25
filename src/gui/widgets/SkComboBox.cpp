@@ -112,3 +112,9 @@ bool SkComboBox::setCurrentItemByItemData (QVariant value)
 
 	return false;
 }
+
+void SkComboBox::setCurrentItemByItemData (QVariant itemData, int defaultIndex)
+{
+	if (!setCurrentItemByItemData (itemData))
+		setCurrentIndex (defaultIndex);
+}
