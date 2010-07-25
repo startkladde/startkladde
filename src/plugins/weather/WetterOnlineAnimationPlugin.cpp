@@ -24,8 +24,6 @@ enum State { stateNavigationPage, stateRadarPage, stateRadarImage };
 
 const QString navigationPageUrl ("http://www.wetteronline.de/include/radar_dldl_00_dwddgf.htm");
 
-// FIXME "Operation canceled" output when network is disconnected (see WetterOnlineImagePlugin)
-
 WetterOnlineAnimationPlugin::WetterOnlineAnimationPlugin ():
 	downloader (new Downloader (this))
 {

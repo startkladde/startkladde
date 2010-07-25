@@ -19,7 +19,7 @@ class WeatherWidget:public SkLabel
 		WeatherWidget (QWidget *parent=NULL);
 		virtual ~WeatherWidget ();
 		virtual bool loadImage (const QString&);
-		virtual bool loadMovie (const QString&);
+		virtual void loadMovie (const QString&);
 		virtual void setText (const QString&);
 
 	public slots:

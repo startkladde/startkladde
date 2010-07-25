@@ -372,6 +372,7 @@ void MainWindow::setupPlugins ()
 		weatherPlugin->enableRefresh (s.weatherPluginInterval);
 		connect (weatherPlugin, SIGNAL (textOutput (const QString &, Qt::TextFormat)), weatherWidget, SLOT (setText (const QString &, Qt::TextFormat)));
 		connect (weatherPlugin, SIGNAL (imageOutput (const QImage &)), weatherWidget, SLOT (setImage (const QImage &)));
+		connect (weatherPlugin, SIGNAL (movieOutput (SkMovie &)), weatherWidget, SLOT (setMovie (SkMovie &)));
 		connect (weatherWidget, SIGNAL (doubleClicked ()), this, SLOT (weatherWidget_doubleClicked ()));
 		weatherPlugin->start ();
 

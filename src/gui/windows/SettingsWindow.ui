@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -391,7 +391,7 @@ Netzwerkdiagnose:</string>
           <string/>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="infoPluginsTab">
           <attribute name="title">
@@ -624,7 +624,7 @@ angezeigt.</string>
               <item row="5" column="2">
                <widget class="QSpinBox" name="weatherPluginHeightInput">
                 <property name="toolTip">
-                 <string>Höhe (in Pixeln) der Wettergrafik</string>
+                 <string>Höhe der Wettergrafik</string>
                 </property>
                 <property name="suffix">
                  <string> Pixel</string>
@@ -660,7 +660,7 @@ angezeigt.</string>
               <item row="1" column="0">
                <widget class="QLabel" name="weatherPluginCommandLabel">
                 <property name="text">
-                 <string>Ko&amp;mmando:</string>
+                 <string>Pl&amp;ugin:</string>
                 </property>
                 <property name="buddy">
                  <cstring>weatherPluginCommandInput</cstring>
@@ -670,10 +670,10 @@ angezeigt.</string>
               <item row="3" column="2">
                <widget class="QSpinBox" name="weatherPluginIntervalInput">
                 <property name="toolTip">
-                 <string>Dauer (in Sekunden) zwischen Aktualisierungen der Wettergrafik</string>
+                 <string>Dauer zwischen Aktualisierungen der Wettergrafik</string>
                 </property>
                 <property name="suffix">
-                 <string> s</string>
+                 <string> Minuten</string>
                 </property>
                 <property name="maximum">
                  <number>86400</number>
@@ -708,7 +708,7 @@ angezeigt.</string>
               <item row="1" column="0">
                <widget class="QLabel" name="weatherWindowCommandLabel">
                 <property name="text">
-                 <string>&amp;Kommando:</string>
+                 <string>Plu&amp;gin:</string>
                 </property>
                 <property name="buddy">
                  <cstring>weatherWindowCommandInput</cstring>
@@ -755,10 +755,10 @@ leer, wird keine Wetterfenster angezeigt.</string>
               <item row="3" column="1">
                <widget class="QSpinBox" name="weatherWindowIntervalInput">
                 <property name="toolTip">
-                 <string>Dauer (in Sekunden) zwischen Aktualisierungen der Grafik im Wetterfenster</string>
+                 <string>Dauer zwischen Aktualisierungen der Grafik im Wetterfenster</string>
                 </property>
                 <property name="suffix">
-                 <string> s</string>
+                 <string> Minuten</string>
                 </property>
                 <property name="maximum">
                  <number>86400</number>

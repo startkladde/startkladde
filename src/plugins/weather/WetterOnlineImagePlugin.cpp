@@ -23,8 +23,6 @@ enum State { stateIndexPage, stateImage };
 
 const QString indexUrl ("http://www.wetteronline.de/daten/radarhtml/de/dwddg/radarf.htm");
 
-// FIXME "Operation canceled" output when network is disconnected
-
 WetterOnlineImagePlugin::WetterOnlineImagePlugin ():
 	downloader (new Downloader (this))
 {

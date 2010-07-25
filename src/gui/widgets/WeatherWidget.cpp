@@ -54,22 +54,10 @@ bool WeatherWidget::loadImage (const QString &fileName)
 	return true;
 }
 
-bool WeatherWidget::loadMovie (const QString &fileName)
+void WeatherWidget::loadMovie (const QString &fileName)
 {
-	// NB: wenn hier WordWrap=true ist (zum Beispiel, weil vorher ein Text
-	// gesetzt war), dann funktioniert die Movie-Darstellung nicht mehr, wenn
-	// einmal ein Text gesetzt war: das Fenster, das nur ein Layout mit diesem
-	// Widget enthält, wird auf Höhe 0 gesetzt.
-	// Nach diesem Fehler kann man bequem 2 Stunden lang suchen.
-
-	setWordWrap (false);
-
-	// FIXME leak
-	QMovie *movie=new QMovie (fileName);
-	SkLabel::setMovie (movie);
-	movie->start ();
-
-	return true;
+	SkMovie m (fileName);
+	setMovie (m);
 }
 
 void WeatherWidget::setText (const QString &text)
@@ -81,6 +69,11 @@ void WeatherWidget::setText (const QString &text)
 
 void WeatherWidget::setMovie (SkMovie &movie)
 {
+	// NB: wenn hier WordWrap=true ist (zum Beispiel, weil vorher ein Text
+	// gesetzt war), dann funktioniert die Movie-Darstellung nicht mehr, wenn
+	// einmal ein Text gesetzt war: das Fenster, das nur ein Layout mit diesem
+	// Widget enthält, wird auf Höhe 0 gesetzt.
+	// Nach diesem Fehler kann man bequem 2 Stunden lang suchen.
 	setWordWrap (false);
 
 	// Clear the contents so we can delete the movie
@@ -105,6 +98,7 @@ void WeatherWidget::inputLine (QString line)
 		if (rx.numCaptures ()>0)
 		{
 			QString text=rx.cap (1);
+			// An even number of backslashes, followed by a backslash and an n ==> newline
 			// (\\)*\n ==> newline
 			// Regexp escaping: (\\\\)*\\n ==> newline
 			// C escaping: (\\\\\\\\)*\\\\n ==> \n
@@ -131,10 +125,7 @@ void WeatherWidget::inputLine (QString line)
 		if (rx.numCaptures ()>0)
 		{
 			QString filename=rx.cap (1);
-			if (!loadMovie (filename))
-			{
-				setText ("Film kann nicht\ngeladen werden:\n"+filename);
-			}
+			loadMovie (filename);
 			// Note that we cannot delete the file at this point because Qt
 			// reads from the file when the animation starts over.
 		}

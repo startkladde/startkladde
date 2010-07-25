@@ -1,5 +1,7 @@
 #include "Downloader.h"
 
+//#include <iostream>
+
 #include <QUrl>
 
 #include "src/net/Network.h"
@@ -94,6 +96,9 @@ void Downloader::abort ()
 {
 	if (reply)
 	{
+		// First disconnect, then abort. Otherwise, we may get an
+		// "Object::disconnect: Unexpected null parameter" error
+		reply->disconnect ();
 		reply->abort ();
 		reply->deleteLater ();
 		reply=NULL;
