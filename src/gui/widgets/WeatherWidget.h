@@ -3,9 +3,8 @@
 
 #include <QPixmap>
 #include <QImageReader>
-#include <QSharedPointer>
-#include <QTemporaryFile> // Required for QSharedPointer deletion
 
+#include "src/graphics/SkMovie.h"
 #include "src/gui/widgets/SkLabel.h"
 
 class QImage;
@@ -26,7 +25,7 @@ class WeatherWidget:public SkLabel
 	public slots:
 		virtual void inputLine (QString line);
 		virtual void setImage (const QImage &image);
-		virtual void loadMovie (QSharedPointer<QTemporaryFile> file);
+		virtual void setMovie (SkMovie &movie);
 
 	signals:
 		void doubleClicked ();
@@ -40,8 +39,7 @@ class WeatherWidget:public SkLabel
 		virtual void pluginNotFound ();
 
 	private:
-		QSharedPointer<QTemporaryFile> movieFile;
-		QMovie *movie;
+		SkMovie newMovie;
 };
 
 #endif

@@ -9,14 +9,13 @@
 
 #include <QMovie>
 #include <QRegExp>
-#include <QTemporaryFile>
-#include <QSharedPointer>
 
 #include "src/plugin/factory/PluginFactory.h"
 #include "src/net/Downloader.h"
 #include "src/util/qString.h"
 #include "src/util/io.h"
 #include "src/text.h"
+#include "src/graphics/SkMovie.h"
 
 REGISTER_WEATHER_PLUGIN (WetterOnlineAnimationPlugin)
 SK_PLUGIN_DEFINITION (WetterOnlineAnimationPlugin, "{f3b7c9b2-455f-459f-b636-02b2b9a78b7b}", "Wetter Online (Animation)", "Zeigt eine Regenradar-Animation von wetteronline.de an")
@@ -71,13 +70,10 @@ void WetterOnlineAnimationPlugin::downloadSucceeded (int state, QNetworkReply *r
 		case stateRadarImage:
 		{
 			outputText (utf8 ("Radarbild speichern"));
-
-			QSharedPointer<QTemporaryFile> file (new QTemporaryFile ());
-			if (!file->open ()) OUTPUT_AND_RETURN ("Fehler beim Speichern des Videos");
-			file->write (reply->readAll ());
-			file->close ();
-
-			outputMovie (file);
+			SkMovie movie (reply);
+			if (!movie.getMovie ()->isValid ()) OUTPUT_AND_RETURN ("Fehler beim Lesen des Videos");
+			movie.getMovie ()->setSpeed (200);
+			outputMovie (movie);
 		} break;
 	}
 }

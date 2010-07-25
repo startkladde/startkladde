@@ -2,16 +2,15 @@
 #define WEATHERPLUGIN_H_
 
 #include <QUuid>
-#include <QSharedPointer>
-#include <QTemporaryFile> // Required for QSharedPointer deletion, FIXME remove when we have SkMovie
 
 #include "src/plugin/Plugin.h"
 #include "src/accessor.h"
 
 class QImage;
 class QTimer;
-class QMovie;
 class QTemporaryFile;
+
+class SkMovie;
 
 /**
  * A plugin which displays a weather image (or an error message text)
@@ -77,12 +76,12 @@ class WeatherPlugin: public Plugin
 	signals:
 		void textOutput (const QString &text, Qt::TextFormat format);
 		void imageOutput (const QImage &image);
-		void movieOutput (QSharedPointer<QTemporaryFile> file);
+		void movieOutput (SkMovie &movie);
 
 	protected:
 		void outputText (const QString &text, Qt::TextFormat format=Qt::PlainText);
 		void outputImage (const QImage &image);
-		void outputMovie (QSharedPointer<QTemporaryFile> file);
+		void outputMovie (SkMovie &movie);
 
 	private:
 		QTimer *refreshTimer;

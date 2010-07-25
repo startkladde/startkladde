@@ -10,9 +10,9 @@
 #include "src/config/Settings.h" // TOOD remove dependency, set size from MainWindow
 #include "src/util/qString.h" // remove
 
+
 WeatherWidget::WeatherWidget (QWidget *parent):
-	SkLabel (parent),
-	movie (NULL)
+	SkLabel (parent)
 {
 	if (Settings::instance ().coloredLabels)
 	{
@@ -34,39 +34,6 @@ void WeatherWidget::setImage (const QImage &image)
 {
 	QPixmap pixmap=QPixmap::fromImage (image);
 	setPixmap (pixmap);
-}
-
-void WeatherWidget::loadMovie (QSharedPointer<QTemporaryFile> file)
-{
-	// Clear the contents so we can delete the movie
-	setText ("");
-
-	// Delete the old movie (if any), so it does not try to access the file
-	// any more.
-	delete movie;
-
-	// Store a shared pointer to the temporary file. The temporary file will
-	// be deleted when all shared pointers have been deleted. If there is an
-	// old file, this will probably happen right now.
-	movieFile=file;
-
-	movie=new QMovie (movieFile->fileName (), QByteArray (), this);
-
-	// FIXME: the valid check and the setSpeed should be in the plugin;
-	// we probably need an SkMovie which stores the reference to the temporary
-	// file
-	if (!movie->isValid ())
-	{
-		setText ("Fehler beim Laden des Videos");
-	}
-	else
-	{
-		movie->setSpeed (200);
-
-		// Set the movie
-		setMovie (movie);
-		movie->start ();
-	}
 }
 
 bool WeatherWidget::loadImage (const QString &fileName)
@@ -99,7 +66,7 @@ bool WeatherWidget::loadMovie (const QString &fileName)
 
 	// FIXME leak
 	QMovie *movie=new QMovie (fileName);
-	setMovie (movie);
+	SkLabel::setMovie (movie);
 	movie->start ();
 
 	return true;
@@ -112,8 +79,25 @@ void WeatherWidget::setText (const QString &text)
 	adjustSize ();
 }
 
+void WeatherWidget::setMovie (SkMovie &movie)
+{
+	setWordWrap (false);
+
+	// Clear the contents so we can delete the movie
+	setText ("");
+
+	SkLabel::setMovie (movie.getMovie ());
+	movie.getMovie ( )->start ();
+
+	// Store the movie. The temporary file will be deleted when all copies of
+	// this SkMovie have been deleted. If there is an old file, this will
+	// probably happen right now.
+	newMovie=movie;
+}
+
 void WeatherWidget::inputLine (QString line)
 {
+	// FIXME this should be in a plugin
 	if (line.startsWith ("[MSG]", Qt::CaseInsensitive))
 	{
 		QRegExp rx ("\\[MSG\\]\\s*\\[(.*)\\]" );
@@ -173,21 +157,3 @@ void WeatherWidget::resizeEvent (QResizeEvent *e)
 	QLabel::resizeEvent (e);
 	emit sizeChanged (e->size ());
 }
-
-//////////////////////
-
-// TODO wenn Bild angezeigt, Bild mitresizen
-
-//void WeatherWidget::paintEvent (QPaintEvent *e)
-//{
-//	::paintEvent (e)
-//	// Is an image loaded?
-//	if (pixmap.size ()!=QSize (0, 0))
-//	{
-//		QPainter painter (this);
-//		painter.setClipRect (e->rect ());
-////		painter.drawPixmap (0, 0, pixmap);
-//		painter.drawPixmap (0, 0, scaledPixmap);
-//	}
-//}
-

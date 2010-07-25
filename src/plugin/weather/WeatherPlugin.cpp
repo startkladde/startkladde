@@ -8,8 +8,6 @@
 #include "WeatherPlugin.h"
 
 #include <QTimer>
-#include <QSharedPointer>
-#include <QTemporaryFile>
 
 WeatherPlugin::WeatherPlugin ():
 	refreshTimer (new QTimer (this)),
@@ -32,9 +30,9 @@ void WeatherPlugin::outputImage (const QImage &image)
 	emit imageOutput (image);
 }
 
-void WeatherPlugin::outputMovie (QSharedPointer<QTemporaryFile> file)
+void WeatherPlugin::outputMovie (SkMovie &movie)
 {
-	emit movieOutput (file);
+	emit movieOutput (movie);
 }
 
 void WeatherPlugin::start ()
