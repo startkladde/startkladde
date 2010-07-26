@@ -14,7 +14,6 @@
 #include "src/util/qList.h"
 #include "src/util/qString.h"
 
-// FIXME massive code duplication info/weather
 
 // ******************
 // ** Construction **
@@ -26,8 +25,8 @@ PluginFactory::PluginFactory ()
 
 PluginFactory::~PluginFactory ()
 {
-	QList<const InfoPlugin::Descriptor *> list=infoPluginDescriptors.values ();
-	deleteList (list);
+	QList<const    InfoPlugin::Descriptor *>    infoPluginList=   infoPluginDescriptors.values (); deleteList (   infoPluginList);
+	QList<const WeatherPlugin::Descriptor *> weatherPluginList=weatherPluginDescriptors.values (); deleteList (weatherPluginList);
 }
 
 
@@ -50,73 +49,50 @@ PluginFactory &PluginFactory::getInstance ()
 	return *PluginFactory::instance;
 }
 
+
 // *************
 // ** Factory **
 // *************
 
 /**
- * Registers an info plugin by adding its descriptor to the list of know info
+ * Registers a plugin by adding its descriptor to the list of know
  * plugin descriptors
  *
- * @param descriptor the descriptor for the info plugin to add
+ * @param descriptor the descriptor for the plugin to add
  */
-void PluginFactory::addDescriptor (InfoPlugin::Descriptor *descriptor)
+template<class T> void PluginFactory::addDescriptor (typename T::Descriptor *descriptor)
 {
+	QHash<QUuid, const typename T::Descriptor *> &descriptorHash=getDescriptorHash<T> ();
+
 	if (descriptor->getId ().isNull ())
 	{
 		QString message=QString ("Error: invalid UUID for plugin %1").arg (descriptor->getName ());
 		std::cerr << message << std::endl;
 	}
-	else if (infoPluginDescriptors.contains (descriptor->getId ()))
+	else if (descriptorHash.contains (descriptor->getId ()))
 	{
 		QString message=QString ("Error: duplicate UUID %1 for plugins %2 and %3").arg (
 				descriptor->getId (),
 				descriptor->getName (),
-				infoPluginDescriptors.value (descriptor->getId ())->getName ());
+				descriptorHash.value (descriptor->getId ())->getName ());
 
 		std::cerr << message << std::endl;
 	}
 	else
 	{
-		infoPluginDescriptors.insert (descriptor->getId (), descriptor);
+		descriptorHash.insert (descriptor->getId (), descriptor);
 	}
 }
 
-void PluginFactory::addDescriptor (WeatherPlugin::Descriptor *descriptor)
-{
-	if (descriptor->getId ().isNull ())
-	{
-		QString message=QString ("Error: invalid UUID for plugin %1").arg (descriptor->getName ());
-		std::cerr << message << std::endl;
-	}
-	else if (weatherPluginDescriptors.contains (descriptor->getId ()))
-	{
-		QString message=QString ("Error: duplicate UUID %1 for plugins %2 and %3").arg (
-				descriptor->getId (),
-				descriptor->getName (),
-				weatherPluginDescriptors.value (descriptor->getId ())->getName ());
-
-		std::cerr << message << std::endl;
-	}
-	else
-	{
-		weatherPluginDescriptors.insert (descriptor->getId (), descriptor);
-	}
-}
 /**
- * Returns the list of all known info plugin descriptors
+ * Returns the list of all known plugin descriptors
  *
- * @return a list of pointers to info plugin descriptors. The caller may not
+ * @return a list of pointers to plugin descriptors. The caller may not
  *         delete any of the pointers.
  */
-const QList<const InfoPlugin::Descriptor *> PluginFactory::getInfoPluginDescriptors ()
+template<class T> QList<const typename T::Descriptor *> PluginFactory::getDescriptors ()
 {
-	return infoPluginDescriptors.values ();
-}
-
-const QList<const WeatherPlugin::Descriptor *> PluginFactory::getWeatherPluginDescriptors ()
-{
-	return weatherPluginDescriptors.values ();
+	return getDescriptorHash<T> ().values ();
 }
 
 /**
@@ -132,59 +108,63 @@ const QList<const WeatherPlugin::Descriptor *> PluginFactory::getWeatherPluginDe
  * @param id the ID of the plugin to find
  * @return a pointer to the descriptor for the plugin, or NULL
  */
-const InfoPlugin::Descriptor *PluginFactory::findInfoPlugin (const QUuid &id) const
+template<class T> const typename T::Descriptor *PluginFactory::findPlugin (const QUuid &id) const
 {
-	return infoPluginDescriptors.value (id);
-}
-
-const WeatherPlugin::Descriptor *PluginFactory::findWeatherPlugin (const QUuid &id) const
-{
-	return weatherPluginDescriptors.value (id);
+	return getDescriptorHash<T> ().value (id);
 }
 
 /**
- * Creates an info plugin with a given ID
+ * Creates a plugin with a given ID
  *
  * If no plugin with the given ID has been registered, NULL is returned.
  *
- * The caller takes ownership of the returned InfoPlugin instance.
+ * The caller takes ownership of the returned Plugin instance.
  *
  * @param id the ID of the plugin to create
- * @return an InfoPlugin instance, or NULL
+ * @return a Plugin instance, or NULL
  * @see #find
  */
-InfoPlugin *PluginFactory::createInfoPlugin (const QUuid &id) const
+template<class T> T *PluginFactory::createPlugin (const QUuid &id) const
 {
-	const InfoPlugin::Descriptor *descriptor=findInfoPlugin (id);
-	if (!descriptor) return NULL;
-
-	return descriptor->create ();
-}
-
-WeatherPlugin *PluginFactory::createWeatherPlugin (const QUuid &id) const
-{
-	const WeatherPlugin::Descriptor *descriptor=findWeatherPlugin (id);
+	const typename T::Descriptor *descriptor=findPlugin<T> (id);
 	if (!descriptor) return NULL;
 
 	return descriptor->create ();
 }
 
 
-// *************************************
+// *********************************
 // ** PluginFactory::Registration **
-// *************************************
+// *********************************
 
-/**
- * Registers an info plugin
- *
- * @param descriptor the descriptor of the plugin to register
- */
-PluginFactory::InfoPluginRegistration::InfoPluginRegistration (InfoPlugin::Descriptor *descriptor)
+template<class T> PluginFactory::Registration<T>::Registration (typename T::Descriptor *descriptor)
 {
-	PluginFactory::getInstance ().addDescriptor (descriptor);
+	PluginFactory::getInstance ().addDescriptor<T> (descriptor);
 }
 
-PluginFactory::WeatherPluginRegistration::WeatherPluginRegistration (WeatherPlugin::Descriptor *descriptor)
-{
-	PluginFactory::getInstance ().addDescriptor (descriptor);
-}
+
+// ***************
+// ** Templates **
+// ***************
+
+#define specializeTemplates(T, t) \
+	template<> const QHash<QUuid, const T::Descriptor *> &PluginFactory::getDescriptorHash<T> () const \
+	{ return t ## Descriptors; } \
+	template<>       QHash<QUuid, const T::Descriptor *> &PluginFactory::getDescriptorHash<T> () \
+	{ return t ## Descriptors; } \
+	// Empty line
+
+specializeTemplates (   InfoPlugin,    infoPlugin);
+specializeTemplates (WeatherPlugin, weatherPlugin);
+
+
+#define instantiateTemplates(T) \
+	template void                          PluginFactory::addDescriptor <T> (T::Descriptor *descriptor); \
+	template QList<const T::Descriptor *>  PluginFactory::getDescriptors<T> ();                          \
+	template const T::Descriptor          *PluginFactory::findPlugin    <T> (const QUuid &id) const;     \
+	template T                            *PluginFactory::createPlugin      (const QUuid &id) const;     \
+	template class                         PluginFactory::Registration<T>;                               \
+	// Empty line
+
+instantiateTemplates (   InfoPlugin);
+instantiateTemplates (WeatherPlugin);

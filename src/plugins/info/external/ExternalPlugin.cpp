@@ -40,7 +40,7 @@
 #include "src/util/io.h"
 #include "src/config/Settings.h"
 
-REGISTER_INFO_PLUGIN (ExternalPlugin)
+REGISTER_PLUGIN (InfoPlugin, ExternalPlugin)
 SK_PLUGIN_DEFINITION (ExternalPlugin, "{2fbb91be-bde5-4fba-a3c7-69d7caf827a5}", "Extern",
 	utf8 ("Empfängt Daten von einem externen Programm"))
 

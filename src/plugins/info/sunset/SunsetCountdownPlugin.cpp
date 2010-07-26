@@ -17,7 +17,7 @@
 #include "src/util/time.h"
 #include "src/text.h"
 
-REGISTER_INFO_PLUGIN (SunsetCountdownPlugin)
+REGISTER_PLUGIN (InfoPlugin, SunsetCountdownPlugin)
 SK_PLUGIN_DEFINITION (SunsetCountdownPlugin, "{9735dfd7-ddfd-476c-affd-edbf196e0279}", "Sunset-Countdown", utf8 ("Zeigt die verbleibende Zeit bis Sonnenuntergang an"))
 
 // ******************

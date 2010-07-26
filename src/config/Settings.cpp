@@ -119,7 +119,7 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 			s.setArrayIndex (i);
 
 			QString id=s.value ("id").toString ();
-			InfoPlugin *plugin=factory.createInfoPlugin (id);
+			InfoPlugin *plugin=factory.createPlugin<InfoPlugin> (id);
 
 			// TODO better handling if not found
 			if (plugin)

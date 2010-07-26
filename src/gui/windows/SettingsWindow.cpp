@@ -131,7 +131,7 @@ void SettingsWindow::readSettings ()
 	// Plugin selection lists
 	ui.weatherPluginInput      ->addItem ("-", QString ());
 	ui.weatherWindowPluginInput->addItem ("-", QString ());
-	foreach (const WeatherPlugin::Descriptor *descriptor, PluginFactory::getInstance ().getWeatherPluginDescriptors ())
+	foreach (const WeatherPlugin::Descriptor *descriptor, PluginFactory::getInstance ().getDescriptors<WeatherPlugin> ())
 	{
 		QString name=descriptor->getName ();
 		QString id  =descriptor->getId   ();
@@ -314,7 +314,7 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 	warnEdit ();
 	QTreeWidget *list=ui.infoPluginList;
 
-	QList<const InfoPlugin::Descriptor *> descriptors=PluginFactory::getInstance ().getInfoPluginDescriptors ();
+	QList<const InfoPlugin::Descriptor *> descriptors=PluginFactory::getInstance ().getDescriptors<InfoPlugin> ();
 	const InfoPlugin::Descriptor *descriptor=InfoPluginSelectionDialog::select (descriptors, this);
 
 	if (!descriptor) return;

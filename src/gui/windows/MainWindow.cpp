@@ -353,7 +353,7 @@ void MainWindow::setupPlugins ()
 
 
 	bool showWeatherPlugin=(s.weatherPluginEnabled && !isBlank (s.weatherPluginId));
-	weatherPlugin=PluginFactory::getInstance ().createWeatherPlugin (s.weatherPluginId);
+	weatherPlugin=PluginFactory::getInstance ().createPlugin<WeatherPlugin> (s.weatherPluginId);
 	if (!weatherPlugin) showWeatherPlugin=false;
 	ui.weatherFrame->setVisible (showWeatherPlugin);
 	if (showWeatherPlugin)
@@ -1339,7 +1339,7 @@ void MainWindow::weatherWidget_doubleClicked ()
 		if (s.weatherWindowEnabled && !isBlank (s.weatherWindowPluginId))
 		{
 			// The plugin will be deleted by the weather dialog
-			WeatherPlugin *weatherDialogPlugin=PluginFactory::getInstance ().createWeatherPlugin (s.weatherWindowPluginId);
+			WeatherPlugin *weatherDialogPlugin=PluginFactory::getInstance ().createPlugin<WeatherPlugin> (s.weatherWindowPluginId);
 
 			if (weatherDialogPlugin)
 			{

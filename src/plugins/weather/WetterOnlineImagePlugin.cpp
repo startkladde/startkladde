@@ -16,7 +16,7 @@
 #include "src/util/io.h"
 #include "src/text.h"
 
-REGISTER_WEATHER_PLUGIN (WetterOnlineImagePlugin)
+REGISTER_PLUGIN (WeatherPlugin, WetterOnlineImagePlugin)
 SK_PLUGIN_DEFINITION (WetterOnlineImagePlugin, "{a00e31ec-6d3d-4221-91bd-751a2756937f}", "Wetter Online (Bild)", "Zeigt ein Regenradarbild von wetteronline.de an")
 
 enum State { stateIndexPage, stateImage };

@@ -17,7 +17,7 @@
 #include "src/text.h"
 #include "src/graphics/SkMovie.h"
 
-REGISTER_WEATHER_PLUGIN (WetterOnlineAnimationPlugin)
+REGISTER_PLUGIN (WeatherPlugin, WetterOnlineAnimationPlugin)
 SK_PLUGIN_DEFINITION (WetterOnlineAnimationPlugin, "{f3b7c9b2-455f-459f-b636-02b2b9a78b7b}", "Wetter Online (Animation)", "Zeigt eine Regenradar-Animation von wetteronline.de an")
 
 enum State { stateNavigationPage, stateRadarPage, stateRadarImage };

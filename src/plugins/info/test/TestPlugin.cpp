@@ -16,7 +16,7 @@
 #include "src/text.h"
 #include "src/util/qString.h"
 
-REGISTER_INFO_PLUGIN (TestPlugin)
+REGISTER_PLUGIN (InfoPlugin, TestPlugin)
 SK_PLUGIN_DEFINITION (TestPlugin, "{80e116f8-06d5-44ce-802a-e1b727b98af2}", "Test",
 	utf8 ("Gibt eine Begrüßung und die aktuelle Uhrzeit aus"))
 

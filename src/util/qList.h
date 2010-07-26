@@ -9,6 +9,12 @@ template<class T> void deleteList (QList<T *> &list)
 		delete list.takeLast ();
 }
 
+template<class T> void deleteList (QList<const 	T *> &list)
+{
+	while (!list.isEmpty ())
+		delete list.takeLast ();
+}
+
 template<class T> void appendUnlessNull (QList<T *> &list, T *t)
 {
 	if (t)
