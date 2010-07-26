@@ -1,5 +1,5 @@
-#ifndef EXTERNALPLUGIN_H_
-#define EXTERNALPLUGIN_H_
+#ifndef EXTERNALINFOPLUGIN_H_
+#define EXTERNALINFOPLUGIN_H_
 
 #include "src/plugin/info/InfoPlugin.h"
 
@@ -8,14 +8,14 @@ class QProcess;
 /**
  * Example command: "date +%H:%M"
  */
-class ExternalPlugin: public InfoPlugin
+class ExternalInfoPlugin: public InfoPlugin
 {
 		Q_OBJECT
 		SK_PLUGIN
 
 	public:
-		ExternalPlugin (const QString &caption=QString (), bool enabled=true, const QString &command="", bool richText=false);
-		virtual ~ExternalPlugin ();
+		ExternalInfoPlugin (const QString &caption=QString (), bool enabled=true, const QString &command="", bool richText=false);
+		virtual ~ExternalInfoPlugin ();
 
 		virtual void start ();
 		virtual void terminate ();

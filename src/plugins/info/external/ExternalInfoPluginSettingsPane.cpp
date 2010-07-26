@@ -1,40 +1,40 @@
-#include "ExternalPluginSettingsPane.h"
+#include "ExternalInfoPluginSettingsPane.h"
 
 #include <QFileInfo>
 #include <QFileDialog>
 
 #include "src/util/qString.h"
 #include "src/gui/dialogs.h"
-#include "src/plugins/info/external/ExternalPlugin.h"
+#include "src/plugins/info/external/ExternalInfoPlugin.h"
 
 // TODO: file resolving sunset plugin style
 
-ExternalPluginSettingsPane::ExternalPluginSettingsPane (ExternalPlugin *plugin, QWidget *parent):
+ExternalInfoPluginSettingsPane::ExternalInfoPluginSettingsPane (ExternalInfoPlugin *plugin, QWidget *parent):
 	PluginSettingsPane (parent),
 	plugin (plugin)
 {
 	ui.setupUi (this);
 }
 
-ExternalPluginSettingsPane::~ExternalPluginSettingsPane()
+ExternalInfoPluginSettingsPane::~ExternalInfoPluginSettingsPane()
 {
 
 }
 
-void ExternalPluginSettingsPane::readSettings ()
+void ExternalInfoPluginSettingsPane::readSettings ()
 {
 	ui.commandInput    ->setText    (plugin->getCommand  ());
 	ui.richTextCheckbox->setChecked (plugin->getRichText ());
 }
 
-bool ExternalPluginSettingsPane::writeSettings ()
+bool ExternalInfoPluginSettingsPane::writeSettings ()
 {
 	plugin->setCommand  (ui.commandInput    ->text      ());
 	plugin->setRichText (ui.richTextCheckbox->isChecked ());
 	return true;
 }
 
-void ExternalPluginSettingsPane::on_browseButton_clicked ()
+void ExternalInfoPluginSettingsPane::on_browseButton_clicked ()
 {
 	QString currentCommand=ui.commandInput->text ();
 	QString resolved=plugin->resolveFilename (currentCommand, getEffectivePluginPaths ());

@@ -1,5 +1,5 @@
 /*
- * ExternalPlugin.cpp
+ * ExternalInfoPlugin.cpp
  *
  *  Created on: 22.07.2010
  *      Author: Martin Herrmann
@@ -17,14 +17,13 @@
 
 /*
  * TODO:
- *   - parameters as a separate field (allow spaces!)
- *   - browse
+ *   - parameters as a separate config field (allow spaces!)
  *   - restart behavior: no action, notify, restart (with interval), print message
  *   - working directory: current, program, plugin, other
  *   - allow specifying interpreter
  */
 
-#include "ExternalPlugin.h"
+#include "ExternalInfoPlugin.h"
 
 //#include <QDebug>
 #include <QSettings>
@@ -34,40 +33,40 @@
 #include <QString>
 
 #include "src/plugin/factory/PluginFactory.h"
-#include "ExternalPluginSettingsPane.h"
+#include "ExternalInfoPluginSettingsPane.h"
 #include "src/text.h"
 #include "src/util/qString.h"
 #include "src/util/io.h"
 #include "src/config/Settings.h"
 
-REGISTER_PLUGIN (InfoPlugin, ExternalPlugin)
-SK_PLUGIN_DEFINITION (ExternalPlugin, "{2fbb91be-bde5-4fba-a3c7-69d7caf827a5}", "Extern",
+REGISTER_PLUGIN (InfoPlugin, ExternalInfoPlugin)
+SK_PLUGIN_DEFINITION (ExternalInfoPlugin, "{2fbb91be-bde5-4fba-a3c7-69d7caf827a5}", "Extern",
 	utf8 ("Empfängt Daten von einem externen Programm"))
 
-ExternalPlugin::ExternalPlugin (const QString &caption, bool enabled, const QString &command, bool richText):
+ExternalInfoPlugin::ExternalInfoPlugin (const QString &caption, bool enabled, const QString &command, bool richText):
 	InfoPlugin (caption, enabled),
 	command (command), richText (richText),
 	subprocess (NULL)
 {
 }
 
-ExternalPlugin::~ExternalPlugin ()
+ExternalInfoPlugin::~ExternalInfoPlugin ()
 {
 	terminate ();
 }
 
-PluginSettingsPane *ExternalPlugin::infoPluginCreateSettingsPane (QWidget *parent)
+PluginSettingsPane *ExternalInfoPlugin::infoPluginCreateSettingsPane (QWidget *parent)
 {
-	return new ExternalPluginSettingsPane (this, parent);
+	return new ExternalInfoPluginSettingsPane (this, parent);
 }
 
-void ExternalPlugin::infoPluginReadSettings (const QSettings &settings)
+void ExternalInfoPlugin::infoPluginReadSettings (const QSettings &settings)
 {
 	command =settings.value ("command" , command ).toString ();
 	richText=settings.value ("richText", richText).toBool ();
 }
 
-void ExternalPlugin::infoPluginWriteSettings (QSettings &settings)
+void ExternalInfoPlugin::infoPluginWriteSettings (QSettings &settings)
 {
 	settings.setValue ("command" , command );
 	settings.setValue ("richText", richText);
@@ -75,7 +74,7 @@ void ExternalPlugin::infoPluginWriteSettings (QSettings &settings)
 
 #define OUTPUT_AND_RETURN(text) do { outputText (utf8 (text)); return; } while (0)
 
-void ExternalPlugin::start ()
+void ExternalInfoPlugin::start ()
 {
 	terminate ();
 
@@ -103,7 +102,7 @@ void ExternalPlugin::start ()
 	// Note that on Windows, we may have to add the interpreter explicitly.
 }
 
-void ExternalPlugin::terminate ()
+void ExternalInfoPlugin::terminate ()
 {
 	if (subprocess)
 	{
@@ -123,12 +122,12 @@ void ExternalPlugin::terminate ()
 	}
 }
 
-QString ExternalPlugin::configText () const
+QString ExternalInfoPlugin::configText () const
 {
 	return utf8 ("„%1“, %2 text").arg (command, richText?"rich":"plain");
 }
 
-void ExternalPlugin::outputAvailable ()
+void ExternalInfoPlugin::outputAvailable ()
 {
 	// Might happen if the process finished or was restarted in the meantime
 	if (!subprocess) return;
@@ -141,7 +140,7 @@ void ExternalPlugin::outputAvailable ()
 	}
 }
 
-void ExternalPlugin::processFinished ()
+void ExternalInfoPlugin::processFinished ()
 {
 	// The stored subprocess pointer may already have been overwritten, for
 	// example, if the plugin has been restarted and this slot is called for
@@ -170,7 +169,7 @@ void ExternalPlugin::processFinished ()
 	// if (restart_interval>0) QTimer::singleShot (restart_interval*1000, this, SLOT (start ()));
 }
 
-void ExternalPlugin::splitCommand (QString &commandProper, QString &parameters, const QString &commandWithParameters)
+void ExternalInfoPlugin::splitCommand (QString &commandProper, QString &parameters, const QString &commandWithParameters)
 {
 	int firstSpace=commandWithParameters.indexOf (' ');
 

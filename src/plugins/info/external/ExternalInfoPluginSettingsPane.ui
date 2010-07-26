@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ExternalPluginSettingsPaneClass</class>
- <widget class="QWidget" name="ExternalPluginSettingsPaneClass">
+ <class>ExternalInfoPluginSettingsPaneClass</class>
+ <widget class="QWidget" name="ExternalInfoPluginSettingsPaneClass">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>ExternalPluginSettingsPane</string>
+   <string>ExternalInfoPluginSettingsPane</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
