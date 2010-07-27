@@ -30,6 +30,7 @@ SkProcess::SkProcess (QObject *parent):
 
 SkProcess::~SkProcess ()
 {
+	stop ();
 }
 
 void SkProcess::start (const QString &command)

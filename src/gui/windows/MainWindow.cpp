@@ -349,12 +349,17 @@ void MainWindow::setupPlugins ()
 	weatherWidget=NULL;
 
 
-	bool showWeatherPlugin=(s.weatherPluginEnabled && !isBlank (s.weatherPluginId));
-	weatherPlugin=PluginFactory::getInstance ().createPlugin<WeatherPlugin> (s.weatherPluginId);
-	if (!weatherPlugin) showWeatherPlugin=false;
-	ui.weatherFrame->setVisible (showWeatherPlugin);
-	if (showWeatherPlugin)
+	weatherPlugin=NULL; // Deleted in terminatePlugins
+	if (s.weatherPluginEnabled && !isBlank (s.weatherPluginId))
+		weatherPlugin=PluginFactory::getInstance ().createPlugin<WeatherPlugin> (s.weatherPluginId);
+
+	ui.weatherFrame->setVisible (weatherPlugin!=NULL);
+	if (weatherPlugin)
 	{
+		ExternalWeatherPlugin *externalWeatherPlugin=dynamic_cast<ExternalWeatherPlugin *> (weatherPlugin);
+		if (externalWeatherPlugin)
+			externalWeatherPlugin->setCommand (s.weatherPluginCommand);
+
 		// Create and setup the weather widget. The weather widget is located to
 		// the right of the info frame.
 		weatherWidget = new WeatherWidget (ui.weatherFrame);
@@ -1340,6 +1345,10 @@ void MainWindow::weatherWidget_doubleClicked ()
 
 			if (weatherDialogPlugin)
 			{
+				ExternalWeatherPlugin *externalWeatherDialogPlugin=dynamic_cast<ExternalWeatherPlugin *> (weatherDialogPlugin);
+				if (externalWeatherDialogPlugin)
+					externalWeatherDialogPlugin->setCommand (s.weatherWindowCommand);
+
 				weatherDialogPlugin->enableRefresh (s.weatherWindowInterval);
 
 				// The weather dialog will be deleted when it's closed, and

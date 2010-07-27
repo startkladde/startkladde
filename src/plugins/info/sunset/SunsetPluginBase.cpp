@@ -67,8 +67,6 @@ QString SunsetPluginBase::configText () const
 		return filename;
 }
 
-#define OUTPUT_AND_RETURN(text) do { outputText (utf8 (text)); return; } while (0)
-
 /**
  * Reads the required data from the data file
  *
@@ -103,15 +101,15 @@ void SunsetPluginBase::start ()
 		if (isBlank (sunsetString)) OUTPUT_AND_RETURN ("Zeit für aktuelles Datum nicht in Datendatei vorhanden");
 
 		rawSunset=QTime::fromString (sunsetString, "hh:mm");
-		if (!rawSunset.isValid ()) OUTPUT_AND_RETURN ("Ungültiges Zeitformat");
+		if (!rawSunset.isValid ()) OUTPUT_AND_RETURN (utf8 ("Ungültiges Zeitformat"));
 
 		if (longitudeCorrection)
 		{
 			QString referenceLongitudeString=readReferenceLongitudeString (resolvedFilename);
-			if (referenceLongitudeString.isEmpty ()) OUTPUT_AND_RETURN ("Kein Bezugslängengrad in Datendatei gefunden");
+			if (referenceLongitudeString.isEmpty ()) OUTPUT_AND_RETURN (utf8 ("Kein Bezugslängengrad in Datendatei gefunden"));
 
 			referenceLongitude=Longitude::parse (referenceLongitudeString);
-			if (!referenceLongitude.isValid ()) OUTPUT_AND_RETURN ("Ungültiger Bezugslängengrad");
+			if (!referenceLongitude.isValid ()) OUTPUT_AND_RETURN (utf8 ("Ungültiger Bezugslängengrad"));
 
 			// Add the difference in clock time for the same solar time
 			correctedSunset=rawSunset.addSecs (longitude.clockTimeOffsetTo (referenceLongitude));

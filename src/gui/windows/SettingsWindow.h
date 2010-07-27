@@ -43,6 +43,9 @@ class SettingsWindow: public QDialog
 
 		void on_infoPluginList_itemDoubleClicked (QTreeWidgetItem *item, int column);
 
+		void on_weatherPluginInput_currentIndexChanged ();
+		void on_weatherWindowPluginInput_currentIndexChanged ();
+
 		void updateWidgets ();
 
 		void on_buttonBox_accepted ();

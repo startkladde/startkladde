@@ -14,6 +14,7 @@ WeatherDialog::WeatherDialog (WeatherPlugin *plugin, QWidget *parent):
 	setAttribute (Qt::WA_DeleteOnClose, true);
 
 	ww=new WeatherWidget (this);
+	ww->setWordWrap (false);
 
 	QObject::connect (ww, SIGNAL (doubleClicked ()), plugin, SLOT (restart ()));
 	connect (plugin, SIGNAL (textOutput (const QString &, Qt::TextFormat)), ww, SLOT (setText (const QString &, Qt::TextFormat)));

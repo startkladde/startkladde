@@ -60,7 +60,7 @@ void WetterOnlineImagePlugin::downloadSucceeded (int state, QNetworkReply *reply
 		{
 			QByteArray data=reply->readAll ();
 			QImage image=QImage::fromData (data);
-			if (image.isNull ()) OUTPUT_AND_RETURN ("Fehler: ungültige Wettergrafik");
+			if (image.isNull ()) OUTPUT_AND_RETURN (utf8 ("Fehler: ungültige Wettergrafik"));
 			outputImage (image);
 		} break;
 	}

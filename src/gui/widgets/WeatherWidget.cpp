@@ -7,8 +7,7 @@
 #include <QRegExp>
 #include <QResizeEvent>
 
-#include "src/config/Settings.h" // TODO remove dependency, set size from MainWindow
-//#include "src/util/qString.h" // remove
+#include "src/config/Settings.h" // TODO remove dependency, set from MainWindow
 
 
 WeatherWidget::WeatherWidget (QWidget *parent):

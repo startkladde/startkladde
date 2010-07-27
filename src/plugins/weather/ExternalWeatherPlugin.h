@@ -16,7 +16,7 @@ class ExternalWeatherPlugin: public WeatherPlugin
 		ExternalWeatherPlugin (const QString &command="");
 		virtual ~ExternalWeatherPlugin ();
 
-		value_accessor (QString, Command , command );
+		value_accessor (QString, Command, command);
 
 	public slots:
 		virtual void refresh ();

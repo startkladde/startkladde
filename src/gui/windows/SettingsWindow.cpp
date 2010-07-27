@@ -35,6 +35,8 @@
 #include "src/util/qList.h"
 #include "src/gui/dialogs.h"
 
+#include "src/plugins/weather/ExternalWeatherPlugin.h"
+
 //const int columnTitle=0;
 //const int columnCommand=1;
 //const int columnEnabled=2;
@@ -130,7 +132,10 @@ void SettingsWindow::readSettings ()
 	// Plugin selection lists
 	ui.weatherPluginInput      ->addItem ("-", QString ());
 	ui.weatherWindowPluginInput->addItem ("-", QString ());
-	foreach (const WeatherPlugin::Descriptor *descriptor, PluginFactory::getInstance ().getDescriptors<WeatherPlugin> ())
+
+	QList<const WeatherPlugin::Descriptor *> sortedPlugins (PluginFactory::getInstance ().getDescriptors<WeatherPlugin> ());
+	qSort (sortedPlugins.begin (), sortedPlugins.end (), WeatherPlugin::Descriptor::nameLessThanP);
+	foreach (const WeatherPlugin::Descriptor *descriptor, sortedPlugins)
 	{
 		QString name=descriptor->getName ();
 		QString id  =descriptor->getId   ();
@@ -141,15 +146,18 @@ void SettingsWindow::readSettings ()
 	// Weather plugin
 	ui.weatherPluginBox          ->setChecked               (s.weatherPluginEnabled);
 	ui.weatherPluginInput        ->setCurrentItemByItemData (s.weatherPluginId, 0);
-//	ui.weatherPluginCommandInput ->setText                  (s.weatherPluginCommand );
+	ui.weatherPluginCommandInput ->setText                  (s.weatherPluginCommand );
 	ui.weatherPluginHeightInput  ->setValue                 (s.weatherPluginHeight  );
 	ui.weatherPluginIntervalInput->setValue                 (s.weatherPluginInterval/60);
+	on_weatherPluginInput_currentIndexChanged ();
+
 	// Weather dialog
 	ui.weatherWindowBox          ->setChecked               (s.weatherWindowEnabled);
 	ui.weatherWindowPluginInput  ->setCurrentItemByItemData (s.weatherWindowPluginId, 0);
-//	ui.weatherWindowCommandInput ->setText                  (s.weatherWindowCommand );
+	ui.weatherWindowCommandInput ->setText                  (s.weatherWindowCommand );
 	ui.weatherWindowIntervalInput->setValue                 (s.weatherWindowInterval/60);
 	ui.weatherWindowTitleInput   ->setText                  (s.weatherWindowTitle   );
+	on_weatherWindowPluginInput_currentIndexChanged ();
 
 	// *** Plugins - Paths
 	ui.pluginPathList->clear ();
@@ -220,13 +228,13 @@ void SettingsWindow::writeSettings ()
 	// Weather plugin
 	s.weatherPluginEnabled =ui.weatherPluginBox          ->isChecked ();
 	s.weatherPluginId      =ui.weatherPluginInput        ->currentItemData ().toString ();
-//	s.weatherPluginCommand =ui.weatherPluginCommandInput ->text ();
+	s.weatherPluginCommand =ui.weatherPluginCommandInput ->text ();
 	s.weatherPluginHeight  =ui.weatherPluginHeightInput  ->value ();
 	s.weatherPluginInterval=ui.weatherPluginIntervalInput->value ()*60;
 	// Weather dialog
 	s.weatherWindowEnabled =ui.weatherWindowBox          ->isChecked ();
 	s.weatherWindowPluginId=ui.weatherWindowPluginInput  ->currentItemData ().toString ();
-//	s.weatherWindowCommand =ui.weatherWindowCommandInput ->text ();
+	s.weatherWindowCommand =ui.weatherWindowCommandInput ->text ();
 	s.weatherWindowInterval=ui.weatherWindowIntervalInput->value ()*60;
 	s.weatherWindowTitle   =ui.weatherWindowTitleInput   ->text ();
 
@@ -463,4 +471,18 @@ void SettingsWindow::warnEdit ()
 		"Datenbankpasswort erforderlich."), this);
 
 	warned=true;
+}
+
+void SettingsWindow::on_weatherPluginInput_currentIndexChanged ()
+{
+	bool external=(ui.weatherPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
+	ui.weatherPluginCommandLabel->setEnabled (external);
+	ui.weatherPluginCommandInput->setEnabled (external);
+}
+
+void SettingsWindow::on_weatherWindowPluginInput_currentIndexChanged ()
+{
+	bool external=(ui.weatherWindowPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
+	ui.weatherWindowCommandLabel->setEnabled (external);
+	ui.weatherWindowCommandInput->setEnabled (external);
 }

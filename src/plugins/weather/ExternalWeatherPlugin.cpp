@@ -17,15 +17,13 @@
 #include "src/io/SkProcess.h"
 #include "src/text.h"
 #include "src/util/qString.h"
-////#include "src/util/io.h"
+//#include "src/util/io.h"
 #include "src/config/Settings.h"
 #include "src/graphics/SkMovie.h"
 
 REGISTER_PLUGIN (WeatherPlugin, ExternalWeatherPlugin)
 SK_PLUGIN_DEFINITION (ExternalWeatherPlugin, "{01db73ff-1473-4aeb-b297-13398927005c}", "Extern",
 	utf8 ("Externes Wetter-Plugin"))
-
-#define OUTPUT_AND_RETURN(text) do { outputText (utf8 (text)); return; } while (0)
 
 ExternalWeatherPlugin::ExternalWeatherPlugin (const QString &command):
 	command (command),
@@ -39,32 +37,6 @@ ExternalWeatherPlugin::~ExternalWeatherPlugin ()
 {
 	terminate ();
 }
-
-//void ExternalWeatherPlugin::start ()
-//{
-//	terminate ();
-//
-//	if (isBlank (command)) OUTPUT_AND_RETURN ("Kein Kommando angegeben");
-//
-//	QString commandProper;
-//	QString parameters;
-//	splitCommand (commandProper, parameters, command);
-//
-//	QString resolved=resolveFilename (commandProper, Settings::instance ().pluginPaths);
-//	if (isBlank (resolved)) OUTPUT_AND_RETURN ("Kommando nicht gefunden");
-//	if (!QFile::exists (resolved)) OUTPUT_AND_RETURN ("Kommando existiert nicht");
-//
-//	if (!process->startAndWait (resolved+" "+parameters)) OUTPUT_AND_RETURN ("Fehler beim Starten des Prozesses");
-//	outputText ("Prozess gestartet");
-//
-//	// Note that on Windows, we may have to add the interpreter explicitly.
-//}
-//
-//void ExternalWeatherPlugin::terminate ()
-//{
-//	process->stop ();
-//}
-//
 
 void ExternalWeatherPlugin::refresh ()
 {
@@ -80,7 +52,7 @@ void ExternalWeatherPlugin::refresh ()
 	if (isBlank (resolved)) OUTPUT_AND_RETURN ("Kommando nicht gefunden");
 	if (!QFile::exists (resolved)) OUTPUT_AND_RETURN ("Kommando existiert nicht");
 
-	if (!process->startAndWait (resolved+" "+parameters)) OUTPUT_AND_RETURN ("Fehler beim Starten des Prozesses");
+	if (!process->startAndWait (resolved+" "+parameters)) OUTPUT_AND_RETURN (QString ("Fehler: %1").arg (process->getProcess ()->errorString ()));
 	outputText ("Prozess gestartet");
 }
 
@@ -92,8 +64,6 @@ void ExternalWeatherPlugin::abort ()
 
 void ExternalWeatherPlugin::lineReceived (const QString &line)
 {
-	// FIXME handle line
-
 	if (line.startsWith ("[MSG]", Qt::CaseInsensitive))
 	{
 		QRegExp rx ("\\[MSG\\]\\s*\\[(.*)\\]" );

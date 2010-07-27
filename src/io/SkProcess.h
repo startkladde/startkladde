@@ -21,6 +21,8 @@ class SkProcess: public QObject
 
 		static void splitCommand (QString &commandProper, QString &parameters, const QString &commandWithParameters);
 
+		QProcess *getProcess () { return process; }
+
 	signals:
 		void lineReceived (const QString &line);
 		void exited (int exitCode, QProcess::ExitStatus exitStatus);

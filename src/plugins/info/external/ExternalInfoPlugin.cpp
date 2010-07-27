@@ -31,8 +31,6 @@ REGISTER_PLUGIN (InfoPlugin, ExternalInfoPlugin)
 SK_PLUGIN_DEFINITION (ExternalInfoPlugin, "{2fbb91be-bde5-4fba-a3c7-69d7caf827a5}", "Extern",
 	utf8 ("Empfängt Daten von einem externen Programm"))
 
-#define OUTPUT_AND_RETURN(text) do { outputText (utf8 (text)); return; } while (0)
-
 ExternalInfoPlugin::ExternalInfoPlugin (const QString &caption, bool enabled, const QString &command, bool richText):
 	InfoPlugin (caption, enabled),
 	command (command), richText (richText),
@@ -78,7 +76,7 @@ void ExternalInfoPlugin::start ()
 	if (isBlank (resolved)) OUTPUT_AND_RETURN ("Kommando nicht gefunden");
 	if (!QFile::exists (resolved)) OUTPUT_AND_RETURN ("Kommando existiert nicht");
 
-	if (!process->startAndWait (resolved+" "+parameters)) OUTPUT_AND_RETURN ("Fehler beim Starten des Prozesses");
+	if (!process->startAndWait (resolved+" "+parameters)) OUTPUT_AND_RETURN (QString ("Fehler: %1").arg (process->getProcess ()->errorString ()));
 	outputText ("Prozess gestartet");
 
 	// Note that on Windows, we may have to add the interpreter explicitly.
