@@ -164,6 +164,7 @@ HEADERS += \
            src/gui/windows/objectEditor/PersonEditorPane.h \
            src/gui/windows/objectEditor/PlaneEditorPane.h \
            src/io/AnsiColors.h \
+           src/io/SkProcess.h \
            src/logging/messages.h \
            src/model/Entity.h \
            src/model/Flight.h \
@@ -302,6 +303,7 @@ SOURCES += \
            src/gui/windows/objectEditor/PersonEditorPane.cpp \
            src/gui/windows/objectEditor/PlaneEditorPane.cpp \
            src/io/AnsiColors.cpp \
+           src/io/SkProcess.cpp \
            src/logging/messages.cpp \
            src/model/Entity.cpp \
            src/model/Flight.cpp \

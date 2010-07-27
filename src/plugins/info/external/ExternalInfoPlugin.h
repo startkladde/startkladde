@@ -1,9 +1,11 @@
 #ifndef EXTERNALINFOPLUGIN_H_
 #define EXTERNALINFOPLUGIN_H_
 
+#include <QProcess> // Required for QProcess::ExitStatus
+
 #include "src/plugin/info/InfoPlugin.h"
 
-class QProcess;
+class SkProcess;
 
 /**
  * Example command: "date +%H:%M"
@@ -31,17 +33,14 @@ class ExternalInfoPlugin: public InfoPlugin
 		virtual QString configText () const;
 
 	protected slots:
-		void outputAvailable ();
-		void processFinished ();
-
-	protected:
-		static void splitCommand (QString &commandProper, QString &parameters, const QString &commandWithParameters);
+		void lineReceived (const QString &line);
+		void processExited (int exitCode, QProcess::ExitStatus exitStatus);
 
 	private:
 		QString command;
 		bool richText;
 
-		QProcess *subprocess;
+		SkProcess *process;
 };
 
 #endif
