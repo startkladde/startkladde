@@ -1,6 +1,6 @@
 #include "AcpiWidget.h"
 
-#include <QDebug> // XXX
+#include <QDebug>
 #include <QPalette>
 //#include <QColor>
 #include <QTimer>

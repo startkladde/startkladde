@@ -5,7 +5,7 @@
 
 #include "ui_SettingsWindow.h"
 
-class ShellPluginInfo;
+class InfoPlugin;
 
 class SettingsWindow: public QDialog
 {
@@ -15,11 +15,13 @@ class SettingsWindow: public QDialog
 		SettingsWindow (QWidget *parent=0);
 		~SettingsWindow ();
 
+		QStringList getPluginPaths ();
+
 	protected:
 		void readSettings ();
 		void writeSettings ();
 
-		void readItem (QTreeWidgetItem *item, const ShellPluginInfo &plugin);
+		void readItem (QTreeWidgetItem *item, const InfoPlugin *plugin);
 		void makeItemEditable (QListWidgetItem *item);
 
 		bool allowEdit ();
@@ -37,14 +39,24 @@ class SettingsWindow: public QDialog
 		void on_removeInfoPluginButton_clicked ();
 		void on_infoPluginUpButton_clicked ();
 		void on_infoPluginDownButton_clicked ();
+		void on_infoPluginSettingsButton_clicked ();
+
+		void on_infoPluginList_itemDoubleClicked (QTreeWidgetItem *item, int column);
+
+		void on_weatherPluginInput_currentIndexChanged ();
+		void on_weatherWindowPluginInput_currentIndexChanged ();
 
 		void updateWidgets ();
 
 		void on_buttonBox_accepted ();
 
+		void on_browseWeatherPluginCommandButton_clicked ();
+		void on_browseWeatherWindowCommandButton_clicked ();
+
 	private:
 		Ui::SettingsWindowClass ui;
 		bool warned;
+		QList<InfoPlugin *> infoPlugins;
 
 	public:
 		bool databaseSettingsChanged;

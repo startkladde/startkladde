@@ -41,9 +41,9 @@ bool Plane::selfLaunchOnly () const
 
 QString Plane::fullRegistration () const
 {
-	if (blank (callsign))
+	if (isBlank (callsign))
 		return registration;
-	else if (blank (registration))
+	else if (isBlank (registration))
 		return callsign;
 	else
 		return QString ("%1 (%2)").arg (registration, callsign);
@@ -51,9 +51,9 @@ QString Plane::fullRegistration () const
 
 QString Plane::registrationWithType () const
 {
-	if (blank (type))
+	if (isBlank (type))
 		return registration;
-	else if (blank (registration))
+	else if (isBlank (registration))
 		return type;
 	else
 		return QString ("%1 (%2)").arg (registration, type);
@@ -79,8 +79,8 @@ QString Plane::toString () const
 
 bool Plane::clubAwareLessThan (const Plane &p1, const Plane &p2)
 {
-	QString club1=simplify_club_name (p1.club);
-	QString club2=simplify_club_name (p2.club);
+	QString club1=simplifyClubName (p1.club);
+	QString club2=simplifyClubName (p2.club);
 
 	if (club1<club2) return true;
 	if (club1>club2) return false;

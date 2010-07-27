@@ -1,5 +1,7 @@
 /*
  * Improvements:
+ *   - for the plugins, we should use a model and QTreeView instead of
+ *     QTreeWidget and manual syncing between plugin list and view
  *   - pluginPathList: after dragging, select the dragged item in the new
  *     position
  *   - infoPluginList: enable internal dragging
@@ -12,27 +14,40 @@
 #include "SettingsWindow.h"
 
 #include <iostream>
+#include <cassert>
 
 #include <QItemEditorFactory>
 #include <QSettings>
 #include <QInputDialog>
 #include <QPushButton>
+#include <QDebug>
 
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
-#include "src/plugins/ShellPluginInfo.h"
+#include "src/plugin/info/InfoPlugin.h"
+#include "src/plugin/factory/PluginFactory.h"
+#include "src/plugin/info/InfoPluginSelectionDialog.h"
+#include "src/plugin/settings/PluginSettingsDialog.h"
 #include "src/gui/views/ReadOnlyItemDelegate.h"
 #include "src/gui/views/SpinBoxCreator.h"
 #include "src/gui/views/SpecialIntDelegate.h"
 #include "src/util/qString.h"
+#include "src/util/qList.h"
 #include "src/gui/dialogs.h"
 
-const int columnTitle=0;
-const int columnCommand=1;
-const int columnEnabled=2;
-const int columnRichText=3;
-const int columnInterval=4;
-const int columnWarnOnDeath=5;
+#include "src/plugins/weather/ExternalWeatherPlugin.h"
+
+//const int columnTitle=0;
+//const int columnCommand=1;
+//const int columnEnabled=2;
+//const int columnRichText=3;
+//const int columnInterval=4;
+//const int columnWarnOnDeath=5;
+
+const int captionColumn=0;
+const int    nameColumn=1;
+const int enabledColumn=2;
+const int  configColumn=3;
 
 SettingsWindow::SettingsWindow (QWidget *parent):
 	QDialog (parent),
@@ -44,18 +59,14 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 
 	ui.dbTypePane->setVisible (false);
 
-	// Make boolean columns read-only
-	ui.infoPluginList->setItemDelegateForColumn (columnEnabled    , new ReadOnlyItemDelegate (ui.infoPluginList));
-	ui.infoPluginList->setItemDelegateForColumn (columnRichText   , new ReadOnlyItemDelegate (ui.infoPluginList));
-	ui.infoPluginList->setItemDelegateForColumn (columnWarnOnDeath, new ReadOnlyItemDelegate (ui.infoPluginList));
-
-	// Setup the integer colum
-	QStyledItemDelegate *intervalDelegate=new SpecialIntDelegate (columnTitle, "Nicht neu starten", " s", ui.infoPluginList);
-	SpinBoxCreator *spinBoxCreator=new SpinBoxCreator (columnTitle, "Nicht neu starten", " s");
-	QItemEditorFactory *factory=new QItemEditorFactory;
-	factory->registerEditor (QVariant::Int, spinBoxCreator);
-	intervalDelegate->setItemEditorFactory (factory);
-	ui.infoPluginList->setItemDelegateForColumn (columnInterval, intervalDelegate);
+	// Make boolean columns and some other columns read-only
+	// The title column is read-only because we would have to write back the
+	// value to the plugin after editing it so the plugin settings dialog show
+	// it correctly.
+	ui.infoPluginList->setItemDelegateForColumn (   nameColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (captionColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (enabledColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn ( configColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
 
 	// Note that this label does not use wordWrap because it causes the minimum
 	// size of the label not to work properly.
@@ -67,7 +78,7 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 
 SettingsWindow::~SettingsWindow()
 {
-
+	deleteList (infoPlugins);
 }
 
 void SettingsWindow::on_buttonBox_accepted ()
@@ -86,7 +97,7 @@ void SettingsWindow::readSettings ()
 
 	// *** Database
 	ui.mysqlServerInput        ->setText    (info.server);
-	ui.mysqlDefaultPortCheckBox->setChecked (info.defaultPort); // TODO enable port
+	ui.mysqlDefaultPortCheckBox->setChecked (info.defaultPort);
 	ui.mysqlPortInput          ->setValue   (info.port);
 	ui.mysqlUserInput          ->setText    (info.username);
 	ui.mysqlPasswordInput      ->setText    (info.password);
@@ -104,8 +115,11 @@ void SettingsWindow::readSettings ()
 	ui.diagCommandInput   ->setText    (s.diagCommand);
 
 	// *** Plugins - Info
+	deleteList (infoPlugins);
+	infoPlugins=s.readInfoPlugins ();
+
 	ui.infoPluginList->clear ();
-	foreach (const ShellPluginInfo &plugin, s.infoPlugins)
+	foreach (InfoPlugin *plugin, infoPlugins)
 	{
 		QTreeWidgetItem *item=new QTreeWidgetItem (ui.infoPluginList);
 		readItem (item, plugin);
@@ -115,16 +129,35 @@ void SettingsWindow::readSettings ()
 
 
 	// *** Plugins - Weather
+	// Plugin selection lists
+	ui.weatherPluginInput      ->addItem ("-", QString ());
+	ui.weatherWindowPluginInput->addItem ("-", QString ());
+
+	QList<const WeatherPlugin::Descriptor *> sortedPlugins (PluginFactory::getInstance ().getDescriptors<WeatherPlugin> ());
+	qSort (sortedPlugins.begin (), sortedPlugins.end (), WeatherPlugin::Descriptor::nameLessThanP);
+	foreach (const WeatherPlugin::Descriptor *descriptor, sortedPlugins)
+	{
+		QString name=descriptor->getName ();
+		QString id  =descriptor->getId   ();
+		ui.weatherPluginInput      ->addItem (name, id);
+		ui.weatherWindowPluginInput->addItem (name, id);
+	}
+
 	// Weather plugin
-	ui.weatherPluginBox          ->setChecked (s.weatherPluginEnabled);
-	ui.weatherPluginCommandInput ->setText    (s.weatherPluginCommand );
-	ui.weatherPluginHeightInput  ->setValue   (s.weatherPluginHeight  );
-	ui.weatherPluginIntervalInput->setValue   (s.weatherPluginInterval);
+	ui.weatherPluginBox          ->setChecked               (s.weatherPluginEnabled);
+	ui.weatherPluginInput        ->setCurrentItemByItemData (s.weatherPluginId, 0);
+	ui.weatherPluginCommandInput ->setText                  (s.weatherPluginCommand );
+	ui.weatherPluginHeightInput  ->setValue                 (s.weatherPluginHeight  );
+	ui.weatherPluginIntervalInput->setValue                 (s.weatherPluginInterval/60);
+	on_weatherPluginInput_currentIndexChanged ();
+
 	// Weather dialog
-	ui.weatherWindowBox          ->setChecked (s.weatherWindowEnabled);
-	ui.weatherWindowCommandInput ->setText    (s.weatherWindowCommand );
-	ui.weatherWindowIntervalInput->setValue   (s.weatherWindowInterval);
-	ui.weatherWindowTitleInput   ->setText    (s.weatherWindowTitle   );
+	ui.weatherWindowBox          ->setChecked               (s.weatherWindowEnabled);
+	ui.weatherWindowPluginInput  ->setCurrentItemByItemData (s.weatherWindowPluginId, 0);
+	ui.weatherWindowCommandInput ->setText                  (s.weatherWindowCommand );
+	ui.weatherWindowIntervalInput->setValue                 (s.weatherWindowInterval/60);
+	ui.weatherWindowTitleInput   ->setText                  (s.weatherWindowTitle   );
+	on_weatherWindowPluginInput_currentIndexChanged ();
 
 	// *** Plugins - Paths
 	ui.pluginPathList->clear ();
@@ -138,14 +171,12 @@ void SettingsWindow::readSettings ()
 	updateWidgets ();
 }
 
-void SettingsWindow::readItem (QTreeWidgetItem *item, const ShellPluginInfo &plugin)
+void SettingsWindow::readItem (QTreeWidgetItem *item, const InfoPlugin *plugin)
 {
-	item->setData       (columnTitle      , Qt::DisplayRole, plugin.caption);
-	item->setData       (columnCommand    , Qt::DisplayRole, plugin.command);
-	item->setCheckState (columnEnabled    , plugin.enabled?Qt::Checked:Qt::Unchecked);
-	item->setCheckState (columnRichText   , plugin.richText?Qt::Checked:Qt::Unchecked);
-	item->setData       (columnInterval   , Qt::DisplayRole, plugin.restartInterval);
-	item->setCheckState (columnWarnOnDeath, plugin.warnOnDeath?Qt::Checked:Qt::Unchecked);
+	item->setData       (captionColumn, Qt::DisplayRole, plugin->getCaption ());
+	item->setData       (   nameColumn, Qt::DisplayRole, plugin->getName ());
+	item->setCheckState (enabledColumn, plugin->isEnabled ()?Qt::Checked:Qt::Unchecked);
+	item->setData       ( configColumn, Qt::DisplayRole, plugin->configText ());
 
 	item->setFlags (item->flags () | Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
 }
@@ -182,42 +213,49 @@ void SettingsWindow::writeSettings ()
 	s.diagCommand=ui.diagCommandInput   ->text ();
 
 	// *** Plugins - Info
-	s.infoPlugins.clear ();
-	int numInfoPlugins=ui.infoPluginList->topLevelItemCount ();
+	int numInfoPlugins=infoPlugins.size ();
+	assert (numInfoPlugins==ui.infoPluginList->topLevelItemCount ());
 	for (int i=0; i<numInfoPlugins; ++i)
 	{
 		QTreeWidgetItem &item=*ui.infoPluginList->topLevelItem (i);
-		s.infoPlugins << ShellPluginInfo (
-			item.data       (columnTitle      , Qt::DisplayRole).toString (),
-			item.data       (columnCommand    , Qt::DisplayRole).toString (),
-			item.checkState (columnEnabled                     )==Qt::Checked,
-			item.checkState (columnRichText                    )==Qt::Checked,
-			item.data       (columnInterval   , Qt::DisplayRole).toInt    (),
-			item.checkState (columnWarnOnDeath                 )==Qt::Checked
-			);
+		infoPlugins[i]->setCaption (item.data       (captionColumn, Qt::DisplayRole).toString ());
+		infoPlugins[i]->setEnabled (item.checkState (enabledColumn                 )==Qt::Checked);
 	}
+	s.writeInfoPlugins (infoPlugins);
+
 
 	// *** Plugins - Weather
 	// Weather plugin
 	s.weatherPluginEnabled =ui.weatherPluginBox          ->isChecked ();
+	s.weatherPluginId      =ui.weatherPluginInput        ->currentItemData ().toString ();
 	s.weatherPluginCommand =ui.weatherPluginCommandInput ->text ();
 	s.weatherPluginHeight  =ui.weatherPluginHeightInput  ->value ();
-	s.weatherPluginInterval=ui.weatherPluginIntervalInput->value ();
+	s.weatherPluginInterval=ui.weatherPluginIntervalInput->value ()*60;
 	// Weather dialog
 	s.weatherWindowEnabled =ui.weatherWindowBox          ->isChecked ();
+	s.weatherWindowPluginId=ui.weatherWindowPluginInput  ->currentItemData ().toString ();
 	s.weatherWindowCommand =ui.weatherWindowCommandInput ->text ();
-	s.weatherWindowInterval=ui.weatherWindowIntervalInput->value ();
+	s.weatherWindowInterval=ui.weatherWindowIntervalInput->value ()*60;
 	s.weatherWindowTitle   =ui.weatherWindowTitleInput   ->text ();
 
 	// *** Plugins - Paths
-	s.pluginPaths.clear ();
-	int numPluginPaths=ui.pluginPathList->count ();
-	for (int i=0; i<numPluginPaths; ++i)
-		s.pluginPaths << ui.pluginPathList->item (i)->text ();
+	s.pluginPaths=getPluginPaths ();
 
 	s.save ();
 
 	databaseSettingsChanged=oldInfo.different (info);
+}
+
+QStringList SettingsWindow::getPluginPaths ()
+{
+	QStringList pluginPaths;
+
+	int numPluginPaths=ui.pluginPathList->count ();
+
+	for (int i=0; i<numPluginPaths; ++i)
+		pluginPaths << ui.pluginPathList->item (i)->text ();
+
+	return pluginPaths;
 }
 
 void SettingsWindow::updateWidgets ()
@@ -283,21 +321,45 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 	warnEdit ();
 	QTreeWidget *list=ui.infoPluginList;
 
-	QTreeWidgetItem *item=new QTreeWidgetItem (list);
-	readItem (item, ShellPluginInfo ());
+	QList<const InfoPlugin::Descriptor *> descriptors=PluginFactory::getInstance ().getDescriptors<InfoPlugin> ();
+	const InfoPlugin::Descriptor *descriptor=InfoPluginSelectionDialog::select (descriptors, this);
 
-	list->setCurrentItem (item);
-	list->editItem (item, 0);
+	if (!descriptor) return;
+
+	InfoPlugin *plugin=descriptor->create ();
+
+	if (plugin)
+	{
+		plugin->setCaption (plugin->getName ()+":");
+		int settingsDialogResult=PluginSettingsDialog::invoke (plugin, this, this);
+
+		if (settingsDialogResult==QDialog::Accepted)
+		{
+			infoPlugins.append (plugin);
+
+			QTreeWidgetItem *item=new QTreeWidgetItem (list);
+			readItem (item, plugin);
+
+			list->setCurrentItem (item);
+		}
+		else
+		{
+			delete plugin;
+		}
+	}
 }
 
 void SettingsWindow::on_removeInfoPluginButton_clicked ()
 {
 	warnEdit ();
-	QTreeWidget *list=ui.infoPluginList;
+ 	QTreeWidget *list=ui.infoPluginList;
 
 	int row=list->indexOfTopLevelItem (list->currentItem ());
 	if (row<0 || row>=list->topLevelItemCount ()) return;
+
 	delete list->takeTopLevelItem (row);
+	delete infoPlugins.takeAt (row);
+
 	if (row>=list->topLevelItemCount ()) --row;
 	if (row>=0) list->setCurrentItem (list->topLevelItem (row));
 }
@@ -312,6 +374,8 @@ void SettingsWindow::on_infoPluginUpButton_clicked ()
 	if (row==0) return;
 
 	list->insertTopLevelItem (row-1, list->takeTopLevelItem (row));
+	infoPlugins.insert (row-1, infoPlugins.takeAt (row));
+
 	list->setCurrentItem (list->topLevelItem (row-1));
 }
 
@@ -325,7 +389,30 @@ void SettingsWindow::on_infoPluginDownButton_clicked ()
 	if (row==list->topLevelItemCount ()-1) return;
 
 	list->insertTopLevelItem (row+1, list->takeTopLevelItem (row));
+	infoPlugins.insert (row+1, infoPlugins.takeAt (row));
+
 	list->setCurrentItem (list->topLevelItem (row+1));
+}
+
+void SettingsWindow::on_infoPluginSettingsButton_clicked ()
+{
+	warnEdit ();
+	QTreeWidget *list=ui.infoPluginList;
+
+	int row=list->indexOfTopLevelItem (list->currentItem ());
+	if (row<0 || row>=list->topLevelItemCount ()) return;
+
+	PluginSettingsDialog::invoke (infoPlugins[row], this, this);
+	readItem (ui.infoPluginList->topLevelItem (row), infoPlugins[row]);
+}
+
+void SettingsWindow::on_infoPluginList_itemDoubleClicked (QTreeWidgetItem *item, int column)
+{
+	(void)column;
+	if (!item) return;
+
+	ui.infoPluginList->setCurrentItem (item);
+	on_infoPluginSettingsButton_clicked ();
 }
 
 bool SettingsWindow::allowEdit ()
@@ -384,4 +471,36 @@ void SettingsWindow::warnEdit ()
 		"Datenbankpasswort erforderlich."), this);
 
 	warned=true;
+}
+
+void SettingsWindow::on_weatherPluginInput_currentIndexChanged ()
+{
+	bool external=(ui.weatherPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
+	ui.weatherPluginCommandLabel->setEnabled (external);
+	ui.weatherPluginCommandInput->setEnabled (external);
+	ui.browseWeatherPluginCommandButton->setEnabled (external);
+}
+
+void SettingsWindow::on_weatherWindowPluginInput_currentIndexChanged ()
+{
+	bool external=(ui.weatherWindowPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
+	ui.weatherWindowCommandLabel->setEnabled (external);
+	ui.weatherWindowCommandInput->setEnabled (external);
+	ui.browseWeatherWindowCommandButton->setEnabled (external);
+}
+
+void SettingsWindow::on_browseWeatherPluginCommandButton_clicked ()
+{
+	QString filename=Plugin::browse (ui.weatherPluginCommandInput->text (), "*", getPluginPaths (), this);
+
+	if (!filename.isEmpty ())
+		ui.weatherPluginCommandInput->setText (filename);
+}
+
+void SettingsWindow::on_browseWeatherWindowCommandButton_clicked ()
+{
+	QString filename=Plugin::browse (ui.weatherWindowCommandInput->text (), "*", getPluginPaths (), this);
+
+	if (!filename.isEmpty ())
+		ui.weatherWindowCommandInput->setText (filename);
 }

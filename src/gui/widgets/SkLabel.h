@@ -7,12 +7,18 @@
 #include "src/accessor.h"
 
 /**
- * A QLabel which can be made invisible without changing the layout by setting
+ * A QLabel with some additional features
+ *
+ * An SkLabel can be made invisible without disturbing the layout by setting
  * the foreground color equal to the background color. This is called
  * "concealing" the label.
+ *
+ * An SkLabel can be set to an error state which affects the background color.
+ *
+ * An SkLabel has a setText slot which accepts a parameter for choosing
+ * richt-text vs. plaintext.
  */
 class SkLabel: public QLabel
-	// Not hidden by hide () because this messes up the QLayout.
 {
 	Q_OBJECT
 
@@ -23,12 +29,19 @@ class SkLabel: public QLabel
 
 		// Property access
 		void setDefaultBackgroundColor (const QColor &color);
-		attr_accessor (QColor, ErrorColor, errorColor);
 		void resetDefaultBackgroundColor ();
 		QColor getDefaultBackgroundColor ();
 
+		void setDefaultForegroundColor (const QColor &color);
+		void resetDefaultForegroundColor ();
+		QColor getDefaultForegroundColor ();
+
+		attr_accessor (QColor, ErrorColor, errorColor);
+
 		void setPaletteForegroundColor (const QColor &color);
 		void setPaletteBackgroundColor (const QColor &color);
+
+		using QLabel::setText;
 
 	public slots:
 		void setConcealed (bool concealed);
@@ -36,6 +49,10 @@ class SkLabel: public QLabel
 		void setNumber (int number);
 		void setNumber (float number);
 		void setNumber (double number);
+
+		void setText (const QString &text, Qt::TextFormat format);
+		void setTextAndColor (const QString &text, const QColor &color);
+		void setTextAndDefaultColor (const QString &text);
 
 	signals:
 		void doubleClicked (QMouseEvent *event);
@@ -48,8 +65,9 @@ class SkLabel: public QLabel
 		bool concealed;
 		bool error;
 
+		QColor defaultForegroundColor;
 		QColor defaultBackgroundColor;
-		bool useDefaultBackgroundColor;
+		bool useDefaultBackgroundColor; // TODO use defaultBackgroundColor.isValid instead
 		QColor errorColor;
 };
 

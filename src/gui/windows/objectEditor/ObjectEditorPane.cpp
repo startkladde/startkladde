@@ -33,6 +33,6 @@ void ObjectEditorPaneBase::errorCheck (const QString &problem, QWidget *widget)
 // TODO use more
 void ObjectEditorPaneBase::requiredField (const QString &value, QWidget *widget, const QString &problem)
 {
-	if (eintrag_ist_leer (value))
+	if (isNone (value))
 		errorCheck (problem, widget);
 }

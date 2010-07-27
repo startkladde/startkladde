@@ -28,7 +28,6 @@
 
 // Testen des Wetterplugins
 //#include "WeatherDialog.h"
-//#include "ShellPlugin.h"
 
 //void display_help ()
 //	/*
@@ -341,6 +340,23 @@ void test ()
 {
 }
 
+#include "src/plugin/info/InfoPlugin.h"
+#include "src/plugin/factory/PluginFactory.h"
+
+void plugins_test ()
+{
+	std::cout << "Begin plugin test" << std::endl;
+
+	foreach (const InfoPlugin::Descriptor *descriptor, PluginFactory::getInstance ().getDescriptors<InfoPlugin> ())
+	{
+		std::cout << QString ("Registered plugin %1 (%2)").arg (descriptor->getName (), descriptor->getDescription ()) << std::endl;
+		InfoPlugin *plugin=descriptor->create ();
+		delete plugin;
+	}
+
+	std::cout << "End plugin test" << std::endl;
+}
+
 #include "src/concurrent/Waiter.h"
 #include "src/model/LaunchMethod.h" //remove
 #include "src/db/migrations/Migration_20100216135637_add_launch_methods.h"
@@ -391,6 +407,8 @@ int main (int argc, char **argv)
 				ret=test_database ();
 			else if (nonOptions[0]=="proxy")
 				proxy_test ();
+			else if (nonOptions[0]=="plugins")
+				plugins_test ();
 			else
 				ret=doStuff (nonOptions);
 		}

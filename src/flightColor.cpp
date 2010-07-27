@@ -1,8 +1,8 @@
-#include "src/color.h"
+#include "src/flightColor.h"
 
 
 // Ganz tolle Präprozessor-Macros für das Ankreuzfeld-System, siehe
-// flug_farbe ().
+// flightColor ().
 #define ist_true(x) ((x)==true)
 #define ist_false(x) ((x)==false)
 #define ist_egal(x) (true)
@@ -33,7 +33,7 @@
 #define white 255,255,255
 
 // TODO move to flight
-QColor flug_farbe (Flight::Mode modus, bool fehler, bool schlepp, bool gestartet, bool gelandet)
+QColor flightColor (Flight::Mode modus, bool fehler, bool schlepp, bool gestartet, bool gelandet)
 	/*
 	 * Finds out which color to use for a given flight.
 	 * Parameters:
@@ -93,27 +93,3 @@ QColor flug_farbe (Flight::Mode modus, bool fehler, bool schlepp, bool gestartet
 
 	return QColor (255, 255, 255);	// Default: weiß
 }
-
-
-QColor interpol (float position, const QColor &color0, const QColor &color1)
-{
-	float p = position;
-	float q = 1 - p;
-
-	return QColor (
-		color0.red   () * q + color1.red   () * p,
-		color0.green () * q + color1.green () * p,
-		color0.blue  () * q + color1.blue  () * p
-		);
-}
-
-QColor interpol (float position, const QColor &color0, const QColor &color1, const QColor &color2)
-{
-	if (position <= 0.5)
-		return interpol (2* position , color0, color1);
-	else
-		return interpol (2* (position -0.5), color1, color2);
-}
-
-
-

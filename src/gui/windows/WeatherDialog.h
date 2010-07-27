@@ -6,13 +6,13 @@
 class QResizeEvent;
 class QHBoxLayout;
 
-class ShellPlugin;
+class WeatherPlugin;
 class WeatherWidget;
 
 class WeatherDialog:public QDialog
 {
 	public:
-		WeatherDialog (ShellPlugin *_plugin, QWidget *parent=NULL);
+		WeatherDialog (WeatherPlugin *plugin, QWidget *parent=NULL);
 		~WeatherDialog ();
 
 		void restartPlugin ();
@@ -22,7 +22,7 @@ class WeatherDialog:public QDialog
 
 	private:
 		WeatherWidget *ww;
-		ShellPlugin *plugin;
+		WeatherPlugin *plugin;
 		QHBoxLayout *weatherLayout;
 
 };

@@ -58,10 +58,10 @@ template<> void Cache::updateHashesObjectAdded<Plane> (const Plane &plane)
 {
 	synchronized (dataMutex)
 	{
-		if (!blank (plane.type)) planeTypes.insert (plane.type);
+		if (!isBlank (plane.type)) planeTypes.insert (plane.type);
 		planeRegistrations.insert (plane.registration);
 		planeIdsByRegistration.insert (plane.registration.toLower (), plane.getId ());
-		if (!blank (plane.club)) clubs.insert (plane.club);
+		if (!isBlank (plane.club)) clubs.insert (plane.club);
 	}
 }
 
@@ -128,7 +128,7 @@ template<> void Cache::updateHashesObjectAdded<Person> (const Person &person)
 		personIdsByLastName .insert (lastLower , id);
 		personIdsByFirstName.insert (firstLower, id);
 		personIdsByName.insert (QPair<QString, QString> (lastLower, firstLower), id);
-		if (!blank (person.club)) clubs.insert (person.club);
+		if (!isBlank (person.club)) clubs.insert (person.club);
 	}
 }
 
@@ -218,10 +218,10 @@ template<> void Cache::updateHashesObjectAdded<Flight> (const Flight &flight)
 {
 	synchronized (dataMutex)
 	{
-		if (!blank (flight.       departureLocation)) locations.insert (flight.       departureLocation);
-		if (!blank (flight.         landingLocation)) locations.insert (flight.         landingLocation);
-		if (!blank (flight.towflightLandingLocation)) locations.insert (flight.towflightLandingLocation);
-		if (!blank (flight.accountingNotes)) accountingNotes.insert (flight.accountingNotes);
+		if (!isBlank (flight.       departureLocation)) locations.insert (flight.       departureLocation);
+		if (!isBlank (flight.         landingLocation)) locations.insert (flight.         landingLocation);
+		if (!isBlank (flight.towflightLandingLocation)) locations.insert (flight.towflightLandingLocation);
+		if (!isBlank (flight.accountingNotes)) accountingNotes.insert (flight.accountingNotes);
 	}
 }
 

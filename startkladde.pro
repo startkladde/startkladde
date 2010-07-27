@@ -45,6 +45,9 @@ DEFINES += SK_BUILD=$${SK_BUILD}
 
 #QMAKE_CXXFLAGS += -Werror
 
+win32:DEFINES += SK_WINDOWS
+unix:DEFINES += SK_UNIX
+
 
 ###########
 ## Paths ##
@@ -77,7 +80,8 @@ HEADERS += \
            build/migrations.h \
            build/migrations_headers.h \
            src/accessor.h \
-           src/color.h \
+           src/flightColor.h \
+           src/Longitude.h \
            src/StorableException.h \
            src/text.h \
            src/version.h \
@@ -127,11 +131,13 @@ HEADERS += \
            src/db/schema/SchemaDumper.h \
            src/db/schema/spec/ColumnSpec.h \
            src/db/schema/spec/IndexSpec.h \
+           src/graphics/SkMovie.h \
            src/gui/dialogs.h \
            src/gui/views/ReadOnlyItemDelegate.h \
            src/gui/views/SpecialIntDelegate.h \
            src/gui/views/SpinBoxCreator.h \
            src/gui/widgets/AcpiWidget.h \
+           src/gui/widgets/LongitudeInput.h \
            src/gui/widgets/SkComboBox.h \
            src/gui/widgets/SkLabel.h \
            src/gui/widgets/SkTableView.h \
@@ -158,6 +164,7 @@ HEADERS += \
            src/gui/windows/objectEditor/PersonEditorPane.h \
            src/gui/windows/objectEditor/PlaneEditorPane.h \
            src/io/AnsiColors.h \
+           src/io/SkProcess.h \
            src/logging/messages.h \
            src/model/Entity.h \
            src/model/Flight.h \
@@ -174,20 +181,47 @@ HEADERS += \
            src/model/objectList/MutableObjectList.h \
            src/model/objectList/ObjectListModel.h \
            src/model/objectList/ObjectModel.h \
+           src/net/Downloader.h \
+           src/net/Network.h \
            src/net/TcpProxy.h \
-           src/plugins/ShellPlugin.h \
-           src/plugins/ShellPluginInfo.h \
+           src/plugin/Plugin.h \
+           src/plugin/factory/PluginFactory.h \
+           src/plugin/info/InfoPlugin.h \
+           src/plugin/info/InfoPluginSelectionDialog.h \
+           src/plugin/info/InfoPluginSettingsPane.h \
+           src/plugin/settings/PluginSettingsPane.h \
+           src/plugin/settings/PluginSettingsDialog.h \
+           src/plugin/weather/WeatherPlugin.h \
+           src/plugins/info/external/ExternalInfoPlugin.h \
+           src/plugins/info/external/ExternalInfoPluginSettingsPane.h \
+           src/plugins/info/metar/MetarPlugin.h \
+           src/plugins/info/metar/MetarPluginSettingsPane.h \
+           src/plugins/info/sunset/SunsetPluginBase.h \
+           src/plugins/info/sunset/SunsetCountdownPlugin.h \
+           src/plugins/info/sunset/SunsetTimePlugin.h \
+           src/plugins/info/sunset/SunsetPluginSettingsPane.h \
+           src/plugins/info/test/TestPlugin.h \
+           src/plugins/info/test/TestPluginSettingsPane.h \
+           src/plugins/weather/ExternalWeatherPlugin.h \
+           src/plugins/weather/WetterOnlineAnimationPlugin.h \
+           src/plugins/weather/WetterOnlineImagePlugin.h \
            src/statistics/LaunchMethodStatistics.h \
            src/statistics/PilotLog.h \
            src/statistics/PlaneLog.h \
            src/util/bool.h \
+           src/util/color.h \
+           src/util/environment.h \
+           src/util/file.h \
+           src/util/io.h \
+           src/util/qList.h \
            src/util/qString.h \
            src/util/time.h \
 		   # Empty line
 
 SOURCES += \
 		   build/CurrentSchema.cpp \
-           src/color.cpp \
+           src/flightColor.cpp \
+           src/Longitude.cpp \
            src/startkladde.cpp \
            src/StorableException.cpp \
            src/text.cpp \
@@ -237,10 +271,12 @@ SOURCES += \
            src/db/schema/SchemaDumper.cpp \
            src/db/schema/spec/ColumnSpec.cpp \
            src/db/schema/spec/IndexSpec.cpp \
+           src/graphics/SkMovie.cpp \
            src/gui/dialogs.cpp \
            src/gui/views/ReadOnlyItemDelegate.cpp \
            src/gui/views/SpecialIntDelegate.cpp \
            src/gui/views/SpinBoxCreator.cpp \
+           src/gui/widgets/LongitudeInput.cpp \
            src/gui/widgets/SkComboBox.cpp \
            src/gui/widgets/SkLabel.cpp \
            src/gui/widgets/SkTableView.cpp \
@@ -266,6 +302,7 @@ SOURCES += \
            src/gui/windows/objectEditor/PersonEditorPane.cpp \
            src/gui/windows/objectEditor/PlaneEditorPane.cpp \
            src/io/AnsiColors.cpp \
+           src/io/SkProcess.cpp \
            src/logging/messages.cpp \
            src/model/Entity.cpp \
            src/model/Flight.cpp \
@@ -277,18 +314,45 @@ SOURCES += \
            src/model/flightList/FlightModel.cpp \
            src/model/flightList/FlightProxyList.cpp \
            src/model/flightList/FlightSortFilterProxyModel.cpp \
+           src/net/Downloader.cpp \
+           src/net/Network.cpp \
            src/net/TcpProxy.cpp \
-           src/plugins/ShellPlugin.cpp \
-           src/plugins/ShellPluginInfo.cpp \
+           src/plugin/Plugin.cpp \
+           src/plugin/factory/PluginFactory.cpp \
+           src/plugin/info/InfoPlugin.cpp \
+           src/plugin/info/InfoPluginSelectionDialog.cpp \
+           src/plugin/info/InfoPluginSettingsPane.cpp \
+           src/plugin/settings/PluginSettingsPane.cpp \
+           src/plugin/settings/PluginSettingsDialog.cpp \
+           src/plugin/weather/WeatherPlugin.cpp \
+           src/plugins/info/external/ExternalInfoPlugin.cpp \
+           src/plugins/info/external/ExternalInfoPluginSettingsPane.cpp \
+           src/plugins/info/metar/MetarPlugin.cpp \
+           src/plugins/info/metar/MetarPluginSettingsPane.cpp \
+           src/plugins/info/sunset/SunsetPluginBase.cpp \
+           src/plugins/info/sunset/SunsetCountdownPlugin.cpp \
+           src/plugins/info/sunset/SunsetTimePlugin.cpp \
+           src/plugins/info/sunset/SunsetPluginSettingsPane.cpp \
+           src/plugins/info/test/TestPlugin.cpp \
+           src/plugins/info/test/TestPluginSettingsPane.cpp \
+           src/plugins/weather/ExternalWeatherPlugin.cpp \
+           src/plugins/weather/WetterOnlineAnimationPlugin.cpp \
+           src/plugins/weather/WetterOnlineImagePlugin.cpp \
            src/statistics/LaunchMethodStatistics.cpp \
            src/statistics/PilotLog.cpp \
            src/statistics/PlaneLog.cpp \
            src/util/bool.cpp \
+           src/util/color.cpp \
+           src/util/environment.cpp \
+           src/util/file.cpp \
+           src/util/io.cpp \
+           src/util/qList.cpp \
            src/util/qString.cpp \
            src/util/time.cpp \
 		   # Empty line
 
 FORMS += \
+           src/gui/widgets/LongitudeInput.ui \
            src/gui/windows/DateInputDialog.ui \
            src/gui/windows/FlightWindow.ui \
            src/gui/windows/LaunchMethodSelectionWindow.ui \
@@ -302,6 +366,13 @@ FORMS += \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.ui \
            src/gui/windows/objectEditor/PersonEditorPane.ui \
            src/gui/windows/objectEditor/PlaneEditorPane.ui \
+           src/plugin/info/InfoPluginSelectionDialog.ui \
+           src/plugin/info/InfoPluginSettingsPane.ui \
+           src/plugin/settings/PluginSettingsDialog.ui \
+           src/plugins/info/external/ExternalInfoPluginSettingsPane.ui \
+           src/plugins/info/metar/MetarPluginSettingsPane.ui \
+           src/plugins/info/sunset/SunsetPluginSettingsPane.ui \
+           src/plugins/info/test/TestPluginSettingsPane.ui \
            # Empty line
 
 RESOURCES += \

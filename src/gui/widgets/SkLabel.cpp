@@ -51,6 +51,23 @@ QColor SkLabel::getDefaultBackgroundColor ()
 	return defaultBackgroundColor;
 }
 
+void SkLabel::setDefaultForegroundColor (const QColor &color)
+{
+	defaultForegroundColor=color;
+	updateColors ();
+}
+
+void SkLabel::resetDefaultForegroundColor ()
+{
+	defaultForegroundColor=QColor ();
+	updateColors ();
+}
+
+QColor SkLabel::getDefaultForegroundColor ()
+{
+	return defaultForegroundColor;
+}
+
 void SkLabel::setConcealed (bool concealed)
 {
 	this->concealed=concealed;
@@ -63,6 +80,10 @@ void SkLabel::setError (bool error)
 	updateColors ();
 }
 
+/**
+ * Use setDefaultForegroundColor instead
+ */
+// TODO remove
 void SkLabel::setPaletteForegroundColor (const QColor &color)
 {
 	QPalette palette;
@@ -70,6 +91,10 @@ void SkLabel::setPaletteForegroundColor (const QColor &color)
 	setPalette(palette);
 }
 
+/**
+ * Use setDefaultBackgroundColor instead
+ */
+// TODO remove
 void SkLabel::setPaletteBackgroundColor (const QColor &color)
 {
 	QPalette palette;
@@ -86,7 +111,6 @@ void SkLabel::updateColors ()
 {
 	QPalette p=palette ();
 
-	// TODO implement error state display
 	if (concealed)
 	{
 		// Concealed => foreground and background like parent background
@@ -101,19 +125,19 @@ void SkLabel::updateColors ()
 		p.setColor (QPalette::Foreground, parentWidget ()->palette ().foreground ().color ());
 		p.setColor (QPalette::Background, errorColor);
 	}
-	else if (useDefaultBackgroundColor)
-	{
-		// Not concealed => given background, same foreground as parent
-		setAutoFillBackground (true);
-		p.setColor (QPalette::Foreground, parentWidget ()->palette ().foreground ().color ());
-		p.setColor (QPalette::Background, defaultBackgroundColor);
-	}
 	else
 	{
-		// Not concealed, background color not used => same palette as parent
-		setAutoFillBackground (false);
-		p.setColor (QPalette::Foreground, parentWidget ()->palette ().foreground ().color ());
-		p.setColor (QPalette::Background, parentWidget ()->palette ().background ().color ());
+		if (defaultForegroundColor.isValid ())
+			p.setColor (QPalette::Foreground, defaultForegroundColor);
+		else
+			p.setColor (QPalette::Foreground, parentWidget ()->palette ().foreground ().color ());
+
+		if (useDefaultBackgroundColor)
+			p.setColor (QPalette::Background, defaultBackgroundColor);
+		else
+			p.setColor (QPalette::Background, parentWidget ()->palette ().background ().color ());
+
+		setAutoFillBackground (useDefaultBackgroundColor);
 	}
 
 	setPalette (p);
@@ -137,4 +161,22 @@ void SkLabel::setNumber (float number)
 void SkLabel::setNumber (double number)
 {
 	setText (QString::number (number));
+}
+
+void SkLabel::setText (const QString &text, Qt::TextFormat format)
+{
+	setTextFormat (format);
+	setText (text);
+}
+
+void SkLabel::setTextAndColor (const QString &text, const QColor &color)
+{
+	setText (text);
+	setDefaultForegroundColor (color);
+	updateColors ();
+}
+
+void SkLabel::setTextAndDefaultColor (const QString &text)
+{
+	setTextAndColor (text, QColor ());
 }

@@ -154,7 +154,7 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<Flight> &flights, Cache &ca
 		if (flight.hasDuration ())
 			entry.operationTime=entry.operationTime.addSecs (QTime ().secsTo (flight.flightDuration ())); // TODO: check flight mode
 
-		if (!eintrag_ist_leer (flight.comments)) comments << flight.comments.trimmed ();
+		if (!isNone (flight.comments)) comments << flight.comments.trimmed ();
 		if (!flight.finished ()) entry.valid=false;
 
 		if (flight.isTowflight ()) ++numTowFlights;

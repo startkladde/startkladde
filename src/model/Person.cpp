@@ -75,7 +75,7 @@ QString Person::formalName () const
 
 QString Person::formalNameWithClub () const
 {
-	if (eintrag_ist_leer (club)) return formalName ();
+	if (isNone (club)) return formalName ();
 	return formalName ()+" ("+club+")";
 }
 

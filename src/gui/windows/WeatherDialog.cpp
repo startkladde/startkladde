@@ -3,24 +3,26 @@
 #include <QLayout>
 
 #include "src/gui/widgets/WeatherWidget.h"
-#include "src/plugins/ShellPlugin.h"
+#include "src/plugin/weather/WeatherPlugin.h"
 
-WeatherDialog::WeatherDialog (ShellPlugin *_plugin, QWidget *parent)
-	:QDialog (parent)
+class SkMovie;
+
+WeatherDialog::WeatherDialog (WeatherPlugin *plugin, QWidget *parent):
+	QDialog (parent),
+	plugin (plugin)
 {
-	plugin=_plugin;
-
 	setAttribute (Qt::WA_DeleteOnClose, true);
 
 	ww=new WeatherWidget (this);
+	ww->setWordWrap (false);
 
-	QObject::connect (plugin, SIGNAL (lineRead (QString)), ww, SLOT (inputLine (QString)));
-	QObject::connect (plugin, SIGNAL (pluginNotFound ()), ww, SLOT (pluginNotFound ()));
 	QObject::connect (ww, SIGNAL (doubleClicked ()), plugin, SLOT (restart ()));
+	connect (plugin, SIGNAL (textOutput (const QString &, Qt::TextFormat)), ww, SLOT (setText (const QString &, Qt::TextFormat)));
+	connect (plugin, SIGNAL (imageOutput (const QImage &)), ww, SLOT (setImage (const QImage &)));
+	connect (plugin, SIGNAL (movieOutput (SkMovie &)), ww, SLOT (setMovie (SkMovie &)));
 	plugin->start ();
 
 	weatherLayout=new QHBoxLayout ();
-	weatherLayout->setSizeConstraint (QLayout::SetFixedSize);
 	weatherLayout->addWidget (ww);
 	setLayout (weatherLayout);
 }

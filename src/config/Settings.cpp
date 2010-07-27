@@ -12,13 +12,23 @@
 #include <QSettings>
 
 #include "src/util/qString.h"
+#include "src/util/qList.h"
+#include "src/plugin/info/InfoPlugin.h"
+#include "src/plugin/factory/PluginFactory.h"
+#include "src/plugins/info/test/TestPlugin.h"
+#include "src/plugins/info/metar/MetarPlugin.h"
+#include "src/plugins/info/sunset/SunsetTimePlugin.h"
+#include "src/plugins/info/sunset/SunsetCountdownPlugin.h"
+#include "src/plugins/weather/WetterOnlineImagePlugin.h"
+#include "src/plugins/weather/WetterOnlineAnimationPlugin.h"
+
 
 Settings *Settings::theInstance=NULL;
 
 /*
  * Notes:
  *   - don't store a QSettings instance in the class. Constructing and
- *     destructing QSettings instances is "very fast" (according to the
+ *     destroying QSettings instances is "very fast" (according to the
  *     documentation) and QSettings is only reentrant, not thread safe.
  */
 
@@ -89,6 +99,78 @@ void Settings::save ()
 	emit changed ();
 }
 
+QList<InfoPlugin *> Settings::readInfoPlugins ()
+{
+	QList<InfoPlugin *> plugins;
+
+	QSettings s;
+	s.beginGroup ("settings");
+
+	PluginFactory &factory=PluginFactory::getInstance ();
+
+	// If no entry for infoPlugins exists, create a default set of plugins.
+	// Note that if no plugins are used, there is still an entry with 0
+	// elements.
+	if (s.contains ("infoPlugins/size"))
+	{
+		int n=s.beginReadArray ("infoPlugins");
+		for (int i=0; i<n; ++i)
+		{
+			s.setArrayIndex (i);
+
+			QString id=s.value ("id").toString ();
+			InfoPlugin *plugin=factory.createPlugin<InfoPlugin> (id);
+
+			// TODO better handling if not found
+			if (plugin)
+			{
+				s.beginGroup ("settings");
+				plugin->readSettings (s);
+				s.endGroup ();
+
+				plugins << plugin;
+			}
+		}
+		s.endArray ();
+	}
+	else
+	{
+//		plugins.append (new TestPlugin ("Foo:"));
+//		plugins.append (new TestPlugin ("Bar:", true, "TestPlugin", true));
+
+		plugins.append (new SunsetTimePlugin      ("Sunset:"         , true, "sunsets.txt"));
+		plugins.append (new SunsetCountdownPlugin ("Zeit bis sunset:", true, "sunsets.txt"));
+
+		plugins.append (new MetarPlugin ("Wetter:", true, "EDDF", 15*60));
+		plugins.append (new MetarPlugin (""       , true, "EDDS", 15*60));
+		plugins.append (new MetarPlugin (""       , true, "EDDM", 15*60));
+	}
+
+	return plugins;
+}
+
+void Settings::writeInfoPlugins (const QList<InfoPlugin *> &plugins)
+{
+	QSettings s;
+	s.beginGroup ("settings");
+
+	// *** Plugins - Info
+	s.beginWriteArray ("infoPlugins");
+	for (int i=0; i<plugins.size (); ++i)
+	{
+		s.setArrayIndex (i);
+
+		InfoPlugin *plugin=plugins[i];
+		s.setValue ("id", plugin->getId ().toString ());
+
+		s.beginGroup ("settings");
+		plugin->writeSettings (s);
+		s.endGroup ();
+	}
+	s.endArray ();
+
+}
+
 void Settings::readSettings ()
 {
 	QSettings s;
@@ -110,37 +192,15 @@ void Settings::readSettings ()
 	enableDebug=s.value ("enableDebug", false       ).toBool ();
 	diagCommand=s.value ("diagCommand", "./script/netztest_xterm").toString (); // xterm -e ./netztest &
 
-	// *** Plugins - Info
-	infoPlugins.clear ();
-	if (s.contains ("infoPlugins/size"))
-	{
-		int n=s.beginReadArray ("infoPlugins");
-		for (int i=0; i<n; ++i)
-		{
-			s.setArrayIndex (i);
-			infoPlugins << ShellPluginInfo (s);
-		}
-		s.endArray ();
-	}
-	else
-	{
-		infoPlugins
-			<< ShellPluginInfo ("Sunset:"         , "sunset_time.rb"     , true, false, 0  , false)
-			<< ShellPluginInfo ("Zeit bis sunset:", "sunset_countdown.rb", true, true , 60 , false)
-			<< ShellPluginInfo ("Wetter:"         , "metar.rb EDDS"      , true, false, 600, false)
-			<< ShellPluginInfo (""                , "metar.rb EDDF"      , true, false, 600, false)
-			<< ShellPluginInfo (""                , "metar.rb EDFM"      , true, false, 600, false)
-			;
-	}
-
-
 	// *** Plugins - Weather
 	// Weather plugin
+	weatherPluginId      =s.value ("weatherPluginId"      , WetterOnlineImagePlugin::_getId ().toString ()).toString ();
 	weatherPluginCommand =s.value ("weatherPluginCommand" , "regenradar_wetteronline.de.rb").toString ();
 	weatherPluginEnabled =s.value ("weatherPluginEnabled" , true).toBool ();
 	weatherPluginHeight  =s.value ("weatherPluginHeight"  , 200).toInt ();
 	weatherPluginInterval=s.value ("weatherPluginInterval", 600).toInt ();
 	// Weather dialog
+	weatherWindowPluginId=s.value ("weatherWindowPluginId", WetterOnlineAnimationPlugin::_getId ().toString ()).toString ();
 	weatherWindowCommand =s.value ("weatherWindowCommand" , "regenradar_wetteronline.de_animation.rb").toString ();
 	weatherWindowEnabled =s.value ("weatherWindowEnabled" , true).toBool ();
 	weatherWindowInterval=s.value ("weatherWindowInterval", 300).toInt ();
@@ -193,23 +253,16 @@ void Settings::writeSettings ()
 	s.setValue ("enableDebug", enableDebug);
 	s.setValue ("diagCommand", diagCommand);
 
-	// *** Plugins - Info
-	s.beginWriteArray ("infoPlugins");
-	for (int i=0; i<infoPlugins.size (); ++i)
-	{
-		s.setArrayIndex (i);
-		infoPlugins.at (i).save (s);
-	}
-	s.endArray ();
-
 
 	// *** Plugins - Weather
 	// Weather plugin
+	s.setValue ("weatherPluginId"      , weatherPluginId);
 	s.setValue ("weatherPluginCommand" , weatherPluginCommand);
 	s.setValue ("weatherPluginEnabled" , weatherPluginEnabled);
 	s.setValue ("weatherPluginHeight"  , weatherPluginHeight);
 	s.setValue ("weatherPluginInterval", weatherPluginInterval);
 	// Weather dialog
+	s.setValue ("weatherWindowPluginId", weatherWindowPluginId);
 	s.setValue ("weatherWindowCommand" , weatherWindowCommand);
 	s.setValue ("weatherWindowEnabled" , weatherWindowEnabled);
 	s.setValue ("weatherWindowInterval", weatherWindowInterval);
@@ -227,23 +280,3 @@ void Settings::writeSettings ()
 	s.sync ();
 }
 
-bool Settings::anyPluginsEnabled ()
-{
-	if (weatherPluginEnabled) return true;
-	if (weatherWindowEnabled) return true;
-
-	foreach (const ShellPluginInfo &plugin, infoPlugins)
-		if (plugin.enabled)
-			return true;
-
-	return false;
-}
-
-void Settings::disableAllPlugins ()
-{
-	weatherPluginEnabled=false;
-	weatherWindowEnabled=false;
-
-	for (int i=0; i<infoPlugins.size (); ++i)
-		infoPlugins[i].enabled=false;
-}

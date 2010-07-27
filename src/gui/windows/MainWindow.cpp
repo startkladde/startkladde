@@ -45,14 +45,16 @@
 #include "src/model/objectList/AutomaticEntityList.h" // TODO remove some?
 #include "src/model/objectList/EntityList.h"
 #include "src/model/objectList/ObjectListModel.h"
-#include "src/plugins/ShellPlugin.h"
-#include "src/plugins/ShellPluginInfo.h"
+#include "src/plugin/info/InfoPlugin.h"
+#include "src/plugin/weather/WeatherPlugin.h"
+#include "src/plugin/factory/PluginFactory.h"
 #include "src/statistics/LaunchMethodStatistics.h"
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
+#include "src/util/qList.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
@@ -129,10 +131,16 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	ui.actionShutdown->setVisible (Settings::instance ().enableShutdown);
 
+#if defined(Q_OS_WIN32)
+	bool virtualKeyboardEnabled=false;
+#elif defined(Q_OS_WIN64)
+	bool virtualKeyboardEnabled=false;
+#else
 	bool virtualKeyboardEnabled = (
 		system ("which kvkbd >/dev/null") == 0 &&
 		system ("which dbus-send >/dev/null") == 0);
 		//system ("which dcop >/dev/null") == 0);
+#endif
 
 	ui.actionShowVirtualKeyboard->setVisible (virtualKeyboardEnabled);
 //	ui.actionShowVirtualKeyboard->setIcon (QIcon ((const QPixmap&)QPixmap (kvkbd)));
@@ -265,30 +273,18 @@ void MainWindow::setupLayout ()
 	pluginPaneLayout->setColumnStretch (1, 1);
 }
 
-void MainWindow::setupPlugin (const ShellPluginInfo &pluginInfo, QGridLayout *pluginLayout)
+void MainWindow::setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout)
 {
-	ShellPlugin *plugin=new ShellPlugin (pluginInfo);
-	infoPlugins.append (plugin);
+	connect (this, SIGNAL (minuteChanged ()), plugin, SLOT (minuteChanged ()));
 
 	SkLabel *captionLabel = new SkLabel ("", ui.pluginPane);
 	SkLabel *valueLabel = new SkLabel ("...", ui.pluginPane);
 
+	captionLabel->setText (plugin->getCaption ());
+
 	valueLabel->setWordWrap (true);
-
-	if (pluginInfo.richText)
-	{
-		captionLabel->setTextFormat (Qt::RichText);
-		valueLabel->setTextFormat (Qt::RichText);
-
-		captionLabel->setText ("<nobr>" + plugin->get_caption () + "</nobr>");
-	}
-	else
-	{
-		captionLabel->setTextFormat (Qt::PlainText);
-		valueLabel->setTextFormat (Qt::PlainText);
-
-		captionLabel->setText (plugin->get_caption ());
-	}
+	valueLabel->setToolTip (QString ("%1\nKonfiguration: %2").arg (plugin->getDescription (), plugin->configText ()));
+	captionLabel->setToolTip (valueLabel->toolTip ());
 
 	int row = pluginLayout->rowCount ();
 	pluginLayout->addWidget (captionLabel, row, 0, Qt::AlignTop);
@@ -303,8 +299,7 @@ void MainWindow::setupPlugin (const ShellPluginInfo &pluginInfo, QGridLayout *pl
 		valueLabel ->setAutoFillBackground (true);
 	}
 
-	plugin->set_caption_display (captionLabel);
-	plugin->set_value_display (valueLabel);
+	connect (plugin, SIGNAL (textOutput (QString, Qt::TextFormat)), valueLabel, SLOT (setText (QString, Qt::TextFormat)));
 
 	QObject::connect (captionLabel, SIGNAL (doubleClicked (QMouseEvent *)), plugin, SLOT (restart ()));
 	QObject::connect (valueLabel, SIGNAL (doubleClicked (QMouseEvent *)), plugin, SLOT (restart ()));
@@ -332,11 +327,15 @@ void MainWindow::setupPlugins ()
 	pluginLayout->setMargin (4);
 	pluginLayout->setVerticalSpacing (4);
 
-	ui.pluginPane->setVisible (!s.infoPlugins.isEmpty ());
+	deleteList (infoPlugins);
 
-	foreach (const ShellPluginInfo &pluginInfo, s.infoPlugins)
-		if (pluginInfo.enabled)
-			setupPlugin (pluginInfo, pluginLayout);
+	infoPlugins=s.readInfoPlugins ();
+
+	ui.pluginPane->setVisible (!infoPlugins.isEmpty ());
+
+	foreach (InfoPlugin *plugin, infoPlugins)
+		if (plugin->isEnabled ())
+			setupPlugin (plugin, pluginLayout);
 
 	pluginLayout->setColumnStretch (0, 0);
 	pluginLayout->setColumnStretch (1, 1);
@@ -347,32 +346,26 @@ void MainWindow::setupPlugins ()
 	delete weatherWidget;
 	weatherWidget=NULL;
 
-	// No longer required, plugins work now (with ruby)
-//#ifdef WIN32
-//	if (s.anyPluginsEnabled ())
-//	{
-//		s.disableAllPlugins ();
-//		s.save ();
-//		showWarning (utf8 ("Plugins deaktiviert"), utf8 ("Plugins werden unter Windows zur Zeit nicht unterstützt. Alle Plugins wurden deaktiviert."), this);
-//	}
-//#endif
 
-	bool showWeatherPlugin=(s.weatherPluginEnabled && !blank (s.weatherPluginCommand));
-	ui.weatherFrame->setVisible (showWeatherPlugin);
-	if (showWeatherPlugin)
+	weatherPlugin=NULL; // Deleted in terminatePlugins
+	if (s.weatherPluginEnabled && !isBlank (s.weatherPluginId))
+		weatherPlugin=PluginFactory::getInstance ().createWeatherPlugin (s.weatherPluginId, s.weatherPluginCommand);
+
+	ui.weatherFrame->setVisible (weatherPlugin!=NULL);
+	if (weatherPlugin)
 	{
 		// Create and setup the weather widget. The weather widget is located to
 		// the right of the info frame.
 		weatherWidget = new WeatherWidget (ui.weatherFrame);
 		ui.weatherFrame->layout ()->addWidget (weatherWidget);
 		weatherWidget->setFixedSize (s.weatherPluginHeight, s.weatherPluginHeight);
-		weatherWidget->setText ("[Wetter]");
+		weatherWidget->setText ("Wetter");
 
-		// Create and setup the weather plugin and connect it to the weather widget
-		weatherPlugin = new ShellPlugin ("Wetter", s.weatherPluginCommand, s.weatherPluginInterval);
-		QObject::connect (weatherPlugin, SIGNAL (lineRead (QString)), weatherWidget, SLOT (inputLine (QString)));
-		QObject::connect (weatherPlugin, SIGNAL (pluginNotFound ()), weatherWidget, SLOT (pluginNotFound ()));
-		QObject::connect (weatherWidget, SIGNAL (doubleClicked ()), this, SLOT (weatherWidget_doubleClicked ()));
+		weatherPlugin->enableRefresh (s.weatherPluginInterval);
+		connect (weatherPlugin, SIGNAL (textOutput (const QString &, Qt::TextFormat)), weatherWidget, SLOT (setText (const QString &, Qt::TextFormat)));
+		connect (weatherPlugin, SIGNAL (imageOutput (const QImage &)), weatherWidget, SLOT (setImage (const QImage &)));
+		connect (weatherPlugin, SIGNAL (movieOutput (SkMovie &)), weatherWidget, SLOT (setMovie (SkMovie &)));
+		connect (weatherWidget, SIGNAL (doubleClicked ()), this, SLOT (weatherWidget_doubleClicked ()));
 		weatherPlugin->start ();
 	}
 
@@ -380,7 +373,7 @@ void MainWindow::setupPlugins ()
 
 void MainWindow::terminatePlugins ()
 {
-	foreach (ShellPlugin *plugin, infoPlugins)
+	foreach (InfoPlugin *plugin, infoPlugins)
 	{
 		//std::cout << "Terminating plugin " << plugin->get_caption () << std::endl;
 		plugin->terminate ();
@@ -500,13 +493,13 @@ void MainWindow::settingsChanged ()
 	Settings &s=Settings::instance ();
 
 	// Fenstereinstellungen
-	if (blank (s.location))
+	if (isBlank (s.location))
 		setWindowTitle ("Startkladde");
 	else
 		setWindowTitle (utf8 ("Hauptflugbuch %1 - Startkladde").arg (s.location));
 
 	ui.menuDebug     ->menuAction ()->setVisible (Settings::instance ().enableDebug);
-	ui.actionNetworkDiagnostics     ->setVisible (!blank (Settings::instance ().diagCommand));
+	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (Settings::instance ().diagCommand));
 
 	// Plugins
 	setupPlugins ();
@@ -1166,8 +1159,11 @@ void MainWindow::on_actionRestartPlugins_triggered ()
 	if (weatherPlugin) weatherPlugin->restart ();
 	if (weatherDialog) weatherDialog->restartPlugin ();
 
-	foreach (ShellPlugin *plugin, infoPlugins)
-		plugin->restart ();
+	foreach (InfoPlugin *plugin, infoPlugins)
+	{
+		plugin->terminate ();
+		plugin->start ();
+	}
 }
 
 // **********
@@ -1186,7 +1182,7 @@ void MainWindow::on_actionInfo_triggered ()
 void MainWindow::on_actionNetworkDiagnostics_triggered ()
 {
 	QString command=Settings::instance ().diagCommand;
-	if (blank (command)) return;
+	if (isBlank (command)) return;
 
 	// TODO: use QProcess and make sure it's in the background
 	if (system (command.toUtf8 ().constData ())!=0)
@@ -1309,17 +1305,16 @@ void MainWindow::timeTimer_timeout ()
 	ui.utcTimeLabel->setText (formatDateTime (now.toUTC ()));
 	ui.localTimeLabel->setText (formatDateTime (now.toLocalTime ()));
 
-	// TODO: on the beginning of a minute, update the fliht duration (probably
-	// call from here rather than from a timer in the model so it's
-	// synchronized to the minutes)
-
 	static int lastSecond=0;
 	int second=QTime::currentTime ().second ();
 
+	// Some things are done on the beginning of a new minute.
 	if (second<lastSecond)
 	{
 		int durationColumn=flightModel->durationColumn ();
 		flightListModel->columnChanged (durationColumn);
+
+		emit minuteChanged ();
 	}
 
 	lastSecond=second;
@@ -1337,17 +1332,21 @@ void MainWindow::weatherWidget_doubleClicked ()
 	}
 	else
 	{
-		if (s.weatherWindowEnabled && !blank (s.weatherWindowCommand))
+		if (s.weatherWindowEnabled && !isBlank (s.weatherWindowPluginId))
 		{
-			// The weather animation plugin will be deleted by the weather dialog
-			ShellPlugin *weatherAnimationPlugin = new ShellPlugin (
-					s.weatherWindowTitle, s.weatherWindowCommand, s.weatherPluginInterval);
+			// The plugin will be deleted by the weather dialog
+			WeatherPlugin *weatherDialogPlugin=PluginFactory::getInstance ().createWeatherPlugin (s.weatherPluginId, s.weatherPluginCommand);
 
-			// The weather dialog will be deleted when it's closed, and
-			// weatherDialog is a QPointer, so it will be set to NULL.
-			weatherDialog = new WeatherDialog (weatherAnimationPlugin, this);
-			weatherDialog->setWindowTitle (s.weatherWindowTitle);
-			weatherDialog->show ();
+			if (weatherDialogPlugin)
+			{
+				weatherDialogPlugin->enableRefresh (s.weatherWindowInterval);
+
+				// The weather dialog will be deleted when it's closed, and
+				// weatherDialog is a QPointer, so it will be set to NULL.
+				weatherDialog = new WeatherDialog (weatherDialogPlugin, this);
+				weatherDialog->setWindowTitle (s.weatherWindowTitle);
+				weatherDialog->show ();
+			}
 		}
 	}
 }

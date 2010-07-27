@@ -13,7 +13,8 @@
 #include <QStringList>
 
 #include "src/db/DatabaseInfo.h"
-#include "src/plugins/ShellPluginInfo.h"
+
+class InfoPlugin;
 
 /**
  * The new configuration class, to replace Options
@@ -29,8 +30,8 @@ class Settings: public QObject
 		QStringList readArgs (const QStringList &args);
 		void save ();
 
-		bool anyPluginsEnabled ();
-		void disableAllPlugins ();
+//		bool anyPluginsEnabled ();
+//		void disableAllPlugins ();
 
 	signals:
 		void changed ();
@@ -56,18 +57,21 @@ class Settings: public QObject
 		bool enableShutdown;
 
 		// *** Plugins - Info
-		QList<ShellPluginInfo> infoPlugins;
+		QList<InfoPlugin *> readInfoPlugins ();
+		void writeInfoPlugins (const QList<InfoPlugin *> &plugins);
 
 		// *** Plugins - Weather
 		// Weather plugin
+		QString weatherPluginId;
 		QString weatherPluginCommand;
 		bool weatherPluginEnabled;
 		int weatherPluginHeight;
-		int weatherPluginInterval;
+		int weatherPluginInterval; // in seconds
 		// Weather dialog
+		QString weatherWindowPluginId;
 		QString weatherWindowCommand;
 		bool weatherWindowEnabled;
-		int weatherWindowInterval;
+		int weatherWindowInterval; // in seconds
 		QString weatherWindowTitle;
 
 		// *** Plugins - Paths
