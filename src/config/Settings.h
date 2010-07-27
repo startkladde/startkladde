@@ -13,7 +13,6 @@
 #include <QStringList>
 
 #include "src/db/DatabaseInfo.h"
-#include "src/plugin/ShellPluginInfo.h"
 
 class InfoPlugin;
 
@@ -60,8 +59,6 @@ class Settings: public QObject
 		// *** Plugins - Info
 		QList<InfoPlugin *> readInfoPlugins ();
 		void writeInfoPlugins (const QList<InfoPlugin *> &plugins);
-
-//		QList<ShellPluginInfo> infoPlugins;
 
 		// *** Plugins - Weather
 		// Weather plugin

@@ -18,12 +18,9 @@ class WeatherWidget:public SkLabel
 	public:
 		WeatherWidget (QWidget *parent=NULL);
 		virtual ~WeatherWidget ();
-		virtual bool loadImage (const QString&);
-		virtual void loadMovie (const QString&);
 		virtual void setText (const QString&);
 
 	public slots:
-		virtual void inputLine (QString line);
 		virtual void setImage (const QImage &image);
 		virtual void setMovie (SkMovie &movie);
 
@@ -34,9 +31,6 @@ class WeatherWidget:public SkLabel
 	protected:
 		virtual void mouseDoubleClickEvent (QMouseEvent *e);
 		virtual void resizeEvent (QResizeEvent *);
-
-	protected slots:
-		virtual void pluginNotFound ();
 
 	private:
 		SkMovie newMovie;

@@ -1,4 +1,4 @@
-	#ifndef WEATHERPLUGIN_H_
+#ifndef WEATHERPLUGIN_H_
 #define WEATHERPLUGIN_H_
 
 #include <QUuid>

@@ -6,7 +6,6 @@
 #include "ui_SettingsWindow.h"
 
 class InfoPlugin;
-class ShellPluginInfo;
 
 class SettingsWindow: public QDialog
 {

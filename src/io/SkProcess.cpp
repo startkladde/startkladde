@@ -111,7 +111,7 @@ void SkProcess::processFinished (int exitCode, QProcess::ExitStatus exitStatus)
 }
 
 
-void ExternalInfoPlugin::splitCommand (QString &commandProper, QString &parameters, const QString &commandWithParameters)
+void SkProcess::splitCommand (QString &commandProper, QString &parameters, const QString &commandWithParameters)
 {
 	int firstSpace=commandWithParameters.indexOf (' ');
 

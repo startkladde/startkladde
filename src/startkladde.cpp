@@ -28,7 +28,6 @@
 
 // Testen des Wetterplugins
 //#include "WeatherDialog.h"
-//#include "ShellPlugin.h"
 
 //void display_help ()
 //	/*

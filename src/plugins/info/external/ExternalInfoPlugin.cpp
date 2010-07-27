@@ -25,7 +25,6 @@
 #include "src/io/SkProcess.h"
 #include "src/text.h"
 #include "src/util/qString.h"
-//#include "src/util/io.h"
 #include "src/config/Settings.h"
 
 REGISTER_PLUGIN (InfoPlugin, ExternalInfoPlugin)
@@ -73,7 +72,7 @@ void ExternalInfoPlugin::start ()
 
 	QString commandProper;
 	QString parameters;
-	splitCommand (commandProper, parameters, command);
+	SkProcess::splitCommand (commandProper, parameters, command);
 
 	QString resolved=resolveFilename (commandProper, Settings::instance ().pluginPaths);
 	if (isBlank (resolved)) OUTPUT_AND_RETURN ("Kommando nicht gefunden");
@@ -105,7 +104,7 @@ void ExternalInfoPlugin::processExited (int exitCode, QProcess::ExitStatus exitS
 	(void)exitCode;
 	(void)exitStatus;
 
-s	// Restarting (old code)
+	// Restarting (old code)
 	// if (warn_on_death) std::cout << "The process for '" << caption << "' died." << std::endl;
 	// if (restart_interval>0) QTimer::singleShot (restart_interval*1000, this, SLOT (start ()));
 }

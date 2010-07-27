@@ -7,8 +7,8 @@
 #include <QRegExp>
 #include <QResizeEvent>
 
-#include "src/config/Settings.h" // TOOD remove dependency, set size from MainWindow
-#include "src/util/qString.h" // remove
+#include "src/config/Settings.h" // TODO remove dependency, set size from MainWindow
+//#include "src/util/qString.h" // remove
 
 
 WeatherWidget::WeatherWidget (QWidget *parent):
@@ -32,32 +32,12 @@ WeatherWidget::~WeatherWidget ()
 
 void WeatherWidget::setImage (const QImage &image)
 {
-	QPixmap pixmap=QPixmap::fromImage (image);
-	setPixmap (pixmap);
-}
-
-bool WeatherWidget::loadImage (const QString &fileName)
-{
 	setWordWrap (false);
-
-	// Create and load the image
-	QImage image;
-	if (!image.load (fileName)) return false;
-
-	//image.smoothScale (width(), height (), QImage::ScaleMin);
 	QPixmap pixmap=QPixmap::fromImage (image);
 	setPixmap (pixmap);
 
-	int height=Settings::instance ().weatherPluginHeight;
-	setFixedSize (height*pixmap.width()/pixmap.height(), height);
-
-	return true;
-}
-
-void WeatherWidget::loadMovie (const QString &fileName)
-{
-	SkMovie m (fileName);
-	setMovie (m);
+//	int height=Settings::instance ().weatherPluginHeight;
+//	setFixedSize (height*pixmap.width()/pixmap.height(), height);
 }
 
 void WeatherWidget::setText (const QString &text)
@@ -88,59 +68,10 @@ void WeatherWidget::setMovie (SkMovie &movie)
 	newMovie=movie;
 }
 
-void WeatherWidget::inputLine (QString line)
-{
-	// FIXME this should be in a plugin
-	if (line.startsWith ("[MSG]", Qt::CaseInsensitive))
-	{
-		QRegExp rx ("\\[MSG\\]\\s*\\[(.*)\\]" );
-		rx.indexIn (line);
-		if (rx.numCaptures ()>0)
-		{
-			QString text=rx.cap (1);
-			// An even number of backslashes, followed by a backslash and an n ==> newline
-			// (\\)*\n ==> newline
-			// Regexp escaping: (\\\\)*\\n ==> newline
-			// C escaping: (\\\\\\\\)*\\\\n ==> \n
-			setText (text.replace (QRegExp ("(\\\\\\\\)*\\\\n"), "\n").replace ("\\\\", "\\"));
-		}
-	}
-	else if (line.startsWith ("[IMG]", Qt::CaseInsensitive))
-	{
-		QRegExp rx ("\\[IMG\\]\\s*\\[(.*)\\]" );
-		rx.indexIn (line);
-		if (rx.numCaptures ()>0)
-		{
-			QString filename=rx.cap (1);
-			if (!loadImage (filename))
-			{
-				setText ("Grafik kann nicht\ngeladen werden:\n"+filename);
-			}
-		}
-	}
-	else if (line.startsWith ("[MOV]", Qt::CaseInsensitive))
-	{
-		QRegExp rx ("\\[MOV\\]\\s*\\[(.*)\\]" );
-		rx.indexIn (line);
-		if (rx.numCaptures ()>0)
-		{
-			QString filename=rx.cap (1);
-			loadMovie (filename);
-			// Note that we cannot delete the file at this point because Qt
-			// reads from the file when the animation starts over.
-		}
-	}
-}
-
 void WeatherWidget::mouseDoubleClickEvent (QMouseEvent *e)
 {
 	(void)e;
 	emit (doubleClicked ());
-}
-
-void WeatherWidget::pluginNotFound ()
-{
-	setText ("Plugin nicht gefunden");
 }
 
 void WeatherWidget::resizeEvent (QResizeEvent *e)

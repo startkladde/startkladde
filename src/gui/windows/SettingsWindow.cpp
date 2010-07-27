@@ -28,7 +28,6 @@
 #include "src/plugin/factory/PluginFactory.h"
 #include "src/plugin/info/InfoPluginSelectionDialog.h"
 #include "src/plugin/settings/PluginSettingsDialog.h"
-#include "src/plugin/ShellPluginInfo.h"
 #include "src/gui/views/ReadOnlyItemDelegate.h"
 #include "src/gui/views/SpinBoxCreator.h"
 #include "src/gui/views/SpecialIntDelegate.h"

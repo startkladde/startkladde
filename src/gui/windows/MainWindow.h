@@ -49,8 +49,6 @@ class QModelIndex;
 class FlightSortFilterProxyModel;
 class InfoPlugin;
 class WeatherPlugin;
-class ShellPlugin;
-class ShellPluginInfo;
 class WeatherWidget;
 class WeatherDialog;
 class FlightModel;

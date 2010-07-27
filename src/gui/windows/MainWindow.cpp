@@ -46,8 +46,6 @@
 #include "src/model/objectList/EntityList.h"
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/plugin/info/InfoPlugin.h"
-#include "src/plugin/ShellPlugin.h"
-#include "src/plugin/ShellPluginInfo.h"
 #include "src/plugin/weather/WeatherPlugin.h"
 #include "src/plugin/factory/PluginFactory.h"
 #include "src/statistics/LaunchMethodStatistics.h"
@@ -60,6 +58,8 @@
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
+
+#include "src/plugins/weather/ExternalWeatherPlugin.h" // FIXME remove
 
 template <class T> class MutableObjectList;
 
@@ -278,9 +278,6 @@ void MainWindow::setupLayout ()
 void MainWindow::setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout)
 {
 	connect (this, SIGNAL (minuteChanged ()), plugin, SLOT (minuteChanged ()));
-
-//	ShellPlugin *plugin=new ShellPlugin (pluginInfo);
-//	infoPlugins.append (plugin);
 
 	SkLabel *captionLabel = new SkLabel ("", ui.pluginPane);
 	SkLabel *valueLabel = new SkLabel ("...", ui.pluginPane);

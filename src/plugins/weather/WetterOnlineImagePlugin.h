@@ -16,15 +16,15 @@ class WetterOnlineImagePlugin: public WeatherPlugin
 		WetterOnlineImagePlugin ();
 		virtual ~WetterOnlineImagePlugin ();
 
-	private:
-		Downloader *downloader;
-
 	public slots:
 		virtual void refresh ();
 		virtual void abort ();
 
 		void downloadSucceeded (int state, QNetworkReply *reply);
 		void downloadFailed    (int state, QNetworkReply *reply, QNetworkReply::NetworkError code);
+
+	private:
+		Downloader *downloader;
 };
 
 #endif
