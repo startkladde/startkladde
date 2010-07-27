@@ -14,6 +14,7 @@
 #include "src/util/qList.h"
 #include "src/util/qString.h"
 
+#include "src/plugins/weather/ExternalWeatherPlugin.h"
 
 // ******************
 // ** Construction **
@@ -123,6 +124,7 @@ template<class T> const typename T::Descriptor *PluginFactory::findPlugin (const
  * @param id the ID of the plugin to create
  * @return a Plugin instance, or NULL
  * @see #find
+ * @see #createWeatherPlugin
  */
 template<class T> T *PluginFactory::createPlugin (const QUuid &id) const
 {
@@ -130,6 +132,31 @@ template<class T> T *PluginFactory::createPlugin (const QUuid &id) const
 	if (!descriptor) return NULL;
 
 	return descriptor->create ();
+}
+
+/**
+ * As a special case of createPlugin, creates the plugin with the given ID and
+ * sets its command property to the given command if it is an
+ * ExternalWeatherPlugin
+ *
+ * As with createPlugin, the caller takes ownershiop of the returned Plugin
+ * instance.
+ *
+ * @param id the ID of the plugin to create
+ * @param externalCommand the command to set if the plugin is an
+ *        ExternalWeatherPlugin
+ * @return a Plugin instance, or NULL
+ * @see #createPlugin
+ */
+WeatherPlugin *PluginFactory::createWeatherPlugin (const QUuid &id, const QString &externalCommand)
+{
+	WeatherPlugin *weatherPlugin=createPlugin<WeatherPlugin> (id);
+
+	ExternalWeatherPlugin *externalWeatherPlugin=dynamic_cast<ExternalWeatherPlugin *> (weatherPlugin);
+	if (externalWeatherPlugin)
+		externalWeatherPlugin->setCommand (externalCommand);
+
+	return weatherPlugin;
 }
 
 

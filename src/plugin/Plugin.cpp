@@ -12,6 +12,7 @@
 #include <QStringList>
 #include <QDebug>
 #include <QDir>
+#include <QFileDialog>
 
 #include "src/text.h"
 #include "src/util/qString.h"
@@ -40,7 +41,7 @@ void Plugin::restart ()
  * @param filename a file name
  * @return true if filename is absolute, false if not
  */
-bool Plugin::filenameIsAbsolute (const QString &filename) const
+bool Plugin::filenameIsAbsolute (const QString &filename)
 {
 	// We treat file names with the explicit directory ./ as absolute
 	if (filename.startsWith ("./")) return true;
@@ -56,7 +57,7 @@ bool Plugin::filenameIsAbsolute (const QString &filename) const
  * @param pluginPaths usually, use Settings::instance ().pluginPaths
  * @return
  */
-QString Plugin::resolveFilename (const QString &filename, const QStringList &pluginPaths) const
+QString Plugin::resolveFilename (const QString &filename, const QStringList &pluginPaths)
 {
 	if (isBlank (filename))
 		return "";
@@ -89,4 +90,24 @@ QString Plugin::resolveFilename (const QString &filename, const QStringList &plu
 
 	// Not found
 	return QString ();
+}
+
+QString Plugin::browse (const QString &currentFile, const QString &filter, const QStringList &pluginPaths, QWidget *parent)
+{
+	QString resolved=Plugin::resolveFilename (currentFile, pluginPaths);
+
+	QString dir;
+	if (resolved.isEmpty ())
+		dir=".";
+	else
+		dir=QFileInfo (resolved).dir ().path ();
+
+	return QFileDialog::getOpenFileName (
+		parent,
+		utf8 ("Datei auswählen"),
+		dir,
+		filter,
+		NULL,
+		0
+		);
 }

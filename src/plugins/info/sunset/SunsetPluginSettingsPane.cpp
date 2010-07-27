@@ -1,8 +1,7 @@
 #include "SunsetPluginSettingsPane.h"
 
-#include <QFile>
-#include <QFileDialog>
 #include <QDebug>
+#include <QFileInfo>
 
 #include "src/plugins/info/sunset/SunsetPluginBase.h"
 #include "src/util/qString.h"
@@ -113,23 +112,7 @@ void SunsetPluginSettingsPane::on_filenameInput_editingFinished ()
 
 void SunsetPluginSettingsPane::on_findFileButton_clicked ()
 {
-	QString currentFile=ui.filenameInput->text ();
-	QString resolved=plugin->resolveFilename (currentFile, getEffectivePluginPaths ());
-
-	QString dir;
-	if (resolved.isEmpty ())
-		dir=".";
-	else
-		dir=QFileInfo (resolved).dir ().path ();
-
-	QString filename=QFileDialog::getOpenFileName (
-		this,
-		utf8 ("Datei auswählen"),
-		dir,
-		"*.txt",
-		NULL,
-		0
-		);
+	QString filename=Plugin::browse (ui.filenameInput->text (), ".txt", getEffectivePluginPaths (), this);
 
 	if (!filename.isEmpty ())
 	{

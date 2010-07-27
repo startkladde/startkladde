@@ -59,8 +59,6 @@
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
 
-#include "src/plugins/weather/ExternalWeatherPlugin.h" // FIXME remove
-
 template <class T> class MutableObjectList;
 
 // ******************
@@ -351,15 +349,11 @@ void MainWindow::setupPlugins ()
 
 	weatherPlugin=NULL; // Deleted in terminatePlugins
 	if (s.weatherPluginEnabled && !isBlank (s.weatherPluginId))
-		weatherPlugin=PluginFactory::getInstance ().createPlugin<WeatherPlugin> (s.weatherPluginId);
+		weatherPlugin=PluginFactory::getInstance ().createWeatherPlugin (s.weatherPluginId, s.weatherPluginCommand);
 
 	ui.weatherFrame->setVisible (weatherPlugin!=NULL);
 	if (weatherPlugin)
 	{
-		ExternalWeatherPlugin *externalWeatherPlugin=dynamic_cast<ExternalWeatherPlugin *> (weatherPlugin);
-		if (externalWeatherPlugin)
-			externalWeatherPlugin->setCommand (s.weatherPluginCommand);
-
 		// Create and setup the weather widget. The weather widget is located to
 		// the right of the info frame.
 		weatherWidget = new WeatherWidget (ui.weatherFrame);
@@ -1341,14 +1335,10 @@ void MainWindow::weatherWidget_doubleClicked ()
 		if (s.weatherWindowEnabled && !isBlank (s.weatherWindowPluginId))
 		{
 			// The plugin will be deleted by the weather dialog
-			WeatherPlugin *weatherDialogPlugin=PluginFactory::getInstance ().createPlugin<WeatherPlugin> (s.weatherWindowPluginId);
+			WeatherPlugin *weatherDialogPlugin=PluginFactory::getInstance ().createWeatherPlugin (s.weatherPluginId, s.weatherPluginCommand);
 
 			if (weatherDialogPlugin)
 			{
-				ExternalWeatherPlugin *externalWeatherDialogPlugin=dynamic_cast<ExternalWeatherPlugin *> (weatherDialogPlugin);
-				if (externalWeatherDialogPlugin)
-					externalWeatherDialogPlugin->setCommand (s.weatherWindowCommand);
-
 				weatherDialogPlugin->enableRefresh (s.weatherWindowInterval);
 
 				// The weather dialog will be deleted when it's closed, and

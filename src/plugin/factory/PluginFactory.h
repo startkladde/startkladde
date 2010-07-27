@@ -76,6 +76,9 @@ class PluginFactory
 		template<class T> QList<const typename T::Descriptor *> getDescriptors ();
 		template<class T> T *createPlugin (const QUuid &id) const;
 
+		// Special factory
+		WeatherPlugin *createWeatherPlugin (const QUuid &id, const QString &externalCommand);
+
 	private:
 		template<class T> void addDescriptor (typename T::Descriptor *descriptor);
 		template<class T> const typename T::Descriptor *findPlugin (const QUuid &id) const;

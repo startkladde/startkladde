@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
-    <height>540</height>
+    <width>641</width>
+    <height>638</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -687,9 +687,6 @@ Berech des Hauptfensters angezeigt.</string>
               <item row="1" column="2" colspan="2">
                <widget class="SkComboBox" name="weatherPluginInput"/>
               </item>
-              <item row="2" column="2" colspan="2">
-               <widget class="QLineEdit" name="weatherPluginCommandInput"/>
-              </item>
               <item row="2" column="0">
                <widget class="QLabel" name="weatherPluginCommandLabel">
                 <property name="text">
@@ -698,6 +695,29 @@ Berech des Hauptfensters angezeigt.</string>
                 <property name="buddy">
                  <cstring>weatherPluginCommandInput</cstring>
                 </property>
+               </widget>
+              </item>
+              <item row="2" column="2" colspan="2">
+               <widget class="QWidget" name="widget_4" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <property name="margin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLineEdit" name="weatherPluginCommandInput">
+                   <property name="toolTip">
+                    <string>Das auszuführende Programm. Programme im Plugin-Suchpfad können ohne Pfad angegeben werden.</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="browseWeatherPluginCommandButton">
+                   <property name="text">
+                    <string>Durch&amp;suchen</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
@@ -722,7 +742,7 @@ Berech des Hauptfensters angezeigt.</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="4" column="0">
                <widget class="QLabel" name="weatherWindowTitleLabel">
                 <property name="text">
                  <string>Tite&amp;l:</string>
@@ -732,14 +752,14 @@ Berech des Hauptfensters angezeigt.</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="1" colspan="2">
+              <item row="4" column="1" colspan="2">
                <widget class="QLineEdit" name="weatherWindowTitleInput">
                 <property name="toolTip">
                  <string>Titel des Wetterfensters</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0">
+              <item row="5" column="0">
                <widget class="QLabel" name="weatherWindowIntervalLabel">
                 <property name="text">
                  <string>I&amp;ntervall:</string>
@@ -749,7 +769,7 @@ Berech des Hauptfensters angezeigt.</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
+              <item row="5" column="1">
                <widget class="QSpinBox" name="weatherWindowIntervalInput">
                 <property name="toolTip">
                  <string>Dauer zwischen Aktualisierungen der Grafik im Wetterfenster</string>
@@ -762,7 +782,7 @@ Berech des Hauptfensters angezeigt.</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="2">
+              <item row="5" column="2">
                <spacer name="horizontalSpacer_4">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -788,7 +808,7 @@ Berech des Hauptfensters angezeigt.</string>
               <item row="1" column="1" colspan="2">
                <widget class="SkComboBox" name="weatherWindowPluginInput"/>
               </item>
-              <item row="2" column="0">
+              <item row="3" column="0">
                <widget class="QLabel" name="weatherWindowCommandLabel">
                 <property name="text">
                  <string>K&amp;ommando:</string>
@@ -798,8 +818,28 @@ Berech des Hauptfensters angezeigt.</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1" colspan="2">
-               <widget class="QLineEdit" name="weatherWindowCommandInput"/>
+              <item row="3" column="1" colspan="2">
+               <widget class="QWidget" name="widget_5" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <property name="margin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLineEdit" name="weatherWindowCommandInput">
+                   <property name="toolTip">
+                    <string>Das auszuführende Programm. Programme im Plugin-Suchpfad können ohne Pfad angegeben werden.</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="browseWeatherWindowCommandButton">
+                   <property name="text">
+                    <string>Durchsuc&amp;hen</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
               </item>
              </layout>
             </widget>

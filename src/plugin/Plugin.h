@@ -102,8 +102,9 @@ class Plugin: public QObject
 
 		virtual QString configText () const=0;
 
-		virtual bool filenameIsAbsolute (const QString &filename) const;
-		virtual QString resolveFilename (const QString &filename, const QStringList &pluginPaths) const;
+		static bool filenameIsAbsolute (const QString &filename);
+		static QString resolveFilename (const QString &filename, const QStringList &pluginPaths);
+		static QString browse (const QString &currentFile, const QString &filter, const QStringList &pluginPaths, QWidget *parent=NULL);
 };
 
 #endif

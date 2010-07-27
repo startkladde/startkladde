@@ -50,6 +50,9 @@ class SettingsWindow: public QDialog
 
 		void on_buttonBox_accepted ();
 
+		void on_browseWeatherPluginCommandButton_clicked ();
+		void on_browseWeatherWindowCommandButton_clicked ();
+
 	private:
 		Ui::SettingsWindowClass ui;
 		bool warned;

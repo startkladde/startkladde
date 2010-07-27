@@ -478,6 +478,7 @@ void SettingsWindow::on_weatherPluginInput_currentIndexChanged ()
 	bool external=(ui.weatherPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
 	ui.weatherPluginCommandLabel->setEnabled (external);
 	ui.weatherPluginCommandInput->setEnabled (external);
+	ui.browseWeatherPluginCommandButton->setEnabled (external);
 }
 
 void SettingsWindow::on_weatherWindowPluginInput_currentIndexChanged ()
@@ -485,4 +486,21 @@ void SettingsWindow::on_weatherWindowPluginInput_currentIndexChanged ()
 	bool external=(ui.weatherWindowPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
 	ui.weatherWindowCommandLabel->setEnabled (external);
 	ui.weatherWindowCommandInput->setEnabled (external);
+	ui.browseWeatherWindowCommandButton->setEnabled (external);
+}
+
+void SettingsWindow::on_browseWeatherPluginCommandButton_clicked ()
+{
+	QString filename=Plugin::browse (ui.weatherPluginCommandInput->text (), "*", getPluginPaths (), this);
+
+	if (!filename.isEmpty ())
+		ui.weatherPluginCommandInput->setText (filename);
+}
+
+void SettingsWindow::on_browseWeatherWindowCommandButton_clicked ()
+{
+	QString filename=Plugin::browse (ui.weatherWindowCommandInput->text (), "*", getPluginPaths (), this);
+
+	if (!filename.isEmpty ())
+		ui.weatherWindowCommandInput->setText (filename);
 }

@@ -1,5 +1,5 @@
-//#ifndef IO_H_
-//#define IO_H_
+//#ifndef CONSOLE_H_
+//#define CONSOLE_H_
 //
 //#include <QString>
 //

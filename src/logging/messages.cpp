@@ -5,7 +5,7 @@
 #include <QDateTime>
 #include <QString>
 
-#include "src/io/colors.h"
+#include "src/io/AnsiColors.h"
 #include "src/util/qString.h"
 
 QString timestamp ()
@@ -22,8 +22,9 @@ void log_message (const QString &message)
 	 *   - message: The message to write.
 	 */
 {
-	std::cout << QString (c_message "%1: %2" c_default)
-		.arg (timestamp (), message) << std::endl;
+	AnsiColors c;
+	std::cout << QString ("%1%2: %3%4")
+		.arg (c.yellow (), timestamp (), message, c.reset ()) << std::endl;
 }
 
 void log_error (const QString &message)
@@ -35,6 +36,7 @@ void log_error (const QString &message)
 	 *   - message: The message to write.
 	 */
 {
-	std::cerr << QString (c_error "%1: Error: %2" c_default)
-		.arg (timestamp (), message) << std::endl;
+	AnsiColors c;
+	std::cerr << QString ("%1%2: Error: %3%4")
+		.arg (c.red (), timestamp (), message, c.reset ()) << std::endl;
 }
