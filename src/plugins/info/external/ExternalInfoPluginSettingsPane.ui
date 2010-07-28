@@ -45,7 +45,7 @@
       <item row="0" column="1">
        <widget class="QLineEdit" name="commandInput">
         <property name="toolTip">
-         <string>Der Name des zu grüßenden</string>
+         <string>Das auszuführende Programm. Programme im Plugin-Suchpfad können ohne Pfad angegeben werden.</string>
         </property>
        </widget>
       </item>
