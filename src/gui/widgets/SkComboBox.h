@@ -42,7 +42,7 @@ class SkComboBox:public QComboBox
 		SkComboBox (QWidget *parent=0);
 
 //		void setLineEdit (QLineEdit *edit);
-		attr_accessor (QString, DefaultPrefix, defaultPrefix);
+		value_accessor (QString, DefaultPrefix, defaultPrefix);
 
 		bool setCurrentItemByItemData (QVariant itemData);
 		void setCurrentItemByItemData (QVariant itemData, int defaultIndex);

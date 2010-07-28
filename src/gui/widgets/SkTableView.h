@@ -27,7 +27,7 @@ class SkTableView: public QTableView
 		// Property access
 		virtual void setModel (QAbstractItemModel *model);
 
-		attr_accessor (bool, AutoResizeRows, autoResizeRows);
+		value_accessor (bool, AutoResizeRows, autoResizeRows);
 
 		// Settings
 		void readColumnWidths (QSettings &settings, const ColumnInfo &columnInfo);

@@ -36,7 +36,7 @@ class SkLabel: public QLabel
 		void resetDefaultForegroundColor ();
 		QColor getDefaultForegroundColor ();
 
-		attr_accessor (QColor, ErrorColor, errorColor);
+		value_accessor (QColor, ErrorColor, errorColor);
 
 		void setPaletteForegroundColor (const QColor &color);
 		void setPaletteBackgroundColor (const QColor &color);
