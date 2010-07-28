@@ -1335,7 +1335,7 @@ void MainWindow::weatherWidget_doubleClicked ()
 		if (s.weatherWindowEnabled && !isBlank (s.weatherWindowPluginId))
 		{
 			// The plugin will be deleted by the weather dialog
-			WeatherPlugin *weatherDialogPlugin=PluginFactory::getInstance ().createWeatherPlugin (s.weatherPluginId, s.weatherPluginCommand);
+			WeatherPlugin *weatherDialogPlugin=PluginFactory::getInstance ().createWeatherPlugin (s.weatherWindowPluginId, s.weatherWindowCommand);
 
 			if (weatherDialogPlugin)
 			{
