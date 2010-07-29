@@ -1,3 +1,7 @@
+2.0.7 (2010-07-29)
+	- Set time menu entry not shown on Windows
+	- Fixed time editor fields on Windows
+
 2.0.6 (2010-07-29)
 	- Improved settings dialog
 	- New plugin architecture (ruby no longer required)
