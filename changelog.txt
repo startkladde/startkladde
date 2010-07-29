@@ -1,3 +1,6 @@
+	- Improved settings dialog
+	- New plugin architecture (ruby no longer required)
+	- Longitude correction and time zone for sunset plugin
 	- Include towflights in pilot and plane logs
 	- Removed demosystem code
 	- Checked return values of kvkbd system calls
