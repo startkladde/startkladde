@@ -76,6 +76,7 @@ class Query
 		// *** QSqlQuery interface
 		bool prepare (QSqlQuery &query) const;
 		void bindTo (QSqlQuery &query) const;
+		bool exec (QSqlQuery &query) const;
 
 	private:
 		QString queryString;

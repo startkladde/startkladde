@@ -438,7 +438,7 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 	if (displayQueries)
 		std::cout << "..."; std::cout.flush ();
 
-	if (!sqlQuery.exec ())
+	if (!query.exec (sqlQuery))
 	{
 		if (canceled)
 		{

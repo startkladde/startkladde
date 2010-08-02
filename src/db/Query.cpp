@@ -273,8 +273,20 @@ Query &Query::bind (const QVariant &v)
 // ** QSqlQuery interface **
 // *************************
 
+/*
+ * On query execution:
+ *   - Queries without bind values are executed without preparing. This is
+ *     required for MySQL 5.0 compatibility (to avoid "This command is not
+ *     supported in the prepared statement protocol yet" errors). There may
+ *     also be other advantages like improved performance for queries without
+ *     parameters.
+ */
 bool Query::prepare (QSqlQuery &query) const
 {
+	// Queries without bind values are executed without preparing
+	if (bindValues.empty ())
+		return true;
+
 	return query.prepare (queryString);
 }
 
@@ -285,10 +297,36 @@ bool Query::prepare (QSqlQuery &query) const
  * Note that due to QSql limitations, this method may only be called from
  * the thread that created the QSqlQuery.
  *
+ * You generally want to use #prepare first.
+ *
  * @param query the query the bind values will be added to
  */
 void Query::bindTo (QSqlQuery &query) const
 {
+	// Queries without bind values are executed without preparing
+	if (bindValues.empty ())
+		return;
+
 	foreach (const QVariant &value, bindValues)
 		query.addBindValue (value);
+}
+
+/**
+ * Executes the given QSqlQuery
+ *
+ * Note that due to QSql limitations, this method may only be called from the
+ * thread that created the QSqlQuery.
+ *
+ * You generally want to use #prepare and #bindTo first.
+ *
+ * @param query the query that will be executed
+ * @return the result of the exec method of query
+ */
+bool Query::exec (QSqlQuery &query) const
+{
+	// Queries without bind values are executed without preparing
+	if (bindValues.empty ())
+		return query.exec (queryString);
+
+	return query.exec ();
 }

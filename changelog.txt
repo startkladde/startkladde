@@ -1,3 +1,5 @@
+	- MySQL 5.0 compatibility
+	
 2.0.7 (2010-07-29)
 	- Set time menu entry not shown on Windows
 	- Fixed time editor fields on Windows
