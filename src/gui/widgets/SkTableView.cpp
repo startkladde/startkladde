@@ -12,6 +12,7 @@
 #include "src/itemDataRoles.h"
 #include "src/concurrent/threadUtil.h" // Required for assert (isGuiThread ());
 #include "src/model/objectList/ColumnInfo.h"
+#include "src/util/color.h"
 
 #include <iostream>
 #include <cassert>
@@ -21,6 +22,11 @@ SkTableView::SkTableView (QWidget *parent):
 	autoResizeRows (false),
 	settingButtons (false)
 {
+	// Use a style sheet rather than a palette because a style may ignore the
+	// palette, while a style sheet is guaranteed to be honored.
+
+	// Note: somehow, gradients don't seem to work here
+	setStyleSheet ("selection-background-color: #3F3F3F;");
 }
 
 SkTableView::~SkTableView ()
@@ -232,4 +238,30 @@ void SkTableView::keyPressEvent (QKeyEvent *e)
 		case Qt::Key_Delete: e->ignore (); break;
 		default: QTableView::keyPressEvent (e);
 	}
+//
+//	std::cout << "A key: " << e->key () << std::endl;
 }
+
+// Current cell changed - row (flight) or column
+//void SkTableView::currentChanged (const QModelIndex &current, const QModelIndex &previous)
+//{
+//	QTableView::currentChanged (current, previous);
+//}
+
+// Selection changed - since selectionBehavior is SelectRows, this means that a
+// different flight (or none) was selected
+//void SkTableView::selectionChanged (const QItemSelection &selected, const QItemSelection &deselected)
+//{
+//	if (!selected.indexes ().isEmpty ())
+//	{
+//		const QModelIndex &index=selected.indexes ().first ();
+//
+//		// Set up the highlights color depending on the cell background color
+//		QPalette p=palette ();
+//		QColor c=index.data (Qt::BackgroundRole).value<QBrush> ().color ();
+//		p.setColor (QPalette::Highlight, interpol (0.5, c, Qt::black));
+//		setPalette (p);
+//	}
+//
+//	QTableView::selectionChanged (selected, deselected);
+//}
