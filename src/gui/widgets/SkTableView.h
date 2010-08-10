@@ -14,6 +14,7 @@
 
 class ColumnInfo;
 class QSettings;
+class TableButton;
 
 class SkTableView: public QTableView
 {
@@ -33,6 +34,12 @@ class SkTableView: public QTableView
 		void readColumnWidths (QSettings &settings, const ColumnInfo &columnInfo);
 		void writeColumnWidths (QSettings &settings, const ColumnInfo &columnInfo);
 
+		bool cellVisible (const QModelIndex &index);
+		QWidget *findVisibleWidget (const QModelIndexList &indexes);
+		QPersistentModelIndex findButton (TableButton *button);
+		bool focusWidgetAt (const QModelIndex &index);
+
+
 	public slots:
 		virtual void reset ();
 		virtual void layoutChanged ();
@@ -49,7 +56,10 @@ class SkTableView: public QTableView
 
 	protected:
 		void updateButtons (int row);
+		void updateWidgetFocus (const QModelIndexList &indexes);
 		void keyPressEvent (QKeyEvent *e);
+		void scrollLeft ();
+		void scrollRight ();
 
 		bool autoResizeRows;
 

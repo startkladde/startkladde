@@ -23,6 +23,7 @@
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QScrollBar>
+#include <QWidget> // remove
 
 // TODO many dependencies - split
 #include "src/concurrent/threadUtil.h"
@@ -1303,6 +1304,8 @@ QString formatDateTime (const QDateTime &dateTime)
 		dateTime.time ().toString (Qt::DefaultLocaleLongDate);
 }
 
+#include "src/gui/widgets/TableButton.h"
+
 void MainWindow::timeTimer_timeout ()
 {
 	QDateTime now=QDateTime::currentDateTime ();
@@ -1315,8 +1318,15 @@ void MainWindow::timeTimer_timeout ()
 	// Some things are done on the beginning of a new minute.
 	if (second<lastSecond)
 	{
+		QModelIndex oldIndex=ui.flightTable->currentIndex ();
+		QPersistentModelIndex focusWidgetIndex=ui.flightTable->findButton (
+			dynamic_cast<TableButton *> (QApplication::focusWidget ()));
+
 		int durationColumn=flightModel->durationColumn ();
 		flightListModel->columnChanged (durationColumn);
+
+		ui.flightTable->setCurrentIndex (oldIndex);
+		ui.flightTable->focusWidgetAt (focusWidgetIndex);
 
 		emit minuteChanged ();
 	}

@@ -1,3 +1,16 @@
+/*
+ * Improvements:
+ *   - horizontal scrolling using the scroll bar (mouse) does not update the
+ *     widget focus (updateWidgetFocus is not called)
+ *   - updating the data (e. g. flight duration on minute change) recreates the
+ *     buttons, even if not necessary; this is probably inefficient. Also, it
+ *     necessitates determining the index of the focused button
+ *     (focusWidgetIndex) beforehand and focusing the widget at that index
+ *     afterwards (focusWidgetAt) (from MainWindow)
+ *   - on every move, the current selection has to be searched for a visible
+ *     button in order to set the focus; this could possibly be made more
+ *     efficient
+ */
 #include "SkTableView.h"
 
 #include <QSettings>
@@ -234,6 +247,8 @@ void SkTableView::writeColumnWidths (QSettings &settings, const ColumnInfo &colu
 
 void SkTableView::keyPressEvent (QKeyEvent *e)
 {
+//	std::cout << "key " << e->key () << " pressed in SkTableView" << std::endl;
+
 	// Hack: it seems that as of Qt 4.6.2 (Ubuntu Lucid), QTableView consumes
 	// the delete key, which is not passed to the parent widget (the containing
 	// window). This only seems to happen with the delete key proper, not the
@@ -242,7 +257,11 @@ void SkTableView::keyPressEvent (QKeyEvent *e)
 	switch (e->key ())
 	{
 		case Qt::Key_Delete: e->ignore (); break;
-		default: QTableView::keyPressEvent (e);
+		case Qt::Key_Left: scrollLeft (); break;
+		case Qt::Key_Right: scrollRight (); break;
+		default:
+			e->ignore ();
+			QTableView::keyPressEvent (e);
 	}
 //
 //	std::cout << "A key: " << e->key () << std::endl;
@@ -253,6 +272,63 @@ void SkTableView::keyPressEvent (QKeyEvent *e)
 //{
 //	QTableView::currentChanged (current, previous);
 //}
+
+bool SkTableView::cellVisible (const QModelIndex &index)
+{
+	QRect viewportRect=viewport ()->rect ();
+	QRect indexRect=visualRect (index);
+
+	return
+		viewportRect.contains (indexRect.topLeft ()) &&
+		viewportRect.contains (indexRect.bottomRight ())
+		;
+}
+
+QWidget *SkTableView::findVisibleWidget (const QModelIndexList &indexes)
+{
+	foreach (const QModelIndex &index, indexes)
+	{
+		QWidget *widget=indexWidget (index);
+
+		if (widget)
+			if (cellVisible (index))
+				return widget;
+	}
+
+	return NULL;
+}
+
+/**
+ * @param button may be NULL
+ * @return
+ */
+QPersistentModelIndex SkTableView::findButton (TableButton *button)
+{
+	if (!button) return QPersistentModelIndex ();
+
+	return button->getIndex ();
+}
+
+bool SkTableView::focusWidgetAt (const QModelIndex &index)
+{
+	if (!index.isValid ()) return false;
+
+	QWidget *widget=indexWidget (index);
+	if (!widget) return false;
+
+	widget->setFocus ();
+	return true;
+}
+
+void SkTableView::updateWidgetFocus (const QModelIndexList &indexes)
+{
+	// If the current selection contains a widget, focus it if it is visible
+	QWidget *widget=findVisibleWidget (indexes);
+	if (widget)
+		widget->setFocus ();
+	else
+		this->setFocus ();
+}
 
 // Selection changed - since selectionBehavior is SelectRows, this means that a
 // different flight (or none) was selected
@@ -270,25 +346,60 @@ void SkTableView::selectionChanged (const QItemSelection &selected, const QItemS
 //		setStyleSheet (QString ("selection-background-color: %1;").arg (c.name ()));
 //	}
 
-	// If the current selection contains a widget, focus it if it is visible
-	foreach (const QModelIndex &index, selected.indexes ())
-	{
-		QWidget *widget=indexWidget (index);
-
-		if (widget)
-		{
-//			std::cout << "Viewport: " << viewport ()->rect () << ", widget: " << visualRect (index) << std::endl;
-			QRect viewportRect=viewport ()->rect ();
-			QRect indexRect=visualRect (index);
-
-			if (
-				viewportRect.contains (indexRect.topLeft ()) &&
-				viewportRect.contains (indexRect.bottomRight ())
-				)
-				indexWidget (index)->setFocus ();
-			break;
-		}
-	}
+	updateWidgetFocus (selected.indexes ());
 
 	QTableView::selectionChanged (selected, deselected);
+}
+
+void SkTableView::scrollLeft ()
+{
+	// The current row is selected completely
+	QList<QModelIndex> indexes=selectionModel ()->selectedIndexes ();
+
+	// Find the first visible cell and scroll to the one before it
+	QModelIndex lastIndex;
+	QListIterator<QModelIndex> i (indexes);
+	while (i.hasNext ())
+	{
+		QModelIndex index=i.next ();
+		if (cellVisible (index))
+		{
+			if (lastIndex.isValid ())
+			{
+				setCurrentIndex (lastIndex);
+				updateWidgetFocus (selectionModel ()->selectedIndexes ());
+			}
+			return;
+		}
+
+		lastIndex=index;
+	}
+
+	updateWidgetFocus (selectionModel ()->selectedIndexes ());
+}
+
+void SkTableView::scrollRight ()
+{
+	// The current row is selected completely
+	QList<QModelIndex> indexes=selectionModel ()->selectedIndexes ();
+
+	// Find the first visible cell and scroll to the one before it
+	QModelIndex lastIndex;
+	QListIterator<QModelIndex> i (indexes);
+	i.toBack ();
+	while (i.hasPrevious ())
+	{
+		QModelIndex index=i.previous ();
+		if (cellVisible (index))
+		{
+			if (lastIndex.isValid ())
+			{
+				setCurrentIndex (lastIndex);
+				updateWidgetFocus (selectionModel ()->selectedIndexes ());
+			}
+			return;
+		}
+
+		lastIndex=index;
+	}
 }

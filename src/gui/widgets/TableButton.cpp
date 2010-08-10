@@ -56,16 +56,34 @@ QSize TableButton::sizeHint () const
 
 void TableButton::keyPressEvent (QKeyEvent *event)
 {
-	// Ignore the cursor keys so they are handled by the table view. Otherwise,
-	// the cursor keys would change the focused button, and only when there is
-	// no button in the given direction would the key be passed to the table
-	// view and change the selection.
-	if (
-		event->key ()==Qt::Key_Down ||
-		event->key ()==Qt::Key_Up ||
-		event->key ()==Qt::Key_Left ||
-		event->key ()==Qt::Key_Right)
-		event->ignore ();
-	else
-		QPushButton::keyPressEvent (event);
+//	std::cout << "key " << event->key () << " pressed in TableButton" << std::endl;
+
+	switch (event->key ())
+	{
+		case Qt::Key_Space:
+			// Handle space bar (button press)
+			QPushButton::keyPressEvent (event);
+			break;
+		default:
+			// Ignore all other events
+			event->ignore ();
+			break;
+	}
+
+
+	// Ignore all other keys
+	event->ignore ();
+
+//	// Ignore the cursor keys so they are handled by the table view. Otherwise,
+//	// the cursor keys would change the focused button, and only when there is
+//	// no button in the given direction would the key be passed to the table
+//	// view and change the selection.
+//	if (
+//		event->key ()==Qt::Key_Down ||
+//		event->key ()==Qt::Key_Up ||
+//		event->key ()==Qt::Key_Left ||
+//		event->key ()==Qt::Key_Right)
+//		event->ignore ();
+//	else
+//		QPushButton::keyPressEvent (event);
 }
