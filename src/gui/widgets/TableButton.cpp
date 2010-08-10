@@ -1,5 +1,7 @@
 #include "TableButton.h"
 
+#include <QKeyEvent>
+
 #include <iostream>
 
 TableButton::TableButton (QPersistentModelIndex index, QWidget *parent):
@@ -33,6 +35,10 @@ void TableButton::init ()
 //	std::cout << "+button" << std::endl;
 	QObject::connect (this, SIGNAL (clicked ()), this, SLOT (clickedSlot ()));
 //	setText (QString ("[%1, %2]").arg (index.row  ()).arg (index.column ()));
+
+	// Don't accept keyboard focus - the tab order of buttons in the table is
+	// not defined.
+	setFocusPolicy (Qt::ClickFocus);
 }
 
 void TableButton::clickedSlot ()
@@ -46,4 +52,20 @@ QSize TableButton::sizeHint () const
 	QSize size=QPushButton::sizeHint ();
 	size.setHeight (0);
 	return size;
+}
+
+void TableButton::keyPressEvent (QKeyEvent *event)
+{
+	// Ignore the cursor keys so they are handled by the table view. Otherwise,
+	// the cursor keys would change the focused button, and only when there is
+	// no button in the given direction would the key be passed to the table
+	// view and change the selection.
+	if (
+		event->key ()==Qt::Key_Down ||
+		event->key ()==Qt::Key_Up ||
+		event->key ()==Qt::Key_Left ||
+		event->key ()==Qt::Key_Right)
+		event->ignore ();
+	else
+		QPushButton::keyPressEvent (event);
 }

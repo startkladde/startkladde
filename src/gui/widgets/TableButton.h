@@ -11,6 +11,8 @@
 #include <QPushButton>
 #include <QPersistentModelIndex>
 
+class QKeyEvent;
+
 /**
  * A QPersistentModelIndex is used, which will be updated to be identical to
  * the new index as the model changes.
@@ -35,6 +37,9 @@ class TableButton: public QPushButton
 
 	protected slots:
 		void clickedSlot ();
+
+	protected:
+		virtual void keyPressEvent (QKeyEvent *event);
 
 	private:
 		void init ();

@@ -1613,6 +1613,8 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 
 			setDisplayDateCurrent (true); // Will also call refreshFlights
 
+			ui.flightTable->setFocus ();
+
 			break;
 		// no default
 	}

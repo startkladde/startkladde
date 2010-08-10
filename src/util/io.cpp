@@ -10,6 +10,9 @@
 #include <QRegExp>
 #include <QIODevice>
 #include <QString>
+#include <QRect>
+
+#include "src/util/qString.h"
 
 QString readLineUtf8 (QIODevice &device)
 {
@@ -38,4 +41,10 @@ QString findInIoDevice (QIODevice &device, const QRegExp &regexp, int group)
 		return re.cap (group);
 	else
 		return QString ();
+}
+
+std::ostream &operator<< (std::ostream &ostream, const QRect &rect)
+{
+	ostream << QString ("%1x%2+%3+%4").arg (rect.width ()).arg (rect.height ()).arg (rect.x ()).arg (rect.y ());
+	return ostream;
 }

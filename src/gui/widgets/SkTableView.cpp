@@ -14,6 +14,7 @@
 #include "src/model/objectList/ColumnInfo.h"
 #include "src/util/color.h"
 #include "src/util/qString.h"
+#include "src/util/io.h" // remove
 
 #include <iostream>
 #include <cassert>
@@ -26,8 +27,12 @@ SkTableView::SkTableView (QWidget *parent):
 	// Use a style sheet rather than a palette because a style may ignore the
 	// palette, while a style sheet is guaranteed to be honored.
 
-	// Note: somehow, gradients don't seem to work here
+	// Note: somehow, gradients don't seem to work here. See the sample
+	// selectionChanged method to set the selection color depending on the
+	// cell background color.
 	setStyleSheet ("selection-background-color: #3F3F3F;");
+
+	setTabKeyNavigation (false);
 }
 
 SkTableView::~SkTableView ()
@@ -251,8 +256,8 @@ void SkTableView::keyPressEvent (QKeyEvent *e)
 
 // Selection changed - since selectionBehavior is SelectRows, this means that a
 // different flight (or none) was selected
-//void SkTableView::selectionChanged (const QItemSelection &selected, const QItemSelection &deselected)
-//{
+void SkTableView::selectionChanged (const QItemSelection &selected, const QItemSelection &deselected)
+{
 //	if (!selected.indexes ().isEmpty ())
 //	{
 //		QModelIndex index=selected.indexes ().first ();
@@ -264,6 +269,26 @@ void SkTableView::keyPressEvent (QKeyEvent *e)
 //		//c=QColor (63, 63, 63);
 //		setStyleSheet (QString ("selection-background-color: %1;").arg (c.name ()));
 //	}
-//
-//	QTableView::selectionChanged (selected, deselected);
-//}
+
+	// If the current selection contains a widget, focus it if it is visible
+	foreach (const QModelIndex &index, selected.indexes ())
+	{
+		QWidget *widget=indexWidget (index);
+
+		if (widget)
+		{
+//			std::cout << "Viewport: " << viewport ()->rect () << ", widget: " << visualRect (index) << std::endl;
+			QRect viewportRect=viewport ()->rect ();
+			QRect indexRect=visualRect (index);
+
+			if (
+				viewportRect.contains (indexRect.topLeft ()) &&
+				viewportRect.contains (indexRect.bottomRight ())
+				)
+				indexWidget (index)->setFocus ();
+			break;
+		}
+	}
+
+	QTableView::selectionChanged (selected, deselected);
+}
