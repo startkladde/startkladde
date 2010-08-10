@@ -260,11 +260,9 @@ void SkTableView::keyPressEvent (QKeyEvent *e)
 		case Qt::Key_Left: scrollLeft (); break;
 		case Qt::Key_Right: scrollRight (); break;
 		default:
-			e->ignore ();
+			// e->ignore (); // What?
 			QTableView::keyPressEvent (e);
 	}
-//
-//	std::cout << "A key: " << e->key () << std::endl;
 }
 
 // Current cell changed - row (flight) or column
@@ -334,17 +332,18 @@ void SkTableView::updateWidgetFocus (const QModelIndexList &indexes)
 // different flight (or none) was selected
 void SkTableView::selectionChanged (const QItemSelection &selected, const QItemSelection &deselected)
 {
-//	if (!selected.indexes ().isEmpty ())
-//	{
-//		QModelIndex index=selected.indexes ().first ();
-//
-//		// Set up the highlights color depending on the cell background color
-//		QColor c=index.data (Qt::BackgroundRole).value<QBrush> ().color ();
-//		c=interpol (0.5, c, Qt::black);
-//		//c=interpol (0.5, c, Qt::white);
-//		//c=QColor (63, 63, 63);
-//		setStyleSheet (QString ("selection-background-color: %1;").arg (c.name ()));
-//	}
+	// Set up the selection colors depending on the cell background color
+	QColor flightColor;
+	if (!selected.indexes ().isEmpty ())
+	{
+		QModelIndex index=selected.indexes ().first ();
+
+		flightColor=index.data (Qt::BackgroundRole).value<QBrush> ().color ();
+	}
+
+	setStyleSheet (QString
+		("selection-background-color: #3F3F3F; selection-color: %1;")
+		.arg (flightColor.name ()));
 
 	updateWidgetFocus (selected.indexes ());
 
@@ -354,6 +353,7 @@ void SkTableView::selectionChanged (const QItemSelection &selected, const QItemS
 void SkTableView::scrollLeft ()
 {
 	// The current row is selected completely
+	// FIXME a flight may not have been selected
 	QList<QModelIndex> indexes=selectionModel ()->selectedIndexes ();
 
 	// Find the first visible cell and scroll to the one before it
@@ -381,6 +381,7 @@ void SkTableView::scrollLeft ()
 void SkTableView::scrollRight ()
 {
 	// The current row is selected completely
+	// FIXME a flight may not have been selected
 	QList<QModelIndex> indexes=selectionModel ()->selectedIndexes ();
 
 	// Find the first visible cell and scroll to the one before it

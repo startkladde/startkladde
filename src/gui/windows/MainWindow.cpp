@@ -1201,6 +1201,8 @@ void MainWindow::on_actionNetworkDiagnostics_triggered ()
 
 void MainWindow::keyPressEvent (QKeyEvent *e)
 {
+//	std::cout << "key " << e->key () << " pressed in MainWindow" << std::endl;
+
 	switch (e->key ())
 	{
 		// The function keys trigger actions
@@ -1217,8 +1219,10 @@ void MainWindow::keyPressEvent (QKeyEvent *e)
 		case Qt::Key_F12: if (databaseActionsEnabled) ui.actionRefreshAll   ->trigger (); break;
 
 		// Flight manipulation
-		case Qt::Key_Insert: if (databaseActionsEnabled && ui.flightTable->hasFocus ()) ui.actionNew    ->trigger (); break;
-		case Qt::Key_Delete: if (databaseActionsEnabled && ui.flightTable->hasFocus ()) ui.actionDelete ->trigger (); break;
+		// Note that we used to check for ui.flightTable->hasFocus() here, but this prevents
+		// the actions from working when a table button is focused.
+		case Qt::Key_Insert: if (databaseActionsEnabled) ui.actionNew    ->trigger (); break;
+		case Qt::Key_Delete: if (databaseActionsEnabled) ui.actionDelete ->trigger (); break;
 
 		default: e->ignore (); break;
 	}
