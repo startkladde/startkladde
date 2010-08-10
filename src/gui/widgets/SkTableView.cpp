@@ -13,6 +13,7 @@
 #include "src/concurrent/threadUtil.h" // Required for assert (isGuiThread ());
 #include "src/model/objectList/ColumnInfo.h"
 #include "src/util/color.h"
+#include "src/util/qString.h"
 
 #include <iostream>
 #include <cassert>
@@ -254,13 +255,14 @@ void SkTableView::keyPressEvent (QKeyEvent *e)
 //{
 //	if (!selected.indexes ().isEmpty ())
 //	{
-//		const QModelIndex &index=selected.indexes ().first ();
+//		QModelIndex index=selected.indexes ().first ();
 //
 //		// Set up the highlights color depending on the cell background color
-//		QPalette p=palette ();
 //		QColor c=index.data (Qt::BackgroundRole).value<QBrush> ().color ();
-//		p.setColor (QPalette::Highlight, interpol (0.5, c, Qt::black));
-//		setPalette (p);
+//		c=interpol (0.5, c, Qt::black);
+//		//c=interpol (0.5, c, Qt::white);
+//		//c=QColor (63, 63, 63);
+//		setStyleSheet (QString ("selection-background-color: %1;").arg (c.name ()));
 //	}
 //
 //	QTableView::selectionChanged (selected, deselected);
