@@ -246,20 +246,23 @@ void SkTableView::writeColumnWidths (QSettings &settings, const ColumnInfo &colu
 
 void SkTableView::keyPressEvent (QKeyEvent *e)
 {
-//	std::cout << "key " << e->key () << " pressed in SkTableView" << std::endl;
+//	std::cout << "key " << e->key () << "/" << e->modifiers () << " pressed in SkTableView" << std::endl;
 
-	// Hack: it seems that as of Qt 4.6.2 (Ubuntu Lucid), QTableView consumes
-	// the delete key, which is not passed to the parent widget (the containing
-	// window). This only seems to happen with the delete key proper, not the
-	// keypad delete key, even though both have a value of Qt::Key_Delete.
-	// Ignore the delete key here to propagate it to the parent widget.
-	switch (e->key ())
+	// Ctrl+Enter
+	if ((e->key ()==Qt::Key_Return || e->key ()==Qt::Key_Enter) && e->modifiers () & Qt::ControlModifier)
+		e->ignore (); // Don't call base, it will accept it
+	else switch (e->key ())
 	{
+		// Hack: it seems that as of Qt 4.6.2 (Ubuntu Lucid), QTableView consumes
+		// the delete key, which is not passed to the parent widget (the containing
+		// window). This only seems to happen with the delete key proper, not the
+		// keypad delete key, even though both have a value of Qt::Key_Delete.
+		// Ignore the delete key here to propagate it to the parent widget.
 		case Qt::Key_Delete: e->ignore (); break;
 		case Qt::Key_Left: scrollLeft (); break;
 		case Qt::Key_Right: scrollRight (); break;
 		default:
-			// e->ignore (); // What?
+			e->ignore (); // Propagate to parent widget (unless the QTableView accepts it)
 			QTableView::keyPressEvent (e);
 	}
 }

@@ -1201,7 +1201,7 @@ void MainWindow::on_actionNetworkDiagnostics_triggered ()
 
 void MainWindow::keyPressEvent (QKeyEvent *e)
 {
-//	std::cout << "key " << e->key () << " pressed in MainWindow" << std::endl;
+//	std::cout << "key " << e->key () << "/" << e->modifiers () << " pressed in MainWindow" << std::endl;
 
 	switch (e->key ())
 	{
@@ -1223,6 +1223,11 @@ void MainWindow::keyPressEvent (QKeyEvent *e)
 		// the actions from working when a table button is focused.
 		case Qt::Key_Insert: if (databaseActionsEnabled) ui.actionNew    ->trigger (); break;
 		case Qt::Key_Delete: if (databaseActionsEnabled) ui.actionDelete ->trigger (); break;
+
+		case Qt::Key_Return:
+		case Qt::Key_Enter:
+			if (e->modifiers () & Qt::ControlModifier) ui.actionRepeat ->trigger (); break;
+			break;
 
 		default: e->ignore (); break;
 	}
