@@ -40,9 +40,8 @@ SkTableView::SkTableView (QWidget *parent):
 	// Use a style sheet rather than a palette because a style may ignore the
 	// palette, while a style sheet is guaranteed to be honored.
 
-	// Note: somehow, gradients don't seem to work here. See the sample
-	// selectionChanged method to set the selection color depending on the
-	// cell background color.
+	// The selection color is set depending on the flight color in the
+	// selectionChanged method (overwriting the style sheet).
 	setStyleSheet ("selection-background-color: #3F3F3F;");
 
 	setTabKeyNavigation (false);
@@ -341,9 +340,33 @@ void SkTableView::selectionChanged (const QItemSelection &selected, const QItemS
 		flightColor=index.data (Qt::BackgroundRole).value<QBrush> ().color ();
 	}
 
+	// Flight color on dark gray in selected cells
 	setStyleSheet (QString
 		("selection-background-color: #3F3F3F; selection-color: %1;")
 		.arg (flightColor.name ()));
+
+	// Fake border around selected
+	// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
+//	setStyleSheet (QString (
+//	    "selection-color: #000000; "
+//	    "selection-background-color: "
+//	    "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
+//	    "stop: 0 %1, stop: 0.2 %2, stop: 0.8 %3, stop: 1 %4);")
+//	    .arg (QString ("#000000"))
+//	    .arg (flightColor.name ())
+//	    .arg (flightColor.name ())
+//	    .arg (QString ("#000000")));
+
+	// Vertical gradient in selected cells
+	// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
+//	setStyleSheet (QString (
+//	    "selection-color: #000000; "
+//	    "selection-background-color: "
+//	    "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
+//	    "stop: 0 %1, stop: 1 %2);")
+//	    .arg (flightColor.darker (135).name())
+//	    .arg (flightColor.lighter (135).name()));
+
 
 	updateWidgetFocus (selected.indexes ());
 

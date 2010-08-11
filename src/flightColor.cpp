@@ -25,6 +25,7 @@
 #define hellrot 255,127,127
 #define blau 127,127,255
 #define hellblau 191,191,255
+#define schleppblau 162,162,216
 #define gruen 0,255,0
 #define hellgruen 191,255,191
 #define gelb 255,255,0
@@ -48,6 +49,8 @@ QColor flightColor (Flight::Mode modus, bool fehler, bool schlepp, bool gestarte
 {
 	// Ganz tolles Farbauswahl-Ankreuzfeld-C-Präprozessor-System, gebaut von
 	// Martin, dem Helden der Softwareentwicklung für die Luftfahrt.
+	// Zweck der Aktion ist, dass man erkennen kann, dass jeder mögliche Fall
+	// behandelt ist.
 	// Man trage in die entsprechende Spalte ein, wofür diese Farbe gelten
 	// soll. t: die entsprechende Variable muss true sein, f: die
 	// entsprechende Variable muss false sein, x: der Wert der Variablen ist
@@ -63,7 +66,7 @@ QColor flightColor (Flight::Mode modus, bool fehler, bool schlepp, bool gestarte
 	//     s   p  t  d  r
 
 	// Fehlerhafte Flüge
-	farbe (xx, t, x, x, t, rot);		// Schleppflug Fehler
+	farbe (xx, t, x, x, t, hellrot);	// Schleppflug Fehler
 	farbe (xx, f, x, x, t, hellrot);	// Fehler
 	farbe (ge, x, f, t, x, pink);		// }Gelandet, aber nicht gestartet: Programmfehler
 	farbe (lo, x, f, t, x, pink);		// }muss vorher gecheckt werden und Fehler auslösen
@@ -77,15 +80,15 @@ QColor flightColor (Flight::Mode modus, bool fehler, bool schlepp, bool gestarte
 	farbe (ge, f, f, x, f, hellgelb);	// Vorbereitet
 	farbe (ge, f, t, x, f, hellgruen);	// Landung wird nicht aufgezeichnet
 	farbe (ge, t, f, x, f, gelb);		// Schlepp, Vorbereitet, kommt nicht vor
-	farbe (ge, t, t, x, f, gruen);		// Schlepp, Landung wird nicht aufgezeichnet
+	farbe (ge, t, t, x, f, hellgruen);	// Schlepp, Landung wird nicht aufgezeichnet
 
 	// Lokale Flüge
 	farbe (lo, f, f, x, f, hellgelb);	// nicht gestartet
 	farbe (lo, f, t, f, f, hellblau);	// Flug in der Luft
 	farbe (lo, f, t, t, f, hellgruen);	// gelandeter Flug
-	farbe (lo, t, f, x, f, gelb);		// nicht gestarteter Schleppflug
-	farbe (lo, t, t, f, f, blau);		// Schleppflug in der Luft
-	farbe (lo, t, t, t, f, gruen);		// gelandeter Schleppflug: grün
+	farbe (lo, t, f, x, f, gelb);		// nicht gestarteter Schleppflug (gibt es nicht)
+	farbe (lo, t, t, f, f, schleppblau);// Schleppflug in der Luft
+	farbe (lo, t, t, t, f, hellgruen);	// gelandeter Schleppflug
 
 //	Template
 //	farbe (ll, x, x, x, x, white);
