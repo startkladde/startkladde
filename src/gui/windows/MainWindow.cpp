@@ -162,6 +162,7 @@ MainWindow::MainWindow (QWidget *parent) :
 
 	// Flight table
 	ui.flightTable->setAutoResizeRows (true);
+	ui.flightTable->setColoredSelectionEnabled (true);
 	ui.flightTable->setModel (proxyModel);
 	ui.flightTable->resizeColumnsToContents (); // Default sizes
 	readColumnWidths (); // Stored sizes

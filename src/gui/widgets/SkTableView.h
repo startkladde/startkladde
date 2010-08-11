@@ -29,6 +29,7 @@ class SkTableView: public QTableView
 		virtual void setModel (QAbstractItemModel *model);
 
 		value_accessor (bool, AutoResizeRows, autoResizeRows);
+		value_accessor (bool, ColoredSelectionEnabled, coloredSelectionEnabled);
 
 		// Settings
 		void readColumnWidths (QSettings &settings, const ColumnInfo &columnInfo);
@@ -69,6 +70,7 @@ class SkTableView: public QTableView
 		// to avoid this recursion. This may not be the best solution for this
 		// problem.
 		bool settingButtons;
+		bool coloredSelectionEnabled;
 };
 
 #endif
