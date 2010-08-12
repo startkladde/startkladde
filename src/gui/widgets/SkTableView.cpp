@@ -245,10 +245,7 @@ void SkTableView::keyPressEvent (QKeyEvent *e)
 {
 //	std::cout << "key " << e->key () << "/" << e->modifiers () << " pressed in SkTableView" << std::endl;
 
-	// Ctrl+Enter
-	if ((e->key ()==Qt::Key_Return || e->key ()==Qt::Key_Enter) && e->modifiers () & Qt::ControlModifier)
-		e->ignore (); // Don't call base, it will accept it
-	else switch (e->key ())
+	switch (e->key ())
 	{
 		// Hack: it seems that as of Qt 4.6.2 (Ubuntu Lucid), QTableView consumes
 		// the delete key, which is not passed to the parent widget (the containing
@@ -258,6 +255,10 @@ void SkTableView::keyPressEvent (QKeyEvent *e)
 		case Qt::Key_Delete: e->ignore (); break;
 		case Qt::Key_Left: scrollLeft (); break;
 		case Qt::Key_Right: scrollRight (); break;
+		case Qt::Key_Return:
+		case Qt::Key_Enter:
+			e->ignore (); // Don't call base, it will accept it
+			break;
 		default:
 			e->ignore (); // Propagate to parent widget (unless the QTableView accepts it)
 			QTableView::keyPressEvent (e);

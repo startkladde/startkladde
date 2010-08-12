@@ -25,10 +25,12 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		virtual void on_actionDelete_triggered ();
 		virtual void on_actionRefresh_triggered ();
 
-		virtual void on_table_activated (const QModelIndex &index);
+		virtual void on_table_doubleClicked (const QModelIndex &index);
 
 	protected:
 		virtual QString makePasswordMessage ();
+		void keyPressEvent (QKeyEvent *e);
+
 
 	private:
 		MutableObjectList<T> *list;

@@ -12,6 +12,7 @@
 
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
+#include <QKeyEvent>
 
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 #include "src/model/objectList/ObjectListModel.h"
@@ -155,13 +156,30 @@ template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 	list->replaceList (manager.getCache ().getObjects<T> ().getList ());
 }
 
-template<class T> void ObjectListWindow<T>::on_table_activated (const QModelIndex &index)
+/**
+ * Not using the activated signal because it may be emitted on single click,
+ * depending on the desktop settings.
+ */
+template<class T> void ObjectListWindow<T>::on_table_doubleClicked (const QModelIndex &index)
 {
 	if (!allowEdit (makePasswordMessage ())) return;
 
 	QModelIndex listIndex=proxyModel->mapToSource (index);
 	ObjectEditorWindow<T>::editObject (this, manager, listModel->at (listIndex));
 }
+
+template<class T> void ObjectListWindow<T>::keyPressEvent (QKeyEvent *e)
+{
+	int key=e->key ();
+
+	// Treat return/enter like double click on the current item
+	if (key==Qt::Key_Enter || key==Qt::Key_Return)
+	{
+		QModelIndex index=ui.table->currentIndex ();
+		if (index.isValid ()) on_table_doubleClicked (index);
+	}
+}
+
 
 template<class T> QString ObjectListWindow<T>::makePasswordMessage ()
 {

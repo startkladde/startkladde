@@ -1227,7 +1227,13 @@ void MainWindow::keyPressEvent (QKeyEvent *e)
 
 		case Qt::Key_Return:
 		case Qt::Key_Enter:
-			if (e->modifiers () & Qt::ControlModifier) ui.actionRepeat ->trigger (); break;
+			if (databaseActionsEnabled)
+			{
+				if (e->modifiers () & Qt::ControlModifier)
+					ui.actionRepeat ->trigger ();
+				else
+					ui.actionEdit   ->trigger ();
+			}
 			break;
 
 		default: e->ignore (); break;
@@ -1236,15 +1242,12 @@ void MainWindow::keyPressEvent (QKeyEvent *e)
 	QMainWindow::keyPressEvent (e);
 }
 
-void MainWindow::on_flightTable_activated (const QModelIndex &index)
+/**
+ * Not using the activated signal because it may be emitted on single click,
+ * depending on the desktop settings.
+ */
+void MainWindow::on_flightTable_doubleClicked (const QModelIndex &index)
 {
-	QModelIndex sourceIndex=proxyModel->mapToSource (index);
-
-//	std::cout << QString ("Flight table activated at proxy index %1,%2 which maps to source index %3,%4")
-//		.arg (index.row()).arg (index.column())
-//		.arg (sourceIndex.row()).arg (sourceIndex.column())
-//		<< std::endl;
-
 	if (index.isValid ())
 		ui.actionEdit->trigger ();
 	else

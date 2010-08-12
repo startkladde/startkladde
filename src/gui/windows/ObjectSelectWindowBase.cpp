@@ -11,8 +11,6 @@ ObjectSelectWindowBase::ObjectSelectWindowBase (QWidget *parent):
 
 ObjectSelectWindowBase::~ObjectSelectWindowBase ()
 {
-//	QObject::connect (ui.objectList, SIGNAL (itemActivated (QTreeWidgetItem *, int)), this, SLOT (slot_double_click (QTreeWidgetItem *, int)));
-
 }
 
 dbId ObjectSelectWindowBase::getResultId () const
@@ -20,7 +18,11 @@ dbId ObjectSelectWindowBase::getResultId () const
 	return resultId;
 }
 
-void ObjectSelectWindowBase::on_objectList_itemActivated (QTreeWidgetItem *item, int column)
+/**
+ * Not using the itemActivated signal because it may be emitted on single
+ * click, depending on the desktop settings.
+ */
+void ObjectSelectWindowBase::on_objectList_itemDoubleClicked (QTreeWidgetItem *item, int column)
 {
 	(void)column;
 	if (item) accept ();

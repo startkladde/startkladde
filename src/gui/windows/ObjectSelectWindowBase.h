@@ -22,7 +22,7 @@ class ObjectSelectWindowBase : public QDialog
 		virtual dbId getResultId () const;
 
 	protected slots:
-		void on_objectList_itemActivated (QTreeWidgetItem *item, int column);
+		void on_objectList_itemDoubleClicked (QTreeWidgetItem *item, int column);
 
 	protected:
 		Ui::ObjectSelectWindowBaseClass ui;

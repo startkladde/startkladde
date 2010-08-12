@@ -191,7 +191,7 @@ class MainWindow: public QMainWindow
 
 		// Flight Table
 		void on_flightTable_customContextMenuRequested (const QPoint &pos);
-		void on_flightTable_activated (const QModelIndex &index);
+		void on_flightTable_doubleClicked (const QModelIndex &index);
 		void flightTable_buttonClicked (QPersistentModelIndex proxyIndex); // TODO const &, remove dependency
 		void flightTable_horizontalHeader_sectionClicked (int index) { sortByColumn (index); }
 

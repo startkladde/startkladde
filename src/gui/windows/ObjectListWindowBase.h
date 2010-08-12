@@ -28,7 +28,7 @@ class ObjectListWindowBase : public QMainWindow
 		virtual void on_actionRefresh_triggered ()=0;
 		virtual void on_actionClose_triggered ();
 
-		virtual void on_table_activated (const QModelIndex &index)=0;
+		virtual void on_table_doubleClicked (const QModelIndex &index)=0;
 
 	protected slots:
 		virtual void databaseStateChanged (DbManager::State state);
