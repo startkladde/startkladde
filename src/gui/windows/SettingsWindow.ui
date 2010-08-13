@@ -253,6 +253,13 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkMedicalsCheckbox">
+            <property name="text">
+             <string>&amp;Medicals überprüfen</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="recordTowpilotCheckbox">
             <property name="toolTip">
@@ -1004,7 +1011,6 @@ Berech des Hauptfensters angezeigt.</string>
   <tabstop>mysqlPasswordInput</tabstop>
   <tabstop>mysqlDatabaseInput</tabstop>
   <tabstop>locationInput</tabstop>
-  <tabstop>recordTowpilotCheckbox</tabstop>
   <tabstop>protectSettingsCheckbox</tabstop>
   <tabstop>protectLaunchMethodsCheckbox</tabstop>
   <tabstop>enableDebugCheckbox</tabstop>

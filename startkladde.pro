@@ -213,6 +213,7 @@ HEADERS += \
            src/util/environment.h \
            src/util/file.h \
            src/util/io.h \
+           src/util/qDate.h \
            src/util/qList.h \
            src/util/qString.h \
            src/util/time.h \
@@ -346,6 +347,7 @@ SOURCES += \
            src/util/environment.cpp \
            src/util/file.cpp \
            src/util/io.cpp \
+           src/util/qDate.cpp \
            src/util/qList.cpp \
            src/util/qString.cpp \
            src/util/time.cpp \

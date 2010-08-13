@@ -18,6 +18,7 @@
 #include "src/db/cache/Cache.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 #include "src/config/Settings.h" // Required for location
+#include "src/util/qDate.h"
 #include "src/util/qString.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/DbManager.h"
@@ -1028,13 +1029,56 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool departNow, cons
 			ui.registrationInput);
 }
 
+/**
+ * Performs medical the validity check for a given person
+ *
+ * The person may be NULL, in which case no checks are performed.
+ *
+ * @param person the person to check or NULL
+ * @return
+ */
+void FlightWindow::checkMedical (const Person *person, const QString &ofThePersonText)
+{
+	// Check medical | Date  |
+	// flag          | given | Action
+	// --------------+-------+---------------------------------
+	// false         | *     | No check
+	// true          | false | Warning: no date given
+	// true          | true  | Check (warning: medical expired)
+
+	// Person not specified
+	if (!person)
+		return;
+
+	// Medical check disabled for this person
+	if (!person->checkMedical)
+		return;
+
+	if (person->medicalValidity.isValid ())
+	{
+		// Regular medical check
+		if (person->medicalValidity < ui.dateInput->date ())
+			errorCheck (utf8 (
+				"Laut Datenbank ist das Medical "
+				"%1 am %2 abgelaufen."
+				).arg (ofThePersonText, toString (person->medicalValidity)), this);
+	}
+	else
+	{
+		// No medical date specified (but check enabled)
+		errorCheck (utf8 (
+			"Es ist kein Ablaufdatum für das Medical %1 "
+			"eingetragen, die Medicalprüfung ist aber aktiviert."
+			).arg (ofThePersonText), this);
+	}
+}
+
 void FlightWindow::checkFlightPhase3 (const Flight &flight, bool departNow, const Plane *plane, const Person *pilot, const Person *copilot, const Person *towpilot)
 	throw (FlightWindow::AbortedException)
 {
 	// Phase 3: plane, towplane and people determined
 
 	// Pilot und Begleiter identisch
-
 	if (idValid (flight.pilotId) && flight.pilotId==flight.copilotId)
 		errorCheck ("Pilot und Begleiter sind identisch.",
 			ui.pilotLastNameInput);
@@ -1073,6 +1117,17 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool departNow, cons
 		errorCheck (QString ("Laut Datenbank fliegt der Schlepppilot %2 noch.")
 			.arg (towpilot->fullName ()),
 			ui.towpilotLastNameInput);
+
+	if (Settings::instance ().checkMedicals)
+	{
+		// TODO use Flight::pilotDescription
+		checkMedical (pilot, flight.isTraining ()?utf8 ("des Flugschülers"):utf8 ("des Piloten"));
+
+		// TODO use Flight::copilotDescription and create
+		// Flight::typeCopilotMedicalRequired
+		if (flight.type==Flight::typeTraining2)
+			checkMedical (copilot, utf8 ("des Fluglehrers"));
+	}
 }
 
 void FlightWindow::determineFlightPlanes (Flight &flight)

@@ -161,3 +161,20 @@ bool Flight::typeIsGuest (Flight::Type type)
 	assert (false);
 	return false;
 }
+
+bool Flight::typeIsTraining (Flight::Type type)
+{
+	switch (type)
+	{
+		case typeNone: return false;
+		case typeNormal: return false;
+		case typeTraining2: return true;
+		case typeTraining1: return true;
+		case typeTow: return false;
+		case typeGuestPrivate: return false;
+		case typeGuestExternal: return false;
+	}
+
+	assert (false);
+	return false;
+}

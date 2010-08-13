@@ -185,6 +185,7 @@ void Settings::readSettings ()
 	// Data
 	location      =s.value ("location"      , "Dingenskirchen").toString ();
 	recordTowpilot=s.value ("recordTowpilot", true            ).toBool ();
+	checkMedicals =s.value ("checkMedicals" , true            ).toBool ();
 	// Permissions
 	protectSettings     =s.value ("protectSettings"     , false).toBool ();
 	protectLaunchMethods=s.value ("protectLaunchMethods", false).toBool ();
@@ -246,6 +247,7 @@ void Settings::writeSettings ()
 	// Data
 	s.setValue ("location"      , location      );
 	s.setValue ("recordTowpilot", recordTowpilot);
+	s.setValue ("checkMedicals" , checkMedicals );
 	// Permissions
 	s.setValue ("protectSettings"     , protectSettings     );
 	s.setValue ("protectLaunchMethods", protectLaunchMethods);

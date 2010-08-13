@@ -289,7 +289,7 @@ class FlightWindow: public QDialog
 		void checkFlightPhase1 (const Flight &flight, bool departNow) throw (AbortedException);
 		void checkFlightPhase2 (const Flight &flight, bool departNow, const Plane *plane, const Plane *towplane, const LaunchMethod *launchMethod) throw (AbortedException);
 		void checkFlightPhase3 (const Flight &flight, bool departNow, const Plane *plane, const Person *pilot, const Person *copilot, const Person *towpilot) throw (AbortedException);
-
+		void checkMedical (const Person *person, const QString &ofThePersonText);
 		void errorCheck (const QString &problem, QWidget *widget) throw (AbortedException);
 
 		bool checkBuffer ();

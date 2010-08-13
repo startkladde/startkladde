@@ -45,6 +45,7 @@ class Settings: public QObject
 		// Data
 		QString location;
 		bool recordTowpilot;
+		bool checkMedicals;
 		// Permissions
 		bool protectSettings;
 		bool protectLaunchMethods;

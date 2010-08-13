@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QMetaType>
+#include <QDate>
 
 #include "src/model/Entity.h"
 #include "src/model/objectList/ObjectModel.h"
@@ -31,6 +32,8 @@ class Person: public Entity
 		QString firstName;
 		QString club;
 		QString clubId;
+		bool checkMedical;
+		QDate medicalValidity;
 
 
 		// *** Comparison

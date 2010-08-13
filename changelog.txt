@@ -4,6 +4,7 @@
 	- Improved flight color scheme
 	- Improved display of selected items in tables
 	- Improved keyboard navigation
+	- Medical validity checking
 	- MySQL 5.0 compatibility
 	
 2.0.7 (2010-07-29)

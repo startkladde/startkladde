@@ -10,6 +10,8 @@ class Person;
 
 class PersonEditorPane: public ObjectEditorPane<Person>
 {
+	Q_OBJECT
+
 	public:
 		PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 		virtual ~PersonEditorPane();
@@ -19,8 +21,13 @@ class PersonEditorPane: public ObjectEditorPane<Person>
 
 		void setNameObject (const Person &nameObject);
 
+	public slots:
+		void on_medicalValidityUnknownCheckbox_toggled ();
+		void on_checkMedicalInput_currentIndexChanged ();
+
 	protected:
 		virtual void fillData ();
+		QDate getEffectiveMedicalValidity ();
 
 	private:
 		Ui::PersonEditorPaneClass ui;

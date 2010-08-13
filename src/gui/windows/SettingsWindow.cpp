@@ -107,6 +107,7 @@ void SettingsWindow::readSettings ()
 	// Data
 	ui.locationInput         ->setText    (s.location);
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
+	ui.checkMedicalsCheckbox ->setChecked (s.checkMedicals);
 	// Permissions
 	ui.protectSettingsCheckbox     ->setChecked (s.protectSettings);
 	ui.protectLaunchMethodsCheckbox->setChecked (s.protectLaunchMethods);
@@ -205,6 +206,7 @@ void SettingsWindow::writeSettings ()
 	// Data
 	s.location      =ui.locationInput         ->text ();
 	s.recordTowpilot=ui.recordTowpilotCheckbox->isChecked ();
+	s.checkMedicals =ui.checkMedicalsCheckbox ->isChecked ();
 	// Permissions
 	s.protectSettings     =ui.protectSettingsCheckbox     ->isChecked ();
 	s.protectLaunchMethods=ui.protectLaunchMethodsCheckbox->isChecked ();

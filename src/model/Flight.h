@@ -196,12 +196,14 @@ class Flight
 		virtual bool isExternal () const { return !landsHere () || !departsHere (); }
 		virtual Flight makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const;
 		static QList<Flight> makeTowflights (const QList<Flight> &flights, Cache &cache);
+		virtual bool isTraining () const { return typeIsTraining (type); }
 
 		// TODO: this concept is bad - a flight in the database must never
 		// have the flight type "towflight", because that is reserved for
 		// "shadow" towflights created from flights from the database; when
 		// the user performs "land" on a towflight, it does not land the flight
 		// with that ID but its towflight.
+		// The towflights should probably be separate flights in the database.
 		virtual bool isTowflight () const { return type==typeTow; }
 
 
@@ -214,6 +216,7 @@ class Flight
 		static QString typePilotDescription (Type type);
 		static QString typeCopilotDescription (Type type);
 		static bool typeIsGuest (Type type);
+		static bool typeIsTraining (Type type);
 
 
 		// *** Mode methods
