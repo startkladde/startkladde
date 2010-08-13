@@ -15,7 +15,14 @@
 class ColumnInfo;
 class QSettings;
 class TableButton;
+class QMouseEvent;
 
+/**
+ * Adds some functionality to QTableView:
+ *   - on double click on empty (non-cell) space, doubleClicked is emitted with
+ *     an invalid index
+ *   - ...
+ */
 class SkTableView: public QTableView
 {
 	Q_OBJECT
@@ -47,6 +54,7 @@ class SkTableView: public QTableView
 
 	signals:
 		void buttonClicked (QPersistentModelIndex index);
+		void emptySpaceDoubleClicked ();
 
 	protected slots:
 //		virtual void rowsAboutToBeRemoved (const QModelIndex &parent, int start, int end);
@@ -58,7 +66,8 @@ class SkTableView: public QTableView
 	protected:
 		void updateButtons (int row);
 		void updateWidgetFocus (const QModelIndexList &indexes);
-		void keyPressEvent (QKeyEvent *e);
+		virtual void mouseDoubleClickEvent (QMouseEvent *event);
+		virtual void keyPressEvent (QKeyEvent *e);
 		void scrollLeft ();
 		void scrollRight ();
 

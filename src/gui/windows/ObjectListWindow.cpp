@@ -164,8 +164,15 @@ template<class T> void ObjectListWindow<T>::on_table_doubleClicked (const QModel
 {
 	if (!allowEdit (makePasswordMessage ())) return;
 
-	QModelIndex listIndex=proxyModel->mapToSource (index);
-	ObjectEditorWindow<T>::editObject (this, manager, listModel->at (listIndex));
+	if (index.isValid ())
+	{
+		QModelIndex listIndex=proxyModel->mapToSource (index);
+		ObjectEditorWindow<T>::editObject (this, manager, listModel->at (listIndex));
+	}
+	else
+	{
+		ui.actionNew->trigger ();
+	}
 }
 
 template<class T> void ObjectListWindow<T>::keyPressEvent (QKeyEvent *e)

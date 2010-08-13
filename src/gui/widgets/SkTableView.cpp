@@ -429,3 +429,15 @@ void SkTableView::scrollRight ()
 		lastIndex=index;
 	}
 }
+
+void SkTableView::mouseDoubleClickEvent (QMouseEvent *event)
+{
+	if (indexAt (event->pos ()).isValid ())
+		QTableView::mouseDoubleClickEvent (event);
+	else
+	{
+//		emit emptySpaceDoubleClicked ();
+		emit doubleClicked (QModelIndex ());
+		event->accept ();
+	}
+}

@@ -1,3 +1,4 @@
+	- Create flights/objects with double click on empty table space
 	- Don't edit with single clicks, independent of desktop settings
 	- Repeating a flight with Ctrl+Enter
 	- Improved flight color scheme
