@@ -170,14 +170,25 @@ template<class T> void ObjectListWindow<T>::on_table_doubleClicked (const QModel
 
 template<class T> void ObjectListWindow<T>::keyPressEvent (QKeyEvent *e)
 {
+//	std::cout << "ObjectListWindow key " << e->key () << std::endl;
+
 	int key=e->key ();
 
 	// Treat return/enter like double click on the current item
 	if (key==Qt::Key_Enter || key==Qt::Key_Return)
 	{
-		QModelIndex index=ui.table->currentIndex ();
-		if (index.isValid ()) on_table_doubleClicked (index);
+		if (ui.table->hasFocus ())
+		{
+			QModelIndex index=ui.table->currentIndex ();
+			if (index.isValid ())
+			{
+				on_table_doubleClicked (index);
+				return;
+			}
+		}
 	}
+
+	ObjectListWindowBase::keyPressEvent (e);
 }
 
 

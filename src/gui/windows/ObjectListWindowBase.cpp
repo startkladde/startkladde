@@ -30,6 +30,8 @@ void ObjectListWindowBase::on_actionClose_triggered ()
 
 void ObjectListWindowBase::keyPressEvent (QKeyEvent *e)
 {
+//	std::cout << "ObjectListWindowBase key " << e->key () << std::endl;
+
 	// KeyEvents are accepted by default
 	switch (e->key ())
 	{
