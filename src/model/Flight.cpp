@@ -11,6 +11,7 @@
 #include "src/db/result/Result.h"
 #include "src/util/qString.h"
 #include "src/util/time.h"
+#include "src/flightColor.h" // TODO remove after flightColor has been moved to Flight
 
 template<class T> class QList;
 
@@ -1014,4 +1015,18 @@ Query Flight::referencesLaunchMethodCondition (dbId id)
 {
 	return Query ("launch_method_id=?")
 		.bind (id);
+}
+
+
+QColor Flight::getColor (Cache &cache) const
+{
+	Plane *plane=cache.getNewObject<Plane> (planeId);
+	LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (launchMethodId);
+
+	bool error=fehlerhaft (plane, NULL, launchMethod);
+
+	delete plane;
+	delete launchMethod;
+
+	return flightColor (mode, error, isTowflight (), departed, landed);
 }

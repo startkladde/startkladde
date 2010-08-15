@@ -341,34 +341,35 @@ void SkTableView::selectionChanged (const QItemSelection &selected, const QItemS
 			QModelIndex index=selected.indexes ().first ();
 
 			backgroundColor=index.data (Qt::BackgroundRole).value<QBrush> ().color ();
-		}
 
-		// Flight color on dark gray in selected cells
-		setStyleSheet (QString
-			("selection-background-color: #3F3F3F; selection-color: %1;")
-			.arg (backgroundColor.name ()));
+			// Flight color on dark gray in selected cells
+			if (backgroundColor.isValid ())
+				setStyleSheet (QString
+					("selection-background-color: #3F3F3F; selection-color: %1;")
+					.arg (backgroundColor.name ()));
+		}
 
 		// Fake border around selected
 		// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
-	//	setStyleSheet (QString (
-	//	    "selection-color: #000000; "
-	//	    "selection-background-color: "
-	//	    "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
-	//	    "stop: 0 %1, stop: 0.2 %2, stop: 0.8 %3, stop: 1 %4);")
-	//	    .arg (QString ("#000000"))
-	//	    .arg (backgroundColor.name ())
-	//	    .arg (backgroundColor.name ())
-	//	    .arg (QString ("#000000")));
+//		setStyleSheet (QString (
+//		    "selection-color: #000000; "
+//		    "selection-background-color: "
+//		    "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
+//		    "stop: 0 %1, stop: 0.2 %2, stop: 0.8 %3, stop: 1 %4);")
+//		    .arg (QString ("#000000"))
+//		    .arg (backgroundColor.name ())
+//		    .arg (backgroundColor.name ())
+//		    .arg (QString ("#000000")));
 
 		// Vertical gradient in selected cells
 		// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
-	//	setStyleSheet (QString (
-	//	    "selection-color: #000000; "
-	//	    "selection-background-color: "
-	//	    "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
-	//	    "stop: 0 %1, stop: 1 %2);")
-	//	    .arg (backgroundColor.darker (135).name())
-	//	    .arg (backgroundColor.lighter (135).name()));
+//		setStyleSheet (QString (
+//		    "selection-color: #000000; "
+//		    "selection-background-color: "
+//		    "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
+//		    "stop: 0 %1, stop: 1 %2);")
+//		    .arg (backgroundColor.darker (135).name())
+//		    .arg (backgroundColor.lighter (135).name()));
 	}
 
 	updateWidgetFocus (selected.indexes ());

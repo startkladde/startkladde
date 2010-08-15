@@ -196,6 +196,7 @@ class Flight
 		virtual bool isExternal () const { return !landsHere () || !departsHere (); }
 		virtual Flight makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const;
 		static QList<Flight> makeTowflights (const QList<Flight> &flights, Cache &cache);
+		QColor getColor (Cache &cache) const;
 		virtual bool isTraining () const { return typeIsTraining (type); }
 
 		// TODO: this concept is bad - a flight in the database must never

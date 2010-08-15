@@ -5,7 +5,6 @@
 
 #include <QBrush>
 
-#include "src/flightColor.h" // TODO remove after flightColor has been moved to Flight
 #include "src/itemDataRoles.h"
 #include "src/model/Flight.h"
 #include "src/model/LaunchMethod.h"
@@ -141,16 +140,7 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 	}
 	else if (role==Qt::BackgroundRole)
 	{
-		Plane *plane=cache.getNewObject<Plane> (flight.planeId);
-		LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (flight.launchMethodId);
-
-		bool error=flight.fehlerhaft (plane, NULL, launchMethod);
-
-		delete plane;
-		delete launchMethod;
-
-		QColor color=flightColor (flight.mode, error, flight.isTowflight (), flight.departed, flight.landed);
-		return QBrush (color);
+		return QBrush (flight.getColor (cache));
 	}
 	else if (role==isButtonRole)
 	{
