@@ -1007,15 +1007,20 @@ Query Flight::referencesLaunchMethodCondition (dbId id)
 
 QColor Flight::getColor (Cache &cache) const
 {
-	Plane *plane=cache.getNewObject<Plane> (getPlaneId ());
-	LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (getLaunchMethodId ());
+	if (!cachedColor.isValid ())
+	{
+		Plane *plane=cache.getNewObject<Plane> (getPlaneId ());
+		LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (getLaunchMethodId ());
 
-	bool error=fehlerhaft (plane, NULL, launchMethod);
+		bool error=fehlerhaft (plane, NULL, launchMethod);
 
-	delete plane;
-	delete launchMethod;
+		delete plane;
+		delete launchMethod;
 
-	return flightColor (getMode (), error, isTowflight (), getDeparted (), getLanded ());
+		cachedColor=flightColor (getMode (), error, isTowflight (), getDeparted (), getLanded ());
+	}
+
+	return cachedColor;
 }
 
 
@@ -1025,5 +1030,5 @@ QColor Flight::getColor (Cache &cache) const
 
 void Flight::dataChanged ()
 {
-
+	cachedColor=QColor ();
 }

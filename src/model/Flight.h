@@ -5,12 +5,12 @@
 
 #include <QApplication>
 #include <QMetaType>
+#include <QColor>
 
 #include "FlightBase.h"
 
 class Plane;
 class LaunchMethod;
-
 class Query;
 class Result;
 class Cache;
@@ -214,6 +214,7 @@ class Flight: public FlightBase
 		virtual QString incompletePersonName (QString nn, QString vn) const;
 		virtual void dataChanged ();
 
+		mutable QColor cachedColor;
 
 };
 
