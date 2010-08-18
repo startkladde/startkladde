@@ -168,6 +168,7 @@ HEADERS += \
            src/logging/messages.h \
            src/model/Entity.h \
            src/model/Flight.h \
+           src/model/FlightBase.h \
            src/model/LaunchMethod.h \
            src/model/Person.h \
            src/model/Plane.h \
@@ -307,6 +308,7 @@ SOURCES += \
            src/logging/messages.cpp \
            src/model/Entity.cpp \
            src/model/Flight.cpp \
+           src/model/FlightBase.cpp \
            src/model/Flight_Mode.cpp \
            src/model/Flight_Type.cpp \
            src/model/LaunchMethod.cpp \

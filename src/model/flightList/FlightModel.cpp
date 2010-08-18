@@ -119,18 +119,18 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 		{
 			case 0: return registrationData (flight, role);
 			case 1: return planeTypeData (flight, role);
-			case 2: return Flight::shortTypeText (flight.type);
+			case 2: return Flight::shortTypeText (flight.getType ());
 			case 3: return pilotData (flight, role);
 			case 4: return copilotData (flight, role);
 			case 5: return launchMethodData (flight, role);
 			case 6: return departureTimeData (flight, role);
 			case 7: return landingTimeData (flight, role);
 			case 8: return durationData (flight, role);
-			case 9: return flight.numLandings;
-			case 10: return flight.departureLocation;
-			case 11: return flight.landingLocation;
-			case 12: return flight.comments;
-			case 13: return flight.isTowflight()?QString ("(Siehe geschleppter Flug)"):flight.accountingNotes;
+			case 9: return flight.getNumLandings ();
+			case 10: return flight.getDepartureLocation ();
+			case 11: return flight.getLandingLocation ();
+			case 12: return flight.getComments ();
+			case 13: return flight.isTowflight()?QString ("(Siehe geschleppter Flug)"):flight.getAccountingNotes ();
 			case 14: return flight.effdatum ();
 			case 15: return (flight.isTowflight ()?QString ("(%1)"):QString ("%1")).arg (flight.getId ());
 		}
@@ -145,7 +145,7 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 	else if (role==isButtonRole)
 	{
 		// Only show buttons for prepared flights and today's flights
-		if (!flight.isPrepared() && flight.departureTime.toLocalTime ().date ()!=QDate::currentDate ())
+		if (!flight.isPrepared() && flight.getDepartureTime ().toLocalTime ().date ()!=QDate::currentDate ())
 			return false;
 
 		if      (column==departButtonColumn ()) { return flight.canDepart (); }
@@ -180,7 +180,7 @@ QVariant FlightModel::registrationData (const Flight &flight, int role) const
 
 	try
 	{
-		Plane plane=cache.getObject<Plane> (flight.planeId);
+		Plane plane=cache.getObject<Plane> (flight.getPlaneId ());
 		return plane.fullRegistration ();
 	}
 	catch (Cache::NotFoundException)
@@ -195,7 +195,7 @@ QVariant FlightModel::planeTypeData (const Flight &flight, int role) const
 
 	try
 	{
-		Plane plane=cache.getObject<Plane> (flight.planeId);
+		Plane plane=cache.getObject<Plane> (flight.getPlaneId ());
 		return plane.type;
 	}
 	catch (Cache::NotFoundException)
@@ -210,7 +210,7 @@ QVariant FlightModel::pilotData (const Flight &flight, int role) const
 
 	try
 	{
-		Person pilot=cache.getObject<Person> (flight.pilotId);
+		Person pilot=cache.getObject<Person> (flight.getPilotId ());
 		return pilot.formalNameWithClub ();
 	}
 	catch (Cache::NotFoundException)
@@ -225,12 +225,12 @@ QVariant FlightModel::copilotData (const Flight &flight, int role) const
 
 	try
 	{
-		if (Flight::typeCopilotRecorded (flight.type))
+		if (Flight::typeCopilotRecorded (flight.getType ()))
 		{
-			Person copilot=cache.getObject<Person> (flight.copilotId);
+			Person copilot=cache.getObject<Person> (flight.getCopilotId ());
 			return copilot.formalNameWithClub ();
 		}
-		else if (Flight::typeIsGuest (flight.type))
+		else if (Flight::typeIsGuest (flight.getType ()))
 		{
 			return "(Gast)";
 		}
@@ -254,9 +254,9 @@ QVariant FlightModel::launchMethodData (const Flight &flight, int role) const
 		if (!flight.departsHere ()) return "-";
 
 		// For towflights without launch method, assume self launch
-		if (idInvalid (flight.launchMethodId) && flight.isTowflight ()) return "ES";
+		if (idInvalid (flight.getLaunchMethodId ()) && flight.isTowflight ()) return "ES";
 
-		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (flight.launchMethodId);
+		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (flight.getLaunchMethodId ());
 
 		return launchMethod.shortName;
 
@@ -277,7 +277,7 @@ QVariant FlightModel::departureTimeData (const Flight &flight, int role) const
 	else if  (!flight.hasDepartureTime ())
 		return "";
 	else
-		return flight.departureTime.toUTC ().time ().toString ("hh:mm")+"Z";
+		return flight.getDepartureTime ().toUTC ().time ().toString ("hh:mm")+"Z";
 }
 
 QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
@@ -289,7 +289,7 @@ QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
 	else if (!flight.hasLandingTime ())
 		return "";
 	else
-		return flight.landingTime.toUTC ().time ().toString ("hh:mm")+"Z";
+		return flight.getLandingTime ().toUTC ().time ().toString ("hh:mm")+"Z";
 }
 
 QVariant FlightModel::durationData (const Flight &flight, int role) const

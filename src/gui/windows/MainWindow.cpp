@@ -718,19 +718,19 @@ void MainWindow::departFlight (dbId id)
 
 			// *** Check for planes flying
 			// Plane
-			if (!checkPlaneFlying (flight.planeId, "Flugzeug")) return;
+			if (!checkPlaneFlying (flight.getPlaneId (), "Flugzeug")) return;
 			if (isAirtow)
 				if (!checkPlaneFlying (flight.effectiveTowplaneId (cache), "Schleppflugzeug")) return;
 
 			// *** Check for people flying
 			// Pilot
-			if (!checkPersonFlying (flight.pilotId, flight.pilotDescription ())) return;
+			if (!checkPersonFlying (flight.getPilotId (), flight.pilotDescription ())) return;
 			// Copilot (if recorded for this flight)
 			if (flight.copilotRecorded ())
-				if (!checkPersonFlying (flight.copilotId, flight.copilotDescription ())) return;
+				if (!checkPersonFlying (flight.getCopilotId (), flight.copilotDescription ())) return;
 			// Towpilot (if airtow)
 			if (isAirtow && Settings::instance ().recordTowpilot)
-				if (!checkPersonFlying (flight.towpilotId, flight.towpilotDescription ())) return;
+				if (!checkPersonFlying (flight.getTowpilotId (), flight.towpilotDescription ())) return;
 
 			flight.departNow ();
 			updateFlight (flight);
@@ -979,8 +979,8 @@ void MainWindow::on_actionDisplayError_triggered ()
 	{
 		Flight flight = dbManager.getCache ().getObject<Flight> (id);
 
-		Plane *plane=dbManager.getCache ().getNewObject<Plane> (flight.planeId);
-		LaunchMethod *launchMethod=dbManager.getCache ().getNewObject<LaunchMethod> (flight.launchMethodId);
+		Plane *plane=dbManager.getCache ().getNewObject<Plane> (flight.getPlaneId ());
+		LaunchMethod *launchMethod=dbManager.getCache ().getNewObject<LaunchMethod> (flight.getLaunchMethodId ());
 		Plane *towplane=NULL;
 
 		dbId towplaneId=invalidId;
@@ -989,7 +989,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 			if (launchMethod->towplaneKnown ())
 				towplaneId=dbManager.getCache ().getPlaneIdByRegistration (launchMethod->towplaneRegistration);
 			else
-				towplaneId=flight.towplaneId;
+				towplaneId=flight.getTowplaneId ();
 
 			if (idValid (towplaneId))
 				towplane=dbManager.getCache ().getNewObject<Plane> (towplaneId);

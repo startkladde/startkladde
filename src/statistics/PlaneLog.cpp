@@ -86,8 +86,8 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Cache &cache)
 {
 	PlaneLog::Entry entry;
 
-	Plane      *plane     =cache.getNewObject<Plane     > (flight->planeId );
-	Person     *pilot     =cache.getNewObject<Person    > (flight->pilotId    );
+	Plane      *plane     =cache.getNewObject<Plane     > (flight->getPlaneId ());
+	Person     *pilot     =cache.getNewObject<Person    > (flight->getPilotId ());
 
 	if (plane) entry.registration=plane->registration.trimmed ();
 	if (plane) entry.type=plane->type.trimmed ();
@@ -95,13 +95,13 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Cache &cache)
 	entry.date=flight->effdatum ();
 	if (pilot) entry.pilotName=pilot->formalName ();
 	entry.minPassengers=entry.maxPassengers=flight->numPassengers ();
-	entry.departureLocation=flight->departureLocation.trimmed ();
-	entry.landingLocation=flight->landingLocation.trimmed ();
-	entry.departureTime=flight->hasDepartureTime ()?flight->departureTime:QDateTime ();
-	entry.  landingTime=flight->hasLandingTime   ()?flight->  landingTime:QDateTime ();
-	entry.numLandings  =flight->landsHere ()?flight->numLandings:0;
+	entry.departureLocation=flight->getDepartureLocation ().trimmed ();
+	entry.landingLocation=flight->getLandingLocation ().trimmed ();
+	entry.departureTime=flight->hasDepartureTime ()?flight->getDepartureTime ():QDateTime ();
+	entry.  landingTime=flight->hasLandingTime   ()?flight->  getLandingTime ():QDateTime ();
+	entry.numLandings  =flight->landsHere ()?flight->getNumLandings ():0;
 	entry.operationTime=flight->hasDuration ()?flight->flightDuration ():QTime ();
-	entry.comments=flight->comments.trimmed ();
+	entry.comments=flight->getComments ().trimmed ();
 
 	entry.valid=flight->finished ();
 
@@ -121,8 +121,8 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<Flight> &flights, Cache &ca
 
 	PlaneLog::Entry entry;
 
-	Plane      *plane     =cache.getNewObject<Plane     > (flights.last ().planeId );
-	Person     *pilot     =cache.getNewObject<Person    > (flights.last ().pilotId    );
+	Plane      *plane     =cache.getNewObject<Plane     > (flights.last ().getPlaneId ());
+	Person     *pilot     =cache.getNewObject<Person    > (flights.last ().getPilotId ());
 
 	// Values directly determined
 	if (plane) entry.registration=plane->registration;
@@ -130,10 +130,10 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<Flight> &flights, Cache &ca
 
 	entry.date=flights.last ().effdatum ();
 	if (pilot) entry.pilotName=pilot->formalName ();
-	entry.departureLocation=flights.first ().departureLocation.trimmed ();
-	entry.landingLocation=flights.last ().landingLocation.trimmed ();
-	entry.departureTime=flights.first ().departureTime;
-	entry.landingTime=flights.last ().landingTime;
+	entry.departureLocation=flights.first ().getDepartureLocation ().trimmed ();
+	entry.landingLocation=flights.last ().getLandingLocation ().trimmed ();
+	entry.departureTime=flights.first ().getDepartureTime ();
+	entry.landingTime=flights.last ().getLandingTime ();
 
 	// Values determined from all flights
 	entry.minPassengers=entry.maxPassengers=0;
@@ -149,12 +149,12 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<Flight> &flights, Cache &ca
 		if (entry.minPassengers==0 || numPassengers<entry.minPassengers) entry.minPassengers=numPassengers;
 		if (entry.maxPassengers==0 || numPassengers>entry.maxPassengers) entry.maxPassengers=numPassengers;
 
-		entry.numLandings+=flight.numLandings;
+		entry.numLandings+=flight.getNumLandings ();
 
 		if (flight.hasDuration ())
 			entry.operationTime=entry.operationTime.addSecs (QTime ().secsTo (flight.flightDuration ())); // TODO: check flight mode
 
-		if (!isNone (flight.comments)) comments << flight.comments.trimmed ();
+		if (!isNone (flight.getComments ())) comments << flight.getComments ().trimmed ();
 		if (!flight.finished ()) entry.valid=false;
 
 		if (flight.isTowflight ()) ++numTowFlights;
@@ -210,7 +210,7 @@ PlaneLog *PlaneLog::createNew (dbId planeId, const QList<Flight> &flights, Cache
 	// Make a list of flights for this plane
 	foreach (const Flight &flight, flights)
 		if (flight.finished ())
-			if (flight.planeId==planeId)
+			if (flight.getPlaneId ()==planeId)
 				interestingFlights.append (flight);
 
 	qSort (interestingFlights);
@@ -262,7 +262,7 @@ PlaneLog *PlaneLog::createNew (const QList<Flight> &flights, Cache &cache)
 	// Determine all planes which have flights
 	foreach (const Flight &flight, flights)
 		if (flight.finished ())
-			planeIdSet.insert (flight.planeId);
+			planeIdSet.insert (flight.getPlaneId ());
 
 	QList<dbId> planeIds=planeIdSet.toList ();
 	planeIds.removeAll (0);

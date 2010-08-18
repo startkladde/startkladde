@@ -49,12 +49,12 @@ FlightProxyList::~FlightProxyList ()
 bool FlightProxyList::isAirtow (const Flight &flight, LaunchMethod *launchMethod) const
 {
 	// No launch method => no airtow
-	if (!idValid (flight.launchMethodId))
+	if (!idValid (flight.getLaunchMethodId ()))
 		return false;
 
 	try
 	{
-		LaunchMethod lm=cache.getObject<LaunchMethod> (flight.launchMethodId);
+		LaunchMethod lm=cache.getObject<LaunchMethod> (flight.getLaunchMethodId ());
 		if (launchMethod) *launchMethod=lm;
 		return lm.isAirtow ();
 	}
@@ -74,7 +74,7 @@ void FlightProxyList::addTowflightFor (const Flight &flight, const LaunchMethod 
 	if (launchMethod.towplaneKnown ())
 		towplaneId=cache.getPlaneIdByRegistration (launchMethod.towplaneRegistration);
 	else
-		towplaneId=flight.towplaneId;
+		towplaneId=flight.getTowplaneId ();
 
 	// For the launch method, use an invalid ID. The FlightModel recognizes
 	// towflights by their type and displays the launch method as self launch
@@ -96,7 +96,7 @@ void FlightProxyList::updateTowflight (dbId id, int towflightIndex)
 			if (launchMethod.towplaneKnown ())
 				towplaneId=cache.getPlaneIdByRegistration (launchMethod.towplaneRegistration);
 			else
-				towplaneId=flight.towplaneId;
+				towplaneId=flight.getTowplaneId ();
 
 			dbId selfLaunchId=cache.getLaunchMethodByType (LaunchMethod::typeSelf);
 

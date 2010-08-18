@@ -288,7 +288,7 @@ dbId Cache::planeFlying (dbId id)
 		foreach (const Flight &flight, flightsToday.getList ())
 		{
 			// Plane is the plane of this flight?
-			if (flight.planeId==id && flight.isFlying ())
+			if (flight.getPlaneId ()==id && flight.isFlying ())
 				return flight.getId ();
 
 			// Plane is the towplane of this flight?
@@ -309,9 +309,9 @@ dbId Cache::personFlying (dbId id)
 		foreach (const Flight &flight, flightsToday.getList ())
 		{
 			if (
-				(flight.isFlying         () && flight.pilotId    ==id) ||
-				(flight.isFlying         () && flight.copilotId  ==id) ||
-				(flight.isTowplaneFlying () && flight.towpilotId ==id))
+				(flight.isFlying         () && flight.getPilotId    ()==id) ||
+				(flight.isFlying         () && flight.getCopilotId  ()==id) ||
+				(flight.isTowplaneFlying () && flight.getTowpilotId ()==id))
 				return flight.getId ();
 		}
 	}

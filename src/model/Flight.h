@@ -4,11 +4,9 @@
 #include <cassert>
 
 #include <QApplication>
-#include <QString>
-#include <QDateTime>
 #include <QMetaType>
 
-#include "src/db/dbId.h"
+#include "FlightBase.h"
 
 class Plane;
 class LaunchMethod;
@@ -40,61 +38,18 @@ enum FlightError {
 
 class Database;
 
-// TODO: inherit from Entity
-class Flight
+
+
+class Flight: public FlightBase
 {
 	friend class Database;
 
 	public:
-		// *** Types
-		enum Type {
-			typeNone,
-			typeNormal,
-			typeTraining2, typeTraining1,
-			typeGuestPrivate, typeGuestExternal,
-			typeTow
-		};
-
-		enum Mode { modeLocal, modeComing, modeLeaving };
-
-
 		// *** Construction
 		Flight ();
 		Flight (dbId id); // TODO protected (friend Database)?
 
 
-		// *** Data
-		dbId planeId, pilotId, copilotId;
-		Type type;
-		Mode mode;
-
-		bool departed, landed, towflightLanded;
-		dbId launchMethodId;
-		QString departureLocation;
-		QString landingLocation;
-
-		QDateTime departureTime;
-		QDateTime landingTime;
-		int numLandings;
-
-		dbId towplaneId;
-		Mode towflightMode;
-		QString towflightLandingLocation;
-		QDateTime towflightLandingTime;
-		dbId towpilotId;
-
-		// Incomplete names
-		QString pilotLastName   , pilotFirstName   ;
-		QString copilotLastName , copilotFirstName ;
-		QString towpilotLastName, towpilotFirstName;
-
-		QString comments;
-		QString accountingNotes;
-
-
-		// *** Attribute accessors
-		virtual dbId getId () const { return id; }
-		virtual void setId (dbId id) { this->id=id; } // TODO can we do without this?
 
 
 		// *** Comparison
@@ -106,12 +61,12 @@ class Flight
 		// *** Status
 		// TODO fliegt and isFlying are probably not correct
 		virtual bool fliegt () const { return happened () && !finished (); }
-		virtual bool isFlying () const { return departsHere () && landsHere () && departed && !landed; }
-		virtual bool sfz_fliegt () const { return happened () && !towflightLanded; }
+		virtual bool isFlying () const { return departsHere () && landsHere () && getDeparted () && !getLanded (); }
+		virtual bool sfz_fliegt () const { return happened () && !getTowflightLanded (); }
 //		TODO: !((departs_here and departed) or (lands_here and landed))
 		virtual bool isPrepared () const { return !happened (); }
 		// TODO this is certainly not correct
-		virtual bool isTowplaneFlying () const { return departsHere () && towflightLandsHere () && departed && !towflightLanded; }
+		virtual bool isTowplaneFlying () const { return departsHere () && towflightLandsHere () && getDeparted () && !getTowflightLanded (); }
 
 		virtual bool happened () const;
 		virtual bool finished () const;
@@ -133,8 +88,8 @@ class Flight
 		virtual QString incompleteCopilotName () const;
 		virtual QString incompleteTowpilotName () const;
 
-		virtual bool copilotRecorded () const { return typeCopilotRecorded (type); }
-		virtual bool hasCopilot () const { return typeAlwaysHasCopilot (type) || (typeCopilotRecorded (type) && copilotSpecified ()); }
+		virtual bool copilotRecorded () const { return typeCopilotRecorded (getType ()); }
+		virtual bool hasCopilot () const { return typeAlwaysHasCopilot (getType ()) || (typeCopilotRecorded (getType ()) && copilotSpecified ()); }
 		virtual int numPassengers () const { return hasCopilot ()?2:1; } // TODO: this is inaccurate for planes with >2 seats
 
 
@@ -143,9 +98,9 @@ class Flight
 		virtual dbId effectiveTowplaneId (Cache &cache) const;
 
 		// *** Departure/landing
-		virtual bool departsHere        () const { return departsHere (mode         ); }
-		virtual bool landsHere          () const { return landsHere   (mode         ); }
-		virtual bool towflightLandsHere () const { return landsHere   (towflightMode); }
+		virtual bool departsHere        () const { return departsHere (getMode          ()); }
+		virtual bool landsHere          () const { return landsHere   (getMode          ()); }
+		virtual bool towflightLandsHere () const { return landsHere   (getTowflightMode ()); }
 
 		virtual bool canDepart        (QString *reason=NULL) const;
 		virtual bool canLand          (QString *reason=NULL) const;
@@ -167,9 +122,9 @@ class Flight
 		virtual bool canHaveLandingTime          () const { return landsHere () || isTowflight (); }
 		virtual bool canHaveTowflightLandingTime () const { return true; } // Leaving towflights hava an end time
 
-		virtual bool hasDepartureTime        () const { return canHaveDepartureTime        () && departed       ; }
-		virtual bool hasLandingTime          () const { return canHaveLandingTime          () && landed         ; }
-		virtual bool hasTowflightLandingTime () const { return canHaveTowflightLandingTime () && towflightLanded; }
+		virtual bool hasDepartureTime        () const { return canHaveDepartureTime        () && getDeparted ()       ; }
+		virtual bool hasLandingTime          () const { return canHaveLandingTime          () && getLanded ()         ; }
+		virtual bool hasTowflightLandingTime () const { return canHaveTowflightLandingTime () && getTowflightLanded (); }
 
 		virtual QTime flightDuration () const;
 		virtual QTime towflightDuration () const;
@@ -197,7 +152,7 @@ class Flight
 		virtual Flight makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const;
 		static QList<Flight> makeTowflights (const QList<Flight> &flights, Cache &cache);
 		QColor getColor (Cache &cache) const;
-		virtual bool isTraining () const { return typeIsTraining (type); }
+		virtual bool isTraining () const { return typeIsTraining (getType ()); }
 
 		// TODO: this concept is bad - a flight in the database must never
 		// have the flight type "towflight", because that is reserved for
@@ -205,7 +160,7 @@ class Flight
 		// the user performs "land" on a towflight, it does not land the flight
 		// with that ID but its towflight.
 		// The towflights should probably be separate flights in the database.
-		virtual bool isTowflight () const { return type==typeTow; }
+		virtual bool isTowflight () const { return getType ()==typeTow; }
 
 
 		// *** Type methods
@@ -255,10 +210,11 @@ class Flight
 		static Query referencesLaunchMethodCondition (dbId id);
 
 	private:
-		dbId id;
-
-		virtual void initialize (dbId id);
+//		void initialize ();
 		virtual QString incompletePersonName (QString nn, QString vn) const;
+		virtual void dataChanged ();
+
+
 };
 
 Q_DECLARE_METATYPE (Flight);

@@ -218,10 +218,10 @@ template<> void Cache::updateHashesObjectAdded<Flight> (const Flight &flight)
 {
 	synchronized (dataMutex)
 	{
-		if (!isBlank (flight.       departureLocation)) locations.insert (flight.       departureLocation);
-		if (!isBlank (flight.         landingLocation)) locations.insert (flight.         landingLocation);
-		if (!isBlank (flight.towflightLandingLocation)) locations.insert (flight.towflightLandingLocation);
-		if (!isBlank (flight.accountingNotes)) accountingNotes.insert (flight.accountingNotes);
+		if (!isBlank (flight.       getDepartureLocation ())) locations      .insert (flight.       getDepartureLocation ());
+		if (!isBlank (flight.         getLandingLocation ())) locations      .insert (flight.         getLandingLocation ());
+		if (!isBlank (flight.getTowflightLandingLocation ())) locations      .insert (flight.getTowflightLandingLocation ());
+		if (!isBlank (flight.         getAccountingNotes ())) accountingNotes.insert (flight.         getAccountingNotes ());
 	}
 }
 

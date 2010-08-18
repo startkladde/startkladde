@@ -117,12 +117,12 @@ template<class T> dbId Database::createObject (T &object)
 	QSharedPointer<Result> result=interface.executeQueryResult (query);
 	interface.commit ();
 
-	object.id=result->lastInsertId ().toLongLong ();
+	object.setId (result->lastInsertId ().toLongLong ());
 
-	if (idValid (object.id))
+	if (idValid (object.getId ()))
 		emit dbEvent (DbEvent::added (object));
 
-	return object.id;
+	return object.getId ();
 }
 
 template<class T> void Database::createObjects (QList<T> &objects, OperationMonitorInterface monitor)

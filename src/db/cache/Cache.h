@@ -69,11 +69,9 @@ class Cache: public QObject
 				dbId id;
 		};
 
-
 		// *** Construction
 		Cache (Database &db);
 		virtual ~Cache ();
-
 
 		// *** Properties
 		Database &getDatabase ();
@@ -90,16 +88,13 @@ class Cache: public QObject
 		void refreshPreparedFlights (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void refreshLocations       (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void refreshAccountingNotes (OperationMonitorInterface monitor=OperationMonitorInterface::null);
-		void refreshAll (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		void refreshAll             (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
 		void refreshFlights (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void fetchFlightsOther (QDate date, OperationMonitorInterface monitor=OperationMonitorInterface::null);
 
-
 		// *** Misc
 		void clear ();
-
-
 
 		// ***** Lookup (implemented in Cache_lookup.cpp)
 
@@ -116,13 +111,11 @@ class Cache: public QObject
 		QDate getTodayDate ();
 		QDate getOtherDate ();
 
-
 		// *** Individual objects
 		template<class T> T getObject (dbId id);
 		template<class T> T* getNewObject (dbId id);
 		template<class T> bool objectExists (dbId id);
 		template<class T> QList<T> getObjects (const QList<dbId> &ids, bool ignoreNotFound);
-
 
 		// *** Objects by propery
 		dbId getPlaneIdByRegistration (const QString &registration);
@@ -131,7 +124,6 @@ class Cache: public QObject
 		QList<dbId> getPersonIdsByFirstName (const QString &firstName);
 		QList<dbId> getPersonIdsByLastName (const QString &lastName);
 		dbId getLaunchMethodByType (LaunchMethod::Type type) const;
-
 
 		// *** String lists
 		QStringList getPlaneRegistrations ();
@@ -144,11 +136,9 @@ class Cache: public QObject
 		QStringList getPlaneTypes ();
 		QStringList getClubs ();
 
-
 		// *** Object flying
 		dbId planeFlying (dbId id);
 		dbId personFlying (dbId id);
-
 
 	signals:
 		void changed (DbEvent event);
@@ -160,10 +150,8 @@ class Cache: public QObject
 		template<class T> const QHash<dbId, T> &objectsByIdHash () const;
 		template<class T>       QHash<dbId, T> &objectsByIdHash ()      ;
 
-
 		// *** Generic refreshing
 		void refreshFlightsOf (const QString &description, const QDate &date, EntityList<Flight> &targetList, QDate *targetDate, OperationMonitorInterface monitor);
-
 
 		// *** Change handling - generic
 		template<class T> void handleDbChanged (const DbEvent &event);
@@ -183,20 +171,17 @@ class Cache: public QObject
 		// operation); this is also the reason why we still pass the
 		// ID.
 		template<class T> void clearHashes ();
-		template<class T> void updateHashesObjectAdded   (const T &object                    );
-		template<class T> void updateHashesObjectDeleted (dbId id        , const T *oldObject);
+		template<class T> void updateHashesObjectAdded (const T &object);
+		template<class T> void updateHashesObjectDeleted (dbId id, const T *oldObject);
 		template<class T> void updateHashesObjectUpdated (const T &object, const T *oldObject);
-
 
 	protected slots:
 		// *** Change handling - generic
 		void dbChanged (DbEvent event);
 
-
 	private:
 		// *** Database
 		Database &db;
-
 
 		// *** Data
 		// Note: when adding something here, also handle it in the
@@ -211,8 +196,10 @@ class Cache: public QObject
 		// Flight lists - several lists, therefore cannot use
 		// AutomaticEntityList (should have AutomaticFlightList which
 		// stores a date)
-		EntityList<Flight> flightsToday; QDate todayDate;
-		EntityList<Flight> flightsOther; QDate otherDate;
+		EntityList<Flight> flightsToday;
+		QDate todayDate;
+		EntityList<Flight> flightsOther;
+		QDate otherDate;
 		EntityList<Flight> preparedFlights;
 
 		// String lists
