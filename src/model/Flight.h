@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QMetaType>
 #include <QColor>
+#include <QList>
 
 #include "FlightBase.h"
 
@@ -135,11 +136,10 @@ class Flight: public FlightBase
 
 
 		// *** Error checking
-		virtual FlightError errorCheck (int *, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *launchMethod) const;
+		virtual QList<FlightError> getErrors (bool includeTowflightErrors, Plane *plane, Plane *towplane, LaunchMethod *launchMethod) const;
 		virtual QString errorDescription (FlightError code) const;
 		virtual bool isErroneous (Cache &cache) const;
-		virtual bool fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
-		virtual bool schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
+		virtual bool isErroneous (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
 
 
 		// *** Formatting
@@ -151,7 +151,7 @@ class Flight: public FlightBase
 		virtual bool isExternal () const { return !landsHere () || !departsHere (); }
 		virtual Flight makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const;
 		static QList<Flight> makeTowflights (const QList<Flight> &flights, Cache &cache);
-		QColor getColor (Cache &cache) const;
+		virtual QColor getColor (Cache &cache) const;
 		virtual bool isTraining () const { return typeIsTraining (getType ()); }
 
 		// TODO: this concept is bad - a flight in the database must never
@@ -214,6 +214,10 @@ class Flight: public FlightBase
 		virtual QString incompletePersonName (QString nn, QString vn) const;
 		virtual void dataChanged ();
 
+		virtual void checkPerson (QList<FlightError> &errors, dbId id, const QString &lastName, const QString &firstName, bool required,
+			FlightError notSpecifiedError, FlightError lastNameOnlyError, FlightError firstNameOnlyError, FlightError notIdentifiedError) const;
+
+		// FIXME: when a plane changes, the cached color becomes invalid
 		mutable QColor cachedColor;
 
 };

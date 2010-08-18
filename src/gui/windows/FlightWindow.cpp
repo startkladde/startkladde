@@ -578,8 +578,6 @@ void FlightWindow::updateErrors (bool setFocus)
 	Plane *towplane           =cache.getNewObject<Plane       > (flight.getTowplaneId     ());
 	LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (flight.getLaunchMethodId ());
 
-	FlightError error;
-	int errorIndex=0;
 	int numErrors=0;
 	QWidget *firstErrorWidget=NULL;
 
@@ -588,7 +586,8 @@ void FlightWindow::updateErrors (bool setFocus)
 		label->setError (false);
 
 	ui.errorList->clear ();
-	while ((error=flight.errorCheck (&errorIndex, true, launchMethod && launchMethod->isAirtow (), plane, towplane, launchMethod))!=ff_ok)
+	QList<FlightError> errors=flight.getErrors (launchMethod && launchMethod->isAirtow (), plane, towplane, launchMethod);
+	foreach (FlightError error, errors)
 	{
 		// In the cases of unknown or non-unique people, we don't want to query
 		// the user. So the determineFlightBasic method uses the buffered IDs

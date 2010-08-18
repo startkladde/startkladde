@@ -435,7 +435,7 @@ QTime Flight::towflightDuration () const
 // ********************
 
 /**
- * This uses fehlerhaft, does not consider schlepp_fehlerhaft
+ * This does not consider errors of the towflight
  *
  * @param cache
  * @return
@@ -445,7 +445,7 @@ bool Flight::isErroneous (Cache &cache) const
 	Plane *thePlane=cache.getNewObject<Plane> (getPlaneId ());
 	LaunchMethod *theLaunchMethod=cache.getNewObject<LaunchMethod> (getLaunchMethodId ());
 
-	bool erroneous=fehlerhaft (thePlane, NULL, theLaunchMethod);
+	bool erroneous=isErroneous (thePlane, NULL, theLaunchMethod);
 
 	delete thePlane;
 	delete theLaunchMethod;
@@ -454,7 +454,7 @@ bool Flight::isErroneous (Cache &cache) const
 }
 
 /**
- * Determines whether the flight is erroneous
+ * Determines whether the flight (not the towflight) is erroneous
  *
  * @param fz the plane, if known, or NULL
  * @param sfz the towplane, if any and known, or NULL
@@ -463,37 +463,19 @@ bool Flight::isErroneous (Cache &cache) const
  *                  error
  * @return true if there is an error, false else
  */
-bool Flight::fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText) const
+bool Flight::isErroneous (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText) const
 {
-	int i=0;
-	FlightError error=errorCheck (&i, true, false, fz, sfz, sa);
-
-	if (errorText)
-		if (error!=ff_ok)
-			*errorText=errorDescription(error);
-
-	return (error!=ff_ok);
-}
-
-// TODO replace by checking the towflight?
-bool Flight::schlepp_fehlerhaft (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText) const
-	/*
-	 * Finds out if the towflight for this flight (if any) contains an error.
-	 * Parameters:
-	 *   - fz: the plane data structure for the flight.
-	 * Return value:
-	 *   - true if any error was found
-	 *   - false else.
-	 */
-{
-	int i=0;
-	FlightError error=errorCheck (&i, false, true, fz, sfz, sa);
-
-	if (errorText)
-		if (error!=ff_ok)
-			*errorText=errorDescription(error);
-
-	return (error!=ff_ok);
+	// FIXME: stop after first error? use cache?
+	QList<FlightError> errors=getErrors (false, fz, sfz, sa);
+	if (errors.isEmpty ())
+	{
+		return false;
+	}
+	else
+	{
+		if (errorText) *errorText=errorDescription (errors.first ());
+		return true;
+	}
 }
 
 QString Flight::errorDescription (FlightError code) const
@@ -548,89 +530,166 @@ QString Flight::errorDescription (FlightError code) const
 	return "Unbekannter Fehler";
 }
 
-/**
- * Performes the unified error checking.
- *
- * Usage of this function:
- *   - set *index=0.
- *   - call in loop until return value is ff_ok.
- *   - each call returns an error of ff_ok.
- *   - don't change the data in the middle or the results *may* be invalid.
- *   - you can stop the loop at any time.
- *   - the function is reentrant, provided you use different '*index'es.
- *   - you shouldn't use the value of the index variable, it is internal.
- *   - you should not set index to anything but 0 manually or the result is
- *     undefined.
- *
- * @param index the index of the first error to check
- * @param check_flug whether to theck the flight proper
- * @param check_schlepp whether to check the towflight
- * @param fz the plane, if known, or NULL
- * @param sfz the towplane, if any and known, or NULL
- * @param sa the launch method, if any and known, or nULL
- * @return an error code, or ff_ok
- */
-FlightError Flight::errorCheck (int *index, bool check_flug, bool check_schlepp, Plane *fz, Plane *sfz, LaunchMethod *sa) const
+void Flight::checkPerson (QList<FlightError> &errors, dbId id, const QString &lastName, const QString &firstName, bool required,
+	FlightError notSpecifiedError, FlightError lastNameOnlyError, FlightError firstNameOnlyError, FlightError notIdentifiedError) const
+{
+	// Person specified - no error
+	if (idValid (id)) return;
+
+	bool  lastNameSpecified=!isBlank ( lastName);
+	bool firstNameSpecified=!isBlank (firstName);
+
+	if (lastNameSpecified && firstNameSpecified)
+		// Both specified
+		errors << notIdentifiedError;
+	else if (lastNameSpecified)
+		// Last name specified only
+		errors << lastNameOnlyError;
+	else if (firstNameSpecified)
+		// First name specified only
+		errors << firstNameOnlyError;
+	else
+	{
+		// None specified
+		if (required)
+			errors << notSpecifiedError;
+	}
+}
+
+// FIXME pass cache instead
+QList<FlightError> Flight::getErrors (bool includeTowflightErrors, Plane *plane, Plane *towplane, LaunchMethod *launchMethod) const
 {
 	// FIXME remove
-	std::cout << "Error check flight " << getId () << std::endl;
+	//	// TODO einsitzige Schulung mit Begleiter
+	std::cout << "getErrors for flight " << getId () << std::endl;
 
-	bool recordTowpilot=Settings::instance ().recordTowpilot;
+	QList<FlightError> errors;
 
-	// TODO return a QList instead
-	// TODO check_schlepp not used. Investigate.
-	(void)check_schlepp;
-#define CHECK_FEHLER(bereich, bedingung, fehlercode) if ((*index)==(num++)) { (*index)++; if (bereich && bedingung) return fehlercode; }
-#define FLUG (check_flug)
-#define SCHLEPP (check_schlepp)
-	//printf ("Fehlercheckung: %d %s %s\n", *index, check_flug?"flug":"!flug", check_schlepp?"schlepp":"!schlepp");
-	int num=0;
+	// Basic properties
+	if (idInvalid (getId ())) errors << ff_keine_id;
+	if (getType ()==typeNone) errors << ff_kein_flugtyp;
 
-	// Note: when adding an error check concerning people or planes not being
-	// specified to this list, FlightWindow::updateErrors should check if
-	// this is a non-error (see there for an explanation).
-	CHECK_FEHLER (FLUG, idInvalid (getId ()), ff_keine_id)
-	CHECK_FEHLER (FLUG, idInvalid (getPlaneId ()), ff_kein_flugzeug)
-	CHECK_FEHLER (FLUG, sa && sa->personRequired && idInvalid (getPilotId ()) && getPilotLastName ().isEmpty () && getPilotFirstName ().isEmpty (), ff_kein_pilot)
-	CHECK_FEHLER (FLUG, idInvalid (getPilotId ()) && !getPilotLastName ().isEmpty () && getPilotFirstName ().isEmpty (), ff_pilot_nur_nachname);
-	CHECK_FEHLER (FLUG, idInvalid (getPilotId ()) && !getPilotLastName ().isEmpty () && getPilotFirstName ().isEmpty (), ff_pilot_nur_vorname);
-	CHECK_FEHLER (FLUG, idInvalid (getPilotId ()) && !getPilotLastName ().isEmpty () && !getPilotFirstName ().isEmpty (), ff_pilot_nicht_identifiziert);
-	CHECK_FEHLER (FLUG, typeCopilotRecorded (getType ()) && idInvalid (getCopilotId ()) && !getCopilotLastName ().isEmpty () && getCopilotFirstName ().isEmpty (), ff_begleiter_nur_nachname);
-	CHECK_FEHLER (FLUG, typeCopilotRecorded (getType ()) && idInvalid (getCopilotId ()) && !getCopilotLastName ().isEmpty () && getCopilotFirstName ().isEmpty (), ff_begleiter_nur_vorname);
-	CHECK_FEHLER (FLUG, typeCopilotRecorded (getType ()) && idInvalid (getCopilotId ()) && !getCopilotLastName ().isEmpty () && !getCopilotFirstName ().isEmpty (), ff_begleiter_nicht_identifiziert);
-	CHECK_FEHLER (FLUG, typeCopilotRecorded (getType ()) && getPilotId ()!=0 && getPilotId ()==getCopilotId (), ff_pilot_gleich_begleiter)
-	CHECK_FEHLER (FLUG, recordTowpilot && sa && sa->isAirtow () && idInvalid (getTowpilotId ()) && !getTowpilotLastName ().isEmpty () && getTowpilotFirstName ().isEmpty (), ff_towpilot_nur_nachname);
-	CHECK_FEHLER (FLUG, recordTowpilot && sa && sa->isAirtow () && idInvalid (getTowpilotId ()) && !getTowpilotLastName ().isEmpty () && getTowpilotFirstName ().isEmpty (), ff_towpilot_nur_vorname);
-	CHECK_FEHLER (FLUG, recordTowpilot && sa && sa->isAirtow () && idInvalid (getTowpilotId ()) && !getTowpilotLastName ().isEmpty () && !getTowpilotFirstName ().isEmpty (), ff_towpilot_nicht_identifiziert);
-	CHECK_FEHLER (FLUG, recordTowpilot && sa && sa->isAirtow () && getTowpilotId ()!=0 && getPilotId ()==getTowpilotId (), ff_pilot_gleich_towpilot)
-	CHECK_FEHLER (FLUG, idInvalid (getCopilotId ()) && (getType ()==typeTraining2) && getCopilotLastName ().isEmpty () && getCopilotFirstName ().isEmpty (), ff_schulung_ohne_begleiter)
-	// TODO einsitzige Schulung mit Begleiter
-	CHECK_FEHLER (FLUG, getCopilotId ()!=0 && !typeCopilotRecorded (getType ()), ff_begleiter_nicht_erlaubt)
-	CHECK_FEHLER (FLUG, departsHere () && landsHere () && getLanded () && !getDeparted (), ff_nur_gelandet)
-	CHECK_FEHLER (FLUG, departsHere () && landsHere () && getDeparted () && getLanded () && getDepartureTime ()>getLandingTime (), ff_landung_vor_start)
-	CHECK_FEHLER (FLUG, idInvalid (getLaunchMethodId ()) && departsHere () && getDeparted () && !isTowflight (), ff_keine_startart)
-	CHECK_FEHLER (FLUG, getType ()==typeNone, ff_kein_flugtyp)
-	CHECK_FEHLER (FLUG, getNumLandings ()<0, ff_landungen_negativ)
-	CHECK_FEHLER (FLUG, landsHere () && getNumLandings ()==0 && getLanded (), ff_landungen_null)
-	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && getType ()==typeTraining2, ff_doppelsitzige_schulung_in_einsitzer)
-	CHECK_FEHLER (FLUG, (getDeparted () || !departsHere ()) && isNone (getDepartureLocation ()), ff_kein_startort)
-	CHECK_FEHLER (FLUG, (getLanded () || !landsHere ()) && isNone (getLandingLocation ()), ff_kein_zielort)
-	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow() && (getTowflightLanded () || !towflightLandsHere ()) && isNone (getTowflightLandingLocation ()), ff_kein_zielort_sfz)
-	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && getNumLandings ()>1 && sa && !sa->isAirtow (), ff_segelflugzeug_landungen)
-	CHECK_FEHLER (FLUG, fz && fz->category==Plane::categoryGlider && !getLanded () && getNumLandings ()>0 && sa && !sa->isAirtow (), ff_segelflugzeug_landungen_ohne_landung)
-	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && typeCopilotRecorded (getType ()) && getCopilotId ()!=0, ff_begleiter_in_einsitzer)
-	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && getType ()==typeGuestPrivate, ff_gastflug_in_einsitzer)
-	CHECK_FEHLER (FLUG, fz && fz->numSeats<=1 && getType ()==typeGuestExternal, ff_gastflug_in_einsitzer)
-	//CHECK_FEHLER (FLUG, fz && fz->category==categoryGlider && sa && launchMethod==sa_ss, ff_segelflugzeug_selbststart)
-	CHECK_FEHLER (FLUG, departsHere () && getNumLandings ()>0 && !getDeparted (), ff_landungen_ohne_start)
-	CHECK_FEHLER (FLUG, departsHere ()!=landsHere () && getDepartureLocation ()==getLandingLocation (), ff_startort_gleich_zielort)
-	CHECK_FEHLER (SCHLEPP, sa && sa->isAirtow () && !sa->towplaneKnown () && idInvalid (getTowplaneId ()), ff_kein_schleppflugzeug)
-	CHECK_FEHLER (SCHLEPP, sa && sfz && sa->isAirtow () && !sa->towplaneKnown () && sfz->category==Plane::categoryGlider, ff_towplane_is_glider);
+	// Pilot
+	checkPerson (errors, getPilotId (), getPilotLastName (), getPilotFirstName (),
+		launchMethod && launchMethod->personRequired,
+		ff_kein_pilot, ff_pilot_nur_nachname, ff_pilot_nur_vorname, ff_pilot_nicht_identifiziert);
 
-	return ff_ok;
-#undef CHECK_FEHLER
-#undef FLUG
-#undef SCHLEPP
+	// Copilot (if recorded)
+	if (typeCopilotRecorded (getType ()))
+	{
+		checkPerson (errors, getCopilotId (), getCopilotLastName (), getCopilotFirstName (),
+			false,
+			ff_ok, ff_begleiter_nur_nachname, ff_begleiter_nur_vorname, ff_begleiter_nicht_identifiziert
+			);
+
+		if (idValid (getPilotId ()) && getPilotId ()==getCopilotId ())
+			errors << ff_pilot_gleich_begleiter;
+
+		if (getType ()==typeTraining2 && !copilotSpecified ())
+			errors << ff_schulung_ohne_begleiter;
+	}
+
+	// Towpilot (if recorded)
+	if (Settings::instance ().recordTowpilot && launchMethod && launchMethod->isAirtow ())
+	{
+		checkPerson (errors, getTowpilotId (), getTowpilotLastName (), getTowpilotFirstName (),
+			false,
+			ff_ok, ff_towpilot_nur_nachname, ff_towpilot_nur_vorname, ff_towpilot_nicht_identifiziert);
+
+		if (idValid (getTowpilotId ()) && getPilotId ()==getTowpilotId ())
+			errors << ff_pilot_gleich_towpilot;
+	}
+	// TODO copilot equals towpilot, if both are recorded
+
+	// Plane
+	if (idInvalid (getPlaneId ())) errors << ff_kein_flugzeug;
+
+	if (plane)
+	{
+		// Single-seat planes
+		if (plane->numSeats==1)
+		{
+			if (getType ()==typeTraining2    ) errors << ff_doppelsitzige_schulung_in_einsitzer;
+			if (getType ()==typeGuestPrivate ) errors << ff_gastflug_in_einsitzer;
+			if (getType ()==typeGuestExternal) errors << ff_gastflug_in_einsitzer;
+
+			if (typeCopilotRecorded (getType ()) && copilotSpecified ())
+				errors << ff_begleiter_in_einsitzer;
+		}
+
+		// Gliders
+		if (plane->category==Plane::categoryGlider)
+		{
+			if (launchMethod && launchMethod->type==LaunchMethod::typeSelf)
+				errors << ff_segelflugzeug_selbststart;
+		}
+
+		// Gliders (except airtows)
+		if (plane->category==Plane::categoryGlider && launchMethod && !launchMethod->isAirtow ())
+		{
+			if (getNumLandings ()>1)                  errors << ff_segelflugzeug_landungen;
+			if (getNumLandings ()>0 && !getLanded ()) errors << ff_segelflugzeug_landungen_ohne_landung;
+		}
+	}
+
+	// Status - generic
+	if (getNumLandings ()<0) errors << ff_landungen_negativ;
+
+	if (departsHere ()!=landsHere () && getDepartureLocation ()==getLandingLocation ())
+		errors << ff_startort_gleich_zielort;
+
+	// Status - local flights
+	if (departsHere () && landsHere ())
+	{
+		if (!getDeparted () && getLanded ())
+			errors << ff_nur_gelandet;
+
+		if (getDeparted () && getLanded () && getDepartureTime ()>getLandingTime ())
+			errors << ff_landung_vor_start;
+	}
+
+	// Status - departing flights (local or leaving)
+	if (departsHere ())
+	{
+		if (getDeparted () && idInvalid (getLaunchMethodId ()) && !isTowflight ())
+			errors << ff_keine_startart;
+
+		if (!getDeparted () && getNumLandings ()>0)
+			errors << ff_landungen_ohne_start;
+	}
+
+	// Status - landing flights (local or coming)
+	if (landsHere ())
+	{
+		if (getNumLandings ()==0 && getLanded ())
+			errors << ff_landungen_null;
+	}
+
+	if ((getDeparted () || !departsHere ())
+		&& isNone (getDepartureLocation ()))
+		errors << ff_kein_startort;
+
+	if ((getLanded () || !landsHere ())
+		&& isNone (getLandingLocation ()))
+		errors << ff_kein_zielort;
+
+	// Towflight errors
+	if (includeTowflightErrors && launchMethod && launchMethod->isAirtow ())
+	{
+		// FIXME implement
+		if ((getTowflightLanded () || !towflightLandsHere ())
+			&& isNone (getTowflightLandingLocation ()))
+			errors << ff_kein_zielort_sfz;
+
+		if (!launchMethod->towplaneKnown () && idInvalid (getTowplaneId ()))
+			errors << ff_kein_schleppflugzeug;
+
+		if (!launchMethod->towplaneKnown () && towplane
+			&& towplane->category==Plane::categoryGlider)
+			errors << ff_towplane_is_glider;
+	}
+
+	return errors;
 }
 
 
@@ -1009,15 +1068,7 @@ QColor Flight::getColor (Cache &cache) const
 {
 	if (!cachedColor.isValid ())
 	{
-		Plane *plane=cache.getNewObject<Plane> (getPlaneId ());
-		LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (getLaunchMethodId ());
-
-		bool error=fehlerhaft (plane, NULL, launchMethod);
-
-		delete plane;
-		delete launchMethod;
-
-		cachedColor=flightColor (getMode (), error, isTowflight (), getDeparted (), getLanded ());
+		cachedColor=flightColor (getMode (), isErroneous (cache), isTowflight (), getDeparted (), getLanded ());
 	}
 
 	return cachedColor;
