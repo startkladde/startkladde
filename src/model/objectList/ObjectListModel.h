@@ -1,5 +1,5 @@
 /*
- * ObjectList.h
+ * ObjectListModel.h
  *
  *  Created on: Aug 18, 2009
  *      Author: Martin Herrmann
@@ -232,6 +232,5 @@ template<class T> void ObjectListModel<T>::columnChanged (int column)
 
 	emit dataChanged (topLeft, bottomRight);
 }
-
 
 #endif

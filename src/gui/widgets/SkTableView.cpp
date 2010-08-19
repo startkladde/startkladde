@@ -136,6 +136,8 @@ void SkTableView::dataChanged (const QModelIndex &topLeft, const QModelIndex &bo
 	if (autoResizeRows)
 		for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
 			resizeRowToContents (i);
+
+	updateSelectionColors ();
 }
 
 void SkTableView::reset ()
@@ -328,29 +330,24 @@ void SkTableView::updateWidgetFocus (const QModelIndexList &indexes)
 		this->setFocus ();
 }
 
-// Selection changed - since selectionBehavior is SelectRows, this means that a
-// different flight (or none) was selected
-void SkTableView::selectionChanged (const QItemSelection &selected, const QItemSelection &deselected)
+void SkTableView::updateSelectionColors ()
 {
-	if (coloredSelectionEnabled)
-	{
-		// Set up the selection colors depending on the cell background color
-		QColor backgroundColor;
-		if (!selected.indexes ().isEmpty ())
-		{
-			QModelIndex index=selected.indexes ().first ();
+	if (!coloredSelectionEnabled) return;
 
-			backgroundColor=index.data (Qt::BackgroundRole).value<QBrush> ().color ();
+	QModelIndex index=currentIndex ();
+	if (!index.isValid ()) return;
 
-			// Flight color on dark gray in selected cells
-			if (backgroundColor.isValid ())
-				setStyleSheet (QString
-					("selection-background-color: #3F3F3F; selection-color: %1;")
-					.arg (backgroundColor.name ()));
-		}
+	QColor backgroundColor=index.data (Qt::BackgroundRole).value<QBrush> ().color ();
 
-		// Fake border around selected
-		// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
+	// Flight color on dark gray in selected cells
+	if (backgroundColor.isValid ())
+		setStyleSheet (QString
+			("selection-background-color: #3F3F3F; selection-color: %1;")
+			.arg (backgroundColor.name ()));
+	// FIXME else
+
+	// Fake border around selected
+	// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
 //		setStyleSheet (QString (
 //		    "selection-color: #000000; "
 //		    "selection-background-color: "
@@ -361,8 +358,8 @@ void SkTableView::selectionChanged (const QItemSelection &selected, const QItemS
 //		    .arg (backgroundColor.name ())
 //		    .arg (QString ("#000000")));
 
-		// Vertical gradient in selected cells
-		// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
+	// Vertical gradient in selected cells
+	// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
 //		setStyleSheet (QString (
 //		    "selection-color: #000000; "
 //		    "selection-background-color: "
@@ -370,7 +367,14 @@ void SkTableView::selectionChanged (const QItemSelection &selected, const QItemS
 //		    "stop: 0 %1, stop: 1 %2);")
 //		    .arg (backgroundColor.darker (135).name())
 //		    .arg (backgroundColor.lighter (135).name()));
-	}
+}
+
+// Selection changed - since selectionBehavior is SelectRows, this means that a
+// different flight (or none) was selected
+void SkTableView::selectionChanged (const QItemSelection &selected, const QItemSelection &deselected)
+{
+	// Set up the selection colors depending on the cell background color
+	updateSelectionColors ();
 
 	updateWidgetFocus (selected.indexes ());
 	QTableView::selectionChanged (selected, deselected);

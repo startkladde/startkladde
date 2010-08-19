@@ -70,6 +70,7 @@ class SkTableView: public QTableView
 		virtual void keyPressEvent (QKeyEvent *e);
 		void scrollLeft ();
 		void scrollRight ();
+		void updateSelectionColors ();
 
 		bool autoResizeRows;
 
