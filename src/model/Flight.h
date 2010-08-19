@@ -210,16 +210,18 @@ class Flight: public FlightBase
 		static Query referencesLaunchMethodCondition (dbId id);
 
 	private:
-//		void initialize ();
+		void initialize ();
 		virtual QString incompletePersonName (QString nn, QString vn) const;
 		virtual void dataChanged ();
 
+		virtual QList<FlightError> getErrorsImpl (bool includeTowflightErrors, Plane *plane, Plane *towplane, LaunchMethod *launchMethod) const;
 		virtual void checkPerson (QList<FlightError> &errors, dbId id, const QString &lastName, const QString &firstName, bool required,
 			FlightError notSpecifiedError, FlightError lastNameOnlyError, FlightError firstNameOnlyError, FlightError notIdentifiedError) const;
 
 		// FIXME: when a plane changes, the cached color becomes invalid
 		mutable QColor cachedColor;
-
+		mutable QList<FlightError> cachedErrors;
+		mutable bool cachedErrorsValid;
 };
 
 Q_DECLARE_METATYPE (Flight);

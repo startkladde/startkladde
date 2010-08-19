@@ -40,18 +40,19 @@ template<class T> class QList;
 Flight::Flight ():
 	FlightBase ()
 {
-//	initialize ();
+	initialize ();
 }
 
 Flight::Flight (dbId id):
 	FlightBase (id)
 {
-//	initialize (id);
+	initialize ();
 }
 
-//void Flight::initialize ()
-//{
-//}
+void Flight::initialize ()
+{
+	cachedErrorsValid=false;
+}
 
 
 // ****************
@@ -556,12 +557,21 @@ void Flight::checkPerson (QList<FlightError> &errors, dbId id, const QString &la
 	}
 }
 
-// FIXME pass cache instead
 QList<FlightError> Flight::getErrors (bool includeTowflightErrors, Plane *plane, Plane *towplane, LaunchMethod *launchMethod) const
 {
-	// FIXME remove
-	//	// TODO einsitzige Schulung mit Begleiter
-	std::cout << "getErrors for flight " << getId () << std::endl;
+	if (!cachedErrorsValid)
+	{
+		cachedErrors=getErrorsImpl (includeTowflightErrors, plane, towplane, launchMethod);
+		cachedErrorsValid=true;
+	}
+
+	return cachedErrors;
+}
+
+// FIXME pass cache instead
+QList<FlightError> Flight::getErrorsImpl (bool includeTowflightErrors, Plane *plane, Plane *towplane, LaunchMethod *launchMethod) const
+{
+	// TODO einsitzige Schulung mit Begleiter
 
 	QList<FlightError> errors;
 
@@ -1082,4 +1092,5 @@ QColor Flight::getColor (Cache &cache) const
 void Flight::dataChanged ()
 {
 	cachedColor=QColor ();
+	cachedErrorsValid=false;
 }
