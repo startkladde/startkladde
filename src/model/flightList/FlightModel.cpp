@@ -109,8 +109,8 @@ QString FlightModel::sampleText (int columnIndex) const
 
 QVariant FlightModel::data (const Flight &flight, int column, int role) const
 {
-	// TODO: the error check for the color is done for each cell and each time
-	// the cursor is moved - maybe someone (who?) should cache the data
+//	std::cout << "FlightModel::data for flight " << flight.getId () << " col#" << column << std::endl;
+	// TODO more caching - this is called very often
 	// TODO isButtonRole and buttonTextRole should be in xxxData ()
 
 	if (role==Qt::DisplayRole)

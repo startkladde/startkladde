@@ -344,7 +344,8 @@ void SkTableView::updateSelectionColors ()
 		setStyleSheet (QString
 			("selection-background-color: #3F3F3F; selection-color: %1;")
 			.arg (backgroundColor.name ()));
-	// FIXME else
+	else
+		setStyleSheet (QString ("selection-background-color: #3F3F3F;"));
 
 	// Fake border around selected
 	// WARNING: in some styles (e. g. Gnome), gradients appear as solid black

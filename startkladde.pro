@@ -177,6 +177,7 @@ HEADERS += \
            src/model/flightList/FlightSortFilterProxyModel.h \
            src/model/objectList/AbstractObjectList.h \
            src/model/objectList/AutomaticEntityList.h \
+           src/model/objectList/CachingObjectListModel.h \
            src/model/objectList/ColumnInfo.h \
            src/model/objectList/EntityList.h \
            src/model/objectList/MutableObjectList.h \
