@@ -60,7 +60,7 @@ class SkTableView: public QTableView
 //		virtual void rowsAboutToBeRemoved (const QModelIndex &parent, int start, int end);
 		virtual void rowsInserted (const QModelIndex &parent, int start, int end);
 		virtual void dataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight);
-//		virtual void currentChanged (const QModelIndex &current, const QModelIndex &previous);
+		virtual void currentChanged (const QModelIndex &current, const QModelIndex &previous);
 		virtual void selectionChanged (const QItemSelection &selected, const QItemSelection &deselected);
 
 	protected:

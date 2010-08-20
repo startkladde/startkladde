@@ -268,10 +268,15 @@ void SkTableView::keyPressEvent (QKeyEvent *e)
 }
 
 // Current cell changed - row (flight) or column
-//void SkTableView::currentChanged (const QModelIndex &current, const QModelIndex &previous)
-//{
-//	QTableView::currentChanged (current, previous);
-//}
+void SkTableView::currentChanged (const QModelIndex &current, const QModelIndex &previous)
+{
+	QTableView::currentChanged (current, previous);
+
+	// If no cells are selected, explicitly make the current index current, so
+	// the row gets selected. This may seem redundand, but it seems to work.
+	if (!selectionModel ()->hasSelection ())
+		setCurrentIndex (current);
+}
 
 bool SkTableView::cellVisible (const QModelIndex &index)
 {
