@@ -273,7 +273,7 @@ void SkTableView::currentChanged (const QModelIndex &current, const QModelIndex 
 	QTableView::currentChanged (current, previous);
 
 	// If no cells are selected, explicitly make the current index current, so
-	// the row gets selected. This may seem redundand, but it seems to work.
+	// the row gets selected. This may seem redundant, but it seems to work.
 	if (!selectionModel ()->hasSelection ())
 		setCurrentIndex (current);
 }
@@ -388,8 +388,8 @@ void SkTableView::selectionChanged (const QItemSelection &selected, const QItemS
 
 void SkTableView::scrollLeft ()
 {
-	// The current row is selected completely
-	// FIXME a flight may not have been selected
+	// The current row is selected completely if there is a current
+	// index - see currentChanged
 	QList<QModelIndex> indexes=selectionModel ()->selectedIndexes ();
 
 	// Find the first visible cell and scroll to the one before it
@@ -416,8 +416,8 @@ void SkTableView::scrollLeft ()
 
 void SkTableView::scrollRight ()
 {
-	// The current row is selected completely
-	// FIXME a flight may not have been selected
+	// The current row is selected completely if there is a current
+	// index - see currentChanged
 	QList<QModelIndex> indexes=selectionModel ()->selectedIndexes ();
 
 	// Find the first visible cell and scroll to the one before it

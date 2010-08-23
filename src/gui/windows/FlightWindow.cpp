@@ -574,10 +574,6 @@ void FlightWindow::updateErrors (bool setFocus)
 
 	Flight flight=determineFlightBasic ();
 
-	Plane *plane              =cache.getNewObject<Plane       > (flight.getPlaneId        ());
-	Plane *towplane           =cache.getNewObject<Plane       > (flight.getTowplaneId     ());
-	LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (flight.getLaunchMethodId ());
-
 	int numErrors=0;
 	QWidget *firstErrorWidget=NULL;
 
@@ -586,7 +582,7 @@ void FlightWindow::updateErrors (bool setFocus)
 		label->setError (false);
 
 	ui.errorList->clear ();
-	QList<FlightError> errors=flight.getErrors (launchMethod && launchMethod->isAirtow (), plane, towplane, launchMethod);
+	QList<FlightError> errors=flight.getErrors (true, cache);
 	foreach (FlightError error, errors)
 	{
 		// In the cases of unknown or non-unique people, we don't want to query
@@ -630,10 +626,6 @@ void FlightWindow::updateErrors (bool setFocus)
 			}
 		}
 	}
-
-	delete plane;
-	delete towplane;
-	delete launchMethod;
 
 	if (setFocus && firstErrorWidget)
 		firstErrorWidget->setFocus ();

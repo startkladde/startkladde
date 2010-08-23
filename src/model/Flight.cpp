@@ -436,25 +436,6 @@ QTime Flight::towflightDuration () const
 // ********************
 
 /**
- * This does not consider errors of the towflight
- *
- * @param cache
- * @return
- */
-bool Flight::isErroneous (Cache &cache) const
-{
-	Plane *thePlane=cache.getNewObject<Plane> (getPlaneId ());
-	LaunchMethod *theLaunchMethod=cache.getNewObject<LaunchMethod> (getLaunchMethodId ());
-
-	bool erroneous=isErroneous (thePlane, NULL, theLaunchMethod);
-
-	delete thePlane;
-	delete theLaunchMethod;
-
-	return erroneous;
-}
-
-/**
  * Determines whether the flight (not the towflight) is erroneous
  *
  * @param fz the plane, if known, or NULL
@@ -464,10 +445,10 @@ bool Flight::isErroneous (Cache &cache) const
  *                  error
  * @return true if there is an error, false else
  */
-bool Flight::isErroneous (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText) const
+bool Flight::isErroneous (Cache &cache, QString *errorText) const
 {
-	// FIXME: stop after first error? use cache?
-	QList<FlightError> errors=getErrors (false, fz, sfz, sa);
+	// FIXME: stop after first error?
+	QList<FlightError> errors=getErrors (false, cache);
 	if (errors.isEmpty ())
 	{
 		return false;
@@ -557,23 +538,29 @@ void Flight::checkPerson (QList<FlightError> &errors, dbId id, const QString &la
 	}
 }
 
-QList<FlightError> Flight::getErrors (bool includeTowflightErrors, Plane *plane, Plane *towplane, LaunchMethod *launchMethod) const
+QList<FlightError> Flight::getErrors (bool includeTowflightErrors, Cache &cache) const
 {
 	if (!cachedErrorsValid)
 	{
-		cachedErrors=getErrorsImpl (includeTowflightErrors, plane, towplane, launchMethod);
+		cachedErrors=getErrorsImpl (includeTowflightErrors, cache);
 		cachedErrorsValid=true;
 	}
 
 	return cachedErrors;
 }
 
-// FIXME pass cache instead
-QList<FlightError> Flight::getErrorsImpl (bool includeTowflightErrors, Plane *plane, Plane *towplane, LaunchMethod *launchMethod) const
+/**
+ * The actual error check implementation - caching is handled by getErrors
+ */
+QList<FlightError> Flight::getErrorsImpl (bool includeTowflightErrors, Cache &cache) const
 {
-	// TODO einsitzige Schulung mit Begleiter
-
+	// The result
 	QList<FlightError> errors;
+
+	// Determine data
+	Plane *plane              =cache.getNewObject<Plane       > (getPlaneId        ());
+	Plane *towplane           =cache.getNewObject<Plane       > (getTowplaneId     ());
+	LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (getLaunchMethodId ());
 
 	// Basic properties
 	if (idInvalid (getId ())) errors << ff_keine_id;
@@ -686,7 +673,6 @@ QList<FlightError> Flight::getErrorsImpl (bool includeTowflightErrors, Plane *pl
 	// Towflight errors
 	if (includeTowflightErrors && launchMethod && launchMethod->isAirtow ())
 	{
-		// FIXME implement
 		if ((getTowflightLanded () || !towflightLandsHere ())
 			&& isNone (getTowflightLandingLocation ()))
 			errors << ff_kein_zielort_sfz;
@@ -698,6 +684,10 @@ QList<FlightError> Flight::getErrorsImpl (bool includeTowflightErrors, Plane *pl
 			&& towplane->category==Plane::categoryGlider)
 			errors << ff_towplane_is_glider;
 	}
+
+	delete plane;
+	delete towplane;
+	delete launchMethod;
 
 	return errors;
 }

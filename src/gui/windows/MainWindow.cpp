@@ -1010,7 +1010,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 		}
 
 		QString errorText;
-		bool error=flight.isErroneous (plane, NULL, launchMethod, &errorText);
+		bool error=flight.isErroneous (cache, &errorText);
 
 		delete plane;
 		delete towplane;

@@ -136,10 +136,9 @@ class Flight: public FlightBase
 
 
 		// *** Error checking
-		virtual QList<FlightError> getErrors (bool includeTowflightErrors, Plane *plane, Plane *towplane, LaunchMethod *launchMethod) const;
+		virtual QList<FlightError> getErrors (bool includeTowflightErrors, Cache &cache) const;
 		virtual QString errorDescription (FlightError code) const;
-		virtual bool isErroneous (Cache &cache) const;
-		virtual bool isErroneous (Plane *fz, Plane *sfz, LaunchMethod *sa, QString *errorText=NULL) const;
+		virtual bool isErroneous (Cache &cache, QString *errorText=NULL) const;
 
 
 		// *** Formatting
@@ -214,7 +213,7 @@ class Flight: public FlightBase
 		virtual QString incompletePersonName (QString nn, QString vn) const;
 		virtual void dataChanged ();
 
-		virtual QList<FlightError> getErrorsImpl (bool includeTowflightErrors, Plane *plane, Plane *towplane, LaunchMethod *launchMethod) const;
+		virtual QList<FlightError> getErrorsImpl (bool includeTowflightErrors, Cache &cache) const;
 		virtual void checkPerson (QList<FlightError> &errors, dbId id, const QString &lastName, const QString &firstName, bool required,
 			FlightError notSpecifiedError, FlightError lastNameOnlyError, FlightError firstNameOnlyError, FlightError notIdentifiedError) const;
 
