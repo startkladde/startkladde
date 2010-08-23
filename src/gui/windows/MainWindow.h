@@ -8,8 +8,6 @@
  *   - TODO towplane type and registration not shown correctly
  *   - TODO the weather widget is still made smaller if the window is resized.
  *          Note that it will not get small than the fixed size set in the UI.
- *   - TODO use QDate or date?
- *   - TODO table sorting
  *   - TODO change the display when the database does not reply to ping
  *   - TODO task error handling
  *   - TODO warn on edit if database not alive (recently responded)

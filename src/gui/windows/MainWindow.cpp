@@ -1594,6 +1594,11 @@ void MainWindow::cacheChanged (DbEvent event)
 	{
 		// TODO log error
 	}
+
+	// Cannot use foreach because flightList can only return a copy of its list
+	int numFlights=flightList->size ();
+	for (int i=0; i<numFlights; ++i)
+		flightList->at (i).databaseChanged (event);
 }
 
 void MainWindow::databaseStateChanged (DbManager::State state)

@@ -229,7 +229,8 @@ template<class T> const T &MutableObjectList<T>::at (int index) const
 }
 
 /**
- * Makes a copy of the list, which is fast due to Qt implicit sharing as lon * as the returned list and this list is not modified.
+ * Makes a copy of the list, which is fast due to Qt implicit sharing as long
+ * as the returned list and this list is not modified.
  *
  * @return a QList containing all the objects of this list
  */

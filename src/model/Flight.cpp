@@ -12,6 +12,7 @@
 #include "src/util/qString.h"
 #include "src/util/time.h"
 #include "src/flightColor.h" // TODO remove after flightColor has been moved to Flight
+#include "src/db/event/DbEvent.h"
 
 template<class T> class QList;
 
@@ -447,7 +448,6 @@ QTime Flight::towflightDuration () const
  */
 bool Flight::isErroneous (Cache &cache, QString *errorText) const
 {
-	// FIXME: stop after first error?
 	QList<FlightError> errors=getErrors (false, cache);
 	if (errors.isEmpty ())
 	{
@@ -1079,8 +1079,38 @@ QColor Flight::getColor (Cache &cache) const
 // ** Cache **
 // ***********
 
-void Flight::dataChanged ()
+void Flight::dataChanged () const
 {
 	cachedColor=QColor ();
 	cachedErrorsValid=false;
+}
+
+void Flight::databaseChanged (const DbEvent &event) const
+{
+	// TODO: this does not catch a change of the plane associated with the
+	// launch method
+	switch (event.getTable ())
+	{
+		case DbEvent::tableFlights:
+			// Nothing
+			break;
+		case DbEvent::tableLaunchMethods:
+			if (event.getId ()==getLaunchMethodId ())
+				dataChanged ();
+			break;
+		case DbEvent::tablePeople:
+			if (
+				event.getId ()==getPilotId    () ||
+				event.getId ()==getCopilotId  () ||
+				event.getId ()==getTowpilotId ())
+				dataChanged ();
+			break;
+		case DbEvent::tablePlanes:
+			if (
+				event.getId ()==getPlaneId    () ||
+				event.getId ()==getTowplaneId ())
+				dataChanged ();
+			break;
+		// No default - compiler warning on unhandled case
+	}
 }

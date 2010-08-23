@@ -10,6 +10,7 @@
 
 #include "FlightBase.h"
 
+class DbEvent;
 class Plane;
 class LaunchMethod;
 class Query;
@@ -152,6 +153,7 @@ class Flight: public FlightBase
 		static QList<Flight> makeTowflights (const QList<Flight> &flights, Cache &cache);
 		virtual QColor getColor (Cache &cache) const;
 		virtual bool isTraining () const { return typeIsTraining (getType ()); }
+		void databaseChanged (const DbEvent &event) const;
 
 		// TODO: this concept is bad - a flight in the database must never
 		// have the flight type "towflight", because that is reserved for
@@ -211,13 +213,12 @@ class Flight: public FlightBase
 	private:
 		void initialize ();
 		virtual QString incompletePersonName (QString nn, QString vn) const;
-		virtual void dataChanged ();
+		virtual void dataChanged () const;
 
 		virtual QList<FlightError> getErrorsImpl (bool includeTowflightErrors, Cache &cache) const;
 		virtual void checkPerson (QList<FlightError> &errors, dbId id, const QString &lastName, const QString &firstName, bool required,
 			FlightError notSpecifiedError, FlightError lastNameOnlyError, FlightError firstNameOnlyError, FlightError notIdentifiedError) const;
 
-		// FIXME: when a plane changes, the cached color becomes invalid
 		mutable QColor cachedColor;
 		mutable QList<FlightError> cachedErrors;
 		mutable bool cachedErrorsValid;

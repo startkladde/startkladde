@@ -78,7 +78,7 @@ class FlightBase
 
 	private:
 		void initialize (dbId id);
-		virtual void dataChanged ()=0;
+		virtual void dataChanged () const=0;
 
 		// *** Data
 		dbId id;
