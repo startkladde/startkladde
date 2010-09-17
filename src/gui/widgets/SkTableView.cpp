@@ -10,6 +10,9 @@
  *   - on every move, the current selection has to be searched for a visible
  *     button in order to set the focus; this could possibly be made more
  *     efficient
+ *
+ * Due to caching and widget issues, it might be more appropriate to implement
+ * a QTableWidget based model view rather than using a QTableView.
  */
 #include "SkTableView.h"
 
@@ -138,6 +141,10 @@ void SkTableView::dataChanged (const QModelIndex &topLeft, const QModelIndex &bo
 			resizeRowToContents (i);
 
 	updateSelectionColors ();
+
+	// Required or the button focus may be lost after a prepared flight has
+	// been edited
+	updateWidgetFocus (selectionModel ()->selectedIndexes ());
 }
 
 void SkTableView::reset ()
@@ -451,4 +458,13 @@ void SkTableView::mouseDoubleClickEvent (QMouseEvent *event)
 		emit doubleClicked (QModelIndex ());
 		event->accept ();
 	}
+}
+
+void SkTableView::mousePressEvent (QMouseEvent *event)
+{
+	QTableView::mousePressEvent (event);
+
+	// Required or the button focus may be lost when another cell of the
+	// currently selected (!) flight is clicked
+	updateWidgetFocus (selectionModel ()->selectedIndexes ());
 }

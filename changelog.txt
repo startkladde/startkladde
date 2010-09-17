@@ -1,3 +1,6 @@
+	- Bugfix: table button focus lost when current flight is edited
+	- Bugfix: table button focus lost when other cell of selected flight
+	  is clicked
 	- Create flights/objects with double click on empty table space
 	- Don't edit with single clicks, independent of desktop settings
 	- Repeating a flight with Ctrl+Enter

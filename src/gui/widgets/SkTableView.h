@@ -67,6 +67,7 @@ class SkTableView: public QTableView
 		void updateButtons (int row);
 		void updateWidgetFocus (const QModelIndexList &indexes);
 		virtual void mouseDoubleClickEvent (QMouseEvent *event);
+		virtual void mousePressEvent (QMouseEvent *event);
 		virtual void keyPressEvent (QKeyEvent *e);
 		void scrollLeft ();
 		void scrollRight ();
