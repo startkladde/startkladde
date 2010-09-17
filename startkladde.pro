@@ -96,6 +96,7 @@ HEADERS += \
            src/concurrent/monitor/SignalOperationMonitor.h \
            src/concurrent/monitor/SimpleOperationMonitor.h \
            src/config/Settings.h \
+           src/container/SkMultiHash.h \
            src/container/SortedSet.h \
            src/container/SortedSet_impl.h \
            src/db/Database.h \

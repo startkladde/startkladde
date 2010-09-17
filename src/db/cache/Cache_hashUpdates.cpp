@@ -123,8 +123,9 @@ template<> void Cache::updateHashesObjectAdded<Person> (const Person &person)
 
 		personLastNames.insert (last);
 		personFirstNames.insert (first);
-		lastNamesByFirstName.insert (firstLower, last );
-		firstNamesByLastName.insert (lastLower , first);
+		// insertUnique: avoid duplicate identical (!) values for a given key
+		lastNamesByFirstName.insertUnique (firstLower, last );
+		firstNamesByLastName.insertUnique (lastLower , first);
 		personIdsByLastName .insert (lastLower , id);
 		personIdsByFirstName.insert (firstLower, id);
 		personIdsByName.insert (QPair<QString, QString> (lastLower, firstLower), id);

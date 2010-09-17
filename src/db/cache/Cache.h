@@ -21,6 +21,7 @@
 #include "src/db/event/DbEvent.h"
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/container/SortedSet.h"
+#include "src/container/SkMultiHash.h"
 
 class Flight;
 class Person;
@@ -226,10 +227,19 @@ class Cache: public QObject
 		// Specific hashes
 		// The keys of these hashes are lower case; names are QPair
 		// (lastName, firstName) (also in lower case).
+		//
+		// Note: if, in the corresponding updateHashesObjectDeleted method
+		// (defined in Cache_hashUpdates.cpp) a value is not removed from the
+		// cache, attention must be paid to keep the cache duplicate-free on
+		// update (which is done as a delete and an add). For SortedSets, this
+		// is not an issue; for MultiHashes, the insertUnique method of
+		// SkMultiHash can be used.
+		// A better data structure would be a UniqueMultiHash or a
+		// Hash<SortedSet>.
 		QMultiHash<QString           , dbId> planeIdsByRegistration; // key is lower case
 		QMultiHash<LaunchMethod::Type, dbId> launchMethodIdsByType;
-		QMultiHash<QString, QString> lastNamesByFirstName; // key is lower case
-		QMultiHash<QString, QString> firstNamesByLastName; // key is lower case
+		SkMultiHash<QString, QString> lastNamesByFirstName; // key is lower case
+		SkMultiHash<QString, QString> firstNamesByLastName; // key is lower case
 		QMultiHash<QString, dbId> personIdsByLastName; // key is lower case
 		QMultiHash<QString, dbId> personIdsByFirstName; // key is lower case
 		QMultiHash<QPair<QString, QString>, dbId> personIdsByName; // key is lower case
