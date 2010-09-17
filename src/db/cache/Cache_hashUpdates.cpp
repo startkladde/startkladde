@@ -56,6 +56,10 @@ template<> void Cache::clearHashes<Plane> ()
 
 template<> void Cache::updateHashesObjectAdded<Plane> (const Plane &plane)
 {
+	// All values inserted here should be removed in the corresponding
+	// updateHashesObjectDeleted method, if possible; otherwise, care must be
+	// taken not to insert a value multiple times if an object is deleted and
+	// re-added.
 	synchronized (dataMutex)
 	{
 		if (!isBlank (plane.type)) planeTypes.insert (plane.type);
@@ -115,6 +119,10 @@ template<> void Cache::clearHashes<Person> ()
 
 template<> void Cache::updateHashesObjectAdded<Person> (const Person &person)
 {
+	// All values inserted here should be removed in the corresponding
+	// updateHashesObjectDeleted method, if possible; otherwise, care must be
+	// taken not to insert a value multiple times if an object is deleted and
+	// re-added.
 	synchronized (dataMutex)
 	{
 		const QString &last =person.lastName ; QString lastLower =last .toLower ();
@@ -178,6 +186,10 @@ template<> void Cache::clearHashes<LaunchMethod> ()
 
 template<> void Cache::updateHashesObjectAdded<LaunchMethod> (const LaunchMethod &launchMethod)
 {
+	// All values inserted here should be removed in the corresponding
+	// updateHashesObjectDeleted method, if possible; otherwise, care must be
+	// taken not to insert a value multiple times if an object is deleted and
+	// re-added.
 	synchronized (dataMutex)
 	{
 		launchMethodIdsByType.insert (launchMethod.type, launchMethod.getId ());
@@ -217,6 +229,10 @@ template<> void Cache::clearHashes<Flight> ()
 
 template<> void Cache::updateHashesObjectAdded<Flight> (const Flight &flight)
 {
+	// All values inserted here should be removed in the corresponding
+	// updateHashesObjectDeleted method, if possible; otherwise, care must be
+	// taken not to insert a value multiple times if an object is deleted and
+	// re-added.
 	synchronized (dataMutex)
 	{
 		if (!isBlank (flight.       getDepartureLocation ())) locations      .insert (flight.       getDepartureLocation ());
