@@ -142,6 +142,7 @@ HEADERS += \
            src/gui/widgets/SkComboBox.h \
            src/gui/widgets/SkLabel.h \
            src/gui/widgets/SkTableView.h \
+           src/gui/widgets/SkTableWidget.h \
            src/gui/widgets/SkTreeWidgetItem.h \
            src/gui/widgets/TableButton.h \
            src/gui/widgets/WeatherWidget.h \
@@ -284,6 +285,7 @@ SOURCES += \
            src/gui/widgets/SkComboBox.cpp \
            src/gui/widgets/SkLabel.cpp \
            src/gui/widgets/SkTableView.cpp \
+           src/gui/widgets/SkTableWidget.cpp \
            src/gui/widgets/SkTreeWidgetItem.cpp \
            src/gui/widgets/TableButton.cpp \
            src/gui/widgets/WeatherWidget.cpp \

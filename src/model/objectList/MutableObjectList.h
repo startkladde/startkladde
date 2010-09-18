@@ -167,6 +167,7 @@ template<class T> void MutableObjectList<T>::replace (int index, const T &object
  */
 template<class T> void MutableObjectList<T>::clear ()
 {
+	// TODO Qt 4.6: use beginResetModel and endResetModel
 	list.clear ();
 	QAbstractItemModel::reset ();
 }
@@ -184,7 +185,7 @@ template<class T> void MutableObjectList<T>::clear ()
  */
 template<class T> void MutableObjectList<T>::replaceList (const QList<T> &newList)
 {
-
+	// TODO Qt 4.6: use beginResetModel and endResetModel
 	list=newList;
 	QAbstractItemModel::reset ();
 }
@@ -194,6 +195,7 @@ template<class T> void MutableObjectList<T>::replaceList (const QList<T> &newLis
 // */
 //template<class T> void MutableObjectList<T>::appendList (const QList<T> &other)
 //{
+//	// TODO Qt 4.6: use beginResetModel and endResetModel
 //	list+=other;
 //	QAbstractItemModel::reset ();
 //}
@@ -203,6 +205,7 @@ template<class T> void MutableObjectList<T>::replaceList (const QList<T> &newLis
 // */
 //template<class T> void MutableObjectList<T>::appendList (const AbstractObjectList<T> &other)
 //{
+//	// TODO Qt 4.6: use beginResetModel and endResetModel
 //	list+=other.getList ();
 //	QAbstractItemModel::reset ();
 //}

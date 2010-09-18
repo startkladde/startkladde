@@ -196,7 +196,7 @@ void SkTableView::reset ()
  */
 void SkTableView::readColumnWidths (QSettings &settings, const ColumnInfo &columnInfo)
 {
-	// The column info set must have the sam number of columns as the model of
+	// The column info set must have the same number of columns as the model of
 	// this table.
 	assert (columnInfo.columnCount ()==model ()->columnCount ());
 
