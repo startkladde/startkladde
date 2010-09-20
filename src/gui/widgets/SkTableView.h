@@ -54,7 +54,6 @@ class SkTableView: public QTableView
 
 	signals:
 		void buttonClicked (QPersistentModelIndex index);
-		void emptySpaceDoubleClicked ();
 
 	protected slots:
 //		virtual void rowsAboutToBeRemoved (const QModelIndex &parent, int start, int end);

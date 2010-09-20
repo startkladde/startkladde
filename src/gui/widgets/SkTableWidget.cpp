@@ -20,38 +20,39 @@
 #include "src/model/objectList/ColumnInfo.h"
 
 SkTableWidget::SkTableWidget (QWidget *parent):
-	QTableWidget (parent)
+	QTableWidget (parent),
+	effectiveModel (NULL)
 {
-
 }
 
 SkTableWidget::SkTableWidget (int rows, int columns, QWidget *parent):
-	QTableWidget (rows, columns, parent)
+	QTableWidget (rows, columns, parent),
+	effectiveModel (NULL)
 {
-
 }
 
 SkTableWidget::~SkTableWidget ()
 {
 }
 
-QAbstractItemModel *SkTableWidget::getDataModel ()
+QAbstractItemModel *SkTableWidget::getEffectiveModel ()
 {
-	return dataModel;
+	return effectiveModel;
 }
 
-void SkTableWidget::setDataModel (QAbstractItemModel *dataModel)
+void SkTableWidget::setEffectiveModel (QAbstractItemModel *effectiveModel)
 {
-	this->dataModel=dataModel;
+	this->effectiveModel=effectiveModel;
 
 #define reconnect(member) \
 	disconnect (this, SLOT (model_ ## member)); \
-	connect (dataModel, SIGNAL (member), this, SLOT (model_ ## member));
+	if (effectiveModel) connect (effectiveModel, SIGNAL (member), this, SLOT (model_ ## member));
 
 	reconnect (rowsInserted (const QModelIndex &, int, int));
 	reconnect (rowsRemoved (const QModelIndex &, int, int));
 	reconnect (dataChanged (const QModelIndex &, const QModelIndex &));
 	reconnect (modelReset ());
+	reconnect (layoutAboutToBeChanged ());
 	reconnect (layoutChanged ());
 
 #undef reconnect
@@ -76,9 +77,11 @@ void SkTableWidget::setDataModel (QAbstractItemModel *dataModel)
  */
 void SkTableWidget::readColumnWidths (QSettings &settings, const ColumnInfo &columnInfo)
 {
+	if (!effectiveModel) return;
+
 	// The column info set must have the same number of columns as the model of
 	// this table.
-	assert (columnInfo.columnCount ()==dataModel->columnCount ());
+	assert (columnInfo.columnCount ()==columnCount ());
 
 	for (int i=0; i<columnInfo.columnCount (); ++i)
 	{
@@ -131,44 +134,72 @@ void SkTableWidget::clearTable ()
 
 void SkTableWidget::setCell (int row, int column)
 {
-	QModelIndex index=dataModel->index (row, column);
+	if (!effectiveModel) return;
 
-	if (dataModel->data (index, isButtonRole).toBool ())
+	QModelIndex index=effectiveModel->index (row, column);
+
+	if (effectiveModel->data (index, isButtonRole).toBool ())
 	{
 		// *** It's a button
 
-		QString text=dataModel->data (index, buttonTextRole).toString ();
+		QString text=effectiveModel->data (index, buttonTextRole).toString ();
 		std::cout << "#" << std::flush;
 		TableButton *button=new TableButton (index, text, this);
+		connect (button, SIGNAL (clicked (QPersistentModelIndex)), this, SIGNAL (buttonClicked (QPersistentModelIndex)));
 
+		setItem (row, column, NULL);
 		setCellWidget (row, column, button);
 	}
 	else
 	{
 		// *** It's a regular cell
 
-		QString text=dataModel->data (index, Qt::DisplayRole).toString ();
+		QString text=effectiveModel->data (index, Qt::DisplayRole).toString ();
 		QTableWidgetItem *item=new QTableWidgetItem (text);
 		item->setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-		QBrush background=dataModel->data (index, Qt::BackgroundRole).value<QBrush> (); // TODO allow reusing
+		QBrush background=effectiveModel->data (index, Qt::BackgroundRole).value<QBrush> (); // TODO allow reusing
 		item->setBackground (background);
 
 		setItem (row, column, item);
+		setCellWidget (row, column, NULL);
 	}
 }
 
 void SkTableWidget::setRow (int row)
 {
-	int columnCount=dataModel->columnCount ();
+	if (!effectiveModel) return;
+
+	int columnCount=effectiveModel->columnCount ();
 	for (int column=0; column<columnCount; ++column)
 		setCell (row, column);
+
+	// FIXME only if enabled
+	resizeRowToContents (row);
 }
 
-void SkTableWidget::setHeaders ()
+void SkTableWidget::updateRowCount ()
+{
+	int ourRowCount=rowCount ();
+	int modelRowCount=effectiveModel?(effectiveModel->rowCount ()):0;
+
+	// Too few rows? Add the difference.
+	if (ourRowCount<modelRowCount)
+		for (int row=ourRowCount; row<modelRowCount; ++row)
+			insertRow (row);
+
+	// Too many rows? Remove the difference.
+	if (ourRowCount>modelRowCount)
+		for (int row=ourRowCount-1; row>=modelRowCount; --row)
+			removeRow (row);
+
+	assert (rowCount ()==modelRowCount);
+}
+
+void SkTableWidget::updateColumnCount ()
 {
 	int ourColumnCount=columnCount ();
-	int modelColumnCount=dataModel->columnCount ();
+	int modelColumnCount=effectiveModel?(effectiveModel->columnCount ()):0;
 
 	// Too few columns? Add the difference.
 	if (ourColumnCount<modelColumnCount)
@@ -180,12 +211,20 @@ void SkTableWidget::setHeaders ()
 		for (int column=ourColumnCount-1; column>=modelColumnCount; --column)
 			removeColumn (column);
 
-	assert (columnCount ()==dataModel->columnCount ());
+	assert (columnCount ()==modelColumnCount);
+}
+
+void SkTableWidget::setHeaders ()
+{
+	updateColumnCount ();
+
+	if (!effectiveModel) return;
 
 	// Column titles
-	for (int column=0; column<modelColumnCount; ++column)
+	int numColumns=columnCount ();
+	for (int column=0; column<numColumns; ++column)
 		setHorizontalHeaderItem (column, new QTableWidgetItem (
-			dataModel->headerData (column, Qt::Horizontal).toString ()));
+				effectiveModel->headerData (column, Qt::Horizontal).toString ()));
 }
 
 void SkTableWidget::removeAllRows ()
@@ -201,21 +240,15 @@ void SkTableWidget::removeAllRows ()
 
 void SkTableWidget::model_modelReset ()
 {
-	std::cout << "model reset to " << dataModel->rowCount () << " rows" << std::endl;
+	std::cout << "model reset to " << effectiveModel->rowCount () << " rows" << std::endl;
+
+	updateRowCount ();
+	updateColumnCount ();
 
 	setHeaders ();
 
-	removeAllRows ();
-
-	int rowCount=dataModel->rowCount ();
-	for (int row=0; row<rowCount; ++row)
-	{
-		insertRow (row);
+	for (int row=0; row<rowCount (); ++row)
 		setRow (row);
-	}
-
-	// FIXME only if enabled, only changed ones?
-	resizeRowsToContents ();
 }
 
 void SkTableWidget::model_rowsInserted (const QModelIndex &parent, int start, int end)
@@ -223,6 +256,7 @@ void SkTableWidget::model_rowsInserted (const QModelIndex &parent, int start, in
 	assert (!parent.isValid ());
 	std::cout << "model inserted rows " << start << " to " << end << std::endl;
 
+	// Don't use updateRowCount because it adds missing rows at the end
 	for (int i=start; i<=end; ++i)
 	{
 		insertRow (i);
@@ -235,6 +269,7 @@ void SkTableWidget::model_rowsRemoved (const QModelIndex &parent, int start, int
 	assert (!parent.isValid ());
 	std::cout << "model removed rows " << start << " to " << end << std::endl;
 
+	// Don't use updateRowCount because it removes missing rows from the end
 	for (int i=end; i>=start; --i)
 		removeRow (i);
 }
@@ -249,15 +284,47 @@ void SkTableWidget::model_dataChanged (const QModelIndex &topLeft, const QModelI
 			setCell (row, column);
 }
 
+void SkTableWidget::model_layoutAboutToBeChanged ()
+{
+	// Note that we cannot use currentIndex because that refers to the internal
+	// model of the table widget, not effectiveModel.
+
+	// The index is converted to a QPersistentModelIndex and will be updated
+	// when the layout change happens
+	selectedIndex=effectiveModel->index (currentRow (), currentColumn ());
+
+	assert (indexes.isEmpty ());
+	for (int row=0; row<rowCount (); ++row)
+		indexes.append (effectiveModel->index (row, 0));
+}
+
 void SkTableWidget::model_layoutChanged ()
 {
 	// Note that when the data changes (for example, after editing a flight),
 	// the proxy model re-sorts the data and emits layoutChanged (even if the
 	// layout is the same as before).
+	// Note also that this also happens if the filter paramters of the proxy
+	// model changed, so the number of rows may very well change here.
 
 	// FIXME implement (how?)
 	// Ugly solution: write the data to all columns (without deleting the columns)
 	// and update the current selection (by using a persistent model index).
-	std::cout << "oh no! the layout changed and we aren't handling it!" << std::endl;
-	model_modelReset ();
+	std::cout << "layout changed" << std::endl;
+
+	updateRowCount ();
+	updateColumnCount ();
+
+	// Only update those rows where the index changed during the layout change
+	for (int row=0; row<rowCount (); ++row)
+		if (row>=indexes.size () || indexes.at (row).row ()!=row)
+			setRow (row);
+	indexes.clear ();
+
+	if (selectedIndex.isValid ())
+	{
+		// Note that we do not use setcurrentIndex because the selected index refers
+		// to effectiveModel, not the internal model of the table widget
+		setCurrentCell (selectedIndex.row (), selectedIndex.column ());
+		selectedIndex=QPersistentModelIndex ();
+	}
 }

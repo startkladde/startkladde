@@ -196,6 +196,8 @@ void SkTableView::reset ()
  */
 void SkTableView::readColumnWidths (QSettings &settings, const ColumnInfo &columnInfo)
 {
+	if (!model ()) return;
+
 	// The column info set must have the same number of columns as the model of
 	// this table.
 	assert (columnInfo.columnCount ()==model ()->columnCount ());
@@ -238,6 +240,8 @@ void SkTableView::readColumnWidths (QSettings &settings, const ColumnInfo &colum
 
 void SkTableView::writeColumnWidths (QSettings &settings, const ColumnInfo &columnInfo)
 {
+	if (!model ()) return;
+
 	assert (columnInfo.columnCount ()==model ()->columnCount ());
 
 	for (int i=0; i<columnInfo.columnCount (); ++i)
@@ -395,6 +399,8 @@ void SkTableView::selectionChanged (const QItemSelection &selected, const QItemS
 
 void SkTableView::scrollLeft ()
 {
+	if (!selectionModel ()) return;
+
 	// The current row is selected completely if there is a current
 	// index - see currentChanged
 	QList<QModelIndex> indexes=selectionModel ()->selectedIndexes ();
@@ -423,6 +429,8 @@ void SkTableView::scrollLeft ()
 
 void SkTableView::scrollRight ()
 {
+	if (!selectionModel ()) return;
+
 	// The current row is selected completely if there is a current
 	// index - see currentChanged
 	QList<QModelIndex> indexes=selectionModel ()->selectedIndexes ();
@@ -454,7 +462,6 @@ void SkTableView::mouseDoubleClickEvent (QMouseEvent *event)
 		QTableView::mouseDoubleClickEvent (event);
 	else
 	{
-//		emit emptySpaceDoubleClicked ();
 		emit doubleClicked (QModelIndex ());
 		event->accept ();
 	}
@@ -463,6 +470,8 @@ void SkTableView::mouseDoubleClickEvent (QMouseEvent *event)
 void SkTableView::mousePressEvent (QMouseEvent *event)
 {
 	QTableView::mousePressEvent (event);
+
+	if (!selectionModel ()) return;
 
 	// Required or the button focus may be lost when another cell of the
 	// currently selected (!) flight is clicked

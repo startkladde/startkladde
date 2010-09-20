@@ -163,11 +163,11 @@ MainWindow::MainWindow (QWidget *parent) :
 	// Flight table
 	ui.flightTable->setAutoResizeRows (true);
 	ui.flightTable->setColoredSelectionEnabled (true);
-	ui.flightTable->setModel (proxyModel);
+//	ui.flightTable->setModel (proxyModel);
 	ui.flightTable->resizeColumnsToContents (); // Default sizes
 
 	// FIXME this is new, use all of above
-	ui.flightTableWidget->setDataModel (proxyModel);
+	ui.flightTableWidget->setEffectiveModel (proxyModel);
 	ui.flightTableWidget->resizeColumnsToContents ();
 
 	readColumnWidths (); // Stored sizes
@@ -181,6 +181,16 @@ MainWindow::MainWindow (QWidget *parent) :
 		ui.flightTable->horizontalHeader (), SIGNAL (sectionClicked (int)),
 		this, SLOT (flightTable_horizontalHeader_sectionClicked (int))
 		);
+
+	QObject::connect (
+		ui.flightTableWidget, SIGNAL (buttonClicked (QPersistentModelIndex)),
+		this, SLOT (flightTable_buttonClicked (QPersistentModelIndex))
+		);
+	QObject::connect (
+		ui.flightTableWidget->horizontalHeader (), SIGNAL (sectionClicked (int)),
+		this, SLOT (flightTable_horizontalHeader_sectionClicked (int))
+		);
+
 
 	QObject::connect (ui.actionHideFinished, SIGNAL (toggled (bool)), proxyModel, SLOT (setHideFinishedFlights (bool)));
 	QObject::connect (ui.actionAlwaysShowExternal, SIGNAL (toggled (bool)), proxyModel, SLOT (setAlwaysShowExternalFlights (bool)));
@@ -610,6 +620,10 @@ void MainWindow::sortCustom ()
 	// Show the sort status in the header view
 	ui.flightTable->setSortingEnabled (false); // Make sure it is off
 	ui.flightTable->horizontalHeader ()->setSortIndicatorShown (false);
+
+	// Show the sort status in the header view
+	ui.flightTableWidget->setSortingEnabled (false); // Make sure it is off
+	ui.flightTableWidget->horizontalHeader ()->setSortIndicatorShown (false);
 }
 
 void MainWindow::sortByColumn (int column)
