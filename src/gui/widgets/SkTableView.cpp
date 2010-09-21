@@ -31,24 +31,27 @@
 #include "src/util/color.h"
 #include "src/util/qString.h"
 #include "src/util/io.h" // remove
+#include "src/gui/views/SkItemDelegate.h"
 
 #include <iostream>
 #include <cassert>
 
 SkTableView::SkTableView (QWidget *parent):
 	QTableView (parent),
-	autoResizeRows (false),
 	settingButtons (false),
-	coloredSelectionEnabled (false)
+	autoResizeRows (false),
+	itemDelegate (new SkItemDelegate (this))
 {
-	// Use a style sheet rather than a palette because a style may ignore the
-	// palette, while a style sheet is guaranteed to be honored.
+	// Don't use a syle sheet - is slow.
+	// If we must, use a style sheet rather than a palette because a style may
+	//ignore the palette, while a style sheet is guaranteed to be honored.
 
 	setTabKeyNavigation (false);
 }
 
 SkTableView::~SkTableView ()
 {
+	delete itemDelegate;
 }
 
 void SkTableView::setModel (QAbstractItemModel *model)
@@ -140,7 +143,7 @@ void SkTableView::dataChanged (const QModelIndex &topLeft, const QModelIndex &bo
 		for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
 			resizeRowToContents (i);
 
-	updateSelectionColors ();
+//	updateSelectionColors ();
 
 	// Required or the button focus may be lost after a prepared flight has
 	// been edited
@@ -178,80 +181,6 @@ void SkTableView::reset ()
 
 	if (autoResizeRows)
 		resizeRowsToContents ();
-}
-
-/**
- * Reads the column widths from the settings or uses defaults from a columnInfo
- *
- * The settings object has to be set to the correct section. The widths are
- * read from the value columnWidth_(name) where name is the column name from
- * columnInfo.
- *
- * If no width is stored in settings for a given column, the sample text from
- * columnInfo and the column title from the model are used to determine a
- * default width.
- *
- * @param settings the QSettings to read the widths from
- * @param columnInfo the ColumnInfo to read the default widths from
- */
-void SkTableView::readColumnWidths (QSettings &settings, const ColumnInfo &columnInfo)
-{
-	if (!model ()) return;
-
-	// The column info set must have the same number of columns as the model of
-	// this table.
-	assert (columnInfo.columnCount ()==model ()->columnCount ());
-
-	for (int i=0; i<columnInfo.columnCount (); ++i)
-	{
-		// Determine the column name and the settings key
-		QString columnName=columnInfo.columnName (i);
-		QString key=QString ("columnWidth_%1").arg (columnName);
-
-		// Determine the font metrics and the frame margin
-		const QFont &font=horizontalHeader ()->font ();
-		QFontMetrics metrics (font);
-		QStyle *style=horizontalHeader ()->style ();
-		if (!style) style=QApplication::style ();
-		// Similar to QItemDelegate::textRectangle
-		const int margin=style->pixelMetric (QStyle::PM_FocusFrameHMargin)+1;
-
-		if (settings.contains (key))
-		{
-			// The settings contain a width for this column
-			setColumnWidth (i, settings.value (key).toInt ());
-		}
-		else
-		{
-			// No width for this column in the settings. Determine the default.
-			QString sampleText=columnInfo.sampleText (i);
-			QString headerText=model ()->headerData (i, Qt::Horizontal).toString ();
-
-			// The 2/4 were determined experimentally. Probably, some metric
-			// should be used. For headerWidth, +2 is enough on Linux/Gnome,
-			// but not on Windows XP.
-			int sampleWidth=metrics.boundingRect (sampleText).width ()+2*margin+2;
-			int headerWidth=metrics.boundingRect (headerText).width ()+2*margin+4;
-
-			setColumnWidth (i, qMax (sampleWidth, headerWidth));
-		}
-	}
-}
-
-void SkTableView::writeColumnWidths (QSettings &settings, const ColumnInfo &columnInfo)
-{
-	if (!model ()) return;
-
-	assert (columnInfo.columnCount ()==model ()->columnCount ());
-
-	for (int i=0; i<columnInfo.columnCount (); ++i)
-	{
-		QString columnName=columnInfo.columnName (i);
-		QString key=QString ("columnWidth_%1").arg (columnName);
-		int value=columnWidth (i);
-
-		settings.setValue (key, value);
-	}
 }
 
 void SkTableView::keyPressEvent (QKeyEvent *e)
@@ -346,56 +275,6 @@ void SkTableView::updateWidgetFocus (const QModelIndexList &indexes)
 		this->setFocus ();
 }
 
-void SkTableView::updateSelectionColors ()
-{
-	if (!coloredSelectionEnabled) return;
-
-	QModelIndex index=currentIndex ();
-	if (!index.isValid ()) return;
-
-	QColor backgroundColor=index.data (Qt::BackgroundRole).value<QBrush> ().color ();
-
-	// Flight color on dark gray in selected cells
-	if (backgroundColor.isValid ())
-		setStyleSheet (QString
-			("selection-background-color: #3F3F3F; selection-color: %1;")
-			.arg (backgroundColor.name ()));
-	else
-		setStyleSheet (QString ("selection-background-color: #3F3F3F;"));
-
-	// Fake border around selected
-	// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
-//		setStyleSheet (QString (
-//		    "selection-color: #000000; "
-//		    "selection-background-color: "
-//		    "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
-//		    "stop: 0 %1, stop: 0.2 %2, stop: 0.8 %3, stop: 1 %4);")
-//		    .arg (QString ("#000000"))
-//		    .arg (backgroundColor.name ())
-//		    .arg (backgroundColor.name ())
-//		    .arg (QString ("#000000")));
-
-	// Vertical gradient in selected cells
-	// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
-//		setStyleSheet (QString (
-//		    "selection-color: #000000; "
-//		    "selection-background-color: "
-//		    "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
-//		    "stop: 0 %1, stop: 1 %2);")
-//		    .arg (backgroundColor.darker (135).name())
-//		    .arg (backgroundColor.lighter (135).name()));
-}
-
-// Selection changed - since selectionBehavior is SelectRows, this means that a
-// different flight (or none) was selected
-void SkTableView::selectionChanged (const QItemSelection &selected, const QItemSelection &deselected)
-{
-	// Set up the selection colors depending on the cell background color
-	updateSelectionColors ();
-
-	updateWidgetFocus (selected.indexes ());
-	QTableView::selectionChanged (selected, deselected);
-}
 
 void SkTableView::scrollLeft ()
 {
@@ -476,4 +355,142 @@ void SkTableView::mousePressEvent (QMouseEvent *event)
 	// Required or the button focus may be lost when another cell of the
 	// currently selected (!) flight is clicked
 	updateWidgetFocus (selectionModel ()->selectedIndexes ());
+}
+
+/**
+ * Reads the column widths from the settings or uses defaults from a columnInfo
+ *
+ * The settings object has to be set to the correct section. The widths are
+ * read from the value columnWidth_(name) where name is the column name from
+ * columnInfo.
+ *
+ * If no width is stored in settings for a given column, the sample text from
+ * columnInfo and the column title from the model are used to determine a
+ * default width.
+ *
+ * @param settings the QSettings to read the widths from
+ * @param columnInfo the ColumnInfo to read the default widths from
+ */
+void SkTableView::readColumnWidths (QSettings &settings, const ColumnInfo &columnInfo)
+{
+	if (!getEffectiveModel ()) return;
+
+	// The column info set must have the same number of columns as the model of
+	// this table.
+	assert (columnInfo.columnCount ()==getEffectiveModel ()->columnCount ());
+
+	for (int i=0; i<columnInfo.columnCount (); ++i)
+	{
+		// Determine the column name and the settings key
+		QString columnName=columnInfo.columnName (i);
+		QString key=QString ("columnWidth_%1").arg (columnName);
+
+		// Determine the font metrics and the frame margin
+		const QFont &font=horizontalHeader ()->font ();
+		QFontMetrics metrics (font);
+		QStyle *style=horizontalHeader ()->style ();
+		if (!style) style=QApplication::style ();
+		// Similar to QItemDelegate::textRectangle
+		const int margin=style->pixelMetric (QStyle::PM_FocusFrameHMargin)+1;
+
+		if (settings.contains (key))
+		{
+			// The settings contain a width for this column
+			setColumnWidth (i, settings.value (key).toInt ());
+		}
+		else
+		{
+			// No width for this column in the settings. Determine the default.
+			QString sampleText=columnInfo.sampleText (i);
+			QString headerText=model ()->headerData (i, Qt::Horizontal).toString ();
+
+			// The 2/4 were determined experimentally. Probably, some metric
+			// should be used. For headerWidth, +2 is enough on Linux/Gnome,
+			// but not on Windows XP.
+			int sampleWidth=metrics.boundingRect (sampleText).width ()+2*margin+2;
+			int headerWidth=metrics.boundingRect (headerText).width ()+2*margin+4;
+
+			setColumnWidth (i, qMax (sampleWidth, headerWidth));
+		}
+	}
+}
+
+void SkTableView::writeColumnWidths (QSettings &settings, const ColumnInfo &columnInfo)
+{
+	if (!getEffectiveModel ()) return;
+
+	assert (columnInfo.columnCount ()==getEffectiveModel ()->columnCount ());
+
+	for (int i=0; i<columnInfo.columnCount (); ++i)
+	{
+		QString columnName=columnInfo.columnName (i);
+		QString key=QString ("columnWidth_%1").arg (columnName);
+		int value=columnWidth (i);
+
+		settings.setValue (key, value);
+	}
+}
+
+// FIXME document, but it's slow
+//void SkTableView::updateSelectionColors ()
+//{
+//	return;
+//	if (!coloredSelectionEnabled) return;
+//
+//	QModelIndex index=currentIndex ();
+//	if (!index.isValid ()) return;
+//
+//	QColor backgroundColor=index.data (Qt::BackgroundRole).value<QBrush> ().color ();
+//
+//	// Flight color on dark gray in selected cells
+//	if (backgroundColor.isValid ())
+//		setStyleSheet (QString
+//			("selection-background-color: #3F3F3F; selection-color: %1;")
+//			.arg (backgroundColor.name ()));
+//	else
+//		setStyleSheet (QString ("selection-background-color: #3F3F3F;"));
+//
+//	// Fake border around selected
+//	// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
+////		setStyleSheet (QString (
+////		    "selection-color: #000000; "
+////		    "selection-background-color: "
+////		    "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
+////		    "stop: 0 %1, stop: 0.2 %2, stop: 0.8 %3, stop: 1 %4);")
+////		    .arg (QString ("#000000"))
+////		    .arg (backgroundColor.name ())
+////		    .arg (backgroundColor.name ())
+////		    .arg (QString ("#000000")));
+//
+//	// Vertical gradient in selected cells
+//	// WARNING: in some styles (e. g. Gnome), gradients appear as solid black
+////		setStyleSheet (QString (
+////		    "selection-color: #000000; "
+////		    "selection-background-color: "
+////		    "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
+////		    "stop: 0 %1, stop: 1 %2);")
+////		    .arg (backgroundColor.darker (135).name())
+////		    .arg (backgroundColor.lighter (135).name()));
+//}
+
+// Selection changed - since selectionBehavior is SelectRows, this means that a
+// different flight (or none) was selected
+void SkTableView::selectionChanged (const QItemSelection &selected, const QItemSelection &deselected)
+{
+	// Set up the selection colors depending on the cell background color
+//	updateSelectionColors ();
+
+	updateWidgetFocus (selected.indexes ());
+	QTableView::selectionChanged (selected, deselected);
+}
+
+
+void SkTableView::setColoredSelectionEnabled (bool value)
+{
+	itemDelegate->setColoredSelectionEnabled (value);
+}
+
+bool SkTableView::getColoredSelectionEnabled ()
+{
+	return itemDelegate->getColoredSelectionEnabled ();
 }
