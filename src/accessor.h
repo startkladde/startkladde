@@ -17,5 +17,8 @@
         bool_reader (capitalName, name) \
         bool_writer (capitalName, name)
 
+// T    *getFoo ()             const { return foo; }
+// void  setFoo (const T *foo)       { this->foo=foo; }
+
 #endif
 

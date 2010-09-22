@@ -28,11 +28,14 @@ TableButton::TableButton (QPersistentModelIndex index, const QIcon &icon, const 
 TableButton::~TableButton ()
 {
 //	std::cout << "-button" << std::endl;
+	std::cout << "-" << std::flush;
 }
 
 void TableButton::init ()
 {
 //	std::cout << "+button" << std::endl;
+	std::cout << "+" << std::flush;
+
 	QObject::connect (this, SIGNAL (clicked ()), this, SLOT (clickedSlot ()));
 //	setText (QString ("[%1, %2]").arg (index.row  ()).arg (index.column ()));
 

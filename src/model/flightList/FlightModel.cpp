@@ -109,7 +109,6 @@ QString FlightModel::sampleText (int columnIndex) const
 
 QVariant FlightModel::data (const Flight &flight, int column, int role) const
 {
-//	std::cout << "FlightModel::data for flight " << flight.getId () << " col#" << column << std::endl;
 	// TODO more caching - this is called very often
 	// TODO isButtonRole and buttonTextRole should be in xxxData ()
 

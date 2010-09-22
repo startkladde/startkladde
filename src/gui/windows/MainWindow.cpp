@@ -165,7 +165,9 @@ MainWindow::MainWindow (QWidget *parent) :
 	ui.flightTable->setColoredSelectionEnabled (true);
 	ui.flightTable->setModel (proxyModel);
 	ui.flightTable->resizeColumnsToContents (); // Default sizes
+
 	readColumnWidths (); // Stored sizes
+
 
 	QObject::connect (
 		ui.flightTable, SIGNAL (buttonClicked (QPersistentModelIndex)),
@@ -631,6 +633,10 @@ void MainWindow::sortByColumn (int column)
 	header->setSortIndicator (sortColumn, sortOrder);
 }
 
+/**
+ * Called when the flight list changes (flights are inserted or removed or data
+ * changes). Updates the info labels.
+ */
 void MainWindow::flightListChanged ()
 {
 	QList<Flight> flights=flightList->getList ();

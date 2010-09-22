@@ -135,6 +135,7 @@ HEADERS += \
            src/graphics/SkMovie.h \
            src/gui/dialogs.h \
            src/gui/views/ReadOnlyItemDelegate.h \
+           src/gui/views/SkItemDelegate.h \
            src/gui/views/SpecialIntDelegate.h \
            src/gui/views/SpinBoxCreator.h \
            src/gui/widgets/AcpiWidget.h \
@@ -178,7 +179,6 @@ HEADERS += \
            src/model/flightList/FlightSortFilterProxyModel.h \
            src/model/objectList/AbstractObjectList.h \
            src/model/objectList/AutomaticEntityList.h \
-           src/model/objectList/CachingObjectListModel.h \
            src/model/objectList/ColumnInfo.h \
            src/model/objectList/EntityList.h \
            src/model/objectList/MutableObjectList.h \
@@ -278,6 +278,7 @@ SOURCES += \
            src/graphics/SkMovie.cpp \
            src/gui/dialogs.cpp \
            src/gui/views/ReadOnlyItemDelegate.cpp \
+           src/gui/views/SkItemDelegate.cpp \
            src/gui/views/SpecialIntDelegate.cpp \
            src/gui/views/SpinBoxCreator.cpp \
            src/gui/widgets/LongitudeInput.cpp \
