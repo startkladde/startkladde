@@ -29,6 +29,7 @@ class FlightProxyList: public AbstractObjectList<Flight>
 		virtual QList<Flight> getList () const;
 
 		virtual int findTowref (int index) const;
+		virtual int modelIndexFor (dbId id, bool towflight) const;
 
 	protected:
 		virtual bool isAirtow (const Flight &flight, LaunchMethod *launchMethod) const;

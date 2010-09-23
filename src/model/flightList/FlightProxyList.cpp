@@ -150,11 +150,17 @@ bool FlightProxyList::modelIndexIsTowflight (int index) const
 
 int FlightProxyList::towflightIndexToModelIndex (int towflightIndex) const
 {
+	if (towflightIndex<0)
+		return -1;
+
 	return towflightIndex+sourceModel.size ();
 }
 
 int FlightProxyList::modelIndexToTowflightIndex (int modelIndex) const
 {
+	if (modelIndex<0)
+		return -1;
+
 	return modelIndex-sourceModel.size ();
 }
 
@@ -186,6 +192,20 @@ int FlightProxyList::findTowref (int index) const
 	else
 	{
 		return -1;
+	}
+}
+
+int FlightProxyList::modelIndexFor (dbId id, bool towflight) const
+{
+	if (towflight)
+	{
+		int towflightIndex=findTowflight (id);
+		return towflightIndexToModelIndex (towflightIndex); // Handles <0
+	}
+	else
+	{
+		int flightIndex=findFlight (id);
+		return flightIndexToModelIndex (flightIndex); // Handles <0
 	}
 }
 

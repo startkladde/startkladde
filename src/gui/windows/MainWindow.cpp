@@ -558,8 +558,15 @@ void MainWindow::refreshFlights ()
 		proxyModel->setShowPreparedFlights (false);
 	}
 
+	bool towflightSelected=false;
+	dbId selectedId=currentFlightId (&towflightSelected);
+	int column=ui.flightTable->currentIndex ().column ();
+
 	flightList->replaceList (flights);
 	sortCustom ();
+
+	if (idValid (selectedId))
+		selectFlight (selectedId, towflightSelected, column);
 
 	// TODO should be done automatically
 	// ui.flightTable->resizeColumnsToContents ();
@@ -584,16 +591,43 @@ dbId MainWindow::currentFlightId (bool *isTowflight)
 	QModelIndex proxyIndex = ui.flightTable->currentIndex ();
 
 	// Map the index from the proxy model to the flight list model
-	QModelIndex flightListIndex = proxyModel->mapToSource (proxyIndex);
+	QModelIndex flightListModelIndex = proxyModel->mapToSource (proxyIndex);
 
 	// If there is not selection, return an invalid ID
-	if (!flightListIndex.isValid ()) return invalidId;
+	if (!flightListModelIndex.isValid ()) return invalidId;
 
 	// Get the flight from the model
-	const Flight &flight = flightListModel->at (flightListIndex);
+	const Flight &flight = flightListModel->at (flightListModelIndex);
 
 	if (isTowflight) (*isTowflight) = flight.isTowflight ();
 	return flight.getId ();
+}
+
+bool MainWindow::selectFlight (dbId id, bool selectTowflight, int column)
+{
+//	int flightListIndex=flightList->findById (id);
+
+	// Find the flight or towflight with that ID in the flight proxy list
+	int proxyListIndex=proxyList->modelIndexFor (id, selectTowflight);
+	if (proxyListIndex<0) return false;
+
+	// Create the index in the flight list model
+	QModelIndex flightListModelIndex=flightListModel->index (proxyListIndex, column);
+	if (!flightListModelIndex.isValid ()) return false;
+
+	// Map the index from the flight list model to the proxy model
+	QModelIndex proxyIndex=proxyModel->mapFromSource (flightListModelIndex);
+	if (!proxyIndex.isValid ()) return false;
+
+	// Select it
+	ui.flightTable->setCurrentIndex (proxyIndex);
+
+	return true;
+
+	// flightList
+	// proxyList       = FlightProxyList            (flightList)
+	// flightListModel = ObjectListModel            (proxyList)
+	// proxyModel      = FlightSortFilterProxyModel (flightListModel)
 }
 
 void MainWindow::sortCustom ()
@@ -870,6 +904,37 @@ void MainWindow::on_actionTouchngo_triggered ()
 	catch (Cache::NotFoundException &ex)
 	{
 		log_error (QString ("Flight %1 not found in MainWindow::on_actionTouchngo_triggered").arg (ex.id));
+	}
+}
+
+void MainWindow::departOrLand ()
+{
+	bool isTowflight=false;
+	dbId id = currentFlightId (&isTowflight);
+
+	if (idInvalid (id)) return;
+
+	try
+	{
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
+
+		bool flightChanged=true;
+
+		if (flight.canDepart ())
+			flight.departNow ();
+		else if (isTowflight && flight.canTowflightLand ())
+			flight.landTowflightNow ();
+		else if (!isTowflight && flight.canLand ())
+			flight.landNow ();
+		else
+			flightChanged=false;
+
+		if (flightChanged)
+			updateFlight (flight);
+	}
+	catch (Cache::NotFoundException &ex)
+	{
+		log_error (QString ("Flight %1 not found in MainWindow::departOrLand").arg (ex.id));
 	}
 }
 
@@ -1238,6 +1303,11 @@ void MainWindow::keyPressEvent (QKeyEvent *e)
 				else
 					ui.actionEdit   ->trigger ();
 			}
+			break;
+		case Qt::Key_Space:
+			if (databaseActionsEnabled)
+				departOrLand ();
+
 			break;
 
 		default: e->ignore (); break;

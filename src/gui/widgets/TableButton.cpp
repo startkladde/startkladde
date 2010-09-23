@@ -28,20 +28,22 @@ TableButton::TableButton (QPersistentModelIndex index, const QIcon &icon, const 
 TableButton::~TableButton ()
 {
 //	std::cout << "-button" << std::endl;
-	std::cout << "-" << std::flush;
+//	std::cout << "-" << std::flush;
 }
 
 void TableButton::init ()
 {
 //	std::cout << "+button" << std::endl;
-	std::cout << "+" << std::flush;
+//	std::cout << "+" << std::flush;
 
 	QObject::connect (this, SIGNAL (clicked ()), this, SLOT (clickedSlot ()));
 //	setText (QString ("[%1, %2]").arg (index.row  ()).arg (index.column ()));
 
 	// Don't accept keyboard focus - the tab order of buttons in the table is
-	// not defined.
-	setFocusPolicy (Qt::ClickFocus);
+	// not defined. Don't accept mouse focus - space bar on the table is handled
+	// explicitly and a focused button, when different from the current row,
+	// would cause confusion as to which row is affected by a space bar press.
+	setFocusPolicy (Qt::NoFocus);
 }
 
 void TableButton::clickedSlot ()

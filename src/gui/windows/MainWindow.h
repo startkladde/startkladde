@@ -88,6 +88,7 @@ class MainWindow: public QMainWindow
 		void updateFlight (const Flight &flight);
 
 		dbId currentFlightId (bool *isTowflight=NULL);
+		bool selectFlight (dbId id, bool selectTowflight, int column);
 		void sortCustom ();
 		void sortByColumn (int column);
 
@@ -202,6 +203,7 @@ class MainWindow: public QMainWindow
 		void departFlight (dbId id);
 		void landFlight (dbId id);
 		void landTowflight (dbId id);
+		void departOrLand ();
 
 		// Plugins
 		void weatherWidget_doubleClicked ();

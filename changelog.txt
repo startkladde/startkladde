@@ -1,3 +1,6 @@
+	- Space bar departs/lands flights without table button focus
+	- Select the same flight as before after refresh
+	- Caching of flight data
 	- Bugfix: duplicate person name part entries in firstByLast/lastByFirst
 	  name hashes in Cache on person change
 	- Bugfix: table button focus lost when current flight is edited

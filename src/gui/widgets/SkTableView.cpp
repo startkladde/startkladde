@@ -81,11 +81,12 @@ SkTableView::SkTableView (QWidget *parent):
 	itemDelegate (new SkItemDelegate (this))
 {
 	setTabKeyNavigation (false);
+
+	setItemDelegate (itemDelegate);
 }
 
 SkTableView::~SkTableView ()
 {
-	delete itemDelegate;
 }
 
 void SkTableView::setModel (QAbstractItemModel *model)
@@ -174,9 +175,9 @@ void SkTableView::dataChanged (const QModelIndex &topLeft, const QModelIndex &bo
 		for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
 			resizeRowToContents (i);
 
-	// Required or the button focus may be lost after a prepared flight has
-	// been edited
-	updateWidgetFocus (selectionModel ()->selectedIndexes ());
+	// The button focus may be lost after a prepared flight has been edited.
+	// Don't update the focus, it is slow
+//	updateWidgetFocus (selectionModel ()->selectedIndexes ());
 }
 
 void SkTableView::reset ()
@@ -294,14 +295,26 @@ bool SkTableView::focusWidgetAt (const QModelIndex &index)
 	return true;
 }
 
+/**
+ * This method is slow, don't use it
+ *
+ * More specifically, it's the setFocus call that is slow.
+ *
+ * If this method is called on every change of the current item in the table,
+ * scrolling is slowed down noticeably for rows with a button.
+ *
+ * @param indexes
+ */
 void SkTableView::updateWidgetFocus (const QModelIndexList &indexes)
 {
+	assert (!"This method should not be used, it's slow.");
+
 	// If the current selection contains a widget, focus it if it is visible
 	QWidget *widget=findVisibleWidget (indexes);
 	if (widget)
-		widget->setFocus ();
+		widget->setFocus (Qt::OtherFocusReason);
 	else
-		this->setFocus ();
+		this->setFocus (Qt::OtherFocusReason);
 }
 
 
@@ -324,7 +337,8 @@ void SkTableView::scrollLeft ()
 			if (lastIndex.isValid ())
 			{
 				setCurrentIndex (lastIndex);
-				updateWidgetFocus (selectionModel ()->selectedIndexes ());
+				// Don't update the focus, it is slow
+				//updateWidgetFocus (selectionModel ()->selectedIndexes ());
 			}
 			return;
 		}
@@ -332,7 +346,8 @@ void SkTableView::scrollLeft ()
 		lastIndex=index;
 	}
 
-	updateWidgetFocus (selectionModel ()->selectedIndexes ());
+	// Don't update the focus, it is slow
+	//updateWidgetFocus (selectionModel ()->selectedIndexes ());
 }
 
 void SkTableView::scrollRight ()
@@ -355,7 +370,8 @@ void SkTableView::scrollRight ()
 			if (lastIndex.isValid ())
 			{
 				setCurrentIndex (lastIndex);
-				updateWidgetFocus (selectionModel ()->selectedIndexes ());
+				// Don't update the focus, it is slow
+				//updateWidgetFocus (selectionModel ()->selectedIndexes ());
 			}
 			return;
 		}
@@ -381,9 +397,10 @@ void SkTableView::mousePressEvent (QMouseEvent *event)
 
 	if (!selectionModel ()) return;
 
-	// Required or the button focus may be lost when another cell of the
+	// The button focus may be lost when another cell of the
 	// currently selected (!) flight is clicked
-	updateWidgetFocus (selectionModel ()->selectedIndexes ());
+	// Don't update the focus, it is slow
+	//updateWidgetFocus (selectionModel ()->selectedIndexes ());
 }
 
 /**
@@ -466,7 +483,8 @@ void SkTableView::writeColumnWidths (QSettings &settings, const ColumnInfo &colu
 // different flight (or none) was selected
 void SkTableView::selectionChanged (const QItemSelection &selected, const QItemSelection &deselected)
 {
-	updateWidgetFocus (selected.indexes ());
+	// Don't update the focus, it is slow
+	//updateWidgetFocus (selected.indexes ());
 	QTableView::selectionChanged (selected, deselected);
 }
 
