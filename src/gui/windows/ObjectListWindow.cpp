@@ -8,6 +8,46 @@
  *     name)
  *   - display centered
  */
+
+/*
+ * FIXME plan for merging people:
+ *   (0) preparation
+ *   (A) allow type specific actions in ObjectListWindow
+ *   (B) implement merging
+ *   (X) also
+ *
+ * (0)
+ *   - test ObjectSelectWindow for a large database (test code below)
+ *
+ * (A): currently, we only have generic code in ObjectListWindow<T>. To allow
+ * type specific actions:
+ *   - move ObjectListWindow* to objectList/
+ *   - inherit PersonListWindow etc. from ObjectListWindow
+ *   - put specific code there, with (potentially pure) virtual methods in
+ *     ObjectListWindow
+ *   - create the ObjectListWindow instances with ObjectListWindow<T>::create
+ *     which can be specialized if there is a specific class
+ *
+ * (B)
+ *   - generic: switch object selector from Entity::get_selector_value to ObjectModel
+ *   - generic: potentially switch object selector from tree widget to tree view, or
+ *     table widget/table view (with ObjectListModel) if it supports spannung columns
+ *   - generic: enable (and check) sorting in object selector (beware the "special"
+ *     entries "Unknown" and "Create new")
+ *   - generic: allow disabling of "special" entries in object selector
+ *   - use a selector for selecting a person
+ *   - make a confirmation dialog
+ *
+ * (X)
+ *   - test horizontal scrolling with tree view/tree widget
+ *
+	#include "src/gui/windows/ObjectSelectWindow.h"
+	EntityList<Person> testList=manager.getCache ().getObjects<Person> ();
+	dbId resultId;
+	ObjectSelectWindow<Person>::select (&resultId, "Test", "Test auswählen", testList.getList (), invalidId, parent);
+ *
+ */
+
 #include <iostream>
 
 #include <QMessageBox>
