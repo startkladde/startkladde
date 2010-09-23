@@ -26,6 +26,7 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		virtual void on_actionRefresh_triggered ();
 
 		virtual void on_table_doubleClicked (const QModelIndex &index);
+		virtual void on_table_customContextMenuRequested (const QPoint &pos);
 
 	protected:
 		virtual QString makePasswordMessage ();
@@ -39,6 +40,8 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 //		bool listModelOwned;
 
 		QSortFilterProxyModel *proxyModel;
+
+		QMenu *contextMenu;
 };
 
 #endif // OBJECTLISTWINDOW_H

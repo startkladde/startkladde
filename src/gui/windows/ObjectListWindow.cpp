@@ -26,7 +26,8 @@
 //	ObjectListWindowBase (manager, parent),
 //	listModel (listModel), listModelOwned (listModelOwned)
 template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWidget *parent):
-	ObjectListWindowBase (manager, parent)
+	ObjectListWindowBase (manager, parent),
+	contextMenu (new QMenu (this))
 {
 	// Create the object listModel
 	list = new AutomaticEntityList<T>
@@ -173,6 +174,25 @@ template<class T> void ObjectListWindow<T>::on_table_doubleClicked (const QModel
 	{
 		ui.actionNew->trigger ();
 	}
+}
+
+template<class T> void ObjectListWindow<T>::on_table_customContextMenuRequested (const QPoint &pos)
+{
+	contextMenu->clear ();
+
+	if (ui.table->indexAt (pos).isValid ())
+	{
+		contextMenu->addAction (ui.actionNew);
+		contextMenu->addSeparator ();
+		contextMenu->addAction (ui.actionEdit);
+		contextMenu->addAction (ui.actionDelete);
+	}
+	else
+	{
+		contextMenu->addAction (ui.actionNew);
+	}
+
+	contextMenu->popup (ui.table->mapToGlobal (pos), 0);
 }
 
 template<class T> void ObjectListWindow<T>::keyPressEvent (QKeyEvent *e)
