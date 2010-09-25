@@ -22,10 +22,10 @@ template<class T> class ObjectModel;
 template<class T> class ObjectSelectWindow: public ObjectSelectWindowBase
 {
 	public:
-		ObjectSelectWindow (const QList<T> &objects, ObjectModel<T> *model, bool modelOwned, dbId selectedId, QWidget *parent=NULL);
+		ObjectSelectWindow (const QList<T> &objects, ObjectModel<T> *model, bool modelOwned, dbId selectedId, bool enableSpecialEntries, QWidget *parent=NULL);
 		virtual ~ObjectSelectWindow ();
 
-		static Result select (dbId *resultId, const QString &title, const QString &text, const QList<T> &objects, ObjectModel<T> *model, bool modelOwned, dbId preselectionId, QWidget *parent=NULL);
+		static Result select (dbId *resultId, const QString &title, const QString &text, const QList<T> &objects, ObjectModel<T> *model, bool modelOwned, dbId preselectionId, bool enableSpecialEntries, QWidget *parent=NULL);
 
 	private:
 		ObjectModel<T> *model;

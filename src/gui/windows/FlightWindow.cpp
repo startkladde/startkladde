@@ -1548,7 +1548,7 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 	dbId selectedPerson=invalidId;
 	ObjectSelectWindowBase::Result selectionResult=
 		ObjectSelectWindow<Person>::select (&selectedPerson, title, text,
-			people, new Person::DefaultObjectModel (), true, preselectionId, this);
+			people, new Person::DefaultObjectModel (), true, preselectionId, true, this);
 
 	switch (selectionResult)
 	{

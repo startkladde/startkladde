@@ -29,9 +29,6 @@
  *     which can be specialized if there is a specific class
  *
  * (B)
- *   - generic: enable (and check) sorting in object selector (beware the "special"
- *     entries "Unknown" and "Create new")
- *   - generic: allow disabling of "special" entries in object selector
  *   - use a selector for selecting a person
  *   - make a confirmation dialog
  *
