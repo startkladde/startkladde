@@ -32,7 +32,7 @@
 #include "src/gui/windows/DateInputDialog.h"
 #include "src/gui/windows/FlightWindow.h"
 #include "src/gui/windows/LaunchMethodSelectionWindow.h"
-#include "src/gui/windows/ObjectListWindow.h"
+#include "src/gui/windows/objectList/ObjectListWindow.h"
 #include "src/gui/windows/SplashScreen.h"
 #include "src/gui/windows/StatisticsWindow.h"
 #include "src/gui/windows/WeatherDialog.h"

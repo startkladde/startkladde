@@ -151,8 +151,6 @@ HEADERS += \
            src/gui/windows/LaunchMethodSelectionWindow.h \
            src/gui/windows/MainWindow.h \
            src/gui/windows/MonitorDialog.h \
-           src/gui/windows/ObjectListWindow.h \
-           src/gui/windows/ObjectListWindowBase.h \
            src/gui/windows/ObjectSelectWindow.h \
            src/gui/windows/ObjectSelectWindowBase.h \
            src/gui/windows/SplashScreen.h \
@@ -165,6 +163,8 @@ HEADERS += \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.h \
            src/gui/windows/objectEditor/PersonEditorPane.h \
            src/gui/windows/objectEditor/PlaneEditorPane.h \
+           src/gui/windows/objectList/ObjectListWindow.h \
+           src/gui/windows/objectList/ObjectListWindowBase.h \
            src/io/AnsiColors.h \
            src/io/SkProcess.h \
            src/logging/messages.h \
@@ -293,8 +293,6 @@ SOURCES += \
            src/gui/windows/LaunchMethodSelectionWindow.cpp \
            src/gui/windows/MainWindow.cpp \
            src/gui/windows/MonitorDialog.cpp \
-           src/gui/windows/ObjectListWindow.cpp \
-           src/gui/windows/ObjectListWindowBase.cpp \
            src/gui/windows/ObjectSelectWindow.cpp \
            src/gui/windows/ObjectSelectWindowBase.cpp \
            src/gui/windows/SplashScreen.cpp \
@@ -306,6 +304,8 @@ SOURCES += \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.cpp \
            src/gui/windows/objectEditor/PersonEditorPane.cpp \
            src/gui/windows/objectEditor/PlaneEditorPane.cpp \
+           src/gui/windows/objectList/ObjectListWindow.cpp \
+           src/gui/windows/objectList/ObjectListWindowBase.cpp \
            src/io/AnsiColors.cpp \
            src/io/SkProcess.cpp \
            src/logging/messages.cpp \
