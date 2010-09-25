@@ -164,6 +164,7 @@ HEADERS += \
            src/gui/windows/objectEditor/PersonEditorPane.h \
            src/gui/windows/objectEditor/PlaneEditorPane.h \
            src/gui/windows/objectList/ObjectListWindow.h \
+           src/gui/windows/objectList/PersonListWindow.h \
            src/gui/windows/objectList/ObjectListWindowBase.h \
            src/io/AnsiColors.h \
            src/io/SkProcess.h \
@@ -305,6 +306,7 @@ SOURCES += \
            src/gui/windows/objectEditor/PersonEditorPane.cpp \
            src/gui/windows/objectEditor/PlaneEditorPane.cpp \
            src/gui/windows/objectList/ObjectListWindow.cpp \
+           src/gui/windows/objectList/PersonListWindow.cpp \
            src/gui/windows/objectList/ObjectListWindowBase.cpp \
            src/io/AnsiColors.cpp \
            src/io/SkProcess.cpp \

@@ -10,6 +10,10 @@
  *   - on every move, the current selection has to be searched for a visible
  *     button in order to set the focus; this could possibly be made more
  *     efficient
+ *   - use a QTreeView instead? May be useful for horizontal scrolling
+ *   - use a custom delegate for rendering the buttons? Might be faster and
+ *     provide better control over the focus (which is disabled at the moment
+ *     due to poor performance)
  */
 
 /*

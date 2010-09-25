@@ -21,19 +21,11 @@
  *
  * (A): currently, we only have generic code in ObjectListWindow<T>. To allow
  * type specific actions:
- *   - move ObjectListWindow* to objectList/
- *   - inherit PersonListWindow etc. from ObjectListWindow
- *   - put specific code there, with (potentially pure) virtual methods in
- *     ObjectListWindow
- *   - create the ObjectListWindow instances with ObjectListWindow<T>::create
- *     which can be specialized if there is a specific class
+ *   - put specific code in PersonListWindow
  *
  * (B)
  *   - use a selector for selecting a person
  *   - make a confirmation dialog
- *
- * (X)
- *   - test horizontal scrolling with tree view/tree widget
  *
 	#include "src/gui/windows/ObjectSelectWindow.h"
 	EntityList<Person> testList=manager.getCache ().getObjects<Person> ();
@@ -59,6 +51,8 @@
 //template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, ObjectListModel<T> *listModel, bool listModelOwned, QWidget *parent):
 //	ObjectListWindowBase (manager, parent),
 //	listModel (listModel), listModelOwned (listModelOwned)
+// FIXME ist there a way to prevent calling this, even privately, except
+// through the create method?
 template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWidget *parent):
 	ObjectListWindowBase (manager, parent),
 	contextMenu (new QMenu (this))
@@ -70,7 +64,6 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 	// Create the object model and object list model
 	objectModel=new typename T::DefaultObjectModel ();
 	listModel = new ObjectListModel<T> (list, false, objectModel, true, this);
-
 
 	// Set the list model as the table's model with a sort proxy
 	proxyModel=new QSortFilterProxyModel (this);
@@ -106,7 +99,7 @@ template<class T> void ObjectListWindow<T>::show (DbManager &manager, const QStr
 template<class T> void ObjectListWindow<T>::show (DbManager &manager, bool editPasswordRequired, const QString &editPassword, QWidget *parent)
 {
 	// Create the window
-	ObjectListWindowBase *window = new ObjectListWindow<T> (manager, parent);
+	ObjectListWindowBase *window = ObjectListWindow<T>::create (manager, parent);
 	window->setAttribute (Qt::WA_DeleteOnClose, true);
 
 	if (editPasswordRequired)
@@ -256,6 +249,17 @@ template<class T> void ObjectListWindow<T>::keyPressEvent (QKeyEvent *e)
 template<class T> QString ObjectListWindow<T>::makePasswordMessage ()
 {
 	return utf8 ("Zum Editieren der %1 ist das Datenbankpasswort erforderlich.").arg (T::objectTypeDescriptionPlural ());
+}
+
+/**
+ * FIXME document:
+ *   - must be used for all ObjectListWindow creations
+ *   - defaults to creating ObjectListWindow<T>
+ *   - can be specialized (event though instantiated below) to create a subclass
+ */
+template<class T> ObjectListWindow<T> *ObjectListWindow<T>::create (DbManager &manager, QWidget *parent)
+{
+	return new ObjectListWindow<T> (manager, parent);
 }
 
 // Instantiate the class templates

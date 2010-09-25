@@ -9,11 +9,13 @@ class DbManager;
 class QSortFilterProxyModel;
 template<class T> class ObjectListModel;
 
+/**
+ * Uses a T::DefaultObjectModel. This model should expose all editable fields
+ * of T.
+ */
 template <class T> class ObjectListWindow: public ObjectListWindowBase
 {
 	public:
-//		ObjectListWindow (DbManager &manager, ObjectListModel<T> *listModel, bool listModelOwned, QWidget *parent=NULL);
-		ObjectListWindow (DbManager &manager, QWidget *parent=NULL);
 		~ObjectListWindow();
 
 		static void show (DbManager &manager, QWidget *parent=NULL);
@@ -28,7 +30,13 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		virtual void on_table_doubleClicked (const QModelIndex &index);
 		virtual void on_table_customContextMenuRequested (const QPoint &pos);
 
+		static ObjectListWindow<T> *create (DbManager &manager, QWidget *parent=NULL);
+
 	protected:
+		// Instances are only to be created using the create method
+//		ObjectListWindow (DbManager &manager, ObjectListModel<T> *listModel, bool listModelOwned, QWidget *parent=NULL);
+		ObjectListWindow (DbManager &manager, QWidget *parent=NULL);
+
 		virtual QString makePasswordMessage ();
 		void keyPressEvent (QKeyEvent *e);
 
