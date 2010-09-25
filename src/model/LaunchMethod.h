@@ -57,11 +57,6 @@ class LaunchMethod: public Entity
 		static QList<Type> listTypes ();
 
 
-		// *** EntitySelectWindow helpers
-		virtual QString get_selector_value (int column_number) const;
-		static QString get_selector_caption (int column_number);
-
-
 		// *** ObjectListWindow/ObjectEditorWindow helpers
 		static QString objectTypeDescription () { return "Startart"; }
 		static QString objectTypeDescriptionDefinite () { return "die Startart"; }

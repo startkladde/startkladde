@@ -91,37 +91,6 @@ QString Person::getDisplayName () const
 }
 
 
-// ********************************
-// ** EntitySelectWindow helpers **
-// ********************************
-
-QString Person::get_selector_value (int column_number) const
-{
-	switch (column_number)
-	{
-		case 0: return lastName;
-		case 1: return firstName;
-		case 2: return club;
-		case 3: return comments;
-		case 4: return QString::number (id);
-		default: return QString ();
-	}
-}
-
-QString Person::get_selector_caption (int column_number)
-{
-	switch (column_number)
-	{
-		case 0: return "Nachname";
-		case 1: return "Vorname";
-		case 2: return "Verein";
-		case 3: return "Bemerkungen";
-		case 4: return "ID";
-		default: return QString ();
-	}
-}
-
-
 // *****************
 // ** ObjectModel **
 // *****************
@@ -142,7 +111,6 @@ QVariant Person::DefaultObjectModel::displayHeaderData (int column) const
 		case 4: return utf8 ("Medical prüfen");
 		case 5: return "Bemerkungen";
 		case 6: return "Vereins-ID";
-		// TODO remove from DefaultItemModel?
 		case 7: return "ID";
 	}
 

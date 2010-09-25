@@ -1,27 +1,25 @@
 #include "ObjectSelectWindow.h"
 
+#include <iostream>
+
 #include "src/gui/widgets/SkTreeWidgetItem.h"
 //#include "src/logging/messages.h"
 #include "src/text.h"
+#include "src/util/qString.h"
 
-template<class T> ObjectSelectWindow<T>::ObjectSelectWindow (const QList<T> &objects, dbId selectedId, QWidget *parent):
-	ObjectSelectWindowBase (parent)
+#include "src/model/objectList/ObjectModel.h"
+
+template<class T> ObjectSelectWindow<T>::ObjectSelectWindow (const QList<T> &objects, ObjectModel<T> *model, bool modelOwned, dbId selectedId, QWidget *parent):
+	ObjectSelectWindowBase (parent),
+	model (model), modelOwned (modelOwned)
 {
-	int i=0;
 	QString title;
 
-	QStringList header;
+	QStringList headerLabels;
+	for (int i=0; i<model->columnCount (); ++i)
+		headerLabels << model->headerData (i).toString ();
 
-	// TODO improve: ObjectModel? StringList?
-	while (title=T::get_selector_caption (i), !title.isEmpty ())
-	{
-		header.append (title);
-		++i;
-	}
-
-	ui.objectList->setColumnCount (header.size ());
-	ui.objectList->setHeaderLabels (header);
-
+	ui.objectList->setHeaderLabels (headerLabels);
 
 	unknownItem=new SkTreeWidgetItem (ui.objectList, "(Unbekannt)");
 	unknownItem->setFirstColumnSpanned (true);
@@ -38,7 +36,7 @@ template<class T> ObjectSelectWindow<T>::ObjectSelectWindow (const QList<T> &obj
 		item->id=object.getId ();
 
 		for (int i=0; i<numColumns; ++i)
-			item->setText (i, object.get_selector_value (i));
+			item->setData (i, Qt::DisplayRole, model->data (object, i));
 
 		if (!idInvalid (object.getId ()) && object.getId ()==selectedId)
 			ui.objectList->setCurrentItem (item);
@@ -51,12 +49,13 @@ template<class T> ObjectSelectWindow<T>::ObjectSelectWindow (const QList<T> &obj
 
 template<class T> ObjectSelectWindow<T>::~ObjectSelectWindow ()
 {
+	if (modelOwned) delete model;
 }
 
 template<class T> ObjectSelectWindowBase::Result ObjectSelectWindow<T>::select
-	(dbId *resultId, const QString &title, const QString &text, const QList<T> &objects, dbId preselectionId, QWidget *parent)
+	(dbId *resultId, const QString &title, const QString &text, const QList<T> &objects, ObjectModel<T> *model, bool modelOwned, dbId preselectionId, QWidget *parent)
 {
-	ObjectSelectWindow<T> window (objects, preselectionId, parent);
+	ObjectSelectWindow<T> window (objects, model, modelOwned, preselectionId, parent);
 
 	window.setWindowTitle (title);
 

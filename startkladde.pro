@@ -316,6 +316,7 @@ SOURCES += \
            src/model/Flight_Type.cpp \
            src/model/LaunchMethod.cpp \
            src/model/Person.cpp \
+           src/model/PersonModel.cpp \
            src/model/Plane.cpp \
            src/model/flightList/FlightModel.cpp \
            src/model/flightList/FlightProxyList.cpp \

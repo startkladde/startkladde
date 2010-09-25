@@ -49,11 +49,6 @@ class Person: public Entity
 		virtual QString getDisplayName () const;
 
 
-		// *** EntitySelectWindow helpers
-		virtual QString get_selector_value (int column_number) const;
-		static QString get_selector_caption (int column_number);
-
-
 		// *** ObjectListWindow/ObjectEditorWindow helpers
 		static QString objectTypeDescription () { return "Person"; }
 		static QString objectTypeDescriptionDefinite () { return "die Person"; }

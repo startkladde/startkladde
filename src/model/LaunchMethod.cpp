@@ -135,33 +135,6 @@ QList<LaunchMethod::Type> LaunchMethod::listTypes ()
 }
 
 
-// ********************************
-// ** EntitySelectWindow helpers **
-// ********************************
-
-QString LaunchMethod::get_selector_value (int column_number) const
-{
-	switch (column_number)
-	{
-		case 0: return name;
-		case 1: return comments;
-		case 2: return QString::number (id);
-		default: return QString ();
-	}
-}
-
-QString LaunchMethod::get_selector_caption (int column_number)
-{
-	switch (column_number)
-	{
-		case 0: return "Bezeichnung";
-		case 1: return "Bemerkungen";
-		case 2: return "(ID)";
-		default: return QString ();
-	}
-}
-
-
 // *****************
 // ** ObjectModel **
 // *****************

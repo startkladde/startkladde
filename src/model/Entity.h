@@ -34,11 +34,6 @@ class Entity
 		virtual void setId (dbId id) { this->id=id; }
 		virtual QString getDisplayName () const=0;
 
-
-		// *** EntitySelectWindow helpers
-		virtual QString get_selector_value (int column_number) const;
-		static QString get_selector_caption (int column_number);
-
 	protected:
 		dbId id;
 };

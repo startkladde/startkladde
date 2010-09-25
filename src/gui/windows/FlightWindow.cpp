@@ -1545,14 +1545,10 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 	if (idValid (originalId))
 		preselectionId=originalId;
 
-	// Do the selection
-	// There were multiple persons. Let the user select one.
-//	EntitySelectWindow<Person> selector (this, "selector");
-//	selection_result res=selector.do_selection (title, text, people, preselectionId);
-
 	dbId selectedPerson=invalidId;
 	ObjectSelectWindowBase::Result selectionResult=
-		ObjectSelectWindow<Person>::select (&selectedPerson, title, text, people, preselectionId, this);
+		ObjectSelectWindow<Person>::select (&selectedPerson, title, text,
+			people, new Person::DefaultObjectModel (), true, preselectionId, this);
 
 	switch (selectionResult)
 	{

@@ -29,9 +29,6 @@
  *     which can be specialized if there is a specific class
  *
  * (B)
- *   - generic: switch object selector from Entity::get_selector_value to ObjectModel
- *   - generic: potentially switch object selector from tree widget to tree view, or
- *     table widget/table view (with ObjectListModel) if it supports spannung columns
  *   - generic: enable (and check) sorting in object selector (beware the "special"
  *     entries "Unknown" and "Create new")
  *   - generic: allow disabling of "special" entries in object selector

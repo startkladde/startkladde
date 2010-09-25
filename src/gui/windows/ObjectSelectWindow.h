@@ -10,21 +10,26 @@
 
 #include "src/gui/windows/ObjectSelectWindowBase.h"
 
+template<class T> class ObjectModel;
+
 /**
  * A dialog for letting the user select an object from a list. A "new" and
  * "unknown" entry are also given.
  *
- * Classes to be used with this window must implement get_selector_caption
- * and get_selector_value (see Person). Also, this template must be
- * instantiated for use with the class (at the end of ObjectSelectWindow.cpp).
+ * This template must be instantiated for every class it is used with (at the
+ * end of ObjectSelectWindow.cpp).
  */
 template<class T> class ObjectSelectWindow: public ObjectSelectWindowBase
 {
 	public:
-		ObjectSelectWindow (const QList<T> &objects, dbId selectedId, QWidget *parent=NULL);
+		ObjectSelectWindow (const QList<T> &objects, ObjectModel<T> *model, bool modelOwned, dbId selectedId, QWidget *parent=NULL);
 		virtual ~ObjectSelectWindow ();
 
-		static Result select (dbId *resultId, const QString &title, const QString &text, const QList<T> &objects, dbId preselectionId, QWidget *parent=NULL);
+		static Result select (dbId *resultId, const QString &title, const QString &text, const QList<T> &objects, ObjectModel<T> *model, bool modelOwned, dbId preselectionId, QWidget *parent=NULL);
+
+	private:
+		ObjectModel<T> *model;
+		bool modelOwned;
 };
 
 #endif
