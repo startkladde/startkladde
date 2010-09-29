@@ -19,10 +19,6 @@
  * (0)
  *   - test ObjectSelectWindow for a large database (test code below)
  *
- * (A): currently, we only have generic code in ObjectListWindow<T>. To allow
- * type specific actions:
- *   - put specific code in PersonListWindow
- *
  * (B)
  *   - use a selector for selecting a person
  *   - make a confirmation dialog
@@ -115,6 +111,21 @@ template<class T> void ObjectListWindow<T>::show (DbManager &manager, bool editP
 	window->show ();
 }
 
+/**
+ * Note that the result may become invalid as soon as the model is changed.
+ * @return
+ */
+template<class T> const T *ObjectListWindow<T>::getCurrentObject ()
+{
+	QModelIndex tableIndex=ui.table->currentIndex ();
+	if (!tableIndex.isValid ()) return NULL;
+
+	QModelIndex listIndex=proxyModel->mapToSource (tableIndex);
+	if (!listIndex.isValid ()) return NULL;
+
+	const T &object=listModel->at (listIndex);
+	return &object;
+}
 
 template<class T> void ObjectListWindow<T>::on_actionNew_triggered ()
 {
@@ -127,20 +138,19 @@ template<class T> void ObjectListWindow<T>::on_actionEdit_triggered ()
 {
 	if (!allowEdit (makePasswordMessage ())) return;
 
-	QModelIndex listIndex=proxyModel->mapToSource (ui.table->currentIndex ());
-	if (!listIndex.isValid ()) return;
+	const T *object=getCurrentObject ();
+	if (!object) return;
 
-	ObjectEditorWindow<T>::editObject (this, manager, listModel->at (listIndex));
+	ObjectEditorWindow<T>::editObject (this, manager, *object);
 }
 
 template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 {
 	if (!allowEdit (makePasswordMessage ())) return;
 
-	QModelIndex listIndex=proxyModel->mapToSource (ui.table->currentIndex ());
-	if (!listIndex.isValid ()) return;
-	const T &object=listModel->at (listIndex);
-	dbId id=object.getId ();
+	const T *object=getCurrentObject ();
+	if (!object) return;
+	dbId id=object->getId ();
 
 	bool objectUsed=true;
 
@@ -156,13 +166,13 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 	if (objectUsed)
 	{
 		QString title=utf8 ("%1 benutzt").arg (T::objectTypeDescription ());
-		QString text=utf8 ("%1 %2 wird verwendet und kann daher nicht gelöscht werden.").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
+		QString text=utf8 ("%1 %2 wird verwendet und kann daher nicht gelöscht werden.").arg (T::objectTypeDescriptionDefinite (), object->getDisplayName ());
 		QMessageBox::critical (this, title, firstToUpper (text));
 	}
 	else
 	{
 		QString title=utf8 ("%1 löschen?").arg (T::objectTypeDescription ());
-		QString question=utf8 ("Soll %1 %2 gelöscht werden?").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
+		QString question=utf8 ("Soll %1 %2 gelöscht werden?").arg (T::objectTypeDescriptionDefinite (), object->getDisplayName ());
 		if (yesNoQuestion (this, title, question))
 		{
 			try

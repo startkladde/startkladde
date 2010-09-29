@@ -32,8 +32,14 @@ template<> ObjectListWindow<Person> *ObjectListWindow<Person>::create (DbManager
 
 void PersonListWindow::overwriteAction_triggered ()
 {
+	if (!allowEdit (makePasswordMessage ())) return;
+
+	const Person *person=getCurrentObject ();
+	if (!person) return;
+
+
 	// FIXME implement
-	std::cout << "overwrite person" << std::endl;
+	std::cout << "overwrite person " << person->getDisplayName () << std::endl;
 }
 
 void PersonListWindow::prepareContextMenu (QMenu *contextMenu, const QPoint &pos)

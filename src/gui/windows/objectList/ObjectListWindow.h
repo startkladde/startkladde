@@ -37,6 +37,8 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 //		ObjectListWindow (DbManager &manager, ObjectListModel<T> *listModel, bool listModelOwned, QWidget *parent=NULL);
 		ObjectListWindow (DbManager &manager, QWidget *parent=NULL);
 
+		const T *getCurrentObject ();
+
 		virtual QString makePasswordMessage ();
 		void keyPressEvent (QKeyEvent *e);
 
