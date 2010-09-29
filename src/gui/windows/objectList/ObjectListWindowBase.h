@@ -46,4 +46,4 @@ class ObjectListWindowBase : public QMainWindow
 		bool editPasswordOk;
 };
 
-#endif // OBJECTLISTWINDOWBASE_H
+#endif

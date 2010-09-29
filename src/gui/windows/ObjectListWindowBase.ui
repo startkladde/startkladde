@@ -70,19 +70,26 @@
      <height>27</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_Datenbank">
+   <widget class="QMenu" name="menuObject">
     <property name="title">
-     <string>&amp;Datenbank</string>
+     <string>&amp;Objekt</string>
     </property>
     <addaction name="actionNew"/>
+    <addaction name="separator"/>
     <addaction name="actionDelete"/>
     <addaction name="actionEdit"/>
     <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>&amp;Fenster</string>
+    </property>
     <addaction name="actionRefresh"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
    </widget>
-   <addaction name="menu_Datenbank"/>
+   <addaction name="menuWindow"/>
+   <addaction name="menuObject"/>
   </widget>
   <action name="actionNew">
    <property name="text">

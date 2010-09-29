@@ -1,10 +1,3 @@
-/*
- * PersonListWindow.h
- *
- *  Created on: 25.09.2010
- *      Author: martin
- */
-
 #ifndef PERSONLISTWINDOW_H_
 #define PERSONLISTWINDOW_H_
 
@@ -12,13 +5,26 @@
 
 #include "src/model/Person.h"
 
+class QAction;
+
 class DbManager;
 
 class PersonListWindow: public ObjectListWindow<Person>
 {
+	Q_OBJECT
+
 	public:
 		PersonListWindow (DbManager &manager, QWidget *parent=NULL);
 		virtual ~PersonListWindow ();
+
+	protected:
+		virtual void prepareContextMenu (QMenu *contextMenu, const QPoint &pos);
+
+	protected slots:
+		void overwriteAction_triggered ();
+
+	private:
+		QAction *overwriteAction;
 };
 
-#endif /* PERSONLISTWINDOW_H_ */
+#endif

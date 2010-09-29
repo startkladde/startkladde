@@ -78,6 +78,12 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 	ui.table->resizeRowsToContents (); // Do this although autoResizeRows is true - there are already rows.
 
 	setWindowTitle (T::objectTypeDescriptionPlural ());
+
+	// TODO this should be done later - a subclass may add menus
+	QString mnemonics="f";
+	QChar closeButtonMnemonic=getMnemonic (ui.buttonBox->button (QDialogButtonBox::Close));
+	if (!closeButtonMnemonic.isNull ()) mnemonics+=closeButtonMnemonic;
+	ui.menuObject->setTitle (insertMnemonic (T::objectTypeDescription (), mnemonics));
 }
 
 template<class T> ObjectListWindow<T>::~ObjectListWindow()
@@ -122,6 +128,8 @@ template<class T> void ObjectListWindow<T>::on_actionEdit_triggered ()
 	if (!allowEdit (makePasswordMessage ())) return;
 
 	QModelIndex listIndex=proxyModel->mapToSource (ui.table->currentIndex ());
+	if (!listIndex.isValid ()) return;
+
 	ObjectEditorWindow<T>::editObject (this, manager, listModel->at (listIndex));
 }
 
@@ -130,6 +138,7 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 	if (!allowEdit (makePasswordMessage ())) return;
 
 	QModelIndex listIndex=proxyModel->mapToSource (ui.table->currentIndex ());
+	if (!listIndex.isValid ()) return;
 	const T &object=listModel->at (listIndex);
 	dbId id=object.getId ();
 
@@ -195,6 +204,7 @@ template<class T> void ObjectListWindow<T>::on_table_doubleClicked (const QModel
 	if (index.isValid ())
 	{
 		QModelIndex listIndex=proxyModel->mapToSource (index);
+		if (!listIndex.isValid ()) return;
 		ObjectEditorWindow<T>::editObject (this, manager, listModel->at (listIndex));
 	}
 	else
@@ -203,8 +213,10 @@ template<class T> void ObjectListWindow<T>::on_table_doubleClicked (const QModel
 	}
 }
 
-template<class T> void ObjectListWindow<T>::on_table_customContextMenuRequested (const QPoint &pos)
+template<class T> void ObjectListWindow<T>::prepareContextMenu (QMenu *contextMenu, const QPoint &pos)
 {
+	// Note that contextMenu refers to the parameter, not the private class
+	// property
 	contextMenu->clear ();
 
 	if (ui.table->indexAt (pos).isValid ())
@@ -218,7 +230,11 @@ template<class T> void ObjectListWindow<T>::on_table_customContextMenuRequested 
 	{
 		contextMenu->addAction (ui.actionNew);
 	}
+}
 
+template<class T> void ObjectListWindow<T>::on_table_customContextMenuRequested (const QPoint &pos)
+{
+	prepareContextMenu (contextMenu, pos);
 	contextMenu->popup (ui.table->mapToGlobal (pos), 0);
 }
 

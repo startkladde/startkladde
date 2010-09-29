@@ -2,6 +2,7 @@
 
 #include <QString>
 #include <QStringList>
+#include <QAbstractButton>
 
 #include "config/Settings.h"
 
@@ -121,4 +122,46 @@ bool locationEntryCanBeChanged (const QString &location)
 	return
 		isNone (location) ||
 		location.simplified ().toLower () == Settings::instance ().location.simplified ().toLower ();
+}
+
+QString insertMnemonic (const QString &text, const QString &disallowed, bool fallbackToFirst)
+{
+	QString disallowedLower=disallowed.toLower ();
+	QString textLower=text.toLower ();
+
+	QString result=text;
+
+	// Improvement: use std::string functionality (wrap for QString)
+	for (int i=0; i<text.length (); ++i)
+		if (!disallowedLower.contains (textLower[i]))
+			return result.insert (i, "&");
+
+	// No allowed mnemonic possible
+	if (fallbackToFirst)
+		return QString ("&")+text;
+	else
+		return text;
+}
+
+QChar getMnemonic (const QString &text)
+{
+	int ampersandPosition=text.indexOf ('&');
+
+	if (ampersandPosition<0)
+		// No ampersand in string
+		return QChar ();
+	else if (ampersandPosition+1>=text.length ())
+		// Ampersand is last character (or beyond the end of the string)
+		return QChar ();
+	else
+		// Ampersand found
+		return text.at (ampersandPosition+1);
+}
+
+QChar getMnemonic (const QAbstractButton *button)
+{
+	if (button)
+		return getMnemonic (button->text ());
+	else
+		return QChar ();
 }

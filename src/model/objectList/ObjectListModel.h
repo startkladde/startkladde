@@ -62,6 +62,8 @@ template<class T> class ObjectListModel: public ObjectListModelBase
 		virtual ~ObjectListModel ();
 
 		// Access
+//		virtual bool hasIndex (const QModelIndex &index) const;
+//		virtual bool hasRow (int index) const;
 		virtual const T &at (const QModelIndex &index) const;
 		virtual const T &at (int row) const;
 
@@ -172,6 +174,24 @@ template<class T> QVariant ObjectListModel<T>::headerData (int section, Qt::Orie
 // **********
 // ** Misc **
 // **********
+
+// Untested
+//template<class T> bool ObjectListModel<T>::hasRow (int row) const
+//{
+//	return (row>=0 && row<list->size ());
+//}
+
+// Untested
+//template<class T> bool ObjectListModel<T>::hasIndex (const QModelIndex &index) const
+//{
+//	return (
+//		index.isValid () &&
+//		index.row ()>=0 &&
+//		index.column ()>=0 &&
+//		index.row ()<list->size () &&
+//		index.column ()<model->columnCount ()
+//		);
+//}
 
 /**
  * Gets a reference to the object specified by a model index from the list

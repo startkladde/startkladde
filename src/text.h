@@ -5,6 +5,8 @@
 #include <QDateTime>
 #include <QString>
 
+class QAbstractButton;
+
 #define STRINGIFY_INDIR(arg) #arg
 #define STRINGIFY(arg) STRINGIFY_INDIR(arg)
 
@@ -25,6 +27,9 @@ QString countText (int count, const QString &singular, const QString &plural);
 QString simplifyClubName (const QString &clubName);
 bool locationEntryCanBeChanged (const QString &location);
 
+QString insertMnemonic (const QString &text, const QString &disallowed, bool fallbackToFirst=false);
+QChar getMnemonic (const QString &text);
+QChar getMnemonic (const QAbstractButton *button);
 
 #endif
 

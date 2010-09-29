@@ -40,6 +40,7 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		virtual QString makePasswordMessage ();
 		void keyPressEvent (QKeyEvent *e);
 
+		virtual void prepareContextMenu (QMenu *contextMenu, const QPoint &pos);
 
 	private:
 		MutableObjectList<T> *list;
