@@ -15,8 +15,8 @@
 // ** Construction **
 // ******************
 
-LaunchMethod::LaunchMethod ()
-	:Entity ()
+LaunchMethod::LaunchMethod ():
+	Entity ()
 {
 	initialize ();
 }

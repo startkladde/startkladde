@@ -34,25 +34,27 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 
 	protected:
 		// Instances are only to be created using the create method
-//		ObjectListWindow (DbManager &manager, ObjectListModel<T> *listModel, bool listModelOwned, QWidget *parent=NULL);
 		ObjectListWindow (DbManager &manager, QWidget *parent=NULL);
 
-		const T *getCurrentObject ();
+		int activeObjectCount ();
+		QList<T> activeObjects ();
 
 		virtual QString makePasswordMessage ();
 		void keyPressEvent (QKeyEvent *e);
 
-		virtual void prepareContextMenu (QMenu *contextMenu, const QPoint &pos);
+		virtual void prepareContextMenu (QMenu *contextMenu);
 
 	private:
+		void appendObjectTo (QList<T> &list, const QModelIndex &tableIndex);
+		bool checkAndDelete (const T &object, bool cancelOption);
+
 		MutableObjectList<T> *list;
 		ObjectModel<T> *objectModel;
 		ObjectListModel<T> *listModel;
-//		bool listModelOwned;
 
 		QSortFilterProxyModel *proxyModel;
 
 		QMenu *contextMenu;
 };
 
-#endif // OBJECTLISTWINDOW_H
+#endif

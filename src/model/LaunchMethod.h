@@ -18,9 +18,10 @@ class LaunchMethod: public Entity
 
 		class DefaultObjectModel: public ObjectModel<LaunchMethod>
 		{
-			virtual int columnCount () const;
-			virtual QVariant displayHeaderData (int column) const;
-			virtual QVariant displayData (const LaunchMethod &object, int column) const;
+			public:
+				virtual int columnCount () const;
+				virtual QVariant displayHeaderData (int column) const;
+				virtual QVariant displayData (const LaunchMethod &object, int column) const;
 		};
 
 

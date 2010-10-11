@@ -146,6 +146,7 @@ HEADERS += \
            src/gui/widgets/SkTreeWidgetItem.h \
            src/gui/widgets/TableButton.h \
            src/gui/widgets/WeatherWidget.h \
+           src/gui/windows/ConfirmOverwritePersonDialog.h \
            src/gui/windows/DateInputDialog.h \
            src/gui/windows/FlightWindow.h \
            src/gui/windows/LaunchMethodSelectionWindow.h \
@@ -289,6 +290,7 @@ SOURCES += \
            src/gui/widgets/SkTreeWidgetItem.cpp \
            src/gui/widgets/TableButton.cpp \
            src/gui/widgets/WeatherWidget.cpp \
+           src/gui/windows/ConfirmOverwritePersonDialog.cpp \
            src/gui/windows/DateInputDialog.cpp \
            src/gui/windows/FlightWindow.cpp \
            src/gui/windows/LaunchMethodSelectionWindow.cpp \
@@ -363,6 +365,7 @@ SOURCES += \
 
 FORMS += \
            src/gui/widgets/LongitudeInput.ui \
+           src/gui/windows/ConfirmOverwritePersonDialog.ui \
            src/gui/windows/DateInputDialog.ui \
            src/gui/windows/FlightWindow.ui \
            src/gui/windows/LaunchMethodSelectionWindow.ui \

@@ -124,11 +124,11 @@ run-debug: startkladde_debug
 # Use a temporary file in build/, so if the dumping fails, we don't overwrite
 # the schema
 .PHONY: update_current_schema
-update_current_schema: startkladde
+update_current_schema: startkladde_debug
 	mkdir -p build
-	./startkladde db:ensure_empty || (echo "Error: database is not empty - use ./startkladde db:clear"; false)
-	./startkladde db:migrate
-	./startkladde db:dump build/current_schema.yaml
+	./startkladde_debug db:ensure_empty || (echo "Error: database is not empty - use ./startkladde db:clear"; false)
+	./startkladde_debug db:migrate
+	./startkladde_debug db:dump build/current_schema.yaml
 	mv build/current_schema.yaml src/db/migrations/current_schema.yaml
 	echo "Schema definition updated successfully"
 

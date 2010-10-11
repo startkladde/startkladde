@@ -504,6 +504,7 @@ template<class T> bool DbManager::objectUsed (dbId id, QWidget *parent)
 	return returner.returnedValue ();
 }
 
+// Improvement: atomic used check and delete
 template<class T> void DbManager::deleteObject (dbId id, QWidget *parent)
 {
 	Returner<int> returner;

@@ -2,32 +2,8 @@
 
 /*
  * Improvements:
- *   - restore cursor position after refresh
  *   - add a way to refresh the list from the database
- *   - on deletion: add identification (plane: registration; person: formatted
- *     name)
  *   - display centered
- */
-
-/*
- * FIXME plan for merging people:
- *   (0) preparation
- *   (A) allow type specific actions in ObjectListWindow
- *   (B) implement merging
- *   (X) also
- *
- * (0)
- *   - test ObjectSelectWindow for a large database (test code below)
- *
- * (B)
- *   - use a selector for selecting a person
- *   - make a confirmation dialog
- *
-	#include "src/gui/windows/ObjectSelectWindow.h"
-	EntityList<Person> testList=manager.getCache ().getObjects<Person> ();
-	dbId resultId;
-	ObjectSelectWindow<Person>::select (&resultId, "Test", "Test auswählen", testList.getList (), invalidId, parent);
- *
  */
 
 #include <iostream>
@@ -44,11 +20,14 @@
 #include "src/model/objectList/ObjectModel.h"
 
 
-//template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, ObjectListModel<T> *listModel, bool listModelOwned, QWidget *parent):
-//	ObjectListWindowBase (manager, parent),
-//	listModel (listModel), listModelOwned (listModelOwned)
-// FIXME ist there a way to prevent calling this, even privately, except
-// through the create method?
+/**
+ * ATTENTION: this constructor should never be called except by the create
+ * method or a subclass constructor to allow specialization.
+ *
+ * @param manager
+ * @param parent
+ * @see create
+ */
 template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWidget *parent):
 	ObjectListWindowBase (manager, parent),
 	contextMenu (new QMenu (this))
@@ -112,19 +91,97 @@ template<class T> void ObjectListWindow<T>::show (DbManager &manager, bool editP
 }
 
 /**
- * Note that the result may become invalid as soon as the model is changed.
- * @return
+ * Appends an object from a specified position (index) in the table to a QList
+ *
+ * The target list contains objects (rather than pointers), so a copy of the
+ * objects is made. Thus, the objects will remain valid even if the model
+ * changes (although they may become out of sync with the database).
+ *
+ * @param targetList the list to append the object to
+ * @param tableIndex the index of one of the cells of the object to add. Note
+ *                   that this index refers to the table, not to the
+ *                   ObjectListModel (there is a proxy model).
  */
-template<class T> const T *ObjectListWindow<T>::getCurrentObject ()
+template<class T> void ObjectListWindow<T>::appendObjectTo (QList<T> &targetList, const QModelIndex &tableIndex)
 {
-	QModelIndex tableIndex=ui.table->currentIndex ();
-	if (!tableIndex.isValid ()) return NULL;
+	if (!tableIndex.isValid ())
+		return;
 
 	QModelIndex listIndex=proxyModel->mapToSource (tableIndex);
-	if (!listIndex.isValid ()) return NULL;
+	if (!listIndex.isValid ())
+		return;
 
 	const T &object=listModel->at (listIndex);
-	return &object;
+	targetList.append (object);
+}
+
+/**
+ * Determines the number of active objects
+ *
+ * See the activeObjects method for a description of which objects are
+ * considered active.
+ *
+ * @return the number of active objects
+ * @see #activeObjects
+ */
+template<class T> int ObjectListWindow<T>::activeObjectCount ()
+{
+	// ATTENTION: make sure getActiveObjects corresponds to this method
+
+	// If there is a selection, the active objects are the selected objects
+	// (rows)
+	if (ui.table->selectionModel ()->hasSelection ())
+		return ui.table->selectionModel ()->selectedRows ().size ();
+
+	// If there is no selection, the active object may be the current one
+	QModelIndex tableIndex=ui.table->currentIndex ();
+	if (tableIndex.isValid ())
+	{
+		QModelIndex listIndex=proxyModel->mapToSource (tableIndex);
+
+		if (listIndex.isValid ())
+			return 1;
+	}
+
+	return 0;
+}
+
+/**
+ * Lists the active objects
+ *
+ * The active objects are the selected objects if any objects are selected, or
+ * the current object (if any) if no objects are selected. If there are neither
+ * selected objects nor a current object, there are no active objects and the
+ * returned list will be empty.
+ *
+ * The list contains values, so a copy of the objects is made. The values will
+ * not become invalid if the model is changed, but they may become out of sync
+ * with the database.
+ *
+ * @return a list containing copies of the active objects
+ * @see activeObjectCount
+ */
+template<class T> QList<T> ObjectListWindow<T>::activeObjects ()
+{
+	// ATTENTION: make sure activeObjectCount corresponds to this method
+
+	QList<T> activeObjects;
+
+	if (ui.table->selectionModel ()->hasSelection ())
+	{
+		// There's a selection
+		foreach (const QModelIndex &tableIndex, ui.table->selectionModel ()->selectedRows (0))
+			appendObjectTo (activeObjects, tableIndex);
+	}
+	else
+	{
+		// There's no selection
+		appendObjectTo (activeObjects, ui.table->currentIndex ()); // May be invalid
+	}
+
+	assert (activeObjects.size ()==activeObjectCount ());
+
+	return activeObjects;
 }
 
 template<class T> void ObjectListWindow<T>::on_actionNew_triggered ()
@@ -138,56 +195,136 @@ template<class T> void ObjectListWindow<T>::on_actionEdit_triggered ()
 {
 	if (!allowEdit (makePasswordMessage ())) return;
 
-	const T *object=getCurrentObject ();
-	if (!object) return;
+	QList<T> objects=activeObjects ();
+	if (objects.isEmpty ()) return;
 
-	ObjectEditorWindow<T>::editObject (this, manager, *object);
+	// Improvement: an ObjectEditorWindow that can edit multiple objects
+	foreach (const T &object, objects)
+	{
+		int result=ObjectEditorWindow<T>::editObject (this, manager, object);
+		if (result!=QDialog::Accepted) break;
+	}
+}
+
+/**
+ *
+ * @param id
+ * @param cancelOption
+ * @return false if canceled
+ */
+template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, bool cancelOption)
+{
+	bool objectUsed=true;
+
+	try
+	{
+		objectUsed=manager.objectUsed<T> (object.getId (), this);
+	}
+	catch (OperationCanceledException)
+	{
+		return false;
+	}
+
+	if (objectUsed)
+	{
+		QString title=utf8 ("%1 benutzt").arg (T::objectTypeDescription ());
+		QString text=utf8 ("%1 %2 wird verwendet und kann daher nicht gelöscht werden.").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
+
+		if (cancelOption)
+			text+=" Fortfahren?";
+
+		QMessageBox::StandardButtons buttons=QMessageBox::Ok;
+
+		if (cancelOption)
+			buttons |= QMessageBox::Cancel;
+
+		if (QMessageBox::critical (this, title, firstToUpper (text), buttons, QMessageBox::Ok)==QMessageBox::Ok)
+			// Continue
+			return true;
+		else
+			// Canceled
+			return false;
+	}
+	else
+	{
+		try
+		{
+			manager.deleteObject<T> (object.getId (), this);
+			return true;
+		}
+		catch (OperationCanceledException)
+		{
+			// TODO the cache may now be inconsistent
+			return false;
+		}
+	}
 }
 
 template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 {
 	if (!allowEdit (makePasswordMessage ())) return;
 
-	const T *object=getCurrentObject ();
-	if (!object) return;
-	dbId id=object->getId ();
+	QList<T> objects=activeObjects ();
 
-	bool objectUsed=true;
-
-	try
-	{
-		objectUsed=manager.objectUsed<T> (id, this);
-	}
-	catch (OperationCanceledException)
-	{
+	if (objects.isEmpty ())
 		return;
-	}
 
-	if (objectUsed)
+	// TODO better selection after deletion
+	//   - single object deleted => next one
+	//   - last object deleted => last one
+	//   - multiple (non-continuous) objects deleted => ...?
+	//   - multiple (non-continuous) objects delete, seleced out of order => ...?
+	//   - ...?
+	// Suggestions:
+	//   - the last one deleted
+	//   - the first (top) one selected (they may be selected out of order)
+	QModelIndex previousIndex=ui.table->currentIndex ();
+
+	for (int i=0; i<objects.size (); ++i)
 	{
-		QString title=utf8 ("%1 benutzt").arg (T::objectTypeDescription ());
-		QString text=utf8 ("%1 %2 wird verwendet und kann daher nicht gelöscht werden.").arg (T::objectTypeDescriptionDefinite (), object->getDisplayName ());
-		QMessageBox::critical (this, title, firstToUpper (text));
-	}
-	else
-	{
+		const T &object=objects.at (i);
+
 		QString title=utf8 ("%1 löschen?").arg (T::objectTypeDescription ());
-		QString question=utf8 ("Soll %1 %2 gelöscht werden?").arg (T::objectTypeDescriptionDefinite (), object->getDisplayName ());
-		if (yesNoQuestion (this, title, question))
-		{
-			try
-			{
-				QModelIndex previousIndex=ui.table->currentIndex ();
-				manager.deleteObject<T> (id, this);
-				ui.table->setCurrentIndex (previousIndex); // Handles deletion of last item correctly
-			}
-			catch (OperationCanceledException)
-			{
-				// TODO the cache may now be inconsistent
-			}
+		QString question=utf8 ("Soll %1 %2 gelöscht werden?").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
 
-			// TODO select "next" entry
+		bool confirmDelete=false, cancel=false;
+
+		if (i<objects.size ()-1)
+		{
+			// More objects to follow
+			QMessageBox::StandardButton result=yesNoCancelQuestion (this, title, question);
+			confirmDelete=(result==QMessageBox::Yes);
+			cancel=(result==QMessageBox::Cancel);
 		}
+		else
+		{
+			// Last object
+			// TODO add a "Yes to all" option and a proper progress indicator
+			confirmDelete=yesNoQuestion (this, title, question);
+			cancel=false;
+		}
+
+		if (confirmDelete)
+		{
+			if (!checkAndDelete (object, false))
+				break;
+		}
+		else if (cancel)
+		{
+			break;
+		}
+		// else: No
+	}
+
+	// Don't make any change if there are still selected rows
+	if (!ui.table->selectionModel ()->hasSelection ())
+	{
+		QAbstractItemModel *model=ui.table->model ();
+
+		if (previousIndex.row ()>=model->rowCount ())
+			previousIndex=model->index (model->rowCount ()-1, previousIndex.column ());
+
+		ui.table->setCurrentIndex (previousIndex); // Handles deletion of last item correctly
 	}
 }
 
@@ -200,7 +337,28 @@ template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 	}
 	catch (OperationCanceledException &ex) {}
 
+	// We want to select the "same item as before" after the update. However,
+	// this is poorly defined, since the model is replaced, so the list indexes
+	// get invalid (or at least meaningless).
+	// For now, we select the object from the same table index as before.
+	// Improvement: select the same column as before, but pick the row
+	// according the the ID of the object stored there. What to do if the
+	// selected ID disappeared?
+
+	// Store the old index and ID
+	QModelIndex oldTableIndex=ui.table->currentIndex ();
+
 	list->replaceList (manager.getCache ().getObjects<T> ().getList ());
+
+	QAbstractItemModel *model=ui.table->model ();
+
+	if (oldTableIndex.row () < model->rowCount ())
+		// The old row still exists. Select the old table index.
+		ui.table->setCurrentIndex (oldTableIndex);
+	else
+		// The old row doesn't exist any more. Select the same column in the
+		// last row.
+		ui.table->setCurrentIndex (model->index (model->rowCount ()-1, oldTableIndex.column (), oldTableIndex.parent ()));
 }
 
 /**
@@ -223,28 +381,36 @@ template<class T> void ObjectListWindow<T>::on_table_doubleClicked (const QModel
 	}
 }
 
-template<class T> void ObjectListWindow<T>::prepareContextMenu (QMenu *contextMenu, const QPoint &pos)
+/**
+ * If this method is overridden in a subclass, the parent method should be
+ * called first. Then, any subclass menu entries should be added, potentially
+ * with a separator. Use activeObjectCount to determine the number of active
+ * (selected, or current if none are selected) objects, not the selection
+ * model or the current item.
+ *
+ * @param contextMenu
+ * @param pos
+ */
+template<class T> void ObjectListWindow<T>::prepareContextMenu (QMenu *contextMenu)
 {
 	// Note that contextMenu refers to the parameter, not the private class
 	// property
+	// Improvement: pass the activeObjectCount to this method
 	contextMenu->clear ();
 
-	if (ui.table->indexAt (pos).isValid ())
+	contextMenu->addAction (ui.actionNew);
+
+	if (activeObjectCount ()>0)
 	{
-		contextMenu->addAction (ui.actionNew);
 		contextMenu->addSeparator ();
 		contextMenu->addAction (ui.actionEdit);
 		contextMenu->addAction (ui.actionDelete);
-	}
-	else
-	{
-		contextMenu->addAction (ui.actionNew);
 	}
 }
 
 template<class T> void ObjectListWindow<T>::on_table_customContextMenuRequested (const QPoint &pos)
 {
-	prepareContextMenu (contextMenu, pos);
+	prepareContextMenu (contextMenu);
 	contextMenu->popup (ui.table->mapToGlobal (pos), 0);
 }
 
@@ -254,17 +420,13 @@ template<class T> void ObjectListWindow<T>::keyPressEvent (QKeyEvent *e)
 
 	int key=e->key ();
 
-	// Treat return/enter like double click on the current item
+	// Return/enter triggers the edit action
 	if (key==Qt::Key_Enter || key==Qt::Key_Return)
 	{
 		if (ui.table->hasFocus ())
 		{
-			QModelIndex index=ui.table->currentIndex ();
-			if (index.isValid ())
-			{
-				on_table_doubleClicked (index);
-				return;
-			}
+			ui.actionEdit->trigger ();
+			return;
 		}
 	}
 
@@ -278,13 +440,29 @@ template<class T> QString ObjectListWindow<T>::makePasswordMessage ()
 }
 
 /**
- * FIXME document:
- *   - must be used for all ObjectListWindow creations
- *   - defaults to creating ObjectListWindow<T>
- *   - can be specialized (event though instantiated below) to create a subclass
+ * Creates a new instance of ObjectListWindow for the given type
+ *
+ * The default implementation creates an instance of ObjectListWindow. This
+ * method may be specialized for a specific type to create a subclass. For
+ * example, ObjectListWindow<Person>::create is specialized in
+ * PersonListWindow.cpp to create a PersonListWindow instance, which inherits
+ * ObjectListWindow<Person> and adds person specific functionality.
+ *
+ * ATTENTION: all ObjectListWindow instances have to be created using this
+ * method (or a subclass constructor), never directly using the
+ * ObjectListWindow constructor. Otherwise, the generic class may be created
+ * instead of the specific class.
+ *
+ * Note that, with GCC, it is possible to specialize this method (even in a
+ * different compilation unit) for a type for which the class (including this
+ * method) has been instantiated in this file. It is unclear whether this is
+ * allowed by the C++ standard.
  */
 template<class T> ObjectListWindow<T> *ObjectListWindow<T>::create (DbManager &manager, QWidget *parent)
 {
+	// Potential improvement: prevent creating ObjectListWindow instances
+	// except through this method (note that currently, the constructor has to
+	// be called from subclass constructors.
 	return new ObjectListWindow<T> (manager, parent);
 }
 

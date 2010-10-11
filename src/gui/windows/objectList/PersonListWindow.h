@@ -18,13 +18,13 @@ class PersonListWindow: public ObjectListWindow<Person>
 		virtual ~PersonListWindow ();
 
 	protected:
-		virtual void prepareContextMenu (QMenu *contextMenu, const QPoint &pos);
+		virtual void prepareContextMenu (QMenu *contextMenu);
 
 	protected slots:
-		void overwriteAction_triggered ();
+		void mergeAction_triggered ();
 
 	private:
-		QAction *overwriteAction;
+		QAction *mergeAction;
 };
 
 #endif

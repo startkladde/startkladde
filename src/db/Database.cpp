@@ -208,7 +208,7 @@ QList<Flight> Database::getPreparedFlights ()
 {
 	// The correct criterion for prepared flights is:
 	// !(happened)
-	// or
+	// also known as
 	// !((departs_here and departed) or (lands_here and landed))
 	//
 	// Resolving the flight mode, we get:
@@ -240,7 +240,7 @@ QList<Flight> Database::getFlightsDate (QDate date)
 	// The correct criterion for flights on a given date is:
 	// (happened and effective_date=that_date)
 	// effective_date has to be calculated from departure time, landing time,
-	// status and mode, which is compilicated. Thus, we select a superset of
+	// status and mode, which is complicated. Thus, we select a superset of
 	// the flights of that date and filter out the correct flights afterwards.
 
 	// The superset criterion is:

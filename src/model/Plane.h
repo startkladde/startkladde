@@ -27,9 +27,10 @@ class Plane: public Entity
 
 		class DefaultObjectModel: public ObjectModel<Plane>
 		{
-			virtual int columnCount () const;
-			virtual QVariant displayHeaderData (int column) const;
-			virtual QVariant displayData (const Plane &object, int column) const;
+			public:
+				virtual int columnCount () const;
+				virtual QVariant displayHeaderData (int column) const;
+				virtual QVariant displayData (const Plane &object, int column) const;
 		};
 
 

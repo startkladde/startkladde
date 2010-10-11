@@ -9,6 +9,7 @@
 #define OBJECTMODEL_H_
 
 #include <QVariant>
+#include <QStringList>
 
 /**
  * A view on the data of a class - providing data and header data for multiple
@@ -46,6 +47,9 @@ template<class T> class ObjectModel
 
 		virtual QVariant headerData (int column, int role=Qt::DisplayRole) const;
 		virtual QVariant data (const T &object, int column, int role=Qt::DisplayRole) const;
+
+		virtual QStringList displayHeaderStrings () const;
+		virtual QStringList displayDataStrings (const T &object) const;
 
 	protected:
 		virtual QVariant displayHeaderData (int column) const;
@@ -119,6 +123,40 @@ template<class T> QVariant ObjectModel<T>::displayData (const T &object, int col
 	(void)object;
 	(void)column;
 	return QVariant ();
+}
+
+/**
+ * Returns the header display data as a string list
+ *
+ * @return a list of string representations of the header data for the
+ *         DisplayRole. The size of the list is equal to columnCount ().
+ */
+template<class T> QStringList ObjectModel<T>::displayHeaderStrings () const
+{
+	QStringList result;
+
+	for (int i=0; i<columnCount (); ++i)
+		result.append (headerData (i).toString ());
+
+	return result;
+}
+
+
+/**
+ * Returns the display data for an object as a string list
+ *
+ * @param object an object
+ * @return a list of string representations of the data for the DisplayRole of
+ *         object. The size of the list is equal to columnCount ().
+ */
+template<class T> QStringList ObjectModel<T>::displayDataStrings (const T &object) const
+{
+	QStringList result;
+
+	for (int i=0; i<columnCount (); ++i)
+		result.append (data (object, i).toString ());
+
+	return result;
 }
 
 #endif

@@ -9,16 +9,19 @@
 
 #include <iostream>
 
+#include "src/gui/dialogs.h"
 #include "src/util/qString.h"
+#include "src/gui/windows/ObjectSelectWindow.h"
+#include "src/gui/windows/ConfirmOverwritePersonDialog.h"
 
 PersonListWindow::PersonListWindow (DbManager &manager, QWidget *parent):
 	ObjectListWindow<Person> (manager, parent),
-	overwriteAction (new QAction (utf8 ("Über&schreiben"), this))
+	mergeAction (new QAction (utf8 ("&Zusammenfassen"), this))
 {
-	connect (overwriteAction, SIGNAL (triggered ()), this, SLOT (overwriteAction_triggered ()));
+	connect (mergeAction, SIGNAL (triggered ()), this, SLOT (mergeAction_triggered ()));
 
 	ui.menuObject->addSeparator ();
-	ui.menuObject->addAction (overwriteAction);
+	ui.menuObject->addAction (mergeAction);
 }
 
 PersonListWindow::~PersonListWindow ()
@@ -30,26 +33,75 @@ template<> ObjectListWindow<Person> *ObjectListWindow<Person>::create (DbManager
 	return new PersonListWindow (manager, parent);
 }
 
-void PersonListWindow::overwriteAction_triggered ()
+void PersonListWindow::mergeAction_triggered ()
 {
-	if (!allowEdit (makePasswordMessage ())) return;
+	if (!allowEdit ("Zum Zusammenfassen von Personen ist das Datenbankpasswort erforderlich.")) return;
 
-	const Person *person=getCurrentObject ();
-	if (!person) return;
-
-
-	// FIXME implement
-	std::cout << "overwrite person " << person->getDisplayName () << std::endl;
-}
-
-void PersonListWindow::prepareContextMenu (QMenu *contextMenu, const QPoint &pos)
-{
-	ObjectListWindow<Person>::prepareContextMenu (contextMenu, pos);
-
-	if (ui.table->indexAt (pos).isValid ())
+	QList<Person> people=activeObjects ();
+	if (people.size ()<2)
 	{
-		contextMenu->addSeparator ();
-		contextMenu->addAction (overwriteAction);
+		showWarning (
+			utf8 ("Zu wenige Person ausgewählt"),
+			utf8 ("Zum Zusammenfassen müssen mindestens zwei Personen ausgewählt sein."),
+			this);
+		return;
+	}
+
+	QString title=utf8 ("Korrekten Eintrag auswählen");
+	QString text=utf8 ("Bitte den korrekten Eintrag auswählen.");
+
+	if (people.size ()>2)
+		text+=utf8 (" Alle anderen Einträge werden überschrieben.");
+	else
+		text+=utf8 (" Der andere Eintrag wird überschrieben.");
+
+	dbId correctPersonId=invalidId;
+	ObjectSelectWindowBase::Result selectionResult=
+		ObjectSelectWindow<Person>::select (&correctPersonId, title, text,
+			people, new Person::DefaultObjectModel (), true, invalidId, false, this);
+
+	switch (selectionResult)
+	{
+		case ObjectSelectWindowBase::resultOk:
+			break;
+		case ObjectSelectWindowBase::resultUnknown:
+			// fallthrough
+		case ObjectSelectWindowBase::resultNew:
+			// fallthrough
+		case ObjectSelectWindowBase::resultCancelled: case ObjectSelectWindowBase::resultNoneSelected:
+			return;
+	}
+
+	Person correctPerson;
+
+	for (int i=0; i<people.size (); ++i)
+	{
+		if (people.at (i).getId ()==correctPersonId)
+		{
+			correctPerson=people.takeAt (i);
+			break;
+		}
+	}
+
+	// The wrong people are now in people
+	bool confirmed=ConfirmOverwritePersonDialog::confirmOverwrite (correctPerson, people, this);
+
+	if (confirmed)
+	{
+		/*
+		 * FIXME implement:
+		 *   - do the overwriting - what about cache updates?
+		 */
 	}
 }
 
+void PersonListWindow::prepareContextMenu (QMenu *contextMenu)
+{
+	ObjectListWindow<Person>::prepareContextMenu (contextMenu);
+
+	if (activeObjectCount ()>1)
+	{
+		contextMenu->addSeparator ();
+		contextMenu->addAction (mergeAction);
+	}
+}

@@ -20,6 +20,14 @@ bool yesNoQuestion (QWidget *parent, QString title, QString question)
 	return result==QMessageBox::Ok;
 }
 
+QMessageBox::StandardButton yesNoCancelQuestion (QWidget *parent, QString title, QString question)
+{
+	QMessageBox::StandardButtons buttons=QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel;
+	QMessageBox::StandardButton result=QMessageBox::question (parent, title, question, buttons, QMessageBox::Yes);
+	return result;
+}
+
+
 bool confirmProblem (QWidget *parent, const QString title, const QString problem)
 	/*
 	 * Displays a message and ask the user if he wishes to accept anyway.

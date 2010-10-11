@@ -1,3 +1,4 @@
+	- Speedups in flight table display
 	- Allow disabling of "special" entries in ObjectSelectWindow
 	- ObjectSelectWindow uses ObjectModel
 	- Context menu in ObjectListWindow
