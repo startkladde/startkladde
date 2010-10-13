@@ -42,6 +42,9 @@ class Database: public QObject
 {
 	Q_OBJECT;
 
+	// Hack required for merging people
+	friend class DbManager;
+
 	public:
 		// *** Data types
 		class NotFoundException {};
@@ -86,6 +89,9 @@ class Database: public QObject
 
 	signals:
 		void dbEvent (DbEvent event);
+
+	protected:
+		void emitDbEvent (DbEvent event);
 
 	private:
 		Interface &interface;

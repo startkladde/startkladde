@@ -283,6 +283,9 @@ template<class T> bool Database::objectUsed (dbId id)
 
 template<> bool Database::objectUsed<Person> (dbId id)
 {
+	// ATTENTION: make sure that DbManager::mergePeople correspondents to this
+	// method
+
 	// A person may be referenced by a flight
 	if (objectExists<Flight> (Flight::referencesPersonCondition (id))) return true;
 
@@ -316,6 +319,17 @@ template<> bool Database::objectUsed<Flight> (dbId id)
 
 	// Flights are never used
 	return false;
+}
+
+
+// **********
+// ** Misc **
+// **********
+
+void Database::emitDbEvent (DbEvent event)
+{
+	// Hack for merging people, invoked by our friend DbManager::mergePeople
+	emit dbEvent (event);
 }
 
 // ***************************

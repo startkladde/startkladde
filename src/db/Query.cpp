@@ -16,9 +16,10 @@ Query::Query ()
 }
 
 /**
- * Note that we could write Query ("...") without this constructor, but we
- * couldn't write interface.executeQuery ("...") (therefore, we don't need
- * a constructor taking a char* and a QList<QVariant>.
+ * Note that we could write Query ("...") (Query (const QString &)) without
+ * this constructor, but we couldn't write interface.executeQuery ("...")
+ * (therefore, we don't need a constructor taking a char* and a
+ * QList<QVariant>).
  *
  * @param queryString
  * @return

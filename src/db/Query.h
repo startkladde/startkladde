@@ -40,6 +40,11 @@ class Query
 		static Query count (const QString &table);
 		static Query count (const QString &table, const Query &condition);
 
+//		static Query update (const QString &table, const QString &column, const QVariant &value, const Query &condition);
+//
+//		static Query valueInListCondition (const QString &column, const QList<QVariant> &values);
+
+
 		// *** Manipulation
 		Query operator+ (const Query &other) const;
 		Query &operator+= (const Query &other);

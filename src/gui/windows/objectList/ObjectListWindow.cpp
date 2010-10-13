@@ -30,6 +30,7 @@
  */
 template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWidget *parent):
 	ObjectListWindowBase (manager, parent),
+	manager (manager),
 	contextMenu (new QMenu (this))
 {
 	// Create the object listModel

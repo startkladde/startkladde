@@ -33,6 +33,8 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		static ObjectListWindow<T> *create (DbManager &manager, QWidget *parent=NULL);
 
 	protected:
+		DbManager &manager;
+
 		// Instances are only to be created using the create method
 		ObjectListWindow (DbManager &manager, QWidget *parent=NULL);
 

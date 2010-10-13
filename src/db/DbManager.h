@@ -113,6 +113,9 @@ class DbManager: public QObject
 		template<class T> dbId createObject (      T &object, QWidget *parent);
 		template<class T> int  updateObject (const T &object, QWidget *parent);
 
+		// *** Database updates
+		void mergePeople (const Person &correctPerson, const QList<Person> &wrongPeople);
+
 	signals:
 		void readTimeout ();
 		void readResumed ();
