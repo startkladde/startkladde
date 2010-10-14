@@ -87,8 +87,7 @@ void PersonListWindow::mergeAction_triggered ()
 	bool confirmed=ConfirmOverwritePersonDialog::confirmOverwrite (correctPerson, people, this);
 
 	if (confirmed)
-		// FIXME need parent for status indicator?
-		manager.mergePeople (correctPerson, people);
+		manager.mergePeople (correctPerson, people, this);
 }
 
 void PersonListWindow::prepareContextMenu (QMenu *contextMenu)

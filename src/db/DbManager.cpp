@@ -542,79 +542,73 @@ template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
 // ** Database updates **
 // **********************
 
-// TODO move somewhere
-Query makeListQuery (const QList<Person> &people)
-{
-	QStringList     queryStringParts;
-	QList<QVariant> queryValues;
-
-	foreach (const Person &person, people)
-	{
-		queryStringParts.append ("?"            );
-		queryValues     .append (person.getId ());
-	}
-
-	return Query ("("+queryStringParts.join (", ")+")", queryValues);
-}
-
+// TODO document bad coding practice: friend class for db.emitDbEvent,
+// knowledge about Person in DbManager, but doing it right is complex
 // TODO: replace with a worker class, and uninclude Person.h from header
-void DbManager::mergePeople (const Person &correctPerson, const QList<Person> &wrongPeople)
+void DbManager::mergePeople (const Person &correctPerson, const QList<Person> &wrongPeople, QWidget *parent)
 {
-	// ATTENTION: make sure that Database::objectUsed<Person> corresponds to
-	// this method
-	std::cout << "Overwrite " << wrongPeople.size () << " people with " << correctPerson.fullName () << std::endl;
-
-	// Determine the ID of the correct person (e. g. 1)
+	// Determine the ID of the correct person
 	dbId correctId=correctPerson.getId ();
 
-	// Construct a query (part) containing the IDs of the wrong people (e. g.
-	// "(2, 3, 4)")
-	Query wrongPeopleQuery=makeListQuery (wrongPeople);
+	// Determine the IDs of the wrong people
+	QList<QVariant> wrongIds;
+	foreach (const Person &person, wrongPeople)
+		wrongIds.append (person.getId ());
 
-	// Create the query
-	Query query=Query ("UPDATE flights SET pilot_id=? where pilot_id in ").bind (correctId)+wrongPeopleQuery;
+	// Execute the queries
+	// Wrap the operations into a transaction, see top of Database.cpp (TODO code duplication)
+	// FIXME with progress indicator
+	interface.transaction ();
+	interface.executeQuery (Query::updateColumnValue ("flights", "pilot_id"   , correctId, wrongIds));
+	interface.executeQuery (Query::updateColumnValue ("flights", "copilot_id" , correctId, wrongIds));
+	interface.executeQuery (Query::updateColumnValue ("flights", "towpilot_id", correctId, wrongIds));
+	interface.executeQuery (Query::updateColumnValue ("users"  , "person_id"  , correctId, wrongIds));
+	interface.commit ();
 
-	// Wrap the operation into a transaction, see top of Database.cpp (TODO code duplication)
-//	interface.transaction ();
-	// FIXME other queries (probably in same transaction)
-//	interface.executeQueryResult (query);
-//	interface.commit ();
+	// Emit the corresponding events
+	// FIXME what if canceled?
 
-	// FIXME emit the dbEvents (what if canceled?)
+	// Make the Database emit a dbEvent for each affected flight (and user, if
+	// we had a User class) so the cache and GUI will be updated
+	foreach (Flight flight, cache.getAllKnownFlights ().getList ())
+	{
+		bool flightChanged=false;
 
+		if (wrongIds.contains (flight.getPilotId ()))
+		{
+			flight.setPilotId (correctId);
+			flightChanged=true;
+		}
+		if (wrongIds.contains (flight.getCopilotId ()))
+		{
+			flight.setCopilotId (correctId);
+			flightChanged=true;
+		}
+		if (wrongIds.contains (flight.getTowpilotId ()))
+		{
+			flight.setTowpilotId (correctId);
+			flightChanged=true;
+		}
 
+		if (flightChanged)
+			db.emitDbEvent (DbEvent::changed<Flight> (flight));
+	}
 
-	//	# Update users and flights
-	//	User  .all(:conditions => { :person_id  => wrong_person_id }).each { |user|   user.person_id    = correct_person_id; user  .save }
-	//	Flight.all(:conditions => { :pilot_id   => wrong_person_id }).each { |flight| flight.pilot_id   = correct_person_id; flight.save }
-	//	Flight.all(:conditions => { :copilot_id => wrong_person_id }).each { |flight| flight.copilot_id = correct_person_id; flight.save }
-	//	Flight.all(:conditions => { :towpilot_id=> wrong_person_id }).each { |flight| flight.towpilot_id= correct_person_id; flight.save }
+	// Check if any of the wrong people are still in use. This could be caused
+	// by this method not changing all references to the person. It is
+	// important not to delete a person that is in use.
+	QList<dbId> idsToDelete;
+	foreach (const Person &person, wrongPeople)
+	{
+		// FIXME use proper parent
+		if (!objectUsed<Person> (person.getId (), NULL))
+			idsToDelete.append (person.getId ());
+	}
 
-	// Make Database emit a dbEvent for each changed flight (and user, if we
-	// had a User class) so the cache will be updated
+	// FIXME warning if any person is still in use
 
-	//db.emitDbEvent (DbEvent::changed<Flight> (...))
-
-
-//
-//	# Check that the person has no flights or users any more
-//	flash[:error]="Fehler: Nach dem Überschreiben der Person existiert noch ein Benutzer, der auf die Person verweist." and redirect_to and return if User  .exists? :person_id   =>wrong_person_id
-//	flash[:error]="Fehler: Nach dem Überschreiben der Person existiert noch ein Flug, der auf die Person verweist."     and redirect_to and return if Flight.exists? :pilot_id    =>wrong_person_id
-//	flash[:error]="Fehler: Nach dem Überschreiben der Person existiert noch ein Flug, der auf die Person verweist."     and redirect_to and return if Flight.exists? :copilot_id  =>wrong_person_id
-//	flash[:error]="Fehler: Nach dem Überschreiben der Person existiert noch ein Flug, der auf die Person verweist."     and redirect_to and return if Flight.exists? :towpilot_id =>wrong_person_id
-//
-//	# Once again for safety, as this is really important
-//	flash[:error]="Fehler: Nach dem Überschreiben ist die Person noch in Benutzung." and redirect_to and return if @wrong_person.used?
-//
-//	# Delete the person
-//	wrong_person_name=@wrong_person.full_name
-//	@wrong_person.destroy
-
-	// Again, emit events
-//
-//	flash[:notice]="#{wrong_person_name} wurde durch #{@correct_person.full_name} ersetzt."
-//	redirect_to :action=>'index'
-
+	// FIXME with progress indicator
+	db.deleteObjects<Person> (idsToDelete);
 }
 
 

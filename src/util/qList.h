@@ -21,4 +21,13 @@ template<class T> void appendUnlessNull (QList<T *> &list, T *t)
 		list.append (t);
 }
 
+template<class T, class F> QList<T> convertType (const QList<F> &list)
+{
+	QList<T> result;
+	foreach (const F &object, list)
+		result.append (object);
+
+	return result;
+}
+
 #endif

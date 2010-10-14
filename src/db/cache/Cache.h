@@ -111,6 +111,7 @@ class Cache: public QObject
 		EntityList<Flight> getPreparedFlights ();
 		QDate getTodayDate ();
 		QDate getOtherDate ();
+		EntityList<Flight> getAllKnownFlights ();
 
 		// *** Individual objects
 		template<class T> T getObject (dbId id);

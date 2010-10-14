@@ -358,7 +358,6 @@ SOURCES += \
            src/util/file.cpp \
            src/util/io.cpp \
            src/util/qDate.cpp \
-           src/util/qList.cpp \
            src/util/qString.cpp \
            src/util/time.cpp \
 		   # Empty line

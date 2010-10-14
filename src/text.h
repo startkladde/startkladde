@@ -31,5 +31,7 @@ QString insertMnemonic (const QString &text, const QString &disallowed, bool fal
 QChar getMnemonic (const QString &text);
 QChar getMnemonic (const QAbstractButton *button);
 
+QString repeatString (const QString &string, unsigned int num, const QString &separator=QString ());
+
 #endif
 

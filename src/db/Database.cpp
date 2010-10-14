@@ -18,6 +18,7 @@
 #include "src/model/Flight.h"
 #include "src/model/LaunchMethod.h"
 #include "src/util/qString.h"
+#include "src/util/qList.h"
 #include "src/db/Query.h"
 #include "src/db/result/Result.h"
 
@@ -85,6 +86,9 @@ template<class T> T Database::getObject (dbId id)
 	return T::createFromResult (*result);
 }
 
+// TODO there should be a method that only deletes and object if it is not used
+// (atomically, by extending the condition). This should be the default for
+// deleting objects.
 template<class T> bool Database::deleteObject (dbId id)
 {
 	Query query=Query ("DELETE FROM %1 WHERE ID=?")
@@ -96,6 +100,24 @@ template<class T> bool Database::deleteObject (dbId id)
 	interface.commit ();
 
 	emit dbEvent (DbEvent::deleted<T> (id));
+
+	return result->numRowsAffected ()>0;
+}
+
+template<class T> int Database::deleteObjects (const QList<dbId> &ids)
+{
+	Query query=
+		Query ("DELETE FROM %1 WHERE ")
+			.arg (T::dbTableName ())
+		+Query::valueInListCondition ("id", convertType<QVariant> (ids));
+
+	// Wrap the operation into a transaction, see top of file
+	interface.transaction ();
+	QSharedPointer<Result> result=interface.executeQueryResult (query);
+	interface.commit ();
+
+	foreach (dbId id, ids)
+		emit dbEvent (DbEvent::deleted<T> (id));
 
 	return result->numRowsAffected ()>0;
 }
@@ -347,17 +369,18 @@ void Database::emitDbEvent (DbEvent event)
 //   - ::createListFromQuery (Result &result); // TODO change to createList
 
 #define INSTANTIATE_TEMPLATES(T) \
-	template QList<T> Database::getObjects      (const Query &condition); \
-	template int      Database::countObjects<T> (const Query &condition); \
-	template bool     Database::objectExists<T> (dbId id); \
-	template T        Database::getObject       (dbId id); \
-	template bool     Database::deleteObject<T> (dbId id); \
-	template dbId     Database::createObject    (T &object); \
-	template void     Database::createObjects   (QList<T> &objects, OperationMonitorInterface monitor); \
-	template bool     Database::updateObject    (const T &object); \
-	template QList<T> Database::getObjects  <T> (); \
-	template int      Database::countObjects<T> (); \
-	template bool     Database::objectUsed<T>   (dbId id);
+	template QList<T> Database::getObjects       (const Query &condition); \
+	template int      Database::countObjects<T>  (const Query &condition); \
+	template bool     Database::objectExists<T>  (dbId id); \
+	template T        Database::getObject        (dbId id); \
+	template bool     Database::deleteObject<T>  (dbId id); \
+	template int      Database::deleteObjects<T> (const QList<dbId> &id); \
+	template dbId     Database::createObject     (T &object); \
+	template void     Database::createObjects    (QList<T> &objects, OperationMonitorInterface monitor); \
+	template bool     Database::updateObject     (const T &object); \
+	template QList<T> Database::getObjects  <T>  (); \
+	template int      Database::countObjects<T>  (); \
+	template bool     Database::objectUsed<T>    (dbId id);
 
 	// Empty line
 

@@ -6,6 +6,7 @@
 #include <QString>
 
 #include "src/io/AnsiColors.h"
+#include "src/text.h"
 
 // ******************
 // ** Construction **
@@ -172,11 +173,40 @@ Query Query::count (const QString &table, const Query &condition)
 		return Query ("SELECT COUNT(*) FROM %1 WHERE ").arg (table)+condition;
 }
 
+Query Query::valueInListCondition (const QString &column, const QList<QVariant> &values)
+{
+	Query query ("%1 IN (%2)");
+
+	query.arg (column);
+	query.arg (repeatString ("?", values.size (), ","));
+
+	foreach (const QVariant &value, values)
+		query.bind (value);
+
+	return query;
+}
+
+Query Query::updateColumnValue (const QString &table, const QString &column, const QVariant &newValue, const QList<QVariant> &oldValues)
+{
+	return
+		Query ("UPDATE %1 SET %2 = ? WHERE ")
+			.arg (table)
+			.arg (column)
+			.bind (newValue)
+		+valueInListCondition (column, oldValues);
+}
 
 // ******************
 // ** Manipulation **
 // ******************
 
+/**
+ * Must only be used with queries where all placeholders are bound, or the
+ * bind order will be wrong!
+ *
+ * @param other
+ * @return
+ */
 Query Query::operator+ (const Query &other) const
 {
 	return Query (queryString+other.queryString, bindValues+other.bindValues);

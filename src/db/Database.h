@@ -61,6 +61,7 @@ class Database: public QObject
 		template<class T> bool objectExists (dbId id);
 		template<class T> T getObject (dbId id);
 		template<class T> bool deleteObject (dbId id);
+		template<class T> int deleteObjects (const QList<dbId> &ids);
 		template<class T> dbId createObject (T &object);
 		template<class T> void createObjects (QList<T> &objects, OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		template<class T> bool updateObject (const T &object);

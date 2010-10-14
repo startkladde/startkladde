@@ -165,3 +165,15 @@ QChar getMnemonic (const QAbstractButton *button)
 	else
 		return QChar ();
 }
+
+QString repeatString (const QString &string, unsigned int num, const QString &separator)
+{
+	if (num==0) return QString ();
+
+	QString result=string;
+
+	for (int i=0; i<num-1; ++i)
+		result+=separator+string;
+
+	return result;
+}
