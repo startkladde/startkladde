@@ -331,10 +331,9 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 
 template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 {
-	// FIXME crash
 	try
 	{
-//		manager.refreshCache (this);
+		//manager.refreshCache (this);
 		manager.refreshObjects<T> (this);
 	}
 	catch (OperationCanceledException &ex) {}
@@ -354,9 +353,10 @@ template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 
 	QAbstractItemModel *model=ui.table->model ();
 
+	// Note that the model has been replaced, so we may not reuse the old index
 	if (oldTableIndex.row () < model->rowCount ())
 		// The old row still exists. Select the old table index.
-		ui.table->setCurrentIndex (oldTableIndex);
+		ui.table->setCurrentIndex (model->index (oldTableIndex.row (), oldTableIndex.column ()));
 	else
 		// The old row doesn't exist any more. Select the same column in the
 		// last row.
