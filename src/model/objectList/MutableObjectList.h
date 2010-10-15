@@ -24,6 +24,7 @@ template<class T> class MutableObjectList: public AbstractObjectList<T>
 		MutableObjectList (const QList<T> &list, QObject *parent=NULL);
 		MutableObjectList (const MutableObjectList<T> &other);
 		MutableObjectList<T> &operator= (const MutableObjectList<T> &other);
+		MutableObjectList<T> operator+ (const MutableObjectList<T> &other);
 		virtual ~MutableObjectList ();
 
 
@@ -88,6 +89,17 @@ template<class T> MutableObjectList<T> &MutableObjectList<T>::operator= (const M
 	setParent (other.parent ());
 	list=other.list;
 	return *this;
+}
+
+/**
+ * Uses this' parent
+ *
+ * @param other
+ * @return
+ */
+template<class T> MutableObjectList<T> MutableObjectList<T>::operator+ (const MutableObjectList<T> &other)
+{
+	return MutableObjectList<T> (list+other.list, this->parent ());
 }
 
 template<class T> MutableObjectList<T>::~MutableObjectList ()

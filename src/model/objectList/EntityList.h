@@ -28,6 +28,7 @@ template<class T> class EntityList: public MutableObjectList<T>
 		EntityList (QObject *parent=NULL);
 		EntityList (const QList<T> &list, QObject *parent=NULL);
 		virtual ~EntityList ();
+		EntityList<T> operator+ (const EntityList<T> &other);
 
 		// Access
 		// TODO: addById which gets the data from the cache (?); dito for replace
@@ -57,6 +58,17 @@ template<class T> EntityList<T>::EntityList (const QList<T> &list, QObject *pare
 
 template<class T> EntityList<T>::~EntityList ()
 {
+}
+
+/**
+ * Uses this' parent
+ *
+ * @param other
+ * @return
+ */
+template<class T> EntityList<T> EntityList<T>::operator+ (const EntityList<T> &other)
+{
+	return EntityList<T> (this->list+other.list, this->parent ());
 }
 
 

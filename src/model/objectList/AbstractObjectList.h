@@ -11,7 +11,7 @@
 #include <QAbstractTableModel>
 
 /**
- * A list of objects that performs as a QAbstractTableModel, thus emitting
+ * A list of objects that performs as a QAbstractTableModel, by emitting
  * signals on change.
  *
  * The data provided by this is a table with a single column, containing the

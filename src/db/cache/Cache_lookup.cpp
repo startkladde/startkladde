@@ -49,18 +49,17 @@ EntityList<LaunchMethod> Cache::getLaunchMethods ()
 
 EntityList<Flight> Cache::getFlightsToday ()
 {
-	// FIXME do we want to used getList here (and in the other methods)?
-	synchronizedReturn (dataMutex, flightsToday.getList ());
+	synchronizedReturn (dataMutex, flightsToday);
 }
 
 EntityList<Flight> Cache::getFlightsOther ()
 {
-	synchronizedReturn (dataMutex, flightsOther.getList ());
+	synchronizedReturn (dataMutex, flightsOther);
 }
 
 EntityList<Flight> Cache::getPreparedFlights ()
 {
-	synchronizedReturn (dataMutex, preparedFlights.getList ());
+	synchronizedReturn (dataMutex, preparedFlights);
 }
 
 QDate Cache::getTodayDate ()
@@ -75,8 +74,7 @@ QDate Cache::getOtherDate ()
 
 EntityList<Flight> Cache::getAllKnownFlights ()
 {
-	// TODO add an operator+ for EntityList
-	synchronizedReturn (dataMutex, EntityList<Flight> (flightsToday.getList ()+flightsOther.getList ()+preparedFlights.getList ()));
+	synchronizedReturn (dataMutex, flightsToday+flightsOther+preparedFlights);
 }
 
 
