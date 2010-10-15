@@ -113,6 +113,8 @@ template<typename T> QList<T> SortedSet<T>::toQList () const
 
 template<typename T> SortedSet<T> &SortedSet<T>::operator= (const QList<T> &list)
 {
+	// No need to handle self assignment - different type
+
 	data.clear ();
 
 	foreach (const T &value, list)

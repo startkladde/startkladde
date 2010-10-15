@@ -55,7 +55,7 @@ OperationMonitorInterface &OperationMonitorInterface::operator= (const Operation
 {
 //	std::cout << "=interface" << std::endl;
 
-	if (&other==this) return *this;
+	if (&other==this) return *this; // Handle self assignment
 
 	// There is a race condition here that makes the class non-thread-safe
 	// when the last copy is deleted.

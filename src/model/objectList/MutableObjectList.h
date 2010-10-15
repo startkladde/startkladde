@@ -86,6 +86,8 @@ template<class T> MutableObjectList<T>::MutableObjectList (const MutableObjectLi
 
 template<class T> MutableObjectList<T> &MutableObjectList<T>::operator= (const MutableObjectList<T> &other)
 {
+	if (&other==this) return *this; // Handle self assignment
+
 	setParent (other.parent ());
 	list=other.list;
 	return *this;
