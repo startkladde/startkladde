@@ -5,6 +5,7 @@
  *     interface#cancelConnection), we cannot determine whether the operation
  *     was performed or not, so the cache may be invalid. Using a transaction
  *     hopefully reduces the "critical" time where this may happen.
+ *     TODO: this means we cannot use a transaction around multiple operations
  */
 #include "Database.h"
 
@@ -106,6 +107,10 @@ template<class T> bool Database::deleteObject (dbId id)
 
 template<class T> int Database::deleteObjects (const QList<dbId> &ids)
 {
+	// Don't perform the query with an empty list, it will fail.
+	if (ids.isEmpty ())
+		return 0;
+
 	Query query=
 		Query ("DELETE FROM %1 WHERE ")
 			.arg (T::dbTableName ())

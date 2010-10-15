@@ -41,8 +41,9 @@ class DbWorker: QObject
 
 		template<class T> void createObject  (Returner<dbId> &returner, OperationMonitor &monitor, T &object);
 		template<class T> void createObjects (Returner<void> &returner, OperationMonitor &monitor, QList<T> &objects);
-		template<class T> void deleteObject  (Returner<int > &returner, OperationMonitor &monitor, dbId id);
-		template<class T> void updateObject  (Returner<int > &returner, OperationMonitor &monitor, const T &object);
+		template<class T> void deleteObject  (Returner<bool> &returner, OperationMonitor &monitor, dbId id);
+		template<class T> void deleteObjects (Returner<int > &returner, OperationMonitor &monitor, const QList<dbId> &ids);
+		template<class T> void updateObject  (Returner<bool> &returner, OperationMonitor &monitor, const T &object);
 		template<class T> void objectUsed    (Returner<bool> &returner, OperationMonitor &monitor, dbId id);
 
 	protected:

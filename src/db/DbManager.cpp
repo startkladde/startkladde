@@ -509,11 +509,22 @@ template<class T> bool DbManager::objectUsed (dbId id, QWidget *parent)
 // Improvement: atomic used check and delete
 template<class T> void DbManager::deleteObject (dbId id, QWidget *parent)
 {
-	Returner<int> returner;
+	Returner<bool> returner;
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.deleteObject<T> (returner, monitor, id);
 	MonitorDialog::monitor (monitor, utf8 ("%1 löschen").arg (T::objectTypeDescription ()), parent);
+	returner.wait ();
+}
+
+// Improvement: atomic used check and delete
+template<class T> void DbManager::deleteObjects (const QList<dbId> &ids, QWidget *parent)
+{
+	Returner<int> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+	dbWorker.deleteObjects<T> (returner, monitor, ids);
+	MonitorDialog::monitor (monitor, utf8 ("%1 löschen").arg (T::objectTypeDescriptionPlural ()), parent);
 	returner.wait ();
 }
 
@@ -529,7 +540,7 @@ template<class T> dbId DbManager::createObject (T &object, QWidget *parent)
 
 template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
 {
-	Returner<int> returner;
+	Returner<bool> returner;
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.updateObject (returner, monitor, object);
@@ -537,10 +548,81 @@ template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
 	return returner.returnedValue ();
 }
 
+void DbManager::executeQuery (const Query &query, const QString &statusText, QWidget *parent)
+{
+	Returner<void> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+	interfaceWorker.executeQuery (returner, monitor, query);
+	MonitorDialog::monitor (monitor, statusText, parent);
+	returner.wait ();
+}
+
+void DbManager::transaction (QWidget *parent)
+{
+	Returner<void> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+	interfaceWorker.transaction (returner, monitor);
+	MonitorDialog::monitor (monitor, utf8 ("Transaktion beginnen"), parent);
+	returner.wait ();
+}
+
+void DbManager::commit (QWidget *parent)
+{
+	Returner<void> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+	interfaceWorker.commit (returner, monitor);
+	MonitorDialog::monitor (monitor, utf8 ("Transaktion ausführen"), parent);
+	returner.wait ();
+}
+
+void DbManager::rollback (QWidget *parent)
+{
+	Returner<void> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+	interfaceWorker.rollback (returner, monitor);
+	MonitorDialog::monitor (monitor, utf8 ("Transaktion abbrechen"), parent);
+	returner.wait ();
+}
+
 
 // **********************
 // ** Database updates **
 // **********************
+
+QString DbManager::mergeDeleteWarningTitle (int notDeletedCount, int deletedCount)
+{
+	(void)deletedCount;
+
+	if (notDeletedCount>1)
+		return utf8 ("Personen noch in Benutzung");
+	else
+		return utf8 ("Person noch in Benutzung");
+}
+
+QString DbManager::mergeDeleteWarningText (int notDeletedCount, int deletedCount)
+{
+	QString text;
+
+	if (notDeletedCount>1)
+		text=utf8 ("Nach dem Zusammenfassen sind noch %1 Personen in Benutzung.").arg (notDeletedCount);
+	else
+		text=utf8 ("Nach dem Zusammenfassen ist noch eine Person in Benutzung.");
+
+	if (deletedCount==0)
+		text+=utf8 (" Es wird keine Person gelöscht.");
+	else if (deletedCount==1)
+		text+=utf8 (" Es wird nur eine Person gelöscht.");
+	else
+		text+=utf8 (" Es werden nur %1 Personen gelöscht.").arg (deletedCount);
+
+	return text;
+}
+
+
 
 // TODO document bad coding practice: friend class for db.emitDbEvent,
 // knowledge about Person in DbManager, but doing it right is complex
@@ -555,60 +637,81 @@ void DbManager::mergePeople (const Person &correctPerson, const QList<Person> &w
 	foreach (const Person &person, wrongPeople)
 		wrongIds.append (person.getId ());
 
-	// Execute the queries
-	// Wrap the operations into a transaction, see top of Database.cpp (TODO code duplication)
-	// FIXME with progress indicator
-	interface.transaction ();
-	interface.executeQuery (Query::updateColumnValue ("flights", "pilot_id"   , correctId, wrongIds));
-	interface.executeQuery (Query::updateColumnValue ("flights", "copilot_id" , correctId, wrongIds));
-	interface.executeQuery (Query::updateColumnValue ("flights", "towpilot_id", correctId, wrongIds));
-	interface.executeQuery (Query::updateColumnValue ("users"  , "person_id"  , correctId, wrongIds));
-	interface.commit ();
-
-	// Emit the corresponding events
-	// FIXME what if canceled?
-
-	// Make the Database emit a dbEvent for each affected flight (and user, if
-	// we had a User class) so the cache and GUI will be updated
-	foreach (Flight flight, cache.getAllKnownFlights ().getList ())
+	try
 	{
-		bool flightChanged=false;
+		// Execute the queries
+		// TODO single progress indicator
+		transaction (parent);
+		executeQuery (Query::updateColumnValue ("flights", "pilot_id"   , correctId, wrongIds), utf8 ("Flüge: Piloteneinträge aktualisieren")       , parent);
+		executeQuery (Query::updateColumnValue ("flights", "copilot_id" , correctId, wrongIds), utf8 ("Flüge: Copiloteneinträge aktualisieren")     , parent);
+		executeQuery (Query::updateColumnValue ("flights", "towpilot_id", correctId, wrongIds), utf8 ("Flüge: Schlepppiloteneinträge aktualisieren"), parent);
+		executeQuery (Query::updateColumnValue ("users"  , "person_id"  , correctId, wrongIds), utf8 ("Benutzer: Personenreferenzen aktualisieren") , parent);
+		commit (parent);
 
-		if (wrongIds.contains (flight.getPilotId ()))
-		{
-			flight.setPilotId (correctId);
-			flightChanged=true;
-		}
-		if (wrongIds.contains (flight.getCopilotId ()))
-		{
-			flight.setCopilotId (correctId);
-			flightChanged=true;
-		}
-		if (wrongIds.contains (flight.getTowpilotId ()))
-		{
-			flight.setTowpilotId (correctId);
-			flightChanged=true;
-		}
+		// Emit the corresponding events
 
-		if (flightChanged)
-			db.emitDbEvent (DbEvent::changed<Flight> (flight));
+		// Make the Database emit a dbEvent for each affected flight (and user, if
+		// we had a User class) so the cache and GUI will be updated
+		foreach (Flight flight, cache.getAllKnownFlights ().getList ())
+		{
+			bool flightChanged=false;
+
+			if (wrongIds.contains (flight.getPilotId    ())) { flight.setPilotId    (correctId); flightChanged=true; }
+			if (wrongIds.contains (flight.getCopilotId  ())) { flight.setCopilotId  (correctId); flightChanged=true; }
+			if (wrongIds.contains (flight.getTowpilotId ())) { flight.setTowpilotId (correctId); flightChanged=true; }
+
+			if (flightChanged)
+				db.emitDbEvent (DbEvent::changed<Flight> (flight));
+		}
+		// Users are not handled because we don't have users
+	}
+	catch (OperationCanceledException)
+	{
+		// TODO the cache may now be inconsistent
+		// Don't emit the change events in this case.
+		return;
 	}
 
-	// Check if any of the wrong people are still in use. This could be caused
-	// by this method not changing all references to the person. It is
-	// important not to delete a person that is in use.
+
+	// None of the wrong people should be in use any more. However, in case of
+	// a bug in this method, a person may still be in use. Under no
+	// circumstances may we delete a person that is still in use.
+
+	// Make a list of IDs of wrong people we can delete
 	QList<dbId> idsToDelete;
-	foreach (const Person &person, wrongPeople)
+	try
 	{
-		// FIXME use proper parent
-		if (!objectUsed<Person> (person.getId (), NULL))
-			idsToDelete.append (person.getId ());
+		foreach (const Person &person, wrongPeople)
+			if (!objectUsed<Person> (person.getId (), parent))
+				idsToDelete.append (person.getId ());
+	}
+	catch (OperationCanceledException)
+	{
+		// Data updated, but canceled before deletion - this is acceptable
+		return;
 	}
 
-	// FIXME warning if any person is still in use
+	// If the list of IDs to delete has a different size than the list of wrong
+	// people, some of them were still in use.
+	if (idsToDelete.size ()!=wrongPeople.size ())
+	{
+		int deletedCount=idsToDelete.size ();
+		int notDeletedCount=wrongPeople.size ()-deletedCount;
 
-	// FIXME with progress indicator
-	db.deleteObjects<Person> (idsToDelete);
+		showWarning (
+			mergeDeleteWarningTitle (notDeletedCount, deletedCount),
+			mergeDeleteWarningText  (notDeletedCount, deletedCount),
+			parent);
+	}
+
+	try
+	{
+		deleteObjects<Person> (idsToDelete, parent);
+	}
+	catch (OperationCanceledException &ex)
+	{
+		// TODO the cache may now be inconsistent
+	}
 }
 
 

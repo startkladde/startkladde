@@ -1,3 +1,9 @@
+Wenn eine Query fehlschlägt, wird eine Exception nach außen geworfen und das
+Programm beendet, selbst wenn ein Statusdialog verwendet wird.
+
+Viel Codeduplikation in den Workern
+Viel Codeduplikation bei Operationen mit Status-Monitor
+
 Siehe auch Trac (startkladde.sf.net) 
 
 Release checks:

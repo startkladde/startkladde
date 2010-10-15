@@ -331,6 +331,7 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 
 template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 {
+	// FIXME crash
 	try
 	{
 //		manager.refreshCache (this);

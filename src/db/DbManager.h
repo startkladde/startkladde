@@ -108,10 +108,11 @@ class DbManager: public QObject
 		void fetchFlights (QDate date, QWidget *parent);
 		template<class T> void refreshObjects (QWidget *parent);
 
-		template<class T> bool objectUsed   (dbId id        , QWidget *parent);
-		template<class T> void deleteObject (dbId id        , QWidget *parent);
-		template<class T> dbId createObject (      T &object, QWidget *parent);
-		template<class T> int  updateObject (const T &object, QWidget *parent);
+		template<class T> bool objectUsed    (dbId id               , QWidget *parent);
+		template<class T> void deleteObject  (dbId id               , QWidget *parent);
+		template<class T> void deleteObjects (const QList<dbId> &ids, QWidget *parent);
+		template<class T> dbId createObject  (      T &object       , QWidget *parent);
+		template<class T> int  updateObject  (const T &object       , QWidget *parent);
 
 		// *** Database updates
 		void mergePeople (const Person &correctPerson, const QList<Person> &wrongPeople, QWidget *parent);
@@ -127,12 +128,20 @@ class DbManager: public QObject
 	protected:
 		void setState (State newState);
 
+		void executeQuery (const Query &query, const QString &statusText, QWidget *parent);
+		void transaction (QWidget *parent);
+		void commit      (QWidget *parent);
+		void rollback    (QWidget *parent);
+
 	protected slots:
 		void settingsChanged ();
 
 	private:
 		DbManager (const DbManager &other);
 		DbManager &operator= (const DbManager &other);
+
+		QString mergeDeleteWarningTitle (int notDeletedCount, int deletedCount);
+		QString mergeDeleteWarningText (int notDeletedCount, int deletedCount);
 
 		State state;
 
