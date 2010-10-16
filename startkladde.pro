@@ -2,7 +2,10 @@
 ## Settings ##
 ##############
 
-win32: MYSQL_INCLUDE_PATH = c:/programme/mysql/5.1/include
+# Compiling on Windows natively:
+#win32: MYSQL_INCLUDE_PATH = c:/programme/mysql/5.1/include
+# Cross compiling:
+win32: MYSQL_INCLUDE_PATH = /usr/include/mysql
 
 
 #########################
@@ -10,7 +13,7 @@ win32: MYSQL_INCLUDE_PATH = c:/programme/mysql/5.1/include
 #########################
 
 TEMPLATE = app
-CONFIG += qt thread resources
+CONFIG += qt thread resources rtti
 QT += network sql
 
 # Do not overwrite the to level Makefile

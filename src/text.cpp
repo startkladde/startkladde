@@ -172,7 +172,7 @@ QString repeatString (const QString &string, unsigned int num, const QString &se
 
 	QString result=string;
 
-	for (int i=0; i<num-1; ++i)
+	for (unsigned int i=0; i<num-1; ++i)
 		result+=separator+string;
 
 	return result;

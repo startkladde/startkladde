@@ -20,6 +20,7 @@
 
 # Set to qmake-qt4 if the default qmake is qmake-qt3 on this system
 QMAKE = qmake -Wall
+#QMAKE = qmake -Wall -spec ./config/mkspecs/win32-cross-mingw
 
 
 ####################
@@ -105,7 +106,7 @@ clean: Makefile_startkladde
 	rm -f Makefile_startkladde Makefile_startkladde.Debug Makefile_startkladde.Release
 	rm -f version/version.h
 	rm -rf build debug release
-	rm -f object_script.startkladde.Debug object_script.startkladde.Release # For Windows
+	rm -f object_script.startkladde* # For Windows
 	rm -f startkladde startkladde_release startkladde_debug
 #	$(MAKE) -C plugins clean
 
