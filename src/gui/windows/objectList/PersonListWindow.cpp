@@ -28,11 +28,6 @@ PersonListWindow::~PersonListWindow ()
 {
 }
 
-template<> ObjectListWindow<Person> *ObjectListWindow<Person>::create (DbManager &manager, QWidget *parent)
-{
-	return new PersonListWindow (manager, parent);
-}
-
 void PersonListWindow::mergeAction_triggered ()
 {
 	if (!allowEdit ("Zum Zusammenfassen von Personen ist das Datenbankpasswort erforderlich.")) return;

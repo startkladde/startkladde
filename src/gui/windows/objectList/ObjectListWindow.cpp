@@ -6,6 +6,12 @@
  *   - display centered
  */
 
+/*
+ * Creating is not as easy as for ObjectEditorPane, because we want to have a
+ * default class (ObjectListWindow) which can be overridden for a given object
+ * type (e. g. PersonListWindow).
+ */
+
 #include <iostream>
 
 #include <QMessageBox>
@@ -446,19 +452,21 @@ template<class T> QString ObjectListWindow<T>::makePasswordMessage ()
  *
  * The default implementation creates an instance of ObjectListWindow. This
  * method may be specialized for a specific type to create a subclass. For
- * example, ObjectListWindow<Person>::create is specialized in
- * PersonListWindow.cpp to create a PersonListWindow instance, which inherits
- * ObjectListWindow<Person> and adds person specific functionality.
+ * example, ObjectListWindow<Person>::create is specialized to create a
+ * PersonListWindow instance, which inherits ObjectListWindow<Person> and adds
+ * person specific functionality.
+ *
+ * Specializations have to be performed at the end of the file, before (!) the
+ * instantiation.
  *
  * ATTENTION: all ObjectListWindow instances have to be created using this
  * method (or a subclass constructor), never directly using the
  * ObjectListWindow constructor. Otherwise, the generic class may be created
  * instead of the specific class.
  *
- * Note that, with GCC, it is possible to specialize this method (even in a
- * different compilation unit) for a type for which the class (including this
- * method) has been instantiated in this file. It is unclear whether this is
- * allowed by the C++ standard.
+ * Note that with GCC on Linux, it is possible to specialize this method in a
+ * different compilation unit. This does not seem to be portable, mingw32
+ * doesn't accept it (complains about a duplicate symbol).
  */
 template<class T> ObjectListWindow<T> *ObjectListWindow<T>::create (DbManager &manager, QWidget *parent)
 {
@@ -467,6 +475,22 @@ template<class T> ObjectListWindow<T> *ObjectListWindow<T>::create (DbManager &m
 	// be called from subclass constructors.
 	return new ObjectListWindow<T> (manager, parent);
 }
+
+
+// **********************************
+// ** Create method specialization **
+// **********************************
+
+#include "src/gui/windows/objectList/PersonListWindow.h"
+template<> ObjectListWindow<Person> *ObjectListWindow<Person>::create (DbManager &manager, QWidget *parent)
+{
+	return new PersonListWindow (manager, parent);
+}
+
+
+// *************************
+// ** Class instantiation **
+// *************************
 
 // Instantiate the class templates
 #include "src/model/Plane.h"
