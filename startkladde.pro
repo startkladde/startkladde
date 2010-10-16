@@ -391,11 +391,11 @@ FORMS += \
            # Empty line
 
 RESOURCES += \
-           startkladde.qrc \
+           config/startkladde.qrc \
            # Empty line
 
 # Windows resource file (e. g. exe file icon)
-RC_FILE = startkladde.rc
+RC_FILE = config/startkladde.rc
 
 # ACPI widget: on windows, use the dummy implementation, on unix, use the
 # libacpi implementation
@@ -430,7 +430,7 @@ unix {
 	plugins.files += plugins
 
 	menu.path += /usr/share/applications/
-	menu.files += startkladde.desktop
+	menu.files += config/startkladde.desktop
 
 	icon.path += /usr/share/pixmaps
 	icon.files += graphics/startkladde.png

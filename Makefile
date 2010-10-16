@@ -62,7 +62,7 @@ Makefile_%.Debug Makefile_%.Release: Makefile_%
 Makefile_startkladde: build/migrations.pro
 
 # The migrations list depends on the migrations directory
-build/migrations.pro: migrations.pro.erb src/db/migrations
+build/migrations.pro: src/migrations.pro.erb src/db/migrations
 	mkdir -p build
 	erb $< >$@ || rm $@
 
