@@ -611,7 +611,10 @@ void FlightWindow::updateErrors (bool setFocus)
 		{
 			++numErrors;
 
-			ui.errorList->addItem (flight.errorDescription (error));
+			// Seems like the item background color is not affected by the
+			// list widget palette
+			QListWidgetItem *item=new QListWidgetItem (flight.errorDescription (error), ui.errorList);
+			item->setBackgroundColor (errorColor);
 
 			QWidget *errorWidget=getErrorWidget (error);
 			if (errorWidget)
@@ -639,6 +642,7 @@ void FlightWindow::updateErrors (bool setFocus)
 	{
 		QPalette pal=ui.errorList->palette ();
 		pal.setColor (QPalette::Base, errorColor);
+//		pal.setColor (QPalette::Window, errorColor);
 		ui.errorList->setPalette (pal);
 	}
 }
