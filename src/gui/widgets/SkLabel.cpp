@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "src/util/color.h"
+
 // ******************
 // ** Construction **
 // ******************
@@ -53,6 +55,9 @@ QColor SkLabel::getDefaultBackgroundColor ()
 
 void SkLabel::setDefaultForegroundColor (const QColor &color)
 {
+	// TODO: this will use the parent's foreground color as this widget's
+	// foreground color, which means that it will not be updated if the
+	// style is changed.
 	defaultForegroundColor=color;
 	updateColors ();
 }
@@ -115,27 +120,29 @@ void SkLabel::updateColors ()
 	{
 		// Concealed => foreground and background like parent background
 		setAutoFillBackground (true);
-		p.setColor (QPalette::Foreground, parentWidget ()->palette ().background ().color ());
-		p.setColor (QPalette::Background, parentWidget ()->palette ().background ().color ());
+
+		p.setColor (QPalette::WindowText, parentWidget ()->palette ().background ().color ());
+		p.setColor (QPalette::Window    , parentWidget ()->palette ().background ().color ());
 	}
 	else if (error)
 	{
 		// Error => given error background, same foreground as parent
 		setAutoFillBackground (true);
-		p.setColor (QPalette::Foreground, parentWidget ()->palette ().foreground ().color ());
-		p.setColor (QPalette::Background, errorColor);
+
+		p.setColor (QPalette::WindowText, parentWidget ()->palette ().foreground ().color ());
+		p.setColor (QPalette::Window    , errorColor);
 	}
 	else
 	{
 		if (defaultForegroundColor.isValid ())
-			p.setColor (QPalette::Foreground, defaultForegroundColor);
+			p.setColor (QPalette::WindowText, defaultForegroundColor);
 		else
-			p.setColor (QPalette::Foreground, parentWidget ()->palette ().foreground ().color ());
+			p.setColor (QPalette::WindowText, parentWidget ()->palette ().foreground ().color ());
 
 		if (useDefaultBackgroundColor)
-			p.setColor (QPalette::Background, defaultBackgroundColor);
+			p.setColor (QPalette::Window    , defaultBackgroundColor);
 		else
-			p.setColor (QPalette::Background, parentWidget ()->palette ().background ().color ());
+			p.setColor (QPalette::Window    , parentWidget ()->palette ().background ().color ());
 
 		setAutoFillBackground (useDefaultBackgroundColor);
 	}

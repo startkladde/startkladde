@@ -14,7 +14,8 @@ while true
 		if dt<0
 			puts "<font color=\"#FF0000\">-#{format_duration(dt)}</font>"
 		else
-			puts "<font color=\"#000000\">#{format_duration(dt)}</font>"
+			# Use the default foreground color rather than hard-coded black 
+			puts "#{format_duration(dt)}"
 		end
 	rescue RuntimeError => ex
 		puts ex

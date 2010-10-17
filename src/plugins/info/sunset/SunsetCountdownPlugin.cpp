@@ -69,9 +69,13 @@ void SunsetCountdownPlugin::update ()
 
 	int seconds=currentTime.secsTo (sunsetTime);
 
-	QString color=(seconds<0)?"#FF0000":"#000000";
 	QString duration=formatDuration (seconds, false);
-	QString output=QString ("<font color=\"%1\">%2</font>").arg (color, duration);
+
+	QString output;
+	if (seconds<0)
+		output=QString ("<font color=\"#FF0000\">%2</font>").arg (duration);
+	else
+		output=duration;
 
 	outputText (output, Qt::RichText);
 }

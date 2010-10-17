@@ -18,7 +18,10 @@
  */
 std::ostream &operator<< (std::ostream &s, const QColor &c)
 {
-	return s << c.red () << "," <<  c.green () << "," << c.blue ();
+	if (c.isValid ())
+		return s << c.red () << "," <<  c.green () << "," << c.blue ();
+	else
+		return s << "-";
 }
 
 QColor interpol (float position, const QColor &color0, const QColor &color1)
