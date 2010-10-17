@@ -67,7 +67,8 @@ unix {
 	INCLUDEPATH += /usr/include/mysql
 	# Link against mysqlclient explicitly to avoid "Error in my_thread_global_end():
 	# 1 threads didn't exit" in specific situations (e. g. exception on open).
-	LIBS += -lmysqlclient
+	# /usr/lib/mysql is for Fedora
+	LIBS += -L/usr/lib/mysql -lmysqlclient
 }
 win32 {
 	INCLUDEPATH += $$MYSQL_INCLUDE_PATH
