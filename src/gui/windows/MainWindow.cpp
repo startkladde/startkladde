@@ -531,7 +531,7 @@ void MainWindow::refreshFlights ()
 	QList<Flight> flights;
 	if (!databaseActionsEnabled)
 	{
-		ui.displayDateLabel->setPaletteForegroundColor (Qt::black);
+		ui.displayDateLabel->resetDefaultForegroundColor ();
 		ui.displayDateLabel->setText ("-");
 	}
 	else if (displayDate==today)
@@ -541,7 +541,7 @@ void MainWindow::refreshFlights ()
 		flights  = dbManager.getCache ().getFlightsToday ().getList ();
 		flights += dbManager.getCache ().getPreparedFlights ().getList ();
 
-		ui.displayDateLabel->setPaletteForegroundColor (Qt::black);
+		ui.displayDateLabel->resetDefaultForegroundColor ();
 		ui.displayDateLabel->setText (utf8 ("Heute (%1)").arg (today.toString (Qt::DefaultLocaleShortDate)));
 
 		proxyModel->setShowPreparedFlights (true);
@@ -1682,7 +1682,7 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 	switch (state)
 	{
 		case DbManager::stateDisconnected:
-			ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+			ui.databaseStateLabel->resetDefaultForegroundColor ();
 			ui.databaseStateLabel->setText ("Getrennt");
 
 			ui.flightTable->setVisible (false);
@@ -1694,7 +1694,7 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 			break;
 		case DbManager::stateConnecting:
 			databaseOkText="Verbindung wird aufgebaut...";
-			ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+			ui.databaseStateLabel->resetDefaultForegroundColor ();
 			ui.databaseStateLabel->setText (databaseOkText);
 
 			ui.flightTable->setVisible (true);
@@ -1706,7 +1706,7 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 			break;
 		case DbManager::stateConnected:
 			databaseOkText="OK";
-			ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+			ui.databaseStateLabel->resetDefaultForegroundColor ();
 			ui.databaseStateLabel->setText (databaseOkText);
 
 			ui.flightTable->setVisible (true);
@@ -1735,7 +1735,7 @@ void MainWindow::readTimeout ()
 
 void MainWindow::readResumed ()
 {
-	ui.databaseStateLabel->setPaletteForegroundColor (Qt::black);
+	ui.databaseStateLabel->resetDefaultForegroundColor ();
 	ui.databaseStateLabel->setText (databaseOkText);
 }
 
