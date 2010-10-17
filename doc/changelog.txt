@@ -1,3 +1,4 @@
+	- Improved libacpi state display 
 	- Bugfix: style ignored in label foreground colors 
 	- Bugfix: possible crash on refresh in ObjectListWindow
 	- Merging people

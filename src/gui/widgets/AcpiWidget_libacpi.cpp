@@ -28,8 +28,8 @@ AcpiWidget::AcpiWidget (QWidget* parent)
 	// 10 second period
 	timer->start (10000);
 	connect (timer, SIGNAL(timeout()), this, SLOT (slotTimer()));
-	// show widget immediatly
-	slotTimer();
+	// show widget immediatly (cannot call this directly from the constructor)
+	QTimer::singleShot (0, this, SLOT (slotTimer ()));
 }
 
 bool AcpiWidget::valid ()
@@ -59,16 +59,18 @@ void AcpiWidget::slotTimer()
 	int battstate = init_acpi_batt(&global_acpi);
 	int acstate = init_acpi_acadapt(&global_acpi);
 
+	// TODO improve
+
 	if(acstate == SUCCESS && ac->ac_state == P_BATT) {
 		message = "Batterie: ";
 		palette.setColor(QPalette::Window, Qt::red);
 	}
 	else if(acstate == SUCCESS && ac->ac_state == P_AC) {
-		message = "Extern; ";
+		message = "Extern ";
 		palette.setColor (QPalette::Window, Qt::white);
 	}
 	else {
-		message = "Nicht bekannt; ";
+		message = "Nicht bekannt ";
 		palette.setColor(QPalette::Window, Qt::red);
 	}
 	setPalette(palette);
@@ -114,7 +116,7 @@ void AcpiWidget::slotTimer()
 		}
 	}
 	else
-		message += "nicht bekannt; ";
+		message += "unbekannt ";
 
 	setText (message);
 	//update ();
