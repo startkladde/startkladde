@@ -842,6 +842,8 @@ void MainWindow::on_actionNew_triggered ()
 {
 	delete createFlightWindow; // noop if NULL
 	createFlightWindow=FlightWindow::createFlight (this, dbManager, getNewFlightDate (), preselectedLaunchMethod);
+	createFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
+
 }
 
 void MainWindow::on_actionLaunchMethodPreselection_triggered ()
@@ -966,6 +968,7 @@ void MainWindow::on_actionEdit_triggered ()
 			// Another flight may be being edited
 			delete editFlightWindow; // noop if NULL
 			editFlightWindow=FlightWindow::editFlight (this, dbManager, flight);
+			editFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
 		}
 	}
 	catch (Cache::NotFoundException &ex)
@@ -996,6 +999,7 @@ void MainWindow::on_actionRepeat_triggered ()
 		Flight flight = dbManager.getCache ().getObject<Flight> (id);
 		delete createFlightWindow; // noop if NULL
 		createFlightWindow=FlightWindow::repeatFlight (this, dbManager, flight, getNewFlightDate (), preselectedLaunchMethod);
+		createFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
 	}
 	catch (Cache::NotFoundException &ex)
 	{
@@ -1445,6 +1449,7 @@ void MainWindow::weatherWidget_doubleClicked ()
 				// The weather dialog will be deleted when it's closed, and
 				// weatherDialog is a QPointer, so it will be set to NULL.
 				weatherDialog = new WeatherDialog (weatherDialogPlugin, this);
+				weatherDialog->setAttribute (Qt::WA_DeleteOnClose, true);
 				weatherDialog->setWindowTitle (s.weatherWindowTitle);
 				weatherDialog->show ();
 			}

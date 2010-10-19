@@ -91,6 +91,7 @@ template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DbManage
 
 template<class T> ObjectEditorWindow<T>::~ObjectEditorWindow ()
 {
+		std::cout << "ObjectEditorWindow being deleted" << std::endl;
 }
 
 
@@ -102,24 +103,26 @@ template<class T> ObjectEditorWindow<T>::~ObjectEditorWindow ()
 // TODO: registration/name/... not editable
 template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, DbManager &manager)
 {
-	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeCreate, manager, parent);
-	w->setAttribute (Qt::WA_DeleteOnClose, true);
+	// Note that we cannot use WA_DeleteOnClose here because we need to read the
+	// ID from w after it has been closed.
+	ObjectEditorWindow<T> w (modeCreate, manager, parent);
 
-	if (w->exec ()==QDialog::Accepted)
-		return w->getId ();
+	if (w.exec ()==QDialog::Accepted)
+		return w.getId ();
 	else
 		return invalidId;
 }
 
 template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, DbManager &manager, const T &nameObject)
 {
-	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeCreate, manager, parent);
-	w->setAttribute (Qt::WA_DeleteOnClose, true);
+	// Note that we cannot use WA_DeleteOnClose here because we need to read the
+	// ID from w after it has been closed.
+	ObjectEditorWindow<T> w (modeCreate, manager, parent);
 
-	w->editorPane->setNameObject (nameObject);
+	w.editorPane->setNameObject (nameObject);
 
-	if (w->exec ()==QDialog::Accepted)
-		return w->getId ();
+	if (w.exec ()==QDialog::Accepted)
+		return w.getId ();
 	else
 		return invalidId;
 }
@@ -158,6 +161,7 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 			{
 				std::cout << "Create object: " << object.toString () << std::endl;
 				id=manager.createObject (object, this);
+				std::cout << "after manager.createObject: id is " << id << " is " << getId () << std::endl;
 				return true;
 			}
 			catch (OperationCanceledException)
@@ -201,7 +205,10 @@ template<class T> void ObjectEditorWindow<T>::on_okButton_clicked ()
 	{
 		T object=editorPane->determineObject ();
 		if (writeToDatabase (object))
+		{
+			std::cout << "after writeToDatabase, right before accept, id is " << getId () << std::endl;
 			accept (); // Close the dialog
+		}
 	}
 	catch (ObjectEditorPaneBase::AbortedException &e)
 	{

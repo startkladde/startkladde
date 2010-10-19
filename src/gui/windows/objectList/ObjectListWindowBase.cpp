@@ -13,7 +13,6 @@ ObjectListWindowBase::ObjectListWindowBase (DbManager &manager, QWidget *parent)
 	editPasswordRequired (false), editPasswordOk (false)
 {
 	ui.setupUi(this);
-	setAttribute (Qt::WA_DeleteOnClose, true);
 	ui.buttonBox->button (QDialogButtonBox::Close)->setText (utf8 ("&Schließen"));
 
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));

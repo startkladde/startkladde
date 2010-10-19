@@ -11,8 +11,6 @@ WeatherDialog::WeatherDialog (WeatherPlugin *plugin, QWidget *parent):
 	QDialog (parent),
 	plugin (plugin)
 {
-	setAttribute (Qt::WA_DeleteOnClose, true);
-
 	ww=new WeatherWidget (this);
 	ww->setWordWrap (false);
 

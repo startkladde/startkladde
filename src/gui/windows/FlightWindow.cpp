@@ -437,7 +437,6 @@ void FlightWindow::showEvent (QShowEvent *event)
 FlightWindow *FlightWindow::createFlight (QWidget *parent, DbManager &manager, QDate date, dbId preselectedLaunchMethod)
 {
 	FlightWindow *w=new FlightWindow (parent, modeCreate, manager, NULL);
-	w->setAttribute (Qt::WA_DeleteOnClose, true);
 
 	w->ui.dateInput->setDate (date);
 	w->updateSetup ();
@@ -451,7 +450,6 @@ FlightWindow *FlightWindow::createFlight (QWidget *parent, DbManager &manager, Q
 FlightWindow *FlightWindow::repeatFlight (QWidget *parent, DbManager &manager, const Flight &original, QDate date, dbId preselectedLaunchMethod)
 {
 	FlightWindow *w=new FlightWindow (parent, modeCreate, manager);
-	w->setAttribute (Qt::WA_DeleteOnClose, true);
 	w->flightToFields (original, true, preselectedLaunchMethod);
 
 	w->ui.dateInput->setDate (date);
@@ -467,7 +465,6 @@ FlightWindow *FlightWindow::repeatFlight (QWidget *parent, DbManager &manager, c
 FlightWindow *FlightWindow::editFlight (QWidget *parent, DbManager &manager, Flight &flight)
 {
 	FlightWindow *w=new FlightWindow (parent, modeEdit, manager);
-	w->setAttribute (Qt::WA_DeleteOnClose, true);
 	w->flightToFields (flight, false);
 
 	w->updateSetup ();
