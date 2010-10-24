@@ -1,3 +1,5 @@
+2.1.0 (2010-10-24):
+	- Added function key shortcuts to menu entries
 	- Bugfix: newly created person/plane not stored correctly when creating
 	  flight 
 	- Improved libacpi state display 
@@ -25,11 +27,11 @@
 	- New feature: Medical validity checking
 	- MySQL 5.0 compatibility
 	
-2.0.7 (2010-07-29)
+2.0.7 (2010-07-29):
 	- Set time menu entry not shown on Windows
 	- Fixed time editor fields on Windows
 
-2.0.6 (2010-07-29)
+2.0.6 (2010-07-29):
 	- Improved settings dialog
 	- New plugin architecture (ruby no longer required)
 	- Longitude correction and time zone for sunset plugin
