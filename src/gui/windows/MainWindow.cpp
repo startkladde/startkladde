@@ -1280,17 +1280,18 @@ void MainWindow::keyPressEvent (QKeyEvent *e)
 	switch (e->key ())
 	{
 		// The function keys trigger actions
-		case Qt::Key_F2:  if (databaseActionsEnabled) ui.actionNew          ->trigger (); break;
-		case Qt::Key_F3:  if (databaseActionsEnabled) ui.actionRepeat       ->trigger (); break;
-		case Qt::Key_F4:  if (databaseActionsEnabled) ui.actionEdit         ->trigger (); break;
-		case Qt::Key_F5:  if (databaseActionsEnabled) ui.actionDepart       ->trigger (); break;
-		case Qt::Key_F6:  if (databaseActionsEnabled) ui.actionLand         ->trigger (); break;
-		case Qt::Key_F7:  if (databaseActionsEnabled) ui.actionTouchngo     ->trigger (); break;
-		case Qt::Key_F8:  if (databaseActionsEnabled) ui.actionDelete       ->trigger (); break;
-		case Qt::Key_F9:  if (databaseActionsEnabled) ui.actionSort         ->trigger (); break;
-		case Qt::Key_F10:                             ui.actionQuit         ->trigger (); break;
-		case Qt::Key_F11: if (databaseActionsEnabled) ui.actionHideFinished ->trigger (); break;
-		case Qt::Key_F12: if (databaseActionsEnabled) ui.actionRefreshAll   ->trigger (); break;
+		// ATTENTION: any changes here should be reflected in the menu entries' text.
+		case Qt::Key_F2:  if (databaseActionsEnabled) ui.actionNew           ->trigger (); break;
+		case Qt::Key_F3:  if (databaseActionsEnabled) ui.actionRepeat        ->trigger (); break;
+		case Qt::Key_F4:  if (databaseActionsEnabled) ui.actionEdit          ->trigger (); break;
+		case Qt::Key_F5:  if (databaseActionsEnabled) ui.actionDepart        ->trigger (); break;
+		case Qt::Key_F6:  if (databaseActionsEnabled) ui.actionLand          ->trigger (); break;
+		case Qt::Key_F7:  if (databaseActionsEnabled) ui.actionTouchngo      ->trigger (); break;
+		case Qt::Key_F8:  if (databaseActionsEnabled) ui.actionDelete        ->trigger (); break;
+		case Qt::Key_F9:  if (databaseActionsEnabled) ui.actionSort          ->trigger (); break;
+		case Qt::Key_F10: if (databaseActionsEnabled) ui.actionSetDisplayDate->trigger (); break;
+		case Qt::Key_F11: if (databaseActionsEnabled) ui.actionHideFinished  ->trigger (); break;
+		case Qt::Key_F12: if (databaseActionsEnabled) ui.actionRefreshAll    ->trigger (); break;
 
 		// Flight manipulation
 		// Note that we used to check for ui.flightTable->hasFocus() here, but this prevents
@@ -1461,9 +1462,9 @@ void MainWindow::weatherWidget_doubleClicked ()
 // ** View - Flights **
 // ********************
 
-void on_actionSort_triggered ()
+void MainWindow::on_actionSort_triggered ()
 {
-
+	sortCustom ();
 }
 
 // **********

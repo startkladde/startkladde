@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../../startkladde.qrc">
+   <iconset resource="../../../config/startkladde.qrc">
     <normaloff>:/graphics/icon.png</normaloff>:/graphics/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -251,9 +251,6 @@
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
-      <attribute name="horizontalHeaderHighlightSections">
-       <bool>false</bool>
-      </attribute>
      </widget>
     </item>
     <item>
@@ -360,7 +357,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -508,7 +505,7 @@
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Werkzeugleiste</string>
    </property>
    <property name="movable">
     <bool>false</bool>
@@ -537,6 +534,9 @@
    <property name="text">
     <string>&amp;Beenden</string>
    </property>
+   <property name="toolTip">
+    <string>Beenden</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
    </property>
@@ -548,7 +548,10 @@
   </action>
   <action name="actionNew">
    <property name="text">
-    <string>&amp;Neuer Flug...</string>
+    <string>&amp;Neuer Flug... (F2)</string>
+   </property>
+   <property name="toolTip">
+    <string>Neuer Flug (F2)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -556,7 +559,7 @@
   </action>
   <action name="actionDepart">
    <property name="text">
-    <string>&amp;Starten</string>
+    <string>&amp;Starten (F5)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -564,7 +567,7 @@
   </action>
   <action name="actionLand">
    <property name="text">
-    <string>&amp;Landen/Beenden</string>
+    <string>&amp;Landen/Beenden (F6)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
@@ -572,7 +575,7 @@
   </action>
   <action name="actionTouchngo">
    <property name="text">
-    <string>Zwischenland&amp;ung</string>
+    <string>Zwischenland&amp;ung (F7)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
@@ -580,7 +583,7 @@
   </action>
   <action name="actionEdit">
    <property name="text">
-    <string>&amp;Editieren...</string>
+    <string>&amp;Editieren... (F4)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
@@ -588,13 +591,13 @@
   </action>
   <action name="actionRepeat">
    <property name="text">
-    <string>Wiederh&amp;olen...</string>
+    <string>Wiederh&amp;olen... (F3)</string>
    </property>
    <property name="iconText">
-    <string>Flug wiederholen</string>
+    <string>Flug wiederholen (F3)</string>
    </property>
    <property name="toolTip">
-    <string>Flug wiederholen</string>
+    <string>Flug wiederholen (F3)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -602,7 +605,7 @@
   </action>
   <action name="actionDelete">
    <property name="text">
-    <string>Lösc&amp;hen...</string>
+    <string>Lösc&amp;hen... (F8)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+H</string>
@@ -634,7 +637,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Er&amp;ledigte Flüge ausblenden</string>
+    <string>Er&amp;ledigte Flüge ausblenden (F11)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
@@ -664,12 +667,15 @@
   </action>
   <action name="actionSort">
    <property name="text">
-    <string>Nach effektiver Zeit Sor&amp;tieren</string>
+    <string>Nach effektiver Zeit Sor&amp;tieren (F9)</string>
    </property>
   </action>
   <action name="actionSetDisplayDate">
    <property name="text">
-    <string>Anzeigedatum &amp;einstellen...</string>
+    <string>Anzeigedatum &amp;einstellen... (F10)</string>
+   </property>
+   <property name="toolTip">
+    <string>Anzeigedatum einstellen (F10)</string>
    </property>
   </action>
   <action name="actionResetDisplayDateOnNewFlight">
@@ -736,7 +742,7 @@
   </action>
   <action name="actionRefreshAll">
    <property name="text">
-    <string>Alle &amp;aktualisieren</string>
+    <string>Alle &amp;aktualisieren (F12)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -867,7 +873,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../startkladde.qrc"/>
+  <include location="../../../config/startkladde.qrc"/>
  </resources>
  <connections/>
 </ui>

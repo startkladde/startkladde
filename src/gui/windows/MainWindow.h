@@ -157,7 +157,7 @@ class MainWindow: public QMainWindow
 		// on_actionHideFinished_triggered (bool checked) - connected to proxyModel
 		// on_actionAlwaysShowExternal_triggered (bool checked) - connected to proxyModel
 		// on_actionAlwaysShowErroneous_triggered (bool checked) - connected to proxyModel
-		void on_actionSort_triggered () { sortCustom (); }
+		void on_actionSort_triggered ();
 		void on_actionResizeColumns_triggered () { ui.flightTable->resizeColumnsToContents (); }
 
 
