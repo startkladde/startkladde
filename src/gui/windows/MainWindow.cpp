@@ -1018,8 +1018,8 @@ void MainWindow::on_actionDelete_triggered ()
 
 	if (!yesNoQuestion (this, utf8 ("Flug löschen?"), utf8 ("Flug wirklich löschen?"))) return;
 
-	if (isTowflight) if (!yesNoQuestion (this, utf8 ("Geschleppten Flug löschen?"), utf8 (
-			"Der gewählte Flug ist ein Schleppflug. Soll der dazu gehörige geschleppte Flug wirklich gelöscht werden?"))) return;
+	if (isTowflight) if (!yesNoQuestion (this, utf8 ("Geschleppten Flug löschen?"),
+			utf8 ("Der gewählte Flug ist ein Schleppflug. Soll der dazu gehörige geschleppte Flug wirklich gelöscht werden?"))) return;
 
 	try
 	{
@@ -1171,7 +1171,7 @@ void MainWindow::on_actionShowVirtualKeyboard_triggered (bool checked)
 			else
 			{
 				showWarning ("Bildschirmtastatur konnte nicht angezeigt werden",
-					"Die Bildschirmtastatur konnte nicht angezeigt werden. Möglicherweise is kvkbd nicht installiert.",
+					utf8 ("Die Bildschirmtastatur konnte nicht angezeigt werden. Möglicherweise is kvkbd nicht installiert."),
 					this);
 			}
 
@@ -1807,8 +1807,8 @@ void MainWindow::on_actionSettings_triggered ()
 		QString title=utf8 ("Datenbankeinstellungen geändert");
 
 		QString text=utf8 (
-			"Die Datenbankeinstellungen wurden geändert."
-			" Die Änderungen werden beim nächsten Verbindungsaufbau wirksam."
+			"Die Datenbankeinstellungen wurden geändert." /*utf8*/
+			" Die Änderungen werden beim nächsten Verbindungsaufbau wirksam." /*utf8*/
 			" Soll die Verbindung jetzt neu aufgebaut werden?");
 
 		if (yesNoQuestion (this, title, text))
@@ -1843,14 +1843,15 @@ void MainWindow::on_actionSetTime_triggered ()
 		{
 			showWarning (utf8 ("Systemzeit geändert"),
 				utf8 ("Die Systemzeit wurde geändert. Gegebenenfalls"
-				" wird die Änderung erst beim nächsten Herunterfahren"
+				" wird die Änderung erst beim nächsten Herunterfahren" /*utf8*/
 				" dauerhaft gespeichert."), this);
 		}
 		else
 		{
 			showWarning (utf8 ("Fehler"),
 				utf8 ("Die Änderung der Systemzeit ist fehlgeschlagen."
-				" Möglicherweise sind die Berechtigungen nicht ausreichend."), this);
+				" Möglicherweise sind die Berechtigungen nicht ausreichend."), /*utf8*/
+				this);
 		}
 	}
 }

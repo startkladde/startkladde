@@ -8,6 +8,7 @@
 #include <QColor>
 #include <QList>
 
+#include "src/util/qString.h"
 #include "FlightBase.h"
 
 class DbEvent;
@@ -187,7 +188,7 @@ class Flight: public FlightBase
 		// *** ObjectListWindow/ObjectEditorWindow helpers
 		static QString objectTypeDescription () { return "Flug"; }
 		static QString objectTypeDescriptionDefinite () { return "der Flug"; }
-		static QString objectTypeDescriptionPlural () { return qApp->translate ("Flight", "Flüge"); }
+		static QString objectTypeDescriptionPlural () { return utf8 ("Flüge"); }
 
 
 		// *** SQL interface

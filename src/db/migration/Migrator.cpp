@@ -226,7 +226,7 @@ Migrator::Action Migrator::getRequiredAction (quint64 *currentVersion, int *numP
 	}
 
 	// #4 - load canceled
-	monitor.status ("Datenbankversion prüfen");
+	monitor.status (utf8 ("Datenbankversion prüfen"));
 	quint64 current=this->currentVersion ();
 	if (current==0) return actionLoad;
 

@@ -468,8 +468,8 @@ void SettingsWindow::warnEdit ()
 	if (warned) return;
 
 	showWarning (utf8 ("Einstellungen geschützt"), utf8 (
-		"Achtung: Die Einstellungen sind geschützt. Die Einstellungen\n"
-		"können geändert werden, aber zum Speichern ist das\n"
+		"Achtung: Die Einstellungen sind geschützt. Die Einstellungen\n" /*utf8*/
+		"können geändert werden, aber zum Speichern ist das\n" /*utf8*/
 		"Datenbankpasswort erforderlich."), this);
 
 	warned=true;

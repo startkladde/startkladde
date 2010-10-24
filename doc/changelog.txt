@@ -3,14 +3,14 @@
 	- Improved libacpi state display 
 	- Bugfix: style ignored in label foreground colors 
 	- Bugfix: possible crash on refresh in ObjectListWindow
-	- Merging people
+	- New feature: Merging people
 	- Speedups in flight table display
 	- Allow disabling of "special" entries in ObjectSelectWindow
 	- ObjectSelectWindow uses ObjectModel
 	- Context menu in ObjectListWindow
 	- Space bar departs/lands flights without table button focus
 	- Select the same flight as before after refresh
-	- Caching of flight data
+	- Caching of additional data of flights
 	- Bugfix: duplicate person name part entries in firstByLast/lastByFirst
 	  name hashes in Cache on person change
 	- Bugfix: table button focus lost when current flight is edited
@@ -22,7 +22,7 @@
 	- Improved flight color scheme
 	- Improved display of selected items in tables
 	- Improved keyboard navigation
-	- Medical validity checking
+	- New feature: Medical validity checking
 	- MySQL 5.0 compatibility
 	
 2.0.7 (2010-07-29)

@@ -1059,8 +1059,8 @@ void FlightWindow::checkMedical (const Person *person, const QString &ofThePerso
 	{
 		// No medical date specified (but check enabled)
 		errorCheck (utf8 (
-			"Es ist kein Ablaufdatum für das Medical %1 "
-			"eingetragen, die Medicalprüfung ist aber aktiviert."
+			"Es ist kein Ablaufdatum für das Medical %1 " /*utf8*/
+			"eingetragen, die Medicalprüfung ist aber aktiviert." /*utf8*/
 			).arg (ofThePersonText), this);
 	}
 }

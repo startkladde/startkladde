@@ -6,14 +6,6 @@ Viel Codeduplikation bei Operationen mit Status-Monitor
 
 Siehe auch Trac (startkladde.sf.net) 
 
-Release checks:
-  - Version!
-  - test all situations for database initialization
-  - start maximized
-  - dialogs: tab order; first tabs active
-  - no two flight windows can be opened
-  - all äüöß in utf8 ()
-  
 
 == Critical (before release) ==
 

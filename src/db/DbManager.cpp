@@ -119,9 +119,9 @@ void DbManager::grantPermissions (QWidget *parent)
 		"Der Datenbankbenutzer %1 existiert nicht, das angegebene Passwort\n"
 		"stimmt nicht oder der Benutzer hat unzureichende Zugriffsrechte auf\n"
 		"die Datenbank %2. Zur automatischen Korrektur wird das Passwort des\n"
-		"Datenbankbenutzers root benötigt (dieses Passwort kann ein anderes\n"
-		"als das für den Systembenutzer root sein)\n"
-		"Bitte das Kennwort für den Datenbankbenutzer root eingeben:")
+		"Datenbankbenutzers root benötigt (dieses Passwort kann ein anderes\n" /*utf8*/
+		"als das für den Systembenutzer root sein)\n" /*utf8*/
+		"Bitte das Kennwort für den Datenbankbenutzer root eingeben:") /*utf8*/
 		.arg (info.username, info.database);
 
 	bool retry=true;
@@ -161,9 +161,9 @@ void DbManager::grantPermissions (QWidget *parent)
 		catch (AccessDeniedException) // Actually: only 1045
 		{
 			text=utf8 (
-				"Anmeldung als root verweigert. Möglicherweise ist das\n"
+				"Anmeldung als root verweigert. Möglicherweise ist das\n" /*utf8*/
 				"angegebene Kennwort nicht richtig.\n"
-				"Bitte das Kennwort für root eingeben:");
+				"Bitte das Kennwort für root eingeben:"); /*utf8*/
 			retry=true;
 		}
 	}
@@ -300,7 +300,7 @@ void DbManager::checkVersion (QWidget *parent)
 					"  - Aktuelle Version: %2\n"
 					"  - Anzahl ausstehender Migrationen: %3\n"
 					"\n"
-					"Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.\n"
+					"Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.\n" /*utf8*/
 					"Vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden.\n"
 					"\n"
 					"Soll die Datenbank jetzt aktualisiert werden?"
