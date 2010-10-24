@@ -1,5 +1,7 @@
 #include "LaunchMethodSelectionWindow.h"
 
+#include <QPushButton>
+
 #include "src/db/cache/Cache.h"
 #include "src/gui/dialogs.h"
 #include "src/util/qString.h"
@@ -8,6 +10,7 @@ LaunchMethodSelectionWindow::LaunchMethodSelectionWindow (QWidget *parent):
 	QDialog (parent)
 {
 	ui.setupUi (this);
+	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 }
 
 LaunchMethodSelectionWindow::~LaunchMethodSelectionWindow ()
