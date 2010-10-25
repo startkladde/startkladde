@@ -710,9 +710,14 @@ void MainWindow::flightListChanged ()
 
 void MainWindow::updateFlight (const Flight &flight)
 {
-	// TODO error handling? required? What happens on uncaught exception? Then
-	// remove this method if it only calls dbManager.updateObject
-	dbManager.updateObject (flight, this);
+	try
+	{
+		dbManager.updateObject (flight, this);
+	}
+	catch (OperationCanceledException &e)
+	{
+		// TODO the cache may now be inconsistent
+	}
 }
 
 bool MainWindow::checkPlaneFlying (dbId id, const QString &description)
@@ -1586,6 +1591,18 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 // **************
 // ** Database **
 // **************
+
+void MainWindow::on_actionConnect_triggered ()
+{
+	// Does not throw OperationCanceledException, ConnectionFailedException, ConnectCanceledException, SqlException
+	dbManager.connect (this);
+}
+
+void MainWindow::on_actionDisconnect_triggered ()
+{
+	// Does not throw OperationCanceledException, ConnectionFailedException, ConnectCanceledException, SqlException
+	dbManager.disconnect ();
+}
 
 void MainWindow::on_actionEditPlanes_triggered ()
 {

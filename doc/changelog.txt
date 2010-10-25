@@ -1,3 +1,5 @@
+	- Bugfix: crash after canceling an update object operation from the main
+	  window
 2.1.0 (2010-10-24):
 	- Added function key shortcuts to menu entries
 	- Bugfix: newly created person/plane not stored correctly when creating

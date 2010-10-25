@@ -82,6 +82,7 @@ void PersonListWindow::mergeAction_triggered ()
 	bool confirmed=ConfirmOverwritePersonDialog::confirmOverwrite (correctPerson, people, this);
 
 	if (confirmed)
+		// Does not throw OperationCanceledException
 		manager.mergePeople (correctPerson, people, this);
 }
 

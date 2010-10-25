@@ -627,6 +627,13 @@ QString DbManager::mergeDeleteWarningText (int notDeletedCount, int deletedCount
 // TODO document bad coding practice: friend class for db.emitDbEvent,
 // knowledge about Person in DbManager, but doing it right is complex
 // TODO: replace with a worker class, and uninclude Person.h from header
+/**
+ * This method will not throw OperationCanceledException
+ *
+ * @param correctPerson
+ * @param wrongPeople
+ * @param parent
+ */
 void DbManager::mergePeople (const Person &correctPerson, const QList<Person> &wrongPeople, QWidget *parent)
 {
 	// Determine the ID of the correct person

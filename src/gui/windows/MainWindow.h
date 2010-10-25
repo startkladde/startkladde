@@ -172,8 +172,8 @@ class MainWindow: public QMainWindow
 		void on_actionLaunchMethodStatistics_triggered ();
 
 		// Menu: Database
-		void on_actionConnect_triggered () { dbManager.connect (this); }
-		void on_actionDisconnect_triggered () { dbManager.disconnect (); }
+		void on_actionConnect_triggered ();
+		void on_actionDisconnect_triggered ();
 		void on_actionEditPlanes_triggered ();
 		void on_actionEditPeople_triggered ();
 		void on_actionEditLaunchMethods_triggered ();

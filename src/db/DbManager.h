@@ -50,6 +50,9 @@ class QWidget;
  * This class is intended to be used from the GUI (in the GUI thread) and as
  * such is not thread safe. Some of the classes contained by the manager are
  * thread safe, though.
+ *
+ * ATTENTION: all methods which update the database may throw an exception,
+ * especially an OperationCanceledException
  */
 class DbManager: public QObject
 {
