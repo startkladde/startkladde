@@ -9,7 +9,7 @@
 
 #include <QSqlError>
 #include <QEvent>
-#include <QTimer> // remove
+#include <QTimer>
 
 #include "src/db/result/Result.h"
 #include "src/concurrent/Returner.h"
@@ -32,20 +32,11 @@
  */
 ThreadSafeInterface::ThreadSafeInterface (const DatabaseInfo &info, int readTimeout, int keepaliveInterval):
 	Interface (info),
-	keepaliveEnabled (false), keepaliveInterval (keepaliveInterval),
+	readTimeoutSeconds (readTimeout), keepaliveEnabled (false), keepaliveInterval (keepaliveInterval),
 	interface (NULL), isOpen (false)
 {
-	// For connecting the signals, we need to know that it's a
-	// DefaultInterface. Afterwards, we assign it to the
-	// AbstractInterface *interface. TODO shouldn't the signal be declared
-	// in AbstractInterface?
-	DefaultInterface *defaultInterface=new DefaultInterface (info, readTimeout);
-	connect (defaultInterface, SIGNAL (databaseError (int, QString)), this, SIGNAL (databaseError (int, QString)));
-	connect (defaultInterface, SIGNAL (executingQuery (Query)), this, SIGNAL (executingQuery (Query)));
-	connect (defaultInterface, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()), Qt::DirectConnection);
-	connect (defaultInterface, SIGNAL (readResumed ()), this, SIGNAL (readResumed ()), Qt::DirectConnection);
-	interface=defaultInterface;
-
+	// This must be done on the background thread
+	QTimer::singleShot (0, this, SLOT (slot_createInterface ()));
 
 #define CONNECT(definition) connect (this, SIGNAL (sig_ ## definition), this, SLOT (slot_ ## definition))
 	CONNECT (setInfo   (Returner<void>      *, DatabaseInfo));
@@ -65,6 +56,22 @@ ThreadSafeInterface::ThreadSafeInterface (const DatabaseInfo &info, int readTime
 
 	moveToThread (&thread);
 	thread.start ();
+}
+
+void ThreadSafeInterface::slot_createInterface ()
+{
+	// Note that the interface is created on the background thread
+
+	// For connecting the signals, we need to know that it's a
+	// DefaultInterface. Afterwards, we assign it to the
+	// AbstractInterface *interface. TODO shouldn't the signal be declared
+	// in AbstractInterface?
+	DefaultInterface *defaultInterface=new DefaultInterface (getInfo (), readTimeoutSeconds);
+	connect (defaultInterface, SIGNAL (databaseError (int, QString)), this, SIGNAL (databaseError (int, QString)));
+	connect (defaultInterface, SIGNAL (executingQuery (Query)), this, SIGNAL (executingQuery (Query)));
+	connect (defaultInterface, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()), Qt::DirectConnection);
+	connect (defaultInterface, SIGNAL (readResumed ()), this, SIGNAL (readResumed ()), Qt::DirectConnection);
+	interface=defaultInterface;
 }
 
 ThreadSafeInterface::~ThreadSafeInterface ()

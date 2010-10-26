@@ -49,6 +49,7 @@
 #include <cassert>
 
 #include <QVariant>
+#include <QThread>
 
 #include <errmsg.h>
 #include <mysqld_error.h>
@@ -86,6 +87,8 @@ DefaultInterface::DefaultInterface (const DatabaseInfo &dbInfo, int readTimeout)
 	//std::cout << "Create db " << name << std::endl;
 
 	db=QSqlDatabase::addDatabase ("QMYSQL", name);
+	threadId=QThread::currentThreadId ();
+	std::cout << "DefaultInterface created on thread " << QThread::currentThreadId () << std::endl;
 }
 
 DefaultInterface::~DefaultInterface ()
@@ -146,6 +149,8 @@ bool DefaultInterface::open ()
 
 void DefaultInterface::openImpl ()
 {
+	verifyThread ();
+
 	while (true)
 	{
 		std::cout << QString ("%1 connecting to %2 via %3:%4...")
@@ -197,6 +202,8 @@ void DefaultInterface::openImpl ()
 
 void DefaultInterface::close ()
 {
+	verifyThread ();
+
 	std::cout << "Closing connection" << std::endl;
 	std::cout << "close info " << getInfo().toString() << std::endl;
 
@@ -206,6 +213,7 @@ void DefaultInterface::close ()
 
 QSqlError DefaultInterface::lastError () const
 {
+	verifyThread ();
 	return db.lastError ();
 }
 
@@ -238,6 +246,8 @@ void DefaultInterface::rollback ()
 
 void DefaultInterface::transactionStatementImpl (AbstractInterface::TransactionStatement statement)
 {
+	verifyThread ();
+
 	// Reset the canceled flag; make sure this is always done before
 	// entering doTransactionStatement.
 	canceled=0;
@@ -260,6 +270,8 @@ void DefaultInterface::transactionStatementImpl (AbstractInterface::TransactionS
 
 bool DefaultInterface::doTransactionStatement (TransactionStatement statement)
 {
+	verifyThread ();
+
 	if (displayQueries) std::cout << transactionStatementString (statement) << "..." << std::flush;
 
 	bool result=false;
@@ -403,6 +415,8 @@ QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOn
  */
 QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly)
 {
+	verifyThread ();
+
 	if (displayQueries)
 	{
 		std::cout << query.colorizedString () << "...";
@@ -473,6 +487,8 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 
 void DefaultInterface::ping ()
 {
+	verifyThread ();
+
 	// Don't flood stdout with ping messages
 	bool display=false;
 	//bool display=displayQueries;
@@ -520,4 +536,15 @@ void DefaultInterface::ping ()
 
 		if (display) std::cout << "Retrying...";
 	}
+}
+
+void DefaultInterface::verifyThread () const
+{
+	// FIXME remove?
+	assert (QThread::currentThreadId ()==threadId);
+
+	// The db may only be accessed on the thread where it was created (Qt
+	// restriction)
+	if (QThread::currentThreadId ()!=threadId)
+		std::cout << "FAIL: a method of DefaultInterface was called on the wrong thread!" << std::endl;
 }

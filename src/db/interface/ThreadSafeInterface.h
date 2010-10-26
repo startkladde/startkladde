@@ -85,6 +85,7 @@ class ThreadSafeInterface: public QObject, public Interface
 
 	protected slots:
 		// *** Backend slots
+		virtual void slot_createInterface ();
 		virtual void slot_setInfo   (Returner<void>      *returner, DatabaseInfo info);
 		virtual void slot_open      (Returner<bool>      *returner);
 		virtual void slot_close     (Returner<void>      *returner);
@@ -98,6 +99,7 @@ class ThreadSafeInterface: public QObject, public Interface
 		virtual void slot_ping               (Returner<void>                    *returner);
 
 	private:
+		int readTimeoutSeconds;
 		bool keepaliveEnabled;
 		int keepaliveInterval; // milliseconds
 		QBasicTimer keepaliveTimer;

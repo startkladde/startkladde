@@ -67,11 +67,17 @@ class DefaultInterface: public QObject, public Interface
 		void readTimeout ();
 		void readResumed ();
 
+	protected:
+		void verifyThread () const;
+
 	private:
+		// TODO: when accessing db, we want to check the thread. Make a wrapper
+		// around db that does this, or better, move db to common base class
 		QSqlDatabase db;
 		TcpProxy *proxy;
 		QAtomicInt canceled; // There is no QAtomicBool. 0=false, others=true
 		bool displayQueries;
+		Qt::HANDLE threadId; // The thread ID db was created on
 
 		static QAtomicInt freeNumber;
 		static int getFreeNumber () { return freeNumber.fetchAndAddOrdered (1); }
