@@ -449,10 +449,10 @@
     <addaction name="actionEditPlanes"/>
     <addaction name="actionEditPeople"/>
     <addaction name="actionEditLaunchMethods"/>
+    <addaction name="actionShowFlights"/>
     <addaction name="separator"/>
     <addaction name="actionRefreshAll"/>
     <addaction name="separator"/>
-    <addaction name="actionExportDatabase"/>
    </widget>
    <widget class="QMenu" name="menuDebug">
     <property name="title">
@@ -859,12 +859,12 @@
     <string>Starta&amp;rt-Vorauswahl...</string>
    </property>
   </action>
-  <action name="actionExportDatabase">
+  <action name="actionShowFlights">
    <property name="text">
-    <string>&amp;Exportieren</string>
+    <string>Flug&amp;datenbank anzeigen</string>
    </property>
    <property name="toolTip">
-    <string>Datenbank in Datei exportieren</string>
+    <string>Flugdatenbank anzeigen</string>
    </property>
   </action>
  </widget>

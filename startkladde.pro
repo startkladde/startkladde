@@ -151,7 +151,8 @@ HEADERS += \
            src/gui/widgets/TableButton.h \
            src/gui/widgets/WeatherWidget.h \
            src/gui/windows/ConfirmOverwritePersonDialog.h \
-           src/gui/windows/DateInputDialog.h \
+           src/gui/windows/input/DateInputDialog.h \
+           src/gui/windows/input/DateTimeInputDialog.h \
            src/gui/windows/ExportDatabaseDialog.h \
            src/gui/windows/FlightWindow.h \
            src/gui/windows/LaunchMethodSelectionWindow.h \
@@ -169,6 +170,7 @@ HEADERS += \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.h \
            src/gui/windows/objectEditor/PersonEditorPane.h \
            src/gui/windows/objectEditor/PlaneEditorPane.h \
+           src/gui/windows/objectList/FlightListWindow.h \
            src/gui/windows/objectList/ObjectListWindow.h \
            src/gui/windows/objectList/PersonListWindow.h \
            src/gui/windows/objectList/ObjectListWindowBase.h \
@@ -296,7 +298,8 @@ SOURCES += \
            src/gui/widgets/TableButton.cpp \
            src/gui/widgets/WeatherWidget.cpp \
            src/gui/windows/ConfirmOverwritePersonDialog.cpp \
-           src/gui/windows/DateInputDialog.cpp \
+           src/gui/windows/input/DateInputDialog.cpp \
+           src/gui/windows/input/DateTimeInputDialog.cpp \
            src/gui/windows/ExportDatabaseDialog.cpp \
            src/gui/windows/FlightWindow.cpp \
            src/gui/windows/LaunchMethodSelectionWindow.cpp \
@@ -313,6 +316,7 @@ SOURCES += \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.cpp \
            src/gui/windows/objectEditor/PersonEditorPane.cpp \
            src/gui/windows/objectEditor/PlaneEditorPane.cpp \
+           src/gui/windows/objectList/FlightListWindow.cpp \
            src/gui/windows/objectList/ObjectListWindow.cpp \
            src/gui/windows/objectList/PersonListWindow.cpp \
            src/gui/windows/objectList/ObjectListWindowBase.cpp \
@@ -371,13 +375,13 @@ SOURCES += \
 FORMS += \
            src/gui/widgets/LongitudeInput.ui \
            src/gui/windows/ConfirmOverwritePersonDialog.ui \
-           src/gui/windows/DateInputDialog.ui \
+           src/gui/windows/input/DateInputDialog.ui \
+           src/gui/windows/input/DateTimeInputDialog.ui \
            src/gui/windows/ExportDatabaseDialog.ui \
            src/gui/windows/FlightWindow.ui \
            src/gui/windows/LaunchMethodSelectionWindow.ui \
            src/gui/windows/MainWindow.ui \
            src/gui/windows/MonitorDialog.ui \
-           src/gui/windows/ObjectListWindowBase.ui \
            src/gui/windows/ObjectSelectWindowBase.ui \
            src/gui/windows/SettingsWindow.ui \
            src/gui/windows/StatisticsWindow.ui \
@@ -385,6 +389,8 @@ FORMS += \
            src/gui/windows/objectEditor/ObjectEditorWindowBase.ui \
            src/gui/windows/objectEditor/PersonEditorPane.ui \
            src/gui/windows/objectEditor/PlaneEditorPane.ui \
+           src/gui/windows/objectList/FlightListWindow.ui \
+           src/gui/windows/objectList/ObjectListWindowBase.ui \
            src/plugin/info/InfoPluginSelectionDialog.ui \
            src/plugin/info/InfoPluginSettingsPane.ui \
            src/plugin/settings/PluginSettingsDialog.ui \

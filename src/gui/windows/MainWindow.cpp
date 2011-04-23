@@ -29,15 +29,16 @@
 #include "src/concurrent/threadUtil.h"
 #include "src/config/Settings.h"
 #include "src/gui/widgets/WeatherWidget.h"
-#include "src/gui/windows/DateInputDialog.h"
+#include "src/gui/windows/input/DateInputDialog.h"
+#include "src/gui/windows/input/DateTimeInputDialog.h"
 #include "src/gui/windows/FlightWindow.h"
 #include "src/gui/windows/LaunchMethodSelectionWindow.h"
 #include "src/gui/windows/objectList/ObjectListWindow.h"
+#include "src/gui/windows/objectList/FlightListWindow.h"
 #include "src/gui/windows/SplashScreen.h"
 #include "src/gui/windows/StatisticsWindow.h"
 #include "src/gui/windows/WeatherDialog.h"
 #include "src/gui/windows/SettingsWindow.h"
-#include "src/gui/windows/ExportDatabaseDialog.h"
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
 #include "src/model/Person.h"
@@ -1205,13 +1206,6 @@ void MainWindow::on_actionRefreshAll_triggered ()
 	refreshFlights ();
 }
 
-void MainWindow::on_actionExportDatabase_triggered ()
-{
-	ExportDatabaseDialog *dialog=new ExportDatabaseDialog (this);
-	dialog->setAttribute (Qt::WA_DeleteOnClose, true);
-	dialog->show ();
-}
-
 void MainWindow::on_actionRefreshTable_triggered ()
 {
 	refreshFlights ();
@@ -1563,8 +1557,8 @@ void MainWindow::setDisplayDate (QDate newDisplayDate, bool force)
 void MainWindow::on_actionSetDisplayDate_triggered ()
 {
 	QDate newDisplayDate = displayDate;
-	if (DateInputDialog::editDate (this, &newDisplayDate, NULL, "Anzeigedatum einstellen", "Anzeigedatum:",
-		true, true, true)) setDisplayDate (newDisplayDate, true);
+	if (DateInputDialog::editDate (&newDisplayDate, "Anzeigedatum einstellen", "Anzeigedatum:", this))
+		setDisplayDate (newDisplayDate, true);
 }
 
 // ****************
@@ -1632,6 +1626,11 @@ void MainWindow::on_actionEditLaunchMethods_triggered ()
 		Settings::instance ().protectLaunchMethods,
 		Settings::instance ().databaseInfo.password,
 		this);
+}
+
+void MainWindow::on_actionShowFlights_triggered ()
+{
+	FlightListWindow::show (dbManager, this);
 }
 
 
@@ -1858,7 +1857,7 @@ void MainWindow::on_actionSetTime_triggered ()
 	QTime time = oldDateTime.time ();
 
 
-	if (DateInputDialog::editDate (this, &date, &time, "Systemdatum einstellen", "Datum:", false, false, false))
+	if (DateTimeInputDialog::editDateTime (this, &date, &time, "Systemdatum einstellen"))
 	{
 		QString timeString=QString ("%1-%2-%3 %4:%5:%6")
 			.arg (date.year ()).arg (date.month ()).arg (date.day ())

@@ -177,8 +177,8 @@ class MainWindow: public QMainWindow
 		void on_actionEditPlanes_triggered ();
 		void on_actionEditPeople_triggered ();
 		void on_actionEditLaunchMethods_triggered ();
+		void on_actionShowFlights_triggered ();
 		void on_actionRefreshAll_triggered ();
-		void on_actionExportDatabase_triggered ();
 
 		// Menu: Debug
 		void on_actionSegfault_triggered () { *(int *)NULL = 0; } // For testing the automatic restart mechanism
