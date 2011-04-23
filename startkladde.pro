@@ -153,7 +153,6 @@ HEADERS += \
            src/gui/windows/ConfirmOverwritePersonDialog.h \
            src/gui/windows/input/DateInputDialog.h \
            src/gui/windows/input/DateTimeInputDialog.h \
-           src/gui/windows/ExportDatabaseDialog.h \
            src/gui/windows/FlightWindow.h \
            src/gui/windows/LaunchMethodSelectionWindow.h \
            src/gui/windows/MainWindow.h \
@@ -300,7 +299,6 @@ SOURCES += \
            src/gui/windows/ConfirmOverwritePersonDialog.cpp \
            src/gui/windows/input/DateInputDialog.cpp \
            src/gui/windows/input/DateTimeInputDialog.cpp \
-           src/gui/windows/ExportDatabaseDialog.cpp \
            src/gui/windows/FlightWindow.cpp \
            src/gui/windows/LaunchMethodSelectionWindow.cpp \
            src/gui/windows/MainWindow.cpp \
@@ -377,7 +375,6 @@ FORMS += \
            src/gui/windows/ConfirmOverwritePersonDialog.ui \
            src/gui/windows/input/DateInputDialog.ui \
            src/gui/windows/input/DateTimeInputDialog.ui \
-           src/gui/windows/ExportDatabaseDialog.ui \
            src/gui/windows/FlightWindow.ui \
            src/gui/windows/LaunchMethodSelectionWindow.ui \
            src/gui/windows/MainWindow.ui \
