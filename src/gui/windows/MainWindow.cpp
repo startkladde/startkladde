@@ -1397,8 +1397,12 @@ void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
 QString formatDateTime (const QDateTime &dateTime)
 {
 	// xx.yy.zzzz aa:bb:cc
+	// Note that QTime::toString (Qt::DefaultLocaleLongDate) includes the time
+	// zone, which will be reported as the local time zone even for UTC time,
+	// since QTime doesn't know about time zones.
+
 	return dateTime.date ().toString (Qt::DefaultLocaleShortDate)+" "+
-		dateTime.time ().toString (Qt::DefaultLocaleLongDate);
+		dateTime.time ().toString (Qt::TextDate);
 }
 
 #include "src/gui/widgets/TableButton.h"
