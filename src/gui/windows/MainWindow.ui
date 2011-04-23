@@ -251,6 +251,9 @@
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
      </widget>
     </item>
     <item>
@@ -448,6 +451,8 @@
     <addaction name="actionEditLaunchMethods"/>
     <addaction name="separator"/>
     <addaction name="actionRefreshAll"/>
+    <addaction name="separator"/>
+    <addaction name="actionExportDatabase"/>
    </widget>
    <widget class="QMenu" name="menuDebug">
     <property name="title">
@@ -742,7 +747,7 @@
   </action>
   <action name="actionRefreshAll">
    <property name="text">
-    <string>Alle &amp;aktualisieren (F12)</string>
+    <string>&amp;Aktualisieren (F12)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -852,6 +857,14 @@
   <action name="actionLaunchMethodPreselection">
    <property name="text">
     <string>Starta&amp;rt-Vorauswahl...</string>
+   </property>
+  </action>
+  <action name="actionExportDatabase">
+   <property name="text">
+    <string>&amp;Exportieren</string>
+   </property>
+   <property name="toolTip">
+    <string>Datenbank in Datei exportieren</string>
    </property>
   </action>
  </widget>

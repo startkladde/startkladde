@@ -37,6 +37,7 @@
 #include "src/gui/windows/StatisticsWindow.h"
 #include "src/gui/windows/WeatherDialog.h"
 #include "src/gui/windows/SettingsWindow.h"
+#include "src/gui/windows/ExportDatabaseDialog.h"
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
 #include "src/model/Person.h"
@@ -1202,6 +1203,13 @@ void MainWindow::on_actionRefreshAll_triggered ()
 	catch (OperationCanceledException &ex) {}
 
 	refreshFlights ();
+}
+
+void MainWindow::on_actionExportDatabase_triggered ()
+{
+	ExportDatabaseDialog *dialog=new ExportDatabaseDialog (this);
+	dialog->setAttribute (Qt::WA_DeleteOnClose, true);
+	dialog->show ();
 }
 
 void MainWindow::on_actionRefreshTable_triggered ()

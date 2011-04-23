@@ -2,6 +2,8 @@
 
 #include <QPushButton>
 
+// TODO: use QDate(Time)Edit with CalendarPopup
+
 DateInputDialog::DateInputDialog (QWidget *parent, Qt::WindowFlags f):
 	QDialog(parent, f)
 {
