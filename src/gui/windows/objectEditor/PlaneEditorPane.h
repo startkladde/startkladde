@@ -5,8 +5,7 @@
 #include "ui_PlaneEditorPane.h"
 
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required for ObjectEditorWindowBase::Mode
-
-class Plane;
+#include "src/model/Plane.h"
 
 class PlaneEditorPane: public ObjectEditorPane<Plane>
 {
@@ -17,7 +16,7 @@ class PlaneEditorPane: public ObjectEditorPane<Plane>
 		virtual ~PlaneEditorPane();
 
 		virtual void objectToFields (const Plane &plane);
-		virtual Plane determineObject ();
+		virtual void fieldsToObject (Plane &object);
 		virtual void setNameObject (const Plane &nameObject);
 
 	public slots:

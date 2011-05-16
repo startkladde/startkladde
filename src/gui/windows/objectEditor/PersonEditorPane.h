@@ -5,8 +5,7 @@
 #include "ui_PersonEditorPane.h"
 
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required for ObjectEditorWindowBase::Mode
-
-class Person;
+#include "src/model/Person.h"
 
 class PersonEditorPane: public ObjectEditorPane<Person>
 {
@@ -17,7 +16,7 @@ class PersonEditorPane: public ObjectEditorPane<Person>
 		virtual ~PersonEditorPane();
 
 		virtual void objectToFields (const Person &person);
-		virtual Person determineObject ();
+		virtual void fieldsToObject (Person &object);
 
 		void setNameObject (const Person &nameObject);
 

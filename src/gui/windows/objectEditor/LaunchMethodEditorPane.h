@@ -4,8 +4,7 @@
 #include "ObjectEditorPane.h"
 #include "ui_LaunchMethodEditorPane.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required for ObjectEditorWindowBase::Mode
-
-class LaunchMethod;
+#include "src/model/LaunchMethod.h"
 
 class LaunchMethodEditorPane: public ObjectEditorPane<LaunchMethod>
 {
@@ -16,7 +15,7 @@ class LaunchMethodEditorPane: public ObjectEditorPane<LaunchMethod>
 		virtual ~LaunchMethodEditorPane();
 
 		virtual void objectToFields (const LaunchMethod &launchMethod);
-		virtual LaunchMethod determineObject ();
+		virtual void fieldsToObject (LaunchMethod &object);
 
 	public slots:
 		virtual void on_typeInput_activated (int index);

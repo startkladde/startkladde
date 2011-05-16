@@ -69,8 +69,6 @@ void LaunchMethodEditorPane::on_typeInput_activated (int index)
 
 void LaunchMethodEditorPane::objectToFields (const LaunchMethod &launchMethod)
 {
-	originalId=launchMethod.getId ();
-
 	ui.nameInput                ->setText                  (launchMethod.name);
 	ui.shortNameInput           ->setText                  (launchMethod.shortName);
 	ui.logStringInput           ->setText                  (launchMethod.logString);
@@ -83,10 +81,8 @@ void LaunchMethodEditorPane::objectToFields (const LaunchMethod &launchMethod)
 	on_typeInput_activated (ui.typeInput->currentIndex ());
 }
 
-LaunchMethod LaunchMethodEditorPane::determineObject ()
+void LaunchMethodEditorPane::fieldsToObject (LaunchMethod &launchMethod)
 {
-	LaunchMethod launchMethod (originalId);
-
 	launchMethod.name                 = ui.nameInput                     ->text ().simplified ();
 	launchMethod.shortName            = ui.shortNameInput                ->text ().simplified ();
 	launchMethod.logString            = ui.logStringInput                ->text ().simplified ();
@@ -103,6 +99,4 @@ LaunchMethod LaunchMethodEditorPane::determineObject ()
 	requiredField (launchMethod.name     , ui.nameInput     , utf8 ("Es wurde kein Name angegeben."                 ));
 	requiredField (launchMethod.shortName, ui.shortNameInput, utf8 ("Es wurde kein Kürzel angegeben."               ));
 	requiredField (launchMethod.logString, ui.logStringInput, utf8 ("Es wurde keine Flugbuch-Bezeichnung angegeben."));
-
-	return launchMethod;
 }

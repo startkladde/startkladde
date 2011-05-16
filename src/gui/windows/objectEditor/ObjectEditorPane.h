@@ -8,6 +8,8 @@
 #ifndef OBJECTEDITORPANE_H_
 #define OBJECTEDITORPANE_H_
 
+#include <iostream>
+
 #include <QtGui/QWidget>
 
 #include "src/db/dbId.h"
@@ -59,18 +61,9 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		ObjectEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 		virtual ~ObjectEditorPane ();
 
-		/**
-		 * Implementations of this method must also store the original ID.
-		 * @param object
-		 */
-		virtual void objectToFields (const T &object)=0;
+		virtual void setObject (const T &object);
 
-		/**
-		 * Creates an object, using the values from the input fields. Throws
-		 * AbortedException if the user aborts.
-		 * Implementations of this method must also restore the original ID.
-		 */
-		virtual T determineObject ()=0;
+		virtual T determineObject ();
 
 		/**
 		 * Sets the "name" fields (e. g. last and first name for people, or
@@ -84,9 +77,18 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		/** @brief Implementations of ObjectEditorPane should specialize this template method */
 		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
 
-	protected:
-		dbId originalId;
+	private:
+		/**
+		 * Writes the values of the object to the editor fields
+		 */
+		virtual void objectToFields (const T &object)=0;
 
+		/**
+		 * Writes the values of the editor fields to the object
+		 */
+		virtual void fieldsToObject (T &object)=0;
+
+		T originalObject;
 };
 
 // *************************************
@@ -94,13 +96,40 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 // *************************************
 
 template<class T> ObjectEditorPane<T>::ObjectEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent):
-	ObjectEditorPaneBase (mode, cache, parent),
-	originalId (invalidId)
+	ObjectEditorPaneBase (mode, cache, parent)
 {
 }
 
 template<class T> ObjectEditorPane<T>::~ObjectEditorPane ()
 {
+}
+
+/**
+ * Writes the object properties to the input fields (and stores the original
+ * object)
+ *
+ * @param object the object to write
+ */
+template<class T> void ObjectEditorPane<T>::setObject (const T &object)
+{
+	originalObject=object;
+
+	objectToFields (object);
+}
+
+/**
+ * Creates an object, using the values from the input fields (or defaults from
+ * the original object). Throws AbortedException if the user aborts.
+ *
+ * @return the created object
+ */
+template<class T> T ObjectEditorPane<T>::determineObject ()
+{
+	T object (originalObject);
+
+	fieldsToObject (object);
+
+	return object;
 }
 
 #endif

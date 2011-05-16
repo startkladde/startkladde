@@ -104,8 +104,6 @@ void PlaneEditorPane::on_registrationInput_editingFinished ()
 
 void PlaneEditorPane::objectToFields (const Plane &plane)
 {
-	originalId=plane.getId ();
-
 	ui.registrationInput->setText (plane.registration);
 	ui.callsignInput->setText (plane.callsign);
 	ui.categoryInput->setCurrentItemByItemData (plane.category);
@@ -115,12 +113,9 @@ void PlaneEditorPane::objectToFields (const Plane &plane)
 	ui.commentsInput->setText (plane.comments);
 }
 
-Plane PlaneEditorPane::determineObject ()
+void PlaneEditorPane::fieldsToObject (Plane &plane)
 {
 	// TODO: checks go here; throw AbortedException if aborted
-	Plane plane;
-
-	plane.setId (originalId);
 
 	plane.registration=ui.registrationInput->text ().simplified ();
 	plane.callsign=ui.callsignInput->text ().simplified ();
@@ -170,7 +165,4 @@ Plane PlaneEditorPane::determineObject ()
 	if (maxSeats>=0 && plane.numSeats>maxSeats)
 		errorCheck (utf8 ("Es wurden zu viele Sitze für die gewählte Gattung angegeben."),
 			ui.seatsInput);
-
-
-	return plane;
 }

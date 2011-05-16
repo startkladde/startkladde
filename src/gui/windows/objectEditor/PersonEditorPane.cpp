@@ -96,8 +96,6 @@ void PersonEditorPane::on_checkMedicalInput_currentIndexChanged ()
 
 void PersonEditorPane::objectToFields (const Person &person)
 {
-	originalId=person.getId ();
-
 	ui.lastNameInput->setText (person.lastName);
 	ui.firstNameInput->setText (person.firstName);
 	ui.clubInput->setEditText (person.club);
@@ -123,12 +121,8 @@ QDate PersonEditorPane::getEffectiveMedicalValidity ()
 		return ui.medicalValidityInput->date ();
 }
 
-Person PersonEditorPane::determineObject ()
+void PersonEditorPane::fieldsToObject (Person &person)
 {
-	Person person;
-
-	person.setId (originalId);
-
 	person.lastName             =ui.lastNameInput       ->text ().simplified ();
 	person.firstName            =ui.firstNameInput      ->text ().simplified ();
 	person.club                 =ui.clubInput           ->currentText ().simplified ();
@@ -145,7 +139,4 @@ Person PersonEditorPane::determineObject ()
 	if (isNone (person.firstName))
 		errorCheck ("Es wurde kein Vorname angegeben.",
 			ui.firstNameInput);
-
-
-	return person;
 }

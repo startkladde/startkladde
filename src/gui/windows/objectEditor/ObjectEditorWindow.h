@@ -133,7 +133,7 @@ template<class T> void ObjectEditorWindow<T>::displayObject (QWidget *parent, Db
 {
 	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeDisplay, manager, parent);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
-	w->editorPane->objectToFields (object);
+	w->editorPane->setObject (object);
 	w->exec ();
 }
 
@@ -142,7 +142,7 @@ template<class T> int ObjectEditorWindow<T>::editObject (QWidget *parent, DbMana
 {
 	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeEdit, manager, parent);
 	w->setAttribute (Qt::WA_DeleteOnClose, true);
-	w->editorPane->objectToFields (object);
+	w->editorPane->setObject (object);
 	return w->exec ();
 }
 
@@ -203,6 +203,7 @@ template<class T> void ObjectEditorWindow<T>::on_okButton_clicked ()
 	// The OK button was pressed. Check and store the object.
 	try
 	{
+		std::cout << "goona determine" << std::endl;
 		T object=editorPane->determineObject ();
 		if (writeToDatabase (object))
 		{
