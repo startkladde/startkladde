@@ -13,7 +13,7 @@
 #include <QtGui/QWidget>
 
 #include "src/db/dbId.h"
-#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required fro ObjectEditorWindowBase::Mode
+#include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required for ObjectEditorWindowBase::Mode
 
 class Cache;
 

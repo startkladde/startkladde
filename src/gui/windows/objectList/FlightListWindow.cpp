@@ -4,6 +4,7 @@
 #include <QPushButton>
 
 #include "src/util/qString.h"
+#include "src/gui/windows/input/DateInputDialog.h"
 
 FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 	QMainWindow (parent),
@@ -26,8 +27,14 @@ void FlightListWindow::show (DbManager &manager, QWidget *parent)
 	FlightListWindow *window = new FlightListWindow (manager, parent);
 	window->setAttribute (Qt::WA_DeleteOnClose, true);
 
-	// Show the window
-	window->show ();
+	// Get the date range
+	QDate first, last;
+	if (DateInputDialog::editRange (&first, &last, "Datum eingeben", "Datum eingeben:", parent))
+//	if (DateInputDialog::editDate (&first, "Datum eingeben", "Datum eingeben:", parent))
+	{
+		// Show the window
+		window->show ();
+	}
 }
 
 void FlightListWindow::on_actionClose_triggered ()

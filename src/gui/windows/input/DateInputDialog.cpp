@@ -2,6 +2,8 @@
 
 #include <QPushButton>
 
+#include "src/util/qDate.h"
+
 DateInputDialog::DateInputDialog (QWidget *parent, Qt::WindowFlags f):
 	QDialog(parent, f)
 {
@@ -29,64 +31,100 @@ void DateInputDialog::setup (bool modal, const QString &title, const QString &te
 	ui.lastDateInput   ->setVisible (rangeEnabled);
 
 	// Enable the correct date input(s)
-	ui.singleDateInput->setEnabled (ui.otherDateSelect->isChecked ());
+	ui.otherDateInput->setEnabled (ui.otherDateSelect->isChecked ());
 
 	ui.firstDateInput ->setEnabled (ui.dateRangeSelect->isChecked ());
 	ui.lastDateInput  ->setEnabled (ui.dateRangeSelect->isChecked ());
 }
 
+void DateInputDialog::setupDates (QDate otherDate, QDate firstDate, QDate lastDate)
+{
+	ui.otherDateInput->setDate (otherDate);
+	ui.firstDateInput->setDate (firstDate);
+	ui.lastDateInput ->setDate (lastDate );
+}
+
+void DateInputDialog::activateOption (QRadioButton *selection, QWidget *focusWidget)
+{
+	selection->setCheckable (true);
+	focusWidget->setFocus ();
+}
+
+void DateInputDialog::activateToday     () { activateOption (ui.todaySelect    , ui.todaySelect    );}
+void DateInputDialog::activateYesterday () { activateOption (ui.yesterdaySelect, ui.yesterdaySelect);}
+void DateInputDialog::activateOther     () { activateOption (ui.otherDateSelect, ui.otherDateInput );}
+void DateInputDialog::activateRange     () { activateOption (ui.dateRangeSelect, ui.firstDateInput );}
+
 bool DateInputDialog::editDate  (QDate *date, const QString &title, const QString &text, QWidget *parent)
 {
+	// Setup the dialog
 	DateInputDialog dialog (parent);
 	dialog.setup (true, title, text, false);
 
-	QDate today=QDate::currentDate ();
-	QDate yesterday=today.addDays (-1);
+	// Determine some constants
+	const QDate today=QDate::currentDate ();
+	const QDate yesterday=today.addDays (-1);
 
-	dialog.ui.singleDateInput->setDate (*date);
+	// FIXME Setup the date fields and select the initial option - like in editRange
 
-	if (*date == today)
-	{
-		// Today - use "today"
-		dialog.ui.todaySelect->setChecked (true);
-		dialog.ui.todaySelect->setFocus ();
-	}
-	else if (*date == yesterday)
-	{
-		// Yesterday - use "yesterday"
-		dialog.ui.yesterdaySelect->setChecked (true);
-		dialog.ui.yesterdaySelect->setFocus ();
-	}
-	else
-	{
-		// Neither today nor yesterday - use "other"
-		dialog.ui.otherDateSelect->setChecked (true);
-		dialog.ui.singleDateInput->setFocus ();
-	}
+	// Setup the date fields
+	dialog.ui.otherDateInput->setDate (validDate (*date, today));
 
-	if (QDialog::Accepted==dialog.exec ())
-	{
-		if (dialog.ui.todaySelect->isChecked ())
-			*date=today;
-		else if (dialog.ui.yesterdaySelect->isChecked ())
-			*date=yesterday;
-		else if (dialog.ui.otherDateSelect->isChecked ())
-			*date=dialog.ui.singleDateInput->date ();
-		else
-			return false;
+	// Select the initial option
+	if      (*date == today    ) dialog.activateToday     ();
+	else if (*date == yesterday) dialog.activateYesterday ();
+	else if (date->isValid ()  ) dialog.activateOther     ();
+	else                         dialog.activateToday     ();
 
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	// Show the dialog
+	int result=dialog.exec ();
+	if (result!=QDialog::Accepted) return false;
 
+	// Depending on the selected option, store the result
+	if      (dialog.ui.todaySelect    ->isChecked ()) *date=today;
+	else if (dialog.ui.yesterdaySelect->isChecked ()) *date=yesterday;
+	else if (dialog.ui.otherDateSelect->isChecked ()) *date=dialog.ui.otherDateInput->date ();
+	else return false;
+
+	return true;
 }
 
+/**
+ * @param first must not be null
+ * @param last must not be null
+ * @param title
+ * @param text
+ * @param parent
+ * @return
+ */
 bool DateInputDialog::editRange (QDate *first, QDate *last, const QString &title, const QString &text, QWidget *parent)
 {
+	// Setup the dialog
 	DateInputDialog dialog (parent);
 	dialog.setup (true, title, text, true);
 
+	// Determine some constants
+	QDate today      =QDate::currentDate ();
+	QDate yesterday  =today.addDays (-1);
+
+
+	// Setup the date fields and select the initial option
+	if      (!first->isValid () || !last->isValid ()) { dialog.setupDates (today    , firstOfYear (today)    , today    ); dialog.activateToday     (); } // One invalid - today
+	else if (*first!=*last)                           { dialog.setupDates (*last    , *first                 , *last    ); dialog.activateRange     (); } // Different - range
+	else if (*first==today)                           { dialog.setupDates (today    , firstOfYear (today)    , today    ); dialog.activateToday     (); } // Identical (today)
+	else if (*first==yesterday)                       { dialog.setupDates (yesterday, firstOfYear (yesterday), yesterday); dialog.activateYesterday (); } // Identical (yesterday)
+	else                                              { dialog.setupDates (*first   , firstOfYear (*first)   , *first   ); dialog.activateOther     (); } // Identical (other)
+
+	// Show the dialog
+	int result=dialog.exec ();
+	if (result!=QDialog::Accepted) return false;
+
+	// Depending on the selected option, store the result
+	if      (dialog.ui.todaySelect    ->isChecked ()) { *first=today                            ; *last=*first; }
+	else if (dialog.ui.yesterdaySelect->isChecked ()) { *first=yesterday                        ; *last=*first; }
+	else if (dialog.ui.otherDateSelect->isChecked ()) { *first=dialog.ui.otherDateInput->date (); *last=*first; }
+	else if (dialog.ui.otherDateSelect->isChecked ()) { *first=dialog.ui.firstDateInput->date (); *last=dialog.ui.lastDateInput->date (); }
+	else return false;
+
+	return true;
 }

@@ -5,6 +5,11 @@
 
 #include "ui_DateInputDialog.h"
 
+/**
+ * Note that the results of selecting "today" or "yesterday" might be unexpected
+ * if the date changes between invocation and acceptance of the dialog (i. e. at
+ * midnight).
+ */
 class DateInputDialog : public QDialog
 {
 	public:
@@ -16,6 +21,15 @@ class DateInputDialog : public QDialog
 
 	protected:
 		void setup (bool modal, const QString &title, const QString &text, bool rangeEnabled);
+
+		void setupDates (QDate otherDate, QDate firstDate, QDate lastDate);
+
+		void activateOption (QRadioButton *selection, QWidget *focusWidget);
+		void activateToday ();
+		void activateYesterday ();
+		void activateOther ();
+		void activateRange ();
+
 
 	private:
 		Ui::DateInputDialogClass ui;

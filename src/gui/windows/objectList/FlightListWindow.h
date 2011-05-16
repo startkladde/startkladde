@@ -11,9 +11,9 @@
  *
  * Note that this window is not based on ObjectListWindow as it is significantly
  * different from other object list windows:
- *   * it does not allow creating and editing of objects
- *   * the data it displays is not cached by the database
- *   * it allow retrieving different sets of data
+ *   - it does not allow creating and editing of objects
+ *   - the data it displays is not cached by the database
+ *   - it allow retrieving different sets of data (by date)
  */
 class FlightListWindow: public QMainWindow
 {

@@ -56,7 +56,7 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QDateEdit" name="singleDateInput">
+       <widget class="QDateEdit" name="otherDateInput">
         <property name="calendarPopup">
          <bool>true</bool>
         </property>
@@ -146,7 +146,7 @@
   <connection>
    <sender>otherDateSelect</sender>
    <signal>toggled(bool)</signal>
-   <receiver>singleDateInput</receiver>
+   <receiver>otherDateInput</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

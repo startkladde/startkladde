@@ -10,6 +10,17 @@
 #include <QDate>
 
 /**
+ * Returns date if it is valid, or invalidOption if date is not valid
+ */
+QDate validDate (const QDate &date, const QDate &invalidOption)
+{
+	if (date.isValid ())
+		return date;
+	else
+		return invalidOption;
+}
+
+/**
  * Formats a date with a default format specification
  *
  * @param date the date to format
@@ -23,4 +34,14 @@ QString toString (const QDate &date, bool zeroPad)
 		return date.toString (zeroPad?"dd.MM.yyyy":"d.M.yyyy");
 	else
 		return QString ();
+}
+
+QDate firstOfYear (int year)
+{
+	return QDate (year, 1, 1);
+}
+
+QDate firstOfYear (const QDate &date)
+{
+	return firstOfYear (date.year ());
 }
