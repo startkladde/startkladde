@@ -111,6 +111,7 @@ void PersonEditorPane::objectToFields (const Person &person)
 		ui.medicalValidityInput->setDate (QDate::currentDate ());
 		ui.medicalValidityUnknownCheckbox->setChecked (true);
 	}
+	ui.clubIdInput->setText (person.clubId);
 }
 
 QDate PersonEditorPane::getEffectiveMedicalValidity ()
@@ -129,6 +130,7 @@ void PersonEditorPane::fieldsToObject (Person &person)
 	person.comments             =ui.commentsInput       ->text ().simplified ();
 	person.checkMedical         =ui.checkMedicalInput   ->currentItemData ().toBool ();
 	person.medicalValidity      =getEffectiveMedicalValidity ();
+	person.clubId               =ui.clubIdInput         ->text ();
 
 	// Error checks
 

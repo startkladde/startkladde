@@ -20,7 +20,7 @@
    <property name="margin">
     <number>0</number>
    </property>
-   <item row="9" column="0">
+   <item row="10" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -79,10 +79,10 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="8" column="1">
     <widget class="QLineEdit" name="commentsInput"/>
    </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
       <string>&amp;Bemerkungen:</string>
@@ -203,6 +203,16 @@ aktiviert werden.</string>
      </layout>
     </widget>
    </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Vereins-ID:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLineEdit" name="clubIdInput"/>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -218,6 +228,9 @@ aktiviert werden.</string>
   <tabstop>firstNameInput</tabstop>
   <tabstop>clubInput</tabstop>
   <tabstop>checkMedicalInput</tabstop>
+  <tabstop>medicalValidityUnknownCheckbox</tabstop>
+  <tabstop>medicalValidityInput</tabstop>
+  <tabstop>clubIdInput</tabstop>
   <tabstop>commentsInput</tabstop>
  </tabstops>
  <resources/>
