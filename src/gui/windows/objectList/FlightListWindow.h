@@ -4,6 +4,8 @@
 #include <QtGui/QMainWindow>
 #include "ui_FlightListWindow.h"
 
+#include <QDate>
+
 #include "src/db/DbManager.h" // Required for DbManager::State
 
 /**
@@ -34,6 +36,8 @@ class FlightListWindow: public QMainWindow
 		virtual void on_actionExport_triggered ();
 
 	protected:
+		bool setDateRange (const QDate &first, const QDate &last);
+
 		void keyPressEvent (QKeyEvent *e);
 
 	protected slots:
@@ -43,6 +47,8 @@ class FlightListWindow: public QMainWindow
 		Ui::FlightListWindowClass ui;
 
 		DbManager &manager;
+
+		QDate currentFirst, currentLast;
 
 //		ObjectList<Flight> *list;
 //		ObjectModel<Flight> *objectModel;

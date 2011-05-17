@@ -3,7 +3,9 @@
 #include <QKeyEvent>
 #include <QPushButton>
 
+#include "src/text.h"
 #include "src/util/qString.h"
+#include "src/util/qDate.h"
 #include "src/gui/windows/input/DateInputDialog.h"
 
 FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
@@ -30,11 +32,33 @@ void FlightListWindow::show (DbManager &manager, QWidget *parent)
 	// Get the date range
 	QDate first, last;
 	if (DateInputDialog::editRange (&first, &last, "Datum eingeben", "Datum eingeben:", parent))
-//	if (DateInputDialog::editDate (&first, "Datum eingeben", "Datum eingeben:", parent))
 	{
-		// Show the window
-		window->show ();
+		// Get the flights from the database
+		if (window->setDateRange (first, last))
+		{
+			// Show the window
+			window->show ();
+		}
 	}
+}
+
+bool FlightListWindow::setDateRange (const QDate &first, const QDate &last)
+{
+	// FIXME date range reversed
+	// FIXME implement fetch and display
+	int numFlights=0; // FIXME
+
+
+	if (false) return false;
+
+	currentFirst=first;
+	currentLast=last;
+
+	QString dateText=toString (currentFirst, currentLast, " bis ");
+	QString numFlightsText=countText (numFlights, "Flug", utf8 ("Flüge"), utf8 ("keine Flüge"));
+	ui.captionLabel->setText (QString ("%1: %2").arg (dateText).arg (numFlightsText));
+
+	return true;
 }
 
 void FlightListWindow::on_actionClose_triggered ()
@@ -44,8 +68,6 @@ void FlightListWindow::on_actionClose_triggered ()
 
 void FlightListWindow::keyPressEvent (QKeyEvent *e)
 {
-//	std::cout << "FlightListWindow key " << e->key () << std::endl;
-
 	// KeyEvents are accepted by default
 	switch (e->key ())
 	{
@@ -64,10 +86,14 @@ void FlightListWindow::databaseStateChanged (DbManager::State state)
 
 void FlightListWindow::on_actionSelectDate_triggered ()
 {
+	QDate newFirst=currentFirst;
+	QDate newLast =currentLast ;
 
+	if (DateInputDialog::editRange (&newFirst, &newLast, "Datum eingeben", "Datum eingeben:", this))
+		setDateRange (newFirst, newLast);
 }
 
 void FlightListWindow::on_actionExport_triggered ()
 {
-
+	// FIXME implement
 }

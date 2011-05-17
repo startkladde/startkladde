@@ -7,6 +7,8 @@
 
 #include "qDate.h"
 
+#include "src/util/qString.h"
+
 #include <QDate>
 
 /**
@@ -36,6 +38,16 @@ QString toString (const QDate &date, bool zeroPad)
 		return QString ();
 }
 
+QString toString (const QDate &first, const QDate &last, const QString &separator, bool zeroPad)
+{
+	if (!first.isValid () || !last.isValid ())
+		return utf8 ("Ungültig");
+	else if (first==last)
+		return toString (first, zeroPad);
+	else
+		return toString (first, zeroPad)+separator+toString (last, zeroPad);
+}
+
 QDate firstOfYear (int year)
 {
 	return QDate (year, 1, 1);
@@ -44,4 +56,9 @@ QDate firstOfYear (int year)
 QDate firstOfYear (const QDate &date)
 {
 	return firstOfYear (date.year ());
+}
+
+std::ostream &operator<< (std::ostream &s, const QDate &date)
+{
+	return s << toString (date, false);
 }

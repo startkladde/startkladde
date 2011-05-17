@@ -100,6 +100,16 @@ QString countText (int count, const QString &singular, const QString &plural)
 		return QString ("%1 %2").arg (count).arg (plural);
 }
 
+QString countText (int count, const QString &singular, const QString &plural, const QString &noneText)
+{
+	if (count==0)
+		return noneText;
+	else if (count==1)
+		return QString ("%1 %2").arg (count).arg (singular);
+	else
+		return QString ("%1 %2").arg (count).arg (plural);
+}
+
 /**
  * Creates a canonical form of a club name useful for comparison
  *

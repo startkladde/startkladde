@@ -35,6 +35,8 @@ void DateInputDialog::setup (bool modal, const QString &title, const QString &te
 
 	ui.firstDateInput ->setEnabled (ui.dateRangeSelect->isChecked ());
 	ui.lastDateInput  ->setEnabled (ui.dateRangeSelect->isChecked ());
+
+	resize (sizeHint ());
 }
 
 void DateInputDialog::setupDates (QDate otherDate, QDate firstDate, QDate lastDate)
@@ -46,7 +48,7 @@ void DateInputDialog::setupDates (QDate otherDate, QDate firstDate, QDate lastDa
 
 void DateInputDialog::activateOption (QRadioButton *selection, QWidget *focusWidget)
 {
-	selection->setCheckable (true);
+	selection->setChecked (true);
 	focusWidget->setFocus ();
 }
 
@@ -64,8 +66,6 @@ bool DateInputDialog::editDate  (QDate *date, const QString &title, const QStrin
 	// Determine some constants
 	const QDate today=QDate::currentDate ();
 	const QDate yesterday=today.addDays (-1);
-
-	// FIXME Setup the date fields and select the initial option - like in editRange
 
 	// Setup the date fields
 	dialog.ui.otherDateInput->setDate (validDate (*date, today));
@@ -123,7 +123,7 @@ bool DateInputDialog::editRange (QDate *first, QDate *last, const QString &title
 	if      (dialog.ui.todaySelect    ->isChecked ()) { *first=today                            ; *last=*first; }
 	else if (dialog.ui.yesterdaySelect->isChecked ()) { *first=yesterday                        ; *last=*first; }
 	else if (dialog.ui.otherDateSelect->isChecked ()) { *first=dialog.ui.otherDateInput->date (); *last=*first; }
-	else if (dialog.ui.otherDateSelect->isChecked ()) { *first=dialog.ui.firstDateInput->date (); *last=dialog.ui.lastDateInput->date (); }
+	else if (dialog.ui.dateRangeSelect->isChecked ()) { *first=dialog.ui.firstDateInput->date (); *last=dialog.ui.lastDateInput->date (); }
 	else return false;
 
 	return true;
