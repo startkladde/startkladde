@@ -6,6 +6,13 @@
  *     was performed or not, so the cache may be invalid. Using a transaction
  *     hopefully reduces the "critical" time where this may happen.
  *     TODO: this means we cannot use a transaction around multiple operations
+ *
+ * TODO: the selection frontends, value lists and additional properties should
+ * probably replaced with queries (potentially with after filter).
+ *
+ * TODO: Generic methods should be separate from specific methods (selection
+ * frontends, value lists, additional properties) and the name of the generic
+ * methods class should reflect its function (Orm or similar).
  */
 #include "Database.h"
 
@@ -22,6 +29,7 @@
 #include "src/util/qList.h"
 #include "src/db/Query.h"
 #include "src/db/result/Result.h"
+#include "src/util/qDate.h" // TODO remove
 
 // ******************
 // ** Construction **
@@ -53,6 +61,7 @@ void Database::cancelConnection ()
 
 template<class T> QList<T> Database::getObjects (const Query &condition)
 {
+	// FIXME DOING the FlightListWindow crash might be here
 	Query query=Query::select (T::dbTableName (), T::selectColumnList ())
 		.condition (condition);
 
@@ -264,39 +273,10 @@ QList<Flight> Database::getPreparedFlights ()
 
 QList<Flight> Database::getFlightsDate (QDate date)
 {
-	// The correct criterion for flights on a given date is:
-	// (happened and effective_date=that_date)
-	// effective_date has to be calculated from departure time, landing time,
-	// status and mode, which is complicated. Thus, we select a superset of
-	// the flights of that date and filter out the correct flights afterwards.
-
-	// The superset criterion is:
-	// (departure_date=that_date or landing_date=that_date)
-	// Since the database stores the datetimes, we compare them agains the
-	// first and last datetime of the date.
-
-	QDateTime thisMidnight (date,             QTime (0, 0, 0)); // Start of day
-	QDateTime nextMidnight (date.addDays (1), QTime (0, 0, 0)); // Start of next day
-
-	// TODO to Flight (but need after-filter)
-	// TODO multi-bind
-	Query condition ("(departure_time>=? AND departure_time<?) OR (landing_time>=? AND landing_time<?)");
-	condition.bind (thisMidnight); condition.bind (nextMidnight);
-	condition.bind (thisMidnight); condition.bind (nextMidnight);
+	Query condition=Flight::dateSupersetCondition (date);
 
 	QList<Flight> candidates=getObjects<Flight> (condition);
-
-	// For some of the selected flights, the fact that the departure or landing
-	// time is on that day may not indicate that the flight actually happened
-	// on that day. For example, if a flight is prepared (i. e. not taken off
-	// nor landed), or leaving, the times may not be relevant.
-	// Thus, we only keep flights which happened and where the effective date
-	// is the given date.
-
-	QList<Flight> flights;
-	foreach (const Flight &flight, candidates)
-		if (flight.happened () && flight.effdatum ()==date)
-			flights.append (flight);
+	QList<Flight> flights=Flight::dateSupersetFilter (candidates, date);
 
 	return flights;
 }

@@ -1,5 +1,7 @@
 #include "Query.h"
 
+#include <iostream> // remove
+
 #include <QVariant>
 #include <QSqlQuery>
 #include <QStringList>
@@ -7,6 +9,7 @@
 
 #include "src/io/AnsiColors.h"
 #include "src/text.h"
+#include "src/util/qString.h" // remove
 
 // ******************
 // ** Construction **
@@ -214,6 +217,7 @@ Query Query::operator+ (const Query &other) const
 
 Query &Query::operator+= (const Query &other)
 {
+	std::cout << "Concatenating queries: [" << queryString << "]+[" << other.queryString << "]" << std::endl;
 	queryString += other.queryString;
 	bindValues += other.bindValues;
 	return *this;

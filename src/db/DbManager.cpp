@@ -476,6 +476,12 @@ void DbManager::refreshCache (QWidget *parent)
 	returner.wait ();
 }
 
+/**
+ * Fetches the flights of a single date to the cache
+ *
+ * @param date
+ * @param parent
+ */
 void DbManager::fetchFlights (QDate date, QWidget *parent)
 {
 	Returner<void> returner;
@@ -484,6 +490,30 @@ void DbManager::fetchFlights (QDate date, QWidget *parent)
 	cacheWorker.fetchFlightsOther (returner, monitor, date);
 	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), parent);
 	returner.wait ();
+}
+
+/**
+ * Gets and returns the flights of a date range
+ *
+ * @param first first date of the range
+ * @param last last date of the range
+ * @param parent parent widget for progress dialog
+ * @return the list of flights
+ */
+// FIXME throws?
+// FIXME it might be better to implement a template getObjects method and do the
+// query selection (and potentially the after filter) outside of this method
+QList<Flight> DbManager::getFlights (const QDate &first, const QDate &last, QWidget *parent)
+{
+	// FIXME implement
+	Returner<QList<Flight> > returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+	dbWorker.getObjects<Flight> (returner, monitor, Flight::dateSupersetCondition (first)); // FIXME range condition
+	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), parent);
+	QList<Flight> candidates=returner.returnedValue ();
+	return Flight::dateSupersetFilter (candidates, first); // FIXME range filter
+	return returner.returnedValue ();
 }
 
 template<class T> void DbManager::refreshObjects (QWidget *parent)

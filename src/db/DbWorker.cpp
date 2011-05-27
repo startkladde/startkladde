@@ -20,6 +20,24 @@
 // ** Tasks **
 // ***********
 
+template<class T> class GetObjectsTask: public DbWorker::Task
+{
+	public:
+		GetObjectsTask (Returner<QList<T> > *returner, const Query &condition):
+			returner (returner), condition (condition)
+		{
+		}
+
+		Returner<QList <T> > *returner;
+		const Query &condition;
+
+		virtual void run (Database &db, OperationMonitor *monitor)
+		{
+			OperationMonitorInterface interface=monitor->interface ();
+			returnOrException (returner, db.getObjects<T> (condition));
+		}
+};
+
 template<class T> class CreateObjectTask: public DbWorker::Task
 {
 	public:
@@ -157,6 +175,11 @@ DbWorker::~DbWorker ()
 // ** Front-end methods **
 // ***********************
 
+template<class T> void DbWorker::getObjects (Returner<QList<T> > &returner, OperationMonitor &monitor, const Query &condition)
+{
+	executeAndDeleteTask (&monitor, new GetObjectsTask<T> (&returner, condition));
+}
+
 template<class T> void DbWorker::createObject (Returner<dbId> &returner, OperationMonitor &monitor, T &object)
 {
 	executeAndDeleteTask (&monitor, new CreateObjectTask<T> (&returner, object));
@@ -206,12 +229,13 @@ void DbWorker::slot_executeAndDeleteTask (OperationMonitor *monitor, DbWorker::T
 
 #define INSTANTIATE_TEMPLATES(T) \
 	template class CreateObjectTask<T>; \
-	template void DbWorker::createObject  <T> (Returner<dbId> &returner, OperationMonitor &monitor, T &object); \
-	template void DbWorker::createObjects <T> (Returner<void> &returner, OperationMonitor &monitor, QList<T> &object); \
-	template void DbWorker::deleteObject  <T> (Returner<bool> &returner, OperationMonitor &monitor, dbId id); \
-	template void DbWorker::deleteObjects <T> (Returner<int > &returner, OperationMonitor &monitor, const QList<dbId> &ids); \
-	template void DbWorker::updateObject  <T> (Returner<bool> &returner, OperationMonitor &monitor, const T &object); \
-	template void DbWorker::objectUsed    <T> (Returner<bool> &returner, OperationMonitor &monitor, dbId id); \
+	template void DbWorker::getObjects    <T> (Returner<QList <T> > &returner, OperationMonitor &monitor, const Query &condition); \
+	template void DbWorker::createObject  <T> (Returner<dbId>       &returner, OperationMonitor &monitor, T &object); \
+	template void DbWorker::createObjects <T> (Returner<void>       &returner, OperationMonitor &monitor, QList<T> &object); \
+	template void DbWorker::deleteObject  <T> (Returner<bool>       &returner, OperationMonitor &monitor, dbId id); \
+	template void DbWorker::deleteObjects <T> (Returner<int >       &returner, OperationMonitor &monitor, const QList<dbId> &ids); \
+	template void DbWorker::updateObject  <T> (Returner<bool>       &returner, OperationMonitor &monitor, const T &object); \
+	template void DbWorker::objectUsed    <T> (Returner<bool>       &returner, OperationMonitor &monitor, dbId id); \
 	// Empty line
 
 INSTANTIATE_TEMPLATES (Person      )

@@ -3,6 +3,7 @@
 #include <QKeyEvent>
 #include <QPushButton>
 
+#include "src/model/Flight.h"
 #include "src/text.h"
 #include "src/util/qString.h"
 #include "src/util/qDate.h"
@@ -44,16 +45,23 @@ void FlightListWindow::show (DbManager &manager, QWidget *parent)
 
 bool FlightListWindow::setDateRange (const QDate &first, const QDate &last)
 {
-	// FIXME date range reversed
+	// FIXME handle date range reversed
 	// FIXME implement fetch and display
-	int numFlights=0; // FIXME
+	// FIXME test aborting
+	// FIXME sometimes crashes
 
+	QList<Flight> flights=manager.getFlights (first, last, this);
+
+	// FIXME remove repeated getFlights
+	for (int i=0; i<32; ++i)
+		flights=manager.getFlights (first, last, this);
 
 	if (false) return false;
 
 	currentFirst=first;
 	currentLast=last;
 
+	int numFlights=flights.size ();
 	QString dateText=toString (currentFirst, currentLast, " bis ");
 	QString numFlightsText=countText (numFlights, "Flug", utf8 ("Flüge"), utf8 ("keine Flüge"));
 	ui.captionLabel->setText (QString ("%1: %2").arg (dateText).arg (numFlightsText));
