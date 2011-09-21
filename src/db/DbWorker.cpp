@@ -29,10 +29,18 @@ template<class T> class GetObjectsTask: public DbWorker::Task
 		}
 
 		Returner<QList <T> > *returner;
+		// FIXME all of the tasks are handed to the worker thread, so they
+		// should not store any references if possible. Where not possible,
+		// document that it must not be called with a reference to a temporary
+		// (i. e. the result of a function called in the argument to this
+		// method).
 		const Query &condition;
+//		Query condition;
 
 		virtual void run (Database &db, OperationMonitor *monitor)
 		{
+			std::cout << "GetObjectsTask running - the query condition is:" << std::endl;
+			std::cout << condition.getQueryString () << std::endl;
 			OperationMonitorInterface interface=monitor->interface ();
 			returnOrException (returner, db.getObjects<T> (condition));
 		}

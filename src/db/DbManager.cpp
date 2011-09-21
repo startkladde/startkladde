@@ -505,12 +505,18 @@ void DbManager::fetchFlights (QDate date, QWidget *parent)
 // query selection (and potentially the after filter) outside of this method
 QList<Flight> DbManager::getFlights (const QDate &first, const QDate &last, QWidget *parent)
 {
-	// FIXME implement
+	// FIXME implement range
 	Returner<QList<Flight> > returner;
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
-	dbWorker.getObjects<Flight> (returner, monitor, Flight::dateSupersetCondition (first)); // FIXME range condition
+	std::cout << "manager: call dbWorker.getObjects" << std::endl;
+	// FIXME make sure that not dbWorker method is called with a temporary as
+	// a reference
+	Query condition=Flight::dateSupersetCondition (first);
+	dbWorker.getObjects<Flight> (returner, monitor, condition); // FIXME range condition
+	std::cout << "manager: call MonitorDialog::monitor" << std::endl;
 	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), parent);
+	std::cout << "manager: call returner.returnedValue" << std::endl;
 	QList<Flight> candidates=returner.returnedValue ();
 	return Flight::dateSupersetFilter (candidates, first); // FIXME range filter
 	return returner.returnedValue ();

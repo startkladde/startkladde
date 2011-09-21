@@ -52,6 +52,11 @@ Query::~Query ()
 // ** Properties **
 // ****************
 
+QString Query::getQueryString () const
+{
+	return queryString;
+}
+
 bool Query::isEmpty () const
 {
 	return queryString.isEmpty ();
@@ -217,7 +222,6 @@ Query Query::operator+ (const Query &other) const
 
 Query &Query::operator+= (const Query &other)
 {
-	std::cout << "Concatenating queries: [" << queryString << "]+[" << other.queryString << "]" << std::endl;
 	queryString += other.queryString;
 	bindValues += other.bindValues;
 	return *this;

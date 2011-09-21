@@ -61,7 +61,6 @@ void Database::cancelConnection ()
 
 template<class T> QList<T> Database::getObjects (const Query &condition)
 {
-	// FIXME DOING the FlightListWindow crash might be here
 	Query query=Query::select (T::dbTableName (), T::selectColumnList ())
 		.condition (condition);
 
