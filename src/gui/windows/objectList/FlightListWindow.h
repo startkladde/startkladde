@@ -8,6 +8,9 @@
 
 #include "src/db/DbManager.h" // Required for DbManager::State
 
+template<class T> class MutableObjectList;
+template<class T> class ObjectListModel;
+
 /**
  * A window for showing and exporting a flight list
  *
@@ -50,9 +53,9 @@ class FlightListWindow: public QMainWindow
 
 		QDate currentFirst, currentLast;
 
-//		ObjectList<Flight> *list;
-//		ObjectModel<Flight> *objectModel;
-//		ObjectListModel<Flight> *listModel;
+		MutableObjectList<Flight> *flightList;
+		ObjectModel<Flight> *flightModel;
+		ObjectListModel<Flight> *flightListModel;
 //
 //		QSortFilterProxyModel *proxyModel;
 

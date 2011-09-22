@@ -8,6 +8,9 @@
 #include "src/util/qString.h"
 #include "src/util/qDate.h"
 #include "src/gui/windows/input/DateInputDialog.h"
+#include "src/model/objectList/MutableObjectList.h"
+#include "src/model/flightList/FlightModel.h"
+#include "src/model/objectList/ObjectListModel.h"
 
 FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 	QMainWindow (parent),
@@ -17,11 +20,22 @@ FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 	ui.buttonBox->button (QDialogButtonBox::Close)->setText (utf8 ("&Schließen"));
 
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
+
+	flightList=new MutableObjectList<Flight> ();
+	flightModel=new FlightModel (manager.getCache ());
+	flightListModel=new ObjectListModel<Flight> (flightList, true, flightModel, true, this);
+
+	// FIXME no color?
+	ui.table->setModel (flightListModel); // FIXME sort proxy
+	ui.table->setAutoResizeRows (true);
 }
 
 FlightListWindow::~FlightListWindow()
 {
-
+	ui.table->setModel (NULL);
+	// FIXME check
+	// flightListModel deleted by parent
+	// flightModel and flightList deleted by listModel (owned)
 }
 
 void FlightListWindow::show (DbManager &manager, QWidget *parent)
@@ -46,25 +60,23 @@ void FlightListWindow::show (DbManager &manager, QWidget *parent)
 bool FlightListWindow::setDateRange (const QDate &first, const QDate &last)
 {
 	// FIXME handle date range reversed
-	// FIXME implement fetch and display
 	// FIXME test aborting
-	// FIXME sometimes crashes
 
+	// Get the flights from the database
 	QList<Flight> flights=manager.getFlights (first, last, this);
 
-	// FIXME remove repeated getFlights
-	for (int i=0; i<32; ++i)
-		flights=manager.getFlights (first, last, this);
-
-	if (false) return false;
-
+	// Store the (new) first and last date
 	currentFirst=first;
 	currentLast=last;
 
+	// Create and set the descriptive text: "1.1.2011 bis 31.12.2011: 123 Flüge"
 	int numFlights=flights.size ();
 	QString dateText=toString (currentFirst, currentLast, " bis ");
 	QString numFlightsText=countText (numFlights, "Flug", utf8 ("Flüge"), utf8 ("keine Flüge"));
 	ui.captionLabel->setText (QString ("%1: %2").arg (dateText).arg (numFlightsText));
+
+	flightList->replaceList (flights);
+	ui.table->resizeColumnsToContents ();
 
 	return true;
 }
