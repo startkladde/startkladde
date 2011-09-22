@@ -13,6 +13,16 @@
 #include "src/model/flightList/FlightModel.h"
 #include "src/model/objectList/ObjectListModel.h"
 
+/*
+ * Improvements:
+ *   - Instead of a refresh action, track flight changes, either through
+ *     AutomaticEntityList or by explicitly receiving DbEvent signals. This
+ *     requires applying the filter to each changed flight.
+ *   - Receive DbEvent signals to update person/plane changes immediately. At
+ *     the moment, such changes are only updated when the window is activated,
+ *     because the list view rereads the data from the cache.
+ */
+
 FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 	QMainWindow (parent),
 	manager (manager)
@@ -33,14 +43,16 @@ FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 	proxyModel->setSourceModel (flightListModel);
 
 	// FIXME better model, and allow sorting by time/date
-	// FIXME add refresh menu item
 	ui.table->setModel (proxyModel);
 	ui.table->setAutoResizeRows (true);
 }
 
 FlightListWindow::~FlightListWindow()
 {
-	// FIXME check
+	// FIXME verify:
+	//   - flightListModel: ObjectListModel
+	//   - flightModel: FlightModel
+	//   - flightList: MutableObjectList
 	// flightListModel deleted by parent
 	// flightModel and flightList deleted by listModel (owned)
 }
@@ -64,17 +76,13 @@ void FlightListWindow::show (DbManager &manager, QWidget *parent)
 	}
 }
 
-bool FlightListWindow::setDateRange (const QDate &first, const QDate &last)
+void FlightListWindow::fetchFlights ()
 {
 	// FIXME handle date range reversed
-	// FIXME test aborting
+	// FIXME test aborting (both on opening and refreshing/changing date)
 
 	// Get the flights from the database
-	QList<Flight> flights=manager.getFlights (first, last, this);
-
-	// Store the (new) first and last date
-	currentFirst=first;
-	currentLast=last;
+	QList<Flight> flights=manager.getFlights (currentFirst, currentLast, this);
 
 	// Create and set the descriptive text: "1.1.2011 bis 31.12.2011: 123 Flüge"
 	int numFlights=flights.size ();
@@ -84,8 +92,22 @@ bool FlightListWindow::setDateRange (const QDate &first, const QDate &last)
 
 	flightList->replaceList (flights);
 	ui.table->resizeColumnsToContents ();
+}
+
+bool FlightListWindow::setDateRange (const QDate &first, const QDate &last)
+{
+	// Store the (new) first and last date
+	currentFirst=first;
+	currentLast=last;
+
+	fetchFlights ();
 
 	return true;
+}
+
+void FlightListWindow::on_actionRefresh_triggered ()
+{
+	fetchFlights ();
 }
 
 void FlightListWindow::on_actionClose_triggered ()

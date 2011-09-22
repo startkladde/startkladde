@@ -39,9 +39,12 @@ class FlightListWindow: public QMainWindow
 		virtual void on_actionClose_triggered ();
 
 		virtual void on_actionSelectDate_triggered ();
+		virtual void on_actionRefresh_triggered ();
+
 		virtual void on_actionExport_triggered ();
 
 	protected:
+		void fetchFlights ();
 		bool setDateRange (const QDate &first, const QDate &last);
 
 		void keyPressEvent (QKeyEvent *e);
