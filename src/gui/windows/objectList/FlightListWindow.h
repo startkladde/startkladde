@@ -8,6 +8,8 @@
 
 #include "src/db/DbManager.h" // Required for DbManager::State
 
+class QSortFilterProxyModel;
+
 template<class T> class MutableObjectList;
 template<class T> class ObjectListModel;
 
@@ -56,9 +58,8 @@ class FlightListWindow: public QMainWindow
 		MutableObjectList<Flight> *flightList;
 		ObjectModel<Flight> *flightModel;
 		ObjectListModel<Flight> *flightListModel;
-//
-//		QSortFilterProxyModel *proxyModel;
 
+		QSortFilterProxyModel *proxyModel;
 };
 
 #endif

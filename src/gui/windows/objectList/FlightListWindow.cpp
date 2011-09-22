@@ -2,6 +2,7 @@
 
 #include <QKeyEvent>
 #include <QPushButton>
+#include <QSortFilterProxyModel>
 
 #include "src/model/Flight.h"
 #include "src/text.h"
@@ -21,18 +22,23 @@ FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 
+	// Set up the flight list and model
 	flightList=new MutableObjectList<Flight> ();
 	flightModel=new FlightModel (manager.getCache ());
 	flightListModel=new ObjectListModel<Flight> (flightList, true, flightModel, true, this);
 
+	// Set up the sorting proxy model
+	proxyModel=new QSortFilterProxyModel (this);
+	proxyModel->setSourceModel (flightListModel);
+
 	// FIXME no color?
-	ui.table->setModel (flightListModel); // FIXME sort proxy
+	// FIXME better model, and allow sorting by time/date
+	ui.table->setModel (proxyModel);
 	ui.table->setAutoResizeRows (true);
 }
 
 FlightListWindow::~FlightListWindow()
 {
-	ui.table->setModel (NULL);
 	// FIXME check
 	// flightListModel deleted by parent
 	// flightModel and flightList deleted by listModel (owned)

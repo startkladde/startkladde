@@ -39,8 +39,6 @@ template<class T> class GetObjectsTask: public DbWorker::Task
 
 		virtual void run (Database &db, OperationMonitor *monitor)
 		{
-			std::cout << "GetObjectsTask running - the query condition is:" << std::endl;
-			std::cout << condition.getQueryString () << std::endl;
 			OperationMonitorInterface interface=monitor->interface ();
 			returnOrException (returner, db.getObjects<T> (condition));
 		}
