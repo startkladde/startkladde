@@ -1119,12 +1119,47 @@ QList<Flight> Flight::dateSupersetFilter (const QList<Flight> &superset, const Q
 	return result;
 }
 
+/**
+ * Selecting flights of a given date range from the database is complicated.
+ * Therefore, a superset is selected. The superset must be filtered using the
+ * dateRangeSupersetFilter method.
+ *
+ * First and last date are inclusive.
+ *
+ * @param first the first date
+ * @param last the last date
+ * @return
+ */
+Query Flight::dateRangeSupersetCondition (const QDate &first, const QDate &last)
+{
+	// The same considerations as for dateSupersetConditions apply.
 
-//Query Flight::dateRangeCondition (const QDate &first, const QDate &last)
-//{
-//	return Query ("false"); // FIXME
-//}
+	// Since the database stores the datetimes, we compare them against the
+	// first and last datetime of the date.
+	QDateTime firstMidnight (first,            QTime (0, 0, 0)); // Start of the first day
+	QDateTime lastMidnight  (last.addDays (1), QTime (0, 0, 0)); // Start of the day after the last
 
+	Query condition ("(departure_time>=? AND departure_time<?) OR (landing_time>=? AND landing_time<?)");
+	condition.bind (firstMidnight); condition.bind (lastMidnight);
+	condition.bind (firstMidnight); condition.bind (lastMidnight);
+
+	return condition;
+}
+
+QList<Flight> Flight::dateRangeSupersetFilter (const QList<Flight> &superset, const QDate &first, const QDate &last)
+{
+	QList<Flight> result;
+
+	// See dateSupersetCondition for details
+	foreach (const Flight &flight, superset)
+	{
+		QDate effectiveDate=flight.effdatum ();
+		if (flight.happened () && effectiveDate>=first && effectiveDate<=last)
+			result.append (flight);
+	}
+
+	return result;
+}
 
 QColor Flight::getColor (Cache &cache) const
 {

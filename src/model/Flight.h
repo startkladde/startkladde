@@ -210,9 +210,10 @@ class Flight: public FlightBase
 		static Query referencesPersonCondition (dbId id);
 		static Query referencesPlaneCondition (dbId id);
 		static Query referencesLaunchMethodCondition (dbId id);
-		static Query dateSupersetCondition (const QDate &date);
-		static QList<Flight> dateSupersetFilter (const QList<Flight> &superset, const QDate &date);
-//		static Query dateRangeCondition (const QDate &first, const QDate &last);
+		static Query         dateSupersetCondition (                               const QDate &date);
+		static QList<Flight> dateSupersetFilter    (const QList<Flight> &superset, const QDate &date);
+		static Query         dateRangeSupersetCondition (                               const QDate &first, const QDate &last);
+		static QList<Flight> dateRangeSupersetFilter    (const QList<Flight> &superset, const QDate &first, const QDate &last);
 
 	private:
 		void initialize ();

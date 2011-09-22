@@ -501,21 +501,20 @@ void DbManager::fetchFlights (QDate date, QWidget *parent)
  * @return the list of flights
  */
 // FIXME throws?
-// FIXME it might be better to implement a template getObjects method and do the
+// FIXME doing it might be better to implement a template getObjects method and do the
 // query selection (and potentially the after filter) outside of this method
 QList<Flight> DbManager::getFlights (const QDate &first, const QDate &last, QWidget *parent)
 {
-	// FIXME implement range
 	Returner<QList<Flight> > returner;
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	// FIXME make sure that not dbWorker method is called with a temporary as
 	// a reference
-	Query condition=Flight::dateSupersetCondition (first);
-	dbWorker.getObjects<Flight> (returner, monitor, condition); // FIXME range condition
+	Query condition=Flight::dateRangeSupersetCondition (first, last);
+	dbWorker.getObjects<Flight> (returner, monitor, condition);
 	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), parent);
 	QList<Flight> candidates=returner.returnedValue ();
-	return Flight::dateSupersetFilter (candidates, first); // FIXME range filter
+	return Flight::dateRangeSupersetFilter (candidates, first, last);
 	return returner.returnedValue ();
 }
 
@@ -782,4 +781,3 @@ INSTANTIATE_TEMPLATES (Flight      )
 INSTANTIATE_TEMPLATES (LaunchMethod)
 
 #	undef INSTANTIATE_TEMPLATES
-
