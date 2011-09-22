@@ -14,12 +14,18 @@
 #include "src/util/qString.h"
 
 FlightModel::FlightModel (Cache &cache):
-	cache (cache)
+	cache (cache),
+	colorEnabled (true)
 {
 }
 
 FlightModel::~FlightModel ()
 {
+}
+
+void FlightModel::setColorEnabled (bool colorEnabled)
+{
+	this->colorEnabled=colorEnabled;
 }
 
 int FlightModel::columnCount () const
@@ -139,7 +145,10 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 	}
 	else if (role==Qt::BackgroundRole)
 	{
-		return QBrush (flight.getColor (cache));
+		if (colorEnabled)
+			return QBrush (flight.getColor (cache));
+		else
+			return QVariant ();
 	}
 	else if (role==isButtonRole)
 	{

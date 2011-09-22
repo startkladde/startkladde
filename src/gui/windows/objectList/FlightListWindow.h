@@ -10,6 +10,7 @@
 
 class QSortFilterProxyModel;
 
+class FlightModel;
 template<class T> class MutableObjectList;
 template<class T> class ObjectListModel;
 
@@ -56,7 +57,7 @@ class FlightListWindow: public QMainWindow
 		QDate currentFirst, currentLast;
 
 		MutableObjectList<Flight> *flightList;
-		ObjectModel<Flight> *flightModel;
+		FlightModel *flightModel;
 		ObjectListModel<Flight> *flightListModel;
 
 		QSortFilterProxyModel *proxyModel;

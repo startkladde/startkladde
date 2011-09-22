@@ -25,14 +25,15 @@ FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 	// Set up the flight list and model
 	flightList=new MutableObjectList<Flight> ();
 	flightModel=new FlightModel (manager.getCache ());
+	flightModel->setColorEnabled (false);
 	flightListModel=new ObjectListModel<Flight> (flightList, true, flightModel, true, this);
 
 	// Set up the sorting proxy model
 	proxyModel=new QSortFilterProxyModel (this);
 	proxyModel->setSourceModel (flightListModel);
 
-	// FIXME no color?
 	// FIXME better model, and allow sorting by time/date
+	// FIXME add refresh menu item
 	ui.table->setModel (proxyModel);
 	ui.table->setAutoResizeRows (true);
 }

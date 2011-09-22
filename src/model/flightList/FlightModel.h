@@ -26,6 +26,8 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 		FlightModel (Cache &cache);
 		virtual ~FlightModel ();
 
+		void setColorEnabled (bool colorEnabled);
+
 		virtual int columnCount () const;
 		virtual QVariant displayHeaderData (int column) const;
 		virtual QVariant data (const Flight &flight, int column, int role=Qt::DisplayRole) const;
@@ -50,6 +52,8 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 
 	private:
 		Cache &cache;
+
+		bool colorEnabled;
 };
 
 #endif
