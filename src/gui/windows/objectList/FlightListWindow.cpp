@@ -7,6 +7,7 @@
 
 #include "src/model/Flight.h"
 #include "src/text.h"
+#include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/util/qString.h"
 #include "src/util/qDate.h"
 #include "src/gui/windows/input/DateInputDialog.h"
@@ -65,22 +66,43 @@ void FlightListWindow::show (DbManager &manager, QWidget *parent)
 		window->setAttribute (Qt::WA_DeleteOnClose, true);
 
 		// Get the flights from the database
-		window->setDateRange (first, last);
-		window->show ();
+		if (window->fetchFlights (first, last))
+			window->show ();
+		else
+			delete window;
 	}
 }
 
-void FlightListWindow::fetchFlights ()
+bool FlightListWindow::fetchFlights (const QDate &first, const QDate &last)
 {
-	// FIXME test aborting (both on opening and refreshing/changing date)
+	// TODO: move this functionality to DateInputDialog
+	if (first>last)
+		// Range reversed
+		return fetchFlights (last, first);
 
 	// Get the flights from the database
-	QList<Flight> flights=manager.getFlights (currentFirst, currentLast, this);
+	QList<Flight> flights;
+	try
+	{
+		flights=manager.getFlights (first, last, this);
+	}
+	catch (OperationCanceledException &ex)
+	{
+		return false;
+	}
 
 	// Sort the flights (by effective date)
 	// TODO: hide the sort indicator. The functionality is already in
 	// MainWindow, should probably be in SkTableView.
 	qSort (flights);
+
+	// Store the date range
+	currentFirst=first;
+	currentLast=last;
+
+	// Update the list
+	flightList->replaceList (flights);
+	ui.table->resizeColumnsToContents ();
 
 	// Create and set the descriptive text: "1.1.2011 bis 31.12.2011: 123 Flüge"
 	int numFlights=flights.size ();
@@ -88,30 +110,7 @@ void FlightListWindow::fetchFlights ()
 	QString numFlightsText=countText (numFlights, "Flug", utf8 ("Flüge"), utf8 ("keine Flüge"));
 	ui.captionLabel->setText (QString ("%1: %2").arg (dateText).arg (numFlightsText));
 
-	flightList->replaceList (flights);
-	ui.table->resizeColumnsToContents ();
-}
-
-void FlightListWindow::setDateRange (const QDate &first, const QDate &last)
-{
-	// Store the (new) first and last date, reversing the range if necessary
-	if (first<=last)
-	{
-		currentFirst=first;
-		currentLast=last;
-	}
-	else
-	{
-		currentFirst=last;
-		currentLast=first;
-	}
-
-	fetchFlights ();
-}
-
-void FlightListWindow::on_actionRefresh_triggered ()
-{
-	fetchFlights ();
+	return true;
 }
 
 void FlightListWindow::on_actionClose_triggered ()
@@ -143,7 +142,12 @@ void FlightListWindow::on_actionSelectDate_triggered ()
 	QDate newLast =currentLast ;
 
 	if (DateInputDialog::editRange (&newFirst, &newLast, "Datum eingeben", "Datum eingeben:", this))
-		setDateRange (newFirst, newLast);
+		fetchFlights (newFirst, newLast);
+}
+
+void FlightListWindow::on_actionRefresh_triggered ()
+{
+	fetchFlights (currentFirst, currentLast);
 }
 
 void FlightListWindow::on_actionExport_triggered ()
