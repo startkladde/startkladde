@@ -3,6 +3,7 @@
 #include <QKeyEvent>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+#include <QtAlgorithms>
 
 #include "src/model/Flight.h"
 #include "src/text.h"
@@ -42,7 +43,6 @@ FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 	proxyModel=new QSortFilterProxyModel (this);
 	proxyModel->setSourceModel (flightListModel);
 
-	// FIXME better model, and allow sorting by time/date
 	ui.table->setModel (proxyModel);
 	ui.table->setAutoResizeRows (true);
 }
@@ -76,6 +76,11 @@ void FlightListWindow::fetchFlights ()
 
 	// Get the flights from the database
 	QList<Flight> flights=manager.getFlights (currentFirst, currentLast, this);
+
+	// Sort the flights (by effective date)
+	// TODO: hide the sort indicator. The functionality is already in
+	// MainWindow, should probably be in SkTableView.
+	qSort (flights);
 
 	// Create and set the descriptive text: "1.1.2011 bis 31.12.2011: 123 Flüge"
 	int numFlights=flights.size ();
