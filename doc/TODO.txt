@@ -1,3 +1,7 @@
+Make sure that all classes (with virtual methods) have a virtual destructor
+
+On startup, several MutableObjectList instaces are deleted. Why?
+
 Wenn eine Query fehlschlägt, wird eine Exception nach außen geworfen und das
 Programm beendet, selbst wenn ein Statusdialog verwendet wird.
 

@@ -10,6 +10,8 @@
 
 #include "AbstractObjectList.h"
 
+#include <iostream>
+
 // TODO: thread safety required?
 
 /**
@@ -81,7 +83,6 @@ template<class T> MutableObjectList<T>::MutableObjectList (const MutableObjectLi
 	AbstractObjectList<T> (other.parent ()),
 	list (other.list)
 {
-
 }
 
 template<class T> MutableObjectList<T> &MutableObjectList<T>::operator= (const MutableObjectList<T> &other)

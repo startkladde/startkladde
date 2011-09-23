@@ -39,6 +39,8 @@
 template<class T> class ObjectModel
 {
 	public:
+		virtual ~ObjectModel ();
+
 		/**
 		 * Determines the number of columns in this model.
 		 * @return the number of columns in this model
@@ -55,6 +57,10 @@ template<class T> class ObjectModel
 		virtual QVariant displayHeaderData (int column) const;
 		virtual QVariant displayData (const T &object, int column) const;
 };
+
+template<class T> ObjectModel<T>::~ObjectModel ()
+{
+}
 
 /**
  * Returns the data for the header of the model (e. g. column names). The

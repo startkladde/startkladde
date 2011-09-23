@@ -45,7 +45,7 @@ class FlightListWindow: public QMainWindow
 
 	protected:
 		void fetchFlights ();
-		bool setDateRange (const QDate &first, const QDate &last);
+		void setDateRange (const QDate &first, const QDate &last);
 
 		void keyPressEvent (QKeyEvent *e);
 

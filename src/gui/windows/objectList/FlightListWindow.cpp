@@ -47,38 +47,31 @@ FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 	ui.table->setAutoResizeRows (true);
 }
 
-FlightListWindow::~FlightListWindow()
+FlightListWindow::~FlightListWindow ()
 {
-	// FIXME verify:
-	//   - flightListModel: ObjectListModel
-	//   - flightModel: FlightModel
-	//   - flightList: MutableObjectList
-	// flightListModel deleted by parent
-	// flightModel and flightList deleted by listModel (owned)
+	// flightListModel is deleted by this class, which is its Qt parent.
+	// flightModel and flightList are deleted by flightListModel, which owns
+	// them.
 }
 
 void FlightListWindow::show (DbManager &manager, QWidget *parent)
 {
-	// Create the window
-	FlightListWindow *window = new FlightListWindow (manager, parent);
-	window->setAttribute (Qt::WA_DeleteOnClose, true);
-
 	// Get the date range
 	QDate first, last;
 	if (DateInputDialog::editRange (&first, &last, "Datum eingeben", "Datum eingeben:", parent))
 	{
+		// Create the window
+		FlightListWindow *window = new FlightListWindow (manager, parent);
+		window->setAttribute (Qt::WA_DeleteOnClose, true);
+
 		// Get the flights from the database
-		if (window->setDateRange (first, last))
-		{
-			// Show the window
-			window->show ();
-		}
+		window->setDateRange (first, last);
+		window->show ();
 	}
 }
 
 void FlightListWindow::fetchFlights ()
 {
-	// FIXME handle date range reversed
 	// FIXME test aborting (both on opening and refreshing/changing date)
 
 	// Get the flights from the database
@@ -94,15 +87,21 @@ void FlightListWindow::fetchFlights ()
 	ui.table->resizeColumnsToContents ();
 }
 
-bool FlightListWindow::setDateRange (const QDate &first, const QDate &last)
+void FlightListWindow::setDateRange (const QDate &first, const QDate &last)
 {
-	// Store the (new) first and last date
-	currentFirst=first;
-	currentLast=last;
+	// Store the (new) first and last date, reversing the range if necessary
+	if (first<=last)
+	{
+		currentFirst=first;
+		currentLast=last;
+	}
+	else
+	{
+		currentFirst=last;
+		currentLast=first;
+	}
 
 	fetchFlights ();
-
-	return true;
 }
 
 void FlightListWindow::on_actionRefresh_triggered ()
