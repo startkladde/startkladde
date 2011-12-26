@@ -4,16 +4,22 @@
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QtAlgorithms>
+#include <QFileDialog>
 
+#include "src/data/Csv.h"
 #include "src/model/Flight.h"
 #include "src/text.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/util/qString.h"
 #include "src/util/qDate.h"
+#include "src/gui/dialogs.h"
 #include "src/gui/windows/input/DateInputDialog.h"
 #include "src/model/objectList/MutableObjectList.h"
 #include "src/model/flightList/FlightModel.h"
 #include "src/model/objectList/ObjectListModel.h"
+
+// FIXME add different output formats
+// FIXME allow choosing charset
 
 /*
  * Improvements:
@@ -75,7 +81,7 @@ void FlightListWindow::show (DbManager &manager, QWidget *parent)
 
 bool FlightListWindow::fetchFlights (const QDate &first, const QDate &last)
 {
-	// TODO: move this functionality to DateInputDialog
+	// TODO: move this functionality to the date input dialog
 	if (first>last)
 		// Range reversed
 		return fetchFlights (last, first);
@@ -152,5 +158,27 @@ void FlightListWindow::on_actionRefresh_triggered ()
 
 void FlightListWindow::on_actionExport_triggered ()
 {
-	// FIXME implement
+	QString fileName=QFileDialog::getSaveFileName (this, "Flugdatenbank exportieren", ".", ("CSV-Dateien (*.csv);;Alle Dateien (*)"));
+
+	std::cout << fileName << std::endl;
+	if (!fileName.isEmpty ())
+	{
+		QFile file (fileName);
+		if (file.open (QIODevice::WriteOnly | QIODevice::Text))
+		{
+			QString csv=Csv (*flightListModel).toString ();
+			file.write (csv.toUtf8 ());
+			file.close ();
+
+			int numFlights=flightListModel->rowCount (QModelIndex ());
+			QString message=QString ("%1 exportiert").arg (countText (numFlights, "Flug", utf8 ("Flüge")));
+			QMessageBox::information (this, "Flugdatenbank exportieren", message);
+		}
+		else
+		{
+			QString message=QString ("Exportieren fehlgeschlagen: %1").arg (file.errorString ());
+			QMessageBox::critical (this, "Exportieren fehlgeschlagen", message);
+		}
+
+	}
 }

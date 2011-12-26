@@ -103,6 +103,7 @@ HEADERS += \
            src/container/SkMultiHash.h \
            src/container/SortedSet.h \
            src/container/SortedSet_impl.h \
+           src/data/Csv.h \
            src/db/Database.h \
            src/db/DbManager.h \
            src/db/DbWorker.h \
@@ -249,6 +250,7 @@ SOURCES += \
            src/concurrent/monitor/SignalOperationMonitor.cpp \
            src/concurrent/monitor/SimpleOperationMonitor.cpp \
            src/config/Settings.cpp \
+           src/data/Csv.cpp \
            src/db/Database.cpp \
            src/db/DatabaseInfo.cpp \
            src/db/DbManager.cpp \
