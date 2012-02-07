@@ -13,6 +13,7 @@
 #include "src/util/qString.h"
 #include "src/util/qDate.h"
 #include "src/gui/dialogs.h"
+#include "src/gui/windows/CsvExportDialog.h"
 #include "src/gui/windows/input/DateInputDialog.h"
 #include "src/model/objectList/MutableObjectList.h"
 #include "src/model/flightList/FlightModel.h"
@@ -163,6 +164,10 @@ void FlightListWindow::on_actionExport_triggered ()
 	std::cout << fileName << std::endl;
 	if (!fileName.isEmpty ())
 	{
+//		CsvExportDialog csvExportDialog;
+//		csvExportDialog.setModal (true);
+//		csvExportDialog.exec ();
+
 		QFile file (fileName);
 		if (file.open (QIODevice::WriteOnly | QIODevice::Text))
 		{

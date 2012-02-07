@@ -152,6 +152,7 @@ HEADERS += \
            src/gui/widgets/TableButton.h \
            src/gui/widgets/WeatherWidget.h \
            src/gui/windows/ConfirmOverwritePersonDialog.h \
+           src/gui/windows/CsvExportDialog.h \
            src/gui/windows/input/DateInputDialog.h \
            src/gui/windows/input/DateTimeInputDialog.h \
            src/gui/windows/FlightWindow.h \
@@ -299,6 +300,7 @@ SOURCES += \
            src/gui/widgets/TableButton.cpp \
            src/gui/widgets/WeatherWidget.cpp \
            src/gui/windows/ConfirmOverwritePersonDialog.cpp \
+           src/gui/windows/CsvExportDialog.cpp \
            src/gui/windows/input/DateInputDialog.cpp \
            src/gui/windows/input/DateTimeInputDialog.cpp \
            src/gui/windows/FlightWindow.cpp \
@@ -375,6 +377,7 @@ SOURCES += \
 FORMS += \
            src/gui/widgets/LongitudeInput.ui \
            src/gui/windows/ConfirmOverwritePersonDialog.ui \
+           src/gui/windows/CsvExportDialog.ui \
            src/gui/windows/input/DateInputDialog.ui \
            src/gui/windows/input/DateTimeInputDialog.ui \
            src/gui/windows/FlightWindow.ui \
