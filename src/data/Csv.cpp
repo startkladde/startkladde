@@ -65,5 +65,5 @@ QString Csv::toString ()
 		items.clear ();
 	}
 
-	return lines.join ("\n");
+	return lines.join ("\n")+"\n";
 }
