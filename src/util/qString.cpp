@@ -7,7 +7,7 @@
  * program is supposed to run smoothly even on slow (533 MHz) hardware).
  *
  * It may be useful to mark multi-line string literals which are passed to this
- * function with /*utf8* / (minus the extra space) so we can easily grep for
+ * function with / *utf8* / (minus the extra spaces) so we can easily grep for
  * unprocessed strings with non-ASCII characters.
  */
 QString utf8 (const char *text)
