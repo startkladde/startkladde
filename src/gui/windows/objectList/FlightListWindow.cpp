@@ -5,6 +5,7 @@
 #include <QSortFilterProxyModel>
 #include <QtAlgorithms>
 #include <QFileDialog>
+#include <QTextCodec>
 
 #include "src/data/Csv.h"
 #include "src/model/Flight.h"
@@ -19,8 +20,7 @@
 #include "src/model/flightList/FlightModel.h"
 #include "src/model/objectList/ObjectListModel.h"
 
-// FIXME add different output formats
-// FIXME allow choosing charset
+// TODO add different output formats
 
 /*
  * Improvements:
@@ -157,33 +157,59 @@ void FlightListWindow::on_actionRefresh_triggered ()
 	fetchFlights (currentFirst, currentLast);
 }
 
+/**
+ * Called when the user activates the "Export" action.
+ */
 void FlightListWindow::on_actionExport_triggered ()
 {
-	QString fileName=QFileDialog::getSaveFileName (this, "Flugdatenbank exportieren", ".", ("CSV-Dateien (*.csv);;Alle Dateien (*)"));
+	// Query the user for a file name
+	QString fileName=QFileDialog::getSaveFileName (this,
+			"Flugdatenbank exportieren", ".",
+			"CSV-Dateien (*.csv);;Alle Dateien (*)");
 
-	std::cout << fileName << std::endl;
-	if (!fileName.isEmpty ())
+	// Cancel if the file name was empty (probably because the user canceled)
+	if (fileName.isEmpty ())
+		return;
+
+	// Query the user for CSV options (charset, separator...)
+	CsvExportDialog csvExportDialog;
+	csvExportDialog.setModal (true);
+	int settingsResult=csvExportDialog.exec ();
+
+	// Cancel if the user canceled
+	if (settingsResult!=QDialog::Accepted)
+		return;
+
+	// Get the settings from the dialog
+	const QTextCodec *codec=csvExportDialog.getSelectedCodec ();
+	const QString &separator=csvExportDialog.getSeparator ();
+
+	// Open the file
+	QFile file (fileName);
+	if (file.open (QIODevice::WriteOnly | QIODevice::Text))
 	{
-//		CsvExportDialog csvExportDialog;
-//		csvExportDialog.setModal (true);
-//		csvExportDialog.exec ();
+		// Opening succeeded
 
-		QFile file (fileName);
-		if (file.open (QIODevice::WriteOnly | QIODevice::Text))
-		{
-			QString csv=Csv (*flightListModel).toString ();
-			file.write (csv.toUtf8 ());
-			file.close ();
+		// Create a CSV table from the flight list model
+		Csv csv (*flightListModel, separator);
 
-			int numFlights=flightListModel->rowCount (QModelIndex ());
-			QString message=QString ("%1 exportiert").arg (countText (numFlights, "Flug", utf8 ("Flüge")));
-			QMessageBox::information (this, "Flugdatenbank exportieren", message);
-		}
-		else
-		{
-			QString message=QString ("Exportieren fehlgeschlagen: %1").arg (file.errorString ());
-			QMessageBox::critical (this, "Exportieren fehlgeschlagen", message);
-		}
+		// Convert and write the CSV
+		file.write (codec->fromUnicode (csv.toString ()));
 
+		// Close the file
+		file.close ();
+
+
+		// Exporting succeeded - display a message to the user
+		int numFlights=flightListModel->rowCount (QModelIndex ());
+		QString message=QString ("%1 exportiert").arg (countText (numFlights, "Flug", utf8 ("Flüge")));
+		QMessageBox::information (this, "Flugdatenbank exportieren", message);
+	}
+	else
+	{
+		// Opening failed - display a message to the user
+		QString message=QString ("Exportieren fehlgeschlagen: %1")
+			.arg (file.errorString ());
+		QMessageBox::critical (this, "Exportieren fehlgeschlagen", message);
 	}
 }

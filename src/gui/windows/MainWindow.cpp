@@ -1630,8 +1630,6 @@ void MainWindow::on_actionEditLaunchMethods_triggered ()
 
 void MainWindow::on_actionShowFlights_triggered ()
 {
-	// FIXME remove
-	QMessageBox::critical (this, "Nicht implementiert", "Baustelle!"); return;
 	FlightListWindow::show (dbManager, this);
 }
 
