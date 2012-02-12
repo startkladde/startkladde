@@ -1,6 +1,7 @@
 	- Bugfix: crash after canceling an update object operation from the main
 	  window
 	- Bugfix: (wrong) time zone displayed for time in main window
+	- Flight database window and CSV export
 	  
 2.1.0 (2010-10-24):
 	- Added function key shortcuts to menu entries
