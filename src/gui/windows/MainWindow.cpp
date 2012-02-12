@@ -1035,7 +1035,7 @@ void MainWindow::on_actionDelete_triggered ()
 		dbManager.deleteObject<Flight> (id, this);
 		ui.flightTable->setCurrentIndex (previousIndex); // Handles deletion of last item correctly
 	}
-	catch (OperationCanceledException)
+	catch (OperationCanceledException &)
 	{
 		// TODO the cache may now be inconsistent
 	}
@@ -1700,7 +1700,7 @@ void MainWindow::cacheChanged (DbEvent event)
 			}
 		}
 	}
-	catch (Cache::NotFoundException)
+	catch (Cache::NotFoundException &)
 	{
 		// TODO log error
 	}
