@@ -8,7 +8,7 @@ class QAbstractTableModel;
 class Csv
 {
 	public:
-		Csv (const QAbstractTableModel &model);
+		Csv (const QAbstractTableModel &model, const QString &separator=",");
 		virtual ~Csv ();
 
 		QString toString ();
@@ -18,6 +18,8 @@ class Csv
 
 	private:
 		const QAbstractTableModel &model;
+
+		const QString separator;
 };
 
 #endif

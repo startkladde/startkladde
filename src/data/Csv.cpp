@@ -3,8 +3,8 @@
 #include <QAbstractTableModel>
 #include <QStringList>
 
-Csv::Csv (const QAbstractTableModel &model):
-	model (model)
+Csv::Csv (const QAbstractTableModel &model, const QString &separator):
+	model (model), separator (separator)
 {
 }
 
@@ -14,13 +14,14 @@ Csv::~Csv ()
 
 /**
  * Replaces every quote by double quotes and encloses the string in double
- * quotes if it contains a comma or a quote.
+ * quotes if it contains the separator or a quote.
  *
- * foo           => foo
- * foo "bar" baz => "foo ""bar"" baz"
- * foo, bar      => "foo, bar"
- * "foo"         => """foo"""
- * "foo, bar"    => """foo, bar"""
+ * Examples, with separator==",":
+ *   foo           => foo
+ *   foo "bar" baz => "foo ""bar"" baz"
+ *   foo, bar      => "foo, bar"
+ *   "foo"         => """foo"""
+ *   "foo, bar"    => """foo, bar"""
  *
  *
  */
@@ -30,7 +31,7 @@ QString Csv::escape (const QString &text) const
 
 	result.replace ("\"", "\"\"");
 
-	if (result.contains (",") or result.contains ("\""))
+	if (result.contains (separator) or result.contains ("\""))
 		result="\""+result+"\"";
 
 	return result;
@@ -50,7 +51,7 @@ QString Csv::toString ()
 		QVariant value=model.headerData (column, Qt::Horizontal);
 		items.append (escape (value.toString ()));
 	}
-	lines.append (items.join (","));
+	lines.append (items.join (separator));
 	items.clear ();
 
 	// Body
@@ -61,7 +62,7 @@ QString Csv::toString ()
 			QVariant value=model.data (model.index (row, column));
 			items.append (escape (value.toString ()));
 		}
-		lines.append (items.join (","));
+		lines.append (items.join (separator));
 		items.clear ();
 	}
 
