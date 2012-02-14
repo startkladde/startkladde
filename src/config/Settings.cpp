@@ -187,8 +187,10 @@ void Settings::readSettings ()
 	recordTowpilot=s.value ("recordTowpilot", true            ).toBool ();
 	checkMedicals =s.value ("checkMedicals" , true            ).toBool ();
 	// Permissions
-	protectSettings     =s.value ("protectSettings"     , false).toBool ();
-	protectLaunchMethods=s.value ("protectLaunchMethods", false).toBool ();
+	protectSettings      =s.value ("protectSettings"      , false).toBool ();
+	protectLaunchMethods =s.value ("protectLaunchMethods" , false).toBool ();
+	protectMergePeople   =s.value ("protectMergePeople"   , false).toBool ();
+	protectFlightDatabase=s.value ("protectFlightDatabase", false).toBool ();
 	// Diagnostics
 	enableDebug=s.value ("enableDebug", false       ).toBool ();
 	diagCommand=s.value ("diagCommand", "./script/netztest_xterm").toString (); // xterm -e ./netztest &
@@ -249,8 +251,10 @@ void Settings::writeSettings ()
 	s.setValue ("recordTowpilot", recordTowpilot);
 	s.setValue ("checkMedicals" , checkMedicals );
 	// Permissions
-	s.setValue ("protectSettings"     , protectSettings     );
-	s.setValue ("protectLaunchMethods", protectLaunchMethods);
+	s.setValue ("protectSettings"      , protectSettings      );
+	s.setValue ("protectLaunchMethods" , protectLaunchMethods );
+	s.setValue ("protectMergePeople"   , protectMergePeople   );
+	s.setValue ("protectFlightDatabase", protectFlightDatabase);
 	// Diagnostics
 	s.setValue ("enableDebug", enableDebug);
 	s.setValue ("diagCommand", diagCommand);

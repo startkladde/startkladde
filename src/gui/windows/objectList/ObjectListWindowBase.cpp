@@ -3,14 +3,13 @@
 #include <iostream>
 
 #include <QKeyEvent>
-#include <QInputDialog>
 #include <QPushButton>
 
 #include "src/util/qString.h"
 
 ObjectListWindowBase::ObjectListWindowBase (DbManager &manager, QWidget *parent):
 	QMainWindow(parent), manager (manager),
-	editPasswordRequired (false), editPasswordOk (false)
+	editPermission (this)
 {
 	ui.setupUi(this);
 	ui.buttonBox->button (QDialogButtonBox::Close)->setText (utf8 ("&Schließen"));
@@ -55,30 +54,10 @@ void ObjectListWindowBase::databaseStateChanged (DbManager::State state)
 
 void ObjectListWindowBase::requireEditPassword (const QString &password)
 {
-	editPassword=password;
-	editPasswordRequired=true;
+	editPermission.requirePassword (password);
 }
 
 bool ObjectListWindowBase::allowEdit (QString message)
 {
-	if (!editPasswordRequired) return true;
-	if (editPasswordOk) return true;
-
-	while (true)
-	{
-		bool ok=false;
-		QString enteredPassword=QInputDialog::getText (this, "Passwort erforderlich",
-			utf8 ("%1 Bitte Passwort eingeben:").arg (message), QLineEdit::Password, QString (), &ok);
-
-		// Canceled
-		if (!ok) return false;
-
-		if (enteredPassword==editPassword)
-		{
-			editPasswordOk=true;
-			return true;
-		}
-
-		message="Das eingegebene Passwort ist nicht korrekt.";
-	}
+	return editPermission.permit (message);
 }

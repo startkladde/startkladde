@@ -1630,6 +1630,15 @@ void MainWindow::on_actionEditLaunchMethods_triggered ()
 
 void MainWindow::on_actionShowFlights_triggered ()
 {
+	if (Settings::instance ().protectFlightDatabase)
+	{
+		QString password=Settings::instance ().databaseInfo.password;
+		QString message="Zum Anzeigen der Flugdatenbank ist das Datenbankpasswort erforderlich.";
+
+		if (!verifyPassword (this, password, message))
+			return;
+	}
+
 	FlightListWindow::show (dbManager, this);
 }
 

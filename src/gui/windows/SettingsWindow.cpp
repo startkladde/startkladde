@@ -54,6 +54,8 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	warned (false),
 	databaseSettingsChanged (false)
 {
+	// TODO there should be a warning if the settings can't be saved without a password
+
 	ui.setupUi (this);
 	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
@@ -109,8 +111,10 @@ void SettingsWindow::readSettings ()
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
 	ui.checkMedicalsCheckbox ->setChecked (s.checkMedicals);
 	// Permissions
-	ui.protectSettingsCheckbox     ->setChecked (s.protectSettings);
-	ui.protectLaunchMethodsCheckbox->setChecked (s.protectLaunchMethods);
+	ui.protectSettingsCheckbox      ->setChecked (s.protectSettings);
+	ui.protectLaunchMethodsCheckbox ->setChecked (s.protectLaunchMethods);
+	ui.protectMergePeopleCheckbox   ->setChecked (s.protectMergePeople);
+	ui.protectFlightDatabaseCheckbox->setChecked (s.protectFlightDatabase);
 	// Diagnostics
 	ui.enableDebugCheckbox->setChecked (s.enableDebug);
 	ui.diagCommandInput   ->setText    (s.diagCommand);
@@ -208,8 +212,10 @@ void SettingsWindow::writeSettings ()
 	s.recordTowpilot=ui.recordTowpilotCheckbox->isChecked ();
 	s.checkMedicals =ui.checkMedicalsCheckbox ->isChecked ();
 	// Permissions
-	s.protectSettings     =ui.protectSettingsCheckbox     ->isChecked ();
-	s.protectLaunchMethods=ui.protectLaunchMethodsCheckbox->isChecked ();
+	s.protectSettings      =ui.protectSettingsCheckbox      ->isChecked ();
+	s.protectLaunchMethods =ui.protectLaunchMethodsCheckbox ->isChecked ();
+	s.protectMergePeople   =ui.protectMergePeopleCheckbox   ->isChecked ();
+	s.protectFlightDatabase=ui.protectFlightDatabaseCheckbox->isChecked ();
 	// Diagnostics
 	s.enableDebug=ui.enableDebugCheckbox->isChecked ();
 	s.diagCommand=ui.diagCommandInput   ->text ();
@@ -417,6 +423,14 @@ void SettingsWindow::on_infoPluginList_itemDoubleClicked (QTreeWidgetItem *item,
 	on_infoPluginSettingsButton_clicked ();
 }
 
+/**
+ * Determines whether the settings may be stored.
+ *
+ * Changing the settings may be protected, that is, require that the database
+ * password is entered. However, it's not simply a matter of asking the password
+ * in this case. This method determines whether the settings may be store, and
+ * asks the user for a password if required.
+ */
 bool SettingsWindow::allowEdit ()
 {
 	QString message;
@@ -428,12 +442,22 @@ bool SettingsWindow::allowEdit ()
 
 	if (Settings::instance ().protectSettings)
 	{
+		// The password protection is (already was) enabled. The user must enter
+		// the password.
+		// If the password was also changed, clarify that the user must enter
+		// the *old* password.
 		message=utf8 ("Zum Speichern der Einstellungen ist das %1Datenbankpasswort\n"
 			"erforderlich.").arg (passwordChanged?"(alte) ":"");
 		requiredPassword=oldPassword;
 	}
 	else if (ui.protectSettingsCheckbox->isChecked ())
 	{
+		// The password protection was disabled before, but has been enabled.
+		// The user must enter the database password to make sure that he
+		// actually knows the password, so he won't enable the protection
+		// without having a way to disable it again.
+		// If the password was also changed, clarify that the user must enter
+		// the *new* password.
 		message=utf8 (
 			"Der Passwortschutz der Einstellungen wird aktiviert. Dazu ist das\n"
 			"%1Datenbankpasswort erforderlich. Fall der Schutz nicht aktiviert\n"
@@ -443,23 +467,16 @@ bool SettingsWindow::allowEdit ()
 		requiredPassword=newPassword;
 	}
 	else
-		return true;
-
-
-	while (true)
 	{
-		bool ok=false;
-		QString enteredPassword=QInputDialog::getText (this, "Passwort erforderlich",
-			utf8 ("%1 Bitte Passwort eingeben:").arg (message), QLineEdit::Password, QString (), &ok);
-
-		// Canceled
-		if (!ok) return false;
-
-		if (enteredPassword==requiredPassword)
-			return true;
-
-		message="Das eingegebene Passwort ist nicht korrekt.";
+		// The password protection is not currently enabled, nor has it been
+		// enabled. We can store the settings.
+		return true;
 	}
+
+	// If we didn't return yet, we may only store the settings if the user
+	// enters the correct password. Which one is the "correct" password has been
+	// determined before.
+	return verifyPassword (this, requiredPassword, message);
 }
 
 void SettingsWindow::warnEdit ()

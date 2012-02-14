@@ -6,6 +6,7 @@
 #include "ui_ObjectListWindowBase.h"
 
 #include "src/db/DbManager.h" // Required for DbManager::State
+#include "src/gui/PasswordPermission.h"
 
 /*
  * TODO: Menu View->Sort and hotkey
@@ -39,11 +40,11 @@ class ObjectListWindowBase : public QMainWindow
 		void keyPressEvent (QKeyEvent *e);
 		Ui::ObjectListWindowBaseClass ui;
 
+		// TODO get rid - use editPermission directly (make protected).
 		bool allowEdit (QString message);
 
-		bool editPasswordRequired;
-		QString editPassword;
-		bool editPasswordOk;
+	private:
+		PasswordPermission editPermission;
 };
 
 #endif

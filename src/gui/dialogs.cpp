@@ -1,5 +1,7 @@
 #include "dialogs.h"
 
+#include <QInputDialog>
+
 // TODO: this is sometimes used where an error or an info should be displayed instead;
 void showWarning (const QString &title, const QString &text, QWidget *parent)
 	/*
@@ -48,3 +50,36 @@ bool confirmProblem (QWidget *parent, const QString problem)
 	return confirmProblem (parent, "Warnung", problem);
 }
 
+bool verifyPassword (QWidget *parent, const QString &password, const QString &message)
+{
+	QString title="Passwort erforderlich";
+	QString label=QString ("%1 Bitte Passwort eingeben:").arg (message);
+
+	// Keep asking the user for the password until he either enters the correct
+	// password or cancels.
+	while (true)
+	{
+		// Show a dialog asking the user for the password
+		bool ok=false;
+		QString enteredPassword=QInputDialog::getText (parent, title, label,
+			QLineEdit::Password, QString (), &ok);
+
+		// If the user canceled, return false
+		if (!ok)
+			return false;
+
+		// If the entered password is correct, return true
+		if (enteredPassword==password)
+			return true;
+
+		// The user neither canceled nor entered the correct password, or we
+		// would have returned by now.
+		label="Das eingegebene Passwort ist nicht korrekt. Bitte Passwort eingeben:";
+	}
+
+	// This cannot be reached, but code analysis may not recognize this and warn
+	// about reaching the end of the function. Also, it's more robust against
+	// possible changes of this function to explicitly return a valid value
+	// here.
+	return false;
+}

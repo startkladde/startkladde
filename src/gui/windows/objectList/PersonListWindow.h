@@ -2,7 +2,7 @@
 #define PERSONLISTWINDOW_H_
 
 #include "src/gui/windows/objectList/ObjectListWindow.h"
-
+#include "src/gui/PasswordPermission.h"
 #include "src/model/Person.h"
 
 class QAction;
@@ -25,6 +25,8 @@ class PersonListWindow: public ObjectListWindow<Person>
 
 	private:
 		QAction *mergeAction;
+
+		PasswordPermission mergePermission;
 };
 
 #endif

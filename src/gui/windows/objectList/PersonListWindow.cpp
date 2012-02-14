@@ -9,6 +9,7 @@
 
 #include <iostream>
 
+#include "src/config/Settings.h"
 #include "src/gui/dialogs.h"
 #include "src/util/qString.h"
 #include "src/gui/windows/ObjectSelectWindow.h"
@@ -16,12 +17,20 @@
 
 PersonListWindow::PersonListWindow (DbManager &manager, QWidget *parent):
 	ObjectListWindow<Person> (manager, parent),
-	mergeAction (new QAction (utf8 ("&Zusammenfassen"), this))
+	mergeAction (new QAction (utf8 ("&Zusammenfassen"), this)),
+	mergePermission (this)
 {
 	connect (mergeAction, SIGNAL (triggered ()), this, SLOT (mergeAction_triggered ()));
 
 	ui.menuObject->addSeparator ();
 	ui.menuObject->addAction (mergeAction);
+
+	// The PersonListWindow may be created as ObjectListWindow<Person>. In this
+	// case, the specific properties pertaining to merge operations cannot be
+	// set because the generic interface does not know about them. Therefore,
+	// we explicitly set them here.
+	if (Settings::instance ().protectMergePeople)
+		mergePermission.requirePassword (Settings::instance ().databaseInfo.password);
 }
 
 PersonListWindow::~PersonListWindow ()
@@ -30,7 +39,11 @@ PersonListWindow::~PersonListWindow ()
 
 void PersonListWindow::mergeAction_triggered ()
 {
-	if (!allowEdit ("Zum Zusammenfassen von Personen ist das Datenbankpasswort erforderlich.")) return;
+	// We cannot use allowEdit because that is also used for adding and editing
+	// people, and we may want to reqire a password for merging, but not for
+	// editing.
+	if (!mergePermission.permit ("Zum Zusammenfassen von Personen ist das Datenbankpasswort erforderlich."))
+		return;
 
 	QList<Person> people=activeObjects ();
 	if (people.size ()<2)

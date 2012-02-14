@@ -10,5 +10,7 @@ bool confirmProblem (QWidget *, const QString, const QString);
 bool yesNoQuestion (QWidget *parent, QString title, QString question);
 QMessageBox::StandardButton yesNoCancelQuestion (QWidget *parent, QString title, QString question);
 
+bool verifyPassword (QWidget *parent, const QString &password, const QString &message);
+
 
 #endif

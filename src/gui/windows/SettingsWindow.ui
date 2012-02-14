@@ -329,6 +329,20 @@ aufgehoben werden.</string>
             </layout>
            </widget>
           </item>
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="protectMergePeopleCheckbox">
+            <property name="text">
+             <string>Passwort zum Zusammenfassen von &amp;Personen erforderlich</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="protectFlightDatabaseCheckbox">
+            <property name="text">
+             <string>Passwort zum Abrufen der &amp;Flugdatenbank erforderlich</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
