@@ -21,6 +21,7 @@
 #include <QInputDialog>
 #include <QPushButton>
 #include <QDebug>
+#include <QShowEvent>
 
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
@@ -522,4 +523,15 @@ void SettingsWindow::on_browseWeatherWindowCommandButton_clicked ()
 
 	if (!filename.isEmpty ())
 		ui.weatherWindowCommandInput->setText (filename);
+}
+
+void SettingsWindow::showEvent (QShowEvent *event)
+{
+	// When the dialog is made visible (showEvent), show a warning if the
+	// settings are password protected.  This warning will only be shown once
+	// during the lifetime of the SettingsWindow instance.
+	// Note that when this is active, all other calls to warnEdit are
+	// unnecessary (but harmless).
+	if (!event->spontaneous ())
+		warnEdit ();
 }

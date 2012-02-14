@@ -27,6 +27,8 @@ class SettingsWindow: public QDialog
 		bool allowEdit ();
 		void warnEdit ();
 
+		virtual void showEvent (QShowEvent *event);
+
 	private slots:
 		void on_mysqlDefaultPortCheckBox_toggled () { updateWidgets (); }
 
