@@ -61,7 +61,7 @@
              <item row="0" column="0">
               <widget class="SkLabel" name="localTimeCaptionLabel">
                <property name="text">
-                <string>Lokalzeit:</string>
+                <string>Local time:</string>
                </property>
               </widget>
              </item>
@@ -82,35 +82,35 @@
              <item row="2" column="0">
               <widget class="SkLabel" name="displayDateCaptionLabel">
                <property name="text">
-                <string>Anzeigedatum:</string>
+                <string>Displayed date:</string>
                </property>
               </widget>
              </item>
              <item row="3" column="0">
               <widget class="SkLabel" name="activeFlightsCaptionLabel">
                <property name="text">
-                <string>Flüge in der Luft:</string>
+                <string>Flights airborne:</string>
                </property>
               </widget>
              </item>
              <item row="4" column="0">
               <widget class="SkLabel" name="totalFlightsCaptionLabel">
                <property name="text">
-                <string>Flüge gesamt:</string>
+                <string>Flights total:</string>
                </property>
               </widget>
              </item>
              <item row="6" column="0">
               <widget class="SkLabel" name="databaseStateCaptionLabel">
                <property name="text">
-                <string>Datenbankverbindung:</string>
+                <string>Database connection:</string>
                </property>
               </widget>
              </item>
              <item row="7" column="0">
               <widget class="SkLabel" name="powerStateCaptionLabel">
                <property name="text">
-                <string>Stromversorgung:</string>
+                <string>Power supply:</string>
                </property>
               </widget>
              </item>
@@ -251,9 +251,6 @@
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
-      <attribute name="horizontalHeaderHighlightSections">
-       <bool>false</bool>
-      </attribute>
      </widget>
     </item>
     <item>
@@ -284,7 +281,7 @@
        <item>
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>Es besteht keine Verbindung zur Datenbank</string>
+          <string>Not connected to database</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -316,7 +313,7 @@
           <item>
            <widget class="QPushButton" name="connectButton">
             <property name="text">
-             <string>&amp;Verbinden</string>
+             <string>&amp;Connect</string>
             </property>
            </widget>
           </item>
@@ -360,7 +357,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -375,7 +372,7 @@
    </widget>
    <widget class="QMenu" name="menuFlight">
     <property name="title">
-     <string>&amp;Flug</string>
+     <string>&amp;Flight</string>
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionLaunchMethodPreselection"/>
@@ -392,11 +389,11 @@
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>&amp;Ansicht</string>
+     <string>&amp;View</string>
     </property>
     <widget class="QMenu" name="menuFlights">
      <property name="title">
-      <string>&amp;Flüge</string>
+      <string>&amp;Flights</string>
      </property>
      <addaction name="actionHideFinished"/>
      <addaction name="actionAlwaysShowExternal"/>
@@ -407,7 +404,7 @@
     </widget>
     <widget class="QMenu" name="menuDate">
      <property name="title">
-      <string>&amp;Datum</string>
+      <string>&amp;Date</string>
      </property>
      <addaction name="actionSetDisplayDate"/>
      <addaction name="actionResetDisplayDateOnNewFlight"/>
@@ -415,7 +412,7 @@
     </widget>
     <widget class="QMenu" name="menuFont">
      <property name="title">
-      <string>&amp;Schriftart</string>
+      <string>F&amp;ont</string>
      </property>
      <addaction name="actionSelectFont"/>
      <addaction name="actionIncrementFontSize"/>
@@ -433,7 +430,7 @@
    </widget>
    <widget class="QMenu" name="menuStatistics">
     <property name="title">
-     <string>&amp;Statistik</string>
+     <string>&amp;Statistics</string>
     </property>
     <addaction name="actionPlaneLogs"/>
     <addaction name="actionPilotLogs"/>
@@ -441,7 +438,7 @@
    </widget>
    <widget class="QMenu" name="menuDatabase">
     <property name="title">
-     <string>&amp;Datenbank</string>
+     <string>&amp;Database</string>
     </property>
     <addaction name="actionConnect"/>
     <addaction name="actionDisconnect"/>
@@ -464,7 +461,7 @@
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>&amp;Hilfe</string>
+     <string>&amp;Help</string>
     </property>
     <addaction name="actionInfo"/>
     <addaction name="actionNetworkDiagnostics"/>
@@ -485,7 +482,7 @@
     <set>QDockWidget::DockWidgetClosable</set>
    </property>
    <property name="windowTitle">
-    <string>Protokoll</string>
+    <string>Log</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>8</number>
@@ -532,15 +529,12 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSetTime">
    <property name="text">
-    <string>&amp;Zeit einstellen...</string>
+    <string>Set &amp;time...</string>
    </property>
   </action>
   <action name="actionQuit">
    <property name="text">
-    <string>&amp;Beenden</string>
-   </property>
-   <property name="toolTip">
-    <string>Beenden</string>
+    <string>&amp;Exit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -548,15 +542,15 @@
   </action>
   <action name="actionShutdown">
    <property name="text">
-    <string>&amp;Herunterfahren</string>
+    <string>&amp;Shutdown</string>
    </property>
   </action>
   <action name="actionNew">
    <property name="text">
-    <string>&amp;Neuer Flug... (F2)</string>
+    <string>&amp;New flight... (F2)</string>
    </property>
    <property name="toolTip">
-    <string>Neuer Flug (F2)</string>
+    <string>New flight (F2)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -564,7 +558,7 @@
   </action>
   <action name="actionDepart">
    <property name="text">
-    <string>&amp;Starten (F5)</string>
+    <string>Dep&amp;art (F5)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -572,7 +566,7 @@
   </action>
   <action name="actionLand">
    <property name="text">
-    <string>&amp;Landen/Beenden (F6)</string>
+    <string>&amp;Land/end (F6)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
@@ -580,7 +574,7 @@
   </action>
   <action name="actionTouchngo">
    <property name="text">
-    <string>Zwischenland&amp;ung (F7)</string>
+    <string>&amp;Touch-and-go (F7)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
@@ -588,7 +582,7 @@
   </action>
   <action name="actionEdit">
    <property name="text">
-    <string>&amp;Editieren... (F4)</string>
+    <string>&amp;Edit... (F4)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
@@ -596,13 +590,13 @@
   </action>
   <action name="actionRepeat">
    <property name="text">
-    <string>Wiederh&amp;olen... (F3)</string>
+    <string>&amp;Replicate... (F3)</string>
    </property>
    <property name="iconText">
     <string>Flug wiederholen (F3)</string>
    </property>
    <property name="toolTip">
-    <string>Flug wiederholen (F3)</string>
+    <string>Replicate flight (F3)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -610,7 +604,7 @@
   </action>
   <action name="actionDelete">
    <property name="text">
-    <string>Lösc&amp;hen... (F8)</string>
+    <string>&amp;Delete... (F8)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+H</string>
@@ -618,12 +612,12 @@
   </action>
   <action name="actionRefreshTable">
    <property name="text">
-    <string>Tabelle aktualisie&amp;ren</string>
+    <string>&amp;Update table</string>
    </property>
   </action>
   <action name="actionJumpToTow">
    <property name="text">
-    <string>Zu Schleppflug spr&amp;ingen</string>
+    <string>&amp;Jump to towflight</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
@@ -631,7 +625,7 @@
   </action>
   <action name="actionRestartPlugins">
    <property name="text">
-    <string>&amp;Plugins neu starten</string>
+    <string>&amp;Restart plugins</string>
    </property>
   </action>
   <action name="actionHideFinished">
@@ -642,7 +636,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Er&amp;ledigte Flüge ausblenden (F11)</string>
+    <string>&amp;Hide finished flights (F11)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
@@ -656,7 +650,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Externe Flüge immer anzeigen</string>
+    <string>Always show e&amp;xternal flights</string>
    </property>
   </action>
   <action name="actionAlwaysShowErroneous">
@@ -667,20 +661,17 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Fehlerhafte Flüge immer anzeigen</string>
+    <string>Always show &amp;erroneous flights</string>
    </property>
   </action>
   <action name="actionSort">
    <property name="text">
-    <string>Nach effektiver Zeit Sor&amp;tieren (F9)</string>
+    <string>Sort by effective &amp;time</string>
    </property>
   </action>
   <action name="actionSetDisplayDate">
    <property name="text">
-    <string>Anzeigedatum &amp;einstellen... (F10)</string>
-   </property>
-   <property name="toolTip">
-    <string>Anzeigedatum einstellen (F10)</string>
+    <string>Set &amp;display date... (F10)</string>
    </property>
   </action>
   <action name="actionResetDisplayDateOnNewFlight">
@@ -691,7 +682,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Anzeigedatum bei neuem Flug anpa&amp;ssen</string>
+    <string>&amp;Update displayed date when creating a flight</string>
    </property>
   </action>
   <action name="actionUseCurrentDateForNewFlights">
@@ -702,12 +693,12 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Für neue Flüge immer &amp;aktuelles Datum verwenden</string>
+    <string>Always use &amp;current data for new flights</string>
    </property>
   </action>
   <action name="actionPlaneLogs">
    <property name="text">
-    <string>&amp;Bordbücher</string>
+    <string>&amp;Plane logbooks</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+B</string>
@@ -715,7 +706,7 @@
   </action>
   <action name="actionPilotLogs">
    <property name="text">
-    <string>&amp;Flugbücher</string>
+    <string>P&amp;ilot logbooks</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
@@ -723,7 +714,7 @@
   </action>
   <action name="actionLaunchMethodStatistics">
    <property name="text">
-    <string>Startartstatisti&amp;k</string>
+    <string>&amp;Launch method overview</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+K</string>
@@ -731,7 +722,7 @@
   </action>
   <action name="actionEditPlanes">
    <property name="text">
-    <string>Flugzeu&amp;ge editieren</string>
+    <string>Edit &amp;planes</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
@@ -739,7 +730,7 @@
   </action>
   <action name="actionEditPeople">
    <property name="text">
-    <string>&amp;Personen editieren</string>
+    <string>Edit p&amp;eople</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
@@ -747,7 +738,7 @@
   </action>
   <action name="actionRefreshAll">
    <property name="text">
-    <string>&amp;Aktualisieren (F12)</string>
+    <string>&amp;Update (F12)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -755,7 +746,7 @@
   </action>
   <action name="actionSegfault">
    <property name="text">
-    <string>Ab&amp;sturz provozieren</string>
+    <string>Provoke &amp;crash</string>
    </property>
   </action>
   <action name="actionPingServer">
@@ -773,7 +764,7 @@
   </action>
   <action name="actionNetworkDiagnostics">
    <property name="text">
-    <string>&amp;Netzwerkdiagnose</string>
+    <string>&amp;Network diagnostics</string>
    </property>
   </action>
   <action name="actionWebinterface">
@@ -783,12 +774,12 @@
   </action>
   <action name="actionSelectFont">
    <property name="text">
-    <string>Schriftart auswählen...</string>
+    <string>&amp;Select font</string>
    </property>
   </action>
   <action name="actionIncrementFontSize">
    <property name="text">
-    <string>Schrift vergrößern</string>
+    <string>&amp;Increase size</string>
    </property>
    <property name="iconText">
     <string>+</string>
@@ -796,7 +787,7 @@
   </action>
   <action name="actionDecrementFontSize">
    <property name="text">
-    <string>Schrift verkleinern</string>
+    <string>&amp;Decrease size</string>
    </property>
    <property name="iconText">
     <string>-</string>
@@ -807,7 +798,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Bildschirmtastatur anzeigen</string>
+    <string>Show &amp;virtual keyboard</string>
    </property>
   </action>
   <action name="actionTest">
@@ -820,7 +811,7 @@
   </action>
   <action name="actionConnect">
    <property name="text">
-    <string>&amp;Verbindung aufbauen</string>
+    <string>&amp;Connect</string>
    </property>
   </action>
   <action name="actionDisconnect">
@@ -828,27 +819,27 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Verbindung &amp;trennen</string>
+    <string>&amp;Disconnect</string>
    </property>
   </action>
   <action name="actionDisplayError">
    <property name="text">
-    <string>&amp;Fehler anzeigen</string>
+    <string>&amp;Show errors</string>
    </property>
   </action>
   <action name="actionResizeColumns">
    <property name="text">
-    <string>&amp;Spaltenbreiten anpassen</string>
+    <string>Adjust &amp;column widths</string>
    </property>
   </action>
   <action name="actionEditLaunchMethods">
    <property name="text">
-    <string>&amp;Startarten editieren</string>
+    <string>Edit &amp;launch methods</string>
    </property>
   </action>
   <action name="actionSettings">
    <property name="text">
-    <string>&amp;Einstellungen...</string>
+    <string>&amp;Settings</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+T</string>
@@ -856,12 +847,12 @@
   </action>
   <action name="actionLaunchMethodPreselection">
    <property name="text">
-    <string>Starta&amp;rt-Vorauswahl...</string>
+    <string>&amp;Preselect launch method...</string>
    </property>
   </action>
   <action name="actionShowFlights">
    <property name="text">
-    <string>Flug&amp;datenbank anzeigen</string>
+    <string>Show &amp;flight database</string>
    </property>
    <property name="toolTip">
     <string>Flugdatenbank anzeigen</string>
