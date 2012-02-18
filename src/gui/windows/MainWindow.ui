@@ -187,14 +187,14 @@
              <item row="0" column="0">
               <widget class="QLabel" name="label">
                <property name="text">
-                <string>Caption:</string>
+                <string notr="true">Caption:</string>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
               <widget class="QLabel" name="label_2">
                <property name="text">
-                <string>Value</string>
+                <string notr="true">Value</string>
                </property>
               </widget>
              </item>
@@ -357,7 +357,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -466,6 +466,13 @@
     <addaction name="actionInfo"/>
     <addaction name="actionNetworkDiagnostics"/>
    </widget>
+   <widget class="QMenu" name="translationMenu">
+    <property name="title">
+     <string>&amp;Translation</string>
+    </property>
+    <addaction name="loadTranslationAction"/>
+    <addaction name="unloadTranslationAction"/>
+   </widget>
    <addaction name="menuProgram"/>
    <addaction name="menuFlight"/>
    <addaction name="menuView"/>
@@ -473,6 +480,7 @@
    <addaction name="menuDatabase"/>
    <addaction name="menuDebug"/>
    <addaction name="menuHelp"/>
+   <addaction name="translationMenu"/>
   </widget>
   <widget class="QDockWidget" name="logDockWidget">
    <property name="enabled">
@@ -856,6 +864,16 @@
    </property>
    <property name="toolTip">
     <string>Flugdatenbank anzeigen</string>
+   </property>
+  </action>
+  <action name="loadTranslationAction">
+   <property name="text">
+    <string>&amp;Load</string>
+   </property>
+  </action>
+  <action name="unloadTranslationAction">
+   <property name="text">
+    <string>U&amp;nload</string>
    </property>
   </action>
  </widget>

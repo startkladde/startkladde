@@ -429,6 +429,7 @@ unix {
 error( "build/migrations.pro could not be included" )
 }
 
+TRANSLATIONS += startkladde_de.ts
 
 ##################
 ## Installation ##

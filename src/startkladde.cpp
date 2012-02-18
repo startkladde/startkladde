@@ -238,7 +238,7 @@ int test_database ()
 	return 0;
 }
 
-int showGui (QApplication &a)
+int showGui (QApplication &a, QTranslator *translator)
 {
 	//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
 
@@ -246,7 +246,7 @@ int showGui (QApplication &a)
 	//a.setStyle ("light, 3rd revision");
 //	if (!style.isEmpty ()) a.setStyle (style);
 
-	MainWindow w (NULL);
+	MainWindow w (NULL, translator);
 
 	// Let the plugins initialize
 	QThread::yieldCurrentThread ();
@@ -365,6 +365,11 @@ int main (int argc, char **argv)
 {
 	QApplication a (argc, argv); // Always
 
+    QTranslator translator;
+    //translator.load ("startkladde_de");
+    a.installTranslator (&translator);
+
+
 	qApp->addLibraryPath (qApp->applicationDirPath () + "/plugins");
 
 	// Event is used as parameters for signals emitted by tasks running on
@@ -399,7 +404,7 @@ int main (int argc, char **argv)
 	{
 		if (nonOptions.empty ())
 		{
-			ret=showGui (a);
+			ret=showGui (a, &translator);
 		}
 		else
 		{

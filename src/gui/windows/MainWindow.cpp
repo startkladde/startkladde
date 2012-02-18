@@ -12,6 +12,7 @@
 
 #include <QAction>
 #include <QSettings>
+#include <QEvent>
 #include <QFontDialog>
 #include <QTimer>
 #include <QGridLayout>
@@ -23,6 +24,7 @@
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QScrollBar>
+#include <QTranslator>
 #include <QWidget> // remove
 
 // TODO many dependencies - split
@@ -68,17 +70,19 @@ template <class T> class MutableObjectList;
 // ** Construction **
 // ******************
 
-MainWindow::MainWindow (QWidget *parent) :
-	QMainWindow (parent), oldLogVisible (false),
-		dbManager (Settings::instance ().databaseInfo),
-		cache (dbManager.getCache ()),
-		preselectedLaunchMethod (invalidId),
-		createFlightWindow (NULL), editFlightWindow (NULL),
-		weatherWidget (NULL), weatherPlugin (NULL),
-		weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
-		contextMenu (new QMenu (this)),
-		databaseActionsEnabled (false),
-		fontSet (false)
+MainWindow::MainWindow (QWidget *parent, QTranslator *translator):
+	QMainWindow (parent),
+	translator (translator),
+	oldLogVisible (false),
+	dbManager (Settings::instance ().databaseInfo),
+	cache (dbManager.getCache ()),
+	preselectedLaunchMethod (invalidId),
+	createFlightWindow (NULL), editFlightWindow (NULL),
+	weatherWidget (NULL), weatherPlugin (NULL),
+	weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
+	contextMenu (new QMenu (this)),
+	databaseActionsEnabled (false),
+	fontSet (false)
 {
 	ui.setupUi (this);
 
@@ -1909,4 +1913,22 @@ void MainWindow::logMessage (QString message)
 	// may scroll to the bottom right, which is undesirable.
 	QScrollBar *scrollBar=ui.logWidget->verticalScrollBar ();
 	scrollBar->setValue (scrollBar->maximum ());
+}
+
+void MainWindow::on_loadTranslationAction_triggered ()
+{
+	translator->load ("startkladde_de");
+}
+
+void MainWindow::on_unloadTranslationAction_triggered ()
+{
+	translator->load ("");
+}
+
+void MainWindow::changeEvent (QEvent *event)
+{
+    if (event->type () == QEvent::LanguageChange)
+    	ui.retranslateUi (this);
+    else
+        QWidget::changeEvent (event);
 }

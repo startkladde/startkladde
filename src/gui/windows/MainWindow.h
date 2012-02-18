@@ -44,6 +44,8 @@
 class QWidget;
 template<class T> class QList;
 class QModelIndex;
+class QTranslator;
+
 class FlightSortFilterProxyModel;
 class InfoPlugin;
 class WeatherPlugin;
@@ -66,7 +68,7 @@ class MainWindow: public QMainWindow
 	Q_OBJECT
 
 	public:
-		MainWindow (QWidget *parent);
+		MainWindow (QWidget *parent, QTranslator *translator);
 		~MainWindow ();
 
 	protected:
@@ -100,6 +102,7 @@ class MainWindow: public QMainWindow
 		// Events
 		void closeEvent (QCloseEvent *event);
 		void keyPressEvent (QKeyEvent *);
+		void changeEvent (QEvent *event);
 
 		// Database connection management
 		void closeDatabase ();
@@ -216,12 +219,18 @@ class MainWindow: public QMainWindow
 		void cacheChanged (DbEvent event);
 		void executingQuery (Query);
 
+		// Translation
+		void on_loadTranslationAction_triggered ();
+		void on_unloadTranslationAction_triggered ();
+
 		void logMessage (QString message);
 
 		void flightListChanged ();
 
 	private:
 		Ui::MainWindowClass ui;
+		QTranslator *translator;
+
 		bool oldLogVisible;
 
 		DbManager dbManager;
