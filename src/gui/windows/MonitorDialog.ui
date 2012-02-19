@@ -23,7 +23,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Fortschritt</string>
+      <string>Progress</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

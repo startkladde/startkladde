@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Einstellungen</string>
+   <string>Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
    <item row="2" column="0">
@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -33,7 +33,7 @@
      </property>
      <widget class="QWidget" name="dbTab">
       <attribute name="title">
-       <string>&amp;Datenbank</string>
+       <string>&amp;Database</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -45,7 +45,7 @@
           <item>
            <widget class="QLabel" name="dbTypeLabel">
             <property name="text">
-             <string>&amp;Typ:</string>
+             <string>&amp;Type</string>
             </property>
             <property name="buddy">
              <cstring>dbTypeInput</cstring>
@@ -74,7 +74,7 @@
        <item>
         <widget class="QGroupBox" name="dbConnectionBox">
          <property name="title">
-          <string>Verbindung</string>
+          <string>Connection</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_13">
           <item row="0" column="0">
@@ -123,7 +123,7 @@
              <item row="2" column="0">
               <widget class="QLabel" name="mysqlUserLabel">
                <property name="text">
-                <string>Be&amp;nutzer:</string>
+                <string>User&amp;name</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlUserInput</cstring>
@@ -140,7 +140,7 @@
              <item row="3" column="0">
               <widget class="QLabel" name="mysqlPasswordLabel">
                <property name="text">
-                <string>Pa&amp;sswort:</string>
+                <string>Pa&amp;ssword:</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlPasswordInput</cstring>
@@ -160,7 +160,7 @@
              <item row="4" column="0">
               <widget class="QLabel" name="mysqlDatabaseLabel">
                <property name="text">
-                <string>Daten&amp;bank:</string>
+                <string>Data&amp;base</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlDatabaseInput</cstring>
@@ -200,7 +200,7 @@
              <item row="1" column="3">
               <widget class="QLabel" name="label">
                <property name="text">
-                <string>(Standard: 3306)</string>
+                <string>(standard: 3306)</string>
                </property>
               </widget>
              </item>
@@ -227,7 +227,7 @@
      </widget>
      <widget class="QWidget" name="settingsTab">
       <attribute name="title">
-       <string>&amp;Einstellungen</string>
+       <string>S&amp;ettings</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
@@ -239,7 +239,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="locationLabel">
             <property name="text">
-             <string>O&amp;rt:</string>
+             <string>Ai&amp;rfield name:</string>
             </property>
             <property name="buddy">
              <cstring>locationInput</cstring>
@@ -256,7 +256,7 @@
           <item row="2" column="0" colspan="2">
            <widget class="QCheckBox" name="checkMedicalsCheckbox">
             <property name="text">
-             <string>&amp;Medicals überprüfen</string>
+             <string>Check &amp;medicals</string>
             </property>
            </widget>
           </item>
@@ -266,7 +266,7 @@
              <string>Wenn aktiviert, kann der Name des Schlepppiloten von Flügen eingetragen werden</string>
             </property>
             <property name="text">
-             <string>Schlepppi&amp;lot erfassen</string>
+             <string>Record towpi&amp;lot</string>
             </property>
            </widget>
           </item>
@@ -276,7 +276,7 @@
        <item>
         <widget class="QGroupBox" name="permissionsBox">
          <property name="title">
-          <string>Berechtigungen</string>
+          <string>Permissions</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="2" column="0">
@@ -286,7 +286,7 @@
 Datenbankpasswort eingegeben werden.</string>
             </property>
             <property name="text">
-             <string>Passwort zum Ändern von &amp;Startarten erforderlich</string>
+             <string>Require password to modify launch method&amp;s</string>
             </property>
            </widget>
           </item>
@@ -297,7 +297,7 @@ Datenbankpasswort eingegeben werden.</string>
 das Datenbankpasswort eingegeben werden.</string>
             </property>
             <property name="text">
-             <string>Passwort zum Ändern von E&amp;instellungen erforderlich</string>
+             <string>Requ&amp;ire password to change settings</string>
             </property>
            </widget>
           </item>
@@ -319,10 +319,9 @@ das Datenbankpasswort eingegeben werden.</string>
              <item>
               <widget class="QLabel" name="passwordMessageLabel">
                <property name="text">
-                <string>Der Passwortschutz kann durch Löschen bzw. Editieren
-der Konfigurationsdatei bzw. des Registry-Schlüssels
-%1
-aufgehoben werden.</string>
+                <string>The password protection can be removed by deleting
+or editing the configuration file or registry key
+%1.</string>
                </property>
               </widget>
              </item>
@@ -332,14 +331,14 @@ aufgehoben werden.</string>
           <item row="3" column="0">
            <widget class="QCheckBox" name="protectMergePeopleCheckbox">
             <property name="text">
-             <string>Passwort zum Zusammenfassen von &amp;Personen erforderlich</string>
+             <string>Require password to merge &amp;people</string>
             </property>
            </widget>
           </item>
           <item row="4" column="0">
            <widget class="QCheckBox" name="protectFlightDatabaseCheckbox">
             <property name="text">
-             <string>Passwort zum Abrufen der &amp;Flugdatenbank erforderlich</string>
+             <string>Require password to display the &amp;flight database</string>
             </property>
            </widget>
           </item>
@@ -349,7 +348,7 @@ aufgehoben werden.</string>
        <item>
         <widget class="QGroupBox" name="diagnosticsBox">
          <property name="title">
-          <string>Diagnose</string>
+          <string>Diagnostics</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_8">
           <item row="0" column="0" colspan="2">
@@ -358,7 +357,7 @@ aufgehoben werden.</string>
              <string>Aktiviert einige Menüeinträge zur Fehlerdiagnose</string>
             </property>
             <property name="text">
-             <string>Optionen zur Fehlersuche (Debu&amp;gging) aktivieren</string>
+             <string>Enable debu&amp;gging options</string>
             </property>
            </widget>
           </item>
@@ -372,8 +371,8 @@ aufgehoben werden.</string>
           <item row="1" column="0">
            <widget class="QLabel" name="diagCommandLabel">
             <property name="text">
-             <string>Ko&amp;mmando für
-Netzwerkdiagnose:</string>
+             <string>Co&amp;mmand for
+network diagnostics:</string>
             </property>
             <property name="buddy">
              <cstring>diagCommandInput</cstring>
@@ -400,7 +399,7 @@ Netzwerkdiagnose:</string>
      </widget>
      <widget class="QWidget" name="infoPluginsTab">
       <attribute name="title">
-       <string>&amp;Info-Plugins</string>
+       <string>&amp;Info plugins</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
@@ -420,7 +419,7 @@ Berech des Hauptfensters angezeigt.</string>
          </property>
          <column>
           <property name="text">
-           <string>Titel</string>
+           <string>Title</string>
           </property>
           <property name="toolTip">
            <string>Titel des Plugins; wird im Hauptfenster angezeigt</string>
@@ -442,12 +441,12 @@ Berech des Hauptfensters angezeigt.</string>
          </column>
          <column>
           <property name="text">
-           <string>Aktiv</string>
+           <string>Active</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Konfiguration</string>
+           <string>Configuration</string>
           </property>
          </column>
         </widget>
@@ -577,13 +576,13 @@ Berech des Hauptfensters angezeigt.</string>
      </widget>
      <widget class="QWidget" name="weatherPluginsTab">
       <attribute name="title">
-       <string>&amp;Wettergrafik</string>
+       <string>&amp;Weather picture</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <item>
         <widget class="QGroupBox" name="weatherPluginBox">
          <property name="title">
-          <string>Wettergrafik</string>
+          <string>Weather picture enabled</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -592,7 +591,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="6" column="0" colspan="2">
            <widget class="QLabel" name="weatherPluginHeightLabel">
             <property name="text">
-             <string>&amp;Höhe:</string>
+             <string>&amp;Height:</string>
             </property>
             <property name="buddy">
              <cstring>weatherPluginHeightInput</cstring>
@@ -605,7 +604,7 @@ Berech des Hauptfensters angezeigt.</string>
              <string>Höhe der Wettergrafik</string>
             </property>
             <property name="suffix">
-             <string> Pixel</string>
+             <string> pixels</string>
             </property>
             <property name="maximum">
              <number>65535</number>
@@ -628,7 +627,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="4" column="0">
            <widget class="QLabel" name="weatherPluginIntervalLabel">
             <property name="text">
-             <string>Inter&amp;vall:</string>
+             <string>Inter&amp;val:</string>
             </property>
             <property name="buddy">
              <cstring>weatherPluginIntervalInput</cstring>
@@ -651,7 +650,7 @@ Berech des Hauptfensters angezeigt.</string>
              <string>Dauer zwischen Aktualisierungen der Wettergrafik</string>
             </property>
             <property name="suffix">
-             <string> Minuten</string>
+             <string> minutes</string>
             </property>
             <property name="maximum">
              <number>86400</number>
@@ -677,7 +676,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="2" column="0">
            <widget class="QLabel" name="weatherPluginCommandLabel">
             <property name="text">
-             <string>&amp;Kommando:</string>
+             <string>&amp;Command:</string>
             </property>
             <property name="buddy">
              <cstring>weatherPluginCommandInput</cstring>
@@ -700,7 +699,7 @@ Berech des Hauptfensters angezeigt.</string>
              <item>
               <widget class="QPushButton" name="browseWeatherPluginCommandButton">
                <property name="text">
-                <string>Durch&amp;suchen</string>
+                <string>Browse</string>
                </property>
               </widget>
              </item>
@@ -713,7 +712,7 @@ Berech des Hauptfensters angezeigt.</string>
        <item>
         <widget class="QGroupBox" name="weatherWindowBox">
          <property name="title">
-          <string>Wetterfenster</string>
+          <string>Weather window enabled</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -732,7 +731,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="4" column="0">
            <widget class="QLabel" name="weatherWindowTitleLabel">
             <property name="text">
-             <string>Tite&amp;l:</string>
+             <string>Tit&amp;le:</string>
             </property>
             <property name="buddy">
              <cstring>weatherWindowTitleInput</cstring>
@@ -749,7 +748,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="5" column="0">
            <widget class="QLabel" name="weatherWindowIntervalLabel">
             <property name="text">
-             <string>I&amp;ntervall:</string>
+             <string>I&amp;nterval:</string>
             </property>
             <property name="buddy">
              <cstring>weatherWindowIntervalInput</cstring>
@@ -762,7 +761,7 @@ Berech des Hauptfensters angezeigt.</string>
              <string>Dauer zwischen Aktualisierungen der Grafik im Wetterfenster</string>
             </property>
             <property name="suffix">
-             <string> Minuten</string>
+             <string> minutes</string>
             </property>
             <property name="maximum">
              <number>86400</number>
@@ -785,7 +784,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="0" column="0" colspan="3">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Das Wetterfenster wird durch Doppelklick auf die Wettergrafik geöffnet.</string>
+             <string>The weather window can be opened by double-clicking the weather picture.</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -798,7 +797,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="3" column="0">
            <widget class="QLabel" name="weatherWindowCommandLabel">
             <property name="text">
-             <string>K&amp;ommando:</string>
+             <string>C&amp;ommand:</string>
             </property>
             <property name="buddy">
              <cstring>weatherWindowCommandInput</cstring>
@@ -821,7 +820,7 @@ Berech des Hauptfensters angezeigt.</string>
              <item>
               <widget class="QPushButton" name="browseWeatherWindowCommandButton">
                <property name="text">
-                <string>Durchsuc&amp;hen</string>
+                <string>Browse</string>
                </property>
               </widget>
              </item>
@@ -848,13 +847,14 @@ Berech des Hauptfensters angezeigt.</string>
      </widget>
      <widget class="QWidget" name="pluginPathsTab">
       <attribute name="title">
-       <string>Plugin-&amp;Pfad</string>
+       <string>&amp;Plugin path</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Verzeichnisse, in denen Plugins (in der angegebenen Reihenfolge) gesucht werden. Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder relativ zum aktuellen Verzeichnis (z. B. .startkladde/plugins) angegeben werden.</string>
+          <string>Directories to look for plugins in (in the order given).
+Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to the current directory (e. g. .startkladde/plugins).</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
