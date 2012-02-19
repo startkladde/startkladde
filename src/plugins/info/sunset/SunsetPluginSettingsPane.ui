@@ -25,7 +25,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="nameLabel">
        <property name="text">
-        <string>&amp;Dateiname:</string>
+        <string>&amp;Filename:</string>
        </property>
        <property name="buddy">
         <cstring>filenameInput</cstring>
@@ -45,7 +45,7 @@ Der Dateiname kann absolut oder relativ angegeben werden. Relative Dateinamen we
        <item>
         <widget class="QPushButton" name="findFileButton">
          <property name="text">
-          <string>Durch&amp;suchen</string>
+          <string>&amp;Browse</string>
          </property>
         </widget>
        </item>
@@ -54,8 +54,8 @@ Der Dateiname kann absolut oder relativ angegeben werden. Relative Dateinamen we
      <item row="1" column="1">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Der Dateiname kann ohne Verzeichnis angegeben werden,
-sofern sich die Datei im Plugin-Pfad oder im Sytempfad befindet.</string>
+        <string>The filename can be specified without a directory
+if the file is located in the plugin path or in the system path.</string>
        </property>
        <property name="wordWrap">
         <bool>false</bool>
@@ -65,7 +65,7 @@ sofern sich die Datei im Plugin-Pfad oder im Sytempfad befindet.</string>
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Datei:</string>
+        <string>File:</string>
        </property>
       </widget>
      </item>
@@ -82,7 +82,7 @@ sofern sich die Datei im Plugin-Pfad oder im Sytempfad befindet.</string>
      <item row="3" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>Quelle:</string>
+        <string>Source:</string>
        </property>
       </widget>
      </item>
@@ -92,14 +92,14 @@ sofern sich die Datei im Plugin-Pfad oder im Sytempfad befindet.</string>
         <string>Die Quelle für die Daten laut Datendatei</string>
        </property>
        <property name="text">
-        <string>unbekannt</string>
+        <string>unknown</string>
        </property>
       </widget>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Bezugslängengrad:</string>
+        <string>Reference longitude:</string>
        </property>
       </widget>
      </item>
@@ -109,14 +109,14 @@ sofern sich die Datei im Plugin-Pfad oder im Sytempfad befindet.</string>
         <string>Der Längengrad, für den die Zeiten der Datei gelten</string>
        </property>
        <property name="text">
-        <string>unbekannt</string>
+        <string>unknown</string>
        </property>
       </widget>
      </item>
      <item row="5" column="0">
       <widget class="QLabel" name="longitudeLabel">
        <property name="text">
-        <string>&amp;Längengrad:</string>
+        <string>&amp;Longitude:</string>
        </property>
        <property name="buddy">
         <cstring>longitudeInput</cstring>
@@ -129,7 +129,7 @@ sofern sich die Datei im Plugin-Pfad oder im Sytempfad befindet.</string>
         <string>Korrektur der Sonnenuntergangszeiten für den tatsächlichen Längengrad</string>
        </property>
        <property name="text">
-        <string>&amp;Korrektur aktivieren</string>
+        <string>Enable &amp;correction</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -139,8 +139,8 @@ sofern sich die Datei im Plugin-Pfad oder im Sytempfad befindet.</string>
      <item row="6" column="1">
       <widget class="SkLabel" name="referenceLongitudeNoteLabel">
        <property name="text">
-        <string>Längengradkorrektur ist nur dann möglich, wenn in
-der Datendatei ein Bezugslängengrad angegeben ist.</string>
+        <string>Longitude correction is only possible if
+a reference longitude is specified in the data file.</string>
        </property>
       </widget>
      </item>
@@ -183,7 +183,7 @@ der Datendatei ein Bezugslängengrad angegeben ist.</string>
      <item row="8" column="0">
       <widget class="QLabel" name="timeZoneLabel">
        <property name="text">
-        <string>&amp;Zeitzone:</string>
+        <string>&amp;Timezone:</string>
        </property>
        <property name="buddy">
         <cstring>timeZoneInput</cstring>
@@ -207,7 +207,7 @@ der Datendatei ein Bezugslängengrad angegeben ist.</string>
          </item>
          <item>
           <property name="text">
-           <string>Lokalzeit</string>
+           <string>Local time</string>
           </property>
          </item>
         </widget>
@@ -247,15 +247,15 @@ der Datendatei ein Bezugslängengrad angegeben ist.</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>SkLabel</class>
+   <extends>QLabel</extends>
+   <header>src/gui/widgets/SkLabel.h</header>
+  </customwidget>
+  <customwidget>
    <class>LongitudeInput</class>
    <extends>QWidget</extends>
    <header>src/gui/widgets/LongitudeInput.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>SkLabel</class>
-   <extends>QLabel</extends>
-   <header>src/gui/widgets/SkLabel.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

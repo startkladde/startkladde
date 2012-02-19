@@ -33,7 +33,7 @@
    <item row="8" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>&amp;Bemerkungen:</string>
+      <string>&amp;Comments:</string>
      </property>
      <property name="buddy">
       <cstring>commentsInput</cstring>
@@ -53,7 +53,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>&amp;Flugbuch-Bezeichnung:</string>
+      <string>Logbook label:</string>
      </property>
      <property name="buddy">
       <cstring>logStringInput</cstring>
@@ -63,7 +63,7 @@
    <item row="4" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>&amp;Tastenkürzel:</string>
+      <string>Keyboard shortcut:</string>
      </property>
      <property name="buddy">
       <cstring>keyboardShortcutInput</cstring>
@@ -73,7 +73,7 @@
    <item row="5" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>T&amp;yp:</string>
+      <string>T&amp;ype:</string>
      </property>
      <property name="buddy">
       <cstring>typeInput</cstring>
@@ -83,7 +83,7 @@
    <item row="6" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
-      <string>&amp;Schleppflugzeug:</string>
+      <string>&amp;Towplane:</string>
      </property>
      <property name="buddy">
       <cstring>towplaneRegistrationInput</cstring>
@@ -115,7 +115,7 @@
    <item row="7" column="0">
     <widget class="QLabel" name="label_8">
      <property name="text">
-      <string>&amp;Person erforderlich:</string>
+      <string>&amp;Person required:</string>
      </property>
      <property name="buddy">
       <cstring>personRequiredInput</cstring>

@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="messageLabel">
      <property name="text">
-      <string>Bitte das hinzuzufügende Plugin auswählen:</string>
+      <string>Select the plugin to add:</string>
      </property>
     </widget>
    </item>
@@ -33,7 +33,7 @@
      </column>
      <column>
       <property name="text">
-       <string>Beschreibung</string>
+       <string>Description</string>
       </property>
      </column>
     </widget>

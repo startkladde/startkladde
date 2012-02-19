@@ -20,7 +20,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>&amp;Titel:</string>
+      <string>&amp;Title:</string>
      </property>
      <property name="buddy">
       <cstring>captionInput</cstring>
@@ -37,7 +37,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QGroupBox" name="infoPluginSettingsPane">
      <property name="title">
-      <string>Einstellungen</string>
+      <string>Settings</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout"/>
     </widget>

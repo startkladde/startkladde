@@ -63,7 +63,7 @@
       <string>Beim Versuch, die Einstellungen zu speichern, einen Fehler auslösen</string>
      </property>
      <property name="text">
-      <string>&amp;Fehler beim Speichern</string>
+      <string>&amp;Error on save</string>
      </property>
     </widget>
    </item>
