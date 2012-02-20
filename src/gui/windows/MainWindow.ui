@@ -357,7 +357,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -515,7 +515,7 @@
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>Werkzeugleiste</string>
+    <string>Toolbar</string>
    </property>
    <property name="movable">
     <bool>false</bool>
@@ -601,7 +601,7 @@
     <string>&amp;Replicate... (F3)</string>
    </property>
    <property name="iconText">
-    <string>Flug wiederholen (F3)</string>
+    <string>Replicate flight (F3)</string>
    </property>
    <property name="toolTip">
     <string>Replicate flight (F3)</string>

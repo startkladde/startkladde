@@ -121,18 +121,17 @@
       <item>
        <widget class="SkComboBox" name="checkMedicalInput">
         <property name="toolTip">
-         <string>Das Medical dieser Person beim Anlegen
-von Flügen auf Aktualität prüfen</string>
+         <string>Check this person's medical validity
+when creating a new flight</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="medicalCheckDisabledLabel">
         <property name="toolTip">
-         <string>Die globale Medical-Prüfung ist deaktiviert. Damit
-Medicals überprüft werden, muss die Option
-„Medicals prüfen“ in den Programmeinstellungen
-aktiviert werden.</string>
+         <string>The global medical check option is disabled. For
+medicals to be checked, enable the option
+&quot;Check medicals&quot; in the program settings</string>
         </property>
         <property name="text">
          <string>...</string>
@@ -180,7 +179,7 @@ aktiviert werden.</string>
          <bool>false</bool>
         </property>
         <property name="toolTip">
-         <string>Das Datum, bis zu dem das Medical dieser Person gültig ist</string>
+         <string>The last date that this person's medical is valid</string>
         </property>
         <property name="displayFormat">
          <string>dd.MM.yyyy</string>

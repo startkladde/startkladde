@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Datum eingeben</string>
+   <string>Enter date</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,0,0">
    <item row="3" column="0">

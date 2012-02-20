@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -96,7 +96,7 @@
              <item row="0" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlServerInput">
                <property name="toolTip">
-                <string>IP-Adresse oder Hostname des Datenbankservers</string>
+                <string>IP address or host name of the database server</string>
                </property>
               </widget>
              </item>
@@ -113,7 +113,7 @@
              <item row="1" column="2">
               <widget class="QSpinBox" name="mysqlPortInput">
                <property name="toolTip">
-                <string>TCP-Port des Datenbankservers</string>
+                <string>TCP port of the database server</string>
                </property>
                <property name="maximum">
                 <number>65535</number>
@@ -133,7 +133,7 @@
              <item row="2" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlUserInput">
                <property name="toolTip">
-                <string>Benutzername für die Verbindung zum Datenbankserver</string>
+                <string>Username for the connection to the database server</string>
                </property>
               </widget>
              </item>
@@ -150,7 +150,7 @@
              <item row="3" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlPasswordInput">
                <property name="toolTip">
-                <string>Passwort für die Verbindung zum Datenbankserver</string>
+                <string>Password for the connection to the database server</string>
                </property>
                <property name="echoMode">
                 <enum>QLineEdit::Password</enum>
@@ -170,7 +170,7 @@
              <item row="4" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlDatabaseInput">
                <property name="toolTip">
-                <string>Name der zu verwendenden Datenbank auf dem Datenbankserver</string>
+                <string>Name of the database on the database server</string>
                </property>
               </widget>
              </item>
@@ -190,7 +190,7 @@
              <item row="1" column="1">
               <widget class="QCheckBox" name="mysqlDefaultPortCheckBox">
                <property name="toolTip">
-                <string>Wenn aktiv, wird der Standard-Datenbank-Port verwendet</string>
+                <string>If enabled, the default port is used for the database server</string>
                </property>
                <property name="text">
                 <string>Standa&amp;rd</string>
@@ -249,7 +249,7 @@
           <item row="0" column="1">
            <widget class="QLineEdit" name="locationInput">
             <property name="toolTip">
-             <string>Name des Flugplatzes (z. B. &quot;Rheinstetten&quot;)</string>
+             <string>Name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)</string>
             </property>
            </widget>
           </item>
@@ -263,7 +263,7 @@
           <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="recordTowpilotCheckbox">
             <property name="toolTip">
-             <string>Wenn aktiviert, kann der Name des Schlepppiloten von Flügen eingetragen werden</string>
+             <string>If enabled, the name of the towpilot can be entered for flights</string>
             </property>
             <property name="text">
              <string>Record towpi&amp;lot</string>
@@ -282,8 +282,7 @@
           <item row="2" column="0">
            <widget class="QCheckBox" name="protectLaunchMethodsCheckbox">
             <property name="toolTip">
-             <string>Wenn aktiviert, muss zum Ändern von Startarten das
-Datenbankpasswort eingegeben werden.</string>
+             <string>If eneabled, the database password must be entered to modify launch methods</string>
             </property>
             <property name="text">
              <string>Require password to modify launch method&amp;s</string>
@@ -293,8 +292,7 @@ Datenbankpasswort eingegeben werden.</string>
           <item row="0" column="0">
            <widget class="QCheckBox" name="protectSettingsCheckbox">
             <property name="toolTip">
-             <string>Wenn aktiviert, muss zum Speichern von Einstellungen
-das Datenbankpasswort eingegeben werden.</string>
+             <string>If eneabled, the database password must be entered to change settings</string>
             </property>
             <property name="text">
              <string>Requ&amp;ire password to change settings</string>
@@ -330,6 +328,9 @@ or editing the configuration file or registry key
           </item>
           <item row="3" column="0">
            <widget class="QCheckBox" name="protectMergePeopleCheckbox">
+            <property name="toolTip">
+             <string>If eneabled, the database password must be entered to merge people</string>
+            </property>
             <property name="text">
              <string>Require password to merge &amp;people</string>
             </property>
@@ -337,6 +338,9 @@ or editing the configuration file or registry key
           </item>
           <item row="4" column="0">
            <widget class="QCheckBox" name="protectFlightDatabaseCheckbox">
+            <property name="toolTip">
+             <string>If eneabled, the database password must be entered to display the flight database</string>
+            </property>
             <property name="text">
              <string>Require password to display the &amp;flight database</string>
             </property>
@@ -354,7 +358,7 @@ or editing the configuration file or registry key
           <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="enableDebugCheckbox">
             <property name="toolTip">
-             <string>Aktiviert einige Menüeinträge zur Fehlerdiagnose</string>
+             <string>Enables some menu entries for error diagnostics</string>
             </property>
             <property name="text">
              <string>Enable debu&amp;gging options</string>
@@ -364,7 +368,7 @@ or editing the configuration file or registry key
           <item row="1" column="1">
            <widget class="QLineEdit" name="diagCommandInput">
             <property name="toolTip">
-             <string>Kommando, das ausgeführt wird, wenn der Menüpunkt Hilfe-&gt;Netzwerkdiagnose ausgeführt wird</string>
+             <string>Command to run when the menu item Help-Network diagnostics is selected</string>
             </property>
            </widget>
           </item>

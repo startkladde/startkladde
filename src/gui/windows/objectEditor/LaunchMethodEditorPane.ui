@@ -43,7 +43,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>&amp;Kürzel:</string>
+      <string>&amp;Short name:</string>
      </property>
      <property name="buddy">
       <cstring>shortNameInput</cstring>

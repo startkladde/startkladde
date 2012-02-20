@@ -42,7 +42,7 @@
      <item>
       <widget class="QSpinBox" name="refreshIntervalInput">
        <property name="toolTip">
-        <string>Zeit zwischen Aktualiserungen der METER-Meldung</string>
+        <string>Time between updates of the METAR report</string>
        </property>
        <property name="suffix">
         <string>minutes</string>
@@ -91,7 +91,7 @@
      <item>
       <widget class="QLineEdit" name="airportInput">
        <property name="toolTip">
-        <string>ICAO-Code des Flughafens, dessen METAR-Meldung angezeigt werden</string>
+        <string>ICAO code of the airport of which to display the METAR reports</string>
        </property>
       </widget>
      </item>
