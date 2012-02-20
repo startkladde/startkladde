@@ -17,6 +17,7 @@
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
 #include <QKeyEvent>
+#include <QPushButton>
 
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 #include "src/model/objectList/ObjectListModel.h"
@@ -63,7 +64,7 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 
 	// TODO this should be done later - a subclass may add menus
 	QString mnemonics="f";
-	QChar closeButtonMnemonic=getMnemonic (ui.buttonBox->button (QDialogButtonBox::Close));
+	QChar closeButtonMnemonic=getMnemonic (ui.buttonBox->button (QDialogButtonBox::Close)->text ());
 	if (!closeButtonMnemonic.isNull ()) mnemonics+=closeButtonMnemonic;
 	ui.menuObject->setTitle (insertMnemonic (T::objectTypeDescription (), mnemonics));
 }
