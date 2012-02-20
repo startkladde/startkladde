@@ -37,8 +37,8 @@
        <item>
         <widget class="QLineEdit" name="filenameInput">
          <property name="toolTip">
-          <string>Der Name der Datendatei, aus der die Sonnenuntergangszeiten gelesen werden.
-Der Dateiname kann absolut oder relativ angegeben werden. Relative Dateinamen werden im Plugin-Pfad gesucht.</string>
+          <string>The name of the data file to read the sunset times from.
+The filename can be absolute or relative. Relative filenames are searched in the plugin path.</string>
          </property>
         </widget>
        </item>
@@ -126,7 +126,7 @@ if the file is located in the plugin path or in the system path.</string>
      <item row="5" column="1">
       <widget class="QCheckBox" name="longitudeCorrectionCheckbox">
        <property name="toolTip">
-        <string>Korrektur der Sonnenuntergangszeiten für den tatsächlichen Längengrad</string>
+        <string>Correct the sunset times for the actual longitude</string>
        </property>
        <property name="text">
         <string>Enable &amp;correction</string>
@@ -161,7 +161,7 @@ a reference longitude is specified in the data file.</string>
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="toolTip">
-          <string>Der tatsächliche Längengrad</string>
+          <string>The actual longitude</string>
          </property>
         </widget>
        </item>
@@ -198,7 +198,7 @@ a reference longitude is specified in the data file.</string>
        <item>
         <widget class="QComboBox" name="timeZoneInput">
          <property name="toolTip">
-          <string>Zeitzone für die Anzeige</string>
+          <string>Time zone for display</string>
          </property>
          <item>
           <property name="text">

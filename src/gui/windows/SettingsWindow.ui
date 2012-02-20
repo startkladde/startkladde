@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -282,7 +282,7 @@
           <item row="2" column="0">
            <widget class="QCheckBox" name="protectLaunchMethodsCheckbox">
             <property name="toolTip">
-             <string>If eneabled, the database password must be entered to modify launch methods</string>
+             <string>If enabled, the database password must be entered to modify launch methods</string>
             </property>
             <property name="text">
              <string>Require password to modify launch method&amp;s</string>
@@ -292,7 +292,7 @@
           <item row="0" column="0">
            <widget class="QCheckBox" name="protectSettingsCheckbox">
             <property name="toolTip">
-             <string>If eneabled, the database password must be entered to change settings</string>
+             <string>If enabled, the database password must be entered to change settings</string>
             </property>
             <property name="text">
              <string>Requ&amp;ire password to change settings</string>
@@ -329,7 +329,7 @@ or editing the configuration file or registry key
           <item row="3" column="0">
            <widget class="QCheckBox" name="protectMergePeopleCheckbox">
             <property name="toolTip">
-             <string>If eneabled, the database password must be entered to merge people</string>
+             <string>If enabled, the database password must be entered to merge people</string>
             </property>
             <property name="text">
              <string>Require password to merge &amp;people</string>
@@ -339,7 +339,7 @@ or editing the configuration file or registry key
           <item row="4" column="0">
            <widget class="QCheckBox" name="protectFlightDatabaseCheckbox">
             <property name="toolTip">
-             <string>If eneabled, the database password must be entered to display the flight database</string>
+             <string>If enabled, the database password must be entered to display the flight database</string>
             </property>
             <property name="text">
              <string>Require password to display the &amp;flight database</string>
@@ -409,8 +409,8 @@ network diagnostics:</string>
        <item>
         <widget class="QTreeWidget" name="infoPluginList">
          <property name="toolTip">
-          <string>Liste der Info-Plugins. Die Info-Plugins werden im oberen
-Berech des Hauptfensters angezeigt.</string>
+          <string>The list of info plugins. Info-Plugins are displayed
+in the upper part of the main window.</string>
          </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
@@ -483,7 +483,7 @@ Berech des Hauptfensters angezeigt.</string>
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Info-Plugin dazufügen</string>
+             <string>Add info plugin</string>
             </property>
             <property name="text">
              <string>+</string>
@@ -499,7 +499,7 @@ Berech des Hauptfensters angezeigt.</string>
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Ausgewähltes Info-Plugin entfernen</string>
+             <string>Removed selected info plugin</string>
             </property>
             <property name="text">
              <string>-</string>
@@ -515,7 +515,7 @@ Berech des Hauptfensters angezeigt.</string>
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Ausgewähltes Info-Plugin nach oben verschieben</string>
+             <string>Move selected info plugin up</string>
             </property>
             <property name="text">
              <string/>
@@ -534,7 +534,7 @@ Berech des Hauptfensters angezeigt.</string>
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Ausgewähltes Info-Plugin nach unten verschieben</string>
+             <string>Move selected info plugin down</string>
             </property>
             <property name="text">
              <string>...</string>
@@ -553,7 +553,7 @@ Berech des Hauptfensters angezeigt.</string>
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Einstellungen für ausgewähltes Info-Plugin</string>
+             <string>Settings for selected info plugin</string>
             </property>
             <property name="text">
              <string>...</string>
@@ -605,7 +605,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="6" column="2">
            <widget class="QSpinBox" name="weatherPluginHeightInput">
             <property name="toolTip">
-             <string>Höhe der Wettergrafik</string>
+             <string>Height of the weather picture in pixels</string>
             </property>
             <property name="suffix">
              <string> pixels</string>
@@ -651,7 +651,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="4" column="2">
            <widget class="QSpinBox" name="weatherPluginIntervalInput">
             <property name="toolTip">
-             <string>Dauer zwischen Aktualisierungen der Wettergrafik</string>
+             <string>Time between updates of the weather picture</string>
             </property>
             <property name="suffix">
              <string> minutes</string>
@@ -696,7 +696,7 @@ Berech des Hauptfensters angezeigt.</string>
              <item>
               <widget class="QLineEdit" name="weatherPluginCommandInput">
                <property name="toolTip">
-                <string>Das auszuführende Programm. Programme im Plugin-Suchpfad können ohne Pfad angegeben werden.</string>
+                <string>The program to execute. Programs in the plugin path can be specified without path.</string>
                </property>
               </widget>
              </item>
@@ -745,7 +745,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="4" column="1" colspan="2">
            <widget class="QLineEdit" name="weatherWindowTitleInput">
             <property name="toolTip">
-             <string>Titel des Wetterfensters</string>
+             <string>Title of the weather window</string>
             </property>
            </widget>
           </item>
@@ -762,7 +762,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="5" column="1">
            <widget class="QSpinBox" name="weatherWindowIntervalInput">
             <property name="toolTip">
-             <string>Dauer zwischen Aktualisierungen der Grafik im Wetterfenster</string>
+             <string>Time between updates of the picture in the weather window</string>
             </property>
             <property name="suffix">
              <string> minutes</string>
@@ -817,7 +817,7 @@ Berech des Hauptfensters angezeigt.</string>
              <item>
               <widget class="QLineEdit" name="weatherWindowCommandInput">
                <property name="toolTip">
-                <string>Das auszuführende Programm. Programme im Plugin-Suchpfad können ohne Pfad angegeben werden.</string>
+                <string>The program to execute. Programs in the plugin path can be specified without path.</string>
                </property>
               </widget>
              </item>
@@ -874,7 +874,7 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
           <item>
            <widget class="QListWidget" name="pluginPathList">
             <property name="toolTip">
-             <string>Verzeichnisse, in denen Plugins gesucht werden</string>
+             <string>Directories to look for plugins in</string>
             </property>
             <property name="dragDropMode">
              <enum>QAbstractItemView::InternalMove</enum>
@@ -918,7 +918,7 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Plugin-Pfad dazufügen</string>
+                <string>Add plugin path</string>
                </property>
                <property name="text">
                 <string>+</string>
@@ -934,7 +934,7 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Ausgewählten Plugin-Pfad entfernen</string>
+                <string>Remove selected plugin path</string>
                </property>
                <property name="text">
                 <string>-</string>
@@ -950,7 +950,7 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Ausgewählten Plugin-Pfad nach oben verschieben</string>
+                <string>Move selected plugin path up</string>
                </property>
                <property name="text">
                 <string/>
@@ -969,7 +969,7 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Ausgewählten Plugin-Pfad nach unten verschieben</string>
+                <string>Move selected plugin path down</string>
                </property>
                <property name="text">
                 <string>...</string>
