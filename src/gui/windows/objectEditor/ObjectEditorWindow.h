@@ -47,7 +47,7 @@ template<class T> class ObjectEditorWindow: public ObjectEditorWindowBase
 		bool writeToDatabase (T &object);
 
 		// GUI events
-		virtual void on_okButton_clicked ();
+		virtual void on_buttonBox_accepted ();
 
 		dbId getId () const { return id; }
 
@@ -78,12 +78,11 @@ template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DbManage
 		case modeEdit:
 			setWindowTitle (QString ("%1 editieren").arg (T::objectTypeDescription ()));
 			break;
-		case modeDisplay:
-			setWindowTitle (QString ("%1 anzeigen").arg (T::objectTypeDescription ()));
-			ui.okButton->setVisible (false);
-			ui.cancelButton->setText (utf8 ("&Schließen"));
-			editorPane->setEnabled (false);
-			break;
+//		case modeDisplay:
+//			setWindowTitle (QString ("%1 anzeigen").arg (T::objectTypeDescription ()));
+//			ui.buttonBox->setStandardButtons (QDialogButtonBox::Close);
+//			editorPane->setEnabled (false);
+//			break;
 	}
 
 	resize (sizeHint ());
@@ -129,13 +128,13 @@ template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, DbM
 
 // TODO: this should probably take an ID instead of a T&
 // TODO: only show a close button
-template<class T> void ObjectEditorWindow<T>::displayObject (QWidget *parent, DbManager &manager, const T &object)
-{
-	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeDisplay, manager, parent);
-	w->setAttribute (Qt::WA_DeleteOnClose, true);
-	w->editorPane->setObject (object);
-	w->exec ();
-}
+//template<class T> void ObjectEditorWindow<T>::displayObject (QWidget *parent, DbManager &manager, const T &object)
+//{
+//	ObjectEditorWindow<T> *w=new ObjectEditorWindow<T> (modeDisplay, manager, parent);
+//	w->setAttribute (Qt::WA_DeleteOnClose, true);
+//	w->editorPane->setObject (object);
+//	w->exec ();
+//}
 
 // TODO: this should probably take an ID instead of a T&
 template<class T> int ObjectEditorWindow<T>::editObject (QWidget *parent, DbManager &manager, const T &object)
@@ -184,9 +183,9 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 				return false;
 			}
 		} break;
-		case modeDisplay:
-			assert (false);
-			break;
+//		case modeDisplay:
+//			assert (false);
+//			break;
 	}
 
 	assert (false);
@@ -198,16 +197,15 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 // ** GUI events **
 // ****************
 
-template<class T> void ObjectEditorWindow<T>::on_okButton_clicked ()
+template<class T> void ObjectEditorWindow<T>::on_buttonBox_accepted ()
 {
 	// The OK button was pressed. Check and store the object.
 	try
 	{
-		std::cout << "goona determine" << std::endl;
 		T object=editorPane->determineObject ();
 		if (writeToDatabase (object))
 		{
-			std::cout << "after writeToDatabase, right before accept, id is " << getId () << std::endl;
+			//std::cout << "after writeToDatabase, right before accept, id is " << getId () << std::endl;
 			accept (); // Close the dialog
 		}
 	}

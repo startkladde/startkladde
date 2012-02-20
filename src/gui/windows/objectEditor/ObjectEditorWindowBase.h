@@ -28,13 +28,14 @@ class ObjectEditorWindowBase: public QDialog
 
 	public:
 		// Types
-		enum Mode { modeCreate, modeEdit, modeDisplay };
+		// modeDisplay is not tested
+		enum Mode { modeCreate, modeEdit/*, modeDisplay*/ };
 
 		ObjectEditorWindowBase (DbManager &manager, QWidget *parent=NULL, Qt::WindowFlags flags=0);
 		virtual ~ObjectEditorWindowBase ();
 
 	public slots:
-		virtual void on_okButton_clicked ()=0;
+		virtual void on_buttonBox_accepted ()=0;
 
 	protected:
 		Ui::ObjectEditorWindowBaseClass ui;
