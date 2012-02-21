@@ -512,12 +512,12 @@ The preselection will be reset on the next start of the program.</source>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="14"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauptfenster</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="64"/>
         <source>Local time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokalzeit:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="71"/>
@@ -529,153 +529,153 @@ The preselection will be reset on the next start of the program.</source>
         <location filename="../src/gui/windows/MainWindow.ui" line="171"/>
         <location filename="../src/gui/windows/MainWindow.ui" line="801"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="78"/>
         <source>UTC:</source>
-        <translation type="unfinished"></translation>
+        <translation>UTC:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="85"/>
         <source>Displayed date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzeigedatum:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="92"/>
         <source>Flights airborne:</source>
-        <translation type="unfinished"></translation>
+        <translation>Flüge in der Luft:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="99"/>
         <source>Flights total:</source>
-        <translation type="unfinished"></translation>
+        <translation>Flüge insgesamt:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="106"/>
         <source>Database connection:</source>
-        <translation type="unfinished"></translation>
+        <translation>Datenbankverbindung:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="113"/>
         <source>Power supply:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stromversorgung:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="284"/>
         <source>Not connected to database</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Verbindung zur Datenbank</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="316"/>
         <location filename="../src/gui/windows/MainWindow.ui" line="822"/>
         <source>&amp;Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verbindung aufbauen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="365"/>
         <source>&amp;Programm</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Programm</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="375"/>
         <source>&amp;Flight</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Flug</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="392"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ansicht</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="396"/>
         <source>&amp;Flights</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Flüge</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="407"/>
         <source>&amp;Date</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Datum</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="415"/>
         <source>F&amp;ont</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Schriftart</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="433"/>
         <source>&amp;Statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Statistik</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="441"/>
         <source>&amp;Database</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Datenbank</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="456"/>
         <source>De&amp;bug</source>
-        <translation type="unfinished"></translation>
+        <translation>De&amp;bug</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="464"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hilfe</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="471"/>
         <source>&amp;Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Überse&amp;tzung</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="493"/>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Protokoll</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="518"/>
         <source>Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeugleiste</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="540"/>
         <source>Set &amp;time...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zei&amp;t einstellen...</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="545"/>
         <source>&amp;Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>B&amp;eenden</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="548"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="553"/>
         <source>&amp;Shutdown</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Herunterfahren</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="558"/>
         <source>&amp;New flight... (F2)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Neuer Flug... (F2)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="561"/>
         <source>New flight (F2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuer Flug (F2)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="564"/>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="569"/>
         <source>Dep&amp;art (F5)</source>
-        <translation type="unfinished"></translation>
+        <translation>St&amp;arten (F5)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="572"/>
