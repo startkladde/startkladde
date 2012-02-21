@@ -1917,7 +1917,7 @@ void MainWindow::logMessage (QString message)
 
 void MainWindow::on_loadTranslationAction_triggered ()
 {
-	translator->load ("startkladde_de");
+	translator->load ("translations/startkladde_de");
 }
 
 void MainWindow::on_unloadTranslationAction_triggered ()
