@@ -17,7 +17,10 @@
    <item>
     <widget class="QLabel" name="messageLabel">
      <property name="text">
-      <string>Select the plugin to add:</string>
+      <string>Select the &amp;plugin to add:</string>
+     </property>
+     <property name="buddy">
+      <cstring>pluginList</cstring>
      </property>
     </widget>
    </item>

@@ -129,7 +129,7 @@ if the file is located in the plugin path or in the system path.</string>
         <string>Correct the sunset times for the actual longitude</string>
        </property>
        <property name="text">
-        <string>Enable &amp;correction</string>
+        <string>&amp;Enable correction</string>
        </property>
        <property name="checked">
         <bool>true</bool>

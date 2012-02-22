@@ -56,7 +56,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>&amp;Club:</string>
+      <string>Cl&amp;ub:</string>
      </property>
      <property name="buddy">
       <cstring>clubInput</cstring>
@@ -85,7 +85,7 @@
    <item row="8" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>C&amp;omments:</string>
+      <string>Commen&amp;ts:</string>
      </property>
      <property name="buddy">
       <cstring>commentsInput</cstring>
@@ -206,6 +206,9 @@ medicals to be checked, enable the option
     <widget class="QLabel" name="label_7">
      <property name="text">
       <string>Club &amp;ID:</string>
+     </property>
+     <property name="buddy">
+      <cstring>clubIdInput</cstring>
      </property>
     </widget>
    </item>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>239</height>
+    <height>172</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@ The preselection will be reset on the next start of the program.</string>
    <item>
     <widget class="QGroupBox" name="preselectionCheckbox">
      <property name="title">
-      <string>Activate preselection</string>
+      <string>&amp;Activate preselection</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

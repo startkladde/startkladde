@@ -1,0 +1,121 @@
+= Accelerators =
+
+Assigning each item a unique shortcut may not be possible because there are too
+many items.
+
+Some items ("unique items") must have a unique shortcut:
+* Anything that triggers an option: push buttons, toggle buttons, checkboxes,
+  radio buttons
+* The first field in the dialog, so we can jump to the beginning
+* Very common items
+
+The Ok and Cancel buttons should have a (unique) shortcut. If there are any
+buttons on the form, or any other items which intercept the Enter key, the Ok
+button must have a (unique) shortcut.
+
+Some letters may appear only in a single item ("unique letters") and can be
+assigned immediately. Doing so may make other letters unique. Some letters do
+not appear in any item ("unused letters") and cannot be be used at all.
+
+After that, start assigning letters to items starting with short items or
+letters that appear in few items.
+
+
+== FlightWindow ==
+
+=== English ===
+
+Total letters: 26
+Unused letters: jkqvxz (6)
+Unique letters: by (2)
+Number of available letters: 18
+
+Unique words: 6/9 (must/should)
+
+Remaining letters: 12/9
+Remaining words: 18
+
+
+Unique letter:
+* flight type  . . . . . . . . . . y
+* number of landings . . . . . . . b
+
+Must be unique:
+* automatic  . . . . . . . . . . . u
+* automatic  . . . . . . . . . . . m
+* automatic  . . . . . . . . . . . o
+* depart now . . . . . . . . . . . w
+* depart later . . . . . . . . . . r
+* cancel . . . . . . . . . . . . . c
+* ok . . . . . . . . . . . . . . . k (either OK or depart now/later)
+
+Should be unique:
+* registration . . . . . . . . . . s - first item
+* departure time . . . . . . . . . d - frequently used for entering flights offline (dt automatic - lt automatic - departure time)
+* launch method  . . . . . . . . . a - important item
+
+Remaining:
+* last name  . . . . . . . . . . . l
+* first name . . . . . . . . . . . f
+* last name  . . . . . . . . . . . l
+* first name . . . . . . . . . . . f
+* [flight] mode  . . . . . . . . . h
+* towplane . . . . . . . . . . . . p
+* last name  . . . . . . . . . . . n
+* first name . . . . . . . . . . . n
+* towflight mode . . . . . . . . . h
+* landing time . . . . . . . . . . i
+* landing time towplane  . . . . . i
+* departure location . . . . . . . p
+* landing location . . . . . . . . g
+* landing location towplane  . . . t
+* comments . . . . . . . . . . . . t
+* accounting notes . . . . . . . . g
+* date . . . . . . . . . . . . . . e
+* errors . . . . . . . . . . . . . e
+
+
+== SettingsWindow ==
+
+=== English ===
+
+Database (unused: cghijkqxz) ..... d
+* Type ............................. y
+* Server ........................... e
+* Port ............................. r
+* Default .......................... f
+* User name ........................ u
+* Password ......................... a
+* Database ......................... t
+
+Settings (unused: jvxz) ............................... s
+* Airfield name ......................................... a
+* Record towpilot ....................................... t
+* Check medicals ........................................ m
+* Require password to change settings ................... r
+* Require password to modify launch methods ............. e
+* Require password to merge people ...................... q
+* Require password to display the flight database ....... u
+* Enable debugging options .............................. b
+* Command for network diagnostics ....................... g
+
+Info plugins ..... i
+
+Weather plugin (unused: fjkqxyz) ..... w
+* Weather plugin enabled ............... e
+* Plugin ............................... l
+* Command .............................. m
+* Browse ............................... b
+* Interval ............................. i
+* Height ............................... h
+* Weather window enabled ............... n
+* Plugin ............................... u
+* Command .............................. a
+* Browser .............................. r
+* Title ................................ t
+* Interval ............................. v
+
+Plugin path ..... p
+
+Ok ......... o
+Cancel ..... c

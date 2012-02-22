@@ -45,7 +45,7 @@
           <item>
            <widget class="QLabel" name="dbTypeLabel">
             <property name="text">
-             <string>&amp;Type</string>
+             <string>T&amp;ype:</string>
             </property>
             <property name="buddy">
              <cstring>dbTypeInput</cstring>
@@ -86,7 +86,7 @@
              <item row="0" column="0">
               <widget class="QLabel" name="mysqlServerLabel">
                <property name="text">
-                <string>&amp;Server:</string>
+                <string>S&amp;erver:</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlServerInput</cstring>
@@ -103,7 +103,7 @@
              <item row="1" column="0">
               <widget class="QLabel" name="mysqlPortLabel">
                <property name="text">
-                <string>P&amp;ort:</string>
+                <string>Po&amp;rt:</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlPortInput</cstring>
@@ -123,7 +123,7 @@
              <item row="2" column="0">
               <widget class="QLabel" name="mysqlUserLabel">
                <property name="text">
-                <string>User&amp;name</string>
+                <string>&amp;User name</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlUserInput</cstring>
@@ -140,7 +140,7 @@
              <item row="3" column="0">
               <widget class="QLabel" name="mysqlPasswordLabel">
                <property name="text">
-                <string>Pa&amp;ssword:</string>
+                <string>P&amp;assword:</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlPasswordInput</cstring>
@@ -160,7 +160,7 @@
              <item row="4" column="0">
               <widget class="QLabel" name="mysqlDatabaseLabel">
                <property name="text">
-                <string>Data&amp;base</string>
+                <string>Da&amp;tabase</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlDatabaseInput</cstring>
@@ -193,14 +193,14 @@
                 <string>If enabled, the default port is used for the database server</string>
                </property>
                <property name="text">
-                <string>Standa&amp;rd</string>
+                <string>De&amp;fault</string>
                </property>
               </widget>
              </item>
              <item row="1" column="3">
               <widget class="QLabel" name="label">
                <property name="text">
-                <string>(standard: 3306)</string>
+                <string>(default: 3306)</string>
                </property>
               </widget>
              </item>
@@ -227,7 +227,7 @@
      </widget>
      <widget class="QWidget" name="settingsTab">
       <attribute name="title">
-       <string>S&amp;ettings</string>
+       <string>&amp;Settings</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
@@ -239,7 +239,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="locationLabel">
             <property name="text">
-             <string>Ai&amp;rfield name:</string>
+             <string>&amp;Airfield name:</string>
             </property>
             <property name="buddy">
              <cstring>locationInput</cstring>
@@ -266,7 +266,7 @@
              <string>If enabled, the name of the towpilot can be entered for flights</string>
             </property>
             <property name="text">
-             <string>Record towpi&amp;lot</string>
+             <string>Record &amp;towpilot</string>
             </property>
            </widget>
           </item>
@@ -285,7 +285,7 @@
              <string>If enabled, the database password must be entered to modify launch methods</string>
             </property>
             <property name="text">
-             <string>Require password to modify launch method&amp;s</string>
+             <string>R&amp;equire password to modify launch method&amp;s</string>
             </property>
            </widget>
           </item>
@@ -295,7 +295,7 @@
              <string>If enabled, the database password must be entered to change settings</string>
             </property>
             <property name="text">
-             <string>Requ&amp;ire password to change settings</string>
+             <string>&amp;Require password to change settings</string>
             </property>
            </widget>
           </item>
@@ -332,7 +332,7 @@ or editing the configuration file or registry key
              <string>If enabled, the database password must be entered to merge people</string>
             </property>
             <property name="text">
-             <string>Require password to merge &amp;people</string>
+             <string>Re&amp;quire password to merge &amp;people</string>
             </property>
            </widget>
           </item>
@@ -342,7 +342,7 @@ or editing the configuration file or registry key
              <string>If enabled, the database password must be entered to display the flight database</string>
             </property>
             <property name="text">
-             <string>Require password to display the &amp;flight database</string>
+             <string>Req&amp;uire password to display the &amp;flight database</string>
             </property>
            </widget>
           </item>
@@ -361,7 +361,7 @@ or editing the configuration file or registry key
              <string>Enables some menu entries for error diagnostics</string>
             </property>
             <property name="text">
-             <string>Enable debu&amp;gging options</string>
+             <string>Enable de&amp;bugging options</string>
             </property>
            </widget>
           </item>
@@ -375,8 +375,7 @@ or editing the configuration file or registry key
           <item row="1" column="0">
            <widget class="QLabel" name="diagCommandLabel">
             <property name="text">
-             <string>Co&amp;mmand for
-network diagnostics:</string>
+             <string>Command for network dia&amp;gnostics:</string>
             </property>
             <property name="buddy">
              <cstring>diagCommandInput</cstring>
@@ -580,13 +579,13 @@ in the upper part of the main window.</string>
      </widget>
      <widget class="QWidget" name="weatherPluginsTab">
       <attribute name="title">
-       <string>&amp;Weather picture</string>
+       <string>&amp;Weather plugin</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <item>
         <widget class="QGroupBox" name="weatherPluginBox">
          <property name="title">
-          <string>Weather picture enabled</string>
+          <string>Weather plugin &amp;enabled</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -605,7 +604,7 @@ in the upper part of the main window.</string>
           <item row="6" column="2">
            <widget class="QSpinBox" name="weatherPluginHeightInput">
             <property name="toolTip">
-             <string>Height of the weather picture in pixels</string>
+             <string>Height of the weather plugin in pixels</string>
             </property>
             <property name="suffix">
              <string> pixels</string>
@@ -631,7 +630,7 @@ in the upper part of the main window.</string>
           <item row="4" column="0">
            <widget class="QLabel" name="weatherPluginIntervalLabel">
             <property name="text">
-             <string>Inter&amp;val:</string>
+             <string>&amp;Interval:</string>
             </property>
             <property name="buddy">
              <cstring>weatherPluginIntervalInput</cstring>
@@ -641,7 +640,7 @@ in the upper part of the main window.</string>
           <item row="1" column="0">
            <widget class="QLabel" name="weatherPluginLabel">
             <property name="text">
-             <string>Pl&amp;ugin:</string>
+             <string>P&amp;lugin:</string>
             </property>
             <property name="buddy">
              <cstring>weatherPluginInput</cstring>
@@ -651,7 +650,7 @@ in the upper part of the main window.</string>
           <item row="4" column="2">
            <widget class="QSpinBox" name="weatherPluginIntervalInput">
             <property name="toolTip">
-             <string>Time between updates of the weather picture</string>
+             <string>Time between updates of the weather plugin</string>
             </property>
             <property name="suffix">
              <string> minutes</string>
@@ -680,7 +679,7 @@ in the upper part of the main window.</string>
           <item row="2" column="0">
            <widget class="QLabel" name="weatherPluginCommandLabel">
             <property name="text">
-             <string>&amp;Command:</string>
+             <string>Co&amp;mmand:</string>
             </property>
             <property name="buddy">
              <cstring>weatherPluginCommandInput</cstring>
@@ -703,7 +702,7 @@ in the upper part of the main window.</string>
              <item>
               <widget class="QPushButton" name="browseWeatherPluginCommandButton">
                <property name="text">
-                <string>Browse</string>
+                <string>&amp;Browse</string>
                </property>
               </widget>
              </item>
@@ -716,7 +715,7 @@ in the upper part of the main window.</string>
        <item>
         <widget class="QGroupBox" name="weatherWindowBox">
          <property name="title">
-          <string>Weather window enabled</string>
+          <string>Weather wi&amp;ndow enabled</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -725,7 +724,7 @@ in the upper part of the main window.</string>
           <item row="1" column="0">
            <widget class="QLabel" name="weatherWindowPluginLabel">
             <property name="text">
-             <string>Plu&amp;gin:</string>
+             <string>Pl&amp;ugin:</string>
             </property>
             <property name="buddy">
              <cstring>weatherWindowPluginInput</cstring>
@@ -735,7 +734,7 @@ in the upper part of the main window.</string>
           <item row="4" column="0">
            <widget class="QLabel" name="weatherWindowTitleLabel">
             <property name="text">
-             <string>Tit&amp;le:</string>
+             <string>&amp;Title:</string>
             </property>
             <property name="buddy">
              <cstring>weatherWindowTitleInput</cstring>
@@ -752,7 +751,7 @@ in the upper part of the main window.</string>
           <item row="5" column="0">
            <widget class="QLabel" name="weatherWindowIntervalLabel">
             <property name="text">
-             <string>I&amp;nterval:</string>
+             <string>Inter&amp;val:</string>
             </property>
             <property name="buddy">
              <cstring>weatherWindowIntervalInput</cstring>
@@ -788,7 +787,7 @@ in the upper part of the main window.</string>
           <item row="0" column="0" colspan="3">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>The weather window can be opened by double-clicking the weather picture.</string>
+             <string>The weather window can be opened by double-clicking the weather plugin.</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -801,7 +800,7 @@ in the upper part of the main window.</string>
           <item row="3" column="0">
            <widget class="QLabel" name="weatherWindowCommandLabel">
             <property name="text">
-             <string>C&amp;ommand:</string>
+             <string>Comm&amp;and:</string>
             </property>
             <property name="buddy">
              <cstring>weatherWindowCommandInput</cstring>

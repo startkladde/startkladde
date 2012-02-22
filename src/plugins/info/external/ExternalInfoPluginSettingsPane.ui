@@ -35,7 +35,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="nameLabel">
         <property name="text">
-         <string>&amp;Command</string>
+         <string>Co&amp;mmand</string>
         </property>
         <property name="buddy">
          <cstring>commandInput</cstring>
