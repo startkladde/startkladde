@@ -98,7 +98,7 @@
     <string>&amp;Delete</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+L</string>
+    <string>Ctrl+D</string>
    </property>
   </action>
   <action name="actionEdit">

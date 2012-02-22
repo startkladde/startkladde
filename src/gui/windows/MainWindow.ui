@@ -187,14 +187,14 @@
              <item row="0" column="0">
               <widget class="QLabel" name="label">
                <property name="text">
-                <string notr="true">Caption:</string>
+                <string notr="true" extracomment="Placeholder - will be removed">Caption:</string>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
               <widget class="QLabel" name="label_2">
                <property name="text">
-                <string notr="true">Value</string>
+                <string notr="true" extracomment="Placeholder - will be removed">Value</string>
                </property>
               </widget>
              </item>
@@ -566,10 +566,10 @@
   </action>
   <action name="actionDepart">
    <property name="text">
-    <string>De&amp;part (F5)</string>
+    <string>&amp;Depart (F5)</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string>Ctrl+D</string>
    </property>
   </action>
   <action name="actionLand">
@@ -582,10 +582,10 @@
   </action>
   <action name="actionTouchngo">
    <property name="text">
-    <string>&amp;Touch-and-go (F7)</string>
+    <string>Touch-and-&amp;go (F7)</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+U</string>
+    <string>Ctrl+T</string>
    </property>
   </action>
   <action name="actionEdit">
@@ -607,15 +607,15 @@
     <string>Replicate flight (F3)</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+O</string>
+    <string>Ctrl+C</string>
    </property>
   </action>
   <action name="actionDelete">
    <property name="text">
-    <string>&amp;Delete... (F8)</string>
+    <string>Dele&amp;te... (F8)</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+H</string>
+    <string>Del</string>
    </property>
   </action>
   <action name="actionRefreshTable">
@@ -628,7 +628,7 @@
     <string>&amp;Jump to towflight</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+I</string>
+    <string>Ctrl+J</string>
    </property>
   </action>
   <action name="actionRestartPlugins">
@@ -676,6 +676,9 @@
    <property name="text">
     <string>Sort by effective &amp;time</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
   </action>
   <action name="actionSetDisplayDate">
    <property name="text">
@@ -701,31 +704,22 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Always use &amp;current data for new flights</string>
+    <string>Always use &amp;current date for new flights</string>
    </property>
   </action>
   <action name="actionPlaneLogs">
    <property name="text">
     <string>&amp;Plane logbooks</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+B</string>
-   </property>
   </action>
   <action name="actionPilotLogs">
    <property name="text">
     <string>P&amp;ilot logbooks</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+F</string>
-   </property>
   </action>
   <action name="actionLaunchMethodStatistics">
    <property name="text">
     <string>&amp;Launch method overview</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+K</string>
    </property>
   </action>
   <action name="actionEditPlanes">
@@ -733,7 +727,7 @@
     <string>Edit &amp;planes</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+G</string>
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="actionEditPeople">
@@ -741,7 +735,7 @@
     <string>Edit p&amp;eople</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+P</string>
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionRefreshAll">
@@ -808,6 +802,9 @@
    <property name="text">
     <string>Show &amp;virtual keyboard</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+K</string>
+   </property>
   </action>
   <action name="actionTest">
    <property name="text">
@@ -834,6 +831,9 @@
    <property name="text">
     <string>&amp;Show errors</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
   </action>
   <action name="actionResizeColumns">
    <property name="text">
@@ -850,7 +850,7 @@
     <string>&amp;Settings</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+T</string>
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionLaunchMethodPreselection">
