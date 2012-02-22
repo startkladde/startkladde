@@ -550,7 +550,7 @@
   </action>
   <action name="actionShutdown">
    <property name="text">
-    <string>&amp;Shutdown</string>
+    <string>Shut&amp;down</string>
    </property>
   </action>
   <action name="actionNew">
@@ -566,7 +566,7 @@
   </action>
   <action name="actionDepart">
    <property name="text">
-    <string>Dep&amp;art (F5)</string>
+    <string>De&amp;part (F5)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -620,7 +620,7 @@
   </action>
   <action name="actionRefreshTable">
    <property name="text">
-    <string>&amp;Update table</string>
+    <string>&amp;Refresh table</string>
    </property>
   </action>
   <action name="actionJumpToTow">
@@ -633,7 +633,7 @@
   </action>
   <action name="actionRestartPlugins">
    <property name="text">
-    <string>&amp;Restart plugins</string>
+    <string>Restart &amp;plugins</string>
    </property>
   </action>
   <action name="actionHideFinished">
@@ -746,7 +746,7 @@
   </action>
   <action name="actionRefreshAll">
    <property name="text">
-    <string>&amp;Update (F12)</string>
+    <string>&amp;Refresh (F12)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -754,7 +754,7 @@
   </action>
   <action name="actionSegfault">
    <property name="text">
-    <string>Provoke &amp;crash</string>
+    <string>&amp;Crash</string>
    </property>
   </action>
   <action name="actionPingServer">
@@ -855,7 +855,7 @@
   </action>
   <action name="actionLaunchMethodPreselection">
    <property name="text">
-    <string>&amp;Preselect launch method...</string>
+    <string>Preselect launch &amp;method...</string>
    </property>
   </action>
   <action name="actionShowFlights">
