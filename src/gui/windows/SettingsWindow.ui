@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -123,7 +123,7 @@
              <item row="2" column="0">
               <widget class="QLabel" name="mysqlUserLabel">
                <property name="text">
-                <string>&amp;User name</string>
+                <string>&amp;User name:</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlUserInput</cstring>
@@ -160,7 +160,7 @@
              <item row="4" column="0">
               <widget class="QLabel" name="mysqlDatabaseLabel">
                <property name="text">
-                <string>Da&amp;tabase</string>
+                <string>Da&amp;tabase:</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlDatabaseInput</cstring>
@@ -233,7 +233,7 @@
        <item>
         <widget class="QGroupBox" name="dataBox">
          <property name="title">
-          <string>Erfassung</string>
+          <string>General</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
           <item row="0" column="0">
@@ -422,34 +422,28 @@ in the upper part of the main window.</string>
          </property>
          <column>
           <property name="text">
-           <string>Title</string>
+           <string comment="Info plugins table list header">Title</string>
           </property>
           <property name="toolTip">
-           <string>Titel des Plugins; wird im Hauptfenster angezeigt</string>
-          </property>
-          <property name="statusTip">
-           <string>statusTip</string>
-          </property>
-          <property name="whatsThis">
-           <string>whatsThis</string>
+           <string>Title of the plugin; will be displayed in the main window</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Plugin</string>
+           <string comment="Info plugins table list header">Plugin</string>
           </property>
           <property name="toolTip">
-           <string>Plugin-Kommando (mit eventuellen Parametern)</string>
+           <string>Plugin command (with any parameters)</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Active</string>
+           <string comment="Info plugins table list header">Active</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Configuration</string>
+           <string comment="Info plugins table list header">Configuration</string>
           </property>
          </column>
         </widget>
@@ -607,7 +601,7 @@ in the upper part of the main window.</string>
              <string>Height of the weather plugin in pixels</string>
             </property>
             <property name="suffix">
-             <string> pixels</string>
+             <string extracomment="With leading space"> pixels</string>
             </property>
             <property name="maximum">
              <number>65535</number>
@@ -653,7 +647,7 @@ in the upper part of the main window.</string>
              <string>Time between updates of the weather plugin</string>
             </property>
             <property name="suffix">
-             <string> minutes</string>
+             <string extracomment="With leading space"> minutes</string>
             </property>
             <property name="maximum">
              <number>86400</number>
@@ -764,7 +758,7 @@ in the upper part of the main window.</string>
              <string>Time between updates of the picture in the weather window</string>
             </property>
             <property name="suffix">
-             <string> minutes</string>
+             <string extracomment="With leading space"> minutes</string>
             </property>
             <property name="maximum">
              <number>86400</number>
@@ -823,7 +817,7 @@ in the upper part of the main window.</string>
              <item>
               <widget class="QPushButton" name="browseWeatherWindowCommandButton">
                <property name="text">
-                <string>Browse</string>
+                <string>B&amp;rowse</string>
                </property>
               </widget>
              </item>

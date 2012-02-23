@@ -602,7 +602,7 @@ Die Vorauswahl wird beim nächsten Programmstart zurückgesetzt.</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="64"/>
         <source>Local time:</source>
-        <translation type="unfinished">Lokalzeit:</translation>
+        <translation>Lokalzeit:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="71"/>
@@ -612,146 +612,146 @@ Die Vorauswahl wird beim nächsten Programmstart zurückgesetzt.</translation>
         <location filename="../src/gui/windows/MainWindow.ui" line="157"/>
         <location filename="../src/gui/windows/MainWindow.ui" line="164"/>
         <location filename="../src/gui/windows/MainWindow.ui" line="171"/>
-        <location filename="../src/gui/windows/MainWindow.ui" line="795"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="792"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="78"/>
         <source>UTC:</source>
-        <translation type="unfinished">UTC:</translation>
+        <translation>UTC:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="85"/>
         <source>Displayed date:</source>
-        <translation type="unfinished">Anzeigedatum:</translation>
+        <translation>Anzeigedatum:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="92"/>
         <source>Flights airborne:</source>
-        <translation type="unfinished">Flüge in der Luft:</translation>
+        <translation>Flüge in der Luft:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="99"/>
         <source>Flights total:</source>
-        <translation type="unfinished">Flüge insgesamt:</translation>
+        <translation>Flüge gesamt:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="106"/>
         <source>Database connection:</source>
-        <translation type="unfinished">Datenbankverbindung:</translation>
+        <translation>Datenbankverbindung:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="113"/>
         <source>Power supply:</source>
-        <translation type="unfinished">Stromversorgung:</translation>
+        <translation>Stromversorgung:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="284"/>
         <source>Not connected to database</source>
-        <translation type="unfinished">Keine Verbindung zur Datenbank</translation>
+        <translation>Es besteht keine Verbindung zur Datenbank</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="316"/>
-        <location filename="../src/gui/windows/MainWindow.ui" line="819"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="813"/>
         <source>&amp;Connect</source>
-        <translation type="unfinished">&amp;Verbindung aufbauen</translation>
+        <translation>&amp;Verbindung aufbauen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="365"/>
         <source>&amp;Programm</source>
-        <translation type="unfinished">&amp;Programm</translation>
+        <translation>&amp;Programm</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="375"/>
         <source>&amp;Flight</source>
-        <translation type="unfinished">&amp;Flug</translation>
+        <translation>&amp;Flug</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="392"/>
         <source>&amp;View</source>
-        <translation type="unfinished">&amp;Ansicht</translation>
+        <translation>&amp;Ansicht</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="396"/>
         <source>&amp;Flights</source>
-        <translation type="unfinished">&amp;Flüge</translation>
+        <translation>&amp;Flüge</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="407"/>
         <source>&amp;Date</source>
-        <translation type="unfinished">&amp;Datum</translation>
+        <translation>&amp;Datum</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="415"/>
         <source>F&amp;ont</source>
-        <translation type="unfinished">&amp;Schriftart</translation>
+        <translation>&amp;Schriftart</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="433"/>
         <source>&amp;Statistics</source>
-        <translation type="unfinished">&amp;Statistik</translation>
+        <translation>&amp;Statistik</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="441"/>
         <source>&amp;Database</source>
-        <translation type="unfinished">&amp;Datenbank</translation>
+        <translation>&amp;Datenbank</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="456"/>
         <source>De&amp;bug</source>
-        <translation type="unfinished">De&amp;bug</translation>
+        <translation>De&amp;bug</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="464"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Hilfe</translation>
+        <translation>&amp;Hilfe</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="471"/>
         <source>&amp;Translation</source>
-        <translation type="unfinished">Überse&amp;tzung</translation>
+        <translation>Überse&amp;tzung</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="493"/>
         <source>Log</source>
-        <translation type="unfinished">Protokoll</translation>
+        <translation>Protokoll</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="518"/>
         <source>Toolbar</source>
-        <translation type="unfinished">Werkzeugleiste</translation>
+        <translation>Werkzeugleiste</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="540"/>
         <source>Set &amp;time...</source>
-        <translation type="unfinished">Zei&amp;t einstellen...</translation>
+        <translation>&amp;Zeit einstellen...</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="545"/>
         <source>&amp;Exit</source>
-        <translation type="unfinished">B&amp;eenden</translation>
+        <translation>&amp;Beenden</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="548"/>
         <source>Ctrl+Q</source>
         <extracomment>Exit</extracomment>
-        <translation type="unfinished">Ctrl+Q</translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="764"/>
-        <source>&amp;About</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/gui/windows/MainWindow.ui" line="677"/>
+        <source>Sort by effective &amp;time (F9)</source>
+        <translation>Nach effektiver Zeit sor&amp;tieren (F9)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="858"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="849"/>
         <source>Preselect launch &amp;method...</source>
-        <translation>Startart-&amp;Vorauswahl</translation>
+        <translation>Starta&amp;rt-Vorauswahl...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="866"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="857"/>
         <source>Show flight database</source>
-        <translation type="unfinished"></translation>
+        <translation>Flugdatenbank anzeigen</translation>
     </message>
     <message>
         <source>&amp;Shutdown</source>
@@ -760,336 +760,337 @@ Die Vorauswahl wird beim nächsten Programmstart zurückgesetzt.</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="558"/>
         <source>&amp;New flight... (F2)</source>
-        <translation type="unfinished">&amp;Neuer Flug... (F2)</translation>
+        <translation>&amp;Neuer Flug... (F2)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="561"/>
         <source>New flight (F2)</source>
-        <translation type="unfinished">Neuer Flug (F2)</translation>
+        <translation>Neuer Flug (F2)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="564"/>
         <source>Ctrl+N</source>
         <extracomment>New flight</extracomment>
-        <translation type="unfinished">Ctrl+N</translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <source>Dep&amp;art (F5)</source>
         <translation type="obsolete">St&amp;arten (F5)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="853"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="844"/>
         <source>Ctrl+S</source>
         <extracomment>Settings</extracomment>
-        <translation type="unfinished">Ctrl+S</translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="577"/>
         <source>&amp;Land/end (F6)</source>
-        <translation type="unfinished">Landen/Beenden (F6)</translation>
+        <translation>&amp;Landen/Beenden (F6)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="14"/>
         <source>Startkladde</source>
-        <translation type="unfinished">Startkladde</translation>
+        <translation>Startkladde</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="553"/>
         <source>Shut&amp;down</source>
-        <translation type="unfinished">Herunterfahren</translation>
+        <translation>&amp;Herunterfahren</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="569"/>
         <source>&amp;Depart (F5)</source>
-        <translation type="unfinished">Starten</translation>
+        <translation>&amp;Starten</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="572"/>
         <source>Ctrl+D</source>
         <extracomment>Depart</extracomment>
-        <translation type="unfinished">Ctrl+D</translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="580"/>
         <source>Ctrl+L</source>
         <extracomment>Land</extracomment>
-        <translation type="unfinished">Ctrl+L</translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="593"/>
         <source>&amp;Edit... (F4)</source>
-        <translation type="unfinished">Editieren (F4)</translation>
+        <translation>&amp;Editieren... (F4)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="596"/>
         <source>Ctrl+E</source>
         <extracomment>Edit</extracomment>
-        <translation type="unfinished">Ctrl+E</translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="601"/>
         <source>&amp;Replicate... (F3)</source>
-        <translation type="unfinished">Wiederholen... (F3)</translation>
+        <translation>Wiederh&amp;olen... (F3)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="604"/>
         <location filename="../src/gui/windows/MainWindow.ui" line="607"/>
         <source>Replicate flight (F3)</source>
-        <translation type="unfinished">Flug wiederholen (F3)</translation>
+        <translation>Flug wiederholen (F3)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="610"/>
         <source>Ctrl+C</source>
         <extracomment>Replicate</extracomment>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="615"/>
         <source>Dele&amp;te... (F8)</source>
-        <translation type="unfinished">Löschen</translation>
+        <translation>Lösc&amp;hen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="618"/>
         <source>Del</source>
         <extracomment>Delete</extracomment>
-        <translation type="unfinished">Del</translation>
+        <translation>Del</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="623"/>
         <source>&amp;Refresh table</source>
-        <translation type="unfinished">Tabelle aktualisieren</translation>
+        <translation>Tabelle aktualisie&amp;ren</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="631"/>
         <source>Ctrl+J</source>
         <extracomment>Jump to towflight</extracomment>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation>Ctrl+I</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="636"/>
         <source>Restart &amp;plugins</source>
-        <translation type="unfinished">Plugins neu starten</translation>
+        <translation>&amp;Plugins neu starten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="707"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="704"/>
         <source>Always use &amp;current date for new flights</source>
-        <translation type="unfinished">Für neue Flüge immer aktuelles Datum verwenden</translation>
+        <translation>Für neue Flüge immer &amp;aktuelles Datum verwenden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="738"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="735"/>
         <source>Ctrl+O</source>
         <extracomment>Edit people</extracomment>
-        <translation type="unfinished">Ctrl+O</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="628"/>
         <source>&amp;Jump to towflight</source>
-        <translation type="unfinished">Zu Schleppflug springen</translation>
+        <translation>Zu Schleppflug spr&amp;ingen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="647"/>
         <source>&amp;Hide finished flights (F11)</source>
-        <translation type="unfinished">Abgeschlossene Flüge ausblenden (F11)</translation>
+        <translation>Erledigte Flüge ausb&amp;lenden (F11)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="650"/>
         <source>Ctrl+A</source>
         <extracomment>Hide finished flights</extracomment>
-        <translation type="unfinished">Ctrl+A</translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="661"/>
         <source>Always show e&amp;xternal flights</source>
-        <translation type="unfinished">Externe Flüge immer anzeigen</translation>
+        <translation>&amp;Externe Flüge immer anzeigen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="672"/>
         <source>Always show &amp;erroneous flights</source>
-        <translation type="unfinished">Fehlerhafte Flüge immer anzeigen</translation>
+        <translation>&amp;Fehlerhafte Flüge immer anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="677"/>
         <source>Sort by effective &amp;time</source>
-        <translation type="unfinished">Nach effektiver Zeit sortieren</translation>
+        <translation type="obsolete">Nach effektiver Zeit sortieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="685"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="682"/>
         <source>Set &amp;display date... (F10)</source>
-        <translation type="unfinished">Anzeigedatum einstellen... (F10)</translation>
+        <translation>Anzeigedatum &amp;einstellen... (F10)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="696"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="693"/>
         <source>&amp;Update displayed date when creating a flight</source>
-        <translation type="unfinished">Anzeigedatum bei neuem Flug anpassen</translation>
+        <translation>Anzeigedatum bei neuem Flug anpa&amp;ssen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="712"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="709"/>
         <source>&amp;Plane logbooks</source>
-        <translation type="unfinished">&amp;Bordbücher</translation>
+        <translation>&amp;Bordbücher</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="680"/>
         <source>Ctrl+B</source>
         <extracomment>Sort by effective time</extracomment>
-        <translation type="unfinished">Ctrl+B</translation>
+        <translation type="obsolete">Ctrl+B</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="585"/>
         <source>Touch-and-&amp;go (F7)</source>
-        <translation type="unfinished">Zwischenlandung (F7)</translation>
+        <translation>Zwischenland&amp;ung (F7)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="717"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="714"/>
         <source>P&amp;ilot logbooks</source>
-        <translation type="unfinished">Flugbücher</translation>
+        <translation>&amp;Flugbücher</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="722"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="719"/>
         <source>&amp;Launch method overview</source>
-        <translation type="unfinished">Startartübersicht</translation>
+        <translation>Startartstatisti&amp;k</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="743"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="740"/>
         <source>&amp;Refresh (F12)</source>
-        <translation type="unfinished">Aktualisieren (F12)</translation>
+        <translation>&amp;Aktualisieren (F12)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="751"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="748"/>
         <source>&amp;Crash</source>
-        <translation type="unfinished">Programmabsturz hervorrufen</translation>
+        <translation>Ab&amp;sturz provozieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="806"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="761"/>
+        <source>&amp;About Startkladde</source>
+        <translation>&amp;Über Startkladde</translation>
+    </message>
+    <message>
         <source>Ctrl+K</source>
         <extracomment>Show virtual keyboard</extracomment>
-        <translation type="unfinished">Ctrl+K</translation>
+        <translation type="obsolete">Ctrl+K</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="724"/>
+        <source>Edit &amp;planes</source>
+        <translation>&amp;Flugzeuge editieren</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="732"/>
+        <source>Edit p&amp;eople</source>
+        <translation>&amp;Personen editieren</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="727"/>
-        <source>Edit &amp;planes</source>
-        <translation type="unfinished">&amp;Flugzeuge editieren</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="735"/>
-        <source>Edit p&amp;eople</source>
-        <translation type="unfinished">Personen editieren</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="730"/>
         <source>Ctrl+P</source>
         <extracomment>Edit planes</extracomment>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="746"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="743"/>
         <source>Ctrl+R</source>
         <extracomment>Refresh</extracomment>
-        <translation type="unfinished">Ctrl+R</translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="756"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="753"/>
         <source>&amp;Ping Server</source>
-        <translation type="unfinished">Server &amp;pingen</translation>
+        <translation>&amp;Ping server</translation>
     </message>
     <message>
         <source>&amp;Info</source>
         <translation type="obsolete">&amp;Über...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="769"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="766"/>
         <source>&amp;Network diagnostics</source>
-        <translation type="unfinished">Netzwerkdiagnose</translation>
+        <translation>&amp;Netzwerkdiagnose</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="774"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="771"/>
         <source>&amp;Webinterface</source>
-        <translation type="unfinished">Webschnittstelle</translation>
+        <translation>&amp;Webschnittstelle</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="779"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="776"/>
         <source>&amp;Select font</source>
-        <translation type="unfinished">Schriftart auswählen</translation>
+        <translation>Schriftart &amp;auswählen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="781"/>
+        <source>&amp;Increase size</source>
+        <translation>Schrift ver&amp;größern</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="784"/>
-        <source>&amp;Increase size</source>
-        <translation type="unfinished">Schrift vergrößern</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="787"/>
         <source>+</source>
-        <translation type="unfinished">+</translation>
+        <translation>+</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="792"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="789"/>
         <source>&amp;Decrease size</source>
-        <translation type="unfinished">Schrift verkleinern</translation>
+        <translation>Schrift ver&amp;kleinern</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="803"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="800"/>
         <source>Show &amp;virtual keyboard</source>
-        <translation type="unfinished">Bildschirmtastatur anzeigen</translation>
+        <translation>&amp;Bildschirmtastatur anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="811"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="805"/>
         <source>&amp;Test</source>
-        <translation type="unfinished">&amp;Test</translation>
+        <translation>&amp;Test</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="827"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="821"/>
         <source>&amp;Disconnect</source>
-        <translation type="unfinished">Verbindung trennen</translation>
+        <translation>Verbindung &amp;trennen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="832"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="826"/>
         <source>&amp;Show errors</source>
-        <translation type="unfinished">Fehler anzeigen</translation>
+        <translation>&amp;Fehler anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="835"/>
         <source>Ctrl+X</source>
         <extracomment>Show errors</extracomment>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation type="obsolete">Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="840"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="831"/>
         <source>Adjust &amp;column widths</source>
-        <translation type="unfinished">Spaltenbreiten anpassen</translation>
+        <translation>&amp;Spaltenbreiten anpassen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="845"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="836"/>
         <source>Edit &amp;launch methods</source>
-        <translation type="unfinished">Startarten editieren</translation>
+        <translation>&amp;Startarten editieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="850"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="841"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished">Einstellungen</translation>
+        <translation>&amp;Einstellungen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="588"/>
         <source>Ctrl+T</source>
         <extracomment>Touch-and-go</extracomment>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation>Ctrl+U</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="863"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="854"/>
         <source>Show &amp;flight database</source>
-        <translation type="unfinished">Flugdatenbank anzeigen</translation>
+        <translation>Flug&amp;datenbank anzeigen</translation>
     </message>
     <message>
         <source>Flugdatenbank anzeigen</source>
         <translation type="obsolete">Flugdatenbank anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="871"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="862"/>
         <source>&amp;Load</source>
-        <translation type="unfinished">&amp;Laden</translation>
+        <translation>&amp;Laden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="876"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="867"/>
         <source>U&amp;nload</source>
-        <translation type="unfinished">E&amp;ntladen</translation>
+        <translation>E&amp;ntladen</translation>
     </message>
 </context>
 <context>
@@ -1405,437 +1406,460 @@ aktiviert werden.</translation>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="14"/>
         <source>Settings</source>
-        <translation type="unfinished">Einstellungen</translation>
+        <translation>Einstellungen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="36"/>
         <source>&amp;Database</source>
-        <translation type="unfinished">&amp;Datenbank</translation>
+        <translation>&amp;Datenbank</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="77"/>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindung</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="99"/>
         <source>IP address or host name of the database server</source>
-        <translation type="unfinished"></translation>
+        <translation>IP-Adresse oder Hostname des Datenbankservers</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="116"/>
         <source>TCP port of the database server</source>
-        <translation type="unfinished"></translation>
+        <translation>TCP-Port des Datenbankservers</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="126"/>
+        <source>&amp;User name:</source>
+        <translation>Be&amp;nutzername:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="136"/>
         <source>Username for the connection to the database server</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzername für die Verbindung zum Datenbankserver</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="153"/>
         <source>Password for the connection to the database server</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwort für die Verbindung zum Datenbankserver</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="163"/>
+        <source>Da&amp;tabase:</source>
+        <translation>Daten&amp;bank:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="173"/>
         <source>Name of the database on the database server</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der zu verwendenden Datenbank auf dem Datenbankserver</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="193"/>
         <source>If enabled, the default port is used for the database server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="236"/>
-        <source>Erfassung</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn aktiviert, wird der Standard-Datenbank-Port verwendet</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="252"/>
         <source>Name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Flugplatzes, an dem dieses Programm eingesetzt wird (z. B. &quot;Rheinstetten&quot;)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="259"/>
         <source>Check &amp;medicals</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Medicals überprüfen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="266"/>
         <source>If enabled, the name of the towpilot can be entered for flights</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn aktiviert, kann der Name des Schlepppiloten von Flügen eingetragen werden</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="279"/>
         <source>Permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>Berechtigungen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="285"/>
         <source>If enabled, the database password must be entered to modify launch methods</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn aktiviert, muss zum Ändern von Startarten das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="295"/>
         <source>If enabled, the database password must be entered to change settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn aktiviert, muss zum Speichern von Einstellungen das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="320"/>
         <source>The password protection can be removed by deleting
 or editing the configuration file or registry key
 %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Passwortschutz kann durch Löschen bzw. Editieren
+der Konfigurationsdatei bzw. des Registry-Schlüssels
+%1
+aufgehoben werden.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="332"/>
         <source>If enabled, the database password must be entered to merge people</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn aktiviert, muss zum Zusammenfassen von Personen das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="342"/>
         <source>If enabled, the database password must be entered to display the flight database</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn aktiviert, muss zum Ändern von Startarten das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="355"/>
         <source>Diagnostics</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagnose</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="361"/>
         <source>Enables some menu entries for error diagnostics</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviert einige Menüeinträge zur Fehlerdiagnose</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="371"/>
         <source>Command to run when the menu item Help-Network diagnostics is selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommando, das ausgeführt wird, wenn der Menüpunkt Hilfe-&gt;Netzwerkdiagnose ausgeführt wird</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="48"/>
         <source>T&amp;ype:</source>
-        <translation type="unfinished"></translation>
+        <translation>T&amp;yp:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="89"/>
         <source>S&amp;erver:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Server:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="106"/>
         <source>Po&amp;rt:</source>
-        <translation type="unfinished"></translation>
+        <translation>P&amp;ort:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="126"/>
         <source>&amp;User name</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Be&amp;nutzername:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="143"/>
         <source>P&amp;assword:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pa&amp;sswort:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="163"/>
         <source>Da&amp;tabase</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Daten&amp;bank</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="196"/>
         <source>De&amp;fault</source>
-        <translation type="unfinished"></translation>
+        <translation>Standa&amp;rd</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="203"/>
         <source>(default: 3306)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Standard: 3306)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="230"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished">Einstellungen</translation>
+        <translation>&amp;Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="236"/>
+        <source>General</source>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="242"/>
         <source>&amp;Airfield name:</source>
-        <translation type="unfinished"></translation>
+        <translation>O&amp;rt:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="269"/>
         <source>Record &amp;towpilot</source>
-        <translation type="unfinished"></translation>
+        <translation>Schlepppi&amp;lot erfassen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="288"/>
         <source>R&amp;equire password to modify launch method&amp;s</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwort zum Ändern von &amp;Startarten erforderlich</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="298"/>
         <source>&amp;Require password to change settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwort zum Ändern von E&amp;instellungen erforderlich</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="335"/>
         <source>Re&amp;quire password to merge &amp;people</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwort zum Zusammenfassen von &amp;Personen erforderlich</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="345"/>
         <source>Req&amp;uire password to display the &amp;flight database</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwort zum Abrufen der &amp;Flugdatenbank erforderlich</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="364"/>
         <source>Enable de&amp;bugging options</source>
-        <translation type="unfinished"></translation>
+        <translation>Optionen zur Fehlersuche (Debu&amp;gging) aktivieren</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="378"/>
         <source>Command for network dia&amp;gnostics:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ko&amp;mmando für Netzwerkdiagnose:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="405"/>
         <source>&amp;Info plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Info-Plugins</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="411"/>
         <source>The list of info plugins. Info-Plugins are displayed
 in the upper part of the main window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste der Info-Plugins. Die Info-Plugins werden im oberen
+Bereich des Hauptfensters angezeigt.</translation>
+    </message>
+    <message>
+        <source>Titel des Plugins; wird im Hauptfenster angezeigt</source>
+        <translation type="obsolete">Titel des Plugins; wird im Hauptfenster angezeigt</translation>
+    </message>
+    <message>
+        <source>Plugin-Kommando (mit eventuellen Parametern)</source>
+        <translation type="obsolete">Plugin-Kommando (mit eventuellen Parametern)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="479"/>
+        <source>Add info plugin</source>
+        <translation>Info-Plugin dazufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="482"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="917"/>
+        <source>+</source>
+        <translation>+</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="495"/>
+        <source>Removed selected info plugin</source>
+        <translation>Ausgewähltes Info-Plugin entfernen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="498"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="933"/>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="511"/>
+        <source>Move selected info plugin up</source>
+        <translation>Ausgewähltes Info-Plugin nach oben verschieben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="530"/>
+        <source>Move selected info plugin down</source>
+        <translation>Ausgewähltes Info-Plugin nach unten verschieben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="533"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="552"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="968"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="549"/>
+        <source>Settings for selected info plugin</source>
+        <translation>Einstellungen für ausgewähltes Info-Plugin</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="576"/>
+        <source>&amp;Weather plugin</source>
+        <translation>&amp;Wetterplugin</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="582"/>
+        <source>Weather plugin &amp;enabled</source>
+        <translation>We&amp;ttergrafik aktiviert</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="601"/>
+        <source>Height of the weather plugin in pixels</source>
+        <translation>Höhe der Wettergrafik in Pixeln</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="591"/>
+        <source>&amp;Height:</source>
+        <translation>&amp;Höhe:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="425"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <comment>Info plugins table list header</comment>
+        <translation>Titel</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="428"/>
-        <source>Titel des Plugins; wird im Hauptfenster angezeigt</source>
-        <translation type="unfinished"></translation>
+        <source>Title of the plugin; will be displayed in the main window</source>
+        <translation>Titel des Plugins; wird im Hauptfenster angezeigt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="431"/>
-        <source>statusTip</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="434"/>
-        <source>whatsThis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="439"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="433"/>
         <source>Plugin</source>
-        <translation type="unfinished"></translation>
+        <comment>Info plugins table list header</comment>
+        <translation>Plugin</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="442"/>
-        <source>Plugin-Kommando (mit eventuellen Parametern)</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="436"/>
+        <source>Plugin command (with any parameters)</source>
+        <translation>Plugin-Kommando (mit eventuellen Parametern)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="447"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="441"/>
         <source>Active</source>
-        <translation type="unfinished"></translation>
+        <comment>Info plugins table list header</comment>
+        <translation>Aktiviert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="452"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="446"/>
         <source>Configuration</source>
-        <translation type="unfinished"></translation>
+        <comment>Info plugins table list header</comment>
+        <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="485"/>
-        <source>Add info plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="488"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="923"/>
-        <source>+</source>
-        <translation type="unfinished">+</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="501"/>
-        <source>Removed selected info plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="504"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="939"/>
-        <source>-</source>
-        <translation type="unfinished">-</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="517"/>
-        <source>Move selected info plugin up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="536"/>
-        <source>Move selected info plugin down</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="539"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="558"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="974"/>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="555"/>
-        <source>Settings for selected info plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="582"/>
-        <source>&amp;Weather plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="588"/>
-        <source>Weather plugin &amp;enabled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="607"/>
-        <source>Height of the weather plugin in pixels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="597"/>
-        <source>&amp;Height:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="610"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="604"/>
         <source> pixels</source>
-        <translation type="unfinished"></translation>
+        <extracomment>With leading space</extracomment>
+        <translation> Pixel</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="633"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="627"/>
         <source>&amp;Interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inter&amp;vall:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="643"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="637"/>
         <source>P&amp;lugin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pl&amp;ugin:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="653"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="647"/>
         <source>Time between updates of the weather plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitdauer zwischen Aktualisierungen der Wettergrafik</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="682"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="676"/>
         <source>Co&amp;mmand:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kommando:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="705"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="699"/>
         <source>&amp;Browse</source>
-        <translation type="unfinished">&amp;Durchsuchen</translation>
+        <translation>Durch&amp;suchen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="718"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="712"/>
         <source>Weather wi&amp;ndow enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Wetter&amp;fenster aktiviert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="737"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="731"/>
         <source>&amp;Title:</source>
-        <translation type="unfinished">&amp;Titel:</translation>
+        <translation>Tite&amp;l:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="754"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="748"/>
         <source>Inter&amp;val:</source>
-        <translation type="unfinished"></translation>
+        <translation>I&amp;ntervall:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="727"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="721"/>
         <source>Pl&amp;ugin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Plu&amp;gin:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="656"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="767"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="650"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="761"/>
         <source> minutes</source>
-        <translation type="unfinished"> Minuten</translation>
+        <extracomment>With leading space
+----------
+With leading space</extracomment>
+        <translation> Minuten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="698"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="819"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="692"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="813"/>
         <source>The program to execute. Programs in the plugin path can be specified without path.</source>
-        <translation type="unfinished">Das Programm, das ausgeführt wird. Programme im Pluginpfand können ohne Pfad angegeben werden.</translation>
+        <translation>Das Programm, das ausgeführt wird. Programme im Pluginpfand können ohne Pfad angegeben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="790"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="784"/>
         <source>The weather window can be opened by double-clicking the weather plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Wetterfenster wird durch Doppelklick auf die Wettergrafik geöffnet.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="803"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="797"/>
         <source>Comm&amp;and:</source>
-        <translation type="unfinished"></translation>
+        <translation>K&amp;ommando:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="826"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Durchsuc&amp;hen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="747"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="741"/>
         <source>Title of the weather window</source>
-        <translation type="unfinished"></translation>
+        <translation>Titel des Wetterfensters</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="764"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="758"/>
         <source>Time between updates of the picture in the weather window</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitdauer zwischen Aktualisierungen der Grafik im Wetterfenster</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="820"/>
+        <source>B&amp;rowse</source>
+        <translation>Durchsuc&amp;hen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="847"/>
+        <source>&amp;Plugin path</source>
+        <translation>Plugin-&amp;Pfad</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="853"/>
-        <source>&amp;Plugin path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="859"/>
         <source>Directories to look for plugins in (in the order given).
 Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to the current directory (e. g. .startkladde/plugins).</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzeichnisse, in denen Plugins (in der angegebenen Reihenfolge) gesucht werden.
+Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder relativ zum aktuellen Verzeichnis (z. B. .startkladde/plugins) angegeben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="876"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="870"/>
         <source>Directories to look for plugins in</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzeichnisse, in denen Plugins gesucht werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="920"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="914"/>
         <source>Add plugin path</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin-Pfad dazufügen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="936"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="930"/>
         <source>Remove selected plugin path</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählten Plugin-Pfad entfernen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="952"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="946"/>
         <source>Move selected plugin path up</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählten Plugin-Pfad nach oben verschieben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="971"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="965"/>
         <source>Move selected plugin path down</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählten Plugin-Pfad nach unten verschieben</translation>
     </message>
 </context>
 <context>
