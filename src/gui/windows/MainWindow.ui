@@ -761,7 +761,7 @@
   </action>
   <action name="actionInfo">
    <property name="text">
-    <string>&amp;Info</string>
+    <string>&amp;About</string>
    </property>
   </action>
   <action name="actionNetworkDiagnostics">
@@ -863,7 +863,7 @@
     <string>Show &amp;flight database</string>
    </property>
    <property name="toolTip">
-    <string>Flugdatenbank anzeigen</string>
+    <string>Show flight database</string>
    </property>
   </action>
   <action name="loadTranslationAction">

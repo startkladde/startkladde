@@ -131,7 +131,7 @@ when creating a new flight</string>
         <property name="toolTip">
          <string>The global medical check option is disabled. For
 medicals to be checked, enable the option
-&quot;Check medicals&quot; in the program settings</string>
+&quot;Check medicals&quot; in the program settings.</string>
         </property>
         <property name="text">
          <string>...</string>

@@ -72,7 +72,7 @@ if the file is located in the plugin path or in the system path.</string>
      <item row="2" column="1">
       <widget class="SkLabel" name="filenameLabel">
        <property name="toolTip">
-        <string>Der vollständige Name der Datendatei</string>
+        <string>The complete name of the data file</string>
        </property>
        <property name="text">
         <string>-</string>
@@ -89,7 +89,7 @@ if the file is located in the plugin path or in the system path.</string>
      <item row="3" column="1">
       <widget class="QLabel" name="sourceLabel">
        <property name="toolTip">
-        <string>Die Quelle für die Daten laut Datendatei</string>
+        <string>The source of the data, according to the data file</string>
        </property>
        <property name="text">
         <string>unknown</string>
@@ -106,7 +106,7 @@ if the file is located in the plugin path or in the system path.</string>
      <item row="4" column="1">
       <widget class="QLabel" name="referenceLongitudeLabel">
        <property name="toolTip">
-        <string>Der Längengrad, für den die Zeiten der Datei gelten</string>
+        <string>The longitude for which the times in the file are valid</string>
        </property>
        <property name="text">
         <string>unknown</string>
