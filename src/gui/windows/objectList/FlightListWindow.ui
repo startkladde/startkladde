@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>716</width>
+    <width>800</width>
     <height>600</height>
    </rect>
   </property>
@@ -70,7 +70,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>716</width>
+     <width>800</width>
      <height>21</height>
     </rect>
    </property>
@@ -84,8 +84,8 @@
     <property name="title">
      <string>&amp;Flights</string>
     </property>
-    <addaction name="actionSelectDate"/>
     <addaction name="actionRefresh"/>
+    <addaction name="actionSelectDate"/>
     <addaction name="separator"/>
     <addaction name="actionExport"/>
    </widget>
@@ -118,7 +118,7 @@
   </action>
   <action name="actionRefresh">
    <property name="text">
-    <string>&amp;Update</string>
+    <string>&amp;Refresh</string>
    </property>
    <property name="shortcut">
     <string extracomment="Refresh">Ctrl+R</string>

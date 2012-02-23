@@ -68,17 +68,16 @@
     <property name="title">
      <string>&amp;Object</string>
     </property>
+    <addaction name="actionRefresh"/>
+    <addaction name="separator"/>
     <addaction name="actionNew"/>
-    <addaction name="separator"/>
-    <addaction name="actionDelete"/>
     <addaction name="actionEdit"/>
-    <addaction name="separator"/>
+    <addaction name="actionDelete"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
      <string>&amp;Window</string>
     </property>
-    <addaction name="actionRefresh"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
    </widget>
