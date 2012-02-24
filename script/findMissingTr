@@ -1,0 +1,118 @@
+#!/usr/bin/env ruby
+
+def accept_part(part)
+	# Only consider parts that contain a quote
+	return false unless part =~ /"/
+
+	# This part contains a quoted string. Return true unless it is preceded by
+	# one of the tr functions - tr, notr and qnotr - after a non-word character
+	# (so it doesn't match fauxtr)
+	return false if part =~ /[^\w](tr|notr|qnotr)\s*\("/
+
+	true
+end
+
+# This may have false positives, but it should not have false negatives (i. e.
+# it should accept all lines that have a missing tr)
+def accept(line)
+	# Remove comments
+	line.gsub!(/\/\/.*/, '')
+
+	# Don't consider includes (only at the beginning of the line, optionally indendet)
+	return false if line =~ /^\s*#include/
+
+	# Split the line into multiple parts, each containing everything up to and
+	# including a maximum of one string
+	# any number of non-quotes, a quote, any number of non-quotes, a quote.
+	# Group everything, we're interested in the RE, not the parts delimited by it
+	re=/([^"]*"[^"]*")/
+	parts=line.split(re)
+	parts.each { |part|
+		return true if accept_part(part)
+	}
+
+	false
+end
+
+def perform_tests
+	test_lines=[
+		# Simple cases
+		['foo ();'                        , false], # No quoted text
+		['a="moo"'                        , true ], # Quoted text
+
+		# With comments
+		['foo ();  // A "commented" string'     , false], # Quoted text in comment
+		['a="moo"; // A comment'                , true ], # Quoted text and comment
+		['a="moo"; // A "commented" string'     , true ], # Quoted text and quoted text in comment
+		['a="moo", 2/3; // A "commented" string', true ], # Quoted text and quoted text in comment
+
+		# With include
+		['#include "foo.h"'               , false], # Regular include
+		['    #include "foo.h"'           , false], # Indented include
+		['foo (); // #include "foo.h"'    , false], # No quote, include in comment
+		['a="moo"; // #include "foo.h"'   , true ], # Quoted text, #include in comment
+
+		# With tr
+		['foo=tr ("moo");'                , false],
+		['foo=tr("moo");'                 , false],
+		['foo=notr("moo");'               , false],
+		['foo=qnotr("moo");'              , false],
+		['foo=fauxtr ("moo");'            , true ],
+		['foo=fauxtr("moo");'             , true ],
+
+		# With multiple strings
+		['foo (tr ("moo"), tr ("bert"));' , false ],
+		['foo (("moo"), tr ("bert"));'    , true  ],
+		['foo (tr ("moo"), ("bert"));'    , true  ],
+		['foo (tr (42), ("bert"));'       , true  ], # This tr may not be associated with that string
+
+		['', false] # empty line
+	]
+
+	def pad(length, string)
+		string=string.to_s unless string.is_a?(String)
+		string+(" "*(length-string.length))
+	end
+
+	def maxlen(strings)
+		strings.map { |string| string.length }.max	
+	end
+
+	len=maxlen(test_lines.map { |test_line| test_line[0] })
+
+	test_lines.each { |test_line|
+		string=test_line[0]
+		expected=test_line[1]
+		actual=accept(string.dup)
+
+		if actual==expected
+			result="OK"
+		elsif expected==true
+			result="false negative!"
+		else
+			result="failure"
+		end
+
+		puts "#{pad(len, string)} - expected #{pad(5,expected)}, actual #{pad(5,actual)} - #{result}"
+	}
+end
+
+def process_files(files)
+	files.each { |file|
+		line_number=0
+		File.foreach(file) { |line|
+			line_number+=1
+			if accept(line)
+				puts "#{file}:#{line_number} #{line}"
+			end
+		}
+		
+	}
+end
+
+if ARGV==['-t']
+	perform_tests
+else
+	process_files ARGV
+end
+
