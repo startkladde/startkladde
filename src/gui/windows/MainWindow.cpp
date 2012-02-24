@@ -510,7 +510,7 @@ void MainWindow::settingsChanged ()
 
 	// Fenstereinstellungen
 	if (isBlank (s.location))
-		setWindowTitle ("Startkladde");
+		setWindowTitle (tr ("Startkladde"));
 	else
 		setWindowTitle (tr ("Flight log %1 - Startkladde").arg (s.location));
 
@@ -550,7 +550,7 @@ void MainWindow::refreshFlights ()
 		flights += dbManager.getCache ().getPreparedFlights ().getList ();
 
 		ui.displayDateLabel->resetDefaultForegroundColor ();
-		ui.displayDateLabel->setText (utf8 ("Today (%1)").arg (today.toString (Qt::DefaultLocaleShortDate)));
+		ui.displayDateLabel->setText (tr ("Today (%1)").arg (today.toString (Qt::DefaultLocaleShortDate)));
 
 		proxyModel->setShowPreparedFlights (true);
 	}
@@ -690,12 +690,12 @@ void MainWindow::flightListChanged ()
 	if (databaseActionsEnabled && displayDate == QDate::currentDate ())
 		ui.activeFlightsLabel->setNumber (Flight::countFlying (flights));
 	else
-		ui.activeFlightsLabel->setText ("-");
+		ui.activeFlightsLabel->setText (notr ("-"));
 
 	if (databaseActionsEnabled)
 		ui.totalFlightsLabel->setNumber (Flight::countHappened (flights));
 	else
-		ui.totalFlightsLabel->setText ("-");
+		ui.totalFlightsLabel->setText (notr ("-"));
 }
 
 // *************************
@@ -771,9 +771,9 @@ void MainWindow::departFlight (dbId id)
 
 			// *** Check for planes flying
 			// Plane
-			if (!checkPlaneFlying (flight.getPlaneId (), tr ("Plane"))) return;
+			if (!checkPlaneFlying (flight.getPlaneId (), tr ("plane"))) return;
 			if (isAirtow)
-				if (!checkPlaneFlying (flight.effectiveTowplaneId (cache), tr ("Towplane"))) return;
+				if (!checkPlaneFlying (flight.effectiveTowplaneId (cache), tr ("towplane"))) return;
 
 			// *** Check for people flying
 			// Pilot
@@ -1029,10 +1029,10 @@ void MainWindow::on_actionDelete_triggered ()
 	// TODO display message
 	return;
 
-	if (!yesNoQuestion (this, utf8 ("Flug löschen?"), utf8 ("Flug wirklich löschen?"))) return;
+	if (!yesNoQuestion (this, tr ("Delete flight?"), tr ("Really delete flight?"))) return;
 
-	if (isTowflight) if (!yesNoQuestion (this, utf8 ("Geschleppten Flug löschen?"),
-			utf8 ("Der gewählte Flug ist ein Schleppflug. Soll der dazu gehörige geschleppte Flug wirklich gelöscht werden?"))) return;
+	if (isTowflight) if (!yesNoQuestion (this, tr ("Delete glider flight?"),
+			tr ("The selected flight is a towflight. Really delete the corresponding glider flight?"))) return;
 
 	try
 	{
@@ -1059,7 +1059,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 
 	if (idInvalid (id))
 	{
-		showWarning (utf8 ("Kein Flug ausgewählt"), utf8 ("Es ist kein Flug ausgewählt"), this);
+		showWarning (tr ("No flight selected"), tr ("No flight is selected."), this);
 		return;
 	}
 
@@ -1104,12 +1104,20 @@ void MainWindow::on_actionDisplayError_triggered ()
 		delete towplane;
 		delete launchMethod;
 
-		QString flightText (isTowflight?"Schleppflug":"Flug");
-
 		if (error)
-			showWarning (QString ("%1 fehlerhaft").arg (flightText), QString ("Erster Fehler des %1s: %2").arg (flightText, errorText), this);
+		{
+			if (isTowflight)
+				showWarning (tr ("Towflight has errors"), tr ("First error of the towflight: %1").arg (errorText), this);
+			else
+				showWarning (tr ("Flight has errors"), tr ("First error of the flight: %1").arg (errorText), this);
+		}
 		else
-			showWarning (QString ("%1 fehlerfrei").arg (flightText), QString ("Der %1 ist fehlerfrei.").arg (flightText), this);
+		{
+			if (isTowflight)
+				showWarning (tr ("Towflight has no errors"), tr ("The towflight has no errors."), this);
+			else
+				showWarning (tr ("Flight has no errors"), tr ("The flight has no errors."), this);
+		}
 	}
 	catch (Cache::NotFoundException &ex)
 	{
@@ -1169,22 +1177,22 @@ void MainWindow::on_actionShowVirtualKeyboard_triggered (bool checked)
 		// stderr. If it fails, it will be run again.
 		// Note that without --print-reply, it doesn't seem to work
 		//int result = system ("dcop kvkbd kvkbd show >/dev/null 2>/dev/null");
-		int result=system ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:true >/dev/null");
+		int result=system (notr ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:true >/dev/null"));
 		if (result != 0)
 		{
 			// failed to show; try launch
-			if (system ("kvkbd >/dev/null")==0)
+			if (system (notr ("kvkbd >/dev/null"))==0)
 			{
 				//system ("dcop kvkbd kvkbd show >/dev/null");
-				if (system ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:true  >/dev/null")!=0)
-					showWarning ("DBus-Aufruf fehlgeschlagen",
-						"Der Aufruf von dbus-send zum Anzeigen der Bildschirmtastatur ist fehlgeschlagen.",
+				if (system (notr ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:true  >/dev/null"))!=0)
+					showWarning (tr ("DBus call failed"),
+						tr ("The call to dbus-send for displaying the virtual keyboard failed."),
 						this);
 			}
 			else
 			{
-				showWarning ("Bildschirmtastatur konnte nicht angezeigt werden",
-					utf8 ("Die Bildschirmtastatur konnte nicht angezeigt werden. Möglicherweise is kvkbd nicht installiert."),
+				showWarning (tr ("Unable to display virtual keyboard"),
+					tr ("The virtual keyboard could not be displayed. Maybe kvkbd is not installed."),
 					this);
 			}
 
@@ -1193,9 +1201,9 @@ void MainWindow::on_actionShowVirtualKeyboard_triggered (bool checked)
 	else
 	{
 		//system ("/usr/bin/dcop kvkbd kvkbd hide >/dev/null");
-		if (system ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:false >/dev/null")!=0)
-			showWarning ("DBus-Aufruf fehlgeschlagen",
-				"Der Aufruf von dbus-send zum Ausblenden der Bildschirmtastatur ist fehlgeschlagen.",
+		if (system (notr ("dbus-send --print-reply --dest='org.kde.kvkbd' /Kvkbd org.freedesktop.DBus.Properties.Set string:org.kde.kvkbd.Kvkbd string:visible variant:boolean:false >/dev/null"))!=0)
+			showWarning (tr ("DBus call failed"),
+				tr ("The call to dbus-send for hiding the virtual keyboard failed."),
 				this);
 
 	}
@@ -1224,7 +1232,7 @@ void MainWindow::on_actionJumpToTow_triggered ()
 
 	if (!currentIndex.isValid ())
 	{
-		showWarning (utf8 ("Kein Flug ausgewählt"), utf8 ("Es ist kein Flug ausgewählt."), this);
+		showWarning (tr ("No flight selected"), tr ("No flight is selected."), this);
 		return;
 	}
 
@@ -1232,10 +1240,11 @@ void MainWindow::on_actionJumpToTow_triggered ()
 	// correspond to those of its source, the FlightProxyList.
 	int towref=proxyList->findTowref (currentIndex.row ());
 
+	// TODO better error message
 	if (towref<0)
 	{
-		QString text=utf8 ("Entweder der gewählte Flug ist weder ein geschleppter Flug noch ein Schleppflug, oder er ist noch nicht gestartet.");
-		showWarning (utf8 ("Kein Schleppflug"), text, this);
+		QString text=tr ("Either the selected flight is neither a towflight nor a towed flight, or it has not departed yet.");
+		showWarning (tr ("No towflight"), text, this);
 		return;
 	}
 
@@ -1278,8 +1287,8 @@ void MainWindow::on_actionNetworkDiagnostics_triggered ()
 
 	// TODO: use QProcess and make sure it's in the background
 	if (system (command.toUtf8 ().constData ())!=0)
-		showWarning (utf8 ("Fehler"),
-			utf8 ("Beim Ausführen der Netzwerkdiagnose ist ein Fehler aufgetreten."), this);
+		showWarning (tr ("Error"),
+			tr ("An error occured while executing the network diagnostics command."), this);
 }
 
 // ************
@@ -1376,7 +1385,7 @@ void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
 {
 	if (!proxyIndex.isValid ())
 	{
-		log_error ("A button with invalid persistent index was clicked in MainWindow::flightTable_buttonClicked");
+		log_error (notr ("A button with invalid persistent index was clicked in MainWindow::flightTable_buttonClicked"));
 		return;
 	}
 
@@ -1399,7 +1408,7 @@ void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
 			landFlight (flight.getId ());
 	}
 	else
-		std::cerr << "Unhandled button column in MainWindow::flightTable_buttonClicked" << std::endl;
+		std::cerr << notr ("Unhandled button column in MainWindow::flightTable_buttonClicked") << std::endl;
 }
 
 QString formatDateTime (const QDateTime &dateTime)
@@ -1409,7 +1418,7 @@ QString formatDateTime (const QDateTime &dateTime)
 	// zone, which will be reported as the local time zone even for UTC time,
 	// since QTime doesn't know about time zones.
 
-	return dateTime.date ().toString (Qt::DefaultLocaleShortDate)+" "+
+	return dateTime.date ().toString (Qt::DefaultLocaleShortDate)+notr (" ")+
 		dateTime.time ().toString (Qt::TextDate);
 }
 
@@ -1563,7 +1572,7 @@ void MainWindow::setDisplayDate (QDate newDisplayDate, bool force)
 void MainWindow::on_actionSetDisplayDate_triggered ()
 {
 	QDate newDisplayDate = displayDate;
-	if (DateInputDialog::editDate (&newDisplayDate, "Anzeigedatum einstellen", "Anzeigedatum:", this))
+	if (DateInputDialog::editDate (&newDisplayDate, tr ("Set display date"), tr ("Display date:"), this))
 		setDisplayDate (newDisplayDate, true);
 }
 
@@ -1578,7 +1587,7 @@ void MainWindow::on_actionPlaneLogs_triggered ()
 	flights+=Flight::makeTowflights (flights, dbManager.getCache ());
 
 	PlaneLog *planeLog = PlaneLog::createNew (flights, dbManager.getCache ());
-	StatisticsWindow::display (planeLog, true, utf8 ("Bordbücher"), this);
+	StatisticsWindow::display (planeLog, true, tr ("Plane logbooks"), this);
 }
 
 void MainWindow::on_actionPilotLogs_triggered ()
@@ -1591,13 +1600,13 @@ void MainWindow::on_actionPilotLogs_triggered ()
 	PilotLog *pilotLog = PilotLog::createNew (flights, dbManager.getCache ());
 
 	// Display the pilots' log
-	StatisticsWindow::display (pilotLog, true, utf8 ("Flugbücher"), this);
+	StatisticsWindow::display (pilotLog, true, tr ("Pilot logbooks"), this);
 }
 
 void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 {
 	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (proxyList->getList (), dbManager.getCache ());
-	StatisticsWindow::display (stats, true, "Startartstatistik", this);
+	StatisticsWindow::display (stats, true, tr ("Launch method overview"), this);
 }
 
 // **************
@@ -1639,7 +1648,7 @@ void MainWindow::on_actionShowFlights_triggered ()
 	if (Settings::instance ().protectFlightDatabase)
 	{
 		QString password=Settings::instance ().databaseInfo.password;
-		QString message="Zum Anzeigen der Flugdatenbank ist das Datenbankpasswort erforderlich.";
+		QString message=tr ("The database password is required to display the flight database.");
 
 		if (!verifyPassword (this, password, message))
 			return;
@@ -1660,7 +1669,7 @@ void MainWindow::databaseError (int number, QString message)
 	else
 	{
 		logMessage (message);
-		statusBar ()->showMessage (utf8 ("Datenbank: %2 (%1)").arg (number).arg (message), 2000);
+		statusBar ()->showMessage (tr ("Database: %2 (%1)").arg (number).arg (message), 2000);
 	}
 }
 
@@ -1673,7 +1682,7 @@ void MainWindow::cacheChanged (DbEvent event)
 {
 	assert (isGuiThread ());
 
-	std::cout << "MainWindow: "<< event.toString () << std::endl;
+	std::cout << notr ("MainWindow: ") << event.toString () << std::endl;
 
 	try
 	{
@@ -1732,7 +1741,7 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 	{
 		case DbManager::stateDisconnected:
 			ui.databaseStateLabel->resetDefaultForegroundColor ();
-			ui.databaseStateLabel->setText ("Getrennt");
+			ui.databaseStateLabel->setText (tr ("Not connected"));
 
 			ui.flightTable->setVisible (false);
 			ui.notConnectedPane->setVisible (true);
@@ -1742,7 +1751,7 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 
 			break;
 		case DbManager::stateConnecting:
-			databaseOkText="Verbindung wird aufgebaut...";
+			databaseOkText=tr ("Connecting...");
 			ui.databaseStateLabel->resetDefaultForegroundColor ();
 			ui.databaseStateLabel->setText (databaseOkText);
 
@@ -1754,7 +1763,7 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 
 			break;
 		case DbManager::stateConnected:
-			databaseOkText="OK";
+			databaseOkText=tr ("OK");
 			ui.databaseStateLabel->resetDefaultForegroundColor ();
 			ui.databaseStateLabel->setText (databaseOkText);
 
@@ -1779,7 +1788,7 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 void MainWindow::readTimeout ()
 {
 	ui.databaseStateLabel->setPaletteForegroundColor (Qt::red);
-	ui.databaseStateLabel->setText ("Keine Antwort");
+	ui.databaseStateLabel->setText (tr ("No reply"));
 }
 
 void MainWindow::readResumed ()
@@ -1848,12 +1857,12 @@ void MainWindow::on_actionSettings_triggered ()
 	// Check if the database changed
 	if (dbManager.getState ()==DbManager::stateConnected && w.databaseSettingsChanged)
 	{
-		QString title=utf8 ("Datenbankeinstellungen geändert");
+		QString title=tr ("Database settings changed");
 
-		QString text=utf8 (
-			"Die Datenbankeinstellungen wurden geändert." /*utf8*/
-			" Die Änderungen werden beim nächsten Verbindungsaufbau wirksam." /*utf8*/
-			" Soll die Verbindung jetzt neu aufgebaut werden?");
+		QString text=tr (
+			"The database settings were changed."
+			" The changes will be effective on the next reconnect."
+			" Do you want to reconnect now?");
 
 		if (yesNoQuestion (this, title, text))
 		{
@@ -1872,29 +1881,28 @@ void MainWindow::on_actionSetTime_triggered ()
 	QTime time = oldDateTime.time ();
 
 
-	if (DateTimeInputDialog::editDateTime (this, &date, &time, "Systemdatum einstellen"))
+	if (DateTimeInputDialog::editDateTime (this, &date, &time, tr ("Set system time")))
 	{
-		QString timeString=QString ("%1-%2-%3 %4:%5:%6")
+		QString timeString=QString (notr ("%1-%2-%3 %4:%5:%6"))
 			.arg (date.year ()).arg (date.month ()).arg (date.day ())
 			.arg (time.hour ()).arg (time.minute ()).arg (time.second ());
 
-		// sudo -n: non-interactive (don't propmt for password)
+		// sudo -n: non-interactive (don't prompt for password)
 		// sudoers entry: deffi ALL=NOPASSWD: /bin/date
 
-		int result=QProcess::execute ("sudo", QStringList () << "-n" << "date" << "-s" << timeString);
+		int result=QProcess::execute (notr ("sudo"), QStringList () << notr ("-n") << notr ("date") << notr ("-s") << timeString);
 
 		if (result==0)
 		{
-			showWarning (utf8 ("Systemzeit geändert"),
-				utf8 ("Die Systemzeit wurde geändert. Gegebenenfalls"
-				" wird die Änderung erst beim nächsten Herunterfahren" /*utf8*/
-				" dauerhaft gespeichert."), this);
+			showWarning (tr ("System time changed"),
+				tr ("The system time was changed. The setting"
+				" may only be stored permanently when the system is shut down."), this);
 		}
 		else
 		{
-			showWarning (utf8 ("Fehler"),
-				utf8 ("Die Änderung der Systemzeit ist fehlgeschlagen."
-				" Möglicherweise sind die Berechtigungen nicht ausreichend."), /*utf8*/
+			showWarning (tr ("Error"),
+				tr ("Changing the system time failed."
+				" Maybe the user has insufficient permissions."),
 				this);
 		}
 	}
@@ -1909,7 +1917,7 @@ void MainWindow::logMessage (QString message)
 {
 	QString timeString = QTime::currentTime ().toString ();
 
-	ui.logWidget->append (QString ("[%1] %2").arg (timeString).arg (message));
+	ui.logWidget->append (qnotr ("[%1] %2").arg (timeString).arg (message));
 
 	// Scroll the log widget to the bottom. Note that ensurecursorVisible
 	// may scroll to the bottom right, which is undesirable.
@@ -1919,12 +1927,12 @@ void MainWindow::logMessage (QString message)
 
 void MainWindow::on_loadTranslationAction_triggered ()
 {
-	translator->load ("translations/startkladde_de");
+	translator->load (notr ("translations/startkladde_de"));
 }
 
 void MainWindow::on_unloadTranslationAction_triggered ()
 {
-	translator->load ("");
+	translator->load (notr (""));
 }
 
 void MainWindow::changeEvent (QEvent *event)
