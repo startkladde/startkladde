@@ -30,6 +30,7 @@
 // TODO many dependencies - split
 #include "src/concurrent/threadUtil.h"
 #include "src/config/Settings.h"
+#include "src/notr.h"
 #include "src/gui/widgets/WeatherWidget.h"
 #include "src/gui/windows/input/DateInputDialog.h"
 #include "src/gui/windows/input/DateTimeInputDialog.h"
@@ -132,7 +133,7 @@ MainWindow::MainWindow (QWidget *parent, QTranslator *translator):
 
 	// Menu bar
 	QAction *logAction = ui.logDockWidget->toggleViewAction ();
-	logAction->setText ("Protoko&ll anzeigen");
+	logAction->setText (tr ("Show &log"));
 	ui.menuDatabase->addSeparator ();
 	ui.menuDatabase->addAction (logAction);
 
@@ -148,14 +149,14 @@ MainWindow::MainWindow (QWidget *parent, QTranslator *translator):
 	bool virtualKeyboardEnabled=false;
 #else
 	bool virtualKeyboardEnabled = (
-		system ("which kvkbd >/dev/null") == 0 &&
-		system ("which dbus-send >/dev/null") == 0);
+		system (notr ("which kvkbd >/dev/null")) == 0 &&
+		system (notr ("which dbus-send >/dev/null")) == 0);
 		//system ("which dcop >/dev/null") == 0);
 #endif
 
 	ui.actionShowVirtualKeyboard->setVisible (virtualKeyboardEnabled);
 //	ui.actionShowVirtualKeyboard->setIcon (QIcon ((const QPixmap&)QPixmap (kvkbd)));
-	ui.actionShowVirtualKeyboard->setIcon (QIcon (":/graphics/kvkbd.png"));
+	ui.actionShowVirtualKeyboard->setIcon (QIcon (notr (":/graphics/kvkbd.png")));
 
 	// Log
 	ui.logWidget->document ()->setMaximumBlockCount (100);
@@ -234,7 +235,7 @@ void MainWindow::setupLabels ()
 			SkLabel *label = dynamic_cast<SkLabel *> (object);
 			if (label)
 			{
-				if (label->objectName ().contains ("Caption", Qt::CaseSensitive))
+				if (label->objectName ().contains (notr ("Caption"), Qt::CaseSensitive))
 					label->setPaletteBackgroundColor (QColor (0, 255, 127));
 				else
 					label->setPaletteBackgroundColor (QColor (0, 127, 255));
@@ -291,14 +292,15 @@ void MainWindow::setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout)
 {
 	connect (this, SIGNAL (minuteChanged ()), plugin, SLOT (minuteChanged ()));
 
-	SkLabel *captionLabel = new SkLabel ("", ui.pluginPane);
-	SkLabel *valueLabel = new SkLabel ("...", ui.pluginPane);
+	SkLabel *captionLabel = new SkLabel (notr (""), ui.pluginPane);
+	SkLabel *valueLabel = new SkLabel (notr ("..."), ui.pluginPane);
 
 	captionLabel->setText (plugin->getCaption ());
 
 	valueLabel->setWordWrap (true);
-	valueLabel->setToolTip (QString ("%1\nKonfiguration: %2").arg (plugin->getDescription (), plugin->configText ()));
-	captionLabel->setToolTip (valueLabel->toolTip ());
+	QString toolTip=tr ("%1\nConfiguration: %2").arg (plugin->getDescription (), plugin->configText ());
+	valueLabel->setToolTip (toolTip);
+	captionLabel->setToolTip (toolTip);
 
 	int row = pluginLayout->rowCount ();
 	pluginLayout->addWidget (captionLabel, row, 0, Qt::AlignTop);
@@ -373,7 +375,7 @@ void MainWindow::setupPlugins ()
 		weatherWidget = new WeatherWidget (ui.weatherFrame);
 		ui.weatherFrame->layout ()->addWidget (weatherWidget);
 		weatherWidget->setFixedSize (s.weatherPluginHeight, s.weatherPluginHeight);
-		weatherWidget->setText ("Wetter");
+		weatherWidget->setText (tr ("Weather"));
 
 		weatherPlugin->enableRefresh (s.weatherPluginInterval);
 		connect (weatherPlugin, SIGNAL (textOutput (const QString &, Qt::TextFormat)), weatherWidget, SLOT (setText (const QString &, Qt::TextFormat)));
@@ -427,18 +429,18 @@ bool MainWindow::confirmAndExit (int returnCode, QString title, QString text)
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
-	if (!confirmAndExit (0, "Wirklich beenden?", "Programm wirklich beenden?"))
+	if (!confirmAndExit (0, tr ("Really exit?"), tr ("Really exit the program?")))
 		event->ignore ();
 }
 
 void MainWindow::on_actionQuit_triggered ()
 {
-	confirmAndExit (0, "Wirklich beenden?", "Programm wirklich beenden?");
+	confirmAndExit (0, tr ("Really exit?"), tr ("Really exit the program?"));
 }
 
 void MainWindow::on_actionShutdown_triggered ()
 {
-	confirmAndExit (69, "Wirklich herunterfahren?", "Rechner wirklich herunterfahren?");
+	confirmAndExit (69, tr ("Really shut down?"), tr ("Really shut down the computer?"));
 }
 
 // **************
@@ -449,17 +451,17 @@ void MainWindow::writeSettings ()
 {
 	QSettings settings;
 
-	settings.beginGroup ("gui");
+	settings.beginGroup (notr ("gui"));
 
 	if (fontSet)
 	{
-		settings.beginGroup ("fonts");
+		settings.beginGroup (notr ("fonts"));
 		QFont font = QApplication::font ();
-		settings.setValue ("font", font.toString ());
+		settings.setValue (notr ("font"), font.toString ());
 		settings.endGroup ();
 	}
 
-	settings.beginGroup ("flightTable");
+	settings.beginGroup (notr ("flightTable"));
 	ui.flightTable->writeColumnWidths (settings, *flightModel);
 	settings.endGroup ();
 
@@ -472,8 +474,8 @@ void MainWindow::readColumnWidths ()
 {
 	QSettings settings;
 
-	settings.beginGroup ("gui");
-    settings.beginGroup ("flightTable");
+	settings.beginGroup (notr ("gui"));
+    settings.beginGroup (notr ("flightTable"));
     ui.flightTable->readColumnWidths (settings, *flightModel);
     settings.endGroup ();
     settings.endGroup ();
@@ -483,12 +485,12 @@ void MainWindow::readSettings ()
 {
 	QSettings settings;
 
-	settings.beginGroup ("gui");
-	settings.beginGroup ("fonts");
+	settings.beginGroup (notr ("gui"));
+	settings.beginGroup (notr ("fonts"));
 
-	if (settings.contains ("font"))
+	if (settings.contains (notr ("font")))
 	{
-		QString fontDescription = settings.value ("font").toString ();
+		QString fontDescription = settings.value (notr ("font")).toString ();
 		QFont font;
 		if (font.fromString (fontDescription))
 		{
@@ -510,7 +512,7 @@ void MainWindow::settingsChanged ()
 	if (isBlank (s.location))
 		setWindowTitle ("Startkladde");
 	else
-		setWindowTitle (utf8 ("Hauptflugbuch %1 - Startkladde").arg (s.location));
+		setWindowTitle (tr ("Flight log %1 - Startkladde").arg (s.location));
 
 	ui.menuDebug     ->menuAction ()->setVisible (Settings::instance ().enableDebug);
 	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (Settings::instance ().diagCommand));
@@ -538,7 +540,7 @@ void MainWindow::refreshFlights ()
 	if (!databaseActionsEnabled)
 	{
 		ui.displayDateLabel->resetDefaultForegroundColor ();
-		ui.displayDateLabel->setText ("-");
+		ui.displayDateLabel->setText (notr ("-"));
 	}
 	else if (displayDate==today)
 	{
@@ -548,7 +550,7 @@ void MainWindow::refreshFlights ()
 		flights += dbManager.getCache ().getPreparedFlights ().getList ();
 
 		ui.displayDateLabel->resetDefaultForegroundColor ();
-		ui.displayDateLabel->setText (utf8 ("Heute (%1)").arg (today.toString (Qt::DefaultLocaleShortDate)));
+		ui.displayDateLabel->setText (utf8 ("Today (%1)").arg (today.toString (Qt::DefaultLocaleShortDate)));
 
 		proxyModel->setShowPreparedFlights (true);
 	}
@@ -731,9 +733,9 @@ bool MainWindow::checkPlaneFlying (dbId id, const QString &description)
 	if (idValid (id) && cache.planeFlying (id))
 	{
 		Plane plane=cache.getObject<Plane> (id);
-		QString text=utf8 ("Laut Datenbank fliegt das %1 %2 noch. Trotzdem starten?")
+		QString text=tr ("According to the database, the %1 %2 is still flying. Depart anyway?")
 				.arg (description, plane.registration);
-		if (!yesNoQuestion (this, "Flugzeug fliegt noch", text))
+		if (!yesNoQuestion (this, tr ("Plane still flying"), text))
 			return false;
 	}
 
@@ -745,9 +747,9 @@ bool MainWindow::checkPersonFlying (dbId id, const QString &description)
 	if (idValid (id) && cache.personFlying (id))
 	{
 		Person person=cache.getObject<Person> (id);
-		QString text=utf8 ("Laut Datenbank fliegt der %1 %2 noch. Trotzdem starten?")
+		QString text=tr ("According to the database, the %1 %2 is still flying. Start anyway?")
 				.arg (description, person.fullName ());
-		if (!yesNoQuestion (this, "Person fliegt noch", text)) return false;
+		if (!yesNoQuestion (this, tr ("Person still flying"), text)) return false;
 	}
 
 	return true;
@@ -769,9 +771,9 @@ void MainWindow::departFlight (dbId id)
 
 			// *** Check for planes flying
 			// Plane
-			if (!checkPlaneFlying (flight.getPlaneId (), "Flugzeug")) return;
+			if (!checkPlaneFlying (flight.getPlaneId (), tr ("Plane"))) return;
 			if (isAirtow)
-				if (!checkPlaneFlying (flight.effectiveTowplaneId (cache), "Schleppflugzeug")) return;
+				if (!checkPlaneFlying (flight.effectiveTowplaneId (cache), tr ("Towplane"))) return;
 
 			// *** Check for people flying
 			// Pilot
@@ -788,12 +790,12 @@ void MainWindow::departFlight (dbId id)
 		}
 		else
 		{
-			showWarning (utf8 ("Start nicht möglich"), reason, this);
+			showWarning (tr ("Departing not possible"), reason, this);
 		}
 	}
 	catch (Cache::NotFoundException &ex)
 	{
-		log_error (QString ("Flight %1 not found in MainWindow::departFlight").arg (ex.id));
+		log_error (qnotr ("Flight %1 not found in MainWindow::departFlight").arg (ex.id));
 	}
 }
 
@@ -814,12 +816,12 @@ void MainWindow::landFlight (dbId id)
 		}
 		else
 		{
-			showWarning (utf8 ("Landung nicht möglich"), reason, this);
+			showWarning (tr ("Landing not possible"), reason, this);
 		}
 	}
 	catch (Cache::NotFoundException &ex)
 	{
-		log_error (QString ("Flight not found in MainWindow::landFlight").arg (ex.id));
+		log_error (qnotr ("Flight not found in MainWindow::landFlight").arg (ex.id));
 	}
 }
 
@@ -840,12 +842,12 @@ void MainWindow::landTowflight (dbId id)
 		}
 		else
 		{
-			showWarning (utf8 ("Landung nicht möglich"), reason, this);
+			showWarning (tr ("Landing not possible"), reason, this);
 		}
 	}
 	catch (Cache::NotFoundException &ex)
 	{
-		log_error (QString ("Flight %1 not found in MainWindow::landTowFlight").arg (ex.id));
+		log_error (qnotr ("Flight %1 not found in MainWindow::landTowFlight").arg (ex.id));
 	}
 }
 
@@ -888,8 +890,8 @@ void MainWindow::on_actionTouchngo_triggered ()
 	if (isTowflight)
 	{
 		showWarning (
-			utf8 ("Zwischenlandung nicht möglich"),
-			utf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können keine Zwischenlandung machen."),
+			tr ("Touch-and-go not possible"),
+			tr ("The selected flight is a towflight. Towflights cannot perform a touch-and-go."),
 			this);
 	}
 
@@ -911,12 +913,12 @@ void MainWindow::on_actionTouchngo_triggered ()
 		}
 		else
 		{
-			showWarning (utf8 ("Zwischenlandung nicht möglich"), reason, this);
+			showWarning (tr ("Touch-and-go not possible"), reason, this);
 		}
 	}
 	catch (Cache::NotFoundException &ex)
 	{
-		log_error (QString ("Flight %1 not found in MainWindow::on_actionTouchngo_triggered").arg (ex.id));
+		log_error (qnotr ("Flight %1 not found in MainWindow::on_actionTouchngo_triggered").arg (ex.id));
 	}
 }
 
@@ -947,7 +949,7 @@ void MainWindow::departOrLand ()
 	}
 	catch (Cache::NotFoundException &ex)
 	{
-		log_error (QString ("Flight %1 not found in MainWindow::departOrLand").arg (ex.id));
+		log_error (qnotr ("Flight %1 not found in MainWindow::departOrLand").arg (ex.id));
 	}
 }
 
@@ -984,7 +986,7 @@ void MainWindow::on_actionEdit_triggered ()
 	}
 	catch (Cache::NotFoundException &ex)
 	{
-		log_error (QString ("Flight not found in MainWindow::on_actionEdit_triggered").arg (ex.id));
+		log_error (qnotr ("Flight not found in MainWindow::on_actionEdit_triggered").arg (ex.id));
 	}
 }
 
@@ -999,8 +1001,8 @@ void MainWindow::on_actionRepeat_triggered ()
 
 	else if (isTowflight)
 	{
-		showWarning (utf8 ("Wiederholen nicht möglich"),
-			utf8 ("Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können nicht wiederholt werden."),
+		showWarning (tr ("Replicating not possible"),
+			tr ("The selected flight is a towflight. Towflights cannot be replicated."),
 			this);
 		return;
 	}
@@ -1014,7 +1016,7 @@ void MainWindow::on_actionRepeat_triggered ()
 	}
 	catch (Cache::NotFoundException &ex)
 	{
-		log_error (QString ("Flight %1 not found in MainWindow::on_actionRepeat_triggered").arg (id));
+		log_error (qnotr ("Flight %1 not found in MainWindow::on_actionRepeat_triggered").arg (id));
 	}
 }
 
@@ -1111,7 +1113,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 	}
 	catch (Cache::NotFoundException &ex)
 	{
-		log_error (QString ("Flight %1 not found in MainWindow::on_actionDisplayError_triggered").arg (ex.id));
+		log_error (qnotr ("Flight %1 not found in MainWindow::on_actionDisplayError_triggered").arg (ex.id));
 	}
 }
 

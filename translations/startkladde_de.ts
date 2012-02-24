@@ -594,6 +594,153 @@ Die Vorauswahl wird beim nächsten Programmstart zurückgesetzt.</translation>
     </message>
 </context>
 <context>
+    <name>MainWindow</name>
+    <message>
+        <source>Wirklich beenden?</source>
+        <translation type="obsolete">Wirklich beenden?</translation>
+    </message>
+    <message>
+        <source>Programm wirklich beenden?</source>
+        <translation type="obsolete">Programm wirklich beenden?</translation>
+    </message>
+    <message>
+        <source>Wirklich herunterfahren?</source>
+        <translation type="obsolete">Wirklich herunterfahren?</translation>
+    </message>
+    <message>
+        <source>Rechner wirklich herunterfahren?</source>
+        <translation type="obsolete">Rechner wirklich herunterfahren?</translation>
+    </message>
+    <message>
+        <source>Protoko&amp;ll anzeigen</source>
+        <translation type="obsolete">Show &amp;log</translation>
+    </message>
+    <message>
+        <source>%1
+Konfiguration: %2</source>
+        <translation type="obsolete">%1
+Configuration: %2</translation>
+    </message>
+    <message>
+        <source>Wetter</source>
+        <translation type="obsolete">Weather</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="135"/>
+        <source>Show &amp;log</source>
+        <translation>Protoko&amp;ll anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="300"/>
+        <source>%1
+Configuration: %2</source>
+        <translation>%1
+Konfiguration: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="377"/>
+        <source>Weather</source>
+        <translation>Wetter</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="431"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="437"/>
+        <source>Really exit?</source>
+        <translation>Wirklich beenden?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="431"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="437"/>
+        <source>Really exit the program?</source>
+        <translation>Programm wirklich beenden?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="442"/>
+        <source>Really shut down?</source>
+        <translation>Wirklich herunterfahren?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="442"/>
+        <source>Really shut down the computer?</source>
+        <translation>Rechner wirklich herunterfahren?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="514"/>
+        <source>Flight log %1 - Startkladde</source>
+        <translation>Hauptflugbuch %1 - Startkladde</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="735"/>
+        <source>According to the database, the %1 %2 is still flying. Depart anyway?</source>
+        <translation>Laut Datenbank fliegt das %1 %2 noch. Trotzdem starten?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="737"/>
+        <source>Plane still flying</source>
+        <translation>Flugzeug fliegt noch</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="749"/>
+        <source>According to the database, the %1 %2 is still flying. Start anyway?</source>
+        <translation>Laut Datenbank fliegt der %1 %2 noch. Trotzdem starten?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="751"/>
+        <source>Person still flying</source>
+        <translation>Person fliegt noch</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="773"/>
+        <source>Plane</source>
+        <translation>Flugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="775"/>
+        <source>Towplane</source>
+        <translation>Schleppflugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="792"/>
+        <source>Departing not possible</source>
+        <translation>Start nicht möglich</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="818"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="844"/>
+        <source>Landing not possible</source>
+        <translation>Landung nicht möglich</translation>
+    </message>
+    <message>
+        <source>Flight not found in MainWindow::landFlight</source>
+        <translation type="obsolete">Flight not found in MainWindow::landFlight</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="892"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="915"/>
+        <source>Touch-and-go not possible</source>
+        <translation>Zwischenlandung nicht möglich</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="893"/>
+        <source>The selected flight is a towflight. Towflights cannot perform a touch-and-go.</source>
+        <translation>Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können keine Zwischenlandung machen.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1003"/>
+        <source>Replicating not possible</source>
+        <translation>Wiederholen nicht möglich</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1004"/>
+        <source>The selected flight is a towflight. Towflights cannot be replicated.</source>
+        <translation>Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können nicht wiederholt werden.</translation>
+    </message>
+    <message>
+        <source>Hauptflugbuch %1 - Startkladde</source>
+        <translation type="obsolete">Flight log %1 - Startkladde</translation>
+    </message>
+</context>
+<context>
     <name>MainWindowClass</name>
     <message>
         <source>MainWindow</source>
