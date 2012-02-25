@@ -1,5 +1,20 @@
 #!/usr/bin/env ruby
 
+# Finds lines containing strings without tr(), notr() or qnotr().
+# Usage:
+#   find_missing_tr file, file, ... - process files
+#   find_missing_tr -t              - runs integrated unit tests
+
+# Shortcomings:
+#   * does not handle C string concatenation ("foo" "bar", it's one string)
+#     correctly (neither single- nor multi-line)
+#   * does not handle multi-line strings (strings with a literal newline)
+#     correctly, but that's ugly anyway and can be replaced with C string
+#     concatenation
+# None of these shortcomings (should) produce false negatives, so we won't miss
+# any missing tr.
+
+
 ###########
 ## Utils ##
 ###########
@@ -18,11 +33,11 @@ end
 ## String processing ##
 #######################
 
-# Removes C style comments (/* ... */), replacing them with a single space
+# Removes C style comments (/*...*/), replacing them with a single space
 # (single-line comments) or the number of newlines contained within the comment
 # (multi-line comments). The latter has the purpose of preserving the original
 # line numbers.
-# This does not remove C++ comments (// ...).
+# This does not remove C++ comments (//...).
 def remove_c_comments(string)
 	#   slash
 	#   | asterisk
@@ -40,36 +55,42 @@ def remove_c_comments(string)
 end
 
 def tr_missing_part(part)
-	# Only consider parts that contain a quote
-	return false unless part =~ /"/
-
-	# This part contains a quoted string. Return true unless it is preceded by
-	# one of the tr functions - tr, notr and qnotr - after a non-word character
-	# (so it doesn't match fauxtr)
-	return false if part =~ /[^\w](tr|notr|qnotr)\s*\("/
-
-	true
+	if part =~ /"/
+		# This part contains a quoted string. Return true unless it is preceded by
+		# one of the tr functions - tr, notr and qnotr - after a non-word character
+		# (so it doesn't match fauxtr)
+		if part =~ /[^\w](tr|notr|qnotr)\s*\("/
+			false
+		else
+			true
+		end
+	else
+		# This part does not contain a quoted string.
+	end
 end
 
 # This may have false positives, but it should not have false negatives (i. e.
 # it should accept all lines that have a missing tr)
 def tr_missing_line(line)
-	# Remove comments
+	# Remove comments (//...)
 	line.gsub!(/\/\/.*/, '')
 
 	# Don't consider includes (only at the beginning of the line, optionally indendet)
 	return false if line =~ /^\s*#include/
 
-	# Split the line into multiple parts, each containing everything up to and
-	# including a maximum of one string
-	# any number of non-quotes, a quote, any number of non-quotes, a quote.
-	# Group everything, we're interested in the RE, not the parts delimited by it
-	re=/([^"]*"[^"]*")/
-	parts=line.split(re)
-	parts.each { |part|
+	# Scan the string for quote strings with what is before
+	#   any number of non-quotes
+	#   |    quote
+	#   |    |any number of non-quotes
+	#   |    ||    quote
+	#   |    ||    |
+	re=/[^"]*"[^"]*"/
+	line.scan(re) { |match|
+		part=match # If the RE contains groups, this will be an array
 		return true if tr_missing_part(part)
 	}
 
+	# No part had a missing tr, so neither does this line
 	false
 end
 
@@ -123,15 +144,17 @@ def test_remove_c_comments
 		["", ""]
 	]
 
+	len=maxlen(tests.map { |test| test[0].inspect })
+
 	tests.each { |test|
 		string=test[0]
 		expected=test[1]
 		actual=remove_c_comments(string)
 
 		if (expected==actual)
-			puts "OK - #{string.inspect} => #{actual.inspect}"
+			puts "OK      - #{pad(len, string.inspect)} => #{actual.inspect}"
 		else
-			puts "failure - #{string.inspect}, expected #{expected.inspect}, got #{actual.inspect}"
+			puts "failure - #{pad(len, string.inspect)} => expected #{expected.inspect}, got #{actual.inspect}"
 		end
 	}
 end
@@ -162,6 +185,13 @@ def test_tr_missing_line
 		['foo=fauxtr ("moo");'            , true ],
 		['foo=fauxtr("moo");'             , true ],
 
+		# Multi-line strings
+		#["foo=\"moo\nbert\";" , false], # Multi-line string - not supported
+
+		# String concatenation
+		#['foo=tr ("moo" "bert")' , false], # String concatenation - not supported
+		#['foo=tr ("moo" \n "bert")', false], # Multi-line string concatenation - not supported
+
 		# With multiple strings
 		['foo (tr ("moo"), tr ("bert"));' , false ],
 		['foo (("moo"), tr ("bert"));'    , true  ],
@@ -186,7 +216,7 @@ def test_tr_missing_line
 			result="failure"
 		end
 
-		puts "#{pad(len, string)} - expected #{pad(5,expected)}, actual #{pad(5,actual)} - #{result}"
+		puts "#{result} - #{pad(len, string)} - expected #{pad(5,expected)}, actual #{pad(5,actual)}"
 	}
 end
 
