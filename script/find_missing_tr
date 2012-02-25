@@ -1,6 +1,45 @@
 #!/usr/bin/env ruby
 
-def accept_part(part)
+###########
+## Utils ##
+###########
+
+def pad(length, string)
+	string=string.to_s unless string.is_a?(String)
+	string+(" "*(length-string.length))
+end
+
+def maxlen(strings)
+	strings.map { |string| string.length }.max	
+end
+
+
+#######################
+## String processing ##
+#######################
+
+# Removes C style comments (/* ... */), replacing them with a single space
+# (single-line comments) or the number of newlines contained within the comment
+# (multi-line comments). The latter has the purpose of preserving the original
+# line numbers.
+# This does not remove C++ comments (// ...).
+def remove_c_comments(string)
+	#   slash
+	#   | asterisk
+	#   | | any characters (non-greedy)
+	#   | | |  asterisk
+	#   | | |  | slash
+	#   | | |  | |  multi-line
+	#   | | |  | |  |
+	re=/\/\*.*?\*\//m
+	string.gsub(re) { |match|
+		replacement=match.gsub(/[^\r\n]/, '')
+		replacement=" " if replacement.empty?
+		replacement
+	}
+end
+
+def tr_missing_part(part)
 	# Only consider parts that contain a quote
 	return false unless part =~ /"/
 
@@ -14,7 +53,7 @@ end
 
 # This may have false positives, but it should not have false negatives (i. e.
 # it should accept all lines that have a missing tr)
-def accept(line)
+def tr_missing_line(line)
 	# Remove comments
 	line.gsub!(/\/\/.*/, '')
 
@@ -28,13 +67,76 @@ def accept(line)
 	re=/([^"]*"[^"]*")/
 	parts=line.split(re)
 	parts.each { |part|
-		return true if accept_part(part)
+		return true if tr_missing_part(part)
 	}
 
 	false
 end
 
-def perform_tests
+
+#####################
+## File processing ##
+#####################
+
+def process_files(files)
+	# Perform for each file
+	files.each { |file|
+		# Read the data from the file
+		data=File.read(file)
+
+		# Remove C style comments
+		data=remove_c_comments(data)
+
+		line_number=0
+		data.each_line { |line|
+			line_number+=1
+			if tr_missing_line(line)
+				puts "#{file}:#{line_number} #{line}"
+			end
+		}
+		
+	}
+end
+
+
+###########
+## Tests ##
+###########
+
+def test_remove_c_comments
+	tests=[
+		# Single-line cases
+		["foobar ();"                                  , "foobar ();"], # No comment
+		["foobar (); /* comment */"                    , "foobar ();  "], # Comment at end
+		["foobar /* comment */ ();"                    , "foobar   ();"], # Comment in the middle
+		["before /* first */ between /*second */ after", "before   between   after"], # Multiple comments
+
+		# Multi-line cases
+		["multi /* first */\nline /* second */", "multi  \nline  "], # Multiple single-line comments
+		["multi /* first \n still first */ line", "multi \n line"], # Multi-line comment
+
+		# Special cases
+		["before /* first * / second */ after", "before   after"], # Termination charaters with space inbetween
+		["before /* first /* second */ after" , "before   after"], # Opening characters in comment
+
+		# Dummy case
+		["", ""]
+	]
+
+	tests.each { |test|
+		string=test[0]
+		expected=test[1]
+		actual=remove_c_comments(string)
+
+		if (expected==actual)
+			puts "OK - #{string.inspect} => #{actual.inspect}"
+		else
+			puts "failure - #{string.inspect}, expected #{expected.inspect}, got #{actual.inspect}"
+		end
+	}
+end
+
+def test_tr_missing_line
 	test_lines=[
 		# Simple cases
 		['foo ();'                        , false], # No quoted text
@@ -69,21 +171,12 @@ def perform_tests
 		['', false] # empty line
 	]
 
-	def pad(length, string)
-		string=string.to_s unless string.is_a?(String)
-		string+(" "*(length-string.length))
-	end
-
-	def maxlen(strings)
-		strings.map { |string| string.length }.max	
-	end
-
 	len=maxlen(test_lines.map { |test_line| test_line[0] })
 
 	test_lines.each { |test_line|
 		string=test_line[0]
 		expected=test_line[1]
-		actual=accept(string.dup)
+		actual=tr_missing_line(string.dup)
 
 		if actual==expected
 			result="OK"
@@ -97,21 +190,14 @@ def perform_tests
 	}
 end
 
-def process_files(files)
-	files.each { |file|
-		line_number=0
-		File.foreach(file) { |line|
-			line_number+=1
-			if accept(line)
-				puts "#{file}:#{line_number} #{line}"
-			end
-		}
-		
-	}
-end
+
+##########
+## Main ##
+##########
 
 if ARGV==['-t']
-	perform_tests
+	test_remove_c_comments
+	test_tr_missing_line
 else
 	process_files ARGV
 end
