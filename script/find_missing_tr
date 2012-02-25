@@ -11,6 +11,8 @@
 #   * does not handle multi-line strings (strings with a literal newline)
 #     correctly, but that's ugly anyway and can be replaced with C string
 #     concatenation
+#   * does not know about the preprocessor, so "#define mytr tr" won't be
+#     handle properly
 # None of these shortcomings (should) produce false negatives, so we won't miss
 # any missing tr.
 
