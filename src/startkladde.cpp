@@ -17,6 +17,7 @@
 #include "src/db/interface/exceptions/SqlException.h"
 #include "src/db/event/DbEvent.h" // For qRegisterMetaType
 #include "src/net/TcpProxy.h" // remove
+#include "src/notr.h"
 #include "src/version.h"
 
 // For test_database
@@ -48,37 +49,37 @@
 void ponder ()
 {
 //	std::cout << utf8 ("Pondering on thread %1: ").arg (QThread::currentThreadId ());
-	std::cout << "Pondering: ";
+	std::cout << notr ("Pondering: ");
 	const int delay=200;
 
-	std::cout << "[" << std::flush;
+	std::cout << notr ("[") << std::flush;
 
 	for (int i=1; i<=10; ++i)
 	{
 		std::cout << i << std::flush;
 
-		std::cout << "."; std::cout.flush(); DefaultQThread::msleep (delay);
-		std::cout << "o"; std::cout.flush(); DefaultQThread::msleep (delay);
-		std::cout << "O"; std::cout.flush(); DefaultQThread::msleep (delay);
-		std::cout << "o"; std::cout.flush(); DefaultQThread::msleep (delay);
+		std::cout << notr ("."); std::cout.flush(); DefaultQThread::msleep (delay);
+		std::cout << notr ("o"); std::cout.flush(); DefaultQThread::msleep (delay);
+		std::cout << notr ("O"); std::cout.flush(); DefaultQThread::msleep (delay);
+		std::cout << notr ("o"); std::cout.flush(); DefaultQThread::msleep (delay);
 	}
 
-	std::cout << "]" << std::endl;
+	std::cout << notr ("]") << std::endl;
 }
 
 void proxy_test ()
 {
 //	std::cout << utf8 ("Creating proxy on thread %1").arg (QThread::currentThreadId ()) << std::endl;
-	std::cout << "Creating proxy" << std::endl;
+	std::cout << notr ("Creating proxy") << std::endl;
 
 	TcpProxy proxy;
 //	proxy.open ("localhost", 3306);
-	proxy.open ("damogran.local", 3307);
+	proxy.open (notr ("damogran.local"), 3307);
 
 	while (true)
 	{
 //		ponder ();
-		std::cout << "Press enter to terminat0r" << std::endl;
+		std::cout << notr ("Press enter to terminat0r") << std::endl;
 
 		char in[101];
 		std::cin.getline (in, 100);
@@ -149,7 +150,7 @@ int test_database ()
 	//    DefaultQThread::sleep (1);
 
 		std::cout << std::endl;
-		std::cout << "Get people" << std::endl;
+		std::cout << notr ("Get people") << std::endl;
 		QList<Person> people=db.getObjects<Person> ();
 		foreach (const Person &person, people)
 			std::cout << person.toString () << std::endl;
@@ -157,7 +158,7 @@ int test_database ()
 		DefaultQThread::sleep (1);
 
 		std::cout << std::endl;
-		std::cout << "Get planes" << std::endl;
+		std::cout << notr ("Get planes") << std::endl;
 		QList<Plane> planes=db.getObjects<Plane> ();
 		foreach (const Plane &plane, planes)
 			std::cout << plane.toString () << std::endl;
@@ -273,45 +274,45 @@ int doStuff (const QStringList &nonOptions)
 
 	if (!ok)
 	{
-		std::cout << "Database failed to open: " << db.lastError ().text () << std::endl;
+		std::cout << notr ("Database failed to open: ") << db.lastError ().text () << std::endl;
 		return 1;
 	}
 
-	if (nonOptions[0]=="db:up")
+	if (nonOptions[0]==notr ("db:up"))
 		Migrator (db).up ();
-	else if (nonOptions[0]=="db:down")
+	else if (nonOptions[0]==notr ("db:down"))
 		Migrator (db).down ();
-	else if (nonOptions[0]=="db:migrate")
+	else if (nonOptions[0]==notr ("db:migrate"))
 		Migrator (db).migrate ();
-	else if (nonOptions[0]=="db:version")
-		std::cout << "Version is " << Migrator (db).currentVersion () << std::endl;
-	else if (nonOptions[0]=="db:load")
+	else if (nonOptions[0]==notr ("db:version"))
+		std::cout << notr ("Version is ") << Migrator (db).currentVersion () << std::endl;
+	else if (nonOptions[0]==notr ("db:load"))
 		Migrator (db).loadSchema ();
-	else if (nonOptions[0]=="db:drop")
+	else if (nonOptions[0]==notr ("db:drop"))
 		Migrator (db).drop ();
-	else if (nonOptions[0]=="db:clear")
+	else if (nonOptions[0]==notr ("db:clear"))
 		Migrator (db).clear ();
-	else if (nonOptions[0]=="db:ensure_empty")
+	else if (nonOptions[0]==notr ("db:ensure_empty"))
 		return db.tableExists ()?1:0;
-	else if (nonOptions[0]=="db:create")
+	else if (nonOptions[0]==notr ("db:create"))
 		Migrator (db).create ();
-//	else if (nonOptions[0]=="db:test")
+//	else if (nonOptions[0]==notr ("db:test"))
 //		test_database (db);
-//	else if (nonOptions[0]=="db:fail") // TODO
-//		db.executeQuery ("bam!");
-	else if (nonOptions[0]=="db:migrations")
+//	else if (nonOptions[0]==notr ("db:fail")) // TODO
+//		db.executeQuery (notr ("bam!"));
+	else if (nonOptions[0]==notr ("db:migrations"))
 	{
 		MigrationFactory factory;
 		foreach (quint64 version, factory.availableVersions ())
-			std::cout << version << " - " << factory.migrationName (version) << std::endl;
+			std::cout << version << notr (" - ") << factory.migrationName (version) << std::endl;
 	}
-	else if (nonOptions[0]=="db:dump")
+	else if (nonOptions[0]==notr ("db:dump"))
 	{
 		Migrator m (db);
 		if (!m.isCurrent ())
 		{
 			// TODO require --force switch if not current
-			std::cerr << "Warning: the database is not current"  << std::endl;
+			std::cerr << notr ("Warning: the database is not current")  << std::endl;
 		}
 
 		SchemaDumper d (db);
@@ -319,7 +320,7 @@ int doStuff (const QStringList &nonOptions)
 		if (nonOptions.size ()>1)
 		{
 			QString filename=nonOptions[1];
-			std::cout << QString ("Dumping schema to %1").arg (filename) << std::endl;
+			std::cout << QString (notr ("Dumping schema to %1")).arg (filename) << std::endl;
 			d.dumpSchemaToFile (filename);
 		}
 		else
@@ -329,7 +330,7 @@ int doStuff (const QStringList &nonOptions)
 	}
 	else
 	{
-		std::cout << "Unrecognized" << std::endl;
+		std::cout << notr ("Unrecognized") << std::endl;
 		return 1;
 	}
 
@@ -345,16 +346,16 @@ void test ()
 
 void plugins_test ()
 {
-	std::cout << "Begin plugin test" << std::endl;
+	std::cout << notr ("Begin plugin test") << std::endl;
 
 	foreach (const InfoPlugin::Descriptor *descriptor, PluginFactory::getInstance ().getDescriptors<InfoPlugin> ())
 	{
-		std::cout << QString ("Registered plugin %1 (%2)").arg (descriptor->getName (), descriptor->getDescription ()) << std::endl;
+		std::cout << qnotr ("Registered plugin %1 (%2)").arg (descriptor->getName (), descriptor->getDescription ()) << std::endl;
 		InfoPlugin *plugin=descriptor->create ();
 		delete plugin;
 	}
 
-	std::cout << "End plugin test" << std::endl;
+	std::cout << notr ("End plugin test") << std::endl;
 }
 
 #include "src/concurrent/Waiter.h"
@@ -370,24 +371,24 @@ int main (int argc, char **argv)
     a.installTranslator (&translator);
 
 
-	qApp->addLibraryPath (qApp->applicationDirPath () + "/plugins");
+	qApp->addLibraryPath (qApp->applicationDirPath () + notr ("/plugins"));
 
 	// Event is used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
-	qRegisterMetaType<DbEvent> ("DbEvent");
-	qRegisterMetaType<Query> ("Query");
-	qRegisterMetaType<DatabaseInfo> ("DatabaseInfo");
+	qRegisterMetaType<DbEvent> (notr ("DbEvent"));
+	qRegisterMetaType<Query> (notr ("Query"));
+	qRegisterMetaType<DatabaseInfo> (notr ("DatabaseInfo"));
 
 	// For QSettings
-	QCoreApplication::setOrganizationName ("startkladde");
-	QCoreApplication::setOrganizationDomain("startkladde.sf.net");
-	QCoreApplication::setApplicationName("startkladde");
+	QCoreApplication::setOrganizationName (notr ("startkladde"));
+	QCoreApplication::setOrganizationDomain(notr ("startkladde.sf.net"));
+	QCoreApplication::setApplicationName(notr ("startkladde"));
 
 	QStringList args;
 	for (int i=0; i<argc; ++i) args << argv[i];
 
-	if (args.size ()>=2 && args[1]=="--version")
+	if (args.size ()>=2 && args[1]==notr ("--version"))
 	{
 		std::cout << getVersion () << std::endl;
 
@@ -408,11 +409,11 @@ int main (int argc, char **argv)
 		}
 		else
 		{
-			if (nonOptions[0]=="test_db")
+			if (nonOptions[0]==notr ("test_db"))
 				ret=test_database ();
-			else if (nonOptions[0]=="proxy")
+			else if (nonOptions[0]==notr ("proxy"))
 				proxy_test ();
-			else if (nonOptions[0]=="plugins")
+			else if (nonOptions[0]==notr ("plugins"))
 				plugins_test ();
 			else
 				ret=doStuff (nonOptions);

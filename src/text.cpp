@@ -4,9 +4,10 @@
 #include <QStringList>
 #include <QAbstractButton>
 
-#include "config/Settings.h"
+#include "src/config/Settings.h"
+#include "src/notr.h"
 
-const QString whitespace=" \t\r\n";
+const QString whitespace=notr (" \t\r\n");
 
 /**
  * Determines whether a string consists only of whitespace
@@ -27,7 +28,7 @@ bool isBlank (const QString &string)
 bool isNone (const QString &string)
 {
 	QString trimmed=string.trimmed ();
-	return (trimmed.isEmpty () || string=="-");
+	return (trimmed.isEmpty () || string==notr ("-"));
 }
 
 /**
@@ -95,9 +96,9 @@ QString capitalize (const QString &string)
 QString countText (int count, const QString &singular, const QString &plural)
 {
 	if (count==1)
-		return QString ("%1 %2").arg (count).arg (singular);
+		return qnotr ("%1 %2").arg (count).arg (singular);
 	else
-		return QString ("%1 %2").arg (count).arg (plural);
+		return qnotr ("%1 %2").arg (count).arg (plural);
 }
 
 QString countText (int count, const QString &singular, const QString &plural, const QString &noneText)
@@ -105,9 +106,9 @@ QString countText (int count, const QString &singular, const QString &plural, co
 	if (count==0)
 		return noneText;
 	else if (count==1)
-		return QString ("%1 %2").arg (count).arg (singular);
+		return qnotr ("%1 %2").arg (count).arg (singular);
 	else
-		return QString ("%1 %2").arg (count).arg (plural);
+		return qnotr ("%1 %2").arg (count).arg (plural);
 }
 
 /**
@@ -144,11 +145,11 @@ QString insertMnemonic (const QString &text, const QString &disallowed, bool fal
 	// Improvement: use std::string functionality (wrap for QString)
 	for (int i=0; i<text.length (); ++i)
 		if (!disallowedLower.contains (textLower[i]))
-			return result.insert (i, "&");
+			return result.insert (i, notr ("&"));
 
 	// No allowed mnemonic possible
 	if (fallbackToFirst)
-		return QString ("&")+text;
+		return qnotr ("&")+text;
 	else
 		return text;
 }
