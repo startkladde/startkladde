@@ -61,7 +61,7 @@ def tr_missing_part(part)
 		# This part contains a quoted string. Return true unless it is preceded by
 		# one of the tr functions - tr, notr and qnotr - after a non-word character
 		# (so it doesn't match fauxtr)
-		if part =~ /[^\w](tr|notr|qnotr)\s*\("/
+		if part =~ /[^\w](tr|notr|qnotr|qnotrUtf8)\s*\("/
 			false
 		else
 			true
