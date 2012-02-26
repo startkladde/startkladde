@@ -16,13 +16,17 @@
 #include "src/util/io.h"
 #include "src/text.h"
 #include "src/graphics/SkMovie.h"
+#include "src/notr.h"
+
+// TODO TR test all messages
 
 REGISTER_PLUGIN (WeatherPlugin, WetterOnlineAnimationPlugin)
+// TODO TR
 SK_PLUGIN_DEFINITION (WetterOnlineAnimationPlugin, "{f3b7c9b2-455f-459f-b636-02b2b9a78b7b}", "Wetter Online (Animation)", "Zeigt eine Regenradar-Animation von wetteronline.de an")
 
 enum State { stateNavigationPage, stateRadarPage, stateRadarImage };
 
-const QString navigationPageUrl ("http://www.wetteronline.de/include/radar_dldl_00_dwddgf.htm");
+const QString navigationPageUrl (notr ("http://www.wetteronline.de/include/radar_dldl_00_dwddgf.htm"));
 
 WetterOnlineAnimationPlugin::WetterOnlineAnimationPlugin ():
 	downloader (new Downloader (this))
@@ -36,7 +40,7 @@ WetterOnlineAnimationPlugin::~WetterOnlineAnimationPlugin ()
 
 void WetterOnlineAnimationPlugin::refresh ()
 {
-	outputText (utf8 ("Radarfilm herunterladen (1)..."));
+	outputText (tr ("Downloading radar animation (1)..."));
 	downloader->startDownload (stateNavigationPage, navigationPageUrl);
 }
 
@@ -51,8 +55,8 @@ void WetterOnlineAnimationPlugin::downloadSucceeded (int state, QNetworkReply *r
 	{
 		case stateNavigationPage:
 		{
-			QString radarPagePath=findInIoDevice (*reply, QRegExp ("a href.*a href=\"\\/([^\"]*)\".*Loop 3 Stunden"), 1);
-			if (isBlank (radarPagePath)) OUTPUT_AND_RETURN ("Fehler: auf der Navigationsseite wurde kein Link zur Animation gefunden");
+			QString radarPagePath=findInIoDevice (*reply, QRegExp (notr ("a href.*a href=\"\\/([^\"]*)\".*Loop 3 Stunden")), 1);
+			if (isBlank (radarPagePath)) OUTPUT_AND_RETURN (tr ("Error: no animation link was found on the navigation page"));
 			QString radarPageUrl=QString ("http://www.wetteronline.de/%1").arg (radarPagePath);
 			downloader->startDownload (stateRadarPage, radarPageUrl);
 			outputText (utf8 ("Radarbild herunterladen (2)..."));
@@ -60,7 +64,7 @@ void WetterOnlineAnimationPlugin::downloadSucceeded (int state, QNetworkReply *r
 		case stateRadarPage:
 		{
 			QString radarImagePath=findInIoDevice (*reply, QRegExp ("(daten\\/radar[^\"]*)\""), 1);
-			if (isBlank (radarImagePath)) OUTPUT_AND_RETURN ("Fehler: auf der Wetterseite wurde keine Animation gefunden");
+			if (isBlank (radarImagePath)) OUTPUT_AND_RETURN (tr ("Error: no animation was found on the weather page"));
 			QString radarImageUrl=QString ("http://www.wetteronline.de/%1").arg (radarImagePath);
 			downloader->startDownload (stateRadarImage, radarImageUrl);
 			outputText (utf8 ("Radarbild herunterladen (3)..."));
@@ -69,7 +73,7 @@ void WetterOnlineAnimationPlugin::downloadSucceeded (int state, QNetworkReply *r
 		{
 			outputText (utf8 ("Radarbild speichern"));
 			SkMovie movie (reply);
-			if (!movie.getMovie ()->isValid ()) OUTPUT_AND_RETURN ("Fehler beim Lesen des Videos");
+			if (!movie.getMovie ()->isValid ()) OUTPUT_AND_RETURN (tr ("Error reading the animation"));
 			movie.getMovie ()->setSpeed (200);
 			outputMovie (movie);
 		} break;

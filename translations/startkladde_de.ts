@@ -2637,4 +2637,60 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
         <translation>&amp;Fehler beim Speichern</translation>
     </message>
 </context>
+<context>
+    <name>WetterOnlineAnimationPlugin</name>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="43"/>
+        <source>Downloading radar animation (1)...</source>
+        <translation>Radaranimation herunterladen (1)...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="59"/>
+        <source>Error: no animation link was found on the navigation page</source>
+        <translation>Fehler: auf der Navigationsseite wurde kein Link zur Animation gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="67"/>
+        <source>Error: no animation was found on the weather page</source>
+        <translation>Fehler: auf der Wetterseite wurde keine Animation gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="76"/>
+        <source>Error reading the animation</source>
+        <translation>Fehler beim Lesen der Animation</translation>
+    </message>
+</context>
+<context>
+    <name>WetterOnlineImagePlugin</name>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="42"/>
+        <source>Download radar image (1)...</source>
+        <translation>Radarbild herunterladen (1)...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="58"/>
+        <source>Error: no radar image found</source>
+        <translation>Fehler: kein Radarbild gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="61"/>
+        <source>Download radar image (2)...</source>
+        <translation>Radarbild herunterladen (2)...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="67"/>
+        <source>Error: invalid radar image</source>
+        <translation>Fehler: ungültiges Radarbild</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="80"/>
+        <source>Error: page not found (404)</source>
+        <translation>Fehler: Seite nicht gefunden (404)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="83"/>
+        <source>Error: radar image not found (404)</source>
+        <translation>Fehler: Radarbild nicht gefunden (404)</translation>
+    </message>
+</context>
 </TS>
