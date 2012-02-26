@@ -22,7 +22,11 @@
 
 REGISTER_PLUGIN (WeatherPlugin, WetterOnlineAnimationPlugin)
 // TODO TR
-SK_PLUGIN_DEFINITION (WetterOnlineAnimationPlugin, "{f3b7c9b2-455f-459f-b636-02b2b9a78b7b}", "Wetter Online (Animation)", "Zeigt eine Regenradar-Animation von wetteronline.de an")
+SK_PLUGIN_DEFINITION (
+	WetterOnlineAnimationPlugin,
+	"{f3b7c9b2-455f-459f-b636-02b2b9a78b7b}",
+	"Wetter Online (Animation)",
+	"Zeigt eine Regenradar-Animation von wetteronline.de an")
 
 enum State { stateNavigationPage, stateRadarPage, stateRadarImage };
 
@@ -63,7 +67,7 @@ void WetterOnlineAnimationPlugin::downloadSucceeded (int state, QNetworkReply *r
 		} break;
 		case stateRadarPage:
 		{
-			QString radarImagePath=findInIoDevice (*reply, QRegExp (notr ("(daten\\/radar[^\")]*)\""), 1);
+			QString radarImagePath=findInIoDevice (*reply, QRegExp (notr ("(daten\\/radar[^\")]*)\"")), 1);
 			if (isBlank (radarImagePath)) OUTPUT_AND_RETURN (tr ("Error: no animation was found on the weather page"));
 			QString radarImageUrl=qnotr ("http://www.wetteronline.de/%1").arg (radarImagePath);
 			downloader->startDownload (stateRadarImage, radarImageUrl);

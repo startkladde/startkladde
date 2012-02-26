@@ -148,6 +148,55 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>ExternalWeatherPlugin</name>
+    <message>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="49"/>
+        <source>Starting process...</source>
+        <translation>Prozess starten...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="51"/>
+        <source>No command specified</source>
+        <translation>Kein Kommando angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="58"/>
+        <source>Command not found</source>
+        <translation>Kommanod nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="59"/>
+        <source>Command does not exist</source>
+        <translation>Kommando existiert nicht</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="61"/>
+        <source>Error: %1</source>
+        <translation>Fehler: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="62"/>
+        <source>Process started</source>
+        <translation>Prozess gestartet</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="98"/>
+        <source>Cannot load iamge:
+</source>
+        <translation>Grafik kann nicht
+geladen werden:
+</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="115"/>
+        <source>Cannot load animation:
+</source>
+        <translation>Animation kann nicht
+geladen werden:
+</translation>
+    </message>
+</context>
+<context>
     <name>FlightListWindowClass</name>
     <message>
         <location filename="../src/gui/windows/objectList/FlightListWindow.ui" line="14"/>
@@ -2640,52 +2689,52 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
 <context>
     <name>WetterOnlineAnimationPlugin</name>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="43"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="47"/>
         <source>Downloading radar animation (1)...</source>
         <translation>Radaranimation herunterladen (1)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="59"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="63"/>
         <source>Error: no animation link was found on the navigation page</source>
         <translation>Fehler: auf der Navigationsseite wurde kein Link zur Animation gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="62"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="66"/>
         <source>Downloading radar animation (2)...</source>
         <translation>Radaranimation herunterladen (2)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="67"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="71"/>
         <source>Error: no animation was found on the weather page</source>
         <translation>Fehler: auf der Wetterseite wurde keine Animation gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="70"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="74"/>
         <source>Downloading radar animation (3)...</source>
         <translation>Radaranimation herunterladen (3)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="74"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="78"/>
         <source>Saving radar animation</source>
         <translation>Radaranimation speichern</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="76"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="80"/>
         <source>Error reading the animation</source>
         <translation>Fehler beim Lesen der Animation</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="90"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="94"/>
         <source>Error: navigation page not found (404)</source>
         <translation>Fehler: Navigationsseite nicht gefunden (404)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="93"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="97"/>
         <source>Error: radar page not found (404)</source>
         <translation>Fehler: Radarseite nicht gefunden (404)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="96"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="100"/>
         <source>Error: radar animation not found (404)</source>
         <translation>Fehler: Radaranimation nicht gefunden (404)</translation>
     </message>
@@ -2693,32 +2742,32 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
 <context>
     <name>WetterOnlineImagePlugin</name>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="42"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="46"/>
         <source>Download radar image (1)...</source>
         <translation>Radarbild herunterladen (1)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="58"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="62"/>
         <source>Error: no radar image found</source>
         <translation>Fehler: kein Radarbild gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="61"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="65"/>
         <source>Download radar image (2)...</source>
         <translation>Radarbild herunterladen (2)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="67"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="71"/>
         <source>Error: invalid radar image</source>
         <translation>Fehler: ungültiges Radarbild</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="80"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="84"/>
         <source>Error: page not found (404)</source>
         <translation>Fehler: Seite nicht gefunden (404)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="83"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="87"/>
         <source>Error: radar image not found (404)</source>
         <translation>Fehler: Radarbild nicht gefunden (404)</translation>
     </message>
