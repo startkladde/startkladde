@@ -1973,6 +1973,32 @@ aktiviert werden.</translation>
     </message>
 </context>
 <context>
+    <name>QDate</name>
+    <message>
+        <source>dd.MM.yyyy</source>
+        <translation type="obsolete">dd.MM.yyyy</translation>
+    </message>
+    <message>
+        <source>d.M.yyyy</source>
+        <translation type="obsolete">d.M.yyyy</translation>
+    </message>
+    <message>
+        <location filename="../src/util/qDate.cpp" line="40"/>
+        <source>MM/dd/yyyy</source>
+        <translation>dd.MM.yyyy</translation>
+    </message>
+    <message>
+        <location filename="../src/util/qDate.cpp" line="42"/>
+        <source>M/d/yyyy</source>
+        <translation>d.M.yyyy</translation>
+    </message>
+    <message>
+        <location filename="../src/util/qDate.cpp" line="53"/>
+        <source>invalid</source>
+        <translation>ungültig</translation>
+    </message>
+</context>
+<context>
     <name>SettingsWindowClass</name>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="14"/>

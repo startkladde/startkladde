@@ -7,9 +7,10 @@
 
 #include "qDate.h"
 
-#include "src/util/qString.h"
-
+#include <QApplication>
 #include <QDate>
+
+#include "src/util/qString.h"
 
 /**
  * Returns date if it is valid, or invalidOption if date is not valid
@@ -30,18 +31,26 @@ QDate validDate (const QDate &date, const QDate &invalidOption)
  * @return a string containing the formatted date, or an invalid string if the
  *         date is invalid
  */
+// TODO TR: better localized format
 QString toString (const QDate &date, bool zeroPad)
 {
 	if (date.isValid ())
-		return date.toString (zeroPad?"dd.MM.yyyy":"d.M.yyyy");
+	{
+		if (zeroPad)
+			return date.toString (qApp->translate ("QDate", "MM/dd/yyyy"));
+		else
+			return date.toString (qApp->translate ("QDate", "M/d/yyyy"));
+	}
 	else
+	{
 		return QString ();
+	}
 }
 
 QString toString (const QDate &first, const QDate &last, const QString &separator, bool zeroPad)
 {
 	if (!first.isValid () || !last.isValid ())
-		return ("ungültig");
+		return (qApp->translate ("QDate", "invalid"));
 	else if (first==last)
 		return toString (first, zeroPad);
 	else
