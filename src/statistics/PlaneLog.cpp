@@ -354,18 +354,18 @@ QVariant PlaneLog::headerData (int section, Qt::Orientation orientation, int rol
 		{
 			switch (section)
 			{
-				case 0: return "Registration"; break;
-				case 1: return "Model"; break;
-				case 2: return "Date"; break;
-				case 3: return "Pilot"; break;
-				case 4: return "Passengers"; break;
-				case 5: return "Departure location"; break;
-				case 6: return "Landing location"; break;
-				case 7: return "Departure time"; break;
-				case 8: return "Landing time"; break;
-				case 9: return "Number of landings"; break;
-				case 10: return "Time airborne"; break;
-				case 11: return "Comments"; break;
+				case 0: return tr ("Registration"); break;
+				case 1: return tr ("Model"); break;
+				case 2: return tr ("Date"); break;
+				case 3: return tr ("Pilot"); break;
+				case 4: return tr ("Passengers"); break;
+				case 5: return tr ("Departure location"); break;
+				case 6: return tr ("Landing location"); break;
+				case 7: return tr ("Departure time"); break;
+				case 8: return tr ("Landing time"); break;
+				case 9: return tr ("Number of landings"); break;
+				case 10: return tr ("Time airborne"); break;
+				case 11: return tr ("Comments"); break;
 			}
 		}
 		else
