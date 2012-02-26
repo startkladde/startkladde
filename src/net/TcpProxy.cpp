@@ -14,6 +14,7 @@
 #include "src/concurrent/synchronized.h"
 #include "src/util/qString.h"
 #include "src/concurrent/Returner.h"
+#include "src/notr.h"
 
 //#define DEBUG(stuff) do { std::cout << stuff << std::endl; } while (0)
 #define DEBUG(stuff)
@@ -22,7 +23,7 @@ TcpProxy::TcpProxy ():
 	server (NULL), serverSocket (NULL), clientSocket (NULL),
 	readTimedOut (false), readTimeoutMs (0)
 {
-	DEBUG ("Creating a TcpProxy on thread " << QThread::currentThreadId ());
+	DEBUG (notr ("Creating a TcpProxy on thread ") << QThread::currentThreadId ());
 
 	connect (this, SIGNAL (sig_open (Returner<quint16> *, QString, quint16)), this, SLOT (slot_open (Returner<quint16> *, QString, quint16)));
 	connect (this, SIGNAL (sig_close ()), this, SLOT (slot_close ()));
@@ -35,13 +36,13 @@ TcpProxy::~TcpProxy ()
 {
 	proxyThread.quit ();
 
-	std::cout << "Waiting for proxy thread to terminate...";
+	std::cout << notr ("Waiting for proxy thread to terminate...");
 	std::cout.flush ();
 
 	if (proxyThread.wait (1000))
-		std::cout << "OK" << std::endl;
+		std::cout << notr ("OK") << std::endl;
 	else
-		std::cout << "Timeout" << std::endl;
+		std::cout << notr ("Timeout") << std::endl;
 
 	// server, serverSocket and clientSocket will be deleted automatically
 }
@@ -107,7 +108,7 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
 			server->close ();
 	}
 
-	DEBUG ("Open server in thread " << QThread::currentThreadId ());
+	DEBUG (notr ("Open server in thread ") << QThread::currentThreadId ());
 
 	// Store the connection data
 	synchronized (mutex)
@@ -127,11 +128,11 @@ quint16 TcpProxy::openImpl (QString serverHost, quint16 serverPort)
 	{
 		synchronized (mutex) this->proxyPort=server->serverPort ();
 
-		DEBUG ("OK, listening on port " << server->serverPort ());
+		DEBUG (notr ("OK, listening on port ") << server->serverPort ());
 	}
 	else
 	{
-		DEBUG ("Listen failed");
+		DEBUG (notr ("Listen failed"));
 	}
 
 	return server->serverPort ();
@@ -151,14 +152,14 @@ void TcpProxy::slot_close ()
  */
 void TcpProxy::doClose ()
 {
-	DEBUG ("Close connection in thread " << QThread::currentThreadId ());
+	DEBUG (notr ("Close connection in thread ") << QThread::currentThreadId ());
 	closeClientSocket ();
 	closeServerSocket ();
 }
 
 void TcpProxy::closeClientSocket ()
 {
-	DEBUG ("close client socket");
+	DEBUG (notr ("close client socket"));
 	if (!clientSocket) return;
 
 	if (serverSocket) clientSocket->write (serverSocket->read (serverSocket->bytesAvailable ()));
@@ -172,7 +173,7 @@ void TcpProxy::closeClientSocket ()
 
 void TcpProxy::closeServerSocket ()
 {
-	DEBUG ("close server socket");
+	DEBUG (notr ("close server socket"));
 
 	if (!serverSocket) return;
 
@@ -187,8 +188,8 @@ void TcpProxy::closeServerSocket ()
 
 void TcpProxy::newConnection ()
 {
-	DEBUG ("new connection on thread " << QThread::currentThreadId ());
-	DEBUG (utf8 ("connecting to %1:%2").arg (serverHost).arg (serverPort));
+	DEBUG (notr ("new connection on thread ") << QThread::currentThreadId ());
+	DEBUG (notr ("connecting to %1:%2").arg (serverHost).arg (serverPort));
 
 	delete serverSocket;
 	serverSocket=new QTcpSocket (this);
@@ -211,16 +212,16 @@ void TcpProxy::newConnection ()
 
 void TcpProxy::clientRead ()
 {
-	DEBUG ("write to server..." << clientSocket->bytesAvailable ());
+	DEBUG (notr ("write to server...") << clientSocket->bytesAvailable ());
 
 	if (serverSocket) serverSocket->write (clientSocket->readAll ());
 
-	DEBUG ("done");
+	DEBUG (notr ("done"));
 }
 
 void TcpProxy::serverRead ()
 {
-	DEBUG ("write to client..." << serverSocket->bytesAvailable ());
+	DEBUG (notr ("write to client...") << serverSocket->bytesAvailable ());
 
 	if (readTimedOut)
 	{
@@ -233,30 +234,30 @@ void TcpProxy::serverRead ()
 	if (clientSocket) clientSocket->write (serverSocket->readAll ());
 
 
-	DEBUG ("done");
+	DEBUG (notr ("done"));
 }
 
 void TcpProxy::clientClosed ()
 {
-	DEBUG ("client closed");
+	DEBUG (notr ("client closed"));
 	doClose ();
 }
 
 void TcpProxy::serverClosed ()
 {
-	DEBUG ("server closed");
+	DEBUG (notr ("server closed"));
 	doClose ();
 }
 
 void TcpProxy::clientError ()
 {
-	DEBUG ("client error");
+	DEBUG (notr ("client error"));
 	doClose ();
 }
 
 void TcpProxy::serverError ()
 {
-	DEBUG ("server error");
+	DEBUG (notr ("server error"));
 	doClose ();
 }
 
