@@ -2650,14 +2650,44 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
         <translation>Fehler: auf der Navigationsseite wurde kein Link zur Animation gefunden</translation>
     </message>
     <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="62"/>
+        <source>Downloading radar animation (2)...</source>
+        <translation>Radaranimation herunterladen (2)...</translation>
+    </message>
+    <message>
         <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="67"/>
         <source>Error: no animation was found on the weather page</source>
         <translation>Fehler: auf der Wetterseite wurde keine Animation gefunden</translation>
     </message>
     <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="70"/>
+        <source>Downloading radar animation (3)...</source>
+        <translation>Radaranimation herunterladen (3)...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="74"/>
+        <source>Saving radar animation</source>
+        <translation>Radaranimation speichern</translation>
+    </message>
+    <message>
         <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="76"/>
         <source>Error reading the animation</source>
         <translation>Fehler beim Lesen der Animation</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="90"/>
+        <source>Error: navigation page not found (404)</source>
+        <translation>Fehler: Navigationsseite nicht gefunden (404)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="93"/>
+        <source>Error: radar page not found (404)</source>
+        <translation>Fehler: Radarseite nicht gefunden (404)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="96"/>
+        <source>Error: radar animation not found (404)</source>
+        <translation>Fehler: Radaranimation nicht gefunden (404)</translation>
     </message>
 </context>
 <context>

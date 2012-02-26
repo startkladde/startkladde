@@ -59,7 +59,7 @@ void WetterOnlineAnimationPlugin::downloadSucceeded (int state, QNetworkReply *r
 			if (isBlank (radarPagePath)) OUTPUT_AND_RETURN (tr ("Error: no animation link was found on the navigation page"));
 			QString radarPageUrl=QString ("http://www.wetteronline.de/%1").arg (radarPagePath);
 			downloader->startDownload (stateRadarPage, radarPageUrl);
-			outputText (utf8 ("Radarbild herunterladen (2)..."));
+			outputText (tr ("Downloading radar animation (2)..."));
 		} break;
 		case stateRadarPage:
 		{
@@ -67,11 +67,11 @@ void WetterOnlineAnimationPlugin::downloadSucceeded (int state, QNetworkReply *r
 			if (isBlank (radarImagePath)) OUTPUT_AND_RETURN (tr ("Error: no animation was found on the weather page"));
 			QString radarImageUrl=QString ("http://www.wetteronline.de/%1").arg (radarImagePath);
 			downloader->startDownload (stateRadarImage, radarImageUrl);
-			outputText (utf8 ("Radarbild herunterladen (3)..."));
+			outputText (tr ("Downloading radar animation (3)..."));
 		} break;
 		case stateRadarImage:
 		{
-			outputText (utf8 ("Radarbild speichern"));
+			outputText (tr ("Saving radar animation"));
 			SkMovie movie (reply);
 			if (!movie.getMovie ()->isValid ()) OUTPUT_AND_RETURN (tr ("Error reading the animation"));
 			movie.getMovie ()->setSpeed (200);
@@ -87,13 +87,13 @@ void WetterOnlineAnimationPlugin::downloadFailed (int state, QNetworkReply *repl
 		switch ((State)state)
 		{
 			case stateNavigationPage:
-				outputText (utf8 ("Fehler: Navigationsseite nicht gefunden (404)"));
+				outputText (tr ("Error: navigation page not found (404)"));
 				break;
 			case stateRadarPage:
-				outputText (utf8 ("Fehler: Radarseite nicht gefunden (404)"));
+				outputText (tr ("Error: radar page not found (404)"));
 				break;
 			case stateRadarImage:
-				outputText (utf8 ("Fehler: Radarfilm nicht gefunden (404)"));
+				outputText (tr ("Error: radar animation not found (404)"));
 				break;
 		}
 	}
