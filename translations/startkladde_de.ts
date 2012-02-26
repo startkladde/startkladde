@@ -2517,6 +2517,37 @@ Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder 
     </message>
 </context>
 <context>
+    <name>SunsetPluginSettingsPane</name>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.cpp" line="135"/>
+        <source>not found</source>
+        <translation>nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.cpp" line="137"/>
+        <source>does not exist</source>
+        <translation>existiert nicht</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.cpp" line="139"/>
+        <source>%1
+Error: %2</source>
+        <translation>%1
+Fehler: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.cpp" line="149"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.cpp" line="159"/>
+        <source>unknown</source>
+        <translation>unbekannt</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.cpp" line="161"/>
+        <source>invalid</source>
+        <translation>ungültig</translation>
+    </message>
+</context>
+<context>
     <name>SunsetPluginSettingsPaneClass</name>
     <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="14"/>
