@@ -105,8 +105,11 @@ def tr_missing_line(line)
 	# been used
 	line.gsub!(/qApp ?-> ?translate ?\( ?"[^"]*" ?, ?"[^"]*" ?\)/, '')
 
-	# We could not remove all other valid tr functions, but this approach is
-	# good, too:
+	# Remove two-argument form of tr
+	line.gsub!(/tr ?\( ?"[^"]*" ?, ?"[^"]*" ?\)/, '')
+
+	# We could now remove all other valid tr functions, but this approach is
+	# easier to read for everything that has the form foo("..."):
 	# Scan the string for quote strings with what is before
 	#    any number of non-quotes
 	#    |    quote
@@ -215,6 +218,9 @@ def test_tr_missing_line
 		['foo=qnotr("moo");'              , false],
 		['foo=fauxtr ("moo");'            , true ],
 		['foo=fauxtr("moo");'             , true ],
+
+		# With two-argument form of tr
+		['foo=tr ("moo", "disambiguation")', false],
 
 		# With escaped quotes
 		['foo=tr ("foo\\"bar")',           false], # Single escaped quote
