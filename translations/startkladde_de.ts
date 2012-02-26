@@ -1854,6 +1854,69 @@ aktiviert werden.</translation>
     </message>
 </context>
 <context>
+    <name>PlaneLog</name>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="357"/>
+        <source>Registration</source>
+        <translation>Kennzeichen</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="358"/>
+        <source>Model</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="359"/>
+        <source>Date</source>
+        <translation>Datum</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="360"/>
+        <source>Pilot</source>
+        <translation>Pilot</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="361"/>
+        <source>Passengers</source>
+        <translation>Insassen</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="362"/>
+        <source>Departure location</source>
+        <translation>Startort</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="363"/>
+        <source>Landing location</source>
+        <translation>Zielort</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="364"/>
+        <source>Departure time</source>
+        <translation>Startzeit</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="365"/>
+        <source>Landing time</source>
+        <translation>Landezeit</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="366"/>
+        <source>Number of landings</source>
+        <translation>Anzahl Landungen</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="367"/>
+        <source>Time airborne</source>
+        <translation>Betriebsdauer</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="368"/>
+        <source>Comments</source>
+        <translation>Bemerkungen</translation>
+    </message>
+</context>
+<context>
     <name>PlaneLog::Entry</name>
     <message>
         <location filename="../src/statistics/PlaneLog.cpp" line="49"/>
