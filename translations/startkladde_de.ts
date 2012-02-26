@@ -2680,6 +2680,15 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
     </message>
 </context>
 <context>
+    <name>SunsetTimePlugin</name>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetTimePlugin.cpp" line="59"/>
+        <source> UTC</source>
+        <comment>With leading space</comment>
+        <translation> UTC</translation>
+    </message>
+</context>
+<context>
     <name>TestPluginSettingsPaneClass</name>
     <message>
         <location filename="../src/plugins/info/test/TestPluginSettingsPane.ui" line="14"/>
