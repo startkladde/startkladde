@@ -3,6 +3,7 @@
 # Finds lines containing strings without tr(), notr() or qnotr().
 # Usage:
 #   find_missing_tr file, file, ... - process files
+#   find_missing_tr -a              - process automatically found files
 #   find_missing_tr -t              - runs integrated unit tests
 
 # Shortcomings:
@@ -230,6 +231,9 @@ end
 if ARGV==['-t']
 	test_remove_c_comments
 	test_tr_missing_line
+elsif ARGV==['-a']
+#	`find . -iname *.cpp`
+	system("find . -iname \\*.cpp |grep -v moc_ |grep -v migrations/Migration_ |grep -v ./test/ |xargs #{$0}")
 else
 	process_files ARGV
 end
