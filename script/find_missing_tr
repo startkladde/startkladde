@@ -75,11 +75,21 @@ end
 # This may have false positives, but it should not have false negatives (i. e.
 # it should accept all lines that have a missing tr)
 def tr_missing_line(line)
+	# We'll be modifying the line
+	line=line.dup
+
 	# Remove comments (//...)
 	line.gsub!(/\/\/.*/, '')
 
-	# Don't consider includes (only at the beginning of the line, optionally indendet)
+	# Compact whitespace
+	line.gsub!(/\s+/, ' ')
+
+	# Don't consider includes (only at the beginning of the line, optionally indented)
 	return false if line =~ /^\s*#include/
+
+	# Remove qApp->translate ("context", "string")
+	line.gsub!(/qApp ?-> ?translate ?\( ?"[^"]*" ?, ?"[^"]*" ?\)/, '')
+
 
 	# Scan the string for quote strings with what is before
 	#   any number of non-quotes
@@ -187,6 +197,10 @@ def test_tr_missing_line
 		['foo=qnotr("moo");'              , false],
 		['foo=fauxtr ("moo");'            , true ],
 		['foo=fauxtr("moo");'             , true ],
+
+		# With more complex tr
+		['foo=qApp->translate("context","moo")'                        , false], # No whitespace
+		[' foo  =  qApp  ->  translate  (  " context "  ,  " moo "  ) ', false], # Lots of whitespace
 
 		# Multi-line strings
 		#["foo=\"moo\nbert\";" , false], # Multi-line string - not supported
