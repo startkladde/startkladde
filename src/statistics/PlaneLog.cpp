@@ -8,6 +8,7 @@
 #include "src/model/Person.h"
 #include "src/text.h"
 #include "src/util/qString.h"
+#include "src/notr.h"
 
 // ************************
 // ** Entry construction **
@@ -36,26 +37,26 @@ QString PlaneLog::Entry::numPassengersString () const
 	if (minPassengers==maxPassengers)
 		return QString::number (minPassengers);
 	else if (minPassengers==1 && maxPassengers==2)
-		return "1/2";
+		return notr ("1/2");
 	else
 		// Should not happen: entries for non-gliders cannot be merged
-		return QString ("%1-%2").arg (minPassengers).arg (maxPassengers);
+		return QString (notr ("%1-%2")).arg (minPassengers).arg (maxPassengers);
 }
 
 QString PlaneLog::Entry::departureTimeText () const
 {
 	if (departureTime.isValid ())
-		return departureTime.toUTC ().toString ("hh:mm")+"Z";
+		return departureTime.toUTC ().toString (tr ("hh:mm"))+tr ("Z");
 	else
-		return "-";
+		return notr ("-");
 }
 
 QString PlaneLog::Entry::landingTimeText () const
 {
 	if (landingTime.isValid ())
-		return landingTime.toUTC ().toString ("hh:mm")+"Z";
+		return landingTime.toUTC ().toString (tr ("hh:mm"))+tr ("Z");
 	else
-		return "-";
+		return notr ("-");
 }
 
 QVariant PlaneLog::Entry::numLandingsText () const
@@ -63,16 +64,16 @@ QVariant PlaneLog::Entry::numLandingsText () const
 	if (numLandings>0)
 		return numLandings;
 	else
-		return "-";
+		return notr ("-");
 }
 
 QString PlaneLog::Entry::operationTimeText () const
 {
 	// Operation times >24h may be valid, so use isNull rather than isValid
 	if (!operationTime.isNull ())
-		return operationTime.toString ("h:mm");
+		return operationTime.toString (tr ("h:mm"));
 	else
-		return "-";
+		return notr ("-");
 }
 
 // ********************
@@ -160,12 +161,13 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<Flight> &flights, Cache &ca
 		if (flight.isTowflight ()) ++numTowFlights;
 	}
 
+	// TODO TR: use count form of tr? Should be capitalized? Works corectly?
 	if (numTowFlights==1)
-		comments << utf8 ("Schleppflug");
+		comments << tr ("towflight");
 	else if (numTowFlights>1)
-		comments << utf8 ("Schleppflüge");
+		comments << tr ("towflights");
 
-	entry.comments=comments.join ("; ");
+	entry.comments=comments.join (notr ("; "));
 
 	delete plane;
 	delete pilot;
@@ -352,18 +354,18 @@ QVariant PlaneLog::headerData (int section, Qt::Orientation orientation, int rol
 		{
 			switch (section)
 			{
-				case 0: return "Kennzeichen"; break;
-				case 1: return "Typ"; break;
-				case 2: return "Datum"; break;
+				case 0: return "Registration"; break;
+				case 1: return "Model"; break;
+				case 2: return "Date"; break;
 				case 3: return "Pilot"; break;
-				case 4: return "Insassen"; break;
-				case 5: return "Startort"; break;
-				case 6: return "Zielort"; break;
-				case 7: return "Startzeit"; break;
-				case 8: return "Landezeit"; break;
-				case 9: return "Landungen"; break;
-				case 10: return "Betriebsdauer"; break;
-				case 11: return "Bemerkungen"; break;
+				case 4: return "Passengers"; break;
+				case 5: return "Departure location"; break;
+				case 6: return "Landing location"; break;
+				case 7: return "Departure time"; break;
+				case 8: return "Landing time"; break;
+				case 9: return "Number of landings"; break;
+				case 10: return "Time airborne"; break;
+				case 11: return "Comments"; break;
 			}
 		}
 		else

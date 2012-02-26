@@ -41,7 +41,7 @@ QString toString (const QDate &date, bool zeroPad)
 QString toString (const QDate &first, const QDate &last, const QString &separator, bool zeroPad)
 {
 	if (!first.isValid () || !last.isValid ())
-		return utf8 ("Ungültig");
+		return ("ungültig");
 	else if (first==last)
 		return toString (first, zeroPad);
 	else

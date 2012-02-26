@@ -561,6 +561,24 @@ Die Vorauswahl wird beim nächsten Programmstart zurückgesetzt.</translation>
     </message>
 </context>
 <context>
+    <name>LaunchMethodStatistics</name>
+    <message>
+        <location filename="../src/statistics/LaunchMethodStatistics.cpp" line="75"/>
+        <source>Towflights</source>
+        <translation>Schleppflüge</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/LaunchMethodStatistics.cpp" line="128"/>
+        <source>Launch method</source>
+        <translation>Startart</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/LaunchMethodStatistics.cpp" line="129"/>
+        <source>Number of launches</source>
+        <translation>Anzahl Starts</translation>
+    </message>
+</context>
+<context>
     <name>LongitudeInputClass</name>
     <message>
         <location filename="../src/gui/widgets/LongitudeInput.ui" line="14"/>
@@ -1705,6 +1723,89 @@ aktiviert werden.</translation>
     </message>
 </context>
 <context>
+    <name>PilotLog</name>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="260"/>
+        <source>Date</source>
+        <translation>Datum</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="261"/>
+        <source>Model</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="262"/>
+        <source>Registration</source>
+        <translation>Kennzeichen</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="263"/>
+        <source>Pilot</source>
+        <translation>Pilot</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="264"/>
+        <source>Copilot</source>
+        <translation>Begleiter</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="265"/>
+        <source>Launch method</source>
+        <translation>Startart</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="266"/>
+        <source>Departure location</source>
+        <translation>Startort</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="267"/>
+        <source>Landing location</source>
+        <translation>Zielort</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="268"/>
+        <source>Departure time</source>
+        <translation>Startzeit</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="269"/>
+        <source>Landing time</source>
+        <translation>Landezeit</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="270"/>
+        <source>Flight duration</source>
+        <translation>Flugdauer</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="271"/>
+        <source>Comments</source>
+        <translation>Bemerkungen</translation>
+    </message>
+</context>
+<context>
+    <name>PilotLog::Entry</name>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="36"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="41"/>
+        <source>hh:mm</source>
+        <translation>hh:mm</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="36"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="41"/>
+        <source>Z</source>
+        <translation>Z</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="46"/>
+        <source>h:mm</source>
+        <translation>h:mm</translation>
+    </message>
+</context>
+<context>
     <name>PlaneEditorPaneClass</name>
     <message>
         <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.ui" line="14"/>
@@ -1750,6 +1851,36 @@ aktiviert werden.</translation>
         <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.ui" line="147"/>
         <source>?</source>
         <translation>?</translation>
+    </message>
+</context>
+<context>
+    <name>PlaneLog::Entry</name>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="49"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="57"/>
+        <source>hh:mm</source>
+        <translation>hh:mm</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="49"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="57"/>
+        <source>Z</source>
+        <translation>Z</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="74"/>
+        <source>h:mm</source>
+        <translation>h:mm</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="166"/>
+        <source>towflight</source>
+        <translation>Schleppflug</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="168"/>
+        <source>towflights</source>
+        <translation>Schleppflüge</translation>
     </message>
 </context>
 <context>

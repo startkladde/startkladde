@@ -1,5 +1,7 @@
 #include "qString.h"
 
+#include "src/notr.h"
+
 /**
  * A shortcut for QString::fromUtf8
  *
@@ -29,6 +31,6 @@ QString std2q (const std::string &s)
 /** Converts a QString to a std::string */
 std::string q2std (const QString &s)
 {
-	if (s.isNull ()) return "";
+	if (s.isNull ()) return notr ("");
 	return std::string (s.toUtf8 ().constData ());
 }

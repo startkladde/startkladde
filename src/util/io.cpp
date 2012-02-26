@@ -13,6 +13,7 @@
 #include <QRect>
 
 #include "src/util/qString.h"
+#include "src/notr.h"
 
 QString readLineUtf8 (QIODevice &device)
 {
@@ -45,6 +46,6 @@ QString findInIoDevice (QIODevice &device, const QRegExp &regexp, int group)
 
 std::ostream &operator<< (std::ostream &ostream, const QRect &rect)
 {
-	ostream << QString ("%1x%2+%3+%4").arg (rect.width ()).arg (rect.height ()).arg (rect.x ()).arg (rect.y ());
+	ostream << qnotr ("%1x%2+%3+%4").arg (rect.width ()).arg (rect.height ()).arg (rect.x ()).arg (rect.y ());
 	return ostream;
 }

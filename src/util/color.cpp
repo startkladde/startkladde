@@ -9,6 +9,8 @@
 
 #include <QColor>
 
+#include "src/notr.h"
+
 /**
  * Outputs a QColor to a stream in the form "r,g,b"
  *
@@ -19,9 +21,9 @@
 std::ostream &operator<< (std::ostream &s, const QColor &c)
 {
 	if (c.isValid ())
-		return s << c.red () << "," <<  c.green () << "," << c.blue ();
+		return s << c.red () << notr (",") <<  c.green () << notr (",") << c.blue ();
 	else
-		return s << "-";
+		return s << notr ("-");
 }
 
 QColor interpol (float position, const QColor &color0, const QColor &color1)

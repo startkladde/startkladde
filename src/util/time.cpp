@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "src/Longitude.h"
+#include "src/notr.h"
 
 /**
  * Returns a copy of a time with the seconds set to 0
@@ -58,16 +59,16 @@ QString formatDuration (int seconds, bool includeSeconds)
 	uint hours=minutes/60;
 	minutes=minutes%60;
 
-	QString sign=negative?"-":"";
+	QString sign=negative?notr ("-"):notr ("");
 
 	if (includeSeconds)
-		return QString ("%1%2:%3:%4")
+		return qnotr ("%1%2:%3:%4")
 			.arg (sign)
 			.arg (hours)
 			.arg (minutes, 2, 10, QChar ('0'))
 			.arg (seconds, 2, 10, QChar ('0'));
 	else
-		return QString ("%1%2:%3")
+		return qnotr ("%1%2:%3")
 			.arg (sign)
 			.arg (hours)
 			.arg (minutes, 2, 10, QChar ('0'));
