@@ -13,7 +13,7 @@
 #     correctly, but that's ugly anyway and can be replaced with C string
 #     concatenation
 #   * does not know about the preprocessor, so "#define mytr tr" won't be
-#     handle properly
+#     handled properly
 # None of these shortcomings (should) produce false negatives, so we won't miss
 # any missing tr.
 
@@ -69,28 +69,35 @@ def tr_missing_part(part)
 		end
 	else
 		# This part does not contain a quoted string.
+		false
 	end
 end
 
 # This may have false positives, but it should not have false negatives (i. e.
 # it should accept all lines that have a missing tr)
 def tr_missing_line(line)
-	# We'll be modifying the line
+	# We'll be modifying the line, make a copy
 	line=line.dup
 
-	# Remove comments (//...)
+	# Remove comments (//...) - any string in a comment is not considered a
+	# missing tr
 	line.gsub!(/\/\/.*/, '')
 
-	# Compact whitespace
+	# Replace any whitespace with a single space to simplify regexps
 	line.gsub!(/\s+/, ' ')
 
-	# Don't consider includes (only at the beginning of the line, optionally indented)
+	# Don't consider includes (only at the beginning of the line, optionally
+	# indented). A line with an include statement cannot contain any other
+	# statements, so we can return false right away if we find an include
+	# statement.
 	return false if line =~ /^\s*#include/
 
-	# Remove qApp->translate ("context", "string")
+	# Remove qApp->translate ("context", "string") - a valid tr function has
+	# been used
 	line.gsub!(/qApp ?-> ?translate ?\( ?"[^"]*" ?, ?"[^"]*" ?\)/, '')
 
-
+	# We could not remove all other valid tr functions, but this approach is
+	# good, too:
 	# Scan the string for quote strings with what is before
 	#   any number of non-quotes
 	#   |    quote
