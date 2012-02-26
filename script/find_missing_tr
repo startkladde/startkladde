@@ -58,6 +58,7 @@ def remove_c_comments(string)
 end
 
 def tr_missing_part(part)
+	#puts "    #{part}"
 	if part =~ /"/
 		# This part contains a quoted string. Return true unless it is preceded by
 		# one of the tr functions - tr, notr and qnotr - after a non-word character
@@ -86,6 +87,13 @@ def tr_missing_line(line)
 	# Replace any whitespace with a single space to simplify regexps
 	line.gsub!(/\s+/, ' ')
 
+	# Replace two consecutive backslashes (escaped backslash) with an
+	# underscore to prevent escaped backslashes escaping anything else
+	line.gsub!(/\\\\/, '')
+
+	# Remove quotes preceded by a backslash, they do not count as quotes
+	line.gsub!(/\\"/, '')
+
 	# Don't consider includes (only at the beginning of the line, optionally
 	# indented). A line with an include statement cannot contain any other
 	# statements, so we can return false right away if we find an include
@@ -99,14 +107,16 @@ def tr_missing_line(line)
 	# We could not remove all other valid tr functions, but this approach is
 	# good, too:
 	# Scan the string for quote strings with what is before
-	#   any number of non-quotes
-	#   |    quote
-	#   |    |any number of non-quotes
-	#   |    ||    quote
-	#   |    ||    |
-	re=/[^"]*"[^"]*"/
+	#    any number of non-quotes
+	#    |    quote
+	#    |    |any number of non-quotes
+	#    |    ||     quote
+	#    |    ||     |or
+	#    |    ||     ||end of line
+	#    |    ||     |||
+	re=/([^"]*"[^"]*("|$))/
 	line.scan(re) { |match|
-		part=match # If the RE contains groups, this will be an array
+		part=match[0] # If the RE contains groups, this will be an array
 		return true if tr_missing_part(part)
 	}
 
@@ -204,6 +214,11 @@ def test_tr_missing_line
 		['foo=qnotr("moo");'              , false],
 		['foo=fauxtr ("moo");'            , true ],
 		['foo=fauxtr("moo");'             , true ],
+
+		# With escaped quotes
+		['foo=tr ("foo\\"bar")',           false], # Single escaped quote
+		['foo=tr ("foo\\"bar\\"baz")',     false], # Multiple escaped quotes
+		['foo=tr ("foo\\\\"bar\\\\"baz")', true],  # Now they are not escaped and actually end the string
 
 		# With more complex tr
 		['foo=qApp->translate("context","moo")'                        , false], # No whitespace
