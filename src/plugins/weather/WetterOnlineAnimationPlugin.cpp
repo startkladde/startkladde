@@ -57,7 +57,7 @@ void WetterOnlineAnimationPlugin::downloadSucceeded (int state, QNetworkReply *r
 		{
 			QString radarPagePath=findInIoDevice (*reply, QRegExp (notr ("a href.*a href=\"\\/([^\"]*)\".*Loop 3 Stunden")), 1);
 			if (isBlank (radarPagePath)) OUTPUT_AND_RETURN (tr ("Error: no animation link was found on the navigation page"));
-			QString radarPageUrl=QString ("http://www.wetteronline.de/%1").arg (radarPagePath);
+			QString radarPageUrl=qnotr ("http://www.wetteronline.de/%1").arg (radarPagePath);
 			downloader->startDownload (stateRadarPage, radarPageUrl);
 			outputText (tr ("Downloading radar animation (2)..."));
 		} break;
@@ -65,7 +65,7 @@ void WetterOnlineAnimationPlugin::downloadSucceeded (int state, QNetworkReply *r
 		{
 			QString radarImagePath=findInIoDevice (*reply, QRegExp (notr ("(daten\\/radar[^\")]*)\""), 1);
 			if (isBlank (radarImagePath)) OUTPUT_AND_RETURN (tr ("Error: no animation was found on the weather page"));
-			QString radarImageUrl=QString ("http://www.wetteronline.de/%1").arg (radarImagePath);
+			QString radarImageUrl=qnotr ("http://www.wetteronline.de/%1").arg (radarImagePath);
 			downloader->startDownload (stateRadarImage, radarImageUrl);
 			outputText (tr ("Downloading radar animation (3)..."));
 		} break;
