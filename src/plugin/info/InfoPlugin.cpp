@@ -11,6 +11,7 @@
 #include <QDebug>
 
 #include "src/plugin/info/InfoPluginSettingsPane.h"
+#include "src/notr.h"
 
 InfoPlugin::InfoPlugin (QString caption, bool enabled):
 	caption (caption), enabled (enabled)
@@ -49,8 +50,8 @@ PluginSettingsPane *InfoPlugin::createSettingsPane (QWidget *parent)
  */
 void InfoPlugin::readSettings (const QSettings &settings)
 {
-	caption=settings.value ("caption", getName ()).toString ();
-	enabled=settings.value ("enabled", true).toBool ();
+	caption=settings.value (notr ("caption"), getName ()).toString ();
+	enabled=settings.value (notr ("enabled"), true).toBool ();
 	infoPluginReadSettings (settings);
 }
 
@@ -63,8 +64,8 @@ void InfoPlugin::readSettings (const QSettings &settings)
  */
 void InfoPlugin::writeSettings (QSettings &settings)
 {
-	settings.setValue ("caption", caption);
-	settings.setValue ("enabled", enabled);
+	settings.setValue (notr ("caption"), caption);
+	settings.setValue (notr ("enabled"), enabled);
 	infoPluginWriteSettings (settings);
 }
 
