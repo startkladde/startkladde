@@ -7,6 +7,7 @@
 
 #include "src/io/AnsiColors.h"
 #include "src/util/qString.h"
+#include "src/notr.h"
 
 QString timestamp ()
 {
@@ -23,7 +24,7 @@ void log_message (const QString &message)
 	 */
 {
 	AnsiColors c;
-	std::cout << QString ("%1%2: %3%4")
+	std::cout << qnotr ("%1%2: %3%4")
 		.arg (c.yellow (), timestamp (), message, c.reset ()) << std::endl;
 }
 
@@ -37,6 +38,6 @@ void log_error (const QString &message)
 	 */
 {
 	AnsiColors c;
-	std::cerr << QString ("%1%2: Error: %3%4")
+	std::cerr << qnotr ("%1%2: Error: %3%4")
 		.arg (c.red (), timestamp (), message, c.reset ()) << std::endl;
 }
