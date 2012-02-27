@@ -142,6 +142,44 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>ExternalInfoPlugin</name>
+    <message>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="72"/>
+        <source>No command specified</source>
+        <translation>Kein Kommando angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="79"/>
+        <source>Command not found</source>
+        <translation>Kommanod nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="80"/>
+        <source>Command does not exist</source>
+        <translation>Kommando existiert nicht</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="82"/>
+        <source>Error: %1</source>
+        <translation>Fehler: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="83"/>
+        <source>Process started</source>
+        <translation>Prozess gestartet</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="96"/>
+        <source>%1; rich text</source>
+        <translation>%1; Rich text</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="98"/>
+        <source>%1; plain text</source>
+        <translation>%1; Standardtext</translation>
+    </message>
+</context>
+<context>
     <name>ExternalInfoPluginSettingsPaneClass</name>
     <message>
         <location filename="../src/plugins/info/external/ExternalInfoPluginSettingsPane.ui" line="20"/>

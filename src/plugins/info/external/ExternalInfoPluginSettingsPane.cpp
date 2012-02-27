@@ -3,6 +3,7 @@
 #include "src/util/qString.h"
 #include "src/gui/dialogs.h"
 #include "src/plugins/info/external/ExternalInfoPlugin.h"
+#include "src/notr.h"
 
 // TODO: file resolving sunset plugin style
 
@@ -33,7 +34,7 @@ bool ExternalInfoPluginSettingsPane::writeSettings ()
 
 void ExternalInfoPluginSettingsPane::on_browseButton_clicked ()
 {
-	QString command=Plugin::browse (ui.commandInput->text (), "*", getEffectivePluginPaths (), this);
+	QString command=Plugin::browse (ui.commandInput->text (), notr ("*"), getEffectivePluginPaths (), this);
 
 	if (!command.isEmpty ())
 		ui.commandInput->setText (command);

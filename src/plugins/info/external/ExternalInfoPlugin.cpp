@@ -26,9 +26,13 @@
 #include "src/text.h"
 #include "src/util/qString.h"
 #include "src/config/Settings.h"
+#include "src/notr.h"
 
 REGISTER_PLUGIN (InfoPlugin, ExternalInfoPlugin)
-SK_PLUGIN_DEFINITION (ExternalInfoPlugin, "{2fbb91be-bde5-4fba-a3c7-69d7caf827a5}", "Extern",
+SK_PLUGIN_DEFINITION (
+	ExternalInfoPlugin,
+	"{2fbb91be-bde5-4fba-a3c7-69d7caf827a5}",
+	"Extern",
 	utf8 ("Empfängt Daten von einem externen Programm"))
 
 ExternalInfoPlugin::ExternalInfoPlugin (const QString &caption, bool enabled, const QString &command, bool richText):
@@ -52,32 +56,32 @@ PluginSettingsPane *ExternalInfoPlugin::infoPluginCreateSettingsPane (QWidget *p
 
 void ExternalInfoPlugin::infoPluginReadSettings (const QSettings &settings)
 {
-	command =settings.value ("command" , command ).toString ();
-	richText=settings.value ("richText", richText).toBool ();
+	command =settings.value (notr ("command") , command ).toString ();
+	richText=settings.value (notr ("richText"), richText).toBool ();
 }
 
 void ExternalInfoPlugin::infoPluginWriteSettings (QSettings &settings)
 {
-	settings.setValue ("command" , command );
-	settings.setValue ("richText", richText);
+	settings.setValue (notr ("command") , command );
+	settings.setValue (notr ("richText"), richText);
 }
 
 void ExternalInfoPlugin::start ()
 {
 	terminate ();
 
-	if (isBlank (command)) OUTPUT_AND_RETURN ("Kein Kommando angegeben");
+	if (isBlank (command)) OUTPUT_AND_RETURN (tr ("No command specified"));
 
 	QString commandProper;
 	QString parameters;
 	SkProcess::splitCommand (commandProper, parameters, command);
 
 	QString resolved=resolveFilename (commandProper, Settings::instance ().pluginPaths);
-	if (isBlank (resolved)) OUTPUT_AND_RETURN ("Kommando nicht gefunden");
-	if (!QFile::exists (resolved)) OUTPUT_AND_RETURN ("Kommando existiert nicht");
+	if (isBlank (resolved)) OUTPUT_AND_RETURN (tr ("Command not found"));
+	if (!QFile::exists (resolved)) OUTPUT_AND_RETURN (tr ("Command does not exist"));
 
-	if (!process->startAndWait (resolved+" "+parameters)) OUTPUT_AND_RETURN (QString ("Fehler: %1").arg (process->getProcess ()->errorString ()));
-	outputText ("Prozess gestartet");
+	if (!process->startAndWait (resolved+notr (" ")+parameters)) OUTPUT_AND_RETURN (tr ("Error: %1").arg (process->getProcess ()->errorString ()));
+	outputText (tr ("Process started"));
 
 	// Note that on Windows, we may have to add the interpreter explicitly.
 }
@@ -89,7 +93,10 @@ void ExternalInfoPlugin::terminate ()
 
 QString ExternalInfoPlugin::configText () const
 {
-	return utf8 ("„%1“, %2 text").arg (command, richText?"rich":"plain");
+	if (richText)
+		return tr ("%1; rich text").arg (command);
+	else
+		return tr ("%1; plain text").arg (command);
 }
 
 void ExternalInfoPlugin::lineReceived (const QString &line)
