@@ -8,6 +8,7 @@
 #include <QResizeEvent>
 
 #include "src/config/Settings.h" // TODO remove dependency, set from MainWindow
+#include "src/notr.h"
 
 
 WeatherWidget::WeatherWidget (QWidget *parent):
@@ -56,7 +57,7 @@ void WeatherWidget::setMovie (SkMovie &movie)
 	setWordWrap (false);
 
 	// Clear the contents so we can delete the movie
-	setText ("");
+	setText (notr (""));
 
 	SkLabel::setMovie (movie.getMovie ());
 	movie.getMovie ( )->start ();

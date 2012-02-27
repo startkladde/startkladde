@@ -28,10 +28,11 @@ template<class T> ObjectSelectWindow<T>::ObjectSelectWindow (const QList<T> &obj
 
 	if (enableSpecialEntries)
 	{
-		unknownItem=new SkTreeWidgetItem (ui.objectList, "(Unbekannt)");
+		// TODO TR seems like template classes are not processed by lupdate
+		unknownItem=new SkTreeWidgetItem (ui.objectList, tr ("(Unknown)")); //tr (Unbekannt)
 		unknownItem->setFirstColumnSpanned (true);
 
-		newItem=new SkTreeWidgetItem (ui.objectList, "(Neu anlegen)");
+		newItem=new SkTreeWidgetItem (ui.objectList, tr ("(Create new)")); //tr (Neu anlegen)
 		newItem->setFirstColumnSpanned (true);
 
 		ui.objectList->setCurrentItem (unknownItem);

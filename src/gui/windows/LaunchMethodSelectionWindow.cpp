@@ -10,7 +10,7 @@ LaunchMethodSelectionWindow::LaunchMethodSelectionWindow (QWidget *parent):
 	QDialog (parent)
 {
 	ui.setupUi (this);
-	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
+	//ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 }
 
 LaunchMethodSelectionWindow::~LaunchMethodSelectionWindow ()
@@ -22,7 +22,8 @@ bool LaunchMethodSelectionWindow::select (Cache &cache, dbId &value, QWidget *pa
 {
 	if (cache.getLaunchMethods ().getList ().isEmpty ())
 	{
-		showWarning (utf8 ("Keine Startarten definiert"), utf8 ("Es kann keine Startart vorausgewählt werden, da keine Startarten definiert sind."), parent);
+		showWarning (tr ("No launch methods defined"),
+			tr ("No launch method can be preselected because no launch methods are defined."), parent);
 		return false;
 	}
 

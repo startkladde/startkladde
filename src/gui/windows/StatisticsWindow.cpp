@@ -9,7 +9,7 @@ StatisticsWindow::StatisticsWindow (QAbstractTableModel *model, bool modelOwned,
 	model (model), modelOwned (modelOwned)
 {
 	ui.setupUi(this);
-	ui.buttonBox->button (QDialogButtonBox::Close)->setText (utf8 ("&Schließen"));
+	//ui.buttonBox->button (QDialogButtonBox::Close)->setText (utf8 ("&Schließen"));
 
 	ui.table->setModel (model);
 

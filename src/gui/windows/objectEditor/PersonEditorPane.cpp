@@ -5,6 +5,7 @@
 #include "src/text.h"
 #include "src/config/Settings.h"
 #include "src/util/qString.h"
+#include "src/notr.h"
 
 /*
  * TODO: disallow person name changes; allow merges only
@@ -21,7 +22,7 @@ PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &ca
 
 	// Not pre-set because this prevents us from making the dialog smaller in
 	// Designer
-	ui.medicalCheckDisabledLabel->setText (utf8 ("Medical-Prüfung ist deaktiviert!"));
+	ui.medicalCheckDisabledLabel->setText (tr ("Medical check is disabled!"));
 	ui.medicalCheckDisabledLabel->setVisible (false);
 
 	fillData ();
@@ -47,12 +48,12 @@ template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEdi
 void PersonEditorPane::fillData ()
 {
 	// Clubs
-	ui.clubInput->addItem ("");
+	ui.clubInput->addItem (notr (""));
 	ui.clubInput->addItems (cache.getClubs ());
-	ui.clubInput->setEditText ("");
+	ui.clubInput->setEditText (notr (""));
 
-	ui.checkMedicalInput->addItem ("Ja"  , true );
-	ui.checkMedicalInput->addItem ("Nein", false);
+	ui.checkMedicalInput->addItem (tr ("Yes"), true );
+	ui.checkMedicalInput->addItem (tr ("No" ), false);
 	ui.checkMedicalInput->setCurrentItemByItemData (false);
 }
 
@@ -135,10 +136,10 @@ void PersonEditorPane::fieldsToObject (Person &person)
 	// Error checks
 
 	if (isNone (person.lastName))
-		errorCheck ("Es wurde kein Nachname angegeben.",
+		errorCheck (tr ("Last name not specified"),
 			ui.lastNameInput);
 
 	if (isNone (person.firstName))
-		errorCheck ("Es wurde kein Vorname angegeben.",
+		errorCheck (tr ("First name not specified"),
 			ui.firstNameInput);
 }

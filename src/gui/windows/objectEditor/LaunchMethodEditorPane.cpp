@@ -3,6 +3,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/db/cache/Cache.h"
 #include "src/util/qString.h"
+#include "src/notr.h"
 
 // ******************
 // ** Construction **
@@ -41,14 +42,14 @@ void LaunchMethodEditorPane::fillData ()
 	ui.typeInput->setCurrentItemByItemData (LaunchMethod::typeOther);
 
 	// Person required
-	ui.personRequiredInput->addItem ("Ja"  , true );
-	ui.personRequiredInput->addItem ("Nein", false);
+	ui.personRequiredInput->addItem (tr ("Yes"), true );
+	ui.personRequiredInput->addItem (tr ("No") , false);
 	ui.personRequiredInput->setCurrentItemByItemData (true);
 
 	// Registrations
-	ui.towplaneRegistrationInput->addItem ("");
+	ui.towplaneRegistrationInput->addItem (notr (""));
 	ui.towplaneRegistrationInput->addItems (cache.getPlaneRegistrations ());
-	ui.towplaneRegistrationInput->setEditText ("");
+	ui.towplaneRegistrationInput->setEditText (notr (""));
 }
 
 // ****************
@@ -96,7 +97,7 @@ void LaunchMethodEditorPane::fieldsToObject (LaunchMethod &launchMethod)
 	// TODO error checks:
 	//   - towplane is glider
 	//   - create towplane if it does not exist
-	requiredField (launchMethod.name     , ui.nameInput     , utf8 ("Es wurde kein Name angegeben."                 ));
-	requiredField (launchMethod.shortName, ui.shortNameInput, utf8 ("Es wurde kein Kürzel angegeben."               ));
-	requiredField (launchMethod.logString, ui.logStringInput, utf8 ("Es wurde keine Flugbuch-Bezeichnung angegeben."));
+	requiredField (launchMethod.name     , ui.nameInput     , tr ("Name not specified"         ));
+	requiredField (launchMethod.shortName, ui.shortNameInput, tr ("Short name not specified"   ));
+	requiredField (launchMethod.logString, ui.logStringInput, tr ("Logbook label not specified"));
 }

@@ -10,7 +10,7 @@ InfoPluginSelectionDialog::InfoPluginSelectionDialog (const QList<const InfoPlug
     plugins (plugins)
 {
 	ui.setupUi (this);
-	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
+	//ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
 	setup ();
 }
@@ -27,7 +27,7 @@ void InfoPluginSelectionDialog::setup ()
 	if (plugins.isEmpty ())
 	{
 		ui.pluginList->setVisible (false);
-		ui.messageLabel->setText ("Es sind keine Plugins vorhanden.");
+		ui.messageLabel->setText (tr ("There are no plugins."));
 		ui.buttonBox->button (QDialogButtonBox::Ok)->setEnabled (false);
 	}
 	else

@@ -2,6 +2,33 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="de_DE">
 <context>
+    <name>AcpiWidget</name>
+    <message>
+        <source>Battery: </source>
+        <comment>With traling space</comment>
+        <translation type="obsolete">Batterie: </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="67"/>
+        <source>battery: </source>
+        <comment>With traling space</comment>
+        <translation>Batterie: </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="71"/>
+        <source>External </source>
+        <comment>With trailing space</comment>
+        <translation>extern </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="75"/>
+        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="121"/>
+        <source>Unknown </source>
+        <comment>With trailing space</comment>
+        <translation>unbekannt </translation>
+    </message>
+</context>
+<context>
     <name>ConfirmOverwritePersonDialogClass</name>
     <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.ui" line="14"/>
@@ -492,6 +519,14 @@ geladen werden:
     </message>
 </context>
 <context>
+    <name>InfoPluginSelectionDialog</name>
+    <message>
+        <location filename="../src/plugin/info/InfoPluginSelectionDialog.cpp" line="30"/>
+        <source>There are no plugins.</source>
+        <translation>Es sind keine Plugins vorhanden.</translation>
+    </message>
+</context>
+<context>
     <name>InfoPluginSelectionDialogClass</name>
     <message>
         <location filename="../src/plugin/info/InfoPluginSelectionDialog.ui" line="14"/>
@@ -542,6 +577,34 @@ geladen werden:
     </message>
 </context>
 <context>
+    <name>LaunchMethodEditorPane</name>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="45"/>
+        <source>Yes</source>
+        <translation>Ja</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="46"/>
+        <source>No</source>
+        <translation>Nein</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="100"/>
+        <source>Name not specified</source>
+        <translation>Es wurde kein Name angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="101"/>
+        <source>Short name not specified</source>
+        <translation>Es wurde kein Kürzel angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="102"/>
+        <source>Logbook label not specified</source>
+        <translation>Es wurde keine Flugbuch-Bezeichnung angegeben</translation>
+    </message>
+</context>
+<context>
     <name>LaunchMethodEditorPaneClass</name>
     <message>
         <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.ui" line="14"/>
@@ -587,6 +650,19 @@ geladen werden:
         <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.ui" line="118"/>
         <source>&amp;Person required:</source>
         <translation>&amp;Person erforderlich:</translation>
+    </message>
+</context>
+<context>
+    <name>LaunchMethodSelectionWindow</name>
+    <message>
+        <location filename="../src/gui/windows/LaunchMethodSelectionWindow.cpp" line="25"/>
+        <source>No launch methods defined</source>
+        <translation>Keine Startarten definiert</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/LaunchMethodSelectionWindow.cpp" line="26"/>
+        <source>No launch method can be preselected because no launch methods are defined.</source>
+        <translation>Es kann keine Startart vorausgewählt werden, da keine Startarten definiert sind.</translation>
     </message>
 </context>
 <context>
@@ -1594,6 +1670,14 @@ Konfiguration: %2</translation>
     </message>
 </context>
 <context>
+    <name>ObjectEditorPaneBase</name>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/ObjectEditorPane.cpp" line="26"/>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+</context>
+<context>
     <name>ObjectEditorWindowBaseClass</name>
     <message>
         <location filename="../src/gui/windows/objectEditor/ObjectEditorWindowBase.ui" line="14"/>
@@ -1680,6 +1764,34 @@ Konfiguration: %2</translation>
         <location filename="../src/gui/windows/ObjectSelectWindowBase.ui" line="20"/>
         <source>TextLabel</source>
         <translation>TextLabel</translation>
+    </message>
+</context>
+<context>
+    <name>PersonEditorPane</name>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="25"/>
+        <source>Medical check is disabled!</source>
+        <translation>Medical-Prüfung ist deaktiviert!</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="55"/>
+        <source>Yes</source>
+        <translation>Ja</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="56"/>
+        <source>No</source>
+        <translation>Nein</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="139"/>
+        <source>Last name not specified</source>
+        <translation>Es wurde kein Nachname angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="143"/>
+        <source>First name not specified</source>
+        <translation>Es wurde kein Vorname angegeben</translation>
     </message>
 </context>
 <context>
@@ -1852,6 +1964,54 @@ aktiviert werden.</translation>
         <location filename="../src/statistics/PilotLog.cpp" line="46"/>
         <source>h:mm</source>
         <translation>h:mm</translation>
+    </message>
+</context>
+<context>
+    <name>PlaneEditorPane</name>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="136"/>
+        <source>A plane with the registration %1 already exists</source>
+        <translation>Es gibt bereits ein Flugzeug mit dem Kennzeichen %1</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="137"/>
+        <source>Plane already exists</source>
+        <translation>Flugzeug existiert bereits</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="142"/>
+        <source>Registration not specified</source>
+        <translation>Es wurde kein Kennzeichen angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="146"/>
+        <source>Category not specified</source>
+        <translation>Es wurde keine Gattung angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="151"/>
+        <source>The selected category does not match the registration</source>
+        <translation>Die angegebene Gattung passt nicht zum Kennzeichen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="155"/>
+        <source>Model not specified</source>
+        <translation>Es wurde kein Typ angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="159"/>
+        <source>Number of seats not specified</source>
+        <translation>Es wurde keine Sitzzahl angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="163"/>
+        <source>0 seats specified</source>
+        <translation>Es wurden 0 Sitze angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="168"/>
+        <source>To many seats specified for the selected category</source>
+        <translation>Es wurden zu viele Sitze für die gewählte Gattung angegeben</translation>
     </message>
 </context>
 <context>
@@ -2514,6 +2674,14 @@ Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder 
         <location filename="../src/gui/windows/SettingsWindow.ui" line="965"/>
         <source>Move selected plugin path down</source>
         <translation>Ausgewählten Plugin-Pfad nach unten verschieben</translation>
+    </message>
+</context>
+<context>
+    <name>SplashScreen</name>
+    <message>
+        <location filename="../src/gui/windows/SplashScreen.cpp" line="63"/>
+        <source>Flight log</source>
+        <translation>Hauptflugbuch</translation>
     </message>
 </context>
 <context>
