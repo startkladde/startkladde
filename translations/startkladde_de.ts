@@ -2770,6 +2770,26 @@ Fehler: %2</translation>
         <source>invalid</source>
         <translation>ungültig</translation>
     </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.cpp" line="169"/>
+        <source>Longitude correction is only possible if a
+reference longitude is specified in the data file.</source>
+        <translation>Längengradkorrektur ist nur dann möglich, wenn in
+der Datendatei ein Bezugslängengrad angegeben ist.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.cpp" line="171"/>
+        <source>Longitude correction is not possible because
+no reference longitude is specified in the data file.</source>
+        <translation>Längengradkorrektur ist nicht möglich, weil in der
+Datendatei kein Bezugslängengrad angegeben ist.</translation>
+    </message>
+    <message>
+        <source>Longitude correction is only possible if a
+reference longitude is specified in the data file</source>
+        <translation type="obsolete">Längengradkorrektur ist nur dann möglich, wenn in
+der Datendatei ein Bezugslängengrad angegeben ist.</translation>
+    </message>
 </context>
 <context>
     <name>SunsetPluginSettingsPaneClass</name>

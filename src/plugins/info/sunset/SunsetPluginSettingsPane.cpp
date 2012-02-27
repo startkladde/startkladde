@@ -163,14 +163,13 @@ void SunsetPluginSettingsPane::updateReferenceLongitudeLabel ()
 		ui.referenceLongitudeLabel->setText (referenceLongitude.format ());
 }
 
-// TODO TR
-const QString referenceLongitudeNoteRegular=
-	utf8 ("Längengradkorrektur ist nur dann möglich, wenn in\nder Datendatei ein Bezugslängengrad angegeben ist.");
-const QString referenceLongitudeNoteError=
-	utf8 ("Längengradkorrektur ist nicht möglich, weil in\nder Datendatei kein Bezugslängengrad angegeben ist.");
-
 void SunsetPluginSettingsPane::updateReferenceLongitudeNoteLabel ()
 {
+	const QString referenceLongitudeNoteRegular=
+		tr ("Longitude correction is only possible if a\nreference longitude is specified in the data file.");
+	const QString referenceLongitudeNoteError=
+		tr ("Longitude correction is not possible because\nno reference longitude is specified in the data file.");
+
 	if (fileOk && !referenceLongitude.isValid ())
 	{
 		if (ui.longitudeCorrectionCheckbox->isChecked ())
