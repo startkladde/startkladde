@@ -83,10 +83,17 @@ def tr_missing_line(line)
 
 	# Remove comments (//...) - any string in a comment is not considered a
 	# missing tr
-	line.gsub!(/\/\/.*/, '')
+	line.gsub!(/ \/\/ .* /x, '')
 
 	# Replace any whitespace with a single space to simplify regexps
-	line.gsub!(/\s+/, ' ')
+	line.gsub!(/ \s+ /, ' ')
+
+	# Remove any whitespace around operators to simplify regexps
+	#            any whitespace
+	#            |   any of parentheses, comma, operators... as a group
+	#            |   |            any whitespace
+	#            |   |            |
+	line.gsub!(/ \s* ( [-+()<>,] ) \s* /x, '\\1')
 
 	# Replace two consecutive backslashes (escaped backslash) with an
 	# underscore to prevent escaped backslashes escaping anything else
@@ -103,10 +110,10 @@ def tr_missing_line(line)
 
 	# Remove qApp->translate ("context", "string") - a valid tr function has
 	# been used
-	line.gsub!(/qApp ?-> ?translate ?\( ?"[^"]*" ?, ?"[^"]*" ?\)/, '')
+	line.gsub!(/qApp->translate \( "[^"]*" , "[^"]*" \) /x, '')
 
 	# Remove two-argument form of tr
-	line.gsub!(/tr ?\( ?"[^"]*" ?, ?"[^"]*" ?\)/, '')
+	line.gsub!(/tr \( "[^"]*" , "[^"]*" \) /x, '')
 
 	# We could now remove all other valid tr functions, but this approach is
 	# easier to read for everything that has the form foo("..."):
