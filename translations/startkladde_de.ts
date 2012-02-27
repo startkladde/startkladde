@@ -1996,6 +1996,14 @@ aktiviert werden.</translation>
     </message>
 </context>
 <context>
+    <name>Plugin</name>
+    <message>
+        <location filename="../src/plugin/Plugin.cpp" line="110"/>
+        <source>Select file</source>
+        <translation>Datei auswählen</translation>
+    </message>
+</context>
+<context>
     <name>PluginSettingsDialogClass</name>
     <message>
         <location filename="../src/plugin/settings/PluginSettingsDialog.ui" line="14"/>
@@ -2556,7 +2564,12 @@ Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder 
     <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="122"/>
         <source>Error: </source>
+        <comment>With trailing space</comment>
         <translation>Fehler: </translation>
+    </message>
+    <message>
+        <source>Error: </source>
+        <translation type="obsolete">Fehler: </translation>
     </message>
 </context>
 <context>

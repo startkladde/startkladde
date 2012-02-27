@@ -17,6 +17,7 @@
 #include "src/text.h"
 #include "src/util/qString.h"
 #include "src/util/environment.h"
+#include "src/notr.h"
 
 Plugin::Plugin ()
 {
@@ -44,8 +45,8 @@ void Plugin::restart ()
 bool Plugin::filenameIsAbsolute (const QString &filename)
 {
 	// We treat file names with the explicit directory ./ as absolute
-	if (filename.startsWith ("./")) return true;
-	if (filename.startsWith (".\\")) return true;
+	if (filename.startsWith (notr ("./"))) return true;
+	if (filename.startsWith (notr (".\\"))) return true;
 	if (QFileInfo (filename).isAbsolute ()) return true;
 
 	return false;
@@ -60,7 +61,7 @@ bool Plugin::filenameIsAbsolute (const QString &filename)
 QString Plugin::resolveFilename (const QString &filename, const QStringList &pluginPaths)
 {
 	if (isBlank (filename))
-		return "";
+		return notr ("");
 
 	// Absolute file names are not changed
 	if (filenameIsAbsolute (filename))
@@ -69,7 +70,8 @@ QString Plugin::resolveFilename (const QString &filename, const QStringList &plu
 	// Search in the plugin paths
 	foreach (const QString &path, pluginPaths)
 	{
-		QString full=path+"/"+filename;
+		// TODO TR: Qt pathname construction?
+		QString full=path+notr ("/")+filename;
 		if (QFile::exists (full))
 			return full;
 	}
@@ -82,7 +84,8 @@ QString Plugin::resolveFilename (const QString &filename, const QStringList &plu
 	QStringList systemPath=getSystemPath ();
 	foreach (const QString &path, systemPath)
 	{
-		QString full=path+"/"+filename;
+		// TODO TR: Qt pathname construction?
+		QString full=path+notr ("/")+filename;
 		if (QFile::exists (full))
 			return full;
 	}
@@ -98,13 +101,13 @@ QString Plugin::browse (const QString &currentFile, const QString &filter, const
 
 	QString dir;
 	if (resolved.isEmpty ())
-		dir=".";
+		dir=notr (".");
 	else
 		dir=QFileInfo (resolved).dir ().path ();
 
 	return QFileDialog::getOpenFileName (
 		parent,
-		utf8 ("Datei auswählen"),
+		tr ("Select file"),
 		dir,
 		filter,
 		NULL,
