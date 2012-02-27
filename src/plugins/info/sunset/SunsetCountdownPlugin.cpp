@@ -16,9 +16,14 @@
 #include "src/util/file.h"
 #include "src/util/time.h"
 #include "src/text.h"
+#include "src/notr.h"
 
 REGISTER_PLUGIN (InfoPlugin, SunsetCountdownPlugin)
-SK_PLUGIN_DEFINITION (SunsetCountdownPlugin, "{9735dfd7-ddfd-476c-affd-edbf196e0279}", "Sunset-Countdown", utf8 ("Zeigt die verbleibende Zeit bis Sonnenuntergang an"))
+SK_PLUGIN_DEFINITION (
+	SunsetCountdownPlugin,
+	"{9735dfd7-ddfd-476c-affd-edbf196e0279}",
+	"Sunset-Countdown",
+	"Zeigt die verbleibende Zeit bis Sonnenuntergang an")
 
 // ******************
 // ** Construction **
@@ -73,7 +78,7 @@ void SunsetCountdownPlugin::update ()
 
 	QString output;
 	if (seconds<0)
-		output=QString ("<font color=\"#FF0000\">%2</font>").arg (duration);
+		output=qnotr ("<font color=\"#FF0000\">%2</font>").arg (duration);
 	else
 		output=duration;
 
