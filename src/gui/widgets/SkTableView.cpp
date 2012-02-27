@@ -74,6 +74,7 @@
 #include "src/util/qString.h"
 #include "src/util/io.h" // remove
 #include "src/gui/views/SkItemDelegate.h"
+#include "src/notr.h"
 
 #include <iostream>
 #include <cassert>
@@ -311,7 +312,8 @@ bool SkTableView::focusWidgetAt (const QModelIndex &index)
  */
 void SkTableView::updateWidgetFocus (const QModelIndexList &indexes)
 {
-	assert (!"This method should not be used, it's slow.");
+	// TODO TR remove it?
+	assert (!notr ("This method should not be used, it's slow."));
 
 	// If the current selection contains a widget, focus it if it is visible
 	QWidget *widget=findVisibleWidget (indexes);
@@ -433,7 +435,7 @@ void SkTableView::readColumnWidths (QSettings &settings, const ColumnInfo &colum
 	{
 		// Determine the column name and the settings key
 		QString columnName=columnInfo.columnName (i);
-		QString key=QString ("columnWidth_%1").arg (columnName);
+		QString key=qnotr ("columnWidth_%1").arg (columnName);
 
 		// Determine the font metrics and the frame margin
 		const QFont &font=horizontalHeader ()->font ();
@@ -474,7 +476,7 @@ void SkTableView::writeColumnWidths (QSettings &settings, const ColumnInfo &colu
 	for (int i=0; i<columnInfo.columnCount (); ++i)
 	{
 		QString columnName=columnInfo.columnName (i);
-		QString key=QString ("columnWidth_%1").arg (columnName);
+		QString key=qnotr ("columnWidth_%1").arg (columnName);
 		int value=columnWidth (i);
 
 		settings.setValue (key, value);
