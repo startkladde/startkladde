@@ -2517,6 +2517,49 @@ Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder 
     </message>
 </context>
 <context>
+    <name>SunsetPluginBase</name>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="90"/>
+        <source>No file specified</source>
+        <translation>Keine Datei angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="93"/>
+        <source>File not found</source>
+        <translation>Datei nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="94"/>
+        <source>File does not exist</source>
+        <translation>Datei existiert nicht</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="102"/>
+        <source>Time for current data not found in data file</source>
+        <translation>Zeit fü® aktuelles Datum nicht in Datendatei vorhanden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="105"/>
+        <source>Invalid time format</source>
+        <translation>Ungültiges Zeitformat</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="110"/>
+        <source>No reference longitude found in data file</source>
+        <translation>Kein Bezugslängengrad in Datendatei gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="113"/>
+        <source>Invalid reference longitude</source>
+        <translation>Ungültiger Bezugslängengrad</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="122"/>
+        <source>Error: </source>
+        <translation>Fehler: </translation>
+    </message>
+</context>
+<context>
     <name>SunsetPluginSettingsPane</name>
     <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.cpp" line="135"/>
