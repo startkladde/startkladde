@@ -1614,6 +1614,43 @@ Konfiguration: %2</translation>
     </message>
 </context>
 <context>
+    <name>MetarPlugin</name>
+    <message>
+        <location filename="../src/plugins/info/metar/MetarPlugin.cpp" line="77"/>
+        <source>%1 (%2 minutes)</source>
+        <translation>%1 (%2 minutes)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/metar/MetarPlugin.cpp" line="85"/>
+        <source>No airport specified</source>
+        <translation>Kein Flughafen agegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/metar/MetarPlugin.cpp" line="87"/>
+        <source>%1 is not a valid ICAO code</source>
+        <translation>%1 ist kein gültiger ICAO-Code</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/metar/MetarPlugin.cpp" line="91"/>
+        <source>Retrieving METAR for %1...</source>
+        <translation>METAR für %1 abrufen...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/metar/MetarPlugin.cpp" line="115"/>
+        <source>Error: no METAR found for %1</source>
+        <translation>Fehler: kein METAR für %1 gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/metar/MetarPlugin.cpp" line="125"/>
+        <source>Error: METAR page not found (404)</source>
+        <translation>Fehler: METAR-Seite nicht gefunden (404)</translation>
+    </message>
+    <message>
+        <source>Error: METAR page not found</source>
+        <translation type="obsolete">Fehler: METAR-Seite nicht gefunden (404)</translation>
+    </message>
+</context>
+<context>
     <name>MetarPluginSettingsPaneClass</name>
     <message>
         <location filename="../src/plugins/info/metar/MetarPluginSettingsPane.ui" line="14"/>
@@ -1889,18 +1926,18 @@ aktiviert werden.</translation>
         <location filename="../src/statistics/PilotLog.cpp" line="36"/>
         <location filename="../src/statistics/PilotLog.cpp" line="41"/>
         <source>hh:mm</source>
-        <translation type="unfinished">hh:mm</translation>
+        <translation>hh:mm</translation>
     </message>
     <message>
         <location filename="../src/statistics/PilotLog.cpp" line="36"/>
         <location filename="../src/statistics/PilotLog.cpp" line="41"/>
         <source>Z</source>
-        <translation type="unfinished">Z</translation>
+        <translation>Z</translation>
     </message>
     <message>
         <location filename="../src/statistics/PilotLog.cpp" line="46"/>
         <source>h:mm</source>
-        <translation type="unfinished">h:mm</translation>
+        <translation>h:mm</translation>
     </message>
     <message>
         <location filename="../src/statistics/PilotLog.cpp" line="260"/>
@@ -2080,28 +2117,28 @@ aktiviert werden.</translation>
         <location filename="../src/statistics/PlaneLog.cpp" line="49"/>
         <location filename="../src/statistics/PlaneLog.cpp" line="57"/>
         <source>hh:mm</source>
-        <translation type="unfinished">hh:mm</translation>
+        <translation>hh:mm</translation>
     </message>
     <message>
         <location filename="../src/statistics/PlaneLog.cpp" line="49"/>
         <location filename="../src/statistics/PlaneLog.cpp" line="57"/>
         <source>Z</source>
-        <translation type="unfinished">Z</translation>
+        <translation>Z</translation>
     </message>
     <message>
         <location filename="../src/statistics/PlaneLog.cpp" line="74"/>
         <source>h:mm</source>
-        <translation type="unfinished">h:mm</translation>
+        <translation>h:mm</translation>
     </message>
     <message>
         <location filename="../src/statistics/PlaneLog.cpp" line="166"/>
         <source>towflight</source>
-        <translation type="unfinished">Schleppflug</translation>
+        <translation>Schleppflug</translation>
     </message>
     <message>
         <location filename="../src/statistics/PlaneLog.cpp" line="168"/>
         <source>towflights</source>
-        <translation type="unfinished">Schleppflüge</translation>
+        <translation>Schleppflüge</translation>
     </message>
     <message>
         <location filename="../src/statistics/PlaneLog.cpp" line="357"/>
