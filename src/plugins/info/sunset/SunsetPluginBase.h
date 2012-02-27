@@ -15,6 +15,8 @@
  */
 class SunsetPluginBase: public InfoPlugin
 {
+		Q_OBJECT
+
 	public:
 		friend class SunsetPluginSettingsPane;
 

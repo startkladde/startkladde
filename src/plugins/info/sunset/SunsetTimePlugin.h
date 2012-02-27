@@ -5,6 +5,7 @@
 
 class SunsetTimePlugin: public SunsetPluginBase
 {
+	Q_OBJECT
 	SK_PLUGIN
 
 	public:

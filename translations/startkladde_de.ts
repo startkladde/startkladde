@@ -1886,6 +1886,23 @@ aktiviert werden.</translation>
 <context>
     <name>PilotLog</name>
     <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="36"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="41"/>
+        <source>hh:mm</source>
+        <translation type="unfinished">hh:mm</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="36"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="41"/>
+        <source>Z</source>
+        <translation type="unfinished">Z</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PilotLog.cpp" line="46"/>
+        <source>h:mm</source>
+        <translation type="unfinished">h:mm</translation>
+    </message>
+    <message>
         <location filename="../src/statistics/PilotLog.cpp" line="260"/>
         <source>Date</source>
         <translation>Datum</translation>
@@ -1949,21 +1966,16 @@ aktiviert werden.</translation>
 <context>
     <name>PilotLog::Entry</name>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="36"/>
-        <location filename="../src/statistics/PilotLog.cpp" line="41"/>
         <source>hh:mm</source>
-        <translation>hh:mm</translation>
+        <translation type="obsolete">hh:mm</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="36"/>
-        <location filename="../src/statistics/PilotLog.cpp" line="41"/>
         <source>Z</source>
-        <translation>Z</translation>
+        <translation type="obsolete">Z</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="46"/>
         <source>h:mm</source>
-        <translation>h:mm</translation>
+        <translation type="obsolete">h:mm</translation>
     </message>
 </context>
 <context>
@@ -2065,6 +2077,33 @@ aktiviert werden.</translation>
 <context>
     <name>PlaneLog</name>
     <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="49"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="57"/>
+        <source>hh:mm</source>
+        <translation type="unfinished">hh:mm</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="49"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="57"/>
+        <source>Z</source>
+        <translation type="unfinished">Z</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="74"/>
+        <source>h:mm</source>
+        <translation type="unfinished">h:mm</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="166"/>
+        <source>towflight</source>
+        <translation type="unfinished">Schleppflug</translation>
+    </message>
+    <message>
+        <location filename="../src/statistics/PlaneLog.cpp" line="168"/>
+        <source>towflights</source>
+        <translation type="unfinished">Schleppflüge</translation>
+    </message>
+    <message>
         <location filename="../src/statistics/PlaneLog.cpp" line="357"/>
         <source>Registration</source>
         <translation>Kennzeichen</translation>
@@ -2128,31 +2167,24 @@ aktiviert werden.</translation>
 <context>
     <name>PlaneLog::Entry</name>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="49"/>
-        <location filename="../src/statistics/PlaneLog.cpp" line="57"/>
         <source>hh:mm</source>
-        <translation>hh:mm</translation>
+        <translation type="obsolete">hh:mm</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="49"/>
-        <location filename="../src/statistics/PlaneLog.cpp" line="57"/>
         <source>Z</source>
-        <translation>Z</translation>
+        <translation type="obsolete">Z</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="74"/>
         <source>h:mm</source>
-        <translation>h:mm</translation>
+        <translation type="obsolete">h:mm</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="166"/>
         <source>towflight</source>
-        <translation>Schleppflug</translation>
+        <translation type="obsolete">Schleppflug</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="168"/>
         <source>towflights</source>
-        <translation>Schleppflüge</translation>
+        <translation type="obsolete">Schleppflüge</translation>
     </message>
 </context>
 <context>

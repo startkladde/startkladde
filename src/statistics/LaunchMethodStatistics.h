@@ -17,6 +17,8 @@ class Flight;
 
 class LaunchMethodStatistics: public QAbstractTableModel
 {
+		Q_OBJECT
+
 	public:
 		class Entry
 		{
