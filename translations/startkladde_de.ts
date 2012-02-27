@@ -2546,6 +2546,29 @@ aktiviert werden.</translation>
     </message>
 </context>
 <context>
+    <name>Settings</name>
+    <message>
+        <location filename="../src/config/Settings.cpp" line="144"/>
+        <source>Sunset:</source>
+        <translation>Sunset:</translation>
+    </message>
+    <message>
+        <location filename="../src/config/Settings.cpp" line="145"/>
+        <source>Time until sunset:</source>
+        <translation>Zeit bis sunset:</translation>
+    </message>
+    <message>
+        <location filename="../src/config/Settings.cpp" line="190"/>
+        <source>Twiddlethorpe</source>
+        <translation>Dingenskirchen</translation>
+    </message>
+    <message>
+        <location filename="../src/config/Settings.cpp" line="214"/>
+        <source>Weather radar (3 hours)</source>
+        <translation>Regenradar (3 Stunden)</translation>
+    </message>
+</context>
+<context>
     <name>SettingsWindowClass</name>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="14"/>
