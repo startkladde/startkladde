@@ -2,12 +2,15 @@
 
 #include <cassert>
 
+#include <QApplication>
+
 #include "src/text.h"
 #include "src/db/Query.h"
 #include "src/db/result/Result.h"
 #include "src/util/bool.h"
 #include "src/util/qDate.h"
 #include "src/util/qString.h"
+#include "src/notr.h"
 
 
 // ******************
@@ -52,7 +55,7 @@ bool Person::operator< (const Person &o) const
 
 QString Person::toString () const
 {
-	return QString ("id=%1, lastName=%2, firstName=%3, club=%4, clubId=%5, medicalValidity=%6, checkMedical=%7")
+	return QString (notr ("id=%1, lastName=%2, firstName=%3, club=%4, clubId=%5, medicalValidity=%6, checkMedical=%7"))
 		.arg (id)
 		.arg (lastName)
 		.arg (firstName)
@@ -65,24 +68,27 @@ QString Person::toString () const
 
 QString Person::fullName () const
 {
-	QString l=lastName ; if (l.isEmpty ()) l="?";
-	QString f=firstName; if (f.isEmpty ()) f="?";
+	QString l=lastName ; if (l.isEmpty ()) l=notr ("?");
+	QString f=firstName; if (f.isEmpty ()) f=notr ("?");
 
-	return f+" "+l;
+	// TODO use .arg
+	return f+notr (" ")+l;
 }
 
 QString Person::formalName () const
 {
-	QString l=lastName ; if (l.isEmpty ()) l="?";
-	QString f=firstName; if (f.isEmpty ()) f="?";
+	QString l=lastName ; if (l.isEmpty ()) l=notr ("?");
+	QString f=firstName; if (f.isEmpty ()) f=notr ("?");
 
-	return l+", "+f;
+	// TODO use .arg
+	return l+notr (", ")+f;
 }
 
 QString Person::formalNameWithClub () const
 {
 	if (isNone (club)) return formalName ();
-	return formalName ()+" ("+club+")";
+	// TODO use .arg
+	return formalName ()+notr (" (")+club+notr (")");
 }
 
 QString Person::getDisplayName () const
@@ -104,14 +110,14 @@ QVariant Person::DefaultObjectModel::displayHeaderData (int column) const
 {
 	switch (column)
 	{
-		case 0: return "Nachname";
-		case 1: return "Vorname";
-		case 2: return "Verein";
-		case 3: return "Medical bis";
-		case 4: return utf8 ("Medical prüfen");
-		case 5: return "Bemerkungen";
-		case 6: return "Vereins-ID";
-		case 7: return "ID";
+		case 0: return qApp->translate ("Person::DefaultObjectModel", "Last name");
+		case 1: return qApp->translate ("Person::DefaultObjectModel", "First name");
+		case 2: return qApp->translate ("Person::DefaultObjectModel", "Club");
+		case 3: return qApp->translate ("Person::DefaultObjectModel", "Medical until");
+		case 4: return qApp->translate ("Person::DefaultObjectModel", "Check medical");
+		case 5: return qApp->translate ("Person::DefaultObjectModel", "Comments");
+		case 6: return qApp->translate ("Person::DefaultObjectModel", "Club ID");
+		case 7: return qApp->translate ("Person::DefaultObjectModel", "ID");
 	}
 
 	assert (false);
@@ -125,7 +131,7 @@ QVariant Person::DefaultObjectModel::displayData (const Person &object, int colu
 		case 0: return object.lastName;
 		case 1: return object.firstName;
 		case 2: return object.club;
-		case 3: return object.medicalValidity.isValid ()?::toString (object.medicalValidity):QString ("Unbekannt");
+		case 3: return object.medicalValidity.isValid ()?::toString (object.medicalValidity):qApp->translate ("Person::DefaultObjectModel", "unknown");
 		case 4: return boolToString (object.checkMedical);
 		case 5: return object.comments;
 		case 6: return object.clubId;
@@ -143,12 +149,12 @@ QVariant Person::DefaultObjectModel::displayData (const Person &object, int colu
 
 QString Person::dbTableName ()
 {
-	return "people";
+	return notr ("people");
 }
 
 QString Person::selectColumnList ()
 {
-	return "id,last_name,first_name,club,club_id,comments,medical_validity,check_medical_validity";
+	return notr ("id,last_name,first_name,club,club_id,comments,medical_validity,check_medical_validity");
 }
 
 Person Person::createFromResult (const Result &result)
@@ -168,12 +174,12 @@ Person Person::createFromResult (const Result &result)
 
 QString Person::insertColumnList ()
 {
-	return "last_name,first_name,club,club_id,comments,medical_validity,check_medical_validity";
+	return notr ("last_name,first_name,club,club_id,comments,medical_validity,check_medical_validity");
 }
 
 QString Person::insertPlaceholderList ()
 {
-	return "?,?,?,?,?,?,?";
+	return notr ("?,?,?,?,?,?,?");
 }
 
 void Person::bindValues (Query &q) const

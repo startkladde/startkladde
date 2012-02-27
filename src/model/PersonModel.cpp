@@ -7,6 +7,8 @@
 
 #include "PersonModel.h"
 
+#include <QApplication>
+
 #include "src/model/Person.h"
 
 PersonModel::PersonModel ()
@@ -26,11 +28,11 @@ QVariant PersonModel::displayHeaderData (int column) const
 {
 	switch (column)
 	{
-		case 0: return "Nachname";
-		case 1: return "Vorname";
-		case 2: return "Verein";
-		case 3: return "Bemerkungen";
-		case 4: return "ID";
+		case 0: return qApp->translate ("PersonModel", "Last name");
+		case 1: return qApp->translate ("PersonModel", "First name");
+		case 2: return qApp->translate ("PersonModel", "Club");
+		case 3: return qApp->translate ("PersonModel", "Comments");
+		case 4: return qApp->translate ("PersonModel", "ID");
 	}
 
 	return QVariant ();

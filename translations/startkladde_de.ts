@@ -144,37 +144,37 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ExternalInfoPlugin</name>
     <message>
-        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="72"/>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="73"/>
         <source>No command specified</source>
         <translation>Kein Kommando angegeben</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="79"/>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="80"/>
         <source>Command not found</source>
         <translation>Kommanod nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="80"/>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="81"/>
         <source>Command does not exist</source>
         <translation>Kommando existiert nicht</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="82"/>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="83"/>
         <source>Error: %1</source>
         <translation>Fehler: %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="83"/>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="84"/>
         <source>Process started</source>
         <translation>Prozess gestartet</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="96"/>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="97"/>
         <source>%1; rich text</source>
         <translation>%1; Rich text</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="98"/>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="99"/>
         <source>%1; plain text</source>
         <translation>%1; Standardtext</translation>
     </message>
@@ -612,6 +612,77 @@ geladen werden:
         <location filename="../src/plugin/info/InfoPluginSettingsPane.ui" line="40"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
+    </message>
+</context>
+<context>
+    <name>LaunchMethod</name>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="121"/>
+        <source>Winch launch</source>
+        <translation>Windenstart</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="122"/>
+        <source>Airtow</source>
+        <translation>F-Schlepp</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="123"/>
+        <source>Self launch</source>
+        <translation>Eigenstart</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="124"/>
+        <source>Other</source>
+        <translation>Sonstige</translation>
+    </message>
+</context>
+<context>
+    <name>LaunchMethod::DefaultObjectModel</name>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="154"/>
+        <source>Name</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="155"/>
+        <source>Short name</source>
+        <translation>Kürzel</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="156"/>
+        <source>Logbook label</source>
+        <translation>Flugbuch-Bezeichnung</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="157"/>
+        <source>Keyboard shortcut</source>
+        <translation>Tastenkürzel</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="158"/>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="159"/>
+        <source>Towplane</source>
+        <translation>Schleppflugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="160"/>
+        <source>Person required</source>
+        <translation>Person erforderlich</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="161"/>
+        <source>Comments</source>
+        <translation>Bemerkungen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="163"/>
+        <source>ID</source>
+        <translation>ID</translation>
     </message>
 </context>
 <context>
@@ -1842,6 +1913,54 @@ Konfiguration: %2</translation>
     </message>
 </context>
 <context>
+    <name>Person::DefaultObjectModel</name>
+    <message>
+        <location filename="../src/model/Person.cpp" line="113"/>
+        <source>Last name</source>
+        <translation>Nachname</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.cpp" line="114"/>
+        <source>First name</source>
+        <translation>Vorname</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.cpp" line="115"/>
+        <source>Club</source>
+        <translation>Verein</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.cpp" line="116"/>
+        <source>Medical until</source>
+        <translation>Medical bis</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.cpp" line="117"/>
+        <source>Check medical</source>
+        <translation>Medical prüfen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.cpp" line="118"/>
+        <source>Comments</source>
+        <translation>Bemerkungen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.cpp" line="119"/>
+        <source>Club ID</source>
+        <translation>Vereins-ID</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.cpp" line="120"/>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.cpp" line="134"/>
+        <source>unknown</source>
+        <translation>unbekannt</translation>
+    </message>
+</context>
+<context>
     <name>PersonEditorPane</name>
     <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="25"/>
@@ -1959,6 +2078,34 @@ aktiviert werden.</translation>
     </message>
 </context>
 <context>
+    <name>PersonModel</name>
+    <message>
+        <location filename="../src/model/PersonModel.cpp" line="31"/>
+        <source>Last name</source>
+        <translation>Nachname</translation>
+    </message>
+    <message>
+        <location filename="../src/model/PersonModel.cpp" line="32"/>
+        <source>First name</source>
+        <translation>Vorname</translation>
+    </message>
+    <message>
+        <location filename="../src/model/PersonModel.cpp" line="33"/>
+        <source>Club</source>
+        <translation>Verein</translation>
+    </message>
+    <message>
+        <location filename="../src/model/PersonModel.cpp" line="34"/>
+        <source>Comments</source>
+        <translation>Bemerkungen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/PersonModel.cpp" line="35"/>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+</context>
+<context>
     <name>PilotLog</name>
     <message>
         <location filename="../src/statistics/PilotLog.cpp" line="36"/>
@@ -2051,6 +2198,82 @@ aktiviert werden.</translation>
     <message>
         <source>h:mm</source>
         <translation type="obsolete">h:mm</translation>
+    </message>
+</context>
+<context>
+    <name>Plane</name>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="120"/>
+        <source>Airplane</source>
+        <translation>Motorflugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="121"/>
+        <source>Glider</source>
+        <translation>Segelflugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="122"/>
+        <source>Motorglider</source>
+        <translation>Motorsegler</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="123"/>
+        <source>Ultralight</source>
+        <translation>Ultraleicht</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="124"/>
+        <source>Other</source>
+        <translation>Sonstige</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="125"/>
+        <source>None</source>
+        <translation>Keine</translation>
+    </message>
+</context>
+<context>
+    <name>Plane::DefaultObjectModel</name>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="199"/>
+        <source>Registration</source>
+        <translation>Kennzeichen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="200"/>
+        <source>Callsign</source>
+        <translation>Wettbewerbskennzeichen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="201"/>
+        <source>Model</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="202"/>
+        <source>Category</source>
+        <translation>Gattung</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="203"/>
+        <source>Seats</source>
+        <translation>Sitze</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="204"/>
+        <source>Club</source>
+        <translation>Verein</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="205"/>
+        <source>Comments</source>
+        <translation>Bemerkungen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="207"/>
+        <source>ID</source>
+        <translation>ID</translation>
     </message>
 </context>
 <context>

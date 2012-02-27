@@ -2,9 +2,12 @@
 
 #include <cassert>
 
+#include <QApplication>
+
 #include "src/text.h"
 #include "src/db/result/Result.h"
 #include "src/db/Query.h"
+#include "src/notr.h"
 
 // ******************
 // ** Construction **
@@ -46,7 +49,7 @@ QString Plane::fullRegistration () const
 	else if (isBlank (registration))
 		return callsign;
 	else
-		return QString ("%1 (%2)").arg (registration, callsign);
+		return QString (notr ("%1 (%2)")).arg (registration, callsign);
 }
 
 QString Plane::registrationWithType () const
@@ -56,7 +59,7 @@ QString Plane::registrationWithType () const
 	else if (isBlank (registration))
 		return type;
 	else
-		return QString ("%1 (%2)").arg (registration, type);
+		return qnotr ("%1 (%2)").arg (registration, type);
 }
 
 
@@ -66,7 +69,7 @@ QString Plane::registrationWithType () const
 
 QString Plane::toString () const
 {
-	return QString ("id=%1, registration=%2, callsign=%3, type=%4, club=%5, category=%6, seats=%7")
+	return qnotr ("id=%1, registration=%2, callsign=%3, type=%4, club=%5, category=%6, seats=%7")
 		.arg (id)
 		.arg (registration)
 		.arg (callsign)
@@ -114,17 +117,17 @@ QString Plane::categoryText (Plane::Category category)
 {
 	switch (category)
 	{
-		case categoryAirplane:     return "Motorflugzeug";
-		case categoryGlider:       return "Segelflugzeug";
-		case categoryMotorglider:  return "Motorsegler";
-		case categoryUltralight:   return "Ultraleicht";
-		case categoryOther:        return "Sonstige";
-		case categoryNone:         return "Keine";
+		case categoryAirplane:    return qApp->translate ("Plane", "Airplane");
+		case categoryGlider:      return qApp->translate ("Plane", "Glider");
+		case categoryMotorglider: return qApp->translate ("Plane", "Motorglider");
+		case categoryUltralight:  return qApp->translate ("Plane", "Ultralight");
+		case categoryOther:       return qApp->translate ("Plane", "Other");
+		case categoryNone:        return qApp->translate ("Plane", "None");
 		// no default
 	}
 
-	assert (!"Unhandled category");
-	return "?";
+	assert (!notr ("Unhandled category"));
+	return notr ("?");
 }
 
 /**
@@ -193,15 +196,15 @@ QVariant Plane::DefaultObjectModel::displayHeaderData (int column) const
 {
 	switch (column)
 	{
-		case 0: return "Kennzeichen";
-		case 1: return "Wettbewerbskennzeichen";
-		case 2: return "Typ";
-		case 3: return "Gattung";
-		case 4: return "Sitze";
-		case 5: return "Verein";
-		case 6: return "Bemerkungen";
+		case 0: return qApp->translate ("Plane::DefaultObjectModel", "Registration");
+		case 1: return qApp->translate ("Plane::DefaultObjectModel", "Callsign");
+		case 2: return qApp->translate ("Plane::DefaultObjectModel", "Model");
+		case 3: return qApp->translate ("Plane::DefaultObjectModel", "Category");
+		case 4: return qApp->translate ("Plane::DefaultObjectModel", "Seats");
+		case 5: return qApp->translate ("Plane::DefaultObjectModel", "Club");
+		case 6: return qApp->translate ("Plane::DefaultObjectModel", "Comments");
 		// TODO remove from DefaultItemModel?
-		case 7: return "ID";
+		case 7: return qApp->translate ("Plane::DefaultObjectModel", "ID");
 	}
 
 	assert (false);
@@ -216,7 +219,7 @@ QVariant Plane::DefaultObjectModel::displayData (const Plane &object, int column
 		case 1: return object.callsign;
 		case 2: return object.type;
 		case 3: return categoryText(object.category);
-		case 4: return object.numSeats>=0?QVariant (object.numSeats):QVariant ("?");
+		case 4: return object.numSeats>=0?QVariant (object.numSeats):QVariant (notr ("?"));
 		case 5: return object.club;
 		case 6: return object.comments;
 		case 7: return object.id;
@@ -233,12 +236,12 @@ QVariant Plane::DefaultObjectModel::displayData (const Plane &object, int column
 
 QString Plane::dbTableName ()
 {
-	return "planes";
+	return notr ("planes");
 }
 
 QString Plane::selectColumnList ()
 {
-	return "id,registration,club,num_seats,type,category,callsign,comments";
+	return notr ("id,registration,club,num_seats,type,category,callsign,comments");
 }
 
 
@@ -260,12 +263,12 @@ Plane Plane::createFromResult (const Result &result)
 
 QString Plane::insertColumnList ()
 {
-	return "registration,club,num_seats,type,category,callsign,comments";
+	return notr ("registration,club,num_seats,type,category,callsign,comments");
 }
 
 QString Plane::insertPlaceholderList ()
 {
-	return "?,?,?,?,?,?,?";
+	return notr ("?,?,?,?,?,?,?");
 }
 
 void Plane::bindValues (Query &q) const
@@ -294,25 +297,25 @@ QString Plane::categoryToDb (Category category)
 {
 	switch (category)
 	{
-		case categoryNone         : return "?"          ;
-		case categoryAirplane     : return "airplane"   ;
-		case categoryGlider       : return "glider"     ;
-		case categoryMotorglider  : return "motorglider";
-		case categoryUltralight   : return "ultralight" ;
-		case categoryOther        : return "other"      ;
+		case categoryNone         : return notr ("?")          ;
+		case categoryAirplane     : return notr ("airplane")   ;
+		case categoryGlider       : return notr ("glider")     ;
+		case categoryMotorglider  : return notr ("motorglider");
+		case categoryUltralight   : return notr ("ultralight") ;
+		case categoryOther        : return notr ("other")      ;
 		// no default
 	}
 
-	assert (!"Unhandled category");
-	return "?";
+	assert (!notr ("Unhandled category"));
+	return notr ("?");
 }
 
 Plane::Category Plane::categoryFromDb (QString category)
 {
-	if      (category=="airplane"   ) return categoryAirplane;
-	else if (category=="glider"     ) return categoryGlider;
-	else if (category=="motorglider") return categoryMotorglider;
-	else if (category=="ultralight" ) return categoryUltralight;
-	else if (category=="other"      ) return categoryOther;
+	if      (category==notr ("airplane")   ) return categoryAirplane;
+	else if (category==notr ("glider")     ) return categoryGlider;
+	else if (category==notr ("motorglider")) return categoryMotorglider;
+	else if (category==notr ("ultralight") ) return categoryUltralight;
+	else if (category==notr ("other")      ) return categoryOther;
 	else                              return categoryNone;
 }
