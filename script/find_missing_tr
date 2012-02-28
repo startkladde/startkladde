@@ -111,6 +111,9 @@ def tr_missing_line(line)
 	# Remove qApp->translate ("context", "string") (valid tr function)
 	line.gsub!(/qApp->translate \( "[^"]*" , "[^"]*" \) /x, '')
 
+	# Remove qApp->translate ("context", "string", "comment") (valid tr function)
+	line.gsub!(/qApp->translate \( "[^"]*" , "[^"]*", "[^"]*" \) /x, '')
+
 	# Remove two-argument form of tr (valid tr function)
 	line.gsub!(/tr \( "[^"]*" , "[^"]*" \) /x, '')
 
@@ -239,6 +242,7 @@ def test_tr_missing_line
 		# With more complex tr
 		['foo=qApp->translate("context","moo")'                        , false], # No whitespace
 		[' foo  =  qApp  ->  translate  (  " context "  ,  " moo "  ) ', false], # Lots of whitespace
+		['foo=qApp->translate("context","moo","comment")'              , false], # 3-argument form
 
 		# extern "C"
 		['extern"C"{}'        ,  false],
