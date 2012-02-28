@@ -289,7 +289,7 @@ QVariant FlightModel::departureTimeData (const Flight &flight, int role) const
 		return notr ("");
 	else
 		// TODO TR cache
-		return flight.getDepartureTime ().toUTC ().time ().toString (qApp->translate ("FlightModel", "hh:mm"))+"Z";
+		return flight.getDepartureTime ().toUTC ().time ().toString (qApp->translate ("FlightModel", "hh:mm"))+notr ("Z");
 }
 
 QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
