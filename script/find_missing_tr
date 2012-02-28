@@ -58,6 +58,8 @@ def remove_c_comments(string)
 	}
 end
 
+# TODO must either remove escaped quotes or make sure it is only called with
+# escaped quotes removed
 def remove_string_concatenation(string)
 	# It is important to have the \s* in the group to reproduce line breaks
 	# (when we use multi-line)
@@ -225,6 +227,8 @@ def test_remove_string_concatenation
 		['foo="bar" "baz";'          , 'foo="bar" ;'        ], # Simple concatenation
 		['foo="bar""baz";'           , 'foo="bar";'         ], # Simple concatenation no whitespace
 		[' foo = " bar " " baz " ; ' , ' foo = " bar "  ; ' ], # Simple concatenation no whitespace
+
+		# TODO test escaped quotes
 
 		# Dummy case
 		["", ""]
