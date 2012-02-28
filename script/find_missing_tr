@@ -58,6 +58,13 @@ def remove_c_comments(string)
 	}
 end
 
+def remove_string_concatenation(string)
+	# It is important to have the \s* in the group to reproduce line breaks
+	# (when we use multi-line)
+	# TODO support multi-line
+	string.gsub(/ ( "[^"]*" \s* ) "[^"]*" /x, '\\1')
+end
+
 def tr_missing_part(part)
 	#puts "    #{part}"
 	if part =~ /"/
@@ -88,19 +95,21 @@ def tr_missing_line(line)
 	# Replace any whitespace with a single space to simplify regexps
 	line.gsub!(/ \s+ /, ' ')
 
-	# Remove any whitespace around operators to simplify regexps
-	#            any whitespace
-	#            |   any of parentheses, comma, operators... as a group
-	#            |   |            any whitespace
-	#            |   |            |
-	line.gsub!(/ \s* ( [-+()<>,"] ) \s* /x, '\\1')
-
 	# Replace two consecutive backslashes (escaped backslash) with an
 	# underscore to prevent escaped backslashes escaping anything else
 	line.gsub!(/\\\\/, '')
 
 	# Remove quotes preceded by a backslash, they do not count as quotes
 	line.gsub!(/\\"/, '')
+
+	# TODO remove concatenated strings
+
+	# Remove any whitespace around operators to simplify regexps
+	#            any whitespace
+	#            |   any of parentheses, comma, operators... as a group
+	#            |   |            any whitespace
+	#            |   |            |
+	line.gsub!(/ \s* ( [-+()<>,"] ) \s* /x, '\\1')
 
 	# Don't consider includes (only at the beginning of the line, optionally
 	# indented). A line with an include statement cannot contain any other
@@ -209,6 +218,33 @@ def test_remove_c_comments
 	}
 end
 
+def test_remove_string_concatenation
+	tests=[
+		# Single-line cases
+		['foo="bar";'                , nil                  ], # No string concatenation
+		['foo="bar" "baz";'          , 'foo="bar" ;'        ], # Simple concatenation
+		['foo="bar""baz";'           , 'foo="bar";'         ], # Simple concatenation no whitespace
+		[' foo = " bar " " baz " ; ' , ' foo = " bar "  ; ' ], # Simple concatenation no whitespace
+
+		# Dummy case
+		["", ""]
+	]
+
+	len=maxlen(tests.map { |test| test[0].inspect })
+
+	tests.each { |test|
+		string=test[0]
+		expected=test[1]||string
+		actual=remove_string_concatenation(string)
+
+		if (expected==actual)
+			puts "OK      - #{pad(len, string.inspect)} => #{actual.inspect}"
+		else
+			puts "failure - #{pad(len, string.inspect)} => expected #{expected.inspect}, got #{actual.inspect}"
+		end
+	}
+end
+
 def test_tr_missing_line
 	test_lines=[
 		# Simple cases
@@ -297,6 +333,7 @@ end
 if ARGV==['-t']
 	test_remove_c_comments
 	test_tr_missing_line
+	test_remove_string_concatenation
 elsif ARGV==['-a']
 #	`find . -iname *.cpp`
 	system("find . -iname \\*.cpp |grep -v moc_ |grep -v migrations/Migration_ |grep -v ./build/ |grep -v ./test/ |xargs #{$0}")
