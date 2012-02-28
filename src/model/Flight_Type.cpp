@@ -2,9 +2,11 @@
 
 #include <cassert>
 
+#include <QApplication>
 #include <QList>
 
 #include "src/util/qString.h"
+#include "src/notr.h"
 
 QList<Flight::Type> Flight::listTypes (bool includeInvalid)
 {
@@ -22,13 +24,13 @@ QString Flight::typeText (Type type, bool withShortcut)
 	{
 		switch (type)
 		{
-			case typeNone:          return          typeText (type, false);
-			case typeNormal:        return "N - " + typeText (type, false);
-			case typeTraining2:     return "2 - " + typeText (type, false);
-			case typeTraining1:     return "1 - " + typeText (type, false);
-			case typeTow:           return "S - " + typeText (type, false);
-			case typeGuestPrivate:  return "G - " + typeText (type, false);
-			case typeGuestExternal: return "E - " + typeText (type, false);
+			case typeNone:          return notr ("-");
+			case typeNormal:        return qApp->translate ("Flight::Type", "R - Regular flight"); //tr N - Normalflug
+			case typeTraining2:     return qApp->translate ("Flight::Type", "2 - Two-seated training"); //tr 2 - Schulungsflug (doppelsitzig)
+			case typeTraining1:     return qApp->translate ("Flight::Type", "1 - Solo training"); //tr 1 - Schulungsflug (einsitzig)
+			case typeTow:           return qApp->translate ("Flight::Type", "T - Towflight"); //tr S - Schleppflug
+			case typeGuestPrivate:  return qApp->translate ("Flight::Type", "P - Passenger flight"); //tr G - Gastflug (privat)
+			case typeGuestExternal: return qApp->translate ("Flight::Type", "E - Passenger flight (extern)"); //tr E - Gastflug (extern)
 			// No default
 		}
 	}
@@ -36,37 +38,37 @@ QString Flight::typeText (Type type, bool withShortcut)
 	{
 		switch (type)
 		{
-			case typeNone:          return "-";
-			case typeNormal:        return "Normalflug";
-			case typeTraining2:     return "Schulungsflug (doppelsitzig)";
-			case typeTraining1:     return "Schulungsflug (einsitzig)";
-			case typeTow:           return "Schleppflug";
-			case typeGuestPrivate:  return "Gastflug (privat)";
-			case typeGuestExternal: return "Gastflug (extern)";
+			case typeNone:          return notr ("-");
+			case typeNormal:        return qApp->translate ("Flight::Type", "Regular flight"); //tr Normalflug
+			case typeTraining2:     return qApp->translate ("Flight::Type", "Two-seated training"); //tr Schulungsflug (doppelsitzig)
+			case typeTraining1:     return qApp->translate ("Flight::Type", "Solo training"); //tr Schulungsflug (einsitzig)
+			case typeTow:           return qApp->translate ("Flight::Type", "Towflight"); //tr Schleppflug
+			case typeGuestPrivate:  return qApp->translate ("Flight::Type", "Passenger flight"); //tr Gastflug (privat)
+			case typeGuestExternal: return qApp->translate ("Flight::Type", "Passenger flight (external)"); //tr Gastflug (extern)
 			// No default
 		}
 	}
 
-	assert (!"Unhandled type");
-	return "?";
+	assert (!notr ("Unhandled type"));
+	return notr ("?");
 }
 
 QString Flight::shortTypeText (Type type)
 {
 	switch (type)
 	{
-		case typeNone:          return "-";
-		case typeNormal:        return "Normal";
-		case typeTraining2:     return "Schul (2)";
-		case typeTraining1:     return "Schul (1)";
-		case typeTow:           return "Schlepp";
-		case typeGuestPrivate:  return "Gast (P)";
-		case typeGuestExternal: return "Gast (E)";
+		case typeNone:          return notr ("-");
+		case typeNormal:        return qApp->translate ("Flight::Type", "Regular"); //tr Normal
+		case typeTraining2:     return qApp->translate ("Flight::Type", "Training (2)"); //tr Schul (2)
+		case typeTraining1:     return qApp->translate ("Flight::Type", "Training (1)"); //tr Schul (1)
+		case typeTow:           return qApp->translate ("Flight::Type", "Tow"); //tr Schlepp
+		case typeGuestPrivate:  return qApp->translate ("Flight::Type", "Passenger"); //tr Gast (P)
+		case typeGuestExternal: return qApp->translate ("Flight::Type", "Passenger (E)"); //tr Gast (E)
 		// No default
 	}
 
-	assert (!"Unhandled type");
-	return "?";
+	assert (!notr ("Unhandled type"));
+	return notr ("?");
 }
 
 // TODO rename allowed
@@ -106,22 +108,23 @@ bool Flight::typeAlwaysHasCopilot (Flight::Type type)
 
 QString Flight::typePilotDescription (Flight::Type type)
 {
+	// TODO TR: capitalization?
 	switch (type)
 	{
 		case typeTraining2:
 		case typeTraining1:
-			return utf8 ("Flugschüler");
+			return qApp->translate ("Flight::Type", "student"); //tr Flugschüler //tr TODO
 		case typeNone:
 		case typeNormal:
 		case typeGuestPrivate:
 		case typeGuestExternal:
-			return QString ("Pilot");
+			return qApp->translate ("Flight::Type", "pilot"); //tr Pilot //tr TODO
 		case typeTow:
-			return QString ("Schlepppilot");
+			return qApp->translate ("Flight::Type", "towpilot"); //tr Schlepppilot //tr TODO
 	}
 
 	assert (false);
-	return QString ("Pilot");
+	return qApp->translate ("Flight::Type", "pilot"); //tr Pilot
 }
 
 QString Flight::typeCopilotDescription (Flight::Type type)
@@ -129,20 +132,20 @@ QString Flight::typeCopilotDescription (Flight::Type type)
 	switch (type)
 	{
 		case typeTraining2:
-			return utf8 ("Fluglehrer");
+			return qApp->translate ("Flight::Type", "flight instructor"); //tr Fluglehrer //tr TODO
 		case typeGuestPrivate:
 		case typeGuestExternal:
-			return QString ("Gast");
+			return qApp->translate ("Flight::Type", "passenger"); //tr Gast //tr TODO
 		case typeNone:
 		case typeNormal:
 		case typeTow:
-			return QString ("Begleiter");
+			return qApp->translate ("Flight::Type", "copilot"); //tr Begleiter //tr TODO
 		case typeTraining1:
-			return QString ("-");
+			return notr ("-");
 	}
 
 	assert (false);
-	return QString ("Begleiter");
+	return qApp->translate ("Flight::Type", "copilot"); //tr Begleiter
 }
 
 bool Flight::typeIsGuest (Flight::Type type)

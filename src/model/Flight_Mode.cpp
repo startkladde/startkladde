@@ -1,8 +1,11 @@
 #include "Flight.h"
 
+#include <QApplication>
 #include <QList>
 
 #include <cassert>
+
+#include "src/notr.h"
 
 QList<Flight::Mode> Flight::listModes ()
 {
@@ -18,14 +21,14 @@ QString Flight::modeText (Flight::Mode mode)
 {
 	switch (mode)
 	{
-		case modeLocal:   return "Lokal";
-		case modeComing:  return "Kommt";
-		case modeLeaving: return "Geht";
+		case modeLocal:   return qApp->translate ("Flight::Mode", "Local"); //tr Lokal
+		case modeComing:  return qApp->translate ("Flight::Mode", "Coming"); //tr Kommt
+		case modeLeaving: return qApp->translate ("Flight::Mode", "Leaving"); //tr Geht
 		// no default
 	}
 
-	assert (!"Unhandled mode");
-	return "?";
+	assert (!notr ("Unhandled mode"));
+	return notr ("?");
 }
 
 bool Flight::landsHere (Flight::Mode mode)

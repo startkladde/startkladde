@@ -310,6 +310,149 @@ geladen werden:
     </message>
 </context>
 <context>
+    <name>Flight::Mode</name>
+    <message>
+        <location filename="../src/model/Flight_Mode.cpp" line="21"/>
+        <source>Local</source>
+        <translation>Lokal</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Mode.cpp" line="22"/>
+        <source>Coming</source>
+        <translation>Kommt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Mode.cpp" line="23"/>
+        <source>Leaving</source>
+        <translation>Geht</translation>
+    </message>
+</context>
+<context>
+    <name>Flight::Type</name>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="27"/>
+        <source>R - Regular flight</source>
+        <translation>N - Normalflug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="28"/>
+        <source>2 - Two-seated training</source>
+        <translation>2 - Schulungsflug (einsitzig)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="29"/>
+        <source>1 - Solo training</source>
+        <translation>1 - Schulungsflug (einsitzig)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="30"/>
+        <source>T - Towflight</source>
+        <translation>S - Schleppflug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="31"/>
+        <source>P - Passenger flight</source>
+        <translation>G - Gastflug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="32"/>
+        <source>E - Passenger flight (extern)</source>
+        <translation>E - Gastflug (extern)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="41"/>
+        <source>Regular flight</source>
+        <translation>Normalflug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="42"/>
+        <source>Two-seated training</source>
+        <translation>Schulungsflug (einsitzig)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="43"/>
+        <source>Solo training</source>
+        <translation>Schulungsflug (einsitzig)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="44"/>
+        <source>Towflight</source>
+        <translation>Schleppflug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="45"/>
+        <source>Passenger flight</source>
+        <translation>Gastflug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="46"/>
+        <source>Passenger flight (external)</source>
+        <translation>Gastflug (extern)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="60"/>
+        <source>Regular</source>
+        <translation>Normal</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="61"/>
+        <source>Training (2)</source>
+        <translation>Schul (2)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="62"/>
+        <source>Training (1)</source>
+        <translation>Schul (1)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="63"/>
+        <source>Tow</source>
+        <translation>Schlepp</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="64"/>
+        <source>Passenger</source>
+        <translation>Gast</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="65"/>
+        <source>Passenger (E)</source>
+        <translation>Gast (E)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="115"/>
+        <source>student</source>
+        <translation>Flugschüler</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="120"/>
+        <location filename="../src/model/Flight_Type.cpp" line="126"/>
+        <source>pilot</source>
+        <translation>Pilot</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="122"/>
+        <source>towpilot</source>
+        <translation>Schlepppilot</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="134"/>
+        <source>flight instructor</source>
+        <translation>Fluglehrer</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="137"/>
+        <source>passenger</source>
+        <translation>Gast</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Type.cpp" line="141"/>
+        <location filename="../src/model/Flight_Type.cpp" line="147"/>
+        <source>copilot</source>
+        <translation>Copilot</translation>
+    </message>
+</context>
+<context>
     <name>FlightListWindow</name>
     <message>
         <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="70"/>
