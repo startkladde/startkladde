@@ -93,7 +93,7 @@ def tr_missing_line(line)
 	#            |   any of parentheses, comma, operators... as a group
 	#            |   |            any whitespace
 	#            |   |            |
-	line.gsub!(/ \s* ( [-+()<>,] ) \s* /x, '\\1')
+	line.gsub!(/ \s* ( [-+()<>,"] ) \s* /x, '\\1')
 
 	# Replace two consecutive backslashes (escaped backslash) with an
 	# underscore to prevent escaped backslashes escaping anything else
@@ -108,12 +108,14 @@ def tr_missing_line(line)
 	# statement.
 	return false if line =~ /^\s*#include/
 
-	# Remove qApp->translate ("context", "string") - a valid tr function has
-	# been used
+	# Remove qApp->translate ("context", "string") (valid tr function)
 	line.gsub!(/qApp->translate \( "[^"]*" , "[^"]*" \) /x, '')
 
-	# Remove two-argument form of tr
+	# Remove two-argument form of tr (valid tr function)
 	line.gsub!(/tr \( "[^"]*" , "[^"]*" \) /x, '')
+
+	# Remove 'extern "C"'
+	line.gsub!(/extern "C"/x, '')
 
 	# We could now remove all other valid tr functions, but this approach is
 	# easier to read for everything that has the form foo("..."):
@@ -237,6 +239,10 @@ def test_tr_missing_line
 		# With more complex tr
 		['foo=qApp->translate("context","moo")'                        , false], # No whitespace
 		[' foo  =  qApp  ->  translate  (  " context "  ,  " moo "  ) ', false], # Lots of whitespace
+
+		# extern "C"
+		['extern"C"{}'        ,  false],
+		['extern  "C"  {  }  ',  false],
 
 		# Multi-line strings
 		#["foo=\"moo\nbert\";" , false], # Multi-line string - not supported
