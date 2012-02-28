@@ -6,9 +6,10 @@
  */
 
 #include "AnsiColors.h"
+#include "src/notr.h"
 
-const QString AnsiColors::escapePrefix="\033[";
-const QString AnsiColors::escapeSuffix="m";
+const QString AnsiColors::escapePrefix=notr ("\033[");
+const QString AnsiColors::escapeSuffix=notr ("m");
 
 AnsiColors::AnsiColors ():
 	currentOffset (foreground)
@@ -20,7 +21,7 @@ AnsiColors::operator QString () const
 	if (values.empty())
 		return escapePrefix+QString::number (valueReset)+escapeSuffix;
 	else
-		return escapePrefix+values.join (";")+escapeSuffix;
+		return escapePrefix+values.join (notr (";"))+escapeSuffix;
 }
 
 AnsiColors AnsiColors::val (int v)

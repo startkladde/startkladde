@@ -4026,4 +4026,32 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
         <translation>Fehler: Radarbild nicht gefunden (404)</translation>
     </message>
 </context>
+<context>
+    <name>dialogs</name>
+    <message>
+        <location filename="../src/gui/dialogs.cpp" line="46"/>
+        <source> Accept anyway?</source>
+        <translation> Trotzdem akzeptieren?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogs.cpp" line="52"/>
+        <source>Warning</source>
+        <translation>Warnung</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogs.cpp" line="57"/>
+        <source>Password required</source>
+        <translation>Passwort erforderlich</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogs.cpp" line="58"/>
+        <source>%1 Please enter the password:</source>
+        <translation>%1 Bitte Passwort eingeben:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/dialogs.cpp" line="79"/>
+        <source>The entered password is not correct. Please enter password:</source>
+        <translation>Das eingegebene Passwort ist nicht korrekt. Bitte Passwort eingeben:</translation>
+    </message>
+</context>
 </TS>
