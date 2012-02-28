@@ -18,7 +18,7 @@ ConfirmOverwritePersonDialog::ConfirmOverwritePersonDialog (QWidget *parent, Qt:
 	QDialog (parent, f)
 {
 	ui.setupUi(this);
-	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
+	//ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 }
 
 ConfirmOverwritePersonDialog::~ConfirmOverwritePersonDialog ()
@@ -42,15 +42,17 @@ void ConfirmOverwritePersonDialog::setup (const Person &correctPerson, const QLi
 	QString wrongEntriesText;
 	if (wrongPeople.size ()>1)
 	{
-		wrongEntriesText=utf8 ("Falsche Einträge");
-		ui.introLabel->setText (utf8 ("Die folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:"));
-		ui.descriptionLabel->setText (ui.descriptionLabel->text ().arg ("Alle", "Personen"));
+		wrongEntriesText=tr ("Erroneous entries");
+		ui.introLabel->setText (tr ("The following erroneous entries will be replaced with the correct entry:"));
+		// TODO TR set complete text
+		ui.descriptionLabel->setText (ui.descriptionLabel->text ().arg (tr ("All"), tr ("people")));
 	}
 	else
 	{
-		wrongEntriesText=utf8 ("Falscher Eintrag");
-		ui.introLabel->setText (utf8 ("Der folgende fehlerhafte Personeneintrag wird durch den korrekten Eintrag ersetzt:"));
-		ui.descriptionLabel->setText (ui.descriptionLabel->text ().arg ("Beide", "Person"));
+		wrongEntriesText=tr ("Wrong entry");
+		ui.introLabel->setText (tr ("The following erroneous entry will be replaced with the correct entry:"));
+		// TODO TR set complete text
+		ui.descriptionLabel->setText (ui.descriptionLabel->text ().arg (tr ("Both"), tr ("person")));
 	}
 
 	// Clear the tree
@@ -61,7 +63,7 @@ void ConfirmOverwritePersonDialog::setup (const Person &correctPerson, const QLi
 
 	// Create the root items
 	QTreeWidgetItem *  wrongParentItem=new QTreeWidgetItem (ui.entriesTree, QStringList (wrongEntriesText          ));
-	QTreeWidgetItem *correctParentItem=new QTreeWidgetItem (ui.entriesTree, QStringList (utf8 ("Korrekter Eintrag")));
+	QTreeWidgetItem *correctParentItem=new QTreeWidgetItem (ui.entriesTree, QStringList (tr ("Correct entry")));
 
 	// Set up the root items
 	wrongParentItem  ->setFirstColumnSpanned (true);

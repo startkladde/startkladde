@@ -23,6 +23,7 @@
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/DbManager.h"
 #include "src/logging/messages.h"
+#include "src/notr.h"
 
 /*
  * On enabling/diabling widgets:
@@ -104,9 +105,9 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	// *** Setup the window
 	ui.setupUi (this);
 
-	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
+	//ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
-	nowButton=new QPushButton ("Jetzt");
+	nowButton=new QPushButton (tr ("Now"));
 	ui.buttonBox->addButton (nowButton, QDialogButtonBox::AcceptRole);
 	QObject::connect (nowButton, SIGNAL (clicked ()), this, SLOT (nowButton_clicked ()));
 
@@ -175,10 +176,10 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	switch (mode)
 	{
 		case modeCreate:
-			setWindowTitle ("Flug anlegen");
+			setWindowTitle (tr ("Create flight"));
 			break;
 		case modeEdit:
-			setWindowTitle ("Flug editieren");
+			setWindowTitle (tr ("Edit flight"));
 			break;
 	}
 
@@ -271,13 +272,13 @@ void FlightWindow::fillData ()
 	const QStringList lastNames =cache.getPersonLastNames ();
 	const QStringList firstNames=cache.getPersonFirstNames();
 
-	ui.   pilotFirstNameInput ->addItem ("");
-	ui. copilotFirstNameInput ->addItem ("");
-	ui.towpilotFirstNameInput ->addItem ("");
+	ui.   pilotFirstNameInput ->addItem (notr (""));
+	ui. copilotFirstNameInput ->addItem (notr (""));
+	ui.towpilotFirstNameInput ->addItem (notr (""));
 
-	ui.   pilotLastNameInput ->addItem ("");
-	ui. copilotLastNameInput ->addItem ("");
-	ui.towpilotLastNameInput ->addItem ("");
+	ui.   pilotLastNameInput ->addItem (notr (""));
+	ui. copilotLastNameInput ->addItem (notr (""));
+	ui.towpilotLastNameInput ->addItem (notr (""));
 
 	ui.   pilotFirstNameInput ->addItems (firstNames);
 	ui. copilotFirstNameInput ->addItems (firstNames);
@@ -287,13 +288,13 @@ void FlightWindow::fillData ()
 	ui. copilotLastNameInput ->addItems (lastNames);
 	ui.towpilotLastNameInput ->addItems (lastNames);
 
-	ui.   pilotFirstNameInput ->setEditText ("");
-	ui. copilotFirstNameInput ->setEditText ("");
-	ui.towpilotFirstNameInput ->setEditText ("");
+	ui.   pilotFirstNameInput ->setEditText (notr (""));
+	ui. copilotFirstNameInput ->setEditText (notr (""));
+	ui.towpilotFirstNameInput ->setEditText (notr (""));
 
-	ui.   pilotLastNameInput ->setEditText ("");
-	ui. copilotLastNameInput ->setEditText ("");
-	ui.towpilotLastNameInput ->setEditText ("");
+	ui.   pilotLastNameInput ->setEditText (notr (""));
+	ui. copilotLastNameInput ->setEditText (notr (""));
+	ui.towpilotLastNameInput ->setEditText (notr (""));
 
 
 	// *** Flight flightModes
@@ -310,7 +311,7 @@ void FlightWindow::fillData ()
 
 	// *** Launch methods
 	QList<LaunchMethod> launchMethods=cache.getLaunchMethods ().getList ();
-	ui.launchMethodInput->addItem ("-", invalidId);
+	ui.launchMethodInput->addItem (notr ("-"), invalidId);
 	for (int i=0; i<launchMethods.size (); ++i)
 		ui.launchMethodInput->addItem (launchMethods.at (i).nameWithShortcut (), launchMethods.at (i).getId ());
 
@@ -320,9 +321,9 @@ void FlightWindow::fillData ()
 
 	// *** Locations
 	const QStringList locations=cache.getLocations ();
-	ui.       departureLocationInput -> addItem ("");
-	ui.         landingLocationInput -> addItem ("");
-	ui.towflightLandingLocationInput -> addItem ("");
+	ui.       departureLocationInput -> addItem (notr (""));
+	ui.         landingLocationInput -> addItem (notr (""));
+	ui.towflightLandingLocationInput -> addItem (notr (""));
 
 	ui.       departureLocationInput -> addItems (locations);
 	ui.         landingLocationInput -> addItems (locations);
@@ -334,14 +335,14 @@ void FlightWindow::fillData ()
 	ui.         landingLocationInput ->setEditText (location);
 	ui.towflightLandingLocationInput ->setEditText (location);
 
-	ui.         landingLocationInput ->setEditText ("");
-	ui.towflightLandingLocationInput ->setEditText ("");
+	ui.         landingLocationInput ->setEditText (notr (""));
+	ui.towflightLandingLocationInput ->setEditText (notr (""));
 
 
 	// *** Accounting notes
-	ui.accountingNoteInput->addItem ("");
+	ui.accountingNoteInput->addItem (notr (""));
 	ui.accountingNoteInput->addItems (cache.getAccountingNotes ());
-	ui.accountingNoteInput->setEditText ("");
+	ui.accountingNoteInput->setEditText (notr (""));
 }
 
 void FlightWindow::showEvent (QShowEvent *event)
@@ -519,7 +520,7 @@ int FlightWindow::fillNames (QStringList (Cache::*fullListMethod)(), QStringList
 
 	// Write the name list to the target
 	target->clear ();
-	target->addItem ("");
+	target->addItem (notr (""));
 	target->addItems (nameList);
 
 	// If there is exactly one name and the target field was empty before and
@@ -632,7 +633,7 @@ void FlightWindow::updateErrors (bool setFocus)
 
 	if (numErrors==0)
 	{
-		ui.errorList->addItem ("Keine");
+		ui.errorList->addItem (tr ("None", "Error list entries"));
 		ui.errorList->setPalette (palette ());
 	}
 	else
@@ -795,7 +796,7 @@ void FlightWindow::flightToFields (const Flight &flight, bool repeat, dbId prese
 	}
 	catch (Cache::NotFoundException &ex)
 	{
-		log_error ("Launch method not found in FlightWindow::flightToFields");
+		log_error (notr ("Launch method not found in FlightWindow::flightToFields"));
 	}
 
 	// If the launch method is to be copied, use the launch method from the
@@ -903,7 +904,7 @@ Flight FlightWindow::determineFlightBasic () throw ()
 void FlightWindow::errorCheck (const QString &problem, QWidget *widget)
 	throw (FlightWindow::AbortedException)
 {
-	if (!confirmProblem (this, "Fehler", problem))
+	if (!confirmProblem (this, tr ("Error"), problem))
 	{
 		if (widget) widget->setFocus ();
 		throw AbortedException ();
@@ -918,44 +919,46 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool departNow)
 	// Note that we use the values from the passed flight, not from the editor
 	// fields.
 
+	// TODO TR: punctuation
+
 	if ((departNow || flight.getDeparted ()) && flight.departsHere () && idInvalid (flight.getLaunchMethodId ()))
-		errorCheck ("Es wurde keine Startartart angegeben.",
+		errorCheck (tr ("No launch method specified"),
 			ui.launchMethodInput);
 
 	if ((flight.getDeparted () || !flight.departsHere ()) && isNone (flight.getDepartureLocation ()))
-		errorCheck ("Es wurde kein Startort angegeben.",
+		errorCheck (tr ("No departure location specified"),
 				ui.departureLocationInput);
 
 	if ((flight.getLanded () || !flight.landsHere ()) && isNone (flight.getLandingLocation ()))
-		errorCheck ("Es wurde kein Zielort angegeben.",
+		errorCheck (tr ("No landing location specified"),
 			ui.landingLocationInput);
 
 	if ((flight.departsHere ()!=flight.landsHere ()) && (flight.getDepartureLocation ().simplified ()==flight.getLandingLocation ().simplified ()))
-		errorCheck ("Der Startort ist gleich dem Zielort.",
+		errorCheck (tr ("Departure location and landing location are equal"),
 			flight.departsHere ()?ui.landingLocationInput:ui.departureLocationInput);
 
 	if (flight.getLanded () && flight.getDeparted () && flight.getDepartureTime ()>flight.getLandingTime ())
-		errorCheck ("Die Landezeit des Flugs liegt vor der Startzeit.",
+		errorCheck (tr ("Landing time before departure time"),
 			ui.landingTimeInput);
 
 	if (flight.departsHere () && flight.landsHere () && flight.getLanded () && !flight.getDeparted ())
-		errorCheck ("Es wurde eine Landezeit, aber keine Startzeit angegeben.",
+		errorCheck (tr ("Landing time not specified, but departure time specified"),
 				ui.landingTimeInput);
 
 	if (flight.landsHere () && flight.getLanded () && flight.getNumLandings ()==0)
-		errorCheck ("Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0.",
+		errorCheck (tr ("Landing time specified, but number of landings is 0"),
 			ui.numLandingsInput);
 
 	if (flight.getTowflightLanded () && !flight.towflightLandsHere () && isNone (flight.getTowflightLandingLocation ()))
-		errorCheck (utf8 ("Es wurde kein Zielort für das Schleppflugzeug angegeben."),
+		errorCheck (tr ("Towplane landing location not specified"),
 			ui.towflightLandingLocationInput);
 
 	if (flight.getDeparted () && flight.getTowflightLanded () && flight.getDepartureTime ()>flight.getTowflightLandingTime ())
-		errorCheck ("Die Landezeit des Schleppflugs liegt vor der Startzeit.",
+		errorCheck (tr ("Towflight landing time before departure time"),
 			ui.towflightLandingTimeInput);
 
 	if (flight.getTowflightLanded () && !flight.getDeparted ())
-		errorCheck ("Es wurde eine Landezeit des Schleppflugs, aber keine Startzeit angegeben.",
+		errorCheck (tr ("Towflight landing time before departure time"),
 			ui.towflightLandingTimeInput);
 }
 
@@ -965,58 +968,58 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool departNow, cons
 	// Phase 2: plane and towplane determined, people not determined
 
 	if (idValid (flight.getPlaneId ()) && flight.getPlaneId ()==flight.getTowplaneId ())
-		errorCheck ("Flugzeug und Schleppflugzeug sind identisch.",
+		errorCheck (tr ("Plane and towplane are identical."),
 			ui.towplaneRegistrationInput);
 
 	if (plane && launchMethod &&
 		flight.getNumLandings ()>1 && plane->category==Plane::categoryGlider && !(launchMethod && launchMethod->type==LaunchMethod::typeAirtow))
-		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.\nEs wurde jedoch mehr als eine Landung angegeben.")
+		errorCheck (tr ("According to the database, the plane %1 (%2) is a glider,\nbut the number of landings is greater than one.")
 			.arg (plane->registration).arg (plane->type),
 			ui.numLandingsInput);
 
 	if (plane &&
 		flight.getNumLandings ()>0 && !flight.getLanded () && plane->category==Plane::categoryGlider && !(launchMethod && launchMethod->type==LaunchMethod::typeAirtow))
-		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.\nEs wurden jedoch eine Landung, aber keine Landezeit angegeben.")
+		errorCheck (tr ("According to the database, the plane %1 (%2) is a glider,\nbut a landing was specified without landing time.")
 			.arg (plane->registration).arg (plane->type),
 			ui.numLandingsInput);
 
 	if (plane &&
 		plane->category==Plane::categoryGlider && launchMethod && launchMethod->type==LaunchMethod::typeSelf)
-		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 ein Segelflugzeug.\nEs wurden jedoch \"Eigenstart\" als Startart angegeben.")
-			.arg (plane->registrationWithType ()),
+		errorCheck (tr ("According to the database, the plane %1 (%2) is a glider,\nbut the launch method is self launch.")
+			.arg (plane->registrationWithType ()), // TODO TR %1 (%2) correct? Use uniformly.
 			ui.launchMethodInput);
 
 	if (plane && launchMethod &&
 		(plane->category==Plane::categoryAirplane || plane->category==Plane::categoryUltralight) && launchMethod->type!=LaunchMethod::typeSelf)
-		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 ein Motorflugzeug.\nEs wurden jedoch eine andere Startart als \"Eigenstart\" angegeben.")
+		errorCheck (tr ("According to the database, the plane %1 is an airplane,\nbut the launch method is not self launch.")
 			.arg (plane->registrationWithType ()),
 			ui.departureTimeInput);
 
 	if (plane && launchMethod &&
 		plane->numSeats==1 && (flight.getType ()==Flight::typeGuestPrivate || flight.getType ()==Flight::typeGuestExternal) && launchMethod->type!=LaunchMethod::typeSelf)
-		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.\nEs wurden jedoch der Flugtyp \"Gastflug\" angegeben.")
+		errorCheck (tr ("According to the database, the plane %1 (%2) is a single seater, but the flight type is \"passenger flight\".")
 			.arg (plane->registration).arg (plane->type),
 			ui.registrationInput);
 
 	if (plane && launchMethod &&
 		plane->numSeats==1 && flight.getType ()==Flight::typeTraining2 && launchMethod->type!=LaunchMethod::typeSelf)
-		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.\nEs wurden jedoch der Flugtyp \"Doppelsitzige Schulung\" angegeben.")
+		errorCheck (tr ("According to the database, the plane %1 (%2) is a single seater, but the flight type is \"two-seated training\".")
 			.arg (plane->registration).arg (plane->type),
 			ui.registrationInput);
 
 	if (towplane &&
 		towplane->category==Plane::categoryGlider)
-		errorCheck (QString ("Laut Datenbank ist das Schleppflugzeug %1 (%2) ein Segelflugzeug.")
+		errorCheck (tr ("According to the database, the towplane %1 (%2) is a glider.")
 			.arg (plane->registration).arg (plane->type),
 			ui.towplaneRegistrationInput);
 
 	if (plane && departNow && idValid (cache.planeFlying (plane->getId ())))
-		errorCheck (QString ("Laut Datenbank fliegt das Flugzeug %1 noch.")
+		errorCheck (tr ("According to the database, the plane %1 is still flying.")
 			.arg (plane->registration),
 			ui.registrationInput);
 
 	if (towplane && departNow && idValid (cache.planeFlying (towplane->getId ())))
-		errorCheck (QString ("Laut Datenbank fliegt das Schleppflugzeug %1 noch.")
+		errorCheck (tr ("According to the database, the towplane %1 is still flying.")
 			.arg (towplane->registration),
 			ui.registrationInput);
 }
@@ -1050,18 +1053,14 @@ void FlightWindow::checkMedical (const Person *person, const QString &ofThePerso
 	{
 		// Regular medical check
 		if (person->medicalValidity < ui.dateInput->date ())
-			errorCheck (utf8 (
-				"Laut Datenbank ist das Medical "
-				"%1 am %2 abgelaufen."
-				).arg (ofThePersonText, toString (person->medicalValidity)), this);
+			errorCheck (tr ("According to the database, the medical %1 expired on %2.")
+				.arg (ofThePersonText, toString (person->medicalValidity)), this);
 	}
 	else
 	{
 		// No medical date specified (but check enabled)
-		errorCheck (utf8 (
-			"Es ist kein Ablaufdatum für das Medical %1 " /*utf8*/
-			"eingetragen, die Medicalprüfung ist aber aktiviert." /*utf8*/
-			).arg (ofThePersonText), this);
+		errorCheck (tr ("Medical check is activated, but the expiry date of the medical %1 is not known.")
+			.arg (ofThePersonText), this);
 	}
 }
 
@@ -1072,53 +1071,53 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool departNow, cons
 
 	// Pilot und Begleiter identisch
 	if (idValid (flight.getPilotId ()) && flight.getPilotId ()==flight.getCopilotId ())
-		errorCheck ("Pilot und Begleiter sind identisch.",
+		errorCheck (tr ("Pilot and copilot are identical"),
 			ui.pilotLastNameInput);
 
 	if (idValid (flight.getPilotId ()) && flight.getPilotId ()==flight.getTowpilotId ())
-		errorCheck ("Pilot und Schlepppilot sind identisch.",
+		errorCheck (tr ("Pilot and towpilot are identical"),
 			ui.towpilotLastNameInput);
 
 	if (idValid (flight.getCopilotId ()) && flight.getCopilotId ()==flight.getTowpilotId ())
-		errorCheck ("Begleiter und Schlepppilot sind identisch.",
+		errorCheck (tr ("Copilot and towpilot are identical"),
 			ui.towpilotLastNameInput);
 
 	if (flight.getType ()==Flight::typeTraining2 && !flight.copilotSpecified ())
-		errorCheck ("Doppelsitzige Schulung ohne Fluglehrer.",
+		errorCheck (tr ("Two-seated training without flight instructor"),
 			ui.copilotLastNameInput);
 
 	if (plane && plane->numSeats==1 && flight.copilotSpecified ())
-		errorCheck (QString ("Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.\nEs wurden jedoch ein Begleiter angegeben.")
+		errorCheck (QString (tr ("According to the database, the plane %1 (%2) is a single seater,\nbut a copilot was specified."))
 		.arg (plane->registration).arg (plane->type),
 		ui.registrationInput);
 
 	// TODO use Flight::pilotDescription
 	if (pilot && departNow && idValid (cache.personFlying (pilot->getId ())))
-		errorCheck (QString ("Laut Datenbank fliegt der Pilot %1 noch.")
+		errorCheck (QString (tr ("According to the database, the pilot %1 is still flying."))
 			.arg (pilot->fullName ()),
 			ui.pilotLastNameInput);
 
 	// TODO use Flight::copilotDescription
 	if (copilot && departNow && idValid (cache.personFlying (copilot->getId ())))
-		errorCheck (QString ("Laut Datenbank fliegt der Begleiter %1 noch.")
+		errorCheck (QString (tr ("According to the database, the copilot %1 is still flying."))
 			.arg (copilot->fullName ()),
 			ui.copilotLastNameInput);
 
 	// TODO use Flight::towpilotDescription
 	if (towpilot && departNow && idValid (cache.personFlying (towpilot->getId ())))
-		errorCheck (QString ("Laut Datenbank fliegt der Schlepppilot %2 noch.")
+		errorCheck (QString (tr ("According to the database, the towpilot %1 is still flying."))
 			.arg (towpilot->fullName ()),
 			ui.towpilotLastNameInput);
 
 	if (Settings::instance ().checkMedicals)
 	{
 		// TODO use Flight::pilotDescription
-		checkMedical (pilot, flight.isTraining ()?utf8 ("des Flugschülers"):utf8 ("des Piloten"));
+		checkMedical (pilot, flight.isTraining ()?tr ("of the student"):tr ("of the pilot"));
 
 		// TODO use Flight::copilotDescription and create
 		// Flight::typeCopilotMedicalRequired
 		if (flight.getType ()==Flight::typeTraining2)
-			checkMedical (copilot, utf8 ("des Fluglehrers"));
+			checkMedical (copilot, tr ("of the flight instructor"));
 	}
 }
 
@@ -1127,11 +1126,11 @@ void FlightWindow::determineFlightPlanes (Flight &flight)
 {
 	// Determine the plane
 	if (isRegistrationActive ())
-		flight.setPlaneId (determineAndEnterPlane (getCurrentRegistration (), "Flugzeug", ui.registrationInput, ui.planeTypeWidget));
+		flight.setPlaneId (determineAndEnterPlane (getCurrentRegistration (), tr ("plane"), ui.registrationInput, ui.planeTypeWidget));
 
 	// For an unknown airtow, determine the towplane
 	if (isTowplaneRegistrationActive ())
-		flight.setTowplaneId (determineAndEnterPlane (getCurrentTowplaneRegistration (), "Schleppflugzeug", ui.towplaneRegistrationInput, ui.towplaneTypeWidget));
+		flight.setTowplaneId (determineAndEnterPlane (getCurrentTowplaneRegistration (), tr ("towplane"), ui.towplaneRegistrationInput, ui.towplaneTypeWidget));
 
 	// For a known airtow, determine the towplane (lets the user add it to the
 	// database)
@@ -1139,7 +1138,7 @@ void FlightWindow::determineFlightPlanes (Flight &flight)
 	{
 		LaunchMethod launchMethod=getCurrentLaunchMethod ();
 		if (launchMethod.towplaneKnown ())
-			determineAndEnterPlane (launchMethod.towplaneRegistration, "Schleppflugzeug", NULL, ui.towplaneTypeWidget);
+			determineAndEnterPlane (launchMethod.towplaneRegistration, tr ("towplane"), NULL, ui.towplaneTypeWidget);
 	}
 }
 
@@ -1194,7 +1193,7 @@ void FlightWindow::determineFlightPeople (Flight &flight, const LaunchMethod *la
 			isTowpilotActive(),
 			getCurrentTowpilotLastName(),
 			getCurrentTowpilotFirstName(),
-			"Schlepppilot",
+			tr ("towpilot"),
 			true, // required
 			towpilotLastName, towpilotFirstName,
 			selectedTowpilot,
@@ -1306,8 +1305,8 @@ dbId FlightWindow::determinePlane (QString registration, QString description, QW
 	{
 		// No registration given. Query the user to accept this.
 		if (!confirmProblem (this,
-			QString ("Kein %1 angegeben").arg (description),
-			QString ("Es wurde kein %1 angegeben.").arg (description)))
+			tr ("No %1 specified").arg (description),
+			tr ("The %1 is not specified.").arg (description)))
 			throw AbortedException ();
 
 		// User accepted
@@ -1325,21 +1324,22 @@ dbId FlightWindow::determinePlane (QString registration, QString description, QW
 	id=cache.getPlaneIdByRegistration (Plane::defaultRegistrationPrefix ()+registration);
 	if (idValid (id))
 	{
-		QString title=QString ("%1 nicht bekannt").arg (description);
-		QString question=QString (
-			"Das %1 %2 ist nicht bekannt.\n"
-			"Es gibt allerdings ein Flugzeug mit dem Kennzeichen %3.\n"
-			"Soll dieses Flugzeug verwendet werden?")
+		// TODO TR need this for beginning/middle of sentence, and also for determinePerson
+		QString title=tr ("%1 unknown").arg (description);
+		QString question=tr (
+			"The %1 %2 is unknown. However,\n"
+			"there is a plane with the registration %3.\n"
+			"Use this plane?")
 			.arg (description, registration, Plane::defaultRegistrationPrefix ()+registration);
 
 		if (yesNoQuestion (this, title, question))
 			return id;
 	}
 
-	QString title=QString ("%1 nicht bekannt").arg (description);
-	QString question=QString (
-		"Das %1 %2 ist nicht bekannt.\n"
-		"Soll es in die Datenbank aufgenommen werden?")
+	QString title=tr ("%1 unknown").arg (description);
+	QString question=tr (
+		"The %1 %2 is unknown.\n"
+		"Add it to the database?")
 		.arg (description, registration.toUpper ());
 
 	if (yesNoQuestion (this, title, question))
@@ -1462,11 +1462,10 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 	bool firstNameGiven=!isNone (firstName);
 
 	// Case 0: name is "+1"
-	if (lastName.simplified ()=="+1" || firstName.simplified ()=="+1")
+	if (lastName.simplified ()==notr ("+1") || firstName.simplified ()==notr ("+1"))
 	{
-		QString title=utf8 ("+1 als Name angegeben");
-		QString problem=utf8 ("Es wurde \"+1\" als Name angegeben. Für Gastflüge sollte"
-			" stattdessen der Flugtyp \"Gastflug\" verwendet werden.");
+		QString title=tr ("Name is \"+1\"");
+		QString problem=tr ("The name is \"+1\". For passenger flights, the flight type \"passenger flight\" should be used instead.");
 		if (!confirmProblem (this, title, problem))
 			throw AbortedException ();
 	}
@@ -1479,8 +1478,9 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 			return invalidId;
 
 		// Case 7: confirm that the name is not known
-		QString title=QString ("Kein %1 angegeben").arg (description);
-		QString problem=QString ("Es wurde kein %1 angegeben.").arg (description);
+		// TODO TR proper capitalization
+		QString title=tr ("%1 not specified").arg (description);
+		QString problem=tr ("The %1 is not specified.").arg (description);
 
 		if (!confirmProblem (this, title, problem))
 		{
@@ -1504,10 +1504,10 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 	if (lastNameGiven && firstNameGiven && candidates.empty ())
 	{
 		// No person of that name was found in the database.
-		QString title=QString ("%1 nicht bekannt").arg (description);
-		QString question=QString (
-			"Die Person %1 %2 (%3) ist nicht bekannt.\n"
-			"Soll sie in die Datenbank aufgenommen werden?")
+		// TODO TR capitalization
+		QString title=tr ("%1 unknown").arg (description);
+		QString question=tr (
+			"The person %1 %2 (%3) is unknown.\nAdd it to the database?")
 			.arg (capitalize (firstName), capitalize (lastName), description);
 
 		if (yesNoQuestion (this, title, question))
@@ -1523,17 +1523,17 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 	// Case 3-6: show selection list with candidates, "Unknown" and "Create"
 	// options and cancel button
 
-	QString title ("Personenauswahl");
+	QString title (tr ("Person selection"));
 	QString text;
 	if (lastNameGiven && firstNameGiven)
 		// Case 3: multiple candidates
-		text=utf8 ("Es kommen mehrere Personen in Frage. Bitte auswählen (%1):").arg (description);
+		text=tr ("Different people are possible. Please select (%1):").arg (description);
 	else if (!firstNameGiven)
 		// Case 4-6: no first name given
-		text=utf8 ("Es wurde nur ein Nachname angegeben. Bitte auswählen (%1):").arg (description);
+		text=tr ("Only the last name was specified. Please select (%1):").arg (description);
 	else if (!lastNameGiven)
 		// Case 4-6: no last name given
-		text=utf8 ("Es wurde nur ein Vorname angegeben. Bitte auswählen (%1):").arg (description);
+		text=tr ("Only the first name was specified. Please select (%1):").arg (description);
 	// Note that (!lastNameGiven && !firstNameGiven) has already been handled
 	// (case 1)
 
@@ -1567,7 +1567,7 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 			throw AbortedException ();
 	}
 
-	assert (!"Unhandled case in FlightWindow::determinePerson");
+	assert (!notr ("Unhandled case in FlightWindow::determinePerson"));
 	return 0;
 }
 
@@ -1713,8 +1713,8 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 	{
 		QMessageBox::critical (
 			this,
-			"Fehler beim Speichern",
-			QString ("Fehler beim Speichern")
+			tr ("Save error"),
+			tr ("An error occured while writing the flight to the datbase")
 			);
 	}
 
@@ -1824,20 +1824,21 @@ void FlightWindow::disableWidgets (QWidget *widget0, QWidget *widget2, bool disa
 // ******************************
 
 // TODO rename to departureTime
-const QString textDepartureTimeAutomatic        =utf8 ("Automati&sch");
-const QString textDepartureTimeDeparted         =utf8 ("Ge&startet"  );
-const QString textLandingTimeAutomatic          =utf8 ("&Automatisch");
-const QString textLandingTimeLanded             =utf8 ("Gel&andet"   );
-const QString textTowflightLandingTimeAutomatic =utf8 ("Au&tomatisch");
-const QString textTowflightLandingTimeLanded    =utf8 ("Gelande&t"   );
-const QString textTowflightLandingTimeEnded     =utf8 ("Beende&t"    );
-const QString textTowflightLandingTime          =utf8 ("Landezeit Schl&eppflugzeug:");
-const QString textTowflightEnd                  =utf8 ("Schl&eppende:");
-const QString textButtonOk                      =utf8 ("&OK");
-const QString textButtonDepartNow               =utf8 ( "&Jetzt starten");
-const QString textButtonDepartLater             =utf8 ("S&päter starten");
-const QString textButtonLandNow                 =utf8 ( "&Jetzt landen");
-const QString textButtonLandLater               =utf8 ("S&päter landen");
+// TODO TR mnemonics compatible with dialog?
+const QString textDepartureTimeAutomatic        =FlightWindow::tr ("Automatic");
+const QString textDepartureTimeDeparted         =FlightWindow::tr ("Departed");
+const QString textLandingTimeAutomatic          =FlightWindow::tr ("Automatic");
+const QString textLandingTimeLanded             =FlightWindow::tr ("Landed");
+const QString textTowflightLandingTimeAutomatic =FlightWindow::tr ("Automatic");
+const QString textTowflightLandingTimeLanded    =FlightWindow::tr ("Landed");
+const QString textTowflightLandingTimeEnded     =FlightWindow::tr ("Finished");
+const QString textTowflightLandingTime          =FlightWindow::tr ("Landing time towplane:");
+const QString textTowflightEnd                  =FlightWindow::tr ("Release time:");
+const QString textButtonOk                      =FlightWindow::tr ("OK");
+const QString textButtonDepartNow               =FlightWindow::tr ("Depart now");
+const QString textButtonDepartLater             =FlightWindow::tr ("Depart later");
+const QString textButtonLandNow                 =FlightWindow::tr ("Land now");
+const QString textButtonLandLater               =FlightWindow::tr ("Land later");
 
 
 /*
@@ -1922,8 +1923,8 @@ void FlightWindow::updateSetupLabels ()
 
 	ui.towflightLandingTimeLabel->setText (currentTowLandsHere ()?textTowflightLandingTime:textTowflightEnd);
 
-	ui.pilotLabel  ->setText (Flight::typePilotDescription   (getCurrentFlightType ())+":");
-	ui.copilotLabel->setText (Flight::typeCopilotDescription (getCurrentFlightType ())+":");
+	ui.pilotLabel  ->setText (Flight::typePilotDescription   (getCurrentFlightType ())+notr (":"));
+	ui.copilotLabel->setText (Flight::typeCopilotDescription (getCurrentFlightType ())+notr (":"));
 }
 
 void FlightWindow::updateSetupButtons ()
@@ -2000,12 +2001,12 @@ void FlightWindow::registrationChanged (const QString &text)
 		}
 		catch (Cache::NotFoundException &ex)
 		{
-			ui.planeTypeWidget->setText ("?");
+			ui.planeTypeWidget->setText (notr ("?"));
 		}
 	}
 	else
 	{
-		ui.planeTypeWidget->setText ("-");
+		ui.planeTypeWidget->setText (notr ("-"));
 	}
 }
 
@@ -2027,13 +2028,13 @@ void FlightWindow::flightModeChanged (int index)
 
 			// Clear landing location (leaving or set automatically on landing)
 			if (locationEntryCanBeChanged (landingLocation))
-				ui.landingLocationInput->setEditText ("");
+				ui.landingLocationInput->setEditText (notr (""));
 		}
 		else
 		{
 			// Clear departure location (not departed here)
 			if (locationEntryCanBeChanged (departureLocation))
-				ui.departureLocationInput->setEditText ("");
+				ui.departureLocationInput->setEditText (notr (""));
 
 			// Landing location will be set automatically on landing
 		}
@@ -2061,7 +2062,7 @@ void FlightWindow::launchMethodChanged (int index)
 				}
 				catch (Cache::NotFoundException &ex)
 				{
-					ui.towplaneTypeWidget->setText ("?");
+					ui.towplaneTypeWidget->setText (notr ("?"));
 				}
 			}
 
@@ -2089,12 +2090,12 @@ void FlightWindow::towplaneRegistrationChanged (const QString &text)
 		}
 		catch (Cache::NotFoundException &ex)
 		{
-			ui.towplaneTypeWidget->setText ("?");
+			ui.towplaneTypeWidget->setText (notr ("?"));
 		}
 	}
 	else
 	{
-		ui.planeTypeWidget->setText ("-");
+		ui.planeTypeWidget->setText (notr ("-"));
 	}
 }
 
@@ -2116,7 +2117,7 @@ void FlightWindow::landingTimeCheckboxChanged (bool checked)
 	{
 		// Not landed => unset landing location input
 		if (locationEntryCanBeChanged (ui.landingLocationInput->currentText ()))
-			ui.landingLocationInput->setEditText ("");
+			ui.landingLocationInput->setEditText (notr (""));
 	}
 }
 
@@ -2135,7 +2136,7 @@ void FlightWindow::towflightLandingTimeCheckboxChanged (bool checked)
 	{
 		// Not landed => unset landing location input
 		if (locationEntryCanBeChanged (ui.towflightLandingLocationInput->currentText ()))
-			ui.towflightLandingLocationInput->setEditText ("");
+			ui.towflightLandingLocationInput->setEditText (notr (""));
 	}
 }
 

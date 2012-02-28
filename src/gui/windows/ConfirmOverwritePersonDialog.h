@@ -20,6 +20,8 @@ template<class T> class MutableObjectList;
  */
 class ConfirmOverwritePersonDialog : public QDialog
 {
+		Q_OBJECT
+
 	public:
 		ConfirmOverwritePersonDialog (QWidget *parent=NULL, Qt::WindowFlags f=NULL);
 		~ConfirmOverwritePersonDialog ();

@@ -35,6 +35,7 @@
 #include "src/util/qString.h"
 #include "src/util/qList.h"
 #include "src/gui/dialogs.h"
+#include "src/notr.h"
 
 #include "src/plugins/weather/ExternalWeatherPlugin.h"
 
@@ -58,7 +59,7 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	// TODO there should be a warning if the settings can't be saved without a password
 
 	ui.setupUi (this);
-	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
+//	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
 	ui.dbTypePane->setVisible (false);
 
@@ -136,8 +137,8 @@ void SettingsWindow::readSettings ()
 
 	// *** Plugins - Weather
 	// Plugin selection lists
-	ui.weatherPluginInput      ->addItem ("-", QString ());
-	ui.weatherWindowPluginInput->addItem ("-", QString ());
+	ui.weatherPluginInput      ->addItem (notr ("-"), QString ());
+	ui.weatherWindowPluginInput->addItem (notr ("-"), QString ());
 
 	QList<const WeatherPlugin::Descriptor *> sortedPlugins (PluginFactory::getInstance ().getDescriptors<WeatherPlugin> ());
 	qSort (sortedPlugins.begin (), sortedPlugins.end (), WeatherPlugin::Descriptor::nameLessThanP);
@@ -277,7 +278,7 @@ void SettingsWindow::on_addPluginPathButton_clicked ()
 	warnEdit ();
 	QListWidget *list=ui.pluginPathList;
 
-	list->addItem ("");
+	list->addItem (notr (""));
 	makeItemEditable (list->item (list->count ()-1));
 	list->setCurrentRow (list->count ()-1);
 	list->editItem (list->item (list->count ()-1));
@@ -339,7 +340,7 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 
 	if (plugin)
 	{
-		plugin->setCaption (plugin->getName ()+":");
+		plugin->setCaption (plugin->getName ()+notr (":"));
 		int settingsDialogResult=PluginSettingsDialog::invoke (plugin, this, this);
 
 		if (settingsDialogResult==QDialog::Accepted)
@@ -447,8 +448,11 @@ bool SettingsWindow::allowEdit ()
 		// the password.
 		// If the password was also changed, clarify that the user must enter
 		// the *old* password.
-		message=utf8 ("Zum Speichern der Einstellungen ist das %1Datenbankpasswort\n"
-			"erforderlich.").arg (passwordChanged?"(alte) ":"");
+		if (passwordChanged)
+			message=tr ("The (old) database password is required to save\nthe settings.");
+		else
+			message=tr ("The database password is required to save\nthe settings.");
+			//tr Zum Speichern der Einstellungen ist das %1Datenbankpasswort\nerforderlich.
 		requiredPassword=oldPassword;
 	}
 	else if (ui.protectSettingsCheckbox->isChecked ())
@@ -459,12 +463,22 @@ bool SettingsWindow::allowEdit ()
 		// without having a way to disable it again.
 		// If the password was also changed, clarify that the user must enter
 		// the *new* password.
-		message=utf8 (
-			"Der Passwortschutz der Einstellungen wird aktiviert. Dazu ist das\n"
-			"%1Datenbankpasswort erforderlich. Fall der Schutz nicht aktiviert\n"
-			"werden soll, kann jetzt abgebrochen und die entsprechende Option\n"
-			"deaktiviert werden."
-			).arg (passwordChanged?"(neue) ":"");
+		// TODO TR: without line breaks?
+		// TODO TR: "must be entered"
+		if (passwordChanged)
+			message=tr (
+				"Password protection of the settings is being enabled. The\n"
+				"(new) database password is required. If you don't want\n"
+				"to enable the protection, you can cancel now and disable\n"
+				"the corresponding option."
+				);
+		else
+			message=tr (
+				"Password protection of the settings is being enabled. The\n"
+				"database password is required. If you don't want\n"
+				"to enable the protection, you can cancel now and disable\n"
+				"the corresponding option."
+				);
 		requiredPassword=newPassword;
 	}
 	else
@@ -485,10 +499,10 @@ void SettingsWindow::warnEdit ()
 	if (!Settings::instance ().protectSettings) return;
 	if (warned) return;
 
-	showWarning (utf8 ("Einstellungen geschützt"), utf8 (
-		"Achtung: Die Einstellungen sind geschützt. Die Einstellungen\n" /*utf8*/
-		"können geändert werden, aber zum Speichern ist das\n" /*utf8*/
-		"Datenbankpasswort erforderlich."), this);
+	showWarning (tr ("Settings protected"), tr (
+		"The settings are protected. The settings\n"
+		"can be changed, but to save them, the database\n"
+		"password is required."), this);
 
 	warned=true;
 }
@@ -511,7 +525,7 @@ void SettingsWindow::on_weatherWindowPluginInput_currentIndexChanged ()
 
 void SettingsWindow::on_browseWeatherPluginCommandButton_clicked ()
 {
-	QString filename=Plugin::browse (ui.weatherPluginCommandInput->text (), "*", getPluginPaths (), this);
+	QString filename=Plugin::browse (ui.weatherPluginCommandInput->text (), notr ("*"), getPluginPaths (), this);
 
 	if (!filename.isEmpty ())
 		ui.weatherPluginCommandInput->setText (filename);
@@ -519,7 +533,7 @@ void SettingsWindow::on_browseWeatherPluginCommandButton_clicked ()
 
 void SettingsWindow::on_browseWeatherWindowCommandButton_clicked ()
 {
-	QString filename=Plugin::browse (ui.weatherWindowCommandInput->text (), "*", getPluginPaths (), this);
+	QString filename=Plugin::browse (ui.weatherWindowCommandInput->text (), notr ("*"), getPluginPaths (), this);
 
 	if (!filename.isEmpty ())
 		ui.weatherWindowCommandInput->setText (filename);
