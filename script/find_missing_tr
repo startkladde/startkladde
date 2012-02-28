@@ -64,7 +64,7 @@ def tr_missing_part(part)
 		# This part contains a quoted string. Return true unless it is preceded by
 		# one of the tr functions - tr, notr and qnotr - after a non-word character
 		# (so it doesn't match fauxtr)
-		if part =~ /[^\w](tr|notr|qnotr|qnotrUtf8)\s*\("/
+		if part =~ /[^\w] (tr|notr|qnotr|qnotrUtf8) \("/x
 			false
 		else
 			true
@@ -108,6 +108,9 @@ def tr_missing_line(line)
 	# statement.
 	return false if line =~ /^\s*#include/
 
+	# Merge concatenated strings
+	line.gsub!(/ " ([^"]*) " " ([^"]*) "   /x, '"\\1\\2"')
+
 	# Remove qApp->translate ("context", "string") (valid tr function)
 	line.gsub!(/qApp->translate \( "[^"]*" , "[^"]*" \) /x, '')
 
@@ -130,9 +133,10 @@ def tr_missing_line(line)
 	#    |    ||     |or
 	#    |    ||     ||end of line
 	#    |    ||     |||
-	re=/([^"]*"[^"]*("|$))/
+	re=/( [^"]* " [^"]* ("|$))/x
 	line.scan(re) { |match|
-		part=match[0] # If the RE contains groups, this will be an array
+		# The RE contains groups, so the match is an array
+		part=match[0]
 		return true if tr_missing_part(part)
 	}
 
@@ -250,9 +254,11 @@ def test_tr_missing_line
 
 		# Multi-line strings
 		#["foo=\"moo\nbert\";" , false], # Multi-line string - not supported
+		#['foo=tr(\n"bar");', false], # String on next line
 
 		# String concatenation
-		#['foo=tr ("moo" "bert")' , false], # String concatenation - not supported
+		['a=" "'                  , true], # Not a string concatenation
+		['foo=tr ("moo" "bert")' , false], # String concatenation
 		#['foo=tr ("moo" \n "bert")', false], # Multi-line string concatenation - not supported
 
 		# With multiple strings
