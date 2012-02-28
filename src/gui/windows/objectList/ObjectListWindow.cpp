@@ -25,6 +25,7 @@
 #include "src/text.h"
 #include "src/model/objectList/AutomaticEntityList.h"
 #include "src/model/objectList/ObjectModel.h"
+#include "src/notr.h"
 
 
 /**
@@ -63,7 +64,7 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 	setWindowTitle (T::objectTypeDescriptionPlural ());
 
 	// TODO this should be done later - a subclass may add menus
-	QString mnemonics="f";
+	QString mnemonics=tr ("w", "Window menu mnemonic"); //tr f
 	QChar closeButtonMnemonic=getMnemonic (ui.buttonBox->button (QDialogButtonBox::Close)->text ());
 	if (!closeButtonMnemonic.isNull ()) mnemonics+=closeButtonMnemonic;
 	ui.menuObject->setTitle (insertMnemonic (T::objectTypeDescription (), mnemonics));
@@ -77,7 +78,7 @@ template<class T> ObjectListWindow<T>::~ObjectListWindow()
 
 template<class T> void ObjectListWindow<T>::show (DbManager &manager, QWidget *parent)
 {
-	show (manager, false, "", parent);
+	show (manager, false, notr (""), parent);
 }
 
 template<class T> void ObjectListWindow<T>::show (DbManager &manager, const QString &password, QWidget *parent)
@@ -235,11 +236,12 @@ template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, boo
 
 	if (objectUsed)
 	{
-		QString title=utf8 ("%1 benutzt").arg (T::objectTypeDescription ());
-		QString text=utf8 ("%1 %2 wird verwendet und kann daher nicht gelöscht werden.").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
+		QString title=tr ("%1 in use").arg (T::objectTypeDescription ()); //tr %1 benutzt
+		QString text=tr ("%1 %2 is in use and cannot be deleted.").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ()); //tr %1 %2 wird verwendet und kann daher nicht gelöscht werden.
 
+		// TODO TR what is this?
 		if (cancelOption)
-			text+=" Fortfahren?";
+			text+=tr (" Continue?"); //tr  Fortfahren?
 
 		QMessageBox::StandardButtons buttons=QMessageBox::Ok;
 
@@ -292,8 +294,8 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 	{
 		const T &object=objects.at (i);
 
-		QString title=utf8 ("%1 löschen?").arg (T::objectTypeDescription ());
-		QString question=utf8 ("Soll %1 %2 gelöscht werden?").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
+		QString title=tr ("%1 löschen?").arg (T::objectTypeDescription ()); //tr %1 löschen?
+		QString question=tr ("Soll %1 %2 gelöscht werden?").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ()); //tr Soll %1 %2 gelöscht werden?
 
 		bool confirmDelete=false, cancel=false;
 
@@ -445,7 +447,7 @@ template<class T> void ObjectListWindow<T>::keyPressEvent (QKeyEvent *e)
 
 template<class T> QString ObjectListWindow<T>::makePasswordMessage ()
 {
-	return utf8 ("Zum Editieren der %1 ist das Datenbankpasswort erforderlich.").arg (T::objectTypeDescriptionPlural ());
+	return tr ("The database password must be entered to edit %1.").arg (T::objectTypeDescriptionPlural ()); //tr Zum Editieren der %1 ist das Datenbankpasswort erforderlich.
 }
 
 /**

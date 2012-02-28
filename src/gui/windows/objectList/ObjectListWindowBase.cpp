@@ -12,7 +12,7 @@ ObjectListWindowBase::ObjectListWindowBase (DbManager &manager, QWidget *parent)
 	editPermission (this)
 {
 	ui.setupUi(this);
-	ui.buttonBox->button (QDialogButtonBox::Close)->setText (utf8 ("&Schließen"));
+	//ui.buttonBox->button (QDialogButtonBox::Close)->setText (utf8 ("&Schließen"));
 
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 }

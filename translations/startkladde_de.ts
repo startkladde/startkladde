@@ -310,6 +310,69 @@ geladen werden:
     </message>
 </context>
 <context>
+    <name>FlightListWindow</name>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="70"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="152"/>
+        <source>Enter date</source>
+        <translation>Datum eingeben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="70"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="152"/>
+        <source>Enter date:</source>
+        <translation>Datum eingeben:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="117"/>
+        <source> to </source>
+        <translation> bis </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="118"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="206"/>
+        <source>flight</source>
+        <translation>Flug</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="118"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="206"/>
+        <source>flights</source>
+        <translation>Flüge</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="118"/>
+        <source>no flights</source>
+        <translation>keine Flüge</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="168"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="207"/>
+        <source>Export flight database</source>
+        <translation>Flugdatenbank exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="169"/>
+        <source>CSV files (*.csv);;All files (*)</source>
+        <translation>CSV-Dateien (*.csv);;Alle Dateien (*)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="206"/>
+        <source>%1 exported</source>
+        <translation>%1 exportiert</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="212"/>
+        <source>Exporting failed: %1</source>
+        <translation>Exportieren fehlgeschlagen: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="214"/>
+        <source>Exporting failed</source>
+        <translation>Exportieren fehlgeschlagen</translation>
+    </message>
+</context>
+<context>
     <name>FlightListWindowClass</name>
     <message>
         <location filename="../src/gui/windows/objectList/FlightListWindow.ui" line="14"/>
@@ -2513,6 +2576,49 @@ aktiviert werden.</translation>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="208"/>
         <source>Club &amp;ID:</source>
         <translation>Vereins-&amp;ID:</translation>
+    </message>
+</context>
+<context>
+    <name>PersonListWindow</name>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="20"/>
+        <source>&amp;Merge</source>
+        <translation>&amp;Zusammenfassen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="45"/>
+        <source>The database password must be entered to merge people.</source>
+        <translation>Zum Zusammenfassen von Personen muss das Datenbankpasswort eingegeben werden.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="52"/>
+        <source>Not enough people selected</source>
+        <translation>Zu wenige Personen ausgewählt</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="53"/>
+        <source>At least two people must be selected for merging.</source>
+        <translation>Zum Zusammenfassen müssen mindestens zwei Personen ausgewählt sein.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="58"/>
+        <source>Select correct entry</source>
+        <translation>Korrekten Eintrag auswählen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="60"/>
+        <source>Please select the correct entry.</source>
+        <translation>Bitte den korrekten Eintrag auswählen.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="63"/>
+        <source> All other entries will be overwritten.</source>
+        <translation>Alle anderen Einträge werden überschrieben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="65"/>
+        <source> The other entry will be overwritten.</source>
+        <translation>Der andere Eintrag wird überschrieben.</translation>
     </message>
 </context>
 <context>

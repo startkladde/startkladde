@@ -19,6 +19,7 @@
 #include "src/model/objectList/MutableObjectList.h"
 #include "src/model/flightList/FlightModel.h"
 #include "src/model/objectList/ObjectListModel.h"
+#include "src/notr.h"
 
 // TODO add different output formats
 
@@ -37,7 +38,7 @@ FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 	manager (manager)
 {
 	ui.setupUi(this);
-	ui.buttonBox->button (QDialogButtonBox::Close)->setText (utf8 ("&Schließen"));
+	//ui.buttonBox->button (QDialogButtonBox::Close)->setText (utf8 ("&Schließen"));
 
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 
@@ -66,7 +67,7 @@ void FlightListWindow::show (DbManager &manager, QWidget *parent)
 {
 	// Get the date range
 	QDate first, last;
-	if (DateInputDialog::editRange (&first, &last, "Datum eingeben", "Datum eingeben:", parent))
+	if (DateInputDialog::editRange (&first, &last, tr ("Enter date"), tr ("Enter date:"), parent))
 	{
 		// Create the window
 		FlightListWindow *window = new FlightListWindow (manager, parent);
@@ -113,9 +114,9 @@ bool FlightListWindow::fetchFlights (const QDate &first, const QDate &last)
 
 	// Create and set the descriptive text: "1.1.2011 bis 31.12.2011: 123 Flüge"
 	int numFlights=flights.size ();
-	QString dateText=toString (currentFirst, currentLast, " bis ");
-	QString numFlightsText=countText (numFlights, "Flug", utf8 ("Flüge"), utf8 ("keine Flüge"));
-	ui.captionLabel->setText (QString ("%1: %2").arg (dateText).arg (numFlightsText));
+	QString dateText=toString (currentFirst, currentLast, tr (" to "));
+	QString numFlightsText=countText (numFlights, tr ("flight"), tr ("flights"), tr ("no flights"));
+	ui.captionLabel->setText (qnotr ("%1: %2").arg (dateText).arg (numFlightsText));
 
 	return true;
 }
@@ -148,7 +149,7 @@ void FlightListWindow::on_actionSelectDate_triggered ()
 	QDate newFirst=currentFirst;
 	QDate newLast =currentLast ;
 
-	if (DateInputDialog::editRange (&newFirst, &newLast, "Datum eingeben", "Datum eingeben:", this))
+	if (DateInputDialog::editRange (&newFirst, &newLast, tr ("Enter date"), tr ("Enter date:"), this))
 		fetchFlights (newFirst, newLast);
 }
 
@@ -164,8 +165,8 @@ void FlightListWindow::on_actionExport_triggered ()
 {
 	// Query the user for a file name
 	QString fileName=QFileDialog::getSaveFileName (this,
-			"Flugdatenbank exportieren", ".",
-			"CSV-Dateien (*.csv);;Alle Dateien (*)");
+			tr ("Export flight database"), notr ("."),
+			tr ("CSV files (*.csv);;All files (*)"));
 
 	// Cancel if the file name was empty (probably because the user canceled)
 	if (fileName.isEmpty ())
@@ -202,14 +203,14 @@ void FlightListWindow::on_actionExport_triggered ()
 
 		// Exporting succeeded - display a message to the user
 		int numFlights=flightListModel->rowCount (QModelIndex ());
-		QString message=QString ("%1 exportiert").arg (countText (numFlights, "Flug", utf8 ("Flüge")));
-		QMessageBox::information (this, "Flugdatenbank exportieren", message);
+		QString message=tr ("%1 exported").arg (countText (numFlights, tr ("flight"), tr ("flights")));
+		QMessageBox::information (this, tr ("Export flight database"), message);
 	}
 	else
 	{
 		// Opening failed - display a message to the user
-		QString message=QString ("Exportieren fehlgeschlagen: %1")
+		QString message=QString (tr ("Exporting failed: %1"))
 			.arg (file.errorString ());
-		QMessageBox::critical (this, "Exportieren fehlgeschlagen", message);
+		QMessageBox::critical (this, tr ("Exporting failed"), message);
 	}
 }

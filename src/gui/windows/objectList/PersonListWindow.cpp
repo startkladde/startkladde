@@ -17,7 +17,7 @@
 
 PersonListWindow::PersonListWindow (DbManager &manager, QWidget *parent):
 	ObjectListWindow<Person> (manager, parent),
-	mergeAction (new QAction (utf8 ("&Zusammenfassen"), this)),
+	mergeAction (new QAction (tr ("&Merge"), this)),
 	mergePermission (this)
 {
 	connect (mergeAction, SIGNAL (triggered ()), this, SLOT (mergeAction_triggered ()));
@@ -42,26 +42,27 @@ void PersonListWindow::mergeAction_triggered ()
 	// We cannot use allowEdit because that is also used for adding and editing
 	// people, and we may want to reqire a password for merging, but not for
 	// editing.
-	if (!mergePermission.permit ("Zum Zusammenfassen von Personen ist das Datenbankpasswort erforderlich."))
+	if (!mergePermission.permit (tr ("The database password must be entered to merge people.")))
 		return;
 
 	QList<Person> people=activeObjects ();
 	if (people.size ()<2)
 	{
 		showWarning (
-			utf8 ("Zu wenige Person ausgewählt"),
-			utf8 ("Zum Zusammenfassen müssen mindestens zwei Personen ausgewählt sein."),
+			tr ("Not enough people selected"),
+			tr ("At least two people must be selected for merging."),
 			this);
 		return;
 	}
 
-	QString title=utf8 ("Korrekten Eintrag auswählen");
-	QString text=utf8 ("Bitte den korrekten Eintrag auswählen.");
+	QString title=tr ("Select correct entry");
+	// TODO TR simplify
+	QString text=tr ("Please select the correct entry.");
 
 	if (people.size ()>2)
-		text+=utf8 (" Alle anderen Einträge werden überschrieben.");
+		text+=tr (" All other entries will be overwritten.");
 	else
-		text+=utf8 (" Der andere Eintrag wird überschrieben.");
+		text+=tr (" The other entry will be overwritten.");
 
 	dbId correctPersonId=invalidId;
 	ObjectSelectWindowBase::Result selectionResult=
