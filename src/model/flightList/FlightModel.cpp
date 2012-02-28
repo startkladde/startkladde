@@ -3,6 +3,7 @@
 #include <cassert>
 #include <iostream>
 
+#include <QApplication>
 #include <QBrush>
 
 #include "src/itemDataRoles.h"
@@ -12,6 +13,7 @@
 #include "src/model/Plane.h"
 #include "src/db/cache/Cache.h"
 #include "src/util/qString.h"
+#include "src/notr.h"
 
 FlightModel::FlightModel (Cache &cache):
 	cache (cache),
@@ -37,22 +39,22 @@ QVariant FlightModel::displayHeaderData (int column) const
 {
 	switch (column)
 	{
-		case 0: return "Kennz.";
-		case 1: return "Typ";
-		case 2: return "Flugtyp";
-		case 3: return "Pilot/FS";
-		case 4: return "Begleiter/FL";
-		case 5: return "Startart";
-		case 6: return "Start";
-		case 7: return "Landung";
-		case 8: return "Dauer";
-		case 9: return "Ldg.";
-		case 10: return "Startort";
-		case 11: return "Zielort";
-		case 12: return "Bemerkungen";
-		case 13: return "Abrechnungshinweis";
-		case 14: return "Datum";
-		case 15: return "ID";
+		case 0: return qApp->translate ("FlightModel", "Reg.");
+		case 1: return qApp->translate ("FlightModel", "Model");
+		case 2: return qApp->translate ("FlightModel", "Type");
+		case 3: return qApp->translate ("FlightModel", "Pilot/Student");
+		case 4: return qApp->translate ("FlightModel", "Copilot/FI");
+		case 5: return qApp->translate ("FlightModel", "Launch method");
+		case 6: return qApp->translate ("FlightModel", "Departure");
+		case 7: return qApp->translate ("FlightModel", "Landing");
+		case 8: return qApp->translate ("FlightModel", "Duration");
+		case 9: return qApp->translate ("FlightModel", "Ldgs.");
+		case 10: return qApp->translate ("FlightModel", "Departure location");
+		case 11: return qApp->translate ("FlightModel", "Landing location");
+		case 12: return qApp->translate ("FlightModel", "Comments");
+		case 13: return qApp->translate ("FlightModel", "Accounting notes");
+		case 14: return qApp->translate ("FlightModel", "Date");
+		case 15: return qApp->translate ("FlightModel", "ID");
 	}
 
 	// Apparantly, an unhandled column can happen when the last flight is deleted
@@ -64,25 +66,25 @@ QString FlightModel::columnName (int columnIndex) const
 {
 	switch (columnIndex)
 	{
-		case 0: return "registration";
-		case 1: return "aircraftType";
-		case 2: return "flightType";
-		case 3: return "pilot";
-		case 4: return "copilot";
-		case 5: return "launchMethod";
-		case 6: return "departureTime";
-		case 7: return "landingTime";
-		case 8: return "flightDuration";
-		case 9: return "numLandings";
-		case 10: return "departureLocation";
-		case 11: return "landingLocation";
-		case 12: return "comments";
-		case 13: return "accountingNote";
-		case 14: return "date";
-		case 15: return "id";
+		case 0: return notr ("registration");
+		case 1: return notr ("aircraftType");
+		case 2: return notr ("flightType");
+		case 3: return notr ("pilot");
+		case 4: return notr ("copilot");
+		case 5: return notr ("launchMethod");
+		case 6: return notr ("departureTime");
+		case 7: return notr ("landingTime");
+		case 8: return notr ("flightDuration");
+		case 9: return notr ("numLandings");
+		case 10: return notr ("departureLocation");
+		case 11: return notr ("landingLocation");
+		case 12: return notr ("comments");
+		case 13: return notr ("accountingNote");
+		case 14: return notr ("date");
+		case 15: return notr ("id");
 	}
 
-	assert (!"Unhandled column");
+	assert (!notr ("Unhandled column"));
 	return QString ();
 }
 
@@ -90,26 +92,26 @@ QString FlightModel::sampleText (int columnIndex) const
 {
 	switch (columnIndex)
 	{
-		case 0: return "D-1234 (WW)";
-		case 1: return "DR-400/180";
-		case 2: return "Schul (2)";
-		case 3: return "Xxxxxxxx, Yyyyyy (FSV Ding";
-		case 4: return "Xxxxxxxx, Yyyyyy (FSV Ding";
-		case 5: return "Startart"; // Header text is longer than content
+		case 0: return qApp->translate ("FlightModel", "N99999 (WW)");
+		case 1: return qApp->translate ("FlightModel", "DR-400/180");
+		case 2: return qApp->translate ("FlightModel", "Passenger (E)");
+		case 3: return qApp->translate ("FlightModel", "Xxxxxxxx, Yyyyyy (Twidd");
+		case 4: return qApp->translate ("FlightModel", "Xxxxxxxx, Yyyyyy (Twidd");
+		case 5: return qApp->translate ("FlightModel", "Launch method"); // Header text is longer than content
 		// Improvement: use QStyle::PM_ButtonMargin for buttons
-		case 6: return "  Starten  ";
-		case 7: return "  Landen  ";
-		case 8: return "00:00";
-		case 9: return "Ldg."; // Header text is longer than content
-		case 10: return "Rheinstetten";
-		case 11: return "Rheinstetten";
-		case 12: return utf8 ("Seilrissübung");
-		case 13: return utf8 ("Landegebühr bezahlt");
-		case 14: return "12.34.5678";
-		case 15: return "12345";
+		case 6: return qApp->translate ("FlightModel", "  Depart  ");
+		case 7: return qApp->translate ("FlightModel", "  Land  ");
+		case 8: return qApp->translate ("FlightModel", "00:00");
+		case 9: return qApp->translate ("FlightModel", "Ldgs."); // Header text is longer than content
+		case 10: return qApp->translate ("FlightModel", "Twiddlethorpe");
+		case 11: return qApp->translate ("FlightModel", "Twiddlethorpe");
+		case 12: return qApp->translate ("FlightModel", "Cable break training");
+		case 13: return qApp->translate ("FlightModel", "Landing fee paid");
+		case 14: return qApp->translate ("FlightModel", "12/34/5678");
+		case 15: return qApp->translate ("FlightModel", "12345");
 	}
 
-	assert (!"Unhandled column");
+	assert (!notr ("Unhandled column"));
 	return QString ();
 }
 
@@ -135,9 +137,9 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 			case 10: return flight.getDepartureLocation ();
 			case 11: return flight.getLandingLocation ();
 			case 12: return flight.getComments ();
-			case 13: return flight.isTowflight()?QString ("(Siehe geschleppter Flug)"):flight.getAccountingNotes ();
+			case 13: return flight.isTowflight()?qApp->translate ("FlightModel", "(See glider flight)"):flight.getAccountingNotes ();
 			case 14: return flight.effdatum ();
-			case 15: return (flight.isTowflight ()?QString ("(%1)"):QString ("%1")).arg (flight.getId ());
+			case 15: return (flight.isTowflight ()?qnotr ("(%1)"):qnotr ("%1")).arg (flight.getId ());
 		}
 
 		assert (false);
@@ -162,14 +164,15 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 	}
 	else if (role==buttonTextRole)
 	{
+		// TODO TR cache
 		if (column==departButtonColumn ())
-			return "Starten";
+			return qApp->translate ("FlightModel", "Depart");
 		else if (column==landButtonColumn ())
 		{
 			if (flight.isTowflight () && !flight.landsHere ())
-				return "Ende";
+				return qApp->translate ("FlightModel", "End");
 			else
-				return "Landen";
+				return qApp->translate ("FlightModel", "Land");
 		}
 		return QVariant ();
 	}
@@ -193,7 +196,7 @@ QVariant FlightModel::registrationData (const Flight &flight, int role) const
 	}
 	catch (Cache::NotFoundException)
 	{
-		return "???";
+		return notr ("???");
 	}
 }
 
@@ -208,7 +211,7 @@ QVariant FlightModel::planeTypeData (const Flight &flight, int role) const
 	}
 	catch (Cache::NotFoundException)
 	{
-		return "???";
+		return notr ("???");
 	}
 }
 
@@ -240,11 +243,11 @@ QVariant FlightModel::copilotData (const Flight &flight, int role) const
 		}
 		else if (Flight::typeIsGuest (flight.getType ()))
 		{
-			return "(Gast)";
+			return qApp->translate ("FlightModel", "(Passenger)");
 		}
 		else
 		{
-			return "-";
+			return notr ("-");
 		}
 	}
 	catch (Cache::NotFoundException)
@@ -259,10 +262,10 @@ QVariant FlightModel::launchMethodData (const Flight &flight, int role) const
 
 	try
 	{
-		if (!flight.departsHere ()) return "-";
+		if (!flight.departsHere ()) return notr ("-");
 
 		// For towflights without launch method, assume self launch
-		if (idInvalid (flight.getLaunchMethodId ()) && flight.isTowflight ()) return "ES";
+		if (idInvalid (flight.getLaunchMethodId ()) && flight.isTowflight ()) return qApp->translate ("FlightModel", "SL", "Self launch");
 
 		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (flight.getLaunchMethodId ());
 
@@ -272,7 +275,7 @@ QVariant FlightModel::launchMethodData (const Flight &flight, int role) const
 	}
 	catch (Cache::NotFoundException)
 	{
-		return "?";
+		return notr ("?");
 	}
 }
 
@@ -281,11 +284,12 @@ QVariant FlightModel::departureTimeData (const Flight &flight, int role) const
 	(void)role;
 
 	if (!flight.canHaveDepartureTime ())
-		return "-";
+		return notr ("-");
 	else if  (!flight.hasDepartureTime ())
-		return "";
+		return notr ("");
 	else
-		return flight.getDepartureTime ().toUTC ().time ().toString ("hh:mm")+"Z";
+		// TODO TR cache
+		return flight.getDepartureTime ().toUTC ().time ().toString (qApp->translate ("FlightModel", "hh:mm"))+"Z";
 }
 
 QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
@@ -293,11 +297,11 @@ QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
 	(void)role;
 
 	if (!flight.canHaveLandingTime())
-		return "-";
+		return notr ("-");
 	else if (!flight.hasLandingTime ())
-		return "";
+		return notr ("");
 	else
-		return flight.getLandingTime ().toUTC ().time ().toString ("hh:mm")+"Z";
+		return flight.getLandingTime ().toUTC ().time ().toString (qApp->translate ("FlightModel", "hh:mm"))+notr ("Z");
 }
 
 QVariant FlightModel::durationData (const Flight &flight, int role) const
@@ -305,7 +309,7 @@ QVariant FlightModel::durationData (const Flight &flight, int role) const
 	(void)role;
 
 	if (!flight.hasDuration ())
-		return "-";
+		return notr ("-");
 	else
-		return flight.flightDuration ().toString ("h:mm");
+		return flight.flightDuration ().toString (qApp->translate ("FlightModel", "h:mm"));
 }

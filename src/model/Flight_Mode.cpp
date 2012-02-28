@@ -21,9 +21,9 @@ QString Flight::modeText (Flight::Mode mode)
 {
 	switch (mode)
 	{
-		case modeLocal:   return qApp->translate ("Flight::Mode", "Local"); //tr Lokal
-		case modeComing:  return qApp->translate ("Flight::Mode", "Coming"); //tr Kommt
-		case modeLeaving: return qApp->translate ("Flight::Mode", "Leaving"); //tr Geht
+		case modeLocal:   return qApp->translate ("Flight::Mode", "Local");
+		case modeComing:  return qApp->translate ("Flight::Mode", "Coming");
+		case modeLeaving: return qApp->translate ("Flight::Mode", "Leaving");
 		// no default
 	}
 

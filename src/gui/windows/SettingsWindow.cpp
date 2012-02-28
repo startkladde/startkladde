@@ -452,7 +452,6 @@ bool SettingsWindow::allowEdit ()
 			message=tr ("The (old) database password is required to save\nthe settings.");
 		else
 			message=tr ("The database password is required to save\nthe settings.");
-			//tr Zum Speichern der Einstellungen ist das %1Datenbankpasswort\nerforderlich.
 		requiredPassword=oldPassword;
 	}
 	else if (ui.protectSettingsCheckbox->isChecked ())

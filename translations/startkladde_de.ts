@@ -312,17 +312,17 @@ geladen werden:
 <context>
     <name>Flight::Mode</name>
     <message>
-        <location filename="../src/model/Flight_Mode.cpp" line="21"/>
+        <location filename="../src/model/Flight_Mode.cpp" line="24"/>
         <source>Local</source>
         <translation>Lokal</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Mode.cpp" line="22"/>
+        <location filename="../src/model/Flight_Mode.cpp" line="25"/>
         <source>Coming</source>
         <translation>Kommt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Mode.cpp" line="23"/>
+        <location filename="../src/model/Flight_Mode.cpp" line="26"/>
         <source>Leaving</source>
         <translation>Geht</translation>
     </message>
@@ -330,124 +330,124 @@ geladen werden:
 <context>
     <name>Flight::Type</name>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="27"/>
+        <location filename="../src/model/Flight_Type.cpp" line="28"/>
         <source>R - Regular flight</source>
         <translation>N - Normalflug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="28"/>
+        <location filename="../src/model/Flight_Type.cpp" line="29"/>
         <source>2 - Two-seated training</source>
         <translation>2 - Schulungsflug (einsitzig)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="29"/>
+        <location filename="../src/model/Flight_Type.cpp" line="30"/>
         <source>1 - Solo training</source>
         <translation>1 - Schulungsflug (einsitzig)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="30"/>
+        <location filename="../src/model/Flight_Type.cpp" line="31"/>
         <source>T - Towflight</source>
         <translation>S - Schleppflug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="31"/>
+        <location filename="../src/model/Flight_Type.cpp" line="32"/>
         <source>P - Passenger flight</source>
         <translation>G - Gastflug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="32"/>
+        <location filename="../src/model/Flight_Type.cpp" line="33"/>
         <source>E - Passenger flight (extern)</source>
         <translation>E - Gastflug (extern)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="41"/>
+        <location filename="../src/model/Flight_Type.cpp" line="42"/>
         <source>Regular flight</source>
         <translation>Normalflug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="42"/>
+        <location filename="../src/model/Flight_Type.cpp" line="43"/>
         <source>Two-seated training</source>
         <translation>Schulungsflug (einsitzig)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="43"/>
+        <location filename="../src/model/Flight_Type.cpp" line="44"/>
         <source>Solo training</source>
         <translation>Schulungsflug (einsitzig)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="44"/>
+        <location filename="../src/model/Flight_Type.cpp" line="45"/>
         <source>Towflight</source>
         <translation>Schleppflug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="45"/>
+        <location filename="../src/model/Flight_Type.cpp" line="46"/>
         <source>Passenger flight</source>
         <translation>Gastflug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="46"/>
+        <location filename="../src/model/Flight_Type.cpp" line="47"/>
         <source>Passenger flight (external)</source>
         <translation>Gastflug (extern)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="60"/>
+        <location filename="../src/model/Flight_Type.cpp" line="61"/>
         <source>Regular</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="61"/>
+        <location filename="../src/model/Flight_Type.cpp" line="62"/>
         <source>Training (2)</source>
         <translation>Schul (2)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="62"/>
+        <location filename="../src/model/Flight_Type.cpp" line="63"/>
         <source>Training (1)</source>
         <translation>Schul (1)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="63"/>
+        <location filename="../src/model/Flight_Type.cpp" line="64"/>
         <source>Tow</source>
         <translation>Schlepp</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="64"/>
+        <location filename="../src/model/Flight_Type.cpp" line="65"/>
         <source>Passenger</source>
         <translation>Gast</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="65"/>
+        <location filename="../src/model/Flight_Type.cpp" line="66"/>
         <source>Passenger (E)</source>
         <translation>Gast (E)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="115"/>
+        <location filename="../src/model/Flight_Type.cpp" line="116"/>
         <source>student</source>
         <translation>Flugschüler</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="120"/>
-        <location filename="../src/model/Flight_Type.cpp" line="126"/>
+        <location filename="../src/model/Flight_Type.cpp" line="121"/>
+        <location filename="../src/model/Flight_Type.cpp" line="127"/>
         <source>pilot</source>
         <translation>Pilot</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="122"/>
+        <location filename="../src/model/Flight_Type.cpp" line="123"/>
         <source>towpilot</source>
         <translation>Schlepppilot</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="134"/>
+        <location filename="../src/model/Flight_Type.cpp" line="135"/>
         <source>flight instructor</source>
         <translation>Fluglehrer</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="137"/>
+        <location filename="../src/model/Flight_Type.cpp" line="138"/>
         <source>passenger</source>
         <translation>Gast</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="141"/>
-        <location filename="../src/model/Flight_Type.cpp" line="147"/>
+        <location filename="../src/model/Flight_Type.cpp" line="142"/>
+        <location filename="../src/model/Flight_Type.cpp" line="148"/>
         <source>copilot</source>
         <translation>Copilot</translation>
     </message>
@@ -584,6 +584,212 @@ geladen werden:
         <source>Ctrl+R</source>
         <extracomment>Refresh</extracomment>
         <translation>Ctrl+R</translation>
+    </message>
+</context>
+<context>
+    <name>FlightModel</name>
+    <message>
+        <source>TODO</source>
+        <translation type="obsolete">Zu erledigen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="42"/>
+        <source>Reg.</source>
+        <translation>Kennz.</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="43"/>
+        <source>Model</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="44"/>
+        <source>Type</source>
+        <translation>Flugtyp</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="45"/>
+        <source>Pilot/Student</source>
+        <translation>Pilot/FS</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="46"/>
+        <source>Copilot/FI</source>
+        <translation>Begleiter/FL</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="47"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="100"/>
+        <source>Launch method</source>
+        <translation>StartartStartart</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="48"/>
+        <source>Departure</source>
+        <translation>Start</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="49"/>
+        <source>Landing</source>
+        <translation>Landung</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="50"/>
+        <source>Duration</source>
+        <translation>Dauer</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="51"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="105"/>
+        <source>Ldgs.</source>
+        <translation>Ldg.</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="52"/>
+        <source>Departure location</source>
+        <translation>Startort</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="53"/>
+        <source>Landing location</source>
+        <translation>Zielort</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="54"/>
+        <source>Comments</source>
+        <translation>Bemerkungen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="55"/>
+        <source>Accounting notes</source>
+        <translation>Abrechnungshinweise</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="56"/>
+        <source>Date</source>
+        <translation>Datum</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="57"/>
+        <source>ID</source>
+        <translation>ID</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="95"/>
+        <source>N99999 (WW)</source>
+        <translation>D-1234 (WW)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="268"/>
+        <source>SL</source>
+        <comment>Self launch</comment>
+        <translatorcomment>Eigenstart</translatorcomment>
+        <translation>ES</translation>
+    </message>
+    <message>
+        <source>N99999</source>
+        <translation type="obsolete">D-1234 (WW)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="96"/>
+        <source>DR-400/180</source>
+        <translation>DR-400/180</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="97"/>
+        <source>Passenger (E)</source>
+        <translation>Gast (E)</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="98"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="99"/>
+        <source>Xxxxxxxx, Yyyyyy (Twidd</source>
+        <translation>Xxxxxxxx, Yyyyyy (FSV Ding</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="102"/>
+        <source>  Depart  </source>
+        <translation>  Starten  </translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="103"/>
+        <source>  Land  </source>
+        <translation>  Landen  </translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="104"/>
+        <source>00:00</source>
+        <translation>00:00</translation>
+    </message>
+    <message>
+        <source>Ldg.</source>
+        <translation type="obsolete">Ldg.</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="106"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="107"/>
+        <source>Twiddlethorpe</source>
+        <translation>Dingenskirchen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="108"/>
+        <source>Cable break training</source>
+        <translation>Seilrissübung</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="109"/>
+        <source>Landing fee paid</source>
+        <translation>Landegebühr bezahlt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="110"/>
+        <source>12/34/5678</source>
+        <translation>12.34.5678</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="111"/>
+        <source>12345</source>
+        <translation>12345</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="140"/>
+        <source>(See glider flight)</source>
+        <translation>Siehe geschleppter Flug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="169"/>
+        <source>Depart</source>
+        <translation>Starten</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="173"/>
+        <source>End</source>
+        <translation>Ende</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="175"/>
+        <source>Land</source>
+        <translation>Landen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="246"/>
+        <source>(Passenger)</source>
+        <translation>(Gast)</translation>
+    </message>
+    <message>
+        <source>SL</source>
+        <translation type="obsolete">ES</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="292"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="304"/>
+        <source>hh:mm</source>
+        <translation>hh:mm</translation>
+    </message>
+    <message>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="314"/>
+        <source>h:mm</source>
+        <translation>h:mm</translation>
     </message>
 </context>
 <context>
@@ -4043,6 +4249,13 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
         <source> UTC</source>
         <comment>With leading space</comment>
         <translation> UTC</translation>
+    </message>
+</context>
+<context>
+    <name>TODO</name>
+    <message>
+        <source>(See glider flight)</source>
+        <translation type="obsolete">Siehe geschleppter Flug</translation>
     </message>
 </context>
 <context>
