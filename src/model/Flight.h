@@ -18,6 +18,8 @@ class Query;
 class Result;
 class Cache;
 
+// TODO TR translate, camelCase
+// TODO TR only_last_name should be first_name_missing
 enum FlightError {
 	ff_ok,
 	ff_keine_id, ff_kein_flugzeug, ff_kein_pilot, ff_pilot_gleich_begleiter,

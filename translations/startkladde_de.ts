@@ -310,6 +310,303 @@ geladen werden:
     </message>
 </context>
 <context>
+    <name>Flight</name>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="274"/>
+        <location filename="../src/model/Flight.cpp" line="288"/>
+        <location filename="../src/model/Flight.cpp" line="307"/>
+        <source>The flight has already landed.</source>
+        <translation>Der Flug is bereits gelandet.</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="277"/>
+        <source>The flight does not depart here.</source>
+        <translation>Der Flug startet nicht hier.</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="280"/>
+        <source>The flight has already departed.</source>
+        <translation>Der Flug ist bereits gestartet.</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="291"/>
+        <source>The flight does not land here.</source>
+        <translation>Der Flug landet nicht hier.</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="294"/>
+        <location filename="../src/model/Flight.cpp" line="310"/>
+        <location filename="../src/model/Flight.cpp" line="321"/>
+        <source>The flight has not departed yet.</source>
+        <translation>Der Flug ist noch nicht gestartet.</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="304"/>
+        <source>The flight is a towflight.</source>
+        <translation>Der Flug ist ein Schleppflug.</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="318"/>
+        <source>The towflight has already landed.</source>
+        <translation>Der Schleppflug ist bereits gelandet.</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="469"/>
+        <source>No errors</source>
+        <translation>Keine Fehler</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="471"/>
+        <source>Flight has no ID</source>
+        <translation>Flug hat keine ID</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="473"/>
+        <source>No plane specified</source>
+        <translation>Kein Flugzeug angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="477"/>
+        <source>The student&apos;s first name is missing</source>
+        <translation>Der Vorname des Flugschülers fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="479"/>
+        <source>The pilot&apos;s first name is missing</source>
+        <translation>Der Vorname des Piloten fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="482"/>
+        <source>The student&apos;s last name is missing</source>
+        <translation>Der Nachname des Flugschülers fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="484"/>
+        <source>The pilot&apos;s last name is missing</source>
+        <translation>Der Nachname des Piloten fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="487"/>
+        <source>The student is not identified</source>
+        <translation>Der Flugschüler ist nicht identifiziert</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="489"/>
+        <source>The pilot is not identified</source>
+        <translation>Der Pilot ist nicht identifiziert</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="493"/>
+        <source>The flight instructor&apos;s first name is missing</source>
+        <translation>Der Vorname des Fluglehrers fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="495"/>
+        <source>The copilot&apos;s first name is missing</source>
+        <translation>Der Vorname des Begleiters fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="498"/>
+        <source>The flight instructor&apos;s last name is missing</source>
+        <translation>Der Nachname des Fluglehrers fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="500"/>
+        <source>The copilot&apos;s last name is missing</source>
+        <translation>Der Nachname des Begleiters fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="503"/>
+        <source>The flight instructor is not identified</source>
+        <translation>Der Fluglehrer ist nicht identifiziert</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="505"/>
+        <source>The copilot is not identified</source>
+        <translation>Der Begleiter ist nicht identifiziert</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="508"/>
+        <source>The towpilot&apos;s first name is missing</source>
+        <translation>Der Vorname des Schlepppiloten fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="510"/>
+        <source>The towpilot&apos;s last name is missing</source>
+        <translation>Der Nachname des Schlepppiloten fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="512"/>
+        <source>The towpilot is not identified</source>
+        <translation>Der Schlepppilot ist nicht identifiziert</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="516"/>
+        <source>No student specified</source>
+        <translation>Kein Flugschüler angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="518"/>
+        <source>No pilot specified</source>
+        <translation>Kein Pilot angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="522"/>
+        <source>Student and flight instructor are identical</source>
+        <translation>Flugschüler und Fluglehrer sind identisch</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="524"/>
+        <source>Pilot and copilot are identical</source>
+        <translation>Pilot and copilot are identical</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="528"/>
+        <source>Student and towpilot are identical</source>
+        <translation>Flugschüler und Schlepppilot sind identisch</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="530"/>
+        <source>Pilot and towpilot are identical</source>
+        <translation>Pilot und Schlepppilot sind identisch</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="532"/>
+        <source>Two-seated training without flight instructor</source>
+        <translation>Doppelsitzige Schulung ohne Fluglehrer</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="533"/>
+        <source>No copilot allowed</source>
+        <translation>Begleiter nicht erlaubt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="534"/>
+        <source>Flight has landed but not departed</source>
+        <translation>Flug ist gelandet, aber nicht gestartet</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="535"/>
+        <source>Landing before departure</source>
+        <translation>Landung liegt vor Start</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="536"/>
+        <source>No launch method specified</source>
+        <translation>Keine Startart angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="537"/>
+        <source>No mode specified</source>
+        <translation>Kein Modus angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="538"/>
+        <source>No mode specified for towflight</source>
+        <translation>Kein Modus für Schleppflug angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="539"/>
+        <source>No flight type specified</source>
+        <translation>Kein Flugtyp angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="540"/>
+        <source>Negative number of landings</source>
+        <translation>Negative Anzahl Landungen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="541"/>
+        <source>Flight has landed, but number of landings is zero</source>
+        <translation>Flug ist gelandet, aber Anzahl der Landungen ist null</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="542"/>
+        <source>Towflight has landed but not departed</source>
+        <translation>Schleppflug ist gelandet, aber nicht gestartet</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="543"/>
+        <source>Towflight landing before departure</source>
+        <translation>Landung des Schleppflugs liegt vor Start</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="544"/>
+        <source>Two-seated training in single-seater</source>
+        <translation>Doppelsitzige Schulung in Einsitzer</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="545"/>
+        <source>No departure location specified</source>
+        <translation>Kein Startort angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="546"/>
+        <source>No landing location specified</source>
+        <translation>Kein Zielort angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="547"/>
+        <source>No landing location specified for towplane</source>
+        <translation>Kein Zielort für Schleppflugzeug angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="548"/>
+        <source>Glider performs more than one landing</source>
+        <translation>Segelflugzeug macht mehr als eine Landung</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="549"/>
+        <source>Glider performs landing without landing time</source>
+        <translation>Segelflugzeug macht Landungen ohne Landezeit</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="550"/>
+        <source>Copilot in single-seater</source>
+        <translation>Begleiter in einsitzigem Flugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="551"/>
+        <source>Passenger flight in single-seater</source>
+        <translation>Gastflug in einsitzigem Flugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="552"/>
+        <source>Glider performs self launch</source>
+        <translation>Segelflugzeug im Selbststart</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="553"/>
+        <source>Number of landings is greater than zero without departure</source>
+        <translation>Anzahl Landungen ungleich null ohne Start</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="554"/>
+        <source>Landing location and departure location are identical</source>
+        <translation>Startort gleich Zielort</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="555"/>
+        <source>Towplane not specified</source>
+        <translation>Schleppflugzeug nicht angegeben</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="556"/>
+        <source>Towplane is glider</source>
+        <translation>Schleppflugzeug ist Segelflugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="560"/>
+        <source>Unknown error</source>
+        <translation>Unbekannter Fehler</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.cpp" line="850"/>
+        <source>Towflight for flight %1</source>
+        <translation>Schleppflug für Flug %1</translation>
+    </message>
+</context>
+<context>
     <name>Flight::Mode</name>
     <message>
         <location filename="../src/model/Flight_Mode.cpp" line="24"/>
@@ -420,34 +717,34 @@ geladen werden:
         <translation>Gast (E)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="116"/>
+        <location filename="../src/model/Flight_Type.cpp" line="117"/>
         <source>student</source>
         <translation>Flugschüler</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="121"/>
-        <location filename="../src/model/Flight_Type.cpp" line="127"/>
+        <location filename="../src/model/Flight_Type.cpp" line="122"/>
+        <location filename="../src/model/Flight_Type.cpp" line="128"/>
         <source>pilot</source>
         <translation>Pilot</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="123"/>
+        <location filename="../src/model/Flight_Type.cpp" line="124"/>
         <source>towpilot</source>
         <translation>Schlepppilot</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="135"/>
+        <location filename="../src/model/Flight_Type.cpp" line="136"/>
         <source>flight instructor</source>
         <translation>Fluglehrer</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="138"/>
+        <location filename="../src/model/Flight_Type.cpp" line="139"/>
         <source>passenger</source>
         <translation>Gast</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="142"/>
-        <location filename="../src/model/Flight_Type.cpp" line="148"/>
+        <location filename="../src/model/Flight_Type.cpp" line="143"/>
+        <location filename="../src/model/Flight_Type.cpp" line="149"/>
         <source>copilot</source>
         <translation>Copilot</translation>
     </message>
@@ -3478,7 +3775,7 @@ the settings.</source>
 erforderlich.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="469"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="468"/>
         <source>Password protection of the settings is being enabled. The
 (new) database password is required. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -3489,7 +3786,7 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="476"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="475"/>
         <source>Password protection of the settings is being enabled. The
 database password is required. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -3520,12 +3817,12 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="502"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="501"/>
         <source>Settings protected</source>
         <translation>Einstellungen geschützt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="502"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="501"/>
         <source>The settings are protected. The settings
 can be changed, but to save them, the database
 password is required.</source>
@@ -4256,6 +4553,10 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
     <message>
         <source>(See glider flight)</source>
         <translation type="obsolete">Siehe geschleppter Flug</translation>
+    </message>
+    <message>
+        <source>Towflight for flight %1</source>
+        <translation type="obsolete">Schleppflug für Flug %1</translation>
     </message>
 </context>
 <context>
