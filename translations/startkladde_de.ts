@@ -4369,9 +4369,13 @@ Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder 
         <translation>Datei existiert nicht</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="102"/>
         <source>Time for current data not found in data file</source>
-        <translation>Zeit fü® aktuelles Datum nicht in Datendatei vorhanden</translation>
+        <translation type="obsolete">Zeit fü® aktuelles Datum nicht in Datendatei vorhanden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="102"/>
+        <source>Time for current date not found in data file</source>
+        <translation>Zeit für aktuelles Datum nicht in Datendatei vorhanden</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="105"/>
@@ -4643,6 +4647,23 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
         <location filename="../src/plugins/info/test/TestPlugin.cpp" line="119"/>
         <source>%1; plain text</source>
         <translation>%1; Standardtext</translation>
+    </message>
+</context>
+<context>
+    <name>TestPluginSettingsPane</name>
+    <message>
+        <location filename="../src/plugins/info/test/TestPluginSettingsPane.cpp" line="29"/>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/test/TestPluginSettingsPane.cpp" line="30"/>
+        <source>Test error (&quot;Error on save&quot; is enabled)</source>
+        <translation>Fest-Fehler (&quot;Fehler beim Speichern&quot; ist aktiv)</translation>
+    </message>
+    <message>
+        <source>Test error (Error on save&quot; is enabled)</source>
+        <translation type="obsolete">Fest-Fehler (&quot;Fehler beim Speichern&quot; ist aktiv)</translation>
     </message>
 </context>
 <context>

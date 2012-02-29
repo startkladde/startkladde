@@ -26,8 +26,8 @@ bool TestPluginSettingsPane::writeSettings ()
 {
 	if (ui.failCheckbox->isChecked ())
 	{
-		showWarning ("Fehler",
-			utf8 ("Test-Fehler („Fehler beim Speichern“ is aktiv)"),
+		showWarning (tr ("Error"),
+			tr ("Test error (\"Error on save\" is enabled)"),
 			this);
 
 		return false;
@@ -37,3 +37,4 @@ bool TestPluginSettingsPane::writeSettings ()
 	plugin->setRichText     (ui.richTextCheckbox ->isChecked ());
 	return true;
 }
+
