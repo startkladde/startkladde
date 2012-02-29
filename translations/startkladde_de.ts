@@ -192,6 +192,16 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ExternalInfoPlugin</name>
     <message>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="35"/>
+        <source>External</source>
+        <translation>Extern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="36"/>
+        <source>Receives data from an external program</source>
+        <translation>Empfängt Daten von einem externen Programm</translation>
+    </message>
+    <message>
         <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="73"/>
         <source>No command specified</source>
         <translation>Kein Kommando angegeben</translation>
@@ -263,6 +273,16 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ExternalWeatherPlugin</name>
     <message>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="31"/>
+        <source>External</source>
+        <translation>Extern</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="32"/>
+        <source>External weather plugin</source>
+        <translation>Externes Wetter-Plugin</translation>
+    </message>
+    <message>
         <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="49"/>
         <source>Starting process...</source>
         <translation>Prozess starten...</translation>
@@ -312,296 +332,296 @@ geladen werden:
 <context>
     <name>Flight</name>
     <message>
-        <location filename="../src/model/Flight.cpp" line="274"/>
-        <location filename="../src/model/Flight.cpp" line="288"/>
-        <location filename="../src/model/Flight.cpp" line="307"/>
+        <location filename="../src/model/Flight.cpp" line="275"/>
+        <location filename="../src/model/Flight.cpp" line="289"/>
+        <location filename="../src/model/Flight.cpp" line="308"/>
         <source>The flight has already landed.</source>
         <translation>Der Flug is bereits gelandet.</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="277"/>
+        <location filename="../src/model/Flight.cpp" line="278"/>
         <source>The flight does not depart here.</source>
         <translation>Der Flug startet nicht hier.</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="280"/>
+        <location filename="../src/model/Flight.cpp" line="281"/>
         <source>The flight has already departed.</source>
         <translation>Der Flug ist bereits gestartet.</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="291"/>
+        <location filename="../src/model/Flight.cpp" line="292"/>
         <source>The flight does not land here.</source>
         <translation>Der Flug landet nicht hier.</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="294"/>
-        <location filename="../src/model/Flight.cpp" line="310"/>
-        <location filename="../src/model/Flight.cpp" line="321"/>
+        <location filename="../src/model/Flight.cpp" line="295"/>
+        <location filename="../src/model/Flight.cpp" line="311"/>
+        <location filename="../src/model/Flight.cpp" line="322"/>
         <source>The flight has not departed yet.</source>
         <translation>Der Flug ist noch nicht gestartet.</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="304"/>
+        <location filename="../src/model/Flight.cpp" line="305"/>
         <source>The flight is a towflight.</source>
         <translation>Der Flug ist ein Schleppflug.</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="318"/>
+        <location filename="../src/model/Flight.cpp" line="319"/>
         <source>The towflight has already landed.</source>
         <translation>Der Schleppflug ist bereits gelandet.</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="469"/>
+        <location filename="../src/model/Flight.cpp" line="470"/>
         <source>No errors</source>
         <translation>Keine Fehler</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="471"/>
+        <location filename="../src/model/Flight.cpp" line="472"/>
         <source>Flight has no ID</source>
         <translation>Flug hat keine ID</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="473"/>
+        <location filename="../src/model/Flight.cpp" line="474"/>
         <source>No plane specified</source>
         <translation>Kein Flugzeug angegeben</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="477"/>
+        <location filename="../src/model/Flight.cpp" line="478"/>
         <source>The student&apos;s first name is missing</source>
         <translation>Der Vorname des Flugschülers fehlt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="479"/>
+        <location filename="../src/model/Flight.cpp" line="480"/>
         <source>The pilot&apos;s first name is missing</source>
         <translation>Der Vorname des Piloten fehlt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="482"/>
+        <location filename="../src/model/Flight.cpp" line="483"/>
         <source>The student&apos;s last name is missing</source>
         <translation>Der Nachname des Flugschülers fehlt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="484"/>
+        <location filename="../src/model/Flight.cpp" line="485"/>
         <source>The pilot&apos;s last name is missing</source>
         <translation>Der Nachname des Piloten fehlt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="487"/>
+        <location filename="../src/model/Flight.cpp" line="488"/>
         <source>The student is not identified</source>
         <translation>Der Flugschüler ist nicht identifiziert</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="489"/>
+        <location filename="../src/model/Flight.cpp" line="490"/>
         <source>The pilot is not identified</source>
         <translation>Der Pilot ist nicht identifiziert</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="493"/>
+        <location filename="../src/model/Flight.cpp" line="494"/>
         <source>The flight instructor&apos;s first name is missing</source>
         <translation>Der Vorname des Fluglehrers fehlt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="495"/>
+        <location filename="../src/model/Flight.cpp" line="496"/>
         <source>The copilot&apos;s first name is missing</source>
         <translation>Der Vorname des Begleiters fehlt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="498"/>
+        <location filename="../src/model/Flight.cpp" line="499"/>
         <source>The flight instructor&apos;s last name is missing</source>
         <translation>Der Nachname des Fluglehrers fehlt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="500"/>
+        <location filename="../src/model/Flight.cpp" line="501"/>
         <source>The copilot&apos;s last name is missing</source>
         <translation>Der Nachname des Begleiters fehlt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="503"/>
+        <location filename="../src/model/Flight.cpp" line="504"/>
         <source>The flight instructor is not identified</source>
         <translation>Der Fluglehrer ist nicht identifiziert</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="505"/>
+        <location filename="../src/model/Flight.cpp" line="506"/>
         <source>The copilot is not identified</source>
         <translation>Der Begleiter ist nicht identifiziert</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="508"/>
+        <location filename="../src/model/Flight.cpp" line="509"/>
         <source>The towpilot&apos;s first name is missing</source>
         <translation>Der Vorname des Schlepppiloten fehlt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="510"/>
+        <location filename="../src/model/Flight.cpp" line="511"/>
         <source>The towpilot&apos;s last name is missing</source>
         <translation>Der Nachname des Schlepppiloten fehlt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="512"/>
+        <location filename="../src/model/Flight.cpp" line="513"/>
         <source>The towpilot is not identified</source>
         <translation>Der Schlepppilot ist nicht identifiziert</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="516"/>
+        <location filename="../src/model/Flight.cpp" line="517"/>
         <source>No student specified</source>
         <translation>Kein Flugschüler angegeben</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="518"/>
+        <location filename="../src/model/Flight.cpp" line="519"/>
         <source>No pilot specified</source>
         <translation>Kein Pilot angegeben</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="522"/>
+        <location filename="../src/model/Flight.cpp" line="523"/>
         <source>Student and flight instructor are identical</source>
         <translation>Flugschüler und Fluglehrer sind identisch</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="524"/>
+        <location filename="../src/model/Flight.cpp" line="525"/>
         <source>Pilot and copilot are identical</source>
         <translation>Pilot and copilot are identical</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="528"/>
+        <location filename="../src/model/Flight.cpp" line="529"/>
         <source>Student and towpilot are identical</source>
         <translation>Flugschüler und Schlepppilot sind identisch</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="530"/>
+        <location filename="../src/model/Flight.cpp" line="531"/>
         <source>Pilot and towpilot are identical</source>
         <translation>Pilot und Schlepppilot sind identisch</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="532"/>
+        <location filename="../src/model/Flight.cpp" line="533"/>
         <source>Two-seated training without flight instructor</source>
         <translation>Doppelsitzige Schulung ohne Fluglehrer</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="533"/>
+        <location filename="../src/model/Flight.cpp" line="534"/>
         <source>No copilot allowed</source>
         <translation>Begleiter nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="534"/>
+        <location filename="../src/model/Flight.cpp" line="535"/>
         <source>Flight has landed but not departed</source>
         <translation>Flug ist gelandet, aber nicht gestartet</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="535"/>
+        <location filename="../src/model/Flight.cpp" line="536"/>
         <source>Landing before departure</source>
         <translation>Landung liegt vor Start</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="536"/>
+        <location filename="../src/model/Flight.cpp" line="537"/>
         <source>No launch method specified</source>
         <translation>Keine Startart angegeben</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="537"/>
+        <location filename="../src/model/Flight.cpp" line="538"/>
         <source>No mode specified</source>
         <translation>Kein Modus angegeben</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="538"/>
+        <location filename="../src/model/Flight.cpp" line="539"/>
         <source>No mode specified for towflight</source>
         <translation>Kein Modus für Schleppflug angegeben</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="539"/>
+        <location filename="../src/model/Flight.cpp" line="540"/>
         <source>No flight type specified</source>
         <translation>Kein Flugtyp angegeben</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="540"/>
+        <location filename="../src/model/Flight.cpp" line="541"/>
         <source>Negative number of landings</source>
         <translation>Negative Anzahl Landungen</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="541"/>
+        <location filename="../src/model/Flight.cpp" line="542"/>
         <source>Flight has landed, but number of landings is zero</source>
         <translation>Flug ist gelandet, aber Anzahl der Landungen ist null</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="542"/>
+        <location filename="../src/model/Flight.cpp" line="543"/>
         <source>Towflight has landed but not departed</source>
         <translation>Schleppflug ist gelandet, aber nicht gestartet</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="543"/>
+        <location filename="../src/model/Flight.cpp" line="544"/>
         <source>Towflight landing before departure</source>
         <translation>Landung des Schleppflugs liegt vor Start</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="544"/>
+        <location filename="../src/model/Flight.cpp" line="545"/>
         <source>Two-seated training in single-seater</source>
         <translation>Doppelsitzige Schulung in Einsitzer</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="545"/>
+        <location filename="../src/model/Flight.cpp" line="546"/>
         <source>No departure location specified</source>
         <translation>Kein Startort angegeben</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="546"/>
+        <location filename="../src/model/Flight.cpp" line="547"/>
         <source>No landing location specified</source>
         <translation>Kein Zielort angegeben</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="547"/>
+        <location filename="../src/model/Flight.cpp" line="548"/>
         <source>No landing location specified for towplane</source>
         <translation>Kein Zielort für Schleppflugzeug angegeben</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="548"/>
+        <location filename="../src/model/Flight.cpp" line="549"/>
         <source>Glider performs more than one landing</source>
         <translation>Segelflugzeug macht mehr als eine Landung</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="549"/>
+        <location filename="../src/model/Flight.cpp" line="550"/>
         <source>Glider performs landing without landing time</source>
         <translation>Segelflugzeug macht Landungen ohne Landezeit</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="550"/>
+        <location filename="../src/model/Flight.cpp" line="551"/>
         <source>Copilot in single-seater</source>
         <translation>Begleiter in einsitzigem Flugzeug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="551"/>
+        <location filename="../src/model/Flight.cpp" line="552"/>
         <source>Passenger flight in single-seater</source>
         <translation>Gastflug in einsitzigem Flugzeug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="552"/>
+        <location filename="../src/model/Flight.cpp" line="553"/>
         <source>Glider performs self launch</source>
         <translation>Segelflugzeug im Selbststart</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="553"/>
+        <location filename="../src/model/Flight.cpp" line="554"/>
         <source>Number of landings is greater than zero without departure</source>
         <translation>Anzahl Landungen ungleich null ohne Start</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="554"/>
+        <location filename="../src/model/Flight.cpp" line="555"/>
         <source>Landing location and departure location are identical</source>
         <translation>Startort gleich Zielort</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="555"/>
+        <location filename="../src/model/Flight.cpp" line="556"/>
         <source>Towplane not specified</source>
         <translation>Schleppflugzeug nicht angegeben</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="556"/>
+        <location filename="../src/model/Flight.cpp" line="557"/>
         <source>Towplane is glider</source>
         <translation>Schleppflugzeug ist Segelflugzeug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="560"/>
+        <location filename="../src/model/Flight.cpp" line="561"/>
         <source>Unknown error</source>
         <translation>Unbekannter Fehler</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="850"/>
+        <location filename="../src/model/Flight.cpp" line="851"/>
         <source>Towflight for flight %1</source>
         <translation>Schleppflug für Flug %1</translation>
     </message>
@@ -2864,6 +2884,16 @@ Konfiguration: %2</translation>
 <context>
     <name>MetarPlugin</name>
     <message>
+        <location filename="../src/plugins/info/metar/MetarPlugin.cpp" line="28"/>
+        <source>METAR</source>
+        <translation>METAR</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/metar/MetarPlugin.cpp" line="29"/>
+        <source>Displays METAR messages (internet connection required)</source>
+        <translation>Zeit METAR-Meldungen an (Internetverbindung erforderlich)</translation>
+    </message>
+    <message>
         <location filename="../src/plugins/info/metar/MetarPlugin.cpp" line="77"/>
         <source>%1 (%2 minutes)</source>
         <translation>%1 (%2 minutes)</translation>
@@ -4309,6 +4339,19 @@ Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder 
     </message>
 </context>
 <context>
+    <name>SunsetCountdownPlugin</name>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetCountdownPlugin.cpp" line="25"/>
+        <source>Sunset countdown</source>
+        <translation>Sunset-Countdown</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetCountdownPlugin.cpp" line="26"/>
+        <source>Displays the time remaining until sunset</source>
+        <translation>Zeigt die verbleibende Zeit bis Sonnenuntergang an</translation>
+    </message>
+</context>
+<context>
     <name>SunsetPluginBase</name>
     <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginBase.cpp" line="90"/>
@@ -4542,6 +4585,16 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
 <context>
     <name>SunsetTimePlugin</name>
     <message>
+        <location filename="../src/plugins/info/sunset/SunsetTimePlugin.cpp" line="24"/>
+        <source>Sunset</source>
+        <translation>Sunset</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/sunset/SunsetTimePlugin.cpp" line="25"/>
+        <source>Displays the sunset time</source>
+        <translation>Zeit die Sonnenuntergangszeit an</translation>
+    </message>
+    <message>
         <location filename="../src/plugins/info/sunset/SunsetTimePlugin.cpp" line="59"/>
         <source> UTC</source>
         <comment>With leading space</comment>
@@ -4557,6 +4610,39 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
     <message>
         <source>Towflight for flight %1</source>
         <translation type="obsolete">Schleppflug für Flug %1</translation>
+    </message>
+</context>
+<context>
+    <name>TestPlugin</name>
+    <message>
+        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="24"/>
+        <source>Test</source>
+        <translation>Test</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="25"/>
+        <source>Outputs a greeting and the current time</source>
+        <translation>Gibt eine Begrüßung und die aktuelle Uhrzeit aus</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="89"/>
+        <source>Hello</source>
+        <translation>Hallo</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="97"/>
+        <source>at %1</source>
+        <translation>um %1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="117"/>
+        <source>%1; rich text</source>
+        <translation>%1; Rich text</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="119"/>
+        <source>%1; plain text</source>
+        <translation>%1; Standardtext</translation>
     </message>
 </context>
 <context>
@@ -4599,6 +4685,16 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
 </context>
 <context>
     <name>WetterOnlineAnimationPlugin</name>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="28"/>
+        <source>Wetter Online (animation)</source>
+        <translation>Wetter Online (Animation)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="29"/>
+        <source>Displays a weather radar animation from wetteronline.de</source>
+        <translation>Zeigt eine Regenradar-Animation von wetteronline.de an</translation>
+    </message>
     <message>
         <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="47"/>
         <source>Downloading radar animation (1)...</source>
@@ -4653,32 +4749,42 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
 <context>
     <name>WetterOnlineImagePlugin</name>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="46"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="26"/>
+        <source>Wetter Online (image)</source>
+        <translation>Wetter Online (Bild)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="27"/>
+        <source>Displays a weather image from wetteronline.de</source>
+        <translation>Zeigt ein Regenradar-Bild von wetteronline.de an</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="45"/>
         <source>Download radar image (1)...</source>
         <translation>Radarbild herunterladen (1)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="62"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="61"/>
         <source>Error: no radar image found</source>
         <translation>Fehler: kein Radarbild gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="65"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="64"/>
         <source>Download radar image (2)...</source>
         <translation>Radarbild herunterladen (2)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="71"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="70"/>
         <source>Error: invalid radar image</source>
         <translation>Fehler: ungültiges Radarbild</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="84"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="83"/>
         <source>Error: page not found (404)</source>
         <translation>Fehler: Seite nicht gefunden (404)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="87"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="86"/>
         <source>Error: radar image not found (404)</source>
         <translation>Fehler: Radarbild nicht gefunden (404)</translation>
     </message>

@@ -24,9 +24,9 @@ REGISTER_PLUGIN (WeatherPlugin, WetterOnlineAnimationPlugin)
 // TODO TR
 SK_PLUGIN_DEFINITION (
 	WetterOnlineAnimationPlugin,
-	"{f3b7c9b2-455f-459f-b636-02b2b9a78b7b}",
-	"Wetter Online (Animation)",
-	"Zeigt eine Regenradar-Animation von wetteronline.de an")
+	notr ("{f3b7c9b2-455f-459f-b636-02b2b9a78b7b}"),
+	WetterOnlineAnimationPlugin::tr ("Wetter Online (animation)"),
+	WetterOnlineAnimationPlugin::tr ("Displays a weather radar animation from wetteronline.de"))
 
 enum State { stateNavigationPage, stateRadarPage, stateRadarImage };
 

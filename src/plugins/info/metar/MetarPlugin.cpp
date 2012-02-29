@@ -24,9 +24,9 @@
 REGISTER_PLUGIN (InfoPlugin, MetarPlugin)
 SK_PLUGIN_DEFINITION (
 	MetarPlugin,
-	"{4a6c7218-42ae-475d-8fd9-a2a131c1aa90}",
-	"METAR",
-	"Zeigt METAR-Meldungen in (Internetverbindung erforderlich)")
+	notr ("{4a6c7218-42ae-475d-8fd9-a2a131c1aa90}"),
+	MetarPlugin::tr ("METAR"),
+	MetarPlugin::tr ("Displays METAR messages (internet connection required)"))
 
 MetarPlugin::MetarPlugin (const QString &caption, bool enabled, const QString &airport, int refreshInterval):
 	InfoPlugin (caption, enabled),

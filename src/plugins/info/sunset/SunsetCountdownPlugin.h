@@ -5,6 +5,7 @@
 
 class SunsetCountdownPlugin: public SunsetPluginBase
 {
+		Q_OBJECT
 		SK_PLUGIN
 
 	public:

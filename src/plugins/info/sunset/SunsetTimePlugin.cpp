@@ -20,9 +20,9 @@
 REGISTER_PLUGIN (InfoPlugin, SunsetTimePlugin)
 SK_PLUGIN_DEFINITION (
 	SunsetTimePlugin,
-	"{1998d604-e819-4aee-af3d-f0c5cee4c508}",
-	"Sunset",
-	"Zeigt die Sonnenuntergangszeit an")
+	notr ("{1998d604-e819-4aee-af3d-f0c5cee4c508}"),
+	SunsetTimePlugin::tr ("Sunset"),
+	SunsetTimePlugin::tr ("Displays the sunset time"))
 
 // ******************
 // ** Construction **

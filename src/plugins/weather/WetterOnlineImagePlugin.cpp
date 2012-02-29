@@ -20,12 +20,11 @@
 // TODO TR test all messages
 
 REGISTER_PLUGIN (WeatherPlugin, WetterOnlineImagePlugin)
-// TODO TR
 SK_PLUGIN_DEFINITION (
 	WetterOnlineImagePlugin,
-	"{a00e31ec-6d3d-4221-91bd-751a2756937f}",
-	"Wetter Online (Bild)",
-	"Zeigt ein Regenradarbild von wetteronline.de an")
+	notr ("{a00e31ec-6d3d-4221-91bd-751a2756937f}"),
+	WetterOnlineImagePlugin::tr ("Wetter Online (image)"),
+	WetterOnlineImagePlugin::tr ("Displays a weather image from wetteronline.de"))
 
 enum State { stateIndexPage, stateImage };
 

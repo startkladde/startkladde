@@ -22,6 +22,7 @@
  */
 class TestPlugin: public InfoPlugin
 {
+		Q_OBJECT
 		SK_PLUGIN
 
 	public:

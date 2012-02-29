@@ -15,21 +15,25 @@
 #include "TestPluginSettingsPane.h"
 #include "src/text.h"
 #include "src/util/qString.h"
+#include "src/notr.h"
 
 REGISTER_PLUGIN (InfoPlugin, TestPlugin)
-SK_PLUGIN_DEFINITION (TestPlugin, "{80e116f8-06d5-44ce-802a-e1b727b98af2}", "Test",
-	utf8 ("Gibt eine Begrüßung und die aktuelle Uhrzeit aus"))
+SK_PLUGIN_DEFINITION (
+	TestPlugin,
+	notr ("{80e116f8-06d5-44ce-802a-e1b727b98af2}"),
+	TestPlugin::tr ("Test"),
+	TestPlugin::tr ("Outputs a greeting and the current time"))
 
 TestPlugin::TestPlugin (const QString &caption, bool enabled, const QString &greetingName, bool richText):
 	InfoPlugin (caption, enabled),
 	greetingName (greetingName), richText (richText)
 {
-	qDebug () << "Creating test plugin";
+	qDebug () << notr ("Creating test plugin");
 }
 
 TestPlugin::~TestPlugin ()
 {
-	qDebug () << "Destroying test plugin";
+	qDebug () << notr ("Destroying test plugin");
 }
 
 //QString TestPlugin::getId () const
@@ -54,14 +58,14 @@ PluginSettingsPane *TestPlugin::infoPluginCreateSettingsPane (QWidget *parent)
 
 void TestPlugin::infoPluginReadSettings (const QSettings &settings)
 {
-	greetingName=settings.value ("greetingName", greetingName).toString ();
-	richText    =settings.value ("richText"    , richText    ).toBool   ();
+	greetingName=settings.value (notr ("greetingName"), greetingName).toString ();
+	richText    =settings.value (notr ("richText")    , richText    ).toBool   ();
 }
 
 void TestPlugin::infoPluginWriteSettings (QSettings &settings)
 {
-	settings.setValue ("greetingName", greetingName);
-	settings.setValue ("richText"    , richText    );
+	settings.setValue (notr ("greetingName"), greetingName);
+	settings.setValue (notr ("richText")    , richText    );
 }
 
 void TestPlugin::start ()
@@ -82,26 +86,26 @@ void TestPlugin::minuteChanged ()
 void TestPlugin::trigger ()
 {
 	// Construct the text parts
-	QString helloText="Hallo";
+	QString helloText=tr ("Hello");
 
 	QString greetingText;
 	if (isBlank (greetingName))
-		greetingText="";
+		greetingText=notr ("");
 	else
-		greetingText=QString (" %1").arg (greetingName);
+		greetingText=qnotr (" %1").arg (greetingName);
 
-	QString timeText=QString ("um %1").arg (QTime::currentTime ().toString ());
+	QString timeText=tr ("at %1").arg (QTime::currentTime ().toString ());
 
 	// Add color if rich text is set
 	if (richText)
 	{
-		   helloText=QString ("<font color=\"#FF3F00\">%1</font>").arg (   helloText);
-		greetingText=QString ("<font color=\"#3F7F00\">%1</font>").arg (greetingText);
-		    timeText=QString ("<font color=\"#003FFF\">%1</font>").arg (    timeText);
+		   helloText=qnotr ("<font color=\"#FF3F00\">%1</font>").arg (   helloText);
+		greetingText=qnotr ("<font color=\"#3F7F00\">%1</font>").arg (greetingText);
+		    timeText=qnotr ("<font color=\"#003FFF\">%1</font>").arg (    timeText);
 	}
 
 	// Construct the final text
-	QString text=QString ("%1%2 %3").arg (helloText, greetingText, timeText);
+	QString text=QString (notr ("%1%2 %3")).arg (helloText, greetingText, timeText);
 
 	// Output the text
 	outputText (text, richText?Qt::RichText:Qt::PlainText);
@@ -109,5 +113,8 @@ void TestPlugin::trigger ()
 
 QString TestPlugin::configText () const
 {
-	return utf8 ("„%1“, %2 text").arg (greetingName, richText?"rich":"plain");
+	if (richText)
+		return tr ("%1; rich text").arg (greetingName);
+	else
+		return tr ("%1; plain text").arg (greetingName);
 }

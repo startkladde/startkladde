@@ -27,9 +27,9 @@ REGISTER_PLUGIN (WeatherPlugin, ExternalWeatherPlugin)
 // TODO TR
 SK_PLUGIN_DEFINITION (
 	ExternalWeatherPlugin,
-	"{01db73ff-1473-4aeb-b297-13398927005c}",
-	"Extern",
-	"Externes Wetter-Plugin")
+	notr ("{01db73ff-1473-4aeb-b297-13398927005c}"),
+	ExternalWeatherPlugin::tr ("External"),
+	ExternalWeatherPlugin::tr ("External weather plugin"))
 
 ExternalWeatherPlugin::ExternalWeatherPlugin (const QString &command):
 	command (command),

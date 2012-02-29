@@ -31,9 +31,9 @@
 REGISTER_PLUGIN (InfoPlugin, ExternalInfoPlugin)
 SK_PLUGIN_DEFINITION (
 	ExternalInfoPlugin,
-	"{2fbb91be-bde5-4fba-a3c7-69d7caf827a5}",
-	"Extern",
-	utf8 ("Empfängt Daten von einem externen Programm"))
+	notr ("{2fbb91be-bde5-4fba-a3c7-69d7caf827a5}"),
+	ExternalInfoPlugin::tr ("External"),
+	ExternalInfoPlugin::tr ("Receives data from an external program"))
 
 ExternalInfoPlugin::ExternalInfoPlugin (const QString &caption, bool enabled, const QString &command, bool richText):
 	InfoPlugin (caption, enabled),

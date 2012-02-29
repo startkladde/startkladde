@@ -99,7 +99,7 @@ void SunsetPluginBase::start ()
 
 		// Find the sunset for today
 		QString sunsetString=readSunsetString (resolvedFilename);
-		if (isBlank (sunsetString)) OUTPUT_AND_RETURN (tr ("Time for current data not found in data file"));
+		if (isBlank (sunsetString)) OUTPUT_AND_RETURN (tr ("Time for current date not found in data file"));
 
 		rawSunset=QTime::fromString (sunsetString, notr ("hh:mm"));
 		if (!rawSunset.isValid ()) OUTPUT_AND_RETURN (tr ("Invalid time format"));
