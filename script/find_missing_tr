@@ -161,18 +161,6 @@ def preprocess(data)
 	data
 end
 
-#def tr_missing_line(line)
-#	line=preprocess(line);
-#	line=remove_valid_strings(line);
-#
-#	# If there are any strings left, they are missing a tr function
-#	if line =~ /"/
-#		true
-#	else
-#		false
-#	end
-#end
-
 
 #####################
 ## File processing ##
@@ -208,22 +196,12 @@ def process_data(filename, data)
 		raise "preprocess did not preserve the number of lines for #{filename}"
 	end
 
-
 	(0...original_lines.size).each { |i|
 		line_number=i+1
 		if (tr_missing(processed_lines[i]))
 			puts "#{filename}:#{line_number} #{original_lines[i]}"
 		end
 	}
-
-
-#	line_number=0
-#	data.each_line { |line|
-#		line_number+=1
-#		if (tr_missing(line))
-#			puts "#{filename}:#{line_number} #{line}"
-#		end
-#	}
 end
 
 def process_files(files)
