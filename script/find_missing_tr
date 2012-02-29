@@ -37,12 +37,42 @@ end
 ## String processing ##
 #######################
 
-# Removes C style comments (/*...*/), replacing them with a single space
-# (single-line comments) or the number of newlines contained within the comment
-# (multi-line comments). The latter has the purpose of preserving the original
-# line numbers.
-# This does not remove C++ comments (//...).
-def remove_c_comments(string)
+def only_newlines(data)
+	if data
+		data.gsub(/[^\r\n]/, '')
+	else
+		""
+	end
+end
+
+def to_whitespace(data)
+	# Remove any whitespace except newlines
+	result=only_newlines(data)
+
+	# Return a single space if it is empty
+	result=" " if result.empty?
+
+	result
+end
+
+
+def preprocess(data)
+	data=data.dup
+
+	# Remove two consecutive backslashes (escaped backslash) to prevent escaped
+	# backslashes escaping anything else
+	data.gsub!(/\\\\/, '')
+
+	# Remove quotes preceded by a backslash, they do not count as quotes
+	data.gsub!(/\\"/, '')
+
+	# Remove C++ style comments (//...)
+	data.gsub!(/ \/\/ .* /x, '')
+
+	# Removes C style comments (/*...*/), replacing them with a single space
+	# (single-line comments) or the number of newlines contained within the
+	# comment (multi-line comments). The latter has the purpose of preserving
+	# the original line numbers.
 	#   slash
 	#   | asterisk
 	#   | | any characters (non-greedy)
@@ -51,20 +81,37 @@ def remove_c_comments(string)
 	#   | | |  | |  multi-line
 	#   | | |  | |  |
 	re=/\/\*.*?\*\//m
-	string.gsub(re) { |match|
-		replacement=match.gsub(/[^\r\n]/, '')
-		replacement=" " if replacement.empty?
-		replacement
-	}
-end
+	data.gsub!(re) { |match| to_whitespace(match) }
 
-# TODO must either remove escaped quotes or make sure it is only called with
-# escaped quotes removed
-def remove_string_concatenation(string)
-	# It is important to have the \s* in the group to reproduce line breaks
-	# (when we use multi-line)
-	# TODO support multi-line
-	string.gsub(/ ( "[^"]*" \s* ) "[^"]*" /x, '\\1')
+	# Replace any horizontal whitespace with a single space to simplify regexps
+	data.gsub!(/ [ \t]+ /x, ' ')
+
+	# Remove any whitespace at the beginning and end of lines
+	data.gsub!(/ ^ \s+ /x, '')
+	data.gsub!(/ \s+ $ /x, '')
+
+	# Remove any horizontal whitespace around operators to simplify regexps
+	#            any whitespace
+	#            |   any of parentheses, comma, operators... as a group
+	#            |   |            any whitespace
+	#            |   |            |
+	data.gsub!(/ [ \t]* ( [-+()<>,"] ) [ \t]* /x, '\\1')
+
+	# Remove string concatenation
+	# Note that a single gsub will not match multiple consecutive strings,
+	# e.g. "ababa".gsub(/aba/, 'a') is "aba", not "a". Positive lookbehind
+	# would be easier, but seems unsupported in Ruby 1.8.
+	#string.gsub(/(?<= " [^"]* " ) " [^"]* " /x, '') # Positive lookbehind (without newlines)
+	re=/
+		(" [^"]* ") # A quoted string (group 1)
+		((
+			\s*        # Any whitespace (including newlines)
+			" [^"]* "  # A quoted string
+		)+)        # At least once, all in group 2
+		/x
+	data.gsub!(re) { $1+only_newlines($2) }
+
+	data
 end
 
 def tr_missing_part(part)
@@ -84,34 +131,14 @@ def tr_missing_part(part)
 	end
 end
 
+
 # This may have false positives, but it should not have false negatives (i. e.
 # it should accept all lines that have a missing tr)
 def tr_missing_line(line)
 	# We'll be modifying the line, make a copy
 	line=line.dup
 
-	# Remove comments (//...) - any string in a comment is not considered a
-	# missing tr
-	line.gsub!(/ \/\/ .* /x, '')
-
-	# Replace any whitespace with a single space to simplify regexps
-	line.gsub!(/ \s+ /, ' ')
-
-	# Replace two consecutive backslashes (escaped backslash) with an
-	# underscore to prevent escaped backslashes escaping anything else
-	line.gsub!(/\\\\/, '')
-
-	# Remove quotes preceded by a backslash, they do not count as quotes
-	line.gsub!(/\\"/, '')
-
-	# TODO remove concatenated strings
-
-	# Remove any whitespace around operators to simplify regexps
-	#            any whitespace
-	#            |   any of parentheses, comma, operators... as a group
-	#            |   |            any whitespace
-	#            |   |            |
-	line.gsub!(/ \s* ( [-+()<>,"] ) \s* /x, '\\1')
+	line=preprocess(line);
 
 	# Don't consider includes (only at the beginning of the line, optionally
 	# indented). A line with an include statement cannot contain any other
@@ -166,8 +193,8 @@ def process_files(files)
 		# Read the data from the file
 		data=File.read(file)
 
-		# Remove C style comments
-		data=remove_c_comments(data)
+		# Preprocess
+		data=preprocess(data)
 
 		line_number=0
 		data.each_line { |line|
@@ -185,21 +212,38 @@ end
 ## Tests ##
 ###########
 
-def test_remove_c_comments
+def test_preprocess
 	tests=[
 		# Single-line cases
-		["foobar ();"                                  , "foobar ();"], # No comment
-		["foobar (); /* comment */"                    , "foobar ();  "], # Comment at end
-		["foobar /* comment */ ();"                    , "foobar   ();"], # Comment in the middle
-		["before /* first */ between /*second */ after", "before   between   after"], # Multiple comments
+		["foobar ();"                                  , "foobar();"],
+		["foobar (); /* comment */"                    , "foobar();"], # Comment at end
+		["foobar /* comment */ ();"                    , "foobar();"], # Comment in the middle
+		["before /* first */ between /*second */ after", "before between after"], # Multiple comments
 
 		# Multi-line cases
-		["multi /* first */\nline /* second */", "multi  \nline  "], # Multiple single-line comments
-		["multi /* first \n still first */ line", "multi \n line"], # Multi-line comment
+		["multi\nline", "multi\nline"], # Multi-line preserved
+		["    multi    \n    line    ", "multi\nline"], # Whitespace at beginning/end of line removed
+		["multi /* first */\nline /* second */", "multi\nline"], # Multiple single-line comments
+		["multi /* first \n still first */ line", "multi\nline"], # Multi-line comment
 
 		# Special cases
-		["before /* first * / second */ after", "before   after"], # Termination charaters with space inbetween
-		["before /* first /* second */ after" , "before   after"], # Opening characters in comment
+		["before /* first * / second */ after", "before after"], # Termination charaters with space inbetween
+		["before /* first /* second */ after" , "before after"], # Opening characters in comment
+
+		# String concatenation
+		['foo="bar";'                            , nil                  ], # No string concatenation
+		['foo="string" "concatenation";'         , 'foo="string";'      ], # Simple concatenation
+		['foo=" string " " concatenation ";'     , 'foo="string";'      ], # Simple concatenation whitespace in strings
+		['foo="string""concatenation";'          , 'foo="string";'      ], # Simple concatenation no whitespace
+		['foo="multi" "string" "concatenation";' , 'foo="multi";'       ], # Multi concatenation
+
+		# With escaped quotes
+		['foo="st\\"ring" "co\\"ncatenation";'   , 'foo="string";'   ],
+		['foo="st\\"ringco\\"ncatenation";'      , 'foo="stringconcatenation";'   ],
+
+		# Multi-line string concatenation
+		["foo=\"multiline\" \n \"concatenation\";", "foo=\"multiline\"\n;" ], # String continued in the next line
+		["foo=\"multiline\" \n \"concatenation\"; \"after\"", "foo=\"multiline\"\n;\"after\"" ], # String continued in the next line
 
 		# Dummy case
 		["", ""]
@@ -209,8 +253,8 @@ def test_remove_c_comments
 
 	tests.each { |test|
 		string=test[0]
-		expected=test[1]
-		actual=remove_c_comments(string)
+		expected=test[1] || string
+		actual=preprocess(string)
 
 		if (expected==actual)
 			puts "OK      - #{pad(len, string.inspect)} => #{actual.inspect}"
@@ -220,34 +264,6 @@ def test_remove_c_comments
 	}
 end
 
-def test_remove_string_concatenation
-	tests=[
-		# Single-line cases
-		['foo="bar";'                , nil                  ], # No string concatenation
-		['foo="bar" "baz";'          , 'foo="bar" ;'        ], # Simple concatenation
-		['foo="bar""baz";'           , 'foo="bar";'         ], # Simple concatenation no whitespace
-		[' foo = " bar " " baz " ; ' , ' foo = " bar "  ; ' ], # Simple concatenation no whitespace
-
-		# TODO test escaped quotes
-
-		# Dummy case
-		["", ""]
-	]
-
-	len=maxlen(tests.map { |test| test[0].inspect })
-
-	tests.each { |test|
-		string=test[0]
-		expected=test[1]||string
-		actual=remove_string_concatenation(string)
-
-		if (expected==actual)
-			puts "OK      - #{pad(len, string.inspect)} => #{actual.inspect}"
-		else
-			puts "failure - #{pad(len, string.inspect)} => expected #{expected.inspect}, got #{actual.inspect}"
-		end
-	}
-end
 
 def test_tr_missing_line
 	test_lines=[
@@ -274,6 +290,8 @@ def test_tr_missing_line
 		['foo=qnotr("moo");'              , false],
 		['foo=fauxtr ("moo");'            , true ],
 		['foo=fauxtr("moo");'             , true ],
+		['foo=t/*.*/r("moo");'            , true ], # Not tr
+		['foo=faux/*.*/tr("moo");'        , false], # Not fauxtr
 
 		# With two-argument form of tr
 		['foo=tr ("moo", "disambiguation")', false],
@@ -297,9 +315,9 @@ def test_tr_missing_line
 		#['foo=tr(\n"bar");', false], # String on next line
 
 		# String concatenation
-		['a=" "'                  , true], # Not a string concatenation
-		['foo=tr ("moo" "bert")' , false], # String concatenation
-		#['foo=tr ("moo" \n "bert")', false], # Multi-line string concatenation - not supported
+		['a=" "'                        , true], # Not a string concatenation
+		['foo=tr ("moo" "bert")'        , false], # String concatenation
+		['foo=tr ("moo" "bert"), "bar"' , true], # Missing after string concatenation
 
 		# With multiple strings
 		['foo (tr ("moo"), tr ("bert"));' , false ],
@@ -335,9 +353,8 @@ end
 ##########
 
 if ARGV==['-t']
-	test_remove_c_comments
-	test_tr_missing_line
-	test_remove_string_concatenation
+	test_preprocess
+	test_tr_missing_line # FIXME enable
 elsif ARGV==['-a']
 #	`find . -iname *.cpp`
 	system("find . -iname \\*.cpp |grep -v moc_ |grep -v migrations/Migration_ |grep -v ./build/ |grep -v ./test/ |xargs #{$0}")
