@@ -11,12 +11,17 @@
 #     correctly, but that's ugly anyway and can be replaced with C string
 #     concatenation
 #   * does not handle // in strings correctly
-#   * does not handle correctly:
-#     foo=tr (
-#       "...");
 # None of these shortcomings (should) produce false negatives, so we won't miss
 # any missing tr.
 
+# Also, the following example may be interpreted wrong:
+# a=tr ("aaa");
+#           ^ start of string
+# b=tr ("");
+#       ^^ end of string, start of string (concatenation)
+# c=tr ("ccc", "ddd");
+#       ^ end of string
+# Can this be a problem?
 
 ###########
 ## Utils ##
@@ -30,11 +35,6 @@ end
 def maxlen(strings)
 	strings.map { |string| string.length }.max	
 end
-
-
-#######################
-## String processing ##
-#######################
 
 def only_newlines(data)
 	if data
@@ -55,6 +55,17 @@ def to_whitespace(data)
 end
 
 
+#######################
+## String processing ##
+#######################
+
+def dump_match(match)
+	return if match.nil?
+	match.to_a.each_with_index { |c, i|
+		puts "    #{i}: #{c.inspect}"
+	}
+end
+
 def preprocess(data)
 	data=data.dup
 
@@ -72,138 +83,156 @@ def preprocess(data)
 	# (single-line comments) or the number of newlines contained within the
 	# comment (multi-line comments). The latter has the purpose of preserving
 	# the original line numbers.
-	#   slash
-	#   | asterisk
-	#   | | any characters (non-greedy)
-	#   | | |  asterisk
-	#   | | |  | slash
-	#   | | |  | |  multi-line
-	#   | | |  | |  |
-	re=/\/\*.*?\*\//m
+	re=/
+		\/\*   # Opening delimiter
+		.*?    # Any character (non-greedy)
+		\*\/   # Closing delimiter
+		/mx    # Multi-line free-spacing
 	data.gsub!(re) { |match| to_whitespace(match) }
 
 	# Replace any horizontal whitespace with a single space to simplify regexps
 	data.gsub!(/ [ \t]+ /x, ' ')
 
-	# Remove any whitespace at the beginning and end of lines
-	data.gsub!(/ ^ \s+ /x, '')
-	data.gsub!(/ \s+ $ /x, '')
-
-	# Remove any horizontal whitespace around operators to simplify regexps
-	#            any whitespace
-	#            |   any of parentheses, comma, operators... as a group
-	#            |   |            any whitespace
-	#            |   |            |
-	data.gsub!(/ [ \t]* ( [-+()<>,"] ) [ \t]* /x, '\\1')
+	# Remove any horizontal whitespace around operators and from the beginning
+	# and the end of lines
+	re=/
+		[ \t]*           # Any horizontal whitespace
+		([-+()<>,"]|^|$) # Any of the operators in group 1
+		[ \t]*           # Any horizontal whitespace
+		/x
+	data.gsub!(re, '\\1')
 
 	# Remove string concatenation
 	# Note that a single gsub will not match multiple times, e.g.
 	# "ababa".gsub(/aba/, 'a') substitutes "ababa" => "aba", not "ababa" =>
 	# "aba" => "a".
 	re=/
-		(" [^"]* ")        # A quoted string (group 1)
+		(" [^"\r\n]* ")        # A quoted string (group 1)
 		(
 			(
-				\s*        # Any whitespace (including newlines) - must be inside of group 2
-				" [^"]* "  # A quoted string
-			)+             # Any number of times
-		)                  # All in group 2
+				\s*            # Any whitespace (including newlines) - must be inside of group 2
+				" [^"]* "  # A quoted string without newlines
+			)+                 # Any number of times
+		)                      # All in group 2
 		/x
 	data.gsub!(re) { $1+only_newlines($2) }
-
-	data
-end
-
-def tr_missing_part(part)
-	#puts "    #{part}"
-	if part =~ /"/
-		# This part contains a quoted string. Return true unless it is preceded by
-		# one of the tr functions - tr, notr and qnotr - after a non-word character
-		# (so it doesn't match fauxtr)
-		if part =~ /[^\w] (tr|notr|qnotr|qnotrUtf8) \("/x
-			false
-		else
-			true
-		end
-	else
-		# This part does not contain a quoted string.
-		false
-	end
-end
-
-
-# This may have false positives, but it should not have false negatives (i. e.
-# it should accept all lines that have a missing tr)
-def tr_missing_line(line)
-	# We'll be modifying the line, make a copy
-	line=line.dup
-
-	line=preprocess(line);
 
 	# Don't consider includes (only at the beginning of the line, optionally
 	# indented). A line with an include statement cannot contain any other
 	# statements, so we can return false right away if we find an include
 	# statement.
-	return false if line =~ /^\s*#include/
-
-	# Merge concatenated strings
-	line.gsub!(/ " ([^"]*) " " ([^"]*) "   /x, '"\\1\\2"')
-
-	# Remove qApp->translate ("context", "string") (valid tr function)
-	line.gsub!(/qApp->translate \( "[^"]*" , "[^"]*" \) /x, '')
-
-	# Remove qApp->translate ("context", "string", "comment") (valid tr function)
-	line.gsub!(/qApp->translate \( "[^"]*" , "[^"]*", "[^"]*" \) /x, '')
-
-	# Remove two-argument form of tr (valid tr function)
-	line.gsub!(/tr \( "[^"]*" , "[^"]*" \) /x, '')
+	data.gsub!(/^[ \t]*#include.*$/, '')
 
 	# Remove 'extern "C"'
-	line.gsub!(/extern "C"/x, '')
+	data.gsub!(/extern[ \t]*"C"/x, '')
 
-	# We could now remove all other valid tr functions, but this approach is
-	# easier to read for everything that has the form foo("..."):
-	# Scan the string for quote strings with what is before
-	#    any number of non-quotes
-	#    |    quote
-	#    |    |any number of non-quotes
-	#    |    ||     quote
-	#    |    ||     |or
-	#    |    ||     ||end of line
-	#    |    ||     |||
-	re=/( [^"]* " [^"]* ("|$))/x
-	line.scan(re) { |match|
-		# The RE contains groups, so the match is an array
-		part=match[0]
-		return true if tr_missing_part(part)
-	}
+	# Remove qApp->translate ("context", "string") (valid tr function)
+	data.gsub!(/qApp->translate \( "[^"]*" , "[^"]*" \) /x, '')
 
-	# No part had a missing tr, so neither does this line
-	false
+	# Remove qApp->translate ("context", "string", "comment") (valid tr function)
+	data.gsub!(/qApp->translate \( "[^"]*" , "[^"]*", "[^"]*" \) /x, '')
+
+	# Remove two-argument form of tr (valid tr function)
+	re=/
+		tr          # tr
+		\(          # Opening parenthesis
+		" [^"]* "   # Quoted string
+		,           # Comma
+		" [^"]* "   # Quoted string
+		\)          # Closign parenthesis
+		/x;         # Free-spacing
+	data.gsub!(re, '')
+
+	# Remove one-argument tr functions
+	re=/
+		(                             # Group 1
+			[^\w]                     #   Non-word character, so it doesn't match, e. g., fauxtr
+			(tr|notr|qnotr|qnotrUtf8) #   Any of the tr functions
+			\s*                       #   There may be a newline here
+			\(                        #   Opening parenthesis
+			\s*                       #   There may be a newline here
+			" [^"]* "                 #   Quoted string
+			\s*                       #   There may be a newline here
+			\)                        #   Closing parenthesis
+		)
+		/x
+	data.gsub!(re) { only_newlines($1) }
+
+	data
 end
+
+#def tr_missing_line(line)
+#	line=preprocess(line);
+#	line=remove_valid_strings(line);
+#
+#	# If there are any strings left, they are missing a tr function
+#	if line =~ /"/
+#		true
+#	else
+#		false
+#	end
+#end
 
 
 #####################
 ## File processing ##
 #####################
 
+# Data must be preprocessed
+def tr_missing(data)
+	if (data=~/"/)
+		true
+	else
+		false
+	end
+end
+
+def process_data(filename, data)
+	# Preprocess
+	original_data=data
+	processed_data=preprocess(data)
+
+	original_lines=original_data.split(/\n\r?/, -1)
+	processed_lines=processed_data.split(/\n\r?/, -1)
+
+	if processed_lines.size!=original_lines.size
+		#p original_lines
+		#p processed_lines
+
+		(0...original_lines.size).each { |i|
+			puts "-------- #{i+1}"
+			puts original_lines[i]
+			puts processed_lines[i]
+		}
+
+		raise "preprocess did not preserve the number of lines for #{filename}"
+	end
+
+
+	(0...original_lines.size).each { |i|
+		line_number=i+1
+		if (tr_missing(processed_lines[i]))
+			puts "#{filename}:#{line_number} #{original_lines[i]}"
+		end
+	}
+
+
+#	line_number=0
+#	data.each_line { |line|
+#		line_number+=1
+#		if (tr_missing(line))
+#			puts "#{filename}:#{line_number} #{line}"
+#		end
+#	}
+end
+
 def process_files(files)
 	# Perform for each file
 	files.each { |file|
 		# Read the data from the file
 		data=File.read(file)
+		process_data(file, data)
 
-		# Preprocess
-		data=preprocess(data)
-
-		line_number=0
-		data.each_line { |line|
-			line_number+=1
-			if tr_missing_line(line)
-				puts "#{file}:#{line_number} #{line}"
-			end
-		}
-		
 	}
 end
 
@@ -265,7 +294,7 @@ def test_preprocess
 end
 
 
-def test_tr_missing_line
+def test_tr_missing
 	test_lines=[
 		# Simple cases
 		['foo ();'                        , false], # No quoted text
@@ -325,6 +354,8 @@ def test_tr_missing_line
 		['foo (tr ("moo"), ("bert"));'    , true  ],
 		['foo (tr (42), ("bert"));'       , true  ], # This tr may not be associated with that string
 
+		[ "a=tr (\"aaa\"); \n b=tr (\"\"); \n c=tr (\"ccc\", \"ddd\");", false ],
+
 		['', false] # empty line
 	]
 
@@ -333,7 +364,7 @@ def test_tr_missing_line
 	test_lines.each { |test_line|
 		string=test_line[0]
 		expected=test_line[1]
-		actual=tr_missing_line(string.dup)
+		actual=tr_missing(preprocess (string))
 
 		if actual==expected
 			result="OK"
@@ -354,7 +385,7 @@ end
 
 if ARGV==['-t']
 	test_preprocess
-	test_tr_missing_line
+	test_tr_missing
 elsif ARGV==['-a']
 #	`find . -iname *.cpp`
 	system("find . -iname \\*.cpp |grep -v moc_ |grep -v migrations/Migration_ |grep -v ./build/ |grep -v ./test/ |xargs #{$0}")
