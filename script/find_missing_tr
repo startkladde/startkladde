@@ -7,14 +7,13 @@
 #   find_missing_tr -t              - runs integrated unit tests
 
 # Shortcomings:
-#   * does not handle C string concatenation ("foo" "bar", it's one string)
-#     correctly (neither single- nor multi-line)
 #   * does not handle multi-line strings (strings with a literal newline)
 #     correctly, but that's ugly anyway and can be replaced with C string
 #     concatenation
-#   * does not know about the preprocessor, so "#define mytr tr" won't be
-#     handled properly
 #   * does not handle // in strings correctly
+#   * does not handle correctly:
+#     foo=tr (
+#       "...");
 # None of these shortcomings (should) produce false negatives, so we won't miss
 # any missing tr.
 
@@ -98,16 +97,17 @@ def preprocess(data)
 	data.gsub!(/ [ \t]* ( [-+()<>,"] ) [ \t]* /x, '\\1')
 
 	# Remove string concatenation
-	# Note that a single gsub will not match multiple consecutive strings,
-	# e.g. "ababa".gsub(/aba/, 'a') is "aba", not "a". Positive lookbehind
-	# would be easier, but seems unsupported in Ruby 1.8.
-	#string.gsub(/(?<= " [^"]* " ) " [^"]* " /x, '') # Positive lookbehind (without newlines)
+	# Note that a single gsub will not match multiple times, e.g.
+	# "ababa".gsub(/aba/, 'a') substitutes "ababa" => "aba", not "ababa" =>
+	# "aba" => "a".
 	re=/
-		(" [^"]* ") # A quoted string (group 1)
-		((
-			\s*        # Any whitespace (including newlines)
-			" [^"]* "  # A quoted string
-		)+)        # At least once, all in group 2
+		(" [^"]* ")        # A quoted string (group 1)
+		(
+			(
+				\s*        # Any whitespace (including newlines) - must be inside of group 2
+				" [^"]* "  # A quoted string
+			)+             # Any number of times
+		)                  # All in group 2
 		/x
 	data.gsub!(re) { $1+only_newlines($2) }
 
@@ -354,7 +354,7 @@ end
 
 if ARGV==['-t']
 	test_preprocess
-	test_tr_missing_line # FIXME enable
+	test_tr_missing_line
 elsif ARGV==['-a']
 #	`find . -iname *.cpp`
 	system("find . -iname \\*.cpp |grep -v moc_ |grep -v migrations/Migration_ |grep -v ./build/ |grep -v ./test/ |xargs #{$0}")
