@@ -380,7 +380,7 @@ if ARGV==['-t']
 	test_tr_missing
 elsif ARGV==['-a']
 #	`find . -iname *.cpp`
-	system("find . -iname \\*.cpp |grep -v moc_ |grep -v migrations/Migration_ |grep -v ./build/ |grep -v ./test/ |xargs #{$0}")
+	system("find . -iname \\*.cpp |grep -v moc_ |grep -v migrations/Migration_ |grep -v ./build/ |grep -v '\\./test/' |xargs #{$0}")
 else
 	process_files ARGV
 end
