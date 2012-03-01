@@ -49,13 +49,13 @@ DbManager::DbManager (const DbManager &other):
 	interface (other.interface.getInfo ()), db (interface), cache (db),
 	interfaceWorker (interface), dbWorker (db), migratorWorker (interface), cacheWorker (cache)
 {
-	assert (!"DbManager copied");
+	assert (!notr ("DbManager copied"));
 }
 
 DbManager &DbManager::operator= (const DbManager &other)
 {
 	(void)other;
-	assert (!"DbManager assigned");
+	assert (!notr ("DbManager assigned"));
 }
 
 DbManager::~DbManager ()
@@ -79,7 +79,7 @@ bool DbManager::isCurrent (QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	migratorWorker.isCurrent (returner, monitor);
-	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+	MonitorDialog::monitor (monitor, tr ("Connecting"), parent); //tr Verbindungsaufbau
 	return returner.returnedValue ();
 }
 
@@ -114,14 +114,20 @@ void DbManager::grantPermissions (QWidget *parent)
 	DatabaseInfo info=interface.getInfo ();
 
 	// Get the root password from the user
-	QString title=utf8 ("Datenbank-Passwort benötigt");
-	QString text=utf8 (
-		"Der Datenbankbenutzer %1 existiert nicht, das angegebene Passwort\n"
-		"stimmt nicht oder der Benutzer hat unzureichende Zugriffsrechte auf\n"
-		"die Datenbank %2. Zur automatischen Korrektur wird das Passwort des\n"
-		"Datenbankbenutzers root benötigt (dieses Passwort kann ein anderes\n" /*utf8*/
-		"als das für den Systembenutzer root sein)\n" /*utf8*/
-		"Bitte das Kennwort für den Datenbankbenutzer root eingeben:") /*utf8*/
+	QString title=tr ("Database password required"); //tr Datenbank-Passwort benötigt
+	QString text=tr (
+		"The database user %1 does not exist, the given password\n"
+		"is not correct or the user has insufficient access to\n"
+		"the database %2. To correct this automatically, the password\n"
+		"of the database user root is required (this password can be\n"
+		"different from the one of the system user root).\n"
+		"Please enter the password for the database user root:")
+//tr		"Der Datenbankbenutzer %1 existiert nicht, das angegebene Passwort\n"
+//tr		"stimmt nicht oder der Benutzer hat unzureichende Zugriffsrechte auf\n"
+//tr		"die Datenbank %2. Zur automatischen Korrektur wird das Passwort des\n"
+//tr		"Datenbankbenutzers root benötigt (dieses Passwort kann ein anderes\n" /*utf8*/
+//tr		"als das für den Systembenutzer root sein)\n" /*utf8*/
+//tr		"Bitte das Kennwort für den Datenbankbenutzer root eingeben:") /*utf8*/
 		.arg (info.username, info.database);
 
 	bool retry=true;
@@ -131,14 +137,14 @@ void DbManager::grantPermissions (QWidget *parent)
 
 		bool ok;
 		QString rootPassword=QInputDialog::getText (parent,
-			title, text, QLineEdit::Password, "", &ok);
+			title, text, QLineEdit::Password, notr (""), &ok);
 
 		if (!ok)
 			throw DbManager::ConnectCanceledException ();
 
 		DatabaseInfo rootInfo=info;
-		rootInfo.database="";
-		rootInfo.username="root";
+		rootInfo.database=notr ("");
+		rootInfo.username=notr ("root");
 		rootInfo.password=rootPassword;
 
 		try
@@ -153,17 +159,20 @@ void DbManager::grantPermissions (QWidget *parent)
 			QObject::connect (&monitor, SIGNAL (canceled ()), &rootInterface, SLOT (cancelConnection ()), Qt::DirectConnection);
 
 			rootInterfaceWorker.grantAll (returner, monitor, info.database, info.username, info.password);
-			MonitorDialog::monitor (monitor, "Benutzer anlegen", parent);
+			MonitorDialog::monitor (monitor, tr ("Creating user"), parent); //tr Benutzer anlegen
 			returner.wait ();
 
 			rootInterface.close ();
 		}
 		catch (AccessDeniedException) // Actually: only 1045
 		{
-			text=utf8 (
-				"Anmeldung als root verweigert. Möglicherweise ist das\n" /*utf8*/
-				"angegebene Kennwort nicht richtig.\n"
-				"Bitte das Kennwort für root eingeben:"); /*utf8*/
+			text=tr (
+				"Logging in as root failed. The given password\n"
+				"may not be correct.\n"
+				"Please enter the password for the database user root:");
+//				"Anmeldung als root verweigert. Möglicherweise ist das\n" /*utf8*/
+//				"angegebene Kennwort nicht richtig.\n"
+//				"Bitte das Kennwort für root eingeben:"); /*utf8*/
 			retry=true;
 		}
 	}
@@ -174,7 +183,7 @@ void DbManager::createDatabase (QWidget *parent)
 	const DatabaseInfo &info=interface.getInfo ();
 
 	DatabaseInfo createInfo=info;
-	createInfo.database="";
+	createInfo.database=notr ("");
 
 	ThreadSafeInterface createInterface (createInfo);
 	InterfaceWorker createInterfaceWorker (createInterface);
@@ -185,7 +194,7 @@ void DbManager::createDatabase (QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &createInterface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	createInterfaceWorker.createDatabase (returner, monitor, info.database);
-	MonitorDialog::monitor (monitor, "Datenbank anlegen", parent);
+	MonitorDialog::monitor (monitor, tr ("Creating database"), parent); //tr Datenbank anlegen
 	returner.wait ();
 }
 
@@ -194,57 +203,57 @@ void DbManager::createSampleLaunchMethods (QWidget *parent)
 	QList<LaunchMethod> sampleLaunchMethods;
 
 	LaunchMethod winchA;
-	winchA.name="Winde Verein A";
-	winchA.shortName="WA";
-	winchA.logString="W";
-	winchA.keyboardShortcut="A";
+	winchA.name=tr ("Winch club A"); //tr Winde Verein A
+	winchA.shortName=tr ("WA", "Winch club A"); //tr WA
+	winchA.logString=tr ("W", "Winch logbook label"); //tr W
+	winchA.keyboardShortcut=tr ("A", "Winch club A keyboard shortcut"); //tr A
 	winchA.type=LaunchMethod::typeWinch;
 	winchA.personRequired=true;
 	sampleLaunchMethods.append (winchA);
 
 	LaunchMethod winchB;
-	winchB.name="Winde Verein B";
-	winchB.shortName="WB";
-	winchB.logString="W";
-	winchB.keyboardShortcut="B";
+	winchB.name=tr ("Winch club B"); //tr Winde Verein B
+	winchB.shortName=tr ("WB", "Winch club B"); //tr WB
+	winchB.logString=tr ("W", "Winch logbook label"); //tr W
+	winchB.keyboardShortcut=tr ("B", "Winch club B keyboard shortcut"); //tr B
 	winchB.type=LaunchMethod::typeWinch;
 	winchB.personRequired=true;
 	sampleLaunchMethods.append (winchB);
 
 	LaunchMethod airtowEfgh;
-	airtowEfgh.name="D-EFGH";
-	airtowEfgh.shortName="GH";
-	airtowEfgh.logString="F";
-	airtowEfgh.keyboardShortcut="G";
+	airtowEfgh.name=tr ("TODO"); //tr D-EFGH
+	airtowEfgh.shortName=tr ("TODO"); //tr GH
+	airtowEfgh.logString=tr ("TODO"); //tr F
+	airtowEfgh.keyboardShortcut=tr ("TODO"); //tr G
 	airtowEfgh.type=LaunchMethod::typeAirtow;
-	airtowEfgh.towplaneRegistration="D-EFGH";
+	airtowEfgh.towplaneRegistration=tr ("TODO"); //tr D-EFGH
 	airtowEfgh.personRequired=true;
 	sampleLaunchMethods.append (airtowEfgh);
 
 	LaunchMethod airtowMnop;
-	airtowMnop.name="D-MNOP";
-	airtowMnop.shortName="OP";
-	airtowMnop.logString="F";
-	airtowMnop.keyboardShortcut="O";
+	airtowMnop.name=tr ("TODO"); //tr D-MNOP
+	airtowMnop.shortName=tr ("TODO"); //tr OP
+	airtowMnop.logString=tr ("TODO"); //tr F
+	airtowMnop.keyboardShortcut=tr ("TODO"); //tr O
 	airtowMnop.type=LaunchMethod::typeAirtow;
-	airtowMnop.towplaneRegistration="D-MNOP";
+	airtowMnop.towplaneRegistration=tr ("TODO"); //tr D-MNOP
 	airtowMnop.personRequired=true;
 	sampleLaunchMethods.append (airtowMnop);
 
 	LaunchMethod airtowOther;
-	airtowOther.name="F-Schlepp (sonstige)";
-	airtowOther.shortName="FS";
-	airtowOther.logString="F";
-	airtowOther.keyboardShortcut="F";
+	airtowOther.name=tr ("TODO"); //tr F-Schlepp (sonstige)
+	airtowOther.shortName=tr ("TODO"); //tr FS
+	airtowOther.logString=tr ("TODO"); //tr F
+	airtowOther.keyboardShortcut=tr ("TODO"); //tr F
 	airtowOther.type=LaunchMethod::typeAirtow;
 	airtowOther.personRequired=true;
 	sampleLaunchMethods.append (airtowOther);
 
 	LaunchMethod selfLaunch;
-	selfLaunch.name="Eigenstart";
-	selfLaunch.shortName="ES";
-	selfLaunch.logString="E";
-	selfLaunch.keyboardShortcut="E";
+	selfLaunch.name=tr ("TODO"); //tr Eigenstart
+	selfLaunch.shortName=tr ("TODO"); //tr ES
+	selfLaunch.logString=tr ("TODO"); //tr E
+	selfLaunch.keyboardShortcut=tr ("TODO"); //tr E
 	selfLaunch.type=LaunchMethod::typeSelf;
 	selfLaunch.personRequired=false;
 	sampleLaunchMethods.append (selfLaunch);
@@ -254,7 +263,7 @@ void DbManager::createSampleLaunchMethods (QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.createObjects (returner, monitor, sampleLaunchMethods);
-	MonitorDialog::monitor (monitor, "Beispielstartarten erstellen", parent);
+	MonitorDialog::monitor (monitor, tr ("Creating example launch methods"), parent); //tr Beispielstartarten erstellen
 	returner.wait ();
 }
 
@@ -268,25 +277,25 @@ void DbManager::checkVersion (QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	migratorWorker.getRequiredAction (returner, monitor, &currentVersion, &numPendingMigrations);
-	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+	MonitorDialog::monitor (monitor, tr ("Connecting"), parent); //tr Verbindungsaufbau
 	Migrator::Action action=returner.returnedValue ();
 
 	switch (action)
 	{
 		case Migrator::actionLoad:
 		{
-			confirmOrCancel ("Datenbank leer",
-				utf8 ("Die Datenbank %1 ist leer oder unvollständig. Soll sie jetzt erstellt werden?").arg (interface.getInfo ().toString ()), parent);
+			confirmOrCancel (tr ("Database empty"), //tr Datenbank leer
+				tr ("TODO").arg (interface.getInfo ().toString ()), parent); //tr Die Datenbank %1 ist leer oder unvollständig. Soll sie jetzt erstellt werden?
 
 			Returner<void> returner;
 			SignalOperationMonitor monitor;
 			QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 			migratorWorker.loadSchema (returner, monitor);
-			MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+			MonitorDialog::monitor (monitor, tr ("Connecting"), parent); //tr Verbindungsaufbau
 			returner.wait (); // Required so any exceptions are rethrown
 
 			// After loading the schema, the database must be current.
-			ensureCurrent ("Datenbank ist nach Erstellen nicht aktuell.", parent);
+			ensureCurrent (tr ("Database not current after creating"), parent); //tr Datenbank ist nach Erstellen nicht aktuell.
 
 			createSampleLaunchMethods (parent);
 		} break;
@@ -294,27 +303,36 @@ void DbManager::checkVersion (QWidget *parent)
 		{
 			quint64 latestVersion=Migrator::latestVersion ();
 
-			confirmOrCancel ("Datenbank nicht aktuell", utf8 (
-					"Die Datenbank ist nicht aktuell:\n"
-					"  - Momentane Version: %1\n"
-					"  - Aktuelle Version: %2\n"
-					"  - Anzahl ausstehender Migrationen: %3\n"
+			confirmOrCancel (tr ("Database not current"), tr ( //tr Datenbank nicht aktuell
+					"The database is not up to date:\n"
+					"  - Current version: %1\n"
+					"  - Up-to-date version: %2\n"
+					"  - Number of missing migrations: %3\n"
 					"\n"
-					"Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.\n" /*utf8*/
-					"Vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden.\n"
+					"Attention: the update should not be interrupted because this can lead to an inconsistent database which cannot be repaired automatically.\n"
+					"Before updating, a backup of the database should be made.\n"
 					"\n"
-					"Soll die Datenbank jetzt aktualisiert werden?"
+					"Update the database now?"
+//					"Die Datenbank ist nicht aktuell:\n"
+//					"  - Momentane Version: %1\n"
+//					"  - Aktuelle Version: %2\n"
+//					"  - Anzahl ausstehender Migrationen: %3\n"
+//					"\n"
+//					"Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.\n" /*utf8*/
+//					"Vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden.\n"
+//					"\n"
+//					"Soll die Datenbank jetzt aktualisiert werden?"
 				).arg (currentVersion).arg (latestVersion).arg (numPendingMigrations), parent);
 
 			Returner<void> returner;
 			SignalOperationMonitor monitor;
 			QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 			migratorWorker.migrate (returner, monitor);
-			MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+			MonitorDialog::monitor (monitor, tr ("Connecting"), parent); //tr Verbindungsaufbau
 			returner.wait (); // Required so any exceptions are rethrown
 
 			// After migrating, the database must be current.
-			ensureCurrent ("Datenbank ist nach der Aktualisierung nicht aktuell.", parent);
+			ensureCurrent (tr ("The database is not up to date after updating."), parent); //tr Datenbank ist nach der Aktualisierung nicht aktuell.
 		} break;
 		case Migrator::actionNone:
 			// Nothing to do, the database is current
@@ -329,7 +347,7 @@ void DbManager::doOpenInterface (InterfaceWorker &worker, QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &worker.getInterface (), SLOT (cancelConnection ()), Qt::DirectConnection);
 	worker.open (returner, monitor);
-	MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+	MonitorDialog::monitor (monitor, tr ("Connecting"), parent); //tr Verbindungsaufbau
 	returner.wait ();
 
 	// Now that the interface is open, we can start the keepalive
@@ -351,8 +369,8 @@ void DbManager::openInterface (QWidget *parent)
 		// that particular permission is missing, the enclosing routine will
 		// have to pick up and grant us the permissions.
 
-		confirmOrCancel ("Datenbank erstellen?", QString (
-			"Die Datenbank %1 existiert nicht. Soll sie erstellt werden?")
+		confirmOrCancel (tr ("Create database?"), QString ( //tr Datenbank erstellen?
+			tr ("TODO")) //tr Die Datenbank %1 existiert nicht. Soll sie erstellt werden?
 			.arg (interface.getInfo ().database), parent);
 
 		// Create the database, which involves opening a connection without a
@@ -367,11 +385,11 @@ void DbManager::openInterface (QWidget *parent)
 		SignalOperationMonitor monitor;
 		QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 		migratorWorker.loadSchema (returner, monitor);
-		MonitorDialog::monitor (monitor, "Verbindungsaufbau", parent);
+		MonitorDialog::monitor (monitor, tr ("Connecting"), parent); //tr Verbindungsaufbau
 		returner.wait (); // Required so any exceptions are rethrown
 
 		// After loading the schema, the database must be current.
-		ensureCurrent ("Nach dem Laden ist die Datenbank nicht aktuell.", parent);
+		ensureCurrent (tr ("After loading, the database is not up to date."), parent); //tr Nach dem Laden ist die Datenbank nicht aktuell.
 
 		createSampleLaunchMethods (parent);
 	}
@@ -418,31 +436,31 @@ bool DbManager::connect (QWidget *parent)
 	}
 	catch (DbManager::ConnectCanceledException)
 	{
-		showWarning ("Verbindungsaufbau abgebrochen",
-			"Der Verbindungsaufbau wurde abgebrochen",
+		showWarning (tr ("Connection canceled"), //tr Verbindungsaufbau abgebrochen
+			tr ("TODO"), //tr Der Verbindungsaufbau wurde abgebrochen
 			parent);
 	}
 	catch (OperationCanceledException &ex)
 	{
-		showWarning ("Verbindungsaufbau abgebrochen",
-			"Der Verbindungsaufbau wurde abgebrochen",
+		showWarning (tr ("Connection canceled"), //tr Verbindungsaufbau abgebrochen
+			tr ("TODO"), //tr Der Verbindungsaufbau wurde abgebrochen
 			parent);
 	}
 	catch (ConnectFailedException &ex)
 	{
-		showWarning ("Verbindungsaufbau fehlgeschlagen",
-			QString ("Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1").arg (ex.message),
+		showWarning (tr ("Connection failed"), //tr Verbindungsaufbau fehlgeschlagen
+			tr ("TODO").arg (ex.message), //tr Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1
 			parent);
 	}
 	catch (SqlException &ex)
 	{
 		QSqlError error=ex.error;
 
-		QString text=QString (
+		QString text=tr (
 			"Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1"
 			" (Fehlercode %2, Typ %3)"
 			).arg (error.databaseText ()).arg (error.number ()).arg (error.type ());
-		showWarning ("Fehler beim Verbindungsaufbau", text, parent);
+		showWarning (tr ("Error while connecting"), text, parent); //tr Fehler beim Verbindungsaufbau
 	}
 
 	setState (stateDisconnected);
@@ -472,7 +490,7 @@ void DbManager::refreshCache (QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	cacheWorker.refreshAll (returner, monitor);
-	MonitorDialog::monitor (monitor, "Daten abrufen", parent);
+	MonitorDialog::monitor (monitor, tr ("Retrieving data"), parent); //tr Daten abrufen
 	returner.wait ();
 }
 
@@ -488,7 +506,7 @@ void DbManager::fetchFlights (QDate date, QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	cacheWorker.fetchFlightsOther (returner, monitor, date);
-	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), parent);
+	MonitorDialog::monitor (monitor, tr ("Retrieving flights"), parent); //tr Flüge abrufen
 	returner.wait ();
 }
 
@@ -512,7 +530,7 @@ QList<Flight> DbManager::getFlights (const QDate &first, const QDate &last, QWid
 	// a reference
 	Query condition=Flight::dateRangeSupersetCondition (first, last);
 	dbWorker.getObjects<Flight> (returner, monitor, condition);
-	MonitorDialog::monitor (monitor, utf8 ("Flüge abrufen"), parent);
+	MonitorDialog::monitor (monitor, tr ("Retrieving flights"), parent); //tr Flüge abrufen
 	QList<Flight> candidates=returner.returnedValue ();
 	return Flight::dateRangeSupersetFilter (candidates, first, last);
 	return returner.returnedValue ();
@@ -524,7 +542,7 @@ template<class T> void DbManager::refreshObjects (QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	cacheWorker.refreshObjects<T> (returner, monitor);
-	MonitorDialog::monitor (monitor, "Daten aktualisieren", parent);
+	MonitorDialog::monitor (monitor, tr ("Refreshing data"), parent); //tr Daten aktualisieren
 	returner.wait ();
 }
 
@@ -534,7 +552,7 @@ template<class T> bool DbManager::objectUsed (dbId id, QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.objectUsed<T> (returner, monitor, id);
-	MonitorDialog::monitor (monitor, utf8 ("%1 prüfen").arg (T::objectTypeDescription ()), parent);
+	MonitorDialog::monitor (monitor, tr ("Checking %1").arg (T::objectTypeDescription ()), parent); //tr %1 prüfen
 	return returner.returnedValue ();
 }
 
@@ -545,7 +563,7 @@ template<class T> void DbManager::deleteObject (dbId id, QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.deleteObject<T> (returner, monitor, id);
-	MonitorDialog::monitor (monitor, utf8 ("%1 löschen").arg (T::objectTypeDescription ()), parent);
+	MonitorDialog::monitor (monitor, tr ("Deleting %1").arg (T::objectTypeDescription ()), parent); //tr %1 löschen
 	returner.wait ();
 }
 
@@ -556,7 +574,7 @@ template<class T> void DbManager::deleteObjects (const QList<dbId> &ids, QWidget
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.deleteObjects<T> (returner, monitor, ids);
-	MonitorDialog::monitor (monitor, utf8 ("%1 löschen").arg (T::objectTypeDescriptionPlural ()), parent);
+	MonitorDialog::monitor (monitor, tr ("Deleting %1").arg (T::objectTypeDescriptionPlural ()), parent); //tr %1 löschen
 	returner.wait ();
 }
 
@@ -566,7 +584,7 @@ template<class T> dbId DbManager::createObject (T &object, QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.createObject (returner, monitor, object);
-	MonitorDialog::monitor (monitor, utf8 ("%1 anlegen").arg (T::objectTypeDescription ()), parent);
+	MonitorDialog::monitor (monitor, tr ("Creating %1").arg (T::objectTypeDescription ()), parent); //tr %1 anlegen
 	return returner.returnedValue ();
 }
 
@@ -576,7 +594,7 @@ template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	dbWorker.updateObject (returner, monitor, object);
-	MonitorDialog::monitor (monitor, utf8 ("%1 aktualisieren").arg (T::objectTypeDescription ()), parent);
+	MonitorDialog::monitor (monitor, tr ("Updating %1").arg (T::objectTypeDescription ()), parent); //tr %1 aktualisieren
 	return returner.returnedValue ();
 }
 
@@ -596,7 +614,7 @@ void DbManager::transaction (QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	interfaceWorker.transaction (returner, monitor);
-	MonitorDialog::monitor (monitor, utf8 ("Transaktion beginnen"), parent);
+	MonitorDialog::monitor (monitor, tr ("Beginning transaction"), parent); //tr Transaktion beginnen
 	returner.wait ();
 }
 
@@ -606,7 +624,7 @@ void DbManager::commit (QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	interfaceWorker.commit (returner, monitor);
-	MonitorDialog::monitor (monitor, utf8 ("Transaktion ausführen"), parent);
+	MonitorDialog::monitor (monitor, tr ("Committing transaction"), parent); //tr Transaktion ausführen
 	returner.wait ();
 }
 
@@ -616,7 +634,7 @@ void DbManager::rollback (QWidget *parent)
 	SignalOperationMonitor monitor;
 	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
 	interfaceWorker.rollback (returner, monitor);
-	MonitorDialog::monitor (monitor, utf8 ("Transaktion abbrechen"), parent);
+	MonitorDialog::monitor (monitor, tr ("Rolling back transaction"), parent); //tr Transaktion abbrechen
 	returner.wait ();
 }
 
@@ -630,9 +648,9 @@ QString DbManager::mergeDeleteWarningTitle (int notDeletedCount, int deletedCoun
 	(void)deletedCount;
 
 	if (notDeletedCount>1)
-		return utf8 ("Personen noch in Benutzung");
+		return tr ("People still in use"); //tr Personen noch in Benutzung
 	else
-		return utf8 ("Person noch in Benutzung");
+		return tr ("Person still in use"); //tr Person noch in Benutzung
 }
 
 QString DbManager::mergeDeleteWarningText (int notDeletedCount, int deletedCount)
@@ -640,16 +658,16 @@ QString DbManager::mergeDeleteWarningText (int notDeletedCount, int deletedCount
 	QString text;
 
 	if (notDeletedCount>1)
-		text=utf8 ("Nach dem Zusammenfassen sind noch %1 Personen in Benutzung.").arg (notDeletedCount);
+		text=tr ("TODO").arg (notDeletedCount); //tr Nach dem Zusammenfassen sind noch %1 Personen in Benutzung.
 	else
-		text=utf8 ("Nach dem Zusammenfassen ist noch eine Person in Benutzung.");
+		text=tr ("TODO"); //tr Nach dem Zusammenfassen ist noch eine Person in Benutzung.
 
 	if (deletedCount==0)
-		text+=utf8 (" Es wird keine Person gelöscht.");
+		text+=tr ("TODO"); //tr  Es wird keine Person gelöscht.
 	else if (deletedCount==1)
-		text+=utf8 (" Es wird nur eine Person gelöscht.");
+		text+=tr ("TODO"); //tr  Es wird nur eine Person gelöscht.
 	else
-		text+=utf8 (" Es werden nur %1 Personen gelöscht.").arg (deletedCount);
+		text+=tr ("TODO").arg (deletedCount); //tr  Es werden nur %1 Personen gelöscht.
 
 	return text;
 }
@@ -681,10 +699,10 @@ void DbManager::mergePeople (const Person &correctPerson, const QList<Person> &w
 		// Execute the queries
 		// TODO single progress indicator
 		transaction (parent);
-		executeQuery (Query::updateColumnValue ("flights", "pilot_id"   , correctId, wrongIds), utf8 ("Flüge: Piloteneinträge aktualisieren")       , parent);
-		executeQuery (Query::updateColumnValue ("flights", "copilot_id" , correctId, wrongIds), utf8 ("Flüge: Copiloteneinträge aktualisieren")     , parent);
-		executeQuery (Query::updateColumnValue ("flights", "towpilot_id", correctId, wrongIds), utf8 ("Flüge: Schlepppiloteneinträge aktualisieren"), parent);
-		executeQuery (Query::updateColumnValue ("users"  , "person_id"  , correctId, wrongIds), utf8 ("Benutzer: Personenreferenzen aktualisieren") , parent);
+		executeQuery (Query::updateColumnValue (notr ("flights"), notr ("pilot_id")   , correctId, wrongIds), tr ("TODO")       , parent); //tr Flüge: Piloteneinträge aktualisieren
+		executeQuery (Query::updateColumnValue (notr ("flights"), notr ("copilot_id") , correctId, wrongIds), tr ("TODO")     , parent); //tr Flüge: Copiloteneinträge aktualisieren
+		executeQuery (Query::updateColumnValue (notr ("flights"), notr ("towpilot_id"), correctId, wrongIds), tr ("TODO"), parent); //tr Flüge: Schlepppiloteneinträge aktualisieren
+		executeQuery (Query::updateColumnValue (notr ("users")  , notr ("person_id")  , correctId, wrongIds), tr ("TODO") , parent); //tr Benutzer: Personenreferenzen aktualisieren
 		commit (parent);
 
 		// Emit the corresponding events
