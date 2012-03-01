@@ -188,9 +188,10 @@ class Flight: public FlightBase
 
 
 		// *** ObjectListWindow/ObjectEditorWindow helpers
-		static QString objectTypeDescription () { return "Flug"; }
-		static QString objectTypeDescriptionDefinite () { return "der Flug"; }
-		static QString objectTypeDescriptionPlural () { return utf8 ("Flüge"); }
+		// TODO TR this translates poorly, change?
+		static QString objectTypeDescription () { return qApp->translate ("Flight", "flight"); }
+		static QString objectTypeDescriptionDefinite () { return qApp->translate ("Flight", "the flight"); }
+		static QString objectTypeDescriptionPlural () { return qApp->translate ("Flight", "flights"); }
 
 
 		// *** SQL interface

@@ -1049,6 +1049,21 @@ geladen werden:
         <source>Towflight for flight %1</source>
         <translation>Schleppflug für Flug %1</translation>
     </message>
+    <message>
+        <location filename="../src/model/Flight.h" line="192"/>
+        <source>flight</source>
+        <translation>Flug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.h" line="193"/>
+        <source>the flight</source>
+        <translation>der Flug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight.h" line="194"/>
+        <source>flights</source>
+        <translation>Flüge</translation>
+    </message>
 </context>
 <context>
     <name>Flight::Mode</name>
@@ -2241,6 +2256,21 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <location filename="../src/model/LaunchMethod.cpp" line="124"/>
         <source>Other</source>
         <translation>Sonstige</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.h" line="63"/>
+        <source>launch method</source>
+        <translation>Startart</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.h" line="64"/>
+        <source>the launch method</source>
+        <translation>die Startart</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.h" line="65"/>
+        <source>launch methods</source>
+        <translation>Startarten</translation>
     </message>
 </context>
 <context>
@@ -3577,6 +3607,24 @@ Konfiguration: %2</translation>
     </message>
 </context>
 <context>
+    <name>Person</name>
+    <message>
+        <location filename="../src/model/Person.h" line="55"/>
+        <source>person</source>
+        <translation>Person</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.h" line="56"/>
+        <source>the person</source>
+        <translation>die Person</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.h" line="57"/>
+        <source>people</source>
+        <translation>Personen</translation>
+    </message>
+</context>
+<context>
     <name>Person::DefaultObjectModel</name>
     <message>
         <location filename="../src/model/Person.cpp" line="113"/>
@@ -3938,6 +3986,21 @@ aktiviert werden.</translation>
         <location filename="../src/model/Plane.cpp" line="125"/>
         <source>None</source>
         <translation>Keine</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.h" line="73"/>
+        <source>plane</source>
+        <translation>Flugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.h" line="74"/>
+        <source>the plane</source>
+        <translation>das Flugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.h" line="75"/>
+        <source>planes</source>
+        <translation>Flugzeuge</translation>
     </message>
 </context>
 <context>
