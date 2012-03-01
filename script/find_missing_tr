@@ -103,6 +103,9 @@ def preprocess(data)
 	# Replace any horizontal whitespace with a single space to simplify regexps
 	data.gsub!(/ [ \t]+ /x, ' ')
 
+	# Remove empty strings and same-line string concatenation
+	data.gsub!(/"[ \t]*"/, '')
+
 	# Remove any horizontal whitespace around operators and from the beginning
 	# and the end of lines
 	re=/
@@ -112,7 +115,7 @@ def preprocess(data)
 		/x
 	data.gsub!(re, '\\1')
 
-	# Remove string concatenation
+	# Remove multi-line string concatenation
 	# Note that a single gsub will not match multiple times, e.g.
 	# "ababa".gsub(/aba/, 'a') substitutes "ababa" => "aba", not "ababa" =>
 	# "aba" => "a".
@@ -252,14 +255,14 @@ def test_preprocess
 		["before \"foo//bar\" after"          , "before\"foo//bar\"after" ],
 
 		# String concatenation
-		['foo="bar";'                            , nil                  ], # No string concatenation
-		['foo="string" "concatenation";'         , 'foo="string";'      ], # Simple concatenation
-		['foo=" string " " concatenation ";'     , 'foo="string";'      ], # Simple concatenation whitespace in strings
-		['foo="string""concatenation";'          , 'foo="string";'      ], # Simple concatenation no whitespace
-		['foo="multi" "string" "concatenation";' , 'foo="multi";'       ], # Multi concatenation
+		['foo="bar";'                            , nil                               ], # No string concatenation
+		['foo="string" "concatenation";'         , 'foo="stringconcatenation";'      ], # Simple concatenation
+		['foo=" string " " concatenation ";'     , 'foo="string  concatenation";'    ], # Simple concatenation whitespace in strings
+		['foo="string""concatenation";'          , 'foo="stringconcatenation";'      ], # Simple concatenation no whitespace
+		['foo="multi" "string" "concatenation";' , 'foo="multistringconcatenation";' ], # Multi concatenation
 
 		# With escaped quotes
-		['foo="st\\"ring" "co\\"ncatenation";'   , 'foo="string";'   ],
+		['foo="st\\"ring" "co\\"ncatenation";'   , 'foo="stringconcatenation";'   ],
 		['foo="st\\"ringco\\"ncatenation";'      , 'foo="stringconcatenation";'   ],
 
 		# Multi-line string concatenation
@@ -335,8 +338,12 @@ def test_tr_missing
 		#["foo=\"moo\nbert\";" , false], # Multi-line string - not supported
 		#['foo=tr(\n"bar");', false], # String on next line
 
+		# Empty strings
+		['a=""'    , false], # Empty string
+		['a=" "'   , false], # Empty string
+		['a="   "' , false], # Empty string
+
 		# String concatenation
-		['a=" "'                        , true], # Not a string concatenation
 		['foo=tr ("moo" "bert")'        , false], # String concatenation
 		['foo=tr ("moo" "bert"), "bar"' , true], # Missing after string concatenation
 
