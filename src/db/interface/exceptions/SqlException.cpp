@@ -1,6 +1,7 @@
 #include "SqlException.h"
 
 #include "src/io/AnsiColors.h"
+#include "src/notr.h"
 
 SqlException::SqlException (const QSqlError &error):
 	error (error)

@@ -8,6 +8,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
+#include "src/notr.h"
 
 /*
  * Now, the implementation of this here worker class is a bit more complicated

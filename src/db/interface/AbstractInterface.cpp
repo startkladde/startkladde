@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "src/util/qString.h"
+#include "src/notr.h"
 
 AbstractInterface::AbstractInterface (const DatabaseInfo &info):
 	info (info)

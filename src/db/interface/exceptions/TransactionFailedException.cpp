@@ -3,6 +3,7 @@
 #include <cassert>
 
 #include "src/io/AnsiColors.h"
+#include "src/notr.h"
 
 TransactionFailedException::TransactionFailedException (const QSqlError &error,
 	AbstractInterface::TransactionStatement statement):

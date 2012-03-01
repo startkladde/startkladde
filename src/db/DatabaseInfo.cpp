@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+#include "src/notr.h"
+
 DatabaseInfo::DatabaseInfo ():
 	defaultPort (true), port (0)
 {

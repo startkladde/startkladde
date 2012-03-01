@@ -11,6 +11,8 @@
 #include <iostream>
 #include <cassert>
 
+#include "src/notr.h"
+
 class Plane;
 class Flight;
 class Person;
