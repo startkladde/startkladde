@@ -28,6 +28,7 @@
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
 #include "src/config/Settings.h"
+#include "src/notr.h"
 
 #include "src/concurrent/DefaultQThread.h" //remove
 
@@ -204,7 +205,7 @@ void DbManager::createSampleLaunchMethods (QWidget *parent)
 
 	LaunchMethod winchA;
 	winchA.name=tr ("Winch club A"); //tr Winde Verein A
-	winchA.shortName=tr ("WA", "Winch club A"); //tr WA
+	winchA.shortName=tr ("WA", "Winch club A short name"); //tr WA
 	winchA.logString=tr ("W", "Winch logbook label"); //tr W
 	winchA.keyboardShortcut=tr ("A", "Winch club A keyboard shortcut"); //tr A
 	winchA.type=LaunchMethod::typeWinch;
@@ -213,7 +214,7 @@ void DbManager::createSampleLaunchMethods (QWidget *parent)
 
 	LaunchMethod winchB;
 	winchB.name=tr ("Winch club B"); //tr Winde Verein B
-	winchB.shortName=tr ("WB", "Winch club B"); //tr WB
+	winchB.shortName=tr ("WB", "Winch club B short name"); //tr WB
 	winchB.logString=tr ("W", "Winch logbook label"); //tr W
 	winchB.keyboardShortcut=tr ("B", "Winch club B keyboard shortcut"); //tr B
 	winchB.type=LaunchMethod::typeWinch;
@@ -221,39 +222,39 @@ void DbManager::createSampleLaunchMethods (QWidget *parent)
 	sampleLaunchMethods.append (winchB);
 
 	LaunchMethod airtowEfgh;
-	airtowEfgh.name=tr ("TODO"); //tr D-EFGH
-	airtowEfgh.shortName=tr ("TODO"); //tr GH
-	airtowEfgh.logString=tr ("TODO"); //tr F
-	airtowEfgh.keyboardShortcut=tr ("TODO"); //tr G
+	airtowEfgh.name=tr ("D-EFGH"); //tr D-EFGH
+	airtowEfgh.shortName=tr ("GH", "D-EFGH short name"); //tr GH
+	airtowEfgh.logString=tr ("A", "Airtow logbook label"); //tr F
+	airtowEfgh.keyboardShortcut=tr ("G", "D-EFGH keyboard shortcut"); //tr G
 	airtowEfgh.type=LaunchMethod::typeAirtow;
-	airtowEfgh.towplaneRegistration=tr ("TODO"); //tr D-EFGH
+	airtowEfgh.towplaneRegistration=tr ("D-EFGH"); //tr D-EFGH
 	airtowEfgh.personRequired=true;
 	sampleLaunchMethods.append (airtowEfgh);
 
 	LaunchMethod airtowMnop;
-	airtowMnop.name=tr ("TODO"); //tr D-MNOP
-	airtowMnop.shortName=tr ("TODO"); //tr OP
-	airtowMnop.logString=tr ("TODO"); //tr F
-	airtowMnop.keyboardShortcut=tr ("TODO"); //tr O
+	airtowMnop.name=tr ("D-MNOP"); //tr D-MNOP
+	airtowMnop.shortName=tr ("OP", "D-MNOP short name"); //tr OP
+	airtowMnop.logString=tr ("A", "Airtow logbook label"); //tr F
+	airtowMnop.keyboardShortcut=tr ("O", "D-EFGH keyboard shortcut"); //tr O
 	airtowMnop.type=LaunchMethod::typeAirtow;
-	airtowMnop.towplaneRegistration=tr ("TODO"); //tr D-MNOP
+	airtowMnop.towplaneRegistration=tr ("D-MNOP");
 	airtowMnop.personRequired=true;
 	sampleLaunchMethods.append (airtowMnop);
 
 	LaunchMethod airtowOther;
-	airtowOther.name=tr ("TODO"); //tr F-Schlepp (sonstige)
-	airtowOther.shortName=tr ("TODO"); //tr FS
-	airtowOther.logString=tr ("TODO"); //tr F
-	airtowOther.keyboardShortcut=tr ("TODO"); //tr F
+	airtowOther.name=tr ("Airtow (other)"); //tr F-Schlepp (sonstige)
+	airtowOther.shortName=tr ("AT"); //tr FS
+	airtowOther.logString=tr ("A", "Airtow logbook label"); //tr F
+	airtowOther.keyboardShortcut=tr ("A", "Airtow (other) keyboard shortcut"); //tr F
 	airtowOther.type=LaunchMethod::typeAirtow;
 	airtowOther.personRequired=true;
 	sampleLaunchMethods.append (airtowOther);
 
 	LaunchMethod selfLaunch;
-	selfLaunch.name=tr ("TODO"); //tr Eigenstart
-	selfLaunch.shortName=tr ("TODO"); //tr ES
-	selfLaunch.logString=tr ("TODO"); //tr E
-	selfLaunch.keyboardShortcut=tr ("TODO"); //tr E
+	selfLaunch.name=tr ("Self launch"); //tr Eigenstart
+	selfLaunch.shortName=tr ("SL", "Self launch short name"); //tr ES
+	selfLaunch.logString=tr ("S", "Self launch logbook label"); //tr E
+	selfLaunch.keyboardShortcut=tr ("S", "Self launch keyboard shortcut"); //tr E
 	selfLaunch.type=LaunchMethod::typeSelf;
 	selfLaunch.personRequired=false;
 	sampleLaunchMethods.append (selfLaunch);
@@ -285,7 +286,8 @@ void DbManager::checkVersion (QWidget *parent)
 		case Migrator::actionLoad:
 		{
 			confirmOrCancel (tr ("Database empty"), //tr Datenbank leer
-				tr ("TODO").arg (interface.getInfo ().toString ()), parent); //tr Die Datenbank %1 ist leer oder unvollständig. Soll sie jetzt erstellt werden?
+				tr ("The database %1 is empty or incomplete. Create it now?").arg (interface.getInfo ().toString ()), parent);
+			//tr Die Datenbank %1 ist leer oder unvollständig. Soll sie jetzt erstellt werden?
 
 			Returner<void> returner;
 			SignalOperationMonitor monitor;
@@ -370,7 +372,8 @@ void DbManager::openInterface (QWidget *parent)
 		// have to pick up and grant us the permissions.
 
 		confirmOrCancel (tr ("Create database?"), QString ( //tr Datenbank erstellen?
-			tr ("TODO")) //tr Die Datenbank %1 existiert nicht. Soll sie erstellt werden?
+			tr ("The database %1 does not exist. Create it now?"))
+				//tr Die Datenbank %1 existiert nicht. Soll sie erstellt werden?
 			.arg (interface.getInfo ().database), parent);
 
 		// Create the database, which involves opening a connection without a
@@ -436,20 +439,20 @@ bool DbManager::connect (QWidget *parent)
 	}
 	catch (DbManager::ConnectCanceledException)
 	{
-		showWarning (tr ("Connection canceled"), //tr Verbindungsaufbau abgebrochen
-			tr ("TODO"), //tr Der Verbindungsaufbau wurde abgebrochen
+		showWarning (tr ("Connection canceled", "Title"), //tr Verbindungsaufbau abgebrochen
+			tr ("Connection canceled", "Text"), //tr Der Verbindungsaufbau wurde abgebrochen
 			parent);
 	}
 	catch (OperationCanceledException &ex)
 	{
-		showWarning (tr ("Connection canceled"), //tr Verbindungsaufbau abgebrochen
-			tr ("TODO"), //tr Der Verbindungsaufbau wurde abgebrochen
+		showWarning (tr ("Connection canceled", "Title"), //tr Verbindungsaufbau abgebrochen
+			tr ("Connection canceled", "Text"), //tr Der Verbindungsaufbau wurde abgebrochen
 			parent);
 	}
 	catch (ConnectFailedException &ex)
 	{
 		showWarning (tr ("Connection failed"), //tr Verbindungsaufbau fehlgeschlagen
-			tr ("TODO").arg (ex.message), //tr Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1
+			tr ("An error occured while connecting: %1").arg (ex.message), //tr Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1
 			parent);
 	}
 	catch (SqlException &ex)
@@ -658,16 +661,16 @@ QString DbManager::mergeDeleteWarningText (int notDeletedCount, int deletedCount
 	QString text;
 
 	if (notDeletedCount>1)
-		text=tr ("TODO").arg (notDeletedCount); //tr Nach dem Zusammenfassen sind noch %1 Personen in Benutzung.
+		text=tr ("After merging, %1 people are still in use.").arg (notDeletedCount); //tr Nach dem Zusammenfassen sind noch %1 Personen in Benutzung.
 	else
-		text=tr ("TODO"); //tr Nach dem Zusammenfassen ist noch eine Person in Benutzung.
+		text=tr ("After merging, one person is still in use."); //tr Nach dem Zusammenfassen ist noch eine Person in Benutzung.
 
 	if (deletedCount==0)
-		text+=tr ("TODO"); //tr  Es wird keine Person gelöscht.
+		text+=tr ("No person will be deleted."); //tr  Es wird keine Person gelöscht.
 	else if (deletedCount==1)
-		text+=tr ("TODO"); //tr  Es wird nur eine Person gelöscht.
+		text+=tr ("One person will be deleted."); //tr  Es wird nur eine Person gelöscht.
 	else
-		text+=tr ("TODO").arg (deletedCount); //tr  Es werden nur %1 Personen gelöscht.
+		text+=tr ("Only %1 people will be deleted.").arg (deletedCount); //tr  Es werden nur %1 Personen gelöscht.
 
 	return text;
 }
@@ -699,10 +702,10 @@ void DbManager::mergePeople (const Person &correctPerson, const QList<Person> &w
 		// Execute the queries
 		// TODO single progress indicator
 		transaction (parent);
-		executeQuery (Query::updateColumnValue (notr ("flights"), notr ("pilot_id")   , correctId, wrongIds), tr ("TODO")       , parent); //tr Flüge: Piloteneinträge aktualisieren
-		executeQuery (Query::updateColumnValue (notr ("flights"), notr ("copilot_id") , correctId, wrongIds), tr ("TODO")     , parent); //tr Flüge: Copiloteneinträge aktualisieren
-		executeQuery (Query::updateColumnValue (notr ("flights"), notr ("towpilot_id"), correctId, wrongIds), tr ("TODO"), parent); //tr Flüge: Schlepppiloteneinträge aktualisieren
-		executeQuery (Query::updateColumnValue (notr ("users")  , notr ("person_id")  , correctId, wrongIds), tr ("TODO") , parent); //tr Benutzer: Personenreferenzen aktualisieren
+		executeQuery (Query::updateColumnValue (notr ("flights"), notr ("pilot_id")   , correctId, wrongIds), tr ("Flights: refresh pilots"         ), parent); //tr Flüge: Piloteneinträge aktualisieren
+		executeQuery (Query::updateColumnValue (notr ("flights"), notr ("copilot_id") , correctId, wrongIds), tr ("Flights: refresh copilots"       ), parent); //tr Flüge: Copiloteneinträge aktualisieren
+		executeQuery (Query::updateColumnValue (notr ("flights"), notr ("towpilot_id"), correctId, wrongIds), tr ("Flights: refresh towpilots"      ), parent); //tr Flüge: Schlepppiloteneinträge aktualisieren
+		executeQuery (Query::updateColumnValue (notr ("users")  , notr ("person_id")  , correctId, wrongIds), tr ("Users: refresh people references"), parent); //tr Benutzer: Personenreferenzen aktualisieren
 		commit (parent);
 
 		// Emit the corresponding events

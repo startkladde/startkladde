@@ -190,6 +190,389 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>DbManager</name>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="83"/>
+        <location filename="../src/db/DbManager.cpp" line="281"/>
+        <location filename="../src/db/DbManager.cpp" line="296"/>
+        <location filename="../src/db/DbManager.cpp" line="333"/>
+        <location filename="../src/db/DbManager.cpp" line="352"/>
+        <location filename="../src/db/DbManager.cpp" line="391"/>
+        <source>Connecting</source>
+        <translation>Verbindungsaufbau</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="118"/>
+        <source>Database password required</source>
+        <translation>Datenbank-Passwort benötigt</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="119"/>
+        <source>The database user %1 does not exist, the given password
+is not correct or the user has insufficient access to
+the database %2. To correct this automatically, the password
+of the database user root is required (this password can be
+different from the one of the system user root).
+Please enter the password for the database user root:</source>
+        <translation>Der Datenbankbenutzer %1 existiert nicht, das engegebene Passwort
+stimmt nicht oder der Benutzer hat unzureichende Zugriffsrechte auf
+die Datenbank %2. Zur automatische Korrektur wird das Passwort des
+Datenbankbenutzers root benötigt (dieses Passwort kann ein anderes
+als das für den Systembenutzer root set).
+Bitte das Passwort für den Datenbankbenutzer root eingeben:</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="163"/>
+        <source>Creating user</source>
+        <translation>Benutzer anlegen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="170"/>
+        <source>Logging in as root failed. The given password
+may not be correct.
+Please enter the password for the database user root:</source>
+        <translation>Anmeldung als root verweigert. Möglicherweise ist das
+angegebene Passwort nicht richtig.
+Bitte das Passwort für root eingeben:</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="198"/>
+        <source>Creating database</source>
+        <translation>Datenbank anlegen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="207"/>
+        <source>Winch club A</source>
+        <translation>Winde Verein A</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="208"/>
+        <source>WA</source>
+        <comment>Winch club A short name</comment>
+        <translation>WA</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="209"/>
+        <location filename="../src/db/DbManager.cpp" line="218"/>
+        <source>W</source>
+        <comment>Winch logbook label</comment>
+        <translation>W</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="210"/>
+        <source>A</source>
+        <comment>Winch club A keyboard shortcut</comment>
+        <translation>A</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="216"/>
+        <source>Winch club B</source>
+        <translation>Winde Verein B</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="217"/>
+        <source>WB</source>
+        <comment>Winch club B short name</comment>
+        <translation>WB</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="219"/>
+        <source>B</source>
+        <comment>Winch club B keyboard shortcut</comment>
+        <translation>B</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="225"/>
+        <location filename="../src/db/DbManager.cpp" line="230"/>
+        <source>D-EFGH</source>
+        <translation>D-EFGH</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="226"/>
+        <source>GH</source>
+        <comment>D-EFGH short name</comment>
+        <translation>GH</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="227"/>
+        <location filename="../src/db/DbManager.cpp" line="237"/>
+        <location filename="../src/db/DbManager.cpp" line="247"/>
+        <source>A</source>
+        <comment>Airtow logbook label</comment>
+        <translation>F</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="228"/>
+        <source>G</source>
+        <comment>D-EFGH keyboard shortcut</comment>
+        <translation>G</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="235"/>
+        <location filename="../src/db/DbManager.cpp" line="240"/>
+        <source>D-MNOP</source>
+        <translation>D-MNOP</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="236"/>
+        <source>OP</source>
+        <comment>D-MNOP short name</comment>
+        <translation>OP</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="238"/>
+        <source>O</source>
+        <comment>D-EFGH keyboard shortcut</comment>
+        <translation>O</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="245"/>
+        <source>Airtow (other)</source>
+        <translation>F-Schlepp (sonstige)</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="246"/>
+        <source>AT</source>
+        <translation>FS</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="248"/>
+        <source>A</source>
+        <comment>Airtow (other) keyboard shortcut</comment>
+        <translation>F</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="254"/>
+        <source>Self launch</source>
+        <translation>Eigenstart</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="255"/>
+        <source>SL</source>
+        <comment>Self launch short name</comment>
+        <translation>ES</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="256"/>
+        <source>S</source>
+        <comment>Self launch logbook label</comment>
+        <translation>E</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="257"/>
+        <source>S</source>
+        <comment>Self launch keyboard shortcut</comment>
+        <translation>E</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="267"/>
+        <source>Creating example launch methods</source>
+        <translation>Beispielstartarten erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="288"/>
+        <source>Database empty</source>
+        <translation>Datenbank leer</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="289"/>
+        <source>The database %1 is empty or incomplete. Create it now?</source>
+        <translation>Die Datenbank %1 ist leer oder unvollständig. Soll sie jetzt erstellt werden?</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="300"/>
+        <source>Database not current after creating</source>
+        <translation>Datenbank ist nach Erstellen nicht aktuell</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="308"/>
+        <source>Database not current</source>
+        <translation>Datenbank nicht aktuell</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="308"/>
+        <source>The database is not up to date:
+  - Current version: %1
+  - Up-to-date version: %2
+  - Number of missing migrations: %3
+
+Attention: the update should not be interrupted because this can lead to an inconsistent database which cannot be repaired automatically.
+Before updating, a backup of the database should be made.
+
+Update the database now?</source>
+        <translation>Die Datenbank ist nicht aktuell:
+  - Momentane Version: %1
+  - Aktuelle Version: %2
+  - Anzahl ausstehender Migrationen: %3
+
+Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.
+Vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden.
+
+Soll die Datenbank jetzt aktualisiert werden?</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="337"/>
+        <source>The database is not up to date after updating.</source>
+        <translation>Datenbank ist nach der Aktualisierung nicht aktuell.</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="374"/>
+        <source>Create database?</source>
+        <translation>Datenbank erstellen?</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="375"/>
+        <source>The database %1 does not exist. Create it now?</source>
+        <translation>Die Datenbank %1 exisitert nicht. Soll sie erstellt werden?</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="395"/>
+        <source>After loading, the database is not up to date.</source>
+        <translation>Nach dem Laden ist die Datenbank nicht aktuell.</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="442"/>
+        <location filename="../src/db/DbManager.cpp" line="448"/>
+        <source>Connection canceled</source>
+        <comment>Title</comment>
+        <translation>Verbindungsaufbau abgebrochen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="443"/>
+        <location filename="../src/db/DbManager.cpp" line="449"/>
+        <source>Connection canceled</source>
+        <comment>Text</comment>
+        <translation>Der Verbindungsaufbau wurde abgebrochen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="454"/>
+        <source>Connection failed</source>
+        <translation>Verbindungsaufbau fehlgeschlagen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="455"/>
+        <source>An error occured while connecting: %1</source>
+        <translation>Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="462"/>
+        <source>Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1 (Fehlercode %2, Typ %3)</source>
+        <translation>Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1 (Fehlercode %2, Typ %3)</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="466"/>
+        <source>Error while connecting</source>
+        <translation>Fehler beim Verbindungsaufbau</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="496"/>
+        <source>Retrieving data</source>
+        <translation>Daten abrufen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="512"/>
+        <location filename="../src/db/DbManager.cpp" line="536"/>
+        <source>Retrieving flights</source>
+        <translation>Flüge abrufen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="548"/>
+        <source>Refreshing data</source>
+        <translation>Daten aktualisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="558"/>
+        <source>Checking %1</source>
+        <translation>%1 prüfen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="569"/>
+        <location filename="../src/db/DbManager.cpp" line="580"/>
+        <source>Deleting %1</source>
+        <translation>%1 löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="590"/>
+        <source>Creating %1</source>
+        <translation>%1 anlegen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="600"/>
+        <source>Updating %1</source>
+        <translation>%1 aktualisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="620"/>
+        <source>Beginning transaction</source>
+        <translation>Transaktion beginnen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="630"/>
+        <source>Committing transaction</source>
+        <translation>Transaktion ausführen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="640"/>
+        <source>Rolling back transaction</source>
+        <translation>Transaktion abbrechen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="654"/>
+        <source>People still in use</source>
+        <translation>Personen noch in Benutzung</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="656"/>
+        <source>Person still in use</source>
+        <translation>Person noch in Benutzung</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="664"/>
+        <source>After merging, %1 people are still in use.</source>
+        <translation>Nach dem Zusammenfassen sind noch %1 Personen in Benutzung.</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="666"/>
+        <source>After merging, one person is still in use.</source>
+        <translation>Nach dem Zusammenfassen ist noch eine Person in Benutzung.</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="669"/>
+        <source>No person will be deleted.</source>
+        <translation>Es wird keine Person gelöscht.</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="671"/>
+        <source>One person will be deleted.</source>
+        <translation>Es wird nur eine Person gelöscht.</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="673"/>
+        <source>Only %1 people will be deleted.</source>
+        <translation>Es werden nur %1 Personen gelöscht.</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="705"/>
+        <source>Flights: refresh pilots</source>
+        <translation>Flüge: Piloteneinträge aktualisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="706"/>
+        <source>Flights: refresh copilots</source>
+        <translation>Flüge: Copiloteneinträge aktualisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="707"/>
+        <source>Flights: refresh towpilots</source>
+        <translation>Flüge: Schlepppiloteneinträge aktualisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/db/DbManager.cpp" line="708"/>
+        <source>Users: refresh people references</source>
+        <translation>Benutzer: Personenreferenzen aktualisieren</translation>
+    </message>
+</context>
+<context>
     <name>ExternalInfoPlugin</name>
     <message>
         <location filename="../src/plugins/info/external/ExternalInfoPlugin.cpp" line="35"/>
@@ -1776,22 +2159,22 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>InterfaceWorker</name>
     <message>
-        <location filename="../src/db/interface/InterfaceWorker.cpp" line="91"/>
+        <location filename="../src/db/interface/InterfaceWorker.cpp" line="92"/>
         <source>Connecting to %1</source>
         <translation>Verbindung zu %1 herstellen</translation>
     </message>
     <message>
-        <location filename="../src/db/interface/InterfaceWorker.cpp" line="98"/>
+        <location filename="../src/db/interface/InterfaceWorker.cpp" line="99"/>
         <source>Beginning transaction</source>
         <translation>Transaktion beginnen</translation>
     </message>
     <message>
-        <location filename="../src/db/interface/InterfaceWorker.cpp" line="105"/>
+        <location filename="../src/db/interface/InterfaceWorker.cpp" line="106"/>
         <source>Committing transaction</source>
         <translation>Transaktion ausführen</translation>
     </message>
     <message>
-        <location filename="../src/db/interface/InterfaceWorker.cpp" line="112"/>
+        <location filename="../src/db/interface/InterfaceWorker.cpp" line="113"/>
         <source>Rolling back transaction</source>
         <translation>Transaktion abbrechen</translation>
     </message>
@@ -2997,39 +3380,39 @@ Konfiguration: %2</translation>
 <context>
     <name>Migrator</name>
     <message>
-        <location filename="../src/db/migration/Migrator.cpp" line="55"/>
+        <location filename="../src/db/migration/Migrator.cpp" line="57"/>
         <source>Applying migration: %1</source>
         <translation>Migration anwenden: %1</translation>
     </message>
     <message>
-        <location filename="../src/db/migration/Migrator.cpp" line="61"/>
+        <location filename="../src/db/migration/Migrator.cpp" line="63"/>
         <source>Reverting migration: %1</source>
         <translation>Migration rückgängig machen: %1</translation>
     </message>
     <message>
-        <location filename="../src/db/migration/Migrator.cpp" line="133"/>
+        <location filename="../src/db/migration/Migrator.cpp" line="135"/>
         <source>Creating migrations table</source>
         <translation>Migrationstabelle erstellen</translation>
     </message>
     <message>
-        <location filename="../src/db/migration/Migrator.cpp" line="142"/>
+        <location filename="../src/db/migration/Migrator.cpp" line="144"/>
         <source>Loading schema</source>
         <translation>Schema laden</translation>
     </message>
     <message>
-        <location filename="../src/db/migration/Migrator.cpp" line="145"/>
+        <location filename="../src/db/migration/Migrator.cpp" line="147"/>
         <source>Saving version</source>
         <translation>Version speichern</translation>
     </message>
     <message>
-        <location filename="../src/db/migration/Migrator.cpp" line="209"/>
-        <location filename="../src/db/migration/Migrator.cpp" line="289"/>
+        <location filename="../src/db/migration/Migrator.cpp" line="211"/>
+        <location filename="../src/db/migration/Migrator.cpp" line="291"/>
         <source>Checking database</source>
         <translation>Datenbank prüfen</translation>
     </message>
     <message>
-        <location filename="../src/db/migration/Migrator.cpp" line="229"/>
-        <location filename="../src/db/migration/Migrator.cpp" line="281"/>
+        <location filename="../src/db/migration/Migrator.cpp" line="231"/>
+        <location filename="../src/db/migration/Migrator.cpp" line="283"/>
         <source>Checking database version</source>
         <translation>Datenbankversion prüfen</translation>
     </message>
