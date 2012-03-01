@@ -30,6 +30,7 @@
 #include "src/db/Query.h"
 #include "src/db/result/Result.h"
 #include "src/util/qDate.h" // TODO remove
+#include "src/notr.h"
 
 // ******************
 // ** Construction **
@@ -80,13 +81,13 @@ template<class T> bool Database::objectExists (const Query &query)
 
 template<class T> bool Database::objectExists (dbId id)
 {
-	return objectExists<T> (Query ("id=?").bind (id));
+	return objectExists<T> (Query (notr ("id=?")).bind (id));
 }
 
 template<class T> T Database::getObject (dbId id)
 {
 	Query query=Query::select (T::dbTableName (), T::selectColumnList ())
-		.condition (Query ("id=?").bind (id));
+		.condition (Query (notr ("id=?")).bind (id));
 
 	QSharedPointer<Result> result=interface.executeQueryResult (query);
 
@@ -100,7 +101,7 @@ template<class T> T Database::getObject (dbId id)
 // deleting objects.
 template<class T> bool Database::deleteObject (dbId id)
 {
-	Query query=Query ("DELETE FROM %1 WHERE ID=?")
+	Query query=Query (notr ("DELETE FROM %1 WHERE ID=?"))
 		.arg (T::dbTableName ()).bind (id);
 
 	// Wrap the operation into a transaction, see top of file
@@ -120,9 +121,9 @@ template<class T> int Database::deleteObjects (const QList<dbId> &ids)
 		return 0;
 
 	Query query=
-		Query ("DELETE FROM %1 WHERE ")
+		Query (notr ("DELETE FROM %1 WHERE "))
 			.arg (T::dbTableName ())
-		+Query::valueInListCondition ("id", convertType<QVariant> (ids));
+		+Query::valueInListCondition (notr ("id"), convertType<QVariant> (ids));
 
 	// Wrap the operation into a transaction, see top of file
 	interface.transaction ();
@@ -143,7 +144,7 @@ template<class T> int Database::deleteObjects (const QList<dbId> &ids)
  */
 template<class T> dbId Database::createObject (T &object)
 {
-	Query query=Query ("INSERT INTO %1 (%2) values (%3)")
+	Query query=Query (notr ("INSERT INTO %1 (%2) values (%3)"))
 		.arg (T::dbTableName (), T::insertColumnList (), T::insertPlaceholderList ());
 	object.bindValues (query);
 
@@ -176,7 +177,7 @@ template<class T> bool Database::updateObject (const T &object)
 {
 	// Use REPLACE INTO instead of UPDATE so in case the object does not exist
 	// (e. g. because of an inconsistent cache), it will be created.
-	Query query=Query ("REPLACE INTO %1 (id,%2) values (?,%3)")
+	Query query=Query (notr ("REPLACE INTO %1 (id,%2) values (?,%3)"))
 		.arg (T::dbTableName (), T::insertColumnList (), T::insertPlaceholderList ());
 	query.bind (object.getId ());
 	object.bindValues (query);
@@ -210,7 +211,7 @@ QStringList Database::listLocations ()
 {
 	return interface.listStrings (Query::selectDistinctColumns (
 		Flight::dbTableName (),
-		QStringList () << "departure_location" << "landing_location" << "towflight_landing_location",
+		QStringList () << notr ("departure_location") << notr ("landing_location") << notr ("towflight_landing_location"),
 		true));
 }
 
@@ -218,7 +219,7 @@ QStringList Database::listAccountingNotes ()
 {
 	return interface.listStrings (Query::selectDistinctColumns (
 		Flight::dbTableName (),
-		"accounting_notes",
+		notr ("accounting_notes"),
 		true));
 }
 
@@ -226,7 +227,7 @@ QStringList Database::listClubs ()
 {
 	return interface.listStrings (Query::selectDistinctColumns (
 		QStringList () << Plane::dbTableName() << Person::dbTableName (),
-		"club",
+		notr ("club"),
 		true));
 }
 
@@ -234,7 +235,7 @@ QStringList Database::listPlaneTypes ()
 {
 	return interface.listStrings (Query::selectDistinctColumns (
 		Plane::dbTableName (),
-		"type",
+		notr ("type"),
 		true));
 }
 
@@ -262,7 +263,7 @@ QList<Flight> Database::getPreparedFlights ()
 
 	// TODO to Flight
 	// TODO multi-bind
-	Query condition ("!(mode=? AND !(departed=0 AND landed=0)) AND !(mode=? AND departed!=0) AND !(mode=? AND landed!=0)");
+	Query condition (notr ("!(mode=? AND !(departed=0 AND landed=0)) AND !(mode=? AND departed!=0) AND !(mode=? AND landed!=0)"));
 	condition.bind (Flight::modeToDb (Flight::modeLocal  ));
 	condition.bind (Flight::modeToDb (Flight::modeLeaving));
 	condition.bind (Flight::modeToDb (Flight::modeComing ));
@@ -298,7 +299,7 @@ template<> bool Database::objectUsed<Person> (dbId id)
 	// A person may be referenced by a user (although we don't have a user
 	// model here, only in sk_web)
 	if (interface.countQuery (
-		Query::count ("users", Query ("person_id=?").bind (id))
+		Query::count (notr ("users"), Query (notr ("person_id=?")).bind (id))
 	)) return true;
 
 	return false;
