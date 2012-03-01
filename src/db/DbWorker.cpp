@@ -172,9 +172,9 @@ DbWorker::~DbWorker ()
 {
 	thread.quit ();
 
-	std::cout << "Waiting for ORM worker thread to terminate..." << std::flush;
-	if (thread.wait (1000)) std::cout << "OK"      << std::endl;
-	else                    std::cout << "Timeout" << std::endl;
+	std::cout << notr ("Waiting for ORM worker thread to terminate...") << std::flush;
+	if (thread.wait (1000)) std::cout << notr ("OK")      << std::endl;
+	else                    std::cout << notr ("Timeout") << std::endl;
 }
 
 // ***********************

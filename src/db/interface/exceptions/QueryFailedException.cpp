@@ -32,7 +32,7 @@ void QueryFailedException::rethrow () const
 
 QString QueryFailedException::toString () const
 {
-	return makeString (QString (
+	return makeString (qnotr (
 		"Query failed during %1:\n"
 		"    Query         : %2\n")
 		.arg (phaseString (phase))
@@ -44,7 +44,7 @@ QString QueryFailedException::colorizedString () const
 {
 	AnsiColors c;
 
-	return makeColorizedString (QString (
+	return makeColorizedString (qnotr (
 		"%1Query failed%2 during %3:\n"
 		"    Query         : %4")
 		.arg (c.red ()).arg (c.reset ())
@@ -57,11 +57,11 @@ QString QueryFailedException::phaseString (QueryFailedException::Phase phase)
 {
 	switch (phase)
 	{
-		case phasePrepare: return "prepare";
-		case phaseExecute: return "execute";
+		case phasePrepare: return notr ("prepare");
+		case phaseExecute: return notr ("execute");
 		// no default
 	}
 
-	assert (!"Unhandled phase");
-	return "?";
+	assert (!notr ("Unhandled phase"));
+	return notr ("?");
 }

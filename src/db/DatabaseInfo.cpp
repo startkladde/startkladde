@@ -22,7 +22,7 @@ DatabaseInfo::DatabaseInfo (QSettings &settings):
 
 QString DatabaseInfo::toString () const
 {
-	return QString ("%1@%2:%3").arg (username, server, database);
+	return QString (notr ("%1@%2:%3")).arg (username, server, database);
 }
 
 DatabaseInfo::operator QString () const
@@ -35,27 +35,27 @@ QString DatabaseInfo::serverText () const
 	if (defaultPort)
 		return server;
 	else
-		return QString ("%1:%2").arg (server).arg (port);
+		return QString (notr ("%1:%2")).arg (server).arg (port);
 }
 
 void DatabaseInfo::load (QSettings &settings)
 {
-	server     =settings.value ("server"     , "localhost"  ).toString ();
-	defaultPort=settings.value ("defaultPort", true         ).toBool   ();
-	port       =settings.value ("port"       , 3306         ).toInt    ();
-	username   =settings.value ("username"   , "startkladde").toString ();
-	password   =settings.value ("password"   , "sk"         ).toString ();
-	database   =settings.value ("database"   , "startkladde").toString ();
+	server     =settings.value (notr ("server")     , notr ("localhost")  ).toString ();
+	defaultPort=settings.value (notr ("defaultPort"), true                ).toBool   ();
+	port       =settings.value (notr ("port")       , 3306                ).toInt    ();
+	username   =settings.value (notr ("username")   , notr ("startkladde")).toString ();
+	password   =settings.value (notr ("password")   , notr ("sk")         ).toString ();
+	database   =settings.value (notr ("database")   , notr ("startkladde")).toString ();
 }
 
 void DatabaseInfo::save (QSettings &settings)
 {
-	settings.setValue ("server"     , server     );
-	settings.setValue ("defaultPort", defaultPort);
-	settings.setValue ("port"       , port       );
-	settings.setValue ("username"   , username   );
-	settings.setValue ("password"   , password   );
-	settings.setValue ("database"   , database   );
+	settings.setValue (notr ("server")     , server     );
+	settings.setValue (notr ("defaultPort"), defaultPort);
+	settings.setValue (notr ("port")       , port       );
+	settings.setValue (notr ("username")   , username   );
+	settings.setValue (notr ("password")   , password   );
+	settings.setValue (notr ("database")   , database   );
 }
 
 /**

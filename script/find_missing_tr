@@ -121,7 +121,7 @@ def preprocess(data)
 		(
 			(
 				\s*            # Any whitespace (including newlines) - must be inside of group 2
-				" [^"]* "  # A quoted string without newlines
+				" [^"\r\n]* "  # A quoted string without newlines
 			)+                 # Any number of times
 		)                      # All in group 2
 		/x

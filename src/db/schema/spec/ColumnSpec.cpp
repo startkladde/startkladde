@@ -3,6 +3,8 @@
 #include <QList>
 #include <QStringList>
 
+#include "src/notr.h"
+
 ColumnSpec::ColumnSpec (const QString &name, const QString &type, const QString &extra):
 	name (name), type (type), extra (extra)
 {
@@ -15,9 +17,9 @@ ColumnSpec::~ColumnSpec ()
 QString ColumnSpec::createClause () const
 {
 	if (extra.isEmpty ())
-		return QString ("%1 %2").arg (name, type);
+		return qnotr ("%1 %2").arg (name, type);
 	else
-		return QString ("%1 %2 %3").arg (name, type, extra);
+		return qnotr ("%1 %2 %3").arg (name, type, extra);
 }
 
 QString ColumnSpec::createClause (const QList<ColumnSpec> &list)
@@ -27,5 +29,5 @@ QString ColumnSpec::createClause (const QList<ColumnSpec> &list)
 	foreach (const ColumnSpec &columnSpec, list)
 		createClauses.append (columnSpec.createClause ());
 
-	return createClauses.join (", ");
+	return createClauses.join (notr (", "));
 }

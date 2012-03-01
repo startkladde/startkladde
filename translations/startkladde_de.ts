@@ -1774,6 +1774,29 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
     </message>
 </context>
 <context>
+    <name>InterfaceWorker</name>
+    <message>
+        <location filename="../src/db/interface/InterfaceWorker.cpp" line="91"/>
+        <source>Connecting to %1</source>
+        <translation>Verbindung zu %1 herstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/interface/InterfaceWorker.cpp" line="98"/>
+        <source>Beginning transaction</source>
+        <translation>Transaktion beginnen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/interface/InterfaceWorker.cpp" line="105"/>
+        <source>Committing transaction</source>
+        <translation>Transaktion ausführen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/interface/InterfaceWorker.cpp" line="112"/>
+        <source>Rolling back transaction</source>
+        <translation>Transaktion abbrechen</translation>
+    </message>
+</context>
+<context>
     <name>LaunchMethod</name>
     <message>
         <location filename="../src/model/LaunchMethod.cpp" line="121"/>
@@ -2969,6 +2992,46 @@ Konfiguration: %2</translation>
         <location filename="../src/plugins/info/metar/MetarPluginSettingsPane.ui" line="94"/>
         <source>ICAO code of the airport of which to display the METAR reports</source>
         <translation>ICAO-Code des Flughafens, dessen METAR-Meldung angezeigt werden soll</translation>
+    </message>
+</context>
+<context>
+    <name>Migrator</name>
+    <message>
+        <location filename="../src/db/migration/Migrator.cpp" line="55"/>
+        <source>Applying migration: %1</source>
+        <translation>Migration anwenden: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/db/migration/Migrator.cpp" line="61"/>
+        <source>Reverting migration: %1</source>
+        <translation>Migration rückgängig machen: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/db/migration/Migrator.cpp" line="133"/>
+        <source>Creating migrations table</source>
+        <translation>Migrationstabelle erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/migration/Migrator.cpp" line="142"/>
+        <source>Loading schema</source>
+        <translation>Schema laden</translation>
+    </message>
+    <message>
+        <location filename="../src/db/migration/Migrator.cpp" line="145"/>
+        <source>Saving version</source>
+        <translation>Version speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/db/migration/Migrator.cpp" line="209"/>
+        <location filename="../src/db/migration/Migrator.cpp" line="289"/>
+        <source>Checking database</source>
+        <translation>Datenbank prüfen</translation>
+    </message>
+    <message>
+        <location filename="../src/db/migration/Migrator.cpp" line="229"/>
+        <location filename="../src/db/migration/Migrator.cpp" line="281"/>
+        <source>Checking database version</source>
+        <translation>Datenbankversion prüfen</translation>
     </message>
 </context>
 <context>
@@ -4614,6 +4677,10 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
     <message>
         <source>Towflight for flight %1</source>
         <translation type="obsolete">Schleppflug für Flug %1</translation>
+    </message>
+    <message>
+        <source>TODO</source>
+        <translation type="obsolete">Zu erledigen</translation>
     </message>
 </context>
 <context>

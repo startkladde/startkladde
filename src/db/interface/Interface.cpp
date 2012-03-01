@@ -23,6 +23,7 @@
 #include "src/db/schema/spec/ColumnSpec.h"
 #include "src/db/schema/spec/IndexSpec.h"
 #include "src/db/interface/exceptions/QueryFailedException.h" // TODO remove
+#include "src/notr.h"
 
 // ******************
 // ** Construction **
@@ -44,18 +45,18 @@ Interface::~Interface ()
 
 // Note: these values are used in migrations. If they are changed, the
 // migrations should be updated to use the same values as before.
-QString Interface::dataTypeBinary    () { return "blob"            ; }
-QString Interface::dataTypeBoolean   () { return "tinyint(1)"      ; }
-QString Interface::dataTypeDate      () { return "date"            ; }
-QString Interface::dataTypeDatetime  () { return "datetime"        ; }
-QString Interface::dataTypeDecimal   () { return "decimal"         ; }
-QString Interface::dataTypeFloat     () { return "float"           ; }
-QString Interface::dataTypeInteger   () { return "int(11)"         ; }
-QString Interface::dataTypeString    () { return "varchar(255)"    ; }
-QString Interface::dataTypeText      () { return "text"            ; }
-QString Interface::dataTypeTime      () { return "time"            ; }
-QString Interface::dataTypeTimestamp () { return "datetime"        ; }
-QString Interface::dataTypeCharacter () { return "varchar(1)"      ; } // Non-Rails
+QString Interface::dataTypeBinary    () { return notr ("blob")            ; }
+QString Interface::dataTypeBoolean   () { return notr ("tinyint(1)")      ; }
+QString Interface::dataTypeDate      () { return notr ("date")            ; }
+QString Interface::dataTypeDatetime  () { return notr ("datetime")        ; }
+QString Interface::dataTypeDecimal   () { return notr ("decimal")         ; }
+QString Interface::dataTypeFloat     () { return notr ("float")           ; }
+QString Interface::dataTypeInteger   () { return notr ("int(11)")         ; }
+QString Interface::dataTypeString    () { return notr ("varchar(255)")    ; }
+QString Interface::dataTypeText      () { return notr ("text")            ; }
+QString Interface::dataTypeTime      () { return notr ("time")            ; }
+QString Interface::dataTypeTimestamp () { return notr ("datetime")        ; }
+QString Interface::dataTypeCharacter () { return notr ("varchar(1)")      ; } // Non-Rails
 QString Interface::dataTypeId        () { return dataTypeInteger (); }
 
 
@@ -65,14 +66,14 @@ QString Interface::dataTypeId        () { return dataTypeInteger (); }
 
 void Interface::grantAll (const QString &database, const QString &username, const QString &password)
 {
-	Query query=Query ("GRANT ALL ON %1.* TO '%2'@'%'")
+	Query query=Query (notr ("GRANT ALL ON %1.* TO '%2'@'%'"))
 		.arg (database).arg (username);
 
 	// Client side hashing has the advantage that the password is never
 	// transmitted as part of a query, so we can display the query to the
 	// user in a log.
 	if (!password.isEmpty())
-		query+=Query ("IDENTIFIED BY PASSWORD '%1'").arg (mysqlPasswordHash (password));
+		query+=Query (notr ("IDENTIFIED BY PASSWORD '%1'")).arg (mysqlPasswordHash (password));
 
 	executeQuery (query);
 }
@@ -83,12 +84,12 @@ void Interface::grantAll (const QString &database, const QString &username, cons
 
 void Interface::createDatabase (const QString &name, bool skipIfExists)
 {
-	std::cout << QString ("Creating database %1%2")
-		.arg (name, skipIfExists?" if it does not exist":"")
+	std::cout << QString (notr ("Creating database %1%2"))
+		.arg (name, skipIfExists?notr (" if it does not exist"):notr (""))
 		<< std::endl;
 
-	executeQuery (Query ("CREATE DATABASE %1 %2")
-		.arg (skipIfExists?"IF NOT EXISTS":"").arg (name));
+	executeQuery (Query (notr ("CREATE DATABASE %1 %2"))
+		.arg (skipIfExists?notr ("IF NOT EXISTS"):notr ("")).arg (name));
 }
 
 /**
@@ -108,100 +109,104 @@ void Interface::createTable (const QString &name, bool skipIfExists)
 
 void Interface::createTable (const QString &name, const QList<ColumnSpec> &columns, bool skipIfExists)
 {
-	std::cout << QString ("Creating table %1%2")
-		.arg (name, skipIfExists?" if it does not exist":"")
+	// TODO TR easier
+	std::cout << QString (notr ("Creating table %1%2"))
+		.arg (name, skipIfExists?notr (" if it does not exist"):notr (""))
 		<< std::endl;
 
-	executeQuery (Query (
+	// TODO TR CreateTableQuery
+	executeQuery (Query (notr (
 		"CREATE TABLE %1 %2 ("
 		"%3"
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
-		)
-		.arg (skipIfExists?"IF NOT EXISTS":"", name, ColumnSpec::createClause (columns)));
+		))
+		.arg (skipIfExists?notr ("IF NOT EXISTS"):notr (""), name, ColumnSpec::createClause (columns)));
 }
 
 void Interface::createTable (const QString &name, const QList<ColumnSpec> &columns, const QList<IndexSpec> &indexes, bool skipIfExists)
 {
-	std::cout << QString ("Creating table %1%2")
-		.arg (name, skipIfExists?" if it does not exist":"")
+	// TODO TR easier
+	std::cout << qnotr ("Creating table %1%2")
+		.arg (name, skipIfExists?notr (" if it does not exist"):notr (""))
 		<< std::endl;
 
 	QString createColumnsClause=ColumnSpec::createClause (columns);
 
 	QString createIndexesClause;
 	if (!indexes.isEmpty ())
-		createIndexesClause=QString (", %1").arg (IndexSpec::createClause (indexes));
+		createIndexesClause=qnotr (", %1").arg (IndexSpec::createClause (indexes));
 
-	executeQuery (Query (
+	executeQuery (Query (notr (
 		"CREATE TABLE %1 %2 ("
 		"%3%4"
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
-		)
-		.arg (skipIfExists?"IF NOT EXISTS":"", name, createColumnsClause, createIndexesClause));
+		))
+		.arg (skipIfExists?notr ("IF NOT EXISTS"):notr (""), name, createColumnsClause, createIndexesClause));
 }
 
 
 
 void Interface::createTableLike (const QString &like, const QString &name, bool skipIfExists)
 {
-	std::cout << QString ("Creating table %1 like %2%3")
-		.arg (name, like, skipIfExists?" if it does not exist":"")
+	// TODO TR easier
+	std::cout << qnotr ("Creating table %1 like %2%3")
+		.arg (name, like, skipIfExists?notr (" if it does not exist"):notr (""))
 		<< std::endl;
 
-	executeQuery (Query ("CREATE TABLE %1 %2 LIKE %3")
-		.arg (skipIfExists?"IF NOT EXISTS":"", name, like));
+	executeQuery (Query (notr ("CREATE TABLE %1 %2 LIKE %3"))
+		.arg (skipIfExists?notr ("IF NOT EXISTS"):notr (""), name, like));
 }
 
 void Interface::dropTable (const QString &name)
 {
-	std::cout << QString ("Dropping table %1").arg (name) << std::endl;
+	std::cout << qnotr ("Dropping table %1").arg (name) << std::endl;
 
-	executeQuery (Query ("DROP TABLE %1").arg (name));
+	executeQuery (Query (notr ("DROP TABLE %1")).arg (name));
 }
 
 void Interface::renameTable (const QString &oldName, const QString &newName)
 {
-	std::cout << QString ("Renaming table %1 to %2").arg (oldName, newName) << std::endl;
+	std::cout << qnotr ("Renaming table %1 to %2").arg (oldName, newName) << std::endl;
 
-	executeQuery (Query ("RENAME TABLE %1 TO %2").arg (oldName, newName));
+	executeQuery (Query (notr ("RENAME TABLE %1 TO %2")).arg (oldName, newName));
 }
 
 bool Interface::tableExists ()
 {
-	return queryHasResult (Query ("SHOW TABLES"));
+	return queryHasResult (Query (notr ("SHOW TABLES")));
 }
 
 bool Interface::tableExists (const QString &name)
 {
 	// Using addBindValue does not seem to work here
-	return queryHasResult (Query ("SHOW TABLES LIKE '%1'").arg (name));
+	return queryHasResult (Query (notr ("SHOW TABLES LIKE '%1'")).arg (name));
 }
 
 QStringList Interface::showTables ()
 {
-	return listStrings ("SHOW TABLES");
+	return listStrings (notr ("SHOW TABLES"));
 }
 
 void Interface::addColumn (const QString &table, const QString &name, const QString &type, const QString &extraSpecification, bool skipIfExists)
 {
 	if (skipIfExists && columnExists (table, name))
 	{
-		std::cout << QString ("Skipping existing column %1.%2").arg (table, name) << std::endl;
+		std::cout << qnotr ("Skipping existing column %1.%2").arg (table, name) << std::endl;
 		return;
 	}
 
-	std::cout << QString ("Adding column %1.%2").arg (table, name) << std::endl;
+	std::cout << qnotr ("Adding column %1.%2").arg (table, name) << std::endl;
 
-	executeQuery (Query ("ALTER TABLE %1 ADD COLUMN %2 %3 %4")
+	executeQuery (Query (notr ("ALTER TABLE %1 ADD COLUMN %2 %3 %4"))
 		.arg (table, name, type, extraSpecification));
 }
 
 void Interface::changeColumnType (const QString &table, const QString &name, const QString &type, const QString &extraSpecification)
 {
-	std::cout << QString ("Changing column %1.%2 type to %3")
+	std::cout << qnotr ("Changing column %1.%2 type to %3")
 		.arg (table, name, type) << std::endl;
 
-	executeQuery (Query ("ALTER TABLE %1 MODIFY %2 %3 %4")
+	executeQuery (Query (notr ("ALTER TABLE %1 MODIFY %2 %3 %4"))
 		.arg (table, name, type, extraSpecification));
 }
 
@@ -209,25 +214,25 @@ void Interface::dropColumn (const QString &table, const QString &name, bool skip
 {
 	if (skipIfNotExists && !columnExists (table, name))
 	{
-		std::cout << QString ("Skipping non-existing column %1.%2")
+		std::cout << qnotr ("Skipping non-existing column %1.%2")
 			.arg (table, name) << std::endl;
 		return;
 	}
 
-	std::cout << QString ("Dropping column %1.%2")
+	std::cout << qnotr ("Dropping column %1.%2")
 		.arg (table, name) << std::endl;
 
-	executeQuery (Query ("ALTER TABLE %1 DROP COLUMN %2")
+	executeQuery (Query (notr ("ALTER TABLE %1 DROP COLUMN %2"))
 		.arg (table, name));
 }
 
 void Interface::renameColumn (const QString &table, const QString &oldName, const QString &newName, const QString &type, const QString &extraSpecification)
 {
-	std::cout << QString ("Renaming column %1.%2 to %3")
+	std::cout << qnotr ("Renaming column %1.%2 to %3")
 		.arg (table, oldName, newName) << std::endl;
 
 	executeQuery (
-		Query ("ALTER TABLE %1 CHANGE %2 %3 %4 %5")
+		Query (notr ("ALTER TABLE %1 CHANGE %2 %3 %4 %5"))
 		.arg (table, oldName, newName, type, extraSpecification));
 }
 
@@ -235,7 +240,7 @@ bool Interface::columnExists (const QString &table, const QString &name)
 {
 
 	return queryHasResult (
-		Query ("SHOW COLUMNS FROM %1 LIKE '%2'")
+		Query (notr ("SHOW COLUMNS FROM %1 LIKE '%2'"))
 		.arg (table, name));
 }
 
@@ -244,14 +249,14 @@ QList<IndexSpec> Interface::showIndexes (const QString &table)
 {
 	QList<IndexSpec> indexes;
 
-	Query query=Query ("SHOW INDEXES FROM %1").arg (table);
+	Query query=Query (notr ("SHOW INDEXES FROM %1")).arg (table);
 	QSharedPointer<Result> result=executeQueryResult (query);
 
 	QSqlRecord record=result->record ();
 	// TODO: handle index not found
-	int     nameIndex=record.indexOf ("Key_name");
-	int   columnIndex=record.indexOf ("Column_name");
-	int sequenceIndex=record.indexOf ("Seq_in_index");
+	int     nameIndex=record.indexOf (notr ("Key_name"));
+	int   columnIndex=record.indexOf (notr ("Column_name"));
+	int sequenceIndex=record.indexOf (notr ("Seq_in_index"));
 
 	// First, create a nested map:
 	// name -> (sequence -> column)
@@ -274,7 +279,7 @@ QList<IndexSpec> Interface::showIndexes (const QString &table)
 		QString column  =result->value (  columnIndex).toString ();
 		int     sequence=result->value (sequenceIndex).toInt ();
 
-		if (name!="PRIMARY")
+		if (name!=notr ("PRIMARY"))
 			map[name][sequence]=column;
 	}
 
@@ -285,7 +290,7 @@ QList<IndexSpec> Interface::showIndexes (const QString &table)
 
 		QStringList columnList (sequenceColumnMap.values ());
 
-		indexes.append (IndexSpec (table, name, columnList.join (",")));
+		indexes.append (IndexSpec (table, name, columnList.join (notr (","))));
 	}
 
 	return indexes;
@@ -293,14 +298,15 @@ QList<IndexSpec> Interface::showIndexes (const QString &table)
 
 void Interface::createIndex (const IndexSpec &index, bool skipIfExists)
 {
-	std::cout << QString ("Creating index %1.%2%3")
-		.arg (index.getTable (), index.getName (), skipIfExists?" if it does not exist":"")
+	// TODO TR easier
+	std::cout << qnotr ("Creating index %1.%2%3")
+		.arg (index.getTable (), index.getName (), skipIfExists?notr (" if it does not exist"):notr (""))
 		<< std::endl;
 
 	// TODO: the MySQL specific stuff should not be here
 	try
 	{
-		executeQuery (QString ("CREATE INDEX %1 ON %2 (%3)")
+		executeQuery (qnotr ("CREATE INDEX %1 ON %2 (%3)")
 			.arg (index.getName (), index.getTable (), index.getColumns ()));
 	}
 	catch (QueryFailedException &ex)
@@ -309,7 +315,7 @@ void Interface::createIndex (const IndexSpec &index, bool skipIfExists)
 		// execute the query at all in this case (also, this currently emits
 		// an error message)
 		if (skipIfExists && ex.error.number ()==ER_DUP_KEYNAME)
-			std::cout << QString ("Skipping existing index %1.%2").arg (index.getTable (), index.getName ()) << std::endl;
+			std::cout << qnotr ("Skipping existing index %1.%2").arg (index.getTable (), index.getName ()) << std::endl;
 		else
 			throw;
 	}
@@ -317,18 +323,19 @@ void Interface::createIndex (const IndexSpec &index, bool skipIfExists)
 
 void Interface::dropIndex (const QString &table, const QString &name, bool skipIfNotExists)
 {
-	std::cout << QString ("Dropping index %1.%2%3")
-		.arg (table, name, skipIfNotExists?" if it exists":"")
+	// TODO tr easier
+	std::cout << qnotr ("Dropping index %1.%2%3")
+		.arg (table, name, skipIfNotExists?notr (" if it exists"):notr (""))
 		<< std::endl;
 
 	try
 	{
-		executeQuery (QString ("DROP INDEX %1 ON %2").arg (name, table));
+		executeQuery (qnotr ("DROP INDEX %1 ON %2").arg (name, table));
 	}
 	catch (QueryFailedException &ex)
 	{
 		if (skipIfNotExists && ex.error.number ()==ER_CANT_DROP_FIELD_OR_KEY)
-			std::cout << QString ("Skipping non-existing index %1.%2").arg (table, name) << std::endl;
+			std::cout << qnotr ("Skipping non-existing index %1.%2").arg (table, name) << std::endl;
 		else
 			throw;
 	}
@@ -338,7 +345,7 @@ void Interface::dropIndex (const QString &table, const QString &name, bool skipI
 
 ColumnSpec Interface::idColumn ()
 {
-	return ColumnSpec ("id", dataTypeId (), "NOT NULL AUTO_INCREMENT PRIMARY KEY");
+	return ColumnSpec (notr ("id"), dataTypeId (), notr ("NOT NULL AUTO_INCREMENT PRIMARY KEY"));
 }
 
 // *******************************
@@ -348,7 +355,7 @@ ColumnSpec Interface::idColumn ()
 void Interface::updateColumnValues (const QString &tableName, const QString &columnName,
 	const QVariant &oldValue, const QVariant &newValue)
 {
-	executeQuery (Query ("UPDATE %1 SET %2=? WHERE %2=?")
+	executeQuery (Query (notr ("UPDATE %1 SET %2=? WHERE %2=?"))
 		.arg (tableName, columnName).bind (newValue).bind (oldValue));
 }
 
@@ -384,5 +391,5 @@ QString Interface::mysqlPasswordHash (const QString &password)
 	data=QCryptographicHash::hash (data, QCryptographicHash::Sha1);
 	data=QCryptographicHash::hash (data, QCryptographicHash::Sha1);
 
-	return QString ("*%1").arg (QString (data.toHex ()).toUpper ());
+	return QString (notr ("*%1")).arg (QString (data.toHex ()).toUpper ());
 }

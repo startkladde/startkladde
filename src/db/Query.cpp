@@ -10,6 +10,7 @@
 #include "src/io/AnsiColors.h"
 #include "src/text.h"
 #include "src/util/qString.h" // remove
+#include "src/notr.h"
 
 // ******************
 // ** Construction **
@@ -67,21 +68,21 @@ QString Query::toString () const
 	if (bindValues.isEmpty ())
 		return queryString;
 	else if (bindValues.size ()==1)
-		return QString ("%1 [%2]").arg (queryString, bindValues[0].toString ());
+		return qnotr ("%1 [%2]").arg (queryString, bindValues[0].toString ());
 	else
 	{
 		QString result (queryString);
-		result += " [";
+		result += notr (" [");
 
 		bool first=true;
 		foreach (const QVariant &value, bindValues)
 		{
-			if (!first) result+=", ";
+			if (!first) result+=notr (", ");
 			result+=value.toString ();
 			first=false;
 		}
 
-		result+="]";
+		result+=notr ("]");
 		return result;
 	}
 }
@@ -93,12 +94,12 @@ QString Query::colorizedString () const
 
 	result += c.blue ();
 
-	QStringList words=toString ().split (" ", QString::SkipEmptyParts);
+	QStringList words=toString ().split (notr (" "), QString::SkipEmptyParts);
 
 	bool first=true;
 	foreach (const QString &word, words)
 	{
-		if (!first) result+=" ";
+		if (!first) result+=notr (" ");
 		first=false;
 
 		if (word.toUpper ()==word)
@@ -130,10 +131,10 @@ QString Query::colorizedString () const
 Query Query::selectDistinctColumns (const QString &table, const QString &column, bool excludeEmpty)
 {
 	// "select distinct column from table"
-	QString queryString=QString ("SELECT DISTINCT %1 FROM %2").arg (column, table);
+	QString queryString=qnotr ("SELECT DISTINCT %1 FROM %2").arg (column, table);
 
 	// ..." where column!=''"
-	if (excludeEmpty) queryString+=QString (" WHERE %1!=''").arg (column);
+	if (excludeEmpty) queryString+=qnotr (" WHERE %1!=''").arg (column);
 
 	return Query (queryString);
 }
@@ -147,7 +148,7 @@ Query Query::selectDistinctColumns (const QStringList &tables, const QStringList
 		foreach (const QString &column, columns)
 			parts << selectDistinctColumns (table, column, excludeEmpty).queryString;
 
-	return Query (parts.join (" UNION "));
+	return Query (parts.join (notr (" UNION ")));
 }
 
 Query Query::selectDistinctColumns (const QStringList &tables, const QString &column, bool excludeEmpty)
@@ -162,31 +163,31 @@ Query Query::selectDistinctColumns (const QString &table, const QStringList &col
 
 Query Query::select (const QString &table, const QString &columns)
 {
-	return Query ("SELECT %1 FROM %2")
+	return Query (notr ("SELECT %1 FROM %2"))
 		.arg (columns, table);
 }
 
 Query Query::count (const QString &table)
 {
 	// TODO default case of count(table, condition)
-	return Query ("SELECT COUNT(*) FROM %1")
+	return Query (notr ("SELECT COUNT(*) FROM %1"))
 		.arg (table);
 }
 
 Query Query::count (const QString &table, const Query &condition)
 {
 	if (condition.isEmpty ())
-		return Query ("SELECT COUNT(*) FROM %1").arg (table);
+		return Query (notr ("SELECT COUNT(*) FROM %1")).arg (table);
 	else
-		return Query ("SELECT COUNT(*) FROM %1 WHERE ").arg (table)+condition;
+		return Query (notr ("SELECT COUNT(*) FROM %1 WHERE ")).arg (table)+condition;
 }
 
 Query Query::valueInListCondition (const QString &column, const QList<QVariant> &values)
 {
-	Query query ("%1 IN (%2)");
+	Query query (notr ("%1 IN (%2)"));
 
 	query.arg (column);
-	query.arg (repeatString ("?", values.size (), ","));
+	query.arg (repeatString (notr ("?"), values.size (), notr (",")));
 
 	foreach (const QVariant &value, values)
 		query.bind (value);
@@ -197,7 +198,7 @@ Query Query::valueInListCondition (const QString &column, const QList<QVariant> 
 Query Query::updateColumnValue (const QString &table, const QString &column, const QVariant &newValue, const QList<QVariant> &oldValues)
 {
 	return
-		Query ("UPDATE %1 SET %2 = ? WHERE ")
+		Query (notr ("UPDATE %1 SET %2 = ? WHERE "))
 			.arg (table)
 			.arg (column)
 			.bind (newValue)
@@ -242,7 +243,7 @@ Query &Query::condition (const Query &condition)
 {
 	if (!condition.isEmpty ())
 	{
-		queryString+=" WHERE ";
+		queryString+=notr (" WHERE ");
 		(*this)+=condition;
 	}
 

@@ -19,14 +19,14 @@ void PingFailedException::rethrow () const
 
 QString PingFailedException::toString () const
 {
-	return makeString (QString ("Ping failed:"));
+	return makeString (qnotr ("Ping failed:"));
 }
 
 QString PingFailedException::colorizedString () const
 {
 	AnsiColors c;
 
-	return makeColorizedString (QString (
+	return makeColorizedString (qnotr (
 		"%1Ping failed%2:")
 		.arg (c.red ()).arg (c.reset ())
 		);

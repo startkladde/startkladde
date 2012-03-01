@@ -13,6 +13,7 @@
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/concurrent/Returner.h"
 #include "src/util/qString.h"
+#include "src/notr.h"
 
 InterfaceWorker::InterfaceWorker (ThreadSafeInterface &interface):
 	interface (interface)
@@ -35,9 +36,9 @@ InterfaceWorker::~InterfaceWorker ()
 {
 	thread.quit ();
 
-	std::cout << "Waiting for interface worker thread to terminate..." << std::flush;
-	if (thread.wait (1000)) std::cout << "OK"      << std::endl;
-	else                    std::cout << "Timeout" << std::endl;
+	std::cout << notr ("Waiting for interface worker thread to terminate...") << std::flush;
+	if (thread.wait (1000)) std::cout << notr ("OK")      << std::endl;
+	else                    std::cout << notr ("Timeout") << std::endl;
 }
 
 
@@ -88,28 +89,28 @@ void InterfaceWorker::executeQuery (Returner<void> &returner, OperationMonitor &
 void InterfaceWorker::slot_open (Returner<bool> *returner, OperationMonitor *monitor)
 {
 	OperationMonitorInterface monitorInterface=monitor->interface ();
-	monitorInterface.status (utf8 ("Verbindung zu %1 herstellen").arg (interface.getInfo ().serverText ()));
+	monitorInterface.status (tr ("Connecting to %1").arg (interface.getInfo ().serverText ()));
 	returnOrException (returner, interface.open ());
 }
 
 void InterfaceWorker::slot_transaction (Returner<void> *returner, OperationMonitor *monitor)
 {
 	OperationMonitorInterface monitorInterface=monitor->interface ();
-	monitorInterface.status (utf8 ("Transaktion beginnen"));
+	monitorInterface.status (tr ("Beginning transaction"));
 	returnVoidOrException (returner, interface.transaction ());
 }
 
 void InterfaceWorker::slot_commit (Returner<void> *returner, OperationMonitor *monitor)
 {
 	OperationMonitorInterface monitorInterface=monitor->interface ();
-	monitorInterface.status (utf8 ("Transaktion ausführen"));
+	monitorInterface.status (tr ("Committing transaction"));
 	returnVoidOrException (returner, interface.commit ());
 }
 
 void InterfaceWorker::slot_rollback (Returner<void> *returner, OperationMonitor *monitor)
 {
 	OperationMonitorInterface monitorInterface=monitor->interface ();
-	monitorInterface.status (utf8 ("Transaktion abbrechen"));
+	monitorInterface.status (tr ("Rolling back transaction"));
 	returnVoidOrException (returner, interface.rollback ());
 }
 

@@ -22,7 +22,7 @@ void TransactionFailedException::rethrow () const
 
 QString TransactionFailedException::toString () const
 {
-	return makeString (QString (
+	return makeString (qnotr (
 		"Transaction failed:\n"
 		"    Statement     : %1\n")
 		.arg (AbstractInterface::transactionStatementString (statement))
@@ -33,7 +33,7 @@ QString TransactionFailedException::colorizedString () const
 {
 	AnsiColors c;
 
-	return makeColorizedString (QString (
+	return makeColorizedString (qnotr (
 		"%1Transaction failed%2:\n"
 		"    Statement     : %3")
 		.arg (c.red ()).arg (c.reset ())
