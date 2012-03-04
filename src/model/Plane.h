@@ -51,7 +51,7 @@ class Plane: public Entity
 
 		// *** Property access
 		virtual bool selfLaunchOnly () const;
-	    static QString defaultRegistrationPrefix () { return "D-"; } // TODO TR must be configurable
+	    static QString defaultRegistrationPrefix () { return qApp->translate ("Plane", "N", "default prefix"); } // TODO TR must be configurable, and make the default empty (and handle empty)
 	    virtual QString fullRegistration () const;
 	    virtual QString registrationWithType () const;
 

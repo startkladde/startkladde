@@ -2,6 +2,7 @@
 #define SUNSETCOUNTDOWNPLUGIN_H_
 
 #include "SunsetPluginBase.h"
+#include "src/notr.h"
 
 class SunsetCountdownPlugin: public SunsetPluginBase
 {
@@ -9,7 +10,7 @@ class SunsetCountdownPlugin: public SunsetPluginBase
 		SK_PLUGIN
 
 	public:
-		SunsetCountdownPlugin (QString caption=QString (), bool enabled=true, const QString &filename="sunsets.txt");
+		SunsetCountdownPlugin (QString caption=QString (), bool enabled=true, const QString &filename=notr ("sunsets.txt"));
 		virtual ~SunsetCountdownPlugin ();
 
 		virtual void start ();

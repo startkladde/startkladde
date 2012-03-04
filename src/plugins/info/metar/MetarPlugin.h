@@ -21,7 +21,10 @@ class MetarPlugin: public InfoPlugin
 		SK_PLUGIN
 
 	public:
-		MetarPlugin (const QString &caption=QString (), bool enabled=true, const QString &airport="EDDF", int refreshInterval=15*60);
+		// TODO TR plugins should have enabled as last parameter and no default
+		// for others. Problem: InfoPlugin::DefaultDescriptor wants to
+		// default-construct plugins.
+		MetarPlugin (const QString &caption=QString (), bool enabled=true, const QString &airport="", int refreshInterval=15*60);
 		virtual ~MetarPlugin ();
 
 		virtual void start ();

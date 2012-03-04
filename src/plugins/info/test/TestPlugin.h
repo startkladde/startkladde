@@ -9,6 +9,7 @@
 #define TESTPLUGIN_H_
 
 #include "src/plugin/info/InfoPlugin.h"
+#include "src/notr.h"
 
 /**
  * A simple info plugin which displays a greeting message, either as plain text
@@ -26,7 +27,7 @@ class TestPlugin: public InfoPlugin
 		SK_PLUGIN
 
 	public:
-		TestPlugin (const QString &caption=QString (), bool enabled=true, const QString &greetingName="TestPlugin", bool richText=false);
+		TestPlugin (const QString &caption=QString (), bool enabled=true, const QString &greetingName=notr ("TestPlugin"), bool richText=false);
 		virtual ~TestPlugin ();
 
 		virtual void start ();

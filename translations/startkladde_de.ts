@@ -1050,6 +1050,11 @@ geladen werden:
         <translation>Schleppflug für Flug %1</translation>
     </message>
     <message>
+        <location filename="../src/model/Flight.h" line="86"/>
+        <source>Towpilot</source>
+        <translation>Schlepppilot</translation>
+    </message>
+    <message>
         <location filename="../src/model/Flight.h" line="192"/>
         <source>flight</source>
         <translation>Flug</translation>
@@ -2258,17 +2263,22 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>Sonstige</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.h" line="63"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="180"/>
+        <source>No</source>
+        <translation>Nein</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.h" line="64"/>
         <source>launch method</source>
         <translation>Startart</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.h" line="64"/>
+        <location filename="../src/model/LaunchMethod.h" line="65"/>
         <source>the launch method</source>
         <translation>die Startart</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.h" line="65"/>
+        <location filename="../src/model/LaunchMethod.h" line="66"/>
         <source>launch methods</source>
         <translation>Startarten</translation>
     </message>
@@ -2446,6 +2456,23 @@ Die Vorauswahl wird beim nächsten Programmstart zurückgesetzt.</translation>
         <location filename="../src/statistics/LaunchMethodStatistics.cpp" line="129"/>
         <source>Number of launches</source>
         <translation>Anzahl Starts</translation>
+    </message>
+</context>
+<context>
+    <name>Longitude</name>
+    <message>
+        <location filename="../src/Longitude.h" line="45"/>
+        <source>E</source>
+        <comment>east</comment>
+        <translatorcomment>Not translated</translatorcomment>
+        <translation>E</translation>
+    </message>
+    <message>
+        <location filename="../src/Longitude.h" line="45"/>
+        <source>W</source>
+        <comment>west</comment>
+        <translatorcomment>Not translated</translatorcomment>
+        <translation>W</translation>
     </message>
 </context>
 <context>
@@ -3609,19 +3636,29 @@ Konfiguration: %2</translation>
 <context>
     <name>Person</name>
     <message>
-        <location filename="../src/model/Person.h" line="55"/>
+        <location filename="../src/model/Person.h" line="56"/>
         <source>person</source>
         <translation>Person</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.h" line="56"/>
+        <location filename="../src/model/Person.h" line="57"/>
         <source>the person</source>
         <translation>die Person</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.h" line="57"/>
+        <location filename="../src/model/Person.h" line="58"/>
         <source>people</source>
         <translation>Personen</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.cpp" line="135"/>
+        <source>No</source>
+        <translation>Nein</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.cpp" line="135"/>
+        <source>Yes</source>
+        <translation>Ja</translation>
     </message>
 </context>
 <context>
@@ -3988,17 +4025,23 @@ aktiviert werden.</translation>
         <translation>Keine</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.h" line="73"/>
+        <location filename="../src/model/Plane.h" line="54"/>
+        <source>N</source>
+        <comment>default prefix</comment>
+        <translation>D-</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.h" line="74"/>
         <source>plane</source>
         <translation>Flugzeug</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.h" line="74"/>
+        <location filename="../src/model/Plane.h" line="75"/>
         <source>the plane</source>
         <translation>das Flugzeug</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.h" line="75"/>
+        <location filename="../src/model/Plane.h" line="76"/>
         <source>planes</source>
         <translation>Flugzeuge</translation>
     </message>

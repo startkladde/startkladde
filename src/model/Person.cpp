@@ -132,7 +132,7 @@ QVariant Person::DefaultObjectModel::displayData (const Person &object, int colu
 		case 1: return object.firstName;
 		case 2: return object.club;
 		case 3: return object.medicalValidity.isValid ()?::toString (object.medicalValidity):qApp->translate ("Person::DefaultObjectModel", "unknown");
-		case 4: return boolToString (object.checkMedical);
+		case 4: return object.checkMedical?qApp->translate ("Person", "Yes"):qApp->translate ("Person", "No");
 		case 5: return object.comments;
 		case 6: return object.clubId;
 		case 7: return object.id;

@@ -11,6 +11,7 @@
 #include <QSqlQuery>
 
 #include "src/db/result/Result.h"
+#include "src/notr.h"
 
 /**
  * A Result implementation that reads the values directly from a
@@ -48,7 +49,7 @@ class DefaultResult: public Result
 		virtual int size () const;
 		virtual QVariant value (int index) const;
 
-		virtual QString type () const { return "default"; }
+		virtual QString type () const { return notr ("default"); }
 
 	private:
 		// Not a reference - make a copy of the query. The query will

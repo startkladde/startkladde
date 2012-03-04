@@ -177,7 +177,7 @@ QVariant LaunchMethod::DefaultObjectModel::displayData (const LaunchMethod &obje
 		case 3: return object.keyboardShortcut;
 		case 4: return typeString (object.type);
 		case 5: return object.isAirtow ()?object.towplaneRegistration:notr ("-");
-		case 6: return boolToString (object.personRequired);
+		case 6: return object.personRequired?qApp->translate ("LaunchMethod", "No"):qApp->translate ("LaunchMethod", "No");
 		case 7: return object.comments;
 		case 8: return object.id;
 	}

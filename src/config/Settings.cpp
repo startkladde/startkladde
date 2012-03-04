@@ -144,9 +144,9 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 		plugins.append (new SunsetTimePlugin      (tr ("Sunset:")           , true, notr ("sunsets.txt")));
 		plugins.append (new SunsetCountdownPlugin (tr ("Time until sunset:"), true, notr ("sunsets.txt")));
 
-		plugins.append (new MetarPlugin (notr ("Weather:"), true, notr ("EDDF"), 15*60));
-		plugins.append (new MetarPlugin (notr ("")        , true, notr ("EDDS"), 15*60));
-		plugins.append (new MetarPlugin (notr ("")        , true, notr ("EDDM"), 15*60));
+		plugins.append (new MetarPlugin (notr ("Weather:"), true, "EDDF", 15*60));
+		plugins.append (new MetarPlugin (notr ("")        , true, "EDDS", 15*60));
+		plugins.append (new MetarPlugin (notr ("")        , true, "EDDM", 15*60));
 	}
 
 	return plugins;

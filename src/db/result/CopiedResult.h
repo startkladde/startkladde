@@ -15,6 +15,7 @@ class QSqlRecord;
 class QSqlQuery;
 
 #include "src/db/result/Result.h"
+#include "src/notr.h"
 
 /**
  * A Result implementation that makes a copy of the data.
@@ -43,7 +44,7 @@ class CopiedResult: public Result
 		virtual int size () const;
 		virtual QVariant value (int index) const;
 
-		virtual QString type () const { return "copied"; }
+		virtual QString type () const { return notr ("copied"); }
 
 	private:
 		QList<QSqlRecord> records;

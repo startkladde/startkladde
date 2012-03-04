@@ -83,7 +83,7 @@ class Flight: public FlightBase
 		// *** Crew
 		virtual QString pilotDescription () const;
 		virtual QString copilotDescription () const;
-		virtual QString towpilotDescription () const { return "Schlepppilot"; }
+		virtual QString towpilotDescription () const { return qApp->translate ("Flight", "Towpilot"); }
 
 		virtual bool pilotSpecified    () const;
 		virtual bool copilotSpecified  () const;
