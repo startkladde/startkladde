@@ -24,7 +24,7 @@ DatabaseInfo::DatabaseInfo (QSettings &settings):
 
 QString DatabaseInfo::toString () const
 {
-	return qnotr ("%1@%2:%3")).arg (username, server, database);
+	return qnotr ("%1@%2:%3").arg (username, server, database);
 }
 
 DatabaseInfo::operator QString () const
