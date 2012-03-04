@@ -115,8 +115,12 @@ bool FlightListWindow::fetchFlights (const QDate &first, const QDate &last)
 	// Create and set the descriptive text: "1.1.2011 bis 31.12.2011: 123 Flüge"
 	int numFlights=flights.size ();
 	QString dateText=toString (currentFirst, currentLast, tr (" to "));
-	QString numFlightsText=countText (numFlights, tr ("flight"), tr ("flights"), tr ("no flights"));
-	ui.captionLabel->setText (qnotr ("%1: %2").arg (dateText).arg (numFlightsText));
+	QString numFlightsText;
+
+	if (numFlights==0)
+		ui.captionLabel->setText (tr ("%1: no flights").arg (dateText));
+	else
+		ui.captionLabel->setText (tr ("%1: %n flight(s)", "", numFlights).arg (dateText));
 
 	return true;
 }
@@ -203,8 +207,9 @@ void FlightListWindow::on_actionExport_triggered ()
 
 		// Exporting succeeded - display a message to the user
 		int numFlights=flightListModel->rowCount (QModelIndex ());
-		QString message=tr ("%1 exported").arg (countText (numFlights, tr ("flight"), tr ("flights")));
-		QMessageBox::information (this, tr ("Export flight database"), message);
+		QString title=tr ("Export flight database");
+		QString message=tr ("%n flight(s) exported", "", numFlights);
+		QMessageBox::information (this, title, message);
 	}
 	else
 	{

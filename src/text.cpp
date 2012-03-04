@@ -86,29 +86,32 @@ QString capitalize (const QString &string)
 }
 
 /**
- * Generates a string describing a number of objects
+ * Generates a string in singular or plural form. Note that for translated
+ * strings, tr() in the plural form should be used instead because it handles
+ * languages with different distinctions than singular and plural.
  *
  * @param count the number of objects
- * @param singular the singular of the object name
- * @param plural the plural of the object name
- * @return a string of the form "1 object" or "n objects"
+ * @param singular the singular form of the string
+ * @param plural the plural form of the string with %1 for the count
+ * @return if count is 1, the singular string; otherwise, the plural string
+ *         with %1 filled in with the count
  */
 QString countText (int count, const QString &singular, const QString &plural)
 {
 	if (count==1)
-		return qnotr ("%1 %2").arg (count).arg (singular);
+		return singular;
 	else
-		return qnotr ("%1 %2").arg (count).arg (plural);
+		return plural.arg (count);
 }
 
-QString countText (int count, const QString &singular, const QString &plural, const QString &noneText)
+QString countText (int count, const QString &singular, const QString &plural, const QString &none)
 {
 	if (count==0)
-		return noneText;
+		return none;
 	else if (count==1)
-		return qnotr ("%1 %2").arg (count).arg (singular);
+		return singular;
 	else
-		return qnotr ("%1 %2").arg (count).arg (plural);
+		return plural.arg (count);
 }
 
 /**

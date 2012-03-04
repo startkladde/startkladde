@@ -475,11 +475,16 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 	{
 		if (displayQueries)
 		{
-			if (sqlQuery.isSelect ())
-				std::cout << countText (sqlQuery.size (), notr ("row"), notr ("rows")) << notr (" returned") << std::endl;
-			else
-				std::cout << countText (sqlQuery.numRowsAffected (), notr ("row"), notr ("rows")) << notr (" affected") << std::endl;
+			int numRows=sqlQuery.size ();
 
+			if (sqlQuery.isSelect ())
+				std::cout << countText (numRows,
+					notr ("1 row returned"),
+					notr ("%1 rows returned")) << std::endl;
+			else
+				std::cout << countText (numRows,
+					notr ("1 row affected"),
+					notr ("%1 rows affected")) << std::endl;
 		}
 
 		return sqlQuery;
