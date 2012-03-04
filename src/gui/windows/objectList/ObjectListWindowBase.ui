@@ -76,7 +76,7 @@
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
-     <string>&amp;Window</string>
+     <string extracomment="The mnemonic is referenced in ObjectListWindow&lt;T&gt;, make sure to update it when this value is changed.">&amp;Window</string>
     </property>
     <addaction name="separator"/>
     <addaction name="actionClose"/>

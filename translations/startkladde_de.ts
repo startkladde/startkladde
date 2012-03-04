@@ -3553,6 +3553,45 @@ Konfiguration: %2</translation>
     </message>
 </context>
 <context>
+    <name>ObjectListWindow&lt;T&gt;</name>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="67"/>
+        <source>w</source>
+        <comment>Window menu mnemonic</comment>
+        <translation>f</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="239"/>
+        <source>%1 in use</source>
+        <translation>%1 benutzt</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="240"/>
+        <source>%1 %2 is in use and cannot be deleted.</source>
+        <translation>%1 %2 wird verwendet und kann daher nicht gelöscht werden.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="244"/>
+        <source> Continue?</source>
+        <translation>Fortsetzen?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="297"/>
+        <source>Delete %1?</source>
+        <translation>%1 löschen?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="298"/>
+        <source>Do you want to delete %1 %2?</source>
+        <translation>Soll %1 %2 gelöscht werden?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="450"/>
+        <source>The database password must be entered to edit %1.</source>
+        <translation>Zum Editieren der %1 muss das Datenbankpasswort eingegeben werden.</translation>
+    </message>
+</context>
+<context>
     <name>ObjectListWindowBaseClass</name>
     <message>
         <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="69"/>
@@ -3562,6 +3601,7 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="79"/>
         <source>&amp;Window</source>
+        <extracomment>The mnemonic is referenced in ObjectListWindow&lt;T&gt;, make sure to update it when this value is changed.</extracomment>
         <translation>&amp;Fenster</translation>
     </message>
     <message>
@@ -3618,6 +3658,19 @@ Konfiguration: %2</translation>
         <source>Ctrl+W</source>
         <extracomment>Close</extracomment>
         <translation>Ctrl+W</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectSelectWindow&lt;T&gt;</name>
+    <message>
+        <location filename="../src/gui/windows/ObjectSelectWindow.cpp" line="32"/>
+        <source>(Unknown)</source>
+        <translation>(Unbekannt)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/ObjectSelectWindow.cpp" line="35"/>
+        <source>(Create new)</source>
+        <translation>(Neu anlegen)</translation>
     </message>
 </context>
 <context>
