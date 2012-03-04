@@ -59,7 +59,7 @@ QString formatDuration (int seconds, bool includeSeconds)
 	uint hours=minutes/60;
 	minutes=minutes%60;
 
-	QString sign=negative?notr ("-"):notr ("");
+	QString sign=negative?notr ("-"):"";
 
 	if (includeSeconds)
 		return qnotr ("%1%2:%3:%4")

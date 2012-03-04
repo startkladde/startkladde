@@ -286,7 +286,7 @@ QVariant FlightModel::departureTimeData (const Flight &flight, int role) const
 	if (!flight.canHaveDepartureTime ())
 		return notr ("-");
 	else if  (!flight.hasDepartureTime ())
-		return notr ("");
+		return "";
 	else
 		// TODO TR cache
 		return flight.getDepartureTime ().toUTC ().time ().toString (qApp->translate ("FlightModel", "hh:mm"))+notr ("Z");
@@ -299,7 +299,7 @@ QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
 	if (!flight.canHaveLandingTime())
 		return notr ("-");
 	else if (!flight.hasLandingTime ())
-		return notr ("");
+		return "";
 	else
 		return flight.getLandingTime ().toUTC ().time ().toString (qApp->translate ("FlightModel", "hh:mm"))+notr ("Z");
 }

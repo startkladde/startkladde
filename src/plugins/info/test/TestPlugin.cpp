@@ -90,7 +90,7 @@ void TestPlugin::trigger ()
 
 	QString greetingText;
 	if (isBlank (greetingName))
-		greetingText=notr ("");
+		greetingText="";
 	else
 		greetingText=qnotr (" %1").arg (greetingName);
 

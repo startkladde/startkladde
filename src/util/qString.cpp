@@ -31,6 +31,6 @@ QString std2q (const std::string &s)
 /** Converts a QString to a std::string */
 std::string q2std (const QString &s)
 {
-	if (s.isNull ()) return notr ("");
+	if (s.isNull ()) return "";
 	return std::string (s.toUtf8 ().constData ());
 }

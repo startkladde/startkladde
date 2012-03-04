@@ -85,11 +85,11 @@ void Interface::grantAll (const QString &database, const QString &username, cons
 void Interface::createDatabase (const QString &name, bool skipIfExists)
 {
 	std::cout << qnotr ("Creating database %1%2")
-		.arg (name, skipIfExists?notr (" if it does not exist"):notr (""))
+		.arg (name, skipIfExists?notr (" if it does not exist"):"")
 		<< std::endl;
 
 	executeQuery (Query (notr ("CREATE DATABASE %1 %2"))
-		.arg (skipIfExists?notr ("IF NOT EXISTS"):notr ("")).arg (name));
+		.arg (skipIfExists?notr ("IF NOT EXISTS"):"").arg (name));
 }
 
 /**
@@ -111,7 +111,7 @@ void Interface::createTable (const QString &name, const QList<ColumnSpec> &colum
 {
 	// TODO TR easier
 	std::cout << qnotr ("Creating table %1%2")
-		.arg (name, skipIfExists?notr (" if it does not exist"):notr (""))
+		.arg (name, skipIfExists?notr (" if it does not exist"):"")
 		<< std::endl;
 
 	// TODO TR CreateTableQuery
@@ -120,14 +120,14 @@ void Interface::createTable (const QString &name, const QList<ColumnSpec> &colum
 		"%3"
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		))
-		.arg (skipIfExists?notr ("IF NOT EXISTS"):notr (""), name, ColumnSpec::createClause (columns)));
+		.arg (skipIfExists?notr ("IF NOT EXISTS"):"", name, ColumnSpec::createClause (columns)));
 }
 
 void Interface::createTable (const QString &name, const QList<ColumnSpec> &columns, const QList<IndexSpec> &indexes, bool skipIfExists)
 {
 	// TODO TR easier
 	std::cout << qnotr ("Creating table %1%2")
-		.arg (name, skipIfExists?notr (" if it does not exist"):notr (""))
+		.arg (name, skipIfExists?notr (" if it does not exist"):"")
 		<< std::endl;
 
 	QString createColumnsClause=ColumnSpec::createClause (columns);
@@ -141,7 +141,7 @@ void Interface::createTable (const QString &name, const QList<ColumnSpec> &colum
 		"%3%4"
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		))
-		.arg (skipIfExists?notr ("IF NOT EXISTS"):notr (""), name, createColumnsClause, createIndexesClause));
+		.arg (skipIfExists?notr ("IF NOT EXISTS"):"", name, createColumnsClause, createIndexesClause));
 }
 
 
@@ -150,11 +150,11 @@ void Interface::createTableLike (const QString &like, const QString &name, bool 
 {
 	// TODO TR easier
 	std::cout << qnotr ("Creating table %1 like %2%3")
-		.arg (name, like, skipIfExists?notr (" if it does not exist"):notr (""))
+		.arg (name, like, skipIfExists?notr (" if it does not exist"):"")
 		<< std::endl;
 
 	executeQuery (Query (notr ("CREATE TABLE %1 %2 LIKE %3"))
-		.arg (skipIfExists?notr ("IF NOT EXISTS"):notr (""), name, like));
+		.arg (skipIfExists?notr ("IF NOT EXISTS"):"", name, like));
 }
 
 void Interface::dropTable (const QString &name)
@@ -300,7 +300,7 @@ void Interface::createIndex (const IndexSpec &index, bool skipIfExists)
 {
 	// TODO TR easier
 	std::cout << qnotr ("Creating index %1.%2%3")
-		.arg (index.getTable (), index.getName (), skipIfExists?notr (" if it does not exist"):notr (""))
+		.arg (index.getTable (), index.getName (), skipIfExists?notr (" if it does not exist"):"")
 		<< std::endl;
 
 	// TODO: the MySQL specific stuff should not be here
@@ -325,7 +325,7 @@ void Interface::dropIndex (const QString &table, const QString &name, bool skipI
 {
 	// TODO tr easier
 	std::cout << qnotr ("Dropping index %1.%2%3")
-		.arg (table, name, skipIfNotExists?notr (" if it exists"):notr (""))
+		.arg (table, name, skipIfNotExists?notr (" if it exists"):"")
 		<< std::endl;
 
 	try

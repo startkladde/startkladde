@@ -844,20 +844,20 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 	towflight.setType (typeTow);
 	towflight.setDepartureLocation (getDepartureLocation ());      // The tow flight departed the same location as the towed flight.
 	towflight.setLandingLocation (getTowflightLandingLocation ()); // The tow flight landing place is our landingLocationTowplane.
-	towflight.setTowflightLandingLocation (notr (""));
+	towflight.setTowflightLandingLocation ("");
 
 	towflight.setNumLandings ((towflightLandsHere () && getTowflightLanded ())?1:0);
 
 	towflight.setComments (qApp->translate ("Flight", "Towflight for flight %1").arg (getId ()));
-	towflight.setAccountingNotes (notr (""));
+	towflight.setAccountingNotes ("");
 	towflight.setMode (getTowflightMode ());
 	towflight.setTowflightMode (modeLocal);
 	towflight.setPilotLastName (getTowpilotLastName ());
 	towflight.setPilotFirstName (getTowpilotFirstName ());
-	towflight.setCopilotLastName (notr (""));
-	towflight.setCopilotFirstName (notr (""));
-	towflight.setTowpilotLastName (notr (""));
-	towflight.setTowpilotFirstName (notr (""));
+	towflight.setCopilotLastName ("");
+	towflight.setCopilotFirstName ("");
+	towflight.setTowpilotLastName ("");
+	towflight.setTowpilotFirstName ("");
 	towflight.setTowplaneId (invalidId);
 	towflight.setDeparted (getDeparted ());
 	towflight.setLanded (getTowflightLanded ());

@@ -278,7 +278,7 @@ void SettingsWindow::on_addPluginPathButton_clicked ()
 	warnEdit ();
 	QListWidget *list=ui.pluginPathList;
 
-	list->addItem (notr (""));
+	list->addItem ("");
 	makeItemEditable (list->item (list->count ()-1));
 	list->setCurrentRow (list->count ()-1);
 	list->editItem (list->item (list->count ()-1));

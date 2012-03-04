@@ -33,8 +33,8 @@ LaunchMethod::LaunchMethod (dbId id):
 void LaunchMethod::initialize ()
 {
 	// TODO TR remove?
-	towplaneRegistration=notr ("");
-	keyboardShortcut=notr ("");
+	towplaneRegistration="";
+	keyboardShortcut="";
 	name=notr ("---");
 	shortName=notr ("-");
 	logString=notr ("-");
@@ -92,7 +92,8 @@ QString LaunchMethod::toString () const
 		.arg (name)
 		.arg (shortName)
 		.arg (typeString (type))
-		.arg (personRequired?notr (""):notr ("not "))
+		// TODO TR better
+		.arg (personRequired?"":notr ("not "))
 		;
 }
 

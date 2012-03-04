@@ -57,21 +57,21 @@ template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEdito
 void PlaneEditorPane::fillData ()
 {
 	// Categories
-	ui.categoryInput->addItem (notr (""), Plane::categoryNone);
+	ui.categoryInput->addItem ("", Plane::categoryNone);
 	const QList<Plane::Category> categories=Plane::listCategories (false);
 	for (int i=0; i<categories.size (); ++i)
 		ui.categoryInput->addItem (Plane::categoryText (categories.at (i)), categories.at (i));
 	ui.categoryInput->setCurrentItemByItemData (Plane::categoryNone);
 
 	// Types
-	ui.typeInput->addItem (notr (""));
+	ui.typeInput->addItem ("");
 	ui.typeInput->addItems (cache.getPlaneTypes ());
-	ui.typeInput->setEditText (notr (""));
+	ui.typeInput->setEditText ("");
 
 	// Clubs
-	ui.clubInput->addItem (notr (""));
+	ui.clubInput->addItem ("");
 	ui.clubInput->addItems (cache.getClubs ());
-	ui.clubInput->setEditText (notr (""));
+	ui.clubInput->setEditText ("");
 }
 
 void PlaneEditorPane::setNameObject (const Plane &nameObject)

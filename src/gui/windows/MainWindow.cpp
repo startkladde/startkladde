@@ -292,7 +292,7 @@ void MainWindow::setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout)
 {
 	connect (this, SIGNAL (minuteChanged ()), plugin, SLOT (minuteChanged ()));
 
-	SkLabel *captionLabel = new SkLabel (notr (""), ui.pluginPane);
+	SkLabel *captionLabel = new SkLabel ("", ui.pluginPane);
 	SkLabel *valueLabel = new SkLabel (notr ("..."), ui.pluginPane);
 
 	captionLabel->setText (plugin->getCaption ());
@@ -1932,7 +1932,7 @@ void MainWindow::on_loadTranslationAction_triggered ()
 
 void MainWindow::on_unloadTranslationAction_triggered ()
 {
-	translator->load (notr (""));
+	translator->load ("");
 }
 
 void MainWindow::changeEvent (QEvent *event)

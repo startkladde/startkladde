@@ -57,7 +57,7 @@ void WeatherWidget::setMovie (SkMovie &movie)
 	setWordWrap (false);
 
 	// Clear the contents so we can delete the movie
-	setText (notr (""));
+	setText ("");
 
 	SkLabel::setMovie (movie.getMovie ());
 	movie.getMovie ( )->start ();

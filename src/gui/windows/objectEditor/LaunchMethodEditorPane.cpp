@@ -47,9 +47,9 @@ void LaunchMethodEditorPane::fillData ()
 	ui.personRequiredInput->setCurrentItemByItemData (true);
 
 	// Registrations
-	ui.towplaneRegistrationInput->addItem (notr (""));
+	ui.towplaneRegistrationInput->addItem ("");
 	ui.towplaneRegistrationInput->addItems (cache.getPlaneRegistrations ());
-	ui.towplaneRegistrationInput->setEditText (notr (""));
+	ui.towplaneRegistrationInput->setEditText ("");
 }
 
 // ****************

@@ -48,9 +48,9 @@ template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEdi
 void PersonEditorPane::fillData ()
 {
 	// Clubs
-	ui.clubInput->addItem (notr (""));
+	ui.clubInput->addItem ("");
 	ui.clubInput->addItems (cache.getClubs ());
-	ui.clubInput->setEditText (notr (""));
+	ui.clubInput->setEditText ("");
 
 	ui.checkMedicalInput->addItem (tr ("Yes"), true );
 	ui.checkMedicalInput->addItem (tr ("No" ), false);

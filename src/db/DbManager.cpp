@@ -132,13 +132,13 @@ void DbManager::grantPermissions (QWidget *parent)
 
 		bool ok;
 		QString rootPassword=QInputDialog::getText (parent,
-			title, text, QLineEdit::Password, notr (""), &ok);
+			title, text, QLineEdit::Password, "", &ok);
 
 		if (!ok)
 			throw DbManager::ConnectCanceledException ();
 
 		DatabaseInfo rootInfo=info;
-		rootInfo.database=notr ("");
+		rootInfo.database="";
 		rootInfo.username=notr ("root");
 		rootInfo.password=rootPassword;
 
@@ -175,7 +175,7 @@ void DbManager::createDatabase (QWidget *parent)
 	const DatabaseInfo &info=interface.getInfo ();
 
 	DatabaseInfo createInfo=info;
-	createInfo.database=notr ("");
+	createInfo.database="";
 
 	ThreadSafeInterface createInterface (createInfo);
 	InterfaceWorker createInterfaceWorker (createInterface);

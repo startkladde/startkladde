@@ -78,7 +78,7 @@ template<class T> ObjectListWindow<T>::~ObjectListWindow()
 
 template<class T> void ObjectListWindow<T>::show (DbManager &manager, QWidget *parent)
 {
-	show (manager, false, notr (""), parent);
+	show (manager, false, "", parent);
 }
 
 template<class T> void ObjectListWindow<T>::show (DbManager &manager, const QString &password, QWidget *parent)

@@ -61,7 +61,7 @@ bool Plugin::filenameIsAbsolute (const QString &filename)
 QString Plugin::resolveFilename (const QString &filename, const QStringList &pluginPaths)
 {
 	if (isBlank (filename))
-		return notr ("");
+		return "";
 
 	// Absolute file names are not changed
 	if (filenameIsAbsolute (filename))
