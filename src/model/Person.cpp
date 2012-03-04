@@ -55,7 +55,7 @@ bool Person::operator< (const Person &o) const
 
 QString Person::toString () const
 {
-	return QString (notr ("id=%1, lastName=%2, firstName=%3, club=%4, clubId=%5, medicalValidity=%6, checkMedical=%7"))
+	return qnotr ("id=%1, lastName=%2, firstName=%3, club=%4, clubId=%5, medicalValidity=%6, checkMedical=%7")
 		.arg (id)
 		.arg (lastName)
 		.arg (firstName)

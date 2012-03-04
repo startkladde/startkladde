@@ -87,7 +87,7 @@ void MetarPlugin::refresh ()
 		outputText (tr ("%1 is not a valid ICAO code").arg (airport));
 	else
 	{
-		QString url=QString (notr ("http://weather.noaa.gov/mgetmetar.php?cccc=%1")).arg (icao);
+		QString url=qnotr ("http://weather.noaa.gov/mgetmetar.php?cccc=%1").arg (icao);
 		outputText (tr ("Retrieving METAR for %1...").arg (icao));
 		downloader->startDownload (0, url);
 	}
@@ -101,7 +101,7 @@ QString MetarPlugin::extractMetar (QIODevice &reply)
 	//EDDF 311920Z 26009KT 9999 FEW012 SCT019 BKN023 13/11 Q1015 NOSIG
 	//
 	//</font>
-	QString re=QString (notr ("^%1.*$")).arg (airport.trimmed ().toUpper ());
+	QString re=qnotr ("^%1.*$").arg (airport.trimmed ().toUpper ());
 	return findInIoDevice (reply, QRegExp (re), 0);
 }
 

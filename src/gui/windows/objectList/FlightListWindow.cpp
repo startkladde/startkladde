@@ -209,7 +209,7 @@ void FlightListWindow::on_actionExport_triggered ()
 	else
 	{
 		// Opening failed - display a message to the user
-		QString message=QString (tr ("Exporting failed: %1"))
+		QString message=tr ("Exporting failed: %1")
 			.arg (file.errorString ());
 		QMessageBox::critical (this, tr ("Exporting failed"), message);
 	}

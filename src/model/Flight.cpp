@@ -754,8 +754,8 @@ QString personToString (dbId id, QString lastName, QString firstName)
 		return notr ("-");
 	else
 		return qnotr ("(%1, %2)")
-			.arg (isNone (lastName )?QString (notr ("?")):lastName )
-			.arg (isNone (firstName)?QString (notr ("?")):firstName);
+			.arg (isNone (lastName )?qnotr ("?"):lastName )
+			.arg (isNone (firstName)?qnotr ("?"):firstName);
 }
 
 QString timeToString (bool performed, QDateTime time)

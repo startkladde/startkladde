@@ -49,7 +49,7 @@ QString Plane::fullRegistration () const
 	else if (isBlank (registration))
 		return callsign;
 	else
-		return QString (notr ("%1 (%2)")).arg (registration, callsign);
+		return qnotr ("%1 (%2)").arg (registration, callsign);
 }
 
 QString Plane::registrationWithType () const

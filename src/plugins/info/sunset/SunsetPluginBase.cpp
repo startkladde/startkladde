@@ -63,7 +63,7 @@ void SunsetPluginBase::infoPluginWriteSettings (QSettings &settings)
 QString SunsetPluginBase::configText () const
 {
 	if (longitudeCorrection)
-		return QString (notr ("%1, %2")).arg (longitude.format (), filename);
+		return qnotr ("%1, %2").arg (longitude.format (), filename);
 	else
 		return filename;
 }

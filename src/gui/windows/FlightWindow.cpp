@@ -1087,25 +1087,25 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool departNow, cons
 			ui.copilotLastNameInput);
 
 	if (plane && plane->numSeats==1 && flight.copilotSpecified ())
-		errorCheck (QString (tr ("According to the database, the plane %1 (%2) is a single seater,\nbut a copilot was specified."))
+		errorCheck (tr ("According to the database, the plane %1 (%2) is a single seater,\nbut a copilot was specified.")
 		.arg (plane->registration).arg (plane->type),
 		ui.registrationInput);
 
 	// TODO use Flight::pilotDescription
 	if (pilot && departNow && idValid (cache.personFlying (pilot->getId ())))
-		errorCheck (QString (tr ("According to the database, the pilot %1 is still flying."))
+		errorCheck (tr ("According to the database, the pilot %1 is still flying.")
 			.arg (pilot->fullName ()),
 			ui.pilotLastNameInput);
 
 	// TODO use Flight::copilotDescription
 	if (copilot && departNow && idValid (cache.personFlying (copilot->getId ())))
-		errorCheck (QString (tr ("According to the database, the copilot %1 is still flying."))
+		errorCheck (tr ("According to the database, the copilot %1 is still flying.")
 			.arg (copilot->fullName ()),
 			ui.copilotLastNameInput);
 
 	// TODO use Flight::towpilotDescription
 	if (towpilot && departNow && idValid (cache.personFlying (towpilot->getId ())))
-		errorCheck (QString (tr ("According to the database, the towpilot %1 is still flying."))
+		errorCheck (tr ("According to the database, the towpilot %1 is still flying.")
 			.arg (towpilot->fullName ()),
 			ui.towpilotLastNameInput);
 

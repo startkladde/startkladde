@@ -1392,7 +1392,7 @@ void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
 	QModelIndex flightListIndex = proxyModel->mapToSource (proxyIndex);
 	const Flight &flight = flightListModel->at (flightListIndex);
 
-//	std::cout << QString ("Button clicked at proxy index (%1,%2), flight list index is (%3,%4), flight ID is %5")
+//	std::cout << qnotr ("Button clicked at proxy index (%1,%2), flight list index is (%3,%4), flight ID is %5")
 //		.arg (proxyIndex.row()).arg (proxyIndex.column())
 //		.arg (flightListIndex.row()).arg (flightListIndex.column())
 //		.arg (flight.id)
@@ -1883,7 +1883,7 @@ void MainWindow::on_actionSetTime_triggered ()
 
 	if (DateTimeInputDialog::editDateTime (this, &date, &time, tr ("Set system time")))
 	{
-		QString timeString=QString (notr ("%1-%2-%3 %4:%5:%6"))
+		QString timeString=qnotr ("%1-%2-%3 %4:%5:%6")
 			.arg (date.year ()).arg (date.month ()).arg (date.day ())
 			.arg (time.hour ()).arg (time.minute ()).arg (time.second ());
 

@@ -40,7 +40,7 @@ QString PlaneLog::Entry::numPassengersString () const
 		return notr ("1/2");
 	else
 		// Should not happen: entries for non-gliders cannot be merged
-		return QString (notr ("%1-%2")).arg (minPassengers).arg (maxPassengers);
+		return qnotr ("%1-%2").arg (minPassengers).arg (maxPassengers);
 }
 
 QString PlaneLog::Entry::departureTimeText () const

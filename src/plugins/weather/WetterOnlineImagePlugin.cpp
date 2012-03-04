@@ -59,7 +59,7 @@ void WetterOnlineImagePlugin::downloadSucceeded (int state, QNetworkReply *reply
 		{
 			QString imagePath=findInIoDevice (*reply, QRegExp (notr ("(daten\\/radar[^\"]*)\"")), 1);
 			if (isBlank (imagePath)) OUTPUT_AND_RETURN (tr ("Error: no radar image found"));
-			QString imageUrl=QString (notr ("http://www.wetteronline.de/%1")).arg (imagePath);
+			QString imageUrl=qnotr ("http://www.wetteronline.de/%1").arg (imagePath);
 			downloader->startDownload (stateImage, imageUrl);
 			outputText (tr ("Download radar image (2)..."));
 		} break;

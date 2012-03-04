@@ -24,7 +24,7 @@ DatabaseInfo::DatabaseInfo (QSettings &settings):
 
 QString DatabaseInfo::toString () const
 {
-	return QString (notr ("%1@%2:%3")).arg (username, server, database);
+	return qnotr ("%1@%2:%3")).arg (username, server, database);
 }
 
 DatabaseInfo::operator QString () const
@@ -37,7 +37,7 @@ QString DatabaseInfo::serverText () const
 	if (defaultPort)
 		return server;
 	else
-		return QString (notr ("%1:%2")).arg (server).arg (port);
+		return qnotr ("%1:%2").arg (server).arg (port);
 }
 
 void DatabaseInfo::load (QSettings &settings)

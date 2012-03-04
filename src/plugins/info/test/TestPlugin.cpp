@@ -105,7 +105,7 @@ void TestPlugin::trigger ()
 	}
 
 	// Construct the final text
-	QString text=QString (notr ("%1%2 %3")).arg (helloText, greetingText, timeText);
+	QString text=qnotr ("%1%2 %3").arg (helloText, greetingText, timeText);
 
 	// Output the text
 	outputText (text, richText?Qt::RichText:Qt::PlainText);

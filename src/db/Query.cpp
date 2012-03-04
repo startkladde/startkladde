@@ -110,7 +110,7 @@ QString Query::colorizedString () const
 		result+=word;
 	}
 
-//		return QString ("%1%2%3")
+//		return qnotr ("%1%2%3")
 //			.arg (c.bold().blue())
 //			.arg (toString ())
 //			.arg (c.reset ())

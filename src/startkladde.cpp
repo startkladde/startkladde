@@ -99,10 +99,10 @@ int test_database ()
 //		{
 //			QSqlError error=interface.lastError ();
 //			std::cout << "Database could not be opened" << std::endl;
-//			std::cout << QString ("Type: %1, number: %2")
+//			std::cout << qnotr ("Type: %1, number: %2")
 //				.arg (error.type ()).arg (error.number ()) << std::endl;
-//			std::cout << QString ("Database text: %1").arg (error.databaseText ()) << std::endl;
-//			std::cout << QString ("Driver text: %1").arg (error.driverText ()) << std::endl;
+//			std::cout << qnotr ("Database text: %1").arg (error.databaseText ()) << std::endl;
+//			std::cout << qnotr ("Driver text: %1").arg (error.driverText ()) << std::endl;
 //
 //			std::cout << "Database error: " << error.databaseText () << std::endl;
 //
@@ -320,7 +320,7 @@ int doStuff (const QStringList &nonOptions)
 		if (nonOptions.size ()>1)
 		{
 			QString filename=nonOptions[1];
-			std::cout << QString (notr ("Dumping schema to %1")).arg (filename) << std::endl;
+			std::cout << qnotr ("Dumping schema to %1").arg (filename) << std::endl;
 			d.dumpSchemaToFile (filename);
 		}
 		else

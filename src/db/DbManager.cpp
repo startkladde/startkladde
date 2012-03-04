@@ -278,7 +278,6 @@ void DbManager::checkVersion (QWidget *parent)
 		{
 			confirmOrCancel (tr ("Database empty"),
 				tr ("The database %1 is empty or incomplete. Create it now?").arg (interface.getInfo ().toString ()), parent);
-			//tr Die Datenbank %1 ist leer oder unvollständig. Soll sie jetzt erstellt werden?
 
 			Returner<void> returner;
 			SignalOperationMonitor monitor;
@@ -355,7 +354,6 @@ void DbManager::openInterface (QWidget *parent)
 
 		confirmOrCancel (tr ("Create database?"), QString (
 			tr ("The database %1 does not exist. Create it now?"))
-				//tr Die Datenbank %1 existiert nicht. Soll sie erstellt werden?
 			.arg (interface.getInfo ().database), parent);
 
 		// Create the database, which involves opening a connection without a

@@ -84,7 +84,7 @@ void Interface::grantAll (const QString &database, const QString &username, cons
 
 void Interface::createDatabase (const QString &name, bool skipIfExists)
 {
-	std::cout << QString (notr ("Creating database %1%2"))
+	std::cout << qnotr ("Creating database %1%2")
 		.arg (name, skipIfExists?notr (" if it does not exist"):notr (""))
 		<< std::endl;
 
@@ -110,7 +110,7 @@ void Interface::createTable (const QString &name, bool skipIfExists)
 void Interface::createTable (const QString &name, const QList<ColumnSpec> &columns, bool skipIfExists)
 {
 	// TODO TR easier
-	std::cout << QString (notr ("Creating table %1%2"))
+	std::cout << qnotr ("Creating table %1%2")
 		.arg (name, skipIfExists?notr (" if it does not exist"):notr (""))
 		<< std::endl;
 
@@ -391,5 +391,5 @@ QString Interface::mysqlPasswordHash (const QString &password)
 	data=QCryptographicHash::hash (data, QCryptographicHash::Sha1);
 	data=QCryptographicHash::hash (data, QCryptographicHash::Sha1);
 
-	return QString (notr ("*%1")).arg (QString (data.toHex ()).toUpper ());
+	return qnotr ("*%1").arg (QString (data.toHex ()).toUpper ());
 }

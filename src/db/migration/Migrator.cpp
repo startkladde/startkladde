@@ -154,14 +154,14 @@ void Migrator::drop ()
 {
 	// TODO create and use db method
 	QString databaseName=interface.getInfo ().database;
-	interface.executeQuery (QString (notr ("DROP DATABASE %1")).arg (databaseName));
+	interface.executeQuery (qnotr ("DROP DATABASE %1")).arg (databaseName);
 }
 
 void Migrator::create ()
 {
 	// TODO use db method
 	QString databaseName=interface.getInfo ().database;
-	interface.executeQuery (QString (notr ("CREATE DATABASE %1")).arg (databaseName));
+	interface.executeQuery (qnotr ("CREATE DATABASE %1")).arg (databaseName);
 }
 
 void Migrator::clear ()
