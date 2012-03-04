@@ -3545,6 +3545,19 @@ Konfiguration: %2</translation>
     </message>
 </context>
 <context>
+    <name>ObjectEditorWindow&lt;T&gt;</name>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/ObjectEditorWindow.h" line="78"/>
+        <source>Create %1</source>
+        <translation>%1 erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/ObjectEditorWindow.h" line="81"/>
+        <source>Edit %1</source>
+        <translation>%1 editieren</translation>
+    </message>
+</context>
+<context>
     <name>ObjectEditorWindowBaseClass</name>
     <message>
         <location filename="../src/gui/windows/objectEditor/ObjectEditorWindowBase.ui" line="14"/>
