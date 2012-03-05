@@ -973,20 +973,20 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool departNow, cons
 
 	if (plane && launchMethod &&
 		flight.getNumLandings ()>1 && plane->category==Plane::categoryGlider && !(launchMethod && launchMethod->type==LaunchMethod::typeAirtow))
-		errorCheck (tr ("According to the database, the plane %1 (%2) is a glider,\nbut the number of landings is greater than one.")
-			.arg (plane->registration).arg (plane->type),
+		errorCheck (tr ("According to the database, the plane %1 is a glider,\nbut the number of landings is greater than one.")
+			.arg (plane->registrationWithType ()),
 			ui.numLandingsInput);
 
 	if (plane &&
 		flight.getNumLandings ()>0 && !flight.getLanded () && plane->category==Plane::categoryGlider && !(launchMethod && launchMethod->type==LaunchMethod::typeAirtow))
-		errorCheck (tr ("According to the database, the plane %1 (%2) is a glider,\nbut a landing was specified without landing time.")
-			.arg (plane->registration).arg (plane->type),
+		errorCheck (tr ("According to the database, the plane %1 is a glider,\nbut a landing was specified without landing time.")
+			.arg (plane->registrationWithType ()),
 			ui.numLandingsInput);
 
 	if (plane &&
 		plane->category==Plane::categoryGlider && launchMethod && launchMethod->type==LaunchMethod::typeSelf)
-		errorCheck (tr ("According to the database, the plane %1 (%2) is a glider,\nbut the launch method is self launch.")
-			.arg (plane->registrationWithType ()), // TODO TR %1 (%2) correct? Use uniformly.
+		errorCheck (tr ("According to the database, the plane %1 is a glider,\nbut the launch method is self launch.")
+			.arg (plane->registrationWithType ()),
 			ui.launchMethodInput);
 
 	if (plane && launchMethod &&
@@ -997,14 +997,14 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool departNow, cons
 
 	if (plane && launchMethod &&
 		plane->numSeats==1 && (flight.getType ()==Flight::typeGuestPrivate || flight.getType ()==Flight::typeGuestExternal) && launchMethod->type!=LaunchMethod::typeSelf)
-		errorCheck (tr ("According to the database, the plane %1 (%2) is a single seater, but the flight type is \"passenger flight\".")
-			.arg (plane->registration).arg (plane->type),
+		errorCheck (tr ("According to the database, the plane %1 is a single seater, but the flight type is \"passenger flight\".")
+			.arg (plane->registrationWithType ()),
 			ui.registrationInput);
 
 	if (plane && launchMethod &&
 		plane->numSeats==1 && flight.getType ()==Flight::typeTraining2 && launchMethod->type!=LaunchMethod::typeSelf)
-		errorCheck (tr ("According to the database, the plane %1 (%2) is a single seater, but the flight type is \"two-seated training\".")
-			.arg (plane->registration).arg (plane->type),
+		errorCheck (tr ("According to the database, the plane %1 is a single seater, but the flight type is \"two-seated training\".")
+			.arg (plane->registrationWithType ()),
 			ui.registrationInput);
 
 	if (towplane &&
@@ -1015,12 +1015,12 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool departNow, cons
 
 	if (plane && departNow && idValid (cache.planeFlying (plane->getId ())))
 		errorCheck (tr ("According to the database, the plane %1 is still flying.")
-			.arg (plane->registration),
+			.arg (plane->fullRegistration ()),
 			ui.registrationInput);
 
 	if (towplane && departNow && idValid (cache.planeFlying (towplane->getId ())))
 		errorCheck (tr ("According to the database, the towplane %1 is still flying.")
-			.arg (towplane->registration),
+			.arg (towplane->fullRegistration ()),
 			ui.registrationInput);
 }
 
@@ -1087,7 +1087,7 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool departNow, cons
 			ui.copilotLastNameInput);
 
 	if (plane && plane->numSeats==1 && flight.copilotSpecified ())
-		errorCheck (tr ("According to the database, the plane %1 (%2) is a single seater,\nbut a copilot was specified.")
+		errorCheck (tr ("According to the database, the plane %1 is a single seater,\nbut a copilot was specified.")
 		.arg (plane->registration).arg (plane->type),
 		ui.registrationInput);
 
