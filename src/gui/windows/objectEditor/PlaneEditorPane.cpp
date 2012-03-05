@@ -129,42 +129,40 @@ void PlaneEditorPane::fieldsToObject (Plane &plane)
 
 
 	// Error checks
-	// TODO TR punctuation in errorCheck for all EditorPanes
-
 	if (mode==ObjectEditorWindowBase::modeCreate && idValid (cache.getPlaneIdByRegistration (plane.registration)))
 	{
-		QString message=tr ("A plane with the registration %1 already exists").arg (plane.registration);
+		QString message=tr ("A plane with the registration %1 already exists.").arg (plane.registration);
 		QMessageBox::critical (this, tr ("Plane already exists"), message, QMessageBox::Ok, QMessageBox::NoButton);
 		throw AbortedException ();
 	}
 
 	if (isNone (plane.registration))
-		errorCheck (tr ("Registration not specified"),
+		errorCheck (tr ("Registration not specified."),
 			ui.registrationInput);
 
 	if (plane.category==Plane::categoryNone)
-		errorCheck (tr ("Category not specified"),
+		errorCheck (tr ("Category not specified."),
 			ui.categoryInput);
 
 	Plane::Category registrationCategory=Plane::categoryFromRegistration (plane.registration);
 	if (registrationCategory!=Plane::categoryNone && plane.category!=Plane::categoryNone && plane.category!=registrationCategory)
-		errorCheck (tr ("The selected category does not match the registration"),
+		errorCheck (tr ("The selected category does not match the registration."),
 			ui.categoryInput);
 
 	if (isNone (plane.type))
-		errorCheck (tr ("Model not specified"),
+		errorCheck (tr ("Model not specified."),
 			ui.typeInput);
 
 	if (plane.numSeats<0)
-		errorCheck (tr ("Number of seats not specified"),
+		errorCheck (tr ("Number of seats not specified."),
 			ui.seatsInput);
 
 	if (plane.numSeats==0)
-		errorCheck (tr ("0 seats specified"),
+		errorCheck (tr ("0 seats specified."),
 			ui.seatsInput);
 
 	int maxSeats=Plane::categoryMaxSeats (plane.category);
 	if (maxSeats>=0 && plane.numSeats>maxSeats)
-		errorCheck (tr ("To many seats specified for the selected category"),
+		errorCheck (tr ("To many seats specified for the selected category."),
 			ui.seatsInput);
 }

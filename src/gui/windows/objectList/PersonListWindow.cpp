@@ -56,13 +56,12 @@ void PersonListWindow::mergeAction_triggered ()
 	}
 
 	QString title=tr ("Select correct entry");
-	// TODO TR simplify
-	QString text=tr ("Please select the correct entry.");
 
+	QString text;
 	if (people.size ()>2)
-		text+=tr (" All other entries will be overwritten.");
+		text=tr ("Please select the correct entry. All other entries will be overwritten.");
 	else
-		text+=tr (" The other entry will be overwritten.");
+		text=tr ("Please select the correct entry. The other entry will be overwritten.");
 
 	dbId correctPersonId=invalidId;
 	ObjectSelectWindowBase::Result selectionResult=

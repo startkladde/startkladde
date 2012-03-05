@@ -109,12 +109,12 @@ void Interface::createTable (const QString &name, bool skipIfExists)
 
 void Interface::createTable (const QString &name, const QList<ColumnSpec> &columns, bool skipIfExists)
 {
-	// TODO TR easier
-	std::cout << qnotr ("Creating table %1%2")
-		.arg (name, skipIfExists?notr (" if it does not exist"):"")
-		<< std::endl;
+	if (skipIfExists)
+		std::cout << qnotr ("Creating table %1 if it does not exist").arg (name) << std::endl;
+	else
+		std::cout << qnotr ("Creating table %1").arg (name) << std::endl;
 
-	// TODO TR CreateTableQuery
+	// TODO CreateTableQuery
 	executeQuery (Query (notr (
 		"CREATE TABLE %1 %2 ("
 		"%3"
@@ -125,10 +125,10 @@ void Interface::createTable (const QString &name, const QList<ColumnSpec> &colum
 
 void Interface::createTable (const QString &name, const QList<ColumnSpec> &columns, const QList<IndexSpec> &indexes, bool skipIfExists)
 {
-	// TODO TR easier
-	std::cout << qnotr ("Creating table %1%2")
-		.arg (name, skipIfExists?notr (" if it does not exist"):"")
-		<< std::endl;
+	if (skipIfExists)
+		std::cout << qnotr ("Creating table %1 if it does not exist").arg (name) << std::endl;
+	else
+		std::cout << qnotr ("Creating table %1").arg (name) << std::endl;
 
 	QString createColumnsClause=ColumnSpec::createClause (columns);
 
@@ -136,6 +136,7 @@ void Interface::createTable (const QString &name, const QList<ColumnSpec> &colum
 	if (!indexes.isEmpty ())
 		createIndexesClause=qnotr (", %1").arg (IndexSpec::createClause (indexes));
 
+	// TODO CreateTableQuery
 	executeQuery (Query (notr (
 		"CREATE TABLE %1 %2 ("
 		"%3%4"
@@ -148,11 +149,12 @@ void Interface::createTable (const QString &name, const QList<ColumnSpec> &colum
 
 void Interface::createTableLike (const QString &like, const QString &name, bool skipIfExists)
 {
-	// TODO TR easier
-	std::cout << qnotr ("Creating table %1 like %2%3")
-		.arg (name, like, skipIfExists?notr (" if it does not exist"):"")
-		<< std::endl;
+	if (skipIfExists)
+		std::cout << qnotr ("Creating table %1 like %2 if it does not exist").arg (name, like) << std::endl;
+	else
+		std::cout << qnotr ("Creating table %1 like %2").arg (name, like) << std::endl;
 
+	// TODO CreateTableLikeQuery
 	executeQuery (Query (notr ("CREATE TABLE %1 %2 LIKE %3"))
 		.arg (skipIfExists?notr ("IF NOT EXISTS"):"", name, like));
 }
@@ -298,14 +300,15 @@ QList<IndexSpec> Interface::showIndexes (const QString &table)
 
 void Interface::createIndex (const IndexSpec &index, bool skipIfExists)
 {
-	// TODO TR easier
-	std::cout << qnotr ("Creating index %1.%2%3")
-		.arg (index.getTable (), index.getName (), skipIfExists?notr (" if it does not exist"):"")
-		<< std::endl;
+	if (skipIfExists)
+		std::cout << qnotr ("Creating index %1.%2 if it does not exist").arg (index.getTable (), index.getName ()) << std::endl;
+	else
+		std::cout << qnotr ("Creating index %1.%2").arg (index.getTable (), index.getName ()) << std::endl;
 
 	// TODO: the MySQL specific stuff should not be here
 	try
 	{
+		// TODO createIndexQuery
 		executeQuery (qnotr ("CREATE INDEX %1 ON %2 (%3)")
 			.arg (index.getName (), index.getTable (), index.getColumns ()));
 	}
@@ -323,10 +326,10 @@ void Interface::createIndex (const IndexSpec &index, bool skipIfExists)
 
 void Interface::dropIndex (const QString &table, const QString &name, bool skipIfNotExists)
 {
-	// TODO tr easier
-	std::cout << qnotr ("Dropping index %1.%2%3")
-		.arg (table, name, skipIfNotExists?notr (" if it exists"):"")
-		<< std::endl;
+	if (skipIfNotExists)
+		std::cout << qnotr ("Dropping index %1.%2 if it exists").arg (table, name) << std::endl;
+	else
+		std::cout << qnotr ("Dropping index %1.%2").arg (table, name) << std::endl;
 
 	try
 	{

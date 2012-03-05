@@ -44,14 +44,14 @@ void ConfirmOverwritePersonDialog::setup (const Person &correctPerson, const QLi
 	{
 		wrongEntriesText=tr ("Erroneous entries");
 		ui.introLabel->setText (tr ("The following erroneous entries will be replaced with the correct entry:"));
-		// TODO TR set complete text
+		// TODO set complete text
 		ui.descriptionLabel->setText (ui.descriptionLabel->text ().arg (tr ("All"), tr ("people")));
 	}
 	else
 	{
 		wrongEntriesText=tr ("Wrong entry");
 		ui.introLabel->setText (tr ("The following erroneous entry will be replaced with the correct entry:"));
-		// TODO TR set complete text
+		// TODO set complete text
 		ui.descriptionLabel->setText (ui.descriptionLabel->text ().arg (tr ("Both"), tr ("person")));
 	}
 

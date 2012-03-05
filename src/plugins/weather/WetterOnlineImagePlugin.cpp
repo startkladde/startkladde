@@ -17,8 +17,6 @@
 #include "src/text.h"
 #include "src/notr.h"
 
-// TODO TR test all messages
-
 REGISTER_PLUGIN (WeatherPlugin, WetterOnlineImagePlugin)
 SK_PLUGIN_DEFINITION (
 	WetterOnlineImagePlugin,

@@ -301,7 +301,8 @@ bool SkTableView::focusWidgetAt (const QModelIndex &index)
 }
 
 /**
- * This method is slow, don't use it
+ * This method is slow, don't use it. It's only left here for reference, until
+ * a better solution is available.
  *
  * More specifically, it's the setFocus call that is slow.
  *
@@ -312,15 +313,14 @@ bool SkTableView::focusWidgetAt (const QModelIndex &index)
  */
 void SkTableView::updateWidgetFocus (const QModelIndexList &indexes)
 {
-	// TODO TR remove it?
 	assert (!notr ("This method should not be used, it's slow."));
 
-	// If the current selection contains a widget, focus it if it is visible
-	QWidget *widget=findVisibleWidget (indexes);
-	if (widget)
-		widget->setFocus (Qt::OtherFocusReason);
-	else
-		this->setFocus (Qt::OtherFocusReason);
+//	// If the current selection contains a widget, focus it if it is visible
+//	QWidget *widget=findVisibleWidget (indexes);
+//	if (widget)
+//		widget->setFocus (Qt::OtherFocusReason);
+//	else
+//		this->setFocus (Qt::OtherFocusReason);
 }
 
 

@@ -684,58 +684,70 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
 <context>
     <name>ExternalWeatherPlugin</name>
     <message>
-        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="31"/>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="28"/>
         <source>External</source>
         <translation>Extern</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="32"/>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="29"/>
         <source>External weather plugin</source>
         <translation>Externes Wetter-Plugin</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="49"/>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="46"/>
         <source>Starting process...</source>
         <translation>Prozess starten...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="51"/>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="48"/>
         <source>No command specified</source>
         <translation>Kein Kommando angegeben</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="58"/>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="55"/>
         <source>Command not found</source>
         <translation>Kommanod nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="59"/>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="56"/>
         <source>Command does not exist</source>
         <translation>Kommando existiert nicht</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="61"/>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="58"/>
         <source>Error: %1</source>
         <translation>Fehler: %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="62"/>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="59"/>
         <source>Process started</source>
         <translation>Prozess gestartet</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="98"/>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="94"/>
+        <source>Cannot load image:
+%1</source>
+        <translation>Grafik kann nicht geladen werden:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="110"/>
+        <source>Cannot load animation:
+%1</source>
+        <translation>Animation kann nicht geladen werden:
+%1</translation>
+    </message>
+    <message>
         <source>Cannot load iamge:
 </source>
-        <translation>Grafik kann nicht
+        <translation type="obsolete">Grafik kann nicht
 geladen werden:
 </translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/ExternalWeatherPlugin.cpp" line="115"/>
         <source>Cannot load animation:
 </source>
-        <translation>Animation kann nicht
+        <translation type="obsolete">Animation kann nicht
 geladen werden:
 </translation>
     </message>
@@ -1037,22 +1049,22 @@ geladen werden:
         <translation>Schleppflug für Flug %1</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="86"/>
+        <location filename="../src/model/Flight.h" line="84"/>
         <source>Towpilot</source>
         <translation>Schlepppilot</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="192"/>
+        <location filename="../src/model/Flight.h" line="190"/>
         <source>flight</source>
         <translation>Flug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="193"/>
+        <location filename="../src/model/Flight.h" line="191"/>
         <source>the flight</source>
         <translation>der Flug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="194"/>
+        <location filename="../src/model/Flight.h" line="192"/>
         <source>flights</source>
         <translation>Flüge</translation>
     </message>
@@ -1548,50 +1560,40 @@ geladen werden:
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="925"/>
         <source>No launch method specified</source>
-        <translation>Es wurde keine Startart angegeben</translation>
+        <translation type="obsolete">Es wurde keine Startart angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="929"/>
         <source>No departure location specified</source>
-        <translation>Es wurde kein Startort angegeben</translation>
+        <translation type="obsolete">Es wurde kein Startort angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="933"/>
         <source>No landing location specified</source>
-        <translation>Es wurde kein Zielort angegeben</translation>
+        <translation type="obsolete">Es wurde kein Zielort angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="937"/>
         <source>Departure location and landing location are equal</source>
-        <translation>Startort und Zielort sind identisch</translation>
+        <translation type="obsolete">Startort und Zielort sind identisch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="941"/>
         <source>Landing time before departure time</source>
-        <translation>Die Landezeit liegt vor der Startzeit</translation>
+        <translation type="obsolete">Die Landezeit liegt vor der Startzeit</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="945"/>
         <source>Landing time not specified, but departure time specified</source>
-        <translation>Es wurde eine Landezeit, aber keine Startzeit angegeben</translation>
+        <translation type="obsolete">Es wurde eine Landezeit, aber keine Startzeit angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="949"/>
         <source>Landing time specified, but number of landings is 0</source>
-        <translation>Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0</translation>
+        <translation type="obsolete">Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="953"/>
         <source>Towplane landing location not specified</source>
-        <translation>Es wurde kein Zielort für das Schleppflugzeug angegeben</translation>
+        <translation type="obsolete">Es wurde kein Zielort für das Schleppflugzeug angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="957"/>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="961"/>
         <source>Towflight landing time before departure time</source>
-        <translation>Die Landezeit des Schleppflugs liegt vor der Startzeit</translation>
+        <translation type="obsolete">Die Landezeit des Schleppflugs liegt vor der Startzeit</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="971"/>
@@ -1599,24 +1601,21 @@ geladen werden:
         <translation>Flugzeug und Schleppflugzeug sind identisch.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="976"/>
         <source>According to the database, the plane %1 (%2) is a glider,
 but the number of landings is greater than one.</source>
-        <translation>Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.
+        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.
 Es wurde jedoch mehr als eine Landung angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="982"/>
         <source>According to the database, the plane %1 (%2) is a glider,
 but a landing was specified without landing time.</source>
-        <translation>Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.
+        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.
 Es wurde jedoch eine Landung, aber keine Landezeit angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="988"/>
         <source>According to the database, the plane %1 (%2) is a glider,
 but the launch method is self launch.</source>
-        <translation>Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.
+        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.
 Es wurde jedoch Eigenstart als Startart angegeben.</translation>
     </message>
     <message>
@@ -1627,15 +1626,13 @@ but the launch method is not self launch.</source>
 Es wurde jedoch eine andere Startart als Eigenstart angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1000"/>
         <source>According to the database, the plane %1 (%2) is a single seater, but the flight type is &quot;passenger flight&quot;.</source>
-        <translation>Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.
+        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.
 Es wurde jedoch der Flugtyp &quot;Gastflug&quot; angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1006"/>
         <source>According to the database, the plane %1 (%2) is a single seater, but the flight type is &quot;two-seated training&quot;.</source>
-        <translation>Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.
+        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.
 Es wurde jedoch der Flugtyp &quot;doppelsitzige Schulung&quot; angegeben.</translation>
     </message>
     <message>
@@ -1664,6 +1661,13 @@ Es wurde jedoch der Flugtyp &quot;doppelsitzige Schulung&quot; angegeben.</trans
         <translation>Es ist kein Ablaufdatum für das Medical %1 eingetragen, die Medicalprüfung ist aber aktiviert.</translation>
     </message>
     <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1090"/>
+        <source>According to the database, the plane %1 is a single seater,
+but a copilot was specified.</source>
+        <translation>Laut Datenbank ist das Flugzeug %1 einsitzig.
+Es wurde jedoch ein Begleiter angegeben.</translation>
+    </message>
+    <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1108"/>
         <source>According to the database, the towpilot %1 is still flying.</source>
         <translation>Laut Datenbank fliegt der Schlepppilot %1 noch.</translation>
@@ -1678,31 +1682,141 @@ Es gibt allerdings ein Flugzeug mit dem Kennzeichen %3.
 Soll dieses Flugzeug verwendet werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1074"/>
         <source>Pilot and copilot are identical</source>
-        <translation>Pilot and copilot are identical</translation>
+        <translation type="obsolete">Pilot und Begleiter sind identisch</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="976"/>
+        <source>According to the database, the plane %1 is a glider,
+but the number of landings is greater than one.</source>
+        <translation>Laut Datenbank ist das Flugzeug %1 ein Segelflugzeug.
+Es wurde jedoch mehr als eine Landung angegeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="982"/>
+        <source>According to the database, the plane %1 is a glider,
+but a landing was specified without landing time.</source>
+        <translation>Laut Datenbank ist das Flugzeug %1 ein Segelflugzeug.
+Es wurde jedoch eine Landung, aber keine Landezeit angegeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="988"/>
+        <source>According to the database, the plane %1 is a glider,
+but the launch method is self launch.</source>
+        <translation>Laut Datenbank ist das Flugzeug %1 ein Segelflugzeug.
+Es wurde jedoch Eigenstart als Startart angegeben.</translation>
+    </message>
+    <message>
+        <source>According to the database, the plane %1 is a single seater, but the flight type is &quot;passenger flight&quot;.</source>
+        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 einsitzig.
+Es wurde jedoch der Flugtyp &quot;Gastflug&quot; angegeben.</translation>
+    </message>
+    <message>
+        <source>According to the database, the plane %1 is a single seater, but the flight type is &quot;two-seated training&quot;.</source>
+        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 einsitzig.
+Es wurde jedoch der Flugtyp &quot;doppelsitzige Schulung&quot; angegeben.</translation>
+    </message>
+    <message>
+        <source>Pilot and towpilot are identical</source>
+        <translation type="obsolete">Pilot and towpilot are identical</translation>
+    </message>
+    <message>
+        <source>Copilot and towpilot are identical</source>
+        <translation type="obsolete">Copilot and towpilot are identical</translation>
+    </message>
+    <message>
+        <source>Two-seated training without flight instructor</source>
+        <translation type="obsolete">Doppelsitzige Schulung ohne Fluglehrer</translation>
+    </message>
+    <message>
+        <source>According to the database, the plane %1 (%2) is a single seater,
+but a copilot was specified.</source>
+        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.
+Es wurde jedoch ein Begleiter angegeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="925"/>
+        <source>No launch method specified.</source>
+        <translation>Keine Startart angegeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="929"/>
+        <source>No departure location specified.</source>
+        <translation>Kein Startort angegeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="933"/>
+        <source>No landing location specified.</source>
+        <translation>Kein Zielort angegeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="937"/>
+        <source>Departure location and landing location are equal.</source>
+        <translation>Startort und Zielort sind identisch.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="941"/>
+        <source>Landing time before departure time.</source>
+        <translation>Die Landezeit liegt vor der Startzeit.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="945"/>
+        <source>Landing time not specified, but departure time specified.</source>
+        <translation>Es wurde eine Landezeit, aber keine Startzeit angegeben.</translation>
+    </message>
+    <message>
+        <source>Landing time specified, but number of landings is 0.</source>
+        <translation type="obsolete">Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="949"/>
+        <source>Landing time specified, but the number of landings is 0.</source>
+        <translation>Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="953"/>
+        <source>Towplane landing location not specified.</source>
+        <translation>Es wurde kein Zielort für das Schleppflugzeug angegeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="957"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="961"/>
+        <source>Towflight landing time before departure time.</source>
+        <translation>Die Landezeit des Schleppflugs liegt vor der Startzeit.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1000"/>
+        <source>According to the database, the plane %1 is a single seater,
+but the flight type is &quot;passenger flight&quot;.</source>
+        <translation>Laut Datenbank ist das Flugzeug %1 einsitzig.
+Es wurde jedoch der Flugtyp &quot;Gastflug&quot; angegeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1006"/>
+        <source>According to the database, the plane %1 is a single seater,
+but the flight type is &quot;two-seated training&quot;.</source>
+        <translation>Laut Datenbank ist das Flugzeug %1 einsitzig.
+Es wurde jedoch der Flugtyp &quot;doppelsitzige Schulung&quot; angegeben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1074"/>
+        <source>Pilot and copilot are identical.</source>
+        <translation>Pilot and copilot are identical.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1078"/>
-        <source>Pilot and towpilot are identical</source>
-        <translation>Pilot and towpilot are identical</translation>
+        <source>Pilot and towpilot are identical.</source>
+        <translation>Pilot und Schlepppilot sind identisch.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1082"/>
-        <source>Copilot and towpilot are identical</source>
-        <translation>Copilot and towpilot are identical</translation>
+        <source>Copilot and towpilot are identical.</source>
+        <translation>Copilot and towpilot are identical.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1086"/>
-        <source>Two-seated training without flight instructor</source>
-        <translation>Doppelsitzige Schulung ohne Fluglehrer</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1090"/>
-        <source>According to the database, the plane %1 (%2) is a single seater,
-but a copilot was specified.</source>
-        <translation>Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.
-Es wurde jedoch ein Begleiter angegeben.</translation>
+        <source>Two-seated training without flight instructor.</source>
+        <translation>Doppelsitzige Schulung ohne Fluglehrer.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1096"/>
@@ -2153,27 +2267,27 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>LaunchMethod</name>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="122"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="119"/>
         <source>Winch launch</source>
         <translation>Windenstart</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="123"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="120"/>
         <source>Airtow</source>
         <translation>F-Schlepp</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="124"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="121"/>
         <source>Self launch</source>
         <translation>Eigenstart</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="125"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="122"/>
         <source>Other</source>
         <translation>Sonstige</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="181"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="178"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
@@ -2196,47 +2310,47 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>LaunchMethod::DefaultObjectModel</name>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="155"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="152"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="156"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="153"/>
         <source>Short name</source>
         <translation>Kürzel</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="157"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="154"/>
         <source>Logbook label</source>
         <translation>Flugbuch-Bezeichnung</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="158"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="155"/>
         <source>Keyboard shortcut</source>
         <translation>Tastenkürzel</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="159"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="156"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="160"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="157"/>
         <source>Towplane</source>
         <translation>Schleppflugzeug</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="161"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="158"/>
         <source>Person required</source>
         <translation>Person erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="162"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="159"/>
         <source>Comments</source>
         <translation>Bemerkungen</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="164"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="161"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
@@ -2541,6 +2655,11 @@ Konfiguration: %2</translation>
         <translation>Beim Ausführen der Netzwerkdiagnose ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1651"/>
+        <source>The database password must be entered to display the flight database.</source>
+        <translation>Zum Anzeigen der Flugdatenbank muss das Datenbankpasswort eingegeben werden.</translation>
+    </message>
+    <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1898"/>
         <source>The system time was changed. The setting may only be stored permanently when the system is shut down.</source>
         <translation>Die Systemzeit wurde geändert. Gegebenenfalls wird die Änderung erst beim nächsten Herunterfahren dauerhaft gespeichert.</translation>
@@ -2654,9 +2773,8 @@ Konfiguration: %2</translation>
         <translation>Startartstatistik</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1651"/>
         <source>The database password is required to display the flight database.</source>
-        <translation>Zum Anzeigen der Flugdatenbank ist das Datenbankpasswort erforderlich.</translation>
+        <translation type="obsolete">Zum Anzeigen der Flugdatenbank ist das Datenbankpasswort erforderlich.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1672"/>
@@ -3393,22 +3511,22 @@ Konfiguration: %2</translation>
         <translation>%1 %2 wird verwendet und kann daher nicht gelöscht werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="244"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="243"/>
         <source> Continue?</source>
         <translation>Fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="297"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="296"/>
         <source>Delete %1?</source>
         <translation>%1 löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="298"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="297"/>
         <source>Do you want to delete %1 %2?</source>
         <translation>Soll %1 %2 gelöscht werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="450"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="449"/>
         <source>The database password must be entered to edit %1.</source>
         <translation>Zum Editieren der %1 muss das Datenbankpasswort eingegeben werden.</translation>
     </message>
@@ -3485,12 +3603,12 @@ Konfiguration: %2</translation>
 <context>
     <name>ObjectSelectWindow&lt;T&gt;</name>
     <message>
-        <location filename="../src/gui/windows/ObjectSelectWindow.cpp" line="32"/>
+        <location filename="../src/gui/windows/ObjectSelectWindow.cpp" line="31"/>
         <source>(Unknown)</source>
         <translation>(Unbekannt)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ObjectSelectWindow.cpp" line="35"/>
+        <location filename="../src/gui/windows/ObjectSelectWindow.cpp" line="34"/>
         <source>(Create new)</source>
         <translation>(Neu anlegen)</translation>
     </message>
@@ -3720,19 +3838,26 @@ aktiviert werden.</translation>
         <translation>Korrekten Eintrag auswählen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="60"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="62"/>
+        <source>Please select the correct entry. All other entries will be overwritten.</source>
+        <translation>Bitte den korrekten Eintrag auswählen. Alle anderen Einträge werden überschrieben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="64"/>
+        <source>Please select the correct entry. The other entry will be overwritten.</source>
+        <translation>Bitte den korrekten Eintrag auswählen. Der andere Eintrag wird überschrieben.</translation>
+    </message>
+    <message>
         <source>Please select the correct entry.</source>
-        <translation>Bitte den korrekten Eintrag auswählen.</translation>
+        <translation type="obsolete">Bitte den korrekten Eintrag auswählen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="63"/>
         <source> All other entries will be overwritten.</source>
-        <translation>Alle anderen Einträge werden überschrieben.</translation>
+        <translation type="obsolete">Alle anderen Einträge werden überschrieben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="65"/>
         <source> The other entry will be overwritten.</source>
-        <translation>Der andere Eintrag wird überschrieben.</translation>
+        <translation type="obsolete">Der andere Eintrag wird überschrieben.</translation>
     </message>
 </context>
 <context>
@@ -4066,62 +4191,62 @@ aktiviert werden.</translation>
         <translation>Schleppflüge</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="357"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="358"/>
         <source>Registration</source>
         <translation>Kennzeichen</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="358"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="359"/>
         <source>Model</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="359"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="360"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="360"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="361"/>
         <source>Pilot</source>
         <translation>Pilot</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="361"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="362"/>
         <source>Passengers</source>
         <translation>Insassen</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="362"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="363"/>
         <source>Departure location</source>
         <translation>Startort</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="363"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="364"/>
         <source>Landing location</source>
         <translation>Zielort</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="364"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="365"/>
         <source>Departure time</source>
         <translation>Startzeit</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="365"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="366"/>
         <source>Landing time</source>
         <translation>Landezeit</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="366"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="367"/>
         <source>Number of landings</source>
         <translation>Anzahl Landungen</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="367"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="368"/>
         <source>Time airborne</source>
         <translation>Betriebsdauer</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="368"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="369"/>
         <source>Comments</source>
         <translation>Bemerkungen</translation>
     </message>
@@ -4196,23 +4321,55 @@ aktiviert werden.</translation>
 <context>
     <name>SettingsWindow</name>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="452"/>
         <source>The (old) database password is required to save
+the settings.</source>
+        <translation type="obsolete">Zum Speichern der Einstellungen ist das (alte) Datenbankpasswort
+erforderlich.</translation>
+    </message>
+    <message>
+        <source>The database password is required to save
+the settings.</source>
+        <translation type="obsolete">Zum Speichern der Einstellungen ist das Datenbankpasswort
+erforderlich.</translation>
+    </message>
+    <message>
+        <source>Password protection of the settings is being enabled. The
+(new) database password is required. If you don&apos;t want
+to enable the protection, you can cancel now and disable
+the corresponding option.</source>
+        <translation type="obsolete">Der Passwortschutz der Einstellungen wird aktiviert. Dazu ist das
+(neue) Datenbankpasswort erforderlich. Falls der Schutz nicht aktiviert
+werden soll, kann jetzt abgebrochen und die entsprechende Option
+deaktiviert werden.</translation>
+    </message>
+    <message>
+        <source>Password protection of the settings is being enabled. The
+database password is required. If you don&apos;t want
+to enable the protection, you can cancel now and disable
+the corresponding option.</source>
+        <translation type="obsolete">Der Passwortschutz der Einstellungen wird aktiviert. Dazu ist das
+Datenbankpasswort erforderlich. Falls der Schutz nicht aktiviert
+werden soll, kann jetzt abgebrochen und die entsprechende Option
+deaktiviert werden.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="452"/>
+        <source>The (old) database password must be entered to save
 the settings.</source>
         <translation>Zum Speichern der Einstellungen ist das (alte) Datenbankpasswort
 erforderlich.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.cpp" line="454"/>
-        <source>The database password is required to save
+        <source>The database password must be entered to save
 the settings.</source>
         <translation>Zum Speichern der Einstellungen ist das Datenbankpasswort
 erforderlich.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="468"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="466"/>
         <source>Password protection of the settings is being enabled. The
-(new) database password is required. If you don&apos;t want
+(new) database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
 the corresponding option.</source>
         <translation>Der Passwortschutz der Einstellungen wird aktiviert. Dazu ist das
@@ -4221,9 +4378,9 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="475"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="473"/>
         <source>Password protection of the settings is being enabled. The
-database password is required. If you don&apos;t want
+database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
 the corresponding option.</source>
         <translation>Der Passwortschutz der Einstellungen wird aktiviert. Dazu ist das
@@ -4232,16 +4389,24 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="501"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="499"/>
         <source>Settings protected</source>
         <translation>Einstellungen geschützt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="501"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="499"/>
+        <source>The settings are protected. The settings
+can be changed, but to save them, the database
+password must be entered.</source>
+        <translation>Die Einstellungen sind geschützt. Die Einstellungen
+können geändert werden, aber zum Speichern ist das
+Datenbankpasswort erforderlich.</translation>
+    </message>
+    <message>
         <source>The settings are protected. The settings
 can be changed, but to save them, the database
 password is required.</source>
-        <translation>Die Einstellungen sind geschützt. Die Einstellungen
+        <translation type="obsolete">Die Einstellungen sind geschützt. Die Einstellungen
 können geändert werden, aber zum Speichern ist das
 Datenbankpasswort erforderlich.</translation>
     </message>
@@ -4690,7 +4855,7 @@ Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder 
 <context>
     <name>SplashScreen</name>
     <message>
-        <location filename="../src/gui/windows/SplashScreen.cpp" line="63"/>
+        <location filename="../src/gui/windows/SplashScreen.cpp" line="62"/>
         <source>Flight log</source>
         <translation>Hauptflugbuch</translation>
     </message>
@@ -5030,62 +5195,62 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
 <context>
     <name>WetterOnlineAnimationPlugin</name>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="28"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="25"/>
         <source>Wetter Online (animation)</source>
         <translation>Wetter Online (Animation)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="29"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="26"/>
         <source>Displays a weather radar animation from wetteronline.de</source>
         <translation>Zeigt eine Regenradar-Animation von wetteronline.de an</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="47"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="44"/>
         <source>Downloading radar animation (1)...</source>
         <translation>Radaranimation herunterladen (1)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="63"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="60"/>
         <source>Error: no animation link was found on the navigation page</source>
         <translation>Fehler: auf der Navigationsseite wurde kein Link zur Animation gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="66"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="63"/>
         <source>Downloading radar animation (2)...</source>
         <translation>Radaranimation herunterladen (2)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="71"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="68"/>
         <source>Error: no animation was found on the weather page</source>
         <translation>Fehler: auf der Wetterseite wurde keine Animation gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="74"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="71"/>
         <source>Downloading radar animation (3)...</source>
         <translation>Radaranimation herunterladen (3)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="78"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="75"/>
         <source>Saving radar animation</source>
         <translation>Radaranimation speichern</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="80"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="77"/>
         <source>Error reading the animation</source>
         <translation>Fehler beim Lesen der Animation</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="94"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="91"/>
         <source>Error: navigation page not found (404)</source>
         <translation>Fehler: Navigationsseite nicht gefunden (404)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="97"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="94"/>
         <source>Error: radar page not found (404)</source>
         <translation>Fehler: Radarseite nicht gefunden (404)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="100"/>
+        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="97"/>
         <source>Error: radar animation not found (404)</source>
         <translation>Fehler: Radaranimation nicht gefunden (404)</translation>
     </message>
@@ -5093,42 +5258,42 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
 <context>
     <name>WetterOnlineImagePlugin</name>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="26"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="24"/>
         <source>Wetter Online (image)</source>
         <translation>Wetter Online (Bild)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="27"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="25"/>
         <source>Displays a weather image from wetteronline.de</source>
         <translation>Zeigt ein Regenradar-Bild von wetteronline.de an</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="45"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="43"/>
         <source>Download radar image (1)...</source>
         <translation>Radarbild herunterladen (1)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="61"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="59"/>
         <source>Error: no radar image found</source>
         <translation>Fehler: kein Radarbild gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="64"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="62"/>
         <source>Download radar image (2)...</source>
         <translation>Radarbild herunterladen (2)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="70"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="68"/>
         <source>Error: invalid radar image</source>
         <translation>Fehler: ungültiges Radarbild</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="83"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="81"/>
         <source>Error: page not found (404)</source>
         <translation>Fehler: Seite nicht gefunden (404)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="86"/>
+        <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="84"/>
         <source>Error: radar image not found (404)</source>
         <translation>Fehler: Radarbild nicht gefunden (404)</translation>
     </message>

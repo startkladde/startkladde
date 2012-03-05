@@ -18,10 +18,7 @@
 #include "src/graphics/SkMovie.h"
 #include "src/notr.h"
 
-// TODO TR test all messages
-
 REGISTER_PLUGIN (WeatherPlugin, WetterOnlineAnimationPlugin)
-// TODO TR
 SK_PLUGIN_DEFINITION (
 	WetterOnlineAnimationPlugin,
 	notr ("{f3b7c9b2-455f-459f-b636-02b2b9a78b7b}"),

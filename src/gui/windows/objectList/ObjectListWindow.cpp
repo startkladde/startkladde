@@ -239,7 +239,6 @@ template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, boo
 		QString title=qApp->translate ("ObjectListWindow<T>", "%1 in use").arg (T::objectTypeDescription ());
 		QString text=qApp->translate ("ObjectListWindow<T>", "%1 %2 is in use and cannot be deleted.").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
 
-		// TODO TR what is this?
 		if (cancelOption)
 			text+=qApp->translate ("ObjectListWindow<T>", " Continue?");
 

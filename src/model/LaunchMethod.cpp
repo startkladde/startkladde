@@ -32,7 +32,6 @@ LaunchMethod::LaunchMethod (dbId id):
 // Class management
 void LaunchMethod::initialize ()
 {
-	// TODO TR remove?
 	towplaneRegistration="";
 	keyboardShortcut="";
 	name=notr ("---");
@@ -87,14 +86,12 @@ LaunchMethod LaunchMethod::parseConfigLine (QString line)
 
 QString LaunchMethod::toString () const
 {
-	return qnotr ("id=%1, description=%2 (%3), type=%4, person %5required")
-		.arg (id)
-		.arg (name)
-		.arg (shortName)
-		.arg (typeString (type))
-		// TODO TR better
-		.arg (personRequired?"":notr ("not "))
-		;
+	if (personRequired)
+		return qnotr ("id=%1, description=%2 (%3), type=%4, person required")
+			.arg (id).arg (name).arg (shortName).arg (typeString (type));
+	else
+		return qnotr ("id=%1, description=%2 (%3), type=%4, person not required")
+			.arg (id).arg (name).arg (shortName).arg (typeString (type));
 }
 
 QString LaunchMethod::nameWithShortcut () const

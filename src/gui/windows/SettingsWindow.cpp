@@ -449,9 +449,9 @@ bool SettingsWindow::allowEdit ()
 		// If the password was also changed, clarify that the user must enter
 		// the *old* password.
 		if (passwordChanged)
-			message=tr ("The (old) database password is required to save\nthe settings.");
+			message=tr ("The (old) database password must be entered to save\nthe settings.");
 		else
-			message=tr ("The database password is required to save\nthe settings.");
+			message=tr ("The database password must be entered to save\nthe settings.");
 		requiredPassword=oldPassword;
 	}
 	else if (ui.protectSettingsCheckbox->isChecked ())
@@ -462,19 +462,17 @@ bool SettingsWindow::allowEdit ()
 		// without having a way to disable it again.
 		// If the password was also changed, clarify that the user must enter
 		// the *new* password.
-		// TODO TR: without line breaks?
-		// TODO TR: "must be entered"
 		if (passwordChanged)
 			message=tr (
 				"Password protection of the settings is being enabled. The\n"
-				"(new) database password is required. If you don't want\n"
+				"(new) database password must be entered. If you don't want\n"
 				"to enable the protection, you can cancel now and disable\n"
 				"the corresponding option."
 				);
 		else
 			message=tr (
 				"Password protection of the settings is being enabled. The\n"
-				"database password is required. If you don't want\n"
+				"database password must be entered. If you don't want\n"
 				"to enable the protection, you can cancel now and disable\n"
 				"the corresponding option."
 				);
@@ -501,7 +499,7 @@ void SettingsWindow::warnEdit ()
 	showWarning (tr ("Settings protected"), tr (
 		"The settings are protected. The settings\n"
 		"can be changed, but to save them, the database\n"
-		"password is required."), this);
+		"password must be entered."), this);
 
 	warned=true;
 }

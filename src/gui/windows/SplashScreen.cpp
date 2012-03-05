@@ -59,7 +59,6 @@ SplashScreen::SplashScreen (QWidget *parent):
 	palette.setColor (QPalette::Foreground, QColor (255, 255, 255));
 	lbl_status->setPalette (palette);
 	}
-	// TODO TR used?
 	lbl_status->setText (tr ("Flight log"));
 	lbl_status->move (0, lbl_picture->height ()+lbl_version->height ());
 	lbl_status->adjustSize ();
@@ -131,7 +130,6 @@ void SplashScreen::show_version ()
 
 
 
-// TODO TR remove (other methods too)?
 void SplashScreen::set_status (QString s)
 	/*
 	 * Sets the status text.

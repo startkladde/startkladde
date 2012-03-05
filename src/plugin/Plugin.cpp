@@ -70,7 +70,7 @@ QString Plugin::resolveFilename (const QString &filename, const QStringList &plu
 	// Search in the plugin paths
 	foreach (const QString &path, pluginPaths)
 	{
-		// TODO TR: Qt pathname construction?
+		// TODO: Qt pathname construction?
 		QString full=path+notr ("/")+filename;
 		if (QFile::exists (full))
 			return full;
@@ -84,7 +84,7 @@ QString Plugin::resolveFilename (const QString &filename, const QStringList &plu
 	QStringList systemPath=getSystemPath ();
 	foreach (const QString &path, systemPath)
 	{
-		// TODO TR: Qt pathname construction?
+		// TODO: Qt pathname construction?
 		QString full=path+notr ("/")+filename;
 		if (QFile::exists (full))
 			return full;

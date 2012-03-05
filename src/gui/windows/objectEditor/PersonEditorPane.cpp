@@ -136,10 +136,10 @@ void PersonEditorPane::fieldsToObject (Person &person)
 	// Error checks
 
 	if (isNone (person.lastName))
-		errorCheck (tr ("Last name not specified"),
+		errorCheck (tr ("Last name not specified."),
 			ui.lastNameInput);
 
 	if (isNone (person.firstName))
-		errorCheck (tr ("First name not specified"),
+		errorCheck (tr ("First name not specified."),
 			ui.firstNameInput);
 }

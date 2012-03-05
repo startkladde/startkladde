@@ -11,7 +11,5 @@
 #include <QString>
 
 QString boolToString (bool val, const QString &true_value, const QString &false_value);
-// TODO TR remove
-//bool stringToBool (const QString &text);
 
 #endif

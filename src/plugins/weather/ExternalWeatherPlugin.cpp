@@ -21,10 +21,7 @@
 #include "src/graphics/SkMovie.h"
 #include "src/notr.h"
 
-// TODO TR test all messages
-
 REGISTER_PLUGIN (WeatherPlugin, ExternalWeatherPlugin)
-// TODO TR
 SK_PLUGIN_DEFINITION (
 	ExternalWeatherPlugin,
 	notr ("{01db73ff-1473-4aeb-b297-13398927005c}"),
@@ -94,8 +91,7 @@ void ExternalWeatherPlugin::lineReceived (const QString &line)
 			QImage image (filename);
 
 			if (image.isNull ())
-				// TODO TR: use %1
-				outputText (tr ("Cannot load iamge:\n")+filename);
+				outputText (tr ("Cannot load image:\n%1").arg (filename));
 			else
 				outputImage (image);
 		}
@@ -111,8 +107,7 @@ void ExternalWeatherPlugin::lineReceived (const QString &line)
 			if (movie.getMovie ()->isValid ())
 				outputMovie (movie);
 			else
-				// TODO TR: use %1
-				outputText (tr ("Cannot load animation:\n")+filename);
+				outputText (tr ("Cannot load animation:\n%1").arg (filename));
 		}
 	}
 }

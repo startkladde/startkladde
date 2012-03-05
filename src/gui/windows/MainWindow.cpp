@@ -1648,7 +1648,7 @@ void MainWindow::on_actionShowFlights_triggered ()
 	if (Settings::instance ().protectFlightDatabase)
 	{
 		QString password=Settings::instance ().databaseInfo.password;
-		QString message=tr ("The database password is required to display the flight database.");
+		QString message=tr ("The database password must be entered to display the flight database.");
 
 		if (!verifyPassword (this, password, message))
 			return;

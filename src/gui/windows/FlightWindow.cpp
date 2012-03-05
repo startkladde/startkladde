@@ -919,46 +919,44 @@ void FlightWindow::checkFlightPhase1 (const Flight &flight, bool departNow)
 	// Note that we use the values from the passed flight, not from the editor
 	// fields.
 
-	// TODO TR: punctuation
-
 	if ((departNow || flight.getDeparted ()) && flight.departsHere () && idInvalid (flight.getLaunchMethodId ()))
-		errorCheck (tr ("No launch method specified"),
+		errorCheck (tr ("No launch method specified."),
 			ui.launchMethodInput);
 
 	if ((flight.getDeparted () || !flight.departsHere ()) && isNone (flight.getDepartureLocation ()))
-		errorCheck (tr ("No departure location specified"),
+		errorCheck (tr ("No departure location specified."),
 				ui.departureLocationInput);
 
 	if ((flight.getLanded () || !flight.landsHere ()) && isNone (flight.getLandingLocation ()))
-		errorCheck (tr ("No landing location specified"),
+		errorCheck (tr ("No landing location specified."),
 			ui.landingLocationInput);
 
 	if ((flight.departsHere ()!=flight.landsHere ()) && (flight.getDepartureLocation ().simplified ()==flight.getLandingLocation ().simplified ()))
-		errorCheck (tr ("Departure location and landing location are equal"),
+		errorCheck (tr ("Departure location and landing location are equal."),
 			flight.departsHere ()?ui.landingLocationInput:ui.departureLocationInput);
 
 	if (flight.getLanded () && flight.getDeparted () && flight.getDepartureTime ()>flight.getLandingTime ())
-		errorCheck (tr ("Landing time before departure time"),
+		errorCheck (tr ("Landing time before departure time."),
 			ui.landingTimeInput);
 
 	if (flight.departsHere () && flight.landsHere () && flight.getLanded () && !flight.getDeparted ())
-		errorCheck (tr ("Landing time not specified, but departure time specified"),
+		errorCheck (tr ("Landing time not specified, but departure time specified."),
 				ui.landingTimeInput);
 
 	if (flight.landsHere () && flight.getLanded () && flight.getNumLandings ()==0)
-		errorCheck (tr ("Landing time specified, but number of landings is 0"),
+		errorCheck (tr ("Landing time specified, but the number of landings is 0."),
 			ui.numLandingsInput);
 
 	if (flight.getTowflightLanded () && !flight.towflightLandsHere () && isNone (flight.getTowflightLandingLocation ()))
-		errorCheck (tr ("Towplane landing location not specified"),
+		errorCheck (tr ("Towplane landing location not specified."),
 			ui.towflightLandingLocationInput);
 
 	if (flight.getDeparted () && flight.getTowflightLanded () && flight.getDepartureTime ()>flight.getTowflightLandingTime ())
-		errorCheck (tr ("Towflight landing time before departure time"),
+		errorCheck (tr ("Towflight landing time before departure time."),
 			ui.towflightLandingTimeInput);
 
 	if (flight.getTowflightLanded () && !flight.getDeparted ())
-		errorCheck (tr ("Towflight landing time before departure time"),
+		errorCheck (tr ("Towflight landing time before departure time."),
 			ui.towflightLandingTimeInput);
 }
 
@@ -997,13 +995,13 @@ void FlightWindow::checkFlightPhase2 (const Flight &flight, bool departNow, cons
 
 	if (plane && launchMethod &&
 		plane->numSeats==1 && (flight.getType ()==Flight::typeGuestPrivate || flight.getType ()==Flight::typeGuestExternal) && launchMethod->type!=LaunchMethod::typeSelf)
-		errorCheck (tr ("According to the database, the plane %1 is a single seater, but the flight type is \"passenger flight\".")
+		errorCheck (tr ("According to the database, the plane %1 is a single seater,\nbut the flight type is \"passenger flight\".")
 			.arg (plane->registrationWithType ()),
 			ui.registrationInput);
 
 	if (plane && launchMethod &&
 		plane->numSeats==1 && flight.getType ()==Flight::typeTraining2 && launchMethod->type!=LaunchMethod::typeSelf)
-		errorCheck (tr ("According to the database, the plane %1 is a single seater, but the flight type is \"two-seated training\".")
+		errorCheck (tr ("According to the database, the plane %1 is a single seater,\nbut the flight type is \"two-seated training\".")
 			.arg (plane->registrationWithType ()),
 			ui.registrationInput);
 
@@ -1071,19 +1069,19 @@ void FlightWindow::checkFlightPhase3 (const Flight &flight, bool departNow, cons
 
 	// Pilot und Begleiter identisch
 	if (idValid (flight.getPilotId ()) && flight.getPilotId ()==flight.getCopilotId ())
-		errorCheck (tr ("Pilot and copilot are identical"),
+		errorCheck (tr ("Pilot and copilot are identical."),
 			ui.pilotLastNameInput);
 
 	if (idValid (flight.getPilotId ()) && flight.getPilotId ()==flight.getTowpilotId ())
-		errorCheck (tr ("Pilot and towpilot are identical"),
+		errorCheck (tr ("Pilot and towpilot are identical."),
 			ui.towpilotLastNameInput);
 
 	if (idValid (flight.getCopilotId ()) && flight.getCopilotId ()==flight.getTowpilotId ())
-		errorCheck (tr ("Copilot and towpilot are identical"),
+		errorCheck (tr ("Copilot and towpilot are identical."),
 			ui.towpilotLastNameInput);
 
 	if (flight.getType ()==Flight::typeTraining2 && !flight.copilotSpecified ())
-		errorCheck (tr ("Two-seated training without flight instructor"),
+		errorCheck (tr ("Two-seated training without flight instructor."),
 			ui.copilotLastNameInput);
 
 	if (plane && plane->numSeats==1 && flight.copilotSpecified ())
