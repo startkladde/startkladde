@@ -465,7 +465,6 @@ QString Flight::errorDescription (FlightError code) const
 {
 	switch (code)
 	{
-		// TODO tr for all; .arg
 		case ff_ok:
 			return qApp->translate ("Flight", "No errors");
 		case ff_keine_id:

@@ -118,8 +118,7 @@ void SunsetPluginBase::start ()
 	}
 	catch (FileOpenError &ex)
 	{
-		// TODO TR: use .arg
-		outputText (tr ("Error: ", "With trailing space")+ex.errorString);
+		outputText (tr ("Error: %1").arg (ex.errorString));
 	}
 }
 

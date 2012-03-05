@@ -42,8 +42,7 @@ bool confirmProblem (QWidget *parent, const QString title, const QString problem
 	 */
 {
 	// TODO: Buttons Yes/No, but with Esc handling
-	// TODO TR: use .arg
-	QString question=problem+qApp->translate ("dialogs", " Accept anyway?");
+	QString question=qApp->translate ("dialogs", "%1 Accept anyway?").arg (problem);
 	return yesNoQuestion (parent, title, question);
 }
 
