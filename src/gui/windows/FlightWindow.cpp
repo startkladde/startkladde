@@ -1052,7 +1052,7 @@ void FlightWindow::checkMedical (const Person *person, const QString &ofThePerso
 		// Regular medical check
 		if (person->medicalValidity < ui.dateInput->date ())
 			errorCheck (tr ("According to the database, the medical %1 expired on %2.")
-				.arg (ofThePersonText, toString (person->medicalValidity)), this);
+				.arg (ofThePersonText, person->medicalValidity.toString (Qt::DefaultLocaleShortDate)), this);
 	}
 	else
 	{

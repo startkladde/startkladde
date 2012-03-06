@@ -23,38 +23,14 @@ QDate validDate (const QDate &date, const QDate &invalidOption)
 		return invalidOption;
 }
 
-/**
- * Formats a date with a default format specification
- *
- * @param date the date to format
- * @param zeroPad whether to pad the components to a constant width with zeros
- * @return a string containing the formatted date, or an invalid string if the
- *         date is invalid
- */
-// TODO TR: better localized format
-QString toString (const QDate &date, bool zeroPad)
-{
-	if (date.isValid ())
-	{
-		if (zeroPad)
-			return date.toString (qApp->translate ("QDate", "MM/dd/yyyy"));
-		else
-			return date.toString (qApp->translate ("QDate", "M/d/yyyy"));
-	}
-	else
-	{
-		return QString ();
-	}
-}
-
-QString toString (const QDate &first, const QDate &last, const QString &separator, bool zeroPad)
+QString dateRangeToString (const QDate &first, const QDate &last, const QString &separator, Qt::DateFormat format)
 {
 	if (!first.isValid () || !last.isValid ())
-		return (qApp->translate ("QDate", "invalid"));
+		return qApp->translate ("QDate", "invalid");
 	else if (first==last)
-		return toString (first, zeroPad);
+		return first.toString (format);
 	else
-		return toString (first, zeroPad)+separator+toString (last, zeroPad);
+		return first.toString (format)+separator+last.toString (format);
 }
 
 QDate firstOfYear (int year)
@@ -69,5 +45,5 @@ QDate firstOfYear (const QDate &date)
 
 std::ostream &operator<< (std::ostream &s, const QDate &date)
 {
-	return s << toString (date, false);
+	return s << date.toString (Qt::ISODate);
 }

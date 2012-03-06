@@ -114,8 +114,7 @@ bool FlightListWindow::fetchFlights (const QDate &first, const QDate &last)
 
 	// Create and set the descriptive text: "1.1.2011 bis 31.12.2011: 123 Flüge"
 	int numFlights=flights.size ();
-	QString dateText=toString (currentFirst, currentLast, tr (" to "));
-	QString numFlightsText;
+	QString dateText=dateRangeToString (currentFirst, currentLast, tr (" to "), Qt::DefaultLocaleShortDate);
 
 	if (numFlights==0)
 		ui.captionLabel->setText (tr ("%1: no flights").arg (dateText));
