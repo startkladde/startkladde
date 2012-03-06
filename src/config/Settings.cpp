@@ -139,14 +139,16 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 //		plugins.append (new TestPlugin ("Foo:"));
 //		plugins.append (new TestPlugin ("Bar:", true, "TestPlugin", true));
 
-		// TODO TR: translate this - need to load the translator before or
-		// translate afterwards
 		plugins.append (new SunsetTimePlugin      (tr ("Sunset:")           , true, notr ("sunsets.txt")));
 		plugins.append (new SunsetCountdownPlugin (tr ("Time until sunset:"), true, notr ("sunsets.txt")));
 
-		plugins.append (new MetarPlugin (notr ("Weather:"), true, "EDDF", 15*60));
-		plugins.append (new MetarPlugin (""               , true, "EDDS", 15*60));
-		plugins.append (new MetarPlugin (""               , true, "EDDM", 15*60));
+		// Add METAR plugin instances for three well-known airports; when
+		// translating, the airport IDs should be replaced with airports in the
+		// country the translation is made for (e. g. a german translation
+		// might include Frankfurt as one of the airports).
+		plugins.append (new MetarPlugin (tr ("Weather:"), true, tr ("KSFO"), 15*60));
+		plugins.append (new MetarPlugin (""             , true, tr ("KJFK"), 15*60));
+		plugins.append (new MetarPlugin (""             , true, tr ("KFTW"), 15*60));
 	}
 
 	return plugins;
@@ -186,7 +188,6 @@ void Settings::readSettings ()
 
 	// *** Settings
 	// Data
-	// TODO TR: translator already loaded?
 	location      =s.value (notr ("location")      , tr ("Twiddlethorpe")).toString ();
 	recordTowpilot=s.value (notr ("recordTowpilot"), true            ).toBool ();
 	checkMedicals =s.value (notr ("checkMedicals") , true            ).toBool ();

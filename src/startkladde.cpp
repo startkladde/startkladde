@@ -362,14 +362,33 @@ void plugins_test ()
 #include "src/model/LaunchMethod.h" //remove
 #include "src/db/migrations/Migration_20100216135637_add_launch_methods.h"
 
+/**
+ * Loads the tranlation for the current system locale
+ */
+void loadTranslation (QTranslator &translator)
+{
+	// Get the system locale
+	QString locale = QLocale::system().name();
+
+	// Construct the translation filename
+	QString translationFileName="translations/startkladde_"+locale;
+
+	// Load the translator
+	std::cout << "Loading translation from " << translationFileName << "...";
+	bool result=translator.load (translationFileName);
+	if (result)
+		std::cout << "success" << std::endl;
+	else
+		std::cout << "failed, continuing without translation" << std::endl;
+}
+
 int main (int argc, char **argv)
 {
-	QApplication a (argc, argv); // Always
+	QApplication application (argc, argv);
 
-    QTranslator translator;
-    //translator.load ("startkladde_de");
-    a.installTranslator (&translator);
-
+	QTranslator translator;
+	loadTranslation (translator);
+    application.installTranslator (&translator);
 
 	qApp->addLibraryPath (qApp->applicationDirPath () + notr ("/plugins"));
 
@@ -405,7 +424,7 @@ int main (int argc, char **argv)
 	{
 		if (nonOptions.empty ())
 		{
-			ret=showGui (a, &translator);
+			ret=showGui (application, &translator);
 		}
 		else
 		{
