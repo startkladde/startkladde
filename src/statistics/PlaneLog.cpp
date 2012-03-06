@@ -161,14 +161,12 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<Flight> &flights, Cache &ca
 		if (flight.isTowflight ()) ++numTowFlights;
 	}
 
-	// TODO TR: test
 	if (numTowFlights==1)
 		comments << tr ("towflight");
 	else if (numTowFlights>1)
 		comments << tr ("towflights");
 
-	// TODO TR: capitalize
-	entry.comments=comments.join (notr ("; "));
+	entry.comments=firstToUpper (comments.join (notr ("; ")));
 
 	delete plane;
 	delete pilot;
