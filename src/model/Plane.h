@@ -70,7 +70,6 @@ class Plane: public Entity
 
 
 		// *** ObjectListWindow/ObjectEditorWindow helpers
-		// TODO TR this translates poorly, change?
 		static QString objectTypeDescription () { return qApp->translate ("Plane", "plane"); }
 		static QString objectTypeDescriptionDefinite () { return qApp->translate ("Plane", "the plane"); }
 		static QString objectTypeDescriptionPlural () { return qApp->translate ("Plane", "planes"); }

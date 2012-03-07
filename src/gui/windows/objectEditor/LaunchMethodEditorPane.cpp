@@ -4,6 +4,7 @@
 #include "src/db/cache/Cache.h"
 #include "src/util/qString.h"
 #include "src/notr.h"
+#include "src/text.h"
 
 // ******************
 // ** Construction **
@@ -38,7 +39,7 @@ void LaunchMethodEditorPane::fillData ()
 {
 	// Types
 	foreach (LaunchMethod::Type type, LaunchMethod::listTypes ())
-		ui.typeInput->addItem (LaunchMethod::typeString (type), type);
+		ui.typeInput->addItem (firstToUpper (LaunchMethod::typeString (type)), type);
 	ui.typeInput->setCurrentItemByItemData (LaunchMethod::typeOther);
 
 	// Person required

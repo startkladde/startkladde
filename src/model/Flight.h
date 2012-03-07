@@ -186,7 +186,6 @@ class Flight: public FlightBase
 
 
 		// *** ObjectListWindow/ObjectEditorWindow helpers
-		// TODO TR this translates poorly, change?
 		static QString objectTypeDescription () { return qApp->translate ("Flight", "flight"); }
 		static QString objectTypeDescriptionDefinite () { return qApp->translate ("Flight", "the flight"); }
 		static QString objectTypeDescriptionPlural () { return qApp->translate ("Flight", "flights"); }

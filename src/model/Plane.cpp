@@ -117,12 +117,12 @@ QString Plane::categoryText (Plane::Category category)
 {
 	switch (category)
 	{
-		case categoryAirplane:    return qApp->translate ("Plane", "Airplane");
-		case categoryGlider:      return qApp->translate ("Plane", "Glider");
-		case categoryMotorglider: return qApp->translate ("Plane", "Motorglider");
-		case categoryUltralight:  return qApp->translate ("Plane", "Ultralight");
-		case categoryOther:       return qApp->translate ("Plane", "Other");
-		case categoryNone:        return qApp->translate ("Plane", "None");
+		case categoryAirplane:    return qApp->translate ("Plane", "airplane");
+		case categoryGlider:      return qApp->translate ("Plane", "glider");
+		case categoryMotorglider: return qApp->translate ("Plane", "motorglider");
+		case categoryUltralight:  return qApp->translate ("Plane", "ultralight");
+		case categoryOther:       return qApp->translate ("Plane", "other");
+		case categoryNone:        return qApp->translate ("Plane", "none");
 		// no default
 	}
 
@@ -218,7 +218,7 @@ QVariant Plane::DefaultObjectModel::displayData (const Plane &object, int column
 		case 0: return object.registration;
 		case 1: return object.callsign;
 		case 2: return object.type;
-		case 3: return categoryText(object.category);
+		case 3: return firstToUpper (categoryText(object.category));
 		case 4: return object.numSeats>=0?QVariant (object.numSeats):QVariant (notr ("?"));
 		case 5: return object.club;
 		case 6: return object.comments;

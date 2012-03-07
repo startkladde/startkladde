@@ -60,7 +60,6 @@ class LaunchMethod: public Entity
 
 
 		// *** ObjectListWindow/ObjectEditorWindow helpers
-		// TODO TR this translates poorly, change?
 		static QString objectTypeDescription () { return qApp->translate ("LaunchMethod", "launch method"); }
 		static QString objectTypeDescriptionDefinite () { return qApp->translate ("LaunchMethod", "the launch method"); }
 		static QString objectTypeDescriptionPlural () { return qApp->translate ("LaunchMethod", "launch methods"); }

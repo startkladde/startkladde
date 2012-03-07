@@ -300,13 +300,17 @@ void FlightWindow::fillData ()
 	// *** Flight flightModes
 	const QList<Flight::Mode> flightModes=Flight::listModes ();
 	for (int i=0; i<flightModes.size (); ++i)
-		ui.flightModeInput->addItem (Flight::modeText (flightModes.at (i)), flightModes.at (i));
+		ui.flightModeInput->addItem (
+			firstToUpper (Flight::modeText (flightModes.at (i))),
+			flightModes.at (i));
 
 
 	// *** Towflight flightModes
 	const QList<Flight::Mode> towflightModes=Flight::listTowModes ();
 	for (int i=0; i<towflightModes.size(); ++i)
-		ui.towflightModeInput->addItem (Flight::modeText (towflightModes.at (i)), towflightModes.at (i));
+		ui.towflightModeInput->addItem (
+			firstToUpper (Flight::modeText (towflightModes.at (i))),
+			towflightModes.at (i));
 
 
 	// *** Launch methods
@@ -1322,8 +1326,7 @@ dbId FlightWindow::determinePlane (QString registration, QString description, QW
 	id=cache.getPlaneIdByRegistration (Plane::defaultRegistrationPrefix ()+registration);
 	if (idValid (id))
 	{
-		// TODO TR need this for beginning/middle of sentence, and also for determinePerson
-		QString title=tr ("%1 unknown").arg (description);
+		QString title=firstToUpper (tr ("%1 unknown").arg (description));
 		QString question=tr (
 			"The %1 %2 is unknown. However,\n"
 			"there is a plane with the registration %3.\n"
@@ -1334,7 +1337,7 @@ dbId FlightWindow::determinePlane (QString registration, QString description, QW
 			return id;
 	}
 
-	QString title=tr ("%1 unknown").arg (description);
+	QString title=firstToUpper (tr ("%1 unknown").arg (description));
 	QString question=tr (
 		"The %1 %2 is unknown.\n"
 		"Add it to the database?")
@@ -1476,8 +1479,7 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 			return invalidId;
 
 		// Case 7: confirm that the name is not known
-		// TODO TR proper capitalization
-		QString title=tr ("%1 not specified").arg (description);
+		QString title=firstToUpper (tr ("%1 not specified").arg (description));
 		QString problem=tr ("The %1 is not specified.").arg (description);
 
 		if (!confirmProblem (this, title, problem))
@@ -1502,8 +1504,7 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 	if (lastNameGiven && firstNameGiven && candidates.empty ())
 	{
 		// No person of that name was found in the database.
-		// TODO TR capitalization
-		QString title=tr ("%1 unknown").arg (description);
+		QString title=firstToUpper (tr ("%1 unknown").arg (description));
 		QString question=tr (
 			"The person %1 %2 (%3) is unknown.\nAdd it to the database?")
 			.arg (capitalize (firstName), capitalize (lastName), description);
@@ -1921,8 +1922,8 @@ void FlightWindow::updateSetupLabels ()
 
 	ui.towflightLandingTimeLabel->setText (currentTowLandsHere ()?textTowflightLandingTime:textTowflightEnd);
 
-	ui.pilotLabel  ->setText (Flight::typePilotDescription   (getCurrentFlightType ())+notr (":"));
-	ui.copilotLabel->setText (Flight::typeCopilotDescription (getCurrentFlightType ())+notr (":"));
+	ui.pilotLabel  ->setText (firstToUpper (Flight::typePilotDescription   (getCurrentFlightType ()))+notr (":"));
+	ui.copilotLabel->setText (firstToUpper (Flight::typeCopilotDescription (getCurrentFlightType ()))+notr (":"));
 }
 
 void FlightWindow::updateSetupButtons ()

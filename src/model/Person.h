@@ -52,7 +52,6 @@ class Person: public Entity
 
 
 		// *** ObjectListWindow/ObjectEditorWindow helpers
-		// TODO TR this translates poorly, change?
 		static QString objectTypeDescription () { return qApp->translate ("Person", "person"); }
 		static QString objectTypeDescriptionDefinite () { return qApp->translate ("Person", "the person"); }
 		static QString objectTypeDescriptionPlural () { return qApp->translate ("Person", "people"); }

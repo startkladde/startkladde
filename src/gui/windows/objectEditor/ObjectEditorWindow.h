@@ -81,7 +81,7 @@ template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DbManage
 			setWindowTitle (qApp->translate ("ObjectEditorWindow<T>", "Edit %1").arg (T::objectTypeDescription ()));
 			break;
 //		case modeDisplay:
-//			setWindowTitle (qApp->translate ("ObjectEditorWindow<T>", "%1 anzeigen").arg (T::objectTypeDescription ()));
+//			setWindowTitle (qApp->translate ("ObjectEditorWindow<T>", "Display %1").arg (T::objectTypeDescription ()));
 //			ui.buttonBox->setStandardButtons (QDialogButtonBox::Close);
 //			editorPane->setEnabled (false);
 //			break;

@@ -11,6 +11,7 @@
 #include "src/db/Query.h"
 #include "src/util/qString.h"
 #include "src/notr.h"
+#include "src/text.h"
 
 
 // ******************
@@ -116,10 +117,10 @@ QString LaunchMethod::typeString (LaunchMethod::Type type)
 {
 	switch (type)
 	{
-		case typeWinch : return qApp->translate ("LaunchMethod", "Winch launch"); break;
-		case typeAirtow: return qApp->translate ("LaunchMethod", "Airtow"); break;
-		case typeSelf  : return qApp->translate ("LaunchMethod", "Self launch"); break;
-		case typeOther : return qApp->translate ("LaunchMethod", "Other"); break;
+		case typeWinch : return qApp->translate ("LaunchMethod", "winch launch"); break;
+		case typeAirtow: return qApp->translate ("LaunchMethod", "airtow"); break;
+		case typeSelf  : return qApp->translate ("LaunchMethod", "self launch"); break;
+		case typeOther : return qApp->translate ("LaunchMethod", "other"); break;
 	}
 
 	return notr ("???");
@@ -173,7 +174,7 @@ QVariant LaunchMethod::DefaultObjectModel::displayData (const LaunchMethod &obje
 		case 1: return object.shortName;
 		case 2: return object.logString;
 		case 3: return object.keyboardShortcut;
-		case 4: return typeString (object.type);
+		case 4: return firstToUpper (typeString (object.type));
 		case 5: return object.isAirtow ()?object.towplaneRegistration:notr ("-");
 		case 6: return object.personRequired?qApp->translate ("LaunchMethod", "No"):qApp->translate ("LaunchMethod", "No");
 		case 7: return object.comments;

@@ -106,10 +106,8 @@ bool Flight::typeAlwaysHasCopilot (Flight::Type type)
 	return false;
 }
 
-// TODO TR: this translates poorly - remove (along with similar functions)?
 QString Flight::typePilotDescription (Flight::Type type)
 {
-	// TODO TR: capitalization?
 	switch (type)
 	{
 		case typeTraining2:

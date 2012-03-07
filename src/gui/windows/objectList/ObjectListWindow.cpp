@@ -236,8 +236,12 @@ template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, boo
 
 	if (objectUsed)
 	{
-		QString title=qApp->translate ("ObjectListWindow<T>", "%1 in use").arg (T::objectTypeDescription ());
-		QString text=qApp->translate ("ObjectListWindow<T>", "%1 %2 is in use and cannot be deleted.").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
+		QString title=firstToUpper (
+			qApp->translate ("ObjectListWindow<T>", "%1 in use")
+				.arg (T::objectTypeDescription ()));
+		QString text=firstToUpper (
+			qApp->translate ("ObjectListWindow<T>", "%1 %2 is in use and cannot be deleted.")
+				.arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ()));
 
 		if (cancelOption)
 			text+=qApp->translate ("ObjectListWindow<T>", " Continue?");
@@ -247,7 +251,7 @@ template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, boo
 		if (cancelOption)
 			buttons |= QMessageBox::Cancel;
 
-		if (QMessageBox::critical (this, title, firstToUpper (text), buttons, QMessageBox::Ok)==QMessageBox::Ok)
+		if (QMessageBox::critical (this, title, text, buttons, QMessageBox::Ok)==QMessageBox::Ok)
 			// Continue
 			return true;
 		else
