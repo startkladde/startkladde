@@ -1824,20 +1824,26 @@ void FlightWindow::disableWidgets (QWidget *widget0, QWidget *widget2, bool disa
 
 // TODO rename to departureTime
 // TODO TR mnemonics compatible with dialog?
-const QString textDepartureTimeAutomatic        =FlightWindow::tr ("Automatic");
-const QString textDepartureTimeDeparted         =FlightWindow::tr ("Departed");
-const QString textLandingTimeAutomatic          =FlightWindow::tr ("Automatic");
-const QString textLandingTimeLanded             =FlightWindow::tr ("Landed");
-const QString textTowflightLandingTimeAutomatic =FlightWindow::tr ("Automatic");
-const QString textTowflightLandingTimeLanded    =FlightWindow::tr ("Landed");
-const QString textTowflightLandingTimeEnded     =FlightWindow::tr ("Finished");
+const QString textDepartureTimeAutomatic        =FlightWindow::tr ("Au&tomatic");
+const QString textDepartureTimeDeparted         =FlightWindow::tr ("Depar&ted");
+
+const QString textLandingTimeAutomatic          =FlightWindow::tr ("&Automatic");
+const QString textLandingTimeLanded             =FlightWindow::tr ("L&anded");
+
+const QString textTowflightLandingTimeAutomatic =FlightWindow::tr ("A&utomatic");
+const QString textTowflightLandingTimeLanded    =FlightWindow::tr ("Lande&d");
+const QString textTowflightLandingTimeEnded     =FlightWindow::tr ("Finishe&d");
+
 const QString textTowflightLandingTime          =FlightWindow::tr ("Landing time towplane:");
 const QString textTowflightEnd                  =FlightWindow::tr ("Release time:");
-const QString textButtonOk                      =FlightWindow::tr ("OK");
-const QString textButtonDepartNow               =FlightWindow::tr ("Depart now");
-const QString textButtonDepartLater             =FlightWindow::tr ("Depart later");
-const QString textButtonLandNow                 =FlightWindow::tr ("Land now");
-const QString textButtonLandLater               =FlightWindow::tr ("Land later");
+
+//const QString textButtonOk                      =FlightWindow::tr ("OK");
+
+const QString textButtonDepartNow               =FlightWindow::tr ("Depart no&w");
+const QString textButtonLandNow                 =FlightWindow::tr ("Land no&w");
+
+const QString textButtonDepartLater             =FlightWindow::tr ("Depart &later");
+const QString textButtonLandLater               =FlightWindow::tr ("Land &later");
 
 
 /*

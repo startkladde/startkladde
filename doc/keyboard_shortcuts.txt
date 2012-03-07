@@ -32,7 +32,7 @@ Number of available letters: 18
 
 Unique words: 6/9 (must/should)
 
-Remaining letters: 12/9
+Remaining letters: 9/12
 Remaining words: 18
 
 
@@ -41,38 +41,40 @@ Unique letter:
 * number of landings . . . . . . . b
 
 Must be unique:
-* automatic  . . . . . . . . . . . u
-* automatic  . . . . . . . . . . . m
-* automatic  . . . . . . . . . . . o
-* depart now . . . . . . . . . . . w
-* depart later . . . . . . . . . . r
-* cancel . . . . . . . . . . . . . c
-* ok . . . . . . . . . . . . . . . k (either OK or depart now/later)
+* automatic/departed . . . . . . . t
+* automatic/landed . . . . . . . . a
+* automatic/landed/finished. . . . u/d
+* depart now/land now. . . . . . . w
+* depart later/land later. . . . . l
 
 Should be unique:
-* registration . . . . . . . . . . s - first item
-* departure time . . . . . . . . . d - frequently used for entering flights offline (dt automatic - lt automatic - departure time)
-* launch method  . . . . . . . . . a - important item
+* registration . . . . . . . . . . r - first item
+* departure time . . . . . . . . . p - frequently used for entering flights offline
+* launch method  . . . . . . . . . h - important item h
 
-Remaining:
-* last name  . . . . . . . . . . . l
-* first name . . . . . . . . . . . f
-* last name  . . . . . . . . . . . l
-* first name . . . . . . . . . . . f
-* [flight] mode  . . . . . . . . . h
-* towplane . . . . . . . . . . . . p
-* last name  . . . . . . . . . . . n
-* first name . . . . . . . . . . . n
-* towflight mode . . . . . . . . . h
-* landing time . . . . . . . . . . i
-* landing time towplane  . . . . . i
-* departure location . . . . . . . p
-* landing location . . . . . . . . g
-* landing location towplane  . . . t
-* comments . . . . . . . . . . . . t
-* accounting notes . . . . . . . . g
-* date . . . . . . . . . . . . . . e
-* errors . . . . . . . . . . . . . e
+Should avoid:
+* ok . . . . . . . . . . . . . . . o
+* cancel . . . . . . . . . . . . . c
+
+Remaining: efgimns
+* last name  (3x). . . . . . . . . . . . s     s
+* first name (3x). . . . . . . . . . . . f     f
+
+* [flight] mode  . . . . . . . . . . . . m
+* towplane . . . . . . . . . . . . . . . n
+* towflight mode . . . . . . . . . . . . m
+* landing time . . . . . . . . . . . . . m
+* landing time towplane/release time . . m
+* departure location . . . . . . . . . . i
+* landing location . . . . . . . . . . . g
+* landing location towplane  . . . . . . g
+* comments . . . . . . . . . . . . . . . n
+* accounting notes . . . . . . . . . . . i
+* date . . . . . . . . . . . . . . . . . e
+* errors . . . . . . . . . . . . . . . . e
+
+
+
 
 
 == SettingsWindow ==
@@ -119,3 +121,5 @@ Plugin path ..... p
 
 Ok ......... o
 Cancel ..... c
+
+
