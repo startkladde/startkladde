@@ -1054,17 +1054,17 @@ geladen werden:
         <translation>Schlepppilot</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="190"/>
+        <location filename="../src/model/Flight.h" line="189"/>
         <source>flight</source>
         <translation>Flug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="191"/>
+        <location filename="../src/model/Flight.h" line="190"/>
         <source>the flight</source>
         <translation>der Flug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="192"/>
+        <location filename="../src/model/Flight.h" line="191"/>
         <source>flights</source>
         <translation>Flüge</translation>
     </message>
@@ -1072,19 +1072,31 @@ geladen werden:
 <context>
     <name>Flight::Mode</name>
     <message>
-        <location filename="../src/model/Flight_Mode.cpp" line="24"/>
         <source>Local</source>
-        <translation>Lokal</translation>
+        <translation type="obsolete">Lokal</translation>
+    </message>
+    <message>
+        <source>Coming</source>
+        <translation type="obsolete">Kommt</translation>
+    </message>
+    <message>
+        <source>Leaving</source>
+        <translation type="obsolete">Geht</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Flight_Mode.cpp" line="24"/>
+        <source>local</source>
+        <translation>lokal</translation>
     </message>
     <message>
         <location filename="../src/model/Flight_Mode.cpp" line="25"/>
-        <source>Coming</source>
-        <translation>Kommt</translation>
+        <source>coming</source>
+        <translation>kommt</translation>
     </message>
     <message>
         <location filename="../src/model/Flight_Mode.cpp" line="26"/>
-        <source>Leaving</source>
-        <translation>Geht</translation>
+        <source>leaving</source>
+        <translation>geht</translation>
     </message>
 </context>
 <context>
@@ -1180,34 +1192,34 @@ geladen werden:
         <translation>Gast (E)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="117"/>
+        <location filename="../src/model/Flight_Type.cpp" line="115"/>
         <source>student</source>
         <translation>Flugschüler</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="122"/>
-        <location filename="../src/model/Flight_Type.cpp" line="128"/>
+        <location filename="../src/model/Flight_Type.cpp" line="120"/>
+        <location filename="../src/model/Flight_Type.cpp" line="126"/>
         <source>pilot</source>
         <translation>Pilot</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="124"/>
+        <location filename="../src/model/Flight_Type.cpp" line="122"/>
         <source>towpilot</source>
         <translation>Schlepppilot</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="136"/>
+        <location filename="../src/model/Flight_Type.cpp" line="134"/>
         <source>flight instructor</source>
         <translation>Fluglehrer</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="139"/>
+        <location filename="../src/model/Flight_Type.cpp" line="137"/>
         <source>passenger</source>
         <translation>Gast</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight_Type.cpp" line="143"/>
-        <location filename="../src/model/Flight_Type.cpp" line="149"/>
+        <location filename="../src/model/Flight_Type.cpp" line="141"/>
+        <location filename="../src/model/Flight_Type.cpp" line="147"/>
         <source>copilot</source>
         <translation>Copilot</translation>
     </message>
@@ -1216,13 +1228,13 @@ geladen werden:
     <name>FlightListWindow</name>
     <message>
         <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="70"/>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="156"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="155"/>
         <source>Enter date</source>
         <translation>Datum eingeben</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="70"/>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="156"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="155"/>
         <source>Enter date:</source>
         <translation>Datum eingeben:</translation>
     </message>
@@ -1232,12 +1244,12 @@ geladen werden:
         <translation> bis </translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="121"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="120"/>
         <source>%1: no flights</source>
         <translation>%1: keine Flüge</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="123"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="122"/>
         <source>%1: %n flight(s)</source>
         <translation>
             <numerusform>%1: %n Flug</numerusform>
@@ -1245,7 +1257,7 @@ geladen werden:
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="211"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="210"/>
         <source>%n flight(s) exported</source>
         <translation>
             <numerusform>%n Flug exportiert</numerusform>
@@ -1253,23 +1265,23 @@ geladen werden:
         </translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="172"/>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="210"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="171"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="209"/>
         <source>Export flight database</source>
         <translation>Flugdatenbank exportieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="173"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="172"/>
         <source>CSV files (*.csv);;All files (*)</source>
         <translation>CSV-Dateien (*.csv);;Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="217"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="216"/>
         <source>Exporting failed: %1</source>
         <translation>Exportieren fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="219"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="218"/>
         <source>Exporting failed</source>
         <translation>Exportieren fehlgeschlagen</translation>
     </message>
@@ -1549,13 +1561,13 @@ geladen werden:
         <translation>Flug editieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="636"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="640"/>
         <source>None</source>
         <comment>Error list entries</comment>
         <translation>Keine</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="907"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="911"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
@@ -1596,7 +1608,7 @@ geladen werden:
         <translation type="obsolete">Die Landezeit des Schleppflugs liegt vor der Startzeit</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="969"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="973"/>
         <source>Plane and towplane are identical.</source>
         <translation>Flugzeug und Schleppflugzeug sind identisch.</translation>
     </message>
@@ -1619,7 +1631,7 @@ but the launch method is self launch.</source>
 Es wurde jedoch Eigenstart als Startart angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="992"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="996"/>
         <source>According to the database, the plane %1 is an airplane,
 but the launch method is not self launch.</source>
         <translation>Laut Datenbank ist das Flugzeug %1 ein Motorflugzeug.
@@ -1636,44 +1648,44 @@ Es wurde jedoch der Flugtyp &quot;Gastflug&quot; angegeben.</translation>
 Es wurde jedoch der Flugtyp &quot;doppelsitzige Schulung&quot; angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1010"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1014"/>
         <source>According to the database, the towplane %1 (%2) is a glider.</source>
         <translation>Laut Datenbank ist das Schleppflugzeug %1 (%2) ein Segelflugzeug.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1015"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1019"/>
         <source>According to the database, the plane %1 is still flying.</source>
         <translation>Laut Datenbank fliegt das Flugzeug %1 noch.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1020"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1024"/>
         <source>According to the database, the towplane %1 is still flying.</source>
         <translation>Laut Datenbank fliegt das Schleppflugzeug %1 noch.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1054"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1058"/>
         <source>According to the database, the medical %1 expired on %2.</source>
         <translation>Laut Datenbank ist das Medical %1 am %2 abgelaufen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1060"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1064"/>
         <source>Medical check is activated, but the expiry date of the medical %1 is not known.</source>
         <translation>Es ist kein Ablaufdatum für das Medical %1 eingetragen, die Medicalprüfung ist aber aktiviert.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1088"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1092"/>
         <source>According to the database, the plane %1 is a single seater,
 but a copilot was specified.</source>
         <translation>Laut Datenbank ist das Flugzeug %1 einsitzig.
 Es wurde jedoch ein Begleiter angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1106"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1110"/>
         <source>According to the database, the towpilot %1 is still flying.</source>
         <translation>Laut Datenbank fliegt der Schlepppilot %1 noch.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1327"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1330"/>
         <source>The %1 %2 is unknown. However,
 there is a plane with the registration %3.
 Use this plane?</source>
@@ -1686,21 +1698,21 @@ Soll dieses Flugzeug verwendet werden?</translation>
         <translation type="obsolete">Pilot und Begleiter sind identisch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="974"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="978"/>
         <source>According to the database, the plane %1 is a glider,
 but the number of landings is greater than one.</source>
         <translation>Laut Datenbank ist das Flugzeug %1 ein Segelflugzeug.
 Es wurde jedoch mehr als eine Landung angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="980"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="984"/>
         <source>According to the database, the plane %1 is a glider,
 but a landing was specified without landing time.</source>
         <translation>Laut Datenbank ist das Flugzeug %1 ein Segelflugzeug.
 Es wurde jedoch eine Landung, aber keine Landezeit angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="986"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="990"/>
         <source>According to the database, the plane %1 is a glider,
 but the launch method is self launch.</source>
         <translation>Laut Datenbank ist das Flugzeug %1 ein Segelflugzeug.
@@ -1735,32 +1747,32 @@ but a copilot was specified.</source>
 Es wurde jedoch ein Begleiter angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="923"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="927"/>
         <source>No launch method specified.</source>
         <translation>Keine Startart angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="927"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="931"/>
         <source>No departure location specified.</source>
         <translation>Kein Startort angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="931"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="935"/>
         <source>No landing location specified.</source>
         <translation>Kein Zielort angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="935"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="939"/>
         <source>Departure location and landing location are equal.</source>
         <translation>Startort und Zielort sind identisch.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="939"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="943"/>
         <source>Landing time before departure time.</source>
         <translation>Die Landezeit liegt vor der Startzeit.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="943"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="947"/>
         <source>Landing time not specified, but departure time specified.</source>
         <translation>Es wurde eine Landezeit, aber keine Startzeit angegeben.</translation>
     </message>
@@ -1769,228 +1781,228 @@ Es wurde jedoch ein Begleiter angegeben.</translation>
         <translation type="obsolete">Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="947"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="951"/>
         <source>Landing time specified, but the number of landings is 0.</source>
         <translation>Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="951"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="955"/>
         <source>Towplane landing location not specified.</source>
         <translation>Es wurde kein Zielort für das Schleppflugzeug angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="955"/>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="959"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="963"/>
         <source>Towflight landing time before departure time.</source>
         <translation>Die Landezeit des Schleppflugs liegt vor der Startzeit.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="998"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1002"/>
         <source>According to the database, the plane %1 is a single seater,
 but the flight type is &quot;passenger flight&quot;.</source>
         <translation>Laut Datenbank ist das Flugzeug %1 einsitzig.
 Es wurde jedoch der Flugtyp &quot;Gastflug&quot; angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1004"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1008"/>
         <source>According to the database, the plane %1 is a single seater,
 but the flight type is &quot;two-seated training&quot;.</source>
         <translation>Laut Datenbank ist das Flugzeug %1 einsitzig.
 Es wurde jedoch der Flugtyp &quot;doppelsitzige Schulung&quot; angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1072"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1076"/>
         <source>Pilot and copilot are identical.</source>
         <translation>Pilot and copilot are identical.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1076"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1080"/>
         <source>Pilot and towpilot are identical.</source>
         <translation>Pilot und Schlepppilot sind identisch.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1080"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1084"/>
         <source>Copilot and towpilot are identical.</source>
         <translation>Copilot and towpilot are identical.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1084"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1088"/>
         <source>Two-seated training without flight instructor.</source>
         <translation>Doppelsitzige Schulung ohne Fluglehrer.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1094"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1098"/>
         <source>According to the database, the pilot %1 is still flying.</source>
         <translation>Laut Datenbank fliegt der Pilot %1 noch.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1100"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1104"/>
         <source>According to the database, the copilot %1 is still flying.</source>
         <translation>Laut Datenbank fliegt der Begleiter %1 noch.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1113"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1117"/>
         <source>of the student</source>
         <translation>des Flugschülers</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1113"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1117"/>
         <source>of the pilot</source>
         <translation>des Piloten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1118"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1122"/>
         <source>of the flight instructor</source>
         <translation>des Fluglehrers</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1127"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1131"/>
         <source>plane</source>
         <translation>Flugzeug</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1131"/>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1139"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1135"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1143"/>
         <source>towplane</source>
         <translation>Schleppflugzeug</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1194"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1198"/>
         <source>towpilot</source>
         <translation>Schlepppilot</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1306"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1310"/>
         <source>No %1 specified</source>
         <translation>Kein %1 angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1307"/>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1481"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1311"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1483"/>
         <source>The %1 is not specified.</source>
         <translation>Es wurde kein %1 angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1326"/>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1337"/>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1506"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1329"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1340"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1507"/>
         <source>%1 unknown</source>
         <translation>%1 nicht bekannt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1338"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1341"/>
         <source>The %1 %2 is unknown.
 Add it to the database?</source>
         <translation>Das %1 %2 ist nicht bekannt.
 Soll es in die Datenbank aufgenommen werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1465"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1468"/>
         <source>Name is &quot;+1&quot;</source>
         <translation>&quot;+1&quot; als Name angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1466"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1469"/>
         <source>The name is &quot;+1&quot;. For passenger flights, the flight type &quot;passenger flight&quot; should be used instead.</source>
         <translation>Es wurde &quot;+1&quot; als Name angegeben. Für Gastflüge sollte stattdessen der Flugtyp &quot;Gastflug&quot; verwendet werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1480"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1482"/>
         <source>%1 not specified</source>
         <translation>Kein %1 angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1507"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1508"/>
         <source>The person %1 %2 (%3) is unknown.
 Add it to the database?</source>
         <translation>Die Person %1 %2 (%3) ist nicht bekannt.
 Soll sie in die Datenbank aufgenommen werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1524"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1525"/>
         <source>Person selection</source>
         <translation>Personenauswahl</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1528"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1529"/>
         <source>Different people are possible. Please select (%1):</source>
         <translation>Es kommen mehrere Personen in Frage. Bitte auswählen (%1):</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1531"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1532"/>
         <source>Only the last name was specified. Please select (%1):</source>
         <translation>Es wurde nur ein Nachname angegeben. Bitte auswählen (%1):</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1534"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1535"/>
         <source>Only the first name was specified. Please select (%1):</source>
         <translation>Es wurde nur ein Vorname angegeben. Bitte auswählen (%1):</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1714"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1715"/>
         <source>Save error</source>
         <translation>Fehler beim Speichern</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1715"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1716"/>
         <source>An error occured while writing the flight to the datbase</source>
         <translation>Beim Speichern des Flugs in der Datenbank ist ein Fehler aufgetreten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1826"/>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1828"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1827"/>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1830"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1833"/>
         <source>Automatic</source>
         <translation>Automatisch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1827"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1828"/>
         <source>Departed</source>
         <translation>Gestartet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1829"/>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1831"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1834"/>
         <source>Landed</source>
         <translation>Galandet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1832"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1835"/>
         <source>Finished</source>
         <translation>Beendet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1833"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1837"/>
         <source>Landing time towplane:</source>
         <translation>Landezeit Schleppflugzeug:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1834"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1838"/>
         <source>Release time:</source>
         <translation>Schleppende:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1835"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1840"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1836"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1842"/>
         <source>Depart now</source>
         <translation>Jetzt starten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1837"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1845"/>
         <source>Depart later</source>
         <translation>Später starten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1838"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1843"/>
         <source>Land now</source>
         <translation>Jetzt landen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1839"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1846"/>
         <source>Land later</source>
         <translation>Später landen</translation>
     </message>
@@ -2267,42 +2279,58 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>LaunchMethod</name>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="119"/>
         <source>Winch launch</source>
-        <translation>Windenstart</translation>
+        <translation type="obsolete">Windenstart</translation>
+    </message>
+    <message>
+        <source>Airtow</source>
+        <translation type="obsolete">F-Schlepp</translation>
+    </message>
+    <message>
+        <source>Self launch</source>
+        <translation type="obsolete">Eigenstart</translation>
+    </message>
+    <message>
+        <source>Other</source>
+        <translation type="obsolete">Sonstige</translation>
     </message>
     <message>
         <location filename="../src/model/LaunchMethod.cpp" line="120"/>
-        <source>Airtow</source>
-        <translation>F-Schlepp</translation>
+        <source>winch launch</source>
+        <translation>Windenstart</translation>
     </message>
     <message>
         <location filename="../src/model/LaunchMethod.cpp" line="121"/>
-        <source>Self launch</source>
-        <translation>Eigenstart</translation>
+        <source>airtow</source>
+        <translation>F-Schlepp</translation>
     </message>
     <message>
         <location filename="../src/model/LaunchMethod.cpp" line="122"/>
-        <source>Other</source>
+        <source>self launch</source>
+        <translation>Eigenstart</translation>
+    </message>
+    <message>
+        <location filename="../src/model/LaunchMethod.cpp" line="123"/>
+        <source>other</source>
         <translation>Sonstige</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="178"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="179"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.h" line="64"/>
+        <location filename="../src/model/LaunchMethod.h" line="63"/>
         <source>launch method</source>
         <translation>Startart</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.h" line="65"/>
+        <location filename="../src/model/LaunchMethod.h" line="64"/>
         <source>the launch method</source>
         <translation>die Startart</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.h" line="66"/>
+        <location filename="../src/model/LaunchMethod.h" line="65"/>
         <source>launch methods</source>
         <translation>Startarten</translation>
     </message>
@@ -2310,47 +2338,47 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>LaunchMethod::DefaultObjectModel</name>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="152"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="153"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="153"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="154"/>
         <source>Short name</source>
         <translation>Kürzel</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="154"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="155"/>
         <source>Logbook label</source>
         <translation>Flugbuch-Bezeichnung</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="155"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="156"/>
         <source>Keyboard shortcut</source>
         <translation>Tastenkürzel</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="156"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="157"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="157"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="158"/>
         <source>Towplane</source>
         <translation>Schleppflugzeug</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="158"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="159"/>
         <source>Person required</source>
         <translation>Person erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="159"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="160"/>
         <source>Comments</source>
         <translation>Bemerkungen</translation>
     </message>
     <message>
-        <location filename="../src/model/LaunchMethod.cpp" line="161"/>
+        <location filename="../src/model/LaunchMethod.cpp" line="162"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
@@ -2358,27 +2386,27 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>LaunchMethodEditorPane</name>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="45"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="46"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="46"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="47"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="100"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="101"/>
         <source>Name not specified</source>
         <translation>Es wurde kein Name angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="101"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="102"/>
         <source>Short name not specified</source>
         <translation>Es wurde kein Kürzel angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="102"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="103"/>
         <source>Logbook label not specified</source>
         <translation>Es wurde keine Flugbuch-Bezeichnung angegeben</translation>
     </message>
@@ -3501,32 +3529,32 @@ Konfiguration: %2</translation>
         <translation>f</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="239"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="240"/>
         <source>%1 in use</source>
         <translation>%1 benutzt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="240"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="243"/>
         <source>%1 %2 is in use and cannot be deleted.</source>
         <translation>%1 %2 wird verwendet und kann daher nicht gelöscht werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="243"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="247"/>
         <source> Continue?</source>
         <translation>Fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="296"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="300"/>
         <source>Delete %1?</source>
         <translation>%1 löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="297"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="301"/>
         <source>Do you want to delete %1 %2?</source>
         <translation>Soll %1 %2 gelöscht werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="449"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="453"/>
         <source>The database password must be entered to edit %1.</source>
         <translation>Zum Editieren der %1 muss das Datenbankpasswort eingegeben werden.</translation>
     </message>
@@ -3629,27 +3657,27 @@ Konfiguration: %2</translation>
 <context>
     <name>Person</name>
     <message>
-        <location filename="../src/model/Person.h" line="56"/>
+        <location filename="../src/model/Person.h" line="55"/>
         <source>person</source>
         <translation>Person</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.h" line="57"/>
+        <location filename="../src/model/Person.h" line="56"/>
         <source>the person</source>
         <translation>die Person</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.h" line="58"/>
+        <location filename="../src/model/Person.h" line="57"/>
         <source>people</source>
         <translation>Personen</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="135"/>
+        <location filename="../src/model/Person.cpp" line="139"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="135"/>
+        <location filename="../src/model/Person.cpp" line="138"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
@@ -3697,7 +3725,7 @@ Konfiguration: %2</translation>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="134"/>
+        <location filename="../src/model/Person.cpp" line="136"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
@@ -3979,34 +4007,28 @@ aktiviert werden.</translation>
 <context>
     <name>Plane</name>
     <message>
-        <location filename="../src/model/Plane.cpp" line="120"/>
         <source>Airplane</source>
-        <translation>Motorflugzeug</translation>
+        <translation type="obsolete">Motorflugzeug</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.cpp" line="121"/>
         <source>Glider</source>
-        <translation>Segelflugzeug</translation>
+        <translation type="obsolete">Segelflugzeug</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.cpp" line="122"/>
         <source>Motorglider</source>
-        <translation>Motorsegler</translation>
+        <translation type="obsolete">Motorsegler</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.cpp" line="123"/>
         <source>Ultralight</source>
-        <translation>Ultraleicht</translation>
+        <translation type="obsolete">Ultraleicht</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.cpp" line="124"/>
         <source>Other</source>
-        <translation>Sonstige</translation>
+        <translation type="obsolete">Sonstige</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.cpp" line="125"/>
         <source>None</source>
-        <translation>Keine</translation>
+        <translation type="obsolete">Keine</translation>
     </message>
     <message>
         <location filename="../src/model/Plane.h" line="54"/>
@@ -4015,19 +4037,49 @@ aktiviert werden.</translation>
         <translation>D-</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.h" line="74"/>
+        <location filename="../src/model/Plane.h" line="73"/>
         <source>plane</source>
         <translation>Flugzeug</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.h" line="75"/>
+        <location filename="../src/model/Plane.h" line="74"/>
         <source>the plane</source>
         <translation>das Flugzeug</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.h" line="76"/>
+        <location filename="../src/model/Plane.h" line="75"/>
         <source>planes</source>
         <translation>Flugzeuge</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="120"/>
+        <source>airplane</source>
+        <translation>Motorflugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="121"/>
+        <source>glider</source>
+        <translation>Segelflugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="122"/>
+        <source>motorglider</source>
+        <translation>Motorsegler</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="123"/>
+        <source>ultralight</source>
+        <translation>Ultraleicht</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="124"/>
+        <source>other</source>
+        <translation>Sonstige</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Plane.cpp" line="125"/>
+        <source>none</source>
+        <translation>Keine</translation>
     </message>
 </context>
 <context>
@@ -4221,72 +4273,72 @@ aktiviert werden.</translation>
         <translation>h:mm</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="166"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="165"/>
         <source>towflight</source>
         <translation>Schleppflug</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="168"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="167"/>
         <source>towflights</source>
         <translation>Schleppflüge</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="358"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="356"/>
         <source>Registration</source>
         <translation>Kennzeichen</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="359"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="357"/>
         <source>Model</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="360"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="358"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="361"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="359"/>
         <source>Pilot</source>
         <translation>Pilot</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="362"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="360"/>
         <source>Passengers</source>
         <translation>Insassen</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="363"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="361"/>
         <source>Departure location</source>
         <translation>Startort</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="364"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="362"/>
         <source>Landing location</source>
         <translation>Zielort</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="365"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="363"/>
         <source>Departure time</source>
         <translation>Startzeit</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="366"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="364"/>
         <source>Landing time</source>
         <translation>Landezeit</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="367"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="365"/>
         <source>Number of landings</source>
         <translation>Anzahl Landungen</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="368"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="366"/>
         <source>Time airborne</source>
         <translation>Betriebsdauer</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="369"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="367"/>
         <source>Comments</source>
         <translation>Bemerkungen</translation>
     </message>
@@ -4320,17 +4372,15 @@ aktiviert werden.</translation>
 <context>
     <name>QDate</name>
     <message>
-        <location filename="../src/util/qDate.cpp" line="40"/>
         <source>MM/dd/yyyy</source>
-        <translation>dd.MM.yyyy</translation>
+        <translation type="obsolete">dd.MM.yyyy</translation>
     </message>
     <message>
-        <location filename="../src/util/qDate.cpp" line="42"/>
         <source>M/d/yyyy</source>
-        <translation>d.M.yyyy</translation>
+        <translation type="obsolete">d.M.yyyy</translation>
     </message>
     <message>
-        <location filename="../src/util/qDate.cpp" line="53"/>
+        <location filename="../src/util/qDate.cpp" line="29"/>
         <source>invalid</source>
         <translation>ungültig</translation>
     </message>
