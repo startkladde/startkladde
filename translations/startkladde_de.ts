@@ -1949,62 +1949,113 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>Beim Speichern des Flugs in der Datenbank ist ein Fehler aufgetreten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1827"/>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1830"/>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1833"/>
-        <source>Automatic</source>
-        <translation>Automatisch</translation>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1825"/>
+        <source>Au&amp;tomatic</source>
+        <translation type="unfinished">Automatisch</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1826"/>
+        <source>Depar&amp;ted</source>
+        <translation type="unfinished">Gestartet</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1828"/>
-        <source>Departed</source>
-        <translation>Gestartet</translation>
+        <source>&amp;Automatic</source>
+        <translation type="unfinished">Automatisch</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1829"/>
+        <source>L&amp;anded</source>
+        <translation type="unfinished">Galandet</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1831"/>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1834"/>
-        <source>Landed</source>
-        <translation>Galandet</translation>
+        <source>A&amp;utomatic</source>
+        <translation type="unfinished">Automati&amp;sch</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1832"/>
+        <source>Lande&amp;d</source>
+        <translation type="unfinished">Galandet</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1833"/>
+        <source>Finishe&amp;d</source>
+        <translation type="unfinished">Beendet</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1835"/>
-        <source>Finished</source>
-        <translation>Beendet</translation>
+        <source>Landing ti&amp;me towplane:</source>
+        <translation type="unfinished">Landezeit Schleppflugzeug:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1837"/>
-        <source>Landing time towplane:</source>
-        <translation>Landezeit Schleppflugzeug:</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1838"/>
-        <source>Release time:</source>
-        <translation>Schleppende:</translation>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1836"/>
+        <source>Release ti&amp;me:</source>
+        <translation type="unfinished">Schleppende:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1840"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Depart n&amp;ow</source>
+        <translation type="unfinished">Jetzt starten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1842"/>
-        <source>Depart now</source>
-        <translation>Jetzt starten</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1845"/>
-        <source>Depart later</source>
-        <translation>Später starten</translation>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1841"/>
+        <source>Land n&amp;ow</source>
+        <translation type="unfinished">Jetzt landen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1843"/>
-        <source>Land now</source>
-        <translation>Jetzt landen</translation>
+        <source>Depart &amp;later</source>
+        <translation type="unfinished">Später starten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1846"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1844"/>
+        <source>Land &amp;later</source>
+        <translation type="unfinished">Später landen</translation>
+    </message>
+    <message>
+        <source>Automatic</source>
+        <translation type="obsolete">Automatisch</translation>
+    </message>
+    <message>
+        <source>Departed</source>
+        <translation type="obsolete">Gestartet</translation>
+    </message>
+    <message>
+        <source>Landed</source>
+        <translation type="obsolete">Galandet</translation>
+    </message>
+    <message>
+        <source>Finished</source>
+        <translation type="obsolete">Beendet</translation>
+    </message>
+    <message>
+        <source>Landing time towplane:</source>
+        <translation type="obsolete">Landezeit Schleppflugzeug:</translation>
+    </message>
+    <message>
+        <source>Release time:</source>
+        <translation type="obsolete">Schleppende:</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="obsolete">OK</translation>
+    </message>
+    <message>
+        <source>Depart now</source>
+        <translation type="obsolete">Jetzt starten</translation>
+    </message>
+    <message>
+        <source>Depart later</source>
+        <translation type="obsolete">Später starten</translation>
+    </message>
+    <message>
+        <source>Land now</source>
+        <translation type="obsolete">Jetzt landen</translation>
+    </message>
+    <message>
         <source>Land later</source>
-        <translation>Später landen</translation>
+        <translation type="obsolete">Später landen</translation>
     </message>
 </context>
 <context>
@@ -2015,9 +2066,8 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>FlightWindow</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="53"/>
         <source>Regi&amp;stration:</source>
-        <translation>&amp;Kennzeichen:</translation>
+        <translation type="obsolete">&amp;Kennzeichen:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="73"/>
@@ -2036,54 +2086,56 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>Pilot:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="197"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="107"/>
+        <source>La&amp;st name:</source>
+        <comment>Pilot</comment>
+        <translation type="unfinished">&amp;Nachname:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="157"/>
+        <source>La&amp;st name:</source>
+        <comment>Copilot</comment>
+        <translation type="unfinished">&amp;Nachname:</translation>
+    </message>
+    <message>
         <source>Flig&amp;ht mode:</source>
-        <translation>Flugmo&amp;dus:</translation>
+        <translation type="obsolete">Flugmo&amp;dus:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="210"/>
         <source>L&amp;aunch method:</source>
-        <translation>Starta&amp;rt:</translation>
+        <translation type="obsolete">Starta&amp;rt:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="223"/>
         <source>Tow&amp;plane:</source>
-        <translation>Sch&amp;leppflugzeug:</translation>
+        <translation type="obsolete">Sch&amp;leppflugzeug:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="301"/>
         <source>Towflig&amp;ht mode:</source>
-        <translation>Mo&amp;dus Schleppflug:</translation>
+        <translation type="obsolete">Mo&amp;dus Schleppflug:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="314"/>
         <source>&amp;Departure time:</source>
-        <translation>Startze&amp;it:</translation>
+        <translation type="obsolete">Startze&amp;it:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="382"/>
         <source>Landing t&amp;ime:</source>
-        <translation>Lande&amp;zeit:</translation>
+        <translation type="obsolete">Lande&amp;zeit:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="450"/>
         <source>Landing t&amp;ime towplane:</source>
-        <translation>Landezeit Schl&amp;eppflugzeug:</translation>
+        <translation type="obsolete">Landezeit Schl&amp;eppflugzeug:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="518"/>
         <source>De&amp;parture location:</source>
-        <translation>Sta&amp;rtort:</translation>
+        <translation type="obsolete">Sta&amp;rtort:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="538"/>
         <source>Landin&amp;g location:</source>
-        <translation>Zie&amp;lort:</translation>
+        <translation type="obsolete">Zie&amp;lort:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="558"/>
         <source>Landing location &amp;towplane:</source>
-        <translation>&amp;Zielort Schleppflugzeug:</translation>
+        <translation type="obsolete">&amp;Zielort Schleppflugzeug:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="578"/>
@@ -2091,14 +2143,12 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>Anzahl Landun&amp;gen:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="626"/>
         <source>Commen&amp;ts:</source>
-        <translation>&amp;Bemerkungen:</translation>
+        <translation type="obsolete">&amp;Bemerkungen:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="639"/>
         <source>Accountin&amp;g notes:</source>
-        <translation>Abrechnungshin&amp;weise:</translation>
+        <translation type="obsolete">Abrechnungshin&amp;weise:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="659"/>
@@ -2111,15 +2161,19 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>Begleiter:</translation>
     </message>
     <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="53"/>
+        <source>&amp;Registration:</source>
+        <translation type="unfinished">&amp;Kennzeichen:</translation>
+    </message>
+    <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="87"/>
         <source>Flight t&amp;ype:</source>
         <translation>Flugt&amp;yp:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="107"/>
         <source>&amp;Last name:</source>
         <comment>Pilot</comment>
-        <translation>&amp;Nachname:</translation>
+        <translation type="obsolete">&amp;Nachname:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="127"/>
@@ -2128,16 +2182,34 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>&amp;Vorname:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="157"/>
         <source>&amp;Last name:</source>
         <comment>Copilot</comment>
-        <translation>Nac&amp;hname:</translation>
+        <translation type="obsolete">Nac&amp;hname:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="177"/>
         <source>&amp;First name:</source>
         <comment>Copilot</comment>
         <translation>Vorna&amp;me:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="197"/>
+        <source>Fli&amp;ght mode:</source>
+        <translation type="unfinished">Flugmo&amp;dus:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="210"/>
+        <source>Launch met&amp;hod:</source>
+        <translation type="unfinished">Starta&amp;rt:</translation>
+    </message>
+    <message>
+        <source>To&amp;wpla:</source>
+        <translation type="obsolete">Schleppflugzeug</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="223"/>
+        <source>To&amp;wplane:</source>
+        <translation type="unfinished">&amp;Schleppflugzeug:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="240"/>
@@ -2151,21 +2223,93 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="261"/>
-        <source>Last &amp;name:</source>
+        <source>La&amp;st name:</source>
         <comment>Towpilot</comment>
-        <translation>Nac&amp;hname:</translation>
+        <translation type="unfinished">&amp;Nachname:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="281"/>
-        <source>First &amp;name:</source>
+        <source>&amp;First name:</source>
         <comment>Towpilot</comment>
-        <translation>Vorna&amp;me:</translation>
+        <translation type="unfinished">&amp;Vorname:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="301"/>
+        <source>Towfli&amp;ght mode:</source>
+        <translation type="unfinished">Mo&amp;dus Schleppflug:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="314"/>
+        <source>De&amp;parture time:</source>
+        <translation type="unfinished">Startze&amp;it:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="324"/>
+        <source>Au&amp;tomatic</source>
+        <comment>Departure time</comment>
+        <translation type="unfinished">Automatisch</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="382"/>
+        <source>Landing ti&amp;me:</source>
+        <translation type="unfinished">Lande&amp;zeit:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="392"/>
+        <source>&amp;Automatic</source>
+        <comment>Landing time</comment>
+        <translation type="unfinished">Automatisch</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="450"/>
+        <source>Landing ti&amp;me towplane:</source>
+        <translation type="unfinished">Landezeit Schleppflugzeug:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="460"/>
+        <source>A&amp;utomatic</source>
+        <comment>Landing time towplane</comment>
+        <translation type="unfinished">Automati&amp;sch</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="518"/>
+        <source>Departure locat&amp;ion:</source>
+        <translation type="unfinished">Sta&amp;rtort:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="538"/>
+        <source>Landing locat&amp;ion:</source>
+        <translation type="unfinished">Zie&amp;lort:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="558"/>
+        <source>Landing locat&amp;ion towplane:</source>
+        <translation type="unfinished">&amp;Zielort Schleppflugzeug:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="626"/>
+        <source>Comme&amp;nts:</source>
+        <translation type="unfinished">&amp;Bemerkungen:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="639"/>
+        <source>Accounti&amp;ng notes:</source>
+        <translation type="unfinished">Abrechnungshin&amp;weise:</translation>
+    </message>
+    <message>
+        <source>Last &amp;name:</source>
+        <comment>Towpilot</comment>
+        <translation type="obsolete">Nac&amp;hname:</translation>
+    </message>
+    <message>
+        <source>First &amp;name:</source>
+        <comment>Towpilot</comment>
+        <translation type="obsolete">Vorna&amp;me:</translation>
+    </message>
+    <message>
         <source>A&amp;utomatic</source>
         <comment>Departure time</comment>
-        <translation>Automati&amp;sch</translation>
+        <translation type="obsolete">Automati&amp;sch</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="349"/>
@@ -2182,16 +2326,14 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>UTC</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="392"/>
         <source>Auto&amp;matic</source>
         <comment>Landing time</comment>
-        <translation>&amp;Automatisch</translation>
+        <translation type="obsolete">&amp;Automatisch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="460"/>
         <source>Aut&amp;omatic</source>
         <comment>Landing time towplane</comment>
-        <translation>Au&amp;tomatisch</translation>
+        <translation type="obsolete">Au&amp;tomatisch</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="697"/>

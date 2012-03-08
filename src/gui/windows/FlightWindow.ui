@@ -194,7 +194,7 @@
           <item row="7" column="0">
            <widget class="SkLabel" name="flightModeLabel">
             <property name="text">
-             <string>Flight &amp;mode:</string>
+             <string>Fli&amp;ght mode:</string>
             </property>
             <property name="buddy">
              <cstring>flightModeInput</cstring>
@@ -220,7 +220,7 @@
           <item row="9" column="0">
            <widget class="SkLabel" name="towplaneRegistrationLabel">
             <property name="text">
-             <string>Towpla&amp;ne:</string>
+             <string>To&amp;wplane:</string>
             </property>
             <property name="buddy">
              <cstring>towplaneRegistrationInput</cstring>
@@ -298,7 +298,7 @@
           <item row="13" column="0">
            <widget class="SkLabel" name="towflightModeLabel">
             <property name="text">
-             <string>Towflight &amp;mode:</string>
+             <string>Towfli&amp;ght mode:</string>
             </property>
             <property name="buddy">
              <cstring>towflightModeInput</cstring>
@@ -535,7 +535,7 @@
           <item row="18" column="0">
            <widget class="SkLabel" name="landingLocationLabel">
             <property name="text">
-             <string>Landin&amp;g location:</string>
+             <string>Landing locat&amp;ion:</string>
             </property>
             <property name="buddy">
              <cstring>landingLocationInput</cstring>
@@ -555,7 +555,7 @@
           <item row="19" column="0">
            <widget class="SkLabel" name="towflightLandingLocationLabel">
             <property name="text">
-             <string>Landin&amp;g location towplane:</string>
+             <string>Landing locat&amp;ion towplane:</string>
             </property>
             <property name="buddy">
              <cstring>towflightLandingLocationInput</cstring>
@@ -636,7 +636,7 @@
           <item row="22" column="0">
            <widget class="SkLabel" name="accountingNoteLabel">
             <property name="text">
-             <string>Account&amp;ing notes:</string>
+             <string>Accounti&amp;ng notes:</string>
             </property>
             <property name="buddy">
              <cstring>accountingNoteInput</cstring>

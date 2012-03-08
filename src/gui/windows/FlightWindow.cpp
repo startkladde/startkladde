@@ -1822,8 +1822,6 @@ void FlightWindow::disableWidgets (QWidget *widget0, QWidget *widget2, bool disa
 // ** Input field state update **
 // ******************************
 
-// TODO rename to departureTime
-// TODO TR mnemonics compatible with dialog?
 const QString textDepartureTimeAutomatic        =FlightWindow::tr ("Au&tomatic");
 const QString textDepartureTimeDeparted         =FlightWindow::tr ("Depar&ted");
 
@@ -1834,13 +1832,13 @@ const QString textTowflightLandingTimeAutomatic =FlightWindow::tr ("A&utomatic")
 const QString textTowflightLandingTimeLanded    =FlightWindow::tr ("Lande&d");
 const QString textTowflightLandingTimeEnded     =FlightWindow::tr ("Finishe&d");
 
-const QString textTowflightLandingTime          =FlightWindow::tr ("Landing time towplane:");
-const QString textTowflightEnd                  =FlightWindow::tr ("Release time:");
+const QString textTowflightLandingTime          =FlightWindow::tr ("Landing ti&me towplane:");
+const QString textTowflightEnd                  =FlightWindow::tr ("Release ti&me:");
 
 //const QString textButtonOk                      =FlightWindow::tr ("OK");
 
-const QString textButtonDepartNow               =FlightWindow::tr ("Depart no&w");
-const QString textButtonLandNow                 =FlightWindow::tr ("Land no&w");
+const QString textButtonDepartNow               =FlightWindow::tr ("Depart n&ow");
+const QString textButtonLandNow                 =FlightWindow::tr ("Land n&ow");
 
 const QString textButtonDepartLater             =FlightWindow::tr ("Depart &later");
 const QString textButtonLandLater               =FlightWindow::tr ("Land &later");

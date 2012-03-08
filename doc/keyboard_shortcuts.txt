@@ -23,6 +23,13 @@ letters that appear in few items.
 
 == FlightWindow ==
 
+Buttons are one of:
+* OK/Cancel
+* Depart now/Depart later/Cancel
+* Land now/Land later/Cancel
+=> O can be reused for "now"
+
+
 === English ===
 
 Total letters: 26
@@ -43,14 +50,14 @@ Unique letter:
 Must be unique:
 * automatic/departed . . . . . . . t
 * automatic/landed . . . . . . . . a
-* automatic/landed/finished. . . . u/d
-* depart now/land now. . . . . . . w
+* automatic/landed/finished. . . . u/d/d
+* depart now/land now. . . . . . . o
 * depart later/land later. . . . . l
 
 Should be unique:
 * registration . . . . . . . . . . r - first item
 * departure time . . . . . . . . . p - frequently used for entering flights offline
-* launch method  . . . . . . . . . h - important item h
+* launch method  . . . . . . . . . h - important item
 
 Should avoid:
 * ok . . . . . . . . . . . . . . . o
@@ -60,20 +67,86 @@ Remaining: efgimns
 * last name  (3x). . . . . . . . . . . . s     s
 * first name (3x). . . . . . . . . . . . f     f
 
-* [flight] mode  . . . . . . . . . . . . m
-* towplane . . . . . . . . . . . . . . . n
-* towflight mode . . . . . . . . . . . . m
+* towplane [registration]. . . . . . . . w
+
+* [flight] mode  . . . . . . . . . . . . g
+* towflight mode . . . . . . . . . . . . g
+
 * landing time . . . . . . . . . . . . . m
 * landing time towplane/release time . . m
-* departure location . . . . . . . . . . i
-* landing location . . . . . . . . . . . g
-* landing location towplane  . . . . . . g
+
+* departure location . . . . . . . . . .  i
+* landing location . . . . . . . . . . .  i
+* landing location towplane  . . . . . .  i
+
 * comments . . . . . . . . . . . . . . . n
-* accounting notes . . . . . . . . . . . i
+* accounting notes . . . . . . . . . . . n
+
 * date . . . . . . . . . . . . . . . . . e
 * errors . . . . . . . . . . . . . . . . e
 
 
+=== German ===
+
+Total letters: 26
+Unused letters: qx (2)
+Unique letters: jwvy (4), secondary: bk (2)
+
+Must be unique:
+* Automatisch/Gestartet. . . . . . . . s!
+* Automatisch/Gelandet . . . . . . . . t!
+* Automatisch/Gelandet/Beendet . . . .          [chimu]/[den]
+* Jetzt starten/jetzt landen . . . . . j!
+* Später starten/später landen . . . .          [enp]
+
+Should be unique
+* Kennzeichen. . . . . . . . . . . . . k!
+* Startzeit. . . . . . . . . . . . . .          [eiz]
+* Startart . . . . . . . . . . . . . . r!                          (cannot be unique)
+
+Should avoid:
+* Ok . . . . . . . . . . . . . . . . . o!
+* Abbrechen. . . . . . . . . . . . . . a!
+
+Remaining:
+* Flugtyp. . . . . . . . . . . . . . . y!
+
+* Nachname (3x). . . . . . . . . . . .          [cehmn]
+* Vorname  (3x). . . . . . . . . . . . v!
+
+* Schleppflugzeug. . . . . . . . . . .          [cefghlpuz]
+
+* Flugmodus. . . . . . . . . . . . . .          [dfglmu]
+* Modus Schleppflugzeug. . . . . . . .          [cdefghlmpuz]
+
+* Landezeit. . . . . . . . . . . . . .          [deilnz]
+* Landezeit Schleppflugzeug. . . . . .          [cdefghilnpuz]
+* Startort . . . . . . . . . . . . . . r!
+* Zielort. . . . . . . . . . . . . . .          [eilz]
+* Zielort Schleppflugzeug. . . . . . .          [cefghilpuz]
+* Anzahl Landungen . . . . . . . . . .          [deghlnuz]
+* Bemerkungen. . . . . . . . . . . . . b!
+* Abrechnungshinweise. . . . . . . . . w!
+* Datum. . . . . . . . . . . . . . . .          [dmu]
+* Fehler . . . . . . . . . . . . . . .          [efhl]
+
+TODO:
+* entweder Landezeit Schleppflugzeug/Schleppende  [cehlnp]
+  oder     Landezeit Schleppflugzeug/Ausklinkzeit [eilnz]
+
+c 6
+d 7
+e 12
+f 6
+g 6
+h 8 
+i 6
+l 9
+m 5
+n 6
+p 5
+u 8
+z 7
 
 
 
