@@ -737,20 +737,6 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         <translation>Animation kann nicht geladen werden:
 %1</translation>
     </message>
-    <message>
-        <source>Cannot load iamge:
-</source>
-        <translation type="obsolete">Grafik kann nicht
-geladen werden:
-</translation>
-    </message>
-    <message>
-        <source>Cannot load animation:
-</source>
-        <translation type="obsolete">Animation kann nicht
-geladen werden:
-</translation>
-    </message>
 </context>
 <context>
     <name>Flight</name>
@@ -1071,18 +1057,6 @@ geladen werden:
 </context>
 <context>
     <name>Flight::Mode</name>
-    <message>
-        <source>Local</source>
-        <translation type="obsolete">Lokal</translation>
-    </message>
-    <message>
-        <source>Coming</source>
-        <translation type="obsolete">Kommt</translation>
-    </message>
-    <message>
-        <source>Leaving</source>
-        <translation type="obsolete">Geht</translation>
-    </message>
     <message>
         <location filename="../src/model/Flight_Mode.cpp" line="24"/>
         <source>local</source>
@@ -1572,63 +1546,9 @@ geladen werden:
         <translation>Fehler</translation>
     </message>
     <message>
-        <source>No launch method specified</source>
-        <translation type="obsolete">Es wurde keine Startart angegeben</translation>
-    </message>
-    <message>
-        <source>No departure location specified</source>
-        <translation type="obsolete">Es wurde kein Startort angegeben</translation>
-    </message>
-    <message>
-        <source>No landing location specified</source>
-        <translation type="obsolete">Es wurde kein Zielort angegeben</translation>
-    </message>
-    <message>
-        <source>Departure location and landing location are equal</source>
-        <translation type="obsolete">Startort und Zielort sind identisch</translation>
-    </message>
-    <message>
-        <source>Landing time before departure time</source>
-        <translation type="obsolete">Die Landezeit liegt vor der Startzeit</translation>
-    </message>
-    <message>
-        <source>Landing time not specified, but departure time specified</source>
-        <translation type="obsolete">Es wurde eine Landezeit, aber keine Startzeit angegeben</translation>
-    </message>
-    <message>
-        <source>Landing time specified, but number of landings is 0</source>
-        <translation type="obsolete">Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0</translation>
-    </message>
-    <message>
-        <source>Towplane landing location not specified</source>
-        <translation type="obsolete">Es wurde kein Zielort für das Schleppflugzeug angegeben</translation>
-    </message>
-    <message>
-        <source>Towflight landing time before departure time</source>
-        <translation type="obsolete">Die Landezeit des Schleppflugs liegt vor der Startzeit</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="973"/>
         <source>Plane and towplane are identical.</source>
         <translation>Flugzeug und Schleppflugzeug sind identisch.</translation>
-    </message>
-    <message>
-        <source>According to the database, the plane %1 (%2) is a glider,
-but the number of landings is greater than one.</source>
-        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.
-Es wurde jedoch mehr als eine Landung angegeben.</translation>
-    </message>
-    <message>
-        <source>According to the database, the plane %1 (%2) is a glider,
-but a landing was specified without landing time.</source>
-        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.
-Es wurde jedoch eine Landung, aber keine Landezeit angegeben.</translation>
-    </message>
-    <message>
-        <source>According to the database, the plane %1 (%2) is a glider,
-but the launch method is self launch.</source>
-        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) ein Segelflugzeug.
-Es wurde jedoch Eigenstart als Startart angegeben.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="996"/>
@@ -1636,16 +1556,6 @@ Es wurde jedoch Eigenstart als Startart angegeben.</translation>
 but the launch method is not self launch.</source>
         <translation>Laut Datenbank ist das Flugzeug %1 ein Motorflugzeug.
 Es wurde jedoch eine andere Startart als Eigenstart angegeben.</translation>
-    </message>
-    <message>
-        <source>According to the database, the plane %1 (%2) is a single seater, but the flight type is &quot;passenger flight&quot;.</source>
-        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.
-Es wurde jedoch der Flugtyp &quot;Gastflug&quot; angegeben.</translation>
-    </message>
-    <message>
-        <source>According to the database, the plane %1 (%2) is a single seater, but the flight type is &quot;two-seated training&quot;.</source>
-        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.
-Es wurde jedoch der Flugtyp &quot;doppelsitzige Schulung&quot; angegeben.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1014"/>
@@ -1694,10 +1604,6 @@ Es gibt allerdings ein Flugzeug mit dem Kennzeichen %3.
 Soll dieses Flugzeug verwendet werden?</translation>
     </message>
     <message>
-        <source>Pilot and copilot are identical</source>
-        <translation type="obsolete">Pilot und Begleiter sind identisch</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="978"/>
         <source>According to the database, the plane %1 is a glider,
 but the number of landings is greater than one.</source>
@@ -1717,34 +1623,6 @@ Es wurde jedoch eine Landung, aber keine Landezeit angegeben.</translation>
 but the launch method is self launch.</source>
         <translation>Laut Datenbank ist das Flugzeug %1 ein Segelflugzeug.
 Es wurde jedoch Eigenstart als Startart angegeben.</translation>
-    </message>
-    <message>
-        <source>According to the database, the plane %1 is a single seater, but the flight type is &quot;passenger flight&quot;.</source>
-        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 einsitzig.
-Es wurde jedoch der Flugtyp &quot;Gastflug&quot; angegeben.</translation>
-    </message>
-    <message>
-        <source>According to the database, the plane %1 is a single seater, but the flight type is &quot;two-seated training&quot;.</source>
-        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 einsitzig.
-Es wurde jedoch der Flugtyp &quot;doppelsitzige Schulung&quot; angegeben.</translation>
-    </message>
-    <message>
-        <source>Pilot and towpilot are identical</source>
-        <translation type="obsolete">Pilot and towpilot are identical</translation>
-    </message>
-    <message>
-        <source>Copilot and towpilot are identical</source>
-        <translation type="obsolete">Copilot and towpilot are identical</translation>
-    </message>
-    <message>
-        <source>Two-seated training without flight instructor</source>
-        <translation type="obsolete">Doppelsitzige Schulung ohne Fluglehrer</translation>
-    </message>
-    <message>
-        <source>According to the database, the plane %1 (%2) is a single seater,
-but a copilot was specified.</source>
-        <translation type="obsolete">Laut Datenbank ist das Flugzeug %1 (%2) einsitzig.
-Es wurde jedoch ein Begleiter angegeben.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="927"/>
@@ -1775,10 +1653,6 @@ Es wurde jedoch ein Begleiter angegeben.</translation>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="947"/>
         <source>Landing time not specified, but departure time specified.</source>
         <translation>Es wurde eine Landezeit, aber keine Startzeit angegeben.</translation>
-    </message>
-    <message>
-        <source>Landing time specified, but number of landings is 0.</source>
-        <translation type="obsolete">Es wurde eine Landezeit angegeben, aber die Anzahl der Landungen ist 0.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="951"/>
@@ -1986,12 +1860,13 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1835"/>
         <source>Landing ti&amp;me towplane:</source>
-        <translation type="unfinished">Landezeit Schleppflugzeug:</translation>
+        <translation>&amp;Landezeit Schleppflugzeug:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1836"/>
         <source>Release ti&amp;me:</source>
-        <translation type="unfinished">Schleppende:</translation>
+        <translatorcomment>Könnte auch &quot;Ausk&amp;linkzeit&quot; sein</translatorcomment>
+        <translation>Sch&amp;leppende:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1840"/>
@@ -2013,50 +1888,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <source>Land &amp;later</source>
         <translation>S&amp;päter landen</translation>
     </message>
-    <message>
-        <source>Automatic</source>
-        <translation type="obsolete">Automatisch</translation>
-    </message>
-    <message>
-        <source>Departed</source>
-        <translation type="obsolete">Gestartet</translation>
-    </message>
-    <message>
-        <source>Landed</source>
-        <translation type="obsolete">Galandet</translation>
-    </message>
-    <message>
-        <source>Finished</source>
-        <translation type="obsolete">Beendet</translation>
-    </message>
-    <message>
-        <source>Landing time towplane:</source>
-        <translation type="obsolete">Landezeit Schleppflugzeug:</translation>
-    </message>
-    <message>
-        <source>Release time:</source>
-        <translation type="obsolete">Schleppende:</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Depart now</source>
-        <translation type="obsolete">Jetzt starten</translation>
-    </message>
-    <message>
-        <source>Depart later</source>
-        <translation type="obsolete">Später starten</translation>
-    </message>
-    <message>
-        <source>Land now</source>
-        <translation type="obsolete">Jetzt landen</translation>
-    </message>
-    <message>
-        <source>Land later</source>
-        <translation type="obsolete">Später landen</translation>
-    </message>
 </context>
 <context>
     <name>FlightWindowClass</name>
@@ -2064,10 +1895,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <location filename="../src/gui/windows/FlightWindow.ui" line="14"/>
         <source>FlightWindow</source>
         <translation>FlightWindow</translation>
-    </message>
-    <message>
-        <source>Regi&amp;stration:</source>
-        <translation type="obsolete">&amp;Kennzeichen:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="73"/>
@@ -2098,62 +1925,14 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>&amp;Nachname:</translation>
     </message>
     <message>
-        <source>Flig&amp;ht mode:</source>
-        <translation type="obsolete">Flugmo&amp;dus:</translation>
-    </message>
-    <message>
-        <source>L&amp;aunch method:</source>
-        <translation type="obsolete">Starta&amp;rt:</translation>
-    </message>
-    <message>
-        <source>Tow&amp;plane:</source>
-        <translation type="obsolete">Sch&amp;leppflugzeug:</translation>
-    </message>
-    <message>
-        <source>Towflig&amp;ht mode:</source>
-        <translation type="obsolete">Mo&amp;dus Schleppflug:</translation>
-    </message>
-    <message>
-        <source>&amp;Departure time:</source>
-        <translation type="obsolete">Startze&amp;it:</translation>
-    </message>
-    <message>
-        <source>Landing t&amp;ime:</source>
-        <translation type="obsolete">Lande&amp;zeit:</translation>
-    </message>
-    <message>
-        <source>Landing t&amp;ime towplane:</source>
-        <translation type="obsolete">Landezeit Schl&amp;eppflugzeug:</translation>
-    </message>
-    <message>
-        <source>De&amp;parture location:</source>
-        <translation type="obsolete">Sta&amp;rtort:</translation>
-    </message>
-    <message>
-        <source>Landin&amp;g location:</source>
-        <translation type="obsolete">Zie&amp;lort:</translation>
-    </message>
-    <message>
-        <source>Landing location &amp;towplane:</source>
-        <translation type="obsolete">&amp;Zielort Schleppflugzeug:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="578"/>
         <source>Num&amp;ber of landin&amp;gs:</source>
         <translation>Anzahl Land&amp;ungen:</translation>
     </message>
     <message>
-        <source>Commen&amp;ts:</source>
-        <translation type="obsolete">&amp;Bemerkungen:</translation>
-    </message>
-    <message>
-        <source>Accountin&amp;g notes:</source>
-        <translation type="obsolete">Abrechnungshin&amp;weise:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="659"/>
         <source>Dat&amp;e:</source>
-        <translation>&amp;Datum:</translation>
+        <translation>Dat&amp;um:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="147"/>
@@ -2171,20 +1950,10 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>Flugt&amp;yp:</translation>
     </message>
     <message>
-        <source>&amp;Last name:</source>
-        <comment>Pilot</comment>
-        <translation type="obsolete">&amp;Nachname:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="127"/>
         <source>&amp;First name:</source>
         <comment>Pilot</comment>
         <translation>&amp;Vorname:</translation>
-    </message>
-    <message>
-        <source>&amp;Last name:</source>
-        <comment>Copilot</comment>
-        <translation type="obsolete">Nac&amp;hname:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="177"/>
@@ -2201,10 +1970,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <location filename="../src/gui/windows/FlightWindow.ui" line="210"/>
         <source>Launch met&amp;hod:</source>
         <translation>Starta&amp;rt:</translation>
-    </message>
-    <message>
-        <source>To&amp;wpla:</source>
-        <translation type="obsolete">Schleppflugzeug</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="223"/>
@@ -2252,7 +2017,7 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="382"/>
         <source>Landing ti&amp;me:</source>
-        <translation>Lande&amp;zeit:</translation>
+        <translation>Lan&amp;dezeit:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="392"/>
@@ -2279,12 +2044,12 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="538"/>
         <source>Landing locat&amp;ion:</source>
-        <translation>Zie&amp;lort:</translation>
+        <translation>&amp;Zielort:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="558"/>
         <source>Landing locat&amp;ion towplane:</source>
-        <translation>Zie&amp;lort Schleppflugzeug:</translation>
+        <translation>&amp;Zielort Schleppflugzeug:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="626"/>
@@ -2295,21 +2060,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <location filename="../src/gui/windows/FlightWindow.ui" line="639"/>
         <source>Accounti&amp;ng notes:</source>
         <translation>Abrechnungshin&amp;weise:</translation>
-    </message>
-    <message>
-        <source>Last &amp;name:</source>
-        <comment>Towpilot</comment>
-        <translation type="obsolete">Nac&amp;hname:</translation>
-    </message>
-    <message>
-        <source>First &amp;name:</source>
-        <comment>Towpilot</comment>
-        <translation type="obsolete">Vorna&amp;me:</translation>
-    </message>
-    <message>
-        <source>A&amp;utomatic</source>
-        <comment>Departure time</comment>
-        <translation type="obsolete">Automati&amp;sch</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="349"/>
@@ -2324,16 +2074,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <location filename="../src/gui/windows/FlightWindow.ui" line="492"/>
         <source>UTC</source>
         <translation>UTC</translation>
-    </message>
-    <message>
-        <source>Auto&amp;matic</source>
-        <comment>Landing time</comment>
-        <translation type="obsolete">&amp;Automatisch</translation>
-    </message>
-    <message>
-        <source>Aut&amp;omatic</source>
-        <comment>Landing time towplane</comment>
-        <translation type="obsolete">Au&amp;tomatisch</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="697"/>
@@ -2420,22 +2160,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 </context>
 <context>
     <name>LaunchMethod</name>
-    <message>
-        <source>Winch launch</source>
-        <translation type="obsolete">Windenstart</translation>
-    </message>
-    <message>
-        <source>Airtow</source>
-        <translation type="obsolete">F-Schlepp</translation>
-    </message>
-    <message>
-        <source>Self launch</source>
-        <translation type="obsolete">Eigenstart</translation>
-    </message>
-    <message>
-        <source>Other</source>
-        <translation type="obsolete">Sonstige</translation>
-    </message>
     <message>
         <location filename="../src/model/LaunchMethod.cpp" line="120"/>
         <source>winch launch</source>
@@ -2941,10 +2665,6 @@ Konfiguration: %2</translation>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1609"/>
         <source>Launch method overview</source>
         <translation>Startartstatistik</translation>
-    </message>
-    <message>
-        <source>The database password is required to display the flight database.</source>
-        <translation type="obsolete">Zum Anzeigen der Flugdatenbank ist das Datenbankpasswort erforderlich.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1672"/>
@@ -3899,14 +3619,6 @@ Konfiguration: %2</translation>
         <source>First name not specified.</source>
         <translation>Es wurde kein Vorname angegeben.</translation>
     </message>
-    <message>
-        <source>Last name not specified</source>
-        <translation type="obsolete">Es wurde kein Nachname angegeben</translation>
-    </message>
-    <message>
-        <source>First name not specified</source>
-        <translation type="obsolete">Es wurde kein Vorname angegeben</translation>
-    </message>
 </context>
 <context>
     <name>PersonEditorPaneClass</name>
@@ -4025,18 +3737,6 @@ aktiviert werden.</translation>
         <source>Please select the correct entry. The other entry will be overwritten.</source>
         <translation>Bitte den korrekten Eintrag auswählen. Der andere Eintrag wird überschrieben.</translation>
     </message>
-    <message>
-        <source>Please select the correct entry.</source>
-        <translation type="obsolete">Bitte den korrekten Eintrag auswählen.</translation>
-    </message>
-    <message>
-        <source> All other entries will be overwritten.</source>
-        <translation type="obsolete">Alle anderen Einträge werden überschrieben.</translation>
-    </message>
-    <message>
-        <source> The other entry will be overwritten.</source>
-        <translation type="obsolete">Der andere Eintrag wird überschrieben.</translation>
-    </message>
 </context>
 <context>
     <name>PersonModel</name>
@@ -4149,30 +3849,6 @@ aktiviert werden.</translation>
 <context>
     <name>Plane</name>
     <message>
-        <source>Airplane</source>
-        <translation type="obsolete">Motorflugzeug</translation>
-    </message>
-    <message>
-        <source>Glider</source>
-        <translation type="obsolete">Segelflugzeug</translation>
-    </message>
-    <message>
-        <source>Motorglider</source>
-        <translation type="obsolete">Motorsegler</translation>
-    </message>
-    <message>
-        <source>Ultralight</source>
-        <translation type="obsolete">Ultraleicht</translation>
-    </message>
-    <message>
-        <source>Other</source>
-        <translation type="obsolete">Sonstige</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">Keine</translation>
-    </message>
-    <message>
         <location filename="../src/model/Plane.h" line="54"/>
         <source>N</source>
         <comment>default prefix</comment>
@@ -4270,10 +3946,6 @@ aktiviert werden.</translation>
 <context>
     <name>PlaneEditorPane</name>
     <message>
-        <source>A plane with the registration %1 already exists</source>
-        <translation type="obsolete">Es gibt bereits ein Flugzeug mit dem Kennzeichen %1</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="134"/>
         <source>A plane with the registration %1 already exists.</source>
         <translation>Es gibt bereits ein Flugzeug mit dem Kennzeichen %1.</translation>
@@ -4317,34 +3989,6 @@ aktiviert werden.</translation>
         <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="166"/>
         <source>To many seats specified for the selected category.</source>
         <translation>Es wurden zu viele Sitze für die gewählte Gattung angegeben.</translation>
-    </message>
-    <message>
-        <source>Registration not specified</source>
-        <translation type="obsolete">Es wurde kein Kennzeichen angegeben</translation>
-    </message>
-    <message>
-        <source>Category not specified</source>
-        <translation type="obsolete">Es wurde keine Gattung angegeben</translation>
-    </message>
-    <message>
-        <source>The selected category does not match the registration</source>
-        <translation type="obsolete">Die angegebene Gattung passt nicht zum Kennzeichen</translation>
-    </message>
-    <message>
-        <source>Model not specified</source>
-        <translation type="obsolete">Es wurde kein Typ angegeben</translation>
-    </message>
-    <message>
-        <source>Number of seats not specified</source>
-        <translation type="obsolete">Es wurde keine Sitzzahl angegeben</translation>
-    </message>
-    <message>
-        <source>0 seats specified</source>
-        <translation type="obsolete">Es wurden 0 Sitze angegeben</translation>
-    </message>
-    <message>
-        <source>To many seats specified for the selected category</source>
-        <translation type="obsolete">Es wurden zu viele Sitze für die gewählte Gattung angegeben</translation>
     </message>
 </context>
 <context>
@@ -4514,14 +4158,6 @@ aktiviert werden.</translation>
 <context>
     <name>QDate</name>
     <message>
-        <source>MM/dd/yyyy</source>
-        <translation type="obsolete">dd.MM.yyyy</translation>
-    </message>
-    <message>
-        <source>M/d/yyyy</source>
-        <translation type="obsolete">d.M.yyyy</translation>
-    </message>
-    <message>
         <location filename="../src/util/qDate.cpp" line="29"/>
         <source>invalid</source>
         <translation>ungültig</translation>
@@ -4576,38 +4212,6 @@ aktiviert werden.</translation>
 <context>
     <name>SettingsWindow</name>
     <message>
-        <source>The (old) database password is required to save
-the settings.</source>
-        <translation type="obsolete">Zum Speichern der Einstellungen ist das (alte) Datenbankpasswort
-erforderlich.</translation>
-    </message>
-    <message>
-        <source>The database password is required to save
-the settings.</source>
-        <translation type="obsolete">Zum Speichern der Einstellungen ist das Datenbankpasswort
-erforderlich.</translation>
-    </message>
-    <message>
-        <source>Password protection of the settings is being enabled. The
-(new) database password is required. If you don&apos;t want
-to enable the protection, you can cancel now and disable
-the corresponding option.</source>
-        <translation type="obsolete">Der Passwortschutz der Einstellungen wird aktiviert. Dazu ist das
-(neue) Datenbankpasswort erforderlich. Falls der Schutz nicht aktiviert
-werden soll, kann jetzt abgebrochen und die entsprechende Option
-deaktiviert werden.</translation>
-    </message>
-    <message>
-        <source>Password protection of the settings is being enabled. The
-database password is required. If you don&apos;t want
-to enable the protection, you can cancel now and disable
-the corresponding option.</source>
-        <translation type="obsolete">Der Passwortschutz der Einstellungen wird aktiviert. Dazu ist das
-Datenbankpasswort erforderlich. Falls der Schutz nicht aktiviert
-werden soll, kann jetzt abgebrochen und die entsprechende Option
-deaktiviert werden.</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.cpp" line="452"/>
         <source>The (old) database password must be entered to save
 the settings.</source>
@@ -4654,14 +4258,6 @@ deaktiviert werden.</translation>
 can be changed, but to save them, the database
 password must be entered.</source>
         <translation>Die Einstellungen sind geschützt. Die Einstellungen
-können geändert werden, aber zum Speichern ist das
-Datenbankpasswort erforderlich.</translation>
-    </message>
-    <message>
-        <source>The settings are protected. The settings
-can be changed, but to save them, the database
-password is required.</source>
-        <translation type="obsolete">Die Einstellungen sind geschützt. Die Einstellungen
 können geändert werden, aber zum Speichern ist das
 Datenbankpasswort erforderlich.</translation>
     </message>

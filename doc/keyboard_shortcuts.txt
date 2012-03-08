@@ -93,62 +93,46 @@ Unused letters: qx (2)
 Unique letters: jwvy (4), secondary: bk (2)
 
 Must be unique:
-* Automatisch/Gestartet. . . . . . . . s!
-* Automatisch/Gelandet . . . . . . . . t!
-* Automatisch/Gelandet/Beendet . . . . c/e/e    [chimu]/[den]
-* Jetzt starten/jetzt landen . . . . . j!
-* Später starten/später landen . . . . p        [enp]
+* Automatisch/Gestartet. . . . . . . . . . . . . . . . . s!
+* Automatisch/Gelandet . . . . . . . . . . . . . . . . . t!
+* Automatisch/Gelandet/Beendet/Ausgeklinkt . . . . . . . c/e/e/e  [chimu]/[en]
+* Jetzt starten/jetzt landen . . . . . . . . . . . . . . j!
+* Später starten/später landen . . . . . . . . . . . . . p        [enp]
 
 Should be unique
-* Kennzeichen. . . . . . . . . . . . . k!
-* Startzeit. . . . . . . . . . . . . . i        [eiz]
-* Startart . . . . . . . . . . . . . . r!                          (cannot be unique)
+* Kennzeichen. . . . . . . . . . . . . . . . . . . . . . k!
+* Startzeit. . . . . . . . . . . . . . . . . . . . . . . i        [eiz]
+* Startart . . . . . . . . . . . . . . . . . . . . . . . r!                          (cannot be unique)
 
 Should avoid:
-* Ok . . . . . . . . . . . . . . . . . o!
-* Abbrechen. . . . . . . . . . . . . . a!
+* Ok . . . . . . . . . . . . . . . . . . . . . . . . . . o!
+* Abbrechen. . . . . . . . . . . . . . . . . . . . . . . a!
 
 Remaining:
-* Flugtyp. . . . . . . . . . . . . . . y!
+* Flugtyp. . . . . . . . . . . . . . . . . . . . . . . . y!
 
-* Nachname (3x). . . . . . . . . . . . n        [cehmn]
-* Vorname  (3x). . . . . . . . . . . . v!
+* Nachname (3x). . . . . . . . . . . . . . . . . . . . . n        [cehmn]
+* Vorname  (3x). . . . . . . . . . . . . . . . . . . . . v!
 
-* Schleppflugzeug. . . . . . . . . . . h        [cefghlpuz]
+* Schleppflugzeug. . . . . . . . . . . . . . . . . . . . h        [cefghlpuz]
 
-* Flugmodus. . . . . . . . . . . . . . m        [dfglmu]
-* Modus Schleppflugzeug. . . . . . . . m        [cdefghlmpuz]
+* Flugmodus. . . . . . . . . . . . . . . . . . . . . . . m        [dfglmu]
+* Modus Schleppflugzeug. . . . . . . . . . . . . . . . . m        [cdefghlmpuz]
 
-* Landezeit. . . . . . . . . . . . . . z        [deilnz]
-* Landezeit Schleppflugzeug. . . . . . g        [cdefghilnpuz]
-* Startort . . . . . . . . . . . . . . r!
-* Zielort. . . . . . . . . . . . . . . l        [eilz]
-* Zielort Schleppflugzeug. . . . . . . l        [cefghilpuz]
-* Anzahl Landungen . . . . . . . . . . u        [deghlnuz]
-* Bemerkungen. . . . . . . . . . . . . b!
-* Abrechnungshinweise. . . . . . . . . w!
-* Datum. . . . . . . . . . . . . . . . d        [dmu]
-* Fehler . . . . . . . . . . . . . . . f        [efhl]
+* Landezeit. . . . . . . . . . . . . . . . . . . . . . . d        [deilnz]
+* Landezeit Schleppflugzeug/Schleppende/Ausklinkzeit . . l        [eln]
+* Startort . . . . . . . . . . . . . . . . . . . . . . . r!
+* Zielort. . . . . . . . . . . . . . . . . . . . . . . . z        [eilz]
+* Zielort Schleppflugzeug. . . . . . . . . . . . . . . . z        [cefghilpuz]
+* Anzahl Landungen . . . . . . . . . . . . . . . . . . . u        [deghlnuz]
+* Bemerkungen. . . . . . . . . . . . . . . . . . . . . . b!
+* Abrechnungshinweise. . . . . . . . . . . . . . . . . . w!
+* Datum. . . . . . . . . . . . . . . . . . . . . . . . . u        [dmu]
+* Fehler . . . . . . . . . . . . . . . . . . . . . . . . f        [efhl]
 
-TODO:
-* entweder Landezeit Schleppflugzeug/Schleppende  [cehlnp]
-  oder     Landezeit Schleppflugzeug/Ausklinkzeit [eilnz]
+Duplicate: mz, r (cannot be unique), nv (3x names)
 
-Duplicate: lm, r (cannot be unique), nv (3x names)
-
-c 6
-d 7
-e 12
-f 6
-g 6
-h 8 
-i 6
-l 9
-m 5
-n 6
-p 5
-u 8
-z 7
+After "!": c6 d7 e12 f6 g6 h8 i6 l9 m5 n6 p5 u8 z7
 
 
 
