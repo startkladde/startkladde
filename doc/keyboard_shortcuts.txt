@@ -95,13 +95,13 @@ Unique letters: jwvy (4), secondary: bk (2)
 Must be unique:
 * Automatisch/Gestartet. . . . . . . . s!
 * Automatisch/Gelandet . . . . . . . . t!
-* Automatisch/Gelandet/Beendet . . . .          [chimu]/[den]
+* Automatisch/Gelandet/Beendet . . . . c/e/e    [chimu]/[den]
 * Jetzt starten/jetzt landen . . . . . j!
-* Später starten/später landen . . . .          [enp]
+* Später starten/später landen . . . . p        [enp]
 
 Should be unique
 * Kennzeichen. . . . . . . . . . . . . k!
-* Startzeit. . . . . . . . . . . . . .          [eiz]
+* Startzeit. . . . . . . . . . . . . . i        [eiz]
 * Startart . . . . . . . . . . . . . . r!                          (cannot be unique)
 
 Should avoid:
@@ -111,28 +111,30 @@ Should avoid:
 Remaining:
 * Flugtyp. . . . . . . . . . . . . . . y!
 
-* Nachname (3x). . . . . . . . . . . .          [cehmn]
+* Nachname (3x). . . . . . . . . . . . n        [cehmn]
 * Vorname  (3x). . . . . . . . . . . . v!
 
-* Schleppflugzeug. . . . . . . . . . .          [cefghlpuz]
+* Schleppflugzeug. . . . . . . . . . . h        [cefghlpuz]
 
-* Flugmodus. . . . . . . . . . . . . .          [dfglmu]
-* Modus Schleppflugzeug. . . . . . . .          [cdefghlmpuz]
+* Flugmodus. . . . . . . . . . . . . . m        [dfglmu]
+* Modus Schleppflugzeug. . . . . . . . m        [cdefghlmpuz]
 
-* Landezeit. . . . . . . . . . . . . .          [deilnz]
-* Landezeit Schleppflugzeug. . . . . .          [cdefghilnpuz]
+* Landezeit. . . . . . . . . . . . . . z        [deilnz]
+* Landezeit Schleppflugzeug. . . . . . g        [cdefghilnpuz]
 * Startort . . . . . . . . . . . . . . r!
-* Zielort. . . . . . . . . . . . . . .          [eilz]
-* Zielort Schleppflugzeug. . . . . . .          [cefghilpuz]
-* Anzahl Landungen . . . . . . . . . .          [deghlnuz]
+* Zielort. . . . . . . . . . . . . . . l        [eilz]
+* Zielort Schleppflugzeug. . . . . . . l        [cefghilpuz]
+* Anzahl Landungen . . . . . . . . . . u        [deghlnuz]
 * Bemerkungen. . . . . . . . . . . . . b!
 * Abrechnungshinweise. . . . . . . . . w!
-* Datum. . . . . . . . . . . . . . . .          [dmu]
-* Fehler . . . . . . . . . . . . . . .          [efhl]
+* Datum. . . . . . . . . . . . . . . . d        [dmu]
+* Fehler . . . . . . . . . . . . . . . f        [efhl]
 
 TODO:
 * entweder Landezeit Schleppflugzeug/Schleppende  [cehlnp]
   oder     Landezeit Schleppflugzeug/Ausklinkzeit [eilnz]
+
+Duplicate: lm, r (cannot be unique), nv (3x names)
 
 c 6
 d 7
