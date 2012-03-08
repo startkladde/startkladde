@@ -1835,7 +1835,7 @@ const QString textTowflightLandingTimeEnded     =FlightWindow::tr ("Finishe&d");
 const QString textTowflightLandingTime          =FlightWindow::tr ("Landing ti&me towplane:");
 const QString textTowflightEnd                  =FlightWindow::tr ("Release ti&me:");
 
-//const QString textButtonOk                      =FlightWindow::tr ("OK");
+const QString textButtonOk                      =FlightWindow::tr ("OK");
 
 const QString textButtonDepartNow               =FlightWindow::tr ("Depart n&ow");
 const QString textButtonLandNow                 =FlightWindow::tr ("Land n&ow");

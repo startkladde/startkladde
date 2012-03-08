@@ -52,6 +52,27 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 
 	private:
 		Cache &cache;
+		
+		// Cached strings
+		QString headerTextRegistration;
+		QString headerTextModel;
+		QString headerTextType;
+		QString headerTextPilot;
+		QString headerTextCopilot;
+		QString headerTextLaunchMethod;
+		QString headerTextDeparture;
+		QString headerTextLanding;
+		QString headerTextDuration;
+		QString headerTextNumLandings;
+		QString headerTextDepartureLocation;
+		QString headerTextLandingLocation;
+		QString headerTextComments;
+		QString headerTextAccountingNotes;
+		QString headerTextDate;
+		QString headerTextId;
+
+		void updateTranslations ();
+
 
 		bool colorEnabled;
 };

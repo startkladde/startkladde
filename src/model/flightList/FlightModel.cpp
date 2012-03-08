@@ -19,6 +19,7 @@ FlightModel::FlightModel (Cache &cache):
 	cache (cache),
 	colorEnabled (true)
 {
+	updateTranslations ();
 }
 
 FlightModel::~FlightModel ()
@@ -35,26 +36,49 @@ int FlightModel::columnCount () const
 	return 16;
 }
 
+void FlightModel::updateTranslations ()
+{
+	// The displayHeaderData is queried very often, so the translations are
+	// cached. It is unclear whether this actually has a significant
+	// performance impact.
+	headerTextRegistration      =qApp->translate ("FlightModel", "Reg.");
+	headerTextModel             =qApp->translate ("FlightModel", "Model");
+	headerTextType              =qApp->translate ("FlightModel", "Type");
+	headerTextPilot             =qApp->translate ("FlightModel", "Pilot/Student");
+	headerTextCopilot           =qApp->translate ("FlightModel", "Copilot/FI");
+	headerTextLaunchMethod      =qApp->translate ("FlightModel", "Launch method");
+	headerTextDeparture         =qApp->translate ("FlightModel", "Departure");
+	headerTextLanding           =qApp->translate ("FlightModel", "Landing");
+	headerTextDuration          =qApp->translate ("FlightModel", "Duration");
+	headerTextNumLandings       =qApp->translate ("FlightModel", "Ldgs.");
+	headerTextDepartureLocation =qApp->translate ("FlightModel", "Departure location");
+	headerTextLandingLocation   =qApp->translate ("FlightModel", "Landing location");
+	headerTextComments          =qApp->translate ("FlightModel", "Comments");
+	headerTextAccountingNotes   =qApp->translate ("FlightModel", "Accounting notes");
+	headerTextDate              =qApp->translate ("FlightModel", "Date");
+	headerTextId                =qApp->translate ("FlightModel", "ID");
+}
+
 QVariant FlightModel::displayHeaderData (int column) const
 {
 	switch (column)
 	{
-		case 0: return qApp->translate ("FlightModel", "Reg.");
-		case 1: return qApp->translate ("FlightModel", "Model");
-		case 2: return qApp->translate ("FlightModel", "Type");
-		case 3: return qApp->translate ("FlightModel", "Pilot/Student");
-		case 4: return qApp->translate ("FlightModel", "Copilot/FI");
-		case 5: return qApp->translate ("FlightModel", "Launch method");
-		case 6: return qApp->translate ("FlightModel", "Departure");
-		case 7: return qApp->translate ("FlightModel", "Landing");
-		case 8: return qApp->translate ("FlightModel", "Duration");
-		case 9: return qApp->translate ("FlightModel", "Ldgs.");
-		case 10: return qApp->translate ("FlightModel", "Departure location");
-		case 11: return qApp->translate ("FlightModel", "Landing location");
-		case 12: return qApp->translate ("FlightModel", "Comments");
-		case 13: return qApp->translate ("FlightModel", "Accounting notes");
-		case 14: return qApp->translate ("FlightModel", "Date");
-		case 15: return qApp->translate ("FlightModel", "ID");
+		case 0: return headerTextRegistration;
+		case 1: return headerTextModel;
+		case 2: return headerTextType;
+		case 3: return headerTextPilot;
+		case 4: return headerTextCopilot;
+		case 5: return headerTextLaunchMethod;
+		case 6: return headerTextDeparture;
+		case 7: return headerTextLanding;
+		case 8: return headerTextDuration;
+		case 9: return headerTextNumLandings;
+		case 10: return headerTextDepartureLocation;
+		case 11: return headerTextLandingLocation;
+		case 12: return headerTextComments;
+		case 13: return headerTextAccountingNotes;
+		case 14: return headerTextDate;
+		case 15: return headerTextId;
 	}
 
 	// Apparantly, an unhandled column can happen when the last flight is deleted
@@ -137,7 +161,7 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 			case 10: return flight.getDepartureLocation ();
 			case 11: return flight.getLandingLocation ();
 			case 12: return flight.getComments ();
-			case 13: return flight.isTowflight()?qApp->translate ("FlightModel", "(See glider flight)"):flight.getAccountingNotes ();
+			case 13: return flight.getAccountingNotes ();
 			case 14: return flight.effdatum ();
 			case 15: return (flight.isTowflight ()?qnotr ("(%1)"):qnotr ("%1")).arg (flight.getId ());
 		}
@@ -164,7 +188,6 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 	}
 	else if (role==buttonTextRole)
 	{
-		// TODO TR cache
 		if (column==departButtonColumn ())
 			return qApp->translate ("FlightModel", "Depart");
 		else if (column==landButtonColumn ())
@@ -288,8 +311,9 @@ QVariant FlightModel::departureTimeData (const Flight &flight, int role) const
 	else if  (!flight.hasDepartureTime ())
 		return "";
 	else
-		// TODO TR cache
-		return flight.getDepartureTime ().toUTC ().time ().toString (qApp->translate ("FlightModel", "hh:mm"))+notr ("Z");
+		// Don't use the default (locale) formatting, it may add seconds or
+		// time zone information
+		return flight.getDepartureTime ().toUTC ().time ().toString (notr ("hh:mm"))+notr ("Z");
 }
 
 QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
@@ -301,7 +325,9 @@ QVariant FlightModel::landingTimeData (const Flight &flight, int role) const
 	else if (!flight.hasLandingTime ())
 		return "";
 	else
-		return flight.getLandingTime ().toUTC ().time ().toString (qApp->translate ("FlightModel", "hh:mm"))+notr ("Z");
+		// Don't use the default (locale) formatting, it may add seconds or
+		// time zone information
+		return flight.getLandingTime ().toUTC ().time ().toString (notr ("hh:mm"))+notr ("Z");
 }
 
 QVariant FlightModel::durationData (const Flight &flight, int role) const
@@ -311,5 +337,8 @@ QVariant FlightModel::durationData (const Flight &flight, int role) const
 	if (!flight.hasDuration ())
 		return notr ("-");
 	else
-		return flight.flightDuration ().toString (qApp->translate ("FlightModel", "h:mm"));
+		// Don't use the default (locale) formatting, it may add time zone
+		// information (which is inapproprate for a duration) and we don't want
+		// the duration zero-padded.
+		return flight.flightDuration ().toString (notr ("h:mm"));
 }

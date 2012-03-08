@@ -848,7 +848,7 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 	towflight.setNumLandings ((towflightLandsHere () && getTowflightLanded ())?1:0);
 
 	towflight.setComments (qApp->translate ("Flight", "Towflight for flight %1").arg (getId ()));
-	towflight.setAccountingNotes ("");
+	towflight.setAccountingNotes (qApp->translate ("Flight", "(See glider flight)"));
 	towflight.setMode (getTowflightMode ());
 	towflight.setTowflightMode (modeLocal);
 	towflight.setPilotLastName (getTowpilotLastName ());
