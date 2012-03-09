@@ -1035,6 +1035,11 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         <translation>Schleppflug für Flug %1</translation>
     </message>
     <message>
+        <location filename="../src/model/Flight.cpp" line="851"/>
+        <source>(See glider flight)</source>
+        <translation>(Siehe geschleppter Flug)</translation>
+    </message>
+    <message>
         <location filename="../src/model/Flight.h" line="84"/>
         <source>Towpilot</source>
         <translation>Schlepppilot</translation>
@@ -1263,9 +1268,13 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
 <context>
     <name>FlightListWindowClass</name>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.ui" line="14"/>
         <source>FlightListWindow</source>
-        <translation>FlightListWindow</translation>
+        <translation type="obsolete">FlightListWindow</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.ui" line="14"/>
+        <source>Flight database</source>
+        <translation>Flugdatenbank</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectList/FlightListWindow.ui" line="21"/>
@@ -1330,191 +1339,187 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
 <context>
     <name>FlightModel</name>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="42"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="44"/>
         <source>Reg.</source>
         <translation>Kennz.</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="43"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="45"/>
         <source>Model</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="44"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="46"/>
         <source>Type</source>
         <translation>Flugtyp</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="45"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="47"/>
         <source>Pilot/Student</source>
         <translation>Pilot/FS</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="46"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="48"/>
         <source>Copilot/FI</source>
         <translation>Begleiter/FL</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="47"/>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="100"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="49"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="124"/>
         <source>Launch method</source>
         <translation>StartartStartart</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="48"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="50"/>
         <source>Departure</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="49"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="51"/>
         <source>Landing</source>
         <translation>Landung</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="50"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="52"/>
         <source>Duration</source>
         <translation>Dauer</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="51"/>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="105"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="53"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="129"/>
         <source>Ldgs.</source>
         <translation>Ldg.</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="52"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="54"/>
         <source>Departure location</source>
         <translation>Startort</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="53"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="55"/>
         <source>Landing location</source>
         <translation>Zielort</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="54"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="56"/>
         <source>Comments</source>
         <translation>Bemerkungen</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="55"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="57"/>
         <source>Accounting notes</source>
         <translation>Abrechnungshinweise</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="56"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="58"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="57"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="59"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="95"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="119"/>
         <source>N99999 (WW)</source>
         <translation>D-1234 (WW)</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="268"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="291"/>
         <source>SL</source>
         <comment>Self launch</comment>
         <translatorcomment>Eigenstart</translatorcomment>
         <translation>ES</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="96"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="120"/>
         <source>DR-400/180</source>
         <translation>DR-400/180</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="97"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="121"/>
         <source>Passenger (E)</source>
         <translation>Gast (E)</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="98"/>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="99"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="122"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="123"/>
         <source>Xxxxxxxx, Yyyyyy (Twidd</source>
         <translation>Xxxxxxxx, Yyyyyy (FSV Ding</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="102"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="126"/>
         <source>  Depart  </source>
         <translation>  Starten  </translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="103"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="127"/>
         <source>  Land  </source>
         <translation>  Landen  </translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="104"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="128"/>
         <source>00:00</source>
         <translation>00:00</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="106"/>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="107"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="130"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="131"/>
         <source>Twiddlethorpe</source>
         <translation>Dingenskirchen</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="108"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="132"/>
         <source>Cable break training</source>
         <translation>Seilrissübung</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="109"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="133"/>
         <source>Landing fee paid</source>
         <translation>Landegebühr bezahlt</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="110"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="134"/>
         <source>12/34/5678</source>
         <translation>12.34.5678</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="111"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="135"/>
         <source>12345</source>
         <translation>12345</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="140"/>
         <source>(See glider flight)</source>
-        <translation>Siehe geschleppter Flug</translation>
+        <translation type="obsolete">Siehe geschleppter Flug</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="169"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="192"/>
         <source>Depart</source>
         <translation>Starten</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="173"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="196"/>
         <source>End</source>
         <translation>Ende</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="175"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="198"/>
         <source>Land</source>
         <translation>Landen</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="246"/>
+        <location filename="../src/model/flightList/FlightModel.cpp" line="269"/>
         <source>(Passenger)</source>
         <translation>(Gast)</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="292"/>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="304"/>
         <source>hh:mm</source>
-        <translation>hh:mm</translation>
+        <translation type="obsolete">hh:mm</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="314"/>
         <source>h:mm</source>
-        <translation>h:mm</translation>
+        <translation type="obsolete">h:mm</translation>
     </message>
 </context>
 <context>
@@ -1867,6 +1872,11 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <source>Release ti&amp;me:</source>
         <translatorcomment>Könnte auch &quot;Ausk&amp;linkzeit&quot; sein</translatorcomment>
         <translation>Sch&amp;leppende:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1838"/>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1840"/>
@@ -2810,9 +2820,8 @@ Konfiguration: %2</translation>
         <translation>&amp;Verbindung aufbauen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="365"/>
         <source>&amp;Programm</source>
-        <translation>&amp;Programm</translation>
+        <translation type="obsolete">&amp;Programm</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="375"/>
@@ -2901,9 +2910,12 @@ Konfiguration: %2</translation>
         <translation>Starta&amp;rt-Vorauswahl...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="857"/>
+        <source>Show flight &amp;database</source>
+        <translation type="obsolete">Flug&amp;datenbank anzeigen</translation>
+    </message>
+    <message>
         <source>Show flight database</source>
-        <translation>Flugdatenbank anzeigen</translation>
+        <translation type="obsolete">Flugdatenbank anzeigen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="558"/>
@@ -2936,6 +2948,11 @@ Konfiguration: %2</translation>
         <location filename="../src/gui/windows/MainWindow.ui" line="14"/>
         <source>Startkladde</source>
         <translation>Startkladde</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="365"/>
+        <source>&amp;Program</source>
+        <translation>&amp;Programm</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="553"/>
@@ -3024,6 +3041,12 @@ Konfiguration: %2</translation>
         <source>Ctrl+O</source>
         <extracomment>Edit people</extracomment>
         <translation>Ctrl+P</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="854"/>
+        <source>Show flight d&amp;atabase</source>
+        <extracomment>Seems like &amp;f is not displayed correctly, possible because it is replaced with a ligature</extracomment>
+        <translation>Flug&amp;datenbank anzeigen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="628"/>
@@ -3195,17 +3218,16 @@ Konfiguration: %2</translation>
         <translation>Ctrl+U</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="854"/>
         <source>Show &amp;flight database</source>
-        <translation>Flug&amp;datenbank anzeigen</translation>
+        <translation type="obsolete">Flug&amp;datenbank anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="862"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="859"/>
         <source>&amp;Load</source>
         <translation>&amp;Laden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="867"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="864"/>
         <source>U&amp;nload</source>
         <translation>E&amp;ntladen</translation>
     </message>
@@ -3385,38 +3407,38 @@ Konfiguration: %2</translation>
 <context>
     <name>ObjectListWindow&lt;T&gt;</name>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="67"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="68"/>
         <source>w</source>
         <comment>Window menu mnemonic</comment>
         <translation>f</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="240"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="246"/>
         <source>%1 in use</source>
         <translation>%1 benutzt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="243"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="249"/>
         <source>%1 %2 is in use and cannot be deleted.</source>
         <translation>%1 %2 wird verwendet und kann daher nicht gelöscht werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="247"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="253"/>
         <source> Continue?</source>
         <translation>Fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="300"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="306"/>
         <source>Delete %1?</source>
         <translation>%1 löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="301"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="307"/>
         <source>Do you want to delete %1 %2?</source>
         <translation>Soll %1 %2 gelöscht werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="453"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="459"/>
         <source>The database password must be entered to edit %1.</source>
         <translation>Zum Editieren der %1 muss das Datenbankpasswort eingegeben werden.</translation>
     </message>

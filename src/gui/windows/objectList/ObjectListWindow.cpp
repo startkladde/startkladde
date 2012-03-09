@@ -61,13 +61,19 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 	ui.table->resizeColumnsToContents ();
 	ui.table->resizeRowsToContents (); // Do this although autoResizeRows is true - there are already rows.
 
-	setWindowTitle (T::objectTypeDescriptionPlural ());
+	setWindowTitle (firstToUpper (T::objectTypeDescriptionPlural ()));
 
 	// TODO this should be done later - a subclass may add menus
+	// TODO should probably autodetect mnemonics
 	QString mnemonics=qApp->translate ("ObjectListWindow<T>", "w", "Window menu mnemonic");
 	QChar closeButtonMnemonic=getMnemonic (ui.buttonBox->button (QDialogButtonBox::Close)->text ());
 	if (!closeButtonMnemonic.isNull ()) mnemonics+=closeButtonMnemonic;
-	ui.menuObject->setTitle (insertMnemonic (T::objectTypeDescription (), mnemonics));
+
+	// Set the "Object" menu
+	QString objectMenuText=T::objectTypeDescription ();
+	objectMenuText=firstToUpper (objectMenuText);
+	objectMenuText=insertMnemonic (objectMenuText, mnemonics);
+	ui.menuObject->setTitle (objectMenuText);
 }
 
 template<class T> ObjectListWindow<T>::~ObjectListWindow()

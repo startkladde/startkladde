@@ -357,12 +357,12 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
     <property name="title">
-     <string>&amp;Programm</string>
+     <string>&amp;Program</string>
     </property>
     <addaction name="actionSettings"/>
     <addaction name="actionSetTime"/>
@@ -851,10 +851,7 @@
   </action>
   <action name="actionShowFlights">
    <property name="text">
-    <string>Show &amp;flight database</string>
-   </property>
-   <property name="toolTip">
-    <string>Show flight database</string>
+    <string extracomment="Seems like &amp;f is not displayed correctly, possible because it is replaced with a ligature">Show flight d&amp;atabase</string>
    </property>
   </action>
   <action name="loadTranslationAction">
