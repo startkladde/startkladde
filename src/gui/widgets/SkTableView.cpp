@@ -311,17 +311,18 @@ bool SkTableView::focusWidgetAt (const QModelIndex &index)
  *
  * @param indexes
  */
-void SkTableView::updateWidgetFocus (const QModelIndexList &indexes)
-{
-	assert (!notr ("This method should not be used, it's slow."));
-
+//void SkTableView::updateWidgetFocus (const QModelIndexList &indexes)
+//{
+//	(void)indexes;
+//	assert (!notr ("This method should not be used, it's slow."));
+//
 //	// If the current selection contains a widget, focus it if it is visible
 //	QWidget *widget=findVisibleWidget (indexes);
 //	if (widget)
 //		widget->setFocus (Qt::OtherFocusReason);
 //	else
 //		this->setFocus (Qt::OtherFocusReason);
-}
+//}
 
 
 void SkTableView::scrollLeft ()
