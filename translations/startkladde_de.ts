@@ -1268,10 +1268,6 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
 <context>
     <name>FlightListWindowClass</name>
     <message>
-        <source>FlightListWindow</source>
-        <translation type="obsolete">FlightListWindow</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/objectList/FlightListWindow.ui" line="14"/>
         <source>Flight database</source>
         <translation>Flugdatenbank</translation>
@@ -1490,10 +1486,6 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         <translation>12345</translation>
     </message>
     <message>
-        <source>(See glider flight)</source>
-        <translation type="obsolete">Siehe geschleppter Flug</translation>
-    </message>
-    <message>
         <location filename="../src/model/flightList/FlightModel.cpp" line="192"/>
         <source>Depart</source>
         <translation>Starten</translation>
@@ -1512,14 +1504,6 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         <location filename="../src/model/flightList/FlightModel.cpp" line="269"/>
         <source>(Passenger)</source>
         <translation>(Gast)</translation>
-    </message>
-    <message>
-        <source>hh:mm</source>
-        <translation type="obsolete">hh:mm</translation>
-    </message>
-    <message>
-        <source>h:mm</source>
-        <translation type="obsolete">h:mm</translation>
     </message>
 </context>
 <context>
@@ -1828,73 +1812,73 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>Beim Speichern des Flugs in der Datenbank ist ein Fehler aufgetreten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1825"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1826"/>
         <source>Au&amp;tomatic</source>
         <translation>Automati&amp;sch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1826"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1827"/>
         <source>Depar&amp;ted</source>
         <translation>Ge&amp;startet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1828"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1829"/>
         <source>&amp;Automatic</source>
         <translation>Au&amp;tomatisch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1829"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1830"/>
         <source>L&amp;anded</source>
         <translation>Galande&amp;t</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1831"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1832"/>
         <source>A&amp;utomatic</source>
         <translation>Automatis&amp;ch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1832"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1833"/>
         <source>Lande&amp;d</source>
         <translation>G&amp;alandet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1833"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1834"/>
         <source>Finishe&amp;d</source>
         <translation>B&amp;eendet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1835"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1836"/>
         <source>Landing ti&amp;me towplane:</source>
         <translation>&amp;Landezeit Schleppflugzeug:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1836"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1837"/>
         <source>Release ti&amp;me:</source>
         <translatorcomment>Könnte auch &quot;Ausk&amp;linkzeit&quot; sein</translatorcomment>
         <translation>Sch&amp;leppende:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1838"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1839"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1840"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1841"/>
         <source>Depart n&amp;ow</source>
         <translation>&amp;Jetzt starten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1841"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1842"/>
         <source>Land n&amp;ow</source>
         <translation>&amp;Jetzt landen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1843"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1844"/>
         <source>Depart &amp;later</source>
         <translation>S&amp;päter starten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.cpp" line="1844"/>
+        <location filename="../src/gui/windows/FlightWindow.cpp" line="1845"/>
         <source>Land &amp;later</source>
         <translation>S&amp;päter landen</translation>
     </message>
@@ -2820,10 +2804,6 @@ Konfiguration: %2</translation>
         <translation>&amp;Verbindung aufbauen</translation>
     </message>
     <message>
-        <source>&amp;Programm</source>
-        <translation type="obsolete">&amp;Programm</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="375"/>
         <source>&amp;Flight</source>
         <translation>&amp;Flug</translation>
@@ -2908,14 +2888,6 @@ Konfiguration: %2</translation>
         <location filename="../src/gui/windows/MainWindow.ui" line="849"/>
         <source>Preselect launch &amp;method...</source>
         <translation>Starta&amp;rt-Vorauswahl...</translation>
-    </message>
-    <message>
-        <source>Show flight &amp;database</source>
-        <translation type="obsolete">Flug&amp;datenbank anzeigen</translation>
-    </message>
-    <message>
-        <source>Show flight database</source>
-        <translation type="obsolete">Flugdatenbank anzeigen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="558"/>
@@ -3216,10 +3188,6 @@ Konfiguration: %2</translation>
         <source>Ctrl+T</source>
         <extracomment>Touch-and-go</extracomment>
         <translation>Ctrl+U</translation>
-    </message>
-    <message>
-        <source>Show &amp;flight database</source>
-        <translation type="obsolete">Flug&amp;datenbank anzeigen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="859"/>
@@ -4994,22 +4962,22 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
         <translation>Gibt eine Begrüßung und die aktuelle Uhrzeit aus</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="89"/>
+        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="74"/>
         <source>Hello</source>
         <translation>Hallo</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="97"/>
+        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="82"/>
         <source>at %1</source>
         <translation>um %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="117"/>
+        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="102"/>
         <source>%1; rich text</source>
         <translation>%1; Rich text</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="119"/>
+        <location filename="../src/plugins/info/test/TestPlugin.cpp" line="104"/>
         <source>%1; plain text</source>
         <translation>%1; Standardtext</translation>
     </message>

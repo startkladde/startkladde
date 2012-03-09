@@ -1822,6 +1822,7 @@ void FlightWindow::disableWidgets (QWidget *widget0, QWidget *widget2, bool disa
 // ** Input field state update **
 // ******************************
 
+// TODO TR this is called before the translator is loaded
 const QString textDepartureTimeAutomatic        =FlightWindow::tr ("Au&tomatic");
 const QString textDepartureTimeDeparted         =FlightWindow::tr ("Depar&ted");
 

@@ -390,6 +390,11 @@ int main (int argc, char **argv)
 	loadTranslation (translator);
     application.installTranslator (&translator);
 
+	// This works, but how do we pull in the file?
+	//QTranslator qtTranslator;
+	//qtTranslator.load ("translations/qt_"+QLocale::system ().name ());
+	//application.installTranslator (&qtTranslator);
+
 	qApp->addLibraryPath (qApp->applicationDirPath () + notr ("/plugins"));
 
 	// Event is used as parameters for signals emitted by tasks running on
