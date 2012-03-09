@@ -215,7 +215,7 @@ QString Flight::incompletePersonName (QString nn, QString vn) const
 {
 	if (isNone (nn) && isNone (vn)) return (notr ("-"));
 	else if (isNone (nn)) return qnotr ("(???, %1)").arg (vn);
-	else if (isNone (vn)) return qnotr ("(%1, %2)").arg (nn).arg (notr ("???")); // ??) would be a trigraph
+	else if (isNone (vn)) return qnotr ("(%1, ???" ")").arg (nn); // ??) would be a trigraph
 	else                  return qnotr ("%1, %2").arg (nn).arg (vn);
 }
 
