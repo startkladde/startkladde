@@ -3,6 +3,6 @@
 
 #define notr(value) (value)
 #define qnotr(value) QString (value)
-#define qnotrUtf8(value) utf8 (value)
+#define qnotrUtf8(value) QString::fromUtf8 (value)
 
 #endif

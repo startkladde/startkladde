@@ -36,21 +36,6 @@ TestPlugin::~TestPlugin ()
 	qDebug () << notr ("Destroying test plugin");
 }
 
-//QString TestPlugin::getId () const
-//{
-//	return "test";
-//}
-//
-//QString TestPlugin::getName () const
-//{
-//	return "Test";
-//}
-//
-//QString TestPlugin::getDescription () const
-//{
-//	return utf8 ("Gibt eine Begrüßung und die aktuelle Uhrzeit aus");
-//}
-
 PluginSettingsPane *TestPlugin::infoPluginCreateSettingsPane (QWidget *parent)
 {
 	return new TestPluginSettingsPane (this, parent);

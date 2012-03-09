@@ -47,9 +47,7 @@ class OperationMonitorInterface
 
 		// Operation feedback
 		void status (const QString &text, bool checkCanceled=true);
-		void status (const char *text, bool checkCanceled=true);
 		void progress (int progress, int maxProgress, const QString &status=QString (), bool checkCanceled=true);
-		void progress (int progress, int maxProgress, const char *status, bool checkCanceled=true);
 		void ended ();
 
 		// Operation control

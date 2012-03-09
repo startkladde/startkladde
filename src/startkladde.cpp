@@ -48,7 +48,7 @@
 
 void ponder ()
 {
-//	std::cout << utf8 ("Pondering on thread %1: ").arg (QThread::currentThreadId ());
+//	std::cout << QString::fromUtf8 ("Pondering on thread %1: ").arg (QThread::currentThreadId ());
 	std::cout << notr ("Pondering: ");
 	const int delay=200;
 
@@ -69,7 +69,7 @@ void ponder ()
 
 void proxy_test ()
 {
-//	std::cout << utf8 ("Creating proxy on thread %1").arg (QThread::currentThreadId ()) << std::endl;
+//	std::cout << QString::fromUtf8 ("Creating proxy on thread %1").arg (QThread::currentThreadId ()) << std::endl;
 	std::cout << notr ("Creating proxy") << std::endl;
 
 	TcpProxy proxy;
@@ -140,7 +140,7 @@ int test_database ()
 	//    DefaultQThread::sleep (1);
 
 	//    Person p;
-	//    p.lastName=utf8 ("Müller");
+	//    p.lastName=QString::fromUtf8 ("Müller");
 	//    p.firstName="Busch";
 	//    dbId newId=db.createObject (p);
 	//
