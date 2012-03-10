@@ -18,7 +18,6 @@ ConfirmOverwritePersonDialog::ConfirmOverwritePersonDialog (QWidget *parent, Qt:
 	QDialog (parent, f)
 {
 	ui.setupUi(this);
-	//ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 }
 
 ConfirmOverwritePersonDialog::~ConfirmOverwritePersonDialog ()

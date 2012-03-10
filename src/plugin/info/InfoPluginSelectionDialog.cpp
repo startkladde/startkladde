@@ -10,7 +10,6 @@ InfoPluginSelectionDialog::InfoPluginSelectionDialog (const QList<const InfoPlug
     plugins (plugins)
 {
 	ui.setupUi (this);
-	//ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
 	setup ();
 }

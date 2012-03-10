@@ -38,7 +38,6 @@ FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 	manager (manager)
 {
 	ui.setupUi(this);
-	//ui.buttonBox->button (QDialogButtonBox::Close)->setText (utf8 ("&Schließen"));
 
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 

@@ -59,7 +59,6 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	// TODO there should be a warning if the settings can't be saved without a password
 
 	ui.setupUi (this);
-//	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
 	ui.dbTypePane->setVisible (false);
 

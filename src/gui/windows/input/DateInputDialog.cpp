@@ -8,7 +8,6 @@ DateInputDialog::DateInputDialog (QWidget *parent, Qt::WindowFlags f):
 	QDialog(parent, f)
 {
 	ui.setupUi(this);
-	//ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 }
 
 DateInputDialog::~DateInputDialog()

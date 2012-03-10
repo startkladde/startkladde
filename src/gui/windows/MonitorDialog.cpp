@@ -13,7 +13,6 @@ MonitorDialog::MonitorDialog (SignalOperationMonitor &monitor, QWidget *parent):
 	QDialog (parent), theMonitor (monitor)
 {
 	ui.setupUi (this);
-	//ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
 //	setModal (true);
 

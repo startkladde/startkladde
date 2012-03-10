@@ -10,7 +10,6 @@ LaunchMethodSelectionWindow::LaunchMethodSelectionWindow (QWidget *parent):
 	QDialog (parent)
 {
 	ui.setupUi (this);
-	//ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 }
 
 LaunchMethodSelectionWindow::~LaunchMethodSelectionWindow ()
