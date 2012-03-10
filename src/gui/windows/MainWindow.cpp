@@ -61,6 +61,7 @@
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
 #include "src/util/qList.h"
+#include "src/util/qDate.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
@@ -551,7 +552,8 @@ void MainWindow::refreshFlights ()
 		flights += dbManager.getCache ().getPreparedFlights ().getList ();
 
 		ui.displayDateLabel->resetDefaultForegroundColor ();
-		ui.displayDateLabel->setText (tr ("Today (%1)").arg (today.toString (Qt::DefaultLocaleShortDate)));
+		QString formattedDate=today.toString (defaultNumericDateFormat ());
+		ui.displayDateLabel->setText (tr ("Today (%1)").arg (formattedDate));
 
 		proxyModel->setShowPreparedFlights (true);
 	}
@@ -562,7 +564,7 @@ void MainWindow::refreshFlights ()
 		flights=dbManager.getCache ().getFlightsOther ().getList ();
 
 		ui.displayDateLabel->setPaletteForegroundColor (Qt::red);
-		ui.displayDateLabel->setText (dbManager.getCache ().getOtherDate ().toString (Qt::DefaultLocaleLongDate));
+		ui.displayDateLabel->setText (dbManager.getCache ().getOtherDate ().toString (tr ("dddd, M/d/yyyy")));
 
 		proxyModel->setShowPreparedFlights (false);
 	}
@@ -1412,24 +1414,14 @@ void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
 		std::cerr << notr ("Unhandled button column in MainWindow::flightTable_buttonClicked") << std::endl;
 }
 
-QString formatDateTime (const QDateTime &dateTime)
-{
-	// xx.yy.zzzz aa:bb:cc
-	// Note that QTime::toString (Qt::DefaultLocaleLongDate) includes the time
-	// zone, which will be reported as the local time zone even for UTC time,
-	// since QTime doesn't know about time zones.
-
-	return dateTime.date ().toString (Qt::DefaultLocaleShortDate)+notr (" ")+
-		dateTime.time ().toString (Qt::TextDate);
-}
-
 #include "src/gui/widgets/TableButton.h"
 
 void MainWindow::timeTimer_timeout ()
 {
 	QDateTime now=QDateTime::currentDateTime ();
-	ui.utcTimeLabel->setText (formatDateTime (now.toUTC ()));
-	ui.localTimeLabel->setText (formatDateTime (now.toLocalTime ()));
+
+	ui.utcTimeLabel  ->setText (now.toUTC       ().toString (defaultNumericDateTimeFormat ()));
+	ui.localTimeLabel->setText (now.toLocalTime ().toString (defaultNumericDateTimeFormat ()));
 
 	static int lastSecond=0;
 	int second=QTime::currentTime ().second ();

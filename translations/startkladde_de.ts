@@ -91,66 +91,14 @@ Fortsetzen?&lt;/html&gt;</translation>
 Fortsetzen?&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>&lt;html&gt;All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
-&lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt;
-Continue?&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
-&lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
-Fortsetzen?&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person.
-&lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt;
-Continue?&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;Beide Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Person werden der korrekten Person zugewiesen.
-&lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
-Fortsetzen?&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
-&lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt;
-Continue?</source>
-        <translation type="obsolete">Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
-&lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
-Fortsetzen?</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="55"/>
         <source>Erroneous entry</source>
         <translation>Fehlerhafter Eintrag</translation>
     </message>
     <message>
-        <source>Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person.
-&lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt;
-Continue?</source>
-        <translation type="obsolete">Beide Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Person werden der korrekten Person zugewiesen.
-&lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
-Fortsetzen?</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">Alle</translation>
-    </message>
-    <message>
-        <source>people</source>
-        <translation type="obsolete">Personen</translation>
-    </message>
-    <message>
-        <source>Wrong entry</source>
-        <translation type="obsolete">Fehlerhafter Eintrag</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="56"/>
         <source>The following erroneous entry will be replaced with the correct entry:</source>
         <translation>Der folgende fehlerhaft Personeneintrag wird durch den korrekten Eintrag ersetzt:</translation>
-    </message>
-    <message>
-        <source>Both</source>
-        <translation type="obsolete">Beide</translation>
-    </message>
-    <message>
-        <source>person</source>
-        <translation type="obsolete">Person</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="73"/>
@@ -179,38 +127,6 @@ Continue?]</source>
         <extracomment>Will be replaced programmatically</extracomment>
         <translation>[Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
 Achtung: diese Aktion kann nicht rückgängig gemacht werden. Fortsetzen?]</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;%1 entries must refer to the same person. All flights of the wrong %2 will be assigned to the correct person.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; color:#ff0000;&quot;&gt;Warning&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;: This action cannot be undone.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;Continue?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;%1 Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften %2 werden der korrekten Person zugewiesen.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; color:#ff0000;&quot;&gt;Achtung&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;: Diese Aktion kann nicht rückgängig gemacht werden.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;Fortsetzen?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;%1 entries must refer to the same person. All flights of the wrong %2 will be assigned to the correct person.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; color:#ff0000;&quot;&gt;Attention&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;: This action cannot be undone.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;Continue?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;%1 Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften %2 werden der korrekten Person zugewiesen.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; color:#ff0000;&quot;&gt;Achtung&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;: Diese Aktion kann nicht rückgängig gemacht werden.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;Fortsetzen?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -500,26 +416,6 @@ Before updating, a backup of the database should be made.
 
 Update the database now?</source>
         <translation>Die Datenbank ist nicht aktuell:
-  - Momentane Version: %1
-  - Aktuelle Version: %2
-  - Anzahl ausstehender Migrationen: %3
-
-Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.
-Vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden.
-
-Soll die Datenbank jetzt aktualisiert werden?</translation>
-    </message>
-    <message>
-        <source>The database is not up to date:
-  - Current version: %1
-  - Up-to-date version: %2
-  - Number of missing migrations: %3
-
-Attention: the update should not be interrupted because this can lead to an inconsistent database which cannot be repaired automatically.
-Before updating, a backup of the database should be made.
-
-Update the database now?</source>
-        <translation type="obsolete">Die Datenbank ist nicht aktuell:
   - Momentane Version: %1
   - Aktuelle Version: %2
   - Anzahl ausstehender Migrationen: %3
@@ -2514,322 +2410,327 @@ Die Vorauswahl wird beim nächsten Programmstart zurückgesetzt.</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="137"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="138"/>
         <source>Show &amp;log</source>
         <translation>Protoko&amp;ll anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="302"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="303"/>
         <source>%1
 Configuration: %2</source>
         <translation>%1
 Konfiguration: %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="379"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="380"/>
         <source>Weather</source>
         <translation>Wetter</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="433"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="439"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="434"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="440"/>
         <source>Really exit?</source>
         <translation>Wirklich beenden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="433"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="439"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="434"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="440"/>
         <source>Really exit the program?</source>
         <translation>Programm wirklich beenden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="444"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="445"/>
         <source>Really shut down?</source>
         <translation>Wirklich herunterfahren?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="444"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="445"/>
         <source>Really shut down the computer?</source>
         <translation>Rechner wirklich herunterfahren?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="514"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="515"/>
         <source>Startkladde</source>
         <translation>Startkladde</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="516"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="517"/>
         <source>Flight log %1 - Startkladde</source>
         <translation>Hauptflugbuch %1 - Startkladde</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="554"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="556"/>
         <source>Today (%1)</source>
         <translation>Heute (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="737"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="567"/>
+        <source>dddd, M/d/yyyy</source>
+        <translation>dddd, d.M.yyyy</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="739"/>
         <source>According to the database, the %1 %2 is still flying. Depart anyway?</source>
         <translation>Laut Datenbank fliegt das %1 %2 noch. Trotzdem starten?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="739"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="741"/>
         <source>Plane still flying</source>
         <translation>Flugzeug fliegt noch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="751"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="753"/>
         <source>According to the database, the %1 %2 is still flying. Start anyway?</source>
         <translation>Laut Datenbank fliegt der %1 %2 noch. Trotzdem starten?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="753"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="755"/>
         <source>Person still flying</source>
         <translation>Person fliegt noch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="775"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="777"/>
         <source>plane</source>
         <translation>Flugzeug</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="777"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="779"/>
         <source>towplane</source>
         <translation>Schleppflugzeug</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1033"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1035"/>
         <source>Delete flight?</source>
         <translation>Flug löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1033"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1035"/>
         <source>Really delete flight?</source>
         <translation>Flug wirklich löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1035"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1037"/>
         <source>Delete glider flight?</source>
         <translation>Segelflug löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1036"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1038"/>
         <source>The selected flight is a towflight. Really delete the corresponding glider flight?</source>
         <translation>Der ausgewählte Flug ist ein Schleppflug. Soll der dazugehörige Segelflug wirklich gelöscht werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1063"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1236"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1065"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1238"/>
         <source>No flight selected</source>
         <translation>Kein Flug ausgewählt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1195"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1197"/>
         <source>Unable to display virtual keyboard</source>
         <translation>Bildschirmtastatur konnte nicht angezeigt werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1292"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1294"/>
         <source>An error occured while executing the network diagnostics command.</source>
         <translation>Beim Ausführen der Netzwerkdiagnose ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1652"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1644"/>
         <source>The database password must be entered to display the flight database.</source>
         <translation>Zum Anzeigen der Flugdatenbank muss das Datenbankpasswort eingegeben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1899"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1891"/>
         <source>The system time was changed. The setting may only be stored permanently when the system is shut down.</source>
         <translation>Die Systemzeit wurde geändert. Gegebenenfalls wird die Änderung erst beim nächsten Herunterfahren dauerhaft gespeichert.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1111"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1113"/>
         <source>Towflight has errors</source>
         <translation>Schleppflug fehlerhaft</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1111"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1113"/>
         <source>First error of the towflight: %1</source>
         <translation>Erster Fehler des Schleppflugs: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1113"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1115"/>
         <source>Flight has errors</source>
         <translation>Flug hat Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1113"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1115"/>
         <source>First error of the flight: %1</source>
         <translation>Erster Fehler des Flugs: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1118"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1120"/>
         <source>Towflight has no errors</source>
         <translation>Schleppflug fehlerfrei</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1118"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1120"/>
         <source>The towflight has no errors.</source>
         <translation>Der Schleppflug ist fehlerfrei.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1120"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1122"/>
         <source>Flight has no errors</source>
         <translation>Flug fehlerfrei</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1120"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1122"/>
         <source>The flight has no errors.</source>
         <translation>Der Flug ist fehlerfrei.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1189"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1206"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1191"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1208"/>
         <source>DBus call failed</source>
         <translation>DBus-Aufruf fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1190"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1192"/>
         <source>The call to dbus-send for displaying the virtual keyboard failed.</source>
         <translation>Der Aufruf von dbus-send zum Anzeigen der Bildschirmtastatur ist fehlgeschlagen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1196"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1198"/>
         <source>The virtual keyboard could not be displayed. Maybe kvkbd is not installed.</source>
         <translation>Die Bildschirmtastatur konnte nicht angezeigt werden. Möglicherweise ist kvkbd nicht installiert.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1207"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1209"/>
         <source>The call to dbus-send for hiding the virtual keyboard failed.</source>
         <translation>Der aufruf von dbus-send zum Ausblenden der Bildschirmtastatur ist fehlgeschlagen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1063"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1236"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1065"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1238"/>
         <source>No flight is selected.</source>
         <translation>Es ist kein Flug ausgewählt.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1247"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1249"/>
         <source>Either the selected flight is neither a towflight nor a towed flight, or it has not departed yet.</source>
         <translation>Entweder der ausgewählte Flug ist weder ein geschleppter Flug noch ein Schleppflug, oder er ist noch nicht gestartet.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1248"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1250"/>
         <source>No towflight</source>
         <translation>Kein Schleppflug</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1291"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1904"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1293"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1896"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1576"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1568"/>
         <source>Set display date</source>
         <translation>Anzeigedatum einstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1576"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1568"/>
         <source>Display date:</source>
         <translation>Anzeigedatum:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1591"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1583"/>
         <source>Plane logbooks</source>
         <translation>Bordbücher</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1604"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1596"/>
         <source>Pilot logbooks</source>
         <translation>Flugbücher</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1610"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
         <source>Launch method overview</source>
         <translation>Startartstatistik</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1673"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1665"/>
         <source>Database: %2 (%1)</source>
         <translation>Datenbank: %2 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1745"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1737"/>
         <source>Not connected</source>
         <translation>Keine Verbindung</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1755"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1747"/>
         <source>Connecting...</source>
         <translation>Verbindung wird aufgebaut...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1767"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1759"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1792"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1784"/>
         <source>No reply</source>
         <translation>Keine Antwort</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1861"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1853"/>
         <source>Database settings changed</source>
         <translation>Datenbankeinstellungen geändert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1863"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1855"/>
         <source>The database settings were changed. The changes will be effective on the next reconnect. Do you want to reconnect now?</source>
         <translation>Die Datenbankeinstellungen wurden geändert. Die Anderungen werden beim nächsten Verbindungsaufbau wirksam. Soll die Verbindung jetzt neu aufgebaut werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1885"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1877"/>
         <source>Set system time</source>
         <translation>Systemzeit einstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1898"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1890"/>
         <source>System time changed</source>
         <translation>Systemzeit geändert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1905"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1897"/>
         <source>Changing the system time failed. Maybe the user has insufficient permissions.</source>
         <translation>Die Änderung der Systemzeit ist fehlgeschlagen. Möglicherweise sind die Benutzerberechtigungen nicht ausreichend.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="794"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="796"/>
         <source>Departing not possible</source>
         <translation>Start nicht möglich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="820"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="846"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="822"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="848"/>
         <source>Landing not possible</source>
         <translation>Landung nicht möglich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="894"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="917"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="896"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="919"/>
         <source>Touch-and-go not possible</source>
         <translation>Zwischenlandung nicht möglich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="895"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="897"/>
         <source>The selected flight is a towflight. Towflights cannot perform a touch-and-go.</source>
         <translation>Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können keine Zwischenlandung machen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1005"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1007"/>
         <source>Replicating not possible</source>
         <translation>Wiederholen nicht möglich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1006"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1008"/>
         <source>The selected flight is a towflight. Towflights cannot be replicated.</source>
         <translation>Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können nicht wiederholt werden.</translation>
     </message>
@@ -3850,79 +3751,73 @@ aktiviert werden.</translation>
 <context>
     <name>PilotLog</name>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="36"/>
-        <location filename="../src/statistics/PilotLog.cpp" line="41"/>
-        <source>hh:mm</source>
-        <translation>hh:mm</translation>
+        <location filename="../src/statistics/PilotLog.cpp" line="37"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="42"/>
+        <source>hh:mm &apos;UTC&apos;</source>
+        <translation>hh:mm &apos;UTC&apos;</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="36"/>
-        <location filename="../src/statistics/PilotLog.cpp" line="41"/>
-        <source>Z</source>
-        <translation>Z</translation>
-    </message>
-    <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="46"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="47"/>
         <source>h:mm</source>
         <translation>h:mm</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="260"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="261"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="261"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="262"/>
         <source>Model</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="262"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="263"/>
         <source>Registration</source>
         <translation>Kennzeichen</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="263"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="264"/>
         <source>Pilot</source>
         <translation>Pilot</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="264"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="265"/>
         <source>Copilot</source>
         <translation>Begleiter</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="265"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="266"/>
         <source>Launch method</source>
         <translation>Startart</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="266"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="267"/>
         <source>Departure location</source>
         <translation>Startort</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="267"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="268"/>
         <source>Landing location</source>
         <translation>Zielort</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="268"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="269"/>
         <source>Departure time</source>
         <translation>Startzeit</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="269"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="270"/>
         <source>Landing time</source>
         <translation>Landezeit</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="270"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="271"/>
         <source>Flight duration</source>
         <translation>Flugdauer</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PilotLog.cpp" line="271"/>
+        <location filename="../src/statistics/PilotLog.cpp" line="272"/>
         <source>Comments</source>
         <translation>Bemerkungen</translation>
     </message>
@@ -4123,89 +4018,83 @@ aktiviert werden.</translation>
 <context>
     <name>PlaneLog</name>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="49"/>
-        <location filename="../src/statistics/PlaneLog.cpp" line="57"/>
-        <source>hh:mm</source>
-        <translation>hh:mm</translation>
+        <location filename="../src/statistics/PlaneLog.cpp" line="50"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="58"/>
+        <source>hh:mm &apos;UTC&apos;</source>
+        <translation>hh:mm &apos;UTC&apos;</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="49"/>
-        <location filename="../src/statistics/PlaneLog.cpp" line="57"/>
-        <source>Z</source>
-        <translation>Z</translation>
-    </message>
-    <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="74"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="75"/>
         <source>h:mm</source>
         <translation>h:mm</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="165"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="166"/>
         <source>towflight</source>
         <translation>Schleppflug</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="167"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="168"/>
         <source>towflights</source>
         <translation>Schleppflüge</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="356"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="357"/>
         <source>Registration</source>
         <translation>Kennzeichen</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="357"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="358"/>
         <source>Model</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="358"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="359"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="359"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="360"/>
         <source>Pilot</source>
         <translation>Pilot</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="360"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="361"/>
         <source>Passengers</source>
         <translation>Insassen</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="361"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="362"/>
         <source>Departure location</source>
         <translation>Startort</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="362"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="363"/>
         <source>Landing location</source>
         <translation>Zielort</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="363"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="364"/>
         <source>Departure time</source>
         <translation>Startzeit</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="364"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="365"/>
         <source>Landing time</source>
         <translation>Landezeit</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="365"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="366"/>
         <source>Number of landings</source>
         <translation>Anzahl Landungen</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="366"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="367"/>
         <source>Time airborne</source>
         <translation>Betriebsdauer</translation>
     </message>
     <message>
-        <location filename="../src/statistics/PlaneLog.cpp" line="367"/>
+        <location filename="../src/statistics/PlaneLog.cpp" line="368"/>
         <source>Comments</source>
         <translation>Bemerkungen</translation>
     </message>
@@ -4240,8 +4129,29 @@ aktiviert werden.</translation>
     <name>QDate</name>
     <message>
         <location filename="../src/util/qDate.cpp" line="29"/>
+        <location filename="../src/util/qDate.cpp" line="39"/>
         <source>invalid</source>
         <translation>ungültig</translation>
+    </message>
+    <message>
+        <location filename="../src/util/qDate.cpp" line="77"/>
+        <source>M/d/yyyy</source>
+        <translation>d.M.yyyy</translation>
+    </message>
+    <message>
+        <location filename="../src/util/qDate.cpp" line="82"/>
+        <source>MM/dd/yyyy</source>
+        <translation>dd.MM.yyyy</translation>
+    </message>
+    <message>
+        <location filename="../src/util/qDate.cpp" line="87"/>
+        <source>M/d/yyyy h:mm:ss</source>
+        <translation>d.M.yyyy h:mm:ss</translation>
+    </message>
+    <message>
+        <location filename="../src/util/qDate.cpp" line="92"/>
+        <source>MM/dd/yyyy hh:mm:ss</source>
+        <translation>dd.MM.yyyy hh:mm:ss</translation>
     </message>
 </context>
 <context>

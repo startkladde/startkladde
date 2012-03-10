@@ -111,9 +111,9 @@ bool FlightListWindow::fetchFlights (const QDate &first, const QDate &last)
 	flightList->replaceList (flights);
 	ui.table->resizeColumnsToContents ();
 
-	// Create and set the descriptive text: "1.1.2011 bis 31.12.2011: 123 Flüge"
+	// Create and set the descriptive text: "1/1/2011 to 12/31/2011: 123 flights"
 	int numFlights=flights.size ();
-	QString dateText=dateRangeToString (currentFirst, currentLast, tr (" to "), Qt::DefaultLocaleShortDate);
+	QString dateText=dateRangeToString (currentFirst, currentLast, defaultNumericDateFormat (), tr (" to "));
 
 	if (numFlights==0)
 		ui.captionLabel->setText (tr ("%1: no flights").arg (dateText));

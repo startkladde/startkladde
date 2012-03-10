@@ -7,6 +7,7 @@
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
 #include "src/db/cache/Cache.h"
+#include "src/util/qDate.h"
 
 
 // ************************
@@ -28,17 +29,17 @@ PilotLog::Entry::~Entry ()
 
 QString PilotLog::Entry::dateText () const
 {
-	return date.toString (Qt::DefaultLocaleShortDate);
+	return date.toString (defaultNumericDateFormat ());
 }
 
 QString PilotLog::Entry::departureTimeText () const
 {
-	return departureTime.toUTC ().toString (tr ("hh:mm"))+tr ("Z");
+	return departureTime.toUTC ().toString (tr ("hh:mm 'UTC'"));
 }
 
 QString PilotLog::Entry::landingTimeText () const
 {
-	return landingTime.toUTC ().toString (tr ("hh:mm"))+tr ("Z");
+	return landingTime.toUTC ().toString (tr ("hh:mm 'UTC'"));
 }
 
 QString PilotLog::Entry::flightDurationText () const

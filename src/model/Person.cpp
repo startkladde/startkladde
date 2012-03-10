@@ -132,7 +132,7 @@ QVariant Person::DefaultObjectModel::displayData (const Person &object, int colu
 		case 1: return object.firstName;
 		case 2: return object.club;
 		case 3: return object.medicalValidity.isValid ()?
-				object.medicalValidity.toString (Qt::DefaultLocaleShortDate):
+				object.medicalValidity.toString (defaultNumericDateFormat ()):
 				qApp->translate ("Person::DefaultObjectModel", "unknown");
 		case 4: return object.checkMedical?
 				qApp->translate ("Person", "Yes"):

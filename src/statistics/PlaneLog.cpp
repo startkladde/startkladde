@@ -8,6 +8,7 @@
 #include "src/model/Person.h"
 #include "src/text.h"
 #include "src/util/qString.h"
+#include "src/util/qDate.h"
 #include "src/notr.h"
 
 // ************************
@@ -29,7 +30,7 @@ PlaneLog::Entry::~Entry ()
 
 QString PlaneLog::Entry::dateText () const
 {
-	return date.toString (Qt::DefaultLocaleShortDate);
+	return date.toString (defaultNumericDateFormat ());
 }
 
 QString PlaneLog::Entry::numPassengersString () const
@@ -46,7 +47,7 @@ QString PlaneLog::Entry::numPassengersString () const
 QString PlaneLog::Entry::departureTimeText () const
 {
 	if (departureTime.isValid ())
-		return departureTime.toUTC ().toString (tr ("hh:mm"))+tr ("Z");
+		return departureTime.toUTC ().toString (tr ("hh:mm 'UTC'"));
 	else
 		return notr ("-");
 }
@@ -54,7 +55,7 @@ QString PlaneLog::Entry::departureTimeText () const
 QString PlaneLog::Entry::landingTimeText () const
 {
 	if (landingTime.isValid ())
-		return landingTime.toUTC ().toString (tr ("hh:mm"))+tr ("Z");
+		return landingTime.toUTC ().toString (tr ("hh:mm 'UTC'"));
 	else
 		return notr ("-");
 }
