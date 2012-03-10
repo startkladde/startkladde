@@ -141,7 +141,7 @@ template<class T> void ObjectListWindow<T>::appendObjectTo (QList<T> &targetList
  */
 template<class T> int ObjectListWindow<T>::activeObjectCount ()
 {
-	// ATTENTION: make sure getActiveObjects corresponds to this method
+	// WARNING: make sure getActiveObjects corresponds to this method
 
 	// If there is a selection, the active objects are the selected objects
 	// (rows)
@@ -178,7 +178,7 @@ template<class T> int ObjectListWindow<T>::activeObjectCount ()
  */
 template<class T> QList<T> ObjectListWindow<T>::activeObjects ()
 {
-	// ATTENTION: make sure activeObjectCount corresponds to this method
+	// WARNING: make sure activeObjectCount corresponds to this method
 
 	QList<T> activeObjects;
 
@@ -471,7 +471,7 @@ template<class T> QString ObjectListWindow<T>::makePasswordMessage ()
  * Specializations have to be performed at the end of the file, before (!) the
  * instantiation.
  *
- * ATTENTION: all ObjectListWindow instances have to be created using this
+ * WARNING: all ObjectListWindow instances have to be created using this
  * method (or a subclass constructor), never directly using the
  * ObjectListWindow constructor. Otherwise, the generic class may be created
  * instead of the specific class.

@@ -301,7 +301,7 @@ void DbManager::checkVersion (QWidget *parent)
 					"  - Up-to-date version: %2\n"
 					"  - Number of missing migrations: %3\n"
 					"\n"
-					"Attention: the update should not be interrupted because this can lead to an inconsistent database which cannot be repaired automatically.\n"
+					"Warning: the update should not be interrupted because this can lead to an inconsistent database which cannot be repaired automatically.\n"
 					"Before updating, a backup of the database should be made.\n"
 					"\n"
 					"Update the database now?"
