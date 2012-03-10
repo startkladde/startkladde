@@ -1,0 +1,5 @@
+In date inputs, we use a non-default, translatable format specification because
+the default specification uses a two-digit date format (at least for some
+locales). The inputs use padded fields to avoid ambiguity with keyboard entry
+(e. g. 11/1/xxxx vs. 1/11/xxxx).
+

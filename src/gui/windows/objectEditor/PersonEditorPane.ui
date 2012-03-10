@@ -182,7 +182,7 @@ medicals to be checked, enable the option
          <string>The last date that this person's medical is valid</string>
         </property>
         <property name="displayFormat">
-         <string>dd.MM.yyyy</string>
+         <string>MM/dd/yyyy</string>
         </property>
        </widget>
       </item>

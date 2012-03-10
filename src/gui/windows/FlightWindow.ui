@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>492</width>
-        <height>780</height>
+        <width>510</width>
+        <height>781</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -673,7 +673,11 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QDateEdit" name="dateInput"/>
+              <widget class="QDateEdit" name="dateInput">
+               <property name="displayFormat">
+                <string>MM/dd/yyyy</string>
+               </property>
+              </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_6">
