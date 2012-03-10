@@ -1200,7 +1200,7 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         <location filename="../src/model/Flight_Type.cpp" line="141"/>
         <location filename="../src/model/Flight_Type.cpp" line="147"/>
         <source>copilot</source>
-        <translation>Copilot</translation>
+        <translation>Begleiter</translation>
     </message>
 </context>
 <context>

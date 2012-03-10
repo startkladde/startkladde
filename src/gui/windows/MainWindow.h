@@ -68,7 +68,7 @@ class MainWindow: public QMainWindow
 	Q_OBJECT
 
 	public:
-		MainWindow (QWidget *parent, QTranslator *translator);
+		MainWindow (QWidget *parent, QTranslator *applicationTranslator, QTranslator *qtTranslator);
 		~MainWindow ();
 
 	protected:
@@ -229,7 +229,8 @@ class MainWindow: public QMainWindow
 
 	private:
 		Ui::MainWindowClass ui;
-		QTranslator *translator;
+		QTranslator *applicationTranslator;
+		QTranslator *qtTranslator;
 
 		bool oldLogVisible;
 

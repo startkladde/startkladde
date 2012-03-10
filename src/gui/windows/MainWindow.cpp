@@ -71,9 +71,10 @@ template <class T> class MutableObjectList;
 // ** Construction **
 // ******************
 
-MainWindow::MainWindow (QWidget *parent, QTranslator *translator):
+MainWindow::MainWindow (QWidget *parent, QTranslator *applicationTranslator, QTranslator *qtTranslator):
 	QMainWindow (parent),
-	translator (translator),
+	applicationTranslator (applicationTranslator),
+	qtTranslator (qtTranslator),
 	oldLogVisible (false),
 	dbManager (Settings::instance ().databaseInfo),
 	cache (dbManager.getCache ()),
@@ -1927,12 +1928,14 @@ void MainWindow::logMessage (QString message)
 
 void MainWindow::on_loadTranslationAction_triggered ()
 {
-	translator->load (notr ("translations/startkladde_de"));
+	applicationTranslator->load ("startkladde_"+QLocale::system ().name (), "translations");
+	qtTranslator         ->load ("qt_"         +QLocale::system ().name (), QLibraryInfo::location (QLibraryInfo::TranslationsPath));
 }
 
 void MainWindow::on_unloadTranslationAction_triggered ()
 {
-	translator->load ("");
+	applicationTranslator->load ("");
+	qtTranslator         ->load ("");
 }
 
 void MainWindow::changeEvent (QEvent *event)

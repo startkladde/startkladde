@@ -239,7 +239,7 @@ int test_database ()
 	return 0;
 }
 
-int showGui (QApplication &a, QTranslator *translator)
+int showGui (QApplication &a, QTranslator *applicationTranslator, QTranslator *qtTranslator)
 {
 	//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
 
@@ -247,7 +247,7 @@ int showGui (QApplication &a, QTranslator *translator)
 	//a.setStyle ("light, 3rd revision");
 //	if (!style.isEmpty ()) a.setStyle (style);
 
-	MainWindow w (NULL, translator);
+	MainWindow w (NULL, applicationTranslator, qtTranslator);
 
 	// Let the plugins initialize
 	QThread::yieldCurrentThread ();
@@ -362,38 +362,47 @@ void plugins_test ()
 #include "src/model/LaunchMethod.h" //remove
 #include "src/db/migrations/Migration_20100216135637_add_launch_methods.h"
 
-/**
- * Loads the tranlation for the current system locale
- */
-void loadTranslation (QTranslator &translator)
+bool loadTranslation (QTranslator &translator, const QString &filename, const QString &directory)
 {
-	// Get the system locale
-	QString locale = QLocale::system().name();
-
-	// Construct the translation filename
-	QString translationFileName="translations/startkladde_"+locale;
-
 	// Load the translator
-	std::cout << "Loading translation from " << translationFileName << "...";
-	bool result=translator.load (translationFileName);
+	std::cout << "Loading translation from " << filename << " in " << directory << "...";
+
+	bool result=translator.load (filename, directory);
+
 	if (result)
 		std::cout << "success" << std::endl;
 	else
-		std::cout << "failed, continuing without translation" << std::endl;
+		std::cout << "failed" << std::endl;
+
+	return result;
+}
+
+bool loadApplicationTranslation (QTranslator &translator)
+{
+	return loadTranslation (translator,
+		"startkladde_"+QLocale::system ().name (),
+		"translations");
+}
+
+bool loadQtTranslation (QTranslator &translator)
+{
+	return loadTranslation (translator,
+		"qt_"+QLocale::system ().name (),
+		QLibraryInfo::location (QLibraryInfo::TranslationsPath));
 }
 
 int main (int argc, char **argv)
 {
 	QApplication application (argc, argv);
 
-	QTranslator translator;
-	loadTranslation (translator);
-    application.installTranslator (&translator);
+	QTranslator applicationTranslator;
+	if (loadApplicationTranslation (applicationTranslator))
+		application.installTranslator (&applicationTranslator);
 
-	// This works, but how do we pull in the file?
-	//QTranslator qtTranslator;
-	//qtTranslator.load ("translations/qt_"+QLocale::system ().name ());
-	//application.installTranslator (&qtTranslator);
+	// FIXME This works, but how do we distribute the file?
+	QTranslator qtTranslator;
+	if (loadQtTranslation (qtTranslator))
+		application.installTranslator (&qtTranslator);
 
 	qApp->addLibraryPath (qApp->applicationDirPath () + notr ("/plugins"));
 
@@ -429,7 +438,7 @@ int main (int argc, char **argv)
 	{
 		if (nonOptions.empty ())
 		{
-			ret=showGui (application, &translator);
+			ret=showGui (application, &applicationTranslator, &qtTranslator);
 		}
 		else
 		{
