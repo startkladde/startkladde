@@ -1612,7 +1612,7 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="189"/>
         <source>Edit flight</source>
-        <translation>Flug editieren</translation>
+        <translation>Flug bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="647"/>
@@ -3042,7 +3042,7 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="593"/>
         <source>&amp;Edit... (F4)</source>
-        <translation>&amp;Editieren... (F4)</translation>
+        <translation>B&amp;earbeiten... (F4)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="596"/>
@@ -3185,12 +3185,12 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="724"/>
         <source>Edit &amp;planes</source>
-        <translation>&amp;Flugzeuge editieren</translation>
+        <translation>&amp;Flugzeuge bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="732"/>
         <source>Edit p&amp;eople</source>
-        <translation>&amp;Personen editieren</translation>
+        <translation>&amp;Personen bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="727"/>
@@ -3267,7 +3267,7 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="836"/>
         <source>Edit &amp;launch methods</source>
-        <translation>&amp;Startarten editieren</translation>
+        <translation>&amp;Startarten bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="841"/>
@@ -3452,7 +3452,7 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/objectEditor/ObjectEditorWindow.h" line="81"/>
         <source>Edit %1</source>
-        <translation>%1 editieren</translation>
+        <translation>%1 bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -3499,7 +3499,7 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="459"/>
         <source>The database password must be entered to edit %1.</source>
-        <translation>Zum Editieren der %1 muss das Datenbankpasswort eingegeben werden.</translation>
+        <translation>Zum Ändern der %1 muss das Datenbankpasswort eingegeben werden.</translation>
     </message>
 </context>
 <context>
@@ -3540,7 +3540,7 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="105"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Editieren</translation>
+        <translation>B&amp;earbeiten</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="108"/>
@@ -4435,7 +4435,7 @@ Datenbankpasswort erforderlich.</translation>
         <source>The password protection can be removed by deleting
 or editing the configuration file or registry key
 %1.</source>
-        <translation>Der Passwortschutz kann durch Löschen bzw. Editieren
+        <translation>Der Passwortschutz kann durch Löschen bzw. Bearbeiten
 der Konfigurationsdatei bzw. des Registry-Schlüssels
 %1
 aufgehoben werden.</translation>
