@@ -43,15 +43,23 @@ void ConfirmOverwritePersonDialog::setup (const Person &correctPerson, const QLi
 	{
 		wrongEntriesText=tr ("Erroneous entries");
 		ui.introLabel->setText (tr ("The following erroneous entries will be replaced with the correct entry:"));
-		// TODO set complete text
-		ui.descriptionLabel->setText (ui.descriptionLabel->text ().arg (tr ("All"), tr ("people")));
+		ui.descriptionLabel->setText (tr (
+			"<html>"
+			"All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person. "
+			"<font color=\"#FF0000\">Warning: this action cannot be undone.</font> "
+			"Continue?"
+			"</html>"));
 	}
 	else
 	{
-		wrongEntriesText=tr ("Wrong entry");
+		wrongEntriesText=tr ("Erroneous entry");
 		ui.introLabel->setText (tr ("The following erroneous entry will be replaced with the correct entry:"));
-		// TODO set complete text
-		ui.descriptionLabel->setText (ui.descriptionLabel->text ().arg (tr ("Both"), tr ("person")));
+		ui.descriptionLabel->setText (tr (
+			"<html>"
+			"Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person. "
+			"<font color=\"#FF0000\">Warning: this action cannot be undone.</font> "
+			"Continue?"
+			"</html>"));
 	}
 
 	// Clear the tree

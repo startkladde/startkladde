@@ -67,47 +67,93 @@
 <context>
     <name>ConfirmOverwritePersonDialog</name>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="45"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="44"/>
         <source>Erroneous entries</source>
         <translation>Fehlerhafte Einträge</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="46"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="45"/>
         <source>The following erroneous entries will be replaced with the correct entry:</source>
         <translation>Tie folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="48"/>
-        <source>All</source>
-        <translation>Alle</translation>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="46"/>
+        <source>&lt;html&gt;All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person. &lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt; Continue?&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
+&lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
+Fortsetzen?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="48"/>
-        <source>people</source>
-        <translation>Personen</translation>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="57"/>
+        <source>&lt;html&gt;Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person. &lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt; Continue?&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Beide Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Person werden der korrekten Person zugewiesen.
+&lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
+Fortsetzen?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="52"/>
-        <source>Wrong entry</source>
+        <source>&lt;html&gt;All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
+&lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt;
+Continue?&lt;/html&gt;</source>
+        <translation type="obsolete">&lt;html&gt;Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
+&lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
+Fortsetzen?&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person.
+&lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt;
+Continue?&lt;/html&gt;</source>
+        <translation type="obsolete">&lt;html&gt;Beide Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Person werden der korrekten Person zugewiesen.
+&lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
+Fortsetzen?&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
+&lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt;
+Continue?</source>
+        <translation type="obsolete">Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
+&lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
+Fortsetzen?</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="55"/>
+        <source>Erroneous entry</source>
         <translation>Fehlerhafter Eintrag</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="53"/>
+        <source>Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person.
+&lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt;
+Continue?</source>
+        <translation type="obsolete">Beide Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Person werden der korrekten Person zugewiesen.
+&lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
+Fortsetzen?</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="obsolete">Alle</translation>
+    </message>
+    <message>
+        <source>people</source>
+        <translation type="obsolete">Personen</translation>
+    </message>
+    <message>
+        <source>Wrong entry</source>
+        <translation type="obsolete">Fehlerhafter Eintrag</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="56"/>
         <source>The following erroneous entry will be replaced with the correct entry:</source>
         <translation>Der folgende fehlerhaft Personeneintrag wird durch den korrekten Eintrag ersetzt:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="55"/>
         <source>Both</source>
-        <translation>Beide</translation>
+        <translation type="obsolete">Beide</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="55"/>
         <source>person</source>
-        <translation>Person</translation>
+        <translation type="obsolete">Person</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="66"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="73"/>
         <source>Correct entry</source>
         <translation>Korrekter Eintrag</translation>
     </message>
@@ -122,10 +168,35 @@
     <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.ui" line="20"/>
         <source>[The following wrong person entries will be replaced with the correct entry:]</source>
+        <extracomment>Will be replaced programmatically</extracomment>
         <translation>[Die folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:]</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.ui" line="33"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.ui" line="39"/>
+        <source>[All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
+Warning: this action cannot be undone.
+Continue?]</source>
+        <extracomment>Will be replaced programmatically</extracomment>
+        <translation>[Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
+Achtung: diese Aktion kann nicht rückgängig gemacht werden. Fortsetzen?]</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;%1 entries must refer to the same person. All flights of the wrong %2 will be assigned to the correct person.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; color:#ff0000;&quot;&gt;Warning&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;: This action cannot be undone.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;Continue?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;%1 Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften %2 werden der korrekten Person zugewiesen.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; color:#ff0000;&quot;&gt;Achtung&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;: Diese Aktion kann nicht rückgängig gemacht werden.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;Fortsetzen?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -133,7 +204,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;%1 entries must refer to the same person. All flights of the wrong %2 will be assigned to the correct person.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; color:#ff0000;&quot;&gt;Attention&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;: This action cannot be undone.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;;&quot;&gt;Continue?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -424,11 +495,31 @@ Bitte das Passwort für root eingeben:</translation>
   - Up-to-date version: %2
   - Number of missing migrations: %3
 
-Attention: the update should not be interrupted because this can lead to an inconsistent database which cannot be repaired automatically.
+Warning: the update should not be interrupted because this can lead to an inconsistent database which cannot be repaired automatically.
 Before updating, a backup of the database should be made.
 
 Update the database now?</source>
         <translation>Die Datenbank ist nicht aktuell:
+  - Momentane Version: %1
+  - Aktuelle Version: %2
+  - Anzahl ausstehender Migrationen: %3
+
+Achtung: die Aktualisierung sollte nicht unterbrochen werden, da dies zu einer inkonsistenten Datenbank führen kann, die nicht automatisch repariert werden kann.
+Vor dem Aktualisieren der Datenbank sollte eine Sicherungskopie der Datenbank erstellt werden.
+
+Soll die Datenbank jetzt aktualisiert werden?</translation>
+    </message>
+    <message>
+        <source>The database is not up to date:
+  - Current version: %1
+  - Up-to-date version: %2
+  - Number of missing migrations: %3
+
+Attention: the update should not be interrupted because this can lead to an inconsistent database which cannot be repaired automatically.
+Before updating, a backup of the database should be made.
+
+Update the database now?</source>
+        <translation type="obsolete">Die Datenbank ist nicht aktuell:
   - Momentane Version: %1
   - Aktuelle Version: %2
   - Anzahl ausstehender Migrationen: %3
@@ -1206,29 +1297,29 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
 <context>
     <name>FlightListWindow</name>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="70"/>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="155"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="69"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="154"/>
         <source>Enter date</source>
         <translation>Datum eingeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="70"/>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="155"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="69"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="154"/>
         <source>Enter date:</source>
         <translation>Datum eingeben:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="117"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="116"/>
         <source> to </source>
         <translation> bis </translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="120"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="119"/>
         <source>%1: no flights</source>
         <translation>%1: keine Flüge</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="122"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="121"/>
         <source>%1: %n flight(s)</source>
         <translation>
             <numerusform>%1: %n Flug</numerusform>
@@ -1236,7 +1327,7 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="210"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="209"/>
         <source>%n flight(s) exported</source>
         <translation>
             <numerusform>%n Flug exportiert</numerusform>
@@ -1244,23 +1335,23 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="171"/>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="209"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="170"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="208"/>
         <source>Export flight database</source>
         <translation>Flugdatenbank exportieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="172"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="171"/>
         <source>CSV files (*.csv);;All files (*)</source>
         <translation>CSV-Dateien (*.csv);;Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="216"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="215"/>
         <source>Exporting failed: %1</source>
         <translation>Exportieren fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="218"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="217"/>
         <source>Exporting failed</source>
         <translation>Exportieren fehlgeschlagen</translation>
     </message>
@@ -2078,7 +2169,7 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>InfoPluginSelectionDialog</name>
     <message>
-        <location filename="../src/plugin/info/InfoPluginSelectionDialog.cpp" line="30"/>
+        <location filename="../src/plugin/info/InfoPluginSelectionDialog.cpp" line="29"/>
         <source>There are no plugins.</source>
         <translation>Es sind keine Plugins vorhanden.</translation>
     </message>
@@ -2322,12 +2413,12 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>LaunchMethodSelectionWindow</name>
     <message>
-        <location filename="../src/gui/windows/LaunchMethodSelectionWindow.cpp" line="25"/>
+        <location filename="../src/gui/windows/LaunchMethodSelectionWindow.cpp" line="24"/>
         <source>No launch methods defined</source>
         <translation>Keine Startarten definiert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/LaunchMethodSelectionWindow.cpp" line="26"/>
+        <location filename="../src/gui/windows/LaunchMethodSelectionWindow.cpp" line="25"/>
         <source>No launch method can be preselected because no launch methods are defined.</source>
         <translation>Es kann keine Startart vorausgewählt werden, da keine Startarten definiert sind.</translation>
     </message>
@@ -3325,7 +3416,7 @@ Konfiguration: %2</translation>
 <context>
     <name>MonitorDialog</name>
     <message>
-        <location filename="../src/gui/windows/MonitorDialog.cpp" line="64"/>
+        <location filename="../src/gui/windows/MonitorDialog.cpp" line="63"/>
         <source>Canceling...</source>
         <translation>Abbrechen...</translation>
     </message>
@@ -4202,21 +4293,21 @@ aktiviert werden.</translation>
 <context>
     <name>SettingsWindow</name>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="452"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="451"/>
         <source>The (old) database password must be entered to save
 the settings.</source>
         <translation>Zum Speichern der Einstellungen ist das (alte) Datenbankpasswort
 erforderlich.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="454"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="453"/>
         <source>The database password must be entered to save
 the settings.</source>
         <translation>Zum Speichern der Einstellungen ist das Datenbankpasswort
 erforderlich.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="466"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="465"/>
         <source>Password protection of the settings is being enabled. The
 (new) database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -4227,7 +4318,7 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="473"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="472"/>
         <source>Password protection of the settings is being enabled. The
 database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -4238,12 +4329,12 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="499"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="498"/>
         <source>Settings protected</source>
         <translation>Einstellungen geschützt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="499"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="498"/>
         <source>The settings are protected. The settings
 can be changed, but to save them, the database
 password must be entered.</source>
