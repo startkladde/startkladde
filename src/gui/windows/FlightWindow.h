@@ -47,8 +47,8 @@
  *     the button should be "depart now" or "land now", resp. later.
  *     Note that create mode *is* different from edit mode, for example the
  *     automatic selection of launch method/departure locations.
- *   - addObject a calendar to the date input
- *   - addObject a button to set the departure/landing time to the current time
+ *   - Add a calendar to the date input
+ *   - Add a button to set the departure/landing time to the current time
  *   - Add option to allow, but not require the towpilot
  *   - The sizeHint for the timeEdits seems to be too low by 1 pixel. This is
  *     solved by a hack in showEvent. It worked in the old version of this
@@ -410,8 +410,9 @@ class FlightWindow: public QDialog
 
 
 		// *** Button events
-		void okButton_clicked (); // not automatically connected
-		void nowButton_clicked (); // not automatically connected
+		void okButton_clicked    (); // not automatically connected
+		void nowButton_clicked   (); // not automatically connected
+		void laterButton_clicked (); // not automatically connected
 
 
 	private:
@@ -419,6 +420,7 @@ class FlightWindow: public QDialog
 
 		Ui::FlightWindowClass ui;
 		QPushButton *nowButton;
+		QPushButton *laterButton;
 
 		DbManager &manager;
 		Cache &cache;

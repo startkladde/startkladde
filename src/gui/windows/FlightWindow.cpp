@@ -105,14 +105,20 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	// *** Setup the window
 	ui.setupUi (this);
 
-	//ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
-
+	// Create, add and connect the "now" button
 	nowButton=new QPushButton (tr ("Now"));
 	ui.buttonBox->addButton (nowButton, QDialogButtonBox::AcceptRole);
 	QObject::connect (nowButton, SIGNAL (clicked ()), this, SLOT (nowButton_clicked ()));
 
+	// Create, add and connect the "later" button
+	laterButton=new QPushButton (tr ("Later"));
+	ui.buttonBox->addButton (laterButton, QDialogButtonBox::AcceptRole);
+	QObject::connect (laterButton, SIGNAL (clicked ()), this, SLOT (laterButton_clicked ()));
+
+	// Find and connect the the "OK" button
 	QPushButton *okButton=ui.buttonBox->button (QDialogButtonBox::Ok);
 	QObject::connect (okButton, SIGNAL (clicked ()), this, SLOT (okButton_clicked ()));
+
 
 	// *** Database
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
@@ -171,6 +177,7 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	widgetLabelMap.insert (ui.accountingNoteInput, ui.accountingNoteLabel);
 	widgetLabelMap.insert (ui.dateInput          , ui.dateLabel);
 	widgetLabelMap.insert (ui.errorList          , ui.errorLabel);
+
 
 	// *** Setup the GUI
 	switch (mode)
@@ -1410,7 +1417,7 @@ dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
  *  - If a name is given and there is a unique person of this name in the
  *    database, the person is returned
  *  - In any other case, the user is shown a list of potential persons and an
- *    "Unknown" and a "Create new" button.
+ *    "Unknown" and a "Create new" option.
  * If none of these succeeds, an AbortedException is thrown
  *
  * @param active whether the person is active at all; an invalid ID is returned
@@ -1836,8 +1843,6 @@ const QString textTowflightLandingTimeEnded     =FlightWindow::tr ("Finishe&d");
 const QString textTowflightLandingTime          =FlightWindow::tr ("Landing ti&me towplane:");
 const QString textTowflightEnd                  =FlightWindow::tr ("Release ti&me:");
 
-const QString textButtonOk                      =FlightWindow::tr ("OK");
-
 const QString textButtonDepartNow               =FlightWindow::tr ("Depart n&ow");
 const QString textButtonLandNow                 =FlightWindow::tr ("Land n&ow");
 
@@ -1935,25 +1940,32 @@ void FlightWindow::updateSetupButtons ()
 {
 	QPushButton *okButton=ui.buttonBox->button (QDialogButtonBox::Ok);
 
+	// Whether the flight can be departed or landed now. This also determines
+	// the buttons shown:
+	//   * true: Depart/Land now, Depart/Land later, Cancel
+	//   * false: OK, Cancel
 	bool nowPossible=isNowActionPossible ();
-	if (nowPossible && currentDepartsHere ())
+
+	nowButton   ->setVisible ( nowPossible);
+	laterButton ->setVisible ( nowPossible);
+	okButton    ->setVisible (!nowPossible);
+
+	laterButton->setDefault ( nowPossible);
+	okButton   ->setDefault (!nowPossible);
+
+	if (nowPossible)
 	{
-		// Depart now/later
-		nowButton->setVisible(true);
-		nowButton->setText (textButtonDepartNow);
-		okButton->setText (textButtonDepartLater);
-	}
-	else if (nowPossible && currentLandsHere ())
-	{
-		// Land now/later
-		nowButton->setVisible(true);
-		nowButton->setText (textButtonLandNow);
-		okButton->setText (textButtonLandLater);
-	}
-	else
-	{
-		nowButton->setVisible (false);
-		okButton->setText (textButtonOk);
+		// Set the text of the now/later buttons - either depart or land
+		if (currentDepartsHere ())
+		{
+			nowButton  ->setText (textButtonDepartNow  );
+			laterButton->setText (textButtonDepartLater);
+		}
+		else if (currentLandsHere ())
+		{
+			nowButton->setVisible(true);
+			nowButton->setText (textButtonLandNow);
+		}
 	}
 }
 
@@ -2189,3 +2201,11 @@ void FlightWindow::nowButton_clicked ()
 		// User aborted, do nothing
 	}
 }
+
+void FlightWindow::laterButton_clicked ()
+{
+	// This is the same as the OK button
+	this->okButton_clicked ();
+}
+
+
