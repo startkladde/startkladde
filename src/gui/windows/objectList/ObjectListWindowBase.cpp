@@ -60,3 +60,14 @@ bool ObjectListWindowBase::allowEdit (QString message)
 {
 	return editPermission.permit (message);
 }
+
+void ObjectListWindowBase::changeEvent (QEvent *event)
+{
+    if (event->type () == QEvent::LanguageChange)
+		// The language changed. Retranslate the UI.
+    	ui.retranslateUi (this);
+    else
+        QWidget::changeEvent (event);
+}
+
+

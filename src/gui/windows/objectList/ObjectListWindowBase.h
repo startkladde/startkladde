@@ -43,6 +43,9 @@ class ObjectListWindowBase : public QMainWindow
 		// TODO get rid - use editPermission directly (make protected).
 		bool allowEdit (QString message);
 
+		// Events
+		void changeEvent (QEvent *event);
+
 	private:
 		PasswordPermission editPermission;
 };

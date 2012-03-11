@@ -46,7 +46,9 @@ class FlightListWindow: public QMainWindow
 	protected:
 		bool fetchFlights (const QDate &first, const QDate &last);
 
+		// Events
 		void keyPressEvent (QKeyEvent *e);
+		void changeEvent (QEvent *event);
 
 	protected slots:
 		virtual void databaseStateChanged (DbManager::State state);

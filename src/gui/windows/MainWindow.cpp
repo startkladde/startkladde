@@ -1925,7 +1925,9 @@ void MainWindow::on_changeLanguageAction_triggered ()
 void MainWindow::changeEvent (QEvent *event)
 {
     if (event->type () == QEvent::LanguageChange)
+		// The language changed. Retranslate the UI.
     	ui.retranslateUi (this);
     else
         QWidget::changeEvent (event);
 }
+
