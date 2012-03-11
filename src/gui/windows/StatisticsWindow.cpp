@@ -5,7 +5,7 @@
 #include "src/util/qString.h"
 
 StatisticsWindow::StatisticsWindow (QAbstractTableModel *model, bool modelOwned, QWidget *parent):
-	QDialog(parent),
+	SkDialog (parent),
 	model (model), modelOwned (modelOwned)
 {
 	ui.setupUi(this);
