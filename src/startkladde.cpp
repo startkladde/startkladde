@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <ios>
 #include <string>
+
 #include <QApplication>
 
 #include "src/config/Settings.h"
@@ -19,6 +20,7 @@
 #include "src/net/TcpProxy.h" // remove
 #include "src/notr.h"
 #include "src/version.h"
+#include "src/i18n/TranslationManager.h"
 
 // For test_database
 //#include "src/model/Plane.h"
@@ -239,7 +241,7 @@ int test_database ()
 	return 0;
 }
 
-int showGui (QApplication &a, QTranslator *applicationTranslator, QTranslator *qtTranslator)
+int showGui (QApplication &a, TranslationManager *translationManager)
 {
 	//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
 
@@ -247,7 +249,7 @@ int showGui (QApplication &a, QTranslator *applicationTranslator, QTranslator *q
 	//a.setStyle ("light, 3rd revision");
 //	if (!style.isEmpty ()) a.setStyle (style);
 
-	MainWindow w (NULL, applicationTranslator, qtTranslator);
+	MainWindow w (NULL, translationManager);
 
 	// Let the plugins initialize
 	QThread::yieldCurrentThread ();
@@ -362,49 +364,17 @@ void plugins_test ()
 #include "src/model/LaunchMethod.h" //remove
 #include "src/db/migrations/Migration_20100216135637_add_launch_methods.h"
 
-bool loadTranslation (QTranslator &translator, const QString &filename, const QString &directory)
-{
-	// Load the translator
-	std::cout << "Loading translation from " << filename << " in " << directory << "...";
-
-	bool result=translator.load (filename, directory);
-
-	if (result)
-		std::cout << "success" << std::endl;
-	else
-		std::cout << "failed" << std::endl;
-
-	return result;
-}
-
-bool loadApplicationTranslation (QTranslator &translator)
-{
-	return loadTranslation (translator,
-		"startkladde_"+QLocale::system ().name (),
-		"translations");
-}
-
-bool loadQtTranslation (QTranslator &translator)
-{
-	return loadTranslation (translator,
-		"qt_"+QLocale::system ().name (),
-		QLibraryInfo::location (QLibraryInfo::TranslationsPath));
-}
 
 int main (int argc, char **argv)
 {
 	QApplication application (argc, argv);
 
-	QTranslator applicationTranslator;
-	if (loadApplicationTranslation (applicationTranslator))
-		application.installTranslator (&applicationTranslator);
-
-	// FIXME This works, but how do we distribute the file?
-	QTranslator qtTranslator;
-	if (loadQtTranslation (qtTranslator))
-		application.installTranslator (&qtTranslator);
-
 	qApp->addLibraryPath (qApp->applicationDirPath () + notr ("/plugins"));
+
+	// Setup the translation
+	TranslationManager translationManager;
+	translationManager.loadForCurrentLocale ();
+	translationManager.install (&application);
 
 	// Event is used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
@@ -438,7 +408,7 @@ int main (int argc, char **argv)
 	{
 		if (nonOptions.empty ())
 		{
-			ret=showGui (application, &applicationTranslator, &qtTranslator);
+			ret=showGui (application, &translationManager);
 		}
 		else
 		{

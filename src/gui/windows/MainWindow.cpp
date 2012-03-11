@@ -24,7 +24,6 @@
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QScrollBar>
-#include <QTranslator>
 #include <QWidget> // remove
 
 // TODO many dependencies - split
@@ -65,6 +64,7 @@
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
+#include "src/i18n/TranslationManager.h"
 
 template <class T> class MutableObjectList;
 
@@ -72,10 +72,9 @@ template <class T> class MutableObjectList;
 // ** Construction **
 // ******************
 
-MainWindow::MainWindow (QWidget *parent, QTranslator *applicationTranslator, QTranslator *qtTranslator):
+MainWindow::MainWindow (QWidget *parent, TranslationManager *translationManager):
 	QMainWindow (parent),
-	applicationTranslator (applicationTranslator),
-	qtTranslator (qtTranslator),
+	translationManager (translationManager),
 	oldLogVisible (false),
 	dbManager (Settings::instance ().databaseInfo),
 	cache (dbManager.getCache ()),
@@ -1918,16 +1917,9 @@ void MainWindow::logMessage (QString message)
 	scrollBar->setValue (scrollBar->maximum ());
 }
 
-void MainWindow::on_loadTranslationAction_triggered ()
+void MainWindow::on_changeLanguageAction_triggered ()
 {
-	applicationTranslator->load ("startkladde_"+QLocale::system ().name (), "translations");
-	qtTranslator         ->load ("qt_"         +QLocale::system ().name (), QLibraryInfo::location (QLibraryInfo::TranslationsPath));
-}
-
-void MainWindow::on_unloadTranslationAction_triggered ()
-{
-	applicationTranslator->load ("");
-	qtTranslator         ->load ("");
+	translationManager->changeLanguage ();
 }
 
 void MainWindow::changeEvent (QEvent *event)

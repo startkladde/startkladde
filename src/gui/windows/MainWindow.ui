@@ -470,8 +470,7 @@
     <property name="title">
      <string>&amp;Translation</string>
     </property>
-    <addaction name="loadTranslationAction"/>
-    <addaction name="unloadTranslationAction"/>
+    <addaction name="changeLanguageAction"/>
    </widget>
    <addaction name="menuProgram"/>
    <addaction name="menuFlight"/>
@@ -854,14 +853,12 @@
     <string extracomment="Seems like &amp;f is not displayed correctly, possible because it is replaced with a ligature">Show flight d&amp;atabase</string>
    </property>
   </action>
-  <action name="loadTranslationAction">
+  <action name="changeLanguageAction">
    <property name="text">
-    <string>&amp;Load</string>
+    <string>Change &amp;language</string>
    </property>
-  </action>
-  <action name="unloadTranslationAction">
-   <property name="text">
-    <string>U&amp;nload</string>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
    </property>
   </action>
  </widget>

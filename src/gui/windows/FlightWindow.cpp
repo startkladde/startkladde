@@ -1963,8 +1963,8 @@ void FlightWindow::updateSetupButtons ()
 		}
 		else if (currentLandsHere ())
 		{
-			nowButton->setVisible(true);
-			nowButton->setText (textButtonLandNow);
+			nowButton  ->setText (textButtonLandNow  );
+			laterButton->setText (textButtonLandLater);
 		}
 	}
 }

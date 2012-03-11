@@ -44,7 +44,6 @@
 class QWidget;
 template<class T> class QList;
 class QModelIndex;
-class QTranslator;
 
 class FlightSortFilterProxyModel;
 class InfoPlugin;
@@ -55,6 +54,7 @@ class FlightModel;
 class FlightProxyList;
 class FlightWindow;
 template<class T> class ObjectListModel;
+class TranslationManager;
 
 /*
  * Notes:
@@ -68,7 +68,7 @@ class MainWindow: public QMainWindow
 	Q_OBJECT
 
 	public:
-		MainWindow (QWidget *parent, QTranslator *applicationTranslator, QTranslator *qtTranslator);
+		MainWindow (QWidget *parent, TranslationManager *translationManager);
 		~MainWindow ();
 
 	protected:
@@ -220,8 +220,7 @@ class MainWindow: public QMainWindow
 		void executingQuery (Query);
 
 		// Translation
-		void on_loadTranslationAction_triggered ();
-		void on_unloadTranslationAction_triggered ();
+		void on_changeLanguageAction_triggered ();
 
 		void logMessage (QString message);
 
@@ -229,8 +228,7 @@ class MainWindow: public QMainWindow
 
 	private:
 		Ui::MainWindowClass ui;
-		QTranslator *applicationTranslator;
-		QTranslator *qtTranslator;
+		TranslationManager *translationManager;
 
 		bool oldLogVisible;
 
