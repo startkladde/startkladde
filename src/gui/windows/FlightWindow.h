@@ -107,12 +107,12 @@
  * Edit   geht   Start    |    OK                            +Gestartet      Gegangen
  */
 
-#include <QDialog>
 #include <QDate>
 #include <QList>
 
 #include "ui_FlightWindow.h"
 
+#include "src/gui/SkDialog.h"
 #include "src/db/dbId.h"
 #include "src/model/LaunchMethod.h" // TODO remove dependency
 #include "src/model/Flight.h" // Required for Flight::Mode and Flight::Type
@@ -135,7 +135,7 @@ class Cache;
 	case modeEdit: return editValue; \
 	} return defaultValue; } while (0)
 
-class FlightWindow: public QDialog
+class FlightWindow: public SkDialog<Ui::FlightWindowClass>
 {
     Q_OBJECT
 
@@ -162,6 +162,8 @@ class FlightWindow: public QDialog
 		dbId getEditedId () { return originalFlightId; }
 
 	protected:
+		void setupTitle ();
+
 		// Input field data
 		int fillNames (QStringList (Cache::*fullListMethod)(), QStringList (Cache::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget);
 		dbId fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget);
@@ -408,6 +410,7 @@ class FlightWindow: public QDialog
 		void dateChanged           (const QDate   &date) { (void)date; }
 
 
+		void languageChanged ();
 
 		// *** Button events
 		void okButton_clicked    (); // not automatically connected
@@ -418,7 +421,6 @@ class FlightWindow: public QDialog
 	private:
 		QMultiMap<QWidget *, SkLabel *> widgetLabelMap;
 
-		Ui::FlightWindowClass ui;
 		QPushButton *nowButton;
 		QPushButton *laterButton;
 
@@ -434,7 +436,7 @@ class FlightWindow: public QDialog
 		// input fields, so they are active if the checkbox is not checked. In edit
 		// mode, we have "Departed"/"Landed" checkboxes which activate the input
 		// field.
-		bool getTimeFieldActive (bool checkboxValue) {	EDITOR_MODE_RETURN (!checkboxValue, checkboxValue, true); }
+		bool getTimeFieldActive (bool checkboxValue) { EDITOR_MODE_RETURN (!checkboxValue, checkboxValue, true); }
 		bool getTimeFieldCheckboxValue (bool active) { EDITOR_MODE_RETURN (!active, active, true); }
 
 		bool isNowActionPossible ();

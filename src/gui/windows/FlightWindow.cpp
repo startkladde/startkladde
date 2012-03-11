@@ -90,7 +90,7 @@ static const QColor errorColor (255, 127, 127);
  * @param flags the window flags, passed to the base class constructor
  */
 FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager &manager, Qt::WindowFlags flags)
-	:QDialog (parent, flags),
+	:SkDialog (parent, flags),
 	manager (manager),
 	cache (manager.getCache ()),
 	mode (mode),
@@ -102,16 +102,13 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	selectedCopilot (invalidId),
 	selectedTowpilot (invalidId)
 {
-	// *** Setup the window
-	ui.setupUi (this);
-
 	// Create, add and connect the "now" button
-	nowButton=new QPushButton (tr ("Now"));
+	nowButton=new QPushButton ("[Now]");
 	ui.buttonBox->addButton (nowButton, QDialogButtonBox::AcceptRole);
 	QObject::connect (nowButton, SIGNAL (clicked ()), this, SLOT (nowButton_clicked ()));
 
 	// Create, add and connect the "later" button
-	laterButton=new QPushButton (tr ("Later"));
+	laterButton=new QPushButton ("[Later]");
 	ui.buttonBox->addButton (laterButton, QDialogButtonBox::AcceptRole);
 	QObject::connect (laterButton, SIGNAL (clicked ()), this, SLOT (laterButton_clicked ()));
 
@@ -180,15 +177,7 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 
 
 	// *** Setup the GUI
-	switch (mode)
-	{
-		case modeCreate:
-			setWindowTitle (tr ("Create flight"));
-			break;
-		case modeEdit:
-			setWindowTitle (tr ("Edit flight"));
-			break;
-	}
+	setupTitle ();
 
 	// Setup the label error colors
 	foreach (SkLabel * const &label, widgetLabelMap.values ())
@@ -236,6 +225,20 @@ void FlightWindow::databaseStateChanged (DbManager::State state)
 // ***********
 // ** Setup **
 // ***********
+
+void FlightWindow::setupTitle ()
+{
+	switch (mode)
+	{
+		case modeCreate:
+			setWindowTitle (tr ("Create flight"));
+			break;
+		case modeEdit:
+			setWindowTitle (tr ("Edit flight"));
+			break;
+	}
+}
+
 
 void FlightWindow::settingsChanged ()
 {
@@ -2187,4 +2190,13 @@ void FlightWindow::laterButton_clicked ()
 	this->okButton_clicked ();
 }
 
+void FlightWindow::languageChanged ()
+{
+	SkDialog::languageChanged ();
+
+	setupTitle ();
+
+	updateSetupLabels ();
+	updateSetupButtons ();
+}
 
