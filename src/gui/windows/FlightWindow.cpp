@@ -1829,27 +1829,6 @@ void FlightWindow::disableWidgets (QWidget *widget0, QWidget *widget2, bool disa
 // ** Input field state update **
 // ******************************
 
-// TODO TR this is called before the translator is loaded
-const QString textDepartureTimeAutomatic        =FlightWindow::tr ("Au&tomatic");
-const QString textDepartureTimeDeparted         =FlightWindow::tr ("Depar&ted");
-
-const QString textLandingTimeAutomatic          =FlightWindow::tr ("&Automatic");
-const QString textLandingTimeLanded             =FlightWindow::tr ("L&anded");
-
-const QString textTowflightLandingTimeAutomatic =FlightWindow::tr ("A&utomatic");
-const QString textTowflightLandingTimeLanded    =FlightWindow::tr ("Lande&d");
-const QString textTowflightLandingTimeEnded     =FlightWindow::tr ("Finishe&d");
-
-const QString textTowflightLandingTime          =FlightWindow::tr ("Landing ti&me towplane:");
-const QString textTowflightEnd                  =FlightWindow::tr ("Release ti&me:");
-
-const QString textButtonDepartNow               =FlightWindow::tr ("Depart n&ow");
-const QString textButtonLandNow                 =FlightWindow::tr ("Land n&ow");
-
-const QString textButtonDepartLater             =FlightWindow::tr ("Depart &later");
-const QString textButtonLandLater               =FlightWindow::tr ("Land &later");
-
-
 /*
  * Notes on field state updates:
  *   - Changes in some field values (e. g. flight type) lead to changes in some
@@ -1918,19 +1897,19 @@ void FlightWindow::updateSetupLabels ()
 	{
 		case modeCreate:
 			// In create mode, we have "Automatic" checkboxes
-			ui.          departureTimeCheckbox->setText (textDepartureTimeAutomatic);
-			ui.         landingTimeCheckbox->setText (textLandingTimeAutomatic);
-			ui.towflightLandingTimeCheckbox->setText (textTowflightLandingTimeAutomatic);
+			ui.       departureTimeCheckbox->setText (tr ("Au&tomatic"));
+			ui.         landingTimeCheckbox->setText (tr ("&Automatic"));
+			ui.towflightLandingTimeCheckbox->setText (tr ("A&utomatic"));
 			break;
 		case modeEdit:
 			// In edit mode, we have "Departed"/"Landed" checkboxes
-			ui.          departureTimeCheckbox->setText (textDepartureTimeDeparted);
-			ui.         landingTimeCheckbox->setText (textLandingTimeLanded);
-			ui.towflightLandingTimeCheckbox->setText (currentTowLandsHere ()?textTowflightLandingTimeLanded:textTowflightLandingTimeEnded);
+			ui.       departureTimeCheckbox->setText (tr ("Depar&ted"));
+			ui.         landingTimeCheckbox->setText (tr ("L&anded"));
+			ui.towflightLandingTimeCheckbox->setText (currentTowLandsHere ()?tr ("Lande&d"):tr ("Finishe&d"));
 			break;
 	}
 
-	ui.towflightLandingTimeLabel->setText (currentTowLandsHere ()?textTowflightLandingTime:textTowflightEnd);
+	ui.towflightLandingTimeLabel->setText (currentTowLandsHere ()?tr ("Landing ti&me towplane:"):tr ("Release ti&me:"));
 
 	ui.pilotLabel  ->setText (firstToUpper (Flight::typePilotDescription   (getCurrentFlightType ()))+notr (":"));
 	ui.copilotLabel->setText (firstToUpper (Flight::typeCopilotDescription (getCurrentFlightType ()))+notr (":"));
@@ -1958,13 +1937,13 @@ void FlightWindow::updateSetupButtons ()
 		// Set the text of the now/later buttons - either depart or land
 		if (currentDepartsHere ())
 		{
-			nowButton  ->setText (textButtonDepartNow  );
-			laterButton->setText (textButtonDepartLater);
+			nowButton  ->setText (tr ("Depart n&ow"  ));
+			laterButton->setText (tr ("Depart &later"));
 		}
 		else if (currentLandsHere ())
 		{
-			nowButton  ->setText (textButtonLandNow  );
-			laterButton->setText (textButtonLandLater);
+			nowButton  ->setText (tr ("Land n&ow"  ));
+			laterButton->setText (tr ("Land &later"));
 		}
 	}
 }
