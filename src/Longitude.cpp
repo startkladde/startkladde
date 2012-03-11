@@ -13,7 +13,7 @@
 #include <QRegExp>
 #include <QDebug>
 
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 #include "src/util/qString.h"
 
 

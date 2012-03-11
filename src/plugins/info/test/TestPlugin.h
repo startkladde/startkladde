@@ -9,7 +9,7 @@
 #define TESTPLUGIN_H_
 
 #include "src/plugin/info/InfoPlugin.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 /**
  * A simple info plugin which displays a greeting message, either as plain text

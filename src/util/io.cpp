@@ -13,7 +13,7 @@
 #include <QRect>
 
 #include "src/util/qString.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 QString readLineUtf8 (QIODevice &device)
 {

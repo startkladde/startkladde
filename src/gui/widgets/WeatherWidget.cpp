@@ -8,7 +8,7 @@
 #include <QResizeEvent>
 
 #include "src/config/Settings.h" // TODO remove dependency, set from MainWindow
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 
 WeatherWidget::WeatherWidget (QWidget *parent):

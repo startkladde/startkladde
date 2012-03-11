@@ -15,7 +15,7 @@ class QSqlRecord;
 class QSqlQuery;
 
 #include "src/db/result/Result.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 /**
  * A Result implementation that makes a copy of the data.

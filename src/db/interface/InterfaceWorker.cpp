@@ -13,7 +13,7 @@
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/concurrent/Returner.h"
 #include "src/util/qString.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 InterfaceWorker::InterfaceWorker (ThreadSafeInterface &interface):
 	interface (interface)

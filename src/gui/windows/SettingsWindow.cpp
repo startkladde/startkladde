@@ -35,7 +35,7 @@
 #include "src/util/qString.h"
 #include "src/util/qList.h"
 #include "src/gui/dialogs.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 #include "src/plugins/weather/ExternalWeatherPlugin.h"
 

@@ -23,7 +23,7 @@
 #include "src/db/schema/spec/ColumnSpec.h"
 #include "src/db/schema/spec/IndexSpec.h"
 #include "src/db/interface/exceptions/QueryFailedException.h" // TODO remove
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 // ******************
 // ** Construction **

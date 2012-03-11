@@ -11,7 +11,7 @@
 #include <QDebug>
 
 #include "src/plugin/info/InfoPluginSettingsPane.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 InfoPlugin::InfoPlugin (QString caption, bool enabled):
 	caption (caption), enabled (enabled)

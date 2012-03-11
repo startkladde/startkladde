@@ -11,7 +11,7 @@
 #include <QSqlQuery>
 
 #include "src/db/result/Result.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 /**
  * A Result implementation that reads the values directly from a

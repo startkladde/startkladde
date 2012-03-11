@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 #include "src/Longitude.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 /**
  * Returns a copy of a time with the seconds set to 0

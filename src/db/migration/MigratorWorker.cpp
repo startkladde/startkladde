@@ -5,7 +5,7 @@
 #include "src/db/migration/Migrator.h"
 #include "src/concurrent/monitor/OperationMonitor.h"
 #include "src/db/interface/ThreadSafeInterface.h" // required for Interface inheritance
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 MigratorWorker::MigratorWorker (ThreadSafeInterface &interface):
 	migrator (interface)

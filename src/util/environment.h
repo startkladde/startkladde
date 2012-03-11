@@ -4,7 +4,7 @@
 #include <QString>
 #include <QStringList>
 
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 QString getEnvironmentVariable (const QString& name);
 QStringList getSystemPath (const QString &environmentVariable=notr ("PATH"));

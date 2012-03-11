@@ -10,7 +10,7 @@
 #include "src/db/result/Result.h"
 #include "src/db/Query.h"
 #include "src/util/qString.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 #include "src/text.h"
 
 

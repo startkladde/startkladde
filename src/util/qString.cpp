@@ -1,6 +1,6 @@
 #include "qString.h"
 
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 std::ostream &operator<< (std::ostream &s, const QString &c)
 {

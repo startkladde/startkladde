@@ -19,7 +19,7 @@
 #include "src/util/qString.h"
 #include "src/util/io.h"
 #include "src/net/Downloader.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 REGISTER_PLUGIN (InfoPlugin, MetarPlugin)
 SK_PLUGIN_DEFINITION (

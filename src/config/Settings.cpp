@@ -21,7 +21,7 @@
 #include "src/plugins/info/sunset/SunsetCountdownPlugin.h"
 #include "src/plugins/weather/WetterOnlineImagePlugin.h"
 #include "src/plugins/weather/WetterOnlineAnimationPlugin.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 
 Settings *Settings::theInstance=NULL;

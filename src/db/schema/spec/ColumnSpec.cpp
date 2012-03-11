@@ -3,7 +3,7 @@
 #include <QList>
 #include <QStringList>
 
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 ColumnSpec::ColumnSpec (const QString &name, const QString &type, const QString &extra):
 	name (name), type (type), extra (extra)

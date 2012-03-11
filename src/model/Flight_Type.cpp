@@ -6,7 +6,7 @@
 #include <QList>
 
 #include "src/util/qString.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 QList<Flight::Type> Flight::listTypes (bool includeInvalid)
 {

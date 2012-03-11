@@ -9,7 +9,7 @@
 
 #include <QColor>
 
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 /**
  * Outputs a QColor to a stream in the form "r,g,b"

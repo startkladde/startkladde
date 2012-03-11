@@ -6,7 +6,7 @@
  */
 
 #include "AnsiColors.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 const QString AnsiColors::escapePrefix=notr ("\033[");
 const QString AnsiColors::escapeSuffix=notr ("m");

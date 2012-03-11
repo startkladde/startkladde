@@ -17,7 +17,7 @@
 #include "src/db/result/CopiedResult.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/interface/exceptions/PingFailedException.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 // ******************
 // ** Construction **

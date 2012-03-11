@@ -1,7 +1,7 @@
 #ifndef COLORS_H_
 #define COLORS_H_
 
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 // TODO remove
 

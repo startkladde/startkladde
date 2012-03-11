@@ -25,7 +25,7 @@
 #include "src/text.h"
 #include "src/model/objectList/AutomaticEntityList.h"
 #include "src/model/objectList/ObjectModel.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 
 /**

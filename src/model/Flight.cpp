@@ -13,7 +13,7 @@
 #include "src/util/time.h"
 #include "src/flightColor.h" // TODO remove after flightColor has been moved to Flight
 #include "src/db/event/DbEvent.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 template<class T> class QList;
 

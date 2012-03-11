@@ -15,7 +15,7 @@
 #include "src/util/file.h"
 #include "src/util/time.h"
 #include "src/text.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 REGISTER_PLUGIN (InfoPlugin, SunsetTimePlugin)
 SK_PLUGIN_DEFINITION (

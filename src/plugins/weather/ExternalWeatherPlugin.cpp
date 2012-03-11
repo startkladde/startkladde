@@ -19,7 +19,7 @@
 #include "src/util/qString.h"
 #include "src/config/Settings.h"
 #include "src/graphics/SkMovie.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 REGISTER_PLUGIN (WeatherPlugin, ExternalWeatherPlugin)
 SK_PLUGIN_DEFINITION (

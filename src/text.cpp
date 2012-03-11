@@ -5,7 +5,7 @@
 #include <QAbstractButton>
 
 #include "src/config/Settings.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 const QString whitespace=notr (" \t\r\n");
 

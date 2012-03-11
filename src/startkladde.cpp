@@ -18,7 +18,7 @@
 #include "src/db/interface/exceptions/SqlException.h"
 #include "src/db/event/DbEvent.h" // For qRegisterMetaType
 #include "src/net/TcpProxy.h" // remove
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 #include "src/version.h"
 #include "src/i18n/TranslationManager.h"
 

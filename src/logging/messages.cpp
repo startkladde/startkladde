@@ -7,7 +7,7 @@
 
 #include "src/io/AnsiColors.h"
 #include "src/util/qString.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 QString timestamp ()
 {

@@ -176,6 +176,7 @@ HEADERS += \
            src/gui/windows/objectList/ObjectListWindow.h \
            src/gui/windows/objectList/PersonListWindow.h \
            src/gui/windows/objectList/ObjectListWindowBase.h \
+           src/i18n/notr.h \
            src/i18n/TranslationManager.h \
            src/io/AnsiColors.h \
            src/io/SkProcess.h \

@@ -74,7 +74,7 @@
 #include "src/util/qString.h"
 #include "src/util/io.h" // remove
 #include "src/gui/views/SkItemDelegate.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 #include <iostream>
 #include <cassert>

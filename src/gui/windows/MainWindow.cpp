@@ -29,7 +29,7 @@
 // TODO many dependencies - split
 #include "src/concurrent/threadUtil.h"
 #include "src/config/Settings.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 #include "src/gui/widgets/WeatherWidget.h"
 #include "src/gui/windows/input/DateInputDialog.h"
 #include "src/gui/windows/input/DateTimeInputDialog.h"

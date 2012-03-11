@@ -6,7 +6,7 @@
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/db/cache/Cache.h"
 #include "src/concurrent/Returner.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 CacheWorker::CacheWorker (Cache &cache):
 	cache (cache)

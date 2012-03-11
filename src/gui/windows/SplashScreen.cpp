@@ -4,7 +4,7 @@
 
 #include "src/version.h"
 #include "src/util/qString.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 // TODO multiple lines in message area
 // TODO Klick auf labels schließen

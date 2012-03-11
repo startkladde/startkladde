@@ -15,7 +15,7 @@
 #include "TestPluginSettingsPane.h"
 #include "src/text.h"
 #include "src/util/qString.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 REGISTER_PLUGIN (InfoPlugin, TestPlugin)
 SK_PLUGIN_DEFINITION (

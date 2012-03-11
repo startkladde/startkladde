@@ -19,7 +19,7 @@
 #include "src/model/objectList/MutableObjectList.h"
 #include "src/model/flightList/FlightModel.h"
 #include "src/model/objectList/ObjectListModel.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 // TODO add different output formats
 

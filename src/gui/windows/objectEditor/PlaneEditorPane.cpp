@@ -6,7 +6,7 @@
 #include "src/db/cache/Cache.h"
 #include "src/model/Plane.h"
 #include "src/util/qString.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 /*
  * Improvements:

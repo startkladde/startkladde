@@ -10,7 +10,7 @@
 #include "src/util/bool.h"
 #include "src/util/qDate.h"
 #include "src/util/qString.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 
 // ******************

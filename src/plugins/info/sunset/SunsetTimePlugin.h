@@ -2,7 +2,7 @@
 #define SUNSETTIMEPLUGIN_H_
 
 #include "SunsetPluginBase.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 class SunsetTimePlugin: public SunsetPluginBase
 {

@@ -10,7 +10,7 @@
 #include "src/io/AnsiColors.h"
 #include "src/text.h"
 #include "src/util/qString.h" // remove
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 // ******************
 // ** Construction **

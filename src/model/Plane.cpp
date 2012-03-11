@@ -7,7 +7,7 @@
 #include "src/text.h"
 #include "src/db/result/Result.h"
 #include "src/db/Query.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 // ******************
 // ** Construction **

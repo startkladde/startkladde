@@ -26,7 +26,7 @@
 #include "src/text.h"
 #include "src/util/qString.h"
 #include "src/config/Settings.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 REGISTER_PLUGIN (InfoPlugin, ExternalInfoPlugin)
 SK_PLUGIN_DEFINITION (

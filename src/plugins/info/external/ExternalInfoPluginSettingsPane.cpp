@@ -3,7 +3,7 @@
 #include "src/util/qString.h"
 #include "src/gui/dialogs.h"
 #include "src/plugins/info/external/ExternalInfoPlugin.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 // TODO: file resolving sunset plugin style
 

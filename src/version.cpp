@@ -2,7 +2,7 @@
 
 #include "version/version.h"
 #include "text.h"
-#include "notr.h"
+#include "i18n/notr.h"
 
 QString getVersion ()
 {

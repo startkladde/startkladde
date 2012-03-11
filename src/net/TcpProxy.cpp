@@ -14,7 +14,7 @@
 #include "src/concurrent/synchronized.h"
 #include "src/util/qString.h"
 #include "src/concurrent/Returner.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 //#define DEBUG(stuff) do { std::cout << stuff << std::endl; } while (0)
 #define DEBUG(stuff)

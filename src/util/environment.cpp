@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 /**
  * Gets the contents of an environment variable

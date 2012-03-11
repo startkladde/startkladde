@@ -18,7 +18,7 @@
 #include "src/util/qString.h"
 #include "src/util/time.h"
 #include "src/config/Settings.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 
 // ******************

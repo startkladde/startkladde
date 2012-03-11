@@ -5,7 +5,7 @@
 
 #include "src/plugin/info/InfoPlugin.h"
 #include "src/Longitude.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 /**
  * A plugin which displays the sunset time for the current date, read from a

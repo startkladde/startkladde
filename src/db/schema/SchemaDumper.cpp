@@ -10,7 +10,7 @@
 #include "src/db/migration/Migrator.h" // Required for migrationsTableName/migrationsColumnName
 #include "src/db/result/Result.h"
 #include "src/text.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 SchemaDumper::SchemaDumper (Interface &interface):
 	interface (interface)

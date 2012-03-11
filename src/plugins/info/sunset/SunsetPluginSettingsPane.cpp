@@ -9,7 +9,7 @@
 #include "src/text.h"
 #include "src/gui/dialogs.h"
 #include "src/plugins/info/sunset/SunsetTimePlugin.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 SunsetPluginSettingsPane::SunsetPluginSettingsPane (SunsetPluginBase *plugin, QWidget *parent):
 	PluginSettingsPane (parent),

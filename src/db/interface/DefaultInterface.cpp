@@ -66,7 +66,7 @@
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/config/Settings.h"
 #include "src/concurrent/DefaultQThread.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 QAtomicInt DefaultInterface::freeNumber=0;
 

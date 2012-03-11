@@ -3,7 +3,7 @@
 #include <QAbstractTableModel>
 #include <QStringList>
 
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 Csv::Csv (const QAbstractTableModel &model, const QString &separator):
 	model (model), separator (separator)

@@ -1,7 +1,7 @@
 #include "ConnectionFailedException.h"
 
 #include "src/io/AnsiColors.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 ConnectionFailedException::ConnectionFailedException (const QSqlError &error):
 	SqlException (error)

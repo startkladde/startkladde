@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include "src/io/AnsiColors.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 QueryFailedException::QueryFailedException (const QSqlError &error, const Query &query,
 	QueryFailedException::Phase phase):

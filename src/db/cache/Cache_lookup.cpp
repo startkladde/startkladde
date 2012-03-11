@@ -12,7 +12,7 @@
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
 #include "src/container/SortedSet_impl.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 // ******************
 // ** Object lists **

@@ -5,7 +5,7 @@
 //#include <QColor>
 #include <QTimer>
 
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 extern "C"
 {

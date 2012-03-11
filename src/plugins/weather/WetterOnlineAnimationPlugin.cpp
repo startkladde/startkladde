@@ -16,7 +16,7 @@
 #include "src/util/io.h"
 #include "src/text.h"
 #include "src/graphics/SkMovie.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 REGISTER_PLUGIN (WeatherPlugin, WetterOnlineAnimationPlugin)
 SK_PLUGIN_DEFINITION (

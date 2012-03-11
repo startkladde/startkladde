@@ -13,7 +13,7 @@
 #include "src/model/Plane.h"
 #include "src/db/cache/Cache.h"
 #include "src/util/qString.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 FlightModel::FlightModel (Cache &cache):
 	cache (cache),

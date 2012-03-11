@@ -3,7 +3,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/db/cache/Cache.h"
 #include "src/util/qString.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 #include "src/text.h"
 
 // ******************

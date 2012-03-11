@@ -1,7 +1,7 @@
 #include "PingFailedException.h"
 
 #include "src/io/AnsiColors.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 PingFailedException::PingFailedException (const QSqlError &error):
 	SqlException (error)

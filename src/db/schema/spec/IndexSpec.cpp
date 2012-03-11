@@ -2,7 +2,7 @@
 
 #include <QStringList>
 
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 IndexSpec::IndexSpec (const QString &table, const QString &name, const QString &columns):
 	table (table), name (name), columns (columns)

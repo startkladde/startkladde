@@ -28,7 +28,7 @@
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
 #include "src/config/Settings.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 #include "src/concurrent/DefaultQThread.h" //remove
 

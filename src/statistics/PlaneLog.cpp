@@ -9,7 +9,7 @@
 #include "src/text.h"
 #include "src/util/qString.h"
 #include "src/util/qDate.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 // ************************
 // ** Entry construction **

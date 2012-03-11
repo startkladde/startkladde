@@ -12,7 +12,7 @@
 #include <QList>
 #include <QVariant>
 
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 class QSqlQuery;
 

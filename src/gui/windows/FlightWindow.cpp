@@ -23,7 +23,7 @@
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/DbManager.h"
 #include "src/logging/messages.h"
-#include "src/notr.h"
+#include "src/i18n/notr.h"
 
 /*
  * On enabling/diabling widgets:
