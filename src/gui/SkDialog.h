@@ -5,8 +5,7 @@
  * A base class for Designer created, QDialog based classes
  *
  * This class inherits and enhances QDialog. It handles storage of the
- * designer-created UI (in the "ui" property) and initialization of the GUI
- * on creation.
+ * designer-created UI (in the "ui" property).
  *
  * When a QEvent::LanguageChange event is received, the languageChanged
  * method is invoked. The default implementation of languageChanged
@@ -15,8 +14,8 @@
  *
  * To use this class, inherit from SkDialog, specifying the Designer
  * created UI class a template parameter. The Designer UI class is
- * available as protected property "ui". Do not call ui.setupUi, SkDialog
- * does this.
+ * available as protected property "ui". You must call "ui.setupUi (this)"
+ * to initialize the GUI.
  * To be notified of language changes, override the languageChanged method
  * and call SkDialog::languageChanged before retranslating dynamically
  * generated strings. To be notified of other change events, override the
@@ -26,6 +25,13 @@
  * class, so retranslateUi can not be called polymorphically. Therefore, it
  * is necessary to use a template class to call retranslateUi by duck
  * typing.
+ *
+ * The call to ui.setupUi cannot be performed by SkDialog constructor because
+ * the automatically connected slots (on_object_signal) will not be connected.
+ * This is probably because in any base class constructor, virtual methods of
+ * the derived class can not be used yet (cf. [1]).
+ *
+ * [1] http://www.parashift.com/c++-faq-lite/strange-inheritance.html#faq-23.5
  */
 template<class UiClass> class SkDialog: public QDialog
 {
@@ -36,8 +42,6 @@ template<class UiClass> class SkDialog: public QDialog
 		SkDialog (QWidget *parent=NULL, Qt::WindowFlags f=0):
 			QDialog (parent, f)
 		{
-			// Setup the GUI
-			ui.setupUi (this);
 		}
 
 		virtual ~SkDialog ()
@@ -67,3 +71,4 @@ template<class UiClass> class SkDialog: public QDialog
 };
 
 #endif
+

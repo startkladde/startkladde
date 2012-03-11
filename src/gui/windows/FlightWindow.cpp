@@ -102,6 +102,8 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	selectedCopilot (invalidId),
 	selectedTowpilot (invalidId)
 {
+	ui.setupUi (this);
+
 	// Create, add and connect the "now" button
 	nowButton=new QPushButton ("[Now]");
 	ui.buttonBox->addButton (nowButton, QDialogButtonBox::AcceptRole);
@@ -126,6 +128,7 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	settingsChanged ();
 
 	// *** Setup the data
+	fillLists ();
 	fillData ();
 
 
@@ -256,6 +259,42 @@ void FlightWindow::settingsChanged ()
 	ui.towpilotFirstNameLabel->setVisible (tp);
 }
 
+void FlightWindow::fillLists ()
+{
+	// Flight types
+	foreach (Flight::Type flightType, Flight::listTypes (false))
+	{
+		QString text=Flight::typeText (flightType, true);
+		ui.flightTypeInput->addItem (text, flightType);
+	}
+
+	// Flight flightModes
+	foreach (Flight::Mode flightMode, Flight::listModes ())
+	{
+		QString text=firstToUpper (Flight::modeText (flightMode));
+		ui.flightModeInput   ->addItem (text, flightMode);
+		ui.towflightModeInput->addItem (text, flightMode);
+	}
+}
+
+void FlightWindow::updateLists ()
+{
+	// Flight types
+	for (int i=0, n=ui.flightTypeInput->count (); i<n; ++i)
+	{
+		Flight::Type flightType=(Flight::Type)(ui.flightTypeInput->itemData (i).toInt ());
+		ui.flightTypeInput->setItemText (i, Flight::typeText (flightType, true));
+	}
+
+	// Flight flightModes
+	for (int i=0, n=ui.flightModeInput->count (); i<n; ++i)
+	{
+		Flight::Mode flightMode=(Flight::Mode)(ui.flightModeInput->itemData (i).toInt ());
+		ui.flightModeInput   ->setItemText (i, firstToUpper (Flight::modeText (flightMode)));
+		ui.towflightModeInput->setItemText (i, firstToUpper (Flight::modeText (flightMode)));
+	}
+}
+
 void FlightWindow::fillData ()
 {
 	// *** Plane registrations
@@ -270,12 +309,6 @@ void FlightWindow::fillData ()
 	ui.towplaneRegistrationInput->addItems (registrations);
 	ui.towplaneRegistrationInput->setEditText (Plane::defaultRegistrationPrefix ());
 	ui.towplaneRegistrationInput->setDefaultPrefix (Plane::defaultRegistrationPrefix ());
-
-
-	// *** Flight types
-	const QList<Flight::Type> flightTypes=Flight::listTypes (false);
-	for (int i=0; i<flightTypes.size(); ++i)
-		ui.flightTypeInput->addItem (Flight::typeText (flightTypes.at (i), true), flightTypes.at (i));
 
 
 	// *** Person names
@@ -305,22 +338,6 @@ void FlightWindow::fillData ()
 	ui.   pilotLastNameInput ->setEditText ("");
 	ui. copilotLastNameInput ->setEditText ("");
 	ui.towpilotLastNameInput ->setEditText ("");
-
-
-	// *** Flight flightModes
-	const QList<Flight::Mode> flightModes=Flight::listModes ();
-	for (int i=0; i<flightModes.size (); ++i)
-		ui.flightModeInput->addItem (
-			firstToUpper (Flight::modeText (flightModes.at (i))),
-			flightModes.at (i));
-
-
-	// *** Towflight flightModes
-	const QList<Flight::Mode> towflightModes=Flight::listTowModes ();
-	for (int i=0; i<towflightModes.size(); ++i)
-		ui.towflightModeInput->addItem (
-			firstToUpper (Flight::modeText (towflightModes.at (i))),
-			towflightModes.at (i));
 
 
 	// *** Launch methods
@@ -2195,6 +2212,7 @@ void FlightWindow::languageChanged ()
 	SkDialog::languageChanged ();
 
 	setupTitle ();
+	updateLists ();
 
 	updateSetupLabels ();
 	updateSetupButtons ();

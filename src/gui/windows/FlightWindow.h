@@ -151,7 +151,9 @@ class FlightWindow: public SkDialog<Ui::FlightWindowClass>
 		~FlightWindow ();
 
 		// *** Setup
+		void fillLists ();
 		void fillData ();
+		void updateLists ();
 
 		// *** Invocation
 		static FlightWindow *createFlight (QWidget *parent, DbManager &manager, QDate date, dbId preselectedLaunchMethod);
@@ -470,3 +472,4 @@ class FlightWindow: public SkDialog<Ui::FlightWindowClass>
 };
 
 #endif
+
