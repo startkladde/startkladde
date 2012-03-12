@@ -52,7 +52,7 @@ const int enabledColumn=2;
 const int  configColumn=3;
 
 SettingsWindow::SettingsWindow (QWidget *parent):
-	QDialog (parent),
+	SkDialog<Ui::SettingsWindowClass> (parent),
 	warned (false),
 	databaseSettingsChanged (false)
 {

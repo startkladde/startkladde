@@ -1,13 +1,13 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
-#include <QtGui/QDialog>
+#include "src/gui/SkDialog.h"
 
 #include "ui_SettingsWindow.h"
 
 class InfoPlugin;
 
-class SettingsWindow: public QDialog
+class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 {
     Q_OBJECT
 
@@ -56,7 +56,6 @@ class SettingsWindow: public QDialog
 		void on_browseWeatherWindowCommandButton_clicked ();
 
 	private:
-		Ui::SettingsWindowClass ui;
 		bool warned;
 		QList<InfoPlugin *> infoPlugins;
 
