@@ -6,7 +6,7 @@ const int nameColumn=0;
 const int descriptionColumn=1;
 
 InfoPluginSelectionDialog::InfoPluginSelectionDialog (const QList<const InfoPlugin::Descriptor *> &plugins, QWidget *parent):
-    QDialog (parent),
+    SkDialog<Ui::InfoPluginSelectionDialogClass> (parent),
     plugins (plugins)
 {
 	ui.setupUi (this);

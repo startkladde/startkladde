@@ -1,14 +1,14 @@
 #ifndef LAUNCHMETHODSELECTIONWINDOW_H
 #define LAUNCHMETHODSELECTIONWINDOW_H
 
-#include <QtGui/QDialog>
-#include "ui_LaunchMethodSelectionWindow.h"
-
 #include "src/db/dbId.h"
+#include "src/gui/SkDialog.h"
+
+#include "ui_LaunchMethodSelectionWindow.h"
 
 class Cache;
 
-class LaunchMethodSelectionWindow: public QDialog
+class LaunchMethodSelectionWindow: public SkDialog<Ui::LaunchMethodSelectionWindowClass>
 {
     Q_OBJECT
 
@@ -17,9 +17,6 @@ class LaunchMethodSelectionWindow: public QDialog
 		~LaunchMethodSelectionWindow ();
 
 		static bool select (Cache &cache, dbId &value, QWidget *parent=NULL);
-
-	private:
-		Ui::LaunchMethodSelectionWindowClass ui;
 };
 
 #endif

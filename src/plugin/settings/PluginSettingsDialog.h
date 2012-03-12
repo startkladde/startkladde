@@ -1,10 +1,11 @@
 #ifndef PLUGINSETTINGSDIALOG_H
 #define PLUGINSETTINGSDIALOG_H
 
-#include <QtGui/QDialog>
-#include "ui_PluginSettingsDialog.h"
-
 #include "src/accessor.h"
+#include "src/gui/SkDialog.h"
+#include "src/plugin/info/InfoPlugin.h"
+
+#include "ui_PluginSettingsDialog.h"
 
 class Plugin;
 class QWidget;
@@ -15,7 +16,7 @@ class SettingsWindow;
  * A dialog which allows editing the settings of a plugin by means of its
  * PluginSettingsPane
  */
-class PluginSettingsDialog : public QDialog
+class PluginSettingsDialog: public SkDialog<Ui::PluginSettingsDialogClass>
 {
 		Q_OBJECT
 
@@ -29,8 +30,6 @@ class PluginSettingsDialog : public QDialog
 		void on_buttonBox_accepted ();
 
 	private:
-		Ui::PluginSettingsDialogClass ui;
-
 		PluginSettingsPane *settingsPane;
 };
 

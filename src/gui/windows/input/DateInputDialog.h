@@ -1,7 +1,7 @@
 #ifndef DATEINPUTDIALOG_H
 #define DATEINPUTDIALOG_H
 
-#include <QDialog>
+#include "src/gui/SkDialog.h"
 
 #include "ui_DateInputDialog.h"
 
@@ -10,7 +10,7 @@
  * if the date changes between invocation and acceptance of the dialog (i. e. at
  * midnight).
  */
-class DateInputDialog : public QDialog
+class DateInputDialog: public SkDialog<Ui::DateInputDialogClass>
 {
 	public:
 		DateInputDialog (QWidget *parent = 0, Qt::WindowFlags f=0);
@@ -29,10 +29,6 @@ class DateInputDialog : public QDialog
 		void activateYesterday ();
 		void activateOther ();
 		void activateRange ();
-
-
-	private:
-		Ui::DateInputDialogClass ui;
 };
 
 #endif // DATEINPUTDIALOG_H

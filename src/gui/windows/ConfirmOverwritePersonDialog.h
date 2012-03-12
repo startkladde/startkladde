@@ -1,9 +1,9 @@
 #ifndef CONFIRMOVERWRITEPERSONDIALOG_H
 #define CONFIRMOVERWRITEPERSONDIALOG_H
 
-#include "ui_ConfirmOverwritePersonDialog.h"
+#include "src/gui/SkDialog.h"
 
-#include <QDialog>
+#include "ui_ConfirmOverwritePersonDialog.h"
 
 class Person;
 template<class T> class QList;
@@ -18,7 +18,7 @@ template<class T> class MutableObjectList;
  * user about the consequences of merging. The user can confirm or cancel the
  * process.
  */
-class ConfirmOverwritePersonDialog : public QDialog
+class ConfirmOverwritePersonDialog: public SkDialog<Ui::ConfirmOverwritePersonDialogClass>
 {
 		Q_OBJECT
 
@@ -30,9 +30,6 @@ class ConfirmOverwritePersonDialog : public QDialog
 
 	protected:
 		void setup (const Person &correctPerson, const QList<Person> &wrongPeople);
-
-	private:
-		Ui::ConfirmOverwritePersonDialogClass ui;
 };
 
 #endif

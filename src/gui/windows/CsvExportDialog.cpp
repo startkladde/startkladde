@@ -8,7 +8,7 @@
 #include "src/i18n/notr.h"
 
 CsvExportDialog::CsvExportDialog (QWidget *parent):
-	QDialog (parent)
+	SkDialog<Ui::CsvExportDialogClass> (parent)
 {
 	ui.setupUi (this);
 

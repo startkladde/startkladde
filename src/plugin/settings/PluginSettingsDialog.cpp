@@ -13,7 +13,7 @@
  * @param parent the parent widget
  */
 PluginSettingsDialog::PluginSettingsDialog (Plugin *plugin, QWidget *parent, SettingsWindow *settingsWindow):
-	QDialog (parent)
+	SkDialog<Ui::PluginSettingsDialogClass> (parent)
 {
 	ui.setupUi(this);
 

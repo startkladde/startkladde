@@ -3,7 +3,7 @@
 #include "src/db/DbManager.h"
 
 ObjectEditorWindowBase::ObjectEditorWindowBase (DbManager &manager, QWidget *parent, Qt::WindowFlags flags):
-	QDialog (parent, flags),
+	SkDialog<Ui::ObjectEditorWindowBaseClass> (parent, flags),
 	manager (manager)
 {
 	ui.setupUi (this);

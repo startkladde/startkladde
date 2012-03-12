@@ -7,7 +7,7 @@
 #include "src/util/qString.h"
 
 LaunchMethodSelectionWindow::LaunchMethodSelectionWindow (QWidget *parent):
-	QDialog (parent)
+	SkDialog<Ui::LaunchMethodSelectionWindowClass> (parent)
 {
 	ui.setupUi (this);
 }

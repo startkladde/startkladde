@@ -3,7 +3,7 @@
 #include <QPushButton>
 
 DateTimeInputDialog::DateTimeInputDialog (QWidget *parent, Qt::WindowFlags f):
-	QDialog(parent, f)
+	SkDialog<Ui::DateTimeInputDialogClass> (parent, f)
 {
 	ui.setupUi(this);
 }

@@ -5,7 +5,7 @@
 #include "src/util/qDate.h"
 
 DateInputDialog::DateInputDialog (QWidget *parent, Qt::WindowFlags f):
-	QDialog(parent, f)
+	SkDialog<Ui::DateInputDialogClass> (parent, f)
 {
 	ui.setupUi(this);
 }

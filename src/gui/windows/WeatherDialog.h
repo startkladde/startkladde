@@ -9,7 +9,7 @@ class QHBoxLayout;
 class WeatherPlugin;
 class WeatherWidget;
 
-class WeatherDialog:public QDialog
+class WeatherDialog: public QDialog
 {
 	public:
 		WeatherDialog (WeatherPlugin *plugin, QWidget *parent=NULL);

@@ -15,7 +15,7 @@
  * @param f the Qt window flags
  */
 ConfirmOverwritePersonDialog::ConfirmOverwritePersonDialog (QWidget *parent, Qt::WindowFlags f):
-	QDialog (parent, f)
+	SkDialog<Ui::ConfirmOverwritePersonDialogClass> (parent, f)
 {
 	ui.setupUi(this);
 }

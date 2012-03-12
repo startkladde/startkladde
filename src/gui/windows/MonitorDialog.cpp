@@ -10,7 +10,7 @@
 #include "src/concurrent/monitor/SignalOperationMonitor.h"
 
 MonitorDialog::MonitorDialog (SignalOperationMonitor &monitor, QWidget *parent):
-	QDialog (parent), theMonitor (monitor)
+	SkDialog<Ui::MonitorDialogClass> (parent), theMonitor (monitor)
 {
 	ui.setupUi (this);
 

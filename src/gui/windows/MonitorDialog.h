@@ -1,7 +1,8 @@
 #ifndef MONITORDIALOG_H
 #define MONITORDIALOG_H
 
-#include <QtGui/QDialog>
+#include "src/gui/SkDialog.h"
+
 #include "ui_MonitorDialog.h"
 
 class SignalOperationMonitor;
@@ -13,7 +14,7 @@ class SignalOperationMonitor;
  * that should be used (without further work). That's why the constructor is
  * private.
  */
-class MonitorDialog: public QDialog
+class MonitorDialog: public SkDialog<Ui::MonitorDialogClass>
 {
     Q_OBJECT
 
@@ -31,7 +32,6 @@ class MonitorDialog: public QDialog
 
 	private:
 		SignalOperationMonitor &theMonitor;
-		Ui::MonitorDialogClass ui;
 };
 
 #endif // MONITORDIALOG_H
