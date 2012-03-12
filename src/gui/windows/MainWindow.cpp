@@ -73,7 +73,7 @@ template <class T> class MutableObjectList;
 // ******************
 
 MainWindow::MainWindow (QWidget *parent, TranslationManager *translationManager):
-	QMainWindow (parent),
+	SkMainWindow<Ui::MainWindowClass> (parent),
 	translationManager (translationManager),
 	oldLogVisible (false),
 	dbManager (Settings::instance ().databaseInfo),
@@ -505,18 +505,25 @@ void MainWindow::readSettings ()
 
 }
 
-void MainWindow::settingsChanged ()
+void MainWindow::setupTitle ()
 {
 	Settings &s=Settings::instance ();
 
-	// Fenstereinstellungen
 	if (isBlank (s.location))
 		setWindowTitle (tr ("Startkladde"));
 	else
 		setWindowTitle (tr ("Flight log %1 - Startkladde").arg (s.location));
 
-	ui.menuDebug     ->menuAction ()->setVisible (Settings::instance ().enableDebug);
-	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (Settings::instance ().diagCommand));
+}
+
+void MainWindow::settingsChanged ()
+{
+	Settings &s=Settings::instance ();
+
+	setupTitle ();
+
+	ui.menuDebug     ->menuAction ()->setVisible (s.enableDebug);
+	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (s.diagCommand));
 
 	// Plugins
 	setupPlugins ();
@@ -1922,12 +1929,8 @@ void MainWindow::on_changeLanguageAction_triggered ()
 	translationManager->changeLanguage ();
 }
 
-void MainWindow::changeEvent (QEvent *event)
+void MainWindow::languageChanged ()
 {
-    if (event->type () == QEvent::LanguageChange)
-		// The language changed. Retranslate the UI.
-    	ui.retranslateUi (this);
-    else
-        QWidget::changeEvent (event);
+	SkMainWindow<Ui::MainWindowClass>::languageChanged ();
+	setupTitle ();
 }
-

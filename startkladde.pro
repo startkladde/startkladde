@@ -141,6 +141,7 @@ HEADERS += \
            src/gui/dialogs.h \
            src/gui/PasswordPermission.h \
 		   src/gui/SkDialog.h \
+		   src/gui/SkMainWindow.h \
            src/gui/views/ReadOnlyItemDelegate.h \
            src/gui/views/SkItemDelegate.h \
            src/gui/views/SpecialIntDelegate.h \

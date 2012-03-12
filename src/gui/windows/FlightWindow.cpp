@@ -90,7 +90,7 @@ static const QColor errorColor (255, 127, 127);
  * @param flags the window flags, passed to the base class constructor
  */
 FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager &manager, Qt::WindowFlags flags)
-	:SkDialog (parent, flags),
+	:SkDialog<Ui::FlightWindowClass> (parent, flags),
 	manager (manager),
 	cache (manager.getCache ()),
 	mode (mode),
@@ -2209,7 +2209,7 @@ void FlightWindow::laterButton_clicked ()
 
 void FlightWindow::languageChanged ()
 {
-	SkDialog::languageChanged ();
+	SkDialog<Ui::FlightWindowClass>::languageChanged ();
 
 	setupTitle ();
 	updateLists ();

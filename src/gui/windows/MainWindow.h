@@ -33,13 +33,13 @@
  *   - allow repeating of towflights
  */
 
-#include <QtGui/QMainWindow>
 #include <QPointer>
 #include <QPersistentModelIndex>
 
 #include "ui_MainWindow.h"
 
 #include "src/db/DbManager.h"
+#include "src/gui/SkMainWindow.h"
 
 class QWidget;
 template<class T> class QList;
@@ -63,9 +63,9 @@ class TranslationManager;
  *     it's performed anyway, and that way the user can be told why someting
  *     is not possible.
  */
-class MainWindow: public QMainWindow
+class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 {
-	Q_OBJECT
+		Q_OBJECT
 
 	public:
 		MainWindow (QWidget *parent, TranslationManager *translationManager);
@@ -76,6 +76,7 @@ class MainWindow: public QMainWindow
 		bool confirmAndExit (int returnCode, QString title, QString text);
 
 		// Setup
+		void setupTitle ();
 		void setupPlugins ();
 		void setupLabels ();
 		void setupLayout ();
@@ -102,7 +103,6 @@ class MainWindow: public QMainWindow
 		// Events
 		void closeEvent (QCloseEvent *event);
 		void keyPressEvent (QKeyEvent *);
-		void changeEvent (QEvent *event);
 
 		// Database connection management
 		void closeDatabase ();
@@ -111,6 +111,9 @@ class MainWindow: public QMainWindow
 		// Plugins
 		void setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout);
 		void terminatePlugins ();
+
+		// Translation
+		virtual void languageChanged ();
 
 	signals:
 		void minuteChanged ();
@@ -227,7 +230,6 @@ class MainWindow: public QMainWindow
 		void flightListChanged ();
 
 	private:
-		Ui::MainWindowClass ui;
 		TranslationManager *translationManager;
 
 		bool oldLogVisible;
