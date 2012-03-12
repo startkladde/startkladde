@@ -357,7 +357,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -471,6 +471,7 @@
      <string>&amp;Translation</string>
     </property>
     <addaction name="changeLanguageAction"/>
+    <addaction name="timerBasedLanguageChangeAction"/>
    </widget>
    <addaction name="menuProgram"/>
    <addaction name="menuFlight"/>
@@ -859,6 +860,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="timerBasedLanguageChangeAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Timer-based language change</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
  </widget>

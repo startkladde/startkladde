@@ -224,6 +224,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 
 		// Translation
 		void on_changeLanguageAction_triggered ();
+		void on_timerBasedLanguageChangeAction_triggered ();
 
 		void logMessage (QString message);
 
@@ -231,6 +232,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 
 	private:
 		TranslationManager *translationManager;
+		QTimer *translationTimer;
 
 		bool oldLogVisible;
 

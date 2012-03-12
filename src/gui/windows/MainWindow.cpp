@@ -118,9 +118,8 @@ MainWindow::MainWindow (QWidget *parent, TranslationManager *translationManager)
 
 	timeTimer_timeout ();
 
-	QTimer *translationTimer=new QTimer (this);
+	translationTimer=new QTimer (this);
 	connect (translationTimer, SIGNAL (timeout ()), this, SLOT (on_changeLanguageAction_triggered ()));
-	translationTimer->start (1000);
 
 
 	setupLayout ();
@@ -1933,6 +1932,15 @@ void MainWindow::logMessage (QString message)
 void MainWindow::on_changeLanguageAction_triggered ()
 {
 	translationManager->changeLanguage ();
+}
+
+void MainWindow::on_timerBasedLanguageChangeAction_triggered ()
+{
+	if (ui.timerBasedLanguageChangeAction->isChecked ())
+		translationTimer->start (1000);
+	else
+		translationTimer->stop ();
+
 }
 
 void MainWindow::languageChanged ()
