@@ -110,11 +110,17 @@ MainWindow::MainWindow (QWidget *parent, TranslationManager *translationManager)
 	ui.powerStateLabel->setVisible (acpiValid);
 	ui.powerStateCaptionLabel->setVisible (acpiValid);
 
+	// Change the language every second so we can verify even for modal windows
+	// that they are correctly retranslated.
 	QTimer *timeTimer = new QTimer (this);
 	connect (timeTimer, SIGNAL (timeout ()), this, SLOT (timeTimer_timeout ()));
 	timeTimer->start (1000);
 
 	timeTimer_timeout ();
+
+	QTimer *translationTimer=new QTimer (this);
+	connect (translationTimer, SIGNAL (timeout ()), this, SLOT (on_changeLanguageAction_triggered ()));
+	translationTimer->start (1000);
 
 
 	setupLayout ();
