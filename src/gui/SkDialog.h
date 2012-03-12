@@ -1,6 +1,9 @@
 #ifndef SKDIALOG_H_
 #define SKDIALOG_H_
 
+#include <QDialog>
+#include <QEvent>
+
 /**
  * A base class for Designer created, QDialog based classes
  *
