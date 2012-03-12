@@ -1,18 +1,17 @@
 #ifndef OBJECTLISTWINDOWBASE_H
 #define OBJECTLISTWINDOWBASE_H
 
-#include <QtGui/QMainWindow>
-
 #include "ui_ObjectListWindowBase.h"
 
 #include "src/db/DbManager.h" // Required for DbManager::State
 #include "src/gui/PasswordPermission.h"
+#include "src/gui/SkMainWindow.h"
 
 /*
  * TODO: Menu View->Sort and hotkey
  */
 
-class ObjectListWindowBase : public QMainWindow
+class ObjectListWindowBase : public SkMainWindow<Ui::ObjectListWindowBaseClass>
 {
     Q_OBJECT
 
@@ -38,13 +37,13 @@ class ObjectListWindowBase : public QMainWindow
 	protected:
 		DbManager &manager;
 		void keyPressEvent (QKeyEvent *e);
-		Ui::ObjectListWindowBaseClass ui;
 
 		// TODO get rid - use editPermission directly (make protected).
 		bool allowEdit (QString message);
 
 		// Events
-		void changeEvent (QEvent *event);
+		// FIXME remove
+//		void changeEvent (QEvent *event);
 
 	private:
 		PasswordPermission editPermission;

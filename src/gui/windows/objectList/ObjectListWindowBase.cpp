@@ -8,11 +8,9 @@
 #include "src/util/qString.h"
 
 ObjectListWindowBase::ObjectListWindowBase (DbManager &manager, QWidget *parent):
-	QMainWindow(parent), manager (manager),
-	editPermission (this)
+	SkMainWindow<Ui::ObjectListWindowBaseClass> (parent),
+	manager (manager), editPermission (this)
 {
-	ui.setupUi(this);
-
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 }
 
@@ -60,14 +58,3 @@ bool ObjectListWindowBase::allowEdit (QString message)
 {
 	return editPermission.permit (message);
 }
-
-void ObjectListWindowBase::changeEvent (QEvent *event)
-{
-    if (event->type () == QEvent::LanguageChange)
-		// The language changed. Retranslate the UI.
-    	ui.retranslateUi (this);
-    else
-        QWidget::changeEvent (event);
-}
-
-

@@ -1,12 +1,12 @@
 #ifndef FLIGHTLISTWINDOW_H
 #define FLIGHTLISTWINDOW_H
 
-#include <QtGui/QMainWindow>
 #include "ui_FlightListWindow.h"
 
 #include <QDate>
 
 #include "src/db/DbManager.h" // Required for DbManager::State
+#include "src/gui/SkMainWindow.h"
 
 class QSortFilterProxyModel;
 
@@ -23,7 +23,7 @@ template<class T> class ObjectListModel;
  *   - the data it displays is not cached by the database
  *   - it allow retrieving different sets of data (by date)
  */
-class FlightListWindow: public QMainWindow
+class FlightListWindow: public SkMainWindow<Ui::FlightListWindowClass>
 {
 	Q_OBJECT
 
@@ -46,16 +46,16 @@ class FlightListWindow: public QMainWindow
 	protected:
 		bool fetchFlights (const QDate &first, const QDate &last);
 
+		void updateLabel ();
+
 		// Events
 		void keyPressEvent (QKeyEvent *e);
-		void changeEvent (QEvent *event);
+		void languageChanged ();
 
 	protected slots:
 		virtual void databaseStateChanged (DbManager::State state);
 
 	private:
-		Ui::FlightListWindowClass ui;
-
 		DbManager &manager;
 
 		QDate currentFirst, currentLast;

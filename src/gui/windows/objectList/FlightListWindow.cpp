@@ -34,7 +34,7 @@
  */
 
 FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
-	QMainWindow (parent),
+	SkMainWindow<Ui::FlightListWindowClass> (parent),
 	manager (manager)
 {
 	ui.setupUi(this);
@@ -111,16 +111,21 @@ bool FlightListWindow::fetchFlights (const QDate &first, const QDate &last)
 	flightList->replaceList (flights);
 	ui.table->resizeColumnsToContents ();
 
+	updateLabel ();
+
+	return true;
+}
+
+void FlightListWindow::updateLabel ()
+{
 	// Create and set the descriptive text: "1/1/2011 to 12/31/2011: 123 flights"
-	int numFlights=flights.size ();
+	int numFlights=flightList->size ();
 	QString dateText=dateRangeToString (currentFirst, currentLast, defaultNumericDateFormat (), tr (" to "));
 
 	if (numFlights==0)
 		ui.captionLabel->setText (tr ("%1: no flights").arg (dateText));
 	else
 		ui.captionLabel->setText (tr ("%1: %n flight(s)", "", numFlights).arg (dateText));
-
-	return true;
 }
 
 void FlightListWindow::on_actionClose_triggered ()
@@ -218,12 +223,8 @@ void FlightListWindow::on_actionExport_triggered ()
 	}
 }
 
-void FlightListWindow::changeEvent (QEvent *event)
+void FlightListWindow::languageChanged ()
 {
-    if (event->type () == QEvent::LanguageChange)
-		// The language changed. Retranslate the UI.
-    	ui.retranslateUi (this);
-    else
-        QWidget::changeEvent (event);
+	SkMainWindow<Ui::FlightListWindowClass>::languageChanged ();
+	updateLabel ();
 }
-

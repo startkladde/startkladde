@@ -41,6 +41,8 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 	manager (manager),
 	contextMenu (new QMenu (this))
 {
+		ui.setupUi(this);
+
 	// Create the object listModel
 	list = new AutomaticEntityList<T>
 		(manager.getCache (), manager.getCache ().getObjects<T> ().getList (), this);
@@ -61,7 +63,7 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 	ui.table->resizeColumnsToContents ();
 	ui.table->resizeRowsToContents (); // Do this although autoResizeRows is true - there are already rows.
 
-	setWindowTitle (firstToUpper (T::objectTypeDescriptionPlural ()));
+	setupWindowTitle ();
 
 	// TODO this should be done later - a subclass may add menus
 	// TODO should probably autodetect mnemonics
@@ -104,6 +106,12 @@ template<class T> void ObjectListWindow<T>::show (DbManager &manager, bool editP
 	// Show the window
 	window->show ();
 }
+
+template<class T> void ObjectListWindow<T>::setupWindowTitle ()
+{
+	setWindowTitle (firstToUpper (T::objectTypeDescriptionPlural ()));
+}
+
 
 /**
  * Appends an object from a specified position (index) in the table to a QList
@@ -451,6 +459,12 @@ template<class T> void ObjectListWindow<T>::keyPressEvent (QKeyEvent *e)
 	}
 
 	ObjectListWindowBase::keyPressEvent (e);
+}
+
+template<class T> void ObjectListWindow<T>::languageChanged ()
+{
+	ObjectListWindowBase::languageChanged ();
+	setupWindowTitle ();
 }
 
 
