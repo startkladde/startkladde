@@ -33,6 +33,7 @@
  *   - allow repeating of towflights
  */
 
+#include <QAction>
 #include <QPointer>
 #include <QPersistentModelIndex>
 
@@ -76,7 +77,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		bool confirmAndExit (int returnCode, QString title, QString text);
 
 		// Setup
-		void setupTitle ();
+		void setupText ();
 		void setupPlugins ();
 		void setupLabels ();
 		void setupLayout ();
@@ -233,6 +234,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 	private:
 		TranslationManager *translationManager;
 		QTimer *translationTimer;
+
+		QAction *logAction;
 
 		bool oldLogVisible;
 

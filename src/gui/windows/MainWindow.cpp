@@ -98,9 +98,15 @@ MainWindow::MainWindow (QWidget *parent, TranslationManager *translationManager)
 	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
 	proxyModel->setDynamicSortFilter (true);
 
+	// Menu bar
+	logAction = ui.logDockWidget->toggleViewAction ();
+	ui.menuDatabase->addSeparator ();
+	ui.menuDatabase->addAction (logAction);
+
 
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 	readSettings ();
+	// This also calls setupText
 	settingsChanged ();
 
 	setupLabels ();
@@ -136,12 +142,6 @@ MainWindow::MainWindow (QWidget *parent, TranslationManager *translationManager)
 	setDisplayDateCurrent (true);
 
 	ui.logDockWidget->setVisible (false);
-
-	// Menu bar
-	QAction *logAction = ui.logDockWidget->toggleViewAction ();
-	logAction->setText (tr ("Show &log"));
-	ui.menuDatabase->addSeparator ();
-	ui.menuDatabase->addAction (logAction);
 
 	ui.actionShutdown->setVisible (Settings::instance ().enableShutdown);
 
@@ -510,9 +510,12 @@ void MainWindow::readSettings ()
 
 }
 
-void MainWindow::setupTitle ()
+/** Setup translated texts */
+void MainWindow::setupText ()
 {
 	Settings &s=Settings::instance ();
+
+	logAction->setText (tr ("Show &log"));
 
 	if (isBlank (s.location))
 		setWindowTitle (tr ("Startkladde"));
@@ -525,7 +528,7 @@ void MainWindow::settingsChanged ()
 {
 	Settings &s=Settings::instance ();
 
-	setupTitle ();
+	setupText ();
 
 	ui.menuDebug     ->menuAction ()->setVisible (s.enableDebug);
 	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (s.diagCommand));
@@ -1946,7 +1949,7 @@ void MainWindow::on_timerBasedLanguageChangeAction_triggered ()
 void MainWindow::languageChanged ()
 {
 	SkMainWindow<Ui::MainWindowClass>::languageChanged ();
-	setupTitle ();
+	setupText ();
 
 	// See the FlightModel class documentation
 	flightModel->updateTranslations ();
