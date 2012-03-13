@@ -1806,6 +1806,7 @@ void MainWindow::setDatabaseActionsEnabled (bool enabled)
 	ui.actionPilotLogs               ->setEnabled (enabled);
 	ui.actionPingServer              ->setEnabled (enabled);
 	ui.actionPlaneLogs               ->setEnabled (enabled);
+	ui.actionShowFlights             ->setEnabled (enabled);
 	ui.actionRefreshAll              ->setEnabled (enabled);
 	ui.actionRefreshTable            ->setEnabled (enabled);
 	ui.actionRepeat                  ->setEnabled (enabled);
