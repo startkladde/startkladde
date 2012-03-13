@@ -17,7 +17,7 @@
 
 PersonListWindow::PersonListWindow (DbManager &manager, QWidget *parent):
 	ObjectListWindow<Person> (manager, parent),
-	mergeAction (new QAction (tr ("&Merge"), this)),
+	mergeAction (new QAction (this)),
 	mergePermission (this)
 {
 	connect (mergeAction, SIGNAL (triggered ()), this, SLOT (mergeAction_triggered ()));
@@ -31,10 +31,17 @@ PersonListWindow::PersonListWindow (DbManager &manager, QWidget *parent):
 	// we explicitly set them here.
 	if (Settings::instance ().protectMergePeople)
 		mergePermission.requirePassword (Settings::instance ().databaseInfo.password);
+
+	setupText ();
 }
 
 PersonListWindow::~PersonListWindow ()
 {
+}
+
+void PersonListWindow::setupText ()
+{
+	mergeAction->setText (tr ("&Merge"));
 }
 
 void PersonListWindow::mergeAction_triggered ()
@@ -72,11 +79,10 @@ void PersonListWindow::mergeAction_triggered ()
 	{
 		case ObjectSelectWindowBase::resultOk:
 			break;
-		case ObjectSelectWindowBase::resultUnknown:
-			// fallthrough
-		case ObjectSelectWindowBase::resultNew:
-			// fallthrough
-		case ObjectSelectWindowBase::resultCancelled: case ObjectSelectWindowBase::resultNoneSelected:
+		case ObjectSelectWindowBase::resultUnknown:      // fallthrough
+		case ObjectSelectWindowBase::resultNew:          // fallthrough
+		case ObjectSelectWindowBase::resultCancelled:    // fallthrough
+		case ObjectSelectWindowBase::resultNoneSelected: // fallthrough
 			return;
 	}
 
@@ -108,4 +114,10 @@ void PersonListWindow::prepareContextMenu (QMenu *contextMenu)
 		contextMenu->addSeparator ();
 		contextMenu->addAction (mergeAction);
 	}
+}
+
+void PersonListWindow::languageChanged ()
+{
+	ObjectListWindow<Person>::languageChanged ();
+	setupText ();
 }

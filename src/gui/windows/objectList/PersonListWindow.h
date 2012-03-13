@@ -20,13 +20,19 @@ class PersonListWindow: public ObjectListWindow<Person>
 	protected:
 		virtual void prepareContextMenu (QMenu *contextMenu);
 
+		void languageChanged ();
+
 	protected slots:
 		void mergeAction_triggered ();
 
 	private:
+		void setupText ();
+
 		QAction *mergeAction;
 
 		PasswordPermission mergePermission;
+
+
 };
 
 #endif

@@ -2,10 +2,10 @@
 #define CONFIRMOVERWRITEPERSONDIALOG_H
 
 #include "src/gui/SkDialog.h"
+#include "src/model/Person.h"
 
 #include "ui_ConfirmOverwritePersonDialog.h"
 
-class Person;
 template<class T> class QList;
 template<class T> class ObjectModel;
 template<class T> class ObjectListModel;
@@ -30,6 +30,19 @@ class ConfirmOverwritePersonDialog: public SkDialog<Ui::ConfirmOverwritePersonDi
 
 	protected:
 		void setup (const Person &correctPerson, const QList<Person> &wrongPeople);
+		void setupTexts ();
+		virtual void languageChanged ();
+
+	private:
+		Person correctPerson;
+		QList<Person> wrongPeople;
+
+		QTreeWidgetItem *  wrongParentItem;
+		QTreeWidgetItem *correctParentItem;
+
+		// The model to get the data from
+		Person::DefaultObjectModel model;
+
 };
 
 #endif
