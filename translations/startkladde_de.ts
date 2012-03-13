@@ -1362,7 +1362,7 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         <location filename="../src/model/flightList/FlightModel.cpp" line="49"/>
         <location filename="../src/model/flightList/FlightModel.cpp" line="124"/>
         <source>Launch method</source>
-        <translation>StartartStartart</translation>
+        <translation>Startart</translation>
     </message>
     <message>
         <location filename="../src/model/flightList/FlightModel.cpp" line="50"/>

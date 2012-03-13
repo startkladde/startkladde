@@ -40,6 +40,8 @@ class ObjectListModelBase: public QAbstractTableModel
 	public:
 		ObjectListModelBase (QObject *parent=NULL): QAbstractTableModel (parent) {}
 
+		void reset () { QAbstractTableModel::reset (); }
+
 	public slots:
 		virtual void listDataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight)=0;
 };

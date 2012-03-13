@@ -40,6 +40,8 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 		virtual QString columnName (int columnIndex) const;
 		virtual QString sampleText (int columnIndex) const;
 
+		void updateTranslations ();
+
 	protected:
 		virtual QVariant registrationData (const Flight &flight, int role) const;
 		virtual QVariant planeTypeData (const Flight &flight, int role) const;
@@ -70,8 +72,6 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 		QString headerTextAccountingNotes;
 		QString headerTextDate;
 		QString headerTextId;
-
-		void updateTranslations ();
 
 
 		bool colorEnabled;
