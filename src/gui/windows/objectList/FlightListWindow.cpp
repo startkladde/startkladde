@@ -227,4 +227,8 @@ void FlightListWindow::languageChanged ()
 {
 	SkMainWindow<Ui::FlightListWindowClass>::languageChanged ();
 	updateLabel ();
+
+	// See the FlightModel class documentation
+	flightModel->updateTranslations ();
+	flightListModel->reset ();
 }

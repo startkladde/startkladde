@@ -1947,9 +1947,9 @@ void MainWindow::languageChanged ()
 {
 	SkMainWindow<Ui::MainWindowClass>::languageChanged ();
 	setupTitle ();
+
+	// See the FlightModel class documentation
 	flightModel->updateTranslations ();
-	// TODO flightModel should have a reset mechanism that notifies the
-	// flightListModel. reset should not be exposed.
 	flightListModel->reset ();
 }
 

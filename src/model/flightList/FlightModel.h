@@ -19,6 +19,22 @@ class Cache;
 /**
  * Unlike the models for Person, Plane and LaunchMethod, this is not part of the
  * respective class because it is much more complex.
+ *
+ * For performance reasons, this model caches the translated strings. On
+ * language change, the values have to be updated. This would be easy, but
+ * updating the strings is not enough, we also have to signal the user
+ * (typically an ObjectListModel<Flight>) that the model data has become
+ * invalid (like QAbstractItemModel's reset method), but there is no mechanism
+ * for that at the moment. Therefore, on language change, someone must call
+ * this model's updateTranslations method and make sure that the data is read
+ * from the model again (ObjectListModel even exposes the reset method for this
+ * purpose).
+ * Note that this only applies to the header data and the button texts - data
+ * that is read from (and translated in) the flight is retranslated without
+ * these measures, as the QAbstractItemModel resets (?).
+ * TODO change this, add a modelReset signal (headerDataChanged could also be
+ * used, but the buttons have to be updated as well) (and unexpose
+ * ObjectListModel's reset method)
  */
 class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 {
