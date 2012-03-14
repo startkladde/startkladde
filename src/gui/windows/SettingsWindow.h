@@ -18,6 +18,8 @@ class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 		QStringList getPluginPaths ();
 
 	protected:
+		void setupText ();
+
 		void readSettings ();
 		void writeSettings ();
 
@@ -28,6 +30,7 @@ class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 		void warnEdit ();
 
 		virtual void showEvent (QShowEvent *event);
+		virtual void languageChanged ();
 
 	private slots:
 		void on_mysqlDefaultPortCheckBox_toggled () { updateWidgets (); }

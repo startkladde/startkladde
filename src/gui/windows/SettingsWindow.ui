@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>658</width>
-    <height>533</height>
+    <width>650</width>
+    <height>530</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -317,9 +317,10 @@
              <item>
               <widget class="QLabel" name="passwordMessageLabel">
                <property name="text">
-                <string>The password protection can be removed by deleting
-or editing the configuration file or registry key
-%1.</string>
+                <string notr="true">[The password protection can be removed by deleting or editing the configuration file or registry key...]</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
                </property>
               </widget>
              </item>

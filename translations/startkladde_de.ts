@@ -2070,14 +2070,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
     </message>
 </context>
 <context>
-    <name>InfoPluginSelectionDialog</name>
-    <message>
-        <location filename="../src/plugin/info/InfoPluginSelectionDialog.cpp" line="29"/>
-        <source>There are no plugins.</source>
-        <translation>Es sind keine Plugins vorhanden.</translation>
-    </message>
-</context>
-<context>
     <name>InfoPluginSelectionDialogClass</name>
     <message>
         <location filename="../src/plugin/info/InfoPluginSelectionDialog.ui" line="14"/>
@@ -2316,12 +2308,12 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>LaunchMethodSelectionWindow</name>
     <message>
-        <location filename="../src/gui/windows/LaunchMethodSelectionWindow.cpp" line="24"/>
+        <location filename="../src/gui/windows/LaunchMethodSelectionWindow.cpp" line="25"/>
         <source>No launch methods defined</source>
         <translation>Keine Startarten definiert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/LaunchMethodSelectionWindow.cpp" line="25"/>
+        <location filename="../src/gui/windows/LaunchMethodSelectionWindow.cpp" line="26"/>
         <source>No launch method can be preselected because no launch methods are defined.</source>
         <translation>Es kann keine Startart vorausgewählt werden, da keine Startarten definiert sind.</translation>
     </message>
@@ -2466,275 +2458,263 @@ Konfiguration: %2</translation>
         <translation>Hauptflugbuch %1 - Startkladde</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="570"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="554"/>
         <source>Today (%1)</source>
         <translation>Heute (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="581"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="559"/>
         <source>dddd, M/d/yyyy</source>
         <translation>dddd, d.M.yyyy</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="753"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="765"/>
         <source>According to the database, the %1 %2 is still flying. Depart anyway?</source>
         <translation>Laut Datenbank fliegt das %1 %2 noch. Trotzdem starten?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="755"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="767"/>
         <source>Plane still flying</source>
         <translation>Flugzeug fliegt noch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="767"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="779"/>
         <source>According to the database, the %1 %2 is still flying. Start anyway?</source>
         <translation>Laut Datenbank fliegt der %1 %2 noch. Trotzdem starten?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="769"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="781"/>
         <source>Person still flying</source>
         <translation>Person fliegt noch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="791"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="803"/>
         <source>plane</source>
         <translation>Flugzeug</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="793"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="805"/>
         <source>towplane</source>
         <translation>Schleppflugzeug</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1049"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1061"/>
         <source>Delete flight?</source>
         <translation>Flug löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1049"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1061"/>
         <source>Really delete flight?</source>
         <translation>Flug wirklich löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1051"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1063"/>
         <source>Delete glider flight?</source>
         <translation>Segelflug löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1052"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1064"/>
         <source>The selected flight is a towflight. Really delete the corresponding glider flight?</source>
         <translation>Der ausgewählte Flug ist ein Schleppflug. Soll der dazugehörige Segelflug wirklich gelöscht werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1079"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1252"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1091"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1264"/>
         <source>No flight selected</source>
         <translation>Kein Flug ausgewählt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1211"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1223"/>
         <source>Unable to display virtual keyboard</source>
         <translation>Bildschirmtastatur konnte nicht angezeigt werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1308"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1320"/>
         <source>An error occured while executing the network diagnostics command.</source>
         <translation>Beim Ausführen der Netzwerkdiagnose ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1658"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1675"/>
         <source>The database password must be entered to display the flight database.</source>
         <translation>Zum Anzeigen der Flugdatenbank muss das Datenbankpasswort eingegeben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1905"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1933"/>
         <source>The system time was changed. The setting may only be stored permanently when the system is shut down.</source>
         <translation>Die Systemzeit wurde geändert. Gegebenenfalls wird die Änderung erst beim nächsten Herunterfahren dauerhaft gespeichert.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1127"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1139"/>
         <source>Towflight has errors</source>
         <translation>Schleppflug fehlerhaft</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1127"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1139"/>
         <source>First error of the towflight: %1</source>
         <translation>Erster Fehler des Schleppflugs: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1129"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1141"/>
         <source>Flight has errors</source>
         <translation>Flug hat Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1129"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1141"/>
         <source>First error of the flight: %1</source>
         <translation>Erster Fehler des Flugs: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1134"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1146"/>
         <source>Towflight has no errors</source>
         <translation>Schleppflug fehlerfrei</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1134"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1146"/>
         <source>The towflight has no errors.</source>
         <translation>Der Schleppflug ist fehlerfrei.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1136"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1148"/>
         <source>Flight has no errors</source>
         <translation>Flug fehlerfrei</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1136"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1148"/>
         <source>The flight has no errors.</source>
         <translation>Der Flug ist fehlerfrei.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1205"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1222"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1217"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1234"/>
         <source>DBus call failed</source>
         <translation>DBus-Aufruf fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1206"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1218"/>
         <source>The call to dbus-send for displaying the virtual keyboard failed.</source>
         <translation>Der Aufruf von dbus-send zum Anzeigen der Bildschirmtastatur ist fehlgeschlagen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1212"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1224"/>
         <source>The virtual keyboard could not be displayed. Maybe kvkbd is not installed.</source>
         <translation>Die Bildschirmtastatur konnte nicht angezeigt werden. Möglicherweise ist kvkbd nicht installiert.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1223"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1235"/>
         <source>The call to dbus-send for hiding the virtual keyboard failed.</source>
         <translation>Der aufruf von dbus-send zum Ausblenden der Bildschirmtastatur ist fehlgeschlagen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1079"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1252"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1091"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1264"/>
         <source>No flight is selected.</source>
         <translation>Es ist kein Flug ausgewählt.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1263"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1275"/>
         <source>Either the selected flight is neither a towflight nor a towed flight, or it has not departed yet.</source>
         <translation>Entweder der ausgewählte Flug ist weder ein geschleppter Flug noch ein Schleppflug, oder er ist noch nicht gestartet.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1264"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1276"/>
         <source>No towflight</source>
         <translation>Kein Schleppflug</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1307"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1910"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1319"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1938"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1582"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1599"/>
         <source>Set display date</source>
         <translation>Anzeigedatum einstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1582"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1599"/>
         <source>Display date:</source>
         <translation>Anzeigedatum:</translation>
     </message>
     <message>
-        <source>Plane logbooks</source>
-        <translation type="obsolete">Bordbücher</translation>
-    </message>
-    <message>
-        <source>Pilot logbooks</source>
-        <translation type="obsolete">Flugbücher</translation>
-    </message>
-    <message>
-        <source>Launch method overview</source>
-        <translation type="obsolete">Startartstatistik</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1679"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1696"/>
         <source>Database: %2 (%1)</source>
         <translation>Datenbank: %2 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1751"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1768"/>
         <source>Not connected</source>
         <translation>Keine Verbindung</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1761"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1772"/>
         <source>Connecting...</source>
         <translation>Verbindung wird aufgebaut...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1773"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1776"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1798"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1826"/>
         <source>No reply</source>
         <translation>Keine Antwort</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1867"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1895"/>
         <source>Database settings changed</source>
         <translation>Datenbankeinstellungen geändert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1869"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1897"/>
         <source>The database settings were changed. The changes will be effective on the next reconnect. Do you want to reconnect now?</source>
         <translation>Die Datenbankeinstellungen wurden geändert. Die Anderungen werden beim nächsten Verbindungsaufbau wirksam. Soll die Verbindung jetzt neu aufgebaut werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1891"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1919"/>
         <source>Set system time</source>
         <translation>Systemzeit einstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1904"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1932"/>
         <source>System time changed</source>
         <translation>Systemzeit geändert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1911"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1939"/>
         <source>Changing the system time failed. Maybe the user has insufficient permissions.</source>
         <translation>Die Änderung der Systemzeit ist fehlgeschlagen. Möglicherweise sind die Benutzerberechtigungen nicht ausreichend.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="810"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="822"/>
         <source>Departing not possible</source>
         <translation>Start nicht möglich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="836"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="862"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="848"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="874"/>
         <source>Landing not possible</source>
         <translation>Landung nicht möglich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="910"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="933"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="922"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="945"/>
         <source>Touch-and-go not possible</source>
         <translation>Zwischenlandung nicht möglich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="911"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="923"/>
         <source>The selected flight is a towflight. Towflights cannot perform a touch-and-go.</source>
         <translation>Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können keine Zwischenlandung machen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1021"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1033"/>
         <source>Replicating not possible</source>
         <translation>Wiederholen nicht möglich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1022"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1034"/>
         <source>The selected flight is a towflight. Towflights cannot be replicated.</source>
         <translation>Der ausgewählte Flug ist ein Schleppflug. Schleppflüge können nicht wiederholt werden.</translation>
     </message>
@@ -2924,10 +2904,6 @@ Konfiguration: %2</translation>
         <location filename="../src/gui/windows/MainWindow.ui" line="577"/>
         <source>&amp;Land/end (F6)</source>
         <translation>&amp;Landen/Beenden (F6)</translation>
-    </message>
-    <message>
-        <source>Startkladde</source>
-        <translation type="obsolete">Startkladde</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="365"/>
@@ -4209,21 +4185,26 @@ aktiviert werden.</translation>
 <context>
     <name>SettingsWindow</name>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="451"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="89"/>
+        <source>The password protection can be removed by deleting or editing the configuration file or registry key %1.</source>
+        <translation>Der Passwortschutz kann durch Löschen bzw. Bearbeiten der Konfigurationsdatei bzw. des Registry-Schlüssels %1 aufgehoben werden.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="462"/>
         <source>The (old) database password must be entered to save
 the settings.</source>
         <translation>Zum Speichern der Einstellungen ist das (alte) Datenbankpasswort
 erforderlich.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="453"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="464"/>
         <source>The database password must be entered to save
 the settings.</source>
         <translation>Zum Speichern der Einstellungen ist das Datenbankpasswort
 erforderlich.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="465"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="476"/>
         <source>Password protection of the settings is being enabled. The
 (new) database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -4234,7 +4215,7 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="472"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="483"/>
         <source>Password protection of the settings is being enabled. The
 database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -4245,12 +4226,12 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="498"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="509"/>
         <source>Settings protected</source>
         <translation>Einstellungen geschützt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="498"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="509"/>
         <source>The settings are protected. The settings
 can be changed, but to save them, the database
 password must be entered.</source>
@@ -4347,37 +4328,27 @@ Datenbankpasswort erforderlich.</translation>
         <translation>Wenn aktiviert, muss zum Speichern von Einstellungen das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="320"/>
-        <source>The password protection can be removed by deleting
-or editing the configuration file or registry key
-%1.</source>
-        <translation>Der Passwortschutz kann durch Löschen bzw. Bearbeiten
-der Konfigurationsdatei bzw. des Registry-Schlüssels
-%1
-aufgehoben werden.</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="332"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="333"/>
         <source>If enabled, the database password must be entered to merge people</source>
         <translation>Wenn aktiviert, muss zum Zusammenfassen von Personen das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="342"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="343"/>
         <source>If enabled, the database password must be entered to display the flight database</source>
         <translation>Wenn aktiviert, muss zum Ändern von Startarten das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="355"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="356"/>
         <source>Diagnostics</source>
         <translation>Diagnose</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="361"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="362"/>
         <source>Enables some menu entries for error diagnostics</source>
         <translation>Aktiviert einige Menüeinträge zur Fehlerdiagnose</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="371"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="372"/>
         <source>Command to run when the menu item Help-Network diagnostics is selected</source>
         <translation>Kommando, das ausgeführt wird, wenn der Menüpunkt Hilfe-&gt;Netzwerkdiagnose ausgeführt wird</translation>
     </message>
@@ -4442,189 +4413,189 @@ aufgehoben werden.</translation>
         <translation>Passwort zum Ändern von E&amp;instellungen erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="335"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="336"/>
         <source>Re&amp;quire password to merge &amp;people</source>
         <translation>Passwort zum Zusammenfassen von &amp;Personen erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="345"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="346"/>
         <source>Req&amp;uire password to display the &amp;flight database</source>
         <translation>Passwort zum Abrufen der &amp;Flugdatenbank erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="364"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="365"/>
         <source>Enable de&amp;bugging options</source>
         <translation>Optionen zur Fehlersuche (Debu&amp;gging) aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="378"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="379"/>
         <source>Command for network dia&amp;gnostics:</source>
         <translation>Ko&amp;mmando für Netzwerkdiagnose:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="405"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="406"/>
         <source>&amp;Info plugins</source>
         <translation>&amp;Info-Plugins</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="411"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="412"/>
         <source>The list of info plugins. Info-Plugins are displayed
 in the upper part of the main window.</source>
         <translation>Liste der Info-Plugins. Die Info-Plugins werden im oberen
 Bereich des Hauptfensters angezeigt.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="479"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="480"/>
         <source>Add info plugin</source>
         <translation>Info-Plugin dazufügen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="482"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="917"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="483"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="918"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="495"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="496"/>
         <source>Removed selected info plugin</source>
         <translation>Ausgewähltes Info-Plugin entfernen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="498"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="933"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="499"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="934"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="511"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="512"/>
         <source>Move selected info plugin up</source>
         <translation>Ausgewähltes Info-Plugin nach oben verschieben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="530"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="531"/>
         <source>Move selected info plugin down</source>
         <translation>Ausgewähltes Info-Plugin nach unten verschieben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="533"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="552"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="968"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="534"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="553"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="969"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="549"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="550"/>
         <source>Settings for selected info plugin</source>
         <translation>Einstellungen für ausgewähltes Info-Plugin</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="576"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="577"/>
         <source>&amp;Weather plugin</source>
         <translation>&amp;Wetterplugin</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="582"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="583"/>
         <source>Weather plugin &amp;enabled</source>
         <translation>We&amp;ttergrafik aktiviert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="601"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="602"/>
         <source>Height of the weather plugin in pixels</source>
         <translation>Höhe der Wettergrafik in Pixeln</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="591"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="592"/>
         <source>&amp;Height:</source>
         <translation>&amp;Höhe:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="425"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="426"/>
         <source>Title</source>
         <comment>Info plugins table list header</comment>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="428"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="429"/>
         <source>Title of the plugin; will be displayed in the main window</source>
         <translation>Titel des Plugins; wird im Hauptfenster angezeigt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="433"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="434"/>
         <source>Plugin</source>
         <comment>Info plugins table list header</comment>
         <translation>Plugin</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="436"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="437"/>
         <source>Plugin command (with any parameters)</source>
         <translation>Plugin-Kommando (mit eventuellen Parametern)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="441"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="442"/>
         <source>Active</source>
         <comment>Info plugins table list header</comment>
         <translation>Aktiviert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="446"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="447"/>
         <source>Configuration</source>
         <comment>Info plugins table list header</comment>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="604"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="605"/>
         <source> pixels</source>
         <extracomment>With leading space</extracomment>
         <translation> Pixel</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="627"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="628"/>
         <source>&amp;Interval:</source>
         <translation>Inter&amp;vall:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="637"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="638"/>
         <source>P&amp;lugin:</source>
         <translation>Pl&amp;ugin:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="647"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="648"/>
         <source>Time between updates of the weather plugin</source>
         <translation>Zeitdauer zwischen Aktualisierungen der Wettergrafik</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="676"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="677"/>
         <source>Co&amp;mmand:</source>
         <translation>&amp;Kommando:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="699"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="700"/>
         <source>&amp;Browse</source>
         <translation>Durch&amp;suchen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="712"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="713"/>
         <source>Weather wi&amp;ndow enabled</source>
         <translation>Wetter&amp;fenster aktiviert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="731"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="732"/>
         <source>&amp;Title:</source>
         <translation>Tite&amp;l:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="748"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="749"/>
         <source>Inter&amp;val:</source>
         <translation>I&amp;ntervall:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="721"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="722"/>
         <source>Pl&amp;ugin:</source>
         <translation>Plu&amp;gin:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="650"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="761"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="651"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="762"/>
         <source> minutes</source>
         <extracomment>With leading space
 ----------
@@ -4632,70 +4603,70 @@ With leading space</extracomment>
         <translation> Minuten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="692"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="813"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="693"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="814"/>
         <source>The program to execute. Programs in the plugin path can be specified without path.</source>
         <translation>Das Programm, das ausgeführt wird. Programme im Pluginpfand können ohne Pfad angegeben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="784"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="785"/>
         <source>The weather window can be opened by double-clicking the weather plugin.</source>
         <translation>Das Wetterfenster wird durch Doppelklick auf die Wettergrafik geöffnet.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="797"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="798"/>
         <source>Comm&amp;and:</source>
         <translation>K&amp;ommando:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="741"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="742"/>
         <source>Title of the weather window</source>
         <translation>Titel des Wetterfensters</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="758"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="759"/>
         <source>Time between updates of the picture in the weather window</source>
         <translation>Zeitdauer zwischen Aktualisierungen der Grafik im Wetterfenster</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="820"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="821"/>
         <source>B&amp;rowse</source>
         <translation>Durchsuc&amp;hen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="847"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="848"/>
         <source>&amp;Plugin path</source>
         <translation>Plugin-&amp;Pfad</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="853"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="854"/>
         <source>Directories to look for plugins in (in the order given).
 Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to the current directory (e. g. .startkladde/plugins).</source>
         <translation>Verzeichnisse, in denen Plugins (in der angegebenen Reihenfolge) gesucht werden.
 Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder relativ zum aktuellen Verzeichnis (z. B. .startkladde/plugins) angegeben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="870"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="871"/>
         <source>Directories to look for plugins in</source>
         <translation>Verzeichnisse, in denen Plugins gesucht werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="914"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="915"/>
         <source>Add plugin path</source>
         <translation>Plugin-Pfad dazufügen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="930"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="931"/>
         <source>Remove selected plugin path</source>
         <translation>Ausgewählten Plugin-Pfad entfernen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="946"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="947"/>
         <source>Move selected plugin path up</source>
         <translation>Ausgewählten Plugin-Pfad nach oben verschieben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="965"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="966"/>
         <source>Move selected plugin path down</source>
         <translation>Ausgewählten Plugin-Pfad nach unten verschieben</translation>
     </message>
@@ -4711,17 +4682,17 @@ Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder 
 <context>
     <name>StatisticsWindow</name>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1597"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1614"/>
         <source>Plane logbooks</source>
         <translation>Bordbücher</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1610"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1627"/>
         <source>Pilot logbooks</source>
         <translation>Flugbücher</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1616"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1633"/>
         <source>Launch method overview</source>
         <translation>Startartstatistik</translation>
     </message>

@@ -71,17 +71,28 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	ui.infoPluginList->setItemDelegateForColumn (enabledColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
 	ui.infoPluginList->setItemDelegateForColumn ( configColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
 
-	// Note that this label does not use wordWrap because it causes the minimum
-	// size of the label not to work properly.
-	ui.passwordMessageLabel->setText (ui.passwordMessageLabel->text ().arg (QSettings ().fileName ()));
-
 	readSettings ();
 	updateWidgets ();
+
+	setupText ();
 }
 
 SettingsWindow::~SettingsWindow()
 {
 	deleteList (infoPlugins);
+}
+
+void SettingsWindow::setupText ()
+{
+	// Note that this label does not use wordWrap because it causes the minimum
+	// size of the label not to work properly.
+	ui.passwordMessageLabel->setText (tr (
+		"The password protection can be removed by deleting or editing"
+		" the configuration file or registry key %1.")
+		.arg (QSettings ().fileName ()));
+
+	// Required because we have a label with word wrap
+	adjustSize ();
 }
 
 void SettingsWindow::on_buttonBox_accepted ()
@@ -544,4 +555,10 @@ void SettingsWindow::showEvent (QShowEvent *event)
 	// unnecessary (but harmless).
 	if (!event->spontaneous ())
 		warnEdit ();
+}
+
+void SettingsWindow::languageChanged ()
+{
+	SkDialog<Ui::SettingsWindowClass>::languageChanged ();
+	setupText ();
 }
