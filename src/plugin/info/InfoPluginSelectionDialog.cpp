@@ -16,31 +16,34 @@ InfoPluginSelectionDialog::InfoPluginSelectionDialog (const QList<const InfoPlug
 
 InfoPluginSelectionDialog::~InfoPluginSelectionDialog()
 {
-
 }
 
 void InfoPluginSelectionDialog::setup ()
 {
 	ui.pluginList->clear ();
 
-	if (plugins.isEmpty ())
-	{
-		ui.pluginList->setVisible (false);
-		ui.messageLabel->setText (tr ("There are no plugins."));
-		ui.buttonBox->button (QDialogButtonBox::Ok)->setEnabled (false);
-	}
-	else
-	{
-		foreach (const InfoPlugin::Descriptor *descriptor, plugins)
-		{
-			QTreeWidgetItem *item=new QTreeWidgetItem (ui.pluginList);
-			item->setData (nameColumn       , Qt::DisplayRole, descriptor->getName        ());
-			item->setData (descriptionColumn, Qt::DisplayRole, descriptor->getDescription ());
-		}
+	for (int i=0, n=plugins.size (); i<n; ++i)
+		new QTreeWidgetItem (ui.pluginList);
 
-		for (int i=0; i<ui.pluginList->columnCount (); ++i)
-			ui.pluginList->resizeColumnToContents (i);
+	setupText ();
+
+	ui.buttonBox->button (QDialogButtonBox::Ok)->setEnabled (!plugins.isEmpty ());
+}
+
+void InfoPluginSelectionDialog::setupText ()
+{
+	QTreeWidgetItem *rootItem=ui.pluginList->invisibleRootItem ();
+
+	for (int i=0, n=plugins.size (); i<n; ++i)
+	{
+		QTreeWidgetItem *item=rootItem->child (i);
+		item->setData (nameColumn       , Qt::DisplayRole, plugins[i]->getName        ());
+		item->setData (descriptionColumn, Qt::DisplayRole, plugins[i]->getDescription ());
 	}
+
+	for (int i=0; i<ui.pluginList->columnCount (); ++i)
+		ui.pluginList->resizeColumnToContents (i);
+
 }
 
 const InfoPlugin::Descriptor *InfoPluginSelectionDialog::getCurrentPluginDescriptor ()
@@ -68,4 +71,10 @@ const InfoPlugin::Descriptor *InfoPluginSelectionDialog::select (const QList<con
 	delete dialog;
 
 	return result;
+}
+
+void InfoPluginSelectionDialog::languageChanged ()
+{
+	SkDialog<Ui::InfoPluginSelectionDialogClass>::languageChanged ();
+	setupText ();
 }

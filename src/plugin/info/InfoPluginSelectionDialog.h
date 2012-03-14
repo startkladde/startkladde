@@ -17,9 +17,13 @@ class InfoPluginSelectionDialog: public SkDialog<Ui::InfoPluginSelectionDialogCl
 		~InfoPluginSelectionDialog ();
 
 		void setup ();
+		void setupText ();
 		const InfoPlugin::Descriptor *getCurrentPluginDescriptor ();
 
 		static const InfoPlugin::Descriptor *select (const QList<const InfoPlugin::Descriptor *> &plugins, QWidget *parent=NULL);
+
+	protected:
+		virtual void languageChanged ();
 
 	private:
 		QList<const InfoPlugin::Descriptor *> plugins;
