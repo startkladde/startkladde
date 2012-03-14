@@ -116,6 +116,10 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		// Translation
 		virtual void languageChanged ();
 
+		void updateDisplayDateLabel (const QDate &today=QDate::currentDate ());
+		void updateTimeLabels (const QDateTime &now=QDateTime::currentDateTime ());
+		void updateDatabaseStateLabel (DbManager::State state);
+
 	signals:
 		void minuteChanged ();
 

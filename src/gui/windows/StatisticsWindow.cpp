@@ -4,16 +4,15 @@
 
 #include "src/util/qString.h"
 
-StatisticsWindow::StatisticsWindow (QAbstractTableModel *model, bool modelOwned, QWidget *parent):
+StatisticsWindow::StatisticsWindow (QAbstractTableModel *model, bool modelOwned, const char *ntr_title, QWidget *parent):
 	SkDialog<Ui::StatisticsWindowClass> (parent),
-	model (model), modelOwned (modelOwned)
+	model (model), modelOwned (modelOwned), ntr_title (ntr_title)
 {
 	ui.setupUi(this);
 
 	ui.table->setModel (model);
 
-	ui.table->resizeColumnsToContents ();
-	ui.table->resizeRowsToContents ();
+	setupText ();
 }
 
 StatisticsWindow::~StatisticsWindow()
@@ -22,10 +21,23 @@ StatisticsWindow::~StatisticsWindow()
 		delete model;
 }
 
-void StatisticsWindow::display (QAbstractTableModel *model, bool modelOwned, QString title, QWidget *parent)
+void StatisticsWindow::setupText ()
 {
-	StatisticsWindow *window=new StatisticsWindow (model, modelOwned, parent);
-	window->setWindowTitle (title);
+	setWindowTitle (tr (ntr_title));
+
+	ui.table->resizeColumnsToContents ();
+	ui.table->resizeRowsToContents ();
+}
+
+void StatisticsWindow::display (QAbstractTableModel *model, bool modelOwned, const char *ntr_title, QWidget *parent)
+{
+	StatisticsWindow *window=new StatisticsWindow (model, modelOwned, ntr_title, parent);
 	window->setAttribute (Qt::WA_DeleteOnClose, true);
 	window->show ();
+}
+
+void StatisticsWindow::languageChanged ()
+{
+	SkDialog<Ui::StatisticsWindowClass>::languageChanged ();
+	setupText ();
 }

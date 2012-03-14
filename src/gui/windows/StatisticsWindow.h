@@ -9,15 +9,22 @@ class QAbstractTableModel;
 
 class StatisticsWindow: public SkDialog<Ui::StatisticsWindowClass>
 {
+		Q_OBJECT
+
 	public:
-		StatisticsWindow (QAbstractTableModel *model, bool modelOwned, QWidget *parent=0);
+		StatisticsWindow (QAbstractTableModel *model, bool modelOwned, const char *ntr_title, QWidget *parent=0);
 		~StatisticsWindow ();
 
-		static void display (QAbstractTableModel *model, bool modelOwned, QString title, QWidget *parent=0);
+		static void display (QAbstractTableModel *model, bool modelOwned, const char *ntr_title, QWidget *parent=0);
+
+	protected:
+		void languageChanged ();
+		void setupText ();
 
 	private:
 		QAbstractTableModel *model;
 		bool modelOwned;
+		const char *ntr_title;
 };
 
-#endif // STATISTICSWINDOW_H
+#endif

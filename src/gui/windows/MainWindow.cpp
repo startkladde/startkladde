@@ -541,6 +541,25 @@ void MainWindow::settingsChanged ()
 // ** Flights **
 // *************
 
+void MainWindow::updateDisplayDateLabel (const QDate &today)
+{
+	if (!databaseActionsEnabled)
+	{
+		ui.displayDateLabel->resetDefaultForegroundColor ();
+		ui.displayDateLabel->setText (notr ("-"));
+	}
+	else if (displayDate==today)
+	{
+		ui.displayDateLabel->resetDefaultForegroundColor ();
+		ui.displayDateLabel->setText (tr ("Today (%1)").arg (today.toString (defaultNumericDateFormat ())));
+	}
+	else
+	{
+		ui.displayDateLabel->setPaletteForegroundColor (Qt::red);
+		ui.displayDateLabel->setText (dbManager.getCache ().getOtherDate ().toString (tr ("dddd, M/d/yyyy")));
+	}
+}
+
 /**
  * Refreshes both the flight table and the corresponding info labels, from the
  * cache, including the display date label (text and color). Does not access
@@ -553,35 +572,28 @@ void MainWindow::refreshFlights ()
 	QDate today=QDate::currentDate ();
 
 	QList<Flight> flights;
-	if (!databaseActionsEnabled)
+	if (databaseActionsEnabled)
 	{
-		ui.displayDateLabel->resetDefaultForegroundColor ();
-		ui.displayDateLabel->setText (notr ("-"));
+		if (displayDate==today)
+		{
+			// The display date is today's date - display today's flights and
+			// prepared flights
+			flights  = dbManager.getCache ().getFlightsToday ().getList ();
+			flights += dbManager.getCache ().getPreparedFlights ().getList ();
+
+			proxyModel->setShowPreparedFlights (true);
+		}
+		else
+		{
+			// The display date is not today's date - display the flights from the
+			// cache's "other" date
+			flights=dbManager.getCache ().getFlightsOther ().getList ();
+
+			proxyModel->setShowPreparedFlights (false);
+		}
 	}
-	else if (displayDate==today)
-	{
-		// The display date is today's date - display today's flights and
-		// prepared flights
-		flights  = dbManager.getCache ().getFlightsToday ().getList ();
-		flights += dbManager.getCache ().getPreparedFlights ().getList ();
 
-		ui.displayDateLabel->resetDefaultForegroundColor ();
-		QString formattedDate=today.toString (defaultNumericDateFormat ());
-		ui.displayDateLabel->setText (tr ("Today (%1)").arg (formattedDate));
-
-		proxyModel->setShowPreparedFlights (true);
-	}
-	else
-	{
-		// The display date is not today's date - display the flights from the
-		// cache's "other" date
-		flights=dbManager.getCache ().getFlightsOther ().getList ();
-
-		ui.displayDateLabel->setPaletteForegroundColor (Qt::red);
-		ui.displayDateLabel->setText (dbManager.getCache ().getOtherDate ().toString (tr ("dddd, M/d/yyyy")));
-
-		proxyModel->setShowPreparedFlights (false);
-	}
+	updateDisplayDateLabel (today);
 
 	bool towflightSelected=false;
 	dbId selectedId=currentFlightId (&towflightSelected);
@@ -1430,12 +1442,17 @@ void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
 
 #include "src/gui/widgets/TableButton.h"
 
+void MainWindow::updateTimeLabels (const QDateTime &now)
+{
+	ui.utcTimeLabel  ->setText (now.toUTC       ().toString (defaultNumericDateTimeFormat ()));
+	ui.localTimeLabel->setText (now.toLocalTime ().toString (defaultNumericDateTimeFormat ()));
+}
+
 void MainWindow::timeTimer_timeout ()
 {
 	QDateTime now=QDateTime::currentDateTime ();
 
-	ui.utcTimeLabel  ->setText (now.toUTC       ().toString (defaultNumericDateTimeFormat ()));
-	ui.localTimeLabel->setText (now.toLocalTime ().toString (defaultNumericDateTimeFormat ()));
+	updateTimeLabels (now);
 
 	static int lastSecond=0;
 	int second=QTime::currentTime ().second ();
@@ -1594,7 +1611,7 @@ void MainWindow::on_actionPlaneLogs_triggered ()
 	flights+=Flight::makeTowflights (flights, dbManager.getCache ());
 
 	PlaneLog *planeLog = PlaneLog::createNew (flights, dbManager.getCache ());
-	StatisticsWindow::display (planeLog, true, tr ("Plane logbooks"), this);
+	StatisticsWindow::display (planeLog, true, QT_TRANSLATE_NOOP ("StatisticsWindow", "Plane logbooks"), this);
 }
 
 void MainWindow::on_actionPilotLogs_triggered ()
@@ -1607,13 +1624,13 @@ void MainWindow::on_actionPilotLogs_triggered ()
 	PilotLog *pilotLog = PilotLog::createNew (flights, dbManager.getCache ());
 
 	// Display the pilots' log
-	StatisticsWindow::display (pilotLog, true, tr ("Pilot logbooks"), this);
+	StatisticsWindow::display (pilotLog, true, QT_TRANSLATE_NOOP ("StatisticsWindow", "Pilot logbooks"), this);
 }
 
 void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 {
 	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (proxyList->getList (), dbManager.getCache ());
-	StatisticsWindow::display (stats, true, tr ("Launch method overview"), this);
+	StatisticsWindow::display (stats, true, QT_TRANSLATE_NOOP ("StatisticsWindow", "Launch method overview"), this);
 }
 
 // **************
@@ -1742,14 +1759,33 @@ void MainWindow::cacheChanged (DbEvent event)
 		flightList->at (i).databaseChanged (event);
 }
 
-void MainWindow::databaseStateChanged (DbManager::State state)
+void MainWindow::updateDatabaseStateLabel (DbManager::State state)
 {
 	switch (state)
 	{
 		case DbManager::stateDisconnected:
 			ui.databaseStateLabel->resetDefaultForegroundColor ();
 			ui.databaseStateLabel->setText (tr ("Not connected"));
+			break;
+		case DbManager::stateConnecting:
+			ui.databaseStateLabel->resetDefaultForegroundColor ();
+			ui.databaseStateLabel->setText (tr ("Connecting..."));
+			break;
+		case DbManager::stateConnected:
+			ui.databaseStateLabel->resetDefaultForegroundColor ();
+			ui.databaseStateLabel->setText (tr ("OK"));
+			break;
+		// no default
+	}
+}
 
+void MainWindow::databaseStateChanged (DbManager::State state)
+{
+	updateDatabaseStateLabel (state);
+
+	switch (state)
+	{
+		case DbManager::stateDisconnected:
 			ui.flightTable->setVisible (false);
 			ui.notConnectedPane->setVisible (true);
 			setDatabaseActionsEnabled (false);
@@ -1758,10 +1794,6 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 
 			break;
 		case DbManager::stateConnecting:
-			databaseOkText=tr ("Connecting...");
-			ui.databaseStateLabel->resetDefaultForegroundColor ();
-			ui.databaseStateLabel->setText (databaseOkText);
-
 			ui.flightTable->setVisible (true);
 			ui.notConnectedPane->setVisible (false);
 			setDatabaseActionsEnabled (false);
@@ -1770,10 +1802,6 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 
 			break;
 		case DbManager::stateConnected:
-			databaseOkText=tr ("OK");
-			ui.databaseStateLabel->resetDefaultForegroundColor ();
-			ui.databaseStateLabel->setText (databaseOkText);
-
 			ui.flightTable->setVisible (true);
 			ui.notConnectedPane->setVisible (false);
 			setDatabaseActionsEnabled (true);
@@ -1950,6 +1978,10 @@ void MainWindow::languageChanged ()
 {
 	SkMainWindow<Ui::MainWindowClass>::languageChanged ();
 	setupText ();
+
+	updateDisplayDateLabel ();
+	updateTimeLabels ();
+	updateDatabaseStateLabel (dbManager.getState ());
 
 	// See the FlightModel class documentation
 	flightModel->updateTranslations ();
