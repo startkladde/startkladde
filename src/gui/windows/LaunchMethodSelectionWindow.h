@@ -17,6 +17,9 @@ class LaunchMethodSelectionWindow: public SkDialog<Ui::LaunchMethodSelectionWind
 		~LaunchMethodSelectionWindow ();
 
 		static bool select (Cache &cache, dbId &value, QWidget *parent=NULL);
+
+	protected:
+		void languageChanged ();
 };
 
 #endif

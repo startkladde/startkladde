@@ -10,6 +10,7 @@ LaunchMethodSelectionWindow::LaunchMethodSelectionWindow (QWidget *parent):
 	SkDialog<Ui::LaunchMethodSelectionWindowClass> (parent)
 {
 	ui.setupUi (this);
+	this->adjustSize ();
 }
 
 LaunchMethodSelectionWindow::~LaunchMethodSelectionWindow ()
@@ -44,4 +45,12 @@ bool LaunchMethodSelectionWindow::select (Cache &cache, dbId &value, QWidget *pa
 		value=invalidId;
 
 	return true;
+}
+
+void LaunchMethodSelectionWindow::languageChanged ()
+{
+	SkDialog<Ui::LaunchMethodSelectionWindowClass>::languageChanged ();
+
+	// Required because we have a label with word wrapping enabled.
+	adjustSize ();
 }
