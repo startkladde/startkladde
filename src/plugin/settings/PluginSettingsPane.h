@@ -7,6 +7,11 @@
 
 class SettingsWindow;
 
+// Note that we cannot inherit the plugin settings pane from an SkDialog-like
+// SkWidget because they inherit from PluginSettingsPane, and PluginSettingsPane
+// cannot inherit from SkWidget because SkWidget would have to be instantiated
+// with the Ui class which is different for different plugin settings panes.
+
 /**
  * A QWidget with fields for configuring a plugin instance
  *

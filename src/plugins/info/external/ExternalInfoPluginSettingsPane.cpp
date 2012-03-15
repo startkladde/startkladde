@@ -39,3 +39,13 @@ void ExternalInfoPluginSettingsPane::on_browseButton_clicked ()
 	if (!command.isEmpty ())
 		ui.commandInput->setText (command);
 }
+
+void ExternalInfoPluginSettingsPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+	}
+	else
+		QWidget::changeEvent (event);
+}

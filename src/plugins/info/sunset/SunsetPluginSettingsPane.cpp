@@ -185,3 +185,12 @@ void SunsetPluginSettingsPane::updateReferenceLongitudeNoteLabel ()
 	}
 }
 
+void SunsetPluginSettingsPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+	}
+	else
+		QWidget::changeEvent (event);
+}

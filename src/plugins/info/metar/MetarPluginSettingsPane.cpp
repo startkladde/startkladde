@@ -30,3 +30,14 @@ bool MetarPluginSettingsPane::writeSettings ()
 	plugin->setRefreshInterval (ui.refreshIntervalInput->value ()*60);
 	return true;
 }
+
+void MetarPluginSettingsPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+		adjustSize ();
+	}
+	else
+		QWidget::changeEvent (event);
+}

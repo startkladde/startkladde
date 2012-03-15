@@ -38,3 +38,12 @@ bool TestPluginSettingsPane::writeSettings ()
 	return true;
 }
 
+void TestPluginSettingsPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+	}
+	else
+		QWidget::changeEvent (event);
+}

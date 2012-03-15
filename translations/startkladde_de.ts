@@ -4988,7 +4988,7 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
     <message>
         <location filename="../src/plugins/info/test/TestPluginSettingsPane.cpp" line="30"/>
         <source>Test error (&quot;Error on save&quot; is enabled)</source>
-        <translation>Fest-Fehler (&quot;Fehler beim Speichern&quot; ist aktiv)</translation>
+        <translation>Test-Fehler (&quot;Fehler beim Speichern&quot; ist aktiv)</translation>
     </message>
 </context>
 <context>

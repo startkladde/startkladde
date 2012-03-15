@@ -30,6 +30,7 @@ class InfoPluginSettingsPane: public PluginSettingsPane
 
 	protected:
 		virtual void setSettingsWindow (SettingsWindow *settingsWindow);
+		virtual void changeEvent (QEvent *event);
 
 	private:
 		Ui::InfoPluginSettingsPaneClass ui;
