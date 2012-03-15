@@ -1604,6 +1604,13 @@ void MainWindow::on_actionSetDisplayDate_triggered ()
 // ** Statistics **
 // ****************
 
+// Note that these strings must be defined ouside of the functions because the
+// window may have to access them (for retranslation) after the function
+// returns.
+const char *ntr_planeLogBooksTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Plane logbooks");
+const char *ntr_pilotLogBooksTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Pilot logbooks");
+const char *ntr_launchMethodOverviewTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Launch method overview");
+
 void MainWindow::on_actionPlaneLogs_triggered ()
 {
 	// Get the list of flights and add the towflights
@@ -1611,7 +1618,7 @@ void MainWindow::on_actionPlaneLogs_triggered ()
 	flights+=Flight::makeTowflights (flights, dbManager.getCache ());
 
 	PlaneLog *planeLog = PlaneLog::createNew (flights, dbManager.getCache ());
-	StatisticsWindow::display (planeLog, true, QT_TRANSLATE_NOOP ("StatisticsWindow", "Plane logbooks"), this);
+	StatisticsWindow::display (planeLog, true, ntr_planeLogBooksTitle, this);
 }
 
 void MainWindow::on_actionPilotLogs_triggered ()
@@ -1624,13 +1631,13 @@ void MainWindow::on_actionPilotLogs_triggered ()
 	PilotLog *pilotLog = PilotLog::createNew (flights, dbManager.getCache ());
 
 	// Display the pilots' log
-	StatisticsWindow::display (pilotLog, true, QT_TRANSLATE_NOOP ("StatisticsWindow", "Pilot logbooks"), this);
+	StatisticsWindow::display (pilotLog, true, ntr_pilotLogBooksTitle, this);
 }
 
 void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 {
 	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (proxyList->getList (), dbManager.getCache ());
-	StatisticsWindow::display (stats, true, QT_TRANSLATE_NOOP ("StatisticsWindow", "Launch method overview"), this);
+	StatisticsWindow::display (stats, true, ntr_launchMethodOverviewTitle, this);
 }
 
 // **************
