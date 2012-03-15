@@ -6,3 +6,10 @@ locales). The inputs use padded fields to avoid ambiguity with keyboard entry
 Dialogs with table and tree views will typically call the respective
 resizeColumnsToWidth methods on language change.
 
+For designer-created ui windows/widgets, text that will be set programmitically
+should
+* be set to a dummy text, approximating the actual text, in [brackets]
+* be set to non-translatable, because on retranslation, it is usually better to
+  leave the text in the original language than to overwrite it with the dummy
+  text
+
