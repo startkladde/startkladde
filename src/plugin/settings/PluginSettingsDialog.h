@@ -26,10 +26,16 @@ class PluginSettingsDialog: public SkDialog<Ui::PluginSettingsDialogClass>
 
 		static int invoke (Plugin *plugin, QWidget *parent=NULL, SettingsWindow *settingsWindow=NULL);
 
+	protected:
+		void setupText ();
+
+		virtual void languageChanged ();
+
 	private slots:
 		void on_buttonBox_accepted ();
 
 	private:
+		Plugin *plugin;
 		PluginSettingsPane *settingsPane;
 };
 
