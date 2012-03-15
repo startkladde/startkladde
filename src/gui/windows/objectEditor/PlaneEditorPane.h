@@ -24,6 +24,8 @@ class PlaneEditorPane: public ObjectEditorPane<Plane>
 
 	protected:
 		virtual void fillData ();
+		virtual void setupText ();
+		virtual void changeEvent (QEvent *event);
 
 	private:
 		Ui::PlaneEditorPaneClass ui;

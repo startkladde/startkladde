@@ -22,6 +22,8 @@ class LaunchMethodEditorPane: public ObjectEditorPane<LaunchMethod>
 
 	protected:
 		virtual void fillData ();
+		virtual void setupText ();
+		virtual void changeEvent (QEvent *event);
 
 	private:
 		Ui::LaunchMethodEditorPaneClass ui;

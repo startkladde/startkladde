@@ -15,6 +15,7 @@ LaunchMethodEditorPane::LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mod
 {
 	ui.setupUi(this);
 
+	setupText ();
 	fillData ();
 
 	ui.nameInput->setFocus ();
@@ -34,6 +35,11 @@ template<> ObjectEditorPane<LaunchMethod> *ObjectEditorPane<LaunchMethod>::creat
 // ***********
 // ** Setup **
 // ***********
+
+void LaunchMethodEditorPane::setupText ()
+{
+	// FIXME implement
+}
 
 void LaunchMethodEditorPane::fillData ()
 {
@@ -101,4 +107,19 @@ void LaunchMethodEditorPane::fieldsToObject (LaunchMethod &launchMethod)
 	requiredField (launchMethod.name     , ui.nameInput     , tr ("Name not specified"         ));
 	requiredField (launchMethod.shortName, ui.shortNameInput, tr ("Short name not specified"   ));
 	requiredField (launchMethod.logString, ui.logStringInput, tr ("Logbook label not specified"));
+}
+
+// **********
+// ** Misc **
+// **********
+
+void LaunchMethodEditorPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+		setupText ();
+	}
+	else
+		QWidget::changeEvent (event);
 }

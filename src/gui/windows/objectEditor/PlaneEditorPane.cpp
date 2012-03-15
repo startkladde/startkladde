@@ -30,6 +30,7 @@ PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cach
 {
 	ui.setupUi(this);
 
+	setupText ();
 	fillData ();
 
 
@@ -53,6 +54,11 @@ template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEdito
 // ***********
 // ** Setup **
 // ***********
+
+void PlaneEditorPane::setupText ()
+{
+	// FIXME implement
+}
 
 void PlaneEditorPane::fillData ()
 {
@@ -165,4 +171,19 @@ void PlaneEditorPane::fieldsToObject (Plane &plane)
 	if (maxSeats>=0 && plane.numSeats>maxSeats)
 		errorCheck (tr ("To many seats specified for the selected category."),
 			ui.seatsInput);
+}
+
+// **********
+// ** Misc **
+// **********
+
+void PlaneEditorPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+		setupText ();
+	}
+	else
+		QWidget::changeEvent (event);
 }

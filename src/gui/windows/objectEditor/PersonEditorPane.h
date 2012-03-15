@@ -26,7 +26,9 @@ class PersonEditorPane: public ObjectEditorPane<Person>
 
 	protected:
 		virtual void fillData ();
+		virtual void setupText ();
 		QDate getEffectiveMedicalValidity ();
+		virtual void changeEvent (QEvent *event);
 
 	private:
 		Ui::PersonEditorPaneClass ui;

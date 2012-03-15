@@ -25,6 +25,7 @@ PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &ca
 	ui.medicalCheckDisabledLabel->setText (tr ("Medical check is disabled!"));
 	ui.medicalCheckDisabledLabel->setVisible (false);
 
+	setupText ();
 	fillData ();
 
 	ui.lastNameInput->setFocus ();
@@ -44,6 +45,11 @@ template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEdi
 // ***********
 // ** Setup **
 // ***********
+
+void PersonEditorPane::setupText ()
+{
+	// FIXME implement
+}
 
 void PersonEditorPane::fillData ()
 {
@@ -142,4 +148,19 @@ void PersonEditorPane::fieldsToObject (Person &person)
 	if (isNone (person.firstName))
 		errorCheck (tr ("First name not specified."),
 			ui.firstNameInput);
+}
+
+// **********
+// ** Misc **
+// **********
+
+void PersonEditorPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+		setupText ();
+	}
+	else
+		QWidget::changeEvent (event);
 }
