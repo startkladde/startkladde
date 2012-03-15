@@ -231,4 +231,6 @@ void FlightListWindow::languageChanged ()
 	// See the FlightModel class documentation
 	flightModel->updateTranslations ();
 	flightListModel->reset ();
+
+	ui.table->resizeColumnsToContents ();
 }

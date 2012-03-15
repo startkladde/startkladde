@@ -181,7 +181,6 @@ MainWindow::MainWindow (QWidget *parent, TranslationManager *translationManager)
 
 	readColumnWidths (); // Stored sizes
 
-
 	QObject::connect (
 		ui.flightTable, SIGNAL (buttonClicked (QPersistentModelIndex)),
 		this, SLOT (flightTable_buttonClicked (QPersistentModelIndex))
@@ -1993,5 +1992,8 @@ void MainWindow::languageChanged ()
 	// See the FlightModel class documentation
 	flightModel->updateTranslations ();
 	flightListModel->reset ();
+
+	// Do not call this, we use stored column widths which would be overwritten.
+	//ui.flightTable->resizeColumnsToContents ();
 }
 

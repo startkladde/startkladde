@@ -465,6 +465,7 @@ template<class T> void ObjectListWindow<T>::languageChanged ()
 {
 	ObjectListWindowBase::languageChanged ();
 	setupText ();
+	ui.table->resizeColumnsToContents ();
 }
 
 

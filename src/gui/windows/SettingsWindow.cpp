@@ -561,4 +561,6 @@ void SettingsWindow::languageChanged ()
 {
 	SkDialog<Ui::SettingsWindowClass>::languageChanged ();
 	setupText ();
+	for (int i=0, n=ui.infoPluginList->columnCount (); i<n; ++i)
+		ui.infoPluginList->resizeColumnToContents (i);
 }

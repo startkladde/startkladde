@@ -10,9 +10,13 @@ StatisticsWindow::StatisticsWindow (QAbstractTableModel *model, bool modelOwned,
 {
 	ui.setupUi(this);
 
-	ui.table->setModel (model);
 
 	setupText ();
+
+	ui.table->setModel (model);
+
+	ui.table->resizeColumnsToContents ();
+	ui.table->resizeRowsToContents ();
 }
 
 StatisticsWindow::~StatisticsWindow()
@@ -24,9 +28,6 @@ StatisticsWindow::~StatisticsWindow()
 void StatisticsWindow::setupText ()
 {
 	setWindowTitle (tr (ntr_title));
-
-	ui.table->resizeColumnsToContents ();
-	ui.table->resizeRowsToContents ();
 }
 
 void StatisticsWindow::display (QAbstractTableModel *model, bool modelOwned, const char *ntr_title, QWidget *parent)
@@ -40,4 +41,7 @@ void StatisticsWindow::languageChanged ()
 {
 	SkDialog<Ui::StatisticsWindowClass>::languageChanged ();
 	setupText ();
+
+	ui.table->resizeColumnsToContents ();
+	ui.table->resizeRowsToContents ();
 }

@@ -3,3 +3,6 @@ the default specification uses a two-digit date format (at least for some
 locales). The inputs use padded fields to avoid ambiguity with keyboard entry
 (e. g. 11/1/xxxx vs. 1/11/xxxx).
 
+Dialogs with table and tree views will typically call the respective
+resizeColumnsToWidth methods on language change.
+
