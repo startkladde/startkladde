@@ -7,6 +7,11 @@
 
 class SignalOperationMonitor;
 
+// TODO: This class is not retranslatable. Making it retranslatable would be a
+// lot of work since it is called from many places, all of which would have to
+// use Q_TRANSLATE_NOOP. Since the window is only shown for a short time, this
+// should not be an issue.
+
 /**
  * When using this class, beware of race conditions: when the monitor emits end
  * before the signal is connected, the signal may never be received. The

@@ -12,6 +12,13 @@
 
 template<class T> class ObjectModel;
 
+// TODO: This class is not retranslatable. Making it retranslatable is
+// complicated because when called from FlightWindow, it is called with text
+// that is dynamically generated. Since the window is modal, a language change
+// should not happen while the window is open.
+// Apart from the title and the label, the model headers and model data have to
+// be retranslated as well, but that is easier.
+
 /**
  * A dialog for letting the user select an object from a list. A "new" and
  * "unknown" entry are also given.
