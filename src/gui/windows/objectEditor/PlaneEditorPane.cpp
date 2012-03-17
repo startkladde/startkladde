@@ -30,8 +30,13 @@ PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cach
 {
 	ui.setupUi(this);
 
+	prepareText ();
 	setupText ();
-	fillData ();
+	loadData ();
+
+	ui.categoryInput->setCurrentItemByItemData (Plane::categoryNone);
+	ui.typeInput->setEditText ("");
+	ui.clubInput->setEditText ("");
 
 
 	ui.registrationInput->setText (Plane::defaultRegistrationPrefix ());
@@ -55,29 +60,36 @@ template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEdito
 // ** Setup **
 // ***********
 
-void PlaneEditorPane::setupText ()
-{
-	// FIXME implement
-}
-
-void PlaneEditorPane::fillData ()
+void PlaneEditorPane::prepareText ()
 {
 	// Categories
 	ui.categoryInput->addItem ("", Plane::categoryNone);
 	const QList<Plane::Category> categories=Plane::listCategories (false);
-	for (int i=0; i<categories.size (); ++i)
-		ui.categoryInput->addItem (firstToUpper (Plane::categoryText (categories.at (i))), categories.at (i));
-	ui.categoryInput->setCurrentItemByItemData (Plane::categoryNone);
+	for (int i=0, n=categories.size (); i<n; ++i)
+		ui.categoryInput->addItem ("", categories.at (i));
+}
 
+void PlaneEditorPane::setupText ()
+{
+	// Categories
+	// The text for category none, at index 0, is left at "".
+	for (int i=1, n=ui.categoryInput->count (); i<n; ++i)
+	{
+		Plane::Category category=(Plane::Category)ui.categoryInput->itemData (i).toInt ();
+		QString text=firstToUpper (Plane::categoryText (category));
+		ui.categoryInput->setItemText (i, text);
+	}
+}
+
+void PlaneEditorPane::loadData ()
+{
 	// Types
 	ui.typeInput->addItem ("");
 	ui.typeInput->addItems (cache.getPlaneTypes ());
-	ui.typeInput->setEditText ("");
 
 	// Clubs
 	ui.clubInput->addItem ("");
 	ui.clubInput->addItems (cache.getClubs ());
-	ui.clubInput->setEditText ("");
 }
 
 void PlaneEditorPane::setNameObject (const Plane &nameObject)

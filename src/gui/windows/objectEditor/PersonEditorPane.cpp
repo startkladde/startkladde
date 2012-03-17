@@ -26,7 +26,10 @@ PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &ca
 	ui.medicalCheckDisabledLabel->setVisible (false);
 
 	setupText ();
-	fillData ();
+	loadData ();
+
+	ui.clubInput->setEditText ("");
+	ui.checkMedicalInput->setCurrentItemByItemData (false);
 
 	ui.lastNameInput->setFocus ();
 }
@@ -48,19 +51,26 @@ template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEdi
 
 void PersonEditorPane::setupText ()
 {
-	// FIXME implement
+	if (ui.checkMedicalInput->count ()==0)
+	{
+		// The combo box is empty - add the items
+		ui.checkMedicalInput->addItem (tr ("Yes"), true );
+		ui.checkMedicalInput->addItem (tr ("No" ), false);
+	}
+	else
+	{
+		// The combo box is already filled -
+		// update the item texts
+		ui.checkMedicalInput->setItemText (0, tr ("Yes"));
+		ui.checkMedicalInput->setItemText (1, tr ("No"));
+	}
 }
 
-void PersonEditorPane::fillData ()
+void PersonEditorPane::loadData ()
 {
 	// Clubs
 	ui.clubInput->addItem ("");
 	ui.clubInput->addItems (cache.getClubs ());
-	ui.clubInput->setEditText ("");
-
-	ui.checkMedicalInput->addItem (tr ("Yes"), true );
-	ui.checkMedicalInput->addItem (tr ("No" ), false);
-	ui.checkMedicalInput->setCurrentItemByItemData (false);
 }
 
 void PersonEditorPane::setNameObject (const Person &nameObject)

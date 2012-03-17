@@ -21,7 +21,7 @@ class LaunchMethodEditorPane: public ObjectEditorPane<LaunchMethod>
 		virtual void on_typeInput_activated (int index);
 
 	protected:
-		virtual void fillData ();
+		virtual void loadData ();
 		virtual void setupText ();
 		virtual void changeEvent (QEvent *event);
 

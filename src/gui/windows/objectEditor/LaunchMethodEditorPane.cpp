@@ -16,7 +16,11 @@ LaunchMethodEditorPane::LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mod
 	ui.setupUi(this);
 
 	setupText ();
-	fillData ();
+	loadData ();
+
+	ui.typeInput->setCurrentItemByItemData (LaunchMethod::typeOther);
+	ui.personRequiredInput->setCurrentItemByItemData (true);
+	ui.towplaneRegistrationInput->setEditText ("");
 
 	ui.nameInput->setFocus ();
 }
@@ -38,25 +42,50 @@ template<> ObjectEditorPane<LaunchMethod> *ObjectEditorPane<LaunchMethod>::creat
 
 void LaunchMethodEditorPane::setupText ()
 {
-	// FIXME implement
+	// Person required
+	if (ui.personRequiredInput->count ()==0)
+	{
+		// The combo box is empty - add the items
+		ui.personRequiredInput->addItem (tr ("Yes"), true );
+		ui.personRequiredInput->addItem (tr ("No" ), false);
+	}
+	else
+	{
+		// The combo box is already filled - update the item texts
+		ui.personRequiredInput->setItemText (0, tr ("Yes"));
+		ui.personRequiredInput->setItemText (1, tr ("No"));
+	}
+
+	// Types
+	if (ui.typeInput->count ()==0)
+	{
+		// The combo box is empty - add the items
+		QList<LaunchMethod::Type> types=LaunchMethod::listTypes ();
+		foreach (LaunchMethod::Type type, types)
+		{
+			QString text=firstToUpper (LaunchMethod::typeString (type));
+			ui.typeInput->addItem (text, type);
+		}
+	}
+	else
+	{
+		// The combo box is already filled - update the types stored in the
+		// item data
+		for (int i=0, n=ui.typeInput->count (); i<n; ++i)
+		{
+			LaunchMethod::Type type=(LaunchMethod::Type)ui.typeInput->itemData (i).toInt ();
+			QString text=firstToUpper (LaunchMethod::typeString (type));
+			ui.typeInput->setItemText (i, text);
+		}
+	}
+
 }
 
-void LaunchMethodEditorPane::fillData ()
+void LaunchMethodEditorPane::loadData ()
 {
-	// Types
-	foreach (LaunchMethod::Type type, LaunchMethod::listTypes ())
-		ui.typeInput->addItem (firstToUpper (LaunchMethod::typeString (type)), type);
-	ui.typeInput->setCurrentItemByItemData (LaunchMethod::typeOther);
-
-	// Person required
-	ui.personRequiredInput->addItem (tr ("Yes"), true );
-	ui.personRequiredInput->addItem (tr ("No") , false);
-	ui.personRequiredInput->setCurrentItemByItemData (true);
-
 	// Registrations
 	ui.towplaneRegistrationInput->addItem ("");
 	ui.towplaneRegistrationInput->addItems (cache.getPlaneRegistrations ());
-	ui.towplaneRegistrationInput->setEditText ("");
 }
 
 // ****************
