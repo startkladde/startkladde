@@ -4,6 +4,7 @@
 #include <QPalette>
 //#include <QColor>
 #include <QTimer>
+#include <QEvent>
 
 #include "src/i18n/notr.h"
 
@@ -64,7 +65,7 @@ void AcpiWidget::slotTimer()
 	// TODO improve
 
 	if(acstate == SUCCESS && ac->ac_state == P_BATT) {
-		message = tr ("battery: ", "With traling space");
+		message = tr ("Battery: ", "With traling space");
 		palette.setColor(QPalette::Window, Qt::red);
 	}
 	else if(acstate == SUCCESS && ac->ac_state == P_AC) {
@@ -122,4 +123,14 @@ void AcpiWidget::slotTimer()
 
 	setText (message);
 	//update ();
+}
+
+void AcpiWidget::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		slotTimer ();
+	}
+	else
+		QWidget::changeEvent (event);
 }
