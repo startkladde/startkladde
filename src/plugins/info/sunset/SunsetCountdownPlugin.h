@@ -17,6 +17,9 @@ class SunsetCountdownPlugin: public SunsetPluginBase
 
 		virtual void minuteChanged ();
 
+	protected slots:
+		void languageChanged ();
+
 	private:
 		virtual void update ();
 };

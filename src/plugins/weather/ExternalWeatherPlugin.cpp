@@ -119,3 +119,10 @@ void ExternalWeatherPlugin::processExited (int exitCode, QProcess::ExitStatus ex
 
 	// That's cool
 }
+
+void ExternalWeatherPlugin::languageChanged ()
+{
+	// There is no interface for retranslating an external plugin, so we have to
+	// restart it
+	restart ();
+}

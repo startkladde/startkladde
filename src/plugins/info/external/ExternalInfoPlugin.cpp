@@ -113,3 +113,10 @@ void ExternalInfoPlugin::processExited (int exitCode, QProcess::ExitStatus exitS
 	// if (warn_on_death) std::cout << "The process for '" << caption << "' died." << std::endl;
 	// if (restart_interval>0) QTimer::singleShot (restart_interval*1000, this, SLOT (start ()));
 }
+
+void ExternalInfoPlugin::languageChanged ()
+{
+	// There is no interface for retranslating an external plugin, so we have to
+	// restart it
+	restart ();
+}

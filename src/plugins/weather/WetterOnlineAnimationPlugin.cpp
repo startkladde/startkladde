@@ -103,3 +103,9 @@ void WetterOnlineAnimationPlugin::downloadFailed (int state, QNetworkReply *repl
 		outputText (reply->errorString ());
 	}
 }
+
+
+void WetterOnlineAnimationPlugin::languageChanged ()
+{
+	// Nothing to do
+}

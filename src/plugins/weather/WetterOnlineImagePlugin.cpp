@@ -91,3 +91,8 @@ void WetterOnlineImagePlugin::downloadFailed (int state, QNetworkReply *reply, Q
 	}
 }
 
+
+void WetterOnlineImagePlugin::languageChanged ()
+{
+	// Nothing to do
+}

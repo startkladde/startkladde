@@ -45,6 +45,9 @@ class TestPlugin: public InfoPlugin
 
 		virtual QString configText () const;
 
+	protected slots:
+		void languageChanged ();
+
 	private:
 		QString greetingName;
 		bool richText;

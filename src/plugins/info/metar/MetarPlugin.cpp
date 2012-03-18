@@ -126,3 +126,8 @@ void MetarPlugin::downloadFailed (int state, QNetworkReply *reply, QNetworkReply
 	else
 		outputText (reply->errorString ());
 }
+
+void MetarPlugin::languageChanged ()
+{
+	// Nothing to do
+}

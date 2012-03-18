@@ -21,6 +21,9 @@ class SunsetTimePlugin: public SunsetPluginBase
 		virtual void infoPluginWriteSettings (QSettings &settings);
 
 
+	protected slots:
+		void languageChanged ();
+
 	private:
 		bool displayUtc;
 };

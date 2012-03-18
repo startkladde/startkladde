@@ -103,3 +103,8 @@ QString TestPlugin::configText () const
 	else
 		return tr ("%1; plain text").arg (greetingName);
 }
+
+void TestPlugin::languageChanged ()
+{
+	trigger ();
+}

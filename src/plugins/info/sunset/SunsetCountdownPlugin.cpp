@@ -57,6 +57,11 @@ void SunsetCountdownPlugin::minuteChanged ()
 	update ();
 }
 
+void SunsetCountdownPlugin::languageChanged ()
+{
+	update ();
+}
+
 
 // *******************
 // ** Functionality **

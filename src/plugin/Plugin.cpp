@@ -18,9 +18,11 @@
 #include "src/util/qString.h"
 #include "src/util/environment.h"
 #include "src/i18n/notr.h"
+#include "src/i18n/LanguageChangeNotifier.h"
 
 Plugin::Plugin ()
 {
+	LanguageChangeNotifier::subscribe (this);
 }
 
 Plugin::~Plugin ()

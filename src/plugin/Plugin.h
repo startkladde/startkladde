@@ -105,6 +105,10 @@ class Plugin: public QObject
 		static bool filenameIsAbsolute (const QString &filename);
 		static QString resolveFilename (const QString &filename, const QStringList &pluginPaths);
 		static QString browse (const QString &currentFile, const QString &filter, const QStringList &pluginPaths, QWidget *parent=NULL);
+
+	protected slots:
+		virtual void languageChanged ()=0;
+
 };
 
 #endif

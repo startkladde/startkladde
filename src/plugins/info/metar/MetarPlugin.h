@@ -53,6 +53,9 @@ class MetarPlugin: public InfoPlugin
 		void downloadSucceeded (int state, QNetworkReply *reply);
 		void downloadFailed    (int state, QNetworkReply *reply, QNetworkReply::NetworkError code);
 
+	protected slots:
+		void languageChanged ();
+
 	private slots:
 		void refresh ();
 };

@@ -61,6 +61,10 @@ void SunsetTimePlugin::start ()
 		outputText (utcToLocal (sunsetTime).toString (timeFormat));
 }
 
+void SunsetTimePlugin::languageChanged ()
+{
+	restart ();
+}
 
 // ************************
 // ** InfoPlugin methods **
