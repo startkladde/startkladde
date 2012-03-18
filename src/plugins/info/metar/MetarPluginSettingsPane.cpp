@@ -4,6 +4,13 @@
 #include "src/gui/dialogs.h"
 #include "src/plugins/info/metar/MetarPlugin.h"
 
+/*
+ * TODO:
+ *   - when retranslating, the airport input may not be drawn correctly until it
+ *     is focused. A spacer between the airport input and the label to the right
+ *     of it does not help.
+ */
+
 MetarPluginSettingsPane::MetarPluginSettingsPane (MetarPlugin *plugin, QWidget *parent):
 	PluginSettingsPane (parent),
 	plugin (plugin)

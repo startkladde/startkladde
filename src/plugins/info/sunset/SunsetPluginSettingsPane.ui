@@ -75,7 +75,7 @@ if the file is located in the plugin path or in the system path.</string>
         <string>The complete name of the data file</string>
        </property>
        <property name="text">
-        <string>-</string>
+        <string notr="true">[-]</string>
        </property>
       </widget>
      </item>
@@ -92,7 +92,7 @@ if the file is located in the plugin path or in the system path.</string>
         <string>The source of the data, according to the data file</string>
        </property>
        <property name="text">
-        <string>unknown</string>
+        <string notr="true">[unknown]</string>
        </property>
       </widget>
      </item>
@@ -109,7 +109,7 @@ if the file is located in the plugin path or in the system path.</string>
         <string>The longitude for which the times in the file are valid</string>
        </property>
        <property name="text">
-        <string>unknown</string>
+        <string notr="true">[unknown]</string>
        </property>
       </widget>
      </item>
