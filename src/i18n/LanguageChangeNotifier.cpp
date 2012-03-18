@@ -29,3 +29,4 @@ void LanguageChangeNotifier::changeEvent (QEvent *event)
 	else
 		QWidget::changeEvent (event);
 }
+
