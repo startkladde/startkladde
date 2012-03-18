@@ -57,9 +57,6 @@ The filename can be absolute or relative. Relative filenames are searched in the
         <string>The filename can be specified without a directory
 if the file is located in the plugin path or in the system path.</string>
        </property>
-       <property name="wordWrap">
-        <bool>false</bool>
-       </property>
       </widget>
      </item>
      <item row="2" column="0">

@@ -18,6 +18,7 @@ ConfirmOverwritePersonDialog::ConfirmOverwritePersonDialog (QWidget *parent, Qt:
 	SkDialog<Ui::ConfirmOverwritePersonDialogClass> (parent, f)
 {
 	ui.setupUi(this);
+	adjustSize ();
 }
 
 ConfirmOverwritePersonDialog::~ConfirmOverwritePersonDialog ()
@@ -140,4 +141,5 @@ void ConfirmOverwritePersonDialog::languageChanged ()
 {
 	SkDialog<Ui::ConfirmOverwritePersonDialogClass>::languageChanged ();
 	setupTexts ();
+	adjustSize ();
 }
