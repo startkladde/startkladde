@@ -17,6 +17,9 @@ class LongitudeInput: public QWidget
 		void setLongitude (const Longitude &longitude);
 		Longitude getLongitude () const;
 
+	protected:
+		virtual void changeEvent (QEvent *event);
+
 	private:
 		Ui::LongitudeInputClass ui;
 };
