@@ -178,6 +178,7 @@ HEADERS += \
            src/gui/windows/objectList/ObjectListWindow.h \
            src/gui/windows/objectList/PersonListWindow.h \
            src/gui/windows/objectList/ObjectListWindowBase.h \
+           src/i18n/LanguageChangeNotifier.h \
            src/i18n/notr.h \
            src/i18n/TranslationManager.h \
            src/io/AnsiColors.h \
@@ -328,6 +329,7 @@ SOURCES += \
            src/gui/windows/objectList/ObjectListWindow.cpp \
            src/gui/windows/objectList/PersonListWindow.cpp \
            src/gui/windows/objectList/ObjectListWindowBase.cpp \
+           src/i18n/LanguageChangeNotifier.cpp \
            src/i18n/TranslationManager.cpp \
            src/io/AnsiColors.cpp \
            src/io/SkProcess.cpp \
