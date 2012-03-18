@@ -46,5 +46,5 @@ void MetarPluginSettingsPane::changeEvent (QEvent *event)
 		adjustSize ();
 	}
 	else
-		QWidget::changeEvent (event);
+		PluginSettingsPane::changeEvent (event);
 }

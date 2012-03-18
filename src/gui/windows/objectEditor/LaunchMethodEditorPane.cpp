@@ -150,5 +150,5 @@ void LaunchMethodEditorPane::changeEvent (QEvent *event)
 		setupText ();
 	}
 	else
-		QWidget::changeEvent (event);
+		ObjectEditorPane<LaunchMethod>::changeEvent (event);
 }

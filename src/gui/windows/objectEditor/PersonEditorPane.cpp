@@ -172,5 +172,5 @@ void PersonEditorPane::changeEvent (QEvent *event)
 		setupText ();
 	}
 	else
-		QWidget::changeEvent (event);
+		ObjectEditorPane<Person>::changeEvent (event);
 }

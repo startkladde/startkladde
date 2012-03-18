@@ -132,5 +132,5 @@ void AcpiWidget::changeEvent (QEvent *event)
 		slotTimer ();
 	}
 	else
-		QWidget::changeEvent (event);
+		SkLabel::changeEvent (event);
 }

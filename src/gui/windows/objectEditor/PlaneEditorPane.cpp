@@ -197,5 +197,5 @@ void PlaneEditorPane::changeEvent (QEvent *event)
 		setupText ();
 	}
 	else
-		QWidget::changeEvent (event);
+		ObjectEditorPane<Plane>::changeEvent (event);
 }

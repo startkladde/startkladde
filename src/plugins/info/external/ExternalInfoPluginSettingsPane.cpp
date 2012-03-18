@@ -47,5 +47,5 @@ void ExternalInfoPluginSettingsPane::changeEvent (QEvent *event)
 		ui.retranslateUi (this);
 	}
 	else
-		QWidget::changeEvent (event);
+		PluginSettingsPane::changeEvent (event);
 }

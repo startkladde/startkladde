@@ -42,7 +42,7 @@ template<class UiClass> class SkDialog: public QDialog
 			if (event->type () == QEvent::LanguageChange)
 				languageChanged ();
 			else
-				QWidget::changeEvent (event);
+				QDialog::changeEvent (event);
 		}
 };
 

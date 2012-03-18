@@ -68,7 +68,7 @@ template<class UiClass> class SkMainWindow: public QMainWindow
 			if (event->type () == QEvent::LanguageChange)
 				languageChanged ();
 			else
-				QWidget::changeEvent (event);
+				QMainWindow::changeEvent (event);
 		}
 };
 
