@@ -241,7 +241,7 @@ int test_database ()
 	return 0;
 }
 
-int showGui (QApplication &a, TranslationManager *translationManager)
+int showGui (QApplication &a)
 {
 	//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
 
@@ -249,7 +249,7 @@ int showGui (QApplication &a, TranslationManager *translationManager)
 	//a.setStyle ("light, 3rd revision");
 //	if (!style.isEmpty ()) a.setStyle (style);
 
-	MainWindow w (NULL, translationManager);
+	MainWindow w (NULL);
 
 	// Let the plugins initialize
 	QThread::yieldCurrentThread ();
@@ -372,7 +372,7 @@ int main (int argc, char **argv)
 	qApp->addLibraryPath (qApp->applicationDirPath () + notr ("/plugins"));
 
 	// Setup the translation
-	TranslationManager translationManager;
+	TranslationManager &translationManager=TranslationManager::instance ();
 	translationManager.loadForCurrentLocale ();
 	translationManager.install (&application);
 
@@ -408,7 +408,7 @@ int main (int argc, char **argv)
 	{
 		if (nonOptions.empty ())
 		{
-			ret=showGui (application, &translationManager);
+			ret=showGui (application);
 		}
 		else
 		{

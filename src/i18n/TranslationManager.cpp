@@ -5,15 +5,30 @@
 #include <QApplication>
 #include <QLibraryInfo>
 #include <QLocale>
+#include <QRegExp>
+#include <QStringList>
+#include <QDir>
 
 #include "src/util/qString.h"
 
+TranslationManager *TranslationManager::theInstance;
+
 TranslationManager::TranslationManager ()
 {
+	translationsPath="translations";
+
 }
 
 TranslationManager::~TranslationManager ()
 {
+}
+
+TranslationManager &TranslationManager::instance ()
+{
+	if (!theInstance)
+		theInstance=new TranslationManager ();
+
+	return *theInstance;
 }
 
 void TranslationManager::changeLanguage ()
@@ -46,8 +61,8 @@ void TranslationManager::unload ()
 
 void TranslationManager::loadForLocale (const QString &localeName)
 {
-	loadTranslation (applicationTranslator, "startkladde_"+localeName, "translations");
-	loadTranslation (qtTranslator,          "qt_"         +localeName, QLibraryInfo::location (QLibraryInfo::TranslationsPath));
+	loadTranslation (applicationTranslator, filenameForLocaleName (localeName), translationsPath);
+	loadTranslation (qtTranslator,          "qt_"+localeName                  , QLibraryInfo::location (QLibraryInfo::TranslationsPath));
 }
 
 void TranslationManager::loadForCurrentLocale ()
@@ -62,4 +77,54 @@ void TranslationManager::install (QApplication *application)
 	application->installTranslator (&qtTranslator);
 }
 
+QString TranslationManager::filenameForLocaleName (const QString &localeName)
+{
+	return "startkladde_"+localeName;
+}
 
+QString TranslationManager::localeNameFromFilename (const QString &filename)
+{
+	QRegExp regexp ("startkladde_(.*)\\.qm");
+	if (regexp.exactMatch (filename))
+		return regexp.cap (1);
+	else
+		return QString ();
+}
+
+
+
+QList<TranslationManager::Language> TranslationManager::listLanguages ()
+{
+	QList<Language> result;
+
+	QStringList nameFilters=QStringList () << "*.qm";
+
+	QStringList fileList=QDir (translationsPath).entryList (nameFilters, QDir::Files);
+	foreach (const QString &filename, fileList)
+	{
+		QString localeName=localeNameFromFilename (filename);
+
+		if (!localeName.isEmpty ())
+		{
+			Language language;
+			language.localeName=localeName;
+			language.languageName=determineLanguageNameForLocale (localeName);
+			result.append (language);
+		}
+	}
+
+	foreach (const Language &language, result)
+		std::cout << language.localeName << " - " << language.languageName << std::endl;
+
+	return result;
+}
+
+QString TranslationManager::determineLanguageNameForLocale (const QString &localeName)
+{
+	QTranslator translator;
+	translator.load (filenameForLocaleName (localeName), translationsPath);
+
+	struct { const char *source; const char *comment; } languageString=QT_TRANSLATE_NOOP3("Translation", "Default (English)", "Replace with the name of the translation language, in that language");
+
+	return translator.translate ("Translation", languageString.source);
+}

@@ -2,6 +2,7 @@
 #define TRANSLATIONMANAGER_H_
 
 #include <QTranslator>
+#include <QString>
 
 class QApplication;
 class QTranslator;
@@ -9,7 +10,15 @@ class QTranslator;
 class TranslationManager
 {
 	public:
-		TranslationManager ();
+		class Language
+		{
+			public:
+				QString localeName;
+				QString languageName;
+		};
+
+		static TranslationManager &instance ();
+
 		virtual ~TranslationManager ();
 
 		void install (QApplication *application);
@@ -20,10 +29,22 @@ class TranslationManager
 
 		void changeLanguage ();
 
+		QList<Language> listLanguages ();
+
+	protected:
+		QString filenameForLocaleName (const QString &localeName);
+		QString localeNameFromFilename (const QString &filename);
+
+		QString determineLanguageNameForLocale (const QString &localeName);
 
 	private:
+		TranslationManager ();
+		static TranslationManager *theInstance;
+
 		QTranslator applicationTranslator;
 		QTranslator qtTranslator;
+
+		QString translationsPath;
 
 		bool loadTranslation (QTranslator &translator, const QString &filename, const QString &directory);
 };

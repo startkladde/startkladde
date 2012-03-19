@@ -67,41 +67,41 @@
 <context>
     <name>ConfirmOverwritePersonDialog</name>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="84"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="85"/>
         <source>Erroneous entries</source>
         <translation>Fehlerhafte Einträge</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="85"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="86"/>
         <source>The following erroneous entries will be replaced with the correct entry:</source>
         <translation>Tie folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="86"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="87"/>
         <source>&lt;html&gt;All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person. &lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt; Continue?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
 &lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
 Fortsetzen?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="97"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="98"/>
         <source>&lt;html&gt;Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person. &lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt; Continue?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Beide Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Person werden der korrekten Person zugewiesen.
 &lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
 Fortsetzen?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="95"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="96"/>
         <source>Erroneous entry</source>
         <translation>Fehlerhafter Eintrag</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="96"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="97"/>
         <source>The following erroneous entry will be replaced with the correct entry:</source>
         <translation>Der folgende fehlerhaft Personeneintrag wird durch den korrekten Eintrag ersetzt:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="78"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="79"/>
         <source>Correct entry</source>
         <translation>Korrekter Eintrag</translation>
     </message>
@@ -656,8 +656,8 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/external/ExternalInfoPluginSettingsPane.ui" line="38"/>
-        <source>Co&amp;mmand</source>
-        <translation>&amp;Kommando</translation>
+        <source>Co&amp;mmand:</source>
+        <translation>&amp;Kommando:</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/external/ExternalInfoPluginSettingsPane.ui" line="48"/>
@@ -3313,11 +3313,6 @@ Konfiguration: %2</translation>
         <source>MonitorDialog</source>
         <translation>MonitorDialog</translation>
     </message>
-    <message>
-        <location filename="../src/gui/windows/MonitorDialog.ui" line="26"/>
-        <source>Progress</source>
-        <translation>Fortschritt</translation>
-    </message>
 </context>
 <context>
     <name>ObjectEditorPaneBase</name>
@@ -4075,7 +4070,7 @@ aktiviert werden.</translation>
 <context>
     <name>Plugin</name>
     <message>
-        <location filename="../src/plugin/Plugin.cpp" line="110"/>
+        <location filename="../src/plugin/Plugin.cpp" line="112"/>
         <source>Select file</source>
         <translation>Datei auswählen</translation>
     </message>
@@ -4819,79 +4814,79 @@ if the file is located in the plugin path or in the system path.</source>
 sofern sich die Datei im Plugin-Pfad oder im Sytempfad befindet.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="68"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="65"/>
         <source>File:</source>
         <translation>Datei:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="85"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="82"/>
         <source>Source:</source>
         <translation>Quelle:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="102"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="99"/>
         <source>Reference longitude:</source>
         <translation>Bezugslängengrad:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="75"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="72"/>
         <source>The complete name of the data file</source>
         <translation>Der vollständige Name der Datendatei</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="92"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="89"/>
         <source>The source of the data, according to the data file</source>
         <translation>Die Quelle für die Daten laut Datendatei</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="109"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="106"/>
         <source>The longitude for which the times in the file are valid</source>
         <translation>Der Längengrad, für den die Zeiten der Datei gelten</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="119"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="116"/>
         <source>&amp;Longitude:</source>
         <translation>&amp;Längengrad:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="129"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="126"/>
         <source>Correct the sunset times for the actual longitude</source>
         <translation>Korrektur der Sonnenuntergangszeiten für den tatsächlichen Längengrad</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="132"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="129"/>
         <source>&amp;Enable correction</source>
         <translation>&amp;Korrektur aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="142"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="139"/>
         <source>Longitude correction is only possible if
 a reference longitude is specified in the data file.</source>
         <translation>Längengradkorrektur ist nur dann möglich, wenn in
 der Datendatei ein Bezugslängengrad angegeben ist.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="164"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="161"/>
         <source>The actual longitude</source>
         <translation>Der tatsächliche Längengrad</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="186"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="183"/>
         <source>&amp;Timezone:</source>
         <translation>&amp;Zeitzone:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="201"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="198"/>
         <source>Time zone for display</source>
         <translation>Zeitzone für die Anzeige</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="205"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="202"/>
         <source>UTC</source>
         <translation>UTC</translation>
     </message>
     <message>
-        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="210"/>
+        <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="207"/>
         <source>Local time</source>
         <translation>Lokalzeit</translation>
     </message>
@@ -4997,6 +4992,15 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
         <location filename="../src/plugins/info/test/TestPluginSettingsPane.ui" line="66"/>
         <source>&amp;Error on save</source>
         <translation>&amp;Fehler beim Speichern</translation>
+    </message>
+</context>
+<context>
+    <name>Translation</name>
+    <message>
+        <location filename="../src/i18n/TranslationManager.cpp" line="117"/>
+        <source>Default (English)</source>
+        <comment>Replace with the name of the translation language, in that language</comment>
+        <translation>Deutsch</translation>
     </message>
 </context>
 <context>

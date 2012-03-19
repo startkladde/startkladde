@@ -72,9 +72,8 @@ template <class T> class MutableObjectList;
 // ** Construction **
 // ******************
 
-MainWindow::MainWindow (QWidget *parent, TranslationManager *translationManager):
+MainWindow::MainWindow (QWidget *parent):
 	SkMainWindow<Ui::MainWindowClass> (parent),
-	translationManager (translationManager),
 	oldLogVisible (false),
 	dbManager (Settings::instance ().databaseInfo),
 	cache (dbManager.getCache ()),
@@ -1968,7 +1967,7 @@ void MainWindow::logMessage (QString message)
 
 void MainWindow::on_changeLanguageAction_triggered ()
 {
-	translationManager->changeLanguage ();
+	TranslationManager::instance ().changeLanguage ();
 }
 
 void MainWindow::on_timerBasedLanguageChangeAction_triggered ()

@@ -55,7 +55,6 @@ class FlightModel;
 class FlightProxyList;
 class FlightWindow;
 template<class T> class ObjectListModel;
-class TranslationManager;
 
 /*
  * Notes:
@@ -69,7 +68,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		Q_OBJECT
 
 	public:
-		MainWindow (QWidget *parent, TranslationManager *translationManager);
+		MainWindow (QWidget *parent);
 		~MainWindow ();
 
 	protected:
@@ -236,7 +235,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void flightListChanged ();
 
 	private:
-		TranslationManager *translationManager;
+		// TODO move to translation manager?
 		QTimer *translationTimer;
 
 		QAction *logAction;
