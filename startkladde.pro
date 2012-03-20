@@ -436,7 +436,7 @@ unix {
 error( "build/migrations.pro could not be included" )
 }
 
-TRANSLATIONS += translations/startkladde_de.ts
+TRANSLATIONS += translations/startkladde_de.ts translations/startkladde_bork.ts
 
 ##################
 ## Installation ##
