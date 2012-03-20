@@ -1057,11 +1057,39 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
   <tabstop>mysqlUserInput</tabstop>
   <tabstop>mysqlPasswordInput</tabstop>
   <tabstop>mysqlDatabaseInput</tabstop>
+  <tabstop>languageInput</tabstop>
   <tabstop>locationInput</tabstop>
+  <tabstop>recordTowpilotCheckbox</tabstop>
+  <tabstop>checkMedicalsCheckbox</tabstop>
   <tabstop>protectSettingsCheckbox</tabstop>
   <tabstop>protectLaunchMethodsCheckbox</tabstop>
+  <tabstop>protectMergePeopleCheckbox</tabstop>
+  <tabstop>protectFlightDatabaseCheckbox</tabstop>
   <tabstop>enableDebugCheckbox</tabstop>
   <tabstop>diagCommandInput</tabstop>
+  <tabstop>infoPluginList</tabstop>
+  <tabstop>addInfoPluginButton</tabstop>
+  <tabstop>removeInfoPluginButton</tabstop>
+  <tabstop>infoPluginUpButton</tabstop>
+  <tabstop>infoPluginDownButton</tabstop>
+  <tabstop>infoPluginSettingsButton</tabstop>
+  <tabstop>weatherPluginBox</tabstop>
+  <tabstop>weatherPluginInput</tabstop>
+  <tabstop>weatherPluginCommandInput</tabstop>
+  <tabstop>browseWeatherPluginCommandButton</tabstop>
+  <tabstop>weatherPluginIntervalInput</tabstop>
+  <tabstop>weatherPluginHeightInput</tabstop>
+  <tabstop>weatherWindowBox</tabstop>
+  <tabstop>weatherWindowPluginInput</tabstop>
+  <tabstop>weatherWindowCommandInput</tabstop>
+  <tabstop>browseWeatherWindowCommandButton</tabstop>
+  <tabstop>weatherWindowTitleInput</tabstop>
+  <tabstop>weatherWindowIntervalInput</tabstop>
+  <tabstop>pluginPathList</tabstop>
+  <tabstop>addPluginPathButton</tabstop>
+  <tabstop>removePluginPathButton</tabstop>
+  <tabstop>pluginPathUpButton</tabstop>
+  <tabstop>pluginPathDownButton</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

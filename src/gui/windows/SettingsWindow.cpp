@@ -36,6 +36,7 @@
 #include "src/util/qList.h"
 #include "src/gui/dialogs.h"
 #include "src/i18n/notr.h"
+#include "src/i18n/TranslationManager.h"
 
 #include "src/plugins/weather/ExternalWeatherPlugin.h"
 
@@ -51,6 +52,9 @@ const int    nameColumn=1;
 const int enabledColumn=2;
 const int  configColumn=3;
 
+const int automaticLanguage=0;
+const int noTranslation=1;
+
 SettingsWindow::SettingsWindow (QWidget *parent):
 	SkDialog<Ui::SettingsWindowClass> (parent),
 	warned (false),
@@ -61,6 +65,12 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	ui.setupUi (this);
 
 	ui.dbTypePane->setVisible (false);
+
+	ui.languageInput->addItem (tr ("Automatic (use system language)"), automaticLanguage);
+	QList<TranslationManager::Language> languages=TranslationManager::instance ().listLanguages ();
+	foreach (const TranslationManager::Language &language, languages)
+		ui.languageInput->addItem (language.languageName, language.localeName);
+	ui.languageInput->addItem (tr ("No translation"), noTranslation);
 
 	// Make boolean columns and some other columns read-only
 	// The title column is read-only because we would have to write back the
@@ -563,4 +573,26 @@ void SettingsWindow::languageChanged ()
 	setupText ();
 	for (int i=0, n=ui.infoPluginList->columnCount (); i<n; ++i)
 		ui.infoPluginList->resizeColumnToContents (i);
+}
+
+void SettingsWindow::on_languageInput_currentIndexChanged (int index)
+{
+	QVariant userData=ui.languageInput->itemData (index);
+
+	if ((QMetaType::Type)userData.type ()==QMetaType::QString)
+	{
+		QString localeName=userData.toString ();
+		TranslationManager::instance ().loadForLocale (localeName);
+	}
+	else if ((QMetaType::Type)userData.type ()==QMetaType::Int)
+	{
+		int languageSelection=userData.toInt ();
+		if (languageSelection==automaticLanguage)
+			TranslationManager::instance ().loadForCurrentLocale ();
+		else if (languageSelection==noTranslation)
+			TranslationManager::instance ().unload ();
+		else
+			std::cerr << "Invalid language choice" << std::endl;
+	}
+
 }
