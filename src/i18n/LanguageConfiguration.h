@@ -2,6 +2,7 @@
 #define LANGUAGECONFIGURATION_H_
 
 #include <QString>
+#include <QVariant>
 
 class LanguageConfiguration
 {
@@ -11,10 +12,12 @@ class LanguageConfiguration
 		LanguageConfiguration ();
 		LanguageConfiguration (Type type);
 		LanguageConfiguration (const QString &localeName);
+		LanguageConfiguration (const QVariant &value);
 		virtual ~LanguageConfiguration ();
 
-		Type getType () { return type; }
-		QString getLocaleName () { return localeName; }
+
+		Type getType () const { return type; }
+		QString getLocaleName () const { return localeName; }
 
 	private:
 		Type type;

@@ -7,6 +7,8 @@
 class QApplication;
 class QTranslator;
 
+class LanguageConfiguration;
+
 class TranslationManager
 {
 	public:
@@ -26,6 +28,7 @@ class TranslationManager
 		void unload ();
 		void loadForLocale (const QString &localeName);
 		void loadForCurrentLocale ();
+		void loadForConfiguration (const LanguageConfiguration &configuration);
 
 		void changeLanguage ();
 

@@ -63,11 +63,11 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 
 	ui.dbTypePane->setVisible (false);
 
-	ui.languageInput->addItem (tr ("Automatic (use system language)"), LanguageConfiguration::systemLanguage);
+	ui.languageInput->addItem ("", LanguageConfiguration::systemLanguage);
 	QList<TranslationManager::Language> languages=TranslationManager::instance ().listLanguages ();
 	foreach (const TranslationManager::Language &language, languages)
 		ui.languageInput->addItem (language.languageName, language.localeName);
-	ui.languageInput->addItem (tr ("No translation"), LanguageConfiguration::noTranslation);
+	ui.languageInput->addItem ("", LanguageConfiguration::noTranslation);
 
 	// Make boolean columns and some other columns read-only
 	// The title column is read-only because we would have to write back the
@@ -98,6 +98,9 @@ void SettingsWindow::setupText ()
 		" the configuration file or registry key %1.")
 		.arg (QSettings ().fileName ()));
 
+	ui.languageInput->setItemTextByItemData (LanguageConfiguration::systemLanguage, tr ("Automatic (use system language)"));
+	ui.languageInput->setItemTextByItemData (LanguageConfiguration::noTranslation, tr ("No translation"));
+
 	// Required because we have a label with word wrap
 	adjustSize ();
 }
@@ -126,13 +129,7 @@ void SettingsWindow::readSettings ()
 
 	// *** Settings
 	// UI
-	switch (s.languageConfiguration.getType ())
-	{
-		case LanguageConfiguration::manualLanguage: ui.languageInput->setCurrentItemByItemData (s.languageConfiguration.getLocaleName ()); break;
-		case LanguageConfiguration::noTranslation : ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::noTranslation);  break;
-		case LanguageConfiguration::systemLanguage: ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::systemLanguage); break;
-		// No default
-	}
+	setSelectedLanguageConfiguration (s.languageConfiguration);
 	// Data
 	ui.locationInput         ->setText    (s.location);
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
@@ -235,23 +232,7 @@ void SettingsWindow::writeSettings ()
 
 	// *** Settings
 	// Language
-	// FIXME store LanguageConfiguration directly in ItemData
-	QVariant userData=ui.languageInput->itemData (ui.languageInput->currentIndex ());
-	if ((QMetaType::Type)userData.type ()==QMetaType::QString)
-	{
-		QString localeName=userData.toString ();
-		s.languageConfiguration=LanguageConfiguration (localeName);
-	}
-	else if ((QMetaType::Type)userData.type ()==QMetaType::Int)
-	{
-		int languageSelection=userData.toInt ();
-		if (languageSelection==LanguageConfiguration::systemLanguage)
-			s.languageConfiguration=LanguageConfiguration (LanguageConfiguration::systemLanguage);
-		else if (languageSelection==LanguageConfiguration::noTranslation)
-			s.languageConfiguration=LanguageConfiguration (LanguageConfiguration::noTranslation);
-		else
-			std::cerr << "Invalid language choice" << std::endl;
-	}
+	s.languageConfiguration=getSelectedLanguageConfiguration ();
 	// Data
 	s.location      =ui.locationInput         ->text ();
 	s.recordTowpilot=ui.recordTowpilotCheckbox->isChecked ();
@@ -600,22 +581,28 @@ void SettingsWindow::languageChanged ()
 
 void SettingsWindow::on_languageInput_currentIndexChanged (int index)
 {
-	// FIXME store LanguageConfiguration directly in ItemData
+	// Get the user data for the specified index
 	QVariant userData=ui.languageInput->itemData (index);
-	if ((QMetaType::Type)userData.type ()==QMetaType::QString)
-	{
-		QString localeName=userData.toString ();
-		TranslationManager::instance ().loadForLocale (localeName);
-	}
-	else if ((QMetaType::Type)userData.type ()==QMetaType::Int)
-	{
-		int languageSelection=userData.toInt ();
-		if (languageSelection==LanguageConfiguration::systemLanguage)
-			TranslationManager::instance ().loadForCurrentLocale ();
-		else if (languageSelection==LanguageConfiguration::noTranslation)
-			TranslationManager::instance ().unload ();
-		else
-			std::cerr << "Invalid language choice" << std::endl;
-	}
 
+	// Create the language configuration
+	LanguageConfiguration languageConfiguration=LanguageConfiguration (userData);
+
+	// Load the language
+	TranslationManager::instance ().loadForConfiguration (languageConfiguration);
+}
+
+void SettingsWindow::setSelectedLanguageConfiguration (const LanguageConfiguration &languageConfiguration)
+{
+	switch (languageConfiguration.getType ())
+	{
+		case LanguageConfiguration::manualLanguage: ui.languageInput->setCurrentItemByItemData (languageConfiguration.getLocaleName ()); break;
+		case LanguageConfiguration::noTranslation : ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::noTranslation);  break;
+		case LanguageConfiguration::systemLanguage: ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::systemLanguage); break;
+		// No default
+	}
+}
+
+LanguageConfiguration SettingsWindow::getSelectedLanguageConfiguration ()
+{
+	return LanguageConfiguration (ui.languageInput->currentItemData ());
 }

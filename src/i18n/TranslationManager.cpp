@@ -10,6 +10,7 @@
 #include <QDir>
 
 #include "src/util/qString.h"
+#include "src/i18n/LanguageConfiguration.h"
 
 TranslationManager *TranslationManager::theInstance;
 
@@ -127,4 +128,21 @@ QString TranslationManager::determineLanguageNameForLocale (const QString &local
 	struct { const char *source; const char *comment; } languageString=QT_TRANSLATE_NOOP3("Translation", "Default (English)", "Replace with the name of the translation language, in that language");
 
 	return translator.translate ("Translation", languageString.source);
+}
+
+void TranslationManager::loadForConfiguration (const LanguageConfiguration &configuration)
+{
+	switch (configuration.getType ())
+	{
+		case LanguageConfiguration::manualLanguage:
+			loadForLocale (configuration.getLocaleName ());
+			break;
+		case LanguageConfiguration::noTranslation :
+			unload ();
+			break;
+		case LanguageConfiguration::systemLanguage:
+			loadForCurrentLocale ();
+			break;
+		// No default
+	}
 }

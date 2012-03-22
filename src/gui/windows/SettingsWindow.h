@@ -2,6 +2,7 @@
 #define SETTINGSWINDOW_H
 
 #include "src/gui/SkDialog.h"
+#include "src/i18n/LanguageConfiguration.h"
 
 #include "ui_SettingsWindow.h"
 
@@ -31,6 +32,9 @@ class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 
 		virtual void showEvent (QShowEvent *event);
 		virtual void languageChanged ();
+
+		LanguageConfiguration getSelectedLanguageConfiguration ();
+		void setSelectedLanguageConfiguration (const LanguageConfiguration &languageConfiguration);
 
 	private slots:
 		void on_mysqlDefaultPortCheckBox_toggled () { updateWidgets (); }

@@ -1,8 +1,6 @@
 #ifndef SKCOMBOBOX_H_
 #define SKCOMBOBOX_H_
 
-#include <iostream>
-
 #include <QComboBox>
 #include <QString>
 
@@ -44,9 +42,11 @@ class SkComboBox:public QComboBox
 //		void setLineEdit (QLineEdit *edit);
 		value_accessor (QString, DefaultPrefix, defaultPrefix);
 
-		bool setCurrentItemByItemData (QVariant itemData);
-		void setCurrentItemByItemData (QVariant itemData, int defaultIndex);
+		int indexByItemData (const QVariant &itemData, int defaultIndex=-1);
+		bool setCurrentItemByItemData (QVariant value);
+		void setCurrentItemByItemData (QVariant value, int defaultIndex);
 		QVariant currentItemData (int role=Qt::UserRole);
+		void setItemTextByItemData (const QVariant &itemData, const QString &text);
 
 		void setEditable (bool editable);
 

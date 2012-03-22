@@ -1,7 +1,5 @@
 #include "SkComboBox.h"
 
-#include <iostream>
-
 #include <QLineEdit>
 #include <QCompleter>
 #include <QFocusEvent>
@@ -99,6 +97,17 @@ QVariant SkComboBox::currentItemData (int role)
 	return itemData (index, role);
 }
 
+int SkComboBox::indexByItemData (const QVariant &value, int defaultIndex)
+{
+	for (int i=0, n=count (); i<n; ++i)
+		if (itemData (i)==value)
+			return i;
+
+	return defaultIndex;
+}
+
+
+
 bool SkComboBox::setCurrentItemByItemData (QVariant value)
 {
 	for (int i=0; i<count (); ++i)
@@ -117,4 +126,11 @@ void SkComboBox::setCurrentItemByItemData (QVariant itemData, int defaultIndex)
 {
 	if (!setCurrentItemByItemData (itemData))
 		setCurrentIndex (defaultIndex);
+}
+
+void SkComboBox::setItemTextByItemData (const QVariant &itemData, const QString &text)
+{
+	int index=indexByItemData (itemData, -1);
+	if (index>=0)
+		setItemText (index, text);
 }
