@@ -52,9 +52,6 @@ const int    nameColumn=1;
 const int enabledColumn=2;
 const int  configColumn=3;
 
-const int automaticLanguage=0;
-const int noTranslation=1;
-
 SettingsWindow::SettingsWindow (QWidget *parent):
 	SkDialog<Ui::SettingsWindowClass> (parent),
 	warned (false),
@@ -66,11 +63,11 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 
 	ui.dbTypePane->setVisible (false);
 
-	ui.languageInput->addItem (tr ("Automatic (use system language)"), automaticLanguage);
+	ui.languageInput->addItem (tr ("Automatic (use system language)"), LanguageConfiguration::systemLanguage);
 	QList<TranslationManager::Language> languages=TranslationManager::instance ().listLanguages ();
 	foreach (const TranslationManager::Language &language, languages)
 		ui.languageInput->addItem (language.languageName, language.localeName);
-	ui.languageInput->addItem (tr ("No translation"), noTranslation);
+	ui.languageInput->addItem (tr ("No translation"), LanguageConfiguration::noTranslation);
 
 	// Make boolean columns and some other columns read-only
 	// The title column is read-only because we would have to write back the
@@ -128,6 +125,14 @@ void SettingsWindow::readSettings ()
 	ui.mysqlDatabaseInput      ->setText    (info.database);
 
 	// *** Settings
+	// UI
+	switch (s.languageConfiguration.getType ())
+	{
+		case LanguageConfiguration::manualLanguage: ui.languageInput->setCurrentItemByItemData (s.languageConfiguration.getLocaleName ()); break;
+		case LanguageConfiguration::noTranslation : ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::noTranslation);  break;
+		case LanguageConfiguration::systemLanguage: ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::systemLanguage); break;
+		// No default
+	}
 	// Data
 	ui.locationInput         ->setText    (s.location);
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
@@ -229,6 +234,24 @@ void SettingsWindow::writeSettings ()
 	info.database   =ui.mysqlDatabaseInput      ->text ();
 
 	// *** Settings
+	// Language
+	// FIXME store LanguageConfiguration directly in ItemData
+	QVariant userData=ui.languageInput->itemData (ui.languageInput->currentIndex ());
+	if ((QMetaType::Type)userData.type ()==QMetaType::QString)
+	{
+		QString localeName=userData.toString ();
+		s.languageConfiguration=LanguageConfiguration (localeName);
+	}
+	else if ((QMetaType::Type)userData.type ()==QMetaType::Int)
+	{
+		int languageSelection=userData.toInt ();
+		if (languageSelection==LanguageConfiguration::systemLanguage)
+			s.languageConfiguration=LanguageConfiguration (LanguageConfiguration::systemLanguage);
+		else if (languageSelection==LanguageConfiguration::noTranslation)
+			s.languageConfiguration=LanguageConfiguration (LanguageConfiguration::noTranslation);
+		else
+			std::cerr << "Invalid language choice" << std::endl;
+	}
 	// Data
 	s.location      =ui.locationInput         ->text ();
 	s.recordTowpilot=ui.recordTowpilotCheckbox->isChecked ();
@@ -577,8 +600,8 @@ void SettingsWindow::languageChanged ()
 
 void SettingsWindow::on_languageInput_currentIndexChanged (int index)
 {
+	// FIXME store LanguageConfiguration directly in ItemData
 	QVariant userData=ui.languageInput->itemData (index);
-
 	if ((QMetaType::Type)userData.type ()==QMetaType::QString)
 	{
 		QString localeName=userData.toString ();
@@ -587,9 +610,9 @@ void SettingsWindow::on_languageInput_currentIndexChanged (int index)
 	else if ((QMetaType::Type)userData.type ()==QMetaType::Int)
 	{
 		int languageSelection=userData.toInt ();
-		if (languageSelection==automaticLanguage)
+		if (languageSelection==LanguageConfiguration::systemLanguage)
 			TranslationManager::instance ().loadForCurrentLocale ();
-		else if (languageSelection==noTranslation)
+		else if (languageSelection==LanguageConfiguration::noTranslation)
 			TranslationManager::instance ().unload ();
 		else
 			std::cerr << "Invalid language choice" << std::endl;
