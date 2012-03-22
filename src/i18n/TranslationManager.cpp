@@ -114,9 +114,6 @@ QList<TranslationManager::Language> TranslationManager::listLanguages ()
 		}
 	}
 
-//	foreach (const Language &language, result)
-//		std::cout << language.localeName << " - " << language.languageName << std::endl;
-
 	return result;
 }
 

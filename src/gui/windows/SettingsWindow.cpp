@@ -40,17 +40,15 @@
 
 #include "src/plugins/weather/ExternalWeatherPlugin.h"
 
-//const int columnTitle=0;
-//const int columnCommand=1;
-//const int columnEnabled=2;
-//const int columnRichText=3;
-//const int columnInterval=4;
-//const int columnWarnOnDeath=5;
-
 const int captionColumn=0;
 const int    nameColumn=1;
 const int enabledColumn=2;
 const int  configColumn=3;
+
+
+// ******************
+// ** Construction **
+// ******************
 
 SettingsWindow::SettingsWindow (QWidget *parent):
 	SkDialog<Ui::SettingsWindowClass> (parent),
@@ -89,6 +87,11 @@ SettingsWindow::~SettingsWindow()
 	deleteList (infoPlugins);
 }
 
+
+// ***********
+// ** Setup **
+// ***********
+
 void SettingsWindow::setupText ()
 {
 	// Note that this label does not use wordWrap because it causes the minimum
@@ -105,13 +108,45 @@ void SettingsWindow::setupText ()
 	adjustSize ();
 }
 
-void SettingsWindow::on_buttonBox_accepted ()
+
+// ********************
+// ** UI data access **
+// ********************
+
+void SettingsWindow::setSelectedLanguageConfiguration (const LanguageConfiguration &languageConfiguration)
 {
-	if (allowEdit ())
+	switch (languageConfiguration.getType ())
 	{
-		writeSettings ();
-		close ();
+		case LanguageConfiguration::manualLanguage: ui.languageInput->setCurrentItemByItemData (languageConfiguration.getLocaleName ()); break;
+		case LanguageConfiguration::noTranslation : ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::noTranslation);  break;
+		case LanguageConfiguration::systemLanguage: ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::systemLanguage); break;
+		// No default
 	}
+}
+
+LanguageConfiguration SettingsWindow::getSelectedLanguageConfiguration ()
+{
+	return LanguageConfiguration (ui.languageInput->currentItemData ());
+}
+
+
+// **************
+// ** Settings **
+// **************
+
+void SettingsWindow::readItem (QTreeWidgetItem *item, const InfoPlugin *plugin)
+{
+	item->setData       (captionColumn, Qt::DisplayRole, plugin->getCaption ());
+	item->setData       (   nameColumn, Qt::DisplayRole, plugin->getName ());
+	item->setCheckState (enabledColumn, plugin->isEnabled ()?Qt::Checked:Qt::Unchecked);
+	item->setData       ( configColumn, Qt::DisplayRole, plugin->configText ());
+
+	item->setFlags (item->flags () | Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
+}
+
+void SettingsWindow::makeItemEditable (QListWidgetItem *item)
+{
+	item->setFlags (item->flags () | Qt::ItemIsEditable);
 }
 
 void SettingsWindow::readSettings ()
@@ -200,21 +235,6 @@ void SettingsWindow::readSettings ()
 	updateWidgets ();
 }
 
-void SettingsWindow::readItem (QTreeWidgetItem *item, const InfoPlugin *plugin)
-{
-	item->setData       (captionColumn, Qt::DisplayRole, plugin->getCaption ());
-	item->setData       (   nameColumn, Qt::DisplayRole, plugin->getName ());
-	item->setCheckState (enabledColumn, plugin->isEnabled ()?Qt::Checked:Qt::Unchecked);
-	item->setData       ( configColumn, Qt::DisplayRole, plugin->configText ());
-
-	item->setFlags (item->flags () | Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
-}
-
-void SettingsWindow::makeItemEditable (QListWidgetItem *item)
-{
-	item->setFlags (item->flags () | Qt::ItemIsEditable);
-}
-
 void SettingsWindow::writeSettings ()
 {
 	Settings &s=Settings::instance ();
@@ -292,10 +312,10 @@ QStringList SettingsWindow::getPluginPaths ()
 	return pluginPaths;
 }
 
-void SettingsWindow::updateWidgets ()
-{
-	ui.mysqlPortInput->setEnabled (!ui.mysqlDefaultPortCheckBox->isChecked ());
-}
+
+// *****************
+// ** Plugin path **
+// *****************
 
 void SettingsWindow::on_addPluginPathButton_clicked ()
 {
@@ -347,8 +367,9 @@ void SettingsWindow::on_pluginPathDownButton_clicked ()
 }
 
 
-
-
+// ******************
+// ** Info plugins **
+// ******************
 
 void SettingsWindow::on_addInfoPluginButton_clicked ()
 {
@@ -449,6 +470,72 @@ void SettingsWindow::on_infoPluginList_itemDoubleClicked (QTreeWidgetItem *item,
 	on_infoPluginSettingsButton_clicked ();
 }
 
+
+// *********************
+// ** Weather plugins **
+// *********************
+
+void SettingsWindow::on_weatherPluginInput_currentIndexChanged ()
+{
+	bool external=(ui.weatherPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
+	ui.weatherPluginCommandLabel->setEnabled (external);
+	ui.weatherPluginCommandInput->setEnabled (external);
+	ui.browseWeatherPluginCommandButton->setEnabled (external);
+}
+
+void SettingsWindow::on_weatherWindowPluginInput_currentIndexChanged ()
+{
+	bool external=(ui.weatherWindowPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
+	ui.weatherWindowCommandLabel->setEnabled (external);
+	ui.weatherWindowCommandInput->setEnabled (external);
+	ui.browseWeatherWindowCommandButton->setEnabled (external);
+}
+
+void SettingsWindow::on_browseWeatherPluginCommandButton_clicked ()
+{
+	QString filename=Plugin::browse (ui.weatherPluginCommandInput->text (), notr ("*"), getPluginPaths (), this);
+
+	if (!filename.isEmpty ())
+		ui.weatherPluginCommandInput->setText (filename);
+}
+
+void SettingsWindow::on_browseWeatherWindowCommandButton_clicked ()
+{
+	QString filename=Plugin::browse (ui.weatherWindowCommandInput->text (), notr ("*"), getPluginPaths (), this);
+
+	if (!filename.isEmpty ())
+		ui.weatherWindowCommandInput->setText (filename);
+}
+
+
+
+// *************
+// ** Closing **
+// *************
+
+void SettingsWindow::reject ()
+{
+	SkDialog<Ui::SettingsWindowClass>::reject ();
+	// Load the original language
+	// TODO only if changed
+	TranslationManager::instance ().loadForConfiguration (Settings::instance ().languageConfiguration);
+}
+
+void SettingsWindow::on_buttonBox_accepted ()
+{
+	if (allowEdit ())
+	{
+		writeSettings ();
+		close ();
+	}
+}
+
+
+
+// **********
+// ** Misc **
+// **********
+
 /**
  * Determines whether the settings may be stored.
  *
@@ -528,38 +615,6 @@ void SettingsWindow::warnEdit ()
 	warned=true;
 }
 
-void SettingsWindow::on_weatherPluginInput_currentIndexChanged ()
-{
-	bool external=(ui.weatherPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
-	ui.weatherPluginCommandLabel->setEnabled (external);
-	ui.weatherPluginCommandInput->setEnabled (external);
-	ui.browseWeatherPluginCommandButton->setEnabled (external);
-}
-
-void SettingsWindow::on_weatherWindowPluginInput_currentIndexChanged ()
-{
-	bool external=(ui.weatherWindowPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
-	ui.weatherWindowCommandLabel->setEnabled (external);
-	ui.weatherWindowCommandInput->setEnabled (external);
-	ui.browseWeatherWindowCommandButton->setEnabled (external);
-}
-
-void SettingsWindow::on_browseWeatherPluginCommandButton_clicked ()
-{
-	QString filename=Plugin::browse (ui.weatherPluginCommandInput->text (), notr ("*"), getPluginPaths (), this);
-
-	if (!filename.isEmpty ())
-		ui.weatherPluginCommandInput->setText (filename);
-}
-
-void SettingsWindow::on_browseWeatherWindowCommandButton_clicked ()
-{
-	QString filename=Plugin::browse (ui.weatherWindowCommandInput->text (), notr ("*"), getPluginPaths (), this);
-
-	if (!filename.isEmpty ())
-		ui.weatherWindowCommandInput->setText (filename);
-}
-
 void SettingsWindow::showEvent (QShowEvent *event)
 {
 	// When the dialog is made visible (showEvent), show a warning if the
@@ -589,20 +644,10 @@ void SettingsWindow::on_languageInput_currentIndexChanged (int index)
 
 	// Load the language
 	TranslationManager::instance ().loadForConfiguration (languageConfiguration);
+
+}
+void SettingsWindow::updateWidgets ()
+{
+	ui.mysqlPortInput->setEnabled (!ui.mysqlDefaultPortCheckBox->isChecked ());
 }
 
-void SettingsWindow::setSelectedLanguageConfiguration (const LanguageConfiguration &languageConfiguration)
-{
-	switch (languageConfiguration.getType ())
-	{
-		case LanguageConfiguration::manualLanguage: ui.languageInput->setCurrentItemByItemData (languageConfiguration.getLocaleName ()); break;
-		case LanguageConfiguration::noTranslation : ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::noTranslation);  break;
-		case LanguageConfiguration::systemLanguage: ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::systemLanguage); break;
-		// No default
-	}
-}
-
-LanguageConfiguration SettingsWindow::getSelectedLanguageConfiguration ()
-{
-	return LanguageConfiguration (ui.languageInput->currentItemData ());
-}

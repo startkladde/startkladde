@@ -36,6 +36,8 @@ class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 		LanguageConfiguration getSelectedLanguageConfiguration ();
 		void setSelectedLanguageConfiguration (const LanguageConfiguration &languageConfiguration);
 
+		void reject ();
+
 	private slots:
 		void on_mysqlDefaultPortCheckBox_toggled () { updateWidgets (); }
 
