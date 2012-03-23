@@ -4,10 +4,12 @@
 #include <QString>
 #include <QVariant>
 
+class QSettings;
+
 class LanguageConfiguration
 {
 	public:
-		enum Type { manualLanguage, systemLanguage, noTranslation };
+		enum Type { manualSelection, systemLanguage, noTranslation };
 
 		LanguageConfiguration ();
 		LanguageConfiguration (Type type);
@@ -15,6 +17,8 @@ class LanguageConfiguration
 		LanguageConfiguration (const QVariant &value);
 		virtual ~LanguageConfiguration ();
 
+		virtual void load (QSettings &settings);
+		virtual void save (QSettings &settings);
 
 		Type getType () const { return type; }
 		QString getLocaleName () const { return localeName; }

@@ -131,7 +131,7 @@ void TranslationManager::loadForConfiguration (const LanguageConfiguration &conf
 {
 	switch (configuration.getType ())
 	{
-		case LanguageConfiguration::manualLanguage:
+		case LanguageConfiguration::manualSelection:
 			loadForLocale (configuration.getLocaleName ());
 			break;
 		case LanguageConfiguration::noTranslation :

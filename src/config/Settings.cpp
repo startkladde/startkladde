@@ -188,7 +188,9 @@ void Settings::readSettings ()
 
 	// *** Settings
 	// UI
-	// FIXME languageConfiguration
+	s.beginGroup (notr ("language"));
+	languageConfiguration.load (s);
+	s.endGroup ();
 	// Data
 	location      =s.value (notr ("location")      , tr ("Twiddlethorpe")).toString ();
 	recordTowpilot=s.value (notr ("recordTowpilot"), true            ).toBool ();
@@ -254,7 +256,9 @@ void Settings::writeSettings ()
 
 	// *** Settings
 	// UI
-	// FIXME languageConfiguration
+	s.beginGroup (notr ("language"));
+	languageConfiguration.save (s);
+	s.endGroup ();
 	// Data
 	s.setValue (notr ("location")      , location      );
 	s.setValue (notr ("recordTowpilot"), recordTowpilot);

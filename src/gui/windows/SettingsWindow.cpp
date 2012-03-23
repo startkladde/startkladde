@@ -67,6 +67,8 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 		ui.languageInput->addItem (language.languageName, language.localeName);
 	ui.languageInput->addItem ("", LanguageConfiguration::noTranslation);
 
+	ui.languageInput->setSizeAdjustPolicy (QComboBox::AdjustToContents);
+
 	// Make boolean columns and some other columns read-only
 	// The title column is read-only because we would have to write back the
 	// value to the plugin after editing it so the plugin settings dialog show
@@ -117,7 +119,7 @@ void SettingsWindow::setSelectedLanguageConfiguration (const LanguageConfigurati
 {
 	switch (languageConfiguration.getType ())
 	{
-		case LanguageConfiguration::manualLanguage: ui.languageInput->setCurrentItemByItemData (languageConfiguration.getLocaleName ()); break;
+		case LanguageConfiguration::manualSelection: ui.languageInput->setCurrentItemByItemData (languageConfiguration.getLocaleName ()); break;
 		case LanguageConfiguration::noTranslation : ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::noTranslation);  break;
 		case LanguageConfiguration::systemLanguage: ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::systemLanguage); break;
 		// No default
