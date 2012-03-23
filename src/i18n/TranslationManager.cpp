@@ -109,6 +109,7 @@ QList<TranslationManager::Language> TranslationManager::listLanguages ()
 		{
 			Language language;
 			language.localeName=localeName;
+			// FIXME handle properly if empty (at least: don't return it)
 			language.languageName=determineLanguageNameForLocale (localeName);
 			result.append (language);
 		}

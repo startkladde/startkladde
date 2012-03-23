@@ -61,13 +61,8 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 
 	ui.dbTypePane->setVisible (false);
 
-	ui.languageInput->addItem ("", LanguageConfiguration::systemLanguage);
-	QList<TranslationManager::Language> languages=TranslationManager::instance ().listLanguages ();
-	foreach (const TranslationManager::Language &language, languages)
-		ui.languageInput->addItem (language.languageName, language.localeName);
-	ui.languageInput->addItem ("", LanguageConfiguration::noTranslation);
-
 	ui.languageInput->setSizeAdjustPolicy (QComboBox::AdjustToContents);
+	ui.languageInput->setLanguageItems (TranslationManager::instance ().listLanguages ());
 
 	// Make boolean columns and some other columns read-only
 	// The title column is read-only because we would have to write back the
@@ -103,32 +98,8 @@ void SettingsWindow::setupText ()
 		" the configuration file or registry key %1.")
 		.arg (QSettings ().fileName ()));
 
-	ui.languageInput->setItemTextByItemData (LanguageConfiguration::systemLanguage, tr ("Automatic (use system language)"));
-	ui.languageInput->setItemTextByItemData (LanguageConfiguration::noTranslation, tr ("No translation"));
-
 	// Required because we have a label with word wrap
 	adjustSize ();
-}
-
-
-// ********************
-// ** UI data access **
-// ********************
-
-void SettingsWindow::setSelectedLanguageConfiguration (const LanguageConfiguration &languageConfiguration)
-{
-	switch (languageConfiguration.getType ())
-	{
-		case LanguageConfiguration::manualSelection: ui.languageInput->setCurrentItemByItemData (languageConfiguration.getLocaleName ()); break;
-		case LanguageConfiguration::noTranslation : ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::noTranslation);  break;
-		case LanguageConfiguration::systemLanguage: ui.languageInput->setCurrentItemByItemData (LanguageConfiguration::systemLanguage); break;
-		// No default
-	}
-}
-
-LanguageConfiguration SettingsWindow::getSelectedLanguageConfiguration ()
-{
-	return LanguageConfiguration (ui.languageInput->currentItemData ());
 }
 
 
@@ -166,7 +137,7 @@ void SettingsWindow::readSettings ()
 
 	// *** Settings
 	// UI
-	setSelectedLanguageConfiguration (s.languageConfiguration);
+	ui.languageInput->setCurrentItem (s.languageConfiguration);
 	// Data
 	ui.locationInput         ->setText    (s.location);
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
@@ -254,7 +225,7 @@ void SettingsWindow::writeSettings ()
 
 	// *** Settings
 	// Language
-	s.languageConfiguration=getSelectedLanguageConfiguration ();
+	s.languageConfiguration=ui.languageInput->getSelectedLanguageConfiguration ();
 	// Data
 	s.location      =ui.locationInput         ->text ();
 	s.recordTowpilot=ui.recordTowpilotCheckbox->isChecked ();
@@ -638,13 +609,8 @@ void SettingsWindow::languageChanged ()
 
 void SettingsWindow::on_languageInput_currentIndexChanged (int index)
 {
-	// Get the user data for the specified index
-	QVariant userData=ui.languageInput->itemData (index);
-
-	// Create the language configuration
-	LanguageConfiguration languageConfiguration=LanguageConfiguration (userData);
-
-	// Load the language
+	// Load the selected language
+	LanguageConfiguration languageConfiguration=ui.languageInput->getLanguageConfiguration (index);
 	TranslationManager::instance ().loadForConfiguration (languageConfiguration);
 
 }

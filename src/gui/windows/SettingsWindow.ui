@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -247,7 +247,11 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="SkComboBox" name="languageInput"/>
+           <widget class="LanguageComboBox" name="languageInput">
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToContents</enum>
+            </property>
+           </widget>
           </item>
           <item row="0" column="2">
            <spacer name="horizontalSpacer_3">
@@ -1046,6 +1050,11 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
    <class>SkComboBox</class>
    <extends>QComboBox</extends>
    <header>src/gui/widgets/SkComboBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LanguageComboBox</class>
+   <extends>QComboBox</extends>
+   <header>src/gui/widgets/LanguageComboBox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

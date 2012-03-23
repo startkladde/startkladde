@@ -147,6 +147,7 @@ HEADERS += \
            src/gui/views/SpecialIntDelegate.h \
            src/gui/views/SpinBoxCreator.h \
            src/gui/widgets/AcpiWidget.h \
+           src/gui/widgets/LanguageComboBox.h \
            src/gui/widgets/LongitudeInput.h \
            src/gui/widgets/SkComboBox.h \
            src/gui/widgets/SkLabel.h \
@@ -300,6 +301,7 @@ SOURCES += \
            src/gui/views/SkItemDelegate.cpp \
            src/gui/views/SpecialIntDelegate.cpp \
            src/gui/views/SpinBoxCreator.cpp \
+           src/gui/widgets/LanguageComboBox.cpp \
            src/gui/widgets/LongitudeInput.cpp \
            src/gui/widgets/SkComboBox.cpp \
            src/gui/widgets/SkLabel.cpp \

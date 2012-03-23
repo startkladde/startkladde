@@ -37,7 +37,7 @@ LanguageConfiguration::LanguageConfiguration (const QVariant &value)
 			case systemLanguage: this->type=systemLanguage; break;
 			case noTranslation:  this->type=noTranslation; break;
 			default:
-				std::cerr << "Invalid language choice in SettingsWindow::getSelectedLanguageConfiguration" << std::endl;
+				std::cerr << "Invalid language choice " << value.toString () << " in LanguageConfiguration::LanguageConfiguration" << std::endl;
 				this->type=systemLanguage;
 		}
 	}

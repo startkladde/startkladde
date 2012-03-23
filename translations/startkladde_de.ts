@@ -2139,6 +2139,19 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
     </message>
 </context>
 <context>
+    <name>LanguageComboBox</name>
+    <message>
+        <location filename="../src/gui/widgets/LanguageComboBox.cpp" line="30"/>
+        <source>Automatic (use system language)</source>
+        <translation>Automatisch (Systemeinstellung benutzen)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/LanguageComboBox.cpp" line="31"/>
+        <source>No translation</source>
+        <translation>Keine Übersetzung</translation>
+    </message>
+</context>
+<context>
     <name>LaunchMethod</name>
     <message>
         <location filename="../src/model/LaunchMethod.cpp" line="120"/>
@@ -4148,12 +4161,12 @@ aktiviert werden.</translation>
         <translation>EDDM</translation>
     </message>
     <message>
-        <location filename="../src/config/Settings.cpp" line="191"/>
+        <location filename="../src/config/Settings.cpp" line="195"/>
         <source>Twiddlethorpe</source>
         <translation>Dingenskirchen</translation>
     </message>
     <message>
-        <location filename="../src/config/Settings.cpp" line="215"/>
+        <location filename="../src/config/Settings.cpp" line="219"/>
         <source>Weather radar (3 hours)</source>
         <translation>Regenradar (3 Stunden)</translation>
     </message>
@@ -4161,14 +4174,12 @@ aktiviert werden.</translation>
 <context>
     <name>SettingsWindow</name>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="66"/>
         <source>Automatic (use system language)</source>
-        <translation>Automatisch (Systemeinstellung benutzen)</translation>
+        <translation type="obsolete">Automatisch (Systemeinstellung benutzen)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="70"/>
         <source>No translation</source>
-        <translation>Keine Übersetzung</translation>
+        <translation type="obsolete">Keine Übersetzung</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.cpp" line="96"/>
@@ -4176,21 +4187,21 @@ aktiviert werden.</translation>
         <translation>Der Passwortschutz kann durch Löschen bzw. Bearbeiten der Konfigurationsdatei bzw. des Registry-Schlüssels %1 aufgehoben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="469"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="559"/>
         <source>The (old) database password must be entered to save
 the settings.</source>
         <translation>Zum Speichern der Einstellungen ist das (alte) Datenbankpasswort
 erforderlich.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="471"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="561"/>
         <source>The database password must be entered to save
 the settings.</source>
         <translation>Zum Speichern der Einstellungen ist das Datenbankpasswort
 erforderlich.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="483"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="573"/>
         <source>Password protection of the settings is being enabled. The
 (new) database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -4201,7 +4212,7 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="490"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="580"/>
         <source>Password protection of the settings is being enabled. The
 database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -4212,12 +4223,12 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="516"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="606"/>
         <source>Settings protected</source>
         <translation>Einstellungen geschützt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="516"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="606"/>
         <source>The settings are protected. The settings
 can be changed, but to save them, the database
 password must be entered.</source>
@@ -4284,57 +4295,57 @@ Datenbankpasswort erforderlich.</translation>
         <translation>Wenn aktiviert, wird der Standard-Datenbank-Port verwendet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="287"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="291"/>
         <source>Name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)</source>
         <translation>Name des Flugplatzes, an dem dieses Programm eingesetzt wird (z. B. &quot;Rheinstetten&quot;)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="294"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="298"/>
         <source>Check &amp;medicals</source>
         <translation>&amp;Medicals überprüfen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="301"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="305"/>
         <source>If enabled, the name of the towpilot can be entered for flights</source>
         <translation>Wenn aktiviert, kann der Name des Schlepppiloten von Flügen eingetragen werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="314"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="318"/>
         <source>Permissions</source>
         <translation>Berechtigungen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="320"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="324"/>
         <source>If enabled, the database password must be entered to modify launch methods</source>
         <translation>Wenn aktiviert, muss zum Ändern von Startarten das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="330"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="334"/>
         <source>If enabled, the database password must be entered to change settings</source>
         <translation>Wenn aktiviert, muss zum Speichern von Einstellungen das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="368"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="372"/>
         <source>If enabled, the database password must be entered to merge people</source>
         <translation>Wenn aktiviert, muss zum Zusammenfassen von Personen das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="378"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="382"/>
         <source>If enabled, the database password must be entered to display the flight database</source>
         <translation>Wenn aktiviert, muss zum Ändern von Startarten das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="391"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="395"/>
         <source>Diagnostics</source>
         <translation>Diagnose</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="397"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="401"/>
         <source>Enables some menu entries for error diagnostics</source>
         <translation>Aktiviert einige Menüeinträge zur Fehlerdiagnose</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="407"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="411"/>
         <source>Command to run when the menu item Help-Network diagnostics is selected</source>
         <translation>Kommando, das ausgeführt wird, wenn der Menüpunkt Hilfe-&gt;Netzwerkdiagnose ausgeführt wird</translation>
     </message>
@@ -4384,214 +4395,214 @@ Datenbankpasswort erforderlich.</translation>
         <translation>Spra&amp;che:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="271"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="275"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="277"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="281"/>
         <source>&amp;Airfield name:</source>
         <translation>O&amp;rt:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="304"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="308"/>
         <source>Record &amp;towpilot</source>
         <translation>Schlepppi&amp;lot erfassen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="323"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="327"/>
         <source>R&amp;equire password to modify launch method&amp;s</source>
         <translation>Passwort zum Ändern von &amp;Startarten erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="333"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="337"/>
         <source>&amp;Require password to change settings</source>
         <translation>Passwort zum Ändern von E&amp;instellungen erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="371"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="375"/>
         <source>Re&amp;quire password to merge &amp;people</source>
         <translation>Passwort zum Zusammenfassen von &amp;Personen erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="381"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="385"/>
         <source>Req&amp;uire password to display the &amp;flight database</source>
         <translation>Passwort zum Abrufen der &amp;Flugdatenbank erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="400"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="404"/>
         <source>Enable de&amp;bugging options</source>
         <translation>Optionen zur Fehlersuche (Debu&amp;gging) aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="414"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="418"/>
         <source>Command for network dia&amp;gnostics:</source>
         <translation>Ko&amp;mmando für Netzwerkdiagnose:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="441"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="445"/>
         <source>&amp;Info plugins</source>
         <translation>&amp;Info-Plugins</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="447"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="451"/>
         <source>The list of info plugins. Info-Plugins are displayed
 in the upper part of the main window.</source>
         <translation>Liste der Info-Plugins. Die Info-Plugins werden im oberen
 Bereich des Hauptfensters angezeigt.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="515"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="519"/>
         <source>Add info plugin</source>
         <translation>Info-Plugin dazufügen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="518"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="953"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="522"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="957"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="531"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="535"/>
         <source>Removed selected info plugin</source>
         <translation>Ausgewähltes Info-Plugin entfernen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="534"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="969"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="538"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="973"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="547"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="551"/>
         <source>Move selected info plugin up</source>
         <translation>Ausgewähltes Info-Plugin nach oben verschieben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="566"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="570"/>
         <source>Move selected info plugin down</source>
         <translation>Ausgewähltes Info-Plugin nach unten verschieben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="569"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="588"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="1004"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="573"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="592"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="1008"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="585"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="589"/>
         <source>Settings for selected info plugin</source>
         <translation>Einstellungen für ausgewähltes Info-Plugin</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="612"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="616"/>
         <source>&amp;Weather plugin</source>
         <translation>&amp;Wetterplugin</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="618"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="622"/>
         <source>Weather plugin &amp;enabled</source>
         <translation>We&amp;ttergrafik aktiviert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="637"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="641"/>
         <source>Height of the weather plugin in pixels</source>
         <translation>Höhe der Wettergrafik in Pixeln</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="627"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="631"/>
         <source>&amp;Height:</source>
         <translation>&amp;Höhe:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="461"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="465"/>
         <source>Title</source>
         <comment>Info plugins table list header</comment>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="464"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="468"/>
         <source>Title of the plugin; will be displayed in the main window</source>
         <translation>Titel des Plugins; wird im Hauptfenster angezeigt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="469"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="473"/>
         <source>Plugin</source>
         <comment>Info plugins table list header</comment>
         <translation>Plugin</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="472"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="476"/>
         <source>Plugin command (with any parameters)</source>
         <translation>Plugin-Kommando (mit eventuellen Parametern)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="477"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="481"/>
         <source>Active</source>
         <comment>Info plugins table list header</comment>
         <translation>Aktiviert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="482"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="486"/>
         <source>Configuration</source>
         <comment>Info plugins table list header</comment>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="640"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="644"/>
         <source> pixels</source>
         <extracomment>With leading space</extracomment>
         <translation> Pixel</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="663"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="667"/>
         <source>&amp;Interval:</source>
         <translation>Inter&amp;vall:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="673"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="677"/>
         <source>P&amp;lugin:</source>
         <translation>Pl&amp;ugin:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="683"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="687"/>
         <source>Time between updates of the weather plugin</source>
         <translation>Zeitdauer zwischen Aktualisierungen der Wettergrafik</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="712"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="716"/>
         <source>Co&amp;mmand:</source>
         <translation>&amp;Kommando:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="735"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="739"/>
         <source>&amp;Browse</source>
         <translation>Durch&amp;suchen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="748"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="752"/>
         <source>Weather wi&amp;ndow enabled</source>
         <translation>Wetter&amp;fenster aktiviert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="767"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="771"/>
         <source>&amp;Title:</source>
         <translation>Tite&amp;l:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="784"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="788"/>
         <source>Inter&amp;val:</source>
         <translation>I&amp;ntervall:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="757"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="761"/>
         <source>Pl&amp;ugin:</source>
         <translation>Plu&amp;gin:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="686"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="797"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="690"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="801"/>
         <source> minutes</source>
         <extracomment>With leading space
 ----------
@@ -4599,70 +4610,70 @@ With leading space</extracomment>
         <translation> Minuten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="728"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="849"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="732"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="853"/>
         <source>The program to execute. Programs in the plugin path can be specified without path.</source>
         <translation>Das Programm, das ausgeführt wird. Programme im Pluginpfand können ohne Pfad angegeben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="820"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="824"/>
         <source>The weather window can be opened by double-clicking the weather plugin.</source>
         <translation>Das Wetterfenster wird durch Doppelklick auf die Wettergrafik geöffnet.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="833"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="837"/>
         <source>Comm&amp;and:</source>
         <translation>K&amp;ommando:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="777"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="781"/>
         <source>Title of the weather window</source>
         <translation>Titel des Wetterfensters</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="794"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="798"/>
         <source>Time between updates of the picture in the weather window</source>
         <translation>Zeitdauer zwischen Aktualisierungen der Grafik im Wetterfenster</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="856"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="860"/>
         <source>B&amp;rowse</source>
         <translation>Durchsuc&amp;hen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="883"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="887"/>
         <source>&amp;Plugin path</source>
         <translation>Plugin-&amp;Pfad</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="889"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="893"/>
         <source>Directories to look for plugins in (in the order given).
 Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to the current directory (e. g. .startkladde/plugins).</source>
         <translation>Verzeichnisse, in denen Plugins (in der angegebenen Reihenfolge) gesucht werden.
 Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder relativ zum aktuellen Verzeichnis (z. B. .startkladde/plugins) angegeben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="906"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="910"/>
         <source>Directories to look for plugins in</source>
         <translation>Verzeichnisse, in denen Plugins gesucht werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="950"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="954"/>
         <source>Add plugin path</source>
         <translation>Plugin-Pfad dazufügen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="966"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="970"/>
         <source>Remove selected plugin path</source>
         <translation>Ausgewählten Plugin-Pfad entfernen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="982"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="986"/>
         <source>Move selected plugin path up</source>
         <translation>Ausgewählten Plugin-Pfad nach oben verschieben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="1001"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="1005"/>
         <source>Move selected plugin path down</source>
         <translation>Ausgewählten Plugin-Pfad nach unten verschieben</translation>
     </message>
@@ -5017,7 +5028,7 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
 <context>
     <name>Translation</name>
     <message>
-        <location filename="../src/i18n/TranslationManager.cpp" line="127"/>
+        <location filename="../src/i18n/TranslationManager.cpp" line="125"/>
         <source>Default (English)</source>
         <comment>Replace with the name of the translation language, in that language</comment>
         <translation>Deutsch</translation>
