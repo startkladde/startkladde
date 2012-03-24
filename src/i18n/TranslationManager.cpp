@@ -11,6 +11,12 @@
 
 #include "src/util/qString.h"
 
+// TODO: when switching from "automatic" to, e. g., "German" in a German
+// environment, the translation is still reloaded, because the old locale is
+// "de_DE" and the new one is "de". This could, for example, be solved by
+// storing the name of the translation file instead of the locale name (or could
+// it?).
+
 
 // ****************************
 // ** Construction/singleton **
@@ -18,8 +24,7 @@
 
 TranslationManager *TranslationManager::theInstance;
 
-TranslationManager::TranslationManager ():
-	currentConfiguration (LanguageConfiguration (LanguageConfiguration::noTranslation))
+TranslationManager::TranslationManager ()
 {
 	translationsPath="translations";
 
@@ -93,73 +98,77 @@ QString TranslationManager::determineLanguageNameForLocale (const QString &local
 // **********************
 
 /**
- * Unloads the translation and updates the current configuration to "no
- * translation"
+ * Unloads the translation, if any is loaded
+ *
+ * If no translation is loaded, nothing happens, unless force is true.
  */
-void TranslationManager::unload ()
+void TranslationManager::unload (bool force)
 {
-	std::cout << "Unloading translation" << std::endl;
-	applicationTranslator.load ("");
-	qtTranslator         .load ("");
-	currentConfiguration=LanguageConfiguration (LanguageConfiguration::noTranslation);
+	if (currentTranslation!="" || force)
+	{
+		// Output a message
+		std::cout << "Unloading translation" << std::endl;
+
+		applicationTranslator.load ("");
+		qtTranslator         .load ("");
+
+		currentTranslation="";
+	}
 }
 
 /**
- * Loads the translation for the given locale and updates the current
- * configuration to "manual setting"
+ * Loads the translation for the given locale name
  *
- * @param localeName the name of the locale to load, typically something like
- *                   "de".
+ * If the translation is already loaded, nothing happens, unless force is true.
  */
-void TranslationManager::loadForLocale (const QString &localeName)
+void TranslationManager::loadForLocale (const QString &localeName, bool force)
 {
-	loadTranslation (applicationTranslator, filenameForLocaleName (localeName), translationsPath);
-	loadTranslation (qtTranslator,          "qt_"+localeName                  , QLibraryInfo::location (QLibraryInfo::TranslationsPath));
-	currentConfiguration=LanguageConfiguration (localeName);
+	//std::cout << "Current: " << currentTranslation << "; new: " << localeName << std::endl;
+	if (currentTranslation!=localeName || force)
+	{
+		// A message will be output by loadTranslation
+
+		loadTranslation (applicationTranslator, filenameForLocaleName (localeName), translationsPath);
+		loadTranslation (qtTranslator,          "qt_"+localeName                  , QLibraryInfo::location (QLibraryInfo::TranslationsPath));
+
+		currentTranslation=localeName;
+	}
 }
 
 /**
- * Loads the translation for the current locale and updates the current
- * configuration to "system language"
+ * Loads the translation for the current locale
+ *
+ * If the translation is already loaded, nothing happens, unless force is true.
  */
-void TranslationManager::loadForCurrentLocale ()
+void TranslationManager::loadForCurrentLocale (bool force)
 {
-	// Note that loadForLocale sets the current configuration to "manual
-	// setting", so we have to change it to "system language" afterwards.
-	loadForLocale (QLocale::system ().name ());
-	currentConfiguration=LanguageConfiguration (LanguageConfiguration::systemLanguage);
+	loadForLocale (QLocale::system ().name (), force);
 }
 
 /**
- * Loads the translation specified by the given configuration and updates the
- * current configuration
+ * Loads the translation specified by the given configuration
  *
- * If the specified configuration is equal to the current configuration, nothing
- * is loaded, unless the force parameter is true.
+ * If the translation is already loaded, nothing nothing happens, unless the
+ * force parameter is true.
  *
- * @param configuration the configuration to load
- * @param force load the configuration even if it is equal to the current
- *              configuration
+ * @param configuration the language configuration to load
+ * @param force load the language even if it is already loaded
  */
-// FIXME what happens if it is invalid?
+// FIXME what happens if it is invalid (e. g. invalid value in configuration)?
 void TranslationManager::load (const LanguageConfiguration &configuration, bool force)
 {
-	std::cout << "Current configuration: " << currentConfiguration.toString () << "; new configuration: " << configuration.toString () << std::endl;
-	if (configuration!=currentConfiguration || force)
+	switch (configuration.getType ())
 	{
-		switch (configuration.getType ())
-		{
-			case LanguageConfiguration::manualSelection:
-				loadForLocale (configuration.getLocaleName ());
-				break;
-			case LanguageConfiguration::noTranslation :
-				unload ();
-				break;
-			case LanguageConfiguration::systemLanguage:
-				loadForCurrentLocale ();
-				break;
-			// No default
-		}
+		case LanguageConfiguration::manualSelection:
+			loadForLocale (configuration.getLocaleName (), force);
+			break;
+		case LanguageConfiguration::noTranslation :
+			unload (force);
+			break;
+		case LanguageConfiguration::systemLanguage:
+			loadForCurrentLocale (force);
+			break;
+		// No default
 	}
 }
 

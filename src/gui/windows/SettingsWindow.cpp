@@ -607,6 +607,10 @@ void SettingsWindow::languageChanged ()
 		ui.infoPluginList->resizeColumnToContents (i);
 }
 
+// Use the "activated" signal rather than the "currentIndexChanged" signal to
+// avoid loading another language on startup, before the index has been set to
+// the current setting. This does have the disadvantage of being called when the
+// same setting as before is selected.
 void SettingsWindow::on_languageInput_activated (int index)
 {
 	// Load the selected language

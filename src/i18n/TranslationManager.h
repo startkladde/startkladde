@@ -35,14 +35,11 @@ class TranslationManager
 		QList<Language> listLanguages ();
 
 		// Language loading
-		void unload ();
-		void loadForLocale (const QString &localeName);
-		void loadForCurrentLocale ();
+		void unload (bool force=false);
+		void loadForLocale (const QString &localeName, bool force=false);
+		void loadForCurrentLocale (bool force=false);
 		void load (const LanguageConfiguration &configuration, bool force=false);
 		void toggleLanguage ();
-
-		// Current configuration
-		LanguageConfiguration getCurrentConfiguration () { return currentConfiguration; }
 
 	protected:
 		// Settings
@@ -67,8 +64,8 @@ class TranslationManager
 		// Language loading
 		bool loadTranslation (QTranslator &translator, const QString &filename, const QString &directory);
 
-		// Current configuration
-		LanguageConfiguration currentConfiguration;
+		// Current translation
+		QString currentTranslation;
 };
 
 #endif
