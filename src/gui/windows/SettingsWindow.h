@@ -41,7 +41,7 @@ class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 	private slots:
 		void on_mysqlDefaultPortCheckBox_toggled () { updateWidgets (); }
 
-		void on_languageInput_currentIndexChanged (int index);
+		void on_languageInput_activated (int index);
 
 		void on_addPluginPathButton_clicked ();
 		void on_removePluginPathButton_clicked ();

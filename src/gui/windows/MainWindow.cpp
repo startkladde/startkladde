@@ -1967,7 +1967,7 @@ void MainWindow::logMessage (QString message)
 
 void MainWindow::on_changeLanguageAction_triggered ()
 {
-	TranslationManager::instance ().changeLanguage ();
+	TranslationManager::instance ().toggleLanguage ();
 }
 
 void MainWindow::on_timerBasedLanguageChangeAction_triggered ()

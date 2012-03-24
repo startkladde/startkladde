@@ -371,11 +371,6 @@ int main (int argc, char **argv)
 
 	qApp->addLibraryPath (qApp->applicationDirPath () + notr ("/plugins"));
 
-	// Setup the translation
-	TranslationManager &translationManager=TranslationManager::instance ();
-	translationManager.loadForCurrentLocale ();
-	translationManager.install (&application);
-
 	// Event is used as parameters for signals emitted by tasks running on
 	// a background thread. These connections must be queued, so the parameter
 	// types must be registered.
@@ -401,6 +396,10 @@ int main (int argc, char **argv)
 	Settings::instance ().programPath=argv[0];
 	QStringList nonOptions=Settings::instance ().readArgs (args);
 
+	// Setup the translation
+	TranslationManager &translationManager=TranslationManager::instance ();
+	translationManager.load (Settings::instance ().languageConfiguration);
+	translationManager.install (&application);
 
 	int ret=0;
 

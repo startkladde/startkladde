@@ -10,11 +10,16 @@
 #include <QDir>
 
 #include "src/util/qString.h"
-#include "src/i18n/LanguageConfiguration.h"
+
+
+// ****************************
+// ** Construction/singleton **
+// ****************************
 
 TranslationManager *TranslationManager::theInstance;
 
-TranslationManager::TranslationManager ()
+TranslationManager::TranslationManager ():
+	currentConfiguration (LanguageConfiguration (LanguageConfiguration::noTranslation))
 {
 	translationsPath="translations";
 
@@ -32,45 +37,10 @@ TranslationManager &TranslationManager::instance ()
 	return *theInstance;
 }
 
-void TranslationManager::changeLanguage ()
-{
-	if (applicationTranslator.isEmpty ())
-		loadForCurrentLocale ();
-	else
-		unload ();
-}
 
-bool TranslationManager::loadTranslation (QTranslator &translator, const QString &filename, const QString &directory)
-{
-	std::cout << "Loading translation from " << filename << " in " << directory << "...";
-
-	bool result=translator.load (filename, directory);
-
-	if (result)
-		std::cout << "success" << std::endl;
-	else
-		std::cout << "failed" << std::endl;
-
-	return result;
-}
-
-void TranslationManager::unload ()
-{
-	applicationTranslator.load ("");
-	qtTranslator         .load ("");
-}
-
-void TranslationManager::loadForLocale (const QString &localeName)
-{
-	loadTranslation (applicationTranslator, filenameForLocaleName (localeName), translationsPath);
-	loadTranslation (qtTranslator,          "qt_"+localeName                  , QLibraryInfo::location (QLibraryInfo::TranslationsPath));
-}
-
-void TranslationManager::loadForCurrentLocale ()
-{
-	loadForLocale (QLocale::system ().name ());
-}
-
+// ***********
+// ** Setup **
+// ***********
 
 void TranslationManager::install (QApplication *application)
 {
@@ -78,21 +48,10 @@ void TranslationManager::install (QApplication *application)
 	application->installTranslator (&qtTranslator);
 }
 
-QString TranslationManager::filenameForLocaleName (const QString &localeName)
-{
-	return "startkladde_"+localeName;
-}
 
-QString TranslationManager::localeNameFromFilename (const QString &filename)
-{
-	QRegExp regexp ("startkladde_(.*)\\.qm");
-	if (regexp.exactMatch (filename))
-		return regexp.cap (1);
-	else
-		return QString ();
-}
-
-
+// *************************************
+// ** Language listing/identification **
+// *************************************
 
 QList<TranslationManager::Language> TranslationManager::listLanguages ()
 {
@@ -128,19 +87,119 @@ QString TranslationManager::determineLanguageNameForLocale (const QString &local
 	return translator.translate ("Translation", languageString.source);
 }
 
-void TranslationManager::loadForConfiguration (const LanguageConfiguration &configuration)
+
+// **********************
+// ** Language loading **
+// **********************
+
+/**
+ * Unloads the translation and updates the current configuration to "no
+ * translation"
+ */
+void TranslationManager::unload ()
 {
-	switch (configuration.getType ())
+	std::cout << "Unloading translation" << std::endl;
+	applicationTranslator.load ("");
+	qtTranslator         .load ("");
+	currentConfiguration=LanguageConfiguration (LanguageConfiguration::noTranslation);
+}
+
+/**
+ * Loads the translation for the given locale and updates the current
+ * configuration to "manual setting"
+ *
+ * @param localeName the name of the locale to load, typically something like
+ *                   "de".
+ */
+void TranslationManager::loadForLocale (const QString &localeName)
+{
+	loadTranslation (applicationTranslator, filenameForLocaleName (localeName), translationsPath);
+	loadTranslation (qtTranslator,          "qt_"+localeName                  , QLibraryInfo::location (QLibraryInfo::TranslationsPath));
+	currentConfiguration=LanguageConfiguration (localeName);
+}
+
+/**
+ * Loads the translation for the current locale and updates the current
+ * configuration to "system language"
+ */
+void TranslationManager::loadForCurrentLocale ()
+{
+	// Note that loadForLocale sets the current configuration to "manual
+	// setting", so we have to change it to "system language" afterwards.
+	loadForLocale (QLocale::system ().name ());
+	currentConfiguration=LanguageConfiguration (LanguageConfiguration::systemLanguage);
+}
+
+/**
+ * Loads the translation specified by the given configuration and updates the
+ * current configuration
+ *
+ * If the specified configuration is equal to the current configuration, nothing
+ * is loaded, unless the force parameter is true.
+ *
+ * @param configuration the configuration to load
+ * @param force load the configuration even if it is equal to the current
+ *              configuration
+ */
+// FIXME what happens if it is invalid?
+void TranslationManager::load (const LanguageConfiguration &configuration, bool force)
+{
+	std::cout << "Current configuration: " << currentConfiguration.toString () << "; new configuration: " << configuration.toString () << std::endl;
+	if (configuration!=currentConfiguration || force)
 	{
-		case LanguageConfiguration::manualSelection:
-			loadForLocale (configuration.getLocaleName ());
-			break;
-		case LanguageConfiguration::noTranslation :
-			unload ();
-			break;
-		case LanguageConfiguration::systemLanguage:
-			loadForCurrentLocale ();
-			break;
-		// No default
+		switch (configuration.getType ())
+		{
+			case LanguageConfiguration::manualSelection:
+				loadForLocale (configuration.getLocaleName ());
+				break;
+			case LanguageConfiguration::noTranslation :
+				unload ();
+				break;
+			case LanguageConfiguration::systemLanguage:
+				loadForCurrentLocale ();
+				break;
+			// No default
+		}
 	}
+}
+
+void TranslationManager::toggleLanguage ()
+{
+	if (applicationTranslator.isEmpty ())
+		loadForCurrentLocale ();
+	else
+		unload ();
+}
+
+bool TranslationManager::loadTranslation (QTranslator &translator, const QString &filename, const QString &directory)
+{
+	std::cout << "Loading translation from " << filename << " in " << directory << "...";
+
+	bool result=translator.load (filename, directory);
+
+	if (result)
+		std::cout << "success" << std::endl;
+	else
+		std::cout << "failed" << std::endl;
+
+	return result;
+}
+
+
+// **************
+// ** Settings **
+// **************
+
+QString TranslationManager::filenameForLocaleName (const QString &localeName)
+{
+	return "startkladde_"+localeName;
+}
+
+QString TranslationManager::localeNameFromFilename (const QString &filename)
+{
+	QRegExp regexp ("startkladde_(.*)\\.qm");
+	if (regexp.exactMatch (filename))
+		return regexp.cap (1);
+	else
+		return QString ();
 }

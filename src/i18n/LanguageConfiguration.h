@@ -23,6 +23,11 @@ class LanguageConfiguration
 		Type getType () const { return type; }
 		QString getLocaleName () const { return localeName; }
 
+		bool operator== (const LanguageConfiguration &other) const;
+		bool operator!= (const LanguageConfiguration &other) const;
+
+		QString toString () const;
+
 	private:
 		Type type;
 		QString localeName; // Only for manualLanguage

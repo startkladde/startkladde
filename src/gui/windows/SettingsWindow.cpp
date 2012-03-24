@@ -489,9 +489,9 @@ void SettingsWindow::on_browseWeatherWindowCommandButton_clicked ()
 void SettingsWindow::reject ()
 {
 	SkDialog<Ui::SettingsWindowClass>::reject ();
-	// Load the original language
-	// TODO only if changed
-	TranslationManager::instance ().loadForConfiguration (Settings::instance ().languageConfiguration);
+	// Load the original language. Nothing will happen if the language did not
+	// change.
+	TranslationManager::instance ().load (Settings::instance ().languageConfiguration);
 }
 
 void SettingsWindow::on_buttonBox_accepted ()
@@ -607,11 +607,11 @@ void SettingsWindow::languageChanged ()
 		ui.infoPluginList->resizeColumnToContents (i);
 }
 
-void SettingsWindow::on_languageInput_currentIndexChanged (int index)
+void SettingsWindow::on_languageInput_activated (int index)
 {
 	// Load the selected language
 	LanguageConfiguration languageConfiguration=ui.languageInput->getLanguageConfiguration (index);
-	TranslationManager::instance ().loadForConfiguration (languageConfiguration);
+	TranslationManager::instance ().load (languageConfiguration);
 
 }
 void SettingsWindow::updateWidgets ()

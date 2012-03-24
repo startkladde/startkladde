@@ -75,10 +75,9 @@ void LanguageConfiguration::load (QSettings &settings)
 
 void LanguageConfiguration::save (QSettings &settings)
 {
-	enum Type { manualLanguage, systemLanguage, noTranslation };
 	switch (type)
 	{
-		case manualLanguage:
+		case manualSelection:
 			settings.setValue (notr ("type"), notr ("manualSelection"));
 			settings.setValue (notr ("localeName"), localeName);
 			break;
@@ -90,5 +89,35 @@ void LanguageConfiguration::save (QSettings &settings)
 			settings.setValue (notr ("type"), notr ("noTranslation"));
 			settings.setValue (notr ("localeName"), "");
 			break;
+		// No default
+	}
+}
+
+bool LanguageConfiguration::operator== (const LanguageConfiguration &other) const
+{
+	switch (type)
+	{
+		case manualSelection: return other.type==manualSelection && other.localeName==this->localeName; break;
+		case systemLanguage : return other.type==systemLanguage;                                        break;
+		case noTranslation  : return other.type==noTranslation;                                         break;
+		// No default
+	}
+
+	return false;
+}
+
+bool LanguageConfiguration::operator!= (const LanguageConfiguration &other) const
+{
+	return !(other==*this);
+}
+
+QString LanguageConfiguration::toString () const
+{
+	switch (type)
+	{
+		case manualSelection: return qnotr ("manual selection: %1").arg (localeName); break;
+		case systemLanguage : return notr ("system language"); break;
+		case noTranslation  : return notr ("no translation"); break;
+		// No default
 	}
 }
