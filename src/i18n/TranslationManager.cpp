@@ -73,8 +73,19 @@ QList<TranslationManager::Language> TranslationManager::listLanguages ()
 		{
 			Language language;
 			language.localeName=localeName;
-			// FIXME handle properly if empty (at least: don't return it)
+
+			// If the language name is empty, use the locale name instead. This
+			// may happen if there is a language which does not translate its own
+			// name.
+			// TODO this functionality should be in the caller, but callers
+			// would forget to handle it. There should be a parameter for what
+			// to do in this case: ignore it (return empty name, the caller
+			// handles it), ignore the language (don't include it in the list),
+			// use locale name.
 			language.languageName=determineLanguageNameForLocale (localeName);
+			if (language.languageName.isEmpty ())
+				language.languageName=language.localeName;
+
 			result.append (language);
 		}
 	}

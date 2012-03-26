@@ -2141,12 +2141,12 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>LanguageComboBox</name>
     <message>
-        <location filename="../src/gui/widgets/LanguageComboBox.cpp" line="30"/>
+        <location filename="../src/gui/widgets/LanguageComboBox.cpp" line="31"/>
         <source>Automatic (use system language)</source>
         <translation>Automatisch (Systemeinstellung benutzen)</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/LanguageComboBox.cpp" line="31"/>
+        <location filename="../src/gui/widgets/LanguageComboBox.cpp" line="32"/>
         <source>No translation</source>
         <translation>Keine Übersetzung</translation>
     </message>
@@ -4187,21 +4187,21 @@ aktiviert werden.</translation>
         <translation>Der Passwortschutz kann durch Löschen bzw. Bearbeiten der Konfigurationsdatei bzw. des Registry-Schlüssels %1 aufgehoben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="559"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="536"/>
         <source>The (old) database password must be entered to save
 the settings.</source>
         <translation>Zum Speichern der Einstellungen ist das (alte) Datenbankpasswort
 erforderlich.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="561"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="538"/>
         <source>The database password must be entered to save
 the settings.</source>
         <translation>Zum Speichern der Einstellungen ist das Datenbankpasswort
 erforderlich.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="573"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="550"/>
         <source>Password protection of the settings is being enabled. The
 (new) database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -4212,7 +4212,7 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="580"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="557"/>
         <source>Password protection of the settings is being enabled. The
 database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -4223,12 +4223,12 @@ werden soll, kann jetzt abgebrochen und die entsprechende Option
 deaktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="606"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="583"/>
         <source>Settings protected</source>
         <translation>Einstellungen geschützt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="606"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="583"/>
         <source>The settings are protected. The settings
 can be changed, but to save them, the database
 password must be entered.</source>
@@ -5028,7 +5028,7 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
 <context>
     <name>Translation</name>
     <message>
-        <location filename="../src/i18n/TranslationManager.cpp" line="125"/>
+        <location filename="../src/i18n/TranslationManager.cpp" line="90"/>
         <source>Default (English)</source>
         <comment>Replace with the name of the translation language, in that language</comment>
         <translation>Deutsch</translation>
