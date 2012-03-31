@@ -56,10 +56,45 @@ translation</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <source>Numerus message(s) (manually translated)</source>
+        <source>%n numerus message(s) (manually translated)</source>
         <translation>
             <numerusform>%n manual translation</numerusform>
             <numerusform>%n manual translation(s)</numerusform>
+        </translation>
+    </message>
+
+    <message numerus="yes">
+		<source>%n multi line
+numerus
+message(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+		<source>%n multi line
+numerus message(s)
+(already mock translated)</source>
+        <translation type="unfinished">
+			<numerusform>%n old
+multi-line
+mock translation</numerusform>
+			<numerusform>%n old
+multi-line
+mock translation(s)</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+		<source>%n mult line
+numerus message(s)
+(manually translated)</source>
+        <translation>
+			<numerusform>%n manual
+multi line
+translation</numerusform>
+			<numerusform>%n manual
+multi line
+translation(s)</numerusform>
         </translation>
     </message>
 

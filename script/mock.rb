@@ -1,5 +1,11 @@
 #!/usr/bin/env ruby
 
+# Next:
+#   * output to file instead of stdout
+#   * configurable +++/---
+#   * entity/HTML/%n handling
+#   * call mock filter
+
 # See http://doc.trolltech.com/qq/qq03-swedish-chef.html
 
 # Source may include:
@@ -13,6 +19,7 @@ class String
 end
 
 # TODO handle XML entities and HTML
+# TODO don't mock %n
 def mock(string)
 	string.upcase
 end
@@ -31,7 +38,8 @@ class TsFileMocker
 	end
 
 	def output(lines)
-		puts lines.split(/\n\r?/).map { |line| "+++"+line }.join("\n")
+		puts lines.map_lines { |line| "+++"+line }
+		#puts lines
 	end
 
 	def copy(lines)
@@ -39,7 +47,7 @@ class TsFileMocker
 	end
 
 	def eat(lines)
-		puts lines.split(/\n\r?/).map { |line| "---"+line }.join("\n")
+		puts lines.map_lines { |line| "---"+line }
 	end
 
 	def processLine(line)
