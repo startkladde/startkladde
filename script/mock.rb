@@ -2,40 +2,7 @@
 
 # See http://doc.trolltech.com/qq/qq03-swedish-chef.html
 
-# Relevant cases:
-# Basic case:
-#    <message>
-#        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="68"/>
-#        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="70"/>
-#        <source>Battery: </source>
-#        <comment>With traling space</comment>
-#        <translation type="unfinished"></translation>
-#    </message>
-# Multiline text:
-#	<message>
-#        <source>Logging in as root failed. The given password
-#may not be correct.
-#Please enter the password for the database user root:</source>
-#        <translation type="unfinished"></translation>
-#    </message>
-# Numerus message:
-#	<message numerus="yes">
-#        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="128"/>
-#        <source>%1: %n flight(s)</source>
-#        <translation type="unfinished">
-#            <numerusform></numerusform>
-#        </translation>
-#    </message>
-#    <message numerus="yes">
-#        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="214"/>
-#        <source>%n flight(s) exported</source>
-#        <translation>
-#            <numerusform>%n Flug exportiert</numerusform>
-#            <numerusform>%n Flüge exportiert</numerusform>
-#        </translation>
-#    </message>
-
-# Souce may include:
+# Source may include:
 #   * Entities: <source>&amp;Encoding:</source>
 #   * HTML: <source>&lt;html&gt;Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person. &lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt; Continue?&lt;/html&gt;</source>
 
@@ -51,51 +18,87 @@ end
 
 puts "Mocking #{filename}"
 
-#data=File.read(filename)
-
-#regexp=/(<source>(.*)<\/source>.*<translation)[^>]*><\/translation>/m
-#regexp=/(<source>(.*?)<\/source>.*?<translation[^>]*?>)(<\/translation>)/m
-
+# TODO handle XML entities and HTML
 def mock(string)
 	string.upcase
 end
 
+source=''
+inSource=false
+inTranslation=false
+numerusMessage=false
 
-message=''
-messageComplete=false
-
+# line includes the trailing newline, this is important for assembling
+# multi-line messages
 File.open(filename).each { |line|
-	message=''
-	messageComplete=false
+	translationStart=false
+	translationEnd=false
 
-	if line =~ /^\s*<source>(.*)<\/source>\s*$/
+	if line =~ /^\s*<message/
+		# New message - reset message state
+		source=''
+		inSource=false
+		inTranslation=false
+		# Determine whether it is a numerus message
+		numerusMessage=!((line =~ /numerus="yes"/).nil?)
+
+	elsif line =~ /^\s*<source>(.*)<\/source>\s*$/
 		# Single-line source string
-		message=$1
-		messageComplete=true
-	elsif line =~ /^\s*<source>(.*)$/
-		message=$1
-		messageComplete=false
+		source=$1
+	elsif line =~ /^\s*<source>(.*)$/m
+		# Start of multi-line source string
+		source=$1
+		inSource=true
+	elsif line =~ /(.*)<\/source>\s*$/m
+		# End of multi-line translation
+		source+=$1
+		inSource=false
+	elsif inSource
+		# Middle of multi-line source string
+		source+=line
+
+	elsif line =~ /^\s*<translation.*type="unfinished".*>.*<\/translation>\s*$/
+		# Single-line translation (we're only interested in 'unfinished' ones)
+		translationStart=true
+		translationEnd=true
+	elsif line =~ /^\s*<translation.*type="unfinished"/
+		# Start of multi-line translation
+		translationStart=true
+		inTranslation=true
+	elsif line =~ /<\/translation>\s*$/ and inTranslation
+		# End of multi-line translation - only if we're in a translation,
+		# because a translation without type=unfinished does not count as a
+		# translation
+		translationEnd=true
+		inTranslation=false
 	end
 
-	puts line
+	# We may not be in a source and in a translation simultaneously
+	raise "inSource and inTranslation" if inSource && inTranslation
 
-	if messageComplete
-		puts "--- got message: #{message.inspect}"
+	# Put this check at the beginning instead of an else clause so we can
+	# output ---line for lines not copied - this is great for development
+	if !inTranslation && !translationStart && !translationEnd
+		# Copy the line
+		puts line
+	else
+		# Don't copy the line
+		puts "---#{line}"
+
+		if translationStart
+			# This handles both single and multi-line messages
+			# TODO handle numerusMessage
+			if numerusMessage
+				singularGuess=source.gsub('(s)', '')
+				pluralGuess  =source.gsub('(s)', 's')
+				puts "+++        <translation type=\"unfinished\">"
+				puts "+++            <numerusform>#{mock(singularGuess)}</numerusform>"
+				puts "+++            <numerusform>#{mock(pluralGuess)}</numerusform>"
+				puts "+++        </translation>"
+			else
+				puts "+++        <translation type=\"unfinished\">#{mock(source)}</translation>"
+			end
+		end
 	end
-
 }
-
-#data.gsub!(regexp) { |match|
-#	m1=$1
-#	m2=$2
-#	m3=$3
-#
-#	if match. =~ /&/i # FIXME properly handle & - don't touch XML entities (&xxx;), but do translate strings with &
-#		match
-#	else
-#		"#{m1}#{mock(m2)}#{m3}"
-#	end
-#}
-
-puts data
 

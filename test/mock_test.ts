@@ -11,53 +11,53 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Regular message (mock translated)</source>
-		<translation type="unfinished">Mock translation</translation>
+        <source>Regular message (already mock translated)</source>
+        <translation type="unfinished">Old mock translation</translation>
     </message>
     <message>
         <source>Regular message (manually translated)</source>
-		<translation>Manual translation</translation>
+        <translation>Manual translation</translation>
     </message>
 
-	<message>
+    <message>
         <source>Multi
 line
 message</source>
         <translation type="unfinished"></translation>
     </message>
-	<message>
-		<source>Multi line
+    <message>
+        <source>Multi line
 message
-(mock translated)</source>
-		<translation type="unfinished">Multi line
+(already mock translated)</source>
+        <translation type="unfinished">Old multi line
 mock
 translation</translation>
     </message>
-	<message>
-		<source>Multi line
+    <message>
+        <source>Multi line
 message
 (manually translated)</source>
-		<translation>Multi line
+        <translation>Multi line
 manual
 translation</translation>
     </message>
 
-	<message numerus="yes">
+    <message numerus="yes">
         <source>%n numerus message(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <source>%n numerus message(s) (mock translated)</source>
+        <source>%n numerus message(s) (already mock translated)</source>
         <translation type="unfinished">
-            <numerusform>%n mock translation</numerusform>
-            <numerusform>%n mock translation(s)</numerusform>
+            <numerusform>%n old mock translation</numerusform>
+            <numerusform>%n old mock translation(s)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>Numerus message(s) (manually translated)</source>
-		<translation>
+        <translation>
             <numerusform>%n manual translation</numerusform>
             <numerusform>%n manual translation(s)</numerusform>
         </translation>
