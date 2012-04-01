@@ -3,9 +3,6 @@
 require 'cgi'
 require 'pty'
 
-# Next:
-#   * call mock filter
-
 # See http://doc.trolltech.com/qq/qq03-swedish-chef.html
 
 ##########
