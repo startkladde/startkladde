@@ -1,17 +1,11 @@
 #!/usr/bin/env ruby
 
+require 'cgi'
+
 # Next:
-#   * output to file instead of stdout
-#   * configurable +++/---
-#   * entity/HTML/%n handling
 #   * call mock filter
 
 # See http://doc.trolltech.com/qq/qq03-swedish-chef.html
-
-# Source may include:
-#   * Entities: <source>&amp;Encoding:</source>
-#   * HTML: <source>&lt;html&gt;Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person. &lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt; Continue?&lt;/html&gt;</source>
-
 
 ##########
 ## Util ##
@@ -45,6 +39,18 @@ class PlainOutputter
 	def close; end
 end
 
+class FileOutputter
+	def initialize(filename)
+		@file=File.open(filename, 'w')
+	end
+
+	def output(lines); @file.puts lines; end
+	def copy  (lines); @file.puts lines; end
+	def eat   (lines); end
+	def close; @file.close; end
+end
+
+
 
 ###################
 ## String mocker ##
@@ -65,15 +71,32 @@ class QtStringMocker
 	end
 
 	def mock(string)
-		# TODO XML
-		# TODO HTML
-		# TODO %n
-		# TODO &
-		if string=~/&/
-			string
-		else
-			@mocker.mock(string)
-		end
+		string=CGI.unescapeHTML(string)
+
+		# TODO mnemonics (e. g. File&name)
+		re=/
+			([^<%]+) # A text - anything not containing a < or %
+		|
+			(< [^>]* >) # An HTML tag
+		|
+			(%.) # % followed by a single character
+		/x
+		string=string.scan(re).map { |text, html_tag, percent|
+			if text
+				#puts "    Text: #{text.inspect}"
+				@mocker.mock(text)
+			elsif html_tag
+				#puts "    HTML: #{html_tag.inspect}"
+				html_tag
+			elsif percent
+				#puts "    Percent: #{html_tag.inspect}"
+				percent
+			else
+				"???"
+			end
+		}.join
+
+		CGI.escapeHTML(string)
 	end
 end
 
@@ -186,8 +209,22 @@ end
 def testMocker
 	mocker=UpcaseStringMocker.new
 	mocker=QtStringMocker.new(mocker)
-	puts mocker.mock("foo")
-	puts mocker.mock("foo&lt;bar&gt;")
+	[
+		["foo"                                  , "FOO"                                  ],
+		["foo&amp;bar&amp;"                     , "FOO&amp;BAR&amp;"                     ],
+		["foo&lt;font&gt;bar"                   , "FOO&lt;font&gt;BAR"                   ],
+		["foo&lt;/font&gt;bar"                  , "FOO&lt;/font&gt;BAR"                  ],
+		["foo&lt;font size=&quot;x&quot;&gt;bar", "FOO&lt;font size=&quot;x&quot;&gt;BAR"],
+		["%n foo(s)"                            , "%n FOO(S)"                            ],
+		["", ""]
+	].each { |source, expected|
+		actual=mocker.mock(source)
+		if actual==expected
+			puts "OK - #{source} - #{actual}"
+		else
+			puts "fail - #{source} - #{actual}, expected #{expected}"
+		end
+	}
 end
 
 
@@ -198,23 +235,23 @@ end
 def help
 	puts "Usage:"
 	puts "    #{$0} --test"
-	puts "    #{$0} mock_filter filename.ts"
+	puts "    #{$0} [-o|--output filename] [-f|--filter mock_filter] filename.ts"
 	puts "Example: #{$0} 'tr [:lower:] [:upper:]' translations/startkladde_sc.ts"
 	exit 1
 end
 
 # Parse parameters
+test=false
+diff=false
+filenames=[]
 while arg=ARGV.shift
 	case arg
 	when '--test': test=true
+	when '--diff': diff=true
+	when '-f' , '--filter': filter=ARGV.shift; if filter.nil?; puts "Filter missing"; help; end
+	when '-o' , '--output': output=ARGV.shift; if output.nil?; puts "Output missing"; help; end
 	when /^-/: puts "Unknown parameter #{arg}"; help
-	else
-		filter=arg
-		filename=ARGV.shift
-		if !ARGV.empty?
-			puts "Extra parameters: #{ARGV}"
-			help
-		end
+	else filenames << arg
 	end
 end
 
@@ -223,25 +260,32 @@ if test
 	exit 0
 end
 
-if filter.blank?
-	puts "No filter specified"
+if filenames.empty?
+	puts "No files specified"
 	help
-elsif filename.blank?
-	puts "No file name specified"
+elsif filenames.size>1
+	puts "Too many file specified"
 	help
 end
 
+filename=filenames[0]
 if File.exist?(filename)
-	puts "Mocking #{filename}"
+	stringMocker=filter ? UpcaseStringMocker.new : UpcaseStringMocker.new
+	stringMocker=QtStringMocker.new(stringMocker)
 
-	stringMocker=UpcaseStringMocker.new
-	stringMocker=QtStringMocker.new(mocker)
-	outputter=DiffOutputter.new
+	if output.nil?
+		outputter=DiffOutputter.new
+	elsif output=="-"
+		outputter=PlainOutputter.new
+	else
+		outputter=FileOutputter.new(output)
+	end
 	fileMocker=TsFileMocker.new(stringMocker, outputter)
 
 	fileMocker.processFile(filename)
+
+	outputter.close
 else
 	puts "File #{filename} does not exist"
 end
-
 
