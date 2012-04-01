@@ -12,42 +12,86 @@
 #   * Entities: <source>&amp;Encoding:</source>
 #   * HTML: <source>&lt;html&gt;Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person. &lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt; Continue?&lt;/html&gt;</source>
 
+
+##########
+## Util ##
+##########
+
+class NilClass; def blank?; true  ; end; end
+class String  ; def blank?; empty?; end; end
+
 class String
 	def map_lines
 		self.split(/\n\r?/).map { |line| yield(line) }.join("\n")
 	end
 end
 
-# TODO handle XML entities and HTML
-# TODO don't mock %n
-def mock(string)
-	string.upcase
+
+###############
+## Outputter ##
+###############
+
+class DiffOutputter
+	def output(lines); puts lines.map_lines { |line| "+++"+line }; end
+	def copy  (lines); puts lines                                ; end
+	def eat   (lines); puts lines.map_lines { |line| "---"+line }; end
+	def close; end
 end
+
+class PlainOutputter
+	def output(lines); puts lines; end
+	def copy  (lines); puts lines; end
+	def eat   (lines); end
+	def close; end
+end
+
+
+###################
+## String mocker ##
+###################
+
+class UpcaseStringMocker
+	def mock(string)
+		string.upcase
+	end
+end
+
+# A wrapper for another String mocker, for filtering out XML entities, HTML
+# tags, %n and & mnemonics
+# Currently simply does not mock strings containing &
+class QtStringMocker
+	def initialize(mocker)
+		@mocker=mocker
+	end
+
+	def mock(string)
+		# TODO XML
+		# TODO HTML
+		# TODO %n
+		# TODO &
+		if string=~/&/
+			string
+		else
+			@mocker.mock(string)
+		end
+	end
+end
+
+
+#################
+## File mocker ##
+#################
 
 # Parses and mocks a .ts file
 class TsFileMocker
-	def initialize
+	def initialize(stringMocker, outputter)
+		@stringMocker=stringMocker
+		@outputter=outputter
+
 		@sourceString=''
 		@inSource=false
 		@inTranslation=false
 		@numerusMessage=false
-	end
-
-	def write(lines)
-		puts lines
-	end
-
-	def output(lines)
-		puts lines.map_lines { |line| "+++"+line }
-		#puts lines
-	end
-
-	def copy(lines)
-		puts lines
-	end
-
-	def eat(lines)
-		puts lines.map_lines { |line| "---"+line }
 	end
 
 	def processLine(line)
@@ -106,12 +150,12 @@ class TsFileMocker
 			if @numerusMessage
 				singularGuess=@sourceString.gsub('(s)', '')
 				pluralGuess  =@sourceString.gsub('(s)', 's')
-				output "        <translation type=\"unfinished\">"
-				output "            <numerusform>#{mock(singularGuess)}</numerusform>"
-				output "            <numerusform>#{mock(pluralGuess)}</numerusform>"
-				output "        </translation>"
+				@outputter.output "        <translation type=\"unfinished\">"
+				@outputter.output "            <numerusform>#{@stringMocker.mock(singularGuess)}</numerusform>"
+				@outputter.output "            <numerusform>#{@stringMocker.mock(pluralGuess)}</numerusform>"
+				@outputter.output "        </translation>"
 			else
-				output "        <translation type=\"unfinished\">#{mock(@sourceString)}</translation>"
+				@outputter.output "        <translation type=\"unfinished\">#{@stringMocker.mock(@sourceString)}</translation>"
 			end
 		elsif !@inTranslation && !translationEnd
 			copyLine=true
@@ -119,30 +163,85 @@ class TsFileMocker
 
 		# Copy the line if we determined to do so before
 		if copyLine
-			copy line
+			@outputter.copy line
 		else
-			eat line
+			@outputter.eat line
 		end
+	end
 
+	def processFile(filename)
+		# line includes the trailing newline, this is important for assembling
+		# multi-line messages
+		File.open(filename).each { |line|
+			self.processLine(line)
+		}
 	end
 end
 
-filter=ARGV[0]
-filename=ARGV[1]
 
-if filter.nil? or filter.empty? or filename.nil? or filename.empty?
-	puts "Usage: #{$0} filter_program filename.ts"
+##########
+## Test ##
+##########
+
+def testMocker
+	mocker=UpcaseStringMocker.new
+	mocker=QtStringMocker.new(mocker)
+	puts mocker.mock("foo")
+	puts mocker.mock("foo&lt;bar&gt;")
+end
+
+
+##########
+## Main ##
+##########
+
+def help
+	puts "Usage:"
+	puts "    #{$0} --test"
+	puts "    #{$0} mock_filter filename.ts"
 	puts "Example: #{$0} 'tr [:lower:] [:upper:]' translations/startkladde_sc.ts"
 	exit 1
 end
 
-puts "Mocking #{filename}"
+# Parse parameters
+while arg=ARGV.shift
+	case arg
+	when '--test': test=true
+	when /^-/: puts "Unknown parameter #{arg}"; help
+	else
+		filter=arg
+		filename=ARGV.shift
+		if !ARGV.empty?
+			puts "Extra parameters: #{ARGV}"
+			help
+		end
+	end
+end
 
-fileMocker=TsFileMocker.new
+if test
+	testMocker
+	exit 0
+end
 
-# line includes the trailing newline, this is important for assembling
-# multi-line messages
-File.open(filename).each { |line|
-	fileMocker.processLine line
-}
+if filter.blank?
+	puts "No filter specified"
+	help
+elsif filename.blank?
+	puts "No file name specified"
+	help
+end
+
+if File.exist?(filename)
+	puts "Mocking #{filename}"
+
+	stringMocker=UpcaseStringMocker.new
+	stringMocker=QtStringMocker.new(mocker)
+	outputter=DiffOutputter.new
+	fileMocker=TsFileMocker.new(stringMocker, outputter)
+
+	fileMocker.processFile(filename)
+else
+	puts "File #{filename} does not exist"
+end
+
 
