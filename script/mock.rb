@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'cgi'
+require 'pty'
 
 # Next:
 #   * call mock filter
@@ -50,6 +51,12 @@ class FileOutputter
 	def close; @file.close; end
 end
 
+class QuietOutputter
+	def output(lines); end
+	def copy  (lines); end
+	def eat   (lines); end
+	def close; end
+end
 
 
 ###################
@@ -59,6 +66,29 @@ end
 class UpcaseStringMocker
 	def mock(string)
 		string.upcase
+	end
+
+	def close
+	end
+end
+
+class ProcessMocker
+	def initialize(command)
+		@read,@write,@pid=PTY.spawn(command)
+	end
+
+	def mock(string)
+		string.lines.map { |line|
+			@write.puts line
+			@read.readline.chomp
+			result=@read.readline.chomp
+			result
+		}.join("\n")
+	end
+
+	def close
+		@read.close
+		@write.close
 	end
 end
 
@@ -97,6 +127,10 @@ class QtStringMocker
 		}.join
 
 		CGI.escapeHTML(string)
+	end
+
+	def close
+		@mocker.close
 	end
 end
 
@@ -225,6 +259,12 @@ def testMocker
 			puts "fail - #{source} - #{actual}, expected #{expected}"
 		end
 	}
+
+	#mocker=ProcessMocker.new ("sed s/[aeiou]/_/g")
+	mocker=ProcessMocker.new("~/dl/bork/chef")
+	puts mocker.mock("Hello world!")
+	puts mocker.mock("Hello\nworld!")
+	mocker.close
 end
 
 
@@ -236,8 +276,33 @@ def help
 	puts "Usage:"
 	puts "    #{$0} --test"
 	puts "    #{$0} [-o|--output filename] [-f|--filter mock_filter] filename.ts"
+	puts
 	puts "Example: #{$0} 'tr [:lower:] [:upper:]' translations/startkladde_sc.ts"
+	puts
+	puts "The filter must output exactly one line for each line input."
 	exit 1
+end
+
+def createStringMocker(filter)
+	if filter
+		stringMocker=ProcessMocker.new(filter)
+	else
+		stringMocker=UpcaseStringMocker.new
+	end
+
+	QtStringMocker.new(stringMocker)
+end
+
+def createOutputter(output)
+	if output.nil?
+		DiffOutputter.new
+	elsif output.empty?
+		QuietOutputter.new
+	elsif output=="-"
+		PlainOutputter.new
+	else
+		FileOutputter.new(output)
+	end
 end
 
 # Parse parameters
@@ -270,16 +335,8 @@ end
 
 filename=filenames[0]
 if File.exist?(filename)
-	stringMocker=filter ? UpcaseStringMocker.new : UpcaseStringMocker.new
-	stringMocker=QtStringMocker.new(stringMocker)
-
-	if output.nil?
-		outputter=DiffOutputter.new
-	elsif output=="-"
-		outputter=PlainOutputter.new
-	else
-		outputter=FileOutputter.new(output)
-	end
+	stringMocker=createStringMocker(filter)
+	outputter=createOutputter(output)
 	fileMocker=TsFileMocker.new(stringMocker, outputter)
 
 	fileMocker.processFile(filename)
