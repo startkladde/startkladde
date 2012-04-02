@@ -3,6 +3,7 @@
 
 #include "src/gui/SkDialog.h"
 #include "src/i18n/LanguageConfiguration.h"
+#include "src/plugin/weather/WeatherPlugin.h"
 
 #include "ui_SettingsWindow.h"
 
@@ -19,6 +20,7 @@ class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 		QStringList getPluginPaths ();
 
 	protected:
+		void prepareText ();
 		void setupText ();
 
 		void readSettings ();
@@ -69,6 +71,7 @@ class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 	private:
 		bool warned;
 		QList<InfoPlugin *> infoPlugins;
+		QList<const WeatherPlugin::Descriptor *> weatherPlugins;
 
 	public:
 		bool databaseSettingsChanged;

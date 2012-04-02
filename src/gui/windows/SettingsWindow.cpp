@@ -59,6 +59,9 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 
 	ui.setupUi (this);
 
+	prepareText ();
+	setupText ();
+
 	ui.dbTypePane->setVisible (false);
 
 	ui.languageInput->setSizeAdjustPolicy (QComboBox::AdjustToContents);
@@ -75,8 +78,6 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 
 	readSettings ();
 	updateWidgets ();
-
-	setupText ();
 }
 
 SettingsWindow::~SettingsWindow()
@@ -89,6 +90,23 @@ SettingsWindow::~SettingsWindow()
 // ** Setup **
 // ***********
 
+void SettingsWindow::prepareText ()
+{
+	weatherPlugins=PluginFactory::getInstance ().getDescriptors<WeatherPlugin> ();
+	qSort (weatherPlugins.begin (), weatherPlugins.end (), WeatherPlugin::Descriptor::nameLessThanP);
+
+	// Weather plugin lists
+	ui.weatherPluginInput      ->addItem (notr ("-"), QString ());
+	ui.weatherWindowPluginInput->addItem (notr ("-"), QString ());
+
+	foreach (const WeatherPlugin::Descriptor *descriptor, weatherPlugins)
+	{
+		QString id  =descriptor->getId   ();
+		ui.weatherPluginInput      ->addItem ("", id);
+		ui.weatherWindowPluginInput->addItem ("", id);
+	}
+}
+
 void SettingsWindow::setupText ()
 {
 	// Note that this label does not use wordWrap because it causes the minimum
@@ -97,6 +115,15 @@ void SettingsWindow::setupText ()
 		"The password protection can be removed by deleting or editing"
 		" the configuration file or registry key %1.")
 		.arg (QSettings ().fileName ()));
+
+	// Weather plugin lists
+	foreach (const WeatherPlugin::Descriptor *descriptor, weatherPlugins)
+	{
+		QString name=descriptor->getName ();
+		QString id  =descriptor->getId   ();
+		ui.weatherPluginInput      ->setItemTextByItemData (id, name);
+		ui.weatherWindowPluginInput->setItemTextByItemData (id, name);
+	}
 
 	// Required because we have a label with word wrap
 	adjustSize ();
@@ -166,19 +193,6 @@ void SettingsWindow::readSettings ()
 
 
 	// *** Plugins - Weather
-	// Plugin selection lists
-	ui.weatherPluginInput      ->addItem (notr ("-"), QString ());
-	ui.weatherWindowPluginInput->addItem (notr ("-"), QString ());
-
-	QList<const WeatherPlugin::Descriptor *> sortedPlugins (PluginFactory::getInstance ().getDescriptors<WeatherPlugin> ());
-	qSort (sortedPlugins.begin (), sortedPlugins.end (), WeatherPlugin::Descriptor::nameLessThanP);
-	foreach (const WeatherPlugin::Descriptor *descriptor, sortedPlugins)
-	{
-		QString name=descriptor->getName ();
-		QString id  =descriptor->getId   ();
-		ui.weatherPluginInput      ->addItem (name, id);
-		ui.weatherWindowPluginInput->addItem (name, id);
-	}
 
 	// Weather plugin
 	ui.weatherPluginBox          ->setChecked               (s.weatherPluginEnabled);
