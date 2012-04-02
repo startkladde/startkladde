@@ -357,7 +357,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -458,6 +458,9 @@
     <addaction name="actionSegfault"/>
     <addaction name="actionPingServer"/>
     <addaction name="actionTest"/>
+    <addaction name="separator"/>
+    <addaction name="changeLanguageAction"/>
+    <addaction name="timerBasedLanguageChangeAction"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -466,13 +469,6 @@
     <addaction name="actionInfo"/>
     <addaction name="actionNetworkDiagnostics"/>
    </widget>
-   <widget class="QMenu" name="translationMenu">
-    <property name="title">
-     <string>&amp;Translation</string>
-    </property>
-    <addaction name="changeLanguageAction"/>
-    <addaction name="timerBasedLanguageChangeAction"/>
-   </widget>
    <addaction name="menuProgram"/>
    <addaction name="menuFlight"/>
    <addaction name="menuView"/>
@@ -480,7 +476,6 @@
    <addaction name="menuDatabase"/>
    <addaction name="menuDebug"/>
    <addaction name="menuHelp"/>
-   <addaction name="translationMenu"/>
   </widget>
   <widget class="QDockWidget" name="logDockWidget">
    <property name="enabled">

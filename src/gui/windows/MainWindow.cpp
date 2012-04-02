@@ -528,7 +528,12 @@ void MainWindow::settingsChanged ()
 
 	setupText ();
 
-	ui.menuDebug     ->menuAction ()->setVisible (s.enableDebug);
+	ui.menuDebug->menuAction ()->setVisible (s.enableDebug);
+	// Even though the menu is invisible, we still need to disable the menu
+	// entries to disable their shortcuts.
+	ui.changeLanguageAction          ->setEnabled (s.enableDebug);
+	ui.timerBasedLanguageChangeAction->setEnabled (s.enableDebug);
+
 	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (s.diagCommand));
 
 	// Plugins
