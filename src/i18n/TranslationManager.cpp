@@ -26,7 +26,7 @@ TranslationManager *TranslationManager::theInstance;
 
 TranslationManager::TranslationManager ()
 {
-	translationsPath="translations";
+	translationsPath=QCoreApplication::applicationDirPath ()+"/translations";
 
 }
 
