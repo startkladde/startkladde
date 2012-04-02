@@ -60,7 +60,8 @@ void TranslationManager::install (QApplication *application)
 
 QList<TranslationManager::Language> TranslationManager::listLanguages ()
 {
-	QList<Language> result;
+	QList<Language> languages;
+	QList<Language> languagesWithoutName;
 
 	QStringList nameFilters=QStringList () << "*.qm";
 
@@ -83,14 +84,20 @@ QList<TranslationManager::Language> TranslationManager::listLanguages ()
 			// handles it), ignore the language (don't include it in the list),
 			// use locale name.
 			language.languageName=determineLanguageNameForLocale (localeName);
-			if (language.languageName.isEmpty ())
-				language.languageName=language.localeName;
 
-			result.append (language);
+			if (language.languageName.isEmpty ())
+			{
+				language.languageName=language.localeName;
+				languagesWithoutName.append (language);
+			}
+			else
+			{
+				languages.append (language);
+			}
 		}
 	}
 
-	return result;
+	return languages+languagesWithoutName;
 }
 
 QString TranslationManager::determineLanguageNameForLocale (const QString &localeName)
