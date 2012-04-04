@@ -1,11 +1,8 @@
 #!/usr/bin/env ruby
 
-# TODO:
-#   * diff option (write to temporary file and call diff program)
-#   * inplace option (write to temporary file and move)
-
 require 'cgi'
 require 'pty'
+require 'tempfile'
 
 # See http://doc.trolltech.com/qq/qq03-swedish-chef.html
 
@@ -260,12 +257,6 @@ def testMocker
 			puts "fail - #{source} - #{actual}, expected #{expected}"
 		end
 	}
-
-	#mocker=ProcessMocker.new ("sed s/[aeiou]/_/g")
-	mocker=ProcessMocker.new("~/dl/bork/chef")
-	puts mocker.mock("Hello world!")
-	puts mocker.mock("Hello\nworld!")
-	mocker.close
 end
 
 
@@ -275,10 +266,18 @@ end
 
 def help
 	puts "Usage:"
+	puts "    #{$0} [-f|--filter mock_filter] filename.ts"
+	puts "        Prints the file with added and removed lines"
+	puts "    #{$0} [-f|--filter mock_filter] [-o|--output filename] filename.ts"
+	puts "        Writes the result to filename or standard output if filename is -, or no output if filename is empty"
+	puts "    #{$0} [-f|--filter mock_filter] --diff filename.ts"
+	puts "        Shows a diff"
+	puts "    #{$0} [-f|--filter mock_filter] --inplace filename.ts"
+	puts "        Overwrites the input file in place"
 	puts "    #{$0} --test"
-	puts "    #{$0} [-o|--output filename] [-f|--filter mock_filter] filename.ts"
+	puts "        Runs integrated unit tests"
 	puts
-	puts "Example: #{$0} 'tr [:lower:] [:upper:]' translations/startkladde_sc.ts"
+	puts "Example: #{$0} -f 'tr [:lower:] [:upper:]' translations/startkladde_sc.ts"
 	puts
 	puts "The filter must output exactly one line for each line input."
 	exit 1
@@ -309,11 +308,13 @@ end
 # Parse parameters
 test=false
 diff=false
+inplace=false
 filenames=[]
 while arg=ARGV.shift
 	case arg
 	when '--test': test=true
 	when '--diff': diff=true
+	when '--inplace': inplace=true
 	when '-f' , '--filter': filter=ARGV.shift; if filter.nil?; puts "Filter missing"; help; end
 	when '-o' , '--output': output=ARGV.shift; if output.nil?; puts "Output missing"; help; end
 	when /^-/: puts "Unknown parameter #{arg}"; help
@@ -335,15 +336,34 @@ elsif filenames.size>1
 end
 
 filename=filenames[0]
-if File.exist?(filename)
-	stringMocker=createStringMocker(filter)
-	outputter=createOutputter(output)
-	fileMocker=TsFileMocker.new(stringMocker, outputter)
-
-	fileMocker.processFile(filename)
-
-	outputter.close
-else
+if !File.exist?(filename)
 	puts "File #{filename} does not exist"
+	exit 1
 end
+
+stringMocker=createStringMocker(filter)
+
+if diff
+	tempfile=Tempfile.new('mock')
+	outputter=FileOutputter.new(tempfile.path)
+	TsFileMocker.new(stringMocker, outputter).processFile(filename)
+	outputter.close
+	system "diff", "-u", filename, tempfile.path
+	tempfile.unlink
+elsif inplace
+	tempfile=Tempfile.new('mock')
+	outputter=FileOutputter.new(tempfile.path)
+	TsFileMocker.new(stringMocker, outputter).processFile(filename)
+	outputter.close
+	# Not using FileUtils.mv because that needs to change the permissions and
+	# this may not be possible on a shared filesystem.
+	File.open(filename, "w") { |file| file.print File.read(tempfile.path) }
+	tempfile.unlink
+else
+	outputter=createOutputter(output)
+	TsFileMocker.new(stringMocker, outputter).processFile(filename)
+	outputter.close
+end
+
+
 
