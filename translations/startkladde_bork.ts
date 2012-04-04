@@ -2328,10 +2328,6 @@ Edd it tu zee detebese-a?</translation>
 <context>
     <name>LaunchMethodSelectionWindowClass</name>
     <message>
-        <source>LaunchMethodSelectionWindow</source>
-        <translation type="obsolete">LoonchMethudSelecshunVeendoo</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/LaunchMethodSelectionWindow.ui" line="14"/>
         <source>Launch method preselection</source>
         <translation type="unfinished">Loonch methud preselecshun</translation>
@@ -2668,14 +2664,6 @@ Cunffeegooreshun: %2</translation>
         <translation type="unfinished">Deespleyed dete-a:</translation>
     </message>
     <message>
-        <source>Set display date</source>
-        <translation type="obsolete">Set deespley dete-a</translation>
-    </message>
-    <message>
-        <source>Display date:</source>
-        <translation type="obsolete">Deespley dete-a:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1690"/>
         <source>The database password must be entered to display the flight database.</source>
         <translation type="unfinished">Zee detebese-a pessvurd moost be-a intered tu deespley zee fleeght detebese-a.</translation>
@@ -2833,10 +2821,6 @@ Cunffeegooreshun: %2</translation>
         <location filename="../src/gui/windows/MainWindow.ui" line="467"/>
         <source>&amp;Help</source>
         <translation type="unfinished">&amp;Help</translation>
-    </message>
-    <message>
-        <source>&amp;Translation</source>
-        <translation type="obsolete">&amp;Trunsleshun</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="488"/>
@@ -3003,10 +2987,6 @@ Cunffeegooreshun: %2</translation>
         <location filename="../src/gui/windows/MainWindow.ui" line="672"/>
         <source>Sort by effective &amp;time (F9)</source>
         <translation type="unfinished">Surt by iffffecteefe-a &amp;teeme-a (F9)</translation>
-    </message>
-    <message>
-        <source>Set &amp;display date... (F10)</source>
-        <translation type="obsolete">Set &amp;deespley dete-a... (F10)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="677"/>
@@ -4373,13 +4353,9 @@ pessvurd moost be-a intered.</translation>
         <translation type="unfinished">Iff inebled, zee detebese-a pessvurd moost be-a intered tu mudeeffy loonch methuds</translation>
     </message>
     <message>
-        <source>R&amp;equire password to modify launch method&amp;s</source>
-        <translation type="obsolete">R&amp;iqooure-a pessvurd tu mudeeffy loonch methud&amp;s</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="327"/>
         <source>R&amp;equire password to modify launch methods</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">R&amp;iqooure-a pessvurd tu mudeeffy loonch methuds</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="334"/>
@@ -4414,12 +4390,12 @@ pessvurd moost be-a intered.</translation>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="392"/>
         <source>Require password to &amp;view medical dates</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Reqooure-a pessvurd tu &amp;feeoo medeecel detes</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="399"/>
         <source>Require password to c&amp;hange medical dates</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Reqooure-a pessvurd tu c&amp;hunge-a medeecel detes</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="409"/>
@@ -5035,16 +5011,6 @@ a refference-a lungeetoode-a is speceeffied in zee deta feele-a.</translation>
 <context>
     <name>Translation</name>
     <message>
-        <source>Default (English)</source>
-        <comment>Replace with the name of the translation language, in that language</comment>
-        <translation type="obsolete">Bork Bork Bork</translation>
-    </message>
-    <message>
-        <source>?</source>
-        <comment>Replace with the name of the translation language, in that language</comment>
-        <translation type="obsolete">?</translation>
-    </message>
-    <message>
         <location filename="../src/i18n/TranslationManager.cpp" line="265"/>
         <source> </source>
         <comment>Replace with the name of the translation language, in that language</comment>
@@ -5155,14 +5121,6 @@ a refference-a lungeetoode-a is speceeffied in zee deta feele-a.</translation>
         <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="84"/>
         <source>Error: radar image not found (404)</source>
         <translation type="unfinished">Irrur: reder imege-a nut fuoond (404)</translation>
-    </message>
-</context>
-<context>
-    <name>_Translation</name>
-    <message>
-        <source>?</source>
-        <comment>Replace with the name of the translation language, in that language</comment>
-        <translation type="obsolete">?</translation>
     </message>
 </context>
 <context>

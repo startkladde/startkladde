@@ -2336,10 +2336,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>LaunchMethodSelectionWindowClass</name>
     <message>
-        <source>LaunchMethodSelectionWindow</source>
-        <translation type="obsolete">LaunchMethodSelectionWindow</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/LaunchMethodSelectionWindow.ui" line="14"/>
         <source>Launch method preselection</source>
         <translation>Startart-Vorauswahl</translation>
@@ -2656,14 +2652,6 @@ Konfiguration: %2</translation>
         <translation>Fehler</translation>
     </message>
     <message>
-        <source>Set display date</source>
-        <translation type="obsolete">Anzeigedatum einstellen</translation>
-    </message>
-    <message>
-        <source>Display date:</source>
-        <translation type="obsolete">Anzeigedatum:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1711"/>
         <source>Database: %2 (%1)</source>
         <translation>Datenbank: %2 (%1)</translation>
@@ -2843,10 +2831,6 @@ Konfiguration: %2</translation>
         <location filename="../src/gui/windows/MainWindow.ui" line="467"/>
         <source>&amp;Help</source>
         <translation>&amp;Hilfe</translation>
-    </message>
-    <message>
-        <source>&amp;Translation</source>
-        <translation type="obsolete">Überse&amp;tzung</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="488"/>
@@ -3060,10 +3044,6 @@ Konfiguration: %2</translation>
         <location filename="../src/gui/windows/MainWindow.ui" line="667"/>
         <source>Always show &amp;erroneous flights</source>
         <translation>&amp;Fehlerhafte Flüge immer anzeigen</translation>
-    </message>
-    <message>
-        <source>Set &amp;display date... (F10)</source>
-        <translation type="obsolete">Anzeigedatum &amp;einstellen... (F10)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="688"/>
@@ -4189,14 +4169,6 @@ aktiviert werden.</translation>
 <context>
     <name>SettingsWindow</name>
     <message>
-        <source>Automatic (use system language)</source>
-        <translation type="obsolete">Automatisch (Systemeinstellung benutzen)</translation>
-    </message>
-    <message>
-        <source>No translation</source>
-        <translation type="obsolete">Keine Übersetzung</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.cpp" line="114"/>
         <source>The password protection can be removed by deleting or editing the configuration file or registry key %1.</source>
         <translation>Der Passwortschutz kann durch Löschen bzw. Bearbeiten der Konfigurationsdatei bzw. des Registry-Schlüssels %1 aufgehoben werden.</translation>
@@ -4438,10 +4410,6 @@ Datenbankpasswort erforderlich.</translation>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="308"/>
         <source>Record &amp;towpilot</source>
         <translation>Schlepppi&amp;lot erfassen</translation>
-    </message>
-    <message>
-        <source>R&amp;equire password to modify launch method&amp;s</source>
-        <translation type="obsolete">Passwort zum Ändern von &amp;Startarten erforderlich</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="337"/>
@@ -5057,25 +5025,10 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
 <context>
     <name>Translation</name>
     <message>
-        <source>Default (English)</source>
-        <comment>Replace with the name of the translation language, in that language</comment>
-        <translation type="obsolete">Deutsch</translation>
-    </message>
-    <message>
-        <source>?</source>
-        <comment>Replace with the name of the translation language, in that language</comment>
-        <translation type="obsolete">?</translation>
-    </message>
-    <message>
         <location filename="../src/i18n/TranslationManager.cpp" line="265"/>
         <source> </source>
         <comment>Replace with the name of the translation language, in that language</comment>
         <translation>Deutsch</translation>
-    </message>
-    <message>
-        <source>???</source>
-        <comment>Replace with the name of the translation language, in that language</comment>
-        <translation type="obsolete">Deutsch</translation>
     </message>
 </context>
 <context>
@@ -5182,14 +5135,6 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
         <location filename="../src/plugins/weather/WetterOnlineImagePlugin.cpp" line="84"/>
         <source>Error: radar image not found (404)</source>
         <translation>Fehler: Radarbild nicht gefunden (404)</translation>
-    </message>
-</context>
-<context>
-    <name>_Translation</name>
-    <message>
-        <source>?</source>
-        <comment>Replace with the name of the translation language, in that language</comment>
-        <translation type="obsolete">?</translation>
     </message>
 </context>
 <context>
