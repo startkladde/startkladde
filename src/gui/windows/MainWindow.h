@@ -217,6 +217,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void departOrLand ();
 
 		// Plugins
+		void restartPlugins ();
 		void weatherWidget_doubleClicked ();
 
 		// Timers

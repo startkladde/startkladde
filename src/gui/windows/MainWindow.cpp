@@ -411,6 +411,18 @@ void MainWindow::terminatePlugins ()
 	}
 }
 
+void MainWindow::restartPlugins ()
+{
+	if (weatherPlugin) weatherPlugin->restart ();
+	if (weatherDialog) weatherDialog->restartPlugin ();
+
+	foreach (InfoPlugin *plugin, infoPlugins)
+	{
+		plugin->terminate ();
+		plugin->start ();
+	}
+}
+
 
 // *************
 // ** Closing **
@@ -1289,14 +1301,7 @@ void MainWindow::on_actionJumpToTow_triggered ()
 
 void MainWindow::on_actionRestartPlugins_triggered ()
 {
-	if (weatherPlugin) weatherPlugin->restart ();
-	if (weatherDialog) weatherDialog->restartPlugin ();
-
-	foreach (InfoPlugin *plugin, infoPlugins)
-	{
-		plugin->terminate ();
-		plugin->start ();
-	}
+	restartPlugins ();
 }
 
 // **********
@@ -1996,6 +2001,8 @@ void MainWindow::languageChanged ()
 	// See the FlightModel class documentation
 	flightModel->updateTranslations ();
 	flightListModel->reset ();
+
+	restartPlugins ();
 
 	// Do not call this, we use stored column widths which would be overwritten.
 	//ui.flightTable->resizeColumnsToContents ();
