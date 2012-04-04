@@ -2551,12 +2551,12 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
         <source>Set displayed date</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzeigedatum einstellen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
         <source>Displayed date:</source>
-        <translation type="unfinished">Anzeigedatum:</translation>
+        <translation>Anzeigedatum:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1685"/>
@@ -3012,7 +3012,7 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="677"/>
         <source>Set &amp;displayed date... (F10)</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzeigedatum &amp;einstellen... (F10)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="699"/>

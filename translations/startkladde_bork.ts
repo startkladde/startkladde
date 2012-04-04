@@ -2656,7 +2656,7 @@ Cunffeegooreshun: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
         <source>Set displayed date</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Set deespleyed dete-a</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
@@ -3007,7 +3007,7 @@ Cunffeegooreshun: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="677"/>
         <source>Set &amp;displayed date... (F10)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Set &amp;deespleyed dete-a... (F10)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="688"/>
