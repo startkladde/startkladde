@@ -2648,7 +2648,7 @@ Cunffeegooreshun: %2</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1327"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1953"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1954"/>
         <source>Error</source>
         <translation type="unfinished">Irrur</translation>
     </message>
@@ -2706,32 +2706,32 @@ Cunffeegooreshun: %2</translation>
         <translation type="unfinished">Nu reply</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1910"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1911"/>
         <source>Database settings changed</source>
         <translation type="unfinished">Detebese-a setteengs chunged</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1912"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1913"/>
         <source>The database settings were changed. The changes will be effective on the next reconnect. Do you want to reconnect now?</source>
         <translation type="unfinished">Zee detebese-a setteengs vere-a chunged. Zee chunges veell be-a iffffecteefe-a oon zee next recunnect. Du yuoo vunt tu recunnect noo?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1934"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1935"/>
         <source>Set system time</source>
         <translation type="unfinished">Set system teeme-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1947"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1948"/>
         <source>System time changed</source>
         <translation type="unfinished">System teeme-a chunged</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1948"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1949"/>
         <source>The system time was changed. The setting may only be stored permanently when the system is shut down.</source>
         <translation type="unfinished">Zee system teeme-a ves chunged. Zee setteeng mey oonly be-a stured permunently vhee zee system is shoot doon.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1954"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1955"/>
         <source>Changing the system time failed. Maybe the user has insufficient permissions.</source>
         <translation type="unfinished">Chungeeng zee system teeme-a feeeled. Meybe-a zee user hes insooffffeecient permeessiuns.</translation>
     </message>
@@ -4167,7 +4167,7 @@ medeecels tu be-a checked, ineble-a zee oopshun
         <translation type="unfinished">Tveeddlethurpe-a</translation>
     </message>
     <message>
-        <location filename="../src/config/Settings.cpp" line="219"/>
+        <location filename="../src/config/Settings.cpp" line="221"/>
         <source>Weather radar (3 hours)</source>
         <translation type="unfinished">Veezeer reder (3 huoors)</translation>
     </message>
@@ -4180,21 +4180,21 @@ medeecels tu be-a checked, ineble-a zee oopshun
         <translation type="unfinished">Zee pessvurd prutecshun cun be-a remufed by deleteeng oor ideeting zee cunffeegooreshun feele-a oor regeestry key %1.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="550"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="554"/>
         <source>The (old) database password must be entered to save
 the settings.</source>
         <translation type="unfinished">Zee (oold) detebese-a pessvurd moost be-a intered tu sefe-a
 zee setteengs.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="552"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="556"/>
         <source>The database password must be entered to save
 the settings.</source>
         <translation type="unfinished">Zee detebese-a pessvurd moost be-a intered tu sefe-a
 zee setteengs.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="564"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="568"/>
         <source>Password protection of the settings is being enabled. The
 (new) database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -4205,7 +4205,7 @@ tu ineble-a zee prutecshun, yuoo cun cuncel noo und deeseble-a
 zee currespundeeng oopshun.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="571"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="575"/>
         <source>Password protection of the settings is being enabled. The
 database password must be entered. If you don&apos;t want
 to enable the protection, you can cancel now and disable
@@ -4216,12 +4216,12 @@ tu ineble-a zee prutecshun, yuoo cun cuncel noo und deeseble-a
 zee currespundeeng oopshun.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="597"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="601"/>
         <source>Settings protected</source>
         <translation type="unfinished">Setteengs prutected</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.cpp" line="597"/>
+        <location filename="../src/gui/windows/SettingsWindow.cpp" line="601"/>
         <source>The settings are protected. The settings
 can be changed, but to save them, the database
 password must be entered.</source>
@@ -4373,9 +4373,13 @@ pessvurd moost be-a intered.</translation>
         <translation type="unfinished">Iff inebled, zee detebese-a pessvurd moost be-a intered tu mudeeffy loonch methuds</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="327"/>
         <source>R&amp;equire password to modify launch method&amp;s</source>
-        <translation type="unfinished">R&amp;iqooure-a pessvurd tu mudeeffy loonch methud&amp;s</translation>
+        <translation type="obsolete">R&amp;iqooure-a pessvurd tu mudeeffy loonch methud&amp;s</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="327"/>
+        <source>R&amp;equire password to modify launch methods</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="334"/>
@@ -4408,164 +4412,174 @@ pessvurd moost be-a intered.</translation>
         <translation type="unfinished">Req&amp;uure-a pessvurd tu deespley zee &amp;fleeght detebese-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="395"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="392"/>
+        <source>Require password to &amp;view medical dates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="399"/>
+        <source>Require password to c&amp;hange medical dates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="409"/>
         <source>Diagnostics</source>
         <translation type="unfinished">Deeegnustics</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="401"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="415"/>
         <source>Enables some menu entries for error diagnostics</source>
         <translation type="unfinished">Inebles sume-a menoo intreees fur irrur deeegnustics</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="404"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="418"/>
         <source>Enable de&amp;bugging options</source>
         <translation type="unfinished">Ineble-a de-a&amp;booggeeng oopshuns</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="411"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="425"/>
         <source>Command to run when the menu item Help-Network diagnostics is selected</source>
         <translation type="unfinished">Cummund tu roon vhee zee menoo item Help-Netvurk deeegnustics is selected</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="418"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="432"/>
         <source>Command for network dia&amp;gnostics:</source>
         <translation type="unfinished">Cummund fur netvurk deea&amp;gnusteecs:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="445"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="459"/>
         <source>&amp;Info plugins</source>
         <translation type="unfinished">&amp;Inffu ploogeens</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="451"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="465"/>
         <source>The list of info plugins. Info-Plugins are displayed
 in the upper part of the main window.</source>
         <translation type="unfinished">Zee leest ooff inffu ploogeens. Inffu-Ploogeens ere-a deespleyed
 in zee upper pert ooff zee meeen veendoo.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="465"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="479"/>
         <source>Title</source>
         <comment>Info plugins table list header</comment>
         <translation type="unfinished">Teetle-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="468"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="482"/>
         <source>Title of the plugin; will be displayed in the main window</source>
         <translation type="unfinished">Teetle-a ooff zee ploogeen; veell be-a deespleyed in zee meeen veendoo</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="473"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="487"/>
         <source>Plugin</source>
         <comment>Info plugins table list header</comment>
         <translation type="unfinished">Ploogeen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="476"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="490"/>
         <source>Plugin command (with any parameters)</source>
         <translation type="unfinished">Ploogeen cummund (veet uny peremeters)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="481"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="495"/>
         <source>Active</source>
         <comment>Info plugins table list header</comment>
         <translation type="unfinished">Ecteefe-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="486"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="500"/>
         <source>Configuration</source>
         <comment>Info plugins table list header</comment>
         <translation type="unfinished">Cunffeegooreshun</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="519"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="533"/>
         <source>Add info plugin</source>
         <translation type="unfinished">Edd inffu ploogeen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="522"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="957"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="536"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="971"/>
         <source>+</source>
         <translation type="unfinished">+</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="535"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="549"/>
         <source>Removed selected info plugin</source>
         <translation type="unfinished">Remufed selected inffu ploogeen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="538"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="973"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="552"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="987"/>
         <source>-</source>
         <translation type="unfinished">-</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="551"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="565"/>
         <source>Move selected info plugin up</source>
         <translation type="unfinished">Mufe-a selected inffu ploogeen up</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="570"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="584"/>
         <source>Move selected info plugin down</source>
         <translation type="unfinished">Mufe-a selected inffu ploogeen doon</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="573"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="592"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="1008"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="587"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="606"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="1022"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="589"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="603"/>
         <source>Settings for selected info plugin</source>
         <translation type="unfinished">Setteengs fur selected inffu ploogeen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="616"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="630"/>
         <source>&amp;Weather plugin</source>
         <translation type="unfinished">&amp;Veezeer ploogeen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="622"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="636"/>
         <source>Weather plugin &amp;enabled</source>
         <translation type="unfinished">Veezeer ploogeen &amp;inebled</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="631"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="645"/>
         <source>&amp;Height:</source>
         <translation type="unfinished">&amp;Heeeght:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="641"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="655"/>
         <source>Height of the weather plugin in pixels</source>
         <translation type="unfinished">Heeeght ooff zee veezeer ploogeen in peexels</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="644"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="658"/>
         <source> pixels</source>
         <extracomment>With leading space</extracomment>
         <translation type="unfinished"> peexels</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="667"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="681"/>
         <source>&amp;Interval:</source>
         <translation type="unfinished">&amp;Interfel:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="677"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="691"/>
         <source>P&amp;lugin:</source>
         <translation type="unfinished">P&amp;loogeen:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="687"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="701"/>
         <source>Time between updates of the weather plugin</source>
         <translation type="unfinished">Teeme-a betveee updetes ooff zee veezeer ploogeen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="690"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="801"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="704"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="815"/>
         <source> minutes</source>
         <extracomment>With leading space
 ----------
@@ -4573,100 +4587,100 @@ With leading space</extracomment>
         <translation type="unfinished"> meenootes</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="716"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="730"/>
         <source>Co&amp;mmand:</source>
         <translation type="unfinished">Cu&amp;mmund:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="732"/>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="853"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="746"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="867"/>
         <source>The program to execute. Programs in the plugin path can be specified without path.</source>
         <translation type="unfinished">Zee prugrem tu ixecoote-a. Prugrems in zee ploogeen pet cun be-a speceeffied veethuoot pet.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="739"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="753"/>
         <source>&amp;Browse</source>
         <translation type="unfinished">&amp;Broose-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="752"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="766"/>
         <source>Weather wi&amp;ndow enabled</source>
         <translation type="unfinished">Veezeer vee&amp;ndoo inebled</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="761"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="775"/>
         <source>Pl&amp;ugin:</source>
         <translation type="unfinished">Pl&amp;ugeen:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="771"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="785"/>
         <source>&amp;Title:</source>
         <translation type="unfinished">&amp;Teetle-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="781"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="795"/>
         <source>Title of the weather window</source>
         <translation type="unfinished">Teetle-a ooff zee veezeer veendoo</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="788"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="802"/>
         <source>Inter&amp;val:</source>
         <translation type="unfinished">Inter&amp;fel:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="798"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="812"/>
         <source>Time between updates of the picture in the weather window</source>
         <translation type="unfinished">Teeme-a betveee updetes ooff zee peectoore-a in zee veezeer veendoo</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="824"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="838"/>
         <source>The weather window can be opened by double-clicking the weather plugin.</source>
         <translation type="unfinished">Zee veezeer veendoo cun be-a oopened by duooble-a-cleecking zee veezeer ploogeen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="837"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="851"/>
         <source>Comm&amp;and:</source>
         <translation type="unfinished">Cumm&amp;und:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="860"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="874"/>
         <source>B&amp;rowse</source>
         <translation type="unfinished">B&amp;roose-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="887"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="901"/>
         <source>&amp;Plugin path</source>
         <translation type="unfinished">&amp;Ploogeen pet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="893"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="907"/>
         <source>Directories to look for plugins in (in the order given).
 Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to the current directory (e. g. .startkladde/plugins).</source>
         <translation type="unfinished">Durectureees tu luuk fur ploogeens in (in zee oorder geefee).
 Durecturyeees cun be-a ebsuloote-a (i. g. /fer/leeb/stertkledde-a/ploogeens oor releteefe-a tu zee coorrent durectury (i. g. .stertkledde-a/ploogeens).</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="910"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="924"/>
         <source>Directories to look for plugins in</source>
         <translation type="unfinished">Durectureees tu luuk fur ploogeens in</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="954"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="968"/>
         <source>Add plugin path</source>
         <translation type="unfinished">Edd ploogeen pet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="970"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="984"/>
         <source>Remove selected plugin path</source>
         <translation type="unfinished">Remufe-a selected ploogeen pet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="986"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="1000"/>
         <source>Move selected plugin path up</source>
         <translation type="unfinished">Mufe-a selected ploogeen pet up</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="1005"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="1019"/>
         <source>Move selected plugin path down</source>
         <translation type="unfinished">Mufe-a selected ploogeen pet doon</translation>
     </message>

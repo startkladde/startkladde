@@ -54,6 +54,8 @@ class Settings: public QObject
 		bool protectLaunchMethods;
 		bool protectMergePeople;
 		bool protectFlightDatabase;
+		bool protectViewMedicals;
+		bool protectChangeMedicals;
 		// Diagnostics
 		bool enableDebug;
 		QString diagCommand;

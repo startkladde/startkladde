@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>557</width>
-    <height>565</height>
+    <width>520</width>
+    <height>621</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -324,7 +324,7 @@
              <string>If enabled, the database password must be entered to modify launch methods</string>
             </property>
             <property name="text">
-             <string>R&amp;equire password to modify launch method&amp;s</string>
+             <string>R&amp;equire password to modify launch methods</string>
             </property>
            </widget>
           </item>
@@ -383,6 +383,20 @@
             </property>
             <property name="text">
              <string>Req&amp;uire password to display the &amp;flight database</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QCheckBox" name="protectViewMedicalsCheckbox">
+            <property name="text">
+             <string>Require password to &amp;view medical dates</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QCheckBox" name="protectChangeMedicalsCheckbox">
+            <property name="text">
+             <string>Require password to c&amp;hange medical dates</string>
             </property>
            </widget>
           </item>

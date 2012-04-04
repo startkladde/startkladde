@@ -174,6 +174,8 @@ void SettingsWindow::readSettings ()
 	ui.protectLaunchMethodsCheckbox ->setChecked (s.protectLaunchMethods);
 	ui.protectMergePeopleCheckbox   ->setChecked (s.protectMergePeople);
 	ui.protectFlightDatabaseCheckbox->setChecked (s.protectFlightDatabase);
+	ui.protectViewMedicalsCheckbox  ->setChecked (s.protectViewMedicals);
+	ui.protectChangeMedicalsCheckbox->setChecked (s.protectChangeMedicals);
 	// Diagnostics
 	ui.enableDebugCheckbox->setChecked (s.enableDebug);
 	ui.diagCommandInput   ->setText    (s.diagCommand);
@@ -249,6 +251,8 @@ void SettingsWindow::writeSettings ()
 	s.protectLaunchMethods =ui.protectLaunchMethodsCheckbox ->isChecked ();
 	s.protectMergePeople   =ui.protectMergePeopleCheckbox   ->isChecked ();
 	s.protectFlightDatabase=ui.protectFlightDatabaseCheckbox->isChecked ();
+	s.protectViewMedicals  =ui.protectViewMedicalsCheckbox  ->isChecked ();
+	s.protectChangeMedicals=ui.protectChangeMedicalsCheckbox->isChecked ();
 	// Diagnostics
 	s.enableDebug=ui.enableDebugCheckbox->isChecked ();
 	s.diagCommand=ui.diagCommandInput   ->text ();

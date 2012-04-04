@@ -196,10 +196,12 @@ void Settings::readSettings ()
 	recordTowpilot=s.value (notr ("recordTowpilot"), true            ).toBool ();
 	checkMedicals =s.value (notr ("checkMedicals") , true            ).toBool ();
 	// Permissions
-	protectSettings      =s.value (notr ("protectSettings")      , false).toBool ();
-	protectLaunchMethods =s.value (notr ("protectLaunchMethods") , false).toBool ();
-	protectMergePeople   =s.value (notr ("protectMergePeople")   , false).toBool ();
+	protectSettings      =s.value (notr ("protectSettings"      ), false).toBool ();
+	protectLaunchMethods =s.value (notr ("protectLaunchMethods" ), false).toBool ();
+	protectMergePeople   =s.value (notr ("protectMergePeople"   ), false).toBool ();
 	protectFlightDatabase=s.value (notr ("protectFlightDatabase"), false).toBool ();
+	protectViewMedicals  =s.value (notr ("protectViewMedicals"  ), false).toBool ();
+	protectChangeMedicals=s.value (notr ("protectChangeMedicals"), false).toBool ();
 	// Diagnostics
 	enableDebug=s.value (notr ("enableDebug"), false       ).toBool ();
 	diagCommand=s.value (notr ("diagCommand"), notr ("./script/netztest_xterm")).toString (); // xterm -e ./netztest &
@@ -264,10 +266,12 @@ void Settings::writeSettings ()
 	s.setValue (notr ("recordTowpilot"), recordTowpilot);
 	s.setValue (notr ("checkMedicals") , checkMedicals );
 	// Permissions
-	s.setValue (notr ("protectSettings")      , protectSettings      );
-	s.setValue (notr ("protectLaunchMethods") , protectLaunchMethods );
-	s.setValue (notr ("protectMergePeople")   , protectMergePeople   );
+	s.setValue (notr ("protectSettings"      ), protectSettings      );
+	s.setValue (notr ("protectLaunchMethods" ), protectLaunchMethods );
+	s.setValue (notr ("protectMergePeople"   ), protectMergePeople   );
 	s.setValue (notr ("protectFlightDatabase"), protectFlightDatabase);
+	s.setValue (notr ("protectViewMedicals"  ), protectViewMedicals  );
+	s.setValue (notr ("protectChangeMedicals"), protectChangeMedicals);
 	// Diagnostics
 	s.setValue (notr ("enableDebug"), enableDebug);
 	s.setValue (notr ("diagCommand"), diagCommand);
