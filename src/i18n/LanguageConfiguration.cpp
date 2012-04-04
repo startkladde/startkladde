@@ -120,4 +120,7 @@ QString LanguageConfiguration::toString () const
 		case noTranslation  : return notr ("no translation"); break;
 		// No default
 	}
+
+	// Should not happen, all types should be handled above
+	return "";
 }
