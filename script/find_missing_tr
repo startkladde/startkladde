@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+# TODO:
+#   * better test cases
+#   * parsing: non-line-based, with preprocessing
+
 # Finds lines containing strings without tr(), notr() or qnotr().
 # Usage:
 #   find_missing_tr file, file, ... - process files
@@ -158,15 +162,15 @@ def preprocess(data)
 
 	# Remove one-argument tr functions
 	re=/
-		(                             # Group 1
-			[^\w]                     #   Non-word character, so it doesn't match, e. g., fauxtr
-			(tr|notr|qnotr|qnotrUtf8) #   Any of the tr functions
-			\s*                       #   There may be a newline here
-			\(                        #   Opening parenthesis
-			\s*                       #   There may be a newline here
-			" [^"]* "                 #   Quoted string
-			\s*                       #   There may be a newline here
-			\)                        #   Closing parenthesis
+		(                                  # Group 1
+			[^\w]                          #   Non-word character, so it doesn't match, e. g., fauxtr
+			(tr|notr|qnotr|qnotrUtf8|QDir) #   Any of the tr functions
+			\s*                            #   There may be a newline here
+			\(                             #   Opening parenthesis
+			\s*                            #   There may be a newline here
+			" [^"]* "                      #   Quoted string
+			\s*                            #   There may be a newline here
+			\)                             #   Closing parenthesis
 		)
 		/x
 	data.gsub!(re) { only_newlines($1) }
@@ -388,6 +392,12 @@ if ARGV==['-t']
 elsif ARGV==['-a']
 #	`find . -iname *.cpp`
 	system("find . -iname \\*.cpp -o -iname \\*.h |grep -v moc_ |grep -v migrations/Migration_ |grep -v ./build/ |grep -v '\\./test/' |xargs #{$0}")
+elsif ARGV.empty?
+	puts "Usage:"
+	puts "#{$0} -a (process automatically found files)"
+	puts "#{$0} -t (run integrated unit tests)"
+	puts "#{$0} files..."
+	exit 1
 else
 	process_files ARGV
 end

@@ -2655,13 +2655,21 @@ Cunffeegooreshun: %2</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
-        <source>Set display date</source>
-        <translation type="unfinished">Set deespley dete-a</translation>
+        <source>Set displayed date</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
+        <source>Displayed date:</source>
+        <translation type="unfinished">Deespleyed dete-a:</translation>
+    </message>
+    <message>
+        <source>Set display date</source>
+        <translation type="obsolete">Set deespley dete-a</translation>
+    </message>
+    <message>
         <source>Display date:</source>
-        <translation type="unfinished">Deespley dete-a:</translation>
+        <translation type="obsolete">Deespley dete-a:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1685"/>
@@ -2993,9 +3001,13 @@ Cunffeegooreshun: %2</translation>
         <translation type="unfinished">Surt by iffffecteefe-a &amp;teeme-a (F9)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="677"/>
         <source>Set &amp;display date... (F10)</source>
-        <translation type="unfinished">Set &amp;deespley dete-a... (F10)</translation>
+        <translation type="obsolete">Set &amp;deespley dete-a... (F10)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="677"/>
+        <source>Set &amp;displayed date... (F10)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="688"/>
@@ -5015,7 +5027,7 @@ a refference-a lungeetoode-a is speceeffied in zee deta feele-a.</translation>
         <translation type="obsolete">?</translation>
     </message>
     <message>
-        <location filename="../src/i18n/TranslationManager.cpp" line="116"/>
+        <location filename="../src/i18n/TranslationManager.cpp" line="265"/>
         <source> </source>
         <comment>Replace with the name of the translation language, in that language</comment>
         <translation>Bork Bork Bork</translation>

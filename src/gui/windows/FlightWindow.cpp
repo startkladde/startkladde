@@ -105,12 +105,12 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	ui.setupUi (this);
 
 	// Create, add and connect the "now" button
-	nowButton=new QPushButton ("[Now]");
+	nowButton=new QPushButton (notr ("[Now]"));
 	ui.buttonBox->addButton (nowButton, QDialogButtonBox::AcceptRole);
 	QObject::connect (nowButton, SIGNAL (clicked ()), this, SLOT (nowButton_clicked ()));
 
 	// Create, add and connect the "later" button
-	laterButton=new QPushButton ("[Later]");
+	laterButton=new QPushButton (notr ("[Later]"));
 	ui.buttonBox->addButton (laterButton, QDialogButtonBox::AcceptRole);
 	QObject::connect (laterButton, SIGNAL (clicked ()), this, SLOT (laterButton_clicked ()));
 

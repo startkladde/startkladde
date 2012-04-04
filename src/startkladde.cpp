@@ -407,7 +407,7 @@ int main (int argc, char **argv)
 		// value).
 		if (languageConfiguration.getType ()==LanguageConfiguration::manualSelection)
 		{
-			std::cout << "Loading the manually specified translation failed, using system language instead" << std::endl;
+			std::cout << notr ("Loading the manually specified translation failed, using system language instead") << std::endl;
 
 			LanguageConfiguration languageConfiguration (LanguageConfiguration::systemLanguage);
 			Settings::instance ().languageConfiguration=languageConfiguration;

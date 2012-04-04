@@ -2549,6 +2549,16 @@ Konfiguration: %2</translation>
         <translation>Beim Ausführen der Netzwerkdiagnose ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
+        <source>Set displayed date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
+        <source>Displayed date:</source>
+        <translation type="unfinished">Anzeigedatum:</translation>
+    </message>
+    <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1685"/>
         <source>The database password must be entered to display the flight database.</source>
         <translation>Zum Anzeigen der Flugdatenbank muss das Datenbankpasswort eingegeben werden.</translation>
@@ -2642,14 +2652,12 @@ Konfiguration: %2</translation>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
         <source>Set display date</source>
-        <translation>Anzeigedatum einstellen</translation>
+        <translation type="obsolete">Anzeigedatum einstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
         <source>Display date:</source>
-        <translation>Anzeigedatum:</translation>
+        <translation type="obsolete">Anzeigedatum:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1706"/>
@@ -3002,6 +3010,11 @@ Konfiguration: %2</translation>
         <translation>&amp;Plugins neu starten</translation>
     </message>
     <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="677"/>
+        <source>Set &amp;displayed date... (F10)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="699"/>
         <source>Always use &amp;current date for new flights</source>
         <translation>Für neue Flüge immer &amp;aktuelles Datum verwenden</translation>
@@ -3045,9 +3058,8 @@ Konfiguration: %2</translation>
         <translation>&amp;Fehlerhafte Flüge immer anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="677"/>
         <source>Set &amp;display date... (F10)</source>
-        <translation>Anzeigedatum &amp;einstellen... (F10)</translation>
+        <translation type="obsolete">Anzeigedatum &amp;einstellen... (F10)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="688"/>
@@ -5037,7 +5049,7 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
         <translation type="obsolete">?</translation>
     </message>
     <message>
-        <location filename="../src/i18n/TranslationManager.cpp" line="116"/>
+        <location filename="../src/i18n/TranslationManager.cpp" line="265"/>
         <source> </source>
         <comment>Replace with the name of the translation language, in that language</comment>
         <translation>Deutsch</translation>

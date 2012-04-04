@@ -37,7 +37,7 @@ LanguageConfiguration::LanguageConfiguration (const QVariant &value)
 			case systemLanguage: this->type=systemLanguage; break;
 			case noTranslation:  this->type=noTranslation; break;
 			default:
-				std::cerr << "Invalid language choice " << value.toString () << " in LanguageConfiguration::LanguageConfiguration" << std::endl;
+				std::cerr << notr ("Invalid language choice ") << value.toString () << notr (" in LanguageConfiguration::LanguageConfiguration") << std::endl;
 				this->type=systemLanguage;
 		}
 	}
@@ -49,7 +49,7 @@ LanguageConfiguration::~LanguageConfiguration ()
 
 void LanguageConfiguration::load (QSettings &settings)
 {
-	QString typeString=settings.value ("type", "systemLanguage").toString ();
+	QString typeString=settings.value (notr ("type"), notr ("systemLanguage")).toString ();
 	if (typeString==notr ("manualSelection"))
 	{
 		type=manualSelection;

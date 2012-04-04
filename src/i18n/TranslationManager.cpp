@@ -29,7 +29,7 @@ TranslationManager *TranslationManager::theInstance;
 TranslationManager::TranslationManager ()
 {
 	// Set up the translation path
-	translationPath << QCoreApplication::applicationDirPath ()+"/translations"; // Application directory/translations
+	translationPath << QCoreApplication::applicationDirPath ()+notr ("/translations"); // Application directory/translations
 	translationPath << QLibraryInfo::location (QLibraryInfo::TranslationsPath); // Qt translations directory
 #ifdef Q_OS_UNIX
 	translationPath << QDir ("/usr/share/startkladde/translations");
@@ -74,7 +74,7 @@ void TranslationManager::install (QApplication *application)
 // FIXME required?
 QString TranslationManager::localeNameFromFilename (const QString &filename)
 {
-	QRegExp regexp ("startkladde_(.*)\\.qm");
+	QRegExp regexp (notr ("startkladde_(.*)\\.qm"));
 	if (regexp.exactMatch (filename))
 		return regexp.cap (1);
 	else
@@ -91,7 +91,7 @@ QStringList TranslationManager::listTranslationFiles ()
 	QStringList filenames;
 
 	QStringList nameFilters;
-	nameFilters << "startkladde_*.qm";
+	nameFilters << notr ("startkladde_*.qm");
 
 	foreach (const QDir &dir, translationPath)
 		filenames.append (dir.entryList (nameFilters, QDir::Files));
@@ -101,7 +101,7 @@ QStringList TranslationManager::listTranslationFiles ()
 
 bool TranslationManager::loadTranslation (QTranslator &translator, const QString &prefix, const QString &localeName)
 {
-	QString filename=prefix+"_"+localeName+".qm";
+	QString filename=prefix+notr ("_")+localeName+notr (".qm");
 
 	// Look in all directories of the translation path until the translation
 	// has been found
@@ -111,17 +111,17 @@ bool TranslationManager::loadTranslation (QTranslator &translator, const QString
 		// filename specified because the translator tries to shorten the
 		// filename if the file does not exist, e. g. from startkladde_de_DE.qm
 		// to startkladde_de.qm.
-		std::cout << "Trying to load " << filename << " from " << dir.path () << "...";
+		std::cout << qnotr ("Trying to load %1 from %2...").arg (filename, dir.path ());
 		if (translator.load (filename, dir.path ()))
 		{
 			// Loading succeeded. Return success.
-			std::cout << "OK" << std::endl;
+			std::cout << notr ("OK") << std::endl;
 			return true;
 		}
 		else
 		{
 			// Loading failed. Continue trying.
-			std::cout << "failed" << std::endl;
+			std::cout << notr ("failed") << std::endl;
 		}
 	}
 
@@ -146,7 +146,7 @@ bool TranslationManager::unload (bool force)
 	if (currentLocale!="" || force)
 	{
 		// Output a message
-		std::cout << "Unloading translation" << std::endl;
+		std::cout << notr ("Unloading translation") << std::endl;
 
 		appTranslator.load ("");
 		qtTranslator .load ("");
@@ -172,14 +172,14 @@ bool TranslationManager::loadForLocale (const QString &localeName, bool force)
 		return true;
 
 	// Output a message
-	std::cout << "Loading translation for " << localeName << std::endl;
+	std::cout << notr ("Loading translation for ") << localeName << std::endl;
 
 	// Load the application translation
-	if (loadTranslation (appTranslator, "startkladde", localeName))
+	if (loadTranslation (appTranslator, notr ("startkladde"), localeName))
 	{
 		// Loading the application translation succeeded, load the Qt
 		// translation (ignore failure)
-		loadTranslation (qtTranslator, "qt", localeName);
+		loadTranslation (qtTranslator, notr ("qt"), localeName);
 
 		// Store the loaded locale name
 		currentLocale=localeName;
@@ -259,13 +259,13 @@ void TranslationManager::toggleLanguage ()
 QString TranslationManager::determineLanguageNameForLocale (const QString &localeName)
 {
 	QTranslator translator;
-	loadTranslation (translator, "startkladde", localeName);
+	loadTranslation (translator, notr ("startkladde"), localeName);
 
 	struct { const char *source; const char *comment; } languageString=
 		QT_TRANSLATE_NOOP3("Translation", " ",
 			"Replace with the name of the translation language, in that language");
 
-	return translator.translate ("Translation", languageString.source);
+	return translator.translate (notr ("Translation"), languageString.source);
 }
 
 
@@ -297,11 +297,11 @@ QList<TranslationManager::Language> TranslationManager::listLanguages ()
 		}
 	}
 
-	std::cout << "Found languages:" << std::endl;
+	std::cout << notr ("Found languages:") << std::endl;
 	foreach (const Language &language, languages)
-		std::cout << QString ("  * %1 (%2)").arg (language.languageName, language.localeName) << std::endl;
+		std::cout << qnotr ("  * %1 (%2)").arg (language.languageName, language.localeName) << std::endl;
 	foreach (const Language &language, languagesWithoutName)
-		std::cout << QString ("  * %1").arg (language.localeName) << std::endl;
+		std::cout << qnotr ("  * %1").arg (language.localeName) << std::endl;
 
 	return languages+languagesWithoutName;
 }
