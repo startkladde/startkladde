@@ -33,17 +33,19 @@
  *   - allow repeating of towflights
  */
 
-#include <QtGui/QMainWindow>
+#include <QAction>
 #include <QPointer>
 #include <QPersistentModelIndex>
 
 #include "ui_MainWindow.h"
 
 #include "src/db/DbManager.h"
+#include "src/gui/SkMainWindow.h"
 
 class QWidget;
 template<class T> class QList;
 class QModelIndex;
+
 class FlightSortFilterProxyModel;
 class InfoPlugin;
 class WeatherPlugin;
@@ -61,9 +63,9 @@ template<class T> class ObjectListModel;
  *     it's performed anyway, and that way the user can be told why someting
  *     is not possible.
  */
-class MainWindow: public QMainWindow
+class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 {
-	Q_OBJECT
+		Q_OBJECT
 
 	public:
 		MainWindow (QWidget *parent);
@@ -74,6 +76,7 @@ class MainWindow: public QMainWindow
 		bool confirmAndExit (int returnCode, QString title, QString text);
 
 		// Setup
+		void setupText ();
 		void setupPlugins ();
 		void setupLabels ();
 		void setupLayout ();
@@ -108,6 +111,13 @@ class MainWindow: public QMainWindow
 		// Plugins
 		void setupPlugin (InfoPlugin *plugin, QGridLayout *pluginLayout);
 		void terminatePlugins ();
+
+		// Translation
+		virtual void languageChanged ();
+
+		void updateDisplayDateLabel (const QDate &today=QDate::currentDate ());
+		void updateTimeLabels (const QDateTime &now=QDateTime::currentDateTime ());
+		void updateDatabaseStateLabel (DbManager::State state);
 
 	signals:
 		void minuteChanged ();
@@ -207,6 +217,7 @@ class MainWindow: public QMainWindow
 		void departOrLand ();
 
 		// Plugins
+		void restartPlugins ();
 		void weatherWidget_doubleClicked ();
 
 		// Timers
@@ -216,12 +227,20 @@ class MainWindow: public QMainWindow
 		void cacheChanged (DbEvent event);
 		void executingQuery (Query);
 
+		// Translation
+		void on_changeLanguageAction_triggered ();
+		void on_timerBasedLanguageChangeAction_triggered ();
+
 		void logMessage (QString message);
 
 		void flightListChanged ();
 
 	private:
-		Ui::MainWindowClass ui;
+		// TODO move to translation manager?
+		QTimer *translationTimer;
+
+		QAction *logAction;
+
 		bool oldLogVisible;
 
 		DbManager dbManager;

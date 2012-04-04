@@ -4,6 +4,7 @@
 
 #include "src/version.h"
 #include "src/util/qString.h"
+#include "src/i18n/notr.h"
 
 // TODO multiple lines in message area
 // TODO Klick auf labels schließen
@@ -11,7 +12,7 @@
 SplashScreen::SplashScreen (QWidget *parent):
 	QDialog (parent, Qt::CustomizeWindowHint|Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::Window)
 {
-	QPixmap pixmap (":/graphics/logo.png");
+	QPixmap pixmap (notr (":/graphics/logo.png"));
 
 	setModal(true);
 
@@ -34,7 +35,7 @@ SplashScreen::SplashScreen (QWidget *parent):
     lbl_version->setLineWidth (1);
     lbl_version->setMidLineWidth (1);
 	lbl_version->setFrameStyle (QFrame::Panel | QFrame::Sunken);
-//	lbl_version->setFont (QFont ("Fixed[misc]", 9));
+//	lbl_version->setFont (QFont (notr ("Fixed[misc]"), 9));
 	lbl_version->setAutoFillBackground (true);
 	{
 	QPalette palette=lbl_version->palette ();
@@ -51,14 +52,14 @@ SplashScreen::SplashScreen (QWidget *parent):
     lbl_status->setLineWidth (1);
     lbl_status->setMidLineWidth (1);
 	lbl_status->setFrameStyle (QFrame::Panel | QFrame::Sunken);
-//	lbl_status->setFont (QFont ("Fixed[misc]", 9));
+//	lbl_status->setFont (QFont (notr ("Fixed[misc]"), 9));
 	{
 	QPalette palette=lbl_status->palette ();
 	palette.setColor (QPalette::Background, QColor (0, 0, 0));
 	palette.setColor (QPalette::Foreground, QColor (255, 255, 255));
 	lbl_status->setPalette (palette);
 	}
-	lbl_status->setText ("Hauptflugbuch");
+	lbl_status->setText (tr ("Flight log"));
 	lbl_status->move (0, lbl_picture->height ()+lbl_version->height ());
 	lbl_status->adjustSize ();
 	lbl_status->resize (lbl_picture->width (), lbl_status->height ());
@@ -136,7 +137,7 @@ void SplashScreen::set_status (QString s)
 	 *   - s: the text to set.
 	 */
 {
-	std::cout << "Status: " << s << std::endl;
+	std::cout << notr ("Status: ") << s << std::endl;
 	status_text=s;
 	lbl_status->setText (status_text);
 	qApp->processEvents ();
@@ -152,7 +153,7 @@ void SplashScreen::set_progress (int i, int n)
 {
 	i_string.setNum (i);
 	n_string.setNum (n);
-	lbl_status->setText (status_text+" ("+i_string+"/"+n_string+")");
+	lbl_status->setText (status_text+notr (" (")+i_string+notr ("/")+n_string+notr (")"));
 	qApp->processEvents ();
 }
 

@@ -25,6 +25,9 @@ class WetterOnlineAnimationPlugin: public WeatherPlugin
 
 		void downloadSucceeded (int state, QNetworkReply *reply);
 		void downloadFailed    (int state, QNetworkReply *reply, QNetworkReply::NetworkError code);
+
+	protected slots:
+		void languageChanged ();
 };
 
 #endif

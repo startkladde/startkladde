@@ -35,32 +35,37 @@
 #include "src/util/qString.h"
 #include "src/util/qList.h"
 #include "src/gui/dialogs.h"
+#include "src/i18n/notr.h"
+#include "src/i18n/TranslationManager.h"
 
 #include "src/plugins/weather/ExternalWeatherPlugin.h"
-
-//const int columnTitle=0;
-//const int columnCommand=1;
-//const int columnEnabled=2;
-//const int columnRichText=3;
-//const int columnInterval=4;
-//const int columnWarnOnDeath=5;
 
 const int captionColumn=0;
 const int    nameColumn=1;
 const int enabledColumn=2;
 const int  configColumn=3;
 
+
+// ******************
+// ** Construction **
+// ******************
+
 SettingsWindow::SettingsWindow (QWidget *parent):
-	QDialog (parent),
+	SkDialog<Ui::SettingsWindowClass> (parent),
 	warned (false),
 	databaseSettingsChanged (false)
 {
 	// TODO there should be a warning if the settings can't be saved without a password
 
 	ui.setupUi (this);
-	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
+
+	prepareText ();
+	setupText ();
 
 	ui.dbTypePane->setVisible (false);
+
+	ui.languageInput->setSizeAdjustPolicy (QComboBox::AdjustToContents);
+	ui.languageInput->setLanguageItems (TranslationManager::instance ().listLanguages ());
 
 	// Make boolean columns and some other columns read-only
 	// The title column is read-only because we would have to write back the
@@ -71,10 +76,6 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	ui.infoPluginList->setItemDelegateForColumn (enabledColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
 	ui.infoPluginList->setItemDelegateForColumn ( configColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
 
-	// Note that this label does not use wordWrap because it causes the minimum
-	// size of the label not to work properly.
-	ui.passwordMessageLabel->setText (ui.passwordMessageLabel->text ().arg (QSettings ().fileName ()));
-
 	readSettings ();
 	updateWidgets ();
 }
@@ -84,13 +85,68 @@ SettingsWindow::~SettingsWindow()
 	deleteList (infoPlugins);
 }
 
-void SettingsWindow::on_buttonBox_accepted ()
+
+// ***********
+// ** Setup **
+// ***********
+
+void SettingsWindow::prepareText ()
 {
-	if (allowEdit ())
+	weatherPlugins=PluginFactory::getInstance ().getDescriptors<WeatherPlugin> ();
+	qSort (weatherPlugins.begin (), weatherPlugins.end (), WeatherPlugin::Descriptor::nameLessThanP);
+
+	// Weather plugin lists
+	ui.weatherPluginInput      ->addItem (notr ("-"), QString ());
+	ui.weatherWindowPluginInput->addItem (notr ("-"), QString ());
+
+	foreach (const WeatherPlugin::Descriptor *descriptor, weatherPlugins)
 	{
-		writeSettings ();
-		close ();
+		QString id  =descriptor->getId   ();
+		ui.weatherPluginInput      ->addItem ("", id);
+		ui.weatherWindowPluginInput->addItem ("", id);
 	}
+}
+
+void SettingsWindow::setupText ()
+{
+	// Note that this label does not use wordWrap because it causes the minimum
+	// size of the label not to work properly.
+	ui.passwordMessageLabel->setText (tr (
+		"The password protection can be removed by deleting or editing"
+		" the configuration file or registry key %1.")
+		.arg (QSettings ().fileName ()));
+
+	// Weather plugin lists
+	foreach (const WeatherPlugin::Descriptor *descriptor, weatherPlugins)
+	{
+		QString name=descriptor->getName ();
+		QString id  =descriptor->getId   ();
+		ui.weatherPluginInput      ->setItemTextByItemData (id, name);
+		ui.weatherWindowPluginInput->setItemTextByItemData (id, name);
+	}
+
+	// Required because we have a label with word wrap
+	adjustSize ();
+}
+
+
+// **************
+// ** Settings **
+// **************
+
+void SettingsWindow::readItem (QTreeWidgetItem *item, const InfoPlugin *plugin)
+{
+	item->setData       (captionColumn, Qt::DisplayRole, plugin->getCaption ());
+	item->setData       (   nameColumn, Qt::DisplayRole, plugin->getName ());
+	item->setCheckState (enabledColumn, plugin->isEnabled ()?Qt::Checked:Qt::Unchecked);
+	item->setData       ( configColumn, Qt::DisplayRole, plugin->configText ());
+
+	item->setFlags (item->flags () | Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
+}
+
+void SettingsWindow::makeItemEditable (QListWidgetItem *item)
+{
+	item->setFlags (item->flags () | Qt::ItemIsEditable);
 }
 
 void SettingsWindow::readSettings ()
@@ -107,6 +163,8 @@ void SettingsWindow::readSettings ()
 	ui.mysqlDatabaseInput      ->setText    (info.database);
 
 	// *** Settings
+	// UI
+	ui.languageInput->setCurrentItem (s.languageConfiguration);
 	// Data
 	ui.locationInput         ->setText    (s.location);
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
@@ -135,19 +193,6 @@ void SettingsWindow::readSettings ()
 
 
 	// *** Plugins - Weather
-	// Plugin selection lists
-	ui.weatherPluginInput      ->addItem ("-", QString ());
-	ui.weatherWindowPluginInput->addItem ("-", QString ());
-
-	QList<const WeatherPlugin::Descriptor *> sortedPlugins (PluginFactory::getInstance ().getDescriptors<WeatherPlugin> ());
-	qSort (sortedPlugins.begin (), sortedPlugins.end (), WeatherPlugin::Descriptor::nameLessThanP);
-	foreach (const WeatherPlugin::Descriptor *descriptor, sortedPlugins)
-	{
-		QString name=descriptor->getName ();
-		QString id  =descriptor->getId   ();
-		ui.weatherPluginInput      ->addItem (name, id);
-		ui.weatherWindowPluginInput->addItem (name, id);
-	}
 
 	// Weather plugin
 	ui.weatherPluginBox          ->setChecked               (s.weatherPluginEnabled);
@@ -177,21 +222,6 @@ void SettingsWindow::readSettings ()
 	updateWidgets ();
 }
 
-void SettingsWindow::readItem (QTreeWidgetItem *item, const InfoPlugin *plugin)
-{
-	item->setData       (captionColumn, Qt::DisplayRole, plugin->getCaption ());
-	item->setData       (   nameColumn, Qt::DisplayRole, plugin->getName ());
-	item->setCheckState (enabledColumn, plugin->isEnabled ()?Qt::Checked:Qt::Unchecked);
-	item->setData       ( configColumn, Qt::DisplayRole, plugin->configText ());
-
-	item->setFlags (item->flags () | Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
-}
-
-void SettingsWindow::makeItemEditable (QListWidgetItem *item)
-{
-	item->setFlags (item->flags () | Qt::ItemIsEditable);
-}
-
 void SettingsWindow::writeSettings ()
 {
 	Settings &s=Settings::instance ();
@@ -208,6 +238,8 @@ void SettingsWindow::writeSettings ()
 	info.database   =ui.mysqlDatabaseInput      ->text ();
 
 	// *** Settings
+	// Language
+	s.languageConfiguration=ui.languageInput->getSelectedLanguageConfiguration ();
 	// Data
 	s.location      =ui.locationInput         ->text ();
 	s.recordTowpilot=ui.recordTowpilotCheckbox->isChecked ();
@@ -267,10 +299,10 @@ QStringList SettingsWindow::getPluginPaths ()
 	return pluginPaths;
 }
 
-void SettingsWindow::updateWidgets ()
-{
-	ui.mysqlPortInput->setEnabled (!ui.mysqlDefaultPortCheckBox->isChecked ());
-}
+
+// *****************
+// ** Plugin path **
+// *****************
 
 void SettingsWindow::on_addPluginPathButton_clicked ()
 {
@@ -322,8 +354,9 @@ void SettingsWindow::on_pluginPathDownButton_clicked ()
 }
 
 
-
-
+// ******************
+// ** Info plugins **
+// ******************
 
 void SettingsWindow::on_addInfoPluginButton_clicked ()
 {
@@ -339,7 +372,7 @@ void SettingsWindow::on_addInfoPluginButton_clicked ()
 
 	if (plugin)
 	{
-		plugin->setCaption (plugin->getName ()+":");
+		plugin->setCaption (plugin->getName ()+notr (":"));
 		int settingsDialogResult=PluginSettingsDialog::invoke (plugin, this, this);
 
 		if (settingsDialogResult==QDialog::Accepted)
@@ -424,6 +457,72 @@ void SettingsWindow::on_infoPluginList_itemDoubleClicked (QTreeWidgetItem *item,
 	on_infoPluginSettingsButton_clicked ();
 }
 
+
+// *********************
+// ** Weather plugins **
+// *********************
+
+void SettingsWindow::on_weatherPluginInput_currentIndexChanged ()
+{
+	bool external=(ui.weatherPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
+	ui.weatherPluginCommandLabel->setEnabled (external);
+	ui.weatherPluginCommandInput->setEnabled (external);
+	ui.browseWeatherPluginCommandButton->setEnabled (external);
+}
+
+void SettingsWindow::on_weatherWindowPluginInput_currentIndexChanged ()
+{
+	bool external=(ui.weatherWindowPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
+	ui.weatherWindowCommandLabel->setEnabled (external);
+	ui.weatherWindowCommandInput->setEnabled (external);
+	ui.browseWeatherWindowCommandButton->setEnabled (external);
+}
+
+void SettingsWindow::on_browseWeatherPluginCommandButton_clicked ()
+{
+	QString filename=Plugin::browse (ui.weatherPluginCommandInput->text (), notr ("*"), getPluginPaths (), this);
+
+	if (!filename.isEmpty ())
+		ui.weatherPluginCommandInput->setText (filename);
+}
+
+void SettingsWindow::on_browseWeatherWindowCommandButton_clicked ()
+{
+	QString filename=Plugin::browse (ui.weatherWindowCommandInput->text (), notr ("*"), getPluginPaths (), this);
+
+	if (!filename.isEmpty ())
+		ui.weatherWindowCommandInput->setText (filename);
+}
+
+
+
+// *************
+// ** Closing **
+// *************
+
+void SettingsWindow::reject ()
+{
+	SkDialog<Ui::SettingsWindowClass>::reject ();
+	// Load the original language. Nothing will happen if the language did not
+	// change.
+	TranslationManager::instance ().load (Settings::instance ().languageConfiguration);
+}
+
+void SettingsWindow::on_buttonBox_accepted ()
+{
+	if (allowEdit ())
+	{
+		writeSettings ();
+		close ();
+	}
+}
+
+
+
+// **********
+// ** Misc **
+// **********
+
 /**
  * Determines whether the settings may be stored.
  *
@@ -447,8 +546,10 @@ bool SettingsWindow::allowEdit ()
 		// the password.
 		// If the password was also changed, clarify that the user must enter
 		// the *old* password.
-		message=utf8 ("Zum Speichern der Einstellungen ist das %1Datenbankpasswort\n"
-			"erforderlich.").arg (passwordChanged?"(alte) ":"");
+		if (passwordChanged)
+			message=tr ("The (old) database password must be entered to save\nthe settings.");
+		else
+			message=tr ("The database password must be entered to save\nthe settings.");
 		requiredPassword=oldPassword;
 	}
 	else if (ui.protectSettingsCheckbox->isChecked ())
@@ -459,12 +560,20 @@ bool SettingsWindow::allowEdit ()
 		// without having a way to disable it again.
 		// If the password was also changed, clarify that the user must enter
 		// the *new* password.
-		message=utf8 (
-			"Der Passwortschutz der Einstellungen wird aktiviert. Dazu ist das\n"
-			"%1Datenbankpasswort erforderlich. Fall der Schutz nicht aktiviert\n"
-			"werden soll, kann jetzt abgebrochen und die entsprechende Option\n"
-			"deaktiviert werden."
-			).arg (passwordChanged?"(neue) ":"");
+		if (passwordChanged)
+			message=tr (
+				"Password protection of the settings is being enabled. The\n"
+				"(new) database password must be entered. If you don't want\n"
+				"to enable the protection, you can cancel now and disable\n"
+				"the corresponding option."
+				);
+		else
+			message=tr (
+				"Password protection of the settings is being enabled. The\n"
+				"database password must be entered. If you don't want\n"
+				"to enable the protection, you can cancel now and disable\n"
+				"the corresponding option."
+				);
 		requiredPassword=newPassword;
 	}
 	else
@@ -485,44 +594,12 @@ void SettingsWindow::warnEdit ()
 	if (!Settings::instance ().protectSettings) return;
 	if (warned) return;
 
-	showWarning (utf8 ("Einstellungen geschützt"), utf8 (
-		"Achtung: Die Einstellungen sind geschützt. Die Einstellungen\n" /*utf8*/
-		"können geändert werden, aber zum Speichern ist das\n" /*utf8*/
-		"Datenbankpasswort erforderlich."), this);
+	showWarning (tr ("Settings protected"), tr (
+		"The settings are protected. The settings\n"
+		"can be changed, but to save them, the database\n"
+		"password must be entered."), this);
 
 	warned=true;
-}
-
-void SettingsWindow::on_weatherPluginInput_currentIndexChanged ()
-{
-	bool external=(ui.weatherPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
-	ui.weatherPluginCommandLabel->setEnabled (external);
-	ui.weatherPluginCommandInput->setEnabled (external);
-	ui.browseWeatherPluginCommandButton->setEnabled (external);
-}
-
-void SettingsWindow::on_weatherWindowPluginInput_currentIndexChanged ()
-{
-	bool external=(ui.weatherWindowPluginInput->currentItemData ().toString ()==ExternalWeatherPlugin::_getId ());
-	ui.weatherWindowCommandLabel->setEnabled (external);
-	ui.weatherWindowCommandInput->setEnabled (external);
-	ui.browseWeatherWindowCommandButton->setEnabled (external);
-}
-
-void SettingsWindow::on_browseWeatherPluginCommandButton_clicked ()
-{
-	QString filename=Plugin::browse (ui.weatherPluginCommandInput->text (), "*", getPluginPaths (), this);
-
-	if (!filename.isEmpty ())
-		ui.weatherPluginCommandInput->setText (filename);
-}
-
-void SettingsWindow::on_browseWeatherWindowCommandButton_clicked ()
-{
-	QString filename=Plugin::browse (ui.weatherWindowCommandInput->text (), "*", getPluginPaths (), this);
-
-	if (!filename.isEmpty ())
-		ui.weatherWindowCommandInput->setText (filename);
 }
 
 void SettingsWindow::showEvent (QShowEvent *event)
@@ -535,3 +612,28 @@ void SettingsWindow::showEvent (QShowEvent *event)
 	if (!event->spontaneous ())
 		warnEdit ();
 }
+
+void SettingsWindow::languageChanged ()
+{
+	SkDialog<Ui::SettingsWindowClass>::languageChanged ();
+	setupText ();
+	for (int i=0, n=ui.infoPluginList->columnCount (); i<n; ++i)
+		ui.infoPluginList->resizeColumnToContents (i);
+}
+
+// Use the "activated" signal rather than the "currentIndexChanged" signal to
+// avoid loading another language on startup, before the index has been set to
+// the current setting. This does have the disadvantage of being called when the
+// same setting as before is selected.
+void SettingsWindow::on_languageInput_activated (int index)
+{
+	// Load the selected language
+	LanguageConfiguration languageConfiguration=ui.languageInput->getLanguageConfiguration (index);
+	TranslationManager::instance ().load (languageConfiguration);
+
+}
+void SettingsWindow::updateWidgets ()
+{
+	ui.mysqlPortInput->setEnabled (!ui.mysqlDefaultPortCheckBox->isChecked ());
+}
+

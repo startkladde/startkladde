@@ -12,6 +12,8 @@
 #include <QList>
 #include <QVariant>
 
+#include "src/i18n/notr.h"
+
 class QSqlQuery;
 
 class Query
@@ -37,7 +39,7 @@ class Query
 		static Query selectDistinctColumns (const QStringList &tables, const QString     &column , bool excludeEmpty=false);
 		static Query selectDistinctColumns (const QString     &table , const QStringList &columns, bool excludeEmpty=false);
 
-		static Query select (const QString &table, const QString &columns="*");
+		static Query select (const QString &table, const QString &columns=notr ("*"));
 		static Query count (const QString &table);
 		static Query count (const QString &table, const Query &condition);
 

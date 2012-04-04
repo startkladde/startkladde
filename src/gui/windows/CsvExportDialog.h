@@ -1,10 +1,11 @@
 #ifndef CSVEXPORTDIALOG_H
 #define CSVEXPORTDIALOG_H
 
-#include <QtGui/QDialog>
+#include "src/gui/SkDialog.h"
+
 #include "ui_CsvExportDialog.h"
 
-class CsvExportDialog : public QDialog
+class CsvExportDialog: public SkDialog<Ui::CsvExportDialogClass>
 {
     Q_OBJECT
 
@@ -22,8 +23,6 @@ class CsvExportDialog : public QDialog
 
 	private:
     	void addCodecEntry (int mib);
-
-    	Ui::CsvExportDialogClass ui;
 
     	int selectedMib;
 };

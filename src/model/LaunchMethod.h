@@ -1,6 +1,7 @@
 #ifndef LAUNCHMETHOD_H_
 #define LAUNCHMETHOD_H_
 
+#include <QApplication>
 #include <QString>
 #include <QStringList>
 #include <QMetaType>
@@ -59,9 +60,9 @@ class LaunchMethod: public Entity
 
 
 		// *** ObjectListWindow/ObjectEditorWindow helpers
-		static QString objectTypeDescription () { return "Startart"; }
-		static QString objectTypeDescriptionDefinite () { return "die Startart"; }
-		static QString objectTypeDescriptionPlural () { return "Startarten"; }
+		static QString objectTypeDescription () { return qApp->translate ("LaunchMethod", "launch method"); }
+		static QString objectTypeDescriptionDefinite () { return qApp->translate ("LaunchMethod", "the launch method"); }
+		static QString objectTypeDescriptionPlural () { return qApp->translate ("LaunchMethod", "launch methods"); }
 
 
 		// *** SQL interface

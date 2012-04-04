@@ -11,13 +11,16 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Plugin auswählen</string>
+   <string>Select plugin</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="messageLabel">
      <property name="text">
-      <string>Bitte das hinzuzufügende Plugin auswählen:</string>
+      <string>Select the &amp;plugin to add:</string>
+     </property>
+     <property name="buddy">
+      <cstring>pluginList</cstring>
      </property>
     </widget>
    </item>
@@ -33,7 +36,7 @@
      </column>
      <column>
       <property name="text">
-       <string>Beschreibung</string>
+       <string>Description</string>
       </property>
      </column>
     </widget>

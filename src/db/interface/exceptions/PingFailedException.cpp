@@ -1,6 +1,7 @@
 #include "PingFailedException.h"
 
 #include "src/io/AnsiColors.h"
+#include "src/i18n/notr.h"
 
 PingFailedException::PingFailedException (const QSqlError &error):
 	SqlException (error)
@@ -19,14 +20,14 @@ void PingFailedException::rethrow () const
 
 QString PingFailedException::toString () const
 {
-	return makeString (QString ("Ping failed:"));
+	return makeString (qnotr ("Ping failed:"));
 }
 
 QString PingFailedException::colorizedString () const
 {
 	AnsiColors c;
 
-	return makeColorizedString (QString (
+	return makeColorizedString (qnotr (
 		"%1Ping failed%2:")
 		.arg (c.red ()).arg (c.reset ())
 		);

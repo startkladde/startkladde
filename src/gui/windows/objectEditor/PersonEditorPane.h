@@ -25,8 +25,10 @@ class PersonEditorPane: public ObjectEditorPane<Person>
 		void on_checkMedicalInput_currentIndexChanged ();
 
 	protected:
-		virtual void fillData ();
+		virtual void loadData ();
+		virtual void setupText ();
 		QDate getEffectiveMedicalValidity ();
+		virtual void changeEvent (QEvent *event);
 
 	private:
 		Ui::PersonEditorPaneClass ui;

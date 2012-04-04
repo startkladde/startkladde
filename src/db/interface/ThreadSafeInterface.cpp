@@ -17,6 +17,7 @@
 #include "src/db/result/CopiedResult.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/db/interface/exceptions/PingFailedException.h"
+#include "src/i18n/notr.h"
 
 // ******************
 // ** Construction **
@@ -79,9 +80,9 @@ ThreadSafeInterface::~ThreadSafeInterface ()
 	delete interface;
 	thread.quit ();
 
-	std::cout << "Waiting for interface worker thread to terminate..." << std::flush;
-	if (thread.wait (1000)) std::cout << "OK"      << std::endl;
-	else                    std::cout << "Timeout" << std::endl;
+	std::cout << notr ("Waiting for interface worker thread to terminate...") << std::flush;
+	if (thread.wait (1000)) std::cout << notr ("OK")      << std::endl;
+	else                    std::cout << notr ("Timeout") << std::endl;
 }
 
 

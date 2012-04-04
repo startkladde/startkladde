@@ -21,7 +21,10 @@ class MetarPlugin: public InfoPlugin
 		SK_PLUGIN
 
 	public:
-		MetarPlugin (const QString &caption=QString (), bool enabled=true, const QString &airport="EDDF", int refreshInterval=15*60);
+		// TODO plugins should have enabled as last parameter and no default
+		// for others. Problem: InfoPlugin::DefaultDescriptor wants to
+		// default-construct plugins.
+		MetarPlugin (const QString &caption=QString (), bool enabled=true, const QString &airport="", int refreshInterval=15*60);
 		virtual ~MetarPlugin ();
 
 		virtual void start ();
@@ -49,6 +52,9 @@ class MetarPlugin: public InfoPlugin
 	public slots:
 		void downloadSucceeded (int state, QNetworkReply *reply);
 		void downloadFailed    (int state, QNetworkReply *reply, QNetworkReply::NetworkError code);
+
+	protected slots:
+		void languageChanged ();
 
 	private slots:
 		void refresh ();

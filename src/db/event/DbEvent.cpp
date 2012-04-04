@@ -11,6 +11,8 @@
 #include <iostream>
 #include <cassert>
 
+#include "src/i18n/notr.h"
+
 class Plane;
 class Flight;
 class Person;
@@ -30,7 +32,7 @@ class LaunchMethod;
 DbEvent::DbEvent ():
 	type (typeChange), table (tablePeople), id (invalidId)
 {
-	assert (!"DbEvent default constructor called");
+	assert (!notr ("DbEvent default constructor called"));
 }
 
 DbEvent::DbEvent (Type type, Table table, dbId id, const QVariant &value):
@@ -42,7 +44,7 @@ DbEvent::DbEvent (Type type, Table table, dbId id, const QVariant &value):
 
 QString DbEvent::toString () const
 {
-	return QString ("db_event (type: %1, table: %2, id: %3)")
+	return qnotr ("db_event (type: %1, table: %2, id: %3)")
 		.arg (typeString (type), tableString (table)).arg (id);
 }
 
@@ -50,28 +52,28 @@ QString DbEvent::typeString (DbEvent::Type type)
 {
 	switch (type)
 	{
-		case typeAdd    : return "add";
-		case typeDelete : return "delete";
-		case typeChange : return "change";
+		case typeAdd    : return notr ("add");
+		case typeDelete : return notr ("delete");
+		case typeChange : return notr ("change");
 		// no default
 	}
 
-	assert (!"Unhandled type");
-	return "?";
+	assert (!notr ("Unhandled type"));
+	return notr ("?");
 }
 
 QString DbEvent::tableString (DbEvent::Table table)
 {
 	switch (table)
 	{
-		case tablePeople: return "people";
-		case tableFlights: return "flights";
-		case tableLaunchMethods: return "launch methods";
-		case tablePlanes: return "planes";
+		case tablePeople: return notr ("people");
+		case tableFlights: return notr ("flights");
+		case tableLaunchMethods: return notr ("launch methods");
+		case tablePlanes: return notr ("planes");
 	}
 
-	assert (!"Unhandled table");
-	return "?";
+	assert (!notr ("Unhandled table"));
+	return notr ("?");
 }
 
 // Specialize

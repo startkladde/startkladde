@@ -81,7 +81,7 @@ class Flight: public FlightBase
 		// *** Crew
 		virtual QString pilotDescription () const;
 		virtual QString copilotDescription () const;
-		virtual QString towpilotDescription () const { return "Schlepppilot"; }
+		virtual QString towpilotDescription () const { return qApp->translate ("Flight", "Towpilot"); }
 
 		virtual bool pilotSpecified    () const;
 		virtual bool copilotSpecified  () const;
@@ -186,9 +186,9 @@ class Flight: public FlightBase
 
 
 		// *** ObjectListWindow/ObjectEditorWindow helpers
-		static QString objectTypeDescription () { return "Flug"; }
-		static QString objectTypeDescriptionDefinite () { return "der Flug"; }
-		static QString objectTypeDescriptionPlural () { return utf8 ("Flüge"); }
+		static QString objectTypeDescription () { return qApp->translate ("Flight", "flight"); }
+		static QString objectTypeDescriptionDefinite () { return qApp->translate ("Flight", "the flight"); }
+		static QString objectTypeDescriptionPlural () { return qApp->translate ("Flight", "flights"); }
 
 
 		// *** SQL interface

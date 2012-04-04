@@ -30,6 +30,9 @@ class SunsetPluginSettingsPane: public PluginSettingsPane
 		virtual void updateReferenceLongitudeLabel ();
 		virtual void updateReferenceLongitudeNoteLabel ();
 
+	protected:
+		virtual void changeEvent (QEvent *event);
+
 	private:
 		Ui::SunsetPluginSettingsPaneClass ui;
 

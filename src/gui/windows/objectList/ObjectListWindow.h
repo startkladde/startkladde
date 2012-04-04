@@ -35,6 +35,7 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 	protected:
 		DbManager &manager;
 
+
 		// Instances are only to be created using the create method
 		ObjectListWindow (DbManager &manager, QWidget *parent=NULL);
 
@@ -43,12 +44,14 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 
 		virtual QString makePasswordMessage ();
 		void keyPressEvent (QKeyEvent *e);
+		void languageChanged ();
 
 		virtual void prepareContextMenu (QMenu *contextMenu);
 
 	private:
 		void appendObjectTo (QList<T> &list, const QModelIndex &tableIndex);
 		bool checkAndDelete (const T &object, bool cancelOption);
+		void setupText ();
 
 		MutableObjectList<T> *list;
 		ObjectModel<T> *objectModel;

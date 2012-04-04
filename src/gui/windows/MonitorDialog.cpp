@@ -10,10 +10,9 @@
 #include "src/concurrent/monitor/SignalOperationMonitor.h"
 
 MonitorDialog::MonitorDialog (SignalOperationMonitor &monitor, QWidget *parent):
-	QDialog (parent), theMonitor (monitor)
+	SkDialog<Ui::MonitorDialogClass> (parent), theMonitor (monitor)
 {
 	ui.setupUi (this);
-	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
 //	setModal (true);
 
@@ -61,7 +60,7 @@ void MonitorDialog::monitor (SignalOperationMonitor &monitor, const QString &tit
 
 void MonitorDialog::reject ()
 {
-	ui.statusLabel->setText ("Abbrechen...");
+	ui.statusLabel->setText (tr ("Canceling..."));
 	theMonitor.cancel ();
 }
 

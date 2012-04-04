@@ -3,6 +3,7 @@
 
 #include "src/accessor.h"
 
+#include <QApplication>
 #include <QString>
 #include <QTime>
 
@@ -41,7 +42,7 @@ class Longitude
 		void toDms (unsigned int &degrees, unsigned int &minutes, unsigned int &seconds, bool &positive) const;
 		void toDms (unsigned int &degrees, unsigned int &minutes, unsigned int &seconds, bool &positive, double &remainder) const;
 
-		QString format (const QString &eastString="E", const QString &westString="W") const;
+		QString format (const QString &eastString=qApp->translate ("Longitude", "E", "east"), const QString &westString=qApp->translate ("Longitude", "W", "west")) const;
 		static Longitude parse (const QString &string);
 
 	protected:

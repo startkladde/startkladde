@@ -23,6 +23,8 @@ class Cache;
  */
 class ObjectEditorPaneBase: public QWidget
 {
+		Q_OBJECT
+
 	public:
 		// Types
 		class AbortedException: public std::exception {};

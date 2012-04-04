@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Datum eingeben</string>
+   <string>Enter date</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,0,0">
    <item row="3" column="0">
@@ -30,33 +30,36 @@
       <item row="0" column="0">
        <widget class="QLabel" name="dateLabel">
         <property name="text">
-         <string>Datum:</string>
+         <string>Date:</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
        <widget class="QRadioButton" name="todaySelect">
         <property name="text">
-         <string>&amp;Heute</string>
+         <string>&amp;Today</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
        <widget class="QRadioButton" name="yesterdaySelect">
         <property name="text">
-         <string>&amp;Gestern</string>
+         <string>&amp;Yesterday</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
        <widget class="QRadioButton" name="otherDateSelect">
         <property name="text">
-         <string>Anderes &amp;Datum:</string>
+         <string>Other &amp;date:</string>
         </property>
        </widget>
       </item>
       <item row="2" column="2">
        <widget class="QDateEdit" name="otherDateInput">
+        <property name="displayFormat">
+         <string>MM/dd/yyyy</string>
+        </property>
         <property name="calendarPopup">
          <bool>true</bool>
         </property>
@@ -65,12 +68,15 @@
       <item row="3" column="1">
        <widget class="QRadioButton" name="dateRangeSelect">
         <property name="text">
-         <string>&amp;Zeitraum:</string>
+         <string>Date &amp;range:</string>
         </property>
        </widget>
       </item>
       <item row="3" column="2">
        <widget class="QDateEdit" name="firstDateInput">
+        <property name="displayFormat">
+         <string>MM/dd/yyyy</string>
+        </property>
         <property name="calendarPopup">
          <bool>true</bool>
         </property>
@@ -79,12 +85,15 @@
       <item row="3" column="3">
        <widget class="QLabel" name="dateRangeToLabel">
         <property name="text">
-         <string>bis</string>
+         <string>to</string>
         </property>
        </widget>
       </item>
       <item row="3" column="4">
        <widget class="QDateEdit" name="lastDateInput">
+        <property name="displayFormat">
+         <string>MM/dd/yyyy</string>
+        </property>
         <property name="calendarPopup">
          <bool>true</bool>
         </property>

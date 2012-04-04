@@ -9,6 +9,7 @@
 #include "src/text.h"
 #include "src/gui/dialogs.h"
 #include "src/plugins/info/sunset/SunsetTimePlugin.h"
+#include "src/i18n/notr.h"
 
 SunsetPluginSettingsPane::SunsetPluginSettingsPane (SunsetPluginBase *plugin, QWidget *parent):
 	PluginSettingsPane (parent),
@@ -112,7 +113,7 @@ void SunsetPluginSettingsPane::on_filenameInput_editingFinished ()
 
 void SunsetPluginSettingsPane::on_findFileButton_clicked ()
 {
-	QString filename=Plugin::browse (ui.filenameInput->text (), ".txt", getEffectivePluginPaths (), this);
+	QString filename=Plugin::browse (ui.filenameInput->text (), notr (".txt"), getEffectivePluginPaths (), this);
 
 	if (!filename.isEmpty ())
 	{
@@ -129,13 +130,13 @@ void SunsetPluginSettingsPane::on_findFileButton_clicked ()
 void SunsetPluginSettingsPane::updateFilenameLabel ()
 {
 	if (!fileSpecified)
-		ui.filenameLabel->setTextAndDefaultColor ("-");
+		ui.filenameLabel->setTextAndDefaultColor (notr ("-"));
 	else if (!fileResolved)
-		ui.filenameLabel->setTextAndColor ("nicht gefunden", Qt::red);
+		ui.filenameLabel->setTextAndColor (tr ("not found"), Qt::red);
 	else if (!fileExists)
-		ui.filenameLabel->setTextAndColor ("existiert nicht", Qt::red);
+		ui.filenameLabel->setTextAndColor (tr ("does not exist"), Qt::red);
 	else if (!fileOk)
-		ui.filenameLabel->setTextAndColor (QString ("%1\nFehler: %2").arg (resolvedFilename, fileError), Qt::red);
+		ui.filenameLabel->setTextAndColor (tr ("%1\nError: %2").arg (resolvedFilename, fileError), Qt::red);
 	else
 		ui.filenameLabel->setTextAndDefaultColor (resolvedFilename);
 }
@@ -143,9 +144,9 @@ void SunsetPluginSettingsPane::updateFilenameLabel ()
 void SunsetPluginSettingsPane::updateSourceLabel ()
 {
 	if (!fileOk)
-		ui.sourceLabel->setText ("-");
+		ui.sourceLabel->setText (notr ("-"));
 	else if (source.isEmpty ())
-		ui.sourceLabel->setText ("unbekannt");
+		ui.sourceLabel->setText (tr ("unknown"));
 	else
 		ui.sourceLabel->setText (source);
 }
@@ -153,22 +154,22 @@ void SunsetPluginSettingsPane::updateSourceLabel ()
 void SunsetPluginSettingsPane::updateReferenceLongitudeLabel ()
 {
 	if (!fileOk)
-		ui.referenceLongitudeLabel->setText ("-");
+		ui.referenceLongitudeLabel->setText (notr ("-"));
 	else if (!referenceLongitudeFound)
-		ui.referenceLongitudeLabel->setText (utf8 ("unbekannt"));
+		ui.referenceLongitudeLabel->setText (tr ("unknown"));
 	else if (!referenceLongitude.isValid ())
-		ui.referenceLongitudeLabel->setText (utf8 ("ungültig"));
+		ui.referenceLongitudeLabel->setText (tr ("invalid"));
 	else
 		ui.referenceLongitudeLabel->setText (referenceLongitude.format ());
 }
 
-const QString referenceLongitudeNoteRegular=
-	utf8 ("Längengradkorrektur ist nur dann möglich, wenn in\nder Datendatei ein Bezugslängengrad angegeben ist.");
-const QString referenceLongitudeNoteError=
-	utf8 ("Längengradkorrektur ist nicht möglich, weil in\nder Datendatei kein Bezugslängengrad angegeben ist.");
-
 void SunsetPluginSettingsPane::updateReferenceLongitudeNoteLabel ()
 {
+	const QString referenceLongitudeNoteRegular=
+		tr ("Longitude correction is only possible if a\nreference longitude is specified in the data file.");
+	const QString referenceLongitudeNoteError=
+		tr ("Longitude correction is not possible because\nno reference longitude is specified in the data file.");
+
 	if (fileOk && !referenceLongitude.isValid ())
 	{
 		if (ui.longitudeCorrectionCheckbox->isChecked ())
@@ -184,3 +185,12 @@ void SunsetPluginSettingsPane::updateReferenceLongitudeNoteLabel ()
 	}
 }
 
+void SunsetPluginSettingsPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+	}
+	else
+		PluginSettingsPane::changeEvent (event);
+}

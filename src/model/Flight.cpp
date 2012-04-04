@@ -13,6 +13,7 @@
 #include "src/util/time.h"
 #include "src/flightColor.h" // TODO remove after flightColor has been moved to Flight
 #include "src/db/event/DbEvent.h"
+#include "src/i18n/notr.h"
 
 template<class T> class QList;
 
@@ -212,10 +213,10 @@ QString Flight::incompletePersonName (QString nn, QString vn) const
 	 *   - the formatted name.
 	 */
 {
-	if (isNone (nn) && isNone (vn)) return ("-");
-	else if (isNone (nn)) return QString ("(???, %1)").arg (vn);
-	else if (isNone (vn)) return QString ("(%1, %2)").arg (nn).arg ("???"); // ??) would be a trigraph
-	else                            return QString ("%1, %2").arg (nn).arg (vn);
+	if (isNone (nn) && isNone (vn)) return (notr ("-"));
+	else if (isNone (nn)) return qnotr ("(???, %1)").arg (vn);
+	else if (isNone (vn)) return qnotr ("(%1, ???" ")").arg (nn); // ??) would be a trigraph
+	else                  return qnotr ("%1, %2").arg (nn).arg (vn);
 }
 
 // *******************
@@ -271,13 +272,13 @@ bool Flight::canDepart (QString *reason) const
 	// TODO only for flights of today
 
 	// Already landed
-	notPossibleIf (landsHere () && getLanded (), "Der Flug ist bereits gelandet");
+	notPossibleIf (landsHere () && getLanded (), qApp->translate ("Flight", "The flight has already landed."));
 
 	// Does not dpeart here
-	notPossibleIf (!departsHere (), "Der Flug startet nicht hier.");
+	notPossibleIf (!departsHere (), qApp->translate ("Flight", "The flight does not depart here."));
 
 	// Already departed
-	notPossibleIf (getDeparted (), "Der Flug ist bereits gestartet.");
+	notPossibleIf (getDeparted (), qApp->translate ("Flight", "The flight has already departed."));
 
 	return true;
 }
@@ -285,13 +286,13 @@ bool Flight::canDepart (QString *reason) const
 bool Flight::canLand (QString *reason) const
 {
 	// Already landed
-	notPossibleIf (getLanded (), "Der Flug ist bereits gelandet.");
+	notPossibleIf (getLanded (), qApp->translate ("Flight", "The flight has already landed."));
 
 	// Does not land here (only applies to non-towflights)
-	notPossibleIf (!isTowflight () && !landsHere (), "Der Flug landet nicht hier.");
+	notPossibleIf (!isTowflight () && !landsHere (), qApp->translate ("Flight", "The flight does not land here."));
 
 	// Must depart first
-	notPossibleIf (departsHere () && !getDeparted (), "Der Flug ist noch nicht gestartet.");
+	notPossibleIf (departsHere () && !getDeparted (), qApp->translate ("Flight", "The flight has not departed yet."));
 
 	return true;
 }
@@ -301,13 +302,13 @@ bool Flight::canTouchngo (QString *reason) const
 	// TODO only for flights of today
 
 	// Towflight
-	notPossibleIf (isTowflight (), "Der Flug ist ein Schleppflug");
+	notPossibleIf (isTowflight (), qApp->translate ("Flight", "The flight is a towflight."));
 
 	// Already landed
-	notPossibleIf (getLanded (), "Der Flug ist bereits gelandet.");
+	notPossibleIf (getLanded (), qApp->translate ("Flight", "The flight has already landed."));
 
 	// Must depart first
-	notPossibleIf (departsHere () && !getDeparted (), "Der Flug ist noch nicht gestartet.");
+	notPossibleIf (departsHere () && !getDeparted (), qApp->translate ("Flight", "The flight has not departed yet."));
 
 	return true;
 }
@@ -315,10 +316,10 @@ bool Flight::canTouchngo (QString *reason) const
 bool Flight::canTowflightLand (QString *reason) const
 {
 	// Already landed
-	notPossibleIf (getTowflightLanded (), "Der Schleppflug ist bereits gelandet.");
+	notPossibleIf (getTowflightLanded (), qApp->translate ("Flight", "The towflight has already landed."));
 
 	// Must depart first
-	notPossibleIf (departsHere () && !getDeparted (), "Der Flug ist noch nicht gestartet.");
+	notPossibleIf (departsHere () && !getDeparted (), qApp->translate ("Flight", "The flight has not departed yet."));
 
 	return true;
 }
@@ -464,52 +465,99 @@ QString Flight::errorDescription (FlightError code) const
 {
 	switch (code)
 	{
-		// TODO tr for all; .arg
-		case ff_ok: return utf8 ("Kein Fehler");
-		case ff_keine_id: return utf8 ("Flug hat keine ID");
-		case ff_kein_flugzeug: return utf8 ("Kein Flugzeug angegeben");
-		// TODO use person_bezeichnung (flightType) (oder wie die heißt) here
-		case ff_pilot_nur_nachname: return utf8 ("Für den %1 ist nur ein Nachname angegeben").arg (utf8 (getType ()==typeTraining2?"Flugschüler":"Piloten"));
-		case ff_pilot_nur_vorname: return  utf8 ("Für den ")+utf8 (getType ()==typeTraining2?"Flugschüler":"Piloten")+" ist nur ein Vorname angegeben";
-		case ff_pilot_nicht_identifiziert: return  "Der "+utf8 (getType ()==typeTraining2?"Flugschüler":"Pilot")+" ist nicht identifiziert";
-		case ff_begleiter_nur_nachname: return utf8 ("Für den %1 ist nur ein Nachname angegeben").arg (QString (getType ()==typeTraining2?"Fluglehrer":"Begleiter"));
-		case ff_begleiter_nur_vorname: return  utf8 ("Für den ")+QString (getType ()==typeTraining2?"Fluglehrer":"Begleiter")+" ist nur ein Vorname angegeben";
-		case ff_begleiter_nicht_identifiziert: return  "Der "+QString (getType ()==typeTraining2?"Fluglehrer":"Begleiter")+" ist nicht identifiziert";
-		case ff_towpilot_nur_nachname: return utf8 ("Für den Schleppiloten ist nur ein Nachname angegeben");
-		case ff_towpilot_nur_vorname: return  utf8 ("Für den Schleppiloten ist nur ein Vorname angegeben");
-		case ff_towpilot_nicht_identifiziert: return  "Der Schleppilot ist nicht identifiziert";
-		case ff_kein_pilot: return utf8 ("Kein %1 angegeben").arg (utf8 (getType ()==typeTraining2 || getType ()==typeTraining1?"Flugschüler":"Pilot"));
-		case ff_pilot_gleich_begleiter: return utf8 (getType ()==typeTraining2?"Flugschüler und Fluglehrer":"Pilot und Begleiter")+" sind identisch";
-		case ff_pilot_gleich_towpilot: return utf8 (getType ()==typeTraining2?"Flugschüler":"Pilot")+" und Schlepppilot sind identisch";
-		case ff_schulung_ohne_begleiter: return utf8 ("Doppelsitzige Schulung ohne Fluglehrer");
-		case ff_begleiter_nicht_erlaubt: return utf8 ("Begleiter ist nicht erlaubt");
-		case ff_nur_gelandet: return utf8 ("Flug ist gelandet, aber nicht gestartet");
-		case ff_landung_vor_start: return utf8 ("Landung liegt vor Start");
-		case ff_keine_startart: return utf8 ("Keine Startart angegeben");
-		case ff_kein_modus: return utf8 ("Kein Modus angegeben");
-		case ff_kein_sfz_modus: return utf8 ("Kein Modus für den Schleppflug angegeben");
-		case ff_kein_flugtyp: return utf8 ("Kein Flugtyp angegeben");
-		case ff_landungen_negativ: return utf8 ("Negative Anzahl Landungen");
-		case ff_landungen_null: return utf8 ("Flug ist gelandet, aber Anzahl der Landungen ist 0");
-		case ff_schlepp_nur_gelandet: return utf8 ("Schleppflug ist gelandet, aber nicht gestartet");
-		case ff_schlepp_landung_vor_start: return utf8 ("Landung des Schleppflugs liegt vor Start");
-		case ff_doppelsitzige_schulung_in_einsitzer: return utf8 ("Doppelsitzige Schulung in Einsitzer");
-		case ff_kein_startort: return utf8 ("Kein Startort angegeben");
-		case ff_kein_zielort: return utf8 ("Kein Zielort angegeben");
-		case ff_kein_zielort_sfz: return utf8 ("Kein Zielort für das Schleppflugzeug angegeben");
-		case ff_segelflugzeug_landungen: return utf8 ("Segelflugzeug macht mehr als eine Landung");
-		case ff_segelflugzeug_landungen_ohne_landung: return utf8 ("Segelflugzeug macht Landungen ohne Landezeit");
-		case ff_begleiter_in_einsitzer: return utf8 ("Begleiter in einsitzigem Flugzeug");
-		case ff_gastflug_in_einsitzer: return utf8 ("Gastflug in einsitzigem Flugzeug");
-		case ff_segelflugzeug_selbststart: return utf8 ("Segelflugzeug im Selbststart");
-		case ff_landungen_ohne_start: return utf8 ("Anzahl Landungen ungleich null ohne Start");
-		case ff_startort_gleich_zielort: return utf8 ("Startort gleich Zielort");
-		case ff_kein_schleppflugzeug: return utf8 ("Schleppflugzeug nicht angegeben");
-		case ff_towplane_is_glider: return utf8 ("Schleppflugzeug ist Segelflugzeug");
+		case ff_ok:
+			return qApp->translate ("Flight", "No errors");
+		case ff_keine_id:
+			return qApp->translate ("Flight", "Flight has no ID");
+		case ff_kein_flugzeug:
+			return qApp->translate ("Flight", "No plane specified");
+
+		case ff_pilot_nur_nachname:
+			if (isTraining ())
+				return qApp->translate ("Flight", "The student's first name is missing");
+			else
+				return qApp->translate ("Flight", "The pilot's first name is missing");
+		case ff_pilot_nur_vorname:
+			if (isTraining ())
+				return qApp->translate ("Flight", "The student's last name is missing");
+			else
+				return qApp->translate ("Flight", "The pilot's last name is missing");
+		case ff_pilot_nicht_identifiziert:
+			if (isTraining ())
+				return qApp->translate ("Flight", "The student is not identified");
+			else
+				return qApp->translate ("Flight", "The pilot is not identified");
+
+		case ff_begleiter_nur_nachname:
+			if (isTraining ())
+				return qApp->translate ("Flight", "The flight instructor's first name is missing");
+			else
+				return qApp->translate ("Flight", "The copilot's first name is missing");
+		case ff_begleiter_nur_vorname:
+			if (isTraining ())
+				return qApp->translate ("Flight", "The flight instructor's last name is missing");
+			else
+				return qApp->translate ("Flight", "The copilot's last name is missing");
+		case ff_begleiter_nicht_identifiziert:
+			if (isTraining ())
+				return qApp->translate ("Flight", "The flight instructor is not identified");
+			else
+				return qApp->translate ("Flight", "The copilot is not identified");
+
+		case ff_towpilot_nur_nachname:
+			return qApp->translate ("Flight", "The towpilot's first name is missing");
+		case ff_towpilot_nur_vorname:
+			return qApp->translate ("Flight", "The towpilot's last name is missing");
+		case ff_towpilot_nicht_identifiziert:
+			return qApp->translate ("Flight", "The towpilot is not identified");
+
+		case ff_kein_pilot:
+			if (isTraining ())
+				return qApp->translate ("Flight", "No student specified");
+			else
+				return qApp->translate ("Flight", "No pilot specified");
+				
+		case ff_pilot_gleich_begleiter:
+			if (isTraining ())
+				return qApp->translate ("Flight", "Student and flight instructor are identical");
+			else
+				return qApp->translate ("Flight", "Pilot and copilot are identical");
+
+		case ff_pilot_gleich_towpilot:
+			if (isTraining ())
+				return qApp->translate ("Flight", "Student and towpilot are identical");
+			else
+				return qApp->translate ("Flight", "Pilot and towpilot are identical");
+
+		case ff_schulung_ohne_begleiter:              return qApp->translate ("Flight", "Two-seated training without flight instructor");
+		case ff_begleiter_nicht_erlaubt:              return qApp->translate ("Flight", "No copilot allowed");
+		case ff_nur_gelandet:                         return qApp->translate ("Flight", "Flight has landed but not departed");
+		case ff_landung_vor_start:                    return qApp->translate ("Flight", "Landing before departure");
+		case ff_keine_startart:                       return qApp->translate ("Flight", "No launch method specified");
+		case ff_kein_modus:                           return qApp->translate ("Flight", "No mode specified");
+		case ff_kein_sfz_modus:                       return qApp->translate ("Flight", "No mode specified for towflight");
+		case ff_kein_flugtyp:                         return qApp->translate ("Flight", "No flight type specified");
+		case ff_landungen_negativ:                    return qApp->translate ("Flight", "Negative number of landings");
+		case ff_landungen_null:                       return qApp->translate ("Flight", "Flight has landed, but number of landings is zero");
+		case ff_schlepp_nur_gelandet:                 return qApp->translate ("Flight", "Towflight has landed but not departed");
+		case ff_schlepp_landung_vor_start:            return qApp->translate ("Flight", "Towflight landing before departure");
+		case ff_doppelsitzige_schulung_in_einsitzer:  return qApp->translate ("Flight", "Two-seated training in single-seater");
+		case ff_kein_startort:                        return qApp->translate ("Flight", "No departure location specified");
+		case ff_kein_zielort:                         return qApp->translate ("Flight", "No landing location specified");
+		case ff_kein_zielort_sfz:                     return qApp->translate ("Flight", "No landing location specified for towplane");
+		case ff_segelflugzeug_landungen:              return qApp->translate ("Flight", "Glider performs more than one landing");
+		case ff_segelflugzeug_landungen_ohne_landung: return qApp->translate ("Flight", "Glider performs landing without landing time");
+		case ff_begleiter_in_einsitzer:               return qApp->translate ("Flight", "Copilot in single-seater");
+		case ff_gastflug_in_einsitzer:                return qApp->translate ("Flight", "Passenger flight in single-seater");
+		case ff_segelflugzeug_selbststart:            return qApp->translate ("Flight", "Glider performs self launch");
+		case ff_landungen_ohne_start:                 return qApp->translate ("Flight", "Number of landings is greater than zero without departure");
+		case ff_startort_gleich_zielort:              return qApp->translate ("Flight", "Landing location and departure location are identical");
+		case ff_kein_schleppflugzeug:                 return qApp->translate ("Flight", "Towplane not specified");
+		case ff_towplane_is_glider:                   return qApp->translate ("Flight", "Towplane is glider");
 		// No default to allow compiler warning
 	}
 
-	return "Unbekannter Fehler";
+	return qApp->translate ("Flight", "Unknown error");
 }
 
 void Flight::checkPerson (QList<FlightError> &errors, dbId id, const QString &lastName, const QString &firstName, bool required,
@@ -702,24 +750,24 @@ QString personToString (dbId id, QString lastName, QString firstName)
 	if (idValid (id))
 		return QString::number (id);
 	else if (isNone(lastName) && isNone(firstName))
-		return "-";
+		return notr ("-");
 	else
-		return QString ("(%1, %2)")
-			.arg (isNone (lastName)?QString ("?"):lastName)
-			.arg (isNone (firstName)?QString ("?"):firstName);
+		return qnotr ("(%1, %2)")
+			.arg (isNone (lastName )?qnotr ("?"):lastName )
+			.arg (isNone (firstName)?qnotr ("?"):firstName);
 }
 
 QString timeToString (bool performed, QDateTime time)
 {
 	if (performed)
-		return time.toUTC ().time ().toString ("h:mm") +"Z";
+		return time.toUTC ().time ().toString (notr ("h:mm")) +notr ("Z");
 	else
-		return "-";
+		return notr ("-");
 }
 
 QString Flight::toString () const
 {
-	return QString ("id=%1, plane=%2, type=%3, pilot=%4, copilot=%5, mode=%6, "
+	return qnotr ("id=%1, plane=%2, type=%3, pilot=%4, copilot=%5, mode=%6, "
 		"launchMethod=%7, towplane=%8, towpilot=%9, towFlightMode=%10, "
 		"departureTime=%11, landingTime=%12, towflightLandingTime=%13, "
 		"departureLocation='%14', landingLocation='%15', towflightLandingLocation='%16', "
@@ -799,8 +847,8 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 
 	towflight.setNumLandings ((towflightLandsHere () && getTowflightLanded ())?1:0);
 
-	towflight.setComments (utf8 ("Schleppflug für Flug Nr. %1").arg (getId ()));
-	towflight.setAccountingNotes ("");
+	towflight.setComments (qApp->translate ("Flight", "Towflight for flight %1").arg (getId ()));
+	towflight.setAccountingNotes (qApp->translate ("Flight", "(See glider flight)"));
 	towflight.setMode (getTowflightMode ());
 	towflight.setTowflightMode (modeLocal);
 	towflight.setPilotLastName (getTowpilotLastName ());
@@ -863,19 +911,19 @@ bool Flight::collectiveLogEntryPossible (const Flight *prev, const Plane *plane)
 
 QString Flight::dbTableName ()
 {
-	return "flights";
+	return notr ("flights");
 }
 
 QString Flight::selectColumnList ()
 {
-	return
+	return notr (
 		"id,pilot_id,copilot_id,plane_id,type,mode,departed,landed,towflight_landed" // 9
 		",launch_method_id,departure_location,landing_location,num_landings,departure_time,landing_time" // 6 Σ15
 		",pilot_last_name,pilot_first_name,copilot_last_name,copilot_first_name" // 4 Σ19
 		",towflight_landing_time,towflight_mode,towflight_landing_location,towplane_id" // 4 Σ23
 		",accounting_notes,comments" // 2 Σ25
 		",towpilot_id,towpilot_last_name,towpilot_first_name" // 3 Σ28
-		;
+		);
 }
 
 Flight Flight::createFromResult (const Result &result)
@@ -923,26 +971,26 @@ Flight Flight::createFromResult (const Result &result)
 
 QString Flight::insertColumnList ()
 {
-	return
+	return notr (
 		"pilot_id,copilot_id,plane_id,type,mode,departed,landed,towflight_landed" // 8
 		",launch_method_id,departure_location,landing_location,num_landings,departure_time,landing_time" // 6 Σ14
 		",pilot_last_name,pilot_first_name,copilot_last_name,copilot_first_name" // 4 Σ18
 		",towflight_landing_time,towflight_mode,towflight_landing_location,towplane_id" // 4 Σ22
 		",accounting_notes,comments" // 2 Σ24
 		",towpilot_id,towpilot_last_name,towpilot_first_name" // 3 Σ27
-		;
+		);
 }
 
 QString Flight::insertPlaceholderList ()
 {
-	return
+	return notr (
 		"?,?,?,?,?,?,?,?"
 		",?,?,?,?,?,?"
 		",?,?,?,?"
 		",?,?,?,?"
 		",?,?"
 		",?,?,?"
-		;
+		);
 }
 
 void Flight::bindValues (Query &q) const
@@ -998,21 +1046,21 @@ QString Flight::modeToDb (Flight::Mode mode)
 {
 	switch (mode)
 	{
-		case modeLocal   : return "local";
-		case modeComing  : return "coming";
-		case modeLeaving : return "leaving";
+		case modeLocal   : return notr ("local");
+		case modeComing  : return notr ("coming");
+		case modeLeaving : return notr ("leaving");
 		// no default
 	}
 
 	assert (false);
-	return "?";
+	return notr ("?");
 }
 
 Flight::Mode Flight::modeFromDb (QString mode)
 {
-	if      (mode=="local"  ) return modeLocal;
-	else if (mode=="coming" ) return modeComing;
-	else if (mode=="leaving") return modeLeaving;
+	if      (mode==notr ("local")  ) return modeLocal;
+	else if (mode==notr ("coming") ) return modeComing;
+	else if (mode==notr ("leaving")) return modeLeaving;
 	else                      return modeLocal;
 }
 
@@ -1020,46 +1068,46 @@ QString Flight::typeToDb (Type type)
 {
 	switch (type)
 	{
-		case typeNone          : return "?";
-		case typeNormal        : return "normal";
-		case typeTraining2     : return "training_2";
-		case typeTraining1     : return "training_1";
-		case typeTow           : return "tow";
-		case typeGuestPrivate  : return "guest_private";
-		case typeGuestExternal : return "guest_external";
+		case typeNone          : return notr ("?");
+		case typeNormal        : return notr ("normal");
+		case typeTraining2     : return notr ("training_2");
+		case typeTraining1     : return notr ("training_1");
+		case typeTow           : return notr ("tow");
+		case typeGuestPrivate  : return notr ("guest_private");
+		case typeGuestExternal : return notr ("guest_external");
 		// no default
 	};
 
 	assert (false);
-	return "?";
+	return notr ("?");
 }
 
 Flight::Type Flight::typeFromDb (QString type)
 {
-	if      (type=="normal"        ) return typeNormal;
-	else if (type=="training_2"    ) return typeTraining2;
-	else if (type=="training_1"    ) return typeTraining1;
-	else if (type=="tow"           ) return typeTow;
-	else if (type=="guest_private" ) return typeGuestPrivate;
-	else if (type=="guest_external") return typeGuestExternal;
-	else                             return typeNone;
+	if      (type==notr ("normal")        ) return typeNormal;
+	else if (type==notr ("training_2")    ) return typeTraining2;
+	else if (type==notr ("training_1")    ) return typeTraining1;
+	else if (type==notr ("tow")           ) return typeTow;
+	else if (type==notr ("guest_private") ) return typeGuestPrivate;
+	else if (type==notr ("guest_external")) return typeGuestExternal;
+	else                                    return typeNone;
 }
 
 Query Flight::referencesPersonCondition (dbId id)
 {
-	return Query ("pilot_id=? OR copilot_id=? OR towpilot_id=?")
+	return Query (notr ("pilot_id=? OR copilot_id=? OR towpilot_id=?"))
 		.bind (id).bind (id).bind (id);
 }
 
 Query Flight::referencesPlaneCondition (dbId id)
 {
-	return Query ("plane_id=? OR towplane_id=?")
+	return Query (notr ("plane_id=? OR towplane_id=?"))
 		.bind (id).bind (id);
 }
 
 Query Flight::referencesLaunchMethodCondition (dbId id)
 {
-	return Query ("launch_method_id=?")
+	return Query (notr ("launch_method_id=?"))
 		.bind (id);
 }
 
@@ -1100,7 +1148,7 @@ Query Flight::dateRangeSupersetCondition (const QDate &first, const QDate &last)
 	QDateTime firstMidnight (first,            QTime (0, 0, 0)); // Start of the first day
 	QDateTime lastMidnight  (last.addDays (1), QTime (0, 0, 0)); // Start of the day after the last
 
-	Query condition ("(departure_time>=? AND departure_time<?) OR (landing_time>=? AND landing_time<?)");
+	Query condition (notr ("(departure_time>=? AND departure_time<?) OR (landing_time>=? AND landing_time<?)"));
 	condition.bind (firstMidnight); condition.bind (lastMidnight);
 	condition.bind (firstMidnight); condition.bind (lastMidnight);
 

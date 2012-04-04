@@ -100,7 +100,7 @@ template<> QHash<dbId, LaunchMethod> &Cache::objectsByIdHash<LaunchMethod> () { 
 
 template<class T> void Cache::refreshObjects (OperationMonitorInterface monitor)
 {
-	monitor.status (utf8 ("%1 abrufen").arg (T::objectTypeDescriptionPlural ()));
+	monitor.status (tr ("Retrieving %1").arg (T::objectTypeDescriptionPlural ()));
 
 	// Get the list from the database
 	QList<T> newObjects=db.getObjects<T> ();
@@ -144,7 +144,7 @@ void Cache::refreshLaunchMethods (OperationMonitorInterface monitor)
 void Cache::refreshFlightsOf (const QString &description, const QDate &date,
 	EntityList<Flight> &targetList, QDate *targetDate, OperationMonitorInterface monitor)
 {
-	monitor.status (utf8 ("%1 abrufen").arg (description));
+	monitor.status (tr ("Retrieving %1").arg (description));
 
 	// Get the list from the database
 	QList<Flight> newFlights;
@@ -177,33 +177,33 @@ void Cache::refreshFlightsOf (const QString &description, const QDate &date,
 
 void Cache::refreshFlightsToday (OperationMonitorInterface monitor)
 {
-	refreshFlightsOf (utf8 ("Flüge von heute"),
+	refreshFlightsOf (tr ("flights of today"),
 		QDate::currentDate (), flightsToday, &todayDate, monitor);
 }
 
 void Cache::refreshFlightsOther (OperationMonitorInterface monitor)
 {
 	if (otherDate.isNull ()) return;
-	refreshFlightsOf (utf8 ("Flüge von %1").arg (otherDate.toString (Qt::LocaleDate)),
+	refreshFlightsOf (tr ("flights of %1").arg (otherDate.toString (Qt::LocaleDate)),
 		otherDate, flightsOther, NULL, monitor);
 }
 
 void Cache::fetchFlightsOther (QDate date, OperationMonitorInterface monitor)
 {
 	if (date.isNull ()) return;
-	refreshFlightsOf (utf8 ("Flüge von %1").arg (date.toString (Qt::LocaleDate)),
+	refreshFlightsOf (tr ("flights of %1").arg (date.toString (Qt::LocaleDate)),
 		date, flightsOther, &otherDate, monitor);
 }
 
 void Cache::refreshPreparedFlights (OperationMonitorInterface monitor)
 {
-	refreshFlightsOf (utf8 ("Vorbereitete Flüge"),
+	refreshFlightsOf (tr ("prepared flights"),
 		QDate (), preparedFlights, NULL, monitor);
 }
 
 void Cache::refreshLocations (OperationMonitorInterface monitor)
 {
-	monitor.status (utf8 ("Flugplätze abrufen"));
+	monitor.status (tr ("locations"));
 
 	QStringList newLocations=db.listLocations ();
 	synchronized (dataMutex) locations=newLocations;
@@ -211,7 +211,7 @@ void Cache::refreshLocations (OperationMonitorInterface monitor)
 
 void Cache::refreshAccountingNotes (OperationMonitorInterface monitor)
 {
-	monitor.status (utf8 ("Abrechnungshinweise abrufen"));
+	monitor.status (tr ("accounting notes"));
 
 	QStringList newAccountingNotes=db.listAccountingNotes ();
 	synchronized (dataMutex) accountingNotes=newAccountingNotes;
@@ -232,7 +232,7 @@ void Cache::refreshAll (OperationMonitorInterface monitor)
 	monitor.progress (5, 8); refreshPreparedFlights (monitor);
 	monitor.progress (6, 8); refreshLocations       (monitor);
 	monitor.progress (7, 8); refreshAccountingNotes (monitor);
-	monitor.progress (8, 8, "Fertig");
+	monitor.progress (8, 8, tr ("Finished"));
 }
 
 void Cache::refreshFlights (OperationMonitorInterface monitor)
@@ -243,7 +243,7 @@ void Cache::refreshFlights (OperationMonitorInterface monitor)
 	monitor.progress (0, 3); refreshFlightsToday    (monitor);
 	monitor.progress (1, 3); refreshFlightsOther    (monitor);
 	monitor.progress (2, 3); refreshPreparedFlights (monitor);
-	monitor.progress (3, 3, "Fertig");
+	monitor.progress (3, 3, tr ("Finished"));
 }
 
 

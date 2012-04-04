@@ -33,8 +33,10 @@ class ExternalInfoPlugin: public InfoPlugin
 		virtual QString configText () const;
 
 	protected slots:
+		void languageChanged ();
 		void lineReceived (const QString &line);
 		void processExited (int exitCode, QProcess::ExitStatus exitStatus);
+
 
 	private:
 		QString command;

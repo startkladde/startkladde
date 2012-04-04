@@ -8,7 +8,7 @@
 #ifndef OBJECTEDITORWINDOWBASE_H_
 #define OBJECTEDITORWINDOWBASE_H_
 
-#include <QtGui/QDialog>
+#include "src/gui/SkDialog.h"
 
 #include "ui_ObjectEditorWindowBase.h"
 
@@ -22,7 +22,7 @@ class DbManager;
  *     to be in the header
  *   - template stuff must be declared in the template
  */
-class ObjectEditorWindowBase: public QDialog
+class ObjectEditorWindowBase: public SkDialog<Ui::ObjectEditorWindowBaseClass>
 {
 	Q_OBJECT
 
@@ -38,7 +38,6 @@ class ObjectEditorWindowBase: public QDialog
 		virtual void on_buttonBox_accepted ()=0;
 
 	protected:
-		Ui::ObjectEditorWindowBaseClass ui;
 		DbManager &manager;
 };
 

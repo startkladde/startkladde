@@ -1,7 +1,7 @@
 #include "ObjectSelectWindowBase.h"
 
 ObjectSelectWindowBase::ObjectSelectWindowBase (QWidget *parent):
-	QDialog (parent),
+	SkDialog<Ui::ObjectSelectWindowBaseClass> (parent),
 	resultId (invalidId),
 	newItem (NULL), unknownItem (NULL)
 {

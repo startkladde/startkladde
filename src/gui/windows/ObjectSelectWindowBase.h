@@ -1,15 +1,14 @@
 #ifndef OBJECTSELECTWINDOWBASE_H
 #define OBJECTSELECTWINDOWBASE_H
 
-#include <QtGui/QDialog>
+#include "src/db/dbId.h"
+#include "src/gui/SkDialog.h"
 
 #include "ui_ObjectSelectWindowBase.h"
 
-#include "src/db/dbId.h"
-
 class SkTreeWidgetItem;
 
-class ObjectSelectWindowBase : public QDialog
+class ObjectSelectWindowBase: public SkDialog<Ui::ObjectSelectWindowBaseClass>
 {
 	Q_OBJECT
 
@@ -25,8 +24,6 @@ class ObjectSelectWindowBase : public QDialog
 		void on_objectList_itemDoubleClicked (QTreeWidgetItem *item, int column);
 
 	protected:
-		Ui::ObjectSelectWindowBaseClass ui;
-
 		dbId resultId;
 		SkTreeWidgetItem *newItem;
 		SkTreeWidgetItem *unknownItem;

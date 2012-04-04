@@ -1,6 +1,7 @@
 #ifndef PLANE_H_
 #define PLANE_H_
 
+#include <QApplication>
 #include <QString>
 #include <QList>
 #include <QMetaType>
@@ -50,7 +51,7 @@ class Plane: public Entity
 
 		// *** Property access
 		virtual bool selfLaunchOnly () const;
-	    static QString defaultRegistrationPrefix () { return "D-"; }
+	    static QString defaultRegistrationPrefix () { return qApp->translate ("Plane", "N", "default prefix"); }
 	    virtual QString fullRegistration () const;
 	    virtual QString registrationWithType () const;
 
@@ -69,9 +70,9 @@ class Plane: public Entity
 
 
 		// *** ObjectListWindow/ObjectEditorWindow helpers
-		static QString objectTypeDescription () { return "Flugzeug"; }
-		static QString objectTypeDescriptionDefinite () { return "das Flugzeug"; }
-		static QString objectTypeDescriptionPlural () { return "Flugzeuge"; }
+		static QString objectTypeDescription () { return qApp->translate ("Plane", "plane"); }
+		static QString objectTypeDescriptionDefinite () { return qApp->translate ("Plane", "the plane"); }
+		static QString objectTypeDescriptionPlural () { return qApp->translate ("Plane", "planes"); }
 
 
 		// SQL interface

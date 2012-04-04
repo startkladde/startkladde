@@ -37,3 +37,14 @@ Longitude LongitudeInput::getLongitude () const
 		ui.signInput->currentIndex ()==0
 		);
 }
+
+void LongitudeInput::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+		adjustSize ();
+	}
+	else
+		QWidget::changeEvent (event);
+}

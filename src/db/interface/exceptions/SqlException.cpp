@@ -1,6 +1,7 @@
 #include "SqlException.h"
 
 #include "src/io/AnsiColors.h"
+#include "src/i18n/notr.h"
 
 SqlException::SqlException (const QSqlError &error):
 	error (error)
@@ -13,7 +14,7 @@ SqlException::~SqlException ()
 
 QString SqlException::makeString (const QString &message) const
 {
-	return QString (
+	return qnotr (
 		"%1\n"
 		"    Number/type   : %2/%3\n"
 		"    Database error: %4\n"
@@ -28,7 +29,7 @@ QString SqlException::makeColorizedString (const QString &message) const
 {
 	AnsiColors c;
 
-	return QString (
+	return qnotr (
 		"%3\n"
 		"    Number/type   : %1%4%2/%5\n"
 		"    Database error: %1%6%2\n"

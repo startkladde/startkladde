@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "src/util/qString.h"
+#include "src/i18n/notr.h"
 
 AbstractInterface::AbstractInterface (const DatabaseInfo &info):
 	info (info)
@@ -30,12 +31,12 @@ QString AbstractInterface::transactionStatementString (TransactionStatement stat
 {
 	switch (statement)
 	{
-		case transactionBegin   : return "Transaction";
-		case transactionCommit  : return "Commit";
-		case transactionRollback: return "Rollback";
+		case transactionBegin   : return notr ("Transaction");
+		case transactionCommit  : return notr ("Commit");
+		case transactionRollback: return notr ("Rollback");
 		// no default
 	}
 
-	assert (!"Unhandled statement");
-	return "?";
+	assert (!notr ("Unhandled statement"));
+	return notr ("?");
 }

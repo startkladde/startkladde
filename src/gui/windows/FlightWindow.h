@@ -47,8 +47,8 @@
  *     the button should be "depart now" or "land now", resp. later.
  *     Note that create mode *is* different from edit mode, for example the
  *     automatic selection of launch method/departure locations.
- *   - addObject a calendar to the date input
- *   - addObject a button to set the departure/landing time to the current time
+ *   - Add a calendar to the date input
+ *   - Add a button to set the departure/landing time to the current time
  *   - Add option to allow, but not require the towpilot
  *   - The sizeHint for the timeEdits seems to be too low by 1 pixel. This is
  *     solved by a hack in showEvent. It worked in the old version of this
@@ -107,12 +107,12 @@
  * Edit   geht   Start    |    OK                            +Gestartet      Gegangen
  */
 
-#include <QDialog>
 #include <QDate>
 #include <QList>
 
 #include "ui_FlightWindow.h"
 
+#include "src/gui/SkDialog.h"
 #include "src/db/dbId.h"
 #include "src/model/LaunchMethod.h" // TODO remove dependency
 #include "src/model/Flight.h" // Required for Flight::Mode and Flight::Type
@@ -135,7 +135,7 @@ class Cache;
 	case modeEdit: return editValue; \
 	} return defaultValue; } while (0)
 
-class FlightWindow: public QDialog
+class FlightWindow: public SkDialog<Ui::FlightWindowClass>
 {
     Q_OBJECT
 
@@ -151,7 +151,9 @@ class FlightWindow: public QDialog
 		~FlightWindow ();
 
 		// *** Setup
+		void fillLists ();
 		void fillData ();
+		void updateLists ();
 
 		// *** Invocation
 		static FlightWindow *createFlight (QWidget *parent, DbManager &manager, QDate date, dbId preselectedLaunchMethod);
@@ -162,6 +164,8 @@ class FlightWindow: public QDialog
 		dbId getEditedId () { return originalFlightId; }
 
 	protected:
+		void setupTitle ();
+
 		// Input field data
 		int fillNames (QStringList (Cache::*fullListMethod)(), QStringList (Cache::*partialListMethod)(const QString &), QComboBox *target, const QString &otherName, bool preserveTarget);
 		dbId fillLastNames  (bool active, QComboBox *target, const QString &firstName, bool preserveTarget);
@@ -408,17 +412,19 @@ class FlightWindow: public QDialog
 		void dateChanged           (const QDate   &date) { (void)date; }
 
 
+		void languageChanged ();
 
 		// *** Button events
-		void okButton_clicked (); // not automatically connected
-		void nowButton_clicked (); // not automatically connected
+		void okButton_clicked    (); // not automatically connected
+		void nowButton_clicked   (); // not automatically connected
+		void laterButton_clicked (); // not automatically connected
 
 
 	private:
 		QMultiMap<QWidget *, SkLabel *> widgetLabelMap;
 
-		Ui::FlightWindowClass ui;
 		QPushButton *nowButton;
+		QPushButton *laterButton;
 
 		DbManager &manager;
 		Cache &cache;
@@ -432,7 +438,7 @@ class FlightWindow: public QDialog
 		// input fields, so they are active if the checkbox is not checked. In edit
 		// mode, we have "Departed"/"Landed" checkboxes which activate the input
 		// field.
-		bool getTimeFieldActive (bool checkboxValue) {	EDITOR_MODE_RETURN (!checkboxValue, checkboxValue, true); }
+		bool getTimeFieldActive (bool checkboxValue) { EDITOR_MODE_RETURN (!checkboxValue, checkboxValue, true); }
 		bool getTimeFieldCheckboxValue (bool active) { EDITOR_MODE_RETURN (!active, active, true); }
 
 		bool isNowActionPossible ();
@@ -466,3 +472,4 @@ class FlightWindow: public QDialog
 };
 
 #endif
+

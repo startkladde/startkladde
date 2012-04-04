@@ -2,11 +2,15 @@
 
 #include <QPushButton>
 
+// TODO: The title is not retranslated because it is specified outside of this
+// class. This can be changed using the technique used for StatisticsWindow.
+// Since the window is modal, a language change should not happen while the
+// window is open.
+
 DateTimeInputDialog::DateTimeInputDialog (QWidget *parent, Qt::WindowFlags f):
-	QDialog(parent, f)
+	SkDialog<Ui::DateTimeInputDialogClass> (parent, f)
 {
 	ui.setupUi(this);
-	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 }
 
 DateTimeInputDialog::~DateTimeInputDialog()

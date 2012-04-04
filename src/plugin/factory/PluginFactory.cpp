@@ -13,6 +13,7 @@
 
 #include "src/util/qList.h"
 #include "src/util/qString.h"
+#include "src/i18n/notr.h"
 
 #include "src/plugins/weather/ExternalWeatherPlugin.h"
 
@@ -67,12 +68,12 @@ template<class T> void PluginFactory::addDescriptor (typename T::Descriptor *des
 
 	if (descriptor->getId ().isNull ())
 	{
-		QString message=QString ("Error: invalid UUID for plugin %1").arg (descriptor->getName ());
+		QString message=qnotr ("Error: invalid UUID for plugin %1").arg (descriptor->getName ());
 		std::cerr << message << std::endl;
 	}
 	else if (descriptorHash.contains (descriptor->getId ()))
 	{
-		QString message=QString ("Error: duplicate UUID %1 for plugins %2 and %3").arg (
+		QString message=qnotr ("Error: duplicate UUID %1 for plugins %2 and %3").arg (
 				descriptor->getId (),
 				descriptor->getName (),
 				descriptorHash.value (descriptor->getId ())->getName ());

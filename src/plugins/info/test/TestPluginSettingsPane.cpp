@@ -26,8 +26,8 @@ bool TestPluginSettingsPane::writeSettings ()
 {
 	if (ui.failCheckbox->isChecked ())
 	{
-		showWarning ("Fehler",
-			utf8 ("Test-Fehler („Fehler beim Speichern“ is aktiv)"),
+		showWarning (tr ("Error"),
+			tr ("Test error (\"Error on save\" is enabled)"),
 			this);
 
 		return false;
@@ -36,4 +36,14 @@ bool TestPluginSettingsPane::writeSettings ()
 	plugin->setGreetingName (ui.greetingNameInput->text      ());
 	plugin->setRichText     (ui.richTextCheckbox ->isChecked ());
 	return true;
+}
+
+void TestPluginSettingsPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+	}
+	else
+		PluginSettingsPane::changeEvent (event);
 }

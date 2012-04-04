@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>716</width>
+    <width>800</width>
     <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Flight database</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -70,22 +70,22 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>716</width>
+     <width>800</width>
      <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFenster">
     <property name="title">
-     <string>&amp;Fenster</string>
+     <string>&amp;Window</string>
     </property>
     <addaction name="actionClose"/>
    </widget>
    <widget class="QMenu" name="menuFl_uege">
     <property name="title">
-     <string>Fl&amp;uege</string>
+     <string>&amp;Flights</string>
     </property>
-    <addaction name="actionSelectDate"/>
     <addaction name="actionRefresh"/>
+    <addaction name="actionSelectDate"/>
     <addaction name="separator"/>
     <addaction name="actionExport"/>
    </widget>
@@ -94,31 +94,34 @@
   </widget>
   <action name="actionClose">
    <property name="text">
-    <string>&amp;Schließen</string>
+    <string>&amp;Close</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+W</string>
+    <string extracomment="Close">Ctrl+W</string>
    </property>
   </action>
   <action name="actionSelectDate">
    <property name="text">
-    <string>&amp;Datum auswaehlen</string>
+    <string>Select &amp;date</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+D</string>
+    <string extracomment="Select date">Ctrl+D</string>
    </property>
   </action>
   <action name="actionExport">
    <property name="text">
-    <string>&amp;Exportieren</string>
+    <string>&amp;Export</string>
+   </property>
+   <property name="shortcut">
+    <string extracomment="Export">Ctrl+E</string>
    </property>
   </action>
   <action name="actionRefresh">
    <property name="text">
-    <string>&amp;Aktualisieren</string>
+    <string>&amp;Refresh</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R</string>
+    <string extracomment="Refresh">Ctrl+R</string>
    </property>
   </action>
  </widget>

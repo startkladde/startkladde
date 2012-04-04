@@ -1,25 +1,30 @@
 #ifndef STATISTICSWINDOW_H
 #define STATISTICSWINDOW_H
 
-#include <QtGui/QDialog>
-
 #include "ui_StatisticsWindow.h"
+
+#include "src/gui/SkDialog.h"
 
 class QAbstractTableModel;
 
-class StatisticsWindow: public QDialog
+class StatisticsWindow: public SkDialog<Ui::StatisticsWindowClass>
 {
+		Q_OBJECT
+
 	public:
-		StatisticsWindow (QAbstractTableModel *model, bool modelOwned, QWidget *parent=0);
+		StatisticsWindow (QAbstractTableModel *model, bool modelOwned, const char *ntr_title, QWidget *parent=0);
 		~StatisticsWindow ();
 
-		static void display (QAbstractTableModel *model, bool modelOwned, QString title, QWidget *parent=0);
+		static void display (QAbstractTableModel *model, bool modelOwned, const char *ntr_title, QWidget *parent=0);
+
+	protected:
+		void languageChanged ();
+		void setupText ();
 
 	private:
-		Ui::StatisticsWindowClass ui;
-
 		QAbstractTableModel *model;
 		bool modelOwned;
+		const char *ntr_title;
 };
 
-#endif // STATISTICSWINDOW_H
+#endif

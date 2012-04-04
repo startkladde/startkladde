@@ -66,6 +66,7 @@
 #include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/config/Settings.h"
 #include "src/concurrent/DefaultQThread.h"
+#include "src/i18n/notr.h"
 
 QAtomicInt DefaultInterface::freeNumber=0;
 
@@ -83,12 +84,12 @@ DefaultInterface::DefaultInterface (const DatabaseInfo &dbInfo, int readTimeout)
 	connect (proxy, SIGNAL (readTimeout ()), this, SIGNAL (readTimeout ()), Qt::DirectConnection);
 	connect (proxy, SIGNAL (readResumed ()), this, SIGNAL (readResumed ()), Qt::DirectConnection);
 
-	QString name=utf8 ("startkladde_defaultInterface_%1").arg (getFreeNumber ());
+	QString name=qnotr ("startkladde_defaultInterface_%1").arg (getFreeNumber ());
 	//std::cout << "Create db " << name << std::endl;
 
-	db=QSqlDatabase::addDatabase ("QMYSQL", name);
+	db=QSqlDatabase::addDatabase (notr ("QMYSQL"), name);
 	threadId=QThread::currentThreadId ();
-	std::cout << "DefaultInterface created on thread " << QThread::currentThreadId () << std::endl;
+	std::cout << notr ("DefaultInterface created on thread ") << QThread::currentThreadId () << std::endl;
 }
 
 DefaultInterface::~DefaultInterface ()
@@ -133,13 +134,13 @@ bool DefaultInterface::open ()
 
 	// Note that this may not be "localhost" because the MySQL library uses a
 	// unix domain socket and ignores the port in this case.
-	db.setHostName     ("127.0.0.1");
+	db.setHostName     (notr ("127.0.0.1"));
 	db.setUserName     (info.username);
 	db.setPassword     (info.password);
 	db.setPort         (proxyPort);
 	db.setDatabaseName (info.database);
 
-	db.setConnectOptions ("CLIENT_COMPRESS");
+	db.setConnectOptions (notr ("CLIENT_COMPRESS"));
 
 
 	openImpl ();
@@ -153,13 +154,13 @@ void DefaultInterface::openImpl ()
 
 	while (true)
 	{
-		std::cout << QString ("%1 connecting to %2 via %3:%4...")
+		std::cout << qnotr ("%1 connecting to %2 via %3:%4...")
 			.arg (db.connectionName ()).arg (getInfo ().toString ()).arg (db.hostName ()).arg (db.port ());
 		std::cout.flush ();
 
 		if (db.open ())
 		{
-			std::cout << "OK" << std::endl;
+			std::cout << notr ("OK") << std::endl;
 			return;
 		}
 		else
@@ -167,7 +168,7 @@ void DefaultInterface::openImpl ()
 			if (canceled)
 			{
 				// Failed because canceled
-				std::cout << "canceled" << std::endl;
+				std::cout << notr ("canceled") << std::endl;
 				throw OperationCanceledException ();
 			}
 			else
@@ -194,7 +195,7 @@ void DefaultInterface::openImpl ()
 				// This is acceptable for a delay as short as 1 second. It
 				// could be circumvented by using a QWaitCondition.
 				DefaultQThread::sleep (1);
-				std::cout << "Retrying...";
+				std::cout << notr ("Retrying...");
 			}
 		}
 	}
@@ -204,8 +205,8 @@ void DefaultInterface::close ()
 {
 	verifyThread ();
 
-	std::cout << "Closing connection" << std::endl;
-	std::cout << "close info " << getInfo().toString() << std::endl;
+	std::cout << notr ("Closing connection") << std::endl;
+	std::cout << notr ("close info ") << getInfo().toString() << std::endl;
 
 	db.close ();
 	proxy->close ();
@@ -264,7 +265,7 @@ void DefaultInterface::transactionStatementImpl (AbstractInterface::TransactionS
 		// can be reopened.
 		close ();
 
-		if (displayQueries) std::cout << "Retrying...";
+		if (displayQueries) std::cout << notr ("Retrying...");
 	}
 }
 
@@ -272,7 +273,7 @@ bool DefaultInterface::doTransactionStatement (TransactionStatement statement)
 {
 	verifyThread ();
 
-	if (displayQueries) std::cout << transactionStatementString (statement) << "..." << std::flush;
+	if (displayQueries) std::cout << transactionStatementString (statement) << notr ("...") << std::flush;
 
 	bool result=false;
 	switch (statement)
@@ -285,13 +286,13 @@ bool DefaultInterface::doTransactionStatement (TransactionStatement statement)
 
 	if (result)
 	{
-		if (displayQueries) std::cout << "OK" << std::endl;
+		if (displayQueries) std::cout << notr ("OK") << std::endl;
 		return true;
 	}
 	else if (canceled)
 	{
 		// Failed because canceled
-		if (displayQueries) std::cout << "canceled" << std::endl;
+		if (displayQueries) std::cout << notr ("canceled") << std::endl;
 		throw OperationCanceledException ();
 	}
 	else
@@ -390,7 +391,7 @@ QSqlQuery DefaultInterface::executeQueryImpl (const Query &query, bool forwardOn
 			// can be reopened.
 			close ();
 
-			if (displayQueries) std::cout << "Retrying...";
+			if (displayQueries) std::cout << notr ("Retrying...");
 		}
 	}
 }
@@ -419,7 +420,7 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 
 	if (displayQueries)
 	{
-		std::cout << query.colorizedString () << "...";
+		std::cout << query.colorizedString () << notr ("...");
 		std::cout.flush ();
 	}
 
@@ -433,7 +434,7 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 		if (canceled)
 		{
 			if (displayQueries)
-				std::cout << "canceled" << std::endl;
+				std::cout << notr ("canceled") << std::endl;
 			throw OperationCanceledException ();
 		}
 		else
@@ -450,14 +451,14 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 	query.bindTo (sqlQuery);
 
 	if (displayQueries)
-		std::cout << "..."; std::cout.flush ();
+		std::cout << notr ("..."); std::cout.flush ();
 
 	if (!query.exec (sqlQuery))
 	{
 		if (canceled)
 		{
 			if (displayQueries)
-				std::cout << "canceled" << std::endl;
+				std::cout << notr ("canceled") << std::endl;
 			throw OperationCanceledException ();
 		}
 		else
@@ -474,11 +475,16 @@ QSqlQuery DefaultInterface::doExecuteQuery (const Query &query, bool forwardOnly
 	{
 		if (displayQueries)
 		{
-			if (sqlQuery.isSelect ())
-				std::cout << countText (sqlQuery.size (), "row", "rows") << " returned" << std::endl;
-			else
-				std::cout << countText (sqlQuery.numRowsAffected (), "row", "rows") << " affected" << std::endl;
+			int numRows=sqlQuery.size ();
 
+			if (sqlQuery.isSelect ())
+				std::cout << countText (numRows,
+					notr ("1 row returned"),
+					notr ("%1 rows returned")) << std::endl;
+			else
+				std::cout << countText (numRows,
+					notr ("1 row affected"),
+					notr ("%1 rows affected")) << std::endl;
 		}
 
 		return sqlQuery;
@@ -502,21 +508,21 @@ void DefaultInterface::ping ()
 
 		// Keep calling doTransactionStatement until it succeeds. If it failes
 		// terminally, it will throw an exception instead of returning false.
-		if (display) std::cout << "Ping..." << std::flush;
+		if (display) std::cout << notr ("Ping...") << std::flush;
 
 
 
 		QSqlQuery sqlQuery (db);
 
-		if (sqlQuery.prepare ("SELECT 0")) // Up: 36 bytes, down: 52 bytes
+		if (sqlQuery.prepare (notr ("SELECT 0"))) // Up: 36 bytes, down: 52 bytes
 		{
-			if (display) std::cout << "OK" << std::endl;
+			if (display) std::cout << notr ("OK") << std::endl;
 			return;
 		}
 		else if (canceled)
 		{
 			// Failed because canceled
-			if (display) std::cout << "canceled" << std::endl;
+			if (display) std::cout << notr ("canceled") << std::endl;
 			throw OperationCanceledException ();
 		}
 		else
@@ -534,7 +540,7 @@ void DefaultInterface::ping ()
 		// can be reopened.
 		close ();
 
-		if (display) std::cout << "Retrying...";
+		if (display) std::cout << notr ("Retrying...");
 	}
 }
 
@@ -546,5 +552,5 @@ void DefaultInterface::verifyThread () const
 	// The db may only be accessed on the thread where it was created (Qt
 	// restriction)
 	if (QThread::currentThreadId ()!=threadId)
-		std::cout << "FAIL: a method of DefaultInterface was called on the wrong thread!" << std::endl;
+		std::cout << notr ("FAIL: a method of DefaultInterface was called on the wrong thread!") << std::endl;
 }

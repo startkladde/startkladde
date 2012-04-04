@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>NewFlightWindow</string>
+   <string>FlightWindow</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="margin">
@@ -34,7 +34,7 @@
         <x>0</x>
         <y>0</y>
         <width>510</width>
-        <height>779</height>
+        <height>781</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -50,7 +50,7 @@
           <item row="0" column="0">
            <widget class="SkLabel" name="registrationLabel">
             <property name="text">
-             <string>&amp;Kennzeichen:</string>
+             <string>&amp;Registration:</string>
             </property>
             <property name="buddy">
              <cstring>registrationInput</cstring>
@@ -70,7 +70,7 @@
           <item row="1" column="0">
            <widget class="SkLabel" name="planeTypeLabel">
             <property name="text">
-             <string>Flugzeugtyp:</string>
+             <string>Plane model:</string>
             </property>
            </widget>
           </item>
@@ -84,7 +84,7 @@
           <item row="2" column="0">
            <widget class="SkLabel" name="flightTypeLabel">
             <property name="text">
-             <string>Flugt&amp;yp:</string>
+             <string>Flight t&amp;ype:</string>
             </property>
             <property name="buddy">
              <cstring>flightTypeInput</cstring>
@@ -104,7 +104,7 @@
           <item row="3" column="1">
            <widget class="SkLabel" name="pilotLastNameLabel">
             <property name="text">
-             <string>&amp;Nachname:</string>
+             <string comment="Pilot">La&amp;st name:</string>
             </property>
             <property name="buddy">
              <cstring>pilotLastNameInput</cstring>
@@ -124,7 +124,7 @@
           <item row="4" column="1">
            <widget class="SkLabel" name="pilotFirstNameLabel">
             <property name="text">
-             <string>&amp;Vorname:</string>
+             <string comment="Pilot">&amp;First name:</string>
             </property>
             <property name="buddy">
              <cstring>pilotFirstNameInput</cstring>
@@ -144,7 +144,7 @@
           <item row="5" column="0">
            <widget class="SkLabel" name="copilotLabel">
             <property name="text">
-             <string>Begleiter:</string>
+             <string>Copilot:</string>
             </property>
             <property name="buddy">
              <cstring>copilotLastNameInput</cstring>
@@ -154,7 +154,7 @@
           <item row="5" column="1">
            <widget class="SkLabel" name="copilotLastNameLabel">
             <property name="text">
-             <string>Nac&amp;hname:</string>
+             <string comment="Copilot">La&amp;st name:</string>
             </property>
             <property name="buddy">
              <cstring>copilotLastNameInput</cstring>
@@ -174,7 +174,7 @@
           <item row="6" column="1">
            <widget class="SkLabel" name="copilotFirstNameLabel">
             <property name="text">
-             <string>Vorna&amp;me:</string>
+             <string comment="Copilot">&amp;First name:</string>
             </property>
             <property name="buddy">
              <cstring>copilotFirstNameInput</cstring>
@@ -194,7 +194,7 @@
           <item row="7" column="0">
            <widget class="SkLabel" name="flightModeLabel">
             <property name="text">
-             <string>Mo&amp;dus:</string>
+             <string>Fli&amp;ght mode:</string>
             </property>
             <property name="buddy">
              <cstring>flightModeInput</cstring>
@@ -207,7 +207,7 @@
           <item row="8" column="0">
            <widget class="SkLabel" name="launchMethodLabel">
             <property name="text">
-             <string>Starta&amp;rt:</string>
+             <string>Launch met&amp;hod:</string>
             </property>
             <property name="buddy">
              <cstring>launchMethodInput</cstring>
@@ -220,7 +220,7 @@
           <item row="9" column="0">
            <widget class="SkLabel" name="towplaneRegistrationLabel">
             <property name="text">
-             <string>Sch&amp;leppflugzeug:</string>
+             <string>To&amp;wplane:</string>
             </property>
             <property name="buddy">
              <cstring>towplaneRegistrationInput</cstring>
@@ -237,7 +237,7 @@
           <item row="10" column="0">
            <widget class="SkLabel" name="towplaneTypeLabel">
             <property name="text">
-             <string>Typ Schleppflugzeug:</string>
+             <string>Towplane model:</string>
             </property>
            </widget>
           </item>
@@ -251,14 +251,14 @@
           <item row="11" column="0">
            <widget class="SkLabel" name="towpilotLabel">
             <property name="text">
-             <string>Schlepppilot:</string>
+             <string>Towpilot:</string>
             </property>
            </widget>
           </item>
           <item row="11" column="1">
            <widget class="SkLabel" name="towpilotLastNameLabel">
             <property name="text">
-             <string>Nachname:</string>
+             <string comment="Towpilot">La&amp;st name:</string>
             </property>
             <property name="buddy">
              <cstring>towpilotLastNameInput</cstring>
@@ -278,7 +278,7 @@
           <item row="12" column="1">
            <widget class="SkLabel" name="towpilotFirstNameLabel">
             <property name="text">
-             <string>Vorname:</string>
+             <string comment="Towpilot">&amp;First name:</string>
             </property>
             <property name="buddy">
              <cstring>towpilotFirstNameInput</cstring>
@@ -298,7 +298,7 @@
           <item row="13" column="0">
            <widget class="SkLabel" name="towflightModeLabel">
             <property name="text">
-             <string>Schleppflug Modus:</string>
+             <string>Towfli&amp;ght mode:</string>
             </property>
             <property name="buddy">
              <cstring>towflightModeInput</cstring>
@@ -311,7 +311,7 @@
           <item row="14" column="0">
            <widget class="SkLabel" name="departureTimeLabel">
             <property name="text">
-             <string>Startze&amp;it:</string>
+             <string>De&amp;parture time:</string>
             </property>
             <property name="buddy">
              <cstring>departureTimeInput</cstring>
@@ -321,7 +321,7 @@
           <item row="14" column="1">
            <widget class="QCheckBox" name="departureTimeCheckbox">
             <property name="text">
-             <string>Automati&amp;sch</string>
+             <string comment="Departure time">Au&amp;tomatic</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -379,7 +379,7 @@
           <item row="15" column="0">
            <widget class="SkLabel" name="landingTimeLabel">
             <property name="text">
-             <string>Lande&amp;zeit:</string>
+             <string>Landing ti&amp;me:</string>
             </property>
             <property name="buddy">
              <cstring>landingTimeInput</cstring>
@@ -389,7 +389,7 @@
           <item row="15" column="1">
            <widget class="QCheckBox" name="landingTimeCheckbox">
             <property name="text">
-             <string>&amp;Automatisch</string>
+             <string comment="Landing time">&amp;Automatic</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -447,7 +447,7 @@
           <item row="16" column="0">
            <widget class="SkLabel" name="towflightLandingTimeLabel">
             <property name="text">
-             <string>Landezeit Schl&amp;eppflugzeug:</string>
+             <string>Landing ti&amp;me towplane:</string>
             </property>
             <property name="buddy">
              <cstring>towflightLandingTimeInput</cstring>
@@ -457,7 +457,7 @@
           <item row="16" column="1">
            <widget class="QCheckBox" name="towflightLandingTimeCheckbox">
             <property name="text">
-             <string>Au&amp;tomatisch</string>
+             <string comment="Landing time towplane">A&amp;utomatic</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -515,7 +515,7 @@
           <item row="17" column="0">
            <widget class="SkLabel" name="departureLocationLabel">
             <property name="text">
-             <string>Sta&amp;rtort:</string>
+             <string>Departure locat&amp;ion:</string>
             </property>
             <property name="buddy">
              <cstring>departureLocationInput</cstring>
@@ -535,7 +535,7 @@
           <item row="18" column="0">
            <widget class="SkLabel" name="landingLocationLabel">
             <property name="text">
-             <string>Zie&amp;lort:</string>
+             <string>Landing locat&amp;ion:</string>
             </property>
             <property name="buddy">
              <cstring>landingLocationInput</cstring>
@@ -555,7 +555,7 @@
           <item row="19" column="0">
            <widget class="SkLabel" name="towflightLandingLocationLabel">
             <property name="text">
-             <string>&amp;Zielort Schleppflugzeug:</string>
+             <string>Landing locat&amp;ion towplane:</string>
             </property>
             <property name="buddy">
              <cstring>towflightLandingLocationInput</cstring>
@@ -575,7 +575,7 @@
           <item row="20" column="0">
            <widget class="SkLabel" name="numLandingsLabel">
             <property name="text">
-             <string>Landun&amp;gen:</string>
+             <string>Num&amp;ber of landin&amp;gs:</string>
             </property>
             <property name="buddy">
              <cstring>numLandingsInput</cstring>
@@ -623,7 +623,7 @@
           <item row="21" column="0">
            <widget class="SkLabel" name="commentLabel">
             <property name="text">
-             <string>&amp;Bemerkungen:</string>
+             <string>Comme&amp;nts:</string>
             </property>
             <property name="buddy">
              <cstring>commentInput</cstring>
@@ -636,7 +636,7 @@
           <item row="22" column="0">
            <widget class="SkLabel" name="accountingNoteLabel">
             <property name="text">
-             <string>Abrechnungshin&amp;weis:</string>
+             <string>Accounti&amp;ng notes:</string>
             </property>
             <property name="buddy">
              <cstring>accountingNoteInput</cstring>
@@ -656,7 +656,7 @@
           <item row="23" column="0">
            <widget class="SkLabel" name="dateLabel">
             <property name="text">
-             <string>Dat&amp;um:</string>
+             <string>Dat&amp;e:</string>
             </property>
             <property name="buddy">
              <cstring>dateInput</cstring>
@@ -673,7 +673,11 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QDateEdit" name="dateInput"/>
+              <widget class="QDateEdit" name="dateInput">
+               <property name="displayFormat">
+                <string>MM/dd/yyyy</string>
+               </property>
+              </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_6">
@@ -694,7 +698,7 @@
           <item row="24" column="0">
            <widget class="SkLabel" name="errorLabel">
             <property name="text">
-             <string>F&amp;ehler:</string>
+             <string>&amp;Errors:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>

@@ -72,7 +72,7 @@ LaunchMethodStatistics *LaunchMethodStatistics::createNew (const QList<Flight> &
 	if (numTowFlights>0)
 	{
 		Entry towflightsEntry;
-		towflightsEntry.name=utf8 ("Schleppflüge");
+		towflightsEntry.name=tr ("Towflights");
 		towflightsEntry.num=numTowFlights;
 		result->entries.append (towflightsEntry);
 	}
@@ -125,8 +125,8 @@ QVariant LaunchMethodStatistics::headerData (int section, Qt::Orientation orient
 		{
 			switch (section)
 			{
-				case 0: return "Startart"; break;
-				case 1: return "Anzahl Starts"; break;
+				case 0: return tr ("Launch method"); break;
+				case 1: return tr ("Number of launches"); break;
 			}
 		}
 		else

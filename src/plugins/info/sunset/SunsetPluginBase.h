@@ -5,6 +5,7 @@
 
 #include "src/plugin/info/InfoPlugin.h"
 #include "src/Longitude.h"
+#include "src/i18n/notr.h"
 
 /**
  * A plugin which displays the sunset time for the current date, read from a
@@ -15,10 +16,12 @@
  */
 class SunsetPluginBase: public InfoPlugin
 {
+		Q_OBJECT
+
 	public:
 		friend class SunsetPluginSettingsPane;
 
-		SunsetPluginBase (QString caption=QString (), bool enabled=true, const QString &filename="sunsets.txt");
+		SunsetPluginBase (QString caption=QString (), bool enabled=true, const QString &filename=notr ("sunsets.txt"));
 		virtual ~SunsetPluginBase ();
 
 		virtual PluginSettingsPane *infoPluginCreateSettingsPane (QWidget *parent=NULL);

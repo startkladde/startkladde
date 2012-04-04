@@ -15,10 +15,10 @@
  * @param f the Qt window flags
  */
 ConfirmOverwritePersonDialog::ConfirmOverwritePersonDialog (QWidget *parent, Qt::WindowFlags f):
-	QDialog (parent, f)
+	SkDialog<Ui::ConfirmOverwritePersonDialogClass> (parent, f)
 {
 	ui.setupUi(this);
-	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
+	adjustSize ();
 }
 
 ConfirmOverwritePersonDialog::~ConfirmOverwritePersonDialog ()
@@ -29,54 +29,87 @@ ConfirmOverwritePersonDialog::~ConfirmOverwritePersonDialog ()
  * Sets up the window
  *
  * This method clears, sets up and populates the tree view with the correct
- * and wrong people, and adjusts some labels.
+ * and wrong people, and adjusts the labels.
  *
  * @param correctPerson the correct person entry
  * @param wrongPeople a list of one or more wrong person entries
  */
 void ConfirmOverwritePersonDialog::setup (const Person &correctPerson, const QList<Person> &wrongPeople)
 {
-	// The model to get the data from
-	Person::DefaultObjectModel model;
-
-	QString wrongEntriesText;
-	if (wrongPeople.size ()>1)
-	{
-		wrongEntriesText=utf8 ("Falsche Einträge");
-		ui.introLabel->setText (utf8 ("Die folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:"));
-		ui.descriptionLabel->setText (ui.descriptionLabel->text ().arg ("Alle", "Personen"));
-	}
-	else
-	{
-		wrongEntriesText=utf8 ("Falscher Eintrag");
-		ui.introLabel->setText (utf8 ("Der folgende fehlerhafte Personeneintrag wird durch den korrekten Eintrag ersetzt:"));
-		ui.descriptionLabel->setText (ui.descriptionLabel->text ().arg ("Beide", "Person"));
-	}
+	// Store the people data
+	this->correctPerson=correctPerson;
+	this->wrongPeople=wrongPeople;
 
 	// Clear the tree
 	ui.entriesTree->clear ();
 
-	// Set up the header
-	ui.entriesTree->setHeaderLabels (model.displayHeaderStrings ());
-
 	// Create the root items
-	QTreeWidgetItem *  wrongParentItem=new QTreeWidgetItem (ui.entriesTree, QStringList (wrongEntriesText          ));
-	QTreeWidgetItem *correctParentItem=new QTreeWidgetItem (ui.entriesTree, QStringList (utf8 ("Korrekter Eintrag")));
+	wrongParentItem  =new QTreeWidgetItem (ui.entriesTree);
+	correctParentItem=new QTreeWidgetItem (ui.entriesTree);
 
-	// Set up the root items
+	// Setup the root items
 	wrongParentItem  ->setFirstColumnSpanned (true);
 	correctParentItem->setFirstColumnSpanned (true);
 
-	// Create a child item for the corrent person
-	new QTreeWidgetItem (correctParentItem, model.displayDataStrings (correctPerson));
+	// Create (empty) children items for the correct person and wrong people.
+	// The contents depend on the language and will be filled in by setupTexts.
+	new QTreeWidgetItem (correctParentItem);
+	for (int i=0, n=wrongPeople.size (); i<n; ++i)
+		new QTreeWidgetItem (wrongParentItem);
 
-	// Create child items for the wrong people
-	foreach (const Person &person, wrongPeople)
-		new QTreeWidgetItem (wrongParentItem, model.displayDataStrings (person));
+	// Fill in all language dependent texts
+	setupTexts ();
 
 	// Expand the root items
 	wrongParentItem  ->setExpanded (true);
 	correctParentItem->setExpanded (true);
+
+}
+
+/**
+ * Sets up all texts that may depend on the language. This method is called on
+ * dialog creation and on retranslation.
+ */
+void ConfirmOverwritePersonDialog::setupTexts ()
+{
+	// Set the text of the tree widget headers
+	ui.entriesTree->setHeaderLabels (model.displayHeaderStrings ());
+
+	// Set the text of the root item for the correct person
+	correctParentItem->setText (0, tr ("Correct entry"));
+
+	// Set the texts that depend on the number of wrong people: the root item
+	// for the wrong people and the labels
+	if (wrongPeople.size ()>1)
+	{
+		wrongParentItem->setText (0, tr ("Erroneous entries"));
+		ui.introLabel->setText (tr ("The following erroneous entries will be replaced with the correct entry:"));
+		ui.descriptionLabel->setText (tr (
+			"<html>"
+			"All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person. "
+			"<font color=\"#FF0000\">Warning: this action cannot be undone.</font> "
+			"Continue?"
+			"</html>"));
+	}
+	else
+	{
+		wrongParentItem->setText (0, tr ("Erroneous entry"));
+		ui.introLabel->setText (tr ("The following erroneous entry will be replaced with the correct entry:"));
+		ui.descriptionLabel->setText (tr (
+			"<html>"
+			"Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person. "
+			"<font color=\"#FF0000\">Warning: this action cannot be undone.</font> "
+			"Continue?"
+			"</html>"));
+
+	}
+
+	// Set the texts for the actual people entries (these, too, may depend on
+	// the language, and since we copy the data to the tree widget items instead
+	// of using a modelview, we must update them manually.
+	for (int i=0, n=wrongPeople.size (); i<n; ++i)
+		*(wrongParentItem->child (i))=QTreeWidgetItem (model.displayDataStrings (wrongPeople[i]));
+	*(correctParentItem->child (0))=QTreeWidgetItem (model.displayDataStrings (correctPerson));
 
 	// Resize the columns to the contents
 	for (int i=0; i<model.columnCount (); ++i)
@@ -102,4 +135,11 @@ bool ConfirmOverwritePersonDialog::confirmOverwrite (const Person &correctPerson
 		return true;
 	else
 		return false;
+}
+
+void ConfirmOverwritePersonDialog::languageChanged ()
+{
+	SkDialog<Ui::ConfirmOverwritePersonDialogClass>::languageChanged ();
+	setupTexts ();
+	adjustSize ();
 }

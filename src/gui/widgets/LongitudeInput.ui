@@ -57,7 +57,7 @@
     <widget class="QComboBox" name="signInput">
      <item>
       <property name="text">
-       <string>Ost</string>
+       <string>East</string>
       </property>
      </item>
      <item>

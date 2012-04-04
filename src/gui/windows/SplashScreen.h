@@ -11,11 +11,13 @@
 #include <QPainter>
 #include <QPixmap>
 
+#include "src/gui/SkDialog.h"
+
 /*
  * A SplashScreen screen capable of displaying a progress indicator
  */
 
-class SplashScreen:public QDialog
+class SplashScreen: public QDialog
 {
 	Q_OBJECT
 

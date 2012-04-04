@@ -21,6 +21,7 @@
 #include "src/plugins/info/sunset/SunsetCountdownPlugin.h"
 #include "src/plugins/weather/WetterOnlineImagePlugin.h"
 #include "src/plugins/weather/WetterOnlineAnimationPlugin.h"
+#include "src/i18n/notr.h"
 
 
 Settings *Settings::theInstance=NULL;
@@ -64,20 +65,20 @@ QStringList Settings::readArgs (const QStringList &args)
 	{
 		QString arg=unprocessed.first ();
 
-		if (arg.startsWith ("-"))
+		if (arg.startsWith (notr ("-")))
 		{
 			unprocessed.removeFirst ();
 
-			if (arg=="-q")
+			if (arg==notr ("-q"))
 				displayQueries=true;
-			else if (arg=="--colored-labels")
+			else if (arg==notr ("--colored-labels"))
 				coloredLabels=true;
-			else if (arg=="--no-full-screen")
+			else if (arg==notr ("--no-full-screen"))
 				noFullScreen=true;
-			else if (arg=="--enable-shutdown")
+			else if (arg==notr ("--enable-shutdown"))
 				enableShutdown=true;
 			else
-				std::cout << "Unrecognized option " << arg << std::endl;
+				std::cout << notr ("Unrecognized option ") << arg << std::endl;
 		}
 		else
 		{
@@ -104,27 +105,27 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 	QList<InfoPlugin *> plugins;
 
 	QSettings s;
-	s.beginGroup ("settings");
+	s.beginGroup (notr ("settings"));
 
 	PluginFactory &factory=PluginFactory::getInstance ();
 
 	// If no entry for infoPlugins exists, create a default set of plugins.
 	// Note that if no plugins are used, there is still an entry with 0
 	// elements.
-	if (s.contains ("infoPlugins/size"))
+	if (s.contains (notr ("infoPlugins/size")))
 	{
-		int n=s.beginReadArray ("infoPlugins");
+		int n=s.beginReadArray (notr ("infoPlugins"));
 		for (int i=0; i<n; ++i)
 		{
 			s.setArrayIndex (i);
 
-			QString id=s.value ("id").toString ();
+			QString id=s.value (notr ("id")).toString ();
 			InfoPlugin *plugin=factory.createPlugin<InfoPlugin> (id);
 
 			// TODO better handling if not found
 			if (plugin)
 			{
-				s.beginGroup ("settings");
+				s.beginGroup (notr ("settings"));
 				plugin->readSettings (s);
 				s.endGroup ();
 
@@ -138,12 +139,16 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 //		plugins.append (new TestPlugin ("Foo:"));
 //		plugins.append (new TestPlugin ("Bar:", true, "TestPlugin", true));
 
-		plugins.append (new SunsetTimePlugin      ("Sunset:"         , true, "sunsets.txt"));
-		plugins.append (new SunsetCountdownPlugin ("Zeit bis sunset:", true, "sunsets.txt"));
+		plugins.append (new SunsetTimePlugin      (tr ("Sunset:")           , true, notr ("sunsets.txt")));
+		plugins.append (new SunsetCountdownPlugin (tr ("Time until sunset:"), true, notr ("sunsets.txt")));
 
-		plugins.append (new MetarPlugin ("Wetter:", true, "EDDF", 15*60));
-		plugins.append (new MetarPlugin (""       , true, "EDDS", 15*60));
-		plugins.append (new MetarPlugin (""       , true, "EDDM", 15*60));
+		// Add METAR plugin instances for three well-known airports; when
+		// translating, the airport IDs should be replaced with airports in the
+		// country the translation is made for (e. g. a german translation
+		// might include Frankfurt as one of the airports).
+		plugins.append (new MetarPlugin (tr ("Weather:"), true, tr ("KSFO"), 15*60));
+		plugins.append (new MetarPlugin (""             , true, tr ("KJFK"), 15*60));
+		plugins.append (new MetarPlugin (""             , true, tr ("KFTW"), 15*60));
 	}
 
 	return plugins;
@@ -152,18 +157,18 @@ QList<InfoPlugin *> Settings::readInfoPlugins ()
 void Settings::writeInfoPlugins (const QList<InfoPlugin *> &plugins)
 {
 	QSettings s;
-	s.beginGroup ("settings");
+	s.beginGroup (notr ("settings"));
 
 	// *** Plugins - Info
-	s.beginWriteArray ("infoPlugins");
+	s.beginWriteArray (notr ("infoPlugins"));
 	for (int i=0; i<plugins.size (); ++i)
 	{
 		s.setArrayIndex (i);
 
 		InfoPlugin *plugin=plugins[i];
-		s.setValue ("id", plugin->getId ().toString ());
+		s.setValue (notr ("id"), plugin->getId ().toString ());
 
-		s.beginGroup ("settings");
+		s.beginGroup (notr ("settings"));
 		plugin->writeSettings (s);
 		s.endGroup ();
 	}
@@ -174,63 +179,67 @@ void Settings::writeInfoPlugins (const QList<InfoPlugin *> &plugins)
 void Settings::readSettings ()
 {
 	QSettings s;
-	s.beginGroup ("settings");
+	s.beginGroup (notr ("settings"));
 
 	// *** Database
-	s.beginGroup ("database");
+	s.beginGroup (notr ("database"));
 	databaseInfo.load (s); // Connection
 	s.endGroup ();
 
 	// *** Settings
+	// UI
+	s.beginGroup (notr ("language"));
+	languageConfiguration.load (s);
+	s.endGroup ();
 	// Data
-	location      =s.value ("location"      , "Dingenskirchen").toString ();
-	recordTowpilot=s.value ("recordTowpilot", true            ).toBool ();
-	checkMedicals =s.value ("checkMedicals" , true            ).toBool ();
+	location      =s.value (notr ("location")      , tr ("Twiddlethorpe")).toString ();
+	recordTowpilot=s.value (notr ("recordTowpilot"), true            ).toBool ();
+	checkMedicals =s.value (notr ("checkMedicals") , true            ).toBool ();
 	// Permissions
-	protectSettings      =s.value ("protectSettings"      , false).toBool ();
-	protectLaunchMethods =s.value ("protectLaunchMethods" , false).toBool ();
-	protectMergePeople   =s.value ("protectMergePeople"   , false).toBool ();
-	protectFlightDatabase=s.value ("protectFlightDatabase", false).toBool ();
+	protectSettings      =s.value (notr ("protectSettings")      , false).toBool ();
+	protectLaunchMethods =s.value (notr ("protectLaunchMethods") , false).toBool ();
+	protectMergePeople   =s.value (notr ("protectMergePeople")   , false).toBool ();
+	protectFlightDatabase=s.value (notr ("protectFlightDatabase"), false).toBool ();
 	// Diagnostics
-	enableDebug=s.value ("enableDebug", false       ).toBool ();
-	diagCommand=s.value ("diagCommand", "./script/netztest_xterm").toString (); // xterm -e ./netztest &
+	enableDebug=s.value (notr ("enableDebug"), false       ).toBool ();
+	diagCommand=s.value (notr ("diagCommand"), notr ("./script/netztest_xterm")).toString (); // xterm -e ./netztest &
 
 	// *** Plugins - Weather
 	// Weather plugin
-	weatherPluginId      =s.value ("weatherPluginId"      , WetterOnlineImagePlugin::_getId ().toString ()).toString ();
-	weatherPluginCommand =s.value ("weatherPluginCommand" , "regenradar_wetteronline.de.rb").toString ();
-	weatherPluginEnabled =s.value ("weatherPluginEnabled" , true).toBool ();
-	weatherPluginHeight  =s.value ("weatherPluginHeight"  , 200).toInt ();
-	weatherPluginInterval=s.value ("weatherPluginInterval", 15*60).toInt ();
+	weatherPluginId      =s.value (notr ("weatherPluginId")      , WetterOnlineImagePlugin::_getId ().toString ()).toString ();
+	weatherPluginCommand =s.value (notr ("weatherPluginCommand") , notr ("regenradar_wetteronline.de.rb")).toString ();
+	weatherPluginEnabled =s.value (notr ("weatherPluginEnabled") , true).toBool ();
+	weatherPluginHeight  =s.value (notr ("weatherPluginHeight")  , 200).toInt ();
+	weatherPluginInterval=s.value (notr ("weatherPluginInterval"), 15*60).toInt ();
 	// Weather dialog
-	weatherWindowPluginId=s.value ("weatherWindowPluginId", WetterOnlineAnimationPlugin::_getId ().toString ()).toString ();
-	weatherWindowCommand =s.value ("weatherWindowCommand" , "regenradar_wetteronline.de_animation.rb").toString ();
-	weatherWindowEnabled =s.value ("weatherWindowEnabled" , true).toBool ();
-	weatherWindowInterval=s.value ("weatherWindowInterval", 15*60).toInt ();
-	weatherWindowTitle   =s.value ("weatherWindowTitle"   , "Regenradar (3 Stunden)").toString ();
+	weatherWindowPluginId=s.value (notr ("weatherWindowPluginId"), WetterOnlineAnimationPlugin::_getId ().toString ()).toString ();
+	weatherWindowCommand =s.value (notr ("weatherWindowCommand") , notr ("regenradar_wetteronline.de_animation.rb")).toString ();
+	weatherWindowEnabled =s.value (notr ("weatherWindowEnabled") , true).toBool ();
+	weatherWindowInterval=s.value (notr ("weatherWindowInterval"), 15*60).toInt ();
+	weatherWindowTitle   =s.value (notr ("weatherWindowTitle")   , tr ("Weather radar (3 hours)")).toString ();
 
 	// *** Plugins - Paths
 	pluginPaths.clear ();
-	if (s.contains ("pluginPaths/size"))
+	if (s.contains (notr ("pluginPaths/size")))
 	{
-		int n=s.beginReadArray ("pluginPaths");
+		int n=s.beginReadArray (notr ("pluginPaths"));
 		for (int i=0; i<n; ++i)
 		{
 			s.setArrayIndex (i);
-			pluginPaths << s.value ("path").toString ();
+			pluginPaths << s.value (notr ("path")).toString ();
 		}
 		s.endArray ();
 	}
 	else
 	{
 		pluginPaths
-			<< "./.startkladde/plugins"
-			<< "./plugins"
-			<< "./plugins/info"
-			<< "./plugins/weather"
-			<< "/usr/lib/startkladde/plugins"
-			<< "/usr/lib/startkladde/plugins/info"
-			<< "/usr/lib/startkladde/plugins/weather"
+			<< notr ("./.startkladde/plugins")
+			<< notr ("./plugins")
+			<< notr ("./plugins/info")
+			<< notr ("./plugins/weather")
+			<< notr ("/usr/lib/startkladde/plugins")
+			<< notr ("/usr/lib/startkladde/plugins/info")
+			<< notr ("/usr/lib/startkladde/plugins/weather")
 			;
 	}
 }
@@ -238,48 +247,52 @@ void Settings::readSettings ()
 void Settings::writeSettings ()
 {
 	QSettings s;
-	s.beginGroup ("settings");
+	s.beginGroup (notr ("settings"));
 
 	// *** Database
-	s.beginGroup ("database");
+	s.beginGroup (notr ("database"));
 	databaseInfo.save (s); // Connection
 	s.endGroup ();
 
 	// *** Settings
+	// UI
+	s.beginGroup (notr ("language"));
+	languageConfiguration.save (s);
+	s.endGroup ();
 	// Data
-	s.setValue ("location"      , location      );
-	s.setValue ("recordTowpilot", recordTowpilot);
-	s.setValue ("checkMedicals" , checkMedicals );
+	s.setValue (notr ("location")      , location      );
+	s.setValue (notr ("recordTowpilot"), recordTowpilot);
+	s.setValue (notr ("checkMedicals") , checkMedicals );
 	// Permissions
-	s.setValue ("protectSettings"      , protectSettings      );
-	s.setValue ("protectLaunchMethods" , protectLaunchMethods );
-	s.setValue ("protectMergePeople"   , protectMergePeople   );
-	s.setValue ("protectFlightDatabase", protectFlightDatabase);
+	s.setValue (notr ("protectSettings")      , protectSettings      );
+	s.setValue (notr ("protectLaunchMethods") , protectLaunchMethods );
+	s.setValue (notr ("protectMergePeople")   , protectMergePeople   );
+	s.setValue (notr ("protectFlightDatabase"), protectFlightDatabase);
 	// Diagnostics
-	s.setValue ("enableDebug", enableDebug);
-	s.setValue ("diagCommand", diagCommand);
+	s.setValue (notr ("enableDebug"), enableDebug);
+	s.setValue (notr ("diagCommand"), diagCommand);
 
 
 	// *** Plugins - Weather
 	// Weather plugin
-	s.setValue ("weatherPluginId"      , weatherPluginId);
-	s.setValue ("weatherPluginCommand" , weatherPluginCommand);
-	s.setValue ("weatherPluginEnabled" , weatherPluginEnabled);
-	s.setValue ("weatherPluginHeight"  , weatherPluginHeight);
-	s.setValue ("weatherPluginInterval", weatherPluginInterval);
+	s.setValue (notr ("weatherPluginId")      , weatherPluginId);
+	s.setValue (notr ("weatherPluginCommand") , weatherPluginCommand);
+	s.setValue (notr ("weatherPluginEnabled") , weatherPluginEnabled);
+	s.setValue (notr ("weatherPluginHeight")  , weatherPluginHeight);
+	s.setValue (notr ("weatherPluginInterval"), weatherPluginInterval);
 	// Weather dialog
-	s.setValue ("weatherWindowPluginId", weatherWindowPluginId);
-	s.setValue ("weatherWindowCommand" , weatherWindowCommand);
-	s.setValue ("weatherWindowEnabled" , weatherWindowEnabled);
-	s.setValue ("weatherWindowInterval", weatherWindowInterval);
-	s.setValue ("weatherWindowTitle"   , weatherWindowTitle);
+	s.setValue (notr ("weatherWindowPluginId"), weatherWindowPluginId);
+	s.setValue (notr ("weatherWindowCommand") , weatherWindowCommand);
+	s.setValue (notr ("weatherWindowEnabled") , weatherWindowEnabled);
+	s.setValue (notr ("weatherWindowInterval"), weatherWindowInterval);
+	s.setValue (notr ("weatherWindowTitle")   , weatherWindowTitle);
 
 	// *** Plugins - Paths
-	s.beginWriteArray ("pluginPaths");
+	s.beginWriteArray (notr ("pluginPaths"));
 	for (int i=0; i<pluginPaths.size (); ++i)
 	{
 		s.setArrayIndex (i);
-		s.setValue ("path", pluginPaths.at (i));
+		s.setValue (notr ("path"), pluginPaths.at (i));
 	}
 	s.endArray ();
 

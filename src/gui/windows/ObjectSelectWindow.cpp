@@ -28,10 +28,10 @@ template<class T> ObjectSelectWindow<T>::ObjectSelectWindow (const QList<T> &obj
 
 	if (enableSpecialEntries)
 	{
-		unknownItem=new SkTreeWidgetItem (ui.objectList, "(Unbekannt)");
+		unknownItem=new SkTreeWidgetItem (ui.objectList, qApp->translate ("ObjectSelectWindow<T>", "(Unknown)"));
 		unknownItem->setFirstColumnSpanned (true);
 
-		newItem=new SkTreeWidgetItem (ui.objectList, "(Neu anlegen)");
+		newItem=new SkTreeWidgetItem (ui.objectList, qApp->translate ("ObjectSelectWindow<T>", "(Create new)"));
 		newItem->setFirstColumnSpanned (true);
 
 		ui.objectList->setCurrentItem (unknownItem);

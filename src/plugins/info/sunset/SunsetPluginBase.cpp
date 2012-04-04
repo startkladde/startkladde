@@ -18,6 +18,7 @@
 #include "src/util/qString.h"
 #include "src/util/time.h"
 #include "src/config/Settings.h"
+#include "src/i18n/notr.h"
 
 
 // ******************
@@ -47,22 +48,22 @@ PluginSettingsPane *SunsetPluginBase::infoPluginCreateSettingsPane (QWidget *par
 
 void SunsetPluginBase::infoPluginReadSettings (const QSettings &settings)
 {
-	filename=settings.value ("filename", filename).toString ();
-	longitude=Longitude (settings.value ("longitude", Longitude (9, 27, 0, true).getValue ()).toDouble ());
-	longitudeCorrection=settings.value ("longitudeCorrection", false).toBool ();
+	filename=settings.value (notr ("filename"), filename).toString ();
+	longitude=Longitude (settings.value (notr ("longitude"), Longitude (9, 27, 0, true).getValue ()).toDouble ());
+	longitudeCorrection=settings.value (notr ("longitudeCorrection"), false).toBool ();
 }
 
 void SunsetPluginBase::infoPluginWriteSettings (QSettings &settings)
 {
-	settings.setValue ("filename", filename);
-	settings.setValue ("longitude", longitude.getValue ());
-	settings.setValue ("longitudeCorrection", longitudeCorrection);
+	settings.setValue (notr ("filename"), filename);
+	settings.setValue (notr ("longitude"), longitude.getValue ());
+	settings.setValue (notr ("longitudeCorrection"), longitudeCorrection);
 }
 
 QString SunsetPluginBase::configText () const
 {
 	if (longitudeCorrection)
-		return QString ("%1, %2").arg (longitude.format (), filename);
+		return qnotr ("%1, %2").arg (longitude.format (), filename);
 	else
 		return filename;
 }
@@ -86,11 +87,11 @@ void SunsetPluginBase::start ()
 	rawSunset=correctedSunset=QTime ();
 	referenceLongitude=Longitude ();
 
-	if (isBlank (filename)) OUTPUT_AND_RETURN ("Keine Datei angegeben");
+	if (isBlank (filename)) OUTPUT_AND_RETURN (tr ("No file specified"));
 
 	resolvedFilename=resolveFilename (filename, Settings::instance ().pluginPaths);
-	if (isBlank (resolvedFilename)) OUTPUT_AND_RETURN ("Datei nicht gefunden");
-	if (!QFile::exists (resolvedFilename)) OUTPUT_AND_RETURN ("Datei existiert nicht");
+	if (isBlank (resolvedFilename)) OUTPUT_AND_RETURN (tr ("File not found"));
+	if (!QFile::exists (resolvedFilename)) OUTPUT_AND_RETURN (tr ("File does not exist"));
 
 	try
 	{
@@ -98,18 +99,18 @@ void SunsetPluginBase::start ()
 
 		// Find the sunset for today
 		QString sunsetString=readSunsetString (resolvedFilename);
-		if (isBlank (sunsetString)) OUTPUT_AND_RETURN (utf8 ("Zeit für aktuelles Datum nicht in Datendatei vorhanden"));
+		if (isBlank (sunsetString)) OUTPUT_AND_RETURN (tr ("Time for current date not found in data file"));
 
-		rawSunset=QTime::fromString (sunsetString, "hh:mm");
-		if (!rawSunset.isValid ()) OUTPUT_AND_RETURN (utf8 ("Ungültiges Zeitformat"));
+		rawSunset=QTime::fromString (sunsetString, notr ("hh:mm"));
+		if (!rawSunset.isValid ()) OUTPUT_AND_RETURN (tr ("Invalid time format"));
 
 		if (longitudeCorrection)
 		{
 			QString referenceLongitudeString=readReferenceLongitudeString (resolvedFilename);
-			if (referenceLongitudeString.isEmpty ()) OUTPUT_AND_RETURN (utf8 ("Kein Bezugslängengrad in Datendatei gefunden"));
+			if (referenceLongitudeString.isEmpty ()) OUTPUT_AND_RETURN (tr ("No reference longitude found in data file"));
 
 			referenceLongitude=Longitude::parse (referenceLongitudeString);
-			if (!referenceLongitude.isValid ()) OUTPUT_AND_RETURN (utf8 ("Ungültiger Bezugslängengrad"));
+			if (!referenceLongitude.isValid ()) OUTPUT_AND_RETURN (tr ("Invalid reference longitude"));
 
 			// Add the difference in clock time for the same solar time
 			correctedSunset=rawSunset.addSecs (longitude.clockTimeOffsetTo (referenceLongitude));
@@ -117,7 +118,7 @@ void SunsetPluginBase::start ()
 	}
 	catch (FileOpenError &ex)
 	{
-		outputText ("Fehler: "+ex.errorString);
+		outputText (tr ("Error: %1").arg (ex.errorString));
 	}
 }
 
@@ -151,8 +152,9 @@ void SunsetPluginBase::terminate ()
  */
 QString SunsetPluginBase::readSunsetString (const QString &filename)
 {
-	QString dateString=QDate::currentDate ().toString ("MM-dd");
-	QRegExp regexp (QString ("^%1\\s*(\\S*)").arg (dateString));
+	QString dateString=QDate::currentDate ().toString (notr ("MM-dd"));
+	// TODO does not escape dateString
+	QRegExp regexp (qnotr ("^%1\\s*(\\S*)").arg (dateString));
 
 	return findInFile (filename, regexp, 1);
 }
@@ -174,7 +176,7 @@ QString SunsetPluginBase::readSunsetString (const QString &filename)
  */
 QString SunsetPluginBase::readReferenceLongitudeString (const QString &filename)
 {
-	return findInFile (filename, QRegExp ("^ReferenceLongitude: (.*)"), 1);
+	return findInFile (filename, QRegExp (notr ("^ReferenceLongitude: (.*)")), 1);
 }
 
 /**
@@ -192,7 +194,7 @@ QString SunsetPluginBase::readReferenceLongitudeString (const QString &filename)
  */
 QString SunsetPluginBase::readSource (const QString &filename)
 {
-	QRegExp regexp ("^Source: (.*)");
+	QRegExp regexp (notr ("^Source: (.*)"));
 
 	return findInFile (filename, regexp, 1);
 }

@@ -13,13 +13,12 @@
  * @param parent the parent widget
  */
 PluginSettingsDialog::PluginSettingsDialog (Plugin *plugin, QWidget *parent, SettingsWindow *settingsWindow):
-	QDialog (parent)
+	SkDialog<Ui::PluginSettingsDialogClass> (parent),
+	plugin (plugin)
 {
 	ui.setupUi(this);
-	ui.buttonBox->button (QDialogButtonBox::Cancel)->setText ("Abbre&chen");
 
-	ui.nameLabel       ->setText (plugin->getName        ());
-	ui.descriptionLabel->setText (plugin->getDescription ());
+	setupText ();
 
 	settingsPane=plugin->createSettingsPane (ui.pluginSettingsPane);
 	ui.pluginSettingsPane->layout ()->addWidget (settingsPane);
@@ -30,6 +29,13 @@ PluginSettingsDialog::PluginSettingsDialog (Plugin *plugin, QWidget *parent, Set
 PluginSettingsDialog::~PluginSettingsDialog()
 {
 
+}
+
+void PluginSettingsDialog::setupText ()
+{
+
+	ui.nameLabel       ->setText (plugin->getName        ());
+	ui.descriptionLabel->setText (plugin->getDescription ());
 }
 
 /**
@@ -56,4 +62,10 @@ int PluginSettingsDialog::invoke (Plugin *plugin, QWidget *parent, SettingsWindo
 	int result=dialog->exec ();
 	delete dialog;
 	return result;
+}
+
+void PluginSettingsDialog::languageChanged ()
+{
+	SkDialog<Ui::PluginSettingsDialogClass>::languageChanged ();
+	setupText ();
 }

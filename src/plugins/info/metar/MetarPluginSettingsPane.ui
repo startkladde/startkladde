@@ -20,7 +20,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QLabel" name="nameLabel">
      <property name="text">
-      <string>&amp;Flughafen (ICAO-Code):</string>
+      <string>&amp;Airport (ICAO code):</string>
      </property>
      <property name="buddy">
       <cstring>airportInput</cstring>
@@ -30,7 +30,7 @@
    <item row="3" column="0" colspan="2">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Aktualiserungs&amp;intervall:</string>
+      <string>Update &amp;interval:</string>
      </property>
      <property name="buddy">
       <cstring>refreshIntervalInput</cstring>
@@ -42,10 +42,10 @@
      <item>
       <widget class="QSpinBox" name="refreshIntervalInput">
        <property name="toolTip">
-        <string>Zeit zwischen Aktualiserungen der METER-Meldung</string>
+        <string>Time between updates of the METAR report</string>
        </property>
        <property name="suffix">
-        <string> Minuten</string>
+        <string extracomment="With a space at the beginning"> minutes</string>
        </property>
        <property name="minimum">
         <number>1</number>
@@ -91,21 +91,14 @@
      <item>
       <widget class="QLineEdit" name="airportInput">
        <property name="toolTip">
-        <string>ICAO-Code des Flughafens, dessen METAR-Meldung angezeigt werden</string>
+        <string>ICAO code of the airport of which to display the METAR reports</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(z. B. &lt;span style=&quot; font-style:italic;&quot;&gt;EDDF&lt;/span&gt; für Frankfurt)&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;(e. g. &lt;i&gt;KSFO&lt;/i&gt; for San Francisco)&lt;/html&gt;</string>
        </property>
       </widget>
      </item>

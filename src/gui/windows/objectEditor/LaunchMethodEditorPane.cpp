@@ -3,6 +3,8 @@
 #include "src/model/LaunchMethod.h"
 #include "src/db/cache/Cache.h"
 #include "src/util/qString.h"
+#include "src/i18n/notr.h"
+#include "src/text.h"
 
 // ******************
 // ** Construction **
@@ -13,7 +15,12 @@ LaunchMethodEditorPane::LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mod
 {
 	ui.setupUi(this);
 
-	fillData ();
+	setupText ();
+	loadData ();
+
+	ui.typeInput->setCurrentItemByItemData (LaunchMethod::typeOther);
+	ui.personRequiredInput->setCurrentItemByItemData (true);
+	ui.towplaneRegistrationInput->setEditText ("");
 
 	ui.nameInput->setFocus ();
 }
@@ -33,22 +40,52 @@ template<> ObjectEditorPane<LaunchMethod> *ObjectEditorPane<LaunchMethod>::creat
 // ** Setup **
 // ***********
 
-void LaunchMethodEditorPane::fillData ()
+void LaunchMethodEditorPane::setupText ()
 {
-	// Types
-	foreach (LaunchMethod::Type type, LaunchMethod::listTypes ())
-		ui.typeInput->addItem (LaunchMethod::typeString (type), type);
-	ui.typeInput->setCurrentItemByItemData (LaunchMethod::typeOther);
-
 	// Person required
-	ui.personRequiredInput->addItem ("Ja"  , true );
-	ui.personRequiredInput->addItem ("Nein", false);
-	ui.personRequiredInput->setCurrentItemByItemData (true);
+	if (ui.personRequiredInput->count ()==0)
+	{
+		// The combo box is empty - add the items
+		ui.personRequiredInput->addItem (tr ("Yes"), true );
+		ui.personRequiredInput->addItem (tr ("No" ), false);
+	}
+	else
+	{
+		// The combo box is already filled - update the item texts
+		ui.personRequiredInput->setItemText (0, tr ("Yes"));
+		ui.personRequiredInput->setItemText (1, tr ("No"));
+	}
 
+	// Types
+	if (ui.typeInput->count ()==0)
+	{
+		// The combo box is empty - add the items
+		QList<LaunchMethod::Type> types=LaunchMethod::listTypes ();
+		foreach (LaunchMethod::Type type, types)
+		{
+			QString text=firstToUpper (LaunchMethod::typeString (type));
+			ui.typeInput->addItem (text, type);
+		}
+	}
+	else
+	{
+		// The combo box is already filled - update the types stored in the
+		// item data
+		for (int i=0, n=ui.typeInput->count (); i<n; ++i)
+		{
+			LaunchMethod::Type type=(LaunchMethod::Type)ui.typeInput->itemData (i).toInt ();
+			QString text=firstToUpper (LaunchMethod::typeString (type));
+			ui.typeInput->setItemText (i, text);
+		}
+	}
+
+}
+
+void LaunchMethodEditorPane::loadData ()
+{
 	// Registrations
 	ui.towplaneRegistrationInput->addItem ("");
 	ui.towplaneRegistrationInput->addItems (cache.getPlaneRegistrations ());
-	ui.towplaneRegistrationInput->setEditText ("");
 }
 
 // ****************
@@ -96,7 +133,22 @@ void LaunchMethodEditorPane::fieldsToObject (LaunchMethod &launchMethod)
 	// TODO error checks:
 	//   - towplane is glider
 	//   - create towplane if it does not exist
-	requiredField (launchMethod.name     , ui.nameInput     , utf8 ("Es wurde kein Name angegeben."                 ));
-	requiredField (launchMethod.shortName, ui.shortNameInput, utf8 ("Es wurde kein Kürzel angegeben."               ));
-	requiredField (launchMethod.logString, ui.logStringInput, utf8 ("Es wurde keine Flugbuch-Bezeichnung angegeben."));
+	requiredField (launchMethod.name     , ui.nameInput     , tr ("Name not specified"         ));
+	requiredField (launchMethod.shortName, ui.shortNameInput, tr ("Short name not specified"   ));
+	requiredField (launchMethod.logString, ui.logStringInput, tr ("Logbook label not specified"));
+}
+
+// **********
+// ** Misc **
+// **********
+
+void LaunchMethodEditorPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+		setupText ();
+	}
+	else
+		ObjectEditorPane<LaunchMethod>::changeEvent (event);
 }

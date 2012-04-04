@@ -62,3 +62,12 @@ void InfoPluginSettingsPane::setSettingsWindow (SettingsWindow *settingsWindow)
 	infoPluginSettingsPane->setSettingsWindow (settingsWindow);
 }
 
+void InfoPluginSettingsPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+	}
+	else
+		PluginSettingsPane::changeEvent (event);
+}

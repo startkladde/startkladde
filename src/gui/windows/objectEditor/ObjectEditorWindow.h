@@ -3,6 +3,8 @@
 
 #include <cassert>
 
+#include <QApplication>
+
 // TODO many dependencies in header, maybe move to .cpp and instantiate
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h"
 #include "src/gui/windows/objectEditor/ObjectEditorPane.h"
@@ -73,13 +75,13 @@ template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DbManage
 	switch (mode)
 	{
 		case modeCreate:
-			setWindowTitle (QString ("%1 erstellen").arg (T::objectTypeDescription ()));
+			setWindowTitle (qApp->translate ("ObjectEditorWindow<T>", "Create %1").arg (T::objectTypeDescription ()));
 			break;
 		case modeEdit:
-			setWindowTitle (QString ("%1 editieren").arg (T::objectTypeDescription ()));
+			setWindowTitle (qApp->translate ("ObjectEditorWindow<T>", "Edit %1").arg (T::objectTypeDescription ()));
 			break;
 //		case modeDisplay:
-//			setWindowTitle (QString ("%1 anzeigen").arg (T::objectTypeDescription ()));
+//			setWindowTitle (qApp->translate ("ObjectEditorWindow<T>", "Display %1").arg (T::objectTypeDescription ()));
 //			ui.buttonBox->setStandardButtons (QDialogButtonBox::Close);
 //			editorPane->setEnabled (false);
 //			break;
@@ -90,7 +92,7 @@ template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DbManage
 
 template<class T> ObjectEditorWindow<T>::~ObjectEditorWindow ()
 {
-		std::cout << "ObjectEditorWindow being deleted" << std::endl;
+		std::cout << notr ("ObjectEditorWindow being deleted") << std::endl;
 }
 
 
@@ -158,9 +160,9 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 		{
 			try
 			{
-				std::cout << "Create object: " << object.toString () << std::endl;
+				std::cout << notr ("Create object: ") << object.toString () << std::endl;
 				id=manager.createObject (object, this);
-				std::cout << "after manager.createObject: id is " << id << " is " << getId () << std::endl;
+				std::cout << notr ("after manager.createObject: id is ") << id << notr (" is ") << getId () << std::endl;
 				return true;
 			}
 			catch (OperationCanceledException)
@@ -173,7 +175,7 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 		{
 			try
 			{
-				std::cout << "Update object: " << object.toString () << std::endl;
+				std::cout << notr ("Update object: ") << object.toString () << std::endl;
 				manager.updateObject (object, this);
 				return true;
 			}

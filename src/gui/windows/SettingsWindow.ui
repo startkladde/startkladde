@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>658</width>
-    <height>533</height>
+    <width>557</width>
+    <height>565</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Einstellungen</string>
+   <string>Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
    <item row="2" column="0">
@@ -33,7 +33,7 @@
      </property>
      <widget class="QWidget" name="dbTab">
       <attribute name="title">
-       <string>&amp;Datenbank</string>
+       <string>&amp;Database</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -45,7 +45,7 @@
           <item>
            <widget class="QLabel" name="dbTypeLabel">
             <property name="text">
-             <string>&amp;Typ:</string>
+             <string>T&amp;ype:</string>
             </property>
             <property name="buddy">
              <cstring>dbTypeInput</cstring>
@@ -74,7 +74,7 @@
        <item>
         <widget class="QGroupBox" name="dbConnectionBox">
          <property name="title">
-          <string>Verbindung</string>
+          <string>Connection</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_13">
           <item row="0" column="0">
@@ -86,7 +86,7 @@
              <item row="0" column="0">
               <widget class="QLabel" name="mysqlServerLabel">
                <property name="text">
-                <string>&amp;Server:</string>
+                <string>S&amp;erver:</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlServerInput</cstring>
@@ -96,14 +96,14 @@
              <item row="0" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlServerInput">
                <property name="toolTip">
-                <string>IP-Adresse oder Hostname des Datenbankservers</string>
+                <string>IP address or host name of the database server</string>
                </property>
               </widget>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="mysqlPortLabel">
                <property name="text">
-                <string>P&amp;ort:</string>
+                <string>Po&amp;rt:</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlPortInput</cstring>
@@ -113,7 +113,7 @@
              <item row="1" column="2">
               <widget class="QSpinBox" name="mysqlPortInput">
                <property name="toolTip">
-                <string>TCP-Port des Datenbankservers</string>
+                <string>TCP port of the database server</string>
                </property>
                <property name="maximum">
                 <number>65535</number>
@@ -123,7 +123,7 @@
              <item row="2" column="0">
               <widget class="QLabel" name="mysqlUserLabel">
                <property name="text">
-                <string>Be&amp;nutzer:</string>
+                <string>&amp;User name:</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlUserInput</cstring>
@@ -133,14 +133,14 @@
              <item row="2" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlUserInput">
                <property name="toolTip">
-                <string>Benutzername für die Verbindung zum Datenbankserver</string>
+                <string>Username for the connection to the database server</string>
                </property>
               </widget>
              </item>
              <item row="3" column="0">
               <widget class="QLabel" name="mysqlPasswordLabel">
                <property name="text">
-                <string>Pa&amp;sswort:</string>
+                <string>P&amp;assword:</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlPasswordInput</cstring>
@@ -150,7 +150,7 @@
              <item row="3" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlPasswordInput">
                <property name="toolTip">
-                <string>Passwort für die Verbindung zum Datenbankserver</string>
+                <string>Password for the connection to the database server</string>
                </property>
                <property name="echoMode">
                 <enum>QLineEdit::Password</enum>
@@ -160,7 +160,7 @@
              <item row="4" column="0">
               <widget class="QLabel" name="mysqlDatabaseLabel">
                <property name="text">
-                <string>Daten&amp;bank:</string>
+                <string>Da&amp;tabase:</string>
                </property>
                <property name="buddy">
                 <cstring>mysqlDatabaseInput</cstring>
@@ -170,7 +170,7 @@
              <item row="4" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlDatabaseInput">
                <property name="toolTip">
-                <string>Name der zu verwendenden Datenbank auf dem Datenbankserver</string>
+                <string>Name of the database on the database server</string>
                </property>
               </widget>
              </item>
@@ -190,17 +190,17 @@
              <item row="1" column="1">
               <widget class="QCheckBox" name="mysqlDefaultPortCheckBox">
                <property name="toolTip">
-                <string>Wenn aktiv, wird der Standard-Datenbank-Port verwendet</string>
+                <string>If enabled, the default port is used for the database server</string>
                </property>
                <property name="text">
-                <string>Standa&amp;rd</string>
+                <string>De&amp;fault</string>
                </property>
               </widget>
              </item>
              <item row="1" column="3">
               <widget class="QLabel" name="label">
                <property name="text">
-                <string>(Standard: 3306)</string>
+                <string>(default: 3306)</string>
                </property>
               </widget>
              </item>
@@ -227,19 +227,58 @@
      </widget>
      <widget class="QWidget" name="settingsTab">
       <attribute name="title">
-       <string>&amp;Einstellungen</string>
+       <string>&amp;Settings</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>User interface</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="languageLabel">
+            <property name="text">
+             <string>&amp;Language:</string>
+            </property>
+            <property name="buddy">
+             <cstring>languageInput</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="LanguageComboBox" name="languageInput">
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToContents</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="dataBox">
          <property name="title">
-          <string>Erfassung</string>
+          <string>General</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
           <item row="0" column="0">
            <widget class="QLabel" name="locationLabel">
             <property name="text">
-             <string>O&amp;rt:</string>
+             <string>&amp;Airfield name:</string>
             </property>
             <property name="buddy">
              <cstring>locationInput</cstring>
@@ -249,24 +288,24 @@
           <item row="0" column="1">
            <widget class="QLineEdit" name="locationInput">
             <property name="toolTip">
-             <string>Name des Flugplatzes (z. B. &quot;Rheinstetten&quot;)</string>
+             <string>Name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0" colspan="2">
            <widget class="QCheckBox" name="checkMedicalsCheckbox">
             <property name="text">
-             <string>&amp;Medicals überprüfen</string>
+             <string>Check &amp;medicals</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="recordTowpilotCheckbox">
             <property name="toolTip">
-             <string>Wenn aktiviert, kann der Name des Schlepppiloten von Flügen eingetragen werden</string>
+             <string>If enabled, the name of the towpilot can be entered for flights</string>
             </property>
             <property name="text">
-             <string>Schlepppi&amp;lot erfassen</string>
+             <string>Record &amp;towpilot</string>
             </property>
            </widget>
           </item>
@@ -276,28 +315,26 @@
        <item>
         <widget class="QGroupBox" name="permissionsBox">
          <property name="title">
-          <string>Berechtigungen</string>
+          <string>Permissions</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="2" column="0">
            <widget class="QCheckBox" name="protectLaunchMethodsCheckbox">
             <property name="toolTip">
-             <string>Wenn aktiviert, muss zum Ändern von Startarten das
-Datenbankpasswort eingegeben werden.</string>
+             <string>If enabled, the database password must be entered to modify launch methods</string>
             </property>
             <property name="text">
-             <string>Passwort zum Ändern von &amp;Startarten erforderlich</string>
+             <string>R&amp;equire password to modify launch method&amp;s</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0">
            <widget class="QCheckBox" name="protectSettingsCheckbox">
             <property name="toolTip">
-             <string>Wenn aktiviert, muss zum Speichern von Einstellungen
-das Datenbankpasswort eingegeben werden.</string>
+             <string>If enabled, the database password must be entered to change settings</string>
             </property>
             <property name="text">
-             <string>Passwort zum Ändern von E&amp;instellungen erforderlich</string>
+             <string>&amp;Require password to change settings</string>
             </property>
            </widget>
           </item>
@@ -319,10 +356,10 @@ das Datenbankpasswort eingegeben werden.</string>
              <item>
               <widget class="QLabel" name="passwordMessageLabel">
                <property name="text">
-                <string>Der Passwortschutz kann durch Löschen bzw. Editieren
-der Konfigurationsdatei bzw. des Registry-Schlüssels
-%1
-aufgehoben werden.</string>
+                <string notr="true">[The password protection can be removed by deleting or editing the configuration file or registry key...]</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -331,15 +368,21 @@ aufgehoben werden.</string>
           </item>
           <item row="3" column="0">
            <widget class="QCheckBox" name="protectMergePeopleCheckbox">
+            <property name="toolTip">
+             <string>If enabled, the database password must be entered to merge people</string>
+            </property>
             <property name="text">
-             <string>Passwort zum Zusammenfassen von &amp;Personen erforderlich</string>
+             <string>Re&amp;quire password to merge &amp;people</string>
             </property>
            </widget>
           </item>
           <item row="4" column="0">
            <widget class="QCheckBox" name="protectFlightDatabaseCheckbox">
+            <property name="toolTip">
+             <string>If enabled, the database password must be entered to display the flight database</string>
+            </property>
             <property name="text">
-             <string>Passwort zum Abrufen der &amp;Flugdatenbank erforderlich</string>
+             <string>Req&amp;uire password to display the &amp;flight database</string>
             </property>
            </widget>
           </item>
@@ -349,31 +392,30 @@ aufgehoben werden.</string>
        <item>
         <widget class="QGroupBox" name="diagnosticsBox">
          <property name="title">
-          <string>Diagnose</string>
+          <string>Diagnostics</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_8">
           <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="enableDebugCheckbox">
             <property name="toolTip">
-             <string>Aktiviert einige Menüeinträge zur Fehlerdiagnose</string>
+             <string>Enables some menu entries for error diagnostics</string>
             </property>
             <property name="text">
-             <string>Optionen zur Fehlersuche (Debu&amp;gging) aktivieren</string>
+             <string>Enable de&amp;bugging options</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="diagCommandInput">
             <property name="toolTip">
-             <string>Kommando, das ausgeführt wird, wenn der Menüpunkt Hilfe-&gt;Netzwerkdiagnose ausgeführt wird</string>
+             <string>Command to run when the menu item Help-Network diagnostics is selected</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="diagCommandLabel">
             <property name="text">
-             <string>Ko&amp;mmando für
-Netzwerkdiagnose:</string>
+             <string>Command for network dia&amp;gnostics:</string>
             </property>
             <property name="buddy">
              <cstring>diagCommandInput</cstring>
@@ -400,14 +442,14 @@ Netzwerkdiagnose:</string>
      </widget>
      <widget class="QWidget" name="infoPluginsTab">
       <attribute name="title">
-       <string>&amp;Info-Plugins</string>
+       <string>&amp;Info plugins</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QTreeWidget" name="infoPluginList">
          <property name="toolTip">
-          <string>Liste der Info-Plugins. Die Info-Plugins werden im oberen
-Berech des Hauptfensters angezeigt.</string>
+          <string>The list of info plugins. Info-Plugins are displayed
+in the upper part of the main window.</string>
          </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
@@ -420,34 +462,28 @@ Berech des Hauptfensters angezeigt.</string>
          </property>
          <column>
           <property name="text">
-           <string>Titel</string>
+           <string comment="Info plugins table list header">Title</string>
           </property>
           <property name="toolTip">
-           <string>Titel des Plugins; wird im Hauptfenster angezeigt</string>
-          </property>
-          <property name="statusTip">
-           <string>statusTip</string>
-          </property>
-          <property name="whatsThis">
-           <string>whatsThis</string>
+           <string>Title of the plugin; will be displayed in the main window</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Plugin</string>
+           <string comment="Info plugins table list header">Plugin</string>
           </property>
           <property name="toolTip">
-           <string>Plugin-Kommando (mit eventuellen Parametern)</string>
+           <string>Plugin command (with any parameters)</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Aktiv</string>
+           <string comment="Info plugins table list header">Active</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Konfiguration</string>
+           <string comment="Info plugins table list header">Configuration</string>
           </property>
          </column>
         </widget>
@@ -480,7 +516,7 @@ Berech des Hauptfensters angezeigt.</string>
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Info-Plugin dazufügen</string>
+             <string>Add info plugin</string>
             </property>
             <property name="text">
              <string>+</string>
@@ -496,7 +532,7 @@ Berech des Hauptfensters angezeigt.</string>
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Ausgewähltes Info-Plugin entfernen</string>
+             <string>Removed selected info plugin</string>
             </property>
             <property name="text">
              <string>-</string>
@@ -512,7 +548,7 @@ Berech des Hauptfensters angezeigt.</string>
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Ausgewähltes Info-Plugin nach oben verschieben</string>
+             <string>Move selected info plugin up</string>
             </property>
             <property name="text">
              <string/>
@@ -531,7 +567,7 @@ Berech des Hauptfensters angezeigt.</string>
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Ausgewähltes Info-Plugin nach unten verschieben</string>
+             <string>Move selected info plugin down</string>
             </property>
             <property name="text">
              <string>...</string>
@@ -550,7 +586,7 @@ Berech des Hauptfensters angezeigt.</string>
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Einstellungen für ausgewähltes Info-Plugin</string>
+             <string>Settings for selected info plugin</string>
             </property>
             <property name="text">
              <string>...</string>
@@ -577,13 +613,13 @@ Berech des Hauptfensters angezeigt.</string>
      </widget>
      <widget class="QWidget" name="weatherPluginsTab">
       <attribute name="title">
-       <string>&amp;Wettergrafik</string>
+       <string>&amp;Weather plugin</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <item>
         <widget class="QGroupBox" name="weatherPluginBox">
          <property name="title">
-          <string>Wettergrafik</string>
+          <string>Weather plugin &amp;enabled</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -592,7 +628,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="6" column="0" colspan="2">
            <widget class="QLabel" name="weatherPluginHeightLabel">
             <property name="text">
-             <string>&amp;Höhe:</string>
+             <string>&amp;Height:</string>
             </property>
             <property name="buddy">
              <cstring>weatherPluginHeightInput</cstring>
@@ -602,10 +638,10 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="6" column="2">
            <widget class="QSpinBox" name="weatherPluginHeightInput">
             <property name="toolTip">
-             <string>Höhe der Wettergrafik</string>
+             <string>Height of the weather plugin in pixels</string>
             </property>
             <property name="suffix">
-             <string> Pixel</string>
+             <string extracomment="With leading space"> pixels</string>
             </property>
             <property name="maximum">
              <number>65535</number>
@@ -628,7 +664,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="4" column="0">
            <widget class="QLabel" name="weatherPluginIntervalLabel">
             <property name="text">
-             <string>Inter&amp;vall:</string>
+             <string>&amp;Interval:</string>
             </property>
             <property name="buddy">
              <cstring>weatherPluginIntervalInput</cstring>
@@ -638,7 +674,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="1" column="0">
            <widget class="QLabel" name="weatherPluginLabel">
             <property name="text">
-             <string>Pl&amp;ugin:</string>
+             <string>P&amp;lugin:</string>
             </property>
             <property name="buddy">
              <cstring>weatherPluginInput</cstring>
@@ -648,10 +684,10 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="4" column="2">
            <widget class="QSpinBox" name="weatherPluginIntervalInput">
             <property name="toolTip">
-             <string>Dauer zwischen Aktualisierungen der Wettergrafik</string>
+             <string>Time between updates of the weather plugin</string>
             </property>
             <property name="suffix">
-             <string> Minuten</string>
+             <string extracomment="With leading space"> minutes</string>
             </property>
             <property name="maximum">
              <number>86400</number>
@@ -677,7 +713,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="2" column="0">
            <widget class="QLabel" name="weatherPluginCommandLabel">
             <property name="text">
-             <string>&amp;Kommando:</string>
+             <string>Co&amp;mmand:</string>
             </property>
             <property name="buddy">
              <cstring>weatherPluginCommandInput</cstring>
@@ -693,14 +729,14 @@ Berech des Hauptfensters angezeigt.</string>
              <item>
               <widget class="QLineEdit" name="weatherPluginCommandInput">
                <property name="toolTip">
-                <string>Das auszuführende Programm. Programme im Plugin-Suchpfad können ohne Pfad angegeben werden.</string>
+                <string>The program to execute. Programs in the plugin path can be specified without path.</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="browseWeatherPluginCommandButton">
                <property name="text">
-                <string>Durch&amp;suchen</string>
+                <string>&amp;Browse</string>
                </property>
               </widget>
              </item>
@@ -713,7 +749,7 @@ Berech des Hauptfensters angezeigt.</string>
        <item>
         <widget class="QGroupBox" name="weatherWindowBox">
          <property name="title">
-          <string>Wetterfenster</string>
+          <string>Weather wi&amp;ndow enabled</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -722,7 +758,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="1" column="0">
            <widget class="QLabel" name="weatherWindowPluginLabel">
             <property name="text">
-             <string>Plu&amp;gin:</string>
+             <string>Pl&amp;ugin:</string>
             </property>
             <property name="buddy">
              <cstring>weatherWindowPluginInput</cstring>
@@ -732,7 +768,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="4" column="0">
            <widget class="QLabel" name="weatherWindowTitleLabel">
             <property name="text">
-             <string>Tite&amp;l:</string>
+             <string>&amp;Title:</string>
             </property>
             <property name="buddy">
              <cstring>weatherWindowTitleInput</cstring>
@@ -742,14 +778,14 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="4" column="1" colspan="2">
            <widget class="QLineEdit" name="weatherWindowTitleInput">
             <property name="toolTip">
-             <string>Titel des Wetterfensters</string>
+             <string>Title of the weather window</string>
             </property>
            </widget>
           </item>
           <item row="5" column="0">
            <widget class="QLabel" name="weatherWindowIntervalLabel">
             <property name="text">
-             <string>I&amp;ntervall:</string>
+             <string>Inter&amp;val:</string>
             </property>
             <property name="buddy">
              <cstring>weatherWindowIntervalInput</cstring>
@@ -759,10 +795,10 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="5" column="1">
            <widget class="QSpinBox" name="weatherWindowIntervalInput">
             <property name="toolTip">
-             <string>Dauer zwischen Aktualisierungen der Grafik im Wetterfenster</string>
+             <string>Time between updates of the picture in the weather window</string>
             </property>
             <property name="suffix">
-             <string> Minuten</string>
+             <string extracomment="With leading space"> minutes</string>
             </property>
             <property name="maximum">
              <number>86400</number>
@@ -785,7 +821,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="0" column="0" colspan="3">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Das Wetterfenster wird durch Doppelklick auf die Wettergrafik geöffnet.</string>
+             <string>The weather window can be opened by double-clicking the weather plugin.</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -798,7 +834,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item row="3" column="0">
            <widget class="QLabel" name="weatherWindowCommandLabel">
             <property name="text">
-             <string>K&amp;ommando:</string>
+             <string>Comm&amp;and:</string>
             </property>
             <property name="buddy">
              <cstring>weatherWindowCommandInput</cstring>
@@ -814,14 +850,14 @@ Berech des Hauptfensters angezeigt.</string>
              <item>
               <widget class="QLineEdit" name="weatherWindowCommandInput">
                <property name="toolTip">
-                <string>Das auszuführende Programm. Programme im Plugin-Suchpfad können ohne Pfad angegeben werden.</string>
+                <string>The program to execute. Programs in the plugin path can be specified without path.</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="browseWeatherWindowCommandButton">
                <property name="text">
-                <string>Durchsuc&amp;hen</string>
+                <string>B&amp;rowse</string>
                </property>
               </widget>
              </item>
@@ -848,13 +884,14 @@ Berech des Hauptfensters angezeigt.</string>
      </widget>
      <widget class="QWidget" name="pluginPathsTab">
       <attribute name="title">
-       <string>Plugin-&amp;Pfad</string>
+       <string>&amp;Plugin path</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Verzeichnisse, in denen Plugins (in der angegebenen Reihenfolge) gesucht werden. Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder relativ zum aktuellen Verzeichnis (z. B. .startkladde/plugins) angegeben werden.</string>
+          <string>Directories to look for plugins in (in the order given).
+Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to the current directory (e. g. .startkladde/plugins).</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -870,7 +907,7 @@ Berech des Hauptfensters angezeigt.</string>
           <item>
            <widget class="QListWidget" name="pluginPathList">
             <property name="toolTip">
-             <string>Verzeichnisse, in denen Plugins gesucht werden</string>
+             <string>Directories to look for plugins in</string>
             </property>
             <property name="dragDropMode">
              <enum>QAbstractItemView::InternalMove</enum>
@@ -914,7 +951,7 @@ Berech des Hauptfensters angezeigt.</string>
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Plugin-Pfad dazufügen</string>
+                <string>Add plugin path</string>
                </property>
                <property name="text">
                 <string>+</string>
@@ -930,7 +967,7 @@ Berech des Hauptfensters angezeigt.</string>
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Ausgewählten Plugin-Pfad entfernen</string>
+                <string>Remove selected plugin path</string>
                </property>
                <property name="text">
                 <string>-</string>
@@ -946,7 +983,7 @@ Berech des Hauptfensters angezeigt.</string>
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Ausgewählten Plugin-Pfad nach oben verschieben</string>
+                <string>Move selected plugin path up</string>
                </property>
                <property name="text">
                 <string/>
@@ -965,7 +1002,7 @@ Berech des Hauptfensters angezeigt.</string>
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>Ausgewählten Plugin-Pfad nach unten verschieben</string>
+                <string>Move selected plugin path down</string>
                </property>
                <property name="text">
                 <string>...</string>
@@ -1014,6 +1051,11 @@ Berech des Hauptfensters angezeigt.</string>
    <extends>QComboBox</extends>
    <header>src/gui/widgets/SkComboBox.h</header>
   </customwidget>
+  <customwidget>
+   <class>LanguageComboBox</class>
+   <extends>QComboBox</extends>
+   <header>src/gui/widgets/LanguageComboBox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
@@ -1024,11 +1066,39 @@ Berech des Hauptfensters angezeigt.</string>
   <tabstop>mysqlUserInput</tabstop>
   <tabstop>mysqlPasswordInput</tabstop>
   <tabstop>mysqlDatabaseInput</tabstop>
+  <tabstop>languageInput</tabstop>
   <tabstop>locationInput</tabstop>
+  <tabstop>recordTowpilotCheckbox</tabstop>
+  <tabstop>checkMedicalsCheckbox</tabstop>
   <tabstop>protectSettingsCheckbox</tabstop>
   <tabstop>protectLaunchMethodsCheckbox</tabstop>
+  <tabstop>protectMergePeopleCheckbox</tabstop>
+  <tabstop>protectFlightDatabaseCheckbox</tabstop>
   <tabstop>enableDebugCheckbox</tabstop>
   <tabstop>diagCommandInput</tabstop>
+  <tabstop>infoPluginList</tabstop>
+  <tabstop>addInfoPluginButton</tabstop>
+  <tabstop>removeInfoPluginButton</tabstop>
+  <tabstop>infoPluginUpButton</tabstop>
+  <tabstop>infoPluginDownButton</tabstop>
+  <tabstop>infoPluginSettingsButton</tabstop>
+  <tabstop>weatherPluginBox</tabstop>
+  <tabstop>weatherPluginInput</tabstop>
+  <tabstop>weatherPluginCommandInput</tabstop>
+  <tabstop>browseWeatherPluginCommandButton</tabstop>
+  <tabstop>weatherPluginIntervalInput</tabstop>
+  <tabstop>weatherPluginHeightInput</tabstop>
+  <tabstop>weatherWindowBox</tabstop>
+  <tabstop>weatherWindowPluginInput</tabstop>
+  <tabstop>weatherWindowCommandInput</tabstop>
+  <tabstop>browseWeatherWindowCommandButton</tabstop>
+  <tabstop>weatherWindowTitleInput</tabstop>
+  <tabstop>weatherWindowIntervalInput</tabstop>
+  <tabstop>pluginPathList</tabstop>
+  <tabstop>addPluginPathButton</tabstop>
+  <tabstop>removePluginPathButton</tabstop>
+  <tabstop>pluginPathUpButton</tabstop>
+  <tabstop>pluginPathDownButton</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
@@ -1040,8 +1110,8 @@ Berech des Hauptfensters angezeigt.</string>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>82</x>
-     <y>404</y>
+     <x>91</x>
+     <y>573</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>

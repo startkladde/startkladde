@@ -7,6 +7,7 @@
 #include "src/model/Plane.h"
 #include "src/model/Person.h"
 #include "src/db/cache/Cache.h"
+#include "src/util/qDate.h"
 
 
 // ************************
@@ -28,22 +29,22 @@ PilotLog::Entry::~Entry ()
 
 QString PilotLog::Entry::dateText () const
 {
-	return date.toString (Qt::DefaultLocaleShortDate);
+	return date.toString (defaultNumericDateFormat ());
 }
 
 QString PilotLog::Entry::departureTimeText () const
 {
-	return departureTime.toUTC ().toString ("hh:mm")+"Z";
+	return departureTime.toUTC ().toString (tr ("hh:mm 'UTC'"));
 }
 
 QString PilotLog::Entry::landingTimeText () const
 {
-	return landingTime.toUTC ().toString ("hh:mm")+"Z";
+	return landingTime.toUTC ().toString (tr ("hh:mm 'UTC'"));
 }
 
 QString PilotLog::Entry::flightDurationText () const
 {
-	return flightDuration.toString ("h:mm");
+	return flightDuration.toString (tr ("h:mm"));
 }
 
 
@@ -257,18 +258,18 @@ QVariant PilotLog::headerData (int section, Qt::Orientation orientation, int rol
 		{
 			switch (section)
 			{
-				case 0: return "Datum"; break;
-				case 1: return "Typ"; break;
-				case 2: return "Kennzeichen"; break;
-				case 3: return "Pilot"; break;
-				case 4: return "Begleiter"; break;
-				case 5: return "Startart"; break;
-				case 6: return "Startort"; break;
-				case 7: return "Zielort"; break;
-				case 8: return "Startzeit"; break;
-				case 9: return "Landezeit"; break;
-				case 10: return "Flugdauer"; break;
-				case 11: return "Bemerkungen"; break;
+				case 0: return tr ("Date"); break;
+				case 1: return tr ("Model"); break;
+				case 2: return tr ("Registration"); break;
+				case 3: return tr ("Pilot"); break;
+				case 4: return tr ("Copilot"); break;
+				case 5: return tr ("Launch method"); break;
+				case 6: return tr ("Departure location"); break;
+				case 7: return tr ("Landing location"); break;
+				case 8: return tr ("Departure time"); break;
+				case 9: return tr ("Landing time"); break;
+				case 10: return tr ("Flight duration"); break;
+				case 11: return tr ("Comments"); break;
 			}
 		}
 		else

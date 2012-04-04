@@ -11,13 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Personen zusammenfassen</string>
+   <string>Merge people</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="introLabel">
      <property name="text">
-      <string>[Die folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:]</string>
+      <string extracomment="Will be replaced programmatically">[The following wrong person entries will be replaced with the correct entry:]</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -25,18 +25,20 @@
     </widget>
    </item>
    <item>
-    <widget class="QTreeWidget" name="entriesTree"/>
+    <widget class="QTreeWidget" name="entriesTree">
+     <column>
+      <property name="text">
+       <string notr="true">[1]</string>
+      </property>
+     </column>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="descriptionLabel">
      <property name="text">
-      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;%1 Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften %2 werden der korrekten Person zugeordnet.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Achtung&lt;/span&gt;: Diese Aktion kann nicht rückgängig gemacht werden.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Fortfahren?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string extracomment="Will be replaced programmatically">[All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
+Warning: this action cannot be undone.
+Continue?]</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

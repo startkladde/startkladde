@@ -74,6 +74,7 @@
 #include "src/util/qString.h"
 #include "src/util/io.h" // remove
 #include "src/gui/views/SkItemDelegate.h"
+#include "src/i18n/notr.h"
 
 #include <iostream>
 #include <cassert>
@@ -300,7 +301,8 @@ bool SkTableView::focusWidgetAt (const QModelIndex &index)
 }
 
 /**
- * This method is slow, don't use it
+ * This method is slow, don't use it. It's only left here for reference, until
+ * a better solution is available.
  *
  * More specifically, it's the setFocus call that is slow.
  *
@@ -309,17 +311,18 @@ bool SkTableView::focusWidgetAt (const QModelIndex &index)
  *
  * @param indexes
  */
-void SkTableView::updateWidgetFocus (const QModelIndexList &indexes)
-{
-	assert (!"This method should not be used, it's slow.");
-
-	// If the current selection contains a widget, focus it if it is visible
-	QWidget *widget=findVisibleWidget (indexes);
-	if (widget)
-		widget->setFocus (Qt::OtherFocusReason);
-	else
-		this->setFocus (Qt::OtherFocusReason);
-}
+//void SkTableView::updateWidgetFocus (const QModelIndexList &indexes)
+//{
+//	(void)indexes;
+//	assert (!notr ("This method should not be used, it's slow."));
+//
+//	// If the current selection contains a widget, focus it if it is visible
+//	QWidget *widget=findVisibleWidget (indexes);
+//	if (widget)
+//		widget->setFocus (Qt::OtherFocusReason);
+//	else
+//		this->setFocus (Qt::OtherFocusReason);
+//}
 
 
 void SkTableView::scrollLeft ()
@@ -433,7 +436,7 @@ void SkTableView::readColumnWidths (QSettings &settings, const ColumnInfo &colum
 	{
 		// Determine the column name and the settings key
 		QString columnName=columnInfo.columnName (i);
-		QString key=QString ("columnWidth_%1").arg (columnName);
+		QString key=qnotr ("columnWidth_%1").arg (columnName);
 
 		// Determine the font metrics and the frame margin
 		const QFont &font=horizontalHeader ()->font ();
@@ -474,7 +477,7 @@ void SkTableView::writeColumnWidths (QSettings &settings, const ColumnInfo &colu
 	for (int i=0; i<columnInfo.columnCount (); ++i)
 	{
 		QString columnName=columnInfo.columnName (i);
-		QString key=QString ("columnWidth_%1").arg (columnName);
+		QString key=qnotr ("columnWidth_%1").arg (columnName);
 		int value=columnWidth (i);
 
 		settings.setValue (key, value);

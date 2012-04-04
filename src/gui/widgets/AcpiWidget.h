@@ -12,6 +12,7 @@
 #include "src/gui/widgets/SkLabel.h"
 
 class QTimer;
+class QEvent;
 
 class AcpiWidget: public SkLabel
 {
@@ -21,6 +22,9 @@ class AcpiWidget: public SkLabel
 		AcpiWidget (QWidget* parent);
 
 		static bool valid ();
+
+	protected:
+		virtual void changeEvent (QEvent *event);
 
 	private:
 		QTimer* timer;

@@ -60,8 +60,8 @@
 //		}
 //		else
 //		{
-//			system ((QString ("rm -r ")+name).utf8 ().constData ());
-//			//system ((QString ("touch ")+name+QString (".delete")).c_str ());
+//			system ((qnotr ("rm -r ")+name).utf8 ().constData ());
+//			//system ((qnotr ("touch ")+name+qnotr (".delete")).c_str ());
 //		}
 //	}
 //}

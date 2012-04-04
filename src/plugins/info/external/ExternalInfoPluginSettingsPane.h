@@ -23,6 +23,9 @@ class ExternalInfoPluginSettingsPane: public PluginSettingsPane
 	private slots:
 		virtual void on_browseButton_clicked ();
 
+	protected:
+		virtual void changeEvent (QEvent *event);
+
 	private:
 		Ui::ExternalInfoPluginSettingsPaneClass ui;
 

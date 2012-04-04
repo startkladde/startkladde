@@ -5,9 +5,10 @@
 #include <QTextCodec>
 
 #include "src/util/qString.h"
+#include "src/i18n/notr.h"
 
 CsvExportDialog::CsvExportDialog (QWidget *parent):
-	QDialog (parent)
+	SkDialog<Ui::CsvExportDialogClass> (parent)
 {
 	ui.setupUi (this);
 
@@ -27,8 +28,8 @@ CsvExportDialog::CsvExportDialog (QWidget *parent):
 			addCodecEntry (mib);
 
 	// Setup the separator inputs
-	ui.separatorInput->addItem (",");
-	ui.separatorInput->addItem (";");
+	ui.separatorInput->addItem (notr (","));
+	ui.separatorInput->addItem (notr (";"));
 }
 
 CsvExportDialog::~CsvExportDialog ()
@@ -41,7 +42,7 @@ void CsvExportDialog::addCodecEntry (int mib)
 	QTextCodec *codec=QTextCodec::codecForMib (mib);
 	QString codecName=QString::fromUtf8 (codec->name ());
 
-	//std::cout << mib << " - " << codecName << std::endl;
+	//std::cout << mib << notr (" - ") << codecName << std::endl;
 
 	ui.charsetList->addItem (codecName, mib);
 }

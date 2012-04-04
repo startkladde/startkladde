@@ -20,6 +20,9 @@ class TestPluginSettingsPane: public PluginSettingsPane
 		virtual void readSettings ();
 		virtual bool writeSettings ();
 
+	protected:
+		virtual void changeEvent (QEvent *event);
+
 	private:
 		Ui::TestPluginSettingsPaneClass ui;
 

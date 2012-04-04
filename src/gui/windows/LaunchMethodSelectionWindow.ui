@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>239</height>
+    <width>465</width>
+    <height>212</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>LaunchMethodSelectionWindow</string>
+   <string>Launch method preselection</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QLabel" name="descriptionLabel">
      <property name="text">
-      <string>Die hier ausgewählte Startart wird beim Anlegen von Flügen vorausgewählt. Die Auswahl einer anderen Startart ist immer noch möglich.
-Die Vorauswahl wird beim nächsten Programmstart zurückgesetzt.</string>
+      <string>The launch method selected here will be preselected when creating a new flight. It is still possible to select a different launch method.
+The preselection will be reset on the next start of the program.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -28,7 +28,7 @@ Die Vorauswahl wird beim nächsten Programmstart zurückgesetzt.</string>
    <item>
     <widget class="QGroupBox" name="preselectionCheckbox">
      <property name="title">
-      <string>Vorauswahl aktivieren</string>
+      <string>&amp;Activate preselection</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

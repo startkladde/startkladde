@@ -13,6 +13,7 @@
 #include <QRegExp>
 #include <QDebug>
 
+#include "src/i18n/notr.h"
 #include "src/util/qString.h"
 
 
@@ -180,7 +181,7 @@ QString Longitude::format (const QString &positiveString, const QString &negativ
 	bool positive;
 	toDms (degrees, minutes, seconds, positive);
 
-	return QString (utf8 ("%1° %2' %3\" %4"))
+	return qnotrUtf8 ("%1° %2' %3\" %4")
 		.arg (abs (degrees))
 		.arg (minutes)
 		.arg (seconds)
@@ -212,21 +213,21 @@ Longitude Longitude::parse (const QString &string)
 
 	// dd mm ss
 	// dd° mm' ss"
-	re=QRegExp (utf8 ("^(\\d+)°?\\s+(\\d+)'?\\s+(\\d+)\"?$"));
+	re=QRegExp (qnotrUtf8 ("^(\\d+)°?\\s+(\\d+)'?\\s+(\\d+)\"?$"));
 	if (s.contains (re))
 		return parse (re, 1, 2, 3, true);
 
 	// +|- d m s
 	// +|- d° m' s"
-	re=QRegExp (utf8 ("^([+-])\\s*(\\d+)°?\\s+(\\d+)'?\\s+(\\d+)\"?$"));
+	re=QRegExp (qnotrUtf8 ("^([+-])\\s*(\\d+)°?\\s+(\\d+)'?\\s+(\\d+)\"?$"));
 	if (s.contains (re))
-		return parse (re, 2, 3, 4, re.cap (1)!="-");
+		return parse (re, 2, 3, 4, re.cap (1)!=notr ("-"));
 
 	// dd mm ss E|W
 	// dd° mm' ss" E|W
-	re=QRegExp (utf8 ("^(\\d+)°?\\s+(\\d+)'?\\s+(\\d+)\"?\\s*([EW])$"), Qt::CaseInsensitive);
+	re=QRegExp (qnotrUtf8 ("^(\\d+)°?\\s+(\\d+)'?\\s+(\\d+)\"?\\s*([EW])$"), Qt::CaseInsensitive);
 	if (s.contains (re))
-		return parse (re, 1, 2, 3, re.cap (4)!="W" && re.cap (4)!="w");
+		return parse (re, 1, 2, 3, re.cap (4)!=notr ("W") && re.cap (4)!=notr ("w"));
 
 	return invalid;
 }

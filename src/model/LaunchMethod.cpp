@@ -3,12 +3,15 @@
 #include <cassert>
 
 #include <QVariant>
+#include <QApplication>
 
 #include "src/logging/messages.h"
 #include "src/util/bool.h"
 #include "src/db/result/Result.h"
 #include "src/db/Query.h"
 #include "src/util/qString.h"
+#include "src/i18n/notr.h"
+#include "src/text.h"
 
 
 // ******************
@@ -32,9 +35,9 @@ void LaunchMethod::initialize ()
 {
 	towplaneRegistration="";
 	keyboardShortcut="";
-	name="---";
-	shortName="-";
-	logString="-";
+	name=notr ("---");
+	shortName=notr ("-");
+	logString=notr ("-");
 	personRequired=true;
 	type=typeOther;
 }
@@ -44,7 +47,7 @@ LaunchMethod LaunchMethod::parseConfigLine (QString line)
 	LaunchMethod launchMethod;
 
 	// Split the line and simplify whitespace
-	QStringList split=line.split (",");
+	QStringList split=line.split (notr (","));
 	for (int i=0; i<split.size (); ++i)
 		split[i]=split[i].simplified ();
 
@@ -53,13 +56,13 @@ LaunchMethod LaunchMethod::parseConfigLine (QString line)
 	if (n>=0) launchMethod.id=split[0].toLongLong ();
 	if (n>=1)
 	{
-		if      (split[1].toLower ()=="winch" ) launchMethod.type=typeWinch;
-		else if (split[1].toLower ()=="airtow") launchMethod.type=typeAirtow;
-		else if (split[1].toLower ()=="self"  ) launchMethod.type=typeSelf;
-		else if (split[1].toLower ()=="other" ) launchMethod.type=typeOther;
+		if      (split[1].toLower ()==notr ("winch") ) launchMethod.type=typeWinch;
+		else if (split[1].toLower ()==notr ("airtow")) launchMethod.type=typeAirtow;
+		else if (split[1].toLower ()==notr ("self")  ) launchMethod.type=typeSelf;
+		else if (split[1].toLower ()==notr ("other") ) launchMethod.type=typeOther;
 		else
 		{
-			log_error ("Unknown launch method type in LaunchMethod::parseConfigLine (QString)");
+			log_error (notr ("Unknown launch method type in LaunchMethod::parseConfigLine (QString)"));
 			launchMethod.type=typeOther;
 		}
 	}
@@ -72,7 +75,7 @@ LaunchMethod LaunchMethod::parseConfigLine (QString line)
 	if (n>=4) launchMethod.shortName=split[4];
 	if (n>=5) launchMethod.keyboardShortcut=split[5];
 	if (n>=6) launchMethod.logString=split[6];
-	if (n>=7 && split[7].toLower ()=="false") launchMethod.personRequired=false;
+	if (n>=7 && split[7].toLower ()==notr ("false")) launchMethod.personRequired=false;
 
 	return launchMethod;
 }
@@ -84,21 +87,20 @@ LaunchMethod LaunchMethod::parseConfigLine (QString line)
 
 QString LaunchMethod::toString () const
 {
-	return QString ("id=%1, description=%2 (%3), type=%4, person %5required")
-		.arg (id)
-		.arg (name)
-		.arg (shortName)
-		.arg (typeString (type))
-		.arg (personRequired?"":"not ")
-		;
+	if (personRequired)
+		return qnotr ("id=%1, description=%2 (%3), type=%4, person required")
+			.arg (id).arg (name).arg (shortName).arg (typeString (type));
+	else
+		return qnotr ("id=%1, description=%2 (%3), type=%4, person not required")
+			.arg (id).arg (name).arg (shortName).arg (typeString (type));
 }
 
 QString LaunchMethod::nameWithShortcut () const
 {
 	if (keyboardShortcut.isEmpty ())
-		return QString (" ")+name;
+		return qnotr (" ")+name;
 	else
-		return QString (keyboardShortcut)+QString (" - ")+name;
+		return QString (keyboardShortcut)+qnotr (" - ")+name;
 }
 
 QString LaunchMethod::getDisplayName () const
@@ -115,13 +117,13 @@ QString LaunchMethod::typeString (LaunchMethod::Type type)
 {
 	switch (type)
 	{
-		case typeWinch: return "Windenstart"; break;
-		case typeAirtow: return "F-Schlepp"; break;
-		case typeSelf: return "Eigenstart"; break;
-		case typeOther: return "Sonstige"; break;
+		case typeWinch : return qApp->translate ("LaunchMethod", "winch launch"); break;
+		case typeAirtow: return qApp->translate ("LaunchMethod", "airtow"); break;
+		case typeSelf  : return qApp->translate ("LaunchMethod", "self launch"); break;
+		case typeOther : return qApp->translate ("LaunchMethod", "other"); break;
 	}
 
-	return "???";
+	return notr ("???");
 }
 
 QList<LaunchMethod::Type> LaunchMethod::listTypes ()
@@ -148,16 +150,16 @@ QVariant LaunchMethod::DefaultObjectModel::displayHeaderData (int column) const
 {
 	switch (column)
 	{
-		case 0: return utf8 ("Name");
-		case 1: return utf8 ("Kürzel");
-		case 2: return utf8 ("Flugbuch-Bezeichnung");
-		case 3: return utf8 ("Tastenkürzel");
-		case 4: return utf8 ("Typ");
-		case 5: return utf8 ("Schleppflugzeug");
-		case 6: return utf8 ("Person erforderlich");
-		case 7: return utf8 ("Bemerkungen");
+		case 0: return qApp->translate ("LaunchMethod::DefaultObjectModel", "Name");
+		case 1: return qApp->translate ("LaunchMethod::DefaultObjectModel", "Short name");
+		case 2: return qApp->translate ("LaunchMethod::DefaultObjectModel", "Logbook label");
+		case 3: return qApp->translate ("LaunchMethod::DefaultObjectModel", "Keyboard shortcut");
+		case 4: return qApp->translate ("LaunchMethod::DefaultObjectModel", "Type");
+		case 5: return qApp->translate ("LaunchMethod::DefaultObjectModel", "Towplane");
+		case 6: return qApp->translate ("LaunchMethod::DefaultObjectModel", "Person required");
+		case 7: return qApp->translate ("LaunchMethod::DefaultObjectModel", "Comments");
 		// TODO remove from DefaultObjectModel?
-		case 8: return "ID";
+		case 8: return qApp->translate ("LaunchMethod::DefaultObjectModel", "ID");
 	}
 
 	assert (false);
@@ -172,9 +174,9 @@ QVariant LaunchMethod::DefaultObjectModel::displayData (const LaunchMethod &obje
 		case 1: return object.shortName;
 		case 2: return object.logString;
 		case 3: return object.keyboardShortcut;
-		case 4: return typeString (object.type);
-		case 5: return object.isAirtow ()?object.towplaneRegistration:"-";
-		case 6: return boolToString (object.personRequired);
+		case 4: return firstToUpper (typeString (object.type));
+		case 5: return object.isAirtow ()?object.towplaneRegistration:notr ("-");
+		case 6: return object.personRequired?qApp->translate ("LaunchMethod", "No"):qApp->translate ("LaunchMethod", "No");
 		case 7: return object.comments;
 		case 8: return object.id;
 	}
@@ -190,12 +192,12 @@ QVariant LaunchMethod::DefaultObjectModel::displayData (const LaunchMethod &obje
 
 QString LaunchMethod::dbTableName ()
 {
-	return "launch_methods";
+	return notr ("launch_methods");
 }
 
 QString LaunchMethod::selectColumnList ()
 {
-	return "id,name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments";
+	return notr ("id,name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments");
 }
 
 LaunchMethod LaunchMethod::createFromResult (const Result &result)
@@ -217,12 +219,12 @@ LaunchMethod LaunchMethod::createFromResult (const Result &result)
 
 QString LaunchMethod::insertColumnList ()
 {
-	return "name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments";
+	return notr ("name,short_name,log_string,keyboard_shortcut,type,towplane_registration,person_required,comments");
 }
 
 QString LaunchMethod::insertPlaceholderList ()
 {
-	return "?,?,?,?,?,?,?,?";
+	return notr ("?,?,?,?,?,?,?,?");
 }
 
 void LaunchMethod::bindValues (Query &q) const
@@ -249,22 +251,23 @@ QString LaunchMethod::typeToDb (LaunchMethod::Type type)
 {
 	switch (type)
 	{
-		case typeWinch  : return "winch";
-		case typeAirtow : return "airtow";
-		case typeSelf   : return "self";
-		case typeOther  : return "other";
+		case typeWinch  : return notr ("winch");
+		case typeAirtow : return notr ("airtow");
+		case typeSelf   : return notr ("self");
+		case typeOther  : return notr ("other");
 		// no default
 	}
 
 	assert (false);
-	return "?";
+	return notr ("?");
 }
 
 LaunchMethod::Type LaunchMethod::typeFromDb (QString type)
 {
-	if      (type=="winch" ) return typeWinch;
-	else if (type=="airtow") return typeAirtow;
-	else if (type=="self"  ) return typeSelf;
-	else if (type=="other" ) return typeOther;
-	else                     return typeOther;
+	if      (type==notr ("winch") ) return typeWinch;
+	else if (type==notr ("airtow")) return typeAirtow;
+	else if (type==notr ("self")  ) return typeSelf;
+	else if (type==notr ("other") ) return typeOther;
+	else                            return typeOther;
 }
+

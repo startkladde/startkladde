@@ -12,6 +12,7 @@
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
 #include "src/container/SortedSet_impl.h"
+#include "src/i18n/notr.h"
 
 // ******************
 // ** Object lists **
@@ -101,7 +102,7 @@ template<class T> T Cache::getObject (dbId id)
 		return hash.value (id);
 	}
 
-	assert (!"Not returned yet");
+	assert (!notr ("Not returned yet"));
 	throw NotFoundException (id);
 }
 
@@ -172,7 +173,7 @@ dbId Cache::getPlaneIdByRegistration (const QString &registration)
 		return planeIdsByRegistration.value (registration.toLower ());
 	}
 
-	assert (!"Not returned yet");
+	assert (!notr ("Not returned yet"));
 	return invalidId;
 }
 

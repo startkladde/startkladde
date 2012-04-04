@@ -5,6 +5,7 @@
 #include "src/text.h"
 #include "src/config/Settings.h"
 #include "src/util/qString.h"
+#include "src/i18n/notr.h"
 
 /*
  * TODO: disallow person name changes; allow merges only
@@ -21,10 +22,14 @@ PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &ca
 
 	// Not pre-set because this prevents us from making the dialog smaller in
 	// Designer
-	ui.medicalCheckDisabledLabel->setText (utf8 ("Medical-Prüfung ist deaktiviert!"));
+	ui.medicalCheckDisabledLabel->setText (tr ("Medical check is disabled!"));
 	ui.medicalCheckDisabledLabel->setVisible (false);
 
-	fillData ();
+	setupText ();
+	loadData ();
+
+	ui.clubInput->setEditText ("");
+	ui.checkMedicalInput->setCurrentItemByItemData (false);
 
 	ui.lastNameInput->setFocus ();
 }
@@ -44,16 +49,28 @@ template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEdi
 // ** Setup **
 // ***********
 
-void PersonEditorPane::fillData ()
+void PersonEditorPane::setupText ()
+{
+	if (ui.checkMedicalInput->count ()==0)
+	{
+		// The combo box is empty - add the items
+		ui.checkMedicalInput->addItem (tr ("Yes"), true );
+		ui.checkMedicalInput->addItem (tr ("No" ), false);
+	}
+	else
+	{
+		// The combo box is already filled -
+		// update the item texts
+		ui.checkMedicalInput->setItemText (0, tr ("Yes"));
+		ui.checkMedicalInput->setItemText (1, tr ("No"));
+	}
+}
+
+void PersonEditorPane::loadData ()
 {
 	// Clubs
 	ui.clubInput->addItem ("");
 	ui.clubInput->addItems (cache.getClubs ());
-	ui.clubInput->setEditText ("");
-
-	ui.checkMedicalInput->addItem ("Ja"  , true );
-	ui.checkMedicalInput->addItem ("Nein", false);
-	ui.checkMedicalInput->setCurrentItemByItemData (false);
 }
 
 void PersonEditorPane::setNameObject (const Person &nameObject)
@@ -135,10 +152,25 @@ void PersonEditorPane::fieldsToObject (Person &person)
 	// Error checks
 
 	if (isNone (person.lastName))
-		errorCheck ("Es wurde kein Nachname angegeben.",
+		errorCheck (tr ("Last name not specified."),
 			ui.lastNameInput);
 
 	if (isNone (person.firstName))
-		errorCheck ("Es wurde kein Vorname angegeben.",
+		errorCheck (tr ("First name not specified."),
 			ui.firstNameInput);
+}
+
+// **********
+// ** Misc **
+// **********
+
+void PersonEditorPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+		setupText ();
+	}
+	else
+		ObjectEditorPane<Person>::changeEvent (event);
 }

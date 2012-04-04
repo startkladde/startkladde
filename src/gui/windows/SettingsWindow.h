@@ -1,13 +1,15 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
-#include <QtGui/QDialog>
+#include "src/gui/SkDialog.h"
+#include "src/i18n/LanguageConfiguration.h"
+#include "src/plugin/weather/WeatherPlugin.h"
 
 #include "ui_SettingsWindow.h"
 
 class InfoPlugin;
 
-class SettingsWindow: public QDialog
+class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 {
     Q_OBJECT
 
@@ -18,6 +20,9 @@ class SettingsWindow: public QDialog
 		QStringList getPluginPaths ();
 
 	protected:
+		void prepareText ();
+		void setupText ();
+
 		void readSettings ();
 		void writeSettings ();
 
@@ -28,9 +33,17 @@ class SettingsWindow: public QDialog
 		void warnEdit ();
 
 		virtual void showEvent (QShowEvent *event);
+		virtual void languageChanged ();
+
+		LanguageConfiguration getSelectedLanguageConfiguration ();
+		void setSelectedLanguageConfiguration (const LanguageConfiguration &languageConfiguration);
+
+		void reject ();
 
 	private slots:
 		void on_mysqlDefaultPortCheckBox_toggled () { updateWidgets (); }
+
+		void on_languageInput_activated (int index);
 
 		void on_addPluginPathButton_clicked ();
 		void on_removePluginPathButton_clicked ();
@@ -56,9 +69,9 @@ class SettingsWindow: public QDialog
 		void on_browseWeatherWindowCommandButton_clicked ();
 
 	private:
-		Ui::SettingsWindowClass ui;
 		bool warned;
 		QList<InfoPlugin *> infoPlugins;
+		QList<const WeatherPlugin::Descriptor *> weatherPlugins;
 
 	public:
 		bool databaseSettingsChanged;

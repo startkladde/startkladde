@@ -23,7 +23,7 @@ ObjectEditorPaneBase::~ObjectEditorPaneBase ()
 
 void ObjectEditorPaneBase::errorCheck (const QString &problem, QWidget *widget)
 {
-	if (!confirmProblem (this, "Fehler", problem))
+	if (!confirmProblem (this, tr ("Error"), problem))
 	{
 		if (widget) widget->setFocus ();
 		throw AbortedException ();

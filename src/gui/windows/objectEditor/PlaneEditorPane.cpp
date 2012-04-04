@@ -6,6 +6,7 @@
 #include "src/db/cache/Cache.h"
 #include "src/model/Plane.h"
 #include "src/util/qString.h"
+#include "src/i18n/notr.h"
 
 /*
  * Improvements:
@@ -29,7 +30,13 @@ PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cach
 {
 	ui.setupUi(this);
 
-	fillData ();
+	prepareText ();
+	setupText ();
+	loadData ();
+
+	ui.categoryInput->setCurrentItemByItemData (Plane::categoryNone);
+	ui.typeInput->setEditText ("");
+	ui.clubInput->setEditText ("");
 
 
 	ui.registrationInput->setText (Plane::defaultRegistrationPrefix ());
@@ -53,24 +60,36 @@ template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEdito
 // ** Setup **
 // ***********
 
-void PlaneEditorPane::fillData ()
+void PlaneEditorPane::prepareText ()
 {
 	// Categories
 	ui.categoryInput->addItem ("", Plane::categoryNone);
 	const QList<Plane::Category> categories=Plane::listCategories (false);
-	for (int i=0; i<categories.size (); ++i)
-		ui.categoryInput->addItem (Plane::categoryText (categories.at (i)), categories.at (i));
-	ui.categoryInput->setCurrentItemByItemData (Plane::categoryNone);
+	for (int i=0, n=categories.size (); i<n; ++i)
+		ui.categoryInput->addItem ("", categories.at (i));
+}
 
+void PlaneEditorPane::setupText ()
+{
+	// Categories
+	// The text for category none, at index 0, is left at "".
+	for (int i=1, n=ui.categoryInput->count (); i<n; ++i)
+	{
+		Plane::Category category=(Plane::Category)ui.categoryInput->itemData (i).toInt ();
+		QString text=firstToUpper (Plane::categoryText (category));
+		ui.categoryInput->setItemText (i, text);
+	}
+}
+
+void PlaneEditorPane::loadData ()
+{
 	// Types
 	ui.typeInput->addItem ("");
 	ui.typeInput->addItems (cache.getPlaneTypes ());
-	ui.typeInput->setEditText ("");
 
 	// Clubs
 	ui.clubInput->addItem ("");
 	ui.clubInput->addItems (cache.getClubs ());
-	ui.clubInput->setEditText ("");
 }
 
 void PlaneEditorPane::setNameObject (const Plane &nameObject)
@@ -128,41 +147,55 @@ void PlaneEditorPane::fieldsToObject (Plane &plane)
 
 
 	// Error checks
-
 	if (mode==ObjectEditorWindowBase::modeCreate && idValid (cache.getPlaneIdByRegistration (plane.registration)))
 	{
-		QString message=QString ("Es gibt bereits ein Flugzeug mit dem Kennzeichen %1").arg (plane.registration);
-		QMessageBox::critical (this, "Flugzeug existiert bereits", message, QMessageBox::Ok, QMessageBox::NoButton);
+		QString message=tr ("A plane with the registration %1 already exists.").arg (plane.registration);
+		QMessageBox::critical (this, tr ("Plane already exists"), message, QMessageBox::Ok, QMessageBox::NoButton);
 		throw AbortedException ();
 	}
 
 	if (isNone (plane.registration))
-		errorCheck ("Es wurde kein Kennzeichen angegeben.",
+		errorCheck (tr ("Registration not specified."),
 			ui.registrationInput);
 
 	if (plane.category==Plane::categoryNone)
-		errorCheck ("Es wurde keine Gattung angegeben.",
+		errorCheck (tr ("Category not specified."),
 			ui.categoryInput);
 
 	Plane::Category registrationCategory=Plane::categoryFromRegistration (plane.registration);
 	if (registrationCategory!=Plane::categoryNone && plane.category!=Plane::categoryNone && plane.category!=registrationCategory)
-		errorCheck ("Die angegebene Gattung passt nicht zum Kennzeichen.",
+		errorCheck (tr ("The selected category does not match the registration."),
 			ui.categoryInput);
 
 	if (isNone (plane.type))
-		errorCheck ("Es wurde kein Typ angegeben.",
+		errorCheck (tr ("Model not specified."),
 			ui.typeInput);
 
 	if (plane.numSeats<0)
-		errorCheck ("Es wurde keine Sitzanzahl angegeben.",
+		errorCheck (tr ("Number of seats not specified."),
 			ui.seatsInput);
 
 	if (plane.numSeats==0)
-		errorCheck ("Es wurden 0 Sitze angegeben.",
+		errorCheck (tr ("0 seats specified."),
 			ui.seatsInput);
 
 	int maxSeats=Plane::categoryMaxSeats (plane.category);
 	if (maxSeats>=0 && plane.numSeats>maxSeats)
-		errorCheck (utf8 ("Es wurden zu viele Sitze für die gewählte Gattung angegeben."),
+		errorCheck (tr ("To many seats specified for the selected category."),
 			ui.seatsInput);
+}
+
+// **********
+// ** Misc **
+// **********
+
+void PlaneEditorPane::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		ui.retranslateUi (this);
+		setupText ();
+	}
+	else
+		ObjectEditorPane<Plane>::changeEvent (event);
 }

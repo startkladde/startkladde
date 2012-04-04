@@ -99,15 +99,6 @@ void OperationMonitorInterface::status (const QString &text, bool checkCanceled)
 }
 
 /**
- * An overloaded version of status(const QString&, bool). status is interpreted
- * as utf8.
- */
-void OperationMonitorInterface::status (const char *text, bool checkCanceled)
-{
-	status (utf8 (text), checkCanceled);
-}
-
-/**
  * Sets the progress and the maximum progress of the operation by calling the
  * setProgress method of the monitor
  *
@@ -125,18 +116,6 @@ void OperationMonitorInterface::progress (int progress, int maxProgress, const Q
 		monitor->setProgress (progress, maxProgress);
 		if (!status.isNull ()) monitor->setStatus (status);
 	}
-}
-
-/**
- * An overloaded version of progress(int, int, const QString&, bool). status
- * is interpreted as utf8.
- */
-void OperationMonitorInterface::progress (int progress, int maxProgress, const char *status, bool checkCanceled)
-{
-	if (status)
-		this->progress (progress, maxProgress, utf8 (status), checkCanceled);
-	else
-		this->progress (progress, maxProgress, QString (), checkCanceled);
 }
 
 /**

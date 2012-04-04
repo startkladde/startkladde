@@ -23,6 +23,7 @@ class ExternalWeatherPlugin: public WeatherPlugin
 		virtual void abort ();
 
 	protected slots:
+		void languageChanged ();
 		void lineReceived (const QString &line);
 		void processExited (int exitCode, QProcess::ExitStatus exitStatus);
 

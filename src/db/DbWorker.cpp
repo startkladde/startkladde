@@ -8,6 +8,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
+#include "src/i18n/notr.h"
 
 /*
  * Now, the implementation of this here worker class is a bit more complicated
@@ -172,9 +173,9 @@ DbWorker::~DbWorker ()
 {
 	thread.quit ();
 
-	std::cout << "Waiting for ORM worker thread to terminate..." << std::flush;
-	if (thread.wait (1000)) std::cout << "OK"      << std::endl;
-	else                    std::cout << "Timeout" << std::endl;
+	std::cout << notr ("Waiting for ORM worker thread to terminate...") << std::flush;
+	if (thread.wait (1000)) std::cout << notr ("OK")      << std::endl;
+	else                    std::cout << notr ("Timeout") << std::endl;
 }
 
 // ***********************

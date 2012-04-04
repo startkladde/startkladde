@@ -23,7 +23,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>&amp;Kennzeichen:</string>
+      <string>&amp;Registration:</string>
      </property>
      <property name="buddy">
       <cstring>registrationInput</cstring>
@@ -33,7 +33,7 @@
    <item row="6" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>&amp;Bemerkungen:</string>
+      <string>Comm&amp;ents:</string>
      </property>
      <property name="buddy">
       <cstring>commentsInput</cstring>
@@ -43,7 +43,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>&amp;Wettbewerbskennzeichen:</string>
+      <string>C&amp;allsign:</string>
      </property>
      <property name="buddy">
       <cstring>callsignInput</cstring>
@@ -53,7 +53,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>&amp;Gattung:</string>
+      <string>Ca&amp;tegory:</string>
      </property>
      <property name="buddy">
       <cstring>categoryInput</cstring>
@@ -63,7 +63,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>&amp;Typ:</string>
+      <string>&amp;Model:</string>
      </property>
      <property name="buddy">
       <cstring>typeInput</cstring>
@@ -73,7 +73,7 @@
    <item row="4" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>V&amp;erein:</string>
+      <string>Cl&amp;ub:</string>
      </property>
      <property name="buddy">
       <cstring>clubInput</cstring>
@@ -83,7 +83,7 @@
    <item row="5" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
-      <string>S&amp;itze:</string>
+      <string>&amp;Seats:</string>
      </property>
      <property name="buddy">
       <cstring>seatsInput</cstring>

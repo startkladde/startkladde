@@ -5,6 +5,7 @@
 #include "src/db/migration/Migrator.h"
 #include "src/concurrent/monitor/OperationMonitor.h"
 #include "src/db/interface/ThreadSafeInterface.h" // required for Interface inheritance
+#include "src/i18n/notr.h"
 
 MigratorWorker::MigratorWorker (ThreadSafeInterface &interface):
 	migrator (interface)
@@ -27,9 +28,9 @@ MigratorWorker::~MigratorWorker ()
 {
 	thread.quit ();
 
-	std::cout << "Waiting for migrator worker thread to terminate..." << std::flush;
-	if (thread.wait (1000)) std::cout << "OK"      << std::endl;
-	else                    std::cout << "Timeout" << std::endl;
+	std::cout << notr ("Waiting for migrator worker thread to terminate...") << std::flush;
+	if (thread.wait (1000)) std::cout << notr ("OK")      << std::endl;
+	else                    std::cout << notr ("Timeout") << std::endl;
 }
 
 // ***********************

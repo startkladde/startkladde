@@ -3,6 +3,8 @@
 #include <QAbstractTableModel>
 #include <QStringList>
 
+#include "src/i18n/notr.h"
+
 Csv::Csv (const QAbstractTableModel &model, const QString &separator):
 	model (model), separator (separator)
 {
@@ -29,10 +31,15 @@ QString Csv::escape (const QString &text) const
 {
 	QString result=text;
 
-	result.replace ("\"", "\"\"");
+	QString quote      =notr ("\"");
+	QString doubleQuote=notr ("\"\"");
 
-	if (result.contains (separator) or result.contains ("\""))
-		result="\""+result+"\"";
+	// Replace quotes with double quotes
+	result.replace (quote, doubleQuote);
+
+	// Quote the text if it contains a quote or the separator
+	if (result.contains (separator) or result.contains (quote))
+		result=quote+result+quote;
 
 	return result;
 }
@@ -66,5 +73,6 @@ QString Csv::toString ()
 		items.clear ();
 	}
 
-	return lines.join ("\n")+"\n";
+	QString newline=notr ("\n");
+	return lines.join (newline)+newline;
 }

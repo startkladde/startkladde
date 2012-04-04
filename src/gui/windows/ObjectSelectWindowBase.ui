@@ -11,13 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Bitte auswählen</string>
+   <string notr="true">[Select object]</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="textLabel">
      <property name="text">
-      <string>TextLabel</string>
+      <string notr="true">[Select object]</string>
      </property>
     </widget>
    </item>
@@ -34,7 +34,7 @@
      </property>
      <column>
       <property name="text">
-       <string notr="true">1</string>
+       <string notr="true">[1]</string>
       </property>
      </column>
     </widget>

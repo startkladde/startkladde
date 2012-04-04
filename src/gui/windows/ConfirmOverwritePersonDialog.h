@@ -1,11 +1,11 @@
 #ifndef CONFIRMOVERWRITEPERSONDIALOG_H
 #define CONFIRMOVERWRITEPERSONDIALOG_H
 
+#include "src/gui/SkDialog.h"
+#include "src/model/Person.h"
+
 #include "ui_ConfirmOverwritePersonDialog.h"
 
-#include <QDialog>
-
-class Person;
 template<class T> class QList;
 template<class T> class ObjectModel;
 template<class T> class ObjectListModel;
@@ -18,8 +18,10 @@ template<class T> class MutableObjectList;
  * user about the consequences of merging. The user can confirm or cancel the
  * process.
  */
-class ConfirmOverwritePersonDialog : public QDialog
+class ConfirmOverwritePersonDialog: public SkDialog<Ui::ConfirmOverwritePersonDialogClass>
 {
+		Q_OBJECT
+
 	public:
 		ConfirmOverwritePersonDialog (QWidget *parent=NULL, Qt::WindowFlags f=NULL);
 		~ConfirmOverwritePersonDialog ();
@@ -28,9 +30,19 @@ class ConfirmOverwritePersonDialog : public QDialog
 
 	protected:
 		void setup (const Person &correctPerson, const QList<Person> &wrongPeople);
+		void setupTexts ();
+		virtual void languageChanged ();
 
 	private:
-		Ui::ConfirmOverwritePersonDialogClass ui;
+		Person correctPerson;
+		QList<Person> wrongPeople;
+
+		QTreeWidgetItem *  wrongParentItem;
+		QTreeWidgetItem *correctParentItem;
+
+		// The model to get the data from
+		Person::DefaultObjectModel model;
+
 };
 
 #endif

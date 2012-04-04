@@ -37,7 +37,7 @@ void TableButton::init ()
 //	std::cout << "+" << std::flush;
 
 	QObject::connect (this, SIGNAL (clicked ()), this, SLOT (clickedSlot ()));
-//	setText (QString ("[%1, %2]").arg (index.row  ()).arg (index.column ()));
+//	setText (qnotr ("[%1, %2]").arg (index.row  ()).arg (index.column ()));
 
 	// Don't accept keyboard focus - the tab order of buttons in the table is
 	// not defined. Don't accept mouse focus - space bar on the table is handled
@@ -48,7 +48,7 @@ void TableButton::init ()
 
 void TableButton::clickedSlot ()
 {
-//	setText (QString ("{%1, %2}").arg (index.row  ()).arg (index.column ()));
+//	setText (qnotr ("{%1, %2}").arg (index.row  ()).arg (index.column ()));
 	emit clicked (index);
 }
 

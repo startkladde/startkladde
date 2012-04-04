@@ -36,7 +36,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>&amp;Nachname:</string>
+      <string>&amp;Last name:</string>
      </property>
      <property name="buddy">
       <cstring>lastNameInput</cstring>
@@ -46,7 +46,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>&amp;Vorname:</string>
+      <string>&amp;First name:</string>
      </property>
      <property name="buddy">
       <cstring>firstNameInput</cstring>
@@ -56,7 +56,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>V&amp;erein:</string>
+      <string>Cl&amp;ub:</string>
      </property>
      <property name="buddy">
       <cstring>clubInput</cstring>
@@ -85,7 +85,7 @@
    <item row="8" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>&amp;Bemerkungen:</string>
+      <string>Commen&amp;ts:</string>
      </property>
      <property name="buddy">
       <cstring>commentsInput</cstring>
@@ -95,7 +95,7 @@
    <item row="6" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Medical &amp;gültig bis:</string>
+      <string>Medical &amp;valid until:</string>
      </property>
      <property name="buddy">
       <cstring>medicalValidityInput</cstring>
@@ -105,7 +105,7 @@
    <item row="4" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>&amp;Medical prüfen:</string>
+      <string>Check &amp;medical:</string>
      </property>
      <property name="buddy">
       <cstring>checkMedicalInput</cstring>
@@ -121,18 +121,17 @@
       <item>
        <widget class="SkComboBox" name="checkMedicalInput">
         <property name="toolTip">
-         <string>Das Medical dieser Person beim Anlegen
-von Flügen auf Aktualität prüfen</string>
+         <string>Check this person's medical validity
+when creating a new flight</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="medicalCheckDisabledLabel">
         <property name="toolTip">
-         <string>Die globale Medical-Prüfung ist deaktiviert. Damit
-Medicals überprüft werden, muss die Option
-„Medicals prüfen“ in den Programmeinstellungen
-aktiviert werden.</string>
+         <string>The global medical check option is disabled. For
+medicals to be checked, enable the option
+&quot;Check medicals&quot; in the program settings.</string>
         </property>
         <property name="text">
          <string>...</string>
@@ -167,7 +166,7 @@ aktiviert werden.</string>
       <item>
        <widget class="QCheckBox" name="medicalValidityUnknownCheckbox">
         <property name="text">
-         <string>&amp;Unbekannt</string>
+         <string>&amp;Unknown</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -180,10 +179,10 @@ aktiviert werden.</string>
          <bool>false</bool>
         </property>
         <property name="toolTip">
-         <string>Das Datum, bis zu dem das Medical dieser Person gültig ist</string>
+         <string>The last date that this person's medical is valid</string>
         </property>
         <property name="displayFormat">
-         <string>dd.MM.yyyy</string>
+         <string>MM/dd/yyyy</string>
         </property>
        </widget>
       </item>
@@ -206,7 +205,10 @@ aktiviert werden.</string>
    <item row="7" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
-      <string>Vereins-ID:</string>
+      <string>Club &amp;ID:</string>
+     </property>
+     <property name="buddy">
+      <cstring>clubIdInput</cstring>
      </property>
     </widget>
    </item>

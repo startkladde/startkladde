@@ -6,6 +6,7 @@
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/db/cache/Cache.h"
 #include "src/concurrent/Returner.h"
+#include "src/i18n/notr.h"
 
 CacheWorker::CacheWorker (Cache &cache):
 	cache (cache)
@@ -27,9 +28,9 @@ CacheWorker::~CacheWorker ()
 {
 	thread.quit ();
 
-	std::cout << "Waiting for cache worker thread to terminate..." << std::flush;
-	if (thread.wait (1000)) std::cout << "OK"      << std::endl;
-	else                    std::cout << "Timeout" << std::endl;
+	std::cout << notr ("Waiting for cache worker thread to terminate...") << std::flush;
+	if (thread.wait (1000)) std::cout << notr ("OK")      << std::endl;
+	else                    std::cout << notr ("Timeout") << std::endl;
 }
 
 

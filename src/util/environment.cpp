@@ -9,6 +9,8 @@
 
 #include <stdlib.h>
 
+#include "src/i18n/notr.h"
+
 /**
  * Gets the contents of an environment variable
  *
@@ -28,8 +30,8 @@ QString getEnvironmentVariable (const QString &name)
 QStringList getSystemPath (const QString &environmentVariable)
 {
 #ifdef SK_WINDOWS
-	return getEnvironmentVariable (environmentVariable).split (";");
+	return getEnvironmentVariable (environmentVariable).split (notr (";"));
 #else
-	return getEnvironmentVariable (environmentVariable).split (":");
+	return getEnvironmentVariable (environmentVariable).split (notr (":"));
 #endif
 }

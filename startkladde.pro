@@ -140,11 +140,14 @@ HEADERS += \
            src/graphics/SkMovie.h \
            src/gui/dialogs.h \
            src/gui/PasswordPermission.h \
+		   src/gui/SkDialog.h \
+		   src/gui/SkMainWindow.h \
            src/gui/views/ReadOnlyItemDelegate.h \
            src/gui/views/SkItemDelegate.h \
            src/gui/views/SpecialIntDelegate.h \
            src/gui/views/SpinBoxCreator.h \
            src/gui/widgets/AcpiWidget.h \
+           src/gui/widgets/LanguageComboBox.h \
            src/gui/widgets/LongitudeInput.h \
            src/gui/widgets/SkComboBox.h \
            src/gui/widgets/SkLabel.h \
@@ -176,6 +179,10 @@ HEADERS += \
            src/gui/windows/objectList/ObjectListWindow.h \
            src/gui/windows/objectList/PersonListWindow.h \
            src/gui/windows/objectList/ObjectListWindowBase.h \
+           src/i18n/LanguageChangeNotifier.h \
+           src/i18n/LanguageConfiguration.h \
+           src/i18n/notr.h \
+           src/i18n/TranslationManager.h \
            src/io/AnsiColors.h \
            src/io/SkProcess.h \
            src/logging/messages.h \
@@ -294,6 +301,7 @@ SOURCES += \
            src/gui/views/SkItemDelegate.cpp \
            src/gui/views/SpecialIntDelegate.cpp \
            src/gui/views/SpinBoxCreator.cpp \
+           src/gui/widgets/LanguageComboBox.cpp \
            src/gui/widgets/LongitudeInput.cpp \
            src/gui/widgets/SkComboBox.cpp \
            src/gui/widgets/SkLabel.cpp \
@@ -324,6 +332,9 @@ SOURCES += \
            src/gui/windows/objectList/ObjectListWindow.cpp \
            src/gui/windows/objectList/PersonListWindow.cpp \
            src/gui/windows/objectList/ObjectListWindowBase.cpp \
+           src/i18n/LanguageChangeNotifier.cpp \
+           src/i18n/LanguageConfiguration.cpp \
+           src/i18n/TranslationManager.cpp \
            src/io/AnsiColors.cpp \
            src/io/SkProcess.cpp \
            src/logging/messages.cpp \
@@ -429,6 +440,7 @@ unix {
 error( "build/migrations.pro could not be included" )
 }
 
+TRANSLATIONS += translations/startkladde_de.ts translations/startkladde_bork.ts
 
 ##################
 ## Installation ##

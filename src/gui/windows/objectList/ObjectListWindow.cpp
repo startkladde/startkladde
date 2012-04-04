@@ -25,6 +25,7 @@
 #include "src/text.h"
 #include "src/model/objectList/AutomaticEntityList.h"
 #include "src/model/objectList/ObjectModel.h"
+#include "src/i18n/notr.h"
 
 
 /**
@@ -40,6 +41,8 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 	manager (manager),
 	contextMenu (new QMenu (this))
 {
+		ui.setupUi(this);
+
 	// Create the object listModel
 	list = new AutomaticEntityList<T>
 		(manager.getCache (), manager.getCache ().getObjects<T> ().getList (), this);
@@ -60,13 +63,8 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 	ui.table->resizeColumnsToContents ();
 	ui.table->resizeRowsToContents (); // Do this although autoResizeRows is true - there are already rows.
 
-	setWindowTitle (T::objectTypeDescriptionPlural ());
-
-	// TODO this should be done later - a subclass may add menus
-	QString mnemonics="f";
-	QChar closeButtonMnemonic=getMnemonic (ui.buttonBox->button (QDialogButtonBox::Close)->text ());
-	if (!closeButtonMnemonic.isNull ()) mnemonics+=closeButtonMnemonic;
-	ui.menuObject->setTitle (insertMnemonic (T::objectTypeDescription (), mnemonics));
+	// TODO this should be done later - a subclass may add menus and the mnemonics may be missed
+	setupText ();
 }
 
 template<class T> ObjectListWindow<T>::~ObjectListWindow()
@@ -97,6 +95,23 @@ template<class T> void ObjectListWindow<T>::show (DbManager &manager, bool editP
 	// Show the window
 	window->show ();
 }
+
+template<class T> void ObjectListWindow<T>::setupText ()
+{
+	setWindowTitle (firstToUpper (T::objectTypeDescriptionPlural ()));
+
+	// TODO should probably autodetect mnemonics
+	QString mnemonics=qApp->translate ("ObjectListWindow<T>", "w", "Window menu mnemonic");
+	QChar closeButtonMnemonic=getMnemonic (ui.buttonBox->button (QDialogButtonBox::Close)->text ());
+	if (!closeButtonMnemonic.isNull ()) mnemonics+=closeButtonMnemonic;
+
+	// Set the "Object" menu
+	QString objectMenuText=T::objectTypeDescription ();
+	objectMenuText=firstToUpper (objectMenuText);
+	objectMenuText=insertMnemonic (objectMenuText, mnemonics);
+	ui.menuObject->setTitle (objectMenuText);
+}
+
 
 /**
  * Appends an object from a specified position (index) in the table to a QList
@@ -134,7 +149,7 @@ template<class T> void ObjectListWindow<T>::appendObjectTo (QList<T> &targetList
  */
 template<class T> int ObjectListWindow<T>::activeObjectCount ()
 {
-	// ATTENTION: make sure getActiveObjects corresponds to this method
+	// WARNING: make sure getActiveObjects corresponds to this method
 
 	// If there is a selection, the active objects are the selected objects
 	// (rows)
@@ -171,7 +186,7 @@ template<class T> int ObjectListWindow<T>::activeObjectCount ()
  */
 template<class T> QList<T> ObjectListWindow<T>::activeObjects ()
 {
-	// ATTENTION: make sure activeObjectCount corresponds to this method
+	// WARNING: make sure activeObjectCount corresponds to this method
 
 	QList<T> activeObjects;
 
@@ -235,18 +250,22 @@ template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, boo
 
 	if (objectUsed)
 	{
-		QString title=utf8 ("%1 benutzt").arg (T::objectTypeDescription ());
-		QString text=utf8 ("%1 %2 wird verwendet und kann daher nicht gelöscht werden.").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
+		QString title=firstToUpper (
+			qApp->translate ("ObjectListWindow<T>", "%1 in use")
+				.arg (T::objectTypeDescription ()));
+		QString text=firstToUpper (
+			qApp->translate ("ObjectListWindow<T>", "%1 %2 is in use and cannot be deleted.")
+				.arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ()));
 
 		if (cancelOption)
-			text+=" Fortfahren?";
+			text+=qApp->translate ("ObjectListWindow<T>", " Continue?");
 
 		QMessageBox::StandardButtons buttons=QMessageBox::Ok;
 
 		if (cancelOption)
 			buttons |= QMessageBox::Cancel;
 
-		if (QMessageBox::critical (this, title, firstToUpper (text), buttons, QMessageBox::Ok)==QMessageBox::Ok)
+		if (QMessageBox::critical (this, title, text, buttons, QMessageBox::Ok)==QMessageBox::Ok)
 			// Continue
 			return true;
 		else
@@ -292,8 +311,8 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 	{
 		const T &object=objects.at (i);
 
-		QString title=utf8 ("%1 löschen?").arg (T::objectTypeDescription ());
-		QString question=utf8 ("Soll %1 %2 gelöscht werden?").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
+		QString title=qApp->translate ("ObjectListWindow<T>", "Delete %1?").arg (T::objectTypeDescription ());
+		QString question=qApp->translate ("ObjectListWindow<T>", "Do you want to delete %1 %2?").arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ());
 
 		bool confirmDelete=false, cancel=false;
 
@@ -442,10 +461,17 @@ template<class T> void ObjectListWindow<T>::keyPressEvent (QKeyEvent *e)
 	ObjectListWindowBase::keyPressEvent (e);
 }
 
+template<class T> void ObjectListWindow<T>::languageChanged ()
+{
+	ObjectListWindowBase::languageChanged ();
+	setupText ();
+	ui.table->resizeColumnsToContents ();
+}
+
 
 template<class T> QString ObjectListWindow<T>::makePasswordMessage ()
 {
-	return utf8 ("Zum Editieren der %1 ist das Datenbankpasswort erforderlich.").arg (T::objectTypeDescriptionPlural ());
+	return qApp->translate ("ObjectListWindow<T>", "The database password must be entered to edit %1.").arg (T::objectTypeDescriptionPlural ());
 }
 
 /**
@@ -460,7 +486,7 @@ template<class T> QString ObjectListWindow<T>::makePasswordMessage ()
  * Specializations have to be performed at the end of the file, before (!) the
  * instantiation.
  *
- * ATTENTION: all ObjectListWindow instances have to be created using this
+ * WARNING: all ObjectListWindow instances have to be created using this
  * method (or a subclass constructor), never directly using the
  * ObjectListWindow constructor. Otherwise, the generic class may be created
  * instead of the specific class.

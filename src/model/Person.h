@@ -1,6 +1,7 @@
 #ifndef PERSON_H_
 #define PERSON_H_
 
+#include <QApplication>
 #include <QString>
 #include <QMetaType>
 #include <QDate>
@@ -51,9 +52,9 @@ class Person: public Entity
 
 
 		// *** ObjectListWindow/ObjectEditorWindow helpers
-		static QString objectTypeDescription () { return "Person"; }
-		static QString objectTypeDescriptionDefinite () { return "die Person"; }
-		static QString objectTypeDescriptionPlural () { return "Personen"; }
+		static QString objectTypeDescription () { return qApp->translate ("Person", "person"); }
+		static QString objectTypeDescriptionDefinite () { return qApp->translate ("Person", "the person"); }
+		static QString objectTypeDescriptionPlural () { return qApp->translate ("Person", "people"); }
 
 
 		// SQL interface

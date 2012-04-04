@@ -4,6 +4,9 @@
 #include <QPalette>
 //#include <QColor>
 #include <QTimer>
+#include <QEvent>
+
+#include "src/i18n/notr.h"
 
 extern "C"
 {
@@ -35,7 +38,7 @@ AcpiWidget::AcpiWidget (QWidget* parent)
 bool AcpiWidget::valid ()
 {
 	if(check_acpi_support() == NOT_SUPPORTED){
-		qDebug () << "No acpi support for your system?" << endl;
+		qDebug () << notr ("No acpi support for your system?") << endl;
 		return false;
 	}
 	if (init_acpi_batt(&global_acpi) != SUCCESS && init_acpi_acadapt(&global_acpi) != SUCCESS)
@@ -51,7 +54,7 @@ void AcpiWidget::slotTimer()
 	QPalette palette;
 
 	if(check_acpi_support() == NOT_SUPPORTED){
-		qDebug () << "No acpi support for your system?" << endl;
+		qDebug () << notr ("No acpi support for your system?") << endl;
 		return;
 	}
 
@@ -62,15 +65,15 @@ void AcpiWidget::slotTimer()
 	// TODO improve
 
 	if(acstate == SUCCESS && ac->ac_state == P_BATT) {
-		message = "Batterie: ";
+		message = tr ("Battery: ", "With traling space");
 		palette.setColor(QPalette::Window, Qt::red);
 	}
 	else if(acstate == SUCCESS && ac->ac_state == P_AC) {
-		message = "Extern ";
+		message = tr ("External ", "With trailing space");
 		palette.setColor (QPalette::Window, Qt::white);
 	}
 	else {
-		message = "Nicht bekannt ";
+		message = tr ("Unknown ", "With trailing space");
 		palette.setColor(QPalette::Window, Qt::red);
 	}
 	setPalette(palette);
@@ -84,12 +87,12 @@ void AcpiWidget::slotTimer()
 			if(binfo->present)
 			{
 				if (ac->ac_state == P_BATT)
-					message += QString ("%1% %2:%3").arg(binfo->percentage).arg(binfo->remaining_time/60).arg(binfo->remaining_time%60, 2, 10, QChar('0'));
+					message += qnotr ("%1% %2:%3").arg(binfo->percentage).arg(binfo->remaining_time/60).arg(binfo->remaining_time%60, 2, 10, QChar('0'));
 				else
-					message += QString ("%1%").arg(binfo->percentage);
-				QString tooltip = QString("%1: %2mAh\n").arg(binfo->name).arg(binfo->design_cap);
-				tooltip += QString("%1mAh / %2mAh\n").arg(binfo->last_full_cap).arg(binfo->remaining_cap);
-				tooltip += QString("%1mV / %2mV\n").arg(binfo->design_voltage).arg(binfo->present_voltage);
+					message += qnotr ("%1%").arg(binfo->percentage);
+				QString tooltip = qnotr ("%1: %2mAh\n").arg(binfo->name).arg(binfo->design_cap);
+				tooltip += qnotr("%1mAh / %2mAh\n").arg(binfo->last_full_cap).arg(binfo->remaining_cap);
+				tooltip += qnotr("%1mV / %2mV\n").arg(binfo->design_voltage).arg(binfo->present_voltage);
 /*
 				printf("\n%s:\tpresent: %d\n"
 						"\tdesign capacity: %d\n"
@@ -116,8 +119,18 @@ void AcpiWidget::slotTimer()
 		}
 	}
 	else
-		message += "unbekannt ";
+		message += tr ("Unknown ", "With trailing space");
 
 	setText (message);
 	//update ();
+}
+
+void AcpiWidget::changeEvent (QEvent *event)
+{
+	if (event->type () == QEvent::LanguageChange)
+	{
+		slotTimer ();
+	}
+	else
+		SkLabel::changeEvent (event);
 }

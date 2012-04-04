@@ -23,7 +23,10 @@ class PlaneEditorPane: public ObjectEditorPane<Plane>
 		virtual void on_registrationInput_editingFinished ();
 
 	protected:
-		virtual void fillData ();
+		virtual void loadData ();
+		virtual void prepareText ();
+		virtual void setupText ();
+		virtual void changeEvent (QEvent *event);
 
 	private:
 		Ui::PlaneEditorPaneClass ui;

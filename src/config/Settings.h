@@ -13,6 +13,7 @@
 #include <QStringList>
 
 #include "src/db/DatabaseInfo.h"
+#include "src/i18n/LanguageConfiguration.h"
 
 class InfoPlugin;
 
@@ -42,6 +43,8 @@ class Settings: public QObject
 		DatabaseInfo databaseInfo;
 
 		// *** Settings
+		// UI
+		LanguageConfiguration languageConfiguration;
 		// Data
 		QString location;
 		bool recordTowpilot;

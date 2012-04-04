@@ -44,12 +44,6 @@
       <attribute name="verticalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
-      <attribute name="horizontalHeaderHighlightSections">
-       <bool>false</bool>
-      </attribute>
-      <attribute name="verticalHeaderHighlightSections">
-       <bool>false</bool>
-      </attribute>
      </widget>
     </item>
     <item>
@@ -67,24 +61,23 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuObject">
     <property name="title">
-     <string>&amp;Objekt</string>
+     <string>&amp;Object</string>
     </property>
+    <addaction name="actionRefresh"/>
+    <addaction name="separator"/>
     <addaction name="actionNew"/>
-    <addaction name="separator"/>
-    <addaction name="actionDelete"/>
     <addaction name="actionEdit"/>
-    <addaction name="separator"/>
+    <addaction name="actionDelete"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
-     <string>&amp;Fenster</string>
+     <string extracomment="The mnemonic is referenced in ObjectListWindow&lt;T&gt;, make sure to update it when this value is changed.">&amp;Window</string>
     </property>
-    <addaction name="actionRefresh"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
    </widget>
@@ -93,42 +86,42 @@
   </widget>
   <action name="actionNew">
    <property name="text">
-    <string>&amp;Neu</string>
+    <string>&amp;New</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+N</string>
+    <string extracomment="New">Ctrl+N</string>
    </property>
   </action>
   <action name="actionDelete">
    <property name="text">
-    <string>&amp;Löschen</string>
+    <string>&amp;Delete</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+L</string>
+    <string extracomment="Delete">Ctrl+D</string>
    </property>
   </action>
   <action name="actionEdit">
    <property name="text">
-    <string>&amp;Editieren</string>
+    <string>&amp;Edit</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+E</string>
+    <string extracomment="Edit">Ctrl+E</string>
    </property>
   </action>
   <action name="actionRefresh">
    <property name="text">
-    <string>Aktualisie&amp;ren</string>
+    <string>&amp;Refresh</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R</string>
+    <string extracomment="Refresh">Ctrl+R</string>
    </property>
   </action>
   <action name="actionClose">
    <property name="text">
-    <string>&amp;Schließen</string>
+    <string>&amp;Close</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+W</string>
+    <string extracomment="Close">Ctrl+W</string>
    </property>
   </action>
  </widget>

@@ -23,7 +23,7 @@ QString firstToLower (const QString &text);
 QString capitalize (const QString &string);
 
 QString countText (int count, const QString &singular, const QString &plural);
-QString countText (int count, const QString &singular, const QString &plural, const QString &noneText);
+QString countText (int count, const QString &singular, const QString &plural, const QString &none);
 
 QString simplifyClubName (const QString &clubName);
 bool locationEntryCanBeChanged (const QString &location);
