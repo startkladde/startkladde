@@ -398,7 +398,17 @@ int main (int argc, char **argv)
 
 	// Setup the translation
 	TranslationManager &translationManager=TranslationManager::instance ();
-	translationManager.load (Settings::instance ().languageConfiguration);
+	if (!translationManager.load (Settings::instance ().languageConfiguration))
+	{
+		// Loading the translation failed. Switch to system language, load it
+		// and store it in the configuration (so the settings dialog will
+		// display the correct value).
+		std::cout << "Loading the translation failed" << std::endl;
+
+		LanguageConfiguration languageConfiguration (LanguageConfiguration::systemLanguage);
+		Settings::instance ().languageConfiguration=languageConfiguration;
+		translationManager.load (languageConfiguration);
+	}
 	translationManager.install (&application);
 
 	int ret=0;

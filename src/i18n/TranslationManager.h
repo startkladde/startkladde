@@ -35,10 +35,10 @@ class TranslationManager
 		QList<Language> listLanguages ();
 
 		// Language loading
-		void unload (bool force=false);
-		void loadForLocale (const QString &localeName, bool force=false);
-		void loadForCurrentLocale (bool force=false);
-		void load (const LanguageConfiguration &configuration, bool force=false);
+		bool unload (bool force=false);
+		bool loadForLocale (const QString &localeName, bool force=false);
+		bool loadForCurrentLocale (bool force=false);
+		bool load (const LanguageConfiguration &configuration, bool force=false);
 		void toggleLanguage ();
 
 	protected:

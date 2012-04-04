@@ -85,7 +85,7 @@ QList<TranslationManager::Language> TranslationManager::listLanguages ()
 			// use locale name.
 			language.languageName=determineLanguageNameForLocale (localeName);
 
-			if (language.languageName.isEmpty ())
+			if (language.languageName.trimmed ().isEmpty ())
 			{
 				language.languageName=language.localeName;
 				languagesWithoutName.append (language);
@@ -100,12 +100,21 @@ QList<TranslationManager::Language> TranslationManager::listLanguages ()
 	return languages+languagesWithoutName;
 }
 
+/**
+ * Determines the name of a language, in that language
+ *
+ * This is done by loading the translation for the current locale (without using
+ * it for the application) and retrieving the language name from the translator.
+ * The result is suitable for displaying to the user.
+ */
 QString TranslationManager::determineLanguageNameForLocale (const QString &localeName)
 {
 	QTranslator translator;
 	translator.load (filenameForLocaleName (localeName), translationsPath);
 
-	struct { const char *source; const char *comment; } languageString=QT_TRANSLATE_NOOP3("Translation", "Default (English)", "Replace with the name of the translation language, in that language");
+	struct { const char *source; const char *comment; } languageString=
+		QT_TRANSLATE_NOOP3("Translation", " ",
+			"Replace with the name of the translation language, in that language");
 
 	return translator.translate ("Translation", languageString.source);
 }
@@ -119,8 +128,10 @@ QString TranslationManager::determineLanguageNameForLocale (const QString &local
  * Unloads the translation, if any is loaded
  *
  * If no translation is loaded, nothing happens, unless force is true.
+ *
+ * @return true, indicating success (unloading cannot fail)
  */
-void TranslationManager::unload (bool force)
+bool TranslationManager::unload (bool force)
 {
 	if (currentTranslation!="" || force)
 	{
@@ -132,35 +143,53 @@ void TranslationManager::unload (bool force)
 
 		currentTranslation="";
 	}
+
+	return true;
 }
 
 /**
  * Loads the translation for the given locale name
  *
  * If the translation is already loaded, nothing happens, unless force is true.
+ *
+ * @return true if the application translation could be loaded, regardless of
+ *         whether the Qt translation could be loaded; false otherwise
  */
-void TranslationManager::loadForLocale (const QString &localeName, bool force)
+bool TranslationManager::loadForLocale (const QString &localeName, bool force)
 {
 	//std::cout << "Current: " << currentTranslation << "; new: " << localeName << std::endl;
 	if (currentTranslation!=localeName || force)
 	{
-		// A message will be output by loadTranslation
+		// A message will be output by loadTranslation.
 
-		loadTranslation (applicationTranslator, filenameForLocaleName (localeName), translationsPath);
-		loadTranslation (qtTranslator,          "qt_"+localeName                  , QLibraryInfo::location (QLibraryInfo::TranslationsPath));
+		// Try to load the application translation
+		bool applicationTranslationOk=loadTranslation (applicationTranslator,
+			filenameForLocaleName (localeName), translationsPath);
 
+		// Loading the application translation failed, stop and return failure
+		if (!applicationTranslationOk) return false;
+
+		// Load the Qt translation (ignore failure)
+		loadTranslation (qtTranslator,
+			"qt_"+localeName                  , QLibraryInfo::location (QLibraryInfo::TranslationsPath));
+
+		// Store the loaded locale name
 		currentTranslation=localeName;
 	}
+
+	return true;
 }
 
 /**
  * Loads the translation for the current locale
  *
  * If the translation is already loaded, nothing happens, unless force is true.
+ *
+ * @return true on success (see loadForLocale), false on failure
  */
-void TranslationManager::loadForCurrentLocale (bool force)
+bool TranslationManager::loadForCurrentLocale (bool force)
 {
-	loadForLocale (QLocale::system ().name (), force);
+	return loadForLocale (QLocale::system ().name (), force);
 }
 
 /**
@@ -171,23 +200,27 @@ void TranslationManager::loadForCurrentLocale (bool force)
  *
  * @param configuration the language configuration to load
  * @param force load the language even if it is already loaded
+ * @return true on success (see loadForLocale), false on failure
  */
 // FIXME what happens if it is invalid (e. g. invalid value in configuration)?
-void TranslationManager::load (const LanguageConfiguration &configuration, bool force)
+bool TranslationManager::load (const LanguageConfiguration &configuration, bool force)
 {
 	switch (configuration.getType ())
 	{
 		case LanguageConfiguration::manualSelection:
-			loadForLocale (configuration.getLocaleName (), force);
+			return loadForLocale (configuration.getLocaleName (), force);
 			break;
 		case LanguageConfiguration::noTranslation :
-			unload (force);
+			return unload (force);
 			break;
 		case LanguageConfiguration::systemLanguage:
-			loadForCurrentLocale (force);
+			return loadForCurrentLocale (force);
 			break;
 		// No default
 	}
+
+	// Should never be reached, all cases must be handled above
+	return false;
 }
 
 void TranslationManager::toggleLanguage ()
