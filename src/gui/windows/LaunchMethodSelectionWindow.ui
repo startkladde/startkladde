@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>LaunchMethodSelectionWindow</string>
+   <string>Launch method preselection</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
