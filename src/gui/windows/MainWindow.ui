@@ -674,7 +674,7 @@
   </action>
   <action name="actionSetDisplayDate">
    <property name="text">
-    <string>Set &amp;display date... (F10)</string>
+    <string>Set &amp;displayed date... (F10)</string>
    </property>
   </action>
   <action name="actionResetDisplayDateOnNewFlight">

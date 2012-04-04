@@ -4,7 +4,7 @@
  *     may be created during connect, such as the root interface
  *   - when double-clicking in the empty area of the flight table, create a new
  *     flight
- *   - when double-clicking the display date label, change the display date
+ *   - when double-clicking the displayed date label, change the displayed date
  */
 //	assert (isGuiThread ());
 
@@ -565,7 +565,7 @@ void MainWindow::updateDisplayDateLabel (const QDate &today)
 
 /**
  * Refreshes both the flight table and the corresponding info labels, from the
- * cache, including the display date label (text and color). Does not access
+ * cache, including the displayed date label (text and color). Does not access
  * the database.
  */
 void MainWindow::refreshFlights ()
@@ -579,7 +579,7 @@ void MainWindow::refreshFlights ()
 	{
 		if (displayDate==today)
 		{
-			// The display date is today's date - display today's flights and
+			// The displayed date is today's date - display today's flights and
 			// prepared flights
 			flights  = dbManager.getCache ().getFlightsToday ().getList ();
 			flights += dbManager.getCache ().getPreparedFlights ().getList ();
@@ -588,7 +588,7 @@ void MainWindow::refreshFlights ()
 		}
 		else
 		{
-			// The display date is not today's date - display the flights from the
+			// The displayed date is not today's date - display the flights from the
 			// cache's "other" date
 			flights=dbManager.getCache ().getFlightsOther ().getList ();
 
@@ -1528,7 +1528,7 @@ void MainWindow::on_actionSort_triggered ()
  * Determines the date to use for new flights
  *
  * This is, depending on the current setting, either the current date (today)
- * or the current display date.
+ * or the current displayed date.
  *
  * @return the date to use for new flights
  */
@@ -1550,23 +1550,23 @@ void MainWindow::setDisplayDate (QDate newDisplayDate, bool force)
 {
 	// TODO this should be correct now, but it still sucks. The better solution
 	// would probably be just to have a flag "displayToday" here, and use the
-	// cache's "other" date as display date. This would avoid date==today
+	// cache's "other" date as displayed date. This would avoid date==today
 	// comparisons, prevent inconsistencies and make handling date changes
 	// easier (prevent race conditions on date change).
 
 	// Fetch the current date to avoid it changing during the operation
 	QDate today=QDate::currentDate ();
 
-	// If the display date is null, use the current date
+	// If the displayed date is null, use the current date
 	if (newDisplayDate.isNull ()) newDisplayDate = today;
 
-	// If the display date is already current, don't do anything (unless force
+	// If the displayed date is already current, don't do anything (unless force
 	// is true)
 	if (newDisplayDate==displayDate && !force) return;
 
 	if (newDisplayDate==today)
 	{
-		// Setting today's display date
+		// Setting today's displayed date
 		// Since today's flights are always cached, we can do this
 		// unconditionally.
 		displayDate=newDisplayDate;
@@ -1577,18 +1577,18 @@ void MainWindow::setDisplayDate (QDate newDisplayDate, bool force)
 
 		try
 		{
-			// If the new display date is not in the cache, fetch it.
+			// If the new displayed date is not in the cache, fetch it.
 			// TODO move that to fetchFlights() (with force flag)
 			if (newDisplayDate!=dbManager.getCache ().getOtherDate ())
 				dbManager.fetchFlights (newDisplayDate, this);
 
-			// Now the display date is the one in the cache (which should be
+			// Now the displayed date is the one in the cache (which should be
 			// newDisplayDate).
 			displayDate=dbManager.getCache ().getOtherDate ();
 		}
 		catch (OperationCanceledException &ex)
 		{
-			// The fetching was canceled. Don't change the display date.
+			// The fetching was canceled. Don't change the displayed date.
 		}
 	}
 
@@ -1599,7 +1599,7 @@ void MainWindow::setDisplayDate (QDate newDisplayDate, bool force)
 void MainWindow::on_actionSetDisplayDate_triggered ()
 {
 	QDate newDisplayDate = displayDate;
-	if (DateInputDialog::editDate (&newDisplayDate, tr ("Set display date"), tr ("Display date:"), this))
+	if (DateInputDialog::editDate (&newDisplayDate, tr ("Set displayed date"), tr ("Displayed date:"), this))
 		setDisplayDate (newDisplayDate, true);
 }
 
