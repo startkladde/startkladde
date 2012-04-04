@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+# TODO:
+#   * diff option (write to temporary file and call diff program)
+#   * inplace option (write to temporary file and move)
+
 require 'cgi'
 require 'pty'
 

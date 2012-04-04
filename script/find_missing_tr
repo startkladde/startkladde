@@ -3,6 +3,10 @@
 # TODO:
 #   * better test cases
 #   * parsing: non-line-based, with preprocessing
+#   * allow multi-argument functions
+#     * QT_TRANSLATE_NOOP, QT_TRANSLATE_NOOP3
+#     * qnotrCount
+#     * multi-argument tr
 
 # Finds lines containing strings without tr(), notr() or qnotr().
 # Usage:
