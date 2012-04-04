@@ -3,6 +3,9 @@
 
 #include <QTranslator>
 #include <QString>
+#include <QStringList>
+#include <QList>
+#include <QDir>
 
 #include "src/i18n/LanguageConfiguration.h"
 
@@ -20,6 +23,7 @@ class TranslationManager
 		class Language
 		{
 			public:
+				Language (const QString &localeName, const QString &languageName): localeName (localeName), languageName (languageName) {}
 				QString localeName;
 				QString languageName;
 		};
@@ -42,9 +46,12 @@ class TranslationManager
 		void toggleLanguage ();
 
 	protected:
-		// Settings
+		// Translation files
 		QString filenameForLocaleName (const QString &localeName);
 		QString localeNameFromFilename (const QString &filename);
+		QStringList listTranslationFiles ();
+		bool loadTranslation (QTranslator &translator, const QString &prefix, const QString &localeName);
+
 
 		// Language identification
 		QString determineLanguageNameForLocale (const QString &localeName);
@@ -55,17 +62,15 @@ class TranslationManager
 		static TranslationManager *theInstance;
 
 		// Translators
-		QTranslator applicationTranslator;
+		QTranslator appTranslator;
 		QTranslator qtTranslator;
 
 		// Settings
-		QString translationsPath;
+		QList<QDir> translationPath;
 
-		// Language loading
-		bool loadTranslation (QTranslator &translator, const QString &filename, const QString &directory);
 
 		// Current translation
-		QString currentTranslation;
+		QString currentLocale;
 };
 
 #endif

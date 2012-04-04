@@ -8,7 +8,9 @@
 #include <QRegExp>
 #include <QStringList>
 #include <QDir>
+#include <QTranslator>
 
+#include "src/i18n/notr.h"
 #include "src/util/qString.h"
 
 // TODO: when switching from "automatic" to, e. g., "German" in a German
@@ -26,8 +28,12 @@ TranslationManager *TranslationManager::theInstance;
 
 TranslationManager::TranslationManager ()
 {
-	translationsPath=QCoreApplication::applicationDirPath ()+"/translations";
-
+	// Set up the translation path
+	translationPath << QCoreApplication::applicationDirPath ()+"/translations"; // Application directory/translations
+	translationPath << QLibraryInfo::location (QLibraryInfo::TranslationsPath); // Qt translations directory
+#ifdef Q_OS_UNIX
+	translationPath << QDir ("/usr/share/startkladde/translations");
+#endif
 }
 
 TranslationManager::~TranslationManager ()
@@ -49,74 +55,78 @@ TranslationManager &TranslationManager::instance ()
 
 void TranslationManager::install (QApplication *application)
 {
-	application->installTranslator (&applicationTranslator);
+	application->installTranslator (&appTranslator);
 	application->installTranslator (&qtTranslator);
 }
 
 
-// *************************************
-// ** Language listing/identification **
-// *************************************
+// ***********************
+// ** Translation files **
+// ***********************
 
-QList<TranslationManager::Language> TranslationManager::listLanguages ()
+/**
+ * Determines the locale name from a given filename
+ *
+ * @param filename the filename without path, e. g. startkladde_de.qm
+ * @return the locale name, or an empty string if the filename does not
+ *         represent a known translation file pattern
+ */
+// FIXME required?
+QString TranslationManager::localeNameFromFilename (const QString &filename)
 {
-	QList<Language> languages;
-	QList<Language> languagesWithoutName;
+	QRegExp regexp ("startkladde_(.*)\\.qm");
+	if (regexp.exactMatch (filename))
+		return regexp.cap (1);
+	else
+		return QString ();
+}
 
-	QStringList nameFilters=QStringList () << "*.qm";
+QString TranslationManager::filenameForLocaleName (const QString &localeName)
+{
+	return qnotr ("startkladde_%1.ts").arg (localeName);
+}
 
-	QStringList fileList=QDir (translationsPath).entryList (nameFilters, QDir::Files);
-	foreach (const QString &filename, fileList)
+QStringList TranslationManager::listTranslationFiles ()
+{
+	QStringList filenames;
+
+	QStringList nameFilters;
+	nameFilters << "startkladde_*.qm";
+
+	foreach (const QDir &dir, translationPath)
+		filenames.append (dir.entryList (nameFilters, QDir::Files));
+
+	return filenames;
+}
+
+bool TranslationManager::loadTranslation (QTranslator &translator, const QString &prefix, const QString &localeName)
+{
+	QString filename=prefix+"_"+localeName+".qm";
+
+	// Look in all directories of the translation path until the translation
+	// has been found
+	foreach (const QDir &dir, translationPath)
 	{
-		QString localeName=localeNameFromFilename (filename);
-
-		if (!localeName.isEmpty ())
+		// Output a message. The actual filename may be different from the
+		// filename specified because the translator tries to shorten the
+		// filename if the file does not exist, e. g. from startkladde_de_DE.qm
+		// to startkladde_de.qm.
+		std::cout << "Trying to load " << filename << " from " << dir.path () << "...";
+		if (translator.load (filename, dir.path ()))
 		{
-			Language language;
-			language.localeName=localeName;
-
-			// If the language name is empty, use the locale name instead. This
-			// may happen if there is a language which does not translate its own
-			// name.
-			// TODO this functionality should be in the caller, but callers
-			// would forget to handle it. There should be a parameter for what
-			// to do in this case: ignore it (return empty name, the caller
-			// handles it), ignore the language (don't include it in the list),
-			// use locale name.
-			language.languageName=determineLanguageNameForLocale (localeName);
-
-			if (language.languageName.trimmed ().isEmpty ())
-			{
-				language.languageName=language.localeName;
-				languagesWithoutName.append (language);
-			}
-			else
-			{
-				languages.append (language);
-			}
+			// Loading succeeded. Return success.
+			std::cout << "OK" << std::endl;
+			return true;
+		}
+		else
+		{
+			// Loading failed. Continue trying.
+			std::cout << "failed" << std::endl;
 		}
 	}
 
-	return languages+languagesWithoutName;
-}
-
-/**
- * Determines the name of a language, in that language
- *
- * This is done by loading the translation for the current locale (without using
- * it for the application) and retrieving the language name from the translator.
- * The result is suitable for displaying to the user.
- */
-QString TranslationManager::determineLanguageNameForLocale (const QString &localeName)
-{
-	QTranslator translator;
-	translator.load (filenameForLocaleName (localeName), translationsPath);
-
-	struct { const char *source; const char *comment; } languageString=
-		QT_TRANSLATE_NOOP3("Translation", " ",
-			"Replace with the name of the translation language, in that language");
-
-	return translator.translate ("Translation", languageString.source);
+	// Loading did not succeed. Return failure.
+	return false;
 }
 
 
@@ -133,15 +143,15 @@ QString TranslationManager::determineLanguageNameForLocale (const QString &local
  */
 bool TranslationManager::unload (bool force)
 {
-	if (currentTranslation!="" || force)
+	if (currentLocale!="" || force)
 	{
 		// Output a message
 		std::cout << "Unloading translation" << std::endl;
 
-		applicationTranslator.load ("");
-		qtTranslator         .load ("");
+		appTranslator.load ("");
+		qtTranslator .load ("");
 
-		currentTranslation="";
+		currentLocale="";
 	}
 
 	return true;
@@ -157,27 +167,31 @@ bool TranslationManager::unload (bool force)
  */
 bool TranslationManager::loadForLocale (const QString &localeName, bool force)
 {
-	//std::cout << "Current: " << currentTranslation << "; new: " << localeName << std::endl;
-	if (currentTranslation!=localeName || force)
+	// Nothing to do if the locale is already loaded, unless force is true
+	if (currentLocale==localeName && !force)
+		return true;
+
+	// Output a message
+	std::cout << "Loading translation for " << localeName << std::endl;
+
+	// Load the application translation
+	if (loadTranslation (appTranslator, "startkladde", localeName))
 	{
-		// A message will be output by loadTranslation.
-
-		// Try to load the application translation
-		bool applicationTranslationOk=loadTranslation (applicationTranslator,
-			filenameForLocaleName (localeName), translationsPath);
-
-		// Loading the application translation failed, stop and return failure
-		if (!applicationTranslationOk) return false;
-
-		// Load the Qt translation (ignore failure)
-		loadTranslation (qtTranslator,
-			"qt_"+localeName                  , QLibraryInfo::location (QLibraryInfo::TranslationsPath));
+		// Loading the application translation succeeded, load the Qt
+		// translation (ignore failure)
+		loadTranslation (qtTranslator, "qt", localeName);
 
 		// Store the loaded locale name
-		currentTranslation=localeName;
-	}
+		currentLocale=localeName;
 
-	return true;
+		// Return success
+		return true;
+	}
+	else
+	{
+		// Return failure
+		return false;
+	}
 }
 
 /**
@@ -225,41 +239,69 @@ bool TranslationManager::load (const LanguageConfiguration &configuration, bool 
 
 void TranslationManager::toggleLanguage ()
 {
-	if (applicationTranslator.isEmpty ())
+	if (appTranslator.isEmpty ())
 		loadForCurrentLocale ();
 	else
 		unload ();
 }
 
-bool TranslationManager::loadTranslation (QTranslator &translator, const QString &filename, const QString &directory)
+
+// **********
+// ** Misc **
+// **********
+
+/**
+ * Determines the name of a language, in that language
+ *
+ * This is done by loading the given translation locale (without using it for the
+ * application) and reading the language name from the translator.
+ */
+QString TranslationManager::determineLanguageNameForLocale (const QString &localeName)
 {
-	std::cout << "Loading translation from " << filename << " in " << directory << "...";
+	QTranslator translator;
+	loadTranslation (translator, "startkladde", localeName);
 
-	bool result=translator.load (filename, directory);
+	struct { const char *source; const char *comment; } languageString=
+		QT_TRANSLATE_NOOP3("Translation", " ",
+			"Replace with the name of the translation language, in that language");
 
-	if (result)
-		std::cout << "success" << std::endl;
-	else
-		std::cout << "failed" << std::endl;
-
-	return result;
+	return translator.translate ("Translation", languageString.source);
 }
 
 
-// **************
-// ** Settings **
-// **************
 
-QString TranslationManager::filenameForLocaleName (const QString &localeName)
+QList<TranslationManager::Language> TranslationManager::listLanguages ()
 {
-	return "startkladde_"+localeName;
-}
+	QList<Language> languages;
+	QList<Language> languagesWithoutName;
 
-QString TranslationManager::localeNameFromFilename (const QString &filename)
-{
-	QRegExp regexp ("startkladde_(.*)\\.qm");
-	if (regexp.exactMatch (filename))
-		return regexp.cap (1);
-	else
-		return QString ();
+	foreach (const QString &filename, listTranslationFiles ())
+	{
+		QString localeName=localeNameFromFilename (filename);
+		if (!localeName.isEmpty ())
+		{
+			QString languageName=determineLanguageNameForLocale (localeName);
+
+			// If the language name is empty, use the locale name instead. This
+			// may happen if there is a language which does not translate its own
+			// name.
+			// TODO this functionality should be in the caller, but callers
+			// would forget to handle it. There should be a parameter for what
+			// to do in this case: ignore it (return empty name, the caller
+			// handles it), ignore the language (don't include it in the list),
+			// use locale name.
+			if (languageName.trimmed ().isEmpty ())
+				languagesWithoutName.append (Language (localeName, localeName));
+			else
+				languages.append (Language (localeName, languageName));
+		}
+	}
+
+	std::cout << "Found languages:" << std::endl;
+	foreach (const Language &language, languages)
+		std::cout << QString ("  * %1 (%2)").arg (language.languageName, language.localeName) << std::endl;
+	foreach (const Language &language, languagesWithoutName)
+		std::cout << QString ("  * %1").arg (language.localeName) << std::endl;
+
+	return languages+languagesWithoutName;
 }
