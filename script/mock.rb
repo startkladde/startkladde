@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+# TODO:
+#   * integrate chef, the original sometimes outputs more than one line
+
 require 'cgi'
 require 'pty'
 require 'tempfile'
@@ -17,6 +20,12 @@ class String
 	def map_lines
 		self.split(/\n\r?/).map { |line| yield(line) }.join("\n")
 	end
+end
+
+def copyFileContents(source, target)
+	File.open(target, "w") { |file|
+		file.print File.read(source)
+	}
 end
 
 
@@ -266,55 +275,41 @@ end
 
 def help
 	puts "Usage:"
-	puts "    #{$0} [-f|--filter mock_filter] filename.ts"
-	puts "        Prints the file with added and removed lines"
-	puts "    #{$0} [-f|--filter mock_filter] [-o|--output filename] filename.ts"
-	puts "        Writes the result to filename or standard output if filename is -, or no output if filename is empty"
-	puts "    #{$0} [-f|--filter mock_filter] --diff filename.ts"
-	puts "        Shows a diff"
-	puts "    #{$0} [-f|--filter mock_filter] --inplace filename.ts"
-	puts "        Overwrites the input file in place"
-	puts "    #{$0} --test"
-	puts "        Runs integrated unit tests"
-	puts
-	puts "Example: #{$0} -f 'tr [:lower:] [:upper:]' translations/startkladde_sc.ts"
-	puts
-	puts "The filter must output exactly one line for each line input."
+	puts "  #{$0} filter [output] filename.ts"
+	puts "  #{$0} --test"
+	puts ""
+	puts "filter is one of:"
+	puts "  --upcase"
+	puts "    Use a simple upcase mock filter"
+	puts "  --filter|-f command"
+	puts "    Use the specified command as mock filter. The filter must output exactly one line for each input line."
+	puts ""
+	puts "output is one of:"
+	puts "  --output|-o filename"
+	puts "    Write to the specified file, stdout if filename is \"-\" or don't write if filename is empty."
+	puts "  --diff"
+	puts "    Show a unified diff"
+	puts "  --inplace"
+	puts "    Overwrite the file in place"
+	puts "If output is not specified, the file with changes is output on stdout."
+	puts ""
+	puts "--test runs the integrated unit tests"
 	exit 1
 end
 
-def createStringMocker(filter)
-	if filter
-		stringMocker=ProcessMocker.new(filter)
-	else
-		stringMocker=UpcaseStringMocker.new
-	end
-
-	QtStringMocker.new(stringMocker)
-end
-
-def createOutputter(output)
-	if output.nil?
-		DiffOutputter.new
-	elsif output.empty?
-		QuietOutputter.new
-	elsif output=="-"
-		PlainOutputter.new
-	else
-		FileOutputter.new(output)
-	end
-end
 
 # Parse parameters
-test=false
-diff=false
+upcase =false
+test   =false
+diff   =false
 inplace=false
 filenames=[]
 while arg=ARGV.shift
 	case arg
-	when '--test': test=true
-	when '--diff': diff=true
+	when '--test'   : test   =true
+	when '--diff'   : diff   =true
 	when '--inplace': inplace=true
+	when '--upcase' : upcase =true
 	when '-f' , '--filter': filter=ARGV.shift; if filter.nil?; puts "Filter missing"; help; end
 	when '-o' , '--output': output=ARGV.shift; if output.nil?; puts "Output missing"; help; end
 	when /^-/: puts "Unknown parameter #{arg}"; help
@@ -328,11 +323,10 @@ if test
 end
 
 if filenames.empty?
-	puts "No files specified"
 	help
 elsif filenames.size>1
 	puts "Too many file specified"
-	help
+	exit 1
 end
 
 filename=filenames[0]
@@ -341,29 +335,53 @@ if !File.exist?(filename)
 	exit 1
 end
 
-stringMocker=createStringMocker(filter)
+# Create the string mocker
+if filter
+	stringMocker=ProcessMocker.new(filter)
+elsif upcase
+	stringMocker=UpcaseStringMocker.new
+else
+	puts "No mocker specified"
+	exit 1
+end
+stringMocker=QtStringMocker.new(stringMocker)
 
+# Create the outputter
 if diff
+	# Output to temp file and show diff
 	tempfile=Tempfile.new('mock')
 	outputter=FileOutputter.new(tempfile.path)
-	TsFileMocker.new(stringMocker, outputter).processFile(filename)
-	outputter.close
+elsif inplace
+	# Output to temp file and overwrite original
+	tempfile=Tempfile.new('mock')
+	outputter=FileOutputter.new(tempfile.path)
+elsif output.nil?
+	# Show file with differences
+	outputter=DiffOutputter.new
+elsif output.empty?
+	# Don't show anything
+	outputter=QuietOutputter.new
+elsif output=="-"
+	# Show the result on standard output
+	outputter=PlainOutputter.new
+else
+	# Write the result to the output file
+	outputter=FileOutputter.new(output)
+end
+
+# Mock the file
+fileMocker=TsFileMocker.new(stringMocker, outputter)
+fileMocker.processFile(filename)
+outputter.close
+
+# Post processing
+if diff
 	system "diff", "-u", filename, tempfile.path
 	tempfile.unlink
 elsif inplace
-	tempfile=Tempfile.new('mock')
-	outputter=FileOutputter.new(tempfile.path)
-	TsFileMocker.new(stringMocker, outputter).processFile(filename)
-	outputter.close
 	# Not using FileUtils.mv because that needs to change the permissions and
 	# this may not be possible on a shared filesystem.
-	File.open(filename, "w") { |file| file.print File.read(tempfile.path) }
+	copyFileContents tempfile.path, filename
 	tempfile.unlink
-else
-	outputter=createOutputter(output)
-	TsFileMocker.new(stringMocker, outputter).processFile(filename)
-	outputter.close
 end
-
-
 
