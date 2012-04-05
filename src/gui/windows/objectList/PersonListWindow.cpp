@@ -47,6 +47,10 @@ PersonListWindow::PersonListWindow (DbManager &manager, QWidget *parent):
 	viewMedicalDataPermission  .setPasswordRequired (Settings::instance ().protectViewMedicals  );
 	changeMedicalDataPermission.setPasswordRequired (Settings::instance ().protectChangeMedicals);
 
+	mergePermission            .setMessage (tr ("The database password must be entered to merge people."));
+	viewMedicalDataPermission  .setMessage (tr ("The database password must be entered to view medical data."));
+	changeMedicalDataPermission.setMessage (tr ("The database password must be entered to change medical data."));
+
 	// Display the medical data
 	bool displayMedicalData=!Settings::instance ().protectViewMedicals;
 	displayMedicalDataAction->setChecked (displayMedicalData);
@@ -75,7 +79,7 @@ void PersonListWindow::displayMedicalDataAction_triggered ()
 
 	if (displayMedicalDataAction->isChecked ())
 	{
-		if (viewMedicalDataPermission.permit (tr ("The database password must be entered to view medical data.")))
+		if (viewMedicalDataPermission.permit (this))
 			personModel->setDisplayMedicalData (true);
 		else
 			displayMedicalDataAction->setChecked (false);
@@ -93,7 +97,7 @@ void PersonListWindow::mergeAction_triggered ()
 	// We cannot use allowEdit because that is also used for adding and editing
 	// people, and we may want to reqire a password for merging, but not for
 	// editing.
-	if (!mergePermission.permit (tr ("The database password must be entered to merge people.")))
+	if (!mergePermission.permit (this))
 		return;
 
 	QList<Person> people=activeObjects ();

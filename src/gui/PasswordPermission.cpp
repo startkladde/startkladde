@@ -4,7 +4,8 @@
  * Creates a PasswordPermission, using the given PasswordCheck
  */
 PasswordPermission::PasswordPermission (PasswordCheck &passwordCheck):
-	passwordCheck (passwordCheck)
+	passwordCheck (passwordCheck),
+	passwordRequired (false)
 {
 
 }
@@ -28,6 +29,11 @@ bool PasswordPermission::getPasswordRequired ()
 	return passwordRequired;
 }
 
+void PasswordPermission::setMessage (const QString &message)
+{
+	this->message=message;
+}
+
 /**
  * Determines whether the operation is permitted
  *
@@ -36,13 +42,13 @@ bool PasswordPermission::getPasswordRequired ()
  * the correct password is entered, has been entered before, as determined by
  * the associated PasswordCheck.
  *
- * @param message the message to display to the user in the password dialog
+ * @param parent
  * @return true if the operation is permitted, false otherwise
  */
-bool PasswordPermission::permit (const QString &message)
+bool PasswordPermission::permit (QWidget *parent)
 {
 	if (!passwordRequired)
 		return true;
 
-	return passwordCheck.query (message);
+	return passwordCheck.query (message, parent);
 }

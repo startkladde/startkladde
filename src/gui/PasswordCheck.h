@@ -14,21 +14,18 @@ class QWidget;
 class PasswordCheck
 {
 	public:
-		PasswordCheck (QWidget *parent);
-		PasswordCheck (const QString &password, QWidget *parent);
+		PasswordCheck (const QString &password="");
 		virtual ~PasswordCheck ();
 
 		void setPassword (const QString &password, bool forget=true);
 
-		bool query (const QString &message);
+		bool query (const QString &message, QWidget *parent);
 		void forget ();
 
 	private:
 		bool passwordRequired;
 		QString password;
 		bool passwordOk;
-
-		QWidget *parent;
 };
 
 #endif

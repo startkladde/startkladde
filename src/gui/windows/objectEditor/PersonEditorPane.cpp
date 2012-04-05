@@ -120,10 +120,8 @@ void PersonEditorPane::on_checkMedicalInput_currentIndexChanged ()
 void PersonEditorPane::on_displayMedicalValidityButton_clicked ()
 {
 	if (!paneData) return;
-	// FIXME back to list window
 
-	// FIXME: store message, don't store parent
-	if (paneData->viewMedicalDataPermission->permit (tr ("The database password must be entered to view medical data.")))
+	if (paneData->viewMedicalDataPermission->permit (this))
 	{
 		setMedicalValidityDisplayed (true);
 		paneData->displayMedicalData=true;

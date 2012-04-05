@@ -10,7 +10,7 @@
 
 ObjectListWindowBase::ObjectListWindowBase (DbManager &manager, QWidget *parent):
 	SkMainWindow<Ui::ObjectListWindowBaseClass> (parent),
-	manager (manager), databasePasswordCheck (this), editPermission (databasePasswordCheck)
+	manager (manager), databasePasswordCheck (), editPermission (databasePasswordCheck)
 {
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 

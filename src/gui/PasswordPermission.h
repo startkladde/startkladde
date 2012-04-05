@@ -18,10 +18,14 @@ class PasswordPermission
 
 		void setPasswordRequired (bool required);
 		bool getPasswordRequired ();
-		bool permit (const QString &message);
+		void setMessage (const QString &message);
+
+		bool permit (QWidget *parent);
 
 	private:
 		PasswordCheck &passwordCheck;
+		QString message;
+
 		bool passwordRequired;
 };
 

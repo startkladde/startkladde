@@ -43,6 +43,8 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 {
 		ui.setupUi(this);
 
+	editPermission.setMessage (qApp->translate ("ObjectListWindow<T>", "The database password must be entered to edit %1.").arg (T::objectTypeDescriptionPlural ()));
+
 	// Create the object listModel
 	list = new AutomaticEntityList<T>
 		(manager.getCache (), manager.getCache ().getObjects<T> ().getList (), this);
@@ -203,14 +205,14 @@ template<class T> QList<T> ObjectListWindow<T>::activeObjects ()
 
 template<class T> void ObjectListWindow<T>::on_actionNew_triggered ()
 {
-	if (!editPermission.permit (makePasswordMessage ())) return;
+	if (!editPermission.permit (this)) return;
 
 	ObjectEditorWindow<T>::createObject (this, manager);
 }
 
 template<class T> void ObjectListWindow<T>::on_actionEdit_triggered ()
 {
-	if (!editPermission.permit (makePasswordMessage ())) return;
+	if (!editPermission.permit (this)) return;
 
 	QList<T> objects=activeObjects ();
 	if (objects.isEmpty ()) return;
@@ -292,7 +294,7 @@ template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, boo
 
 template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 {
-	if (!editPermission.permit (makePasswordMessage ())) return;
+	if (!editPermission.permit (this)) return;
 
 	QList<T> objects=activeObjects ();
 
@@ -398,7 +400,7 @@ template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
  */
 template<class T> void ObjectListWindow<T>::on_table_doubleClicked (const QModelIndex &index)
 {
-	if (!editPermission.permit (makePasswordMessage ())) return;
+	if (!editPermission.permit (this)) return;
 
 	if (index.isValid ())
 	{
@@ -471,11 +473,6 @@ template<class T> void ObjectListWindow<T>::languageChanged ()
 	ui.table->resizeColumnsToContents ();
 }
 
-
-template<class T> QString ObjectListWindow<T>::makePasswordMessage ()
-{
-	return qApp->translate ("ObjectListWindow<T>", "The database password must be entered to edit %1.").arg (T::objectTypeDescriptionPlural ());
-}
 
 /**
  * Creates a new instance of ObjectListWindow for the given type

@@ -3,27 +3,14 @@
 #include "src/gui/dialogs.h"
 
 /**
- * Creates a PasswordCheck with an empty password
- *
- * The password must be set using setPassword
- *
- * @param parent the parent widget for displaying the dialog
- */
-PasswordCheck::PasswordCheck (QWidget *parent):
-	passwordOk (false),
-	parent (parent)
-{
-}
-
-/**
  * Creates a PasswordCheck with the specified password
  *
+ * The password can later be changed using setPassword.
+ *
  * @param password the password
- * @param parent the parent widget for displaying the dialog
  */
-PasswordCheck::PasswordCheck (const QString &password, QWidget *parent):
-	password (password), passwordOk (false),
-	parent (parent)
+PasswordCheck::PasswordCheck (const QString &password):
+	password (password), passwordOk (false)
 {
 }
 
@@ -52,7 +39,7 @@ void PasswordCheck::setPassword (const QString &password, bool forget)
  * @return true if the correct password (specified on construction or set with
  *         setPassword) is entered, or false if the user cancels
  */
-bool PasswordCheck::query (const QString &message)
+bool PasswordCheck::query (const QString &message, QWidget *parent)
 {
 	// If the correct password has been entered before, the operation is
 	// permitted
