@@ -761,11 +761,6 @@
     <string>&amp;Network diagnostics</string>
    </property>
   </action>
-  <action name="actionWebinterface">
-   <property name="text">
-    <string>&amp;Webinterface</string>
-   </property>
-  </action>
   <action name="actionSelectFont">
    <property name="text">
     <string>&amp;Select font</string>
