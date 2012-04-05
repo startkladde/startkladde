@@ -157,11 +157,12 @@ void PersonListWindow::prepareContextMenu (QMenu *contextMenu)
 {
 	ObjectListWindow<Person>::prepareContextMenu (contextMenu);
 
+	contextMenu->addSeparator ();
+
 	if (activeObjectCount ()>1)
-	{
-		contextMenu->addSeparator ();
 		contextMenu->addAction (mergeAction);
-	}
+
+	contextMenu->addAction (displayMedicalDataAction);
 }
 
 void PersonListWindow::languageChanged ()

@@ -36,7 +36,17 @@ PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &ca
 	ui.lastNameInput->setFocus ();
 
 	if (paneData)
+	{
 		setMedicalValidityDisplayed (paneData->displayMedicalData);
+	}
+	else
+	{
+		// Set it to false because we don't want to open a loophole, but we can
+		// accept that we have to click the button, or even not be able to view
+		// the medical data if the window has been opened in a specific way.
+		setMedicalValidityDisplayed (false);
+		std::cerr << "No pane data in person editor pane" << std::endl;
+	}
 }
 
 PersonEditorPane::~PersonEditorPane ()
@@ -163,6 +173,16 @@ QDate PersonEditorPane::getEffectiveMedicalValidity ()
 
 void PersonEditorPane::fieldsToObject (Person &person)
 {
+	// Require "change medical data" permission if the medical data changed
+	Person originalPerson=getOriginalObject ();
+	if (getEffectiveMedicalValidity ()!=originalPerson.medicalValidity)
+	{
+		if (paneData && !paneData->changeMedicalDataPermission->permit (this))
+		{
+			throw AbortedException ();
+		}
+	}
+
 	person.lastName             =ui.lastNameInput       ->text ().simplified ();
 	person.firstName            =ui.firstNameInput      ->text ().simplified ();
 	person.club                 =ui.clubInput           ->currentText ().simplified ();

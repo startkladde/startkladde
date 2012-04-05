@@ -98,6 +98,9 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		/** @brief Implementations of ObjectEditorPane should specialize this template method */
 		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL, ObjectEditorPaneData *paneData=NULL);
 
+		// Make a copy
+		T getOriginalObject () { return originalObject; }
+
 	private:
 		/**
 		 * Writes the values of the object to the editor fields
@@ -107,6 +110,8 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		/**
 		 * Writes the values of the editor fields to the object
 		 */
+		// TODO we should either return the object (and throw AbortedException on
+		// failure) or return success as boolen.
 		virtual void fieldsToObject (T &object)=0;
 
 		T originalObject;

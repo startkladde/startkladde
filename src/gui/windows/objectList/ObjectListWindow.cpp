@@ -406,7 +406,7 @@ template<class T> void ObjectListWindow<T>::on_table_doubleClicked (const QModel
 	{
 		QModelIndex listIndex=proxyModel->mapToSource (index);
 		if (!listIndex.isValid ()) return;
-		ObjectEditorWindow<T>::editObject (this, manager, listModel->at (listIndex));
+		editObject (listModel->at (listIndex));
 	}
 	else
 	{
