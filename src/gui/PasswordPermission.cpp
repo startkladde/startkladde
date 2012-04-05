@@ -23,6 +23,11 @@ void PasswordPermission::setPasswordRequired (bool required)
 	passwordRequired=required;
 }
 
+bool PasswordPermission::getPasswordRequired ()
+{
+	return passwordRequired;
+}
+
 /**
  * Determines whether the operation is permitted
  *

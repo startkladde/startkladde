@@ -24,12 +24,19 @@ class PersonListWindow: public ObjectListWindow<Person>
 
 	protected slots:
 		void mergeAction_triggered ();
+		void displayMedicalDataAction_triggered ();
 
 	private:
+		Person::DefaultObjectModel *personModel;
+
 		void setupText ();
 
 		QAction *mergeAction;
+		QAction *displayMedicalDataAction; // FIXME to context menu?
+
 		PasswordPermission mergePermission;
+		PasswordPermission viewMedicalDataPermission;
+		PasswordPermission changeMedicalDataPermission;
 };
 
 #endif

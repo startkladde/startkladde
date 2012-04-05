@@ -18,14 +18,40 @@
 PersonListWindow::PersonListWindow (DbManager &manager, QWidget *parent):
 	ObjectListWindow<Person> (manager, parent),
 	mergeAction (new QAction (this)),
-	mergePermission (databasePasswordCheck)
+	displayMedicalDataAction (new QAction (this)),
+	mergePermission (databasePasswordCheck),
+	viewMedicalDataPermission (databasePasswordCheck),
+	changeMedicalDataPermission (databasePasswordCheck)
 {
-	connect (mergeAction, SIGNAL (triggered ()), this, SLOT (mergeAction_triggered ()));
+	// The model is a Person::DefaultObjectModel, as created in ObjectListWindow
+	// TODO this sucks, the derived class should specify the model explicitly
+	// (and get rid of validity checks)
+	personModel=dynamic_cast<Person::DefaultObjectModel *> (getObjectModel ());
+	if (!personModel)
+		std::cerr << "Unexpected model type in PersonListWindow constructor" << std::endl;
+
+	connect (mergeAction             , SIGNAL (triggered ()), this, SLOT (mergeAction_triggered              ()));
+	connect (displayMedicalDataAction, SIGNAL (triggered ()), this, SLOT (displayMedicalDataAction_triggered ()));
+
+	displayMedicalDataAction->setCheckable (true);
+	displayMedicalDataAction->setChecked (false);
 
 	ui.menuObject->addSeparator ();
 	ui.menuObject->addAction (mergeAction);
+	ui.menuObject->addAction (displayMedicalDataAction);
 
-	mergePermission.setPasswordRequired (Settings::instance ().protectMergePeople);
+	mergePermission            .setPasswordRequired (Settings::instance ().protectMergePeople   );
+	viewMedicalDataPermission  .setPasswordRequired (Settings::instance ().protectViewMedicals  );
+	changeMedicalDataPermission.setPasswordRequired (Settings::instance ().protectChangeMedicals);
+
+	// Display the medical data
+	bool displayMedicalData=!Settings::instance ().protectViewMedicals;
+	displayMedicalDataAction->setChecked (displayMedicalData);
+	personModel->setDisplayMedicalData (displayMedicalData);
+
+//	if (viewMedicalDataPermission.getPasswordRequired ())
+//		if (personModel)
+//			personModel->setDisplayMedicalData (false);
 
 	setupText ();
 }
@@ -36,7 +62,27 @@ PersonListWindow::~PersonListWindow ()
 
 void PersonListWindow::setupText ()
 {
-	mergeAction->setText (tr ("&Merge"));
+	mergeAction             ->setText (tr ("&Merge"));
+	displayMedicalDataAction->setText (tr ("Display &medical data"));
+}
+
+void PersonListWindow::displayMedicalDataAction_triggered ()
+{
+	if (!personModel) return;
+
+	if (displayMedicalDataAction->isChecked ())
+	{
+		if (viewMedicalDataPermission.permit (tr ("The database password must be entered to view medical data.")))
+			personModel->setDisplayMedicalData (true);
+		else
+			displayMedicalDataAction->setChecked (false);
+	}
+	else
+	{
+		personModel->setDisplayMedicalData (false);
+	}
+
+	// FIXME refresh the model
 }
 
 void PersonListWindow::mergeAction_triggered ()

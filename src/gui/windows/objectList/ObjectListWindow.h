@@ -48,6 +48,8 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 
 		virtual void prepareContextMenu (QMenu *contextMenu);
 
+		ObjectModel<T> *getObjectModel () { return objectModel; }
+
 	private:
 		void appendObjectTo (QList<T> &list, const QModelIndex &tableIndex);
 		bool checkAndDelete (const T &object, bool cancelOption);

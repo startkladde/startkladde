@@ -101,6 +101,11 @@ QString Person::getDisplayName () const
 // ** ObjectModel **
 // *****************
 
+Person::DefaultObjectModel::DefaultObjectModel ():
+	displayMedicalData (true)
+{
+}
+
 int Person::DefaultObjectModel::columnCount () const
 {
 	return 8;
@@ -131,9 +136,9 @@ QVariant Person::DefaultObjectModel::displayData (const Person &object, int colu
 		case 0: return object.lastName;
 		case 1: return object.firstName;
 		case 2: return object.club;
-		case 3: return object.medicalValidity.isValid ()?
-				object.medicalValidity.toString (defaultNumericDateFormat ()):
-				qApp->translate ("Person::DefaultObjectModel", "unknown");
+		case 3: if      (!displayMedicalData)                return qApp->translate ("Person::DefaultObjectModel", "not displayed");
+		        else if (!object.medicalValidity.isValid ()) return qApp->translate ("Person::DefaultObjectModel", "unknown");
+		        else                                         return object.medicalValidity.toString (defaultNumericDateFormat ());
 		case 4: return object.checkMedical?
 				qApp->translate ("Person", "Yes"):
 				qApp->translate ("Person", "No");
@@ -144,6 +149,14 @@ QVariant Person::DefaultObjectModel::displayData (const Person &object, int colu
 
 	assert (false);
 	return QVariant ();
+}
+
+void Person::DefaultObjectModel::setDisplayMedicalData (bool displayMedicalData)
+{
+	// TODO this should have a way of notifying a containing model about the
+	// change (there is another place where this functionality is desired).
+	this->displayMedicalData=displayMedicalData;
+
 }
 
 

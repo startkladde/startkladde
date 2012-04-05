@@ -17,6 +17,7 @@ class PasswordPermission
 		virtual ~PasswordPermission ();
 
 		void setPasswordRequired (bool required);
+		bool getPasswordRequired ();
 		bool permit (const QString &message);
 
 	private:

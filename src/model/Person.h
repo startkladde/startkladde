@@ -18,9 +18,16 @@ class Person: public Entity
 		class DefaultObjectModel: public ObjectModel<Person>
 		{
 			public:
+				DefaultObjectModel ();
+
 				virtual int columnCount () const;
 				virtual QVariant displayHeaderData (int column) const;
 				virtual QVariant displayData (const Person &object, int column) const;
+
+				void setDisplayMedicalData (bool displayMedicalData);
+
+			private:
+				bool displayMedicalData;
 		};
 
 
