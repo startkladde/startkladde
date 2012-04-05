@@ -53,6 +53,8 @@ bool confirmProblem (QWidget *parent, const QString problem)
 
 bool verifyPassword (QWidget *parent, const QString &password, const QString &message)
 {
+	// TODO get rid of the "Please enter the password", it should be clear from
+	// the message (verify all messages)
 	QString title=qApp->translate ("dialogs", "Password required");
 	QString label=qApp->translate ("dialogs", "%1 Please enter the password:").arg (message);
 

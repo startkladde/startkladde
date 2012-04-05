@@ -49,7 +49,7 @@ PersonListWindow::PersonListWindow (DbManager &manager, QWidget *parent):
 
 	mergePermission            .setMessage (tr ("The database password must be entered to merge people."));
 	viewMedicalDataPermission  .setMessage (tr ("The database password must be entered to view medical data."));
-	changeMedicalDataPermission.setMessage (tr ("The database password must be entered to change medical data."));
+	changeMedicalDataPermission.setMessage (tr ("The medical data was changed. The database password\nmust be entered to save the changes."));
 
 	// Display the medical data
 	bool displayMedicalData=!Settings::instance ().protectViewMedicals;
@@ -70,7 +70,7 @@ PersonListWindow::~PersonListWindow ()
 void PersonListWindow::setupText ()
 {
 	mergeAction             ->setText (tr ("&Merge"));
-	displayMedicalDataAction->setText (tr ("Display &medical data"));
+	displayMedicalDataAction->setText (tr ("Display medi&cal data"));
 }
 
 void PersonListWindow::displayMedicalDataAction_triggered ()

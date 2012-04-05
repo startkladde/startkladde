@@ -2245,29 +2245,29 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>LaunchMethodEditorPane</name>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="49"/>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="55"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="50"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="56"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="50"/>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="56"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="51"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="57"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="136"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="137"/>
         <source>Name not specified</source>
         <translation>Es wurde kein Name angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="137"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="138"/>
         <source>Short name not specified</source>
         <translation>Es wurde kein Kürzel angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="138"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="139"/>
         <source>Logbook label not specified</source>
         <translation>Es wurde keine Flugbuch-Bezeichnung angegeben</translation>
     </message>
@@ -2559,12 +2559,12 @@ Konfiguration: %2</translation>
         <translation>Anzeigedatum:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1690"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1689"/>
         <source>The database password must be entered to display the flight database.</source>
         <translation>Zum Anzeigen der Flugdatenbank muss das Datenbankpasswort eingegeben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1949"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1948"/>
         <source>The system time was changed. The setting may only be stored permanently when the system is shut down.</source>
         <translation>Die Systemzeit wurde geändert. Gegebenenfalls wird die Änderung erst beim nächsten Herunterfahren dauerhaft gespeichert.</translation>
     </message>
@@ -2647,57 +2647,57 @@ Konfiguration: %2</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="1327"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1954"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1953"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1711"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1710"/>
         <source>Database: %2 (%1)</source>
         <translation>Datenbank: %2 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1783"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1782"/>
         <source>Not connected</source>
         <translation>Keine Verbindung</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1787"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1786"/>
         <source>Connecting...</source>
         <translation>Verbindung wird aufgebaut...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1791"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1790"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1841"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1840"/>
         <source>No reply</source>
         <translation>Keine Antwort</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1911"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1910"/>
         <source>Database settings changed</source>
         <translation>Datenbankeinstellungen geändert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1913"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1912"/>
         <source>The database settings were changed. The changes will be effective on the next reconnect. Do you want to reconnect now?</source>
         <translation>Die Datenbankeinstellungen wurden geändert. Die Anderungen werden beim nächsten Verbindungsaufbau wirksam. Soll die Verbindung jetzt neu aufgebaut werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1935"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1934"/>
         <source>Set system time</source>
         <translation>Systemzeit einstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1948"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1947"/>
         <source>System time changed</source>
         <translation>Systemzeit geändert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1955"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1954"/>
         <source>Changing the system time failed. Maybe the user has insufficient permissions.</source>
         <translation>Die Änderung der Systemzeit ist fehlgeschlagen. Möglicherweise sind die Benutzerberechtigungen nicht ausreichend.</translation>
     </message>
@@ -3333,12 +3333,12 @@ Konfiguration: %2</translation>
 <context>
     <name>ObjectEditorWindow&lt;T&gt;</name>
     <message>
-        <location filename="../src/gui/windows/objectEditor/ObjectEditorWindow.h" line="78"/>
+        <location filename="../src/gui/windows/objectEditor/ObjectEditorWindow.h" line="80"/>
         <source>Create %1</source>
         <translation>%1 erstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/ObjectEditorWindow.h" line="81"/>
+        <location filename="../src/gui/windows/objectEditor/ObjectEditorWindow.h" line="83"/>
         <source>Edit %1</source>
         <translation>%1 bearbeiten</translation>
     </message>
@@ -3354,38 +3354,38 @@ Konfiguration: %2</translation>
 <context>
     <name>ObjectListWindow&lt;T&gt;</name>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="104"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="100"/>
         <source>w</source>
         <comment>Window menu mnemonic</comment>
         <translation>f</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="254"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="259"/>
         <source>%1 in use</source>
         <translation>%1 benutzt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="257"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="262"/>
         <source>%1 %2 is in use and cannot be deleted.</source>
         <translation>%1 %2 wird verwendet und kann daher nicht gelöscht werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="261"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="266"/>
         <source> Continue?</source>
         <translation>Fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="314"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="319"/>
         <source>Delete %1?</source>
         <translation>%1 löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="315"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="320"/>
         <source>Do you want to delete %1 %2?</source>
         <translation>Soll %1 %2 gelöscht werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="474"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="46"/>
         <source>The database password must be entered to edit %1.</source>
         <translation>Zum Ändern der %1 muss das Datenbankpasswort eingegeben werden.</translation>
     </message>
@@ -3475,27 +3475,27 @@ Konfiguration: %2</translation>
 <context>
     <name>Person</name>
     <message>
-        <location filename="../src/model/Person.h" line="55"/>
+        <location filename="../src/model/Person.h" line="62"/>
         <source>person</source>
         <translation>Person</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.h" line="56"/>
+        <location filename="../src/model/Person.h" line="63"/>
         <source>the person</source>
         <translation>die Person</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.h" line="57"/>
+        <location filename="../src/model/Person.h" line="64"/>
         <source>people</source>
         <translation>Personen</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="139"/>
+        <location filename="../src/model/Person.cpp" line="144"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="138"/>
+        <location filename="../src/model/Person.cpp" line="143"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
@@ -3503,47 +3503,52 @@ Konfiguration: %2</translation>
 <context>
     <name>Person::DefaultObjectModel</name>
     <message>
-        <location filename="../src/model/Person.cpp" line="113"/>
+        <location filename="../src/model/Person.cpp" line="118"/>
         <source>Last name</source>
         <translation>Nachname</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="114"/>
+        <location filename="../src/model/Person.cpp" line="119"/>
         <source>First name</source>
         <translation>Vorname</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="115"/>
+        <location filename="../src/model/Person.cpp" line="120"/>
         <source>Club</source>
         <translation>Verein</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="116"/>
+        <location filename="../src/model/Person.cpp" line="121"/>
         <source>Medical until</source>
         <translation>Medical bis</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="117"/>
+        <location filename="../src/model/Person.cpp" line="122"/>
         <source>Check medical</source>
         <translation>Medical prüfen</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="118"/>
+        <location filename="../src/model/Person.cpp" line="123"/>
         <source>Comments</source>
         <translation>Bemerkungen</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="119"/>
+        <location filename="../src/model/Person.cpp" line="124"/>
         <source>Club ID</source>
         <translation>Vereins-ID</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="120"/>
+        <location filename="../src/model/Person.cpp" line="125"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/model/Person.cpp" line="136"/>
+        <location filename="../src/model/Person.cpp" line="139"/>
+        <source>not displayed</source>
+        <translation>nicht angezeigt</translation>
+    </message>
+    <message>
+        <location filename="../src/model/Person.cpp" line="140"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
@@ -3551,29 +3556,29 @@ Konfiguration: %2</translation>
 <context>
     <name>PersonEditorPane</name>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="25"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="27"/>
         <source>Medical check is disabled!</source>
         <translation>Medical-Prüfung ist deaktiviert!</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="57"/>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="64"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="72"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="79"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="58"/>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="65"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="73"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="80"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="155"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="197"/>
         <source>Last name not specified.</source>
         <translation>Es wurde kein Nachname angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="159"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="201"/>
         <source>First name not specified.</source>
         <translation>Es wurde kein Vorname angegeben.</translation>
     </message>
@@ -3653,7 +3658,12 @@ aktiviert werden.</translation>
         <translation>dd.MM.yyyy</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="208"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="192"/>
+        <source>&amp;Display</source>
+        <translation>An&amp;zeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="215"/>
         <source>Club &amp;ID:</source>
         <translation>Vereins-&amp;ID:</translation>
     </message>
@@ -3661,37 +3671,62 @@ aktiviert werden.</translation>
 <context>
     <name>PersonListWindow</name>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="44"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="72"/>
         <source>&amp;Merge</source>
         <translation>&amp;Zusammenfassen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="52"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="50"/>
         <source>The database password must be entered to merge people.</source>
         <translation>Zum Zusammenfassen von Personen muss das Datenbankpasswort eingegeben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="59"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="51"/>
+        <source>The database password must be entered to view medical data.</source>
+        <translation>Zum Anzeigen der Medical-Daten muss das Datenbankpasswort eingegeben werden.</translation>
+    </message>
+    <message>
+        <source>The database password must be entered to change medical data.</source>
+        <translation type="obsolete">Zum Ändern der Medical-Daten muss das Datenbankpasswort eingegeben werden.</translation>
+    </message>
+    <message>
+        <source>Display &amp;medical data</source>
+        <translation type="obsolete">&amp;Medical-Daten anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="52"/>
+        <source>The medical data was changed. The database password
+must be entered to save the changes.</source>
+        <translation>Die Medical-Daten wurden geändern. Zum Speichern muss das
+Datenbankpasswort eingegeben werden.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="73"/>
+        <source>Display medi&amp;cal data</source>
+        <translation>&amp;Medical-Daten anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="107"/>
         <source>Not enough people selected</source>
         <translation>Zu wenige Personen ausgewählt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="60"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="108"/>
         <source>At least two people must be selected for merging.</source>
         <translation>Zum Zusammenfassen müssen mindestens zwei Personen ausgewählt sein.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="65"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="113"/>
         <source>Select correct entry</source>
         <translation>Korrekten Eintrag auswählen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="69"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="117"/>
         <source>Please select the correct entry. All other entries will be overwritten.</source>
         <translation>Bitte den korrekten Eintrag auswählen. Alle anderen Einträge werden überschrieben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="71"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="119"/>
         <source>Please select the correct entry. The other entry will be overwritten.</source>
         <translation>Bitte den korrekten Eintrag auswählen. Der andere Eintrag wird überschrieben.</translation>
     </message>
@@ -3898,47 +3933,47 @@ aktiviert werden.</translation>
 <context>
     <name>PlaneEditorPane</name>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="152"/>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="153"/>
         <source>A plane with the registration %1 already exists.</source>
         <translation>Es gibt bereits ein Flugzeug mit dem Kennzeichen %1.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="153"/>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="154"/>
         <source>Plane already exists</source>
         <translation>Flugzeug existiert bereits</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="158"/>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="159"/>
         <source>Registration not specified.</source>
         <translation>Es wurde kein Kennzeichen angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="162"/>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="163"/>
         <source>Category not specified.</source>
         <translation>Es wurde keine Gattung angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="167"/>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="168"/>
         <source>The selected category does not match the registration.</source>
         <translation>Die angegebene Gattung passt nicht zum Kennzeichen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="171"/>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="172"/>
         <source>Model not specified.</source>
         <translation>Es wurde kein Typ angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="175"/>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="176"/>
         <source>Number of seats not specified.</source>
         <translation>Es wurde keine Sitzzahl angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="179"/>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="180"/>
         <source>0 seats specified.</source>
         <translation>Es wurden 0 Sitze angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="184"/>
+        <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.cpp" line="185"/>
         <source>To many seats specified for the selected category.</source>
         <translation>Es wurden zu viele Sitze für die gewählte Gattung angegeben.</translation>
     </message>
