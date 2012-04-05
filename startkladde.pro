@@ -156,6 +156,7 @@ HEADERS += \
            src/gui/widgets/SkTreeWidgetItem.h \
            src/gui/widgets/TableButton.h \
            src/gui/widgets/WeatherWidget.h \
+           src/gui/windows/AboutDialog.h \
            src/gui/windows/ConfirmOverwritePersonDialog.h \
            src/gui/windows/CsvExportDialog.h \
            src/gui/windows/input/DateInputDialog.h \
@@ -166,7 +167,6 @@ HEADERS += \
            src/gui/windows/MonitorDialog.h \
            src/gui/windows/ObjectSelectWindow.h \
            src/gui/windows/ObjectSelectWindowBase.h \
-           src/gui/windows/SplashScreen.h \
            src/gui/windows/SettingsWindow.h \
            src/gui/windows/StatisticsWindow.h \
            src/gui/windows/WeatherDialog.h \
@@ -312,6 +312,7 @@ SOURCES += \
            src/gui/widgets/TableButton.cpp \
            src/gui/widgets/WeatherWidget.cpp \
            src/gui/windows/ConfirmOverwritePersonDialog.cpp \
+           src/gui/windows/AboutDialog.cpp \
            src/gui/windows/CsvExportDialog.cpp \
            src/gui/windows/input/DateInputDialog.cpp \
            src/gui/windows/input/DateTimeInputDialog.cpp \
@@ -321,7 +322,6 @@ SOURCES += \
            src/gui/windows/MonitorDialog.cpp \
            src/gui/windows/ObjectSelectWindow.cpp \
            src/gui/windows/ObjectSelectWindowBase.cpp \
-           src/gui/windows/SplashScreen.cpp \
            src/gui/windows/SettingsWindow.cpp \
            src/gui/windows/StatisticsWindow.cpp \
            src/gui/windows/WeatherDialog.cpp \
@@ -391,6 +391,7 @@ SOURCES += \
 
 FORMS += \
            src/gui/widgets/LongitudeInput.ui \
+           src/gui/windows/AboutDialog.ui \
            src/gui/windows/ConfirmOverwritePersonDialog.ui \
            src/gui/windows/CsvExportDialog.ui \
            src/gui/windows/input/DateInputDialog.ui \

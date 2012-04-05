@@ -31,13 +31,13 @@
 #include "src/config/Settings.h"
 #include "src/i18n/notr.h"
 #include "src/gui/widgets/WeatherWidget.h"
+#include "src/gui/windows/AboutDialog.h"
 #include "src/gui/windows/input/DateInputDialog.h"
 #include "src/gui/windows/input/DateTimeInputDialog.h"
 #include "src/gui/windows/FlightWindow.h"
 #include "src/gui/windows/LaunchMethodSelectionWindow.h"
 #include "src/gui/windows/objectList/ObjectListWindow.h"
 #include "src/gui/windows/objectList/FlightListWindow.h"
-#include "src/gui/windows/SplashScreen.h"
 #include "src/gui/windows/StatisticsWindow.h"
 #include "src/gui/windows/WeatherDialog.h"
 #include "src/gui/windows/SettingsWindow.h"
@@ -1310,11 +1310,9 @@ void MainWindow::on_actionRestartPlugins_triggered ()
 
 void MainWindow::on_actionInfo_triggered ()
 {
-
-	::SplashScreen *splashScreen = new ::SplashScreen (this);
-	splashScreen->setAttribute (Qt::WA_DeleteOnClose, true);
-	splashScreen->show_version ();
-
+	AboutDialog aboutDialog (this);
+	aboutDialog.setModal (true);
+	aboutDialog.exec ();
 }
 
 void MainWindow::on_actionNetworkDiagnostics_triggered ()

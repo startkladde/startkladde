@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="de_DE">
 <context>
+    <name>AboutDialogClass</name>
+    <message>
+        <location filename="../src/gui/windows/AboutDialog.ui" line="51"/>
+        <source>About Startkladde</source>
+        <translation>Über Startkladde</translation>
+    </message>
+</context>
+<context>
     <name>AcpiWidget</name>
     <message>
         <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="68"/>
@@ -2544,27 +2552,27 @@ Konfiguration: %2</translation>
         <translation>Bildschirmtastatur konnte nicht angezeigt werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1328"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1325"/>
         <source>An error occured while executing the network diagnostics command.</source>
         <translation>Beim Ausführen der Netzwerkdiagnose ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1607"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1604"/>
         <source>Set displayed date</source>
         <translation>Anzeigedatum einstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1607"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1604"/>
         <source>Displayed date:</source>
         <translation>Anzeigedatum:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1689"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1686"/>
         <source>The database password must be entered to display the flight database.</source>
         <translation>Zum Anzeigen der Flugdatenbank muss das Datenbankpasswort eingegeben werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1948"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1945"/>
         <source>The system time was changed. The setting may only be stored permanently when the system is shut down.</source>
         <translation>Die Systemzeit wurde geändert. Gegebenenfalls wird die Änderung erst beim nächsten Herunterfahren dauerhaft gespeichert.</translation>
     </message>
@@ -2646,58 +2654,58 @@ Konfiguration: %2</translation>
         <translation>Kein Schleppflug</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1327"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1953"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1324"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1950"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1710"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1707"/>
         <source>Database: %2 (%1)</source>
         <translation>Datenbank: %2 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1782"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1779"/>
         <source>Not connected</source>
         <translation>Keine Verbindung</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1786"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1783"/>
         <source>Connecting...</source>
         <translation>Verbindung wird aufgebaut...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1790"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1787"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1840"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1837"/>
         <source>No reply</source>
         <translation>Keine Antwort</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1910"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1907"/>
         <source>Database settings changed</source>
         <translation>Datenbankeinstellungen geändert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1912"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1909"/>
         <source>The database settings were changed. The changes will be effective on the next reconnect. Do you want to reconnect now?</source>
         <translation>Die Datenbankeinstellungen wurden geändert. Die Anderungen werden beim nächsten Verbindungsaufbau wirksam. Soll die Verbindung jetzt neu aufgebaut werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1934"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1931"/>
         <source>Set system time</source>
         <translation>Systemzeit einstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1947"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1944"/>
         <source>System time changed</source>
         <translation>Systemzeit geändert</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1954"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1951"/>
         <source>Changing the system time failed. Maybe the user has insufficient permissions.</source>
         <translation>Die Änderung der Systemzeit ist fehlgeschlagen. Möglicherweise sind die Benutzerberechtigungen nicht ausreichend.</translation>
     </message>
@@ -2742,7 +2750,7 @@ Konfiguration: %2</translation>
         <translation>Lokalzeit:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="787"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="782"/>
         <source>-</source>
         <translation>-</translation>
     </message>
@@ -2783,7 +2791,7 @@ Konfiguration: %2</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="316"/>
-        <location filename="../src/gui/windows/MainWindow.ui" line="808"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="803"/>
         <source>&amp;Connect</source>
         <translation>&amp;Verbindung aufbauen</translation>
     </message>
@@ -2864,27 +2872,27 @@ Konfiguration: %2</translation>
         <translation>Nach effektiver Zeit sor&amp;tieren (F9)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="844"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="839"/>
         <source>Preselect launch &amp;method...</source>
         <translation>Starta&amp;rt-Vorauswahl...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="854"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="849"/>
         <source>Change &amp;language</source>
         <translation>Sprache wechse&amp;ln</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="857"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="852"/>
         <source>Ctrl+B</source>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="865"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="860"/>
         <source>&amp;Timer-based language change</source>
         <translation>Zei&amp;tgesteuerter Sprachwechsel</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="868"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="863"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
@@ -2905,7 +2913,7 @@ Konfiguration: %2</translation>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="839"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="834"/>
         <source>Ctrl+S</source>
         <extracomment>Settings</extracomment>
         <translation>Ctrl+T</translation>
@@ -3014,7 +3022,7 @@ Konfiguration: %2</translation>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="849"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="844"/>
         <source>Show flight d&amp;atabase</source>
         <extracomment>Seems like &amp;f is not displayed correctly, possible because it is replaced with a ligature</extracomment>
         <translation>Flug&amp;datenbank anzeigen</translation>
@@ -3119,61 +3127,56 @@ Konfiguration: %2</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="766"/>
-        <source>&amp;Webinterface</source>
-        <translation>&amp;Webschnittstelle</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="771"/>
         <source>&amp;Select font</source>
         <translation>Schriftart &amp;auswählen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="776"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="771"/>
         <source>&amp;Increase size</source>
         <translation>Schrift ver&amp;größern</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="779"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="774"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="784"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="779"/>
         <source>&amp;Decrease size</source>
         <translation>Schrift ver&amp;kleinern</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="795"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="790"/>
         <source>Show &amp;virtual keyboard</source>
         <translation>&amp;Bildschirmtastatur anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="800"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="795"/>
         <source>&amp;Test</source>
         <translation>&amp;Test</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="816"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="811"/>
         <source>&amp;Disconnect</source>
         <translation>Verbindung &amp;trennen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="821"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="816"/>
         <source>&amp;Show errors</source>
         <translation>&amp;Fehler anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="826"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="821"/>
         <source>Adjust &amp;column widths</source>
         <translation>&amp;Spaltenbreiten anpassen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="831"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="826"/>
         <source>Edit &amp;launch methods</source>
         <translation>&amp;Startarten bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="836"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="831"/>
         <source>&amp;Settings</source>
         <translation>&amp;Einstellungen</translation>
     </message>
@@ -3684,14 +3687,6 @@ aktiviert werden.</translation>
         <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="51"/>
         <source>The database password must be entered to view medical data.</source>
         <translation>Zum Anzeigen der Medical-Daten muss das Datenbankpasswort eingegeben werden.</translation>
-    </message>
-    <message>
-        <source>The database password must be entered to change medical data.</source>
-        <translation type="obsolete">Zum Ändern der Medical-Daten muss das Datenbankpasswort eingegeben werden.</translation>
-    </message>
-    <message>
-        <source>Display &amp;medical data</source>
-        <translation type="obsolete">&amp;Medical-Daten anzeigen</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="52"/>
@@ -4711,27 +4706,19 @@ Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder 
     </message>
 </context>
 <context>
-    <name>SplashScreen</name>
-    <message>
-        <location filename="../src/gui/windows/SplashScreen.cpp" line="62"/>
-        <source>Flight log</source>
-        <translation>Hauptflugbuch</translation>
-    </message>
-</context>
-<context>
     <name>StatisticsWindow</name>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1618"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1615"/>
         <source>Plane logbooks</source>
         <translation>Bordbücher</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1619"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1616"/>
         <source>Pilot logbooks</source>
         <translation>Flugbücher</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1620"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1617"/>
         <source>Launch method overview</source>
         <translation>Startartstatistik</translation>
     </message>
@@ -5185,17 +5172,17 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs.cpp" line="56"/>
+        <location filename="../src/gui/dialogs.cpp" line="58"/>
         <source>Password required</source>
         <translation>Passwort erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs.cpp" line="57"/>
+        <location filename="../src/gui/dialogs.cpp" line="59"/>
         <source>%1 Please enter the password:</source>
         <translation>%1 Bitte Passwort eingeben:</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs.cpp" line="78"/>
+        <location filename="../src/gui/dialogs.cpp" line="80"/>
         <source>The entered password is not correct. Please enter password:</source>
         <translation>Das eingegebene Passwort ist nicht korrekt. Bitte Passwort eingeben:</translation>
     </message>
