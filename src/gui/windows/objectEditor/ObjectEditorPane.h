@@ -18,6 +18,25 @@
 class Cache;
 
 /**
+ * TODO: the ObjectEditor/ObjectList classes are getting too complicated,
+ * and hard to maintain, specifically as individual changes are required (e. g.
+ * merging people, password protecting medical data etc.). Remove the templates,
+ * use simple explicit classes instead (PersonEditorDialog etc.), potentially
+ * inheriting from a template class. This will incur a small amount of code
+ * duplication, but the current way is overengineered and inflexible.
+ */
+
+/**
+ * A hack that allows passing data to an object editor pane, necessitated by the
+ * unnecessarily complex templated object editor system
+ */
+class ObjectEditorPaneData
+{
+	public:
+		virtual ~ObjectEditorPaneData () {}
+};
+
+/**
  * A Q_OBJECT base for the template ObjectEditorPane so we can use signals and
  * slots.
  */
@@ -77,7 +96,7 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		virtual void setNameObject (const T &nameObject) { (void)nameObject; }
 
 		/** @brief Implementations of ObjectEditorPane should specialize this template method */
-		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
+		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL, ObjectEditorPaneData *paneData=NULL);
 
 	private:
 		/**

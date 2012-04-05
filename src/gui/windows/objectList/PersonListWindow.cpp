@@ -14,6 +14,9 @@
 #include "src/util/qString.h"
 #include "src/gui/windows/ObjectSelectWindow.h"
 #include "src/gui/windows/ConfirmOverwritePersonDialog.h"
+#include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
+#include "src/gui/windows/objectEditor/PersonEditorPane.h"
+#include "src/gui/PasswordPermission.h"
 
 PersonListWindow::PersonListWindow (DbManager &manager, QWidget *parent):
 	ObjectListWindow<Person> (manager, parent),
@@ -161,4 +164,16 @@ void PersonListWindow::languageChanged ()
 {
 	ObjectListWindow<Person>::languageChanged ();
 	setupText ();
+}
+
+int PersonListWindow::editObject (const Person &object)
+{
+	// TODO overly complicated, see ObjectEditorPane
+
+	PersonEditorPaneData paneData;
+	paneData.displayMedicalData=displayMedicalDataAction->isChecked ();
+	paneData.viewMedicalDataPermission=&viewMedicalDataPermission;
+	paneData.changeMedicalDataPermission=&changeMedicalDataPermission;
+
+	return ObjectEditorWindow<Person>::editObject (this, manager, object, &paneData);
 }

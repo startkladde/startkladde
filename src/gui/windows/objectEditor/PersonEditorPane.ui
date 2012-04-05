@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
-    <height>186</height>
+    <width>424</width>
+    <height>203</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -155,7 +155,7 @@ medicals to be checked, enable the option
     </widget>
    </item>
    <item row="6" column="1">
-    <widget class="QWidget" name="widget_2" native="true">
+    <widget class="QWidget" name="medicalValidityPane" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="spacing">
        <number>0</number>
@@ -183,6 +183,13 @@ medicals to be checked, enable the option
         </property>
         <property name="displayFormat">
          <string>MM/dd/yyyy</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="displayMedicalValidityButton">
+        <property name="text">
+         <string>&amp;Display</string>
         </property>
        </widget>
       </item>

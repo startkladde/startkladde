@@ -42,6 +42,8 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		int activeObjectCount ();
 		QList<T> activeObjects ();
 
+		virtual int editObject (const T &object);
+
 		virtual QString makePasswordMessage ();
 		void keyPressEvent (QKeyEvent *e);
 		void languageChanged ();

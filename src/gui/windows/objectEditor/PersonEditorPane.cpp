@@ -6,6 +6,7 @@
 #include "src/config/Settings.h"
 #include "src/util/qString.h"
 #include "src/i18n/notr.h"
+#include "src/gui/PasswordPermission.h"
 
 /*
  * TODO: disallow person name changes; allow merges only
@@ -15,8 +16,9 @@
 // ** Construction **
 // ******************
 
-PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent):
-	ObjectEditorPane<Person> (mode, cache, parent)
+PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent, PersonEditorPaneData *paneData):
+	ObjectEditorPane<Person> (mode, cache, parent),
+	paneData (paneData)
 {
 	ui.setupUi (this);
 
@@ -32,6 +34,9 @@ PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &ca
 	ui.checkMedicalInput->setCurrentItemByItemData (false);
 
 	ui.lastNameInput->setFocus ();
+
+	if (paneData)
+		setMedicalValidityDisplayed (paneData->displayMedicalData);
 }
 
 PersonEditorPane::~PersonEditorPane ()
@@ -39,9 +44,9 @@ PersonEditorPane::~PersonEditorPane ()
 
 }
 
-template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent)
+template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent, ObjectEditorPaneData *paneData)
 {
-	return new PersonEditorPane (mode, cache, parent);
+	return new PersonEditorPane (mode, cache, parent, dynamic_cast<PersonEditorPaneData *> (paneData));
 }
 
 
@@ -88,6 +93,12 @@ void PersonEditorPane::setNameObject (const Person &nameObject)
 	}
 }
 
+void PersonEditorPane::setMedicalValidityDisplayed (bool displayed)
+{
+	ui.displayMedicalValidityButton  ->setVisible (!displayed);
+	ui.medicalValidityUnknownCheckbox->setVisible ( displayed);
+	ui.medicalValidityInput          ->setVisible ( displayed);
+}
 
 // ****************
 // ** GUI events **
@@ -104,6 +115,19 @@ void PersonEditorPane::on_checkMedicalInput_currentIndexChanged ()
 		ui.checkMedicalInput->currentItemData ().toBool ()==true &&
 		!Settings::instance ().checkMedicals
 	);
+}
+
+void PersonEditorPane::on_displayMedicalValidityButton_clicked ()
+{
+	if (!paneData) return;
+	// FIXME back to list window
+
+	// FIXME: store message, don't store parent
+	if (paneData->viewMedicalDataPermission->permit (tr ("The database password must be entered to view medical data.")))
+	{
+		setMedicalValidityDisplayed (true);
+		paneData->displayMedicalData=true;
+	}
 }
 
 

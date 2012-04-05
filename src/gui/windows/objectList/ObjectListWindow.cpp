@@ -218,9 +218,18 @@ template<class T> void ObjectListWindow<T>::on_actionEdit_triggered ()
 	// Improvement: an ObjectEditorWindow that can edit multiple objects
 	foreach (const T &object, objects)
 	{
-		int result=ObjectEditorWindow<T>::editObject (this, manager, object);
+		int result=editObject (object);
 		if (result!=QDialog::Accepted) break;
 	}
+}
+
+/**
+ * Can be overridden by implementations to allow creation of custom editor
+ * windows
+ */
+template<class T> int ObjectListWindow<T>::editObject (const T &object)
+{
+	return ObjectEditorWindow<T>::editObject (this, manager, object);
 }
 
 /**

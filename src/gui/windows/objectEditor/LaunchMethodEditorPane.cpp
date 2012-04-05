@@ -30,8 +30,9 @@ LaunchMethodEditorPane::~LaunchMethodEditorPane()
 
 }
 
-template<> ObjectEditorPane<LaunchMethod> *ObjectEditorPane<LaunchMethod>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent)
+template<> ObjectEditorPane<LaunchMethod> *ObjectEditorPane<LaunchMethod>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent, ObjectEditorPaneData *paneData)
 {
+	(void)paneData;
 	return new LaunchMethodEditorPane (mode, cache, parent);
 }
 

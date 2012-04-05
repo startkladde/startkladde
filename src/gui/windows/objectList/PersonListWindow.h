@@ -18,6 +18,8 @@ class PersonListWindow: public ObjectListWindow<Person>
 		virtual ~PersonListWindow ();
 
 	protected:
+		int editObject (const Person &object);
+
 		virtual void prepareContextMenu (QMenu *contextMenu);
 
 		void languageChanged ();

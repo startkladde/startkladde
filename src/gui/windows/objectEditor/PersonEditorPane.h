@@ -7,12 +7,23 @@
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required for ObjectEditorWindowBase::Mode
 #include "src/model/Person.h"
 
+class PasswordPermission;
+
+class PersonEditorPaneData: public ObjectEditorPaneData
+{
+	public:
+		bool displayMedicalData;
+		PasswordPermission *viewMedicalDataPermission;
+		PasswordPermission *changeMedicalDataPermission;
+};
+
+
 class PersonEditorPane: public ObjectEditorPane<Person>
 {
 	Q_OBJECT
 
 	public:
-		PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
+		PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL, PersonEditorPaneData *paneData=NULL);
 		virtual ~PersonEditorPane();
 
 		virtual void objectToFields (const Person &person);
@@ -23,8 +34,10 @@ class PersonEditorPane: public ObjectEditorPane<Person>
 	public slots:
 		void on_medicalValidityUnknownCheckbox_toggled ();
 		void on_checkMedicalInput_currentIndexChanged ();
+		void on_displayMedicalValidityButton_clicked ();
 
 	protected:
+		void setMedicalValidityDisplayed (bool displayed);
 		virtual void loadData ();
 		virtual void setupText ();
 		QDate getEffectiveMedicalValidity ();
@@ -32,6 +45,7 @@ class PersonEditorPane: public ObjectEditorPane<Person>
 
 	private:
 		Ui::PersonEditorPaneClass ui;
+		PersonEditorPaneData *paneData;
 };
 
 #endif // PERSONEDITORPANE_H

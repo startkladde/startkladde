@@ -50,8 +50,9 @@ PlaneEditorPane::~PlaneEditorPane()
 
 }
 
-template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent)
+template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent, ObjectEditorPaneData *paneData)
 {
+	(void)paneData;
 	return new PlaneEditorPane (mode, cache, parent);
 }
 
