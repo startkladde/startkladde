@@ -19,8 +19,8 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		~ObjectListWindow();
 
 		static void show (DbManager &manager, QWidget *parent=NULL);
-		static void show (DbManager &manager, const QString &password, QWidget *parent=NULL);
-		static void show (DbManager &manager, bool editPasswordRequired, const QString &editPassword, QWidget *parent=NULL);
+		static void show (DbManager &manager, bool passwordRequiredForEdit, QWidget *parent=NULL);
+		using ObjectListWindowBase::show;
 
 		virtual void on_actionNew_triggered ();
 		virtual void on_actionEdit_triggered ();

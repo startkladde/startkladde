@@ -4,6 +4,7 @@
 #include "ui_ObjectListWindowBase.h"
 
 #include "src/db/DbManager.h" // Required for DbManager::State
+#include "src/gui/PasswordCheck.h"
 #include "src/gui/PasswordPermission.h"
 #include "src/gui/SkMainWindow.h"
 
@@ -18,8 +19,6 @@ class ObjectListWindowBase : public SkMainWindow<Ui::ObjectListWindowBaseClass>
 	public:
 		ObjectListWindowBase (DbManager &manager, QWidget *parent = 0);
 		~ObjectListWindowBase ();
-
-		virtual void requireEditPassword (const QString &password);
 
 	public slots:
 		virtual void on_actionNew_triggered ()=0;
@@ -38,14 +37,8 @@ class ObjectListWindowBase : public SkMainWindow<Ui::ObjectListWindowBaseClass>
 		DbManager &manager;
 		void keyPressEvent (QKeyEvent *e);
 
-		// TODO get rid - use editPermission directly (make protected).
-		bool allowEdit (QString message);
 
-		// Events
-		// FIXME remove
-//		void changeEvent (QEvent *event);
-
-	private:
+		PasswordCheck databasePasswordCheck;
 		PasswordPermission editPermission;
 };
 

@@ -1,37 +1,27 @@
-#ifndef PASSWORDUNLOCKER_H_
-#define PASSWORDUNLOCKER_H_
+#ifndef PASSWORDPERMISSION_H_
+#define PASSWORDPERMISSION_H_
 
-#include <QString>
-
-class QWidget;
+#include "src/gui/PasswordCheck.h"
 
 /**
- * Manages password entry for a given action
+ * Uses a PasswordCheck to query a password from the user if requried
  *
- * This class manages the permission to perform an operation. The user has to
- * enter a password in order to get the permission. After the correct password
- * has been entered, the user is not asked for the password again.
- *
- * This class can also be configured to unconditionally permit the operation
- * without requiring a password.
+ * This is separate from PasswordCheck so several actions (for which the need
+ * for a password is configured individually) can share the same password, and
+ * the password only has to be entered once.
  */
 class PasswordPermission
 {
 	public:
-		PasswordPermission (QWidget *parent);
-		PasswordPermission (bool passwordRequired, const QString &password, QWidget *parent);
+		PasswordPermission (PasswordCheck &passwordCheck);
 		virtual ~PasswordPermission ();
 
-		void requirePassword (const QString &password);
-
+		void setPasswordRequired (bool required);
 		bool permit (const QString &message);
 
 	private:
+		PasswordCheck &passwordCheck;
 		bool passwordRequired;
-		QString password;
-		bool passwordOk;
-
-		QWidget *parent;
 };
 
 #endif

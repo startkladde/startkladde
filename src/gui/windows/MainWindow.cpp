@@ -1678,7 +1678,6 @@ void MainWindow::on_actionEditLaunchMethods_triggered ()
 {
 	ObjectListWindow<LaunchMethod>::show (dbManager,
 		Settings::instance ().protectLaunchMethods,
-		Settings::instance ().databaseInfo.password,
 		this);
 }
 

@@ -6,12 +6,15 @@
 #include <QPushButton>
 
 #include "src/util/qString.h"
+#include "src/config/Settings.h"
 
 ObjectListWindowBase::ObjectListWindowBase (DbManager &manager, QWidget *parent):
 	SkMainWindow<Ui::ObjectListWindowBaseClass> (parent),
-	manager (manager), editPermission (this)
+	manager (manager), databasePasswordCheck (this), editPermission (databasePasswordCheck)
 {
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
+
+	databasePasswordCheck.setPassword (Settings::instance ().databaseInfo.password);
 }
 
 ObjectListWindowBase::~ObjectListWindowBase()
@@ -25,8 +28,6 @@ void ObjectListWindowBase::on_actionClose_triggered ()
 
 void ObjectListWindowBase::keyPressEvent (QKeyEvent *e)
 {
-//	std::cout << "ObjectListWindowBase key " << e->key () << std::endl;
-
 	// KeyEvents are accepted by default
 	switch (e->key ())
 	{
@@ -47,14 +48,4 @@ void ObjectListWindowBase::databaseStateChanged (DbManager::State state)
 {
 	if (state==DbManager::stateDisconnected)
 		close ();
-}
-
-void ObjectListWindowBase::requireEditPassword (const QString &password)
-{
-	editPermission.requirePassword (password);
-}
-
-bool ObjectListWindowBase::allowEdit (QString message)
-{
-	return editPermission.permit (message);
 }

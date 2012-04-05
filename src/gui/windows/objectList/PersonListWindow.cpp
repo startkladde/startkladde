@@ -18,19 +18,14 @@
 PersonListWindow::PersonListWindow (DbManager &manager, QWidget *parent):
 	ObjectListWindow<Person> (manager, parent),
 	mergeAction (new QAction (this)),
-	mergePermission (this)
+	mergePermission (databasePasswordCheck)
 {
 	connect (mergeAction, SIGNAL (triggered ()), this, SLOT (mergeAction_triggered ()));
 
 	ui.menuObject->addSeparator ();
 	ui.menuObject->addAction (mergeAction);
 
-	// The PersonListWindow may be created as ObjectListWindow<Person>. In this
-	// case, the specific properties pertaining to merge operations cannot be
-	// set because the generic interface does not know about them. Therefore,
-	// we explicitly set them here.
-	if (Settings::instance ().protectMergePeople)
-		mergePermission.requirePassword (Settings::instance ().databaseInfo.password);
+	mergePermission.setPasswordRequired (Settings::instance ().protectMergePeople);
 
 	setupText ();
 }

@@ -139,6 +139,7 @@ HEADERS += \
            src/db/schema/spec/IndexSpec.h \
            src/graphics/SkMovie.h \
            src/gui/dialogs.h \
+           src/gui/PasswordCheck.h \
            src/gui/PasswordPermission.h \
 		   src/gui/SkDialog.h \
 		   src/gui/SkMainWindow.h \
@@ -296,6 +297,7 @@ SOURCES += \
            src/db/schema/spec/IndexSpec.cpp \
            src/graphics/SkMovie.cpp \
            src/gui/dialogs.cpp \
+           src/gui/PasswordCheck.cpp \
            src/gui/PasswordPermission.cpp \
            src/gui/views/ReadOnlyItemDelegate.cpp \
            src/gui/views/SkItemDelegate.cpp \

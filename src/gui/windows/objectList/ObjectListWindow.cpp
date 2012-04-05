@@ -75,22 +75,16 @@ template<class T> ObjectListWindow<T>::~ObjectListWindow()
 
 template<class T> void ObjectListWindow<T>::show (DbManager &manager, QWidget *parent)
 {
-	show (manager, false, "", parent);
+	show (manager, false, parent);
 }
 
-template<class T> void ObjectListWindow<T>::show (DbManager &manager, const QString &password, QWidget *parent)
-{
-	show (manager, true, password, parent);
-}
-
-template<class T> void ObjectListWindow<T>::show (DbManager &manager, bool editPasswordRequired, const QString &editPassword, QWidget *parent)
+template<class T> void ObjectListWindow<T>::show (DbManager &manager, bool passwordRequiredForEdit, QWidget *parent)
 {
 	// Create the window
-	ObjectListWindowBase *window = ObjectListWindow<T>::create (manager, parent);
+	ObjectListWindow<T> *window = ObjectListWindow<T>::create (manager, parent);
 	window->setAttribute (Qt::WA_DeleteOnClose, true);
 
-	if (editPasswordRequired)
-		window->requireEditPassword (editPassword);
+	window->editPermission.setPasswordRequired (passwordRequiredForEdit);
 
 	// Show the window
 	window->show ();
@@ -209,14 +203,14 @@ template<class T> QList<T> ObjectListWindow<T>::activeObjects ()
 
 template<class T> void ObjectListWindow<T>::on_actionNew_triggered ()
 {
-	if (!allowEdit (makePasswordMessage ())) return;
+	if (!editPermission.permit (makePasswordMessage ())) return;
 
 	ObjectEditorWindow<T>::createObject (this, manager);
 }
 
 template<class T> void ObjectListWindow<T>::on_actionEdit_triggered ()
 {
-	if (!allowEdit (makePasswordMessage ())) return;
+	if (!editPermission.permit (makePasswordMessage ())) return;
 
 	QList<T> objects=activeObjects ();
 	if (objects.isEmpty ()) return;
@@ -289,7 +283,7 @@ template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, boo
 
 template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 {
-	if (!allowEdit (makePasswordMessage ())) return;
+	if (!editPermission.permit (makePasswordMessage ())) return;
 
 	QList<T> objects=activeObjects ();
 
@@ -395,7 +389,7 @@ template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
  */
 template<class T> void ObjectListWindow<T>::on_table_doubleClicked (const QModelIndex &index)
 {
-	if (!allowEdit (makePasswordMessage ())) return;
+	if (!editPermission.permit (makePasswordMessage ())) return;
 
 	if (index.isValid ())
 	{
