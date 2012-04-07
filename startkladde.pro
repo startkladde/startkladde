@@ -47,6 +47,7 @@ CONFIG(debug, debug|release) {
 DEFINES += SK_BUILD=$${SK_BUILD}
 
 #QMAKE_CXXFLAGS += -Werror
+QMAKE_CXXFLAGS += -Wextra
 
 win32:DEFINES += SK_WINDOWS
 unix:DEFINES += SK_UNIX
