@@ -57,6 +57,7 @@ DbManager &DbManager::operator= (const DbManager &other)
 {
 	(void)other;
 	assert (!notr ("DbManager assigned"));
+	return *this;
 }
 
 DbManager::~DbManager ()
@@ -516,7 +517,6 @@ QList<Flight> DbManager::getFlights (const QDate &first, const QDate &last, QWid
 	MonitorDialog::monitor (monitor, tr ("Retrieving flights"), parent);
 	QList<Flight> candidates=returner.returnedValue ();
 	return Flight::dateRangeSupersetFilter (candidates, first, last);
-	return returner.returnedValue ();
 }
 
 template<class T> void DbManager::refreshObjects (QWidget *parent)

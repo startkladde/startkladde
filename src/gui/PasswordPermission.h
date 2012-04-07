@@ -17,7 +17,7 @@ class PasswordPermission
 		virtual ~PasswordPermission ();
 
 		void setPasswordRequired (bool required);
-		bool getPasswordRequired ();
+		bool getPasswordRequired () const;
 		void setMessage (const QString &message);
 
 		bool permit (QWidget *parent);

@@ -268,6 +268,8 @@ LaunchMethod::Type LaunchMethod::typeFromDb (QString type)
 	else if (type==notr ("airtow")) return typeAirtow;
 	else if (type==notr ("self")  ) return typeSelf;
 	else if (type==notr ("other") ) return typeOther;
-	else                            return typeOther;
+
+	// Unknown type
+	return typeOther;
 }
 

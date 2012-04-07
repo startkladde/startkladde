@@ -28,6 +28,7 @@ Plane::Plane (dbId id):
 void Plane::initialize ()
 {
 	numSeats=0;
+	category=categoryNone;
 }
 
 
@@ -152,7 +153,7 @@ Plane::Category Plane::categoryFromRegistration (QString registration)
 		|| kbu == 'n')
 		return categoryGlider;
 	else if (kbu == 'e' || kbu == 'f' || kbu == 'g' || kbu == 'i'
-		|| kbu == 'c' || kbu == 'c' || kbu == 'c')
+		|| kbu == 'c' || kbu == 'b' || kbu == 'a')
 		return categoryAirplane;
 	else if (kbu == 'm')
 		return categoryUltralight;

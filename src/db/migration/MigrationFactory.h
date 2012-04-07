@@ -23,11 +23,11 @@ class MigrationFactory
 		MigrationFactory ();
 		virtual ~MigrationFactory ();
 
-		QList<quint64> availableVersions ();
-		quint64 latestVersion ();
+		QList<quint64> availableVersions () const;
+		quint64 latestVersion () const;
 
-		Migration *createMigration (Interface &interface, quint64 version);
-		QString migrationName (quint64 version);
+		Migration *createMigration (Interface &interface, quint64 version) const;
+		QString migrationName (quint64 version) const;
 };
 
 #endif

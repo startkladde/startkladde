@@ -24,7 +24,7 @@ void PasswordPermission::setPasswordRequired (bool required)
 	passwordRequired=required;
 }
 
-bool PasswordPermission::getPasswordRequired ()
+bool PasswordPermission::getPasswordRequired () const
 {
 	return passwordRequired;
 }

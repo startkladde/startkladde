@@ -9,7 +9,8 @@
 // ** Entry construction **
 // ************************
 
-LaunchMethodStatistics::Entry::Entry ()
+LaunchMethodStatistics::Entry::Entry ():
+	num (0)
 {
 }
 

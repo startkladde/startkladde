@@ -4,8 +4,8 @@
   * AcpiWidget dummy implementation (for systems without libacpi)
   */
 
-AcpiWidget::AcpiWidget (QWidget* parent):
-	SkLabel (parent)
+AcpiWidget::AcpiWidget (QWidget* parent): SkLabel (parent),
+	timer (NULL)
 {
 }
 

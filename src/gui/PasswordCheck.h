@@ -23,7 +23,6 @@ class PasswordCheck
 		void forget ();
 
 	private:
-		bool passwordRequired;
 		QString password;
 		bool passwordOk;
 };

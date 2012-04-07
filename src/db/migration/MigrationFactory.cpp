@@ -37,7 +37,7 @@ MigrationFactory::~MigrationFactory ()
  *
  * @return a QList of migration versions
  */
-QList<quint64> MigrationFactory::availableVersions ()
+QList<quint64> MigrationFactory::availableVersions () const
 {
 	QList<quint64> versions;
 
@@ -54,7 +54,7 @@ QList<quint64> MigrationFactory::availableVersions ()
  *
  * @return the latest available migration, or 0 if no migrations exist
  */
-quint64 MigrationFactory::latestVersion ()
+quint64 MigrationFactory::latestVersion () const
 {
 	QList<quint64> versions=availableVersions ();
 
@@ -79,7 +79,7 @@ quint64 MigrationFactory::latestVersion ()
  *        version
  */
 
-Migration *MigrationFactory::createMigration (Interface &interface, const quint64 version)
+Migration *MigrationFactory::createMigration (Interface &interface, const quint64 version) const
 {
 	switch (version)
 	{
@@ -101,7 +101,7 @@ Migration *MigrationFactory::createMigration (Interface &interface, const quint6
  * @throw NoSuchMigrationException if there is no migration with the given
  *        version
  */
-QString MigrationFactory::migrationName (quint64 version)
+QString MigrationFactory::migrationName (quint64 version) const
 {
 
 	switch (version)
@@ -114,3 +114,4 @@ QString MigrationFactory::migrationName (quint64 version)
 
 	throw NoSuchMigrationException (version);
 }
+
