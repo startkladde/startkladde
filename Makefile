@@ -86,7 +86,7 @@ templates=src/db/migration/migrations.h.erb src/db/migration/migrations_headers.
 build/migrations.pro: $(templates) src/db/migrations src/db/migrations/current_schema.yaml
 	./script/build/autogenerate_files.rb
 
-version/version.h: version/version version/make_version
+version/version.h: version/version version/make_version.rb
 	cd version; ./make_version; cd ..
 
 
