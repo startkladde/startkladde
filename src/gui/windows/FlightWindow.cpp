@@ -1404,14 +1404,14 @@ dbId FlightWindow::determineAndEnterPlane (QString registration, QString descrip
 
 			if (typeLabel) typeLabel->setText (resultPlane.type);
 		}
-		catch (Cache::NotFoundException) {}
+		catch (Cache::NotFoundException &) {}
 	}
 
 	return result;
 }
 
 dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
-	throw (AbortedException)
+	throw (FlightWindow::AbortedException)
 {
 	Person nameObject;
 	nameObject.lastName=lastName;
@@ -1597,7 +1597,7 @@ dbId FlightWindow::determinePerson (bool active, QString lastName, QString first
 	return 0;
 }
 
-dbId FlightWindow::determineAndEnterPerson (bool active, QString lastName, QString firstName, QString description, bool required, QString &incompleteLastName, QString &incompleteFirstName, dbId originalId, SkComboBox *lastNameWidget, SkComboBox *firstNameWidget) throw (AbortedException)
+dbId FlightWindow::determineAndEnterPerson (bool active, QString lastName, QString firstName, QString description, bool required, QString &incompleteLastName, QString &incompleteFirstName, dbId originalId, SkComboBox *lastNameWidget, SkComboBox *firstNameWidget) throw (FlightWindow::AbortedException)
 {
 	dbId result=determinePerson (active, lastName, firstName, description, required, incompleteLastName, incompleteFirstName, originalId, lastNameWidget);
 
@@ -1609,7 +1609,7 @@ dbId FlightWindow::determineAndEnterPerson (bool active, QString lastName, QStri
 			if (lastNameWidget) lastNameWidget->setEditText (resultPerson.lastName);
 			if (firstNameWidget) firstNameWidget->setEditText (resultPerson.firstName);
 		}
-		catch (Cache::NotFoundException) {}
+		catch (Cache::NotFoundException &) {}
 	}
 
 	return result;
@@ -1715,7 +1715,7 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 			{
 				success=idValid (manager.createObject (flight, this));
 			}
-			catch (OperationCanceledException)
+			catch (OperationCanceledException &)
 			{
 				// TODO the cache may now be inconsistent
 			}
@@ -1728,7 +1728,7 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 				manager.updateObject (flight, this);
 				success=true;
 			}
-			catch (OperationCanceledException)
+			catch (OperationCanceledException &)
 			{
 				// TODO the cache may now be inconsistent
 			}

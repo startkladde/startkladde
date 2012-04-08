@@ -160,7 +160,7 @@ void DbManager::grantPermissions (QWidget *parent)
 
 			rootInterface.close ();
 		}
-		catch (AccessDeniedException) // Actually: only 1045
+		catch (AccessDeniedException &) // Actually: only 1045
 		{
 			text=tr (
 				"Logging in as root failed. The given password\n"
@@ -346,7 +346,7 @@ void DbManager::openInterface (QWidget *parent)
 	{
 		doOpenInterface (interfaceWorker, parent);
 	}
-	catch (DatabaseDoesNotExistException)
+	catch (DatabaseDoesNotExistException &)
 	{
 		// The database does not exist. We have some permissions on the
 		// database, or we would get "access denied". Try to create it, and if
@@ -418,7 +418,7 @@ bool DbManager::connect (QWidget *parent)
 		}
 		// TODO also for access denied during query (1142)
 	}
-	catch (DbManager::ConnectCanceledException)
+	catch (DbManager::ConnectCanceledException &)
 	{
 		showWarning (tr ("Connection canceled", "Title"),
 			tr ("Connection canceled", "Text"),
@@ -705,7 +705,7 @@ void DbManager::mergePeople (const Person &correctPerson, const QList<Person> &w
 		}
 		// Users are not handled because we don't have users
 	}
-	catch (OperationCanceledException)
+	catch (OperationCanceledException &)
 	{
 		// TODO the cache may now be inconsistent
 		// Don't emit the change events in this case.
@@ -725,7 +725,7 @@ void DbManager::mergePeople (const Person &correctPerson, const QList<Person> &w
 			if (!objectUsed<Person> (person.getId (), parent))
 				idsToDelete.append (person.getId ());
 	}
-	catch (OperationCanceledException)
+	catch (OperationCanceledException &)
 	{
 		// Data updated, but canceled before deletion - this is acceptable
 		return;

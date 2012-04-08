@@ -58,7 +58,7 @@ bool FlightProxyList::isAirtow (const Flight &flight, LaunchMethod *launchMethod
 		if (launchMethod) *launchMethod=lm;
 		return lm.isAirtow ();
 	}
-	catch (Cache::NotFoundException)
+	catch (Cache::NotFoundException &)
 	{
 		// Launch method not found => no airtow
 		return false;
@@ -103,7 +103,7 @@ void FlightProxyList::updateTowflight (dbId id, int towflightIndex)
 			towflights.replace (towflightIndex, flight.makeTowflight (towplaneId, selfLaunchId));
 		}
 	}
-	catch (Cache::NotFoundException)
+	catch (Cache::NotFoundException &)
 	{
 		// Do nothing // TODO log error
 	}

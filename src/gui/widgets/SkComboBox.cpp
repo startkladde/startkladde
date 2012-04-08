@@ -4,8 +4,6 @@
 #include <QCompleter>
 #include <QFocusEvent>
 
-static const QColor errorFieldColor (255, 127, 127);
-
 /**
  * Constructs a SkComboBox
  *

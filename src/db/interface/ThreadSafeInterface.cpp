@@ -313,8 +313,8 @@ void ThreadSafeInterface::keepalive ()
 	{
 		interface->ping ();
 	}
-	catch (OperationCanceledException) {}
-	catch (PingFailedException) {}
+	catch (OperationCanceledException &) {}
+	catch (PingFailedException &) {}
 
 	startKeepaliveTimer ();
 }

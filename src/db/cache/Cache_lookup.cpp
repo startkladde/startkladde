@@ -149,7 +149,7 @@ template<class T> QList<T> Cache::getObjects (const QList<dbId> &ids, bool ignor
 		{
 			result.append (getObject<T> (id));
 		}
-		catch (NotFoundException)
+		catch (NotFoundException &)
 		{
 			if (!ignoreNotFound) throw;
 		}

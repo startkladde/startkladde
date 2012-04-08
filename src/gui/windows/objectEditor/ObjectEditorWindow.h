@@ -167,7 +167,7 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 				std::cout << notr ("after manager.createObject: id is ") << id << notr (" is ") << getId () << std::endl;
 				return true;
 			}
-			catch (OperationCanceledException)
+			catch (OperationCanceledException &)
 			{
 				// TODO the cache may now be inconsistent
 				return false;
@@ -181,7 +181,7 @@ template<class T> bool ObjectEditorWindow<T>::writeToDatabase (T &object)
 				manager.updateObject (object, this);
 				return true;
 			}
-			catch (OperationCanceledException)
+			catch (OperationCanceledException &)
 			{
 				// TODO the cache may now be inconsistent
 				return false;

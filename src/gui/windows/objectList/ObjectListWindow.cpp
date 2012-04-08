@@ -248,7 +248,7 @@ template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, boo
 	{
 		objectUsed=manager.objectUsed<T> (object.getId (), this);
 	}
-	catch (OperationCanceledException)
+	catch (OperationCanceledException &)
 	{
 		return false;
 	}
@@ -284,7 +284,7 @@ template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, boo
 			manager.deleteObject<T> (object.getId (), this);
 			return true;
 		}
-		catch (OperationCanceledException)
+		catch (OperationCanceledException &)
 		{
 			// TODO the cache may now be inconsistent
 			return false;

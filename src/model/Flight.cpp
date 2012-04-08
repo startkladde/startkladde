@@ -236,7 +236,7 @@ bool Flight::isAirtow (Cache &cache) const
 		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (getLaunchMethodId ());
 		return launchMethod.isAirtow ();
 	}
-	catch (Cache::NotFoundException)
+	catch (Cache::NotFoundException &)
 	{
 		return false;
 	}
@@ -256,7 +256,7 @@ dbId Flight::effectiveTowplaneId (Cache &cache) const
 		else
 			return getTowplaneId ();
 	}
-	catch (Cache::NotFoundException)
+	catch (Cache::NotFoundException &)
 	{
 		return false;
 	}
