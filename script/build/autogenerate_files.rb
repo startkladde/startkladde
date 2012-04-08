@@ -82,6 +82,8 @@ begin
 		GeneratedFile.new("src/db/schema/CurrentSchema.cpp.erb", "build/CurrentSchema.cpp")
 	]
 
+	# Change to the project base directory
+	Dir.chdir Pathname.new(File.dirname(__FILE__)).join("..").join("..")
 
 	# List the migrations
 	migrations=MigrationDescription.list(migrations_path)
