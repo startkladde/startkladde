@@ -13,6 +13,8 @@
 class Result
 {
 	public:
+		virtual ~Result () {}
+
 		virtual int at () const=0;
 		virtual bool first ()=0;
 		virtual bool isNull (int field) const=0;

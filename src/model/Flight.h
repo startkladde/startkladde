@@ -51,6 +51,7 @@ class Flight: public FlightBase
 		// *** Construction
 		Flight ();
 		Flight (dbId id); // TODO protected (friend Database)?
+		virtual ~Flight ();
 
 
 

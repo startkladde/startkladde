@@ -29,6 +29,8 @@ template<class T> class GetObjectsTask: public DbWorker::Task
 		{
 		}
 
+		virtual ~GetObjectsTask () {}
+
 		Returner<QList <T> > *returner;
 		// FIXME all of the tasks are handed to the worker thread, so they
 		// should not store any references if possible. Where not possible,
@@ -53,6 +55,8 @@ template<class T> class CreateObjectTask: public DbWorker::Task
 		{
 		}
 
+		virtual ~CreateObjectTask () {}
+
 		Returner<dbId> *returner;
 		T &object;
 
@@ -71,6 +75,8 @@ template<class T> class CreateObjectsTask: public DbWorker::Task
 		{
 		}
 
+		virtual ~CreateObjectsTask () {}
+
 		Returner<void> *returner;
 		QList<T> &objects;
 
@@ -87,6 +93,8 @@ template<class T> class DeleteObjectTask: public DbWorker::Task
 			returner (returner), id (id)
 		{
 		}
+
+		virtual ~DeleteObjectTask () {}
 
 		Returner<bool> *returner;
 		dbId id;
@@ -106,6 +114,8 @@ template<class T> class DeleteObjectsTask: public DbWorker::Task
 		{
 		}
 
+		virtual ~DeleteObjectsTask () {}
+
 		Returner<int> *returner;
 		const QList<dbId> &ids;
 
@@ -124,6 +134,8 @@ template<class T> class UpdateObjectTask: public DbWorker::Task
 		{
 		}
 
+		virtual ~UpdateObjectTask () {}
+
 		Returner<bool> *returner;
 		const T &object;
 
@@ -141,6 +153,8 @@ template<class T> class ObjectUsedTask: public DbWorker::Task
 			returner (returner), id (id)
 		{
 		}
+
+		virtual ~ObjectUsedTask () {}
 
 		Returner<bool> *returner;
 		const dbId id;

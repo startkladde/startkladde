@@ -51,6 +51,10 @@ Flight::Flight (dbId id):
 	initialize ();
 }
 
+Flight::~Flight ()
+{
+}
+
 void Flight::initialize ()
 {
 	cachedErrorsValid=false;

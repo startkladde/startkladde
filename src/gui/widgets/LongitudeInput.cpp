@@ -10,7 +10,6 @@ LongitudeInput::LongitudeInput (QWidget *parent):
 
 LongitudeInput::~LongitudeInput ()
 {
-
 }
 
 void LongitudeInput::setLongitude (const Longitude &longitude)

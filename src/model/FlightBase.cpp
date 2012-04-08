@@ -11,6 +11,10 @@ FlightBase::FlightBase (dbId id)
 	initialize (id);
 }
 
+FlightBase::~FlightBase ()
+{
+}
+
 void FlightBase::initialize (dbId id)
 {
 	this->id=id;

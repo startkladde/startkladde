@@ -37,7 +37,7 @@ class FlightBase
 		// *** Construction
 		FlightBase ();
 		FlightBase (dbId id); // TODO protected (friend Database)?
-
+		virtual ~FlightBase ();
 
 		// *** Attribute accessors
 		virtual dbId getId () const { return id; }

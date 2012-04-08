@@ -39,6 +39,7 @@ LanguageConfiguration::LanguageConfiguration (const QVariant &value)
 			default:
 				std::cerr << notr ("Invalid language choice ") << value.toString () << notr (" in LanguageConfiguration::LanguageConfiguration") << std::endl;
 				this->type=systemLanguage;
+				break;
 		}
 	}
 }

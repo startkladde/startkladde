@@ -239,6 +239,7 @@ void SkTableView::keyPressEvent (QKeyEvent *e)
 		default:
 			e->ignore (); // Propagate to parent widget (unless the QTableView accepts it)
 			QTableView::keyPressEvent (e);
+			break;
 	}
 }
 

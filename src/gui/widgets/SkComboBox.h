@@ -38,6 +38,7 @@ class SkComboBox:public QComboBox
 
 	public:
 		SkComboBox (QWidget *parent=0);
+		virtual ~SkComboBox ();
 
 //		void setLineEdit (QLineEdit *edit);
 		value_accessor (QString, DefaultPrefix, defaultPrefix);

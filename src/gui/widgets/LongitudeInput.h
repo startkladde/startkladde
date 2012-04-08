@@ -12,7 +12,7 @@ class LongitudeInput: public QWidget
 
 	public:
 		LongitudeInput (QWidget *parent=NULL);
-		~LongitudeInput ();
+		virtual ~LongitudeInput ();
 
 		void setLongitude (const Longitude &longitude);
 		Longitude getLongitude () const;

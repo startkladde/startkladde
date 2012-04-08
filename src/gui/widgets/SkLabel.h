@@ -26,6 +26,7 @@ class SkLabel: public QLabel
 		// Construction
 		SkLabel (QWidget *parent=0, Qt::WindowFlags f=0);
 		SkLabel (const QString &text, QWidget *parent=0, Qt::WindowFlags f=0);
+		virtual ~SkLabel () {}
 
 		// Property access
 		void setDefaultBackgroundColor (const QColor &color);

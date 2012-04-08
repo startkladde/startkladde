@@ -18,6 +18,10 @@ SkComboBox::SkComboBox (QWidget *parent)
 	connect (this, SIGNAL (activated (const QString &)), this, SIGNAL (editingFinished (const QString &)));
 }
 
+SkComboBox::~SkComboBox ()
+{
+}
+
 void SkComboBox::setEditable (bool editable)
 {
 	QLineEdit *oldLineEdit=lineEdit ();

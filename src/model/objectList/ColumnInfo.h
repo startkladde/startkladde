@@ -11,6 +11,8 @@
 class ColumnInfo
 {
 	public:
+		virtual ~ColumnInfo () {}
+
 		virtual int columnCount () const=0;
 		virtual QString columnName (int columnIndex) const=0;
 		virtual QString sampleText (int columnIndex) const=0;
