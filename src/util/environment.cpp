@@ -7,7 +7,7 @@
 
 #include "environment.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "src/i18n/notr.h"
 

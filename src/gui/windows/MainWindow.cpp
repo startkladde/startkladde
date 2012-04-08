@@ -10,6 +10,8 @@
 
 #include "MainWindow.h"
 
+#include <iostream>
+
 #include <QAction>
 #include <QSettings>
 #include <QEvent>
