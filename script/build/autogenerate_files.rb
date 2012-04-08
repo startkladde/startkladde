@@ -118,5 +118,6 @@ rescue RuntimeError => ex
 
 end
 
-##cd version; ./make_version; cd ..
+Dir.chdir "version"
+system "ruby make_version.rb"
 
