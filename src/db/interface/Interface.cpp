@@ -76,6 +76,14 @@ void Interface::grantAll (const QString &database, const QString &username, cons
 		query+=Query (notr ("IDENTIFIED BY PASSWORD '%1'")).arg (mysqlPasswordHash (password));
 
 	executeQuery (query);
+
+	// For MySQL, % does not include localhost.
+	// TODO grantQuery
+	query=Query (notr ("GRANT ALL ON %1.* TO '%2'@'localhost'"))
+		.arg (database).arg (username);
+	if (!password.isEmpty())
+		query+=Query (notr ("IDENTIFIED BY PASSWORD '%1'")).arg (mysqlPasswordHash (password));
+	executeQuery (query);
 }
 
 // *************************

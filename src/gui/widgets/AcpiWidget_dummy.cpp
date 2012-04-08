@@ -17,3 +17,8 @@ bool AcpiWidget::valid ()
 void AcpiWidget::slotTimer()
 {
 }
+
+void AcpiWidget::changeEvent (QEvent *event)
+{
+	(void)event;
+}
