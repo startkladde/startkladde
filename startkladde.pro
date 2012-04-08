@@ -3,9 +3,9 @@
 ##############
 
 # Compiling on Windows natively:
-#win32: MYSQL_INCLUDE_PATH = c:/programme/mysql/5.1/include
+win32: MYSQL_INCLUDE_PATH = 'c:/program files (x86)/mysql/mysql server 5.5/include'
 # Cross compiling:
-win32: MYSQL_INCLUDE_PATH = /usr/include/mysql
+#win32: MYSQL_INCLUDE_PATH = /usr/include/mysql
 
 
 #########################

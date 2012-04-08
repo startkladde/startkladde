@@ -1,6 +1,6 @@
 <%
-	sources=Dir["src/db/migrations/Migration_*.cpp"]
-	headers=Dir["src/db/migrations/Migration_*.h"]
+	sources=@migrations.map { |migration| migration.cpp_file }
+	headers=@migrations.map { |migration| migration.h_file }
 %>
 	
 # Migrations
