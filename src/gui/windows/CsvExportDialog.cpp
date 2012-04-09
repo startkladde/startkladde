@@ -15,8 +15,9 @@ CsvExportDialog::CsvExportDialog (QWidget *parent):
 	// Add some of the most commonly-used codecs at the top of the list
 	addCodecEntry (0); // System
 	addCodecEntry (106); // UTF-8
-	addCodecEntry (111); // ISO-8859-1
 	addCodecEntry (1015); // UTF-16
+	// ISO Latin1 (ISO-8859-1, MIB=4) is not added because it is close to the
+	// top of the list
 
 	// Add all codecs, in order of ascending MIB. MIB 0 (System) is not
 	// included again; all other codecs with positive MIB are included, even if
@@ -26,6 +27,9 @@ CsvExportDialog::CsvExportDialog (QWidget *parent):
 	foreach (int mib, mibs)
 		if (mib>0) // Don't include 0 again
 			addCodecEntry (mib);
+
+	// Select UTF-8
+	ui.charsetList->setCurrentItemByItemData (106);
 
 	// Setup the separator inputs
 	ui.separatorInput->addItem (notr (","));
