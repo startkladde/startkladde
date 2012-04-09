@@ -611,8 +611,8 @@ void FlightWindow::updateErrors (bool setFocus)
 		label->setError (false);
 
 	ui.errorList->clear ();
-	QList<FlightError> errors=flight.getErrors (true, cache);
-	foreach (FlightError error, errors)
+	QList<Flight::Error> errors=flight.getErrors (true, cache);
+	foreach (Flight::Error error, errors)
 	{
 		// In the cases of unknown or non-unique people, we don't want to query
 		// the user. So the determineFlightBasic method uses the buffered IDs
@@ -631,10 +631,10 @@ void FlightWindow::updateErrors (bool setFocus)
 
 		// Potential non-error: something has been specified but is unknown or
 		// non-unique, so the ID is invalid.
-		if (error==ff_kein_flugzeug           &&    planeSpecified) skipError=true;
-		if (error==ff_kein_pilot              &&    pilotSpecified) skipError=true;
-		if (error==ff_schulung_ohne_begleiter &&  copilotSpecified) skipError=true;
-		if (error==ff_kein_schleppflugzeug    && towplaneSpecified) skipError=true;
+		if (error==Flight::ff_kein_flugzeug           &&    planeSpecified) skipError=true;
+		if (error==Flight::ff_kein_pilot              &&    pilotSpecified) skipError=true;
+		if (error==Flight::ff_schulung_ohne_begleiter &&  copilotSpecified) skipError=true;
+		if (error==Flight::ff_kein_schleppflugzeug    && towplaneSpecified) skipError=true;
 
 		if (!skipError)
 		{
@@ -677,50 +677,50 @@ void FlightWindow::updateErrors (bool setFocus)
 }
 
 // Fehlerbehandlung
-QWidget *FlightWindow::getErrorWidget (FlightError error)
+QWidget *FlightWindow::getErrorWidget (Flight::Error error)
 {
 	switch (error)
 	{
-		case ff_keine_id:                             return NULL;
-		case ff_ok:                                   return NULL;
-		case ff_kein_flugzeug:                        return ui.registrationInput;
-		case ff_kein_pilot:                           return ui.pilotLastNameInput;
-		case ff_pilot_gleich_begleiter:               return ui.copilotLastNameInput;
-		case ff_pilot_nur_nachname:                   return ui.pilotFirstNameInput;
-		case ff_pilot_nur_vorname:                    return ui.pilotLastNameInput;
-		case ff_pilot_nicht_identifiziert:            return ui.pilotLastNameInput;
-		case ff_begleiter_nur_nachname:               return ui.copilotFirstNameInput;
-		case ff_begleiter_nur_vorname:                return ui.copilotLastNameInput;
-		case ff_begleiter_nicht_identifiziert:        return ui.copilotLastNameInput;
-		case ff_schulung_ohne_begleiter:              return ui.copilotLastNameInput;
-		case ff_begleiter_nicht_erlaubt:              return ui.copilotLastNameInput;
-		case ff_nur_gelandet:                         return ui.landingTimeInput;
-		case ff_landung_vor_start:                    return ui.landingTimeInput;
-		case ff_keine_startart:                       return ui.launchMethodInput;
-		case ff_kein_modus:                           return ui.flightModeInput;
-		case ff_kein_sfz_modus:                       return ui.towflightModeInput;
-		case ff_kein_flugtyp:                         return ui.flightTypeInput;
-		case ff_landungen_negativ:                    return ui.numLandingsInput;
-		case ff_doppelsitzige_schulung_in_einsitzer:  return ui.copilotLastNameInput;
-		case ff_kein_startort:                        return ui.departureLocationInput;
-		case ff_kein_zielort:                         return ui.landingLocationInput;
-		case ff_kein_zielort_sfz:                     return ui.towflightLandingLocationInput;
-		case ff_segelflugzeug_landungen:              return ui.numLandingsInput;
-		case ff_begleiter_in_einsitzer:               return ui.copilotLastNameInput;
-		case ff_gastflug_in_einsitzer:                return ui.flightTypeInput;
-		case ff_segelflugzeug_selbststart:            return ui.launchMethodInput;
-		case ff_schlepp_nur_gelandet:                 return ui.towflightLandingTimeInput;
-		case ff_schlepp_landung_vor_start:            return ui.towflightLandingTimeInput;
-		case ff_landungen_null:                       return ui.numLandingsInput;
-		case ff_landungen_ohne_start:                 return ui.numLandingsInput;
-		case ff_segelflugzeug_landungen_ohne_landung: return ui.numLandingsInput;
-		case ff_startort_gleich_zielort:              return ui.landingLocationInput;
-		case ff_kein_schleppflugzeug:                 return ui.towplaneRegistrationInput;
-		case ff_towplane_is_glider:                   return ui.towplaneRegistrationInput;
-		case ff_pilot_gleich_towpilot:                return ui.pilotLastNameInput;
-		case ff_towpilot_nur_nachname:                return ui.towpilotFirstNameInput;
-		case ff_towpilot_nur_vorname:                 return ui.towpilotLastNameInput;
-		case ff_towpilot_nicht_identifiziert:         return ui.towpilotLastNameInput;
+		case Flight::ff_keine_id:                             return NULL;
+		case Flight::ff_ok:                                   return NULL;
+		case Flight::ff_kein_flugzeug:                        return ui.registrationInput;
+		case Flight::ff_kein_pilot:                           return ui.pilotLastNameInput;
+		case Flight::ff_pilot_gleich_begleiter:               return ui.copilotLastNameInput;
+		case Flight::ff_pilot_nur_nachname:                   return ui.pilotFirstNameInput;
+		case Flight::ff_pilot_nur_vorname:                    return ui.pilotLastNameInput;
+		case Flight::ff_pilot_nicht_identifiziert:            return ui.pilotLastNameInput;
+		case Flight::ff_begleiter_nur_nachname:               return ui.copilotFirstNameInput;
+		case Flight::ff_begleiter_nur_vorname:                return ui.copilotLastNameInput;
+		case Flight::ff_begleiter_nicht_identifiziert:        return ui.copilotLastNameInput;
+		case Flight::ff_schulung_ohne_begleiter:              return ui.copilotLastNameInput;
+		case Flight::ff_begleiter_nicht_erlaubt:              return ui.copilotLastNameInput;
+		case Flight::ff_nur_gelandet:                         return ui.landingTimeInput;
+		case Flight::ff_landung_vor_start:                    return ui.landingTimeInput;
+		case Flight::ff_keine_startart:                       return ui.launchMethodInput;
+		case Flight::ff_kein_modus:                           return ui.flightModeInput;
+		case Flight::ff_kein_sfz_modus:                       return ui.towflightModeInput;
+		case Flight::ff_kein_flugtyp:                         return ui.flightTypeInput;
+		case Flight::ff_landungen_negativ:                    return ui.numLandingsInput;
+		case Flight::ff_doppelsitzige_schulung_in_einsitzer:  return ui.copilotLastNameInput;
+		case Flight::ff_kein_startort:                        return ui.departureLocationInput;
+		case Flight::ff_kein_zielort:                         return ui.landingLocationInput;
+		case Flight::ff_kein_zielort_sfz:                     return ui.towflightLandingLocationInput;
+		case Flight::ff_segelflugzeug_landungen:              return ui.numLandingsInput;
+		case Flight::ff_begleiter_in_einsitzer:               return ui.copilotLastNameInput;
+		case Flight::ff_gastflug_in_einsitzer:                return ui.flightTypeInput;
+		case Flight::ff_segelflugzeug_selbststart:            return ui.launchMethodInput;
+		case Flight::ff_schlepp_nur_gelandet:                 return ui.towflightLandingTimeInput;
+		case Flight::ff_schlepp_landung_vor_start:            return ui.towflightLandingTimeInput;
+		case Flight::ff_landungen_null:                       return ui.numLandingsInput;
+		case Flight::ff_landungen_ohne_start:                 return ui.numLandingsInput;
+		case Flight::ff_segelflugzeug_landungen_ohne_landung: return ui.numLandingsInput;
+		case Flight::ff_startort_gleich_zielort:              return ui.landingLocationInput;
+		case Flight::ff_kein_schleppflugzeug:                 return ui.towplaneRegistrationInput;
+		case Flight::ff_towplane_is_glider:                   return ui.towplaneRegistrationInput;
+		case Flight::ff_pilot_gleich_towpilot:                return ui.pilotLastNameInput;
+		case Flight::ff_towpilot_nur_nachname:                return ui.towpilotFirstNameInput;
+		case Flight::ff_towpilot_nur_vorname:                 return ui.towpilotLastNameInput;
+		case Flight::ff_towpilot_nicht_identifiziert:         return ui.towpilotLastNameInput;
 		// No default to allow compiler warnings
 	}
 

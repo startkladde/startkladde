@@ -453,7 +453,7 @@ QTime Flight::towflightDuration () const
  */
 bool Flight::isErroneous (Cache &cache, QString *errorText) const
 {
-	QList<FlightError> errors=getErrors (false, cache);
+	QList<Error> errors=getErrors (false, cache);
 	if (errors.isEmpty ())
 	{
 		return false;
@@ -465,7 +465,7 @@ bool Flight::isErroneous (Cache &cache, QString *errorText) const
 	}
 }
 
-QString Flight::errorDescription (FlightError code) const
+QString Flight::errorDescription (Flight::Error code) const
 {
 	switch (code)
 	{
@@ -564,8 +564,12 @@ QString Flight::errorDescription (FlightError code) const
 	return qApp->translate ("Flight", "Unknown error");
 }
 
-void Flight::checkPerson (QList<FlightError> &errors, dbId id, const QString &lastName, const QString &firstName, bool required,
-	FlightError notSpecifiedError, FlightError lastNameOnlyError, FlightError firstNameOnlyError, FlightError notIdentifiedError) const
+void Flight::checkPerson (QList<Flight::Error> &errors, dbId id,
+		const QString &lastName, const QString &firstName, bool required,
+	Flight::Error notSpecifiedError,
+	Flight::Error lastNameOnlyError,
+	Flight::Error firstNameOnlyError,
+	Flight::Error notIdentifiedError) const
 {
 	// Person specified - no error
 	if (idValid (id)) return;
@@ -590,7 +594,7 @@ void Flight::checkPerson (QList<FlightError> &errors, dbId id, const QString &la
 	}
 }
 
-QList<FlightError> Flight::getErrors (bool includeTowflightErrors, Cache &cache) const
+QList<Flight::Error> Flight::getErrors (bool includeTowflightErrors, Cache &cache) const
 {
 	if (!cachedErrorsValid)
 	{
@@ -604,10 +608,10 @@ QList<FlightError> Flight::getErrors (bool includeTowflightErrors, Cache &cache)
 /**
  * The actual error check implementation - caching is handled by getErrors
  */
-QList<FlightError> Flight::getErrorsImpl (bool includeTowflightErrors, Cache &cache) const
+QList<Flight::Error> Flight::getErrorsImpl (bool includeTowflightErrors, Cache &cache) const
 {
 	// The result
-	QList<FlightError> errors;
+	QList<Error> errors;
 
 	// Determine data
 	Plane *plane              =cache.getNewObject<Plane       > (getPlaneId        ());

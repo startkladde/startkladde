@@ -433,7 +433,7 @@ class FlightWindow: public SkDialog<Ui::FlightWindowClass>
 		const FlightWindow::Mode mode;
 
 		void updateErrors (bool setFocus=false);
-		QWidget *getErrorWidget (FlightError error);
+		QWidget *getErrorWidget (Flight::Error error);
 
 
 		// In create mode, we have "Automatic" checkboxes which deativate the

@@ -18,27 +18,6 @@ class Query;
 class Result;
 class Cache;
 
-enum FlightError {
-	ff_ok,
-	ff_keine_id, ff_kein_flugzeug, ff_kein_pilot, ff_pilot_gleich_begleiter,
-	ff_pilot_gleich_towpilot,
-	ff_pilot_nur_vorname, ff_pilot_nur_nachname, ff_pilot_nicht_identifiziert,
-	ff_begleiter_nur_vorname, ff_begleiter_nur_nachname,
-	ff_begleiter_nicht_identifiziert,
-	ff_towpilot_nur_vorname, ff_towpilot_nur_nachname,
-	ff_towpilot_nicht_identifiziert,
-	ff_schulung_ohne_begleiter,
-	ff_begleiter_nicht_erlaubt, ff_nur_gelandet, ff_landung_vor_start,
-	ff_keine_startart, ff_kein_modus, ff_kein_sfz_modus, ff_kein_flugtyp,
-	ff_landungen_negativ, ff_doppelsitzige_schulung_in_einsitzer,
-	ff_kein_startort, ff_kein_zielort, ff_kein_zielort_sfz,
-	ff_segelflugzeug_landungen, ff_begleiter_in_einsitzer,
-	ff_gastflug_in_einsitzer, ff_segelflugzeug_selbststart,
-	ff_schlepp_nur_gelandet, ff_schlepp_landung_vor_start, ff_landungen_null,
-	ff_landungen_ohne_start, ff_segelflugzeug_landungen_ohne_landung,
-	ff_startort_gleich_zielort, ff_kein_schleppflugzeug, ff_towplane_is_glider
-	};
-
 class Database;
 
 
@@ -48,6 +27,28 @@ class Flight: public FlightBase
 	friend class Database;
 
 	public:
+		enum Error {
+			ff_ok,
+			ff_keine_id, ff_kein_flugzeug, ff_kein_pilot, ff_pilot_gleich_begleiter,
+			ff_pilot_gleich_towpilot,
+			ff_pilot_nur_vorname, ff_pilot_nur_nachname, ff_pilot_nicht_identifiziert,
+			ff_begleiter_nur_vorname, ff_begleiter_nur_nachname,
+			ff_begleiter_nicht_identifiziert,
+			ff_towpilot_nur_vorname, ff_towpilot_nur_nachname,
+			ff_towpilot_nicht_identifiziert,
+			ff_schulung_ohne_begleiter,
+			ff_begleiter_nicht_erlaubt, ff_nur_gelandet, ff_landung_vor_start,
+			ff_keine_startart, ff_kein_modus, ff_kein_sfz_modus, ff_kein_flugtyp,
+			ff_landungen_negativ, ff_doppelsitzige_schulung_in_einsitzer,
+			ff_kein_startort, ff_kein_zielort, ff_kein_zielort_sfz,
+			ff_segelflugzeug_landungen, ff_begleiter_in_einsitzer,
+			ff_gastflug_in_einsitzer, ff_segelflugzeug_selbststart,
+			ff_schlepp_nur_gelandet, ff_schlepp_landung_vor_start, ff_landungen_null,
+			ff_landungen_ohne_start, ff_segelflugzeug_landungen_ohne_landung,
+			ff_startort_gleich_zielort, ff_kein_schleppflugzeug, ff_towplane_is_glider
+			};
+
+
 		// *** Construction
 		Flight ();
 		Flight (dbId id); // TODO protected (friend Database)?
@@ -139,8 +140,8 @@ class Flight: public FlightBase
 
 
 		// *** Error checking
-		virtual QList<FlightError> getErrors (bool includeTowflightErrors, Cache &cache) const;
-		virtual QString errorDescription (FlightError code) const;
+		virtual QList<Error> getErrors (bool includeTowflightErrors, Cache &cache) const;
+		virtual QString errorDescription (Error code) const;
 		virtual bool isErroneous (Cache &cache, QString *errorText=NULL) const;
 
 
@@ -221,12 +222,12 @@ class Flight: public FlightBase
 		virtual QString incompletePersonName (const QString &lastName, const QString &firstName) const;
 		virtual void dataChanged () const;
 
-		virtual QList<FlightError> getErrorsImpl (bool includeTowflightErrors, Cache &cache) const;
-		virtual void checkPerson (QList<FlightError> &errors, dbId id, const QString &lastName, const QString &firstName, bool required,
-			FlightError notSpecifiedError, FlightError lastNameOnlyError, FlightError firstNameOnlyError, FlightError notIdentifiedError) const;
+		virtual QList<Error> getErrorsImpl (bool includeTowflightErrors, Cache &cache) const;
+		virtual void checkPerson (QList<Error> &errors, dbId id, const QString &lastName, const QString &firstName, bool required,
+			Error notSpecifiedError, Error lastNameOnlyError, Error firstNameOnlyError, Error notIdentifiedError) const;
 
 		mutable QColor cachedColor;
-		mutable QList<FlightError> cachedErrors;
+		mutable QList<Error> cachedErrors;
 		mutable bool cachedErrorsValid;
 };
 
