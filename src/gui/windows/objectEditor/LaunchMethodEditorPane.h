@@ -19,6 +19,7 @@ class LaunchMethodEditorPane: public ObjectEditorPane<LaunchMethod>
 
 	public slots:
 		virtual void on_typeInput_activated (int index);
+		virtual void on_specificTowplaneInput_toggled (bool checked);
 
 	protected:
 		virtual void loadData ();

@@ -20,7 +20,7 @@ LaunchMethodEditorPane::LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mod
 
 	ui.typeInput->setCurrentItemByItemData (LaunchMethod::typeOther);
 	ui.personRequiredInput->setCurrentItemByItemData (true);
-	ui.towplaneRegistrationInput->setEditText ("");
+	ui.towplaneRegistrationInput->setEnabled (ui.specificTowplaneInput->isChecked ());
 
 	ui.nameInput->setFocus ();
 }
@@ -100,6 +100,11 @@ void LaunchMethodEditorPane::on_typeInput_activated (int index)
 	ui.towplaneRegistrationInput->setEnabled (airtow);
 }
 
+void LaunchMethodEditorPane::on_specificTowplaneInput_toggled (bool checked)
+{
+	ui.towplaneRegistrationInput->setEnabled (checked);
+}
+
 
 // ******************************
 // ** ObjectEditorPane methods **
@@ -112,11 +117,16 @@ void LaunchMethodEditorPane::objectToFields (const LaunchMethod &launchMethod)
 	ui.logStringInput           ->setText                  (launchMethod.logString);
 	ui.keyboardShortcutInput    ->setText                  (launchMethod.keyboardShortcut);
 	ui.typeInput                ->setCurrentItemByItemData (launchMethod.type);
+	if (isBlank (launchMethod.towplaneRegistration))
+		ui.individualTowplaneInput->setChecked (true);
+	else
+		ui.specificTowplaneInput->setChecked (true);
 	ui.towplaneRegistrationInput->setEditText              (launchMethod.towplaneRegistration);
 	ui.personRequiredInput      ->setCurrentItemByItemData (launchMethod.personRequired);
 	ui.commentsInput            ->setText                  (launchMethod.comments);
 
 	on_typeInput_activated (ui.typeInput->currentIndex ());
+	on_specificTowplaneInput_toggled (ui.specificTowplaneInput->isChecked ());
 }
 
 void LaunchMethodEditorPane::fieldsToObject (LaunchMethod &launchMethod)
@@ -126,7 +136,10 @@ void LaunchMethodEditorPane::fieldsToObject (LaunchMethod &launchMethod)
 	launchMethod.logString            = ui.logStringInput                ->text ().simplified ();
 	launchMethod.keyboardShortcut     = ui.keyboardShortcutInput         ->text ().simplified ();
 	launchMethod.type                 = (LaunchMethod::Type)ui.typeInput ->currentItemData ().toInt ();
-	launchMethod.towplaneRegistration = ui.towplaneRegistrationInput     ->currentText ().simplified ();
+	if (ui.individualTowplaneInput->isChecked ())
+		launchMethod.towplaneRegistration = "";
+	else
+		launchMethod.towplaneRegistration = ui.towplaneRegistrationInput ->currentText ().simplified ();
 	launchMethod.personRequired       = ui.personRequiredInput           ->currentItemData ().toBool ();
 	launchMethod.comments             = ui.commentsInput                 ->text ().simplified ();
 
