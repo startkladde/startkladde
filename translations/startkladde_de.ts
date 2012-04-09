@@ -75,41 +75,57 @@
 <context>
     <name>ConfirmOverwritePersonDialog</name>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="85"/>
         <source>Erroneous entries</source>
-        <translation>Fehlerhafte Einträge</translation>
+        <translation type="obsolete">Fehlerhafte Einträge</translation>
+    </message>
+    <message>
+        <source>The following erroneous entries will be replaced with the correct entry:</source>
+        <translation type="obsolete">Tie folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="86"/>
-        <source>The following erroneous entries will be replaced with the correct entry:</source>
-        <translation>Tie folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:</translation>
+        <source>Erroneous entries (will be overwritten)</source>
+        <translation>Fehlerhafte Einträge (werden überschrieben)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="87"/>
+        <source>The following erroneous entries will be replaced with the correct entry.</source>
+        <translation>Die folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="88"/>
         <source>&lt;html&gt;All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person. &lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt; Continue?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
 &lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
 Fortsetzen?&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="97"/>
+        <source>Erroneous entry (will be overwritten)</source>
+        <translation>Fehlerhafter Eintrag (wird überschrieben)</translation>
+    </message>
+    <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="98"/>
+        <source>The following erroneous entry will be replaced with the correct entry.</source>
+        <translation>Der folgende fehlerhaft Personeneintrag wird durch den korrekten Eintrag ersetzt.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="99"/>
         <source>&lt;html&gt;Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person. &lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt; Continue?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Beide Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Person werden der korrekten Person zugewiesen.
 &lt;font color=&quot;#FF0000&quot;&gt;Achtung: diese Aktion kann nicht rückgängig gemacht werden.&lt;/font&gt;
 Fortsetzen?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="96"/>
         <source>Erroneous entry</source>
-        <translation>Fehlerhafter Eintrag</translation>
+        <translation type="obsolete">Fehlerhafter Eintrag</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="97"/>
         <source>The following erroneous entry will be replaced with the correct entry:</source>
-        <translation>Der folgende fehlerhaft Personeneintrag wird durch den korrekten Eintrag ersetzt:</translation>
+        <translation type="obsolete">Der folgende fehlerhaft Personeneintrag wird durch den korrekten Eintrag ersetzt:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="79"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="80"/>
         <source>Correct entry</source>
         <translation>Korrekter Eintrag</translation>
     </message>
@@ -122,18 +138,16 @@ Fortsetzen?&lt;/html&gt;</translation>
         <translation>Personen zusammenfassen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.ui" line="20"/>
         <source>[The following wrong person entries will be replaced with the correct entry:]</source>
         <extracomment>Will be replaced programmatically</extracomment>
-        <translation>[Die folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:]</translation>
+        <translation type="obsolete">[Die folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:]</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.ui" line="39"/>
         <source>[All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
 Warning: this action cannot be undone.
 Continue?]</source>
         <extracomment>Will be replaced programmatically</extracomment>
-        <translation>[Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
+        <translation type="obsolete">[Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
 Achtung: diese Aktion kann nicht rückgängig gemacht werden. Fortsetzen?]</translation>
     </message>
 </context>
@@ -2265,17 +2279,17 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="150"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="151"/>
         <source>Name not specified</source>
         <translation>Es wurde kein Name angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="151"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="152"/>
         <source>Short name not specified</source>
         <translation>Es wurde kein Kürzel angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="152"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="153"/>
         <source>Logbook label not specified</source>
         <translation>Es wurde keine Flugbuch-Bezeichnung angegeben</translation>
     </message>
@@ -3721,29 +3735,34 @@ Datenbankpasswort eingegeben werden.</translation>
         <translation>&amp;Medical-Daten anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="107"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="104"/>
         <source>Not enough people selected</source>
         <translation>Zu wenige Personen ausgewählt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="108"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="105"/>
         <source>At least two people must be selected for merging.</source>
         <translation>Zum Zusammenfassen müssen mindestens zwei Personen ausgewählt sein.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="113"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="110"/>
         <source>Select correct entry</source>
         <translation>Korrekten Eintrag auswählen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="117"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="114"/>
         <source>Please select the correct entry. All other entries will be overwritten.</source>
         <translation>Bitte den korrekten Eintrag auswählen. Alle anderen Einträge werden überschrieben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="119"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="116"/>
         <source>Please select the correct entry. The other entry will be overwritten.</source>
         <translation>Bitte den korrekten Eintrag auswählen. Der andere Eintrag wird überschrieben.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="119"/>
+        <source>You will have to confirm the operation before any change to the database is made.</source>
+        <translation>Die Operation muss nochmals bestätigt werden, bevor Änderungen an der Datenbank durchgeführt werden.</translation>
     </message>
 </context>
 <context>

@@ -75,37 +75,53 @@
 <context>
     <name>ConfirmOverwritePersonDialog</name>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="79"/>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="80"/>
         <source>Correct entry</source>
         <translation type="unfinished">Currect intry</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="85"/>
         <source>Erroneous entries</source>
-        <translation type="unfinished">Irruneuoos intreees</translation>
+        <translation type="obsolete">Irruneuoos intreees</translation>
+    </message>
+    <message>
+        <source>The following erroneous entries will be replaced with the correct entry:</source>
+        <translation type="obsolete">Zee fullooeeng irruneuoos intreees veell be-a repleced veet zee currect intry:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="86"/>
-        <source>The following erroneous entries will be replaced with the correct entry:</source>
-        <translation type="unfinished">Zee fullooeeng irruneuoos intreees veell be-a repleced veet zee currect intry:</translation>
+        <source>Erroneous entries (will be overwritten)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="87"/>
+        <source>The following erroneous entries will be replaced with the correct entry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="88"/>
         <source>&lt;html&gt;All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person. &lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt; Continue?&lt;/html&gt;</source>
         <translation type="unfinished">&lt;html&gt;Ell intreees moost reffer tu zee seme-a persun. Ell fleeghts ooff zee vrung peuple-a veell be-a esseegned tu zee currect persun. &lt;font color=&quot;#FF0000&quot;&gt;Verneeng: thees ecshun cunnut be-a undune-a.&lt;/font&gt; Cunteenooe-a?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="96"/>
-        <source>Erroneous entry</source>
-        <translation type="unfinished">Irruneuoos intry</translation>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="97"/>
+        <source>Erroneous entry (will be overwritten)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="97"/>
-        <source>The following erroneous entry will be replaced with the correct entry:</source>
-        <translation type="unfinished">Zee fullooeeng irruneuoos intry veell be-a repleced veet zee currect intry:</translation>
+        <source>Erroneous entry</source>
+        <translation type="obsolete">Irruneuoos intry</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="98"/>
+        <source>The following erroneous entry will be replaced with the correct entry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The following erroneous entry will be replaced with the correct entry:</source>
+        <translation type="obsolete">Zee fullooeeng irruneuoos intry veell be-a repleced veet zee currect intry:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="99"/>
         <source>&lt;html&gt;Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person. &lt;font color=&quot;#FF0000&quot;&gt;Warning: this action cannot be undone.&lt;/font&gt; Continue?&lt;/html&gt;</source>
         <translation type="unfinished">&lt;html&gt;But intreees moost reffer tu zee seme-a persun. Ell fleeghts ooff zee vrung persun veell be-a esseegned tu zee currect persun. &lt;font color=&quot;#FF0000&quot;&gt;Verneeng: thees ecshun cunnut be-a undune-a.&lt;/font&gt; Cunteenooe-a?&lt;/html&gt;</translation>
     </message>
@@ -118,18 +134,16 @@
         <translation type="unfinished">Merge-a peuple-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.ui" line="20"/>
         <source>[The following wrong person entries will be replaced with the correct entry:]</source>
         <extracomment>Will be replaced programmatically</extracomment>
-        <translation type="unfinished">[Zee fullooeeng vrung persun intreees veell be-a repleced veet zee currect intry:]</translation>
+        <translation type="obsolete">[Zee fullooeeng vrung persun intreees veell be-a repleced veet zee currect intry:]</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.ui" line="39"/>
         <source>[All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
 Warning: this action cannot be undone.
 Continue?]</source>
         <extracomment>Will be replaced programmatically</extracomment>
-        <translation type="unfinished">[Ell intreees moost reffer tu zee seme-a persun. Ell fleeghts ooff zee vrung peuple-a veell be-a esseegned tu zee currect persun.
+        <translation type="obsolete">[Ell intreees moost reffer tu zee seme-a persun. Ell fleeghts ooff zee vrung peuple-a veell be-a esseegned tu zee currect persun.
 Verneeng: thees ecshun cunnut be-a undune-a.
 Cunteenooe-a?]</translation>
     </message>
@@ -2257,17 +2271,17 @@ Edd it tu zee detebese-a?</translation>
         <translation type="unfinished">Nu</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="150"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="151"/>
         <source>Name not specified</source>
         <translation type="unfinished">Neme-a nut speceeffied</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="151"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="152"/>
         <source>Short name not specified</source>
         <translation type="unfinished">Shurt neme-a nut speceeffied</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="152"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="153"/>
         <source>Logbook label not specified</source>
         <translation type="unfinished">Lugbuuk lebel nut speceeffied</translation>
     </message>
@@ -3710,29 +3724,34 @@ moost be-a intered tu sefe-a zee chunges.</translation>
         <translation type="unfinished">Deespley medee&amp;cel deta</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="107"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="104"/>
         <source>Not enough people selected</source>
         <translation type="unfinished">Nut inuoogh peuple-a selected</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="108"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="105"/>
         <source>At least two people must be selected for merging.</source>
         <translation type="unfinished">Et leest tvu peuple-a moost be-a selected fur mergeeng.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="113"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="110"/>
         <source>Select correct entry</source>
         <translation type="unfinished">Select currect intry</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="117"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="114"/>
         <source>Please select the correct entry. All other entries will be overwritten.</source>
         <translation type="unfinished">Pleese-a select zee currect intry. Ell oozeer intreees veell be-a oofervreettee.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="119"/>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="116"/>
         <source>Please select the correct entry. The other entry will be overwritten.</source>
         <translation type="unfinished">Pleese-a select zee currect intry. Zee oozeer intry veell be-a oofervreettee.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/PersonListWindow.cpp" line="119"/>
+        <source>You will have to confirm the operation before any change to the database is made.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

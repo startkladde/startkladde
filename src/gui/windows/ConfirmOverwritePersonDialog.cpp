@@ -18,7 +18,6 @@ ConfirmOverwritePersonDialog::ConfirmOverwritePersonDialog (QWidget *parent, Qt:
 	SkDialog<Ui::ConfirmOverwritePersonDialogClass> (parent, f)
 {
 	ui.setupUi(this);
-	adjustSize ();
 }
 
 ConfirmOverwritePersonDialog::~ConfirmOverwritePersonDialog ()
@@ -64,6 +63,8 @@ void ConfirmOverwritePersonDialog::setup (const Person &correctPerson, const QLi
 	wrongParentItem  ->setExpanded (true);
 	correctParentItem->setExpanded (true);
 
+	for (int i=0, n=ui.entriesTree->columnCount (); i<n; ++i)
+		ui.entriesTree->resizeColumnToContents (i);
 }
 
 /**
@@ -82,8 +83,8 @@ void ConfirmOverwritePersonDialog::setupTexts ()
 	// for the wrong people and the labels
 	if (wrongPeople.size ()>1)
 	{
-		wrongParentItem->setText (0, tr ("Erroneous entries"));
-		ui.introLabel->setText (tr ("The following erroneous entries will be replaced with the correct entry:"));
+		wrongParentItem->setText (0, tr ("Erroneous entries (will be overwritten)"));
+		ui.introLabel->setText (tr ("The following erroneous entries will be replaced with the correct entry."));
 		ui.descriptionLabel->setText (tr (
 			"<html>"
 			"All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person. "
@@ -93,8 +94,8 @@ void ConfirmOverwritePersonDialog::setupTexts ()
 	}
 	else
 	{
-		wrongParentItem->setText (0, tr ("Erroneous entry"));
-		ui.introLabel->setText (tr ("The following erroneous entry will be replaced with the correct entry:"));
+		wrongParentItem->setText (0, tr ("Erroneous entry (will be overwritten)"));
+		ui.introLabel->setText (tr ("The following erroneous entry will be replaced with the correct entry."));
 		ui.descriptionLabel->setText (tr (
 			"<html>"
 			"Both entries must refer to the same person. All flights of the wrong person will be assigned to the correct person. "

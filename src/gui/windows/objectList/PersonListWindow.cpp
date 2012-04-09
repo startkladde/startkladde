@@ -94,9 +94,6 @@ void PersonListWindow::displayMedicalDataAction_triggered ()
 
 void PersonListWindow::mergeAction_triggered ()
 {
-	// We cannot use allowEdit because that is also used for adding and editing
-	// people, and we may want to reqire a password for merging, but not for
-	// editing.
 	if (!mergePermission.permit (this))
 		return;
 
@@ -117,6 +114,9 @@ void PersonListWindow::mergeAction_triggered ()
 		text=tr ("Please select the correct entry. All other entries will be overwritten.");
 	else
 		text=tr ("Please select the correct entry. The other entry will be overwritten.");
+
+	text += notr ("\n");
+	text += tr ("You will have to confirm the operation before any change to the database is made.");
 
 	dbId correctPersonId=invalidId;
 	ObjectSelectWindowBase::Result selectionResult=

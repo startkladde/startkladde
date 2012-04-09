@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>658</width>
-    <height>440</height>
+    <height>431</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,19 @@
    <item>
     <widget class="QLabel" name="introLabel">
      <property name="text">
-      <string extracomment="Will be replaced programmatically">[The following wrong person entries will be replaced with the correct entry:]</string>
+      <string notr="true" extracomment="Will be replaced programmatically">[The following wrong person entries will be replaced with the correct entry.]</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="descriptionLabel">
+     <property name="text">
+      <string notr="true" extracomment="Will be replaced programmatically">[All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
+Warning: this action cannot be undone.
+Continue?]</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -31,18 +43,6 @@
        <string notr="true">[1]</string>
       </property>
      </column>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="descriptionLabel">
-     <property name="text">
-      <string extracomment="Will be replaced programmatically">[All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
-Warning: this action cannot be undone.
-Continue?]</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
    <item>
