@@ -207,7 +207,7 @@ QString Flight::incompleteTowpilotName () const
 	return incompletePersonName (getTowpilotLastName (), getTowpilotFirstName ());
 }
 
-QString Flight::incompletePersonName (QString nn, QString vn) const
+QString Flight::incompletePersonName (const QString &lastName, const QString &firstName) const
 	/*
 	 * Makes the incomplete name of a person.
 	 * Parameters:
@@ -217,10 +217,10 @@ QString Flight::incompletePersonName (QString nn, QString vn) const
 	 *   - the formatted name.
 	 */
 {
-	if (isNone (nn) && isNone (vn)) return (notr ("-"));
-	else if (isNone (nn)) return qnotr ("(???, %1)").arg (vn);
-	else if (isNone (vn)) return qnotr ("(%1, ???" ")").arg (nn); // ??) would be a trigraph
-	else                  return qnotr ("%1, %2").arg (nn).arg (vn);
+	if (isNone (lastName) && isNone (firstName)) return (notr ("-"));
+	else if (isNone (lastName)) return qnotr ("(???, %1)").arg (firstName);
+	else if (isNone (firstName)) return qnotr ("(%1, ???" ")").arg (lastName); // ??) would be a trigraph
+	else                  return qnotr ("%1, %2").arg (lastName).arg (firstName);
 }
 
 // *******************

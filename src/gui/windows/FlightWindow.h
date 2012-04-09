@@ -79,32 +79,34 @@
  *
  *
  *
- * Aktion Modus  Zeiten   |    Buttons (1)                   Zeitfelder      Bemerkung
- * -----------------------+----------------------------------------------------------------------
- * Neu    lokal  -        |    Jetzt/später starten          +Automatisch    Normal lokal
- * Neu    lokal  Start    |    Jetzt/später landen oder OK   ±Automatisch    Start nachtragen (old: OK)
- * Neu    lokal  Lande    |    OK                            ±Automatisch    Fehler
- * Neu    lokal  Beide    |    OK                            -Automatisch    Nachtragen
- *                        |
- * Neu    kommt  -        |    Jetzt/später landen           +Automatisch    Normal kommt
- * Neu    kommt  Lande    |    OK                            -Automatisch    Nachtragen kommt
- *                        |
- * Neu    geht   -        |    Jetzt/Später starten          +Automatisch    Normal geht
- * Neu    geht   Start    |    OK                            -Automatisch    Nachtragen geht
- * (1) Now/later only if date==today; determined by isNowActionPossible
+ * Action Mode    Times not | Buttons[1]             Time inputs   Comments
+ *                automatic |
+ * -------------------------+------------------------------------------------------------
+ * New    local   -         | Depart now/later       Auto/Auto     Regular local
+ * New    local   Departure | Land now/later or OK   Auto/Auto     Amend departed
+ * New    local   Landing   | OK                     Auto/Auto     Error
+ * New    local   Both      | OK                     Auto/Auto     Amend
+ *                          |
+ * New    coming  -         | Land now/later         -/Auto        Regular coming
+ * New    coming  Landing   | OK                     -/Auto        Amending coming
+ *                          |
+ * New    leaving -         | Depart now/later       Auto/-        Regular leaving
+ * New    leaving Departure | OK                     Auto/-        Amending leaving
  *
- * Aktion Modus  Flags    |    Buttons                       Zeitfelder      Bemerkung
- * -----------------------+----------------------------------------------------------------------
- * Edit   lokal  -        |    OK                            Gestartet/l     Vorbereitet
- * Edit   lokal  Start    |    OK                            Gestartet/l     Fliegt
- * Edit   lokal  Lande    |    OK                            Gestartet/l     Fehler
- * Edit   lokal  Beide    |    OK                            Gestartet/l     Gelandet
- *                        |
- * Edit   kommt  -        |    OK                            -Gelandet       Angekündigt
- * Edit   kommt  Lande    |    OK                            +Gelandet       Gekommen
- *                        |
- * Edit   geht   -        |    OK                            -Gestartet      Vorbereitet geht
- * Edit   geht   Start    |    OK                            +Gestartet      Gegangen
+ * [2] Now/later only if date==today; determined by isNowActionPossible
+ *
+ * Action Mode    Flags     | Buttons                Time inputs     Comments
+ * -------------------------+-------------------------------------------------------------
+ * Edit   local   -         | OK                     Departed/Landed Prepared
+ * Edit   local   Departed  | OK                     Departed/Landed Flying
+ * Edit   local   Landed    | OK                     Departed/Landed Error
+ * Edit   local   Both      | OK                     Departed/Landed Landed
+ *                          |
+ * Edit   coming  -         | OK                     Landed          Prepared coming
+ * Edit   coming  Landed    | OK                     Landed          Landed coming
+ *                          |
+ * Edit   leaving -         | OK                     Departed        Prepared leaving
+ * Edit   leaving Departed  | OK                     Departed        Departed leaving
  */
 
 #include <QDate>

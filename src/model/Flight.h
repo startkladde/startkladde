@@ -218,7 +218,7 @@ class Flight: public FlightBase
 
 	private:
 		void initialize ();
-		virtual QString incompletePersonName (QString nn, QString vn) const;
+		virtual QString incompletePersonName (const QString &lastName, const QString &firstName) const;
 		virtual void dataChanged () const;
 
 		virtual QList<FlightError> getErrorsImpl (bool includeTowflightErrors, Cache &cache) const;
