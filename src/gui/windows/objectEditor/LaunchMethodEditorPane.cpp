@@ -97,7 +97,8 @@ void LaunchMethodEditorPane::on_typeInput_activated (int index)
 {
 	bool airtow=(ui.typeInput->itemData (index)==LaunchMethod::typeAirtow);
 
-	ui.towplaneRegistrationInput->setEnabled (airtow);
+	ui.individualTowplaneInput->setEnabled (airtow);
+	ui.specificTowplanePane->setEnabled (airtow);
 }
 
 void LaunchMethodEditorPane::on_specificTowplaneInput_toggled (bool checked)
