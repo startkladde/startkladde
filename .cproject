@@ -20,7 +20,7 @@
 					<folderInfo id="0.189254767.1799277531." name="/" resourcePath="">
 						<toolChain id="org.eclipse.cdt.build.core.prefbase.toolchain.731974120" name="No ToolChain" resourceTypeBasedDiscovery="false" superClass="org.eclipse.cdt.build.core.prefbase.toolchain">
 							<targetPlatform id="org.eclipse.cdt.build.core.prefbase.toolchain.731974120.827508225" name=""/>
-							<builder arguments="-j 2" autoBuildTarget="all" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="org.eclipse.cdt.build.core.settings.default.builder.860882021" incrementalBuildTarget="debug" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelizationNumber="1" superClass="org.eclipse.cdt.build.core.settings.default.builder">
+							<builder arguments="${MAKE_OPTIONS}" autoBuildTarget="all" cleanBuildTarget="clean" command="${MAKE_COMMAND}" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="org.eclipse.cdt.build.core.settings.default.builder.860882021" incrementalBuildTarget="debug" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="false" parallelizationNumber="2" superClass="org.eclipse.cdt.build.core.settings.default.builder">
 								<outputEntries>
 									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name=""/>
 								</outputEntries>
@@ -28,8 +28,18 @@
 							<tool id="org.eclipse.cdt.build.core.settings.holder.libs.1470917057" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs"/>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.2029492446" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1358409042" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/include/qt4/QtSql"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt4"/>
+									<listOptionValue builtIn="false" value="&quot;${MYSQL_INCLUDE_DIR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${QT_INCLUDE_DIR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${GCC_INCLUDE_DIR}&quot;"/>
+								</option>
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.378035737" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/mingw32/include"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include-fixed"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include/c++"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/include"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include/c++/mingw32"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include/c++/backward"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include"/>
 								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.425657980" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
@@ -37,25 +47,49 @@
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1520626450" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/startkladde}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/startkladde/build}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt4"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt4/QtCore"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt4/QtNetwork"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt4/QtGui"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt4/QtSql"/>
+									<listOptionValue builtIn="false" value="&quot;${GCC_INCLUDE_DIR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${MINGW_INCLUDE_DIR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${MINGW_INCLUDE_DIR}\c++&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${MINGW_INCLUDE_DIR}\c++\mingw32&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${QT_INCLUDE_DIR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${QT_INCLUDE_DIR}/QtCore&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${QT_INCLUDE_DIR}/QtSql&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${QT_INCLUDE_DIR}/QtNetwork&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${QT_INCLUDE_DIR}/QtGui&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${MYSQL_INCLUDE_DIR}&quot;"/>
+								</option>
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1069848787" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/mingw32/include"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include-fixed"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include/c++"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/include"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include/c++/mingw32"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include/c++/backward"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include"/>
 								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1209416698" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.2082553575" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.423107498" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/include/qt4"/>
-									<listOptionValue builtIn="false" value="/usr/include/qt4/Qt"/>
+									<listOptionValue builtIn="false" value="&quot;${MYSQL_INCLUDE_DIR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${QT_INCLUDE_DIR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${GCC_INCLUDE_DIR}&quot;"/>
+								</option>
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.2047776995" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/mingw32/include"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include-fixed"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include/c++"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/include"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include/c++/mingw32"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include/c++/backward"/>
+									<listOptionValue builtIn="false" value="c:/bin/qt/mingw/lib/gcc/mingw32/4.4.0/include"/>
 								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1249519243" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -67,6 +101,10 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="startkladde.null.785839410" name="startkladde"/>
 	</storageModule>
+	<storageModule moduleId="refreshScope" versionNumber="1">
+		<resource resourceType="PROJECT" workspacePath="/startkladde"/>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile"/>
 		<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
