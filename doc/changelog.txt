@@ -10,7 +10,8 @@
 	- Launch method editor: option for towplanes: "select when creating a
 	  flight" or "specify registration"
 	- Changed tab order in settings window
-	- Improved messages when merging people 
+	- Improved messages when merging people
+	- Added tooltips to GUI 
 	  
 2.1.0 (2010-10-24):
 	- Added function key shortcuts to menu entries

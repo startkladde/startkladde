@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>LatitudeInput</string>
+   <string notr="true">LongitudeInput</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
@@ -22,6 +22,9 @@
    </property>
    <item>
     <widget class="QSpinBox" name="degreesInput">
+     <property name="toolTip">
+      <string>&lt;html&gt;Degrees&lt;/html&gt;</string>
+     </property>
      <property name="suffix">
       <string>°</string>
      </property>
@@ -35,6 +38,9 @@
    </item>
    <item>
     <widget class="QSpinBox" name="minutesInput">
+     <property name="toolTip">
+      <string>&lt;html&gt;Arc minutes (1/60 degree)&lt;/html&gt;</string>
+     </property>
      <property name="suffix">
       <string>'</string>
      </property>
@@ -45,6 +51,9 @@
    </item>
    <item>
     <widget class="QSpinBox" name="secondsInput">
+     <property name="toolTip">
+      <string>&lt;html&gt;Arc seconds (1/60 arc minute or 1/3600 degree)&lt;/html&gt;</string>
+     </property>
      <property name="suffix">
       <string>&quot;</string>
      </property>

@@ -94,12 +94,15 @@
           <item row="0" column="1">
            <widget class="QLineEdit" name="locationInput">
             <property name="toolTip">
-             <string>Name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)</string>
+             <string>&lt;html&gt;The name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0" colspan="2">
            <widget class="QCheckBox" name="checkMedicalsCheckbox">
+            <property name="toolTip">
+             <string>&lt;html&gt;If enabled, a warning will be shown when creating a flight if the medical of the pilot expired.&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>Check &amp;medicals</string>
             </property>
@@ -108,7 +111,7 @@
           <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="recordTowpilotCheckbox">
             <property name="toolTip">
-             <string>If enabled, the name of the towpilot can be entered for flights</string>
+             <string>&lt;html&gt;If enabled, the name of the towpilot can be entered for flights.&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Record &amp;towpilot</string>
@@ -127,7 +130,7 @@
           <item row="2" column="0">
            <widget class="QCheckBox" name="protectLaunchMethodsCheckbox">
             <property name="toolTip">
-             <string>If enabled, the database password must be entered to modify launch methods</string>
+             <string>&lt;html&gt;If enabled, the database password must be entered to modify launch methods.&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>R&amp;equire password to modify launch methods</string>
@@ -137,7 +140,7 @@
           <item row="0" column="0">
            <widget class="QCheckBox" name="protectSettingsCheckbox">
             <property name="toolTip">
-             <string>If enabled, the database password must be entered to change settings</string>
+             <string>&lt;html&gt;If enabled, the database password must be entered to change settings.&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>&amp;Require password to change settings</string>
@@ -175,7 +178,7 @@
           <item row="3" column="0">
            <widget class="QCheckBox" name="protectMergePeopleCheckbox">
             <property name="toolTip">
-             <string>If enabled, the database password must be entered to merge people</string>
+             <string>&lt;html&gt;If enabled, the database password must be entered to merge people.&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Re&amp;quire password to merge &amp;people</string>
@@ -185,7 +188,7 @@
           <item row="4" column="0">
            <widget class="QCheckBox" name="protectFlightDatabaseCheckbox">
             <property name="toolTip">
-             <string>If enabled, the database password must be entered to display the flight database</string>
+             <string>&lt;html&gt;If enabled, the database password must be entered to display the flight database.&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Req&amp;uire password to display the &amp;flight database</string>
@@ -194,6 +197,9 @@
           </item>
           <item row="5" column="0">
            <widget class="QCheckBox" name="protectViewMedicalsCheckbox">
+            <property name="toolTip">
+             <string>&lt;html&gt;If enabled, the database password must be entered to view medical data.&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>Require password to &amp;view medical dates</string>
             </property>
@@ -201,6 +207,9 @@
           </item>
           <item row="6" column="0">
            <widget class="QCheckBox" name="protectChangeMedicalsCheckbox">
+            <property name="toolTip">
+             <string>&lt;html&gt;If enabled, the database password must be entered to change medical data.&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>Require password to c&amp;hange medical dates</string>
             </property>
@@ -218,7 +227,7 @@
           <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="enableDebugCheckbox">
             <property name="toolTip">
-             <string>Enables some menu entries for error diagnostics</string>
+             <string>&lt;html&gt;Enable some menu entries for error diagnostics&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Enable de&amp;bugging options</string>
@@ -228,7 +237,7 @@
           <item row="1" column="1">
            <widget class="QLineEdit" name="diagCommandInput">
             <property name="toolTip">
-             <string>Command to run when the menu item Help-Network diagnostics is selected</string>
+             <string>&lt;html&gt;The command to run when the menu item Help-Network diagnostics is selected (not supported on Windows)&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -325,7 +334,7 @@
              <item row="0" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlServerInput">
                <property name="toolTip">
-                <string>IP address or host name of the database server</string>
+                <string>&lt;html&gt;IP address or host name of the database server&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -342,7 +351,7 @@
              <item row="1" column="2">
               <widget class="QSpinBox" name="mysqlPortInput">
                <property name="toolTip">
-                <string>TCP port of the database server</string>
+                <string>&lt;html&gt;The TCP port of the database server&lt;/html&gt;</string>
                </property>
                <property name="maximum">
                 <number>65535</number>
@@ -362,7 +371,7 @@
              <item row="2" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlUserInput">
                <property name="toolTip">
-                <string>Username for the connection to the database server</string>
+                <string>&lt;html&gt;The username for the connection to the database server&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -379,7 +388,7 @@
              <item row="3" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlPasswordInput">
                <property name="toolTip">
-                <string>Password for the connection to the database server</string>
+                <string>&lt;html&gt;The password for the connection to the database server&lt;/html&gt;</string>
                </property>
                <property name="echoMode">
                 <enum>QLineEdit::Password</enum>
@@ -399,7 +408,7 @@
              <item row="4" column="1" colspan="4">
               <widget class="QLineEdit" name="mysqlDatabaseInput">
                <property name="toolTip">
-                <string>Name of the database on the database server</string>
+                <string>&lt;html&gt;The name of the database on the database server&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -419,7 +428,7 @@
              <item row="1" column="1">
               <widget class="QCheckBox" name="mysqlDefaultPortCheckBox">
                <property name="toolTip">
-                <string>If enabled, the default port is used for the database server</string>
+                <string>&lt;html&gt;If enabled, the default port is used for the database server.&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>De&amp;fault</string>
@@ -462,8 +471,7 @@
        <item>
         <widget class="QTreeWidget" name="infoPluginList">
          <property name="toolTip">
-          <string>The list of info plugins. Info-Plugins are displayed
-in the upper part of the main window.</string>
+          <string>&lt;html&gt;The list of info plugins. Info plugins are displayed in the upper part of the main window.&lt;/html&gt;</string>
          </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
@@ -479,7 +487,7 @@ in the upper part of the main window.</string>
            <string comment="Info plugins table list header">Title</string>
           </property>
           <property name="toolTip">
-           <string>Title of the plugin; will be displayed in the main window</string>
+           <string>&lt;html&gt;The title of the plugin will be displayed in the main window&lt;/html&gt;</string>
           </property>
          </column>
          <column>
@@ -487,7 +495,7 @@ in the upper part of the main window.</string>
            <string comment="Info plugins table list header">Plugin</string>
           </property>
           <property name="toolTip">
-           <string>Plugin command (with any parameters)</string>
+           <string>&lt;html&gt;The plugin command (with any parameters)&lt;/html&gt;</string>
           </property>
          </column>
          <column>
@@ -600,7 +608,7 @@ in the upper part of the main window.</string>
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Settings for selected info plugin</string>
+             <string>Change settings for selected info plugin</string>
             </property>
             <property name="text">
              <string>...</string>
@@ -632,6 +640,9 @@ in the upper part of the main window.</string>
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <item>
         <widget class="QGroupBox" name="weatherPluginBox">
+         <property name="toolTip">
+          <string>&lt;html&gt;The weather plugins is displayed on the right of the upper part of the main window.&lt;/html&gt;</string>
+         </property>
          <property name="title">
           <string>Weather plugin &amp;enabled</string>
          </property>
@@ -652,7 +663,7 @@ in the upper part of the main window.</string>
           <item row="6" column="2">
            <widget class="QSpinBox" name="weatherPluginHeightInput">
             <property name="toolTip">
-             <string>Height of the weather plugin in pixels</string>
+             <string>&lt;html&gt;The height of the weather plugin in pixels&lt;/html&gt;</string>
             </property>
             <property name="suffix">
              <string extracomment="With leading space"> pixels</string>
@@ -698,7 +709,7 @@ in the upper part of the main window.</string>
           <item row="4" column="2">
            <widget class="QSpinBox" name="weatherPluginIntervalInput">
             <property name="toolTip">
-             <string>Time between updates of the weather plugin</string>
+             <string>&lt;html&gt;The time between updates of the weather plugin&lt;/html&gt;</string>
             </property>
             <property name="suffix">
              <string extracomment="With leading space"> minutes</string>
@@ -743,7 +754,7 @@ in the upper part of the main window.</string>
              <item>
               <widget class="QLineEdit" name="weatherPluginCommandInput">
                <property name="toolTip">
-                <string>The program to execute. Programs in the plugin path can be specified without path.</string>
+                <string>&lt;html&gt;The program to execute for external weather plugins. Programs in the plugin path can be specified without path.&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -792,7 +803,7 @@ in the upper part of the main window.</string>
           <item row="4" column="1" colspan="2">
            <widget class="QLineEdit" name="weatherWindowTitleInput">
             <property name="toolTip">
-             <string>Title of the weather window</string>
+             <string>&lt;html&gt;The title of the weather window&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -809,7 +820,7 @@ in the upper part of the main window.</string>
           <item row="5" column="1">
            <widget class="QSpinBox" name="weatherWindowIntervalInput">
             <property name="toolTip">
-             <string>Time between updates of the picture in the weather window</string>
+             <string>&lt;html&gt;The time between updates of the picture in the weather window&lt;/html&gt;</string>
             </property>
             <property name="suffix">
              <string extracomment="With leading space"> minutes</string>
@@ -864,7 +875,7 @@ in the upper part of the main window.</string>
              <item>
               <widget class="QLineEdit" name="weatherWindowCommandInput">
                <property name="toolTip">
-                <string>The program to execute. Programs in the plugin path can be specified without path.</string>
+                <string>&lt;html&gt;The program to execute for external weather plugins. Programs in the plugin path can be specified without path.&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -921,7 +932,7 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
           <item>
            <widget class="QListWidget" name="pluginPathList">
             <property name="toolTip">
-             <string>Directories to look for plugins in</string>
+             <string>&lt;html&gt;Directories to look for plugins in&lt;/html&gt;</string>
             </property>
             <property name="dragDropMode">
              <enum>QAbstractItemView::InternalMove</enum>

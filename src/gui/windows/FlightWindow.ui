@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>512</width>
-    <height>830</height>
+    <width>416</width>
+    <height>706</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>510</width>
-        <height>781</height>
+        <width>414</width>
+        <height>657</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -59,6 +59,9 @@
           </item>
           <item row="0" column="1" colspan="2">
            <widget class="SkComboBox" name="registrationInput">
+            <property name="toolTip">
+             <string>&lt;html&gt;The registration of the plane (of the glider for airtows)&lt;/html&gt;</string>
+            </property>
             <property name="editable">
              <bool>true</bool>
             </property>
@@ -76,6 +79,9 @@
           </item>
           <item row="1" column="1" colspan="2">
            <widget class="SkLabel" name="planeTypeWidget">
+            <property name="toolTip">
+             <string>&lt;html&gt;The model of the plane, as stored in the database&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>-</string>
             </property>
@@ -202,7 +208,11 @@
            </widget>
           </item>
           <item row="7" column="1" colspan="2">
-           <widget class="SkComboBox" name="flightModeInput"/>
+           <widget class="SkComboBox" name="flightModeInput">
+            <property name="toolTip">
+             <string>&lt;html&gt;Local flights depart and land here. Coming flights depart somewhere else and land here. Leaving flights depart here and land somewhere else.&lt;/html&gt;</string>
+            </property>
+           </widget>
           </item>
           <item row="8" column="0">
            <widget class="SkLabel" name="launchMethodLabel">
@@ -229,6 +239,9 @@
           </item>
           <item row="9" column="1" colspan="2">
            <widget class="SkComboBox" name="towplaneRegistrationInput">
+            <property name="toolTip">
+             <string>&lt;html&gt;The registration of the towplane (only if the launch method is an airtow that does not specify a towplane)&lt;/html&gt;</string>
+            </property>
             <property name="editable">
              <bool>true</bool>
             </property>
@@ -246,6 +259,9 @@
           </item>
           <item row="10" column="1" colspan="2">
            <widget class="SkLabel" name="towplaneTypeWidget">
+            <property name="toolTip">
+             <string>&lt;html&gt;The model of the towplane, as stored in the database&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>-</string>
             </property>
@@ -309,7 +325,11 @@
            </widget>
           </item>
           <item row="13" column="1" colspan="2">
-           <widget class="SkComboBox" name="towflightModeInput"/>
+           <widget class="SkComboBox" name="towflightModeInput">
+            <property name="toolTip">
+             <string>&lt;html&gt;Local towflights depart and land here. Leaving towflights land somewhere else.&lt;/html&gt;</string>
+            </property>
+           </widget>
           </item>
           <item row="14" column="0">
            <widget class="SkLabel" name="departureTimeLabel">
@@ -527,6 +547,9 @@
           </item>
           <item row="17" column="1" colspan="2">
            <widget class="SkComboBox" name="departureLocationInput">
+            <property name="toolTip">
+             <string>&lt;html&gt;The departure location, or the local airfield name for local and leaving flights.&lt;/html&gt;</string>
+            </property>
             <property name="editable">
              <bool>true</bool>
             </property>
@@ -547,6 +570,9 @@
           </item>
           <item row="18" column="1" colspan="2">
            <widget class="SkComboBox" name="landingLocationInput">
+            <property name="toolTip">
+             <string>&lt;html&gt;The landing location, or the local airfield name for local and coming flights.&lt;/html&gt;</string>
+            </property>
             <property name="editable">
              <bool>true</bool>
             </property>
@@ -567,6 +593,9 @@
           </item>
           <item row="19" column="1" colspan="2">
            <widget class="SkComboBox" name="towflightLandingLocationInput">
+            <property name="toolTip">
+             <string>&lt;html&gt;The departure location, or the local airfield name for local towflights.&lt;/html&gt;</string>
+            </property>
             <property name="editable">
              <bool>true</bool>
             </property>
@@ -596,6 +625,9 @@
              </property>
              <item>
               <widget class="QSpinBox" name="numLandingsInput">
+               <property name="toolTip">
+                <string>&lt;html&gt;The total number of landings, including any touch-and-gos and the final landing&lt;/html&gt;</string>
+               </property>
                <property name="minimum">
                 <number>0</number>
                </property>

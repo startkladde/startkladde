@@ -94,10 +94,18 @@
     </spacer>
    </item>
    <item row="0" column="2">
-    <widget class="QLineEdit" name="nameInput"/>
+    <widget class="QLineEdit" name="nameInput">
+     <property name="toolTip">
+      <string>&lt;html&gt;The name of the launch method is displayed in the flight dialog.&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QLineEdit" name="shortNameInput"/>
+    <widget class="QLineEdit" name="shortNameInput">
+     <property name="toolTip">
+      <string>&lt;html&gt;The short name of the launch method is displayed in the flight table.&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
    <item row="10" column="2">
     <widget class="QLineEdit" name="commentsInput"/>
@@ -119,7 +127,11 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="SkComboBox" name="personRequiredInput"/>
+       <widget class="SkComboBox" name="personRequiredInput">
+        <property name="toolTip">
+         <string>&lt;html&gt;If true, a warning will be output if a person is not specified for a flight with this launch method.&lt;/html&gt;</string>
+        </property>
+       </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer">
@@ -141,10 +153,18 @@
     <widget class="SkComboBox" name="typeInput"/>
    </item>
    <item row="2" column="2">
-    <widget class="QLineEdit" name="logStringInput"/>
+    <widget class="QLineEdit" name="logStringInput">
+     <property name="toolTip">
+      <string>&lt;html&gt;The logbook label of the launch method is used for pilot logbook entries.&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
    <item row="4" column="2">
-    <widget class="QLineEdit" name="keyboardShortcutInput"/>
+    <widget class="QLineEdit" name="keyboardShortcutInput">
+     <property name="toolTip">
+      <string>&lt;html&gt;The keyboard shortcut can be used for quickly selecting a launch method in the flight editor.&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
    <item row="6" column="0">
     <widget class="QLabel" name="label_7">
@@ -155,6 +175,9 @@
    </item>
    <item row="6" column="2">
     <widget class="QRadioButton" name="individualTowplaneInput">
+     <property name="toolTip">
+      <string>&lt;html&gt;A towplane can be entered for every flight that is created with this launch method. This can be used for towplanes that are infrequently used at this airfield.&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Enter &amp;when creating a flight</string>
      </property>
@@ -174,6 +197,9 @@
       </property>
       <item>
        <widget class="QRadioButton" name="specificTowplaneInput">
+        <property name="toolTip">
+         <string>&lt;html&gt;The specified towplane is used for flights created with this launch method. The registration does not have to be entered for every flight. This can be used for towplanes that are frequently used at this airfield.&lt;/html&gt;</string>
+        </property>
         <property name="text">
          <string>Specify &amp;registration:</string>
         </property>

@@ -30,7 +30,7 @@
    <item row="0" column="1">
     <widget class="QLineEdit" name="captionInput">
      <property name="toolTip">
-      <string>The title displayed for the plugin in the main window</string>
+      <string>&lt;html&gt;The title displayed for the plugin in the main window&lt;/html&gt;</string>
      </property>
     </widget>
    </item>

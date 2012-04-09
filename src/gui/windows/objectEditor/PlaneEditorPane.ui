@@ -107,7 +107,11 @@
     <widget class="QLineEdit" name="registrationInput"/>
    </item>
    <item row="1" column="2">
-    <widget class="QLineEdit" name="callsignInput"/>
+    <widget class="QLineEdit" name="callsignInput">
+     <property name="toolTip">
+      <string>&lt;html&gt;Any short name, typically one or two letters or digits. This is displayed along with the registration in the flight table.&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
    <item row="2" column="2">
     <widget class="SkComboBox" name="categoryInput"/>

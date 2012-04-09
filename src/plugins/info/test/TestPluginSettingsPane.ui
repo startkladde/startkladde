@@ -30,14 +30,14 @@
    <item row="0" column="2">
     <widget class="QLineEdit" name="greetingNameInput">
      <property name="toolTip">
-      <string>The name of the one to greet</string>
+      <string>&lt;html&gt;The name of the one to greet&lt;/html&gt;</string>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
     <widget class="QCheckBox" name="richTextCheckbox">
      <property name="toolTip">
-      <string>Use formatted text</string>
+      <string>&lt;html&gt;Use formatted text&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>&amp;Rich text</string>
@@ -60,7 +60,7 @@
    <item row="2" column="2">
     <widget class="QCheckBox" name="failCheckbox">
      <property name="toolTip">
-      <string>Cause an error when saving the settings</string>
+      <string>&lt;html&gt;Cause an error when saving the settings&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>&amp;Error on save</string>

@@ -121,17 +121,14 @@
       <item>
        <widget class="SkComboBox" name="checkMedicalInput">
         <property name="toolTip">
-         <string>Check this person's medical validity
-when creating a new flight</string>
+         <string>&lt;html&gt;Check this person's medical validity when creating a new flight&lt;html&gt;</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="medicalCheckDisabledLabel">
         <property name="toolTip">
-         <string>The global medical check option is disabled. For
-medicals to be checked, enable the option
-&quot;Check medicals&quot; in the program settings.</string>
+         <string>&lt;html&gt;The global medical check option is disabled. For medicals to be checked, enable the option &quot;Check medicals&quot; in the program settings.&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Medical check is disabled!</string>
@@ -179,7 +176,7 @@ medicals to be checked, enable the option
          <bool>false</bool>
         </property>
         <property name="toolTip">
-         <string>The last date that this person's medical is valid</string>
+         <string>&lt;html&gt;The last date that this person's medical is valid&lt;/html&gt;</string>
         </property>
         <property name="displayFormat">
          <string>MM/dd/yyyy</string>
@@ -220,7 +217,11 @@ medicals to be checked, enable the option
     </widget>
    </item>
    <item row="7" column="1">
-    <widget class="QLineEdit" name="clubIdInput"/>
+    <widget class="QLineEdit" name="clubIdInput">
+     <property name="toolTip">
+      <string>&lt;html&gt;This field can be used for a member ID or similar.&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

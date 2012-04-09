@@ -45,7 +45,7 @@
       <item row="0" column="1">
        <widget class="QLineEdit" name="commandInput">
         <property name="toolTip">
-         <string>The program to execute. Programs in the plugin path can be specified without path.</string>
+         <string>&lt;html&gt;The program to execute. Programs in the plugin path can be specified without path.&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
@@ -59,7 +59,7 @@
       <item row="1" column="1">
        <widget class="QCheckBox" name="richTextCheckbox">
         <property name="toolTip">
-         <string>Use formatted text</string>
+         <string>&lt;html&gt;Use formatted text&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>&amp;Rich text</string>
