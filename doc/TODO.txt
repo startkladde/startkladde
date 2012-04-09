@@ -1,5 +1,3 @@
-Make sure that all classes (with virtual methods) have a virtual destructor
-
 On startup, several MutableObjectList instaces are deleted. Why?
 
 Wenn eine Query fehlschlägt, wird eine Exception nach außen geworfen und das
@@ -26,17 +24,10 @@ Plugin system:
   system directory
 
 * "Protocol" (like for weather plugin) for all plugins
-* Better escaping
-* Configuration for plugins, e. g. longitude for sunset time correction
 * Synchronize plugin update with clock
 * Graphical wind display
 * Better plugin termination: delete plugin after the process dies (rewrite
   ShellPlugin)
-
-Plugins:
-* Sunset: allow configuration of longitude
-* Plugin description file, GUI editing of parameters
- 
 
 Flugbuch (Vorschlag eines Fluglehrers):
 * Ausgabe Anzahl Landungen (Interessant bei Platzrunden mit dem Motorflieger)
@@ -50,7 +41,7 @@ Flugbuch (Vorschlag eines Fluglehrers):
 UI:
 * keep landed flights visible for n minutes
 * undo for depart/land
-* Window with with long plugin labels
+* Window with long plugin labels
 * signal unhandled exceptions to main window (QApplication::notify)
 * warning message before aborting migration
 
@@ -88,7 +79,6 @@ Database:
 Other:
 * Time zone safety
 * Write time to hwclock after change (?)
-* Port to Windows
 * Number of flying flights: also consider towplanes
 * Keepalive should be a feature of DefaultInterface, not ThreadSafeInterface (?)
 
@@ -138,3 +128,4 @@ Implementation:
 * Flight: all combinations of mode, started, landed, towflight
 * Flight: also test inactive times (e. g. landing time given but leaving or not
   landed)
+
