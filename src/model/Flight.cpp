@@ -469,95 +469,95 @@ QString Flight::errorDescription (Flight::Error code) const
 {
 	switch (code)
 	{
-		case ff_ok:
+		case noError:
 			return qApp->translate ("Flight", "No errors");
-		case ff_keine_id:
+		case idMissing:
 			return qApp->translate ("Flight", "Flight has no ID");
-		case ff_kein_flugzeug:
+		case planeMissing:
 			return qApp->translate ("Flight", "No plane specified");
 
-		case ff_pilot_nur_nachname:
+		case pilotFirstNameMissing:
 			if (isTraining ())
 				return qApp->translate ("Flight", "The student's first name is missing");
 			else
 				return qApp->translate ("Flight", "The pilot's first name is missing");
-		case ff_pilot_nur_vorname:
+		case pilotLastNameMissing:
 			if (isTraining ())
 				return qApp->translate ("Flight", "The student's last name is missing");
 			else
 				return qApp->translate ("Flight", "The pilot's last name is missing");
-		case ff_pilot_nicht_identifiziert:
+		case pilotNotIdentified:
 			if (isTraining ())
 				return qApp->translate ("Flight", "The student is not identified");
 			else
 				return qApp->translate ("Flight", "The pilot is not identified");
 
-		case ff_begleiter_nur_nachname:
+		case copilotFirstNameMissing:
 			if (isTraining ())
 				return qApp->translate ("Flight", "The flight instructor's first name is missing");
 			else
 				return qApp->translate ("Flight", "The copilot's first name is missing");
-		case ff_begleiter_nur_vorname:
+		case copilotLastNameMissing:
 			if (isTraining ())
 				return qApp->translate ("Flight", "The flight instructor's last name is missing");
 			else
 				return qApp->translate ("Flight", "The copilot's last name is missing");
-		case ff_begleiter_nicht_identifiziert:
+		case copilotNotIdentified:
 			if (isTraining ())
 				return qApp->translate ("Flight", "The flight instructor is not identified");
 			else
 				return qApp->translate ("Flight", "The copilot is not identified");
 
-		case ff_towpilot_nur_nachname:
+		case towpilotFirstNameMissing:
 			return qApp->translate ("Flight", "The towpilot's first name is missing");
-		case ff_towpilot_nur_vorname:
+		case towpilotLastNameMissing:
 			return qApp->translate ("Flight", "The towpilot's last name is missing");
-		case ff_towpilot_nicht_identifiziert:
+		case towpilotNotIdentified:
 			return qApp->translate ("Flight", "The towpilot is not identified");
 
-		case ff_kein_pilot:
+		case pilotMissing:
 			if (isTraining ())
 				return qApp->translate ("Flight", "No student specified");
 			else
 				return qApp->translate ("Flight", "No pilot specified");
 				
-		case ff_pilot_gleich_begleiter:
+		case pilotEqualsCopilot:
 			if (isTraining ())
 				return qApp->translate ("Flight", "Student and flight instructor are identical");
 			else
 				return qApp->translate ("Flight", "Pilot and copilot are identical");
 
-		case ff_pilot_gleich_towpilot:
+		case pilotEqualsTowpilot:
 			if (isTraining ())
 				return qApp->translate ("Flight", "Student and towpilot are identical");
 			else
 				return qApp->translate ("Flight", "Pilot and towpilot are identical");
 
-		case ff_schulung_ohne_begleiter:              return qApp->translate ("Flight", "Two-seated training without flight instructor");
-		case ff_begleiter_nicht_erlaubt:              return qApp->translate ("Flight", "No copilot allowed");
-		case ff_nur_gelandet:                         return qApp->translate ("Flight", "Flight has landed but not departed");
-		case ff_landung_vor_start:                    return qApp->translate ("Flight", "Landing before departure");
-		case ff_keine_startart:                       return qApp->translate ("Flight", "No launch method specified");
-		case ff_kein_modus:                           return qApp->translate ("Flight", "No mode specified");
-		case ff_kein_sfz_modus:                       return qApp->translate ("Flight", "No mode specified for towflight");
-		case ff_kein_flugtyp:                         return qApp->translate ("Flight", "No flight type specified");
-		case ff_landungen_negativ:                    return qApp->translate ("Flight", "Negative number of landings");
-		case ff_landungen_null:                       return qApp->translate ("Flight", "Flight has landed, but number of landings is zero");
-		case ff_schlepp_nur_gelandet:                 return qApp->translate ("Flight", "Towflight has landed but not departed");
-		case ff_schlepp_landung_vor_start:            return qApp->translate ("Flight", "Towflight landing before departure");
-		case ff_doppelsitzige_schulung_in_einsitzer:  return qApp->translate ("Flight", "Two-seated training in single-seater");
-		case ff_kein_startort:                        return qApp->translate ("Flight", "No departure location specified");
-		case ff_kein_zielort:                         return qApp->translate ("Flight", "No landing location specified");
-		case ff_kein_zielort_sfz:                     return qApp->translate ("Flight", "No landing location specified for towplane");
-		case ff_segelflugzeug_landungen:              return qApp->translate ("Flight", "Glider performs more than one landing");
-		case ff_segelflugzeug_landungen_ohne_landung: return qApp->translate ("Flight", "Glider performs landing without landing time");
-		case ff_begleiter_in_einsitzer:               return qApp->translate ("Flight", "Copilot in single-seater");
-		case ff_gastflug_in_einsitzer:                return qApp->translate ("Flight", "Passenger flight in single-seater");
-		case ff_segelflugzeug_selbststart:            return qApp->translate ("Flight", "Glider performs self launch");
-		case ff_landungen_ohne_start:                 return qApp->translate ("Flight", "Number of landings is greater than zero without departure");
-		case ff_startort_gleich_zielort:              return qApp->translate ("Flight", "Landing location and departure location are identical");
-		case ff_kein_schleppflugzeug:                 return qApp->translate ("Flight", "Towplane not specified");
-		case ff_towplane_is_glider:                   return qApp->translate ("Flight", "Towplane is glider");
+		case trainingWithoutInstructor:              return qApp->translate ("Flight", "Two-seated training without flight instructor");
+		case copilotNotAllowed:                      return qApp->translate ("Flight", "No copilot allowed");
+		case landingWithoutDeparture:                return qApp->translate ("Flight", "Flight has landed but not departed");
+		case landingBeforeDeparture:                 return qApp->translate ("Flight", "Landing before departure");
+		case launchMethodMissing:                    return qApp->translate ("Flight", "No launch method specified");
+		case modeMissing:                            return qApp->translate ("Flight", "No mode specified");
+		case towflightModeMissing:                   return qApp->translate ("Flight", "No mode specified for towflight");
+		case typeMissing:                            return qApp->translate ("Flight", "No flight type specified");
+		case numLandingsNegative:                    return qApp->translate ("Flight", "Negative number of landings");
+		case numLandingsZero:                        return qApp->translate ("Flight", "Flight has landed, but number of landings is zero");
+		case towflightLandingWithoutDeparture:       return qApp->translate ("Flight", "Towflight has landed but not departed");
+		case towflightLandingBeforeDeparture:        return qApp->translate ("Flight", "Towflight landing before departure");
+		case trainingInSingleSeater:                 return qApp->translate ("Flight", "Two-seated training in single-seater");
+		case departureLocationMissing:               return qApp->translate ("Flight", "No departure location specified");
+		case landingLocationMissing:                 return qApp->translate ("Flight", "No landing location specified");
+		case towflightLandingLocationMissing:        return qApp->translate ("Flight", "No landing location specified for towplane");
+		case gliderMultipleLandings:                 return qApp->translate ("Flight", "Glider performs more than one landing");
+		case gliderLandingsWithoutLandingTime:       return qApp->translate ("Flight", "Glider performs landing without landing time");
+		case copilotInSingleSeater:                  return qApp->translate ("Flight", "Copilot in single-seater");
+		case passengerFlightInSingleSeater:          return qApp->translate ("Flight", "Passenger flight in single-seater");
+		case gliderSelfLaunch:                       return qApp->translate ("Flight", "Glider performs self launch");
+		case landingsWithoutDeparture:               return qApp->translate ("Flight", "Number of landings is greater than zero without departure");
+		case landingLocationEqualsDepartureLocation: return qApp->translate ("Flight", "Landing location and departure location are identical");
+		case towplaneMissing:                        return qApp->translate ("Flight", "Towplane not specified");
+		case towplaneIsGlider:                       return qApp->translate ("Flight", "Towplane is glider");
 		// No default to allow compiler warning
 	}
 
@@ -619,27 +619,27 @@ QList<Flight::Error> Flight::getErrorsImpl (bool includeTowflightErrors, Cache &
 	LaunchMethod *launchMethod=cache.getNewObject<LaunchMethod> (getLaunchMethodId ());
 
 	// Basic properties
-	if (idInvalid (getId ())) errors << ff_keine_id;
-	if (getType ()==typeNone) errors << ff_kein_flugtyp;
+	if (idInvalid (getId ())) errors << idMissing;
+	if (getType ()==typeNone) errors << typeMissing;
 
 	// Pilot
 	checkPerson (errors, getPilotId (), getPilotLastName (), getPilotFirstName (),
 		launchMethod && launchMethod->personRequired,
-		ff_kein_pilot, ff_pilot_nur_nachname, ff_pilot_nur_vorname, ff_pilot_nicht_identifiziert);
+		pilotMissing, pilotFirstNameMissing, pilotLastNameMissing, pilotNotIdentified);
 
 	// Copilot (if recorded)
 	if (typeCopilotRecorded (getType ()))
 	{
 		checkPerson (errors, getCopilotId (), getCopilotLastName (), getCopilotFirstName (),
 			false,
-			ff_ok, ff_begleiter_nur_nachname, ff_begleiter_nur_vorname, ff_begleiter_nicht_identifiziert
+			noError, copilotFirstNameMissing, copilotLastNameMissing, copilotNotIdentified
 			);
 
 		if (idValid (getPilotId ()) && getPilotId ()==getCopilotId ())
-			errors << ff_pilot_gleich_begleiter;
+			errors << pilotEqualsCopilot;
 
 		if (getType ()==typeTraining2 && !copilotSpecified ())
-			errors << ff_schulung_ohne_begleiter;
+			errors << trainingWithoutInstructor;
 	}
 
 	// Towpilot (if recorded)
@@ -647,98 +647,98 @@ QList<Flight::Error> Flight::getErrorsImpl (bool includeTowflightErrors, Cache &
 	{
 		checkPerson (errors, getTowpilotId (), getTowpilotLastName (), getTowpilotFirstName (),
 			false,
-			ff_ok, ff_towpilot_nur_nachname, ff_towpilot_nur_vorname, ff_towpilot_nicht_identifiziert);
+			noError, towpilotFirstNameMissing, towpilotLastNameMissing, towpilotNotIdentified);
 
 		if (idValid (getTowpilotId ()) && getPilotId ()==getTowpilotId ())
-			errors << ff_pilot_gleich_towpilot;
+			errors << pilotEqualsTowpilot;
 	}
 	// TODO copilot equals towpilot, if both are recorded
 
 	// Plane
-	if (idInvalid (getPlaneId ())) errors << ff_kein_flugzeug;
+	if (idInvalid (getPlaneId ())) errors << planeMissing;
 
 	if (plane)
 	{
 		// Single-seat planes
 		if (plane->numSeats==1)
 		{
-			if (getType ()==typeTraining2    ) errors << ff_doppelsitzige_schulung_in_einsitzer;
-			if (getType ()==typeGuestPrivate ) errors << ff_gastflug_in_einsitzer;
-			if (getType ()==typeGuestExternal) errors << ff_gastflug_in_einsitzer;
+			if (getType ()==typeTraining2    ) errors << trainingInSingleSeater;
+			if (getType ()==typeGuestPrivate ) errors << passengerFlightInSingleSeater;
+			if (getType ()==typeGuestExternal) errors << passengerFlightInSingleSeater;
 
 			if (typeCopilotRecorded (getType ()) && copilotSpecified ())
-				errors << ff_begleiter_in_einsitzer;
+				errors << copilotInSingleSeater;
 		}
 
 		// Gliders
 		if (plane->category==Plane::categoryGlider)
 		{
 			if (launchMethod && launchMethod->type==LaunchMethod::typeSelf)
-				errors << ff_segelflugzeug_selbststart;
+				errors << gliderSelfLaunch;
 		}
 
 		// Gliders (except airtows)
 		if (plane->category==Plane::categoryGlider && launchMethod && !launchMethod->isAirtow ())
 		{
-			if (getNumLandings ()>1)                  errors << ff_segelflugzeug_landungen;
-			if (getNumLandings ()>0 && !getLanded ()) errors << ff_segelflugzeug_landungen_ohne_landung;
+			if (getNumLandings ()>1)                  errors << gliderMultipleLandings;
+			if (getNumLandings ()>0 && !getLanded ()) errors << gliderLandingsWithoutLandingTime;
 		}
 	}
 
 	// Status - generic
-	if (getNumLandings ()<0) errors << ff_landungen_negativ;
+	if (getNumLandings ()<0) errors << numLandingsNegative;
 
 	if (departsHere ()!=landsHere () && getDepartureLocation ()==getLandingLocation ())
-		errors << ff_startort_gleich_zielort;
+		errors << landingLocationEqualsDepartureLocation;
 
 	// Status - local flights
 	if (departsHere () && landsHere ())
 	{
 		if (!getDeparted () && getLanded ())
-			errors << ff_nur_gelandet;
+			errors << landingWithoutDeparture;
 
 		if (getDeparted () && getLanded () && getDepartureTime ()>getLandingTime ())
-			errors << ff_landung_vor_start;
+			errors << landingBeforeDeparture;
 	}
 
 	// Status - departing flights (local or leaving)
 	if (departsHere ())
 	{
 		if (getDeparted () && idInvalid (getLaunchMethodId ()) && !isTowflight ())
-			errors << ff_keine_startart;
+			errors << launchMethodMissing;
 
 		if (!getDeparted () && getNumLandings ()>0)
-			errors << ff_landungen_ohne_start;
+			errors << landingsWithoutDeparture;
 	}
 
 	// Status - landing flights (local or coming)
 	if (landsHere ())
 	{
 		if (getNumLandings ()==0 && getLanded ())
-			errors << ff_landungen_null;
+			errors << numLandingsZero;
 	}
 
 	if ((getDeparted () || !departsHere ())
 		&& isNone (getDepartureLocation ()))
-		errors << ff_kein_startort;
+		errors << departureLocationMissing;
 
 	if ((getLanded () || !landsHere ())
 		&& isNone (getLandingLocation ()))
-		errors << ff_kein_zielort;
+		errors << landingLocationMissing;
 
 	// Towflight errors
 	if (includeTowflightErrors && launchMethod && launchMethod->isAirtow ())
 	{
 		if ((getTowflightLanded () || !towflightLandsHere ())
 			&& isNone (getTowflightLandingLocation ()))
-			errors << ff_kein_zielort_sfz;
+			errors << towflightLandingLocationMissing;
 
 		if (!launchMethod->towplaneKnown () && idInvalid (getTowplaneId ()))
-			errors << ff_kein_schleppflugzeug;
+			errors << towplaneMissing;
 
 		if (!launchMethod->towplaneKnown () && towplane
 			&& towplane->category==Plane::categoryGlider)
-			errors << ff_towplane_is_glider;
+			errors << towplaneIsGlider;
 	}
 
 	delete plane;

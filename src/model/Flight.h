@@ -28,24 +28,38 @@ class Flight: public FlightBase
 
 	public:
 		enum Error {
-			ff_ok,
-			ff_keine_id, ff_kein_flugzeug, ff_kein_pilot, ff_pilot_gleich_begleiter,
-			ff_pilot_gleich_towpilot,
-			ff_pilot_nur_vorname, ff_pilot_nur_nachname, ff_pilot_nicht_identifiziert,
-			ff_begleiter_nur_vorname, ff_begleiter_nur_nachname,
-			ff_begleiter_nicht_identifiziert,
-			ff_towpilot_nur_vorname, ff_towpilot_nur_nachname,
-			ff_towpilot_nicht_identifiziert,
-			ff_schulung_ohne_begleiter,
-			ff_begleiter_nicht_erlaubt, ff_nur_gelandet, ff_landung_vor_start,
-			ff_keine_startart, ff_kein_modus, ff_kein_sfz_modus, ff_kein_flugtyp,
-			ff_landungen_negativ, ff_doppelsitzige_schulung_in_einsitzer,
-			ff_kein_startort, ff_kein_zielort, ff_kein_zielort_sfz,
-			ff_segelflugzeug_landungen, ff_begleiter_in_einsitzer,
-			ff_gastflug_in_einsitzer, ff_segelflugzeug_selbststart,
-			ff_schlepp_nur_gelandet, ff_schlepp_landung_vor_start, ff_landungen_null,
-			ff_landungen_ohne_start, ff_segelflugzeug_landungen_ohne_landung,
-			ff_startort_gleich_zielort, ff_kein_schleppflugzeug, ff_towplane_is_glider
+			// No error
+			noError,
+			
+			// Values missing
+			idMissing,
+			modeMissing, towflightModeMissing, typeMissing,
+			departureLocationMissing, landingLocationMissing, towflightLandingLocationMissing,
+			
+			// References missing
+			planeMissing, pilotMissing, launchMethodMissing,
+			pilotLastNameMissing   , pilotFirstNameMissing   , pilotNotIdentified   ,
+			copilotLastNameMissing , copilotFirstNameMissing , copilotNotIdentified ,
+			towpilotLastNameMissing, towpilotFirstNameMissing, towpilotNotIdentified,
+
+			// Values not unique
+			pilotEqualsCopilot, pilotEqualsTowpilot,
+			landingLocationEqualsDepartureLocation, 
+			
+			// Invalid values
+			numLandingsNegative, 
+			
+			// Inconsistencies
+			landingWithoutDeparture, landingBeforeDeparture,
+			landingsWithoutDeparture, numLandingsZero,
+			towflightLandingWithoutDeparture, towflightLandingBeforeDeparture,
+			copilotNotAllowed, trainingWithoutInstructor,
+			
+			// Inconsistencies with database
+			towplaneMissing,
+			copilotInSingleSeater, trainingInSingleSeater, passengerFlightInSingleSeater,
+			gliderMultipleLandings, gliderLandingsWithoutLandingTime,
+			gliderSelfLaunch, towplaneIsGlider
 			};
 
 
