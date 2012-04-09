@@ -53,7 +53,7 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 
 	private:
 		void appendObjectTo (QList<T> &list, const QModelIndex &tableIndex);
-		bool checkAndDelete (const T &object, bool cancelOption);
+		bool checkAndDelete (const T &object);
 		void setupText ();
 
 		MutableObjectList<T> *list;

@@ -237,10 +237,9 @@ template<class T> int ObjectListWindow<T>::editObject (const T &object)
 /**
  *
  * @param id
- * @param cancelOption
  * @return false if canceled
  */
-template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, bool cancelOption)
+template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object)
 {
 	bool objectUsed=true;
 
@@ -262,13 +261,7 @@ template<class T> bool ObjectListWindow<T>::checkAndDelete (const T &object, boo
 			qApp->translate ("ObjectListWindow<T>", "%1 %2 is in use and cannot be deleted.")
 				.arg (T::objectTypeDescriptionDefinite (), object.getDisplayName ()));
 
-		if (cancelOption)
-			text+=qApp->translate ("ObjectListWindow<T>", " Continue?");
-
 		QMessageBox::StandardButtons buttons=QMessageBox::Ok;
-
-		if (cancelOption)
-			buttons |= QMessageBox::Cancel;
 
 		if (QMessageBox::critical (this, title, text, buttons, QMessageBox::Ok)==QMessageBox::Ok)
 			// Continue
@@ -338,7 +331,7 @@ template<class T> void ObjectListWindow<T>::on_actionDelete_triggered ()
 
 		if (confirmDelete)
 		{
-			if (!checkAndDelete (object, false))
+			if (!checkAndDelete (object))
 				break;
 		}
 		else if (cancel)
