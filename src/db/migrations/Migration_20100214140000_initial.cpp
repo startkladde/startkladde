@@ -1,5 +1,7 @@
 #include "Migration_20100214140000_initial.h"
 
+REGISTER_MIGRATION (20100214140000, initial)
+
 Migration_20100214140000_initial::Migration_20100214140000_initial (Interface &interface):
 	Migration (interface)
 {

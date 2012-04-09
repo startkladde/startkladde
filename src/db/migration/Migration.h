@@ -9,6 +9,8 @@
 #include "src/concurrent/monitor/OperationMonitorInterface.h"
 #include "src/db/schema/spec/ColumnSpec.h"
 #include "src/db/schema/spec/IndexSpec.h"
+#include "src/db/migration/MigrationBuilder.h"
+#include "src/db/migration/MigrationFactory.h" // Required for REGISTER_MIGRATION
 
 template<class T> class QList;
 

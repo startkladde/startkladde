@@ -4,6 +4,8 @@
 
 #include "src/util/qString.h"
 
+REGISTER_MIGRATION (20100215215320, convert_to_utf8)
+
 Migration_20100215215320_convert_to_utf8::Migration_20100215215320_convert_to_utf8 (Interface &interface):
 	Migration (interface)
 {

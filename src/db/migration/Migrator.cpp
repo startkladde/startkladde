@@ -27,14 +27,12 @@ const QString Migrator::migrationsColumnName=notr ("version");
  * @param interface the Interface to access
  */
 Migrator::Migrator (Interface &interface):
-	interface (interface),
-	factory (new MigrationFactory ())
+	interface (interface)
 {
 }
 
 Migrator::~Migrator ()
 {
-	delete factory;
 }
 
 
@@ -47,8 +45,8 @@ void Migrator::runMigration (quint64 version, Migration::Direction direction, Op
 	Migration *migration=NULL;
 	try
 	{
-		migration=factory->createMigration (interface, version);
-		QString name=factory->migrationName (version);
+		migration   =MigrationFactory::instance ().createMigration (interface, version);
+		QString name=MigrationFactory::instance ().migrationName (version);
 
 		switch (direction)
 		{
@@ -223,7 +221,8 @@ Migrator::Action Migrator::getRequiredAction (quint64 *currentVersion, int *numP
 	if (!migrationsTableExists)
 	{
 		if (currentVersion) *currentVersion=0;
-		if (numPendingMigrations) *numPendingMigrations=factory->availableVersions ().size ();
+		if (numPendingMigrations) *numPendingMigrations=
+			MigrationFactory::instance ().availableVersions ().size ();
 		return actionMigrate;
 	}
 
@@ -250,7 +249,8 @@ Migrator::Action Migrator::getRequiredAction (quint64 *currentVersion, int *numP
 
 QList<quint64> Migrator::pendingMigrations ()
 {
-	QList<quint64> availableMigrations=factory->availableVersions ();
+	QList<quint64> availableMigrations=
+		MigrationFactory::instance ().availableVersions ();
 	QList<quint64> appliedMigrations=this->appliedMigrations ();
 
 	QList<quint64> pending;
@@ -263,7 +263,8 @@ QList<quint64> Migrator::pendingMigrations ()
 
 quint64 Migrator::nextMigration ()
 {
-	QList<quint64> availableMigrations=factory->availableVersions ();
+	QList<quint64> availableMigrations=
+		MigrationFactory::instance ().availableVersions ();
 	QList<quint64> appliedMigrations=this->appliedMigrations ();
 
 	foreach (quint64 version, availableMigrations)
@@ -275,7 +276,7 @@ quint64 Migrator::nextMigration ()
 
 quint64 Migrator::latestVersion ()
 {
-	return MigrationFactory ().latestVersion ();
+	return MigrationFactory::instance ().latestVersion ();
 }
 
 bool Migrator::isCurrent (OperationMonitorInterface monitor)

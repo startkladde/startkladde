@@ -1,5 +1,7 @@
 #include "Migration_20100427115235_add_indexes.h"
 
+REGISTER_MIGRATION (20100427115235, add_indexes)
+
 Migration_20100427115235_add_indexes::Migration_20100427115235_add_indexes (Interface &interface):
 	Migration (interface)
 {

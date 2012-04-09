@@ -74,7 +74,6 @@ class Migrator
 
 	private:
 		Interface &interface;
-		MigrationFactory *factory;
 };
 
 #endif

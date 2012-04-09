@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+REGISTER_MIGRATION (20100216190338, full_flight_type)
+
 Migration_20100216190338_full_flight_type::Migration_20100216190338_full_flight_type (Interface &interface):
 	Migration (interface)
 {

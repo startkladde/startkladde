@@ -304,9 +304,15 @@ int doStuff (const QStringList &nonOptions)
 //		db.executeQuery (notr ("bam!"));
 	else if (nonOptions[0]==notr ("db:migrations"))
 	{
-		MigrationFactory factory;
+		MigrationFactory &factory=MigrationFactory::instance ();
+
+		std::cout << "Available migrations:" << std::endl;
 		foreach (quint64 version, factory.availableVersions ())
 			std::cout << version << notr (" - ") << factory.migrationName (version) << std::endl;
+
+		std::cout << "Available migrations (new):" << std::endl;
+		foreach (quint64 version, factory.new_availableVersions ())
+			std::cout << version << notr (" - ") << factory.new_migrationName (version) << std::endl;
 	}
 	else if (nonOptions[0]==notr ("db:dump"))
 	{

@@ -1,5 +1,7 @@
 #include "Migration_20100216124307_rename_columns.h"
 
+REGISTER_MIGRATION (20100216124307, rename_columns)
+
 Migration_20100216124307_rename_columns::Migration_20100216124307_rename_columns (Interface &interface):
 	Migration (interface)
 {

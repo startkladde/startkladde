@@ -1,5 +1,7 @@
 #include "Migration_20100215211913_drop_old_columns.h"
 
+REGISTER_MIGRATION (20100215211913, drop_old_columns)
+
 Migration_20100215211913_drop_old_columns::Migration_20100215211913_drop_old_columns (Interface &interface):
 	Migration (interface)
 {

@@ -1,5 +1,7 @@
 #include "Migration_20100216180053_full_plane_category.h"
 
+REGISTER_MIGRATION (20100216180053, full_plane_category)
+
 Migration_20100216180053_full_plane_category::Migration_20100216180053_full_plane_category (Interface &interface):
 	Migration (interface)
 {

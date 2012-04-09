@@ -3,6 +3,8 @@
 #include <iostream>
 #include "src/util/qString.h"
 
+REGISTER_MIGRATION (20100216105657, remove_temp_tables)
+
 Migration_20100216105657_remove_temp_tables::Migration_20100216105657_remove_temp_tables (Interface &interface):
 	Migration (interface)
 {

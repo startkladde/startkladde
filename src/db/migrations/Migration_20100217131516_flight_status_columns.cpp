@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+REGISTER_MIGRATION (20100217131516, flight_status_columns)
+
 Migration_20100217131516_flight_status_columns::Migration_20100217131516_flight_status_columns (Interface &interface):
 	Migration (interface)
 {

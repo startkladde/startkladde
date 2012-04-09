@@ -1,5 +1,7 @@
 #include "Migration_20100215172237_add_towpilot.h"
 
+REGISTER_MIGRATION (20100215172237, add_towpilot)
+
 Migration_20100215172237_add_towpilot::Migration_20100215172237_add_towpilot (Interface &interface):
 	Migration (interface)
 {

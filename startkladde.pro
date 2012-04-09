@@ -127,6 +127,7 @@ HEADERS += \
            src/db/interface/exceptions/AccessDeniedException.h \
            src/db/interface/exceptions/DatabaseDoesNotExistException.h \
            src/db/migration/Migration.h \
+           src/db/migration/MigrationBuilder.h \
            src/db/migration/MigrationFactory.h \
            src/db/migration/Migrator.h \
            src/db/migration/MigratorWorker.h \

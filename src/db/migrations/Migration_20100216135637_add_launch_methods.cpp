@@ -10,6 +10,8 @@
 #include "src/util/environment.h"
 #include "src/text.h"
 
+REGISTER_MIGRATION (20100216135637, add_launch_methods)
+
 Migration_20100216135637_add_launch_methods::Migration_20100216135637_add_launch_methods (Interface &interface):
 	Migration (interface)
 {

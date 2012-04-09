@@ -1,5 +1,7 @@
 #include "Migration_20100726124616_add_medical_validity.h"
 
+REGISTER_MIGRATION (20100726124616, add_medical_validity)
+
 Migration_20100726124616_add_medical_validity::Migration_20100726124616_add_medical_validity (Interface &interface):
 	Migration (interface)
 {

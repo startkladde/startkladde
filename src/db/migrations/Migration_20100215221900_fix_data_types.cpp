@@ -1,5 +1,7 @@
 #include "Migration_20100215221900_fix_data_types.h"
 
+REGISTER_MIGRATION (20100215221900, fix_data_types)
+
 Migration_20100215221900_fix_data_types::Migration_20100215221900_fix_data_types (Interface &interface):
 	Migration (interface)
 {
