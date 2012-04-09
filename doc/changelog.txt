@@ -1,9 +1,13 @@
 	- Bugfix: crash after canceling an update object operation from the main
 	  window
 	- Bugfix: (wrong) time zone displayed for time in main window
+	- Password protection for merging people
 	- Flight database window and CSV export
 	- Internationalization
 	- Password protect medical data (view and change)
+	- Launch method editor: option for towplanes: "select when creating a
+	  flight" or "specify registration"
+	- Changed tab order in settings window
 	  
 2.1.0 (2010-10-24):
 	- Added function key shortcuts to menu entries
