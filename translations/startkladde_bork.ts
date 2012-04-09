@@ -3583,29 +3583,28 @@ Cunffeegooreshun: %2</translation>
 <context>
     <name>PersonEditorPane</name>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="27"/>
         <source>Medical check is disabled!</source>
-        <translation type="unfinished">Medeecel check is deesebled!</translation>
+        <translation type="obsolete">Medeecel check is deesebled!</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="72"/>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="79"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="69"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="76"/>
         <source>Yes</source>
         <translation type="unfinished">Yes</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="73"/>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="80"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="70"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="77"/>
         <source>No</source>
         <translation type="unfinished">Nu</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="197"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="194"/>
         <source>Last name not specified.</source>
         <translation type="unfinished">Lest neme-a nut speceeffied.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="201"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="198"/>
         <source>First name not specified.</source>
         <translation type="unfinished">Furst neme-a nut speceeffied.</translation>
     </message>
@@ -3665,8 +3664,12 @@ medeecels tu be-a checked, ineble-a zee oopshun
     </message>
     <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="137"/>
+        <source>Medical check is disabled!</source>
+        <translation type="unfinished">Medeecel check is deesebled!</translation>
+    </message>
+    <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="169"/>

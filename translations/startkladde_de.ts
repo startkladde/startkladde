@@ -3593,29 +3593,28 @@ Konfiguration: %2</translation>
 <context>
     <name>PersonEditorPane</name>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="27"/>
         <source>Medical check is disabled!</source>
-        <translation>Medical-Prüfung ist deaktiviert!</translation>
+        <translation type="obsolete">Medical-Prüfung ist deaktiviert!</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="72"/>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="79"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="69"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="76"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="73"/>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="80"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="70"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="77"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="197"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="194"/>
         <source>Last name not specified.</source>
         <translation>Es wurde kein Nachname angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="201"/>
+        <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="198"/>
         <source>First name not specified.</source>
         <translation>Es wurde kein Vorname angegeben.</translation>
     </message>
@@ -3676,8 +3675,12 @@ aktiviert werden.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="137"/>
+        <source>Medical check is disabled!</source>
+        <translation>Medical-Prüfung ist deaktiviert!</translation>
+    </message>
+    <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="169"/>

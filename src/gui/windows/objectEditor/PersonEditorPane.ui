@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>424</width>
-    <height>203</height>
+    <width>318</width>
+    <height>157</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -134,7 +134,7 @@ medicals to be checked, enable the option
 &quot;Check medicals&quot; in the program settings.</string>
         </property>
         <property name="text">
-         <string>...</string>
+         <string>Medical check is disabled!</string>
         </property>
        </widget>
       </item>

@@ -22,9 +22,6 @@ PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &ca
 {
 	ui.setupUi (this);
 
-	// Not pre-set because this prevents us from making the dialog smaller in
-	// Designer
-	ui.medicalCheckDisabledLabel->setText (tr ("Medical check is disabled!"));
 	ui.medicalCheckDisabledLabel->setVisible (false);
 
 	setupText ();
