@@ -1051,32 +1051,32 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         <translation>Unbekannter Fehler</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="854"/>
+        <location filename="../src/model/Flight.cpp" line="858"/>
         <source>Towflight for flight %1</source>
         <translation>Schleppflug für Flug %1</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="855"/>
+        <location filename="../src/model/Flight.cpp" line="859"/>
         <source>(See glider flight)</source>
         <translation>(Siehe geschleppter Flug)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="85"/>
+        <location filename="../src/model/Flight.h" line="100"/>
         <source>Towpilot</source>
         <translation>Schlepppilot</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="190"/>
+        <location filename="../src/model/Flight.h" line="205"/>
         <source>flight</source>
         <translation>Flug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="191"/>
+        <location filename="../src/model/Flight.h" line="206"/>
         <source>the flight</source>
         <translation>der Flug</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="192"/>
+        <location filename="../src/model/Flight.h" line="207"/>
         <source>flights</source>
         <translation>Flüge</translation>
     </message>
@@ -1257,7 +1257,7 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="214"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="227"/>
         <source>%n flight(s) exported</source>
         <translation>
             <numerusform>%n Flug exportiert</numerusform>
@@ -1265,23 +1265,35 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="175"/>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="213"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="188"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="226"/>
         <source>Export flight database</source>
         <translation>Flugdatenbank exportieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="176"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="177"/>
+        <source>FlightList_%1.csv</source>
+        <comment>Filename</comment>
+        <translation>Flugdatenbank_%1.csv</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="183"/>
+        <source>FlightList_%1_%2.csv</source>
+        <comment>Filename</comment>
+        <translation>Flugdatenbank_%1_%2.csv</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="189"/>
         <source>CSV files (*.csv);;All files (*)</source>
         <translation>CSV-Dateien (*.csv);;Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="220"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="233"/>
         <source>Exporting failed: %1</source>
         <translation>Exportieren fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="222"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="235"/>
         <source>Exporting failed</source>
         <translation>Exportieren fehlgeschlagen</translation>
     </message>
@@ -1908,7 +1920,7 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="80"/>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="247"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="250"/>
         <source>-</source>
         <translation>-</translation>
     </message>
@@ -1930,12 +1942,12 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>&amp;Nachname:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="578"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="581"/>
         <source>Num&amp;ber of landin&amp;gs:</source>
         <translation>Anzahl Land&amp;ungen:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="659"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="662"/>
         <source>Dat&amp;e:</source>
         <translation>Dat&amp;um:</translation>
     </message>
@@ -1982,111 +1994,111 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>Sc&amp;hleppflugzeug:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="240"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="243"/>
         <source>Towplane model:</source>
         <translation>Typ Schleppflugzeug:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="254"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="257"/>
         <source>Towpilot:</source>
         <translation>Schlepppilot:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="261"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="264"/>
         <source>La&amp;st name:</source>
         <comment>Towpilot</comment>
         <translation>&amp;Nachname:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="281"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="284"/>
         <source>&amp;First name:</source>
         <comment>Towpilot</comment>
         <translation>&amp;Vorname:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="301"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="304"/>
         <source>Towfli&amp;ght mode:</source>
         <translation>&amp;Modus Schleppflug:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="314"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="317"/>
         <source>De&amp;parture time:</source>
         <translation>Startze&amp;it:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="324"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="327"/>
         <source>Au&amp;tomatic</source>
         <comment>Departure time</comment>
         <translation>Automati&amp;sch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="382"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="385"/>
         <source>Landing ti&amp;me:</source>
         <translation>Lan&amp;dezeit:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="392"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="395"/>
         <source>&amp;Automatic</source>
         <comment>Landing time</comment>
         <translation>Au&amp;tomatisch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="450"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="453"/>
         <source>Landing ti&amp;me towplane:</source>
         <translation>Landezeit Schleppflu&amp;gzeug:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="460"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="463"/>
         <source>A&amp;utomatic</source>
         <comment>Landing time towplane</comment>
         <translation>Automatis&amp;ch</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="518"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="521"/>
         <source>Departure locat&amp;ion:</source>
         <translation>Sta&amp;rtort:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="538"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="541"/>
         <source>Landing locat&amp;ion:</source>
         <translation>&amp;Zielort:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="558"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="561"/>
         <source>Landing locat&amp;ion towplane:</source>
         <translation>&amp;Zielort Schleppflugzeug:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="626"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="629"/>
         <source>Comme&amp;nts:</source>
         <translation>&amp;Bemerkungen:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="639"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="642"/>
         <source>Accounti&amp;ng notes:</source>
         <translation>Abrechnungshin&amp;weise:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="349"/>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="417"/>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="485"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="352"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="420"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="488"/>
         <source>HH:mm</source>
         <translation>HH:mm</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="356"/>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="424"/>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="492"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="359"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="427"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="495"/>
         <source>UTC</source>
         <translation>UTC</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="678"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="681"/>
         <source>MM/dd/yyyy</source>
         <translation>dd.MM.yyyy</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="701"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="704"/>
         <source>&amp;Errors:</source>
         <translation>&amp;Fehler:</translation>
     </message>
@@ -3397,27 +3409,26 @@ Konfiguration: %2</translation>
         <translation>f</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="259"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="258"/>
         <source>%1 in use</source>
         <translation>%1 benutzt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="262"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="261"/>
         <source>%1 %2 is in use and cannot be deleted.</source>
         <translation>%1 %2 wird verwendet und kann daher nicht gelöscht werden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="266"/>
         <source> Continue?</source>
-        <translation>Fortsetzen?</translation>
+        <translation type="obsolete">Fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="319"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="312"/>
         <source>Delete %1?</source>
         <translation>%1 löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="320"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="313"/>
         <source>Do you want to delete %1 %2?</source>
         <translation>Soll %1 %2 gelöscht werden?</translation>
     </message>

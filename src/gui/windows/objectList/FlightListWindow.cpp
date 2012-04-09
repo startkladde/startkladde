@@ -170,9 +170,22 @@ void FlightListWindow::on_actionRefresh_triggered ()
  */
 void FlightListWindow::on_actionExport_triggered ()
 {
+	QString defaultFileName;
+	if (currentLast==currentFirst)
+	{
+		QString date=currentLast.toString (Qt::ISODate);
+		defaultFileName=tr ("FlightList_%1.csv", "Filename").arg (date);
+	}
+	else
+	{
+		QString first=currentFirst.toString (Qt::ISODate);
+		QString last =currentLast .toString (Qt::ISODate);
+		defaultFileName=tr ("FlightList_%1_%2.csv", "Filename").arg (first).arg (last);
+	}
+
 	// Query the user for a file name
 	QString fileName=QFileDialog::getSaveFileName (this,
-			tr ("Export flight database"), notr ("."),
+			tr ("Export flight database"), notr ("./"+defaultFileName),
 			tr ("CSV files (*.csv);;All files (*)"));
 
 	// Cancel if the file name was empty (probably because the user canceled)

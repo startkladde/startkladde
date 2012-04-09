@@ -1045,32 +1045,32 @@ Updete-a zee detebese-a noo?</translation>
         <translation type="unfinished">Unknoon irrur</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="854"/>
+        <location filename="../src/model/Flight.cpp" line="858"/>
         <source>Towflight for flight %1</source>
         <translation type="unfinished">Tooffleeght fur fleeght %1</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.cpp" line="855"/>
+        <location filename="../src/model/Flight.cpp" line="859"/>
         <source>(See glider flight)</source>
         <translation type="unfinished">(See-a gleeder fleeght)</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="85"/>
+        <location filename="../src/model/Flight.h" line="100"/>
         <source>Towpilot</source>
         <translation type="unfinished">Toopeelut</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="190"/>
+        <location filename="../src/model/Flight.h" line="205"/>
         <source>flight</source>
         <translation type="unfinished">fleeght</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="191"/>
+        <location filename="../src/model/Flight.h" line="206"/>
         <source>the flight</source>
         <translation type="unfinished">zee fleeght</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="192"/>
+        <location filename="../src/model/Flight.h" line="207"/>
         <source>flights</source>
         <translation type="unfinished">fleeghts</translation>
     </message>
@@ -1251,18 +1251,30 @@ Updete-a zee detebese-a noo?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="175"/>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="213"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="177"/>
+        <source>FlightList_%1.csv</source>
+        <comment>Filename</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="183"/>
+        <source>FlightList_%1_%2.csv</source>
+        <comment>Filename</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="188"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="226"/>
         <source>Export flight database</source>
         <translation type="unfinished">Ixpurt fleeght detebese-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="176"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="189"/>
         <source>CSV files (*.csv);;All files (*)</source>
         <translation type="unfinished">CSF feeles (*.csf);;Ell feeles (*)</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="214"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="227"/>
         <source>%n flight(s) exported</source>
         <translation type="unfinished">
             <numerusform>%n fleeght ixpurted</numerusform>
@@ -1270,12 +1282,12 @@ Updete-a zee detebese-a noo?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="220"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="233"/>
         <source>Exporting failed: %1</source>
         <translation type="unfinished">Ixpurteeng feeeled: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="222"/>
+        <location filename="../src/gui/windows/objectList/FlightListWindow.cpp" line="235"/>
         <source>Exporting failed</source>
         <translation type="unfinished">Ixpurteeng feeeled</translation>
     </message>
@@ -1905,7 +1917,7 @@ Edd it tu zee detebese-a?</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="80"/>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="247"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="250"/>
         <source>-</source>
         <translation type="unfinished">-</translation>
     </message>
@@ -1964,121 +1976,121 @@ Edd it tu zee detebese-a?</translation>
         <translation type="unfinished">Tu&amp;vplune-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="240"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="243"/>
         <source>Towplane model:</source>
         <translation type="unfinished">Tooplune-a mudel:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="254"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="257"/>
         <source>Towpilot:</source>
         <translation type="unfinished">Toopeelut:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="261"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="264"/>
         <source>La&amp;st name:</source>
         <comment>Towpilot</comment>
         <translation type="unfinished">La&amp;st neme-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="281"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="284"/>
         <source>&amp;First name:</source>
         <comment>Towpilot</comment>
         <translation type="unfinished">&amp;Furst neme-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="301"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="304"/>
         <source>Towfli&amp;ght mode:</source>
         <translation type="unfinished">Toofflee&amp;ght mude-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="314"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="317"/>
         <source>De&amp;parture time:</source>
         <translation type="unfinished">De-a&amp;pertoore-a teeme-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="324"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="327"/>
         <source>Au&amp;tomatic</source>
         <comment>Departure time</comment>
         <translation type="unfinished">Oo&amp;tumeteec</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="349"/>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="417"/>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="485"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="352"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="420"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="488"/>
         <source>HH:mm</source>
         <translation type="unfinished">HH:mm</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="356"/>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="424"/>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="492"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="359"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="427"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="495"/>
         <source>UTC</source>
         <translation type="unfinished">UTC</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="382"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="385"/>
         <source>Landing ti&amp;me:</source>
         <translation type="unfinished">Lundeeng tee&amp;me-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="392"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="395"/>
         <source>&amp;Automatic</source>
         <comment>Landing time</comment>
         <translation type="unfinished">&amp;Ootumeteec</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="450"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="453"/>
         <source>Landing ti&amp;me towplane:</source>
         <translation type="unfinished">Lundeeng tee&amp;me-a tooplune-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="460"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="463"/>
         <source>A&amp;utomatic</source>
         <comment>Landing time towplane</comment>
         <translation type="unfinished">A&amp;utumeteec</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="518"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="521"/>
         <source>Departure locat&amp;ion:</source>
         <translation type="unfinished">Depertoore-a lucet&amp;iun:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="538"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="541"/>
         <source>Landing locat&amp;ion:</source>
         <translation type="unfinished">Lundeeng lucet&amp;iun:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="558"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="561"/>
         <source>Landing locat&amp;ion towplane:</source>
         <translation type="unfinished">Lundeeng lucet&amp;iun tooplune-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="578"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="581"/>
         <source>Num&amp;ber of landin&amp;gs:</source>
         <translation type="unfinished">Noom&amp;ber ooff lundeen&amp;gs:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="626"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="629"/>
         <source>Comme&amp;nts:</source>
         <translation type="unfinished">Cumme-a&amp;nts:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="639"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="642"/>
         <source>Accounti&amp;ng notes:</source>
         <translation type="unfinished">Eccuoontee&amp;ng nutes:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="659"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="662"/>
         <source>Dat&amp;e:</source>
         <translation type="unfinished">Det&amp;i:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="678"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="681"/>
         <source>MM/dd/yyyy</source>
         <translation type="unfinished">MM/dd/yyyy</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/FlightWindow.ui" line="701"/>
+        <location filename="../src/gui/windows/FlightWindow.ui" line="704"/>
         <source>&amp;Errors:</source>
         <translation type="unfinished">&amp;Irrurs:</translation>
     </message>
@@ -3387,27 +3399,26 @@ Cunffeegooreshun: %2</translation>
         <translation type="unfinished">v</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="259"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="258"/>
         <source>%1 in use</source>
         <translation type="unfinished">%1 in use-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="262"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="261"/>
         <source>%1 %2 is in use and cannot be deleted.</source>
         <translation type="unfinished">%1 %2 is in use-a und cunnut be-a deleted.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="266"/>
         <source> Continue?</source>
-        <translation type="unfinished"> Cunteenooe-a?</translation>
+        <translation type="obsolete"> Cunteenooe-a?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="319"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="312"/>
         <source>Delete %1?</source>
         <translation type="unfinished">Delete-a %1?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="320"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="313"/>
         <source>Do you want to delete %1 %2?</source>
         <translation type="unfinished">Du yuoo vunt tu delete-a %1 %2?</translation>
     </message>
