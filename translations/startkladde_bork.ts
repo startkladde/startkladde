@@ -2245,29 +2245,29 @@ Edd it tu zee detebese-a?</translation>
 <context>
     <name>LaunchMethodEditorPane</name>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="49"/>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="55"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="50"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="56"/>
         <source>Yes</source>
         <translation type="unfinished">Yes</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="50"/>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="56"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="51"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="57"/>
         <source>No</source>
         <translation type="unfinished">Nu</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="148"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="150"/>
         <source>Name not specified</source>
         <translation type="unfinished">Neme-a nut speceeffied</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="149"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="151"/>
         <source>Short name not specified</source>
         <translation type="unfinished">Shurt neme-a nut speceeffied</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="150"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="152"/>
         <source>Logbook label not specified</source>
         <translation type="unfinished">Lugbuuk lebel nut speceeffied</translation>
     </message>
@@ -4269,208 +4269,216 @@ pessvurd moost be-a intered.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="36"/>
+        <source>&amp;General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="238"/>
+        <source>Command for network diagnostic&amp;s:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="265"/>
         <source>&amp;Database</source>
         <translation type="unfinished">&amp;Detebese-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="48"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="277"/>
         <source>T&amp;ype:</source>
         <translation type="unfinished">T&amp;ype-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="77"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="306"/>
         <source>Connection</source>
         <translation type="unfinished">Cunnecshun</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="89"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="318"/>
         <source>S&amp;erver:</source>
         <translation type="unfinished">S&amp;irfer:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="99"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="328"/>
         <source>IP address or host name of the database server</source>
         <translation type="unfinished">IP eddress oor hust neme-a ooff zee detebese-a serfer</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="106"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="335"/>
         <source>Po&amp;rt:</source>
         <translation type="unfinished">Pu&amp;rt:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="116"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="345"/>
         <source>TCP port of the database server</source>
         <translation type="unfinished">TCP purt ooff zee detebese-a serfer</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="126"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="355"/>
         <source>&amp;User name:</source>
         <translation type="unfinished">&amp;User neme-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="136"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="365"/>
         <source>Username for the connection to the database server</source>
         <translation type="unfinished">Userneme-a fur zee cunnecshun tu zee detebese-a serfer</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="143"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="372"/>
         <source>P&amp;assword:</source>
         <translation type="unfinished">P&amp;essvurd:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="153"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="382"/>
         <source>Password for the connection to the database server</source>
         <translation type="unfinished">Pessvurd fur zee cunnecshun tu zee detebese-a serfer</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="163"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="392"/>
         <source>Da&amp;tabase:</source>
         <translation type="unfinished">Da&amp;tebese-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="173"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="402"/>
         <source>Name of the database on the database server</source>
         <translation type="unfinished">Neme-a ooff zee detebese-a oon zee detebese-a serfer</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="193"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="422"/>
         <source>If enabled, the default port is used for the database server</source>
         <translation type="unfinished">Iff inebled, zee deffoolt purt is used fur zee detebese-a serfer</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="196"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="425"/>
         <source>De&amp;fault</source>
         <translation type="unfinished">De-a&amp;foolt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="203"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="432"/>
         <source>(default: 3306)</source>
         <translation type="unfinished">(deffoolt: 3306)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="230"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished">&amp;Setteengs</translation>
+        <translation type="obsolete">&amp;Setteengs</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="236"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="42"/>
         <source>User interface</source>
         <translation type="unfinished">User interffece-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="242"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="48"/>
         <source>&amp;Language:</source>
         <translation type="unfinished">&amp;Lungooege-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="275"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="81"/>
         <source>General</source>
         <translation type="unfinished">Generel</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="281"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="87"/>
         <source>&amp;Airfield name:</source>
         <translation type="unfinished">&amp;Eurffeeeld neme-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="291"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="97"/>
         <source>Name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)</source>
         <translation type="unfinished">Neme-a ooff zee eurffeeeld thees prugrem is used et (i. g. &quot;Rheeenstettee&quot;)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="298"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="104"/>
         <source>Check &amp;medicals</source>
         <translation type="unfinished">Check &amp;medeecels</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="305"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="111"/>
         <source>If enabled, the name of the towpilot can be entered for flights</source>
         <translation type="unfinished">Iff inebled, zee neme-a ooff zee toopeelut cun be-a intered fur fleeghts</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="308"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="114"/>
         <source>Record &amp;towpilot</source>
         <translation type="unfinished">Recurd &amp;toopeelut</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="318"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="124"/>
         <source>Permissions</source>
         <translation type="unfinished">Permeessiuns</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="324"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="130"/>
         <source>If enabled, the database password must be entered to modify launch methods</source>
         <translation type="unfinished">Iff inebled, zee detebese-a pessvurd moost be-a intered tu mudeeffy loonch methuds</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="327"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="133"/>
         <source>R&amp;equire password to modify launch methods</source>
         <translation type="unfinished">R&amp;iqooure-a pessvurd tu mudeeffy loonch methuds</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="334"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="140"/>
         <source>If enabled, the database password must be entered to change settings</source>
         <translation type="unfinished">Iff inebled, zee detebese-a pessvurd moost be-a intered tu chunge-a setteengs</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="337"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="143"/>
         <source>&amp;Require password to change settings</source>
         <translation type="unfinished">&amp;Reqooure-a pessvurd tu chunge-a setteengs</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="372"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="178"/>
         <source>If enabled, the database password must be entered to merge people</source>
         <translation type="unfinished">Iff inebled, zee detebese-a pessvurd moost be-a intered tu merge-a peuple-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="375"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="181"/>
         <source>Re&amp;quire password to merge &amp;people</source>
         <translation type="unfinished">Re-a&amp;qooure-a pessvurd tu merge-a &amp;peuple-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="382"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="188"/>
         <source>If enabled, the database password must be entered to display the flight database</source>
         <translation type="unfinished">Iff inebled, zee detebese-a pessvurd moost be-a intered tu deespley zee fleeght detebese-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="385"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="191"/>
         <source>Req&amp;uire password to display the &amp;flight database</source>
         <translation type="unfinished">Req&amp;uure-a pessvurd tu deespley zee &amp;fleeght detebese-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="392"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="198"/>
         <source>Require password to &amp;view medical dates</source>
         <translation type="unfinished">Reqooure-a pessvurd tu &amp;feeoo medeecel detes</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="399"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="205"/>
         <source>Require password to c&amp;hange medical dates</source>
         <translation type="unfinished">Reqooure-a pessvurd tu c&amp;hunge-a medeecel detes</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="409"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="215"/>
         <source>Diagnostics</source>
         <translation type="unfinished">Deeegnustics</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="415"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="221"/>
         <source>Enables some menu entries for error diagnostics</source>
         <translation type="unfinished">Inebles sume-a menoo intreees fur irrur deeegnustics</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="418"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="224"/>
         <source>Enable de&amp;bugging options</source>
         <translation type="unfinished">Ineble-a de-a&amp;booggeeng oopshuns</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="425"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="231"/>
         <source>Command to run when the menu item Help-Network diagnostics is selected</source>
         <translation type="unfinished">Cummund tu roon vhee zee menoo item Help-Netvurk deeegnustics is selected</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="432"/>
         <source>Command for network dia&amp;gnostics:</source>
-        <translation type="unfinished">Cummund fur netvurk deea&amp;gnusteecs:</translation>
+        <translation type="obsolete">Cummund fur netvurk deea&amp;gnusteecs:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="459"/>

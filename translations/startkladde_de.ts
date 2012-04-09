@@ -2253,29 +2253,29 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
 <context>
     <name>LaunchMethodEditorPane</name>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="49"/>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="55"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="50"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="56"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="50"/>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="56"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="51"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="57"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="148"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="150"/>
         <source>Name not specified</source>
         <translation>Es wurde kein Name angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="149"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="151"/>
         <source>Short name not specified</source>
         <translation>Es wurde kein Kürzel angegeben</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="150"/>
+        <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.cpp" line="152"/>
         <source>Logbook label not specified</source>
         <translation>Es wurde keine Flugbuch-Bezeichnung angegeben</translation>
     </message>
@@ -4282,209 +4282,217 @@ Datenbankpasswort erforderlich.</translation>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="36"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="265"/>
         <source>&amp;Database</source>
         <translation>&amp;Datenbank</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="77"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="306"/>
         <source>Connection</source>
         <translation>Verbindung</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="99"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="328"/>
         <source>IP address or host name of the database server</source>
         <translation>IP-Adresse oder Hostname des Datenbankservers</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="116"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="345"/>
         <source>TCP port of the database server</source>
         <translation>TCP-Port des Datenbankservers</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="126"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="355"/>
         <source>&amp;User name:</source>
         <translation>Be&amp;nutzername:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="136"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="365"/>
         <source>Username for the connection to the database server</source>
         <translation>Benutzername für die Verbindung zum Datenbankserver</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="153"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="382"/>
         <source>Password for the connection to the database server</source>
         <translation>Passwort für die Verbindung zum Datenbankserver</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="163"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="392"/>
         <source>Da&amp;tabase:</source>
         <translation>Daten&amp;bank:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="173"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="402"/>
         <source>Name of the database on the database server</source>
         <translation>Name der zu verwendenden Datenbank auf dem Datenbankserver</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="193"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="422"/>
         <source>If enabled, the default port is used for the database server</source>
         <translation>Wenn aktiviert, wird der Standard-Datenbank-Port verwendet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="291"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="97"/>
         <source>Name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)</source>
         <translation>Name des Flugplatzes, an dem dieses Programm eingesetzt wird (z. B. &quot;Rheinstetten&quot;)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="298"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="36"/>
+        <source>&amp;General</source>
+        <translation>Allg&amp;emein</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="104"/>
         <source>Check &amp;medicals</source>
         <translation>Medicals ü&amp;berprüfen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="305"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="111"/>
         <source>If enabled, the name of the towpilot can be entered for flights</source>
         <translation>Wenn aktiviert, kann der Name des Schlepppiloten von Flügen eingetragen werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="318"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="124"/>
         <source>Permissions</source>
         <translation>Berechtigungen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="324"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="130"/>
         <source>If enabled, the database password must be entered to modify launch methods</source>
         <translation>Wenn aktiviert, muss zum Ändern von Startarten das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="327"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="133"/>
         <source>R&amp;equire password to modify launch methods</source>
         <translation>Passwort zum Ändern von &amp;Startarten erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="334"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="140"/>
         <source>If enabled, the database password must be entered to change settings</source>
         <translation>Wenn aktiviert, muss zum Speichern von Einstellungen das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="372"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="178"/>
         <source>If enabled, the database password must be entered to merge people</source>
         <translation>Wenn aktiviert, muss zum Zusammenfassen von Personen das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="382"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="188"/>
         <source>If enabled, the database password must be entered to display the flight database</source>
         <translation>Wenn aktiviert, muss zum Ändern von Startarten das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="392"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="198"/>
         <source>Require password to &amp;view medical dates</source>
         <translation>Passwort z&amp;um Anzeigen von Medical-Daten erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="399"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="205"/>
         <source>Require password to c&amp;hange medical dates</source>
         <translation>Passwort zum Ändern &amp;von Medical-Daten erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="409"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="215"/>
         <source>Diagnostics</source>
         <translation>Diagnose</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="415"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="221"/>
         <source>Enables some menu entries for error diagnostics</source>
         <translation>Aktiviert einige Menüeinträge zur Fehlerdiagnose</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="425"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="231"/>
         <source>Command to run when the menu item Help-Network diagnostics is selected</source>
         <translation>Kommando, das ausgeführt wird, wenn der Menüpunkt Hilfe-&gt;Netzwerkdiagnose ausgeführt wird</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="48"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="238"/>
+        <source>Command for network diagnostic&amp;s:</source>
+        <translation>Ko&amp;mmando für Netzwerkdiagnose:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="277"/>
         <source>T&amp;ype:</source>
         <translation>T&amp;yp:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="89"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="318"/>
         <source>S&amp;erver:</source>
         <translation>&amp;Server:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="106"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="335"/>
         <source>Po&amp;rt:</source>
         <translation>P&amp;ort:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="143"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="372"/>
         <source>P&amp;assword:</source>
         <translation>Pa&amp;sswort:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="196"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="425"/>
         <source>De&amp;fault</source>
         <translation>Standa&amp;rd</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="203"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="432"/>
         <source>(default: 3306)</source>
         <translation>(Standard: 3306)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="230"/>
         <source>&amp;Settings</source>
-        <translation>&amp;Einstellungen</translation>
+        <translation type="obsolete">&amp;Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="236"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="42"/>
         <source>User interface</source>
         <translation>Benutzeroberfläche</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="242"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="48"/>
         <source>&amp;Language:</source>
         <translation>Spra&amp;che:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="275"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="81"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="281"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="87"/>
         <source>&amp;Airfield name:</source>
         <translation>O&amp;rt:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="308"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="114"/>
         <source>Record &amp;towpilot</source>
         <translation>Schlepppi&amp;lot erfassen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="337"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="143"/>
         <source>&amp;Require password to change settings</source>
         <translation>Passwort zum Ändern von Eins&amp;tellungen erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="375"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="181"/>
         <source>Re&amp;quire password to merge &amp;people</source>
         <translation>Passwort zum &amp;Zusammenfassen von Personen erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="385"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="191"/>
         <source>Req&amp;uire password to display the &amp;flight database</source>
         <translation>Passwort zum Abrufen der &amp;Flugdatenbank erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="418"/>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="224"/>
         <source>Enable de&amp;bugging options</source>
         <translation>Optionen zur Fehlersuche (Debu&amp;gging) aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="432"/>
         <source>Command for network dia&amp;gnostics:</source>
-        <translation>Ko&amp;mmando für Netzwerkdiagnose:</translation>
+        <translation type="obsolete">Ko&amp;mmando für Netzwerkdiagnose:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="459"/>
