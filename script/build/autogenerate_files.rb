@@ -1,56 +1,29 @@
 #!/usr/bin/env ruby
 
 require 'pathname'
-#require 'fileutils'
-require 'erb'
 
-class GeneratedFile
-	attr_reader :template, :output
+### Change to the project base directory 
 
-	def initialize(template, output)
-		template=Pathname.new(template) unless template.is_a?(Pathname)
-		output  =Pathname.new(output  ) unless output  .is_a?(Pathname)
-		@template=template
-		@output=output
-	end
+# This script is assumed to be located in script/build
+Dir.chdir Pathname.new(File.dirname(__FILE__)).join("..", "..")
+
+
+### Generate the version
+
+# Call the make_version script in the version directory
+Dir.chdir("version") {
+	system "ruby make_version.rb"
+}
+
+### Generate the current schema
+ 
+template=Pathname.pwd.join('src', 'db', 'schema', 'CurrentSchema.cpp.erb')
+output  =Pathname.pwd.join('build', 'CurrentSchema.cpp')
+
+# Make sure the directory for the output exists
+output.dirname.mkpath
+if !system("erb -T 1 #{template} >#{output}")
+	# Generation failed. Delete the output so we don't leave an old version behind
+	puts "Generation of #{output} failed"
+	output.delete
 end
-
-class Generator
-	def generate(template)
-		ERB.new(template, nil, "%>").result(binding)
-	end
-end
-
-begin
-	generated_files=[
-		GeneratedFile.new("src/db/schema/CurrentSchema.cpp.erb", "build/CurrentSchema.cpp")
-	]
-
-	# Change to the project base directory
-	Dir.chdir Pathname.new(File.dirname(__FILE__)).join("..").join("..")
-
-	# Create the files
-	generator=Generator.new
-	generated_files.each { |generatedFile|
-		if generatedFile.template.file?
-		#if File.file?(generatedFile.template)
-			puts "Writing #{generatedFile.output}"
-
-
-			template=File.read(generatedFile.template)
-			output=generator.generate(template)
-			generatedFile.output.dirname.mkpath
-			File.open(generatedFile.output, "w") { |file| file.write output }
-		else
-			puts "Template #{generatedFile.template} does not exist" 
-		end
-	}
-
-rescue RuntimeError => ex
-	puts "Error: #{ex}"
-
-end
-
-Dir.chdir "version"
-system "ruby make_version.rb"
-
