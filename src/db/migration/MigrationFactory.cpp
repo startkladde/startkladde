@@ -26,7 +26,7 @@ MigrationFactory::~MigrationFactory ()
 	// Delete the builders, they are owned by the factory. This is never going
 	// to happen, though, because the factory is a singleton and is never
 	// deleted.
-	foreach (MigrationBuilder *builder, builders.keys ())
+	foreach (MigrationBuilder *builder, builders.values ())
 		delete builder;
 }
 
