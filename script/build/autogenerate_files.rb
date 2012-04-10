@@ -74,8 +74,6 @@ begin
 
 	generated_files=[
 		# These files use the migrations
-		GeneratedFile.new("src/db/migration/migrations.h.erb"        , "build/migrations.h"        ),
-		GeneratedFile.new("src/db/migration/migrations_headers.h.erb", "build/migrations_headers.h"),
 		GeneratedFile.new("src/migrations.pro.erb"                   , "build/migrations.pro"      ),
 
 		# This does not use the migrations at all

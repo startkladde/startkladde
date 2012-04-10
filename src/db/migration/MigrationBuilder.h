@@ -6,6 +6,10 @@
 class Migration;
 class Interface;
 
+
+/**
+ * See factoryPatterns.txt
+ */
 class MigrationBuilder
 {
 	public:

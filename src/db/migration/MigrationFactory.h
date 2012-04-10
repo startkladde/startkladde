@@ -24,6 +24,8 @@ class Migration;
 /**
  * Determines available migrations, creates migrations and determines
  * migration information.
+ *
+ * See factoryPatterns.txt
  */
 class MigrationFactory
 {
@@ -47,9 +49,6 @@ class MigrationFactory
 
 		QList<quint64> availableVersions () const;
 		quint64 latestVersion () const;
-
-		QList<quint64> new_availableVersions () const;
-		QString new_migrationName (quint64 version) const;
 
 		Migration *createMigration (Interface &interface, quint64 version) const;
 		QString migrationName (quint64 version) const;

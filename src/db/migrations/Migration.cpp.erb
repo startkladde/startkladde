@@ -1,5 +1,7 @@
 #include "<%= class_name %>.h"
 
+REGISTER_MIGRATION (<%= timestamp %>, <%=name %>)
+
 <%= class_name %>::<%= class_name %> (Interface &interface):
 	Migration (interface)
 {
