@@ -1,6 +1,6 @@
 #include "version.h"
 
-#include "version/version.h"
+#include "build/version.h"
 #include "text.h"
 #include "i18n/notr.h"
 

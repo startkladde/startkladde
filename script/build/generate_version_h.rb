@@ -8,7 +8,7 @@ base_dir=Pathname.new(File.dirname(__FILE__)).join("..", "..")
 
 # File names
 version_file=base_dir.join('version', 'version')
-output      =base_dir.join('version', 'version.h')
+output      =base_dir.join('build', 'version.h')
 
 def svn_version(dir)
   if File.directory?('.svn')

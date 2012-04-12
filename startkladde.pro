@@ -61,7 +61,6 @@ MOC_DIR= build
 UI_DIR= build
 RCC_DIR= build
 
-#DEPENDPATH += . version
 INCLUDEPATH += .
 
 unix {
