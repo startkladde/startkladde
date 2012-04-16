@@ -24,6 +24,8 @@ class SettingsWindow;
  */
 class PluginSettingsPane: public QWidget
 {
+		Q_OBJECT
+
 	public:
 		PluginSettingsPane (QWidget *parent=NULL);
 		virtual ~PluginSettingsPane ();
