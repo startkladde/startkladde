@@ -51,8 +51,8 @@
 #include <QVariant>
 #include <QThread>
 
-#include <errmsg.h>
-#include <mysqld_error.h>
+#include <mysql/errmsg.h>
+#include <mysql/mysqld_error.h>
 
 #include "src/util/qString.h"
 #include "src/db/result/DefaultResult.h"
