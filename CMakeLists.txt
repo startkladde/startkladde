@@ -1,20 +1,26 @@
-cmake_minimum_required(VERSION 2.8)
+# FIXME win32 resource file (.exe icon, Windows only)
+# FIXME pull in Qt Mysql plugin
+# TODO use globbing for sources and headers (and remove the inappropriate acpi widget) 
 
+cmake_minimum_required (VERSION 2.8)
+PROJECT (startkladdde)
 
-PROJECT(startkladdde)
+# Include additional cmake scripts (e. g. finding the MySQL library)
+SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 
-SET( CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}" )
+# Find packages
+FIND_PACKAGE (Qt4       REQUIRED)
+FIND_PACKAGE (MySQL 5.0 REQUIRED)
 
-FIND_PACKAGE(Qt4 REQUIRED)
-FIND_PACKAGE("MySQL" 5.0 REQUIRED)
-
-
-SET(QT_USE_QTSQL TRUE)
+# Setup the Qt library
+SET(QT_USE_QTSQL     TRUE)
 SET(QT_USE_QTNETWORK TRUE)
 
-set(CMAKE_AUTOMOC TRUE)
+# This is available starting 2.8.6 which is not currently available in the
+# latest Ubuntu release.
+#set(CMAKE_AUTOMOC TRUE)
 
-file(GLOB MIGRATIONS src/db/migrations Migration_*.cpp)
+file (GLOB MIGRATIONS src/db/migrations/Migration_*.cpp)
 
 SET(startkladde_SOURCES
 	${MIGRATIONS}
@@ -371,14 +377,31 @@ QT4_ADD_RESOURCES(startkladde_RESOURCES_RCC ${startkladde_RESOURCES})
 INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
-ADD_EXECUTABLE(startkladde ${startkladde_SOURCES} 
+#add_custom_command(
+#      OUTPUT ${PROJECT_BINARY_DIR}/sk.bat
+#      COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/sk.bat ${PROJECT_BINARY_DIR}/sk.bat
+#      DEPENDS ${PROJECT_SOURCE_DIR}/sk.bat 
+#      )
+
+if(WIN32)
+	# TODO do this on or after build, not every time we run cmake.
+	# add_custom_command with add_custom_target may or may not be appropriate. 
+	SET (qtlibs QtCore4.dll QtGui4.dll QtSql4.dll QtNetwork4.dll mingwm10.dll libgcc_s_dw2-1.dll)
+	foreach (qtlib ${qtlibs})
+		message ("Pulling in Qt library ${qtlib}")
+		file (COPY ${QT_BINARY_DIR}/${qtlib} DESTINATION ${PROJECT_BINARY_DIR})
+	endforeach()
+endif()
+	
+ADD_EXECUTABLE(startkladde
+	${startkladde_SOURCES} 
 	${startkladde_HEADERS_MOC} 
     ${startkladde_FORMS_HEADERS} 
-    ${startkladde_RESOURCES_RCC})
+    ${startkladde_RESOURCES_RCC}
+)
 
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${MYSQL_INCLUDE_DIR})
 
 
 TARGET_LINK_LIBRARIES(startkladde ${QT_LIBRARIES})
-
 

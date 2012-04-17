@@ -51,8 +51,9 @@
 #include <QVariant>
 #include <QThread>
 
-#include <mysql/errmsg.h>
-#include <mysql/mysqld_error.h>
+// FIXME on windows, can we use mysql/... here? or ... on linux?
+#include <errmsg.h>
+#include <mysqld_error.h>
 
 #include "src/util/qString.h"
 #include "src/db/result/DefaultResult.h"
