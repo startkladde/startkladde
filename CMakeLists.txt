@@ -1,6 +1,6 @@
-# FIXME win32 resource file (.exe icon, Windows only)
 # FIXME pull in Qt Mysql plugin
-# TODO use globbing for sources and headers (and remove the inappropriate acpi widget) 
+# TODO use globbing for sources and headers (and remove the inappropriate acpi widget)
+# FIXME the executable is 6.7 MB as opposed to 2.2 MB with qmake 
 
 cmake_minimum_required (VERSION 2.8)
 PROJECT (startkladdde)
@@ -395,6 +395,8 @@ if(WIN32)
 	# TODO the MySQL finder should export MYSQL_LIBRARY_DIR or MYSQL_BINARY_DIR
 	message ("Pulling in MySQL library libmysql.dll")
 	file (COPY ${MYSQL_INCLUDE_DIR}/../lib/libmysql.dll DESTINATION ${PROJECT_BINARY_DIR})
+	
+	SET (startkladde_WINDOWS_RESOURCES config/startkladde.rc)
 endif()
 
 	
@@ -403,6 +405,7 @@ ADD_EXECUTABLE(startkladde
 	${startkladde_HEADERS_MOC} 
     ${startkladde_FORMS_HEADERS} 
     ${startkladde_RESOURCES_RCC}
+    ${startkladde_WINDOWS_RESOURCES}
 )
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${MYSQL_INCLUDE_DIR})
