@@ -391,7 +391,12 @@ if(WIN32)
 		message ("Pulling in Qt library ${qtlib}")
 		file (COPY ${QT_BINARY_DIR}/${qtlib} DESTINATION ${PROJECT_BINARY_DIR})
 	endforeach()
+
+	# TODO the MySQL finder should export MYSQL_LIBRARY_DIR or MYSQL_BINARY_DIR
+	message ("Pulling in MySQL library libmysql.dll")
+	file (COPY ${MYSQL_INCLUDE_DIR}/../lib/libmysql.dll DESTINATION ${PROJECT_BINARY_DIR})
 endif()
+
 	
 ADD_EXECUTABLE(startkladde
 	${startkladde_SOURCES} 
