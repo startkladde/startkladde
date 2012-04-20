@@ -1,9 +1,24 @@
-# FIXME pull in Qt Mysql plugin
+# TODO use RELEASE as default?
 # TODO use globbing for sources and headers (and remove the inappropriate acpi widget)
-# FIXME the executable is 6.7 MB as opposed to 2.2 MB with qmake 
+# TODO generate version with cmake, and regenerate on every run; then replace SK_BUILD (do include the build type)
+# TODO can we generate the current schema with cmake?
+# TODO the following compiler options and defines were used by qmake:
+#   -Wextra -O2 -frtti -fexceptions -mthreads -Wall
+#   -DQT_LARGEFILE_SUPPORT -DQT_NEEDS_QMAIN -DQT_THREAD_SUPPORT -DUNICODE
+#   -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2
+# TODO clean up compiler options, add -Wall
+# TODO need SK_WINDOWS on Windows
+# TODO installation (cpack): include required Qt plugins
 
 cmake_minimum_required (VERSION 2.8)
 PROJECT (startkladdde)
+
+# For gcc and release node, enable some options that make the binary smaller
+if (CMAKE_COMPILER_IS_GNUCXX)
+	set (CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE}        -DQT_NO_DEBUG") # Disable QT debug code
+	set (CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -s"           ) # Strip binary
+endif ()
+
 
 # Include additional cmake scripts (e. g. finding the MySQL library)
 SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
@@ -401,6 +416,7 @@ endif()
 
 	
 ADD_EXECUTABLE(startkladde
+	WIN32                            # GUI application on Windows - ignored on other platforms
 	${startkladde_SOURCES} 
 	${startkladde_HEADERS_MOC} 
     ${startkladde_FORMS_HEADERS} 
