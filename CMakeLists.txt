@@ -1,6 +1,6 @@
+# TODO add to version: date, build type, svn revision
 # TODO use RELEASE as default?
 # TODO use globbing for sources and headers (and remove the inappropriate acpi widget)
-# TODO generate version with cmake, and regenerate on every run; then replace SK_BUILD (do include the build type)
 # TODO can we generate the current schema with cmake?
 # TODO the following compiler options and defines were used by qmake:
 #   -Wextra -O2 -frtti -fexceptions -mthreads -Wall
@@ -13,19 +13,18 @@
 cmake_minimum_required (VERSION 2.8)
 PROJECT (startkladdde)
 
-# For gcc and release node, enable some options that make the binary smaller
-if (CMAKE_COMPILER_IS_GNUCXX)
-	set (CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE}        -DQT_NO_DEBUG") # Disable QT debug code
-	set (CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -s"           ) # Strip binary
-endif ()
-
-
 # Include additional cmake scripts (e. g. finding the MySQL library)
 SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
+
+
+##############
+## Packages ##
+##############
 
 # Find packages
 FIND_PACKAGE (Qt4       REQUIRED)
 FIND_PACKAGE (MySQL 5.0 REQUIRED)
+FIND_PACKAGE (Subversion 1.4)
 
 # Setup the Qt library
 SET(QT_USE_QTSQL     TRUE)
@@ -34,6 +33,17 @@ SET(QT_USE_QTNETWORK TRUE)
 # This is available starting 2.8.6 which is not currently available in the
 # latest Ubuntu release.
 #set(CMAKE_AUTOMOC TRUE)
+
+# For gcc and release node, enable some options that make the binary smaller
+if (CMAKE_COMPILER_IS_GNUCXX)
+	set (CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE}        -DQT_NO_DEBUG") # Disable QT debug code
+	set (CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -s"           ) # Strip binary
+endif ()
+
+
+##################
+## Source files ##
+##################
 
 file (GLOB MIGRATIONS src/db/migrations/Migration_*.cpp)
 
@@ -414,6 +424,13 @@ if(WIN32)
 	SET (startkladde_WINDOWS_RESOURCES config/startkladde.rc)
 endif()
 
+set (startkladde_VERSION_MAJOR 2)
+set (startkladde_VERSION_MINOR 1)
+set (startkladde_VERSION_REVISION 0)
+
+configure_file ("${PROJECT_SOURCE_DIR}/src/build.h.in" "${PROJECT_BINARY_DIR}/build.h")
+
+include_directories("${PROJECT_BINARY_DIR}")
 	
 ADD_EXECUTABLE(startkladde
 	WIN32                            # GUI application on Windows - ignored on other platforms
