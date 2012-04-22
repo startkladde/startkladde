@@ -1,13 +1,13 @@
-# TODO add to version: date, build type, svn revision
-# TODO use RELEASE as default?
+# TODO add to version: build type, svn revision
 # TODO use globbing for sources and headers (and remove the inappropriate acpi widget)
-# TODO can we generate the current schema with cmake?
+# TODO SK_WINDOWS on Windows, or individually configure the values it is used
+# for
+# TODO use RELEASE as default build type?
 # TODO the following compiler options and defines were used by qmake:
 #   -Wextra -O2 -frtti -fexceptions -mthreads -Wall
 #   -DQT_LARGEFILE_SUPPORT -DQT_NEEDS_QMAIN -DQT_THREAD_SUPPORT -DUNICODE
 #   -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2
 # TODO clean up compiler options, add -Wall
-# TODO need SK_WINDOWS on Windows
 # TODO installation (cpack): include required Qt plugins
 
 cmake_minimum_required (VERSION 2.8)
@@ -22,8 +22,8 @@ SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 ##############
 
 # Find packages
-FIND_PACKAGE (Qt4       REQUIRED)
-FIND_PACKAGE (MySQL 5.0 REQUIRED)
+FIND_PACKAGE (Qt4            REQUIRED)
+FIND_PACKAGE (MySQL      5.0 REQUIRED)
 FIND_PACKAGE (Subversion 1.4)
 
 # Setup the Qt library
