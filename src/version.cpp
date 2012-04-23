@@ -2,7 +2,10 @@
 
 #include "text.h"
 #include "i18n/notr.h"
+
+// Generated headers
 #include "build.h"
+#include "svnVersion.h"
 
 QString getVersion ()
 {
@@ -12,6 +15,10 @@ QString getVersion ()
 		.arg (BUILD_VERSION_MAJOR)
 		.arg (BUILD_VERSION_MINOR)
 		.arg (BUILD_VERSION_REVISION);
+
+	QString svnInfo (SVN_VERSION);
+	if (!svnInfo.isEmpty ())
+		version+=qnotr (" revision %1").arg (svnInfo);
 
 	QString buildType (BUILD_TYPE);
 	if (!buildType.isEmpty ())

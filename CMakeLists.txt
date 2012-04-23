@@ -1,4 +1,6 @@
 # TODO add to version: svn revision
+# FIXME svnversion statt revision aus svn info?
+# TODO handle svn not found, not a working copy
 # TODO copy translations
 # TODO use globbing for sources and headers (and remove the inappropriate acpi widget)
 # TODO SK_WINDOWS on Windows, or individually configure the values it is used
@@ -40,6 +42,9 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 	set (CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE}        -DQT_NO_DEBUG") # Disable QT debug code
 	set (CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -s"           ) # Strip binary
 endif ()
+
+
+
 
 
 ##################
@@ -440,6 +445,7 @@ ADD_EXECUTABLE(startkladde
     ${startkladde_FORMS_HEADERS} 
     ${startkladde_RESOURCES_RCC}
     ${startkladde_WINDOWS_RESOURCES}
+    ${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h
 )
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${MYSQL_INCLUDE_DIR})
@@ -447,3 +453,39 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${MYSQL_IN
 
 TARGET_LINK_LIBRARIES(startkladde ${QT_LIBRARIES})
 
+
+#########
+## SVN ##
+#########
+
+## a custom target that is always built
+#
+## creates svnheader.h using cmake script
+
+# a custom target that is always built
+#add_custom_target (svnheader ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h)
+ADD_CUSTOM_TARGET(svnheader ALL)
+
+# creates svnversion.h using cmake script
+#add_custom_command (
+#	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h
+#    COMMAND ${CMAKE_COMMAND}
+#    	-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+#    	-P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generateSvnHeader.cmake
+#)
+ADD_CUSTOM_COMMAND(
+	TARGET svnheader
+	COMMAND ${CMAKE_COMMAND}
+		-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR} 
+		-P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generateSvnHeader.cmake
+)
+
+
+# svnVersion.h is a generated file
+set_source_files_properties (
+	${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h
+    PROPERTIES GENERATED TRUE
+    HEADER_FILE_ONLY TRUE)
+
+# explicitly say that the executable depends on the svnheader
+add_dependencies (startkladde svnheader)
