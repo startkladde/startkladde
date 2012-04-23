@@ -1,4 +1,5 @@
-# TODO add to version: build type, svn revision
+# TODO add to version: svn revision
+# TODO copy translations
 # TODO use globbing for sources and headers (and remove the inappropriate acpi widget)
 # TODO SK_WINDOWS on Windows, or individually configure the values it is used
 # for
@@ -8,7 +9,7 @@
 #   -DQT_LARGEFILE_SUPPORT -DQT_NEEDS_QMAIN -DQT_THREAD_SUPPORT -DUNICODE
 #   -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2
 # TODO clean up compiler options, add -Wall
-# TODO installation (cpack): include required Qt plugins
+# TODO installation (cpack): include required Qt plugins (Windows only) and translations
 
 cmake_minimum_required (VERSION 2.8)
 PROJECT (startkladdde)

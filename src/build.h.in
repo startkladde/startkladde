@@ -5,6 +5,8 @@
 #define BUILD_VERSION_MINOR    @startkladde_VERSION_MINOR@
 #define BUILD_VERSION_REVISION @startkladde_VERSION_REVISION@
 
+#define BUILD_TYPE "@CMAKE_BUILD_TYPE@"
+
 
 
 #endif
