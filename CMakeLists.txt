@@ -1,5 +1,4 @@
 # TODO handle: svn not found, not a working copy
-# TODO copy translations
 # TODO use globbing for sources and headers (and remove the inappropriate acpi widget)
 # TODO SK_WINDOWS on Windows, or individually configure the values it is used
 # for
@@ -406,11 +405,9 @@ QT4_ADD_RESOURCES(startkladde_RESOURCES_RCC ${startkladde_RESOURCES})
 INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
-#add_custom_command(
-#      OUTPUT ${PROJECT_BINARY_DIR}/sk.bat
-#      COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/sk.bat ${PROJECT_BINARY_DIR}/sk.bat
-#      DEPENDS ${PROJECT_SOURCE_DIR}/sk.bat 
-#      )
+INCLUDE_DIRECTORIES ("${PROJECT_BINARY_DIR}")
+INCLUDE_DIRECTORIES ("${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" "${MYSQL_INCLUDE_DIR}")
+
 
 if(WIN32)
 	# TODO do this on or after build, not every time we run cmake.
@@ -434,8 +431,30 @@ set (startkladde_VERSION_REVISION 0)
 
 configure_file ("${PROJECT_SOURCE_DIR}/src/build.h.in" "${PROJECT_BINARY_DIR}/build.h")
 
-include_directories("${PROJECT_BINARY_DIR}")
-	
+
+##################
+## Translations ##
+##################
+
+# Make a list of translation source files (absolute paths)
+file (GLOB translation_sources translations/*.ts)
+
+# Create the translations/ directory in the build directory
+file (MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/translations)
+
+# Set the OUTPUT_LOCATION of the translation source files to the translations/
+# directory in the build directory. QT4_CREATE_TRANSLATION will place the
+# compiled translations there.
+SET_SOURCE_FILES_PROPERTIES (${translation_sources} PROPERTIES OUTPUT_LOCATION ${PROJECT_BINARY_DIR}/translations)
+
+# Add rules for compiling the translation files
+QT4_CREATE_TRANSLATION(translation_files ${translation_sources})
+
+
+################
+## Executable ##
+################
+
 ADD_EXECUTABLE(startkladde
 	WIN32                            # GUI application on Windows - ignored on other platforms
 	${startkladde_SOURCES} 
@@ -444,12 +463,10 @@ ADD_EXECUTABLE(startkladde
     ${startkladde_RESOURCES_RCC}
     ${startkladde_WINDOWS_RESOURCES}
     ${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h
+     ${translation_files}
 )
 
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${MYSQL_INCLUDE_DIR})
-
-
-TARGET_LINK_LIBRARIES(startkladde ${QT_LIBRARIES})
+TARGET_LINK_LIBRARIES (startkladde ${QT_LIBRARIES})
 
 
 #########
