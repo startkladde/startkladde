@@ -1,6 +1,4 @@
-# TODO add to version: svn revision
-# FIXME svnversion statt revision aus svn info?
-# TODO handle svn not found, not a working copy
+# TODO handle: svn not found, not a working copy
 # TODO copy translations
 # TODO use globbing for sources and headers (and remove the inappropriate acpi widget)
 # TODO SK_WINDOWS on Windows, or individually configure the values it is used
@@ -458,21 +456,11 @@ TARGET_LINK_LIBRARIES(startkladde ${QT_LIBRARIES})
 ## SVN ##
 #########
 
-## a custom target that is always built
-#
-## creates svnheader.h using cmake script
+# See http://stackoverflow.com/questions/3780667/use-cmake-to-get-build-time-svn-revision
 
-# a custom target that is always built
-#add_custom_target (svnheader ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h)
-ADD_CUSTOM_TARGET(svnheader ALL)
+ADD_CUSTOM_TARGET (svnheader ALL)
 
-# creates svnversion.h using cmake script
-#add_custom_command (
-#	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h
-#    COMMAND ${CMAKE_COMMAND}
-#    	-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-#    	-P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generateSvnHeader.cmake
-#)
+# Create svnVersion.h using cmake script
 ADD_CUSTOM_COMMAND(
 	TARGET svnheader
 	COMMAND ${CMAKE_COMMAND}
@@ -480,12 +468,11 @@ ADD_CUSTOM_COMMAND(
 		-P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generateSvnHeader.cmake
 )
 
-
-# svnVersion.h is a generated file
+# Mark svnVersion.h as generated
 set_source_files_properties (
 	${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h
     PROPERTIES GENERATED TRUE
     HEADER_FILE_ONLY TRUE)
 
-# explicitly say that the executable depends on the svnheader
+# The executable depends on the svnheader target
 add_dependencies (startkladde svnheader)
