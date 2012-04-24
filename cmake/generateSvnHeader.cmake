@@ -1,14 +1,21 @@
 include (FindSubversion)
 
-# Extract working copy information into SVN_... variables
-Subversion_WC_INFO (${SOURCE_DIR} SVN)
+if (SUBVERSION_FOUND)
+	# Extract working copy information into SVN_... variables
+	Subversion_WC_INFO (${SOURCE_DIR} SVN)
+	SET (SVN_REVISION "${SVN_WC_REVISION}")
+else ()
+	# Set dummy variables
+	SET (SVN_REVISION "svn")
+endif ()
+
 
 # Write the header file contents to a temporary file
-file (WRITE svnVersion.h.txt "#define SVN_VERSION \"${SVN_WC_REVISION}\"\n")
+file (WRITE svnVersion.h.txt "#define SVN_VERSION \"${SVN_REVISION}\"\n")
 
 # Copy the file to the final file (only if it changed)
 execute_process (COMMAND ${CMAKE_COMMAND} -E copy_if_different svnVersion.h.txt svnVersion.h)
-                        
+
                         
 # From FindSubversion.cmake:                        
 #  FIND_PACKAGE(Subversion)
