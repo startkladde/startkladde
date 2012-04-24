@@ -24,7 +24,6 @@ SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 # Find packages
 FIND_PACKAGE (Qt4            REQUIRED)
 FIND_PACKAGE (MySQL      5.0 REQUIRED)
-FIND_PACKAGE (Subversion 1.4)
 
 # Setup the Qt library
 SET(QT_USE_QTSQL     TRUE)
@@ -414,12 +413,12 @@ if(WIN32)
 	# add_custom_command with add_custom_target may or may not be appropriate. 
 	SET (qtlibs QtCore4.dll QtGui4.dll QtSql4.dll QtNetwork4.dll mingwm10.dll libgcc_s_dw2-1.dll)
 	foreach (qtlib ${qtlibs})
-		message ("Pulling in Qt library ${qtlib}")
+		#message ("Pulling in Qt library ${qtlib}")
 		file (COPY ${QT_BINARY_DIR}/${qtlib} DESTINATION ${PROJECT_BINARY_DIR})
 	endforeach()
 
 	# TODO the MySQL finder should export MYSQL_LIBRARY_DIR or MYSQL_BINARY_DIR
-	message ("Pulling in MySQL library libmysql.dll")
+	#message ("Pulling in MySQL library libmysql.dll")
 	file (COPY ${MYSQL_INCLUDE_DIR}/../lib/libmysql.dll DESTINATION ${PROJECT_BINARY_DIR})
 	
 	SET (startkladde_WINDOWS_RESOURCES config/startkladde.rc)
