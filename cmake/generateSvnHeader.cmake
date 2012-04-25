@@ -1,3 +1,8 @@
+# This only detects subversion working copies if they contain a .svn directory.
+# This seems to be the case for both svn and TortoiseSVN at the moment, but we
+# may want to use the subversion client - if found - to determine whether the
+# source directory is a working directory.
+
 SET (svn_dir "${SOURCE_DIR}/.svn")
 
 IF(EXISTS "${svn_dir}" AND IS_DIRECTORY "${svn_dir}")
