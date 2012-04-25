@@ -28,8 +28,9 @@ SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 ##############
 
 # Find packages
-FIND_PACKAGE (Qt4            REQUIRED)
-FIND_PACKAGE (MySQL      5.0 REQUIRED)
+FIND_PACKAGE (Qt4   REQUIRED    )
+FIND_PACKAGE (MySQL 5.0 REQUIRED)
+FIND_PACKAGE (Acpi              )
 
 # Setup the Qt library
 SET(QT_USE_QTSQL     TRUE)
@@ -59,8 +60,17 @@ file (GLOB_RECURSE startkladde_HEADERS   RELATIVE ${PROJECT_SOURCE_DIR} src/*.h 
 file (GLOB_RECURSE startkladde_FORMS     RELATIVE ${PROJECT_SOURCE_DIR} src/*.ui    )
 file (GLOB_RECURSE startkladde_RESOURCSE RELATIVE ${PROJECT_SOURCE_DIR} config/*.qrc)
 
+if (${ACPI_FOUND})
+	SET (AcpiWidget libacpi)
+	SET (libs ${libs} ${ACPI_LIBRARIES})
+else ()
+	SET (AcpiWidget dummy)
+endif ()
+
 # Tweak source lists
 LIST (REMOVE_ITEM startkladde_SOURCES src/gui/widgets/AcpiWidget_libacpi.cpp)
+LIST (REMOVE_ITEM startkladde_SOURCES src/gui/widgets/AcpiWidget_dummy.cpp)
+LIST (APPEND      startkladde_SOURCES src/gui/widgets/AcpiWidget_${AcpiWidget}.cpp)
 LIST (APPEND      startkladde_SOURCES build/CurrentSchema.cpp)
 
 # Handle Qt sources
@@ -132,7 +142,7 @@ ADD_EXECUTABLE(startkladde
      ${translation_files}
 )
 
-TARGET_LINK_LIBRARIES (startkladde ${QT_LIBRARIES})
+TARGET_LINK_LIBRARIES (startkladde ${QT_LIBRARIES} ${libs})
 
 
 #########
