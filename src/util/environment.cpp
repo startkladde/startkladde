@@ -29,7 +29,7 @@ QString getEnvironmentVariable (const QString &name)
 
 QStringList getSystemPath (const QString &environmentVariable)
 {
-#ifdef SK_WINDOWS
+#if defined (Q_OS_WIN32) || defined (Q_OS_WIN64)
 	return getEnvironmentVariable (environmentVariable).split (notr (";"));
 #else
 	return getEnvironmentVariable (environmentVariable).split (notr (":"));

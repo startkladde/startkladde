@@ -1,15 +1,12 @@
-# TODO handle: svn not found, not a working copy
-# TODO SK_WINDOWS on Windows, or individually configure the values it is used
-# for
 # TODO use RELEASE as default build type?
 # TODO the following compiler options and defines were used by qmake:
 #   -Wextra -O2 -frtti -fexceptions -mthreads -Wall
 #   -DQT_LARGEFILE_SUPPORT -DQT_NEEDS_QMAIN -DQT_THREAD_SUPPORT -DUNICODE
 #   -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2
 # TODO clean up compiler options, add -Wall
-# TODO installation (cpack): include required Qt plugins (Windows only) and translations
+# TODO installation (cpack): include required Qt plugins (Windows only), external
+# plugins and translations
 # TODO remove HEADERS after using AUTOMOC
-# TODO does make clean remove the translation sources?
 
 
 #################
@@ -58,7 +55,7 @@ endif ()
 file (GLOB_RECURSE startkladde_SOURCES   RELATIVE ${PROJECT_SOURCE_DIR} src/*.cpp   )
 file (GLOB_RECURSE startkladde_HEADERS   RELATIVE ${PROJECT_SOURCE_DIR} src/*.h     )
 file (GLOB_RECURSE startkladde_FORMS     RELATIVE ${PROJECT_SOURCE_DIR} src/*.ui    )
-file (GLOB_RECURSE startkladde_RESOURCSE RELATIVE ${PROJECT_SOURCE_DIR} config/*.qrc)
+file (GLOB_RECURSE startkladde_RESOURCES RELATIVE ${PROJECT_SOURCE_DIR} config/*.qrc)
 
 if (${ACPI_FOUND})
 	SET (AcpiWidget libacpi)
@@ -124,7 +121,9 @@ file (MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/translations)
 SET_SOURCE_FILES_PROPERTIES (${translation_sources} PROPERTIES OUTPUT_LOCATION ${PROJECT_BINARY_DIR}/translations)
 
 # Add rules for compiling the translation files
-QT4_CREATE_TRANSLATION(translation_files ${translation_sources})
+# Note that QT4_CREATE_TRANSLATION will delete the translation sources (*.ts)
+# on "make clean".
+QT4_ADD_TRANSLATION(translation_files ${translation_sources})
 
 
 ################

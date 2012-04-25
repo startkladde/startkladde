@@ -146,13 +146,8 @@ MainWindow::MainWindow (QWidget *parent):
 
 	ui.actionShutdown->setVisible (Settings::instance ().enableShutdown);
 
-#ifdef SK_WINDOWS
+#if defined (Q_OS_WIN32) || defined (Q_OS_WIN64)
 	ui.actionSetTime->setVisible (false);
-#endif
-
-#if defined(Q_OS_WIN32)
-	bool virtualKeyboardEnabled=false;
-#elif defined(Q_OS_WIN64)
 	bool virtualKeyboardEnabled=false;
 #else
 	bool virtualKeyboardEnabled = (
