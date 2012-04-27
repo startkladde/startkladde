@@ -27,6 +27,7 @@ SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 FIND_PACKAGE (Qt4       REQUIRED)
 FIND_PACKAGE (MySQL 5.0 REQUIRED)
 FIND_PACKAGE (Acpi              )
+FIND_PACKAGE (Ruby      REQUIRED)
 
 # Setup the Qt library
 SET(QT_USE_QTSQL     TRUE)
@@ -72,6 +73,13 @@ LIST (REMOVE_ITEM startkladde_SOURCES src/gui/widgets/AcpiWidget_libacpi.cpp)
 LIST (REMOVE_ITEM startkladde_SOURCES src/gui/widgets/AcpiWidget_dummy.cpp)
 LIST (APPEND      startkladde_SOURCES src/gui/widgets/AcpiWidget_${AcpiWidget}.cpp)
 LIST (APPEND      startkladde_SOURCES build/CurrentSchema.cpp)
+
+ADD_CUSTOM_COMMAND (
+	OUTPUT "${PROJECT_SOURCE_DIR}/build/CurrentSchema.cpp"
+	MAIN_DEPENDENCY src/db/schema/CurrentSchema.cpp.erb
+	DEPENDS src/db/migrations/current_schema.yaml
+	COMMAND "${RUBY_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/script/build/generate_current_schema_cpp.rb"
+)
 
 # Handle Qt sources
 QT4_WRAP_CPP      (startkladde_HEADERS_MOC   ${startkladde_MOC}      )
@@ -141,7 +149,7 @@ ADD_EXECUTABLE(startkladde
     ${startkladde_RESOURCES_RCC}
     ${startkladde_WINDOWS_RESOURCES}
     ${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h
-     ${translation_files}
+	${translation_files}
 )
 
 TARGET_LINK_LIBRARIES (startkladde ${QT_LIBRARIES} ${libs})
