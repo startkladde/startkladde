@@ -6,14 +6,13 @@
 # TODO clean up compiler options, add -Wall
 # TODO installation (cpack): include required Qt plugins (Windows only), external
 # plugins and translations
-# TODO remove HEADERS after using AUTOMOC
 
 
 #################
 ## cmake setup ##
 #################
 
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 2.8.6) # 2.8.6 required for automoc
 PROJECT (startkladdde)
 
 # Include additional cmake scripts (e. g. finding the MySQL library)
@@ -25,7 +24,7 @@ SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 ##############
 
 # Find packages
-FIND_PACKAGE (Qt4   REQUIRED    )
+FIND_PACKAGE (Qt4       REQUIRED)
 FIND_PACKAGE (MySQL 5.0 REQUIRED)
 FIND_PACKAGE (Acpi              )
 
@@ -33,9 +32,7 @@ FIND_PACKAGE (Acpi              )
 SET(QT_USE_QTSQL     TRUE)
 SET(QT_USE_QTNETWORK TRUE)
 
-# This is available starting 2.8.6 which is not currently available in the
-# latest Ubuntu release.
-#set(CMAKE_AUTOMOC TRUE)
+set(CMAKE_AUTOMOC TRUE)
 
 # For gcc and release mode, enable some options that make the binary smaller
 if (CMAKE_COMPILER_IS_GNUCXX)
@@ -53,9 +50,15 @@ endif ()
 
 # Make lists of source files
 file (GLOB_RECURSE startkladde_SOURCES   RELATIVE ${PROJECT_SOURCE_DIR} src/*.cpp   )
-file (GLOB_RECURSE startkladde_HEADERS   RELATIVE ${PROJECT_SOURCE_DIR} src/*.h     )
 file (GLOB_RECURSE startkladde_FORMS     RELATIVE ${PROJECT_SOURCE_DIR} src/*.ui    )
 file (GLOB_RECURSE startkladde_RESOURCES RELATIVE ${PROJECT_SOURCE_DIR} config/*.qrc)
+
+# Some files cannot be MOCed automatically because the header file name does not
+# match the class name (?). MOC them manually.
+SET (startkladde_MOC
+	src/gui/widgets/AcpiWidget.h
+	src/model/objectList/ObjectListModel.h
+)
 
 if (${ACPI_FOUND})
 	SET (AcpiWidget libacpi)
@@ -71,7 +74,7 @@ LIST (APPEND      startkladde_SOURCES src/gui/widgets/AcpiWidget_${AcpiWidget}.c
 LIST (APPEND      startkladde_SOURCES build/CurrentSchema.cpp)
 
 # Handle Qt sources
-QT4_WRAP_CPP      (startkladde_HEADERS_MOC   ${startkladde_HEADERS}  )
+QT4_WRAP_CPP      (startkladde_HEADERS_MOC   ${startkladde_MOC}      )
 QT4_WRAP_UI       (startkladde_FORMS_HEADERS ${startkladde_FORMS}    )
 QT4_ADD_RESOURCES (startkladde_RESOURCES_RCC ${startkladde_RESOURCES})
 
@@ -133,7 +136,7 @@ QT4_ADD_TRANSLATION(translation_files ${translation_sources})
 ADD_EXECUTABLE(startkladde
 	WIN32                            # GUI application on Windows - ignored on other platforms
 	${startkladde_SOURCES} 
-	${startkladde_HEADERS_MOC} 
+	${startkladde_MOC} 
     ${startkladde_FORMS_HEADERS} 
     ${startkladde_RESOURCES_RCC}
     ${startkladde_WINDOWS_RESOURCES}
@@ -168,3 +171,4 @@ set_source_files_properties (
 
 # The executable depends on the svnheader target
 add_dependencies (startkladde svnheader)
+
