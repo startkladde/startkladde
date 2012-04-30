@@ -1,16 +1,25 @@
-# TODO use RELEASE as default build type?
 # TODO the following compiler options and defines were used by qmake:
 #   -Wextra -O2 -frtti -fexceptions -mthreads -Wall
 #   -DQT_LARGEFILE_SUPPORT -DQT_NEEDS_QMAIN -DQT_THREAD_SUPPORT -DUNICODE
 #   -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2
 # TODO clean up compiler options, add -Wall
 # TODO installation (cpack): include required Qt plugins (Windows only), external
-# plugins and translations
+#   plugins and translations
 
 
 #################
 ## cmake setup ##
 #################
+
+# If the user specifies -DCMAKE_BUILD_TYPE on the command line, take their
+# definition and dump it in the cache along with proper documentation, otherwise
+# set CMAKE_BUILD_TYPE to Release prior to calling PROJECT()
+# This must be performed before PROJECT().
+IF(DEFINED CMAKE_BUILD_TYPE)
+	SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "xxx Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
+ELSE()
+	SET(CMAKE_BUILD_TYPE Release CACHE STRING "yyy Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
+ENDIF()
 
 cmake_minimum_required (VERSION 2.8.6) # 2.8.6 required for automoc
 PROJECT (startkladdde)
@@ -22,6 +31,12 @@ SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 ##############
 ## Packages ##
 ##############
+
+SET (MYSQL_DIR "" CACHE PATH "Base directory of the MySQL installation (the directory containing bin/, lib/ and include/, only required if MySQL is not autodetected (typically on Windows)")
+
+# Hack: prevent an error message if not found
+SET (RUBY_LIBRARY     "not_required")
+SET (RUBY_INCLUDE_DIR "not_required")
 
 # Find packages
 FIND_PACKAGE (Qt4       REQUIRED)
@@ -96,6 +111,7 @@ INCLUDE_DIRECTORIES ("${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}" "${MYSQL_IN
 if(WIN32)
 	# TODO do this on or after build, not every time we run cmake.
 	# add_custom_command with add_custom_target may or may not be appropriate. 
+	# TODO need to check if Qt found first (like MySQL below)?
 	SET (qtlibs QtCore4.dll QtGui4.dll QtSql4.dll QtNetwork4.dll mingwm10.dll libgcc_s_dw2-1.dll)
 	foreach (qtlib ${qtlibs})
 		#message ("Pulling in Qt library ${qtlib}")
@@ -104,7 +120,10 @@ if(WIN32)
 
 	# TODO the MySQL finder should export MYSQL_LIBRARY_DIR or MYSQL_BINARY_DIR
 	#message ("Pulling in MySQL library libmysql.dll")
-	file (COPY ${MYSQL_INCLUDE_DIR}/../lib/libmysql.dll DESTINATION ${PROJECT_BINARY_DIR})
+	# TODO this should not even be executed if MySQL is not found (?)
+	if (MYSQL_INCLUDE_DIR)
+		file (COPY ${MYSQL_INCLUDE_DIR}/../lib/libmysql.dll DESTINATION ${PROJECT_BINARY_DIR})
+	endif ()
 	
 	SET (startkladde_WINDOWS_RESOURCES config/startkladde.rc)
 endif()
