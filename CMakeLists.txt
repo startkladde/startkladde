@@ -1,8 +1,4 @@
-# TODO the following compiler options and defines were used by qmake:
-#   -Wextra -O2 -frtti -fexceptions -mthreads -Wall
-#   -DQT_LARGEFILE_SUPPORT -DQT_NEEDS_QMAIN -DQT_THREAD_SUPPORT -DUNICODE
-#   -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2
-# TODO clean up compiler options, add -Wall
+# TODO compiler options: add -Wall -Wextra
 # TODO installation (cpack): include required Qt plugins (Windows only), external
 #   plugins and translations
 
