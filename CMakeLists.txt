@@ -147,14 +147,19 @@ file (GLOB translation_sources translations/*.ts)
 file (MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/translations)
 
 # Set the OUTPUT_LOCATION of the translation source files to the translations/
-# directory in the build directory. QT4_CREATE_TRANSLATION will place the
-# compiled translations there.
+# directory in the build directory. QT4_ADD_TRANSLATION will place the compiled
+# translations there.
 SET_SOURCE_FILES_PROPERTIES (${translation_sources} PROPERTIES OUTPUT_LOCATION ${PROJECT_BINARY_DIR}/translations)
 
 # Add rules for compiling the translation files
 # Note that QT4_CREATE_TRANSLATION will delete the translation sources (*.ts)
 # on "make clean".
 QT4_ADD_TRANSLATION(translation_files ${translation_sources})
+
+ADD_CUSTOM_TARGET (lupdate
+	COMMAND ${QT_LUPDATE_EXECUTABLE} src -ts ${translation_sources}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 
 ################
