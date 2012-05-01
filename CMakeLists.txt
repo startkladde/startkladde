@@ -108,11 +108,13 @@ if(WIN32)
 	# TODO do this on or after build, not every time we run cmake.
 	# add_custom_command with add_custom_target may or may not be appropriate. 
 	# TODO need to check if Qt found first (like MySQL below)?
+	# TODO Qt MySQL plugin
 	SET (qtlibs QtCore4.dll QtGui4.dll QtSql4.dll QtNetwork4.dll mingwm10.dll libgcc_s_dw2-1.dll)
 	foreach (qtlib ${qtlibs})
 		#message ("Pulling in Qt library ${qtlib}")
 		file (COPY ${QT_BINARY_DIR}/${qtlib} DESTINATION ${PROJECT_BINARY_DIR})
 	endforeach()
+	SET (INSTALL_LIBS ${INSTALL_LIBS} ${qtlibs})
 
 	# TODO the MySQL finder should export MYSQL_LIBRARY_DIR or MYSQL_BINARY_DIR
 	#message ("Pulling in MySQL library libmysql.dll")
@@ -120,6 +122,7 @@ if(WIN32)
 	if (MYSQL_INCLUDE_DIR)
 		file (COPY ${MYSQL_INCLUDE_DIR}/../lib/libmysql.dll DESTINATION ${PROJECT_BINARY_DIR})
 	endif ()
+	SET (INSTALL_LIBS ${INSTALL_LIBS} libmysql.dll)
 	
 	SET (startkladde_WINDOWS_RESOURCES config/startkladde.rc)
 endif()
@@ -194,4 +197,43 @@ set_source_files_properties (
 
 # The executable depends on the svnheader target
 add_dependencies (startkladde svnheader)
+
+
+#############
+## Install ##
+#############
+
+# Install path definitions
+# On Windows, everything is installed into the application directory. On other
+# systems, different files are installed into different system directories.
+IF (WIN32)
+	SET (EXECUTABLE_INSTALL_DIR   ".")
+	SET (TRANSLATIONS_INSTALL_DIR ".")
+ELSE ()
+	SET (EXECUTABLE_INSTALL_DIR   "bin"               )
+	SET (TRANSLATIONS_INSTALL_DIR "share/startkladde" )
+	SET (MENU_INSTALL_DIR         "share/applications")
+	SET (ICON_INSTALL_DIR         "share/pixmaps"     )
+ENDIF ()
+
+# Install the executable
+install (TARGETS   startkladde                        DESTINATION ${EXECUTABLE_INSTALL_DIR}  )
+# Install the translations
+install (DIRECTORY ${PROJECT_BINARY_DIR}/translations DESTINATION ${TRANSLATIONS_INSTALL_DIR})
+# TODO install the external plugins, but without the SVN directory
+
+# On Windows systems, install the required libraries
+IF (WIN32)
+	foreach (lib ${INSTALL_LIBS})
+		install (FILES ${PROJECT_BINARY_DIR}/${lib} DESTINATION ${EXECUTABLE_INSTALL_DIR})
+	endforeach ()
+ENDIF ()
+# TODO install the Qt translations
+
+# On non-Windows systems, install the Freedesktop menu and icon
+#IF (NOT WIN32)
+#	INSTALL (FILES startkladde.desktop       DESTINATION ${MENU_INSTALL_DIR})
+#	INSTALL (FILES graphics/startkladde.png DESTINATION ${ICON_INSTALL_DIR})
+#ENDIF ()
+
 
