@@ -1,6 +1,6 @@
 # TODO compiler options: add -Wall -Wextra
-# TODO installation (cpack): include required Qt plugins (Windows only), external
-#   plugins and translations
+# TODO installation (cpack): include required Qt plugins (Windows only), external plugins
+# TODO make uninstall (see SpeedCrunch)
 
 
 #################
@@ -236,4 +236,14 @@ ENDIF ()
 #	INSTALL (FILES graphics/startkladde.png DESTINATION ${ICON_INSTALL_DIR})
 #ENDIF ()
 
+###############
+## Installer ##
+###############
+
+#include (InstallRequiredSystemLibraries)
+#set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
+set (CPACK_PACKAGE_VERSION_MAJOR "${startkladde_VERSION_MAJOR}")
+set (CPACK_PACKAGE_VERSION_MINOR "${startkladde_VERSION_MINOR}")
+set (CPACK_PACKAGE_VERSION_PATCH "${startkladde_VERSION_REVISION}")
+include (CPack)
 
