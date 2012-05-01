@@ -18,7 +18,7 @@ ELSE()
 ENDIF()
 
 cmake_minimum_required (VERSION 2.8.6) # 2.8.6 required for automoc
-PROJECT (startkladdde)
+PROJECT (startkladde)
 
 # Include additional cmake scripts (e. g. finding the MySQL library)
 SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
