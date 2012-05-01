@@ -83,13 +83,15 @@ endif ()
 LIST (REMOVE_ITEM startkladde_SOURCES src/gui/widgets/AcpiWidget_libacpi.cpp)
 LIST (REMOVE_ITEM startkladde_SOURCES src/gui/widgets/AcpiWidget_dummy.cpp)
 LIST (APPEND      startkladde_SOURCES src/gui/widgets/AcpiWidget_${AcpiWidget}.cpp)
-LIST (APPEND      startkladde_SOURCES build/CurrentSchema.cpp)
+LIST (APPEND      startkladde_SOURCES "${PROJECT_BINARY_DIR}/CurrentSchema.cpp")
 
+# We found the Ruby package, so hopefully, we have erb
 ADD_CUSTOM_COMMAND (
-	OUTPUT "${PROJECT_SOURCE_DIR}/build/CurrentSchema.cpp"
+	OUTPUT "${PROJECT_BINARY_DIR}/CurrentSchema.cpp"
 	MAIN_DEPENDENCY src/db/schema/CurrentSchema.cpp.erb
 	DEPENDS src/db/migrations/current_schema.yaml
-	COMMAND "${RUBY_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/script/build/generate_current_schema_cpp.rb"
+	WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+	COMMAND erb -T 1 src/db/schema/CurrentSchema.cpp.erb >${PROJECT_BINARY_DIR}/CurrentSchema.cpp
 )
 
 # Handle Qt sources
