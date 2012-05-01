@@ -1,6 +1,14 @@
 # TODO compiler options: add -Wall -Wextra
-# TODO installation (cpack): include required Qt plugins (Windows only), external plugins
-# TODO make uninstall (see SpeedCrunch)
+# FIXME make uninstall (see SpeedCrunch)
+
+
+##############
+## Settings ##
+##############
+
+set (startkladde_VERSION_MAJOR 2)
+set (startkladde_VERSION_MINOR 1)
+set (startkladde_VERSION_REVISION 0)
 
 
 #################
@@ -106,32 +114,36 @@ ADD_DEFINITIONS(${QT_DEFINITIONS})
 INCLUDE_DIRECTORIES ("${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}" "${MYSQL_INCLUDE_DIR}")
 
 
-if(WIN32)
-	# TODO do this on or after build, not every time we run cmake.
-	# add_custom_command with add_custom_target may or may not be appropriate. 
-	# TODO need to check if Qt found first (like MySQL below)?
-	# TODO Qt MySQL plugin
-	SET (qtlibs QtCore4.dll QtGui4.dll QtSql4.dll QtNetwork4.dll mingwm10.dll libgcc_s_dw2-1.dll)
-	foreach (qtlib ${qtlibs})
-		#message ("Pulling in Qt library ${qtlib}")
-		file (COPY ${QT_BINARY_DIR}/${qtlib} DESTINATION ${PROJECT_BINARY_DIR})
-	endforeach()
-	SET (INSTALL_LIBS ${INSTALL_LIBS} ${qtlibs})
+function (copy_library source_directory library_name)
+	message (STATUS "Copying library ${library_name} from ${source_directory}")
+
+	# Copy the library to the build directory
+	# TODO do this on/after build, not every time we run cmake.
+	file (COPY ${source_directory}/${library_name} DESTINATION ${PROJECT_BINARY_DIR})
+
+	# Add the library to the list of libraries to install
+	set (INSTALL_LIBS ${INSTALL_LIBS} ${library_name})
+endfunction ()
+
+
+# TODO: Qt and MySQL are required, so this check should not be necessary
+if (WIN32 AND QT_BINARY_DIR AND MYSQL_INCLUDE_DIR)
+	copy_library (${QT_BINARY_DIR} QtCore4.dll)
+	copy_library (${QT_BINARY_DIR} QtGui4.dll)
+	copy_library (${QT_BINARY_DIR} QtSql4.dll)
+	copy_library (${QT_BINARY_DIR} QtNetwork4.dll)
+	copy_library (${QT_BINARY_DIR} mingwm10.dll)
+	copy_library (${QT_BINARY_DIR} libgcc_s_dw2-1.dll)
 
 	# TODO the MySQL finder should export MYSQL_LIBRARY_DIR or MYSQL_BINARY_DIR
-	#message ("Pulling in MySQL library libmysql.dll")
-	# TODO this should not even be executed if MySQL is not found (?)
-	if (MYSQL_INCLUDE_DIR)
-		file (COPY ${MYSQL_INCLUDE_DIR}/../lib/libmysql.dll DESTINATION ${PROJECT_BINARY_DIR})
-	endif ()
-	SET (INSTALL_LIBS ${INSTALL_LIBS} libmysql.dll)
-	
-	SET (startkladde_WINDOWS_RESOURCES config/startkladde.rc)
+	copy_library (${MYSQL_INCLUDE_DIR}/../lib libmysql.dll)
+
+	file (COPY ${QT_PLUGINS_DIR}/sqldrivers/qsqlmysql4.dll DESTINATION ${PROJECT_BINARY_DIR}/plugins/sqldrivers/)
 endif()
 
-set (startkladde_VERSION_MAJOR 2)
-set (startkladde_VERSION_MINOR 1)
-set (startkladde_VERSION_REVISION 0)
+if (WIN32)
+	SET (startkladde_WINDOWS_RESOURCES config/startkladde.rc)
+endif ()
 
 configure_file ("${PROJECT_SOURCE_DIR}/src/build.h.in" "${PROJECT_BINARY_DIR}/build.h")
 
@@ -167,7 +179,7 @@ ADD_CUSTOM_TARGET (lupdate
 ################
 
 ADD_EXECUTABLE(startkladde
-	WIN32                            # GUI application on Windows - ignored on other platforms
+	WIN32 # GUI application on Windows - ignored on other platforms
 	${startkladde_SOURCES} 
 	${startkladde_MOC} 
     ${startkladde_FORMS_HEADERS} 
@@ -214,30 +226,52 @@ add_dependencies (startkladde svnheader)
 # On Windows, everything is installed into the application directory. On other
 # systems, different files are installed into different system directories.
 IF (WIN32)
-	SET (EXECUTABLE_INSTALL_DIR   ".")
-	SET (TRANSLATIONS_INSTALL_DIR ".")
+	# Common
+	SET (EXECUTABLE_INSTALL_DIR      ".")
+	SET (TRANSLATIONS_INSTALL_DIR    ".")
+	SET (PLUGINS_INSTALL_DIR         ".")
+	# Windows specific
+	SET (QT_PLUGINS_INSTALL_DIR      ".")
+	SET (QT_TRANSLATIONS_INSTALL_DIR "translations")
 ELSE ()
+	# Common
 	SET (EXECUTABLE_INSTALL_DIR   "bin"               )
 	SET (TRANSLATIONS_INSTALL_DIR "share/startkladde" )
+	SET (PLUGINS_INSTALL_DIR      "share/startkladde" )
+	# Non-Windows specific
 	SET (MENU_INSTALL_DIR         "share/applications")
 	SET (ICON_INSTALL_DIR         "share/pixmaps"     )
 ENDIF ()
 
-# Install the executable
-install (TARGETS   startkladde                        DESTINATION ${EXECUTABLE_INSTALL_DIR}  )
-# Install the translations
-install (DIRECTORY ${PROJECT_BINARY_DIR}/translations DESTINATION ${TRANSLATIONS_INSTALL_DIR})
-# TODO install the external plugins, but without the SVN directory
+# Install the executable, translations, external plugins
+# For directories installed from the source directory, ignore the .svn
+# subdirectory.
+install (TARGETS   startkladde                        DESTINATION ${EXECUTABLE_INSTALL_DIR}                       )
+install (DIRECTORY ${PROJECT_BINARY_DIR}/translations DESTINATION ${TRANSLATIONS_INSTALL_DIR}                     )
+install (DIRECTORY ${PROJECT_SOURCE_DIR}/plugins      DESTINATION ${PLUGINS_INSTALL_DIR}      PATTERN .svn EXCLUDE)
 
-# On Windows systems, install the required libraries
+# On Windows systems, install the libraries, Qt plugins and Qt translations
 IF (WIN32)
+	# Libraries
 	foreach (lib ${INSTALL_LIBS})
-		install (FILES ${PROJECT_BINARY_DIR}/${lib} DESTINATION ${EXECUTABLE_INSTALL_DIR})
+		install (
+			FILES ${PROJECT_BINARY_DIR}/${lib}
+			DESTINATION ${EXECUTABLE_INSTALL_DIR})
 	endforeach ()
-ENDIF ()
-# TODO install the Qt translations
 
-# On non-Windows systems, install the Freedesktop menu and icon
+	# Qt plugins
+	install (
+		DIRECTORY ${PROJECT_BINARY_DIR}/plugins
+		DESTINATION ${QT_PLUGINS_INSTALL_DIR})
+
+	# Qt translations
+	install (
+		DIRECTORY ${QT_TRANSLATIONS_DIR}/
+		DESTINATION ${QT_TRANSLATIONS_INSTALL_DIR}
+		FILES_MATCHING PATTERN qt_??.qm PATTERN qt_??_??.qm)
+ENDIF ()
+
+# FIXME On non-Windows systems, install the Freedesktop menu and icon
 #IF (NOT WIN32)
 #	INSTALL (FILES startkladde.desktop       DESTINATION ${MENU_INSTALL_DIR})
 #	INSTALL (FILES graphics/startkladde.png DESTINATION ${ICON_INSTALL_DIR})
@@ -247,13 +281,13 @@ ENDIF ()
 ## Installer ##
 ###############
 
-#include (InstallRequiredSystemLibraries)
+include (InstallRequiredSystemLibraries)
 #set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
 set (CPACK_PACKAGE_VERSION_MAJOR "${startkladde_VERSION_MAJOR}")
 set (CPACK_PACKAGE_VERSION_MINOR "${startkladde_VERSION_MINOR}")
 set (CPACK_PACKAGE_VERSION_PATCH "${startkladde_VERSION_REVISION}")
 
-# TODO investigate cpack options:
+# FIXME investigate cpack options:
 #INCLUDE(InstallRequiredSystemLibraries)
 #SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A flight logging software for small airfields")
 #SET(CPACK_PACKAGE_VENDOR "Startkladde team")
