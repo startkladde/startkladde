@@ -1,5 +1,4 @@
 # TODO compiler options: add -Wall -Wextra
-# FIXME make uninstall (see SpeedCrunch)
 
 
 ##############
@@ -277,9 +276,25 @@ ENDIF ()
 #	INSTALL (FILES graphics/startkladde.png DESTINATION ${ICON_INSTALL_DIR})
 #ENDIF ()
 
+
 ###############
-## Installer ##
+## Uninstall ##
 ###############
+
+# uninstall target
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+
+add_custom_target (
+	uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+
+
+#############
+## Package ##
+#############
 
 include (InstallRequiredSystemLibraries)
 #set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
