@@ -270,11 +270,10 @@ IF (WIN32)
 		FILES_MATCHING PATTERN qt_??.qm PATTERN qt_??_??.qm)
 ENDIF ()
 
-# FIXME On non-Windows systems, install the Freedesktop menu and icon
-#IF (NOT WIN32)
-#	INSTALL (FILES startkladde.desktop       DESTINATION ${MENU_INSTALL_DIR})
-#	INSTALL (FILES graphics/startkladde.png DESTINATION ${ICON_INSTALL_DIR})
-#ENDIF ()
+IF (NOT WIN32)
+	INSTALL (FILES config/startkladde.desktop DESTINATION ${MENU_INSTALL_DIR})
+	INSTALL (FILES graphics/startkladde.png   DESTINATION ${ICON_INSTALL_DIR})
+ENDIF ()
 
 
 ###############
@@ -285,11 +284,14 @@ ENDIF ()
 configure_file (
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-    IMMEDIATE @ONLY)
+    IMMEDIATE @ONLY
+)
 
 add_custom_target (
 	uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
+)
+
 
 
 #############
