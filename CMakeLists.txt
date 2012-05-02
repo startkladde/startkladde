@@ -1,6 +1,3 @@
-# TODO compiler options: add -Wall -Wextra
-
-
 ##############
 ## Settings ##
 ##############
@@ -60,7 +57,12 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 endif ()
 
 
+######################
+## Compile settings ##
+######################
 
+# TODO: only for the GNU compiler
+ADD_DEFINITIONS (-Wall -Wextra)
 
 
 ##################
@@ -236,7 +238,7 @@ ELSE ()
 	# Common
 	SET (EXECUTABLE_INSTALL_DIR   "bin"               )
 	SET (TRANSLATIONS_INSTALL_DIR "share/startkladde" )
-	SET (PLUGINS_INSTALL_DIR      "share/startkladde" )
+	SET (PLUGINS_INSTALL_DIR      "lib/startkladde"   )
 	# Non-Windows specific
 	SET (MENU_INSTALL_DIR         "share/applications")
 	SET (ICON_INSTALL_DIR         "share/pixmaps"     )
@@ -299,37 +301,74 @@ add_custom_target (
 #############
 
 include (InstallRequiredSystemLibraries)
-#set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
+
 set (CPACK_PACKAGE_VERSION_MAJOR "${startkladde_VERSION_MAJOR}")
 set (CPACK_PACKAGE_VERSION_MINOR "${startkladde_VERSION_MINOR}")
 set (CPACK_PACKAGE_VERSION_PATCH "${startkladde_VERSION_REVISION}")
 
-# FIXME investigate cpack options:
-#INCLUDE(InstallRequiredSystemLibraries)
-#SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A flight logging software for small airfields")
-#SET(CPACK_PACKAGE_VENDOR "Startkladde team")
-#SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
 #SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
-#SET(CPACK_PACKAGE_INSTALL_DIRECTORY "startkladde ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
-#SET(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
-#SET(CPACK_SOURCE_PACKAGE_FILE_NAME "startkladde-${VERSION}${VERSION_SUFFIX}")
-#SET(CPACK_SOURCE_GENERATOR TBZ2)
-#SET(CPACK_SYSTEM_NAME "")
-#SET(CPACK_TOPLEVEL_TAG "")
-#SET(CPACK_SOURCE_IGNORE_FILES CMakeLists.txt.user "~$" ".svn$")
-#
-#IF (WIN32)
-#	SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
-#	SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
-#	SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} My Famous Project")
-#	SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
-#	SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
-#	SET(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
-#	SET(CPACK_NSIS_MODIFY_PATH ON)
-#ELSE ()
-#	SET(CPACK_STRIP_FILES "bin/MyExecutable")
-#	SET(CPACK_SOURCE_STRIP_FILES "")
-#ENDIF ()
+#SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
+#SET (CPACK_PACKAGE_CONTACT        "martin@famherrmann.de")
+
+SET(CPACK_PACKAGE_DESCRIPTION "Startkladde is a flight logging application for flying clubs.")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A flight logging application for flying clubs")
+SET(CPACK_PACKAGE_VENDOR "Startkladde team")
+SET(CPACK_PACKAGE_EXECUTABLES "startkladde" "Startkladde")
+
+
+set (CPACK_INCLUDE_TOPLEVEL_DIRECTORY 1)
+SET (CPACK_STRIP_FILES 1)
+
+SET (CPACK_SOURCE_IGNORE_FILES CMakeLists.txt.user "~$" ".svn$")
+
+
+##### NSIS specific settings
+
+SET (CPACK_NSIS_MUI_ICON    ${PROJECT_SOURCE_DIR}/graphics/startkladde.ico)
+SET (CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/graphics/startkladde.ico)
+#SET (CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} My Famous Project")
+
+#SET (CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
+SET (CPACK_NSIS_INSTALLED_ICON_NAME startkladde.exe)
+
+SET (CPACK_NSIS_HELP_LINK      "http://startkladde.sourceforge.net")
+SET (CPACK_NSIS_URL_INFO_ABOUT "http://startkladde.sourceforge.net")
+SET (CPACK_NSIS_CONTACT        "martin@famherrmann.de")
+SET (CPACK_NSIS_MODIFY_PATH off)
+
+SET (CPACK_NSIS_MUI_FINISHPAGE_RUN startkladde.exe)
+
+
+##### Debian specific settings
+
+SET (CPACK_DEBIAN_PACKAGE_NAME startkladde)
+SET (CPACK_DEBIAN_PACKAGE_VERSION ${startkladde_VERSION_MAJOR}.${startkladde_VERSION_MINOR}.${startkladde_VERSION_REVISION})
+#SET (CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
+# TODO proper versions: like "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12)"
+
+
+# Do not explicitly require the MySQL client library. Its name changes from time
+# to time (e. g. libmysqlclient18 on Ubuntu Precise), which means that it has to
+# be different for different Ubuntu versions. On the other hand, it is already
+# required by libqt4-sql-mysql, so we don't have to specify it explicitly.
+SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "libacpi0, libc6 (>= 2.4), libgcc1 (>= 1:4.1.1), libqt4-network (>= 4:4.5.3), libqt4-sql (>= 4:4.5.3), libqtcore4 (>= 4:4.7.0~beta1), libqtgui4 (>= 4:4.5.3), libstdc++6 (>= 4.4.0), libqt4-sql-mysql")
+SET (CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Herrmann <martin@famherrmann.de>")
+SET (CPACK_DEBIAN_PACKAGE_SECTION    "misc")
+SET (CPACK_DEBIAN_PACKAGE_PRIORITY   "optional")
+SET (CPACK_DEBIAN_PACKAGE_RECOMMENDS "mysql-server")
+SET (CPACK_DEBIAN_PACKAGE_SUGGESTS   "kvkbd")
+SET (CPACK_DEBIAN_PACKAGE_SUGGESTS   "kvkbd")
+
+# TODO: the old (PPA) debian package included some files that are not longer
+# present:
+# /usr/share/menu/startkladde
+# /usr/share/lintian/overrides/startkladde
+# /usr/share/man/man1/startkladde.1.gz
+# /usr/share/doc/startkladde/TODO.txt.gz
+# /usr/share/doc/startkladde/changelog.gz
+# /usr/share/doc/startkladde/compile.txt
+# /usr/share/doc/startkladde/install.txt
+# /usr/share/doc/startkladde/copyright
 
 include (CPack)
 
