@@ -3,6 +3,8 @@
 #
 #  MYSQL_INCLUDE_DIR - where to find mysql.h, etc.
 #  MYSQL_LIBRARIES   - List of libraries when using MySQL.
+#  MYSQL_LIBRARY     - MySQL library
+#  MYSQL_LIBRARY_DIR - MySQL library directory
 #  MYSQL_FOUND       - True if MySQL found.
 
 IF (MYSQL_INCLUDE_DIR)
@@ -22,6 +24,16 @@ FIND_LIBRARY(MYSQL_LIBRARY
   PATHS /usr/lib /usr/local/lib
   PATH_SUFFIXES mysql
 )
+
+IF (WIN32 AND NOT MYSQL_LIBRARY)
+	FIND_LIBRARY (MYSQL_LIBRARY
+		NAMES mysql
+		PATHS ${MYSQL_INCLUDE_DIR}/..
+		PATH_SUFFIXES bin lib
+	)
+ENDIF ()
+
+get_filename_component (MYSQL_LIBRARY_DIR ${MYSQL_LIBRARY} PATH)
 
 IF (MYSQL_INCLUDE_DIR AND MYSQL_LIBRARY)
   SET(MYSQL_FOUND TRUE)

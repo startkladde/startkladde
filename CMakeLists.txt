@@ -32,6 +32,12 @@ SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 ## Packages ##
 ##############
 
+# For MinGW, we need to copy some libraries from the MinGW binary directory
+# later. Determine the binary directory from the C compiler location.
+if (MINGW)
+	get_filename_component (MINGW_BINARY_DIR ${CMAKE_C_COMPILER} PATH)
+endif ()
+
 SET (MYSQL_DIR "" CACHE PATH "Base directory of the MySQL installation (the directory containing bin/, lib/ and include/, only required if MySQL is not autodetected (typically on Windows)")
 
 # Hack: prevent an error message if not found
@@ -61,9 +67,15 @@ endif ()
 ## Compile settings ##
 ######################
 
-# TODO: only for the GNU compiler
-ADD_DEFINITIONS (-Wall -Wextra)
+# TODO: only for the GNU compiler, CMAKE_COMPILER_IS_GNUCXX (and test on MinGW
+# and Linux)
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
+# Dump variables
+#get_cmake_property(_variableNames VARIABLES)
+#foreach (_variableName ${_variableNames})
+#    message(STATUS "${_variableName}=${${_variableName}}")
+#endforeach()
 
 ##################
 ## Source files ##
@@ -114,8 +126,8 @@ ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 INCLUDE_DIRECTORIES ("${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}" "${MYSQL_INCLUDE_DIR}")
 
-
-function (copy_library source_directory library_name)
+# This must be implemented as a macro, otherwise INSTALL_LIBS will be local
+macro (copy_library source_directory library_name)
 	message (STATUS "Copying library ${library_name} from ${source_directory}")
 
 	# Copy the library to the build directory
@@ -124,7 +136,12 @@ function (copy_library source_directory library_name)
 
 	# Add the library to the list of libraries to install
 	set (INSTALL_LIBS ${INSTALL_LIBS} ${library_name})
-endfunction ()
+endmacro ()
+
+if (WIN32 AND MINGW)
+	copy_library (${MINGW_BINARY_DIR} mingwm10.dll)
+	copy_library (${MINGW_BINARY_DIR} libgcc_s_dw2-1.dll)
+endif ()
 
 
 # TODO: Qt and MySQL are required, so this check should not be necessary
@@ -133,11 +150,8 @@ if (WIN32 AND QT_BINARY_DIR AND MYSQL_INCLUDE_DIR)
 	copy_library (${QT_BINARY_DIR} QtGui4.dll)
 	copy_library (${QT_BINARY_DIR} QtSql4.dll)
 	copy_library (${QT_BINARY_DIR} QtNetwork4.dll)
-	copy_library (${QT_BINARY_DIR} mingwm10.dll)
-	copy_library (${QT_BINARY_DIR} libgcc_s_dw2-1.dll)
 
-	# TODO the MySQL finder should export MYSQL_LIBRARY_DIR or MYSQL_BINARY_DIR
-	copy_library (${MYSQL_INCLUDE_DIR}/../lib libmysql.dll)
+	copy_library (${MYSQL_LIBRARY_DIR} libmysql.dll)
 
 	file (COPY ${QT_PLUGINS_DIR}/sqldrivers/qsqlmysql4.dll DESTINATION ${PROJECT_BINARY_DIR}/plugins/sqldrivers/)
 endif()
@@ -223,6 +237,8 @@ add_dependencies (startkladde svnheader)
 ## Install ##
 #############
 
+#include (InstallRequiredSystemLibraries)
+
 # Install path definitions
 # On Windows, everything is installed into the application directory. On other
 # systems, different files are installed into different system directories.
@@ -296,62 +312,70 @@ add_custom_target (
 
 
 
-#############
-## Package ##
-#############
+#######################
+## Package - generic ##
+#######################
 
-include (InstallRequiredSystemLibraries)
-
+# Package information
+set (CPACK_PACKAGE_NAME "Startkladde")
 set (CPACK_PACKAGE_VERSION_MAJOR "${startkladde_VERSION_MAJOR}")
 set (CPACK_PACKAGE_VERSION_MINOR "${startkladde_VERSION_MINOR}")
 set (CPACK_PACKAGE_VERSION_PATCH "${startkladde_VERSION_REVISION}")
-
-#SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
+SET (CPACK_PACKAGE_DESCRIPTION "Startkladde is a flight logging application for flying clubs.")
+SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "A flight logging application for flying clubs")
+SET (CPACK_PACKAGE_VENDOR "Startkladde team")
+SET (CPACK_PACKAGE_CONTACT "martin@famherrmann.de")
 #SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
-#SET (CPACK_PACKAGE_CONTACT        "martin@famherrmann.de")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/doc/gpl.txt")
 
-SET(CPACK_PACKAGE_DESCRIPTION "Startkladde is a flight logging application for flying clubs.")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A flight logging application for flying clubs")
-SET(CPACK_PACKAGE_VENDOR "Startkladde team")
+# Installed files
 SET(CPACK_PACKAGE_EXECUTABLES "startkladde" "Startkladde")
 
-
-set (CPACK_INCLUDE_TOPLEVEL_DIRECTORY 1)
+# Package settings
+SET (CPACK_SOURCE_IGNORE_FILES CMakeLists.txt.user "~$" ".svn$")
 SET (CPACK_STRIP_FILES 1)
 
-SET (CPACK_SOURCE_IGNORE_FILES CMakeLists.txt.user "~$" ".svn$")
 
+####################
+## Package - NSIS ##
+####################
 
-##### NSIS specific settings
+# Installer appearance
+SET (CPACK_NSIS_DISPLAY_NAME "Startkladde")
+#SET (CPACK_NSIS_MUI_ICON    ${PROJECT_SOURCE_DIR}/graphics\\\\startkladde.ico) # Installer icon
+#SET (CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/graphics\\\\startkladde.ico) # Uninstaller icon
+#SET (CPACK_PACKAGE_ICON    "${PROJECT_SOURCE_DIR}/graphics\\\\test.bmp"      ) # Header image, 150x57
 
-SET (CPACK_NSIS_MUI_ICON    ${PROJECT_SOURCE_DIR}/graphics/startkladde.ico)
-SET (CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/graphics/startkladde.ico)
-#SET (CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} My Famous Project")
+# Installer actions
+SET (CPACK_NSIS_MODIFY_PATH off)                    # Do not add to PATH
+SET (CPACK_NSIS_MUI_FINISHPAGE_RUN startkladde.exe) # Ask user to launch
 
-#SET (CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
+# Start menu
+SET (CPACK_NSIS_EXECUTABLES_DIRECTORY ".") # For menu entries
 SET (CPACK_NSIS_INSTALLED_ICON_NAME startkladde.exe)
 
+# Control panel information
 SET (CPACK_NSIS_HELP_LINK      "http://startkladde.sourceforge.net")
 SET (CPACK_NSIS_URL_INFO_ABOUT "http://startkladde.sourceforge.net")
 SET (CPACK_NSIS_CONTACT        "martin@famherrmann.de")
-SET (CPACK_NSIS_MODIFY_PATH off)
-
-SET (CPACK_NSIS_MUI_FINISHPAGE_RUN startkladde.exe)
 
 
-##### Debian specific settings
+######################
+## Package - Debian ##
+######################
 
 SET (CPACK_DEBIAN_PACKAGE_NAME startkladde)
 SET (CPACK_DEBIAN_PACKAGE_VERSION ${startkladde_VERSION_MAJOR}.${startkladde_VERSION_MINOR}.${startkladde_VERSION_REVISION})
 #SET (CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
-# TODO proper versions: like "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12)"
 
-
-# Do not explicitly require the MySQL client library. Its name changes from time
-# to time (e. g. libmysqlclient18 on Ubuntu Precise), which means that it has to
-# be different for different Ubuntu versions. On the other hand, it is already
-# required by libqt4-sql-mysql, so we don't have to specify it explicitly.
-SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "libacpi0, libc6 (>= 2.4), libgcc1 (>= 1:4.1.1), libqt4-network (>= 4:4.5.3), libqt4-sql (>= 4:4.5.3), libqtcore4 (>= 4:4.7.0~beta1), libqtgui4 (>= 4:4.5.3), libstdc++6 (>= 4.4.0), libqt4-sql-mysql")
+# Do not explicitly require the MySQL client library. On Ubuntu, its name may
+# changes between releases (e. g. libmysqlclient18 on Ubuntu Precise), which
+# means that it has to be different for different Ubuntu releases. On the other
+# hand, it is already required by libqt4-sql-mysql, so we don't have to specify
+# it explicitly.
+SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "libc6 (>= 2.4), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.4.0)")
+SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libqt4-network (>= 4:4.5.3), libqt4-sql (>= 4:4.5.3), libqtcore4 (>= 4:4.7.0~beta1), libqtgui4 (>= 4:4.5.3), libqt4-sql-mysql")
+SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libacpi0")
 SET (CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Herrmann <martin@famherrmann.de>")
 SET (CPACK_DEBIAN_PACKAGE_SECTION    "misc")
 SET (CPACK_DEBIAN_PACKAGE_PRIORITY   "optional")
