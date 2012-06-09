@@ -204,6 +204,11 @@ ADD_EXECUTABLE(startkladde
 	${translation_files}
 )
 
+# TODO: on Unix, we used to link against mysql explicitly (even though it is
+# only used via the Qt plugin) to avoid "Error in my_thread_global_end(): 1
+# threads didn't exit" in specific situations (e. g. exception on open).
+# Is this still required?
+
 TARGET_LINK_LIBRARIES (startkladde ${QT_LIBRARIES} ${libs})
 
 
