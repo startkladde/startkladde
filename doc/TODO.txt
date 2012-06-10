@@ -14,12 +14,7 @@ Siehe auch Trac (startkladde.sf.net)
 
 == Major (important) ==
 
-Build system:
-* Way to build debug/release on demand
-* Add debug/release to version?
-
 Plugin system:
-* Make platform independent
 * Search plugins and data files in current directory, application directory,
   system directory
 
