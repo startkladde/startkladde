@@ -1,9 +1,12 @@
 [Desktop Entry]
+Type=Application
 Name=Startkladde
-Comment=Starterfassung für den Vereinsflugbetrieb
+GenericName=Flight logging
+GenericName[de]=Starterfassung
+Comment=Flight logging for flying clubs
+Comment[de]=Starterfassung für den Vereinsflugbetrieb
+Icon=startkladde.png
 Exec=startkladde
 Terminal=false
-Type=Application
 Categories=Office;Database;Qt;
-Icon=startkladde.png
 

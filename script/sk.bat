@@ -3,7 +3,8 @@ echo "Startkladde debugging batch file"
 echo.
 echo.
 echo.
+cd ..
 del startkladde.log
-.\startkladde_trunk.exe --no-full-screen -q >startkladde.log
+.\startkladde.exe --no-full-screen -q >startkladde.log
 type startkladde.log
 
