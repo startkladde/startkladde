@@ -2524,7 +2524,7 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="535"/>
         <source>Flight log %1 - Startkladde</source>
-        <translation>Hauptflugbuch %1 - Startkladde</translation>
+        <translation>Flugliste %1 - Startkladde</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="571"/>
