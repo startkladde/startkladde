@@ -49,6 +49,7 @@ class Interface: public AbstractInterface
 		static QString dataTypeFloat     ();
 		static QString dataTypeInteger   ();
 		static QString dataTypeString    ();
+		static QString dataTypeString16  ();
 		static QString dataTypeText      ();
 		static QString dataTypeTime      ();
 		static QString dataTypeTimestamp ();

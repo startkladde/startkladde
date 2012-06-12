@@ -53,6 +53,7 @@ QString Interface::dataTypeDecimal   () { return notr ("decimal")         ; }
 QString Interface::dataTypeFloat     () { return notr ("float")           ; }
 QString Interface::dataTypeInteger   () { return notr ("int(11)")         ; }
 QString Interface::dataTypeString    () { return notr ("varchar(255)")    ; }
+QString Interface::dataTypeString16  () { return notr ("varchar(16)")     ; }
 QString Interface::dataTypeText      () { return notr ("text")            ; }
 QString Interface::dataTypeTime      () { return notr ("time")            ; }
 QString Interface::dataTypeTimestamp () { return notr ("datetime")        ; }
