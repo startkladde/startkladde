@@ -379,9 +379,9 @@ SET (CPACK_DEBIAN_PACKAGE_VERSION ${startkladde_VERSION_MAJOR}.${startkladde_VER
 # means that it has to be different for different Ubuntu releases. On the other
 # hand, it is already required by libqt4-sql-mysql, so we don't have to specify
 # it explicitly.
-SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "libc6 (>= 2.4), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.4.0)")
-SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libqt4-network (>= 4:4.5.3), libqt4-sql (>= 4:4.5.3), libqtcore4 (>= 4:4.7.0~beta1), libqtgui4 (>= 4:4.5.3), libqt4-sql-mysql")
-SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libacpi0")
+SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "libc6 (>= 2.15), libgcc1 (>= 1:4.6.3), libstdc++6 (>= 4.6.3)")
+SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libqt4-network (>= 4:4.8.0), libqt4-sql (>= 4:4.8.0), libqtcore4 (>= 4:4.8.0), libqtgui4 (>= 4:4.8.0), libqt4-sql-mysql (>= 4:4.8.0)")
+SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libacpi0 (>=0.2)")
 SET (CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Herrmann <martin@famherrmann.de>")
 SET (CPACK_DEBIAN_PACKAGE_SECTION    "misc")
 SET (CPACK_DEBIAN_PACKAGE_PRIORITY   "optional")
