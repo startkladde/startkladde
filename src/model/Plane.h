@@ -47,6 +47,7 @@ class Plane: public Entity
 		QString type;
 		Category category;
 		QString callsign;
+		QString flarmId;
 
 
 		// *** Property access

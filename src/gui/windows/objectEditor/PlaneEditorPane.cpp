@@ -130,6 +130,7 @@ void PlaneEditorPane::objectToFields (const Plane &plane)
 	ui.typeInput->setEditText (plane.type);
 	ui.clubInput->setEditText (plane.club);
 	ui.seatsInput->setValue (plane.numSeats);
+	ui.flarmIdInput->setText (plane.flarmId);
 	ui.commentsInput->setText (plane.comments);
 }
 
@@ -144,6 +145,7 @@ void PlaneEditorPane::fieldsToObject (Plane &plane)
 	plane.type=ui.typeInput->currentText ().simplified ();
 	plane.club=ui.clubInput->currentText ().simplified ();
 	plane.numSeats=ui.seatsInput->value ();
+	plane.flarmId=ui.flarmIdInput->text ().simplified ();
 	plane.comments=ui.commentsInput->text ().simplified ();
 
 

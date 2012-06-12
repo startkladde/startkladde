@@ -70,7 +70,7 @@ QString Plane::registrationWithType () const
 
 QString Plane::toString () const
 {
-	return qnotr ("id=%1, registration=%2, callsign=%3, type=%4, club=%5, category=%6, seats=%7")
+	return qnotr ("id=%1, registration=%2, callsign=%3, type=%4, club=%5, category=%6, seats=%7, FLARM-ID=%8")
 		.arg (id)
 		.arg (registration)
 		.arg (callsign)
@@ -78,6 +78,7 @@ QString Plane::toString () const
 		.arg (club)
 		.arg (categoryText (category))
 		.arg (numSeats)
+		.arg (flarmId)
 		;
 }
 
@@ -190,7 +191,7 @@ int Plane::categoryMaxSeats (Plane::Category category)
 
 int Plane::DefaultObjectModel::columnCount () const
 {
-	return 8;
+	return 9;
 }
 
 QVariant Plane::DefaultObjectModel::displayHeaderData (int column) const
@@ -203,9 +204,10 @@ QVariant Plane::DefaultObjectModel::displayHeaderData (int column) const
 		case 3: return qApp->translate ("Plane::DefaultObjectModel", "Category");
 		case 4: return qApp->translate ("Plane::DefaultObjectModel", "Seats");
 		case 5: return qApp->translate ("Plane::DefaultObjectModel", "Club");
-		case 6: return qApp->translate ("Plane::DefaultObjectModel", "Comments");
+		case 6: return qApp->translate ("Plane::DefaultObjectModel", "FLARM-ID");
+		case 7: return qApp->translate ("Plane::DefaultObjectModel", "Comments");
 		// TODO remove from DefaultItemModel?
-		case 7: return qApp->translate ("Plane::DefaultObjectModel", "ID");
+		case 8: return qApp->translate ("Plane::DefaultObjectModel", "ID");
 	}
 
 	assert (false);
@@ -222,8 +224,9 @@ QVariant Plane::DefaultObjectModel::displayData (const Plane &object, int column
 		case 3: return firstToUpper (categoryText(object.category));
 		case 4: return object.numSeats>=0?QVariant (object.numSeats):QVariant (notr ("?"));
 		case 5: return object.club;
-		case 6: return object.comments;
-		case 7: return object.id;
+		case 6: return object.flarmId;
+		case 7: return object.comments;
+		case 8: return object.id;
 	}
 
 	assert (false);
@@ -242,7 +245,7 @@ QString Plane::dbTableName ()
 
 QString Plane::selectColumnList ()
 {
-	return notr ("id,registration,club,num_seats,type,category,callsign,comments");
+	return notr ("id,registration,club,num_seats,type,category,callsign,flarm_id,comments");
 }
 
 
@@ -257,19 +260,20 @@ Plane Plane::createFromResult (const Result &result)
 	p.category      =categoryFromDb (
 	                 result.value (5).toString ());
 	p.callsign      =result.value (6).toString ();
-	p.comments      =result.value (7).toString ();
+	p.flarmId       =result.value (7).toString ();
+	p.comments      =result.value (8).toString ();
 
 	return p;
 }
 
 QString Plane::insertColumnList ()
 {
-	return notr ("registration,club,num_seats,type,category,callsign,comments");
+	return notr ("registration,club,num_seats,type,category,callsign,flarm_id,comments");
 }
 
 QString Plane::insertPlaceholderList ()
 {
-	return notr ("?,?,?,?,?,?,?");
+	return notr ("?,?,?,?,?,?,?,?");
 }
 
 void Plane::bindValues (Query &q) const
@@ -280,6 +284,7 @@ void Plane::bindValues (Query &q) const
 	q.bind (type);
 	q.bind (categoryToDb (category));
 	q.bind (callsign);
+	q.bind (flarmId);
 	q.bind (comments);
 }
 
