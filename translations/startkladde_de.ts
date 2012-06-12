@@ -263,7 +263,7 @@ the database %2. To correct this automatically, the password
 of the database user root is required (this password can be
 different from the one of the system user root).
 Please enter the password for the database user root:</source>
-        <translation>Der Datenbankbenutzer %1 existiert nicht, das engegebene Passwort
+        <translation>Der Datenbankbenutzer %1 existiert nicht, das eingegebene Passwort
 stimmt nicht oder der Benutzer hat unzureichende Zugriffsrechte auf
 die Datenbank %2. Zur automatische Korrektur wird das Passwort des
 Datenbankbenutzers root benötigt (dieses Passwort kann ein anderes
