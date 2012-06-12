@@ -41,8 +41,9 @@ endif ()
 SET (MYSQL_DIR "" CACHE PATH "Base directory of the MySQL installation (the directory containing bin/, lib/ and include/, only required if MySQL is not autodetected (typically on Windows)")
 
 # Hack: prevent an error message if not found
-SET (RUBY_LIBRARY     "not_required")
-SET (RUBY_INCLUDE_DIR "not_required")
+SET (RUBY_LIBRARY            "not_required")
+SET (RUBY_INCLUDE_DIR        "not_required")
+SET (RUBY_CONFIG_INCLUDE_DIR "not_required")
 
 # Find packages
 FIND_PACKAGE (Qt4       REQUIRED)
