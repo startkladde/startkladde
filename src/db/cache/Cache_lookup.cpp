@@ -177,6 +177,20 @@ dbId Cache::getPlaneIdByRegistration (const QString &registration)
 	return invalidId;
 }
 
+dbId Cache::getPlaneIdByFlarmId (const QString &flarmId)
+{
+	synchronized (dataMutex)
+	{
+		if (!planeIdsByFlarmId.contains (flarmId))
+			return invalidId;
+
+		return planeIdsByRegistration.value (flarmId);
+	}
+
+	assert (!notr ("Not returned yet"));
+	return invalidId;
+}
+
 QList<dbId> Cache::getPersonIdsByName (const QString &lastName, const QString &firstName)
 {
 	QPair<QString, QString> pair (lastName.toLower (), firstName.toLower ());

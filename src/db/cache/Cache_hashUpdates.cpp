@@ -3,7 +3,7 @@
 #include "src/container/SortedSet_impl.h"
 
 /*
- * Currently, the update methods call the removed and added methods. This may
+  * Currently, the update methods call the removed and added methods. This may
  * or may not be optimal or even correct.
  *
  * Also, we don't remove entries that may still be valid, for example name
@@ -50,6 +50,7 @@ template<> void Cache::clearHashes<Plane> ()
 		planeTypes.clear ();
 		planeRegistrations.clear ();
 		planeIdsByRegistration.clear ();
+		planeIdsByFlarmId.clear ();
 		// clubs is used by multiple types
 	}
 }
@@ -65,6 +66,7 @@ template<> void Cache::updateHashesObjectAdded<Plane> (const Plane &plane)
 		if (!isBlank (plane.type)) planeTypes.insert (plane.type);
 		planeRegistrations.insert (plane.registration);
 		planeIdsByRegistration.insert (plane.registration.toLower (), plane.getId ());
+		planeIdsByFlarmId.insert (plane.flarmId, plane.getId ());
 		if (!isBlank (plane.club)) clubs.insert (plane.club);
 	}
 }
@@ -78,10 +80,13 @@ template<> void Cache::updateHashesObjectDeleted<Plane> (dbId id, const Plane *o
 		{
 			QString registration=oldPlane->registration;
 			QString registrationLower=registration.toLower ();
+			QString flarmId=oldPlane->flarmId;
 
 			planeIdsByRegistration.remove (registrationLower, id);
 			if (!planeIdsByRegistration.contains (registrationLower))
 				planeRegistrations.remove (registration);
+
+			planeIdsByFlarmId.remove (flarmId, id);
 		}
 		// Leave clubs
 	}

@@ -121,6 +121,7 @@ class Cache: public QObject
 
 		// *** Objects by propery
 		dbId getPlaneIdByRegistration (const QString &registration);
+		dbId getPlaneIdByFlarmId (const QString &flarmId);
 		QList<dbId> getPersonIdsByName (const QString &lastName, const QString &firstName);
 		dbId getUniquePersonIdByName (const QString &lastName, const QString &firstName);
 		QList<dbId> getPersonIdsByFirstName (const QString &firstName);
@@ -220,10 +221,10 @@ class Cache: public QObject
 		// Hashes by ID
 		// QHash is used rather than QMap because it provides
 		// "significantly faster lookups" which is important here
-		QHash<dbId, Plane       >        planesById;
-		QHash<dbId, Person      >        peopleById;
-		QHash<dbId, LaunchMethod> launchMethodsById;
-		QHash<dbId, Flight      >       flightsById;
+		QHash<dbId   , Plane       >        planesById;
+		QHash<dbId   , Person      >        peopleById;
+		QHash<dbId   , LaunchMethod> launchMethodsById;
+		QHash<dbId   , Flight      >       flightsById;
 
 		// Specific hashes
 		// The keys of these hashes are lower case; names are QPair
@@ -237,7 +238,8 @@ class Cache: public QObject
 		// SkMultiHash can be used.
 		// A better data structure would be a UniqueMultiHash or a
 		// Hash<SortedSet>.
-		QMultiHash<QString           , dbId> planeIdsByRegistration; // key is lower case
+		QMultiHash<QString, dbId> planeIdsByRegistration; // key is lower case
+		QMultiHash<QString, dbId> planeIdsByFlarmId;
 		QMultiHash<LaunchMethod::Type, dbId> launchMethodIdsByType;
 		SkMultiHash<QString, QString> lastNamesByFirstName; // key is lower case
 		SkMultiHash<QString, QString> firstNamesByLastName; // key is lower case
