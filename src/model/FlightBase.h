@@ -75,6 +75,7 @@ class FlightBase
 
 		flight_value_accessor (QString, Comments, comments);
 		flight_value_accessor (QString, AccountingNotes, accountingNotes);
+		flight_value_accessor (QString, FlarmID, flarmId);
 
 	private:
 		void initialize (dbId id);
@@ -109,6 +110,7 @@ class FlightBase
 
 		QString comments;
 		QString accountingNotes;
+		QString flarmId;
 };
 
 #undef flight_value_accessor

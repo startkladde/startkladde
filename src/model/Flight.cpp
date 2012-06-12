@@ -779,7 +779,7 @@ QString Flight::toString () const
 		"launchMethod=%7, towplane=%8, towpilot=%9, towFlightMode=%10, "
 		"departureTime=%11, landingTime=%12, towflightLandingTime=%13, "
 		"departureLocation='%14', landingLocation='%15', towflightLandingLocation='%16', "
-		"numLandings=%17, comment='%18', accountingNote='%19'")
+		"numLandings=%17, comment='%18', accountingNote='%19', flarmId='%20'")
 
 		.arg (getId ())
 		.arg (getPlaneId ())
@@ -804,6 +804,7 @@ QString Flight::toString () const
 		.arg (getNumLandings ())
 		.arg (getComments ())
 		.arg (getAccountingNotes ())
+		.arg (getFlarmID ())
 		;
 }
 
@@ -870,6 +871,8 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 	towflight.setLanded (getTowflightLanded ());
 	towflight.setTowflightLanded (false);
 
+	towflight.setFlarmID (QString ());
+
 	return towflight;
 }
 
@@ -931,6 +934,7 @@ QString Flight::selectColumnList ()
 		",towflight_landing_time,towflight_mode,towflight_landing_location,towplane_id" // 4 Σ23
 		",accounting_notes,comments" // 2 Σ25
 		",towpilot_id,towpilot_last_name,towpilot_first_name" // 3 Σ28
+		",flarm_id" // 1 Σ29
 		);
 }
 
@@ -974,6 +978,8 @@ Flight Flight::createFromResult (const Result &result)
 	f.setTowpilotLastName   (result.value (26).toString   ());
 	f.setTowpilotFirstName  (result.value (27).toString   ());
 
+	f.setFlarmID (result.value (28).toString ());
+
 	return f;
 }
 
@@ -986,6 +992,7 @@ QString Flight::insertColumnList ()
 		",towflight_landing_time,towflight_mode,towflight_landing_location,towplane_id" // 4 Σ22
 		",accounting_notes,comments" // 2 Σ24
 		",towpilot_id,towpilot_last_name,towpilot_first_name" // 3 Σ27
+		",flarm_id" // 1 Σ28
 		);
 }
 
@@ -998,6 +1005,7 @@ QString Flight::insertPlaceholderList ()
 		",?,?,?,?"
 		",?,?"
 		",?,?,?"
+		",?"
 		);
 }
 
@@ -1035,6 +1043,8 @@ void Flight::bindValues (Query &q) const
 	q.bind (getTowpilotId ());
 	q.bind (getTowpilotLastName ());
 	q.bind (getTowpilotFirstName ());
+
+	q.bind (getFlarmID ());
 }
 
 QList<Flight> Flight::createListFromResult (Result &result)

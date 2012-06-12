@@ -54,7 +54,7 @@ class Flight: public FlightBase
 			landingsWithoutDeparture, numLandingsZero,
 			towflightLandingWithoutDeparture, towflightLandingBeforeDeparture,
 			copilotNotAllowed, trainingWithoutInstructor,
-			
+
 			// Inconsistencies with database
 			towplaneMissing,
 			copilotInSingleSeater, trainingInSingleSeater, passengerFlightInSingleSeater,
@@ -67,8 +67,6 @@ class Flight: public FlightBase
 		Flight ();
 		Flight (dbId id); // TODO protected (friend Database)?
 		virtual ~Flight ();
-
-
 
 
 		// *** Comparison

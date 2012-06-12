@@ -88,6 +88,7 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 		QString headerTextAccountingNotes;
 		QString headerTextDate;
 		QString headerTextId;
+		QString headerTextFlarmId;
 
 
 		bool colorEnabled;
