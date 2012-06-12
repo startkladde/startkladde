@@ -24,6 +24,10 @@
 template<class T> class EntityList: public MutableObjectList<T>
 {
 	public:
+		// Required for gcc 4.7 two-phase lookup
+		using MutableObjectList<T>::replace;
+		using MutableObjectList<T>::append;
+
 		// Construction
 		EntityList (QObject *parent=NULL);
 		EntityList (const QList<T> &list, QObject *parent=NULL);

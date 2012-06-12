@@ -21,6 +21,9 @@
 template<class T> class MutableObjectList: public AbstractObjectList<T>
 {
 	public:
+		// Required for gcc 4.7 two-phase lookup
+		using AbstractObjectList<T>::setParent;
+
 		// Construction
 		MutableObjectList (QObject *parent=NULL);
 		MutableObjectList (const QList<T> &list, QObject *parent=NULL);
