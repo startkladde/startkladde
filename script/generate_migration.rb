@@ -74,7 +74,8 @@ end
 write source_template, source
 write header_template, header
 
-puts "All done. You will now have to use 'make update_current_schema' with a"
-puts "configured and cleared datebase to update the schema definition."
+puts "All done. You will now have to implement the migration and then call"
+puts "'./script/update_current_schema.sh' with a configured and cleared"
+puts "database to update the schema definition."
 
 
