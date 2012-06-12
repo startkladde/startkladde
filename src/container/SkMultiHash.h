@@ -13,6 +13,10 @@
 template<class K, class V> class SkMultiHash: public QMultiHash<K, V>
 {
 	public:
+		// Required for gcc 4.7 two-phase lookup
+		using QMultiHash<K, V>::contains;
+		using QMultiHash<K, V>::insert;
+
 		bool insertUnique (const K &key, const V &value)
 		{
 			if (contains (key, value))
