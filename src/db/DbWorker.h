@@ -35,8 +35,12 @@ class DbWorker: QObject
 
 	public:
 		/** Implementation detail, please disregard */
-		class Task { public:
-			virtual void run (Database &db, OperationMonitor *monitor)=0; };
+		class Task
+		{
+			public:
+				virtual ~Task () {}
+				virtual void run (Database &db, OperationMonitor *monitor)=0;
+		};
 
 		DbWorker (Database &db);
 		virtual ~DbWorker ();
