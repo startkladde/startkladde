@@ -18,6 +18,7 @@ QString Migration::dataTypeDecimal   () { return Interface::dataTypeDecimal   ()
 QString Migration::dataTypeFloat     () { return Interface::dataTypeFloat     (); }
 QString Migration::dataTypeInteger   () { return Interface::dataTypeInteger   (); }
 QString Migration::dataTypeString    () { return Interface::dataTypeString    (); }
+QString Migration::dataTypeString16  () { return Interface::dataTypeString16  (); }
 QString Migration::dataTypeText      () { return Interface::dataTypeText      (); }
 QString Migration::dataTypeTime      () { return Interface::dataTypeTime      (); }
 QString Migration::dataTypeTimestamp () { return Interface::dataTypeTimestamp (); }
