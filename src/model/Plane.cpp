@@ -70,7 +70,7 @@ QString Plane::registrationWithType () const
 
 QString Plane::toString () const
 {
-	return qnotr ("id=%1, registration=%2, callsign=%3, type=%4, club=%5, category=%6, seats=%7, FLARM-ID=%8")
+	return qnotr ("id=%1, registration=%2, callsign=%3, type=%4, club=%5, category=%6, seats=%7, FLARM ID=%8")
 		.arg (id)
 		.arg (registration)
 		.arg (callsign)
@@ -204,7 +204,7 @@ QVariant Plane::DefaultObjectModel::displayHeaderData (int column) const
 		case 3: return qApp->translate ("Plane::DefaultObjectModel", "Category");
 		case 4: return qApp->translate ("Plane::DefaultObjectModel", "Seats");
 		case 5: return qApp->translate ("Plane::DefaultObjectModel", "Club");
-		case 6: return qApp->translate ("Plane::DefaultObjectModel", "FLARM-ID");
+		case 6: return qApp->translate ("Plane::DefaultObjectModel", "FLARM ID");
 		case 7: return qApp->translate ("Plane::DefaultObjectModel", "Comments");
 		// TODO remove from DefaultItemModel?
 		case 8: return qApp->translate ("Plane::DefaultObjectModel", "ID");
