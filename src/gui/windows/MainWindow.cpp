@@ -67,6 +67,7 @@
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
 #include "src/i18n/TranslationManager.h"
+#include "src/flarm/FlarmHandler.h"
 
 template <class T> class MutableObjectList;
 
@@ -208,6 +209,14 @@ MainWindow::MainWindow (QWidget *parent):
 
 	connect (&dbManager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 	databaseStateChanged (dbManager.getState ());
+	
+	// Flarm
+	FlarmHandler *flarmHandler = FlarmHandler::getInstance ();
+	flarmHandler->setDatabase (&dbManager);
+	connect (flarmHandler, SIGNAL (departureDetected(const QString&)), this, SLOT (onFlarmDeparture(const QString&)));
+	connect (flarmHandler, SIGNAL (landingDetected(const QString&)), this, SLOT (onFlarmLanding(const QString&)));
+	connect (flarmHandler, SIGNAL (goaroundDetected(const QString&)), this, SLOT (onFlarmGoaround(const QString&)));
+	connect (flarmHandler, SIGNAL (connectionStateChanged(FlarmHandler::ConnectionState)), this, SLOT (onFlarmConnectionStateChanged(FlarmHandler::ConnectionState)));
 }
 
 MainWindow::~MainWindow ()
@@ -1824,6 +1833,20 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 	}
 }
 
+void MainWindow::onFlarmConnectionStateChanged (FlarmHandler::ConnectionState state) {
+	switch (state)
+	{
+		case FlarmHandler::notConnected:
+			ui.flarmStateLabel->setText (tr ("Flarm not connected"));
+			break;
+		case FlarmHandler::connectedNoData:
+			ui.flarmStateLabel->setText (tr ("No Flarm data"));
+			break;
+		case FlarmHandler::connectedData:
+			ui.flarmStateLabel->setText (tr ("Flarm data ok"));
+			break;
+	}
+}
 
 // ***************************
 // ** Connection monitoring **
@@ -2003,3 +2026,18 @@ void MainWindow::languageChanged ()
 	//ui.flightTable->resizeColumnsToContents ();
 }
 
+// Flarm
+void MainWindow::onFlarmDeparture (const QString& flarmid)
+{
+	qDebug () << "MainWindow::onFlarmDeparture: " << flarmid << endl;
+}
+
+void MainWindow::onFlarmLanding (const QString& flarmid)
+{
+	qDebug () << "MainWindow::onFlarmLanding: " << flarmid << endl;
+}
+
+void MainWindow::onFlarmGoaround (const QString& flarmid)
+{
+	qDebug () << "MainWindow::onFlarmGoaround: " << flarmid << endl;
+}

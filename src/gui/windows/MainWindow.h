@@ -40,6 +40,7 @@
 #include "ui_MainWindow.h"
 
 #include "src/db/DbManager.h"
+#include "src/flarm/FlarmHandler.h"
 #include "src/gui/SkMainWindow.h"
 
 class QWidget;
@@ -125,6 +126,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 	protected slots:
 		void databaseError (int number, QString message);
 		void databaseStateChanged (DbManager::State state);
+		void onFlarmConnectionStateChanged (FlarmHandler::ConnectionState);
 		void readTimeout ();
 		void readResumed ();
 
@@ -234,6 +236,11 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void logMessage (QString message);
 
 		void flightListChanged ();
+		
+		// Flarm
+		void onFlarmDeparture(const QString&);
+		void onFlarmLanding(const QString&);
+		void onFlarmGoaround(const QString&);
 
 	private:
 		// TODO move to translation manager?
