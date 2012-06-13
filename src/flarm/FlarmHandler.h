@@ -54,9 +54,7 @@ class FlarmHandler: public QObject {
     static FlarmHandler* getInstance ();
     ~FlarmHandler ();
     QMap<QString,FlarmRecord*>* getRegMap() {return regMap; }
-    //bool connected();
-    //bool active ();
-    //void updateList (const sk_flugzeug&);
+    void updateList (const Plane&);
     void setDatabase (DbManager*);
     
   private:

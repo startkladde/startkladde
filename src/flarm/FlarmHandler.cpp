@@ -39,7 +39,6 @@ FlarmRecord::FlarmRecord (QObject* parent, const QString& _id, flarmState _state
         last_speed = 0;
         last_alt   = 0;
         last_climb = 0.0;
-        //intervals = 0;
         north = 0;
         east  = 0;
         category = Plane::categoryNone;
@@ -81,14 +80,9 @@ FlarmRecord::flarmState FlarmRecord::getState ()
 
 void FlarmRecord::setClimb (double clmb) {
         climb = clmb;
-        //interval ++;
 }
 
 double FlarmRecord::getClimb () {
-        //double result = climb / intervals;
-        //climb = 0.0;
-        //intervals = 0;
-        //return restult;
         return climb;
 }
 
@@ -190,28 +184,13 @@ double FlarmHandler::calcLon (const QString& lon, const QString& ew) {
         return value;
 }
 
-/*
-void FlarmHandler::updateList (const sk_flugzeug& plane) {
-        if (!plane.flarm_id.empty()) {
-                FlarmRecord* record = regMap->value (std2q(plane.flarm_id));
+void FlarmHandler::updateList (const Plane& plane) {
+        if (!plane.flarmId.isEmpty()) {
+                FlarmRecord* record = regMap->value (plane.flarmId);
                 if (record)
-                        record->reg = std2q(plane.registration);
+                        record->reg = plane.registration;
         }
 }
-*/
-
-/*
-bool FlarmHandler::connected () {
-        if (flarmSocket)
-                return flarmSocket->state() == QAbstractSocket::ConnectedState;
-        else
-                return false;
-}
-
-bool FlarmHandler::active() {
-	return flarmStatus;
-}
-*/
 
 void FlarmHandler::socketStateChanged (QAbstractSocket::SocketState socketState) {
         if (socketState == QAbstractSocket::ConnectedState)
@@ -229,7 +208,6 @@ void FlarmHandler::setConnectionState (ConnectionState state) {
 
 void FlarmHandler::initFlarmSocket () {
 	// will be set on first sentence
-	//flarmStatus = false;
 	setConnectionState (notConnected);
 	
 	//qDebug () << "FlarmHandler::initFlarmSocket: " << endl;
@@ -259,7 +237,6 @@ void FlarmHandler::initFlarmSocket () {
 
 void FlarmHandler::dataReceived () {
 	//qDebug () << "dataReceived" << endl;
-	//flarmStatus = true;
 	setConnectionState (connectedData);
 	flarmDataTimer->start(2000);
 	while (flarmSocket->canReadLine()) {
@@ -270,16 +247,15 @@ void FlarmHandler::dataReceived () {
 }
 
 void FlarmHandler::socketException (QAbstractSocket::SocketError socketError) {
+        Q_UNUSED(socketError)
 	//qDebug () << "socketException: " << socketError << endl;
 	flarmSocket->abort();
-	//flarmStatus = false;
 	//setConnectionState (notConnected);
 	flarmSocketTimer->start (5000);
 }
 
 void FlarmHandler::flarmDataTimeout () {
 	//qDebug () << "FlarmHandler::flarmDataTimeout" << endl;
-	//flarmStatus = false;
 	setConnectionState (connectedNoData);
 	// if no data, most likely the socket is down. Give it enough time to recover     
 	flarmDataTimer->start(6000);
@@ -287,7 +263,6 @@ void FlarmHandler::flarmDataTimeout () {
 
 void FlarmHandler::flarmSocketTimeout () {
 	//qDebug () << "FlarmHandler::flarmSocketTimeout" << endl;
-	//flarmStatus = false;        
 	// do not start timer; initFlarmSocket will take care
 	//flarmSocketTimer->start(5000);
 	initFlarmSocket ();
@@ -321,7 +296,7 @@ uint FlarmHandler::calcCheckSum (const QString& sentence)
         return sum;
 }
 
-/** This function checks if the checksum in the sentence matches the sentence. It retuns true if it matches, and false otherwise. */
+/** This function checks if the checksum in the sentence matches the sentence. It returns true if it matches, and false otherwise. */
 bool FlarmHandler::checkCheckSum(const QString& sentence)
 {
         QStringList list = sentence.split ('*');
