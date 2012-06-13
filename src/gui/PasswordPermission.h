@@ -4,7 +4,7 @@
 #include "src/gui/PasswordCheck.h"
 
 /**
- * Uses a PasswordCheck to query a password from the user if requried
+ * Uses a PasswordCheck to query a password from the user if required
  *
  * This is separate from PasswordCheck so several actions (for which the need
  * for a password is configured individually) can share the same password, and

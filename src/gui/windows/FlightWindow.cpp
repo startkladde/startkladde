@@ -1424,6 +1424,8 @@ dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
 	bool needPasswordForMedical=Settings::instance ().protectChangeMedicals;
 	PasswordCheck passwordCheck (Settings::instance ().databaseInfo.password);
 	PasswordPermission enterMedicalDataPermission (passwordCheck);
+	enterMedicalDataPermission.setPasswordRequired (needPasswordForMedical);
+	enterMedicalDataPermission.setMessage (tr ("The database password must be entered to enter medical data."));
 
 	PersonEditorPaneData paneData;
 	paneData.displayMedicalData=!needPasswordForMedical;
