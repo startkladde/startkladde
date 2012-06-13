@@ -24,6 +24,9 @@
 #include "src/db/DbManager.h"
 #include "src/logging/messages.h"
 #include "src/i18n/notr.h"
+#include "src/gui/PasswordCheck.h"
+#include "src/gui/PasswordPermission.h"
+#include "src/gui/windows/objectEditor/PersonEditorPane.h"
 
 /*
  * On enabling/diabling widgets:
@@ -1417,7 +1420,17 @@ dbId FlightWindow::createNewPerson (QString lastName, QString firstName)
 	nameObject.lastName=lastName;
 	nameObject.firstName=firstName;
 
-	dbId result=ObjectEditorWindow<Person>::createObject (this, manager, nameObject);
+	// TODO overly complicated, see ObjectEditorPane
+	bool needPasswordForMedical=Settings::instance ().protectChangeMedicals;
+	PasswordCheck passwordCheck (Settings::instance ().databaseInfo.password);
+	PasswordPermission enterMedicalDataPermission (passwordCheck);
+
+	PersonEditorPaneData paneData;
+	paneData.displayMedicalData=!needPasswordForMedical;
+	paneData.viewMedicalDataPermission=&enterMedicalDataPermission;
+	paneData.changeMedicalDataPermission=&enterMedicalDataPermission;
+
+	dbId result=ObjectEditorWindow<Person>::createObject (this, manager, nameObject, &paneData);
 	if (idValid (result))
 		return result;
 	else
