@@ -63,6 +63,20 @@ EntityList<Flight> Cache::getPreparedFlights ()
 	synchronizedReturn (dataMutex, preparedFlights);
 }
 
+EntityList<Flight> Cache::getFlyingFlights ()
+{
+	// Don't directly access the preparedFlights property - the access must be
+	// synchronized.
+	EntityList<Flight> preparedFlights=getPreparedFlights ();
+
+	EntityList<Flight> result;
+	foreach (const Flight &flight, preparedFlights.getList ())
+		if (flight.isFlying ())
+			result.append (flight);
+
+	return result;
+}
+
 QDate Cache::getTodayDate ()
 {
 	synchronizedReturn (dataMutex, todayDate);

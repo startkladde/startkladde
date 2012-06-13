@@ -109,6 +109,7 @@ class Cache: public QObject
 		EntityList<Flight> getFlightsToday ();
 		EntityList<Flight> getFlightsOther ();
 		EntityList<Flight> getPreparedFlights ();
+		EntityList<Flight> getFlyingFlights ();
 		QDate getTodayDate ();
 		QDate getOtherDate ();
 		EntityList<Flight> getAllKnownFlights ();
