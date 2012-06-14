@@ -112,8 +112,8 @@ class MyTCPServer (socketserver.TCPServer):
     self.allow_reuse_address = True
     socketserver.TCPServer.__init__(self, address, handler)
 
-  def handle_error(self, request, client_address):
-    print("socket error: ", request.__class__.__name__, client_address)
+#  def handle_error(self, request, client_address):
+#    print("socket error: ", request.__class__.__name__, client_address)
         
 class ServerThread (threading.Thread):
     
@@ -173,9 +173,10 @@ class SerialThread (threading.Thread):
         continue
         
       try:
+        #line = self.serial.readline (None, '\r\n')
         line = self.serial.readline ()
         if len (line) == 0:
-          print ("empty line: %s" % line)
+          # print ("empty line: %s" % line)
           # this happens after timeout; the call to getRI causes an exception if the device has been disconnected
           # we use this as a side effect to force to recreate the device after timeout
           ri = self.serial.getRI ()
@@ -216,12 +217,48 @@ class SerialThread (threading.Thread):
         continue
           
       # print ("put: %s" % line)
+      print ("type of line: ", line.__class__.__name__)
+      if queue.full ():
+        print("throw away: ", queue.get())
+      else:
+        queue.put(line)
+
+class FileThread (threading.Thread):
+  def __init__ (self, filename):
+    threading.Thread.__init__(self)
+    self.serial = None
+    self.filename = filename
+    
+  def run (self):
+    global queue
+
+    file = open (self.filename, 'r')
+    while True:
+      time.sleep (0.02)
+      # the socket does not accept str which is unicode
+      line = bytes (file.readline (), 'ascii')
+
+      if len (line) == 0:
+        continue
+
+      # print ("put: %s" % line)
       if queue.full ():
         print("throw away: ", queue.get())
       else:
         queue.put(line)
 
 if __name__ == "__main__":
+  from optparse import OptionParser
+
+  parser = OptionParser()
+  parser.add_option("-f", "--file", dest="filename", help="read data from FILE", metavar="FILE")
+
+  (options, args) = parser.parse_args()
+  if options.filename:
+    print ("Read from %s" % options.filename)
+  else:
+    print ("Read from serial")
+
   if os.path.exists(PID_FILE):
     pid = findpid()
     # pid file exists, check for real process
@@ -242,7 +279,11 @@ if __name__ == "__main__":
   global queue
   queue = queue.Queue(10)
 
-  serialThread = SerialThread ()
+  if options.filename:
+    serialThread = FileThread (options.filename)
+  else:
+    serialThread = SerialThread ()
+  
   serverThread = ServerThread ()
 
   serialThread.start ()
