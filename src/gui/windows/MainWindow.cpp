@@ -2156,7 +2156,8 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 		// we create the flight with minimal data; will show up in red for completion
 		Flight flight;
 		flight.setType (FlightBase::typeNone);
-		//flight.setPlaneId (plane->getId());
+		if (plane)
+		        flight.setPlaneId (plane->getId());
 		flight.setMode (FlightBase::modeLocal);
 		flight.setFlarmId (flarmid);
 		if (action == FlarmHandler::departure)
