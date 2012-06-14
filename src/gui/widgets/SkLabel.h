@@ -70,6 +70,8 @@ class SkLabel: public QLabel
 		QColor defaultBackgroundColor;
 		bool useDefaultBackgroundColor; // TODO use defaultBackgroundColor.isValid instead
 		QColor errorColor;
+
+		QColor concealedColor;
 };
 
 #endif

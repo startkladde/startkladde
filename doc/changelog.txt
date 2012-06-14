@@ -1,3 +1,5 @@
+	- Bugfix: concealed labels not really concealed on gradient styled
+	  background forms (KDE4)
 	- Bugfix: crash on exit (under some circumstances), caused by an attempt to
 	  reconnect
 	- Bugfix: timer started from wrong thread
