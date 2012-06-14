@@ -380,6 +380,7 @@
     </property>
     <addaction name="actionSettings"/>
     <addaction name="actionSetTime"/>
+    <addaction name="actionSetGPSTime"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
     <addaction name="actionShutdown"/>
@@ -875,6 +876,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionSetGPSTime">
+   <property name="text">
+    <string>Set &amp;GPS time...</string>
+   </property>
+   <property name="toolTip">
+    <string>Set GPS time from Flarm data</string>
    </property>
   </action>
  </widget>
