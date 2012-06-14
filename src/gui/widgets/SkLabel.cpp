@@ -131,6 +131,8 @@ void SkLabel::updateColors ()
 	if (concealed)
 	{
 		// Concealed => concealed color as foreground and background
+		// Note that the parent widget's background is not necessarily a uniform
+		// color. For example, in KDE4, we may have a gradient.
 		setAutoFillBackground (false);
 		p.setColor (QPalette::WindowText, concealedColor);
 		p.setColor (QPalette::Window    , concealedColor);
