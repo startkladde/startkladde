@@ -149,6 +149,7 @@ MainWindow::MainWindow (QWidget *parent):
 
 #if defined (Q_OS_WIN32) || defined (Q_OS_WIN64)
 	ui.actionSetTime->setVisible (false);
+	ui.actionSetGPSTime->setVisible (false);
 	bool virtualKeyboardEnabled=false;
 #else
 	bool virtualKeyboardEnabled = (
@@ -215,7 +216,6 @@ MainWindow::MainWindow (QWidget *parent):
 	flarmHandler->setDatabase (&dbManager);
 	connect (flarmHandler, SIGNAL (actionDetected(const QString&,FlarmHandler::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmHandler::FlightAction)));
 	connect (flarmHandler, SIGNAL (connectionStateChanged(FlarmHandler::ConnectionState)), this, SLOT (onFlarmConnectionStateChanged(FlarmHandler::ConnectionState)));
-        connect (flarmHandler, SIGNAL(updateDateTime(const QDateTime&)), this, SLOT(slotUpdateDateTime(const QDateTime&)));
 }
 
 MainWindow::~MainWindow ()
@@ -1975,6 +1975,58 @@ void MainWindow::on_actionSetTime_triggered ()
 	}
 }
 
+void MainWindow::on_actionSetGPSTime_triggered ()
+{
+        qDebug () << "MainWindow::on_actionSetGPSTime_triggered" << endl;
+        FlarmHandler* flarmHandler = FlarmHandler::getInstance();
+        if (flarmHandler->getConnectionState() != FlarmHandler::connectedData) {
+                QMessageBox::warning (this, tr("No GPS signal"), "Flarm does not send data");
+                return;
+        }
+        QDateTime current (QDateTime::currentDateTimeUtc ());
+        QDateTime currentGPSdateTime = flarmHandler->getGPSTime ();
+        qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString ("hh:mm:ss dd.MM.yyyy") << endl;
+        qDebug () << "currentTime: " << current.toString ("hh:mm:ss dd.MM.yyyy") << endl;   
+        int diff = currentGPSdateTime.secsTo(current);
+        if (abs (diff) > 0) {
+                if (QMessageBox::question(this, tr("Time difference"), 
+                        tr("<p>System time: %1</p>"
+                        "<p>GPS time: %2</p>"
+                        "<p>The system time differs by %3 seconds from the GPS time.</p>"
+                        "<p>Correction?</p>")
+                        .arg(current.toString ("hh:mm:ss dd.MM.yyyy"))
+                        .arg(currentGPSdateTime.toString ("hh:mm:ss dd.MM.yyyy"))
+                        .arg(diff), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+                {
+        		QString timeString=qnotr ("%1-%2-%3 %4:%5:%6")
+	        		.arg (currentGPSdateTime.date().year ()).arg (currentGPSdateTime.date().month ()).arg (currentGPSdateTime.date().day ())
+		        	.arg (currentGPSdateTime.time().hour ()).arg (currentGPSdateTime.time().minute ()).arg (currentGPSdateTime.time().second ());
+
+                        // sudo -n: non-interactive (don't prompt for password)
+                        // sudoers entry: deffi ALL=NOPASSWD: /bin/date
+
+                        int result=QProcess::execute (notr ("sudo"), QStringList () << notr ("-n") << notr ("date") << notr ("-s") << timeString);
+
+                        if (result==0)
+                        {
+			        showWarning (tr ("System time changed"),
+				        tr ("The system time was changed. The setting"
+				        " may only be stored permanently when the system is shut down."), this);
+                        }
+                        else
+                        {
+			        showWarning (tr ("Error"),
+				        tr ("Changing the system time failed."
+				        " Maybe the user has insufficient permissions."),
+				        this);
+                        }
+                }
+        }
+        else
+                QMessageBox::information (this, tr("System time"), tr ("The system time is correct"));
+
+}
+
 void MainWindow::on_actionTest_triggered ()
 {
 	// Perform a sleep task in the background
@@ -2154,7 +2206,4 @@ void MainWindow::manipulateFlight (dbId flight_id, FlarmHandler::FlightAction ac
                         break;
                 }
         }
-}
-
-void MainWindow::slotUpdateDateTime(const QDateTime&) {
 }

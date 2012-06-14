@@ -139,6 +139,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		// Menu: Program
 		void on_actionSettings_triggered ();
 		void on_actionSetTime_triggered ();
+		void on_actionSetGPSTime_triggered ();
 		void on_actionQuit_triggered ();
 		void on_actionShutdown_triggered ();
 
@@ -240,7 +241,6 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		// Flarm
 		void onFlarmAction(const QString&, FlarmHandler::FlightAction);
 		void manipulateFlight (dbId flight_id, FlarmHandler::FlightAction action);
-		void slotUpdateDateTime(const QDateTime&);
 
 	private:
 		// TODO move to translation manager?
