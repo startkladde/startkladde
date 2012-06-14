@@ -198,7 +198,7 @@ dbId Cache::getPlaneIdByFlarmId (const QString &flarmId)
 		if (!planeIdsByFlarmId.contains (flarmId))
 			return invalidId;
 
-		return planeIdsByRegistration.value (flarmId);
+		return planeIdsByFlarmId.value (flarmId);
 	}
 
 	assert (!notr ("Not returned yet"));
