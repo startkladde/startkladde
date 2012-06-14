@@ -804,7 +804,7 @@ QString Flight::toString () const
 		.arg (getNumLandings ())
 		.arg (getComments ())
 		.arg (getAccountingNotes ())
-		.arg (getFlarmID ())
+		.arg (getFlarmId ())
 		;
 }
 
@@ -871,7 +871,7 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 	towflight.setLanded (getTowflightLanded ());
 	towflight.setTowflightLanded (false);
 
-	towflight.setFlarmID (QString ());
+	towflight.setFlarmId (QString ());
 
 	return towflight;
 }
@@ -978,7 +978,7 @@ Flight Flight::createFromResult (const Result &result)
 	f.setTowpilotLastName   (result.value (26).toString   ());
 	f.setTowpilotFirstName  (result.value (27).toString   ());
 
-	f.setFlarmID (result.value (28).toString ());
+	f.setFlarmId (result.value (28).toString ());
 
 	return f;
 }
@@ -1044,7 +1044,7 @@ void Flight::bindValues (Query &q) const
 	q.bind (getTowpilotLastName ());
 	q.bind (getTowpilotFirstName ());
 
-	q.bind (getFlarmID ());
+	q.bind (getFlarmId ());
 }
 
 QList<Flight> Flight::createListFromResult (Result &result)
