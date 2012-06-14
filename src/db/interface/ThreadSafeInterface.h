@@ -10,7 +10,7 @@
 
 #include <QObject>
 #include <QThread>
-#include <QBasicTimer>
+#include <QTimer>
 
 #include "src/db/interface/Interface.h"
 #include "src/db/Query.h" // required for passing a query by copy in a signal
@@ -78,9 +78,6 @@ class ThreadSafeInterface: public QObject, public Interface
 		void readResumed ();
 
 	protected:
-		virtual void timerEvent (QTimerEvent *event);
-		void startKeepaliveTimer ();
-		void stopKeepaliveTimer ();
 		void keepalive ();
 
 	protected slots:
@@ -98,11 +95,15 @@ class ThreadSafeInterface: public QObject, public Interface
 		virtual void slot_queryHasResult     (Returner<bool>                    *returner, Query query);
 		virtual void slot_ping               (Returner<void>                    *returner);
 
+		void startKeepaliveTimer ();
+		void stopKeepaliveTimer ();
+		virtual void keepaliveTimer_timeout ();
+
 	private:
 		int readTimeoutSeconds;
 		bool keepaliveEnabled;
 		int keepaliveInterval; // milliseconds
-		QBasicTimer keepaliveTimer;
+		QTimer keepaliveTimer;
 		QThread thread;
 		AbstractInterface *interface;
 		bool isOpen;
