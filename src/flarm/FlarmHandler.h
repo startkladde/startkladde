@@ -51,7 +51,10 @@ class FlarmHandler: public QObject {
 
   public:
     enum ConnectionState {notConnected, connectedNoData, connectedData};
+    enum FlightAction {departure, landing, goAround};
     static FlarmHandler* getInstance ();
+    static QString flightActionToString (FlarmHandler::FlightAction action); 
+
     ~FlarmHandler ();
     QMap<QString,FlarmRecord*>* getRegMap() {return regMap; }
     void updateList (const Plane&);
@@ -88,9 +91,7 @@ class FlarmHandler: public QObject {
     void landingTimeout ();
 
   signals:
-    void departureDetected (const QString& id);
-    void landingDetected (const QString& id);
-    void goaroundDetected (const QString& id);
+    void actionDetected (const QString& id, FlarmHandler::FlightAction);
     void connectionStateChanged (FlarmHandler::ConnectionState);
     void statusChanged ();
     void updateDateTime (const QDateTime&);
