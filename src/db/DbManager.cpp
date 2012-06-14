@@ -62,6 +62,7 @@ DbManager &DbManager::operator= (const DbManager &other)
 
 DbManager::~DbManager ()
 {
+	interface.close ();
 }
 
 void DbManager::setState (State newState)

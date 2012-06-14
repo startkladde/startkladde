@@ -444,5 +444,6 @@ int main (int argc, char **argv)
 		return 1;
 	}
 
+	std::cout << "Regular program end with exit code " << ret << std::endl;
 	return ret;
 }
