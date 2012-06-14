@@ -1,3 +1,6 @@
+	- Bugfix: crash on exit (under some circumstances), caused by an attempt to
+	  reconnect
+	- Bugfix: timer started from wrong thread
 	- Changed the term "Hauptflugbuch" (German translation only)
 	- Changed build system from make/qmake to cmake
 	- Bugfix: crash after canceling an update object operation from the main
