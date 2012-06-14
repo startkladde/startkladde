@@ -55,6 +55,9 @@ ThreadSafeInterface::ThreadSafeInterface (const DatabaseInfo &info, int readTime
 	CONNECT (ping               (Returner<void>                    *));
 #undef CONNECT
 
+	keepaliveTimer.moveToThread (&thread);
+	connect (&keepaliveTimer, SIGNAL (timeout ()), this, SLOT (keepaliveTimer_timeout ()));
+
 	moveToThread (&thread);
 	thread.start ();
 }
@@ -110,7 +113,7 @@ bool ThreadSafeInterface::open ()
 void ThreadSafeInterface::close ()
 {
 	// Hack: The thread may currently be blocked in a non-responding keepalive,
-	// so the event won't be deleviered. TODO: keepalive should be a
+	// so the event won't be delivered. TODO: keepalive should be a
 	// functionality of DefaultInterface (?), and remove this.
 	cancelConnection ();
 
@@ -279,16 +282,15 @@ bool ThreadSafeInterface::event (QEvent *e)
 	return result;
 }
 
-void ThreadSafeInterface::timerEvent (QTimerEvent *event)
+void ThreadSafeInterface::keepaliveTimer_timeout ()
 {
-	if (event->timerId ()==keepaliveTimer.timerId ())
-		keepalive ();
+	keepalive ();
 }
 
 void ThreadSafeInterface::startKeepaliveTimer ()
 {
 	if (isOpen && keepaliveEnabled && keepaliveInterval>0)
-		keepaliveTimer.start (keepaliveInterval, this);
+		keepaliveTimer.start (keepaliveInterval);
 }
 
 void ThreadSafeInterface::stopKeepaliveTimer ()
@@ -323,8 +325,9 @@ void ThreadSafeInterface::setKeepaliveEnabled (bool enabled)
 {
 	keepaliveEnabled=enabled;
 
+	// We have do do this on the correct thread, so use the slot
 	if (keepaliveEnabled)
-		startKeepaliveTimer ();
+		QTimer::singleShot (0, this, SLOT (startKeepaliveTimer ()));
 	else
-		stopKeepaliveTimer ();
+		QTimer::singleShot (0, this, SLOT (stopKeepaliveTimer ()));
 }
