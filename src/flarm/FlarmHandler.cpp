@@ -219,6 +219,14 @@ void FlarmHandler::setConnectionState (ConnectionState state) {
         }
 }
 
+FlarmHandler::ConnectionState FlarmHandler::getConnectionState () {
+        return connectionState;
+}
+
+QDateTime FlarmHandler::getGPSTime () {
+        return gpsTime;
+}
+        
 void FlarmHandler::initFlarmSocket () {
 	// will be set on first sentence
 	setConnectionState (notConnected);
@@ -561,9 +569,8 @@ void FlarmHandler::processFlarm (const QString& line) {
 	        QTime time (QTime::fromString (timestamp.split('.')[0], "hhmmss"));
 	        QDate date (QDate::fromString (datestamp, "ddMMyy"));
 	        // two digit year give 19xx years. We have to add 100 years :-/
-	        QDateTime datetime (date.addYears(100), time, Qt::UTC);
-	        //qDebug () << "datetime: " << datetime.toString ("hh:mm:ss dd.MM.yy");
-	        emit updateDateTime (datetime);
+	        gpsTime = QDateTime (date.addYears(100), time, Qt::UTC);
+	        //qDebug () << "datetime: " << gpsTime.toString ("hh:mm:ss dd.MM.yy");
 	        if (valid == "A") {
         	        double dlat = calcLat (lat, ns);
         	        double dlon = calcLon (lon, ew);

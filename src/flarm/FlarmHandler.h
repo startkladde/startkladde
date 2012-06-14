@@ -59,6 +59,8 @@ class FlarmHandler: public QObject {
     QMap<QString,FlarmRecord*>* getRegMap() {return regMap; }
     void updateList (const Plane&);
     void setDatabase (DbManager*);
+    ConnectionState getConnectionState ();
+    QDateTime getGPSTime ();
     
   private:
     FlarmHandler (QObject* parent);
@@ -72,6 +74,7 @@ class FlarmHandler: public QObject {
     QFile* trace;
     QTextStream* stream;
     static FlarmHandler* instance;
+    QDateTime gpsTime;
 
     void processFlarm (const QString& line);
     uint calcCheckSum(const QString&);
@@ -94,7 +97,6 @@ class FlarmHandler: public QObject {
     void actionDetected (const QString& id, FlarmHandler::FlightAction);
     void connectionStateChanged (FlarmHandler::ConnectionState);
     void statusChanged ();
-    void updateDateTime (const QDateTime&);
     void homePosition (const QPointF&);
 };
 
