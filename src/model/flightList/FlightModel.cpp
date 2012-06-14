@@ -168,7 +168,7 @@ QVariant FlightModel::data (const Flight &flight, int column, int role) const
 			case 13: return flight.getAccountingNotes ();
 			case 14: return flight.effdatum ();
 			case 15: return (flight.isTowflight ()?qnotr ("(%1)"):qnotr ("%1")).arg (flight.getId ());
-			case 16: return flight.getFlarmID ();
+			case 16: return flight.getFlarmId ();
 		}
 
 		assert (false);
