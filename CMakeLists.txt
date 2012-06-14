@@ -6,6 +6,8 @@ set (startkladde_VERSION_MAJOR 2)
 set (startkladde_VERSION_MINOR 1)
 set (startkladde_VERSION_REVISION 0)
 
+SET (full_version ${startkladde_VERSION_MAJOR}.${startkladde_VERSION_MINOR}.${startkladde_VERSION_REVISION})
+
 
 #################
 ## cmake setup ##
@@ -347,7 +349,7 @@ SET (CPACK_STRIP_FILES 1)
 ####################
 
 # Installer appearance
-SET (CPACK_NSIS_DISPLAY_NAME "Startkladde")
+SET (CPACK_NSIS_DISPLAY_NAME "Startkladde ${full_version}")
 #SET (CPACK_NSIS_MUI_ICON    ${PROJECT_SOURCE_DIR}/graphics\\\\startkladde.ico) # Installer icon
 #SET (CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/graphics\\\\startkladde.ico) # Uninstaller icon
 #SET (CPACK_PACKAGE_ICON    "${PROJECT_SOURCE_DIR}/graphics\\\\test.bmp"      ) # Header image, 150x57
@@ -371,7 +373,7 @@ SET (CPACK_NSIS_CONTACT        "martin@famherrmann.de")
 ######################
 
 SET (CPACK_DEBIAN_PACKAGE_NAME startkladde)
-SET (CPACK_DEBIAN_PACKAGE_VERSION ${startkladde_VERSION_MAJOR}.${startkladde_VERSION_MINOR}.${startkladde_VERSION_REVISION})
+SET (CPACK_DEBIAN_PACKAGE_VERSION ${full_version})
 #SET (CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
 
 # Do not explicitly require the MySQL client library. On Ubuntu, its name may
