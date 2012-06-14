@@ -213,10 +213,9 @@ MainWindow::MainWindow (QWidget *parent):
 	// Flarm
 	FlarmHandler *flarmHandler = FlarmHandler::getInstance ();
 	flarmHandler->setDatabase (&dbManager);
-	connect (flarmHandler, SIGNAL (departureDetected(const QString&)), this, SLOT (onFlarmDeparture(const QString&)));
-	connect (flarmHandler, SIGNAL (landingDetected(const QString&)), this, SLOT (onFlarmLanding(const QString&)));
-	connect (flarmHandler, SIGNAL (goaroundDetected(const QString&)), this, SLOT (onFlarmGoaround(const QString&)));
+	connect (flarmHandler, SIGNAL (actionDetected(const QString&,FlarmHandler::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmHandler::FlightAction)));
 	connect (flarmHandler, SIGNAL (connectionStateChanged(FlarmHandler::ConnectionState)), this, SLOT (onFlarmConnectionStateChanged(FlarmHandler::ConnectionState)));
+        connect (flarmHandler, SIGNAL(updateDateTime(const QDateTime&)), this, SLOT(slotUpdateDateTime(const QDateTime&)));
 }
 
 MainWindow::~MainWindow ()
@@ -755,7 +754,7 @@ void MainWindow::flightListChanged ()
 /*
  * Notes:
  *   - for create, repeat and edit: the flight editor may be modeless
- *     and control may return immediately (even for modal dialogs). The
+ *     and control may return immediately (even for modal dialogs).
  *     The table entry will be updated when the flight editor updates the
  *     database.
  *
@@ -2027,17 +2026,135 @@ void MainWindow::languageChanged ()
 }
 
 // Flarm
-void MainWindow::onFlarmDeparture (const QString& flarmid)
-{
-	qDebug () << "MainWindow::onFlarmDeparture: " << flarmid << endl;
+void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightAction action) {
+	qDebug () << "MainWindow::onFlarmAction: " << flarmid << "; action = " << action << endl;
+	
+	Plane* plane = NULL;
+	QString reg;
+        dbId planeId = dbManager.getCache().getPlaneIdByFlarmId (flarmid);
+        if (idValid (planeId)) {
+                plane = dbManager.getCache().getNewObject<Plane> (planeId);
+                //qDebug () << "plane found by flarm id: " << flarmid << endl;
+        }
+        else
+        {
+                qDebug () << "plane not found by flarm id: " << flarmid << endl;
+        }                                                
+
+	if (plane)
+	        reg = plane->registration; 
+	//else {
+		// don't give up. we will create the flight anyway with invalid plane id.
+		//return;
+		
+		// try to get reg from FlarmNet DB
+		//TODO: FlarmNet database
+		/*
+		FlarmNetRecord* record = FlarmNetDb::getInstance()->getData (flarmid);
+		if (record) {
+			// got plane reg from flarmnet. Try to get it from own database
+			reg = record->registration.trimmed();
+			db->get_plane_registration (&plane, reg);
+		}
+		else
+			reg = "Unbekanntes Flugzeug";
+		*/
+	//}
+	
+	QList<Flight> flights;
+	if (action == FlarmHandler::departure) {
+                flights = dbManager.getCache ().getPreparedFlights ().getList ();
+                qDebug () << "getPreparedFlights: " << flights.count () << endl;
+        }
+	else {
+                flights = dbManager.getCache ().getFlyingFlights ().getList ();
+                qDebug () << "getFlyingFlights: " << flights.count () << endl;
+        }
+
+	//qSort (flights.begin (), flights.end(), Flight::lessThan);
+		        
+	bool flightFound = false;
+	dbId flight_id = -1;
+
+	if (plane) {
+	        foreach (Flight flight, flights)
+	        {
+		        flight_id = flight.getId();
+		        // qDebug () << std2q (plane.registration) << endl;
+		        if (flight.getPlaneId() == plane->getId()) {
+			        flightFound = true;
+			        break;
+                        }
+                }
+	}
+	
+	if (flightFound) {
+		manipulateFlight (flight_id, action);
+		//Beep();
+		QMessageBox* box = new QMessageBox (QMessageBox::Information, tr ("FLARM Information"),
+			tr ("%1 was %2 automatically.").arg(reg).arg(FlarmHandler::flightActionToString(action)),
+			QMessageBox::NoButton, this);
+		box->setAttribute(Qt::WA_DeleteOnClose);
+		// 8 seconds; this is information only
+		QTimer::singleShot(8000, box, SLOT(accept()));
+		box->show();
+	}
+	else {
+		qDebug () << "no flight found: " << reg << endl;
+		// we create the flight with minimal data; will show up in red for completion
+		Flight flight;
+		flight.setType (FlightBase::typeNone);
+		//flight.setPlaneId (plane->getId());
+		flight.setMode (FlightBase::modeLocal);
+		flight.setFlarmId (flarmid);
+		if (action == FlarmHandler::departure)
+			flight.setDepartureLocation (Settings::instance ().location);
+		else
+			flight.setLandingLocation (Settings::instance ().location);
+
+		//flight_id = db->write_flight (flight);
+		dbManager.createObject (flight, this);
+		updateFlight (flight);
+		manipulateFlight (flight.getId(), action);
+		
+		QMessageBox* box = new QMessageBox (QMessageBox::Warning, tr ("FLARM Warning"),
+			tr ("<qt><p>%1 was %2 automatically.</p>"
+			    "<big><font color=\"red\"><p>Entry in flight list is incomplete!</p>"
+			    "<p>Please add missing data!</p></font></big></qt>").arg(reg).arg(FlarmHandler::flightActionToString(action)),
+			QMessageBox::Ok, 0);
+		QTimer::singleShot(10000, box, SLOT(accept()));
+		box->show ();
+		//manipulateFlight (flight_id, fm_edit);
+	}
+		
 }
 
-void MainWindow::onFlarmLanding (const QString& flarmid)
-{
-	qDebug () << "MainWindow::onFlarmLanding: " << flarmid << endl;
+void MainWindow::manipulateFlight (dbId flight_id, FlarmHandler::FlightAction action) {
+        qDebug () << "MainWindow::manipulateFlight" << endl;
+        switch (action)
+        {
+                case FlarmHandler::departure:
+                        departFlight (flight_id);
+                        break;
+                case FlarmHandler::landing:
+                        landFlight (flight_id);
+                        break;
+                case FlarmHandler::goAround:
+                {
+                        Flight flight = dbManager.getCache ().getObject<Flight> (flight_id);
+                        QString reason;
+                        if (flight.canTouchngo (&reason))
+                        {
+                                flight.performTouchngo ();
+                                updateFlight (flight);
+                        }
+                        else {
+                                showWarning (tr ("Touch-and-go not possible"), reason, this);
+                        }
+                        break;
+                }
+        }
 }
 
-void MainWindow::onFlarmGoaround (const QString& flarmid)
-{
-	qDebug () << "MainWindow::onFlarmGoaround: " << flarmid << endl;
+void MainWindow::slotUpdateDateTime(const QDateTime&) {
 }
