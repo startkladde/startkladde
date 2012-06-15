@@ -2714,7 +2714,7 @@ Cunffeegooreshun: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="942"/>
         <location filename="../src/gui/windows/MainWindow.cpp" line="965"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2204"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2205"/>
         <source>Touch-and-go not possible</source>
         <translation type="unfinished">Tuooch-und-gu nut pusseeble-a</translation>
     </message>
@@ -2967,6 +2967,11 @@ Cunffeegooreshun: %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2113"/>
+        <source>Unknown plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="2146"/>
         <source>FLARM Information</source>
         <translation type="unfinished"></translation>
@@ -2977,12 +2982,12 @@ Cunffeegooreshun: %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2172"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2173"/>
         <source>FLARM Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2173"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2174"/>
         <source>&lt;qt&gt;&lt;p&gt;%1 was %2 automatically.&lt;/p&gt;&lt;big&gt;&lt;font color=&quot;red&quot;&gt;&lt;p&gt;Entry in flight list is incomplete!&lt;/p&gt;&lt;p&gt;Please add missing data!&lt;/p&gt;&lt;/font&gt;&lt;/big&gt;&lt;/qt&gt;</source>
         <translation type="unfinished"></translation>
     </message>

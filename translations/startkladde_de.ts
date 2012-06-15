@@ -1898,7 +1898,7 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1927"/>
         <source>L&amp;anded</source>
-        <translation>Galande&amp;t</translation>
+        <translation>Gelande&amp;t</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1922"/>
@@ -2808,6 +2808,11 @@ Konfiguration: %2</translation>
         <translation>Die Systemzeit ist korrekt</translation>
     </message>
     <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2113"/>
+        <source>Unknown plane</source>
+        <translation>Unbekanntes Flugzeug</translation>
+    </message>
+    <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="2146"/>
         <source>FLARM Information</source>
         <translation>FLARM Information</translation>
@@ -2818,12 +2823,12 @@ Konfiguration: %2</translation>
         <translation>%1 wurde automatisch %2.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2172"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2173"/>
         <source>FLARM Warning</source>
         <translation>FLARM Warnung</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2173"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2174"/>
         <source>&lt;qt&gt;&lt;p&gt;%1 was %2 automatically.&lt;/p&gt;&lt;big&gt;&lt;font color=&quot;red&quot;&gt;&lt;p&gt;Entry in flight list is incomplete!&lt;/p&gt;&lt;p&gt;Please add missing data!&lt;/p&gt;&lt;/font&gt;&lt;/big&gt;&lt;/qt&gt;</source>
         <translation>&lt;qt&gt;&lt;p&gt;%1 wurde automatisch %2.&lt;/p&gt;&lt;big&gt;&lt;font color=&quot;red&quot;&gt;&lt;p&gt;Eintrag in Flugliste ist unvollständig!&lt;/p&gt;&lt;p&gt;Bitte die fehlenden Daten ergänzen!&lt;/p&gt;&lt;/font&gt;&lt;/big&gt;&lt;/qt&gt;</translation>
     </message>
@@ -2977,7 +2982,7 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.cpp" line="942"/>
         <location filename="../src/gui/windows/MainWindow.cpp" line="965"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2204"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2205"/>
         <source>Touch-and-go not possible</source>
         <translation>Zwischenlandung nicht möglich</translation>
     </message>
@@ -3917,7 +3922,7 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="222"/>
         <source>&lt;html&gt;This field can be used for a member ID or similar.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Dieses Feld kann für die Mitgliedsnummer oder ähnliches verwendet werden.&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Check this person&apos;s medical validity
@@ -4315,7 +4320,7 @@ Datenbankpasswort eingegeben werden.</translation>
     <message>
         <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.ui" line="153"/>
         <source>&lt;html&gt;Any short name, typically one or two letters or digits. This is displayed along with the registration in the flight table.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Ein kurzer Name, normalerweise ein oder zwei Buchstaben oder Ziffern. Dieser wird mit dem Kennzeichen in der Flugtabelle angezeigt.&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectEditor/PlaneEditorPane.ui" line="183"/>
