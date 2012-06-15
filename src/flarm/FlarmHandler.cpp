@@ -30,8 +30,8 @@
 #include "src/model/Plane.h"
 //#include "FlarmNetDb.h"
 
-FlarmRecord::FlarmRecord (QObject* parent, const QString& _id, flarmState _state)
-        : QObject (parent), id (_id), state (_state)
+FlarmRecord::FlarmRecord (QObject* parent, const QString& id, flarmState _state)
+        : QObject (parent), flarmid (id), state (_state)
 {
         alt   = 0;
         speed = 0;
@@ -53,36 +53,52 @@ void FlarmRecord::setState (flarmState _state)
         state = _state;
         switch (state) {
         case stateOnGround:
-                qDebug () << "on ground: " << id << endl;
+                qDebug () << "on ground: " << flarmid << endl;
                 break;
         case stateStarting:
-                qDebug () << "starting" << id << endl;
+                qDebug () << "starting" << flarmid << endl;
                 break;
         case stateFlying:
-                qDebug () << "flying" << id << endl;
+                qDebug () << "flying" << flarmid << endl;
                 break;
         case stateFlyingFar:
-                qDebug () << "flying far" << id << endl;
+                qDebug () << "flying far" << flarmid << endl;
                 break;
         case stateLanding:
-                qDebug () << "landing" << id << endl;
+                qDebug () << "landing" << flarmid << endl;
                 break;
         default:
-                qDebug () << "unknown" << id << endl;
+                qDebug () << "unknown" << flarmid << endl;
                 break;
         }
 }
 
-FlarmRecord::flarmState FlarmRecord::getState ()
-{
+FlarmRecord::flarmState FlarmRecord::getState () const {
         return state;
+}
+
+QString FlarmRecord::getStateText () const {
+        switch (state) {
+                case FlarmRecord::stateOnGround:
+                        return tr("On ground");
+                case FlarmRecord::stateStarting:
+                        return tr("Starting");
+                case FlarmRecord::stateLanding:
+                        return tr("Landing");
+                case FlarmRecord::stateFlying:
+                        return tr("Flying near airfield");
+                case FlarmRecord::stateFlyingFar:
+                        return tr("Out of range");
+                default:
+                        return notr ("---");
+        }
 }
 
 void FlarmRecord::setClimb (double clmb) {
         climb = clmb;
 }
 
-double FlarmRecord::getClimb () {
+double FlarmRecord::getClimb () const {
         return climb;
 }
 
@@ -91,7 +107,7 @@ void FlarmRecord::setSpeed (int spd) {
         speed = spd;
 }
 
-int FlarmRecord::getSpeed () {
+int FlarmRecord::getSpeed () const {
         return speed;
 }
 
@@ -100,11 +116,11 @@ void FlarmRecord::setAlt (int a) {
         alt = a;
 }
 
-int FlarmRecord::getAlt () {
+int FlarmRecord::getAlt () const {
         return alt;
 }
 
-bool FlarmRecord::isPlausible () {
+bool FlarmRecord::isPlausible () const {
         if (abs (last_alt - alt) > 100) 
                 return false;
         // speed is in km/h
@@ -201,7 +217,7 @@ void FlarmHandler::updateList (const Plane& plane) {
         if (!plane.flarmId.isEmpty()) {
                 FlarmRecord* record = regMap->value (plane.flarmId);
                 if (record)
-                        record->reg = plane.registration;
+                        record->registration = plane.registration;
         }
 }
 
@@ -369,7 +385,7 @@ void FlarmHandler::processFlarm (const QString& line) {
 		        dbId planeId = dbManager->getCache().getPlaneIdByFlarmId (flarmid);
                         if (idValid (planeId)) {
                                 plane = dbManager->getCache().getNewObject<Plane> (planeId);
-                                record->reg = plane->registration;
+                                record->registration = plane->registration;
                                 record->category = plane->category;
                         } 
 		        connect (record, SIGNAL(keepAliveTimeout()), this, SLOT(keepAliveTimeout()));
@@ -582,7 +598,7 @@ void FlarmHandler::processFlarm (const QString& line) {
 void FlarmHandler::keepAliveTimeout () {
         FlarmRecord* record = (FlarmRecord*)sender();
         if (record) {
-                QString flarmid = record->id;
+                QString flarmid = record->flarmid;
                 qDebug () << "keepAliveTimeout: " << flarmid << "; state = " << record->getState() << endl;
                 record->keepAliveTimer->stop();
                 switch (record->getState()) {
@@ -609,7 +625,7 @@ void FlarmHandler::keepAliveTimeout () {
 void FlarmHandler::landingTimeout () {
         FlarmRecord* record = (FlarmRecord*)sender();
         if (record) {
-                QString flarmid = record->id;
+                QString flarmid = record->flarmid;
                 qDebug () << "landingTimeout: " << flarmid << "; state = " << record->getState() << endl;
                 record->landingTimer->stop();
                 switch (record->getState()) {
