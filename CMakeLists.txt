@@ -191,6 +191,13 @@ ADD_CUSTOM_TARGET (lupdate
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+ADD_CUSTOM_TARGET (lupdate_drop
+	COMMAND ${QT_LUPDATE_EXECUTABLE} src -ts ${translation_sources} -no-obsolete
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+
+
 
 ################
 ## Executable ##
