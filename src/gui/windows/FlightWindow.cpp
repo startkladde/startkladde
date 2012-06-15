@@ -881,6 +881,7 @@ Flight FlightWindow::determineFlightBasic () throw ()
 
 	// Some of the data is taken from the stored data
 	flight.setId (originalFlightId);
+	flight.setFlarmId     (originalFlight.getFlarmId());
 	flight.setPlaneId     (isRegistrationActive         ()?selectedPlane   :invalidId);
 	flight.setTowplaneId  (isTowplaneRegistrationActive ()?selectedTowplane:invalidId);
 	flight.setPilotId     (isPilotActive                ()?selectedPilot   :invalidId);
@@ -1747,14 +1748,13 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 	return success;
 }
 
-void FlightWindow::updateFlarmId (Flight & flight)
+void FlightWindow::updateFlarmId (const Flight & flight)
 {
 	qDebug () << "FlightWindow::updateFlarmId" << endl;
 	// If Flarm ID is missing, try to update plane in database
 	dbId planeId = flight.getPlaneId ();
 	Plane plane = cache.getObject<Plane> (planeId);
 	
-	flight.setFlarmId (originalFlight.getFlarmId());
 	if (plane.flarmId.isEmpty() && flight.getFlarmId().isEmpty())
 		qDebug () << "both flarm id empty; we cannot help it" << endl;
 	else if (plane.flarmId == flight.getFlarmId())
