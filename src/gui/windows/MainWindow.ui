@@ -450,6 +450,8 @@
     <addaction name="actionPlaneLogs"/>
     <addaction name="actionPilotLogs"/>
     <addaction name="actionLaunchMethodStatistics"/>
+    <addaction name="separator"/>
+    <addaction name="actionFlarmOverview"/>
    </widget>
    <widget class="QMenu" name="menuDatabase">
     <property name="title">
@@ -884,6 +886,11 @@
    </property>
    <property name="toolTip">
     <string>Set GPS time from Flarm data</string>
+   </property>
+  </action>
+  <action name="actionFlarmOverview">
+   <property name="text">
+    <string>&amp;Flarm overview</string>
    </property>
   </action>
  </widget>

@@ -183,6 +183,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void on_actionPlaneLogs_triggered ();
 		void on_actionPilotLogs_triggered ();
 		void on_actionLaunchMethodStatistics_triggered ();
+		void on_actionFlarmOverview_triggered ();
 
 		// Menu: Database
 		void on_actionConnect_triggered ();

@@ -58,6 +58,7 @@
 #include "src/statistics/LaunchMethodStatistics.h"
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"
+#include "src/statistics/FlarmLog.h"
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
@@ -1621,14 +1622,15 @@ void MainWindow::on_actionSetDisplayDate_triggered ()
 const char *ntr_planeLogBooksTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Plane logbooks");
 const char *ntr_pilotLogBooksTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Pilot logbooks");
 const char *ntr_launchMethodOverviewTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Launch method overview");
+const char *ntr_flarmOverviewTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Flarm overview");
 
 void MainWindow::on_actionPlaneLogs_triggered ()
 {
 	// Get the list of flights and add the towflights
 	QList<Flight> flights=flightList->getList ();
-	flights+=Flight::makeTowflights (flights, dbManager.getCache ());
+	flights+=Flight::makeTowflights (flights, cache);
 
-	PlaneLog *planeLog = PlaneLog::createNew (flights, dbManager.getCache ());
+	PlaneLog *planeLog = PlaneLog::createNew (flights, cache);
 	StatisticsWindow::display (planeLog, true, ntr_planeLogBooksTitle, this);
 }
 
@@ -1636,10 +1638,10 @@ void MainWindow::on_actionPilotLogs_triggered ()
 {
 	// Get the list of flights and add the towflights
 	QList<Flight> flights=flightList->getList ();
-	flights+=Flight::makeTowflights (flights, dbManager.getCache ());
+	flights+=Flight::makeTowflights (flights, cache);
 
 	// Create the pilots' log
-	PilotLog *pilotLog = PilotLog::createNew (flights, dbManager.getCache ());
+	PilotLog *pilotLog = PilotLog::createNew (flights, cache);
 
 	// Display the pilots' log
 	StatisticsWindow::display (pilotLog, true, ntr_pilotLogBooksTitle, this);
@@ -1649,6 +1651,12 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 {
 	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (proxyList->getList (), dbManager.getCache ());
 	StatisticsWindow::display (stats, true, ntr_launchMethodOverviewTitle, this);
+}
+
+void MainWindow::on_actionFlarmOverview_triggered ()
+{
+	FlarmLog *flarmLog = FlarmLog::createNew ();
+	StatisticsWindow::display (flarmLog, true, ntr_flarmOverviewTitle, this);
 }
 
 // **************
