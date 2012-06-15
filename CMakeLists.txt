@@ -222,8 +222,8 @@ TARGET_LINK_LIBRARIES (startkladde ${QT_LIBRARIES} ${libs})
 IF (NOT WIN32)
 	add_custom_command (
 		OUTPUT "${PROJECT_BINARY_DIR}/startkladde.1.gz"
-		DEPENDS "doc/startkladde.sgml"
-		COMMAND docbook-to-man ${PROJECT_SOURCE_DIR}/doc/startkladde.sgml >${PROJECT_BINARY_DIR}/startkladde.1.gz
+		DEPENDS "doc/startkladde.1"
+		COMMAND gzip -c ${PROJECT_SOURCE_DIR}/doc/startkladde.1 >${PROJECT_BINARY_DIR}/startkladde.1.gz
 		COMMENT "Generating manpage startkladde.1.gz"
 	)
 
