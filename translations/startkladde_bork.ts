@@ -80,14 +80,6 @@
         <translation type="unfinished">Currect intry</translation>
     </message>
     <message>
-        <source>Erroneous entries</source>
-        <translation type="obsolete">Irruneuoos intreees</translation>
-    </message>
-    <message>
-        <source>The following erroneous entries will be replaced with the correct entry:</source>
-        <translation type="obsolete">Zee fullooeeng irruneuoos intreees veell be-a repleced veet zee currect intry:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="86"/>
         <source>Erroneous entries (will be overwritten)</source>
         <translation type="unfinished"></translation>
@@ -108,17 +100,9 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Erroneous entry</source>
-        <translation type="obsolete">Irruneuoos intry</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="98"/>
         <source>The following erroneous entry will be replaced with the correct entry.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The following erroneous entry will be replaced with the correct entry:</source>
-        <translation type="obsolete">Zee fullooeeng irruneuoos intry veell be-a repleced veet zee currect intry:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="99"/>
@@ -132,20 +116,6 @@
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.ui" line="14"/>
         <source>Merge people</source>
         <translation type="unfinished">Merge-a peuple-a</translation>
-    </message>
-    <message>
-        <source>[The following wrong person entries will be replaced with the correct entry:]</source>
-        <extracomment>Will be replaced programmatically</extracomment>
-        <translation type="obsolete">[Zee fullooeeng vrung persun intreees veell be-a repleced veet zee currect intry:]</translation>
-    </message>
-    <message>
-        <source>[All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
-Warning: this action cannot be undone.
-Continue?]</source>
-        <extracomment>Will be replaced programmatically</extracomment>
-        <translation type="obsolete">[Ell intreees moost reffer tu zee seme-a persun. Ell fleeghts ooff zee vrung peuple-a veell be-a esseegned tu zee currect persun.
-Verneeng: thees ecshun cunnut be-a undune-a.
-Cunteenooe-a?]</translation>
     </message>
 </context>
 <context>
@@ -698,17 +668,9 @@ Updete-a zee detebese-a noo?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The program to execute. Programs in the plugin path can be specified without path.</source>
-        <translation type="obsolete">Zee prugrem tu ixecoote-a. Prugrems in zee ploogeen pet cun be-a speceeffied veethuoot pet.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/external/ExternalInfoPluginSettingsPane.ui" line="55"/>
         <source>&amp;Browse</source>
         <translation type="unfinished">&amp;Broose-a</translation>
-    </message>
-    <message>
-        <source>Use formatted text</source>
-        <translation type="obsolete">Use-a furmetted text</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/external/ExternalInfoPluginSettingsPane.ui" line="65"/>
@@ -2209,10 +2171,6 @@ Edd it tu zee detebese-a?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The title displayed for the plugin in the main window</source>
-        <translation type="obsolete">Zee teetle-a deespleyed fur zee ploogeen in zee meeen veendoo</translation>
-    </message>
-    <message>
         <location filename="../src/plugin/info/InfoPluginSettingsPane.ui" line="40"/>
         <source>Settings</source>
         <translation type="unfinished">Setteengs</translation>
@@ -2469,10 +2427,6 @@ Edd it tu zee detebese-a?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>To&amp;wplane:</source>
-        <translation type="obsolete">Tu&amp;vplune-a:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.ui" line="116"/>
         <source>&amp;Person required:</source>
         <translation type="unfinished">&amp;Persun reqooured:</translation>
@@ -2546,10 +2500,6 @@ Zee preselecshun veell be-a reset oon zee next stert ooff zee prugrem.</translat
 </context>
 <context>
     <name>LongitudeInputClass</name>
-    <message>
-        <source>LatitudeInput</source>
-        <translation type="obsolete">LeteetoodeInpoot</translation>
-    </message>
     <message>
         <location filename="../src/gui/widgets/LongitudeInput.ui" line="26"/>
         <source>&lt;html&gt;Degrees&lt;/html&gt;</source>
@@ -3420,18 +3370,10 @@ Cunffeegooreshun: %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Time between updates of the METAR report</source>
-        <translation type="obsolete">Teeme-a betveee updetes ooff zee METER repurt</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/metar/MetarPluginSettingsPane.ui" line="48"/>
         <source> minutes</source>
         <extracomment>With a space at the beginning</extracomment>
         <translation type="unfinished"> meenootes</translation>
-    </message>
-    <message>
-        <source>ICAO code of the airport of which to display the METAR reports</source>
-        <translation type="obsolete">ICEO cude-a ooff zee eurpurt ooff vheech tu deespley zee METER repurts</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/metar/MetarPluginSettingsPane.ui" line="101"/>
@@ -3541,10 +3483,6 @@ Cunffeegooreshun: %2</translation>
         <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="261"/>
         <source>%1 %2 is in use and cannot be deleted.</source>
         <translation type="unfinished">%1 %2 is in use-a und cunnut be-a deleted.</translation>
-    </message>
-    <message>
-        <source> Continue?</source>
-        <translation type="obsolete"> Cunteenooe-a?</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="312"/>
@@ -3728,10 +3666,6 @@ Cunffeegooreshun: %2</translation>
 <context>
     <name>PersonEditorPane</name>
     <message>
-        <source>Medical check is disabled!</source>
-        <translation type="obsolete">Medeecel check is deesebled!</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="69"/>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="76"/>
         <source>Yes</source>
@@ -3812,36 +3746,14 @@ Cunffeegooreshun: %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Check this person&apos;s medical validity
-when creating a new flight</source>
-        <translation type="obsolete">Check thees persun&amp;epus;s medeecel feleedity
-vhee creeteeng a noo fleeght</translation>
-    </message>
-    <message>
-        <source>The global medical check option is disabled. For
-medicals to be checked, enable the option
-&quot;Check medicals&quot; in the program settings.</source>
-        <translation type="obsolete">Zee glubel medeecel check oopshun is deesebled. Fur
-medeecels tu be-a checked, ineble-a zee oopshun
-&quot;Check medeecels&quot; in zee prugrem setteengs.</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="134"/>
         <source>Medical check is disabled!</source>
         <translation type="unfinished">Medeecel check is deesebled!</translation>
     </message>
     <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="166"/>
         <source>&amp;Unknown</source>
         <translation type="unfinished">&amp;Unknoon</translation>
-    </message>
-    <message>
-        <source>The last date that this person&apos;s medical is valid</source>
-        <translation type="obsolete">Zee lest dete-a thet thees persun&amp;epus;s medeecel is feleed</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="182"/>
@@ -4628,17 +4540,9 @@ pessvurd moost be-a intered.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>IP address or host name of the database server</source>
-        <translation type="obsolete">IP eddress oor hust neme-a ooff zee detebese-a serfer</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="344"/>
         <source>Po&amp;rt:</source>
         <translation type="unfinished">Pu&amp;rt:</translation>
-    </message>
-    <message>
-        <source>TCP port of the database server</source>
-        <translation type="obsolete">TCP purt ooff zee detebese-a serfer</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="364"/>
@@ -4646,30 +4550,14 @@ pessvurd moost be-a intered.</translation>
         <translation type="unfinished">&amp;User neme-a:</translation>
     </message>
     <message>
-        <source>Username for the connection to the database server</source>
-        <translation type="obsolete">Userneme-a fur zee cunnecshun tu zee detebese-a serfer</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="381"/>
         <source>P&amp;assword:</source>
         <translation type="unfinished">P&amp;essvurd:</translation>
     </message>
     <message>
-        <source>Password for the connection to the database server</source>
-        <translation type="obsolete">Pessvurd fur zee cunnecshun tu zee detebese-a serfer</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="401"/>
         <source>Da&amp;tabase:</source>
         <translation type="unfinished">Da&amp;tebese-a:</translation>
-    </message>
-    <message>
-        <source>Name of the database on the database server</source>
-        <translation type="obsolete">Neme-a ooff zee detebese-a oon zee detebese-a serfer</translation>
-    </message>
-    <message>
-        <source>If enabled, the default port is used for the database server</source>
-        <translation type="obsolete">Iff inebled, zee deffoolt purt is used fur zee detebese-a serfer</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="434"/>
@@ -4680,10 +4568,6 @@ pessvurd moost be-a intered.</translation>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="441"/>
         <source>(default: 3306)</source>
         <translation type="unfinished">(deffoolt: 3306)</translation>
-    </message>
-    <message>
-        <source>&amp;Settings</source>
-        <translation type="obsolete">&amp;Setteengs</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="42"/>
@@ -4706,17 +4590,9 @@ pessvurd moost be-a intered.</translation>
         <translation type="unfinished">&amp;Eurffeeeld neme-a:</translation>
     </message>
     <message>
-        <source>Name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)</source>
-        <translation type="obsolete">Neme-a ooff zee eurffeeeld thees prugrem is used et (i. g. &quot;Rheeenstettee&quot;)</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="107"/>
         <source>Check &amp;medicals</source>
         <translation type="unfinished">Check &amp;medeecels</translation>
-    </message>
-    <message>
-        <source>If enabled, the name of the towpilot can be entered for flights</source>
-        <translation type="obsolete">Iff inebled, zee neme-a ooff zee toopeelut cun be-a intered fur fleeghts</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="117"/>
@@ -4729,17 +4605,9 @@ pessvurd moost be-a intered.</translation>
         <translation type="unfinished">Permeessiuns</translation>
     </message>
     <message>
-        <source>If enabled, the database password must be entered to modify launch methods</source>
-        <translation type="obsolete">Iff inebled, zee detebese-a pessvurd moost be-a intered tu mudeeffy loonch methuds</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="136"/>
         <source>R&amp;equire password to modify launch methods</source>
         <translation type="unfinished">R&amp;iqooure-a pessvurd tu mudeeffy loonch methuds</translation>
-    </message>
-    <message>
-        <source>If enabled, the database password must be entered to change settings</source>
-        <translation type="obsolete">Iff inebled, zee detebese-a pessvurd moost be-a intered tu chunge-a setteengs</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="146"/>
@@ -4747,17 +4615,9 @@ pessvurd moost be-a intered.</translation>
         <translation type="unfinished">&amp;Reqooure-a pessvurd tu chunge-a setteengs</translation>
     </message>
     <message>
-        <source>If enabled, the database password must be entered to merge people</source>
-        <translation type="obsolete">Iff inebled, zee detebese-a pessvurd moost be-a intered tu merge-a peuple-a</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="184"/>
         <source>Re&amp;quire password to merge &amp;people</source>
         <translation type="unfinished">Re-a&amp;qooure-a pessvurd tu merge-a &amp;peuple-a</translation>
-    </message>
-    <message>
-        <source>If enabled, the database password must be entered to display the flight database</source>
-        <translation type="obsolete">Iff inebled, zee detebese-a pessvurd moost be-a intered tu deespley zee fleeght detebese-a</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="194"/>
@@ -4780,32 +4640,14 @@ pessvurd moost be-a intered.</translation>
         <translation type="unfinished">Deeegnustics</translation>
     </message>
     <message>
-        <source>Enables some menu entries for error diagnostics</source>
-        <translation type="obsolete">Inebles sume-a menoo intreees fur irrur deeegnustics</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="233"/>
         <source>Enable de&amp;bugging options</source>
         <translation type="unfinished">Ineble-a de-a&amp;booggeeng oopshuns</translation>
     </message>
     <message>
-        <source>Command to run when the menu item Help-Network diagnostics is selected</source>
-        <translation type="obsolete">Cummund tu roon vhee zee menoo item Help-Netvurk deeegnustics is selected</translation>
-    </message>
-    <message>
-        <source>Command for network dia&amp;gnostics:</source>
-        <translation type="obsolete">Cummund fur netvurk deea&amp;gnusteecs:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="468"/>
         <source>&amp;Info plugins</source>
         <translation type="unfinished">&amp;Inffu ploogeens</translation>
-    </message>
-    <message>
-        <source>The list of info plugins. Info-Plugins are displayed
-in the upper part of the main window.</source>
-        <translation type="obsolete">Zee leest ooff inffu ploogeens. Inffu-Ploogeens ere-a deespleyed
-in zee upper pert ooff zee meeen veendoo.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="487"/>
@@ -4814,18 +4656,10 @@ in zee upper pert ooff zee meeen veendoo.</translation>
         <translation type="unfinished">Teetle-a</translation>
     </message>
     <message>
-        <source>Title of the plugin; will be displayed in the main window</source>
-        <translation type="obsolete">Teetle-a ooff zee ploogeen; veell be-a deespleyed in zee meeen veendoo</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="495"/>
         <source>Plugin</source>
         <comment>Info plugins table list header</comment>
         <translation type="unfinished">Ploogeen</translation>
-    </message>
-    <message>
-        <source>Plugin command (with any parameters)</source>
-        <translation type="obsolete">Ploogeen cummund (veet uny peremeters)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="503"/>
@@ -4879,10 +4713,6 @@ in zee upper pert ooff zee meeen veendoo.</translation>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <source>Settings for selected info plugin</source>
-        <translation type="obsolete">Setteengs fur selected inffu ploogeen</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="638"/>
         <source>&amp;Weather plugin</source>
         <translation type="unfinished">&amp;Veezeer ploogeen</translation>
@@ -4896,10 +4726,6 @@ in zee upper pert ooff zee meeen veendoo.</translation>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="656"/>
         <source>&amp;Height:</source>
         <translation type="unfinished">&amp;Heeeght:</translation>
-    </message>
-    <message>
-        <source>Height of the weather plugin in pixels</source>
-        <translation type="obsolete">Heeeght ooff zee veezeer ploogeen in peexels</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="669"/>
@@ -4918,10 +4744,6 @@ in zee upper pert ooff zee meeen veendoo.</translation>
         <translation type="unfinished">P&amp;loogeen:</translation>
     </message>
     <message>
-        <source>Time between updates of the weather plugin</source>
-        <translation type="obsolete">Teeme-a betveee updetes ooff zee veezeer ploogeen</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="715"/>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="826"/>
         <source> minutes</source>
@@ -4934,10 +4756,6 @@ With leading space</extracomment>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="741"/>
         <source>Co&amp;mmand:</source>
         <translation type="unfinished">Cu&amp;mmund:</translation>
-    </message>
-    <message>
-        <source>The program to execute. Programs in the plugin path can be specified without path.</source>
-        <translation type="obsolete">Zee prugrem tu ixecoote-a. Prugrems in zee ploogeen pet cun be-a speceeffied veethuoot pet.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="764"/>
@@ -4960,17 +4778,9 @@ With leading space</extracomment>
         <translation type="unfinished">&amp;Teetle-a:</translation>
     </message>
     <message>
-        <source>Title of the weather window</source>
-        <translation type="obsolete">Teetle-a ooff zee veezeer veendoo</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="813"/>
         <source>Inter&amp;val:</source>
         <translation type="unfinished">Inter&amp;fel:</translation>
-    </message>
-    <message>
-        <source>Time between updates of the picture in the weather window</source>
-        <translation type="obsolete">Teeme-a betveee updetes ooff zee peectoore-a in zee veezeer veendoo</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="849"/>
@@ -4998,10 +4808,6 @@ With leading space</extracomment>
 Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to the current directory (e. g. .startkladde/plugins).</source>
         <translation type="unfinished">Durectureees tu luuk fur ploogeens in (in zee oorder geefee).
 Durecturyeees cun be-a ebsuloote-a (i. g. /fer/leeb/stertkledde-a/ploogeens oor releteefe-a tu zee coorrent durectury (i. g. .stertkledde-a/ploogeens).</translation>
-    </message>
-    <message>
-        <source>Directories to look for plugins in</source>
-        <translation type="obsolete">Durectureees tu luuk fur ploogeens in</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="979"/>
@@ -5164,12 +4970,6 @@ nu refference-a lungeetoode-a is speceeffied in zee deta feele-a.</translation>
         <translation type="unfinished">&amp;Feeleneme-a:</translation>
     </message>
     <message>
-        <source>The name of the data file to read the sunset times from.
-The filename can be absolute or relative. Relative filenames are searched in the plugin path.</source>
-        <translation type="obsolete">Zee neme-a ooff zee deta feele-a tu reed zee soonset teemes frum.
-Zee feeleneme-a cun be-a ebsuloote-a oor releteefe-a. Releteefe-a feelenemes ere-a seerched in zee ploogeen pet.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="40"/>
         <source>&lt;html&gt;The name of the data file to read the sunset times from. The filename can be absolute or relative. Relative filenames are searched in the plugin path.&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
@@ -5222,17 +5022,9 @@ iff zee feele-a is luceted in zee ploogeen pet oor in zee system pet.</translati
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The complete name of the data file</source>
-        <translation type="obsolete">Zee cumplete-a neme-a ooff zee deta feele-a</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="81"/>
         <source>Source:</source>
         <translation type="unfinished">Suoorce-a:</translation>
-    </message>
-    <message>
-        <source>The source of the data, according to the data file</source>
-        <translation type="obsolete">Zee suoorce-a ooff zee deta, eccurdeeng tu zee deta feele-a</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="98"/>
@@ -5240,17 +5032,9 @@ iff zee feele-a is luceted in zee ploogeen pet oor in zee system pet.</translati
         <translation type="unfinished">Refference-a lungeetoode-a:</translation>
     </message>
     <message>
-        <source>The longitude for which the times in the file are valid</source>
-        <translation type="obsolete">Zee lungeetoode-a fur vheech zee teemes in zee feele-a ere-a feleed</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="115"/>
         <source>&amp;Longitude:</source>
         <translation type="unfinished">&amp;Lungeetoode-a:</translation>
-    </message>
-    <message>
-        <source>Correct the sunset times for the actual longitude</source>
-        <translation type="obsolete">Currect zee soonset teemes fur zee ectooel lungeetoode-a</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="128"/>
@@ -5265,17 +5049,9 @@ a reference longitude is specified in the data file.</source>
 a refference-a lungeetoode-a is speceeffied in zee deta feele-a.</translation>
     </message>
     <message>
-        <source>The actual longitude</source>
-        <translation type="obsolete">Zee ectooel lungeetoode-a</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="182"/>
         <source>&amp;Timezone:</source>
         <translation type="unfinished">&amp;Teemezune-a:</translation>
-    </message>
-    <message>
-        <source>Time zone for display</source>
-        <translation type="obsolete">Teeme-a zune-a fur deespley</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="201"/>
@@ -5381,21 +5157,9 @@ a refference-a lungeetoode-a is speceeffied in zee deta feele-a.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The name of the one to greet</source>
-        <translation type="obsolete">Zee neme-a ooff zee oone-a tu greet</translation>
-    </message>
-    <message>
-        <source>Use formatted text</source>
-        <translation type="obsolete">Use-a furmetted text</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/test/TestPluginSettingsPane.ui" line="43"/>
         <source>&amp;Rich text</source>
         <translation type="unfinished">&amp;Reech text</translation>
-    </message>
-    <message>
-        <source>Cause an error when saving the settings</source>
-        <translation type="obsolete">Coose-a un irrur vhee sefeeng zee setteengs</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/test/TestPluginSettingsPane.ui" line="66"/>

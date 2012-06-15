@@ -75,14 +75,6 @@
 <context>
     <name>ConfirmOverwritePersonDialog</name>
     <message>
-        <source>Erroneous entries</source>
-        <translation type="obsolete">Fehlerhafte Einträge</translation>
-    </message>
-    <message>
-        <source>The following erroneous entries will be replaced with the correct entry:</source>
-        <translation type="obsolete">Tie folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="86"/>
         <source>Erroneous entries (will be overwritten)</source>
         <translation>Fehlerhafte Einträge (werden überschrieben)</translation>
@@ -117,14 +109,6 @@ Fortsetzen?&lt;/html&gt;</translation>
 Fortsetzen?&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Erroneous entry</source>
-        <translation type="obsolete">Fehlerhafter Eintrag</translation>
-    </message>
-    <message>
-        <source>The following erroneous entry will be replaced with the correct entry:</source>
-        <translation type="obsolete">Der folgende fehlerhaft Personeneintrag wird durch den korrekten Eintrag ersetzt:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.cpp" line="80"/>
         <source>Correct entry</source>
         <translation>Korrekter Eintrag</translation>
@@ -136,19 +120,6 @@ Fortsetzen?&lt;/html&gt;</translation>
         <location filename="../src/gui/windows/ConfirmOverwritePersonDialog.ui" line="14"/>
         <source>Merge people</source>
         <translation>Personen zusammenfassen</translation>
-    </message>
-    <message>
-        <source>[The following wrong person entries will be replaced with the correct entry:]</source>
-        <extracomment>Will be replaced programmatically</extracomment>
-        <translation type="obsolete">[Die folgenden fehlerhaften Personeneinträge werden durch den korrekten Eintrag ersetzt:]</translation>
-    </message>
-    <message>
-        <source>[All entries must refer to the same person. All flights of the wrong people will be assigned to the correct person.
-Warning: this action cannot be undone.
-Continue?]</source>
-        <extracomment>Will be replaced programmatically</extracomment>
-        <translation type="obsolete">[Alle Einträge müssen die gleiche Person bezeichnen. Alle Flüge der fehlerhaften Personen werden der korrekten Person zugewiesen.
-Achtung: diese Aktion kann nicht rückgängig gemacht werden. Fortsetzen?]</translation>
     </message>
 </context>
 <context>
@@ -702,17 +673,9 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
         <translation>&lt;html&gt;Text mit Formatierung verwenden&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>The program to execute. Programs in the plugin path can be specified without path.</source>
-        <translation type="obsolete">Das auszuführende Programm. Programme im Plugin-Suchpfad können ohne Pfad angegeben werden.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/external/ExternalInfoPluginSettingsPane.ui" line="55"/>
         <source>&amp;Browse</source>
         <translation>&amp;Durchsuchen</translation>
-    </message>
-    <message>
-        <source>Use formatted text</source>
-        <translation type="obsolete">Text mit Formatierung verwenden</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/external/ExternalInfoPluginSettingsPane.ui" line="65"/>
@@ -1975,10 +1938,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>&lt;html&gt;Lokale Schleppflüge landen hier. Gehende Schleppflüge landen woanders.&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>&lt;html&gt;The landing location, or the local airfield name for local towflights.&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;Der Zielort, oder der Name dieses Flugplatzes für lokale und kommende Flüge&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="610"/>
         <source>Num&amp;ber of landin&amp;gs:</source>
         <translation>Anzahl Land&amp;ungen:</translation>
@@ -1997,10 +1956,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <location filename="../src/gui/windows/FlightWindow.ui" line="53"/>
         <source>&amp;Registration:</source>
         <translation>&amp;Kennzeichen:</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;The registration of the plane (of the glider for airtows)&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;Das Kennzeichen des Flugzeugs (oder des Segelflugzeugs bei F-Schlepps)&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="83"/>
@@ -2082,10 +2037,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>&amp;Modus Schleppflug:</translation>
     </message>
     <message>
-        <source>&lt;html&gt;Local towflights depart and land here. Leaving towflights land somewhere else.&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;Lokale Schleppflüge starten und landen hier. Gehende Schleppflüge starten hier und landen woanders.&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="337"/>
         <source>De&amp;parture time:</source>
         <translation>Startze&amp;it:</translation>
@@ -2142,10 +2093,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <location filename="../src/gui/windows/FlightWindow.ui" line="587"/>
         <source>Landing locat&amp;ion towplane:</source>
         <translation>&amp;Zielort Schleppflugzeug:</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;The departure location, or the local airfield name for local towflights.&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;Der Startort, oder der Name dieses Flugplatzes für lokale und gehende Flüge&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.ui" line="629"/>
@@ -2231,10 +2178,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <location filename="../src/plugin/info/InfoPluginSettingsPane.ui" line="33"/>
         <source>&lt;html&gt;The title displayed for the plugin in the main window&lt;/html&gt;</source>
         <translation>&lt;html&gt;Der Titel, der im Hauptfenster für das Plugin angezeigt wird&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>The title displayed for the plugin in the main window</source>
-        <translation type="obsolete">Der Titel, der im Hauptfenster für das Plugin angezeigt wird</translation>
     </message>
     <message>
         <location filename="../src/plugin/info/InfoPluginSettingsPane.ui" line="40"/>
@@ -2447,10 +2390,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <translation>&lt;html&gt;Wenn ja, wird eine Warnung ausgegeben, wenn bei einem Flug mit dieser Startart kein Pilot angegeben ist.&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>&lt;html&gt;If true, a warning will be output if a person is not specified for a flight with this launch method.&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;Wenn aktiviert, wird eine Warnung ausgegeben, wenn bei einem Flug mit dieser Startart kein Pilot angegeben ist.&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.ui" line="158"/>
         <source>&lt;html&gt;The logbook label of the launch method is used for pilot logbook entries.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Die Flugbuch-Bezeichnung einer Startart wird für die Startartspalte im Flugbuch verwendet.&lt;/html&gt;</translation>
@@ -2490,10 +2429,6 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
         <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.ui" line="204"/>
         <source>Specify &amp;registration:</source>
         <translation>Kenn&amp;zeichen angeben:</translation>
-    </message>
-    <message>
-        <source>To&amp;wplane:</source>
-        <translation type="obsolete">&amp;Schleppflugzeug:</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectEditor/LaunchMethodEditorPane.ui" line="46"/>
@@ -2576,10 +2511,6 @@ Die Vorauswahl wird beim nächsten Programmstart zurückgesetzt.</translation>
 </context>
 <context>
     <name>LongitudeInputClass</name>
-    <message>
-        <source>LatitudeInput</source>
-        <translation type="obsolete">LatitudeInput</translation>
-    </message>
     <message>
         <location filename="../src/gui/widgets/LongitudeInput.ui" line="26"/>
         <source>&lt;html&gt;Degrees&lt;/html&gt;</source>
@@ -3445,10 +3376,6 @@ Konfiguration: %2</translation>
         <translation>&lt;html&gt;Zeit zwischen Aktualisierungen der METAR-Meldung&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Time between updates of the METAR report</source>
-        <translation type="obsolete">Zeit zwischen Aktualisierungen der METAR-Meldung</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/metar/MetarPluginSettingsPane.ui" line="48"/>
         <source> minutes</source>
         <extracomment>With a space at the beginning</extracomment>
@@ -3463,10 +3390,6 @@ Konfiguration: %2</translation>
         <location filename="../src/plugins/info/metar/MetarPluginSettingsPane.ui" line="101"/>
         <source>&lt;html&gt;(e. g. &lt;i&gt;KSFO&lt;/i&gt; for San Francisco)&lt;/html&gt;</source>
         <translation>&lt;html&gt;(z. B. &lt;i&gt;EDDF&lt;/i&gt; für Frankfurt)&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>ICAO code of the airport of which to display the METAR reports</source>
-        <translation type="obsolete">ICAO-Code des Flughafens, dessen METAR-Meldung angezeigt werden soll</translation>
     </message>
 </context>
 <context>
@@ -3571,10 +3494,6 @@ Konfiguration: %2</translation>
         <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="261"/>
         <source>%1 %2 is in use and cannot be deleted.</source>
         <translation>%1 %2 wird verwendet und kann daher nicht gelöscht werden.</translation>
-    </message>
-    <message>
-        <source> Continue?</source>
-        <translation type="obsolete">Fortsetzen?</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="312"/>
@@ -3758,10 +3677,6 @@ Konfiguration: %2</translation>
 <context>
     <name>PersonEditorPane</name>
     <message>
-        <source>Medical check is disabled!</source>
-        <translation type="obsolete">Medical-Prüfung ist deaktiviert!</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="69"/>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.cpp" line="76"/>
         <source>Yes</source>
@@ -3842,37 +3757,14 @@ Konfiguration: %2</translation>
         <translation>&lt;html&gt;Dieses Feld kann für eine Mitgliedsnummer o. ä. verwendet werden.&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Check this person&apos;s medical validity
-when creating a new flight</source>
-        <translation type="obsolete">Das Medical dieser Person beim Anlegen
-von Flügen auf Aktualität prüfen</translation>
-    </message>
-    <message>
-        <source>The global medical check option is disabled. For
-medicals to be checked, enable the option
-&quot;Check medicals&quot; in the program settings.</source>
-        <translation type="obsolete">Die globale Medical-Prüfung ist deaktiviert. Damit
-Medicals überprüft werden, muss die Option
-&quot;Medicals prüfen&quot; in den Programmeinstellungen
-aktiviert werden.</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="134"/>
         <source>Medical check is disabled!</source>
         <translation>Medical-Prüfung ist deaktiviert!</translation>
     </message>
     <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="166"/>
         <source>&amp;Unknown</source>
         <translation>&amp;Unbekannt</translation>
-    </message>
-    <message>
-        <source>The last date that this person&apos;s medical is valid</source>
-        <translation type="obsolete">Das Datum, bis zu dem das Medical dieser Person gültig ist</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/objectEditor/PersonEditorPane.ui" line="182"/>
@@ -4506,42 +4398,14 @@ Datenbankpasswort erforderlich.</translation>
         <translation>Verbindung</translation>
     </message>
     <message>
-        <source>IP address or host name of the database server</source>
-        <translation type="obsolete">IP-Adresse oder Hostname des Datenbankservers</translation>
-    </message>
-    <message>
-        <source>TCP port of the database server</source>
-        <translation type="obsolete">TCP-Port des Datenbankservers</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="364"/>
         <source>&amp;User name:</source>
         <translation>Be&amp;nutzername:</translation>
     </message>
     <message>
-        <source>Username for the connection to the database server</source>
-        <translation type="obsolete">Benutzername für die Verbindung zum Datenbankserver</translation>
-    </message>
-    <message>
-        <source>Password for the connection to the database server</source>
-        <translation type="obsolete">Passwort für die Verbindung zum Datenbankserver</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="401"/>
         <source>Da&amp;tabase:</source>
         <translation>Daten&amp;bank:</translation>
-    </message>
-    <message>
-        <source>Name of the database on the database server</source>
-        <translation type="obsolete">Name der zu verwendenden Datenbank auf dem Datenbankserver</translation>
-    </message>
-    <message>
-        <source>If enabled, the default port is used for the database server</source>
-        <translation type="obsolete">Wenn aktiviert, wird der Standard-Datenbank-Port verwendet</translation>
-    </message>
-    <message>
-        <source>Name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)</source>
-        <translation type="obsolete">Name des Flugplatzes, an dem dieses Programm eingesetzt wird (z. B. &quot;Rheinstetten&quot;)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="36"/>
@@ -4554,34 +4418,14 @@ Datenbankpasswort erforderlich.</translation>
         <translation>Medicals ü&amp;berprüfen</translation>
     </message>
     <message>
-        <source>If enabled, the name of the towpilot can be entered for flights</source>
-        <translation type="obsolete">Wenn aktiviert, kann der Name des Schlepppiloten von Flügen eingetragen werden</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="127"/>
         <source>Permissions</source>
         <translation>Berechtigungen</translation>
     </message>
     <message>
-        <source>If enabled, the database password must be entered to modify launch methods</source>
-        <translation type="obsolete">Wenn aktiviert, muss zum Ändern von Startarten das Datenbankpasswort eingegeben werden</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="136"/>
         <source>R&amp;equire password to modify launch methods</source>
         <translation>Passwort zum Ändern von &amp;Startarten erforderlich</translation>
-    </message>
-    <message>
-        <source>If enabled, the database password must be entered to change settings</source>
-        <translation type="obsolete">Wenn aktiviert, muss zum Speichern von Einstellungen das Datenbankpasswort eingegeben werden</translation>
-    </message>
-    <message>
-        <source>If enabled, the database password must be entered to merge people</source>
-        <translation type="obsolete">Wenn aktiviert, muss zum Zusammenfassen von Personen das Datenbankpasswort eingegeben werden</translation>
-    </message>
-    <message>
-        <source>If enabled, the database password must be entered to display the flight database</source>
-        <translation type="obsolete">Wenn aktiviert, muss zum Ändern von Startarten das Datenbankpasswort eingegeben werden</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="204"/>
@@ -4597,14 +4441,6 @@ Datenbankpasswort erforderlich.</translation>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="224"/>
         <source>Diagnostics</source>
         <translation>Diagnose</translation>
-    </message>
-    <message>
-        <source>Enables some menu entries for error diagnostics</source>
-        <translation type="obsolete">Aktiviert einige Menüeinträge zur Fehlerdiagnose</translation>
-    </message>
-    <message>
-        <source>Command to run when the menu item Help-Network diagnostics is selected</source>
-        <translation type="obsolete">Kommando, das ausgeführt wird, wenn der Menüpunkt Hilfe-&gt;Netzwerkdiagnose ausgeführt wird</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="247"/>
@@ -4672,10 +4508,6 @@ Datenbankpasswort erforderlich.</translation>
         <translation>(Standard: 3306)</translation>
     </message>
     <message>
-        <source>&amp;Settings</source>
-        <translation type="obsolete">&amp;Einstellungen</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="42"/>
         <source>User interface</source>
         <translation>Benutzeroberfläche</translation>
@@ -4694,10 +4526,6 @@ Datenbankpasswort erforderlich.</translation>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="87"/>
         <source>&amp;Airfield name:</source>
         <translation>O&amp;rt:</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;The name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;Name des Flugplatzes, an dem dieses Programm eingesetzt wird (z. B. &quot;Rheinstetten&quot;)&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="104"/>
@@ -4785,19 +4613,9 @@ Datenbankpasswort erforderlich.</translation>
         <translation>&lt;html&gt;Verzeichnisse, in denen Plugins gesucht werden&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Command for network dia&amp;gnostics:</source>
-        <translation type="obsolete">Ko&amp;mmando für Netzwerkdiagnose:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="468"/>
         <source>&amp;Info plugins</source>
         <translation>&amp;Info-Plugins</translation>
-    </message>
-    <message>
-        <source>The list of info plugins. Info-Plugins are displayed
-in the upper part of the main window.</source>
-        <translation type="obsolete">Liste der Info-Plugins. Die Info-Plugins werden im oberen
-Bereich des Hauptfensters angezeigt.</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="541"/>
@@ -4839,10 +4657,6 @@ Bereich des Hauptfensters angezeigt.</translation>
         <translation>...</translation>
     </message>
     <message>
-        <source>Settings for selected info plugin</source>
-        <translation type="obsolete">Einstellungen für ausgewähltes Info-Plugin</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="638"/>
         <source>&amp;Weather plugin</source>
         <translation>&amp;Wetterplugin</translation>
@@ -4851,10 +4665,6 @@ Bereich des Hauptfensters angezeigt.</translation>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="647"/>
         <source>Weather plugin &amp;enabled</source>
         <translation>We&amp;ttergrafik aktiviert</translation>
-    </message>
-    <message>
-        <source>Height of the weather plugin in pixels</source>
-        <translation type="obsolete">Höhe der Wettergrafik in Pixeln</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="656"/>
@@ -4868,18 +4678,10 @@ Bereich des Hauptfensters angezeigt.</translation>
         <translation>Titel</translation>
     </message>
     <message>
-        <source>Title of the plugin; will be displayed in the main window</source>
-        <translation type="obsolete">Titel des Plugins; wird im Hauptfenster angezeigt</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="495"/>
         <source>Plugin</source>
         <comment>Info plugins table list header</comment>
         <translation>Plugin</translation>
-    </message>
-    <message>
-        <source>Plugin command (with any parameters)</source>
-        <translation type="obsolete">Plugin-Kommando (mit eventuellen Parametern)</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="503"/>
@@ -4918,10 +4720,6 @@ Bereich des Hauptfensters angezeigt.</translation>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="702"/>
         <source>P&amp;lugin:</source>
         <translation>Pl&amp;ugin:</translation>
-    </message>
-    <message>
-        <source>Time between updates of the weather plugin</source>
-        <translation type="obsolete">Zeitdauer zwischen Aktualisierungen der Wettergrafik</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="741"/>
@@ -4999,10 +4797,6 @@ With leading space</extracomment>
         <translation> Minuten</translation>
     </message>
     <message>
-        <source>The program to execute. Programs in the plugin path can be specified without path.</source>
-        <translation type="obsolete">Das Programm, das ausgeführt wird. Programme im Pluginpfand können ohne Pfad angegeben werden.</translation>
-    </message>
-    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="849"/>
         <source>The weather window can be opened by double-clicking the weather plugin.</source>
         <translation>Das Wetterfenster wird durch Doppelklick auf die Wettergrafik geöffnet.</translation>
@@ -5011,14 +4805,6 @@ With leading space</extracomment>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="862"/>
         <source>Comm&amp;and:</source>
         <translation>K&amp;ommando:</translation>
-    </message>
-    <message>
-        <source>Title of the weather window</source>
-        <translation type="obsolete">Titel des Wetterfensters</translation>
-    </message>
-    <message>
-        <source>Time between updates of the picture in the weather window</source>
-        <translation type="obsolete">Zeitdauer zwischen Aktualisierungen der Grafik im Wetterfenster</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="885"/>
@@ -5036,10 +4822,6 @@ With leading space</extracomment>
 Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to the current directory (e. g. .startkladde/plugins).</source>
         <translation>Verzeichnisse, in denen Plugins (in der angegebenen Reihenfolge) gesucht werden.
 Verzeichnisse können entweder absolut (z. B. /var/lib/startkladde/plugins oder relativ zum aktuellen Verzeichnis (z. B. .startkladde/plugins) angegeben werden.</translation>
-    </message>
-    <message>
-        <source>Directories to look for plugins in</source>
-        <translation type="obsolete">Verzeichnisse, in denen Plugins gesucht werden</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="979"/>
@@ -5202,12 +4984,6 @@ Datendatei kein Bezugslängengrad angegeben ist.</translation>
         <translation>&amp;Dateiname:</translation>
     </message>
     <message>
-        <source>The name of the data file to read the sunset times from.
-The filename can be absolute or relative. Relative filenames are searched in the plugin path.</source>
-        <translation type="obsolete">Der Name der Datendatei, aus der die Sonnenuntergangszeiten gelesen werden.
-Der Dateiname kann absolut oder relativ angegeben werden. Relative Dateinamen werden im Plugin-Pfad gesucht.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="40"/>
         <source>&lt;html&gt;The name of the data file to read the sunset times from. The filename can be absolute or relative. Relative filenames are searched in the plugin path.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Der Name der Datendatei, aus der die Sonnenuntergangszeiten gelesen werden. Der Dateiname kann absolut oder relativ angegeben werden. Relative Dateinamen werden im Plugin-Pfad gesucht.&lt;/html&gt;</translation>
@@ -5270,25 +5046,9 @@ sofern sich die Datei im Plugin-Pfad oder im Sytempfad befindet.</translation>
         <translation>&lt;html&gt;Die Zeitzone, in der die Zeit angezeigt wird. Die Zeit in der Datendatei wird immer in UTC angegeben.&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>The complete name of the data file</source>
-        <translation type="obsolete">Der vollständige Name der Datendatei</translation>
-    </message>
-    <message>
-        <source>The source of the data, according to the data file</source>
-        <translation type="obsolete">Die Quelle für die Daten laut Datendatei</translation>
-    </message>
-    <message>
-        <source>The longitude for which the times in the file are valid</source>
-        <translation type="obsolete">Der Längengrad, für den die Zeiten der Datei gelten</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="115"/>
         <source>&amp;Longitude:</source>
         <translation>&amp;Längengrad:</translation>
-    </message>
-    <message>
-        <source>Correct the sunset times for the actual longitude</source>
-        <translation type="obsolete">Korrektur der Sonnenuntergangszeiten für den tatsächlichen Längengrad</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="128"/>
@@ -5303,17 +5063,9 @@ a reference longitude is specified in the data file.</source>
 der Datendatei ein Bezugslängengrad angegeben ist.</translation>
     </message>
     <message>
-        <source>The actual longitude</source>
-        <translation type="obsolete">Der tatsächliche Längengrad</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="182"/>
         <source>&amp;Timezone:</source>
         <translation>&amp;Zeitzone:</translation>
-    </message>
-    <message>
-        <source>Time zone for display</source>
-        <translation type="obsolete">Zeitzone für die Anzeige</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/sunset/SunsetPluginSettingsPane.ui" line="201"/>
@@ -5419,21 +5171,9 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
         <translation>&lt;html&gt;Beim Versuch, die Einstellungen zu speichern, einen Fehler auslösen&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>The name of the one to greet</source>
-        <translation type="obsolete">Der Name des zu grüßenden</translation>
-    </message>
-    <message>
-        <source>Use formatted text</source>
-        <translation type="obsolete">Text mit Formatierung verwenden</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/info/test/TestPluginSettingsPane.ui" line="43"/>
         <source>&amp;Rich text</source>
         <translation>&amp;Rich text</translation>
-    </message>
-    <message>
-        <source>Cause an error when saving the settings</source>
-        <translation type="obsolete">Beim Versuch, die Einstellungen zu speichern, einen Fehler auslösen</translation>
     </message>
     <message>
         <location filename="../src/plugins/info/test/TestPluginSettingsPane.ui" line="66"/>
