@@ -2163,7 +2163,7 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 		else
 			flight.setLandingLocation (Settings::instance ().location);
 
-		dbManager.createObject (flight, this);
+		flightId = dbManager.createObject (flight, this);
 		manipulateFlight (flight.getId(), action);
 		
 		QMessageBox* box = new QMessageBox (QMessageBox::Warning, tr ("FLARM Warning"),
@@ -2173,7 +2173,13 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 			QMessageBox::Ok, 0);
 		QTimer::singleShot(10000, box, SLOT(accept()));
 		box->show ();
-		//manipulateFlight (flight_id, fm_edit);
+		
+		// get the Flight object back from the database
+		flight=dbManager.getCache ().getObject<Flight> (flightId);
+		// Another flight may be being edited
+                delete editFlightWindow; // noop if NULL
+                editFlightWindow=FlightWindow::editFlight (this, dbManager, flight);
+                editFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
 	}
 		
 }
