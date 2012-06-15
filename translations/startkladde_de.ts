@@ -1857,7 +1857,7 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1927"/>
         <source>L&amp;anded</source>
-        <translation>Galande&amp;t</translation>
+        <translation>Gelande&amp;t</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1922"/>
