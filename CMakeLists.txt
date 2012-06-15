@@ -394,6 +394,17 @@ SET (CPACK_NSIS_CONTACT        "martin@famherrmann.de")
 SET (CPACK_DEBIAN_PACKAGE_NAME startkladde)
 SET (CPACK_DEBIAN_PACKAGE_VERSION ${full_version})
 #SET (CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
+SET (CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://startkladde.sourceforge.net")
+SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}
+ Startkladde can be used by flying clubs for recording flights for legal or
+ accounting purposes.
+ .
+ The flight data can be accessed by clubs or pilots by using a web interface
+ (in the startkladde-web package).
+ .
+ Startkladde was originally developed at Akaflieg Karlsruhe for use at the
+ Rheinstetten airfield."
+)
 
 # Do not explicitly require the MySQL client library. On Ubuntu, its name may
 # changes between releases (e. g. libmysqlclient18 on Ubuntu Precise), which
