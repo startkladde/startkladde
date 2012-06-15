@@ -1747,6 +1747,35 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 	return success;
 }
 
+void FlightWindow::updateFlarmId (Flight & flight)
+{
+	qDebug () << "FlightWindow::updateFlarmId" << endl;
+	// If Flarm ID is missing, try to update plane in database
+	dbId planeId = flight.getPlaneId ();
+	Plane plane = cache.getObject<Plane> (planeId);
+	
+	flight.setFlarmId (originalFlight.getFlarmId());
+	if (plane.flarmId.isEmpty() && flight.getFlarmId().isEmpty())
+		qDebug () << "both flarm id empty; we cannot help it" << endl;
+	else if (plane.flarmId == flight.getFlarmId())
+		qDebug () << "flarm_id already correct" << endl;
+	else if (plane.flarmId.isEmpty()) {
+		// we already know the flight flarm id is not empty
+		qDebug () << "enter flarm id of flight into plane: " << flight.getFlarmId() << endl;
+		plane.flarmId = flight.getFlarmId();
+		// update database
+		try {
+			manager.updateObject (plane,this);
+		}
+		catch (OperationCanceledException &)
+		{
+			qDebug () << "OperationCanceledException" << endl;
+			// TODO the cache may now be inconsistent
+		}
+	}
+	else
+		qDebug () << "unexpected flarm id in plane: " << plane.flarmId << "; flight flarm id: " << flight.getFlarmId() << endl;
+}
 
 // *****************************
 // ** Input field active-ness **
@@ -2169,9 +2198,11 @@ void FlightWindow::okButton_clicked()
 
 	try
 	{
-		Flight flight=determineFlight (false);
-		if (writeToDatabase (flight))
+		Flight flight = determineFlight (false);
+		updateFlarmId (flight);
+		if (writeToDatabase (flight)) {
 			accept (); // Close the dialog
+		}
 	}
 	catch (AbortedException &e)
 	{

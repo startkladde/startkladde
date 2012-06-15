@@ -2081,26 +2081,21 @@ void MainWindow::languageChanged ()
 void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightAction action) {
 	qDebug () << "MainWindow::onFlarmAction: " << flarmid << "; action = " << action << endl;
 	
-	Plane* plane = NULL;
+	Plane plane;
 	QString reg;
-        dbId planeId = dbManager.getCache().getPlaneIdByFlarmId (flarmid);
+        dbId planeId = cache.getPlaneIdByFlarmId (flarmid);
         if (idValid (planeId)) {
-                plane = dbManager.getCache().getNewObject<Plane> (planeId);
-                //qDebug () << "plane found by flarm id: " << flarmid << endl;
+                plane = cache.getObject<Plane> (planeId);
+	        reg = plane.registration; 
+                qDebug () << "plane found by flarm id: " << reg << "; " << flarmid << endl;
         }
         else
         {
                 qDebug () << "plane not found by flarm id: " << flarmid << endl;
-        }                                                
-
-	if (plane)
-	        reg = plane->registration; 
-	//else {
+		//TODO: FlarmNet database
 		// don't give up. we will create the flight anyway with invalid plane id.
-		//return;
 		
 		// try to get reg from FlarmNet DB
-		//TODO: FlarmNet database
 		/*
 		FlarmNetRecord* record = FlarmNetDb::getInstance()->getData (flarmid);
 		if (record) {
@@ -2109,10 +2104,10 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 			db->get_plane_registration (&plane, reg);
 		}
 		else
-			reg = "Unbekanntes Flugzeug";
 		*/
-	//}
-	
+                reg = tr ("Unknown plane");
+        }                                                
+
 	QList<Flight> flights;
 	if (action == FlarmHandler::departure) {
                 flights = dbManager.getCache ().getPreparedFlights ().getList ();
@@ -2123,25 +2118,21 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
                 qDebug () << "getFlyingFlights: " << flights.count () << endl;
         }
 
-	//qSort (flights.begin (), flights.end(), Flight::lessThan);
-		        
 	bool flightFound = false;
-	dbId flight_id = -1;
+	dbId flightId = -1;
 
-	if (plane) {
-	        foreach (Flight flight, flights)
-	        {
-		        flight_id = flight.getId();
-		        // qDebug () << std2q (plane.registration) << endl;
-		        if (flight.getPlaneId() == plane->getId()) {
-			        flightFound = true;
-			        break;
-                        }
+        foreach (Flight flight, flights)
+        {
+                flightId = flight.getId();
+                qDebug () << "look for plane id: " << plane.registration << endl;
+                if (flight.getPlaneId() == plane.getId()) {
+                        flightFound = true;
+		        break;
                 }
-	}
+        }
 	
 	if (flightFound) {
-		manipulateFlight (flight_id, action);
+		manipulateFlight (flightId, action);
 		//Beep();
 		QMessageBox* box = new QMessageBox (QMessageBox::Information, tr ("FLARM Information"),
 			tr ("%1 was %2 automatically.").arg(reg).arg(FlarmHandler::flightActionToString(action)),
@@ -2155,9 +2146,8 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 		qDebug () << "no flight found: " << reg << endl;
 		// we create the flight with minimal data; will show up in red for completion
 		Flight flight;
-		flight.setType (FlightBase::typeNone);
-		if (plane)
-		        flight.setPlaneId (plane->getId());
+		flight.setType (FlightBase::typeNormal);
+		flight.setPlaneId (plane.getId());
 		flight.setMode (FlightBase::modeLocal);
 		flight.setFlarmId (flarmid);
 		if (action == FlarmHandler::departure)
@@ -2165,9 +2155,7 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 		else
 			flight.setLandingLocation (Settings::instance ().location);
 
-		//flight_id = db->write_flight (flight);
 		dbManager.createObject (flight, this);
-		updateFlight (flight);
 		manipulateFlight (flight.getId(), action);
 		
 		QMessageBox* box = new QMessageBox (QMessageBox::Warning, tr ("FLARM Warning"),

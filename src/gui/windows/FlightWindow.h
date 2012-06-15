@@ -301,6 +301,7 @@ class FlightWindow: public SkDialog<Ui::FlightWindowClass>
 		bool checkBuffer ();
 
 		bool writeToDatabase (Flight &flight);
+		void updateFlarmId (Flight & flight);
 
 		// *** Input field setup
 		void  enableWidget (QWidget *widget, bool  enabled);
