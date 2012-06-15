@@ -60,7 +60,7 @@
           <item row="0" column="1" colspan="2">
            <widget class="SkComboBox" name="registrationInput">
             <property name="toolTip">
-             <string>&lt;html&gt;The registration of the plane (of the glider for airtows)&lt;/html&gt;</string>
+             <string>&lt;html&gt;The registration of the plane (for airtows: the registration of the glider)&lt;/html&gt;</string>
             </property>
             <property name="editable">
              <bool>true</bool>
@@ -327,7 +327,7 @@
           <item row="13" column="1" colspan="2">
            <widget class="SkComboBox" name="towflightModeInput">
             <property name="toolTip">
-             <string>&lt;html&gt;Local towflights depart and land here. Leaving towflights land somewhere else.&lt;/html&gt;</string>
+             <string>&lt;html&gt;Local towflights land here. Leaving towflights land somewhere else.&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -594,7 +594,7 @@
           <item row="19" column="1" colspan="2">
            <widget class="SkComboBox" name="towflightLandingLocationInput">
             <property name="toolTip">
-             <string>&lt;html&gt;The departure location, or the local airfield name for local towflights.&lt;/html&gt;</string>
+             <string>&lt;html&gt;The landing location of the towplane, or the local airfield name for local towflights.&lt;/html&gt;</string>
             </property>
             <property name="editable">
              <bool>true</bool>

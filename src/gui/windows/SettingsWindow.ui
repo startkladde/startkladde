@@ -94,7 +94,7 @@
           <item row="0" column="1">
            <widget class="QLineEdit" name="locationInput">
             <property name="toolTip">
-             <string>&lt;html&gt;The name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)&lt;/html&gt;</string>
+             <string>&lt;html&gt;The name of the airfield where this program is used (e. g. &quot;Rheinstetten&quot;)&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -641,7 +641,7 @@
        <item>
         <widget class="QGroupBox" name="weatherPluginBox">
          <property name="toolTip">
-          <string>&lt;html&gt;The weather plugins is displayed on the right of the upper part of the main window.&lt;/html&gt;</string>
+          <string>&lt;html&gt;The weather plugin is displayed on the right of the upper part of the main window.&lt;/html&gt;</string>
          </property>
          <property name="title">
           <string>Weather plugin &amp;enabled</string>
