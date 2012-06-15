@@ -2006,6 +2006,8 @@ void MainWindow::on_actionSetGPSTime_triggered ()
                         .arg(currentGPSdateTime.toString ("hh:mm:ss dd.MM.yyyy"))
                         .arg(diff), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
                 {
+                        // get the actual GPS time again, the messagebox can stay open a long time
+                        currentGPSdateTime = flarmHandler->getGPSTime ();
         		QString timeString=qnotr ("%1-%2-%3 %4:%5:%6")
 	        		.arg (currentGPSdateTime.date().year ()).arg (currentGPSdateTime.date().month ()).arg (currentGPSdateTime.date().day ())
 		        	.arg (currentGPSdateTime.time().hour ()).arg (currentGPSdateTime.time().minute ()).arg (currentGPSdateTime.time().second ());
