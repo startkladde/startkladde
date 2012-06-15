@@ -215,6 +215,22 @@ ADD_EXECUTABLE(startkladde
 TARGET_LINK_LIBRARIES (startkladde ${QT_LIBRARIES} ${libs})
 
 
+#############
+## manpage ##
+#############
+
+IF (NOT WIN32)
+	add_custom_command (
+		OUTPUT "${PROJECT_BINARY_DIR}/startkladde.1.gz"
+		DEPENDS "doc/startkladde.sgml"
+		COMMAND docbook-to-man ${PROJECT_SOURCE_DIR}/doc/startkladde.sgml >${PROJECT_BINARY_DIR}/startkladde.1.gz
+		COMMENT "Generating manpage startkladde.1.gz"
+	)
+
+	add_custom_target (manpage ALL DEPENDS startkladde.1.gz)
+ENDIF ()
+
+
 #########
 ## SVN ##
 #########
@@ -298,9 +314,10 @@ IF (WIN32)
 ENDIF ()
 
 IF (NOT WIN32)
-	INSTALL (FILES config/startkladde.desktop DESTINATION ${FREEDESKTOP_MENU_INSTALL_DIR})
-	INSTALL (FILES config/debian_menu         DESTINATION ${DEBIAN_MENU_INSTALL_DIR} RENAME startkladde)
-	INSTALL (FILES graphics/startkladde.png   DESTINATION ${ICON_INSTALL_DIR})
+	INSTALL (FILES config/startkladde.desktop             DESTINATION "share/applications")
+	INSTALL (FILES config/debian_menu                     DESTINATION "share/menu" RENAME startkladde)
+	INSTALL (FILES graphics/startkladde.png               DESTINATION "share/pixmaps")
+	INSTALL (FILES ${PROJECT_BINARY_DIR}/startkladde.1.gz DESTINATION "share/man/man1")
 ENDIF ()
 
 
