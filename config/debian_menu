@@ -1,0 +1,3 @@
+?package(startkladde):needs="X11" section="Applications/Data Management"\
+  title="Startkladde" command="/usr/bin/startkladde"\
+  icon="/usr/share/pixmaps/startkladde.png"

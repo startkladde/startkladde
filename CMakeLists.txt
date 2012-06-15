@@ -260,12 +260,13 @@ IF (WIN32)
 	SET (QT_TRANSLATIONS_INSTALL_DIR "translations")
 ELSE ()
 	# Common
-	SET (EXECUTABLE_INSTALL_DIR   "bin"               )
-	SET (TRANSLATIONS_INSTALL_DIR "share/startkladde" )
-	SET (PLUGINS_INSTALL_DIR      "lib/startkladde"   )
+	SET (EXECUTABLE_INSTALL_DIR       "bin"               )
+	SET (TRANSLATIONS_INSTALL_DIR     "share/startkladde" )
+	SET (PLUGINS_INSTALL_DIR          "lib/startkladde"   )
 	# Non-Windows specific
-	SET (MENU_INSTALL_DIR         "share/applications")
-	SET (ICON_INSTALL_DIR         "share/pixmaps"     )
+	SET (FREEDESKTOP_MENU_INSTALL_DIR "share/applications")
+	SET (DEBIAN_MENU_INSTALL_DIR      "share/menu"        )
+	SET (ICON_INSTALL_DIR             "share/pixmaps"     )
 ENDIF ()
 
 # Install the executable, translations, external plugins
@@ -297,7 +298,8 @@ IF (WIN32)
 ENDIF ()
 
 IF (NOT WIN32)
-	INSTALL (FILES config/startkladde.desktop DESTINATION ${MENU_INSTALL_DIR})
+	INSTALL (FILES config/startkladde.desktop DESTINATION ${FREEDESKTOP_MENU_INSTALL_DIR})
+	INSTALL (FILES config/debian_menu         DESTINATION ${DEBIAN_MENU_INSTALL_DIR} RENAME startkladde)
 	INSTALL (FILES graphics/startkladde.png   DESTINATION ${ICON_INSTALL_DIR})
 ENDIF ()
 
@@ -389,18 +391,6 @@ SET (CPACK_DEBIAN_PACKAGE_SECTION    "misc")
 SET (CPACK_DEBIAN_PACKAGE_PRIORITY   "optional")
 SET (CPACK_DEBIAN_PACKAGE_RECOMMENDS "mysql-server")
 SET (CPACK_DEBIAN_PACKAGE_SUGGESTS   "kvkbd")
-SET (CPACK_DEBIAN_PACKAGE_SUGGESTS   "kvkbd")
-
-# TODO: the old (PPA) debian package included some files that are not longer
-# present:
-# /usr/share/menu/startkladde
-# /usr/share/lintian/overrides/startkladde
-# /usr/share/man/man1/startkladde.1.gz
-# /usr/share/doc/startkladde/TODO.txt.gz
-# /usr/share/doc/startkladde/changelog.gz
-# /usr/share/doc/startkladde/compile.txt
-# /usr/share/doc/startkladde/install.txt
-# /usr/share/doc/startkladde/copyright
 
 include (CPack)
 
