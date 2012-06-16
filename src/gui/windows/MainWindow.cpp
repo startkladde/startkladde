@@ -59,6 +59,8 @@
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"
 #include "src/statistics/FlarmLog.h"
+#include "src/flarm/FlarmHandler.h"
+#include "src/flarm/FlarmMap.h"
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
@@ -68,7 +70,6 @@
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
 #include "src/i18n/TranslationManager.h"
-#include "src/flarm/FlarmHandler.h"
 
 template <class T> class MutableObjectList;
 
@@ -1657,6 +1658,12 @@ void MainWindow::on_actionFlarmOverview_triggered ()
 {
 	FlarmLog *flarmLog = FlarmLog::createNew ();
 	StatisticsWindow::display (flarmLog, true, ntr_flarmOverviewTitle, this);
+}
+
+void MainWindow::on_actionFlarmRadar_triggered ()
+{
+        FlarmMap* dialog = new FlarmMap (this);
+        dialog->show ();
 }
 
 // **************
