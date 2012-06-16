@@ -169,6 +169,11 @@ void SettingsWindow::readSettings ()
 	ui.locationInput         ->setText    (s.location);
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
 	ui.checkMedicalsCheckbox ->setChecked (s.checkMedicals);
+	// Flarm
+	ui.checkFlarmEnabled		->setChecked (s.flarmEnabled);
+	ui.checkFlarmEdit		->setChecked (s.flarmEdit);
+	ui.checkFlarmOverview		->setChecked (s.flarmOverview);
+	ui.checkFlarmRadar		->setChecked (s.flarmRadar);
 	// Permissions
 	ui.protectSettingsCheckbox      ->setChecked (s.protectSettings);
 	ui.protectLaunchMethodsCheckbox ->setChecked (s.protectLaunchMethods);
@@ -246,6 +251,11 @@ void SettingsWindow::writeSettings ()
 	s.location      =ui.locationInput         ->text ();
 	s.recordTowpilot=ui.recordTowpilotCheckbox->isChecked ();
 	s.checkMedicals =ui.checkMedicalsCheckbox ->isChecked ();
+	// Flarm
+	s.flarmEnabled	=ui.checkFlarmEnabled	->isChecked ();
+	s.flarmEdit	=ui.checkFlarmEdit	->isChecked ();
+	s.flarmOverview	=ui.checkFlarmOverview	->isChecked ();
+	s.flarmRadar	=ui.checkFlarmRadar	->isChecked ();
 	// Permissions
 	s.protectSettings      =ui.protectSettingsCheckbox      ->isChecked ();
 	s.protectLaunchMethods =ui.protectLaunchMethodsCheckbox ->isChecked ();

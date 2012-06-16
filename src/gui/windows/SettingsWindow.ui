@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>439</width>
-    <height>560</height>
+    <height>586</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -460,6 +460,62 @@
           </size>
          </property>
         </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>&amp;Flarm</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>General</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QCheckBox" name="checkFlarmEnabled">
+            <property name="toolTip">
+             <string>If enabled, data from attached flarm device will be used to detect starts and landings</string>
+            </property>
+            <property name="text">
+             <string>Automatic launch detection</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkFlarmEdit">
+            <property name="toolTip">
+             <string>If enabled, the flight editor will be opened automatically when incomplete flights are detected</string>
+            </property>
+            <property name="text">
+             <string>Flight editor</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkFlarmOverview">
+            <property name="toolTip">
+             <string>If enabled, the Flarm overview can be opened</string>
+            </property>
+            <property name="text">
+             <string>Flarm overview</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkFlarmRadar">
+            <property name="toolTip">
+             <string>If enabled, the Flarm Radar window can be opened</string>
+            </property>
+            <property name="text">
+             <string>Flarm Radar</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
