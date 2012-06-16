@@ -195,6 +195,11 @@ void Settings::readSettings ()
 	location      =s.value (notr ("location")      , tr ("Twiddlethorpe")).toString ();
 	recordTowpilot=s.value (notr ("recordTowpilot"), true            ).toBool ();
 	checkMedicals =s.value (notr ("checkMedicals") , true            ).toBool ();
+	// Flarm
+	flarmEnabled         =s.value (notr("flarmEnabled"), true   ).toBool ();
+	flarmEdit            =s.value (notr("flarmEdit"),    true   ).toBool ();
+	flarmOverview        =s.value (notr("flarmOverview"),true   ).toBool ();
+	flarmRadar           =s.value (notr("flarmRadar"),   true   ).toBool ();
 	// Permissions
 	protectSettings      =s.value (notr ("protectSettings"      ), false).toBool ();
 	protectLaunchMethods =s.value (notr ("protectLaunchMethods" ), false).toBool ();
@@ -265,6 +270,11 @@ void Settings::writeSettings ()
 	s.setValue (notr ("location")      , location      );
 	s.setValue (notr ("recordTowpilot"), recordTowpilot);
 	s.setValue (notr ("checkMedicals") , checkMedicals );
+	// Flarm
+	s.setValue (notr ("flarmEnabled")  , flarmEnabled  );
+	s.setValue (notr ("flarmEdit")     , flarmEdit     );
+	s.setValue (notr ("flarmOverview") , flarmOverview );
+	s.setValue (notr ("flarmRadar")    , flarmRadar    );
 	// Permissions
 	s.setValue (notr ("protectSettings"      ), protectSettings      );
 	s.setValue (notr ("protectLaunchMethods" ), protectLaunchMethods );

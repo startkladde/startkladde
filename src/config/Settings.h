@@ -49,6 +49,11 @@ class Settings: public QObject
 		QString location;
 		bool recordTowpilot;
 		bool checkMedicals;
+		// Flarm
+		bool flarmEnabled;
+		bool flarmEdit;
+		bool flarmOverview;
+		bool flarmRadar;
 		// Permissions
 		bool protectSettings;
 		bool protectLaunchMethods;
