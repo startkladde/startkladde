@@ -780,17 +780,17 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
 <context>
     <name>FlarmHandler</name>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="204"/>
+        <location filename="../src/flarm/FlarmHandler.cpp" line="100"/>
         <source>started</source>
         <translation>gestartet</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="206"/>
+        <location filename="../src/flarm/FlarmHandler.cpp" line="102"/>
         <source>landed</source>
         <translation>gelandet</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="208"/>
+        <location filename="../src/flarm/FlarmHandler.cpp" line="104"/>
         <source>go around</source>
         <translation>durchgestartet</translation>
     </message>
@@ -831,27 +831,27 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
 <context>
     <name>FlarmRecord</name>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="84"/>
+        <location filename="../src/flarm/FlarmRecord.cpp" line="76"/>
         <source>On ground</source>
         <translation>Am Boden</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="86"/>
+        <location filename="../src/flarm/FlarmRecord.cpp" line="78"/>
         <source>Starting</source>
         <translation>Startet</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="88"/>
+        <location filename="../src/flarm/FlarmRecord.cpp" line="80"/>
         <source>Landing</source>
         <translation>Landet</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="90"/>
+        <location filename="../src/flarm/FlarmRecord.cpp" line="82"/>
         <source>Flying near airfield</source>
         <translation>Fliegt in Platznähe</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="92"/>
+        <location filename="../src/flarm/FlarmRecord.cpp" line="84"/>
         <source>Out of range</source>
         <translation>Außerhalb der Reichweite</translation>
     </message>

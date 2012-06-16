@@ -774,17 +774,17 @@ Updete-a zee detebese-a noo?</translation>
 <context>
     <name>FlarmHandler</name>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="204"/>
+        <location filename="../src/flarm/FlarmHandler.cpp" line="100"/>
         <source>started</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="206"/>
+        <location filename="../src/flarm/FlarmHandler.cpp" line="102"/>
         <source>landed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="208"/>
+        <location filename="../src/flarm/FlarmHandler.cpp" line="104"/>
         <source>go around</source>
         <translation type="unfinished"></translation>
     </message>
@@ -825,27 +825,27 @@ Updete-a zee detebese-a noo?</translation>
 <context>
     <name>FlarmRecord</name>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="84"/>
+        <location filename="../src/flarm/FlarmRecord.cpp" line="76"/>
         <source>On ground</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="86"/>
+        <location filename="../src/flarm/FlarmRecord.cpp" line="78"/>
         <source>Starting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="88"/>
+        <location filename="../src/flarm/FlarmRecord.cpp" line="80"/>
         <source>Landing</source>
         <translation type="unfinished">Lundeeng</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="90"/>
+        <location filename="../src/flarm/FlarmRecord.cpp" line="82"/>
         <source>Flying near airfield</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmHandler.cpp" line="92"/>
+        <location filename="../src/flarm/FlarmRecord.cpp" line="84"/>
         <source>Out of range</source>
         <translation type="unfinished"></translation>
     </message>
