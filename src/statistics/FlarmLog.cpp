@@ -73,12 +73,10 @@ int FlarmLog::columnCount (const QModelIndex &index) const
 
 QVariant FlarmLog::data (const QModelIndex &index, int role) const
 {
-	qDebug () << "index: " << index.row () << endl;
 	if (index.row () < 0)
 		return QVariant();
 	
 	QString key = regMap->keys() [index.row ()];
-	qDebug () << "key: " << key << endl;
 	
 	const FlarmRecord* record = (*regMap)[key];
 
@@ -88,9 +86,9 @@ QVariant FlarmLog::data (const QModelIndex &index, int role) const
 		{
 			case 0: return record->flarmid;
 			case 1: return record->registration;
-			case 2: return QString(notr("%1")).arg(record->getAlt());
-			case 3: return QString(notr("%1")).arg(record->getSpeed());
-			case 4: return QString(notr("%1")).arg(record->getClimb());
+			case 2: return QString(qnotr("%1")).arg(record->getAlt());
+			case 3: return QString(qnotr("%1")).arg(record->getSpeed());
+			case 4: return QString(qnotr("%1")).arg(record->getClimb());
 			case 5: return record->getStateText ();
 			default: assert (false); return QVariant ();
 		}
