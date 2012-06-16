@@ -1,3 +1,13 @@
+2.1.x (2012-06-16)
+    New features:
+	- Support of Flarm to detect start and landing automatically
+	- Support of Flarm to adjust system time based on GPS time
+	- Support of Flarm to show planes near the airfield in a table
+	  (Flarm Overview)
+	- Support of Flarm to show planes near the airfield on a map (Flarm
+	  Radar
+	- Qwt6 library added to cmake
+
 	- Changed the term "Hauptflugbuch" (German translation only)
 	- Changed build system from make/qmake to cmake
 	- Bugfix: crash after canceling an update object operation from the main
