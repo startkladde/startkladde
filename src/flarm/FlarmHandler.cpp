@@ -1,5 +1,5 @@
 /**
- * flarm_handler.cpp
+ * FlarmHandler.cpp
  * This program receives serial data via an UNIX socket from a Flarm device and tries to
  * analyse the state of each glider that sends flarm data to create 
  * start and landing events for further processing
@@ -29,110 +29,6 @@
 #include "src/config/Settings.h"
 #include "src/model/Plane.h"
 #include "FlarmHandler.h"
-//#include "FlarmNetDb.h"
-
-FlarmRecord::FlarmRecord (QObject* parent, const QString& id, flarmState _state)
-        : QObject (parent), flarmid (id), state (_state)
-{
-        alt   = 0;
-        speed = 0;
-        climb = 0.0;
-        last_speed = 0;
-        last_alt   = 0;
-        last_climb = 0.0;
-        north = 0;
-        east  = 0;
-        category = Plane::categoryNone;
-        keepAliveTimer = new QTimer (this);
-        landingTimer = new QTimer (this);
-        connect (keepAliveTimer, SIGNAL(timeout()), this, SIGNAL(keepAliveTimeout()));
-        connect (landingTimer, SIGNAL(timeout()), this, SIGNAL(landingTimeout()));
-}
-
-void FlarmRecord::setState (flarmState _state)
-{
-        state = _state;
-        switch (state) {
-        case stateOnGround:
-                qDebug () << "on ground: " << flarmid << endl;
-                break;
-        case stateStarting:
-                qDebug () << "starting" << flarmid << endl;
-                break;
-        case stateFlying:
-                qDebug () << "flying" << flarmid << endl;
-                break;
-        case stateFlyingFar:
-                qDebug () << "flying far" << flarmid << endl;
-                break;
-        case stateLanding:
-                qDebug () << "landing" << flarmid << endl;
-                break;
-        default:
-                qDebug () << "unknown" << flarmid << endl;
-                break;
-        }
-}
-
-FlarmRecord::flarmState FlarmRecord::getState () const {
-        return state;
-}
-
-QString FlarmRecord::getStateText () const {
-        switch (state) {
-                case FlarmRecord::stateOnGround:
-                        return tr("On ground");
-                case FlarmRecord::stateStarting:
-                        return tr("Starting");
-                case FlarmRecord::stateLanding:
-                        return tr("Landing");
-                case FlarmRecord::stateFlying:
-                        return tr("Flying near airfield");
-                case FlarmRecord::stateFlyingFar:
-                        return tr("Out of range");
-                default:
-                        return notr ("---");
-        }
-}
-
-void FlarmRecord::setClimb (double clmb) {
-        climb = clmb;
-}
-
-double FlarmRecord::getClimb () const {
-        return climb;
-}
-
-void FlarmRecord::setSpeed (int spd) {
-        last_speed = speed;
-        speed = spd;
-}
-
-int FlarmRecord::getSpeed () const {
-        return speed;
-}
-
-void FlarmRecord::setAlt (int a) {
-        last_alt = alt;
-        alt = a;
-}
-
-int FlarmRecord::getAlt () const {
-        return alt;
-}
-
-bool FlarmRecord::isPlausible () const {
-        if (abs (last_alt - alt) > 100) 
-                return false;
-        // speed is in km/h
-        if (abs (last_speed - speed) > 100)
-                return false;
-        if (speed < 0)
-                return false;
-        if (speed > 300)
-                return false;
-        return true;
-}
 
 FlarmHandler* FlarmHandler::instance = NULL;
 
@@ -145,10 +41,10 @@ FlarmHandler::FlarmHandler (QObject* parent)
         connectionState = connectedNoData;
         setConnectionState (notConnected);
         flarmDataTimer = new QTimer (this);
-        flarmSocketTimer = new QTimer (this);
+        flarmDeviceTimer = new QTimer (this);
         refreshTimer = new QTimer (this);
         connect (flarmDataTimer, SIGNAL(timeout()), this, SLOT(flarmDataTimeout()));
-        connect (flarmSocketTimer, SIGNAL(timeout()), this, SLOT(flarmSocketTimeout()));
+        connect (flarmDeviceTimer, SIGNAL(timeout()), this, SLOT(flarmDeviceTimeout()));
         connect (refreshTimer, SIGNAL(timeout()), this, SIGNAL(statusChanged()));
         connect (flarmSocket, SIGNAL(readyRead()), this, SLOT(dataReceived()));
         connect (flarmSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(socketException(QAbstractSocket::SocketError)));
@@ -184,7 +80,7 @@ void FlarmHandler::setEnabled (bool e) {
                 else {
                         flarmSocket->close();
                         refreshTimer->stop();
-                        flarmSocketTimer->stop();
+                        flarmDeviceTimer->stop();
                         flarmDataTimer->stop();
                         setConnectionState (notConnected);
                 }
@@ -271,13 +167,13 @@ void FlarmHandler::initFlarmSocket () {
 	if (flarmSocket->state() == QAbstractSocket::ConnectedState) {
 		qDebug () << "FlarmSocket is connected" << endl;
 		// stop the timer. As long as no exception, no timer.
-		flarmSocketTimer->stop ();
+		flarmDeviceTimer->stop ();
 		return;
 	}
  	else if (flarmSocket->state() == QAbstractSocket::ConnectingState) {
  	        // this does not seem to happen
 		qDebug () << "FlarmSocket is connecting" << endl;
-		//flarmSocketTimer->stop ();
+		//flarmDeviceTimer->stop ();
 		flarmSocket->abort ();
 		return;
  	}
@@ -288,7 +184,7 @@ void FlarmHandler::initFlarmSocket () {
 	flarmSocket->connectToHost ("localhost", 4711, QIODevice::ReadOnly);
 
 	flarmDataTimer->start (2000);
-	flarmSocketTimer->start (5000);
+	flarmDeviceTimer->start (5000);
 }
 
 void FlarmHandler::dataReceived () {
@@ -307,7 +203,7 @@ void FlarmHandler::socketException (QAbstractSocket::SocketError socketError) {
 	//qDebug () << "socketException: " << socketError << endl;
 	flarmSocket->abort();
 	//setConnectionState (notConnected);
-	flarmSocketTimer->start (5000);
+	flarmDeviceTimer->start (5000);
 }
 
 void FlarmHandler::flarmDataTimeout () {
@@ -317,10 +213,10 @@ void FlarmHandler::flarmDataTimeout () {
 	flarmDataTimer->start(6000);
 }
 
-void FlarmHandler::flarmSocketTimeout () {
-	//qDebug () << "FlarmHandler::flarmSocketTimeout" << endl;
+void FlarmHandler::flarmDeviceTimeout () {
+	//qDebug () << "FlarmHandler::flarmDeviceTimeout" << endl;
 	// do not start timer; initFlarmSocket will take care
-	//flarmSocketTimer->start(5000);
+	//flarmDeviceTimer->start(5000);
 	initFlarmSocket ();
 }
 

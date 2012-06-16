@@ -7,44 +7,9 @@
 #include <QtCore/QFile>
 #include <QtNetwork/QTcpSocket>
 
+#include "FlarmRecord.h"
 #include "src/db/DbManager.h"
 #include "src/model/Plane.h"
-
-class FlarmRecord: public QObject {
-
-  Q_OBJECT
-  
-  public:
-    enum flarmState {stateUnknown, stateOnGround, stateStarting, stateFlying, stateFlyingFar, stateLanding};
-    enum flarmEvent {eventGround, eventLow, eventFly};
-    FlarmRecord (QObject* parent, const QString& id, flarmState _state);
-    void setState (flarmState state);
-    flarmState getState () const;
-    QString getStateText () const;
-    void setClimb (double);
-    double getClimb () const;
-    void setSpeed (int);
-    int getSpeed () const;
-    void setAlt (int);
-    int getAlt () const;
-    bool isPlausible () const;
-    QString flarmid;
-    QString registration;
-    QString frequence;
-    Plane::Category category;
-    int north;
-    int east;
-    QTimer* keepAliveTimer;
-    QTimer* landingTimer;
-  private:
-    flarmState state;
-    int alt, last_alt;
-    int speed, last_speed;
-    double climb, last_climb;
-  signals:
-    void keepAliveTimeout();
-    void landingTimeout();
-};
 
 class FlarmHandler: public QObject {
 
@@ -68,7 +33,7 @@ class FlarmHandler: public QObject {
     FlarmHandler (QObject* parent);
     QTcpSocket* flarmSocket;
     QTimer* flarmDataTimer;
-    QTimer* flarmSocketTimer;
+    QTimer* flarmDeviceTimer;
     QTimer* refreshTimer;
     ConnectionState connectionState;
     QMap<QString,FlarmRecord*>* regMap;
@@ -92,7 +57,7 @@ class FlarmHandler: public QObject {
     void socketException (QAbstractSocket::SocketError socketError);
     void socketStateChanged(QAbstractSocket::SocketState);
     void flarmDataTimeout (); 
-    void flarmSocketTimeout ();
+    void flarmDeviceTimeout ();
     void keepAliveTimeout ();
     void landingTimeout ();
 
