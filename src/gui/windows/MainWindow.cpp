@@ -554,7 +554,13 @@ void MainWindow::settingsChanged ()
 	ui.timerBasedLanguageChangeAction->setEnabled (s.enableDebug);
 
 	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (s.diagCommand));
-
+	
+	// Flarm
+        ui.actionFlarmOverview		->setVisible (s.flarmOverview);
+        ui.actionFlarmRadar		->setVisible (s.flarmRadar);
+        ui.flarmStateCaptionLabel	->setVisible (s.flarmEnabled);
+        ui.flarmStateLabel		->setVisible (s.flarmEnabled);
+        FlarmHandler::getInstance()->setEnabled (s.flarmEnabled);
 	// Plugins
 	setupPlugins ();
 }
@@ -2183,12 +2189,14 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 		QTimer::singleShot(10000, box, SLOT(accept()));
 		box->show ();
 		
-		// get the Flight object back from the database
-		flight=dbManager.getCache ().getObject<Flight> (flightId);
-		// Another flight may be being edited
-                delete editFlightWindow; // noop if NULL
-                editFlightWindow=FlightWindow::editFlight (this, dbManager, flight);
-                editFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
+		if (Settings::instance().flarmEdit) {
+        		// get the Flight object back from the database
+	        	flight=dbManager.getCache ().getObject<Flight> (flightId);
+	        	// Another flight may be being edited
+	        	delete editFlightWindow; // noop if NULL
+	        	editFlightWindow=FlightWindow::editFlight (this, dbManager, flight);
+	        	editFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
+                }
 	}
 		
 }
