@@ -31,7 +31,7 @@ class FlarmHandler: public QObject {
     
   private:
     FlarmHandler (QObject* parent);
-    QTcpSocket* flarmSocket;
+    QTcpSocket* flarmDevice;
     QTimer* flarmDataTimer;
     QTimer* flarmDeviceTimer;
     QTimer* refreshTimer;
@@ -52,7 +52,7 @@ class FlarmHandler: public QObject {
     void setConnectionState (ConnectionState);
 
   private slots:
-    void initFlarmSocket();
+    void initFlarmDevice();
     void dataReceived ();
     void socketException (QAbstractSocket::SocketError socketError);
     void socketStateChanged(QAbstractSocket::SocketState);

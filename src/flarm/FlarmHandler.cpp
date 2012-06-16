@@ -36,7 +36,7 @@ FlarmHandler::FlarmHandler (QObject* parent)
   :QObject (parent)
 {
         regMap = NULL;
-        flarmSocket = new QTcpSocket (this);
+        flarmDevice = new QTcpSocket (this);
         // force to emit signal
         connectionState = connectedNoData;
         setConnectionState (notConnected);
@@ -46,9 +46,9 @@ FlarmHandler::FlarmHandler (QObject* parent)
         connect (flarmDataTimer, SIGNAL(timeout()), this, SLOT(flarmDataTimeout()));
         connect (flarmDeviceTimer, SIGNAL(timeout()), this, SLOT(flarmDeviceTimeout()));
         connect (refreshTimer, SIGNAL(timeout()), this, SIGNAL(statusChanged()));
-        connect (flarmSocket, SIGNAL(readyRead()), this, SLOT(dataReceived()));
-        connect (flarmSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(socketException(QAbstractSocket::SocketError)));
-        connect (flarmSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(socketStateChanged(QAbstractSocket::SocketState)));
+        connect (flarmDevice, SIGNAL(readyRead()), this, SLOT(dataReceived()));
+        connect (flarmDevice, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(socketException(QAbstractSocket::SocketError)));
+        connect (flarmDevice, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(socketStateChanged(QAbstractSocket::SocketState)));
 
         regMap = new QMultiMap <QString, FlarmRecord*> ();
 
@@ -74,11 +74,11 @@ void FlarmHandler::setEnabled (bool e) {
                 if (enabled)
                 {
         	        // initialize Flarm TcpPort
-        	        QTimer::singleShot (0, this, SLOT(initFlarmSocket()));
+        	        QTimer::singleShot (0, this, SLOT(initFlarmDevice()));
         	        refreshTimer->start (5000);
                 }
                 else {
-                        flarmSocket->close();
+                        flarmDevice->close();
                         refreshTimer->stop();
                         flarmDeviceTimer->stop();
                         flarmDataTimer->stop();
@@ -158,41 +158,40 @@ QDateTime FlarmHandler::getGPSTime () {
         return gpsTime;
 }
         
-void FlarmHandler::initFlarmSocket () {
+void FlarmHandler::initFlarmDevice () {
 	// will be set on first sentence
 	setConnectionState (notConnected);
 	
-	//qDebug () << "FlarmHandler::initFlarmSocket: " << endl;
+	//qDebug () << "FlarmHandler::initFlarmDevice: " << endl;
 
-	if (flarmSocket->state() == QAbstractSocket::ConnectedState) {
+	if (flarmDevice->state() == QAbstractSocket::ConnectedState) {
 		qDebug () << "FlarmSocket is connected" << endl;
 		// stop the timer. As long as no exception, no timer.
 		flarmDeviceTimer->stop ();
 		return;
 	}
- 	else if (flarmSocket->state() == QAbstractSocket::ConnectingState) {
+ 	else if (flarmDevice->state() == QAbstractSocket::ConnectingState) {
  	        // this does not seem to happen
 		qDebug () << "FlarmSocket is connecting" << endl;
 		//flarmDeviceTimer->stop ();
-		flarmSocket->abort ();
+		flarmDevice->abort ();
 		return;
  	}
  	else
- 	        //qDebug() << "state: " << flarmSocket->state() << endl;
+ 	        //qDebug() << "state: " << flarmDevice->state() << endl;
 	
         //qDebug () << "try to connect flarm socket" << endl;
-	flarmSocket->connectToHost ("localhost", 4711, QIODevice::ReadOnly);
+	flarmDevice->connectToHost ("localhost", 4711, QIODevice::ReadOnly);
 
 	flarmDataTimer->start (2000);
-	flarmDeviceTimer->start (5000);
 }
 
 void FlarmHandler::dataReceived () {
 	//qDebug () << "dataReceived" << endl;
 	setConnectionState (connectedData);
 	flarmDataTimer->start(2000);
-	while (flarmSocket->canReadLine()) {
-		QString line = flarmSocket->readLine ();
+	while (flarmDevice->canReadLine()) {
+		QString line = flarmDevice->readLine ();
 		// qDebug () << "line: " << line << endl;
 		processFlarm (line);
 	}
@@ -200,24 +199,23 @@ void FlarmHandler::dataReceived () {
 
 void FlarmHandler::socketException (QAbstractSocket::SocketError socketError) {
         Q_UNUSED(socketError)
-	//qDebug () << "socketException: " << socketError << endl;
-	flarmSocket->abort();
+	qDebug () << "socketException: " << socketError << endl;
+	flarmDevice->abort();
 	//setConnectionState (notConnected);
 	flarmDeviceTimer->start (5000);
+	flarmDataTimer->stop ();
 }
 
 void FlarmHandler::flarmDataTimeout () {
-	//qDebug () << "FlarmHandler::flarmDataTimeout" << endl;
+	qDebug () << "FlarmHandler::flarmDataTimeout" << endl;
 	setConnectionState (connectedNoData);
 	// if no data, most likely the socket is down. Give it enough time to recover     
 	flarmDataTimer->start(6000);
 }
 
 void FlarmHandler::flarmDeviceTimeout () {
-	//qDebug () << "FlarmHandler::flarmDeviceTimeout" << endl;
-	// do not start timer; initFlarmSocket will take care
-	//flarmDeviceTimer->start(5000);
-	initFlarmSocket ();
+	qDebug () << "FlarmHandler::flarmDeviceTimeout" << endl;
+	initFlarmDevice ();
 }
 
 /** This function calculates the checksum in the sentence.
