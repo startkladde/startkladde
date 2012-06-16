@@ -477,7 +477,7 @@
           <item>
            <widget class="QCheckBox" name="checkFlarmEnabled">
             <property name="toolTip">
-             <string>If enabled, data from attached flarm device will be used to detect starts and landings</string>
+             <string>&lt;html&gt;If enabled, data from attached flarm device will be used to detect starts and landings&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Automatic launch detection</string>
@@ -487,7 +487,7 @@
           <item>
            <widget class="QCheckBox" name="checkFlarmEdit">
             <property name="toolTip">
-             <string>If enabled, the flight editor will be opened automatically when incomplete flights are detected</string>
+             <string>&lt;html&gt;If enabled, the flight editor will be opened automatically when incomplete flights are detected&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Flight editor</string>
@@ -497,7 +497,7 @@
           <item>
            <widget class="QCheckBox" name="checkFlarmOverview">
             <property name="toolTip">
-             <string>If enabled, the Flarm overview can be opened</string>
+             <string>&lt;html&gt;If enabled, the Flarm overview can be opened&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Flarm overview</string>
@@ -507,7 +507,7 @@
           <item>
            <widget class="QCheckBox" name="checkFlarmRadar">
             <property name="toolTip">
-             <string>If enabled, the Flarm Radar window can be opened</string>
+             <string>&lt;html&gt;If enabled, the Flarm Radar window can be opened&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Flarm Radar</string>
