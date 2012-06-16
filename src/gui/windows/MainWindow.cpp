@@ -1995,13 +1995,13 @@ void MainWindow::on_actionSetGPSTime_triggered ()
         qDebug () << "MainWindow::on_actionSetGPSTime_triggered" << endl;
         FlarmHandler* flarmHandler = FlarmHandler::getInstance();
         if (flarmHandler->getConnectionState() != FlarmHandler::connectedData) {
-                QMessageBox::warning (this, tr("No GPS signal"), "Flarm does not send data");
+                QMessageBox::warning (this, tr("No GPS signal"), tr("Flarm does not send data"));
                 return;
         }
         QDateTime current (QDateTime::currentDateTimeUtc ());
         QDateTime currentGPSdateTime = flarmHandler->getGPSTime ();
-        qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString ("hh:mm:ss dd.MM.yyyy") << endl;
-        qDebug () << "currentTime: " << current.toString ("hh:mm:ss dd.MM.yyyy") << endl;   
+        qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy")) << endl;
+        qDebug () << "currentTime: " << current.toString (notr("hh:mm:ss dd.MM.yyyy")) << endl;   
         int diff = currentGPSdateTime.secsTo(current);
         if (abs (diff) > 0) {
                 if (QMessageBox::question(this, tr("Time difference"), 
