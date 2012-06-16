@@ -218,6 +218,9 @@ ADD_EXECUTABLE(startkladde
 # only used via the Qt plugin) to avoid "Error in my_thread_global_end(): 1
 # threads didn't exit" in specific situations (e. g. exception on open).
 # Is this still required?
+#IF (UNIX)
+#	SET (libs ${libs} ${MYSQL_LIBRARIES})
+#ENDIF ()
 
 TARGET_LINK_LIBRARIES (startkladde ${QT_LIBRARIES} ${libs})
 
