@@ -61,7 +61,9 @@ set(CMAKE_AUTOMOC TRUE)
 if(NOT Qwt6_FOUND)
     message(STATUS "Qwt6 not found! Disabling plotting support!")
 else()
-    message(STATUS "Qwt6 available at: ${Qwt6_INCLUDE_DIR}")
+    message(STATUS "Qwt6 available at: ${Qwt6_INCLUDE_DIR} ${Qwt6_Qt4_LIBRARY}")
+    include_directories(${Qwt6_INCLUDE_DIR})
+    link_libraries(${Qwt6_Qt4_LIBRARY})
 endif()
 
 # For gcc and release mode, enable some options that make the binary smaller
