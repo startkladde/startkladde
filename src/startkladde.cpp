@@ -306,7 +306,7 @@ int doStuff (const QStringList &nonOptions)
 	{
 		MigrationFactory &factory=MigrationFactory::instance ();
 
-		std::cout << "Available migrations:" << std::endl;
+		std::cout << notr ("Available migrations:") << std::endl;
 		foreach (quint64 version, factory.availableVersions ())
 			std::cout << version << notr (" - ") << factory.migrationName (version) << std::endl;
 	}
@@ -444,6 +444,6 @@ int main (int argc, char **argv)
 		return 1;
 	}
 
-	std::cout << "Regular program end with exit code " << ret << std::endl;
+	std::cout << notr ("Regular program end with exit code ") << ret << std::endl;
 	return ret;
 }

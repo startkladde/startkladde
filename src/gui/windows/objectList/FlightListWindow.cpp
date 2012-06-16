@@ -185,7 +185,7 @@ void FlightListWindow::on_actionExport_triggered ()
 
 	// Query the user for a file name
 	QString fileName=QFileDialog::getSaveFileName (this,
-			tr ("Export flight database"), notr ("./"+defaultFileName),
+			tr ("Export flight database"), notr ("./")+defaultFileName,
 			tr ("CSV files (*.csv);;All files (*)"));
 
 	// Cancel if the file name was empty (probably because the user canceled)

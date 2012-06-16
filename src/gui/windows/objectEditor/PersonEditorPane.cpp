@@ -42,7 +42,7 @@ PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &ca
 		// accept that we have to click the button, or even not be able to view
 		// the medical data if the window has been opened in a specific way.
 		setMedicalValidityDisplayed (false);
-		std::cerr << "No pane data in person editor pane" << std::endl;
+		std::cerr << notr ("No pane data in person editor pane") << std::endl;
 	}
 }
 
