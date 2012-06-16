@@ -26,8 +26,9 @@
 #include <QtCore/QStringList>
 #include <QtCore/QPointF>
 
-#include "FlarmHandler.h"
+#include "src/config/Settings.h"
 #include "src/model/Plane.h"
+#include "FlarmHandler.h"
 //#include "FlarmNetDb.h"
 
 FlarmRecord::FlarmRecord (QObject* parent, const QString& id, flarmState _state)
@@ -155,9 +156,8 @@ FlarmHandler::FlarmHandler (QObject* parent)
 
         regMap = new QMultiMap <QString, FlarmRecord*> ();
 
-	// initialize Flarm TcpPort
-	QTimer::singleShot (0, this, SLOT(initFlarmSocket()));
-	refreshTimer->start (5000);
+        enabled = false;
+        setEnabled (Settings::instance().flarmEnabled);
 
 	QDate today (QDate::currentDate());
 	QString filename = QString ("/var/log/startkladde/startkladde-%1.trc").arg(today.toString("yyyyMMdd"));
@@ -170,6 +170,25 @@ FlarmHandler::~FlarmHandler () {
         trace->close();
         delete regMap;
         delete instance;
+}
+
+void FlarmHandler::setEnabled (bool e) {
+        if (e != enabled) {
+                enabled = e;
+                if (enabled)
+                {
+        	        // initialize Flarm TcpPort
+        	        QTimer::singleShot (0, this, SLOT(initFlarmSocket()));
+        	        refreshTimer->start (5000);
+                }
+                else {
+                        flarmSocket->close();
+                        refreshTimer->stop();
+                        flarmSocketTimer->stop();
+                        flarmDataTimer->stop();
+                        setConnectionState (notConnected);
+                }
+        }
 }
 
 FlarmHandler* FlarmHandler::getInstance () {

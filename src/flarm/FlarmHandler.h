@@ -60,6 +60,7 @@ class FlarmHandler: public QObject {
     QMap<QString,FlarmRecord*>* getRegMap() {return regMap; }
     void updateList (const Plane&);
     void setDatabase (DbManager*);
+    void setEnabled (bool);
     ConnectionState getConnectionState ();
     QDateTime getGPSTime ();
     
@@ -76,6 +77,7 @@ class FlarmHandler: public QObject {
     QTextStream* stream;
     static FlarmHandler* instance;
     QDateTime gpsTime;
+    bool enabled;
 
     void processFlarm (const QString& line);
     uint calcCheckSum(const QString&);
