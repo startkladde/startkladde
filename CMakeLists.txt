@@ -50,12 +50,19 @@ FIND_PACKAGE (Qt4       REQUIRED)
 FIND_PACKAGE (MySQL 5.0 REQUIRED)
 FIND_PACKAGE (Acpi              )
 FIND_PACKAGE (Ruby      REQUIRED)
+FIND_PACKAGE (Qwt6	REQUIRED)
 
 # Setup the Qt library
 SET(QT_USE_QTSQL     TRUE)
 SET(QT_USE_QTNETWORK TRUE)
 
 set(CMAKE_AUTOMOC TRUE)
+
+if(NOT Qwt6_FOUND)
+    message(STATUS "Qwt6 not found! Disabling plotting support!")
+else()
+    message(STATUS "Qwt6 available at: ${Qwt6_INCLUDE_DIR}")
+endif()
 
 # For gcc and release mode, enable some options that make the binary smaller
 if (CMAKE_COMPILER_IS_GNUCXX)
