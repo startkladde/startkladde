@@ -452,6 +452,7 @@
     <addaction name="actionLaunchMethodStatistics"/>
     <addaction name="separator"/>
     <addaction name="actionFlarmOverview"/>
+    <addaction name="actionFlarmRadar"/>
    </widget>
    <widget class="QMenu" name="menuDatabase">
     <property name="title">
@@ -891,6 +892,11 @@
   <action name="actionFlarmOverview">
    <property name="text">
     <string>&amp;Flarm overview</string>
+   </property>
+  </action>
+  <action name="actionFlarmRadar">
+   <property name="text">
+    <string>Flarm &amp;Radar</string>
    </property>
   </action>
  </widget>
