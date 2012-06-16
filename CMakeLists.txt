@@ -372,6 +372,42 @@ SET(CPACK_PACKAGE_EXECUTABLES "startkladde" "Startkladde")
 SET (CPACK_SOURCE_IGNORE_FILES CMakeLists.txt.user "~$" ".svn$")
 SET (CPACK_STRIP_FILES 1)
 
+# Set the package file name 
+IF (WIN32)
+	# On Windows, include the version and -setup in the file name
+	SET (CPACK_PACKAGE_FILE_NAME "startkladde-${full_version}-setup")
+ELSE ()
+	# On Linux, include the version and the architecture in the file name
+
+	# We'll set the package file name to include the architecutre, depending on
+	# the distribution. Therefore, we can not build packages for more than one
+	# distribution at once.
+	IF (CPACK_BINARY_DEB AND CPACK_BINARY_RPM)
+		MESSAGE (FATAL_ERROR "Generating DEB and RPM at the same time is not supported for startkladde")
+	ENDIF ()
+
+	IF (CPACK_BINARY_DEB)
+		# Find the dpkg program. Abort if it is not found.
+		FIND_PROGRAM (DPKG_CMD dpkg)
+		IF (NOT DPKG_CMD)
+			MESSAGE (FATAL_ERROR "dpkg is required for Debian package building")
+		ENDIF(NOT DPKG_CMD)
+
+		# Get the architecture from dpkg --print-architecture
+		EXECUTE_PROCESS (
+			COMMAND "${DPKG_CMD}" --print-architecture
+			OUTPUT_VARIABLE debian_architecture
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+		# Construct the package file name
+		SET (CPACK_PACKAGE_FILE_NAME "startkladde-${full_version}-${debian_architecture}")
+	#ELSEIF (CPACK_BINARY_RPM)
+	#	...
+	ELSE ()
+		SET (CPACK_PACKAGE_FILE_NAME "startkladde-${full_version}")
+	ENDIF ()
+ENDIF ()
+
 
 ####################
 ## Package - NSIS ##
