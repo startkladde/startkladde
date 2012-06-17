@@ -482,7 +482,7 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
     <message>
         <location filename="../src/db/DbManager.cpp" line="358"/>
         <source>The database %1 does not exist. Create it now?</source>
-        <translation>Die Datenbank %1 exisitert nicht. Soll sie erstellt werden?</translation>
+        <translation>Die Datenbank %1 existiert nicht. Soll sie erstellt werden?</translation>
     </message>
     <message>
         <location filename="../src/db/DbManager.cpp" line="377"/>
