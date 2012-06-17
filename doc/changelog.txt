@@ -19,6 +19,7 @@
     - Changed the term "Hauptflugbuch" (German translation only)
     - Add explicit database permission for connections from localhost (not
       included in "%"), fixes connection problem on Windows
+    - Added a Unix manual page
 
 2.1.0 (2010-10-24):
   New features:
