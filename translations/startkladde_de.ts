@@ -453,7 +453,7 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
     <message>
         <location filename="../src/db/DbManager.cpp" line="358"/>
         <source>The database %1 does not exist. Create it now?</source>
-        <translation>Die Datenbank %1 exisitert nicht. Soll sie erstellt werden?</translation>
+        <translation>Die Datenbank %1 existiert nicht. Soll sie erstellt werden?</translation>
     </message>
     <message>
         <location filename="../src/db/DbManager.cpp" line="377"/>
@@ -4490,7 +4490,7 @@ Datenbankpasswort erforderlich.</translation>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="411"/>
         <source>&lt;html&gt;The name of the database on the database server&lt;/html&gt;</source>
-        <translation>&lt;thml&gt;Der Name der Datenbank auf dem Datenbankserver&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;Der Name der Datenbank auf dem Datenbankserver&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="431"/>
