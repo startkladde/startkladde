@@ -1,3 +1,7 @@
+# TODO: we should include the full version (with -r1234 or -svn) in the package
+# file name. Note that generateSvnHeader.cmake is not included in this file, so
+# we'll need to perform the detection separately.
+
 ##############
 ## Settings ##
 ##############
