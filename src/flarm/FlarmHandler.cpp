@@ -173,7 +173,7 @@ void FlarmHandler::initFlarmDevice () {
  	else if (flarmDevice->state() == QAbstractSocket::ConnectingState) {
  	        // this does not seem to happen
 		qDebug () << "FlarmSocket is connecting" << endl;
-		//flarmDeviceTimer->stop ();
+		flarmDeviceTimer->stop ();
 		flarmDevice->abort ();
 		return;
  	}
@@ -182,7 +182,6 @@ void FlarmHandler::initFlarmDevice () {
 	
         //qDebug () << "try to connect flarm socket" << endl;
 	flarmDevice->connectToHost ("localhost", 4711, QIODevice::ReadOnly);
-
 	flarmDataTimer->start (2000);
 }
 
@@ -201,7 +200,7 @@ void FlarmHandler::socketException (QAbstractSocket::SocketError socketError) {
         Q_UNUSED(socketError)
 	qDebug () << "socketException: " << socketError << endl;
 	flarmDevice->abort();
-	//setConnectionState (notConnected);
+	setConnectionState (notConnected);
 	flarmDeviceTimer->start (5000);
 	flarmDataTimer->stop ();
 }
@@ -215,6 +214,7 @@ void FlarmHandler::flarmDataTimeout () {
 
 void FlarmHandler::flarmDeviceTimeout () {
 	qDebug () << "FlarmHandler::flarmDeviceTimeout" << endl;
+        // do not start timer; initFlarmSocket will take care   
 	initFlarmDevice ();
 }
 
