@@ -8,7 +8,7 @@
 
 set (startkladde_VERSION_MAJOR 2)
 set (startkladde_VERSION_MINOR 1)
-set (startkladde_VERSION_REVISION 0)
+set (startkladde_VERSION_REVISION 1)
 
 SET (full_version ${startkladde_VERSION_MAJOR}.${startkladde_VERSION_MINOR}.${startkladde_VERSION_REVISION})
 
