@@ -9,8 +9,13 @@ import serial
 import traceback
 import time
 
-STATUS_DIR    = "/tmp"  
-PID_FILE      = STATUS_DIR + "/serialhandler.pid"
+if sys.platform == "linux2":
+  STATUS_DIR    = "/tmp"  
+  PID_FILE      = STATUS_DIR + "/serialhandler.pid"
+elif sys.platform == "win32":
+  STATUS_DIR    = "C:\\temp"  
+  PID_FILE      = STATUS_DIR + "\\serialhandler.pid"
+
 
 global queue
 
