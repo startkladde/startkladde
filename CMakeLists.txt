@@ -66,7 +66,7 @@ else()
     link_libraries(${Qwt6_Qt4_LIBRARY})
 endif()
 
-link_libraries(/usr/lib/libSerialPort.so)
+# link_libraries(/usr/lib/libSerialPort.so)
 
 # For gcc and release mode, enable some options that make the binary smaller
 if (CMAKE_COMPILER_IS_GNUCXX)
