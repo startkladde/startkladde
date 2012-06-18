@@ -165,6 +165,12 @@ if (WIN32 AND QT_BINARY_DIR AND MYSQL_INCLUDE_DIR)
 
 	copy_library (${MYSQL_LIBRARY_DIR} libmysql.dll)
 
+	# TODO this should use a generic macro
+	message (STATUS "Copying library ${Qwt6_Qt4_LIBRARY}")
+	file (COPY ${Qwt6_Qt4_LIBRARY} DESTINATION ${PROJECT_BINARY_DIR})
+	# FIXME should not be hardcoded
+	set (INSTALL_LIBS ${INSTALL_LIBS} qwt.dll)
+
 	file (COPY ${QT_PLUGINS_DIR}/sqldrivers/qsqlmysql4.dll DESTINATION ${PROJECT_BINARY_DIR}/plugins/sqldrivers/)
 endif()
 
