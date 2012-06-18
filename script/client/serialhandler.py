@@ -38,7 +38,17 @@ def watch():
   except KeyboardInterrupt:
     print('KeyboardInterrupt')
     try:
-      os.kill(os.getppid(), signal.SIGKILL)
+      if sys.platform == "linux2":
+        os.kill(os.getppid(), signal.SIGKILL)
+      elif sys.platform == "win32":
+        import ctypes
+        PROCESS_TERMINATE = 1
+        handle = ctypes.windll.kernel32.OpenProcess(PROCESS_TERMINATE, False, os.getppid())
+        ctypes.windll.kernel32.TerminateProcess(handle, -1)
+        ctypes.windll.kernel32.CloseHandle(handle)
+      else:
+        print ("unknown operation system, could not kill parent process")
+        
     except OSError: pass
     sys.exit()
 
@@ -78,40 +88,27 @@ class SerialThread (threading.Thread):
   def __init__ (self):
     threading.Thread.__init__(self)
     self.serial = None
+    if sys.platform == "linux2":
+      self.devices = ["/dev/ttyUSB0",
+                      "/dev/ttyUSB1",
+                      "/dev/rfcomm0",
+                      "/dev/ttyS0"]
+    elif sys.platform == "win32":
+      self.devices = ["com0",
+                      "com1"]
+    else:
+      self.devices = []
     
   def createSerial (self):
-    success = False
-    # we try the USB device first.
-    if not success:
+    for device in self.devices:
       try:
-        self.serial = serial.Serial('/dev/ttyUSB0', 19200, timeout=1)
-        success = True
+        self.serial = serial.Serial(device, 19200, timeout=1)
       except serial.serialutil.SerialException as exc:
-        print ("no ttyUSB0 device: ", exc)
+        print ("no %s device: " % device, exc)
       else:
-        print("serial created: ttyUSB0")
+        print("serial created: %s" % device)
+        break
 
-    if not success:
-      try:
-        self.serial = serial.Serial('/dev/ttyUSB1', 19200, timeout=1)
-        success = True
-      except serial.serialutil.SerialException as exc:
-        print("no ttyUSB1 device: ", exc)
-        time.sleep (5)
-        self.serial = None
-      else:
-        print("serial created: ttyUSB1")
-
-    # this is the normal case. No USB device, we connect to the Bluetooth device
-    if not success:
-      try:
-        self.serial = serial.Serial('/dev/rfcomm0', 19200, timeout=1)
-        success = True;
-      except serial.serialutil.SerialException as exc:
-        print ("no bluetooth device: ", exc)
-      else:
-        print("serial created: rfcomm0")      
-    
   def run (self):
     global queue
 
