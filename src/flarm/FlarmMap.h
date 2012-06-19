@@ -20,6 +20,9 @@ private slots:
   void drawAirfield (const QPointF&);
 
 private:
+  	  void setExampleVectors ();
+
+private:
   QwtPointSeriesData* data;
   QPointF old_home;
   QVector<QPointF> airfieldVector;

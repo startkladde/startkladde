@@ -8,17 +8,6 @@
 #include "FlarmMap.h"
 #include "FlarmHandler.h"
 
-/*
-const double p1lat = 52.9430789;
-const double p1lon = 12.7896215;
-const double p2lat = 52.94111;
-const double p2lon = 12.7889;
-const double p3lat = 52.9428;
-const double p3lon = 12.7703;
-const double p4lat = 52.9444;
-const double p4lon = 12.7706;
-*/
-
 FlarmMap::FlarmMap (QWidget* parent) 
 : QDialog (parent)
 {
@@ -52,27 +41,6 @@ FlarmMap::FlarmMap (QWidget* parent)
   northUp = -1.0;
 
   /*
-  airfieldVector << QPointF (p1lon, p1lat) << QPointF (p2lon, p2lat) << QPointF (p3lon, p3lat) << QPointF (p4lon, p4lat);
-  patternVector << QPointF (12.789271548674964, 52.94212392967359)
-                << QPointF (12.80044023244796,  52.94122277500129)
-                << QPointF (12.801773857118498, 52.941120848710995)
-                << QPointF (12.80262524603299,  52.941320693327995)
-                << QPointF (12.803246042023268, 52.94174595841085)
-                << QPointF (12.804757118515505, 52.947346447719795)
-                << QPointF (12.804512599999999, 52.94817706138535)
-                << QPointF (12.803663546254134, 52.94857755117815)
-                << QPointF (12.80248103315735,  52.94881246640197)
-                << QPointF (12.758622509608768, 52.952181313142034)
-                << QPointF (12.757164583633068, 52.95218020704071)
-                << QPointF (12.75560434296937,  52.95171226097781)
-                << QPointF (12.754953987817434, 52.95107188923083)
-                << QPointF (12.754016666274461, 52.94632345292743)
-                << QPointF (12.754175670311906, 52.94546260279531)
-                << QPointF (12.754900437234875, 52.944926213872)
-                << QPointF (12.756229743111295, 52.94472066496655)
-                << QPointF (12.770433806814804, 52.94351364365588);
-  */
-  /*
   QMatrix matrix;
   matrix = matrix.translate (1000, 1000);
   QBrush brush (lageplan_xpm);
@@ -84,11 +52,58 @@ FlarmMap::FlarmMap (QWidget* parent)
   grid->attach (qwtPlot);
   data = NULL;
   //QTimer::singleShot (0, this, SLOT (storeVectors()));
+
+  // Instead of reading the vectors from the configuration, you can set example
+  // vectors by enabling the call to setExampleVectors instead of readVectors.
+  // You can also store the example vectors by enabling the call to
+  // storeVectors. After that, you can disable both calls and have the vectors
+  // read from the database.
+  //setExampleVectors ();
+  //storeVectors ();
   readVectors();
 }
 
 FlarmMap::~FlarmMap () {
 } 
+
+void FlarmMap::setExampleVectors ()
+{
+	airfieldVector.clear ();
+	const double p1lat = 52.9430789;
+	const double p1lon = 12.7896215;
+	const double p2lat = 52.94111;
+	const double p2lon = 12.7889;
+	const double p3lat = 52.9428;
+	const double p3lon = 12.7703;
+	const double p4lat = 52.9444;
+	const double p4lon = 12.7706;
+	airfieldVector
+		<< QPointF (p1lon, p1lat)
+		<< QPointF (p2lon, p2lat)
+		<< QPointF (p3lon, p3lat)
+		<< QPointF (p4lon, p4lat);
+
+	patternVector.clear ();
+	patternVector
+		<< QPointF (12.789271548674964, 52.94212392967359 )
+		<< QPointF (12.80044023244796 , 52.94122277500129 )
+		<< QPointF (12.801773857118498, 52.941120848710995)
+		<< QPointF (12.80262524603299 , 52.941320693327995)
+		<< QPointF (12.803246042023268, 52.94174595841085 )
+		<< QPointF (12.804757118515505, 52.947346447719795)
+		<< QPointF (12.804512599999999, 52.94817706138535 )
+		<< QPointF (12.803663546254134, 52.94857755117815 )
+		<< QPointF (12.80248103315735 , 52.94881246640197 )
+		<< QPointF (12.758622509608768, 52.952181313142034)
+		<< QPointF (12.757164583633068, 52.95218020704071 )
+		<< QPointF (12.75560434296937 , 52.95171226097781 )
+		<< QPointF (12.754953987817434, 52.95107188923083 )
+		<< QPointF (12.754016666274461, 52.94632345292743 )
+		<< QPointF (12.754175670311906, 52.94546260279531 )
+		<< QPointF (12.754900437234875, 52.944926213872   )
+		<< QPointF (12.756229743111295, 52.94472066496655 )
+		<< QPointF (12.770433806814804, 52.94351364365588 );
+}
 
 /**
   * Not used, only to initialize the table wich is stored in settings
@@ -126,7 +141,7 @@ void FlarmMap::readVectors () {
     double y = variantlist.takeFirst().toDouble();
     patternVector << QPointF (x, y);
   }
-  settings.endGroup();  
+  settings.endGroup();
   //qDebug () << "FlarmMap::readVectors new: " << airfieldVector << endl;
 }
 
