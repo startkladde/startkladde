@@ -41,7 +41,8 @@ Settings::Settings ():
 	// readSettings. All settings which are only set by command line have to be
 	// initialized.
 	enableDebug (false), coloredLabels (false), displayQueries (false),
-	noFullScreen (false), enableShutdown (false)
+	noFullScreen (false), enableShutdown (false),
+	overrideDatabaseName (false)
 {
 	readSettings ();
 }
@@ -77,6 +78,20 @@ QStringList Settings::readArgs (const QStringList &args)
 				noFullScreen=true;
 			else if (arg==notr ("--enable-shutdown"))
 				enableShutdown=true;
+			else if (arg==notr ("--database-name"))
+			{
+				if (!unprocessed.empty ())
+				{
+					overrideDatabaseName=true;
+					overrideDatabaseNameValue=unprocessed.takeFirst ();
+
+					// Overwrite the stored value in case it has already been
+					// read from the settings store.
+					databaseInfo.database=overrideDatabaseNameValue;
+				}
+				else
+					std::cout << notr ("No database specified after --database-name") << std::endl;
+			}
 			else
 				std::cout << notr ("Unrecognized option ") << arg << std::endl;
 		}
@@ -185,6 +200,10 @@ void Settings::readSettings ()
 	s.beginGroup (notr ("database"));
 	databaseInfo.load (s); // Connection
 	s.endGroup ();
+	// If the database name has been overridden, overwrite the value. It won't
+	// be written back.
+	if (overrideDatabaseName)
+		databaseInfo.database=overrideDatabaseNameValue;
 
 	// *** Settings
 	// UI
@@ -257,9 +276,13 @@ void Settings::writeSettings ()
 	s.beginGroup (notr ("settings"));
 
 	// *** Database
-	s.beginGroup (notr ("database"));
-	databaseInfo.save (s); // Connection
-	s.endGroup ();
+	// If the database name has been overridden, don't store the settings
+	if (!overrideDatabaseName)
+	{
+		s.beginGroup (notr ("database"));
+		databaseInfo.save (s); // Connection
+		s.endGroup ();
+	}
 
 	// *** Settings
 	// UI

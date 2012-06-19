@@ -93,6 +93,13 @@ class Settings: public QObject
 		// *** Other
 		QString programPath;
 
+		// Override settings
+		// If the database name is overridden (command line paramter), it won't
+		// be written to the settings store. It is still possible to change it
+		// in the GUI, though.
+		bool overrideDatabaseName;
+		QString overrideDatabaseNameValue;
+
 	protected:
 		void readSettings ();
 		void writeSettings ();
