@@ -7,7 +7,7 @@ AboutDialog::AboutDialog (QWidget *parent):
 {
 	ui.setupUi (this);
 
-	ui.versionInput->setText (getVersion ());
+	ui.versionInput->setText (getLongVersion ());
 }
 
 AboutDialog::~AboutDialog()
