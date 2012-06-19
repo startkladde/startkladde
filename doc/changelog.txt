@@ -1,5 +1,6 @@
   Improvements:
     - New command line option: --database-name
+    - Remove warning message stating the connection has been canceled
   
 2.1.1 (2012-06-17):
   New features:
