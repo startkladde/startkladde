@@ -67,6 +67,7 @@
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
 #include "src/i18n/TranslationManager.h"
+#include "src/version.h"
 
 template <class T> class MutableObjectList;
 
@@ -525,9 +526,11 @@ void MainWindow::setupText ()
 	logAction->setText (tr ("Show &log"));
 
 	if (isBlank (s.location))
-		setWindowTitle (tr ("Startkladde"));
+		setWindowTitle (tr ("Startkladde %1").arg (getVersion ()));
 	else
-		setWindowTitle (tr ("Flight log %1 - Startkladde").arg (s.location));
+		setWindowTitle (tr ("Flight log %1 - Startkladde %2")
+			.arg (s.location)
+			.arg (getVersion ()));
 
 }
 

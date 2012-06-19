@@ -7,6 +7,17 @@
 #include "build.h"
 #include "svnVersion.h"
 
+QString getLongVersion ()
+{
+	QString version=qnotr ("Version %1").arg (getVersion ());
+
+	QString buildType (BUILD_TYPE);
+	if (!buildType.isEmpty ())
+		version+=qnotr (" (build type: %1)").arg (firstToLower (buildType));
+
+	return version;
+}
+
 /**
  * Returns a descriptive version string intended for display to the user
  *
@@ -19,7 +30,7 @@
  */
 QString getVersion ()
 {
-	QString version=qnotr ("Version %1.%2.%3")
+	QString version=qnotr ("%1.%2.%3")
 		.arg (BUILD_VERSION_MAJOR)
 		.arg (BUILD_VERSION_MINOR)
 		.arg (BUILD_VERSION_REVISION);
@@ -34,10 +45,6 @@ QString getVersion ()
 		else
 			version+=qnotr ("-svn");
 	}
-
-	QString buildType (BUILD_TYPE);
-	if (!buildType.isEmpty ())
-		version+=qnotr (" (build type: %1)").arg (firstToLower (buildType));
 
 	return version;
 }
