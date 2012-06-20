@@ -51,9 +51,13 @@ class Settings: public QObject
 		bool checkMedicals;
 		// Flarm
 		bool flarmEnabled;
-		bool flarmEdit;
+		bool flarmAutostart;
+		bool flarmEditor;
 		bool flarmOverview;
 		bool flarmRadar;
+		// FlarmNet
+		bool flarmNetEnabled;
+		bool flarmNetOverview;
 		// Permissions
 		bool protectSettings;
 		bool protectLaunchMethods;
