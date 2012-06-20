@@ -30,38 +30,35 @@ def scan_cpp(text, print)
 	segment_start=0
 
 	begin
+		# segment_start must be a valid position at this point.
+
 		while state
 			case state
 			when :default
-				next_segment_start=text.index(/( " | \/\/ | \/\* )/x, segment_start)
-				delimiter=$1
-				case delimiter
-				when '"'  then next_state=:string_literal
-				when '//' then next_state=:line_comment
-				when '/*' then next_state=:block_comment
-				when nil  then next_state=nil
-				else raise "Unhandled input #{delimiter.inspect}"
+				pos=text.index(/ (") | (\/\/) | (\/\*) /x, segment_start)
+				if    $1 then next_state=:string_literal; next_segment_start=pos
+				elsif $2 then next_state=:line_comment  ; next_segment_start=pos
+				elsif $3 then next_state=:block_comment ; next_segment_start=pos
+				else          next_state=nil
 				end
 			when :string_literal
-				next_segment_start=text.index(/( " )/x, segment_start+1)+1
-				delimiter=$1
-				case delimiter
-				when '"' then next_state=:default
-				else raise "Unhandled input #{delimiter.inspect}"
-				end
+				pos=segment_start+1
+				begin
+					pos=text.index(/ (") | (\\\" | \\\\) /x, pos)
+					if    $1 then next_state=:default; next_segment_start=pos+1
+					elsif $2 then pos+=2
+					else          next_state=nil
+					end
+				end until next_state!=:string_literal
 			when :block_comment
-				next_segment_start=text.index(/( \*\/ )/x, segment_start+2)+2
-				delimiter=$1
-				case delimiter
-				when '*/' then next_state=:default
-				else raise "Unhandled input #{delimiter.inspect}"
+				pos=text.index(/ (\*\/) /x, segment_start+2)
+				if $1 then next_state=:default; next_segment_start=pos+2
+				else       next_state=nil
 				end
 			when :line_comment
-				next_segment_start=text.index(/( $ )/x, segment_start)
-				delimiter=$1
-				case delimiter
-				when '' then next_state=:default
-				else raise "Unhandled input #{delimiter.inspect}"
+				pos=text.index(/ ($) /x, segment_start)
+				if $1 then next_state=:default; next_segment_start=pos
+				else       next_state=nil
 				end
 			else raise "Unhandled state #{state.inspect}"
 			end
@@ -116,11 +113,14 @@ void foo (const QString &x="STRING")
 	FUNCTION (); /* block comment // still a comment */
 	FUNCTION (); /* block comment /* still a comment */
 
-	// TODO: line comment with line continuation 
-	// TODO: string with line continuation
-	// TODO: string with escaped double quote
-	// TODO: string with escaped backslash before the end
+	// Strings with escaped characters
+	"STRING\\nSTRING";
+	"STRING\\\\STRING";
+	"STRING\\"STRING";
+	"STRING\\\\";
+	"STRING";
 }
+// Comment at the beginning of a line
 EOF
 	puts text
 	puts
@@ -128,6 +128,10 @@ end
 
 
 scan_cpp text, true
+
+scan_cpp "// Unterminated line comment", true
+scan_cpp "/* Unterminated block comment", true
+scan_cpp "\"Unterminated string", true
 
 
 
