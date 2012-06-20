@@ -6,7 +6,7 @@ require 'rainbow'
 
 
 
-def scan_cpp(text)
+def scan_cpp(text, print)
 	colors = {
 		:default        => :cyan,
 		:string_literal => :yellow,
@@ -70,7 +70,7 @@ def scan_cpp(text)
 				next_segment_start=0 if !next_state
 
 				segment=text[segment_start..next_segment_start-1]
-				puts "#{segment_start}-#{next_segment_start-1} - #{state.inspect} - #{segment.inspect}"
+				puts "#{segment_start}-#{next_segment_start-1} - #{state.inspect} - #{segment.inspect}" if print
 				colored += segment.color(colors[state])
 			end
 
@@ -78,14 +78,19 @@ def scan_cpp(text)
 			state=next_state
 		end
 	ensure
-		puts
-		puts colored
-		puts
+		if print
+			puts
+			puts colored
+			puts
+		end
 	end
 
 end
 
-text=<<EOF
+if ARGV[0]
+	text=File.read(ARGV[0])
+else
+	text=<<EOF
 // Comment at the beginning
 
 void foo (const QString &x="STRING")
@@ -117,11 +122,12 @@ void foo (const QString &x="STRING")
 	// TODO: string with escaped backslash before the end
 }
 EOF
+	puts text
+	puts
+end
 
 
-puts text
-puts
-scan_cpp text
+scan_cpp text, true
 
 
 
