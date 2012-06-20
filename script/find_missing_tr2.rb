@@ -1,80 +1,108 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+require 'rainbow'
+
+#	test_cases =<<-EOF
+#	FUNCTION ();
+#
+#	FUNCTION (); FUNCTION (); // COMMENT
+#	FUNCTION (); /* COMMENT */ FUNCTION ();
+#	FUNCTION ("STRING");
+#
+#	FUNCTION ("before // not a comment, a STRING");
+#	FUNCTION ("before /* not a comment, a STRING */ after");
+#
+#	FUNCTION (); // before "not a string, a COMMENT"
+#	FUNCTION (); /* before "not a string, a COMMENT" after */ FUNCTION ();
+#	EOF
+
 # Test cases: 
 #   line comment with line continuation 
 #   /* ... */// foo
 
 
 def scan_cpp(text)
-	pos=0
-	offset=0
+	colors = {
+		:default        => :cyan,
+		:string_literal => :yellow,
+		:block_comment  => :green,
+		:line_comment   => :blue
+	}
 
-	# States: :default, :string_literal, :block_comment, :line_comment
-	state=:default
+	colored=""
 
-#                |   |       |                   |         |   |   index of separator
-# v              v    v      v                     v       v    v  start of segment
-# >               >   >        >                   >        >   >  start position for next search
-# void foo (); a="bar"; b=2; /* more assignments */ return "baz";
-# ---------------sssss-------bbbbbbbbbbbbbbbbbbbbbb--------sssss-
 #
+#                |   |  |            |     |                   |         |   |   index of separator element
+#                1   1  2            1     2                   2         1   1
+# <-------------><---><><-----------><----><--------------------><------><--->x  segment boundaries
+# >               v   v   v           v      v                   v        v   >  start position for next search
 # void foo (); a="bar"; // assignment|b=2; /* more assignments */ return "baz";
+# ---------------sssss--lllllllllllll------bbbbbbbbbbbbbbbbbbbbbb--------sssss-
 
 
-	while true
-		case state
-		when :default
-			next_pos=text.index(/( " | \/\/ | \/\* )/x, pos+offset)
-			case $1
-			when '"' then next_state=:string_literal; offset=0
-			when '//' then next_state=:line_comment; offset=0
-			when '/*' then next_state=:block_comment; offset=0
-			else raise "Unhandled input #{$1.inspect}"
+	# :default :string_literal :block_comment :line_comment
+	state=:default
+	segment_start=0
+
+	begin
+		while state
+			case state
+			when :default
+				next_segment_start=text.index(/( " | \/\/ | \/\* )/x, segment_start)
+				delimiter=$1
+				case delimiter
+				when '"'  then next_state=:string_literal
+				when '//' then next_state=:line_comment
+				when '/*' then next_state=:block_comment
+				when nil  then next_state=nil
+				else raise "Unhandled input #{delimiter.inspect}"
+				end
+			when :string_literal
+				next_segment_start=text.index(/( " )/x, segment_start+1)+1
+				delimiter=$1
+				case delimiter
+				when '"' then next_state=:default
+				else raise "Unhandled input #{delimiter.inspect}"
+				end
+			when :block_comment
+				next_segment_start=text.index(/( \*\/ )/x, segment_start+2)+2
+				delimiter=$1
+				case delimiter
+				when '*/' then next_state=:default
+				else raise "Unhandled input #{delimiter.inspect}"
+				end
+			when :line_comment
+				next_segment_start=text.index(/( $ )/x, segment_start)
+				delimiter=$1
+				case delimiter
+				when '' then next_state=:default
+				else raise "Unhandled input #{delimiter.inspect}"
+				end
+			else raise "Unhandled state #{state.inspect}"
 			end
-		when :string_literal
-			next_pos=text.index(/( " )/x, pos+offset)
-			case $1
-			when '"' then next_state=:default; offset=1
-			else raise "Unhandled input #{$1.inspect}"
-			end
-		when :block_comment
-			next_pos=text.index(/( \*\/ )/x, pos+offset)
-			case $1
-			when '*/' then next_state=:default; offset=2
-			else raise "Unhandled input #{$1.inspect}"
-			end
-		when :line_comment
-			next_pos=text.index(/( $ )/x, pos+offset)
-			case $1
-			when '*/' then next_state=:default; offset=2
-			else raise "Unhandled input #{$1.inspect}"
-			end
-		else raise "Unhandled state #{state.inspect}"
+
+			next_segment_start=0 if !next_state
+
+			segment=text[segment_start..next_segment_start-1]
+			puts "#{segment_start}-#{next_segment_start-1} - #{state.inspect} - #{segment.inspect}"
+			colored += segment.color(colors[state])
+			segment_start=next_segment_start
+			state=next_state
 		end
-
-		puts "#{pos}-#{next_pos} - #{state.inspect} - #{text[pos...next_pos].inspect}"
-		pos=next_pos
-		state=next_state
+	ensure
+		puts
+		puts colored
+		puts
 	end
-
-	
-#	p i
-#	p $1
-
-
-
 
 end
 
-text="void foo (); a=\"bar\"; b=2; /* more assignments */ return \"baz\";"
-
-
-#text=<<EOF
-#void foo ();
-#a="bar"; // assignment
-#b=2; /* more assignments */ return "baz";
-#EOF
-
+text=<<EOF
+void foo ();
+a="bar"; // assignment
+b=2; /* more assignments */ return "baz";
+EOF
 
 puts text
 puts
