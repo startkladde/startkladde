@@ -35,7 +35,7 @@ underscore, like "20100216135637_add_launch_methods".
 Migrations can perform ("apply") a change ("up") and - usually - undo ("revoke)
 it ("down"). Invoking the up or down method of a migration is called "running"
 the migration. Migrations can only be run in the proper order, that is,
-applying the the next migration or revoking the last migration that has been
+applying the next migration or revoking the last migration that has been
 applied.
 
 Migrations are usually run by the "migrator" (Migrator class) and should not be
