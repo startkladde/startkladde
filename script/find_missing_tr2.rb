@@ -4,163 +4,141 @@ require 'rubygems'
 require 'rainbow'
 
 
-class Location
-	attr_accessor :line, :column
-
-	def initialize(line, column)
-		@line=line
-		@column=column
-	end
-
-	def to_s
-		"#{line}.#{column}"
-	end
-end
+#class Location
+#	attr_accessor :line, :column
+#
+#	def initialize(line, column)
+#		@line=line
+#		@column=column
+#	end
+#
+#	def to_s
+#		"#{line}.#{column}"
+#	end
+#end
 
 class CodeSegment
 	attr_accessor :type # :default, :string_literal, :block_comment, :line_comment
-	attr_accessor :start, :end
 	attr_accessor :code
 
-	def initialize
-		@code=""
+	def initialize(type=nil, code="")
+		@type=type
+		@code=code
 	end
 end
 
+# Takes a string of C++ code and splits it into lines and segments
+# For example, the following code:
+#   /* const */ int foo=42;
+#   const char *bar="fred"; // A string
+# Will be represented by:
+#   * line 0:
+#      * default        '  '
+#      * block_comment  '/* const */'
+#      * default        ' int foo=42;'
+#   * line 1:
+#      * default        '  const char *bar='
+#      * string_literal '"fred"
+#      * default        '; '
+#      * line_comment   '// A string'
+# Or at least that's what we hope.
 class CppSegmenter
 	attr_reader :segments, :state
 
 	def initialize
 		@state=:default
-		@segments=[]
-		@current_segment=nil
 	end
 
+	def process_line(line)
+		line=line.chomp
 
-	def process_line(line_number, line)
-		# We split the line into parts corresponding to segments, except that
-		# the segment corresponding to the first part may have been started in
-		# a previous line, and that the segment corresponding to the last part
-		# may continue to the following line(s).
+		result=[]
 
-		# The column pointer is the position of the part we're currently
-		# looking at. We'll set it to nil when there are no more parts in the
-		# line. We'll start at the beginning of the line.
-		part_start=0
-
+		# Start at the beginning of the line
+		segment_start=0
 		skip=0
 
-		# Keep analyzing parts until there are no parts left in this line
-		while part_start
-			#puts "Analyze part at line #{line_number}, column #{part_start}"
+		# As long as there is a segment, we have to process it
+		while segment_start
+			# We may have to skip some characters
+			pos=segment_start+skip
 
-			# By default, we'll stay in the current state
-			next_state=@state
+			# By default, we stay in the current state and don't skip anything.
+			next_state=@state; next_segment_start=nil; skip=0
 
-			# Find the next separator. Possible separators depend on the state
-			# we're currently in.
-			# We set the following variables:
-			#   * next_state: the state associated with the next part
-			#   * next_part_start: the starting position of the next part, or
-			#     nil if there is no next part in this line (this probably
-			#     means that the part is continued in the next line)
-			#   * skip: the number of characters to skip, starting at
-			#     next_part_start. This is the length of the separator if the
-			#     separator belongs to the next part, or 0 if the separator
-			#     belongs to the current part.
+#			# Find the next separator. Possible separators depend on the state
+#			# we're currently in.
+#			# We set the following variables:
+#			#   * next_state: the state associated with the next part
+#			#   * next_part_start: the starting position of the next part, or
+#			#     nil if there is no next part in this line (this probably
+#			#     means that the part is continued in the next line)
+#			#   * skip: the number of characters to skip, starting at
+#			#     next_part_start. This is the length of the separator if the
+#			#     separator belongs to the next part, or 0 if the separator
+#			#     belongs to the current part.
 			case @state
 			when :default
-				pos=line.index(/ (") | (\/\/) | (\/\*) /x, part_start+skip)
-				if    $1 then next_state=:string_literal; next_part_start=pos; skip=1
-				elsif $2 then next_state=:line_comment  ; next_part_start=pos; skip=2
-				elsif $3 then next_state=:block_comment ; next_part_start=pos; skip=2
-				else                                      next_part_start=nil
+				# Look for strings that can start a new segment
+				next_segment_start=line.index(/ (") | (\/\/) | (\/\*) /x, pos)
+				if    $1 then next_state=:string_literal; skip=1
+				elsif $2 then next_state=:line_comment  ; skip=2
+				elsif $3 then next_state=:block_comment ; skip=2
 				end
 			when :string_literal
-				pos=part_start+skip
+				# Look for the end of the string literal. Skip over escaped
+				# backslashes and escaped quotes.
 				begin
 					pos=line.index(/ (") | (\\\" | \\\\) /x, pos)
-					if    $1 then next_state=:default; next_part_start=pos+1; skip=0
+					if    $1 then next_state=:default; next_segment_start=pos+1; skip=0
 					elsif $2 then pos+=2 # Skip over the escaped backslash or quote
-					else                               next_part_start=nil
 					end
 				end until next_state!=@state || !pos
 			when :block_comment
-				pos=line.index(/ (\*\/) /x, part_start+skip)
-				if $1 then next_state=:default; next_part_start=pos+2; skip=0
-				else                            next_part_start=nil
+				# Look for the end of the block comment
+				pos=line.index(/ (\*\/) /x, pos)
+				if $1 then next_state=:default; next_segment_start=pos+2; skip=0
 				end
 			when :line_comment
-				pos=part_start+skip
-				begin
-					pos=line.index(/ (\\$) | ($) /x, pos)
-					if    $1 then pos+=2 # Skip over the escaped newline
-					elsif $2 then next_state=:default; next_part_start=nil
-					else                               next_part_start=nil
-					end
-				end until next_state!=@state
+				# Look for the end of the line
+				pos=line.index(/ (\\$) | ($) /x, pos)
+				if    $1 then 
+				elsif $2 then next_state=:default
+				end
+				next_segment_start=nil
 			else raise "Unhandled state #{@state.inspect}"
 			end
 
-			# It is possible that the part has a length of zero. In this case,
-			# ignore it.
-			if (next_part_start!=part_start)
-				# We need to append the part to the current segment. If there
-				# is no current segment, create one.
-				if !@current_segment
-					@current_segment=CodeSegment.new
-					@current_segment.type=@state
-					@current_segment.start=Location.new(line_number, part_start)
-					@current_segment.end=nil
-
-					@segments << @current_segment
-				end
-
-				# Determine the end of the current part. If another part starts in
-				# this line, the current part ends right before the start of the
-				# next part. Otherwise, the current part ends at the end of the
-				# line.
-				if next_part_start
-					part_end=next_part_start-1
+			# It is possible that the segment has a length of zero. For
+			# example, in the line
+			#   "foo""bar"
+			# there is a zero-length "default" segment between the two strings.
+			# In this case, ignore it.
+			if (next_segment_start!=segment_start)
+				# If we found another segment, take the text up to that
+				# segment. Otherwise, take the text up to the end of the line.
+				if next_segment_start
+					code=line[segment_start..next_segment_start-1]
 				else
-					part_end=line.length-1
+					code=line[segment_start..-1]
 				end
 
-				# Append the part to the segment. Also set the end of the part
-				# in case there is nothing after it.
-				@current_segment.code+=line[part_start..part_end]
-				@current_segment.end=Location.new(line_number, part_end)
-
-				# Now, if the state changed, this means that we are done with
-				# the last segment.
-				@current_segment=nil
+				# Add the segment to the list
+				result << CodeSegment.new(@state, code)
 			end
 
-			#puts "State: #{@state.inspect} -> #{next_state.inspect}, at column #{part_start}"
-
-			part_start=next_part_start
+			segment_start=next_segment_start
 			@state=next_state
 		end
+
+		return result
 	end
 
 	def process_text(text, print)
-		text.lines.each_with_index { |line_number, line|
-			process_line line, line_number
+		text.lines.map { |line|
+			process_line(line)
 		}
 	end
-
-#	def segment(text, print)
-#		# :default :string_literal :block_comment :line_comment
-#		state=:default
-#		segment_start=0
-#
-#		begin
-#			# segment_start must be a valid position at this point.
-#
-#			end
-#		end
-#	end
-
 end
 
 #
@@ -179,44 +157,44 @@ else
 
 void foo (const char *x="STRING")
 {
-	// Simple cases
-	FUNCTION (); FUNCTION (); // COMMENT
-	FUNCTION (); /* COMMENT */ FUNCTION ();
-	FUNCTION ("STRING");
-	/* Empty comment at end of line */ //
-	multiple (); function_calls ();
-	without (); any ();
-	strings_or_comments ();
+  // Simple cases
+  FUNCTION (); FUNCTION (); // COMMENT
+  FUNCTION (); /* COMMENT */ FUNCTION ();
+  FUNCTION ("STRING");
+  /* Empty comment at end of line */ //
+  multiple (); function_calls ();
+  without (); any ();
+  strings_or_comments ();
 
-	// Adjacent segments
-	"STRING""STRING"/* COMMENT *//* COMMENT */"STRING"// COMMENT
+  // Adjacent segments
+  "STRING""STRING"/* COMMENT *//* COMMENT */"STRING"// COMMENT
 
-	// String with comment delimiters
-	FUNCTION ("before // not a comment, a STRING");
-	FUNCTION ("before /* not a comment, a STRING */ after");
+  // String with comment delimiters
+  FUNCTION ("before // not a comment, a STRING");
+  FUNCTION ("before /* not a comment, a STRING */ after");
 
-	// Comments with string delimiters
-	FUNCTION (); // before "not a string, a COMMENT"
-	FUNCTION (); /* before "not a string, a COMMENT" after */ FUNCTION ();
+  // Comments with string delimiters
+  FUNCTION (); // before "not a string, a COMMENT"
+  FUNCTION (); /* before "not a string, a COMMENT" after */ FUNCTION ();
 
-	// Comments with other comment delimiters
-	FUNCTION (); // /* block comment */ still a comment
-	FUNCTION (); /* block comment // still a comment */
-	FUNCTION (); /* block comment /* still a comment */
+  // Comments with other comment delimiters
+  FUNCTION (); // /* block comment */ still a comment
+  FUNCTION (); /* block comment // still a comment */
+  FUNCTION (); /* block comment /* still a comment */
 
-	// Strings with escaped characters
-	"STRING\\nSTRING";
-	"STRING\\\\STRING";
-	"STRING\\"STRING";
-	"STRING\\\\";
-	"STRING";
-	"multi_
+  // Strings with escaped characters
+  "STRING\\nSTRING";
+  "STRING\\\\STRING";
+  "STRING\\"STRING";
+  "STRING\\\\";
+  "STRING";
+  "multi_
 line_
 string";
-	"string_with_\\
+  "string_with_\\
 line continuation";
 
-	// comment_with_\\
+  // comment_with_\\
 line_continuation
 
 }
@@ -224,7 +202,7 @@ line_continuation
 EOF
 end
 
-def pretty_print(segments)
+def pretty_print(lines)
 	colors = {
 		:default        => :cyan,
 		:string_literal => :yellow,
@@ -232,18 +210,19 @@ def pretty_print(segments)
 		:line_comment   => :blue
 	}
 	colored=""
-	segments.each { |segment|
-		puts "#{segment.start}-#{segment.end} - #{segment.type.inspect} - #{segment.code.inspect}"
-		colored += segment.code.color(colors[segment.type])
+	lines.each { |segments|
+		segments.each { |segment|
+			print segment.code.color(colors[segment.type])
+		}
+		puts
 	}
-	puts colored
 end
 
 begin
 	segmenter=CppSegmenter.new
-	segmenter.process_text text, true
+	segments=segmenter.process_text text, true
 #ensure
-	pretty_print segmenter.segments
+	pretty_print segments
 end
 
 
