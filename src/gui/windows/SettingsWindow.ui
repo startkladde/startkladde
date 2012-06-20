@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>439</width>
-    <height>586</height>
+    <width>577</width>
+    <height>787</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -467,15 +467,21 @@
       <attribute name="title">
        <string>&amp;Flarm</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>General</string>
+        <widget class="QGroupBox" name="flarmBox">
+         <property name="toolTip">
+          <string>&lt;html&gt;If enabled, Flarm related functions are availabe&lt;/html&gt;</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="title">
+          <string>Flarm enabled</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QCheckBox" name="checkFlarmEnabled">
+           <widget class="QCheckBox" name="checkFlarmAutostart">
             <property name="toolTip">
              <string>&lt;html&gt;If enabled, data from attached flarm device will be used to detect starts and landings&lt;/html&gt;</string>
             </property>
@@ -485,7 +491,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkFlarmEdit">
+           <widget class="QCheckBox" name="checkFlarmEditor">
             <property name="toolTip">
              <string>&lt;html&gt;If enabled, the flight editor will be opened automatically when incomplete flights are detected&lt;/html&gt;</string>
             </property>
@@ -511,6 +517,31 @@
             </property>
             <property name="text">
              <string>Flarm Radar</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="flarmNetBox">
+         <property name="toolTip">
+          <string>&lt;html&gt;If enabled, the FlarmNet database will be used for additional information&lt;/html&gt;</string>
+         </property>
+         <property name="title">
+          <string>FlarmNet enabled</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QCheckBox" name="checkFlarmNetOverview">
+            <property name="toolTip">
+             <string>&lt;html&gt;If enabled, an overview of the FlarmNet Database can be viewed&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>FlarmNet overview</string>
             </property>
            </widget>
           </item>

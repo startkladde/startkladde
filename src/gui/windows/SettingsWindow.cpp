@@ -170,10 +170,14 @@ void SettingsWindow::readSettings ()
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
 	ui.checkMedicalsCheckbox ->setChecked (s.checkMedicals);
 	// Flarm
-	ui.checkFlarmEnabled		->setChecked (s.flarmEnabled);
-	ui.checkFlarmEdit		->setChecked (s.flarmEdit);
+	ui.flarmBox			->setChecked (s.flarmEnabled);
+	ui.checkFlarmAutostart		->setChecked (s.flarmAutostart);
+	ui.checkFlarmEditor		->setChecked (s.flarmEditor);
 	ui.checkFlarmOverview		->setChecked (s.flarmOverview);
 	ui.checkFlarmRadar		->setChecked (s.flarmRadar);
+	// FlarmNet
+	ui.flarmNetBox			->setChecked (s.flarmNetEnabled);
+	ui.checkFlarmNetOverview	->setChecked (s.flarmNetOverview);
 	// Permissions
 	ui.protectSettingsCheckbox      ->setChecked (s.protectSettings);
 	ui.protectLaunchMethodsCheckbox ->setChecked (s.protectLaunchMethods);
@@ -252,10 +256,14 @@ void SettingsWindow::writeSettings ()
 	s.recordTowpilot=ui.recordTowpilotCheckbox->isChecked ();
 	s.checkMedicals =ui.checkMedicalsCheckbox ->isChecked ();
 	// Flarm
-	s.flarmEnabled	=ui.checkFlarmEnabled	->isChecked ();
-	s.flarmEdit	=ui.checkFlarmEdit	->isChecked ();
+	s.flarmEnabled	=ui.flarmBox		->isChecked ();
+	s.flarmAutostart=ui.checkFlarmAutostart ->isChecked ();
+	s.flarmEditor	=ui.checkFlarmEditor	->isChecked ();
 	s.flarmOverview	=ui.checkFlarmOverview	->isChecked ();
 	s.flarmRadar	=ui.checkFlarmRadar	->isChecked ();
+	// FlarmNet
+	s.flarmNetEnabled	=ui.flarmNetBox			->isChecked ();
+	s.flarmNetOverview	=ui.checkFlarmNetOverview	->isChecked ();
 	// Permissions
 	s.protectSettings      =ui.protectSettingsCheckbox      ->isChecked ();
 	s.protectLaunchMethods =ui.protectLaunchMethodsCheckbox ->isChecked ();
