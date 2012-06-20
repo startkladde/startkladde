@@ -107,7 +107,6 @@ MainWindow::MainWindow (QWidget *parent):
 	ui.menuDatabase->addSeparator ();
 	ui.menuDatabase->addAction (logAction);
 
-
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 	readSettings ();
 	// This also calls setupText
@@ -556,10 +555,15 @@ void MainWindow::settingsChanged ()
 	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (s.diagCommand));
 	
 	// Flarm
-        ui.actionFlarmOverview		->setVisible (s.flarmOverview);
-        ui.actionFlarmRadar		->setVisible (s.flarmRadar);
+	//ui.menuFlarm			->setVisible (s.flarmEnabled);
+	//ui.menuFlarm			->setEnabled (s.flarmEnabled);
+        ui.actionFlarmOverview		->setVisible (s.flarmEnabled && s.flarmOverview);
+        ui.actionFlarmRadar		->setVisible (s.flarmEnabled && s.flarmRadar);
         ui.flarmStateCaptionLabel	->setVisible (s.flarmEnabled);
         ui.flarmStateLabel		->setVisible (s.flarmEnabled);
+        // FlarmNet
+        ui.actionFlarmNetOverview	->setVisible (s.flarmNetEnabled && s.flarmNetOverview);
+        ui.actionFlarmNetImport		->setVisible (s.flarmNetEnabled);
         FlarmHandler::getInstance()->setEnabled (s.flarmEnabled);
 	// Plugins
 	setupPlugins ();
@@ -1672,6 +1676,16 @@ void MainWindow::on_actionFlarmRadar_triggered ()
         dialog->show ();
 }
 
+void MainWindow::on_actionFlarmNetOverview_triggered ()
+{
+        qDebug () << "MainWindow::on_actionFlarmNetOverview_triggered" << endl;
+}
+
+void MainWindow::on_actionFlarmNetImport_triggered ()
+{
+        qDebug () << "MainWindow::on_actionFlarmNetImport_triggered" << endl;
+}
+
 // **************
 // ** Database **
 // **************
@@ -2104,6 +2118,9 @@ void MainWindow::languageChanged ()
 void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightAction action) {
 	qDebug () << "MainWindow::onFlarmAction: " << flarmid << "; action = " << action << endl;
 	
+	if (!Settings::instance().flarmEnabled)
+	        return;
+
 	Plane plane;
 	QString reg;
         dbId planeId = cache.getPlaneIdByFlarmId (flarmid);
@@ -2189,7 +2206,7 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 		QTimer::singleShot(10000, box, SLOT(accept()));
 		box->show ();
 		
-		if (Settings::instance().flarmEdit) {
+		if (Settings::instance().flarmEditor) {
         		// get the Flight object back from the database
 	        	flight=dbManager.getCache ().getObject<Flight> (flightId);
 	        	// Another flight may be being edited
