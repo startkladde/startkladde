@@ -204,39 +204,6 @@ class CppSegmenter2
 			code=""
 		}
 
-		# FIXME can we find a generic description for the state machine?
-		#   * state, input => new state, output type
-		#   * create new segment whenever the output type changes
-		#   * what about "special" output? => goes to buffer when output type==nil?
-		#   * what about EOL? => :eol input value?
-		# FIXME which one is faster?
-		state_machine={
-			:default                  => {
-				'"'  => [:string_literal        , :string_literal ],
-				'/'  => [:default_slash         , nil             ],
-				nil  => [:default               , :default        ]},
-			:default_slash            => {
-				'/'  => [:line_comment          , :line_comment   ],
-				'*'  => [:block_comment         , :block_comment  ]},
-			:line_comment             => {
-				'\\' => [:line_comment_backslash, :line_comment   ]},
-			:line_comment_backslash   => {
-			},
-			:block_comment            => {
-				'*'  => [:block_comment_asterisk, :block_comment  ]
-			},
-			:block_comment_asterisk   => {
-				'/'  => [:default               , :block_comment  ],
-				nil  => [:block_comment         , :block_comment  ]},
-			:string_literal           => {
-				'"'  => [:default                 , :string_literal ],
-				'\\' => [:string_literal_backslash, nil             ]
-			},
-			:string_literal_backslash => {
-				nil => [:string_literal         , :string_literal ]
-			}
-		}
-
 		line.each_char { |c|
 			case @state
 			when :default
@@ -309,6 +276,102 @@ class CppSegmenter2
 		}
 	end
 end
+
+# This one is based on characters and a generic FSM
+class CppSegmenter3
+	attr_reader :state
+
+	def initialize
+		reset
+	end
+
+	def reset
+		@state=:default
+	end
+
+
+	def process_line(line)
+		result=[]
+
+		# We don't want to include the line breaks in the segments
+		line=line.chomp
+
+		code=""
+		buffer=""
+		type=nil
+
+		# FIXME fails for some input files
+		# FIXME which one is faster?
+		# FIXME can we "compile" it?
+		transitions={
+			# Default
+			:default                  => { '"'  => [:string_literal          , :string_literal ],
+			                               '/'  => [:default_slash           , nil             ],
+			                               nil  => [:default                 , :default        ]},
+			:default_slash            => { '/'  => [:line_comment            , :line_comment   ],
+			                               '*'  => [:block_comment           , :block_comment  ]},
+			# String literals
+			:string_literal           => { '"'  => [:default                 , :string_literal ],
+			                               '\\' => [:string_literal_backslash, :string_literal ],
+			                               nil  => [:string_literal          , :string_literal ]},
+			:string_literal_backslash => { nil  => [:string_literal          , :string_literal ]},
+			# Line comment
+			:line_comment             => { :eol => [:default                 , nil             ],
+			                               '\\' => [:line_comment_backslash  , :line_comment   ],
+			                               nil  => [:line_comment            , :line_comment   ]},
+			:line_comment_backslash   => { nil  => [:line_comment            , :line_comment   ]},
+			# Block comment
+			:block_comment            => { '*'  => [:block_comment_asterisk  , :block_comment  ],
+			                               nil  => [:block_comment           , :block_comment  ]},
+			:block_comment_asterisk   => { '/'  => [:default                 , :block_comment  ],
+			                               nil  => [:block_comment           , :block_comment  ]}
+		}
+
+		line.each_char { |c|
+			transition=transitions[@state]
+			next_state, next_type = (transition[c] || transition[nil])
+
+			if next_type.nil?
+				buffer+=c
+			else
+				if next_type!=type
+					if !code.empty?
+						result << CodeSegment.new(type, code)
+					end
+					code=""
+					type=next_type
+				end
+
+				code+=buffer+c
+				buffer=""
+			end
+
+			@state=next_state
+		}
+
+		# EOL
+		transition=transitions[@state]
+		next_state, next_type = transition[:eol] || transition[nil]
+
+		if !code.empty?
+			result << CodeSegment.new(type, code)
+		end
+		@state=next_state
+
+		return result
+	end
+
+	def process_text(text, print)
+		text.lines.map { |line|
+			process_line(line)
+		}
+	end
+end
+
+
+
+
+
 
 #
 #                |   |  |            |     |                   |         |   |   index of separator element
@@ -395,15 +458,13 @@ def pretty_print(lines)
 end
 
 begin
-	segmenter=CppSegmenter2.new
+	segmenter=CppSegmenter3.new
 	segments=segmenter.process_text text, true
 #ensure
 	pretty_print segments
 end
 
-
-#scan_cpp text, true
-
+# FIXME handle unterminated things
 #scan_cpp "// Unterminated line comment", true
 #scan_cpp "/* Unterminated block comment", true
 #scan_cpp "\"Unterminated string", true
