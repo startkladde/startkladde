@@ -30,7 +30,8 @@ class CppSegmenter4
 			                               nil  => [:default                 , :default        ]},
 			:default_slash            => { '/'  => [:line_comment            , :line_comment   ],
 			                               '*'  => [:block_comment           , :block_comment  ],
-			                               nil  => [:default                 , :default        ]},
+			                               nil  => [:default                 , :default        ],
+			                               :eol => [:default                 , :default        ]},
 			# String literals
 			:string_literal           => { '"'  => [:default                 , :string_literal ],
 			                               '\\' => [:string_literal_backslash, :string_literal ],
@@ -77,12 +78,6 @@ class CppSegmenter4
 		# known        | same      | segment continued                          |
 		# known        | different | new segment started                        |
 
-		# n                  | n          | line starts with unknown character
-		# n                  | y          | line starts with known character
-		# y                  | n          | kkk
-		# y                  | y          |
-
-
 		len=line.length
 		len.times { |pos|
 			# Fetch the current character from the string
@@ -92,7 +87,7 @@ class CppSegmenter4
 			# (can be nil for "unknown")
 			transition=transitions[@state]
 			next_state, character_type = (transition[c] || transition[nil])
-			#puts "State #{@state.inspect.color(:yellow)}, input #{c.inspect.color(:magenta)}, next state #{next_state.inspect.color(:yellow)}, type #{character_type.inspect}"
+			puts "State #{@state.inspect.color(:yellow)}, input #{c.inspect.color(:magenta)}, next state #{next_state.inspect.color(:yellow)}, type #{character_type.inspect}"
 
 			if character_type
 				# The type of the current character is known. If the character
@@ -111,7 +106,7 @@ class CppSegmenter4
 
 						code=line[segment_start...next_segment_start]
 						raise "empty" if code.empty?
-						#puts "Add code segment, type #{segment_type.inspect}: #{code.inspect.color(:red)}"
+						puts "Add code segment, type #{segment_type.inspect}: #{code.inspect.color(:red)}"
 						result << CodeSegment.new(segment_type, code)
 						segment_start=next_segment_start
 						segment_type=character_type
@@ -121,6 +116,9 @@ class CppSegmenter4
 						# character's type as segment type. Note that the
 						# segment may already have started on a previous
 						# character if it was unknown.
+						# FIXME this is done for both segment_type and
+						# !segment_type, and if segment_type==character_type,
+						# we can still do it
 						segment_type=character_type
 					end
 
@@ -144,9 +142,14 @@ class CppSegmenter4
 		transition=transitions[@state]
 		next_state, character_type = transition[:eol] || transition[nil]
 
+		# FIXME seems like a kludge
+		# Required for a single / on a line
+		# Always setting it sets a single string literal to "default"
+		segment_type||=character_type
+
 		if segment_start<len
 			code=line[segment_start..-1]
-			#puts "Add code segment at EOL, #{segment_type.inspect}: #{code.inspect.color(:red)}"
+			puts "Add code segment at EOL, #{segment_type.inspect}: #{code.inspect.color(:red)}"
 			result << CodeSegment.new(segment_type, code)
 		end
 
