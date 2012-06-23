@@ -142,6 +142,18 @@ line_continuation
   multiline
   /
   division;
+
+  // Single things on a line
+"STRING"
+// line comment
+/* block comment */
+"
+STRING
+"
+//
+division
+/
+operator
 }
 // Comment at the beginning of a line
 EOF
