@@ -2,28 +2,10 @@
 
 $: << File.dirname($0)
 
-require 'CppSegmenter1'
-require 'CppSegmenter2'
-require 'CppSegmenter3'
-require 'CppSegmenter4'
-
-
 require 'rubygems'
 require 'rainbow'
 
-
-#class Location
-#	attr_accessor :line, :column
-#
-#	def initialize(line, column)
-#		@line=line
-#		@column=column
-#	end
-#
-#	def to_s
-#		"#{line}.#{column}"
-#	end
-#end
+require 'Scanner'
 
 class CodeSegment
 	attr_accessor :type # :default, :string_literal, :block_comment, :line_comment
@@ -60,16 +42,11 @@ end
 
 use_test=false
 print=false
-segmenter_class=nil
 filename=nil
 
 while arg=ARGV.shift do
 	if    arg=="-t" then use_test=true
 	elsif arg=="-p" then print=true
-	elsif arg=="-1" then segmenter_class=CppSegmenter1
-	elsif arg=="-2" then segmenter_class=CppSegmenter2
-	elsif arg=="-3" then segmenter_class=CppSegmenter3
-	elsif arg=="-4" then segmenter_class=CppSegmenter4
 	else  filename=arg
 	end
 end
@@ -78,11 +55,6 @@ error=false
 
 if filename.nil? && !use_test
 	puts "Specify a file name or -t for test text"
-	error=true
-end
-
-if segmenter_class.nil?
-	puts "Sepcify -1, -2, -3 or -4 for a segmenter implementation to use"
 	error=true
 end
 
@@ -162,10 +134,63 @@ else
 end
 
 begin
-	segmenter=segmenter_class.new
-	segments=segmenter.process_text text, true
+	@scanner=Scanner.new(:default) { |states|
+		# Default
+		states.add_state(:default) { |state|
+			state.on '"', :string_literal, :string_literal
+			state.on '/', :default_slash , nil
+			state.default :default       , :default
+		}
+		states.add_state(:default_slash) { |state|
+			state.on '/' , :line_comment , :line_comment
+			state.on '*' , :block_comment, :block_comment
+			state.on "\n", :default, :default
+			state.default  :default, :default
+		}
+
+		# String literals
+		states.add_state(:string_literal) { |state|
+			state.on '"' , :default                 , :string_literal
+			state.on '\\', :string_literal_backslash, :string_literal
+			state.default  :string_literal          , :string_literal
+		}
+		states.add_state(:string_literal_backslash) { |state|
+			state.default :string_literal          , :string_literal
+		}
+
+		# Line comment
+		states.add_state(:line_comment) { |state|
+			state.on "\n", :default                 , nil          
+			state.on '\\', :line_comment_backslash  , :line_comment
+			state.default  :line_comment            , :line_comment
+		}
+		states.add_state(:line_comment_backslash) { |state|
+			state.default :line_comment, :line_comment
+		}
+
+		# Block comment
+		states.add_state(:block_comment) { |state|
+			state.on '*', :block_comment_asterisk  , :block_comment
+			state.default :block_comment           , :block_comment
+		}
+		states.add_state(:block_comment_asterisk) { |state|
+			state.on '/', :default                 , :block_comment
+			state.default :block_comment           , :block_comment
+		}
+	}
+
+
+	lines_tokens=text.lines.map { |line|
+		line_tokens=[]
+
+		@scanner.scan(line) { |token_type, code|
+			line_tokens << CodeSegment.new(token_type, code)
+		}
+
+		line_tokens
+	}
 #ensure
-	pretty_print segments if print
+	pretty_print lines_tokens if print
 end
 
 # FIXME handle unterminated things
