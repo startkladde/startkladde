@@ -14,15 +14,14 @@ class CppSegmenter4
 	def process_line(line)
 		result=[]
 
-		# We don't want to include the line breaks in the segments
-		line=line.chomp
+		# Clean up the line breaks (we should do this before)
+		line=line.chomp+"\n"
 
 		segment_start=0  # The start position of the current segment
 		segment_type=nil # The type of the current segment
 		unknown_length=0 # The number of unknown characters in the current unknown part
 
 		# FIXME speedup: can we "compile" it?
-		# FIXME breaks on a solitary / on a line
 		transitions={
 			# Default
 			:default                  => { '"'  => [:string_literal          , :string_literal ],
@@ -31,14 +30,14 @@ class CppSegmenter4
 			:default_slash            => { '/'  => [:line_comment            , :line_comment   ],
 			                               '*'  => [:block_comment           , :block_comment  ],
 			                               nil  => [:default                 , :default        ],
-			                               :eol => [:default                 , :default        ]},
+			                               "\n" => [:default                 , :default        ]},
 			# String literals
 			:string_literal           => { '"'  => [:default                 , :string_literal ],
 			                               '\\' => [:string_literal_backslash, :string_literal ],
 			                               nil  => [:string_literal          , :string_literal ]},
 			:string_literal_backslash => { nil  => [:string_literal          , :string_literal ]},
 			# Line comment
-			:line_comment             => { :eol => [:default                 , nil             ],
+			:line_comment             => { "\n" => [:default                 , nil             ],
 			                               '\\' => [:line_comment_backslash  , :line_comment   ],
 			                               nil  => [:line_comment            , :line_comment   ]},
 			:line_comment_backslash   => { nil  => [:line_comment            , :line_comment   ]},
@@ -69,6 +68,20 @@ class CppSegmenter4
 		#   !
 		#  <
 
+		#  /
+		# ?? => at EOL, we must set the segment type to :default
+
+		#  "foo"
+		# ?sssss => at EOL, we have to leave the segment type at
+		#           :string_literal, OR we have to write the segment
+		#           when we see the closing quote (this would mean that we
+		#           couldn't write the segment when the type changes, we'd
+		#           probably have to use the state - need a state :nothing?
+		#           Can we always return to a :nothing state?
+		#           Can we fix this by explicitly assigning type :whitespace to
+		#           EOL?
+		#           FIXME
+
 
 		# segment type | type      | meaning                                    | action
 		# unknown      | unknown   | line starts with unknown character         |
@@ -87,7 +100,7 @@ class CppSegmenter4
 			# (can be nil for "unknown")
 			transition=transitions[@state]
 			next_state, character_type = (transition[c] || transition[nil])
-			puts "State #{@state.inspect.color(:yellow)}, input #{c.inspect.color(:magenta)}, next state #{next_state.inspect.color(:yellow)}, type #{character_type.inspect}"
+			#puts "State #{@state.inspect.color(:yellow)}, input #{c.inspect.color(:magenta)}, next state #{next_state.inspect.color(:yellow)}, type #{character_type.inspect}"
 
 			if character_type
 				# The type of the current character is known. If the character
@@ -105,22 +118,17 @@ class CppSegmenter4
 						next_segment_start=pos-unknown_length
 
 						code=line[segment_start...next_segment_start]
-						raise "empty" if code.empty?
-						puts "Add code segment, type #{segment_type.inspect}: #{code.inspect.color(:red)}"
+						#raise "empty" if code.empty?
+						#puts "Add code segment, type #{segment_type.inspect}: #{code.inspect.color(:red)}"
 						result << CodeSegment.new(segment_type, code)
 						segment_start=next_segment_start
-						segment_type=character_type
-					else
-						#puts "Initialize segment type to #{character_type.inspect}"
-						# We don't have a segment type yet, so we'll use this
-						# character's type as segment type. Note that the
-						# segment may already have started on a previous
-						# character if it was unknown.
-						# FIXME this is done for both segment_type and
-						# !segment_type, and if segment_type==character_type,
-						# we can still do it
-						segment_type=character_type
 					end
+
+					# Either this character starts a new segment (segment_type
+					# is valid) or the segment type is unknown (segment_type is
+					# nil). In both cases, set the segment type to the
+					# character type.
+					segment_type=character_type
 
 				else
 					#puts "Segment continued"
@@ -138,22 +146,11 @@ class CppSegmenter4
 			@state=next_state
 		}
 
-		# EOL
-		transition=transitions[@state]
-		next_state, character_type = transition[:eol] || transition[nil]
-
-		# FIXME seems like a kludge
-		# Required for a single / on a line
-		# Always setting it sets a single string literal to "default"
-		segment_type||=character_type
-
 		if segment_start<len
 			code=line[segment_start..-1]
-			puts "Add code segment at EOL, #{segment_type.inspect}: #{code.inspect.color(:red)}"
+			#puts "Add code segment at EOL, #{segment_type.inspect}: #{code.inspect.color(:red)}"
 			result << CodeSegment.new(segment_type, code)
 		end
-
-		@state=next_state
 
 		return result
 	end
