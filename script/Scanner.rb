@@ -19,19 +19,19 @@ class StateActions
 end
 
 class Scanner
-	def initialize(default_state)
+	def initialize(default_state, &proc)
 		@state=nil
 
 		@default_state=default_state
 		@state_actions={}
-		yield self
+		instance_eval(&proc)
 		compile
 		reset
 	end
 
-	def add_state(state)
+	def add_state(state, &block)
 		state_actions=StateActions.new
-		yield state_actions
+		state_actions.instance_eval(&block)
 		@state_actions[state]=state_actions
 	end
 
