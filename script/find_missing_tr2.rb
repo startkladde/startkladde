@@ -52,7 +52,7 @@ def pretty_print(lines)
 		segments.each { |segment|
 			color=colors[segment.type]
 			raise "Unhandled segment type #{segment.type.inspect}" if !color
-			print segment.code.color(color)
+			print segment.code.chomp.color(color)
 		}
 		puts
 	}
