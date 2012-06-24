@@ -29,6 +29,7 @@ class CppScanner <Scanner
 			add_state(:identifier) {
 				on 'a'..'z', :identifier           , :identifier
 				on 'A'..'Z', :identifier           , :identifier
+				on '0'..'9', :identifier           , :identifier
 				on '_'     , :identifier           , :identifier
 				default      :default              , :_ignore   , :reread
 			}

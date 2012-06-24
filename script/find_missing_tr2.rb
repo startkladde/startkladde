@@ -86,6 +86,12 @@ def test_data
 		['foo=t/*.*/r("moo");'            , [false] ], # Not tr
 		['foo=faux/*.*/tr("moo");'        , [true ] ], # Not fauxtr
 		[],
+		# With string concatenation
+		['foo=tr("moo" "bert");'          , [true, true] ],
+		['foo=tr("moo" /* ... */ "bert");', [true, true] ],
+		['foo=tr("moo" // ...'            , [true] ],
+		['    "bert");'                   , [true] ],
+		[],
 		# With two-argument form of tr
 		['foo=tr ("moo", "disambiguation")'       , [true, true] ],
 		['foo=tr ("moo" "bert", "disambiguation")', [true, true, true] ],
@@ -114,9 +120,9 @@ def test_data
 		['"bar");'     , [true ] ], # String on next line
 		[],
 		# Empty strings
-		['a=""'    , [false] ], # Empty string
-		['a=" "'   , [false] ], # Empty string
-		['a="   "' , [false] ], # Empty string
+		['a=""'    , [true] ], # Empty string
+		['a=" "'   , [true] ], # Empty string
+		['a="   "' , [true] ], # Empty string
 		[],
 		# String concatenation
 		['foo=tr ("moo" "bert")'        , [true, true]        ], # String concatenation
@@ -137,7 +143,7 @@ def check_strings(lines_tokens)
 
 	recognizers=[
 		Recognizer.new("include", false, [
-			[:default       , /\#$/     ], # FIXME #$
+			[:default       , /\#$/     ],
 			[:identifier    , "include"],
 			[:string_literal, nil      ]]),
 		Recognizer.new("extern \"C\"", false, [
@@ -159,12 +165,22 @@ def check_strings(lines_tokens)
 			[:string_literal, nil ],
 			[:default       , "," ],
 			[:string_literal, nil ]]),
-		Recognizer.new("Single-argument functions", false, [
-			[:identifier    , /^(notr|qnotr)$/],
+		Recognizer.new("QT_TRANSLATE_NOOP", false, [
+			[:identifier    , /^(QT_TRANSLATE_NOOP|QT_TRANSLATE_NOOP3)$/],
 			[:default       , "(" ],
 			[:string_literal, nil ],
 			[:default       , "," ],
-			[:string_literal, nil ]])]
+			[:string_literal, nil ],
+			[:default       , "," ],
+			[:string_literal, nil ]]),
+		Recognizer.new("Single-argument functions", false, [
+			[:identifier    , /^(notr|qnotr|qnotrUtf8|QDir)$/],
+			[:default       , "(" ],
+			[:string_literal, nil ],
+			[:default       , "," ],
+			[:string_literal, nil ]]),
+		Recognizer.new("Empty strings", false, [
+			[:string_literal, /"\s*"/ ]])]
 
 
 	last_token_was_string=false
@@ -173,7 +189,7 @@ def check_strings(lines_tokens)
 	lines_tokens.each { |tokens|
 		#CppScanner.pretty_print_tokens tokens; puts
 		tokens.each { |token|
-			if token.type==:whitespace
+			if token.type==:whitespace || token.type==:line_comment || token.type==:block_comment
 				# Ignore whitespace
 			else
 				if token.type==:string_literal && last_token_was_string
@@ -219,7 +235,7 @@ def format_single_line(tokens, string_good, chomp)
 	}.join
 end
 
-def print_lines(lines_tokens, string_good, display_all)
+def print_lines(lines_tokens, filename, string_good, display_all)
 	num_lines=lines_tokens.size
 	padwidth=(num_lines+1).to_s.size
 
@@ -231,8 +247,8 @@ def print_lines(lines_tokens, string_good, display_all)
 		}
 
 		if display
-			print (index+1).to_s.ljust(padwidth)
-			print ": "
+			#print (index+1).to_s.ljust(padwidth)
+			print "#{filename}:#{index+1}:"
 			puts format_single_line(tokens, string_good, true)
 		end
 	}
@@ -277,7 +293,7 @@ def perform_unit_tests
 
 end
 
-def check_text(text, print_tokens, print_all)
+def check_text(text, filename, print_tokens, print_all)
 	# Scan the text, produce tokens
 	scanner=CppScanner.new
 	lines_tokens=scanner.scan_lines_token_list(text)
@@ -289,7 +305,7 @@ def check_text(text, print_tokens, print_all)
 	string_good=check_strings(lines_tokens)
 
 	# Print lines (all or bad only)
-	print_lines(lines_tokens, string_good, print_all)
+	print_lines(lines_tokens, filename, string_good, print_all)
 
 end
 
@@ -297,23 +313,27 @@ mode=unit_tests=false
 use_test_data=false
 print_tokens=false
 print_all=false
-filename=nil
+filenames=[]
+auto=false
 
 while arg=ARGV.shift do
 	if    arg=="--test-data" then use_test_data=true
 	elsif arg=="--print-all" then print_all=true
 	elsif arg=="--print-tokens" then print_tokens=true
 	elsif arg=="-t" then unit_tests=true
-	else  filename=arg
+	elsif arg=="-a" then auto=true
+	else  filenames << arg
 	end
 end
 
 error=false
 
-if filename.nil? && !use_test_data && !unit_tests
+if filenames.empty? && !use_test_data && !unit_tests && !auto
 	puts "Usage:"
-	# FIXME better message, allow multiple files, add -a
-	puts "#{$0} [--print-tokens] [--print-all] filename"
+	# FIXME better message
+	# FIXME option to print tokens only for bad lines
+	puts "#{$0} [--print-tokens] [--print-all] files..."
+	puts "#{$0} [--print-tokens] [--print-all] -a (process automatically found files)"
 	puts "#{$0} [--print-tokens] [--print-all] --test-data (use integrated test data)"
 	puts "#{$0} -t (run integrated unit tests)"
 	error=true
@@ -326,10 +346,17 @@ if unit_tests
 else
 	if use_test_data
 		text=test_data.map { |l| l[0] }.join("\n")
+		check_text text, "test-data", print_tokens, print_all
+	elsif auto
+		# FIXME don't shell out, use Ruby methods
+		system("find . -iname \\*.cpp -o -iname \\*.h |grep -v moc_ |grep -v migrations/Migration_ |grep -v ./build/ |grep -v '\\./test/' |xargs #{$0}")
 	else
-		text=File.read(filename)
+		filenames.each { |filename|
+			puts filename
+			text=File.read(filename)
+			check_text text, filename, print_tokens, print_all
+		}
 	end
 
-	check_text text, print_tokens, print_all
 end
 
