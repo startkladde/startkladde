@@ -7,8 +7,8 @@ require 'rainbow'
 
 require 'Scanner'
 
-class CodeSegment
-	attr_accessor :type # :default, :string_literal, :block_comment, :line_comment
+class Token
+	attr_accessor :type
 	attr_accessor :code
 
 	def initialize(type=nil, code="")
@@ -22,20 +22,35 @@ def pretty_print(lines)
 		:default        => :cyan,
 		:string_literal => :yellow,
 		:block_comment  => :green,
-		:line_comment   => :blue
+		:line_comment   => :blue,
+		:identifier     => :red,
+		:whitespace     => :magenta
 	}
 
 	max_line_num=lines.size+1
 	padlength=max_line_num.to_s.length
 
-	lines.each_with_index { |segments, index|
+	lines.each_with_index { |tokens, index|
 		line_number=index+1
 		print "#{line_number.to_s.rjust(padlength)}:"
-		segments.each { |segment|
-			color=colors[segment.type]
-			raise "Unhandled segment type #{segment.type.inspect}" if !color
-			print segment.code.chomp.color(color)
+		tokens.each { |token|
+			type=token.type
+			code=token.code
+
+			color=colors[token.type]
+			raise "Unhandled token type #{token.type.inspect}" if !color
+
+			if type==:whitespace
+				code=code.gsub(' ' , '.')
+				code=code.gsub("\t", '>>>>')
+			end
+
+			code=code.gsub("\n", '<')
+
+			print "|"
+			print code.color(color)
 		}
+		print "|"
 		puts
 	}
 end
@@ -70,7 +85,7 @@ if use_test
 void foo (const char *x="STRING")
 {
   // Simple cases
-  FUNCTION (); FUNCTION (); // COMMENT
+  FUNCTION (); FUNCTION(); // COMMENT
   FUNCTION (); /* COMMENT */ FUNCTION ();
   FUNCTION ("STRING");
   /* Empty comment at end of line */ //
@@ -78,8 +93,11 @@ void foo (const char *x="STRING")
   without (); any ();
   strings_or_comments ();
 
-  // Adjacent segments
+  // Adjacent tokens
+  "STRING" "STRING"
+  /* COMMENT */ /* COMMENT */
   "STRING""STRING"/* COMMENT *//* COMMENT */"STRING"// COMMENT
+  qux=foo+bar-baz;
 
   // String with comment delimiters
   FUNCTION ("before // not a comment, a STRING");
@@ -111,6 +129,7 @@ line continuation";
 line_continuation
 
   single / line / division;
+  / single_line_division /
   multiline
   /
   division;
@@ -137,45 +156,62 @@ begin
 	@scanner=Scanner.new(:default) {
 		# Default
 		add_state(:default) {
-			on '"', :string_literal           , :string_literal
-			on '/', :default_slash            , nil
-			default :default                  , :default
+			on '"'     , :string_literal       , :string_literal
+			on '/'     , :default_slash        , :_unknown
+			on ' '     , :default              , :whitespace
+			on "\t"    , :default              , :whitespace
+			on "\n"    , :default              , :whitespace
+			on 'a'..'z', :identifier           , :identifier
+			on 'A'..'Z', :identifier           , :identifier
+			default :default                   , :default
 		}
 		add_state(:default_slash) {
-			on '/' , :line_comment            , :line_comment
-			on '*' , :block_comment           , :block_comment
-			on "\n", :default                 , :default
-			default  :default                 , :default
+			on '/' , :line_comment             , :line_comment
+			on '*' , :block_comment            , :block_comment
+#			on "\n", :default                  , :whitespace
+#			on ' ' , :default                  , :whitespace
+#			on "\t", :default                  , :whitespace
+			default  :default                  , :default, :reread
+		}
+
+		# Identifier
+		add_state(:identifier) {
+			on 'a'..'z', :identifier, :identifier
+			on 'A'..'Z', :identifier, :identifier
+			on '_'     , :identifier, :identifier
+			default      :default   , :_ignore   , :reread
 		}
 
 		# String literals
 		add_state(:string_literal) {
-			on '"' , :default                 , :string_literal
-			on '\\', :string_literal_backslash, :string_literal
-			default  :string_literal          , :string_literal
+			on '"' , :default                  , :string_literal
+			on '\\', :string_literal_backslash , :_unknown
+			default  :string_literal           , :string_literal
 		}
 		add_state(:string_literal_backslash) {
-			default :string_literal           , :string_literal
+			on "\n", :string_literal           , :whitespace
+			default  :string_literal           , :string_literal
 		}
 
 		# Line comment
 		add_state(:line_comment) {
-			on "\n", :default                 , nil          
-			on '\\', :line_comment_backslash  , :line_comment
-			default  :line_comment            , :line_comment
+			on "\n", :default                  , :whitespace
+			on '\\', :line_comment_backslash   , :_unknown
+			default  :line_comment             , :line_comment
 		}
 		add_state(:line_comment_backslash) {
-			default :line_comment             , :line_comment
+			on "\n", :line_comment             , :whitespace
+			default  :line_comment             , :line_comment
 		}
 
 		# Block comment
 		add_state(:block_comment) {
-			on '*', :block_comment_asterisk   , :block_comment
-			default :block_comment            , :block_comment
+			on '*' , :block_comment_asterisk   , :block_comment
+			default  :block_comment            , :block_comment
 		}
 		add_state(:block_comment_asterisk) {
-			on '/', :default                  , :block_comment
-			default :block_comment            , :block_comment
+			on '/' , :default                  , :block_comment
+			default  :block_comment            , :block_comment
 		}
 	}
 
@@ -184,7 +220,8 @@ begin
 		line_tokens=[]
 
 		@scanner.scan(line) { |token_type, code|
-			line_tokens << CodeSegment.new(token_type, code)
+			puts "Add token #{token_type.inspect}"
+			line_tokens << Token.new(token_type, code)
 		}
 
 		line_tokens
