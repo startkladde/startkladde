@@ -1,19 +1,26 @@
 class StateActions
-	attr_accessor :next_state, :character_type
+	attr_accessor :next_state, :character_type, :reread
 
 	def initialize
 		@next_state={}
 		@character_type={}
+		@reread={}
 	end
 
-	def on(input, next_state, character_type)
-		@next_state    [input]=next_state
-		@character_type[input]=character_type
+	def on(input, next_state, character_type, flags=nil)
+		if input.is_a?(Range)
+			input.each { |char| on char, next_state, character_type }
+		else
+			@next_state    [input]=next_state
+			@character_type[input]=character_type
+			@reread        [input]=(flags==:reread)
+		end
 	end
 
-	def default(next_state, character_type)
+	def default(next_state, character_type, flags=nil)
 		@next_state    .default=next_state
 		@character_type.default=character_type
+		@reread        .default=(flags==:reread)
 	end
 
 end
@@ -55,6 +62,12 @@ class Scanner
 				@state_actions[state].character_type[char.chr]
 			}
 		}
+
+		@reread=@states.map { |state|
+			(0..255).map { |char|
+				@state_actions[state].reread[char.chr]
+			}
+		}
 	end
 
 	def reset
@@ -80,9 +93,18 @@ class Scanner
 			# (can be nil for "unknown")
 			next_state    =@next_state     [@state][c]
 			character_type=@character_type [@state][c]
+			reread        =@reread         [@state][c]
 			#puts "State #{@states[@state].inspect.color(:yellow)}, input #{c.chr.inspect.color(:magenta)}, next state #{@states[next_state].inspect.color(:yellow)}, character type #{character_type.inspect}"
 
-			if character_type
+			if character_type==:_ignore
+				# Ignore the current character
+			elsif character_type==:_unknown
+				# The type of the current character is unknown. There's not a
+				# lot we can do now, so we'll just count the unknown characters
+				# so we can consider them when we get the next known character.
+				unknown_length+=1
+				#puts "Unknown character (#{unknown_length} so far)"
+			else
 				# The type of the current character is known. If the character
 				# type is the same as the token type, we just continue reading.
 				if character_type!=token_type
@@ -113,15 +135,10 @@ class Scanner
 				end
 
 				unknown_length=0
-			else
-				# The type of the current character is unknown. There's not a
-				# lot we can do now, so we'll just count the unknown characters
-				# so we can consider them when we get the next known character.
-				unknown_length+=1
-				#puts "Unknown character (#{unknown_length} so far)"
 			end
-			
+
 			@state=next_state
+			redo if reread
 		}
 
 		if token_start<len
