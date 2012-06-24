@@ -9,7 +9,9 @@ class StateActions
 
 	def on(input, next_state, character_type, flags=nil)
 		if input.is_a?(Range)
-			input.each { |char| on char, next_state, character_type }
+			input.each { |char| on char, next_state, character_type, flags }
+		elsif input.length>1
+			input.each_char { |char| on char, next_state, character_type, flags }
 		else
 			@next_state    [input]=next_state
 			@character_type[input]=character_type
