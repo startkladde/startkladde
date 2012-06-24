@@ -150,5 +150,21 @@ class Scanner
 		end
 	end
 
+	def scan_token_list(string)
+		tokens=[]
+
+		self.scan(string) { |token_type, code|
+			tokens << Token.new(token_type, code)
+		}
+
+		tokens
+	end
+
+	def scan_lines_token_list(string)
+		string.lines.map { |line|
+			scan_token_list(line)
+		}
+	end
+
 end
 
