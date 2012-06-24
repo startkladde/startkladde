@@ -134,48 +134,48 @@ else
 end
 
 begin
-	@scanner=Scanner.new(:default) { |states|
+	@scanner=Scanner.new(:default) {
 		# Default
-		states.add_state(:default) { |state|
-			state.on '"', :string_literal, :string_literal
-			state.on '/', :default_slash , nil
-			state.default :default       , :default
+		add_state(:default) {
+			on '"', :string_literal           , :string_literal
+			on '/', :default_slash            , nil
+			default :default                  , :default
 		}
-		states.add_state(:default_slash) { |state|
-			state.on '/' , :line_comment , :line_comment
-			state.on '*' , :block_comment, :block_comment
-			state.on "\n", :default, :default
-			state.default  :default, :default
+		add_state(:default_slash) {
+			on '/' , :line_comment            , :line_comment
+			on '*' , :block_comment           , :block_comment
+			on "\n", :default                 , :default
+			default  :default                 , :default
 		}
 
 		# String literals
-		states.add_state(:string_literal) { |state|
-			state.on '"' , :default                 , :string_literal
-			state.on '\\', :string_literal_backslash, :string_literal
-			state.default  :string_literal          , :string_literal
+		add_state(:string_literal) {
+			on '"' , :default                 , :string_literal
+			on '\\', :string_literal_backslash, :string_literal
+			default  :string_literal          , :string_literal
 		}
-		states.add_state(:string_literal_backslash) { |state|
-			state.default :string_literal          , :string_literal
+		add_state(:string_literal_backslash) {
+			default :string_literal           , :string_literal
 		}
 
 		# Line comment
-		states.add_state(:line_comment) { |state|
-			state.on "\n", :default                 , nil          
-			state.on '\\', :line_comment_backslash  , :line_comment
-			state.default  :line_comment            , :line_comment
+		add_state(:line_comment) {
+			on "\n", :default                 , nil          
+			on '\\', :line_comment_backslash  , :line_comment
+			default  :line_comment            , :line_comment
 		}
-		states.add_state(:line_comment_backslash) { |state|
-			state.default :line_comment, :line_comment
+		add_state(:line_comment_backslash) {
+			default :line_comment             , :line_comment
 		}
 
 		# Block comment
-		states.add_state(:block_comment) { |state|
-			state.on '*', :block_comment_asterisk  , :block_comment
-			state.default :block_comment           , :block_comment
+		add_state(:block_comment) {
+			on '*', :block_comment_asterisk   , :block_comment
+			default :block_comment            , :block_comment
 		}
-		states.add_state(:block_comment_asterisk) { |state|
-			state.on '/', :default                 , :block_comment
-			state.default :block_comment           , :block_comment
+		add_state(:block_comment_asterisk) {
+			on '/', :default                  , :block_comment
+			default :block_comment            , :block_comment
 		}
 	}
 
@@ -192,11 +192,4 @@ begin
 #ensure
 	pretty_print lines_tokens if print
 end
-
-# FIXME handle unterminated things
-#scan_cpp "// Unterminated line comment", true
-#scan_cpp "/* Unterminated block comment", true
-#scan_cpp "\"Unterminated string", true
-
-
 
