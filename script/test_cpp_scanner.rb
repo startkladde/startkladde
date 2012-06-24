@@ -1,21 +1,18 @@
 #!/usr/bin/env ruby
 
+# FIXME for strings and block comments, the token should always end at the
+# closing character, even if a token of the same type starts immediately
+# after. For example, /* foo *//* bar */ should be two tokens. Currently, we
+# start a new token when the type changes. We either have to force a new token
+# at the closing character or use a different criterion.
+
 $: << File.dirname($0)
 
 require 'rubygems'
 require 'rainbow'
 
-require 'Scanner'
-
-class Token
-	attr_accessor :type
-	attr_accessor :code
-
-	def initialize(type=nil, code="")
-		@type=type
-		@code=code
-	end
-end
+require 'cpp_scanner'
+require 'token'
 
 def pretty_print(lines)
 	colors = {
@@ -148,79 +145,28 @@ operator
 }
 // Comment at the beginning of a line
 EOF
+
+# For unit testing:
+#def t(*args)
+#	Token.new(*args)
+#end
+#lines=[]
+#lines << ["foo ();", [t(:identifier, "foo"), t(:whitespace, " "), t(:default, "();"), t(:whitespace, "\n")]]
+#text=lines.map { |line| line[0] }.join
+
 else
 	text=File.read(filename)
 end
 
 begin
-	@scanner=Scanner.new(:default) {
-		# Default
-		add_state(:default) {
-			on '"'     , :string_literal       , :string_literal
-			on '/'     , :default_slash        , :_unknown
-			on ' '     , :default              , :whitespace
-			on "\t"    , :default              , :whitespace
-			on "\n"    , :default              , :whitespace
-			on 'a'..'z', :identifier           , :identifier
-			on 'A'..'Z', :identifier           , :identifier
-			default :default                   , :default
-		}
-		add_state(:default_slash) {
-			on '/' , :line_comment             , :line_comment
-			on '*' , :block_comment            , :block_comment
-#			on "\n", :default                  , :whitespace
-#			on ' ' , :default                  , :whitespace
-#			on "\t", :default                  , :whitespace
-			default  :default                  , :default, :reread
-		}
-
-		# Identifier
-		add_state(:identifier) {
-			on 'a'..'z', :identifier, :identifier
-			on 'A'..'Z', :identifier, :identifier
-			on '_'     , :identifier, :identifier
-			default      :default   , :_ignore   , :reread
-		}
-
-		# String literals
-		add_state(:string_literal) {
-			on '"' , :default                  , :string_literal
-			on '\\', :string_literal_backslash , :_unknown
-			default  :string_literal           , :string_literal
-		}
-		add_state(:string_literal_backslash) {
-			on "\n", :string_literal           , :whitespace
-			default  :string_literal           , :string_literal
-		}
-
-		# Line comment
-		add_state(:line_comment) {
-			on "\n", :default                  , :whitespace
-			on '\\', :line_comment_backslash   , :_unknown
-			default  :line_comment             , :line_comment
-		}
-		add_state(:line_comment_backslash) {
-			on "\n", :line_comment             , :whitespace
-			default  :line_comment             , :line_comment
-		}
-
-		# Block comment
-		add_state(:block_comment) {
-			on '*' , :block_comment_asterisk   , :block_comment
-			default  :block_comment            , :block_comment
-		}
-		add_state(:block_comment_asterisk) {
-			on '/' , :default                  , :block_comment
-			default  :block_comment            , :block_comment
-		}
-	}
+	@scanner=CppScanner.new
 
 
 	lines_tokens=text.lines.map { |line|
 		line_tokens=[]
 
 		@scanner.scan(line) { |token_type, code|
-			puts "Add token #{token_type.inspect}"
+			#puts "Add token #{token_type.inspect}"
 			line_tokens << Token.new(token_type, code)
 		}
 
