@@ -7,6 +7,12 @@ require 'token'
 # start a new token when the type changes. We either have to force a new token
 # at the closing character or use a different criterion.
 
+# A subclass of Scanner, implementing rules for rudimentary C++ scanning
+#
+# This class mainly passes the state machine definition to the Scanner
+# constructor.
+#
+# It also defines some utility methods for formating strings.
 class CppScanner <Scanner
 	def initialize
 		super(:default) {
@@ -68,7 +74,15 @@ class CppScanner <Scanner
 		}
 	end
 
-	def self.pretty_print_token(token)
+	# Formats a token for display
+	#
+	# The token is colorized according to its type. Additionally, the following
+	# replacements are performed:
+	#   * a space is replaced with '.' (only in whitespace tokens)
+	#   * a tab is replaced with '>>>>' (only in whitespace tokens)
+	#   * a newline is replaced with '<' (in all tokens, even in string
+	#     literals)
+	def self.format_token(token)
 		colors = {
 			:default        => :cyan,
 			:string_literal => :yellow,
@@ -93,14 +107,18 @@ class CppScanner <Scanner
 		code.color(color)
 	end
 
-	def self.pretty_print_tokens(tokens)
-		tokens.each { |token|
-			print "|"
-			print pretty_print_token(token)
-		}
-		print "|"
+	# Formats a list of tokens for display
+	#
+	# The tokens are formatted individually using the format_token method and
+	# concatenated, separated by a pipe character ('|').
+	def self.format_tokens(tokens)
+		"|"+tokens.map { |token|
+			format_token(token)
+		}.join("|")+"|"
 	end
 
+	# Prints a formatted list of lines (token lists)
+	#
 	def self.pretty_print_lines_tokens(lines_tokens)
 		max_line_num=lines_tokens.size+1
 		padlength=max_line_num.to_s.length
@@ -108,8 +126,7 @@ class CppScanner <Scanner
 		lines_tokens.each_with_index { |tokens, index|
 			line_number=index+1
 			print "#{line_number.to_s.rjust(padlength)}:"
-			pretty_print_tokens(tokens)
-			puts
+			puts format_tokens(tokens)
 		}
 	end
 end
