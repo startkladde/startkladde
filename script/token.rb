@@ -6,6 +6,16 @@ class Token
 		@type=type
 		@code=code
 	end
+
+	def match?(type, code=nil)
+		if code.nil?
+			@type==type
+		elsif code.is_a?(Regexp)
+			@type==type && @code =~ code
+		else
+			@type==type && @code==code
+		end
+	end
 end
 
 

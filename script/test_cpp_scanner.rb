@@ -1,10 +1,5 @@
 #!/usr/bin/env ruby
 
-# FIXME for strings and block comments, the token should always end at the
-# closing character, even if a token of the same type starts immediately
-# after. For example, /* foo *//* bar */ should be two tokens. Currently, we
-# start a new token when the type changes. We either have to force a new token
-# at the closing character or use a different criterion.
 
 $: << File.dirname($0)
 
@@ -14,69 +9,15 @@ require 'rainbow'
 require 'cpp_scanner'
 require 'token'
 
-def pretty_print(lines)
-	colors = {
-		:default        => :cyan,
-		:string_literal => :yellow,
-		:block_comment  => :green,
-		:line_comment   => :blue,
-		:identifier     => :red,
-		:whitespace     => :magenta
-	}
-
-	max_line_num=lines.size+1
-	padlength=max_line_num.to_s.length
-
-	lines.each_with_index { |tokens, index|
-		line_number=index+1
-		print "#{line_number.to_s.rjust(padlength)}:"
-		tokens.each { |token|
-			type=token.type
-			code=token.code
-
-			color=colors[token.type]
-			raise "Unhandled token type #{token.type.inspect}" if !color
-
-			if type==:whitespace
-				code=code.gsub(' ' , '.')
-				code=code.gsub("\t", '>>>>')
-			end
-
-			code=code.gsub("\n", '<')
-
-			print "|"
-			print code.color(color)
-		}
-		print "|"
-		puts
-	}
-end
-
-use_test=false
-print=false
-filename=nil
-
-while arg=ARGV.shift do
-	if    arg=="-t" then use_test=true
-	elsif arg=="-p" then print=true
-	else  filename=arg
-	end
-end
-
-error=false
-
-if filename.nil? && !use_test
-	puts "Specify a file name or -t for test text"
-	error=true
-end
-
-exit 1 if error
-
-if use_test
-	# TODO test cases:
-	#  single / at SOL
-	#  single / at EOL
-	text=<<EOF
+# For unit testing:
+#def t(*args)
+#	Token.new(*args)
+#end
+#lines=[]
+#lines << ["foo ();", [t(:identifier, "foo"), t(:whitespace, " "), t(:default, "();"), t(:whitespace, "\n")]]
+#text=lines.map { |line| line[0] }.join
+def test_data
+	<<EOF
 // Comment at the beginning
 
 void foo (const char *x="STRING")
@@ -145,34 +86,43 @@ operator
 }
 // Comment at the beginning of a line
 EOF
+end
 
-# For unit testing:
-#def t(*args)
-#	Token.new(*args)
-#end
-#lines=[]
-#lines << ["foo ();", [t(:identifier, "foo"), t(:whitespace, " "), t(:default, "();"), t(:whitespace, "\n")]]
-#text=lines.map { |line| line[0] }.join
+use_test_data=false
+print=false
+filename=nil
 
+while arg=ARGV.shift do
+	if    arg=="-t" then use_test_data=true
+	elsif arg=="-p" then print=true
+	else  filename=arg
+	end
+end
+
+error=false
+
+if filename.nil? && !use_test_data
+	puts "Specify a file name or -t for a test text"
+	error=true
+end
+
+exit 1 if error
+
+if use_test_data
+	text=test_data
 else
 	text=File.read(filename)
 end
 
 begin
-	@scanner=CppScanner.new
+	scanner=CppScanner.new
 
+	lines_tokens=scanner.scan_lines_token_list(text)
 
-	lines_tokens=text.lines.map { |line|
-		line_tokens=[]
-
-		@scanner.scan(line) { |token_type, code|
-			#puts "Add token #{token_type.inspect}"
-			line_tokens << Token.new(token_type, code)
-		}
-
-		line_tokens
-	}
-#ensure
-	pretty_print lines_tokens if print
+	if print
+		CppScanner.pretty_print_lines_tokens lines_tokens
+	else
+		puts "#{lines_tokens.size} lines processed (-p to print)"
+	end
 end
 
