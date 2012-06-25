@@ -3,8 +3,12 @@
 
 #include <QObject>
 
+class QTimer;
+
 class DataStream: public QObject
 {
+		Q_OBJECT
+
 	public:
 		enum ConnectionState
 		{
@@ -43,6 +47,36 @@ class DataStream: public QObject
 
 		DataStream ();
 		virtual ~DataStream ();
+
+		virtual void open ();
+		virtual void close ();
+
+		State getState ();
+
+	signals:
+		void stateChanged (DataStream::State state);
+		void lineReceived (const QString &line);
+
+	protected:
+		virtual void openImplementation ()=0;
+		virtual void closeImplementation ()=0;
+
+		virtual void dataReceived ();
+		virtual void connectionEstablished ();
+		virtual void connectionLost ();
+		virtual void connectionOpening ();
+		virtual void connectionClosed ();
+
+	private:
+	    QTimer *dataTimer;
+	    QTimer *reconnectTimer;
+
+	    State state;
+
+	private slots:
+		void dataTimerTimeout ();
+		void reconnectTimerTimeout ();
+
 };
 
 #endif

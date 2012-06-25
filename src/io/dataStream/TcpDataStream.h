@@ -6,7 +6,6 @@
 #include "src/io/dataStream/DataStream.h"
 
 class QTcpSocket;
-class QTimer;
 
 class TcpDataStream: public DataStream
 {
@@ -20,35 +19,20 @@ class TcpDataStream: public DataStream
 		void setPort (const uint16_t port);
 		void setTarget (const QString &host, const uint16_t port);
 
-		void open ();
-		void close ();
-
-		State getState ();
-
-	signals:
-		void stateChanged (DataStream::State state);
-		void lineReceived (const QString &line);
-
 	protected:
-		void openSocket ();
-		void closeSocket ();
+		void openImplementation ();
+		void closeImplementation ();
 
 	private:
 		QString host;
 		uint16_t port;
 
-	    QTcpSocket* socket;
-	    QTimer *dataTimer;
-	    QTimer *reconnectTimer;
-
-	    State state;
+	    QTcpSocket *socket;
 
 	private slots:
-    	void dataReceived ();
+    	void socketDataReceived ();
 		void socketStateChanged (QAbstractSocket::SocketState socketState);
 		void socketError (QAbstractSocket::SocketError error);
-		void dataTimerTimeout ();
-		void reconnectTimerTimeout ();
 };
 
 #endif
