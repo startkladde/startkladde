@@ -41,6 +41,7 @@
 
 #include "src/db/DbManager.h"
 #include "src/flarm/FlarmHandler.h"
+#include "src/io/dataStream/TcpDataStream.h"
 #include "src/gui/SkMainWindow.h"
 
 class QWidget;
@@ -126,7 +127,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 	protected slots:
 		void databaseError (int number, QString message);
 		void databaseStateChanged (DbManager::State state);
-		void onFlarmConnectionStateChanged (FlarmHandler::ConnectionState);
+		void onFlarmConnectionStateChanged (TcpDataStream::State state);
 		void readTimeout ();
 		void readResumed ();
 

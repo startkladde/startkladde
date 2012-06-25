@@ -21,6 +21,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses.
  */
+
+#include "FlarmHandler.h"
+
 #include <QtCore/QTime>
 #include <QtCore/QMultiMap>
 #include <QtCore/QStringList>
@@ -28,70 +31,99 @@
 
 #include "src/config/Settings.h"
 #include "src/model/Plane.h"
-#include "FlarmHandler.h"
+#include "src/io/dataStream/TcpDataStream.h"
+#include "src/flarm/Nmea.h"
+
+
+// ****************************
+// ** Construction/singleton **
+// ****************************
 
 FlarmHandler* FlarmHandler::instance = NULL;
 
-FlarmHandler::FlarmHandler (QObject* parent) 
-  :QObject (parent)
+FlarmHandler::FlarmHandler (QObject* parent): QObject (parent),
+	regMap (new QMap<QString, FlarmRecord *> ()),
+	trace (NULL), stream (NULL),
+	enabled (false)
 {
-        regMap = NULL;
-        flarmDevice = new QTcpSocket (this);
-        // force to emit signal
-        connectionState = connectedNoData;
-        setConnectionState (notConnected);
-        flarmDataTimer = new QTimer (this);
-        flarmDeviceTimer = new QTimer (this);
-        refreshTimer = new QTimer (this);
-        connect (flarmDataTimer, SIGNAL(timeout()), this, SLOT(flarmDataTimeout()));
-        connect (flarmDeviceTimer, SIGNAL(timeout()), this, SLOT(flarmDeviceTimeout()));
-        connect (refreshTimer, SIGNAL(timeout()), this, SIGNAL(statusChanged()));
-        connect (flarmDevice, SIGNAL(readyRead()), this, SLOT(dataReceived()));
-        connect (flarmDevice, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(socketException(QAbstractSocket::SocketError)));
-        connect (flarmDevice, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(socketStateChanged(QAbstractSocket::SocketState)));
+	dataStream=new TcpDataStream ();
 
-        regMap = new QMultiMap <QString, FlarmRecord*> ();
+	refreshTimer = new QTimer (this);
+	connect (refreshTimer, SIGNAL (timeout ()), this, SIGNAL (statusChanged ()));
 
-        enabled = false;
-        setEnabled (Settings::instance().flarmEnabled);
+	// TODO test if required
+//	connect (dataStream, SIGNAL (connectionStateChanged (TcpDataStream::ConnectionState)),
+//			this, SIGNAL (connectionStateChanged (TcpDataStream::ConnectionState)));
+	connect (dataStream, SIGNAL (stateChanged (TcpDataStream::State)), this, SIGNAL (connectionStateChanged (TcpDataStream::State)));
+	connect (dataStream, SIGNAL (lineReceived (const QString &)), this, SLOT   (processFlarm (const QString &)));
 
-	QDate today (QDate::currentDate());
-	QString filename = QString ("/var/log/startkladde/startkladde-%1.trc").arg(today.toString("yyyyMMdd"));
-	trace = new QFile (filename, this);
-	trace->open (QIODevice::Append);
-	stream = new QTextStream (trace);
+
+
+//	QDate today (QDate::currentDate());
+//	QString filename = QString ("/var/log/startkladde/startkladde-%1.trc").arg(today.toString("yyyyMMdd"));
+//	trace = new QFile (filename, this);
+//	trace->open (QIODevice::Append);
+//	stream = new QTextStream (trace);
 }
 
-FlarmHandler::~FlarmHandler () {
-        trace->close();
-        delete regMap;
-        delete instance;
+FlarmHandler::~FlarmHandler ()
+{
+	delete dataStream;
+	if (trace) trace->close();
+	delete trace;
+	delete stream;
+	// FIXME delete trace
 }
+
+FlarmHandler* FlarmHandler::getInstance ()
+{
+	if (!instance)
+		instance = new FlarmHandler (NULL);
+        return instance;
+}
+
+
+// ****************
+// ** Properties **
+// ****************
+
+void FlarmHandler::setDatabase (DbManager *db)
+{
+	dbManager = db;
+}
+
+
+// *****************
+// ** Data stream **
+// *****************
+
+TcpDataStream::State FlarmHandler::getConnectionState ()
+{
+	return dataStream->getState ();
+}
+
+
+// **********
+// ** Misc **
+// **********
 
 void FlarmHandler::setEnabled (bool e) {
         if (e != enabled) {
                 enabled = e;
                 if (enabled)
                 {
+                	dataStream->open ();
         	        // initialize Flarm TcpPort
-        	        QTimer::singleShot (0, this, SLOT(initFlarmDevice()));
         	        refreshTimer->start (5000);
                 }
-                else {
-                        flarmDevice->close();
-                        refreshTimer->stop();
-                        flarmDeviceTimer->stop();
-                        flarmDataTimer->stop();
-                        setConnectionState (notConnected);
+                else
+                {
+                	dataStream->close ();
+                	refreshTimer->stop();
                 }
         }
 }
 
-FlarmHandler* FlarmHandler::getInstance () {
-        if (instance == NULL)
-                instance = new FlarmHandler (NULL);
-        return instance;
-}
 
 QString FlarmHandler::flightActionToString (FlarmHandler::FlightAction action) {
         switch (action)
@@ -104,10 +136,6 @@ QString FlarmHandler::flightActionToString (FlarmHandler::FlightAction action) {
                         return tr ("go around");
         }
         return "";
-}
-
-void FlarmHandler::setDatabase (DbManager* db) {
-        dbManager = db;
 }
 
 double FlarmHandler::calcLat (const QString& lat, const QString& ns) {
@@ -136,134 +164,19 @@ void FlarmHandler::updateList (const Plane& plane) {
         }
 }
 
-void FlarmHandler::socketStateChanged (QAbstractSocket::SocketState socketState) {
-        if (socketState == QAbstractSocket::ConnectedState)
-                setConnectionState (connectedNoData);
-        else
-                setConnectionState (notConnected);
-}
-
-void FlarmHandler::setConnectionState (ConnectionState state) {
-        if (state != connectionState) {
-                connectionState = state;
-                emit connectionStateChanged (state);
-        }
-}
-
-FlarmHandler::ConnectionState FlarmHandler::getConnectionState () {
-        return connectionState;
-}
 
 QDateTime FlarmHandler::getGPSTime () {
         return gpsTime;
 }
-        
-void FlarmHandler::initFlarmDevice () {
-	// will be set on first sentence
-	setConnectionState (notConnected);
-	
-	//qDebug () << "FlarmHandler::initFlarmDevice: " << endl;
-
-	if (flarmDevice->state() == QAbstractSocket::ConnectedState) {
-		qDebug () << "FlarmSocket is connected" << endl;
-		// stop the timer. As long as no exception, no timer.
-		flarmDeviceTimer->stop ();
-		return;
-	}
- 	else if (flarmDevice->state() == QAbstractSocket::ConnectingState) {
- 	        // this does not seem to happen
-		qDebug () << "FlarmSocket is connecting" << endl;
-		flarmDeviceTimer->stop ();
-		flarmDevice->abort ();
-		return;
- 	}
- 	else
- 	        //qDebug() << "state: " << flarmDevice->state() << endl;
-	
-        //qDebug () << "try to connect flarm socket" << endl;
-	flarmDevice->connectToHost ("localhost", 4711, QIODevice::ReadOnly);
-	flarmDataTimer->start (2000);
-}
-
-void FlarmHandler::dataReceived () {
-	//qDebug () << "dataReceived" << endl;
-	setConnectionState (connectedData);
-	flarmDataTimer->start(2000);
-	while (flarmDevice->canReadLine()) {
-		QString line = flarmDevice->readLine ();
-		// qDebug () << "line: " << line << endl;
-		processFlarm (line);
-	}
-}
-
-void FlarmHandler::socketException (QAbstractSocket::SocketError socketError) {
-        Q_UNUSED(socketError)
-	qDebug () << "socketException: " << socketError << endl;
-	flarmDevice->abort();
-	setConnectionState (notConnected);
-	flarmDeviceTimer->start (5000);
-	flarmDataTimer->stop ();
-}
-
-void FlarmHandler::flarmDataTimeout () {
-	qDebug () << "FlarmHandler::flarmDataTimeout" << endl;
-	setConnectionState (connectedNoData);
-	// if no data, most likely the socket is down. Give it enough time to recover     
-	flarmDataTimer->start(6000);
-}
-
-void FlarmHandler::flarmDeviceTimeout () {
-	qDebug () << "FlarmHandler::flarmDeviceTimeout" << endl;
-        // do not start timer; initFlarmSocket will take care   
-	initFlarmDevice ();
-}
-
-/** This function calculates the checksum in the sentence.
-   
-   NMEA-0183 Standard
-   The optional checksum field consists of a "*" and two hex digits
-   representing the exclusive OR of all characters between, but not
-   including, the "$" and "*".  A checksum is required on some sentences.
-*/
-uint FlarmHandler::calcCheckSum (const QString& sentence)  
-{
-        uchar sum = 0;
-        uchar len = sentence.length();
-
-        for( int i=1; i < len; i++ )
-        {
-                uchar c = (sentence[i]).toAscii();
-
-                if( c == '$' ) // Start sign will not be considered
-                        continue;
-
-                if( c == '*' ) // End of sentence reached
-                        break;
-                                             
-                sum ^= c;
-        }
-
-        return sum;
-}
-
-/** This function checks if the checksum in the sentence matches the sentence. It returns true if it matches, and false otherwise. */
-bool FlarmHandler::checkCheckSum(const QString& sentence)
-{
-        QStringList list = sentence.split ('*');
-        if (list.length() > 1) {
-                uchar check = (uchar) list[1].trimmed().toUShort(0, 16);
-                return (check == calcCheckSum (list[0]));
-        }
-        else
-                return false;
-}
 
 void FlarmHandler::processFlarm (const QString& line) {
-        if (!checkCheckSum (line)) {
+//	qDebug () << "Flarm handler: process sentence " << line;
+
+        if (!Nmea::verifyChecksum (line)) {
                 //qDebug () << "Checksum failed: " << line << endl; 
                 return;
         }
-        *stream << line;
+        if (stream) *stream << line;
 	QStringList list = line.split (',');
 	QString sentence = list [0];
 	if (sentence == "$PFLAA") {
@@ -551,3 +464,4 @@ void FlarmHandler::landingTimeout () {
                 }
         }
 }
+

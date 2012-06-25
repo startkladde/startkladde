@@ -107,6 +107,12 @@ MainWindow::MainWindow (QWidget *parent):
 	ui.menuDatabase->addSeparator ();
 	ui.menuDatabase->addAction (logAction);
 
+	// Flarm
+	FlarmHandler *flarmHandler = FlarmHandler::getInstance ();
+	flarmHandler->setDatabase (&dbManager);
+	connect (flarmHandler, SIGNAL (actionDetected(const QString&,FlarmHandler::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmHandler::FlightAction)));
+	connect (flarmHandler, SIGNAL (connectionStateChanged (TcpDataStream::State)), this, SLOT (onFlarmConnectionStateChanged (TcpDataStream::State)));
+
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 	readSettings ();
 	// This also calls setupText
@@ -212,11 +218,7 @@ MainWindow::MainWindow (QWidget *parent):
 	connect (&dbManager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 	databaseStateChanged (dbManager.getState ());
 	
-	// Flarm
-	FlarmHandler *flarmHandler = FlarmHandler::getInstance ();
-	flarmHandler->setDatabase (&dbManager);
-	connect (flarmHandler, SIGNAL (actionDetected(const QString&,FlarmHandler::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmHandler::FlightAction)));
-	connect (flarmHandler, SIGNAL (connectionStateChanged(FlarmHandler::ConnectionState)), this, SLOT (onFlarmConnectionStateChanged(FlarmHandler::ConnectionState)));
+
 }
 
 MainWindow::~MainWindow ()
@@ -1867,19 +1869,35 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 	}
 }
 
-void MainWindow::onFlarmConnectionStateChanged (FlarmHandler::ConnectionState state) {
-	switch (state)
+void MainWindow::onFlarmConnectionStateChanged (TcpDataStream::State state)
+{
+	// FIXME proper messages, and a way to output all state information
+	if (state.isOpen ())
 	{
-		case FlarmHandler::notConnected:
-			ui.flarmStateLabel->setText (tr ("Flarm not connected"));
-			break;
-		case FlarmHandler::connectedNoData:
-			ui.flarmStateLabel->setText (tr ("No Flarm data"));
-			break;
-		case FlarmHandler::connectedData:
-			ui.flarmStateLabel->setText (tr ("Flarm data ok"));
-			break;
+		switch (state.getConnectionState ())
+		{
+			case TcpDataStream::notConnected:
+				ui.flarmStateLabel->setText (tr ("No connection"));
+				break;
+			case TcpDataStream::connecting:
+				ui.flarmStateLabel->setText (tr ("Connecting to Flarm"));
+				break;
+			case TcpDataStream::connected:
+				if (state.getDataTimeout ())
+					ui.flarmStateLabel->setText (tr ("No Flarm data"));
+				else if (!state.getDataReceived ())
+					ui.flarmStateLabel->setText (tr ("Connected to Flarm"));
+				else
+					ui.flarmStateLabel->setText (tr ("Data OK"));
+				break;
+		}
 	}
+	else
+	{
+		ui.flarmStateLabel->setText (tr ("Not connected to Flarm"));
+	}
+
+	// FIXME handle timeout and datareceived
 }
 
 // ***************************
@@ -2014,10 +2032,12 @@ void MainWindow::on_actionSetGPSTime_triggered ()
 {
         qDebug () << "MainWindow::on_actionSetGPSTime_triggered" << endl;
         FlarmHandler* flarmHandler = FlarmHandler::getInstance();
-        if (flarmHandler->getConnectionState() != FlarmHandler::connectedData) {
-                QMessageBox::warning (this, tr("No GPS signal"), tr("Flarm does not send data"));
-                return;
-        }
+        // FIXME the data stream should be external to the flarm handler
+        // FIXME enable
+//        if (flarmHandler->getConnectionState() != TcpDataStream::connectedData) {
+//                QMessageBox::warning (this, tr("No GPS signal"), tr("Flarm does not send data"));
+//                return;
+//        }
         QDateTime current (QDateTime::currentDateTimeUtc ());
         QDateTime currentGPSdateTime = flarmHandler->getGPSTime ();
         qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy")) << endl;

@@ -11,12 +11,13 @@
 #include "src/db/DbManager.h"
 #include "src/model/Plane.h"
 
+#include "src/io/dataStream/TcpDataStream.h"
+
 class FlarmHandler: public QObject {
 
   Q_OBJECT
 
   public:
-    enum ConnectionState {notConnected, connectedNoData, connectedData};
     enum FlightAction {departure, landing, goAround};
     static FlarmHandler* getInstance ();
     static QString flightActionToString (FlarmHandler::FlightAction action); 
@@ -26,17 +27,14 @@ class FlarmHandler: public QObject {
     void updateList (const Plane&);
     void setDatabase (DbManager*);
     void setEnabled (bool);
-    ConnectionState getConnectionState ();
+    TcpDataStream::State getConnectionState ();
     QDateTime getGPSTime ();
     
   private:
     FlarmHandler (QObject* parent);
-    QTcpSocket* flarmDevice;
-    QTimer* flarmDataTimer;
-    QTimer* flarmDeviceTimer;
+    TcpDataStream *dataStream;
     QTimer* refreshTimer;
-    ConnectionState connectionState;
-    QMap<QString,FlarmRecord*>* regMap;
+    QMap<QString, FlarmRecord *> *regMap;
     DbManager *dbManager;
     QFile* trace;
     QTextStream* stream;
@@ -44,26 +42,19 @@ class FlarmHandler: public QObject {
     QDateTime gpsTime;
     bool enabled;
 
-    void processFlarm (const QString& line);
-    uint calcCheckSum(const QString&);
-    bool checkCheckSum(const QString&);
     double calcLat (const QString& lat, const QString& ns);
     double calcLon (const QString& lon, const QString& ew);
-    void setConnectionState (ConnectionState);
 
   private slots:
-    void initFlarmDevice();
-    void dataReceived ();
-    void socketException (QAbstractSocket::SocketError socketError);
-    void socketStateChanged(QAbstractSocket::SocketState);
-    void flarmDataTimeout (); 
-    void flarmDeviceTimeout ();
+  void processFlarm (const QString &line);
     void keepAliveTimeout ();
     void landingTimeout ();
 
-  signals:
+    signals:
+    //    	void connectionStateChanged (TcpDataStream::ConnectionState);
+       	void connectionStateChanged (TcpDataStream::State state);
+
     void actionDetected (const QString& id, FlarmHandler::FlightAction);
-    void connectionStateChanged (FlarmHandler::ConnectionState);
     void statusChanged ();
     void homePosition (const QPointF&);
 };
