@@ -40,7 +40,7 @@
 #include "ui_MainWindow.h"
 
 #include "src/db/DbManager.h"
-#include "src/flarm/FlarmHandler.h"
+#include "src/flarm/FlarmHandler.h" // FIXME remove?
 #include "src/io/dataStream/TcpDataStream.h"
 #include "src/gui/SkMainWindow.h"
 
@@ -57,6 +57,7 @@ class FlightModel;
 class FlightProxyList;
 class FlightWindow;
 template<class T> class ObjectListModel;
+class FlarmHandler;
 
 /*
  * Notes:
@@ -127,7 +128,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 	protected slots:
 		void databaseError (int number, QString message);
 		void databaseStateChanged (DbManager::State state);
-		void onFlarmConnectionStateChanged (TcpDataStream::State state);
+		void flarmStream_stateChanged (DataStream::State state);
 		void readTimeout ();
 		void readResumed ();
 
@@ -190,6 +191,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void on_actionFlarmRadar_triggered ();
 		void on_actionFlarmNetImport_triggered ();
 		void on_actionFlarmNetOverview_triggered ();
+		void on_connectFlarmAction_triggered ();
 
 		// Menu: Database
 		void on_actionConnect_triggered ();
@@ -290,6 +292,9 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 
 		/** Whether the font was set explicitly */
 		bool fontSet;
+
+		TcpDataStream *flarmStream;
+		FlarmHandler *flarmHandler;
 
 };
 

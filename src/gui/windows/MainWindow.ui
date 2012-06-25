@@ -265,9 +265,6 @@
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
-      <attribute name="horizontalHeaderHighlightSections">
-       <bool>false</bool>
-      </attribute>
      </widget>
     </item>
     <item>
@@ -374,7 +371,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -496,6 +493,8 @@
     <addaction name="separator"/>
     <addaction name="actionFlarmNetImport"/>
     <addaction name="actionFlarmNetOverview"/>
+    <addaction name="separator"/>
+    <addaction name="connectFlarmAction"/>
    </widget>
    <addaction name="menuProgram"/>
    <addaction name="menuFlight"/>
@@ -921,6 +920,17 @@
   <action name="actionFlarmNetOverview">
    <property name="text">
     <string>FlarmNet &amp;Overview</string>
+   </property>
+  </action>
+  <action name="connectFlarmAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Connect</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
    </property>
   </action>
  </widget>

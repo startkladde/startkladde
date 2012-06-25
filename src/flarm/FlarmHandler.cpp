@@ -46,17 +46,8 @@ FlarmHandler::FlarmHandler (QObject* parent): QObject (parent),
 	trace (NULL), stream (NULL),
 	enabled (false)
 {
-	dataStream=new TcpDataStream ();
-
 	refreshTimer = new QTimer (this);
 	connect (refreshTimer, SIGNAL (timeout ()), this, SIGNAL (statusChanged ()));
-
-	// TODO test if required
-//	connect (dataStream, SIGNAL (connectionStateChanged (TcpDataStream::ConnectionState)),
-//			this, SIGNAL (connectionStateChanged (TcpDataStream::ConnectionState)));
-	connect (dataStream, SIGNAL (stateChanged (TcpDataStream::State)), this, SIGNAL (connectionStateChanged (TcpDataStream::State)));
-	connect (dataStream, SIGNAL (lineReceived (const QString &)), this, SLOT   (processFlarm (const QString &)));
-
 
 
 //	QDate today (QDate::currentDate());
@@ -68,7 +59,6 @@ FlarmHandler::FlarmHandler (QObject* parent): QObject (parent),
 
 FlarmHandler::~FlarmHandler ()
 {
-	delete dataStream;
 	if (trace) trace->close();
 	delete trace;
 	delete stream;
@@ -93,16 +83,6 @@ void FlarmHandler::setDatabase (DbManager *db)
 }
 
 
-// *****************
-// ** Data stream **
-// *****************
-
-TcpDataStream::State FlarmHandler::getConnectionState ()
-{
-	return dataStream->getState ();
-}
-
-
 // **********
 // ** Misc **
 // **********
@@ -112,13 +92,11 @@ void FlarmHandler::setEnabled (bool e) {
                 enabled = e;
                 if (enabled)
                 {
-                	dataStream->open ();
         	        // initialize Flarm TcpPort
         	        refreshTimer->start (5000);
                 }
                 else
                 {
-                	dataStream->close ();
                 	refreshTimer->stop();
                 }
         }
@@ -266,7 +244,7 @@ void FlarmHandler::processFlarm (const QString& line) {
 		                // should not happen. Plane was on ground before, now flying?
 		                // ignore event? 
 			        if (record->landingTimer->isActive()) {
-        			        qCritical () << "unexpected go around1: " << flarmid << endl;
+        			        qCritical () << "unexpected go around1: " << flarmid;
                                 	record->setState (FlarmRecord::stateFlying);
                                 	record->landingTimer->stop();
                                 	if (record->category == Plane::categoryMotorglider)
@@ -275,24 +253,24 @@ void FlarmHandler::processFlarm (const QString& line) {
                                                 qCritical () << "unexpected goaround of glider?" << endl;
 			        }
 			        else {
-                        	        qCritical () << "unexpected start: " << flarmid << endl;
+                        	        qCritical () << "unexpected start: " << flarmid;
                         	        record->setState (FlarmRecord::stateFlying);
                         	        emit actionDetected (flarmid, FlarmHandler::departure);
                         	}
                         	break;
 			case FlarmRecord::eventLow:
 			        if (record->landingTimer->isActive()) {
-        			        qDebug () << "go around2: " << flarmid << endl;
+        			        qDebug () << "go around2: " << flarmid;
                                 	record->setState (FlarmRecord::stateStarting);
                                 	record->landingTimer->stop();
                                 	if (record->category == Plane::categoryMotorglider)
 		        	                emit actionDetected (flarmid, FlarmHandler::goAround);
                                         else
-                                                qCritical () << "unexpected goaround of glider?" << endl;
+                                                qCritical () << "unexpected goaround of glider?";
 			        }
 			        else {
 			                record->setState (FlarmRecord::stateStarting);
-			                qDebug () << "flat start: " << flarmid << endl;
+			                qDebug () << "flat start: " << flarmid;
 			                emit actionDetected (flarmid, FlarmHandler::departure);
                                 }
                         	break;
@@ -303,7 +281,7 @@ void FlarmHandler::processFlarm (const QString& line) {
 		case FlarmRecord::stateLanding:
 			switch (event) {
 			case FlarmRecord::eventGround: 
-                               	qDebug () << "landing continued: " << flarmid << endl;
+                               	qDebug () << "landing continued: " << flarmid;
                                	record->setState (FlarmRecord::stateOnGround);
                         	if (record->category == Plane::categoryMotorglider)
                         	        record->landingTimer->start(30000);
@@ -311,12 +289,12 @@ void FlarmHandler::processFlarm (const QString& line) {
                         	        emit actionDetected (flarmid, FlarmHandler::landing);
                         	break;
 			case FlarmRecord::eventFly:
-			        qDebug () << "go around3: " << flarmid << endl;
+			        qDebug () << "go around3: " << flarmid;
                         	record->setState (FlarmRecord::stateFlying);
                         	if (record->category == Plane::categoryMotorglider)
         			        emit actionDetected (flarmid, FlarmHandler::goAround);
                                 else
-                                        qCritical () << "unexpected goaround of glider?" << endl;
+                                        qCritical () << "unexpected goaround of glider?";
 			        break;
                         default:
                                 ;
@@ -325,7 +303,7 @@ void FlarmHandler::processFlarm (const QString& line) {
 		case FlarmRecord::stateFlying:
 			switch (event) {
 			case FlarmRecord::eventGround:
-                               	qCritical () << "unexpected landing from high: " << flarmid << endl;
+                               	qCritical () << "unexpected landing from high: " << flarmid;
                         	record->setState (FlarmRecord::stateOnGround);
                         	if (record->category == Plane::categoryMotorglider)
                         	        record->landingTimer->start(30000);
@@ -333,7 +311,7 @@ void FlarmHandler::processFlarm (const QString& line) {
                                 	emit actionDetected (flarmid, FlarmHandler::landing);
                         	break;
                         case FlarmRecord::eventLow:
-                               	qDebug () << "flying low: " << flarmid << endl;
+                               	qDebug () << "flying low: " << flarmid;
                                 record->setState (FlarmRecord::stateLanding);
                                 break;
                         default:
@@ -343,7 +321,7 @@ void FlarmHandler::processFlarm (const QString& line) {
 		case FlarmRecord::stateFlyingFar:
 			switch (event) {
 			case FlarmRecord::eventGround:
-                               	qCritical () << "unexpected landing from far: " << flarmid << endl;
+                               	qCritical () << "unexpected landing from far: " << flarmid;
                         	record->setState (FlarmRecord::stateOnGround);
                         	if (record->category == Plane::categoryMotorglider)
                         	        record->landingTimer->start(30000);
@@ -351,11 +329,11 @@ void FlarmHandler::processFlarm (const QString& line) {
                                 	emit actionDetected (flarmid, FlarmHandler::landing);
                         	break;
                         case FlarmRecord::eventLow:
-                               	qDebug () << "flying low: " << flarmid << endl;
+                               	qDebug () << "flying low: " << flarmid;
                                 record->setState (FlarmRecord::stateLanding);
                                 break;
                         case FlarmRecord::eventFly:
-                               	qDebug () << "still flying: " << flarmid << endl;
+                               	qDebug () << "still flying: " << flarmid;
                                 record->setState (FlarmRecord::stateFlying);
                                 break;
                         default:
@@ -365,12 +343,12 @@ void FlarmHandler::processFlarm (const QString& line) {
 		case FlarmRecord::stateStarting:
 			switch (event) {
 			case FlarmRecord::eventGround: 
-                               	qDebug () << "departure aborted: " << flarmid << endl;
+                               	qDebug () << "departure aborted: " << flarmid;
                         	record->setState (FlarmRecord::stateOnGround);
                         	emit actionDetected (flarmid, FlarmHandler::landing);
                         	break;
 			case FlarmRecord::eventFly:
-                               	qDebug () << "departure continued: " << flarmid << endl;
+                               	qDebug () << "departure continued: " << flarmid;
                         	record->setState (FlarmRecord::stateFlying);
 			        break;
                         default:
@@ -380,15 +358,15 @@ void FlarmHandler::processFlarm (const QString& line) {
                 default:
 			switch (event) {
 			case FlarmRecord::eventGround: 
-                               	qDebug () << "new on ground: " << flarmid << endl;
+                               	qDebug () << "new on ground: " << flarmid;
                         	record->setState (FlarmRecord::stateOnGround);
                         	break;
 			case FlarmRecord::eventFly:
-                               	qDebug () << "new flying: " << flarmid << endl;
+                               	qDebug () << "new flying: " << flarmid;
                         	record->setState (FlarmRecord::stateFlying);
 			        break;
 			case FlarmRecord::eventLow:
-                               	qDebug () << "new flying low: " << flarmid << endl;
+                               	qDebug () << "new flying low: " << flarmid;
                         	record->setState (FlarmRecord::stateLanding);
 			        break;
                         default:
@@ -425,7 +403,7 @@ void FlarmHandler::keepAliveTimeout () {
         FlarmRecord* record = (FlarmRecord*)sender();
         if (record) {
                 QString flarmid = record->flarmid;
-                qDebug () << "keepAliveTimeout: " << flarmid << "; state = " << record->getState() << endl;
+                qDebug () << "keepAliveTimeout: " << flarmid << "; state = " << record->getState();
                 record->keepAliveTimer->stop();
                 switch (record->getState()) {
                 case FlarmRecord::stateLanding:
@@ -465,3 +443,7 @@ void FlarmHandler::landingTimeout () {
         }
 }
 
+void FlarmHandler::lineReceived (const QString &line)
+{
+	processFlarm (line);
+}

@@ -70,6 +70,7 @@
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
 #include "src/i18n/TranslationManager.h"
+#include "src/io/dataStream/TcpDataStream.h"
 
 template <class T> class MutableObjectList;
 
@@ -107,11 +108,19 @@ MainWindow::MainWindow (QWidget *parent):
 	ui.menuDatabase->addSeparator ();
 	ui.menuDatabase->addAction (logAction);
 
-	// Flarm
-	FlarmHandler *flarmHandler = FlarmHandler::getInstance ();
+	// Flarm handler
+	flarmHandler=FlarmHandler::getInstance ();
 	flarmHandler->setDatabase (&dbManager);
-	connect (flarmHandler, SIGNAL (actionDetected(const QString&,FlarmHandler::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmHandler::FlightAction)));
-	connect (flarmHandler, SIGNAL (connectionStateChanged (TcpDataStream::State)), this, SLOT (onFlarmConnectionStateChanged (TcpDataStream::State)));
+	connect (flarmHandler, SIGNAL (actionDetected (const QString&,FlarmHandler::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmHandler::FlightAction)));
+
+	// Flarm stream
+	flarmStream=new TcpDataStream ();
+	connect (flarmStream, SIGNAL (stateChanged (DataStream::State)), this, SLOT (flarmStream_stateChanged (DataStream::State)));
+	connect (flarmStream, SIGNAL (lineReceived (const QString &)), flarmHandler, SLOT (lineReceived (const QString &)));
+	flarmStream_stateChanged (flarmStream->getState ());
+	flarmStream->setTarget ("localhost", 4711);
+
+
 
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 	readSettings ();
@@ -566,7 +575,8 @@ void MainWindow::settingsChanged ()
         // FlarmNet
         ui.actionFlarmNetOverview	->setVisible (s.flarmNetEnabled && s.flarmNetOverview);
         ui.actionFlarmNetImport		->setVisible (s.flarmNetEnabled);
-        FlarmHandler::getInstance()->setEnabled (s.flarmEnabled);
+        // FIXME handle this
+//        FlarmHandler::getInstance()->setEnabled (s.flarmEnabled);
 	// Plugins
 	setupPlugins ();
 }
@@ -1869,7 +1879,7 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 	}
 }
 
-void MainWindow::onFlarmConnectionStateChanged (TcpDataStream::State state)
+void MainWindow::flarmStream_stateChanged (DataStream::State state)
 {
 	// FIXME proper messages, and a way to output all state information
 	if (state.isOpen ())
@@ -2263,4 +2273,12 @@ void MainWindow::manipulateFlight (dbId flight_id, FlarmHandler::FlightAction ac
                         break;
                 }
         }
+}
+
+void MainWindow::on_connectFlarmAction_triggered ()
+{
+	if (ui.connectFlarmAction->isChecked ())
+		flarmStream->open ();
+	else
+		flarmStream->close ();
 }

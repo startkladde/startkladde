@@ -5,13 +5,10 @@
 #include <QtCore/QTimer>
 #include <QtCore/QMap>
 #include <QtCore/QFile>
-#include <QtNetwork/QTcpSocket>
 
 #include "FlarmRecord.h"
 #include "src/db/DbManager.h"
 #include "src/model/Plane.h"
-
-#include "src/io/dataStream/TcpDataStream.h"
 
 class FlarmHandler: public QObject {
 
@@ -27,12 +24,13 @@ class FlarmHandler: public QObject {
     void updateList (const Plane&);
     void setDatabase (DbManager*);
     void setEnabled (bool);
-    TcpDataStream::State getConnectionState ();
     QDateTime getGPSTime ();
+
+    public slots:
+    	void lineReceived (const QString &line);
     
   private:
     FlarmHandler (QObject* parent);
-    TcpDataStream *dataStream;
     QTimer* refreshTimer;
     QMap<QString, FlarmRecord *> *regMap;
     DbManager *dbManager;
@@ -51,9 +49,6 @@ class FlarmHandler: public QObject {
     void landingTimeout ();
 
     signals:
-    //    	void connectionStateChanged (TcpDataStream::ConnectionState);
-       	void connectionStateChanged (TcpDataStream::State state);
-
     void actionDetected (const QString& id, FlarmHandler::FlightAction);
     void statusChanged ();
     void homePosition (const QPointF&);

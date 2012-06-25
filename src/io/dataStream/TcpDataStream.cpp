@@ -1,4 +1,4 @@
-#include "src/io/dataStream/TcpDataStream.h"
+#include "TcpDataStream.h"
 
 #include <QTcpSocket>
 #include <QTimer>
@@ -49,17 +49,34 @@ TcpDataStream::~TcpDataStream ()
 
 
 // ****************
+// ** Properties **
+// ****************
+
+void TcpDataStream::setHost (const QString &host)
+{
+	this->host=host;
+}
+
+void TcpDataStream::setPort (const uint16_t port)
+{
+	this->port=port;
+}
+
+void TcpDataStream::setTarget (const QString &host, const uint16_t port)
+{
+	this->host=host;
+	this->port=port;
+}
+
+// ****************
 // ** Connection **
 // ****************
 
 void TcpDataStream::openSocket ()
 {
 	// Nothing to do if the connection is already open or currently opening
-	if (state.getConnectionState ()==notConnected)
-	{
-		// FIXME make configurable
-		socket->connectToHost ("localhost", 4711, QIODevice::ReadOnly);
-	}
+	if (socket->state ()==QAbstractSocket::UnconnectedState)
+		socket->connectToHost (host, port, QIODevice::ReadOnly);
 }
 
 void TcpDataStream::closeSocket ()
@@ -194,41 +211,3 @@ void TcpDataStream::dataTimerTimeout ()
 		emit stateChanged (state);
 }
 
-
-// **********************************
-// ** TcpDataStream::State methods **
-// **********************************
-
-TcpDataStream::State::State ():
-	open (false), connectionState (notConnected),
-	dataReceived (false), dataTimeout (false)
-{
-}
-
-bool TcpDataStream::State::setOpen (bool open)
-{
-	bool result=(open!=this->open);
-	this->open=open;
-	return result;
-}
-
-bool TcpDataStream::State::setConnectionState (TcpDataStream::ConnectionState connectionState)
-{
-	bool result=(connectionState!=this->connectionState);
-	this->connectionState=connectionState;
-	return result;
-}
-
-bool TcpDataStream::State::setDataReceived (bool dataReceived)
-{
-	bool result=(dataReceived!=this->dataReceived);
-	this->dataReceived=dataReceived;
-	return result;
-}
-
-bool TcpDataStream::State::setDataTimeout (bool dataTimeout)
-{
-	bool result=(dataTimeout!=this->dataTimeout);
-	this->dataTimeout=dataTimeout;
-	return result;
-}

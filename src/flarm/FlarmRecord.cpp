@@ -46,22 +46,22 @@ void FlarmRecord::setState (flarmState _state)
         state = _state;
         switch (state) {
         case stateOnGround:
-                qDebug () << "on ground: " << flarmid << endl;
+                qDebug () << "on ground: " << flarmid;
                 break;
         case stateStarting:
-                qDebug () << "starting" << flarmid << endl;
+                qDebug () << "starting" << flarmid;
                 break;
         case stateFlying:
-                qDebug () << "flying" << flarmid << endl;
+                qDebug () << "flying" << flarmid;
                 break;
         case stateFlyingFar:
-                qDebug () << "flying far" << flarmid << endl;
+                qDebug () << "flying far" << flarmid;
                 break;
         case stateLanding:
-                qDebug () << "landing" << flarmid << endl;
+                qDebug () << "landing" << flarmid;
                 break;
         default:
-                qDebug () << "unknown" << flarmid << endl;
+                qDebug () << "unknown" << flarmid;
                 break;
         }
 }
