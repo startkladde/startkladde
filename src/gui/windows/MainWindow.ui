@@ -265,6 +265,9 @@
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
      </widget>
     </item>
     <item>
@@ -371,7 +374,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>25</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -906,6 +909,9 @@
    <property name="text">
     <string>Flarm &amp;Radar</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
   </action>
   <action name="actionFlarmNetImport">
    <property name="text">
@@ -920,14 +926,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>SkLabel</class>
-   <extends>QLabel</extends>
-   <header>src/gui/widgets/SkLabel.h</header>
-  </customwidget>
-  <customwidget>
    <class>SkTableView</class>
    <extends>QTableView</extends>
    <header>src/gui/widgets/SkTableView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>SkLabel</class>
+   <extends>QLabel</extends>
+   <header>src/gui/widgets/SkLabel.h</header>
   </customwidget>
   <customwidget>
    <class>AcpiWidget</class>
