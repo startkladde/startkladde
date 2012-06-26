@@ -10,48 +10,50 @@
 #include "src/db/DbManager.h"
 #include "src/model/Plane.h"
 
+class PflaaSentence;
+class GprmcSentence;
+
 class FlarmHandler: public QObject {
 
-  Q_OBJECT
+		Q_OBJECT
 
-  public:
-    enum FlightAction {departure, landing, goAround};
-    static FlarmHandler* getInstance ();
-    static QString flightActionToString (FlarmHandler::FlightAction action); 
+	public:
+		enum FlightAction {departure, landing, goAround};
+		static FlarmHandler* getInstance ();
+		static QString flightActionToString (FlarmHandler::FlightAction action);
 
-    ~FlarmHandler ();
-    QMap<QString,FlarmRecord*>* getRegMap() {return regMap; }
-    void updateList (const Plane&);
-    void setDatabase (DbManager*);
-    void setEnabled (bool);
-    QDateTime getGPSTime ();
+		~FlarmHandler ();
+		QMap<QString,FlarmRecord*>* getRegMap() {return regMap; }
+		void updateList (const Plane&);
+		void setDatabase (DbManager*);
+		void setEnabled (bool);
+		QDateTime getGPSTime ();
 
-    public slots:
-    	void lineReceived (const QString &line);
-    
-  private:
-    FlarmHandler (QObject* parent);
-    QTimer* refreshTimer;
-    QMap<QString, FlarmRecord *> *regMap;
-    DbManager *dbManager;
-    QFile* trace;
-    QTextStream* stream;
-    static FlarmHandler* instance;
-    QDateTime gpsTime;
-    bool enabled;
+	public slots:
+	void lineReceived (const QString &line);
 
-    double calcLat (const QString& lat, const QString& ns);
-    double calcLon (const QString& lon, const QString& ew);
+	private:
+		FlarmHandler (QObject* parent);
+		QTimer* refreshTimer;
+		QMap<QString, FlarmRecord *> *regMap;
+		DbManager *dbManager;
+		QFile* trace;
+		QTextStream* stream;
+		static FlarmHandler* instance;
+		QDateTime gpsTime;
+		bool enabled;
 
-  private slots:
-  void processFlarm (const QString &line);
-    void keepAliveTimeout ();
-    void landingTimeout ();
+		private slots:
+		void processPflaaSentence (const PflaaSentence &sentence);
+		void processGprmcSentence (const GprmcSentence &sentence);
 
-    signals:
-    void actionDetected (const QString& id, FlarmHandler::FlightAction);
-    void statusChanged ();
-    void homePosition (const QPointF&);
+		void keepAliveTimeout ();
+		void landingTimeout ();
+
+		signals:
+		void actionDetected (const QString& id, FlarmHandler::FlightAction);
+		void statusChanged ();
+		void homePosition (const QPointF&);
 };
 
 #endif
