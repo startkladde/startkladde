@@ -248,8 +248,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void flightListChanged ();
 		
 		// Flarm
-		void onFlarmAction(const QString&, FlarmHandler::FlightAction);
-		void manipulateFlight (dbId flight_id, FlarmHandler::FlightAction action);
+		void onFlarmAction(const QString&, FlarmRecord::FlightAction);
+		void manipulateFlight (dbId flight_id, FlarmRecord::FlightAction action);
 
 	private:
 		// TODO move to translation manager?

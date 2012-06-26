@@ -18,9 +18,8 @@ class FlarmHandler: public QObject {
 		Q_OBJECT
 
 	public:
-		enum FlightAction {departure, landing, goAround};
 		static FlarmHandler* getInstance ();
-		static QString flightActionToString (FlarmHandler::FlightAction action);
+		static QString flightActionToString (FlarmRecord::FlightAction action);
 
 		~FlarmHandler ();
 		QMap<QString,FlarmRecord*>* getRegMap() {return regMap; }
@@ -51,7 +50,7 @@ class FlarmHandler: public QObject {
 		void landingTimeout ();
 
 		signals:
-		void actionDetected (const QString& id, FlarmHandler::FlightAction);
+		void actionDetected (const QString& id, FlarmRecord::FlightAction);
 		void statusChanged ();
 		void homePosition (const QPointF&);
 };

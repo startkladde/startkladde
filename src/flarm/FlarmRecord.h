@@ -5,6 +5,8 @@
 #include <QtCore/QTimer>
 #include "src/model/Plane.h"
 
+class PflaaSentence;
+
 class FlarmRecord: public QObject {
 
   Q_OBJECT
@@ -12,6 +14,7 @@ class FlarmRecord: public QObject {
   public:
     enum flarmState {stateUnknown, stateOnGround, stateStarting, stateFlying, stateFlyingFar, stateLanding};
     enum flarmEvent {eventGround, eventLow, eventFly};
+	enum FlightAction {departure, landing, goAround};
     FlarmRecord (QObject* parent, const QString& id, flarmState _state);
     void setState (flarmState state);
     flarmState getState () const;
@@ -31,6 +34,8 @@ class FlarmRecord: public QObject {
     int east;
     QTimer* keepAliveTimer;
     QTimer* landingTimer;
+	void processPflaaSentence (const PflaaSentence &sentence);
+
   private:
     flarmState state;
     int alt, last_alt;
@@ -39,6 +44,7 @@ class FlarmRecord: public QObject {
   signals:
     void keepAliveTimeout();
     void landingTimeout();
+	void actionDetected (const QString& id, FlarmRecord::FlightAction);
 };
 
 #endif

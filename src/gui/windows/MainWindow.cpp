@@ -111,7 +111,7 @@ MainWindow::MainWindow (QWidget *parent):
 	// Flarm handler
 	flarmHandler=FlarmHandler::getInstance ();
 	flarmHandler->setDatabase (&dbManager);
-	connect (flarmHandler, SIGNAL (actionDetected (const QString&,FlarmHandler::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmHandler::FlightAction)));
+	connect (flarmHandler, SIGNAL (actionDetected (const QString&,FlarmRecord::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmRecord::FlightAction)));
 
 	// Flarm stream
 	flarmStream=new TcpDataStream ();
@@ -2145,7 +2145,7 @@ void MainWindow::languageChanged ()
 }
 
 // Flarm
-void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightAction action) {
+void MainWindow::onFlarmAction (const QString& flarmid, FlarmRecord::FlightAction action) {
 	qDebug () << "MainWindow::onFlarmAction: " << flarmid << "; action = " << action;
 	
 	if (!Settings::instance().flarmEnabled)
@@ -2179,7 +2179,7 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
         }                                                
 
 	QList<Flight> flights;
-	if (action == FlarmHandler::departure) {
+	if (action == FlarmRecord::departure) {
                 flights = dbManager.getCache ().getPreparedFlights ().getList ();
                 qDebug () << "getPreparedFlights: " << flights.count ();
         }
@@ -2220,7 +2220,7 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 		flight.setPlaneId (plane.getId());
 		flight.setMode (FlightBase::modeLocal);
 		flight.setFlarmId (flarmid);
-		if (action == FlarmHandler::departure)
+		if (action == FlarmRecord::departure)
 			flight.setDepartureLocation (Settings::instance ().location);
 		else
 			flight.setLandingLocation (Settings::instance ().location);
@@ -2248,17 +2248,17 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 		
 }
 
-void MainWindow::manipulateFlight (dbId flight_id, FlarmHandler::FlightAction action) {
+void MainWindow::manipulateFlight (dbId flight_id, FlarmRecord::FlightAction action) {
         qDebug () << "MainWindow::manipulateFlight";
         switch (action)
         {
-                case FlarmHandler::departure:
+                case FlarmRecord::departure:
                         departFlight (flight_id);
                         break;
-                case FlarmHandler::landing:
+                case FlarmRecord::landing:
                         landFlight (flight_id);
                         break;
-                case FlarmHandler::goAround:
+                case FlarmRecord::goAround:
                 {
                         Flight flight = dbManager.getCache ().getObject<Flight> (flight_id);
                         QString reason;
