@@ -46,7 +46,7 @@ void FlarmRecord::setState (flarmState _state)
         state = _state;
         switch (state) {
         case stateOnGround:
-                qDebug () << "on ground: " << flarmid;
+                qDebug () << "on ground" << flarmid;
                 break;
         case stateStarting:
                 qDebug () << "starting" << flarmid;
