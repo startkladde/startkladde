@@ -40,7 +40,7 @@ void DataStream::open ()
 	// Nothing to do if the stream is already open
 	if (!state.isOpen ())
 	{
-		qDebug () << "DataStream: open";
+		//qDebug () << "DataStream: open";
 
 		state.setOpen (true);
 		emit stateChanged (state);
@@ -54,7 +54,7 @@ void DataStream::close ()
 	// Nothing to do if the stream is already closed
 	if (state.isOpen ())
 	{
-		qDebug () << "DataStream: close";
+		//qDebug () << "DataStream: close";
 
 		state.setOpen (false);
 		emit stateChanged (state);
@@ -131,7 +131,7 @@ void DataStream::reconnectTimerTimeout ()
 {
 	if (state.isOpen ())
 	{
-		qDebug () << "DataStream: automatic reconnect";
+		//qDebug () << "DataStream: automatic reconnect";
 		openImplementation ();
 	}
 }
@@ -145,7 +145,7 @@ void DataStream::dataTimerTimeout ()
 {
 	if (state.isOpen ())
 	{
-		qDebug () << "DataStream: data timeout";
+		//qDebug () << "DataStream: data timeout";
 
 		if (state.setDataTimeout (true))
 			emit stateChanged (state);

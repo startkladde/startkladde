@@ -105,7 +105,7 @@ void TcpDataStream::socketDataReceived ()
 
 void TcpDataStream::socketStateChanged (QAbstractSocket::SocketState socketState)
 {
-	qDebug () << "TcpDataStream: socket state changed to" << socketState;
+	//qDebug () << "TcpDataStream: socket state changed to" << socketState;
 
 	if (socketState == QAbstractSocket::ConnectedState)
 	{
@@ -117,7 +117,7 @@ void TcpDataStream::socketError (QAbstractSocket::SocketError error)
 {
 	Q_UNUSED (error);
 
-	qDebug () << "TcpDataStream: socket error:" << error << "in socket state" << socket->state () ;
+	//qDebug () << "TcpDataStream: socket error:" << error << "in socket state" << socket->state () ;
 
 	if (socket->state ()==QAbstractSocket::ConnectedState)
 		// We were connected
