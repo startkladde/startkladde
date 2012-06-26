@@ -119,6 +119,8 @@ MainWindow::MainWindow (QWidget *parent):
 	connect (flarmStream, SIGNAL (lineReceived (const QString &)), flarmHandler, SLOT (lineReceived (const QString &)));
 	flarmStream_stateChanged (flarmStream->getState ());
 	flarmStream->setTarget ("localhost", 4711);
+	ui.connectFlarmAction->setChecked (true);
+	on_connectFlarmAction_triggered ();
 
 
 
@@ -1684,18 +1686,19 @@ void MainWindow::on_actionFlarmOverview_triggered ()
 
 void MainWindow::on_actionFlarmRadar_triggered ()
 {
+	// FIXME is this deleted?
         FlarmMap* dialog = new FlarmMap (this);
         dialog->show ();
 }
 
 void MainWindow::on_actionFlarmNetOverview_triggered ()
 {
-        qDebug () << "MainWindow::on_actionFlarmNetOverview_triggered" << endl;
+        qDebug () << "MainWindow::on_actionFlarmNetOverview_triggered";
 }
 
 void MainWindow::on_actionFlarmNetImport_triggered ()
 {
-        qDebug () << "MainWindow::on_actionFlarmNetImport_triggered" << endl;
+        qDebug () << "MainWindow::on_actionFlarmNetImport_triggered";
 }
 
 // **************
@@ -2037,7 +2040,7 @@ void MainWindow::on_actionSetTime_triggered ()
 
 void MainWindow::on_actionSetGPSTime_triggered ()
 {
-        qDebug () << "MainWindow::on_actionSetGPSTime_triggered" << endl;
+        qDebug () << "MainWindow::on_actionSetGPSTime_triggered";
         FlarmHandler* flarmHandler = FlarmHandler::getInstance();
         // FIXME the data stream should be external to the flarm handler
         // FIXME enable
@@ -2047,8 +2050,8 @@ void MainWindow::on_actionSetGPSTime_triggered ()
 //        }
         QDateTime current (QDateTime::currentDateTimeUtc ());
         QDateTime currentGPSdateTime = flarmHandler->getGPSTime ();
-        qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy")) << endl;
-        qDebug () << "currentTime: " << current.toString (notr("hh:mm:ss dd.MM.yyyy")) << endl;   
+        qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy"));
+        qDebug () << "currentTime: " << current.toString (notr("hh:mm:ss dd.MM.yyyy"));
         int diff = currentGPSdateTime.secsTo(current);
         if (abs (diff) > 0) {
                 if (QMessageBox::question(this, tr("Time difference"), 
@@ -2143,7 +2146,7 @@ void MainWindow::languageChanged ()
 
 // Flarm
 void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightAction action) {
-	qDebug () << "MainWindow::onFlarmAction: " << flarmid << "; action = " << action << endl;
+	qDebug () << "MainWindow::onFlarmAction: " << flarmid << "; action = " << action;
 	
 	if (!Settings::instance().flarmEnabled)
 	        return;
@@ -2154,11 +2157,11 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
         if (idValid (planeId)) {
                 plane = cache.getObject<Plane> (planeId);
 	        reg = plane.registration; 
-                qDebug () << "plane found by flarm id: " << reg << "; " << flarmid << endl;
+                qDebug () << "plane found by flarm id: " << reg << "; " << flarmid;
         }
         else
         {
-                qDebug () << "plane not found by flarm id: " << flarmid << endl;
+                qDebug () << "plane not found by flarm id: " << flarmid;
 		//TODO: FlarmNet database
 		// don't give up. we will create the flight anyway with invalid plane id.
 		
@@ -2178,11 +2181,11 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 	QList<Flight> flights;
 	if (action == FlarmHandler::departure) {
                 flights = dbManager.getCache ().getPreparedFlights ().getList ();
-                qDebug () << "getPreparedFlights: " << flights.count () << endl;
+                qDebug () << "getPreparedFlights: " << flights.count ();
         }
 	else {
                 flights = dbManager.getCache ().getFlyingFlights ().getList ();
-                qDebug () << "getFlyingFlights: " << flights.count () << endl;
+                qDebug () << "getFlyingFlights: " << flights.count ();
         }
 
 	bool flightFound = false;
@@ -2191,7 +2194,7 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
         foreach (Flight flight, flights)
         {
                 flightId = flight.getId();
-                qDebug () << "look for plane id: " << plane.registration << endl;
+                qDebug () << "look for plane id: " << plane.registration;
                 if (flight.getPlaneId() == plane.getId()) {
                         flightFound = true;
 		        break;
@@ -2210,7 +2213,7 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 		box->show();
 	}
 	else {
-		qDebug () << "no flight found: " << reg << endl;
+		qDebug () << "no flight found: " << reg;
 		// we create the flight with minimal data; will show up in red for completion
 		Flight flight;
 		flight.setType (FlightBase::typeNormal);
@@ -2246,7 +2249,7 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmHandler::FlightActi
 }
 
 void MainWindow::manipulateFlight (dbId flight_id, FlarmHandler::FlightAction action) {
-        qDebug () << "MainWindow::manipulateFlight" << endl;
+        qDebug () << "MainWindow::manipulateFlight";
         switch (action)
         {
                 case FlarmHandler::departure:
