@@ -71,3 +71,70 @@ bool Nmea::verifyChecksum (const QString &sentence)
 		return false;
 	}
 }
+
+Angle Nmea::parseLatitude  (const QString &value, const QString &sign)
+{
+	return parseAngle (value, sign, "N", "S");
+}
+
+Angle Nmea::parseLongitude (const QString &value, const QString &sign)
+{
+	return parseAngle (value, sign, "E", "W");
+}
+
+Angle Nmea::parseAngle (const QString &value, const QString sign, const QString &positiveSign, const QString &negativeSign)
+{
+	// Format of value is DDMM.MMMM
+
+	bool ok=false;
+
+	// If the string is too short, return an invalid angle.
+	if (value.length ()<3) return Angle ();
+
+	// Extract the degrees. If invalid, return an invalid angle.
+	int degrees=value.left (2).toInt (&ok);
+	if (!ok) return Angle ();
+
+	// Extract the minutes. If invalid, return an invalid angle.
+	double minutes=value.mid (2).toDouble (&ok);
+	if (!ok) return Angle ();
+
+	// Depending on the sign, return the value or an invalid value.
+	if (sign==positiveSign)
+		return Angle (+(degrees+minutes/60));
+	else if (sign==negativeSign)
+		return Angle (-(degrees+minutes/60));
+	else
+		return Angle ();
+}
+
+/**
+ *
+ * @param value
+ * @return the date in UTC (QDate does not know about time zones)
+ */
+QDate Nmea::parseDate (const QString &value)
+{
+	// Format of value is ddmmyy
+	QDate date (QDate::fromString (value, "ddMMyy"));
+
+	// The two-digit year is interpreted as 19xx. We have to add 100 years :-/.
+	return date.addYears (100);
+}
+
+/**
+ *
+ * @param value
+ * @return the time in UTC (QDate does not know about time zones)
+ */
+QTime Nmea::parseTime (const QString &value)
+{
+	// Format of value is hhmmss.xx
+	QString hhmmss=value.split ('.')[0];
+	return QTime::fromString (hhmmss, "hhmmss");
+}
+
+QDateTime Nmea::parseDateTime (const QString &dateValue, const QString &timeValue)
+{
+	return QDateTime (parseDate (dateValue), parseTime (timeValue), Qt::UTC);
+}
