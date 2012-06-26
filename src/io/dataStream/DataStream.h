@@ -5,6 +5,27 @@
 
 class QTimer;
 
+/**
+  * FIXME: the state is not good yet
+ *   - it's too complex?
+ *   - we would like to notify the user about connection failed/connection lost,
+ *     with reconnect time ("reconnect in 4s") and the reason (click on label)
+ * We should probably have
+ *   - isOpen
+ *   - connectionState (disconnected, connecting, connected, waitReconnect)
+ *   - reconnectTime
+ *   - error (noError, connectionFailed, connectionLost)
+ *   - errorMessage
+ *   - dataState (noData, good, timeout)
+ *
+ * FIXME: the implementations should not emit the signals themselves
+ *
+ * FIXME: for debugging, dump the state on change (e. g. in MainWindow)
+ *
+ * TODO:
+ *   - it would be better to have the implementation just send data and split
+ *     it into lines in this class
+ */
 class DataStream: public QObject
 {
 		Q_OBJECT
@@ -58,14 +79,16 @@ class DataStream: public QObject
 		void lineReceived (const QString &line);
 
 	protected:
+		// Stream implementation
 		virtual void openImplementation ()=0;
 		virtual void closeImplementation ()=0;
 
+		// Subclass interface
 		virtual void dataReceived ();
-		virtual void connectionEstablished ();
-		virtual void connectionLost ();
 		virtual void connectionOpening ();
-		virtual void connectionClosed ();
+		virtual void connectionEstablished ();
+		virtual void connectionFailed ();
+		virtual void connectionLost ();
 
 	private:
 	    QTimer *dataTimer;

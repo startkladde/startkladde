@@ -64,7 +64,10 @@ void TcpDataStream::openImplementation ()
 {
 	// Nothing to do if the connection is already open or currently opening
 	if (socket->state ()==QAbstractSocket::UnconnectedState)
+	{
 		socket->connectToHost (host, port, QIODevice::ReadOnly);
+		connectionOpening ();
+	}
 }
 
 void TcpDataStream::closeImplementation ()
@@ -102,20 +105,11 @@ void TcpDataStream::socketDataReceived ()
 
 void TcpDataStream::socketStateChanged (QAbstractSocket::SocketState socketState)
 {
-	// The socket state changed. Update the connection state accordingly.
 	qDebug () << "TcpDataStream: socket state changed to" << socketState;
 
 	if (socketState == QAbstractSocket::ConnectedState)
 	{
 		connectionEstablished ();
-	}
-	else if (socketState == QAbstractSocket::UnconnectedState)
-	{
-		connectionClosed ();
-	}
-	else
-	{
-		connectionOpening ();
 	}
 }
 
@@ -123,10 +117,15 @@ void TcpDataStream::socketError (QAbstractSocket::SocketError error)
 {
 	Q_UNUSED (error);
 
-	qDebug () << "TcpDataStream: socket error: " << error;
+	qDebug () << "TcpDataStream: socket error:" << error << "in socket state" << socket->state () ;
 
-	// Make sure that the socket is really closed
+	if (socket->state ()==QAbstractSocket::ConnectedState)
+		// We were connected
+		connectionLost ();
+	else
+		connectionFailed ();
+
+	// Make sure that the socket is really closed, and close it immediately,
+	// without waiting for any buffers
 	socket->abort ();
-
-	connectionLost ();
 }

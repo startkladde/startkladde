@@ -1881,7 +1881,6 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 
 void MainWindow::flarmStream_stateChanged (DataStream::State state)
 {
-	// FIXME proper messages, and a way to output all state information
 	if (state.isOpen ())
 	{
 		switch (state.getConnectionState ())
@@ -1890,24 +1889,22 @@ void MainWindow::flarmStream_stateChanged (DataStream::State state)
 				ui.flarmStateLabel->setText (tr ("No connection"));
 				break;
 			case TcpDataStream::connecting:
-				ui.flarmStateLabel->setText (tr ("Connecting to Flarm"));
+				ui.flarmStateLabel->setText (tr ("Connecting..."));
 				break;
 			case TcpDataStream::connected:
 				if (state.getDataTimeout ())
-					ui.flarmStateLabel->setText (tr ("No Flarm data"));
+					ui.flarmStateLabel->setText (tr ("No data"));
 				else if (!state.getDataReceived ())
-					ui.flarmStateLabel->setText (tr ("Connected to Flarm"));
+					ui.flarmStateLabel->setText (tr ("Connected"));
 				else
-					ui.flarmStateLabel->setText (tr ("Data OK"));
+					ui.flarmStateLabel->setText (tr ("OK"));
 				break;
 		}
 	}
 	else
 	{
-		ui.flarmStateLabel->setText (tr ("Not connected to Flarm"));
+		ui.flarmStateLabel->setText (tr ("Disabled"));
 	}
-
-	// FIXME handle timeout and datareceived
 }
 
 // ***************************

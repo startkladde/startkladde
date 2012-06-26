@@ -41,8 +41,9 @@ void DataStream::open ()
 	if (!state.isOpen ())
 	{
 		qDebug () << "DataStream: open";
-		if (state.setOpen (true))
-			emit stateChanged (state);
+
+		state.setOpen (true);
+		emit stateChanged (state);
 
 		openImplementation ();
 	}
@@ -55,19 +56,13 @@ void DataStream::close ()
 	{
 		qDebug () << "DataStream: close";
 
-		if (state.setOpen (false))
-			emit stateChanged (state);
+		state.setOpen (false);
+		emit stateChanged (state);
 
+		dataTimer     ->stop ();
+		reconnectTimer->stop ();
 		closeImplementation ();
 	}
-}
-
-void DataStream::reconnectTimerTimeout ()
-{
-	qDebug () << "DataStream: automatic reconnect" << endl;
-
-	if (state.isOpen ())
-		openImplementation ();
 }
 
 
@@ -84,6 +79,14 @@ void DataStream::dataReceived ()
 	dataTimer->start ();
 }
 
+void DataStream::connectionOpening ()
+{
+	// Seems like we're currently connecting
+	state.setConnectionState (connecting);
+	emit stateChanged (state);
+}
+
+
 void DataStream::connectionEstablished ()
 {
 	state.setConnectionState (connected);
@@ -94,28 +97,45 @@ void DataStream::connectionEstablished ()
 	dataTimer->start ();
 }
 
-void DataStream::connectionLost ()
+void DataStream::connectionFailed ()
 {
-
+	dataTimer     ->stop ();
 	reconnectTimer->start ();
-}
 
-void DataStream::connectionOpening ()
-{
-	// Seems like we're currently connecting
-	state.setConnectionState (connecting);
-	emit stateChanged (state);
-}
-
-void DataStream::connectionClosed ()
-{
 	state.setConnectionState (notConnected);
 	emit stateChanged (state);
 }
 
-// **********
-// ** Data **
-// **********
+void DataStream::connectionLost ()
+{
+	dataTimer     ->stop ();
+	reconnectTimer->start ();
+
+	state.setConnectionState (notConnected);
+	emit stateChanged (state);
+}
+
+
+// ************
+// ** Timers **
+// ************
+
+// When closing the stream, the timers are stopped. Still, it is possible to
+// receive a timer event while the stream is closed, in the following case:
+//   * timer expires, timer even is enqueued
+//   * stream is closed
+//   * timer event is received
+// Therefore, it is necessary to check if the state is open in the timer slots.
+
+void DataStream::reconnectTimerTimeout ()
+{
+	if (state.isOpen ())
+	{
+		qDebug () << "DataStream: automatic reconnect";
+		openImplementation ();
+	}
+}
+
 
 /**
  * Called when the timer for data reception expired. Updates the connection
@@ -123,11 +143,15 @@ void DataStream::connectionClosed ()
  */
 void DataStream::dataTimerTimeout ()
 {
-	qDebug () << "DataStream: data timeout" << endl;
+	if (state.isOpen ())
+	{
+		qDebug () << "DataStream: data timeout";
 
-	if (state.setDataTimeout (true))
-		emit stateChanged (state);
+		if (state.setDataTimeout (true))
+			emit stateChanged (state);
+	}
 }
+
 
 // *******************************
 // ** DataStream::State methods **
