@@ -21,8 +21,11 @@
  *   - it's possible to use an abstract base class, providing more type safety
  *     and easier diagnosticts
  *   - methods can be inherited, so common or default functionality is possible
- *   - it's possible to set parameters (properties of this class)
+ *   - it's possible to set parameters (properties of this class), for example
+ *     the unit to show a physical quantity in
  *   - the runtime overhead over a static method solution is small
+ *   - it is possible to select from different models for the same view at
+ *     runtime
  *
  * Implementations can be passed as reference or as template parameter. Passing
  * by reference is usually better.
@@ -124,6 +127,8 @@ template<class T> QVariant ObjectModel<T>::displayHeaderData (int column) const
  * @return the data for the display role for the given column of the given
  *         object
  */
+// TODO make it pure virtual, it produced hard to debug errors if the signature
+// does not match
 template<class T> QVariant ObjectModel<T>::displayData (const T &object, int column) const
 {
 	(void)object;
