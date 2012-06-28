@@ -58,7 +58,6 @@
 #include "src/statistics/LaunchMethodStatistics.h"
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"
-#include "src/statistics/FlarmLog.h"
 #include "src/flarm/FlarmHandler.h"
 #include "src/flarm/FlarmMap.h"
 #include "src/gui/dialogs.h"
@@ -1680,8 +1679,9 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 
 void MainWindow::on_actionFlarmOverview_triggered ()
 {
-	FlarmLog *flarmLog = FlarmLog::createNew ();
-	StatisticsWindow::display (flarmLog, true, ntr_flarmOverviewTitle, this);
+	// FIXME implement
+//	FlarmLog *flarmLog = FlarmLog::createNew ();
+//	StatisticsWindow::display (flarmLog, true, ntr_flarmOverviewTitle, this);
 }
 
 void MainWindow::on_actionFlarmRadar_triggered ()
@@ -1980,7 +1980,7 @@ void MainWindow::closeDatabase ()
 void MainWindow::on_actionSettings_triggered ()
 {
 	SettingsWindow w (this);
-	w.setModal (true); // TODO non-model and auto delete
+	w.setModal (true); // TODO non-modal and auto delete
 	w.exec ();
 
 
@@ -2049,7 +2049,7 @@ void MainWindow::on_actionSetGPSTime_triggered ()
 //                return;
 //        }
         QDateTime current (QDateTime::currentDateTimeUtc ());
-        QDateTime currentGPSdateTime = flarmHandler->getGPSTime ();
+        QDateTime currentGPSdateTime = flarmHandler->getGpsTime ();
         qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy"));
         qDebug () << "currentTime: " << current.toString (notr("hh:mm:ss dd.MM.yyyy"));
         int diff = currentGPSdateTime.secsTo(current);
@@ -2064,7 +2064,7 @@ void MainWindow::on_actionSetGPSTime_triggered ()
                         .arg(diff), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
                 {
                         // get the actual GPS time again, the messagebox can stay open a long time
-                        currentGPSdateTime = flarmHandler->getGPSTime ();
+                        currentGPSdateTime = flarmHandler->getGpsTime ();
         		QString timeString=qnotr ("%1-%2-%3 %4:%5:%6")
 	        		.arg (currentGPSdateTime.date().year ()).arg (currentGPSdateTime.date().month ()).arg (currentGPSdateTime.date().day ())
 		        	.arg (currentGPSdateTime.time().hour ()).arg (currentGPSdateTime.time().minute ()).arg (currentGPSdateTime.time().second ());
@@ -2205,7 +2205,7 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmRecord::FlightActio
 		manipulateFlight (flightId, action);
 		//Beep();
 		QMessageBox* box = new QMessageBox (QMessageBox::Information, tr ("FLARM Information"),
-			tr ("%1 was %2 automatically.").arg(reg).arg(FlarmHandler::flightActionToString(action)),
+			tr ("%1 was %2 automatically.").arg(reg).arg(FlarmRecord::flightActionToString(action)),
 			QMessageBox::NoButton, this);
 		box->setAttribute(Qt::WA_DeleteOnClose);
 		// 8 seconds; this is information only
@@ -2231,7 +2231,7 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmRecord::FlightActio
 		QMessageBox* box = new QMessageBox (QMessageBox::Warning, tr ("FLARM Warning"),
 			tr ("<qt><p>%1 was %2 automatically.</p>"
 			    "<big><font color=\"red\"><p>Entry in flight list is incomplete!</p>"
-			    "<p>Please add missing data!</p></font></big></qt>").arg(reg).arg(FlarmHandler::flightActionToString(action)),
+			    "<p>Please add missing data!</p></font></big></qt>").arg(reg).arg(FlarmRecord::flightActionToString(action)),
 			QMessageBox::Ok, 0);
 		QTimer::singleShot(10000, box, SLOT(accept()));
 		box->show ();
