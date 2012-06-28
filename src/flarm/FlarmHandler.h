@@ -12,47 +12,56 @@
 
 class PflaaSentence;
 class GprmcSentence;
+template<class T> class MutableObjectList;
 
-class FlarmHandler: public QObject {
-
-		Q_OBJECT
+class FlarmHandler: public QObject
+{
+	Q_OBJECT
 
 	public:
+		// Construction/singleton
 		static FlarmHandler* getInstance ();
-		static QString flightActionToString (FlarmRecord::FlightAction action);
-
 		~FlarmHandler ();
-		QMap<QString,FlarmRecord*>* getRegMap() {return regMap; }
-		void updateList (const Plane&);
+
+		// Properties
 		void setDatabase (DbManager*);
-		void setEnabled (bool);
-		QDateTime getGPSTime ();
+
+		// Flarm data
+		QDateTime getGpsTime ();
+		const MutableObjectList<FlarmRecord *> *getFlarmRecords () const;
 
 	public slots:
-	void lineReceived (const QString &line);
+		void lineReceived (const QString &line);
+
+	signals:
+		void actionDetected (const QString &id, FlarmRecord::FlightAction);
+		void statusChanged ();
+		void homePosition (const QPointF&);
+
+	protected:
+		int findOrCreateFlarmRecord (const QString &flarmId);
 
 	private:
 		FlarmHandler (QObject* parent);
-		QTimer* refreshTimer;
-		QMap<QString, FlarmRecord *> *regMap;
+		static FlarmHandler* instance;
+
 		DbManager *dbManager;
 		QFile* trace;
 		QTextStream* stream;
-		static FlarmHandler* instance;
-		QDateTime gpsTime;
-		bool enabled;
 
-		private slots:
+		int findFlarmRecordByFlarmId (const QString &flarmId);
+
+//		QMap<QString, FlarmRecord *> *regMap;
+		// FlarmRecord is a QObject, so we can't store it in a container
+		// directly. We have to store a pointer instead.
+		MutableObjectList<FlarmRecord *> *flarmRecords;
+
+		QDateTime gpsTime;
+
+	private slots:
 		void processPflaaSentence (const PflaaSentence &sentence);
 		void processGprmcSentence (const GprmcSentence &sentence);
 
-		void keepAliveTimeout ();
-		void landingTimeout ();
-
-		signals:
-		void actionDetected (const QString& id, FlarmRecord::FlightAction);
-		void statusChanged ();
-		void homePosition (const QPointF&);
 };
 
 #endif

@@ -3,47 +3,82 @@
 
 #include <QtCore/QString>
 #include <QtCore/QTimer>
+#include <QQueue>
+
 #include "src/model/Plane.h"
 
 class PflaaSentence;
 
 class FlarmRecord: public QObject {
 
-  Q_OBJECT
-  
-  public:
-    enum flarmState {stateUnknown, stateOnGround, stateStarting, stateFlying, stateFlyingFar, stateLanding};
-    enum flarmEvent {eventGround, eventLow, eventFly};
-	enum FlightAction {departure, landing, goAround};
-    FlarmRecord (QObject* parent, const QString& id, flarmState _state);
-    void setState (flarmState state);
-    flarmState getState () const;
-    QString getStateText () const;
-    void setClimb (double);
-    double getClimb () const;
-    void setSpeed (int);
-    int getSpeed () const;
-    void setAlt (int);
-    int getAlt () const;
-    bool isPlausible () const;
-    QString flarmid;
-    QString registration;
-    QString frequence;
-    Plane::Category category;
-    int north;
-    int east;
-    QTimer* keepAliveTimer;
-    QTimer* landingTimer;
-	void processPflaaSentence (const PflaaSentence &sentence);
+		Q_OBJECT
 
-  private:
-    flarmState state;
-    int alt, last_alt;
-    int speed, last_speed;
-    double climb, last_climb;
-  signals:
-    void keepAliveTimeout();
-    void landingTimeout();
+	public:
+		// Types
+		enum flarmState {stateUnknown, stateOnGround, stateStarting, stateFlying, stateFlyingFar, stateLanding};
+		enum FlightSituation {groundSituation, lowSituation, flyingSituation};
+		enum FlightAction {departure, landing, goAround};
+
+		// Construction
+		FlarmRecord (QObject* parent, const QString &flarmId);
+		virtual ~FlarmRecord ();
+
+		// Properties
+		QString getFlarmId     () const { return flarmId; }
+		int     getAlt         () const { return altitude; }
+		int     getGroundSpeed () const { return groundSpeed; }
+		double  getClimb       () const { return climbRate; }
+		int     getNorth       () const { return north; }
+		int     getEast        () const { return east; }
+
+		QList<QPointF> getPreviousPositions () const { return previousPositions; }
+
+		flarmState getState () const { return state; }
+
+		QString getRegistration () { return registration; }
+
+		void setRegistration (const QString &registration);
+		void setCategory (Plane::Category category);
+
+
+		// Misc
+		QString getStateText () const;
+		bool isPlausible () const;
+		void processPflaaSentence (const PflaaSentence &sentence);
+		static QString flightActionToString (FlightAction action);
+
+	protected:
+		FlightSituation getSituation () const;
+
+	private:
+		// Primary data
+		QString flarmId;
+		int    altitude   , lastAltitude;
+		int    groundSpeed, lastGroundSpeed;
+		double climbRate  , lastClimbRate;
+		int north, east;
+
+		// History
+		QQueue<QPointF> previousPositions;
+
+		// Derived data
+		flarmState state;
+
+		// Database data
+		QString registration;
+		Plane::Category category;
+		QString frequency;
+
+		QTimer* keepaliveTimer;
+		QTimer* landingTimer;
+
+		void setState (flarmState state);
+
+	private slots:
+		void keepaliveTimeout ();
+		void landingTimeout ();
+
+	signals:
 	void actionDetected (const QString& id, FlarmRecord::FlightAction);
 };
 

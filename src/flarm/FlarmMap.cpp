@@ -5,12 +5,18 @@
 #include <qwt_plot_panner.h>
 #include <qwt_plot_magnifier.h>
 #include <QtCore/QSettings>
+#include <QSortFilterProxyModel>
+
+#include "src/numeric/Speed.h"
 #include "FlarmMap.h"
 #include "FlarmHandler.h"
+#include "src/flarm/FlarmRecordModel.h"
+#include "src/model/objectList/ObjectListModel.h"
 
 FlarmMap::FlarmMap (QWidget* parent) 
 : QDialog (parent)
 {
+	// FIXME consider aspect ratio when scaling
   setupUi (this);
   qwtPlot->setAxisScale (QwtPlot::yLeft, -2000.0, 2000.0);
   qwtPlot->setAxisScale (QwtPlot::xBottom, -2000.0, 2000.0);
@@ -31,11 +37,11 @@ FlarmMap::FlarmMap (QWidget* parent)
 
   connect (buttonClose, SIGNAL (clicked()), this, SLOT (close()));
   connect (toggleOrientation, SIGNAL(toggled(bool)), this, SLOT (orientationChanged(bool)));
-  
+
   FlarmHandler* flarmHandler = FlarmHandler::getInstance();
   connect (flarmHandler, SIGNAL(homePosition(const QPointF&)),this, SLOT(drawAirfield(const QPointF&)));
   connect (flarmHandler, SIGNAL(statusChanged()), this, SLOT(refreshFlarm()));
-        
+
   toggleOrientation->setIcon (QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
   toggleOrientation->setToolTip (QString::fromUtf8 ("Karte nach Norden ausrichten"));
   northUp = -1.0;
@@ -45,13 +51,32 @@ FlarmMap::FlarmMap (QWidget* parent)
   matrix = matrix.translate (1000, 1000);
   QBrush brush (lageplan_xpm);
   brush.setMatrix (matrix);
-  
+
   qwtPlot->setCanvasBackground (brush);
   */
 
   grid->attach (qwtPlot);
   data = NULL;
   //QTimer::singleShot (0, this, SLOT (storeVectors()));
+
+  // Setup the list
+  const AbstractObjectList<FlarmRecord *> *objectList=FlarmHandler::getInstance ()->getFlarmRecords ();
+  ObjectModel<FlarmRecord *> *objectModel=new FlarmRecordModel ();
+  ObjectListModel<FlarmRecord *> *objectListModel=new ObjectListModel<FlarmRecord *> (objectList, false, objectModel, true, this);
+
+	// Set the list model as the table's model with a sort proxy
+	QSortFilterProxyModel *proxyModel=new QSortFilterProxyModel (this);
+	proxyModel->setSourceModel (objectListModel);
+	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
+	proxyModel->setDynamicSortFilter (true);
+	flarmTable->setModel (proxyModel);
+
+  flarmTable->resizeColumnsToContents ();
+  flarmTable->resizeRowsToContents ();
+  flarmTable->setAutoResizeRows (true);
+  flarmTable->setAutoResizeColumns (false);
+
+
 
   // Instead of reading the vectors from the configuration, you can set example
   // vectors by enabling the call to setExampleVectors instead of readVectors.
@@ -145,86 +170,124 @@ void FlarmMap::readVectors () {
   //qDebug () << "FlarmMap::readVectors new: " << airfieldVector << endl;
 }
 
-void FlarmMap::drawAirfield (const QPointF& home) {
-  // only draw when moved more then 1 arc second
-  if (abs (home.x() - old_home.x()) > 0.00027 || abs (home.y() - old_home.y()) > 0.00027) {
-    old_home = home;
-  }
-  else
-    return;
-  
-  #define PI 3.1415926536
-  QVector <QPointF> airfieldDist;
-  //invert all values if northUp is -1
-  foreach (QPointF point, airfieldVector) {
-    QPointF reldeg (point.x()-home.x(), point.y()-home.y());
-    airfieldDist << QPointF (northUp * (reldeg.x() * (40000000.0 / 360.0)) * cos (point.y() * (PI / 180.0)),
-                        northUp * reldeg.y() * (40000000.0 / 360.0));
-  }
-  // append the first element to close the rectangle
-  airfieldDist << airfieldDist [0];
+void FlarmMap::drawAirfield (const QPointF& home)
+{
+	// only draw when moved more then 1 arc second
+	// FIXME don't always redraw, remove history curves but not static curves
+	// (airfield and traffic circuit)
+//	if (abs (home.x () - old_home.x ()) > 0.00027 || abs (home.y () - old_home.y ()) > 0.00027)
+//	{
+//		old_home = home;
+//	}
+//	else
+//		return;
 
-  QVector <QPointF> patternDist;
-  foreach (QPointF point, patternVector) {
-    QPointF reldeg (point.x()-home.x(), point.y()-home.y());
-    patternDist << QPointF (northUp * (reldeg.x() * (40000000.0 / 360.0)) * cos (point.y() * (PI / 180.0)),
-                        northUp * reldeg.y() * (40000000.0 / 360.0));
-  }
-  
-  qwtPlot->detachItems (QwtPlotItem::Rtti_PlotCurve);
+#define PI 3.1415926536
+	QVector<QPointF> airfieldDist;
+	//invert all values if northUp is -1
+	foreach (QPointF point, airfieldVector)
+		{
+			QPointF reldeg (point.x () - home.x (), point.y () - home.y ());
+			airfieldDist << QPointF (northUp * (reldeg.x () * (40000000.0 / 360.0)) * cos (point.y () * (PI / 180.0)),
+					northUp * reldeg.y () * (40000000.0 / 360.0));
+		}
+	// append the first element to close the rectangle
+	airfieldDist << airfieldDist[0];
 
-  QPen pen;
-  pen.setWidth (2);
+	QVector<QPointF> patternDist;
+	foreach (QPointF point, patternVector)
+		{
+			QPointF reldeg (point.x () - home.x (), point.y () - home.y ());
+			patternDist << QPointF (northUp * (reldeg.x () * (40000000.0 / 360.0)) * cos (point.y () * (PI / 180.0)),
+					northUp * reldeg.y () * (40000000.0 / 360.0));
+		}
 
-  QwtPlotCurve* curve1 = new QwtPlotCurve ("airfield");
-  QwtPlotCurve* curve2 = new QwtPlotCurve ("pattern");
-  QwtPointSeriesData* data1  = new QwtPointSeriesData (airfieldDist);
-  QwtPointSeriesData* data2  = new QwtPointSeriesData (patternDist);
-  curve1->setData (data1);
-  curve2->setData (data2);
-  curve1->setPen (pen);
-  curve1->attach (qwtPlot);
-  curve2->attach (qwtPlot);
+	qwtPlot->detachItems (QwtPlotItem::Rtti_PlotCurve);
+
+	QPen pen;
+	pen.setWidth (2);
+
+	QwtPlotCurve* curve1 = new QwtPlotCurve ("airfield");
+	QwtPlotCurve* curve2 = new QwtPlotCurve ("pattern");
+	QwtPointSeriesData* data1 = new QwtPointSeriesData (airfieldDist);
+	QwtPointSeriesData* data2 = new QwtPointSeriesData (patternDist);
+	curve1->setData (data1);
+	curve2->setData (data2);
+	curve1->setPen (pen);
+	curve1->attach (qwtPlot);
+	curve2->attach (qwtPlot);
 }
 
-void FlarmMap::refreshFlarm() {
-  qwtPlot->detachItems (QwtPlotItem::Rtti_PlotMarker);
+void FlarmMap::refreshFlarm ()
+{
+	qwtPlot->detachItems (QwtPlotItem::Rtti_PlotMarker);
+	// FIXME cannot detach all curves unless we always recreate the static
+	// curves (airfield, traffic circuit)
+	// FIXME done in drawAirfield, this sucks
+//	qwtPlot->detachItems (QwtPlotItem::Rtti_PlotCurve);
 
-  QMap<QString,FlarmRecord*>* regMap = FlarmHandler::getInstance()->getRegMap();
-  foreach (FlarmRecord* record, *regMap) {
-    //qDebug () << i.value()->reg << "; " << i.value()->alt << "; " << i.value()->speed << endl;
+	//  QMap<QString,FlarmRecord*>* regMap = FlarmHandler::getInstance()->getRegMap();
+	//  foreach (FlarmRecord* record, *regMap) {
+	foreach (FlarmRecord *record, FlarmHandler::getInstance ()->getFlarmRecords ()->getList ())
+	{
+		//qDebug () << i.value()->reg << "; " << i.value()->alt << "; " << i.value()->speed << endl;
 
-    FlarmRecord::flarmState state = record->getState();
-    // we will not show far away planes or planes on ground
-    if (state == FlarmRecord::stateStarting || state == FlarmRecord::stateFlying || state == FlarmRecord::stateLanding ) {
-      QwtPlotMarker* marker = new QwtPlotMarker ();
-      QwtText text((record->registration + "\n%1/%2/%3").arg(record->getAlt()).arg(record->getSpeed()).arg(record->getClimb(), 0, 'f', 1));
-      //if (record->getState() == FlarmRecord::stateFlyingFar) {
-      //  text.setColor (Qt::white);
-      //  text.setBackgroundBrush (QBrush(Qt::red));
-      //}
-      if (record->getClimb() > 0.0)
-        text.setBackgroundBrush (QBrush(Qt::green));
-      else
-        text.setBackgroundBrush (QBrush(Qt::yellow));
-      marker->setLabel (text);
-      // south is top if northUp is -1
-      marker->setXValue (northUp * record->east);
-      marker->setYValue (northUp * record->north);
-      marker->attach (qwtPlot);
-    }
-  }  
+		FlarmRecord::flarmState state = record->getState ();
+		// we will not show far away planes or planes on ground
+		if (state == FlarmRecord::stateStarting || state == FlarmRecord::stateFlying || state
+				== FlarmRecord::stateLanding)
+		{
+			QwtPlotMarker* marker = new QwtPlotMarker ();
+			QwtText text (
+					(record->getRegistration () + "\n%1/%2/%3").arg (record->getAlt ()).arg (
+							record->getGroundSpeed () / Speed::km_h).arg (record->getClimb (), 0, 'f', 1));
+			//if (record->getState() == FlarmRecord::stateFlyingFar) {
+			//  text.setColor (Qt::white);
+			//  text.setBackgroundBrush (QBrush(Qt::red));
+			//}
+			QColor climbColor=Qt::green;
+			QColor descentColor=Qt::yellow;
 
-  QwtPlotMarker* marker = new QwtPlotMarker ();
-  QwtText text ("Start");
-  //text.setPaintAttribute (QwtText::PaintBackground, true);
-  text.setBackgroundBrush (QBrush(Qt::red));
-  marker->setLabel (text);
-  marker->setXValue (0);
-  marker->setYValue (0);
-  marker->attach (qwtPlot);
+			climbColor.setAlpha (127);
+			descentColor.setAlpha (127);
 
-  qwtPlot->replot();
+			if (record->getClimb () > 0.0)
+				text.setBackgroundBrush (QBrush (climbColor));
+			else
+				text.setBackgroundBrush (QBrush (descentColor));
+			marker->setLabel (text);
+			// south is top if northUp is -1
+			marker->setXValue (northUp * record->getEast ());
+			marker->setYValue (northUp * record->getNorth ());
+			marker->attach (qwtPlot);
+
+
+			QVector<QPointF> points=record->getPreviousPositions ().toVector ();
+			for (int i=0, n=points.size (); i<n; ++i)
+				points[i]=northUp*points[i];
+
+			QPen pen;
+			pen.setWidth (2);
+
+			// FIXME delete it?
+			QwtPlotCurve* curve = new QwtPlotCurve ("history");
+			QwtPointSeriesData* data = new QwtPointSeriesData (points);
+			curve->setData (data);
+			curve->setPen (pen);
+			curve->attach (qwtPlot);
+		}
+	}
+
+	QwtPlotMarker* marker = new QwtPlotMarker ();
+	QwtText text ("Start");
+	//text.setPaintAttribute (QwtText::PaintBackground, true);
+	text.setBackgroundBrush (QBrush (Qt::red));
+	marker->setLabel (text);
+	marker->setXValue (0);
+	marker->setYValue (0);
+	marker->attach (qwtPlot);
+
+	qwtPlot->replot ();
 }
 
 void FlarmMap::orientationChanged (bool up) {

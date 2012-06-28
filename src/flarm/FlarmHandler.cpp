@@ -5,6 +5,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QPointF>
 
+#include "src/model/objectList/MutableObjectList.h"
 #include "src/config/Settings.h"
 #include "src/model/Plane.h"
 #include "src/io/dataStream/TcpDataStream.h"
@@ -20,14 +21,10 @@
 FlarmHandler* FlarmHandler::instance = NULL;
 
 FlarmHandler::FlarmHandler (QObject* parent): QObject (parent),
-	regMap (new QMap<QString, FlarmRecord *> ()),
+//	regMap (new QMap<QString, FlarmRecord *> ()),
 	trace (NULL), stream (NULL),
-	enabled (false)
+	flarmRecords (new MutableObjectList<FlarmRecord *>)
 {
-	refreshTimer = new QTimer (this);
-	connect (refreshTimer, SIGNAL (timeout ()), this, SIGNAL (statusChanged ()));
-
-
 //	QDate today (QDate::currentDate());
 //	QString filename = QString ("/var/log/startkladde/startkladde-%1.trc").arg(today.toString("yyyyMMdd"));
 //	trace = new QFile (filename, this);
@@ -40,7 +37,7 @@ FlarmHandler::~FlarmHandler ()
 	if (trace) trace->close();
 	delete trace;
 	delete stream;
-	// FIXME delete trace
+	delete flarmRecords;
 }
 
 FlarmHandler* FlarmHandler::getInstance ()
@@ -61,50 +58,73 @@ void FlarmHandler::setDatabase (DbManager *db)
 }
 
 
+
+QDateTime FlarmHandler::getGpsTime () {
+        return gpsTime;
+}
+
+
+// ****************
+// ** Flarm data **
+// ****************
+
+const MutableObjectList<FlarmRecord *> *FlarmHandler::getFlarmRecords () const
+{
+	return flarmRecords;
+}
+
+int FlarmHandler::findFlarmRecordByFlarmId (const QString &flarmId)
+{
+	// FIXME cache - listen to the MutableObjectList signals
+	for (int i=0, n=flarmRecords->size (); i<n; ++i)
+		if (flarmRecords->at (i)->getFlarmId ()==flarmId)
+			return i;
+
+	return -1;
+}
+
 // **********
 // ** Misc **
 // **********
 
-void FlarmHandler::setEnabled (bool e) {
-        if (e != enabled) {
-                enabled = e;
-                if (enabled)
-                {
-        	        // initialize Flarm TcpPort
-        	        refreshTimer->start (5000);
-                }
-                else
-                {
-                	refreshTimer->stop();
-                }
-        }
-}
+int FlarmHandler::findOrCreateFlarmRecord (const QString &flarmId)
+{
+	int index=findFlarmRecordByFlarmId (flarmId);
 
+	if (index>=0)
+	{
+		return index;
+	}
+	else
+	{
+		// FIXME delete it
+		FlarmRecord *record=new FlarmRecord (this, flarmId);
 
-QString FlarmHandler::flightActionToString (FlarmRecord::FlightAction action) {
-        switch (action)
-        {
-                case FlarmRecord::departure:
-                        return tr ("started");
-                case FlarmRecord::landing:
-                        return tr ("landed");
-                case FlarmRecord::goAround:
-                        return tr ("go around");
-        }
-        return "";
-}
+		// try get info from flarmnet database
+		/*
+		 FlarmNetRecord* flarmnet_record = FlarmNetDb::getInstance()->getData (flarmid);
+		 if (flarmnet_record) {
+		 record->freq = flarmnet_record->freq;
+		 record->reg  = flarmnet_record->registration;
+		 }
+		 */
 
-void FlarmHandler::updateList (const Plane& plane) {
-        if (!plane.flarmId.isEmpty()) {
-                FlarmRecord* record = regMap->value (plane.flarmId);
-                if (record)
-                        record->registration = plane.registration;
-        }
-}
+		// Try to get the registration from own database
+		Plane *plane;
+		dbId planeId = dbManager->getCache ().getPlaneIdByFlarmId (flarmId);
+		if (idValid (planeId))
+		{
+			plane = dbManager->getCache ().getNewObject<Plane> (planeId);
+			record->setRegistration (plane->registration);
+			record->setCategory (plane->category);
+		}
 
+		connect (record, SIGNAL (actionDetected (const QString &, FlarmRecord::FlightAction)), this, SIGNAL (actionDetected (const QString &, FlarmRecord::FlightAction)));
 
-QDateTime FlarmHandler::getGPSTime () {
-        return gpsTime;
+		flarmRecords->append (record);
+		return flarmRecords->size ()-1;
+	}
+
 }
 
 void FlarmHandler::processPflaaSentence (const PflaaSentence &sentence)
@@ -115,38 +135,17 @@ void FlarmHandler::processPflaaSentence (const PflaaSentence &sentence)
 		return;
 	}
 
-	FlarmRecord* record;
-	if (!regMap->contains (sentence.flarmId))
-	{
-		// try get info from flarmnet database
-		record = new FlarmRecord (this, sentence.flarmId, FlarmRecord::stateUnknown);
-		/*
-		 FlarmNetRecord* flarmnet_record = FlarmNetDb::getInstance()->getData (flarmid);
-		 if (flarmnet_record) {
-		 record->freq = flarmnet_record->freq;
-		 record->reg  = flarmnet_record->registration;
-		 }
-		 */
-		// Try to get the registration from own database
-		Plane *plane;
-		dbId planeId = dbManager->getCache ().getPlaneIdByFlarmId (sentence.flarmId);
-		if (idValid (planeId))
-		{
-			plane = dbManager->getCache ().getNewObject<Plane> (planeId);
-			record->registration = plane->registration;
-			record->category = plane->category;
-		}
-		connect (record, SIGNAL(keepAliveTimeout()), this, SLOT(keepAliveTimeout()));
-		connect (record, SIGNAL(landingTimeout()), this, SLOT(landingTimeout()));
-		connect (record, SIGNAL (actionDetected (const QString &, FlarmHandler::FlightAction)), this, SIGNAL (actionDetected (const QString &, FlarmHandler::FlightAction)));
-		regMap->insert (sentence.flarmId, record);
-	}
-	else
-	{
-		record = (*regMap)[sentence.flarmId];
-	}
+	// FIXME DOING do properly:
+	//   * modifying the MutlableObjectList entry
+	//   * then caching of flarm id
 
-	record->processPflaaSentence (sentence);
+	int index=findOrCreateFlarmRecord (sentence.flarmId);
+
+	// FIXME the flarm record may also update "itself" from its timer event. The
+	// model will not notice that.
+	flarmRecords->at (index)->processPflaaSentence (sentence);
+	flarmRecords->update (index);
+
 	emit statusChanged ();
 }
 
@@ -173,50 +172,4 @@ void FlarmHandler::lineReceived (const QString &line)
 		processPflaaSentence (PflaaSentence (line));
 	else if (line.startsWith ("$GPRMC"))
 		processGprmcSentence (GprmcSentence (line));
-}
-
-// FIXME to FlarmRecord
-void FlarmHandler::keepAliveTimeout () {
-        FlarmRecord* record = (FlarmRecord*)sender();
-        if (record) {
-                QString flarmid = record->flarmid;
-                qDebug () << "keepAliveTimeout:" << flarmid << "; state =" << record->getState();
-                record->keepAliveTimer->stop();
-                switch (record->getState()) {
-                case FlarmRecord::stateLanding:
-                        qDebug () << "landing by timeout1:" << flarmid;
-                        record->setState (FlarmRecord::stateOnGround);
-                        emit actionDetected (flarmid, FlarmRecord::landing);
-                        break;
-                case FlarmRecord::stateStarting:
-                        qDebug () << "out of range:" << flarmid;
-                        //don't change state
-                        //record->setState (FlarmRecord::stateFlyingFar);
-                        break;
-                case FlarmRecord::stateFlying:
-                        qDebug () << "out of range:" << flarmid;
-                        record->setState (FlarmRecord::stateFlyingFar);
-                        break;
-                default: break;
-                }
-        }
-}
-
-// FIXME to FlarmRecord
-void FlarmHandler::landingTimeout () {
-        FlarmRecord* record = (FlarmRecord*)sender();
-        if (record) {
-                QString flarmid = record->flarmid;
-                qDebug () << "landingTimeout:" << flarmid << "; state =" << record->getState();
-                record->landingTimer->stop();
-                switch (record->getState()) {
-                case FlarmRecord::stateOnGround:
-                        qDebug () << "landing by timeout2:" << flarmid;
-                        emit actionDetected (flarmid, FlarmRecord::landing);
-                        break;
-                default:
-                        qCritical () << "landingTimeout in invalid state: " << record->getState() << "; flarmid = " << flarmid;
-                        break;
-                }
-        }
 }

@@ -1,53 +1,82 @@
-#include <QtDebug>
 #include "FlarmRecord.h"
+
+#include <iostream>
+
+#include <QtDebug>
+
 #include "src/i18n/notr.h"
 #include "src/flarm/PflaaSentence.h"
+#include "src/numeric/Speed.h"
 
-FlarmRecord::FlarmRecord (QObject* parent, const QString& id, flarmState _state)
-        : QObject (parent), flarmid (id), state (_state)
+// ******************
+// ** Construction **
+// ******************
+
+FlarmRecord::FlarmRecord (QObject *parent, const QString &flarmId): QObject (parent),
+	flarmId (flarmId),
+	altitude (0), lastAltitude (0),
+	groundSpeed (0), lastGroundSpeed (0),
+	climbRate (0), lastClimbRate (0),
+	north (0), east (0),
+	state (stateUnknown),
+	category (Plane::categoryNone)
 {
-        alt   = 0;
-        speed = 0;
-        climb = 0.0;
-        last_speed = 0;
-        last_alt   = 0;
-        last_climb = 0.0;
-        north = 0;
-        east  = 0;
-        category = Plane::categoryNone;
-        keepAliveTimer = new QTimer (this);
-        landingTimer = new QTimer (this);
-        connect (keepAliveTimer, SIGNAL(timeout()), this, SIGNAL(keepAliveTimeout()));
-        connect (landingTimer, SIGNAL(timeout()), this, SIGNAL(landingTimeout()));
+	keepaliveTimer = new QTimer (this);
+	landingTimer   = new QTimer (this);
+	connect (keepaliveTimer, SIGNAL (timeout ()), this, SLOT (keepaliveTimeout ()));
+	connect (landingTimer  , SIGNAL (timeout ()), this, SLOT (landingTimeout   ()));
 }
+
+FlarmRecord::~FlarmRecord ()
+{
+	// The timers are deleted automatically
+}
+
+// ****************
+// ** Properties **
+// ****************
+
+
+
+void FlarmRecord::setRegistration (const QString &registration)
+{
+	this->registration=registration;
+}
+
+void FlarmRecord::setCategory (Plane::Category category)
+{
+	this->category=category;
+}
+
+
+
+// **********
+// ** Misc **
+// **********
 
 void FlarmRecord::setState (flarmState _state)
 {
         state = _state;
         switch (state) {
         case stateOnGround:
-                qDebug () << "on ground" << flarmid;
+                qDebug () << "on ground" << flarmId;
                 break;
         case stateStarting:
-                qDebug () << "starting" << flarmid;
+                qDebug () << "starting" << flarmId;
                 break;
         case stateFlying:
-                qDebug () << "flying" << flarmid;
+                qDebug () << "flying" << flarmId;
                 break;
         case stateFlyingFar:
-                qDebug () << "flying far" << flarmid;
+                qDebug () << "flying far" << flarmId;
                 break;
         case stateLanding:
-                qDebug () << "landing" << flarmid;
+                qDebug () << "landing" << flarmId;
                 break;
         default:
-                qDebug () << "unknown" << flarmid;
+                qDebug () << "unknown" << flarmId;
                 break;
         }
-}
-
-FlarmRecord::flarmState FlarmRecord::getState () const {
-        return state;
 }
 
 QString FlarmRecord::getStateText () const {
@@ -67,107 +96,52 @@ QString FlarmRecord::getStateText () const {
         }
 }
 
-void FlarmRecord::setClimb (double clmb) {
-        climb = clmb;
-}
-
-double FlarmRecord::getClimb () const {
-        return climb;
-}
-
-void FlarmRecord::setSpeed (int spd) {
-        last_speed = speed;
-        speed = spd;
-}
-
-int FlarmRecord::getSpeed () const {
-        return speed;
-}
-
-void FlarmRecord::setAlt (int a) {
-        last_alt = alt;
-        alt = a;
-}
-
-int FlarmRecord::getAlt () const {
-        return alt;
-}
-
 bool FlarmRecord::isPlausible () const {
-        if (abs (last_alt - alt) > 100) 
+        if (abs (lastAltitude - altitude) > 100)
                 return false;
-        // speed is in km/h
-        if (abs (last_speed - speed) > 100)
+        // speed is in m/s
+        if (abs (lastGroundSpeed - groundSpeed) > (100.0/3.6))
                 return false;
-        if (speed < 0)
+        if (groundSpeed < 0)
                 return false;
-        if (speed > 300)
+        if (groundSpeed > (300.0/3.6))
                 return false;
         return true;
 }
 
 void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 {
-	keepAliveTimer->start (5000);
+	// There is no setter for the values because they may only be changed
+	// together, lest they become inconsistent.
+	lastAltitude=altitude;
+	lastGroundSpeed=groundSpeed;
+	lastClimbRate=climbRate;
+
+	// FIXME history should be based on time, not samples - samples may get lost
+	previousPositions.enqueue (QPointF (east, north));
+	for (int i=0; i<previousPositions.size ()-20; ++i)
+		previousPositions.dequeue ();
+
+	altitude    = sentence.relativeVertical;
+	groundSpeed = sentence.groundSpeed;
+	climbRate   = sentence.climbRate;
+	north       = sentence.relativeNorth;
+	east        = sentence.relativeEast;
+
+
+
+	keepaliveTimer->start (5000);
 	FlarmRecord::flarmState old_state = getState ();
-	FlarmRecord::flarmEvent event;
-	// 10 m/s = 36 km/h
-	// FIXME store in m/s
-	setSpeed ((sentence.groundSpeed * 36) / 10);
-	north = sentence.relativeNorth;
-	east = sentence.relativeEast;
-	setAlt (sentence.relativeVertical);
-	setClimb (sentence.climbRate);
 	if (!isPlausible ()) return;
 
-	//                          ground speed
-	//           | 0-2 m/s | 2-10 m/s | 10-40 m/s | >40 m/s
-	// altitude  |---------+----------+-----------+--------
-	// >40m      |ground   |fly       |fly        |fly
-	// 0-40m     |ground   |ground    |low        |fly
-
-	if (sentence.groundSpeed < 2)
-	{
-		// Stationary - on ground
-		event = eventGround;
-	}
-	else if (sentence.groundSpeed < 10)
-	{
-		if (sentence.relativeVertical < 40)
-		{
-			// Slow with a low altitude - on ground
-			event = eventGround;
-		}
-		else
-		{
-			// Slow with a high altitude - flying
-			event = eventFly;
-		}
-	}
-	// try to avoid low pass
-	else if (sentence.groundSpeed < 40)
-	{
-		if (sentence.relativeVertical < 40)
-		{
-			//
-			event = eventLow;
-		}
-		else
-		{
-			event = eventFly;
-		}
-	}
-	else
-	{
-		event = eventFly;
-	}
+	FlightSituation event=getSituation ();
 
 	switch (old_state)
 	{
 		case FlarmRecord::stateOnGround:
 			switch (event)
 			{
-				case FlarmRecord::eventFly:
+				case FlarmRecord::flyingSituation:
 					// should not happen. Plane was on ground before, now flying?
 					// ignore event?
 					if (landingTimer->isActive ())
@@ -187,7 +161,7 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 						emit actionDetected (sentence.flarmId, departure);
 					}
 					break;
-				case FlarmRecord::eventLow:
+				case FlarmRecord::lowSituation:
 					if (landingTimer->isActive ())
 					{
 						qDebug () << "go around2:" << sentence.flarmId;
@@ -211,7 +185,7 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 		case FlarmRecord::stateLanding:
 			switch (event)
 			{
-				case FlarmRecord::eventGround:
+				case FlarmRecord::groundSituation:
 					qDebug () << "landing continued:" << sentence.flarmId;
 					setState (FlarmRecord::stateOnGround);
 					if (category == Plane::categoryMotorglider)
@@ -219,7 +193,7 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 					else
 						emit actionDetected (sentence.flarmId, landing);
 					break;
-				case FlarmRecord::eventFly:
+				case FlarmRecord::flyingSituation:
 					qDebug () << "go around3:" << sentence.flarmId;
 					setState (FlarmRecord::stateFlying);
 					if (category == Plane::categoryMotorglider)
@@ -233,7 +207,7 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 		case FlarmRecord::stateFlying:
 			switch (event)
 			{
-				case FlarmRecord::eventGround:
+				case FlarmRecord::groundSituation:
 					qCritical () << "unexpected landing from high: " << sentence.flarmId;
 					setState (FlarmRecord::stateOnGround);
 					if (category == Plane::categoryMotorglider)
@@ -241,7 +215,7 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 					else
 						emit actionDetected (sentence.flarmId, landing);
 					break;
-				case FlarmRecord::eventLow:
+				case FlarmRecord::lowSituation:
 					qDebug () << "flying low:" << sentence.flarmId;
 					setState (FlarmRecord::stateLanding);
 					break;
@@ -251,7 +225,7 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 		case FlarmRecord::stateFlyingFar:
 			switch (event)
 			{
-				case FlarmRecord::eventGround:
+				case FlarmRecord::groundSituation:
 					qCritical () << "unexpected landing from far: " << sentence.flarmId;
 					setState (FlarmRecord::stateOnGround);
 					if (category == Plane::categoryMotorglider)
@@ -259,11 +233,11 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 					else
 						emit actionDetected (sentence.flarmId, landing);
 					break;
-				case FlarmRecord::eventLow:
+				case FlarmRecord::lowSituation:
 					qDebug () << "flying low:" << sentence.flarmId;
 					setState (FlarmRecord::stateLanding);
 					break;
-				case FlarmRecord::eventFly:
+				case FlarmRecord::flyingSituation:
 					qDebug () << "still flying:" << sentence.flarmId;
 					setState (FlarmRecord::stateFlying);
 					break;
@@ -273,12 +247,12 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 		case FlarmRecord::stateStarting:
 			switch (event)
 			{
-				case FlarmRecord::eventGround:
+				case FlarmRecord::groundSituation:
 					qDebug () << "departure aborted:" << sentence.flarmId;
 					setState (FlarmRecord::stateOnGround);
 					emit actionDetected (sentence.flarmId, landing);
 					break;
-				case FlarmRecord::eventFly:
+				case FlarmRecord::flyingSituation:
 					qDebug () << "departure continued:" << sentence.flarmId;
 					setState (FlarmRecord::stateFlying);
 					break;
@@ -288,20 +262,107 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 		default:
 			switch (event)
 			{
-				case FlarmRecord::eventGround:
+				case FlarmRecord::groundSituation:
 					qDebug () << "new on ground:" << sentence.flarmId;
 					setState (FlarmRecord::stateOnGround);
 					break;
-				case FlarmRecord::eventFly:
+				case FlarmRecord::flyingSituation:
 					qDebug () << "new flying:" << sentence.flarmId;
 					setState (FlarmRecord::stateFlying);
 					break;
-				case FlarmRecord::eventLow:
+				case FlarmRecord::lowSituation:
 					qDebug () << "new flying low:" << sentence.flarmId;
 					setState (FlarmRecord::stateLanding);
 					break;
 				default: break;
 			}
 			break;
+	}
+}
+
+void FlarmRecord::keepaliveTimeout ()
+{
+	qDebug () << "keepAliveTimeout:" << flarmId << "; state =" << getState ();
+	keepaliveTimer->stop ();
+	switch (getState ())
+	{
+		case FlarmRecord::stateLanding:
+			qDebug () << "landing by timeout1:" << flarmId;
+			setState (FlarmRecord::stateOnGround);
+			emit actionDetected (flarmId, FlarmRecord::landing);
+			break;
+		case FlarmRecord::stateStarting:
+			qDebug () << "out of range:" << flarmId;
+			//don't change state
+			//setState (FlarmRecord::stateFlyingFar);
+			break;
+		case FlarmRecord::stateFlying:
+			qDebug () << "out of range:" << flarmId;
+			setState (FlarmRecord::stateFlyingFar);
+			break;
+		default:
+			break;
+	}
+}
+
+void FlarmRecord::landingTimeout ()
+{
+	qDebug () << "landingTimeout:" << flarmId << "; state =" << getState ();
+	landingTimer->stop ();
+	switch (getState ())
+	{
+		case FlarmRecord::stateOnGround:
+			qDebug () << "landing by timeout2:" << flarmId;
+			emit actionDetected (flarmId, FlarmRecord::landing);
+			break;
+		default:
+			qCritical () << "landingTimeout in invalid state: " << getState () << "; flarmid = " << flarmId;
+			break;
+	}
+}
+
+QString FlarmRecord::flightActionToString (FlarmRecord::FlightAction action) {
+        switch (action)
+        {
+                case FlarmRecord::departure:
+                        return tr ("started");
+                case FlarmRecord::landing:
+                        return tr ("landed");
+                case FlarmRecord::goAround:
+                        return tr ("go around");
+        }
+        return "";
+}
+
+FlarmRecord::FlightSituation FlarmRecord::getSituation () const
+{
+	//                          ground speed
+	//           | 0-2 m/s | 2-10 m/s | 10-40 m/s | >40 m/s
+	// altitude  |---------+----------+-----------+--------
+	// >40m      |ground   |fly       |fly        |fly
+	// 0-40m     |ground   |ground    |low        |fly
+	// try to avoid low pass
+
+	if (groundSpeed < 2)
+	{
+		return groundSituation;
+	}
+	else if (groundSpeed < 10)
+	{
+		if (altitude < 40)
+			return groundSituation;
+		else
+			return flyingSituation;
+	}
+	else if (groundSpeed < 40)
+	{
+		if (altitude < 40)
+			return lowSituation;
+		else
+			return flyingSituation;
+	}
+	else
+	{
+		return flyingSituation;
 	}
 }
