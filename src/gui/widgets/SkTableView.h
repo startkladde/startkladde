@@ -24,6 +24,7 @@ class QMouseEvent;
  *   - on double click on empty (non-cell) space, doubleClicked is emitted with
  *     an invalid index
  *   - colored selections via SkItemDelegate
+ *   - automatic resizing of rows and columns
  *   - ...
  */
 class SkTableView: public QTableView
@@ -40,7 +41,8 @@ class SkTableView: public QTableView
 		virtual void setEffectiveModel (QAbstractItemModel *model) { setModel (model); }
 		virtual QAbstractItemModel *getEffectiveModel () { return model (); }
 
-		value_accessor (bool, AutoResizeRows, autoResizeRows);
+		value_accessor (bool, AutoResizeRows   , autoResizeRows   );
+		value_accessor (bool, AutoResizeColumns, autoResizeColumns);
 
 		// Settings
 		void setColoredSelectionEnabled (bool value);
@@ -90,6 +92,7 @@ class SkTableView: public QTableView
 		bool settingButtons;
 
 		bool autoResizeRows;
+		bool autoResizeColumns;
 
 		SkItemDelegate *itemDelegate;
 };

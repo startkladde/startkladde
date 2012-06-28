@@ -1,5 +1,5 @@
 /*
- * Improvements:
+  * Improvements:
  *   - horizontal scrolling using the scroll bar (mouse) does not update the
  *     widget focus (updateWidgetFocus is not called)
  *   - updating the data (e. g. flight duration on minute change) recreates the
@@ -52,7 +52,7 @@
  * do it.
  *
  * In short:
- *   - Don't use a syle sheet - it's slow.
+ *   - Don't use a style sheet - it's slow.
  *   - Don't use a palette - it may be ignored by the style
  */
 
@@ -82,7 +82,7 @@
 SkTableView::SkTableView (QWidget *parent):
 	QTableView (parent),
 	settingButtons (false),
-	autoResizeRows (false),
+	autoResizeRows (false), autoResizeColumns (false),
 	itemDelegate (new SkItemDelegate (this))
 {
 	setTabKeyNavigation (false);
@@ -107,6 +107,9 @@ void SkTableView::layoutChanged ()
 	// This happens when the SortFilterModel filter settings are changed
 	if (autoResizeRows)
 		resizeRowsToContents ();
+
+	if (autoResizeColumns)
+		resizeColumnsToContents ();
 }
 
 void SkTableView::updateButtons (int row)
@@ -163,6 +166,9 @@ void SkTableView::rowsInserted (const QModelIndex &parent, int start, int end)
 
 	if (autoResizeRows)
 		resizeRowsToContents ();
+
+	if (autoResizeColumns)
+		resizeColumnsToContents ();
 }
 
 void SkTableView::dataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight)
@@ -179,6 +185,10 @@ void SkTableView::dataChanged (const QModelIndex &topLeft, const QModelIndex &bo
 	if (autoResizeRows)
 		for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
 			resizeRowToContents (i);
+
+	if (autoResizeColumns)
+		for (int i=topLeft.column (); i<=bottomRight.column (); ++i)
+			resizeColumnToContents (i);
 
 	// The button focus may be lost after a prepared flight has been edited.
 	// Don't update the focus, it is slow
@@ -216,6 +226,9 @@ void SkTableView::reset ()
 
 	if (autoResizeRows)
 		resizeRowsToContents ();
+
+	if (autoResizeColumns)
+		resizeColumnsToContents ();
 }
 
 void SkTableView::keyPressEvent (QKeyEvent *e)
