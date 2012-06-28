@@ -74,36 +74,37 @@ bool Nmea::verifyChecksum (const QString &sentence)
 
 Angle Nmea::parseLatitude  (const QString &value, const QString &sign)
 {
-	return parseAngle (value, sign, "N", "S");
+	return parseAngle (value, sign, 2, "N", "S");
 }
 
 Angle Nmea::parseLongitude (const QString &value, const QString &sign)
 {
-	return parseAngle (value, sign, "E", "W");
+	return parseAngle (value, sign, 3, "E", "W");
 }
 
-Angle Nmea::parseAngle (const QString &value, const QString sign, const QString &positiveSign, const QString &negativeSign)
+Angle Nmea::parseAngle (const QString &value, const QString sign, int degreeDigits, const QString &positiveSign, const QString &negativeSign)
 {
 	// Format of value is DDMM.MMMM
 
 	bool ok=false;
 
 	// If the string is too short, return an invalid angle.
-	if (value.length ()<3) return Angle ();
+	if (value.length ()<degreeDigits+1) return Angle ();
 
 	// Extract the degrees. If invalid, return an invalid angle.
-	int degrees=value.left (2).toInt (&ok);
+	int degrees=value.left (degreeDigits).toInt (&ok);
 	if (!ok) return Angle ();
 
 	// Extract the minutes. If invalid, return an invalid angle.
-	double minutes=value.mid (2).toDouble (&ok);
+	double minutes=value.mid (degreeDigits).toDouble (&ok);
 	if (!ok) return Angle ();
 
 	// Depending on the sign, return the value or an invalid value.
+	double magnitude=degrees+minutes/60;
 	if (sign==positiveSign)
-		return Angle (+(degrees+minutes/60));
+		return Angle (+magnitude);
 	else if (sign==negativeSign)
-		return Angle (-(degrees+minutes/60));
+		return Angle (-magnitude);
 	else
 		return Angle ();
 }

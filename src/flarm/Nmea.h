@@ -29,7 +29,7 @@ class Nmea
 	private:
 		Nmea ();
 
-		static Angle parseAngle (const QString &value, const QString sign, const QString &positiveSign, const QString &negativeSign);
+		static Angle parseAngle (const QString &value, const QString sign, int degreeDigits, const QString &positiveSign, const QString &negativeSign);
 };
 
 #endif
