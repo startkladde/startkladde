@@ -11,15 +11,23 @@
 #include <QAbstractTableModel>
 
 /**
- * A list of objects that performs as a QAbstractTableModel, by emitting
+ * A list of objects that performs as a QAbstractTableModel, emitting
  * signals on change.
  *
- * The data provided by this is a table with a single column, containing the
- * result of the object's toString method. For a custom table model, use
- * ObjectListModel.
+ * This model does not provide any data. It just serves as a container for
+ * objects that is able to notify listeners of changes. For a model that
+ * provides data for objects in an AbstractObjectList, use ObjectListModel.
+ *
+ * Objects stored in this container must be assignable; it is, however, possible
+ * to store pointers to objects. In this case, the objects themselves do not
+ * have to be assignable; pointers always are assignable.
  *
  * Note that this QObject can be a template as it defines no signals or slots.
  */
+// FIXME: don't implement the methods that don't do anything useful?
+// FIXME: can we still listen to changes, or do we need a dummy column for that?
+// TODO: maybe we should have a pointer based list instead of (or in addition
+// to) the value based list
 template<class T> class AbstractObjectList: public QAbstractTableModel
 {
 	public:
@@ -89,28 +97,27 @@ template<class T> int AbstractObjectList<T>::rowCount (const QModelIndex &index)
 }
 
 /**
- * The number of columns in the model - 1 for the root index, invalid else
+ * The number of columns in the model - this is always 0.
  *
  * @see QAbstractTableModel::columnCount
  */
 template<class T> int AbstractObjectList<T>::columnCount (const QModelIndex &index) const
 {
-	if (index.isValid ()) return 0;
-	return 1;
+	Q_UNUSED (index);
+	return 0;
 }
 
 /**
- * The data for a given model index and role. Uses the toString method of the
- * object at the given index for the DisplayRole
+ * The data for a given model index and role. This model provides no data, so
+ * the resul is always an invalid value.
  *
  * @see QAbstractTableModel::data
  */
 template<class T> QVariant AbstractObjectList<T>::data (const QModelIndex &index, int role) const
 {
-	if (role!=Qt::DisplayRole) return QVariant ();
-
-	const T &object=at (index.row ());
-	return object.toString ();
+	Q_UNUSED (index);
+	Q_UNUSED (role);
+	return QVariant ();
 }
 
 /**
