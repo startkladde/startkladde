@@ -137,6 +137,37 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 
 	FlightSituation event=getSituation ();
 
+	// [goaround]: motorglider emit go around, others "unexpected goaround of glider"
+	// [landing]: motorglider start landing timer 30s, others emit landing
+
+	// state      | situation       | next state | comments
+	// -----------+-----------------+------------+--------------------------
+	// unknown    | ground          |on ground   | "new on ground"
+	// unknown    | low             |landing     | "new flying low"
+	// unknown    | flying          |flying      | "new flying"
+	//
+	// on ground  | ground          |-
+	// on ground  | low             |starting    |timer active? ("go around2", stop it, [goaround]) else ("flat start", emit departure)
+	// on ground  | flying          |flying      |timer active? ("unexpected go around1", stop it, [goaround] else ("unexpected start", emit departure)
+	//                                            "should not happen. Plane was on ground before, now flying? ignore event?"
+	//
+	// starting   | ground          |on ground   |"departure aborted", emit landing
+	// starting   | low             |-
+	// starting   | flying          |flying      |"departure continued"
+	//
+	// flying     | ground          |on ground   |"unexpected landing from high", [landing]
+	// flying     | low             |landing     |"flying low"
+	// flying     | flying          |-
+	//
+	// flying far | ground          |on ground   |"unexpected landing from far", [landing]
+	// flying far | low             |landing     |"flying low"
+	// flying far | flying          |flying      |"still flying"
+	//
+	// landing    | ground          |on ground   |"landing continued", [landing]
+	// landing    | low             |-
+	// landing    | flying          |flying      |"go around3", [goaround]
+
+
 	switch (old_state)
 	{
 		case FlarmRecord::stateOnGround:
