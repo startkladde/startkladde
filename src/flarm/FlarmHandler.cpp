@@ -158,7 +158,12 @@ void FlarmHandler::processGprmcSentence (const GprmcSentence &sentence)
 	}
 
 	if (sentence.status)
-		emit homePosition (QPointF (sentence.longitude.getValue (), sentence.latitude.getValue ()));
+	{
+		// FIXME store, and use GeoPosition
+		emit homePosition (sentence.position);
+		// FIXME signal
+		gpsTime=sentence.timestamp;
+	}
 }
 
 void FlarmHandler::lineReceived (const QString &line)

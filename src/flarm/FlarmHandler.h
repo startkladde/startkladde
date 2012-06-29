@@ -9,6 +9,7 @@
 #include "FlarmRecord.h"
 #include "src/db/DbManager.h"
 #include "src/model/Plane.h"
+#include "src/numeric/GeoPosition.h"
 
 class PflaaSentence;
 class GprmcSentence;
@@ -36,7 +37,7 @@ class FlarmHandler: public QObject
 	signals:
 		void actionDetected (const QString &id, FlarmRecord::FlightAction);
 		void statusChanged ();
-		void homePosition (const QPointF&);
+		void homePosition (GeoPosition position);
 
 	protected:
 		int findOrCreateFlarmRecord (const QString &flarmId);

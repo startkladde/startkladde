@@ -102,9 +102,9 @@ Angle Nmea::parseAngle (const QString &value, const QString sign, int degreeDigi
 	// Depending on the sign, return the value or an invalid value.
 	double magnitude=degrees+minutes/60;
 	if (sign==positiveSign)
-		return Angle (+magnitude);
+		return Angle::fromDegrees (+magnitude);
 	else if (sign==negativeSign)
-		return Angle (-magnitude);
+		return Angle::fromDegrees (-magnitude);
 	else
 		return Angle ();
 }

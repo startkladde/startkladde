@@ -1,33 +1,47 @@
 #ifndef FLARM_MAP_H
 #define FLARM_MAP_H
-#include <QtGui/QWidget>
-#include <QtGui/QDialog>
-#include <qwt_series_data.h>
+
 #include "ui_FlarmMap.h"
 
-class FlarmMap: public QDialog, private Ui_Map {
-Q_OBJECT
+#include "src/gui/SkDialog.h"
+#include "src/numeric/GeoPosition.h"
 
-public:
-  FlarmMap (QWidget*);
-  ~FlarmMap ();
+class QwtPointSeriesData;
 
-private slots:
-  void refreshFlarm ();
-  void storeVectors();
-  void readVectors();
-  void orientationChanged (bool);
-  void drawAirfield (const QPointF&);
 
-private:
-  	  void setExampleVectors ();
 
-private:
-  QwtPointSeriesData* data;
-  QPointF old_home;
-  QVector<QPointF> airfieldVector;
-  QVector<QPointF> patternVector;
-  double northUp;
+//#include <QtGui/QWidget>
+//#include <QtGui/QDialog>
+
+
+class FlarmMap: public SkDialog<Ui::FlarmMapDialog>
+{
+	Q_OBJECT
+
+	public:
+		FlarmMap (QWidget *parent);
+		~FlarmMap ();
+
+
+	private slots:
+		void refreshFlarm ();
+		void storeVectors ();
+		void readVectors ();
+
+		void drawAirfield (const GeoPosition &home);
+
+	private slots:
+		void on_toggleOrientationButton_toggled (bool on);
+
+	private:
+		void setExampleVectors ();
+
+		QVector<GeoPosition> airfieldVector;
+		QVector<GeoPosition> patternVector;
+
+		QwtPointSeriesData *data;
+		GeoPosition oldHome;
+		double northUp;
 };
 
 #endif

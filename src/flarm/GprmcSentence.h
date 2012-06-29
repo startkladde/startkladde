@@ -4,7 +4,7 @@
 #include <QString>
 #include <QDateTime>
 
-#include "src/numeric/Angle.h"
+#include "src/numeric/GeoPosition.h"
 
 class GprmcSentence
 {
@@ -17,8 +17,7 @@ class GprmcSentence
 
 		QDateTime timestamp;
 		bool status;
-		Angle latitude;
-		Angle longitude;
+		GeoPosition position;
 };
 
 #endif

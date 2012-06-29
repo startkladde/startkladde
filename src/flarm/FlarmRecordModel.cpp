@@ -55,9 +55,9 @@ QVariant FlarmRecordModel::displayData (FlarmRecord * const &flarmRecord, int co
 	{
 		case 0: return flarmRecord->getFlarmId ();
 		case 1: return flarmRecord->getRegistration ();
-		case 2: return QString ("%1 m"   ).arg (flarmRecord->getAlt         ()                       );
-		case 3: return QString ("%1 km/h").arg (flarmRecord->getGroundSpeed ()/Speed::km_h           );
-		case 4: return QString ("%1 m/s" ).arg (flarmRecord->getClimb       ()/Speed::m_s , 0, 'f', 1);
+		case 2: return QString ("%1 m"   ).arg (flarmRecord->getRelativeAltitude()                       );
+		case 3: return QString ("%1 km/h").arg (flarmRecord->getGroundSpeed     ()/Speed::km_h           );
+		case 4: return QString ("%1 m/s" ).arg (flarmRecord->getClimbRate       ()/Speed::m_s , 0, 'f', 1);
 		case 5: return flarmRecord->getStateText ();
 	}
 

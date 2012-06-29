@@ -9,7 +9,20 @@
 
 class PflaaSentence;
 
-class FlarmRecord: public QObject {
+/**
+ * Stores Flarm related data for one plane
+ *
+ * Note that all numeric data (relative altitude, positions etc.), even data
+ * that is received in integer precision from the Flarm, is stored in double
+ * precision. This is because most calculations will be performed in double
+ * precision and automatic conversion is not possible in all cases. For example,
+ * a QVector<QPoint> can not be converted to a QVector<QPointF> automatically.
+ * The performance impact of using double instead if integer precision is
+ * negligible; for the QVector example, it might even be faster if we can avoid
+ * copying the vector.
+ */
+class FlarmRecord: public QObject
+{
 
 		Q_OBJECT
 
@@ -24,14 +37,13 @@ class FlarmRecord: public QObject {
 		virtual ~FlarmRecord ();
 
 		// Properties
-		QString getFlarmId     () const { return flarmId; }
-		int     getAlt         () const { return altitude; }
-		int     getGroundSpeed () const { return groundSpeed; }
-		double  getClimb       () const { return climbRate; }
-		int     getNorth       () const { return north; }
-		int     getEast        () const { return east; }
+		QString getFlarmId          () const { return flarmId; }
+		double  getRelativeAltitude () const { return relativeAltitude; }
+		double  getGroundSpeed      () const { return groundSpeed; }
+		double  getClimbRate        () const { return climbRate; }
+		QPointF getRelativePosition () const { return relativePosition; }
 
-		QList<QPointF> getPreviousPositions () const { return previousPositions; }
+		QList<QPointF> getPreviousRelativePositions () const { return previousRelativePositions; }
 
 		flarmState getState () const { return state; }
 
@@ -51,15 +63,13 @@ class FlarmRecord: public QObject {
 		FlightSituation getSituation () const;
 
 	private:
-		// Primary data
+		// Primary data (received from Flarm)
 		QString flarmId;
-		int    altitude   , lastAltitude;
-		int    groundSpeed, lastGroundSpeed;
-		double climbRate  , lastClimbRate;
-		int north, east;
-
-		// History
-		QQueue<QPointF> previousPositions;
+		QPointF relativePosition; // <East, North> in meters
+		QQueue<QPointF> previousRelativePositions;
+		double relativeAltitude, lastRelativeAltitude; // In meters
+		double groundSpeed     , lastGroundSpeed;      // In meters per second
+		double climbRate       , lastClimbRate;        // In meters per second
 
 		// Derived data
 		flarmState state;

@@ -14,10 +14,9 @@
 
 FlarmRecord::FlarmRecord (QObject *parent, const QString &flarmId): QObject (parent),
 	flarmId (flarmId),
-	altitude (0), lastAltitude (0),
+	relativeAltitude (0), lastRelativeAltitude (0),
 	groundSpeed (0), lastGroundSpeed (0),
 	climbRate (0), lastClimbRate (0),
-	north (0), east (0),
 	state (stateUnknown),
 	category (Plane::categoryNone)
 {
@@ -37,6 +36,8 @@ FlarmRecord::~FlarmRecord ()
 // ****************
 
 
+// FIXME when setRegistration and setCategory are called, we must update the
+// model views
 
 void FlarmRecord::setRegistration (const QString &registration)
 {
@@ -97,7 +98,7 @@ QString FlarmRecord::getStateText () const {
 }
 
 bool FlarmRecord::isPlausible () const {
-        if (abs (lastAltitude - altitude) > 100)
+        if (abs (lastRelativeAltitude - relativeAltitude) > 100)
                 return false;
         // speed is in m/s
         if (abs (lastGroundSpeed - groundSpeed) > (100.0/3.6))
@@ -113,20 +114,19 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 {
 	// There is no setter for the values because they may only be changed
 	// together, lest they become inconsistent.
-	lastAltitude=altitude;
+	lastRelativeAltitude=relativeAltitude;
 	lastGroundSpeed=groundSpeed;
 	lastClimbRate=climbRate;
 
 	// FIXME history should be based on time, not samples - samples may get lost
-	previousPositions.enqueue (QPointF (east, north));
-	for (int i=0; i<previousPositions.size ()-20; ++i)
-		previousPositions.dequeue ();
+	previousRelativePositions.enqueue (relativePosition);
+	for (int i=0; i<previousRelativePositions.size ()-20; ++i)
+		previousRelativePositions.dequeue ();
 
-	altitude    = sentence.relativeVertical;
-	groundSpeed = sentence.groundSpeed;
-	climbRate   = sentence.climbRate;
-	north       = sentence.relativeNorth;
-	east        = sentence.relativeEast;
+	relativeAltitude = sentence.relativeVertical;
+	groundSpeed      = sentence.groundSpeed;
+	climbRate        = sentence.climbRate;
+	relativePosition = QPointF (sentence.relativeEast, sentence.relativeNorth);
 
 
 
@@ -349,14 +349,14 @@ FlarmRecord::FlightSituation FlarmRecord::getSituation () const
 	}
 	else if (groundSpeed < 10)
 	{
-		if (altitude < 40)
+		if (relativeAltitude < 40)
 			return groundSituation;
 		else
 			return flyingSituation;
 	}
 	else if (groundSpeed < 40)
 	{
-		if (altitude < 40)
+		if (relativeAltitude < 40)
 			return lowSituation;
 		else
 			return flyingSituation;

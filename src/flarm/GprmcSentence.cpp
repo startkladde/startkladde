@@ -27,8 +27,9 @@ GprmcSentence::GprmcSentence (const QString &sentence):
 
 	timestamp = Nmea::parseDateTime (parts[9], parts[1]);
 	status    = parts[2]=="A";
-	latitude  = Nmea::parseLatitude  (parts[3], parts[4]);
-	longitude = Nmea::parseLongitude (parts[5], parts[6]);
+	Angle latitude  = Nmea::parseLatitude  (parts[3], parts[4]);
+	Angle longitude = Nmea::parseLongitude (parts[5], parts[6]);
+	position=GeoPosition (latitude, longitude);
 	// parts[7]: velocity
 	// parts[8]: track
 	// parts[9]: date (already used)

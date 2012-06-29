@@ -1,91 +1,87 @@
+#include "FlarmMap.h"
+
 #include <cmath>
+
+#include <QtCore/QSettings>
+#include <QSortFilterProxyModel>
+
 #include <qwt_plot_grid.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_marker.h>
 #include <qwt_plot_panner.h>
 #include <qwt_plot_magnifier.h>
-#include <QtCore/QSettings>
-#include <QSortFilterProxyModel>
+#include <qwt_series_data.h>
 
-#include "src/numeric/Speed.h"
-#include "FlarmMap.h"
-#include "FlarmHandler.h"
+#include "src/flarm/FlarmHandler.h"
 #include "src/flarm/FlarmRecordModel.h"
 #include "src/model/objectList/ObjectListModel.h"
+#include "src/numeric/Angle.h"
+#include "src/numeric/Speed.h"
+#include "src/numeric/GeoPosition.h"
 
-FlarmMap::FlarmMap (QWidget* parent) 
-: QDialog (parent)
+FlarmMap::FlarmMap (QWidget *parent) :
+	SkDialog<Ui::FlarmMapDialog> (parent)
 {
+	ui.setupUi (this);
+
 	// FIXME consider aspect ratio when scaling
-  setupUi (this);
-  qwtPlot->setAxisScale (QwtPlot::yLeft, -2000.0, 2000.0);
-  qwtPlot->setAxisScale (QwtPlot::xBottom, -2000.0, 2000.0);
-  QwtPlotGrid* grid = new QwtPlotGrid();
-  QwtPlotPanner* panner = new QwtPlotPanner (qwtPlot->canvas());
-  panner->setAxisEnabled(QwtPlot::yLeft, true);
-  panner->setAxisEnabled(QwtPlot::xBottom, true);
-  panner->setMouseButton(Qt::LeftButton);
-  panner->setEnabled (true);
+	ui.qwtPlot->setAxisScale (QwtPlot::yLeft, -2000.0, 2000.0);
+	ui.qwtPlot->setAxisScale (QwtPlot::xBottom, -2000.0, 2000.0);
+	QwtPlotGrid* grid = new QwtPlotGrid ();
+	QwtPlotPanner* panner = new QwtPlotPanner (ui.qwtPlot->canvas ());
+	panner->setAxisEnabled (QwtPlot::yLeft, true);
+	panner->setAxisEnabled (QwtPlot::xBottom, true);
+	panner->setMouseButton (Qt::LeftButton);
+	panner->setEnabled (true);
 
-  QwtPlotMagnifier* magnifier = new QwtPlotMagnifier(qwtPlot->canvas());
-  magnifier->setMouseButton(Qt::MidButton);
-  magnifier->setAxisEnabled(QwtPlot::yRight, true);
-  magnifier->setAxisEnabled(QwtPlot::xBottom, true);
-  // Default is 0.95. We want a factor near to 1.0 (no magnifying at all)
-  magnifier->setMouseFactor (0.995);
-  magnifier->setEnabled (true);
+	QwtPlotMagnifier* magnifier = new QwtPlotMagnifier (ui.qwtPlot->canvas ());
+	magnifier->setMouseButton (Qt::MidButton);
+	magnifier->setAxisEnabled (QwtPlot::yRight, true);
+	magnifier->setAxisEnabled (QwtPlot::xBottom, true);
+	// Default is 0.95. We want a factor near to 1.0 (no magnifying at all)
+	magnifier->setMouseFactor (0.995);
+	magnifier->setEnabled (true);
 
-  connect (buttonClose, SIGNAL (clicked()), this, SLOT (close()));
-  connect (toggleOrientation, SIGNAL(toggled(bool)), this, SLOT (orientationChanged(bool)));
+	connect (ui.closeButton, SIGNAL (clicked()), this, SLOT (close()));
 
-  FlarmHandler* flarmHandler = FlarmHandler::getInstance();
-  connect (flarmHandler, SIGNAL(homePosition(const QPointF&)),this, SLOT(drawAirfield(const QPointF&)));
-  connect (flarmHandler, SIGNAL(statusChanged()), this, SLOT(refreshFlarm()));
+	FlarmHandler* flarmHandler = FlarmHandler::getInstance ();
+	connect (flarmHandler, SIGNAL(homePosition(const GeoPosition &)), this, SLOT(drawAirfield(const GeoPosition &)));
+	connect (flarmHandler, SIGNAL(statusChanged()), this, SLOT(refreshFlarm()));
 
-  toggleOrientation->setIcon (QApplication::style()->standardIcon(QStyle::SP_ArrowUp));
-  toggleOrientation->setToolTip (QString::fromUtf8 ("Karte nach Norden ausrichten"));
-  northUp = -1.0;
+	ui.toggleOrientationButton->setIcon (QApplication::style ()->standardIcon (QStyle::SP_ArrowUp));
+	ui.toggleOrientationButton->setToolTip (QString::fromUtf8 ("Karte nach Norden ausrichten"));
+	northUp = -1.0;
 
-  /*
-  QMatrix matrix;
-  matrix = matrix.translate (1000, 1000);
-  QBrush brush (lageplan_xpm);
-  brush.setMatrix (matrix);
+	grid->attach (ui.qwtPlot);
+	data = NULL;
+	//QTimer::singleShot (0, this, SLOT (storeVectors()));
 
-  qwtPlot->setCanvasBackground (brush);
-  */
-
-  grid->attach (qwtPlot);
-  data = NULL;
-  //QTimer::singleShot (0, this, SLOT (storeVectors()));
-
-  // Setup the list
-  const AbstractObjectList<FlarmRecord *> *objectList=FlarmHandler::getInstance ()->getFlarmRecords ();
-  ObjectModel<FlarmRecord *> *objectModel=new FlarmRecordModel ();
-  ObjectListModel<FlarmRecord *> *objectListModel=new ObjectListModel<FlarmRecord *> (objectList, false, objectModel, true, this);
+	// Setup the list
+	const AbstractObjectList<FlarmRecord *> *objectList = FlarmHandler::getInstance ()->getFlarmRecords ();
+	ObjectModel<FlarmRecord *> *objectModel = new FlarmRecordModel ();
+	ObjectListModel<FlarmRecord *> *objectListModel = new ObjectListModel<FlarmRecord *> (objectList, false,
+			objectModel, true, this);
 
 	// Set the list model as the table's model with a sort proxy
-	QSortFilterProxyModel *proxyModel=new QSortFilterProxyModel (this);
+	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel (this);
 	proxyModel->setSourceModel (objectListModel);
 	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
 	proxyModel->setDynamicSortFilter (true);
-	flarmTable->setModel (proxyModel);
+	ui.flarmTable->setModel (proxyModel);
 
-  flarmTable->resizeColumnsToContents ();
-  flarmTable->resizeRowsToContents ();
-  flarmTable->setAutoResizeRows (true);
-  flarmTable->setAutoResizeColumns (false);
+	ui.flarmTable->resizeColumnsToContents ();
+	ui.flarmTable->resizeRowsToContents ();
+	ui.flarmTable->setAutoResizeRows (true);
+	ui.flarmTable->setAutoResizeColumns (false);
 
-
-
-  // Instead of reading the vectors from the configuration, you can set example
-  // vectors by enabling the call to setExampleVectors instead of readVectors.
-  // You can also store the example vectors by enabling the call to
-  // storeVectors. After that, you can disable both calls and have the vectors
-  // read from the database.
-  //setExampleVectors ();
-  //storeVectors ();
-  readVectors();
+	// Instead of reading the vectors from the configuration, you can set example
+	// vectors by enabling the call to setExampleVectors instead of readVectors.
+	// You can also store the example vectors by enabling the call to
+	// storeVectors. After that, you can disable both calls and have the vectors
+	// read from the configuration.
+//	setExampleVectors ();
+//	storeVectors ();
+	readVectors ();
 }
 
 FlarmMap::~FlarmMap () {
@@ -94,83 +90,82 @@ FlarmMap::~FlarmMap () {
 void FlarmMap::setExampleVectors ()
 {
 	airfieldVector.clear ();
-	const double p1lat = 52.9430789;
-	const double p1lon = 12.7896215;
-	const double p2lat = 52.94111;
-	const double p2lon = 12.7889;
-	const double p3lat = 52.9428;
-	const double p3lon = 12.7703;
-	const double p4lat = 52.9444;
-	const double p4lon = 12.7706;
 	airfieldVector
-		<< QPointF (p1lon, p1lat)
-		<< QPointF (p2lon, p2lat)
-		<< QPointF (p3lon, p3lat)
-		<< QPointF (p4lon, p4lat);
+		<< GeoPosition::fromDegrees (52.943078, 12.789621)
+		<< GeoPosition::fromDegrees (52.94111 , 12.7889  )
+		<< GeoPosition::fromDegrees (52.9428  , 12.7703  )
+		<< GeoPosition::fromDegrees (52.9444  , 12.7706  );
 
 	patternVector.clear ();
 	patternVector
-		<< QPointF (12.789271548674964, 52.94212392967359 )
-		<< QPointF (12.80044023244796 , 52.94122277500129 )
-		<< QPointF (12.801773857118498, 52.941120848710995)
-		<< QPointF (12.80262524603299 , 52.941320693327995)
-		<< QPointF (12.803246042023268, 52.94174595841085 )
-		<< QPointF (12.804757118515505, 52.947346447719795)
-		<< QPointF (12.804512599999999, 52.94817706138535 )
-		<< QPointF (12.803663546254134, 52.94857755117815 )
-		<< QPointF (12.80248103315735 , 52.94881246640197 )
-		<< QPointF (12.758622509608768, 52.952181313142034)
-		<< QPointF (12.757164583633068, 52.95218020704071 )
-		<< QPointF (12.75560434296937 , 52.95171226097781 )
-		<< QPointF (12.754953987817434, 52.95107188923083 )
-		<< QPointF (12.754016666274461, 52.94632345292743 )
-		<< QPointF (12.754175670311906, 52.94546260279531 )
-		<< QPointF (12.754900437234875, 52.944926213872   )
-		<< QPointF (12.756229743111295, 52.94472066496655 )
-		<< QPointF (12.770433806814804, 52.94351364365588 );
+		<< GeoPosition::fromDegrees (52.942123, 12.789271)
+		<< GeoPosition::fromDegrees (52.941222, 12.800440)
+		<< GeoPosition::fromDegrees (52.941120, 12.801773)
+		<< GeoPosition::fromDegrees (52.941320, 12.802625)
+		<< GeoPosition::fromDegrees (52.941745, 12.803246)
+		<< GeoPosition::fromDegrees (52.947346, 12.804757)
+		<< GeoPosition::fromDegrees (52.948177, 12.804512)
+		<< GeoPosition::fromDegrees (52.948577, 12.803663)
+		<< GeoPosition::fromDegrees (52.948812, 12.802481)
+		<< GeoPosition::fromDegrees (52.952181, 12.758622)
+		<< GeoPosition::fromDegrees (52.952180, 12.757164)
+		<< GeoPosition::fromDegrees (52.951712, 12.755604)
+		<< GeoPosition::fromDegrees (52.951071, 12.754953)
+		<< GeoPosition::fromDegrees (52.946323, 12.754016)
+		<< GeoPosition::fromDegrees (52.945462, 12.754175)
+		<< GeoPosition::fromDegrees (52.944926, 12.754900)
+		<< GeoPosition::fromDegrees (52.944720, 12.756229)
+		<< GeoPosition::fromDegrees (52.943513, 12.770433);
 }
 
 /**
-  * Not used, only to initialize the table wich is stored in settings
-  */
-void FlarmMap::storeVectors () {
-  QSettings settings ("startkladde", "startkladde");
-  settings.beginGroup ("vectors");
-  QVariantList variant;
-  foreach (QPointF point, airfieldVector)
-    variant << point.x() << point.y();
-  settings.setValue ("airfield", variant);
-  variant.clear();
-  foreach (QPointF point, patternVector)
-    variant << point.x() << point.y();
-  settings.setValue ("pattern", variant);
-  settings.endGroup ();
+ * Not used, only to initialize the table which is stored in settings
+ */
+void FlarmMap::storeVectors ()
+{
+	QSettings settings ("startkladde", "startkladde");
+	settings.beginGroup ("vectors");
+
+	QVariantList valueList;
+	foreach (const GeoPosition &point, airfieldVector)
+		valueList << point.getLongitude ().toDegrees () << point.getLatitude ().toDegrees ();
+	settings.setValue ("airfield", valueList);
+
+	valueList.clear ();
+	foreach (const GeoPosition &point, patternVector)
+	valueList << point.getLongitude ().toDegrees () << point.getLatitude ().toDegrees ();
+	settings.setValue ("pattern", valueList);
+
+	settings.endGroup ();
 }
 
-void FlarmMap::readVectors () {
-  //qDebug () << "FlarmMap::readVectors: " << airfieldVector << endl;
-  QSettings settings ("startkladde", "startkladde");
-  settings.beginGroup ("vectors");
-  QVariantList variantlist = settings.value ("airfield").toList();
-  airfieldVector.clear();
-  while (!variantlist.isEmpty()) {
-    double x = variantlist.takeFirst().toDouble();
-    double y = variantlist.takeFirst().toDouble();
-    airfieldVector << QPointF (x, y);
-  }
+void FlarmMap::readVectors ()
+{
+	QSettings settings ("startkladde", "startkladde");
+	settings.beginGroup ("vectors");
 
-  variantlist = settings.value ("pattern").toList();
-  patternVector.clear();
-  while (!variantlist.isEmpty()) {
-    double x = variantlist.takeFirst().toDouble();
-    double y = variantlist.takeFirst().toDouble();
-    patternVector << QPointF (x, y);
-  }
-  settings.endGroup();
-  //qDebug () << "FlarmMap::readVectors new: " << airfieldVector << endl;
+	QVariantList valueList = settings.value ("airfield").toList ();
+	airfieldVector.clear ();
+	while (valueList.size ()>=2)
+	{
+		double lon = valueList.takeFirst ().toDouble ();
+		double lat = valueList.takeFirst ().toDouble ();
+		airfieldVector << GeoPosition::fromDegrees (lat, lon);
+	}
+
+	valueList = settings.value ("pattern").toList ();
+	patternVector.clear ();
+	while (valueList.size ()>=2)
+	{
+		double lon = valueList.takeFirst ().toDouble ();
+		double lat = valueList.takeFirst ().toDouble ();
+		patternVector << GeoPosition::fromDegrees (lat, lon);
+	}
+
+	settings.endGroup ();
 }
 
-void FlarmMap::drawAirfield (const QPointF& home)
+void FlarmMap::drawAirfield (const GeoPosition &home)
 {
 	// only draw when moved more then 1 arc second
 	// FIXME don't always redraw, remove history curves but not static curves
@@ -182,27 +177,20 @@ void FlarmMap::drawAirfield (const QPointF& home)
 //	else
 //		return;
 
-#define PI 3.1415926536
-	QVector<QPointF> airfieldDist;
 	//invert all values if northUp is -1
-	foreach (QPointF point, airfieldVector)
-		{
-			QPointF reldeg (point.x () - home.x (), point.y () - home.y ());
-			airfieldDist << QPointF (northUp * (reldeg.x () * (40000000.0 / 360.0)) * cos (point.y () * (PI / 180.0)),
-					northUp * reldeg.y () * (40000000.0 / 360.0));
-		}
+
+	QVector<QPointF> airfieldDist;
+	foreach (const GeoPosition &point, airfieldVector)
+		airfieldDist << northUp * point.relativePositionTo (home);
 	// append the first element to close the rectangle
-	airfieldDist << airfieldDist[0];
+	if (!airfieldDist.empty ())
+		airfieldDist << airfieldDist[0];
 
 	QVector<QPointF> patternDist;
-	foreach (QPointF point, patternVector)
-		{
-			QPointF reldeg (point.x () - home.x (), point.y () - home.y ());
-			patternDist << QPointF (northUp * (reldeg.x () * (40000000.0 / 360.0)) * cos (point.y () * (PI / 180.0)),
-					northUp * reldeg.y () * (40000000.0 / 360.0));
-		}
+	foreach (const GeoPosition &point, patternVector)
+		patternDist << northUp * point.relativePositionTo (home);
 
-	qwtPlot->detachItems (QwtPlotItem::Rtti_PlotCurve);
+	ui.qwtPlot->detachItems (QwtPlotItem::Rtti_PlotCurve);
 
 	QPen pen;
 	pen.setWidth (2);
@@ -214,13 +202,13 @@ void FlarmMap::drawAirfield (const QPointF& home)
 	curve1->setData (data1);
 	curve2->setData (data2);
 	curve1->setPen (pen);
-	curve1->attach (qwtPlot);
-	curve2->attach (qwtPlot);
+	curve1->attach (ui.qwtPlot);
+	curve2->attach (ui.qwtPlot);
 }
 
 void FlarmMap::refreshFlarm ()
 {
-	qwtPlot->detachItems (QwtPlotItem::Rtti_PlotMarker);
+	ui.qwtPlot->detachItems (QwtPlotItem::Rtti_PlotMarker);
 	// FIXME cannot detach all curves unless we always recreate the static
 	// curves (airfield, traffic circuit)
 	// FIXME done in drawAirfield, this sucks
@@ -239,8 +227,8 @@ void FlarmMap::refreshFlarm ()
 		{
 			QwtPlotMarker* marker = new QwtPlotMarker ();
 			QwtText text (
-					(record->getRegistration () + "\n%1/%2/%3").arg (record->getAlt ()).arg (
-							record->getGroundSpeed () / Speed::km_h).arg (record->getClimb (), 0, 'f', 1));
+					(record->getRegistration () + "\n%1/%2/%3").arg (record->getRelativeAltitude ()).arg (
+							record->getGroundSpeed () / Speed::km_h).arg (record->getClimbRate (), 0, 'f', 1));
 			//if (record->getState() == FlarmRecord::stateFlyingFar) {
 			//  text.setColor (Qt::white);
 			//  text.setBackgroundBrush (QBrush(Qt::red));
@@ -251,18 +239,17 @@ void FlarmMap::refreshFlarm ()
 			climbColor.setAlpha (127);
 			descentColor.setAlpha (127);
 
-			if (record->getClimb () > 0.0)
+			if (record->getClimbRate () > 0.0)
 				text.setBackgroundBrush (QBrush (climbColor));
 			else
 				text.setBackgroundBrush (QBrush (descentColor));
 			marker->setLabel (text);
 			// south is top if northUp is -1
-			marker->setXValue (northUp * record->getEast ());
-			marker->setYValue (northUp * record->getNorth ());
-			marker->attach (qwtPlot);
+			marker->setValue (northUp*record->getRelativePosition ());
+			marker->attach (ui.qwtPlot);
 
 
-			QVector<QPointF> points=record->getPreviousPositions ().toVector ();
+			QVector<QPointF> points=record->getPreviousRelativePositions ().toVector ();
 			for (int i=0, n=points.size (); i<n; ++i)
 				points[i]=northUp*points[i];
 
@@ -274,7 +261,7 @@ void FlarmMap::refreshFlarm ()
 			QwtPointSeriesData* data = new QwtPointSeriesData (points);
 			curve->setData (data);
 			curve->setPen (pen);
-			curve->attach (qwtPlot);
+			curve->attach (ui.qwtPlot);
 		}
 	}
 
@@ -285,26 +272,31 @@ void FlarmMap::refreshFlarm ()
 	marker->setLabel (text);
 	marker->setXValue (0);
 	marker->setYValue (0);
-	marker->attach (qwtPlot);
+	marker->attach (ui.qwtPlot);
 
-	qwtPlot->replot ();
+	ui.qwtPlot->replot ();
 }
 
-void FlarmMap::orientationChanged (bool up) {
-  QStyle* style = QApplication::style();
-  if (up) {
-    northUp = 1.0;
-    toggleOrientation->setIcon (style->standardIcon(QStyle::SP_ArrowDown));
-    toggleOrientation->setToolTip (QString::fromUtf8 ("Karte nach Süden ausrichten"));
-  }
-  else {
-    northUp = -1.0;
-    toggleOrientation->setIcon (style->standardIcon(QStyle::SP_ArrowUp));
-    toggleOrientation->setToolTip (QString::fromUtf8 ("Karte nach Norden ausrichten"));
-  }
-  QPointF home = old_home;
-  // force to redraw
-  old_home = QPointF ();
-  drawAirfield (home);
-  refreshFlarm ();
+void FlarmMap::on_toggleOrientationButton_toggled (bool on)
+{
+	QStyle* style = QApplication::style ();
+
+	if (on)
+	{
+		northUp = 1.0;
+		ui.toggleOrientationButton->setIcon (style->standardIcon (QStyle::SP_ArrowDown));
+		ui.toggleOrientationButton->setToolTip (QString::fromUtf8 ("Karte nach Süden ausrichten"));
+	}
+	else
+	{
+		northUp = -1.0;
+		ui.toggleOrientationButton->setIcon (style->standardIcon (QStyle::SP_ArrowUp));
+		ui.toggleOrientationButton->setToolTip (QString::fromUtf8 ("Karte nach Norden ausrichten"));
+	}
+	// force to redraw
+	// FIXME this stinks
+	GeoPosition home = oldHome;
+	oldHome=GeoPosition ();
+	drawAirfield (home);
+	refreshFlarm ();
 }
