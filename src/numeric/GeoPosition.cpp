@@ -111,3 +111,9 @@ bool GeoPosition::isValid () const
 	// be included in this check.
 	return latitude.isValid () && longitude.isValid ();
 }
+
+QDebug operator<< (QDebug dbg, const GeoPosition &position)
+{
+	dbg.nospace () << "(" << position.getLatitude ().toDegrees () << ", " << position.getLongitude ().toDegrees () << ")";
+	return dbg.space ();
+}

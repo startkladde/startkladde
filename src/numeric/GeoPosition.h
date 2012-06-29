@@ -2,6 +2,7 @@
 #define GEOPOSITION_H_
 
 #include <QPointF>
+#include <QDebug>
 
 #include "src/numeric/Angle.h"
 
@@ -40,5 +41,7 @@ class GeoPosition
 	private:
 		Angle latitude, longitude;
 };
+
+QDebug operator<< (QDebug dbg, const GeoPosition &position);
 
 #endif
