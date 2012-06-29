@@ -119,14 +119,15 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 	lastClimbRate=climbRate;
 
 	// FIXME history should be based on time, not samples - samples may get lost
-	previousRelativePositions.enqueue (relativePosition);
-	for (int i=0; i<previousRelativePositions.size ()-20; ++i)
-		previousRelativePositions.dequeue ();
-
 	relativeAltitude = sentence.relativeVertical;
 	groundSpeed      = sentence.groundSpeed;
 	climbRate        = sentence.climbRate;
 	relativePosition = QPointF (sentence.relativeEast, sentence.relativeNorth);
+
+	previousRelativePositions.enqueue (relativePosition);
+	for (int i=0; i<previousRelativePositions.size ()-20; ++i)
+		previousRelativePositions.dequeue ();
+
 
 
 
