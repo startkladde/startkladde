@@ -2013,9 +2013,7 @@ void MainWindow::on_actionSetTime_triggered ()
 
 	if (DateTimeInputDialog::editDateTime (this, &date, &time, tr ("Set system time")))
 	{
-		QString timeString=qnotr ("%1-%2-%3 %4:%5:%6")
-			.arg (date.year ()).arg (date.month ()).arg (date.day ())
-			.arg (time.hour ()).arg (time.minute ()).arg (time.second ());
+                QString timeString (QDateTime(date, time).toString (notr("yyyy-MM-dd hh:mm:ss")));
 
 		// sudo -n: non-interactive (don't prompt for password)
 		// sudoers entry: deffi ALL=NOPASSWD: /bin/date
@@ -2049,7 +2047,7 @@ void MainWindow::on_actionSetGPSTime_triggered ()
 //                return;
 //        }
         QDateTime current (QDateTime::currentDateTimeUtc ());
-        QDateTime currentGPSdateTime = flarmHandler->getGpsTime ();
+        QDateTime currentGPSdateTime (flarmHandler->getGpsTime ());
         qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy"));
         qDebug () << "currentTime: " << current.toString (notr("hh:mm:ss dd.MM.yyyy"));
         int diff = currentGPSdateTime.secsTo(current);
@@ -2059,21 +2057,18 @@ void MainWindow::on_actionSetGPSTime_triggered ()
                         "<p>GPS time: %2</p>"
                         "<p>The system time differs by %3 seconds from the GPS time.</p>"
                         "<p>Correction?</p>")
-                        .arg(current.toString ("hh:mm:ss dd.MM.yyyy"))
-                        .arg(currentGPSdateTime.toString ("hh:mm:ss dd.MM.yyyy"))
+                        .arg(current.toString (notr("hh:mm:ss dd.MM.yyyy")))
+                        .arg(currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy")))
                         .arg(diff), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
                 {
                         // get the actual GPS time again, the messagebox can stay open a long time
-                        currentGPSdateTime = flarmHandler->getGpsTime ();
-        		QString timeString=qnotr ("%1-%2-%3 %4:%5:%6")
-	        		.arg (currentGPSdateTime.date().year ()).arg (currentGPSdateTime.date().month ()).arg (currentGPSdateTime.date().day ())
-		        	.arg (currentGPSdateTime.time().hour ()).arg (currentGPSdateTime.time().minute ()).arg (currentGPSdateTime.time().second ());
+                        QString timeString (flarmHandler->getGpsTime ().toString (notr("yyyy-MM-dd hh:mm:ss")));
 
                         // sudo -n: non-interactive (don't prompt for password)
                         // sudoers entry: deffi ALL=NOPASSWD: /bin/date
 
                         int result=QProcess::execute (notr ("sudo"), QStringList () << notr ("-n") << notr ("date") << notr ("-s") << timeString);
-
+                        
                         if (result==0)
                         {
 			        showWarning (tr ("System time changed"),
