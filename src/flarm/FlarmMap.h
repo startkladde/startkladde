@@ -7,8 +7,7 @@
 #include "src/numeric/GeoPosition.h"
 
 class QwtPointSeriesData;
-
-
+class QSettings;
 
 //#include <QtGui/QWidget>
 //#include <QtGui/QDialog>
@@ -21,7 +20,6 @@ class FlarmMap: public SkDialog<Ui::FlarmMapDialog>
 	public:
 		FlarmMap (QWidget *parent);
 		~FlarmMap ();
-
 
 	private slots:
 		void refreshFlarm ();

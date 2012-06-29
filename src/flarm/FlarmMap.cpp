@@ -126,15 +126,8 @@ void FlarmMap::storeVectors ()
 	QSettings settings ("startkladde", "startkladde");
 	settings.beginGroup ("vectors");
 
-	QVariantList valueList;
-	foreach (const GeoPosition &point, airfieldVector)
-		valueList << point.getLongitude ().toDegrees () << point.getLatitude ().toDegrees ();
-	settings.setValue ("airfield", valueList);
-
-	valueList.clear ();
-	foreach (const GeoPosition &point, patternVector)
-	valueList << point.getLongitude ().toDegrees () << point.getLatitude ().toDegrees ();
-	settings.setValue ("pattern", valueList);
+	GeoPosition::storeVector (settings, "airfield", airfieldVector);
+	GeoPosition::storeVector (settings, "pattern" , patternVector );
 
 	settings.endGroup ();
 }
@@ -144,23 +137,8 @@ void FlarmMap::readVectors ()
 	QSettings settings ("startkladde", "startkladde");
 	settings.beginGroup ("vectors");
 
-	QVariantList valueList = settings.value ("airfield").toList ();
-	airfieldVector.clear ();
-	while (valueList.size ()>=2)
-	{
-		double lon = valueList.takeFirst ().toDouble ();
-		double lat = valueList.takeFirst ().toDouble ();
-		airfieldVector << GeoPosition::fromDegrees (lat, lon);
-	}
-
-	valueList = settings.value ("pattern").toList ();
-	patternVector.clear ();
-	while (valueList.size ()>=2)
-	{
-		double lon = valueList.takeFirst ().toDouble ();
-		double lat = valueList.takeFirst ().toDouble ();
-		patternVector << GeoPosition::fromDegrees (lat, lon);
-	}
+	airfieldVector=GeoPosition::readVector (settings, "airfield");
+	patternVector =GeoPosition::readVector (settings, "pattern");
 
 	settings.endGroup ();
 }
@@ -197,6 +175,10 @@ void FlarmMap::drawAirfield (const GeoPosition &home)
 
 	QwtPlotCurve* curve1 = new QwtPlotCurve ("airfield");
 	QwtPlotCurve* curve2 = new QwtPlotCurve ("pattern");
+
+	curve1->setRenderHint (QwtPlotItem::RenderAntialiased);
+	curve2->setRenderHint (QwtPlotItem::RenderAntialiased);
+
 	QwtPointSeriesData* data1 = new QwtPointSeriesData (airfieldDist);
 	QwtPointSeriesData* data2 = new QwtPointSeriesData (patternDist);
 	curve1->setData (data1);
@@ -258,6 +240,7 @@ void FlarmMap::refreshFlarm ()
 
 			// FIXME delete it?
 			QwtPlotCurve* curve = new QwtPlotCurve ("history");
+			curve->setRenderHint (QwtPlotItem::RenderAntialiased);
 			QwtPointSeriesData* data = new QwtPointSeriesData (points);
 			curve->setData (data);
 			curve->setPen (pen);
