@@ -185,7 +185,7 @@ class FileThread (threading.Thread):
 
     file = open (self.filename, 'r')
     while True:
-      time.sleep (0.02)
+      time.sleep (0.01)
       # the socket does not accept str which is unicode
       line = bytes (file.readline (), 'ascii')
 

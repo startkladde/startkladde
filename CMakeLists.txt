@@ -58,12 +58,16 @@ SET(QT_USE_QTNETWORK TRUE)
 
 set(CMAKE_AUTOMOC TRUE)
 
+string(REPLACE "qwt.dll" "qwtd.dll" Qwt6_Qt4_DEBUG_LIBRARY ${Qwt6_Qt4_LIBRARY})
 if(NOT Qwt6_FOUND)
     message(STATUS "Qwt6 not found! Disabling plotting support!")
 else()
     message(STATUS "Qwt6 available at: ${Qwt6_INCLUDE_DIR} ${Qwt6_Qt4_LIBRARY}")
     include_directories(${Qwt6_INCLUDE_DIR})
     link_libraries(${Qwt6_Qt4_LIBRARY})
+    # FIXME only for debug build
+	#link_libraries(${Qwt6_Qt4_DEBUG_LIBRARY})
+    
 endif()
 
 # For gcc and release mode, enable some options that make the binary smaller
