@@ -1,6 +1,7 @@
 #ifndef TCPDATASTREAM_H_
 #define TCPDATASTREAM_H_
 
+#include <stdint.h>
 #include <QAbstractSocket>
 
 #include "src/io/dataStream/DataStream.h"
