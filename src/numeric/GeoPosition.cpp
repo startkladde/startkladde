@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <QString>
+#include <QSettings>
 
 #include "src/util/qString.h"
 
@@ -112,8 +113,47 @@ bool GeoPosition::isValid () const
 	return latitude.isValid () && longitude.isValid ();
 }
 
+/**
+ * Outputs a GeoPosition to a Qt debug stream
+ */
 QDebug operator<< (QDebug dbg, const GeoPosition &position)
 {
 	dbg.nospace () << "(" << position.getLatitude ().toDegrees () << ", " << position.getLongitude ().toDegrees () << ")";
 	return dbg.space ();
+}
+
+/**
+ * Stores a QVector of GeoPosition in a QSettings with a given key
+ *
+ * @see readVector
+ */
+void GeoPosition::storeVector (QSettings &settings, const QString &key, const QVector<GeoPosition> &vector)
+{
+	QVariantList valueList;
+	foreach (const GeoPosition &point, vector)
+		valueList << point.getLongitude ().toDegrees () << point.getLatitude ().toDegrees ();
+	settings.setValue (key, valueList);
+}
+
+/**
+ * Reads a QVector of GeoPosition from a QSettings with a given key
+ *
+ * @see storeVector
+ */
+QVector<GeoPosition> GeoPosition::readVector (QSettings &settings, const QString &key)
+{
+	QVector<GeoPosition> vector;
+
+	QVariantList valueList = settings.value (key).toList ();
+	vector.reserve (valueList.size ()/2);
+	while (valueList.size ()>=2)
+	{
+		double lon = valueList.takeFirst ().toDouble ();
+		double lat = valueList.takeFirst ().toDouble ();
+		vector << GeoPosition::fromDegrees (lat, lon);
+	}
+
+	qDebug () << key << vector;
+
+	return vector;
 }

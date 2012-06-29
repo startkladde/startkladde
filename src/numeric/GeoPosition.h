@@ -6,6 +6,8 @@
 
 #include "src/numeric/Angle.h"
 
+class QSettings;
+
 /**
  * A position on the earth
  *
@@ -37,6 +39,9 @@ class GeoPosition
 		QPointF relativePositionTo (const GeoPosition &reference) const;
 
 		bool isValid () const;
+
+		static QVector<GeoPosition> readVector (QSettings &settings, const QString &key);
+		static void storeVector (QSettings &settings, const QString &key, const QVector<GeoPosition> &vector);
 
 	private:
 		Angle latitude, longitude;
