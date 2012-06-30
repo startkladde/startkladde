@@ -3,7 +3,7 @@
 
 #include <QtCore/QString>
 #include <QtCore/QTimer>
-#include <QQueue>
+#include <QList>
 
 #include "src/model/Plane.h"
 
@@ -20,6 +20,10 @@ class PflaaSentence;
  * The performance impact of using double instead if integer precision is
  * negligible; for the QVector example, it might even be faster if we can avoid
  * copying the vector.
+ *
+ * Implementation note: there are no setters for the flight values (position,
+ * velocity etc.), not even private ones, because they may only be changed
+ * together, lest they become inconsistent.
  */
 class FlarmRecord: public QObject
 {
@@ -54,10 +58,12 @@ class FlarmRecord: public QObject
 
 
 		// Misc
-		QString getStateText () const;
 		bool isPlausible () const;
 		void processPflaaSentence (const PflaaSentence &sentence);
 		static QString flightActionToString (FlightAction action);
+
+		// State methods
+		static QString stateText (flarmState state);
 
 	protected:
 		FlightSituation getSituation () const;
@@ -66,7 +72,10 @@ class FlarmRecord: public QObject
 		// Primary data (received from Flarm)
 		QString flarmId;
 		QPointF relativePosition; // <East, North> in meters
-		QQueue<QPointF> previousRelativePositions;
+		// previousRelativePositions[0] is the current position, with increasing
+		// indices corresponding to older positions. We don't use QQueue with
+		// its enqueue and dequeue methods to make this order explicit.
+		QList<QPointF> previousRelativePositions;
 		double relativeAltitude, lastRelativeAltitude; // In meters
 		double groundSpeed     , lastGroundSpeed;      // In meters per second
 		double climbRate       , lastClimbRate;        // In meters per second
@@ -82,7 +91,8 @@ class FlarmRecord: public QObject
 		QTimer* keepaliveTimer;
 		QTimer* landingTimer;
 
-		void setState (flarmState state);
+		void setState (flarmState state, const QString &comment=QString ());
+		void stateTransition ();
 
 	private slots:
 		void keepaliveTimeout ();
