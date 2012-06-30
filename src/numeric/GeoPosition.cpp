@@ -153,7 +153,5 @@ QVector<GeoPosition> GeoPosition::readVector (QSettings &settings, const QString
 		vector << GeoPosition::fromDegrees (lat, lon);
 	}
 
-	qDebug () << key << vector;
-
 	return vector;
 }
