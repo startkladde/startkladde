@@ -69,6 +69,18 @@ GeoPosition GeoPosition::fromRadians (const double latitude, const double longit
 	return GeoPosition (Angle::fromRadians (latitude), Angle::fromRadians (longitude));
 }
 
+double GeoPosition::distanceTo (const GeoPosition &reference) const
+{
+	Angle averageLatitude=(latitude+reference.latitude)/2;
+	Angle latitudeDifference =latitude -reference.latitude;
+	Angle longitudeDifference=longitude-reference.longitude;
+
+	double east  = earthRadius * longitudeDifference.toRadians () * cos (averageLatitude.toRadians ());
+	double north = earthRadius * latitudeDifference .toRadians ();
+
+	return sqrt (east*east+north*north);
+}
+
 /**
  * Calculates the relative position, in meters east and north of this position
  *
@@ -98,6 +110,16 @@ QPointF GeoPosition::relativePositionTo (const GeoPosition &reference) const
 	double north = earthRadius * latitudeDifference .toRadians ();
 
 	return QPointF (east, north);
+}
+
+QVector<QPointF> GeoPosition::relativePositionTo (const QVector<GeoPosition> &values, const GeoPosition &reference)
+{
+	QVector<QPointF> result (values.size ());
+
+	for (int i=0, n=values.size (); i<n; ++i)
+		result[i]=values[i].relativePositionTo (reference);
+
+	return result;
 }
 
 /**

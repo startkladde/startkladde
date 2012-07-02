@@ -36,7 +36,10 @@ class GeoPosition
 		Angle getLatitude  () const { return latitude ; }
 		Angle getLongitude () const { return longitude; }
 
+		double distanceTo (const GeoPosition &reference) const;
+
 		QPointF relativePositionTo (const GeoPosition &reference) const;
+		static QVector<QPointF> relativePositionTo (const QVector<GeoPosition> &values, const GeoPosition &reference);
 
 		bool isValid () const;
 
