@@ -40,9 +40,11 @@ FlarmMap::FlarmMap (QWidget *parent) :
 	magnifier->setMouseButton (Qt::MidButton);
 	magnifier->setAxisEnabled (QwtPlot::yRight, true);
 	magnifier->setAxisEnabled (QwtPlot::xBottom, true);
-	// Default is 0.95. We want a factor near to 1.0 (no magnifying at all)
-	magnifier->setMouseFactor (0.995);
-//	magnifier->setWheelFactor (1/0.9); // TODO enable, make configurable
+
+	// Positive value - mouse wheel down (back) means zooming out. This is the
+	// convention that many other applications, including Firefox and Gimp, use.
+	magnifier->setMouseFactor (1.05);
+	magnifier->setWheelFactor (1.1);
 	magnifier->setEnabled (true);
 
 	FlarmHandler* flarmHandler = FlarmHandler::getInstance ();
