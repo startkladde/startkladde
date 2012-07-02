@@ -51,7 +51,7 @@ class FlarmRecord: public QObject
 
 		flarmState getState () const { return state; }
 
-		QString getRegistration () { return registration; }
+		QString getRegistration () const { return registration; }
 
 		void setRegistration (const QString &registration);
 		void setCategory (Plane::Category category);
