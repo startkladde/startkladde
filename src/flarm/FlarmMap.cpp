@@ -192,6 +192,75 @@ void FlarmMap::redrawStaticData ()
 	ui.qwtPlot->replot ();
 }
 
+
+void FlarmMap::addMinimalPlaneMarker (const FlarmRecord *record)
+{
+	// ***** Marker
+
+
+	// Create and setup the marker
+	QwtSymbol *symbol=new QwtSymbol (); // Will be deleted in ~Marker
+	symbol->setStyle (QwtSymbol::Cross);
+	symbol->setSize (8);
+	symbol->setPen (QPen (Qt::blue));
+	QwtPlotMarker *marker = new QwtPlotMarker ();
+	marker->setSymbol (symbol);
+	marker->setValue (transform.map (record->getRelativePosition ()));
+
+	// Attach and store the marker
+	marker->attach (ui.qwtPlot);
+	flarmMarkers.append (marker);
+}
+
+void FlarmMap::addVerbosePlaneMarker (const FlarmRecord *record)
+{
+	QColor climbColor  =Qt::green;  climbColor  .setAlpha (127);
+	QColor descentColor=Qt::yellow; descentColor.setAlpha (127);
+
+	// Prepare data
+	QwtText text (qnotr ("%1\n%2/%3/%4")
+		.arg (record->getRegistration ())
+		.arg (record->getRelativeAltitude ())
+		.arg (record->getGroundSpeed () / Velocity::km_h)
+		.arg (record->getClimbRate (), 0, 'f', 1));
+
+	if (record->getClimbRate () > 0.0)
+		text.setBackgroundBrush (QBrush (climbColor));
+	else
+		text.setBackgroundBrush (QBrush (descentColor));
+
+	// Create and setup the marker
+	QwtPlotMarker *marker = new QwtPlotMarker ();
+	marker->setLabel (text);
+	marker->setValue (transform.map (record->getRelativePosition ()));
+
+	// Attach and store the marker
+	marker->attach (ui.qwtPlot);
+	flarmMarkers.append (marker);
+
+}
+
+void FlarmMap::addTrail (const FlarmRecord *record)
+{
+	// Prepare data
+	QPolygonF polygon (record->getPreviousRelativePositions ().toVector ());
+	QwtPointSeriesData *data = new QwtPointSeriesData (transform.map (polygon));
+
+	// Create and setup the curve
+	QwtPlotCurve* curve = new QwtPlotCurve ("history");
+
+	QPen pen;
+	pen.setWidth (2);
+	curve->setPen (pen);
+	curve->setRenderHint (QwtPlotItem::RenderAntialiased);
+
+	curve->setData (data);
+
+	// Attach and store the curve
+	curve->attach (ui.qwtPlot);
+	flarmCurves.append (curve);
+}
+
 void FlarmMap::redrawFlarmData ()
 {
 	// Detach all Flarm items. Better solution: keep them and just set the
@@ -211,10 +280,6 @@ void FlarmMap::redrawFlarmData ()
 	}
 	flarmCurves.clear ();
 
-	QColor climbColor  =Qt::green;  climbColor  .setAlpha (127);
-	QColor descentColor=Qt::yellow; descentColor.setAlpha (127);
-
-
 	foreach (FlarmRecord *record, FlarmHandler::getInstance ()->getFlarmRecords ()->getList ())
 	{
 		switch (record->getState ())
@@ -222,69 +287,12 @@ void FlarmMap::redrawFlarmData ()
 			case FlarmRecord::stateStarting:
 			case FlarmRecord::stateFlying:
 			case FlarmRecord::stateLanding:
-			{
-				// ***** Marker
-
-				// Prepare data
-				QwtText text (qnotr ("%1\n%2/%3/%4")
-					.arg (record->getRegistration ())
-					.arg (record->getRelativeAltitude ())
-					.arg (record->getGroundSpeed () / Velocity::km_h)
-					.arg (record->getClimbRate (), 0, 'f', 1));
-
-				if (record->getClimbRate () > 0.0)
-					text.setBackgroundBrush (QBrush (climbColor));
-				else
-					text.setBackgroundBrush (QBrush (descentColor));
-
-				// Create and setup the marker
-				QwtPlotMarker *marker = new QwtPlotMarker ();
-				marker->setLabel (text);
-				marker->setValue (transform.map (record->getRelativePosition ()));
-
-				// Attach and store the marker
-				marker->attach (ui.qwtPlot);
-				flarmMarkers.append (marker);
-
-
-				// ***** Trails
-
-				// Prepare data
-				QPolygonF polygon (record->getPreviousRelativePositions ().toVector ());
-				QwtPointSeriesData *data = new QwtPointSeriesData (transform.map (polygon));
-
-				// Create and setup the curve
-				QwtPlotCurve* curve = new QwtPlotCurve ("history");
-
-				QPen pen;
-				pen.setWidth (2);
-				curve->setPen (pen);
-				curve->setRenderHint (QwtPlotItem::RenderAntialiased);
-
-				curve->setData (data);
-
-				// Attach and store the curve
-				curve->attach (ui.qwtPlot);
-				flarmCurves.append (curve);
-			} break;
+				addVerbosePlaneMarker (record);
+				addTrail (record);
+				break;
 			case FlarmRecord::stateOnGround:
-			{
-				// ***** Marker
-
-				// Create and setup the marker
-				QwtSymbol *symbol=new QwtSymbol (); // Will be deleted in ~Marker
-				symbol->setStyle (QwtSymbol::Cross);
-				symbol->setSize (8);
-				symbol->setPen (QPen (Qt::blue));
-				QwtPlotMarker *marker = new QwtPlotMarker ();
-				marker->setSymbol (symbol);
-				marker->setValue (transform.map (record->getRelativePosition ()));
-
-				// Attach and store the marker
-				marker->attach (ui.qwtPlot);
-				flarmMarkers.append (marker);
-
-			} break;
+				addMinimalPlaneMarker (record);
+				break;
 			case FlarmRecord::stateUnknown:
 			case FlarmRecord::stateFlyingFar:
 				// don't draw

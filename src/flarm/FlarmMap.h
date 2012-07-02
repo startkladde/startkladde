@@ -13,6 +13,8 @@ class QwtPlotMarker;
 class QwtPlotCurve;
 class QwtPointSeriesData;
 
+class FlarmRecord;
+
 class FlarmMap: public SkDialog<Ui::FlarmMapDialog>
 {
 	Q_OBJECT
@@ -20,6 +22,11 @@ class FlarmMap: public SkDialog<Ui::FlarmMapDialog>
 	public:
 		FlarmMap (QWidget *parent);
 		~FlarmMap ();
+
+	protected:
+		void addMinimalPlaneMarker (const FlarmRecord *record);
+		void addVerbosePlaneMarker (const FlarmRecord *record);
+		void addTrail (const FlarmRecord *record);
 
 	private:
 		void readVectors ();
