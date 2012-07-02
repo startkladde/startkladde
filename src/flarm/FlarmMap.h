@@ -46,7 +46,9 @@ class FlarmMap: public SkDialog<Ui::FlarmMapDialog>
 		void flarmStatusChanged ();
 		void ownPositionChanged (const GeoPosition &ownPosition);
 
-		void on_toggleOrientationButton_toggled (bool on);
+		void on_mapOrientationInput_valueChanged (int value);
+		void on_northButton_clicked ();
+		void on_reverseButton_clicked ();
 
 };
 

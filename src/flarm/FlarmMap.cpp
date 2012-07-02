@@ -45,14 +45,9 @@ FlarmMap::FlarmMap (QWidget *parent) :
 //	magnifier->setWheelFactor (1/0.9); // TODO enable, make configurable
 	magnifier->setEnabled (true);
 
-	connect (ui.closeButton, SIGNAL (clicked()), this, SLOT (close()));
-
 	FlarmHandler* flarmHandler = FlarmHandler::getInstance ();
 	connect (flarmHandler, SIGNAL(homePosition(const GeoPosition &)), this, SLOT(ownPositionChanged(const GeoPosition &)));
 	connect (flarmHandler, SIGNAL(statusChanged()), this, SLOT(flarmStatusChanged()));
-
-	ui.toggleOrientationButton->setIcon (QApplication::style ()->standardIcon (QStyle::SP_ArrowDown));
-	ui.toggleOrientationButton->setToolTip (QString::fromUtf8 ("Karte nach Süden ausrichten"));
 
 	// FIXME load default
 //	transform.rotate (180);
@@ -324,24 +319,6 @@ void FlarmMap::flarmStatusChanged ()
 	redrawFlarmData ();
 }
 
-void FlarmMap::on_toggleOrientationButton_toggled (bool on)
-{
-	QStyle* style = QApplication::style ();
-
-	if (on)
-	{
-		setOrientation (Angle::fromDegrees (180));
-		ui.toggleOrientationButton->setIcon (style->standardIcon (QStyle::SP_ArrowUp));
-		ui.toggleOrientationButton->setToolTip (QString::fromUtf8 ("Karte nach Norden ausrichten"));
-	}
-	else
-	{
-		setOrientation (Angle::fromDegrees (0));
-		ui.toggleOrientationButton->setIcon (style->standardIcon (QStyle::SP_ArrowDown));
-		ui.toggleOrientationButton->setToolTip (QString::fromUtf8 ("Karte nach Süden ausrichten"));
-	}
-}
-
 /**
  * Sets the orientation such that upDirection is shown in the up direction in
  * the window
@@ -357,4 +334,28 @@ void FlarmMap::setOrientation (const Angle &upDirection)
 
 	redrawStaticData ();
 	redrawFlarmData ();
+}
+
+
+// **************
+// ** UI input **
+// **************
+
+void FlarmMap::on_mapOrientationInput_valueChanged (int value)
+{
+	setOrientation (Angle::fromDegrees (value));
+}
+
+void FlarmMap::on_northButton_clicked ()
+{
+	ui.mapOrientationInput->setValue (0);
+}
+
+void FlarmMap::on_reverseButton_clicked ()
+{
+	int currentOrientation=ui.mapOrientationInput->value ();
+	if (currentOrientation>=180)
+		ui.mapOrientationInput->setValue (currentOrientation-180);
+	else
+		ui.mapOrientationInput->setValue (currentOrientation+180);
 }
