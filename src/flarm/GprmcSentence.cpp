@@ -31,7 +31,7 @@ GprmcSentence::GprmcSentence (const QString &sentence):
 	Angle longitude = Nmea::parseLongitude (parts[5], parts[6]);
 	position=GeoPosition (latitude, longitude);
 	// parts[7]: velocity
-	// parts[8]: track
+	// parts[8]: true track in degrees
 	// parts[9]: date (already used)
 	// parts[10]: variation
 	// parts[11]: variationSign
