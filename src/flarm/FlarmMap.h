@@ -6,12 +6,12 @@
 #include "src/gui/SkDialog.h"
 #include "src/numeric/GeoPosition.h"
 
-class QwtPointSeriesData;
 class QSettings;
+class QTransform;
 
-//#include <QtGui/QWidget>
-//#include <QtGui/QDialog>
-
+class QwtPlotMarker;
+class QwtPlotCurve;
+class QwtPointSeriesData;
 
 class FlarmMap: public SkDialog<Ui::FlarmMapDialog>
 {
@@ -21,25 +21,33 @@ class FlarmMap: public SkDialog<Ui::FlarmMapDialog>
 		FlarmMap (QWidget *parent);
 		~FlarmMap ();
 
-	private slots:
-		void refreshFlarm ();
-		void storeVectors ();
+	private:
 		void readVectors ();
+		void setExampleVectors ();
+		void storeVectors ();
 
-		void drawAirfield (const GeoPosition &home);
+		void redrawFlarmData ();
+		void redrawStaticData ();
+
+		void setOrientation (const Angle &upDirection);
+
+		QTransform transform;
+
+		// Static data
+		QVector<GeoPosition> airfieldVector, patternVector;
+		QwtPlotCurve *airfieldCurve, *patternCurve;
+		QwtPointSeriesData *airfieldData, *patternData;
+		GeoPosition ownPosition;
+
+		QList<QwtPlotMarker *> flarmMarkers;
+		QList<QwtPlotCurve *> flarmCurves;
 
 	private slots:
+		void flarmStatusChanged ();
+		void ownPositionChanged (const GeoPosition &ownPosition);
+
 		void on_toggleOrientationButton_toggled (bool on);
 
-	private:
-		void setExampleVectors ();
-
-		QVector<GeoPosition> airfieldVector;
-		QVector<GeoPosition> patternVector;
-
-		QwtPointSeriesData *data;
-		GeoPosition oldHome;
-		double northUp;
 };
 
 #endif

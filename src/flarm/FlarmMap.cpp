@@ -10,6 +10,7 @@
 #include <qwt_plot_marker.h>
 #include <qwt_plot_panner.h>
 #include <qwt_plot_magnifier.h>
+#include <qwt_symbol.h>
 #include <qwt_series_data.h>
 
 #include "src/flarm/FlarmHandler.h"
@@ -20,7 +21,8 @@
 #include "src/numeric/GeoPosition.h"
 
 FlarmMap::FlarmMap (QWidget *parent) :
-	SkDialog<Ui::FlarmMapDialog> (parent)
+	SkDialog<Ui::FlarmMapDialog> (parent),
+	airfieldCurve (NULL), patternCurve (NULL)
 {
 	ui.setupUi (this);
 
@@ -40,21 +42,22 @@ FlarmMap::FlarmMap (QWidget *parent) :
 	magnifier->setAxisEnabled (QwtPlot::xBottom, true);
 	// Default is 0.95. We want a factor near to 1.0 (no magnifying at all)
 	magnifier->setMouseFactor (0.995);
+//	magnifier->setWheelFactor (1/0.9); // TODO enable, make configurable
 	magnifier->setEnabled (true);
 
 	connect (ui.closeButton, SIGNAL (clicked()), this, SLOT (close()));
 
 	FlarmHandler* flarmHandler = FlarmHandler::getInstance ();
-	connect (flarmHandler, SIGNAL(homePosition(const GeoPosition &)), this, SLOT(drawAirfield(const GeoPosition &)));
-	connect (flarmHandler, SIGNAL(statusChanged()), this, SLOT(refreshFlarm()));
+	connect (flarmHandler, SIGNAL(homePosition(const GeoPosition &)), this, SLOT(ownPositionChanged(const GeoPosition &)));
+	connect (flarmHandler, SIGNAL(statusChanged()), this, SLOT(flarmStatusChanged()));
 
-	ui.toggleOrientationButton->setIcon (QApplication::style ()->standardIcon (QStyle::SP_ArrowUp));
-	ui.toggleOrientationButton->setToolTip (QString::fromUtf8 ("Karte nach Norden ausrichten"));
-	northUp = -1.0;
+	ui.toggleOrientationButton->setIcon (QApplication::style ()->standardIcon (QStyle::SP_ArrowDown));
+	ui.toggleOrientationButton->setToolTip (QString::fromUtf8 ("Karte nach Süden ausrichten"));
+
+	// FIXME load default
+//	transform.rotate (180);
 
 	grid->attach (ui.qwtPlot);
-	data = NULL;
-	//QTimer::singleShot (0, this, SLOT (storeVectors()));
 
 	// Setup the list
 	const AbstractObjectList<FlarmRecord *> *objectList = FlarmHandler::getInstance ()->getFlarmRecords ();
@@ -73,6 +76,43 @@ FlarmMap::FlarmMap (QWidget *parent) :
 	ui.flarmTable->resizeRowsToContents ();
 	ui.flarmTable->setAutoResizeRows (true);
 	ui.flarmTable->setAutoResizeColumns (false);
+
+
+	// ***** Static markers
+
+	QwtPlotMarker *startMarker = new QwtPlotMarker ();
+	QwtText text ("Start");
+	//text.setPaintAttribute (QwtText::PaintBackground, true);
+	QColor startColor=Qt::red;
+	startColor.setAlpha (127);
+	text.setBackgroundBrush (QBrush (startColor));
+	startMarker->setLabel (text);
+	startMarker->setXValue (0);
+	startMarker->setYValue (0);
+	startMarker->attach (ui.qwtPlot);
+
+
+	// ***** Static curves
+
+	airfieldCurve = new QwtPlotCurve ("airfield");
+	patternCurve  = new QwtPlotCurve ("pattern");
+
+	airfieldCurve->setRenderHint (QwtPlotItem::RenderAntialiased);
+	patternCurve->setRenderHint (QwtPlotItem::RenderAntialiased);
+
+	QPen pen;
+	pen.setWidth (2);
+	airfieldCurve->setPen (pen);
+
+
+	airfieldData = new QwtPointSeriesData ();
+	patternData = new QwtPointSeriesData ();
+	airfieldCurve->setData (airfieldData);
+	patternCurve->setData (patternData);
+
+	airfieldCurve->attach (ui.qwtPlot);
+	patternCurve->attach (ui.qwtPlot);
+
 
 	// Instead of reading the vectors from the configuration, you can set example
 	// vectors by enabling the call to setExampleVectors instead of readVectors.
@@ -95,6 +135,7 @@ void FlarmMap::setExampleVectors ()
 		<< GeoPosition::fromDegrees (52.94111 , 12.7889  )
 		<< GeoPosition::fromDegrees (52.9428  , 12.7703  )
 		<< GeoPosition::fromDegrees (52.9444  , 12.7706  );
+	airfieldVector << airfieldVector[0];
 
 	patternVector.clear ();
 	patternVector
@@ -143,121 +184,144 @@ void FlarmMap::readVectors ()
 	settings.endGroup ();
 }
 
-void FlarmMap::drawAirfield (const GeoPosition &home)
+void FlarmMap::redrawStaticData ()
 {
-	// only draw when moved more then 1 arc second
-	// FIXME don't always redraw, remove history curves but not static curves
-	// (airfield and traffic circuit)
-//	if (abs (home.x () - old_home.x ()) > 0.00027 || abs (home.y () - old_home.y ()) > 0.00027)
-//	{
-//		old_home = home;
-//	}
-//	else
-//		return;
+	QPolygonF airfieldPolygon (GeoPosition::relativePositionTo (airfieldVector, ownPosition));
+	QPolygonF patternPolygon  (GeoPosition::relativePositionTo (patternVector , ownPosition));
 
-	//invert all values if northUp is -1
+	airfieldData->setSamples (transform.map (airfieldPolygon));
+	patternData ->setSamples (transform.map (patternPolygon));
 
-	QVector<QPointF> airfieldDist;
-	foreach (const GeoPosition &point, airfieldVector)
-		airfieldDist << northUp * point.relativePositionTo (home);
-	// append the first element to close the rectangle
-	if (!airfieldDist.empty ())
-		airfieldDist << airfieldDist[0];
-
-	QVector<QPointF> patternDist;
-	foreach (const GeoPosition &point, patternVector)
-		patternDist << northUp * point.relativePositionTo (home);
-
-	ui.qwtPlot->detachItems (QwtPlotItem::Rtti_PlotCurve);
-
-	QPen pen;
-	pen.setWidth (2);
-
-	QwtPlotCurve* curve1 = new QwtPlotCurve ("airfield");
-	QwtPlotCurve* curve2 = new QwtPlotCurve ("pattern");
-
-	curve1->setRenderHint (QwtPlotItem::RenderAntialiased);
-	curve2->setRenderHint (QwtPlotItem::RenderAntialiased);
-
-	QwtPointSeriesData* data1 = new QwtPointSeriesData (airfieldDist);
-	QwtPointSeriesData* data2 = new QwtPointSeriesData (patternDist);
-	curve1->setData (data1);
-	curve2->setData (data2);
-	curve1->setPen (pen);
-	curve1->attach (ui.qwtPlot);
-	curve2->attach (ui.qwtPlot);
+	ui.qwtPlot->replot ();
 }
 
-void FlarmMap::refreshFlarm ()
+void FlarmMap::redrawFlarmData ()
 {
-	ui.qwtPlot->detachItems (QwtPlotItem::Rtti_PlotMarker);
-	// FIXME cannot detach all curves unless we always recreate the static
-	// curves (airfield, traffic circuit)
-	// FIXME done in drawAirfield, this sucks
-//	qwtPlot->detachItems (QwtPlotItem::Rtti_PlotCurve);
+	// Detach all Flarm items. Better solution: keep them and just set the
+	// updated data; but we'll have to track removal of Flarm records (FIXME)
 
-	//  QMap<QString,FlarmRecord*>* regMap = FlarmHandler::getInstance()->getRegMap();
-	//  foreach (FlarmRecord* record, *regMap) {
+	foreach (QwtPlotMarker *marker, flarmMarkers)
+	{
+		marker->detach ();
+		delete marker;
+	}
+	flarmMarkers.clear ();
+
+	foreach (QwtPlotCurve *curve, flarmCurves)
+	{
+		curve->detach ();
+		delete curve;
+	}
+	flarmCurves.clear ();
+
+	QColor climbColor  =Qt::green;  climbColor  .setAlpha (127);
+	QColor descentColor=Qt::yellow; descentColor.setAlpha (127);
+
+
 	foreach (FlarmRecord *record, FlarmHandler::getInstance ()->getFlarmRecords ()->getList ())
 	{
-		//qDebug () << i.value()->reg << "; " << i.value()->alt << "; " << i.value()->speed << endl;
-
-		FlarmRecord::flarmState state = record->getState ();
-		// we will not show far away planes or planes on ground
-		if (state == FlarmRecord::stateStarting || state == FlarmRecord::stateFlying || state
-				== FlarmRecord::stateLanding)
+		switch (record->getState ())
 		{
-			QwtPlotMarker* marker = new QwtPlotMarker ();
-			QwtText text (
-					(record->getRegistration () + "\n%1/%2/%3").arg (record->getRelativeAltitude ()).arg (
-							record->getGroundSpeed () / Speed::km_h).arg (record->getClimbRate (), 0, 'f', 1));
-			//if (record->getState() == FlarmRecord::stateFlyingFar) {
-			//  text.setColor (Qt::white);
-			//  text.setBackgroundBrush (QBrush(Qt::red));
-			//}
-			QColor climbColor=Qt::green;
-			QColor descentColor=Qt::yellow;
+			case FlarmRecord::stateStarting:
+			case FlarmRecord::stateFlying:
+			case FlarmRecord::stateLanding:
+			{
+				// ***** Marker
 
-			climbColor.setAlpha (127);
-			descentColor.setAlpha (127);
+				// Prepare data
+				QwtText text (qnotr ("%1\n%2/%3/%4")
+					.arg (record->getRegistration ())
+					.arg (record->getRelativeAltitude ())
+					.arg (record->getGroundSpeed () / Speed::km_h)
+					.arg (record->getClimbRate (), 0, 'f', 1));
 
-			if (record->getClimbRate () > 0.0)
-				text.setBackgroundBrush (QBrush (climbColor));
-			else
-				text.setBackgroundBrush (QBrush (descentColor));
-			marker->setLabel (text);
-			// south is top if northUp is -1
-			marker->setValue (northUp*record->getRelativePosition ());
-			marker->attach (ui.qwtPlot);
+				if (record->getClimbRate () > 0.0)
+					text.setBackgroundBrush (QBrush (climbColor));
+				else
+					text.setBackgroundBrush (QBrush (descentColor));
+
+				// Create and setup the marker
+				QwtPlotMarker *marker = new QwtPlotMarker ();
+				marker->setLabel (text);
+				marker->setValue (transform.map (record->getRelativePosition ()));
+
+				// Attach and store the marker
+				marker->attach (ui.qwtPlot);
+				flarmMarkers.append (marker);
 
 
-			QVector<QPointF> points=record->getPreviousRelativePositions ().toVector ();
-			for (int i=0, n=points.size (); i<n; ++i)
-				points[i]=northUp*points[i];
+				// ***** Trails
 
-			QPen pen;
-			pen.setWidth (2);
+				// Prepare data
+				QPolygonF polygon (record->getPreviousRelativePositions ().toVector ());
+				QwtPointSeriesData *data = new QwtPointSeriesData (transform.map (polygon));
 
-			// FIXME delete it?
-			QwtPlotCurve* curve = new QwtPlotCurve ("history");
-			curve->setRenderHint (QwtPlotItem::RenderAntialiased);
-			QwtPointSeriesData* data = new QwtPointSeriesData (points);
-			curve->setData (data);
-			curve->setPen (pen);
-			curve->attach (ui.qwtPlot);
+				// Create and setup the curve
+				QwtPlotCurve* curve = new QwtPlotCurve ("history");
+
+				QPen pen;
+				pen.setWidth (2);
+				curve->setPen (pen);
+				curve->setRenderHint (QwtPlotItem::RenderAntialiased);
+
+				curve->setData (data);
+
+				// Attach and store the curve
+				curve->attach (ui.qwtPlot);
+				flarmCurves.append (curve);
+			} break;
+			case FlarmRecord::stateOnGround:
+			{
+				// ***** Marker
+
+				// Create and setup the marker
+				QwtSymbol *symbol=new QwtSymbol (); // Will be deleted in ~Marker
+				symbol->setStyle (QwtSymbol::Cross);
+				symbol->setSize (8);
+				symbol->setPen (QPen (Qt::blue));
+				QwtPlotMarker *marker = new QwtPlotMarker ();
+				marker->setSymbol (symbol);
+				marker->setValue (transform.map (record->getRelativePosition ()));
+
+				// Attach and store the marker
+				marker->attach (ui.qwtPlot);
+				flarmMarkers.append (marker);
+
+			} break;
+			case FlarmRecord::stateUnknown:
+			case FlarmRecord::stateFlyingFar:
+				// don't draw
+				break;
+			// no default
 		}
 	}
 
-	QwtPlotMarker* marker = new QwtPlotMarker ();
-	QwtText text ("Start");
-	//text.setPaintAttribute (QwtText::PaintBackground, true);
-	text.setBackgroundBrush (QBrush (Qt::red));
-	marker->setLabel (text);
-	marker->setXValue (0);
-	marker->setYValue (0);
-	marker->attach (ui.qwtPlot);
-
 	ui.qwtPlot->replot ();
+}
+
+void FlarmMap::ownPositionChanged (const GeoPosition &ownPosition)
+{
+	redrawStaticData ();
+
+	// Only redraw if either the reference position for the static data is
+	// invalid (i. e., we didn't draw yet), or the position changed by more
+	// than a given threshold. The usual noise on the Flarm GPS data seems to be
+	// substantially less than 1 m. Currently, the threshold is set to 0, so the
+	// static data is redrawn every time a position is received (typically once
+	// per second).
+	if (
+		!this->ownPosition.isValid () ||
+		ownPosition.distanceTo (this->ownPosition)>0)
+	{
+		this->ownPosition=ownPosition;
+		redrawStaticData ();
+	}
+
+}
+
+void FlarmMap::flarmStatusChanged ()
+{
+	redrawFlarmData ();
 }
 
 void FlarmMap::on_toggleOrientationButton_toggled (bool on)
@@ -266,20 +330,31 @@ void FlarmMap::on_toggleOrientationButton_toggled (bool on)
 
 	if (on)
 	{
-		northUp = 1.0;
-		ui.toggleOrientationButton->setIcon (style->standardIcon (QStyle::SP_ArrowDown));
-		ui.toggleOrientationButton->setToolTip (QString::fromUtf8 ("Karte nach Süden ausrichten"));
-	}
-	else
-	{
-		northUp = -1.0;
+		setOrientation (Angle::fromDegrees (180));
 		ui.toggleOrientationButton->setIcon (style->standardIcon (QStyle::SP_ArrowUp));
 		ui.toggleOrientationButton->setToolTip (QString::fromUtf8 ("Karte nach Norden ausrichten"));
 	}
-	// force to redraw
-	// FIXME this stinks
-	GeoPosition home = oldHome;
-	oldHome=GeoPosition ();
-	drawAirfield (home);
-	refreshFlarm ();
+	else
+	{
+		setOrientation (Angle::fromDegrees (0));
+		ui.toggleOrientationButton->setIcon (style->standardIcon (QStyle::SP_ArrowDown));
+		ui.toggleOrientationButton->setToolTip (QString::fromUtf8 ("Karte nach Süden ausrichten"));
+	}
+}
+
+/**
+ * Sets the orientation such that upDirection is shown in the up direction in
+ * the window
+ *
+ * The default is north up, or upDirection=0. upDirection=90° means east up.
+ *
+ * @param upDirection, in radians
+ */
+void FlarmMap::setOrientation (const Angle &upDirection)
+{
+	transform=QTransform ();
+	transform.rotateRadians (upDirection.toRadians ());
+
+	redrawStaticData ();
+	redrawFlarmData ();
 }
