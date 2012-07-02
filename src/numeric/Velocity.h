@@ -1,16 +1,16 @@
-#ifndef SPEED_H_
-#define SPEED_H_
+#ifndef VELOCITY_H_
+#define VELOCITY_H_
 
 /**
- * Defines some constants for speed calculations
+ * Defines some constants for velocity calculations
  *
  * All values are in SI units, that is, m/s.
  *
  * Example:
- *   double speed = 5 * Speed::km_h; // 5 km/h
- *   double speed_in_knots = speed / Speed::knot; // 2.70
+ *   double velocity = 5 * Velocity::km_h; // 5 km/h
+ *   double velocity_in_knots = velocity / Velocity::knot; // 2.70
  */
-class Speed
+class Velocity
 {
 	public:
 		static const double m_s = 1.0;

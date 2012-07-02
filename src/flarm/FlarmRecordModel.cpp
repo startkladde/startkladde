@@ -7,7 +7,7 @@
 #include "src/flarm/FlarmRecord.h"
 #include "src/i18n/notr.h"
 #include "src/util/qString.h"
-#include "src/numeric/Speed.h"
+#include "src/numeric/Velocity.h"
 
 FlarmRecordModel::FlarmRecordModel ()
 {
@@ -56,8 +56,8 @@ QVariant FlarmRecordModel::displayData (FlarmRecord * const &flarmRecord, int co
 		case 0: return flarmRecord->getFlarmId ();
 		case 1: return flarmRecord->getRegistration ();
 		case 2: return QString ("%1 m"   ).arg (flarmRecord->getRelativeAltitude()                       );
-		case 3: return QString ("%1 km/h").arg (flarmRecord->getGroundSpeed     ()/Speed::km_h           );
-		case 4: return QString ("%1 m/s" ).arg (flarmRecord->getClimbRate       ()/Speed::m_s , 0, 'f', 1);
+		case 3: return QString ("%1 km/h").arg (flarmRecord->getGroundSpeed     ()/Velocity::km_h           );
+		case 4: return QString ("%1 m/s" ).arg (flarmRecord->getClimbRate       ()/Velocity::m_s , 0, 'f', 1);
 		case 5: return FlarmRecord::stateText (flarmRecord->getState ());
 	}
 

@@ -8,7 +8,7 @@
 
 #include "src/i18n/notr.h"
 #include "src/flarm/PflaaSentence.h"
-#include "src/numeric/Speed.h"
+#include "src/numeric/Velocity.h"
 
 // ******************
 // ** Construction **
@@ -64,7 +64,7 @@ bool FlarmRecord::isPlausible () const
 	if (groundSpeed < 0) return false;
 
 	// The ground speed cannot be larger than 400 km/h (Mü28: Vne = 380 km/h)
-	if (groundSpeed > (400.0 * Speed::km_h)) return false;
+	if (groundSpeed > (400.0 * Velocity::km_h)) return false;
 
 	// FIXME check the position difference
 
@@ -74,7 +74,7 @@ bool FlarmRecord::isPlausible () const
 
 	// The ground speed change cannot be larger than 100 km/h (in one second -
 	// 2.7 g acceleration)
-	if (fabs (groundSpeed - lastGroundSpeed) > (100.0 * Speed::km_h)) return false;
+	if (fabs (groundSpeed - lastGroundSpeed) > (100.0 * Velocity::km_h)) return false;
 
 	return true;
 }

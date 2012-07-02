@@ -17,7 +17,7 @@
 #include "src/flarm/FlarmRecordModel.h"
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/numeric/Angle.h"
-#include "src/numeric/Speed.h"
+#include "src/numeric/Velocity.h"
 #include "src/numeric/GeoPosition.h"
 
 FlarmMap::FlarmMap (QWidget *parent) :
@@ -229,7 +229,7 @@ void FlarmMap::redrawFlarmData ()
 				QwtText text (qnotr ("%1\n%2/%3/%4")
 					.arg (record->getRegistration ())
 					.arg (record->getRelativeAltitude ())
-					.arg (record->getGroundSpeed () / Speed::km_h)
+					.arg (record->getGroundSpeed () / Velocity::km_h)
 					.arg (record->getClimbRate (), 0, 'f', 1));
 
 				if (record->getClimbRate () > 0.0)
