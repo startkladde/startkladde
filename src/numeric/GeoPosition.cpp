@@ -69,6 +69,21 @@ GeoPosition GeoPosition::fromRadians (const double latitude, const double longit
 	return GeoPosition (Angle::fromRadians (latitude), Angle::fromRadians (longitude));
 }
 
+/**
+ * Calculates the distance between this position and another position
+ *
+ * The calculation uses an approximation that only works for small differences
+ * in latitude.
+ *
+ * Note that the distance is measured along a path where the direction does not
+ * wrap. For example, the distance between 0°N 179°W and 0°N 179°E would be
+ * calculated as 358*60 NM, not 2*60 NM which would be more appropriate. This
+ * behavior may change in the future, when a great circle distance is used
+ * instead.
+ *
+ * @param reference
+ * @return
+ */
 double GeoPosition::distanceTo (const GeoPosition &reference) const
 {
 	Angle averageLatitude=(latitude+reference.latitude)/2;
@@ -82,10 +97,12 @@ double GeoPosition::distanceTo (const GeoPosition &reference) const
 }
 
 /**
- * Calculates the relative position, in meters east and north of this position
+ * Calculates the relative position, in meters east and north of a reference
+ * position
  *
  * This only works for small differences in latitude. For large differences,
- * the relative position (as given here) is not well-defined.
+ * the relative position (as given here) is not well-defined because it depends
+ * on the path.
  *
  * The east distance will be positive if this position is east of the reference.
  * Likewise, the north distance will be positive if this position is north of
@@ -112,6 +129,16 @@ QPointF GeoPosition::relativePositionTo (const GeoPosition &reference) const
 	return QPointF (east, north);
 }
 
+/**
+ * Calculates the relative positions of multiple positions with respect to a
+ * single comment reference position
+ *
+ * @param values a QVector of positions
+ * @param reference a single position
+ * @return a QVector of QPointF, containing one element for each element of
+ *         values
+ * @see relativePositionsTo (const GeoPosition &)
+ */
 QVector<QPointF> GeoPosition::relativePositionTo (const QVector<GeoPosition> &values, const GeoPosition &reference)
 {
 	QVector<QPointF> result (values.size ());
