@@ -10,6 +10,7 @@
 #include "src/db/DbManager.h"
 #include "src/model/Plane.h"
 #include "src/numeric/GeoPosition.h"
+#include "src/flarm/FlarmList.h"
 
 class PflaaSentence;
 class GprmcSentence;
@@ -29,35 +30,28 @@ class FlarmHandler: public QObject
 
 		// Flarm data
 		QDateTime getGpsTime ();
-		const MutableObjectList<FlarmRecord *> *getFlarmRecords () const;
+
+		FlarmList &getFlarmList () { return flarmList; }
 
 	public slots:
 		void lineReceived (const QString &line);
 
 	signals:
 		void actionDetected (const QString &id, FlarmRecord::FlightAction);
-		void statusChanged ();
 		void homePosition (GeoPosition position);
-
-	protected:
-		int findOrCreateFlarmRecord (const QString &flarmId);
 
 	private:
 		FlarmHandler (QObject* parent);
 		static FlarmHandler* instance;
 
 		DbManager *dbManager;
+
 		QFile* trace;
 		QTextStream* stream;
 
-		int findFlarmRecordByFlarmId (const QString &flarmId);
-
-//		QMap<QString, FlarmRecord *> *regMap;
-		// FlarmRecord is a QObject, so we can't store it in a container
-		// directly. We have to store a pointer instead.
-		MutableObjectList<FlarmRecord *> *flarmRecords;
-
 		QDateTime gpsTime;
+
+		FlarmList flarmList;
 
 	private slots:
 		void processPflaaSentence (const PflaaSentence &sentence);

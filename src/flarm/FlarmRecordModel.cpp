@@ -39,7 +39,7 @@ QVariant FlarmRecordModel::displayHeaderData (int column) const
 	return QVariant ();
 }
 
-QVariant FlarmRecordModel::data (FlarmRecord * const &flarmRecord, int column, int role) const
+QVariant FlarmRecordModel::data (const FlarmRecord &flarmRecord, int column, int role) const
 {
 	if (role==Qt::DisplayRole)
 		return displayData (flarmRecord, column);
@@ -49,22 +49,22 @@ QVariant FlarmRecordModel::data (FlarmRecord * const &flarmRecord, int column, i
 		return QVariant ();
 }
 
-QVariant FlarmRecordModel::displayData (FlarmRecord * const &flarmRecord, int column) const
+QVariant FlarmRecordModel::displayData (const FlarmRecord &flarmRecord, int column) const
 {
 	switch (column)
 	{
-		case 0: return flarmRecord->getFlarmId ();
-		case 1: return flarmRecord->getRegistration ();
-		case 2: return QString ("%1 m"   ).arg (flarmRecord->getRelativeAltitude()                       );
-		case 3: return QString ("%1 km/h").arg (flarmRecord->getGroundSpeed     ()/Velocity::km_h           );
-		case 4: return QString ("%1 m/s" ).arg (flarmRecord->getClimbRate       ()/Velocity::m_s , 0, 'f', 1);
-		case 5: return FlarmRecord::stateText (flarmRecord->getState ());
+		case 0: return flarmRecord.getFlarmId ();
+		case 1: return flarmRecord.getRegistration ();
+		case 2: return QString ("%1 m"   ).arg (flarmRecord.getRelativeAltitude()                       );
+		case 3: return QString ("%1 km/h").arg (flarmRecord.getGroundSpeed     ()/Velocity::km_h           );
+		case 4: return QString ("%1 m/s" ).arg (flarmRecord.getClimbRate       ()/Velocity::m_s , 0, 'f', 1);
+		case 5: return FlarmRecord::stateText (flarmRecord.getState ());
 	}
 
 	return QVariant ();
 }
 
-QVariant FlarmRecordModel::alignmentData (FlarmRecord * const &flarmRecord, int column) const
+QVariant FlarmRecordModel::alignmentData (const FlarmRecord &flarmRecord, int column) const
 {
 	Q_UNUSED (flarmRecord);
 

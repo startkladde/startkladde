@@ -4,16 +4,6 @@
 #include "ui_FlarmMap.h"
 
 #include "src/gui/SkDialog.h"
-#include "src/numeric/GeoPosition.h"
-
-class QSettings;
-class QTransform;
-
-class QwtPlotMarker;
-class QwtPlotCurve;
-class QwtPointSeriesData;
-
-class FlarmRecord;
 
 class FlarmMap: public SkDialog<Ui::FlarmMapDialog>
 {
@@ -23,40 +13,15 @@ class FlarmMap: public SkDialog<Ui::FlarmMapDialog>
 		FlarmMap (QWidget *parent);
 		~FlarmMap ();
 
-	protected:
-		void addMinimalPlaneMarker (const FlarmRecord *record);
-		void addVerbosePlaneMarker (const FlarmRecord *record);
-		void addTrail (const FlarmRecord *record);
-
 	private:
 		void readVectors ();
 		void setExampleVectors ();
 		void storeVectors ();
 
-		void redrawFlarmData ();
-		void redrawStaticData ();
-
-		void setOrientation (const Angle &upDirection);
-
-		QTransform transform;
-
-		// Static data
-		QVector<GeoPosition> airfieldVector, patternVector;
-		QwtPlotCurve *airfieldCurve, *patternCurve;
-		QwtPointSeriesData *airfieldData, *patternData;
-		GeoPosition ownPosition;
-
-		QList<QwtPlotMarker *> flarmMarkers;
-		QList<QwtPlotCurve *> flarmCurves;
-
 	private slots:
-		void flarmStatusChanged ();
-		void ownPositionChanged (const GeoPosition &ownPosition);
-
 		void on_mapOrientationInput_valueChanged (int value);
 		void on_northButton_clicked ();
 		void on_reverseButton_clicked ();
-
 };
 
 #endif

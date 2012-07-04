@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>776</width>
-    <height>413</height>
+    <width>991</width>
+    <height>530</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
@@ -73,7 +73,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QwtPlot" name="qwtPlot"/>
+        <widget class="FlarmMapWidget" name="flarmMap"/>
        </item>
       </layout>
      </widget>
@@ -96,6 +96,9 @@
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
      </widget>
     </widget>
    </item>
@@ -110,15 +113,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>SkTableView</class>
    <extends>QTableView</extends>
    <header>src/gui/widgets/SkTableView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FlarmMapWidget</class>
+   <extends>QFrame</extends>
+   <header>src/flarm/FlarmMapWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
