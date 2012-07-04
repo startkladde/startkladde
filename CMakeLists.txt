@@ -64,10 +64,12 @@ if(NOT Qwt6_FOUND)
 else()
     message(STATUS "Qwt6 available at: ${Qwt6_INCLUDE_DIR} ${Qwt6_Qt4_LIBRARY}")
     include_directories(${Qwt6_INCLUDE_DIR})
-    link_libraries(${Qwt6_Qt4_LIBRARY})
-    # FIXME only for debug build
-	#link_libraries(${Qwt6_Qt4_DEBUG_LIBRARY})
     
+    IF(CMAKE_BUILD_TYPE MATCHES "Debug")
+		link_libraries(${Qwt6_Qt4_DEBUG_LIBRARY})
+	ELSE ()
+    	link_libraries(${Qwt6_Qt4_LIBRARY})
+	ENDIF()
 endif()
 
 # For gcc and release mode, enable some options that make the binary smaller
@@ -90,6 +92,7 @@ SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 #foreach (_variableName ${_variableNames})
 #    message(STATUS "${_variableName}=${${_variableName}}")
 #endforeach()
+
 
 ##################
 ## Source files ##
@@ -167,11 +170,16 @@ if (WIN32 AND QT_BINARY_DIR AND MYSQL_INCLUDE_DIR)
 
 	copy_library (${MYSQL_LIBRARY_DIR} libmysql.dll)
 
-	# TODO this should use a generic macro
-	message (STATUS "Copying library ${Qwt6_Qt4_LIBRARY}")
-	file (COPY ${Qwt6_Qt4_LIBRARY} DESTINATION ${PROJECT_BINARY_DIR})
 	# FIXME should not be hardcoded
-	set (INSTALL_LIBS ${INSTALL_LIBS} qwt.dll)
+    IF(CMAKE_BUILD_TYPE MATCHES "Debug")
+		message (STATUS "Copying library ${Qwt6_Qt4_DEBUG_LIBRARY}")
+		file (COPY ${Qwt6_Qt4_DEBUG_LIBRARY} DESTINATION ${PROJECT_BINARY_DIR})
+		set (INSTALL_LIBS ${INSTALL_LIBS} qwtd.dll)
+	ELSE ()
+		message (STATUS "Copying library ${Qwt6_Qt4_LIBRARY}")
+		file (COPY ${Qwt6_Qt4_LIBRARY} DESTINATION ${PROJECT_BINARY_DIR})
+		set (INSTALL_LIBS ${INSTALL_LIBS} qwt.dll)
+	ENDIF()
 
 	file (COPY ${QT_PLUGINS_DIR}/sqldrivers/qsqlmysql4.dll DESTINATION ${PROJECT_BINARY_DIR}/plugins/sqldrivers/)
 endif()
@@ -256,6 +264,13 @@ set_source_files_properties (
 
 # The executable depends on the svnheader target
 add_dependencies (startkladde svnheader)
+
+# Linker flags
+IF (WIN32)
+	# Required for inheriting from QwtPlot; seems to be related to the fact that
+	# QwtPlot is imported from a .dll.
+	set_property (TARGET startkladde PROPERTY LINK_FLAGS "-Wl,--enable-auto-import")
+ENDIF ()
 
 
 #############
@@ -420,4 +435,5 @@ SET (CPACK_DEBIAN_PACKAGE_SUGGESTS   "kvkbd")
 # /usr/share/doc/startkladde/copyright
 
 include (CPack)
+
 
