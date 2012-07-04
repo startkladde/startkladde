@@ -2146,6 +2146,9 @@ void MainWindow::onFlarmAction (const QString& flarmid, FlarmRecord::FlightActio
 	if (!Settings::instance().flarmEnabled)
 	        return;
 
+	if (!Settings::instance ().flarmAutostart)
+		return;
+
 	Plane plane;
 	QString reg;
         dbId planeId = cache.getPlaneIdByFlarmId (flarmid);
