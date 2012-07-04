@@ -17,7 +17,13 @@
 /**
  * An implementation of AbstractObjectList which allows the list to be modified
  * explicitly.
+ *
+ * Objects stored in this container must be assignable; it is, however, possible
+ * to store pointers to objects. In this case, the objects themselves do not
+ * have to be assignable; pointers always are assignable.
  */
+// TODO: maybe we should have a pointer based list instead of (or in addition
+// to) the value based list
 template<class T> class MutableObjectList: public AbstractObjectList<T>
 {
 	public:

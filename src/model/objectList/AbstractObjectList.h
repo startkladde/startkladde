@@ -18,16 +18,13 @@
  * objects that is able to notify listeners of changes. For a model that
  * provides data for objects in an AbstractObjectList, use ObjectListModel.
  *
- * Objects stored in this container must be assignable; it is, however, possible
- * to store pointers to objects. In this case, the objects themselves do not
- * have to be assignable; pointers always are assignable.
- *
  * Note that this QObject can be a template as it defines no signals or slots.
  */
 // FIXME: don't implement the methods that don't do anything useful?
-// FIXME: can we still listen to changes, or do we need a dummy column for that?
-// TODO: maybe we should have a pointer based list instead of (or in addition
-// to) the value based list
+// FIXME: can we still emit changes with 0 columns, or do we need a dummy column
+// for that?
+// FIXME should this be based on QAbstractListModel instead of
+// QAbstractTableModel? Or on on a Qt item view at all?
 template<class T> class AbstractObjectList: public QAbstractTableModel
 {
 	public:
@@ -61,6 +58,7 @@ template<class T> class AbstractObjectList: public QAbstractTableModel
 		 *
 		 * @return a QList consisting of the individual objects
 		 */
+		// FIXME do we really need this method?
 		virtual QList<T> getList () const=0;
 
 		// QAbstractTableModel methods
