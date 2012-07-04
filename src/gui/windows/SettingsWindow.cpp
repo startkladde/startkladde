@@ -170,14 +170,14 @@ void SettingsWindow::readSettings ()
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
 	ui.checkMedicalsCheckbox ->setChecked (s.checkMedicals);
 	// Flarm
-	ui.flarmBox			->setChecked (s.flarmEnabled);
-	ui.checkFlarmAutostart		->setChecked (s.flarmAutostart);
-	ui.checkFlarmEditor		->setChecked (s.flarmEditor);
-	ui.checkFlarmOverview		->setChecked (s.flarmOverview);
-	ui.checkFlarmRadar		->setChecked (s.flarmRadar);
+	ui.flarmBox              ->setChecked (s.flarmEnabled);
+	ui.checkFlarmAutostart   ->setChecked (s.flarmAutostart);
+	ui.checkFlarmEditor      ->setChecked (s.flarmEditor);
+	ui.checkFlarmOverview    ->setChecked (s.flarmOverview);
+	ui.checkFlarmRadar       ->setChecked (s.flarmRadar);
 	// FlarmNet
-	ui.flarmNetBox			->setChecked (s.flarmNetEnabled);
-	ui.checkFlarmNetOverview	->setChecked (s.flarmNetOverview);
+	ui.flarmNetBox           ->setChecked (s.flarmNetEnabled);
+	ui.checkFlarmNetOverview ->setChecked (s.flarmNetOverview);
 	// Permissions
 	ui.protectSettingsCheckbox      ->setChecked (s.protectSettings);
 	ui.protectLaunchMethodsCheckbox ->setChecked (s.protectLaunchMethods);
