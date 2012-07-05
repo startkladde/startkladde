@@ -11,7 +11,7 @@ DataStream::DataStream ()
 
     // Setup the timers
     dataTimer     ->setInterval (2000); dataTimer     ->setSingleShot (true);
-    reconnectTimer->setInterval (5000); reconnectTimer->setSingleShot (true);
+    reconnectTimer->setInterval (1000); reconnectTimer->setSingleShot (true);
 
     // Connect the timers' signals
     connect (dataTimer     , SIGNAL (timeout ()), this, SLOT (dataTimerTimeout      ()));
