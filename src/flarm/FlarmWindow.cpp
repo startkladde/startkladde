@@ -4,6 +4,7 @@
 
 #include <QtCore/QSettings>
 #include <QSortFilterProxyModel>
+#include <QPen>
 
 #include "src/flarm/FlarmHandler.h"
 #include "src/flarm/FlarmRecordModel.h"
@@ -20,7 +21,7 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	// FIXME load default orientation
 
 	// Setup the map
-	ui.flarmMap->setFlarmList (&FlarmHandler::getInstance ()->getFlarmList ());
+	ui.flarmMap->setModel (&FlarmHandler::getInstance ()->getFlarmList ());
 
 	// Setup the list
 	const AbstractObjectList<FlarmRecord> *objectList = &FlarmHandler::getInstance ()->getFlarmList ();
@@ -55,38 +56,39 @@ FlarmWindow::~FlarmWindow () {
 
 void FlarmWindow::setExampleVectors ()
 {
-	QVector<GeoPosition> vector;
-
-	vector.clear ();
-	vector
-		<< GeoPosition::fromDegrees (52.943078, 12.789621)
-		<< GeoPosition::fromDegrees (52.94111 , 12.7889  )
-		<< GeoPosition::fromDegrees (52.9428  , 12.7703  )
-		<< GeoPosition::fromDegrees (52.9444  , 12.7706  );
-	vector << vector[0];
-	ui.flarmMap->setAirfieldVector (vector);
-
-	vector.clear ();
-	vector
-		<< GeoPosition::fromDegrees (52.942123, 12.789271)
-		<< GeoPosition::fromDegrees (52.941222, 12.800440)
-		<< GeoPosition::fromDegrees (52.941120, 12.801773)
-		<< GeoPosition::fromDegrees (52.941320, 12.802625)
-		<< GeoPosition::fromDegrees (52.941745, 12.803246)
-		<< GeoPosition::fromDegrees (52.947346, 12.804757)
-		<< GeoPosition::fromDegrees (52.948177, 12.804512)
-		<< GeoPosition::fromDegrees (52.948577, 12.803663)
-		<< GeoPosition::fromDegrees (52.948812, 12.802481)
-		<< GeoPosition::fromDegrees (52.952181, 12.758622)
-		<< GeoPosition::fromDegrees (52.952180, 12.757164)
-		<< GeoPosition::fromDegrees (52.951712, 12.755604)
-		<< GeoPosition::fromDegrees (52.951071, 12.754953)
-		<< GeoPosition::fromDegrees (52.946323, 12.754016)
-		<< GeoPosition::fromDegrees (52.945462, 12.754175)
-		<< GeoPosition::fromDegrees (52.944926, 12.754900)
-		<< GeoPosition::fromDegrees (52.944720, 12.756229)
-		<< GeoPosition::fromDegrees (52.943513, 12.770433);
-	ui.flarmMap->setPatternVector (vector);
+	// FIXME
+//	QVector<GeoPosition> vector;
+//
+//	vector.clear ();
+//	vector
+//		<< GeoPosition::fromDegrees (52.943078, 12.789621)
+//		<< GeoPosition::fromDegrees (52.94111 , 12.7889  )
+//		<< GeoPosition::fromDegrees (52.9428  , 12.7703  )
+//		<< GeoPosition::fromDegrees (52.9444  , 12.7706  );
+//	vector << vector[0];
+//	ui.flarmMap->setAirfieldVector (vector);
+//
+//	vector.clear ();
+//	vector
+//		<< GeoPosition::fromDegrees (52.942123, 12.789271)
+//		<< GeoPosition::fromDegrees (52.941222, 12.800440)
+//		<< GeoPosition::fromDegrees (52.941120, 12.801773)
+//		<< GeoPosition::fromDegrees (52.941320, 12.802625)
+//		<< GeoPosition::fromDegrees (52.941745, 12.803246)
+//		<< GeoPosition::fromDegrees (52.947346, 12.804757)
+//		<< GeoPosition::fromDegrees (52.948177, 12.804512)
+//		<< GeoPosition::fromDegrees (52.948577, 12.803663)
+//		<< GeoPosition::fromDegrees (52.948812, 12.802481)
+//		<< GeoPosition::fromDegrees (52.952181, 12.758622)
+//		<< GeoPosition::fromDegrees (52.952180, 12.757164)
+//		<< GeoPosition::fromDegrees (52.951712, 12.755604)
+//		<< GeoPosition::fromDegrees (52.951071, 12.754953)
+//		<< GeoPosition::fromDegrees (52.946323, 12.754016)
+//		<< GeoPosition::fromDegrees (52.945462, 12.754175)
+//		<< GeoPosition::fromDegrees (52.944926, 12.754900)
+//		<< GeoPosition::fromDegrees (52.944720, 12.756229)
+//		<< GeoPosition::fromDegrees (52.943513, 12.770433);
+//	ui.flarmMap->setPatternVector (vector);
 }
 
 /**
@@ -94,13 +96,14 @@ void FlarmWindow::setExampleVectors ()
  */
 void FlarmWindow::storeVectors ()
 {
-	QSettings settings ("startkladde", "startkladde");
-	settings.beginGroup ("vectors");
-
-	GeoPosition::storeVector (settings, "airfield", ui.flarmMap->getAirfieldVector ());
-	GeoPosition::storeVector (settings, "pattern" , ui.flarmMap->getPatternVector  ());
-
-	settings.endGroup ();
+	// FIXME
+//	QSettings settings ("startkladde", "startkladde");
+//	settings.beginGroup ("vectors");
+//
+//	GeoPosition::storeVector (settings, "airfield", ui.flarmMap->getAirfieldVector ());
+//	GeoPosition::storeVector (settings, "pattern" , ui.flarmMap->getPatternVector  ());
+//
+//	settings.endGroup ();
 }
 
 void FlarmWindow::readVectors ()
@@ -108,8 +111,11 @@ void FlarmWindow::readVectors ()
 	QSettings settings ("startkladde", "startkladde");
 	settings.beginGroup ("vectors");
 
-	ui.flarmMap->setAirfieldVector (GeoPosition::readVector (settings, "airfield"));
-	ui.flarmMap->setPatternVector  (GeoPosition::readVector (settings, "pattern"));
+	QPen airfieldPen;
+	airfieldPen.setWidth (2);
+
+	ui.flarmMap->addStaticCurve ("airfield", GeoPosition::readVector (settings, "airfield"), airfieldPen);
+	ui.flarmMap->addStaticCurve ("pattern" , GeoPosition::readVector (settings, "pattern" ), QPen ());
 
 	settings.endGroup ();
 }

@@ -5,9 +5,12 @@
 #include "src/flarm/FlarmRecord.h"
 
 class FlarmRecord;
+class QPersistentModelIndex;
 
 class FlarmList: public AbstractObjectList<FlarmRecord>
 {
+		Q_OBJECT
+
 	public:
 		FlarmList (QObject *parent=NULL);
 		virtual ~FlarmList ();
@@ -23,13 +26,14 @@ class FlarmList: public AbstractObjectList<FlarmRecord>
 //		int findOrCreateFlarmRecord (const QString &flarmId);
 //		int findFlarmRecordByFlarmId (const QString &flarmId);
 
-
-
 	private:
-		int findFlarmRecordByFlarmId (const QString &flarmId);
+		int findFlarmRecord (const QString &flarmId);
 
 		QList<FlarmRecord *> flarmRecords;
-		QMap<QString, int> flarmRecordByFlarmId;
+
+	private slots:
+		// Controller slots (the signals are in FlarmRecord)
+		void removeFlarmRecord (const QString &flarmId);
 };
 
 #endif

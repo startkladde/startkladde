@@ -3,11 +3,13 @@
 
 #include <QTransform>
 #include <QVector>
-#include <QModelIndex>
+#include <QHash>
 
 #include <qwt_plot.h>
 
 #include "src/numeric/GeoPosition.h"
+
+class QModelIndex;
 
 class QwtPlotMarker;
 class QwtPlotCurve;
@@ -17,56 +19,90 @@ class Angle;
 class FlarmRecord;
 class FlarmList;
 
+/*
+ * Call tree:
+ *   rowsInserted
+ *       addFlarmData
+ *   dataChanged
+ *       updateFlarmData
+ *           updateTrail
+ *           updateMarkerMinimal
+ *           updateMarkerVerbose
+ *   rowsAboutToBeRemoved
+ *       removeFlarmData
+ *   modelReset
+ *       refreshFlarmData
+ *           addFlarmData
+ *   modelDestroyed
+ *       setModel
+ */
+
 class FlarmMapWidget: public QwtPlot
 {
 		Q_OBJECT
 
 	public:
+		struct StaticCurve
+		{
+			QString name;
+			QVector<GeoPosition> points;
+			QwtPlotCurve *curve;
+			QwtPointSeriesData *data;
+		};
+
 		FlarmMapWidget (QWidget *parent=0);
 		virtual ~FlarmMapWidget ();
 
-		void setFlarmList (FlarmList *list);
+		// Static data
+		void addStaticCurve (const QString &name, const QVector<GeoPosition> &points, QPen pen);
+		void addStaticMarker (const QString &text, const QColor &color, const QPointF &point);
 
-		void setAirfieldVector (const QVector<GeoPosition> &vector);
-		void setPatternVector (const QVector<GeoPosition> &vector);
-		QVector<GeoPosition> getAirfieldVector () const;
-		QVector<GeoPosition> getPatternVector () const;
+		// Model
+		void setModel (FlarmList *model);
 
+		// View
 		void setOrientation (const Angle &upDirection);
 
-	protected:
-		void addMinimalPlaneMarker (const FlarmRecord *record);
-		void addVerbosePlaneMarker (const FlarmRecord *record);
-		void addTrail (const FlarmRecord *record);
-
 	private:
-		void redrawFlarmData ();
-		void redrawStaticData ();
+		// Settings
+		QColor climbColor, descentColor;
 
+		// Model
+		FlarmList *model;
 
+		// View settings
 		QTransform transform;
-
-		// Static data
-		QVector<GeoPosition> airfieldVector, patternVector;
-		QwtPlotCurve *airfieldCurve, *patternCurve;
-		QwtPointSeriesData *airfieldData, *patternData;
 		GeoPosition ownPosition;
 
-		QList<QwtPlotMarker *> flarmMarkers;
-		QList<QwtPlotCurve *> flarmCurves;
+		// Static curves and Flarm data
+		QList<StaticCurve> staticCurves;
+		QHash<QString, QwtPlotMarker *> flarmMarkers;
+		QHash<QString, QwtPlotCurve  *> flarmCurves;
 
-		// Flarm list
-		FlarmList *flarmList;
+
+		// Static data
+		void updateStaticCurves ();
+
+		// Plot item updates
+		virtual void updateTrail (QwtPlotCurve *curve, const FlarmRecord &record);
+		virtual void updateMarkerMinimal (QwtPlotMarker *marker, const FlarmRecord &record);
+		virtual void updateMarkerVerbose (QwtPlotMarker *marker, const FlarmRecord &record);
+
+		// Flarm data - model changes
+		virtual void addFlarmData (const FlarmRecord &record);
+		virtual void removeFlarmData (const FlarmRecord &record);
+		virtual void updateFlarmData (const FlarmRecord &record);
+		virtual void refreshFlarmData ();
 
 	private slots:
 		void ownPositionChanged (const GeoPosition &ownPosition);
 
-		void flarmListDestroyed ();
-		void flarmListDataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight);
-		void flarmListRowsInserted (const QModelIndex &parent, int start, int end);
-		void flarmListRowsAboutToBeRemoved (const QModelIndex &parent, int start, int end);
-		void flarmListReset ();
-		void flarmListLayoutChanged ();
+		// Model slots
+		void rowsInserted (const QModelIndex &parent, int start, int end);
+		void dataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight);
+		void rowsAboutToBeRemoved (const QModelIndex &parent, int start, int end);
+		void modelReset ();
+		void modelDestroyed ();
 };
 
 #endif

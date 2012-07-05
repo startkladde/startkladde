@@ -1,5 +1,9 @@
 #include <src/flarm/FlarmMapWidget.h>
 
+#include <cassert>
+
+#include <QModelIndex>
+
 #include <qwt_plot_grid.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_marker.h>
@@ -9,235 +13,134 @@
 #include <qwt_series_data.h>
 
 #include "src/flarm/FlarmRecord.h"
-#include "src/flarm/FlarmHandler.h"
 #include "src/numeric/Velocity.h"
 #include "src/numeric/GeoPosition.h"
 #include "src/flarm/FlarmList.h"
-
+#include "src/util/qHash.h"
 #include "src/i18n/notr.h"
 
+
+// ******************
+// ** Construction **
+// ******************
+
 FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
-	airfieldCurve (NULL), patternCurve (NULL),
-	flarmList (NULL)
+	climbColor   (  0, 255, 0, 127),
+	descentColor (255, 255, 0, 127),
+	model (NULL)
 {
+	// Setup the axes
 	// FIXME consider aspect ratio when scaling
 	setAxisScale (QwtPlot::yLeft, -2000.0, 2000.0);
 	setAxisScale (QwtPlot::xBottom, -2000.0, 2000.0);
-	QwtPlotGrid* grid = new QwtPlotGrid ();
+
+	// Setup the panner
 	QwtPlotPanner* panner = new QwtPlotPanner (canvas ());
 	panner->setAxisEnabled (QwtPlot::yLeft, true);
 	panner->setAxisEnabled (QwtPlot::xBottom, true);
 	panner->setMouseButton (Qt::LeftButton);
 	panner->setEnabled (true);
 
+	// Setup the magnifier
 	QwtPlotMagnifier* magnifier = new QwtPlotMagnifier (canvas ());
 	magnifier->setMouseButton (Qt::MidButton);
 	magnifier->setAxisEnabled (QwtPlot::yRight, true);
 	magnifier->setAxisEnabled (QwtPlot::xBottom, true);
-
 	// Positive value - mouse wheel down (back) means zooming out. This is the
 	// convention that many other applications, including Firefox and Gimp, use.
 	magnifier->setMouseFactor (1.05);
 	magnifier->setWheelFactor (1.1);
 	magnifier->setEnabled (true);
 
+	// Add the grid
+	QwtPlotGrid* grid = new QwtPlotGrid ();
 	grid->attach (this);
 
-	// ***** Static markers
 
-	QwtPlotMarker *startMarker = new QwtPlotMarker ();
-	QwtText text ("Start");
-	//text.setPaintAttribute (QwtText::PaintBackground, true);
-	QColor startColor=Qt::red;
-	startColor.setAlpha (127);
-	text.setBackgroundBrush (QBrush (startColor));
-	startMarker->setLabel (text);
-	startMarker->setXValue (0);
-	startMarker->setYValue (0);
-	startMarker->attach (this);
+	// Add static markers
+	addStaticMarker ("Start", QColor (255, 0, 0, 127), QPointF (0, 0));
 
-
-	// ***** Static curves
-
-	airfieldCurve = new QwtPlotCurve ("airfield");
-	patternCurve  = new QwtPlotCurve ("pattern");
-
-	airfieldCurve->setRenderHint (QwtPlotItem::RenderAntialiased);
-	patternCurve->setRenderHint (QwtPlotItem::RenderAntialiased);
-
-	QPen pen;
-	pen.setWidth (2);
-	airfieldCurve->setPen (pen);
+//	QwtPlotMarker *startMarker = new QwtPlotMarker ();
+//	QwtText text ("Start");
+//	QColor startColor=Qt::red;
+//	startColor.setAlpha (127);
+//	text.setBackgroundBrush (QBrush (startColor));
+//	startMarker->setLabel (text);
+//	startMarker->setXValue (0);
+//	startMarker->setYValue (0);
+//	startMarker->attach (this);
 
 
-	airfieldData = new QwtPointSeriesData ();
-	patternData = new QwtPointSeriesData ();
-	airfieldCurve->setData (airfieldData);
-	patternCurve->setData (patternData);
-
-	airfieldCurve->attach (this);
-	patternCurve->attach (this);
-
-	redrawFlarmData ();
+	updateStaticCurves ();
+	refreshFlarmData ();
+	replot ();
 }
 
 FlarmMapWidget::~FlarmMapWidget ()
 {
 }
 
-// TODO all temporary, we want an arbitrary number of vectors
-void FlarmMapWidget::setAirfieldVector (const QVector<GeoPosition> &vector)
+
+// ***********
+// ** Model **
+// ***********
+
+void FlarmMapWidget::setModel (FlarmList *model)
 {
-	this->airfieldVector=vector;
-	redrawStaticData ();
-}
+	if (model==this->model)
+		return;
 
-void FlarmMapWidget::setPatternVector (const QVector<GeoPosition> &vector)
-{
-	this->patternVector=vector;
-	redrawStaticData ();
-}
+	// Note that we can ignore layoutChanged because we don't consider the
+	// order of the entries anyway, and we refer to entries by Flarm ID, not
+	// index.
 
-QVector<GeoPosition> FlarmMapWidget::getAirfieldVector () const
-{
-	return airfieldVector;
-}
+	if (this->model)
+	{
+		disconnect (this->model, SIGNAL (destroyed()), this, SLOT (modelDestroyed ()));
+		disconnect (this->model, SIGNAL (dataChanged (QModelIndex, QModelIndex)), this, SLOT (dataChanged (QModelIndex, QModelIndex)));
+		disconnect (this->model, SIGNAL (rowsInserted (QModelIndex, int, int)), this, SLOT (rowsInserted (QModelIndex, int, int)));
+		disconnect (this->model, SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),this, SLOT (rowsAboutToBeRemoved (QModelIndex, int, int)));
+		disconnect (this->model, SIGNAL (modelReset ()), this, SLOT (modelReset ()));
+	}
 
-QVector<GeoPosition> FlarmMapWidget::getPatternVector () const
-{
-	return patternVector;
-}
+	this->model=model;
 
+	if (model)
+	{
+		connect (this->model, SIGNAL (destroyed()), this, SLOT (modelDestroyed ()));
+		connect (this->model, SIGNAL (dataChanged (QModelIndex, QModelIndex)), this, SLOT (dataChanged (QModelIndex, QModelIndex)));
+		connect (this->model, SIGNAL (rowsInserted (QModelIndex, int, int)), this, SLOT (rowsInserted (QModelIndex, int, int)));
+		connect (this->model, SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),this, SLOT (rowsAboutToBeRemoved (QModelIndex, int, int)));
+		connect (this->model, SIGNAL (modelReset ()), this, SLOT (modelReset ()));
+	}
 
-void FlarmMapWidget::redrawStaticData ()
-{
-	QPolygonF airfieldPolygon (GeoPosition::relativePositionTo (airfieldVector, ownPosition));
-	QPolygonF patternPolygon  (GeoPosition::relativePositionTo (patternVector , ownPosition));
-
-	airfieldData->setSamples (transform.map (airfieldPolygon));
-	patternData ->setSamples (transform.map (patternPolygon));
-
+	refreshFlarmData ();
 	replot ();
 }
 
 
-void FlarmMapWidget::addMinimalPlaneMarker (const FlarmRecord *record)
+// **********
+// ** View **
+// **********
+
+/**
+ * Sets the orientation such that upDirection is shown in the up direction in
+ * the window
+ *
+ * The default is north up, or upDirection=0. upDirection=90° means east up.
+ */
+void FlarmMapWidget::setOrientation (const Angle &upDirection)
 {
-	// Create and setup the marker
-	QwtSymbol *symbol=new QwtSymbol (); // Will be deleted in ~Marker
-	symbol->setStyle (QwtSymbol::Cross);
-	symbol->setSize (8);
-	symbol->setPen (QPen (Qt::blue));
-	QwtPlotMarker *marker = new QwtPlotMarker ();
-	marker->setSymbol (symbol);
-	marker->setValue (transform.map (record->getRelativePosition ()));
+	transform=QTransform ();
+	transform.rotateRadians (upDirection.toRadians ());
 
-	// Attach and store the marker
-	marker->attach (this);
-	flarmMarkers.append (marker);
-}
-
-void FlarmMapWidget::addVerbosePlaneMarker (const FlarmRecord *record)
-{
-	QColor climbColor  =Qt::green;  climbColor  .setAlpha (127);
-	QColor descentColor=Qt::yellow; descentColor.setAlpha (127);
-
-	// Prepare data
-	QwtText text (qnotr ("%1\n%2/%3/%4")
-		.arg (record->getRegistration ())
-		.arg (record->getRelativeAltitude ())
-		.arg (record->getGroundSpeed () / Velocity::km_h)
-		.arg (record->getClimbRate (), 0, 'f', 1));
-
-	if (record->getClimbRate () > 0.0)
-		text.setBackgroundBrush (QBrush (climbColor));
-	else
-		text.setBackgroundBrush (QBrush (descentColor));
-
-	// Create and setup the marker
-	QwtPlotMarker *marker = new QwtPlotMarker ();
-	marker->setLabel (text);
-	marker->setValue (transform.map (record->getRelativePosition ()));
-
-	// Attach and store the marker
-	marker->attach (this);
-	flarmMarkers.append (marker);
-
-}
-
-void FlarmMapWidget::addTrail (const FlarmRecord *record)
-{
-	// Prepare data
-	QPolygonF polygon (record->getPreviousRelativePositions ().toVector ());
-	QwtPointSeriesData *data = new QwtPointSeriesData (transform.map (polygon));
-
-	// Create and setup the curve
-	QwtPlotCurve* curve = new QwtPlotCurve ("history");
-
-	QPen pen;
-	pen.setWidth (2);
-	curve->setPen (pen);
-	curve->setRenderHint (QwtPlotItem::RenderAntialiased);
-
-	curve->setData (data);
-
-	// Attach and store the curve
-	curve->attach (this);
-	flarmCurves.append (curve);
-}
-
-void FlarmMapWidget::redrawFlarmData ()
-{
-	// Detach all Flarm items. Better solution: keep them and just set the
-	// updated data; but we'll have to track removal of Flarm records (FIXME)
-
-	foreach (QwtPlotMarker *marker, flarmMarkers)
-	{
-		marker->detach ();
-		delete marker;
-	}
-	flarmMarkers.clear ();
-
-	foreach (QwtPlotCurve *curve, flarmCurves)
-	{
-		curve->detach ();
-		delete curve;
-	}
-	flarmCurves.clear ();
-
-	if (flarmList)
-	{
-		for (int i=0, n=flarmList->size (); i<n; ++i)
-		{
-			const FlarmRecord *record=&FlarmHandler::getInstance ()->getFlarmList ().at (i);
-
-			switch (record->getState ())
-			{
-				case FlarmRecord::stateStarting:
-				case FlarmRecord::stateFlying:
-				case FlarmRecord::stateLanding:
-					addVerbosePlaneMarker (record);
-					addTrail (record);
-					break;
-				case FlarmRecord::stateOnGround:
-					addMinimalPlaneMarker (record);
-					break;
-				case FlarmRecord::stateUnknown:
-				case FlarmRecord::stateFlyingFar:
-					// don't draw
-					break;
-				// no default
-			}
-		}
-	}
-
+	updateStaticCurves ();
+	refreshFlarmData ();
 	replot ();
 }
 
 void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 {
-	redrawStaticData ();
-
 	// Only redraw if either the reference position for the static data is
 	// invalid (i. e., we didn't draw yet), or the position changed by more
 	// than a given threshold. The usual noise on the Flarm GPS data seems to be
@@ -249,80 +152,244 @@ void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 		ownPosition.distanceTo (this->ownPosition)>0)
 	{
 		this->ownPosition=ownPosition;
-		redrawStaticData ();
+		updateStaticCurves ();
+		replot ();
 	}
+}
 
+
+
+// *****************
+// ** Static data **
+// *****************
+
+void FlarmMapWidget::addStaticCurve (const QString &name, const QVector<GeoPosition> &points, QPen pen)
+{
+	StaticCurve curve;
+
+	curve.name=name;
+
+	curve.points=points;
+
+	curve.data=new QwtPointSeriesData (); // Deleted by curve (FIXME really?)
+
+	curve.curve=new QwtPlotCurve (name); // Deleted by QwtPlot
+	curve.curve->setRenderHint (QwtPlotItem::RenderAntialiased);
+	curve.curve->setPen (pen);
+	curve.curve->setData (curve.data);
+	curve.curve->attach (this);
+
+	staticCurves.append (curve);
+}
+
+void FlarmMapWidget::addStaticMarker (const QString &text, const QColor &color, const QPointF &point)
+{
+	QwtText qwtText (text);
+	qwtText.setBackgroundBrush (QBrush (color));
+
+	QwtPlotMarker *marker=new QwtPlotMarker (); // Deleted by plot
+	marker->setLabel (qwtText);
+	marker->setValue (point);
+	marker->attach (this);
+}
+
+void FlarmMapWidget::updateStaticCurves ()
+{
+	foreach (const StaticCurve &curve, staticCurves)
+	{
+		QPolygonF polygon (GeoPosition::relativePositionTo (curve.points, ownPosition));
+		curve.data->setSamples (transform.map (polygon));
+	}
+}
+
+
+// ***********************************
+// ** Flarm data individual updates **
+// ***********************************
+
+void FlarmMapWidget::updateMarkerMinimal (QwtPlotMarker *marker, const FlarmRecord &record)
+{
+	marker->setVisible (true);
+
+	Q_UNUSED (record);
+
+	// Symbol: small blue cross
+	QwtSymbol *symbol=new QwtSymbol (); // Will be deleted by the marker
+	symbol->setStyle (QwtSymbol::Cross);
+	symbol->setSize (8);
+	symbol->setPen (QPen (Qt::blue));
+	marker->setSymbol (symbol);
+
+	// Label: none
+	marker->setLabel (QwtText ());
+}
+
+void FlarmMapWidget::updateMarkerVerbose (QwtPlotMarker *marker, const FlarmRecord &record)
+{
+	marker->setVisible (true);
+
+	// Symbol: none
+	marker->setSymbol (NULL);
+
+	// Label: verbose text
+	QwtText text (qnotr ("%1\n%2/%3/%4")
+		.arg (record.getRegistration ())
+		.arg (record.getRelativeAltitude ())
+		.arg (record.getGroundSpeed () / Velocity::km_h)
+		.arg (record.getClimbRate (), 0, 'f', 1));
+
+	if (record.getClimbRate () > 0.0)
+		text.setBackgroundBrush (QBrush (climbColor));
+	else
+		text.setBackgroundBrush (QBrush (descentColor));
+
+	marker->setLabel (text);
+}
+
+void FlarmMapWidget::updateTrail (QwtPlotCurve *curve, const FlarmRecord &record)
+{
+	curve->setVisible (true);
+
+	// Prepare data. The data will be deleted by the curve.
+	QPolygonF polygon (record.getPreviousRelativePositions ().toVector ());
+	// Will be deleted by the curve
+	QwtPointSeriesData *data = new QwtPointSeriesData (transform.map (polygon));
+	curve->setData (data);
+}
+
+
+// ****************
+// ** Flarm data **
+// ****************
+
+void FlarmMapWidget::addFlarmData (const FlarmRecord &record)
+{
+	// Create, attach and store the marker
+	QwtPlotMarker *marker = new QwtPlotMarker ();
+	marker->attach (this);
+	flarmMarkers.insert (record.getFlarmId (), marker);
+
+	// Create, attach and store the curve
+	QwtPlotCurve* curve = new QwtPlotCurve ("history");
+	curve->attach (this);
+	flarmCurves.insert (record.getFlarmId (), curve);
+
+	// Setup the curve
+	QPen pen;
+	pen.setWidth (2);
+	curve->setPen (pen);
+	curve->setRenderHint (QwtPlotItem::RenderAntialiased);
+
+	// Update the data (marker and trail)
+	updateFlarmData (record);
+}
+
+void FlarmMapWidget::updateFlarmData (const FlarmRecord &record)
+{
+	QwtPlotMarker *marker=flarmMarkers.value (record.getFlarmId (), NULL);
+	QwtPlotCurve  *curve =flarmCurves .value (record.getFlarmId (), NULL);
+
+	// Always set the position, even if the marker is not visible
+	marker->setValue (transform.map (record.getRelativePosition ()));
+
+	switch (record.getState ())
+	{
+		case FlarmRecord::stateStarting:
+		case FlarmRecord::stateFlying:
+		case FlarmRecord::stateLanding:
+			// Verbose marker, trail
+			updateMarkerVerbose (marker, record);
+			updateTrail (curve, record);
+			break;
+		case FlarmRecord::stateOnGround:
+			// Minimal marker, no trail
+			updateMarkerMinimal (marker, record);
+			curve->setVisible (false);
+			break;
+		case FlarmRecord::stateUnknown:
+		case FlarmRecord::stateFlyingFar:
+			// No marker, no trail
+			marker->setVisible (false);
+			curve->setVisible (false);
+			break;
+		// no default
+	}
 }
 
 /**
- * Sets the orientation such that upDirection is shown in the up direction in
- * the window
+ * You will have to call replot yourself.
  *
- * The default is north up, or upDirection=0. upDirection=90° means east up.
- *
- * @param upDirection, in radians
+ * @param flarmId
  */
-void FlarmMapWidget::setOrientation (const Angle &upDirection)
+void FlarmMapWidget::removeFlarmData (const FlarmRecord &record)
 {
-	transform=QTransform ();
-	transform.rotateRadians (upDirection.toRadians ());
+	// Items will be detached automatically on deletion.
+	QString flarmId=record.getFlarmId ();
+	removeAndDeleteIfExists (flarmMarkers, flarmId);
+	removeAndDeleteIfExists (flarmCurves , flarmId);
+}
 
-	redrawStaticData ();
-	redrawFlarmData ();
+void FlarmMapWidget::refreshFlarmData ()
+{
+	// Items will be detached automatically on deletion.
+	clearAndDelete (flarmMarkers);
+	clearAndDelete (flarmCurves);
+
+	// Only draw if we have a model
+	if (model)
+	{
+		for (int i=0, n=model->size (); i<n; ++i)
+		{
+			const FlarmRecord &record=model->at (i);
+			addFlarmData (record);
+		}
+	}
 }
 
 
-// *********************
-// ** Flarm list view **
-// *********************
+// *****************
+// ** Model slots **
+// *****************
 
-// FIXME this should also set the model for the list, but create the
-// FlarmMapWidget first
-void FlarmMapWidget::setFlarmList (FlarmList *list)
+void FlarmMapWidget::rowsInserted (const QModelIndex &parent, int start, int end)
 {
-	assert (!this->flarmList); // FIXME allow changing the model, disconnect the signals
+	Q_UNUSED (parent);
 
-	this->flarmList=list;
+	if (model)
+		for (int i=start; i<=end; ++i)
+			addFlarmData (model->at (i));
 
-	connect (list, SIGNAL (destroyed()), this, SLOT(flarmListDestroyed ()));
-	connect (list, SIGNAL (dataChanged (QModelIndex, QModelIndex)), this, SLOT (flarmListDataChanged (QModelIndex, QModelIndex)));
-	connect (list, SIGNAL (rowsInserted (QModelIndex, int, int)), this, SLOT (flarmListRowsInserted (QModelIndex, int, int)));
-	connect (list, SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),this, SLOT (flarmListRowsAboutToBeRemoved (QModelIndex, int, int)));
-	connect (list, SIGNAL (modelReset ()), this, SLOT (flarmListReset ()));
-	connect (list, SIGNAL (layoutChanged ()), this, SLOT (flarmListLayoutChanged ()));
-
-	redrawFlarmData ();
+	replot ();
 }
 
-void FlarmMapWidget::flarmListDestroyed ()
+void FlarmMapWidget::dataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-	this->flarmList=NULL;
+	if (model)
+		for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
+			updateFlarmData (model->at (i));
+
+	replot ();
 }
 
-void FlarmMapWidget::flarmListDataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight)
+void FlarmMapWidget::rowsAboutToBeRemoved (const QModelIndex &parent, int start, int end)
 {
-	// FIXME don't redraw all
-	redrawFlarmData ();
+	Q_UNUSED (parent);
+
+	if (model)
+		for (int i=start; i<=end; ++i)
+			removeFlarmData (model->at (i));
+
+	replot ();
 }
 
-void FlarmMapWidget::flarmListRowsInserted (const QModelIndex &parent, int start, int end)
+void FlarmMapWidget::modelReset ()
 {
-	// FIXME don't redraw all
-	redrawFlarmData ();
+	refreshFlarmData ();
+	replot ();
 }
 
-void FlarmMapWidget::flarmListRowsAboutToBeRemoved (const QModelIndex &parent, int start, int end)
+void FlarmMapWidget::modelDestroyed ()
 {
-	// FIXME don't redraw all
-	redrawFlarmData ();
+	setModel (NULL);
 }
 
-void FlarmMapWidget::flarmListReset ()
-{
-	redrawFlarmData ();
-}
-
-void FlarmMapWidget::flarmListLayoutChanged ()
-{
-	redrawFlarmData ();
-}
