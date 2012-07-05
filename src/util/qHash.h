@@ -1,6 +1,8 @@
 #ifndef QHASH_H_
 #define QHASH_H_
 
+#include <QHash>
+
 /**
  * Clears a QHash whose values are pointers and deletes all pointers
  */
