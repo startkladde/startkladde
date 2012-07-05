@@ -6,9 +6,12 @@
 
 #include <QtDebug>
 
+#include "src/util/qString.h"
 #include "src/i18n/notr.h"
 #include "src/flarm/PflaaSentence.h"
 #include "src/numeric/Velocity.h"
+
+const int keepaliveTimerInterval=3000;
 
 // ******************
 // ** Construction **
@@ -26,6 +29,8 @@ FlarmRecord::FlarmRecord (QObject *parent, const QString &flarmId): QObject (par
 	landingTimer   = new QTimer (this);
 	connect (keepaliveTimer, SIGNAL (timeout ()), this, SLOT (keepaliveTimeout ()));
 	connect (landingTimer  , SIGNAL (timeout ()), this, SLOT (landingTimeout   ()));
+
+	keepaliveTimer->start (keepaliveTimerInterval);
 }
 
 FlarmRecord::~FlarmRecord ()
@@ -82,7 +87,7 @@ bool FlarmRecord::isPlausible () const
 void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 {
 	// We received an update for this plane - defer the timeout
-	keepaliveTimer->start (5000);
+	keepaliveTimer->start (keepaliveTimerInterval);
 
 	// There is no setter for the values because they may only be changed
 	// together, lest they become inconsistent.
@@ -244,6 +249,10 @@ void FlarmRecord::keepaliveTimeout ()
 		default:
 			break;
 	}
+
+	// Well, the keepaliver timer timed out, which means that we can't see the
+	// plane any more. Remove the record.
+	emit remove (flarmId);
 }
 
 void FlarmRecord::landingTimeout ()

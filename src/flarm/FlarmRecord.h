@@ -68,6 +68,10 @@ class FlarmRecord: public QObject
 		// State methods
 		static QString stateText (flarmState state);
 
+	signals:
+		// Controller signals (the slots are in FlarmList)
+		void remove (const QString &flarmId);
+
 	protected:
 		FlightSituation getSituation () const;
 
