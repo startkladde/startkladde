@@ -1,4 +1,4 @@
-#include "FlarmMap.h"
+#include "FlarmWindow.h"
 
 #include <cmath>
 
@@ -10,7 +10,7 @@
 #include "src/model/objectList/ObjectListModel.h"
 
 
-FlarmMap::FlarmMap (QWidget *parent): SkDialog<Ui::FlarmMapDialog> (parent)
+FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (parent)
 {
 	ui.setupUi (this);
 
@@ -50,10 +50,10 @@ FlarmMap::FlarmMap (QWidget *parent): SkDialog<Ui::FlarmMapDialog> (parent)
 	readVectors ();
 }
 
-FlarmMap::~FlarmMap () {
+FlarmWindow::~FlarmWindow () {
 } 
 
-void FlarmMap::setExampleVectors ()
+void FlarmWindow::setExampleVectors ()
 {
 	QVector<GeoPosition> vector;
 
@@ -92,7 +92,7 @@ void FlarmMap::setExampleVectors ()
 /**
  * Not used, only to initialize the table which is stored in settings
  */
-void FlarmMap::storeVectors ()
+void FlarmWindow::storeVectors ()
 {
 	QSettings settings ("startkladde", "startkladde");
 	settings.beginGroup ("vectors");
@@ -103,7 +103,7 @@ void FlarmMap::storeVectors ()
 	settings.endGroup ();
 }
 
-void FlarmMap::readVectors ()
+void FlarmWindow::readVectors ()
 {
 	QSettings settings ("startkladde", "startkladde");
 	settings.beginGroup ("vectors");
@@ -120,17 +120,17 @@ void FlarmMap::readVectors ()
 // ** UI inputs **
 // ***************
 
-void FlarmMap::on_mapOrientationInput_valueChanged (int value)
+void FlarmWindow::on_mapOrientationInput_valueChanged (int value)
 {
 	ui.flarmMap->setOrientation (Angle::fromDegrees (value));
 }
 
-void FlarmMap::on_northButton_clicked ()
+void FlarmWindow::on_northButton_clicked ()
 {
 	ui.mapOrientationInput->setValue (0);
 }
 
-void FlarmMap::on_reverseButton_clicked ()
+void FlarmWindow::on_reverseButton_clicked ()
 {
 	int currentOrientation=ui.mapOrientationInput->value ();
 	if (currentOrientation>=180)

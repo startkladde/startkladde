@@ -59,7 +59,7 @@
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"
 #include "src/flarm/FlarmHandler.h"
-#include "src/flarm/FlarmMap.h"
+#include "src/flarm/FlarmWindow.h"
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
@@ -1687,7 +1687,7 @@ void MainWindow::on_actionFlarmOverview_triggered ()
 void MainWindow::on_actionFlarmRadar_triggered ()
 {
 	// FIXME is this deleted?
-        FlarmMap* dialog = new FlarmMap (this);
+        FlarmWindow* dialog = new FlarmWindow (this);
         dialog->show ();
 }
 

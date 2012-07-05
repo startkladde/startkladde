@@ -1,17 +1,17 @@
-#ifndef FLARM_MAP_H
-#define FLARM_MAP_H
+#ifndef FLARM_WINDOW_H
+#define FLARM_WINDOW_H
 
-#include "ui_FlarmMap.h"
+#include "ui_FlarmWindow.h"
 
 #include "src/gui/SkDialog.h"
 
-class FlarmMap: public SkDialog<Ui::FlarmMapDialog>
+class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 {
 	Q_OBJECT
 
 	public:
-		FlarmMap (QWidget *parent);
-		~FlarmMap ();
+		FlarmWindow (QWidget *parent);
+		~FlarmWindow ();
 
 	private:
 		void readVectors ();
