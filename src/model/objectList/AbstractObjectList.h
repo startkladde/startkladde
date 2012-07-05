@@ -23,8 +23,6 @@
 // FIXME: don't implement the methods that don't do anything useful?
 // FIXME: can we still emit changes with 0 columns, or do we need a dummy column
 // for that?
-// FIXME should this be based on QAbstractListModel instead of
-// QAbstractTableModel? Or on on a Qt item view at all?
 template<class T> class AbstractObjectList: public QAbstractTableModel
 {
 	public:
