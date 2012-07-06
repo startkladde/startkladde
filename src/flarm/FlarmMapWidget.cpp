@@ -56,20 +56,8 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
 	QwtPlotGrid* grid = new QwtPlotGrid ();
 	grid->attach (this);
 
-
 	// Add static markers
 	addStaticMarker ("Start", QColor (255, 0, 0, 127), QPointF (0, 0));
-
-//	QwtPlotMarker *startMarker = new QwtPlotMarker ();
-//	QwtText text ("Start");
-//	QColor startColor=Qt::red;
-//	startColor.setAlpha (127);
-//	text.setBackgroundBrush (QBrush (startColor));
-//	startMarker->setLabel (text);
-//	startMarker->setXValue (0);
-//	startMarker->setYValue (0);
-//	startMarker->attach (this);
-
 
 	updateStaticCurves ();
 	refreshFlarmData ();
@@ -195,10 +183,15 @@ void FlarmMapWidget::addStaticMarker (const QString &text, const QColor &color, 
 
 void FlarmMapWidget::updateStaticCurves ()
 {
+	bool valid=ownPosition.isValid ();
 	foreach (const StaticCurve &curve, staticCurves)
 	{
-		QPolygonF polygon (GeoPosition::relativePositionTo (curve.points, ownPosition));
-		curve.data->setSamples (transform.map (polygon));
+		if (valid)
+		{
+			QPolygonF polygon (GeoPosition::relativePositionTo (curve.points, ownPosition));
+			curve.data->setSamples (transform.map (polygon));
+		}
+		curve.curve->setVisible (valid);
 	}
 }
 
