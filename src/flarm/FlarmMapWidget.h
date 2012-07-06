@@ -37,6 +37,28 @@ class FlarmList;
  *       setModel
  */
 
+/**
+ * Draws a map containing static curves (like the airfield outline or the
+ * traffic circuit) and markers as well as dynamic Flarm data, read from a model
+ *
+ * For planes on the ground, a small cross is drawn. For flying planes, a label
+ * with the registration, indicating (relative) altitude, airspeed and climb
+ * rate is shown. Additionally, a trail indicating the path of the plane during
+ * the last couple of seconds is drawn.
+ *
+ * The own position is always at the origin of the coordinate system. The static
+ * data is drawn whenever the own position is available. The Flarm data is based
+ * on relative positions and will be drawn even if the own position is unknown.
+ *
+ * This widget provides scrolling (by left-dragging with the mouse) and zooming
+ * (by mouse wheel or middle-dragging) functionality.
+ *
+ * Note that the Flarm data is based on a relative position. When the own
+ * position changes, the past Flarm data is not updated accordingly. Therefore,
+ * while the current Flarm positions will always be correct, the trail will be
+ * wrong when the own position changes rapidly. However, this will not be the
+ * case in a typical usage scenario.
+ */
 class FlarmMapWidget: public QwtPlot
 {
 		Q_OBJECT

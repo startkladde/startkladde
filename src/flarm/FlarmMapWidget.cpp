@@ -1,6 +1,7 @@
 #include <src/flarm/FlarmMapWidget.h>
 
 #include <cassert>
+#include <iostream>
 
 #include <QModelIndex>
 
@@ -73,6 +74,16 @@ FlarmMapWidget::~FlarmMapWidget ()
 // ** Model **
 // ***********
 
+/**
+ * Sets the model to use for getting the Flarm data
+ *
+ * If a model was set before, it is replaced by the new model. If the new model
+ * is the same as before, nothing is changed.
+ *
+ * This method calls replot().
+ *
+ * @param model the new model. This view does not take ownership of the model.
+ */
 void FlarmMapWidget::setModel (FlarmList *model)
 {
 	if (model==this->model)
@@ -112,10 +123,12 @@ void FlarmMapWidget::setModel (FlarmList *model)
 // **********
 
 /**
- * Sets the orientation such that upDirection is shown in the up direction in
- * the window
+ * Sets the orientation such that the given compass direction is shown in the up
+ * direction in the window
  *
  * The default is north up, or upDirection=0. upDirection=90° means east up.
+ *
+ * This method calls replot().
  */
 void FlarmMapWidget::setOrientation (const Angle &upDirection)
 {
@@ -127,6 +140,13 @@ void FlarmMapWidget::setOrientation (const Angle &upDirection)
 	replot ();
 }
 
+/**
+ * Updates the static curves for the new position
+ *
+ * Call this method when the own position changes.
+ *
+ * This method calls replot().
+ */
 void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 {
 	// Only redraw if either the reference position for the static data is
@@ -151,6 +171,17 @@ void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 // ** Static data **
 // *****************
 
+/**
+ * Adds a static curve to the list of static curves
+ *
+ * This method does not call replot(). You have to call it yourself to update
+ * the display.
+ *
+ * @param name a name for the curve, e. g. "airfield"
+ * @param points a vector of points that make up the curve. The curve will not
+ *               be closed automatically.
+ * @param pen the pen to use for drawing the curve
+ */
 void FlarmMapWidget::addStaticCurve (const QString &name, const QVector<GeoPosition> &points, QPen pen)
 {
 	StaticCurve curve;
@@ -170,6 +201,17 @@ void FlarmMapWidget::addStaticCurve (const QString &name, const QVector<GeoPosit
 	staticCurves.append (curve);
 }
 
+/**
+ * Adds a static marker relative to the own position
+ *
+ * This method does not call replot(). You have to call it yourself to update
+ * the display.
+ *
+ * @param text the text to display on the label
+ * @param color the background color of the label
+ * @param point the position, in meters east and north of the own position
+ */
+// FIXME add a message for setting absolute positions
 void FlarmMapWidget::addStaticMarker (const QString &text, const QColor &color, const QPointF &point)
 {
 	QwtText qwtText (text);
