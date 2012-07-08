@@ -14,6 +14,7 @@
 
 class PflaaSentence;
 class GprmcSentence;
+class NmeaDecoder;
 template<class T> class MutableObjectList;
 
 class FlarmHandler: public QObject
@@ -27,14 +28,12 @@ class FlarmHandler: public QObject
 
 		// Properties
 		void setDatabase (DbManager*);
+		void setNmeaDecoder (NmeaDecoder *nmeaDecoder);
 
 		// Flarm data
 		QDateTime getGpsTime ();
 
 		FlarmList &getFlarmList () { return flarmList; }
-
-	public slots:
-		void lineReceived (const QString &line);
 
 	signals:
 		void actionDetected (const QString &id, FlarmRecord::FlightAction);
@@ -45,6 +44,7 @@ class FlarmHandler: public QObject
 		static FlarmHandler* instance;
 
 		DbManager *dbManager;
+		NmeaDecoder *nmeaDecoder;
 
 		QFile* trace;
 		QTextStream* stream;
@@ -54,8 +54,8 @@ class FlarmHandler: public QObject
 		FlarmList flarmList;
 
 	private slots:
-		void processPflaaSentence (const PflaaSentence &sentence);
-		void processGprmcSentence (const GprmcSentence &sentence);
+		void pflaaSentence (const PflaaSentence &sentence);
+		void gprmcSentence (const GprmcSentence &sentence);
 
 };
 

@@ -70,6 +70,7 @@
 #include "src/text.h"
 #include "src/i18n/TranslationManager.h"
 #include "src/io/dataStream/TcpDataStream.h"
+#include "src/nmea/NmeaDecoder.h"
 
 template <class T> class MutableObjectList;
 
@@ -107,19 +108,24 @@ MainWindow::MainWindow (QWidget *parent):
 	ui.menuDatabase->addSeparator ();
 	ui.menuDatabase->addAction (logAction);
 
-	// Flarm handler
-	flarmHandler=FlarmHandler::getInstance ();
-	flarmHandler->setDatabase (&dbManager);
-	connect (flarmHandler, SIGNAL (actionDetected (const QString&,FlarmRecord::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmRecord::FlightAction)));
-
 	// Flarm stream
 	flarmStream=new TcpDataStream ();
 	connect (flarmStream, SIGNAL (stateChanged (DataStream::State)), this, SLOT (flarmStream_stateChanged (DataStream::State)));
-	connect (flarmStream, SIGNAL (lineReceived (const QString &)), flarmHandler, SLOT (lineReceived (const QString &)));
 	flarmStream_stateChanged (flarmStream->getState ());
 	flarmStream->setTarget ("localhost", 4711);
 	ui.connectFlarmAction->setChecked (true);
 	on_connectFlarmAction_triggered ();
+
+	// NMEA decoder
+	nmeaDecoder=new NmeaDecoder ();
+	connect (flarmStream, SIGNAL (lineReceived (const QString &)), nmeaDecoder, SLOT (lineReceived (const QString &)));
+
+	// Flarm handler
+	flarmHandler=FlarmHandler::getInstance ();
+	flarmHandler->setDatabase (&dbManager);
+	flarmHandler->setNmeaDecoder (nmeaDecoder);
+	connect (flarmHandler, SIGNAL (actionDetected (const QString&,FlarmRecord::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmRecord::FlightAction)));
+
 
 
 
@@ -241,6 +247,7 @@ MainWindow::~MainWindow ()
 	// failure", but worse things can happen.
 	setVisible (false);
 	// QObjects will be deleted automatically
+	// FIXME only if this is their parent
 	// TODO make sure this also applies to flightList
 
 	terminatePlugins ();

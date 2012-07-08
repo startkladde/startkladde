@@ -9,9 +9,10 @@
 #include "src/config/Settings.h"
 #include "src/model/Plane.h"
 #include "src/io/dataStream/TcpDataStream.h"
-#include "src/nmea/Nmea.h"
+#include "src/nmea/Nmea.h" // FIXME rmeove?
 #include "src/nmea/GprmcSentence.h"
 #include "src/nmea/PflaaSentence.h"
+#include "src/nmea/NmeaDecoder.h"
 
 
 // ****************************
@@ -21,6 +22,7 @@
 FlarmHandler* FlarmHandler::instance = NULL;
 
 FlarmHandler::FlarmHandler (QObject* parent): QObject (parent),
+	nmeaDecoder (NULL),
 	trace (NULL), stream (NULL)
 {
 //	QDate today (QDate::currentDate());
@@ -54,18 +56,34 @@ void FlarmHandler::setDatabase (DbManager *db)
 	dbManager = db;
 }
 
+void FlarmHandler::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
+{
+	if (this->nmeaDecoder)
+	{
+		this->nmeaDecoder->disconnect (this);
+	}
+
+	this->nmeaDecoder=nmeaDecoder;
+
+	if (this->nmeaDecoder)
+	{
+		connect (this->nmeaDecoder, SIGNAL (gprmcSentence (const GprmcSentence &)), this, SLOT (gprmcSentence (const GprmcSentence &)));
+		connect (this->nmeaDecoder, SIGNAL (pflaaSentence (const PflaaSentence &)), this, SLOT (pflaaSentence (const PflaaSentence &)));
+	}
+}
+
 QDateTime FlarmHandler::getGpsTime ()
 {
 	return gpsTime;
 }
 
 
-void FlarmHandler::processPflaaSentence (const PflaaSentence &sentence)
+void FlarmHandler::pflaaSentence (const PflaaSentence &sentence)
 {
 	flarmList.processPflaaSentence (sentence);
 }
 
-void FlarmHandler::processGprmcSentence (const GprmcSentence &sentence)
+void FlarmHandler::gprmcSentence (const GprmcSentence &sentence)
 {
 	if (!sentence.isValid)
 	{
@@ -82,15 +100,3 @@ void FlarmHandler::processGprmcSentence (const GprmcSentence &sentence)
 	}
 }
 
-void FlarmHandler::lineReceived (const QString &line)
-{
-	//	qDebug () << "Flarm handler: process sentence " << line;
-
-	if (stream) *stream << line;
-
-	// TODO also process GPGGA and GPGSA/GPGSV sentences
-	if (line.startsWith ("$PFLAA"))
-		processPflaaSentence (PflaaSentence (line));
-	else if (line.startsWith ("$GPRMC"))
-		processGprmcSentence (GprmcSentence (line));
-}

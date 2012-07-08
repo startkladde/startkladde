@@ -293,7 +293,9 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		/** Whether the font was set explicitly */
 		bool fontSet;
 
+		// Flarm
 		TcpDataStream *flarmStream;
+		NmeaDecoder *nmeaDecoder;
 		FlarmHandler *flarmHandler;
 
 };
