@@ -9,9 +9,9 @@
 #include "src/config/Settings.h"
 #include "src/model/Plane.h"
 #include "src/io/dataStream/TcpDataStream.h"
-#include "src/flarm/Nmea.h"
-#include "src/flarm/GprmcSentence.h"
-#include "src/flarm/PflaaSentence.h"
+#include "src/nmea/Nmea.h"
+#include "src/nmea/GprmcSentence.h"
+#include "src/nmea/PflaaSentence.h"
 
 
 // ****************************

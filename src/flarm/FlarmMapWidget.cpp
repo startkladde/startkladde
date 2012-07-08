@@ -20,7 +20,6 @@
 #include "src/util/qHash.h"
 #include "src/i18n/notr.h"
 
-
 // ******************
 // ** Construction **
 // ******************
@@ -78,7 +77,8 @@ FlarmMapWidget::~FlarmMapWidget ()
  * Sets the model to use for getting the Flarm data
  *
  * If a model was set before, it is replaced by the new model. If the new model
- * is the same as before, nothing is changed.
+ * is the same as before, nothing is changed. Setting the model to NULL (the
+ * default) effectively disables Flarm data display.
  *
  * This method calls replot().
  *
@@ -136,6 +136,7 @@ void FlarmMapWidget::setOrientation (const Angle &upDirection)
 	transform.rotateRadians (upDirection.toRadians ());
 
 	updateStaticCurves ();
+	// FIXME we just want to update them here, not refresh them
 	refreshFlarmData ();
 	replot ();
 }
@@ -223,6 +224,15 @@ void FlarmMapWidget::addStaticMarker (const QString &text, const QColor &color, 
 	marker->attach (this);
 }
 
+/**
+ * Updates the curve data structures for all static curves
+ *
+ * This must be called whenever the geometry of the curves as drawn on screen
+ * changes, for example when the own position or the tranform changes.
+ *
+ * This method does not call replot(). You have to call it yourself to update
+ * the display.
+ */
 void FlarmMapWidget::updateStaticCurves ()
 {
 	bool valid=ownPosition.isValid ();
@@ -242,6 +252,15 @@ void FlarmMapWidget::updateStaticCurves ()
 // ** Flarm data individual updates **
 // ***********************************
 
+/**
+ * Sets the marker for a Flarm record to the "minimal" form
+ *
+ * This method does not call replot(). You have to call it yourself to update
+ * the display.
+ *
+ * @param marker the marker to modify
+ * @param record the Flarm record the marker is associated with
+ */
 void FlarmMapWidget::updateMarkerMinimal (QwtPlotMarker *marker, const FlarmRecord &record)
 {
 	marker->setVisible (true);
@@ -259,6 +278,15 @@ void FlarmMapWidget::updateMarkerMinimal (QwtPlotMarker *marker, const FlarmReco
 	marker->setLabel (QwtText ());
 }
 
+/**
+ * Sets the marker for a Flarm record to the "verbose" form
+ *
+ * This method does not call replot(). You have to call it yourself to update
+ * the display.
+ *
+ * @param marker the marker to modify
+ * @param record the Flarm record the marker is associated with
+ */
 void FlarmMapWidget::updateMarkerVerbose (QwtPlotMarker *marker, const FlarmRecord &record)
 {
 	marker->setVisible (true);
@@ -281,6 +309,15 @@ void FlarmMapWidget::updateMarkerVerbose (QwtPlotMarker *marker, const FlarmReco
 	marker->setLabel (text);
 }
 
+/**
+ * Updates the trail curve for a Flarm
+ *
+ * This method does not call replot(). You have to call it yourself to update
+ * the display.
+ *
+ * @param curve the crve to modify
+ * @param record the Flarm record the curve is associated with
+ */
 void FlarmMapWidget::updateTrail (QwtPlotCurve *curve, const FlarmRecord &record)
 {
 	curve->setVisible (true);
@@ -297,6 +334,21 @@ void FlarmMapWidget::updateTrail (QwtPlotCurve *curve, const FlarmRecord &record
 // ** Flarm data **
 // ****************
 
+/**
+ * Adds the plot data for a given Flarm record
+ *
+ * This must be called exactly once for each Flarm record after it is added.
+ * updateFlarmData may only be called after this method has been called for the
+ * given Flarm record.
+ *
+ * This method also calls updateFlarmData, so after the call to addFlarmData,
+ * the data will be up to date.
+ *
+ * This method does not call replot(). You have to call it yourself to update
+ * the display.
+ *
+ * @param record the new Flarm record
+ */
 void FlarmMapWidget::addFlarmData (const FlarmRecord &record)
 {
 	// Create, attach and store the marker
@@ -319,6 +371,16 @@ void FlarmMapWidget::addFlarmData (const FlarmRecord &record)
 	updateFlarmData (record);
 }
 
+/**
+ * Updates the plot data (marker and curve) for a given Flarm record
+ *
+ * This must be called whenever a Flarm record is updated.
+ *
+ * This method does not call replot(). You have to call it yourself to update
+ * the display.
+ *
+ * @param record the updated Flarm record
+ */
 void FlarmMapWidget::updateFlarmData (const FlarmRecord &record)
 {
 	QwtPlotMarker *marker=flarmMarkers.value (record.getFlarmId (), NULL);
@@ -352,9 +414,16 @@ void FlarmMapWidget::updateFlarmData (const FlarmRecord &record)
 }
 
 /**
- * You will have to call replot yourself.
+ * Removes the plot data for a given Flarm record
  *
- * @param flarmId
+ * This must be called exactly once for each Flarm record before (!) it is
+ * removed. updateFlarmData may not be called after this method has been called
+ * for the given Flarm record.
+ *
+ * This method does not call replot(). You have to call it yourself to update
+ * the display.
+ *
+ * @param record the new Flarm record
  */
 void FlarmMapWidget::removeFlarmData (const FlarmRecord &record)
 {
@@ -364,6 +433,18 @@ void FlarmMapWidget::removeFlarmData (const FlarmRecord &record)
 	removeAndDeleteIfExists (flarmCurves , flarmId);
 }
 
+/**
+ * Refreshes the plot data for all Flarm records in the model
+ *
+ * This is done by first removing all plot data and then adding the plot data
+ * by calling addFlarmData for each Flarm record in the model.
+ *
+ * This method can be called even if there is no model. All plot data will still
+ * be removed and nothing will be added.
+ *
+ * This method does not call replot(). You have to call it yourself to update
+ * the display.
+ */
 void FlarmMapWidget::refreshFlarmData ()
 {
 	// Items will be detached automatically on deletion.
@@ -386,6 +467,10 @@ void FlarmMapWidget::refreshFlarmData ()
 // ** Model slots **
 // *****************
 
+/**
+ * Called after one or more rows have been inserted into the model. Adds the
+ * Flarm data for the new row(s).
+ */
 void FlarmMapWidget::rowsInserted (const QModelIndex &parent, int start, int end)
 {
 	Q_UNUSED (parent);
@@ -397,6 +482,10 @@ void FlarmMapWidget::rowsInserted (const QModelIndex &parent, int start, int end
 	replot ();
 }
 
+/**
+ * Called after one or more rows have changed in the model. Updates the Flarm
+ * data for the changed row(s).
+ */
 void FlarmMapWidget::dataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
 	if (model)
@@ -406,6 +495,10 @@ void FlarmMapWidget::dataChanged (const QModelIndex &topLeft, const QModelIndex 
 	replot ();
 }
 
+/**
+ * Called before (!) one or more rows are removed from the model. Removes the
+ * Flarm data for the row(s) to be removed.
+ */
 void FlarmMapWidget::rowsAboutToBeRemoved (const QModelIndex &parent, int start, int end)
 {
 	Q_UNUSED (parent);
@@ -417,14 +510,22 @@ void FlarmMapWidget::rowsAboutToBeRemoved (const QModelIndex &parent, int start,
 	replot ();
 }
 
+/**
+ * Called after the model has changed completely. Refreshes all Flarm data.
+ */
 void FlarmMapWidget::modelReset ()
 {
 	refreshFlarmData ();
 	replot ();
 }
 
+/**
+ * Called before the model is destroyed
+ *
+ * This method sets the model to NULL, meaning "no model", to prevent further
+ * accesses to the model.
+ */
 void FlarmMapWidget::modelDestroyed ()
 {
 	setModel (NULL);
 }
-

@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "src/numeric/Velocity.h"
-#include "src/flarm/PflaaSentence.h"
+#include "src/nmea/PflaaSentence.h"
 #include "src/util/qString.h"
 
 // FIXME caching. Problem is: we can't use a QHash/QMap from flarm ID to index

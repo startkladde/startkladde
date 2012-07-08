@@ -8,7 +8,7 @@
 
 #include "src/util/qString.h"
 #include "src/i18n/notr.h"
-#include "src/flarm/PflaaSentence.h"
+#include "src/nmea/PflaaSentence.h"
 #include "src/numeric/Velocity.h"
 
 const int keepaliveTimerInterval=3000;

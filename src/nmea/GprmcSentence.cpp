@@ -1,9 +1,9 @@
-#include <src/flarm/GprmcSentence.h>
+#include "GprmcSentence.h"
 
 #include <QStringList>
 #include <QDebug>
 
-#include "src/flarm/Nmea.h"
+#include "src/nmea/Nmea.h"
 
 GprmcSentence::GprmcSentence (const QString &sentence):
 	sentence (sentence), isValid (false)

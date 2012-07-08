@@ -1,9 +1,9 @@
-#include <src/flarm/PflaaSentence.h>
+#include "PflaaSentence.h"
 
 #include <QStringList>
 #include <QDebug>
 
-#include "src/flarm/Nmea.h"
+#include "src/nmea/Nmea.h"
 
 PflaaSentence::PflaaSentence (const QString &sentence):
 	sentence (sentence), isValid (false)

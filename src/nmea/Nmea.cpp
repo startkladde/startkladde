@@ -1,4 +1,4 @@
-#include <src/flarm/Nmea.h>
+#include "Nmea.h"
 
 #include <QString>
 #include <QStringList>
