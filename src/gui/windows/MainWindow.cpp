@@ -122,7 +122,6 @@ MainWindow::MainWindow (QWidget *parent):
 
 	// Flarm handler
 	flarmHandler=FlarmHandler::getInstance ();
-	flarmHandler->setDatabase (&dbManager);
 	flarmHandler->setNmeaDecoder (nmeaDecoder);
 	connect (flarmHandler, SIGNAL (actionDetected (const QString&,FlarmRecord::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmRecord::FlightAction)));
 

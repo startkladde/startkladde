@@ -5,9 +5,9 @@
 #include <QtCore/QTimer>
 #include <QtCore/QMap>
 #include <QtCore/QFile>
+#include <QTime>
 
 #include "FlarmRecord.h"
-#include "src/db/DbManager.h"
 #include "src/model/Plane.h"
 #include "src/numeric/GeoPosition.h"
 #include "src/flarm/FlarmList.h"
@@ -27,7 +27,6 @@ class FlarmHandler: public QObject
 		~FlarmHandler ();
 
 		// Properties
-		void setDatabase (DbManager*);
 		void setNmeaDecoder (NmeaDecoder *nmeaDecoder);
 
 		// Flarm data
@@ -43,7 +42,6 @@ class FlarmHandler: public QObject
 		FlarmHandler (QObject* parent);
 		static FlarmHandler* instance;
 
-		DbManager *dbManager;
 		NmeaDecoder *nmeaDecoder;
 
 		QFile* trace;

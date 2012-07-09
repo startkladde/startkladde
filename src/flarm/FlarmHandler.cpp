@@ -51,11 +51,6 @@ FlarmHandler* FlarmHandler::getInstance ()
 // ** Properties **
 // ****************
 
-void FlarmHandler::setDatabase (DbManager *db)
-{
-	dbManager = db;
-}
-
 void FlarmHandler::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
 {
 	if (this->nmeaDecoder)
