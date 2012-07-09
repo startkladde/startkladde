@@ -18,6 +18,7 @@ class QwtPointSeriesData;
 class Angle;
 class FlarmRecord;
 class FlarmList;
+class GpsTracker;
 
 /*
  * Call tree:
@@ -107,6 +108,7 @@ class FlarmMapWidget: public QwtPlot
 
 		// Model
 		void setModel (FlarmList *model);
+		void setGpsTracker (GpsTracker *gpsTracker);
 
 	public slots:
 		void ownPositionChanged (const GeoPosition &ownPosition);
@@ -117,7 +119,8 @@ class FlarmMapWidget: public QwtPlot
 		QColor climbColor, descentColor;
 
 		// Model
-		FlarmList *model;
+		FlarmList *model; // FIXME rename flarmList
+		GpsTracker *gpsTracker;
 
 		// View settings
 		QTransform transform;

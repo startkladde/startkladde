@@ -15,26 +15,7 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 {
 	ui.setupUi (this);
 
-	FlarmHandler* flarmHandler = FlarmHandler::getInstance ();
-	connect (flarmHandler, SIGNAL(homePosition(const GeoPosition &)), ui.flarmMap, SLOT(ownPositionChanged(const GeoPosition &)));
-
 	// FIXME load default orientation
-
-	// Setup the map
-	ui.flarmMap->setModel (&FlarmHandler::getInstance ()->getFlarmList ());
-
-	// Setup the list
-	const AbstractObjectList<FlarmRecord> *objectList = &FlarmHandler::getInstance ()->getFlarmList ();
-	ObjectModel<FlarmRecord> *objectModel = new FlarmRecordModel ();
-	ObjectListModel<FlarmRecord> *objectListModel = new ObjectListModel<FlarmRecord> (objectList, false,
-			objectModel, true, this);
-
-	// Set the list model as the table's model with a sort proxy
-	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel (this);
-	proxyModel->setSourceModel (objectListModel);
-	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
-	proxyModel->setDynamicSortFilter (true);
-	ui.flarmTable->setModel (proxyModel);
 
 	ui.flarmTable->resizeColumnsToContents ();
 	ui.flarmTable->resizeRowsToContents ();
@@ -53,6 +34,31 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 
 FlarmWindow::~FlarmWindow () {
 } 
+
+void FlarmWindow::setGpsTracker (GpsTracker *gpsTracker)
+{
+	ui.flarmMap->setGpsTracker (gpsTracker);
+}
+
+void FlarmWindow::setFlarmList (FlarmList *flarmList)
+{
+	// Setup the map
+	ui.flarmMap->setModel (flarmList);
+
+	// Setup the list
+	const AbstractObjectList<FlarmRecord> *objectList = flarmList;
+	ObjectModel<FlarmRecord> *objectModel = new FlarmRecordModel ();
+	ObjectListModel<FlarmRecord> *objectListModel = new ObjectListModel<FlarmRecord> (objectList, false,
+			objectModel, true, this);
+
+	// FIXME create & setyo the proxy model in the constructor
+	// Set the list model as the table's model with a sort proxy
+	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel (this);
+	proxyModel->setSourceModel (objectListModel);
+	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
+	proxyModel->setDynamicSortFilter (true);
+	ui.flarmTable->setModel (proxyModel);
+}
 
 void FlarmWindow::setExampleVectors ()
 {

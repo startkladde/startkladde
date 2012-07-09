@@ -6,6 +6,7 @@
 
 class FlarmRecord;
 class QPersistentModelIndex;
+class NmeaDecoder;
 
 class FlarmList: public AbstractObjectList<FlarmRecord>
 {
@@ -20,7 +21,10 @@ class FlarmList: public AbstractObjectList<FlarmRecord>
 		virtual const FlarmRecord &at (int index) const;
 		virtual QList<FlarmRecord> getList () const;
 
-		void processPflaaSentence (const PflaaSentence &sentence);
+		void setNmeaDecoder (NmeaDecoder *nmeaDecoder);
+
+	public slots:
+		void pflaaSentence (const PflaaSentence &sentence);
 
 //	protected:
 //		int findOrCreateFlarmRecord (const QString &flarmId);
@@ -30,6 +34,8 @@ class FlarmList: public AbstractObjectList<FlarmRecord>
 		int findFlarmRecord (const QString &flarmId);
 
 		QList<FlarmRecord *> flarmRecords;
+
+		NmeaDecoder *nmeaDecoder;
 
 	private slots:
 		// Controller slots (the signals are in FlarmRecord)

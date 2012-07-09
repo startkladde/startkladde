@@ -121,9 +121,17 @@ MainWindow::MainWindow (QWidget *parent):
 	connect (flarmStream, SIGNAL (lineReceived (const QString &)), nmeaDecoder, SLOT (lineReceived (const QString &)));
 
 	// Flarm handler
-	flarmHandler=FlarmHandler::getInstance ();
-	flarmHandler->setNmeaDecoder (nmeaDecoder);
-	connect (flarmHandler, SIGNAL (actionDetected (const QString&,FlarmRecord::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmRecord::FlightAction)));
+//	flarmHandler=FlarmHandler::getInstance ();
+//	flarmHandler->setNmeaDecoder (nmeaDecoder);
+//	connect (flarmHandler, SIGNAL (actionDetected (const QString&,FlarmRecord::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmRecord::FlightAction)));
+
+	// GPS tracker
+	gpsTracker=new GpsTracker ();
+	gpsTracker->setNmeaDecoder (nmeaDecoder);
+
+	// Flarm list
+	flarmList=new FlarmList (this);
+	flarmList->setNmeaDecoder (nmeaDecoder);
 
 
 
@@ -1694,6 +1702,8 @@ void MainWindow::on_actionFlarmRadar_triggered ()
 {
 	// FIXME is this deleted?
         FlarmWindow* dialog = new FlarmWindow (this);
+        dialog->setGpsTracker (gpsTracker);
+        dialog->setFlarmList (flarmList);
         dialog->show ();
 }
 
@@ -2053,7 +2063,7 @@ void MainWindow::on_actionSetGPSTime_triggered ()
 //                return;
 //        }
         QDateTime current (QDateTime::currentDateTimeUtc ());
-        QDateTime currentGPSdateTime (flarmHandler->getGpsTime ());
+        QDateTime currentGPSdateTime (gpsTracker->getGpsTime ());
         qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy"));
         qDebug () << "currentTime: " << current.toString (notr("hh:mm:ss dd.MM.yyyy"));
         int diff = currentGPSdateTime.secsTo(current);
@@ -2068,7 +2078,7 @@ void MainWindow::on_actionSetGPSTime_triggered ()
                         .arg(diff), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
                 {
                         // get the actual GPS time again, the messagebox can stay open a long time
-                        QString timeString (flarmHandler->getGpsTime ().toString (notr("yyyy-MM-dd hh:mm:ss")));
+                        QString timeString (gpsTracker->getGpsTime ().toString (notr("yyyy-MM-dd hh:mm:ss")));
 
                         // sudo -n: non-interactive (don't prompt for password)
                         // sudoers entry: deffi ALL=NOPASSWD: /bin/date

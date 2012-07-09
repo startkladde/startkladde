@@ -22,7 +22,6 @@
 FlarmHandler* FlarmHandler::instance = NULL;
 
 FlarmHandler::FlarmHandler (QObject* parent): QObject (parent),
-	nmeaDecoder (NULL),
 	trace (NULL), stream (NULL)
 {
 //	QDate today (QDate::currentDate());
@@ -50,48 +49,4 @@ FlarmHandler* FlarmHandler::getInstance ()
 // ****************
 // ** Properties **
 // ****************
-
-void FlarmHandler::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
-{
-	if (this->nmeaDecoder)
-	{
-		this->nmeaDecoder->disconnect (this);
-	}
-
-	this->nmeaDecoder=nmeaDecoder;
-
-	if (this->nmeaDecoder)
-	{
-		connect (this->nmeaDecoder, SIGNAL (gprmcSentence (const GprmcSentence &)), this, SLOT (gprmcSentence (const GprmcSentence &)));
-		connect (this->nmeaDecoder, SIGNAL (pflaaSentence (const PflaaSentence &)), this, SLOT (pflaaSentence (const PflaaSentence &)));
-	}
-}
-
-QDateTime FlarmHandler::getGpsTime ()
-{
-	return gpsTime;
-}
-
-
-void FlarmHandler::pflaaSentence (const PflaaSentence &sentence)
-{
-	flarmList.processPflaaSentence (sentence);
-}
-
-void FlarmHandler::gprmcSentence (const GprmcSentence &sentence)
-{
-	if (!sentence.isValid)
-	{
-		qDebug () << QString ("Sentence invalid: ")+sentence.sentence;
-		return;
-	}
-
-	if (sentence.status)
-	{
-		// FIXME store, and use GeoPosition
-		emit homePosition (sentence.position);
-		// FIXME signal
-		gpsTime=sentence.timestamp;
-	}
-}
 

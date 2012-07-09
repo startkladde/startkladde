@@ -13,6 +13,10 @@ class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 		FlarmWindow (QWidget *parent);
 		~FlarmWindow ();
 
+		// FIXME both const
+		void setGpsTracker (GpsTracker *gpsTracker);
+		void setFlarmList (FlarmList *flarmList);
+
 	private:
 		void readVectors ();
 		void setExampleVectors ();

@@ -19,6 +19,7 @@
 #include "src/flarm/FlarmList.h"
 #include "src/util/qHash.h"
 #include "src/i18n/notr.h"
+#include "src/nmea/GpsTracker.h"
 
 // ******************
 // ** Construction **
@@ -27,7 +28,7 @@
 FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
 	climbColor   (  0, 255, 0, 127),
 	descentColor (255, 255, 0, 127),
-	model (NULL)
+	model (NULL), gpsTracker (NULL)
 {
 	// Setup the axes
 	// FIXME consider aspect ratio when scaling
@@ -86,6 +87,7 @@ FlarmMapWidget::~FlarmMapWidget ()
  */
 void FlarmMapWidget::setModel (FlarmList *model)
 {
+	// FIXME do this in all classes using a model
 	if (model==this->model)
 		return;
 
@@ -95,6 +97,7 @@ void FlarmMapWidget::setModel (FlarmList *model)
 
 	if (this->model)
 	{
+		// FIXME seems like this gives an error message on exit if a Flarm window was open
 		disconnect (this->model, SIGNAL (destroyed()), this, SLOT (modelDestroyed ()));
 		disconnect (this->model, SIGNAL (dataChanged (QModelIndex, QModelIndex)), this, SLOT (dataChanged (QModelIndex, QModelIndex)));
 		disconnect (this->model, SIGNAL (rowsInserted (QModelIndex, int, int)), this, SLOT (rowsInserted (QModelIndex, int, int)));
@@ -104,7 +107,7 @@ void FlarmMapWidget::setModel (FlarmList *model)
 
 	this->model=model;
 
-	if (model)
+	if (this->model)
 	{
 		connect (this->model, SIGNAL (destroyed()), this, SLOT (modelDestroyed ()));
 		connect (this->model, SIGNAL (dataChanged (QModelIndex, QModelIndex)), this, SLOT (dataChanged (QModelIndex, QModelIndex)));
@@ -117,6 +120,20 @@ void FlarmMapWidget::setModel (FlarmList *model)
 	replot ();
 }
 
+void FlarmMapWidget::setGpsTracker (GpsTracker *gpsTracker)
+{
+	if (this->gpsTracker)
+	{
+		disconnect (this->gpsTracker, SIGNAL (positionChanged (const GeoPosition &)), this, SLOT (ownPositionChanged (const GeoPosition &)));
+	}
+
+	this->gpsTracker=gpsTracker;
+
+	if (this->gpsTracker)
+	{
+		connect (this->gpsTracker, SIGNAL (positionChanged (const GeoPosition &)), this, SLOT (ownPositionChanged (const GeoPosition &)));
+	}
+}
 
 // **********
 // ** View **

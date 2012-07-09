@@ -297,6 +297,9 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		TcpDataStream *flarmStream;
 		NmeaDecoder *nmeaDecoder;
 		FlarmHandler *flarmHandler;
+		GpsTracker *gpsTracker;
+		FlarmList *flarmList;
+
 
 };
 

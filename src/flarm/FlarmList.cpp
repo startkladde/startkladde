@@ -6,6 +6,7 @@
 #include "src/numeric/Velocity.h"
 #include "src/nmea/PflaaSentence.h"
 #include "src/util/qString.h"
+#include "src/nmea/NmeaDecoder.h"
 
 // FIXME caching. Problem is: we can't use a QHash/QMap from flarm ID to index
 // because the index may change when items are removed or inserted. What we need
@@ -32,6 +33,26 @@ FlarmList::~FlarmList ()
 {
 }
 
+
+// ******************
+// ** NMEA decoder **
+// ******************
+
+void FlarmList::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
+{
+	if (this->nmeaDecoder)
+	{
+		this->nmeaDecoder->disconnect (this);
+	}
+
+	this->nmeaDecoder=nmeaDecoder;
+
+	if (this->nmeaDecoder)
+	{
+		connect (this->nmeaDecoder, SIGNAL (pflaaSentence (const PflaaSentence &)), this, SLOT (pflaaSentence (const PflaaSentence &)));
+	}
+}
+
 // *********************
 // ** Data processing **
 // *********************
@@ -44,7 +65,7 @@ int FlarmList::findFlarmRecord (const QString &flarmId)
 	return -1;
 }
 
-void FlarmList::processPflaaSentence (const PflaaSentence &sentence)
+void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 {
 	// Find the Flarm record for that plane (i. e., Flarm ID)
 	int index = findFlarmRecord (sentence.flarmId);
