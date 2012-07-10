@@ -75,18 +75,18 @@ class GpsTracker;
  *
  * === Plotting ===
  *
- * Markers (static markers and Flarm markers) are stored as QwtPlotMarker*.
- * There position ("value") is stored directly in the QwtPlotMarker. Curves
- * (static curves and Flarm trails) are stored as QwtPlotCurve*. Their points
- * are stored in a QwtPointSeriesData*.
+ * When plot data (e. g. positions of a marker, points of a curve, text of a
+ * marker) changes (e. g. on Flarm state change or orientation change), replot()
+ * must be called for the changes to be displayed. Since replot() is slow and
+ * several plot data items may change at the same time, most functions do not
+ * call replot() themselves but leave that to the caller. Each function that
+ * affects the plot data should document whether or not it calls replot().
  *
- * When the orientation of the map or dynamic data (own position or Flarm data)
- * changes, the points are updated. For the changes to be visible, replot() must
- * be called. Since replot() is slow and typically, several points change at the
- * same time, must functions which change points do not call replot() themselves
- * but leave that to the caller.
- *
- * FIXME: documented in function documentation, which ones do/don't
+ * Typically, methods that are intended to be called from outside will call
+ * replot(). This includes most public methods (as far as they affect the plot
+ * data), the model slots and event handlers (even though they are private/
+ * protected). Methods called by these methods like those for adding or updating
+ * plot data, typically will not call replot ().
  *
  *
  * === Flarm data ===
