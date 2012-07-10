@@ -14,7 +14,7 @@ class GpsTracker: public QObject
 		Q_OBJECT
 
 	public:
-		GpsTracker ();
+		GpsTracker (QObject *parent);
 		virtual ~GpsTracker ();
 
 		void setNmeaDecoder (NmeaDecoder *nmeaDecoder);

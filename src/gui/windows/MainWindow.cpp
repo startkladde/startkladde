@@ -58,7 +58,7 @@
 #include "src/statistics/LaunchMethodStatistics.h"
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"
-#include "src/flarm/FlarmHandler.h"
+#include "src/flarm/FlarmRecord.h"
 #include "src/flarm/FlarmWindow.h"
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
@@ -71,6 +71,8 @@
 #include "src/i18n/TranslationManager.h"
 #include "src/io/dataStream/TcpDataStream.h"
 #include "src/nmea/NmeaDecoder.h"
+#include "src/nmea/GpsTracker.h"
+#include "src/flarm/FlarmList.h"
 
 template <class T> class MutableObjectList;
 
@@ -120,18 +122,14 @@ MainWindow::MainWindow (QWidget *parent):
 	nmeaDecoder=new NmeaDecoder ();
 	connect (flarmStream, SIGNAL (lineReceived (const QString &)), nmeaDecoder, SLOT (lineReceived (const QString &)));
 
-	// Flarm handler
-//	flarmHandler=FlarmHandler::getInstance ();
-//	flarmHandler->setNmeaDecoder (nmeaDecoder);
-//	connect (flarmHandler, SIGNAL (actionDetected (const QString&,FlarmRecord::FlightAction)), this, SLOT (onFlarmAction(const QString&, FlarmRecord::FlightAction)));
-
 	// GPS tracker
-	gpsTracker=new GpsTracker ();
+	gpsTracker=new GpsTracker (this);
 	gpsTracker->setNmeaDecoder (nmeaDecoder);
 
 	// Flarm list
 	flarmList=new FlarmList (this);
 	flarmList->setNmeaDecoder (nmeaDecoder);
+	// FIXME connect flarm actions to this' slots
 
 
 
@@ -591,7 +589,7 @@ void MainWindow::settingsChanged ()
         ui.actionFlarmNetOverview	->setVisible (s.flarmNetEnabled && s.flarmNetOverview);
         ui.actionFlarmNetImport		->setVisible (s.flarmNetEnabled);
         // FIXME handle this
-//        FlarmHandler::getInstance()->setEnabled (s.flarmEnabled);
+        // FIXME set the flarmStream's enabled to s.flarmEnabled
 	// Plugins
 	setupPlugins ();
 }
@@ -2055,10 +2053,8 @@ void MainWindow::on_actionSetTime_triggered ()
 void MainWindow::on_actionSetGPSTime_triggered ()
 {
         qDebug () << "MainWindow::on_actionSetGPSTime_triggered";
-        FlarmHandler* flarmHandler = FlarmHandler::getInstance();
-        // FIXME the data stream should be external to the flarm handler
         // FIXME enable
-//        if (flarmHandler->getConnectionState() != TcpDataStream::connectedData) {
+//        if (not connected or no data) {
 //                QMessageBox::warning (this, tr("No GPS signal"), tr("Flarm does not send data"));
 //                return;
 //        }

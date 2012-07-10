@@ -40,9 +40,9 @@
 #include "ui_MainWindow.h"
 
 #include "src/db/DbManager.h"
-#include "src/flarm/FlarmHandler.h" // FIXME remove?
 #include "src/io/dataStream/TcpDataStream.h"
 #include "src/gui/SkMainWindow.h"
+#include "src/flarm/FlarmRecord.h" // FIXME replace with forward declaration if possible
 
 class QWidget;
 template<class T> class QList;
@@ -57,7 +57,9 @@ class FlightModel;
 class FlightProxyList;
 class FlightWindow;
 template<class T> class ObjectListModel;
-class FlarmHandler;
+class NmeaDecoder;
+class GpsTracker;
+class FlarmList;
 
 /*
  * Notes:
@@ -296,7 +298,6 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		// Flarm
 		TcpDataStream *flarmStream;
 		NmeaDecoder *nmeaDecoder;
-		FlarmHandler *flarmHandler;
 		GpsTracker *gpsTracker;
 		FlarmList *flarmList;
 

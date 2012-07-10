@@ -6,7 +6,7 @@
 #include <QSortFilterProxyModel>
 #include <QPen>
 
-#include "src/flarm/FlarmHandler.h"
+#include "src/flarm/FlarmList.h"
 #include "src/flarm/FlarmRecordModel.h"
 #include "src/model/objectList/ObjectListModel.h"
 
@@ -43,7 +43,7 @@ void FlarmWindow::setGpsTracker (GpsTracker *gpsTracker)
 void FlarmWindow::setFlarmList (FlarmList *flarmList)
 {
 	// Setup the map
-	ui.flarmMap->setModel (flarmList);
+	ui.flarmMap->setFlarmList (flarmList);
 
 	// Setup the list
 	const AbstractObjectList<FlarmRecord> *objectList = flarmList;
@@ -150,4 +150,3 @@ void FlarmWindow::on_reverseButton_clicked ()
 	else
 		ui.mapOrientationInput->setValue (currentOrientation+180);
 }
-
