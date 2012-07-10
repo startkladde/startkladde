@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <QModelIndex>
+#include <QResizeEvent>
 
 #include <qwt_plot_grid.h>
 #include <qwt_plot_curve.h>
@@ -20,6 +21,7 @@
 #include "src/util/qHash.h"
 #include "src/i18n/notr.h"
 #include "src/nmea/GpsTracker.h"
+#include "src/util/qPointF.h"
 
 // ******************
 // ** Construction **
@@ -28,12 +30,14 @@
 FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
 	climbColor   (  0, 255, 0, 127),
 	descentColor (255, 255, 0, 127),
-	model (NULL), gpsTracker (NULL)
+	flarmList (NULL), gpsTracker (NULL)
 {
-	// Setup the axes
-	// FIXME consider aspect ratio when scaling
-	setAxisScale (QwtPlot::yLeft, -2000.0, 2000.0);
-	setAxisScale (QwtPlot::xBottom, -2000.0, 2000.0);
+	// Setup the axes. Note that the aspect ratio may not be correct. This will
+	// be rectified by the first resize event we'll receive before the widget
+	// is shown.
+	double displayRadius=2000;
+	setAxisScale (QwtPlot::yLeft  , -displayRadius, displayRadius);
+	setAxisScale (QwtPlot::xBottom, -displayRadius, displayRadius);
 
 	// Setup the panner
 	QwtPlotPanner* panner = new QwtPlotPanner (canvas ());
@@ -69,51 +73,161 @@ FlarmMapWidget::~FlarmMapWidget ()
 {
 }
 
-
-// ***********
-// ** Model **
-// ***********
+// **************************
+// ** Generic axis methods **
+// **************************
 
 /**
- * Sets the model to use for getting the Flarm data
+ * Gets the current radius of the (primary) axes
  *
- * If a model was set before, it is replaced by the new model. If the new model
- * is the same as before, nothing is changed. Setting the model to NULL (the
- * default) effectively disables Flarm data display.
+ * The axis radius is half the diameter of the axes range. For example, if the
+ * range of an axis is from -1 to +5, the radius is +3. The radius is always
+ * positive.
+ *
+ * @return a QPointF containing the radius of the (bottom) x and (left) y axis
+ */
+QPointF FlarmMapWidget::getAxesRadius () const
+{
+	const QwtScaleDiv *xScaleDiv = axisScaleDiv (QwtPlot::xBottom);
+	const QwtScaleDiv *yScaleDiv = axisScaleDiv (QwtPlot::yLeft);
+
+	double xAxisRange = (xScaleDiv->upperBound () - xScaleDiv->lowerBound ())/2;
+	double yAxisRange = (yScaleDiv->upperBound () - yScaleDiv->lowerBound ())/2;
+
+	return QPointF (xAxisRange, yAxisRange);
+}
+
+/**
+ * Gets the current center of the (primary) axes
+ *
+ * The axes center is middle of the axes range. For example, if the range of an
+ * axis is from -1 to +5, the center is +2. The center can be positive or
+ * negative.
+ *
+ * @return a QPointF containing the center of the (bottom) x and (left) y axis
+ */
+QPointF FlarmMapWidget::getAxesCenter () const
+{
+	const QwtScaleDiv *xScaleDiv = axisScaleDiv (QwtPlot::xBottom);
+	const QwtScaleDiv *yScaleDiv = axisScaleDiv (QwtPlot::yLeft);
+
+	double xAxisCenter = (xScaleDiv->upperBound () + xScaleDiv->lowerBound ())/2;
+	double yAxisCenter = (yScaleDiv->upperBound () + yScaleDiv->lowerBound ())/2;
+
+	return QPointF (xAxisCenter, yAxisCenter);
+}
+
+/**
+ * Sets the current axes, given the center and radius in both directions
+ *
+ * @param center the center for the (bottom) x and (left) y axis
+ * @param radius the radius for the (bottom) x and (left) y axis
+ * @see getAxesRadius
+ * @see getAxesCenter
+ */
+void FlarmMapWidget::setAxes (const QPointF &center, const QPointF &radius)
+{
+	setAxisScale (QwtPlot::xBottom, center.x () - radius.x (), center.x () + radius.x ());
+	setAxisScale (QwtPlot::yLeft  , center.y () - radius.y (), center.y () + radius.y ());
+}
+
+/**
+ * Sets the current axes, given the radius, while retaining the center
+ *
+ * @param radius the radius for the (bottom) x and (left) y axis
+ * @see setAxes
+ */
+void FlarmMapWidget::setAxesRadius (const QPointF &radius)
+{
+	setAxes (getAxesCenter (), radius);
+}
+
+/**
+ * Sets the current axes, given the radius, while retaining the center
+ *
+ * This is a convenience method for setAxesRadius (const QPointF &radius).
+ *
+ * @param xRadius the radius for the (bottom) x axis
+ * @param yRadius the radius for the (left) y axis
+ */
+void FlarmMapWidget::setAxesRadius (double xRadius, double yRadius)
+{
+	setAxesRadius (QPointF (xRadius, yRadius));
+}
+
+
+// ****************
+// ** GUI events **
+// ****************
+
+void FlarmMapWidget::resizeEvent (QResizeEvent *event)
+{
+	// Update the display radius such that the smaller value is retained and the
+	// aspect ratio matches the widget's aspect ratio.
+
+	// Don't update the radius if the widget size is zero in either direction
+	if (width () > 0 && height () > 0)
+	{
+		double smallerRadius=min (getAxesRadius ());
+		double widgetAspectRatio = width () / (double)height ();
+
+		if (widgetAspectRatio>=1)
+			// The widget is wider than high
+			setAxesRadius (smallerRadius*widgetAspectRatio, smallerRadius);
+		else
+			// The widget is higher than wide
+			setAxesRadius (smallerRadius, smallerRadius/widgetAspectRatio);
+	}
+
+	QwtPlot::resizeEvent (event);
+	replot ();
+}
+
+
+// ****************
+// ** Flarm list **
+// ****************
+
+/**
+ * Sets the flarm list to use
+ *
+ * If a Flarm list was set before, it is replaced by the new Flarm list. If the
+ * new Flarm list is the same as before, nothing is changed. Setting the Flarm
+ * list to NULL (the default) effectively disables Flarm data display.
  *
  * This method calls replot().
  *
- * @param model the new model. This view does not take ownership of the model.
+ * @param flarmList the new Flarm list. This view does not take ownership of the
+ *                  Flarm list.
  */
-void FlarmMapWidget::setModel (FlarmList *model)
+void FlarmMapWidget::setFlarmList (FlarmList *flarmList)
 {
 	// FIXME do this in all classes using a model
-	if (model==this->model)
+	if (flarmList==this->flarmList)
 		return;
 
 	// Note that we can ignore layoutChanged because we don't consider the
 	// order of the entries anyway, and we refer to entries by Flarm ID, not
 	// index.
 
-	if (this->model)
+	if (this->flarmList)
 	{
-		// FIXME seems like this gives an error message on exit if a Flarm window was open
-		disconnect (this->model, SIGNAL (destroyed()), this, SLOT (modelDestroyed ()));
-		disconnect (this->model, SIGNAL (dataChanged (QModelIndex, QModelIndex)), this, SLOT (dataChanged (QModelIndex, QModelIndex)));
-		disconnect (this->model, SIGNAL (rowsInserted (QModelIndex, int, int)), this, SLOT (rowsInserted (QModelIndex, int, int)));
-		disconnect (this->model, SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),this, SLOT (rowsAboutToBeRemoved (QModelIndex, int, int)));
-		disconnect (this->model, SIGNAL (modelReset ()), this, SLOT (modelReset ()));
+		disconnect (this->flarmList, SIGNAL (destroyed()), this, SLOT (flarmListDestroyed ()));
+		disconnect (this->flarmList, SIGNAL (dataChanged (QModelIndex, QModelIndex)), this, SLOT (dataChanged (QModelIndex, QModelIndex)));
+		disconnect (this->flarmList, SIGNAL (rowsInserted (QModelIndex, int, int)), this, SLOT (rowsInserted (QModelIndex, int, int)));
+		disconnect (this->flarmList, SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),this, SLOT (rowsAboutToBeRemoved (QModelIndex, int, int)));
+		disconnect (this->flarmList, SIGNAL (modelReset ()), this, SLOT (modelReset ()));
 	}
 
-	this->model=model;
+	this->flarmList=flarmList;
 
-	if (this->model)
+	if (this->flarmList)
 	{
-		connect (this->model, SIGNAL (destroyed()), this, SLOT (modelDestroyed ()));
-		connect (this->model, SIGNAL (dataChanged (QModelIndex, QModelIndex)), this, SLOT (dataChanged (QModelIndex, QModelIndex)));
-		connect (this->model, SIGNAL (rowsInserted (QModelIndex, int, int)), this, SLOT (rowsInserted (QModelIndex, int, int)));
-		connect (this->model, SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),this, SLOT (rowsAboutToBeRemoved (QModelIndex, int, int)));
-		connect (this->model, SIGNAL (modelReset ()), this, SLOT (modelReset ()));
+		connect (this->flarmList, SIGNAL (destroyed()), this, SLOT (flarmListDestroyed ()));
+		connect (this->flarmList, SIGNAL (dataChanged (QModelIndex, QModelIndex)), this, SLOT (dataChanged (QModelIndex, QModelIndex)));
+		connect (this->flarmList, SIGNAL (rowsInserted (QModelIndex, int, int)), this, SLOT (rowsInserted (QModelIndex, int, int)));
+		connect (this->flarmList, SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),this, SLOT (rowsAboutToBeRemoved (QModelIndex, int, int)));
+		connect (this->flarmList, SIGNAL (modelReset ()), this, SLOT (modelReset ()));
 	}
 
 	refreshFlarmData ();
@@ -451,13 +565,13 @@ void FlarmMapWidget::removeFlarmData (const FlarmRecord &record)
 }
 
 /**
- * Refreshes the plot data for all Flarm records in the model
+ * Refreshes the plot data for all Flarm records in the Flarm list
  *
  * This is done by first removing all plot data and then adding the plot data
- * by calling addFlarmData for each Flarm record in the model.
+ * by calling addFlarmData for each Flarm record in the Flarm list.
  *
- * This method can be called even if there is no model. All plot data will still
- * be removed and nothing will be added.
+ * This method can be called even if there is no Flarm list. All plot data will
+ * still be removed and nothing will be added.
  *
  * This method does not call replot(). You have to call it yourself to update
  * the display.
@@ -468,67 +582,67 @@ void FlarmMapWidget::refreshFlarmData ()
 	clearAndDelete (flarmMarkers);
 	clearAndDelete (flarmCurves);
 
-	// Only draw if we have a model
-	if (model)
+	// Only draw if we have a Flarm list
+	if (flarmList)
 	{
-		for (int i=0, n=model->size (); i<n; ++i)
+		for (int i=0, n=flarmList->size (); i<n; ++i)
 		{
-			const FlarmRecord &record=model->at (i);
+			const FlarmRecord &record=flarmList->at (i);
 			addFlarmData (record);
 		}
 	}
 }
 
 
-// *****************
-// ** Model slots **
-// *****************
+// **********************
+// ** Flarm list slots **
+// **********************
 
 /**
- * Called after one or more rows have been inserted into the model. Adds the
- * Flarm data for the new row(s).
+ * Called after one or more rows have been inserted into the Flarm lsit. Adds
+ * the Flarm data for the new row(s).
  */
 void FlarmMapWidget::rowsInserted (const QModelIndex &parent, int start, int end)
 {
 	Q_UNUSED (parent);
 
-	if (model)
+	if (flarmList)
 		for (int i=start; i<=end; ++i)
-			addFlarmData (model->at (i));
+			addFlarmData (flarmList->at (i));
 
 	replot ();
 }
 
 /**
- * Called after one or more rows have changed in the model. Updates the Flarm
- * data for the changed row(s).
+ * Called after one or more rows have changed in the Flarm list. Updates the
+ * Flarm data for the changed row(s).
  */
 void FlarmMapWidget::dataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-	if (model)
+	if (flarmList)
 		for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
-			updateFlarmData (model->at (i));
+			updateFlarmData (flarmList->at (i));
 
 	replot ();
 }
 
 /**
- * Called before (!) one or more rows are removed from the model. Removes the
- * Flarm data for the row(s) to be removed.
+ * Called before (!) one or more rows are removed from the Flarm list. Removes
+ * the Flarm data for the row(s) to be removed.
  */
 void FlarmMapWidget::rowsAboutToBeRemoved (const QModelIndex &parent, int start, int end)
 {
 	Q_UNUSED (parent);
 
-	if (model)
+	if (flarmList)
 		for (int i=start; i<=end; ++i)
-			removeFlarmData (model->at (i));
+			removeFlarmData (flarmList->at (i));
 
 	replot ();
 }
 
 /**
- * Called after the model has changed completely. Refreshes all Flarm data.
+ * Called after the Flarm list has changed completely. Refreshes all Flarm data.
  */
 void FlarmMapWidget::modelReset ()
 {
@@ -537,12 +651,13 @@ void FlarmMapWidget::modelReset ()
 }
 
 /**
- * Called before the model is destroyed
+ * Called before the Flarm list is destroyed
  *
- * This method sets the model to NULL, meaning "no model", to prevent further
- * accesses to the model.
+ * This method sets the Flarm list to NULL, meaning "no Flarm list", to prevent
+ * further accesses to the model.
  */
-void FlarmMapWidget::modelDestroyed ()
+void FlarmMapWidget::flarmListDestroyed ()
 {
-	setModel (NULL);
+	this->flarmList=NULL;
+	modelReset ();
 }
