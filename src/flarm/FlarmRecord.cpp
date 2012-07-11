@@ -129,19 +129,6 @@ void FlarmRecord::processPflaaSentence (const PflaaSentence &sentence)
 }
 
 
-QString FlarmRecord::flightActionToString (FlarmRecord::FlightAction action) {
-        switch (action)
-        {
-                case FlarmRecord::departure:
-                        return tr ("started");
-                case FlarmRecord::landing:
-                        return tr ("landed");
-                case FlarmRecord::goAround:
-                        return tr ("go around");
-        }
-        return "";
-}
-
 // ***********************
 // ** Situation methods **
 // ***********************
@@ -237,7 +224,7 @@ void FlarmRecord::keepaliveTimeout ()
 		case FlarmRecord::stateLanding:
 			qDebug () << "landing by timeout1:" << flarmId;
 			setState (FlarmRecord::stateOnGround);
-			emit actionDetected (flarmId, FlarmRecord::landing);
+			emit landingDetected (flarmId);
 			break;
 		case FlarmRecord::stateStarting:
 			qDebug () << "out of range:" << flarmId;
@@ -263,7 +250,7 @@ void FlarmRecord::landingTimeout ()
 	{
 		case FlarmRecord::stateOnGround:
 			qDebug () << "landing by timeout2:" << flarmId;
-			emit actionDetected (flarmId, FlarmRecord::landing);
+			emit landingDetected (flarmId);
 			break;
 		default:
 			qCritical () << "landingTimeout in invalid state: " << getState () << "; flarmid = " << flarmId;
@@ -332,7 +319,7 @@ void FlarmRecord::stateTransition ()
 						setState (FlarmRecord::stateFlying);
 						landingTimer->stop ();
 						if (category == Plane::categoryMotorglider)
-							emit actionDetected (flarmId, FlarmRecord::goAround);
+							emit goAroundDetected (flarmId);
 						else
 							qCritical () << "unexpected goaround of glider?";
 					}
@@ -340,7 +327,7 @@ void FlarmRecord::stateTransition ()
 					{
 						qCritical () << "unexpected start: " << flarmId;
 						setState (FlarmRecord::stateFlying);
-						emit actionDetected (flarmId, departure);
+						emit departureDetected (flarmId);
 					}
 					break;
 				case FlarmRecord::lowSituation:
@@ -350,7 +337,7 @@ void FlarmRecord::stateTransition ()
 						setState (FlarmRecord::stateStarting);
 						landingTimer->stop ();
 						if (category == Plane::categoryMotorglider)
-							emit actionDetected (flarmId, goAround);
+							emit goAroundDetected (flarmId);
 						else
 							qCritical () << "unexpected goaround of glider?";
 					}
@@ -358,7 +345,7 @@ void FlarmRecord::stateTransition ()
 					{
 						setState (FlarmRecord::stateStarting);
 						qDebug () << "flat start:" << flarmId;
-						emit actionDetected (flarmId, departure);
+						emit departureDetected (flarmId);
 					}
 					break;
 				default: break;
@@ -373,13 +360,13 @@ void FlarmRecord::stateTransition ()
 					if (category == Plane::categoryMotorglider)
 						landingTimer->start (30000);
 					else
-						emit actionDetected (flarmId, landing);
+						emit landingDetected (flarmId);
 					break;
 				case FlarmRecord::flyingSituation:
 					qDebug () << "go around3:" << flarmId;
 					setState (FlarmRecord::stateFlying);
 					if (category == Plane::categoryMotorglider)
-						emit actionDetected (flarmId, goAround);
+						emit goAroundDetected (flarmId);
 					else
 						qCritical () << "unexpected goaround of glider?";
 					break;
@@ -395,7 +382,7 @@ void FlarmRecord::stateTransition ()
 					if (category == Plane::categoryMotorglider)
 						landingTimer->start (30000);
 					else
-						emit actionDetected (flarmId, landing);
+						emit landingDetected (flarmId);
 					break;
 				case FlarmRecord::lowSituation: setState (FlarmRecord::stateLanding, "flying low"); break;
 				case flyingSituation: break;
@@ -411,7 +398,7 @@ void FlarmRecord::stateTransition ()
 					if (category == Plane::categoryMotorglider)
 						landingTimer->start (30000);
 					else
-						emit actionDetected (flarmId, landing);
+						emit landingDetected (flarmId);
 					break;
 				case FlarmRecord::lowSituation:
 					qDebug () << "flying low:" << flarmId;
@@ -430,7 +417,7 @@ void FlarmRecord::stateTransition ()
 				case FlarmRecord::groundSituation:
 					qDebug () << "departure aborted:" << flarmId;
 					setState (FlarmRecord::stateOnGround);
-					emit actionDetected (flarmId, landing);
+					emit landingDetected (flarmId);
 					break;
 				case FlarmRecord::flyingSituation:
 					qDebug () << "departure continued:" << flarmId;

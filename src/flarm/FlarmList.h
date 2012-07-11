@@ -23,17 +23,17 @@ class FlarmList: public AbstractObjectList<FlarmRecord>
 
 		void setNmeaDecoder (NmeaDecoder *nmeaDecoder);
 
+	signals:
+		void departureDetected (const QString &flarmId);
+		void landingDetected   (const QString &flarmId);
+		void goAroundDetected  (const QString &flarmId);
+
 	public slots:
 		void pflaaSentence (const PflaaSentence &sentence);
 
-//	protected:
-//		int findOrCreateFlarmRecord (const QString &flarmId);
-//		int findFlarmRecordByFlarmId (const QString &flarmId);
-
 	private:
-		int findFlarmRecord (const QString &flarmId);
-
 		QList<FlarmRecord *> flarmRecords;
+		QMap<QString, QPersistentModelIndex> byFlarmId;
 
 		NmeaDecoder *nmeaDecoder;
 

@@ -129,9 +129,9 @@ MainWindow::MainWindow (QWidget *parent):
 	// Flarm list
 	flarmList=new FlarmList (this);
 	flarmList->setNmeaDecoder (nmeaDecoder);
-	// FIXME connect flarm actions to this' slots
-
-
+	connect (flarmList, SIGNAL (departureDetected (const QString &)), this, SLOT (flarmList_departureDetected (const QString &)));
+	connect (flarmList, SIGNAL (landingDetected   (const QString &)), this, SLOT (flarmList_landingDetected   (const QString &)));
+	connect (flarmList, SIGNAL (goAroundDetected  (const QString &)), this, SLOT (flarmList_goAroundDetected  (const QString &)));
 
 
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
@@ -581,15 +581,15 @@ void MainWindow::settingsChanged ()
 	// Flarm
 	//ui.menuFlarm			->setVisible (s.flarmEnabled);
 	//ui.menuFlarm			->setEnabled (s.flarmEnabled);
-        ui.actionFlarmOverview		->setVisible (s.flarmEnabled && s.flarmOverview);
-        ui.actionFlarmRadar		->setVisible (s.flarmEnabled && s.flarmRadar);
-        ui.flarmStateCaptionLabel	->setVisible (s.flarmEnabled);
-        ui.flarmStateLabel		->setVisible (s.flarmEnabled);
-        // FlarmNet
-        ui.actionFlarmNetOverview	->setVisible (s.flarmNetEnabled && s.flarmNetOverview);
-        ui.actionFlarmNetImport		->setVisible (s.flarmNetEnabled);
-        // FIXME handle this
-        // FIXME set the flarmStream's enabled to s.flarmEnabled
+	ui.actionFlarmOverview		->setVisible (s.flarmEnabled && s.flarmOverview);
+	ui.actionFlarmRadar		->setVisible (s.flarmEnabled && s.flarmRadar);
+	ui.flarmStateCaptionLabel	->setVisible (s.flarmEnabled);
+	ui.flarmStateLabel		->setVisible (s.flarmEnabled);
+	// FlarmNet
+	ui.actionFlarmNetOverview	->setVisible (s.flarmNetEnabled && s.flarmNetOverview);
+	ui.actionFlarmNetImport		->setVisible (s.flarmNetEnabled);
+	// FIXME set the flarmStream's enabled to s.flarmEnabled
+
 	// Plugins
 	setupPlugins ();
 }
@@ -1689,6 +1689,11 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 	StatisticsWindow::display (stats, true, ntr_launchMethodOverviewTitle, this);
 }
 
+
+// ***********
+// ** Flarm **
+// ***********
+
 void MainWindow::on_actionFlarmOverview_triggered ()
 {
 	// FIXME implement
@@ -1707,12 +1712,12 @@ void MainWindow::on_actionFlarmRadar_triggered ()
 
 void MainWindow::on_actionFlarmNetOverview_triggered ()
 {
-        qDebug () << "MainWindow::on_actionFlarmNetOverview_triggered";
+	qDebug () << "MainWindow::on_actionFlarmNetOverview_triggered";
 }
 
 void MainWindow::on_actionFlarmNetImport_triggered ()
 {
-        qDebug () << "MainWindow::on_actionFlarmNetImport_triggered";
+	qDebug () << "MainWindow::on_actionFlarmNetImport_triggered";
 }
 
 // **************
@@ -2151,139 +2156,199 @@ void MainWindow::languageChanged ()
 	//ui.flightTable->resizeColumnsToContents ();
 }
 
+void MainWindow::flarmList_departureDetected (const QString &flarmId)
+{
+	std::cout << "Detected departure of " << flarmId << std::endl;
+}
+
+void MainWindow::flarmList_landingDetected (const QString &flarmId)
+{
+	std::cout << "Detected landing of " << flarmId << std::endl;
+}
+
+void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
+{
+	std::cout << "Detected go-around of " << flarmId << std::endl;
+}
+
+/*
+ * Try to determine the plane. Possible outcomes:
+ *   - plane known (in database)
+ *     - directly
+ *     - via registration from FlarmNet
+ *   - registration known (from FlarmNet)
+ *   - plane unknown (only Flarm ID known)
+ *
+ * Departure: See if there is a prepared flight:
+ *   - plane known => find flight by plane ID
+ *   - registration known => doesn't help
+ *   - plane unknown => we're out of luck
+ *
+ * Landing: See if there is a flying flight:
+ *   - plane known => by plane ID
+ *   - registration known => doesn't help
+ *   - plane unknown => flight *might* contain a Flarm ID
+ *
+ * Touch and go:
+ *   - like landing
+ *
+ * Flight identified => depart/land/touchngo it
+ * New flight => create one
+ *   - Plane known              => set the plane
+ *   - Plane unknown            => set the Flarm ID
+ *   - Plane registration known => Set the plane registration in the comment?
+ */
+
+/**
+ * Finds a plane from the database or from the FlarmNet database
+ * @param flarmId
+ * @param registration
+ * @return
+ */
+dbId resolvePlane (const QString &flarmId, QString *registration)
+{
+//	Plane plane;
+//	QString reg;
+//	dbId planeId = cache.getPlaneIdByFlarmId (flarmid);
+//
+//	if (idValid (planeId))
+//	{
+//		plane = cache.getObject<Plane> (planeId);
+//		reg = plane.registration;
+//		qDebug () << "plane found by flarm id: " << reg << "; " << flarmid;
+//	}
+//	else
+//	{
+//		qDebug () << "plane not found by flarm id: " << flarmid;
+//		//TODO: FlarmNet database
+//		// don't give up. we will create the flight anyway with invalid plane id.
+//
+//		// FIXME: get the registration from FlarmNet and the plane from the registration
+//		// try to get reg from FlarmNet DB
+//		/*
+//		FlarmNetRecord* record = FlarmNetDb::getInstance()->getData (flarmid);
+//		if (record)
+//		{
+//			// got plane reg from flarmnet. Try to get it from own database
+//			reg = record->registration.trimmed();
+//			db->get_plane_registration (&plane, reg);
+//		}
+//		else
+//		{
+//			...
+//		}
+//		 */
+//		reg = tr ("Unknown plane");
+//	}
+//
+}
+
+
 // Flarm
-void MainWindow::onFlarmAction (const QString& flarmid, FlarmRecord::FlightAction action) {
-	qDebug () << "MainWindow::onFlarmAction: " << flarmid << "; action = " << action;
-	
-	if (!Settings::instance().flarmEnabled)
-	        return;
+// FIXME
+//void MainWindow::onFlarmAction (const QString& flarmid, FlarmRecord::FlightAction action)
+//{
+//	resolvePlane ();
+//
+//	QList<Flight> flights;
+//	if (action == FlarmRecord::departure)
+//	{
+//		flights = dbManager.getCache ().getPreparedFlights ().getList ();
+//		qDebug () << "getPreparedFlights: " << flights.count ();
+//	}
+//	else
+//	{
+//		flights = dbManager.getCache ().getFlyingFlights ().getList ();
+//		qDebug () << "getFlyingFlights: " << flights.count ();
+//	}
+//
+//	bool flightFound = false;
+//	dbId flightId = -1;
+//
+//	foreach (Flight flight, flights)
+//	{
+//		flightId = flight.getId();
+//		qDebug () << "look for plane id: " << plane.registration;
+//		if (flight.getPlaneId() == plane.getId())
+//		{
+//			flightFound = true;
+//			break;
+//		}
+//	}
+//
+//	if (flightFound)
+//	{
+//		manipulateFlight (flightId, action);
+//		//Beep();
+//		QMessageBox* box = new QMessageBox (QMessageBox::Information, tr ("FLARM Information"),
+//				tr ("%1 was %2 automatically.").arg(reg).arg(FlarmRecord::flightActionToString(action)),
+//				QMessageBox::NoButton, this);
+//		box->setAttribute(Qt::WA_DeleteOnClose);
+//		// 8 seconds; this is information only
+//		QTimer::singleShot(8000, box, SLOT(accept()));
+//		box->show();
+//	}
+//	else
+//	{
+//		qDebug () << "no flight found: " << reg;
+//		// we create the flight with minimal data; will show up in red for completion
+//		Flight flight;
+//		flight.setType (FlightBase::typeNormal);
+//		flight.setPlaneId (plane.getId());
+//		flight.setMode (FlightBase::modeLocal);
+//		flight.setFlarmId (flarmid);
+//		if (action == FlarmRecord::departure)
+//			flight.setDepartureLocation (Settings::instance ().location);
+//		else
+//			flight.setLandingLocation (Settings::instance ().location);
+//
+//		flightId = dbManager.createObject (flight, this);
+//		manipulateFlight (flight.getId(), action);
+//
+//		QMessageBox* box = new QMessageBox (QMessageBox::Warning, tr ("FLARM Warning"),
+//				tr ("<qt><p>%1 was %2 automatically.</p>"
+//						"<big><font color=\"red\"><p>Entry in flight list is incomplete!</p>"
+//						"<p>Please add missing data!</p></font></big></qt>").arg(reg).arg(FlarmRecord::flightActionToString(action)),
+//						QMessageBox::Ok, 0);
+//		QTimer::singleShot(10000, box, SLOT(accept()));
+//		box->show ();
+//
+//		if (Settings::instance().flarmEditor)
+//		{
+//			// get the Flight object back from the database
+//			flight=dbManager.getCache ().getObject<Flight> (flightId);
+//			// Another flight may be being edited
+//			delete editFlightWindow; // noop if NULL
+//			editFlightWindow=FlightWindow::editFlight (this, dbManager, flight);
+//			editFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
+//		}
+//	}
+//}
 
-	if (!Settings::instance ().flarmAutostart)
-		return;
-
-	Plane plane;
-	QString reg;
-        dbId planeId = cache.getPlaneIdByFlarmId (flarmid);
-        if (idValid (planeId)) {
-                plane = cache.getObject<Plane> (planeId);
-	        reg = plane.registration; 
-                qDebug () << "plane found by flarm id: " << reg << "; " << flarmid;
-        }
-        else
-        {
-                qDebug () << "plane not found by flarm id: " << flarmid;
-		//TODO: FlarmNet database
-		// don't give up. we will create the flight anyway with invalid plane id.
-		
-		// try to get reg from FlarmNet DB
-		/*
-		FlarmNetRecord* record = FlarmNetDb::getInstance()->getData (flarmid);
-		if (record) {
-			// got plane reg from flarmnet. Try to get it from own database
-			reg = record->registration.trimmed();
-			db->get_plane_registration (&plane, reg);
-		}
-		else
-		*/
-                reg = tr ("Unknown plane");
-        }                                                
-
-	QList<Flight> flights;
-	if (action == FlarmRecord::departure) {
-                flights = dbManager.getCache ().getPreparedFlights ().getList ();
-                qDebug () << "getPreparedFlights: " << flights.count ();
-        }
-	else {
-                flights = dbManager.getCache ().getFlyingFlights ().getList ();
-                qDebug () << "getFlyingFlights: " << flights.count ();
-        }
-
-	bool flightFound = false;
-	dbId flightId = -1;
-
-        foreach (Flight flight, flights)
-        {
-                flightId = flight.getId();
-                qDebug () << "look for plane id: " << plane.registration;
-                if (flight.getPlaneId() == plane.getId()) {
-                        flightFound = true;
-		        break;
-                }
-        }
-	
-	if (flightFound) {
-		manipulateFlight (flightId, action);
-		//Beep();
-		QMessageBox* box = new QMessageBox (QMessageBox::Information, tr ("FLARM Information"),
-			tr ("%1 was %2 automatically.").arg(reg).arg(FlarmRecord::flightActionToString(action)),
-			QMessageBox::NoButton, this);
-		box->setAttribute(Qt::WA_DeleteOnClose);
-		// 8 seconds; this is information only
-		QTimer::singleShot(8000, box, SLOT(accept()));
-		box->show();
-	}
-	else {
-		qDebug () << "no flight found: " << reg;
-		// we create the flight with minimal data; will show up in red for completion
-		Flight flight;
-		flight.setType (FlightBase::typeNormal);
-		flight.setPlaneId (plane.getId());
-		flight.setMode (FlightBase::modeLocal);
-		flight.setFlarmId (flarmid);
-		if (action == FlarmRecord::departure)
-			flight.setDepartureLocation (Settings::instance ().location);
-		else
-			flight.setLandingLocation (Settings::instance ().location);
-
-		flightId = dbManager.createObject (flight, this);
-		manipulateFlight (flight.getId(), action);
-		
-		QMessageBox* box = new QMessageBox (QMessageBox::Warning, tr ("FLARM Warning"),
-			tr ("<qt><p>%1 was %2 automatically.</p>"
-			    "<big><font color=\"red\"><p>Entry in flight list is incomplete!</p>"
-			    "<p>Please add missing data!</p></font></big></qt>").arg(reg).arg(FlarmRecord::flightActionToString(action)),
-			QMessageBox::Ok, 0);
-		QTimer::singleShot(10000, box, SLOT(accept()));
-		box->show ();
-		
-		if (Settings::instance().flarmEditor) {
-        		// get the Flight object back from the database
-	        	flight=dbManager.getCache ().getObject<Flight> (flightId);
-	        	// Another flight may be being edited
-	        	delete editFlightWindow; // noop if NULL
-	        	editFlightWindow=FlightWindow::editFlight (this, dbManager, flight);
-	        	editFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
-                }
-	}
-		
-}
-
-void MainWindow::manipulateFlight (dbId flight_id, FlarmRecord::FlightAction action) {
-        qDebug () << "MainWindow::manipulateFlight";
-        switch (action)
-        {
-                case FlarmRecord::departure:
-                        departFlight (flight_id);
-                        break;
-                case FlarmRecord::landing:
-                        landFlight (flight_id);
-                        break;
-                case FlarmRecord::goAround:
-                {
-                        Flight flight = dbManager.getCache ().getObject<Flight> (flight_id);
-                        QString reason;
-                        if (flight.canTouchngo (&reason))
-                        {
-                                flight.performTouchngo ();
-                                updateFlight (flight);
-                        }
-                        else {
-                                showWarning (tr ("Touch-and-go not possible"), reason, this);
-                        }
-                        break;
-                }
-        }
-}
+//void MainWindow::manipulateFlight (dbId flight_id, FlarmRecord::FlightAction action) {
+//	switch (action)
+//	{
+//		case FlarmRecord::departure:
+//			departFlight (flight_id);
+//			break;
+//		case FlarmRecord::landing:
+//			landFlight (flight_id);
+//			break;
+//		case FlarmRecord::goAround:
+//		{
+//			Flight flight = dbManager.getCache ().getObject<Flight> (flight_id);
+//			QString reason;
+//			if (flight.canTouchngo (&reason))
+//			{
+//				flight.performTouchngo ();
+//				updateFlight (flight);
+//			}
+//			else {
+//				showWarning (tr ("Touch-and-go not possible"), reason, this);
+//			}
+//		} break;
+//	}
+//}
 
 void MainWindow::on_connectFlarmAction_triggered ()
 {

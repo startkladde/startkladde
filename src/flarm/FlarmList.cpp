@@ -8,16 +8,6 @@
 #include "src/util/qString.h"
 #include "src/nmea/NmeaDecoder.h"
 
-// FIXME caching. Problem is: we can't use a QHash/QMap from flarm ID to index
-// because the index may change when items are removed or inserted. What we need
-// is something like QPersistentModelIndex, but AbstractObjectList<> does not
-// provide that.
-// Solutions:
-//   * use QAbstract[Item|List]Model, but we need to implement ObjectListModel
-//     for that
-//   * add persistent index functionality to AbstractObjectList<>, but that
-//     would duplicate Qt functionality
-
 // TODO: we have to take care not to let the list and the map get inconsistent.
 // We might want to encapsulate that, either in a base class or by placing the
 // modification stuff in a controller class.
@@ -57,25 +47,16 @@ void FlarmList::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
 // ** Data processing **
 // *********************
 
-int FlarmList::findFlarmRecord (const QString &flarmId)
-{
-	for (int i = 0, n = flarmRecords.size (); i < n; ++i)
-		if (flarmRecords.at (i)->flarmId == flarmId) return i;
-
-	return -1;
-}
-
 void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 {
 	// Find the Flarm record for that plane (i. e., Flarm ID)
-	int index = findFlarmRecord (sentence.flarmId);
+	QModelIndex recordIndex = byFlarmId.value (sentence.flarmId);
 
-	if (index >= 0)
+	if (recordIndex.isValid ())
 	{
 		// A flarm record was found
-		flarmRecords[index]->processPflaaSentence (sentence);
-		QAbstractItemModel::dataChanged (QAbstractItemModel::createIndex (index, 0),
-				QAbstractItemModel::createIndex (index, 0));
+		flarmRecords[recordIndex.row ()]->processPflaaSentence (sentence);
+		QAbstractItemModel::dataChanged (recordIndex, recordIndex);
 	}
 	else
 	{
@@ -83,6 +64,9 @@ void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 		// the sentence and add it to the list.
 		FlarmRecord *record = new FlarmRecord (this, sentence.flarmId);
 
+		connect (record, SIGNAL (departureDetected (const QString &)), this, SIGNAL (departureDetected (const QString &)));
+		connect (record, SIGNAL (landingDetected   (const QString &)), this, SIGNAL (landingDetected   (const QString &)));
+		connect (record, SIGNAL (goAroundDetected  (const QString &)), this, SIGNAL (goAroundDetected  (const QString &)));
 		connect (record, SIGNAL (remove (const QString &)), this, SLOT (removeFlarmRecord (const QString &)));
 
 		record->processPflaaSentence (sentence);
@@ -106,17 +90,22 @@ void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 		//			record->setRegistration (plane->registration);
 		//			record->setCategory (plane->category);
 		//		}
-		//
-		//		connect (record, SIGNAL (actionDetected (const QString &, FlarmRecord::FlightAction)), this, SIGNAL (actionDetected (const QString &, FlarmRecord::FlightAction)));
 
-
+		// FIXME separate method for adding/removing, updating the cache
 		// Add it to the list and hash
-		int newIndex = flarmRecords.size ();
-		QAbstractItemModel::beginInsertRows (QModelIndex (), newIndex, newIndex);
+		int newRow = flarmRecords.size ();
+
+		QAbstractItemModel::beginInsertRows (QModelIndex (), newRow, newRow);
+
+		// Add to list
 		flarmRecords.append (record);
+
+		// Add to cache
+		Q_ASSERT (!byFlarmId.contains (sentence.flarmId));
+		byFlarmId.insert (sentence.flarmId, QPersistentModelIndex (index (newRow)));
+
 		QAbstractItemModel::endInsertRows ();
 
-		// FIXME connect the delete signal (there is none yet)
 		// FIXME when the flarm record changes, emit a signal, or only do changes
 		// from here
 	}
@@ -131,11 +120,20 @@ void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 
 void FlarmList::removeFlarmRecord (const QString &flarmId)
 {
-	int index = findFlarmRecord (flarmId);
-	if (index >= 0)
+	QModelIndex index = byFlarmId.value (flarmId);
+	if (index.isValid ())
 	{
-		QAbstractItemModel::beginRemoveRows (QModelIndex (), index, index);
-		flarmRecords.removeAt (index);
+		int row=index.row ();
+
+		QAbstractItemModel::beginRemoveRows (QModelIndex (), row, row);
+
+		// Remove from list
+		flarmRecords.removeAt (row);
+
+		// Remove from cache
+		Q_ASSERT (byFlarmId.contains (flarmId));
+		byFlarmId.remove (flarmId);
+
 		QAbstractItemModel::endRemoveRows ();
 	}
 }
@@ -157,7 +155,7 @@ const FlarmRecord &FlarmList::at (int index) const
 QList<FlarmRecord> FlarmList::getList () const
 {
 	// FIXME we cannot implement this because we cannot store FlarmRecord in a
-	// Qt container. This list stores pointer to FlarmRecord.
-	// Get rid of AbstractObjectList::getList
+	// Qt container. This list stores pointer to FlarmRecord. Get rid of
+	// AbstractObjectList::getList
 	assert (!"Not supported");
 }

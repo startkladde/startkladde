@@ -1,6 +1,7 @@
 #ifndef FLARM_RECORD_H
 #define FLARM_RECORD_H
 
+#include <QObject>
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 #include <QList>
@@ -37,7 +38,6 @@ class FlarmRecord: public QObject
 		// Types
 		enum flarmState {stateUnknown, stateOnGround, stateStarting, stateFlying, stateFlyingFar, stateLanding};
 		enum FlightSituation {groundSituation, lowSituation, flyingSituation};
-		enum FlightAction {departure, landing, goAround};
 
 		// Construction
 		FlarmRecord (QObject* parent, const QString &flarmId);
@@ -63,13 +63,18 @@ class FlarmRecord: public QObject
 		// Misc
 		bool isPlausible () const;
 		void processPflaaSentence (const PflaaSentence &sentence);
-		static QString flightActionToString (FlightAction action);
 
 		// State methods
 		static QString stateText (flarmState state);
 
 	signals:
 		// Controller signals (the slots are in FlarmList)
+		// While it's not strictly necessary to pass the flarm ID as a parameter
+		// here, it simplifies receives which will typically connect to multiple
+		// FlarmRecords.
+		void departureDetected (const QString &flarmId);
+		void landingDetected   (const QString &flarmId);
+		void goAroundDetected  (const QString &flarmId);
 		void remove (const QString &flarmId);
 
 	protected:
@@ -105,8 +110,6 @@ class FlarmRecord: public QObject
 		void keepaliveTimeout ();
 		void landingTimeout ();
 
-	signals:
-	void actionDetected (const QString& id, FlarmRecord::FlightAction);
 };
 
 #endif

@@ -623,6 +623,7 @@ void FlarmMapWidget::dataChanged (const QModelIndex &topLeft, const QModelIndex 
 		for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
 			updateFlarmData (flarmList->at (i));
 
+	// Disable this to replot only when the own position changes
 	replot ();
 }
 
