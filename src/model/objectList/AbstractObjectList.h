@@ -11,8 +11,8 @@
 #include <QAbstractTableModel>
 
 /**
- * A list of objects that performs as a QAbstractTableModel, emitting
- * signals on change.
+ * A list of objects that acts as a QAbstractTableModel, emitting signals on
+ * change.
  *
  * This model does not provide any data. It just serves as a container for
  * objects that is able to notify listeners of changes. For a model that
@@ -23,6 +23,7 @@
 // FIXME: don't implement the methods that don't do anything useful?
 // FIXME: can we still emit changes with 0 columns, or do we need a dummy column
 // for that?
+// FIXME: should probably be based on QAbstractListModel
 template<class T> class AbstractObjectList: public QAbstractTableModel
 {
 	public:
@@ -48,6 +49,8 @@ template<class T> class AbstractObjectList: public QAbstractTableModel
 		 */
 		virtual const T &at (int index) const=0;
 
+//		virtual const T &at (const QModelIndex &index) const;
+
 		/**
 		 * Returns a list of objects in this ObjectList. This is probably slow
 		 * (as all objects have to be copied) unless the ObjectList
@@ -64,6 +67,9 @@ template<class T> class AbstractObjectList: public QAbstractTableModel
 		virtual int columnCount (const QModelIndex &index) const;
 		virtual QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const;
 		virtual QVariant headerData (int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
+		virtual QModelIndex index (int row, int column, const QModelIndex &parent=QModelIndex ()) const;
+		virtual QModelIndex index (int row) const;
+
 };
 
 template<class T> AbstractObjectList<T>::AbstractObjectList (QObject *parent):
@@ -133,5 +139,25 @@ template<class T> QVariant AbstractObjectList<T>::headerData (int section, Qt::O
 		return section+1;
 }
 
+template<class T> QModelIndex AbstractObjectList<T>::index (int row, int column, const QModelIndex &parent) const
+{
+	// The model is not hierarchical, so the parent must be invalid. Also, all
+	// indexes are created with invalid parent.
+	if (column!=0 || row<0 || row>=size () || parent.isValid ())
+		return QModelIndex ();
+	else
+		return createIndex (row, column);
+}
+
+template<class T> QModelIndex AbstractObjectList<T>::index (int row) const
+{
+	return index (row, 0);
+}
+
+// Untested
+//template<class T> const T &AbstractObjectList::at (const QModelIndex &index) const
+//{
+//	return at (index.row ());
+//}
 
 #endif
