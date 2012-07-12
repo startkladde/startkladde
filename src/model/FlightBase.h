@@ -75,6 +75,7 @@ class FlightBase
 
 		flight_value_accessor (QString, Comments, comments);
 		flight_value_accessor (QString, AccountingNotes, accountingNotes);
+		/* Only set when the flight is created automatically from a Flarm event */
 		flight_value_accessor (QString, FlarmId, flarmId);
 
 	private:
