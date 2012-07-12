@@ -129,6 +129,10 @@ class Flight: public FlightBase
 		virtual bool landTowflightNow (bool force=false);
 		virtual bool performTouchngo  (bool force=false);
 
+		virtual bool departNow        (const QString &location, bool force=false);
+		virtual bool landNow          (const QString &location, bool force=false);
+		virtual bool landTowflightNow (const QString &location, bool force=false);
+
 		// *** Times
 		virtual QDateTime effectiveTime () const;
 		// TODO which one of these is right?

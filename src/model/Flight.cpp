@@ -384,6 +384,27 @@ bool Flight::performTouchngo (bool force)
 	return false;
 }
 
+bool Flight::departNow (const QString &location, bool force)
+{
+	if (!departNow (force)) return false;
+	setDepartureLocation (location);
+	return true;
+}
+
+bool Flight::landNow (const QString &location, bool force)
+{
+	if (!landNow (force)) return false;
+	setLandingLocation (location);
+	return true;
+}
+
+bool Flight::landTowflightNow (const QString &location, bool force)
+{
+	if (!landTowflightNow (force)) return false;
+	setTowflightLandingLocation (location);
+	return true;
+}
+
 
 // ***********
 // ** Times **
