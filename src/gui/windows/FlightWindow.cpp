@@ -1756,11 +1756,13 @@ void FlightWindow::updateFlarmId (const Flight & flight)
 	Plane plane = cache.getObject<Plane> (planeId);
 	
 	if (plane.flarmId.isEmpty() && flight.getFlarmId().isEmpty())
+		// Both the flight's and the plane's Flarm ID are empty - nothing to do
 		qDebug () << "both flarm id empty; we cannot help it" << endl;
 	else if (plane.flarmId == flight.getFlarmId())
+		// Flight's and plane's Flarm ID match (and are not emtpy) - nothing to do
 		qDebug () << "flarm_id already correct" << endl;
 	else if (plane.flarmId.isEmpty()) {
-		// we already know the flight flarm id is not empty
+		// The plane's Flarm ID is empty  - copy the flight's Flarm ID to the plane
 		qDebug () << "enter flarm id of flight into plane: " << flight.getFlarmId() << endl;
 		plane.flarmId = flight.getFlarmId();
 		// update database
