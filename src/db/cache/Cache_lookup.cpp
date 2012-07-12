@@ -66,19 +66,20 @@ EntityList<Flight> Cache::getPreparedFlights ()
 
 EntityList<Flight> Cache::getFlyingFlights ()
 {
+	// FIXME must also consider coming prepared flights
 	// Don't directly access the preparedFlights property - the access must be
 	// synchronized.
 	//EntityList<Flight> preparedFlights=getPreparedFlights ();
 	//qDebug () << "Cache::getFlyingFlights: prepared: " << preparedFlights.size() << endl; 
 	EntityList<Flight> todayFlights=getFlightsToday ();
-	qDebug () << "Cache::getFlyingFlights: today: " << todayFlights.size() << endl; 
+//	qDebug () << "Cache::getFlyingFlights: today: " << todayFlights.size() << endl;
 
 	EntityList<Flight> result;
 	//foreach (const Flight &flight, preparedFlights.getList ())
 	foreach (const Flight &flight, todayFlights.getList ())
 		if (flight.isFlying ())
 			result.append (flight);
-	qDebug () << "Cache::getFlyingFlights: result: " << result.size() << endl; 
+//	qDebug () << "Cache::getFlyingFlights: result: " << result.size() << endl;
 
 	return result;
 }
