@@ -43,6 +43,7 @@
 #include "src/io/dataStream/TcpDataStream.h"
 #include "src/gui/SkMainWindow.h"
 #include "src/flarm/FlarmRecord.h" // FIXME replace with forward declaration if possible
+#include "src/model/FlightBase.h"
 
 class QWidget;
 template<class T> class QList;
@@ -208,6 +209,9 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void on_actionSegfault_triggered () { *(int *)NULL = 0; } // For testing the automatic restart mechanism
 		//		void on_actionPingServer_triggered ();
 		void on_actionTest_triggered ();
+		void on_injectFlarmDepartureAction_triggered ();
+		void on_injectFlarmLandingAction_triggered ();
+		void on_injectFlarmTouchAndGoAction_triggered ();
 
 		// Menu: Help
 		void on_actionInfo_triggered ();
@@ -253,6 +257,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void flarmList_departureDetected (const QString &flarmId);
 		void flarmList_landingDetected   (const QString &flarmId);
 		void flarmList_goAroundDetected  (const QString &flarmId);
+		Flight createFlarmFlight (dbId planeId, FlightBase::Mode mode, const QString &flarmId, const QString &registration);
+		dbId resolveFlight (const QList<Flight> &flights, const QString &flarmId, dbId *planeId);
 
 	private:
 		// TODO move to translation manager?
@@ -301,6 +307,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		NmeaDecoder *nmeaDecoder;
 		GpsTracker *gpsTracker;
 		FlarmList *flarmList;
+		QString injectedFlarmId;
 
 
 };

@@ -265,6 +265,9 @@
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
      </widget>
     </item>
     <item>
@@ -371,7 +374,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -468,7 +471,7 @@
    </widget>
    <widget class="QMenu" name="menuDebug">
     <property name="title">
-     <string>De&amp;bug</string>
+     <string>D&amp;ebug</string>
     </property>
     <addaction name="actionSegfault"/>
     <addaction name="actionPingServer"/>
@@ -476,6 +479,10 @@
     <addaction name="separator"/>
     <addaction name="changeLanguageAction"/>
     <addaction name="timerBasedLanguageChangeAction"/>
+    <addaction name="separator"/>
+    <addaction name="injectFlarmDepartureAction"/>
+    <addaction name="injectFlarmLandingAction"/>
+    <addaction name="injectFlarmTouchAndGoAction"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -874,7 +881,7 @@
   </action>
   <action name="changeLanguageAction">
    <property name="text">
-    <string>Change &amp;language</string>
+    <string>Change lan&amp;guage</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+B</string>
@@ -885,7 +892,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Timer-based language change</string>
+    <string>Timer-&amp;based language change</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
@@ -931,6 +938,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="injectFlarmDepartureAction">
+   <property name="text">
+    <string>Inject Flarm &amp;departure</string>
+   </property>
+  </action>
+  <action name="injectFlarmLandingAction">
+   <property name="text">
+    <string>Inject Flarm &amp;landing</string>
+   </property>
+  </action>
+  <action name="injectFlarmTouchAndGoAction">
+   <property name="text">
+    <string>Inject Flarm &amp;touch and go</string>
    </property>
   </action>
  </widget>
