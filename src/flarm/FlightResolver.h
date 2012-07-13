@@ -37,8 +37,8 @@ class FlightResolver
 			public:
 				dbId flightId;
 				dbId planeId;
-				// FIXME: we get the complet plane data from FlarmNet, so there
-				// shold probably be a FlarmNetRecord here instead of the
+				// FIXME: we get more than the registration from FlarmNet, so
+				// there should probably be a FlarmNetRecord here instead of the
 				// registration.
 				QString registration;
 

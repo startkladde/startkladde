@@ -16,6 +16,10 @@ FlightResolver::~FlightResolver ()
 /**
  * Finds a flight whose Flarm ID matches the given Flarm ID
  *
+ * The result can contain:
+ *   - a flight ID if a flight was found
+ *   - nothing if no flight was found
+ *
  * @param flights the flights to search
  * @param flarmId the Flarm ID to search for
  * @return the search result. If the flight was found, the flight ID is set. The
@@ -34,7 +38,13 @@ FlightResolver::Result FlightResolver::resolveFlightByFlarmId (const QList<Fligh
  * Finds a flight with a plane whose Flarm ID matches the given Flarm ID
  *
  * First, we look for a plane with the given Flarm ID. If the plane is found,
- * we look for a flight with the given plane.
+ * we look for a flight with that plane.
+ *
+ * The result can contain:
+ *   - a plane ID and a flight ID if a plane and a flight were found
+ *   - only a plane ID if a plane was found, but there is no flight with that
+ *     plane
+ *   - nothing if no plane was found
  *
  * @param flights the flights to search
  * @param flarmId the Flarm ID to search for
@@ -66,6 +76,19 @@ FlightResolver::Result FlightResolver::resolveFlightByPlaneFlarmId (const QList<
  * Finds a flight with a plane whose registration matches the registration of a
  * FlarmNet database entry whose Flarm ID matches the given Flarm ID
  *
+ * First, we look for a FlarmNet entry with the given Flarm ID. If the FlarmNet
+ * entry is found, we look for a plane with the registration from that FlarmNet
+ * entry. If a plane is found, we look for a flight with that plane.
+ *
+ * The result can contain:
+ *   - a registration, plane ID and flight ID if a matching FlarmNet entry, a
+ *     matching plane and a matching flight were found
+ *   - a registration and plane ID if a matching FlarmNet entry and a matching
+ *     plane were found, but there is not flight with that plane
+ *   - just a registration if a matching FlarmNet entry was found, but there
+ *     is no plane with that registration
+ *   - nothing if no matching FlarmNet entry was found
+ *
  * @param flights the flights to search
  * @param flarmId the Flarm ID to search for
  * @return the search result. If a FlarmNet database entry was found, the
@@ -75,33 +98,33 @@ FlightResolver::Result FlightResolver::resolveFlightByPlaneFlarmId (const QList<
 FlightResolver::Result FlightResolver::resolveFlightByFlarmNetDatabase (const QList<Flight> &flights, const QString &flarmId)
 {
 	// TODO implement
-	// Try to look up the plane via FlarmNet: flarmId => registration => id
-	QString registration /* =[find registration in FlarmNet database] (flarmId) */;
-	if (!registration.isEmpty ())
-	{
-		// We found the registration in the FlarmNet database. Try to find the plane with that registration.
-		dbId planeId=cache.getPlaneIdByRegistration (registration);
+	Q_UNUSED (flights); Q_UNUSED (flarmId); return Result::invalid ();
 
-		// TODO code duplication - separate methods for the different criteria?
-		if (idValid (planeId))
-		{
-			// We found the plane in the database. See if any of the flights is using this plane.
-			foreach (const Flight &flight, flights)
-				if (flight.getPlaneId ()==planeId)
-					return Result (flight.getId (), planeId, registration);
-
-			// We identified the plane, but there is no flight using that plane.
-			return Result (invalidId, planeId, registration);
-		}
-		else
-		{
-			return Result (invalidId, invalidId, registration);
-		}
-	}
-	else
-	{
-		return Result::invalid ();
-	}
+//	// Try to look up the plane via FlarmNet: flarmId => registration => id
+//	QString registration /* = [function that find the registration in FlarmNet database] (flarmId) */;
+//	if (!registration.isEmpty ())
+//	{
+//		// We found the registration in the FlarmNet database. Try to find the plane with that registration.
+//		dbId planeId=cache.getPlaneIdByRegistration (registration);
+//		if (idValid (planeId))
+//		{
+//			// We found the plane in the database. See if any of the flights is using this plane.
+//			foreach (const Flight &flight, flights)
+//				if (flight.getPlaneId ()==planeId)
+//					return Result (flight.getId (), planeId, registration);
+//
+//			// We identified the plane, but there is no flight using that plane.
+//			return Result (invalidId, planeId, registration);
+//		}
+//		else
+//		{
+//			return Result (invalidId, invalidId, registration);
+//		}
+//	}
+//	else
+//	{
+//		return Result::invalid ();
+//	}
 }
 
 /**
