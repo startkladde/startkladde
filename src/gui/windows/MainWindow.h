@@ -44,6 +44,7 @@
 #include "src/gui/SkMainWindow.h"
 #include "src/flarm/FlarmRecord.h" // FIXME replace with forward declaration if possible
 #include "src/model/FlightBase.h"
+#include "src/flarm/FlightResolver.h"
 
 class QWidget;
 template<class T> class QList;
@@ -229,9 +230,14 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		// Flight manipulation
 		bool checkPlaneFlying (dbId id, const QString &description);
 		bool checkPersonFlying (dbId id, const QString &description);
-		void departFlight (dbId id);
-		void landFlight (dbId id);
-		void landTowflight (dbId id);
+		void interactiveDepartFlight (dbId id);
+		void interactiveLandFlight (dbId id);
+		void interactiveLandTowflight (dbId id);
+		void interactiveTouchAndGo (dbId id);
+		void nonInteractiveDepartFlight (dbId flightId);
+		void nonInteractiveLandFlight (dbId flightId);
+//		void nonInteractiveLandTowflight (dbId flightId);
+		void nonInteractiveTouchAndGo (dbId flightId);
 		void departOrLand ();
 
 		// Plugins
@@ -257,8 +263,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void flarmList_departureDetected (const QString &flarmId);
 		void flarmList_landingDetected   (const QString &flarmId);
 		void flarmList_goAroundDetected  (const QString &flarmId);
-		Flight createFlarmFlight (dbId planeId, FlightBase::Mode mode, const QString &flarmId, const QString &registration);
-		dbId resolveFlight (const QList<Flight> &flights, const QString &flarmId, dbId *planeId);
+		Flight createFlarmFlight (const FlightResolver::Result &resolverResult, const QString &flarmId);
 
 	private:
 		// TODO move to translation manager?
@@ -307,6 +312,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		NmeaDecoder *nmeaDecoder;
 		GpsTracker *gpsTracker;
 		FlarmList *flarmList;
+		FlightResolver flightResolver;
 		QString injectedFlarmId;
 
 

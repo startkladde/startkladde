@@ -73,6 +73,7 @@
 #include "src/nmea/NmeaDecoder.h"
 #include "src/nmea/GpsTracker.h"
 #include "src/flarm/FlarmList.h"
+#include "src/flarm/FlightResolver.h"
 
 template <class T> class MutableObjectList;
 
@@ -92,6 +93,7 @@ MainWindow::MainWindow (QWidget *parent):
 	contextMenu (new QMenu (this)),
 	databaseActionsEnabled (false),
 	fontSet (false),
+	flightResolver (cache),
 	injectedFlarmId ("ABC")
 {
 	ui.setupUi (this);
@@ -842,7 +844,7 @@ bool MainWindow::checkPersonFlying (dbId id, const QString &description)
 	return true;
 }
 
-void MainWindow::departFlight (dbId id)
+void MainWindow::interactiveDepartFlight (dbId id)
 {
 	// TODO display message
 	if (idInvalid (id)) return;
@@ -886,7 +888,7 @@ void MainWindow::departFlight (dbId id)
 	}
 }
 
-void MainWindow::landFlight (dbId id)
+void MainWindow::interactiveLandFlight (dbId id)
 {
 	// TODO display message
 	if (idInvalid (id)) return;
@@ -912,76 +914,8 @@ void MainWindow::landFlight (dbId id)
 	}
 }
 
-void MainWindow::landTowflight (dbId id)
+void MainWindow::interactiveTouchAndGo (dbId id)
 {
-	// TODO display message
-	if (idInvalid (id)) return;
-
-	try
-	{
-		Flight flight = dbManager.getCache ().getObject<Flight> (id);
-		QString reason;
-
-		if (flight.canTowflightLand (&reason))
-		{
-			flight.landTowflightNow ();
-			updateFlight (flight);
-		}
-		else
-		{
-			showWarning (tr ("Landing not possible"), reason, this);
-		}
-	}
-	catch (Cache::NotFoundException &ex)
-	{
-		log_error (qnotr ("Flight %1 not found in MainWindow::landTowFlight").arg (ex.id));
-	}
-}
-
-void MainWindow::on_actionNew_triggered ()
-{
-	delete createFlightWindow; // noop if NULL
-	createFlightWindow=FlightWindow::createFlight (this, dbManager, getNewFlightDate (), preselectedLaunchMethod);
-	createFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
-
-}
-
-void MainWindow::on_actionLaunchMethodPreselection_triggered ()
-{
-	LaunchMethodSelectionWindow::select (cache, preselectedLaunchMethod, this);
-}
-
-void MainWindow::on_actionDepart_triggered ()
-{
-	// This will check canDepart
-	departFlight (currentFlightId ());
-}
-
-void MainWindow::on_actionLand_triggered ()
-{
-	bool isTowflight = false;
-	dbId id = currentFlightId (&isTowflight);
-
-	if (isTowflight)
-		// This will check canLand
-		landTowflight (id);
-	else
-		landFlight (id);
-}
-
-void MainWindow::on_actionTouchngo_triggered ()
-{
-	bool isTowflight=false;
-	dbId id = currentFlightId (&isTowflight);
-
-	if (isTowflight)
-	{
-		showWarning (
-			tr ("Touch-and-go not possible"),
-			tr ("The selected flight is a towflight. Towflights cannot perform a touch-and-go."),
-			this);
-	}
-
 	// TODO display message
 	if (idInvalid (id)) return;
 
@@ -1007,6 +941,149 @@ void MainWindow::on_actionTouchngo_triggered ()
 	{
 		log_error (qnotr ("Flight %1 not found in MainWindow::on_actionTouchngo_triggered").arg (ex.id));
 	}
+}
+
+void MainWindow::interactiveLandTowflight (dbId id)
+{
+	// TODO display message
+	if (idInvalid (id)) return;
+
+	try
+	{
+		Flight flight = dbManager.getCache ().getObject<Flight> (id);
+		QString reason;
+
+		if (flight.canTowflightLand (&reason))
+		{
+			flight.landTowflightNow ();
+			updateFlight (flight);
+		}
+		else
+		{
+			showWarning (tr ("Landing not possible"), reason, this);
+		}
+	}
+	catch (Cache::NotFoundException &ex)
+	{
+		log_error (qnotr ("Flight %1 not found in MainWindow::landTowFlight").arg (ex.id));
+	}
+}
+
+void MainWindow::nonInteractiveDepartFlight (dbId flightId)
+{
+	try
+	{
+		Flight flight = dbManager.getCache ().getObject<Flight> (flightId);
+		QString reason;
+		if (flight.canDepart (&reason))
+		{
+			flight.departNow ();
+			updateFlight (flight);
+		}
+		else
+		{
+			std::cout << qnotr ("Departure not possible: %1").arg (reason) << std::endl;
+		}
+	}
+	catch (Cache::NotFoundException &ex)
+	{
+		log_error (qnotr ("Flight %1 not found in MainWindow::nonInteractiveDepartFlight").arg (ex.id));
+	}
+}
+
+void MainWindow::nonInteractiveLandFlight (dbId flightId)
+{
+	try
+	{
+		Flight flight = dbManager.getCache ().getObject<Flight> (flightId);
+		QString reason;
+		if (flight.canLand (&reason))
+		{
+			flight.landNow ();
+			updateFlight (flight);
+		}
+		else
+		{
+			std::cout << qnotr ("Landing not possible: %1").arg (reason) << std::endl;
+		}
+	}
+	catch (Cache::NotFoundException &ex)
+	{
+		log_error (qnotr ("Flight %1 not found in MainWindow::nonInteractiveLandFlight").arg (ex.id));
+	}
+}
+
+//void MainWindow::nonInteractiveLandTowflight (dbId flightId)
+//{
+//}
+
+void MainWindow::nonInteractiveTouchAndGo (dbId flightId)
+{
+	try
+	{
+		Flight flight = dbManager.getCache ().getObject<Flight> (flightId);
+		QString reason;
+		if (flight.canTouchngo (&reason))
+		{
+			flight.performTouchngo ();
+			updateFlight (flight);
+		}
+		else
+		{
+			std::cout << qnotr ("Touch and go not possible: ") << reason << std::endl;
+		}
+	}
+	catch (Cache::NotFoundException &ex)
+	{
+		log_error (qnotr ("Flight %1 not found in MainWindow::nonInteractiveTouchAndGo").arg (ex.id));
+	}
+}
+
+void MainWindow::on_actionNew_triggered ()
+{
+	delete createFlightWindow; // noop if NULL
+	createFlightWindow=FlightWindow::createFlight (this, dbManager, getNewFlightDate (), preselectedLaunchMethod);
+	createFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
+
+}
+
+void MainWindow::on_actionLaunchMethodPreselection_triggered ()
+{
+	LaunchMethodSelectionWindow::select (cache, preselectedLaunchMethod, this);
+}
+
+void MainWindow::on_actionDepart_triggered ()
+{
+	// This will check canDepart
+	interactiveDepartFlight (currentFlightId ());
+}
+
+void MainWindow::on_actionLand_triggered ()
+{
+	bool isTowflight = false;
+	dbId id = currentFlightId (&isTowflight);
+
+	if (isTowflight)
+		// This will check canLand
+		interactiveLandTowflight (id);
+	else
+		interactiveLandFlight (id);
+}
+
+void MainWindow::on_actionTouchngo_triggered ()
+{
+	bool isTowflight=false;
+	dbId id = currentFlightId (&isTowflight);
+
+	if (isTowflight)
+	{
+		showWarning (
+			tr ("Touch-and-go not possible"),
+			tr ("The selected flight is a towflight. Towflights cannot perform a touch-and-go."),
+			this);
+	}
+	else
+		interactiveTouchAndGo (id);
 }
 
 void MainWindow::departOrLand ()
@@ -1477,13 +1554,13 @@ void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
 //		<< std::endl;
 
 	if (flightListIndex.column () == flightModel->departButtonColumn ())
-		departFlight (flight.getId ());
+		interactiveDepartFlight (flight.getId ());
 	else if (flightListIndex.column () == flightModel->landButtonColumn ())
 	{
 		if (flight.isTowflight ())
-			landTowflight (flight.getId ());
+			interactiveLandTowflight (flight.getId ());
 		else
-			landFlight (flight.getId ());
+			interactiveLandFlight (flight.getId ());
 	}
 	else
 		std::cerr << notr ("Unhandled button column in MainWindow::flightTable_buttonClicked") << std::endl;
@@ -2193,93 +2270,22 @@ void MainWindow::on_injectFlarmTouchAndGoAction_triggered ()
 }
 
 
-/**
- * Finds a flight associated with a given Flarm ID
- *
- * The flight can be identified by different criteria, with decreasing
- * reliability:
- *   1. The Flarm ID matches the Flarm ID of the flight.
- *      This means that the flight was created automatically. This is the most
- *      reliable criterion as it does not rely on any user-entered data. A
- *      flight identified by this criterion will always be correct (unless the
- *      Flarm ID changes during the flight).
- *   2. The Flarm ID matches the Flarm ID of the plane of the flight.
- *   3. The Flarm ID matches the Flarm ID of a FlarmNet record whose
- *      registration matches the registration of the plane of the flight.
- *      This is the least reliable criterion because the FlarmNet database
- *      itself may be inaccurate, and our copy of the FlarmNet database may be
- *      outdated.
- *
- * The criteria are tested in order of reliability, that is, the result will be
- * the most reliable result we can find. Criterion 3 (FlarmNet) is currently not
- * implemented.
- *
- * @param flights the flights to search
- * @param flarmId the Flarm to match
- * @return the ID of the flight, or an invalid ID if no such flight was found
- */
-dbId MainWindow::resolveFlight (const QList<Flight> &flights, const QString &flarmId, dbId *planeId)
-{
-	// Try to find a flight with a matching Flarm ID (criterion 1)
-	foreach (const Flight &flight, flights)
-	{
-		if (flight.getFlarmId ()==flarmId)
-		{
-			std::cout << qnotr ("Flight found with Flarm ID %1: %2").arg (flarmId).arg (flight.getId ()) << std::endl;
-			return flight.getId ();
-		}
-	}
-
-	// Try to find a flight with a plane with matching Flarm ID
-	// FIXME what if there are multiple planes with this Flarm ID?
-	dbId foundPlaneId=cache.getPlaneIdByFlarmId (flarmId);
-	if (idValid (foundPlaneId))
-	{
-		// We found the plane in the database.
-		if (planeId)
-			(*planeId)=foundPlaneId;
-
-		// See if any of the flights is using this plane.
-		foreach (const Flight &flight, flights)
-		{
-			if (flight.getPlaneId ()==foundPlaneId)
-			{
-				std::cout << qnotr ("Flight found with plane %1: %2").arg (foundPlaneId).arg (flight.getId ()) << std::endl;
-				return flight.getId ();
-			}
-		}
-
-		std::cout << qnotr ("No flight found with plane %1").arg (foundPlaneId) << std::endl;
-		return invalidId;
-	}
-
-	// TODO try to look up the plane via FlarmNet: flarmId => registration => id
-
-	// None of the criteria matched. Therefore, we conclude that we cannot find
-	// the flight.
-	std::cout << qnotr ("No flight found for Flarm ID %1").arg (flarmId) << std::endl;
-	return invalidId;
-}
-
-
-Flight MainWindow::createFlarmFlight (dbId planeId, FlightBase::Mode mode, const QString &flarmId, const QString &registration)
+Flight MainWindow::createFlarmFlight (const FlightResolver::Result &resolverResult, const QString &flarmId)
 {
 	Flight flight;
 
-	flight.setPlaneId (planeId);
-	flight.setType (FlightBase::typeNormal);
-	flight.setMode (mode);
+	flight.setPlaneId (resolverResult.planeId);
 	flight.setFlarmId (flarmId);
-	if (!registration.isEmpty ())
-		flight.setComments (tr ("Registration: %1 (from FlarmNet)").arg (registration));
+	if (resolverResult.registrationFound ())
+		flight.setComments (tr ("Registration from FlarmNet: %1").arg (resolverResult.registration));
 
 	return flight;
 }
 
 /*
- * FIXME all Flarm auto handlers:
- *   - when ID found, handle flight not found
- *   - display a notification: flight was (xxx) automatically [ - is incomplete]
+ * FIXME in all Flarm event handlers: display a notification "flight was (xxx)
+ * automatically [ - is incomplete]" (need a notification scheme, popups are
+ * bad)
  */
 /**
  * We do not use the interactive methods (departFlight et al.). This also means
@@ -2292,32 +2298,22 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 	std::cout << "Detected departure of " << flarmId << std::endl;
 
 	QList<Flight> flights=dbManager.getCache ().getPreparedFlights ().getList ();
-	dbId planeId=invalidId;
-	dbId flightId=resolveFlight (flights, flarmId, &planeId);
+	FlightResolver::Result resolverResult=flightResolver.resolveFlight (flights, flarmId);
 
-	if (idValid (flightId))
+	if (resolverResult.isValid ())
 	{
 		// We found the (prepared) flight. Depart it.
-		Flight flight = dbManager.getCache ().getObject<Flight> (flightId);
-		QString reason;
-		if (flight.canDepart (&reason))
-		{
-			flight.departNow ();
-			updateFlight (flight);
-		}
-		else
-		{
-			std::cout << qnotr ("Departure not possible: %1").arg (reason) << std::endl;
-		}
+		nonInteractiveDepartFlight (resolverResult.flightId);
 	}
 	else
 	{
 		// We did not find the flight. Create it. The data will be incomplete
 		// and the flight will be shown in red.
-		Flight flight=createFlarmFlight (planeId, FlightBase::modeLocal, flarmId, QString ());
+		Flight flight=createFlarmFlight (resolverResult, flarmId);
+		flight.setMode (FlightBase::modeLocal);
 		flight.setLaunchMethodId (preselectedLaunchMethod);
 		flight.departNow (Settings::instance ().location);
-		flightId = dbManager.createObject (flight, this);
+		dbManager.createObject (flight, this);
 	}
 }
 
@@ -2327,31 +2323,21 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 	std::cout << "Detected landing of " << flarmId << std::endl;
 
 	QList<Flight> flights=dbManager.getCache ().getFlyingFlights ().getList ();
-	dbId planeId=invalidId;
-	dbId flightId=resolveFlight (flights, flarmId, &planeId);
+	FlightResolver::Result resolverResult=flightResolver.resolveFlight (flights, flarmId);
 
-	if (idValid (flightId))
+	if (resolverResult.isValid ())
 	{
 		// We found the flight. Land it.
-		Flight flight = dbManager.getCache ().getObject<Flight> (flightId);
-		QString reason;
-		if (flight.canLand (&reason))
-		{
-			flight.landNow ();
-			updateFlight (flight);
-		}
-		else
-		{
-			std::cout << qnotr ("Landing not possible: %1").arg (reason) << std::endl;
-		}
+		nonInteractiveLandFlight (resolverResult.flightId);
 	}
 	else
 	{
 		// We did not find the flight. Create it. The data will be incomplete
 		// and the flight will be shown in red.
-		Flight flight=createFlarmFlight (planeId, FlightBase::modeComing, flarmId, QString ());
+		Flight flight=createFlarmFlight (resolverResult, flarmId);
+		flight.setMode (FlightBase::modeComing);
 		flight.landNow (Settings::instance ().location);
-		flightId = dbManager.createObject (flight, this);
+		dbManager.createObject (flight, this);
 	}
 }
 
@@ -2360,34 +2346,23 @@ void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 	std::cout << "Detected touch-and-go of " << flarmId << std::endl;
 
 	QList<Flight> flights=dbManager.getCache ().getFlyingFlights ().getList ();
-	dbId planeId=invalidId;
-	dbId flightId=resolveFlight (flights, flarmId, &planeId);
+	FlightResolver::Result resolverResult=flightResolver.resolveFlight (flights, flarmId);
 
-	if (idValid (flightId))
+	if (resolverResult.isValid ())
 	{
 		// We found the flight. Perform a touch and go.
-		Flight flight = dbManager.getCache ().getObject<Flight> (flightId);
-		QString reason;
-		if (flight.canTouchngo (&reason))
-		{
-			flight.performTouchngo ();
-			updateFlight (flight);
-		}
-		else
-		{
-			std::cout << qnotr ("Touch and go not possible: ") << reason << std::endl;
-		}
+		nonInteractiveTouchAndGo (resolverResult.flightId);
 	}
 	else
 	{
 		// We did not find the flight. Create it. The data will be incomplete
 		// and the flight will be shown in red.
-		Flight flight=createFlarmFlight (planeId, FlightBase::modeComing, flarmId, QString ());
+		Flight flight=createFlarmFlight (resolverResult, flarmId);
+		flight.setMode (FlightBase::modeComing);
 		flight.performTouchngo ();
-		flightId = dbManager.createObject (flight, this);
+		dbManager.createObject (flight, this);
 	}
 }
-
 
 void MainWindow::on_connectFlarmAction_triggered ()
 {
