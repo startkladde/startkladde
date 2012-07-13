@@ -969,6 +969,9 @@ void MainWindow::interactiveLandTowflight (dbId id)
 	}
 }
 
+// FIXME for all nonInteractiveXxx methods, there should be a way to report
+// errors (departure not possible...) or failed plausibility checks (person
+// still flying...)
 void MainWindow::nonInteractiveDepartFlight (dbId flightId)
 {
 	try
@@ -1774,7 +1777,7 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 
 void MainWindow::on_actionFlarmOverview_triggered ()
 {
-	// FIXME implement
+	// FIXME implement - show the Flarm window with the table preselected
 //	FlarmLog *flarmLog = FlarmLog::createNew ();
 //	StatisticsWindow::display (flarmLog, true, ntr_flarmOverviewTitle, this);
 }
@@ -2282,16 +2285,16 @@ Flight MainWindow::createFlarmFlight (const FlightResolver::Result &resolverResu
 	return flight;
 }
 
-/*
- * FIXME in all Flarm event handlers: display a notification "flight was (xxx)
- * automatically [ - is incomplete]" (need a notification scheme, popups are
- * bad)
- */
 /**
- * We do not use the interactive methods (departFlight et al.). This also means
- * that we skip plausibility checks like "person still flying".
+ * We use the non-interactive flight update methods (nonInteractiveDepartFlight
+ * etc.) because we do not want popups (we still get the status window, but we
+ * might be able to use a different status indicator for that). This means that
+ * we cannot perform plausibility checks like "person is still flying". There
+ * should be a way to report failed plausibility checks in an unobstrusive way.
  *
- * @param flarmId
+ * We also should have an unobstrusive way to display a notification along the
+ * lines of "The flight was departed automatically" or "The flight was departed
+ * automatically and is incomplete".
  */
 void MainWindow::flarmList_departureDetected (const QString &flarmId)
 {
@@ -2317,6 +2320,9 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 	}
 }
 
+/**
+ * See flarmList_departureDetected
+ */
 void MainWindow::flarmList_landingDetected (const QString &flarmId)
 {
 	// FIXME handle towflights
@@ -2341,6 +2347,9 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 	}
 }
 
+/**
+ * See flarmList_departureDetected
+ */
 void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 {
 	std::cout << "Detected touch-and-go of " << flarmId << std::endl;
