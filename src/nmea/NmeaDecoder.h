@@ -16,7 +16,6 @@ class PflaaSentence;
  * (xxxxxSentence) emitted. If the line is not an NMEA sentence, or not a
  * recognized NMEA sentence, it will be ignored.
  */
-// FIXME clarify what happens when the checksum is invalid
 class NmeaDecoder: public QObject
 {
 		Q_OBJECT
