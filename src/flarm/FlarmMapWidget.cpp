@@ -5,12 +5,14 @@
 
 #include <QModelIndex>
 #include <QResizeEvent>
+#include <QKeyEvent>
 
 #include <qwt_plot_grid.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_marker.h>
 #include <qwt_plot_panner.h>
 #include <qwt_plot_magnifier.h>
+#include <qwt_plot_canvas.h>
 #include <qwt_symbol.h>
 #include <qwt_series_data.h>
 
@@ -30,7 +32,8 @@
 FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
 	climbColor   (  0, 255, 0, 127),
 	descentColor (255, 255, 0, 127),
-	flarmList (NULL), gpsTracker (NULL)
+	flarmList (NULL), gpsTracker (NULL),
+	ownPositionMarker (NULL)
 {
 	// Setup the axes. Note that the aspect ratio may not be correct. This will
 	// be rectified by the first resize event we'll receive before the widget
@@ -47,7 +50,7 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
 	panner->setEnabled (true);
 
 	// Setup the magnifier
-	QwtPlotMagnifier* magnifier = new QwtPlotMagnifier (canvas ());
+	QwtPlotMagnifier *magnifier = new QwtPlotMagnifier (canvas ());
 	magnifier->setMouseButton (Qt::MidButton);
 	magnifier->setAxisEnabled (QwtPlot::yRight, true);
 	magnifier->setAxisEnabled (QwtPlot::xBottom, true);
@@ -55,6 +58,15 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
 	// convention that many other applications, including Firefox and Gimp, use.
 	magnifier->setMouseFactor (1.05);
 	magnifier->setWheelFactor (1.1);
+	// Note that we cannot use QwtPlotMagnifier's keyboard zoom functionality
+	// because that also checks the modifier keys and these may be different for
+	// different keyboard layouts; for example, on the American layout the plus
+	// key requires the shift modifier. We therefore implement keyboard zooming
+	// ourselves. This requires the widget's focusPolicy to be set. As long as
+	// this->canvas()'s focusPolicy is not set, QwtPlotMagnifier's keyboard
+	// zooming won't get in the way.
+	// To be sure, we set the keyFactor to 1.
+	magnifier->setKeyFactor (1);
 	magnifier->setEnabled (true);
 
 	// Add the grid
@@ -62,9 +74,9 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
 	grid->attach (this);
 
 	// Add static markers
-	addStaticMarker ("Start", QColor (255, 0, 0, 127), QPointF (0, 0));
+	setOwnPositionLabel ("Start", QColor (255, 0, 0, 127));
 
-	updateStaticCurves ();
+	updateStaticData ();
 	refreshFlarmData ();
 	replot ();
 }
@@ -143,6 +155,17 @@ void FlarmMapWidget::setAxesRadius (const QPointF &radius)
 }
 
 /**
+ * Sets the current axes, given the center, while retaining the radius
+ *
+ * @param center the center for the (bottom) x and (left) y axis
+ * @see setAxes
+ */
+void FlarmMapWidget::setAxesCenter (const QPointF &center)
+{
+	setAxes (center, getAxesRadius ());
+}
+
+/**
  * Sets the current axes, given the radius, while retaining the center
  *
  * This is a convenience method for setAxesRadius (const QPointF &radius).
@@ -155,10 +178,54 @@ void FlarmMapWidget::setAxesRadius (double xRadius, double yRadius)
 	setAxesRadius (QPointF (xRadius, yRadius));
 }
 
+/**
+ * A convenience method for setAxesRadius
+ *
+ * @param factor the zoom factor; a positive zoom factor sets a smaller radius,
+ *               thereby enlarging the plot
+ */
+void FlarmMapWidget::zoomAxes (double factor)
+{
+	setAxesRadius (getAxesRadius ()/factor);
+}
+
+void FlarmMapWidget::moveAxesCenter (const QPointF &offset)
+{
+	setAxesCenter (getAxesCenter ()+offset);
+}
+
+void FlarmMapWidget::moveAxesCenter (double xOffset, double yOffset)
+{
+	moveAxesCenter (QPointF (xOffset, yOffset));
+}
+
 
 // ****************
 // ** GUI events **
 // ****************
+
+void FlarmMapWidget::keyPressEvent (QKeyEvent *event)
+{
+	// Note that we don't use the magnifier for scaling; first, its rescale()
+	// method is protected and second, we'd have to store a pointer to it.
+
+	// FIXME Bug: zooms to 0,0 when a zoom/scroll key is held down
+
+	switch (event->key ())
+	{
+		case Qt::Key_Plus : case Qt::Key_BracketLeft : zoomAxes (  1.1); break;
+		case Qt::Key_Minus: case Qt::Key_BracketRight: zoomAxes (1/1.1); break;
+
+		case Qt::Key_Right: case Qt::Key_L: moveAxesCenter ( 0.1*min (getAxesRadius ()), 0); break;
+		case Qt::Key_Left : case Qt::Key_H: moveAxesCenter (-0.1*min (getAxesRadius ()), 0); break;
+		case Qt::Key_Up   : case Qt::Key_K: moveAxesCenter (0,  0.1*min (getAxesRadius ())); break;
+		case Qt::Key_Down : case Qt::Key_J: moveAxesCenter (0, -0.1*min (getAxesRadius ())); break;
+
+		default:
+			QwtPlot::keyPressEvent (event);
+			break;
+	}
+}
 
 void FlarmMapWidget::resizeEvent (QResizeEvent *event)
 {
@@ -266,7 +333,7 @@ void FlarmMapWidget::setOrientation (const Angle &upDirection)
 	transform=QTransform ();
 	transform.rotateRadians (upDirection.toRadians ());
 
-	updateStaticCurves ();
+	updateStaticData ();
 	// FIXME we just want to update them here, not refresh them
 	refreshFlarmData ();
 	replot ();
@@ -292,7 +359,7 @@ void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 		ownPosition.distanceTo (this->ownPosition)>0)
 	{
 		this->ownPosition=ownPosition;
-		updateStaticCurves ();
+		updateStaticData ();
 		replot ();
 	}
 }
@@ -306,8 +373,11 @@ void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 /**
  * Adds a static curve to the list of static curves
  *
- * This method does not call replot(). You have to call it yourself to update
- * the display.
+ * This method does not call updateStaticData() or replot(). You have to call it
+ * yourself to update the display.
+ *
+ * The created marker is set to invisible initially. It will be set to visible
+ * as soon as the static data is updated when an own position is receive.
  *
  * @param name a name for the curve, e. g. "airfield"
  * @param points a vector of points that make up the curve. The curve will not
@@ -328,31 +398,79 @@ void FlarmMapWidget::addStaticCurve (const QString &name, const QVector<GeoPosit
 	curve.curve->setRenderHint (QwtPlotItem::RenderAntialiased);
 	curve.curve->setPen (pen);
 	curve.curve->setData (curve.data);
+	curve.curve->setVisible (false);
 	curve.curve->attach (this);
 
 	staticCurves.append (curve);
 }
 
 /**
- * Adds a static marker relative to the own position
+ * Adds, updates or removes a static marker at the origin (i. e. the own
+ * position)
  *
  * This method does not call replot(). You have to call it yourself to update
  * the display.
+ *
+ * @param text the text to dsplay on the label. If empty, the label is removed.
+ * @param color the background color of the label
+ */
+void FlarmMapWidget::setOwnPositionLabel (const QString &text, const QColor &color)
+{
+	if (text.isEmpty ())
+	{
+		// The test is empty. Remove the label from the plot.
+		// Delete it because if we only removed it, it would be hard to tell
+		// whether we'd have to delete it in the destructor. If the marker has
+		// not yet been created, this is a noop.
+		delete ownPositionMarker;
+		ownPositionMarker=NULL;
+	}
+	else
+	{
+		// If the marker does not exist yet, create and attach it
+		if (!ownPositionMarker)
+		{
+			ownPositionMarker=new QwtPlotMarker (); // Deleted by plot or manually
+			ownPositionMarker->setValue (QPointF (0, 0));
+			ownPositionMarker->attach (this);
+		}
+
+		// Set the marker's text and color
+		QwtText qwtText (text);
+		qwtText.setBackgroundBrush (QBrush (color));
+		ownPositionMarker->setLabel (qwtText);
+	}
+}
+
+/**
+ * Adds a static marker at a given position
+ *
+ * This method does not call updateStaticData() or replot(). You have to call it
+ * yourself to update the display.
+ *
+ * The created marker is set to invisible initially. It will be set to visible
+ * as soon as the static data is updated when an own position is receive.
  *
  * @param text the text to display on the label
  * @param color the background color of the label
  * @param point the position, in meters east and north of the own position
  */
-// FIXME add a message for setting absolute positions
-void FlarmMapWidget::addStaticMarker (const QString &text, const QColor &color, const QPointF &point)
+void FlarmMapWidget::addStaticMarker (const QString &text, const GeoPosition &position, const QColor &color)
 {
+	StaticMarker marker;
+
+	marker.position=position;
+
 	QwtText qwtText (text);
 	qwtText.setBackgroundBrush (QBrush (color));
 
-	QwtPlotMarker *marker=new QwtPlotMarker (); // Deleted by plot
-	marker->setLabel (qwtText);
-	marker->setValue (point);
-	marker->attach (this);
+	marker.marker=new QwtPlotMarker (); // Deleted by QwtPlot
+//	marker.marker->setRenderHint (QwtPlotItem::RenderAntialiased); // FIXME want?
+	marker.marker->setLabel (qwtText);
+	marker.marker->setVisible (false);
+	marker.marker->attach (this);
+
+	staticMarkers.append (marker);
 }
 
 /**
@@ -364,9 +482,11 @@ void FlarmMapWidget::addStaticMarker (const QString &text, const QColor &color, 
  * This method does not call replot(). You have to call it yourself to update
  * the display.
  */
-void FlarmMapWidget::updateStaticCurves ()
+void FlarmMapWidget::updateStaticData ()
 {
 	bool valid=ownPosition.isValid ();
+
+	// Curves
 	foreach (const StaticCurve &curve, staticCurves)
 	{
 		if (valid)
@@ -376,6 +496,18 @@ void FlarmMapWidget::updateStaticCurves ()
 		}
 		curve.curve->setVisible (valid);
 	}
+
+	// Markers
+	foreach (const StaticMarker &marker, staticMarkers)
+	{
+		if (valid)
+		{
+			QPointF point (marker.position.relativePositionTo (ownPosition));
+			marker.marker->setValue (transform.map (point));
+		}
+		marker.marker->setVisible (valid);
+	}
+
 }
 
 

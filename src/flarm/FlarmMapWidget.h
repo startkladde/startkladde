@@ -70,6 +70,9 @@ class GpsTracker;
  * one or more static curves or markers at any time by calling addStaticCurve or
  * addStaticMarker, respectively.
  *
+ * To allow keyboard scrolling and zooming, you must set the focusPolicy
+ * propery of the widget.
+ *
  *
  * == Implementation details ==
  *
@@ -87,6 +90,8 @@ class GpsTracker;
  * data), the model slots and event handlers (even though they are private/
  * protected). Methods called by these methods like those for adding or updating
  * plot data, typically will not call replot ().
+ *
+ * FIXME after some methods, updateStaticData must also be called
  *
  *
  * === Flarm data ===
@@ -115,12 +120,19 @@ class FlarmMapWidget: public QwtPlot
 			QwtPointSeriesData *data;
 		};
 
+		struct StaticMarker
+		{
+			GeoPosition position;
+			QwtPlotMarker *marker;
+		};
+
 		FlarmMapWidget (QWidget *parent=0);
 		virtual ~FlarmMapWidget ();
 
 		// Static data
+		void setOwnPositionLabel (const QString &text, const QColor &color);
 		void addStaticCurve (const QString &name, const QVector<GeoPosition> &points, QPen pen);
-		void addStaticMarker (const QString &text, const QColor &color, const QPointF &point);
+		void addStaticMarker (const QString &text, const GeoPosition &position, const QColor &color);
 
 		// Flarm list
 		void setFlarmList (FlarmList *flarmList);
@@ -131,6 +143,7 @@ class FlarmMapWidget: public QwtPlot
 		void setOrientation (const Angle &upDirection);
 
 	protected:
+		virtual void keyPressEvent (QKeyEvent *event);
 		virtual void resizeEvent (QResizeEvent *event);
 
 	private:
@@ -146,13 +159,15 @@ class FlarmMapWidget: public QwtPlot
 		GeoPosition ownPosition;
 
 		// Static curves and Flarm data
+		QwtPlotMarker *ownPositionMarker;
 		QList<StaticCurve> staticCurves;
+		QList<StaticMarker> staticMarkers;
 		QHash<QString, QwtPlotMarker *> flarmMarkers;
 		QHash<QString, QwtPlotCurve  *> flarmCurves;
 
 
 		// Static data
-		void updateStaticCurves ();
+		void updateStaticData ();
 
 		// Plot item updates
 		virtual void updateTrail (QwtPlotCurve *curve, const FlarmRecord &record);
@@ -172,6 +187,10 @@ class FlarmMapWidget: public QwtPlot
 		void setAxes (const QPointF &center, const QPointF &radius);
 		void setAxesRadius (const QPointF &radius);
 		void setAxesRadius (double xRadius, double yRadius);
+		void setAxesCenter (const QPointF &center);
+		void zoomAxes (double factor);
+		void moveAxesCenter (const QPointF &offset);
+		void moveAxesCenter (double xOffset, double yOffset);
 
 	private slots:
 		// FlarmList model slots
