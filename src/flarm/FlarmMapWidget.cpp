@@ -61,11 +61,11 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
 	// Note that we cannot use QwtPlotMagnifier's keyboard zoom functionality
 	// because that also checks the modifier keys and these may be different for
 	// different keyboard layouts; for example, on the American layout the plus
-	// key requires the shift modifier. We therefore implement keyboard zooming
-	// ourselves. This requires the widget's focusPolicy to be set. As long as
+	// key requires the shift modifier. Also, this allows only on key each for
+	// zooming in and out. We therefore implement keyboard zooming ourselves.
+	// This requires the widget's focusPolicy to be set. As long as
 	// this->canvas()'s focusPolicy is not set, QwtPlotMagnifier's keyboard
-	// zooming won't get in the way.
-	// To be sure, we set the keyFactor to 1.
+	// zooming won't get in the way. To be sure, we set the keyFactor to 1.
 	magnifier->setKeyFactor (1);
 	magnifier->setEnabled (true);
 
@@ -209,17 +209,19 @@ void FlarmMapWidget::keyPressEvent (QKeyEvent *event)
 	// Note that we don't use the magnifier for scaling; first, its rescale()
 	// method is protected and second, we'd have to store a pointer to it.
 
-	// FIXME Bug: zooms to 0,0 when a zoom/scroll key is held down
+	const double keyboardZoomFactor=1.1;
 
 	switch (event->key ())
 	{
-		case Qt::Key_Plus : case Qt::Key_BracketLeft : zoomAxes (  1.1); break;
-		case Qt::Key_Minus: case Qt::Key_BracketRight: zoomAxes (1/1.1); break;
+		case Qt::Key_Plus : case Qt::Key_BracketLeft : case Qt::Key_Equal:
+			zoomAxes (  keyboardZoomFactor); replot (); break;
+		case Qt::Key_Minus: case Qt::Key_BracketRight:
+			zoomAxes (1/keyboardZoomFactor); replot (); break;
 
-		case Qt::Key_Right: case Qt::Key_L: moveAxesCenter ( 0.1*min (getAxesRadius ()), 0); break;
-		case Qt::Key_Left : case Qt::Key_H: moveAxesCenter (-0.1*min (getAxesRadius ()), 0); break;
-		case Qt::Key_Up   : case Qt::Key_K: moveAxesCenter (0,  0.1*min (getAxesRadius ())); break;
-		case Qt::Key_Down : case Qt::Key_J: moveAxesCenter (0, -0.1*min (getAxesRadius ())); break;
+		case Qt::Key_Right: case Qt::Key_L: moveAxesCenter ( 0.1*min (getAxesRadius ()), 0); replot (); break;
+		case Qt::Key_Left : case Qt::Key_H: moveAxesCenter (-0.1*min (getAxesRadius ()), 0); replot (); break;
+		case Qt::Key_Up   : case Qt::Key_K: moveAxesCenter (0,  0.1*min (getAxesRadius ())); replot (); break;
+		case Qt::Key_Down : case Qt::Key_J: moveAxesCenter (0, -0.1*min (getAxesRadius ())); replot (); break;
 
 		default:
 			QwtPlot::keyPressEvent (event);
