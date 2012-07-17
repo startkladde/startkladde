@@ -46,6 +46,10 @@ class GeoPosition
 		static QVector<GeoPosition> readVector (QSettings &settings, const QString &key);
 		static void storeVector (QSettings &settings, const QString &key, const QVector<GeoPosition> &vector);
 
+		bool operator== (const GeoPosition &other);
+		bool operator!= (const GeoPosition &other);
+
+
 	private:
 		Angle latitude, longitude;
 };

@@ -204,3 +204,25 @@ QVector<GeoPosition> GeoPosition::readVector (QSettings &settings, const QString
 
 	return vector;
 }
+
+/**
+ * Tests for equality
+ *
+ * Note that a GeoPosition includes floating point values, so the euqality
+ * relation is not to be trusted.
+ */
+bool GeoPosition::operator== (const GeoPosition &other)
+{
+	return (latitude==other.latitude) && (longitude==other.longitude);
+}
+
+/**
+ * Tests for inequality
+ *
+ * Note that a GeoPosition includes floating point values, so the ineuqality
+ * relation is not to be trusted.
+ */
+bool GeoPosition::operator!= (const GeoPosition &other)
+{
+	return !(*this==other);
+}
