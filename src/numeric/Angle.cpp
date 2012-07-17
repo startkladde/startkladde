@@ -127,3 +127,26 @@ Angle Angle::operator/ (double factor) const
 	return Angle (value/factor, valid);
 }
 
+/**
+ * Tests for equality
+ *
+ * Note that an angle is stored as a floating point value, so the euqality
+ * relation is not to be trusted.
+ */
+bool Angle::operator== (const Angle &other) const
+{
+	if (!valid && !other.valid) return true;
+	if ( valid &&  other.valid) return value==other.value;
+	return false;
+}
+
+/**
+ * Tests for inequality
+ *
+ * Note that an angle is stored as a floating point value, so the ineuqality
+ * relation is not to be trusted.
+ */
+bool Angle::operator!= (const Angle &other) const
+{
+	return !(*this==other);
+}
