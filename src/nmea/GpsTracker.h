@@ -9,6 +9,9 @@
 class NmeaDecoder;
 class GprmcSentence;
 
+/**
+ * Tracks GPS state such as the own position
+ */
 class GpsTracker: public QObject
 {
 		Q_OBJECT
@@ -19,10 +22,11 @@ class GpsTracker: public QObject
 
 		void setNmeaDecoder (NmeaDecoder *nmeaDecoder);
 
-		GeoPosition getPosition ();
-		QDateTime getGpsTime ();
+		GeoPosition getPosition () const;
+		QDateTime getGpsTime () const;
 
 	signals:
+		/** Emitted whenever a new position record is received */
 		void positionChanged (const GeoPosition &position);
 
 	public slots:

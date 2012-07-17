@@ -3,7 +3,12 @@
 #include "src/nmea/NmeaDecoder.h"
 #include "src/nmea/GprmcSentence.h"
 
-// FIXME add parent parameter
+/**
+ * Creates a GpsTracker instance
+ *
+ * @param parent the Qt parent object. This object will be deleted automatically
+ *               when the parent is destroyed. Can be NULL.
+ */
 GpsTracker::GpsTracker (QObject *parent): QObject (parent),
 	nmeaDecoder (NULL), altitude (0)
 {
@@ -14,6 +19,9 @@ GpsTracker::~GpsTracker ()
 	setNmeaDecoder (NULL);
 }
 
+/**
+ * Sets the NMEA decoder to receive signals from
+ */
 void GpsTracker::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
 {
 	if (nmeaDecoder==this->nmeaDecoder)
@@ -32,22 +40,36 @@ void GpsTracker::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
 	}
 }
 
-GeoPosition GpsTracker::getPosition ()
+/**
+ * Get the most recent position received
+ */
+GeoPosition GpsTracker::getPosition () const
 {
 	return position;
 }
 
-QDateTime GpsTracker::getGpsTime ()
+/**
+ * Gets the most recent GPS time received
+ * @return
+ */
+QDateTime GpsTracker::getGpsTime () const
 {
 	return gpsTime;
 }
 
-// FIXME make sure only valid sentences are emitted
+/**
+ * Updates the state based on a GPRMC sentence
+ */
 void GpsTracker::gprmcSentence (const GprmcSentence &sentence)
 {
+	if (!sentence.isValid ()) return;
+
+	GeoPosition oldPosition=this->position;
+
 	this->gpsTime=sentence.timestamp;
 	this->position=sentence.position;
-	// FIXME doesn't GPRMC have altitude?
+	// FIXME doesn't GPRMC have altitude? Get it from GPGGA.
 
-	emit positionChanged (this->position);
+	if (this->position != oldPosition)
+		emit positionChanged (this->position);
 }
