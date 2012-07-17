@@ -3,6 +3,9 @@
 #include <QString>
 #include <QStringList>
 
+/**
+ * Private constructor, this class cannot be created
+ */
 Nmea::Nmea ()
 {
 }
@@ -72,16 +75,50 @@ bool Nmea::verifyChecksum (const QString &sentence)
 	}
 }
 
+/**
+ * Parses a latitude value
+ *
+ * A latitude value has two digits before the decimal point and a N/S sign
+ * designator
+ *
+ * @see parseAngle
+ */
 Angle Nmea::parseLatitude  (const QString &value, const QString &sign)
 {
 	return parseAngle (value, sign, 2, "N", "S");
 }
 
+/**
+ * Parses a latitude value
+ *
+ * A latitude value has three digits before the decimal point and a E/W sign
+ * designator
+ *
+ * @see parseAngle
+ */
 Angle Nmea::parseLongitude (const QString &value, const QString &sign)
 {
 	return parseAngle (value, sign, 3, "E", "W");
 }
 
+/**
+ * Parses an angle in NMEA format
+ *
+ * This is a private helper function for the frontend functions parseLatitude
+ * and parseLongitude.
+ *
+ * If the sign matches neither the positive nor the negative sign, an invalid
+ * angle is returned.
+ *
+ * @param value the string value to parse, e. g. 01122.30000 for 11°22.3'
+ * @param sign a string (typically single-character) that designates the sign of
+ *             the value
+ * @param degreeDigits the number of digits to use for the degree value, 3 in
+ *                     the example
+ * @param positiveSign the sign string that designates a positive sign
+ * @param negativeSign the sign string that designates a negative sign
+ * @return
+ */
 Angle Nmea::parseAngle (const QString &value, const QString sign, int degreeDigits, const QString &positiveSign, const QString &negativeSign)
 {
 	// Format of value is DDMM.MMMM
@@ -110,9 +147,10 @@ Angle Nmea::parseAngle (const QString &value, const QString sign, int degreeDigi
 }
 
 /**
+ * Parses a date in NMEA format
  *
- * @param value
- * @return the date in UTC (QDate does not know about time zones)
+ * @param value the date value, e. g. 311210 for December 1, 2010
+ * @return the date in the NMEA time zone (QDate does not know about time zones)
  */
 QDate Nmea::parseDate (const QString &value)
 {
@@ -124,9 +162,10 @@ QDate Nmea::parseDate (const QString &value)
 }
 
 /**
+ * Parses a time in NMEA format
  *
- * @param value
- * @return the time in UTC (QDate does not know about time zones)
+ * @param value the time value, e. g. 142835 for 14:28:35
+ * @return the time in the NMEA time zone (QDate does not know about time zones)
  */
 QTime Nmea::parseTime (const QString &value)
 {
@@ -135,6 +174,12 @@ QTime Nmea::parseTime (const QString &value)
 	return QTime::fromString (hhmmss, "hhmmss");
 }
 
+/**
+ * A convenience method for parsing both a date and a time
+ *
+ * Contrary to QDate and QTime, QDateTime does know about time zones. The date
+ * and time values are assumed to be in UTC.
+ */
 QDateTime Nmea::parseDateTime (const QString &dateValue, const QString &timeValue)
 {
 	return QDateTime (parseDate (dateValue), parseTime (timeValue), Qt::UTC);

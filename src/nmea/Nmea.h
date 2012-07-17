@@ -11,6 +11,9 @@
 
 class QString;
 
+/**
+ * NMEA helper functions
+ */
 class Nmea
 {
 	public:
