@@ -1,29 +1,14 @@
 #include "GprmcSentence.h"
 
 #include <QStringList>
-#include <QDebug>
 
 #include "src/nmea/Nmea.h"
 
-GprmcSentence::GprmcSentence (const QString &sentence):
-	sentence (sentence), isValid (false)
+GprmcSentence::GprmcSentence (const QString &line): NmeaSentence (line, "GPRMC", 10),
+	status (false)
 {
-	// Make sure that the checksum is valid
-	if (!Nmea::verifyChecksum (sentence))
-	{
-		qDebug () << QString ("Checksum mismatch: "+sentence);
-		return;
-	}
-
-	// Split the string
-	// FIXME remove the checksum from the last part
-	QStringList parts = sentence.split (',');
-
-	// Make sure that it is not truncated
-	if (parts.length () < 10) return;
-
-	// Make sure that it is actually a GPRMC sentence
-	if (parts[0]!="$GPRMC") return;
+	if (!isValid ()) return;
+	QStringList parts = getParts ();
 
 	timestamp = Nmea::parseDateTime (parts[9], parts[1]);
 	status    = parts[2]=="A";
@@ -36,9 +21,6 @@ GprmcSentence::GprmcSentence (const QString &sentence):
 	// parts[10]: variation
 	// parts[11]: variationSign
 	// parts[12]: integrity
-
-	// FIXME validity
-	isValid=true;
 }
 
 GprmcSentence::~GprmcSentence ()

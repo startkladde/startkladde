@@ -1,29 +1,15 @@
 #include "PflaaSentence.h"
 
 #include <QStringList>
-#include <QDebug>
 
 #include "src/nmea/Nmea.h"
 
-PflaaSentence::PflaaSentence (const QString &sentence):
-	sentence (sentence), isValid (false)
+PflaaSentence::PflaaSentence (const QString &line): NmeaSentence (line, "PFLAA", 10),
+	relativeNorth (0), relativeEast (0), relativeVertical (0),
+	groundSpeed (0), climbRate (0)
 {
-	// Make sure that the checksum is valid
-	if (!Nmea::verifyChecksum (sentence))
-	{
-		qDebug () << QString ("Checksum mismatch: "+sentence);
-		return;
-	}
-
-	// Split the string
-	// FIXME remove the checksum from the last part
-	QStringList parts = sentence.split (',');
-
-	// Make sure that it is not truncated
-	if (parts.length () < 10) return;
-
-	// Make sure that it is actually a PFLAA sentence
-	if (parts[0]!="$PFLAA") return;
+	if (!isValid ()) return;
+	QStringList parts = getParts ();
 
 	// FIXME ok flag
 
@@ -38,8 +24,6 @@ PflaaSentence::PflaaSentence (const QString &sentence):
 	groundSpeed      = parts[ 9].toInt ();
 	climbRate        = parts[10].toDouble ();
 	// parts[11]: aircraftType
-
-	isValid=true;
 }
 
 PflaaSentence::~PflaaSentence ()

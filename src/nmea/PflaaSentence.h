@@ -3,14 +3,18 @@
 
 #include <QString>
 
-class PflaaSentence
+#include "src/nmea/NmeaSentence.h"
+
+/**
+ * Flarm aircraft data
+ *
+ * Not all fields are currently parsed.
+ */
+class PflaaSentence: public NmeaSentence
 {
 	public:
-		PflaaSentence (const QString &sentence);
+		PflaaSentence (const QString &line);
 		virtual ~PflaaSentence ();
-
-		QString sentence;
-		bool isValid;
 
 		int relativeNorth;    // true in meters
 		int relativeEast;     // true in meters

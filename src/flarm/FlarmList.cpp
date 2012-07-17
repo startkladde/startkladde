@@ -49,6 +49,8 @@ void FlarmList::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
 
 void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 {
+	if (!sentence.isValid ()) return;
+
 	// Find the Flarm record for that plane (i. e., Flarm ID)
 	QModelIndex recordIndex = byFlarmId.value (sentence.flarmId);
 
