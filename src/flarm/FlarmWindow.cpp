@@ -123,7 +123,12 @@ void FlarmWindow::readVectors ()
 	ui.flarmMap->addStaticCurve ("airfield", GeoPosition::readVector (settings, "airfield"), airfieldPen);
 	ui.flarmMap->addStaticCurve ("pattern" , GeoPosition::readVector (settings, "pattern" ), QPen ());
 
+	// FIXME read from config or file
+	ui.flarmMap->addStaticMarker ("Halle", GeoPosition::fromDegrees (52.945078, 12.786621), QColor (255, 255, 255, 127));
+
 	settings.endGroup ();
+
+	ui.flarmMap->replot ();
 }
 
 
