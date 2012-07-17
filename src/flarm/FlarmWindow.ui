@@ -73,7 +73,11 @@
         </layout>
        </item>
        <item>
-        <widget class="FlarmMapWidget" name="flarmMap"/>
+        <widget class="FlarmMapWidget" name="flarmMap">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -93,9 +97,6 @@
       <property name="cornerButtonEnabled">
        <bool>false</bool>
       </property>
-      <attribute name="horizontalHeaderHighlightSections">
-       <bool>false</bool>
-      </attribute>
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
