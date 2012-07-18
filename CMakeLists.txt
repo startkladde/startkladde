@@ -54,6 +54,7 @@ FIND_PACKAGE (Qwt6	REQUIRED)
 
 # Setup the Qt library
 SET(QT_USE_QTSQL     TRUE)
+SET(QT_USE_QTXML     TRUE)
 SET(QT_USE_QTNETWORK TRUE)
 
 set(CMAKE_AUTOMOC TRUE)
@@ -166,6 +167,7 @@ if (WIN32 AND QT_BINARY_DIR AND MYSQL_INCLUDE_DIR)
 	copy_library (${QT_BINARY_DIR} QtCore4.dll)
 	copy_library (${QT_BINARY_DIR} QtGui4.dll)
 	copy_library (${QT_BINARY_DIR} QtSql4.dll)
+	copy_library (${QT_BINARY_DIR} QtXml4.dll)
 	copy_library (${QT_BINARY_DIR} QtNetwork4.dll)
 
 	copy_library (${MYSQL_LIBRARY_DIR} libmysql.dll)
@@ -414,7 +416,7 @@ SET (CPACK_DEBIAN_PACKAGE_VERSION ${startkladde_VERSION_MAJOR}.${startkladde_VER
 # hand, it is already required by libqt4-sql-mysql, so we don't have to specify
 # it explicitly.
 SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "libc6 (>= 2.15), libgcc1 (>= 1:4.6.3), libstdc++6 (>= 4.6.3)")
-SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libqt4-network (>= 4:4.8.0), libqt4-sql (>= 4:4.8.0), libqtcore4 (>= 4:4.8.0), libqtgui4 (>= 4:4.8.0), libqt4-sql-mysql (>= 4:4.8.0)")
+SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libqt4-network (>= 4:4.8.0), libqt4-sql (>= 4:4.8.0), libqt4-xml (>=4:4.8.0), libqtcore4 (>= 4:4.8.0), libqtgui4 (>= 4:4.8.0), libqt4-sql-mysql (>= 4:4.8.0)")
 SET (CPACK_DEBIAN_PACKAGE_DEPENDS    "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libacpi0 (>=0.2)")
 SET (CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Herrmann <martin@famherrmann.de>")
 SET (CPACK_DEBIAN_PACKAGE_SECTION    "misc")

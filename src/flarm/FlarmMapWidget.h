@@ -133,6 +133,7 @@ class FlarmMapWidget: public QwtPlot
 		void setOwnPositionLabel (const QString &text, const QColor &color);
 		void addStaticCurve (const QString &name, const QVector<GeoPosition> &points, QPen pen);
 		void addStaticMarker (const QString &text, const GeoPosition &position, const QColor &color);
+		void readKml (const QString &filename);
 
 		// Flarm list
 		void setFlarmList (FlarmList *flarmList);

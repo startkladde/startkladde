@@ -128,6 +128,10 @@ void FlarmWindow::readVectors ()
 
 	settings.endGroup ();
 
+	// FIXME read file name from config
+	// FIXME what if it doesn't exist?
+//	ui.flarmMap->readKml ("../neuruppin.kml");
+
 	ui.flarmMap->replot ();
 }
 
