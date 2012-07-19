@@ -878,25 +878,5 @@ void FlarmMapWidget::readKml (const QString &filename)
 
 	 }
 
-
-	 // print out the element names of all elements that are direct children
-	 // of the outermost element.
-//	 QDomElement documentElement = document.documentElement ();
-//
-//	 QDomNode node = documentElement.firstChild ();
-//	 node=node.firstChild ();
-//	 while (!node.isNull ())
-//	 {
-//		 QDomElement e = node.toElement (); // try to convert the node to an element.
-//		 if (!e.isNull ())
-//		 {
-//			 // the node really is an element.
-//			 std::cout << qPrintable (e.tagName ()) << std::endl;
-//		 }
-//		 else
-//		 {
-//			 std::cout << "not an element" << std::endl;
-//		 }
-//		 node = node.nextSibling ();
-//	 }
+	 replot ();
 }
