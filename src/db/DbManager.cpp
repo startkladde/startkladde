@@ -27,6 +27,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
+#include "src/flarm/FlarmNetRecord.h"
 #include "src/config/Settings.h"
 #include "src/i18n/notr.h"
 
@@ -772,6 +773,7 @@ void DbManager::settingsChanged ()
 #	define INSTANTIATE_TEMPLATES(T) \
 		template bool DbManager::objectUsed  <T> (dbId id        , QWidget *parent); \
 		template void DbManager::deleteObject<T> (dbId id        , QWidget *parent); \
+		template void DbManager::deleteObjects<T>(const QList<dbId>& ids, QWidget *parent); \
 		template dbId DbManager::createObject<T> (T &object      , QWidget *parent); \
 		template int  DbManager::updateObject<T> (const T &object, QWidget *parent); \
 		template void DbManager::refreshObjects<T> (QWidget *parent);
@@ -781,5 +783,6 @@ INSTANTIATE_TEMPLATES (Person      )
 INSTANTIATE_TEMPLATES (Plane       )
 INSTANTIATE_TEMPLATES (Flight      )
 INSTANTIATE_TEMPLATES (LaunchMethod)
+INSTANTIATE_TEMPLATES (FlarmNetRecord)
 
 #	undef INSTANTIATE_TEMPLATES
