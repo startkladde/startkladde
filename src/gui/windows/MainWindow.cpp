@@ -60,6 +60,8 @@
 #include "src/statistics/PlaneLog.h"
 #include "src/flarm/FlarmRecord.h"
 #include "src/flarm/FlarmWindow.h"
+#include "src/flarm/FlarmNetHandler.h"
+#include "src/flarm/FlarmNetOverview.h"
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
@@ -136,6 +138,9 @@ MainWindow::MainWindow (QWidget *parent):
 	connect (flarmList, SIGNAL (landingDetected   (const QString &)), this, SLOT (flarmList_landingDetected   (const QString &)));
 	connect (flarmList, SIGNAL (goAroundDetected  (const QString &)), this, SLOT (flarmList_goAroundDetected  (const QString &)));
 
+	// FlarmNet
+	FlarmNetHandler* handler = FlarmNetHandler::getInstance ();
+	handler->setDatabase (&dbManager);
 
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 	readSettings ();
@@ -1794,11 +1799,14 @@ void MainWindow::on_actionFlarmRadar_triggered ()
 void MainWindow::on_actionFlarmNetOverview_triggered ()
 {
 	qDebug () << "MainWindow::on_actionFlarmNetOverview_triggered";
+        FlarmNetOverview* dialog = new FlarmNetOverview (this, &dbManager);
+	dialog->show ();
 }
 
 void MainWindow::on_actionFlarmNetImport_triggered ()
 {
 	qDebug () << "MainWindow::on_actionFlarmNetImport_triggered";
+        FlarmNetHandler::getInstance()->importFlarmNetDb();
 }
 
 // **************
