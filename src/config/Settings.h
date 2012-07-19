@@ -54,7 +54,9 @@ class Settings: public QObject
 		bool flarmAutostart;
 		bool flarmEditor;
 		bool flarmOverview;
+		// FIXME rename flarmMap, consistency
 		bool flarmRadar;
+		QString flarmMapKmlFileName;
 		// FlarmNet
 		bool flarmNetEnabled;
 		bool flarmNetOverview;

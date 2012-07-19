@@ -220,6 +220,7 @@ void Settings::readSettings ()
 	flarmEditor          =s.value (notr("flarmEdit"),              true   ).toBool ();
 	flarmOverview        =s.value (notr("flarmOverview"),          true   ).toBool ();
 	flarmRadar           =s.value (notr("flarmRadar"),             true   ).toBool ();
+	flarmMapKmlFileName  =s.value (notr("flarmMapKmlFileName"),    ""     ).toString ();
 	// FlarmNet
 	flarmNetEnabled      =s.value (notr("flarmNetEnabled"),        true   ).toBool ();
 	flarmNetOverview     =s.value (notr("flarmNetOverview"),       true   ).toBool ();
@@ -298,11 +299,12 @@ void Settings::writeSettings ()
 	s.setValue (notr ("recordTowpilot"), recordTowpilot);
 	s.setValue (notr ("checkMedicals") , checkMedicals );
 	// Flarm
-	s.setValue (notr ("flarmEnabled"         ), flarmEnabled  );
-	s.setValue (notr ("flarmAutostart"       ), flarmAutostart);
-	s.setValue (notr ("flarmEdit"            ), flarmEditor   );
-	s.setValue (notr ("flarmOverview"        ), flarmOverview );
-	s.setValue (notr ("flarmRadar"           ), flarmRadar    );
+	s.setValue (notr ("flarmEnabled"         ), flarmEnabled       );
+	s.setValue (notr ("flarmAutostart"       ), flarmAutostart     );
+	s.setValue (notr ("flarmEdit"            ), flarmEditor        );
+	s.setValue (notr ("flarmOverview"        ), flarmOverview      );
+	s.setValue (notr ("flarmRadar"           ), flarmRadar         );
+	s.setValue (notr ("flarmMapKmlFileName"  ), flarmMapKmlFileName);
 	// FlarmNet
 	s.setValue (notr ("flarmNetEnabled"      ), flarmNetEnabled);
 	s.setValue (notr ("flarmNetOverview"     ), flarmNetOverview);

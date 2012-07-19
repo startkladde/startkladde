@@ -22,6 +22,7 @@
 #include <QPushButton>
 #include <QDebug>
 #include <QShowEvent>
+#include <QFileDialog>
 
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
@@ -170,11 +171,12 @@ void SettingsWindow::readSettings ()
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
 	ui.checkMedicalsCheckbox ->setChecked (s.checkMedicals);
 	// Flarm
-	ui.flarmBox              ->setChecked (s.flarmEnabled);
-	ui.checkFlarmAutostart   ->setChecked (s.flarmAutostart);
-	ui.checkFlarmEditor      ->setChecked (s.flarmEditor);
-	ui.checkFlarmOverview    ->setChecked (s.flarmOverview);
-	ui.checkFlarmRadar       ->setChecked (s.flarmRadar);
+	ui.flarmBox                ->setChecked (s.flarmEnabled);
+	ui.checkFlarmAutostart     ->setChecked (s.flarmAutostart);
+	ui.checkFlarmEditor        ->setChecked (s.flarmEditor);
+	ui.checkFlarmOverview      ->setChecked (s.flarmOverview);
+	ui.checkFlarmRadar         ->setChecked (s.flarmRadar);
+	ui.flarmMapKmlFileNameInput->setText    (s.flarmMapKmlFileName);
 	// FlarmNet
 	ui.flarmNetBox           ->setChecked (s.flarmNetEnabled);
 	ui.checkFlarmNetOverview ->setChecked (s.flarmNetOverview);
@@ -256,11 +258,12 @@ void SettingsWindow::writeSettings ()
 	s.recordTowpilot=ui.recordTowpilotCheckbox->isChecked ();
 	s.checkMedicals =ui.checkMedicalsCheckbox ->isChecked ();
 	// Flarm
-	s.flarmEnabled	=ui.flarmBox		->isChecked ();
-	s.flarmAutostart=ui.checkFlarmAutostart ->isChecked ();
-	s.flarmEditor	=ui.checkFlarmEditor	->isChecked ();
-	s.flarmOverview	=ui.checkFlarmOverview	->isChecked ();
-	s.flarmRadar	=ui.checkFlarmRadar	->isChecked ();
+	s.flarmEnabled	     =ui.flarmBox		         ->isChecked ();
+	s.flarmAutostart     =ui.checkFlarmAutostart     ->isChecked ();
+	s.flarmEditor	     =ui.checkFlarmEditor	     ->isChecked ();
+	s.flarmOverview	     =ui.checkFlarmOverview	     ->isChecked ();
+	s.flarmRadar	     =ui.checkFlarmRadar	     ->isChecked ();
+	s.flarmMapKmlFileName=ui.flarmMapKmlFileNameInput->text ();
 	// FlarmNet
 	s.flarmNetEnabled	=ui.flarmNetBox			->isChecked ();
 	s.flarmNetOverview	=ui.checkFlarmNetOverview	->isChecked ();
@@ -514,6 +517,22 @@ void SettingsWindow::on_browseWeatherWindowCommandButton_clicked ()
 
 	if (!filename.isEmpty ())
 		ui.weatherWindowCommandInput->setText (filename);
+}
+
+void SettingsWindow::on_browseKmlFileButton_clicked ()
+{
+	// FIXME if already set, use that directory
+	QString fileName=QFileDialog::getOpenFileName (
+		this,
+		tr ("Select KML file"),
+		".",
+		notr ("*.kml"),
+		NULL,
+		0
+		);
+
+	if (!fileName.isEmpty ())
+		ui.flarmMapKmlFileNameInput->setText (fileName);
 }
 
 

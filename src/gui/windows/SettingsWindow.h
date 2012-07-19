@@ -67,6 +67,7 @@ class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 
 		void on_browseWeatherPluginCommandButton_clicked ();
 		void on_browseWeatherWindowCommandButton_clicked ();
+		void on_browseKmlFileButton_clicked ();
 
 	private:
 		bool warned;
