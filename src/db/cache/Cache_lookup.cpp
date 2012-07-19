@@ -12,6 +12,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
+#include "src/flarm/FlarmNetRecord.h"
 #include "src/container/SortedSet_impl.h"
 #include "src/i18n/notr.h"
 
@@ -256,6 +257,15 @@ dbId Cache::getLaunchMethodByType (LaunchMethod::Type type) const
 	return invalidId;
 }
 
+QList<dbId> Cache::getFlarmNetRecordIds () const {
+	synchronizedReturn (dataMutex,  flarmNetRecordIdsByFlarmId.values());
+}
+
+/*
+QList<FlarmNetRecord> Cache::getFlarmNetRecords () const {
+	synchronizedReturn (dataMutex,  flarmNetRecords);
+}
+*/
 
 // ******************
 // ** String lists **
@@ -379,10 +389,12 @@ INSTANTIATE_TEMPLATES (Person      )
 INSTANTIATE_TEMPLATES (Plane       )
 INSTANTIATE_TEMPLATES (Flight      )
 INSTANTIATE_TEMPLATES (LaunchMethod)
+INSTANTIATE_TEMPLATES (FlarmNetRecord)
 
 INSTANTIATE_NON_FLIGHT_TEMPLATES (Person      )
 INSTANTIATE_NON_FLIGHT_TEMPLATES (Plane       )
 INSTANTIATE_NON_FLIGHT_TEMPLATES (LaunchMethod)
+INSTANTIATE_NON_FLIGHT_TEMPLATES (FlarmNetRecord)
 
 #undef INSTANTIATE_TEMPLATES
 #undef INSTANTIATE_NON_FLIGHT_TEMPLATES

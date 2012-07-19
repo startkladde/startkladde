@@ -26,6 +26,7 @@
 class Flight;
 class Person;
 class Plane;
+class FlarmNetRecord;
 
 template<class T> class EntityList;
 
@@ -84,6 +85,7 @@ class Cache: public QObject
 		void refreshPlanes          (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void refreshPeople          (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void refreshLaunchMethods   (OperationMonitorInterface monitor=OperationMonitorInterface::null);
+		void refreshFlarmNetRecords (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void refreshFlightsToday    (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void refreshFlightsOther    (OperationMonitorInterface monitor=OperationMonitorInterface::null);
 		void refreshPreparedFlights (OperationMonitorInterface monitor=OperationMonitorInterface::null);
@@ -128,6 +130,7 @@ class Cache: public QObject
 		QList<dbId> getPersonIdsByFirstName (const QString &firstName);
 		QList<dbId> getPersonIdsByLastName (const QString &lastName);
 		dbId getLaunchMethodByType (LaunchMethod::Type type) const;
+		QList<dbId> getFlarmNetRecordIds () const;
 
 		// *** String lists
 		QStringList getPlaneRegistrations ();
@@ -196,6 +199,7 @@ class Cache: public QObject
 		EntityList<Plane> planes;
 		EntityList<Person> people;
 		EntityList<LaunchMethod> launchMethods;
+		EntityList<FlarmNetRecord> flarmNetRecords;
 
 		// Flight lists - several lists, therefore cannot use
 		// AutomaticEntityList (should have AutomaticFlightList which
@@ -226,6 +230,7 @@ class Cache: public QObject
 		QHash<dbId   , Person      >        peopleById;
 		QHash<dbId   , LaunchMethod> launchMethodsById;
 		QHash<dbId   , Flight      >       flightsById;
+		QHash<dbId   , FlarmNetRecord>     flarmNetRecordsById;
 
 		// Specific hashes
 		// The keys of these hashes are lower case; names are QPair
@@ -247,6 +252,7 @@ class Cache: public QObject
 		QMultiHash<QString, dbId> personIdsByLastName; // key is lower case
 		QMultiHash<QString, dbId> personIdsByFirstName; // key is lower case
 		QMultiHash<QPair<QString, QString>, dbId> personIdsByName; // key is lower case
+		QMultiHash<QString, dbId> flarmNetRecordIdsByFlarmId;
 
 		// Concurrency
 		// Improvement: use rw mutex and separate locks for flights, people...

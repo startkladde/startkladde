@@ -18,6 +18,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
+#include "src/flarm/FlarmNetRecord.h"
 #include "src/text.h"
 
 // All of these methods do not handle the by-id hashes
@@ -100,7 +101,6 @@ template<> void Cache::updateHashesObjectUpdated<Plane> (const Plane &plane, con
 		updateHashesObjectAdded (plane);
 	}
 }
-
 
 // ************
 // ** People **
@@ -266,3 +266,50 @@ template<> void Cache::updateHashesObjectUpdated<Flight> (const Flight &flight, 
 		updateHashesObjectAdded (flight);
 	}
 }
+
+// ********************
+// ** FlarmNetRecord **
+// ********************
+template<> void Cache::clearHashes<FlarmNetRecord> ()
+{
+	synchronized (dataMutex)
+	{
+		flarmNetRecordIdsByFlarmId.clear ();
+	}
+}
+
+template<> void Cache::updateHashesObjectAdded<FlarmNetRecord> (const FlarmNetRecord &record)
+{
+	// All values inserted here should be removed in the corresponding
+	// updateHashesObjectDeleted method, if possible; otherwise, care must be
+	// taken not to insert a value multiple times if an object is deleted and
+	// re-added.
+	synchronized (dataMutex)
+	{
+		dbId id=record.getId ();
+		QString flarmId = record.getFlarmId();
+
+		flarmNetRecordIdsByFlarmId.insert (flarmId, id);
+	}
+}
+
+template<> void Cache::updateHashesObjectDeleted<FlarmNetRecord> (dbId id, const FlarmNetRecord *oldRecord)
+{
+	synchronized (dataMutex)
+	{
+		QString flarmId = oldRecord->getFlarmId();
+
+		if (flarmNetRecordIdsByFlarmId.contains (flarmId))
+                        flarmNetRecordIdsByFlarmId.remove (flarmId, id);
+	}
+}
+
+template<> void Cache::updateHashesObjectUpdated<FlarmNetRecord> (const FlarmNetRecord &record, const FlarmNetRecord *oldRecord)
+{
+	synchronized (dataMutex)
+	{
+		updateHashesObjectDeleted<FlarmNetRecord> (record.getId (), oldRecord);
+		updateHashesObjectAdded (record);
+	}
+}
+
