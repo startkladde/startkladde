@@ -15,7 +15,8 @@
 // to the signals from the object list.
 
 FlarmList::FlarmList (QObject *parent) :
-	AbstractObjectList<FlarmRecord> (parent)
+	AbstractObjectList<FlarmRecord> (parent),
+	nmeaDecoder (NULL)
 {
 }
 
