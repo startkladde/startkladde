@@ -13,7 +13,7 @@ Migration_20120620223948_add_flarmnet::~Migration_20120620223948_add_flarmnet ()
 
 void Migration_20120620223948_add_flarmnet::up ()
 {
-	createTable  ("flarmnet");
+	createTable  ("flarmnet", true); // Creates the id column
 	addColumn ("flarmnet", "flarm_id",     dataTypeString16 (), "NOT NULL", true);
 	addColumn ("flarmnet", "registration", dataTypeString16 (), "NOT NULL", true);
 	addColumn ("flarmnet", "callsign",     dataTypeString16 (), "", true);

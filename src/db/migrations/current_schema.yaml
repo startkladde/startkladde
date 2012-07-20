@@ -273,6 +273,35 @@ tables:
     columns: "person_id"
   - name: "username_index"
     columns: "username"
+- name: "flarmnet"
+  columns:
+  - name: "id"
+    type: "int(11)"
+    nullok: "NO"
+    primary_key: true
+    extra: "auto_increment"
+  - name: "flarm_id"
+    type: "varchar(16)"
+    nullok: "NO"
+  - name: "registration"
+    type: "varchar(255)"
+    nullok: "NO"
+  - name: "callsign"
+    type: "varchar(16)"
+    nullok: "YES"
+  - name: "owner"
+    type: "varchar(255)"
+    nullok: "YES"
+  - name: "type"
+    type: "varchar(255)"
+    nullok: "YES"
+  - name: "frequency"
+    type: "varchar(16)"
+    nullok: "YES"
+  indexes:
+  - name: "flarm_id_index"
+    columns: "flarm_id"
+
 versions:
 - 20100214140000
 - 20100215000000
@@ -292,3 +321,4 @@ versions:
 - 20100427115235
 - 20100726124616
 - 20120612130803
+- 20120620223948
