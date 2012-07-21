@@ -19,20 +19,71 @@ KmlReader::~KmlReader ()
 {
 }
 
-void KmlReader::readMarker (const QString &name, const QDomElement &lookAtElement)
+// aabbggrr
+QColor KmlReader::parseColor (const QString color)
+{
+	if (color.length ()!=8)
+		return QColor ();
+
+	int a=color.mid (0, 2).toInt (NULL, 16);
+	int b=color.mid (2, 2).toInt (NULL, 16);
+	int g=color.mid (4, 2).toInt (NULL, 16);
+	int r=color.mid (6, 2).toInt (NULL, 16);
+
+	return QColor (r, g, b, a);
+}
+
+void KmlReader::readStyle (const QDomNode &styleNode)
+{
+	QDomElement styleElement=styleNode.toElement ();
+	if (styleElement.isNull ())
+		return;
+
+	QString styleId=styleElement.attribute ("id");
+
+	KmlReader::Style style;
+	style.labelColor=parseColor (styleElement.firstChildElement ("LabelStyle").firstChildElement ("color").text ());
+	style.lineColor =parseColor (styleElement.firstChildElement ("LineStyle" ).firstChildElement ("color").text ());
+	style.lineWidth =            styleElement.firstChildElement ("LineStyle" ).firstChildElement ("width").text ().toDouble ();
+
+	styles.insert (styleId, style);
+}
+
+void KmlReader::readStyleMap (const QDomNode &styleMapNode)
+{
+	QDomElement styleMapElement=styleMapNode.toElement ();
+	if (styleMapElement.isNull ())
+		return;
+
+	QString styleMapId=styleMapElement.attribute ("id");
+
+	KmlReader::StyleMap styleMap;
+	QDomNodeList pairElements=styleMapElement.elementsByTagName ("Pair");
+	for (int i=0, n=pairElements.size (); i<n; ++i)
+	{
+		QDomElement pairElement=pairElements.at (i).toElement ();
+		QString key     =pairElement.firstChildElement ("key"     ).text ();
+		QString styleUrl=pairElement.firstChildElement ("styleUrl").text ();
+		styleMap.styles.insert (key, styleUrl);
+	}
+
+	styleMaps.insert (styleMapId, styleMap);
+}
+
+void KmlReader::readMarker (const QString &name, const QString &styleUrl, const QDomElement &lookAtElement)
 {
 	 double longitude=lookAtElement.firstChildElement ("longitude").text ().toDouble ();
 	 double latitude =lookAtElement.firstChildElement ("latitude" ).text ().toDouble ();
 
 	 KmlReader::Marker marker;
 	 marker.position=GeoPosition::fromDegrees (latitude, longitude);
-	 marker.color=Qt::red; // FIXME
 	 marker.name=name;
+	 marker.styleUrl=styleUrl;
 
 	 markers.append (marker);
 }
 
-void KmlReader::readPath (const QString &name, const QDomElement &lineStringElement)
+void KmlReader::readPath (const QString &name, const QString &styleUrl, const QDomElement &lineStringElement)
 {
 	 QList<GeoPosition> points;
 	 QDomElement coordinatesElement=lineStringElement.firstChildElement ("coordinates");
@@ -46,15 +97,14 @@ void KmlReader::readPath (const QString &name, const QDomElement &lineStringElem
 	 }
 
 	 KmlReader::Path path;
-	 path.color=Qt::blue; // FIXME
-	 path.lineWidth=1; // FIXME
 	 path.name=name;
+	 path.styleUrl=styleUrl;
 	 path.positions=points;
 
 	 paths.append (path);
 }
 
-void KmlReader::readPolygon (const QString &name, const QDomElement &polygonElement)
+void KmlReader::readPolygon (const QString &name, const QString &styleUrl, const QDomElement &polygonElement)
 {
 	QList<GeoPosition> points;
 	QDomElement coordinatesElemnt=polygonElement
@@ -71,31 +121,31 @@ void KmlReader::readPolygon (const QString &name, const QDomElement &polygonElem
 	}
 
 	KmlReader::Polygon polygon;
-	polygon.color=Qt::green; // FIXME
-	polygon.lineWidth=2; // FIXME
 	polygon.name=name;
+	polygon.styleUrl=styleUrl;
 	polygon.positions=points;
 
 	polygons.append (polygon);
 }
 
-void KmlReader::readPlacemark (const QDomNode &node)
+void KmlReader::readPlacemark (const QDomNode &placemarkNode)
 {
+	// FIXME is it possible that the node is not an element?
 	 // FIXME only if it exists, or can we use it as a null element if not?
-	 QString placemarkName=node.firstChildElement ("name").text ();
-	 std::cout << "Got a placemark: " << placemarkName << std::endl;
+	 QString placemarkName=placemarkNode.firstChildElement ("name").text ();
+	 QString styleUrl=placemarkNode.firstChildElement ("styleUrl").text ();
 
-	 QDomElement lookAtElement=node.firstChildElement ("LookAt");
+	 QDomElement lookAtElement=placemarkNode.firstChildElement ("LookAt");
 	 if (!lookAtElement.isNull ())
-		 readMarker (placemarkName, lookAtElement);
+		 readMarker (placemarkName, styleUrl, lookAtElement);
 
-	 QDomElement lineStringElement=node.firstChildElement ("LineString");
+	 QDomElement lineStringElement=placemarkNode.firstChildElement ("LineString");
 	 if (!lineStringElement.isNull ())
-		 readPath (placemarkName, lineStringElement);
+		 readPath (placemarkName, styleUrl, lineStringElement);
 
-	 QDomElement polygonElement=node.firstChildElement ("Polygon");
+	 QDomElement polygonElement=placemarkNode.firstChildElement ("Polygon");
 	 if (!polygonElement.isNull ())
-		 readPolygon (placemarkName, polygonElement);
+		 readPolygon (placemarkName, styleUrl, polygonElement);
 }
 
 /**
@@ -120,10 +170,39 @@ void KmlReader::read (const QString &filename)
 
 	 file.close();
 
-	 QDomNodeList placemarkNodes=document.elementsByTagName ("Placemark");
-
-	 // FIXME clean up
 	 // FIXME honor color, line thickness, other attributes?
+
+	 QDomNodeList placemarkNodes=document.elementsByTagName ("Placemark");
 	 for (int i=0, n=placemarkNodes.size (); i<n; ++i)
 		 readPlacemark (placemarkNodes.at (i));
+
+	 QDomNodeList styleNodes=document.elementsByTagName ("Style");
+	 for (int i=0, n=styleNodes.size (); i<n; ++i)
+		 readStyle (styleNodes.at (i));
+
+	 QDomNodeList styleMapNodes=document.elementsByTagName ("StyleMap");
+	 for (int i=0, n=styleMapNodes.size (); i<n; ++i)
+		 readStyleMap (styleMapNodes.at (i));
+
+
+}
+
+KmlReader::Style KmlReader::findStyle (const QString &styleUrl)
+{
+	if (!styleUrl.startsWith ("#"))
+		return KmlReader::Style ();
+
+	QString styleId=styleUrl.mid (1);
+
+	if (styles.contains (styleId))
+		return styles.value (styleId);
+
+	if (styleMaps.contains (styleId))
+	{
+		KmlReader::StyleMap styleMap=styleMaps.value (styleId);
+		if (styleMap.styles.contains ("normal"))
+			return findStyle (styleMap.styles.value ("normal"));
+	}
+
+	return KmlReader::Style ();
 }

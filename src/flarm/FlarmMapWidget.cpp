@@ -811,17 +811,23 @@ void FlarmMapWidget::readKml (const QString &filename)
 
 	// FIXME error indication: file not found
 
-	 // FIXME clean up
-	 // FIXME honor color, line thickness, other attributes?
-
 	foreach (const KmlReader::Marker &marker, kmlReader.markers)
-		addStaticMarker (marker.name, marker.position, marker.color);
+	{
+		KmlReader::Style style=kmlReader.findStyle (marker.styleUrl);
+		addStaticMarker (marker.name, marker.position, style.labelColor);
+	}
 
 	foreach (const KmlReader::Path &path, kmlReader.paths)
-		addStaticCurve (path.name, path.positions.toVector (), QPen (path.color));
+	{
+		KmlReader::Style style=kmlReader.findStyle (path.styleUrl);
+		addStaticCurve (path.name, path.positions.toVector (), style.linePen ());
+	}
 
 	foreach (const KmlReader::Polygon &polygon, kmlReader.polygons)
-		addStaticCurve (polygon.name, polygon.positions.toVector (), QPen (polygon.color));
+	{
+		KmlReader::Style style=kmlReader.findStyle (polygon.styleUrl);
+		addStaticCurve (polygon.name, polygon.positions.toVector (), style.linePen ());
+	}
 
 	replot ();
 }
