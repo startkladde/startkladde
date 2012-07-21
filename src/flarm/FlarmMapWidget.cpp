@@ -6,10 +6,6 @@
 #include <QModelIndex>
 #include <QResizeEvent>
 #include <QKeyEvent>
-#include <QDomDocument>
-#include <QFile>
-#include <QIODevice>
-#include <QStringList>
 
 #include <qwt_plot_grid.h>
 #include <qwt_plot_curve.h>
@@ -29,6 +25,7 @@
 #include "src/nmea/GpsTracker.h"
 #include "src/util/qPointF.h"
 #include "src/util/qString.h"
+#include "src/flarm/KmlReader.h"
 
 // ******************
 // ** Construction **
@@ -809,74 +806,22 @@ void FlarmMapWidget::flarmListDestroyed ()
 
 void FlarmMapWidget::readKml (const QString &filename)
 {
-	std::cout << "Reading KML file " << filename << std::endl;
+	KmlReader kmlReader;
+	kmlReader.read (filename);
 
-	QDomDocument document ("kmlDocument");
-
-	QFile file (filename);
-	// FIXME error indication
-	if (!file.open (QIODevice::ReadOnly))
-		return;
-
-	 if (!document.setContent (&file))
-	     return;
-	 file.close();
-
-	 QDomNodeList placemarkNodes=document.elementsByTagName ("Placemark");
+	// FIXME error indication: file not found
 
 	 // FIXME clean up
 	 // FIXME honor color, line thickness, other attributes?
-	 for (int i=0, n=placemarkNodes.size (); i<n; ++i)
-	 {
-		 QDomNode node=placemarkNodes.at (i);
-		 // FIXME only if it exists, or can we use it as a null element if not?
-		 QString placemarkName=node.firstChildElement ("name").text ();
-		 std::cout << "Got a placemark: " << placemarkName << std::endl;
 
-		 QDomElement lookAtElement=node.firstChildElement ("LookAt");
-		 if (!lookAtElement.isNull ())
-		 {
-			 double longitude=lookAtElement.firstChildElement ("longitude").text ().toDouble ();
-			 double latitude =lookAtElement.firstChildElement ("latitude" ).text ().toDouble ();
-			 addStaticMarker (placemarkName, GeoPosition::fromDegrees (latitude, longitude), Qt::red);
-		 }
+	foreach (const KmlReader::Marker &marker, kmlReader.markers)
+		addStaticMarker (marker.name, marker.position, marker.color);
 
-		 QDomElement lineStringElement=node.firstChildElement ("LineString");
-		 if (!lineStringElement.isNull ())
-		 {
-			 QVector<GeoPosition> points;
-			 QDomElement coordinatesElemnt=lineStringElement.firstChildElement ("coordinates");
-			 foreach (const QString &pointCoordinates, coordinatesElemnt.text ().trimmed ().split (" "))
-			 {
-				 QStringList parts=pointCoordinates.split (",");
-				 // FIXME only if exists
-				 double longitude=parts[0].toDouble ();
-				 double latitude =parts[1].toDouble ();
-				 points.append (GeoPosition::fromDegrees (latitude, longitude));
-			 }
-			 addStaticCurve (placemarkName, points, QPen ());
-		 }
+	foreach (const KmlReader::Path &path, kmlReader.paths)
+		addStaticCurve (path.name, path.positions.toVector (), QPen (path.color));
 
-		 QDomElement polygonElement=node.firstChildElement ("Polygon");
-		 if (!polygonElement.isNull ())
-		 {
-			 QVector<GeoPosition> points;
-			 QDomElement coordinatesElemnt=polygonElement
-					 .firstChildElement ("outerBoundaryIs")
-					 .firstChildElement ("LinearRing")
-					 .firstChildElement ("coordinates");
-			 foreach (const QString &pointCoordinates, coordinatesElemnt.text ().trimmed ().split (" "))
-			 {
-				 QStringList parts=pointCoordinates.split (",");
-				 // FIXME only if exists
-				 double longitude=parts[0].toDouble ();
-				 double latitude =parts[1].toDouble ();
-				 points.append (GeoPosition::fromDegrees (latitude, longitude));
-			 }
-			 addStaticCurve (placemarkName, points, QPen ());
-		 }
+	foreach (const KmlReader::Polygon &polygon, kmlReader.polygons)
+		addStaticCurve (polygon.name, polygon.positions.toVector (), QPen (polygon.color));
 
-	 }
-
-	 replot ();
+	replot ();
 }
