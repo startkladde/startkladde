@@ -78,27 +78,27 @@ QString FlarmNetRecord::getFrequency () const {
 }
 
 void FlarmNetRecord::setFlarmId (const QString& _flarmId) {
-	flarmId = _flarmId;
+	flarmId = _flarmId.trimmed();
 }
 
 void FlarmNetRecord::setRegistration (const QString& _registration) {
-	registration = _registration;
+	registration = _registration.trimmed();
 }
 
 void FlarmNetRecord::setOwner (const QString& _owner) {
-	owner = _owner;
+	owner = _owner.trimmed();
 }
 
 void FlarmNetRecord::setType  (const QString& _type) {
-	type = _type;
+	type = _type.trimmed();
 }
 
 void FlarmNetRecord::setCallsign (const QString& _callsign) {
-	callsign = _callsign;
+	callsign = _callsign.trimmed();
 }
 
 void FlarmNetRecord::setFrequency (const QString& _frequency) {
-	frequency = _frequency;
+	frequency = _frequency.trimmed();
 }
 
 // *******************
@@ -120,12 +120,12 @@ FlarmNetRecord FlarmNetRecord::createFromResult (const Result &result)
 {
 	FlarmNetRecord p (result.value (0).toLongLong ());
 
-	p.flarmId       =result.value (1).toString ();
-	p.registration  =result.value (2).toString ();
-	p.callsign      =result.value (3).toString ();
-	p.owner         =result.value (4).toString ();
-	p.type          =result.value (5).toString ();
-	p.frequency     =result.value (6).toString ();
+	p.setFlarmId      (result.value (1).toString ());
+	p.setRegistration (result.value (2).toString ());
+	p.setCallsign     (result.value (3).toString ());
+	p.setOwner        (result.value (4).toString ());
+	p.setType         (result.value (5).toString ());
+	p.setFrequency    (result.value (6).toString ());
 	// qDebug () << "FlarmNetRecord::createFromResult: " << p.toString() << endl;
 
 	return p;
