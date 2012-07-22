@@ -1,7 +1,9 @@
-#include <src/flarm/FlightResolver.h>
+#include <QtCore/QDebug>
 
+#include <src/flarm/FlightResolver.h>
 #include "src/db/cache/Cache.h"
 #include "src/model/Flight.h"
+#include "src/flarm/FlarmNetRecord.h"
 #include "src/i18n/notr.h"
 
 FlightResolver::FlightResolver (Cache &cache):
@@ -97,34 +99,36 @@ FlightResolver::Result FlightResolver::resolveFlightByPlaneFlarmId (const QList<
  */
 FlightResolver::Result FlightResolver::resolveFlightByFlarmNetDatabase (const QList<Flight> &flights, const QString &flarmId)
 {
-	// TODO implement
-	Q_UNUSED (flights); Q_UNUSED (flarmId); return Result::invalid ();
+	// Q_UNUSED(flights);
+	// Try to look up the plane via FlarmNet: flarmId => registration => id
+	dbId flarmNetRecordId = cache.getFlarmNetRecordIdByFlarmId (flarmId);
+	FlarmNetRecord* flarmNetRecord = new FlarmNetRecord (cache.getObject<FlarmNetRecord> (flarmNetRecordId));
+	QString registration = flarmNetRecord->getRegistration ();
+	qDebug () << "registration: " << registration << endl; 
+	delete flarmNetRecord;
+	if (!registration.isEmpty ())
+	{
+		// We found the registration in the FlarmNet database. Try to find the plane with that registration.
+		dbId planeId=cache.getPlaneIdByRegistration (registration);
+		if (idValid (planeId))
+		{
+			// We found the plane in the database. See if any of the flights is using this plane.
+			foreach (const Flight &flight, flights)
+				if (flight.getPlaneId ()==planeId)
+					return Result (flight.getId (), planeId, registration);
 
-//	// Try to look up the plane via FlarmNet: flarmId => registration => id
-//	QString registration /* = [function that find the registration in FlarmNet database] (flarmId) */;
-//	if (!registration.isEmpty ())
-//	{
-//		// We found the registration in the FlarmNet database. Try to find the plane with that registration.
-//		dbId planeId=cache.getPlaneIdByRegistration (registration);
-//		if (idValid (planeId))
-//		{
-//			// We found the plane in the database. See if any of the flights is using this plane.
-//			foreach (const Flight &flight, flights)
-//				if (flight.getPlaneId ()==planeId)
-//					return Result (flight.getId (), planeId, registration);
-//
-//			// We identified the plane, but there is no flight using that plane.
-//			return Result (invalidId, planeId, registration);
-//		}
-//		else
-//		{
-//			return Result (invalidId, invalidId, registration);
-//		}
-//	}
-//	else
-//	{
-//		return Result::invalid ();
-//	}
+			// We identified the plane, but there is no flight using that plane.
+			return Result (invalidId, planeId, registration);
+		}
+		else
+		{
+			return Result (invalidId, invalidId, registration);
+		}
+	}
+	else
+	{
+		return Result::invalid ();
+	}
 }
 
 /**
