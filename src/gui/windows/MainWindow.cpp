@@ -134,6 +134,7 @@ MainWindow::MainWindow (QWidget *parent):
 	// Flarm list
 	flarmList=new FlarmList (this);
 	flarmList->setNmeaDecoder (nmeaDecoder);
+	flarmList->setDatabase (&dbManager);
 	connect (flarmList, SIGNAL (departureDetected (const QString &)), this, SLOT (flarmList_departureDetected (const QString &)));
 	connect (flarmList, SIGNAL (landingDetected   (const QString &)), this, SLOT (flarmList_landingDetected   (const QString &)));
 	connect (flarmList, SIGNAL (goAroundDetected  (const QString &)), this, SLOT (flarmList_goAroundDetected  (const QString &)));
