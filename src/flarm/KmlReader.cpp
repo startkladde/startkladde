@@ -19,20 +19,6 @@ KmlReader::~KmlReader ()
 {
 }
 
-// aabbggrr
-QColor KmlReader::parseColor (const QString color)
-{
-	if (color.length ()!=8)
-		return QColor ();
-
-	int a=color.mid (0, 2).toInt (NULL, 16);
-	int b=color.mid (2, 2).toInt (NULL, 16);
-	int g=color.mid (4, 2).toInt (NULL, 16);
-	int r=color.mid (6, 2).toInt (NULL, 16);
-
-	return QColor (r, g, b, a);
-}
-
 void KmlReader::readStyle (const QDomNode &styleNode)
 {
 	QDomElement styleElement=styleNode.toElement ();
@@ -41,10 +27,10 @@ void KmlReader::readStyle (const QDomNode &styleNode)
 
 	QString styleId=styleElement.attribute ("id");
 
-	KmlReader::Style style;
-	style.labelColor=parseColor (styleElement.firstChildElement ("LabelStyle").firstChildElement ("color").text ());
-	style.lineColor =parseColor (styleElement.firstChildElement ("LineStyle" ).firstChildElement ("color").text ());
-	style.lineWidth =            styleElement.firstChildElement ("LineStyle" ).firstChildElement ("width").text ().toDouble ();
+	Kml::Style style;
+	style.labelColor=Kml::parseColor (styleElement.firstChildElement ("LabelStyle").firstChildElement ("color").text ());
+	style.lineColor =Kml::parseColor (styleElement.firstChildElement ("LineStyle" ).firstChildElement ("color").text ());
+	style.lineWidth =                 styleElement.firstChildElement ("LineStyle" ).firstChildElement ("width").text ().toDouble ();
 
 	styles.insert (styleId, style);
 }
@@ -57,7 +43,7 @@ void KmlReader::readStyleMap (const QDomNode &styleMapNode)
 
 	QString styleMapId=styleMapElement.attribute ("id");
 
-	KmlReader::StyleMap styleMap;
+	Kml::StyleMap styleMap;
 	QDomNodeList pairElements=styleMapElement.elementsByTagName ("Pair");
 	for (int i=0, n=pairElements.size (); i<n; ++i)
 	{
@@ -75,7 +61,7 @@ void KmlReader::readMarker (const QString &name, const QString &styleUrl, const 
 	 double longitude=lookAtElement.firstChildElement ("longitude").text ().toDouble ();
 	 double latitude =lookAtElement.firstChildElement ("latitude" ).text ().toDouble ();
 
-	 KmlReader::Marker marker;
+	 Kml::Marker marker;
 	 marker.position=GeoPosition::fromDegrees (latitude, longitude);
 	 marker.name=name;
 	 marker.styleUrl=styleUrl;
@@ -96,7 +82,7 @@ void KmlReader::readPath (const QString &name, const QString &styleUrl, const QD
 		 points.append (GeoPosition::fromDegrees (latitude, longitude));
 	 }
 
-	 KmlReader::Path path;
+	 Kml::Path path;
 	 path.name=name;
 	 path.styleUrl=styleUrl;
 	 path.positions=points;
@@ -120,7 +106,7 @@ void KmlReader::readPolygon (const QString &name, const QString &styleUrl, const
 		points.append (GeoPosition::fromDegrees (latitude, longitude));
 	}
 
-	KmlReader::Polygon polygon;
+	Kml::Polygon polygon;
 	polygon.name=name;
 	polygon.styleUrl=styleUrl;
 	polygon.positions=points;
@@ -187,10 +173,10 @@ void KmlReader::read (const QString &filename)
 
 }
 
-KmlReader::Style KmlReader::findStyle (const QString &styleUrl)
+Kml::Style KmlReader::findStyle (const QString &styleUrl)
 {
 	if (!styleUrl.startsWith ("#"))
-		return KmlReader::Style ();
+		return Kml::Style ();
 
 	QString styleId=styleUrl.mid (1);
 
@@ -199,10 +185,10 @@ KmlReader::Style KmlReader::findStyle (const QString &styleUrl)
 
 	if (styleMaps.contains (styleId))
 	{
-		KmlReader::StyleMap styleMap=styleMaps.value (styleId);
+		Kml::StyleMap styleMap=styleMaps.value (styleId);
 		if (styleMap.styles.contains ("normal"))
 			return findStyle (styleMap.styles.value ("normal"));
 	}
 
-	return KmlReader::Style ();
+	return Kml::Style ();
 }

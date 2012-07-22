@@ -26,6 +26,7 @@
 #include "src/util/qPointF.h"
 #include "src/util/qString.h"
 #include "src/flarm/KmlReader.h"
+#include "src/flarm/Kml.h"
 
 // ******************
 // ** Construction **
@@ -811,21 +812,21 @@ void FlarmMapWidget::readKml (const QString &filename)
 
 	// FIXME error indication: file not found
 
-	foreach (const KmlReader::Marker &marker, kmlReader.markers)
+	foreach (const Kml::Marker &marker, kmlReader.markers)
 	{
-		KmlReader::Style style=kmlReader.findStyle (marker.styleUrl);
+		Kml::Style style=kmlReader.findStyle (marker.styleUrl);
 		addStaticMarker (marker.name, marker.position, style.labelColor);
 	}
 
-	foreach (const KmlReader::Path &path, kmlReader.paths)
+	foreach (const Kml::Path &path, kmlReader.paths)
 	{
-		KmlReader::Style style=kmlReader.findStyle (path.styleUrl);
+		Kml::Style style=kmlReader.findStyle (path.styleUrl);
 		addStaticCurve (path.name, path.positions.toVector (), style.linePen ());
 	}
 
-	foreach (const KmlReader::Polygon &polygon, kmlReader.polygons)
+	foreach (const Kml::Polygon &polygon, kmlReader.polygons)
 	{
-		KmlReader::Style style=kmlReader.findStyle (polygon.styleUrl);
+		Kml::Style style=kmlReader.findStyle (polygon.styleUrl);
 		addStaticCurve (polygon.name, polygon.positions.toVector (), style.linePen ());
 	}
 

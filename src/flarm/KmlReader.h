@@ -1,93 +1,46 @@
 #ifndef KMLREADER_H_
 #define KMLREADER_H_
 
-#include <cmath>
-
 #include <QString>
 #include <QColor>
 #include <QMap>
 #include <QPen>
 
+#include "src/flarm/Kml.h"
 #include "src/numeric/GeoPosition.h"
 
 class QDomNode;
 class QDomElement;
 
-
-
 /**
  * A simple and special purpose KML file reader
+ *
+ * To use, create an instance and call read() with the name of a file to read.
+ * You can then get the read data from the properties markers, paths and
+ * polygons. You can also find a style with a given URL using findStyle, or you
+ * can access styles and styleMaps directly.
  *
  * This uses the Qt Xml module.
  */
 class KmlReader
 {
 	public:
-		class Marker
-		{
-			public:
-				GeoPosition position;
-				QString name;
-				QString styleUrl;
-		};
-
-		class Path
-		{
-			public:
-				QString name;
-				QList<GeoPosition> positions;
-				QString styleUrl;
-		};
-
-		class Polygon
-		{
-			public:
-				QString name;
-				QList<GeoPosition> positions;
-				QString styleUrl;
-		};
-
-		class Style
-		{
-			public:
-				QColor labelColor;
-				QColor lineColor;
-				double lineWidth;
-
-				Style (): lineWidth (1) {}
-
-				QPen linePen ()
-				{
-					QPen pen (lineColor);
-					pen.setWidth (round (lineWidth));
-					return pen;
-				}
-		};
-
-		class StyleMap
-		{
-			public:
-				QMap<QString, QString> styles;
-		};
-
 		KmlReader ();
 		virtual ~KmlReader ();
 
 		void read (const QString &filename);
 
-		KmlReader::Style findStyle (const QString &styleUrl);
+		Kml::Style findStyle (const QString &styleUrl);
 
-		QList<KmlReader::Marker> markers;
-		QList<KmlReader::Path> paths;
-		QList<KmlReader::Polygon> polygons;
+		QList<Kml::Marker> markers;
+		QList<Kml::Path> paths;
+		QList<Kml::Polygon> polygons;
 
-		QMap<QString, KmlReader::Style> styles;
-		QMap<QString, KmlReader::StyleMap> styleMaps;
-
-		QColor parseColor (const QString color);
+		QMap<QString, Kml::Style> styles;
+		QMap<QString, Kml::StyleMap> styleMaps;
 
 	private:
-		void readStyle (const QDomNode &styleNode);
+		void readStyle    (const QDomNode &styleNode);
 		void readStyleMap (const QDomNode &styleMapNode);
 
 		void readPlacemark (const QDomNode &placemarkNode);
