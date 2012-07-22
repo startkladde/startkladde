@@ -3,6 +3,7 @@
 
 #include "src/model/objectList/AbstractObjectList.h"
 #include "src/flarm/FlarmRecord.h"
+#include "src/db/DbManager.h"
 
 class FlarmRecord;
 class QPersistentModelIndex;
@@ -22,6 +23,7 @@ class FlarmList: public AbstractObjectList<FlarmRecord>
 		virtual QList<FlarmRecord> getList () const;
 
 		void setNmeaDecoder (NmeaDecoder *nmeaDecoder);
+		void setDatabase (DbManager *dbManager);
 
 	signals:
 		void departureDetected (const QString &flarmId);
@@ -36,6 +38,7 @@ class FlarmList: public AbstractObjectList<FlarmRecord>
 		QMap<QString, QPersistentModelIndex> byFlarmId;
 
 		NmeaDecoder *nmeaDecoder;
+		DbManager *dbManager;
 
 	private slots:
 		// Controller slots (the signals are in FlarmRecord)
