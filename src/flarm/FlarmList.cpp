@@ -7,6 +7,7 @@
 #include "src/nmea/PflaaSentence.h"
 #include "src/util/qString.h"
 #include "src/nmea/NmeaDecoder.h"
+#include "src/flarm/FlarmNetRecord.h"
 
 // TODO: we have to take care not to let the list and the map get inconsistent.
 // We might want to encapsulate that, either in a base class or by placing the
@@ -44,6 +45,10 @@ void FlarmList::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
 	}
 }
 
+void FlarmList::setDatabase (DbManager *dbManager) {
+	this->dbManager = dbManager;
+}
+
 // *********************
 // ** Data processing **
 // *********************
@@ -74,6 +79,29 @@ void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 
 		record->processPflaaSentence (sentence);
 
+		// try get info from flarmnet database
+		dbId flarmNetRecordId = dbManager->getCache ().getFlarmNetRecordIdByFlarmId (sentence.flarmId);  
+		if (idValid (flarmNetRecordId)) {
+                	FlarmNetRecord* flarmNetRecord = new FlarmNetRecord (dbManager->getCache().getObject<FlarmNetRecord> (flarmNetRecordId));
+                	QString registration = flarmNetRecord->getRegistration ();
+                	//qDebug () << "registration: " << registration << endl;    
+                	record->setRegistration (flarmNetRecord->getRegistration());
+                	record->setFrequency (flarmNetRecord->getFrequency());
+                	delete flarmNetRecord;
+
+		}
+
+		// Try to get the registration from own database, FlarmNet may be unreliable
+		Plane *plane;
+		dbId planeId = dbManager->getCache ().getPlaneIdByFlarmId (sentence.flarmId);
+		if (idValid (planeId))
+		{
+			plane = dbManager->getCache ().getNewObject<Plane> (planeId);
+			record->setRegistration (plane->registration);
+			record->setCategory (plane->category);
+		}
+
+                                                                                                        
 		// FIXME
 		//		// try get info from flarmnet database
 		//		/*
