@@ -21,9 +21,9 @@ FlarmNetOverview::FlarmNetOverview (QWidget *parent, DbManager* db) :
 	//TODO: this is ugly code. This should be in the database
 	//const AbstractObjectList<FlarmNetRecord *> *objectList = new MutableObjectList<FlarmNetRecord*>();
 	MutableObjectList<FlarmNetRecord *> *objectList = new MutableObjectList<FlarmNetRecord*>();
-	foreach (dbId id, records) {
+	foreach (dbId flarmNetRecordId, records) {
 		// we use the implicit copy constructor !?
-		FlarmNetRecord* record = new FlarmNetRecord (dbManager->getCache ().getObject<FlarmNetRecord> (id));
+		FlarmNetRecord* record = new FlarmNetRecord (dbManager->getCache ().getObject<FlarmNetRecord> (flarmNetRecordId));
 		objectList->append (record);
 	}
 	
