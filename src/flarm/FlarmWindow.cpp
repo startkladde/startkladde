@@ -6,6 +6,10 @@
 #include <QSortFilterProxyModel>
 #include <QPen>
 
+#include "qwt_compass.h"
+#include "qwt_dial_needle.h"
+#include "qwt_compass_rose.h"
+
 #include "src/flarm/FlarmList.h"
 #include "src/flarm/FlarmRecordModel.h"
 #include "src/model/objectList/ObjectListModel.h"
@@ -21,6 +25,13 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	ui.flarmTable->resizeRowsToContents ();
 	ui.flarmTable->setAutoResizeRows (true);
 	ui.flarmTable->setAutoResizeColumns (false);
+
+	// compass
+	ui.compass->setNeedle (new QwtCompassMagnetNeedle (QwtCompassMagnetNeedle::TriangleStyle, Qt::blue, Qt::red));
+	// no use to assign a compass rose, the widget is too small
+	// 4 arrows, no levels
+	//ui.compass->setRose (new QwtSimpleCompassRose (4,-1));
+      
 
 	// FIXME what if it doesn't exist?
 	ui.flarmMap->readKml (Settings::instance ().flarmMapKmlFileName);
@@ -64,6 +75,12 @@ void FlarmWindow::setFlarmList (FlarmList *flarmList)
 void FlarmWindow::on_mapOrientationInput_valueChanged (int value)
 {
 	ui.flarmMap->setOrientation (Angle::fromDegrees (value));
+	ui.compass->setValue (value);
+}
+
+void FlarmWindow::on_compass_sliderMoved (double value)
+{
+	ui.mapOrientationInput->setValue (value);
 }
 
 void FlarmWindow::on_northButton_clicked ()
