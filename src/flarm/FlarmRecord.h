@@ -58,7 +58,7 @@ class FlarmRecord: public QObject
 
 		void setRegistration (const QString &registration);
 		void setCategory (Plane::Category category);
-
+		void setFrequency (const QString &frequency);
 
 		// Misc
 		bool isPlausible () const;

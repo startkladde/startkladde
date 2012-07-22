@@ -56,6 +56,10 @@ void FlarmRecord::setCategory (Plane::Category category)
 	this->category=category;
 }
 
+void FlarmRecord::setFrequency (const QString &frequency)
+{
+	this->frequency=frequency;
+}
 
 
 // **********
