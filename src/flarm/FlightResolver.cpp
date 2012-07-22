@@ -99,7 +99,6 @@ FlightResolver::Result FlightResolver::resolveFlightByPlaneFlarmId (const QList<
  */
 FlightResolver::Result FlightResolver::resolveFlightByFlarmNetDatabase (const QList<Flight> &flights, const QString &flarmId)
 {
-	// Q_UNUSED(flights);
 	// Try to look up the plane via FlarmNet: flarmId => registration => id
 	dbId flarmNetRecordId = cache.getFlarmNetRecordIdByFlarmId (flarmId);
 	FlarmNetRecord* flarmNetRecord = new FlarmNetRecord (cache.getObject<FlarmNetRecord> (flarmNetRecordId));
