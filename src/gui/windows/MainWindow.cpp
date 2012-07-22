@@ -2315,6 +2315,7 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 	{
 		// We found the (prepared) flight. Depart it.
 		nonInteractiveDepartFlight (resolverResult.flightId);
+		//TODO: show notification
 	}
 	else
 	{
@@ -2325,6 +2326,7 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 		flight.setLaunchMethodId (preselectedLaunchMethod);
 		flight.departNow (Settings::instance ().location);
 		dbManager.createObject (flight, this);
+		//TODO: show notification, open flight editor
 	}
 }
 
