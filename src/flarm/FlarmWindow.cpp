@@ -21,12 +21,14 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 
 	// FIXME load default orientation
 
+	// Setup the table
 	ui.flarmTable->resizeColumnsToContents ();
 	ui.flarmTable->resizeRowsToContents ();
 	ui.flarmTable->setAutoResizeRows (true);
 	ui.flarmTable->setAutoResizeColumns (false);
 
-	// compass
+	// Setup the compass
+	// The needle will be deleted by compass
 	ui.compass->setNeedle (new QwtCompassMagnetNeedle (QwtCompassMagnetNeedle::TriangleStyle, Qt::blue, Qt::red));
 	// no use to assign a compass rose, the widget is too small
 	// 4 arrows, no levels
