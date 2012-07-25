@@ -5,6 +5,7 @@
 #include "src/model/Flight.h"
 #include "src/flarm/FlarmNetRecord.h"
 #include "src/i18n/notr.h"
+#include "src/config/Settings.h"
 
 FlightResolver::FlightResolver (Cache &cache):
 	cache (cache)
@@ -99,6 +100,9 @@ FlightResolver::Result FlightResolver::resolveFlightByPlaneFlarmId (const QList<
  */
 FlightResolver::Result FlightResolver::resolveFlightByFlarmNetDatabase (const QList<Flight> &flights, const QString &flarmId)
 {
+	if (!Settings::instance ().flarmNetEnabled)
+		return Result::invalid ();
+
 	// Try to look up the plane via FlarmNet: flarmId => registration => id
 	dbId flarmNetRecordId = cache.getFlarmNetRecordIdByFlarmId (flarmId);
 	FlarmNetRecord* flarmNetRecord = new FlarmNetRecord (cache.getObject<FlarmNetRecord> (flarmNetRecordId));
