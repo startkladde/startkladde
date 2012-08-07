@@ -33,11 +33,13 @@
  * Notes for implementations of this class:
  *   - all implementations must implement the columnCount method
  *   - for a full-featured implementation, implementations will typically
- *     override the data and headerData methods
+ *     override the data and headerData methods. An example is FlarmRecordModel,
+ *     which also uses TextAlignmentRole.
  *   - if DisplayRole is the only role used, an implementation can override
  *     the displayData and displayHeaderData methods and use the default
  *     implementations of data and headerData which call displayData and
- *     displayHeaderDate, respectively, for the DisplayRole.
+ *     displayHeaderDate, respectively, for the DisplayRole. An example is
+ *     PersonModel.
  */
 template<class T> class ObjectModel
 {
