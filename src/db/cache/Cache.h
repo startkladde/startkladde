@@ -107,6 +107,7 @@ class Cache: public QObject
 		EntityList<Plane> getPlanes ();
 		EntityList<Person> getPeople ();
 		EntityList<LaunchMethod> getLaunchMethods ();
+		EntityList<FlarmNetRecord> getFlarmNetRecords ();
 
 		EntityList<Flight> getFlightsToday ();
 		EntityList<Flight> getFlightsOther ();

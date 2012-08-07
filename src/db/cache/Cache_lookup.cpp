@@ -49,6 +49,11 @@ EntityList<LaunchMethod> Cache::getLaunchMethods ()
 	synchronizedReturn (dataMutex, launchMethods);
 }
 
+EntityList<FlarmNetRecord> Cache::getFlarmNetRecords ()
+{
+	synchronizedReturn (dataMutex, flarmNetRecords);
+}
+
 
 EntityList<Flight> Cache::getFlightsToday ()
 {
@@ -399,15 +404,15 @@ dbId Cache::personFlying (dbId id)
 	template EntityList<T> Cache::getObjects () const; \
 	// Empty line
 
-INSTANTIATE_TEMPLATES (Person      )
-INSTANTIATE_TEMPLATES (Plane       )
-INSTANTIATE_TEMPLATES (Flight      )
-INSTANTIATE_TEMPLATES (LaunchMethod)
+INSTANTIATE_TEMPLATES (Person        )
+INSTANTIATE_TEMPLATES (Plane         )
+INSTANTIATE_TEMPLATES (Flight        )
+INSTANTIATE_TEMPLATES (LaunchMethod  )
 INSTANTIATE_TEMPLATES (FlarmNetRecord)
 
-INSTANTIATE_NON_FLIGHT_TEMPLATES (Person      )
-INSTANTIATE_NON_FLIGHT_TEMPLATES (Plane       )
-INSTANTIATE_NON_FLIGHT_TEMPLATES (LaunchMethod)
+INSTANTIATE_NON_FLIGHT_TEMPLATES (Person        )
+INSTANTIATE_NON_FLIGHT_TEMPLATES (Plane         )
+INSTANTIATE_NON_FLIGHT_TEMPLATES (LaunchMethod  )
 INSTANTIATE_NON_FLIGHT_TEMPLATES (FlarmNetRecord)
 
 #undef INSTANTIATE_TEMPLATES
