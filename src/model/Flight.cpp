@@ -1276,6 +1276,9 @@ void Flight::databaseChanged (const DbEvent &event) const
 				event.getId ()==getTowplaneId ())
 				dataChanged ();
 			break;
+		case DbEvent::tableFlarmNetRecords:
+			// Nothing
+			break;
 		// No default - compiler warning on unhandled case
 	}
 }
