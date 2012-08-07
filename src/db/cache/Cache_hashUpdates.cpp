@@ -287,7 +287,7 @@ template<> void Cache::updateHashesObjectAdded<FlarmNetRecord> (const FlarmNetRe
 	synchronized (dataMutex)
 	{
 		dbId id=record.getId ();
-		QString flarmId = record.getFlarmId();
+		QString flarmId = record.flarmId;
 
 		flarmNetRecordIdsByFlarmId.insert (flarmId, id);
 	}
@@ -297,7 +297,7 @@ template<> void Cache::updateHashesObjectDeleted<FlarmNetRecord> (dbId id, const
 {
 	synchronized (dataMutex)
 	{
-		QString flarmId = oldRecord->getFlarmId();
+		QString flarmId = oldRecord->flarmId;
 
 		if (flarmNetRecordIdsByFlarmId.contains (flarmId))
                         flarmNetRecordIdsByFlarmId.remove (flarmId, id);

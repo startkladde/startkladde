@@ -7,7 +7,7 @@
 
 class FlarmNetRecord;
 
-class FlarmNetRecordModel: public ObjectModel<FlarmNetRecord *>
+class FlarmNetRecordModel: public ObjectModel<FlarmNetRecord>
 {
 	public:
 		FlarmNetRecordModel ();
@@ -17,9 +17,7 @@ class FlarmNetRecordModel: public ObjectModel<FlarmNetRecord *>
 
 	protected:
 		virtual QVariant displayHeaderData (int column) const;
-		virtual QVariant data (FlarmNetRecord * const &flarmNetRecord, int column, int role) const;
-		virtual QVariant displayData (FlarmNetRecord * const &flarmNetRecord, int column) const;
-		virtual QVariant alignmentData (FlarmNetRecord * const &flarmNetRecord, int column) const;
+		virtual QVariant displayData (const FlarmNetRecord &flarmNetRecord, int column) const;
 };
 
 #endif

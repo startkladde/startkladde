@@ -76,6 +76,7 @@
 #include "src/nmea/GpsTracker.h"
 #include "src/flarm/FlarmList.h"
 #include "src/flarm/FlightResolver.h"
+#include "src/flarm/FlarmNetHandler.h"
 
 template <class T> class MutableObjectList;
 
@@ -138,10 +139,6 @@ MainWindow::MainWindow (QWidget *parent):
 	connect (flarmList, SIGNAL (departureDetected (const QString &)), this, SLOT (flarmList_departureDetected (const QString &)));
 	connect (flarmList, SIGNAL (landingDetected   (const QString &)), this, SLOT (flarmList_landingDetected   (const QString &)));
 	connect (flarmList, SIGNAL (goAroundDetected  (const QString &)), this, SLOT (flarmList_goAroundDetected  (const QString &)));
-
-	// FlarmNet
-	FlarmNetHandler* handler = FlarmNetHandler::getInstance ();
-	handler->setDatabase (&dbManager);
 
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 	readSettings ();
@@ -1742,10 +1739,10 @@ void MainWindow::on_actionSetDisplayDate_triggered ()
 // Note that these strings must be defined ouside of the functions because the
 // window may have to access them (for retranslation) after the function
 // returns.
-const char *ntr_planeLogBooksTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Plane logbooks");
-const char *ntr_pilotLogBooksTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Pilot logbooks");
+const char *ntr_planeLogBooksTitle       =QT_TRANSLATE_NOOP ("StatisticsWindow", "Plane logbooks");
+const char *ntr_pilotLogBooksTitle       =QT_TRANSLATE_NOOP ("StatisticsWindow", "Pilot logbooks");
 const char *ntr_launchMethodOverviewTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Launch method overview");
-const char *ntr_flarmOverviewTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Flarm overview");
+const char *ntr_flarmOverviewTitle       =QT_TRANSLATE_NOOP ("StatisticsWindow", "Flarm overview");
 
 void MainWindow::on_actionPlaneLogs_triggered ()
 {
@@ -1790,24 +1787,26 @@ void MainWindow::on_actionFlarmOverview_triggered ()
 
 void MainWindow::on_actionFlarmRadar_triggered ()
 {
-	// FIXME is this deleted?
-        FlarmWindow* dialog = new FlarmWindow (this);
-        dialog->setGpsTracker (gpsTracker);
-        dialog->setFlarmList (flarmList);
-        dialog->show ();
+	FlarmWindow* dialog = new FlarmWindow (this);
+	dialog->setGpsTracker (gpsTracker);
+	dialog->setFlarmList (flarmList);
+	dialog->setAttribute (Qt::WA_DeleteOnClose, true);
+	dialog->show ();
 }
 
 void MainWindow::on_actionFlarmNetOverview_triggered ()
 {
-	qDebug () << "MainWindow::on_actionFlarmNetOverview_triggered";
-        FlarmNetOverview* dialog = new FlarmNetOverview (this, &dbManager);
+	FlarmNetOverview *dialog = new FlarmNetOverview (dbManager, this);
+	dialog->setAttribute (Qt::WA_DeleteOnClose, true);
 	dialog->show ();
 }
 
 void MainWindow::on_actionFlarmNetImport_triggered ()
 {
 	qDebug () << "MainWindow::on_actionFlarmNetImport_triggered";
-        FlarmNetHandler::getInstance()->importFlarmNetDb();
+
+	FlarmNetHandler handler (dbManager, this);
+	handler.interactiveImportFromFile ();
 }
 
 // **************

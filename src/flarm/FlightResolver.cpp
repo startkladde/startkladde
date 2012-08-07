@@ -106,7 +106,7 @@ FlightResolver::Result FlightResolver::resolveFlightByFlarmNetDatabase (const QL
 	// Try to look up the plane via FlarmNet: flarmId => registration => id
 	dbId flarmNetRecordId = cache.getFlarmNetRecordIdByFlarmId (flarmId);
 	FlarmNetRecord* flarmNetRecord = new FlarmNetRecord (cache.getObject<FlarmNetRecord> (flarmNetRecordId));
-	QString registration = flarmNetRecord->getRegistration ();
+	QString registration = flarmNetRecord->registration;
 	qDebug () << "registration: " << registration << endl; 
 	delete flarmNetRecord;
 	if (!registration.isEmpty ())

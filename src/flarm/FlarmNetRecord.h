@@ -12,42 +12,29 @@
 class FlarmNetRecord: public Entity
 {
 	public:
-
-		class DefaultObjectModel: public ObjectModel<FlarmNetRecord>
-		{
-			public:
-				virtual int columnCount () const;
-				virtual QVariant displayHeaderData (int column) const;
-				virtual QVariant displayData (const FlarmNetRecord &object, int column) const;
-		};
-
-
 		// *** Construction
 		FlarmNetRecord ();
 		FlarmNetRecord (dbId id);
 
-		QString getFlarmId () const;
-		QString getRegistration () const;
-		QString getOwner () const;
-		QString getType () const;
-		QString getCallsign () const;
-		QString getFrequency () const;
+		// *** Data
+		QString flarmId;
+		QString registration;
+		QString owner;
+		QString type;
+		QString callsign;
+		QString frequency;
 
-		void setFlarmId (const QString& flarmId);
-		void setRegistration (const QString& registration);
-		void setOwner (const QString& owner);
-		void setType  (const QString& type);
-		void setCallsign (const QString& callsign);
-		void setFrequency (const QString& frequency);
-		
+
 		// *** Formatting
 		virtual QString toString () const;
 		virtual QString getDisplayName () const;
 
+
 		// *** ObjectListWindow/ObjectEditorWindow helpers
-		static QString objectTypeDescription () { return qApp->translate ("FlarmNetRecord", "flarmnet record"); }
-		static QString objectTypeDescriptionDefinite () { return qApp->translate ("FlarmNetRecord", "the flarmnet record"); }
-		static QString objectTypeDescriptionPlural () { return qApp->translate ("FlarmNetRecord", "flarmnet records"); }
+		static QString objectTypeDescription () { return qApp->translate ("FlarmNetRecord", "FlarmNet record"); }
+		static QString objectTypeDescriptionDefinite () { return qApp->translate ("FlarmNetRecord", "the FlarmNet record"); }
+		static QString objectTypeDescriptionPlural () { return qApp->translate ("FlarmNetRecord", "FlarmNet records"); }
+
 
 		// SQL interface
 		static QString dbTableName ();
@@ -60,13 +47,6 @@ class FlarmNetRecord: public Entity
 
 	private:
 		void initialize ();
-		// *** Data
-		QString flarmId;
-		QString registration;
-		QString owner;
-		QString type;
-		QString callsign;
-		QString frequency;
 
 };
 

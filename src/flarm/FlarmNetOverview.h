@@ -3,19 +3,17 @@
 
 #include "ui_FlarmNetOverview.h"
 
-#include "src/db/DbManager.h"
 #include "src/gui/SkDialog.h"
+
+class DbManager;
 
 class FlarmNetOverview: public SkDialog<Ui::FlarmNetOverviewDialog>
 {
 	Q_OBJECT
 
 	public:
-		FlarmNetOverview (QWidget *parent, DbManager* db);
+		FlarmNetOverview (DbManager &dbManager, QWidget *parent);
 		~FlarmNetOverview ();
-
-	private:
-		DbManager* dbManager;
 };
 
 #endif

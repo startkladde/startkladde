@@ -83,10 +83,10 @@ void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 		dbId flarmNetRecordId = dbManager->getCache ().getFlarmNetRecordIdByFlarmId (sentence.flarmId);  
 		if (idValid (flarmNetRecordId)) {
                 	FlarmNetRecord* flarmNetRecord = new FlarmNetRecord (dbManager->getCache().getObject<FlarmNetRecord> (flarmNetRecordId));
-                	QString registration = flarmNetRecord->getRegistration ();
+                	QString registration = flarmNetRecord->registration;
                 	//qDebug () << "registration: " << registration << endl;    
-                	record->setRegistration (flarmNetRecord->getRegistration());
-                	record->setFrequency (flarmNetRecord->getFrequency());
+                	record->setRegistration (flarmNetRecord->registration);
+                	record->setFrequency (flarmNetRecord->frequency);
                 	delete flarmNetRecord;
 
 		}
