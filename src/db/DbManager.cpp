@@ -573,6 +573,16 @@ template<class T> dbId DbManager::createObject (T &object, QWidget *parent)
 	return returner.returnedValue ();
 }
 
+template<class T> void DbManager::createObjects (QList<T> &objects, QWidget *parent)
+{
+	Returner<void> returner;
+	SignalOperationMonitor monitor;
+	QObject::connect (&monitor, SIGNAL (canceled ()), &interface, SLOT (cancelConnection ()), Qt::DirectConnection);
+	dbWorker.createObjects (returner, monitor, objects);
+	MonitorDialog::monitor (monitor, tr ("Creating %1").arg (T::objectTypeDescriptionPlural ()), parent);
+	returner.wait ();
+}
+
 template<class T> int DbManager::updateObject (const T &object, QWidget *parent)
 {
 	Returner<bool> returner;
@@ -771,18 +781,19 @@ void DbManager::settingsChanged ()
 // ***************************
 
 #	define INSTANTIATE_TEMPLATES(T) \
-		template bool DbManager::objectUsed  <T> (dbId id        , QWidget *parent); \
-		template void DbManager::deleteObject<T> (dbId id        , QWidget *parent); \
-		template void DbManager::deleteObjects<T>(const QList<dbId>& ids, QWidget *parent); \
-		template dbId DbManager::createObject<T> (T &object      , QWidget *parent); \
-		template int  DbManager::updateObject<T> (const T &object, QWidget *parent); \
+		template bool DbManager::objectUsed  <T>  (dbId id                , QWidget *parent); \
+		template void DbManager::deleteObject<T>  (dbId id                , QWidget *parent); \
+		template void DbManager::deleteObjects<T> (const QList<dbId>& ids , QWidget *parent); \
+		template dbId DbManager::createObject<T>  (T &object              , QWidget *parent); \
+		template void DbManager::createObjects<T> (      QList<T> &objects, QWidget *parent); \
+		template int  DbManager::updateObject<T>  (const T &object        , QWidget *parent); \
 		template void DbManager::refreshObjects<T> (QWidget *parent);
 		// Empty line
 
-INSTANTIATE_TEMPLATES (Person      )
-INSTANTIATE_TEMPLATES (Plane       )
-INSTANTIATE_TEMPLATES (Flight      )
-INSTANTIATE_TEMPLATES (LaunchMethod)
+INSTANTIATE_TEMPLATES (Person        )
+INSTANTIATE_TEMPLATES (Plane         )
+INSTANTIATE_TEMPLATES (Flight        )
+INSTANTIATE_TEMPLATES (LaunchMethod  )
 INSTANTIATE_TEMPLATES (FlarmNetRecord)
 
 #	undef INSTANTIATE_TEMPLATES
