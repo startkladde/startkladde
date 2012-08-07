@@ -73,29 +73,29 @@ Database &Cache::getDatabase ()
 // given type. They must be specialized before they are used.
 
 // Specialize list getters (const)
-template<> const EntityList<Plane       > &Cache::objectList<Plane       > () const { return planes       ; }
-template<> const EntityList<Person      > &Cache::objectList<Person      > () const { return people       ; }
-template<> const EntityList<LaunchMethod> &Cache::objectList<LaunchMethod> () const { return launchMethods; }
+template<> const EntityList<Plane         > &Cache::objectList<Plane         > () const { return planes         ; }
+template<> const EntityList<Person        > &Cache::objectList<Person        > () const { return people         ; }
+template<> const EntityList<LaunchMethod  > &Cache::objectList<LaunchMethod  > () const { return launchMethods  ; }
 template<> const EntityList<FlarmNetRecord> &Cache::objectList<FlarmNetRecord> () const { return flarmNetRecords; }
 
 // Specialize list getters (non-const)
-template<> EntityList<Plane       > &Cache::objectList<Plane       > () { return planes       ; }
-template<> EntityList<Person      > &Cache::objectList<Person      > () { return people       ; }
-template<> EntityList<LaunchMethod> &Cache::objectList<LaunchMethod> () { return launchMethods; }
+template<> EntityList<Plane         > &Cache::objectList<Plane         > () { return planes         ; }
+template<> EntityList<Person        > &Cache::objectList<Person        > () { return people         ; }
+template<> EntityList<LaunchMethod  > &Cache::objectList<LaunchMethod  > () { return launchMethods  ; }
 template<> EntityList<FlarmNetRecord> &Cache::objectList<FlarmNetRecord> () { return flarmNetRecords; }
 
 // Specialize hash getters (const)
-template<> const QHash<dbId, Plane       > &Cache::objectsByIdHash<Plane       > () const { return        planesById; }
-template<> const QHash<dbId, Person      > &Cache::objectsByIdHash<Person      > () const { return        peopleById; }
-template<> const QHash<dbId, Flight      > &Cache::objectsByIdHash<Flight      > () const { return       flightsById; }
-template<> const QHash<dbId, LaunchMethod> &Cache::objectsByIdHash<LaunchMethod> () const { return launchMethodsById; }
+template<> const QHash<dbId, Plane         > &Cache::objectsByIdHash<Plane         > () const { return          planesById; }
+template<> const QHash<dbId, Person        > &Cache::objectsByIdHash<Person        > () const { return          peopleById; }
+template<> const QHash<dbId, Flight        > &Cache::objectsByIdHash<Flight        > () const { return         flightsById; }
+template<> const QHash<dbId, LaunchMethod  > &Cache::objectsByIdHash<LaunchMethod  > () const { return   launchMethodsById; }
 template<> const QHash<dbId, FlarmNetRecord> &Cache::objectsByIdHash<FlarmNetRecord> () const { return flarmNetRecordsById; }
 
 // Specialize hash getters (non-const)
-template<> QHash<dbId, Plane       > &Cache::objectsByIdHash<Plane       > () { return        planesById; }
-template<> QHash<dbId, Person      > &Cache::objectsByIdHash<Person      > () { return        peopleById; }
-template<> QHash<dbId, Flight      > &Cache::objectsByIdHash<Flight      > () { return       flightsById; }
-template<> QHash<dbId, LaunchMethod> &Cache::objectsByIdHash<LaunchMethod> () { return launchMethodsById; }
+template<> QHash<dbId, Plane         > &Cache::objectsByIdHash<Plane         > () { return          planesById; }
+template<> QHash<dbId, Person        > &Cache::objectsByIdHash<Person        > () { return          peopleById; }
+template<> QHash<dbId, Flight        > &Cache::objectsByIdHash<Flight        > () { return         flightsById; }
+template<> QHash<dbId, LaunchMethod  > &Cache::objectsByIdHash<LaunchMethod  > () { return   launchMethodsById; }
 template<> QHash<dbId, FlarmNetRecord> &Cache::objectsByIdHash<FlarmNetRecord> () { return flarmNetRecordsById; }
 
 
