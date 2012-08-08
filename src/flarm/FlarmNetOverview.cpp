@@ -10,6 +10,8 @@
 
 class FlarmNetRecord;
 
+// FIXME add importing (from file or web)
+
 FlarmNetOverview::FlarmNetOverview (DbManager &dbManager, QWidget *parent):
 	SkDialog<Ui::FlarmNetOverviewDialog> (parent)
 {
@@ -47,8 +49,12 @@ FlarmNetOverview::FlarmNetOverview (DbManager &dbManager, QWidget *parent):
 	
 	// Setup the table view
 	ui.flarmNetTable->setModel (proxyModel);
-	ui.flarmNetTable->resizeColumnsToContents ();
-	ui.flarmNetTable->resizeRowsToContents ();
+
+	// FIXME row height, but autoResizeRows is very slow
+//	ui.flarmNetTable->resizeColumnsToContents ();
+//	ui.flarmNetTable->resizeRowsToContents ();
+//	ui.flarmNetTable->setAutoResizeColumns (true);
+//	ui.flarmNetTable->setAutoResizeRows (true);
 }
 
 FlarmNetOverview::~FlarmNetOverview ()
