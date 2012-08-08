@@ -92,7 +92,7 @@ void FlarmNetHandler::interactiveImportFromFile ()
 
 void FlarmNetHandler::interactiveImportFromWeb ()
 {
-	OperationMonitor monitor ();
+//	OperationMonitor monitor ();
 
 
 
