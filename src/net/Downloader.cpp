@@ -66,6 +66,7 @@ void Downloader::startDownload (int state, const QUrl &url)
 	request.setUrl (QUrl (url));
 
 	// Create the reply
+	// FIXME should we connect the signals first?
 	reply=manager->get (request);
 
 	QObject::connect (
@@ -110,6 +111,7 @@ void Downloader::abort ()
  */
 void Downloader::replyFinished ()
 {
+	// FIXME is this deleted? Same for replyError.
 	QNetworkReply *r=reply;
 
 	// May happen if the download was aborted or restarted inbetween
