@@ -1,26 +1,35 @@
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtGui/QMessageBox>
 #include <QFile>
 #include <QFileDialog>
+#include <QMessageBox>
 
+#include "src/text.h"
+#include "src/concurrent/monitor/SignalOperationMonitor.h"
+#include "src/db/DbManager.h"
 #include "src/flarm/FlarmNetHandler.h"
 #include "src/flarm/FlarmNetRecord.h"
 #include "src/flarm/FlarmNetFile.h"
-#include "src/db/DbManager.h"
-#include "src/text.h"
+#include "src/gui/windows/MonitorDialog.h"
 
+
+static const char *flarmNetFileUrl="http://www.flarmnet.org/files/data.fln";
 
 // ****************************
 // ** Construction/singleton **
 // ****************************
 
 FlarmNetHandler::FlarmNetHandler (DbManager &dbManager, QWidget *parent): QObject (parent),
-	parent (parent), dbManager (dbManager)
+	parent (parent), dbManager (dbManager), operationMonitorInterface (NULL)
 {
+	monitor=new SignalOperationMonitor ();
+	downloader.connectSignals (this);
+
+	connect (monitor, SIGNAL (canceled ()), this, SLOT (abort ()));
 }
 
 FlarmNetHandler::~FlarmNetHandler ()
 {
+	delete monitor;
+	delete operationMonitorInterface;
 }
 
 
@@ -46,12 +55,12 @@ void FlarmNetHandler::interactiveImport (const QByteArray &data)
 
 	QString message;
 	if (numBad==0)
-		message=tr ("%1 FlarmNet record(s) were read.", NULL, numGood).arg (numGood)
+		message=tr ("%1 FlarmNet record(s) were found.", NULL, numGood).arg (numGood)
 			+tr (" Do you want to import the records into the database? This"
 			" will remove all records and replace them with the new records.");
 	else
 		// FIXME test
-		message=tr ("%1 FlarmNet record(s) were read.", NULL, numGood).arg (numGood)
+		message=tr ("%1 FlarmNet record(s) were found.", NULL, numGood).arg (numGood)
 			+tr ("Additionally, %1 invalid record(s) were found.", NULL, numBad).arg (numBad)
 			+tr (" Do you want to import the records into the database? This"
 			" will remove all records and replace them with the new records."
@@ -92,54 +101,63 @@ void FlarmNetHandler::interactiveImportFromFile ()
 
 void FlarmNetHandler::interactiveImportFromWeb ()
 {
-//	OperationMonitor monitor ();
+	// Store a copy of the operation monitor interface locally
+	operationMonitorInterface=new OperationMonitorInterface (monitor->interface ());
+	operationMonitorInterface->progress (0, 0, tr ("Downloading"), true);
 
+	// Start the download
+	downloadSuccess=false; downloadData.clear ();
+	downloadAborted=false;
+	downloadFailure=false; downloadErrorString.clear ();
 
+	downloader.startDownload (0, flarmNetFileUrl);
 
-//  QApplication::setOverrideCursor(Qt::WaitCursor);
-//  QNetworkAccessManager* network = new QNetworkAccessManager (this);
-//  network_reply= network->get(QNetworkRequest(QUrl("http://www.flarmnet.org/files/data.fln")));
-//  connect (network_reply, SIGNAL(finished()), this, SLOT (downloadFinished()));
+	// Open a monitor dialog. This call is blocking and executes a local event
+	// loop. Execution will resume after the monitor has finished when the
+	// download succeeds, fails or is aborted.
+	MonitorDialog::monitor (*monitor, tr ("Importing FlarmNet database"), parent);
+
+	if (downloadSuccess)
+		interactiveImport (downloadData);
+	else if (downloadFailure)
+		QMessageBox::critical (parent, "Download error", downloadErrorString);
+	else
+		{} // Probably aborted, do nothing
 }
 
-//void FlarmNetHandler::downloadFinished ()
-//{
-//	if (network_reply->error() == QNetworkReply::NoError)
-//	{
-//		// Network connection to www.flarmnet.org is ok
-//
-//		// Delete old table
-//	//    QList<dbId>idList = dbManager->getCache().getFlarmNetRecordIds ();
-//	//    if (idList.count() > 0) {
-//	//      dbManager->deleteObjects<FlarmNetRecord> (idList, (QWidget*)parent());
-//	//      qDebug () << "cache contains elems: " << idList.count() << endl;
-//	//    }
-//
-//		while (!network_reply->atEnd())
-//		{
-//			QString rawLine=network_reply->readLine().trimmed ();
-//			QString decodedLine=FlarmNetFile::decodeLine (rawLine);
-//
-//			bool ok=false;
-//			FlarmNetRecord record=FlarmNetFile::createRecord (decodedLine, &ok);
-//
-////			if (record.getFlarmId().length () == 6 && record.getRegistration().length () > 0)
-////			{
-////				//qDebug () << record.toString() << endl;
-////				bool success = idValid (dbManager->createObject (record, (QWidget*)parent()));
-////
-////				//if (success)
-////				//  qDebug () << "insert ok" << endl;
-////			}
-////			else
-////			{
-////				qDebug () << "invalid record" << endl;
-////			}
-//		}
-//		QMessageBox::information (0, "Download", "FlarmNet Datenbank erfolgreich importiert");
-//	}
-//	else
-//	{
-//		QMessageBox::warning (0, "Download", "Fehler beim Importieren der FlarmNet Datenbank: " + network_reply->errorString());
-//	}
-//}
+void FlarmNetHandler::downloadSucceeded (int state, QNetworkReply *reply)
+{
+	Q_UNUSED (state);
+
+	downloadSuccess=true;
+	downloadData=reply->readAll ();
+
+	finishProgress ();
+}
+
+void FlarmNetHandler::downloadFailed (int state, QNetworkReply *reply, QNetworkReply::NetworkError code)
+{
+	Q_UNUSED (state);
+	Q_UNUSED (code);
+
+	downloadFailure=true;
+	downloadErrorString=reply->errorString ();
+
+	finishProgress ();
+}
+
+void FlarmNetHandler::abort ()
+{
+	downloadAborted=true;
+
+	downloader.abort ();
+	finishProgress ();
+}
+
+void FlarmNetHandler::finishProgress ()
+{
+	// When the (last instance of the) interface is deleted, this is counted as
+	// "ended" automatically.
+	delete operationMonitorInterface;
+	operationMonitorInterface=NULL;
+}

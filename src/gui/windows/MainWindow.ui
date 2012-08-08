@@ -495,13 +495,14 @@
     <property name="title">
      <string>Fla&amp;rm</string>
     </property>
+    <addaction name="connectFlarmAction"/>
+    <addaction name="separator"/>
     <addaction name="actionFlarmOverview"/>
     <addaction name="actionFlarmRadar"/>
     <addaction name="separator"/>
-    <addaction name="actionFlarmNetImport"/>
     <addaction name="actionFlarmNetOverview"/>
-    <addaction name="separator"/>
-    <addaction name="connectFlarmAction"/>
+    <addaction name="flarmNetImportFileAction"/>
+    <addaction name="flarmNetImportWebAction"/>
    </widget>
    <addaction name="menuProgram"/>
    <addaction name="menuFlight"/>
@@ -908,25 +909,25 @@
   </action>
   <action name="actionFlarmOverview">
    <property name="text">
-    <string>&amp;Flarm overview</string>
+    <string>Plane &amp;list...</string>
    </property>
   </action>
   <action name="actionFlarmRadar">
    <property name="text">
-    <string>Flarm &amp;Radar</string>
+    <string>Flarm &amp;radar...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
    </property>
   </action>
-  <action name="actionFlarmNetImport">
+  <action name="flarmNetImportFileAction">
    <property name="text">
-    <string>&amp;Import FlarmNet Database</string>
+    <string>Import FlarmNet database from &amp;file...</string>
    </property>
   </action>
   <action name="actionFlarmNetOverview">
    <property name="text">
-    <string>FlarmNet &amp;Overview</string>
+    <string>Flarm&amp;Net overview...</string>
    </property>
   </action>
   <action name="connectFlarmAction">
@@ -953,6 +954,11 @@
   <action name="injectFlarmTouchAndGoAction">
    <property name="text">
     <string>Inject Flarm &amp;touch and go</string>
+   </property>
+  </action>
+  <action name="flarmNetImportWebAction">
+   <property name="text">
+    <string>Download FlarmNet database from &amp;web...</string>
    </property>
   </action>
  </widget>

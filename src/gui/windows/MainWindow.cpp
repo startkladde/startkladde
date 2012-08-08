@@ -592,8 +592,9 @@ void MainWindow::settingsChanged ()
 	ui.flarmStateCaptionLabel	->setVisible (s.flarmEnabled);
 	ui.flarmStateLabel		->setVisible (s.flarmEnabled);
 	// FlarmNet
-	ui.actionFlarmNetOverview	->setVisible (s.flarmNetEnabled && s.flarmNetOverview);
-	ui.actionFlarmNetImport		->setVisible (s.flarmNetEnabled);
+	ui.actionFlarmNetOverview->setVisible (s.flarmNetEnabled && s.flarmNetOverview);
+	ui.flarmNetImportFileAction->setVisible (s.flarmNetEnabled);
+	ui.flarmNetImportWebAction->setVisible (s.flarmNetEnabled);
 	// FIXME set the flarmStream's enabled to s.flarmEnabled
 
 	// Plugins
@@ -1801,13 +1802,18 @@ void MainWindow::on_actionFlarmNetOverview_triggered ()
 	dialog->show ();
 }
 
-void MainWindow::on_actionFlarmNetImport_triggered ()
+void MainWindow::on_flarmNetImportFileAction_triggered ()
 {
-	qDebug () << "MainWindow::on_actionFlarmNetImport_triggered";
-
 	FlarmNetHandler handler (dbManager, this);
 	handler.interactiveImportFromFile ();
 }
+
+void MainWindow::on_flarmNetImportWebAction_triggered ()
+{
+	FlarmNetHandler handler (dbManager, this);
+	handler.interactiveImportFromWeb ();
+}
+
 
 // **************
 // ** Database **

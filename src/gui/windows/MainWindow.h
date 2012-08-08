@@ -193,7 +193,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		//Menu: Flarm
 		void on_actionFlarmOverview_triggered ();
 		void on_actionFlarmRadar_triggered ();
-		void on_actionFlarmNetImport_triggered ();
+		void on_flarmNetImportFileAction_triggered ();
+		void on_flarmNetImportWebAction_triggered ();
 		void on_actionFlarmNetOverview_triggered ();
 		void on_connectFlarmAction_triggered ();
 
