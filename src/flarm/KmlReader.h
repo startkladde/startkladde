@@ -30,6 +30,7 @@ class KmlReader
 
 		void read (const QString &filename);
 
+		bool isEmpty () const;
 		Kml::Style findStyle (const QString &styleUrl);
 
 		QList<Kml::Marker> markers;

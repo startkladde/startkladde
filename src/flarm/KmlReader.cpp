@@ -173,6 +173,14 @@ void KmlReader::read (const QString &filename)
 
 }
 
+bool KmlReader::isEmpty () const
+{
+	if (!markers .isEmpty ()) return false;
+	if (!paths   .isEmpty ()) return false;
+	if (!polygons.isEmpty ()) return false;
+	return true;
+}
+
 Kml::Style KmlReader::findStyle (const QString &styleUrl)
 {
 	if (!styleUrl.startsWith ("#"))
