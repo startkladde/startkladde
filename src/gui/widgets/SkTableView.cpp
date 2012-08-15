@@ -99,7 +99,9 @@ void SkTableView::setModel (QAbstractItemModel *model)
 	QTableView::setModel (model);
 
 	QObject::disconnect (this, SLOT (layoutChanged ()));
-	connect (model, SIGNAL (layoutChanged ()), this, SLOT (layoutChanged ()));
+
+	if (model)
+		connect (model, SIGNAL (layoutChanged ()), this, SLOT (layoutChanged ()));
 }
 
 void SkTableView::layoutChanged ()
@@ -218,6 +220,9 @@ void SkTableView::reset ()
 	// are deleted. Also, not calling QTableView::reset seems to fix the
 	// problem.
 //	QTableView::reset (); // DO NOT CALL!
+
+	if (!model ())
+		return;
 
 	// Set up the buttons
 	int rows=model ()->rowCount ();
