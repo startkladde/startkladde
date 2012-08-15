@@ -12,7 +12,7 @@
 
 #include <QProgressBar>
 #include "src/gui/widgets/SkLabel.h"
-#include "src/gui/windows/NotificationWindow.h"
+//#include "src/gui/windows/NotificationWindow.h"
 
 class QTimer;
 class QEvent;
