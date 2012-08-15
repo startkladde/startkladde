@@ -9,6 +9,7 @@
 #include "src/flarm/FlarmNetRecord.h"
 #include "src/flarm/FlarmNetFile.h"
 #include "src/gui/windows/MonitorDialog.h"
+#include "src/concurrent/monitor/OperationCanceledException.h"
 
 
 static const char *flarmNetFileUrl="http://www.flarmnet.org/files/data.fln";
@@ -45,7 +46,16 @@ void FlarmNetHandler::interactiveImport (QList<FlarmNetRecord> &records)
 	if (idList.count () > 0)
 		dbManager.deleteObjects<FlarmNetRecord> (idList, parent);
 
-	dbManager.createObjects (records, parent);
+	try
+	{
+		dbManager.createObjects (records, parent);
+	}
+	catch (OperationCanceledException &)
+	{
+		QString title=tr ("Importing canceled");
+		QString text=tr ("Importing of FlarmNet data was canceled. The FlarmNet data may be incomplete.");
+		QMessageBox::warning (parent, title, text);
+	}
 }
 
 void FlarmNetHandler::interactiveImport (const QByteArray &data)
