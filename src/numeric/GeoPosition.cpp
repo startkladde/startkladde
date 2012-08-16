@@ -208,19 +208,33 @@ QVector<GeoPosition> GeoPosition::readVector (QSettings &settings, const QString
 /**
  * Tests for equality
  *
- * Note that a GeoPosition includes floating point values, so the euqality
+ * Two invalid GeoPositions are considered equal. A valid and an invalid
+ * GeoPosition are not considered equal. Two valid GeoPositions are considered
+ * equal if they represent the same position.
+ *
+ * Note that a GeoPosition includes floating point values, so the equality
  * relation is not to be trusted.
  */
 bool GeoPosition::operator== (const GeoPosition &other)
 {
-	return (latitude==other.latitude) && (longitude==other.longitude);
+	// Both invalid => equal
+	if (!isValid () && !other.isValid ()) return true;
+
+	// Both valid => equal if the values are equal
+	if ( isValid () &&  other.isValid ())
+		return (latitude==other.latitude) && (longitude==other.longitude);
+
+	// One valid, one invalid => not equal
+	return false;
 }
 
 /**
  * Tests for inequality
  *
- * Note that a GeoPosition includes floating point values, so the ineuqality
+ * Note that a GeoPosition includes floating point values, so the inequality
  * relation is not to be trusted.
+ *
+ * @see operator==
  */
 bool GeoPosition::operator!= (const GeoPosition &other)
 {
