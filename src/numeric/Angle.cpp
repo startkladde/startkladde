@@ -130,21 +130,32 @@ Angle Angle::operator/ (double factor) const
 /**
  * Tests for equality
  *
- * Note that an angle is stored as a floating point value, so the euqality
+ * Two invalid Angles are considered equal. A valid and an invalid Angle are not
+ * considered equal. Two valid Angles are considered equal if they represent the
+ * same angle.
+ *
+ * Note that an angle is stored as a floating point value, so the equality
  * relation is not to be trusted.
  */
 bool Angle::operator== (const Angle &other) const
 {
+	// Both invalid => equal
 	if (!valid && !other.valid) return true;
+
+	// Both valid => equal if the values are equal
 	if ( valid &&  other.valid) return value==other.value;
+
+	// One valid, one invalid => not equal
 	return false;
 }
 
 /**
  * Tests for inequality
  *
- * Note that an angle is stored as a floating point value, so the ineuqality
+ * Note that an angle is stored as a floating point value, so the inequality
  * relation is not to be trusted.
+ *
+ * @see operator==
  */
 bool Angle::operator!= (const Angle &other) const
 {
