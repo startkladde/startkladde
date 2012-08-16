@@ -5,6 +5,8 @@
 
 #include "src/gui/SkDialog.h"
 
+class GpsTracker;
+
 class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 {
 	Q_OBJECT
@@ -16,11 +18,23 @@ class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 		void setGpsTracker (GpsTracker *gpsTracker);
 		void setFlarmList (FlarmList *flarmList);
 
+	public slots:
+		void flarmMapViewChanged ();
+		void flarmMapOwnPositionUpdated ();
+
 	private slots:
 		void on_mapOrientationInput_valueChanged (int value);
 		void on_compass_sliderMoved (double value);
 		void on_northButton_clicked ();
 		void on_reverseButton_clicked ();
+
+		void linkActivated (const QString &link);
+
+
+		void updateWarnings ();
+
+	private:
+		GpsTracker *gpsTracker;
 };
 
 #endif

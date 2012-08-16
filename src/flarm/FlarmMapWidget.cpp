@@ -27,6 +27,8 @@
 #include "src/util/qString.h"
 #include "src/flarm/KmlReader.h"
 #include "src/flarm/Kml.h"
+#include "src/qwt/SkPlotMagnifier.h"
+#include "src/qwt/SkPlotPanner.h"
 
 // ******************
 // ** Construction **
@@ -36,7 +38,8 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
 	climbColor   (  0, 255, 0, 127),
 	descentColor (255, 255, 0, 127),
 	flarmList (NULL), gpsTracker (NULL),
-	ownPositionMarker (NULL)
+	ownPositionMarker (NULL),
+	kmlStatus (kmlNone)
 {
 	// Setup the axes. Note that the aspect ratio may not be correct. This will
 	// be rectified by the first resize event we'll receive before the widget
@@ -46,14 +49,15 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
 	setAxisScale (QwtPlot::xBottom, -displayRadius, displayRadius);
 
 	// Setup the panner
-	QwtPlotPanner* panner = new QwtPlotPanner (canvas ());
+	QwtPlotPanner* panner = new SkPlotPanner (canvas ());
 	panner->setAxisEnabled (QwtPlot::yLeft, true);
 	panner->setAxisEnabled (QwtPlot::xBottom, true);
 	panner->setMouseButton (Qt::LeftButton);
 	panner->setEnabled (true);
+	connect (panner, SIGNAL (moved ()), this, SIGNAL (viewChanged ()));
 
 	// Setup the magnifier
-	QwtPlotMagnifier *magnifier = new QwtPlotMagnifier (canvas ());
+	QwtPlotMagnifier *magnifier = new SkPlotMagnifier (canvas ());
 	magnifier->setMouseButton (Qt::MidButton);
 	magnifier->setAxisEnabled (QwtPlot::yRight, true);
 	magnifier->setAxisEnabled (QwtPlot::xBottom, true);
@@ -71,6 +75,7 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
 	// zooming won't get in the way. To be sure, we set the keyFactor to 1.
 	magnifier->setKeyFactor (1);
 	magnifier->setEnabled (true);
+	connect (magnifier, SIGNAL (rescaled ()), this, SIGNAL (viewChanged ()));
 
 	// Add the grid
 	QwtPlotGrid* grid = new QwtPlotGrid ();
@@ -91,6 +96,28 @@ FlarmMapWidget::~FlarmMapWidget ()
 // **************************
 // ** Generic axis methods **
 // **************************
+
+/**
+ * Gets the coordinates of the (primary) axes as QRectF
+ *
+ * @return
+ */
+QRectF FlarmMapWidget::getAxesRect () const
+{
+	const QwtScaleDiv *xScaleDiv = axisScaleDiv (QwtPlot::xBottom);
+	const QwtScaleDiv *yScaleDiv = axisScaleDiv (QwtPlot::yLeft);
+
+	double left  =xScaleDiv->lowerBound ();
+	double right =xScaleDiv->upperBound ();
+	double bottom=yScaleDiv->lowerBound ();
+	double top   =yScaleDiv->upperBound ();
+
+	QPointF topLeft (left, top);
+	QPointF bottomRight (right, bottom);
+	QRectF axesRect (topLeft, bottomRight);
+
+	return axesRect;
+}
 
 /**
  * Gets the current radius of the (primary) axes
@@ -134,6 +161,10 @@ QPointF FlarmMapWidget::getAxesCenter () const
 
 /**
  * Sets the current axes, given the center and radius in both directions
+ *
+ * Note that this method does not emit the viewChanged signal because the graph
+ * has not been replotted, so accessing its properties (e. g. the axes) may
+ * result in an error.
  *
  * @param center the center for the (bottom) x and (left) y axis
  * @param radius the radius for the (bottom) x and (left) y axis
@@ -217,14 +248,14 @@ void FlarmMapWidget::keyPressEvent (QKeyEvent *event)
 	switch (event->key ())
 	{
 		case Qt::Key_Plus : case Qt::Key_BracketLeft : case Qt::Key_Equal:
-			zoomAxes (  keyboardZoomFactor); replot (); break;
+			zoomAxes (  keyboardZoomFactor); replot (); emit viewChanged (); break;
 		case Qt::Key_Minus: case Qt::Key_BracketRight:
-			zoomAxes (1/keyboardZoomFactor); replot (); break;
+			zoomAxes (1/keyboardZoomFactor); replot (); emit viewChanged (); break;
 
-		case Qt::Key_Right: case Qt::Key_L: moveAxesCenter ( 0.1*min (getAxesRadius ()), 0); replot (); break;
-		case Qt::Key_Left : case Qt::Key_H: moveAxesCenter (-0.1*min (getAxesRadius ()), 0); replot (); break;
-		case Qt::Key_Up   : case Qt::Key_K: moveAxesCenter (0,  0.1*min (getAxesRadius ())); replot (); break;
-		case Qt::Key_Down : case Qt::Key_J: moveAxesCenter (0, -0.1*min (getAxesRadius ())); replot (); break;
+		case Qt::Key_Right: case Qt::Key_L: moveAxesCenter ( 0.1*min (getAxesRadius ()), 0); replot (); emit viewChanged (); break;
+		case Qt::Key_Left : case Qt::Key_H: moveAxesCenter (-0.1*min (getAxesRadius ()), 0); replot (); emit viewChanged (); break;
+		case Qt::Key_Up   : case Qt::Key_K: moveAxesCenter (0,  0.1*min (getAxesRadius ())); replot (); emit viewChanged (); break;
+		case Qt::Key_Down : case Qt::Key_J: moveAxesCenter (0, -0.1*min (getAxesRadius ())); replot (); emit viewChanged (); break;
 
 		default:
 			QwtPlot::keyPressEvent (event);
@@ -319,6 +350,11 @@ void FlarmMapWidget::setGpsTracker (GpsTracker *gpsTracker)
 	{
 		connect (this->gpsTracker, SIGNAL (positionChanged (const GeoPosition &)), this, SLOT (ownPositionChanged (const GeoPosition &)));
 	}
+
+	if (this->gpsTracker)
+	{
+		ownPositionChanged (gpsTracker->getPosition ());
+	}
 }
 
 // **********
@@ -359,6 +395,7 @@ void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 	// substantially less than 1 m. Currently, the threshold is set to 0, so the
 	// static data is redrawn every time a position is received (typically once
 	// per second).
+	// FIXME must also update when the position becomes invalid
 	if (
 		!this->ownPosition.isValid () ||
 		ownPosition.distanceTo (this->ownPosition)>0)
@@ -366,9 +403,14 @@ void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 		this->ownPosition=ownPosition;
 		updateStaticData ();
 		replot ();
+		emit ownPositionUpdated ();
 	}
 }
 
+bool FlarmMapWidget::isOwnPositionKnown () const
+{
+	return ownPosition.isValid ();
+}
 
 
 // *****************
@@ -512,7 +554,6 @@ void FlarmMapWidget::updateStaticData ()
 		}
 		marker.marker->setVisible (valid);
 	}
-
 }
 
 
@@ -805,12 +846,38 @@ void FlarmMapWidget::flarmListDestroyed ()
 // ** KML **
 // *********
 
-void FlarmMapWidget::readKml (const QString &filename)
+FlarmMapWidget::KmlStatus FlarmMapWidget::getKmlStatus () const
 {
-	KmlReader kmlReader;
-	kmlReader.read (filename);
+	return kmlStatus;
+}
 
-	// FIXME error indication: file not found
+/**
+ * Never call this method except from readKml
+ *
+ * This method only exists to facilitate setting kmlStatus in readKml and to
+ * allow the compiler to issue a warning in case no status is assigned.
+ */
+FlarmMapWidget::KmlStatus FlarmMapWidget::readKmlImplementation (const QString &filename)
+{
+	QString effectiveFilename=filename.trimmed ();
+
+	if (effectiveFilename.isEmpty ())
+		return kmlNone;
+
+	KmlReader kmlReader;
+	KmlReader::ReadResult readResult=kmlReader.read (effectiveFilename);
+
+	switch (readResult)
+	{
+		case KmlReader::readNotFound:   return kmlNotFound  ;
+		case KmlReader::readOpenError:  return kmlReadError ;
+		case KmlReader::readParseError: return kmlParseError;
+		case KmlReader::readOk:         break; // Go on, process it
+		// no default
+	}
+
+	if (kmlReader.isEmpty ())
+		return kmlEmpty;
 
 	foreach (const Kml::Marker &marker, kmlReader.markers)
 	{
@@ -831,4 +898,21 @@ void FlarmMapWidget::readKml (const QString &filename)
 	}
 
 	replot ();
+	return kmlOk;
+}
+
+FlarmMapWidget::KmlStatus FlarmMapWidget::readKml (const QString &filename)
+{
+	kmlStatus=readKmlImplementation (filename);
+	return kmlStatus;
+}
+
+
+// **********
+// ** View **
+// **********
+
+bool FlarmMapWidget::isOwnPositionVisible () const
+{
+	return getAxesRect ().contains (0, 0);
 }

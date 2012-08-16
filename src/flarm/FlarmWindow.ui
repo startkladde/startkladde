@@ -20,7 +20,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
@@ -44,8 +44,8 @@
           </widget>
          </item>
          <item>
-          <widget class="QwtCompass" name="compass">
-           <property name="lineWidth">
+          <widget class="QwtCompass" name="compass" native="true">
+           <property name="lineWidth" stdset="0">
             <number>4</number>
            </property>
           </widget>
@@ -80,6 +80,12 @@
         </layout>
        </item>
        <item>
+        <widget class="IconLabel" name="gpsWarning" native="true"/>
+       </item>
+       <item>
+        <widget class="IconLabel" name="kmlWarning" native="true"/>
+       </item>
+       <item>
         <widget class="FlarmMapWidget" name="flarmMap">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
@@ -107,6 +113,9 @@
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
      </widget>
     </widget>
    </item>
@@ -121,9 +130,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QwtCompass</class>
-   <extends>QwtDial</extends>
-   <header>qwt_compass.h</header>
+   <class>SkTableView</class>
+   <extends>QTableView</extends>
+   <header>src/gui/widgets/SkTableView.h</header>
   </customwidget>
   <customwidget>
    <class>QwtDial</class>
@@ -131,14 +140,20 @@
    <header>qwt_dial.h</header>
   </customwidget>
   <customwidget>
-   <class>SkTableView</class>
-   <extends>QTableView</extends>
-   <header>src/gui/widgets/SkTableView.h</header>
-  </customwidget>
-  <customwidget>
    <class>FlarmMapWidget</class>
    <extends>QFrame</extends>
    <header>src/flarm/FlarmMapWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QwtCompass</class>
+   <extends>QwtDial</extends>
+   <header>qwt_compass.h</header>
+  </customwidget>
+  <customwidget>
+   <class>IconLabel</class>
+   <extends>QWidget</extends>
+   <header>src/gui/widgets/IconLabel.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

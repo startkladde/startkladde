@@ -110,6 +110,8 @@ class FlarmMapWidget: public QwtPlot
 		Q_OBJECT
 
 	public:
+		enum KmlStatus { kmlNone, kmlNotFound, kmlReadError, kmlParseError, kmlEmpty, kmlOk };
+
 		struct StaticCurve
 		{
 			QString name;
@@ -133,15 +135,28 @@ class FlarmMapWidget: public QwtPlot
 		void setOwnPositionLabel (const QString &text, const QColor &color);
 		void addStaticCurve (const QString &name, const QVector<GeoPosition> &points, QPen pen);
 		void addStaticMarker (const QString &text, const GeoPosition &position, const QColor &color);
-		void readKml (const QString &filename);
+
+		// KML
+		KmlStatus readKml (const QString &filename);
+		KmlStatus getKmlStatus () const;
 
 		// Flarm list
 		void setFlarmList (FlarmList *flarmList);
 		void setGpsTracker (GpsTracker *gpsTracker);
 
+		// Status
+		bool isOwnPositionKnown () const;
+
+		// View
+		bool isOwnPositionVisible () const;
+
 	public slots:
 		void ownPositionChanged (const GeoPosition &ownPosition);
 		void setOrientation (const Angle &upDirection);
+
+	signals:
+		void viewChanged ();
+		void ownPositionUpdated ();
 
 	protected:
 		virtual void keyPressEvent (QKeyEvent *event);
@@ -166,6 +181,8 @@ class FlarmMapWidget: public QwtPlot
 		QHash<QString, QwtPlotMarker *> flarmMarkers;
 		QHash<QString, QwtPlotCurve  *> flarmCurves;
 
+		// Status
+		KmlStatus kmlStatus;
 
 		// Static data
 		void updateStaticData ();
@@ -181,8 +198,12 @@ class FlarmMapWidget: public QwtPlot
 		virtual void updateFlarmData (const FlarmRecord &record);
 		virtual void refreshFlarmData ();
 
+		// KML
+		KmlStatus readKmlImplementation (const QString &filename);
+
 	protected:
 		// Generic axis methods
+		QRectF getAxesRect () const;
 		QPointF getAxesRadius () const;
 		QPointF getAxesCenter () const;
 		void setAxes (const QPointF &center, const QPointF &radius);
