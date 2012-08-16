@@ -35,6 +35,10 @@ class IconLabel: public QWidget
 
 		QLabel *textLabel ();
 
+	signals:
+		void linkActivated (const QString &link);
+		void linkHovered   (const QString &link);
+
 	private:
 		Ui::IconLabelClass ui;
 };

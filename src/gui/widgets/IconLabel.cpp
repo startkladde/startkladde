@@ -12,6 +12,9 @@
 IconLabel::IconLabel (QWidget *parent, Qt::WindowFlags f): QWidget (parent, f)
 {
 	ui.setupUi (this);
+
+	connect (ui.textLabel, SIGNAL (linkActivated (const QString &)), this, SIGNAL (linkActivated (const QString &)));
+	connect (ui.textLabel, SIGNAL (linkHovered   (const QString &)), this, SIGNAL (linkHovered   (const QString &)));
 }
 
 IconLabel::~IconLabel()
