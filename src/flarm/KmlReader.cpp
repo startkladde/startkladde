@@ -140,37 +140,42 @@ void KmlReader::readPlacemark (const QDomNode &placemarkNode)
  *
  * @param filename
  */
-void KmlReader::read (const QString &filename)
+KmlReader::ReadResult KmlReader::read (const QString &filename)
 {
-	std::cout << "Reading KML file " << filename << std::endl;
+	// Check if the file exists at all
+	if (!QFile::exists (filename))
+		return readNotFound;
 
-	QDomDocument document ("kmlDocument");
-
+	// Try to open the file
 	QFile file (filename);
-	// FIXME error indication
 	if (!file.open (QIODevice::ReadOnly))
-		return;
+		return readOpenError;
 
+	// Try to parse the file
+	QDomDocument document ("kmlDocument");
 	 if (!document.setContent (&file))
-	     return;
+	     return readParseError;
 
+	 // The file has been read and can be closed
 	 file.close();
 
-	 // FIXME honor color, line thickness, other attributes?
-
+	 // Extract the placemarks (includes markers, paths and polygons) from the
+	 // DOM structure
 	 QDomNodeList placemarkNodes=document.elementsByTagName ("Placemark");
 	 for (int i=0, n=placemarkNodes.size (); i<n; ++i)
 		 readPlacemark (placemarkNodes.at (i));
 
+	 // Extract the styles from the DOM structure
 	 QDomNodeList styleNodes=document.elementsByTagName ("Style");
 	 for (int i=0, n=styleNodes.size (); i<n; ++i)
 		 readStyle (styleNodes.at (i));
 
+	 // Extract the style maps from the DOM structure
 	 QDomNodeList styleMapNodes=document.elementsByTagName ("StyleMap");
 	 for (int i=0, n=styleMapNodes.size (); i<n; ++i)
 		 readStyleMap (styleMapNodes.at (i));
 
-
+	 return readOk;
 }
 
 bool KmlReader::isEmpty () const

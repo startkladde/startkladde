@@ -25,10 +25,12 @@ class QDomElement;
 class KmlReader
 {
 	public:
+		enum ReadResult { readNotFound, readOpenError, readParseError, readOk };
+
 		KmlReader ();
 		virtual ~KmlReader ();
 
-		void read (const QString &filename);
+		ReadResult read (const QString &filename);
 
 		bool isEmpty () const;
 		Kml::Style findStyle (const QString &styleUrl);
