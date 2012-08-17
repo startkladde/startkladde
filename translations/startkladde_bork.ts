@@ -12,38 +12,23 @@
 <context>
     <name>AcpiWidget</name>
     <message>
-        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="91"/>
+        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="78"/>
         <source>Battery: </source>
         <comment>With traling space</comment>
         <translation type="unfinished">Bettery: </translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="97"/>
+        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="83"/>
         <source>External </source>
         <comment>With trailing space</comment>
         <translation type="unfinished">Ixternel </translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="109"/>
-        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="160"/>
+        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="94"/>
+        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="145"/>
         <source>Unknown </source>
         <comment>With trailing space</comment>
         <translation type="unfinished">Unknoon </translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="178"/>
-        <source>Unsufficient power supply</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="179"/>
-        <source>&lt;p&gt;External power supply is interrupted.&lt;p&gt;&lt;p&gt;Most likely the battery is uncharged.&lt;/p&gt;&lt;p&gt;The capacity of the internal batterie is limited.&lt;/p&gt;&lt;p&gt;Please connect another power supply as soon as possible!&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/widgets/AcpiWidget_libacpi.cpp" line="184"/>
-        <source>Ignore for  10 minutes</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -563,81 +548,82 @@ Updete-a zee detebese-a noo?</translation>
     </message>
     <message>
         <location filename="../src/db/DbManager.cpp" line="572"/>
+        <location filename="../src/db/DbManager.cpp" line="582"/>
         <source>Creating %1</source>
         <translation type="unfinished">Creeteeng %1</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="582"/>
+        <location filename="../src/db/DbManager.cpp" line="592"/>
         <source>Updating %1</source>
         <translation type="unfinished">Updeteeng %1</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="602"/>
+        <location filename="../src/db/DbManager.cpp" line="612"/>
         <source>Beginning transaction</source>
         <translation type="unfinished">Begeenning trunsecshun</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="612"/>
+        <location filename="../src/db/DbManager.cpp" line="622"/>
         <source>Committing transaction</source>
         <translation type="unfinished">Cummeetting trunsecshun</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="622"/>
+        <location filename="../src/db/DbManager.cpp" line="632"/>
         <source>Rolling back transaction</source>
         <translation type="unfinished">Rulleeng beck trunsecshun</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="636"/>
+        <location filename="../src/db/DbManager.cpp" line="646"/>
         <source>People still in use</source>
         <translation type="unfinished">Peuple-a steell in use-a</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="638"/>
+        <location filename="../src/db/DbManager.cpp" line="648"/>
         <source>Person still in use</source>
         <translation type="unfinished">Persun steell in use-a</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="646"/>
+        <location filename="../src/db/DbManager.cpp" line="656"/>
         <source>After merging, %1 people are still in use.</source>
         <translation type="unfinished">Effter mergeeng, %1 peuple-a ere-a steell in use-a.</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="648"/>
+        <location filename="../src/db/DbManager.cpp" line="658"/>
         <source>After merging, one person is still in use.</source>
         <translation type="unfinished">Effter mergeeng, oone-a persun is steell in use-a.</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="651"/>
+        <location filename="../src/db/DbManager.cpp" line="661"/>
         <source>No person will be deleted.</source>
         <translation type="unfinished">Nu persun veell be-a deleted.</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="653"/>
+        <location filename="../src/db/DbManager.cpp" line="663"/>
         <source>One person will be deleted.</source>
         <translation type="unfinished">Oone-a persun veell be-a deleted.</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="655"/>
+        <location filename="../src/db/DbManager.cpp" line="665"/>
         <source>Only %1 people will be deleted.</source>
         <translation type="unfinished">Oonly %1 peuple-a veell be-a deleted.</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="687"/>
+        <location filename="../src/db/DbManager.cpp" line="697"/>
         <source>Flights: refresh pilots</source>
         <translation type="unfinished">Fleeghts: reffresh peeluts</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="688"/>
+        <location filename="../src/db/DbManager.cpp" line="698"/>
         <source>Flights: refresh copilots</source>
         <translation type="unfinished">Fleeghts: reffresh cupeeluts</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="689"/>
+        <location filename="../src/db/DbManager.cpp" line="699"/>
         <source>Flights: refresh towpilots</source>
         <translation type="unfinished">Fleeghts: reffresh toopeeluts</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="690"/>
+        <location filename="../src/db/DbManager.cpp" line="700"/>
         <source>Users: refresh people references</source>
         <translation type="unfinished">Users: reffresh peuple-a refferences</translation>
     </message>
@@ -794,65 +780,153 @@ Updete-a zee detebese-a noo?</translation>
     </message>
 </context>
 <context>
-    <name>FlarmNetOverviewDialog</name>
+    <name>FlarmNetHandler</name>
     <message>
-        <location filename="../src/flarm/FlarmNetOverview.ui" line="14"/>
-        <source>Flarm Radar</source>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="56"/>
+        <source>Importing canceled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmNetOverview.ui" line="62"/>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="57"/>
+        <source>Importing of FlarmNet data was canceled. The FlarmNet data may be incomplete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="69"/>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="74"/>
+        <source>%1 FlarmNet record(s) were found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="70"/>
+        <source> Do you want to import the records into the database? This will remove all records and replace them with the new records.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="75"/>
+        <source>Additionally, %1 invalid record(s) were found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="76"/>
+        <source> Do you want to import the records into the database? This will remove all records and replace them with the new records. The invalid entries will be ignored.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="82"/>
+        <source>Import FlarmNet database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="94"/>
+        <source>Select .fln file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="107"/>
+        <source>Error opening file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="117"/>
+        <source>Downloading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetHandler.cpp" line="129"/>
+        <source>Importing FlarmNet database</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FlarmNetOverviewDialog</name>
+    <message>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Cluse-a</translation>
+        <translation type="obsolete">&amp;Cluse-a</translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetOverview.ui" line="14"/>
+        <source>FlarmNet database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetOverview.ui" line="44"/>
+        <source>Enter search text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetOverview.ui" line="51"/>
+        <source>Clear search text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmNetOverview.ui" line="54"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
     <name>FlarmNetRecord</name>
     <message>
-        <location filename="../src/flarm/FlarmNetRecord.h" line="48"/>
-        <source>flarmnet record</source>
+        <location filename="../src/flarm/FlarmNetRecord.h" line="34"/>
+        <source>FlarmNet record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmNetRecord.h" line="49"/>
-        <source>the flarmnet record</source>
+        <location filename="../src/flarm/FlarmNetRecord.h" line="35"/>
+        <source>the FlarmNet record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmNetRecord.h" line="50"/>
-        <source>flarmnet records</source>
+        <location filename="../src/flarm/FlarmNetRecord.h" line="36"/>
+        <source>FlarmNet records</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>FlarmNetRecord::DefaultObjectModel</name>
     <message>
-        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="29"/>
+        <source>Registration</source>
+        <translation type="obsolete">Regeestreshun</translation>
+    </message>
+    <message>
+        <source>Callsign</source>
+        <translation type="obsolete">Cellseegn</translation>
+    </message>
+    <message>
+        <source>Model</source>
+        <translation type="obsolete">Mudel</translation>
+    </message>
+</context>
+<context>
+    <name>FlarmNetRecordModel</name>
+    <message>
+        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="24"/>
         <source>Flarm ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="30"/>
+        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="25"/>
         <source>Registration</source>
         <translation type="unfinished">Regeestreshun</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="31"/>
+        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="26"/>
         <source>Callsign</source>
         <translation type="unfinished">Cellseegn</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="32"/>
+        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="27"/>
         <source>Owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="33"/>
+        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="28"/>
         <source>Model</source>
         <translation type="unfinished">Mudel</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="34"/>
+        <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="29"/>
         <source>Frequency</source>
         <translation type="unfinished"></translation>
     </message>
@@ -927,6 +1001,132 @@ Updete-a zee detebese-a noo?</translation>
     <message>
         <location filename="../src/flarm/FlarmRecordModel.cpp" line="36"/>
         <source>State</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FlarmWindow</name>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="124"/>
+        <source>KML file not specified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="125"/>
+        <source>You can specify a KML file to show lines (e. g. airfield boundaries, traffic circuit..) or points (e. g. hangars, buildings...). KML files can be created with Google Earth or Google Maps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="133"/>
+        <source>KML file does not exist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="134"/>
+        <source>The KML file specified in the settings does not exist:
+%1
+The file can be changed in the settings dialog.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="156"/>
+        <source>north</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="157"/>
+        <source>north-east</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="158"/>
+        <source>east</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="159"/>
+        <source>south-east</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="160"/>
+        <source>south</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="161"/>
+        <source>south-west</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="162"/>
+        <source>west</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="163"/>
+        <source>north-west</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="167"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="176"/>
+        <source>No KML elements visible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="168"/>
+        <source>None of the elements read from the KML file are currently visible. The KML element closest to the current position is located %1 to the %2 of the current position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="177"/>
+        <source>None of the elements read from the KML file are currently visible.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="195"/>
+        <source>No KML file specified  (&lt;a href=&quot;kmlFileNotSpecified&quot;&gt;details&lt;/a&gt;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="198"/>
+        <source>The specified KML file does not exist (&lt;a href=&quot;kmlFileDoesNotExist&quot;&gt;details&lt;/a&gt;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="201"/>
+        <source>The specified KML file could not be read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="204"/>
+        <source>The specified KML file could not be parsed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="207"/>
+        <source>The specified KML file does not contain any elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="213"/>
+        <source>None of the KML elements are visible (&lt;a href=&quot;noKmlElementsVisible&quot;&gt;details&lt;/a&gt;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="224"/>
+        <source>No GPS data. The data from the KML file cannot be shown.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="226"/>
+        <source>No GPS data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="230"/>
+        <source>The own position is not visible (&lt;a href=&quot;resetPosition&quot;&gt;reset&lt;/a&gt;)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2356,6 +2556,24 @@ Edd it tu zee detebese-a?</translation>
     </message>
 </context>
 <context>
+    <name>IconLabelClass</name>
+    <message>
+        <location filename="../src/gui/widgets/IconLabel.ui" line="14"/>
+        <source>IconLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/IconLabel.ui" line="23"/>
+        <source>Icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/widgets/IconLabel.ui" line="30"/>
+        <source>Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>InfoPluginSelectionDialogClass</name>
     <message>
         <location filename="../src/plugin/info/InfoPluginSelectionDialog.ui" line="14"/>
@@ -2781,363 +2999,363 @@ Zee preselecshun veell be-a reset oon zee next stert ooff zee prugrem.</translat
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="346"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="341"/>
         <source>%1
 Configuration: %2</source>
         <translation type="unfinished">%1
 Cunffeegooreshun: %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="423"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="418"/>
         <source>Weather</source>
         <translation type="unfinished">Veezeer</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="489"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="495"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="484"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="490"/>
         <source>Really exit?</source>
         <translation type="unfinished">Reelly ixeet?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="489"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="495"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="484"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="490"/>
         <source>Really exit the program?</source>
         <translation type="unfinished">Reelly ixeet zee prugrem?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="500"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="495"/>
         <source>Really shut down?</source>
         <translation type="unfinished">Reelly shoot doon?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="500"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="495"/>
         <source>Really shut down the computer?</source>
         <translation type="unfinished">Reelly shoot doon zee cumpooter?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="569"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="564"/>
         <source>Show &amp;log</source>
         <translation type="unfinished">Shoo &amp;lug</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="572"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="567"/>
         <source>Startkladde</source>
         <translation type="unfinished">Stertkledde-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="574"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="569"/>
         <source>Flight log %1 - Startkladde</source>
         <translation type="unfinished">Fleeght lug %1 - Stertkledde-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="622"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="618"/>
         <source>Today (%1)</source>
         <translation type="unfinished">Tudey (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="627"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="623"/>
         <source>dddd, M/d/yyyy</source>
         <translation type="unfinished">dddd, M/d/yyyy</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="833"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="829"/>
         <source>According to the database, the %1 %2 is still flying. Depart anyway?</source>
         <translation type="unfinished">Eccurdeeng tu zee detebese-a, zee %1 %2 is steell flyeeng. Depert unyvey?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="835"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="831"/>
         <source>Plane still flying</source>
         <translation type="unfinished">Plune-a steell flyeeng</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="847"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="843"/>
         <source>According to the database, the %1 %2 is still flying. Start anyway?</source>
         <translation type="unfinished">Eccurdeeng tu zee detebese-a, zee %1 %2 is steell flyeeng. Stert unyvey?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="849"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="845"/>
         <source>Person still flying</source>
         <translation type="unfinished">Persun steell flyeeng</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="871"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="867"/>
         <source>plane</source>
         <translation type="unfinished">plune-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="873"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="869"/>
         <source>towplane</source>
         <translation type="unfinished">tooplune-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="890"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="886"/>
         <source>Departing not possible</source>
         <translation type="unfinished">Deperteeng nut pusseeble-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="916"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="971"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="912"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="967"/>
         <source>Landing not possible</source>
         <translation type="unfinished">Lundeeng nut pusseeble-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="945"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1092"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="941"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1088"/>
         <source>Touch-and-go not possible</source>
         <translation type="unfinished">Tuooch-und-gu nut pusseeble-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1093"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1089"/>
         <source>The selected flight is a towflight. Towflights cannot perform a touch-and-go.</source>
         <translation type="unfinished">Zee selected fleeght is a tooffleeght. Tooffleeghts cunnut perffurm a tuooch-und-gu.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1179"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1175"/>
         <source>Replicating not possible</source>
         <translation type="unfinished">Repleeceting nut pusseeble-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1180"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1176"/>
         <source>The selected flight is a towflight. Towflights cannot be replicated.</source>
         <translation type="unfinished">Zee selected fleeght is a tooffleeght. Tooffleeghts cunnut be-a repleeceted.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1207"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1203"/>
         <source>Delete flight?</source>
         <translation type="unfinished">Delete-a fleeght?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1207"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1203"/>
         <source>Really delete flight?</source>
         <translation type="unfinished">Reelly delete-a fleeght?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1209"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1205"/>
         <source>Delete glider flight?</source>
         <translation type="unfinished">Delete-a gleeder fleeght?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1210"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1206"/>
         <source>The selected flight is a towflight. Really delete the corresponding glider flight?</source>
         <translation type="unfinished">Zee selected fleeght is a tooffleeght. Reelly delete-a zee currespundeeng gleeder fleeght?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1237"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1410"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1233"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1406"/>
         <source>No flight selected</source>
         <translation type="unfinished">Nu fleeght selected</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1237"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1410"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1233"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1406"/>
         <source>No flight is selected.</source>
         <translation type="unfinished">Nu fleeght is selected.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1285"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1281"/>
         <source>Towflight has errors</source>
         <translation type="unfinished">Tooffleeght hes irrurs</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1285"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1281"/>
         <source>First error of the towflight: %1</source>
         <translation type="unfinished">Furst irrur ooff zee tooffleeght: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1287"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1283"/>
         <source>Flight has errors</source>
         <translation type="unfinished">Fleeght hes irrurs</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1287"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1283"/>
         <source>First error of the flight: %1</source>
         <translation type="unfinished">Furst irrur ooff zee fleeght: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1292"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1288"/>
         <source>Towflight has no errors</source>
         <translation type="unfinished">Tooffleeght hes nu irrurs</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1292"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1288"/>
         <source>The towflight has no errors.</source>
         <translation type="unfinished">Zee tooffleeght hes nu irrurs.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1294"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1290"/>
         <source>Flight has no errors</source>
         <translation type="unfinished">Fleeght hes nu irrurs</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1294"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1290"/>
         <source>The flight has no errors.</source>
         <translation type="unfinished">Zee fleeght hes nu irrurs.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1363"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1380"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1359"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1376"/>
         <source>DBus call failed</source>
         <translation type="unfinished">DBoos cell feeeled</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1364"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1360"/>
         <source>The call to dbus-send for displaying the virtual keyboard failed.</source>
         <translation type="unfinished">Zee cell tu dboos-send fur deespleying zee furtooel keybuerd feeeled.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1369"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1365"/>
         <source>Unable to display virtual keyboard</source>
         <translation type="unfinished">Uneble-a tu deespley furtooel keybuerd</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1370"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1366"/>
         <source>The virtual keyboard could not be displayed. Maybe kvkbd is not installed.</source>
         <translation type="unfinished">Zee furtooel keybuerd cuoold nut be-a deespleyed. Meybe-a kfkbd is nut instelled.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1381"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1377"/>
         <source>The call to dbus-send for hiding the virtual keyboard failed.</source>
         <translation type="unfinished">Zee cell tu dboos-send fur heeding zee furtooel keybuerd feeeled.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1421"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1417"/>
         <source>Either the selected flight is neither a towflight nor a towed flight, or it has not departed yet.</source>
         <translation type="unfinished">Ieezeer zee selected fleeght is neeezeer a tooffleeght nur a tooed fleeght, oor it hes nut deperted yet.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1422"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1418"/>
         <source>No towflight</source>
         <translation type="unfinished">Nu tooffleeght</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1456"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2142"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2189"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1452"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2145"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2192"/>
         <source>Error</source>
         <translation type="unfinished">Irrur</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1457"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1453"/>
         <source>An error occured while executing the network diagnostics command.</source>
         <translation type="unfinished">Un irrur ooccoored vheele-a ixecooteeng zee netvurk deeegnustics cummund.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1736"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1732"/>
         <source>Set displayed date</source>
         <translation type="unfinished">Set deespleyed dete-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1736"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1732"/>
         <source>Displayed date:</source>
         <translation type="unfinished">Deespleyed dete-a:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1853"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1856"/>
         <source>The database password must be entered to display the flight database.</source>
         <translation type="unfinished">Zee detebese-a pessvurd moost be-a intered tu deespley zee fleeght detebese-a.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1874"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1877"/>
         <source>Database: %2 (%1)</source>
         <translation type="unfinished">Detebese-a: %2 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1946"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1949"/>
         <source>Not connected</source>
         <translation type="unfinished">Nut cunnected</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1950"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2006"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1953"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2009"/>
         <source>Connecting...</source>
         <translation type="unfinished">Cunnecteeng...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1954"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2014"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1957"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2017"/>
         <source>OK</source>
         <translation type="unfinished">OoK</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2003"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2006"/>
         <source>No connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2010"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2013"/>
         <source>No data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2012"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2015"/>
         <source>Connected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2020"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2023"/>
         <source>Disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2294"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2297"/>
         <source>Registration from FlarmNet: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2031"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2034"/>
         <source>No reply</source>
         <translation type="unfinished">Nu reply</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2101"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2104"/>
         <source>Database settings changed</source>
         <translation type="unfinished">Detebese-a setteengs chunged</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2103"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2106"/>
         <source>The database settings were changed. The changes will be effective on the next reconnect. Do you want to reconnect now?</source>
         <translation type="unfinished">Zee detebese-a setteengs vere-a chunged. Zee chunges veell be-a iffffecteefe-a oon zee next recunnect. Du yuoo vunt tu recunnect noo?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2125"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2128"/>
         <source>Set system time</source>
         <translation type="unfinished">Set system teeme-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2136"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2183"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2139"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2186"/>
         <source>System time changed</source>
         <translation type="unfinished">System teeme-a chunged</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2137"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2184"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2140"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2187"/>
         <source>The system time was changed. The setting may only be stored permanently when the system is shut down.</source>
         <translation type="unfinished">Zee system teeme-a ves chunged. Zee setteeng mey oonly be-a stured permunently vhee zee system is shoot doon.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2143"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2190"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2146"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2193"/>
         <source>Changing the system time failed. Maybe the user has insufficient permissions.</source>
         <translation type="unfinished">Chungeeng zee system teeme-a feeeled. Meybe-a zee user hes insooffffeecient permeessiuns.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2164"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2167"/>
         <source>Time difference</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2165"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2168"/>
         <source>&lt;p&gt;System time: %1&lt;/p&gt;&lt;p&gt;GPS time: %2&lt;/p&gt;&lt;p&gt;The system time differs by %3 seconds from the GPS time.&lt;/p&gt;&lt;p&gt;Correction?&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2197"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2200"/>
         <source>System time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="2197"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="2200"/>
         <source>The system time is correct</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3185,54 +3403,54 @@ Cunffeegooreshun: %2</translation>
         <translation type="unfinished">Pooer soopply:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="298"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="301"/>
         <source>Not connected to database</source>
         <translation type="unfinished">Nut cunnected tu detebese-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="330"/>
-        <location filename="../src/gui/windows/MainWindow.ui" line="835"/>
-        <location filename="../src/gui/windows/MainWindow.ui" line="934"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="333"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="839"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="938"/>
         <source>&amp;Connect</source>
         <translation type="unfinished">&amp;Cunnect</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="379"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="382"/>
         <source>&amp;Program</source>
         <translation type="unfinished">&amp;Prugrem</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="390"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="393"/>
         <source>&amp;Flight</source>
         <translation type="unfinished">&amp;Fleeght</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="407"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="410"/>
         <source>&amp;View</source>
         <translation type="unfinished">&amp;Feeoo</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="411"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="414"/>
         <source>&amp;Flights</source>
         <translation type="unfinished">&amp;Fleeghts</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="422"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="425"/>
         <source>&amp;Date</source>
         <translation type="unfinished">&amp;Dete-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="430"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="433"/>
         <source>F&amp;ont</source>
         <translation type="unfinished">F&amp;oont</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="448"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="451"/>
         <source>&amp;Statistics</source>
         <translation type="unfinished">&amp;Steteestics</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="456"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="459"/>
         <source>&amp;Database</source>
         <translation type="unfinished">&amp;Detebese-a</translation>
     </message>
@@ -3241,374 +3459,399 @@ Cunffeegooreshun: %2</translation>
         <translation type="obsolete">De-a&amp;boog</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="471"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="474"/>
         <source>D&amp;ebug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="486"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="489"/>
         <source>&amp;Help</source>
         <translation type="unfinished">&amp;Help</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="493"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="496"/>
         <source>Fla&amp;rm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="520"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="524"/>
         <source>Log</source>
         <translation type="unfinished">Lug</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="545"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="549"/>
         <source>Toolbar</source>
         <translation type="unfinished">Tuulber</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="567"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="571"/>
         <source>Set &amp;time...</source>
         <translation type="unfinished">Set &amp;teeme-a...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="572"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="576"/>
         <source>&amp;Exit</source>
         <translation type="unfinished">&amp;Ixeet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="575"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="579"/>
         <source>Ctrl+Q</source>
         <extracomment>Exit</extracomment>
         <translation type="unfinished">Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="580"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="584"/>
         <source>Shut&amp;down</source>
         <translation type="unfinished">Shoot&amp;doon</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="585"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="589"/>
         <source>&amp;New flight... (F2)</source>
         <translation type="unfinished">&amp;Noo fleeght... (F2)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="588"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="592"/>
         <source>New flight (F2)</source>
         <translation type="unfinished">Noo fleeght (F2)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="591"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="595"/>
         <source>Ctrl+N</source>
         <extracomment>New flight</extracomment>
         <translation type="unfinished">Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="596"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="600"/>
         <source>&amp;Depart (F5)</source>
         <translation type="unfinished">&amp;Depert (F5)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="599"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="603"/>
         <source>Ctrl+D</source>
         <extracomment>Depart</extracomment>
         <translation type="unfinished">Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="604"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="608"/>
         <source>&amp;Land/end (F6)</source>
         <translation type="unfinished">&amp;Lund/ind (F6)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="607"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="611"/>
         <source>Ctrl+L</source>
         <extracomment>Land</extracomment>
         <translation type="unfinished">Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="612"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="616"/>
         <source>Touch-and-&amp;go (F7)</source>
         <translation type="unfinished">Tuooch-und-&amp;gu (F7)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="615"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="619"/>
         <source>Ctrl+T</source>
         <extracomment>Touch-and-go</extracomment>
         <translation type="unfinished">Ctrl+T</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="620"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="624"/>
         <source>&amp;Edit... (F4)</source>
         <translation type="unfinished">&amp;Ideet... (F4)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="623"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="627"/>
         <source>Ctrl+E</source>
         <extracomment>Edit</extracomment>
         <translation type="unfinished">Ctrl+I</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="628"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="632"/>
         <source>&amp;Replicate... (F3)</source>
         <translation type="unfinished">&amp;Repleecete-a... (F3)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="631"/>
-        <location filename="../src/gui/windows/MainWindow.ui" line="634"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="635"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="638"/>
         <source>Replicate flight (F3)</source>
         <translation type="unfinished">Repleecete-a fleeght (F3)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="637"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="641"/>
         <source>Ctrl+C</source>
         <extracomment>Replicate</extracomment>
         <translation type="unfinished">Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="642"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="646"/>
         <source>Dele&amp;te... (F8)</source>
         <translation type="unfinished">Dele-a&amp;te-a... (F8)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="645"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="649"/>
         <source>Del</source>
         <extracomment>Delete</extracomment>
         <translation type="unfinished">Del</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="650"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="654"/>
         <source>&amp;Refresh table</source>
         <translation type="unfinished">&amp;Reffresh teble-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="655"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="659"/>
         <source>&amp;Jump to towflight</source>
         <translation type="unfinished">&amp;Joomp tu tooffleeght</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="658"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="662"/>
         <source>Ctrl+J</source>
         <extracomment>Jump to towflight</extracomment>
         <translation type="unfinished">Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="663"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="667"/>
         <source>Restart &amp;plugins</source>
         <translation type="unfinished">Restert &amp;ploogeens</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="674"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="678"/>
         <source>&amp;Hide finished flights (F11)</source>
         <translation type="unfinished">&amp;Heede-a feenished fleeghts (F11)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="677"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="681"/>
         <source>Ctrl+A</source>
         <extracomment>Hide finished flights</extracomment>
         <translation type="unfinished">Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="688"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="692"/>
         <source>Always show e&amp;xternal flights</source>
         <translation type="unfinished">Elveys shoo i&amp;xternel fleeghts</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="699"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="703"/>
         <source>Always show &amp;erroneous flights</source>
         <translation type="unfinished">Elveys shoo &amp;irruneuoos fleeghts</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="704"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="708"/>
         <source>Sort by effective &amp;time (F9)</source>
         <translation type="unfinished">Surt by iffffecteefe-a &amp;teeme-a (F9)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="709"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="713"/>
         <source>Set &amp;displayed date... (F10)</source>
         <translation type="unfinished">Set &amp;deespleyed dete-a... (F10)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="720"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="724"/>
         <source>&amp;Update displayed date when creating a flight</source>
         <translation type="unfinished">&amp;Updete-a deespleyed dete-a vhee creeteeng a fleeght</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="731"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="735"/>
         <source>Always use &amp;current date for new flights</source>
         <translation type="unfinished">Elveys use-a &amp;coorrent dete-a fur noo fleeghts</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="736"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="740"/>
         <source>&amp;Plane logbooks</source>
         <translation type="unfinished">&amp;Plune-a lugbuuks</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="741"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="745"/>
         <source>P&amp;ilot logbooks</source>
         <translation type="unfinished">P&amp;ilut lugbuuks</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="746"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="750"/>
         <source>&amp;Launch method overview</source>
         <translation type="unfinished">&amp;Loonch methud ooferfeeoo</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="751"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="755"/>
         <source>Edit &amp;planes</source>
         <translation type="unfinished">Ideet &amp;plunes</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="754"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="758"/>
         <source>Ctrl+P</source>
         <extracomment>Edit planes</extracomment>
         <translation type="unfinished">Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="759"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="763"/>
         <source>Edit p&amp;eople</source>
         <translation type="unfinished">Ideet p&amp;iuple-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="762"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="766"/>
         <source>Ctrl+O</source>
         <extracomment>Edit people</extracomment>
         <translation type="unfinished">Ctrl+Oo</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="767"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="771"/>
         <source>&amp;Refresh (F12)</source>
         <translation type="unfinished">&amp;Reffresh (F12)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="770"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="774"/>
         <source>Ctrl+R</source>
         <extracomment>Refresh</extracomment>
         <translation type="unfinished">Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="775"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="779"/>
         <source>&amp;Crash</source>
         <translation type="unfinished">&amp;Cresh</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="780"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="784"/>
         <source>&amp;Ping Server</source>
         <translation type="unfinished">&amp;Peeng Serfer</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="788"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="792"/>
         <source>&amp;About Startkladde</source>
         <translation type="unfinished">&amp;Ebuoot Stertkledde-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="793"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="797"/>
         <source>&amp;Network diagnostics</source>
         <translation type="unfinished">&amp;Netvurk deeegnustics</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="798"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="802"/>
         <source>&amp;Select font</source>
         <translation type="unfinished">&amp;Select funt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="803"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="807"/>
         <source>&amp;Increase size</source>
         <translation type="unfinished">&amp;Increese-a seeze-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="806"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="810"/>
         <source>+</source>
         <translation type="unfinished">+</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="811"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="815"/>
         <source>&amp;Decrease size</source>
         <translation type="unfinished">&amp;Decreese-a seeze-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="814"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="818"/>
         <source>-</source>
         <translation type="unfinished">-</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="822"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="826"/>
         <source>Show &amp;virtual keyboard</source>
         <translation type="unfinished">Shoo &amp;furtooel keybuerd</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="827"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="831"/>
         <source>&amp;Test</source>
         <translation type="unfinished">&amp;Test</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="843"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="847"/>
         <source>&amp;Disconnect</source>
         <translation type="unfinished">&amp;Deescunnect</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="848"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="852"/>
         <source>&amp;Show errors</source>
         <translation type="unfinished">&amp;Shoo irrurs</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="853"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="857"/>
         <source>Adjust &amp;column widths</source>
         <translation type="unfinished">Edjoost &amp;culoomn veedths</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="858"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="862"/>
         <source>Edit &amp;launch methods</source>
         <translation type="unfinished">Ideet &amp;loonch methuds</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="863"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="867"/>
         <source>&amp;Settings</source>
         <translation type="unfinished">&amp;Setteengs</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="866"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="870"/>
         <source>Ctrl+S</source>
         <extracomment>Settings</extracomment>
         <translation type="unfinished">Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="871"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="875"/>
         <source>Preselect launch &amp;method...</source>
         <translation type="unfinished">Preselect loonch &amp;methud...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="876"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="880"/>
         <source>Show flight d&amp;atabase</source>
         <extracomment>Seems like &amp;f is not displayed correctly, possible because it is replaced with a ligature</extracomment>
         <translation type="unfinished">Shoo fleeght d&amp;etebese-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="881"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="885"/>
         <source>Change lan&amp;guage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="892"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="896"/>
         <source>Timer-&amp;based language change</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="937"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="912"/>
+        <source>Plane &amp;list...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="917"/>
+        <source>Flarm &amp;radar...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="925"/>
+        <source>Import FlarmNet database from &amp;file...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="930"/>
+        <source>Flarm&amp;Net overview...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="941"/>
         <source>Ctrl+X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="942"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="946"/>
         <source>Inject Flarm &amp;departure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="947"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="951"/>
         <source>Inject Flarm &amp;landing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="952"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="956"/>
         <source>Inject Flarm &amp;touch and go</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.ui" line="961"/>
+        <source>Download FlarmNet database from &amp;web...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3616,7 +3859,7 @@ Cunffeegooreshun: %2</translation>
         <translation type="obsolete">Chunge-a &amp;lungooege-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="884"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="888"/>
         <source>Ctrl+B</source>
         <translation type="unfinished">Ctrl+B</translation>
     </message>
@@ -3625,43 +3868,23 @@ Cunffeegooreshun: %2</translation>
         <translation type="obsolete">&amp;Teemer-besed lungooege-a chunge-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="895"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="899"/>
         <source>Ctrl+V</source>
         <translation type="unfinished">Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="900"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="904"/>
         <source>Set &amp;GPS time...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="903"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="907"/>
         <source>Set GPS time from Flarm data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="908"/>
-        <source>&amp;Flarm overview</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="913"/>
-        <source>Flarm &amp;Radar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="916"/>
+        <location filename="../src/gui/windows/MainWindow.ui" line="920"/>
         <source>Ctrl+F</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="921"/>
-        <source>&amp;Import FlarmNet Database</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/MainWindow.ui" line="926"/>
-        <source>FlarmNet &amp;Overview</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4249,27 +4472,27 @@ moost be-a intered tu sefe-a zee chunges.</translation>
 <context>
     <name>PersonModel</name>
     <message>
-        <location filename="../src/model/PersonModel.cpp" line="31"/>
+        <location filename="../src/model/PersonModel.cpp" line="24"/>
         <source>Last name</source>
         <translation type="unfinished">Lest neme-a</translation>
     </message>
     <message>
-        <location filename="../src/model/PersonModel.cpp" line="32"/>
+        <location filename="../src/model/PersonModel.cpp" line="25"/>
         <source>First name</source>
         <translation type="unfinished">Furst neme-a</translation>
     </message>
     <message>
-        <location filename="../src/model/PersonModel.cpp" line="33"/>
+        <location filename="../src/model/PersonModel.cpp" line="26"/>
         <source>Club</source>
         <translation type="unfinished">Cloob</translation>
     </message>
     <message>
-        <location filename="../src/model/PersonModel.cpp" line="34"/>
+        <location filename="../src/model/PersonModel.cpp" line="27"/>
         <source>Comments</source>
         <translation type="unfinished">Cumments</translation>
     </message>
     <message>
-        <location filename="../src/model/PersonModel.cpp" line="35"/>
+        <location filename="../src/model/PersonModel.cpp" line="28"/>
         <source>ID</source>
         <translation type="unfinished">ID</translation>
     </message>
@@ -5450,22 +5673,22 @@ Durecturyeees cun be-a ebsuloote-a (i. g. /fer/leeb/stertkledde-a/ploogeens oor 
 <context>
     <name>StatisticsWindow</name>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1747"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1743"/>
         <source>Plane logbooks</source>
         <translation type="unfinished">Plune-a lugbuuks</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1748"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1744"/>
         <source>Pilot logbooks</source>
         <translation type="unfinished">Peelut lugbuuks</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1749"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1745"/>
         <source>Launch method overview</source>
         <translation type="unfinished">Loonch methud ooferfeeoo</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1750"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1746"/>
         <source>Flarm overview</source>
         <translation type="unfinished"></translation>
     </message>
