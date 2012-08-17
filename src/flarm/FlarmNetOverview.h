@@ -13,7 +13,7 @@ class FlarmNetOverview: public SkDialog<Ui::FlarmNetOverviewDialog>
 
 	public:
 		FlarmNetOverview (DbManager &dbManager, QWidget *parent);
-		~FlarmNetOverview ();
+		virtual ~FlarmNetOverview ();
 
 	private:
 		QSortFilterProxyModel* proxyModel;
