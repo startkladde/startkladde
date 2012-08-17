@@ -119,7 +119,16 @@ void FlarmWindow::on_reverseButton_clicked ()
 
 void FlarmWindow::linkActivated (const QString &link)
 {
-	if (link=="kmlFileDoesNotExist")
+	if (link=="kmlFileNotSpecified")
+	{
+		QString title=tr ("KML file not specified");
+		QString text=tr ("You can specify a KML file to show lines (e. g."
+			" airfield boundaries, traffic circuit..) or points (e. g. hangars,"
+			" buildings...). KML files can be created with Google Earth or"
+			" Google Maps");
+		QMessageBox::information (this, title, text);
+	}
+	else if (link=="kmlFileDoesNotExist")
 	{
 		QString title=tr ("KML file does not exist");
 		QString text=tr ("The KML file specified in the settings does not exist:\n"
@@ -152,7 +161,7 @@ void FlarmWindow::linkActivated (const QString &link)
 				case 5: bearingString=tr ("south-west"); break;
 				case 6: bearingString=tr ("west"      ); break;
 				case 7: bearingString=tr ("north-west"); break;
-				default: bearingString=notr ("???");
+				default: bearingString=notr ("???"); break;
 			}
 
 			QString title=tr ("No KML elements visible");
@@ -183,7 +192,7 @@ void FlarmWindow::updateWarnings ()
 	switch (ui.flarmMap->getKmlStatus ())
 	{
 		case FlarmMapWidget::kmlNone:
-			ui.kmlWarning->showInformation (tr ("No KML file specified"));
+			ui.kmlWarning->showInformation (tr ("No KML file specified  (<a href=\"kmlFileNotSpecified\">details</a>)"));
 			break;
 		case FlarmMapWidget::kmlNotFound:
 			ui.kmlWarning->showWarning (tr ("The specified KML file does not exist (<a href=\"kmlFileDoesNotExist\">details</a>)"));
@@ -198,10 +207,10 @@ void FlarmWindow::updateWarnings ()
 			ui.kmlWarning->showWarning (tr ("The specified KML file does not contain any elements"));
 			break;
 		case FlarmMapWidget::kmlOk:
-			if (ui.flarmMap->isAnyStaticElementVisible ())
-				ui.kmlWarning->hide ();
-			else
+			if (ui.flarmMap->isOwnPositionKnown () && !ui.flarmMap->isAnyStaticElementVisible ())
 				ui.kmlWarning->showWarning (tr ("None of the KML elements are visible (<a href=\"noKmlElementsVisible\">details</a>)"));
+			else
+				ui.kmlWarning->hide ();
 			break;
 		// no default
 	}
@@ -212,9 +221,9 @@ void FlarmWindow::updateWarnings ()
 	{
 		if (ui.flarmMap->getKmlStatus ()==FlarmMapWidget::kmlOk)
 			// We could show the KML data, if only we had GPS
-			ui.gpsWarning->showWarning (tr ("GPS bad - KML data can not be shown"));
+			ui.gpsWarning->showWarning (tr ("No GPS data. The data from the KML file cannot be shown."));
 		else
-			ui.gpsWarning->showWarning (tr ("GPS bad"));
+			ui.gpsWarning->showWarning (tr ("No GPS data"));
 	}
 
 	if (!ui.flarmMap->isOwnPositionVisible ())
