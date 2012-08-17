@@ -42,7 +42,12 @@ class KmlReader
 		QMap<QString, Kml::Style> styles;
 		QMap<QString, Kml::StyleMap> styleMaps;
 
+		GeoPosition boundingRectSouthWest;
+		GeoPosition boundingRectNorthEast;
+
 	private:
+		void addToBoundingRect (const GeoPosition &position);
+
 		void readStyle    (const QDomNode &styleNode);
 		void readStyleMap (const QDomNode &styleMapNode);
 

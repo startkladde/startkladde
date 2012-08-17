@@ -60,11 +60,14 @@ void KmlReader::readMarker (const QString &name, const QString &styleUrl, const 
 {
 	 double longitude=lookAtElement.firstChildElement ("longitude").text ().toDouble ();
 	 double latitude =lookAtElement.firstChildElement ("latitude" ).text ().toDouble ();
+	 GeoPosition position=GeoPosition::fromDegrees (latitude, longitude);
 
 	 Kml::Marker marker;
-	 marker.position=GeoPosition::fromDegrees (latitude, longitude);
+	 marker.position=position;
 	 marker.name=name;
 	 marker.styleUrl=styleUrl;
+
+	 addToBoundingRect (position);
 
 	 markers.append (marker);
 }
@@ -79,7 +82,11 @@ void KmlReader::readPath (const QString &name, const QString &styleUrl, const QD
 		 // FIXME only if exists
 		 double longitude=parts[0].toDouble ();
 		 double latitude =parts[1].toDouble ();
-		 points.append (GeoPosition::fromDegrees (latitude, longitude));
+		 GeoPosition position=GeoPosition::fromDegrees (latitude, longitude);
+
+		 points.append (position);
+
+		 addToBoundingRect (position);
 	 }
 
 	 Kml::Path path;
@@ -103,7 +110,11 @@ void KmlReader::readPolygon (const QString &name, const QString &styleUrl, const
 		// FIXME only if exists
 		double longitude=parts[0].toDouble ();
 		double latitude =parts[1].toDouble ();
-		points.append (GeoPosition::fromDegrees (latitude, longitude));
+		GeoPosition position=GeoPosition::fromDegrees (latitude, longitude);
+
+		points.append (position);
+
+		addToBoundingRect (position);
 	}
 
 	Kml::Polygon polygon;
@@ -114,6 +125,12 @@ void KmlReader::readPolygon (const QString &name, const QString &styleUrl, const
 	polygons.append (polygon);
 }
 
+/**
+ * A placemark is either a marker (LookAt element), a path (LineString element)
+ * or a polygon (Polygon element).
+ *
+ * @param placemarkNode
+ */
 void KmlReader::readPlacemark (const QDomNode &placemarkNode)
 {
 	// FIXME is it possible that the node is not an element?
@@ -204,4 +221,17 @@ Kml::Style KmlReader::findStyle (const QString &styleUrl)
 	}
 
 	return Kml::Style ();
+}
+
+void KmlReader::addToBoundingRect (const GeoPosition &position)
+{
+	if (boundingRectSouthWest.isValid ())
+		boundingRectSouthWest=GeoPosition::southWest (boundingRectSouthWest, position);
+	else
+		boundingRectSouthWest=position;
+
+	if (boundingRectNorthEast.isValid ())
+		boundingRectNorthEast=GeoPosition::northEast (boundingRectNorthEast, position);
+	else
+		boundingRectNorthEast=position;
 }
