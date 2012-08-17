@@ -1,3 +1,5 @@
+#include "FlarmNetHandler.h"
+
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -5,7 +7,6 @@
 #include "src/text.h"
 #include "src/concurrent/monitor/SignalOperationMonitor.h"
 #include "src/db/DbManager.h"
-#include "src/flarm/FlarmNetHandler.h"
 #include "src/flarm/FlarmNetRecord.h"
 #include "src/flarm/FlarmNetFile.h"
 #include "src/gui/windows/MonitorDialog.h"
