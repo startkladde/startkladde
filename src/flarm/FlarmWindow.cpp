@@ -17,6 +17,7 @@
 #include "src/config/Settings.h"
 #include "src/util/qString.h"
 #include "src/nmea/GpsTracker.h"
+#include "src/numeric/Distance.h"
 
 FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (parent)
 {
@@ -24,9 +25,11 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 
 	ui.kmlWarning->hide ();
 	ui.gpsWarning->hide ();
+	ui.positionWarning->hide ();
 
-	connect (ui.kmlWarning, SIGNAL (linkActivated (const QString &)), this, SLOT (linkActivated (const QString &)));
-	connect (ui.gpsWarning, SIGNAL (linkActivated (const QString &)), this, SLOT (linkActivated (const QString &)));
+	connect (ui.kmlWarning     , SIGNAL (linkActivated (const QString &)), this, SLOT (linkActivated (const QString &)));
+	connect (ui.gpsWarning     , SIGNAL (linkActivated (const QString &)), this, SLOT (linkActivated (const QString &)));
+	connect (ui.positionWarning, SIGNAL (linkActivated (const QString &)), this, SLOT (linkActivated (const QString &)));
 
 	connect (ui.flarmMap, SIGNAL (ownPositionUpdated ()), this, SLOT (flarmMapOwnPositionUpdated ()));
 	connect (ui.flarmMap, SIGNAL (viewChanged        ()), this, SLOT (flarmMapViewChanged        ()));
@@ -125,17 +128,58 @@ void FlarmWindow::linkActivated (const QString &link)
 			.arg (Settings::instance ().flarmMapKmlFileName);
 		QMessageBox::warning (this, title, text);
 	}
+	else if (link=="resetPosition")
+		ui.flarmMap->resetPosition ();
+	else if (link=="noKmlElementsVisible")
+	{
+		double distance;
+		Angle bearing;
+
+		bool ok=ui.flarmMap->findClosestStaticElement (&distance, &bearing);
+		if (ok)
+		{
+			// Note that this is not generic functionality - the wording and
+			// translation may depend on the context. For example, "north-west"
+			// may become "nordwestlich" or "Nordwesten" in German.
+			QString bearingString;
+			switch (bearing.compassSection (8))
+			{
+				case 0: bearingString=tr ("north"     ); break;
+				case 1: bearingString=tr ("north-east"); break;
+				case 2: bearingString=tr ("east"      ); break;
+				case 3: bearingString=tr ("south-east"); break;
+				case 4: bearingString=tr ("south"     ); break;
+				case 5: bearingString=tr ("south-west"); break;
+				case 6: bearingString=tr ("west"      ); break;
+				case 7: bearingString=tr ("north-west"); break;
+				default: bearingString=notr ("???");
+			}
+
+			QString title=tr ("No KML elements visible");
+			QString text=tr ("None of the elements read from the KML file are currently visible."
+				" The KML element closest to the current position is located %1 to the %2 of the current position.")
+				.arg (Distance::format (distance, 0))
+				.arg (bearingString);
+			QMessageBox::warning (this, title, text);
+		}
+		else
+		{
+			QString title=tr ("No KML elements visible");
+			QString text=tr ("None of the elements read from the KML file are currently visible.");
+			QMessageBox::warning (this, title, text);
+		}
+	}
 }
 
 void FlarmWindow::updateWarnings ()
 {
-	bool ownPositionKnown=ui.flarmMap->isOwnPositionKnown ();
-	bool positionWarningShown=false;
-
 	// FIXME test all cases
 	// FIXME proper messages
 	// FIXME is it possible that by moving the origin out of the window, the
 	// layout changes in such a way that the origin is moved in again?
+	// => yes, move it out to the right or left, when the widget is wider than
+	//    high
+
 	switch (ui.flarmMap->getKmlStatus ())
 	{
 		case FlarmMapWidget::kmlNone:
@@ -151,33 +195,32 @@ void FlarmWindow::updateWarnings ()
 			ui.kmlWarning->showWarning (tr ("The specified KML file could not be parsed"));
 			break;
 		case FlarmMapWidget::kmlEmpty:
-			ui.kmlWarning->showWarning (tr ("The specified KML file does not contain any visible elements"));
+			ui.kmlWarning->showWarning (tr ("The specified KML file does not contain any elements"));
 			break;
 		case FlarmMapWidget::kmlOk:
-			if (!ownPositionKnown)
-			{
-				ui.kmlWarning->showWarning (tr ("Own position unknown - KML file useless")); // FIXME proper message
-				positionWarningShown=true;
-			}
-			else if (!ui.flarmMap->isOwnPositionVisible ())
-				ui.kmlWarning->showWarning (tr ("Own position not visible"));
-//			else if (!ui.flarmMap->anyKmlElementsVisible ()) // FIXME enable
-//				ui.kmlWarning->showWarning (tr ("No KML elements visible"));
-			else
+			if (ui.flarmMap->isAnyStaticElementVisible ())
 				ui.kmlWarning->hide ();
+			else
+				ui.kmlWarning->showWarning (tr ("None of the KML elements are visible (<a href=\"noKmlElementsVisible\">details</a>)"));
 			break;
 		// no default
 	}
 
-	ui.flarmMap->isOwnPositionVisible ();
-
-	// FIXME the problem is that by changing the layout, the graph may be
-	// resized before it has been replotted
-
-	if (ownPositionKnown || positionWarningShown)
+	if (ui.flarmMap->isOwnPositionKnown ()) // GPS good
 		ui.gpsWarning->hide ();
 	else
-		ui.gpsWarning->showWarning (tr ("No GPS data"));
+	{
+		if (ui.flarmMap->getKmlStatus ()==FlarmMapWidget::kmlOk)
+			// We could show the KML data, if only we had GPS
+			ui.gpsWarning->showWarning (tr ("GPS bad - KML data can not be shown"));
+		else
+			ui.gpsWarning->showWarning (tr ("GPS bad"));
+	}
+
+	if (!ui.flarmMap->isOwnPositionVisible ())
+		ui.positionWarning->showWarning (tr ("The own position is not visible (<a href=\"resetPosition\">reset</a>)"));
+	else
+		ui.positionWarning->hide ();
 }
 
 void FlarmWindow::flarmMapViewChanged ()

@@ -391,13 +391,13 @@ void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 {
 	// Only redraw if either the reference position for the static data is
 	// invalid (i. e., we didn't draw yet), or the position changed by more
-	// than a given threshold. The usual noise on the Flarm GPS data seems to be
-	// substantially less than 1 m. Currently, the threshold is set to 0, so the
-	// static data is redrawn every time a position is received (typically once
-	// per second).
-	// FIXME must also update when the position becomes invalid
+	// than a given threshold, or the position has become invalid.
+	// The typical noise on the Flarm GPS data seems to be substantially less
+	// than 1 m. Currently, the threshold is set to 0, so the static data is
+	// redrawn every time a position is received (typically once per second).
 	if (
 		!this->ownPosition.isValid () ||
+		!ownPosition.isValid () ||
 		ownPosition.distanceTo (this->ownPosition)>0)
 	{
 		this->ownPosition=ownPosition;
@@ -533,16 +533,7 @@ void FlarmMapWidget::updateStaticData ()
 {
 	bool valid=ownPosition.isValid ();
 
-	// Curves
-	foreach (const StaticCurve &curve, staticCurves)
-	{
-		if (valid)
-		{
-			QPolygonF polygon (GeoPosition::relativePositionTo (curve.points, ownPosition));
-			curve.data->setSamples (transform.map (polygon));
-		}
-		curve.curve->setVisible (valid);
-	}
+	allStaticPoints.clear ();
 
 	// Markers
 	foreach (const StaticMarker &marker, staticMarkers)
@@ -550,10 +541,26 @@ void FlarmMapWidget::updateStaticData ()
 		if (valid)
 		{
 			QPointF point (marker.position.relativePositionTo (ownPosition));
-			marker.marker->setValue (transform.map (point));
+			QPointF transformedPoint=transform.map (point);
+			marker.marker->setValue (transformedPoint);
+			allStaticPoints.append (transformedPoint);
 		}
 		marker.marker->setVisible (valid);
 	}
+
+	// Curves
+	foreach (const StaticCurve &curve, staticCurves)
+	{
+		if (valid)
+		{
+			QPolygonF polygon (GeoPosition::relativePositionTo (curve.points, ownPosition));
+			QPolygonF transformedPolygon=transform.map (polygon);
+			curve.data->setSamples (transformedPolygon);
+			allStaticPoints.append (transformedPolygon.toList ());
+		}
+		curve.curve->setVisible (valid);
+	}
+
 }
 
 
@@ -915,4 +922,61 @@ FlarmMapWidget::KmlStatus FlarmMapWidget::readKml (const QString &filename)
 bool FlarmMapWidget::isOwnPositionVisible () const
 {
 	return getAxesRect ().contains (0, 0);
+}
+
+bool FlarmMapWidget::isAnyStaticElementVisible () const
+{
+	if (!ownPosition.isValid ())
+		return false;
+
+	QRectF axesRect=getAxesRect ();
+
+	foreach (const QPointF &point, allStaticPoints)
+		if (axesRect.contains (point))
+			return true;
+
+	return false;
+}
+
+bool FlarmMapWidget::findClosestStaticElement (double *distance, Angle *bearing) const
+{
+	QPointF viewCenter=getAxesCenter ();
+
+	QPointF closestPoint;
+	double closestDistanceSquared=-1;
+
+	foreach (const QPointF &p, allStaticPoints)
+	{
+		QPointF point=p-viewCenter;
+
+		double distanceSquared=lengthSquared (point);
+
+		if (closestDistanceSquared<0 || distanceSquared<closestDistanceSquared)
+		{
+			closestPoint=point;
+			closestDistanceSquared=distanceSquared;
+		}
+	}
+
+	if (closestDistanceSquared>=0)
+	{
+		if (distance) (*distance)=sqrt (closestDistanceSquared);
+		// Note the transposition - atan2 calculates mathematical angle
+		// (starting at x, going counter-clockwise), we need geographical angle
+		// (starting at y, going clockwise).
+		if (bearing)  (*bearing)=Angle::atan2 (transposed (closestPoint));
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void FlarmMapWidget::resetPosition ()
+{
+	setAxesCenter (QPointF (0, 0));
+	replot ();
+	emit viewChanged ();
 }

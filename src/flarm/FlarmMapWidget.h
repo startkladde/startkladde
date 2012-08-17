@@ -149,6 +149,10 @@ class FlarmMapWidget: public QwtPlot
 
 		// View
 		bool isOwnPositionVisible () const;
+		bool isAnyStaticElementVisible () const;
+		bool findClosestStaticElement (double *distance, Angle *bearing) const;
+		void resetPosition ();
+
 
 	public slots:
 		void ownPositionChanged (const GeoPosition &ownPosition);
@@ -178,8 +182,10 @@ class FlarmMapWidget: public QwtPlot
 		QwtPlotMarker *ownPositionMarker;
 		QList<StaticCurve> staticCurves;
 		QList<StaticMarker> staticMarkers;
+		QList<QPointF> allStaticPoints;
 		QHash<QString, QwtPlotMarker *> flarmMarkers;
 		QHash<QString, QwtPlotCurve  *> flarmCurves;
+		GeoPosition kmlSouthEast, kmlNorthWest;
 
 		// Status
 		KmlStatus kmlStatus;
