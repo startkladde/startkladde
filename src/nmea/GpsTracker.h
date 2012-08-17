@@ -6,6 +6,8 @@
 
 #include "src/numeric/GeoPosition.h"
 
+class QTimer;
+
 class NmeaDecoder;
 class GprmcSentence;
 
@@ -26,7 +28,10 @@ class GpsTracker: public QObject
 		QDateTime getGpsTime () const;
 
 	signals:
-		/** Emitted whenever a new position record is received */
+		/**
+		 * Emitted whenever a new position record is received or no position is
+		 * received for a given time.
+		 */
 		void positionChanged (const GeoPosition &position);
 
 	public slots:
@@ -36,8 +41,12 @@ class GpsTracker: public QObject
 		NmeaDecoder *nmeaDecoder;
 
 		GeoPosition position;
-		double altitude;
 		QDateTime gpsTime;
+
+		QTimer *timer;
+
+	private slots:
+		void timeout ();
 };
 
 #endif

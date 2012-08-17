@@ -1,5 +1,7 @@
 #include "src/nmea/GpsTracker.h"
 
+#include <QTimer>
+
 #include "src/nmea/NmeaDecoder.h"
 #include "src/nmea/GprmcSentence.h"
 
@@ -10,8 +12,11 @@
  *               when the parent is destroyed. Can be NULL.
  */
 GpsTracker::GpsTracker (QObject *parent): QObject (parent),
-	nmeaDecoder (NULL), altitude (0)
+	nmeaDecoder (NULL)
 {
+	timer=new QTimer (this); // Will be deleted by its parent (this)
+	timer->setInterval (4000); // FIXME configurable? At least symbolic constant.
+	connect (timer, SIGNAL (timeout ()), this, SLOT (timeout ()));
 }
 
 GpsTracker::~GpsTracker ()
@@ -64,12 +69,23 @@ void GpsTracker::gprmcSentence (const GprmcSentence &sentence)
 {
 	if (!sentence.isValid ()) return;
 
-	GeoPosition oldPosition=this->position;
+	timer->start ();
+
+	bool positionHasChanged=(sentence.position!=this->position);
 
 	this->gpsTime=sentence.timestamp;
 	this->position=sentence.position;
-	// FIXME doesn't GPRMC have altitude? Get it from GPGGA.
 
-	if (this->position != oldPosition)
+	if (positionHasChanged)
+		emit positionChanged (this->position);
+}
+
+void GpsTracker::timeout ()
+{
+	bool positionHasChanged=this->position.isValid ();
+
+	this->position=GeoPosition ();
+
+	if (positionHasChanged)
 		emit positionChanged (this->position);
 }
