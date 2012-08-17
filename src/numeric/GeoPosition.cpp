@@ -215,7 +215,7 @@ QVector<GeoPosition> GeoPosition::readVector (QSettings &settings, const QString
  * Note that a GeoPosition includes floating point values, so the equality
  * relation is not to be trusted.
  */
-bool GeoPosition::operator== (const GeoPosition &other)
+bool GeoPosition::operator== (const GeoPosition &other) const
 {
 	// Both invalid => equal
 	if (!isValid () && !other.isValid ()) return true;
@@ -236,7 +236,45 @@ bool GeoPosition::operator== (const GeoPosition &other)
  *
  * @see operator==
  */
-bool GeoPosition::operator!= (const GeoPosition &other)
+bool GeoPosition::operator!= (const GeoPosition &other) const
 {
 	return !(*this==other);
+}
+
+/**
+ * Calculates a point that lies as far south as the southernmost and as far west
+ * as the westernmost of the two points p1 and p2
+ *
+ * If either or both of the points are invalid, an invalid GeoPosition is
+ * returned.
+ *
+ * This may fail if the longitude wraps.
+ */
+GeoPosition GeoPosition::southWest (const GeoPosition &p1, const GeoPosition p2)
+{
+	// If either or both of the latitudes are invalid, Angle::min will return
+	// an invalid Angle; the same applies to the longitudes.
+	return GeoPosition (
+		Angle::min (p1.latitude , p2.latitude ),
+		Angle::min (p1.longitude, p2.longitude)
+		);
+}
+
+/**
+ * Calculates a point that lies as far north as the northernmost and as far east
+ * as the easternmost of the two points p1 and p2
+ *
+ * If either or both of the points are invalid, an invalid GeoPosition is
+ * returned.
+ *
+ * This may fail if the longitude wraps.
+ */
+GeoPosition GeoPosition::northEast (const GeoPosition &p1, const GeoPosition p2)
+{
+	// If either or both of the latitudes are invalid, Angle::min will return
+	// an invalid Angle; the same applies to the longitudes.
+	return GeoPosition (
+		Angle::max (p1.latitude , p2.latitude ),
+		Angle::max (p1.longitude, p2.longitude)
+		);
 }

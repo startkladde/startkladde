@@ -46,8 +46,11 @@ class GeoPosition
 		static QVector<GeoPosition> readVector (QSettings &settings, const QString &key);
 		static void storeVector (QSettings &settings, const QString &key, const QVector<GeoPosition> &vector);
 
-		bool operator== (const GeoPosition &other);
-		bool operator!= (const GeoPosition &other);
+		bool operator== (const GeoPosition &other) const;
+		bool operator!= (const GeoPosition &other) const;
+
+		static GeoPosition southWest (const GeoPosition &p1, const GeoPosition p2);
+		static GeoPosition northEast (const GeoPosition &p1, const GeoPosition p2);
 
 
 	private:
