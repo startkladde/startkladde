@@ -1,6 +1,8 @@
 #ifndef ANGLE_H_
 #define ANGLE_H_
 
+class QPointF;
+
 /**
  * FIXME merge with Longitude class
  */
@@ -23,6 +25,8 @@ class Angle
 		static Angle fromRadians (double radians);
 		static Angle fromDegrees (double degrees);
 
+		Angle normalized () const;
+
 		bool isValid () const;
 
 		double toRadians () const;
@@ -35,6 +39,18 @@ class Angle
 
 		bool operator== (const Angle &other) const;
 		bool operator!= (const Angle &other) const;
+		bool operator<  (const Angle &other) const;
+		bool operator<= (const Angle &other) const;
+		bool operator>  (const Angle &other) const;
+		bool operator>= (const Angle &other) const;
+
+		static Angle min (const Angle &a1, const Angle &a2);
+		static Angle max (const Angle &a1, const Angle &a2);
+
+		static Angle atan2 (const double y, const double x);
+		static Angle atan2 (const QPointF &point);
+
+		int compassSection (int numSections) const;
 
 	private:
 		Angle (double value);
@@ -42,7 +58,6 @@ class Angle
 
 		double value;
 		bool valid;
-
 };
 
 #endif

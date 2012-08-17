@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include <QPointF>
+
 /**
  * Constructs an invalid angle
  */
@@ -90,6 +92,18 @@ double Angle::toDegrees () const
 }
 
 /**
+ * Returns an Angle equivalent to this one, but normalized to the range from 0°
+ * (included) to 360° (not included)
+ */
+Angle Angle::normalized () const
+{
+	double v=toRadians ();
+	while (v>=2*M_PI) v-=2*M_PI;
+	while (v<0      ) v+=2*M_PI;
+	return Angle::fromRadians (v);
+}
+
+/**
  * Returns the sum of this and other
  */
 Angle Angle::operator+ (const Angle &other) const
@@ -160,4 +174,129 @@ bool Angle::operator== (const Angle &other) const
 bool Angle::operator!= (const Angle &other) const
 {
 	return !(*this==other);
+}
+
+/**
+ * Tests for less-than
+ *
+ * If either or both of the angles are invalid, this operator returns false.
+ */
+bool Angle::operator< (const Angle &other) const
+{
+	if (!valid || !other.valid) return false;
+	return value<other.value;
+}
+
+/**
+ * Tests for less-or-equal-than
+ *
+ * If either or both of the angles are invalid, this operator returns false.
+ */
+bool Angle::operator<= (const Angle &other) const
+{
+	if (!valid || !other.valid) return false;
+	return value<=other.value;
+}
+
+/**
+ * Tests for greater-then
+ *
+ * If either or both of the angles are invalid, this operator returns false.
+ */
+bool Angle::operator> (const Angle &other) const
+{
+	if (!valid || !other.valid) return false;
+	return value>other.value;
+}
+
+/**
+ * Tests for greater-or-equal-than
+ *
+ * If either or both of the angles are invalid, this operator returns false.
+ */
+bool Angle::operator>= (const Angle &other) const
+{
+	if (!valid || !other.valid) return false;
+	return value>=other.value;
+}
+
+/**
+ * Returns the smaller of two Angles
+ *
+ * If either or both of the angles are invalid, an invalid angle is returned.
+ */
+Angle Angle::min (const Angle &a1, const Angle &a2)
+{
+	if (a1.valid && a2.valid)
+		return (a1.value<a2.value) ? a1.value : a2.value;
+	else
+		return Angle ();
+}
+
+/**
+ * Returns the greater of two Angles
+ *
+ * If either or both of the angles are invalid, an invalid angle is returned.
+ */
+Angle Angle::max (const Angle &a1, const Angle &a2)
+{
+	if (a1.valid && a2.valid)
+		return (a1.value>a2.value) ? a1.value : a2.value;
+	else
+		return Angle ();
+}
+
+/**
+ * Returns an Angle constructed by calling the atan2 function
+ *
+ * If both x and y are 0, an invalid Angle is returned.
+ */
+Angle Angle::atan2 (const double y, const double x)
+{
+	if (x==0 && y==0)
+		return Angle ();
+	else
+		return Angle::fromRadians (::atan2 (y, x));
+}
+
+/**
+ * Returns an Angle constructed by calling the atan2 function
+ *
+ * If the point is (0, 0), an invalid Angle is returned.
+ */
+Angle Angle::atan2 (const QPointF &point)
+{
+	return Angle::atan2 (point.y (), point.x ());
+}
+
+/**
+ * Divides the full circle into numSections sections of equal size and returns
+ * the number of the section containing the (normalized) Angle.
+ *
+ * For example, for numSections=4, the sections are as follows:
+ *     0  <= Angle <  45°: section 0 (north)
+ *    45° <= Angle < 135°: section 1 (east)
+ *   135° <= Angle < 225°: section 2 (south)
+ *   225° <= Angle < 315°: section 3 (west)
+ *   315° <= Angle < 360°: section 0 (north)
+ *
+ * For other values of numSections, the sections are placed such that section 0
+ * is centered at 0° (north).
+ *
+ * @param numSections the number of sections. Typical values are 4 or 8.
+ * @return an integer representing the section, with 0 <= section < numSections
+ */
+int Angle::compassSection (int numSections) const
+{
+	// Convert to a range from 0 (0 degrees) to numSections (360 degrees)
+	double v=normalized ().toRadians ()/(2*M_PI)*numSections;
+
+	// Round to the closest integer
+	int n=round (v);
+
+	// The section adjacent to 360 degrees should be 0, not numSections
+	if (n==numSections)
+		n=0;
+
+	return n;
 }
