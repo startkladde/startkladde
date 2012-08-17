@@ -7,7 +7,7 @@
 #include <QEvent>
 
 #include "src/i18n/notr.h"
-#include "src/gui/windows/NotificationWindow.h"
+//#include "src/gui/windows/NotificationWindow.h"
 
 extern "C"
 {
