@@ -57,7 +57,7 @@ void FlightModel::updateTranslations ()
 	headerTextAccountingNotes   =qApp->translate ("FlightModel", "Accounting notes");
 	headerTextDate              =qApp->translate ("FlightModel", "Date");
 	headerTextId                =qApp->translate ("FlightModel", "ID");
-	headerTextFlarmId           =qApp->translate ("FlightModel", "FLARM ID");
+	headerTextFlarmId           =qApp->translate ("FlightModel", "Flarm ID");
 }
 
 QVariant FlightModel::displayHeaderData (int column) const
