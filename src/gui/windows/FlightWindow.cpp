@@ -2317,6 +2317,8 @@ void FlightWindow::checkFlarmId ()
 					// FIXME test: registration changed
 					ui.registrationInput->setEditText (plane.registration);
 					selectedPlane=result;
+					// TODO: this stinks
+					on_registrationInput_editingFinished (plane.registration);
 				}
 			}
 		}
