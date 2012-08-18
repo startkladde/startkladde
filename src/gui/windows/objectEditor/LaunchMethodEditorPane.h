@@ -15,7 +15,7 @@ class LaunchMethodEditorPane: public ObjectEditorPane<LaunchMethod>
 		virtual ~LaunchMethodEditorPane();
 
 		virtual void objectToFields (const LaunchMethod &launchMethod);
-		virtual void fieldsToObject (LaunchMethod &object);
+		virtual void fieldsToObject (LaunchMethod &object, bool performChecks);
 
 	public slots:
 		virtual void on_typeInput_activated (int index);

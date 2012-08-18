@@ -24,6 +24,7 @@
 #include "src/db/DbManager.h"
 #include "src/logging/messages.h"
 #include "src/i18n/notr.h"
+#include "src/flarm/FlarmNetRecord.h"
 
 /*
  * On enabling/diabling widgets:
@@ -500,6 +501,7 @@ FlightWindow *FlightWindow::editFlight (QWidget *parent, DbManager &manager, Fli
 	w->flightToFields (flight, false);
 
 	w->updateSetup ();
+	w->checkFlarmId ();
 	w->updateErrors (true);
 
 	w->show ();
@@ -2251,3 +2253,78 @@ void FlightWindow::languageChanged ()
 	updateSetupButtons ();
 }
 
+
+// ***********
+// ** Flarm **
+// ***********
+
+void FlightWindow::checkFlarmId ()
+{
+	QString flarmId=originalFlight.getFlarmId ();
+	dbId planeId=originalFlight.getPlaneId ();
+
+	if (!idValid (planeId) && !flarmId.isEmpty ())
+	{
+		// The flight has been automatically created (we known this because it
+		// has a Flarm ID), but it has no plane. This probably means that no
+		// plane with that Flarm ID was found in the database (the plane might
+		// also have been removed by the user).
+		// The most common reason for this case is that an unknown plane has
+		// performed a flight. We may be able to find the plane in the FlarmNet
+		// database. In this case, offer the user to create the plane.
+		// Note that, when a flight is automatically created, if the plane can
+		// be resolved (either directly or via FlarmNet, see FlightResolver),
+		// the plane is already set and this won't be performed at all.
+
+		if (!Settings::instance ().flarmNetEnabled)
+			return;
+
+		try
+		{
+			// Try to find a FlarmNet record with the given Flarm ID
+			dbId flarmNetRecordId = cache.getFlarmNetRecordIdByFlarmId (flarmId);
+			if (!idValid (flarmNetRecordId))
+				// No FlarmNet record with that Flarm ID
+				return;
+
+			FlarmNetRecord flarmNetRecord = cache.getObject<FlarmNetRecord> (flarmNetRecordId);
+
+			if (flarmNetRecord.registration.isEmpty ())
+				return;
+
+			// We found a FlarmNet record with a matching Flarm ID. Don't bother
+			// trying to find a plane, it would already be set if there was one.
+			// FIXME yes we have to do this, it might have been created in the
+			// meantime.
+			// FIXME different message if no type is set
+			QString title=tr ("Automatically create plane?");
+			QString text= tr (
+				"This flight was created automatically. The plane was not "
+				"found in the database. However, the FlarmNet database "
+				"indicates that the plane might be a %1 with registration "
+				"%2 (%3). Do you want to create the plane?")
+				.arg (flarmNetRecord.type)
+				.arg (flarmNetRecord.registration)
+				.arg (flarmNetRecord.callsign);
+
+			if (QMessageBox::question (this, title, text, QMessageBox::Yes | QMessageBox::No)==QMessageBox::Yes)
+			{
+				Plane plane=flarmNetRecord.toPlane ();
+
+				dbId result=ObjectEditorWindow<Plane>::createObjectPreset (this, manager, plane, NULL, &plane);
+				if (idValid (result))
+				{
+					// FIXME test: registration changed
+					ui.registrationInput->setEditText (plane.registration);
+					selectedPlane=result;
+				}
+			}
+		}
+		catch (Cache::NotFoundException &)
+		{
+			// This should not happen because we only fetch objects for IDs we
+			// retrieved from the cache, but you never know...
+		}
+
+	}
+}

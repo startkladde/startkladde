@@ -100,11 +100,11 @@ FlightResolver::Result FlightResolver::resolveFlightByPlaneFlarmId (const QList<
  */
 FlightResolver::Result FlightResolver::resolveFlightByFlarmNetDatabase (const QList<Flight> &flights, const QString &flarmId)
 {
+	if (!Settings::instance ().flarmNetEnabled)
+		return Result::invalid ();
+
 	try
 	{
-		if (!Settings::instance ().flarmNetEnabled)
-			return Result::invalid ();
-
 		// Try to look up the plane via FlarmNet: flarmId => registration => id
 		dbId flarmNetRecordId = cache.getFlarmNetRecordIdByFlarmId (flarmId);
 		if (!idValid (flarmNetRecordId))

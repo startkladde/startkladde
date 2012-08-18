@@ -134,7 +134,7 @@ void PlaneEditorPane::objectToFields (const Plane &plane)
 	ui.commentsInput->setText (plane.comments);
 }
 
-void PlaneEditorPane::fieldsToObject (Plane &plane)
+void PlaneEditorPane::fieldsToObject (Plane &plane, bool performChecks)
 {
 	// TODO: checks go here; throw AbortedException if aborted
 
@@ -148,6 +148,7 @@ void PlaneEditorPane::fieldsToObject (Plane &plane)
 	plane.flarmId=ui.flarmIdInput->text ().simplified ();
 	plane.comments=ui.commentsInput->text ().simplified ();
 
+	if (!performChecks) return;
 
 	// Error checks
 	if (mode==ObjectEditorWindowBase::modeCreate && idValid (cache.getPlaneIdByRegistration (plane.registration)))

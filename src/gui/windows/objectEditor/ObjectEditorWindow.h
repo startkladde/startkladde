@@ -42,6 +42,7 @@ template<class T> class ObjectEditorWindow: public ObjectEditorWindowBase
 		// Invocation
 		static dbId createObject (QWidget *parent, DbManager &manager, ObjectEditorPaneData *paneData=NULL);
 		static dbId createObject (QWidget *parent, DbManager &manager, const T &nameObject, ObjectEditorPaneData *paneData=NULL);
+		static dbId createObjectPreset (QWidget *parent, DbManager &manager, const T &preset, ObjectEditorPaneData *paneData=NULL, T *target=NULL);
 		static void displayObject (QWidget *parent, DbManager &manager, const T &object, ObjectEditorPaneData *paneData=NULL);
 		static int editObject (QWidget *parent, DbManager &manager, const T &object, ObjectEditorPaneData *paneData=NULL);
 
@@ -130,6 +131,24 @@ template<class T> dbId ObjectEditorWindow<T>::createObject (QWidget *parent, DbM
 		return invalidId;
 }
 
+template<class T> dbId ObjectEditorWindow<T>::createObjectPreset (QWidget *parent, DbManager &manager, const T &preset, ObjectEditorPaneData *paneData, T *target)
+{
+	// Note that we cannot use WA_DeleteOnClose here because we need to read the
+	// ID from w after it has been closed.
+	ObjectEditorWindow<T> w (modeCreate, manager, parent, 0, paneData);
+
+	w.editorPane->setObject (preset);
+
+	if (w.exec ()==QDialog::Accepted)
+	{
+		// Get the object without performing the checks again (the API stinks)
+		if (target) (*target)=w.editorPane->determineObject (false);
+		return w.getId ();
+	}
+	else
+		return invalidId;
+}
+
 // TODO: this should probably take an ID instead of a T&
 // TODO: only show a close button
 //template<class T> void ObjectEditorWindow<T>::displayObject (QWidget *parent, DbManager &manager, const T &object)
@@ -206,7 +225,7 @@ template<class T> void ObjectEditorWindow<T>::on_buttonBox_accepted ()
 	// The OK button was pressed. Check and store the object.
 	try
 	{
-		T object=editorPane->determineObject ();
+		T object=editorPane->determineObject (true);
 		if (writeToDatabase (object))
 		{
 			//std::cout << "after writeToDatabase, right before accept, id is " << getId () << std::endl;

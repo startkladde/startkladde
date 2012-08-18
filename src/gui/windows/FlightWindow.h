@@ -436,6 +436,8 @@ class FlightWindow: public SkDialog<Ui::FlightWindowClass>
 		void updateErrors (bool setFocus=false);
 		QWidget *getErrorWidget (Flight::Error error);
 
+		// Flarm
+		void checkFlarmId ();
 
 		// In create mode, we have "Automatic" checkboxes which deativate the
 		// input fields, so they are active if the checkbox is not checked. In edit

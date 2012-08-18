@@ -83,8 +83,8 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		virtual ~ObjectEditorPane ();
 
 		virtual void setObject (const T &object);
-
-		virtual T determineObject ();
+		// The API stinks
+		virtual T determineObject (bool performChecks);
 
 		/**
 		 * Sets the "name" fields (e. g. last and first name for people, or
@@ -112,7 +112,7 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		 */
 		// TODO we should either return the object (and throw AbortedException on
 		// failure) or return success as boolen.
-		virtual void fieldsToObject (T &object)=0;
+		virtual void fieldsToObject (T &object, bool performChecks)=0;
 
 		T originalObject;
 };
@@ -149,11 +149,11 @@ template<class T> void ObjectEditorPane<T>::setObject (const T &object)
  *
  * @return the created object
  */
-template<class T> T ObjectEditorPane<T>::determineObject ()
+template<class T> T ObjectEditorPane<T>::determineObject (bool performChecks)
 {
 	T object (originalObject);
 
-	fieldsToObject (object);
+	fieldsToObject (object, performChecks);
 
 	return object;
 }

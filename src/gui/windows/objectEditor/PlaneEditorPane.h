@@ -16,7 +16,7 @@ class PlaneEditorPane: public ObjectEditorPane<Plane>
 		virtual ~PlaneEditorPane();
 
 		virtual void objectToFields (const Plane &plane);
-		virtual void fieldsToObject (Plane &object);
+		virtual void fieldsToObject (Plane &object, bool performChecks);
 		virtual void setNameObject (const Plane &nameObject);
 
 	public slots:

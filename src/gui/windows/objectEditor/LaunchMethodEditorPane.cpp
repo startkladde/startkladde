@@ -130,7 +130,7 @@ void LaunchMethodEditorPane::objectToFields (const LaunchMethod &launchMethod)
 	on_specificTowplaneInput_toggled (ui.specificTowplaneInput->isChecked ());
 }
 
-void LaunchMethodEditorPane::fieldsToObject (LaunchMethod &launchMethod)
+void LaunchMethodEditorPane::fieldsToObject (LaunchMethod &launchMethod, bool performChecks)
 {
 	launchMethod.name                 = ui.nameInput                     ->text ().simplified ();
 	launchMethod.shortName            = ui.shortNameInput                ->text ().simplified ();
@@ -143,6 +143,8 @@ void LaunchMethodEditorPane::fieldsToObject (LaunchMethod &launchMethod)
 		launchMethod.towplaneRegistration = ui.towplaneRegistrationInput ->currentText ().simplified ();
 	launchMethod.personRequired       = ui.personRequiredInput           ->currentItemData ().toBool ();
 	launchMethod.comments             = ui.commentsInput                 ->text ().simplified ();
+
+	if (!performChecks) return;
 
 	// Error checks
 	// TODO error checks:

@@ -168,11 +168,11 @@ QDate PersonEditorPane::getEffectiveMedicalValidity ()
 		return ui.medicalValidityInput->date ();
 }
 
-void PersonEditorPane::fieldsToObject (Person &person)
+void PersonEditorPane::fieldsToObject (Person &person, bool performChecks)
 {
 	// Require "change medical data" permission if the medical data changed
 	Person originalPerson=getOriginalObject ();
-	if (getEffectiveMedicalValidity ()!=originalPerson.medicalValidity)
+	if (performChecks && getEffectiveMedicalValidity ()!=originalPerson.medicalValidity)
 	{
 		if (paneData && !paneData->changeMedicalDataPermission->permit (this))
 		{
@@ -187,6 +187,8 @@ void PersonEditorPane::fieldsToObject (Person &person)
 	person.checkMedical         =ui.checkMedicalInput   ->currentItemData ().toBool ();
 	person.medicalValidity      =getEffectiveMedicalValidity ();
 	person.clubId               =ui.clubIdInput         ->text ();
+
+	if (!performChecks) return;
 
 	// Error checks
 
