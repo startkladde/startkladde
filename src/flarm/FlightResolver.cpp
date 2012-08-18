@@ -100,36 +100,48 @@ FlightResolver::Result FlightResolver::resolveFlightByPlaneFlarmId (const QList<
  */
 FlightResolver::Result FlightResolver::resolveFlightByFlarmNetDatabase (const QList<Flight> &flights, const QString &flarmId)
 {
-	if (!Settings::instance ().flarmNetEnabled)
-		return Result::invalid ();
-
-	// Try to look up the plane via FlarmNet: flarmId => registration => id
-	dbId flarmNetRecordId = cache.getFlarmNetRecordIdByFlarmId (flarmId);
-	FlarmNetRecord* flarmNetRecord = new FlarmNetRecord (cache.getObject<FlarmNetRecord> (flarmNetRecordId));
-	QString registration = flarmNetRecord->registration;
-	qDebug () << "registration: " << registration << endl; 
-	delete flarmNetRecord;
-	if (!registration.isEmpty ())
+	try
 	{
-		// We found the registration in the FlarmNet database. Try to find the plane with that registration.
-		dbId planeId=cache.getPlaneIdByRegistration (registration);
-		if (idValid (planeId))
-		{
-			// We found the plane in the database. See if any of the flights is using this plane.
-			foreach (const Flight &flight, flights)
-				if (flight.getPlaneId ()==planeId)
-					return Result (flight.getId (), planeId, registration);
+		if (!Settings::instance ().flarmNetEnabled)
+			return Result::invalid ();
 
-			// We identified the plane, but there is no flight using that plane.
-			return Result (invalidId, planeId, registration);
+		// Try to look up the plane via FlarmNet: flarmId => registration => id
+		dbId flarmNetRecordId = cache.getFlarmNetRecordIdByFlarmId (flarmId);
+		if (!idValid (flarmNetRecordId))
+			// No FlarmNet record with that Flarm ID
+			return Result::invalid ();
+
+		FlarmNetRecord flarmNetRecord = cache.getObject<FlarmNetRecord> (flarmNetRecordId);
+		QString registration = flarmNetRecord.registration;
+
+		if (!registration.isEmpty ())
+		{
+			// We found the registration in the FlarmNet database. Try to find the plane with that registration.
+			dbId planeId=cache.getPlaneIdByRegistration (registration);
+			if (idValid (planeId))
+			{
+				// We found the plane in the database. See if any of the flights is using this plane.
+				foreach (const Flight &flight, flights)
+					if (flight.getPlaneId ()==planeId)
+						return Result (flight.getId (), planeId, registration);
+
+				// We identified the plane, but there is no flight using that plane.
+				return Result (invalidId, planeId, registration);
+			}
+			else
+			{
+				return Result (invalidId, invalidId, registration);
+			}
 		}
 		else
 		{
-			return Result (invalidId, invalidId, registration);
+			return Result::invalid ();
 		}
 	}
-	else
+	catch (Cache::NotFoundException &)
 	{
+		// This should not happen because we only fetch objects for IDs we
+		// retrieved from the cache, but you never know...
 		return Result::invalid ();
 	}
 }

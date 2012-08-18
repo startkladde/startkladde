@@ -25,8 +25,6 @@ class Flight;
  *      itself may be inaccurate, and our copy of the FlarmNet database may be
  *      outdated.
  *
- * Note that FlarmNet lookup is currently not implemented.
- *
  * See also: the wiki page "Flarm".
  */
 class FlightResolver
