@@ -113,3 +113,23 @@ QList<FlarmNetRecord> FlarmNetRecord::createListFromResult (Result &result)
 
 	return list;
 }
+
+
+// ****************
+// ** Conversion **
+// ****************
+
+Plane FlarmNetRecord::toPlane () const
+{
+	Plane plane;
+
+	plane.registration=registration;
+	plane.club=owner;
+	plane.numSeats=-1;
+	plane.type=type;
+	plane.category=Plane::categoryFromRegistration (registration);
+	plane.callsign=callsign;
+	plane.flarmId=flarmId;
+
+	return plane;
+}

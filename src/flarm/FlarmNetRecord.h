@@ -8,6 +8,7 @@
 
 #include "src/model/objectList/ObjectModel.h"
 #include "src/model/Entity.h"
+#include "src/model/Plane.h"
 
 class FlarmNetRecord: public Entity
 {
@@ -36,7 +37,7 @@ class FlarmNetRecord: public Entity
 		static QString objectTypeDescriptionPlural () { return qApp->translate ("FlarmNetRecord", "FlarmNet records"); }
 
 
-		// SQL interface
+		// *** SQL interface
 		static QString dbTableName ();
 		static QString selectColumnList ();
 		static FlarmNetRecord createFromResult (const Result &result);
@@ -44,6 +45,9 @@ class FlarmNetRecord: public Entity
 		static QString insertPlaceholderList ();
 		virtual void bindValues (Query &q) const;
 		static QList<FlarmNetRecord> createListFromResult (Result &query);
+
+		// *** Conversion
+		Plane toPlane () const;
 
 	private:
 		void initialize ();
