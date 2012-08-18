@@ -16,6 +16,9 @@
  *   - toQList: O(n) (O(1) for repeated calls without changes to the set)
  *
  * This class is not thread safe
+ *
+ * Files calling methods of a SortedSet (as opposed to only declaring instances
+ * of SortedSet) must also include SortedSet_impl.h.
  */
 template<typename T> class SortedSet
 {
