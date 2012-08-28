@@ -21,6 +21,7 @@ class FlarmNetRecord: public Entity
 		QString flarmId;
 		QString registration;
 		QString owner;
+		QString airfield;
 		QString type;
 		QString callsign;
 		QString frequency;

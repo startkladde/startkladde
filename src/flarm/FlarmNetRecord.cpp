@@ -37,12 +37,13 @@ void FlarmNetRecord::initialize ()
 
 QString FlarmNetRecord::toString () const
 {
-	return qnotr ("id=%1, flarm_id=%2, registration=%3, callsign=%4, owner=%5, type=%6, frequency=%7")
+	return qnotr ("id=%1, flarm_id=%2, registration=%3, callsign=%4, owner=%5, airfield=%6, type=%7, frequency=%8")
 		.arg (id)
 		.arg (flarmId)
 		.arg (registration)
 		.arg (callsign)
 		.arg (owner)
+		.arg (airfield)
 		.arg (type)
 		.arg (frequency)
 		;
@@ -65,7 +66,7 @@ QString FlarmNetRecord::dbTableName ()
 
 QString FlarmNetRecord::selectColumnList ()
 {
-	return notr ("id,flarm_id,registration,callsign,owner,type,frequency");
+	return notr ("id,flarm_id,registration,callsign,owner,airfield,type,frequency");
 }
 
 
@@ -77,8 +78,9 @@ FlarmNetRecord FlarmNetRecord::createFromResult (const Result &result)
 	p.registration = result.value (2).toString ();
 	p.callsign     = result.value (3).toString ();
 	p.owner        = result.value (4).toString ();
-	p.type         = result.value (5).toString ();
-	p.frequency    = result.value (6).toString ();
+	p.airfield     = result.value (5).toString ();
+	p.type         = result.value (6).toString ();
+	p.frequency    = result.value (7).toString ();
 	// qDebug () << "FlarmNetRecord::createFromResult: " << p.toString() << endl;
 
 	return p;
@@ -86,12 +88,12 @@ FlarmNetRecord FlarmNetRecord::createFromResult (const Result &result)
 
 QString FlarmNetRecord::insertColumnList ()
 {
-	return notr ("flarm_id,registration,callsign,owner,type,frequency");
+	return notr ("flarm_id,registration,callsign,owner,airfield,type,frequency");
 }
 
 QString FlarmNetRecord::insertPlaceholderList ()
 {
-	return notr ("?,?,?,?,?,?");
+	return notr ("?,?,?,?,?,?,?");
 }
 
 void FlarmNetRecord::bindValues (Query &q) const
@@ -100,6 +102,7 @@ void FlarmNetRecord::bindValues (Query &q) const
 	q.bind (registration);
 	q.bind (callsign);
 	q.bind (owner);
+	q.bind (airfield);
 	q.bind (type);
 	q.bind (frequency);
 }
