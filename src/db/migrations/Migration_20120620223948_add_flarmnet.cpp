@@ -18,6 +18,7 @@ void Migration_20120620223948_add_flarmnet::up ()
 	addColumn ("flarmnet", "registration", dataTypeString16 (), "NOT NULL", true);
 	addColumn ("flarmnet", "callsign",     dataTypeString16 (), "", true);
 	addColumn ("flarmnet", "owner",        dataTypeString (),   "", true);
+	addColumn ("flarmnet", "airfield",     dataTypeString (),   "", true);
 	addColumn ("flarmnet", "type",         dataTypeString (),   "", true);
 	addColumn ("flarmnet", "frequency",    dataTypeString16 (), "", true);
 }
