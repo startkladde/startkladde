@@ -49,7 +49,7 @@ FlarmNetRecord FlarmNetFile::createRecord (const QString &decodedLine, bool *ok)
 	{
 		record.flarmId     =(decodedLine.mid ( 0,  6).trimmed ());
 		record.owner       =(decodedLine.mid ( 6, 21).trimmed ());
-		// ignore airfield - decodedLine.mid (27, 21)
+		record.airfield    =(decodedLine.mid (27, 21).trimmed ());
 		record.type        =(decodedLine.mid (48, 20).trimmed ());
 		record.registration=(decodedLine.mid (69,  7).trimmed ());
 		record.callsign    =(decodedLine.mid (76,  3).trimmed ());
