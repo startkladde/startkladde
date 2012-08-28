@@ -123,6 +123,7 @@ MainWindow::MainWindow (QWidget *parent):
 	flarmStream->setTarget ("localhost", 4711);
 	ui.connectFlarmAction->setChecked (true);
 	on_connectFlarmAction_triggered ();
+	flarmStreamValid = false;
 
 	// NMEA decoder
 	nmeaDecoder=new NmeaDecoder ();
@@ -1998,6 +1999,7 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 
 void MainWindow::flarmStream_stateChanged (DataStream::State state)
 {
+	flarmStreamValid = false;
 	if (state.isOpen ())
 	{
 		switch (state.getConnectionState ())
@@ -2013,8 +2015,10 @@ void MainWindow::flarmStream_stateChanged (DataStream::State state)
 					ui.flarmStateLabel->setText (tr ("No data"));
 				else if (!state.getDataReceived ())
 					ui.flarmStateLabel->setText (tr ("Connected"));
-				else
+				else {
 					ui.flarmStateLabel->setText (tr ("OK"));
+					flarmStreamValid = true;
+				}
 				break;
 		}
 	}
@@ -2153,11 +2157,10 @@ void MainWindow::on_actionSetTime_triggered ()
 void MainWindow::on_actionSetGPSTime_triggered ()
 {
         qDebug () << "MainWindow::on_actionSetGPSTime_triggered";
-        // FIXME enable
-//        if (not connected or no data) {
-//                QMessageBox::warning (this, tr("No GPS signal"), tr("Flarm does not send data"));
-//                return;
-//        }
+        if (not flarmStreamValid) {
+                QMessageBox::warning (this, tr("No GPS signal"), tr("Flarm does not send data"));
+                return;
+        }
         QDateTime current (QDateTime::currentDateTimeUtc ());
         QDateTime currentGPSdateTime (gpsTracker->getGpsTime ());
         qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy"));

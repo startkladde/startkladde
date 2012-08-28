@@ -315,7 +315,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		FlarmList *flarmList;
 		FlightResolver flightResolver;
 		QString injectedFlarmId;
-
+		bool flarmStreamValid;
 
 };
 
