@@ -3833,17 +3833,17 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="917"/>
         <source>Flarm &amp;radar...</source>
-        <translation type="unfinished"></translation>
+        <translation>Flarm &amp;Radar</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="925"/>
         <source>Import FlarmNet database from &amp;file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importiere FlarmNet Datenbank aus &amp;Datei...</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="930"/>
         <source>Flarm&amp;Net overview...</source>
-        <translation type="unfinished"></translation>
+        <translation>Flarm&amp;Net Übersicht...</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="941"/>
@@ -3868,7 +3868,7 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="961"/>
         <source>Download FlarmNet database from &amp;web...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Importiere FlarmNet Datenbank aus dem &amp;Web...</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="659"/>
