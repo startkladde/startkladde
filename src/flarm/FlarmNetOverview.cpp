@@ -48,13 +48,13 @@ FlarmNetOverview::FlarmNetOverview (DbManager &dbManager, QWidget *parent):
 	// The functionality could also be in the view, but note that at the current
 	// time, the model may be empty, so we'd have to set a flag to consider the
 	// first item added.
-    EntityList<FlarmNetRecord> dummyList;
-    dummyList.append (FlarmNetRecord ());
-    FlarmNetRecordModel dummyObjectModel;
-    ObjectListModel<FlarmNetRecord> dummyListModel (&dummyList, false, &dummyObjectModel, false);
-    ui.flarmNetTable->setModel (&dummyListModel);
-    ui.flarmNetTable->resizeRowsToContents ();
-    int rowHeight=ui.flarmNetTable->verticalHeader ()->sectionSize (0);
+	EntityList<FlarmNetRecord> dummyList;
+	dummyList.append (FlarmNetRecord ());
+	FlarmNetRecordModel dummyObjectModel;
+	ObjectListModel<FlarmNetRecord> dummyListModel (&dummyList, false, &dummyObjectModel, false);
+	ui.flarmNetTable->setModel (&dummyListModel);
+	ui.flarmNetTable->resizeRowsToContents ();
+	int rowHeight=ui.flarmNetTable->verticalHeader ()->sectionSize (0);
 	ui.flarmNetTable->verticalHeader ()->setDefaultSectionSize (rowHeight);
 	ui.flarmNetTable->setModel (NULL);
 
@@ -66,8 +66,6 @@ FlarmNetOverview::FlarmNetOverview (DbManager &dbManager, QWidget *parent):
 
 	// filter all columns
 	proxyModel->setFilterKeyColumn (-1);
-	ui.flarmNetTable->setModel (proxyModel);
-	
 	// Setup the table view
 	ui.flarmNetTable->setModel (proxyModel);
 
