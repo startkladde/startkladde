@@ -41,8 +41,6 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 	manager (manager),
 	contextMenu (new QMenu (this))
 {
-		ui.setupUi(this);
-
 	editPermission.setMessage (qApp->translate ("ObjectListWindow<T>", "The database password must be entered to edit %1.").arg (T::objectTypeDescriptionPlural ()));
 
 	// Create the object listModel
@@ -58,6 +56,10 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 	proxyModel->setSourceModel (listModel);
 	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
 	proxyModel->setDynamicSortFilter (true);
+
+	// filter all columns
+	proxyModel->setFilterKeyColumn (-1);
+                                
 	ui.table->setModel (proxyModel);
 
 	ui.table->setAutoResizeRows (true);
@@ -464,6 +466,16 @@ template<class T> void ObjectListWindow<T>::languageChanged ()
 	ObjectListWindowBase::languageChanged ();
 	setupText ();
 	ui.table->resizeColumnsToContents ();
+}
+
+template<class T> void ObjectListWindow<T>::searchClear () {
+        // qDebug () << "ObjectListWindow<T>::searchClear: " << endl;
+	ui.searchEdit->clear();
+}
+
+template<class T> void ObjectListWindow<T>::searchTextChanged (const QString& search) {
+	qDebug () << "ObjectListWindow<T>::searchTextChanged: " << search << endl;
+	proxyModel->setFilterRegExp (QRegExp (search, Qt::CaseInsensitive, QRegExp::FixedString));
 }
 
 
