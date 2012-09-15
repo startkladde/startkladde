@@ -12,8 +12,17 @@ ObjectListWindowBase::ObjectListWindowBase (DbManager &manager, QWidget *parent)
 	SkMainWindow<Ui::ObjectListWindowBaseClass> (parent),
 	manager (manager), databasePasswordCheck (), editPermission (databasePasswordCheck)
 {
+        // setup the gui in the base class to allow connect to gui elements
+        ui.setupUi(this);
+        
+        // Search button
+        QStyle* style = QApplication::style ();
+        ui.clearButton->setIcon (style->standardIcon (QStyle::SP_DialogDiscardButton));
+        
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
-
+        QObject::connect (ui.searchEdit,  SIGNAL(textChanged(const QString&)), this, SLOT(searchTextChanged(const QString&)));
+	QObject::connect (ui.clearButton, SIGNAL(pressed()), this, SLOT(searchClear()));
+                
 	databasePasswordCheck.setPassword (Settings::instance ().databaseInfo.password);
 }
 
@@ -49,3 +58,4 @@ void ObjectListWindowBase::databaseStateChanged (DbManager::State state)
 	if (state==DbManager::stateDisconnected)
 		close ();
 }
+                                
