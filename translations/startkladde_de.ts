@@ -1092,8 +1092,7 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
     <message>
         <location filename="../src/flarm/FlarmWindow.cpp" line="125"/>
         <source>You can specify a KML file to show map elements as lines (e. g. airfield boundaries, traffic circuit..) or points (e. g. hangars, buildings...). KML files can be created with Google Earth or Google Maps.</source>
-        <translatorcomment>Sie können eine KML Datei angeben, um Kartenelemente zu zeigen, als Linien (z.B. Flugplatzgrenze, Platzrunde) oder Punkte (z.B. Halle, Gebäude). KML Dateien können mit Google Earth oder Google Maps erzeugt werden.</translatorcomment>
-        <translation></translation>
+        <translation>Sie können eine KML Datei angeben, um Kartenelemente zu zeigen, als Linien (z.B. Flugplatzgrenze, Platzrunde) oder Punkte (z.B. Halle, Gebäude). KML Dateien können mit Google Earth oder Google Maps erzeugt werden.</translation>
     </message>
     <message>
         <location filename="../src/flarm/FlarmWindow.cpp" line="134"/>
