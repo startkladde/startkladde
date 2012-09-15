@@ -49,7 +49,7 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	// 4 arrows, no levels
 	//ui.compass->setRose (new QwtSimpleCompassRose (4,-1));
 
-	// Try to read the KML file. If reading fails, the Flarm map widget will
+	// Try to read the KML file. If reading fails, the Flarm radar widget will
 	// indicate that by its kmlStatus property.
 	// The warnings - if any - will be updated as soon as the GPS tracker is
 	// set and the FlarmMapWidget pulls the position.
@@ -69,7 +69,7 @@ void FlarmWindow::setGpsTracker (GpsTracker *gpsTracker)
 
 void FlarmWindow::setFlarmList (FlarmList *flarmList)
 {
-	// Setup the map
+	// Setup the flarm radar
 	ui.flarmMap->setFlarmList (flarmList);
 
 	// Setup the list
@@ -122,10 +122,11 @@ void FlarmWindow::linkActivated (const QString &link)
 	if (link=="kmlFileNotSpecified")
 	{
 		QString title=tr ("KML file not specified");
-		QString text=tr ("You can specify a KML file to show lines (e. g."
-			" airfield boundaries, traffic circuit..) or points (e. g. hangars,"
-			" buildings...). KML files can be created with Google Earth or"
-			" Google Maps");
+		QString text=tr ("You can specify a KML file to show map elements"
+			" as lines (e. g. airfield boundaries, traffic circuit..)"
+			" or points (e. g. hangars, buildings...)."
+			" KML files can be created with Google Earth or"
+			" Google Maps.");
 		QMessageBox::information (this, title, text);
 	}
 	else if (link=="kmlFileDoesNotExist")
