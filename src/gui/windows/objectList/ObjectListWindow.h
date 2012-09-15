@@ -63,6 +63,10 @@ template <class T> class ObjectListWindow: public ObjectListWindowBase
 		QSortFilterProxyModel *proxyModel;
 
 		QMenu *contextMenu;
+
+	private slots:
+		virtual void searchClear();
+		virtual void searchTextChanged (const QString&);
 };
 
 #endif
