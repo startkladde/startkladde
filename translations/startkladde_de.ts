@@ -967,7 +967,7 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
     <message>
         <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="27"/>
         <source>Owner</source>
-        <translation>Eigentümer</translation>
+        <translation>Halter</translation>
     </message>
     <message>
         <location filename="../src/flarm/FlarmNetRecordModel.cpp" line="28"/>
@@ -1079,125 +1079,136 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
     <message>
         <location filename="../src/flarm/FlarmWindow.cpp" line="124"/>
         <source>KML file not specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine KML Datei angegeben</translation>
+    </message>
+    <message>
+        <source>You can specify a KML file to show lines (e. g. airfield boundaries, traffic circuit..) or points (e. g. hangars, buildings...). KML files can be created with Google Earth or Google Maps</source>
+        <translation type="obsolete"> </translation>
+    </message>
+    <message>
+        <source>You can specify a KML file to show map elements as lines (e. g. airfield boundaries, traffic circuit..) or points (e. g. hangars, buildings...). KML files can be created with Google Earth or Google Maps</source>
+        <translation type="obsolete">Sie können eine KML Datei angeben, um Kartenelemente zu zeigen, als Linien (z.B. Flugplatzgrenze, Platzrunde) oder Punkte (z.B. Halle, Gebäude). KML Dateien können mit Google Earth oder Google Maps erzeugt werden.</translation>
     </message>
     <message>
         <location filename="../src/flarm/FlarmWindow.cpp" line="125"/>
-        <source>You can specify a KML file to show lines (e. g. airfield boundaries, traffic circuit..) or points (e. g. hangars, buildings...). KML files can be created with Google Earth or Google Maps</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="133"/>
-        <source>KML file does not exist</source>
-        <translation type="unfinished"></translation>
+        <source>You can specify a KML file to show map elements as lines (e. g. airfield boundaries, traffic circuit..) or points (e. g. hangars, buildings...). KML files can be created with Google Earth or Google Maps.</source>
+        <translatorcomment>Sie können eine KML Datei angeben, um Kartenelemente zu zeigen, als Linien (z.B. Flugplatzgrenze, Platzrunde) oder Punkte (z.B. Halle, Gebäude). KML Dateien können mit Google Earth oder Google Maps erzeugt werden.</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/flarm/FlarmWindow.cpp" line="134"/>
+        <source>KML file does not exist</source>
+        <translation>Die KML Datei existiert nicht</translation>
+    </message>
+    <message>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="135"/>
         <source>The KML file specified in the settings does not exist:
 %1
 The file can be changed in the settings dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die KML Datei die in den Einstellungen angegeben ist, existiert nicht:
+%1
+Die Datei kann in den Einstellungen geändert werden.</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="156"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="157"/>
         <source>north</source>
         <translation>nördlich</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="157"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="158"/>
         <source>north-east</source>
         <translation>nordöstlich</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="158"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="159"/>
         <source>east</source>
         <translation>östlich</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="159"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="160"/>
         <source>south-east</source>
         <translation>südöstlich</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="160"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="161"/>
         <source>south</source>
         <translation>südlich</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="161"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="162"/>
         <source>south-west</source>
         <translation>südwestlich</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="162"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="163"/>
         <source>west</source>
         <translation>westlich</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="163"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="164"/>
         <source>north-west</source>
         <translation>nordwestlich</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="167"/>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="176"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="168"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="177"/>
         <source>No KML elements visible</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine KML Elemente sichtbar</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="168"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="169"/>
         <source>None of the elements read from the KML file are currently visible. The KML element closest to the current position is located %1 to the %2 of the current position.</source>
         <translation>Keines der Elemente aus der KML-Datei ist zur Zeit sichtbar. Das näheste KML-Element befindet sich %1 %2 der aktuellen Position.</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="177"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="178"/>
         <source>None of the elements read from the KML file are currently visible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keines der Elemente aus der KML-Datei ist zur Zeit sichtbar.</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="195"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="196"/>
         <source>No KML file specified  (&lt;a href=&quot;kmlFileNotSpecified&quot;&gt;details&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine KML Datei angegeben (&lt;a href=&quot;kmlFileNotSpecified&quot;&gt;Details&lt;/a&gt;)</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="198"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="199"/>
         <source>The specified KML file does not exist (&lt;a href=&quot;kmlFileDoesNotExist&quot;&gt;details&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Die angegebene KML Datei existiert nicht (&lt;a href=&quot;kmlFileDoesNotExist&quot;&gt;Details&lt;/a&gt;)</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="201"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="202"/>
         <source>The specified KML file could not be read</source>
-        <translation type="unfinished"></translation>
+        <translation>Die angegebene KML Datei konnte nicht gelesen werden</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="204"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="205"/>
         <source>The specified KML file could not be parsed</source>
-        <translation type="unfinished"></translation>
+        <translation>Die angegebene KML Datei konnte nicht interpretiert werden</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="207"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="208"/>
         <source>The specified KML file does not contain any elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Die angegebene KML Datei enthält keine Elemente</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="211"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="212"/>
         <source>None of the KML elements are visible (&lt;a href=&quot;noKmlElementsVisible&quot;&gt;details&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine der KML Elemente sind sichtbar (&lt;a href=&quot;noKmlElementsVisible&quot;&gt;Details&lt;/a&gt;)</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="224"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="225"/>
         <source>No GPS data. The data from the KML file cannot be shown.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine GPS Daten. Die Daten der KML Datei können nicht gezeigt werden.</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="226"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="227"/>
         <source>No GPS data</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine GPS Daten</translation>
     </message>
     <message>
-        <location filename="../src/flarm/FlarmWindow.cpp" line="230"/>
+        <location filename="../src/flarm/FlarmWindow.cpp" line="231"/>
         <source>The own position is not visible (&lt;a href=&quot;resetPosition&quot;&gt;reset&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Die eigene Position ist nicht sichtbar (&lt;a href=&quot;resetPosition&quot;&gt;rücksetzen&lt;/a)</translation>
     </message>
 </context>
 <context>
@@ -5660,6 +5671,11 @@ Bereich des Hauptfensters angezeigt.</translation>
         <translation>Durch&amp;suchen</translation>
     </message>
     <message>
+        <location filename="../src/gui/windows/SettingsWindow.ui" line="526"/>
+        <source>Flarm radar &amp;KML file:</source>
+        <translation>Flarm Radar &amp;KML Datei:</translation>
+    </message>
+    <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="906"/>
         <source>Weather wi&amp;ndow enabled</source>
         <translation>Wetter&amp;fenster aktiviert</translation>
@@ -5713,11 +5729,6 @@ Bereich des Hauptfensters angezeigt.</translation>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="516"/>
         <source>&lt;html&gt;If enabled, the Flarm Radar window can be opened&lt;/html&gt;</source>
         <translation>&lt;html&gt;Wenn aktiviert, kann das Flarm Radar geöffnet werden&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/windows/SettingsWindow.ui" line="526"/>
-        <source>Flarm map &amp;KML file:</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/gui/windows/SettingsWindow.ui" line="558"/>
