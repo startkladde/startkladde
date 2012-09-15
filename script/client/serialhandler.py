@@ -109,10 +109,12 @@ class SerialThread (threading.Thread):
       try:
         self.serial = serial.Serial(device, 19200, timeout=1)
       except serial.serialutil.SerialException as exc:
-        print ("no %s device: " % device, exc)
+        print ("SerialException on %s: %s" % (device, exc))
       else:
         print("serial created: %s" % device)
-        break
+        return
+    # no device could be opened, Wait some seconds to retry
+    time.sleep (5)
 
   def run (self):
     global queue
