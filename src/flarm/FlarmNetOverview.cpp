@@ -15,9 +15,10 @@ FlarmNetOverview::FlarmNetOverview (DbManager &dbManager, QWidget *parent):
 {
 	ui.setupUi (this);
 
-	// Search button
+	// Clear search button
 	QStyle* style = QApplication::style ();
-	ui.clearButton->setIcon (style->standardIcon (QStyle::SP_DialogDiscardButton));
+	ui.clearButton->setIcon (style->standardIcon (QStyle::SP_DialogCloseButton));
+	ui.clearButton->setVisible (false);
 
 	connect (ui.searchEdit,  SIGNAL(textChanged(const QString&)), this, SLOT(searchTextChanged(const QString&)));
 	connect (ui.clearButton, SIGNAL(pressed()), this, SLOT(searchClear()));
@@ -88,4 +89,5 @@ void FlarmNetOverview::searchClear () {
 void FlarmNetOverview::searchTextChanged (const QString& search) {
         // qDebug () << "FlarmNetOverview::searchTextChanged: " << search << endl;
         proxyModel->setFilterRegExp (QRegExp (search, Qt::CaseInsensitive, QRegExp::FixedString));
+        ui.clearButton->setVisible (!search.isEmpty());
 } 
