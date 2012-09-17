@@ -32,7 +32,7 @@ TranslationManager::TranslationManager ()
 	translationPath << QCoreApplication::applicationDirPath ()+notr ("/translations"); // Application directory/translations
 	translationPath << QLibraryInfo::location (QLibraryInfo::TranslationsPath); // Qt translations directory
 #ifdef Q_OS_UNIX
-	translationPath << QDir ("/usr/share/startkladde/translations");
+	translationPath << QDir ("/usr/local/share/startkladde/translations");
 #endif
 }
 
