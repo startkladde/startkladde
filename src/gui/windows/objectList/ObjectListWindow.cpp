@@ -474,8 +474,9 @@ template<class T> void ObjectListWindow<T>::searchClear () {
 }
 
 template<class T> void ObjectListWindow<T>::searchTextChanged (const QString& search) {
-	qDebug () << "ObjectListWindow<T>::searchTextChanged: " << search << endl;
+	//qDebug () << "ObjectListWindow<T>::searchTextChanged: " << search << endl;
 	proxyModel->setFilterRegExp (QRegExp (search, Qt::CaseInsensitive, QRegExp::FixedString));
+	ui.clearButton->setVisible (!search.isEmpty());
 }
 
 

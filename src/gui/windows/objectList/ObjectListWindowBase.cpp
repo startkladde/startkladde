@@ -15,9 +15,11 @@ ObjectListWindowBase::ObjectListWindowBase (DbManager &manager, QWidget *parent)
         // setup the gui in the base class to allow connect to gui elements
         ui.setupUi(this);
         
-        // Search button
+        // Clear search button
         QStyle* style = QApplication::style ();
-        ui.clearButton->setIcon (style->standardIcon (QStyle::SP_DialogDiscardButton));
+        //ui.clearButton->setIcon (style->standardIcon (QStyle::SP_DialogDiscardButton));
+        ui.clearButton->setIcon (style->standardIcon (QStyle::SP_DialogCloseButton));
+        ui.clearButton->setVisible (false);
         
 	QObject::connect (&manager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
         QObject::connect (ui.searchEdit,  SIGNAL(textChanged(const QString&)), this, SLOT(searchTextChanged(const QString&)));
