@@ -4229,18 +4229,18 @@ Konfiguration: %2</translation>
 <context>
     <name>ObjectListWindow&lt;T&gt;</name>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="100"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="102"/>
         <source>w</source>
         <comment>Window menu mnemonic</comment>
         <translation>f</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="258"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="260"/>
         <source>%1 in use</source>
         <translation>%1 benutzt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="261"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="263"/>
         <source>%1 %2 is in use and cannot be deleted.</source>
         <translation>%1 %2 wird verwendet und kann daher nicht gelöscht werden.</translation>
     </message>
@@ -4249,17 +4249,17 @@ Konfiguration: %2</translation>
         <translation type="obsolete">Fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="312"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="314"/>
         <source>Delete %1?</source>
         <translation>%1 löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="313"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="315"/>
         <source>Do you want to delete %1 %2?</source>
         <translation>Soll %1 %2 gelöscht werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="46"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="44"/>
         <source>The database password must be entered to edit %1.</source>
         <translation>Zum Ändern der %1 muss das Datenbankpasswort eingegeben werden.</translation>
     </message>
@@ -4267,67 +4267,82 @@ Konfiguration: %2</translation>
 <context>
     <name>ObjectListWindowBaseClass</name>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="69"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="54"/>
+        <source>Enter search text</source>
+        <translation type="unfinished">Suchtext eingeben</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="61"/>
+        <source>Clear search text</source>
+        <translation type="unfinished">Suchtext löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="64"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="103"/>
         <source>&amp;Object</source>
         <translation>&amp;Objekt</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="79"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="113"/>
         <source>&amp;Window</source>
         <extracomment>The mnemonic is referenced in ObjectListWindow&lt;T&gt;, make sure to update it when this value is changed.</extracomment>
         <translation>&amp;Fenster</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="89"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="123"/>
         <source>&amp;New</source>
         <translation>&amp;Neu</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="92"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="126"/>
         <source>Ctrl+N</source>
         <extracomment>New</extracomment>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="97"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="131"/>
         <source>&amp;Delete</source>
         <translation>&amp;Löschen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="100"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="134"/>
         <source>Ctrl+D</source>
         <extracomment>Delete</extracomment>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="105"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="139"/>
         <source>&amp;Edit</source>
         <translation>B&amp;earbeiten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="108"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="142"/>
         <source>Ctrl+E</source>
         <extracomment>Edit</extracomment>
         <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="113"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="147"/>
         <source>&amp;Refresh</source>
         <translation>&amp;Aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="116"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="150"/>
         <source>Ctrl+R</source>
         <extracomment>Refresh</extracomment>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="121"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="155"/>
         <source>&amp;Close</source>
         <translation>&amp;Schließen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="124"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="158"/>
         <source>Ctrl+W</source>
         <extracomment>Close</extracomment>
         <translation>Ctrl+W</translation>
@@ -6229,7 +6244,7 @@ der Datendatei ein Bezugslängengrad angegeben ist.</translation>
 <context>
     <name>Translation</name>
     <message>
-        <location filename="../src/i18n/TranslationManager.cpp" line="265"/>
+        <location filename="../src/i18n/TranslationManager.cpp" line="266"/>
         <source> </source>
         <comment>Replace with the name of the translation language, in that language</comment>
         <translation>Deutsch</translation>

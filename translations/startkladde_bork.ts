@@ -4102,18 +4102,18 @@ Cunffeegooreshun: %2</translation>
 <context>
     <name>ObjectListWindow&lt;T&gt;</name>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="100"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="102"/>
         <source>w</source>
         <comment>Window menu mnemonic</comment>
         <translation type="unfinished">v</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="258"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="260"/>
         <source>%1 in use</source>
         <translation type="unfinished">%1 in use-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="261"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="263"/>
         <source>%1 %2 is in use and cannot be deleted.</source>
         <translation type="unfinished">%1 %2 is in use-a und cunnut be-a deleted.</translation>
     </message>
@@ -4122,17 +4122,17 @@ Cunffeegooreshun: %2</translation>
         <translation type="obsolete"> Cunteenooe-a?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="312"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="314"/>
         <source>Delete %1?</source>
         <translation type="unfinished">Delete-a %1?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="313"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="315"/>
         <source>Do you want to delete %1 %2?</source>
         <translation type="unfinished">Du yuoo vunt tu delete-a %1 %2?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="46"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindow.cpp" line="44"/>
         <source>The database password must be entered to edit %1.</source>
         <translation type="unfinished">Zee detebese-a pessvurd moost be-a intered tu ideet %1.</translation>
     </message>
@@ -4140,67 +4140,82 @@ Cunffeegooreshun: %2</translation>
 <context>
     <name>ObjectListWindowBaseClass</name>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="69"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="54"/>
+        <source>Enter search text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="61"/>
+        <source>Clear search text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="64"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="103"/>
         <source>&amp;Object</source>
         <translation type="unfinished">&amp;Oobject</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="79"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="113"/>
         <source>&amp;Window</source>
         <extracomment>The mnemonic is referenced in ObjectListWindow&lt;T&gt;, make sure to update it when this value is changed.</extracomment>
         <translation type="unfinished">&amp;Veendoo</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="89"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="123"/>
         <source>&amp;New</source>
         <translation type="unfinished">&amp;Noo</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="92"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="126"/>
         <source>Ctrl+N</source>
         <extracomment>New</extracomment>
         <translation type="unfinished">Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="97"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="131"/>
         <source>&amp;Delete</source>
         <translation type="unfinished">&amp;Delete-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="100"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="134"/>
         <source>Ctrl+D</source>
         <extracomment>Delete</extracomment>
         <translation type="unfinished">Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="105"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="139"/>
         <source>&amp;Edit</source>
         <translation type="unfinished">&amp;Ideet</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="108"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="142"/>
         <source>Ctrl+E</source>
         <extracomment>Edit</extracomment>
         <translation type="unfinished">Ctrl+I</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="113"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="147"/>
         <source>&amp;Refresh</source>
         <translation type="unfinished">&amp;Reffresh</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="116"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="150"/>
         <source>Ctrl+R</source>
         <extracomment>Refresh</extracomment>
         <translation type="unfinished">Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="121"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="155"/>
         <source>&amp;Close</source>
         <translation type="unfinished">&amp;Cluse-a</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="124"/>
+        <location filename="../src/gui/windows/objectList/ObjectListWindowBase.ui" line="158"/>
         <source>Ctrl+W</source>
         <extracomment>Close</extracomment>
         <translation type="unfinished">Ctrl+V</translation>
@@ -6082,7 +6097,7 @@ a refference-a lungeetoode-a is speceeffied in zee deta feele-a.</translation>
 <context>
     <name>Translation</name>
     <message>
-        <location filename="../src/i18n/TranslationManager.cpp" line="265"/>
+        <location filename="../src/i18n/TranslationManager.cpp" line="266"/>
         <source> </source>
         <comment>Replace with the name of the translation language, in that language</comment>
         <translation>Bork Bork Bork</translation>
