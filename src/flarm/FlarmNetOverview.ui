@@ -16,6 +16,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="SkTableView" name="flarmNetTable">
+     <property name="contextMenuPolicy">
+      <enum>Qt::CustomContextMenu</enum>
+     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
      </property>
@@ -78,6 +81,11 @@
     </layout>
    </item>
   </layout>
+  <action name="createPlaneAction">
+   <property name="text">
+    <string>&amp;Create plane...</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

@@ -6,6 +6,8 @@
 
 class DbManager;
 class QSortFilterProxyModel;
+class FlarmNetRecord;
+template<class T> class ObjectListModel;
 
 class FlarmNetOverview: public SkDialog<Ui::FlarmNetOverviewDialog>
 {
@@ -16,11 +18,19 @@ class FlarmNetOverview: public SkDialog<Ui::FlarmNetOverviewDialog>
 		virtual ~FlarmNetOverview ();
 
 	private:
+		DbManager &dbManager;
+
+		ObjectListModel<FlarmNetRecord> *objectListModel;
 		QSortFilterProxyModel* proxyModel;
+		QMenu *contextMenu;
 
 	private slots:
 		void searchClear();
 		void searchTextChanged (const QString&);
+
+		void on_flarmNetTable_customContextMenuRequested (const QPoint &pos);
+		void on_createPlaneAction_triggered ();
+
 };
 
 #endif

@@ -2,16 +2,19 @@
 
 #include <QSettings>
 #include <QSortFilterProxyModel>
+#include <QMenu>
 
 #include "src/db/DbManager.h"
 #include "src/flarm/FlarmNetRecord.h"
 #include "src/flarm/FlarmNetRecordModel.h"
 #include "src/model/objectList/ObjectListModel.h"
+#include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 
 class FlarmNetRecord;
 
 FlarmNetOverview::FlarmNetOverview (DbManager &dbManager, QWidget *parent):
-	SkDialog<Ui::FlarmNetOverviewDialog> (parent)
+	SkDialog<Ui::FlarmNetOverviewDialog> (parent),
+	dbManager (dbManager)
 {
 	ui.setupUi (this);
 
@@ -31,7 +34,7 @@ FlarmNetOverview::FlarmNetOverview (DbManager &dbManager, QWidget *parent):
 	ObjectModel<FlarmNetRecord> *flarmNetRecordModel = new FlarmNetRecordModel ();
 
 	// Create the object list model. It will be deleted by its parent, this.
-	ObjectListModel<FlarmNetRecord> *objectListModel = new ObjectListModel<FlarmNetRecord> (
+	objectListModel = new ObjectListModel<FlarmNetRecord> (
 		flarmNetRecords, true,
 		flarmNetRecordModel, true,
 		this);
@@ -75,6 +78,11 @@ FlarmNetOverview::FlarmNetOverview (DbManager &dbManager, QWidget *parent):
 //	ui.flarmNetTable->resizeRowsToContents ();
 //	ui.flarmNetTable->setAutoResizeColumns (true);
 //	ui.flarmNetTable->setAutoResizeRows (true);
+
+	// Context menu
+	contextMenu=new QMenu (this);
+	contextMenu->addAction (ui.createPlaneAction);
+	//contextMenu->addSeparator ();
 }
 
 FlarmNetOverview::~FlarmNetOverview ()
@@ -91,3 +99,31 @@ void FlarmNetOverview::searchTextChanged (const QString& search) {
         proxyModel->setFilterRegExp (QRegExp (search, Qt::CaseInsensitive, QRegExp::FixedString));
         ui.clearButton->setVisible (!search.isEmpty());
 } 
+
+void FlarmNetOverview::on_flarmNetTable_customContextMenuRequested (const QPoint &pos)
+{
+	contextMenu->popup (ui.flarmNetTable->mapToGlobal (pos), 0);
+}
+
+void FlarmNetOverview::on_createPlaneAction_triggered ()
+{
+	QModelIndex proxyIndex=ui.flarmNetTable->currentIndex ();
+	QModelIndex sourceIndex=proxyModel->mapToSource (proxyIndex);
+
+	FlarmNetRecord record=objectListModel->at (sourceIndex.row ());
+
+	// FIXME use record.toPlane
+	Plane preset;
+	preset.registration=record.registration;
+	preset.club        =record.owner;
+	preset.type        =record.type;
+	preset.numSeats    =-1; // Unknown
+	//preset.category
+	preset.callsign    =record.callsign;
+	preset.flarmId     =record.flarmId;
+	preset.comments    ="Created from FlarmNet record";
+
+	// FIXME don't create if a plane with that registration already exists; offer to update instead
+	// FIXME the category isn't guessed until the user changes the focus
+	ObjectEditorWindow<Plane>::createObjectPreset (this, dbManager, preset, NULL, NULL);
+}
