@@ -123,7 +123,7 @@ class Cache: public QObject
 		template<class T> bool objectExists (dbId id);
 		template<class T> QList<T> getObjects (const QList<dbId> &ids, bool ignoreNotFound);
 
-		// *** Objects by propery
+		// *** Objects by property
 		dbId getPlaneIdByRegistration (const QString &registration);
 		dbId getPlaneIdByFlarmId (const QString &flarmId);
 		dbId getFlarmNetRecordIdByFlarmId (const QString &flarmId);
