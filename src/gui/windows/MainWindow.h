@@ -214,6 +214,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void on_injectFlarmDepartureAction_triggered ();
 		void on_injectFlarmLandingAction_triggered ();
 		void on_injectFlarmTouchAndGoAction_triggered ();
+		void on_resolvePlaneAction_triggered ();
+		void on_resolveFlightAction_triggered ();
 
 		// Menu: Help
 		void on_actionInfo_triggered ();

@@ -265,9 +265,6 @@
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
-      <attribute name="horizontalHeaderHighlightSections">
-       <bool>false</bool>
-      </attribute>
      </widget>
     </item>
     <item>
@@ -374,7 +371,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -483,6 +480,9 @@
     <addaction name="injectFlarmDepartureAction"/>
     <addaction name="injectFlarmLandingAction"/>
     <addaction name="injectFlarmTouchAndGoAction"/>
+    <addaction name="separator"/>
+    <addaction name="resolvePlaneAction"/>
+    <addaction name="resolveFlightAction"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -959,6 +959,16 @@
   <action name="flarmNetImportWebAction">
    <property name="text">
     <string>Download FlarmNet database from &amp;web...</string>
+   </property>
+  </action>
+  <action name="resolvePlaneAction">
+   <property name="text">
+    <string>Resolve &amp;plane</string>
+   </property>
+  </action>
+  <action name="resolveFlightAction">
+   <property name="text">
+    <string>Resolve &amp;flight</string>
    </property>
   </action>
  </widget>

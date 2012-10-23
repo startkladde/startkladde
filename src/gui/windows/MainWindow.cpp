@@ -75,6 +75,7 @@
 #include "src/nmea/NmeaDecoder.h"
 #include "src/nmea/GpsTracker.h"
 #include "src/flarm/FlarmList.h"
+#include "src/flarm/PlaneResolver.h"
 #include "src/flarm/FlightResolver.h"
 #include "src/flarm/FlarmNetHandler.h"
 
@@ -2289,6 +2290,43 @@ void MainWindow::on_injectFlarmTouchAndGoAction_triggered ()
 	}
 }
 
+void MainWindow::on_resolvePlaneAction_triggered ()
+{
+	QString flarmId=QInputDialog::getText (this, "Resolve plane", "Flarm ID:");
+
+	PlaneResolver::Result result=PlaneResolver (cache).resolvePlane (flarmId);
+
+	QString text="Not handled";
+	if (result.planeFound ())
+	{
+		Plane plane=cache.getObject<Plane> (result.planeId);
+		if (result.flarmNetRecordFound ())
+			text=qnotr ("Plane %1 via FlarmNet record %2")
+				.arg (plane.registration)
+				.arg (result.flarmNetRecord->getId ());
+		else
+			text=qnotr ("Plane %1 directly").arg (plane.registration);
+	}
+	else if (result.flarmNetRecordFound ())
+		text=qnotr ("FlarmNet record %1, registration %2")
+			.arg (result.flarmNetRecord->getId ()).arg (result.flarmNetRecord->registration);
+	else
+		text=qnotr ("Not found");
+
+
+	QString title=qnotr ("Resolve plane %1").arg (flarmId);
+	QMessageBox::information (this, title, text);
+}
+
+void MainWindow::on_resolveFlightAction_triggered ()
+{
+	// Note that we'll also need to decide on a set of candidate flights
+
+	QMessageBox::information (this,
+		qnotr ("Resolve flight"),
+		qnotr ("Not implemented"));
+}
+
 
 Flight MainWindow::createFlarmFlight (const FlightResolver::Result &resolverResult, const QString &flarmId)
 {
@@ -2297,7 +2335,11 @@ Flight MainWindow::createFlarmFlight (const FlightResolver::Result &resolverResu
 	flight.setPlaneId (resolverResult.planeId);
 	flight.setFlarmId (flarmId);
 	if (resolverResult.registrationFound ())
+	{
+		// FIXME: if we can find a plane with that registration, do we want to
+		// use it or do we wait for the user to confirm it when editing the flight?
 		flight.setComments (tr ("Registration from FlarmNet: %1").arg (resolverResult.registration));
+	}
 
 	return flight;
 }
