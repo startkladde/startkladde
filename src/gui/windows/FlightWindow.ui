@@ -607,7 +607,7 @@
           <item row="20" column="0">
            <widget class="SkLabel" name="numLandingsLabel">
             <property name="text">
-             <string>Num&amp;ber of landin&amp;gs:</string>
+             <string>Num&amp;ber of landings:</string>
             </property>
             <property name="buddy">
              <cstring>numLandingsInput</cstring>

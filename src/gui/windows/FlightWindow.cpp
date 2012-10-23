@@ -1750,36 +1750,6 @@ bool FlightWindow::writeToDatabase (Flight &flight)
 	return success;
 }
 
-void FlightWindow::updateFlarmId (const Flight & flight)
-{
-	qDebug () << "FlightWindow::updateFlarmId" << endl;
-	// If Flarm ID is missing, try to update plane in database
-	dbId planeId = flight.getPlaneId ();
-	Plane plane = cache.getObject<Plane> (planeId);
-	
-	if (plane.flarmId.isEmpty() && flight.getFlarmId().isEmpty())
-		// Both the flight's and the plane's Flarm ID are empty - nothing to do
-		qDebug () << "both flarm id empty; we cannot help it" << endl;
-	else if (plane.flarmId == flight.getFlarmId())
-		// Flight's and plane's Flarm ID match (and are not emtpy) - nothing to do
-		qDebug () << "flarm_id already correct" << endl;
-	else if (plane.flarmId.isEmpty()) {
-		// The plane's Flarm ID is empty  - copy the flight's Flarm ID to the plane
-		qDebug () << "enter flarm id of flight into plane: " << flight.getFlarmId() << endl;
-		plane.flarmId = flight.getFlarmId();
-		// update database
-		try {
-			manager.updateObject (plane,this);
-		}
-		catch (OperationCanceledException &)
-		{
-			qDebug () << "OperationCanceledException" << endl;
-			// TODO the cache may now be inconsistent
-		}
-	}
-	else
-		qDebug () << "unexpected flarm id in plane: " << plane.flarmId << "; flight flarm id: " << flight.getFlarmId() << endl;
-}
 
 // *****************************
 // ** Input field active-ness **
@@ -2269,9 +2239,9 @@ void FlightWindow::checkFlarmId ()
 		// has a Flarm ID), but it has no plane. This probably means that no
 		// plane with that Flarm ID was found in the database (the plane might
 		// also have been removed by the user).
-		// The most common reason for this case is that an unknown plane has
-		// performed a flight. We may be able to find the plane in the FlarmNet
-		// database. In this case, offer the user to create the plane.
+		// The most common reason for this case is that a depature of an unknown
+		// plane has been detected. We may be able to find the plane in the
+		// FlarmNet database. In this case, offer the user to create the plane.
 		// Note that, when a flight is automatically created, if the plane can
 		// be resolved (either directly or via FlarmNet, see FlightResolver),
 		// the plane is already set and this won't be performed at all.
@@ -2292,33 +2262,66 @@ void FlightWindow::checkFlarmId ()
 			if (flarmNetRecord.registration.isEmpty ())
 				return;
 
-			// We found a FlarmNet record with a matching Flarm ID. Don't bother
-			// trying to find a plane, it would already be set if there was one.
-			// FIXME yes we have to do this, it might have been created in the
-			// meantime.
-			// FIXME different message if no type is set
-			QString title=tr ("Automatically create plane?");
-			QString text= tr (
-				"This flight was created automatically. The plane was not "
-				"found in the database. However, the FlarmNet database "
-				"indicates that the plane might be a %1 with registration "
-				"%2 (%3). Do you want to create the plane?")
-				.arg (flarmNetRecord.type)
-				.arg (flarmNetRecord.registration)
-				.arg (flarmNetRecord.callsign);
-
-			if (QMessageBox::question (this, title, text, QMessageBox::Yes | QMessageBox::No)==QMessageBox::Yes)
+			// We found a FlarmNet record with a matching Flarm ID. There may or
+			// may not be a plane with that registration (even if planes are
+			// selected automatically, based on the FlarmNet registration, when
+			// creating a flight, the user may still have added the plane in the
+			// meantime).
+			dbId planeId=cache.getPlaneIdByRegistration (flarmNetRecord.registration);
+			if (idValid (planeId))
 			{
-				Plane plane=flarmNetRecord.toPlane ();
+				// There is a matching plane in the database. Offer the user to
+				// use it.
+				QString title=tr ("Use plane?");
+				QString text= tr (
+					"This flight was created automatically. The plane is not "
+					"known. However, the FlarmNet database "
+					"indicates that the plane might be a %1 with registration "
+					"%2 (%3). Do you want to use this plane?")
+					.arg (flarmNetRecord.type)
+					.arg (flarmNetRecord.registration)
+					.arg (flarmNetRecord.callsign);
 
-				dbId result=ObjectEditorWindow<Plane>::createObjectPreset (this, manager, plane, NULL, &plane);
-				if (idValid (result))
+				if (QMessageBox::question (this, title, text, QMessageBox::Yes | QMessageBox::No)==QMessageBox::Yes)
 				{
+					Plane plane=cache.getObject<Plane> (planeId);
+
 					// FIXME test: registration changed
 					ui.registrationInput->setEditText (plane.registration);
-					selectedPlane=result;
+					selectedPlane=planeId;
 					// TODO: this stinks
 					on_registrationInput_editingFinished (plane.registration);
+				}
+			}
+			else
+			{
+				// There is no plane with that registration in the database yet.
+				// Offer the user to create it.
+				// FIXME different message if no type is set
+				// FIXME registration/callsign display if callsign empty
+				QString title=tr ("Automatically create plane?");
+				QString text= tr (
+					"This flight was created automatically. The plane was not "
+					"found in the database. However, the FlarmNet database "
+					"indicates that the plane might be a %1 with registration "
+					"%2 (%3). Do you want to create the plane?")
+					.arg (flarmNetRecord.type)
+					.arg (flarmNetRecord.registration)
+					.arg (flarmNetRecord.callsign);
+
+				if (QMessageBox::question (this, title, text, QMessageBox::Yes | QMessageBox::No)==QMessageBox::Yes)
+				{
+					Plane plane=flarmNetRecord.toPlane ();
+
+					dbId result=ObjectEditorWindow<Plane>::createObjectPreset (this, manager, plane, NULL, &plane);
+					if (idValid (result))
+					{
+						// FIXME test: registration changed
+						ui.registrationInput->setEditText (plane.registration);
+						selectedPlane=result;
+						// TODO: this stinks
+						on_registrationInput_editingFinished (plane.registration);
+					}
 				}
 			}
 		}
@@ -2330,3 +2333,54 @@ void FlightWindow::checkFlarmId ()
 
 	}
 }
+
+void FlightWindow::updateFlarmId (const Flight &flight)
+{
+	// Don't do anything if the flight was not created automatically
+	if (flight.getFlarmId ().isEmpty ())
+		return;
+
+	dbId oldPlaneId=originalFlight.getPlaneId ();
+	dbId newPlaneId=flight.getPlaneId ();
+
+	// Don't do anything if the plane was not changed
+	// FIXME really?
+	if (oldPlaneId==newPlaneId)
+		return;
+
+//	Plane oldPlane=cache.getObject<Plane> (oldPlaneId);
+	Plane newPlane=cache.getObject<Plane> (newPlaneId);
+
+	// Don't do anything if the plane's Flarm ID matches the Flight's.
+	if (newPlane.flarmId==flight.getFlarmId ())
+		return;
+
+	// OK, so the flight has a Flarm ID (i. e. it was created automatically)
+	// which does not match the (new) plane's Flarm ID. Maybe we want to update
+	// the plane in the database.
+
+	if (newPlane.flarmId.isEmpty ())
+	{
+		// The plane has no Flarm ID so far. This is the common case of adding
+		// a Flarm ID to a plane, and there's little danger of doing it wrong,
+		// so we do it silently.
+		try
+		{
+			newPlane.flarmId=flight.getFlarmId ();
+			manager.updateObject (newPlane, this);
+		}
+		catch (OperationCanceledException &)
+		{
+			qDebug () << "OperationCanceledException" << endl;
+			// TODO the cache may now be inconsistent
+		}
+	}
+	else
+	{
+		// The plane has a different Flarm ID. This probably means that the
+		// Flarm of the plane was exchanged or swapped with another Flarm.
+
+		// FIXME DOING implement this case, and test both cases.
+	}
+}
+
