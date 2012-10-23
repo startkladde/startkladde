@@ -1,6 +1,7 @@
+#include <src/flarm/FlightResolver.h>
+
 #include <QtCore/QDebug>
 
-#include <src/flarm/FlightResolver.h>
 #include "src/db/cache/Cache.h"
 #include "src/model/Flight.h"
 #include "src/flarm/FlarmNetRecord.h"
