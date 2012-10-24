@@ -11,7 +11,8 @@
  * A Maybe essentially behaves like a QList, except that it is limited to one
  * value. Modifying a Maybe will not affect any copies of that Maybe.
  *
- * This container is implicitly shared, so copying is very fast.
+ * A Maybe stores a value, but the container is implicitly shared, so copying
+ * is very fast as long as the value is not modified.
  */
 template<class T> class Maybe
 {
