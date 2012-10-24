@@ -48,6 +48,8 @@ PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cach
 	if (paneData)
 	{
 		ui.flarmIdInput->setEnabled (!paneData->flarmIdReadOnly);
+		if (!paneData->flarmId.isEmpty ())
+			ui.flarmIdInput->setText (paneData->flarmId);
 	}
 	else
 	{

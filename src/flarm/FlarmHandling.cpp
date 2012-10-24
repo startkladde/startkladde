@@ -93,6 +93,7 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 			{
 				PlaneEditorPaneData paneData;
 				paneData.flarmIdReadOnly=true;
+				paneData.flarmId=flight.getFlarmId ();
 				return ObjectEditorWindow<Plane>::createObject (parent,
 					dbManager, &paneData);
 			}

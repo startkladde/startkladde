@@ -11,6 +11,7 @@ class PlaneEditorPaneData: public ObjectEditorPaneData
 {
 	public:
 		bool flarmIdReadOnly;
+		QString flarmId;
 };
 
 class PlaneEditorPane: public ObjectEditorPane<Plane>
