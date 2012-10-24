@@ -71,7 +71,7 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 			QString text =qApp->translate ("FlarmHandling", "The plane was not "
 				"found in the database. However, the FlarmNet database indicates "
 				"that the plane might be a %1 with registration %2. Do you want "
-				"to create the plane?")
+				"to create this plane?")
 				.arg (result.flarmNetRecord->type)
 				.arg (result.flarmNetRecord->fullRegistration ());
 
