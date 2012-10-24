@@ -400,6 +400,9 @@
     <addaction name="actionRepeat"/>
     <addaction name="actionDelete"/>
     <addaction name="separator"/>
+    <addaction name="identifyPlaneAction"/>
+    <addaction name="updateFlarmIdAction"/>
+    <addaction name="separator"/>
     <addaction name="actionDisplayError"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -969,6 +972,19 @@
   <action name="resolveFlightAction">
    <property name="text">
     <string>Resolve &amp;flight</string>
+   </property>
+  </action>
+  <action name="identifyPlaneAction">
+   <property name="text">
+    <string>&amp;Identify plane</string>
+   </property>
+   <property name="toolTip">
+    <string>&amp;Identify plane</string>
+   </property>
+  </action>
+  <action name="updateFlarmIdAction">
+   <property name="text">
+    <string>&amp;Update Flarm ID</string>
    </property>
   </action>
  </widget>

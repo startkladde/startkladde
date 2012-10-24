@@ -126,6 +126,10 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void updateTimeLabels (const QDateTime &now=QDateTime::currentDateTime ());
 		void updateDatabaseStateLabel (DbManager::State state);
 
+		// Flarm
+		void interactiveIdentifyPlane (dbId flightId);
+		void interactiveUpdateFlarmId (dbId flightId);
+
 	signals:
 		void minuteChanged ();
 
@@ -158,6 +162,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void on_actionEdit_triggered ();
 		void on_actionRepeat_triggered ();
 		void on_actionDelete_triggered ();
+		void on_identifyPlaneAction_triggered ();
+		void on_updateFlarmIdAction_triggered ();
 		void on_actionDisplayError_triggered ();
 
 		// Menu: View
