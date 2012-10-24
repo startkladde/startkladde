@@ -30,6 +30,7 @@ class FlarmNetRecord: public Entity
 		// *** Formatting
 		virtual QString toString () const;
 		virtual QString getDisplayName () const;
+	    virtual QString fullRegistration () const;
 
 
 		// *** ObjectListWindow/ObjectEditorWindow helpers

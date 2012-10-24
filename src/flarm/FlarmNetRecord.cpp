@@ -54,6 +54,23 @@ QString FlarmNetRecord::getDisplayName () const
 	return flarmId;
 }
 
+/**
+ * Returns the registration in form "D-XXXX (YY)" if callsign and registration
+ * are non-blank, or just one of the components if the other is blank.
+ *
+ * @see Plane::fullRegistration
+ */
+QString FlarmNetRecord::fullRegistration () const
+{
+	if (isBlank (callsign))
+		return registration;
+	else if (isBlank (registration))
+		return callsign;
+	else
+		return qnotr ("%1 (%2)").arg (registration, callsign);
+}
+
+
 
 // *******************
 // ** SQL interface **
