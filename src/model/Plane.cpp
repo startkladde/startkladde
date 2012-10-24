@@ -43,6 +43,12 @@ bool Plane::selfLaunchOnly () const
 	return category==categoryAirplane || category==categoryUltralight;
 }
 
+/**
+ * Returns the registration in form "D-XXXX (YY)" if callsign and registration
+ * are non-blank, or just one of the components if the other is blank.
+ *
+ * @see FlarmNetRecord::fullRegistration
+ */
 QString Plane::fullRegistration () const
 {
 	if (isBlank (callsign))
