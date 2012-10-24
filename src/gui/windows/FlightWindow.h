@@ -301,7 +301,7 @@ class FlightWindow: public SkDialog<Ui::FlightWindowClass>
 		bool checkBuffer ();
 
 		bool writeToDatabase (Flight &flight);
-		void updateFlarmId (const Flight & flight);
+		bool updateFlarmId (const Flight & flight);
 
 		// *** Input field setup
 		void  enableWidget (QWidget *widget, bool  enabled);
@@ -429,6 +429,8 @@ class FlightWindow: public SkDialog<Ui::FlightWindowClass>
 		QPushButton *nowButton;
 		QPushButton *laterButton;
 
+		QMenu *advancedPlaneOperationsMenu;
+
 		DbManager &manager;
 		Cache &cache;
 		const FlightWindow::Mode mode;
@@ -437,7 +439,7 @@ class FlightWindow: public SkDialog<Ui::FlightWindowClass>
 		QWidget *getErrorWidget (Flight::Error error);
 
 		// Flarm
-		void checkFlarmId ();
+		void identifyPlane (const Flight &flight);
 
 		// In create mode, we have "Automatic" checkboxes which deativate the
 		// input fields, so they are active if the checkbox is not checked. In edit
