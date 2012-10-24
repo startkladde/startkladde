@@ -54,11 +54,10 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 			QString title=qApp->translate ("FlarmHandling", "Use plane?");
 			QString text =qApp->translate ("FlarmHandling", "The plane seems "
 				"to be a %1 with registration %2. Do you want to use this plane?")
-				.arg (plane.type).arg (plane.registration);
+				.arg (plane.type).arg (plane.fullRegistration ());
 			// FIXME no type?
 			// FIXME allow multiple
 			// FIXME Flarm ID mismatch
-			// FIXME registration+callsign
 
 			if (yesNoQuestion (parent, title, text))
 				return result.planeId;
@@ -67,7 +66,6 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 		{
 			// Offer the user to create a plane with the FlarmNet data
 			// FIXME no type
-			// FIXME registration+callsign
 			// FIXME we need the options: create plane with FlarmNet data, create plane from scratch, cancel
 			QString title=qApp->translate ("FlarmHandling", "Automatically create plane?");
 			QString text =qApp->translate ("FlarmHandling", "The plane was not "
@@ -75,7 +73,7 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 				"that the plane might be a %1 with registration %2. Do you want "
 				"to create the plane?")
 				.arg (result.flarmNetRecord->type)
-				.arg (result.flarmNetRecord->registration);
+				.arg (result.flarmNetRecord->fullRegistration ());
 
 			if (yesNoQuestion (parent, title, text))
 			{

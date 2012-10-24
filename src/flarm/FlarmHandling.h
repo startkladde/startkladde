@@ -3,8 +3,6 @@
 
 #include "src/db/dbId.h"
 
-#include <QObject>
-
 class QWidget;
 class DbManager;
 
@@ -12,10 +10,8 @@ class DbManager;
  * For want of a better name - this class contains some methods for handling
  * flights and planes, as related to Flarm.
  */
-class FlarmHandling//: public QObject
+class FlarmHandling
 {
-//		Q_OBJECT
-
 	public:
 		FlarmHandling ();
 		virtual ~FlarmHandling ();
