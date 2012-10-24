@@ -25,8 +25,9 @@
 // ** Construction **
 // ******************
 
-PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent):
-	ObjectEditorPane<Plane> (mode, cache, parent)
+PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent, PlaneEditorPaneData *paneData):
+	ObjectEditorPane<Plane> (mode, cache, parent),
+	paneData (paneData)
 {
 	ui.setupUi(this);
 
@@ -43,6 +44,15 @@ PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cach
 	ui.registrationInput->setFocus ();
 //	ui.registrationInput->setCursorPosition (ui.registrationInput->text ().length ());
 //	ui.registrationInput->end (false);
+
+	if (paneData)
+	{
+		ui.flarmIdInput->setEnabled (!paneData->flarmIdReadOnly);
+	}
+	else
+	{
+		ui.flarmIdInput->setEnabled (true);
+	}
 }
 
 PlaneEditorPane::~PlaneEditorPane()
@@ -52,8 +62,7 @@ PlaneEditorPane::~PlaneEditorPane()
 
 template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent, ObjectEditorPaneData *paneData)
 {
-	(void)paneData;
-	return new PlaneEditorPane (mode, cache, parent);
+	return new PlaneEditorPane (mode, cache, parent, dynamic_cast<PlaneEditorPaneData *> (paneData));
 }
 
 

@@ -7,12 +7,18 @@
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required for ObjectEditorWindowBase::Mode
 #include "src/model/Plane.h"
 
+class PlaneEditorPaneData: public ObjectEditorPaneData
+{
+	public:
+		bool flarmIdReadOnly;
+};
+
 class PlaneEditorPane: public ObjectEditorPane<Plane>
 {
     Q_OBJECT
 
 	public:
-		PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
+		PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL, PlaneEditorPaneData *paneData=NULL);
 		virtual ~PlaneEditorPane();
 
 		virtual void objectToFields (const Plane &plane);
@@ -30,6 +36,7 @@ class PlaneEditorPane: public ObjectEditorPane<Plane>
 
 	private:
 		Ui::PlaneEditorPaneClass ui;
+		PlaneEditorPaneData *paneData;
 };
 
 
