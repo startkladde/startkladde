@@ -1224,7 +1224,22 @@ void MainWindow::on_actionDelete_triggered ()
 void MainWindow::on_identifyPlaneAction_triggered ()
 {
 	dbId flightId=currentFlightId (NULL);
-	interactiveIdentifyPlane (flightId);
+
+	try
+	{
+		dbId newPlaneId=FlarmHandling::interactiveIdentifyPlane (this, dbManager, flightId);
+
+		// If a plane was found, update the flight
+		if (idValid (newPlaneId))
+		{
+			Flight flight=cache.getObject<Flight> (flightId);
+			flight.setPlaneId (newPlaneId);
+			updateFlight (flight);
+		}
+	}
+	catch (Cache::NotFoundException &ex)
+	{
+	}
 }
 
 void MainWindow::on_updateFlarmIdAction_triggered ()
@@ -2456,25 +2471,6 @@ void MainWindow::on_connectFlarmAction_triggered ()
 		flarmStream->open ();
 	else
 		flarmStream->close ();
-}
-
-void MainWindow::interactiveIdentifyPlane (dbId flightId)
-{
-	try
-	{
-		dbId newPlaneId=FlarmHandling::interactiveIdentifyPlane (this, dbManager, flightId);
-
-		// If a plane was found, update the flight
-		if (idValid (newPlaneId))
-		{
-			Flight flight=cache.getObject<Flight> (flightId);
-			flight.setPlaneId (newPlaneId);
-			updateFlight (flight);
-		}
-	}
-	catch (Cache::NotFoundException &ex)
-	{
-	}
 }
 
 void MainWindow::interactiveUpdateFlarmId (dbId flightId)

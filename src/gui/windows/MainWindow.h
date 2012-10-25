@@ -127,7 +127,6 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void updateDatabaseStateLabel (DbManager::State state);
 
 		// Flarm
-		void interactiveIdentifyPlane (dbId flightId);
 		void interactiveUpdateFlarmId (dbId flightId);
 
 	signals:

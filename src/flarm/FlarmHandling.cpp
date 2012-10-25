@@ -26,16 +26,23 @@ FlarmHandling::~FlarmHandling ()
 {
 }
 
-dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, dbId flightId)
+/**
+ * Tries to identify the plane for an automatically created flight, asking the
+ * user to choose or create a plane if necessary
+ *
+ * @param parent Qt parent widget for dialogs
+ * @param dbManager the database to use for retrieving plane data
+ * @param flarmId the Flarm ID of the flight
+ * @return
+ */
+dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, const QString &flarmId)
 {
 	Cache &cache=dbManager.getCache ();
 
 	try
 	{
-		Flight flight=cache.getObject<Flight> (flightId);
-
 		// We can only do this for automatically created flights
-		if (flight.getFlarmId ().isEmpty ())
+		if (flarmId.isEmpty ())
 		{
 			QMessageBox::information (parent, qApp->translate ("FlarmHandling", "Identify plane"),
 				qApp->translate ("FlarmHandling", "The plane cannot be "
@@ -44,7 +51,7 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 		}
 
 		// Lookup the plane
-		PlaneResolver::Result result=PlaneResolver (cache).resolvePlane (flight.getFlarmId ());
+		PlaneResolver::Result result=PlaneResolver (cache).resolvePlane (flarmId);
 
 		// Let's see what we've got...
 		if (result.planeFound ())
@@ -93,7 +100,7 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 			{
 				PlaneEditorPaneData paneData;
 				paneData.flarmIdReadOnly=true;
-				paneData.flarmId=flight.getFlarmId ();
+				paneData.flarmId=flarmId;
 				return ObjectEditorWindow<Plane>::createObject (parent,
 					dbManager, &paneData);
 			}
@@ -105,4 +112,21 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 	}
 
 	return invalidId;
+}
+
+
+/**
+ * Frontend method
+*/
+dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, dbId flightId)
+{
+	try
+	{
+		Flight flight=dbManager.getCache ().getObject<Flight> (flightId);
+		return interactiveIdentifyPlane (parent, dbManager, flight.getFlarmId ());
+	}
+	catch (Cache::NotFoundException &ex)
+	{
+		return invalidId;
+	}
 }
