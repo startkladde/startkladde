@@ -99,7 +99,7 @@ MainWindow::MainWindow (QWidget *parent):
 	databaseActionsEnabled (false),
 	fontSet (false),
 	flightResolver (cache),
-	injectedFlarmId ("ABC")
+	debugFlarmId ("ABC")
 {
 	ui.setupUi (this);
 
@@ -2293,69 +2293,78 @@ void MainWindow::languageChanged ()
 
 void MainWindow::on_injectFlarmDepartureAction_triggered ()
 {
-	QString flarmId=QInputDialog::getText (this, "Inject Flarm departure", "Flarm ID:", QLineEdit::Normal, injectedFlarmId);
+	QString flarmId=QInputDialog::getText (this, "Inject Flarm departure", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
 	if (!flarmId.isNull ())
 	{
 		flarmList_departureDetected (flarmId);
-		injectedFlarmId=flarmId;
+		debugFlarmId=flarmId;
 	}
 }
 
 void MainWindow::on_injectFlarmLandingAction_triggered ()
 {
-	QString flarmId=QInputDialog::getText (this, "Inject Flarm landing", "Flarm ID:", QLineEdit::Normal, injectedFlarmId);
+	QString flarmId=QInputDialog::getText (this, "Inject Flarm landing", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
 	if (!flarmId.isNull ())
 	{
 		flarmList_landingDetected (flarmId);
-		injectedFlarmId=flarmId;
+		debugFlarmId=flarmId;
 	}
 }
 
 void MainWindow::on_injectFlarmTouchAndGoAction_triggered ()
 {
-	QString flarmId=QInputDialog::getText (this, "Inject Flarm touch and go", "Flarm ID:", QLineEdit::Normal, injectedFlarmId);
+	QString flarmId=QInputDialog::getText (this, "Inject Flarm touch and go", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
 	if (!flarmId.isNull ())
 	{
 		flarmList_goAroundDetected (flarmId);
-		injectedFlarmId=flarmId;
+		debugFlarmId=flarmId;
 	}
 }
 
 void MainWindow::on_resolvePlaneAction_triggered ()
 {
-	QString flarmId=QInputDialog::getText (this, "Resolve plane", "Flarm ID:");
-
-	PlaneResolver::Result result=PlaneResolver (cache).resolvePlane (flarmId);
-
-	QString text="Not handled";
-	if (result.planeFound ())
+	QString flarmId=QInputDialog::getText (this, "Resolve plane", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
+	if (!flarmId.isNull ())
 	{
-		Plane plane=cache.getObject<Plane> (result.planeId);
-		if (result.flarmNetRecordFound ())
-			text=qnotr ("Plane %1 via FlarmNet record %2")
-				.arg (plane.registration)
-				.arg (result.flarmNetRecord->getId ());
+		PlaneResolver::Result result=PlaneResolver (cache).resolvePlane (flarmId);
+
+		QString text="Not handled";
+		if (result.planeFound ())
+		{
+			if (result.flarmNetRecordFound ())
+				text=qnotr ("Plane %1 via FlarmNet record %2")
+					.arg (result.plane->registration)
+					.arg (result.flarmNetRecord->getId ());
+			else
+				text=qnotr ("Plane %1 directly").arg (result.plane->registration);
+		}
+		else if (result.flarmNetRecordFound ())
+			text=qnotr ("FlarmNet record %1, registration %2")
+				.arg (result.flarmNetRecord->getId ()).arg (result.flarmNetRecord->registration);
 		else
-			text=qnotr ("Plane %1 directly").arg (plane.registration);
+			text=qnotr ("Not found");
+
+
+		QString title=qnotr ("Resolve plane %1").arg (flarmId);
+		QMessageBox::information (this, title, text);
+
+		debugFlarmId=flarmId;
 	}
-	else if (result.flarmNetRecordFound ())
-		text=qnotr ("FlarmNet record %1, registration %2")
-			.arg (result.flarmNetRecord->getId ()).arg (result.flarmNetRecord->registration);
-	else
-		text=qnotr ("Not found");
-
-
-	QString title=qnotr ("Resolve plane %1").arg (flarmId);
-	QMessageBox::information (this, title, text);
 }
 
 void MainWindow::on_resolveFlightAction_triggered ()
 {
 	// Note that we'll also need to decide on a set of candidate flights
 
-	QMessageBox::information (this,
-		qnotr ("Resolve flight"),
-		qnotr ("Not implemented"));
+	QString flarmId=QInputDialog::getText (this, "Resolve plane", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
+	if (!flarmId.isNull ())
+	{
+		QMessageBox::information (this,
+				qnotr ("Resolve flight"),
+				qnotr ("Not implemented"));
+
+		debugFlarmId=flarmId;
+	}
 }
 
 

@@ -321,7 +321,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		GpsTracker *gpsTracker;
 		FlarmList *flarmList;
 		FlightResolver flightResolver;
-		QString injectedFlarmId;
+		QString debugFlarmId;
 		bool flarmStreamValid;
 
 };
