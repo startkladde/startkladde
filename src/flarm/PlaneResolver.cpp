@@ -22,7 +22,16 @@ PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmId (const QString &flarm
 {
 	dbId planeId=cache.getPlaneIdByFlarmId (flarmId);
 	if (idValid (planeId))
-		return Result (planeId, Maybe<FlarmNetRecord>::invalid ());
+	{
+		try
+		{
+			Plane plane=cache.getObject<Plane> (planeId);
+			return Result (plane, Maybe<>::invalid);
+		}
+		catch (Cache::NotFoundException &ex)
+		{
+		}
+	}
 
 	return Result::invalid ();
 }
@@ -49,18 +58,23 @@ PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmNetDatabase (const QStri
 		dbId planeId=cache.getPlaneIdByRegistration (registration);
 		if (idValid (planeId))
 		{
-			return Result (planeId, flarmNetRecord);
+			// Make sure that the plane's Flarm ID actually matches the Flarm ID
+			// we're looking for - the data from the FlarmNet database may be
+			// outdated.
+			Plane plane=cache.getObject<Plane> (planeId);
+			if (plane.flarmId==flarmId)
+			{
+				return Result (plane, flarmNetRecord);
+			}
 		}
 		else
 		{
-			return Result (invalidId, flarmNetRecord);
+			return Result (Maybe<>::invalid, flarmNetRecord);
 		}
 	}
-	catch (Cache::NotFoundException &)
+	catch (Cache::NotFoundException &) {}
 	{
-		// This should not happen because we only fetch objects for IDs we
-		// retrieved from the cache, but you never know...
-		return Result::invalid ();
+		// Should not happen
 	}
 
 	return Result::invalid ();

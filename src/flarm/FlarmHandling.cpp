@@ -18,6 +18,9 @@
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 #include "src/gui/windows/objectEditor/PlaneEditorPane.h"
 
+// FIXME: identify known plane - warn if the identified plane is different from
+// the current one
+
 FlarmHandling::FlarmHandling ()
 {
 }
@@ -56,18 +59,17 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 		// Let's see what we've got...
 		if (result.planeFound ())
 		{
-			Plane plane=cache.getObject<Plane> (result.planeId);
 			// Offer the user to use this plane
 			QString title=qApp->translate ("FlarmHandling", "Use plane?");
 			QString text =qApp->translate ("FlarmHandling", "The plane seems "
 				"to be a %1 with registration %2. Do you want to use this plane?")
-				.arg (plane.type).arg (plane.fullRegistration ());
+				.arg (result.plane->type).arg (result.plane->fullRegistration ());
 			// FIXME no type?
 			// FIXME allow multiple
 			// FIXME Flarm ID mismatch
 
 			if (yesNoQuestion (parent, title, text))
-				return result.planeId;
+				return result.plane->getId ();
 		}
 		else if (result.flarmNetRecordFound ())
 		{
@@ -93,6 +95,10 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 		else
 		{
 			// Offer the user to create a plane from scratch
+			// FIXME this does not make sense because (a) the plane may already
+			// be in the database, just without Flarm ID, and (b) when opening
+			// the flight editor, the user will be given the opportunity to
+			// choose the plane (and create it if it does not exist) anyway.
 			QString title=qApp->translate ("FlarmHandling", "Create plane?");
 			QString text =qApp->translate ("FlarmHandling", "The plane was not found. Do you want to create it?");
 

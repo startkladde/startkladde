@@ -19,6 +19,7 @@ class FlarmHandling
 		static dbId interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, const QString &flarmId);
 		static dbId interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, dbId flightId);
 
+//		static void interactiveUpdateFlarmId (QWidget *parent, DbManager &dbManager)
 
 
 };

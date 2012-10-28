@@ -14,20 +14,20 @@ class PlaneResolver
 		class Result
 		{
 			public:
-				dbId planeId;
+				Maybe<Plane>          plane;
 				Maybe<FlarmNetRecord> flarmNetRecord;
 
-				Result (dbId planeId, const Maybe<FlarmNetRecord> &flarmNetRecord):
-					planeId (planeId), flarmNetRecord (flarmNetRecord)
+				Result (const Maybe<Plane> &plane, const Maybe<FlarmNetRecord> &flarmNetRecord):
+					plane (plane), flarmNetRecord (flarmNetRecord)
 				{
 				}
 
 				static Result invalid ()
 				{
-					return Result (invalidId, Maybe<FlarmNetRecord>::invalid ());
+					return Result (Maybe<>::invalid, Maybe<>::invalid);
 				}
 
-				bool planeFound          () const { return idValid (planeId);  }
+				bool planeFound          () const { return plane.isValid          (); }
 				bool flarmNetRecordFound () const { return flarmNetRecord.isValid (); }
 		};
 
