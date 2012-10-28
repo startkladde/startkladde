@@ -1,6 +1,8 @@
 #ifndef MAYBE_H_
 #define MAYBE_H_
 
+#include <cassert>
+
 #include <QList>
 
 /**
@@ -13,13 +15,16 @@
  *
  * A Maybe stores a value, but the container is implicitly shared, so copying
  * is very fast as long as the value is not modified.
+ *
+ * Note that an invalid Maybe of any type can be created by Maybe<>::invalid.
  */
-template<class T> class Maybe
+template<typename T=void> class Maybe
 {
 	public:
 		// Construction
 		Maybe (const T &value);
 		Maybe ();
+		Maybe (const Maybe<void> &voidValue);
 		static Maybe<T> invalid ();
 		virtual ~Maybe ();
 
@@ -40,6 +45,17 @@ template<class T> class Maybe
 		QList<T> list;
 };
 
+/**
+ * Not a useful class on its own, but it contains the static invalid value used
+ * when writing Maybe<>::invalid.
+ */
+template<> class Maybe<void>
+{
+	public:
+		Maybe ();
+		static const Maybe<void> invalid;
+};
+
 
 // ******************
 // ** Construction **
@@ -48,7 +64,7 @@ template<class T> class Maybe
 /**
  * Constructs a valid Maybe with the specified value
  */
-template<class T> Maybe<T>::Maybe (const T &value)
+template<typename T> Maybe<T>::Maybe (const T &value)
 {
 	list.append (value);
 }
@@ -58,19 +74,33 @@ template<class T> Maybe<T>::Maybe (const T &value)
  *
  * Consider using Maybe<T>::invalid () instead for more clarity.
  */
-template<class T> Maybe<T>::Maybe ()
+template<typename T> Maybe<T>::Maybe ()
 {
 }
 
 /**
- * Creates an invalid Maybe
+ * Constructs an invalid Maybe
+ *
+ * This constructor exists so you can omit the type when creating an invalid
+ * Maybe of any type and write "Maybe<>::invalid".
+ *
+ * @param voidValue must be Maybe<>::invalid
  */
-template<class T> Maybe<T> Maybe<T>::invalid ()
+template<typename T> Maybe<T>::Maybe (const Maybe<void> &voidValue)
 {
-		return Maybe<T> ();
+	assert (&voidValue==&Maybe<void>::invalid);
 }
 
-template<class T> Maybe<T>::~Maybe ()
+
+/**
+ * Creates an invalid Maybe
+ */
+template<typename T> Maybe<T> Maybe<T>::invalid ()
+{
+	return Maybe<T> ();
+}
+
+template<typename T> Maybe<T>::~Maybe ()
 {
 }
 
@@ -82,7 +112,7 @@ template<class T> Maybe<T>::~Maybe ()
 /**
  * Returns true if this Maybe is valid, false if not
  */
-template<class T> bool Maybe<T>::isValid () const
+template<typename T> bool Maybe<T>::isValid () const
 {
 	return (!list.isEmpty ());
 }
@@ -93,7 +123,7 @@ template<class T> bool Maybe<T>::isValid () const
  * This method may only be called if this Maybe is valid. The returned reference
  * gets invalid if the Maybe is changed.
  */
-template<class T> T &Maybe<T>::getValue ()
+template<typename T> T &Maybe<T>::getValue ()
 {
 	// This will assert if the value is not valid
 	return list[0];
@@ -103,7 +133,7 @@ template<class T> T &Maybe<T>::getValue ()
  * Returns a pointer to the value so the -> operator can be used directly on the
  * Maybe.
  */
-template<class T> T *Maybe<T>::operator-> ()
+template<typename T> T *Maybe<T>::operator-> ()
 {
 	// This will assert if the value is not valid
 	return &(list[0]);
@@ -112,7 +142,7 @@ template<class T> T *Maybe<T>::operator-> ()
 /**
  * Same as getValue, but returns a constant reference
  */
-template<class T> const T &Maybe<T>::getValue () const
+template<typename T> const T &Maybe<T>::getValue () const
 {
 	// This will assert if the value is not valid
 	return list.at (0);
@@ -121,7 +151,7 @@ template<class T> const T &Maybe<T>::getValue () const
 /**
  * Same as operator*, but returns a constant pointer
  */
-template<class T> const T *Maybe<T>::operator-> () const
+template<typename T> const T *Maybe<T>::operator-> () const
 {
 	// This will assert if the value is not valid
 	return &(list.at (0));
@@ -132,13 +162,13 @@ template<class T> const T *Maybe<T>::operator-> () const
 // ** Write access **
 // ******************
 
-template<class T> void Maybe<T>::setValue (const T &value)
+template<typename T> void Maybe<T>::setValue (const T &value)
 {
 	list.clear ();
 	list.append (value);
 }
 
-template<class T> void Maybe<T>::clearValue ()
+template<typename T> void Maybe<T>::clearValue ()
 {
 	list.clear ();
 }
