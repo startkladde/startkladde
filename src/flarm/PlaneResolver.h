@@ -8,9 +8,24 @@
 class Cache;
 class Plane;
 
+/**
+ * Provides methods for looking up a plane for a given Flarm ID
+ *
+ * Given a Flarm ID, a plane can be identified by different criteria, in
+ * decreasing order or reliability:
+ *   1. The Flarm ID matches the Flarm ID of the plane
+ *   2. The Flarm ID matches the Flarm ID of a FlarmNet record whose
+ *      registration matches the registration of a plane
+ *
+ * See also: the wiki page "Flarm handling".
+ */
 class PlaneResolver
 {
 	public:
+		/**
+		 * Represents the plane lookup result. Can contain a plane and/or a
+		 * FlarmNet record.
+		 */
 		class Result
 		{
 			public:
@@ -22,13 +37,10 @@ class PlaneResolver
 				{
 				}
 
-				static Result invalid ()
+				static Result nothing ()
 				{
-					return Result (Maybe<>::invalid, Maybe<>::invalid);
+					return Result (NULL, NULL);
 				}
-
-				bool planeFound          () const { return plane.isValid          (); }
-				bool flarmNetRecordFound () const { return flarmNetRecord.isValid (); }
 		};
 
 		PlaneResolver (Cache &cache);

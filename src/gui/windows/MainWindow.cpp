@@ -2329,16 +2329,16 @@ void MainWindow::on_resolvePlaneAction_triggered ()
 		PlaneResolver::Result result=PlaneResolver (cache).resolvePlane (flarmId);
 
 		QString text="Not handled";
-		if (result.planeFound ())
+		if (result.plane.isValid ())
 		{
-			if (result.flarmNetRecordFound ())
+			if (result.flarmNetRecord.isValid ())
 				text=qnotr ("Plane %1 via FlarmNet record %2")
 					.arg (result.plane->registration)
 					.arg (result.flarmNetRecord->getId ());
 			else
 				text=qnotr ("Plane %1 directly").arg (result.plane->registration);
 		}
-		else if (result.flarmNetRecordFound ())
+		else if (result.flarmNetRecord.isValid ())
 			text=qnotr ("FlarmNet record %1, registration %2")
 				.arg (result.flarmNetRecord->getId ()).arg (result.flarmNetRecord->registration);
 		else

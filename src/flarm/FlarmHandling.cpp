@@ -57,7 +57,7 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 		PlaneResolver::Result result=PlaneResolver (cache).resolvePlane (flarmId);
 
 		// Let's see what we've got...
-		if (result.planeFound ())
+		if (result.plane.isValid ())
 		{
 			// Offer the user to use this plane
 			QString title=qApp->translate ("FlarmHandling", "Use plane?");
@@ -71,7 +71,7 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 			if (yesNoQuestion (parent, title, text))
 				return result.plane->getId ();
 		}
-		else if (result.flarmNetRecordFound ())
+		else if (result.flarmNetRecord.isValid ())
 		{
 			// Offer the user to create a plane with the FlarmNet data
 			// FIXME no type

@@ -15,16 +15,14 @@
  *
  * A Maybe stores a value, but the container is implicitly shared, so copying
  * is very fast as long as the value is not modified.
- *
- * Note that an invalid Maybe of any type can be created by Maybe<>::invalid.
  */
-template<typename T=void> class Maybe
+template<typename T> class Maybe
 {
 	public:
 		// Construction
-		Maybe (const T &value);
 		Maybe ();
-		Maybe (const Maybe<void> &voidValue);
+		Maybe (const T &value);
+		Maybe (const T *value);
 		static Maybe<T> invalid ();
 		virtual ~Maybe ();
 
@@ -45,17 +43,6 @@ template<typename T=void> class Maybe
 		QList<T> list;
 };
 
-/**
- * Not a useful class on its own, but it contains the static invalid value used
- * when writing Maybe<>::invalid.
- */
-template<> class Maybe<void>
-{
-	public:
-		Maybe ();
-		static const Maybe<void> invalid;
-};
-
 
 // ******************
 // ** Construction **
@@ -63,10 +50,24 @@ template<> class Maybe<void>
 
 /**
  * Constructs a valid Maybe with the specified value
+ *
+ * The value is copied.
  */
 template<typename T> Maybe<T>::Maybe (const T &value)
 {
 	list.append (value);
+}
+
+/**
+ * Constructs an invalid or a valid Maybe with the specified value
+ *
+ * If the value is NULL, the Maybe will be invalid. Otherwise, the value will
+ * be copied.
+ */
+template<typename T> Maybe<T>::Maybe (const T *value)
+{
+	if (value)
+		list.append (*value);
 }
 
 /**
@@ -77,20 +78,6 @@ template<typename T> Maybe<T>::Maybe (const T &value)
 template<typename T> Maybe<T>::Maybe ()
 {
 }
-
-/**
- * Constructs an invalid Maybe
- *
- * This constructor exists so you can omit the type when creating an invalid
- * Maybe of any type and write "Maybe<>::invalid".
- *
- * @param voidValue must be Maybe<>::invalid
- */
-template<typename T> Maybe<T>::Maybe (const Maybe<void> &voidValue)
-{
-	assert (&voidValue==&Maybe<void>::invalid);
-}
-
 
 /**
  * Creates an invalid Maybe
