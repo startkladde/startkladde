@@ -2354,6 +2354,7 @@ void MainWindow::on_resolvePlaneAction_triggered ()
 
 void MainWindow::on_resolveFlightAction_triggered ()
 {
+	// FIXME implement
 	// Note that we'll also need to decide on a set of candidate flights
 
 	QString flarmId=QInputDialog::getText (this, "Resolve plane", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
@@ -2372,13 +2373,16 @@ Flight MainWindow::createFlarmFlight (const FlightResolver::Result &resolverResu
 {
 	Flight flight;
 
-	flight.setPlaneId (resolverResult.planeId);
+	if (resolverResult.plane.isValid ())
+		flight.setPlaneId (resolverResult.plane->getId ());
+
 	flight.setFlarmId (flarmId);
-	if (resolverResult.registrationFound ())
+
+	if (resolverResult.flarmNetRecord.isValid ())
 	{
 		// FIXME: if we can find a plane with that registration, do we want to
 		// use it or do we wait for the user to confirm it when editing the flight?
-		flight.setComments (tr ("Registration from FlarmNet: %1").arg (resolverResult.registration));
+		flight.setComments (tr ("Registration from FlarmNet: %1").arg (resolverResult.flarmNetRecord->registration));
 	}
 
 	return flight;
@@ -2402,7 +2406,7 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 	QList<Flight> flights=dbManager.getCache ().getPreparedFlights ().getList ();
 	FlightResolver::Result resolverResult=flightResolver.resolveFlight (flights, flarmId);
 
-	if (resolverResult.isValid ())
+	if (idValid (resolverResult.flightId))
 	{
 		// We found the (prepared) flight. Depart it.
 		nonInteractiveDepartFlight (resolverResult.flightId);
@@ -2432,7 +2436,7 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 	QList<Flight> flights=dbManager.getCache ().getFlyingFlights ().getList ();
 	FlightResolver::Result resolverResult=flightResolver.resolveFlight (flights, flarmId);
 
-	if (resolverResult.isValid ())
+	if (idValid (resolverResult.flightId))
 	{
 		// We found the flight. Land it.
 		nonInteractiveLandFlight (resolverResult.flightId);
@@ -2458,7 +2462,7 @@ void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 	QList<Flight> flights=dbManager.getCache ().getFlyingFlights ().getList ();
 	FlightResolver::Result resolverResult=flightResolver.resolveFlight (flights, flarmId);
 
-	if (resolverResult.isValid ())
+	if (idValid (resolverResult.flightId))
 	{
 		// We found the flight. Perform a touch and go.
 		nonInteractiveTouchAndGo (resolverResult.flightId);

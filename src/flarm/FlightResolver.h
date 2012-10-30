@@ -4,9 +4,13 @@
 #include <QString>
 
 #include "src/db/dbId.h"
+#include "src/container/Maybe.h"
+#include "src/flarm/FlarmNetRecord.h"
 
 class Cache;
 class Flight;
+class Plane;
+class FlarmNetRecord;
 
 /**
  * Provides methods for looking up a flight for a given Flarm ID
@@ -33,37 +37,29 @@ class FlightResolver
 		class Result
 		{
 			public:
-				dbId flightId;
-				dbId planeId;
-				// FIXME: we get more than the registration from FlarmNet, so
-				// there should probably be a FlarmNetRecord here instead of the
-				// registration.
-				QString registration;
+				dbId                  flightId;
+				Maybe<Plane>          plane;
+				Maybe<FlarmNetRecord> flarmNetRecord;
 
-				Result (dbId flightId, dbId planeId, const QString &registration):
-					flightId (flightId), planeId (planeId), registration (registration)
+				Result (dbId flightId, const Maybe<Plane> &plane, const Maybe<FlarmNetRecord> &flarmNetRecord):
+					flightId (flightId), plane (plane), flarmNetRecord (flarmNetRecord)
 				{
 				}
 
 				static Result nothing ()
 				{
-					return Result (invalidId, invalidId, QString ());
+					return Result (invalidId, NULL, NULL);
 				}
-
-				bool isValid           () const { return idValid (flightId); }
-				bool planeFound        () const { return idValid (planeId);  }
-				bool registrationFound () const { return !registration.isEmpty (); }
 		};
 
 		FlightResolver (Cache &cache);
 		virtual ~FlightResolver ();
 
-		Result resolveFlight                   (const QList<Flight> &flights, const QString &flarmId);
+		Result resolveFlight (const QList<Flight> &candidates, const QString &flarmId);
 
 	protected:
-		Result resolveFlightByFlarmId          (const QList<Flight> &flights, const QString &flarmId);
-		Result resolveFlightByPlaneFlarmId     (const QList<Flight> &flights, const QString &flarmId);
-		Result resolveFlightByFlarmNetDatabase (const QList<Flight> &flights, const QString &flarmId);
+		Result resolveFlightByFlarmId (const QList<Flight> &candidates, const QString &flarmId);
+		Result resolveFlightByPlane   (const QList<Flight> &candidates, const QString &flarmId);
 
 	private:
 		Cache &cache;
