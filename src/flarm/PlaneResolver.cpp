@@ -21,7 +21,12 @@ PlaneResolver::~PlaneResolver ()
 /**
  * Tries to find a plane with the given Flarm ID
  *
- * The result contains either nothing or a plane.
+ * The result can contain:
+ *
+ * Plane | FNR | Description
+ * ------+-----+--------------
+ * yes   | no  | plane was found
+ * no    | no  | no plane was found
  */
 PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmId (const QString &flarmId)
 {
@@ -48,8 +53,13 @@ PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmId (const QString &flarm
  * Tries to find a FlarmNet record with the given Flarm ID, and, on success, a
  * plane with the registration from the FlarmNet record
  *
- * The result contains either nothing, or a FlarmNet record, or a FlarmNet
- * record and a plane.
+ * The result can contain:
+ *
+ * Plane | FNR | Description
+ * ------+-----+--------------
+ * yes   | yes | plane was found via FlarmNet
+ * no    | yes | FlarmNet record, but no plane, was found
+ * no    | no  | nothing was found
  *
  * If a plane was found via FlarmNet but its Flarm ID does not match the Flarm
  * ID we're looking for, nothing is returned.
@@ -103,16 +113,20 @@ PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmNetDatabase (const QStri
 }
 
 /**
- * Tries to find a plane with the given Flarm ID, by any means suppored and
+ * Tries to find a plane for a given Flarm ID, by any means supported and
  * enabled in the configuration
  *
  * The result can contain:
- *   - just a plane, if the plane was found directly
- *   - a plane and a FlarmNet record, if the plane was found via FlarmNet
- *   - just a FlarmNet record, if a FlarmNet record but no plane was found
- *   - nothing, if neither a plane nor a FlarmNet record was found
  *
- * If a plane was found via FlarmNet
+ * Plane | FNR | Description
+ * ------+-----+--------------
+ * yes   | no  | plane found directly
+ * yes   | yes | plane found via FlarmNet
+ * no    | yes | a FlarmNet record, but no plane, was found
+ * no    | no  | nothing was found
+ *
+ * If the result contains a plane, it is guaranteed to have either no Flarm ID
+ * or the Flarm ID we're looking for.
  */
 PlaneResolver::Result PlaneResolver::resolvePlane (const QString &flarmId)
 {
