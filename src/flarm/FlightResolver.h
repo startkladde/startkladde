@@ -25,7 +25,7 @@ class Flight;
  *      itself may be inaccurate, and our copy of the FlarmNet database may be
  *      outdated.
  *
- * See also: the wiki page "Flarm".
+ * See also: the wiki page "Flarm handling".
  */
 class FlightResolver
 {
@@ -45,7 +45,7 @@ class FlightResolver
 				{
 				}
 
-				static Result invalid ()
+				static Result nothing ()
 				{
 					return Result (invalidId, invalidId, QString ());
 				}

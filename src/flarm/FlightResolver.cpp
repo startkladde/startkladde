@@ -35,7 +35,7 @@ FlightResolver::Result FlightResolver::resolveFlightByFlarmId (const QList<Fligh
 		if (flight.getFlarmId ()==flarmId)
 			return Result (flight.getId (), invalidId, QString ());
 
-	return Result::invalid ();
+	return Result::nothing ();
 }
 
 /**
@@ -72,7 +72,7 @@ FlightResolver::Result FlightResolver::resolveFlightByPlaneFlarmId (const QList<
 	}
 	else
 	{
-		return Result::invalid ();
+		return Result::nothing ();
 	}
 }
 
@@ -102,7 +102,7 @@ FlightResolver::Result FlightResolver::resolveFlightByPlaneFlarmId (const QList<
 FlightResolver::Result FlightResolver::resolveFlightByFlarmNetDatabase (const QList<Flight> &flights, const QString &flarmId)
 {
 	if (!Settings::instance ().flarmNetEnabled)
-		return Result::invalid ();
+		return Result::nothing ();
 
 	try
 	{
@@ -110,7 +110,7 @@ FlightResolver::Result FlightResolver::resolveFlightByFlarmNetDatabase (const QL
 		dbId flarmNetRecordId = cache.getFlarmNetRecordIdByFlarmId (flarmId);
 		if (!idValid (flarmNetRecordId))
 			// No FlarmNet record with that Flarm ID
-			return Result::invalid ();
+			return Result::nothing ();
 
 		FlarmNetRecord flarmNetRecord = cache.getObject<FlarmNetRecord> (flarmNetRecordId);
 		QString registration = flarmNetRecord.registration;
@@ -136,14 +136,14 @@ FlightResolver::Result FlightResolver::resolveFlightByFlarmNetDatabase (const QL
 		}
 		else
 		{
-			return Result::invalid ();
+			return Result::nothing ();
 		}
 	}
 	catch (Cache::NotFoundException &)
 	{
 		// This should not happen because we only fetch objects for IDs we
 		// retrieved from the cache, but you never know...
-		return Result::invalid ();
+		return Result::nothing ();
 	}
 }
 
@@ -161,7 +161,7 @@ FlightResolver::Result FlightResolver::resolveFlightByFlarmNetDatabase (const QL
  */
 FlightResolver::Result FlightResolver::resolveFlight (const QList<Flight> &flights, const QString &flarmId)
 {
-	Result result=Result::invalid ();
+	Result result=Result::nothing ();
 
 	// Try to find a flight by Flarm ID (criterion 1)
 	result=resolveFlightByFlarmId (flights, flarmId);
@@ -212,5 +212,5 @@ FlightResolver::Result FlightResolver::resolveFlight (const QList<Flight> &fligh
 
 	// None of the criteria matched, and no useful data was returned.
 	std::cout << qnotr ("No flight found for Flarm ID %1").arg (flarmId) << std::endl;
-	return Result::invalid ();
+	return Result::nothing ();
 }
