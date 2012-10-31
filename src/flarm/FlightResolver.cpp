@@ -24,8 +24,9 @@ FlightResolver::~FlightResolver ()
  * The result can contain:
  *
  * Flight | Plane | FNR | Description
- * -------+-------+-----+--------------
+ * -------+-------+-----+--------------------
  * yes    | no    | no  | flight was found
+ * -------+-------+-----+--------------------
  * no     | no    | no  | no flight was found
  */
 FlightResolver::Result FlightResolver::resolveFlightByFlarmId (const QList<Flight> &candidates, const QString &flarmId)
@@ -44,12 +45,15 @@ FlightResolver::Result FlightResolver::resolveFlightByFlarmId (const QList<Fligh
  * The result can contain:
  *
  * Flight | Plane | FNR | Description
- * -------+-------+-----+--------------
+ * -------+-------+-----+-----------------------------------------------------------
  * yes    | yes   | no  | flight found, plane found directly
  * yes    | yes   | yes | flight found, plane found via FlarmNet
+ * -------+-------+-----+-----------------------------------------------------------
  * no     | yes   | no  | flight not found, but a plane was found directly
  * no     | yes   | yes | flight not found, but a plane was found via FlarmNet
+ * -------+-------+-----+-----------------------------------------------------------
  * no     | no    | yes | plane and flight not found, but a FlarmNet entry was found
+ * -------+-------+-----+-----------------------------------------------------------
  * no     | no    | no  | nothing was found
  */
 FlightResolver::Result FlightResolver::resolveFlightByPlane (const QList<Flight> &candidates, const QString &flarmId)
@@ -89,13 +93,16 @@ FlightResolver::Result FlightResolver::resolveFlightByPlane (const QList<Flight>
  * The result can contain:
  *
  * Flight | Plane | FNR | Description
- * -------+-------+-----+--------------
+ * -------+-------+-----+-----------------------------------------------------------
  * yes    | no    | no  | flight found directly
  * yes    | yes   | no  | flight found via plane, plane found directly
  * yes    | yes   | yes | flight found via plane, plane found via FlarmNet
+ * -------+-------+-----+-----------------------------------------------------------
  * no     | yes   | no  | flight not found, but a plane was found directly
  * no     | yes   | yes | flight not found, but a plane was found via FlarmNet
+ * -------+-------+-----+-----------------------------------------------------------
  * no     | no    | yes | plane and flight not found, but a FlarmNet entry was found
+ * -------+-------+-----+-----------------------------------------------------------
  * no     | no    | no  | nothing was found
  *
  * In other words, the only combination that is not possible is a Flight and a

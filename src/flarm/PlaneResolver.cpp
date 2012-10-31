@@ -24,8 +24,9 @@ PlaneResolver::~PlaneResolver ()
  * The result can contain:
  *
  * Plane | FNR | Description
- * ------+-----+--------------
+ * ------+-----+-------------------
  * yes   | no  | plane was found
+ * ------+-----+-------------------
  * no    | no  | no plane was found
  */
 PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmId (const QString &flarmId)
@@ -56,9 +57,11 @@ PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmId (const QString &flarm
  * The result can contain:
  *
  * Plane | FNR | Description
- * ------+-----+--------------
+ * ------+-----+-----------------------------------------
  * yes   | yes | plane was found via FlarmNet
+ * ------+-----+-----------------------------------------
  * no    | yes | FlarmNet record, but no plane, was found
+ * ------+-----+-----------------------------------------
  * no    | no  | nothing was found
  *
  * If a plane was found via FlarmNet but its Flarm ID does not match the Flarm
@@ -119,10 +122,12 @@ PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmNetDatabase (const QStri
  * The result can contain:
  *
  * Plane | FNR | Description
- * ------+-----+--------------
+ * ------+-----+-------------------------------------------
  * yes   | no  | plane found directly
  * yes   | yes | plane found via FlarmNet
+ * ------+-----+-------------------------------------------
  * no    | yes | a FlarmNet record, but no plane, was found
+ * ------+-----+-------------------------------------------
  * no    | no  | nothing was found
  *
  * If the result contains a plane, it is guaranteed to have either no Flarm ID
