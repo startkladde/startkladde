@@ -241,13 +241,28 @@ int test_database ()
 	return 0;
 }
 
+#include "src/gui/windows/input/ChoiceDialog.h"
+
+void testUi (QApplication &a)
+{
+//	ChoiceDialog dialog (NULL);
+//	dialog.addOption ("&Foo");
+//	dialog.addOption ("&Bar");
+//	dialog.setSelectedOption (1);
+//	int result=dialog.exec ();
+//
+//	if (result==QDialog::Accepted)
+//		std::cout << "Accepted: " << dialog.getSelectedOption () << std::endl;
+//	else
+//		std::cout << "Canceled" << std::endl;
+
+//	int result=ChoiceDialog::choose (NULL, QStringList () << "Foo" << "Bar", 1);
+//	std::cout << "Result: " << result << std::endl;
+}
+
 int showGui (QApplication &a)
 {
 	//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
-
-	// Put light.{la,so} to styles/
-	//a.setStyle ("light, 3rd revision");
-//	if (!style.isEmpty ()) a.setStyle (style);
 
 	MainWindow w (NULL);
 
@@ -424,6 +439,7 @@ int main (int argc, char **argv)
 	{
 		if (nonOptions.empty ())
 		{
+//			testUi (application);
 			ret=showGui (application);
 		}
 		else

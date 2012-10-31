@@ -145,8 +145,32 @@ void PlaneEditorPane::objectToFields (const Plane &plane)
 	ui.commentsInput->setText (plane.comments);
 }
 
+void PlaneEditorPane::checkFlarmId (const QString &newFlarmId, const QString &oldFlarmId)
+{
+	// Find the conflicting plane, i. e. the plane that alrady has the Flarm ID
+	// we're trying to set.
+	// FIXME the old Flarm ID may also be a duplicate
+	dbId conflictingPlaneId=cache.getPlaneIdByFlarmId (newFlarmId);
+
+	// Nothing to do if there is no conflict
+	if (!idValid (conflictingPlaneId))
+		return;
+
+	// There is a conflict. The user has the following choices:
+	//   * clear the Flarm ID of the other flight
+	//   * swap the Flarm ID with the other flight
+	//   * ignore the conflict
+	//   * keep this flight's Flarm ID
+	//   * abort
+
+	// FIXME DOING - implement
+	// FIXME this is needed in several places - move it to a module
+}
+
 void PlaneEditorPane::fieldsToObject (Plane &plane, bool performChecks)
 {
+	if (!performChecks) return;
+
 	// TODO: checks go here; throw AbortedException if aborted
 
 	plane.registration=ui.registrationInput->text ().simplified ();
@@ -158,8 +182,6 @@ void PlaneEditorPane::fieldsToObject (Plane &plane, bool performChecks)
 	plane.numSeats=ui.seatsInput->value ();
 	plane.flarmId=ui.flarmIdInput->text ().simplified ();
 	plane.comments=ui.commentsInput->text ().simplified ();
-
-	if (!performChecks) return;
 
 	// Error checks
 	if (mode==ObjectEditorWindowBase::modeCreate && idValid (cache.getPlaneIdByRegistration (plane.registration)))
@@ -198,6 +220,8 @@ void PlaneEditorPane::fieldsToObject (Plane &plane, bool performChecks)
 	if (maxSeats>=0 && plane.numSeats>maxSeats)
 		errorCheck (tr ("To many seats specified for the selected category."),
 			ui.seatsInput);
+
+	checkFlarmId (plane.flarmId, getOriginalObject ().flarmId);
 }
 
 // **********

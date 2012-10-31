@@ -36,6 +36,8 @@ class PlaneEditorPane: public ObjectEditorPane<Plane>
 		virtual void changeEvent (QEvent *event);
 
 	private:
+		void checkFlarmId (const QString &newFlarmId, const QString &oldFlarmId);
+
 		Ui::PlaneEditorPaneClass ui;
 		PlaneEditorPaneData *paneData;
 };
