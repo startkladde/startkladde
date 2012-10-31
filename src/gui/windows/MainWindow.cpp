@@ -2357,7 +2357,7 @@ void MainWindow::on_resolveFlightAction_triggered ()
 	// FIXME implement
 	// Note that we'll also need to decide on a set of candidate flights
 
-	QString flarmId=QInputDialog::getText (this, "Resolve plane", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
+	QString flarmId=QInputDialog::getText (this, "Resolve flight", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
 	if (!flarmId.isNull ())
 	{
 		QMessageBox::information (this,
