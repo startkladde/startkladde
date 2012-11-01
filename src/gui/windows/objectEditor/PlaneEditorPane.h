@@ -19,7 +19,7 @@ class PlaneEditorPane: public ObjectEditorPane<Plane>
     Q_OBJECT
 
 	public:
-		PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL, PlaneEditorPaneData *paneData=NULL);
+		PlaneEditorPane (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent=NULL, PlaneEditorPaneData *paneData=NULL);
 		virtual ~PlaneEditorPane();
 
 		virtual void objectToFields (const Plane &plane);

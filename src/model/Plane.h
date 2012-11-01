@@ -7,6 +7,7 @@
 #include <QMetaType>
 
 #include "src/model/objectList/ObjectModel.h"
+#include "src/i18n/notr.h"
 
 /*
  * Improvements:
@@ -53,7 +54,7 @@ class Plane: public Entity
 		// *** Property access
 		virtual bool selfLaunchOnly () const;
 	    static QString defaultRegistrationPrefix () { return qApp->translate ("Plane", "N", "default prefix"); }
-	    virtual QString fullRegistration () const;
+	    virtual QString fullRegistration (const QString &fullTemplate=notr ("%1 (%2)")) const;
 	    virtual QString registrationWithType () const;
 
 

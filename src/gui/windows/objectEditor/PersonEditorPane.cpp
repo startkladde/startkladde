@@ -16,8 +16,8 @@
 // ** Construction **
 // ******************
 
-PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent, PersonEditorPaneData *paneData):
-	ObjectEditorPane<Person> (mode, cache, parent),
+PersonEditorPane::PersonEditorPane (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent, PersonEditorPaneData *paneData):
+	ObjectEditorPane<Person> (mode, dbManager, parent),
 	paneData (paneData)
 {
 	ui.setupUi (this);
@@ -51,9 +51,9 @@ PersonEditorPane::~PersonEditorPane ()
 
 }
 
-template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent, ObjectEditorPaneData *paneData)
+template<> ObjectEditorPane<Person> *ObjectEditorPane<Person>::create (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent, ObjectEditorPaneData *paneData)
 {
-	return new PersonEditorPane (mode, cache, parent, dynamic_cast<PersonEditorPaneData *> (paneData));
+	return new PersonEditorPane (mode, dbManager, parent, dynamic_cast<PersonEditorPaneData *> (paneData));
 }
 
 

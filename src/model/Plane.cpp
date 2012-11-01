@@ -44,19 +44,24 @@ bool Plane::selfLaunchOnly () const
 }
 
 /**
- * Returns the registration in form "D-XXXX (YY)" if callsign and registration
- * are non-blank, or just one of the components if the other is blank.
+ * Returns the registration in form "D-XXXX (YY)" (or user-defined) if both
+ * registration and callsign are non-blank, or just one of the components if the
+ * other one is blank.
+ *
+ * To change the form of the result if both the registration and callsign are
+ * non-blank, pass the template in fullTemplate. %1 will be replaced with the
+ * registration and %2 with the callsign.
  *
  * @see FlarmNetRecord::fullRegistration
  */
-QString Plane::fullRegistration () const
+QString Plane::fullRegistration (const QString &fullTemplate) const
 {
 	if (isBlank (callsign))
 		return registration;
 	else if (isBlank (registration))
 		return callsign;
 	else
-		return qnotr ("%1 (%2)").arg (registration, callsign);
+		return fullTemplate.arg (registration, callsign);
 }
 
 QString Plane::registrationWithType () const

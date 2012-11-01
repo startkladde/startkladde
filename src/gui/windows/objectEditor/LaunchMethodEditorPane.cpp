@@ -10,8 +10,8 @@
 // ** Construction **
 // ******************
 
-LaunchMethodEditorPane::LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent):
-	ObjectEditorPane<LaunchMethod> (mode, cache, parent)
+LaunchMethodEditorPane::LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent):
+	ObjectEditorPane<LaunchMethod> (mode, dbManager, parent)
 {
 	ui.setupUi(this);
 
@@ -30,10 +30,10 @@ LaunchMethodEditorPane::~LaunchMethodEditorPane()
 
 }
 
-template<> ObjectEditorPane<LaunchMethod> *ObjectEditorPane<LaunchMethod>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent, ObjectEditorPaneData *paneData)
+template<> ObjectEditorPane<LaunchMethod> *ObjectEditorPane<LaunchMethod>::create (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent, ObjectEditorPaneData *paneData)
 {
 	(void)paneData;
-	return new LaunchMethodEditorPane (mode, cache, parent);
+	return new LaunchMethodEditorPane (mode, dbManager, parent);
 }
 
 

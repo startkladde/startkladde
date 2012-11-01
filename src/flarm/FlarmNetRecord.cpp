@@ -60,14 +60,14 @@ QString FlarmNetRecord::getDisplayName () const
  *
  * @see Plane::fullRegistration
  */
-QString FlarmNetRecord::fullRegistration () const
+QString FlarmNetRecord::fullRegistration (const QString &fullTemplate) const
 {
 	if (isBlank (callsign))
 		return registration;
 	else if (isBlank (registration))
 		return callsign;
 	else
-		return qnotr ("%1 (%2)").arg (registration, callsign);
+		return fullTemplate.arg (registration, callsign);
 }
 
 

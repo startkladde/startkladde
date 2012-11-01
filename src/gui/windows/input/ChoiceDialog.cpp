@@ -8,6 +8,8 @@ ChoiceDialog::ChoiceDialog (QWidget *parent, Qt::WindowFlags f):
 {
 	ui.setupUi(this);
 
+	ui.textLabel->setVisible (false);
+
 	// It might be tempting to remove the dummy option radio button here, but
 	// it is accessed by ui.retranslateUi. We therefore have to reuse it when
 	// the first option is added.
@@ -22,13 +24,22 @@ ChoiceDialog::~ChoiceDialog()
  *
  * The default index may be a valid index or -1 for no default.
  *
+ * If the text is empty, the text won't be shown at all.
+ *
  * The index of the chosen option is returned. If the dialog is canceled or no
  * option is selected, -1 is returned.
  */
-int ChoiceDialog::choose (QWidget *parent, const QStringList &options, int defaultIndex, Qt::WindowFlags flags)
+int ChoiceDialog::choose (const QString &title, const QString &text,
+	const QStringList &options, int defaultIndex,
+	QWidget *parent, Qt::WindowFlags flags)
 {
 	// Create the dialog
 	ChoiceDialog dialog (parent, flags);
+
+	// Set the title and text
+	dialog.setWindowTitle (title);
+	if (!text.isEmpty ())
+		dialog.setText (text);
 
 	// Add the options
 	foreach (const QString &text, options)
@@ -49,9 +60,22 @@ int ChoiceDialog::choose (QWidget *parent, const QStringList &options, int defau
 }
 
 /**
+ * Sets the text show above the options
+ *
+ * If this function is not called, the text label won't be shown at all.
+ *
+ * @param text the text to show; can be Qt rich text
+ */
+void ChoiceDialog::setText (const QString &text)
+{
+	ui.textLabel->setVisible (true);
+	ui.textLabel->setText (text);
+}
+
+/**
  * Adds an option radio button
  *
- * @param text the text of the radio button, must be plain text
+ * @param text the text of the radio button; must be plain text
  */
 void ChoiceDialog::addOption (const QString &text)
 {

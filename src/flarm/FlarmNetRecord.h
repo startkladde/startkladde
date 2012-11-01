@@ -9,6 +9,7 @@
 #include "src/model/objectList/ObjectModel.h"
 #include "src/model/Entity.h"
 #include "src/model/Plane.h"
+#include "src/i18n/notr.h"
 
 class FlarmNetRecord: public Entity
 {
@@ -30,7 +31,7 @@ class FlarmNetRecord: public Entity
 		// *** Formatting
 		virtual QString toString () const;
 		virtual QString getDisplayName () const;
-	    virtual QString fullRegistration () const;
+	    virtual QString fullRegistration (const QString &fullTemplate=notr ("%1 (%2)")) const;
 
 
 		// *** ObjectListWindow/ObjectEditorWindow helpers

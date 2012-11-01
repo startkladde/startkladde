@@ -13,6 +13,8 @@
  * Example use:
  *     ChoiceDialog dialog (parent);
  *
+ *     dialog.setWindowTitle ("Choice");
+ *     dialog.setText ("Choose:");
  *     dialog.addOption ("&Foo");    // Add some options
  *     dialog.addOption ("&Bar");
  *     dialog.addOption ("B&az");
@@ -27,8 +29,11 @@ class ChoiceDialog: public SkDialog<Ui::ChoiceDialogClass>
 		ChoiceDialog (QWidget *parent = 0, Qt::WindowFlags f=0);
 		~ChoiceDialog();
 
-		static int choose (QWidget *parent, const QStringList &options, int defaultIndex=0, Qt::WindowFlags flags=0);
+		static int choose (const QString &title, const QString &text,
+				const QStringList &options, int defaultIndex=0,
+				QWidget *parent=NULL, Qt::WindowFlags flags=0);
 
+		void setText (const QString &text);
 		void addOption (const QString &text);
 
 		void setSelectedOption (int option);

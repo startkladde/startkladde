@@ -245,19 +245,17 @@ int test_database ()
 
 void testUi (QApplication &a)
 {
-//	ChoiceDialog dialog (NULL);
-//	dialog.addOption ("&Foo");
-//	dialog.addOption ("&Bar");
-//	dialog.setSelectedOption (1);
-//	int result=dialog.exec ();
-//
-//	if (result==QDialog::Accepted)
-//		std::cout << "Accepted: " << dialog.getSelectedOption () << std::endl;
-//	else
-//		std::cout << "Canceled" << std::endl;
+	ChoiceDialog dialog (NULL);
+	dialog.setText ("<html><b>Choose</b></html>:");
+	dialog.addOption ("&Foo");
+	dialog.addOption ("&Bar");
+	dialog.setSelectedOption (1);
+	int result=dialog.exec ();
 
-//	int result=ChoiceDialog::choose (NULL, QStringList () << "Foo" << "Bar", 1);
-//	std::cout << "Result: " << result << std::endl;
+	if (result==QDialog::Accepted)
+		std::cout << "Accepted: " << dialog.getSelectedOption () << std::endl;
+	else
+		std::cout << "Canceled" << std::endl;
 }
 
 int showGui (QApplication &a)

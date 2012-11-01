@@ -7,6 +7,8 @@
 #include "src/model/Plane.h"
 #include "src/util/qString.h"
 #include "src/i18n/notr.h"
+#include "src/gui/windows/input/ChoiceDialog.h"
+#include "src/flarm/FlarmIdCheck.h"
 
 /*
  * Improvements:
@@ -25,8 +27,8 @@
 // ** Construction **
 // ******************
 
-PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent, PlaneEditorPaneData *paneData):
-	ObjectEditorPane<Plane> (mode, cache, parent),
+PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent, PlaneEditorPaneData *paneData):
+	ObjectEditorPane<Plane> (mode, dbManager, parent),
 	paneData (paneData)
 {
 	ui.setupUi(this);
@@ -62,9 +64,9 @@ PlaneEditorPane::~PlaneEditorPane()
 
 }
 
-template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent, ObjectEditorPaneData *paneData)
+template<> ObjectEditorPane<Plane> *ObjectEditorPane<Plane>::create (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent, ObjectEditorPaneData *paneData)
 {
-	return new PlaneEditorPane (mode, cache, parent, dynamic_cast<PlaneEditorPaneData *> (paneData));
+	return new PlaneEditorPane (mode, dbManager, parent, dynamic_cast<PlaneEditorPaneData *> (paneData));
 }
 
 
@@ -145,28 +147,6 @@ void PlaneEditorPane::objectToFields (const Plane &plane)
 	ui.commentsInput->setText (plane.comments);
 }
 
-void PlaneEditorPane::checkFlarmId (const QString &newFlarmId, const QString &oldFlarmId)
-{
-	// Find the conflicting plane, i. e. the plane that alrady has the Flarm ID
-	// we're trying to set.
-	// FIXME the old Flarm ID may also be a duplicate
-	dbId conflictingPlaneId=cache.getPlaneIdByFlarmId (newFlarmId);
-
-	// Nothing to do if there is no conflict
-	if (!idValid (conflictingPlaneId))
-		return;
-
-	// There is a conflict. The user has the following choices:
-	//   * clear the Flarm ID of the other flight
-	//   * swap the Flarm ID with the other flight
-	//   * ignore the conflict
-	//   * keep this flight's Flarm ID
-	//   * abort
-
-	// FIXME DOING - implement
-	// FIXME this is needed in several places - move it to a module
-}
-
 void PlaneEditorPane::fieldsToObject (Plane &plane, bool performChecks)
 {
 	if (!performChecks) return;
@@ -221,7 +201,11 @@ void PlaneEditorPane::fieldsToObject (Plane &plane, bool performChecks)
 		errorCheck (tr ("To many seats specified for the selected category."),
 			ui.seatsInput);
 
-	checkFlarmId (plane.flarmId, getOriginalObject ().flarmId);
+	FlarmIdCheck flarmIdCheck (dbManager, this);
+	flarmIdCheck.interactiveCheck (plane.flarmId, getOriginalObject ().flarmId);
+	bool checkResult=flarmIdCheck.interactiveApply (&plane.flarmId);
+	if (!checkResult)
+		throw AbortedException ();
 }
 
 // **********

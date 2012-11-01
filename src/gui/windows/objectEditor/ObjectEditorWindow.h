@@ -72,7 +72,7 @@ template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DbManage
 	ObjectEditorWindowBase (manager, parent, flags),
 	mode (mode)
 {
-	editorPane = ObjectEditorPane<T>::create (mode, manager.getCache (), ui.objectEditorPane, paneData);
+	editorPane = ObjectEditorPane<T>::create (mode, manager, ui.objectEditorPane, paneData);
 	ui.objectEditorPane->layout ()->addWidget (editorPane);
 
 	switch (mode)

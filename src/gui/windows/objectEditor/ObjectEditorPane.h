@@ -15,6 +15,7 @@
 #include "src/db/dbId.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required for ObjectEditorWindowBase::Mode
 
+class DbManager;
 class Cache;
 
 /**
@@ -48,13 +49,14 @@ class ObjectEditorPaneBase: public QWidget
 		// Types
 		class AbortedException: public std::exception {};
 
-		ObjectEditorPaneBase (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
+		ObjectEditorPaneBase (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent=NULL);
 		virtual ~ObjectEditorPaneBase ();
 
 	protected:
 		virtual void errorCheck (const QString &problem, QWidget *widget);
 		virtual void requiredField (const QString &value, QWidget *widget, const QString &problem);
 
+		DbManager &dbManager;
 		Cache &cache;
 		ObjectEditorWindowBase::Mode mode;
 };
@@ -79,7 +81,7 @@ class ObjectEditorPaneBase: public QWidget
 template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 {
 	public:
-		ObjectEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
+		ObjectEditorPane (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent=NULL);
 		virtual ~ObjectEditorPane ();
 
 		virtual void setObject (const T &object);
@@ -96,7 +98,7 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 		virtual void setNameObject (const T &nameObject) { (void)nameObject; }
 
 		/** @brief Implementations of ObjectEditorPane should specialize this template method */
-		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL, ObjectEditorPaneData *paneData=NULL);
+		static ObjectEditorPane<T> *create (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent=NULL, ObjectEditorPaneData *paneData=NULL);
 
 		// Make a copy
 		T getOriginalObject () { return originalObject; }
@@ -121,8 +123,8 @@ template<class T> class ObjectEditorPane: public ObjectEditorPaneBase
 // ** ObjectEditorPane implementation **
 // *************************************
 
-template<class T> ObjectEditorPane<T>::ObjectEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent):
-	ObjectEditorPaneBase (mode, cache, parent)
+template<class T> ObjectEditorPane<T>::ObjectEditorPane (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent):
+	ObjectEditorPaneBase (mode, dbManager, parent)
 {
 }
 

@@ -6,12 +6,14 @@
 #include "src/gui/windows/objectEditor/ObjectEditorWindowBase.h" // Required for ObjectEditorWindowBase::Mode
 #include "src/model/LaunchMethod.h"
 
+class DbManager;
+
 class LaunchMethodEditorPane: public ObjectEditorPane<LaunchMethod>
 {
     Q_OBJECT
 
 	public:
-		LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mode, Cache &cache, QWidget *parent=NULL);
+		LaunchMethodEditorPane (ObjectEditorWindowBase::Mode mode, DbManager &dbManager, QWidget *parent=NULL);
 		virtual ~LaunchMethodEditorPane();
 
 		virtual void objectToFields (const LaunchMethod &launchMethod);
