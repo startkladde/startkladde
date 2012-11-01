@@ -15,6 +15,15 @@
  *
  * A Maybe stores a value, but the container is implicitly shared, so copying
  * is very fast as long as the value is not modified.
+ *
+ * Note that it is possible to pass a pointer as well as a reference to the
+ * constructor, so we can create an empty Maybe by passing NULL. However, this
+ * means that using a Maybe with a pointer type may lead to undefined behavior.
+ * In particular, when calling the constructor with NULL, it is unclear whether
+ * the resulting Maybe will be invalid or valid containing the value NULL.
+ * Therefore, a Maybe should not be used to store a pointer. Since pointers can
+ * already be NULL to indicate "no value", this should not be a serious
+ * restriction.
  */
 template<typename T> class Maybe
 {
