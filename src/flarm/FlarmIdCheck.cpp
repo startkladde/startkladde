@@ -6,8 +6,7 @@
 #include "src/concurrent/monitor/OperationCanceledException.h"
 
 FlarmIdCheck::FlarmIdCheck (DbManager &dbManager, QWidget *parent):
-	dbManager (dbManager), parent (parent),
-	conflict (false)
+	dbManager (dbManager), parent (parent)
 {
 }
 
@@ -43,6 +42,37 @@ QString FlarmIdCheck::Reaction_getText (Reaction reaction, const Plane &conflict
 	return "";
 }
 
+Maybe<Plane> FlarmIdCheck::findConflictingPlane ()
+{
+	Cache &cache=dbManager.getCache ();
+
+	QList<dbId> conflictingPlaneIds=cache.getPlaneIdsByFlarmId (newFlarmId);
+
+	// Return no plane if there are no planes with that Flarm ID
+	if (conflictingPlaneIds.isEmpty ())
+		return NULL;
+
+	// Look at all the plane IDs with that Flarm ID
+	foreach (dbId id, conflictingPlaneIds)
+	{
+		// If the plane ID is different from the ID of the plane we're editing,
+		// we found a conflicting plane. Retrieve it from the database and
+		// return it.
+		if (id!=planeId)
+		{
+			// Retrieve the conflicting plane from the database
+			try
+			{
+				return cache.getObject<Plane> (id);
+			}
+			catch (Cache::NotFoundException &) {}
+		}
+	}
+
+	// We didn't find a conflicting plane.
+	return NULL;
+}
+
 FlarmIdCheck::Options FlarmIdCheck::getOptions ()
 {
 	// cancel is never returned. It is not offered along with the other choices
@@ -59,6 +89,7 @@ FlarmIdCheck::Options FlarmIdCheck::getOptions ()
 		//   * keep            (this=old, other=other)
 		//   * ignore          (this=new, other=other)
 		result.reactions << clear;
+		// If the old Flarm ID is empty, swap would be the same as clear.
 		if (!oldFlarmId.isEmpty ())
 			result.reactions << swap;
 		result.reactions << keep;
@@ -81,19 +112,22 @@ FlarmIdCheck::Options FlarmIdCheck::getOptions ()
 
 FlarmIdCheck::Reaction FlarmIdCheck::showChoiceDialog (const Options &options)
 {
+	if (!conflictingPlane.isValid ())
+		return keep;
+
 	// Choice dialog title and text
 	QString title=tr ("Flarm ID conflict");
 	QString text=tr (
 		"<html><b>The entered Flarm ID, %1, is already used for the plane %2.</b></html>")
 		.arg (newFlarmId)
-		.arg (conflictingPlane.registrationWithType ());
+		.arg (conflictingPlane->registrationWithType ());
 
 	QStringList choiceOptions;
 	int defaultChoiceOption;
 
 	for (int i=0, n=options.reactions.size (); i<n; ++i)
 	{
-		choiceOptions << Reaction_getText (options.reactions[i], conflictingPlane, newFlarmId, oldFlarmId);
+		choiceOptions << Reaction_getText (options.reactions[i], conflictingPlane.getValue (), newFlarmId, oldFlarmId);
 
 		if (options.reactions[i]==options.defaultReaction)
 			defaultChoiceOption=i;
@@ -113,13 +147,13 @@ FlarmIdCheck::Reaction FlarmIdCheck::showChoiceDialog (const Options &options)
  * @param oldFlarmId
  * @return true if OK, false if canceled
  */
-bool FlarmIdCheck::interactiveCheck (const QString &newFlarmId, const QString &oldFlarmId)
+bool FlarmIdCheck::interactiveCheck (const QString &newFlarmId, dbId planeId, const QString &oldFlarmId)
 {
 	this->newFlarmId=newFlarmId;
+	this->planeId   =planeId;
 	this->oldFlarmId=oldFlarmId;
-	conflict=false;
 
-	Cache &cache=dbManager.getCache ();
+	conflictingPlane.clearValue ();
 
 	// Nothing to do if the new Flarm ID is empty
 	if (newFlarmId.trimmed ().isEmpty ())
@@ -127,20 +161,13 @@ bool FlarmIdCheck::interactiveCheck (const QString &newFlarmId, const QString &o
 
 	// Find the conflicting plane, i. e. the plane that alrady has the Flarm ID
 	// we're trying to set.
-	// FIXME: the old Flarm ID may also be a duplicate
-	// FIXME: if the Flarm ID did not change, we may get the same plane here
-	dbId conflictingPlaneId=cache.getPlaneIdByFlarmId (newFlarmId);
+	// FIXME there may be multiple
+	// FIXME: the old Flarm ID may also be a duplicate (but we're probably not
+	// going to handle that)
 
-	// Nothing to do if there is no conflict
-	if (!idValid (conflictingPlaneId))
+	conflictingPlane=findConflictingPlane ();
+	if (!conflictingPlane.isValid ())
 		return true;
-
-	// There is a conflict
-	conflict=true;
-
-	// Retrieve the conflicting plane from the database
-	// TODO NotFoundException (cannot happen)
-	conflictingPlane=cache.getObject<Plane> (conflictingPlaneId);
 
 	// Determine the available options
 	Options options=getOptions ();
@@ -161,7 +188,7 @@ bool FlarmIdCheck::interactiveApply (QString *flightFlarmId)
 		(*flightFlarmId)=newFlarmId;
 
 	// Nothing to do if there is not conflict
-	if (!conflict)
+	if (!conflictingPlane.isValid ())
 		return true;
 
 	bool setOtherFlightFlarmId=false;
@@ -194,8 +221,8 @@ bool FlarmIdCheck::interactiveApply (QString *flightFlarmId)
 	{
 		try
 		{
-			conflictingPlane.flarmId=otherFlightFlarmId;
-			dbManager.updateObject (conflictingPlane, parent);
+			conflictingPlane->flarmId=otherFlightFlarmId;
+			dbManager.updateObject (conflictingPlane.getValue (), parent);
 		}
 		catch (OperationCanceledException &)
 		{

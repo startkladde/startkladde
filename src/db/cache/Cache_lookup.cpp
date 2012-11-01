@@ -204,6 +204,13 @@ dbId Cache::getPlaneIdByRegistration (const QString &registration)
 	return invalidId;
 }
 
+QList<dbId> Cache::getPlaneIdsByFlarmId (const QString &flarmId)
+{
+	synchronizedReturn (dataMutex, planeIdsByFlarmId.values (flarmId));
+}
+
+// FIXME remove - the Flarm ID need not be unique, so all functions calling this
+// should handle multiple results (or ignore it explicitly)
 dbId Cache::getPlaneIdByFlarmId (const QString &flarmId)
 {
 	synchronized (dataMutex)

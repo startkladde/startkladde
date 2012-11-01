@@ -202,7 +202,8 @@ void PlaneEditorPane::fieldsToObject (Plane &plane, bool performChecks)
 			ui.seatsInput);
 
 	FlarmIdCheck flarmIdCheck (dbManager, this);
-	flarmIdCheck.interactiveCheck (plane.flarmId, getOriginalObject ().flarmId);
+	flarmIdCheck.interactiveCheck (plane.flarmId, getOriginalObject ().getId (),
+		getOriginalObject ().flarmId);
 	bool checkResult=flarmIdCheck.interactiveApply (&plane.flarmId);
 	if (!checkResult)
 		throw AbortedException ();

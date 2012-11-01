@@ -6,6 +6,7 @@
 #include <QString>
 
 #include "src/model/Plane.h"
+#include "src/container/Maybe.h"
 
 class DbManager;
 class QWidget;
@@ -18,7 +19,7 @@ class FlarmIdCheck: public QObject
 		FlarmIdCheck (DbManager &dbManager, QWidget *parent);
 		virtual ~FlarmIdCheck ();
 
-		bool interactiveCheck (const QString &newFlarmId, const QString &oldFlarmId);
+		bool interactiveCheck (const QString &newFlarmId, dbId planeId, const QString &oldFlarmId);
 		bool interactiveApply (QString *flightFlarmId);
 
 		bool keepOldFlarmId ();
@@ -49,6 +50,7 @@ class FlarmIdCheck: public QObject
 				Reaction defaultReaction;
 		};
 
+		Maybe<Plane> findConflictingPlane ();
 		Options getOptions ();
 		Reaction showChoiceDialog (const Options &options);
 
@@ -58,12 +60,12 @@ class FlarmIdCheck: public QObject
 
 		// Input data
 		QString newFlarmId;
+		dbId planeId;
 		QString oldFlarmId;
 
 		// Status
-		bool conflict;             // Is there a conflict at all
-		Plane conflictingPlane;    // The conflicting plane if there is a conflict
-		Reaction selectedReaction; // The reaction chosen by the user
+		Maybe<Plane> conflictingPlane; // The conflicting plane if there is a conflict
+		Reaction selectedReaction;     // The reaction chosen by the user
 
 };
 

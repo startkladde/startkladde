@@ -95,7 +95,7 @@ template<class T> ObjectEditorWindow<T>::ObjectEditorWindow (Mode mode, DbManage
 
 template<class T> ObjectEditorWindow<T>::~ObjectEditorWindow ()
 {
-		std::cout << notr ("ObjectEditorWindow being deleted") << std::endl;
+//		std::cout << notr ("ObjectEditorWindow being deleted") << std::endl;
 }
 
 

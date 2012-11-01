@@ -126,6 +126,7 @@ class Cache: public QObject
 		// *** Objects by property
 		dbId getPlaneIdByRegistration (const QString &registration);
 		dbId getPlaneIdByFlarmId (const QString &flarmId);
+		QList<dbId> getPlaneIdsByFlarmId (const QString &flarmId);
 		dbId getFlarmNetRecordIdByFlarmId (const QString &flarmId);
 		QList<dbId> getPersonIdsByName (const QString &lastName, const QString &firstName);
 		dbId getUniquePersonIdByName (const QString &lastName, const QString &firstName);
