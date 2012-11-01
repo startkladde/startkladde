@@ -31,6 +31,7 @@ QString FlarmIdCheck::Reaction_getText (Reaction reaction, const Plane &conflict
 			return tr ("Ignore the conflict - automatic departures and "
 				"landings may not work correctly");
 		case keep:
+			// FIXME it may be empty - use a different message
 			return tr ("Keep this plane's Flarm ID at its old value, %1")
 				.arg (oldFlarmId);
 		case cancel:
