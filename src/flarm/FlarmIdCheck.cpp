@@ -302,7 +302,8 @@ bool FlarmIdCheck::interactiveCheck (const QString &newFlarmId, dbId planeId, co
  *
  * @param flightFlarmId a pointer to the plane's Flarm ID. This should not be
  *                      NULL as the value may have to be changed.
- * @return false if the user canceled, or true otherwise
+ * @return false if the user canceled or if the user had canceled during the
+ *               preceding call to interactiveCheck, or true otherwise
  */
 bool FlarmIdCheck::interactiveApply (QString *planeFlarmId)
 {
