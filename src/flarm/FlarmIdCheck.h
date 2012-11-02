@@ -39,6 +39,11 @@ class QWidget;
  * interactiveApply will do nothing, so you may choose to ignore the return
  * value of interactiveCheck if you are going to call interactiveApply right
  * away.
+ *
+ * Note that the case of multiple conflicting planes are not handled at the
+ * moment. In this case, one of them will be arbitrarily selected and treated as
+ * it was the only one. Even after resolving the conflict, there will still be
+ * multiple planes with the same Flarm ID.
  */
 class FlarmIdCheck: public QObject
 {
@@ -55,6 +60,7 @@ class FlarmIdCheck: public QObject
 
 	protected:
 		/** The resolution of a conflict */
+		// TODO clearThis might be useful (and rename clear to clearOther)
 		enum Resolution
 		{
 			clear,  // Set the other plane's Flarm ID to ""
