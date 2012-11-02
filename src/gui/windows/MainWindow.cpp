@@ -75,8 +75,8 @@
 #include "src/nmea/NmeaDecoder.h"
 #include "src/nmea/GpsTracker.h"
 #include "src/flarm/FlarmList.h"
-#include "src/flarm/PlaneResolver.h"
-#include "src/flarm/FlightResolver.h"
+#include "src/flarm/PlaneLookup.h"
+#include "src/flarm/FlightLookup.h"
 #include "src/flarm/FlarmNetHandler.h"
 #include "src/flarm/PlaneIdentification.h"
 
@@ -98,7 +98,7 @@ MainWindow::MainWindow (QWidget *parent):
 	contextMenu (new QMenu (this)),
 	databaseActionsEnabled (false),
 	fontSet (false),
-	flightResolver (cache),
+	flightLookup (cache),
 	debugFlarmId ("ABC")
 {
 	ui.setupUi (this);
@@ -2321,12 +2321,12 @@ void MainWindow::on_injectFlarmTouchAndGoAction_triggered ()
 	}
 }
 
-void MainWindow::on_resolvePlaneAction_triggered ()
+void MainWindow::on_lookupPlaneAction_triggered ()
 {
-	QString flarmId=QInputDialog::getText (this, "Resolve plane", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
+	QString flarmId=QInputDialog::getText (this, "Lookup plane", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
 	if (!flarmId.isNull ())
 	{
-		PlaneResolver::Result result=PlaneResolver (cache).resolvePlane (flarmId);
+		PlaneLookup::Result result=PlaneLookup (cache).lookupPlane (flarmId);
 
 		QString text="Not handled";
 		if (result.plane.isValid ())
@@ -2345,23 +2345,23 @@ void MainWindow::on_resolvePlaneAction_triggered ()
 			text=qnotr ("Not found");
 
 
-		QString title=qnotr ("Resolve plane %1").arg (flarmId);
+		QString title=qnotr ("Lookup plane %1").arg (flarmId);
 		QMessageBox::information (this, title, text);
 
 		debugFlarmId=flarmId;
 	}
 }
 
-void MainWindow::on_resolveFlightAction_triggered ()
+void MainWindow::on_lookupFlightAction_triggered ()
 {
 	// FIXME implement
 	// Note that we'll also need to decide on a set of candidate flights
 
-	QString flarmId=QInputDialog::getText (this, "Resolve flight", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
+	QString flarmId=QInputDialog::getText (this, "Lookup flight", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
 	if (!flarmId.isNull ())
 	{
 		QMessageBox::information (this,
-				qnotr ("Resolve flight"),
+				qnotr ("Lookup flight"),
 				qnotr ("Not implemented"));
 
 		debugFlarmId=flarmId;
@@ -2369,20 +2369,20 @@ void MainWindow::on_resolveFlightAction_triggered ()
 }
 
 
-Flight MainWindow::createFlarmFlight (const FlightResolver::Result &resolverResult, const QString &flarmId)
+Flight MainWindow::createFlarmFlight (const FlightLookup::Result &lookupResult, const QString &flarmId)
 {
 	Flight flight;
 
-	if (resolverResult.plane.isValid ())
-		flight.setPlaneId (resolverResult.plane->getId ());
+	if (lookupResult.plane.isValid ())
+		flight.setPlaneId (lookupResult.plane->getId ());
 
 	flight.setFlarmId (flarmId);
 
-	if (resolverResult.flarmNetRecord.isValid ())
+	if (lookupResult.flarmNetRecord.isValid ())
 	{
 		// FIXME: if we can find a plane with that registration, do we want to
 		// use it or do we wait for the user to confirm it when editing the flight?
-		flight.setComments (tr ("Registration from FlarmNet: %1").arg (resolverResult.flarmNetRecord->registration));
+		flight.setComments (tr ("Registration from FlarmNet: %1").arg (lookupResult.flarmNetRecord->registration));
 	}
 
 	return flight;
@@ -2404,19 +2404,19 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 	std::cout << "Detected departure of " << flarmId << std::endl;
 
 	QList<Flight> flights=dbManager.getCache ().getPreparedFlights ().getList ();
-	FlightResolver::Result resolverResult=flightResolver.resolveFlight (flights, flarmId);
+	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
-	if (idValid (resolverResult.flightId))
+	if (idValid (lookupResult.flightId))
 	{
 		// We found the (prepared) flight. Depart it.
-		nonInteractiveDepartFlight (resolverResult.flightId);
+		nonInteractiveDepartFlight (lookupResult.flightId);
 		//TODO: show notification
 	}
 	else
 	{
 		// We did not find the flight. Create it. The data will be incomplete
 		// and the flight will be shown in red.
-		Flight flight=createFlarmFlight (resolverResult, flarmId);
+		Flight flight=createFlarmFlight (lookupResult, flarmId);
 		flight.setMode (FlightBase::modeLocal);
 		flight.setLaunchMethodId (preselectedLaunchMethod);
 		flight.departNow (Settings::instance ().location);
@@ -2434,18 +2434,18 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 	std::cout << "Detected landing of " << flarmId << std::endl;
 
 	QList<Flight> flights=dbManager.getCache ().getFlyingFlights ().getList ();
-	FlightResolver::Result resolverResult=flightResolver.resolveFlight (flights, flarmId);
+	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
-	if (idValid (resolverResult.flightId))
+	if (idValid (lookupResult.flightId))
 	{
 		// We found the flight. Land it.
-		nonInteractiveLandFlight (resolverResult.flightId);
+		nonInteractiveLandFlight (lookupResult.flightId);
 	}
 	else
 	{
 		// We did not find the flight. Create it. The data will be incomplete
 		// and the flight will be shown in red.
-		Flight flight=createFlarmFlight (resolverResult, flarmId);
+		Flight flight=createFlarmFlight (lookupResult, flarmId);
 		flight.setMode (FlightBase::modeComing);
 		flight.landNow (Settings::instance ().location);
 		dbManager.createObject (flight, this);
@@ -2460,18 +2460,18 @@ void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 	std::cout << "Detected touch-and-go of " << flarmId << std::endl;
 
 	QList<Flight> flights=dbManager.getCache ().getFlyingFlights ().getList ();
-	FlightResolver::Result resolverResult=flightResolver.resolveFlight (flights, flarmId);
+	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
-	if (idValid (resolverResult.flightId))
+	if (idValid (lookupResult.flightId))
 	{
 		// We found the flight. Perform a touch and go.
-		nonInteractiveTouchAndGo (resolverResult.flightId);
+		nonInteractiveTouchAndGo (lookupResult.flightId);
 	}
 	else
 	{
 		// We did not find the flight. Create it. The data will be incomplete
 		// and the flight will be shown in red.
-		Flight flight=createFlarmFlight (resolverResult, flarmId);
+		Flight flight=createFlarmFlight (lookupResult, flarmId);
 		flight.setMode (FlightBase::modeComing);
 		flight.performTouchngo ();
 		dbManager.createObject (flight, this);

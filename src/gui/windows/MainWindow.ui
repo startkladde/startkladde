@@ -484,8 +484,8 @@
     <addaction name="injectFlarmLandingAction"/>
     <addaction name="injectFlarmTouchAndGoAction"/>
     <addaction name="separator"/>
-    <addaction name="resolvePlaneAction"/>
-    <addaction name="resolveFlightAction"/>
+    <addaction name="lookupPlaneAction"/>
+    <addaction name="lookupFlightAction"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -964,14 +964,14 @@
     <string>Download FlarmNet database from &amp;web...</string>
    </property>
   </action>
-  <action name="resolvePlaneAction">
+  <action name="lookupPlaneAction">
    <property name="text">
-    <string>Resolve &amp;plane</string>
+    <string>Look up &amp;plane</string>
    </property>
   </action>
-  <action name="resolveFlightAction">
+  <action name="lookupFlightAction">
    <property name="text">
-    <string>Resolve &amp;flight</string>
+    <string>Look up &amp;flight</string>
    </property>
   </action>
   <action name="identifyPlaneAction">

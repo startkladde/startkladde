@@ -44,7 +44,7 @@
 #include "src/gui/SkMainWindow.h"
 #include "src/flarm/FlarmRecord.h" // FIXME replace with forward declaration if possible
 #include "src/model/FlightBase.h"
-#include "src/flarm/FlightResolver.h"
+#include "src/flarm/FlightLookup.h" // FIXME remove?
 
 class QWidget;
 template<class T> class QList;
@@ -219,8 +219,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void on_injectFlarmDepartureAction_triggered ();
 		void on_injectFlarmLandingAction_triggered ();
 		void on_injectFlarmTouchAndGoAction_triggered ();
-		void on_resolvePlaneAction_triggered ();
-		void on_resolveFlightAction_triggered ();
+		void on_lookupPlaneAction_triggered ();
+		void on_lookupFlightAction_triggered ();
 
 		// Menu: Help
 		void on_actionInfo_triggered ();
@@ -271,7 +271,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void flarmList_departureDetected (const QString &flarmId);
 		void flarmList_landingDetected   (const QString &flarmId);
 		void flarmList_goAroundDetected  (const QString &flarmId);
-		Flight createFlarmFlight (const FlightResolver::Result &resolverResult, const QString &flarmId);
+		Flight createFlarmFlight (const FlightLookup::Result &lookupResult, const QString &flarmId);
 
 	private:
 		// TODO move to translation manager?
@@ -320,7 +320,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		NmeaDecoder *nmeaDecoder;
 		GpsTracker *gpsTracker;
 		FlarmList *flarmList;
-		FlightResolver flightResolver;
+		FlightLookup flightLookup; // FIXME not a member?
 		QString debugFlarmId;
 		bool flarmStreamValid;
 

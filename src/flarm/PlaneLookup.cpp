@@ -1,4 +1,4 @@
-#include "PlaneResolver.h"
+#include "PlaneLookup.h"
 
 #include <iostream>
 
@@ -9,14 +9,12 @@
 #include "src/i18n/notr.h"
 #include "src/config/Settings.h"
 
-// FIXME resolving/lookup => name confusion
-
-PlaneResolver::PlaneResolver (Cache &cache):
+PlaneLookup::PlaneLookup (Cache &cache):
 	cache (cache)
 {
 }
 
-PlaneResolver::~PlaneResolver ()
+PlaneLookup::~PlaneLookup ()
 {
 }
 
@@ -31,7 +29,7 @@ PlaneResolver::~PlaneResolver ()
  * ------+-----+-------------------
  * no    | no  | no plane was found
  */
-PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmId (const QString &flarmId)
+PlaneLookup::Result PlaneLookup::lookupPlaneByFlarmId (const QString &flarmId)
 {
 	try
 	{
@@ -69,7 +67,7 @@ PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmId (const QString &flarm
  * If a plane was found via FlarmNet but its Flarm ID does not match the Flarm
  * ID we're looking for, nothing is returned.
  */
-PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmNetDatabase (const QString &flarmId)
+PlaneLookup::Result PlaneLookup::lookupPlaneByFlarmNetDatabase (const QString &flarmId)
 {
 	try
 	{
@@ -135,12 +133,12 @@ PlaneResolver::Result PlaneResolver::resolvePlaneByFlarmNetDatabase (const QStri
  * If the result contains a plane, it is guaranteed to have either no Flarm ID
  * or the Flarm ID we're looking for.
  */
-PlaneResolver::Result PlaneResolver::resolvePlane (const QString &flarmId)
+PlaneLookup::Result PlaneLookup::lookupPlane (const QString &flarmId)
 {
 	Result result=Result::nothing ();
 
 	// Try to find the plane by Flarm ID
-	result=resolvePlaneByFlarmId (flarmId);
+	result=lookupPlaneByFlarmId (flarmId);
 
 	// If we found a plane, return the result
 	if (result.plane.isValid ())
@@ -149,7 +147,7 @@ PlaneResolver::Result PlaneResolver::resolvePlane (const QString &flarmId)
 	// Try to find the plane via FlarmNet database if FlarmNet is enabled
 	if (Settings::instance ().flarmNetEnabled)
 	{
-		result=resolvePlaneByFlarmNetDatabase (flarmId);
+		result=lookupPlaneByFlarmNetDatabase (flarmId);
 
 		// If we found anything, return the result
 		if (result.plane.isValid ())

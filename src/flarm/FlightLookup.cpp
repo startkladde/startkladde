@@ -1,20 +1,20 @@
-#include <src/flarm/FlightResolver.h>
+#include <src/flarm/FlightLookup.h>
 
 #include <QtCore/QDebug>
 
-#include "src/flarm/PlaneResolver.h"
+#include "src/flarm/PlaneLookup.h"
 #include "src/db/cache/Cache.h"
 #include "src/model/Flight.h"
 #include "src/flarm/FlarmNetRecord.h"
 #include "src/i18n/notr.h"
 #include "src/config/Settings.h"
 
-FlightResolver::FlightResolver (Cache &cache):
+FlightLookup::FlightLookup (Cache &cache):
 	cache (cache)
 {
 }
 
-FlightResolver::~FlightResolver ()
+FlightLookup::~FlightLookup ()
 {
 }
 
@@ -29,7 +29,7 @@ FlightResolver::~FlightResolver ()
  * -------+-------+-----+--------------------
  * no     | no    | no  | no flight was found
  */
-FlightResolver::Result FlightResolver::resolveFlightByFlarmId (const QList<Flight> &candidates, const QString &flarmId)
+FlightLookup::Result FlightLookup::lookupFlightByFlarmId (const QList<Flight> &candidates, const QString &flarmId)
 {
 	foreach (const Flight &flight, candidates)
 		if (flight.getFlarmId ()==flarmId)
@@ -56,10 +56,10 @@ FlightResolver::Result FlightResolver::resolveFlightByFlarmId (const QList<Fligh
  * -------+-------+-----+-----------------------------------------------------------
  * no     | no    | no  | nothing was found
  */
-FlightResolver::Result FlightResolver::resolveFlightByPlane (const QList<Flight> &candidates, const QString &flarmId)
+FlightLookup::Result FlightLookup::lookupFlightByPlane (const QList<Flight> &candidates, const QString &flarmId)
 {
-	// Try to resolve the plane
-	PlaneResolver::Result planeResult=PlaneResolver (cache).resolvePlane (flarmId);
+	// Try to look up the plane
+	PlaneLookup::Result planeResult=PlaneLookup (cache).lookupPlane (flarmId);
 
 	// Return just the FlarmNet record (if any) if there is no plane (5+6)
 	if (!planeResult.plane.isValid ())
@@ -111,19 +111,19 @@ FlightResolver::Result FlightResolver::resolveFlightByPlane (const QList<Flight>
  * If the result contains a plane, it is guaranteed to have either no Flarm ID
  * or the Flarm ID we're looking for.
  */
-FlightResolver::Result FlightResolver::resolveFlight (const QList<Flight> &candidates, const QString &flarmId)
+FlightLookup::Result FlightLookup::lookupFlight (const QList<Flight> &candidates, const QString &flarmId)
 {
 	Result result=Result::nothing ();
 
 	// Try to find a flight by Flarm ID
-	result=resolveFlightByFlarmId (candidates, flarmId);
+	result=lookupFlightByFlarmId (candidates, flarmId);
 
 	// If we found a flight, return it
 	if (idValid (result.flightId))
 		return result;
 
 	// Try to find a flight by plane
-	result=resolveFlightByPlane (candidates, flarmId);
+	result=lookupFlightByPlane (candidates, flarmId);
 
 	// Whatever we got, we return
 	return result;

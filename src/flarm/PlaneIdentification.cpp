@@ -7,7 +7,7 @@
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
 #include "src/flarm/FlarmNetRecord.h"
-#include "src/flarm/PlaneResolver.h"
+#include "src/flarm/PlaneLookup.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 #include "src/gui/windows/objectEditor/PlaneEditorPane.h"
 
@@ -47,7 +47,7 @@ dbId PlaneIdentification::interactiveIdentifyPlane (QWidget *parent, DbManager &
 		}
 
 		// Lookup the plane
-		PlaneResolver::Result result=PlaneResolver (cache).resolvePlane (flarmId);
+		PlaneLookup::Result result=PlaneLookup (cache).lookupPlane (flarmId);
 
 		// Let's see what we've got...
 		if (result.plane.isValid ())

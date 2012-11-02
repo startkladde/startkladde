@@ -1,5 +1,5 @@
-#ifndef FLIGHTRESOLVER_H_
-#define FLIGHTRESOLVER_H_
+#ifndef FLIGHTLOOKUP_H_
+#define FLIGHTLOOKUP_H_
 
 #include <QString>
 
@@ -31,7 +31,7 @@ class FlarmNetRecord;
  *
  * See also: the wiki page "Flarm handling".
  */
-class FlightResolver
+class FlightLookup
 {
 	public:
 		class Result
@@ -52,14 +52,14 @@ class FlightResolver
 				}
 		};
 
-		FlightResolver (Cache &cache);
-		virtual ~FlightResolver ();
+		FlightLookup (Cache &cache);
+		virtual ~FlightLookup ();
 
-		Result resolveFlight (const QList<Flight> &candidates, const QString &flarmId);
+		Result lookupFlight (const QList<Flight> &candidates, const QString &flarmId);
 
 	protected:
-		Result resolveFlightByFlarmId (const QList<Flight> &candidates, const QString &flarmId);
-		Result resolveFlightByPlane   (const QList<Flight> &candidates, const QString &flarmId);
+		Result lookupFlightByFlarmId (const QList<Flight> &candidates, const QString &flarmId);
+		Result lookupFlightByPlane   (const QList<Flight> &candidates, const QString &flarmId);
 
 	private:
 		Cache &cache;

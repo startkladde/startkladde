@@ -1,5 +1,5 @@
-#ifndef PLANERESOLVER_H_
-#define PLANERESOLVER_H_
+#ifndef PLANELOOKUP_H_
+#define PLANELOOKUP_H_
 
 #include "src/db/dbId.h"
 #include "src/container/Maybe.h"
@@ -23,7 +23,7 @@ class Plane;
  *
  * See also: the wiki page "Flarm handling".
  */
-class PlaneResolver
+class PlaneLookup
 {
 	public:
 		/**
@@ -47,14 +47,14 @@ class PlaneResolver
 				}
 		};
 
-		PlaneResolver (Cache &cache);
-		virtual ~PlaneResolver ();
+		PlaneLookup (Cache &cache);
+		virtual ~PlaneLookup ();
 
-		Result resolvePlane (const QString &flarmId);
+		Result lookupPlane (const QString &flarmId);
 
 	protected:
-		Result resolvePlaneByFlarmId          (const QString &flarmId);
-		Result resolvePlaneByFlarmNetDatabase (const QString &flarmId);
+		Result lookupPlaneByFlarmId          (const QString &flarmId);
+		Result lookupPlaneByFlarmNetDatabase (const QString &flarmId);
 
 	private:
 		Cache &cache;
