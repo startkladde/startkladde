@@ -9,6 +9,8 @@
 #include "src/i18n/notr.h"
 #include "src/config/Settings.h"
 
+// FIXME resolving/lookup => name confusion
+
 PlaneResolver::PlaneResolver (Cache &cache):
 	cache (cache)
 {

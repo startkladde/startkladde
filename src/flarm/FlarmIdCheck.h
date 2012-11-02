@@ -12,7 +12,8 @@ class DbManager;
 class QWidget;
 
 /**
- * A helper class to check for Flarm ID conflicts when updating a plane
+ * A helper class for checking for and resolving Flarm ID conflicts when
+ * updating a plane
  *
  * The Flarm ID of a plane should be unique, that is, there should be only one
  * plane with a given Flarm ID at a time. However, Flarm IDs may change as Flarm

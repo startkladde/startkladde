@@ -78,7 +78,7 @@
 #include "src/flarm/PlaneResolver.h"
 #include "src/flarm/FlightResolver.h"
 #include "src/flarm/FlarmNetHandler.h"
-#include "src/flarm/FlarmHandling.h"
+#include "src/flarm/PlaneIdentification.h"
 
 template <class T> class MutableObjectList;
 
@@ -1227,7 +1227,7 @@ void MainWindow::on_identifyPlaneAction_triggered ()
 
 	try
 	{
-		dbId newPlaneId=FlarmHandling::interactiveIdentifyPlane (this, dbManager, flightId);
+		dbId newPlaneId=PlaneIdentification::interactiveIdentifyPlane (this, dbManager, flightId);
 
 		// If a plane was found, update the flight
 		if (idValid (newPlaneId))

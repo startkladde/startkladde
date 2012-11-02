@@ -26,7 +26,7 @@
 #include "src/logging/messages.h"
 #include "src/i18n/notr.h"
 #include "src/flarm/FlarmNetRecord.h"
-#include "src/flarm/FlarmHandling.h"
+#include "src/flarm/PlaneIdentification.h"
 
 /*
  * On enabling/diabling widgets:
@@ -2258,7 +2258,7 @@ void FlightWindow::identifyPlane (const Flight &flight)
 
 	// Try to identify the plane, letting the user choose or create the plane
 	// if necessary.
-	dbId identifiedPlaneId=FlarmHandling::interactiveIdentifyPlane (this, manager, flight.getFlarmId ());
+	dbId identifiedPlaneId=PlaneIdentification::interactiveIdentifyPlane (this, manager, flight.getFlarmId ());
 
 	if (idValid (identifiedPlaneId))
 	{

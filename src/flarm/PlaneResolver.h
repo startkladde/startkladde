@@ -17,6 +17,10 @@ class Plane;
  *   2. The Flarm ID matches the Flarm ID of a FlarmNet record whose
  *      registration matches the registration of a plane
  *
+ * Note that plane lookup is not the same thing as plane identification. The
+ * difference is explained in the documentation of the PlaneIdentification
+ * class.
+ *
  * See also: the wiki page "Flarm handling".
  */
 class PlaneResolver

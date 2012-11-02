@@ -1,11 +1,4 @@
-/*
- * FlarmHandling.cpp
- *
- *  Created on: 24.10.2012
- *      Author: martin
- */
-
-#include "src/flarm/FlarmHandling.h"
+#include "src/flarm/PlaneIdentification.h"
 
 #include <QWidget>
 
@@ -21,11 +14,11 @@
 // FIXME: identify known plane - warn if the identified plane is different from
 // the current one
 
-FlarmHandling::FlarmHandling ()
+PlaneIdentification::PlaneIdentification ()
 {
 }
 
-FlarmHandling::~FlarmHandling ()
+PlaneIdentification::~PlaneIdentification ()
 {
 }
 
@@ -38,7 +31,7 @@ FlarmHandling::~FlarmHandling ()
  * @param flarmId the Flarm ID of the flight
  * @return
  */
-dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, const QString &flarmId)
+dbId PlaneIdentification::interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, const QString &flarmId)
 {
 	Cache &cache=dbManager.getCache ();
 
@@ -47,8 +40,8 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 		// We can only do this for automatically created flights
 		if (flarmId.isEmpty ())
 		{
-			QMessageBox::information (parent, qApp->translate ("FlarmHandling", "Identify plane"),
-				qApp->translate ("FlarmHandling", "The plane cannot be "
+			QMessageBox::information (parent, qApp->translate ("PlaneIdentification", "Identify plane"),
+				qApp->translate ("PlaneIdentification", "The plane cannot be "
 					"identified because this flight was not created automatically."));
 			return invalidId;
 		}
@@ -60,8 +53,8 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 		if (result.plane.isValid ())
 		{
 			// Offer the user to use this plane
-			QString title=qApp->translate ("FlarmHandling", "Use plane?");
-			QString text =qApp->translate ("FlarmHandling", "The plane seems "
+			QString title=qApp->translate ("PlaneIdentification", "Use plane?");
+			QString text =qApp->translate ("PlaneIdentification", "The plane seems "
 				"to be a %1 with registration %2. Do you want to use this plane?")
 				.arg (result.plane->type).arg (result.plane->fullRegistration ());
 			// FIXME no type?
@@ -76,8 +69,8 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 			// Offer the user to create a plane with the FlarmNet data
 			// FIXME no type
 			// FIXME we need the options: create plane with FlarmNet data, create plane from scratch, cancel
-			QString title=qApp->translate ("FlarmHandling", "Automatically create plane?");
-			QString text =qApp->translate ("FlarmHandling", "The plane was not "
+			QString title=qApp->translate ("PlaneIdentification", "Automatically create plane?");
+			QString text =qApp->translate ("PlaneIdentification", "The plane was not "
 				"found in the database. However, the FlarmNet database indicates "
 				"that the plane might be a %1 with registration %2. Do you want "
 				"to create this plane?")
@@ -99,8 +92,8 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 			// be in the database, just without Flarm ID, and (b) when opening
 			// the flight editor, the user will be given the opportunity to
 			// choose the plane (and create it if it does not exist) anyway.
-			QString title=qApp->translate ("FlarmHandling", "Create plane?");
-			QString text =qApp->translate ("FlarmHandling", "The plane was not found. Do you want to create it?");
+			QString title=qApp->translate ("PlaneIdentification", "Create plane?");
+			QString text =qApp->translate ("PlaneIdentification", "The plane was not found. Do you want to create it?");
 
 			if (yesNoQuestion (parent, title, text))
 			{
@@ -124,7 +117,7 @@ dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbMana
 /**
  * Frontend method
 */
-dbId FlarmHandling::interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, dbId flightId)
+dbId PlaneIdentification::interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, dbId flightId)
 {
 	try
 	{
