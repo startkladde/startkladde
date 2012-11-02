@@ -271,8 +271,9 @@ bool FlarmIdCheck::interactiveCheck (const QString &newFlarmId, dbId planeId, co
 	// Find a conflicting plane, i. e. a plane that alrady has the Flarm ID
 	// we're trying to set, unless the new Flarm ID is blank.
 	// FIXME there may be multiple
-	// FIXME: the old Flarm ID may also be a duplicate (but we're probably not
-	// going to handle that)
+	// FIXME: the old Flarm ID may also be a duplicate (we're probably not
+	// going to handle that, but maybe we want to display a warning; at least
+	// test what happens)
 	conflictingPlane=findConflictingPlane ();
 	if (!conflictingPlane.isValid ())
 		return true;
@@ -303,12 +304,12 @@ bool FlarmIdCheck::interactiveCheck (const QString &newFlarmId, dbId planeId, co
  *                      NULL as the value may have to be changed.
  * @return false if the user canceled, or true otherwise
  */
-bool FlarmIdCheck::interactiveApply (QString *flightFlarmId) // FIXME planeFlarmId
+bool FlarmIdCheck::interactiveApply (QString *planeFlarmId)
 {
 	// By default, use the new Flarm ID for the flight. We'll change that later
 	// if required by the user's choice.
-	if (flightFlarmId)
-		(*flightFlarmId)=newFlarmId;
+	if (planeFlarmId)
+		(*planeFlarmId)=newFlarmId;
 
 	// Nothing to do if there is not conflict
 	if (!conflictingPlane.isValid ())
@@ -330,7 +331,7 @@ bool FlarmIdCheck::interactiveApply (QString *flightFlarmId) // FIXME planeFlarm
 			otherFlightFlarmId=oldFlarmId;
 			break;
 		case keep:
-			(*flightFlarmId)=oldFlarmId;
+			(*planeFlarmId)=oldFlarmId;
 			break;
 		case ignore:
 			break;

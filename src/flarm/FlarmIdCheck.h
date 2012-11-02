@@ -49,7 +49,7 @@ class FlarmIdCheck: public QObject
 		virtual ~FlarmIdCheck ();
 
 		bool interactiveCheck (const QString &newFlarmId, dbId planeId, const QString &oldFlarmId);
-		bool interactiveApply (QString *flightFlarmId);
+		bool interactiveApply (QString *planeFlarmId);
 
 		bool keepOldFlarmId ();
 
