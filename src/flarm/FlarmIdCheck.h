@@ -18,8 +18,9 @@ class QWidget;
  * plane with a given Flarm ID at a time. However, Flarm IDs may change as Flarm
  * units are moved around between planes. When creating or updating a plane, we
  * want to check for a conflict and offer the user some choices to resolve the
- * conflict. The selection of options is non-trivial; additionally, this has to
- * be done in several places. This class contains the required functionality.
+ * conflict. The selection of possible resolutions is non-trivial; additionally,
+ * this has to be done in several places. This class contains the required
+ * functionality.
  *
  * When updating a plane, create an instance of FlarmIdCheck. Call the
  * interactiveCheck method, passing the new Flarm ID, the old Flarm ID and the
@@ -64,23 +65,23 @@ class FlarmIdCheck: public QObject
 		};
 
 		/**
-		 * A set of reactions presented to a user in case of a conflict. The
-		 * set of reactions as wells as the default (preselected) reaction
-		 * depend on the type of conflict.
+		 * A set of resolutions presented to a user in case of a conflict. The
+		 * set of resolutions as wells as the default (preselected) resolution
+		 * depend on the details of the conflict.
 		 */
-		// FIXME name - ResolutionSet?
-		class Options
+		class ResolutionSet
 		{
 			public:
-				// FIXME resolution, not reaction - all in file
-				QList<Resolution> reactions;
-				Resolution defaultReaction;
+				QList<Resolution> resolutions;
+				Resolution defaultResolution;
+				int getDefaultIndex () const
+					{ return resolutions.indexOf (defaultResolution); }
 		};
 
 		Maybe<Plane> findConflictingPlane ();
-		Options getOptions ();
-		QString makeText (Resolution reaction);
-		Resolution showChoiceDialog (const Options &options);
+		ResolutionSet getPossibleResolutions ();
+		QString makeText (Resolution resolution);
+		Resolution showChoiceDialog (const ResolutionSet &possibleResolutions);
 
 	private:
 		DbManager &dbManager;
@@ -93,7 +94,7 @@ class FlarmIdCheck: public QObject
 
 		// Status
 		Maybe<Plane> conflictingPlane; // The conflicting plane if there is a conflict
-		Resolution selectedReaction;   // The reaction chosen by the user
+		Resolution selectedResolution; // The resolution chosen by the user
 
 };
 

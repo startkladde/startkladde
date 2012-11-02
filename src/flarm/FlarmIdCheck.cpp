@@ -56,7 +56,7 @@
  */
 FlarmIdCheck::FlarmIdCheck (DbManager &dbManager, QWidget *parent):
 	dbManager (dbManager), parent (parent),
-	planeId (invalidId), selectedReaction (ignore)
+	planeId (invalidId), selectedResolution (ignore)
 {
 }
 
@@ -127,54 +127,54 @@ Maybe<Plane> FlarmIdCheck::findConflictingPlane ()
  * This method does not check if there is a conflict. Its result is only
  * meaningful if there is.
  *
- * @return an Options instance, which contains a list of possible resolutions
- *         and a default resolution
+ * @return a ResolutionSet instance, which contains a list of possible
+ *         resolutions and a default resolution
  */
-FlarmIdCheck::Options FlarmIdCheck::getOptions ()
+FlarmIdCheck::ResolutionSet FlarmIdCheck::getPossibleResolutions ()
 {
 	// cancel is never returned. It is not explicitly offered along with the
 	// other resolutions but represents the user canceling the choice dialog.
 
-	Options result;
+	ResolutionSet result;
 
 	// For the resolutions available in different situations, see the comments
 	// at the beginning of the file.
 
 	if (newFlarmId!=oldFlarmId)
 	{
-		// The Flarm ID changed (new==other; new!=old; new!=""). The options
-		// are:
-		//   * clear other     (this=new, other="")
-		//   * swap with other (this=new, other=old) (only if old!="")
-		//   * keep            (this=old, other=other)
-		//   * ignore          (this=new, other=other)
-		result.reactions << clear;
+		// The Flarm ID changed. The possible
+		// resolutions are:
+		//   * clear other
+		//   * swap with other
+		//   * keep
+		//   * ignore
+		result.resolutions << clear;
 		// If the old Flarm ID is empty, swap would be the same as clear.
 		if (!oldFlarmId.isEmpty ())
-			result.reactions << swap;
-		result.reactions << keep;
-		result.reactions << ignore;
-		result.defaultReaction=clear;
+			result.resolutions << swap;
+		result.resolutions << keep;
+		result.resolutions << ignore;
+		result.defaultResolution=clear;
 	}
 	else
 	{
 		// The Flarm ID did not change (new==old==other!=""). This limits the
-		// useful options to:
+		// useful resolutions to:
 		//   * clear other     (this=new, other="")
 		//   * ignore          (this=new, other=other)
-		result.reactions << clear;
-		result.reactions << ignore;
-		result.defaultReaction=ignore;
+		result.resolutions << clear;
+		result.resolutions << ignore;
+		result.defaultResolution=ignore;
 	}
 
 	return result;
 }
 
 /**
- * Creates a textual representation for a (possible) reaction for diaplying to
+ * Creates a textual representation for a (possible) resolution for displying to
  * the user. This depends heavily on the current status.
  */
-QString FlarmIdCheck::makeText (Resolution reaction)
+QString FlarmIdCheck::makeText (Resolution resolution)
 {
 	(void)newFlarmId;
 
@@ -182,7 +182,7 @@ QString FlarmIdCheck::makeText (Resolution reaction)
 	if (!conflictingPlane.isValid ())
 		return "";
 
-	switch (reaction)
+	switch (resolution)
 	{
 		case clear:
 			return tr ("Clear the Flarm ID of %1")
@@ -215,12 +215,12 @@ QString FlarmIdCheck::makeText (Resolution reaction)
  * Displays a choice dialog to the user and returns the chosen resolution
  *
  * The available resolutions and the default resolution are passed in the
- * options argument.
+ * possibleResolutions argument.
  *
  * If the user cancels, cancel will be returned. Otherwise, the selected
  * resolution will be returned.
  */
-FlarmIdCheck::Resolution FlarmIdCheck::showChoiceDialog (const Options &options)
+FlarmIdCheck::Resolution FlarmIdCheck::showChoiceDialog (const ResolutionSet &possibleResolutions)
 {
 	if (!conflictingPlane.isValid ())
 		return keep;
@@ -232,23 +232,22 @@ FlarmIdCheck::Resolution FlarmIdCheck::showChoiceDialog (const Options &options)
 		.arg (newFlarmId)
 		.arg (conflictingPlane->registrationWithType ());
 
-	QStringList choiceOptions;
-	int defaultChoiceOption;
+	// Make a list of options
+	QStringList options;
+	foreach (Resolution resolution, possibleResolutions.resolutions)
+		options << makeText (resolution);
 
-	for (int i=0, n=options.reactions.size (); i<n; ++i)
-	{
-		choiceOptions << makeText (options.reactions[i]);
+	// Determine the default option index
+	int defaultOptionIndex=possibleResolutions.getDefaultIndex ();
 
-		if (options.reactions[i]==options.defaultReaction)
-			defaultChoiceOption=i;
-	}
+	// Show the dialog to the user
+	int chosenIndex=ChoiceDialog::choose (title, text, options, defaultOptionIndex, parent);
 
-	int result=ChoiceDialog::choose (title, text, choiceOptions, defaultChoiceOption, parent);
-
-	if (result<0)
+	// Determine the solution from the user's choice
+	if (chosenIndex<0)
 		return cancel;
 	else
-		return options.reactions[result];
+		return possibleResolutions.resolutions[chosenIndex];
 }
 
 /**
@@ -278,12 +277,12 @@ bool FlarmIdCheck::interactiveCheck (const QString &newFlarmId, dbId planeId, co
 	if (!conflictingPlane.isValid ())
 		return true;
 
-	// Determine the available options
-	Options options=getOptions ();
+	// Determine the available resolutions
+	ResolutionSet possibleResolutions=getPossibleResolutions ();
 
-	selectedReaction=showChoiceDialog (options);
+	selectedResolution=showChoiceDialog (possibleResolutions);
 
-	if (selectedReaction==cancel)
+	if (selectedResolution==cancel)
 		return false;
 	else
 		return true;
@@ -320,7 +319,7 @@ bool FlarmIdCheck::interactiveApply (QString *flightFlarmId) // FIXME planeFlarm
 	bool canceled=false;
 
 	// There was a conflict. Let's see what the user chose to do.
-	switch (selectedReaction)
+	switch (selectedResolution)
 	{
 		case clear:
 			setOtherFlightFlarmId=true;
