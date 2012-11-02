@@ -139,6 +139,9 @@ int Flight::countHappened (const QList<Flight> flights)
 // TODO: guarantee that any flight for which this is not true has an effectiveDate
 bool Flight::happened () const
 {
+	// TODO - we should probably switch on the mode instead of using the more
+	// abstract departsHere and landsHere methods to make it more explicit that
+	// this method is actually correct.
 	if (departsHere () && getDeparted ()) return true;
 	if (landsHere () && getLanded ()) return true;
 	return false;

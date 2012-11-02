@@ -1298,6 +1298,10 @@ Flight FlightWindow::determineFlight (bool departNow)
 
 		checkFlightPhase3 (flight, departNow, plane, pilot, copilot, towpilot);
 
+		// If the flight is prepared, clear its Flarm ID.
+		if (flight.isPrepared ())
+			flight.setFlarmId ("");
+
 		return flight;
 	}
 	catch (...)
