@@ -5,6 +5,8 @@
 
 class QWidget;
 class DbManager;
+class Plane;
+class FlarmNetRecord;
 
 /**
  * A helper class for identifying the plane of a flight
@@ -17,7 +19,6 @@ class DbManager;
  * Plane lookup, on the other hand, is non-interactive.
  *
  * See also: the wiki page "Flarm handling".
- *
  */
 class PlaneIdentification
 {
@@ -27,6 +28,10 @@ class PlaneIdentification
 
 		static dbId interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, const QString &flarmId);
 		static dbId interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, dbId flightId);
+
+	protected:
+		static bool queryUsePlane (QWidget *parent, const Plane &plane);
+		static bool queryCreatePlane (QWidget *parent, const FlarmNetRecord &flarmNetRecord);
 };
 
 #endif

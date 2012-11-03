@@ -22,6 +22,34 @@ PlaneIdentification::~PlaneIdentification ()
 {
 }
 
+bool PlaneIdentification::queryUsePlane (QWidget *parent, const Plane &plane)
+{
+	// Offer the user to use this plane
+	QString title=qApp->translate ("PlaneIdentification", "Use plane?");
+	QString text =qApp->translate ("PlaneIdentification", "The plane seems "
+		"to be a %1 with registration %2. Do you want to use this plane?")
+		.arg (plane.type).arg (plane.fullRegistration ());
+	// FIXME no type?
+
+	return yesNoQuestion (parent, title, text);
+}
+
+bool PlaneIdentification::queryCreatePlane (QWidget *parent, const FlarmNetRecord &flarmNetRecord)
+{
+	// Offer the user to create a plane with the FlarmNet data
+	// FIXME no type
+	// FIXME we need the options: create plane with FlarmNet data, create plane from scratch, cancel
+	QString title=qApp->translate ("PlaneIdentification", "Automatically create plane?");
+	QString text =qApp->translate ("PlaneIdentification", "The plane was not "
+		"found in the database. However, the FlarmNet database indicates "
+		"that the plane might be a %1 with registration %2. Do you want "
+		"to create this plane?")
+		.arg (flarmNetRecord.type)
+		.arg (flarmNetRecord.fullRegistration ());
+
+	return yesNoQuestion (parent, title, text);
+}
+
 /**
  * Tries to identify the plane for an automatically created flight, asking the
  * user to choose or create a plane if necessary
@@ -46,38 +74,22 @@ dbId PlaneIdentification::interactiveIdentifyPlane (QWidget *parent, DbManager &
 			return invalidId;
 		}
 
-		// Lookup the plane
+		// Look up the plane
 		PlaneLookup::Result result=PlaneLookup (cache).lookupPlane (flarmId);
 
 		// Let's see what we've got...
 		if (result.plane.isValid ())
 		{
-			// Offer the user to use this plane
-			QString title=qApp->translate ("PlaneIdentification", "Use plane?");
-			QString text =qApp->translate ("PlaneIdentification", "The plane seems "
-				"to be a %1 with registration %2. Do you want to use this plane?")
-				.arg (result.plane->type).arg (result.plane->fullRegistration ());
-			// FIXME no type?
-			// FIXME allow multiple
-			// FIXME Flarm ID mismatch
-
-			if (yesNoQuestion (parent, title, text))
+			// We got a plane. Offer the user to use it. Plane lookup guarantees
+			// that the Flarm ID of a returned plane matches.
+			if (queryUsePlane (parent, result.plane.getValue ()))
 				return result.plane->getId ();
 		}
 		else if (result.flarmNetRecord.isValid ())
 		{
-			// Offer the user to create a plane with the FlarmNet data
-			// FIXME no type
-			// FIXME we need the options: create plane with FlarmNet data, create plane from scratch, cancel
-			QString title=qApp->translate ("PlaneIdentification", "Automatically create plane?");
-			QString text =qApp->translate ("PlaneIdentification", "The plane was not "
-				"found in the database. However, the FlarmNet database indicates "
-				"that the plane might be a %1 with registration %2. Do you want "
-				"to create this plane?")
-				.arg (result.flarmNetRecord->type)
-				.arg (result.flarmNetRecord->fullRegistration ());
 
-			if (yesNoQuestion (parent, title, text))
+			// Offer the user to create a plane with the FlarmNet data
+			if (queryCreatePlane (parent, result.flarmNetRecord.getValue ()))
 			{
 				PlaneEditorPaneData paneData;
 				paneData.flarmIdReadOnly=true;
@@ -85,25 +97,11 @@ dbId PlaneIdentification::interactiveIdentifyPlane (QWidget *parent, DbManager &
 					dbManager, result.flarmNetRecord->toPlane (), &paneData, NULL);
 			}
 		}
-		else
-		{
-			// Offer the user to create a plane from scratch
-			// FIXME this does not make sense because (a) the plane may already
-			// be in the database, just without Flarm ID, and (b) when opening
-			// the flight editor, the user will be given the opportunity to
-			// choose the plane (and create it if it does not exist) anyway.
-			QString title=qApp->translate ("PlaneIdentification", "Create plane?");
-			QString text =qApp->translate ("PlaneIdentification", "The plane was not found. Do you want to create it?");
 
-			if (yesNoQuestion (parent, title, text))
-			{
-				PlaneEditorPaneData paneData;
-				paneData.flarmIdReadOnly=true;
-				paneData.flarmId=flarmId;
-				return ObjectEditorWindow<Plane>::createObject (parent,
-					dbManager, &paneData);
-			}
-		}
+		// Either we didn't find anything or the user declined the offer to use
+		// or create the plane. In any case, continue without a plane. The user
+		// will have to enter (and potentially create) the plane manually.
+		return invalidId;
 	}
 	catch (Cache::NotFoundException &ex)
 	{
