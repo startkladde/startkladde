@@ -30,6 +30,7 @@ class PlaneIdentification
 		static dbId interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, dbId flightId);
 
 	protected:
+		static void notCreatedAutomaticallyMessage (QWidget *parent);
 		static bool queryUsePlane (QWidget *parent, const Plane &plane);
 		static bool queryCreatePlane (QWidget *parent, const FlarmNetRecord &flarmNetRecord);
 };
