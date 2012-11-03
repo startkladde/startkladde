@@ -5,7 +5,7 @@
 #include "src/db/cache/Cache.h"
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
-#include "src/flarm/FlarmNetRecord.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
 #include "src/i18n/notr.h"
 #include "src/config/Settings.h"
 

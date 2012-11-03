@@ -1,11 +1,11 @@
-#include <src/flarm/FlightLookup.h>
+#include "FlightLookup.h"
 
 #include <QtCore/QDebug>
 
-#include "src/flarm/PlaneLookup.h"
+#include "src/flarm/algorithms/PlaneLookup.h"
 #include "src/db/cache/Cache.h"
 #include "src/model/Flight.h"
-#include "src/flarm/FlarmNetRecord.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
 #include "src/i18n/notr.h"
 #include "src/config/Settings.h"
 

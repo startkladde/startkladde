@@ -1,4 +1,4 @@
-#include <src/flarm/FlarmNetFile.h>
+#include <src/flarm/flarmNet/FlarmNetFile.h>
 
 // According to XCSoar's FlarmNetReader.cpp, FlarmNet files are "ISO-Latin-1,
 // which is kind of short-sighted"

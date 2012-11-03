@@ -18,7 +18,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
-#include "src/flarm/FlarmNetRecord.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
 #include "src/text.h"
 
 // All of these methods do not handle the by-id hashes

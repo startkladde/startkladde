@@ -1,8 +1,8 @@
-#include <src/flarm/FlarmNetRecordModel.h>
+#include "FlarmNetRecordModel.h"
 
 #include <QApplication>
 
-#include "src/flarm/FlarmNetRecord.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
 
 FlarmNetRecordModel::FlarmNetRecordModel ()
 {

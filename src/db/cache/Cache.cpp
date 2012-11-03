@@ -34,7 +34,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
-#include "src/flarm/FlarmNetRecord.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
 #include "src/db/Database.h"
 #include "src/concurrent/synchronized.h"
 #include "src/util/qString.h"

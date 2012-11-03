@@ -1,4 +1,4 @@
-#include <src/flarm/FlarmMapWidget.h>
+#include "FlarmMapWidget.h"
 
 #include <cassert>
 #include <iostream>
@@ -25,8 +25,8 @@
 #include "src/nmea/GpsTracker.h"
 #include "src/util/qPointF.h"
 #include "src/util/qString.h"
-#include "src/flarm/KmlReader.h"
-#include "src/flarm/Kml.h"
+#include "src/flarm/flarmMap/KmlReader.h"
+#include "src/flarm/flarmMap/Kml.h"
 #include "src/qwt/SkPlotMagnifier.h"
 #include "src/qwt/SkPlotPanner.h"
 

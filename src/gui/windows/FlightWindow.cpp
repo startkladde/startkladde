@@ -25,8 +25,8 @@
 #include "src/db/DbManager.h"
 #include "src/logging/messages.h"
 #include "src/i18n/notr.h"
-#include "src/flarm/FlarmNetRecord.h"
-#include "src/flarm/PlaneIdentification.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
+#include "src/flarm/algorithms/PlaneIdentification.h"
 
 /*
  * On enabling/diabling widgets:

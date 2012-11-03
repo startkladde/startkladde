@@ -60,8 +60,8 @@
 #include "src/statistics/PlaneLog.h"
 #include "src/flarm/FlarmRecord.h"
 #include "src/flarm/FlarmWindow.h"
-#include "src/flarm/FlarmNetHandler.h"
-#include "src/flarm/FlarmNetOverview.h"
+#include "src/flarm/flarmNet/FlarmNetHandler.h"
+#include "src/flarm/flarmNet/FlarmNetOverview.h"
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
@@ -75,10 +75,10 @@
 #include "src/nmea/NmeaDecoder.h"
 #include "src/nmea/GpsTracker.h"
 #include "src/flarm/FlarmList.h"
-#include "src/flarm/PlaneLookup.h"
-#include "src/flarm/FlightLookup.h"
-#include "src/flarm/FlarmNetHandler.h"
-#include "src/flarm/PlaneIdentification.h"
+#include "src/flarm/algorithms/PlaneLookup.h"
+#include "src/flarm/algorithms/FlightLookup.h"
+#include "src/flarm/flarmNet/FlarmNetHandler.h"
+#include "src/flarm/algorithms/PlaneIdentification.h"
 
 template <class T> class MutableObjectList;
 

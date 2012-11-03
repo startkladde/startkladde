@@ -7,7 +7,7 @@
 #include "src/nmea/PflaaSentence.h"
 #include "src/util/qString.h"
 #include "src/nmea/NmeaDecoder.h"
-#include "src/flarm/FlarmNetRecord.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
 
 // TODO: we have to take care not to let the list and the map get inconsistent.
 // We might want to encapsulate that, either in a base class or by placing the

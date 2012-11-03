@@ -44,7 +44,7 @@
 #include "src/gui/SkMainWindow.h"
 #include "src/flarm/FlarmRecord.h" // FIXME replace with forward declaration if possible
 #include "src/model/FlightBase.h"
-#include "src/flarm/FlightLookup.h" // FIXME remove?
+#include "src/flarm/algorithms/FlightLookup.h" // FIXME remove?
 
 class QWidget;
 template<class T> class QList;

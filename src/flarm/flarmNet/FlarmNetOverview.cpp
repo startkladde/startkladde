@@ -5,8 +5,8 @@
 #include <QMenu>
 
 #include "src/db/DbManager.h"
-#include "src/flarm/FlarmNetRecord.h"
-#include "src/flarm/FlarmNetRecordModel.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
+#include "src/flarm/flarmNet/FlarmNetRecordModel.h"
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 

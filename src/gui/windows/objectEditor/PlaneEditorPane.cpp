@@ -8,7 +8,7 @@
 #include "src/util/qString.h"
 #include "src/i18n/notr.h"
 #include "src/gui/windows/input/ChoiceDialog.h"
-#include "src/flarm/FlarmIdCheck.h"
+#include "src/flarm/algorithms/FlarmIdCheck.h"
 
 /*
  * Improvements:

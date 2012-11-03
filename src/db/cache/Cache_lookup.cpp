@@ -12,7 +12,7 @@
 #include "src/model/LaunchMethod.h"
 #include "src/model/Person.h"
 #include "src/model/Plane.h"
-#include "src/flarm/FlarmNetRecord.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
 #include "src/container/SortedSet_impl.h"
 #include "src/i18n/notr.h"
 

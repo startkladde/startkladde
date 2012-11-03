@@ -3,7 +3,7 @@
 
 #include <QString>
 
-#include "src/flarm/FlarmNetRecord.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
 
 /**
  * Some helper methods for handling the FlarmNet file format

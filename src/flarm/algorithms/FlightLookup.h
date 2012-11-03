@@ -5,7 +5,7 @@
 
 #include "src/db/dbId.h"
 #include "src/container/Maybe.h"
-#include "src/flarm/FlarmNetRecord.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
 
 class Cache;
 class Flight;

@@ -7,8 +7,8 @@
 #include "src/text.h"
 #include "src/concurrent/monitor/SignalOperationMonitor.h"
 #include "src/db/DbManager.h"
-#include "src/flarm/FlarmNetRecord.h"
-#include "src/flarm/FlarmNetFile.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
+#include "src/flarm/flarmNet/FlarmNetFile.h"
 #include "src/gui/windows/MonitorDialog.h"
 #include "src/concurrent/monitor/OperationCanceledException.h"
 

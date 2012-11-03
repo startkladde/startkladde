@@ -1,4 +1,4 @@
-#include "src/flarm/PlaneIdentification.h"
+#include "PlaneIdentification.h"
 
 #include <QWidget>
 
@@ -6,8 +6,8 @@
 #include "src/db/DbManager.h"
 #include "src/model/Flight.h"
 #include "src/model/Plane.h"
-#include "src/flarm/FlarmNetRecord.h"
-#include "src/flarm/PlaneLookup.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
+#include "src/flarm/algorithms/PlaneLookup.h"
 #include "src/gui/windows/objectEditor/ObjectEditorWindow.h"
 #include "src/gui/windows/objectEditor/PlaneEditorPane.h"
 
