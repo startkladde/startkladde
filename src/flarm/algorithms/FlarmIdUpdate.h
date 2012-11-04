@@ -3,6 +3,8 @@
 
 #include <QMessageBox>
 
+#include "src/db/dbId.h"
+
 class DbManager;
 class QWidget;
 class Flight;
@@ -11,26 +13,30 @@ class Plane;
 class FlarmIdUpdate
 {
 	public:
-		FlarmIdUpdate (DbManager &dbManager, bool manualOperation, QWidget *parent);
+		FlarmIdUpdate (DbManager &dbManager, QWidget *parent);
 		virtual ~FlarmIdUpdate ();
 
-		bool interactiveUpdateFlarmId (const Flight &flight);
+		bool interactiveUpdateFlarmId (const Flight &flight, bool manualOperation, dbId oldPlaneId);
 
 	protected:
+		enum UpdateAction { update, dontUpdate, cancel };
+
 		void notCreatedAutomaticallyMessage ();
 		void noPlaneMessage ();
 		void currentMessage ();
 
-		QMessageBox::StandardButton queryUpdateFlarmId (const Plane &plane, const Flight &flight);
+		UpdateAction queryUpdateFlarmId (const Plane &plane, const Flight &flight);
 
+		bool canUpdateSilently (const Plane &plane, const Flight &flight);
 		bool checkAndUpdate (Plane &plane, const Flight &flight);
 
 
 	private:
 		DbManager &dbManager;
-		bool manualOperation;
 		QWidget *parent;
 
+		bool manualOperation;
+		dbId oldPlaneId;
 };
 
 #endif

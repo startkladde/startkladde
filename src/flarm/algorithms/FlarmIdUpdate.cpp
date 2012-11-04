@@ -11,8 +11,9 @@
 #include "src/db/DbManager.h"
 #include "src/flarm/algorithms/FlarmIdCheck.h"
 
-FlarmIdUpdate::FlarmIdUpdate (DbManager &dbManager, bool manualOperation, QWidget *parent):
-	dbManager (dbManager), manualOperation (manualOperation), parent (parent)
+FlarmIdUpdate::FlarmIdUpdate (DbManager &dbManager, QWidget *parent):
+	dbManager (dbManager), parent (parent),
+	manualOperation (true), oldPlaneId (invalidId)
 {
 }
 
@@ -44,20 +45,52 @@ void FlarmIdUpdate::currentMessage ()
 			"flight is already current."));
 }
 
-QMessageBox::StandardButton FlarmIdUpdate::queryUpdateFlarmId (const Plane &plane, const Flight &flight)
+FlarmIdUpdate::UpdateAction FlarmIdUpdate::queryUpdateFlarmId (const Plane &plane, const Flight &flight)
 {
 	QString title=qApp->translate ("FlarmIdUpdate", "Update Flarm ID?");
-	QString text =qApp->translate ("FlarmIdUpdate", "The Flarm ID of the plane "
-		"(%1) is different from the one of this flight (%2). Probably, the "
-		"plane is wrong a new Flarm has been installed in the plane. Do you "
-		"want to update the plane's Flarm ID in the database?")
-		.arg (plane.flarmId)
-		.arg (flight.getFlarmId ());
 
-	if (manualOperation)
-		return yesNoQuestionStandardButton (parent, title, text);
+	// TODO this could be more user-friendly, along the lines of:
+	//   How do you want to proceed?
+	//     ( ) Update the plane's Flarm ID. Choose this if a [new] Flarm was
+	//         installed in the plane
+	//     ( ) Don't update the plane's Flarm ID
+	//     ( ) Go back and edit the plane. Choose this if the plane is wrong.
+	// Also, we should have a "details" button which shows the Flarm IDs of the
+	// plane and of the flight.
+	QString text;
+	if (isBlank (plane.flarmId))
+	{
+		text=qApp->translate ("FlarmIdUpdate",
+				"The selected plane has no Flarm ID. "
+				"This usually means that a Flarm has recently been installed "
+				"in the plane. It could also mean that a wrong plane has been "
+				"entered. "
+				"Do you want to update the plane's Flarm ID in the database?");
+	}
 	else
-		return yesNoCancelQuestion (parent, title, text);
+	{
+		text=qApp->translate ("FlarmIdUpdate",
+			"The Flarm ID of the plane (%1) is different from the one of this "
+			"flight (%2). "
+			"This usually means that a new Flarm has been installed in the "
+			"plane. It could also mean that a wrong plane has been entered. "
+			"Do you want to update the plane's Flarm ID in the database?")
+			.arg (plane.flarmId)
+			.arg (flight.getFlarmId ());
+	}
+
+	QMessageBox::StandardButton result;
+	if (manualOperation)
+		result=yesNoQuestionStandardButton (parent, title, text);
+	else
+		result=yesNoCancelQuestion (parent, title, text);
+
+	if (result==QMessageBox::Yes)
+		return update;
+	else if (result==QMessageBox::No)
+		return dontUpdate;
+	else
+		return cancel;
 }
 
 bool FlarmIdUpdate::checkAndUpdate (Plane &plane, const Flight &flight)
@@ -83,8 +116,49 @@ bool FlarmIdUpdate::checkAndUpdate (Plane &plane, const Flight &flight)
 	return true;
 }
 
-bool FlarmIdUpdate::interactiveUpdateFlarmId (const Flight &flight)
+/**
+ * Checks if it is possible to update the plane's Flarm ID silently, i. e.
+ * without asking the user
+ *
+ * This is relevant for one very common case: an incomplete plane (i. e. a plane
+ * which is in the database, but without a Flarm ID) has departed, the flight
+ * has been created automatically, and the user edits the flight and enters the
+ * plane's registration. This case is so common, and the risk of doing it wrong
+ * so low, that we may make an exception to the rule of not changing a flight
+ * without asking the user.
+ *
+ * All of the following conditions must be fulfilled in order to update a plane
+ * silently:
+ *   - the plane has no Flarm ID yet
+ *   - the Flarm ID of the flight is not taken yet (i. e. there is no plane with
+ *     that Flarm ID yet)
+ *   - the flight did not have a plane before
+ *   - the operation was not performed manually
+ */
+bool FlarmIdUpdate::canUpdateSilently (const Plane &plane, const Flight &flight)
 {
+	// Note that we check in increasing order of computational effort
+
+	if (manualOperation)
+		return false;
+
+	if (idValid (oldPlaneId))
+		return false;
+
+	if (!isBlank (plane.flarmId))
+		return false;
+
+	Cache &cache=dbManager.getCache ();
+	bool flarmIdTaken=!cache.getPlaneIdsByFlarmId (flight.getFlarmId ()).isEmpty ();
+	if (flarmIdTaken)
+		return false;
+
+	return true;
+}
+
+bool FlarmIdUpdate::interactiveUpdateFlarmId (const Flight &flight, bool manualOperation, dbId oldPlaneId)
+{
+	this->oldPlaneId=oldPlaneId;
 	Cache &cache=dbManager.getCache ();
 
 	try
@@ -117,46 +191,33 @@ bool FlarmIdUpdate::interactiveUpdateFlarmId (const Flight &flight)
 		}
 
 		// OK, so the flight has a Flarm ID (i. e. it was created automatically)
-		// which does not match the plane's Flarm ID. Maybe we want to update
-		// the plane in the database.
+		// which does not match the plane's Flarm ID. Either the plane is wrong,
+		// or a new Flarm unit has been installed in the plane. Maybe we want to
+		// update the plane in the database.
 
-		// FIXME test both cases
-		if (isBlank (plane.flarmId))
-		{
-			// The plane has no Flarm ID so far. This is the common case of
-			// adding a Flarm ID to a plane, and there's little danger of doing
-			// it wrong, so we do it silently.
-			plane.flarmId=flight.getFlarmId ();
-			// FIXME only if there are no conflicts
-			dbManager.updateObject (plane, parent);
-			return true;
-		}
+		// Under some very specific circumstances, we can perform the update
+		// silently. Otherwise, we'll have to ask the user.
+		UpdateAction updateAction;
+		if (canUpdateSilently (plane, flight))
+			updateAction=update;
 		else
+			updateAction=queryUpdateFlarmId (plane, flight);
+
+		// Depending on the user's choice, do or don't update the plane, or
+		// cancel the operation.
+		switch (updateAction)
 		{
-			// The plane has a different Flarm ID. This probably means that the
-			// Flarm of the plane was exchanged or swapped with another Flarm.
-			// That, or the user has entered a wrong plane. We'll have to ask
-			// the user how to proceed.
-
-			// Do you want to update the plane's Flarm ID?
-			QMessageBox::StandardButton updateQuestionResult=queryUpdateFlarmId (plane, flight);
-
-
-			if (updateQuestionResult==QMessageBox::Yes)
-			{
-				// Yes, update the plane
+			case update:
+				// Yes, update the plane's Flarm ID
+				// Note that when performing the update silently, we will still
+				// check for conflicts, but we know there are none.
 				return checkAndUpdate (plane, flight);
-			}
-			else if (updateQuestionResult==QMessageBox::No)
-			{
-				// No, don't update the plane
+			case dontUpdate:
+				// No, don't update the plane's Flarm ID
 				return true;
-			}
-			else
-			{
+			case cancel:
 				// Cancel
 				return false;
-			}
 		}
 	}
 	catch (Cache::NotFoundException &)

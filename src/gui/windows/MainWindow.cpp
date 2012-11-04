@@ -1256,8 +1256,8 @@ void MainWindow::on_updateFlarmIdAction_triggered ()
 		dbId flightId=currentFlightId (NULL);
 		Flight flight=dbManager.getCache ().getObject<Flight> (flightId);
 
-		FlarmIdUpdate flarmIdUpdate (dbManager, true, this);
-		flarmIdUpdate.interactiveUpdateFlarmId (flight);
+		FlarmIdUpdate flarmIdUpdate (dbManager, this);
+		flarmIdUpdate.interactiveUpdateFlarmId (flight, true, flight.getPlaneId ());
 	}
 	catch (Cache::NotFoundException &)
 	{

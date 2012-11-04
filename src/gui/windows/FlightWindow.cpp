@@ -2289,8 +2289,8 @@ bool FlightWindow::updateFlarmId (const Flight &flight)
 {
 	if (idValid (flight.getPlaneId ()))
 	{
-		FlarmIdUpdate flarmIdUpdate (manager, false, this);
-		return flarmIdUpdate.interactiveUpdateFlarmId (flight);
+		FlarmIdUpdate flarmIdUpdate (manager, this);
+		return flarmIdUpdate.interactiveUpdateFlarmId (flight, false, originalFlight.getPlaneId ());
 	}
 	else
 	{
