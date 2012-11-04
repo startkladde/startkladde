@@ -310,40 +310,41 @@ bool FlarmIdCheck::interactiveApply (QString *planeFlarmId)
 	Maybe<QString> otherFlightFlarmId;
 	bool canceled=false;
 
-	// Nothing to do if there is not conflict
 	if (!conflictingPlane.isValid ())
 	{
+		// There was no conflict.
 		thisFlightFlarmId.setValue (newFlarmId);
-		return true;
 	}
-
-	// There was a conflict. Let's see what the user chose to do.
-	switch (selectedResolution)
+	else
 	{
-		case clear:
-			thisFlightFlarmId.setValue (newFlarmId);
-			otherFlightFlarmId.setValue ("");
-			break;
-		case swap:
-			thisFlightFlarmId.setValue (newFlarmId);
-			otherFlightFlarmId.setValue (oldFlarmId);
-			break;
-		case keep:
-			thisFlightFlarmId.setValue (oldFlarmId);
-			break;
-		case ignore:
-			thisFlightFlarmId.setValue (newFlarmId);
-			break;
-		case cancel:
-			canceled=true;
-			break;
-		// No default
+		// There was a conflict. Let's see what the user chose to do.
+		switch (selectedResolution)
+		{
+			case clear:
+				thisFlightFlarmId.setValue (newFlarmId);
+				otherFlightFlarmId.setValue ("");
+				break;
+			case swap:
+				thisFlightFlarmId.setValue (newFlarmId);
+				otherFlightFlarmId.setValue (oldFlarmId);
+				break;
+			case keep:
+				thisFlightFlarmId.setValue (oldFlarmId);
+				break;
+			case ignore:
+				thisFlightFlarmId.setValue (newFlarmId);
+				break;
+			case cancel:
+				canceled=true;
+				break;
+			// No default
+		}
 	}
 
 	if (thisFlightFlarmId.isValid ())
 	{
 		if (planeFlarmId)
-			(*planeFlarmId)=newFlarmId;
+			(*planeFlarmId)=thisFlightFlarmId.getValue ();
 	}
 
 	if (otherFlightFlarmId.isValid ())
@@ -355,7 +356,7 @@ bool FlarmIdCheck::interactiveApply (QString *planeFlarmId)
 		}
 		catch (OperationCanceledException &)
 		{
-			// TODO the cache may now be inconsistent
+			return false;
 		}
 	}
 
