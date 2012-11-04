@@ -158,7 +158,9 @@ bool FlarmIdUpdate::canUpdateSilently (const Plane &plane, const Flight &flight)
 
 bool FlarmIdUpdate::interactiveUpdateFlarmId (const Flight &flight, bool manualOperation, dbId oldPlaneId)
 {
+	this->manualOperation=manualOperation;
 	this->oldPlaneId=oldPlaneId;
+
 	Cache &cache=dbManager.getCache ();
 
 	try
