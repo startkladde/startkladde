@@ -1929,8 +1929,8 @@ Die Datei kann in den Einstellungen geändert werden.</translation>
         <translation>ID</translation>
     </message>
     <message>
-        <source>FLARM ID</source>
-        <translation type="obsolete">FLARM ID</translation>
+        <source>Flarm ID</source>
+        <translation type="obsolete">Flarm ID</translation>
     </message>
     <message>
         <location filename="../src/model/flightList/FlightModel.cpp" line="122"/>
@@ -3294,16 +3294,16 @@ Konfiguration: %2</translation>
         <translation type="obsolete">Unbekanntes Flugzeug</translation>
     </message>
     <message>
-        <source>FLARM Information</source>
-        <translation type="obsolete">FLARM Information</translation>
+        <source>Flarm Information</source>
+        <translation type="obsolete">Flarm Information</translation>
     </message>
     <message>
         <source>%1 was %2 automatically.</source>
         <translation type="obsolete">%1 wurde automatisch %2.</translation>
     </message>
     <message>
-        <source>FLARM Warning</source>
-        <translation type="obsolete">FLARM Warnung</translation>
+        <source>Flarm Warning</source>
+        <translation type="obsolete">Flarm Warnung</translation>
     </message>
     <message>
         <source>&lt;qt&gt;&lt;p&gt;%1 was %2 automatically.&lt;/p&gt;&lt;big&gt;&lt;font color=&quot;red&quot;&gt;&lt;p&gt;Entry in flight list is incomplete!&lt;/p&gt;&lt;p&gt;Please add missing data!&lt;/p&gt;&lt;/font&gt;&lt;/big&gt;&lt;/qt&gt;</source>
