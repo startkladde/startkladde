@@ -46,7 +46,8 @@
 //                |                    | swap   -  other=old
 //                |                    | keep   -  new  =old
 
-
+// TODO: there may be multiple conflicting planes
+// TODO: the old Flarm ID may also be a duplicate
 
 /**
  * Creates a FlarmIdCheck
@@ -270,10 +271,6 @@ bool FlarmIdCheck::interactiveCheck (const QString &newFlarmId, dbId planeId, co
 
 	// Find a conflicting plane, i. e. a plane that alrady has the Flarm ID
 	// we're trying to set, unless the new Flarm ID is blank.
-	// FIXME there may be multiple
-	// FIXME: the old Flarm ID may also be a duplicate (we're probably not
-	// going to handle that, but maybe we want to display a warning; at least
-	// test what happens)
 	conflictingPlane=findConflictingPlane ();
 	if (!conflictingPlane.isValid ())
 		return true;
@@ -297,10 +294,10 @@ bool FlarmIdCheck::interactiveCheck (const QString &newFlarmId, dbId planeId, co
  *
  * If the other plane has to be changed, the database is updated.
  *
- * The plane's new Flarm ID is written via the pointer passed as an argument
- * (unless the pointer is NULL). Depending on whether there was a conflict and
- * on the user's choice, this may be the old Flarm ID, the new Flarm ID or an
- * empty string.
+ * Unless the user canceled, the plane's new Flarm ID is written via the pointer
+ * passed as an argument (unless the pointer is NULL). Depending on whether
+ * there was a conflict and on the user's choice, this may be the new or the old
+ * Flarm ID.
  *
  * @param flightFlarmId a pointer to the plane's Flarm ID. This should not be
  *                      NULL as the value may have to be changed.
@@ -309,37 +306,33 @@ bool FlarmIdCheck::interactiveCheck (const QString &newFlarmId, dbId planeId, co
  */
 bool FlarmIdCheck::interactiveApply (QString *planeFlarmId)
 {
-	// By default, use the new Flarm ID for the flight. We'll change that later
-	// if required by the user's choice.
-	// FIXME not if canceled
-	if (planeFlarmId)
-		(*planeFlarmId)=newFlarmId;
+	Maybe<QString> thisFlightFlarmId;
+	Maybe<QString> otherFlightFlarmId;
+	bool canceled=false;
 
 	// Nothing to do if there is not conflict
 	if (!conflictingPlane.isValid ())
+	{
+		thisFlightFlarmId.setValue (newFlarmId);
 		return true;
-
-	// FIXME use Maybe<>
-	bool setOtherFlightFlarmId=false;
-	QString otherFlightFlarmId;
-	bool canceled=false;
+	}
 
 	// There was a conflict. Let's see what the user chose to do.
 	switch (selectedResolution)
 	{
 		case clear:
-			setOtherFlightFlarmId=true;
-			otherFlightFlarmId="";
+			thisFlightFlarmId.setValue (newFlarmId);
+			otherFlightFlarmId.setValue ("");
 			break;
 		case swap:
-			setOtherFlightFlarmId=true;
-			otherFlightFlarmId=oldFlarmId;
+			thisFlightFlarmId.setValue (newFlarmId);
+			otherFlightFlarmId.setValue (oldFlarmId);
 			break;
 		case keep:
-			if (planeFlarmId)
-				(*planeFlarmId)=oldFlarmId;
+			thisFlightFlarmId.setValue (oldFlarmId);
 			break;
 		case ignore:
+			thisFlightFlarmId.setValue (newFlarmId);
 			break;
 		case cancel:
 			canceled=true;
@@ -347,11 +340,17 @@ bool FlarmIdCheck::interactiveApply (QString *planeFlarmId)
 		// No default
 	}
 
-	if (setOtherFlightFlarmId)
+	if (thisFlightFlarmId.isValid ())
+	{
+		if (planeFlarmId)
+			(*planeFlarmId)=newFlarmId;
+	}
+
+	if (otherFlightFlarmId.isValid ())
 	{
 		try
 		{
-			conflictingPlane->flarmId=otherFlightFlarmId;
+			conflictingPlane->flarmId=otherFlightFlarmId.getValue ();
 			dbManager.updateObject (conflictingPlane.getValue (), parent);
 		}
 		catch (OperationCanceledException &)
