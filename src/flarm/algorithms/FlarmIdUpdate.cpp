@@ -11,8 +11,6 @@
 #include "src/db/DbManager.h"
 #include "src/flarm/algorithms/FlarmIdCheck.h"
 
-// FIXME when called from the main window, there should be no cancel option
-
 FlarmIdUpdate::FlarmIdUpdate (DbManager &dbManager, bool manualOperation, QWidget *parent):
 	dbManager (dbManager), manualOperation (manualOperation), parent (parent)
 {
@@ -48,12 +46,11 @@ void FlarmIdUpdate::currentMessage ()
 
 QMessageBox::StandardButton FlarmIdUpdate::queryUpdateFlarmId (const Plane &plane, const Flight &flight)
 {
-	// FIXME better message, with details; plane wrong or new Flarm ID
 	QString title=qApp->translate ("FlarmIdUpdate", "Update Flarm ID?");
-	QString text =qApp->translate ("FlarmIdUpdate", "The Flarm ID of the plane (%1) "
-		"is different from the one of this flight (%2). This may happen "
-		"if a new Flarm is installed in a plane. Do you want to update "
-		"the plane's Flarm ID in the database?")
+	QString text =qApp->translate ("FlarmIdUpdate", "The Flarm ID of the plane "
+		"(%1) is different from the one of this flight (%2). Probably, the "
+		"plane is wrong a new Flarm has been installed in the plane. Do you "
+		"want to update the plane's Flarm ID in the database?")
 		.arg (plane.flarmId)
 		.arg (flight.getFlarmId ());
 
@@ -66,14 +63,16 @@ QMessageBox::StandardButton FlarmIdUpdate::queryUpdateFlarmId (const Plane &plan
 bool FlarmIdUpdate::checkAndUpdate (Plane &plane, const Flight &flight)
 {
 	// Check for a Flarm ID conflict first
-	// FIXME not working properly?
 
+	// Store the old Flarm ID, we'll need it later
 	QString oldFlarmId=plane.flarmId;
 
+	// Check for conflicts and apply the new Flarm ID
 	FlarmIdCheck flarmIdCheck (dbManager, parent);
 	flarmIdCheck.interactiveCheck (flight.getFlarmId (), plane.getId (), plane.flarmId);
 	bool checkResult=flarmIdCheck.interactiveApply (&plane.flarmId);
 
+	// If the user canceled, return false
 	if (!checkResult)
 		return false;
 
@@ -172,7 +171,6 @@ bool FlarmIdUpdate::interactiveUpdateFlarmId (const Flight &flight)
 		return false;
 	}
 
-	// FIXME doing implement, use from MainWindow and FlightWindow
 	// Cannot happen
 	return true;
 }
