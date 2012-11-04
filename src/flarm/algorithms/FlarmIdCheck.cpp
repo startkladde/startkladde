@@ -297,8 +297,10 @@ bool FlarmIdCheck::interactiveCheck (const QString &newFlarmId, dbId planeId, co
  *
  * If the other plane has to be changed, the database is updated.
  *
- * if the plane's Flarm ID has to be changed, the value is written via the
- * pointer passed as an argument (unless the pointer is NULL).
+ * The plane's new Flarm ID is written via the pointer passed as an argument
+ * (unless the pointer is NULL). Depending on whether there was a conflict and
+ * on the user's choice, this may be the old Flarm ID, the new Flarm ID or an
+ * empty string.
  *
  * @param flightFlarmId a pointer to the plane's Flarm ID. This should not be
  *                      NULL as the value may have to be changed.
@@ -309,6 +311,7 @@ bool FlarmIdCheck::interactiveApply (QString *planeFlarmId)
 {
 	// By default, use the new Flarm ID for the flight. We'll change that later
 	// if required by the user's choice.
+	// FIXME not if canceled
 	if (planeFlarmId)
 		(*planeFlarmId)=newFlarmId;
 
@@ -316,6 +319,7 @@ bool FlarmIdCheck::interactiveApply (QString *planeFlarmId)
 	if (!conflictingPlane.isValid ())
 		return true;
 
+	// FIXME use Maybe<>
 	bool setOtherFlightFlarmId=false;
 	QString otherFlightFlarmId;
 	bool canceled=false;
@@ -332,7 +336,8 @@ bool FlarmIdCheck::interactiveApply (QString *planeFlarmId)
 			otherFlightFlarmId=oldFlarmId;
 			break;
 		case keep:
-			(*planeFlarmId)=oldFlarmId;
+			if (planeFlarmId)
+				(*planeFlarmId)=oldFlarmId;
 			break;
 		case ignore:
 			break;

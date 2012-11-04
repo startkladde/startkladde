@@ -49,9 +49,8 @@ PlaneEditorPane::PlaneEditorPane (ObjectEditorWindowBase::Mode mode, DbManager &
 
 	if (paneData)
 	{
-		ui.flarmIdInput->setEnabled (!paneData->flarmIdReadOnly);
-		if (!paneData->flarmId.isEmpty ())
-			ui.flarmIdInput->setText (paneData->flarmId);
+		ui.flarmIdInput     ->setEnabled (!paneData->flarmIdReadOnly     );
+		ui.registrationInput->setEnabled (!paneData->registrationReadOnly);
 	}
 	else
 	{

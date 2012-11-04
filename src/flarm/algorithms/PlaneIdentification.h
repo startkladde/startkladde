@@ -36,8 +36,10 @@ class PlaneIdentification
 	protected:
 		void notCreatedAutomaticallyMessage ();
 		void identificationFailureMessage ();
+
 		bool queryUsePlane (const Plane &plane);
 		bool queryCreatePlane (const FlarmNetRecord &flarmNetRecord);
+
 		dbId interactiveCreatePlane (const FlarmNetRecord &flarmNetRecord);
 
 	private:

@@ -10,8 +10,9 @@
 class PlaneEditorPaneData: public ObjectEditorPaneData
 {
 	public:
+		PlaneEditorPaneData (): registrationReadOnly (false), flarmIdReadOnly (false) {}
+		bool registrationReadOnly;
 		bool flarmIdReadOnly;
-		QString flarmId;
 };
 
 class PlaneEditorPane: public ObjectEditorPane<Plane>

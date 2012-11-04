@@ -12,6 +12,8 @@
 #include "src/gui/windows/objectEditor/PlaneEditorPane.h"
 #include "src/text.h"
 
+// FIXME: if the identified plane is the current one, don't ask
+
 // FIXME: identify known plane - warn if the identified plane is different from
 // the current one
 
@@ -118,7 +120,7 @@ dbId PlaneIdentification::interactiveIdentifyPlane (const Flight &flight)
 	try
 	{
 		// We can only do this for automatically created flights
-		if (flight.getFlarmId ().isEmpty ())
+		if (isBlank (flight.getFlarmId ()))
 		{
 			notCreatedAutomaticallyMessage ();
 			return invalidId;
