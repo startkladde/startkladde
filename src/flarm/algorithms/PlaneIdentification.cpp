@@ -15,7 +15,8 @@
 // FIXME: identify known plane - warn if the identified plane is different from
 // the current one
 
-PlaneIdentification::PlaneIdentification ()
+PlaneIdentification::PlaneIdentification (DbManager &dbManager, bool messageOnFailure, QWidget *parent):
+	dbManager (dbManager), messageOnFailure (messageOnFailure), parent (parent)
 {
 }
 
@@ -23,7 +24,7 @@ PlaneIdentification::~PlaneIdentification ()
 {
 }
 
-bool PlaneIdentification::queryUsePlane (QWidget *parent, const Plane &plane)
+bool PlaneIdentification::queryUsePlane (const Plane &plane)
 {
 	// Offer the user to use this plane
 
@@ -45,7 +46,7 @@ bool PlaneIdentification::queryUsePlane (QWidget *parent, const Plane &plane)
 	return yesNoQuestion (parent, title, text);
 }
 
-bool PlaneIdentification::queryCreatePlane (QWidget *parent, const FlarmNetRecord &flarmNetRecord)
+bool PlaneIdentification::queryCreatePlane (const FlarmNetRecord &flarmNetRecord)
 {
 	// Offer the user to create a plane with the FlarmNet data
 	QString title=qApp->translate ("PlaneIdentification", "Automatically create plane?");
@@ -71,7 +72,7 @@ bool PlaneIdentification::queryCreatePlane (QWidget *parent, const FlarmNetRecor
 	return yesNoQuestion (parent, title, text);
 }
 
-void PlaneIdentification::notCreatedAutomaticallyMessage (QWidget *parent)
+void PlaneIdentification::notCreatedAutomaticallyMessage ()
 {
 	QMessageBox::information (parent,
 		qApp->translate ("PlaneIdentification", "Identify plane"),
@@ -79,82 +80,81 @@ void PlaneIdentification::notCreatedAutomaticallyMessage (QWidget *parent)
 			"identified because this flight was not created automatically."));
 }
 
+void PlaneIdentification::identificationFailureMessage ()
+{
+	QMessageBox::information (parent,
+		qApp->translate ("PlaneIdentification", "Identify plane"),
+		qApp->translate ("PlaneIdentification", "The plane could not be identified."));
+}
+
+dbId PlaneIdentification::interactiveCreatePlane (const FlarmNetRecord &flarmNetRecord)
+{
+	PlaneEditorPaneData paneData;
+	paneData.flarmIdReadOnly=true;
+
+	return ObjectEditorWindow<Plane>::createObjectPreset (parent,
+		dbManager, flarmNetRecord.toPlane (), &paneData, NULL);
+}
+
 /**
  * Tries to identify the plane for an automatically created flight, asking the
  * user to choose or create a plane if necessary
  *
- * @param parent Qt parent widget for dialogs
- * @param dbManager the database to use for retrieving plane data
- * @param flarmId the Flarm ID of the flight
- * @return
+ * This method returns a plane ID if a plane has been identified and selected or
+ * created by the user. The plane ID may be the same as the flight already has.
+ * If the user cancels, chooses not to use the identified plane, or
+ * identification fails, an invalid ID is returned.
+ *
+ * If identification fails, a message is shown to the user, unless
+ * messageOnFailure is false.
+ *
+ * The caller is responsible for setting the plane of the flight and updating
+ * the flight in the database (if applicable) if the plane changed.
  */
-// FIXME: this returns the same value (invalidId) in three cases:
-//   - user canceled
-//   - identification failed
-//   - user chose "no change"
-dbId PlaneIdentification::interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, const QString &flarmId)
+dbId PlaneIdentification::interactiveIdentifyPlane (const Flight &flight)
 {
 	Cache &cache=dbManager.getCache ();
 
 	try
 	{
 		// We can only do this for automatically created flights
-		if (flarmId.isEmpty ())
+		if (flight.getFlarmId ().isEmpty ())
 		{
-			notCreatedAutomaticallyMessage (parent);
+			notCreatedAutomaticallyMessage ();
 			return invalidId;
 		}
 
-		// Look up the plane
-		PlaneLookup::Result result=PlaneLookup (cache).lookupPlane (flarmId);
-
-		// Let's see what we've got...
+		// Look up the plane, and see what we've got
+		PlaneLookup::Result result=PlaneLookup (cache).lookupPlane (flight.getFlarmId ());
 		if (result.plane.isValid ())
 		{
 			// We got a plane. Offer the user to use it. Plane lookup guarantees
-			// that the Flarm ID of a returned plane matches.
-			if (queryUsePlane (parent, result.plane.getValue ()))
+			// that the Flarm ID of a returned plane matches. Therefore, we
+			// don't have to update its Flarm ID.
+			if (queryUsePlane (result.plane.getValue ()))
 				return result.plane->getId ();
+			else
+				return invalidId;
 		}
 		else if (result.flarmNetRecord.isValid ())
 		{
 			// Offer the user to create a plane with the FlarmNet data
-			if (queryCreatePlane (parent, result.flarmNetRecord.getValue ()))
-			{
-				PlaneEditorPaneData paneData;
-				paneData.flarmIdReadOnly=true;
-
-				// There is no plane with that Flarm ID, or plane lookup would
-				// have found it. Therefore, we don't have to check for a Flarm
-				// ID conflict.
-				return ObjectEditorWindow<Plane>::createObjectPreset (parent,
-					dbManager, result.flarmNetRecord->toPlane (), &paneData, NULL);
-			}
+			// There is no plane with that Flarm ID, or plane lookup would have
+			// found it. Therefore, we don't have to check for a Flarm ID
+			// conflict.
+			if (queryCreatePlane (result.flarmNetRecord.getValue ()))
+				return interactiveCreatePlane (result.flarmNetRecord.getValue ());
+			else
+				return invalidId;
 		}
+		else
+		{
+			// Identification failed
+			if (messageOnFailure)
+				identificationFailureMessage ();
 
-		// Either we didn't find anything or the user declined the offer to use
-		// or create the plane. In any case, continue without a plane. The user
-		// will have to enter (and potentially create) the plane manually.
-		return invalidId;
-	}
-	catch (Cache::NotFoundException &ex)
-	{
-		return invalidId;
-	}
-
-	return invalidId;
-}
-
-
-/**
- * Frontend method
-*/
-dbId PlaneIdentification::interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, dbId flightId)
-{
-	try
-	{
-		Flight flight=dbManager.getCache ().getObject<Flight> (flightId);
-		return interactiveIdentifyPlane (parent, dbManager, flight.getFlarmId ());
+			return invalidId;
+		}
 	}
 	catch (Cache::NotFoundException &ex)
 	{

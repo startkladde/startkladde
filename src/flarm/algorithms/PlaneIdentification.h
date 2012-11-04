@@ -7,6 +7,7 @@ class QWidget;
 class DbManager;
 class Plane;
 class FlarmNetRecord;
+class Flight;
 
 /**
  * A helper class for identifying the plane of a flight
@@ -18,21 +19,31 @@ class FlarmNetRecord;
  * letting the user choose from several candidates or even creating a new plane.
  * Plane lookup, on the other hand, is non-interactive.
  *
+ * Note that this class does not actually update the flight in the database.
+ * This is the responsibility of the caller. The reason is that some callers may
+ * not want the flight updated immediately, for example, when editing a flight.
+ *
  * See also: the wiki page "Flarm handling".
  */
 class PlaneIdentification
 {
 	public:
-		PlaneIdentification ();
+		PlaneIdentification (DbManager &dbManager, bool messageOnFailure, QWidget *parent);
 		virtual ~PlaneIdentification ();
 
-		static dbId interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, const QString &flarmId);
-		static dbId interactiveIdentifyPlane (QWidget *parent, DbManager &dbManager, dbId flightId);
+		dbId interactiveIdentifyPlane (const Flight &flight);
 
 	protected:
-		static void notCreatedAutomaticallyMessage (QWidget *parent);
-		static bool queryUsePlane (QWidget *parent, const Plane &plane);
-		static bool queryCreatePlane (QWidget *parent, const FlarmNetRecord &flarmNetRecord);
+		void notCreatedAutomaticallyMessage ();
+		void identificationFailureMessage ();
+		bool queryUsePlane (const Plane &plane);
+		bool queryCreatePlane (const FlarmNetRecord &flarmNetRecord);
+		dbId interactiveCreatePlane (const FlarmNetRecord &flarmNetRecord);
+
+	private:
+		DbManager &dbManager;
+		bool messageOnFailure;
+		QWidget *parent;
 };
 
 #endif

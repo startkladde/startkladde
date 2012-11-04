@@ -2258,9 +2258,10 @@ void FlightWindow::identifyPlane (const Flight &flight)
 
 	// Try to identify the plane, letting the user choose or create the plane
 	// if necessary.
-	dbId identifiedPlaneId=PlaneIdentification::interactiveIdentifyPlane (this, manager, flight.getFlarmId ());
+	PlaneIdentification planeIdentification (manager, false, this);
+	dbId identifiedPlaneId=planeIdentification.interactiveIdentifyPlane (flight);
 
-	if (idValid (identifiedPlaneId))
+	if (idValid (identifiedPlaneId) && identifiedPlaneId!=flight.getPlaneId ())
 	{
 		// We identified a plane. Use it.
 		try
@@ -2268,11 +2269,8 @@ void FlightWindow::identifyPlane (const Flight &flight)
 			// Store it
 			selectedPlane=identifiedPlaneId;
 
-			// Write its registration to the input field
-			Plane plane=cache.getObject<Plane> (identifiedPlaneId);
-			ui.registrationInput->setEditText (plane.registration);
-			// TODO: this stinks
-			on_registrationInput_editingFinished (plane.registration);
+			planeToFields (identifiedPlaneId, ui.registrationInput, ui.planeTypeLabel);
+			// TODO what about updateErrors etc.? See on_registrationInput_editingFinished
 		}
 		catch (Cache::NotFoundException &) {}
 	}
@@ -2280,96 +2278,97 @@ void FlightWindow::identifyPlane (const Flight &flight)
 
 bool FlightWindow::updateFlarmId (const Flight &flight)
 {
-	// FIXME doing: should be in FlarmHandling, and use from both MainWindow and here
-	// Don't do anything if the flight was not created automatically
-	if (flight.getFlarmId ().isEmpty ())
-		return true;
-
-	dbId oldPlaneId=originalFlight.getPlaneId ();
-	dbId newPlaneId=flight.getPlaneId ();
-
-	// Don't do anything if the plane was not changed
-	// FIXME really?
-	if (oldPlaneId==newPlaneId)
-		return true;
-
-//	Plane oldPlane=cache.getObject<Plane> (oldPlaneId);
-	Plane newPlane=cache.getObject<Plane> (newPlaneId);
-
-	// Don't do anything if the plane's Flarm ID matches the Flight's.
-	if (newPlane.flarmId==flight.getFlarmId ())
-		return true;
-
-	// OK, so the flight has a Flarm ID (i. e. it was created automatically)
-	// which does not match the (new) plane's Flarm ID. Maybe we want to update
-	// the plane in the database.
-
-	if (newPlane.flarmId.isEmpty ())
-	{
-		// The plane has no Flarm ID so far. This is the common case of adding
-		// a Flarm ID to a plane, and there's little danger of doing it wrong,
-		// so we do it silently.
-		try
-		{
-			newPlane.flarmId=flight.getFlarmId ();
-			manager.updateObject (newPlane, this);
-			return true;
-		}
-		catch (OperationCanceledException &)
-		{
-			qDebug () << "OperationCanceledException" << endl;
-			// TODO the cache may now be inconsistent
-			return false;
-		}
-	}
-	else
-	{
-		// The plane has a different Flarm ID. This probably means that the
-		// Flarm of the plane was exchanged or swapped with another Flarm. Oooor
-		// the user might have entered a wrong plane. We'll have to ask the user
-		// how to proceed.
-
-		// FIXME if there is another plane with the new Flarm ID, we need to
-		// clear or swap it.
-
-		// FIXME better message, with details
-		QString text=tr ("The Flarm ID of the plane (%1) is different from the "
-			"one of this flight (%2). This may happen if a new Flarm is "
-			"installed in a plane. Do you want to update the plane's Flarm ID"
-			"in the database?")
-			.arg (newPlane.flarmId)
-			.arg (flight.getFlarmId ());
-
-		QMessageBox::StandardButton updateQuestionResult=yesNoCancelQuestion (this, "Update Flarm ID?", text);
-
-		if (updateQuestionResult==QMessageBox::Yes)
-		{
-			try
-			{
-				newPlane.flarmId=flight.getFlarmId ();
-				manager.updateObject (newPlane, this);
-				return true;
-			}
-			catch (OperationCanceledException &)
-			{
-				qDebug () << "OperationCanceledException" << endl;
-				// TODO the cache may now be inconsistent
-				return false;
-			}
-		}
-		else if (updateQuestionResult==QMessageBox::No)
-		{
-			// Don't do anything
-			return true;
-		}
-		else
-		{
-			// User canceled
-			return false;
-		}
-
-		// FIXME allow canceling (use the return value)
-		// FIXME test both cases
-	}
+	return true;
+//	// FIXME doing: should be in FlarmIdUpdate, and use from both MainWindow and here
+//	// Don't do anything if the flight was not created automatically
+//	if (flight.getFlarmId ().isEmpty ())
+//		return true;
+//
+//	dbId oldPlaneId=originalFlight.getPlaneId ();
+//	dbId newPlaneId=flight.getPlaneId ();
+//
+//	// Don't do anything if the plane was not changed
+//	// FIXME really?
+//	if (oldPlaneId==newPlaneId)
+//		return true;
+//
+////	Plane oldPlane=cache.getObject<Plane> (oldPlaneId);
+//	Plane newPlane=cache.getObject<Plane> (newPlaneId);
+//
+//	// Don't do anything if the plane's Flarm ID matches the Flight's.
+//	if (newPlane.flarmId==flight.getFlarmId ())
+//		return true;
+//
+//	// OK, so the flight has a Flarm ID (i. e. it was created automatically)
+//	// which does not match the (new) plane's Flarm ID. Maybe we want to update
+//	// the plane in the database.
+//
+//	if (newPlane.flarmId.isEmpty ())
+//	{
+//		// The plane has no Flarm ID so far. This is the common case of adding
+//		// a Flarm ID to a plane, and there's little danger of doing it wrong,
+//		// so we do it silently.
+//		try
+//		{
+//			newPlane.flarmId=flight.getFlarmId ();
+//			manager.updateObject (newPlane, this);
+//			return true;
+//		}
+//		catch (OperationCanceledException &)
+//		{
+//			qDebug () << "OperationCanceledException" << endl;
+//			// TODO the cache may now be inconsistent
+//			return false;
+//		}
+//	}
+//	else
+//	{
+//		// The plane has a different Flarm ID. This probably means that the
+//		// Flarm of the plane was exchanged or swapped with another Flarm. Oooor
+//		// the user might have entered a wrong plane. We'll have to ask the user
+//		// how to proceed.
+//
+//		// FIXME if there is another plane with the new Flarm ID, we need to
+//		// clear or swap it.
+//
+//		// FIXME better message, with details
+//		QString text=tr ("The Flarm ID of the plane (%1) is different from the "
+//			"one of this flight (%2). This may happen if a new Flarm is "
+//			"installed in a plane. Do you want to update the plane's Flarm ID"
+//			"in the database?")
+//			.arg (newPlane.flarmId)
+//			.arg (flight.getFlarmId ());
+//
+//		QMessageBox::StandardButton updateQuestionResult=yesNoCancelQuestion (this, "Update Flarm ID?", text);
+//
+//		if (updateQuestionResult==QMessageBox::Yes)
+//		{
+//			try
+//			{
+//				newPlane.flarmId=flight.getFlarmId ();
+//				manager.updateObject (newPlane, this);
+//				return true;
+//			}
+//			catch (OperationCanceledException &)
+//			{
+//				qDebug () << "OperationCanceledException" << endl;
+//				// TODO the cache may now be inconsistent
+//				return false;
+//			}
+//		}
+//		else if (updateQuestionResult==QMessageBox::No)
+//		{
+//			// Don't do anything
+//			return true;
+//		}
+//		else
+//		{
+//			// User canceled
+//			return false;
+//		}
+//
+//		// FIXME allow canceling (use the return value)
+//		// FIXME test both cases
+//	}
 }
 
