@@ -1232,8 +1232,8 @@ void MainWindow::on_identifyPlaneAction_triggered ()
 
 		// Try to identify the plane, letting the user choose or create the
 		// plane if necessary.
-		PlaneIdentification planeIdentification (dbManager, true, this);
-		dbId newPlaneId=planeIdentification.interactiveIdentifyPlane (flight);
+		PlaneIdentification planeIdentification (dbManager, this);
+		dbId newPlaneId=planeIdentification.interactiveIdentifyPlane (flight, true);
 
 		// If a plane was found and is different, update the flight
 		if (idValid (newPlaneId) && newPlaneId!=flight.getPlaneId ())

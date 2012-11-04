@@ -12,13 +12,9 @@
 #include "src/gui/windows/objectEditor/PlaneEditorPane.h"
 #include "src/text.h"
 
-// FIXME: if the identified plane is the current one, don't ask
-
-// FIXME: identify known plane - warn if the identified plane is different from
-// the current one
-
-PlaneIdentification::PlaneIdentification (DbManager &dbManager, bool messageOnFailure, QWidget *parent):
-	dbManager (dbManager), messageOnFailure (messageOnFailure), parent (parent)
+PlaneIdentification::PlaneIdentification (DbManager &dbManager, QWidget *parent):
+	dbManager (dbManager), parent (parent),
+	manualOperation (true)
 {
 }
 
@@ -26,7 +22,7 @@ PlaneIdentification::~PlaneIdentification ()
 {
 }
 
-bool PlaneIdentification::queryUsePlane (const Plane &plane)
+bool PlaneIdentification::queryUsePlane (const Plane &plane, const Flight &flight)
 {
 	// Offer the user to use this plane
 
@@ -36,14 +32,19 @@ bool PlaneIdentification::queryUsePlane (const Plane &plane)
 	QString text;
 	if (isBlank (plane.type))
 		text=qApp->translate ("PlaneIdentification",
-			"The plane seems to be %1. "
-			"Do you want to use this plane?")
+			"The plane seems to be %1.")
 			.arg (plane.fullRegistration ());
 	else
 		text=qApp->translate ("PlaneIdentification",
-			"The plane seems to be a %1 with registration %2. "
-			"Do you want to use this plane?")
+			"The plane seems to be a %1 with registration %2.")
 			.arg (plane.type).arg (plane.fullRegistration ());
+
+	if (idValid (flight.getPlaneId ()))
+		text+=qApp->translate ("PlaneIdentification",
+			" Do you want to replace the current plane with this plane?");
+	else
+		text+=qApp->translate ("PlaneIdentification",
+			" Do you want to use this plane?");
 
 	return yesNoQuestion (parent, title, text);
 }
@@ -89,6 +90,13 @@ void PlaneIdentification::identificationFailureMessage ()
 		qApp->translate ("PlaneIdentification", "The plane could not be identified."));
 }
 
+void PlaneIdentification::currentMessage ()
+{
+	QMessageBox::information (parent,
+		qApp->translate ("PlaneIdentification", "Identify plane"),
+		qApp->translate ("PlaneIdentification", "The plane is already current."));
+}
+
 dbId PlaneIdentification::interactiveCreatePlane (const FlarmNetRecord &flarmNetRecord)
 {
 	PlaneEditorPaneData paneData;
@@ -113,8 +121,10 @@ dbId PlaneIdentification::interactiveCreatePlane (const FlarmNetRecord &flarmNet
  * The caller is responsible for setting the plane of the flight and updating
  * the flight in the database (if applicable) if the plane changed.
  */
-dbId PlaneIdentification::interactiveIdentifyPlane (const Flight &flight)
+dbId PlaneIdentification::interactiveIdentifyPlane (const Flight &flight, bool manualOperation)
 {
+	this->manualOperation=manualOperation;
+
 	Cache &cache=dbManager.getCache ();
 
 	try
@@ -130,13 +140,22 @@ dbId PlaneIdentification::interactiveIdentifyPlane (const Flight &flight)
 		PlaneLookup::Result result=PlaneLookup (cache).lookupPlane (flight.getFlarmId ());
 		if (result.plane.isValid ())
 		{
-			// We got a plane. Offer the user to use it. Plane lookup guarantees
-			// that the Flarm ID of a returned plane matches. Therefore, we
-			// don't have to update its Flarm ID.
-			if (queryUsePlane (result.plane.getValue ()))
-				return result.plane->getId ();
+			// We found a plane.
+			if (result.plane->getId ()==flight.getPlaneId ())
+			{
+				// The plane is already current
+				currentMessage ();
+			}
 			else
-				return invalidId;
+			{
+				// The plane is different. Offer the user to use it. Plane
+				// lookup guarantees that the Flarm ID of a returned plane
+				// matches. Therefore, we don't have to update its Flarm ID.
+				if (queryUsePlane (result.plane.getValue (), flight))
+					return result.plane->getId ();
+				else
+					return invalidId;
+			}
 		}
 		else if (result.flarmNetRecord.isValid ())
 		{
@@ -152,7 +171,7 @@ dbId PlaneIdentification::interactiveIdentifyPlane (const Flight &flight)
 		else
 		{
 			// Identification failed
-			if (messageOnFailure)
+			if (manualOperation)
 				identificationFailureMessage ();
 
 			return invalidId;

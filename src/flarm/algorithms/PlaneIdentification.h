@@ -28,24 +28,26 @@ class Flight;
 class PlaneIdentification
 {
 	public:
-		PlaneIdentification (DbManager &dbManager, bool messageOnFailure, QWidget *parent);
+		PlaneIdentification (DbManager &dbManager, QWidget *parent);
 		virtual ~PlaneIdentification ();
 
-		dbId interactiveIdentifyPlane (const Flight &flight);
+		dbId interactiveIdentifyPlane (const Flight &flight, bool manualOperation);
 
 	protected:
 		void notCreatedAutomaticallyMessage ();
 		void identificationFailureMessage ();
+		void currentMessage ();
 
-		bool queryUsePlane (const Plane &plane);
+		bool queryUsePlane (const Plane &plane, const Flight &flight);
 		bool queryCreatePlane (const FlarmNetRecord &flarmNetRecord);
 
 		dbId interactiveCreatePlane (const FlarmNetRecord &flarmNetRecord);
 
 	private:
 		DbManager &dbManager;
-		bool messageOnFailure;
 		QWidget *parent;
+
+		bool manualOperation;
 };
 
 #endif

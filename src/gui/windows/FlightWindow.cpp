@@ -2267,8 +2267,8 @@ void FlightWindow::identifyPlane (const Flight &flight)
 
 	// Try to identify the plane, letting the user choose or create the plane
 	// if necessary.
-	PlaneIdentification planeIdentification (manager, false, this);
-	dbId identifiedPlaneId=planeIdentification.interactiveIdentifyPlane (flight);
+	PlaneIdentification planeIdentification (manager, this);
+	dbId identifiedPlaneId=planeIdentification.interactiveIdentifyPlane (flight, false);
 
 	if (idValid (identifiedPlaneId) && identifiedPlaneId!=flight.getPlaneId ())
 	{
