@@ -165,17 +165,17 @@ bool FlarmIdUpdate::interactiveUpdateFlarmId (const Flight &flight, bool manualO
 
 	try
 	{
-		// We can only do this for automatically created flights
-		if (flight.getFlarmId ().isEmpty ())
-		{
-			notCreatedAutomaticallyMessage ();
-			return true;
-		}
-
 		// We can only do this if the flight has a plane
 		if (!idValid (flight.getPlaneId ()))
 		{
 			noPlaneMessage ();
+			return true;
+		}
+
+		// We can only do this for automatically created flights
+		if (flight.getFlarmId ().isEmpty ())
+		{
+			notCreatedAutomaticallyMessage ();
 			return true;
 		}
 
