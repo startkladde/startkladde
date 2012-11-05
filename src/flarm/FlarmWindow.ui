@@ -145,7 +145,7 @@
   <customwidget>
    <class>FlarmMapWidget</class>
    <extends>QFrame</extends>
-   <header>src/flarm/FlarmMapWidget.h</header>
+   <header>src/flarm/flarmMap/FlarmMapWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
