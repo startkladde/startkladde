@@ -2287,13 +2287,14 @@ void FlightWindow::identifyPlane (const Flight &flight)
 
 bool FlightWindow::updateFlarmId (const Flight &flight)
 {
-	if (idValid (flight.getPlaneId ()))
-	{
-		FlarmIdUpdate flarmIdUpdate (manager, this);
-		return flarmIdUpdate.interactiveUpdateFlarmId (flight, false, originalFlight.getPlaneId ());
-	}
-	else
-	{
+	// This only applies to automatically created flights with a valid plane
+	if (flight.getFlarmId ().isEmpty ())
 		return true;
-	}
+
+	if (!idValid (flight.getPlaneId ()))
+		return true;
+
+	// OK, update
+	FlarmIdUpdate flarmIdUpdate (manager, this);
+	return flarmIdUpdate.interactiveUpdateFlarmId (flight, false, originalFlight.getPlaneId ());
 }
