@@ -252,8 +252,10 @@ MainWindow::MainWindow (QWidget *parent):
 	
 
 	// Test of NotificationWidget
-//	NotificationWidget *nw=new NotificationWidget (ui.flightTable);
-//	nw->move (50, 50);
+//	NotificationWidget *nw=new NotificationWidget ("The flight was departed automatically", this);
+//	nw->setDrawWidgetBackground (true);
+//	// Meh, the position of the other widgets has not been set yet
+//	nw->moveArrowTip (2, 32);
 }
 
 MainWindow::~MainWindow ()
