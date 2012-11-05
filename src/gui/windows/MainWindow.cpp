@@ -80,6 +80,7 @@
 #include "src/flarm/flarmNet/FlarmNetHandler.h"
 #include "src/flarm/algorithms/PlaneIdentification.h"
 #include "src/flarm/algorithms/FlarmIdUpdate.h"
+#include "src/gui/widgets/NotificationWidget.h"
 
 template <class T> class MutableObjectList;
 
@@ -250,6 +251,9 @@ MainWindow::MainWindow (QWidget *parent):
 	databaseStateChanged (dbManager.getState ());
 	
 
+	// Test of NotificationWidget
+//	NotificationWidget *nw=new NotificationWidget (ui.flightTable);
+//	nw->move (50, 50);
 }
 
 MainWindow::~MainWindow ()
