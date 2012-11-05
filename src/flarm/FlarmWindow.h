@@ -5,6 +5,7 @@
 
 #include "src/gui/SkDialog.h"
 
+class FlarmList;
 class GpsTracker;
 
 class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
