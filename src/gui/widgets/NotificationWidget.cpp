@@ -2,20 +2,19 @@
 
 #include <QPainter>
 #include <QRect>
+#include <QDebug>
 
-NotificationWidget::NotificationWidget (const QString &text, QWidget *parent): QWidget (parent),
+NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	cornerRadius (10),
-	arrowWidth (10), arrowLength (20), arrowPosition (30),
+	arrowWidth (3*10), arrowLength (20), arrowPosition (30),
 	backgroundColor (QColor (0, 0, 0, 191)),
 	widgetBackgroundColor (QColor (0, 0, 0, 63)),
 	drawWidgetBackground (false)
 {
 	ui.setupUi (this);
 
-	ui.label->setText (text);
-
 	// Use the default left layout margin as corner radius
-	cornerRadius=ui.widgetLayout->contentsMargins ().left ();
+//	cornerRadius=ui.widgetLayout->contentsMargins ().left ();
 
 	// Set the layout margins to the corner radius. The left margin also
 	// contains the arrow.
@@ -29,6 +28,8 @@ NotificationWidget::NotificationWidget (const QString &text, QWidget *parent): Q
 	QPalette widgetPalette=palette ();
 	widgetPalette.setColor (QPalette::WindowText, Qt::white);
 	setPalette (widgetPalette);
+
+//	setMinimumSize (QSize (10, 10));
 
 	// Make the widget as compact as possible
 	resize (minimumSizeHint ());
@@ -123,4 +124,20 @@ void NotificationWidget::paintEvent (QPaintEvent *event)
 	path.closeSubpath ();
 	painter.setBrush (QColor (0, 0, 0, 191));
 	painter.drawPath (path);
+}
+
+QSize NotificationWidget::minimumSizeHint () const
+{
+	QSize hint=QWidget::minimumSizeHint ();
+
+	// Make sure the widget is large enough for two of the rounded corners
+	hint.setHeight (qMax (hint.height (), 2*cornerRadius));
+	hint.setWidth  (qMax (hint.width  (), 2*cornerRadius));
+
+	// Make sure the widget is large enough for the arrow and the lower corner
+	hint.setHeight (qMax (hint.height (), arrowPosition+arrowWidth/2+cornerRadius));
+
+	qDebug () << hint;
+
+	return hint;
 }

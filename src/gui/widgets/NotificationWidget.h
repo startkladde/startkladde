@@ -9,7 +9,7 @@ class NotificationWidget: public QWidget
     Q_OBJECT
 
 	public:
-    	NotificationWidget (const QString &text, QWidget *parent);
+    	NotificationWidget (QWidget *parent);
     	~NotificationWidget ();
 
     	void setDrawWidgetBackground (bool drawWidgetBackground);
@@ -20,6 +20,7 @@ class NotificationWidget: public QWidget
 
 	protected:
     	virtual void paintEvent (QPaintEvent *event);
+    	virtual QSize minimumSizeHint () const;
 
     	QPoint getArrowTip () const;
 

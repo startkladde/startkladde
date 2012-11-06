@@ -252,10 +252,15 @@ MainWindow::MainWindow (QWidget *parent):
 	
 
 	// Test of NotificationWidget
-//	NotificationWidget *nw=new NotificationWidget ("The flight was departed automatically", this);
+//	NotificationWidget *nw=new NotificationWidget (this);
 //	nw->setDrawWidgetBackground (true);
+//	//nw->setText ("The flight was departed automatically");
 //	// Meh, the position of the other widgets has not been set yet
 //	nw->moveArrowTip (2, 32);
+//
+//	NotificationWidget *butt=new NotificationWidget (NULL);
+//	//nw->setText ("meh");
+//	butt->show ();
 }
 
 MainWindow::~MainWindow ()
