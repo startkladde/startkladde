@@ -1,9 +1,11 @@
 #include "Cache.h"
 
+#include <QMultiHash>
+
 #include "src/container/SortedSet_impl.h"
 
 /*
-  * Currently, the update methods call the removed and added methods. This may
+ * Currently, the update methods call the removed and added methods. This may
  * or may not be optimal or even correct.
  *
  * Also, we don't remove entries that may still be valid, for example name
