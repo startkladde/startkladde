@@ -1,44 +1,76 @@
 #include "NotificationWidget.h"
 
+#include <iostream>
+
+#include <QGraphicsOpacityEffect>
 #include <QPainter>
 #include <QRect>
 #include <QDebug>
 
+#include <QTimer>
+
+// ******************
+// ** Construction **
+// ******************
+
 NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	cornerRadius (10),
-	arrowWidth (3*10), arrowLength (20), arrowPosition (30),
+	arrowWidth (10), arrowLength (20),
 	backgroundColor (QColor (0, 0, 0, 191)),
 	widgetBackgroundColor (QColor (0, 0, 0, 63)),
-	drawWidgetBackground (false)
+	drawWidgetBackground (false),
+	left (0), right (0), top (0), bottom (0)
 {
 	ui.setupUi (this);
 
-	// Use the default left layout margin as corner radius
-//	cornerRadius=ui.widgetLayout->contentsMargins ().left ();
+	QLayout *l=layout ();
+	if (l)
+	{
+		// Set the corner radius. We'll use the margin of the layout, which is
+		// platform/style dependent. The layout has 4 margins (one on each
+		// side), but we only have one corner radius. We'll arbitrarily pick the
+		// left one.
+		cornerRadius=l->contentsMargins ().left ();
 
-	// Set the layout margins to the corner radius. The left margin also
-	// contains the arrow.
-	ui.widgetLayout->setContentsMargins (
-		arrowLength+cornerRadius,
-		cornerRadius,
-		cornerRadius,
-		cornerRadius);
+		// Set the layout's margins. We use the corner radius, except on the
+		// left side, where we'll add space for the arrow.
+		l->setContentsMargins (arrowLength+cornerRadius,
+			cornerRadius, cornerRadius, cornerRadius);
+	}
 
 	// Make label text white
 	QPalette widgetPalette=palette ();
 	widgetPalette.setColor (QPalette::WindowText, Qt::white);
+	widgetPalette.setColor (QPalette::Text      , Qt::white);
 	setPalette (widgetPalette);
 
-//	setMinimumSize (QSize (10, 10));
-
 	// Make the widget as compact as possible
-	resize (minimumSizeHint ());
+	adjustSize ();
 }
 
 NotificationWidget::~NotificationWidget()
 {
+}
+
+void NotificationWidget::selfDestruct (int milliseconds)
+{
+	QTimer::singleShot (milliseconds, this, SLOT (selfDestructNow ()));
 
 }
+
+void NotificationWidget::selfDestructNow ()
+{
+	QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect (this);
+	effect->setOpacity(0.5);
+	setGraphicsEffect (effect);
+	// QPropertyAnimation for fading out
+
+	QTimer::singleShot (2000, this, SLOT (deleteLater ()));
+}
+
+// ****************
+// ** Properties **
+// ****************
 
 void NotificationWidget::setDrawWidgetBackground (bool drawWidgetBackground)
 {
@@ -50,12 +82,29 @@ bool NotificationWidget::getDrawWidgetBackground () const
 	return drawWidgetBackground;
 }
 
+void NotificationWidget::setText (const QString &text)
+{
+	ui.textLabel->setText (text);
+	adjustSize ();
+}
+
+QString NotificationWidget::getText () const
+{
+	return ui.textLabel->text ();
+}
+
+
+// **************
+// ** Geometry **
+// **************
+
 QPoint NotificationWidget::getArrowTip () const
 {
-	// FIXME code duplication with paintEvent
-	int y=qMax (arrowPosition, cornerRadius+arrowWidth/2);
-	int x=0;
-	return QPoint (x, y);
+//	// FIXME code duplication with paintEvent
+//	int y=qMax (arrowPosition, cornerRadius+arrowWidth/2);
+//	int x=0;
+//	return QPoint (x, y);
+	return arrowTip;
 }
 
 void NotificationWidget::moveArrowTip (const QPoint &point)
@@ -68,6 +117,50 @@ void NotificationWidget::moveArrowTip (int x, int y)
 {
 	moveArrowTip (QPoint (x, y));
 }
+
+void NotificationWidget::resizeEvent (QResizeEvent *event)
+{
+	(void)event;
+
+	// Calculate the edges of the bubble
+	left   = arrowLength;
+	right  = width ();
+	top    = 0;
+	bottom = height ();
+
+	// Calculate the arrow coordinates
+	// This currently places the arrow immediately below the top left corner.
+	arrowTop   =QPoint (left            , cornerRadius);
+	arrowBottom=QPoint (left            , cornerRadius+arrowWidth);
+	arrowTip   =QPoint (left-arrowLength, cornerRadius+arrowWidth/2);
+}
+
+
+// **********
+// ** Size **
+// **********
+
+QSize NotificationWidget::minimumSizeHint () const
+{
+	QSize hint=QWidget::minimumSizeHint ();
+
+	// Make sure the widget is wide enough for two rounded corners, and high
+	// enough for two rounded corners and the arrow.
+	hint.setWidth  (qMax (hint.width  (), 2*cornerRadius));
+	hint.setHeight (qMax (hint.height (), 2*cornerRadius+arrowWidth));
+
+	return hint;
+}
+
+QSize NotificationWidget::sizeHint () const
+{
+	return minimumSizeHint ();
+}
+
+
+// **************
+// ** Painting **
+// **************
 
 void NotificationWidget::paintEvent (QPaintEvent *event)
 {
@@ -85,25 +178,9 @@ void NotificationWidget::paintEvent (QPaintEvent *event)
 		painter.drawRect (this->rect ());
 	}
 
-	// Calculate the edges of the bubble
-	int left   = arrowLength;
-	int right  = width ();
-	int top    = 0;
-	int bottom = height ();
-
 	// FIXME make the rounded corners smaller if the widget is too small
 	// Calculate some supplementary values
 	int cornerDiameter=2*cornerRadius;
-
-	// Calculate some arrow coordinates
-	// The effective arrow position must be at least radius+arrowWidth/2,
-	// otherwise the arrow will overlap with the upper left corner.
-	// FIXME make sure it doesn't overlap with the lower left corner - don't
-	// draw the arrow if the widget is too small
-	int effectiveArrowPosition=qMax (arrowPosition, cornerRadius+arrowWidth/2);
-	QPoint arrowTop    (left            , effectiveArrowPosition-arrowWidth/2);
-	QPoint arrowTip    (left-arrowLength, effectiveArrowPosition);
-	QPoint arrowBottom (left            , effectiveArrowPosition+arrowWidth/2);
 
 	QRectF nwCorner (left                , top                  , cornerDiameter, cornerDiameter);
 	QRectF neCorner (right-cornerDiameter, top                  , cornerDiameter, cornerDiameter);
@@ -126,18 +203,3 @@ void NotificationWidget::paintEvent (QPaintEvent *event)
 	painter.drawPath (path);
 }
 
-QSize NotificationWidget::minimumSizeHint () const
-{
-	QSize hint=QWidget::minimumSizeHint ();
-
-	// Make sure the widget is large enough for two of the rounded corners
-	hint.setHeight (qMax (hint.height (), 2*cornerRadius));
-	hint.setWidth  (qMax (hint.width  (), 2*cornerRadius));
-
-	// Make sure the widget is large enough for the arrow and the lower corner
-	hint.setHeight (qMax (hint.height (), arrowPosition+arrowWidth/2+cornerRadius));
-
-	qDebug () << hint;
-
-	return hint;
-}

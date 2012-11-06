@@ -252,12 +252,13 @@ MainWindow::MainWindow (QWidget *parent):
 	
 
 	// Test of NotificationWidget
-//	NotificationWidget *nw=new NotificationWidget (this);
-//	nw->setDrawWidgetBackground (true);
-//	//nw->setText ("The flight was departed automatically");
-//	// Meh, the position of the other widgets has not been set yet
-//	nw->moveArrowTip (2, 32);
-//
+	NotificationWidget *nw=new NotificationWidget (ui.flightTable->viewport ());
+	nw->setDrawWidgetBackground (true);
+	nw->setText ("The flight was departed automatically");
+	// Meh, the position of the other widgets has not been set yet
+	nw->moveArrowTip (2, 32);
+	nw->selfDestruct (2000);
+
 //	NotificationWidget *butt=new NotificationWidget (NULL);
 //	//nw->setText ("meh");
 //	butt->show ();
@@ -481,17 +482,17 @@ void MainWindow::restartPlugins ()
 
 bool MainWindow::confirmAndExit (int returnCode, QString title, QString text)
 {
-	if (yesNoQuestion (this, title, text))
-	{
+//	if (yesNoQuestion (this, title, text))
+//	{
 		closeDatabase ();
 		writeSettings ();
 		qApp->exit (returnCode);
 		return true;
-	}
-	else
-	{
-		return false;
-	}
+//	}
+//	else
+//	{
+//		return false;
+//	}
 }
 
 void MainWindow::closeEvent (QCloseEvent *event)
