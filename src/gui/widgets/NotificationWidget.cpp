@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
 #include <QPainter>
 #include <QRect>
 #include <QDebug>
@@ -61,11 +62,22 @@ void NotificationWidget::selfDestruct (int milliseconds)
 void NotificationWidget::selfDestructNow ()
 {
 	QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect (this);
-	effect->setOpacity(0.5);
 	setGraphicsEffect (effect);
-	// QPropertyAnimation for fading out
 
-	QTimer::singleShot (2000, this, SLOT (deleteLater ()));
+	// FIXME make class WidgetFader with ::fadeOutAndDelete
+	// FIXME make sure it is really destroyed => check for destroyed signal
+	// FIXME also fade it in
+	// FIXME delete immediately on click, make sure this still works
+
+	QPropertyAnimation *animation = new QPropertyAnimation (effect, "opacity");
+	animation->setDuration (1000);
+	animation->setStartValue (1);
+	animation->setEndValue (0);
+	animation->start ();
+
+	connect (animation, SIGNAL (finished ()), this, SLOT (deleteLater ()));
+
+//	QTimer::singleShot (2000, this, SLOT (deleteLater ()));
 }
 
 // ****************
