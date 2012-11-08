@@ -265,6 +265,9 @@
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
      </widget>
     </item>
     <item>
@@ -371,7 +374,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -486,6 +489,7 @@
     <addaction name="separator"/>
     <addaction name="lookupPlaneAction"/>
     <addaction name="lookupFlightAction"/>
+    <addaction name="showNotificationAction"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -985,6 +989,17 @@
   <action name="updateFlarmIdAction">
    <property name="text">
     <string>&amp;Update Flarm ID</string>
+   </property>
+  </action>
+  <action name="showNotificationAction">
+   <property name="text">
+    <string>Sho&amp;w notification</string>
+   </property>
+   <property name="toolTip">
+    <string>Show notification</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
  </widget>

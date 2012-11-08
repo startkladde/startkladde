@@ -1,7 +1,10 @@
 #ifndef NOTOFICATIONWIDGET_H
 #define NOTOFICATIONWIDGET_H
 
-#include <QtGui/QWidget>
+#include <QWidget>
+#include <QRectF>
+#include <QPointF>
+
 #include "ui_NotificationWidget.h"
 
 class NotificationWidget: public QWidget
@@ -11,36 +14,32 @@ class NotificationWidget: public QWidget
 	public:
     	NotificationWidget (QWidget *parent);
     	~NotificationWidget ();
+    	void selfDestruct (int milliseconds);
 
     	// Properties
     	void setDrawWidgetBackground (bool drawWidgetBackground);
     	bool getDrawWidgetBackground () const;
-
     	void setText (const QString &text);
     	QString getText () const;
 
-    	QPoint getArrowTip () const;
-
-    	void selfDestruct (int milliseconds);
-
-    	// Geometry
-    	void moveArrowTip (const QPoint &point);
+    	// Position
+    	void moveArrowTip (const QPointF &point);
     	void moveArrowTip (int x, int y);
 
 	protected:
-    	// Events
-    	virtual void paintEvent (QPaintEvent *event);
-    	virtual void resizeEvent (QResizeEvent *event);
-
-
-
     	// Size
+    	virtual void resizeEvent (QResizeEvent *event);
     	virtual QSize sizeHint () const;
     	virtual QSize minimumSizeHint () const;
 
+    	// Geometry
+    	virtual void updateGeometry ();
+
+    	// Painting
+    	virtual void paintEvent (QPaintEvent *event);
+
     protected slots:
     	void selfDestructNow ();
-
 
 	private:
     	Ui::NotificationWidgetClass ui;
@@ -54,9 +53,14 @@ class NotificationWidget: public QWidget
     	QColor widgetBackgroundColor;
     	bool drawWidgetBackground;
 
-    	// Geometry
-    	int left, right, top, bottom;
-    	QPoint arrowTop, arrowBottom, arrowTip;
+    	struct
+    	{
+			QRectF bubble;
+			QRectF northWest, northEast, southWest, southEast;
+
+			QPointF arrowTop, arrowBottom, arrowTip;
+    	} geometry;
+
 };
 
 #endif

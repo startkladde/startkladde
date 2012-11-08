@@ -2,13 +2,16 @@
 
 #include <iostream>
 
-#include <QGraphicsOpacityEffect>
-#include <QPropertyAnimation>
 #include <QPainter>
-#include <QRect>
+#include <QTimer>
 #include <QDebug>
 
-#include <QTimer>
+#include "src/gui/WidgetFader.h"
+#include "src/util/qRectF.h"
+
+
+// Note that this class uses QPointF and QRectF rather than QPoint and QRect
+// due to obscure bottom/right/center calculation rules of QRect.
 
 // ******************
 // ** Construction **
@@ -19,8 +22,7 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	arrowWidth (10), arrowLength (20),
 	backgroundColor (QColor (0, 0, 0, 191)),
 	widgetBackgroundColor (QColor (0, 0, 0, 63)),
-	drawWidgetBackground (false),
-	left (0), right (0), top (0), bottom (0)
+	drawWidgetBackground (false)
 {
 	ui.setupUi (this);
 
@@ -47,6 +49,10 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 
 	// Make the widget as compact as possible
 	adjustSize ();
+
+	// The geometry will be updated in the reisze event before the widget is
+	// shown, but we need it now so the widget can be moved.
+	updateGeometry ();
 }
 
 NotificationWidget::~NotificationWidget()
@@ -61,23 +67,7 @@ void NotificationWidget::selfDestruct (int milliseconds)
 
 void NotificationWidget::selfDestructNow ()
 {
-	QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect (this);
-	setGraphicsEffect (effect);
-
-	// FIXME make class WidgetFader with ::fadeOutAndDelete
-	// FIXME make sure it is really destroyed => check for destroyed signal
-	// FIXME also fade it in
-	// FIXME delete immediately on click, make sure this still works
-
-	QPropertyAnimation *animation = new QPropertyAnimation (effect, "opacity");
-	animation->setDuration (1000);
-	animation->setStartValue (1);
-	animation->setEndValue (0);
-	animation->start ();
-
-	connect (animation, SIGNAL (finished ()), this, SLOT (deleteLater ()));
-
-//	QTimer::singleShot (2000, this, SLOT (deleteLater ()));
+	WidgetFader::fadeOutAndDelete (this, 1000);
 }
 
 // ****************
@@ -110,47 +100,51 @@ QString NotificationWidget::getText () const
 // ** Geometry **
 // **************
 
-QPoint NotificationWidget::getArrowTip () const
+void NotificationWidget::updateGeometry ()
 {
-//	// FIXME code duplication with paintEvent
-//	int y=qMax (arrowPosition, cornerRadius+arrowWidth/2);
-//	int x=0;
-//	return QPoint (x, y);
-	return arrowTip;
+	// Calculate the extents of the bubble
+	geometry.bubble=QRectF (arrowLength, 0, width ()-arrowLength, height ());
+
+	// Calculate the corner rectangles
+	geometry.northWest=northWestCorner (geometry.bubble, 2*cornerRadius);
+	geometry.northEast=northEastCorner (geometry.bubble, 2*cornerRadius);
+	geometry.southWest=southWestCorner (geometry.bubble, 2*cornerRadius);
+	geometry.southEast=southEastCorner (geometry.bubble, 2*cornerRadius);
+
+	// Calculate the arrow coordinates
+	// This currently places the arrow immediately below the top left corner.
+	geometry.arrowTop   =QPointF (geometry.bubble.left (),             cornerRadius);
+	geometry.arrowBottom=QPointF (geometry.bubble.left (),             cornerRadius+arrowWidth);
+	geometry.arrowTip   =QPointF (geometry.bubble.left ()-arrowLength, cornerRadius+arrowWidth/2);
+
+//	qDebug () << "Arrow tip is at" << geometry.arrowTip;
 }
 
-void NotificationWidget::moveArrowTip (const QPoint &point)
+// **************
+// ** Position **
+// **************
+
+void NotificationWidget::moveArrowTip (const QPointF &point)
 {
-	QPoint arrowTip=getArrowTip ();
-	move (point-arrowTip);
+	move ((point-geometry.arrowTip).toPoint ());
 }
 
 void NotificationWidget::moveArrowTip (int x, int y)
 {
-	moveArrowTip (QPoint (x, y));
+	moveArrowTip (QPointF (x, y));
 }
 
-void NotificationWidget::resizeEvent (QResizeEvent *event)
-{
-	(void)event;
-
-	// Calculate the edges of the bubble
-	left   = arrowLength;
-	right  = width ();
-	top    = 0;
-	bottom = height ();
-
-	// Calculate the arrow coordinates
-	// This currently places the arrow immediately below the top left corner.
-	arrowTop   =QPoint (left            , cornerRadius);
-	arrowBottom=QPoint (left            , cornerRadius+arrowWidth);
-	arrowTip   =QPoint (left-arrowLength, cornerRadius+arrowWidth/2);
-}
 
 
 // **********
 // ** Size **
 // **********
+
+void NotificationWidget::resizeEvent (QResizeEvent *event)
+{
+	(void)event;
+	updateGeometry ();
+}
 
 QSize NotificationWidget::minimumSizeHint () const
 {
@@ -190,26 +184,19 @@ void NotificationWidget::paintEvent (QPaintEvent *event)
 		painter.drawRect (this->rect ());
 	}
 
-	// FIXME make the rounded corners smaller if the widget is too small
-	// Calculate some supplementary values
-	int cornerDiameter=2*cornerRadius;
-
-	QRectF nwCorner (left                , top                  , cornerDiameter, cornerDiameter);
-	QRectF neCorner (right-cornerDiameter, top                  , cornerDiameter, cornerDiameter);
-	QRectF swCorner (left                , bottom-cornerDiameter, cornerDiameter, cornerDiameter);
-	QRectF seCorner (right-cornerDiameter, bottom-cornerDiameter, cornerDiameter, cornerDiameter);
-
 	QPainterPath path;
-	// Draw the outline counter-clockwise, starting with the bottom left corner
-	// arc and ending after the top left corner arc.
-	path.moveTo (left              , bottom-cornerRadius); path.arcTo (swCorner, 180, 90);
-	path.lineTo (right-cornerRadius, bottom             ); path.arcTo (seCorner, 270, 90);
-	path.lineTo (right             , top   +cornerRadius); path.arcTo (neCorner,   0, 90);
-	path.lineTo (left +cornerRadius, top                ); path.arcTo (nwCorner,  90, 90);
+	// Draw the bubble outline counter-clockwise, starting with the bottom left
+	// corner arc and ending after the top left corner arc.
+	path.moveTo (geometry.southWest.topLeft     ()); path.arcTo (geometry.southWest, 180, 90);
+	path.lineTo (geometry.southEast.bottomLeft  ()); path.arcTo (geometry.southEast, 270, 90);
+	path.lineTo (geometry.northEast.bottomRight ()); path.arcTo (geometry.northEast,   0, 90);
+	path.lineTo (geometry.northWest.topRight    ()); path.arcTo (geometry.northWest,  90, 90);
+
 	// Draw the arrow
-	path.lineTo (arrowTop);
-	path.lineTo (arrowTip);
-	path.lineTo (arrowBottom);
+	path.lineTo (geometry.arrowTop);
+	path.lineTo (geometry.arrowTip);
+	path.lineTo (geometry.arrowBottom);
+
 	path.closeSubpath ();
 	painter.setBrush (QColor (0, 0, 0, 191));
 	painter.drawPath (path);

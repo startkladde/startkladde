@@ -81,6 +81,7 @@
 #include "src/flarm/algorithms/PlaneIdentification.h"
 #include "src/flarm/algorithms/FlarmIdUpdate.h"
 #include "src/gui/widgets/NotificationWidget.h"
+#include "src/util/qRectF.h"
 
 template <class T> class MutableObjectList;
 
@@ -249,19 +250,6 @@ MainWindow::MainWindow (QWidget *parent):
 
 	connect (&dbManager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 	databaseStateChanged (dbManager.getState ());
-	
-
-	// Test of NotificationWidget
-	NotificationWidget *nw=new NotificationWidget (ui.flightTable->viewport ());
-	nw->setDrawWidgetBackground (true);
-	nw->setText ("The flight was departed automatically");
-	// Meh, the position of the other widgets has not been set yet
-	nw->moveArrowTip (2, 32);
-	nw->selfDestruct (2000);
-
-//	NotificationWidget *butt=new NotificationWidget (NULL);
-//	//nw->setText ("meh");
-//	butt->show ();
 }
 
 MainWindow::~MainWindow ()
@@ -2512,4 +2500,43 @@ void MainWindow::on_connectFlarmAction_triggered ()
 		flarmStream->open ();
 	else
 		flarmStream->close ();
+}
+
+QRectF MainWindow::rectForFlight (dbId flightId, bool towflight, int column) const
+{
+	// Find the index of the flight in the flight proxy list.
+	int flightIndex=proxyList->modelIndexFor (flightId, towflight);
+
+	// Determine the model index in the flight list model
+	QModelIndex modelIndex=flightListModel->index (flightIndex, column);
+	if (!modelIndex.isValid ())
+		return QRectF ();
+
+	// Map the model index to the proxy model
+	modelIndex=proxyModel->mapFromSource (modelIndex);
+	if (!modelIndex.isValid ())
+		return QRectF ();
+
+	// Get the rectangle from the table view
+	return ui.flightTable->visualRect (modelIndex);
+}
+
+void MainWindow::on_showNotificationAction_triggered ()
+{
+	bool isTowflight;
+	dbId flightId=currentFlightId (&isTowflight);
+	QRectF rect=rectForFlight (flightId, isTowflight, 1);
+
+	if (!rect.isValid ())
+	{
+		std::cerr << notr ("Error no rectangle found for flight ") << flightId << std::endl;
+		return;
+	}
+
+	NotificationWidget *nw=new NotificationWidget (ui.flightTable->viewport ());
+	nw->setDrawWidgetBackground (true);
+	nw->setText ("NotificationWidget for flight");
+	nw->moveArrowTip (rect.center ());
+	nw->show ();
+	nw->selfDestruct (1000);
 }
