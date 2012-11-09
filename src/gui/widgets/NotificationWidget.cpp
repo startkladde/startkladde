@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <QDebug>
+#include <QMouseEvent>
 
 #include "src/gui/WidgetFader.h"
 #include "src/util/qRectF.h"
@@ -18,6 +19,7 @@
 // ******************
 
 NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
+	selfDestructInProgress (false),
 	cornerRadius (10),
 	arrowWidth (10), arrowLength (20),
 	backgroundColor (QColor (0, 0, 0, 191)),
@@ -50,16 +52,16 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	// Make the widget as compact as possible
 	adjustSize ();
 
-	// The geometry will be updated in the reisze event before the widget is
-	// shown, but we need it now so the widget can be moved.
-	updateGeometry ();
+	// The geometry will be updated in the resize event before the widget is
+	// shown, but we need it now so the widget can be moved before it is shown.
+	geometry.update (this);
 }
 
 NotificationWidget::~NotificationWidget()
 {
 }
 
-void NotificationWidget::selfDestruct (int milliseconds)
+void NotificationWidget::selfDestructIn (int milliseconds)
 {
 	QTimer::singleShot (milliseconds, this, SLOT (selfDestructNow ()));
 
@@ -67,6 +69,10 @@ void NotificationWidget::selfDestruct (int milliseconds)
 
 void NotificationWidget::selfDestructNow ()
 {
+	if (selfDestructInProgress)
+		return;
+	selfDestructInProgress=true;
+
 	WidgetFader::fadeOutAndDelete (this, 1000);
 }
 
@@ -100,22 +106,37 @@ QString NotificationWidget::getText () const
 // ** Geometry **
 // **************
 
-void NotificationWidget::updateGeometry ()
+void NotificationWidget::Geometry::update (const NotificationWidget *widget)
 {
 	// Calculate the extents of the bubble
-	geometry.bubble=QRectF (arrowLength, 0, width ()-arrowLength, height ());
+	bubble=QRectF (widget->arrowLength, 0, widget->width ()-widget->arrowLength, widget->height ());
 
 	// Calculate the corner rectangles
-	geometry.northWest=northWestCorner (geometry.bubble, 2*cornerRadius);
-	geometry.northEast=northEastCorner (geometry.bubble, 2*cornerRadius);
-	geometry.southWest=southWestCorner (geometry.bubble, 2*cornerRadius);
-	geometry.southEast=southEastCorner (geometry.bubble, 2*cornerRadius);
+	northWest=northWestCorner (bubble, 2*widget->cornerRadius);
+	northEast=northEastCorner (bubble, 2*widget->cornerRadius);
+	southWest=southWestCorner (bubble, 2*widget->cornerRadius);
+	southEast=southEastCorner (bubble, 2*widget->cornerRadius);
 
 	// Calculate the arrow coordinates
 	// This currently places the arrow immediately below the top left corner.
-	geometry.arrowTop   =QPointF (geometry.bubble.left (),             cornerRadius);
-	geometry.arrowBottom=QPointF (geometry.bubble.left (),             cornerRadius+arrowWidth);
-	geometry.arrowTip   =QPointF (geometry.bubble.left ()-arrowLength, cornerRadius+arrowWidth/2);
+	arrowTop   =QPointF (bubble.left (),                     widget->cornerRadius);
+	arrowBottom=QPointF (bubble.left (),                     widget->cornerRadius+widget->arrowWidth);
+	arrowTip   =QPointF (bubble.left ()-widget->arrowLength, widget->cornerRadius+widget->arrowWidth/2);
+
+	// Draw the bubble outline counter-clockwise, starting with the bottom left
+	// corner arc and ending after the top left corner arc.
+	path=QPainterPath ();
+	path.moveTo (southWest.topLeft     ()); path.arcTo (southWest, 180, 90);
+	path.lineTo (southEast.bottomLeft  ()); path.arcTo (southEast, 270, 90);
+	path.lineTo (northEast.bottomRight ()); path.arcTo (northEast,   0, 90);
+	path.lineTo (northWest.topRight    ()); path.arcTo (northWest,  90, 90);
+
+	// Draw the arrow
+	path.lineTo (arrowTop);
+	path.lineTo (arrowTip);
+	path.lineTo (arrowBottom);
+
+	path.closeSubpath ();
 
 //	qDebug () << "Arrow tip is at" << geometry.arrowTip;
 }
@@ -143,7 +164,7 @@ void NotificationWidget::moveArrowTip (int x, int y)
 void NotificationWidget::resizeEvent (QResizeEvent *event)
 {
 	(void)event;
-	updateGeometry ();
+	geometry.update (this);
 }
 
 QSize NotificationWidget::minimumSizeHint () const
@@ -184,21 +205,21 @@ void NotificationWidget::paintEvent (QPaintEvent *event)
 		painter.drawRect (this->rect ());
 	}
 
-	QPainterPath path;
-	// Draw the bubble outline counter-clockwise, starting with the bottom left
-	// corner arc and ending after the top left corner arc.
-	path.moveTo (geometry.southWest.topLeft     ()); path.arcTo (geometry.southWest, 180, 90);
-	path.lineTo (geometry.southEast.bottomLeft  ()); path.arcTo (geometry.southEast, 270, 90);
-	path.lineTo (geometry.northEast.bottomRight ()); path.arcTo (geometry.northEast,   0, 90);
-	path.lineTo (geometry.northWest.topRight    ()); path.arcTo (geometry.northWest,  90, 90);
-
-	// Draw the arrow
-	path.lineTo (geometry.arrowTop);
-	path.lineTo (geometry.arrowTip);
-	path.lineTo (geometry.arrowBottom);
-
-	path.closeSubpath ();
 	painter.setBrush (QColor (0, 0, 0, 191));
-	painter.drawPath (path);
+	painter.drawPath (geometry.path);
 }
 
+
+// *****************
+// ** Interaction **
+// *****************
+
+void NotificationWidget::mousePressEvent (QMouseEvent *event)
+{
+	if (geometry.path.contains (event->posF ()))
+		// Act on the event
+		selfDestructNow ();
+	else
+		// Let the parent widget receive the event
+		event->ignore ();
+}

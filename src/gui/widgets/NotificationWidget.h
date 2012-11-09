@@ -7,6 +7,8 @@
 
 #include "ui_NotificationWidget.h"
 
+class QMouseEvent;
+
 class NotificationWidget: public QWidget
 {
     Q_OBJECT
@@ -14,7 +16,7 @@ class NotificationWidget: public QWidget
 	public:
     	NotificationWidget (QWidget *parent);
     	~NotificationWidget ();
-    	void selfDestruct (int milliseconds);
+    	void selfDestructIn (int milliseconds);
 
     	// Properties
     	void setDrawWidgetBackground (bool drawWidgetBackground);
@@ -32,17 +34,32 @@ class NotificationWidget: public QWidget
     	virtual QSize sizeHint () const;
     	virtual QSize minimumSizeHint () const;
 
-    	// Geometry
-    	virtual void updateGeometry ();
-
     	// Painting
     	virtual void paintEvent (QPaintEvent *event);
+
+    	// Interaction
+    	void mousePressEvent (QMouseEvent *event);
 
     protected slots:
     	void selfDestructNow ();
 
 	private:
+    	class Geometry
+    	{
+    		public:
+				QRectF bubble;
+				QRectF northWest, northEast, southWest, southEast;
+
+				QPointF arrowTop, arrowBottom, arrowTip;
+
+				QPainterPath path;
+
+				void update (const NotificationWidget *widget);
+    	};
+
     	Ui::NotificationWidgetClass ui;
+
+    	bool selfDestructInProgress;
 
     	// Properties
     	int cornerRadius;
@@ -53,13 +70,7 @@ class NotificationWidget: public QWidget
     	QColor widgetBackgroundColor;
     	bool drawWidgetBackground;
 
-    	struct
-    	{
-			QRectF bubble;
-			QRectF northWest, northEast, southWest, southEast;
-
-			QPointF arrowTop, arrowBottom, arrowTip;
-    	} geometry;
+    	Geometry geometry;
 
 };
 

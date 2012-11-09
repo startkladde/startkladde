@@ -2561,7 +2561,7 @@ void MainWindow::showNotification (dbId flightId, bool towflight, const QString 
 	nw->setText (message);
 	nw->moveArrowTip (rect.center ());
 	nw->show ();
-	nw->selfDestruct (milliseconds);
+	nw->selfDestructIn (milliseconds);
 }
 
 void MainWindow::on_showNotificationAction_triggered ()
