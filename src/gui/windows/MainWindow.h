@@ -128,6 +128,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 
 		// Flight table
 		QRectF rectForFlight (dbId flightId, bool towflight, int column) const;
+		void showNotification (dbId flightId, bool towflight, const QString &message, int milliseconds);
 
 		// Flarm
 		void interactiveUpdateFlarmId (dbId flightId);

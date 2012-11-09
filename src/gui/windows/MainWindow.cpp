@@ -85,6 +85,8 @@
 
 template <class T> class MutableObjectList;
 
+const int notificationDisplayTime=4000; // Milliseconds
+
 // ******************
 // ** Construction **
 // ******************
@@ -2426,7 +2428,9 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 	{
 		// We found the (prepared) flight. Depart it.
 		nonInteractiveDepartFlight (lookupResult.flightId);
-		//TODO: show notification
+
+		showNotification (lookupResult.flightId, false,
+			tr ("The flight was departed automatically"), notificationDisplayTime);
 	}
 	else
 	{
@@ -2436,8 +2440,11 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 		flight.setMode (FlightBase::modeLocal);
 		flight.setLaunchMethodId (preselectedLaunchMethod);
 		flight.departNow (Settings::instance ().location);
-		dbManager.createObject (flight, this);
-		//TODO: show notification, open flight editor
+		dbId flightId=dbManager.createObject (flight, this);
+
+		if (idValid (flightId))
+			showNotification (flightId, false,
+					tr ("The flight was created automatically"), notificationDisplayTime);
 	}
 }
 
@@ -2456,6 +2463,9 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 	{
 		// We found the flight. Land it.
 		nonInteractiveLandFlight (lookupResult.flightId);
+
+		showNotification (lookupResult.flightId, false,
+			tr ("The flight was landed automatically"), notificationDisplayTime);
 	}
 	else
 	{
@@ -2464,7 +2474,11 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 		Flight flight=createFlarmFlight (lookupResult, flarmId);
 		flight.setMode (FlightBase::modeComing);
 		flight.landNow (Settings::instance ().location);
-		dbManager.createObject (flight, this);
+		dbId flightId=dbManager.createObject (flight, this);
+
+		if (idValid(flightId))
+			showNotification (flightId, false,
+				tr ("The flight was created automatically"), notificationDisplayTime);
 	}
 }
 
@@ -2482,6 +2496,9 @@ void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 	{
 		// We found the flight. Perform a touch and go.
 		nonInteractiveTouchAndGo (lookupResult.flightId);
+
+		showNotification (lookupResult.flightId, false,
+			tr ("The flight performed a touch-and-go automatically"), notificationDisplayTime);
 	}
 	else
 	{
@@ -2490,7 +2507,11 @@ void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 		Flight flight=createFlarmFlight (lookupResult, flarmId);
 		flight.setMode (FlightBase::modeComing);
 		flight.performTouchngo ();
-		dbManager.createObject (flight, this);
+		dbId flightId=dbManager.createObject (flight, this);
+
+		if (idValid(flightId))
+			showNotification (flightId, false,
+				tr ("The flight was created automatically"), notificationDisplayTime);
 	}
 }
 
@@ -2521,22 +2542,32 @@ QRectF MainWindow::rectForFlight (dbId flightId, bool towflight, int column) con
 	return ui.flightTable->visualRect (modelIndex);
 }
 
-void MainWindow::on_showNotificationAction_triggered ()
+void MainWindow::showNotification (dbId flightId, bool towflight, const QString &message, int milliseconds)
 {
-	bool isTowflight;
-	dbId flightId=currentFlightId (&isTowflight);
-	QRectF rect=rectForFlight (flightId, isTowflight, 1);
+	QRectF rect=rectForFlight (flightId, towflight, 1);
 
 	if (!rect.isValid ())
 	{
-		std::cerr << notr ("Error no rectangle found for flight ") << flightId << std::endl;
+		if (towflight)
+			std::cerr << notr ("No rectangle found for towflight of ") << flightId << std::endl;
+		else
+			std::cerr << notr ("No rectangle found for flight ") << flightId << std::endl;
+
 		return;
 	}
 
 	NotificationWidget *nw=new NotificationWidget (ui.flightTable->viewport ());
-	nw->setDrawWidgetBackground (true);
-	nw->setText ("NotificationWidget for flight");
+	//nw->setDrawWidgetBackground (true);
+	nw->setText (message);
 	nw->moveArrowTip (rect.center ());
 	nw->show ();
-	nw->selfDestruct (1000);
+	nw->selfDestruct (milliseconds);
+}
+
+void MainWindow::on_showNotificationAction_triggered ()
+{
+	bool isTowflight;
+	dbId flightId=currentFlightId (&isTowflight);
+
+	showNotification (flightId, isTowflight, "NotificationWidget test", 1000);
 }
