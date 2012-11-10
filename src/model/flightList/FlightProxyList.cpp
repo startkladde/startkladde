@@ -5,6 +5,7 @@
 #include "src/model/Flight.h"
 #include "src/db/cache/Cache.h"
 #include "src/model/LaunchMethod.h"
+#include "src/FlightReference.h"
 
 FlightProxyList::FlightProxyList (Cache &cache, QObject *parent):
 	AbstractObjectList<Flight> (parent),
@@ -243,16 +244,16 @@ int FlightProxyList::findTowref (int index) const
 	}
 }
 
-int FlightProxyList::modelIndexFor (dbId id, bool towflight) const
+int FlightProxyList::modelIndexFor (const FlightReference &flight) const
 {
-	if (towflight)
+	if (flight.towflight ())
 	{
-		int towflightIndex=findTowflight (id);
+		int towflightIndex=findTowflight (flight.id ());
 		return towflightIndexToModelIndex (towflightIndex); // Handles <0
 	}
 	else
 	{
-		int flightIndex=findFlight (id);
+		int flightIndex=findFlight (flight.id ());
 		return flightIndexToModelIndex (flightIndex); // Handles <0
 	}
 }

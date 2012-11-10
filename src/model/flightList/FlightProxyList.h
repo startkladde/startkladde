@@ -12,6 +12,7 @@
 #include "src/model/objectList/AbstractObjectList.h"
 #include "src/db/dbId.h"
 
+class FlightReference;
 class LaunchMethod;
 class Cache;
 
@@ -31,7 +32,7 @@ class FlightProxyList: public AbstractObjectList<Flight>
 		virtual QList<Flight> getList () const;
 
 		virtual int findTowref (int index) const;
-		virtual int modelIndexFor (dbId id, bool towflight) const;
+		virtual int modelIndexFor (const FlightReference &flight) const;
 
 	protected:
 		virtual bool isAirtow (const Flight &flight, LaunchMethod *launchMethod) const;

@@ -73,27 +73,8 @@ void FlightTableView::init (DbManager *dbManager)
 
 void FlightTableView::setModel (EntityList<Flight> *flightList)
 {
-	// FIXME reset view et al
+	// This will cause the view to be reset
 	_proxyList->setSourceModel (flightList);
-
-//	// FIXME most of these should be set in the constructor, and just update
-//	// here (where applicable) - what is created here must be deleted. The
-//	// remove the model check at the beginning of all methods where possible.
-//	_flightList=flightList;
-//
-//	_proxyList=new FlightProxyList (dbManager.getCache (), *_flightList, this); // TODO never deleted
-//
-//	_flightModel = new FlightModel (dbManager.getCache ());
-//	_flightListModel = new ObjectListModel<Flight> (_proxyList, false, _flightModel, true, this);
-//
-//	_proxyModel = new FlightSortFilterProxyModel (dbManager.getCache (), this);
-//	_proxyModel->setSourceModel (_flightListModel);
-//
-//	_proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
-//	_proxyModel->setDynamicSortFilter (true);
-//
-//
-//	SkTableView::setModel (_proxyModel);
 }
 
 void FlightTableView::setHideFinishedFlights (bool hideFinishedFlights)
@@ -141,8 +122,7 @@ bool FlightTableView::selectFlight (const FlightReference &flightReference, int 
 		return false;
 
 	// Find the flight or towflight with that ID in the flight proxy list
-	// FIXME should also use FlightReference
-	int proxyListIndex=_proxyList->modelIndexFor (flightReference.id (), flightReference.towflight ());
+	int proxyListIndex=_proxyList->modelIndexFor (flightReference);
 	if (proxyListIndex<0) return false;
 
 	// Create the index in the flight list model
@@ -209,8 +189,7 @@ void FlightTableView::languageChanged ()
 QRectF FlightTableView::rectForFlight (const FlightReference &flight, int column) const
 {
 	// Find the index of the flight in the flight proxy list.
-	// FIXME use FlightReference
-	int flightIndex=_proxyList->modelIndexFor (flight.id (), flight.towflight ());
+	int flightIndex=_proxyList->modelIndexFor (flight);
 
 	// Determine the model index in the flight list model
 	QModelIndex modelIndex=_flightListModel->index (flightIndex, column);
@@ -235,7 +214,7 @@ void FlightTableView::minuteChanged ()
 	int durationColumn=_flightModel->durationColumn ();
 	_flightListModel->columnChanged (durationColumn);
 
-	// FIXME why do we do this?
+	// TODO why do we do this?
 	setCurrentIndex (oldIndex);
 	focusWidgetAt (focusWidgetIndex);
 }
@@ -247,8 +226,6 @@ void FlightTableView::base_buttonClicked (QPersistentModelIndex proxyIndex)
 		log_error (notr ("A button with invalid persistent index was clicked."));
 		return;
 	}
-
-	// FIXME use getFlightFor...
 
 	QModelIndex flightListIndex = _proxyModel->mapToSource (proxyIndex);
 	const Flight &flight = _flightListModel->at (flightListIndex);
