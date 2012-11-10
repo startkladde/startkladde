@@ -27,15 +27,15 @@ FlightTableView::FlightTableView (QWidget *parent):
 	_flightList (NULL), _proxyList (NULL), _flightModel (NULL),
 	_flightListModel (NULL), _proxyModel (NULL)
 {
-	// FIXME test
 	connect (horizontalHeader (), SIGNAL (sectionClicked (int)),
-		this, SLOT (sortByColumn (int)));
+		this, SLOT (toggleSorting (int)));
 
-	// FIXME test
 	connect (
 		this, SIGNAL (buttonClicked (QPersistentModelIndex)),
 		this, SLOT (base_buttonClicked (QPersistentModelIndex))
 		);
+
+	setCustomSorting ();
 }
 
 FlightTableView::~FlightTableView ()
@@ -96,14 +96,6 @@ void FlightTableView::setShowPreparedFlights (bool showPreparedFlights)
 	_proxyModel->setShowPreparedFlights (showPreparedFlights);
 }
 
-void FlightTableView::setCustomSorting (bool customSorting)
-{
-	if (!_flightList)
-		return;
-
-	_proxyModel->setCustomSorting (customSorting);
-}
-
 FlightReference FlightTableView::getCurrentFlightReference ()
 {
 	if (!_flightList)
@@ -151,51 +143,6 @@ bool FlightTableView::selectFlight (const FlightReference &flightReference, int 
 	setCurrentIndex (proxyIndex);
 
 	return true;
-}
-
-void FlightTableView::sortCustom ()
-{
-	if (!_flightList)
-		return;
-
-	// Use custom sorting
-	_proxyModel->sortCustom ();
-
-	// Show the sort status in the header view
-	setSortingEnabled (false); // Make sure it is off
-	horizontalHeader ()->setSortIndicatorShown (false);
-}
-
-void FlightTableView::sortByColumn (int column)
-{
-	// FIXME Sortieren nach Zeiten etc.: vorbereitete immer hinten
-	if (!_flightList)
-		return;
-
-	// FIXME 3-way toggle: ascending/descending/custom
-	// Determine the new sorting order: when custom sorting was in effect or the
-	// sorting column changed, sort ascending; otherwise, toggle the sorting
-	// order
-	if (_proxyModel->getCustomSorting ())
-		_sortOrder=Qt::AscendingOrder; // custom sorting was in effect
-	else if (column!=_sortColumn)
-		_sortOrder=Qt::AscendingOrder; // different column
-	else if (_sortOrder==Qt::AscendingOrder)
-		_sortOrder=Qt::DescendingOrder; // toggle ascending->descending
-	else
-		_sortOrder=Qt::AscendingOrder; // toggle any->ascending
-
-	// Set the new sorting column
-	_sortColumn=column;
-
-	// Sort the proxy model
-	_proxyModel->setCustomSorting (false);
-	_proxyModel->sort (_sortColumn, _sortOrder);
-
-	// Show the sort status in the header view
-	QHeaderView *header=horizontalHeader ();
-	header->setSortIndicatorShown (true);
-	header->setSortIndicator (_sortColumn, _sortOrder);
 }
 
 void FlightTableView::readColumnWidths (QSettings &settings)
@@ -297,8 +244,6 @@ void FlightTableView::minuteChanged ()
 	focusWidgetAt (focusWidgetIndex);
 }
 
-// FIXME add slot
-
 void FlightTableView::base_buttonClicked (QPersistentModelIndex proxyIndex)
 {
 	if (!_flightList)
@@ -323,6 +268,78 @@ void FlightTableView::base_buttonClicked (QPersistentModelIndex proxyIndex)
 		log_error (notr ("Unhandled button column"));
 }
 
+
+// *************
+// ** Sorting **
+// *************
+
+/**
+ * Don't use sortByColumn
+ */
+void FlightTableView::setSorting (int column, Qt::SortOrder order)
+{
+	if (!_flightList)
+		return;
+
+	// Make sure QTableView's sorting mechanism is disabled, we use our own
+	// sorting mechanism
+	setSortingEnabled (false);
+
+	if (column>=0)
+	{
+		// Regular sorting
+		_proxyModel->setCustomSorting (false);
+		_proxyModel->sort (column, order);
+
+		// Show the sort status in the header view
+		QHeaderView *header=horizontalHeader ();
+		header->setSortIndicatorShown (true);
+		header->setSortIndicator (column, order);
+	}
+	else
+	{
+		// Custom sorting
+		_proxyModel->sortCustom ();
+
+		// Hide the sort status in the header view
+		horizontalHeader ()->setSortIndicatorShown (false);
+	}
+
+	// Store the current sort order
+	_sortColumn=column;
+	_sortOrder=order;
+}
+
+void FlightTableView::setCustomSorting ()
+{
+	setSorting (-1, Qt::AscendingOrder);
+}
+
+void FlightTableView::toggleSorting (int column)
+{
+	if (!_flightList)
+		return;
+
+	// Toggle sorting: custom -> ascending -> descending
+	if (_sortColumn<0)
+		// custom -> ascending
+		setSorting (column, Qt::AscendingOrder);
+	else if (_sortColumn==column && _sortOrder==Qt::AscendingOrder)
+		// same column ascending -> descending
+		setSorting (column, Qt::DescendingOrder);
+	else if (_sortColumn==column && _sortOrder==Qt::DescendingOrder)
+		// same column descending -> custom
+		setSorting (-1, Qt::AscendingOrder);
+	else
+		// different column or unhandled order -> ascending
+		setSorting (column, Qt::AscendingOrder);
+}
+
+
+// *******************
+// ** Notifications **
+// *******************
+
 void FlightTableView::showNotification (const FlightReference &flight, const QString &message, int milliseconds)
 {
 	QRectF rect=rectForFlight (flight, 1);
@@ -340,3 +357,4 @@ void FlightTableView::showNotification (const FlightReference &flight, const QSt
 	nw->show ();
 	nw->selfDestructIn (milliseconds);
 }
+

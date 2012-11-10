@@ -18,6 +18,9 @@ template<class T> class ObjectListModel;
 class FlightSortFilterProxyModel;
 
 
+/**
+ * Don't use sortByColumn
+ */
 class FlightTableView: public SkTableView
 {
 		Q_OBJECT
@@ -42,10 +45,12 @@ class FlightTableView: public SkTableView
 		void setAlwaysShowExternalFlights (bool alwaysShowExternalFlights);
 		void setAlwaysShowErroneousFlights (bool alwaysShowErroneousFlights);
 		void setShowPreparedFlights (bool showPreparedFlights);
-		void setCustomSorting (bool customSorting);
 
-		void sortCustom ();
-		void sortByColumn (int column);
+		// Sorting
+		void setSorting (int column, Qt::SortOrder order);
+		void setCustomSorting ();
+		void toggleSorting (int column);
+
 
 		void interactiveJumpToTowflight ();
 
@@ -70,8 +75,8 @@ class FlightTableView: public SkTableView
 		ObjectListModel<Flight> *_flightListModel;
 		FlightSortFilterProxyModel *_proxyModel;
 
+		int _sortColumn; // -1 for custom
 		Qt::SortOrder _sortOrder;
-		int _sortColumn;
 
 };
 

@@ -211,8 +211,6 @@ MainWindow::MainWindow (QWidget *parent):
 	ui.flightTable->setHideFinishedFlights (ui.actionHideFinished->isChecked ());
 	ui.flightTable->setAlwaysShowExternalFlights (ui.actionAlwaysShowExternal->isChecked ());
 	ui.flightTable->setAlwaysShowErroneousFlights (ui.actionAlwaysShowErroneous->isChecked ());
-
-	ui.flightTable->setCustomSorting (true);
 	ui.flightTable->setFocus ();
 
 	setDisplayDateCurrent (true);
@@ -644,7 +642,7 @@ void MainWindow::refreshFlights ()
 	int column=ui.flightTable->currentIndex ().column ();
 
 	flightList->replaceList (flights);
-	ui.flightTable->sortCustom ();
+	ui.flightTable->setCustomSorting ();
 
 	ui.flightTable->selectFlight (selectedFlight, column);
 
@@ -1546,7 +1544,7 @@ void MainWindow::weatherWidget_doubleClicked ()
 void MainWindow::on_actionSort_triggered ()
 {
 	// FIXME connect directly
-	ui.flightTable->sortCustom ();
+	ui.flightTable->setCustomSorting ();
 }
 
 // **********
