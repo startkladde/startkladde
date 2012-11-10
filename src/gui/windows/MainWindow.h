@@ -44,6 +44,7 @@
 #include "src/flarm/FlarmRecord.h" // FIXME replace with forward declaration if possible
 #include "src/model/FlightBase.h"
 #include "src/flarm/algorithms/FlightLookup.h" // FIXME remove?
+#include "src/FlightReference.h"
 
 class QWidget;
 template<class T> class QList;
@@ -220,8 +221,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		// Flight Table
 		void on_flightTable_customContextMenuRequested (const QPoint &pos);
 		void on_flightTable_doubleClicked (const QModelIndex &index);
-		void on_flightTable_departButtonClicked (dbId flightId);
-		void on_flightTable_landButtonClicked (dbId flightId, bool towflight);
+		void on_flightTable_departButtonClicked (FlightReference flight);
+		void on_flightTable_landButtonClicked (FlightReference flight);
 
 		// Not connected pane
 		void on_connectButton_clicked () { on_actionConnect_triggered (); }

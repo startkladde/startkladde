@@ -44,6 +44,7 @@ class NotificationWidget: public QWidget
     	void selfDestructNow ();
 
 	private:
+    	// FIXME store pointer to parent
     	class Geometry
     	{
     		public:
@@ -51,9 +52,11 @@ class NotificationWidget: public QWidget
 				QRectF northWest, northEast, southWest, southEast;
 
 				QPointF arrowTop, arrowBottom, arrowTip;
+				QPointF straightArrowTip;
 
 				QPainterPath path;
 
+		    	// FIXME rename recalculate
 				void update (const NotificationWidget *widget);
     	};
 
@@ -65,6 +68,7 @@ class NotificationWidget: public QWidget
     	int cornerRadius;
     	int arrowWidth;
     	int arrowLength;
+    	int arrowOffset;
 
     	QColor backgroundColor;
     	QColor widgetBackgroundColor;

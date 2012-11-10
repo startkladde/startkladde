@@ -7,6 +7,7 @@
 
 #include "src/db/dbId.h"
 #include "src/db/DbManager.h"
+#include "src/FlightReference.h"
 
 class QSettings;
 
@@ -22,32 +23,18 @@ class FlightTableView: public SkTableView
 		Q_OBJECT
 
 	public:
-		class FlightReference
-		{
-			public:
-				FlightReference ();
-				FlightReference (dbId id, bool towflight);
-				virtual ~FlightReference ();
-				dbId id ();
-				bool towflight ();
-
-			private:
-				dbId _id;
-				bool _towflight;
-		};
-
 		FlightTableView (QWidget *parent);
 		virtual ~FlightTableView ();
 
 		void setModel (EntityList<Flight> *flightList, DbManager &dbManager);
 
-		dbId getCurrentFlightId (bool *isTowflight);
-		bool selectFlight (dbId id, bool selectTowflight, int column);
+		FlightReference getCurrentFlightReference ();
+		bool selectFlight (const FlightReference &flight, int column);
 
 		void readColumnWidths (QSettings &settings);
 		void writeColumnWidths (QSettings &settings);
 
-		QRectF rectForFlight (dbId flightId, bool towflight, int column) const;
+		QRectF rectForFlight (const FlightReference &flight, int column) const;
 
 
 	public slots:
@@ -65,12 +52,12 @@ class FlightTableView: public SkTableView
 		void languageChanged ();
 		void minuteChanged ();
 
-		void showNotification (dbId flightId, bool towflight, const QString &message, int milliseconds);
+		void showNotification (const FlightReference &flight, const QString &message, int milliseconds);
 
 
 	signals:
-		void departButtonClicked (dbId flightId);
-		void landButtonClicked (dbId flightId, bool towflight);
+		void departButtonClicked (FlightReference flight);
+		void landButtonClicked (FlightReference flight);
 
 	protected slots:
 		void base_buttonClicked (QPersistentModelIndex proxyIndex);

@@ -75,7 +75,6 @@
 #include "src/flarm/flarmNet/FlarmNetHandler.h"
 #include "src/flarm/algorithms/PlaneIdentification.h"
 #include "src/flarm/algorithms/FlarmIdUpdate.h"
-//#include "src/util/qRectF.h"
 
 template <class T> class MutableObjectList;
 
@@ -204,12 +203,6 @@ MainWindow::MainWindow (QWidget *parent):
 
 	readColumnWidths (); // Stored sizes
 
-	// FIXME remove joah?
-//	connect (ui.flightTable, SIGNAL (departButtonClicked ()),
-//		this, SLOT (flightTable_departButtonClicked));
-//	connect (ui.flightTable, SIGNAL (landButtonClicked ()),
-//		this, SLOT (flightTable_landButtonClicked));
-//
 	QObject::connect (ui.actionHideFinished, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setHideFinishedFlights (bool)));
 	QObject::connect (ui.actionAlwaysShowExternal, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setAlwaysShowExternalFlights (bool)));
 	QObject::connect (ui.actionAlwaysShowErroneous, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setAlwaysShowErroneousFlights (bool)));
@@ -647,15 +640,13 @@ void MainWindow::refreshFlights ()
 
 	updateDisplayDateLabel (today);
 
-	bool towflightSelected=false;
-	dbId selectedId=ui.flightTable->getCurrentFlightId (&towflightSelected);
+	FlightReference selectedFlight=ui.flightTable->getCurrentFlightReference ();
 	int column=ui.flightTable->currentIndex ().column ();
 
 	flightList->replaceList (flights);
 	ui.flightTable->sortCustom ();
 
-	if (idValid (selectedId))
-		ui.flightTable->selectFlight (selectedId, towflightSelected, column);
+	ui.flightTable->selectFlight (selectedFlight, column);
 
 	// TODO should be done automatically
 	// ui.flightTable->resizeColumnsToContents ();
@@ -967,27 +958,25 @@ void MainWindow::on_actionLaunchMethodPreselection_triggered ()
 void MainWindow::on_actionDepart_triggered ()
 {
 	// This will check canDepart
-	interactiveDepartFlight (ui.flightTable->getCurrentFlightId (NULL));
+	interactiveDepartFlight (ui.flightTable->getCurrentFlightReference ().id ());
 }
 
 void MainWindow::on_actionLand_triggered ()
 {
-	bool isTowflight = false;
-	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
+	FlightReference flight=ui.flightTable->getCurrentFlightReference ();
 
-	if (isTowflight)
+	if (flight.towflight ())
 		// This will check canLand
-		interactiveLandTowflight (id);
+		interactiveLandTowflight (flight.id ());
 	else
-		interactiveLandFlight (id);
+		interactiveLandFlight (flight.id ());
 }
 
 void MainWindow::on_actionTouchngo_triggered ()
 {
-	bool isTowflight=false;
-	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
+	FlightReference flight=ui.flightTable->getCurrentFlightReference ();
 
-	if (isTowflight)
+	if (flight.towflight ())
 	{
 		showWarning (
 			tr ("Touch-and-go not possible"),
@@ -995,27 +984,27 @@ void MainWindow::on_actionTouchngo_triggered ()
 			this);
 	}
 	else
-		interactiveTouchAndGo (id);
+		interactiveTouchAndGo (flight.id ());
 }
 
 void MainWindow::departOrLand ()
 {
-	bool isTowflight=false;
-	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
+	FlightReference flightRef=ui.flightTable->getCurrentFlightReference ();
 
-	if (idInvalid (id)) return;
+	if (!flightRef.isValid ())
+		return;
 
 	try
 	{
-		Flight flight = dbManager.getCache ().getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (flightRef.id ());
 
 		bool flightChanged=true;
 
 		if (flight.canDepart ())
 			flight.departNow ();
-		else if (isTowflight && flight.canTowflightLand ())
+		else if (flightRef.towflight () && flight.canTowflightLand ())
 			flight.landTowflightNow ();
-		else if (!isTowflight && flight.canLand ())
+		else if (!flightRef.towflight () && flight.canLand ())
 			flight.landNow ();
 		else
 			flightChanged=false;
@@ -1031,15 +1020,16 @@ void MainWindow::departOrLand ()
 
 void MainWindow::on_actionEdit_triggered ()
 {
-	dbId id = ui.flightTable->getCurrentFlightId (NULL);
+	FlightReference flightRef=ui.flightTable->getCurrentFlightReference ();
 
-	if (idInvalid (id)) return;
+	if (!flightRef.isValid ())
+		return;
 
 	try
 	{
-		Flight flight = dbManager.getCache ().getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (flightRef.id ());
 
-		if (editFlightWindow && editFlightWindow->getEditedId ()==id)
+		if (editFlightWindow && editFlightWindow->getEditedId ()==flightRef.id ())
 		{
 			// The flight is already being edited
 
@@ -1068,14 +1058,13 @@ void MainWindow::on_actionEdit_triggered ()
 
 void MainWindow::on_actionRepeat_triggered ()
 {
-	bool isTowflight = false;
-	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
+	FlightReference flightRef=ui.flightTable->getCurrentFlightReference ();
 
 	// TODO display message
-	if (idInvalid (id))
+	if (!flightRef.isValid ())
 		return;
 
-	else if (isTowflight)
+	else if (flightRef.towflight ())
 	{
 		showWarning (tr ("Replicating not possible"),
 			tr ("The selected flight is a towflight. Towflights cannot be replicated."),
@@ -1085,36 +1074,37 @@ void MainWindow::on_actionRepeat_triggered ()
 
 	try
 	{
-		Flight flight = dbManager.getCache ().getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (flightRef.id ());
 		delete createFlightWindow; // noop if NULL
 		createFlightWindow=FlightWindow::repeatFlight (this, dbManager, flight, getNewFlightDate (), preselectedLaunchMethod);
 		createFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
 	}
 	catch (Cache::NotFoundException &ex)
 	{
-		log_error (qnotr ("Flight %1 not found in MainWindow::on_actionRepeat_triggered").arg (id));
+		log_error (qnotr ("Flight %1 not found in MainWindow::on_actionRepeat_triggered").arg (flightRef.id ()));
 	}
 }
 
 void MainWindow::on_actionDelete_triggered ()
 {
-	bool isTowflight = false;
-	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
+	FlightReference flight=ui.flightTable->getCurrentFlightReference ();
 
-	if (idInvalid (id))
-	// TODO display message
-	return;
+	if (!flight.isValid ())
+		// TODO display message
+		return;
 
 	if (!yesNoQuestion (this, tr ("Delete flight?"), tr ("Really delete flight?"))) return;
 
-	if (isTowflight) if (!yesNoQuestion (this, tr ("Delete glider flight?"),
-			tr ("The selected flight is a towflight. Really delete the corresponding glider flight?"))) return;
+	if (flight.towflight ())
+		if (!yesNoQuestion (this, tr ("Delete glider flight?"),
+			tr ("The selected flight is a towflight. Really delete the corresponding glider flight?")))
+			return;
 
 	try
 	{
 		// Get the current index
 		QModelIndex previousIndex=ui.flightTable->currentIndex ();
-		dbManager.deleteObject<Flight> (id, this);
+		dbManager.deleteObject<Flight> (flight.id (), this);
 		ui.flightTable->setCurrentIndex (previousIndex); // Handles deletion of last item correctly
 	}
 	catch (OperationCanceledException &)
@@ -1128,8 +1118,11 @@ void MainWindow::on_identifyPlaneAction_triggered ()
 	try
 	{
 		// Retrieve the flight from the database
-		dbId flightId=ui.flightTable->getCurrentFlightId (NULL);
-		Flight flight=cache.getObject<Flight> (flightId);
+		FlightReference flightRef=ui.flightTable->getCurrentFlightReference ();
+		if (!flightRef.isValid ())
+			return;
+
+		Flight flight=cache.getObject<Flight> (flightRef.id ());
 
 		// Try to identify the plane, letting the user choose or create the
 		// plane if necessary.
@@ -1154,8 +1147,11 @@ void MainWindow::on_updateFlarmIdAction_triggered ()
 	{
 		// FIXME not for towflights
 
-		dbId flightId=ui.flightTable->getCurrentFlightId (NULL);
-		Flight flight=dbManager.getCache ().getObject<Flight> (flightId);
+		FlightReference flightRef=ui.flightTable->getCurrentFlightReference ();
+		if (!flightRef.isValid ())
+			return;
+
+		Flight flight=dbManager.getCache ().getObject<Flight> (flightRef.id ());
 
 		FlarmIdUpdate flarmIdUpdate (dbManager, this);
 		flarmIdUpdate.interactiveUpdateFlarmId (flight, true, flight.getPlaneId ());
@@ -1172,10 +1168,9 @@ void MainWindow::on_actionDisplayError_triggered ()
 	// TODO: this method is quite complex and duplicates code found
 	// elsewhere - the towplane generation should be simplified
 
-	bool isTowflight;
-	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
+	FlightReference flightRef=ui.flightTable->getCurrentFlightReference ();
 
-	if (idInvalid (id))
+	if (!flightRef.isValid ())
 	{
 		showWarning (tr ("No flight selected"), tr ("No flight is selected."), this);
 		return;
@@ -1183,7 +1178,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 
 	try
 	{
-		Flight flight = dbManager.getCache ().getObject<Flight> (id);
+		Flight flight = dbManager.getCache ().getObject<Flight> (flightRef.id ());
 
 		Plane *plane=dbManager.getCache ().getNewObject<Plane> (flight.getPlaneId ());
 		LaunchMethod *launchMethod=dbManager.getCache ().getNewObject<LaunchMethod> (flight.getLaunchMethodId ());
@@ -1201,7 +1196,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 				towplane=dbManager.getCache ().getNewObject<Plane> (towplaneId);
 		}
 
-		if (isTowflight)
+		if (flightRef.towflight ())
 		{
 			dbId towLaunchMethod=dbManager.getCache ().getLaunchMethodByType (LaunchMethod::typeSelf);
 
@@ -1224,14 +1219,14 @@ void MainWindow::on_actionDisplayError_triggered ()
 
 		if (error)
 		{
-			if (isTowflight)
+			if (flightRef.towflight ())
 				showWarning (tr ("Towflight has errors"), tr ("First error of the towflight: %1").arg (errorText), this);
 			else
 				showWarning (tr ("Flight has errors"), tr ("First error of the flight: %1").arg (errorText), this);
 		}
 		else
 		{
-			if (isTowflight)
+			if (flightRef.towflight ())
 				showWarning (tr ("Towflight has no errors"), tr ("The towflight has no errors."), this);
 			else
 				showWarning (tr ("Flight has no errors"), tr ("The flight has no errors."), this);
@@ -1471,17 +1466,18 @@ void MainWindow::on_flightTable_customContextMenuRequested (const QPoint &pos)
 	contextMenu->popup (ui.flightTable->mapToGlobal (pos), 0);
 }
 
-void MainWindow::on_flightTable_departButtonClicked (dbId flightId)
+void MainWindow::on_flightTable_departButtonClicked (FlightReference flight)
 {
-	interactiveDepartFlight (flightId);
+	if (flight.isValid ())
+		interactiveDepartFlight (flight.id ());
 }
 
-void MainWindow::on_flightTable_landButtonClicked (dbId flightId, bool towflight)
+void MainWindow::on_flightTable_landButtonClicked (FlightReference flight)
 {
-	if (towflight)
-		interactiveLandTowflight (flightId);
+	if (flight.towflight ())
+		interactiveLandTowflight (flight.id ());
 	else
-		interactiveLandFlight (flightId);
+		interactiveLandFlight (flight.id ());
 }
 
 void MainWindow::updateTimeLabels (const QDateTime &now)
@@ -2286,8 +2282,10 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 		// We found the (prepared) flight. Depart it.
 		nonInteractiveDepartFlight (lookupResult.flightId);
 
-		ui.flightTable->showNotification (lookupResult.flightId, false,
-			tr ("The flight was departed automatically"), notificationDisplayTime);
+		ui.flightTable->showNotification (
+			FlightReference::flight (lookupResult.flightId),
+			tr ("The flight was departed automatically"),
+			notificationDisplayTime);
 	}
 	else
 	{
@@ -2300,8 +2298,10 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 		dbId flightId=dbManager.createObject (flight, this);
 
 		if (idValid (flightId))
-			ui.flightTable->showNotification (flightId, false,
-					tr ("The flight was created automatically"), notificationDisplayTime);
+			ui.flightTable->showNotification (
+				FlightReference::flight (flightId),
+				tr ("The flight was created automatically"),
+				notificationDisplayTime);
 	}
 }
 
@@ -2321,8 +2321,10 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 		// We found the flight. Land it.
 		nonInteractiveLandFlight (lookupResult.flightId);
 
-		ui.flightTable->showNotification (lookupResult.flightId, false,
-			tr ("The flight was landed automatically"), notificationDisplayTime);
+		ui.flightTable->showNotification (
+			FlightReference::flight (lookupResult.flightId),
+			tr ("The flight was landed automatically"),
+			notificationDisplayTime);
 	}
 	else
 	{
@@ -2334,8 +2336,10 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 		dbId flightId=dbManager.createObject (flight, this);
 
 		if (idValid(flightId))
-			ui.flightTable->showNotification (flightId, false,
-				tr ("The flight was created automatically"), notificationDisplayTime);
+			ui.flightTable->showNotification (
+				FlightReference::flight (flightId),
+				tr ("The flight was created automatically"),
+				notificationDisplayTime);
 	}
 }
 
@@ -2354,8 +2358,10 @@ void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 		// We found the flight. Perform a touch and go.
 		nonInteractiveTouchAndGo (lookupResult.flightId);
 
-		ui.flightTable->showNotification (lookupResult.flightId, false,
-			tr ("The flight performed a touch-and-go automatically"), notificationDisplayTime);
+		ui.flightTable->showNotification (
+			FlightReference::flight (lookupResult.flightId),
+			tr ("The flight performed a touch-and-go automatically"),
+			notificationDisplayTime);
 	}
 	else
 	{
@@ -2367,8 +2373,10 @@ void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 		dbId flightId=dbManager.createObject (flight, this);
 
 		if (idValid(flightId))
-			ui.flightTable->showNotification (flightId, false,
-				tr ("The flight was created automatically"), notificationDisplayTime);
+			ui.flightTable->showNotification (
+				FlightReference::flight (flightId),
+				tr ("The flight was created automatically"),
+				notificationDisplayTime);
 	}
 }
 
@@ -2382,8 +2390,8 @@ void MainWindow::on_connectFlarmAction_triggered ()
 
 void MainWindow::on_showNotificationAction_triggered ()
 {
-	bool isTowflight;
-	dbId flightId=ui.flightTable->getCurrentFlightId (&isTowflight);
-
-	ui.flightTable->showNotification (flightId, isTowflight, "NotificationWidget test", 1000);
+	ui.flightTable->showNotification (
+		ui.flightTable->getCurrentFlightReference (),
+		"NotificationWidget test",
+		1000);
 }

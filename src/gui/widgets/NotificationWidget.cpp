@@ -13,6 +13,9 @@
 
 // Note that this class uses QPointF and QRectF rather than QPoint and QRect
 // due to obscure bottom/right/center calculation rules of QRect.
+//
+// Possible improvements:
+//   * better behavior on moveArrowTip if the widget does not fit inside the parent
 
 // ******************
 // ** Construction **
@@ -21,7 +24,7 @@
 NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	selfDestructInProgress (false),
 	cornerRadius (10),
-	arrowWidth (10), arrowLength (20),
+	arrowWidth (10), arrowLength (20), arrowOffset (0),
 	backgroundColor (QColor (0, 0, 0, 191)),
 	widgetBackgroundColor (QColor (0, 0, 0, 63)),
 	drawWidgetBackground (false)
@@ -119,9 +122,10 @@ void NotificationWidget::Geometry::update (const NotificationWidget *widget)
 
 	// Calculate the arrow coordinates
 	// This currently places the arrow immediately below the top left corner.
-	arrowTop   =QPointF (bubble.left (),                     widget->cornerRadius);
-	arrowBottom=QPointF (bubble.left (),                     widget->cornerRadius+widget->arrowWidth);
-	arrowTip   =QPointF (bubble.left ()-widget->arrowLength, widget->cornerRadius+widget->arrowWidth/2);
+	arrowTop        =QPointF (bubble.left (),                     widget->cornerRadius);
+	arrowBottom     =QPointF (bubble.left (),                     widget->cornerRadius+widget->arrowWidth);
+	straightArrowTip=QPointF (bubble.left ()-widget->arrowLength, widget->cornerRadius+widget->arrowWidth/2);
+	arrowTip        =straightArrowTip+QPointF (0, widget->arrowOffset);
 
 	// Draw the bubble outline counter-clockwise, starting with the bottom left
 	// corner arc and ending after the top left corner arc.
@@ -147,7 +151,49 @@ void NotificationWidget::Geometry::update (const NotificationWidget *widget)
 
 void NotificationWidget::moveArrowTip (const QPointF &point)
 {
-	move ((point-geometry.arrowTip).toPoint ());
+	// Calculate the position where this widget would have to be in order to
+	// move the tip of a straight arrow to the given point.
+	QPointF position=point-geometry.straightArrowTip;
+
+	// If this widget has a parent widget (i. e. it is not a top level widget),
+	// make sure it is completely inside the parent widget. Note that if the
+	// parent widget is not high enough for this widget plus the margins, the
+	// results may be unexpected.
+	// FIXME disabled for now, it doesn't work if the arrow tip ends out outside
+	// of the widget boundaries (i. e. above or below the bubble) - we'll have
+	// to resize the widget in this case.
+//	QWidget *parent=parentWidget ();
+//	if (parent)
+//	{
+//		// Set the desired margin at the top and at the bottom
+//		int topMargin=1, bottomMargin=1;
+//
+//		// Calculate the minimum and maximum y position
+//		int minY=topMargin;
+//		int maxY=parent->height ()-bottomMargin-height ();
+//
+//		// Calculate the offset to move the widget to get it inside the
+//		// allowable range.
+//		int yOffset=0;
+//		if (position.y ()<minY)
+//			yOffset=minY-position.y ();
+//		else if (position.y ()>maxY)
+//			yOffset=maxY-position.y ();
+//
+//		// Move the position
+//		position += QPointF (0, yOffset);
+//
+//		// Update the arrow offset. If the arrow offset changed, we have to
+//		// recalculate the geometry.
+//		if (arrowOffset!=-yOffset)
+//		{
+//			arrowOffset=-yOffset;
+//			geometry.update (this);
+//		}
+//	}
+
+	// Move the widget
+	move (position.toPoint ());
 }
 
 void NotificationWidget::moveArrowTip (int x, int y)

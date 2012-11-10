@@ -18,38 +18,6 @@
 // flightListModel = ObjectListModel            (proxyList)
 // proxyModel      = FlightSortFilterProxyModel (flightListModel)
 
-// *****************************
-// ** FlightReference methods **
-// *****************************
-
-FlightTableView::FlightReference::FlightReference ():
-	_id (invalidId), _towflight (false)
-{
-
-}
-
-FlightTableView::FlightReference::FlightReference (dbId id, bool towflight):
-	_id (id), _towflight (towflight)
-{
-
-}
-
-FlightTableView::FlightReference::~FlightReference ()
-{
-}
-
-dbId FlightTableView::FlightReference::id ()
-{
-	return _id;
-}
-
-bool FlightTableView::FlightReference::towflight ()
-{
-	return _towflight;
-}
-
-
-
 // ******************
 // ** Construction **
 // ******************
@@ -136,10 +104,10 @@ void FlightTableView::setCustomSorting (bool customSorting)
 	_proxyModel->setCustomSorting (customSorting);
 }
 
-dbId FlightTableView::getCurrentFlightId (bool *isTowflight)
+FlightReference FlightTableView::getCurrentFlightReference ()
 {
 	if (!_flightList)
-		return invalidId;
+		return FlightReference::invalid;
 
 	// Get the currently selected index from the table; it refers to the
 	// proxy model
@@ -149,22 +117,26 @@ dbId FlightTableView::getCurrentFlightId (bool *isTowflight)
 	QModelIndex flightListModelIndex = _proxyModel->mapToSource (proxyIndex);
 
 	// If there is not selection, return an invalid ID
-	if (!flightListModelIndex.isValid ()) return invalidId;
+	if (!flightListModelIndex.isValid ())
+		return FlightReference::invalid;
 
 	// Get the flight from the model
 	const Flight &flight = _flightListModel->at (flightListModelIndex);
 
-	if (isTowflight) (*isTowflight) = flight.isTowflight ();
-	return flight.getId ();
+	return FlightReference (flight);
 }
 
-bool FlightTableView::selectFlight (dbId id, bool selectTowflight, int column)
+bool FlightTableView::selectFlight (const FlightReference &flightReference, int column)
 {
 	if (!_flightList)
-		return invalidId;
+		return false;
+
+	if (!flightReference.isValid ())
+		return false;
 
 	// Find the flight or towflight with that ID in the flight proxy list
-	int proxyListIndex=_proxyList->modelIndexFor (id, selectTowflight);
+	// FIXME should also use FlightReference
+	int proxyListIndex=_proxyList->modelIndexFor (flightReference.id (), flightReference.towflight ());
 	if (proxyListIndex<0) return false;
 
 	// Create the index in the flight list model
@@ -285,13 +257,14 @@ void FlightTableView::languageChanged ()
 	_flightListModel->reset ();
 }
 
-QRectF FlightTableView::rectForFlight (dbId flightId, bool towflight, int column) const
+QRectF FlightTableView::rectForFlight (const FlightReference &flight, int column) const
 {
 	if (!_flightList)
 		return QRectF ();
 
 	// Find the index of the flight in the flight proxy list.
-	int flightIndex=_proxyList->modelIndexFor (flightId, towflight);
+	// FIXME use FlightReference
+	int flightIndex=_proxyList->modelIndexFor (flight.id (), flight.towflight ());
 
 	// Determine the model index in the flight list model
 	QModelIndex modelIndex=_flightListModel->index (flightIndex, column);
@@ -343,16 +316,16 @@ void FlightTableView::base_buttonClicked (QPersistentModelIndex proxyIndex)
 	const Flight &flight = _flightListModel->at (flightListIndex);
 
 	if (flightListIndex.column () == _flightModel->departButtonColumn ())
-		emit departButtonClicked (flight.getId ());
+		emit departButtonClicked (FlightReference (flight));
 	else if (flightListIndex.column () == _flightModel->landButtonColumn ())
-		emit landButtonClicked (flight.getId (), flight.isTowflight ());
+		emit landButtonClicked (FlightReference (flight));
 	else
 		log_error (notr ("Unhandled button column"));
 }
 
-void FlightTableView::showNotification (dbId flightId, bool towflight, const QString &message, int milliseconds)
+void FlightTableView::showNotification (const FlightReference &flight, const QString &message, int milliseconds)
 {
-	QRectF rect=rectForFlight (flightId, towflight, 1);
+	QRectF rect=rectForFlight (flight, 1);
 
 	if (!rect.isValid ())
 	{
