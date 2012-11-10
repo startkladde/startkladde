@@ -35,7 +35,6 @@
 
 #include <QAction>
 #include <QPointer>
-#include <QPersistentModelIndex>
 
 #include "ui_MainWindow.h"
 
@@ -50,15 +49,11 @@ class QWidget;
 template<class T> class QList;
 class QModelIndex;
 
-class FlightSortFilterProxyModel;
 class InfoPlugin;
 class WeatherPlugin;
 class WeatherWidget;
 class WeatherDialog;
-class FlightModel;
-class FlightProxyList;
 class FlightWindow;
-template<class T> class ObjectListModel;
 class NmeaDecoder;
 class GpsTracker;
 class FlarmList;
@@ -97,11 +92,6 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void setDisplayDateCurrent (bool force) { setDisplayDate (QDate::currentDate (), force); }
 		void updateFlight (const Flight &flight);
 
-		dbId currentFlightId (bool *isTowflight=NULL);
-		bool selectFlight (dbId id, bool selectTowflight, int column);
-		void sortCustom ();
-		void sortByColumn (int column);
-
 		// Settings
 		void writeSettings ();
 		void readSettings ();
@@ -125,10 +115,6 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void updateDisplayDateLabel (const QDate &today=QDate::currentDate ());
 		void updateTimeLabels (const QDateTime &now=QDateTime::currentDateTime ());
 		void updateDatabaseStateLabel (DbManager::State state);
-
-		// Flight table
-		QRectF rectForFlight (dbId flightId, bool towflight, int column) const;
-		void showNotification (dbId flightId, bool towflight, const QString &message, int milliseconds);
 
 		// Flarm
 		void interactiveUpdateFlarmId (dbId flightId);
@@ -234,8 +220,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		// Flight Table
 		void on_flightTable_customContextMenuRequested (const QPoint &pos);
 		void on_flightTable_doubleClicked (const QModelIndex &index);
-		void flightTable_buttonClicked (QPersistentModelIndex proxyIndex); // TODO const &, remove dependency
-		void flightTable_horizontalHeader_sectionClicked (int index) { sortByColumn (index); }
+		void on_flightTable_departButtonClicked (dbId flightId);
+		void on_flightTable_landButtonClicked (dbId flightId, bool towflight);
 
 		// Not connected pane
 		void on_connectButton_clicked () { on_actionConnect_triggered (); }
@@ -300,19 +286,13 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		WeatherPlugin *weatherPlugin;
 		QPointer<WeatherDialog> weatherDialog;
 
+		// The models involved in displaying the flight list
 		EntityList<Flight> *flightList;
-		FlightProxyList *proxyList;
-		FlightModel *flightModel;
-		ObjectListModel<Flight> *flightListModel;
-		FlightSortFilterProxyModel *proxyModel;
 
 		// The context menu is a property of the class rather than a local
 		// variable because it has to persist after the method opening it
 		// returns.
 		QMenu *contextMenu;
-
-		Qt::SortOrder sortOrder;
-		int sortColumn;
 
 		bool databaseActionsEnabled;
 		QString databaseOkText;

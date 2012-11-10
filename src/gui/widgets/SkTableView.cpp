@@ -14,6 +14,7 @@
  *   - use a custom delegate for rendering the buttons? Might be faster and
  *     provide better control over the focus (which is disabled at the moment
  *     due to poor performance)
+ *   - Don't mention flights in the documentation, it's not flight specific
  */
 
 /*

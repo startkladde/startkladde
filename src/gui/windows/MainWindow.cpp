@@ -19,10 +19,8 @@
 #include <QTimer>
 #include <QGridLayout>
 #include <QProgressDialog>
-#include <QHeaderView>
 #include <QInputDialog>
 #include <QList>
-#include <QModelIndex>
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QScrollBar>
@@ -46,9 +44,6 @@
 #include "src/model/Plane.h"
 #include "src/model/Flight.h"
 #include "src/model/Person.h"
-#include "src/model/flightList/FlightModel.h"
-#include "src/model/flightList/FlightProxyList.h"
-#include "src/model/flightList/FlightSortFilterProxyModel.h"
 #include "src/model/objectList/AutomaticEntityList.h" // TODO remove some?
 #include "src/model/objectList/EntityList.h"
 #include "src/model/objectList/ObjectListModel.h"
@@ -80,8 +75,7 @@
 #include "src/flarm/flarmNet/FlarmNetHandler.h"
 #include "src/flarm/algorithms/PlaneIdentification.h"
 #include "src/flarm/algorithms/FlarmIdUpdate.h"
-#include "src/gui/widgets/NotificationWidget.h"
-#include "src/util/qRectF.h"
+//#include "src/util/qRectF.h"
 
 template <class T> class MutableObjectList;
 
@@ -99,7 +93,8 @@ MainWindow::MainWindow (QWidget *parent):
 	preselectedLaunchMethod (invalidId),
 	createFlightWindow (NULL), editFlightWindow (NULL),
 	weatherWidget (NULL), weatherPlugin (NULL),
-	weatherDialog (NULL), flightList (new EntityList<Flight> (this)),
+	weatherDialog (NULL),
+	flightList (new EntityList<Flight> (this)),
 	contextMenu (new QMenu (this)),
 	databaseActionsEnabled (false),
 	fontSet (false),
@@ -107,16 +102,6 @@ MainWindow::MainWindow (QWidget *parent):
 	debugFlarmId ("ABC")
 {
 	ui.setupUi (this);
-
-	flightModel = new FlightModel (dbManager.getCache ());
-	proxyList=new FlightProxyList (dbManager.getCache (), *flightList, this); // TODO never deleted
-	flightListModel = new ObjectListModel<Flight> (proxyList, false, flightModel, true, this);
-
-	proxyModel = new FlightSortFilterProxyModel (dbManager.getCache (), this);
-	proxyModel->setSourceModel (flightListModel);
-
-	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
-	proxyModel->setDynamicSortFilter (true);
 
 	// Menu bar
 	logAction = ui.logDockWidget->toggleViewAction ();
@@ -183,8 +168,6 @@ MainWindow::MainWindow (QWidget *parent):
 	// TODO to showEvent?
 	QTimer::singleShot (0, this, SLOT (on_actionConnect_triggered ()));
 
-	setDisplayDateCurrent (true);
-
 	ui.logDockWidget->setVisible (false);
 
 	ui.actionShutdown->setVisible (Settings::instance ().enableShutdown);
@@ -216,32 +199,31 @@ MainWindow::MainWindow (QWidget *parent):
 	// Flight table
 	ui.flightTable->setAutoResizeRows (true);
 	ui.flightTable->setColoredSelectionEnabled (true);
-	ui.flightTable->setModel (proxyModel);
+	ui.flightTable->setModel (flightList, dbManager);
 	ui.flightTable->resizeColumnsToContents (); // Default sizes
 
 	readColumnWidths (); // Stored sizes
 
-	QObject::connect (
-		ui.flightTable, SIGNAL (buttonClicked (QPersistentModelIndex)),
-		this, SLOT (flightTable_buttonClicked (QPersistentModelIndex))
-		);
-	QObject::connect (
-		ui.flightTable->horizontalHeader (), SIGNAL (sectionClicked (int)),
-		this, SLOT (flightTable_horizontalHeader_sectionClicked (int))
-		);
-
-	QObject::connect (ui.actionHideFinished, SIGNAL (toggled (bool)), proxyModel, SLOT (setHideFinishedFlights (bool)));
-	QObject::connect (ui.actionAlwaysShowExternal, SIGNAL (toggled (bool)), proxyModel, SLOT (setAlwaysShowExternalFlights (bool)));
-	QObject::connect (ui.actionAlwaysShowErroneous, SIGNAL (toggled (bool)), proxyModel, SLOT (setAlwaysShowErroneousFlights (bool)));
+	// FIXME remove joah?
+//	connect (ui.flightTable, SIGNAL (departButtonClicked ()),
+//		this, SLOT (flightTable_departButtonClicked));
+//	connect (ui.flightTable, SIGNAL (landButtonClicked ()),
+//		this, SLOT (flightTable_landButtonClicked));
+//
+	QObject::connect (ui.actionHideFinished, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setHideFinishedFlights (bool)));
+	QObject::connect (ui.actionAlwaysShowExternal, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setAlwaysShowExternalFlights (bool)));
+	QObject::connect (ui.actionAlwaysShowErroneous, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setAlwaysShowErroneousFlights (bool)));
 
 	// Initialize all properties of the filter proxy model
-	proxyModel->setHideFinishedFlights (ui.actionHideFinished->isChecked ());
-	proxyModel->setAlwaysShowExternalFlights (ui.actionAlwaysShowExternal->isChecked ());
-	proxyModel->setAlwaysShowErroneousFlights (ui.actionAlwaysShowErroneous->isChecked ());
+	ui.flightTable->setHideFinishedFlights (ui.actionHideFinished->isChecked ());
+	ui.flightTable->setAlwaysShowExternalFlights (ui.actionAlwaysShowExternal->isChecked ());
+	ui.flightTable->setAlwaysShowErroneousFlights (ui.actionAlwaysShowErroneous->isChecked ());
 
-	proxyModel->setCustomSorting (true);
-
+	ui.flightTable->setCustomSorting (true);
 	ui.flightTable->setFocus ();
+
+	setDisplayDateCurrent (true);
+
 
 	// Database
 	connect (&dbManager.getInterface (), SIGNAL (databaseError (int, QString)), this, SLOT (databaseError (int, QString)));
@@ -256,7 +238,7 @@ MainWindow::MainWindow (QWidget *parent):
 
 MainWindow::~MainWindow ()
 {
-	// Hide the window to avoid trouble[tm].
+	// Hakc: Hide the window to avoid trouble[tm].
 	// If we don't make the window invisible here, it will be done in the
 	// QWidget destructor. Then the flight table will access its model, which
 	// will in turn access the cache, which has already been deleted.
@@ -520,7 +502,7 @@ void MainWindow::writeSettings ()
 	}
 
 	settings.beginGroup (notr ("flightTable"));
-	ui.flightTable->writeColumnWidths (settings, *flightModel);
+	ui.flightTable->writeColumnWidths (settings);
 	settings.endGroup ();
 
 	settings.endGroup ();
@@ -534,7 +516,7 @@ void MainWindow::readColumnWidths ()
 
 	settings.beginGroup (notr ("gui"));
     settings.beginGroup (notr ("flightTable"));
-    ui.flightTable->readColumnWidths (settings, *flightModel);
+    ui.flightTable->readColumnWidths (settings);
     settings.endGroup ();
     settings.endGroup ();
 }
@@ -651,7 +633,7 @@ void MainWindow::refreshFlights ()
 			flights  = dbManager.getCache ().getFlightsToday ().getList ();
 			flights += dbManager.getCache ().getPreparedFlights ().getList ();
 
-			proxyModel->setShowPreparedFlights (true);
+			ui.flightTable->setShowPreparedFlights (true);
 		}
 		else
 		{
@@ -659,21 +641,21 @@ void MainWindow::refreshFlights ()
 			// cache's "other" date
 			flights=dbManager.getCache ().getFlightsOther ().getList ();
 
-			proxyModel->setShowPreparedFlights (false);
+			ui.flightTable->setShowPreparedFlights (false);
 		}
 	}
 
 	updateDisplayDateLabel (today);
 
 	bool towflightSelected=false;
-	dbId selectedId=currentFlightId (&towflightSelected);
+	dbId selectedId=ui.flightTable->getCurrentFlightId (&towflightSelected);
 	int column=ui.flightTable->currentIndex ().column ();
 
 	flightList->replaceList (flights);
-	sortCustom ();
+	ui.flightTable->sortCustom ();
 
 	if (idValid (selectedId))
-		selectFlight (selectedId, towflightSelected, column);
+		ui.flightTable->selectFlight (selectedId, towflightSelected, column);
 
 	// TODO should be done automatically
 	// ui.flightTable->resizeColumnsToContents ();
@@ -689,89 +671,6 @@ void MainWindow::refreshFlights ()
 
 	// TODO
 	//updateInfo ();
-}
-
-dbId MainWindow::currentFlightId (bool *isTowflight)
-{
-	// Get the currently selected index from the table; it refers to the
-	// proxy model
-	QModelIndex proxyIndex = ui.flightTable->currentIndex ();
-
-	// Map the index from the proxy model to the flight list model
-	QModelIndex flightListModelIndex = proxyModel->mapToSource (proxyIndex);
-
-	// If there is not selection, return an invalid ID
-	if (!flightListModelIndex.isValid ()) return invalidId;
-
-	// Get the flight from the model
-	const Flight &flight = flightListModel->at (flightListModelIndex);
-
-	if (isTowflight) (*isTowflight) = flight.isTowflight ();
-	return flight.getId ();
-}
-
-bool MainWindow::selectFlight (dbId id, bool selectTowflight, int column)
-{
-//	int flightListIndex=flightList->findById (id);
-
-	// Find the flight or towflight with that ID in the flight proxy list
-	int proxyListIndex=proxyList->modelIndexFor (id, selectTowflight);
-	if (proxyListIndex<0) return false;
-
-	// Create the index in the flight list model
-	QModelIndex flightListModelIndex=flightListModel->index (proxyListIndex, column);
-	if (!flightListModelIndex.isValid ()) return false;
-
-	// Map the index from the flight list model to the proxy model
-	QModelIndex proxyIndex=proxyModel->mapFromSource (flightListModelIndex);
-	if (!proxyIndex.isValid ()) return false;
-
-	// Select it
-	ui.flightTable->setCurrentIndex (proxyIndex);
-
-	return true;
-
-	// flightList
-	// proxyList       = FlightProxyList            (flightList)
-	// flightListModel = ObjectListModel            (proxyList)
-	// proxyModel      = FlightSortFilterProxyModel (flightListModel)
-}
-
-void MainWindow::sortCustom ()
-{
-	// Use custom sorting
-	proxyModel->sortCustom ();
-
-	// Show the sort status in the header view
-	ui.flightTable->setSortingEnabled (false); // Make sure it is off
-	ui.flightTable->horizontalHeader ()->setSortIndicatorShown (false);
-}
-
-void MainWindow::sortByColumn (int column)
-{
-	// Determine the new sorting order: when custom sorting was in effect or the
-	// sorting column changed, sort ascending; otherwise, toggle the sorting
-	// order
-	if (proxyModel->getCustomSorting ())
-		sortOrder=Qt::AscendingOrder; // custom sorting was in effect
-	else if (column!=sortColumn)
-		sortOrder=Qt::AscendingOrder; // different column
-	else if (sortOrder==Qt::AscendingOrder)
-		sortOrder=Qt::DescendingOrder; // toggle ascending->descending
-	else
-		sortOrder=Qt::AscendingOrder; // toggle any->ascending
-
-	// Set the new sorting column
-	sortColumn=column;
-
-	// Sort the proxy model
-	proxyModel->setCustomSorting (false);
-	proxyModel->sort (sortColumn, sortOrder);
-
-	// Show the sort status in the header view
-	QHeaderView *header=ui.flightTable->horizontalHeader ();
-	header->setSortIndicatorShown (true);
-	header->setSortIndicator (sortColumn, sortOrder);
 }
 
 /**
@@ -1068,13 +967,13 @@ void MainWindow::on_actionLaunchMethodPreselection_triggered ()
 void MainWindow::on_actionDepart_triggered ()
 {
 	// This will check canDepart
-	interactiveDepartFlight (currentFlightId ());
+	interactiveDepartFlight (ui.flightTable->getCurrentFlightId (NULL));
 }
 
 void MainWindow::on_actionLand_triggered ()
 {
 	bool isTowflight = false;
-	dbId id = currentFlightId (&isTowflight);
+	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
 
 	if (isTowflight)
 		// This will check canLand
@@ -1086,7 +985,7 @@ void MainWindow::on_actionLand_triggered ()
 void MainWindow::on_actionTouchngo_triggered ()
 {
 	bool isTowflight=false;
-	dbId id = currentFlightId (&isTowflight);
+	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
 
 	if (isTowflight)
 	{
@@ -1102,7 +1001,7 @@ void MainWindow::on_actionTouchngo_triggered ()
 void MainWindow::departOrLand ()
 {
 	bool isTowflight=false;
-	dbId id = currentFlightId (&isTowflight);
+	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
 
 	if (idInvalid (id)) return;
 
@@ -1132,7 +1031,7 @@ void MainWindow::departOrLand ()
 
 void MainWindow::on_actionEdit_triggered ()
 {
-	dbId id = currentFlightId ();
+	dbId id = ui.flightTable->getCurrentFlightId (NULL);
 
 	if (idInvalid (id)) return;
 
@@ -1170,7 +1069,7 @@ void MainWindow::on_actionEdit_triggered ()
 void MainWindow::on_actionRepeat_triggered ()
 {
 	bool isTowflight = false;
-	dbId id = currentFlightId (&isTowflight);
+	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
 
 	// TODO display message
 	if (idInvalid (id))
@@ -1200,7 +1099,7 @@ void MainWindow::on_actionRepeat_triggered ()
 void MainWindow::on_actionDelete_triggered ()
 {
 	bool isTowflight = false;
-	dbId id = currentFlightId (&isTowflight);
+	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
 
 	if (idInvalid (id))
 	// TODO display message
@@ -1229,7 +1128,7 @@ void MainWindow::on_identifyPlaneAction_triggered ()
 	try
 	{
 		// Retrieve the flight from the database
-		dbId flightId=currentFlightId (NULL);
+		dbId flightId=ui.flightTable->getCurrentFlightId (NULL);
 		Flight flight=cache.getObject<Flight> (flightId);
 
 		// Try to identify the plane, letting the user choose or create the
@@ -1255,7 +1154,7 @@ void MainWindow::on_updateFlarmIdAction_triggered ()
 	{
 		// FIXME not for towflights
 
-		dbId flightId=currentFlightId (NULL);
+		dbId flightId=ui.flightTable->getCurrentFlightId (NULL);
 		Flight flight=dbManager.getCache ().getObject<Flight> (flightId);
 
 		FlarmIdUpdate flarmIdUpdate (dbManager, this);
@@ -1274,7 +1173,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 	// elsewhere - the towplane generation should be simplified
 
 	bool isTowflight;
-	dbId id = currentFlightId (&isTowflight);
+	dbId id = ui.flightTable->getCurrentFlightId (&isTowflight);
 
 	if (idInvalid (id))
 	{
@@ -1441,41 +1340,19 @@ void MainWindow::on_actionRefreshAll_triggered ()
 
 void MainWindow::on_actionRefreshTable_triggered ()
 {
+	// FIXME connect directly
 	refreshFlights ();
 }
 
 void MainWindow::on_actionJumpToTow_triggered ()
 {
-	// Get the currently selected index in the ObjectListModel
-	QModelIndex currentIndex=proxyModel->mapToSource (ui.flightTable->currentIndex ());
-
-	if (!currentIndex.isValid ())
-	{
-		showWarning (tr ("No flight selected"), tr ("No flight is selected."), this);
-		return;
-	}
-
-	// Get the towref from the FlightProxyList. The rows of the ObjectListModel
-	// correspond to those of its source, the FlightProxyList.
-	int towref=proxyList->findTowref (currentIndex.row ());
-
-	// TODO better error message
-	if (towref<0)
-	{
-		QString text=tr ("Either the selected flight is neither a towflight nor a towed flight, or it has not departed yet.");
-		showWarning (tr ("No towflight"), text, this);
-		return;
-	}
-
-	// Generate the index in the ObjectListModel
-	QModelIndex towrefIndex=currentIndex.sibling (towref, currentIndex.column ());
-
-	// Jump to the flight
-	ui.flightTable->setCurrentIndex (proxyModel->mapFromSource (towrefIndex));
+	// FIXME connect directly
+	ui.flightTable->interactiveJumpToTowflight ();
 }
 
 void MainWindow::on_actionRestartPlugins_triggered ()
 {
+	// FIXME connect directly
 	restartPlugins ();
 }
 
@@ -1594,37 +1471,18 @@ void MainWindow::on_flightTable_customContextMenuRequested (const QPoint &pos)
 	contextMenu->popup (ui.flightTable->mapToGlobal (pos), 0);
 }
 
-void MainWindow::flightTable_buttonClicked (QPersistentModelIndex proxyIndex)
+void MainWindow::on_flightTable_departButtonClicked (dbId flightId)
 {
-	if (!proxyIndex.isValid ())
-	{
-		log_error (notr ("A button with invalid persistent index was clicked in MainWindow::flightTable_buttonClicked"));
-		return;
-	}
-
-	QModelIndex flightListIndex = proxyModel->mapToSource (proxyIndex);
-	const Flight &flight = flightListModel->at (flightListIndex);
-
-//	std::cout << qnotr ("Button clicked at proxy index (%1,%2), flight list index is (%3,%4), flight ID is %5")
-//		.arg (proxyIndex.row()).arg (proxyIndex.column())
-//		.arg (flightListIndex.row()).arg (flightListIndex.column())
-//		.arg (flight.id)
-//		<< std::endl;
-
-	if (flightListIndex.column () == flightModel->departButtonColumn ())
-		interactiveDepartFlight (flight.getId ());
-	else if (flightListIndex.column () == flightModel->landButtonColumn ())
-	{
-		if (flight.isTowflight ())
-			interactiveLandTowflight (flight.getId ());
-		else
-			interactiveLandFlight (flight.getId ());
-	}
-	else
-		std::cerr << notr ("Unhandled button column in MainWindow::flightTable_buttonClicked") << std::endl;
+	interactiveDepartFlight (flightId);
 }
 
-#include "src/gui/widgets/TableButton.h"
+void MainWindow::on_flightTable_landButtonClicked (dbId flightId, bool towflight)
+{
+	if (towflight)
+		interactiveLandTowflight (flightId);
+	else
+		interactiveLandFlight (flightId);
+}
 
 void MainWindow::updateTimeLabels (const QDateTime &now)
 {
@@ -1644,15 +1502,8 @@ void MainWindow::timeTimer_timeout ()
 	// Some things are done on the beginning of a new minute.
 	if (second<lastSecond)
 	{
-		QModelIndex oldIndex=ui.flightTable->currentIndex ();
-		QPersistentModelIndex focusWidgetIndex=ui.flightTable->findButton (
-			dynamic_cast<TableButton *> (QApplication::focusWidget ()));
-
-		int durationColumn=flightModel->durationColumn ();
-		flightListModel->columnChanged (durationColumn);
-
-		ui.flightTable->setCurrentIndex (oldIndex);
-		ui.flightTable->focusWidgetAt (focusWidgetIndex);
+		// FIXME connect directly to minuteChanged ()
+		ui.flightTable->minuteChanged ();
 
 		emit minuteChanged ();
 	}
@@ -1698,7 +1549,8 @@ void MainWindow::weatherWidget_doubleClicked ()
 
 void MainWindow::on_actionSort_triggered ()
 {
-	sortCustom ();
+	// FIXME connect directly
+	ui.flightTable->sortCustom ();
 }
 
 // **********
@@ -1821,7 +1673,14 @@ void MainWindow::on_actionPilotLogs_triggered ()
 
 void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 {
-	LaunchMethodStatistics *stats = LaunchMethodStatistics::createNew (proxyList->getList (), dbManager.getCache ());
+	// Get the list of flights and add the towflights
+	QList<Flight> flights=flightList->getList ();
+	flights+=Flight::makeTowflights (flights, cache);
+
+	// Create the launch method statistics
+	LaunchMethodStatistics *stats=LaunchMethodStatistics::createNew (flights, cache);
+
+	// Display the launch method statistics
 	StatisticsWindow::display (stats, true, ntr_launchMethodOverviewTitle, this);
 }
 
@@ -2294,9 +2153,7 @@ void MainWindow::languageChanged ()
 	updateTimeLabels ();
 	updateDatabaseStateLabel (dbManager.getState ());
 
-	// See the FlightModel class documentation
-	flightModel->updateTranslations ();
-	flightListModel->reset ();
+	ui.flightTable->languageChanged ();
 
 	restartPlugins ();
 
@@ -2429,7 +2286,7 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 		// We found the (prepared) flight. Depart it.
 		nonInteractiveDepartFlight (lookupResult.flightId);
 
-		showNotification (lookupResult.flightId, false,
+		ui.flightTable->showNotification (lookupResult.flightId, false,
 			tr ("The flight was departed automatically"), notificationDisplayTime);
 	}
 	else
@@ -2443,7 +2300,7 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 		dbId flightId=dbManager.createObject (flight, this);
 
 		if (idValid (flightId))
-			showNotification (flightId, false,
+			ui.flightTable->showNotification (flightId, false,
 					tr ("The flight was created automatically"), notificationDisplayTime);
 	}
 }
@@ -2464,7 +2321,7 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 		// We found the flight. Land it.
 		nonInteractiveLandFlight (lookupResult.flightId);
 
-		showNotification (lookupResult.flightId, false,
+		ui.flightTable->showNotification (lookupResult.flightId, false,
 			tr ("The flight was landed automatically"), notificationDisplayTime);
 	}
 	else
@@ -2477,7 +2334,7 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 		dbId flightId=dbManager.createObject (flight, this);
 
 		if (idValid(flightId))
-			showNotification (flightId, false,
+			ui.flightTable->showNotification (flightId, false,
 				tr ("The flight was created automatically"), notificationDisplayTime);
 	}
 }
@@ -2497,7 +2354,7 @@ void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 		// We found the flight. Perform a touch and go.
 		nonInteractiveTouchAndGo (lookupResult.flightId);
 
-		showNotification (lookupResult.flightId, false,
+		ui.flightTable->showNotification (lookupResult.flightId, false,
 			tr ("The flight performed a touch-and-go automatically"), notificationDisplayTime);
 	}
 	else
@@ -2510,7 +2367,7 @@ void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 		dbId flightId=dbManager.createObject (flight, this);
 
 		if (idValid(flightId))
-			showNotification (flightId, false,
+			ui.flightTable->showNotification (flightId, false,
 				tr ("The flight was created automatically"), notificationDisplayTime);
 	}
 }
@@ -2523,51 +2380,10 @@ void MainWindow::on_connectFlarmAction_triggered ()
 		flarmStream->close ();
 }
 
-QRectF MainWindow::rectForFlight (dbId flightId, bool towflight, int column) const
-{
-	// Find the index of the flight in the flight proxy list.
-	int flightIndex=proxyList->modelIndexFor (flightId, towflight);
-
-	// Determine the model index in the flight list model
-	QModelIndex modelIndex=flightListModel->index (flightIndex, column);
-	if (!modelIndex.isValid ())
-		return QRectF ();
-
-	// Map the model index to the proxy model
-	modelIndex=proxyModel->mapFromSource (modelIndex);
-	if (!modelIndex.isValid ())
-		return QRectF ();
-
-	// Get the rectangle from the table view
-	return ui.flightTable->visualRect (modelIndex);
-}
-
-void MainWindow::showNotification (dbId flightId, bool towflight, const QString &message, int milliseconds)
-{
-	QRectF rect=rectForFlight (flightId, towflight, 1);
-
-	if (!rect.isValid ())
-	{
-		if (towflight)
-			std::cerr << notr ("No rectangle found for towflight of ") << flightId << std::endl;
-		else
-			std::cerr << notr ("No rectangle found for flight ") << flightId << std::endl;
-
-		return;
-	}
-
-	NotificationWidget *nw=new NotificationWidget (ui.flightTable->viewport ());
-	//nw->setDrawWidgetBackground (true);
-	nw->setText (message);
-	nw->moveArrowTip (rect.center ());
-	nw->show ();
-	nw->selfDestructIn (milliseconds);
-}
-
 void MainWindow::on_showNotificationAction_triggered ()
 {
 	bool isTowflight;
-	dbId flightId=currentFlightId (&isTowflight);
+	dbId flightId=ui.flightTable->getCurrentFlightId (&isTowflight);
 
-	showNotification (flightId, isTowflight, "NotificationWidget test", 1000);
+	ui.flightTable->showNotification (flightId, isTowflight, "NotificationWidget test", 1000);
 }

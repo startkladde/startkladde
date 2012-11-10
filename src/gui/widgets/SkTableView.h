@@ -1,10 +1,3 @@
-/*
- * SkTableView.h
- *
- *  Created on: Aug 29, 2009
- *      Author: Martin Herrmann
- */
-
 #ifndef SKTABLEVIEW_H_
 #define SKTABLEVIEW_H_
 

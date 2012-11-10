@@ -243,7 +243,7 @@
      </widget>
     </item>
     <item>
-     <widget class="SkTableView" name="flightTable">
+     <widget class="FlightTableView" name="flightTable">
       <property name="contextMenuPolicy">
        <enum>Qt::CustomContextMenu</enum>
       </property>
@@ -262,9 +262,6 @@
       <property name="cornerButtonEnabled">
        <bool>false</bool>
       </property>
-      <attribute name="horizontalHeaderHighlightSections">
-       <bool>false</bool>
-      </attribute>
       <attribute name="horizontalHeaderHighlightSections">
        <bool>false</bool>
       </attribute>
@@ -374,7 +371,7 @@
      <x>0</x>
      <y>0</y>
      <width>825</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuProgram">
@@ -1005,11 +1002,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>SkTableView</class>
-   <extends>QTableView</extends>
-   <header>src/gui/widgets/SkTableView.h</header>
-  </customwidget>
-  <customwidget>
    <class>SkLabel</class>
    <extends>QLabel</extends>
    <header>src/gui/widgets/SkLabel.h</header>
@@ -1018,6 +1010,11 @@
    <class>AcpiWidget</class>
    <extends>QLabel</extends>
    <header>src/gui/widgets/AcpiWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FlightTableView</class>
+   <extends>QTableView</extends>
+   <header>src/gui/widgets/FlightTableView.h</header>
   </customwidget>
  </customwidgets>
  <resources>
