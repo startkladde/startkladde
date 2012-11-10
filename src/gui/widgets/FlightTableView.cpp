@@ -22,8 +22,12 @@
 // ** Construction **
 // ******************
 
+/**
+ * You must call init before any other method is called.
+ */
 FlightTableView::FlightTableView (QWidget *parent):
 	SkTableView (parent),
+	_dbManager (NULL),
 	_flightList (NULL), _proxyList (NULL), _flightModel (NULL),
 	_flightListModel (NULL), _proxyModel (NULL)
 {
@@ -35,26 +39,26 @@ FlightTableView::FlightTableView (QWidget *parent):
 		this, SLOT (base_buttonClicked (QPersistentModelIndex))
 		);
 
-	setCustomSorting ();
 }
 
 FlightTableView::~FlightTableView ()
 {
+	delete _flightModel;
 }
 
-void FlightTableView::setModel (EntityList<Flight> *flightList, DbManager &dbManager)
+void FlightTableView::init (DbManager *dbManager)
 {
-	// FIXME most of these should be set in the constructor, and just update
-	// here (where applicable) - what is created here must be deleted. The
-	// remove the model check at the beginning of all methods where possible.
-	_flightList=flightList;
+	if (_dbManager)
+		return;
 
-	_proxyList=new FlightProxyList (dbManager.getCache (), *_flightList, this); // TODO never deleted
+	_dbManager=dbManager;
 
-	_flightModel = new FlightModel (dbManager.getCache ());
+	_proxyList=new FlightProxyList (dbManager->getCache (), this); // TODO never deleted
+
+	_flightModel = new FlightModel (dbManager->getCache ());
 	_flightListModel = new ObjectListModel<Flight> (_proxyList, false, _flightModel, true, this);
 
-	_proxyModel = new FlightSortFilterProxyModel (dbManager.getCache (), this);
+	_proxyModel = new FlightSortFilterProxyModel (dbManager->getCache (), this);
 	_proxyModel->setSourceModel (_flightListModel);
 
 	_proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
@@ -62,45 +66,58 @@ void FlightTableView::setModel (EntityList<Flight> *flightList, DbManager &dbMan
 
 
 	SkTableView::setModel (_proxyModel);
+
+
+	setCustomSorting ();
+}
+
+void FlightTableView::setModel (EntityList<Flight> *flightList)
+{
+	// FIXME reset view et al
+	_proxyList->setSourceModel (flightList);
+
+//	// FIXME most of these should be set in the constructor, and just update
+//	// here (where applicable) - what is created here must be deleted. The
+//	// remove the model check at the beginning of all methods where possible.
+//	_flightList=flightList;
+//
+//	_proxyList=new FlightProxyList (dbManager.getCache (), *_flightList, this); // TODO never deleted
+//
+//	_flightModel = new FlightModel (dbManager.getCache ());
+//	_flightListModel = new ObjectListModel<Flight> (_proxyList, false, _flightModel, true, this);
+//
+//	_proxyModel = new FlightSortFilterProxyModel (dbManager.getCache (), this);
+//	_proxyModel->setSourceModel (_flightListModel);
+//
+//	_proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
+//	_proxyModel->setDynamicSortFilter (true);
+//
+//
+//	SkTableView::setModel (_proxyModel);
 }
 
 void FlightTableView::setHideFinishedFlights (bool hideFinishedFlights)
 {
-	if (!_flightList)
-		return;
-
 	_proxyModel->setHideFinishedFlights (hideFinishedFlights);
 }
 
 void FlightTableView::setAlwaysShowExternalFlights (bool alwaysShowExternalFlights)
 {
-	if (!_flightList)
-		return;
-
 	_proxyModel->setAlwaysShowExternalFlights (alwaysShowExternalFlights);
 }
 
 void FlightTableView::setAlwaysShowErroneousFlights (bool alwaysShowErroneousFlights)
 {
-	if (!_flightList)
-		return;
-
 	_proxyModel->setAlwaysShowErroneousFlights (alwaysShowErroneousFlights);
 }
 
 void FlightTableView::setShowPreparedFlights (bool showPreparedFlights)
 {
-	if (!_flightList)
-		return;
-
 	_proxyModel->setShowPreparedFlights (showPreparedFlights);
 }
 
 FlightReference FlightTableView::getCurrentFlightReference ()
 {
-	if (!_flightList)
-		return FlightReference::invalid;
-
 	// Get the currently selected index from the table; it refers to the
 	// proxy model
 	QModelIndex proxyIndex = currentIndex ();
@@ -120,9 +137,6 @@ FlightReference FlightTableView::getCurrentFlightReference ()
 
 bool FlightTableView::selectFlight (const FlightReference &flightReference, int column)
 {
-	if (!_flightList)
-		return false;
-
 	if (!flightReference.isValid ())
 		return false;
 
@@ -147,25 +161,16 @@ bool FlightTableView::selectFlight (const FlightReference &flightReference, int 
 
 void FlightTableView::readColumnWidths (QSettings &settings)
 {
-	if (!_flightList)
-		return;
-
 	SkTableView::readColumnWidths (settings, *_flightModel);
 }
 
 void FlightTableView::writeColumnWidths (QSettings &settings)
 {
-	if (!_flightList)
-		return;
-
 	SkTableView::writeColumnWidths (settings, *_flightModel);
 }
 
 void FlightTableView::interactiveJumpToTowflight ()
 {
-	if (!_flightList)
-		return;
-
 	// Get the currently selected index in the ObjectListModel
 	QModelIndex index=_proxyModel->mapToSource (currentIndex ());
 
@@ -196,9 +201,6 @@ void FlightTableView::interactiveJumpToTowflight ()
 
 void FlightTableView::languageChanged ()
 {
-	if (!_flightList)
-		return;
-
 	// See the FlightModel class documentation
 	_flightModel->updateTranslations ();
 	_flightListModel->reset ();
@@ -206,9 +208,6 @@ void FlightTableView::languageChanged ()
 
 QRectF FlightTableView::rectForFlight (const FlightReference &flight, int column) const
 {
-	if (!_flightList)
-		return QRectF ();
-
 	// Find the index of the flight in the flight proxy list.
 	// FIXME use FlightReference
 	int flightIndex=_proxyList->modelIndexFor (flight.id (), flight.towflight ());
@@ -229,9 +228,6 @@ QRectF FlightTableView::rectForFlight (const FlightReference &flight, int column
 
 void FlightTableView::minuteChanged ()
 {
-	if (!_flightList)
-		return;
-
 	QModelIndex oldIndex=currentIndex ();
 	QPersistentModelIndex focusWidgetIndex=findButton (
 		dynamic_cast<TableButton *> (QApplication::focusWidget ()));
@@ -246,9 +242,6 @@ void FlightTableView::minuteChanged ()
 
 void FlightTableView::base_buttonClicked (QPersistentModelIndex proxyIndex)
 {
-	if (!_flightList)
-		return;
-
 	if (!proxyIndex.isValid ())
 	{
 		log_error (notr ("A button with invalid persistent index was clicked."));
@@ -278,9 +271,6 @@ void FlightTableView::base_buttonClicked (QPersistentModelIndex proxyIndex)
  */
 void FlightTableView::setSorting (int column, Qt::SortOrder order)
 {
-	if (!_flightList)
-		return;
-
 	// Make sure QTableView's sorting mechanism is disabled, we use our own
 	// sorting mechanism
 	setSortingEnabled (false);
@@ -317,9 +307,6 @@ void FlightTableView::setCustomSorting ()
 
 void FlightTableView::toggleSorting (int column)
 {
-	if (!_flightList)
-		return;
-
 	// Toggle sorting: custom -> ascending -> descending
 	if (_sortColumn<0)
 		// custom -> ascending

@@ -16,6 +16,7 @@ class FlightProxyList;
 class FlightModel;
 template<class T> class ObjectListModel;
 class FlightSortFilterProxyModel;
+class DbManager;
 
 
 /**
@@ -28,8 +29,9 @@ class FlightTableView: public SkTableView
 	public:
 		FlightTableView (QWidget *parent);
 		virtual ~FlightTableView ();
+		void init (DbManager *dbManager);
 
-		void setModel (EntityList<Flight> *flightList, DbManager &dbManager);
+		void setModel (EntityList<Flight> *flightList);
 
 		FlightReference getCurrentFlightReference ();
 		bool selectFlight (const FlightReference &flight, int column);
@@ -68,6 +70,8 @@ class FlightTableView: public SkTableView
 		void base_buttonClicked (QPersistentModelIndex proxyIndex);
 
 	private:
+		DbManager *_dbManager;
+
 		// The models involved in displaying the flight list
 		EntityList<Flight> *_flightList;
 		FlightProxyList *_proxyList;

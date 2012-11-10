@@ -102,6 +102,8 @@ MainWindow::MainWindow (QWidget *parent):
 {
 	ui.setupUi (this);
 
+	ui.flightTable->init (&dbManager);
+
 	// Menu bar
 	logAction = ui.logDockWidget->toggleViewAction ();
 	ui.menuDatabase->addSeparator ();
@@ -198,7 +200,7 @@ MainWindow::MainWindow (QWidget *parent):
 	// Flight table
 	ui.flightTable->setAutoResizeRows (true);
 	ui.flightTable->setColoredSelectionEnabled (true);
-	ui.flightTable->setModel (flightList, dbManager);
+	ui.flightTable->setModel (flightList);
 	ui.flightTable->resizeColumnsToContents (); // Default sizes
 
 	readColumnWidths (); // Stored sizes
