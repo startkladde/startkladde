@@ -226,50 +226,31 @@ void FlightTableView::minuteChanged ()
  */
 QModelIndex FlightTableView::getModelIndex (const FlightReference &flightReference, int column) const
 {
-	// FIXME don't check for validity if mapping preserves invalidity
-
 	// The flight reference refers to the proxy list. Map it to a model index
 	// for the proxy model (this view's model) via proxyList, flightListModel
 	// and proxyModel.
+	// Since all mapping functions can be called with an invalid index and
+	// return an invalid index in this case, we don't have to check for
+	// intermediate invalid indices.
 
-	if (!flightReference.isValid ())
-		return QModelIndex ();
-
-	// Find the index of the flight in the flight proxy list.
-	int flightIndex=_proxyList->getModelIndex (flightReference);
-	if (flightIndex<0)
-		return QModelIndex ();
-
-	// Determine the model index in the flight list model
-	QModelIndex modelIndex=_flightListModel->mapFromSource (flightIndex, column);
-	if (!modelIndex.isValid ())
-		return QModelIndex ();
-
-	// Map the model index to the proxy model
-	return _proxyModel->mapFromSource (modelIndex);
+	int         flightIndex = _proxyList      ->getModelIndex (flightReference);
+	QModelIndex modelIndex  = _flightListModel->mapFromSource (flightIndex, column);
+	QModelIndex proxyIndex  = _proxyModel     ->mapFromSource (modelIndex);
+	return proxyIndex;
 }
 
 FlightReference FlightTableView::getFlightReference (const QModelIndex &modelIndex) const
 {
-	// FIXME don't check for validity if mapping preserves invalidity
-
 	// The model index refers to the proxy model (this view's model). Map it to
 	// a flight reference via proxyModel, flightListModel and proxyList.
+	// Since all mapping functions can be called with an invalid index and
+	// return an invalid index in this case, we don't have to check for
+	// intermediate invalid indices.
 
-	// If the model index is invalid, return an invalid flight referece
-	if (!modelIndex.isValid ())
-		return FlightReference::invalid;
-
-	// Map the index from the proxy model to the flight list model
-	QModelIndex flightListModelIndex = _proxyModel->mapToSource (modelIndex);
-	if (!flightListModelIndex.isValid ())
-		return FlightReference::invalid;
-
-	// Map the index from the flight list model to the flight proxy list
-	int proxyListIndex=_flightListModel->mapToSource (flightListModelIndex);
-
-	// Get the flight from the model
-	return _proxyList->getFlightReference (proxyListIndex);
+	QModelIndex     flightListModelIndex = _proxyModel     ->mapToSource        (modelIndex);
+	int             proxyListIndex       = _flightListModel->mapToSource        (flightListModelIndex);
+	FlightReference flightReference      = _proxyList      ->getFlightReference (proxyListIndex);
+	return flightReference;
 }
 
 // **********
@@ -532,6 +513,10 @@ void FlightTableView::toggleSorting (int column)
  */
 void FlightTableView::layoutNotifications ()
 {
+	// FIXME do some simple layout - don't require least squares, but make sure
+	// there are no overlaps. The widget will have to support more general
+	// arrows, though. Also, if the point is not visible, show a
+	// NotificationWidget without arrow (or with arrow down)
 	QHashIterator<NotificationWidget *, FlightReference> i (notifications);
 	while (i.hasNext ())
 	{
