@@ -81,6 +81,13 @@ void FlightProxyList::sourceModel_destroyed ()
 // **************************
 
 // TODO should be in Flight
+// TODO This also adds towflights for prepared flights with an airtow launch
+// method. Do we want that? Note that they are filtered out in the
+// FlightSortFilterProxyModel, but we still find a towref for them. This stinks.
+// One thing to consider is that we'll want to split the flight and the
+// towflight in the database some time. In that case, we'll have to create them
+// together (so we can store the pilot's name), so there are actually prepared
+// towflights.
 bool FlightProxyList::isAirtow (const Flight &flight, LaunchMethod *launchMethod) const
 {
 	// No launch method => no airtow
@@ -293,7 +300,7 @@ const Flight &FlightProxyList::at (int index) const
 
 QList<Flight> FlightProxyList::getList () const
 {
-	if (_sourceModel)
+	if (!_sourceModel)
 		return QList<Flight> ();
 
 	return _sourceModel->getList () + towflights;
