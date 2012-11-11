@@ -22,7 +22,28 @@ class NotificationWidget;
 
 
 /**
- * Don't use sortByColumn
+ * An SkTableView implementation with some flight specific functionality
+ *
+ * This model view uses a an EntityList<FLight> as a model and maintains other
+ * required models (flight proxy model, flight model, object list model, and
+ * flight sort/filter proxy model) internally. There are some methods for
+ * accessing flights, or determining or changing the currently selected flight.
+ * Appropriate signals are emitted when a table button is pressed.
+ *
+ * The table can be sorted by column (as usual) or by the effective time of the
+ * flights. Clicking the table header toggles between ascending and descending
+ * sorting (as usual) and effective time sorting. Since this requires custom
+ * handling of the sort order, QTableView's method sortByColumn should not be
+ * used.
+ *
+ * Additionally, this class handles notifications for flights (using
+ * NotificationWidget), updating the position and visibility of the
+ * notifications when the table contents change (e. g. flights are added or
+ * removed, or the order changes). Flights that would normally be hidden are
+ * kept visible for as long as a notification is visible for the flight.
+ *
+ * Note that this view class also contains some models internally, in addition
+ * to the model proper, which is set from outside as usual.
  */
 class FlightTableView: public SkTableView
 {
@@ -35,7 +56,7 @@ class FlightTableView: public SkTableView
 
 		void setModel (EntityList<Flight> *flightList);
 
-		FlightReference getCurrentFlightReference ();
+		FlightReference selectedFlight ();
 		bool selectFlight (const FlightReference &flight, int column);
 
 		void readColumnWidths (QSettings &settings);
@@ -66,7 +87,10 @@ class FlightTableView: public SkTableView
 
 
 	signals:
+		/** Emitted when the depart button of a flight is clicked */
 		void departButtonClicked (FlightReference flight);
+
+		/** Emitted when the land button of a flight is clicked */
 		void landButtonClicked (FlightReference flight);
 
 	protected slots:
