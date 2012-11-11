@@ -118,6 +118,9 @@ void FlightTableView::setModel (EntityList<Flight> *flightList)
 {
 	// This will cause the view to be reset
 	_proxyList->setSourceModel (flightList);
+
+	// Store the model
+	_flightList=flightList;
 }
 
 /**
@@ -355,13 +358,23 @@ void FlightTableView::interactiveJumpToTowflight ()
 		return;
 	}
 
-	// Get the towref from the flight proxy list
-	int towFlightProxyListIndex=_proxyList->findTowref (flightProxyListIndex);
+	// Get the flight, we'll need it.
+	const Flight &flight=_proxyList->at (flightProxyListIndex);
 
-	if (towFlightProxyListIndex<0)
+	// Get the towref from the flight proxy list
+	flightProxyListIndex=_proxyList->findTowref (flightProxyListIndex);
+
+	// Special case, this sucks: prepared airtow
+	// FIXME make sure we can map an invalid index and check it after mapping.
+	if (flight.isAirtow (_dbManager->getCache ()) && flight.isPrepared ())
+	{
+		QString text=tr ("The flight has not departed yet.");
+		showWarning (tr ("No towflight"), text, this);
+		return;
+	}
+	else if (flightProxyListIndex<0)
 	{
 		// Oops, there is no tow reference. Let's get the flight and see why.
-		const Flight &flight=_proxyList->at (flightProxyListIndex);
 		QString text;
 		if (!flight.departsHere ())
 			text=tr ("The flight does not depart here.");
@@ -378,7 +391,7 @@ void FlightTableView::interactiveJumpToTowflight ()
 	}
 
 	// Map the flight proxy list index back to a proxy model index and select it
-	flightListModelIndex=_flightListModel->mapFromSource (towFlightProxyListIndex, proxyModelIndex.column ());
+	flightListModelIndex=_flightListModel->mapFromSource (flightProxyListIndex, proxyModelIndex.column ());
 	proxyModelIndex=_proxyModel->mapFromSource (flightListModelIndex);
 	setCurrentIndex (proxyModelIndex);
 }
