@@ -76,8 +76,10 @@ template<class T> class ObjectListModel: public ObjectListModelBase
 		virtual QVariant headerData (int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
 
 		virtual void listDataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight);
-
 		virtual void columnChanged (int column);
+
+		virtual int mapToSource (const QModelIndex &index);
+		virtual QModelIndex mapFromSource (int sourceIndex, int column);
 
 	protected:
 		const AbstractObjectList<T> *list ; bool  listOwned;
@@ -253,6 +255,28 @@ template<class T> void ObjectListModel<T>::columnChanged (int column)
 	QModelIndex bottomRight=createIndex (list->size (), column);
 
 	emit dataChanged (topLeft, bottomRight);
+}
+
+// FIXME document
+template<class T> int ObjectListModel<T>::mapToSource (const QModelIndex &index)
+{
+	if (!index.isValid ())
+		return -1;
+
+	// That's easy, because the objectListModel's rows correspond to the source
+	// model's entries 1:1.
+	return index.row ();
+}
+
+// FIXME document
+template<class T> QModelIndex ObjectListModel<T>::mapFromSource (int sourceIndex, int column)
+{
+	if (sourceIndex<0)
+		return QModelIndex ();
+
+	// That's easy, because the objectListModel's rows correspond to the source
+	// model's entries 1:1.
+	return this->index (sourceIndex, column);
 }
 
 #endif
