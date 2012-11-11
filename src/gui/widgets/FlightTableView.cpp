@@ -330,16 +330,6 @@ void FlightTableView::toggleSorting (int column)
 }
 
 
-// *******************************************
-// ** FlightTableView::Notification methods **
-// *******************************************
-
-FlightTableView::Notification::Notification (NotificationWidget *widget,
-	const FlightReference &flight): widget (widget), flight (flight)
-{
-}
-
-
 // *******************
 // ** Notifications **
 // *******************
@@ -355,40 +345,19 @@ FlightTableView::Notification::Notification (NotificationWidget *widget,
  * Lays out the notification widgets next to their respective flights
  *
  * This method must be called whenever flights are shown, hidden or moved in the
- * flight table.
- *
- * This method checks all notifications that are currently in the list. If the
- * widget has been deleted (because it self-destructed, it was closed by the
- * user, or for any other reason), the notification is removed from the list.
- * Otherwise, its position is updated.
- *
- * The widget can be deleted in response to a Qt event (user interaction or
- * timer). This can not happen asynchronously (i. e. from a different thread),
- * so we do not have to cast the QWeakPointer to a QSharedPointer.
- *
- * However, since the order of events is not defined, it is possible that, when
- * a widget is destroyed, this method is called before the weak pointer is
- * invalidated. In this case, the widget (which is still valid) will be layed
- * out again and the notification will only be deleted on the next invocation of
- * this method. This can also happen if the flight list order changes before the
- * destroyed event is delivered.
- *
- * Note that ideally, this method would also make sure that notification widgets
- * don't overlap (although this is currently not implemented). Therefore, this
- * method is also called when a new notification is displayed or a notification
- * is removed, even though it currently does not affect the positions of other
- * notifications.
- *
- * When we implement non-overlap, we should also make sure that the widget is
- * actually destroyed (or at least hidden) before this method is invoked.
+ * flight table. It must also be called whenever a notification is added or
+ * removed because notification positions can depend on each other (e. g. to
+ * avoid overlap, although that isn't implemented at the moment).
  */
 void FlightTableView::layoutNotifications ()
 {
-	// Update the widget positions
-	foreach (const Notification &notification, notifications)
+	QHashIterator<NotificationWidget *, FlightReference> i (notifications);
+	while (i.hasNext ())
 	{
-		FlightReference flight=notification.flight;
-		NotificationWidget *widget=notification.widget;
+		i.next ();
+
+		NotificationWidget *widget=i.key ();
+		FlightReference flight=i.value ();
 
 		QRectF rect=rectForFlight (flight, 1);
 		if (rect.isValid ())
@@ -405,21 +374,12 @@ void FlightTableView::layoutNotifications ()
 
 void FlightTableView::notificationWidget_closed ()
 {
-	// FIXME jetzt können wir auch wieder ein QHash verwenden
 	// Remove the widget from the list and delete it
-	QMutableListIterator<Notification> i (notifications);
-	while (i.hasNext ())
-	{
-		i.next ();
-		if (i.value ().widget==sender ())
-		{
-			std::cout << "removing the notification widget for " << i.value ().flight.id () << std::endl;
-			i.value ().widget->deleteLater ();
-			i.remove ();
+	NotificationWidget *widget=dynamic_cast<NotificationWidget *> (sender ());
+	notifications.remove (widget);
+	widget->deleteLater ();
 
-		}
-	}
-
+	// Layout all widgets
 	layoutNotifications ();
 }
 
@@ -438,7 +398,7 @@ void FlightTableView::showNotification (const FlightReference &flight, const QSt
 	connect (notificationWidget, SIGNAL (closed ()), this, SLOT (notificationWidget_closed ()));
 
 	// Add the widget to the list
-	notifications.append (Notification (notificationWidget, flight));
+	notifications.insert (notificationWidget, flight);
 
 	// Layout all widgets
 	layoutNotifications ();

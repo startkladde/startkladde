@@ -4,6 +4,7 @@
 #include "SkTableView.h"
 
 #include <QList>
+#include <QHash>
 
 #include "src/db/dbId.h"
 #include "src/db/DbManager.h"
@@ -74,15 +75,6 @@ class FlightTableView: public SkTableView
 		void notificationWidget_closed ();
 
 	private:
-		class Notification
-		{
-			public:
-				Notification (NotificationWidget *, const FlightReference &);
-				virtual ~Notification () {}
-				NotificationWidget *widget;
-				FlightReference flight;
-		};
-
 		DbManager *_dbManager;
 
 		// The models involved in displaying the flight list
@@ -95,7 +87,7 @@ class FlightTableView: public SkTableView
 		int _sortColumn; // -1 for custom
 		Qt::SortOrder _sortOrder;
 
-		QList<Notification> notifications;
+		QHash<NotificationWidget *, FlightReference> notifications;
 };
 
 #endif

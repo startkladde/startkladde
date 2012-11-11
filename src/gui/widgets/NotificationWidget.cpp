@@ -9,6 +9,7 @@
 
 #include "src/gui/WidgetFader.h"
 #include "src/util/qRectF.h"
+#include "src/util/qString.h" // FIXME remove
 
 
 // Note that this class uses QPointF and QRectF rather than QPoint and QRect
@@ -62,6 +63,7 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 
 NotificationWidget::~NotificationWidget()
 {
+	std::cout << "Deleting NotificationWidget: " << getText () << std::endl;
 }
 
 
