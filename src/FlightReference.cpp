@@ -21,12 +21,12 @@ FlightReference::FlightReference (const Flight &flight):
 
 FlightReference FlightReference::flight (dbId id)
 {
-	return FlightReference (id, true);
+	return FlightReference (id, false);
 }
 
 FlightReference FlightReference::towflight (dbId id)
 {
-	return FlightReference (id, false);
+	return FlightReference (id, true);
 }
 
 FlightReference::~FlightReference ()
