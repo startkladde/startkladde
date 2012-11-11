@@ -13,10 +13,13 @@
 #include "src/gui/widgets/NotificationWidget.h"
 
 
-// flightList
-// proxyList       = FlightProxyList            (flightList)      - adds towflights
-// flightListModel = ObjectListModel            (proxyList)       - adds columns (from FlightModel)
-// proxyModel      = FlightSortFilterProxyModel (flightListModel) - sorts and hides finished flights
+// flightList      - Contains the actual flights
+// proxyList       = FlightProxyList            (flightList)
+//                   Adds towflights. Flight references refer to this list.
+// flightListModel = ObjectListModel            (proxyList)
+//                   Adds columns (from FlightModel)
+// proxyModel      = FlightSortFilterProxyModel (flightListModel)
+//                   Sorts and hides finished flights according to the settings.
 
 // ******************
 // ** Construction **
@@ -218,13 +221,24 @@ void FlightTableView::minuteChanged ()
  * specified flight does not exist or is not visible, an invalid model index is
  * returned.
  */
-QModelIndex FlightTableView::modelIndexForFlight (const FlightReference &flight, int column) const
+QModelIndex FlightTableView::getModelIndex (const FlightReference &flightReference, int column) const
 {
+	// FIXME don't check for validity if mapping preserves invalidity
+
+	// The flight reference refers to the proxy list. Map it to a model index
+	// for the proxy model (this view's model) via proxyList, flightListModel
+	// and proxyModel.
+
+	if (!flightReference.isValid ())
+		return QModelIndex ();
+
 	// Find the index of the flight in the flight proxy list.
-	int flightIndex=_proxyList->modelIndexFor (flight);
+	int flightIndex=_proxyList->getModelIndex (flightReference);
+	if (flightIndex<0)
+		return QModelIndex ();
 
 	// Determine the model index in the flight list model
-	QModelIndex modelIndex=_flightListModel->index (flightIndex, column);
+	QModelIndex modelIndex=_flightListModel->mapFromSource (flightIndex, column);
 	if (!modelIndex.isValid ())
 		return QModelIndex ();
 
@@ -232,22 +246,27 @@ QModelIndex FlightTableView::modelIndexForFlight (const FlightReference &flight,
 	return _proxyModel->mapFromSource (modelIndex);
 }
 
-FlightReference FlightTableView::flightReferenceForModelIndex (const QModelIndex &modelIndex) const
+FlightReference FlightTableView::getFlightReference (const QModelIndex &modelIndex) const
 {
+	// FIXME don't check for validity if mapping preserves invalidity
+
+	// The model index refers to the proxy model (this view's model). Map it to
+	// a flight reference via proxyModel, flightListModel and proxyList.
+
 	// If the model index is invalid, return an invalid flight referece
 	if (!modelIndex.isValid ())
 		return FlightReference::invalid;
 
 	// Map the index from the proxy model to the flight list model
 	QModelIndex flightListModelIndex = _proxyModel->mapToSource (modelIndex);
-
-	// If there is not such flight, return an invalid ID
 	if (!flightListModelIndex.isValid ())
 		return FlightReference::invalid;
 
+	// Map the index from the flight list model to the flight proxy list
+	int proxyListIndex=_flightListModel->mapToSource (flightListModelIndex);
+
 	// Get the flight from the model
-	const Flight &flight = _flightListModel->at (flightListModelIndex);
-	return FlightReference (flight);
+	return _proxyList->getFlightReference (proxyListIndex);
 }
 
 // **********
@@ -265,7 +284,7 @@ FlightReference FlightTableView::flightReferenceForModelIndex (const QModelIndex
  */
 QRectF FlightTableView::rectForFlight (const FlightReference &flight, int column) const
 {
-	QModelIndex modelIndex=modelIndexForFlight (flight, column);
+	QModelIndex modelIndex=getModelIndex (flight, column);
 	if (!modelIndex.isValid ())
 		return QRectF ();
 
@@ -287,22 +306,7 @@ QRectF FlightTableView::rectForFlight (const FlightReference &flight, int column
  */
 FlightReference FlightTableView::selectedFlightReference ()
 {
-	return flightReferenceForModelIndex (currentIndex ());
-//	// Get the currently selected index from the table; it refers to the
-//	// proxy model
-//	QModelIndex proxyIndex = currentIndex ();
-//
-//	// Map the index from the proxy model to the flight list model
-//	QModelIndex flightListModelIndex = _proxyModel->mapToSource (proxyIndex);
-//
-//	// If there is not selection, return an invalid ID
-//	if (!flightListModelIndex.isValid ())
-//		return FlightReference::invalid;
-//
-//	// Get the flight from the model
-//	const Flight &flight = _flightListModel->at (flightListModelIndex);
-//
-//	return FlightReference (flight);
+	return getFlightReference (currentIndex ());
 }
 
 /**
@@ -320,7 +324,7 @@ bool FlightTableView::selectFlight (const FlightReference &flightReference, int 
 		return false;
 
 	// Determine the model index
-	QModelIndex index=modelIndexForFlight (flightReference, column);
+	QModelIndex index=getModelIndex (flightReference, column);
 
 	// If the model index is invalid, return false
 	if (!index.isValid ())
@@ -339,32 +343,44 @@ bool FlightTableView::selectFlight (const FlightReference &flightReference, int 
  */
 void FlightTableView::interactiveJumpToTowflight ()
 {
-	// Get the currently selected index in the ObjectListModel
-	QModelIndex index=_proxyModel->mapToSource (currentIndex ());
+	// FIXME does it get simpler when we use getFlightReference/getModelIndex?
+	// Map the current index to a flight proxy list index
+	QModelIndex proxyModelIndex=currentIndex ();
+	QModelIndex flightListModelIndex=_proxyModel->mapToSource (proxyModelIndex);
+	int flightProxyListIndex=_flightListModel->mapToSource (flightListModelIndex);
 
-	if (!index.isValid ())
+	if (flightProxyListIndex<0)
 	{
 		showWarning (tr ("No flight selected"), tr ("No flight is selected."), this);
 		return;
 	}
 
-	// Get the towref from the FlightProxyList. The rows of the ObjectListModel
-	// correspond to those of its source, the FlightProxyList.
-	int towref=_proxyList->findTowref (index.row ());
+	// Get the towref from the flight proxy list
+	int towFlightProxyListIndex=_proxyList->findTowref (flightProxyListIndex);
 
-	// TODO better error message
-	if (towref<0)
+	if (towFlightProxyListIndex<0)
 	{
-		QString text=tr ("Either the selected flight is neither a towflight nor a towed flight, or it has not departed yet.");
+		// Oops, there is no tow reference. Let's get the flight and see why.
+		const Flight &flight=_proxyList->at (flightProxyListIndex);
+		QString text;
+		if (!flight.departsHere ())
+			text=tr ("The flight does not depart here.");
+		else if (!flight.isTowflight () && !flight.isAirtow (_dbManager->getCache ()))
+			text=tr ("The flight is neither a towflight nor a towed flight.");
+		else if (!flight.getDeparted ())
+			text=tr ("The flight has not departed yet.");
+		else
+			// Unknown reason
+			text=tr ("Towflight/towed flight not found");
+
 		showWarning (tr ("No towflight"), text, this);
 		return;
 	}
 
-	// Generate the index in the ObjectListModel
-	QModelIndex towrefIndex=index.sibling (towref, index.column ());
-
-	// Jump to the flight
-	setCurrentIndex (_proxyModel->mapFromSource (towrefIndex));
+	// Map the flight proxy list index back to a proxy model index and select it
+	flightListModelIndex=_flightListModel->mapFromSource (towFlightProxyListIndex, proxyModelIndex.column ());
+	proxyModelIndex=_proxyModel->mapFromSource (flightListModelIndex);
+	setCurrentIndex (proxyModelIndex);
 }
 
 

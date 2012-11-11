@@ -62,29 +62,36 @@ class FlightTableView: public SkTableView
 		void readColumnWidths (QSettings &settings);
 		void writeColumnWidths (QSettings &settings);
 
-		QModelIndex modelIndexForFlight (const FlightReference &flight, int column) const;
-		FlightReference flightReferenceForModelIndex (const QModelIndex &modelIndex) const;
+		// Model
+		QModelIndex getModelIndex (const FlightReference &flightReference, int column) const;
+		FlightReference getFlightReference (const QModelIndex &modelIndex) const;
 
+		// View
 		QRectF rectForFlight (const FlightReference &flight, int column) const;
 
 
 	public slots:
+		// Properties
 		void setHideFinishedFlights (bool hideFinishedFlights);
 		void setAlwaysShowExternalFlights (bool alwaysShowExternalFlights);
 		void setAlwaysShowErroneousFlights (bool alwaysShowErroneousFlights);
 		void setShowPreparedFlights (bool showPreparedFlights);
+
+		// Configuration
+		void languageChanged ();
+
+		// Model
+		void minuteChanged ();
+		// Selection
+		void interactiveJumpToTowflight ();
+
 
 		// Sorting
 		void setSorting (int column, Qt::SortOrder order);
 		void setCustomSorting ();
 		void toggleSorting (int column);
 
-
-		void interactiveJumpToTowflight ();
-
-		void languageChanged ();
-		void minuteChanged ();
-
+		// Notifications
 		void showNotification (const FlightReference &flight, const QString &message, int milliseconds);
 
 
