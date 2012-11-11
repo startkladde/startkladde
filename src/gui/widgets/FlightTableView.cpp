@@ -210,11 +210,6 @@ void FlightTableView::minuteChanged ()
 	focusWidgetAt (focusWidgetIndex);
 }
 
-
-// **********
-// ** View **
-// **********
-
 /**
  * Creates a model index (in the table view) for the specified column of the
  * specified flight or towflight
@@ -236,6 +231,28 @@ QModelIndex FlightTableView::modelIndexForFlight (const FlightReference &flight,
 	// Map the model index to the proxy model
 	return _proxyModel->mapFromSource (modelIndex);
 }
+
+FlightReference FlightTableView::flightReferenceForModelIndex (const QModelIndex &modelIndex) const
+{
+	// If the model index is invalid, return an invalid flight referece
+	if (!modelIndex.isValid ())
+		return FlightReference::invalid;
+
+	// Map the index from the proxy model to the flight list model
+	QModelIndex flightListModelIndex = _proxyModel->mapToSource (modelIndex);
+
+	// If there is not such flight, return an invalid ID
+	if (!flightListModelIndex.isValid ())
+		return FlightReference::invalid;
+
+	// Get the flight from the model
+	const Flight &flight = _flightListModel->at (flightListModelIndex);
+	return FlightReference (flight);
+}
+
+// **********
+// ** View **
+// **********
 
 /**
  * Returns the rectangle (in the table view) that the specified column of the
@@ -268,23 +285,24 @@ QRectF FlightTableView::rectForFlight (const FlightReference &flight, int column
  *
  * @see FlightReference
  */
-FlightReference FlightTableView::selectedFlight ()
+FlightReference FlightTableView::selectedFlightReference ()
 {
-	// Get the currently selected index from the table; it refers to the
-	// proxy model
-	QModelIndex proxyIndex = currentIndex ();
-
-	// Map the index from the proxy model to the flight list model
-	QModelIndex flightListModelIndex = _proxyModel->mapToSource (proxyIndex);
-
-	// If there is not selection, return an invalid ID
-	if (!flightListModelIndex.isValid ())
-		return FlightReference::invalid;
-
-	// Get the flight from the model
-	const Flight &flight = _flightListModel->at (flightListModelIndex);
-
-	return FlightReference (flight);
+	return flightReferenceForModelIndex (currentIndex ());
+//	// Get the currently selected index from the table; it refers to the
+//	// proxy model
+//	QModelIndex proxyIndex = currentIndex ();
+//
+//	// Map the index from the proxy model to the flight list model
+//	QModelIndex flightListModelIndex = _proxyModel->mapToSource (proxyIndex);
+//
+//	// If there is not selection, return an invalid ID
+//	if (!flightListModelIndex.isValid ())
+//		return FlightReference::invalid;
+//
+//	// Get the flight from the model
+//	const Flight &flight = _flightListModel->at (flightListModelIndex);
+//
+//	return FlightReference (flight);
 }
 
 /**
@@ -309,7 +327,7 @@ bool FlightTableView::selectFlight (const FlightReference &flightReference, int 
 		return false;
 
 	// The model index is valid. Select it and return true.
-	setCurrentIndex (proxyIndex);
+	setCurrentIndex (index);
 	return true;
 }
 
@@ -321,8 +339,6 @@ bool FlightTableView::selectFlight (const FlightReference &flightReference, int 
  */
 void FlightTableView::interactiveJumpToTowflight ()
 {
-	// FIXME use getCurrentFlightReference and selectFlight
-
 	// Get the currently selected index in the ObjectListModel
 	QModelIndex index=_proxyModel->mapToSource (currentIndex ());
 
@@ -350,6 +366,11 @@ void FlightTableView::interactiveJumpToTowflight ()
 	// Jump to the flight
 	setCurrentIndex (_proxyModel->mapFromSource (towrefIndex));
 }
+
+
+// *****************
+// ** Interaction **
+// *****************
 
 /**
  * Emits a specific button click signal for the specified flight

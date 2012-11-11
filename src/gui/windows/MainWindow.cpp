@@ -640,7 +640,7 @@ void MainWindow::refreshFlights ()
 
 	updateDisplayDateLabel (today);
 
-	FlightReference selectedFlight=ui.flightTable->selectedFlight ();
+	FlightReference selectedFlight=ui.flightTable->selectedFlightReference ();
 	int column=ui.flightTable->currentIndex ().column ();
 
 	flightList->replaceList (flights);
@@ -958,12 +958,12 @@ void MainWindow::on_actionLaunchMethodPreselection_triggered ()
 void MainWindow::on_actionDepart_triggered ()
 {
 	// This will check canDepart
-	interactiveDepartFlight (ui.flightTable->selectedFlight ().id ());
+	interactiveDepartFlight (ui.flightTable->selectedFlightReference ().id ());
 }
 
 void MainWindow::on_actionLand_triggered ()
 {
-	FlightReference flight=ui.flightTable->selectedFlight ();
+	FlightReference flight=ui.flightTable->selectedFlightReference ();
 
 	if (flight.towflight ())
 		// This will check canLand
@@ -974,7 +974,7 @@ void MainWindow::on_actionLand_triggered ()
 
 void MainWindow::on_actionTouchngo_triggered ()
 {
-	FlightReference flight=ui.flightTable->selectedFlight ();
+	FlightReference flight=ui.flightTable->selectedFlightReference ();
 
 	if (flight.towflight ())
 	{
@@ -989,7 +989,7 @@ void MainWindow::on_actionTouchngo_triggered ()
 
 void MainWindow::departOrLand ()
 {
-	FlightReference flightRef=ui.flightTable->selectedFlight ();
+	FlightReference flightRef=ui.flightTable->selectedFlightReference ();
 
 	if (!flightRef.isValid ())
 		return;
@@ -1020,7 +1020,7 @@ void MainWindow::departOrLand ()
 
 void MainWindow::on_actionEdit_triggered ()
 {
-	FlightReference flightRef=ui.flightTable->selectedFlight ();
+	FlightReference flightRef=ui.flightTable->selectedFlightReference ();
 
 	if (!flightRef.isValid ())
 		return;
@@ -1058,7 +1058,7 @@ void MainWindow::on_actionEdit_triggered ()
 
 void MainWindow::on_actionRepeat_triggered ()
 {
-	FlightReference flightRef=ui.flightTable->selectedFlight ();
+	FlightReference flightRef=ui.flightTable->selectedFlightReference ();
 
 	// TODO display message
 	if (!flightRef.isValid ())
@@ -1087,7 +1087,7 @@ void MainWindow::on_actionRepeat_triggered ()
 
 void MainWindow::on_actionDelete_triggered ()
 {
-	FlightReference flight=ui.flightTable->selectedFlight ();
+	FlightReference flight=ui.flightTable->selectedFlightReference ();
 
 	if (!flight.isValid ())
 		// TODO display message
@@ -1118,7 +1118,7 @@ void MainWindow::on_identifyPlaneAction_triggered ()
 	try
 	{
 		// Retrieve the flight from the database
-		FlightReference flightRef=ui.flightTable->selectedFlight ();
+		FlightReference flightRef=ui.flightTable->selectedFlightReference ();
 		if (!flightRef.isValid ())
 			return;
 
@@ -1147,7 +1147,7 @@ void MainWindow::on_updateFlarmIdAction_triggered ()
 	{
 		// FIXME not for towflights
 
-		FlightReference flightRef=ui.flightTable->selectedFlight ();
+		FlightReference flightRef=ui.flightTable->selectedFlightReference ();
 		if (!flightRef.isValid ())
 			return;
 
@@ -1168,7 +1168,7 @@ void MainWindow::on_actionDisplayError_triggered ()
 	// TODO: this method is quite complex and duplicates code found
 	// elsewhere - the towplane generation should be simplified
 
-	FlightReference flightRef=ui.flightTable->selectedFlight ();
+	FlightReference flightRef=ui.flightTable->selectedFlightReference ();
 
 	if (!flightRef.isValid ())
 	{
@@ -2390,7 +2390,7 @@ void MainWindow::on_connectFlarmAction_triggered ()
 
 void MainWindow::on_showNotificationAction_triggered ()
 {
-	FlightReference flight=ui.flightTable->selectedFlight ();
+	FlightReference flight=ui.flightTable->selectedFlightReference ();
 
 	ui.flightTable->showNotification (
 		flight,

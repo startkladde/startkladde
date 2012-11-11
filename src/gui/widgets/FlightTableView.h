@@ -56,13 +56,15 @@ class FlightTableView: public SkTableView
 
 		void setModel (EntityList<Flight> *flightList);
 
-		FlightReference selectedFlight ();
+		FlightReference selectedFlightReference ();
 		bool selectFlight (const FlightReference &flight, int column);
 
 		void readColumnWidths (QSettings &settings);
 		void writeColumnWidths (QSettings &settings);
 
 		QModelIndex modelIndexForFlight (const FlightReference &flight, int column) const;
+		FlightReference flightReferenceForModelIndex (const QModelIndex &modelIndex) const;
+
 		QRectF rectForFlight (const FlightReference &flight, int column) const;
 
 
