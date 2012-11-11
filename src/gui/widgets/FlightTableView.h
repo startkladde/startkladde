@@ -3,9 +3,7 @@
 
 #include "SkTableView.h"
 
-#include <QPersistentModelIndex>
 #include <QList>
-#include <QPair>
 
 #include "src/db/dbId.h"
 #include "src/db/DbManager.h"
@@ -73,6 +71,7 @@ class FlightTableView: public SkTableView
 	protected slots:
 		void base_buttonClicked (QPersistentModelIndex proxyIndex);
 		void layoutNotifications ();
+		void notificationWidget_closed ();
 
 	private:
 		class Notification
@@ -80,7 +79,7 @@ class FlightTableView: public SkTableView
 			public:
 				Notification (NotificationWidget *, const FlightReference &);
 				virtual ~Notification () {}
-				QWeakPointer<NotificationWidget> widget;
+				NotificationWidget *widget;
 				FlightReference flight;
 		};
 

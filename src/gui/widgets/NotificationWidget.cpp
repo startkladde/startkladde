@@ -22,12 +22,12 @@
 // ******************
 
 NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
-	selfDestructInProgress (false),
 	cornerRadius (10),
 	arrowWidth (10), arrowLength (20), arrowOffset (0),
 	backgroundColor (QColor (0, 0, 0, 191)),
 	widgetBackgroundColor (QColor (0, 0, 0, 63)),
-	drawWidgetBackground (false)
+	drawWidgetBackground (false),
+	_fadeOutDuration (1000), _fadeOutInProgress (false)
 {
 	ui.setupUi (this);
 
@@ -64,20 +64,45 @@ NotificationWidget::~NotificationWidget()
 {
 }
 
-void NotificationWidget::selfDestructIn (int milliseconds)
+
+// *************
+// ** Closing **
+// *************
+
+void NotificationWidget::closeEvent (QCloseEvent *event)
 {
-	QTimer::singleShot (milliseconds, this, SLOT (selfDestructNow ()));
+	QWidget::closeEvent (event);
+	if (event->isAccepted ())
+		emit closed ();
+}
+
+void NotificationWidget::fadeOutAndCloseIn (int delay)
+{
+	QTimer::singleShot (delay, this, SLOT (fadeOutAndCloseNow ()));
+}
+
+void NotificationWidget::fadeOutAndCloseIn (int delay, int duration)
+{
+	_fadeOutDuration=duration;
+	fadeOutAndCloseIn (delay);
 
 }
 
-void NotificationWidget::selfDestructNow ()
+void NotificationWidget::fadeOutAndCloseNow ()
 {
-	if (selfDestructInProgress)
+	if (_fadeOutInProgress)
 		return;
-	selfDestructInProgress=true;
+	_fadeOutInProgress=true;
 
-	WidgetFader::fadeOutAndDelete (this, 1000);
+	WidgetFader::fadeOutAndClose (this, _fadeOutDuration);
 }
+
+void NotificationWidget::fadeOutAndCloseNow (int duration)
+{
+	_fadeOutDuration=duration;
+	fadeOutAndCloseNow ();
+}
+
 
 // ****************
 // ** Properties **
@@ -91,6 +116,16 @@ void NotificationWidget::setDrawWidgetBackground (bool drawWidgetBackground)
 bool NotificationWidget::getDrawWidgetBackground () const
 {
 	return drawWidgetBackground;
+}
+
+void NotificationWidget::setFadeOutDuration (int duration)
+{
+	_fadeOutDuration=duration;
+}
+
+int NotificationWidget::getFadeOutDuration () const
+{
+	return _fadeOutDuration;
 }
 
 void NotificationWidget::setText (const QString &text)
@@ -264,7 +299,7 @@ void NotificationWidget::mousePressEvent (QMouseEvent *event)
 {
 	if (geometry.path.contains (event->posF ()))
 		// Act on the event
-		selfDestructNow ();
+		close ();
 	else
 		// Let the parent widget receive the event
 		event->ignore ();

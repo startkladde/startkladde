@@ -2390,8 +2390,10 @@ void MainWindow::on_connectFlarmAction_triggered ()
 
 void MainWindow::on_showNotificationAction_triggered ()
 {
+	FlightReference flight=ui.flightTable->getCurrentFlightReference ();
+
 	ui.flightTable->showNotification (
-		ui.flightTable->getCurrentFlightReference (),
-		"NotificationWidget test",
+		flight,
+		QString ("NotificationWidget test for %1").arg (flight.id ()),
 		1000);
 }

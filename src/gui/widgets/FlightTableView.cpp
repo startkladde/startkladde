@@ -335,9 +335,7 @@ void FlightTableView::toggleSorting (int column)
 // *******************************************
 
 FlightTableView::Notification::Notification (NotificationWidget *widget,
-	const FlightReference &flight):
-	widget (QWeakPointer<NotificationWidget> (widget)),
-	flight (flight)
+	const FlightReference &flight): widget (widget), flight (flight)
 {
 }
 
@@ -372,7 +370,8 @@ FlightTableView::Notification::Notification (NotificationWidget *widget,
  * a widget is destroyed, this method is called before the weak pointer is
  * invalidated. In this case, the widget (which is still valid) will be layed
  * out again and the notification will only be deleted on the next invocation of
- * this method.
+ * this method. This can also happen if the flight list order changes before the
+ * destroyed event is delivered.
  *
  * Note that ideally, this method would also make sure that notification widgets
  * don't overlap (although this is currently not implemented). Therefore, this
@@ -385,44 +384,62 @@ FlightTableView::Notification::Notification (NotificationWidget *widget,
  */
 void FlightTableView::layoutNotifications ()
 {
-	QMutableListIterator<Notification> i (notifications);
-	while (i.hasNext ())
+	// Update the widget positions
+	foreach (const Notification &notification, notifications)
 	{
-		i.next ();
-		QWeakPointer<NotificationWidget> notificationWidget=i.value ().widget;
-		FlightReference flight=i.value ().flight;
+		FlightReference flight=notification.flight;
+		NotificationWidget *widget=notification.widget;
 
-		// If the notification widget was deleted in the meantime, delete the
-		// hash entry. Otherwise, update widget position.
-		if (notificationWidget)
+		QRectF rect=rectForFlight (flight, 1);
+		if (rect.isValid ())
 		{
-			QRectF rect=rectForFlight (flight, 1);
-			if (rect.isValid ())
-			{
-				notificationWidget.data ()->moveArrowTip (rect.center ());
-				notificationWidget.data ()->show ();
-			}
-			else
-			{
-				notificationWidget.data ()->hide ();
-			}
+			widget->moveArrowTip (rect.center ());
+			widget->show ();
 		}
 		else
 		{
-			i.remove ();
+			widget->hide ();
 		}
 	}
 }
 
+void FlightTableView::notificationWidget_closed ()
+{
+	// FIXME jetzt können wir auch wieder ein QHash verwenden
+	// Remove the widget from the list and delete it
+	QMutableListIterator<Notification> i (notifications);
+	while (i.hasNext ())
+	{
+		i.next ();
+		if (i.value ().widget==sender ())
+		{
+			std::cout << "removing the notification widget for " << i.value ().flight.id () << std::endl;
+			i.value ().widget->deleteLater ();
+			i.remove ();
+
+		}
+	}
+
+	layoutNotifications ();
+}
+
+
 void FlightTableView::showNotification (const FlightReference &flight, const QString &message, int milliseconds)
 {
+	// Create and setup the widget. The widget will be deleted by this class
+	// when it is closed, which happens after a delay oder when the user clicks
+	// the widget.
 	NotificationWidget *notificationWidget=new NotificationWidget (viewport ());
-
 	//widget->setDrawWidgetBackground (true);
 	notificationWidget->setText (message);
-	notificationWidget->selfDestructIn (milliseconds);
+	notificationWidget->fadeOutAndCloseIn (milliseconds);
 
+	// Notify this when the widget is closed
+	connect (notificationWidget, SIGNAL (closed ()), this, SLOT (notificationWidget_closed ()));
+
+	// Add the widget to the list
 	notifications.append (Notification (notificationWidget, flight));
-	connect (notificationWidget, SIGNAL (destroyed ()), this, SLOT (layoutNotifications ()));
+
+	// Layout all widgets
 	layoutNotifications ();
 }

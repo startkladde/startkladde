@@ -14,7 +14,7 @@ class WidgetFader: public QObject
 	public:
 		virtual ~WidgetFader ();
 
-		static void fadeOutAndDelete (QWidget *widget, uint32_t milliseconds);
+		static void fadeOutAndClose (QWidget *widget, uint32_t milliseconds);
 
 	private:
 		WidgetFader (QObject *parent);

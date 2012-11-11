@@ -8,6 +8,7 @@
 #include "ui_NotificationWidget.h"
 
 class QMouseEvent;
+class QCloseEvent;
 
 class NotificationWidget: public QWidget
 {
@@ -16,17 +17,27 @@ class NotificationWidget: public QWidget
 	public:
     	NotificationWidget (QWidget *parent);
     	~NotificationWidget ();
-    	void selfDestructIn (int milliseconds);
 
     	// Properties
     	void setDrawWidgetBackground (bool drawWidgetBackground);
     	bool getDrawWidgetBackground () const;
+    	void setFadeOutDuration (int duration);
+    	int getFadeOutDuration () const;
     	void setText (const QString &text);
     	QString getText () const;
 
     	// Position
     	void moveArrowTip (const QPointF &point);
     	void moveArrowTip (int x, int y);
+
+    public slots:
+    	void fadeOutAndCloseIn (int delay, int duration);
+    	void fadeOutAndCloseIn (int delay);
+    	void fadeOutAndCloseNow ();
+    	void fadeOutAndCloseNow (int duration);
+
+    signals:
+    	void closed ();
 
 	protected:
     	// Size
@@ -40,8 +51,8 @@ class NotificationWidget: public QWidget
     	// Interaction
     	void mousePressEvent (QMouseEvent *event);
 
-    protected slots:
-    	void selfDestructNow ();
+    	// Closing
+    	virtual void closeEvent (QCloseEvent *event);
 
 	private:
     	// FIXME store pointer to parent
@@ -62,8 +73,6 @@ class NotificationWidget: public QWidget
 
     	Ui::NotificationWidgetClass ui;
 
-    	bool selfDestructInProgress;
-
     	// Properties
     	int cornerRadius;
     	int arrowWidth;
@@ -76,6 +85,9 @@ class NotificationWidget: public QWidget
 
     	Geometry geometry;
 
+    	// Closing
+    	int _fadeOutDuration;
+    	bool _fadeOutInProgress;
 };
 
 #endif
