@@ -4,6 +4,8 @@
 #include "SkTableView.h"
 
 #include <QPersistentModelIndex>
+#include <QList>
+#include <QPair>
 
 #include "src/db/dbId.h"
 #include "src/db/DbManager.h"
@@ -17,6 +19,7 @@ class FlightModel;
 template<class T> class ObjectListModel;
 class FlightSortFilterProxyModel;
 class DbManager;
+class NotificationWidget;
 
 
 /**
@@ -39,6 +42,7 @@ class FlightTableView: public SkTableView
 		void readColumnWidths (QSettings &settings);
 		void writeColumnWidths (QSettings &settings);
 
+		QModelIndex modelIndexForFlight (const FlightReference &flight, int column) const;
 		QRectF rectForFlight (const FlightReference &flight, int column) const;
 
 
@@ -68,8 +72,18 @@ class FlightTableView: public SkTableView
 
 	protected slots:
 		void base_buttonClicked (QPersistentModelIndex proxyIndex);
+		void layoutNotifications ();
 
 	private:
+		class Notification
+		{
+			public:
+				Notification (NotificationWidget *, const FlightReference &);
+				virtual ~Notification () {}
+				QWeakPointer<NotificationWidget> widget;
+				FlightReference flight;
+		};
+
 		DbManager *_dbManager;
 
 		// The models involved in displaying the flight list
@@ -82,6 +96,7 @@ class FlightTableView: public SkTableView
 		int _sortColumn; // -1 for custom
 		Qt::SortOrder _sortOrder;
 
+		QList<Notification> notifications;
 };
 
 #endif

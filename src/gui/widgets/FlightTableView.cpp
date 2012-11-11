@@ -23,7 +23,9 @@
 // ******************
 
 /**
- * You must call init before any other method is called.
+ * You must call init before any other method is called, including any Qt
+ * events. This means that after construction, init must be called before the
+ * Qt event loop is reached again.
  */
 FlightTableView::FlightTableView (QWidget *parent):
 	SkTableView (parent),
@@ -38,7 +40,6 @@ FlightTableView::FlightTableView (QWidget *parent):
 		this, SIGNAL (buttonClicked (QPersistentModelIndex)),
 		this, SLOT (base_buttonClicked (QPersistentModelIndex))
 		);
-
 }
 
 FlightTableView::~FlightTableView ()
@@ -53,23 +54,32 @@ void FlightTableView::init (DbManager *dbManager)
 
 	_dbManager=dbManager;
 
-	_proxyList=new FlightProxyList (dbManager->getCache (), this); // TODO never deleted
+	_proxyList=new FlightProxyList (dbManager->getCache (), this);
 
 	_flightModel = new FlightModel (dbManager->getCache ());
+
 	_flightListModel = new ObjectListModel<Flight> (_proxyList, false, _flightModel, true, this);
 
 	_proxyModel = new FlightSortFilterProxyModel (dbManager->getCache (), this);
 	_proxyModel->setSourceModel (_flightListModel);
-
 	_proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
 	_proxyModel->setDynamicSortFilter (true);
 
-
 	SkTableView::setModel (_proxyModel);
 
+	connect (_proxyModel, SIGNAL (rowsInserted  (const QModelIndex &, int, int)), this, SLOT (layoutNotifications ()));
+	connect (_proxyModel, SIGNAL (rowsMoved (const QModelIndex &, int, int, const QModelIndex &, int)), this, SLOT (layoutNotifications ()));
+	connect (_proxyModel, SIGNAL (rowsRemoved (const QModelIndex &, int, int)), this, SLOT (layoutNotifications ()));
+	connect (_proxyModel, SIGNAL (modelReset ()), this, SLOT (layoutNotifications ()));
+	connect (_proxyModel, SIGNAL (layoutChanged ()), this, SLOT (layoutNotifications ()));
 
 	setCustomSorting ();
 }
+
+
+// ****************
+// ** Properties **
+// ****************
 
 void FlightTableView::setModel (EntityList<Flight> *flightList)
 {
@@ -96,6 +106,52 @@ void FlightTableView::setShowPreparedFlights (bool showPreparedFlights)
 {
 	_proxyModel->setShowPreparedFlights (showPreparedFlights);
 }
+
+
+// *******************
+// ** Configuration **
+// *******************
+
+void FlightTableView::readColumnWidths (QSettings &settings)
+{
+	SkTableView::readColumnWidths (settings, *_flightModel);
+}
+
+void FlightTableView::writeColumnWidths (QSettings &settings)
+{
+	SkTableView::writeColumnWidths (settings, *_flightModel);
+}
+
+void FlightTableView::languageChanged ()
+{
+	// See the FlightModel class documentation
+	_flightModel->updateTranslations ();
+	_flightListModel->reset ();
+}
+
+
+// ***********
+// ** Model **
+// ***********
+
+void FlightTableView::minuteChanged ()
+{
+	QModelIndex oldIndex=currentIndex ();
+	QPersistentModelIndex focusWidgetIndex=findButton (
+		dynamic_cast<TableButton *> (QApplication::focusWidget ()));
+
+	int durationColumn=_flightModel->durationColumn ();
+	_flightListModel->columnChanged (durationColumn);
+
+	// TODO why do we do this?
+	setCurrentIndex (oldIndex);
+	focusWidgetAt (focusWidgetIndex);
+}
+
+
+// **********
+// ** View **
+// **********
 
 FlightReference FlightTableView::getCurrentFlightReference ()
 {
@@ -139,16 +195,6 @@ bool FlightTableView::selectFlight (const FlightReference &flightReference, int 
 	return true;
 }
 
-void FlightTableView::readColumnWidths (QSettings &settings)
-{
-	SkTableView::readColumnWidths (settings, *_flightModel);
-}
-
-void FlightTableView::writeColumnWidths (QSettings &settings)
-{
-	SkTableView::writeColumnWidths (settings, *_flightModel);
-}
-
 void FlightTableView::interactiveJumpToTowflight ()
 {
 	// Get the currently selected index in the ObjectListModel
@@ -179,14 +225,7 @@ void FlightTableView::interactiveJumpToTowflight ()
 	setCurrentIndex (_proxyModel->mapFromSource (towrefIndex));
 }
 
-void FlightTableView::languageChanged ()
-{
-	// See the FlightModel class documentation
-	_flightModel->updateTranslations ();
-	_flightListModel->reset ();
-}
-
-QRectF FlightTableView::rectForFlight (const FlightReference &flight, int column) const
+QModelIndex FlightTableView::modelIndexForFlight (const FlightReference &flight, int column) const
 {
 	// Find the index of the flight in the flight proxy list.
 	int flightIndex=_proxyList->modelIndexFor (flight);
@@ -194,29 +233,20 @@ QRectF FlightTableView::rectForFlight (const FlightReference &flight, int column
 	// Determine the model index in the flight list model
 	QModelIndex modelIndex=_flightListModel->index (flightIndex, column);
 	if (!modelIndex.isValid ())
-		return QRectF ();
+		return QModelIndex ();
 
 	// Map the model index to the proxy model
-	modelIndex=_proxyModel->mapFromSource (modelIndex);
+	return _proxyModel->mapFromSource (modelIndex);
+}
+
+QRectF FlightTableView::rectForFlight (const FlightReference &flight, int column) const
+{
+	QModelIndex modelIndex=modelIndexForFlight (flight, column);
 	if (!modelIndex.isValid ())
 		return QRectF ();
 
 	// Get the rectangle from the table view
 	return visualRect (modelIndex);
-}
-
-void FlightTableView::minuteChanged ()
-{
-	QModelIndex oldIndex=currentIndex ();
-	QPersistentModelIndex focusWidgetIndex=findButton (
-		dynamic_cast<TableButton *> (QApplication::focusWidget ()));
-
-	int durationColumn=_flightModel->durationColumn ();
-	_flightListModel->columnChanged (durationColumn);
-
-	// TODO why do we do this?
-	setCurrentIndex (oldIndex);
-	focusWidgetAt (focusWidgetIndex);
 }
 
 void FlightTableView::base_buttonClicked (QPersistentModelIndex proxyIndex)
@@ -300,25 +330,99 @@ void FlightTableView::toggleSorting (int column)
 }
 
 
+// *******************************************
+// ** FlightTableView::Notification methods **
+// *******************************************
+
+FlightTableView::Notification::Notification (NotificationWidget *widget,
+	const FlightReference &flight):
+	widget (QWeakPointer<NotificationWidget> (widget)),
+	flight (flight)
+{
+}
+
+
 // *******************
 // ** Notifications **
 // *******************
 
-void FlightTableView::showNotification (const FlightReference &flight, const QString &message, int milliseconds)
+// Note that it would be nice to use a QPersistenModelIndex to track the index
+// of a flight, so we wouldn't have to look up the index (with all the proxy
+// mappings) each time the model changes. However, when a flight is hidden, the
+// QPersistenModelIndex will become invalid and stay invalid even if the flight
+// is shown again later. Therefore, we have to resort to tracking the flight ID
+// (using a FlightReference) instead.
+
+/**
+ * Lays out the notification widgets next to their respective flights
+ *
+ * This method must be called whenever flights are shown, hidden or moved in the
+ * flight table.
+ *
+ * This method checks all notifications that are currently in the list. If the
+ * widget has been deleted (because it self-destructed, it was closed by the
+ * user, or for any other reason), the notification is removed from the list.
+ * Otherwise, its position is updated.
+ *
+ * The widget can be deleted in response to a Qt event (user interaction or
+ * timer). This can not happen asynchronously (i. e. from a different thread),
+ * so we do not have to cast the QWeakPointer to a QSharedPointer.
+ *
+ * However, since the order of events is not defined, it is possible that, when
+ * a widget is destroyed, this method is called before the weak pointer is
+ * invalidated. In this case, the widget (which is still valid) will be layed
+ * out again and the notification will only be deleted on the next invocation of
+ * this method.
+ *
+ * Note that ideally, this method would also make sure that notification widgets
+ * don't overlap (although this is currently not implemented). Therefore, this
+ * method is also called when a new notification is displayed or a notification
+ * is removed, even though it currently does not affect the positions of other
+ * notifications.
+ *
+ * When we implement non-overlap, we should also make sure that the widget is
+ * actually destroyed (or at least hidden) before this method is invoked.
+ */
+void FlightTableView::layoutNotifications ()
 {
-	QRectF rect=rectForFlight (flight, 1);
-
-	if (!rect.isValid ())
+	QMutableListIterator<Notification> i (notifications);
+	while (i.hasNext ())
 	{
-		return;
-	}
+		i.next ();
+		QWeakPointer<NotificationWidget> notificationWidget=i.value ().widget;
+		FlightReference flight=i.value ().flight;
 
-	// FIXME behaves badly if the flight is scrolled out of the viewport
-	NotificationWidget *nw=new NotificationWidget (viewport ());
-	//nw->setDrawWidgetBackground (true);
-	nw->setText (message);
-	nw->moveArrowTip (rect.center ());
-	nw->show ();
-	nw->selfDestructIn (milliseconds);
+		// If the notification widget was deleted in the meantime, delete the
+		// hash entry. Otherwise, update widget position.
+		if (notificationWidget)
+		{
+			QRectF rect=rectForFlight (flight, 1);
+			if (rect.isValid ())
+			{
+				notificationWidget.data ()->moveArrowTip (rect.center ());
+				notificationWidget.data ()->show ();
+			}
+			else
+			{
+				notificationWidget.data ()->hide ();
+			}
+		}
+		else
+		{
+			i.remove ();
+		}
+	}
 }
 
+void FlightTableView::showNotification (const FlightReference &flight, const QString &message, int milliseconds)
+{
+	NotificationWidget *notificationWidget=new NotificationWidget (viewport ());
+
+	//widget->setDrawWidgetBackground (true);
+	notificationWidget->setText (message);
+	notificationWidget->selfDestructIn (milliseconds);
+
+	notifications.append (Notification (notificationWidget, flight));
+	connect (notificationWidget, SIGNAL (destroyed ()), this, SLOT (layoutNotifications ()));
+	layoutNotifications ();
+}
