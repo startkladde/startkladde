@@ -376,8 +376,11 @@ void FlightTableView::notificationWidget_closed ()
 {
 	// Remove the widget from the list and delete it
 	NotificationWidget *widget=dynamic_cast<NotificationWidget *> (sender ());
-	notifications.remove (widget);
+	FlightReference flight=notifications.take (widget);
 	widget->deleteLater ();
+
+	// Don't keep the flight open
+	_proxyModel->setForceVisible (flight.id (), false);
 
 	// Layout all widgets
 	layoutNotifications ();
@@ -399,6 +402,9 @@ void FlightTableView::showNotification (const FlightReference &flight, const QSt
 
 	// Add the widget to the list
 	notifications.insert (notificationWidget, flight);
+
+	// Keep the flight open
+	_proxyModel->setForceVisible (flight.id (), true);
 
 	// Layout all widgets
 	layoutNotifications ();

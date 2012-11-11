@@ -18,6 +18,16 @@ FlightSortFilterProxyModel::~FlightSortFilterProxyModel ()
 {
 }
 
+void FlightSortFilterProxyModel::setForceVisible (dbId flightId, bool forceVisible)
+{
+	if (forceVisible)
+		flightsForceVisible.insert (flightId);
+	else
+		flightsForceVisible.remove (flightId);
+
+	invalidate ();
+}
+
 bool FlightSortFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex &sourceParent) const
 {
 	(void)sourceParent;
@@ -28,6 +38,9 @@ bool FlightSortFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIn
 
 	// Get the flight from the model
 	const Flight &flight=flightList->at (sourceRow);
+
+	if (flightsForceVisible.contains (flight.getId ()))
+		return true;
 
 	if (flight.isPrepared ())
 	{
