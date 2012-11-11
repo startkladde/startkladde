@@ -9,7 +9,6 @@
 
 #include "src/gui/WidgetFader.h"
 #include "src/util/qRectF.h"
-#include "src/util/qString.h" // FIXME remove
 
 
 // Note that this class uses QPointF and QRectF rather than QPoint and QRect
@@ -28,6 +27,7 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	backgroundColor (QColor (0, 0, 0, 191)),
 	widgetBackgroundColor (QColor (0, 0, 0, 63)),
 	drawWidgetBackground (false),
+	geometry (this),
 	_fadeOutDuration (1000), _fadeOutInProgress (false)
 {
 	ui.setupUi (this);
@@ -58,12 +58,11 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 
 	// The geometry will be updated in the resize event before the widget is
 	// shown, but we need it now so the widget can be moved before it is shown.
-	geometry.update (this);
+	geometry.recalculate ();
 }
 
 NotificationWidget::~NotificationWidget()
 {
-	std::cout << "Deleting NotificationWidget: " << getText () << std::endl;
 }
 
 
@@ -146,7 +145,7 @@ QString NotificationWidget::getText () const
 // ** Geometry **
 // **************
 
-void NotificationWidget::Geometry::update (const NotificationWidget *widget)
+void NotificationWidget::Geometry::recalculate ()
 {
 	// Calculate the extents of the bubble
 	bubble=QRectF (widget->arrowLength, 0, widget->width ()-widget->arrowLength, widget->height ());
@@ -247,7 +246,7 @@ void NotificationWidget::moveArrowTip (int x, int y)
 void NotificationWidget::resizeEvent (QResizeEvent *event)
 {
 	(void)event;
-	geometry.update (this);
+	geometry.recalculate ();
 }
 
 QSize NotificationWidget::minimumSizeHint () const

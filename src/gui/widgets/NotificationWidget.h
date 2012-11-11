@@ -55,10 +55,11 @@ class NotificationWidget: public QWidget
     	virtual void closeEvent (QCloseEvent *event);
 
 	private:
-    	// FIXME store pointer to parent
     	class Geometry
     	{
     		public:
+    			Geometry (NotificationWidget *widget): widget (widget) {}
+
 				QRectF bubble;
 				QRectF northWest, northEast, southWest, southEast;
 
@@ -67,8 +68,10 @@ class NotificationWidget: public QWidget
 
 				QPainterPath path;
 
-		    	// FIXME rename recalculate
-				void update (const NotificationWidget *widget);
+				void recalculate ();
+
+    		private:
+				NotificationWidget *widget;
     	};
 
     	Ui::NotificationWidgetClass ui;
