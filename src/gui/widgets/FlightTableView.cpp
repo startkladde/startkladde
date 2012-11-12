@@ -513,10 +513,19 @@ void FlightTableView::toggleSorting (int column)
  */
 void FlightTableView::layoutNotifications ()
 {
-	// FIXME do some simple layout - don't require least squares, but make sure
-	// there are no overlaps. The widget will have to support more general
-	// arrows, though. Also, if the point is not visible, show a
-	// NotificationWidget without arrow (or with arrow down)
+	// FIXME prevent overlaps (require at least one pixel between adjacent
+	// widgets). Actual least squares layout is probably not easy to do, so we
+	// might just stick with placing widgets from top to bottom. The widgets
+	// will have to support a more general arrow/bubble placement scheme,
+	// though. Also, not that we have to consider the bubble height, rather than
+	// the widget height, which is important if the arrow points to a position
+	// above or below the bubble.
+	// A further improvement would be to make sure that all bubbles are actually
+	// inside the viewport; if a flight is not visible (because it's scrolled
+	// outside of the viewport), the corresponding bubble should show no arrow
+	// (or an arrow pointing vaguely up/downward) and a different text ("the
+	// flight of D-xxxx was..." instead of "the flight was...").
+
 	QHashIterator<NotificationWidget *, FlightReference> i (notifications);
 	while (i.hasNext ())
 	{

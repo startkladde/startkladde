@@ -84,7 +84,7 @@ bool FlightSortFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIn
 
 bool FlightSortFilterProxyModel::lessThan (const QModelIndex &left, const QModelIndex &right) const
 {
-	// FIXME when sorting by time etc.: always sort prepared flights last
+	// TODO: when sorting by time etc.: always sort prepared flights last
 
 	ObjectListModel<Flight> *flightList=dynamic_cast<ObjectListModel<Flight> *> (sourceModel ());
 
