@@ -23,9 +23,13 @@ class FlightReference
 
 		bool isValid () const;
 
+		bool operator== (const FlightReference &other) const;
+
 	private:
 		dbId _id;
 		bool _towflight;
 };
+
+uint qHash (const FlightReference &flightReference);
 
 #endif

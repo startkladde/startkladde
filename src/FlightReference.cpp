@@ -47,3 +47,17 @@ bool FlightReference::isValid () const
 {
 	return idValid (_id);
 }
+
+bool FlightReference::operator== (const FlightReference &other) const
+{
+	return (other._id==this->_id) && (other._towflight==this->_towflight);
+}
+
+uint qHash (const FlightReference &flightReference)
+{
+	if (flightReference.towflight ())
+		return ~flightReference.id ();
+	else
+		return flightReference.id ();
+}
+

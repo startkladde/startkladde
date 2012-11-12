@@ -14,6 +14,7 @@
 #include "src/db/dbId.h"
 
 class Cache;
+class FlightReference;
 
 class FlightSortFilterProxyModel: public QSortFilterProxyModel
 {
@@ -32,7 +33,7 @@ class FlightSortFilterProxyModel: public QSortFilterProxyModel
 		virtual bool getCustomSorting () const { return customSorting; }
 		virtual void sortCustom ();
 
-		virtual void setForceVisible (dbId flightId, bool forceVisible);
+		virtual void setForceVisible (const FlightReference &flight, bool forceVisible);
 
 	protected:
 		virtual bool filterAcceptsRow (int sourceRow, const QModelIndex &sourceParent) const;
@@ -46,7 +47,7 @@ class FlightSortFilterProxyModel: public QSortFilterProxyModel
 		bool hideFinishedFlights;
 		bool alwaysShowExternalFlights;
 		bool alwaysShowErroneousFlights;
-		QSet<dbId> flightsForceVisible;
+		QSet<FlightReference> flightsForceVisible;
 
 		// Sort options
 		bool customSorting;

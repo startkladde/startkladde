@@ -4,6 +4,7 @@
 
 #include "src/model/objectList/ObjectListModel.h"
 #include "src/model/Flight.h"
+#include "src/FlightReference.h"
 
 FlightSortFilterProxyModel::FlightSortFilterProxyModel (Cache &cache, QObject *parent):
 	QSortFilterProxyModel (parent),
@@ -18,12 +19,12 @@ FlightSortFilterProxyModel::~FlightSortFilterProxyModel ()
 {
 }
 
-void FlightSortFilterProxyModel::setForceVisible (dbId flightId, bool forceVisible)
+void FlightSortFilterProxyModel::setForceVisible (const FlightReference &flight, bool forceVisible)
 {
 	if (forceVisible)
-		flightsForceVisible.insert (flightId);
+		flightsForceVisible.insert (flight);
 	else
-		flightsForceVisible.remove (flightId);
+		flightsForceVisible.remove (flight);
 
 	invalidate ();
 }
@@ -40,7 +41,7 @@ bool FlightSortFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIn
 	const Flight &flight=flightList->at (sourceRow);
 
 	// FIXME this also forces (prepared) towflights visible, we don't want that
-	if (flightsForceVisible.contains (flight.getId ()))
+	if (flightsForceVisible.contains (FlightReference (flight)))
 		return true;
 
 	if (flight.isPrepared ())

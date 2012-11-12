@@ -553,7 +553,7 @@ void FlightTableView::notificationWidget_closed ()
 	widget->deleteLater ();
 
 	// Don't keep the flight open
-	_proxyModel->setForceVisible (flight.id (), false);
+	_proxyModel->setForceVisible (FlightReference (flight), false);
 
 	// Layout all widgets
 	layoutNotifications ();
@@ -586,7 +586,7 @@ void FlightTableView::showNotification (const FlightReference &flight, const QSt
 	notifications.insert (notificationWidget, flight);
 
 	// Keep the flight open
-	_proxyModel->setForceVisible (flight.id (), true);
+	_proxyModel->setForceVisible (FlightReference (flight), true);
 
 	// Layout all widgets
 	layoutNotifications ();
