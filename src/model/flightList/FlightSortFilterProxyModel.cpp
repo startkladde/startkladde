@@ -40,7 +40,6 @@ bool FlightSortFilterProxyModel::filterAcceptsRow (int sourceRow, const QModelIn
 	// Get the flight from the model
 	const Flight &flight=flightList->at (sourceRow);
 
-	// FIXME this also forces (prepared) towflights visible, we don't want that
 	if (flightsForceVisible.contains (FlightReference (flight)))
 		return true;
 
