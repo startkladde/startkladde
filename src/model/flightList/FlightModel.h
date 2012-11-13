@@ -48,9 +48,10 @@ class FlightModel: public ObjectModel<Flight>, public ColumnInfo
 		virtual QVariant displayHeaderData (int column) const;
 		virtual QVariant data (const Flight &flight, int column, int role=Qt::DisplayRole) const;
 
+		virtual int pilotColumn        () const { return 3; }
 		virtual int departButtonColumn () const { return 6; }
-		virtual int landButtonColumn () const { return 7; }
-		virtual int durationColumn () const { return 8; }
+		virtual int landButtonColumn   () const { return 7; }
+		virtual int durationColumn     () const { return 8; }
 
 		// ColumnInfo methods
 		virtual QString columnName (int columnIndex) const;

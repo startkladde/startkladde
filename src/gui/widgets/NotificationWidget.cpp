@@ -16,6 +16,8 @@
 //
 // Possible improvements:
 //   * better behavior on moveArrowTip if the widget does not fit inside the parent
+//   * widget showing the time until fade out
+//   * the ability to create derived widgets with buttons using Qt Designer
 
 // ******************
 // ** Construction **

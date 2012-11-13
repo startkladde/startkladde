@@ -21,6 +21,11 @@
 // proxyModel      = FlightSortFilterProxyModel (flightListModel)
 //                   Sorts and hides finished flights according to the settings.
 
+// Possible improvements:
+//   * make sure the notification widget is always in the visible range
+//     horizontally (requires notification layout update on horizontal
+//     scrolling)
+
 // ******************
 // ** Construction **
 // ******************
@@ -534,10 +539,12 @@ void FlightTableView::layoutNotifications ()
 		NotificationWidget *widget=i.key ();
 		FlightReference flight=i.value ();
 
-		QRectF rect=rectForFlight (flight, 1);
+		QRectF rect=rectForFlight (flight, _flightModel->pilotColumn ());
 		if (rect.isValid ())
 		{
-			widget->moveArrowTip (rect.center ());
+			double arrowX=rect.right ()-rect.height ()/2;
+			double arrowY=rect.top   ()+rect.height ()/2;
+			widget->moveArrowTip (QPointF (arrowX, arrowY));
 			widget->show ();
 		}
 		else
