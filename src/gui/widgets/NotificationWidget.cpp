@@ -81,6 +81,13 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	// must be specified relative to the top left corner of the bubble. For a
 	// different arrow tip position specification, the layout would have to be
 	// modified.
+	// We also have so set the row column stretch factors because otherwise, if,
+	// for example, the bottom spacer is larger than the bubble widget (that is,
+	// the arrow points to a location below the bottom of the bubble), the extra
+	// space would be distributed between the middle and bottom row, enlarging
+	// the bubble. Setting the stretch factor for the middle row and column to 0
+	// and the others to 1 ensures that any extra space is always added to the
+	// outer columns.
 	//
 	// The bubble widget has a simple one-element box layout containing the
 	// contents widget. The margins of the bubble widget layout are used for
@@ -101,6 +108,12 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	l->addItem   (_rightSpacer  , 0, 1, 1, 2); // Top middle and right
 	l->addItem   (_bottomSpacer , 1, 0, 2, 1); // Left middle and bottom
 	l->addWidget (_bubbleWidget , 1, 1);      // Center
+	l->setColumnStretch (0, 1);
+	l->setColumnStretch (1, 0);
+	l->setColumnStretch (2, 1);
+	l->setRowStretch (0, 1);
+	l->setRowStretch (1, 0);
+	l->setRowStretch (2, 1);
 
 	// For the default arrow width, we use the corner radius (specifically, the
 	// top margin of the bubble layout).
@@ -111,7 +124,7 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	// shown, but we need it now so the widget can be moved before it is shown.
 	// FIXME doesn't seem so, can we layout without doing this? We'd like to
 	// avoid calling things from the constructor.
-//	_geometry.recalculate ();
+	//_geometry.recalculate ();
 }
 
 NotificationWidget::~NotificationWidget()
@@ -213,8 +226,7 @@ void NotificationWidget::updateLayout ()
 {
 	adjustSize ();
 
-	qDebug () << "Update layout";
-	qDebug () << "arrowTipFromBubblePosition is " << arrowTipFromBubblePosition;
+	qDebug () << "Update layout, arrow tip is at" << arrowTipFromBubblePosition;
 
 	double arrowX=arrowTipFromBubblePosition.x ();
 	double arrowY=arrowTipFromBubblePosition.y ();
@@ -224,20 +236,15 @@ void NotificationWidget::updateLayout ()
 	double bottom=ifPositive (arrowY);
 	double right =ifPositive (arrowX);
 
-	qDebug () << "top left bottom right is " << top << left << bottom << right;
+	qDebug () << "Spacers: top left bottom right is" << top << left << bottom << right;
 
 	_topLeftSpacer->changeSize (left , top   , QSizePolicy::Minimum, QSizePolicy::Minimum);
 	_rightSpacer  ->changeSize (right, 0     , QSizePolicy::Minimum, QSizePolicy::Minimum);
 	_bottomSpacer ->changeSize (0    , bottom, QSizePolicy::Minimum, QSizePolicy::Minimum);
 
-	qDebug () << _topLeftSpacer->sizeHint ();
-	qDebug () << _rightSpacer->sizeHint ();
-	qDebug () << _bottomSpacer->sizeHint ();
-
 	// FIXME required?
-	qDebug () << "before: " << geometry () << _bubbleWidget->geometry ();
 	layout ()->invalidate ();
-	qDebug () << "after: " << geometry () << _bubbleWidget->geometry ();
+	qDebug () << "Geometry: widget" << geometry () << ", bubble:" << _bubbleWidget->geometry ();
 }
 
 
@@ -322,16 +329,23 @@ QPointF NotificationWidget::defaultBubblePosition (const QPointF &arrowTip)
  */
 void NotificationWidget::moveTo (const QPointF &arrowTip, const QPointF &bubblePosition)
 {
-	// The position of the arrow tip, relative to the bubble, is a shape
-	// parameter
+	// Save the old arrow tip position
+	QPointF oldArrowTipFromBubblePosition=arrowTipFromBubblePosition;
+
+	// Calculate the new arrow tip position
 	arrowTipFromBubblePosition=arrowTip-bubblePosition;
 
-	updateLayout ();
+	// FIXME only if changed (or not initialized yet)
+	if (true || arrowTipFromBubblePosition!=oldArrowTipFromBubblePosition)
+	{
+		updateLayout ();
 
-	// Now we have to recalculate the geometry (TODO only if a shape parameter
-	// changed). This will calculate the position of the bubble and of the arrow
-	// tip in widget coordinates.
-	_geometry.recalculate ();
+		// FIXME do automatically after updateLayout by invalidating it.
+		// FIXME only if necessary
+		// Now we have to recalculate the geometry. This will calculate the
+		// position of the bubble and of the arrow tip in widget coordinates.
+		_geometry.recalculate ();
+	}
 
 	// Finally, we can move the widget. For calculating the position (in parent
 	// coordinates), we can use either the arrow tip or the bubble position, the
