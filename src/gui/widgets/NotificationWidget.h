@@ -82,7 +82,6 @@ class NotificationWidget: public QWidget
     	QColor bubbleColor;
 
     	// Shape
-//    	double cornerRadius;
     	double arrowWidth;
     	QPointF arrowTipFromBubblePosition; // NB!
 
@@ -90,7 +89,6 @@ class NotificationWidget: public QWidget
     	QSpacerItem *_topLeftSpacer;
     	QSpacerItem *_rightSpacer;
     	QSpacerItem *_bottomSpacer;
-    	QWidget *_bubbleWidget;
     	QHBoxLayout *_bubbleLayout;
     	QLabel *_contents;
 

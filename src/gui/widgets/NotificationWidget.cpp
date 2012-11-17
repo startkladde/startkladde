@@ -61,7 +61,7 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	// | spacer | (zero height)   |
 	// |--------+-----------------|
 	// | bottom | bubble |        |
-	// | spacer | widget |        |
+	// | spacer | layout |        |
 	// | (zero  |--------+--------|
 	// | width) |        |        |
 	// |        |        |        |
@@ -89,25 +89,24 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	// and the others to 1 ensures that any extra space is always added to the
 	// outer columns.
 	//
-	// The bubble widget has a simple one-element box layout containing the
-	// contents widget. The margins of the bubble widget layout are used for
-	// specifying the rounded corner radius.
-	// Note that the bubble is not drawn on the bubble widget because the arrow,
-	// which extends outside of the bubble widget, is drawn with the same path.
-	// The bubble widget is invisible and is only there as a container for the
-	// contents widget.
-
-	_bubbleWidget=new QWidget (this);
-	_bubbleLayout=new QHBoxLayout (_bubbleWidget);
-	_bubbleLayout->addWidget (_contents);
+	// The bubble layout is a simple one-element box layout containing the
+	// contents widget. Its geometry is identical to the bubble geometry. The
+	// margins of the bubble layout are used for specifying the rounded corner
+	// radius. That way, the contents widget can never overlap the rounded
+	// corner.
 
 	QGridLayout *l=new QGridLayout (this);
+
+	_bubbleLayout=new QHBoxLayout (NULL);
+	_bubbleLayout->setContentsMargins (l->contentsMargins ());
+	_bubbleLayout->addWidget (_contents);
+
 	l->setMargin (0);
 	l->setSpacing (0);
 	l->addItem   (_topLeftSpacer, 0, 0);       // Top left
 	l->addItem   (_rightSpacer  , 0, 1, 1, 2); // Top middle and right
 	l->addItem   (_bottomSpacer , 1, 0, 2, 1); // Left middle and bottom
-	l->addWidget (_bubbleWidget , 1, 1);      // Center
+	l->addLayout (_bubbleLayout , 1, 1);
 	l->setColumnStretch (0, 1);
 	l->setColumnStretch (1, 0);
 	l->setColumnStretch (2, 1);
@@ -118,7 +117,6 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	// For the default arrow width, we use the corner radius (specifically, the
 	// top margin of the bubble layout).
 	arrowWidth=_bubbleLayout->contentsMargins ().top ();
-
 
 	// The geometry will be updated in the resize event before the widget is
 	// shown, but we need it now so the widget can be moved before it is shown.
@@ -244,7 +242,7 @@ void NotificationWidget::updateLayout ()
 
 	// FIXME required?
 	layout ()->invalidate ();
-	qDebug () << "Geometry: widget" << geometry () << ", bubble:" << _bubbleWidget->geometry ();
+	qDebug () << "Geometry: widget" << geometry () << ", bubble:" << _bubbleLayout->geometry ();
 }
 
 
@@ -257,7 +255,7 @@ void NotificationWidget::Geometry::recalculate ()
 {
 	// Determine the geometry of the bubble. It is given by the geometry of the
 	// bubble widget.
-	bubble=widget->_bubbleWidget->geometry ();
+	bubble=widget->_bubbleLayout->geometry ();
 
 	// Get the bubble margins, which specify the radius of the rounded corners.
 	QMargins margins=widget->_bubbleLayout->contentsMargins ();
