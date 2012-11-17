@@ -43,7 +43,8 @@ FlightTableView::FlightTableView (QWidget *parent):
 	SkTableView (parent),
 	_dbManager (NULL),
 	_flightList (NULL), _proxyList (NULL), _flightModel (NULL),
-	_flightListModel (NULL), _proxyModel (NULL)
+	_flightListModel (NULL), _proxyModel (NULL),
+	_sortColumn (-1), _sortOrder (Qt::AscendingOrder)
 {
 	// Table header clicked -> toggle sorting order
 	connect (horizontalHeader (), SIGNAL (sectionClicked (int)),
@@ -56,7 +57,6 @@ FlightTableView::FlightTableView (QWidget *parent):
 
 FlightTableView::~FlightTableView ()
 {
-	delete _flightModel;
 }
 
 /**
@@ -75,17 +75,17 @@ void FlightTableView::init (DbManager *dbManager)
 	// Note: for the meaning of the numerous models, see the comments at the
 	// beginning of the file.
 
-	// Create the proxy list
+	// Create the proxy list - deleted by this
 	_proxyList=new FlightProxyList (dbManager->getCache (), this);
 
-	// Create the flight model
+	// Create the flight model - deleted by _flightListModel
 	_flightModel = new FlightModel (dbManager->getCache ());
 
-	// Create the flight list model
+	// Create the flight list model - deleted by this
 	_flightListModel = new ObjectListModel<Flight> (_proxyList, false, _flightModel, true, this);
 
 	// Create and setup the flight sort filter proxy model (we'll use this as
-	// the table's model)
+	// the table's model) - deleted by this
 	_proxyModel = new FlightSortFilterProxyModel (dbManager->getCache (), this);
 	_proxyModel->setSourceModel (_flightListModel);
 	_proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
@@ -544,7 +544,7 @@ void FlightTableView::layoutNotifications ()
 		{
 			double arrowX=rect.right ()-rect.height ()/2;
 			double arrowY=rect.top   ()+rect.height ()/2;
-			widget->moveArrowTip (QPointF (arrowX, arrowY));
+			widget->moveTo (QPointF (arrowX, arrowY));
 			widget->show ();
 		}
 		else
@@ -591,7 +591,7 @@ void FlightTableView::showNotification (const FlightReference &flight, const QSt
 	// when it is closed, which happens after a delay oder when the user clicks
 	// the widget.
 	NotificationWidget *notificationWidget=new NotificationWidget (viewport ());
-	//widget->setDrawWidgetBackground (true);
+	notificationWidget->setAutoFillBackground (true);
 	notificationWidget->setText (message);
 	notificationWidget->fadeOutAndCloseIn (milliseconds);
 

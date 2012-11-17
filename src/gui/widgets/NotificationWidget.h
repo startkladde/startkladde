@@ -5,10 +5,11 @@
 #include <QRectF>
 #include <QPointF>
 
-#include "ui_NotificationWidget.h"
-
+class QHBoxLayout;
 class QMouseEvent;
 class QCloseEvent;
+class QLabel;
+class QSpacerItem;
 
 class NotificationWidget: public QWidget
 {
@@ -19,16 +20,18 @@ class NotificationWidget: public QWidget
     	~NotificationWidget ();
 
     	// Properties
-    	void setDrawWidgetBackground (bool drawWidgetBackground);
-    	bool getDrawWidgetBackground () const;
     	void setFadeOutDuration (int duration);
     	int getFadeOutDuration () const;
     	void setText (const QString &text);
     	QString getText () const;
+    	QWidget *contents ();
+
+    	// Shape
+    	QPointF defaultBubblePosition (const QPointF &arrowTip);
 
     	// Position
-    	void moveArrowTip (const QPointF &point);
-    	void moveArrowTip (int x, int y);
+    	void moveTo (const QPointF &arrowTip, const QPointF &bubblePosition);
+    	void moveTo (const QPointF &arrowTip);
 
     public slots:
     	void fadeOutAndCloseIn (int delay, int duration);
@@ -42,8 +45,9 @@ class NotificationWidget: public QWidget
 	protected:
     	// Size
     	virtual void resizeEvent (QResizeEvent *event);
-    	virtual QSize sizeHint () const;
-    	virtual QSize minimumSizeHint () const;
+
+    	// Layout
+    	void updateLayout ();
 
     	// Painting
     	virtual void paintEvent (QPaintEvent *event);
@@ -55,6 +59,7 @@ class NotificationWidget: public QWidget
     	virtual void closeEvent (QCloseEvent *event);
 
 	private:
+    	/** Everything is in widget coordinates */
     	class Geometry
     	{
     		public:
@@ -64,7 +69,6 @@ class NotificationWidget: public QWidget
 				QRectF northWest, northEast, southWest, southEast;
 
 				QPointF arrowTop, arrowBottom, arrowTip;
-				QPointF straightArrowTip;
 
 				QPainterPath path;
 
@@ -74,23 +78,28 @@ class NotificationWidget: public QWidget
 				NotificationWidget *widget;
     	};
 
-    	Ui::NotificationWidgetClass ui;
+    	// Color properties
+    	QColor bubbleColor;
 
-    	// Properties
-    	int cornerRadius;
-    	int arrowWidth;
-    	int arrowLength;
-    	int arrowOffset;
+    	// Shape
+//    	double cornerRadius;
+    	double arrowWidth;
+    	QPointF arrowTipFromBubblePosition; // NB!
 
-    	QColor backgroundColor;
-    	QColor widgetBackgroundColor;
-    	bool drawWidgetBackground;
-
-    	Geometry geometry;
+    	// Contents
+    	QSpacerItem *_topLeftSpacer;
+    	QSpacerItem *_rightSpacer;
+    	QSpacerItem *_bottomSpacer;
+    	QWidget *_bubbleWidget;
+    	QHBoxLayout *_bubbleLayout;
+    	QLabel *_contents;
 
     	// Closing
     	int _fadeOutDuration;
     	bool _fadeOutInProgress;
+
+    	// Misc
+    	Geometry _geometry;
 };
 
 #endif

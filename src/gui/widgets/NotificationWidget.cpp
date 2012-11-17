@@ -6,61 +6,112 @@
 #include <QTimer>
 #include <QDebug>
 #include <QMouseEvent>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QSpacerItem>
+#include <QGridLayout>
 
+#include "src/util/math.h"
 #include "src/gui/WidgetFader.h"
 #include "src/util/qRectF.h"
-
+#include "src/util/qWidget.h"
 
 // Note that this class uses QPointF and QRectF rather than QPoint and QRect
 // due to obscure bottom/right/center calculation rules of QRect.
 //
 // Possible improvements:
-//   * better behavior on moveArrowTip if the widget does not fit inside the parent
 //   * widget showing the time until fade out
-//   * the ability to create derived widgets with buttons using Qt Designer
 
 // ******************
 // ** Construction **
 // ******************
 
 NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
-	cornerRadius (10),
-	arrowWidth (10), arrowLength (20), arrowOffset (0),
-	backgroundColor (QColor (0, 0, 0, 191)),
-	widgetBackgroundColor (QColor (0, 0, 0, 63)),
-	drawWidgetBackground (false),
-	geometry (this),
-	_fadeOutDuration (1000), _fadeOutInProgress (false)
+	bubbleColor (QColor (0, 0, 0, 191)),
+	_topLeftSpacer (new QSpacerItem (0, 0)),
+	_rightSpacer   (new QSpacerItem (0, 0)),
+	_bottomSpacer  (new QSpacerItem (0, 0)),
+	_bubbleLayout (NULL), _contents (NULL),
+	_fadeOutDuration (1000), _fadeOutInProgress (false),
+	_geometry (this)
 {
-	ui.setupUi (this);
+	// FIXME bubbleLayout and own layout deleted?
+	// TODO allow setting the corner radius: set the margins of _bubbleLayout
 
-	QLayout *l=layout ();
-	if (l)
-	{
-		// Set the corner radius. We'll use the margin of the layout, which is
-		// platform/style dependent. The layout has 4 margins (one on each
-		// side), but we only have one corner radius. We'll arbitrarily pick the
-		// left one.
-		cornerRadius=l->contentsMargins ().left ();
-
-		// Set the layout's margins. We use the corner radius, except on the
-		// left side, where we'll add space for the arrow.
-		l->setContentsMargins (arrowLength+cornerRadius,
-			cornerRadius, cornerRadius, cornerRadius);
-	}
-
-	// Make label text white
+	// Make label text white and the widget background a rather transparent
+	// black (note that this is the widget background, which is not drawn unless
+	// the autoFillBackground property is set to true; the bubble is drawn in
+	// the bubble color).
 	QPalette widgetPalette=palette ();
 	widgetPalette.setColor (QPalette::WindowText, Qt::white);
 	widgetPalette.setColor (QPalette::Text      , Qt::white);
+	widgetPalette.setColor (backgroundRole ()   , QColor (0, 0, 0, 63));
 	setPalette (widgetPalette);
 
-	// Make the widget as compact as possible
-	adjustSize ();
+	// Add a contents widget - FIXME this should be done from outside, or from a
+	// subclass (and _contents should be QWidget *)
+	// And make sure to remove the old one from the widget (and take ownership?)
+	_contents=new QLabel (this);
+
+	// Setup the layout
+	//
+	// The widget's layout looks like this:
+	// .--------------------------.
+	// |top/left| right  spacer   |
+	// | spacer | (zero height)   |
+	// |--------+-----------------|
+	// | bottom | bubble |        |
+	// | spacer | widget |        |
+	// | (zero  |--------+--------|
+	// | width) |        |        |
+	// |        |        |        |
+	// '--------------------------'
+	// The spacers are there to ensure that there is enough space to draw the
+	// arrow. Their size depends on the position of the arrow tip, as set by the
+	// user. The margins around the layout and the spacing between rows and
+	// columns is zero.
+	// Note that spacers define the positions of all widget edges relative to
+	// the upper left corner of the bubble (a typical layout would define a
+	// space between the right/bottom edge of the bubble and the right/bottom
+	// edge of the widget). This is required because the arrow tip position does
+	// not necessarily depend on the bubble size, but is specified relative to
+	// the upper left corner of the bubble.
+	// This scheme allows us to draw the arrow on any side of the bubble (though
+	// this is not implemented at the moment), but the position of the arrow tip
+	// must be specified relative to the top left corner of the bubble. For a
+	// different arrow tip position specification, the layout would have to be
+	// modified.
+	//
+	// The bubble widget has a simple one-element box layout containing the
+	// contents widget. The margins of the bubble widget layout are used for
+	// specifying the rounded corner radius.
+	// Note that the bubble is not drawn on the bubble widget because the arrow,
+	// which extends outside of the bubble widget, is drawn with the same path.
+	// The bubble widget is invisible and is only there as a container for the
+	// contents widget.
+
+	_bubbleWidget=new QWidget (this);
+	_bubbleLayout=new QHBoxLayout (_bubbleWidget);
+	_bubbleLayout->addWidget (_contents);
+
+	QGridLayout *l=new QGridLayout (this);
+	l->setMargin (0);
+	l->setSpacing (0);
+	l->addItem   (_topLeftSpacer, 0, 0);       // Top left
+	l->addItem   (_rightSpacer  , 0, 1, 1, 2); // Top middle and right
+	l->addItem   (_bottomSpacer , 1, 0, 2, 1); // Left middle and bottom
+	l->addWidget (_bubbleWidget , 1, 1);      // Center
+
+	// For the default arrow width, we use the corner radius (specifically, the
+	// top margin of the bubble layout).
+	arrowWidth=_bubbleLayout->contentsMargins ().top ();
+
 
 	// The geometry will be updated in the resize event before the widget is
 	// shown, but we need it now so the widget can be moved before it is shown.
-	geometry.recalculate ();
+	// FIXME doesn't seem so, can we layout without doing this? We'd like to
+	// avoid calling things from the constructor.
+//	_geometry.recalculate ();
 }
 
 NotificationWidget::~NotificationWidget()
@@ -68,10 +119,23 @@ NotificationWidget::~NotificationWidget()
 }
 
 
+// **************
+// ** Contents **
+// **************
+
+QWidget *NotificationWidget::contents ()
+{
+	return _contents;
+}
+
+
 // *************
 // ** Closing **
 // *************
 
+/**
+ * Emits the closed() event when the widget is closed
+ */
 void NotificationWidget::closeEvent (QCloseEvent *event)
 {
 	QWidget::closeEvent (event);
@@ -79,6 +143,10 @@ void NotificationWidget::closeEvent (QCloseEvent *event)
 		emit closed ();
 }
 
+/**
+ * Sets up a timer that calls fadeOutAndCloseNow after the specified delay (in
+ * milliseconds).
+ */
 void NotificationWidget::fadeOutAndCloseIn (int delay)
 {
 	QTimer::singleShot (delay, this, SLOT (fadeOutAndCloseNow ()));
@@ -111,16 +179,6 @@ void NotificationWidget::fadeOutAndCloseNow (int duration)
 // ** Properties **
 // ****************
 
-void NotificationWidget::setDrawWidgetBackground (bool drawWidgetBackground)
-{
-	this->drawWidgetBackground=drawWidgetBackground;
-}
-
-bool NotificationWidget::getDrawWidgetBackground () const
-{
-	return drawWidgetBackground;
-}
-
 void NotificationWidget::setFadeOutDuration (int duration)
 {
 	_fadeOutDuration=duration;
@@ -133,14 +191,55 @@ int NotificationWidget::getFadeOutDuration () const
 
 void NotificationWidget::setText (const QString &text)
 {
-	ui.textLabel->setText (text);
+	_contents->setText (text);
 	adjustSize ();
 }
 
 QString NotificationWidget::getText () const
 {
-	return ui.textLabel->text ();
+	return _contents->text ();
 }
+
+
+// ************
+// ** Layout **
+// ************
+
+/**
+ * You must update the geometry after calling this (FIXME better just invalidate
+ * it)
+ */
+void NotificationWidget::updateLayout ()
+{
+	adjustSize ();
+
+	qDebug () << "Update layout";
+	qDebug () << "arrowTipFromBubblePosition is " << arrowTipFromBubblePosition;
+
+	double arrowX=arrowTipFromBubblePosition.x ();
+	double arrowY=arrowTipFromBubblePosition.y ();
+
+	double top   =ifPositive (-arrowY);
+	double left  =ifPositive (-arrowX);
+	double bottom=ifPositive (arrowY);
+	double right =ifPositive (arrowX);
+
+	qDebug () << "top left bottom right is " << top << left << bottom << right;
+
+	_topLeftSpacer->changeSize (left , top   , QSizePolicy::Minimum, QSizePolicy::Minimum);
+	_rightSpacer  ->changeSize (right, 0     , QSizePolicy::Minimum, QSizePolicy::Minimum);
+	_bottomSpacer ->changeSize (0    , bottom, QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+	qDebug () << _topLeftSpacer->sizeHint ();
+	qDebug () << _rightSpacer->sizeHint ();
+	qDebug () << _bottomSpacer->sizeHint ();
+
+	// FIXME required?
+	qDebug () << "before: " << geometry () << _bubbleWidget->geometry ();
+	layout ()->invalidate ();
+	qDebug () << "after: " << geometry () << _bubbleWidget->geometry ();
+}
+
 
 
 // **************
@@ -149,96 +248,102 @@ QString NotificationWidget::getText () const
 
 void NotificationWidget::Geometry::recalculate ()
 {
-	// Calculate the extents of the bubble
-	bubble=QRectF (widget->arrowLength, 0, widget->width ()-widget->arrowLength, widget->height ());
+	// Determine the geometry of the bubble. It is given by the geometry of the
+	// bubble widget.
+	bubble=widget->_bubbleWidget->geometry ();
+
+	// Get the bubble margins, which specify the radius of the rounded corners.
+	QMargins margins=widget->_bubbleLayout->contentsMargins ();
 
 	// Calculate the corner rectangles
-	northWest=northWestCorner (bubble, 2*widget->cornerRadius);
-	northEast=northEastCorner (bubble, 2*widget->cornerRadius);
-	southWest=southWestCorner (bubble, 2*widget->cornerRadius);
-	southEast=southEastCorner (bubble, 2*widget->cornerRadius);
+	northWest=northWestCorner (bubble, 2*margins.left  (), 2*margins.top    ());
+	northEast=northEastCorner (bubble, 2*margins.right (), 2*margins.top    ());
+	southWest=southWestCorner (bubble, 2*margins.left  (), 2*margins.bottom ());
+	southEast=southEastCorner (bubble, 2*margins.right (), 2*margins.bottom ());
 
 	// Calculate the arrow coordinates
 	// This currently places the arrow immediately below the top left corner.
-	arrowTop        =QPointF (bubble.left (),                     widget->cornerRadius);
-	arrowBottom     =QPointF (bubble.left (),                     widget->cornerRadius+widget->arrowWidth);
-	straightArrowTip=QPointF (bubble.left ()-widget->arrowLength, widget->cornerRadius+widget->arrowWidth/2);
-	arrowTip        =straightArrowTip+QPointF (0, widget->arrowOffset);
+	// The arrow top is just below the top left corner. The arrow bottom is by
+	// arrowWidth lower than the arrow top. The arrow tip position is calculated
+	// from its relative position to the bubble.
+	arrowTop    = bubble.topLeft () + QPointF (0, margins.top ()    );
+	arrowBottom = arrowTop          + QPointF (0, widget->arrowWidth);
+	arrowTip    = bubble.topLeft () + widget->arrowTipFromBubblePosition;
 
-	// Draw the bubble outline counter-clockwise, starting with the bottom left
-	// corner arc and ending after the top left corner arc.
+	// Create the bubble outline path.
+	//
+	// Clear the path
 	path=QPainterPath ();
+	//
+	// Draw the path counter-clockwise, starting with the bottom left corner arc
+	// and ending after the top left corner arc.
+	//
 	path.moveTo (southWest.topLeft     ()); path.arcTo (southWest, 180, 90);
 	path.lineTo (southEast.bottomLeft  ()); path.arcTo (southEast, 270, 90);
 	path.lineTo (northEast.bottomRight ()); path.arcTo (northEast,   0, 90);
 	path.lineTo (northWest.topRight    ()); path.arcTo (northWest,  90, 90);
-
+	//
 	// Draw the arrow
 	path.lineTo (arrowTop);
 	path.lineTo (arrowTip);
 	path.lineTo (arrowBottom);
-
+	//
+	// Close the path
 	path.closeSubpath ();
-
-//	qDebug () << "Arrow tip is at" << geometry.arrowTip;
 }
+
+
+// ***********
+// ** Shape **
+// ***********
+
+QPointF NotificationWidget::defaultBubblePosition (const QPointF &arrowTip)
+{
+	QMargins margins=_bubbleLayout->contentsMargins ();
+
+	// By default, the arrow tip is placed such that the arrow points straight
+	// to the left from its default position right under the top-left corner,
+	// and is twice as long as wide.
+	QPointF relativeArrowPosition (-2*arrowWidth, margins.top ()+arrowWidth/2);
+
+	return arrowTip-relativeArrowPosition;
+}
+
 
 // **************
 // ** Position **
 // **************
 
-void NotificationWidget::moveArrowTip (const QPointF &point)
+/**
+ * Arguments are in parent coordinates
+ *
+ * @param arrowTip
+ * @param bubblePosition
+ */
+void NotificationWidget::moveTo (const QPointF &arrowTip, const QPointF &bubblePosition)
 {
-	// Calculate the position where this widget would have to be in order to
-	// move the tip of a straight arrow to the given point.
-	QPointF position=point-geometry.straightArrowTip;
+	// The position of the arrow tip, relative to the bubble, is a shape
+	// parameter
+	arrowTipFromBubblePosition=arrowTip-bubblePosition;
 
-	// If this widget has a parent widget (i. e. it is not a top level widget),
-	// make sure it is completely inside the parent widget. Note that if the
-	// parent widget is not high enough for this widget plus the margins, the
-	// results may be unexpected.
-	// FIXME disabled for now, it doesn't work if the arrow tip ends out outside
-	// of the widget boundaries (i. e. above or below the bubble) - we'll have
-	// to resize the widget in this case.
-//	QWidget *parent=parentWidget ();
-//	if (parent)
-//	{
-//		// Set the desired margin at the top and at the bottom
-//		int topMargin=1, bottomMargin=1;
-//
-//		// Calculate the minimum and maximum y position
-//		int minY=topMargin;
-//		int maxY=parent->height ()-bottomMargin-height ();
-//
-//		// Calculate the offset to move the widget to get it inside the
-//		// allowable range.
-//		int yOffset=0;
-//		if (position.y ()<minY)
-//			yOffset=minY-position.y ();
-//		else if (position.y ()>maxY)
-//			yOffset=maxY-position.y ();
-//
-//		// Move the position
-//		position += QPointF (0, yOffset);
-//
-//		// Update the arrow offset. If the arrow offset changed, we have to
-//		// recalculate the geometry.
-//		if (arrowOffset!=-yOffset)
-//		{
-//			arrowOffset=-yOffset;
-//			geometry.update (this);
-//		}
-//	}
+	updateLayout ();
 
-	// Move the widget
-	move (position.toPoint ());
+	// Now we have to recalculate the geometry (TODO only if a shape parameter
+	// changed). This will calculate the position of the bubble and of the arrow
+	// tip in widget coordinates.
+	_geometry.recalculate ();
+
+	// Finally, we can move the widget. For calculating the position (in parent
+	// coordinates), we can use either the arrow tip or the bubble position, the
+	// results should be equal. We use the arrow tip position because that is
+	// the most important parameter.
+	move ((arrowTip-_geometry.arrowTip).toPoint ());
 }
 
-void NotificationWidget::moveArrowTip (int x, int y)
+void NotificationWidget::moveTo (const QPointF &arrowTip)
 {
-	moveArrowTip (QPointF (x, y));
+	moveTo (arrowTip, defaultBubblePosition (arrowTip));
 }
-
 
 
 // **********
@@ -248,24 +353,7 @@ void NotificationWidget::moveArrowTip (int x, int y)
 void NotificationWidget::resizeEvent (QResizeEvent *event)
 {
 	(void)event;
-	geometry.recalculate ();
-}
-
-QSize NotificationWidget::minimumSizeHint () const
-{
-	QSize hint=QWidget::minimumSizeHint ();
-
-	// Make sure the widget is wide enough for two rounded corners, and high
-	// enough for two rounded corners and the arrow.
-	hint.setWidth  (qMax (hint.width  (), 2*cornerRadius));
-	hint.setHeight (qMax (hint.height (), 2*cornerRadius+arrowWidth));
-
-	return hint;
-}
-
-QSize NotificationWidget::sizeHint () const
-{
-	return minimumSizeHint ();
+	_geometry.recalculate ();
 }
 
 
@@ -280,17 +368,9 @@ void NotificationWidget::paintEvent (QPaintEvent *event)
 	QPainter painter (this);
 	painter.setRenderHint(QPainter::Antialiasing);
 	painter.setPen (Qt::NoPen);
+	painter.setBrush (bubbleColor);
 
-	// If we are supposed to draw the widget background, draw a rectangle
-	// comprising the whole widget in the widget background color.
-	if (drawWidgetBackground)
-	{
-		painter.setBrush (widgetBackgroundColor);
-		painter.drawRect (this->rect ());
-	}
-
-	painter.setBrush (QColor (0, 0, 0, 191));
-	painter.drawPath (geometry.path);
+	painter.drawPath (_geometry.path);
 }
 
 
@@ -300,10 +380,11 @@ void NotificationWidget::paintEvent (QPaintEvent *event)
 
 void NotificationWidget::mousePressEvent (QMouseEvent *event)
 {
-	if (geometry.path.contains (event->posF ()))
-		// Act on the event
+	if (_geometry.path.contains (event->posF ()))
+		// The event position is inside the bubble. Act on the event.
 		close ();
 	else
-		// Let the parent widget receive the event
+		// The event position is outside the bubble. Let the parent widget
+		// receive the event.
 		event->ignore ();
 }
