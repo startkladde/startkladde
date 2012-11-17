@@ -15,12 +15,13 @@ class NotificationWidget: public QWidget
     Q_OBJECT
 
 	public:
+    	// Construction
     	NotificationWidget (QWidget *parent);
     	~NotificationWidget ();
 
     	// Properties
-    	void setFadeOutDuration (int duration);
-    	int getFadeOutDuration () const;
+    	void setFadeOutDuration (int duration) { _fadeOutDuration=duration; }
+    	int fadeOutDuration () const           { return _fadeOutDuration; }
 
     	// Contents
     	void setContents (QWidget *contents, bool contentsOwned);
@@ -29,14 +30,13 @@ class NotificationWidget: public QWidget
     	void setText (const QString &text);
     	QString text () const;
 
-    	// Shape
+    	// Shape/position
     	QPointF defaultBubblePosition (const QPointF &arrowTip);
-
-    	// Position
     	void moveTo (const QPointF &arrowTip, const QPointF &bubblePosition);
     	void moveTo (const QPointF &arrowTip);
 
     public slots:
+    	// Closing
     	void fadeOutAndCloseIn (int delay, int duration);
     	void fadeOutAndCloseIn (int delay);
     	void fadeOutAndCloseNow ();
@@ -46,49 +46,47 @@ class NotificationWidget: public QWidget
     	void closed ();
 
 	protected:
-    	// Size
-    	virtual void resizeEvent (QResizeEvent *event);
-
-    	// Layout
+    	virtual void resizeEvent     (QResizeEvent *event);
+		virtual void paintEvent      (QPaintEvent  *event);
+		virtual void mousePressEvent (QMouseEvent  *event);
+		virtual void closeEvent      (QCloseEvent  *event);
+//		virtual void showEvent       (QShowEvent   *event);
     	void updateLayout ();
-
-    	// Painting
-    	virtual void paintEvent (QPaintEvent *event);
-
-    	// Interaction
-    	void mousePressEvent (QMouseEvent *event);
-
-    	// Closing
-    	virtual void closeEvent (QCloseEvent *event);
 
 	private:
     	/** Everything is in widget coordinates */
-    	class Geometry
+    	class Shape
     	{
     		public:
-    			Geometry (NotificationWidget *widget): widget (widget) {}
+    			Shape (NotificationWidget *widget);
 
-				QRectF bubble;
-				QRectF northWest, northEast, southWest, southEast;
-
-				QPointF arrowTop, arrowBottom, arrowTip;
+				void invalidate ();
+				void update ();
 
 				QPainterPath path;
-
-				void recalculate ();
+				QPointF arrowTip;
 
     		private:
-				NotificationWidget *widget;
+				void recalculate ();
+
+				NotificationWidget *_widget;
+				bool _valid;
     	};
 
     	// Color properties
     	QColor bubbleColor;
 
-    	// Shape
+    	// Shape parameters
     	double arrowWidth;
     	QPointF arrowTipFromBubblePosition; // NB!
 
+    	// Calculated shape
+    	const Shape &shape ();
+    	void invalidateShape ();
+    	Shape _shape_;
+
     	// Layout
+//    	bool _layoutInitialized; // FIXME remove if not required
     	QSpacerItem *_topLeftSpacer;
     	QSpacerItem *_rightSpacer;
     	QSpacerItem *_bottomSpacer;
@@ -102,8 +100,6 @@ class NotificationWidget: public QWidget
     	int _fadeOutDuration;
     	bool _fadeOutInProgress;
 
-    	// Misc
-    	Geometry _geometry;
 };
 
 #endif
