@@ -22,6 +22,48 @@
 // Possible improvements:
 //   * widget showing the time until fade out
 
+// The widget's layout looks like this:
+//
+// .--------------------------.
+// |top/left| right  spacer   |
+// | spacer | (zero height)   |
+// |--------+-----------------|
+// | bottom | bubble |        |
+// | spacer | layout |        |
+// | (zero  |--------+--------|
+// | width) |        |        |
+// |        |        |        |
+// '--------------------------'
+//
+// The spacers are there to ensure that there is enough space to draw the arrow.
+// Their size depends on the position of the arrow tip, as set by the user. The
+// margins around the layout and the spacing between rows and columns is zero.
+//
+// Note that spacers define the positions of all widget edges relative to the
+// upper left corner of the bubble (a typical layout would define a space
+// between the right/bottom edge of the bubble and the right/bottom edge of the
+// widget). This is required because the arrow tip position does not necessarily
+// depend on the bubble size, but is specified relative to the upper left corner
+// of the bubble.
+//
+// This scheme allows us to draw the arrow on any side of the bubble (though
+// this is not implemented at the moment), but the position of the arrow tip
+// must be specified relative to the top left corner of the bubble. For a
+// different arrow tip position specification, the layout would have to be
+// modified.
+//
+// We also have so set the row column stretch factors because otherwise, if, for
+// example, the bottom spacer is larger than the bubble widget (that is, the
+// arrow points to a location below the bottom of the bubble), the extra space
+// would be distributed between the middle and bottom row, enlarging the bubble.
+// Setting the stretch factor for the middle row and column to 0 and the others
+// to 1 ensures that any extra space is always added to the outer columns.
+//
+// The bubble layout is a simple one-element box layout containing the contents
+// widget. Its geometry is identical to the bubble geometry. The margins of the
+// bubble layout are used for specifying the rounded corner radius. That way,
+// the contents widget can never overlap the rounded corner.
+
 // ******************
 // ** Construction **
 // ******************
@@ -31,7 +73,8 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	_topLeftSpacer (new QSpacerItem (0, 0)),
 	_rightSpacer   (new QSpacerItem (0, 0)),
 	_bottomSpacer  (new QSpacerItem (0, 0)),
-	_bubbleLayout (NULL), _contents (NULL),
+	_bubbleLayout (NULL),
+	_contents (NULL), _contentsOwned (false),
 	_fadeOutDuration (1000), _fadeOutInProgress (false),
 	_geometry (this)
 {
@@ -48,58 +91,16 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	widgetPalette.setColor (backgroundRole ()   , QColor (0, 0, 0, 63));
 	setPalette (widgetPalette);
 
-	// Add a contents widget - FIXME this should be done from outside, or from a
-	// subclass (and _contents should be QWidget *)
-	// And make sure to remove the old one from the widget (and take ownership?)
-	_contents=new QLabel (this);
-
-	// Setup the layout
-	//
-	// The widget's layout looks like this:
-	// .--------------------------.
-	// |top/left| right  spacer   |
-	// | spacer | (zero height)   |
-	// |--------+-----------------|
-	// | bottom | bubble |        |
-	// | spacer | layout |        |
-	// | (zero  |--------+--------|
-	// | width) |        |        |
-	// |        |        |        |
-	// '--------------------------'
-	// The spacers are there to ensure that there is enough space to draw the
-	// arrow. Their size depends on the position of the arrow tip, as set by the
-	// user. The margins around the layout and the spacing between rows and
-	// columns is zero.
-	// Note that spacers define the positions of all widget edges relative to
-	// the upper left corner of the bubble (a typical layout would define a
-	// space between the right/bottom edge of the bubble and the right/bottom
-	// edge of the widget). This is required because the arrow tip position does
-	// not necessarily depend on the bubble size, but is specified relative to
-	// the upper left corner of the bubble.
-	// This scheme allows us to draw the arrow on any side of the bubble (though
-	// this is not implemented at the moment), but the position of the arrow tip
-	// must be specified relative to the top left corner of the bubble. For a
-	// different arrow tip position specification, the layout would have to be
-	// modified.
-	// We also have so set the row column stretch factors because otherwise, if,
-	// for example, the bottom spacer is larger than the bubble widget (that is,
-	// the arrow points to a location below the bottom of the bubble), the extra
-	// space would be distributed between the middle and bottom row, enlarging
-	// the bubble. Setting the stretch factor for the middle row and column to 0
-	// and the others to 1 ensures that any extra space is always added to the
-	// outer columns.
-	//
-	// The bubble layout is a simple one-element box layout containing the
-	// contents widget. Its geometry is identical to the bubble geometry. The
-	// margins of the bubble layout are used for specifying the rounded corner
-	// radius. That way, the contents widget can never overlap the rounded
-	// corner.
-
+	// Setup the layout (see top of the file for documentation)
+	// For the bubble layout, we want to use the default margin values (defined
+	// by the style). However, for a layout created without a parent widget, the
+	// margins will be set to 0. We therefore create the top level layout first
+	// and copy the margin values to the bubble layout, before setting the top
+	// level layout margins to 0.
 	QGridLayout *l=new QGridLayout (this);
 
 	_bubbleLayout=new QHBoxLayout (NULL);
 	_bubbleLayout->setContentsMargins (l->contentsMargins ());
-	_bubbleLayout->addWidget (_contents);
 
 	l->setMargin (0);
 	l->setSpacing (0);
@@ -118,15 +119,30 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	// top margin of the bubble layout).
 	arrowWidth=_bubbleLayout->contentsMargins ().top ();
 
-	// The geometry will be updated in the resize event before the widget is
-	// shown, but we need it now so the widget can be moved before it is shown.
-	// FIXME doesn't seem so, can we layout without doing this? We'd like to
-	// avoid calling things from the constructor.
-	//_geometry.recalculate ();
+	// Note that we don't update the layout or geometry yet. We should not call
+	// any methods from the constructor, and the geometry will be updated when
+	// the contents widget is set.
 }
 
 NotificationWidget::~NotificationWidget()
 {
+	if (_contentsOwned)
+		_contents->deleteLater ();
+}
+
+
+// ****************
+// ** Properties **
+// ****************
+
+void NotificationWidget::setFadeOutDuration (int duration)
+{
+	_fadeOutDuration=duration;
+}
+
+int NotificationWidget::getFadeOutDuration () const
+{
+	return _fadeOutDuration;
 }
 
 
@@ -134,9 +150,56 @@ NotificationWidget::~NotificationWidget()
 // ** Contents **
 // **************
 
-QWidget *NotificationWidget::contents ()
+void NotificationWidget::setContents (QWidget *contents, bool contentsOwned)
+{
+	// Remove the old contents widget (if there was one)
+	if (_contents)
+		_bubbleLayout->removeWidget (_contents);
+
+	// Delete the old contents widget if we owned it
+	if (_contentsOwned)
+		_contents->deleteLater ();
+
+	// Set the new contents widget
+	_contents=contents;
+	contentsOwned=true;
+
+	// Add the new contents widget to the layout (unless it's NULL)
+	if (_contents)
+		_bubbleLayout->addWidget (_contents);
+}
+
+QWidget *NotificationWidget::contents () const
 {
 	return _contents;
+}
+
+bool NotificationWidget::contentsOwned () const
+{
+	return _contentsOwned;
+}
+
+void NotificationWidget::setText (const QString &text)
+{
+	// If the contents widget is not a label, make it one
+	QLabel *label=dynamic_cast<QLabel *> (_contents);
+	if (!label)
+	{
+		label=new QLabel (this);
+		// We'll be owning the contents widget
+		setContents (label, true);
+	}
+
+	label->setText (text);
+}
+
+QString NotificationWidget::text () const
+{
+	QLabel *label=dynamic_cast<QLabel *> (_contents);
+	if (label)
+		return label->text ();
+	else
+		return QString ();
 }
 
 
@@ -183,32 +246,6 @@ void NotificationWidget::fadeOutAndCloseNow (int duration)
 {
 	_fadeOutDuration=duration;
 	fadeOutAndCloseNow ();
-}
-
-
-// ****************
-// ** Properties **
-// ****************
-
-void NotificationWidget::setFadeOutDuration (int duration)
-{
-	_fadeOutDuration=duration;
-}
-
-int NotificationWidget::getFadeOutDuration () const
-{
-	return _fadeOutDuration;
-}
-
-void NotificationWidget::setText (const QString &text)
-{
-	_contents->setText (text);
-	adjustSize ();
-}
-
-QString NotificationWidget::getText () const
-{
-	return _contents->text ();
 }
 
 

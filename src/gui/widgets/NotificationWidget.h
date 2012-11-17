@@ -8,7 +8,6 @@
 class QHBoxLayout;
 class QMouseEvent;
 class QCloseEvent;
-class QLabel;
 class QSpacerItem;
 
 class NotificationWidget: public QWidget
@@ -22,9 +21,13 @@ class NotificationWidget: public QWidget
     	// Properties
     	void setFadeOutDuration (int duration);
     	int getFadeOutDuration () const;
+
+    	// Contents
+    	void setContents (QWidget *contents, bool contentsOwned);
+    	QWidget *contents () const;
+    	bool contentsOwned () const;
     	void setText (const QString &text);
-    	QString getText () const;
-    	QWidget *contents ();
+    	QString text () const;
 
     	// Shape
     	QPointF defaultBubblePosition (const QPointF &arrowTip);
@@ -85,12 +88,15 @@ class NotificationWidget: public QWidget
     	double arrowWidth;
     	QPointF arrowTipFromBubblePosition; // NB!
 
-    	// Contents
+    	// Layout
     	QSpacerItem *_topLeftSpacer;
     	QSpacerItem *_rightSpacer;
     	QSpacerItem *_bottomSpacer;
     	QHBoxLayout *_bubbleLayout;
-    	QLabel *_contents;
+
+    	// Contents
+    	QWidget *_contents;
+    	bool _contentsOwned;
 
     	// Closing
     	int _fadeOutDuration;
