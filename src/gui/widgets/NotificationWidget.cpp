@@ -300,7 +300,7 @@ void NotificationWidget::updateLayout ()
 	_bottomSpacer ->changeSize (0    , bottom, QSizePolicy::Minimum, QSizePolicy::Minimum);
 
 	layout ()->invalidate ();
-
+	adjustSize();
 	invalidateShape ();
 //	_layoutInitialized=true;
 }
