@@ -5,6 +5,20 @@
 
 class Flight;
 
+/**
+ * Since a flight and - if it uses an airtow launch method - its towflight are
+ * stored in a single database entry with a single ID, we need a way to refer to
+ * one of them. This class represents a reference to either the flight proper or
+ * the towflight with a given flight ID.
+ *
+ * A flight reference consists of a database ID and a flag indicating whether it
+ * refers to the flight proper or the towflight. The flight reference is
+ * considered valid if its database ID is valid.
+ *
+ * While it does not make sense, it is possible to construct a flight reference
+ * referring to the towflight of a non-airtow flight. It is up to the user to
+ * avoid this case.
+ */
 class FlightReference
 {
 	public:

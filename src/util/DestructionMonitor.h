@@ -5,6 +5,17 @@
 
 class QString;
 
+/**
+ * Reacts to the destruction of a QObject
+ *
+ * Currently, the only implemented reaction is outputting a message on standard
+ * output.
+ *
+ * This class is useful for verifying that an object is actually deleted.
+ *
+ * This class is not constructed directly; use the static message method:
+ *     DestructionMonitor::message (this->layout (), "main window layout");
+ */
 class DestructionMonitor: public QObject
 {
 		Q_OBJECT

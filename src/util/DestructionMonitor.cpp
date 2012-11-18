@@ -4,6 +4,10 @@
 
 #include "src/util/qString.h"
 
+/**
+ * Constructs a destruction monitor instance for the given object and stores the
+ * given message
+ */
 DestructionMonitor::DestructionMonitor (QObject *object, const QString &message):
 	QObject (object),
 	_object (object), _message (message)
@@ -18,6 +22,9 @@ DestructionMonitor::~DestructionMonitor ()
 {
 }
 
+/**
+ * The slot called when the object is destroyed. Outputs a message.
+ */
 void DestructionMonitor::objectDestroyed ()
 {
 	QString text="Object destroyed: " + _className;
@@ -34,6 +41,13 @@ void DestructionMonitor::objectDestroyed ()
 	std::cout << text << std::endl;
 }
 
+/**
+ * Outputs a message when the specified object is destroyed
+ *
+ * The message includes the class of the object (determined via the QObject's
+ * MetaObject), the object name (if it is set) and the text passed to this
+ * method (unless it is empty).
+ */
 void DestructionMonitor::message (QObject *object, const QString &text)
 {
 	// Will be deleted by its parent, object

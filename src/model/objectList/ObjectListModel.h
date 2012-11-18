@@ -257,7 +257,12 @@ template<class T> void ObjectListModel<T>::columnChanged (int column)
 	emit dataChanged (topLeft, bottomRight);
 }
 
-// FIXME document
+/**
+ * Maps a model index to the corresponding index in the list
+ *
+ * Since each row in the model corresponds to one entry in the list, this
+ * depends only on the row of the index. The column of the index is ignored.
+ */
 template<class T> int ObjectListModel<T>::mapToSource (const QModelIndex &index)
 {
 	if (!index.isValid ())
@@ -268,7 +273,9 @@ template<class T> int ObjectListModel<T>::mapToSource (const QModelIndex &index)
 	return index.row ();
 }
 
-// FIXME document
+/**
+ * Maps an index in the list and a column to a model index
+ */
 template<class T> QModelIndex ObjectListModel<T>::mapFromSource (int sourceIndex, int column)
 {
 	if (sourceIndex<0)
