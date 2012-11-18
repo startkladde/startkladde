@@ -20,9 +20,6 @@
 // Note that this class uses QPointF and QRectF rather than QPoint and QRect
 // due to obscure bottom/right/center calculation rules of QRect.
 //
-// Possible improvements:
-//   * widget showing the time until fade out
-
 // The widget's layout looks like this:
 //
 // .--------------------------.
@@ -73,6 +70,7 @@
 // TODO reasonable positioning (arrow position=bubble position) before moveTo
 // TODO allow setting the corner radius: set the margins of _bubbleLayout
 // TODO better use a custom layout manager?
+// TODO show time until fade out
 
 NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	bubbleColor (QColor (0, 0, 0, 191)),
@@ -302,7 +300,6 @@ void NotificationWidget::updateLayout ()
 	layout ()->invalidate ();
 	adjustSize();
 	invalidateShape ();
-//	_layoutInitialized=true;
 }
 
 // ***********
@@ -446,8 +443,4 @@ void NotificationWidget::mousePressEvent (QMouseEvent *event)
 	}
 
 	close ();
-
-//	QPoint position=pos ();
-//	QRectF boundingRect=shape ().path.boundingRect ();
-//	qDebug () << "Position: " << position << ", path: " << boundingRect << ", bubble: " << shape ().bubble;
 }

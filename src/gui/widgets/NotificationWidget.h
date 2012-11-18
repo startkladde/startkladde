@@ -98,7 +98,6 @@ class NotificationWidget: public QWidget
     	mutable Shape _shape_;
 
     	// Layout
-//    	bool _layoutInitialized; // FIXME remove if not required
     	QSpacerItem *_topLeftSpacer;
     	QSpacerItem *_rightSpacer;
     	QSpacerItem *_bottomSpacer;
