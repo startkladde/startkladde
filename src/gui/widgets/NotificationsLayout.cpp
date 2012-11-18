@@ -92,22 +92,22 @@ int NotificationsLayout::largestOverlap (QList<LayoutNode> &nodes, int spacing)
 
 void NotificationsLayout::doLayout(QList<LayoutNode> &nodes)
 {
-	const int maxIterations=50;
-	const int spacing=2;
+	const int maxIterations=150;
+	const int spacing=1;
 
 	if (nodes.isEmpty ())
 		return;
 
 	qSort (nodes);
 
-	std::cout << "============= Do layout for " << nodes.size () << " items =====" << std::endl;
+	//std::cout << "============= Do layout for " << nodes.size () << " items =====" << std::endl;
 
 	int iteration;
 	for (iteration=0; iteration<maxIterations; ++iteration)
 	{
-		std::cout << std::setprecision(3) << "Iteration " << iteration << ", Nodes: ";
-		for (int i=0, n=nodes.size (); i<n; ++i)
-			std::cout << i << ": " << nodes[i].y << " + " << nodes[i].h << ", ";
+		//std::cout << std::setprecision(3) << "Iteration " << iteration << ", Nodes: ";
+		//for (int i=0, n=nodes.size (); i<n; ++i)
+		//	std::cout << i << ": " << nodes[i].y << " + " << nodes[i].h << ", ";
 
 		int index=largestOverlap (nodes, spacing);
 
@@ -119,7 +119,7 @@ void NotificationsLayout::doLayout(QList<LayoutNode> &nodes)
 		if (overlap < 1e-3)
 			break;
 
-		std::cout << "largest overlap: " << overlap << " at " << index << std::endl;
+		//std::cout << "largest overlap: " << overlap << " at " << index << std::endl;
 
 		if (index==0)
 		{
@@ -132,18 +132,7 @@ void NotificationsLayout::doLayout(QList<LayoutNode> &nodes)
 		}
 	}
 
-	std::cout << "Done after " << iteration << " iterations" << std::endl;
-
-	// Make sure that the spacing is fulfilled
-	double oldY=0;
-	for (int i=0, n=nodes.size (); i<n; ++i)
-	{
-		LayoutNode &node=nodes[i];
-		if (node.y<oldY+spacing)
-			node.y=oldY+spacing;
-
-		oldY=node.y;
-	}
+	//std::cout << "Done after " << iteration << " iterations" << std::endl;
 }
 
 void NotificationsLayout::layout ()
