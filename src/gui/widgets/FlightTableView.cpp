@@ -587,6 +587,10 @@ void FlightTableView::notificationWidget_closed ()
  */
 void FlightTableView::showNotification (const FlightReference &flight, const QString &message, int milliseconds)
 {
+	// Keep the flight open. Doing this before opening the widget prevents and
+	// extra layout invocation for the newly created widget.
+	_proxyModel->setForceVisible (FlightReference (flight), true);
+
 	// Create and setup the widget. The widget will be deleted by this class
 	// when it is closed, which happens after a delay oder when the user clicks
 	// the widget.
@@ -600,9 +604,6 @@ void FlightTableView::showNotification (const FlightReference &flight, const QSt
 
 	// Add the widget to the list
 	notifications.insert (notificationWidget, flight);
-
-	// Keep the flight open
-	_proxyModel->setForceVisible (FlightReference (flight), true);
 
 	// Layout all widgets
 	layoutNotifications ();
