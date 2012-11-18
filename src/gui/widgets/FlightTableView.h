@@ -19,6 +19,7 @@ template<class T> class ObjectListModel;
 class FlightSortFilterProxyModel;
 class DbManager;
 class NotificationWidget;
+class NotificationsLayout;
 
 
 /**
@@ -121,6 +122,7 @@ class FlightTableView: public SkTableView
 		Qt::SortOrder _sortOrder;
 
 		QHash<NotificationWidget *, FlightReference> notifications;
+		NotificationsLayout *notificationsLayout;
 };
 
 #endif

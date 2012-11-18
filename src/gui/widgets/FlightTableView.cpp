@@ -11,6 +11,7 @@
 #include "src/gui/widgets/TableButton.h"
 #include "src/logging/messages.h"
 #include "src/gui/widgets/NotificationWidget.h"
+#include "src/gui/widgets/NotificationsLayout.h"
 
 
 // flightList      - Contains the actual flights
@@ -44,7 +45,8 @@ FlightTableView::FlightTableView (QWidget *parent):
 	_dbManager (NULL),
 	_flightList (NULL), _proxyList (NULL), _flightModel (NULL),
 	_flightListModel (NULL), _proxyModel (NULL),
-	_sortColumn (-1), _sortOrder (Qt::AscendingOrder)
+	_sortColumn (-1), _sortOrder (Qt::AscendingOrder),
+	notificationsLayout (new NotificationsLayout ())
 {
 	// Table header clicked -> toggle sorting order
 	connect (horizontalHeader (), SIGNAL (sectionClicked (int)),
@@ -57,6 +59,7 @@ FlightTableView::FlightTableView (QWidget *parent):
 
 FlightTableView::~FlightTableView ()
 {
+	delete notificationsLayout;
 }
 
 /**
@@ -544,15 +547,15 @@ void FlightTableView::layoutNotifications ()
 		{
 			double arrowX=rect.right ()-rect.height ()/2;
 			double arrowY=rect.top   ()+rect.height ()/2;
-			widget->moveTo (QPointF (arrowX, arrowY));
-			//widget->moveTo (QPointF (arrowX, arrowY), QPointF (arrowX+20, 50));
-			widget->show ();
+			notificationsLayout->setWidgetPosition (widget, QPointF (arrowX, arrowY));
 		}
 		else
 		{
-			widget->hide ();
+			notificationsLayout->setWidgetInvisible (widget);
 		}
 	}
+
+	notificationsLayout->layout ();
 }
 
 /**
@@ -564,9 +567,10 @@ void FlightTableView::layoutNotifications ()
  */
 void FlightTableView::notificationWidget_closed ()
 {
-	// Remove the widget from the list and delete it
+	// Remove the widget from the list and the layout and delete it
 	NotificationWidget *widget=dynamic_cast<NotificationWidget *> (sender ());
 	FlightReference flight=notifications.take (widget);
+	notificationsLayout->remove (widget);
 	widget->deleteLater ();
 
 	// Don't keep the flight open
@@ -592,15 +596,16 @@ void FlightTableView::showNotification (const FlightReference &flight, const QSt
 	// when it is closed, which happens after a delay oder when the user clicks
 	// the widget.
 	NotificationWidget *notificationWidget=new NotificationWidget (viewport ());
-	notificationWidget->setAutoFillBackground (true);
+//	notificationWidget->setAutoFillBackground (true);
 	notificationWidget->setText (message);
 	notificationWidget->fadeOutAndCloseIn (milliseconds);
 
 	// Notify this when the widget is closed
 	connect (notificationWidget, SIGNAL (closed ()), this, SLOT (notificationWidget_closed ()));
 
-	// Add the widget to the list
+	// Add the widget to the list and the layout
 	notifications.insert (notificationWidget, flight);
+	notificationsLayout->add (notificationWidget);
 
 	// Layout all widgets
 	layoutNotifications ();

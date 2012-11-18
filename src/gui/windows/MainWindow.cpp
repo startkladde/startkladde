@@ -2395,5 +2395,5 @@ void MainWindow::on_showNotificationAction_triggered ()
 	ui.flightTable->showNotification (
 		flight,
 		QString ("NotificationWidget test for flight %1").arg (flight.id ()),
-		1000);
+		5000);
 }

@@ -329,7 +329,7 @@ void NotificationWidget::Shape::recalculate ()
 {
 	// Determine the geometry of the bubble. It is given by the geometry of the
 	// bubble widget.
-	QRectF bubble=_widget->_bubbleLayout->geometry ();
+	bubble=_widget->_bubbleLayout->geometry ();
 
 	// Get the bubble margins, which specify the radius of the rounded corners.
 	QMargins margins=_widget->_bubbleLayout->contentsMargins ();
@@ -374,7 +374,7 @@ void NotificationWidget::Shape::recalculate ()
 	_valid=true;
 }
 
-const NotificationWidget::Shape &NotificationWidget::shape ()
+const NotificationWidget::Shape &NotificationWidget::shape () const
 {
 	_shape_.update ();
 	return _shape_;
@@ -395,6 +395,11 @@ QPointF NotificationWidget::defaultBubblePosition (const QPointF &arrowTip)
 	QPointF relativeArrowPosition (-2*arrowWidth, margins.top () + arrowWidth/2);
 
 	return arrowTip - relativeArrowPosition;
+}
+
+QRectF NotificationWidget::bubbleGeometry () const
+{
+	return shape ().bubble;
 }
 
 
@@ -432,11 +437,17 @@ void NotificationWidget::paintEvent (QPaintEvent *event)
 
 void NotificationWidget::mousePressEvent (QMouseEvent *event)
 {
-	if (shape ().path.contains (event->posF ()))
-		// The event position is inside the bubble. Act on the event.
-		close ();
-	else
+	if (!shape ().path.contains (event->posF ()))
+	{
 		// The event position is outside the bubble. Let the parent widget
 		// receive the event.
 		event->ignore ();
+		return;
+	}
+
+	close ();
+
+//	QPoint position=pos ();
+//	QRectF boundingRect=shape ().path.boundingRect ();
+//	qDebug () << "Position: " << position << ", path: " << boundingRect << ", bubble: " << shape ().bubble;
 }

@@ -45,6 +45,7 @@ class NotificationWidget: public QWidget
     	QPointF defaultBubblePosition (const QPointF &arrowTip);
     	void moveTo (const QPointF &arrowTip, const QPointF &bubblePosition);
     	void moveTo (const QPointF &arrowTip);
+    	QRectF bubbleGeometry () const;
 
     public slots:
     	// Closing
@@ -75,6 +76,7 @@ class NotificationWidget: public QWidget
 
 				QPainterPath path;
 				QPointF arrowTip;
+				QRectF bubble;
 
     		private:
 				void recalculate ();
@@ -91,9 +93,9 @@ class NotificationWidget: public QWidget
     	QPointF arrowTipFromBubblePosition; // NB!
 
     	// Calculated shape
-    	const Shape &shape ();
+    	const Shape &shape () const;
     	void invalidateShape ();
-    	Shape _shape_;
+    	mutable Shape _shape_;
 
     	// Layout
 //    	bool _layoutInitialized; // FIXME remove if not required
