@@ -263,7 +263,6 @@ void NotificationWidget::fadeOutAndCloseNow ()
  */
 void NotificationWidget::moveTo (const QPointF &arrowTip, const QPointF &bubblePosition)
 {
-	qDebug () << "move to";
 	// Save the old arrow tip position
 	QPointF oldArrowTipFromBubblePosition=arrowTipFromBubblePosition;
 
@@ -293,8 +292,6 @@ void NotificationWidget::moveTo (const QPointF &arrowTip)
 
 void NotificationWidget::updateLayout ()
 {
-	qDebug () << "Update layout, arrow tip is at" << arrowTipFromBubblePosition;
-
 	double arrowX=arrowTipFromBubblePosition.x ();
 	double arrowY=arrowTipFromBubblePosition.y ();
 
@@ -303,14 +300,11 @@ void NotificationWidget::updateLayout ()
 	double bottom=ifPositive (arrowY);
 	double right =ifPositive (arrowX);
 
-	qDebug () << "Spacers: top left bottom right is" << top << left << bottom << right;
-
 	_topLeftSpacer->changeSize (left , top   , QSizePolicy::Minimum, QSizePolicy::Minimum);
 	_rightSpacer  ->changeSize (right, 0     , QSizePolicy::Minimum, QSizePolicy::Minimum);
 	_bottomSpacer ->changeSize (0    , bottom, QSizePolicy::Minimum, QSizePolicy::Minimum);
 
 	layout ()->invalidate ();
-	qDebug () << "Geometry: widget" << geometry () << ", bubble:" << _bubbleLayout->geometry ();
 
 	invalidateShape ();
 //	_layoutInitialized=true;
@@ -338,8 +332,6 @@ void NotificationWidget::Shape::update ()
 
 void NotificationWidget::Shape::recalculate ()
 {
-	qDebug () << "Recalculate shape";
-
 	// Determine the geometry of the bubble. It is given by the geometry of the
 	// bubble widget.
 	QRectF bubble=_widget->_bubbleLayout->geometry ();
