@@ -151,12 +151,12 @@ void NotificationWidget::setContents (QWidget *contents, bool contentsOwned)
 		_bubbleLayout->removeWidget (_contents);
 
 	// Delete the old contents widget if we owned it
-	if (_contentsOwned)
+	if (_contents && _contentsOwned)
 		_contents->deleteLater ();
 
 	// Set the new contents widget
 	_contents=contents;
-	contentsOwned=true;
+	contentsOwned=contents?contentsOwned:false;
 
 	// Add the new contents widget to the layout (unless it's NULL)
 	if (_contents)
@@ -397,11 +397,6 @@ void NotificationWidget::invalidateShape ()
 {
 	_shape_.invalidate ();
 }
-
-
-// ***********
-// ** Shape **
-// ***********
 
 QPointF NotificationWidget::defaultBubblePosition (const QPointF &arrowTip)
 {
