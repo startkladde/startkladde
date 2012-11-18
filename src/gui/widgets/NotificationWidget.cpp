@@ -15,6 +15,7 @@
 #include "src/gui/WidgetFader.h"
 #include "src/util/qRectF.h"
 #include "src/util/qWidget.h"
+#include "src/util/DestructionMonitor.h"
 
 // Note that this class uses QPointF and QRectF rather than QPoint and QRect
 // due to obscure bottom/right/center calculation rules of QRect.
@@ -64,22 +65,18 @@
 // bubble layout are used for specifying the rounded corner radius. That way,
 // the contents widget can never overlap the rounded corner.
 
-// FIXME DOING: if adjustSize is called after the widget has been created and a text
-// been set, but before moveTo is called, the widget will be too small. That
-// kind of makes sense, since the layout has not been updated yet (it probably
-// should be). When moveTo is called subsequently, the widget's minimumSizeHint
-// will change, but since it is not itself in a layout, its size will not be
-// adjusted.
-// Also, even without moveTo, the widget should have a realsonable arrow.
-
 // ******************
 // ** Construction **
 // ******************
 
+// TODO position bug, see class documentation
+// TODO reasonable positioning (arrow position=bubble position) before moveTo
+// TODO allow setting the corner radius: set the margins of _bubbleLayout
+// TODO better use a custom layout manager?
+
 NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	bubbleColor (QColor (0, 0, 0, 191)),
 	_shape_ (this),
-//	_layoutInitialized (false),
 	_topLeftSpacer (new QSpacerItem (0, 0)),
 	_rightSpacer   (new QSpacerItem (0, 0)),
 	_bottomSpacer  (new QSpacerItem (0, 0)),
@@ -87,8 +84,6 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	_contents (NULL), _contentsOwned (false),
 	_fadeOutDuration (1000), _fadeOutInProgress (false)
 {
-	// FIXME bubbleLayout and own layout deleted?
-	// TODO allow setting the corner radius: set the margins of _bubbleLayout
 
 	// Make label text white and the widget background a rather transparent
 	// black (note that this is the widget background, which is not drawn unless
@@ -445,7 +440,3 @@ void NotificationWidget::mousePressEvent (QMouseEvent *event)
 		// receive the event.
 		event->ignore ();
 }
-
-//void NotificationWidget::showEvent (QShowEvent *event)
-//{
-//}

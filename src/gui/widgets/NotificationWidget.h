@@ -61,7 +61,6 @@ class NotificationWidget: public QWidget
 		virtual void paintEvent      (QPaintEvent  *event);
 		virtual void mousePressEvent (QMouseEvent  *event);
 		virtual void closeEvent      (QCloseEvent  *event);
-//		virtual void showEvent       (QShowEvent   *event);
     	void updateLayout ();
 
 	private:
