@@ -545,6 +545,7 @@ void FlightTableView::layoutNotifications ()
 			double arrowX=rect.right ()-rect.height ()/2;
 			double arrowY=rect.top   ()+rect.height ()/2;
 			widget->moveTo (QPointF (arrowX, arrowY));
+			//widget->moveTo (QPointF (arrowX, arrowY), QPointF (arrowX+20, 50));
 			widget->show ();
 		}
 		else
@@ -587,10 +588,6 @@ void FlightTableView::notificationWidget_closed ()
  */
 void FlightTableView::showNotification (const FlightReference &flight, const QString &message, int milliseconds)
 {
-	// Keep the flight open. Doing this before opening the widget prevents and
-	// extra layout invocation for the newly created widget.
-	_proxyModel->setForceVisible (FlightReference (flight), true);
-
 	// Create and setup the widget. The widget will be deleted by this class
 	// when it is closed, which happens after a delay oder when the user clicks
 	// the widget.
@@ -607,4 +604,9 @@ void FlightTableView::showNotification (const FlightReference &flight, const QSt
 
 	// Layout all widgets
 	layoutNotifications ();
+
+	// Keep the flight open. Note that we do that after creating the
+	// notification widget in order to cause a re-layout to work around a
+	// NotificationWidget bug (see NotificationWidget).
+	_proxyModel->setForceVisible (FlightReference (flight), true);
 }
