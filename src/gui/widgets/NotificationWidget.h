@@ -10,6 +10,17 @@ class QMouseEvent;
 class QCloseEvent;
 class QSpacerItem;
 
+/**
+ * Note that there is a bug which leads to the widget being moved to the wrong
+ * position if moveTo is called before the widget is visible. Specifically,
+ * the widget's top left corner is moved to the position where the top left
+ * corner of the bubble should be. The reason seems to be that the layout is not
+ * updated until the widget is shown: the bubble position is reported as (0, 0)
+ * even though the margins are set up after updateLayout. The best solution
+ * might be to introduce a custom layout manager. Potentially, this layout
+ * manager could also make sure that the arrow and bubble positions (relative to
+ * the parent widget) are maintained even if the contents are resized.
+ */
 class NotificationWidget: public QWidget
 {
     Q_OBJECT
