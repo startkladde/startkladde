@@ -133,7 +133,7 @@ NotificationWidget::NotificationWidget (QWidget *parent): QWidget (parent),
 	// contents widget is set.
 }
 
-NotificationWidget::~NotificationWidget()
+NotificationWidget::~NotificationWidget ()
 {
 	if (_contentsOwned)
 		_contents->deleteLater ();
@@ -251,6 +251,41 @@ void NotificationWidget::fadeOutAndCloseNow ()
 	fadeOutAndCloseNow (_fadeOutDuration);
 }
 
+// **************
+// ** Position **
+// **************
+
+/**
+ * Arguments are in parent coordinates
+ *
+ * @param arrowTip
+ * @param bubblePosition
+ */
+void NotificationWidget::moveTo (const QPointF &arrowTip, const QPointF &bubblePosition)
+{
+	qDebug () << "move to";
+	// Save the old arrow tip position
+	QPointF oldArrowTipFromBubblePosition=arrowTipFromBubblePosition;
+
+	// Calculate the new arrow tip position
+	arrowTipFromBubblePosition=arrowTip - bubblePosition;
+
+	// If the arrow tip position changed, we have to update the layout (this
+	// will also invalidate the shape if neccesary).
+	if (arrowTipFromBubblePosition != oldArrowTipFromBubblePosition)
+		updateLayout ();
+
+	// Finally, we can move the widget. For calculating the position (in parent
+	// coordinates), we can use either the arrow tip or the bubble position, the
+	// results should be equal. We use the arrow tip position because that is
+	// the most important parameter.
+	move ((arrowTip - shape ().arrowTip).toPoint ());
+}
+
+void NotificationWidget::moveTo (const QPointF &arrowTip)
+{
+	moveTo (arrowTip, defaultBubblePosition (arrowTip));
+}
 
 // ************
 // ** Layout **
@@ -281,13 +316,11 @@ void NotificationWidget::updateLayout ()
 //	_layoutInitialized=true;
 }
 
+// ***********
+// ** Shape **
+// ***********
 
-
-// **************
-// ** Geometry **
-// **************
-
-NotificationWidget::Shape::Shape (NotificationWidget *widget):
+NotificationWidget::Shape::Shape (NotificationWidget *widget) :
 	_widget (widget), _valid (false)
 {
 }
@@ -299,7 +332,7 @@ void NotificationWidget::Shape::invalidate ()
 
 void NotificationWidget::Shape::update ()
 {
-//	if (!_valid)
+	if (!_valid)
 		recalculate ();
 }
 
@@ -326,7 +359,7 @@ void NotificationWidget::Shape::recalculate ()
 	// arrowWidth lower than the arrow top. The arrow tip position is calculated
 	// from its relative position to the bubble.
 	QPointF arrowTop, arrowBottom;
-	arrowTop    = bubble.topLeft () + QPointF (0, margins.top ()    );
+	arrowTop    = bubble.topLeft () + QPointF (0, margins.top ());
 	arrowBottom = arrowTop          + QPointF (0, _widget->arrowWidth);
 	arrowTip    = bubble.topLeft () + _widget->arrowTipFromBubblePosition;
 
@@ -377,46 +410,9 @@ QPointF NotificationWidget::defaultBubblePosition (const QPointF &arrowTip)
 	// By default, the arrow tip is placed such that the arrow points straight
 	// to the left from its default position right under the top-left corner,
 	// and is twice as long as wide.
-	QPointF relativeArrowPosition (-2*arrowWidth, margins.top ()+arrowWidth/2);
+	QPointF relativeArrowPosition (-2*arrowWidth, margins.top () + arrowWidth/2);
 
-	return arrowTip-relativeArrowPosition;
-}
-
-
-// **************
-// ** Position **
-// **************
-
-/**
- * Arguments are in parent coordinates
- *
- * @param arrowTip
- * @param bubblePosition
- */
-void NotificationWidget::moveTo (const QPointF &arrowTip, const QPointF &bubblePosition)
-{
-	qDebug () << "move to";
-	// Save the old arrow tip position
-	QPointF oldArrowTipFromBubblePosition=arrowTipFromBubblePosition;
-
-	// Calculate the new arrow tip position
-	arrowTipFromBubblePosition=arrowTip-bubblePosition;
-
-	// If the arrow tip position changed, we have to update the layout (this
-	// will also invalidate the shape if neccesary).
-	if (arrowTipFromBubblePosition!=oldArrowTipFromBubblePosition)
-		updateLayout ();
-
-	// Finally, we can move the widget. For calculating the position (in parent
-	// coordinates), we can use either the arrow tip or the bubble position, the
-	// results should be equal. We use the arrow tip position because that is
-	// the most important parameter.
-	move ((arrowTip-shape ().arrowTip).toPoint ());
-}
-
-void NotificationWidget::moveTo (const QPointF &arrowTip)
-{
-	moveTo (arrowTip, defaultBubblePosition (arrowTip));
+	return arrowTip - relativeArrowPosition;
 }
 
 
@@ -440,7 +436,7 @@ void NotificationWidget::paintEvent (QPaintEvent *event)
 	(void)event;
 
 	QPainter painter (this);
-	painter.setRenderHint(QPainter::Antialiasing);
+	painter.setRenderHint (QPainter::Antialiasing);
 	painter.setPen (Qt::NoPen);
 	painter.setBrush (bubbleColor);
 
