@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>577</width>
-    <height>787</height>
+    <width>515</width>
+    <height>528</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>5</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -181,7 +181,7 @@
              <string>&lt;html&gt;If enabled, the database password must be entered to merge people.&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>Re&amp;quire password to merge &amp;people</string>
+             <string>Re&amp;quire password to merge people</string>
             </property>
            </widget>
           </item>
@@ -191,7 +191,7 @@
              <string>&lt;html&gt;If enabled, the database password must be entered to display the flight database.&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>Req&amp;uire password to display the &amp;flight database</string>
+             <string>Req&amp;uire password to display the flight database</string>
             </property>
            </widget>
           </item>
