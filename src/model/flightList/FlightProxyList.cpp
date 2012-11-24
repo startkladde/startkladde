@@ -251,7 +251,7 @@ int FlightProxyList::findTowref (int index) const
 	}
 }
 
-int FlightProxyList::getModelIndex (const FlightReference &flight) const
+int FlightProxyList::findModelIndex (const FlightReference &flight) const
 {
 	if (!flight.isValid ())
 		return -1;
@@ -266,6 +266,12 @@ int FlightProxyList::getModelIndex (const FlightReference &flight) const
 		int flightIndex=findFlight (flight.id ());
 		return flightIndexToModelIndex (flightIndex); // Handles <0
 	}
+}
+
+Maybe<Flight> FlightProxyList::findFlight (const FlightReference &flight) const
+{
+	int modelIndex=findModelIndex (flight);
+	return at (modelIndex);
 }
 
 FlightReference FlightProxyList::getFlightReference (int modelIndex) const

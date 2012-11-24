@@ -241,12 +241,19 @@ QModelIndex FlightTableView::getModelIndex (const FlightReference &flightReferen
 	// return an invalid index in this case, we don't have to check for
 	// intermediate invalid indices.
 
-	int         flightIndex = _proxyList      ->getModelIndex (flightReference);
-	QModelIndex modelIndex  = _flightListModel->mapFromSource (flightIndex, column);
-	QModelIndex proxyIndex  = _proxyModel     ->mapFromSource (modelIndex);
+	int         flightIndex = _proxyList      ->findModelIndex (flightReference);
+	QModelIndex modelIndex  = _flightListModel->mapFromSource  (flightIndex, column);
+	QModelIndex proxyIndex  = _proxyModel     ->mapFromSource  (modelIndex);
 	return proxyIndex;
 }
 
+/**
+ * Finds the flight ID for the specified model index (in the table view)
+ *
+ * If the model index is invalid or could not be mapped to a flight, an invalid
+ * flight reference is returned. Since flights are represented by whole rows in
+ * the table, the column component of the model index is ignored.
+ */
 FlightReference FlightTableView::getFlightReference (const QModelIndex &modelIndex) const
 {
 	// The model index refers to the proxy model (this view's model). Map it to

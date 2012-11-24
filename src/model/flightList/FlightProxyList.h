@@ -32,7 +32,8 @@ class FlightProxyList: public AbstractObjectList<Flight>
 		virtual QList<Flight> getList () const;
 
 		virtual int findTowref (int index) const;
-		virtual int getModelIndex (const FlightReference &flight) const;
+		virtual int findModelIndex (const FlightReference &flight) const;
+		virtual Maybe<Flight> findFlight (const FlightReference &flight) const;
 		virtual FlightReference getFlightReference (int modelIndex) const;
 
 	protected:
