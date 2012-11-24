@@ -29,7 +29,7 @@ void NotificationsLayout::remove (const NotificationWidget *widget)
 	_nodes.remove (widget);
 }
 
-void NotificationsLayout::setWidgetPosition (const NotificationWidget *widget, const QPoint &position)
+void NotificationsLayout::setArrowPosition (const NotificationWidget *widget, const QPoint &position)
 {
 	Node &node=_nodes[widget];
 
@@ -90,7 +90,55 @@ int NotificationsLayout::largestOverlap (QList<LayoutNode> &nodes, int spacing)
 	return maxIndex;
 }
 
-void NotificationsLayout::doLayout(QList<LayoutNode> &nodes)
+/** Returns true if done */
+bool NotificationsLayout::doOptimizeIteration (QList<LayoutNode> &nodes, int spacing)
+{
+	//std::cout << std::setprecision(3) << "Iteration " << iteration << ", Nodes: ";
+	//for (int i=0, n=nodes.size (); i<n; ++i)
+	//	std::cout << i << ": " << nodes[i].y << " + " << nodes[i].h << ", ";
+
+	int index=largestOverlap (nodes, spacing);
+
+	if (index<0)
+		return true;
+
+	double overlap=overlapValue (nodes, index, spacing);
+
+	if (overlap < 1e-3)
+		return true;
+
+	//std::cout << "largest overlap: " << overlap << " at " << index << std::endl;
+
+	if (index==0)
+	{
+		nodes[index].y+=overlap;
+	}
+	else
+	{
+		nodes[index]  .y+=overlap/2;
+		nodes[index-1].y-=overlap/2;
+	}
+
+	return false;
+}
+
+void NotificationsLayout::forceNoOverlaps (QList<LayoutNode> &nodes, int spacing)
+{
+	int minY=spacing;
+	QMutableListIterator<LayoutNode> i (nodes);
+	while (i.hasNext ())
+	{
+		i.next ();
+		LayoutNode &layoutNode=i.value ();
+
+		if (layoutNode.y<minY)
+			layoutNode.y=minY;
+
+		minY=layoutNode.y+layoutNode.h+spacing;
+	}
+}
+
+void NotificationsLayout::doLayout (QList<LayoutNode> &nodes)
 {
 	const int maxIterations=150;
 	const int spacing=1;
@@ -100,42 +148,19 @@ void NotificationsLayout::doLayout(QList<LayoutNode> &nodes)
 
 	qSort (nodes);
 
-	//std::cout << "============= Do layout for " << nodes.size () << " items =====" << std::endl;
-
+	// Perform at most maxIterations of optimization
 	int iteration;
 	for (iteration=0; iteration<maxIterations; ++iteration)
-	{
-		//std::cout << std::setprecision(3) << "Iteration " << iteration << ", Nodes: ";
-		//for (int i=0, n=nodes.size (); i<n; ++i)
-		//	std::cout << i << ": " << nodes[i].y << " + " << nodes[i].h << ", ";
-
-		int index=largestOverlap (nodes, spacing);
-
-		if (index<0)
+		if (doOptimizeIteration (nodes, spacing))
 			break;
+	//std::cout << "Optimization done after " << iteration << " iterations" << std::endl;
 
-		double overlap=overlapValue (nodes, index, spacing);
-
-		if (overlap < 1e-3)
-			break;
-
-		//std::cout << "largest overlap: " << overlap << " at " << index << std::endl;
-
-		if (index==0)
-		{
-			nodes[index].y+=overlap;
-		}
-		else
-		{
-			nodes[index]  .y+=overlap/2;
-			nodes[index-1].y-=overlap/2;
-		}
-	}
-
-	//std::cout << "Done after " << iteration << " iterations" << std::endl;
+	// Make sure that there is no overlap by moving overlapping widgets down,
+	// starting from the top. The solution will not be optimal.
+	forceNoOverlaps (nodes, spacing);
 }
 
-void NotificationsLayout::layout ()
+void NotificationsLayout::doLayout ()
 {
 	QList<Node> visibleNodes;
 
@@ -161,7 +186,7 @@ void NotificationsLayout::layout ()
 		LayoutNode layoutNode;
 		layoutNode.node=&visibleNodes[i];
 		layoutNode.y=visibleNodes[i].widget->defaultBubblePosition (visibleNodes[i].arrowPosition).y ();
-		layoutNode.h=visibleNodes[i].widget->bubbleGeometry ().height ();
+		layoutNode.h=visibleNodes[i].widget->bubbleGeometryParent ().height ();
 		layoutNodes.append (layoutNode);
 	}
 
@@ -172,7 +197,6 @@ void NotificationsLayout::layout ()
 	{
 		QPoint arrowPosition=layoutNode.node->arrowPosition;
 		QPoint bubblePosition=layoutNode.node->widget->defaultBubblePosition (arrowPosition);
-//		std::cout << layoutNode.y << std::endl;
 		bubblePosition.setY (layoutNode.y);
 		layoutNode.node->widget->moveTo (arrowPosition, bubblePosition);
 		layoutNode.node->widget->show ();

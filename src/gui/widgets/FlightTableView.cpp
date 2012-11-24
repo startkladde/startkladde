@@ -276,11 +276,11 @@ FlightReference FlightTableView::getFlightReference (const QModelIndex &modelInd
  * is returned. Note that the returned rectangle may be outside of the viewport
  * if the flight is in the table, but scrolled outside of the viewport.
  */
-QRectF FlightTableView::rectForFlight (const FlightReference &flight, int column) const
+QRect FlightTableView::rectForFlight (const FlightReference &flight, int column) const
 {
 	QModelIndex modelIndex=getModelIndex (flight, column);
 	if (!modelIndex.isValid ())
-		return QRectF ();
+		return QRect ();
 
 	// Get the rectangle from the table view
 	return visualRect (modelIndex);
@@ -523,13 +523,6 @@ void FlightTableView::toggleSorting (int column)
  */
 void FlightTableView::layoutNotifications ()
 {
-	// FIXME prevent overlaps (require at least one pixel between adjacent
-	// widgets). Actual least squares layout is probably not easy to do, so we
-	// might just stick with placing widgets from top to bottom. The widgets
-	// will have to support a more general arrow/bubble placement scheme,
-	// though. Also, not that we have to consider the bubble height, rather than
-	// the widget height, which is important if the arrow points to a position
-	// above or below the bubble.
 	// A further improvement would be to make sure that all bubbles are actually
 	// inside the viewport; if a flight is not visible (because it's scrolled
 	// outside of the viewport), the corresponding bubble should show no arrow
@@ -544,12 +537,13 @@ void FlightTableView::layoutNotifications ()
 		NotificationWidget *widget=i.key ();
 		FlightReference flight=i.value ();
 
-		QRectF rect=rectForFlight (flight, _flightModel->pilotColumn ());
+		QRect rect=rectForFlight (flight, _flightModel->pilotColumn ());
 		if (rect.isValid ())
 		{
-			double arrowX=rect.right ()-rect.height ()/2;
-			double arrowY=rect.top   ()+rect.height ()/2;
-			notificationsLayout->setWidgetPosition (widget, QPoint (arrowX, arrowY));
+			// Don't use rect.right(), see QRect documentation
+			int arrowX=rect.x () + rect.width  () - rect.height ()/2;
+			int arrowY=rect.y () + rect.height ()/2;
+			notificationsLayout->setArrowPosition (widget, QPoint (arrowX, arrowY));
 		}
 		else
 		{
@@ -557,7 +551,7 @@ void FlightTableView::layoutNotifications ()
 		}
 	}
 
-	notificationsLayout->layout ();
+	notificationsLayout->doLayout ();
 }
 
 /**

@@ -68,7 +68,7 @@ class FlightTableView: public SkTableView
 		FlightReference getFlightReference (const QModelIndex &modelIndex) const;
 
 		// View
-		QRectF rectForFlight (const FlightReference &flight, int column) const;
+		QRect rectForFlight (const FlightReference &flight, int column) const;
 
 
 	public slots:
