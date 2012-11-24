@@ -1,20 +1,26 @@
 #include "src/util/DestructionMonitor.h"
 
+#include <iostream>
+
 #include <QString>
+#include <QDebug>
 
 #include "src/util/qString.h"
 
 /**
- * Constructs a destruction monitor instance for the given object and stores the
- * given message
+ * Note that the destruction monitor does not become a parent of the object: if
+ * it did, it would be deleted before receiving the destroyed() signal from the
+ * object.
  */
 DestructionMonitor::DestructionMonitor (QObject *object, const QString &message):
-	QObject (object),
+	QObject (NULL),
 	_object (object), _message (message)
 {
 	// Store the class name here. In the objectDestroyed slot, it always returns
 	// QObject.
+	//qDebug () << "Add destruction monitor for" << object;
 	_className=object->metaObject()->className ();
+	_objectName=object->objectName ();
 	connect (object, SIGNAL (destroyed ()), this, SLOT (objectDestroyed ()));
 }
 
@@ -22,34 +28,29 @@ DestructionMonitor::~DestructionMonitor ()
 {
 }
 
-/**
- * The slot called when the object is destroyed. Outputs a message.
- */
 void DestructionMonitor::objectDestroyed ()
 {
 	QString text="Object destroyed: " + _className;
 
 	// Add the object name, if it is set
-	QString objectName=_object->objectName ();
-	if (!objectName.isEmpty ())
-		text+=" "+objectName;
+	if (!_objectName.isEmpty ())
+		text+=" "+_objectName;
 
 	// Add the message, if it is set
 	if (!_message.isEmpty ())
 		text+=" ("+_message+")";
 
-	std::cout << text << std::endl;
+	std::cerr << text << std::endl;
+
+	this->deleteLater ();
 }
 
-/**
- * Outputs a message when the specified object is destroyed
- *
- * The message includes the class of the object (determined via the QObject's
- * MetaObject), the object name (if it is set) and the text passed to this
- * method (unless it is empty).
- */
-void DestructionMonitor::message (QObject *object, const QString &text)
-{
-	// Will be deleted by its parent, object
-	new DestructionMonitor (object, text);
-}
+//void DestructionMonitor::message (QObject *object, const QString &text)
+//{
+//	// FIXME error message
+//	if (!object)
+//		return;
+
+//	// Will be deleted by its parent, object
+//	new DestructionMonitor (object, text);
+//}

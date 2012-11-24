@@ -5,17 +5,6 @@
 
 class QString;
 
-/**
- * Reacts to the destruction of a QObject
- *
- * Currently, the only implemented reaction is outputting a message on standard
- * output.
- *
- * This class is useful for verifying that an object is actually deleted.
- *
- * This class is not constructed directly; use the static message method:
- *     DestructionMonitor::message (this->layout (), "main window layout");
- */
 class DestructionMonitor: public QObject
 {
 		Q_OBJECT
@@ -23,7 +12,11 @@ class DestructionMonitor: public QObject
 	public:
 		virtual ~DestructionMonitor ();
 
-		static void message (QObject *object, const QString &message=QString ());
+		// QObject must be an ancestor of T
+		template<class T> static T *message (
+			T *object, const QString &message=QString ());
+
+//		static void message (QObject *object, const QString &message=QString ());
 
 	private slots:
 		void objectDestroyed ();
@@ -35,6 +28,18 @@ class DestructionMonitor: public QObject
 		QString _message;
 
 		QString _className;
+		QString _objectName;
 };
+
+
+template<class T> T *DestructionMonitor::message (T *object, const QString &text)
+{
+	// Will be deleted by its parent, object
+	if (object)
+		new DestructionMonitor (object, text);
+	// FIXME else error message
+
+	return object;
+}
 
 #endif
