@@ -29,6 +29,7 @@ class WidgetFader: public QObject
 		uint32_t _waitTime;
 		uint32_t _fadeTime;
 
+		bool _fadeInProgress;
 };
 
 #endif

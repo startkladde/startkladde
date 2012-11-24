@@ -8,7 +8,7 @@
 #include <QTimer>
 
 WidgetFader::WidgetFader (QWidget *widget): QObject (NULL),
-	_widget (widget), _waitTime (0), _fadeTime (0)
+	_widget (widget), _waitTime (0), _fadeTime (0), _fadeInProgress (false)
 {
 }
 
@@ -28,6 +28,10 @@ void WidgetFader::start ()
 
 void WidgetFader::startFade ()
 {
+	if (_fadeInProgress)
+		return;
+	_fadeInProgress=true;
+
 	// Create the opacity effect and assign it to the widget. The effect will
 	// be deleted when the widget (which is the effect's parent) is deleted,
 	// when a new effect is assigned to the widget, or after the animation ends.
