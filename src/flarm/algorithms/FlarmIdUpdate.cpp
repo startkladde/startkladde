@@ -29,6 +29,14 @@ void FlarmIdUpdate::notCreatedAutomaticallyMessage ()
 			"update because this flight was not created automatically."));
 }
 
+void FlarmIdUpdate::notCurrentMessage ()
+{
+	QMessageBox::information (parent,
+		qApp->translate ("FlarmIdUpdate", "Update Flarm ID"),
+		qApp->translate ("FlarmIdUpdate", "The Flarm ID cannot be "
+			"update because this flight did not take place today."));
+}
+
 void FlarmIdUpdate::noPlaneMessage ()
 {
 	QMessageBox::information (parent,
@@ -168,14 +176,24 @@ bool FlarmIdUpdate::interactiveUpdateFlarmId (const Flight &flight, bool manualO
 		// We can only do this if the flight has a plane
 		if (!idValid (flight.getPlaneId ()))
 		{
-			noPlaneMessage ();
+			if (manualOperation)
+				noPlaneMessage ();
 			return true;
 		}
 
 		// We can only do this for automatically created flights
 		if (flight.getFlarmId ().isEmpty ())
 		{
-			notCreatedAutomaticallyMessage ();
+			if (manualOperation)
+				notCreatedAutomaticallyMessage ();
+			return true;
+		}
+
+		// We can only do this for current flights (flights of today)
+		if (!flight.isCurrent ())
+		{
+			if (manualOperation)
+				notCurrentMessage ();
 			return true;
 		}
 

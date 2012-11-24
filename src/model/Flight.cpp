@@ -420,6 +420,7 @@ QDate Flight::effdatum (Qt::TimeSpec spec) const
 	return effectiveTime ().toTimeSpec (spec).date ();
 }
 
+// TODO is defaultDate used, or should we return an invalid date?
 QDate Flight::getEffectiveDate (Qt::TimeSpec spec, QDate defaultDate) const
 {
 	// TODO this assumes that every flight at least departs or lands here.
@@ -431,6 +432,12 @@ QDate Flight::getEffectiveDate (Qt::TimeSpec spec, QDate defaultDate) const
 
 	return defaultDate;
 }
+
+bool Flight::isCurrent () const
+{
+	return getEffectiveDate (Qt::LocalTime, QDate ())==QDate::currentDate ();
+}
+
 
 QDateTime Flight::effectiveTime () const
 {

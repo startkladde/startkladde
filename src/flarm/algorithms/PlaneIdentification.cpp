@@ -83,6 +83,14 @@ void PlaneIdentification::notCreatedAutomaticallyMessage ()
 			"identified because this flight was not created automatically."));
 }
 
+void PlaneIdentification::notCurrentMessage ()
+{
+	QMessageBox::information (parent,
+		qApp->translate ("PlaneIdentification", "Identify plane"),
+		qApp->translate ("PlaneIdentification", "The plane cannot be "
+			"identified because this flight did not take place today."));
+}
+
 void PlaneIdentification::identificationFailureMessage ()
 {
 	QMessageBox::information (parent,
@@ -115,8 +123,8 @@ dbId PlaneIdentification::interactiveCreatePlane (const FlarmNetRecord &flarmNet
  * If the user cancels, chooses not to use the identified plane, or
  * identification fails, an invalid ID is returned.
  *
- * If identification fails, a message is shown to the user, unless
- * messageOnFailure is false.
+ * If identification fails, a message is shown to the user if manualOperation is
+ * true.
  *
  * The caller is responsible for setting the plane of the flight and updating
  * the flight in the database (if applicable) if the plane changed.
@@ -132,7 +140,16 @@ dbId PlaneIdentification::interactiveIdentifyPlane (const Flight &flight, bool m
 		// We can only do this for automatically created flights
 		if (isBlank (flight.getFlarmId ()))
 		{
-			notCreatedAutomaticallyMessage ();
+			if (manualOperation)
+				notCreatedAutomaticallyMessage ();
+			return invalidId;
+		}
+
+		// We can only do this for current flights (flights of today)
+		if (!flight.isCurrent ())
+		{
+			if (manualOperation)
+				notCurrentMessage ();
 			return invalidId;
 		}
 

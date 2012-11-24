@@ -35,6 +35,7 @@ class PlaneIdentification
 
 	protected:
 		void notCreatedAutomaticallyMessage ();
+		void notCurrentMessage ();
 		void identificationFailureMessage ();
 		void currentMessage ();
 

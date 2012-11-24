@@ -138,6 +138,7 @@ class Flight: public FlightBase
 		// TODO which one of these is right?
 		virtual QDate effdatum (Qt::TimeSpec spec=Qt::UTC) const;
 		virtual QDate getEffectiveDate (Qt::TimeSpec spec, QDate defaultDate) const;
+		virtual bool isCurrent () const;
 
 		virtual bool canHaveDepartureTime        () const { return departsHere (); }
 		virtual bool canHaveLandingTime          () const { return landsHere () || isTowflight (); }

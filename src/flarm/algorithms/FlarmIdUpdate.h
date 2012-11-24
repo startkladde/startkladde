@@ -22,6 +22,7 @@ class FlarmIdUpdate
 		enum UpdateAction { update, dontUpdate, cancel };
 
 		void notCreatedAutomaticallyMessage ();
+		void notCurrentMessage ();
 		void noPlaneMessage ();
 		void currentMessage ();
 
