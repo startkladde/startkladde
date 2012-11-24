@@ -342,8 +342,7 @@ bool FlightTableView::selectFlight (const FlightReference &flightReference, int 
  */
 void FlightTableView::interactiveJumpToTowflight ()
 {
-	// FIXME does it get simpler when we use getFlightReference/getModelIndex?
-	// Map the current index to a flight proxy list index
+	// Map the selected index to a flight proxy list index
 	QModelIndex proxyModelIndex=currentIndex ();
 	QModelIndex flightListModelIndex=_proxyModel->mapToSource (proxyModelIndex);
 	int flightProxyListIndex=_flightListModel->mapToSource (flightListModelIndex);
@@ -360,8 +359,9 @@ void FlightTableView::interactiveJumpToTowflight ()
 	// Get the towref from the flight proxy list
 	flightProxyListIndex=_proxyList->findTowref (flightProxyListIndex);
 
-	// Special case, this sucks: prepared airtow
-	// FIXME make sure we can map an invalid index and check it after mapping.
+	// Special case, this sucks: prepared airtow. In this case, the proxy list
+	// does contain a corresponding towflight, it's just filtered out by the
+	// sort/filter proxy model. We'll have to handle this case explicitly.
 	if (flight.isAirtow (_dbManager->getCache ()) && flight.isPrepared ())
 	{
 		QString text=tr ("The flight has not departed yet.");
@@ -370,7 +370,7 @@ void FlightTableView::interactiveJumpToTowflight ()
 	}
 	else if (flightProxyListIndex<0)
 	{
-		// Oops, there is no tow reference. Let's get the flight and see why.
+		// Oops, there is no tow reference. Look at the flight to find out why.
 		QString text;
 		if (!flight.departsHere ())
 			text=tr ("The flight does not depart here.");
@@ -406,7 +406,6 @@ void FlightTableView::interactiveJumpToTowflight ()
  */
 void FlightTableView::base_buttonClicked (QPersistentModelIndex proxyIndex)
 {
-	// FIXME simplify - don't need to fetch the flight?
 	if (!proxyIndex.isValid ())
 	{
 		log_error (notr ("A button with invalid persistent index was clicked."));
