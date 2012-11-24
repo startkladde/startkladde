@@ -14,10 +14,20 @@ class WidgetFader: public QObject
 	public:
 		virtual ~WidgetFader ();
 
-		static void fadeOutAndClose (QWidget *widget, uint32_t milliseconds);
+		static WidgetFader *fadeOutAndClose (QWidget *widget, uint32_t fadeTime, uint32_t waitTime=0);
+
+	public slots:
+		void start ();
+		void startFade ();
 
 	private:
-		WidgetFader (QObject *parent);
+		WidgetFader (QWidget *widget);
+
+		QWidget *_widget;
+
+		// In milliseconds
+		uint32_t _waitTime;
+		uint32_t _fadeTime;
 
 };
 

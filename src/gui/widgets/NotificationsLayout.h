@@ -2,7 +2,7 @@
 #define NOTIFICATIONSLAYOUT_H_
 
 #include <QHash>
-#include <QPointF>
+#include <QPoint>
 
 #include "src/gui/widgets/NotificationWidget.h"
 
@@ -15,7 +15,7 @@ class NotificationsLayout
 		void add (NotificationWidget *widget);
 		void remove (const NotificationWidget *widget);
 
-		void setWidgetPosition (const NotificationWidget *widget, const QPointF &position);
+		void setWidgetPosition (const NotificationWidget *widget, const QPoint &position);
 		void setWidgetInvisible (const NotificationWidget *widget);
 
 		void layout ();
@@ -27,7 +27,7 @@ class NotificationsLayout
 			public:
 				NotificationWidget *widget;
 				bool visible;
-				QPointF arrowPosition;
+				QPoint arrowPosition;
 		};
 
 		class LayoutNode

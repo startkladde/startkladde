@@ -29,7 +29,7 @@ void NotificationsLayout::remove (const NotificationWidget *widget)
 	_nodes.remove (widget);
 }
 
-void NotificationsLayout::setWidgetPosition (const NotificationWidget *widget, const QPointF &position)
+void NotificationsLayout::setWidgetPosition (const NotificationWidget *widget, const QPoint &position)
 {
 	Node &node=_nodes[widget];
 
@@ -170,8 +170,8 @@ void NotificationsLayout::layout ()
 	// Apply the layout
 	foreach (const LayoutNode &layoutNode, layoutNodes)
 	{
-		QPointF arrowPosition=layoutNode.node->arrowPosition;
-		QPointF bubblePosition=layoutNode.node->widget->defaultBubblePosition (arrowPosition);
+		QPoint arrowPosition=layoutNode.node->arrowPosition;
+		QPoint bubblePosition=layoutNode.node->widget->defaultBubblePosition (arrowPosition);
 //		std::cout << layoutNode.y << std::endl;
 		bubblePosition.setY (layoutNode.y);
 		layoutNode.node->widget->moveTo (arrowPosition, bubblePosition);

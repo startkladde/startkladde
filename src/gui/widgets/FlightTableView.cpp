@@ -12,7 +12,9 @@
 #include "src/logging/messages.h"
 #include "src/gui/widgets/NotificationWidget.h"
 #include "src/gui/widgets/NotificationsLayout.h"
+#include "src/gui/WidgetFader.h"
 
+// FIXME no ...F classes
 
 // flightList      - Contains the actual flights
 // proxyList       = FlightProxyList            (flightList)
@@ -547,7 +549,7 @@ void FlightTableView::layoutNotifications ()
 		{
 			double arrowX=rect.right ()-rect.height ()/2;
 			double arrowY=rect.top   ()+rect.height ()/2;
-			notificationsLayout->setWidgetPosition (widget, QPointF (arrowX, arrowY));
+			notificationsLayout->setWidgetPosition (widget, QPoint (arrowX, arrowY));
 		}
 		else
 		{
@@ -592,13 +594,20 @@ void FlightTableView::notificationWidget_closed ()
  */
 void FlightTableView::showNotification (const FlightReference &flight, const QString &message, int milliseconds)
 {
+	// Keep the flight open. This causes a re-layout, so we do it before
+	// creating the new widget. This will be reverted when the notification
+	// widget is closed in notificationWidget_closed.
+	_proxyModel->setForceVisible (FlightReference (flight), true);
+
 	// Create and setup the widget. The widget will be deleted by this class
 	// when it is closed, which happens after a delay oder when the user clicks
 	// the widget.
 	NotificationWidget *notificationWidget=new NotificationWidget (viewport ());
-//	notificationWidget->setAutoFillBackground (true);
+	//notificationWidget->setAutoFillBackground (true);
 	notificationWidget->setText (message);
-	notificationWidget->fadeOutAndCloseIn (milliseconds);
+	WidgetFader *fader=WidgetFader::fadeOutAndClose (notificationWidget, 1000, milliseconds);
+
+	connect (notificationWidget, SIGNAL (clicked ()), fader, SLOT (startFade ()));
 
 	// Notify this when the widget is closed
 	connect (notificationWidget, SIGNAL (closed ()), this, SLOT (notificationWidget_closed ()));
@@ -607,11 +616,6 @@ void FlightTableView::showNotification (const FlightReference &flight, const QSt
 	notifications.insert (notificationWidget, flight);
 	notificationsLayout->add (notificationWidget);
 
-	// Layout all widgets
+	// Layout all notification widgets
 	layoutNotifications ();
-
-	// Keep the flight open. Note that we do that after creating the
-	// notification widget in order to cause a re-layout to work around a
-	// NotificationWidget bug (see NotificationWidget).
-	_proxyModel->setForceVisible (FlightReference (flight), true);
 }

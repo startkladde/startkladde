@@ -1,115 +1,100 @@
-#ifndef NOTOFICATIONWIDGET_H
-#define NOTOFICATIONWIDGET_H
+#ifndef NOTIFICATIONWIDGET_H
+#define NOTIFICATIONWIDGET_H
 
 #include <QWidget>
-#include <QRectF>
-#include <QPointF>
+#include <QPainterPath>
 
-class QHBoxLayout;
-class QMouseEvent;
+#include "src/util/math.h"
+
+class QEvent;
 class QCloseEvent;
-class QSpacerItem;
+class QMouseEvent;
+class QPaintEvent;
 
-/**
- * Note that there is a bug which leads to the widget being moved to the wrong
- * position if moveTo is called before the widget is visible. Specifically,
- * the widget's top left corner is moved to the position where the top left
- * corner of the bubble should be. The reason seems to be that the layout is not
- * updated until the widget is shown: the bubble position is reported as (0, 0)
- * even though the margins are set up after updateLayout. The best solution
- * might be to introduce a custom layout manager. Potentially, this layout
- * manager could also make sure that the arrow and bubble positions (relative to
- * the parent widget) are maintained even if the contents are resized.
- */
 class NotificationWidget: public QWidget
 {
-    Q_OBJECT
+		Q_OBJECT
 
 	public:
-    	// Construction
-    	NotificationWidget (QWidget *parent);
-    	~NotificationWidget ();
+		// Construction
+		explicit NotificationWidget (QWidget *parent, Qt::WindowFlags f=0);
+		~NotificationWidget ();
 
-    	// Properties
-    	void setFadeOutDuration (int duration) { _fadeOutDuration=duration; }
-    	int fadeOutDuration () const           { return _fadeOutDuration; }
+		// Contents
+		void setContents (QWidget *contents);
+		QWidget *contents () const  { return _contents; }
+		void setText (const QString &text);
+		QString text () const;
 
-    	// Contents
-    	void setContents (QWidget *contents, bool contentsOwned);
-    	QWidget *contents () const;
-    	bool contentsOwned () const;
-    	void setText (const QString &text);
-    	QString text () const;
+		// Parameters
+		void setArrowWidth   (int arrowWidth  );
+		void setCornerRadius (int cornerRadius);
+		void setMargin       (int margin      );
 
-    	// Shape/position
-    	QPointF defaultBubblePosition (const QPointF &arrowTip);
-    	void moveTo (const QPointF &arrowTip, const QPointF &bubblePosition);
-    	void moveTo (const QPointF &arrowTip);
-    	QRectF bubbleGeometry () const;
+		int arrowWidth   () const { return _arrowWidth;   }
+		int cornerRadius () const { return _cornerRadius; }
+		int margin       () const { return _margin;       }
 
-    public slots:
-    	// Closing
-    	void fadeOutAndCloseIn (int delay, int duration);
-    	void fadeOutAndCloseIn (int delay);
-    	void fadeOutAndCloseNow ();
-    	void fadeOutAndCloseNow (int duration);
+		// Position
+		QPoint defaultBubblePosition (const QPoint &arrowTip) const;
+		void moveTo (const QPoint &arrowTip, const QPoint &bubblePosition);
+		void moveTo (const QPoint &arrowTip);
 
-    signals:
-    	void closed ();
+		// Layout
+		virtual QSize sizeHint () const;
+
+		// Geometry
+		// Including the bubble margins
+		QRect bubbleGeometry () const { return QRect (bubblePosition (), bubbleSizeHint ()); }
+		QRect bubbleGeometryParent () const { return bubbleGeometry ().translated (pos ()); }
+
+	signals:
+		void closed ();
+		void clicked ();
 
 	protected:
-    	virtual void resizeEvent     (QResizeEvent *event);
-		virtual void paintEvent      (QPaintEvent  *event);
-		virtual void mousePressEvent (QMouseEvent  *event);
-		virtual void closeEvent      (QCloseEvent  *event);
-    	void updateLayout ();
+		// Layout
+		virtual void invalidate ();
+		virtual void doLayout ();
+
+		// Depends only on the parameters - in widget coordinates
+		int top    () const { return ifPositive (-_arrowTipFromBubblePosition.y ()); }
+		int left   () const { return ifPositive (-_arrowTipFromBubblePosition.x ()); }
+		int bottom () const { return ifPositive ( _arrowTipFromBubblePosition.y ()); }
+		int right  () const { return ifPositive ( _arrowTipFromBubblePosition.x ()); }
+		QPoint arrowTip       () const { return QPoint (right (), bottom ()); }
+		QPoint bubblePosition () const { return QPoint (left  (), top    ()); }
+		QSize minimumBubbleSize () const { return QSize (2*_cornerRadius, 2*_cornerRadius+_arrowWidth); }
+
+		// Depends only on the parameters and the contents
+		QSize bubbleSizeHint () const;
+
+		// Depends on the actual layout
+		QPainterPath path ();
+
+		// Qt events
+		virtual bool event              (QEvent       *e);
+		virtual void closeEvent         (QCloseEvent  *e);
+		virtual void layoutRequestEvent ();
+		virtual void mousePressEvent    (QMouseEvent  *e);
+		virtual void paintEvent         (QPaintEvent  *e);
+
 
 	private:
-    	/** Everything is in widget coordinates */
-    	class Shape
-    	{
-    		public:
-    			Shape (NotificationWidget *widget);
+		// Contents
+		QWidget *_contents;
 
-				void invalidate ();
-				void update ();
+		// Colors
+		QColor bubbleColor;
 
-				QPainterPath path;
-				QPointF arrowTip;
-				QRectF bubble;
+		// Geometry parameters - set by the user
+		int _arrowWidth;
+		int _cornerRadius;
+		int _margin;
+		QPoint _arrowTipFromBubblePosition; // NB!
 
-    		private:
-				void recalculate ();
-
-				NotificationWidget *_widget;
-				bool _valid;
-    	};
-
-    	// Color properties
-    	QColor bubbleColor;
-
-    	// Shape parameters
-    	double arrowWidth;
-    	QPointF arrowTipFromBubblePosition; // NB!
-
-    	// Calculated shape
-    	const Shape &shape () const;
-    	void invalidateShape ();
-    	mutable Shape _shape_;
-
-    	// Layout
-    	QSpacerItem *_topLeftSpacer;
-    	QSpacerItem *_rightSpacer;
-    	QSpacerItem *_bottomSpacer;
-    	QHBoxLayout *_bubbleLayout;
-
-    	// Contents
-    	QWidget *_contents;
-    	bool _contentsOwned;
-
-    	// Closing
-    	int _fadeOutDuration;
-    	bool _fadeOutInProgress;
+		// The actual geometry - known after doing the layout
+		QPainterPath _path_;
 
 };
 
