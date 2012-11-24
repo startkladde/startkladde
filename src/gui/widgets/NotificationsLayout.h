@@ -30,22 +30,6 @@ class NotificationsLayout
 				QPoint arrowPosition;
 		};
 
-		class LayoutNode
-		{
-			public:
-				Node *node;
-				double y;
-				double h;
-				bool operator< (const LayoutNode &other) const { return y<other.y; }
-		};
-
-		// FIXME this looks like it should be in a class
-		double overlapValue (QList<LayoutNode> &nodes, int index, int spacing);
-		int largestOverlap (QList<LayoutNode> &nodes, int spacing);
-		bool doOptimizeIteration (QList<LayoutNode> &nodes, int spacing);
-		void forceNoOverlaps (QList<LayoutNode> &nodes, int spacing);
-		void doLayout (QList<LayoutNode> &nodes);
-
 		QHash<const NotificationWidget *, Node> _nodes;
 };
 
