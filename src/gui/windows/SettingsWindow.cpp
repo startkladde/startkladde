@@ -63,6 +63,8 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	prepareText ();
 	setupText ();
 
+	ui.tabWidget->setCurrentIndex (0);
+
 	ui.dbTypePane->setVisible (false);
 
 	ui.languageInput->setSizeAdjustPolicy (QComboBox::AdjustToContents);
