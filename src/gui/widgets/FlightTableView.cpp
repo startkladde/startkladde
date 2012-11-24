@@ -14,8 +14,6 @@
 #include "src/gui/widgets/NotificationsLayout.h"
 #include "src/gui/WidgetFader.h"
 
-// FIXME no ...F classes
-
 // flightList      - Contains the actual flights
 // proxyList       = FlightProxyList            (flightList)
 //                   Adds towflights. Flight references refer to this list.
