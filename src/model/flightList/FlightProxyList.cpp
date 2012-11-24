@@ -268,11 +268,11 @@ int FlightProxyList::findModelIndex (const FlightReference &flight) const
 	}
 }
 
-Maybe<Flight> FlightProxyList::findFlight (const FlightReference &flight) const
-{
-	int modelIndex=findModelIndex (flight);
-	return at (modelIndex);
-}
+//Maybe<Flight> FlightProxyList::findFlight (const FlightReference &flight) const
+//{
+//	int modelIndex=findModelIndex (flight);
+//	return at (modelIndex);
+//}
 
 FlightReference FlightProxyList::getFlightReference (int modelIndex) const
 {
@@ -297,7 +297,7 @@ int FlightProxyList::size () const
 	return _sourceModel->size ()+towflights.size ();
 }
 
-// FIXME return Maybe<Flight>, and check for _sourceModel!=NULL
+// TODO return Maybe<Flight>, and check for _sourceModel!=NULL
 const Flight &FlightProxyList::at (int index) const
 {
 	assert (_sourceModel);
