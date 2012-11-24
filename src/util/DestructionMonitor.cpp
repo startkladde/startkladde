@@ -18,7 +18,6 @@ DestructionMonitor::DestructionMonitor (QObject *object, const QString &message)
 {
 	// Store the class name here. In the objectDestroyed slot, it always returns
 	// QObject.
-	//qDebug () << "Add destruction monitor for" << object;
 	_className=object->metaObject()->className ();
 	_objectName=object->objectName ();
 	connect (object, SIGNAL (destroyed ()), this, SLOT (objectDestroyed ()));
@@ -44,13 +43,3 @@ void DestructionMonitor::objectDestroyed ()
 
 	this->deleteLater ();
 }
-
-//void DestructionMonitor::message (QObject *object, const QString &text)
-//{
-//	// FIXME error message
-//	if (!object)
-//		return;
-
-//	// Will be deleted by its parent, object
-//	new DestructionMonitor (object, text);
-//}

@@ -1,7 +1,11 @@
 #ifndef DESTRUCTIONMONITOR_H_
 #define DESTRUCTIONMONITOR_H_
 
+#include <iostream>
+
 #include <QObject>
+
+#include "src/util/qString.h"
 
 class QString;
 
@@ -15,8 +19,6 @@ class DestructionMonitor: public QObject
 		// QObject must be an ancestor of T
 		template<class T> static T *message (
 			T *object, const QString &message=QString ());
-
-//		static void message (QObject *object, const QString &message=QString ());
 
 	private slots:
 		void objectDestroyed ();
@@ -37,7 +39,14 @@ template<class T> T *DestructionMonitor::message (T *object, const QString &text
 	// Will be deleted by its parent, object
 	if (object)
 		new DestructionMonitor (object, text);
-	// FIXME else error message
+	else
+	{
+		if (text.isEmpty ())
+			std::cerr << "Destruction monitor requested for NULL object" << std::endl;
+		else
+			std::cerr << "Destruction monitor requested for NULL object: " << text << std::endl;
+
+	}
 
 	return object;
 }
