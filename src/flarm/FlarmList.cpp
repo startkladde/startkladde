@@ -15,9 +15,13 @@
 // A more comprehensive solution would be a separate cache class which listens
 // to the signals from the object list.
 
+// TODO: there should be only one signal called flarmEvent with a FlarmEvent
+// parameter containing the Flarm ID, the type, and potentially the system time
+// and/or GPS time of the event.
+
 FlarmList::FlarmList (QObject *parent) :
 	AbstractObjectList<FlarmRecord> (parent),
-	nmeaDecoder (NULL)
+	nmeaDecoder (NULL), dbManager (NULL)
 {
 }
 
@@ -45,9 +49,11 @@ void FlarmList::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
 	}
 }
 
-void FlarmList::setDatabase (DbManager *dbManager) {
+void FlarmList::setDatabase (DbManager *dbManager)
+{
 	this->dbManager = dbManager;
 }
+
 
 // *********************
 // ** Data processing **
