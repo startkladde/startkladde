@@ -9,6 +9,9 @@
 #include "src/i18n/notr.h"
 #include "src/config/Settings.h"
 
+// TODO handle properly that case that one lookup source returns multiple
+// results (e. g. multiple planes with that Flarm ID, lookupFlightByPlane)
+
 FlightLookup::FlightLookup (Cache &cache):
 	cache (cache)
 {

@@ -48,6 +48,8 @@
 
 // TODO: there may be multiple conflicting planes
 // TODO: the old Flarm ID may also be a duplicate
+// TODO: instead of, or in addition to, saying "this plane", we should show the
+// registration
 
 /**
  * Creates a FlarmIdCheck
@@ -227,6 +229,10 @@ FlarmIdCheck::Resolution FlarmIdCheck::showChoiceDialog (const ResolutionSet &po
 		return keep;
 
 	// Choice dialog title and text
+	// TODO this says "The entered Flarm ID", even though in some cases, the
+	// Flarm ID may not have been explicitly entered explicitly (e. g. when
+	// performing a Flarm ID update on saving a flight when the plane was
+	// changed).
 	QString title=tr ("Flarm ID conflict");
 	QString text=tr (
 		"<html><b>The entered Flarm ID, %1, is already used for the plane %2.</b></html>")

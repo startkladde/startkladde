@@ -17,10 +17,7 @@ void showWarning (const QString &title, const QString &text, QWidget *parent)
 
 bool yesNoQuestion (QWidget *parent, QString title, QString question)
 {
-	// TODO: Yes/No, but with ESC - it works for yesNoQuestionStandardButton
-	QMessageBox::StandardButtons buttons=QMessageBox::Ok | QMessageBox::Cancel;
-	QMessageBox::StandardButton result=QMessageBox::question (parent, title, question, buttons, QMessageBox::Ok);
-	return result==QMessageBox::Ok;
+	return yesNoQuestionStandardButton (parent, title, question)==QMessageBox::Yes;
 }
 
 QMessageBox::StandardButton yesNoQuestionStandardButton (QWidget *parent, QString title, QString question)

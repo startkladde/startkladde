@@ -63,8 +63,16 @@ FlarmIdUpdate::UpdateAction FlarmIdUpdate::queryUpdateFlarmId (const Plane &plan
 	//         installed in the plane
 	//     ( ) Don't update the plane's Flarm ID
 	//     ( ) Go back and edit the plane. Choose this if the plane is wrong.
-	// Also, we should have a "details" button which shows the Flarm IDs of the
-	// plane and of the flight.
+	// Also, if the user chooses yes, we have to check for Flarm ID conflicts.
+	// Ideally, there would be only one dialog which integrates this question
+	// with the options from the Flarm ID conflicts check. It may not be easy to
+	// implement that without massive code duplication and in a way that makes
+	// it translate well. The best solution might be to let the FlarmIdCheck
+	// generate this text, according to some kind of FlarmIdUpdateReason. This
+	// is a slight violation of orthogonality, but the FlarmIdCheck class is
+	// highly specialized anyway.
+	// Furthermore, we should have a "details" button which shows the Flarm IDs
+	// of the plane and of the flight.
 	QString text;
 	if (isBlank (plane.flarmId))
 	{
@@ -132,7 +140,7 @@ bool FlarmIdUpdate::checkAndUpdate (Plane &plane, const Flight &flight)
  * which is in the database, but without a Flarm ID) has departed, the flight
  * has been created automatically, and the user edits the flight and enters the
  * plane's registration. This case is so common, and the risk of doing it wrong
- * so low, that we may make an exception to the rule of not changing a flight
+ * so low, that we may make an exception to the rule of not changing a plane
  * without asking the user.
  *
  * All of the following conditions must be fulfilled in order to update a plane
@@ -140,7 +148,8 @@ bool FlarmIdUpdate::checkAndUpdate (Plane &plane, const Flight &flight)
  *   - the plane has no Flarm ID yet
  *   - the Flarm ID of the flight is not taken yet (i. e. there is no plane with
  *     that Flarm ID yet)
- *   - the flight did not have a plane before
+ *   - the flight did not have a plane before (this excludes cases where the
+ *     plane was identified via FlarmId without user interaction)
  *   - the operation was not performed manually
  */
 bool FlarmIdUpdate::canUpdateSilently (const Plane &plane, const Flight &flight)

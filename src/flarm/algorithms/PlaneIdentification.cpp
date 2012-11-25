@@ -59,17 +59,17 @@ bool PlaneIdentification::queryCreatePlane (const FlarmNetRecord &flarmNetRecord
 	if (isBlank (flarmNetRecord.type))
 		text=qApp->translate ("PlaneIdentification",
 			"The plane was not found in the database. "
-			"However, the FlarmNet database indicates that the plane might be "
-			"a %1 with registration %2. "
+			"However, the FlarmNet database indicates that the registration of "
+			"the plane might be %1. "
 			"Do you want to create this plane?")
-			.arg (flarmNetRecord.type)
 			.arg (flarmNetRecord.fullRegistration ());
 	else
 		text=qApp->translate ("PlaneIdentification",
 			"The plane was not found in the database. "
-			"However, the FlarmNet database indicates that the registration of "
-			"the plane might be %1. "
+			"However, the FlarmNet database indicates that the plane might be "
+			"a %1 with registration %2. "
 			"Do you want to create this plane?")
+			.arg (flarmNetRecord.type)
 			.arg (flarmNetRecord.fullRegistration ());
 
 	return yesNoQuestion (parent, title, text);
