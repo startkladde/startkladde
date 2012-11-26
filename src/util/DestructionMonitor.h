@@ -9,6 +9,11 @@
 
 class QString;
 
+/**
+ * Prints a message when a QObject is destroyed
+ *
+ * Use the static message() method to register an object.
+ */
 class DestructionMonitor: public QObject
 {
 		Q_OBJECT
@@ -33,19 +38,35 @@ class DestructionMonitor: public QObject
 		QString _objectName;
 };
 
-
+/**
+ * Registers an object for deletion monitoring with a message to print
+ *
+ * T must be a subclass of QObject. Otherwise, a compilation error will occur.
+ *
+ * If the object is NULL, an error message is printed to standard error and the
+ * object is not monitored.
+ *
+ * The specified message text will be included in the message when the object is
+ * deleted.
+ *
+ * A copy of the object pointer is returned. This makes it possible to register
+ * anonymous objects, like this:
+ *     ui.tabWidget->addTab (DestructionMonitor::message (new MyTabWidget (...)));
+ */
 template<class T> T *DestructionMonitor::message (T *object, const QString &text)
 {
-	// Will be deleted by its parent, object
-	if (object)
-		new DestructionMonitor (object, text);
-	else
+	if (!object)
 	{
+		// The object is NULL
 		if (text.isEmpty ())
 			std::cerr << "Destruction monitor requested for NULL object" << std::endl;
 		else
 			std::cerr << "Destruction monitor requested for NULL object: " << text << std::endl;
-
+	}
+	else
+	{
+		// Will be deleted upon receiving the destroyed() signal from object
+		new DestructionMonitor (object, text);
 	}
 
 	return object;
