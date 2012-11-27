@@ -25,7 +25,6 @@
  * then retrieve the optimized positions by calling items(). The items will be
  * returned in any order, but the originalIndex property will refer to the
  * order in which the items were added to the list.
- * FIXME return ordered by original index, and the we can return QList<int>.
  *
  * Mathematically, this is an n-dimensional optimization problem with
  * constraints. The target function, which is to be minimized, is the mean
@@ -79,7 +78,7 @@
  * Another, non-heuristic, method would be to use the downhill simplex method,
  * if we can find a way to extend the target function to outside the polyhedron.
  * This would also allow extending the target function to any convex function.
- * One application would be to equally prefer all positions of a notifiction
+ * One application would be to equally prefer all positions of a notification
  * widget that make the arrow straight (if moved down along the side of the
  * bubble) (not that would make the optimal solution non-unique).
  */

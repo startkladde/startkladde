@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+// TODO we should return the results ordered by original index as QList<int>
+
 RectangleLayout::RectangleLayout ():
 	_spacing (0)
 {
