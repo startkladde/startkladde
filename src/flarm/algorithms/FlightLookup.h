@@ -6,6 +6,7 @@
 #include "src/db/dbId.h"
 #include "src/container/Maybe.h"
 #include "src/flarm/flarmNet/FlarmNetRecord.h"
+#include "src/FlightReference.h"
 
 class Cache;
 class Flight;
@@ -37,18 +38,21 @@ class FlightLookup
 		class Result
 		{
 			public:
-				dbId                  flightId;
+				FlightReference       flightReference;
 				Maybe<Plane>          plane;
 				Maybe<FlarmNetRecord> flarmNetRecord;
 
-				Result (dbId flightId, const Maybe<Plane> &plane, const Maybe<FlarmNetRecord> &flarmNetRecord):
-					flightId (flightId), plane (plane), flarmNetRecord (flarmNetRecord)
+				Result (const FlightReference flightReference,
+					const Maybe<Plane> &plane,
+					const Maybe<FlarmNetRecord> &flarmNetRecord):
+					flightReference (flightReference), plane (plane),
+					flarmNetRecord (flarmNetRecord)
 				{
 				}
 
 				static Result nothing ()
 				{
-					return Result (invalidId, NULL, NULL);
+					return Result (FlightReference::invalid, NULL, NULL);
 				}
 		};
 

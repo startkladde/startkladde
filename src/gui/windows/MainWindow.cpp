@@ -447,6 +447,8 @@ void MainWindow::restartPlugins ()
 
 bool MainWindow::confirmAndExit (int returnCode, QString title, QString text)
 {
+	(void)title;
+	(void)text;
 //	if (yesNoQuestion (this, title, text))
 //	{
 		closeDatabase ();
@@ -2277,13 +2279,13 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 	QList<Flight> flights=dbManager.getCache ().getPreparedFlights ().getList ();
 	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
-	if (idValid (lookupResult.flightId))
+	if (lookupResult.flightReference.isValid ())
 	{
 		// We found the (prepared) flight. Depart it.
-		nonInteractiveDepartFlight (lookupResult.flightId);
+		nonInteractiveDepartFlight (lookupResult.flightReference.id ());
 
 		ui.flightTable->showNotification (
-			FlightReference::flight (lookupResult.flightId),
+			lookupResult.flightReference,
 			tr ("The flight was departed automatically"),
 			notificationDisplayTime);
 	}
@@ -2316,13 +2318,13 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 	QList<Flight> flights=dbManager.getCache ().getFlyingFlights ().getList ();
 	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
-	if (idValid (lookupResult.flightId))
+	if (lookupResult.flightReference.isValid ())
 	{
 		// We found the flight. Land it.
-		nonInteractiveLandFlight (lookupResult.flightId);
+		nonInteractiveLandFlight (lookupResult.flightReference.id ());
 
 		ui.flightTable->showNotification (
-			FlightReference::flight (lookupResult.flightId),
+			lookupResult.flightReference,
 			tr ("The flight was landed automatically"),
 			notificationDisplayTime);
 	}
@@ -2353,13 +2355,13 @@ void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 	QList<Flight> flights=dbManager.getCache ().getFlyingFlights ().getList ();
 	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
-	if (idValid (lookupResult.flightId))
+	if (lookupResult.flightReference.isValid ())
 	{
 		// We found the flight. Perform a touch and go.
-		nonInteractiveTouchAndGo (lookupResult.flightId);
+		nonInteractiveTouchAndGo (lookupResult.flightReference.id ());
 
 		ui.flightTable->showNotification (
-			FlightReference::flight (lookupResult.flightId),
+			lookupResult.flightReference,
 			tr ("The flight performed a touch-and-go automatically"),
 			notificationDisplayTime);
 	}

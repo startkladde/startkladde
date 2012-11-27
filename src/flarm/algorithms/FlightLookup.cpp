@@ -36,7 +36,7 @@ FlightLookup::Result FlightLookup::lookupFlightByFlarmId (const QList<Flight> &c
 {
 	foreach (const Flight &flight, candidates)
 		if (flight.getFlarmId ()==flarmId)
-			return Result (flight.getId (), NULL, NULL);
+			return Result (FlightReference (flight), NULL, NULL);
 
 	return Result::nothing ();
 }
@@ -66,7 +66,7 @@ FlightLookup::Result FlightLookup::lookupFlightByPlane (const QList<Flight> &can
 
 	// Return just the FlarmNet record (if any) if there is no plane (5+6)
 	if (!planeResult.plane.isValid ())
-		return Result (0, NULL, planeResult.flarmNetRecord);
+		return Result (FlightReference::invalid, NULL, planeResult.flarmNetRecord);
 
 	// Found a plane. Try to find a flight with that plane.
 	dbId planeId=planeResult.plane->getId ();
@@ -76,12 +76,12 @@ FlightLookup::Result FlightLookup::lookupFlightByPlane (const QList<Flight> &can
 		{
 			// Found a flight. Return it along with the plane and, potentially,
 			// the FlarmNet record (1+2)
-			return Result (flight.getId (), planeResult.plane, planeResult.flarmNetRecord);
+			return Result (FlightReference (flight), planeResult.plane, planeResult.flarmNetRecord);
 		}
 	}
 
 	// No flight found. Return the plane and FlarmNet record (if any) (3+4)
-	return Result (invalidId, planeResult.plane, planeResult.flarmNetRecord);
+	return Result (FlightReference::invalid, planeResult.plane, planeResult.flarmNetRecord);
 }
 
 
@@ -122,7 +122,7 @@ FlightLookup::Result FlightLookup::lookupFlight (const QList<Flight> &candidates
 	result=lookupFlightByFlarmId (candidates, flarmId);
 
 	// If we found a flight, return it
-	if (idValid (result.flightId))
+	if (result.flightReference.isValid ())
 		return result;
 
 	// Try to find a flight by plane

@@ -24,7 +24,7 @@ class FlightReference
 	public:
 		FlightReference ();
 		FlightReference (dbId id, bool towflight);
-		FlightReference (const Flight &flight);
+		explicit FlightReference (const Flight &flight);
 		virtual ~FlightReference ();
 
 		static FlightReference flight (dbId id);
