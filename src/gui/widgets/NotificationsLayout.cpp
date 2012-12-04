@@ -7,6 +7,15 @@
 #include "src/util/math.h"
 #include "src/algorithms/RectangleLayout.h"
 
+// Improvements:
+//   * we can perform the layout automatically, by adding a geometryChanged
+//     event to NotificationWidget
+
+// FIXME remove automatically when deleted, and document
+
+/**
+ * Creates a new NotificationsLayout without any notifications to lay out
+ */
 NotificationsLayout::NotificationsLayout ()
 {
 }
@@ -15,6 +24,21 @@ NotificationsLayout::~NotificationsLayout ()
 {
 }
 
+/**
+ * Adds a notification widget to the layout
+ *
+ * All widgets added to the same layout should have the same parent, or the
+ * results may be unexpected.
+ *
+ * This class does not take ownership of the widget.
+ *
+ * The initial arrow position of the widget is undefined; you must call
+ * setArrowPosition or setWidgetInvisible.
+ *
+ * @see remove
+ * @see setArrowPosition
+ * @see setWidgetInvisible
+ */
 void NotificationsLayout::add (NotificationWidget *widget)
 {
 	Node node;
@@ -25,11 +49,27 @@ void NotificationsLayout::add (NotificationWidget *widget)
 	_nodes.insert (widget, node);
 }
 
+/**
+ * Removes a notification widget from the layout
+ *
+ * The widget will not be considered for layout calculations and will not be
+ * moved. It is not deleted; this is its parent's task.
+ *
+ * @see add
+ */
 void NotificationsLayout::remove (const NotificationWidget *widget)
 {
 	_nodes.remove (widget);
 }
 
+/**
+ * Sets the arrow position for the given widget
+ *
+ * The widget must have been added using the add method. If the widget was
+ * invisible before, it will be shown on the next call to doLayout().
+ *
+ * @see add
+ */
 void NotificationsLayout::setArrowPosition (const NotificationWidget *widget, const QPoint &position)
 {
 	Node &node=_nodes[widget];
@@ -38,6 +78,12 @@ void NotificationsLayout::setArrowPosition (const NotificationWidget *widget, co
 	node.visible=true;
 }
 
+/**
+ * Sets the specified widget to be invisible
+ *
+ * The widget must have been added using the add method. If the widget was
+ * visible before, it will be hidden on the next call to doLayout().
+ */
 void NotificationsLayout::setWidgetInvisible (const NotificationWidget *widget)
 {
 	Node &node=_nodes[widget];
@@ -45,7 +91,15 @@ void NotificationsLayout::setWidgetInvisible (const NotificationWidget *widget)
 	node.visible=false;
 }
 
-
+/**
+ * Performs the actual layout
+ *
+ * This method also shows or hides the widgets, depending on whether
+ * setArrowPosition or setWidgetInvisible was called on the widget last.
+ *
+ *
+ * This is an expensive method. Do not call it in vain.
+ */
 void NotificationsLayout::doLayout ()
 {
 	QList<Node> visibleNodes;

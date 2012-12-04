@@ -11,6 +11,40 @@ class QCloseEvent;
 class QMouseEvent;
 class QPaintEvent;
 
+/**
+ * A semi-transparent, shaped speech-bubble-like widget that can contain any
+ * contents widget. It is intended as an unobstrusive means to show a message
+ * to the user without requiring action or disturbing input focus.
+ *
+ * The bubble consists of a rounded rectangle and an arrow. The width of the
+ * arrow at its base, the radius of the rounded corners and the margin of the
+ * contents from the bubble edges can be configured. The bubble (and the whole
+ * widget) is sized automatically to fit the contents.
+ *
+ * To use this class, create an instance with the parent widget as for any other
+ * widget. Set a contents widget with setContents() (you can also use setText()
+ * to set a text. In this case, a contents widget will be created
+ * automatically). Use moveTo() to move the arrow tip (and potentially the
+ * bubble) to a specific location. The widget will always be sized automatically
+ * in a way such that the bubble size is the recommended size of the contents
+ * widget (as determined by its size hint) plus the margins. When the contents's
+ * recommended size changes, the bubble (and, if necessary, the whole widget)
+ * will automatically be resized while keeping the positions of the bubble and
+ * the arrow tip.
+ *
+ * The NotificationWidget emits a signal when it is clicked and another signal
+ * when it is closed. These signals may be useful to manage the visibility and
+ * layout of notification widgets.
+ *
+ * This is just the plain widget. You may find the NotificationsLayout and/or
+ * the WidgetFader classes useful in conjunction with this class.
+ *
+ * You should not use the QWidget::resize method on a bubble widget. The size is
+ * calculated automatically to accommodate the contents, the margin and the
+ * arrow. You can use QWidget::move, although the moveTo method will probably be
+ * more useful.
+ *
+ */
 class NotificationWidget: public QWidget
 {
 		Q_OBJECT
@@ -44,9 +78,8 @@ class NotificationWidget: public QWidget
 		virtual QSize sizeHint () const;
 
 		// Geometry
-		// Including the bubble margins
-		QRect bubbleGeometry () const { return QRect (bubblePosition (), bubbleSizeHint ()); }
-		QRect bubbleGeometryParent () const { return bubbleGeometry ().translated (pos ()); }
+		QRect bubbleGeometry () const;
+		QRect bubbleGeometryParent () const;
 
 	signals:
 		void closed ();
