@@ -12,6 +12,15 @@
 #include "src/gui/windows/objectEditor/PlaneEditorPane.h"
 #include "src/text.h"
 
+/**
+ * Creates a new PlaneIdentification instance
+ *
+ * The database manager to use and the parent for any dialogs we may need to
+ * display to the user have to be specified.
+ *
+ * Note that this is not a QWidget; the parent widget will not delete this
+ * instance.
+ */
 PlaneIdentification::PlaneIdentification (DbManager &dbManager, QWidget *parent):
 	dbManager (dbManager), parent (parent),
 	manualOperation (true)
@@ -22,6 +31,15 @@ PlaneIdentification::~PlaneIdentification ()
 {
 }
 
+/**
+ * Asks the user whether he wants to use the specified plane
+ *
+ * The flight also has to be specified so we can determine whether this will
+ * just set the plane or overwrite an already-set value, which will be reflected
+ * in the question(s).
+ *
+ * Returns true if the user chooses to use the plane, or false otherwise.
+ */
 bool PlaneIdentification::queryUsePlane (const Plane &plane, const Flight &flight)
 {
 	// Offer the user to use this plane
@@ -49,6 +67,12 @@ bool PlaneIdentification::queryUsePlane (const Plane &plane, const Flight &fligh
 	return yesNoQuestion (parent, title, text);
 }
 
+/**
+ * Asks the user whether he wants to create a plane from the given FlarmNet
+ * record
+ *
+ * Returns true if the user chooses to create the plane, or false otherwise
+ */
 bool PlaneIdentification::queryCreatePlane (const FlarmNetRecord &flarmNetRecord)
 {
 	// Offer the user to create a plane with the FlarmNet data
@@ -75,6 +99,10 @@ bool PlaneIdentification::queryCreatePlane (const FlarmNetRecord &flarmNetRecord
 	return yesNoQuestion (parent, title, text);
 }
 
+/**
+ * Shows a message to the user indicating that the plane cannot be identified
+ * because the flight was not created automatically
+ */
 void PlaneIdentification::notCreatedAutomaticallyMessage ()
 {
 	QMessageBox::information (parent,
@@ -83,6 +111,10 @@ void PlaneIdentification::notCreatedAutomaticallyMessage ()
 			"identified because this flight was not created automatically."));
 }
 
+/**
+ * Shows a message to the user indicating that the plane cannot be identified
+ * because the flight is not current (i. e. of today)
+ */
 void PlaneIdentification::notCurrentMessage ()
 {
 	QMessageBox::information (parent,
@@ -91,6 +123,9 @@ void PlaneIdentification::notCurrentMessage ()
 			"identified because this flight did not take place today."));
 }
 
+/**
+ * Shows a message to the user indicating that the plane failed to identify
+ */
 void PlaneIdentification::identificationFailureMessage ()
 {
 	QMessageBox::information (parent,
@@ -98,6 +133,9 @@ void PlaneIdentification::identificationFailureMessage ()
 		qApp->translate ("PlaneIdentification", "The plane could not be identified."));
 }
 
+/**
+ * Shows a message to the user indicating that the plane is already current
+ */
 void PlaneIdentification::currentMessage ()
 {
 	QMessageBox::information (parent,
@@ -105,6 +143,16 @@ void PlaneIdentification::currentMessage ()
 		qApp->translate ("PlaneIdentification", "The plane is already current."));
 }
 
+/**
+ * Interactively creates a plane from the given FlarmNet record
+ *
+ * This will open a plane editor with the data from the FlarmNet record pre-
+ * entered, let the user edit the values (except the Flarm ID) and create the
+ * plane in the database if the user accepts.
+ *
+ * Returns the ID of the newly created plane, or an invalid ID if the user
+ * cancels.
+ */
 dbId PlaneIdentification::interactiveCreatePlane (const FlarmNetRecord &flarmNetRecord)
 {
 	PlaneEditorPaneData paneData;

@@ -4,6 +4,9 @@
 
 // TODO we should return the results ordered by original index as QList<int>
 
+/**
+ * Creates a new rectangle layout with not items
+ */
 RectangleLayout::RectangleLayout ():
 	_spacing (0)
 {
@@ -13,15 +16,23 @@ RectangleLayout::~RectangleLayout ()
 {
 }
 
+/**
+ * Sets the spacing to be used in subsequent layout calculations
+ * @param spacing
+ */
 void RectangleLayout::setSpacing (int spacing)
 {
 	_spacing=spacing;
 }
 
+
 // ***********
 // ** Items **
 // ***********
 
+/**
+ * Adds an item with the given optimal (target) position yo and the height i
+ */
 void RectangleLayout::addItem (int targetY, int h)
 {
 	Item item;
@@ -33,6 +44,13 @@ void RectangleLayout::addItem (int targetY, int h)
 	_items.append (item);
 }
 
+/**
+ * Returns a list of items
+ *
+ * The list contains the items that have been added, in undefined order. After
+ * calling doLayout, the y value of the items will be set to the calculated
+ * value.
+ */
 QList<RectangleLayout::Item> RectangleLayout::items ()
 {
 	return _items;
@@ -43,7 +61,19 @@ QList<RectangleLayout::Item> RectangleLayout::items ()
 // ** Layout **
 // ************
 
-// Assumes the list is sorted by target y, uses no weight
+/**
+ * Determines the overlap value for the given item
+ *
+ * The overlap is either the overlap with the top (y=0, for index=0) or the
+ * overlap with the previous item (for index>0).
+ *
+ * This method returns the raw overlap, without weighting.
+ *
+ * The list is assumed to be sorted by the target position, yo.
+ *
+ * @param index
+ * @return
+ */
 double RectangleLayout::overlap (int index) const
 {
 	// The first item can overlap with the top. All other items can overlap with
@@ -65,7 +95,11 @@ double RectangleLayout::overlap (int index) const
 		return 0;
 }
 
-// Assumes the list is sorted by target y, returns the index, uses weight
+/**
+ * Determines the index of the item with the largest weighted overlap value
+ *
+ * The list is assumed to be sorted by the target position, yo.
+ */
 int RectangleLayout::largestOverlap () const
 {
 	// Start with the overlap of the first item.
@@ -90,7 +124,14 @@ int RectangleLayout::largestOverlap () const
 	return maxIndex;
 }
 
-/** Returns true if done */
+/**
+ * Performs one iteration of optimization
+ *
+ * Returns true if all items are at or within an epsilon margin of a valid
+ * position.
+ *
+ * The list is assumed to be sorted by the target position, yo.
+ */
 bool RectangleLayout::optimizeIteration ()
 {
 	//std::cout << std::setprecision(3) << "Iteration " << iteration << ", Nodes: ";
@@ -120,6 +161,11 @@ bool RectangleLayout::optimizeIteration ()
 	return false;
 }
 
+/**
+ * Rounds all positions to the nearest integer value
+ *
+ * The list is assumed to be sorted by the target position, yo.
+ */
 void RectangleLayout::roundPositions ()
 {
 	QMutableListIterator<Item> i (_items);
@@ -131,6 +177,14 @@ void RectangleLayout::roundPositions ()
 	}
 }
 
+/**
+ * Forces all constraints to be met by moving overlapping items down to the next
+ * valid position, starting at the top.
+ *
+ * Use this after performing an appropriate number of optimization steps.
+ *
+ * The list is assumed to be sorted by the target position, yo.
+ */
 void RectangleLayout::forceNoOverlaps ()
 {
 	int minY=0+_spacing;
@@ -148,6 +202,14 @@ void RectangleLayout::forceNoOverlaps ()
 	}
 }
 
+/**
+ * Performs an appropriate number of approximation steps and afterwards forces
+ * all constraints to be met by removing any remaining overlaps.
+ *
+ * The maximum number of iterations can be specified.
+ *
+ * The items are not assumed to be in any specific order.
+ */
 void RectangleLayout::doLayout (int maxIterations)
 {
 	// Sort the list by target y

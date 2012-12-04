@@ -10,7 +10,7 @@ class FlarmNetRecord;
 class Flight;
 
 /**
- * A helper class for identifying the plane of a flight
+ * A helper class for interactively identifying the plane of a flight
  *
  * Note that plane identification is not the same as plane lookup (done by the
  * PlaneLookup class): plane lookup finds the plane for a given Flarm ID,
