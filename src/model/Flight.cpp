@@ -902,6 +902,8 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 	towflight.setLanded (getTowflightLanded ());
 	towflight.setTowflightLanded (false);
 
+	// The towflight has no Flarm ID of its own - we cannot currently record
+	// whether it was created automatically.
 	towflight.setFlarmId (QString ());
 
 	return towflight;
