@@ -176,6 +176,11 @@ dbId PlaneIdentification::interactiveCreatePlane (const FlarmNetRecord &flarmNet
  *
  * The caller is responsible for setting the plane of the flight and updating
  * the flight in the database (if applicable) if the plane changed.
+ *
+ * The manualOperation parameter indicates whether the operation was invoked
+ * explicitly by the user, as opposed to being triggered by some other action
+ * like editing a flight. This implies that a message is always displayed, even
+ * if nothing is done.
  */
 dbId PlaneIdentification::interactiveIdentifyPlane (const Flight &flight, bool manualOperation)
 {

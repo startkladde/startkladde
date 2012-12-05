@@ -10,6 +10,16 @@ class QWidget;
 class Flight;
 class Plane;
 
+/**
+ * A helper class for interactively updating the Flarm ID of a plane in the
+ * database
+ *
+ * Note that this class does update the plane in the database, as opposed to
+ * PlaneIdentification, which only determines what to do and leaves the exection
+ * to the caller.
+ *
+ * See also: the wiki page "Flarm handling".
+ */
 class FlarmIdUpdate
 {
 	public:

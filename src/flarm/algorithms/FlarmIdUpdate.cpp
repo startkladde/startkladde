@@ -11,6 +11,15 @@
 #include "src/db/DbManager.h"
 #include "src/flarm/algorithms/FlarmIdCheck.h"
 
+/**
+ * Creates a new FlarmIdUpdate instance
+ *
+ * The database manager to use and the parent for any dialogs we may need to
+ * display to the user have to be specified.
+ *
+ * Note that this is not a QWidget; the parent widget will not delete this
+ * instance.
+ */
 FlarmIdUpdate::FlarmIdUpdate (DbManager &dbManager, QWidget *parent):
 	dbManager (dbManager), parent (parent),
 	manualOperation (true), oldPlaneId (invalidId)
@@ -21,6 +30,10 @@ FlarmIdUpdate::~FlarmIdUpdate ()
 {
 }
 
+/**
+ * Shows a message to the user indicating that the Flarm ID cannot be updated
+ * because the flight was not created automatically
+ */
 void FlarmIdUpdate::notCreatedAutomaticallyMessage ()
 {
 	QMessageBox::information (parent,
@@ -29,6 +42,10 @@ void FlarmIdUpdate::notCreatedAutomaticallyMessage ()
 			"update because this flight was not created automatically."));
 }
 
+/**
+ * Shows a message to the user indicating that the Flarm ID cannot be updated
+ * because the flight did not take place today
+ */
 void FlarmIdUpdate::notCurrentMessage ()
 {
 	QMessageBox::information (parent,
@@ -37,14 +54,21 @@ void FlarmIdUpdate::notCurrentMessage ()
 			"update because this flight did not take place today."));
 }
 
+/**
+ * Shows a message to the user indicating that the Flarm ID cannot be updated
+ * because the flight does not have a plane
+ */
 void FlarmIdUpdate::noPlaneMessage ()
 {
 	QMessageBox::information (parent,
 		qApp->translate ("FlarmIdUpdate", "Update Flarm ID"),
 		qApp->translate ("FlarmIdUpdate", "The Flarm ID cannot be "
-			"update because this flight does not have a plane."));
+			"updated because this flight does not have a plane."));
 }
 
+/**
+ * Shows a message to the user indicating that the Flarm ID is alreday current
+ */
 void FlarmIdUpdate::currentMessage ()
 {
 	QMessageBox::information (parent,
@@ -53,6 +77,13 @@ void FlarmIdUpdate::currentMessage ()
 			"flight is already current."));
 }
 
+/**
+ * Asks the user whether he wants to update the plane's Flarm ID
+ *
+ * The flight also has to be specified so we can determine the Flarm ID to set.
+ *
+ * Returns the action chosen by the user.
+ */
 FlarmIdUpdate::UpdateAction FlarmIdUpdate::queryUpdateFlarmId (const Plane &plane, const Flight &flight)
 {
 	QString title=qApp->translate ("FlarmIdUpdate", "Update Flarm ID?");
@@ -109,6 +140,14 @@ FlarmIdUpdate::UpdateAction FlarmIdUpdate::queryUpdateFlarmId (const Plane &plan
 		return cancel;
 }
 
+/**
+ * Updates the plane after (interactively) checking for Flarm ID conflicts
+ *
+ * The flight has to be specified to determine the Flarm ID to set.
+ *
+ * Returns true if the Flarm ID is current afterwards (either because it was
+ * already current or because it has been updated), or false otherwise.
+ */
 bool FlarmIdUpdate::checkAndUpdate (Plane &plane, const Flight &flight)
 {
 	// Check for a Flarm ID conflict first
@@ -173,6 +212,20 @@ bool FlarmIdUpdate::canUpdateSilently (const Plane &plane, const Flight &flight)
 	return true;
 }
 
+/**
+ * Finds out whether the Flarm ID of a flight's plane is outdated, confirms with
+ * the user and updates the plane.
+ *
+ * The new Flarm ID is taken from the flight.
+ *
+ * The old plane ID is required in order to determine whether the update can be
+ * performed silently.
+ *
+ * The manualOperation parameter indicates whether the operation was invoked
+ * explicitly by the user, as opposed to being triggered by some other action
+ * like editing a flight. This implies that a message is always displayed, even
+ * if nothing is done. Also, we won't perform the update silently in this case.
+ */
 bool FlarmIdUpdate::interactiveUpdateFlarmId (const Flight &flight, bool manualOperation, dbId oldPlaneId)
 {
 	this->manualOperation=manualOperation;
