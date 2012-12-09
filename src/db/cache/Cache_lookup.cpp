@@ -70,23 +70,30 @@ EntityList<Flight> Cache::getPreparedFlights ()
 	synchronizedReturn (dataMutex, preparedFlights);
 }
 
-EntityList<Flight> Cache::getFlyingFlights ()
+EntityList<Flight> Cache::getFlyingFlights (bool includeTowflights)
 {
 	// FIXME must also consider coming prepared flights
 	// Don't directly access the preparedFlights property - the access must be
 	// synchronized.
-	//EntityList<Flight> preparedFlights=getPreparedFlights ();
-	//qDebug () << "Cache::getFlyingFlights: prepared: " << preparedFlights.size() << endl; 
-	EntityList<Flight> todayFlights=getFlightsToday ();
-//	qDebug () << "Cache::getFlyingFlights: today: " << todayFlights.size() << endl;
 
 	EntityList<Flight> result;
-	//foreach (const Flight &flight, preparedFlights.getList ())
-	foreach (const Flight &flight, todayFlights.getList ())
+
+	// Add flying flights to the list
+	QList<Flight> flightsToday=getFlightsToday ().getList ();
+	foreach (const Flight &flight, flightsToday)
 		if (flight.isFlying ())
 			result.append (flight);
-//	qDebug () << "Cache::getFlyingFlights: result: " << result.size() << endl;
 
+	// Add flying towflights to the list, if requested
+	if (includeTowflights)
+	{
+		QList<Flight> towflightsToday=Flight::makeTowflights (flightsToday, *this);
+		foreach (const Flight &flight, towflightsToday)
+			if (flight.isFlying ())
+				result.append (flight);
+	}
+
+	// Return the list
 	return result;
 }
 

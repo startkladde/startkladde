@@ -109,10 +109,11 @@ class Cache: public QObject
 		EntityList<LaunchMethod> getLaunchMethods ();
 		EntityList<FlarmNetRecord> getFlarmNetRecords ();
 
+		// TODO should probably not be EntityLists
 		EntityList<Flight> getFlightsToday ();
 		EntityList<Flight> getFlightsOther ();
 		EntityList<Flight> getPreparedFlights ();
-		EntityList<Flight> getFlyingFlights ();
+		EntityList<Flight> getFlyingFlights (bool includeTowflights);
 		QDate getTodayDate ();
 		QDate getOtherDate ();
 		EntityList<Flight> getAllKnownFlights ();

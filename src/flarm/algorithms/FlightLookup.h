@@ -30,6 +30,11 @@ class FlarmNetRecord;
  *      itself may be inaccurate, and our copy of the FlarmNet database may be
  *      outdated.
  *
+ * Note that this class does not specifically handle towflights. If you want to
+ * include towflights as lookup candidates, you must include them in the
+ * candidate list  passed to lookupFlights (see Flight::makeTowflight and
+ * Flight::makeTowflights).
+ *
  * See also: the wiki page "Flarm handling".
  */
 class FlightLookup

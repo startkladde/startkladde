@@ -5,6 +5,10 @@
  *   - when double-clicking in the empty area of the flight table, create a new
  *     flight
  *   - when double-clicking the displayed date label, change the displayed date
+ *   - [non]interactive[Depart|Land] should probably accept a FlightReference
+ *     instead of a flight ID, so we can get rid of
+ *     [non]interactiveLandTowflight (really? Note that departing a towflight
+ *     is the same as departing the flight).
  */
 //	assert (isGuiThread ());
 
@@ -707,6 +711,8 @@ void MainWindow::flightListChanged ()
  *
  */
 
+// FIXME this should return whether it was actually updated, and it should be
+// used everywhere this method is called
 void MainWindow::updateFlight (const Flight &flight)
 {
 	try
@@ -874,7 +880,7 @@ void MainWindow::interactiveLandTowflight (dbId id)
 // FIXME for all nonInteractiveXxx methods, there should be a way to report
 // errors (departure not possible...) or failed plausibility checks (person
 // still flying...)
-void MainWindow::nonInteractiveDepartFlight (dbId flightId)
+bool MainWindow::nonInteractiveDepartFlight (dbId flightId)
 {
 	try
 	{
@@ -884,19 +890,23 @@ void MainWindow::nonInteractiveDepartFlight (dbId flightId)
 		{
 			flight.departNow ();
 			updateFlight (flight);
+			return true;
 		}
 		else
 		{
 			std::cout << qnotr ("Departure not possible: %1").arg (reason) << std::endl;
+			return false;
 		}
 	}
 	catch (Cache::NotFoundException &ex)
 	{
 		log_error (qnotr ("Flight %1 not found in MainWindow::nonInteractiveDepartFlight").arg (ex.id));
 	}
+
+	return false;
 }
 
-void MainWindow::nonInteractiveLandFlight (dbId flightId)
+bool MainWindow::nonInteractiveLandFlight (dbId flightId)
 {
 	try
 	{
@@ -906,23 +916,50 @@ void MainWindow::nonInteractiveLandFlight (dbId flightId)
 		{
 			flight.landNow ();
 			updateFlight (flight);
+			return true;
 		}
 		else
 		{
 			std::cout << qnotr ("Landing not possible: %1").arg (reason) << std::endl;
+			return false;
 		}
 	}
 	catch (Cache::NotFoundException &ex)
 	{
 		log_error (qnotr ("Flight %1 not found in MainWindow::nonInteractiveLandFlight").arg (ex.id));
 	}
+
+	return false;
 }
 
-//void MainWindow::nonInteractiveLandTowflight (dbId flightId)
-//{
-//}
+// Note that we can't call nonInteractiveLandFlight on the towflight
+bool MainWindow::nonInteractiveLandTowflight (dbId flightId)
+{
+	try
+	{
+		Flight flight = dbManager.getCache ().getObject<Flight> (flightId);
+		QString reason;
+		if (flight.canTowflightLand (&reason))
+		{
+			flight.landTowflightNow ();
+			updateFlight (flight);
+			return true;
+		}
+		else
+		{
+			std::cout << qnotr ("Landing towflight not possible: %1").arg (reason) << std::endl;
+			return false;
+		}
+	}
+	catch (Cache::NotFoundException &ex)
+	{
+		log_error (qnotr ("Flight %1 not found in MainWindow::nonInteractiveLandTowflight").arg (ex.id));
+	}
 
-void MainWindow::nonInteractiveTouchAndGo (dbId flightId)
+	return false;
+}
+
+bool MainWindow::nonInteractiveTouchAndGo (dbId flightId)
 {
 	try
 	{
@@ -932,16 +969,20 @@ void MainWindow::nonInteractiveTouchAndGo (dbId flightId)
 		{
 			flight.performTouchngo ();
 			updateFlight (flight);
+			return true;
 		}
 		else
 		{
 			std::cout << qnotr ("Touch and go not possible: ") << reason << std::endl;
+			return false;
 		}
 	}
 	catch (Cache::NotFoundException &ex)
 	{
 		log_error (qnotr ("Flight %1 not found in MainWindow::nonInteractiveTouchAndGo").arg (ex.id));
 	}
+
+	return false;
 }
 
 void MainWindow::on_actionNew_triggered ()
@@ -971,6 +1012,7 @@ void MainWindow::on_actionLand_triggered ()
 		// This will check canLand
 		interactiveLandTowflight (flight.id ());
 	else
+		// This will check canLand
 		interactiveLandFlight (flight.id ());
 }
 
@@ -2281,7 +2323,8 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 
 	if (lookupResult.flightReference.isValid ())
 	{
-		// We found the (prepared) flight. Depart it.
+		// We found the (prepared) flight. Depart it. This is the same for
+		// flights and towflights.
 		nonInteractiveDepartFlight (lookupResult.flightReference.id ());
 
 		ui.flightTable->showNotification (
@@ -2312,16 +2355,22 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
  */
 void MainWindow::flarmList_landingDetected (const QString &flarmId)
 {
-	// FIXME handle towflights
 	std::cout << "Detected landing of " << flarmId << std::endl;
 
-	QList<Flight> flights=dbManager.getCache ().getFlyingFlights ().getList ();
+	// Get a list of flying flights, including towflights
+	QList<Flight> flights=dbManager.getCache ().getFlyingFlights (true).getList ();
+
+	// Find out if one of the flights (or towflights) can be matched to the
+	// Flarm ID
 	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
 	if (lookupResult.flightReference.isValid ())
 	{
 		// We found the flight. Land it.
-		nonInteractiveLandFlight (lookupResult.flightReference.id ());
+		if (lookupResult.flightReference.towflight ())
+			nonInteractiveLandTowflight (lookupResult.flightReference.id ());
+		else
+			nonInteractiveLandFlight (lookupResult.flightReference.id ());
 
 		ui.flightTable->showNotification (
 			lookupResult.flightReference,
@@ -2352,18 +2401,25 @@ void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 {
 	std::cout << "Detected touch-and-go of " << flarmId << std::endl;
 
-	QList<Flight> flights=dbManager.getCache ().getFlyingFlights ().getList ();
+	// The candidates for the towflights are flying flights, including
+	// towflights. The touch-and-go will be ignored for towflights, but we still
+	// include them in the list so no new flight is created.
+	QList<Flight> flights=dbManager.getCache ().getFlyingFlights (true).getList ();
 	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
 	if (lookupResult.flightReference.isValid ())
 	{
-		// We found the flight. Perform a touch and go.
-		nonInteractiveTouchAndGo (lookupResult.flightReference.id ());
+		// We found the flight. Perform a touch and go (if possible). Ignore the
+		// event for towflights, they can't perform a touch-and-go.
+		if (!lookupResult.flightReference.towflight ())
+		{
+			nonInteractiveTouchAndGo (lookupResult.flightReference.id ());
 
-		ui.flightTable->showNotification (
-			lookupResult.flightReference,
-			tr ("The flight performed a touch-and-go automatically"),
-			notificationDisplayTime);
+			ui.flightTable->showNotification (
+				lookupResult.flightReference,
+				tr ("The flight performed a touch-and-go automatically"),
+				notificationDisplayTime);
+		}
 	}
 	else
 	{

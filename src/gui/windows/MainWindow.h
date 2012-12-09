@@ -234,10 +234,10 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void interactiveLandFlight (dbId id);
 		void interactiveLandTowflight (dbId id);
 		void interactiveTouchAndGo (dbId id);
-		void nonInteractiveDepartFlight (dbId flightId);
-		void nonInteractiveLandFlight (dbId flightId);
-//		void nonInteractiveLandTowflight (dbId flightId);
-		void nonInteractiveTouchAndGo (dbId flightId);
+		bool nonInteractiveDepartFlight (dbId flightId);
+		bool nonInteractiveLandFlight (dbId flightId);
+		bool nonInteractiveLandTowflight (dbId flightId);
+		bool nonInteractiveTouchAndGo (dbId flightId);
 		void departOrLand ();
 
 		// Plugins

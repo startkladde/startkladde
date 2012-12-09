@@ -306,7 +306,9 @@ bool Flight::canLand (QString *reason) const
 
 bool Flight::canTouchngo (QString *reason) const
 {
-	// TODO only for flights of today
+	// TODO only for flights of today (also applies to other can... methods)
+	// TODO glider flights can only perform a touch-and-go if their launch
+	// method is an airtow
 
 	// Towflight
 	notPossibleIf (isTowflight (), qApp->translate ("Flight", "The flight is a towflight."));
