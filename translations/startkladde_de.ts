@@ -1950,11 +1950,6 @@ Die Datei kann in den Einstellungen geändert werden.</translation>
         <translation>DR-400/180</translation>
     </message>
     <message>
-        <location filename="../src/model/flightList/FlightModel.cpp" line="60"/>
-        <source>Flarm ID</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../src/model/flightList/FlightModel.cpp" line="124"/>
         <source>Passenger (E)</source>
         <translation>Gast (E)</translation>
@@ -2365,7 +2360,7 @@ Soll sie in die Datenbank aufgenommen werden?</translation>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1961"/>
         <source>Lande&amp;d</source>
-        <translation>G&amp;alandet</translation>
+        <translation type="unfinished">Gel&amp;andet</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/FlightWindow.cpp" line="1961"/>
