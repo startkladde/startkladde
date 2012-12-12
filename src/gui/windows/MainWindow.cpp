@@ -2309,16 +2309,24 @@ Flight MainWindow::createFlarmFlight (const FlightLookup::Result &lookupResult, 
  * might be able to use a different status indicator for that). This means that
  * we cannot perform plausibility checks like "person is still flying". There
  * should be a way to report failed plausibility checks in an unobstrusive way.
- *
- * We also should have an unobstrusive way to display a notification along the
- * lines of "The flight was departed automatically" or "The flight was departed
- * automatically and is incomplete".
  */
 void MainWindow::flarmList_departureDetected (const QString &flarmId)
 {
 	std::cout << "Detected departure of " << flarmId << std::endl;
 
+	// Get a list of prepared flights
 	QList<Flight> flights=dbManager.getCache ().getPreparedFlights ().getList ();
+
+	// Add the prepared towflights, so we can identify the flight when the
+	// towplane departs. Note that, contrary to the flying flights (needed for
+	// landings), a prepared towflight always corresponds to a prepared flight.
+	// Therefore, we can base the list of prepared towflights on the list of
+	// prepared flights.
+	// TODO this should still be done by Cache::getPreparedFlights for a more
+	// consistent API
+	flights+=Flight::makeTowflights (flights, cache);
+
+	// Find the flight
 	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
 	if (lookupResult.flightReference.isValid ())
@@ -2357,7 +2365,11 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 {
 	std::cout << "Detected landing of " << flarmId << std::endl;
 
-	// Get a list of flying flights, including towflights
+	// Get a list of flying flights, including towflights. Note that, contrary
+	// to the prepared flights (needed for departures), a flying towflight does
+	// not necessarily correspond to a flying flight, nor vice versa. Therefore,
+	// we need to base the list of prepared towflights on the list of all
+	// relevant flights, whether flying or not.
 	QList<Flight> flights=dbManager.getCache ().getFlyingFlights (true).getList ();
 
 	// Find out if one of the flights (or towflights) can be matched to the
