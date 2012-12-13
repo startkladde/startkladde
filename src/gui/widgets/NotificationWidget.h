@@ -44,6 +44,11 @@ class QPaintEvent;
  * arrow. You can use QWidget::move, although the moveTo method will probably be
  * more useful.
  *
+ * Note that when the user clicks at a point that is inside the widget but
+ * outside the bubble, the event will be received by the parent widget of the
+ * notification widget, not by any sibling widget that may be located at this
+ * point. This could potentially be solved by using a widget mask for the
+ * notification widget.
  */
 class NotificationWidget: public QWidget
 {
