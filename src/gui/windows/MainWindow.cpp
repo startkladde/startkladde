@@ -630,7 +630,7 @@ void MainWindow::refreshFlights ()
 			// The displayed date is today's date - display today's flights and
 			// prepared flights
 			flights  = dbManager.getCache ().getFlightsToday ().getList ();
-			flights += dbManager.getCache ().getPreparedFlights ().getList ();
+			flights += dbManager.getCache ().getPreparedFlights (false).getList ();
 
 			ui.flightTable->setShowPreparedFlights (true);
 		}
@@ -2328,31 +2328,44 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 {
 	std::cout << "Detected departure of " << flarmId << std::endl;
 
-	// Get a list of prepared flights
-	QList<Flight> flights=dbManager.getCache ().getPreparedFlights ().getList ();
+	// Make a list of candidate flights. Start with the prepared flights,
+	// including towflights (so we can identify the flights when the departure
+	// of the towplane is detected).
+	QList<Flight> flights=cache.getPreparedFlights (true).getList ();
 
-	// Add the prepared towflights, so we can identify the flight when the
-	// towplane departs. Note that, contrary to the flying flights (needed for
-	// landings), a prepared towflight always corresponds to a prepared flight.
-	// Therefore, we can base the list of prepared towflights on the list of
-	// prepared flights.
-	// TODO this should still be done by Cache::getPreparedFlights for a more
-	// consistent API
-	flights+=Flight::makeTowflights (flights, cache);
+	// Also add the flying flights along with their towflights to the list of
+	// candidates. That way, we can handle the case that the flight has already
+	// departed (this can happen when both a plane and the towplane have a
+	// Flarm, or if a departure is misdetected).
+	flights+=cache.getFlyingFlights (true).getList ();
 
 	// Find the flight
 	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
 	if (lookupResult.flightReference.isValid ())
 	{
-		// We found the (prepared) flight. Depart it. This is the same for
-		// flights and towflights.
-		nonInteractiveDepartFlight (lookupResult.flightReference.id ());
+		// We found the flight. Depart it, unless it's already flying. This is
+		// the same for flights and towflights.
+		try
+		{
+			Flight flight=cache.getObject<Flight> (lookupResult.flightReference.id ());
+			if (flight.isFlying ())
+			{
+				std::cout << qnotr ("Departure of Flarm ID %1 ignored because "
+					"flight %2 is already flying").arg (flarmId).arg (flight.getId ())
+					<< std::endl;
+			}
+			else
+			{
+				nonInteractiveDepartFlight (lookupResult.flightReference.id ());
 
-		ui.flightTable->showNotification (
-			lookupResult.flightReference,
-			tr ("The flight was departed automatically"),
-			notificationDisplayTime);
+				ui.flightTable->showNotification (
+					lookupResult.flightReference,
+					tr ("The flight was departed automatically"),
+					notificationDisplayTime);
+			}
+		}
+		catch (Cache::NotFoundException &ex) {}
 	}
 	else
 	{

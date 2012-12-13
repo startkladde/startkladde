@@ -112,7 +112,7 @@ class Cache: public QObject
 		// TODO should probably not be EntityLists
 		EntityList<Flight> getFlightsToday ();
 		EntityList<Flight> getFlightsOther ();
-		EntityList<Flight> getPreparedFlights ();
+		EntityList<Flight> getPreparedFlights (bool includeTowflights);
 		EntityList<Flight> getFlyingFlights (bool includeTowflights);
 		QDate getTodayDate ();
 		QDate getOtherDate ();

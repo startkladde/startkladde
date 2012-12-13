@@ -65,9 +65,24 @@ EntityList<Flight> Cache::getFlightsOther ()
 	synchronizedReturn (dataMutex, flightsOther);
 }
 
-EntityList<Flight> Cache::getPreparedFlights ()
+EntityList<Flight> Cache::getPreparedFlights (bool includeTowflights)
 {
-	synchronizedReturn (dataMutex, preparedFlights);
+	if (includeTowflights)
+	{
+		QList<Flight> flights=getPreparedFlights (false).getList ();
+
+		// Add the prepared towflights. Note that, contrary to the flying
+		// flights, a prepared towflight always corresponds to a prepared
+		// flight. Therefore, we can base the list of prepared towflights on the
+		// list of prepared flights (the list of flying towflights must be based
+		// an the list of all of today's flights, not just the flying flights).
+		flights+=Flight::makeTowflights (flights, *this);
+		return flights;
+	}
+	else
+	{
+		synchronizedReturn (dataMutex, preparedFlights);
+	}
 }
 
 EntityList<Flight> Cache::getFlyingFlights (bool includeTowflights)
