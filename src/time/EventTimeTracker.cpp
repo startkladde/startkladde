@@ -1,7 +1,7 @@
 #include "src/time/EventTimeTracker.h"
 
 #include <QDateTime>
-#include <QTime>
+#include <QDebug>
 
 #include "src/util/qTime.h"
 
@@ -16,17 +16,26 @@ EventTimeTracker::~EventTimeTracker ()
 {
 }
 
-void EventTimeTracker::eventNow (dbId id)
+void EventTimeTracker::eventNow (const QString &value)
 {
-	lastEvent.insert (id, QDateTime::currentDateTimeUtc ());
+	_lastEvent.insert (value, QDateTime::currentDateTimeUtc ());
 }
 
-bool EventTimeTracker::eventWithin (dbId id, const QTime &span)
+QTime EventTimeTracker::timeSinceEvent (const QString &value)
 {
-	if (!lastEvent.contains (id))
+	// NB our value is the hash's key
+	QDateTime eventTime=_lastEvent.value (value);
+	QDateTime currentTime=QDateTime::currentDateTimeUtc ();
+	QTime elapsed=fromSeconds (eventTime.secsTo (currentTime));
+	return elapsed;
+}
+
+bool EventTimeTracker::eventWithin (const QString &value, const QTime &span)
+{
+	if (!_lastEvent.contains (value))
 		return false;
 
-	QDateTime lastTime=lastEvent[id];
+	QDateTime lastTime=_lastEvent[value];
 	QDateTime currentTime=QDateTime::currentDateTimeUtc ();
 	int secondsSinceLast=lastTime.secsTo (currentTime);
 	return secondsSinceLast<=toSeconds (span);

@@ -271,6 +271,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void flarmList_landingDetected   (const QString &flarmId);
 		void flarmList_goAroundDetected  (const QString &flarmId);
 		Flight createFlarmFlight (const FlightLookup::Result &lookupResult, const QString &flarmId);
+		QString determineFlarmId (dbId flightId, bool ofTowflight);
 
 	private:
 		// TODO move to translation manager?
@@ -325,7 +326,6 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		// TODO should also handle manual edits
 		EventTimeTracker departureTracker;
 		EventTimeTracker landingTracker;
-		EventTimeTracker towflightLandingTracker;
 		EventTimeTracker touchAndGoTracker;
 };
 

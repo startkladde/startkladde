@@ -5,5 +5,6 @@
 class QTime;
 
 int toSeconds (const QTime &time);
+QTime fromSeconds (int seconds);
 
 #endif

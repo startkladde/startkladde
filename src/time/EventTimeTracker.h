@@ -2,11 +2,10 @@
 #define EVENTTIMETRACKER_H_
 
 #include <QHash>
-
-#include "src/db/dbId.h"
+#include <QString>
+#include <QTime>
 
 class QDateTime;
-class QTime;
 
 class EventTimeTracker
 {
@@ -14,11 +13,12 @@ class EventTimeTracker
 		EventTimeTracker ();
 		virtual ~EventTimeTracker ();
 
-		void eventNow (dbId id);
-		bool eventWithin (dbId id, const QTime &span);
+		void eventNow (const QString &value);
+		QTime timeSinceEvent (const QString &value);
+		bool eventWithin (const QString &value, const QTime &span);
 
 	private:
-		QHash<dbId, QDateTime> lastEvent;
+		QHash<QString, QDateTime> _lastEvent;
 };
 
 #endif

@@ -170,6 +170,7 @@ class Flight: public FlightBase
 		virtual bool collectiveLogEntryPossible (const Flight *prev, const Plane *plane) const;
 		virtual bool isExternal () const { return !landsHere () || !departsHere (); }
 		virtual Flight makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const;
+		virtual Flight makeTowflight (Cache &cache) const;
 		static QList<Flight> makeTowflights (const QList<Flight> &flights, Cache &cache);
 		virtual QColor getColor (Cache &cache) const;
 		virtual bool isTraining () const { return typeIsTraining (getType ()); }

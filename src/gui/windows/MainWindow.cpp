@@ -83,6 +83,7 @@
 template <class T> class MutableObjectList;
 
 const int notificationDisplayTime=4000; // Milliseconds
+const QTime ignoreDuplicateFlarmEventInterval (0, 0, 10);
 
 // ******************
 // ** Construction **
@@ -1258,6 +1259,8 @@ void MainWindow::on_actionDisplayError_triggered ()
 		{
 			dbId towLaunchMethod=dbManager.getCache ().getLaunchMethodByType (LaunchMethod::typeSelf);
 
+			// TODO should use Flight::makeTowflight (cache), probably won't
+			// need the stuff above
 			flight=flight.makeTowflight (towplaneId, towLaunchMethod);
 
 			delete launchMethod;
@@ -2326,6 +2329,18 @@ Flight MainWindow::createFlarmFlight (const FlightLookup::Result &lookupResult, 
  */
 void MainWindow::flarmList_departureDetected (const QString &flarmId)
 {
+	// FIXME doing time-based ignoring
+	if (departureTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
+	{
+		std::cout <<
+			qnotr ("Ignored departure of %1 because it departed %2 minutes ago")
+			.arg (flarmId)
+			.arg (departureTracker.timeSinceEvent (flarmId).toString ("m:ss"))
+			<< std::endl;
+
+		return;
+	}
+
 	std::cout << "Detected departure of " << flarmId << std::endl;
 
 	// Make a list of candidate flights. Start with the prepared flights,
@@ -2390,6 +2405,19 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
  */
 void MainWindow::flarmList_landingDetected (const QString &flarmId)
 {
+	// FIXME doing time-based ignoring
+	if (landingTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
+	{
+		std::cout <<
+			qnotr ("Ignored landing of %1 because it landed %2 minutes ago")
+			.arg (flarmId)
+			.arg (landingTracker.timeSinceEvent (flarmId).toString ("m:ss"))
+			<< std::endl;
+
+		return;
+	}
+
+
 	std::cout << "Detected landing of " << flarmId << std::endl;
 
 	// Get a list of flying flights, including towflights. Note that, contrary
@@ -2438,6 +2466,18 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
  */
 void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
 {
+	// FIXME doing time-based ignoring
+	if (touchAndGoTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
+	{
+		std::cout <<
+			qnotr ("Ignored touch-and-go of %1 because it performed a touch-and-go %2 minutes ago")
+			.arg (flarmId)
+			.arg (departureTracker.timeSinceEvent (flarmId).toString ("m:ss"))
+			<< std::endl;
+
+		return;
+	}
+
 	std::cout << "Detected touch-and-go of " << flarmId << std::endl;
 
 	// The candidates for the towflights are flying flights, including
@@ -2497,20 +2537,75 @@ void MainWindow::on_showNotificationAction_triggered ()
 
 void MainWindow::flightDeparted (dbId id)
 {
-	departureTracker.eventNow (id);
+	// Departing a flight departs both the plane and the towplane
+	QString flarmId;
+
+	flarmId=determineFlarmId (id, false);
+	if (!flarmId.isEmpty ())
+		departureTracker.eventNow (flarmId);
+
+	flarmId=determineFlarmId (id, true);
+	if (!flarmId.isEmpty ())
+		departureTracker.eventNow (flarmId);
 }
 
 void MainWindow::flightLanded (dbId id)
 {
-	landingTracker.eventNow (id);
+	QString flarmId=determineFlarmId (id, false);
+	if (!flarmId.isEmpty ())
+		landingTracker.eventNow (flarmId);
 }
 
 void MainWindow::towflightLanded (dbId id)
 {
-	towflightLandingTracker.eventNow (id);
+	QString flarmId=determineFlarmId (id, true);
+	if (!flarmId.isEmpty ())
+		landingTracker.eventNow (flarmId); // Note that we have the towplane's Flarm ID
 }
 
 void MainWindow::touchAndGoPerformed (dbId id)
 {
-	touchAndGoTracker.eventNow (id);
+	QString flarmId=determineFlarmId (id, false);
+	if (!flarmId.isEmpty ())
+		touchAndGoTracker.eventNow (flarmId);
+}
+
+// Meh, this stinks
+/**
+ * Returns the Flarm ID of the flight, if it has one, or of the plane (if it has
+ * one, but the flight doesn't), or an empty QString otherwise.
+ *
+ * If ofTowflight is true, the towflight is considered instead of the flight,
+ * and the Flarm ID of the flight is not used.
+ *
+ * @param flightId
+ * @param ofTowflight
+ * @return
+ */
+QString MainWindow::determineFlarmId (dbId flightId, bool ofTowflight)
+{
+	try
+	{
+		Flight flight=cache.getObject<Flight> (flightId);
+
+		if (ofTowflight)
+			flight=flight.makeTowflight (cache);
+
+		// Try the Flarm ID of the flight (a towflight won't have one)
+		if (!flight.getFlarmId ().isEmpty ())
+			return flight.getFlarmId ();
+
+		// Try the Flarm ID of the plane
+		if (idValid (flight.getPlaneId ()))
+		{
+			Plane plane=cache.getObject<Plane> (flight.getPlaneId ());
+			if (!plane.flarmId.isEmpty ())
+				return plane.flarmId;
+		}
+
+		// No result
+	}
+	catch (Cache::NotFoundException &ex) {}
+
+	return QString ();
 }

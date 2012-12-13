@@ -911,6 +911,14 @@ Flight Flight::makeTowflight (dbId theTowplaneId, dbId towLaunchMethod) const
 	return towflight;
 }
 
+Flight Flight::makeTowflight (Cache &cache) const
+{
+	// Determine the launch method of the towplane
+	dbId towLaunchMethod=cache.getLaunchMethodByType (LaunchMethod::typeSelf);
+
+	return makeTowflight (effectiveTowplaneId (cache), towLaunchMethod);
+}
+
 QList<Flight> Flight::makeTowflights (const QList<Flight> &flights, Cache &cache)
 {
 	QList<Flight> towflights;
