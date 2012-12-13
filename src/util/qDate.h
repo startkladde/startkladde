@@ -1,5 +1,5 @@
-#ifndef QDATE_H_
-#define QDATE_H_
+#ifndef UTIL_QDATE_H_
+#define UTIL_QDATE_H_
 
 #include <QString>
 

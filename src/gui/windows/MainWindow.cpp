@@ -784,6 +784,7 @@ void MainWindow::interactiveDepartFlight (dbId id)
 
 			flight.departNow ();
 			updateFlight (flight);
+			flightDeparted (id);
 		}
 		else
 		{
@@ -810,6 +811,7 @@ void MainWindow::interactiveLandFlight (dbId id)
 		{
 			flight.landNow ();
 			updateFlight (flight);
+			flightLanded (id);
 		}
 		else
 		{
@@ -839,6 +841,7 @@ void MainWindow::interactiveTouchAndGo (dbId id)
 		{
 			flight.performTouchngo ();
 			updateFlight (flight);
+			touchAndGoPerformed (id);
 		}
 		else
 		{
@@ -865,6 +868,7 @@ void MainWindow::interactiveLandTowflight (dbId id)
 		{
 			flight.landTowflightNow ();
 			updateFlight (flight);
+			towflightLanded (id);
 		}
 		else
 		{
@@ -890,6 +894,7 @@ bool MainWindow::nonInteractiveDepartFlight (dbId flightId)
 		{
 			flight.departNow ();
 			updateFlight (flight);
+			flightDeparted (flightId);
 			return true;
 		}
 		else
@@ -916,6 +921,7 @@ bool MainWindow::nonInteractiveLandFlight (dbId flightId)
 		{
 			flight.landNow ();
 			updateFlight (flight);
+			flightLanded (flightId);
 			return true;
 		}
 		else
@@ -943,6 +949,7 @@ bool MainWindow::nonInteractiveLandTowflight (dbId flightId)
 		{
 			flight.landTowflightNow ();
 			updateFlight (flight);
+			towflightLanded (flightId);
 			return true;
 		}
 		else
@@ -969,6 +976,7 @@ bool MainWindow::nonInteractiveTouchAndGo (dbId flightId)
 		{
 			flight.performTouchngo ();
 			updateFlight (flight);
+			touchAndGoPerformed (flightId);
 			return true;
 		}
 		else
@@ -1042,19 +1050,25 @@ void MainWindow::departOrLand ()
 	{
 		Flight flight = dbManager.getCache ().getObject<Flight> (flightRef.id ());
 
-		bool flightChanged=true;
-
 		if (flight.canDepart ())
+		{
 			flight.departNow ();
-		else if (flightRef.towflight () && flight.canTowflightLand ())
-			flight.landTowflightNow ();
-		else if (!flightRef.towflight () && flight.canLand ())
-			flight.landNow ();
-		else
-			flightChanged=false;
-
-		if (flightChanged)
 			updateFlight (flight);
+			flightDeparted (flightRef.id ());
+		}
+		else if (flightRef.towflight () && flight.canTowflightLand ())
+		{
+			flight.landTowflightNow ();
+			updateFlight (flight);
+			towflightLanded (flightRef.id ());
+		}
+		else if (!flightRef.towflight () && flight.canLand ())
+		{
+			flight.landNow ();
+			updateFlight (flight);
+			flightLanded (flightRef.id ());
+		}
+
 	}
 	catch (Cache::NotFoundException &ex)
 	{
@@ -2466,4 +2480,24 @@ void MainWindow::on_showNotificationAction_triggered ()
 		flight,
 		QString ("NotificationWidget test for flight %1").arg (flight.id ()),
 		5000);
+}
+
+void MainWindow::flightDeparted (dbId id)
+{
+	departureTracker.eventNow (id);
+}
+
+void MainWindow::flightLanded (dbId id)
+{
+	landingTracker.eventNow (id);
+}
+
+void MainWindow::towflightLanded (dbId id)
+{
+	towflightLandingTracker.eventNow (id);
+}
+
+void MainWindow::touchAndGoPerformed (dbId id)
+{
+	touchAndGoTracker.eventNow (id);
 }

@@ -1,10 +1,3 @@
-/*
- * qDate.cpp
- *
- *  Created on: 09.08.2010
- *      Author: martin
- */
-
 #include "qDate.h"
 
 #include <QApplication>

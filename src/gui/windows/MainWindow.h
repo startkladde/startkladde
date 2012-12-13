@@ -45,6 +45,7 @@
 #include "src/model/FlightBase.h"
 #include "src/flarm/algorithms/FlightLookup.h" // FIXME remove?
 #include "src/FlightReference.h"
+#include "src/time/EventTimeTracker.h"
 
 class QWidget;
 template<class T> class QList;
@@ -112,6 +113,12 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 
 		// Translation
 		virtual void languageChanged ();
+
+		// Flight changes
+		void flightDeparted (dbId id);
+		void flightLanded (dbId id);
+		void towflightLanded (dbId id);
+		void touchAndGoPerformed (dbId id);
 
 		void updateDisplayDateLabel (const QDate &today=QDate::currentDate ());
 		void updateTimeLabels (const QDateTime &now=QDateTime::currentDateTime ());
@@ -310,6 +317,16 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		QString debugFlarmId;
 		bool flarmStreamValid;
 
+		// TODO: This is used for Flarm and should be integrated with the Flarm
+		// handling (e. g. receive signals from the flight controller).
+		// TODO this must be called whenever the respective action is performed,
+		// this stinks.
+		// FIXME must also handle flights departed/landed "now" when created
+		// TODO should also handle manual edits
+		EventTimeTracker departureTracker;
+		EventTimeTracker landingTracker;
+		EventTimeTracker towflightLandingTracker;
+		EventTimeTracker touchAndGoTracker;
 };
 
-#endif // MAINWINDOW_H
+#endif
