@@ -114,12 +114,6 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		// Translation
 		virtual void languageChanged ();
 
-		// Flight changes
-		void flightDeparted (dbId id);
-		void flightLanded (dbId id);
-		void towflightLanded (dbId id);
-		void touchAndGoPerformed (dbId id);
-
 		void updateDisplayDateLabel (const QDate &today=QDate::currentDate ());
 		void updateTimeLabels (const QDateTime &now=QDateTime::currentDateTime ());
 		void updateDatabaseStateLabel (DbManager::State state);
@@ -136,6 +130,12 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void flarmStream_stateChanged (DataStream::State state);
 		void readTimeout ();
 		void readResumed ();
+
+		// Flight changes
+		void flightDeparted (dbId id);
+		void flightLanded (dbId id);
+		void towflightLanded (dbId id);
+		void touchAndGoPerformed (dbId id);
 
 		void migrationStarted () { oldLogVisible=ui.logDockWidget->isVisible (); ui.logDockWidget->setVisible (true); }
 		void migrationEnded () { ui.logDockWidget->setVisible (oldLogVisible); }

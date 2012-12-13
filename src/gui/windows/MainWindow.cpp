@@ -996,8 +996,11 @@ bool MainWindow::nonInteractiveTouchAndGo (dbId flightId)
 
 void MainWindow::on_actionNew_triggered ()
 {
-	delete createFlightWindow; // noop if NULL
+	// Delete the old flight window (if it exists)
 	createFlightWindow=FlightWindow::createFlight (this, dbManager, getNewFlightDate (), preselectedLaunchMethod);
+
+	connect (createFlightWindow, SIGNAL (flightDeparted (dbId)), this, SLOT (flightDeparted (dbId)));
+	connect (createFlightWindow, SIGNAL (flightLanded   (dbId)), this, SLOT (flightLanded   (dbId)));
 	createFlightWindow->setAttribute (Qt::WA_DeleteOnClose, true);
 
 }

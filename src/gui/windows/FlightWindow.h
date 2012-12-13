@@ -165,6 +165,10 @@ class FlightWindow: public SkDialog<Ui::FlightWindowClass>
 		// *** Properties
 		dbId getEditedId () { return originalFlightId; }
 
+	signals:
+		void flightDeparted (dbId id);
+		void flightLanded   (dbId id);
+
 	protected:
 		void setupTitle ();
 

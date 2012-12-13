@@ -2219,13 +2219,19 @@ void FlightWindow::nowButton_clicked ()
 
 		// If we are not in create mode, the date is not today or the auto
 		// fields are not checked, the button is not visible at all.
-		if (currentDepartsHere ())
-			flight.departNow (true);
-		else
-			flight.landNow (true);
+		bool departNow=currentDepartsHere ();
+		bool landNow  =!departNow;
+
+		if (departNow) flight.departNow (true);
+		if (landNow)   flight.landNow   (true);
 
 		if (writeToDatabase (flight))
+		{
+			if (departNow) emit flightDeparted (flight.getId ());
+			if (landNow  ) emit flightLanded   (flight.getId ());
 			accept (); // Close the dialog
+
+		}
 	}
 	catch (AbortedException &e)
 	{
