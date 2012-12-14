@@ -269,7 +269,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		// Flarm
 		void flarmList_departureDetected (const QString &flarmId);
 		void flarmList_landingDetected   (const QString &flarmId);
-		void flarmList_goAroundDetected  (const QString &flarmId);
+		void flarmList_touchAndGoDetected  (const QString &flarmId);
 		Flight createFlarmFlight (const FlightLookup::Result &lookupResult, const QString &flarmId);
 		QString determineFlarmId (dbId flightId, bool ofTowflight);
 

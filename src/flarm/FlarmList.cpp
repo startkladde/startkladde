@@ -78,9 +78,9 @@ void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 		// the sentence and add it to the list.
 		FlarmRecord *record = new FlarmRecord (this, sentence.flarmId);
 
-		connect (record, SIGNAL (departureDetected (const QString &)), this, SIGNAL (departureDetected (const QString &)));
-		connect (record, SIGNAL (landingDetected   (const QString &)), this, SIGNAL (landingDetected   (const QString &)));
-		connect (record, SIGNAL (goAroundDetected  (const QString &)), this, SIGNAL (goAroundDetected  (const QString &)));
+		connect (record, SIGNAL (departureDetected  (const QString &)), this, SIGNAL (departureDetected  (const QString &)));
+		connect (record, SIGNAL (landingDetected    (const QString &)), this, SIGNAL (landingDetected    (const QString &)));
+		connect (record, SIGNAL (touchAndGoDetected (const QString &)), this, SIGNAL (touchAndGoDetected (const QString &)));
 		connect (record, SIGNAL (remove (const QString &)), this, SLOT (removeFlarmRecord (const QString &)));
 
 		record->processPflaaSentence (sentence);

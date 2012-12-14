@@ -267,7 +267,7 @@ void FlarmRecord::stateTransition ()
 {
 	FlightSituation event=getSituation ();
 
-	// [goaround]: motorglider emit go around, others "unexpected goaround of glider"
+	// [touch and go]: motorglider emit touch and go, others "unexpected touch and go of glider"
 	// [landing]: motorglider start landing timer 30s, others emit landing
 
 	// state      | situation       | next state | comments
@@ -277,8 +277,8 @@ void FlarmRecord::stateTransition ()
 	// unknown    | flying          |flying      |
 	//
 	// on ground  | ground          |-
-	// on ground  | low             |starting    |timer active? ("go around2", stop it, [goaround]) else ("flat start", emit departure)
-	// on ground  | flying          |flying      |timer active? ("unexpected go around1", stop it, [goaround] else ("unexpected start", emit departure)
+	// on ground  | low             |starting    |timer active? ("touch and go 2", stop it, [touch and go]) else ("flat start", emit departure)
+	// on ground  | flying          |flying      |timer active? ("unexpected touch and go 1", stop it, [touch and go] else ("unexpected start", emit departure)
 	//                                            "should not happen. Plane was on ground before, now flying? ignore event?"
 	//
 	// starting   | ground          |on ground   |"departure aborted", emit landing
@@ -295,7 +295,7 @@ void FlarmRecord::stateTransition ()
 	//
 	// landing    | ground          |on ground   |"landing continued", [landing]
 	// landing    | low             |-
-	// landing    | flying          |flying      |"go around3", [goaround]
+	// landing    | flying          |flying      |"touch and go 3", [touch and go]
 
 
 	FlarmRecord::flarmState old_state = getState ();
@@ -319,13 +319,13 @@ void FlarmRecord::stateTransition ()
 					// ignore event?
 					if (landingTimer->isActive ())
 					{
-						qCritical () << "unexpected go around1: " << flarmId;
+						qCritical () << "unexpected touch and go 1: " << flarmId;
 						setState (FlarmRecord::stateFlying);
 						landingTimer->stop ();
 						if (category == Plane::categoryMotorglider)
-							emit goAroundDetected (flarmId);
+							emit touchAndGoDetected (flarmId);
 						else
-							qCritical () << "unexpected goaround of glider?";
+							qCritical () << "unexpected touch and go of glider?";
 					}
 					else
 					{
@@ -337,13 +337,13 @@ void FlarmRecord::stateTransition ()
 				case FlarmRecord::lowSituation:
 					if (landingTimer->isActive ())
 					{
-						qDebug () << "go around2:" << flarmId;
+						qDebug () << "touch and go 2:" << flarmId;
 						setState (FlarmRecord::stateStarting);
 						landingTimer->stop ();
 						if (category == Plane::categoryMotorglider)
-							emit goAroundDetected (flarmId);
+							emit touchAndGoDetected (flarmId);
 						else
-							qCritical () << "unexpected goaround of glider?";
+							qCritical () << "unexpected touchAndGo of glider?";
 					}
 					else
 					{
@@ -367,12 +367,12 @@ void FlarmRecord::stateTransition ()
 						emit landingDetected (flarmId);
 					break;
 				case FlarmRecord::flyingSituation:
-					qDebug () << "go around3:" << flarmId;
+					qDebug () << "touch and go 3:" << flarmId;
 					setState (FlarmRecord::stateFlying);
 					if (category == Plane::categoryMotorglider)
-						emit goAroundDetected (flarmId);
+						emit touchAndGoDetected (flarmId);
 					else
-						qCritical () << "unexpected goaround of glider?";
+						qCritical () << "unexpected touch and go of glider?";
 					break;
 				default: break;
 			}

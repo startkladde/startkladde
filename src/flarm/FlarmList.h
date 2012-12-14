@@ -26,9 +26,9 @@ class FlarmList: public AbstractObjectList<FlarmRecord>
 		void setDatabase (DbManager *dbManager);
 
 	signals:
-		void departureDetected (const QString &flarmId);
-		void landingDetected   (const QString &flarmId);
-		void goAroundDetected  (const QString &flarmId);
+		void departureDetected  (const QString &flarmId);
+		void landingDetected    (const QString &flarmId);
+		void touchAndGoDetected (const QString &flarmId);
 
 	public slots:
 		void pflaaSentence (const PflaaSentence &sentence);

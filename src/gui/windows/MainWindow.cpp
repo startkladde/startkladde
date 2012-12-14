@@ -135,9 +135,9 @@ MainWindow::MainWindow (QWidget *parent):
 	flarmList=new FlarmList (this);
 	flarmList->setNmeaDecoder (nmeaDecoder);
 	flarmList->setDatabase (&dbManager);
-	connect (flarmList, SIGNAL (departureDetected (const QString &)), this, SLOT (flarmList_departureDetected (const QString &)));
-	connect (flarmList, SIGNAL (landingDetected   (const QString &)), this, SLOT (flarmList_landingDetected   (const QString &)));
-	connect (flarmList, SIGNAL (goAroundDetected  (const QString &)), this, SLOT (flarmList_goAroundDetected  (const QString &)));
+	connect (flarmList, SIGNAL (departureDetected  (const QString &)), this, SLOT (flarmList_departureDetected  (const QString &)));
+	connect (flarmList, SIGNAL (landingDetected    (const QString &)), this, SLOT (flarmList_landingDetected    (const QString &)));
+	connect (flarmList, SIGNAL (touchAndGoDetected (const QString &)), this, SLOT (flarmList_touchAndGoDetected (const QString &)));
 
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 	readSettings ();
@@ -2251,7 +2251,7 @@ void MainWindow::on_injectFlarmTouchAndGoAction_triggered ()
 	QString flarmId=QInputDialog::getText (this, "Inject Flarm touch and go", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
 	if (!flarmId.isNull ())
 	{
-		flarmList_goAroundDetected (flarmId);
+		flarmList_touchAndGoDetected (flarmId);
 		debugFlarmId=flarmId;
 	}
 }
@@ -2467,7 +2467,7 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 /**
  * See flarmList_departureDetected
  */
-void MainWindow::flarmList_goAroundDetected (const QString &flarmId)
+void MainWindow::flarmList_touchAndGoDetected (const QString &flarmId)
 {
 	// FIXME doing time-based ignoring
 	if (touchAndGoTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))

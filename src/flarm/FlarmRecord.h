@@ -74,7 +74,7 @@ class FlarmRecord: public QObject
 		// FlarmRecords.
 		void departureDetected (const QString &flarmId);
 		void landingDetected   (const QString &flarmId);
-		void goAroundDetected  (const QString &flarmId);
+		void touchAndGoDetected  (const QString &flarmId);
 		void remove (const QString &flarmId);
 
 	protected:
