@@ -85,9 +85,6 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void setupLabels ();
 		void setupLayout ();
 
-		// Actions
-		void refreshFlights ();
-
 		// Data
 		QDate getNewFlightDate ();
 		void setDisplayDate (QDate displayDate, bool force);
@@ -131,6 +128,9 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void readTimeout ();
 		void readResumed ();
 
+		// Actions
+		void refreshFlights ();
+
 		// Flight changes
 		void flightDeparted (dbId id);
 		void flightLanded (dbId id);
@@ -164,10 +164,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void on_actionDisplayError_triggered ();
 
 		// Menu: View
-		void on_actionRefreshTable_triggered ();
 		//        void on_actionFont_triggered ();
-		void on_actionJumpToTow_triggered ();
-		void on_actionRestartPlugins_triggered ();
 		void on_actionShowVirtualKeyboard_triggered (bool checked);
 
 		// Menu: View - Font
@@ -179,7 +176,6 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		// on_actionHideFinished_triggered (bool checked) - connected to proxyModel
 		// on_actionAlwaysShowExternal_triggered (bool checked) - connected to proxyModel
 		// on_actionAlwaysShowErroneous_triggered (bool checked) - connected to proxyModel
-		void on_actionSort_triggered ();
 		void on_actionResizeColumns_triggered () { ui.flightTable->resizeColumnsToContents (); }
 
 

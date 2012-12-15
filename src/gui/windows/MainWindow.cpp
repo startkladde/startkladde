@@ -139,6 +139,10 @@ MainWindow::MainWindow (QWidget *parent):
 	connect (flarmList, SIGNAL (landingDetected    (const QString &)), this, SLOT (flarmList_landingDetected    (const QString &)));
 	connect (flarmList, SIGNAL (touchAndGoDetected (const QString &)), this, SLOT (flarmList_touchAndGoDetected (const QString &)));
 
+	connect (this, SIGNAL (minuteChanged ()), ui.flightTable, SLOT (minuteChanged ()));
+
+	connect (ui.actionSort, SIGNAL (triggered ()), ui.flightTable, SLOT (setCustomSorting ()));
+
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 	readSettings ();
 	// This also calls setupText
@@ -210,9 +214,14 @@ MainWindow::MainWindow (QWidget *parent):
 
 	readColumnWidths (); // Stored sizes
 
-	QObject::connect (ui.actionHideFinished, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setHideFinishedFlights (bool)));
-	QObject::connect (ui.actionAlwaysShowExternal, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setAlwaysShowExternalFlights (bool)));
-	QObject::connect (ui.actionAlwaysShowErroneous, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setAlwaysShowErroneousFlights (bool)));
+	connect (ui.actionHideFinished, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setHideFinishedFlights (bool)));
+	connect (ui.actionAlwaysShowExternal, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setAlwaysShowExternalFlights (bool)));
+	connect (ui.actionAlwaysShowErroneous, SIGNAL (toggled (bool)), ui.flightTable, SLOT (setAlwaysShowErroneousFlights (bool)));
+	connect (ui.actionRefreshTable, SIGNAL (triggered ()), this, SLOT (refreshFlights ()));
+
+	connect (ui.actionRefreshTable, SIGNAL (triggered ()), this, SLOT (refreshFlights ()));
+	connect (ui.actionJumpToTow, SIGNAL (triggered ()), ui.flightTable, SLOT (interactiveJumpToTowflight ()));
+	connect (ui.actionRestartPlugins, SIGNAL (triggered ()), this, SLOT (restartPlugins ()));
 
 	// Initialize all properties of the filter proxy model
 	ui.flightTable->setHideFinishedFlights (ui.actionHideFinished->isChecked ());
@@ -1399,24 +1408,6 @@ void MainWindow::on_actionRefreshAll_triggered ()
 	refreshFlights ();
 }
 
-void MainWindow::on_actionRefreshTable_triggered ()
-{
-	// FIXME connect directly
-	refreshFlights ();
-}
-
-void MainWindow::on_actionJumpToTow_triggered ()
-{
-	// FIXME connect directly
-	ui.flightTable->interactiveJumpToTowflight ();
-}
-
-void MainWindow::on_actionRestartPlugins_triggered ()
-{
-	// FIXME connect directly
-	restartPlugins ();
-}
-
 // **********
 // ** Help **
 // **********
@@ -1563,12 +1554,7 @@ void MainWindow::timeTimer_timeout ()
 
 	// Some things are done on the beginning of a new minute.
 	if (second<lastSecond)
-	{
-		// FIXME connect directly to minuteChanged ()
-		ui.flightTable->minuteChanged ();
-
 		emit minuteChanged ();
-	}
 
 	lastSecond=second;
 }
@@ -1603,16 +1589,6 @@ void MainWindow::weatherWidget_doubleClicked ()
 			}
 		}
 	}
-}
-
-// ********************
-// ** View - Flights **
-// ********************
-
-void MainWindow::on_actionSort_triggered ()
-{
-	// FIXME connect directly
-	ui.flightTable->setCustomSorting ();
 }
 
 // **********
@@ -2334,7 +2310,6 @@ Flight MainWindow::createFlarmFlight (const FlightLookup::Result &lookupResult, 
  */
 void MainWindow::flarmList_departureDetected (const QString &flarmId)
 {
-	// FIXME doing time-based ignoring
 	if (departureTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
 	{
 		std::cout <<
@@ -2410,7 +2385,6 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
  */
 void MainWindow::flarmList_landingDetected (const QString &flarmId)
 {
-	// FIXME doing time-based ignoring
 	if (landingTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
 	{
 		std::cout <<
@@ -2471,7 +2445,6 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
  */
 void MainWindow::flarmList_touchAndGoDetected (const QString &flarmId)
 {
-	// FIXME doing time-based ignoring
 	if (touchAndGoTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
 	{
 		std::cout <<
