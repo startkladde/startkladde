@@ -723,18 +723,21 @@ void MainWindow::flightListChanged ()
  *
  */
 
-// FIXME this should return whether it was actually updated, and it should be
-// used everywhere this method is called
-void MainWindow::updateFlight (const Flight &flight)
+bool MainWindow::updateFlight (const Flight &flight)
 {
 	try
 	{
 		dbManager.updateObject (flight, this);
+		return true;
 	}
 	catch (OperationCanceledException &e)
 	{
 		// TODO the cache may now be inconsistent
+
+		return false;
 	}
+
+	return false;
 }
 
 bool MainWindow::checkPlaneFlying (dbId id, const QString &description)
@@ -795,8 +798,8 @@ void MainWindow::interactiveDepartFlight (dbId id)
 				if (!checkPersonFlying (flight.getTowpilotId (), flight.towpilotDescription ())) return;
 
 			flight.departNow ();
-			updateFlight (flight);
-			flightDeparted (id);
+			if (updateFlight (flight))
+				flightDeparted (id);
 		}
 		else
 		{
@@ -822,8 +825,8 @@ void MainWindow::interactiveLandFlight (dbId id)
 		if (flight.canLand (&reason))
 		{
 			flight.landNow ();
-			updateFlight (flight);
-			flightLanded (id);
+			if (updateFlight (flight))
+				flightLanded (id);
 		}
 		else
 		{
@@ -852,8 +855,8 @@ void MainWindow::interactiveTouchAndGo (dbId id)
 		if (flight.canTouchngo (&reason))
 		{
 			flight.performTouchngo ();
-			updateFlight (flight);
-			touchAndGoPerformed (id);
+			if (updateFlight (flight))
+				touchAndGoPerformed (id);
 		}
 		else
 		{
@@ -879,8 +882,8 @@ void MainWindow::interactiveLandTowflight (dbId id)
 		if (flight.canTowflightLand (&reason))
 		{
 			flight.landTowflightNow ();
-			updateFlight (flight);
-			towflightLanded (id);
+			if (updateFlight (flight))
+				towflightLanded (id);
 		}
 		else
 		{
@@ -905,8 +908,8 @@ bool MainWindow::nonInteractiveDepartFlight (dbId flightId)
 		if (flight.canDepart (&reason))
 		{
 			flight.departNow ();
-			updateFlight (flight);
-			flightDeparted (flightId);
+			if (updateFlight (flight))
+				flightDeparted (flightId);
 			return true;
 		}
 		else
@@ -932,9 +935,15 @@ bool MainWindow::nonInteractiveLandFlight (dbId flightId)
 		if (flight.canLand (&reason))
 		{
 			flight.landNow ();
-			updateFlight (flight);
-			flightLanded (flightId);
-			return true;
+			if (updateFlight (flight))
+			{
+				flightLanded (flightId);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
@@ -960,9 +969,15 @@ bool MainWindow::nonInteractiveLandTowflight (dbId flightId)
 		if (flight.canTowflightLand (&reason))
 		{
 			flight.landTowflightNow ();
-			updateFlight (flight);
-			towflightLanded (flightId);
-			return true;
+			if (updateFlight (flight))
+			{
+				towflightLanded (flightId);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
@@ -987,9 +1002,15 @@ bool MainWindow::nonInteractiveTouchAndGo (dbId flightId)
 		if (flight.canTouchngo (&reason))
 		{
 			flight.performTouchngo ();
-			updateFlight (flight);
-			touchAndGoPerformed (flightId);
-			return true;
+			if (updateFlight (flight))
+			{
+				touchAndGoPerformed (flightId);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
@@ -1068,20 +1089,20 @@ void MainWindow::departOrLand ()
 		if (flight.canDepart ())
 		{
 			flight.departNow ();
-			updateFlight (flight);
-			flightDeparted (flightRef.id ());
+			if (updateFlight (flight))
+				flightDeparted (flightRef.id ());
 		}
 		else if (flightRef.towflight () && flight.canTowflightLand ())
 		{
 			flight.landTowflightNow ();
-			updateFlight (flight);
-			towflightLanded (flightRef.id ());
+			if (updateFlight (flight))
+				towflightLanded (flightRef.id ());
 		}
 		else if (!flightRef.towflight () && flight.canLand ())
 		{
 			flight.landNow ();
-			updateFlight (flight);
-			flightLanded (flightRef.id ());
+			if (updateFlight (flight))
+				flightLanded (flightRef.id ());
 		}
 
 	}
@@ -2352,12 +2373,13 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 			}
 			else
 			{
-				nonInteractiveDepartFlight (lookupResult.flightReference.id ());
+				bool departed=nonInteractiveDepartFlight (lookupResult.flightReference.id ());
 
-				ui.flightTable->showNotification (
-					lookupResult.flightReference,
-					tr ("The flight was departed automatically"),
-					notificationDisplayTime);
+				if (departed)
+					ui.flightTable->showNotification (
+						lookupResult.flightReference,
+						tr ("The flight was departed automatically"),
+						notificationDisplayTime);
 			}
 		}
 		catch (Cache::NotFoundException &ex) {}
@@ -2412,16 +2434,18 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 
 	if (lookupResult.flightReference.isValid ())
 	{
+		bool landed;
 		// We found the flight. Land it.
 		if (lookupResult.flightReference.towflight ())
-			nonInteractiveLandTowflight (lookupResult.flightReference.id ());
+			landed=nonInteractiveLandTowflight (lookupResult.flightReference.id ());
 		else
-			nonInteractiveLandFlight (lookupResult.flightReference.id ());
+			landed=nonInteractiveLandFlight (lookupResult.flightReference.id ());
 
-		ui.flightTable->showNotification (
-			lookupResult.flightReference,
-			tr ("The flight was landed automatically"),
-			notificationDisplayTime);
+		if (landed)
+			ui.flightTable->showNotification (
+				lookupResult.flightReference,
+				tr ("The flight was landed automatically"),
+				notificationDisplayTime);
 	}
 	else
 	{
@@ -2470,12 +2494,13 @@ void MainWindow::flarmList_touchAndGoDetected (const QString &flarmId)
 		// event for towflights, they can't perform a touch-and-go.
 		if (!lookupResult.flightReference.towflight ())
 		{
-			nonInteractiveTouchAndGo (lookupResult.flightReference.id ());
+			bool performed=nonInteractiveTouchAndGo (lookupResult.flightReference.id ());
 
-			ui.flightTable->showNotification (
-				lookupResult.flightReference,
-				tr ("The flight performed a touch-and-go automatically"),
-				notificationDisplayTime);
+			if (performed)
+				ui.flightTable->showNotification (
+					lookupResult.flightReference,
+					tr ("The flight performed a touch-and-go automatically"),
+					notificationDisplayTime);
 		}
 	}
 	else

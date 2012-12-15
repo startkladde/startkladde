@@ -89,7 +89,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		QDate getNewFlightDate ();
 		void setDisplayDate (QDate displayDate, bool force);
 		void setDisplayDateCurrent (bool force) { setDisplayDate (QDate::currentDate (), force); }
-		void updateFlight (const Flight &flight);
+		bool updateFlight (const Flight &flight);
 
 		// Settings
 		void writeSettings ();
