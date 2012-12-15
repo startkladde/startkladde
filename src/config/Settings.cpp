@@ -42,7 +42,7 @@ Settings::Settings ():
 	// initialized.
 	enableDebug (false), coloredLabels (false), displayQueries (false),
 	noFullScreen (false), enableShutdown (false),
-	overrideDatabaseName (false)
+	overrideDatabaseName (false), overrideDatabasePort (false)
 {
 	readSettings ();
 }
@@ -88,6 +88,23 @@ QStringList Settings::readArgs (const QStringList &args)
 					// Overwrite the stored value in case it has already been
 					// read from the settings store.
 					databaseInfo.database=overrideDatabaseNameValue;
+				}
+				else
+					std::cout << notr ("No database specified after --database-name") << std::endl;
+			}
+			else if (arg==notr ("--database-port"))
+			{
+				if (!unprocessed.empty ())
+				{
+					bool ok;
+					overrideDatabasePortValue=unprocessed.takeFirst ().toInt (&ok);
+					if (ok)
+					{
+						overrideDatabasePort=true;
+						// Overwrite the stored value in case it has already been
+						// read from the settings store.
+						databaseInfo.port=overrideDatabasePortValue;
+					}
 				}
 				else
 					std::cout << notr ("No database specified after --database-name") << std::endl;
@@ -204,6 +221,8 @@ void Settings::readSettings ()
 	// be written back.
 	if (overrideDatabaseName)
 		databaseInfo.database=overrideDatabaseNameValue;
+	if (overrideDatabasePort)
+		databaseInfo.port=overrideDatabasePortValue;
 
 	// *** Settings
 	// UI
@@ -282,7 +301,7 @@ void Settings::writeSettings ()
 
 	// *** Database
 	// If the database name has been overridden, don't store the settings
-	if (!overrideDatabaseName)
+	if (!overrideDatabaseName && !overrideDatabasePort)
 	{
 		s.beginGroup (notr ("database"));
 		databaseInfo.save (s); // Connection

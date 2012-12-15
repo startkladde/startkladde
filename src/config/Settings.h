@@ -105,6 +105,8 @@ class Settings: public QObject
 		// in the GUI, though.
 		bool overrideDatabaseName;
 		QString overrideDatabaseNameValue;
+		bool overrideDatabasePort;
+		int overrideDatabasePortValue;
 
 	protected:
 		void readSettings ();
