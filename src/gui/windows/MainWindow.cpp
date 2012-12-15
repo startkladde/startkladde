@@ -244,7 +244,7 @@ MainWindow::~MainWindow ()
 	// failure", but worse things can happen.
 	setVisible (false);
 	// QObjects will be deleted automatically
-	// FIXME only if this is their parent
+	// TODO only if this is their parent
 	// TODO make sure this also applies to flightList
 
 	terminatePlugins ();
@@ -573,17 +573,19 @@ void MainWindow::settingsChanged ()
 	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (s.diagCommand));
 	
 	// Flarm
-	//ui.menuFlarm			->setVisible (s.flarmEnabled);
-	//ui.menuFlarm			->setEnabled (s.flarmEnabled);
-	ui.actionFlarmOverview		->setVisible (s.flarmEnabled && s.flarmOverview);
-	ui.actionFlarmRadar		->setVisible (s.flarmEnabled && s.flarmRadar);
-	ui.flarmStateCaptionLabel	->setVisible (s.flarmEnabled);
-	ui.flarmStateLabel		->setVisible (s.flarmEnabled);
+	//ui.menuFlarm             ->setVisible (s.flarmEnabled);
+	//ui.menuFlarm             ->setEnabled (s.flarmEnabled);
+	ui.actionFlarmOverview   ->setVisible (s.flarmEnabled && s.flarmOverview);
+	ui.actionFlarmRadar	     ->setVisible (s.flarmEnabled && s.flarmRadar);
+	ui.flarmStateCaptionLabel->setVisible (s.flarmEnabled);
+	ui.flarmStateLabel       ->setVisible (s.flarmEnabled);
 	// FlarmNet
-	ui.actionFlarmNetOverview->setVisible (s.flarmNetEnabled && s.flarmNetOverview);
+	ui.actionFlarmNetOverview  ->setVisible (s.flarmNetEnabled && s.flarmNetOverview);
 	ui.flarmNetImportFileAction->setVisible (s.flarmNetEnabled);
-	ui.flarmNetImportWebAction->setVisible (s.flarmNetEnabled);
-	// FIXME set the flarmStream's enabled to s.flarmEnabled
+	ui.flarmNetImportWebAction ->setVisible (s.flarmNetEnabled);
+
+	// FIXME state mess - this is also done in on_connectFlarmAction_triggered
+	flarmStream->setOpen (s.flarmEnabled);
 
 	// Plugins
 	setupPlugins ();

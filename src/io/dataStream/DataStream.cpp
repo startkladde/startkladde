@@ -65,6 +65,14 @@ void DataStream::close ()
 	}
 }
 
+void DataStream::setOpen (bool o)
+{
+	if (o)
+		open ();
+	else
+		close ();
+}
+
 
 // ************
 // ** Status **

@@ -71,6 +71,7 @@ class DataStream: public QObject
 
 		virtual void open ();
 		virtual void close ();
+		void setOpen (bool o);
 
 		State getState ();
 
