@@ -10,6 +10,8 @@
  *     - swapping with alt+up/alt+down
  *     - when double-clicking in the empty area, add an item
  *   - reset all to default
+ *   - add an indication that the database name/port have been overridden by a
+ *     command line argument and will not be saved
  */
 #include "SettingsWindow.h"
 
@@ -576,6 +578,7 @@ void SettingsWindow::on_buttonBox_accepted ()
  */
 bool SettingsWindow::allowEdit ()
 {
+	// TODO should the use PasswordPermission?
 	QString message;
 	QString requiredPassword;
 
