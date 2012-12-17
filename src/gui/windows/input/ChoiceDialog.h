@@ -21,7 +21,10 @@
  *     dialog.setSelectedOption (0); // Select the first option
  *
  *     int result=dialog.exec ();    // Show the dialog modally
- *     dialog.getSelectedOption ();  // Get the selected option
+ *     if (result==QDialog::Accepted)
+ *         dialog.getSelectedOption ();  // Get the selected option
+ *
+ * Alternatively, you can use the static choose method.
  */
 class ChoiceDialog: public SkDialog<Ui::ChoiceDialogClass>
 {
