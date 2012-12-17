@@ -79,6 +79,7 @@
 #include "src/flarm/flarmNet/FlarmNetHandler.h"
 #include "src/flarm/algorithms/PlaneIdentification.h"
 #include "src/flarm/algorithms/FlarmIdUpdate.h"
+#include "src/gui/windows/input/ChoiceDialog.h"
 
 template <class T> class MutableObjectList;
 
@@ -2288,18 +2289,57 @@ void MainWindow::on_lookupPlaneAction_triggered ()
 
 void MainWindow::on_lookupFlightAction_triggered ()
 {
-	// FIXME implement
-	// Note that we'll also need to decide on a set of candidate flights
-
+	// Query the user for the Flarm ID
 	QString flarmId=QInputDialog::getText (this, "Lookup flight", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
-	if (!flarmId.isNull ())
-	{
-		QMessageBox::information (this,
-				qnotr ("Lookup flight"),
-				qnotr ("Not implemented"));
+	if (flarmId.isNull ())
+		return;
+	debugFlarmId=flarmId;
 
-		debugFlarmId=flarmId;
+	// Query the user for the candidate flights
+	// Used mnemonics: o c - p r f l t d i s
+	ChoiceDialog choiceDialog (this);
+	choiceDialog.setWindowTitle ("Choose candidate flights");
+	choiceDialog.setText ("Choose the candidate flights for the flight lookup:");
+	choiceDialog.addOption ("&Prepared flights");
+	choiceDialog.addOption ("P&repared flights (with towflights)");
+	choiceDialog.addOption ("&Flying flights");
+	choiceDialog.addOption ("F&lying flights (with towflights)");
+	choiceDialog.addOption ("All flights of &today");
+	choiceDialog.addOption ("All flights of to&day (with towflights)");
+	choiceDialog.addOption ("All flights of d&isplay date");
+	choiceDialog.addOption ("All flights of di&splay date (with towflights)");
+	choiceDialog.setSelectedOption (0);
+	if (choiceDialog.exec ()!=QDialog::Accepted)
+		return;
+
+	// Decode the choice to a basic set of candidates an and "include
+	// towflights" flag
+	int choice=0;
+	bool includeTowflights=false;
+	switch (choiceDialog.getSelectedOption ())
+	{
+		case 0: choice=0; includeTowflights=false; break;
+		case 1: choice=0; includeTowflights=true ; break;
+		case 2: choice=1; includeTowflights=false; break;
+		case 3: choice=1; includeTowflights=true ; break;
+		case 4: choice=2; includeTowflights=false; break;
+		case 5: choice=2; includeTowflights=true ; break;
+		case 6: choice=3; includeTowflights=false; break;
+		case 7: choice=3; includeTowflights=true ; break;
+		default:
+			QMessageBox::warning (this, qnotr ("Unhandled choice"), qnotr ("Unhandled choice"));
+			return;
 	}
+
+	// Do the lookup
+	// FIXME doing implement
+
+	// Display the result
+	// FIXME doing implement
+
+	QMessageBox::information (this,
+			qnotr ("Lookup flight"),
+			qnotr ("Not implemented"));
 }
 
 
@@ -2314,9 +2354,8 @@ Flight MainWindow::createFlarmFlight (const FlightLookup::Result &lookupResult, 
 
 	if (lookupResult.flarmNetRecord.isValid ())
 	{
-		// FIXME: if we can find a plane with that registration, do we want to
-		// use it or do we wait for the user to confirm it when editing the flight?
-		flight.setComments (tr ("Registration from FlarmNet: %1").arg (lookupResult.flarmNetRecord->registration));
+		flight.setComments (tr ("Registration from FlarmNet: %1")
+			.arg (lookupResult.flarmNetRecord->registration));
 	}
 
 	return flight;
