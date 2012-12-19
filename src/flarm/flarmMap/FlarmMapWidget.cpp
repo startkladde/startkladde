@@ -465,7 +465,7 @@ void FlarmMapWidget::setOwnPositionLabel (const QString &text, const QColor &col
 {
 	if (text.isEmpty ())
 	{
-		// The test is empty. Remove the label from the plot.
+		// The text is empty. Remove the label from the plot.
 		// Delete it because if we only removed it, it would be hard to tell
 		// whether we'd have to delete it in the destructor. If the marker has
 		// not yet been created, this is a noop.
