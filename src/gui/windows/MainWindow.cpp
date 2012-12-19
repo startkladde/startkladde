@@ -1240,11 +1240,16 @@ void MainWindow::on_updateFlarmIdAction_triggered ()
 {
 	try
 	{
-		// FIXME not for towflights
-
 		FlightReference flightRef=ui.flightTable->selectedFlightReference ();
 		if (!flightRef.isValid ())
 			return;
+
+		if (flightRef.towflight ())
+		{
+			showWarning ("Cannot update Flarm ID", "The selected flight is a "
+				"towflight. The Flarm ID cannot be updated for towflights.", this);
+			return;
+		}
 
 		Flight flight=dbManager.getCache ().getObject<Flight> (flightRef.id ());
 
