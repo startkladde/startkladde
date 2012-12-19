@@ -1,6 +1,8 @@
 #ifndef FLIGHTREFERENCE_H_
 #define FLIGHTREFERENCE_H_
 
+#include <QString>
+
 #include "src/db/dbId.h"
 
 class Flight;
@@ -36,6 +38,10 @@ class FlightReference
 		bool towflight () const;
 
 		bool isValid () const;
+
+		QString toString () const;
+		QString toString (const QString &flightText, const QString &towflightText) const;
+		QString toString (const QString &templateText, const QString &flightText, const QString &towflightText) const;
 
 		bool operator== (const FlightReference &other) const;
 

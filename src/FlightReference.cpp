@@ -114,3 +114,31 @@ uint qHash (const FlightReference &flightReference)
 	else
 		return 2*flightReference.id ();
 }
+
+/**
+ * Creates a string describing the flight reference
+ *
+ * The template text must contain "%1" and "%2". "%1" will be replaced with the
+ * flight text or the towflight text, depending on the towflight flag. "%2" will
+ * be replaced with the flight ID.
+ */
+QString FlightReference::toString (const QString &templateText, const QString &flightText, const QString &towflightText) const
+{
+	if (_towflight)
+		return templateText.arg (towflightText).arg (_id);
+	else
+		return templateText.arg (flightText).arg (_id);
+}
+
+/**
+ * Creates a string describing the flight reference with a default template text
+ *
+ * The template text is "%1 %2", giving a string like "flight 1" or "towflight
+ * 1".
+ *
+ * @see toString (const QString &, const QString &, const QString &)
+ */
+QString FlightReference::toString (const QString &flightText, const QString &towflightText) const
+{
+	return toString ("%1 %2", flightText, towflightText);
+}

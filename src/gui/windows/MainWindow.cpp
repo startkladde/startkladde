@@ -642,7 +642,7 @@ void MainWindow::refreshFlights ()
 		{
 			// The displayed date is today's date - display today's flights and
 			// prepared flights
-			flights  = dbManager.getCache ().getFlightsToday ().getList ();
+			flights  = dbManager.getCache ().getFlightsToday    (false).getList ();
 			flights += dbManager.getCache ().getPreparedFlights (false).getList ();
 
 			ui.flightTable->setShowPreparedFlights (true);
@@ -2258,33 +2258,34 @@ void MainWindow::on_injectFlarmTouchAndGoAction_triggered ()
 
 void MainWindow::on_lookupPlaneAction_triggered ()
 {
+	// Query the user for the Flarm ID
 	QString flarmId=QInputDialog::getText (this, "Lookup plane", "Flarm ID:", QLineEdit::Normal, debugFlarmId);
-	if (!flarmId.isNull ())
+	if (flarmId.isNull ())
+		return;
+	debugFlarmId=flarmId;
+
+	// Do the lookup
+	PlaneLookup::Result result=PlaneLookup (cache).lookupPlane (flarmId);
+
+	// Display the result
+	QString text="Not handled";
+	if (result.plane.isValid ())
 	{
-		PlaneLookup::Result result=PlaneLookup (cache).lookupPlane (flarmId);
-
-		QString text="Not handled";
-		if (result.plane.isValid ())
-		{
-			if (result.flarmNetRecord.isValid ())
-				text=qnotr ("Plane %1 via FlarmNet record %2")
-					.arg (result.plane->registration)
-					.arg (result.flarmNetRecord->getId ());
-			else
-				text=qnotr ("Plane %1 directly").arg (result.plane->registration);
-		}
-		else if (result.flarmNetRecord.isValid ())
-			text=qnotr ("FlarmNet record %1, registration %2")
-				.arg (result.flarmNetRecord->getId ()).arg (result.flarmNetRecord->registration);
+		if (result.flarmNetRecord.isValid ())
+			text=qnotr ("Plane %1 via FlarmNet record %2")
+				.arg (result.plane->registration)
+				.arg (result.flarmNetRecord->getId ());
 		else
-			text=qnotr ("Not found");
-
-
-		QString title=qnotr ("Lookup plane %1").arg (flarmId);
-		QMessageBox::information (this, title, text);
-
-		debugFlarmId=flarmId;
+			text=qnotr ("Plane %1 directly").arg (result.plane->registration);
 	}
+	else if (result.flarmNetRecord.isValid ())
+		text=qnotr ("FlarmNet record %1, registration %2")
+			.arg (result.flarmNetRecord->getId ()).arg (result.flarmNetRecord->registration);
+	else
+		text=qnotr ("Not found");
+
+	QString title=qnotr ("Lookup plane %1").arg (flarmId);
+	QMessageBox::information (this, title, text);
 }
 
 void MainWindow::on_lookupFlightAction_triggered ()
@@ -2296,7 +2297,7 @@ void MainWindow::on_lookupFlightAction_triggered ()
 	debugFlarmId=flarmId;
 
 	// Query the user for the candidate flights
-	// Used mnemonics: o c - p r f l t d i s
+	// Used mnemonics: o c - p r f l t d
 	ChoiceDialog choiceDialog (this);
 	choiceDialog.setWindowTitle ("Choose candidate flights");
 	choiceDialog.setText ("Choose the candidate flights for the flight lookup:");
@@ -2306,8 +2307,6 @@ void MainWindow::on_lookupFlightAction_triggered ()
 	choiceDialog.addOption ("F&lying flights (with towflights)");
 	choiceDialog.addOption ("All flights of &today");
 	choiceDialog.addOption ("All flights of to&day (with towflights)");
-	choiceDialog.addOption ("All flights of d&isplay date");
-	choiceDialog.addOption ("All flights of di&splay date (with towflights)");
 	choiceDialog.setSelectedOption (0);
 	if (choiceDialog.exec ()!=QDialog::Accepted)
 		return;
@@ -2318,28 +2317,75 @@ void MainWindow::on_lookupFlightAction_triggered ()
 	bool includeTowflights=false;
 	switch (choiceDialog.getSelectedOption ())
 	{
+		// Prepared flights
 		case 0: choice=0; includeTowflights=false; break;
 		case 1: choice=0; includeTowflights=true ; break;
+		// Flying flights
 		case 2: choice=1; includeTowflights=false; break;
 		case 3: choice=1; includeTowflights=true ; break;
+		// Flights of today
 		case 4: choice=2; includeTowflights=false; break;
 		case 5: choice=2; includeTowflights=true ; break;
-		case 6: choice=3; includeTowflights=false; break;
-		case 7: choice=3; includeTowflights=true ; break;
 		default:
 			QMessageBox::warning (this, qnotr ("Unhandled choice"), qnotr ("Unhandled choice"));
 			return;
 	}
 
+	// Fetch the flights
+	QList<Flight> candidates;
+	if (choice==0)
+		candidates=cache.getPreparedFlights (includeTowflights).getList ();
+	else if (choice==1)
+		candidates=cache.getFlyingFlights (includeTowflights).getList ();
+	else if (choice==2)
+		candidates=cache.getFlightsToday (includeTowflights).getList ();
+	else
+	{
+		QMessageBox::warning (this, qnotr ("Unhandled choice"), qnotr ("Unhandled choice"));
+		return;
+	}
+
 	// Do the lookup
-	// FIXME doing implement
+	FlightLookup::Result result=FlightLookup (cache).lookupFlight (candidates, flarmId);
 
 	// Display the result
-	// FIXME doing implement
+	QString text="Not handled";
+	if (result.flightReference.isValid ())
+	{
+		if (result.plane.isValid ())
+		{
+			if (result.flarmNetRecord.isValid ())
+				text=qnotr ("%1 via plane %2 via FlarmNet record %3")
+					.arg (result.flightReference.toString ("Flight", "Towflight"))
+					.arg (result.plane->registration)
+					.arg (result.flarmNetRecord->getId ());
+			else
+				text=qnotr ("%1 via plane %2 directly")
+					.arg (result.flightReference.toString ("Flight", "Towflight"))
+					.arg (result.plane->registration);
+		}
+		else
+		{
+			text=qnotr ("%1 directly").arg (result.flightReference.toString ("Flight", "Towflight"));
+		}
+	}
+	else if (result.plane.isValid ())
+	{
+		if (result.flarmNetRecord.isValid ())
+			text=qnotr ("Plane %1 via FlarmNet record %2")
+				.arg (result.plane->registration)
+				.arg (result.flarmNetRecord->getId ());
+		else
+			text=qnotr ("Plane %1 directly").arg (result.plane->registration);
+	}
+	else if (result.flarmNetRecord.isValid ())
+		text=qnotr ("FlarmNet record %1, registration %2")
+			.arg (result.flarmNetRecord->getId ()).arg (result.flarmNetRecord->registration);
+	else
+		text=qnotr ("Not found");
 
-	QMessageBox::information (this,
-			qnotr ("Lookup flight"),
-			qnotr ("Not implemented"));
+	QString title=qnotr ("Lookup flight %1").arg (flarmId);
+	QMessageBox::information (this, title, text);
 }
 
 

@@ -55,9 +55,18 @@ EntityList<FlarmNetRecord> Cache::getFlarmNetRecords ()
 }
 
 
-EntityList<Flight> Cache::getFlightsToday ()
+EntityList<Flight> Cache::getFlightsToday (bool includeTowflights)
 {
-	synchronizedReturn (dataMutex, flightsToday);
+	if (includeTowflights)
+	{
+		QList<Flight> flights=getFlightsToday (false).getList ();
+		flights+=Flight::makeTowflights (flights, *this);
+		return flights;
+	}
+	else
+	{
+		synchronizedReturn (dataMutex, flightsToday);
+	}
 }
 
 EntityList<Flight> Cache::getFlightsOther ()
@@ -94,19 +103,10 @@ EntityList<Flight> Cache::getFlyingFlights (bool includeTowflights)
 	EntityList<Flight> result;
 
 	// Add flying flights to the list
-	QList<Flight> flightsToday=getFlightsToday ().getList ();
+	QList<Flight> flightsToday=getFlightsToday (includeTowflights).getList ();
 	foreach (const Flight &flight, flightsToday)
 		if (flight.isFlying ())
 			result.append (flight);
-
-	// Add flying towflights to the list, if requested
-	if (includeTowflights)
-	{
-		QList<Flight> towflightsToday=Flight::makeTowflights (flightsToday, *this);
-		foreach (const Flight &flight, towflightsToday)
-			if (flight.isFlying ())
-				result.append (flight);
-	}
 
 	// Return the list
 	return result;

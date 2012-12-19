@@ -110,7 +110,7 @@ class Cache: public QObject
 		EntityList<FlarmNetRecord> getFlarmNetRecords ();
 
 		// TODO should probably not be EntityLists
-		EntityList<Flight> getFlightsToday ();
+		EntityList<Flight> getFlightsToday (bool includeTowflights);
 		EntityList<Flight> getFlightsOther ();
 		EntityList<Flight> getPreparedFlights (bool includeTowflights);
 		EntityList<Flight> getFlyingFlights (bool includeTowflights);
