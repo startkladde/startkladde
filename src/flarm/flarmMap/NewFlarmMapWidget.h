@@ -145,6 +145,8 @@ class NewFlarmMapWidget: public QFrame
 		QPoint   mapFromLocal      (const QPointF     &localPoint);
 		QPolygon mapFromLocal      (const QPolygonF   &localPoints);
 
+		void paintCoordinateSystem (QPainter &painter);
+
 	protected:
 		// Generic axis methods
 		QRectF getAxesRect () const;
@@ -157,6 +159,10 @@ class NewFlarmMapWidget: public QFrame
 		void zoomAxes (double factor);
 		void moveAxesCenter (const QPointF &offset);
 		void moveAxesCenter (double xOffset, double yOffset);
+
+		double getLargerRadius () const;
+		double getXRadius () const;
+		double getYRadius () const;
 
 	private slots:
 		// FlarmList model slots

@@ -989,6 +989,68 @@ void drawCenteredText (QPainter &painter, const QPoint &position, const QString 
 	painter.drawText (rect, text);
 }
 
+double NewFlarmMapWidget::getLargerRadius () const
+{
+	double widgetAspectRatio = width () / (double)height ();
+
+	if (widgetAspectRatio>=1)
+		// The widget is wider than high
+		return smallerRadius*widgetAspectRatio;
+	else
+		// The widget is higher than wide
+		return smallerRadius/widgetAspectRatio;
+
+}
+
+double NewFlarmMapWidget::getXRadius () const
+{
+	double widgetAspectRatio = width () / (double)height ();
+
+	if (widgetAspectRatio>=1)
+		// The widget is wider than high
+		return smallerRadius*widgetAspectRatio;
+	else
+		// The widget is higher than wide
+		return smallerRadius;
+
+}
+
+double NewFlarmMapWidget::getYRadius () const
+{
+	double widgetAspectRatio = width () / (double)height ();
+
+	if (widgetAspectRatio>=1)
+		// The widget is wider than high
+		return smallerRadius;
+	else
+		// The widget is higher than wide
+		return smallerRadius/widgetAspectRatio;
+}
+
+void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
+{
+	double radiusIncrement=1000;
+
+	double largerRadius=getLargerRadius ();
+
+	// FIXME actually: diagonal
+	for (double radius=radiusIncrement; radius<=largerRadius; radius+=radiusIncrement)
+	{
+		// FIXME inefficient
+		QSize size (radius*width ()/getXRadius (), radius*height ()/getYRadius ());
+		QRect rect=centeredQRect (QPoint (0, 0), size);
+		painter.drawArc (rect, 0, 16*360);
+	}
+
+	painter.save ();
+	// FIXME why do we have to transpose?
+	painter.setTransform (transform.transposed (), true);
+	painter.drawLine (0, 0, 0, -qMin (width (), height ())*1/4);
+//	painter.drawLine (0, 0, 0, -20);
+
+	painter.restore ();
+}
+
 void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 {
 	(void)event;
@@ -997,8 +1059,9 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 
 	// The plot coordinate system is centered in the middle of the
 	painter.translate (width ()/2, height ()/2);
-
 	painter.setPen (Qt::black);
+
+	paintCoordinateSystem (painter);
 
 	// Draw the own position
 	painter.setBrush (_ownPositionColor);
@@ -1026,5 +1089,4 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 		}
 
 	}
-
 }
