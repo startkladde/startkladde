@@ -37,7 +37,7 @@ void SkItemDelegate::paint (QPainter *painter, const QStyleOptionViewItem &optio
 	}
 }
 
-// FIXME make configurable
+// TODO make configurable
 void SkItemDelegate::drawFocus(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect) const
 {
 	Q_UNUSED (painter);
