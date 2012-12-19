@@ -71,3 +71,19 @@ QRect southEastCorner (const QRect &rect, const QMargins &margins)
 {
 	return southEastCorner (rect, 2*margins.right (), 2*margins.bottom ());
 }
+
+
+QRect centeredQRect (const QPoint &point, int size)
+{
+	return QRect (point.x ()-size/2, point.y ()-size/2, size, size);
+}
+
+QRect centeredQRect (const QPoint &point, const QSize &size)
+{
+	int x=point.x ();
+	int y=point.y ();
+	int w=size.width ();
+	int h=size.height ();
+
+	return QRect (x-w/2, y-h/2, w, h);
+}

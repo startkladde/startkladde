@@ -42,7 +42,7 @@ namespace Kml
 			double lineWidth;
 
 			Style ();
-			QPen linePen ();
+			QPen linePen () const;
 	};
 
 	class StyleMap

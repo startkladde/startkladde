@@ -11,7 +11,7 @@ Kml::Style::Style ():
 {
 }
 
-QPen Kml::Style::linePen ()
+QPen Kml::Style::linePen () const
 {
 	QPen pen (lineColor);
 	pen.setWidth (round (lineWidth));
