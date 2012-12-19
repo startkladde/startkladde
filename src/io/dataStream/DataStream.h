@@ -46,11 +46,16 @@ class DataStream: public QObject
 			public:
 				State ();
 
-				bool isOpen          () { return open;            }
+				bool isOpen          () const { return open;            }
 				DataStream::ConnectionState getConnectionState ()
-				                        { return connectionState; }
-				bool getDataReceived () { return dataReceived;    }
-				bool getDataTimeout  () { return dataTimeout;     }
+				                        const { return connectionState; }
+				bool getDataReceived () const { return dataReceived;    }
+				bool getDataTimeout  () const { return dataTimeout;     }
+				bool isDataValid     () const
+				{
+					if (connectionState!=connected) return false; // Connection not even opened
+					return dataReceived && !dataTimeout;
+				}
 
 				bool setOpen (bool open);
 				bool setConnectionState (DataStream::ConnectionState connectionState);

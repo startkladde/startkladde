@@ -57,7 +57,8 @@
 #include "src/statistics/LaunchMethodStatistics.h"
 #include "src/statistics/PilotLog.h"
 #include "src/statistics/PlaneLog.h"
-#include "src/flarm/FlarmRecord.h"
+#include "src/flarm/FlarmList.h"
+#include "src/nmea/GpsTracker.h"
 #include "src/flarm/FlarmWindow.h"
 #include "src/flarm/flarmNet/FlarmNetHandler.h"
 #include "src/flarm/flarmNet/FlarmNetOverview.h"
@@ -70,16 +71,12 @@
 #include "src/db/cache/Cache.h"
 #include "src/text.h"
 #include "src/i18n/TranslationManager.h"
-#include "src/io/dataStream/TcpDataStream.h"
-#include "src/nmea/NmeaDecoder.h"
-#include "src/nmea/GpsTracker.h"
-#include "src/flarm/FlarmList.h"
 #include "src/flarm/algorithms/PlaneLookup.h"
 #include "src/flarm/algorithms/FlightLookup.h"
-#include "src/flarm/flarmNet/FlarmNetHandler.h"
 #include "src/flarm/algorithms/PlaneIdentification.h"
 #include "src/flarm/algorithms/FlarmIdUpdate.h"
 #include "src/gui/windows/input/ChoiceDialog.h"
+#include "src/flarm/Flarm.h"
 
 template <class T> class MutableObjectList;
 
@@ -90,11 +87,12 @@ const QTime ignoreDuplicateFlarmEventInterval (0, 0, 10);
 // ** Construction **
 // ******************
 
-MainWindow::MainWindow (QWidget *parent):
+MainWindow::MainWindow (QWidget *parent, DbManager &dbManager, Flarm &flarm):
 	SkMainWindow<Ui::MainWindowClass> (parent),
-	oldLogVisible (false),
-	dbManager (Settings::instance ().databaseInfo),
+	dbManager (dbManager),
 	cache (dbManager.getCache ()),
+	flarm (flarm),
+	oldLogVisible (false),
 	preselectedLaunchMethod (invalidId),
 	createFlightWindow (NULL), editFlightWindow (NULL),
 	weatherWidget (NULL), weatherPlugin (NULL),
@@ -103,42 +101,27 @@ MainWindow::MainWindow (QWidget *parent):
 	contextMenu (new QMenu (this)),
 	databaseActionsEnabled (false),
 	fontSet (false),
-	flightLookup (cache),
 	debugFlarmId ("ABC")
 {
 	ui.setupUi (this);
 
 	ui.flightTable->init (&dbManager);
 
+	// Flarm
+	connect (flarm.dataStream (), SIGNAL (stateChanged (DataStream::State)),
+		this, SLOT (flarmStream_stateChanged (DataStream::State)));
+	flarmStream_stateChanged (flarm.dataStream ()->getState ());
+	ui.connectFlarmAction->setChecked (true);
+	on_connectFlarmAction_triggered ();
+
+	connect (flarm.flarmList (), SIGNAL (departureDetected  (const QString &)), this, SLOT (flarmList_departureDetected  (const QString &)));
+	connect (flarm.flarmList (), SIGNAL (landingDetected    (const QString &)), this, SLOT (flarmList_landingDetected    (const QString &)));
+	connect (flarm.flarmList (), SIGNAL (touchAndGoDetected (const QString &)), this, SLOT (flarmList_touchAndGoDetected (const QString &)));
+
 	// Menu bar
 	logAction = ui.logDockWidget->toggleViewAction ();
 	ui.menuDatabase->addSeparator ();
 	ui.menuDatabase->addAction (logAction);
-
-	// Flarm stream
-	flarmStream=new TcpDataStream ();
-	connect (flarmStream, SIGNAL (stateChanged (DataStream::State)), this, SLOT (flarmStream_stateChanged (DataStream::State)));
-	flarmStream_stateChanged (flarmStream->getState ());
-	flarmStream->setTarget ("localhost", 4711);
-	ui.connectFlarmAction->setChecked (true);
-	on_connectFlarmAction_triggered ();
-	flarmStreamValid = false;
-
-	// NMEA decoder
-	nmeaDecoder=new NmeaDecoder ();
-	connect (flarmStream, SIGNAL (lineReceived (const QString &)), nmeaDecoder, SLOT (lineReceived (const QString &)));
-
-	// GPS tracker
-	gpsTracker=new GpsTracker (this);
-	gpsTracker->setNmeaDecoder (nmeaDecoder);
-
-	// Flarm list
-	flarmList=new FlarmList (this);
-	flarmList->setNmeaDecoder (nmeaDecoder);
-	flarmList->setDatabase (&dbManager);
-	connect (flarmList, SIGNAL (departureDetected  (const QString &)), this, SLOT (flarmList_departureDetected  (const QString &)));
-	connect (flarmList, SIGNAL (landingDetected    (const QString &)), this, SLOT (flarmList_landingDetected    (const QString &)));
-	connect (flarmList, SIGNAL (touchAndGoDetected (const QString &)), this, SLOT (flarmList_touchAndGoDetected (const QString &)));
 
 	connect (this, SIGNAL (minuteChanged ()), ui.flightTable, SLOT (minuteChanged ()));
 
@@ -246,7 +229,7 @@ MainWindow::MainWindow (QWidget *parent):
 
 MainWindow::~MainWindow ()
 {
-	// Hakc: Hide the window to avoid trouble[tm].
+	// Hack: Hide the window to avoid trouble[tm].
 	// If we don't make the window invisible here, it will be done in the
 	// QWidget destructor. Then the flight table will access its model, which
 	// will in turn access the cache, which has already been deleted.
@@ -583,19 +566,14 @@ void MainWindow::settingsChanged ()
 	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (s.diagCommand));
 	
 	// Flarm
-	//ui.menuFlarm             ->setVisible (s.flarmEnabled);
-	//ui.menuFlarm             ->setEnabled (s.flarmEnabled);
-	ui.actionFlarmOverview   ->setVisible (s.flarmEnabled && s.flarmOverview);
-	ui.actionFlarmRadar	     ->setVisible (s.flarmEnabled && s.flarmRadar);
-	ui.flarmStateCaptionLabel->setVisible (s.flarmEnabled);
-	ui.flarmStateLabel       ->setVisible (s.flarmEnabled);
+	ui.actionFlarmOverview   ->setEnabled (s.flarmEnabled && s.flarmOverview);
+	ui.actionFlarmRadar	     ->setEnabled (s.flarmEnabled && s.flarmRadar);
+	ui.flarmStateCaptionLabel->setEnabled (s.flarmEnabled);
+	ui.flarmStateLabel       ->setEnabled (s.flarmEnabled);
 	// FlarmNet
-	ui.actionFlarmNetOverview  ->setVisible (s.flarmNetEnabled && s.flarmNetOverview);
-	ui.flarmNetImportFileAction->setVisible (s.flarmNetEnabled);
-	ui.flarmNetImportWebAction ->setVisible (s.flarmNetEnabled);
-
-	// FIXME state mess - this is also done in on_connectFlarmAction_triggered
-	flarmStream->setOpen (s.flarmEnabled);
+	ui.actionFlarmNetOverview  ->setEnabled (s.flarmNetEnabled && s.flarmNetOverview);
+	ui.flarmNetImportFileAction->setEnabled (s.flarmNetEnabled);
+	ui.flarmNetImportWebAction ->setEnabled (s.flarmNetEnabled);
 
 	// Plugins
 	setupPlugins ();
@@ -897,7 +875,7 @@ void MainWindow::interactiveLandTowflight (dbId id)
 	}
 }
 
-// FIXME for all nonInteractiveXxx methods, there should be a way to report
+// TODO for all nonInteractiveXxx methods, there should be a way to report
 // errors (departure not possible...) or failed plausibility checks (person
 // still flying...)
 bool MainWindow::nonInteractiveDepartFlight (dbId flightId)
@@ -1764,8 +1742,8 @@ void MainWindow::on_actionFlarmOverview_triggered ()
 void MainWindow::on_actionFlarmRadar_triggered ()
 {
 	FlarmWindow* dialog = new FlarmWindow (this);
-	dialog->setGpsTracker (gpsTracker);
-	dialog->setFlarmList (flarmList);
+	dialog->setGpsTracker (flarm.gpsTracker ());
+	dialog->setFlarmList (flarm.flarmList ());
 	dialog->setAttribute (Qt::WA_DeleteOnClose, true);
 	dialog->show ();
 }
@@ -1973,33 +1951,28 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 
 void MainWindow::flarmStream_stateChanged (DataStream::State state)
 {
-	flarmStreamValid = false;
+	QString text;
+
 	if (state.isOpen ())
 	{
 		switch (state.getConnectionState ())
 		{
-			case TcpDataStream::notConnected:
-				ui.flarmStateLabel->setText (tr ("No connection"));
-				break;
-			case TcpDataStream::connecting:
-				ui.flarmStateLabel->setText (tr ("Connecting..."));
-				break;
+			case TcpDataStream::notConnected: text=tr ("No connection"); break;
+			case TcpDataStream::connecting  : text=tr ("Connecting..."); break;
 			case TcpDataStream::connected:
-				if (state.getDataTimeout ())
-					ui.flarmStateLabel->setText (tr ("No data"));
-				else if (!state.getDataReceived ())
-					ui.flarmStateLabel->setText (tr ("Connected"));
-				else {
-					ui.flarmStateLabel->setText (tr ("OK"));
-					flarmStreamValid = true;
-				}
+				if      ( state.getDataTimeout  ()) text=tr ("No data");
+				else if (!state.getDataReceived ()) text=tr ("Connected");
+				else                                text=tr ("OK");
 				break;
+			// No default
 		}
 	}
 	else
 	{
-		ui.flarmStateLabel->setText (tr ("Disabled"));
+		text=tr ("Disabled");
 	}
+
+	ui.flarmStateLabel->setText (text);
 }
 
 // ***************************
@@ -2131,12 +2104,14 @@ void MainWindow::on_actionSetTime_triggered ()
 void MainWindow::on_actionSetGPSTime_triggered ()
 {
         qDebug () << "MainWindow::on_actionSetGPSTime_triggered";
-        if (not flarmStreamValid) {
-                QMessageBox::warning (this, tr("No GPS signal"), tr("Flarm does not send data"));
-                return;
+        if (!flarm.isDataValid ())
+        {
+        	QMessageBox::warning (this, tr ("No GPS signal"),
+        			tr ("Flarm does not send data"));
+        	return;
         }
         QDateTime current (QDateTime::currentDateTimeUtc ());
-        QDateTime currentGPSdateTime (gpsTracker->getGpsTime ());
+        QDateTime currentGPSdateTime (flarm.getGpsTime ());
         qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy"));
         qDebug () << "currentTime: " << current.toString (notr("hh:mm:ss dd.MM.yyyy"));
         int diff = currentGPSdateTime.secsTo(current);
@@ -2150,8 +2125,9 @@ void MainWindow::on_actionSetGPSTime_triggered ()
                         .arg(currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy")))
                         .arg(diff), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
                 {
-                        // get the actual GPS time again, the messagebox can stay open a long time
-                        QString timeString (gpsTracker->getGpsTime ().toString (notr("yyyy-MM-dd hh:mm:ss")));
+                        // Get the current GPS time again, the messagebox can stay open a long time
+                		QDateTime gpsTime=flarm.getGpsTime ();
+                        QString timeString (gpsTime.toString (notr("yyyy-MM-dd hh:mm:ss")));
 
                         // sudo -n: non-interactive (don't prompt for password)
                         // sudoers entry: deffi ALL=NOPASSWD: /bin/date
@@ -2446,6 +2422,7 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 	flights+=cache.getFlyingFlights (true).getList ();
 
 	// Find the flight
+	FlightLookup flightLookup (cache);
 	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
 	if (lookupResult.flightReference.isValid ())
@@ -2520,6 +2497,7 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 
 	// Find out if one of the flights (or towflights) can be matched to the
 	// Flarm ID
+	FlightLookup flightLookup (cache);
 	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
 	if (lookupResult.flightReference.isValid ())
@@ -2576,6 +2554,7 @@ void MainWindow::flarmList_touchAndGoDetected (const QString &flarmId)
 	// towflights. The touch-and-go will be ignored for towflights, but we still
 	// include them in the list so no new flight is created.
 	QList<Flight> flights=dbManager.getCache ().getFlyingFlights (true).getList ();
+	FlightLookup flightLookup (cache);
 	FlightLookup::Result lookupResult=flightLookup.lookupFlight (flights, flarmId);
 
 	if (lookupResult.flightReference.isValid ())
@@ -2612,10 +2591,7 @@ void MainWindow::flarmList_touchAndGoDetected (const QString &flarmId)
 
 void MainWindow::on_connectFlarmAction_triggered ()
 {
-	if (ui.connectFlarmAction->isChecked ())
-		flarmStream->open ();
-	else
-		flarmStream->close ();
+	flarm.setOpen (ui.connectFlarmAction->isChecked ());
 }
 
 void MainWindow::on_showNotificationAction_triggered ()

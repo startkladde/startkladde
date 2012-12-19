@@ -41,9 +41,9 @@
 #include "src/db/DbManager.h"
 #include "src/io/dataStream/TcpDataStream.h"
 #include "src/gui/SkMainWindow.h"
-#include "src/flarm/FlarmRecord.h" // FIXME replace with forward declaration if possible
+//#include "src/flarm/FlarmRecord.h" // FIXME replace with forward declaration if possible
 #include "src/model/FlightBase.h"
-#include "src/flarm/algorithms/FlightLookup.h" // FIXME remove?
+#include "src/flarm/algorithms/FlightLookup.h" // For FlightLookup::Result
 #include "src/FlightReference.h"
 #include "src/time/EventTimeTracker.h"
 
@@ -56,9 +56,7 @@ class WeatherPlugin;
 class WeatherWidget;
 class WeatherDialog;
 class FlightWindow;
-class NmeaDecoder;
-class GpsTracker;
-class FlarmList;
+class Flarm;
 
 /*
  * Notes:
@@ -72,7 +70,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		Q_OBJECT
 
 	public:
-		MainWindow (QWidget *parent);
+		MainWindow (QWidget *parent, DbManager &dbManager, Flarm &flarm);
 		~MainWindow ();
 
 	protected:
@@ -263,13 +261,17 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void flightListChanged ();
 		
 		// Flarm
-		void flarmList_departureDetected (const QString &flarmId);
-		void flarmList_landingDetected   (const QString &flarmId);
-		void flarmList_touchAndGoDetected  (const QString &flarmId);
+		void flarmList_departureDetected  (const QString &flarmId);
+		void flarmList_landingDetected    (const QString &flarmId);
+		void flarmList_touchAndGoDetected (const QString &flarmId);
 		Flight createFlarmFlight (const FlightLookup::Result &lookupResult, const QString &flarmId);
 		QString determineFlarmId (dbId flightId, bool ofTowflight);
 
 	private:
+		DbManager &dbManager;
+		Cache &cache;
+		Flarm &flarm;
+
 		// TODO move to translation manager?
 		QTimer *translationTimer;
 
@@ -277,8 +279,6 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 
 		bool oldLogVisible;
 
-		DbManager dbManager;
-		Cache &cache;
 
 		QDate displayDate;
 		dbId preselectedLaunchMethod;
@@ -306,13 +306,12 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		bool fontSet;
 
 		// Flarm
-		TcpDataStream *flarmStream;
-		NmeaDecoder *nmeaDecoder;
-		GpsTracker *gpsTracker;
-		FlarmList *flarmList;
-		FlightLookup flightLookup; // FIXME not a member?
+//		TcpDataStream *flarmStream;
+//		NmeaDecoder *nmeaDecoder;
+//		GpsTracker *gpsTracker;
+//		FlarmList *flarmList;
 		QString debugFlarmId;
-		bool flarmStreamValid;
+//		bool flarmStreamValid;
 
 		// TODO: This is used for Flarm and should be integrated with the Flarm
 		// handling (e. g. receive signals from the flight controller).

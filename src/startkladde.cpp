@@ -21,6 +21,7 @@
 #include "src/i18n/notr.h"
 #include "src/version.h"
 #include "src/i18n/TranslationManager.h"
+#include "src/flarm/Flarm.h"
 
 // For test_database
 //#include "src/model/Plane.h"
@@ -262,7 +263,10 @@ int showGui (QApplication &a)
 {
 	//QApplication::setDesktopSettingsAware (FALSE); // I know better than the user
 
-	MainWindow w (NULL);
+	DbManager dbManager (Settings::instance ().databaseInfo);
+	Flarm flarm (NULL, dbManager);
+	MainWindow w (NULL, dbManager, flarm);
+
 
 	// Let the plugins initialize
 	QThread::yieldCurrentThread ();
