@@ -68,7 +68,7 @@ NewFlarmMapWidget::NewFlarmMapWidget (QWidget *parent): QFrame (parent),
 	_climbColor       (  0, 255, 0, 127),
 	_descentColor     (255, 255, 0, 127),
 	flarmList (NULL), gpsTracker (NULL),
-	displayCenterPosition (0, 0), smallerRadius (2000),
+	localCenter (0, 0), smallerRadius (2000),
 	kmlStatus (kmlNone)
 {
 	_ownPositionText=tr ("Start"); // FIXME proper English word
@@ -94,7 +94,10 @@ void NewFlarmMapWidget::zoom (double factor)
 
 void NewFlarmMapWidget::scroll (double x, double y)
 {
-	displayCenterPosition+=QPointF (x, y);
+	// Scrolling takes place in plot/view coordinates
+	QPointF viewCenter=transform.map (localCenter);
+	viewCenter+=QPointF (x, y);
+	localCenter=transform.transposed ().map (viewCenter);
 	update ();
 	emit viewChanged ();
 }
@@ -129,6 +132,7 @@ void NewFlarmMapWidget::keyPressEvent (QKeyEvent *event)
 
 void NewFlarmMapWidget::wheelEvent (QWheelEvent *event)
 {
+	// FIXME use zoom(), and zoom around the mouse wheel position
 	// Mouse wheel down (back) means zooming out. This is the convention that
 	// many other applications, including Firefox and Gimp, use.
 	double degrees=event->delta ()/(double)8;
@@ -741,63 +745,92 @@ void NewFlarmMapWidget::resetPosition ()
 }
 
 
-// **************
-// ** Painting **
-// **************
+// ****************
+// ** Transforms **
+// ****************
 
-QPoint NewFlarmMapWidget::mapFromLocal (const QPointF &localPoint)
+// Coordinate systems:
+//   * geographic: latitude/longitude, origin at the equator/zero meridian
+//   * local: east/north in meters, origin at the own position
+//   * view: right/up in meters, orientation up, origin at the own position
+//   * plot: right/up in pixels, orientation up, origin at the display center
+//   * widget: right/down in pixels, orientation up, origin in the upper left
+//
+
+// FIXME transform matrix, and reverse
+QPoint NewFlarmMapWidget::transformLocalToWidget (const QPointF &localPoint)
 {
-	// Transform the position to the display coordinate system (x/y in meters,
-	// centered at the display center, orientation up)
-	QPointF displayPoint=localPoint-displayCenterPosition;
-	displayPoint=transform.map (displayPoint);
+	// Local to view
+	QPointF viewPoint =transform.map (localPoint);
+	QPointF viewCenter=transform.map (localCenter);
 
-	// Transform the position to the plot coordinate system (x/y in pixels,
-	// centered at the widget center, orientation up)
-	// FIXME This assumes that the vertical radius is the smaller one
-	double verticalRadius=smallerRadius;
-	double horizontalRadius=smallerRadius*width()/height();
+	// View to plot
+	QPointF viewRelativeToCenter=viewPoint-viewCenter;
+	QPoint plotPoint (
+		viewRelativeToCenter.x () * width  () / (getXRadius ()*2),
+		viewRelativeToCenter.y () * height () / (getYRadius ()*2));
 
-	QPoint plotPoint=QPoint (displayPoint.x ()/horizontalRadius*width ()/2, displayPoint.y ()/verticalRadius*height ()/2);
+	// Plot to widget
+	QPoint widgetPoint (
+		width  ()/2 + plotPoint.x (),
+		height ()/2 - plotPoint.y ());
 
-	// Transform the position to the centered painter coordinate system, which
-	// has y down
-	QPoint painterPoint (plotPoint.x (), -plotPoint.y ());
-
-	return painterPoint;
+	return widgetPoint;
 }
 
-QPoint NewFlarmMapWidget::mapFromGeographic (const GeoPosition &geoPosition)
+QPointF NewFlarmMapWidget::transformWidgetToLocal (const QPoint &widgetPoint)
 {
-	// The position is specified in the geographic coordinate system (latitude/
-	// longitude, centered at lat=0/lon=0, north up)
+	qDebug () << "widget" << widgetPoint;
+	QPointF plotPoint (widgetPoint.x ()-width ()/2, height()/2-widgetPoint.y ());
+	qDebug () << "plot" << plotPoint;
+	QPointF viewRelativeToCenter (plotPoint.x ()/width()*getXRadius()*2, plotPoint.y()/height ()*getYRadius()*2);
+	QPointF viewCenter=transform.map (localCenter);
+	QPointF viewPoint=viewRelativeToCenter+viewCenter;
+	qDebug () << "view" << viewPoint;
+	QPointF localPoint=transform.transposed().map (viewPoint);
+	qDebug () << "local" << localPoint;
+	return localPoint;
+}
 
-	// Transform the position to the local coordinate system (eastness/northness
-	// in meters, centered at the own position, north up)
+/**
+ * Undefined if the own position is invalid
+ */
+QPoint NewFlarmMapWidget::transformGeographicToWidget (const GeoPosition &geoPosition)
+{
+	// Geographic to local
 	QPointF localPoint (geoPosition.relativePositionTo (_ownPosition));
 
-	return mapFromLocal (localPoint);
+	// Local to widget
+	return transformLocalToWidget (localPoint);
 }
 
-QPolygon NewFlarmMapWidget::mapFromLocal (const QPolygonF &localPolygon)
+
+// Vectorized transform
+QPolygon NewFlarmMapWidget::transformLocalToWidget (const QPolygonF &localPolygon)
 {
 	QPolygon result;
 
 	foreach (const QPointF &localPoint, localPolygon)
-		result.append (mapFromLocal (localPoint));
+		result.append (transformLocalToWidget (localPoint));
 
 	return result;
 }
 
-QPolygon NewFlarmMapWidget::mapFromGeographic (const QVector<GeoPosition> &geoPositions)
+// Vectorized transform
+QPolygon NewFlarmMapWidget::transformGeographicToWidget (const QVector<GeoPosition> &geoPositions)
 {
 	QPolygon result;
 
 	foreach (const GeoPosition &geoPosition, geoPositions)
-		result.append (mapFromGeographic (geoPosition));
+		result.append (transformGeographicToWidget (geoPosition));
 
 	return result;
 }
+
+
+// **************
+// ** Painting **
+// **************
 
 void drawCenteredText (QPainter &painter, const QPoint &position, const QString &text)
 {
@@ -863,7 +896,7 @@ void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 	{
 		// FIXME inefficient
 		QSize size (radius*width ()/getXRadius (), radius*height ()/getYRadius ());
-		QRect rect=centeredQRect (mapFromLocal (QPoint (0, 0)), size);
+		QRect rect=centeredQRect (transformLocalToWidget (QPoint (0, 0)), size);
 		painter.drawArc (rect, 0, 16*360);
 	}
 
@@ -882,15 +915,13 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 	QPainter painter (this);
 	painter.setRenderHint (QPainter::Antialiasing, true);
 
-	// The plot coordinate system is centered in the middle of the
-	painter.translate (width ()/2, height ()/2);
 	painter.setPen (Qt::black);
 
-	paintCoordinateSystem (painter);
+//	paintCoordinateSystem (painter);
 
 	// Draw the own position
 	painter.setBrush (_ownPositionColor);
-	drawCenteredText (painter, mapFromLocal (QPoint (0, 0)), _ownPositionText);
+	drawCenteredText (painter, transformLocalToWidget (QPoint (0, 0)), _ownPositionText);
 
 	// We can only draw the static data if the own position is known, because it
 	// is specified in absolute (earth) coordinates and the display coordinate
@@ -900,7 +931,7 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 		// Draw all static paths
 		foreach (const StaticCurve &curve, staticCurves)
 		{
-			QPolygon p=mapFromGeographic (curve.points);
+			QPolygon p=transformGeographicToWidget (curve.points);
 			painter.setPen (curve.pen);
 			painter.drawPolyline (p);
 		}
@@ -908,10 +939,30 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 		// Draw all static markers
 		foreach (const StaticMarker &marker, staticMarkers)
 		{
-			QPoint p=mapFromGeographic (marker.position);
+			QPoint p=transformGeographicToWidget (marker.position);
 			painter.setBrush (marker.backgroundColor);
 			drawCenteredText (painter, p, marker.text);
 		}
 	}
+}
+
+void NewFlarmMapWidget::mousePressEvent (QMouseEvent *event)
+{
+	localCenter=transformWidgetToLocal (event->pos ());
+	update ();
+//	if (event->buttons ()==Qt::LeftButton)
+//	{
+//		drag
+//	}
+}
+
+void NewFlarmMapWidget::mouseReleaseEvent (QMouseEvent *event)
+{
+
+}
+
+void NewFlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
+{
+
 }
 

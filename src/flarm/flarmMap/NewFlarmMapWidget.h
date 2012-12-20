@@ -86,6 +86,9 @@ class NewFlarmMapWidget: public QFrame
 		virtual void paintEvent (QPaintEvent *event);
 		virtual void keyPressEvent (QKeyEvent *event);
 		virtual void wheelEvent (QWheelEvent *event);
+		virtual void mouseMoveEvent (QMouseEvent *event);
+		virtual void mousePressEvent (QMouseEvent *event);
+		virtual void mouseReleaseEvent (QMouseEvent *event);
 
 		virtual void zoom   (double factor);
 		virtual void scroll (double x, double y);
@@ -105,7 +108,7 @@ class NewFlarmMapWidget: public QFrame
 		// The current view
 		// The view coordinate system is centered at the own position
 
-		QPointF displayCenterPosition;
+		QPointF localCenter; // In local coordinates, because that's what stays fixed when rotating
 		double smallerRadius;
 		QTransform transform;
 
@@ -143,10 +146,18 @@ class NewFlarmMapWidget: public QFrame
 		// KML
 		KmlStatus readKmlImplementation (const QString &filename);
 
-		QPoint   mapFromGeographic (const GeoPosition &geoPosition);
-		QPolygon mapFromGeographic (const QVector<GeoPosition> &geoPositions);
-		QPoint   mapFromLocal      (const QPointF     &localPoint);
-		QPolygon mapFromLocal      (const QPolygonF   &localPoints);
+		QPoint   transformLocalToWidget      (const QPointF     &localPoint);
+		QPoint   transformGeographicToWidget (const GeoPosition &geoPosition);
+
+		QPointF transformWidgetToLocal (const QPoint &widgetPoint);
+
+//		GeoPosition transformLocalToGeographic (const QPointF &localPoint);
+//		GeoPosition transformWidgetToLocal (const QPoint &widgetPoint);
+
+
+		QPolygon transformLocalToWidget      (const QPolygonF   &localPoints);
+		QPolygon transformGeographicToWidget (const QVector<GeoPosition> &geoPositions);
+
 
 		void paintCoordinateSystem (QPainter &painter);
 
@@ -174,6 +185,10 @@ class NewFlarmMapWidget: public QFrame
 		void rowsAboutToBeRemoved (const QModelIndex &parent, int start, int end);
 		void modelReset ();
 		void flarmListDestroyed ();
+
+	private:
+		bool dragging;
+		GeoPosition dragLocation;
 };
 
 #endif
