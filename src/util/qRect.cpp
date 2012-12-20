@@ -1,6 +1,8 @@
 #include "qRect.h"
 
 #include <QMargins>
+#include <QPoint>
+#include <QSize>
 
 // Note that these methods do not use rect.right() and rect.bottom() because,
 // other than for QRectF, "the values returned by [these] functions deviate from

@@ -3,6 +3,8 @@
 
 #include <QRect>
 
+class QPoint;
+class QSize;
 class QMargins;
 
 QRect northWestCorner (const QRect &rect, int width, int height);

@@ -85,7 +85,10 @@ class NewFlarmMapWidget: public QFrame
 	protected:
 		virtual void paintEvent (QPaintEvent *event);
 		virtual void keyPressEvent (QKeyEvent *event);
-		virtual void resizeEvent (QResizeEvent *event);
+		virtual void wheelEvent (QWheelEvent *event);
+
+		virtual void zoom   (double factor);
+		virtual void scroll (double x, double y);
 
 	private:
 		// Settings

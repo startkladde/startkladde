@@ -10,6 +10,8 @@
 #include <QPen>
 #include <QBrush>
 
+// FIXME: must emit viewChanged
+
 #include "src/util/qRect.h"
 //#include "src/flarm/FlarmRecord.h"
 //#include "src/numeric/Velocity.h"
@@ -21,8 +23,6 @@
 //#include "src/util/qPointF.h"
 //#include "src/util/qString.h"
 #include "src/flarm/flarmMap/KmlReader.h"
-//#include "src/qwt/SkPlotMagnifier.h"
-//#include "src/qwt/SkPlotPanner.h"
 
 
 // **************************
@@ -73,263 +73,83 @@ NewFlarmMapWidget::NewFlarmMapWidget (QWidget *parent): QFrame (parent),
 {
 	_ownPositionText=tr ("Start"); // FIXME proper English word
 
-//	// Setup the axes. Note that the aspect ratio may not be correct. This will
-//	// be rectified by the first resize event we'll receive before the widget
-//	// is shown.
-//	double displayRadius=2000;
-//	setAxisScale (QwtPlot::yLeft  , -displayRadius, displayRadius);
-//	setAxisScale (QwtPlot::xBottom, -displayRadius, displayRadius);
-//
-//	// Setup the panner
-//	QwtPlotPanner* panner = new SkPlotPanner (canvas ());
-//	panner->setAxisEnabled (QwtPlot::yLeft, true);
-//	panner->setAxisEnabled (QwtPlot::xBottom, true);
-//	panner->setMouseButton (Qt::LeftButton);
-//	panner->setEnabled (true);
-//	connect (panner, SIGNAL (moved ()), this, SIGNAL (viewChanged ()));
-//
-//	// Setup the magnifier
-//	QwtPlotMagnifier *magnifier = new SkPlotMagnifier (canvas ());
-//	magnifier->setMouseButton (Qt::MidButton);
-//	magnifier->setAxisEnabled (QwtPlot::yRight, true);
-//	magnifier->setAxisEnabled (QwtPlot::xBottom, true);
-//	// Positive value - mouse wheel down (back) means zooming out. This is the
-//	// convention that many other applications, including Firefox and Gimp, use.
-//	magnifier->setMouseFactor (1.05);
-//	magnifier->setWheelFactor (1.1);
-//	// Note that we cannot use QwtPlotMagnifier's keyboard zoom functionality
-//	// because that also checks the modifier keys and these may be different for
-//	// different keyboard layouts; for example, on the American layout the plus
-//	// key requires the shift modifier. Also, this allows only on key each for
-//	// zooming in and out. We therefore implement keyboard zooming ourselves.
-//	// This requires the widget's focusPolicy to be set. As long as
-//	// this->canvas()'s focusPolicy is not set, QwtPlotMagnifier's keyboard
-//	// zooming won't get in the way. To be sure, we set the keyFactor to 1.
-//	magnifier->setKeyFactor (1);
-//	magnifier->setEnabled (true);
-//	connect (magnifier, SIGNAL (rescaled ()), this, SIGNAL (viewChanged ()));
-//
-//	// Add the grid
-//	QwtPlotGrid* grid = new QwtPlotGrid ();
-//	grid->attach (this);
-//
-//	updateStaticData ();
-//	refreshFlarmData ();
+	// FIXME panning
+	// FIXME mouse drag magnification
 }
 
 NewFlarmMapWidget::~NewFlarmMapWidget ()
 {
 }
 
-// **************************
-// ** Generic axis methods **
-// **************************
+// ****************
+// ** GUI events **
+// ****************
 
-///**
-// * Gets the coordinates of the (primary) axes as QRectF
-// *
-// * @return
-// */
-//QRectF NewFlarmMapWidget::getAxesRect () const
-//{
-//	const QwtScaleDiv *xScaleDiv = axisScaleDiv (QwtPlot::xBottom);
-//	const QwtScaleDiv *yScaleDiv = axisScaleDiv (QwtPlot::yLeft);
-//
-//	double left  =xScaleDiv->lowerBound ();
-//	double right =xScaleDiv->upperBound ();
-//	double bottom=yScaleDiv->lowerBound ();
-//	double top   =yScaleDiv->upperBound ();
-//
-//	QPointF topLeft (left, top);
-//	QPointF bottomRight (right, bottom);
-//	QRectF axesRect (topLeft, bottomRight);
-//
-//	return axesRect;
-//}
-//
-///**
-// * Gets the current radius of the (primary) axes
-// *
-// * The axis radius is half the diameter of the axes range. For example, if the
-// * range of an axis is from -1 to +5, the radius is +3. The radius is always
-// * positive.
-// *
-// * @return a QPointF containing the radius of the (bottom) x and (left) y axis
-// */
-//QPointF NewFlarmMapWidget::getAxesRadius () const
-//{
-//	const QwtScaleDiv *xScaleDiv = axisScaleDiv (QwtPlot::xBottom);
-//	const QwtScaleDiv *yScaleDiv = axisScaleDiv (QwtPlot::yLeft);
-//
-//	double xAxisRange = (xScaleDiv->upperBound () - xScaleDiv->lowerBound ())/2;
-//	double yAxisRange = (yScaleDiv->upperBound () - yScaleDiv->lowerBound ())/2;
-//
-//	return QPointF (xAxisRange, yAxisRange);
-//}
-//
-///**
-// * Gets the current center of the (primary) axes
-// *
-// * The axes center is middle of the axes range. For example, if the range of an
-// * axis is from -1 to +5, the center is +2. The center can be positive or
-// * negative.
-// *
-// * @return a QPointF containing the center of the (bottom) x and (left) y axis
-// */
-//QPointF NewFlarmMapWidget::getAxesCenter () const
-//{
-//	const QwtScaleDiv *xScaleDiv = axisScaleDiv (QwtPlot::xBottom);
-//	const QwtScaleDiv *yScaleDiv = axisScaleDiv (QwtPlot::yLeft);
-//
-//	double xAxisCenter = (xScaleDiv->upperBound () + xScaleDiv->lowerBound ())/2;
-//	double yAxisCenter = (yScaleDiv->upperBound () + yScaleDiv->lowerBound ())/2;
-//
-//	return QPointF (xAxisCenter, yAxisCenter);
-//}
-//
-///**
-// * Sets the current axes, given the center and radius in both directions
-// *
-// * Note that this method does not emit the viewChanged signal because the graph
-// * has not been replotted, so accessing its properties (e. g. the axes) may
-// * result in an error.
-// *
-// * @param center the center for the (bottom) x and (left) y axis
-// * @param radius the radius for the (bottom) x and (left) y axis
-// * @see getAxesRadius
-// * @see getAxesCenter
-// */
-//void NewFlarmMapWidget::setAxes (const QPointF &center, const QPointF &radius)
-//{
-//	setAxisScale (QwtPlot::xBottom, center.x () - radius.x (), center.x () + radius.x ());
-//	setAxisScale (QwtPlot::yLeft  , center.y () - radius.y (), center.y () + radius.y ());
-//}
-//
-///**
-// * Sets the current axes, given the radius, while retaining the center
-// *
-// * @param radius the radius for the (bottom) x and (left) y axis
-// * @see setAxes
-// */
-//void NewFlarmMapWidget::setAxesRadius (const QPointF &radius)
-//{
-//	setAxes (getAxesCenter (), radius);
-//}
-//
-///**
-// * Sets the current axes, given the center, while retaining the radius
-// *
-// * @param center the center for the (bottom) x and (left) y axis
-// * @see setAxes
-// */
-//void NewFlarmMapWidget::setAxesCenter (const QPointF &center)
-//{
-//	setAxes (center, getAxesRadius ());
-//}
-//
-///**
-// * Sets the current axes, given the radius, while retaining the center
-// *
-// * This is a convenience method for setAxesRadius (const QPointF &radius).
-// *
-// * @param xRadius the radius for the (bottom) x axis
-// * @param yRadius the radius for the (left) y axis
-// */
-//void NewFlarmMapWidget::setAxesRadius (double xRadius, double yRadius)
-//{
-//	setAxesRadius (QPointF (xRadius, yRadius));
-//}
-//
-///**
-// * A convenience method for setAxesRadius
-// *
-// * @param factor the zoom factor; a positive zoom factor sets a smaller radius,
-// *               thereby enlarging the plot
-// */
-//void NewFlarmMapWidget::zoomAxes (double factor)
-//{
-//	setAxesRadius (getAxesRadius ()/factor);
-//}
-//
-//void NewFlarmMapWidget::moveAxesCenter (const QPointF &offset)
-//{
-//	setAxesCenter (getAxesCenter ()+offset);
-//}
-//
-//void NewFlarmMapWidget::moveAxesCenter (double xOffset, double yOffset)
-//{
-//	moveAxesCenter (QPointF (xOffset, yOffset));
-//}
-//
-//
-//// ****************
-//// ** GUI events **
-//// ****************
+void NewFlarmMapWidget::zoom (double factor)
+{
+	smallerRadius/=factor;
+	update ();
+	emit viewChanged ();
+}
+
+void NewFlarmMapWidget::scroll (double x, double y)
+{
+	displayCenterPosition+=QPointF (x, y);
+	update ();
+	emit viewChanged ();
+}
 
 void NewFlarmMapWidget::keyPressEvent (QKeyEvent *event)
 {
-//	// Note that we don't use the magnifier for scaling; first, its rescale()
-//	// method is protected and second, we'd have to store a pointer to it.
-//
-//	const double keyboardZoomFactor=1.1;
-//
-//	switch (event->key ())
-//	{
-//		case Qt::Key_Plus : case Qt::Key_BracketLeft : case Qt::Key_Equal:
-//			zoomAxes (  keyboardZoomFactor); replot (); emit viewChanged (); break;
-//		case Qt::Key_Minus: case Qt::Key_BracketRight:
-//			zoomAxes (1/keyboardZoomFactor); replot (); emit viewChanged (); break;
-//
-//		case Qt::Key_Right: case Qt::Key_L: moveAxesCenter ( 0.1*min (getAxesRadius ()), 0); replot (); emit viewChanged (); break;
-//		case Qt::Key_Left : case Qt::Key_H: moveAxesCenter (-0.1*min (getAxesRadius ()), 0); replot (); emit viewChanged (); break;
-//		case Qt::Key_Up   : case Qt::Key_K: moveAxesCenter (0,  0.1*min (getAxesRadius ())); replot (); emit viewChanged (); break;
-//		case Qt::Key_Down : case Qt::Key_J: moveAxesCenter (0, -0.1*min (getAxesRadius ())); replot (); emit viewChanged (); break;
-//
-//		default:
-//			QwtPlot::keyPressEvent (event);
-//			break;
-//	}
+	const double keyboardDoubleCount=8;
+	const double keyboardZoomFactor=pow (2, 1/keyboardDoubleCount);
+
+	switch (event->key ())
+	{
+		// Zoom in
+		case Qt::Key_Plus:        zoom (keyboardZoomFactor); break;
+		case Qt::Key_BracketLeft: zoom (keyboardZoomFactor); break;
+		case Qt::Key_Equal:       zoom (keyboardZoomFactor); break;
+
+		// Zoom out
+		case Qt::Key_Minus:        zoom (1/keyboardZoomFactor); break;
+		case Qt::Key_BracketRight: zoom (1/keyboardZoomFactor); break;
+
+		// Scroll
+		case Qt::Key_Right: case Qt::Key_L: scroll ( 0.1*smallerRadius, 0); break;
+		case Qt::Key_Left : case Qt::Key_H: scroll (-0.1*smallerRadius, 0); break;
+		case Qt::Key_Up   : case Qt::Key_K: scroll (0,  0.1*smallerRadius); break;
+		case Qt::Key_Down : case Qt::Key_J: scroll (0, -0.1*smallerRadius); break;
+
+		// Other
+		default: QFrame::keyPressEvent (event); break;
+	}
+	// FIXME always call super, and use accept()/ignore()
 }
 
-void NewFlarmMapWidget::resizeEvent (QResizeEvent *event)
+void NewFlarmMapWidget::wheelEvent (QWheelEvent *event)
 {
-//	// Update the display radius such that the smaller value is retained and the
-//	// aspect ratio matches the widget's aspect ratio.
-//
-//	// Don't update the radius if the widget size is zero in either direction
-//	if (width () > 0 && height () > 0)
-//	{
-//		double smallerRadius=min (getAxesRadius ());
-//		double widgetAspectRatio = width () / (double)height ();
-//
-//		if (widgetAspectRatio>=1)
-//			// The widget is wider than high
-//			setAxesRadius (smallerRadius*widgetAspectRatio, smallerRadius);
-//		else
-//			// The widget is higher than wide
-//			setAxesRadius (smallerRadius, smallerRadius/widgetAspectRatio);
-//	}
-//
-//	QwtPlot::resizeEvent (event);
-//	replot ();
+	// Mouse wheel down (back) means zooming out. This is the convention that
+	// many other applications, including Firefox and Gimp, use.
+	double degrees=event->delta ()/(double)8;
+	smallerRadius*=pow (2, -degrees/120);
+	update ();
 }
 
-//// ****************
-//// ** Flarm list **
-//// ****************
-//
-///**
-// * Sets the flarm list to use
-// *
-// * If a Flarm list was set before, it is replaced by the new Flarm list. If the
-// * new Flarm list is the same as before, nothing is changed. Setting the Flarm
-// * list to NULL (the default) effectively disables Flarm data display.
-// *
-// * This method calls replot().
-// *
-// * @param flarmList the new Flarm list. This view does not take ownership of the
-// *                  Flarm list.
-// */
+
+// ****************
+// ** Flarm list **
+// ****************
+
+/**
+ * Sets the Flarm list to use
+ *
+ * If a Flarm list was set before, it is replaced by the new Flarm list. If the
+ * new Flarm list is the same as before, nothing is changed. Setting the Flarm
+ * list to NULL (the default) effectively disables Flarm data display.
+ *
+ * This view does not take ownership of the Flarm list.
+ */
 void NewFlarmMapWidget::setFlarmList (FlarmList *flarmList)
 {
 	// FIXME do this in all classes using a model
@@ -360,9 +180,7 @@ void NewFlarmMapWidget::setFlarmList (FlarmList *flarmList)
 		connect (this->flarmList, SIGNAL (modelReset ()), this, SLOT (modelReset ()));
 	}
 
-	// FIXME
-//	refreshFlarmData ();
-//	update ();
+	update ();
 }
 
 void NewFlarmMapWidget::setGpsTracker (GpsTracker *gpsTracker)
@@ -1029,24 +847,31 @@ double NewFlarmMapWidget::getYRadius () const
 
 void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 {
+	painter.save ();
+	QPen pen=painter.pen ();
+	pen.setWidthF (0.5);
+	painter.setPen (pen);
+
 	double radiusIncrement=1000;
 
 	double largerRadius=getLargerRadius ();
 
-	// FIXME actually: diagonal
+	// FIXME minimum pixel distance
+	// FIXME draw all visible, even when the origin is scrolled out of view
+	// FIXME draw distances
 	for (double radius=radiusIncrement; radius<=largerRadius; radius+=radiusIncrement)
 	{
 		// FIXME inefficient
 		QSize size (radius*width ()/getXRadius (), radius*height ()/getYRadius ());
-		QRect rect=centeredQRect (QPoint (0, 0), size);
+		QRect rect=centeredQRect (mapFromLocal (QPoint (0, 0)), size);
 		painter.drawArc (rect, 0, 16*360);
 	}
 
-	painter.save ();
 	// FIXME why do we have to transpose?
+	// FIXME arrow and "N"
+	// FIXME move when scrolling
 	painter.setTransform (transform.transposed (), true);
 	painter.drawLine (0, 0, 0, -qMin (width (), height ())*1/4);
-//	painter.drawLine (0, 0, 0, -20);
 
 	painter.restore ();
 }
@@ -1065,21 +890,13 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 
 	// Draw the own position
 	painter.setBrush (_ownPositionColor);
-	drawCenteredText (painter, QPoint (0, 0), _ownPositionText);
+	drawCenteredText (painter, mapFromLocal (QPoint (0, 0)), _ownPositionText);
 
 	// We can only draw the static data if the own position is known, because it
 	// is specified in absolute (earth) coordinates and the display coordinate
 	// system is centered at the own position.
 	if (_ownPosition.isValid ())
 	{
-		// Draw all static markers
-		foreach (const StaticMarker &marker, staticMarkers)
-		{
-			QPoint p=mapFromGeographic (marker.position);
-			painter.setBrush (marker.backgroundColor);
-			drawCenteredText (painter, p, marker.text);
-		}
-
 		// Draw all static paths
 		foreach (const StaticCurve &curve, staticCurves)
 		{
@@ -1088,5 +905,13 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 			painter.drawPolyline (p);
 		}
 
+		// Draw all static markers
+		foreach (const StaticMarker &marker, staticMarkers)
+		{
+			QPoint p=mapFromGeographic (marker.position);
+			painter.setBrush (marker.backgroundColor);
+			drawCenteredText (painter, p, marker.text);
+		}
 	}
 }
+
