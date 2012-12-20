@@ -68,7 +68,7 @@ NewFlarmMapWidget::NewFlarmMapWidget (QWidget *parent): QFrame (parent),
 	_climbColor       (  0, 255, 0, 127),
 	_descentColor     (255, 255, 0, 127),
 	flarmList (NULL), gpsTracker (NULL),
-	localCenter (0, 0), smallerRadius (2000),
+	local_center (0, 0), smallerRadius (2000),
 	kmlStatus (kmlNone)
 {
 	_ownPositionText=tr ("Start"); // FIXME proper English word
@@ -84,23 +84,6 @@ NewFlarmMapWidget::~NewFlarmMapWidget ()
 // ****************
 // ** GUI events **
 // ****************
-
-void NewFlarmMapWidget::zoom (double factor)
-{
-	smallerRadius/=factor;
-	update ();
-	emit viewChanged ();
-}
-
-void NewFlarmMapWidget::scroll (double x, double y)
-{
-	// Scrolling takes place in plot/view coordinates
-	QPointF viewCenter=transform.map (localCenter);
-	viewCenter+=QPointF (x, y);
-	localCenter=transform.transposed ().map (viewCenter);
-	update ();
-	emit viewChanged ();
-}
 
 void NewFlarmMapWidget::keyPressEvent (QKeyEvent *event)
 {
@@ -219,8 +202,7 @@ void NewFlarmMapWidget::setGpsTracker (GpsTracker *gpsTracker)
  */
 void NewFlarmMapWidget::setOrientation (const Angle &upDirection)
 {
-	transform=QTransform ();
-	transform.rotateRadians (upDirection.toRadians ());
+	orientation=upDirection;
 
 	// Schedule a repaint
 	update ();
@@ -745,89 +727,6 @@ void NewFlarmMapWidget::resetPosition ()
 }
 
 
-// ****************
-// ** Transforms **
-// ****************
-
-// Coordinate systems:
-//   * geographic: latitude/longitude, origin at the equator/zero meridian
-//   * local: east/north in meters, origin at the own position
-//   * view: right/up in meters, orientation up, origin at the own position
-//   * plot: right/up in pixels, orientation up, origin at the display center
-//   * widget: right/down in pixels, orientation up, origin in the upper left
-//
-
-// FIXME transform matrix, and reverse
-QPoint NewFlarmMapWidget::transformLocalToWidget (const QPointF &localPoint)
-{
-	// Local to view
-	QPointF viewPoint =transform.map (localPoint);
-	QPointF viewCenter=transform.map (localCenter);
-
-	// View to plot
-	QPointF viewRelativeToCenter=viewPoint-viewCenter;
-	QPoint plotPoint (
-		viewRelativeToCenter.x () * width  () / (getXRadius ()*2),
-		viewRelativeToCenter.y () * height () / (getYRadius ()*2));
-
-	// Plot to widget
-	QPoint widgetPoint (
-		width  ()/2 + plotPoint.x (),
-		height ()/2 - plotPoint.y ());
-
-	return widgetPoint;
-}
-
-QPointF NewFlarmMapWidget::transformWidgetToLocal (const QPoint &widgetPoint)
-{
-	qDebug () << "widget" << widgetPoint;
-	QPointF plotPoint (widgetPoint.x ()-width ()/2, height()/2-widgetPoint.y ());
-	qDebug () << "plot" << plotPoint;
-	QPointF viewRelativeToCenter (plotPoint.x ()/width()*getXRadius()*2, plotPoint.y()/height ()*getYRadius()*2);
-	QPointF viewCenter=transform.map (localCenter);
-	QPointF viewPoint=viewRelativeToCenter+viewCenter;
-	qDebug () << "view" << viewPoint;
-	QPointF localPoint=transform.transposed().map (viewPoint);
-	qDebug () << "local" << localPoint;
-	return localPoint;
-}
-
-/**
- * Undefined if the own position is invalid
- */
-QPoint NewFlarmMapWidget::transformGeographicToWidget (const GeoPosition &geoPosition)
-{
-	// Geographic to local
-	QPointF localPoint (geoPosition.relativePositionTo (_ownPosition));
-
-	// Local to widget
-	return transformLocalToWidget (localPoint);
-}
-
-
-// Vectorized transform
-QPolygon NewFlarmMapWidget::transformLocalToWidget (const QPolygonF &localPolygon)
-{
-	QPolygon result;
-
-	foreach (const QPointF &localPoint, localPolygon)
-		result.append (transformLocalToWidget (localPoint));
-
-	return result;
-}
-
-// Vectorized transform
-QPolygon NewFlarmMapWidget::transformGeographicToWidget (const QVector<GeoPosition> &geoPositions)
-{
-	QPolygon result;
-
-	foreach (const GeoPosition &geoPosition, geoPositions)
-		result.append (transformGeographicToWidget (geoPosition));
-
-	return result;
-}
-
-
 // **************
 // ** Painting **
 // **************
@@ -836,6 +735,14 @@ void drawCenteredText (QPainter &painter, const QPoint &position, const QString 
 {
 	QSize size=painter.fontMetrics ().size (0, text);
 	QRect rect=centeredQRect (position, size);
+	painter.fillRect (rect, painter.brush ());
+	painter.drawText (rect, text);
+}
+
+void drawCenteredText (QPainter &painter, const QPointF &position, const QString &text)
+{
+	QSize size=painter.fontMetrics ().size (0, text);
+	QRectF rect=centeredQRectF (position, QSizeF (size));
 	painter.fillRect (rect, painter.brush ());
 	painter.drawText (rect, text);
 }
@@ -896,13 +803,14 @@ void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 	{
 		// FIXME inefficient
 		QSize size (radius*width ()/getXRadius (), radius*height ()/getYRadius ());
-		QRect rect=centeredQRect (transformLocalToWidget (QPoint (0, 0)), size);
+		QRect rect=centeredQRect (widget_T_local.map (QPoint (0, 0)), size);
 		painter.drawArc (rect, 0, 16*360);
 	}
 
 	// FIXME why do we have to transpose?
 	// FIXME arrow and "N"
 	// FIXME move when scrolling
+	QTransform transform; transform.rotateRadians (orientation.toRadians ());
 	painter.setTransform (transform.transposed (), true);
 	painter.drawLine (0, 0, 0, -qMin (width (), height ())*1/4);
 
@@ -911,6 +819,9 @@ void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 
 void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 {
+	// FIXME only when requried
+	updateView ();
+
 	(void)event;
 	QPainter painter (this);
 	painter.setRenderHint (QPainter::Antialiasing, true);
@@ -921,7 +832,7 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 
 	// Draw the own position
 	painter.setBrush (_ownPositionColor);
-	drawCenteredText (painter, transformLocalToWidget (QPoint (0, 0)), _ownPositionText);
+	drawCenteredText (painter, widget_T_local.map (QPoint (0, 0)), _ownPositionText);
 
 	// We can only draw the static data if the own position is known, because it
 	// is specified in absolute (earth) coordinates and the display coordinate
@@ -931,7 +842,7 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 		// Draw all static paths
 		foreach (const StaticCurve &curve, staticCurves)
 		{
-			QPolygon p=transformGeographicToWidget (curve.points);
+			QPolygonF p=transformGeographicToWidget (curve.points);
 			painter.setPen (curve.pen);
 			painter.drawPolyline (p);
 		}
@@ -939,7 +850,7 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 		// Draw all static markers
 		foreach (const StaticMarker &marker, staticMarkers)
 		{
-			QPoint p=transformGeographicToWidget (marker.position);
+			QPointF p=transformGeographicToWidget (marker.position);
 			painter.setBrush (marker.backgroundColor);
 			drawCenteredText (painter, p, marker.text);
 		}
@@ -948,8 +859,37 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 
 void NewFlarmMapWidget::mousePressEvent (QMouseEvent *event)
 {
-	localCenter=transformWidgetToLocal (event->pos ());
-	update ();
+
+	// Let's translate the own position to widget coordinates, step by step
+
+//	updateView ();
+//
+//	QPointF local_p (0, 0);
+//	qDebug () << "local" << local_p;
+//
+//	QPointF view_p = view_T_local.map (local_p);
+//	qDebug () << "view" << view_p;
+//
+//	QPointF plot_p = plot_T_view.map (view_p);
+//	qDebug () << "plot" << plot_p;
+//
+//	QPointF widget_p = widget_T_plot.map (plot_p);
+//	qDebug () << "widget" << widget_p;
+//
+//	QPointF widget_p_direct = widget_T_local.map (local_p);
+//	qDebug () << "widget (direct)" << widget_p_direct;
+
+	QTransform t1, t2;
+	t1.scale (10, 10);
+	t2.translate (1, 2);
+
+	qDebug () << t1;
+	qDebug () << t2;
+	qDebug () << t1*t2;
+
+
+//	localCenter=transformWidgetToLocal (event->pos ());
+//	update ();
 //	if (event->buttons ()==Qt::LeftButton)
 //	{
 //		drag
@@ -965,4 +905,91 @@ void NewFlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
 {
 
 }
+
+
+
+// **********
+// ** View **
+// **********
+
+void NewFlarmMapWidget::zoom (double factor)
+{
+	smallerRadius/=factor;
+
+	updateView ();
+}
+
+void NewFlarmMapWidget::scroll (double x, double y)
+{
+	QTransform t;
+	t.rotateRadians (orientation.toRadians ());
+	// Scrolling takes place in plot/view coordinates
+	QPointF viewCenter=t.map (local_center);
+	viewCenter+=QPointF (x, y);
+	local_center=t.transposed ().map (viewCenter);
+
+	updateView ();
+}
+
+// Coordinate systems:
+//   * geographic: latitude/longitude, origin at the equator/zero meridian
+//   * local: east/north in meters, origin at the own position
+//   * view: right/up in meters, orientation up, origin at the own position
+//   * plot: right/up in pixels, orientation up, origin at the display center
+//   * widget: right/down in pixels, orientation up, origin in the upper left
+
+
+void NewFlarmMapWidget::updateView ()
+{
+	local_T_view=view_T_plot=plot_T_widget=QTransform ();
+
+	local_T_view.rotateRadians (-orientation.toRadians ());
+	view_T_local=local_T_view.inverted ();
+//	qDebug () << "local_T_view" << local_T_view;
+
+	QPointF view_center=view_T_local.map (local_center);
+	view_T_plot.translate (view_center.x (), view_center.y ());
+	view_T_plot.scale (width ()/(2*getXRadius ()), height ()/(2*getYRadius ()));
+	plot_T_view=view_T_plot.inverted ();
+//	qDebug () << "view_T_plot" << view_T_plot;
+
+	plot_T_widget.translate (-width ()/2, height ()/2);
+	plot_T_widget.scale (1, -1);
+	widget_T_plot=plot_T_widget.inverted ();
+//	qDebug () << "plot_T_widget" << plot_T_widget;
+
+//	local_T_widget=local_T_view*view_T_plot*plot_T_widget;
+	local_T_widget=plot_T_widget*plot_T_view*view_T_local;
+	widget_T_local=local_T_widget.inverted ();
+
+//	qDebug () << "local_T_widget" << local_T_widget;
+//	qDebug () << "widget_T_local" << widget_T_local;
+
+	emit viewChanged ();
+	update ();
+}
+
+/**
+ * Undefined if the own position is invalid
+ */
+QPointF NewFlarmMapWidget::transformGeographicToWidget (const GeoPosition &geoPosition)
+{
+	// Geographic to local
+	QPointF local_point (geoPosition.relativePositionTo (_ownPosition));
+
+	// Local to widget
+	return widget_T_local.map (local_point);
+}
+
+// Vectorized transform
+QPolygonF NewFlarmMapWidget::transformGeographicToWidget (const QVector<GeoPosition> &geoPositions)
+{
+	QPolygonF result;
+
+	foreach (const GeoPosition &geoPosition, geoPositions)
+		result.append (transformGeographicToWidget (geoPosition));
+
+	return result;
+}
+
 

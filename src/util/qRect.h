@@ -25,4 +25,7 @@ QRect southEastCorner (const QRect &rect, const QMargins &margins);
 QRect centeredQRect (const QPoint &point, int size);
 QRect centeredQRect (const QPoint &point, const QSize &size);
 
+QRectF centeredQRectF (const QPointF &point, double size);
+QRectF centeredQRectF (const QPointF &point, const QSizeF &size);
+
 #endif

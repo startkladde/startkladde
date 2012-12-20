@@ -74,10 +74,6 @@ class NewFlarmMapWidget: public QFrame
 		void resetPosition ();
 
 
-	public slots:
-		void ownPositionChanged (const GeoPosition &ownPosition);
-		void setOrientation (const Angle &upDirection);
-
 	signals:
 		void viewChanged ();
 		void ownPositionUpdated ();
@@ -90,8 +86,6 @@ class NewFlarmMapWidget: public QFrame
 		virtual void mousePressEvent (QMouseEvent *event);
 		virtual void mouseReleaseEvent (QMouseEvent *event);
 
-		virtual void zoom   (double factor);
-		virtual void scroll (double x, double y);
 
 	private:
 		// Settings
@@ -101,17 +95,6 @@ class NewFlarmMapWidget: public QFrame
 		// Flarm list
 		FlarmList *flarmList;
 		GpsTracker *gpsTracker;
-
-		// Coordinate systems:
-		//   * earth coordinates: centered at the own position, coordinates are in meters
-
-		// The current view
-		// The view coordinate system is centered at the own position
-
-		QPointF localCenter; // In local coordinates, because that's what stays fixed when rotating
-		double smallerRadius;
-		QTransform transform;
-
 
 		GeoPosition _ownPosition;
 
@@ -146,18 +129,8 @@ class NewFlarmMapWidget: public QFrame
 		// KML
 		KmlStatus readKmlImplementation (const QString &filename);
 
-		QPoint   transformLocalToWidget      (const QPointF     &localPoint);
-		QPoint   transformGeographicToWidget (const GeoPosition &geoPosition);
-
-		QPointF transformWidgetToLocal (const QPoint &widgetPoint);
-
-//		GeoPosition transformLocalToGeographic (const QPointF &localPoint);
-//		GeoPosition transformWidgetToLocal (const QPoint &widgetPoint);
-
-
-		QPolygon transformLocalToWidget      (const QPolygonF   &localPoints);
-		QPolygon transformGeographicToWidget (const QVector<GeoPosition> &geoPositions);
-
+		QPointF   transformGeographicToWidget (const GeoPosition &geoPosition);
+		QPolygonF transformGeographicToWidget (const QVector<GeoPosition> &geoPositions);
 
 		void paintCoordinateSystem (QPainter &painter);
 
@@ -189,6 +162,36 @@ class NewFlarmMapWidget: public QFrame
 	private:
 		bool dragging;
 		GeoPosition dragLocation;
+
+
+		// View
+
+	public slots:
+		virtual void ownPositionChanged (const GeoPosition &ownPosition);
+		virtual void setOrientation (const Angle &upDirection);
+		virtual void zoom   (double factor);
+		virtual void scroll (double x, double y);
+
+	protected:
+		virtual void updateView ();
+
+
+	private:
+		QPointF local_center; // In local coordinates, because that's what stays fixed when rotating
+		double smallerRadius;
+		Angle orientation;
+
+		// Basic transforms
+		QTransform local_T_view, view_T_local;
+		QTransform view_T_plot, plot_T_view;
+		QTransform plot_T_widget, widget_T_plot;
+
+		// Combined transforms
+		QTransform local_T_widget, widget_T_local;
+
+
+
+
 };
 
 #endif

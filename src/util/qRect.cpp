@@ -89,3 +89,17 @@ QRect centeredQRect (const QPoint &point, const QSize &size)
 
 	return QRect (x-w/2, y-h/2, w, h);
 }
+QRectF centeredQRectF (const QPointF &point, double size)
+{
+	return QRectF (point.x ()-size/2, point.y ()-size/2, size, size);
+}
+
+QRectF centeredQRectF (const QPointF &point, const QSizeF &size)
+{
+	int x=point.x ();
+	int y=point.y ();
+	int w=size.width ();
+	int h=size.height ();
+
+	return QRectF (x-w/2, y-h/2, w, h);
+}
