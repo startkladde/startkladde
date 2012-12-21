@@ -10,17 +10,16 @@
 #include <QPen>
 #include <QBrush>
 
-// FIXME: must emit viewChanged
+// FIXME: must emit viewChanged, and only when appropriate
 
 #include "src/util/qRect.h"
 #include "src/flarm/FlarmRecord.h"
 #include "src/numeric/Velocity.h"
-//#include "src/numeric/GeoPosition.h"
 #include "src/flarm/FlarmList.h"
 //#include "src/util/qHash.h"
-//#include "src/i18n/notr.h"
+#include "src/i18n/notr.h"
 #include "src/nmea/GpsTracker.h"
-//#include "src/util/qPointF.h"
+#include "src/util/qPointF.h"
 //#include "src/util/qString.h"
 #include "src/flarm/flarmMap/KmlReader.h"
 #include "src/util/qPainter.h"
@@ -71,12 +70,11 @@ NewFlarmMapWidget::NewFlarmMapWidget (QWidget *parent): QFrame (parent),
 	flarmList (NULL), gpsTracker (NULL),
 	kmlStatus (kmlNone),
 	_center_local (0, 0), _radius (2000),
-	scrollDragging (false), zoomDragging (false)
+	scrollDragging (false), zoomDragging (false),
+	_keyboardZoomDoubleCount (8), _mouseDragZoomDoubleDistance (50),
+	_mouseWheelZoomDoubleAngle (Angle::fromDegrees (120))
 {
 	_ownPositionText=tr ("Start"); // FIXME proper English word
-
-	// FIXME panning
-	// FIXME mouse drag magnification
 }
 
 NewFlarmMapWidget::~NewFlarmMapWidget ()
@@ -89,8 +87,10 @@ NewFlarmMapWidget::~NewFlarmMapWidget ()
 
 void NewFlarmMapWidget::keyPressEvent (QKeyEvent *event)
 {
-	const double keyboardDoubleCount=8;
-	const double keyboardZoomFactor=pow (2, 1/keyboardDoubleCount);
+	// Note that we don't call event->accept (). The documentation for QWidget::
+	// keyPressEvent recommends that implementations do not call the superclass
+	// method if they act upon the key.
+	const double keyboardZoomFactor=pow (2, 1/_keyboardZoomDoubleCount);
 
 	switch (event->key ())
 	{
@@ -112,7 +112,6 @@ void NewFlarmMapWidget::keyPressEvent (QKeyEvent *event)
 		// Other
 		default: QFrame::keyPressEvent (event); break;
 	}
-	// FIXME always call super, and use accept()/ignore()
 }
 
 void NewFlarmMapWidget::wheelEvent (QWheelEvent *event)
@@ -120,8 +119,8 @@ void NewFlarmMapWidget::wheelEvent (QWheelEvent *event)
 	// FIXME use zoom(), and zoom around the mouse wheel position
 	// Mouse wheel down (back) means zooming out. This is the convention that
 	// many other applications, including Firefox and Gimp, use.
-	double degrees=event->delta ()/(double)8;
-	_radius*=pow (2, -degrees/120); // FIXME wheelDoubleAngle
+	Angle angle=Angle::fromDegrees (event->delta ()/(double)8);
+	_radius*=pow (2, -angle/_mouseWheelZoomDoubleAngle);
 	update ();
 }
 
@@ -468,25 +467,30 @@ NewFlarmMapWidget::KmlStatus NewFlarmMapWidget::readKmlImplementation (const QSt
 		return kmlEmpty;
 
 	// For each KML marker in the KML file, add a static marker
-	foreach (const Kml::Marker &marker, kmlReader.markers)
+	foreach (const Kml::Marker &kmlMarker, kmlReader.markers)
 	{
-		Kml::Style style=kmlReader.findStyle (marker.styleUrl);
-		staticMarkers.append (StaticMarker (marker, style));
-		std::cout << "add static marker" << std::endl;
+		Kml::Style style=kmlReader.findStyle (kmlMarker.styleUrl);
+		StaticMarker staticMarker (kmlMarker, style);
+		staticMarkers.append (staticMarker);
+		allStaticPositions.append (kmlMarker.position);
 	}
 
 	// For each KML path in the KML file, add a static curve
 	foreach (const Kml::Path &path, kmlReader.paths)
 	{
 		Kml::Style style=kmlReader.findStyle (path.styleUrl);
-		staticCurves.append (StaticCurve (path, style));
+		StaticCurve staticCurve=StaticCurve (path, style);
+		staticCurves.append (staticCurve);
+		allStaticPositions.append (staticCurve.points.toList ());
 	}
 
 	// For each KML polygon in the KML file, add a static curve
 	foreach (const Kml::Polygon &polygon, kmlReader.polygons)
 	{
 		Kml::Style style=kmlReader.findStyle (polygon.styleUrl);
-		staticCurves.append (StaticCurve (polygon, style));
+		StaticCurve staticCurve=StaticCurve (polygon, style);
+		staticCurves.append (staticCurve);
+		allStaticPositions.append (staticCurve.points.toList ());
 	}
 
 	// Something changed, so we have to schedule a repaint
@@ -508,64 +512,73 @@ NewFlarmMapWidget::KmlStatus NewFlarmMapWidget::readKml (const QString &filename
 
 bool NewFlarmMapWidget::isOwnPositionVisible () const
 {
-//	return getAxesRect ().contains (0, 0);
+	QRectF visibleRect_widget=rect ();
+
+	QPointF ownPosition_local (0, 0);
+	QPointF ownPosition_widget=ownPosition_local*localSystem_widget;
+
+	return visibleRect_widget.contains (ownPosition_widget.toPoint ());
 }
 
 bool NewFlarmMapWidget::isAnyStaticElementVisible () const
 {
-//	if (!ownPosition.isValid ())
-//		return false;
-//
-//	QRectF axesRect=getAxesRect ();
-//
-//	foreach (const QPointF &point, allStaticPoints)
-//		if (axesRect.contains (point))
-//			return true;
-//
-//	return false;
+	if (!_ownPosition.isValid ())
+		return false;
+
+	QRectF visibleRect_widget=rect ();
+
+	foreach (const GeoPosition &position, allStaticPositions)
+	{
+		QPointF position_widget=transformGeographicToWidget (position);
+		if (visibleRect_widget.contains (position_widget))
+			return true;
+	}
+
+	return false;
 }
 
 bool NewFlarmMapWidget::findClosestStaticElement (double *distance, Angle *bearing) const
 {
-//	QPointF viewCenter=getAxesCenter ();
-//
-//	QPointF closestPoint;
-//	double closestDistanceSquared=-1;
-//
-//	foreach (const QPointF &p, allStaticPoints)
-//	{
-//		QPointF point=p-viewCenter;
-//
-//		double distanceSquared=lengthSquared (point);
-//
-//		if (closestDistanceSquared<0 || distanceSquared<closestDistanceSquared)
-//		{
-//			closestPoint=point;
-//			closestDistanceSquared=distanceSquared;
-//		}
-//	}
-//
-//	if (closestDistanceSquared>=0)
-//	{
-//		if (distance) (*distance)=sqrt (closestDistanceSquared);
-//		// Note the transposition - atan2 calculates mathematical angle
-//		// (starting at x, going counter-clockwise), we need geographical angle
-//		// (starting at y, going clockwise).
-//		if (bearing)  (*bearing)=Angle::atan2 (transposed (closestPoint));
-//
-//		return true;
-//	}
-//	else
-//	{
-//		return false;
-//	}
+	QPointF closestPoint_local;
+	double closestDistanceSquared=-1;
+
+	foreach (const GeoPosition &p, allStaticPositions)
+	{
+		// In the local coordinate system
+		QPointF point_local=p.relativePositionTo (_ownPosition);
+
+		// Relative to the display center
+		QPointF relativePoint_local=point_local-_center_local;
+
+		double distanceSquared=lengthSquared (relativePoint_local);
+
+		if (closestDistanceSquared<0 || distanceSquared<closestDistanceSquared)
+		{
+			closestPoint_local=relativePoint_local;
+			closestDistanceSquared=distanceSquared;
+		}
+	}
+
+	if (closestDistanceSquared>=0)
+	{
+		if (distance) (*distance)=sqrt (closestDistanceSquared);
+		// Note the transposition - atan2 calculates mathematical angle
+		// (starting at x, going counter-clockwise), we need geographical angle
+		// (starting at y, going clockwise).
+		if (bearing)  (*bearing)=Angle::atan2 (transposed (closestPoint_local));
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void NewFlarmMapWidget::resetPosition ()
 {
-//	setAxesCenter (QPointF (0, 0));
-//	replot ();
-//	emit viewChanged ();
+	_center_local=QPointF (0, 0);
+	updateView ();
 }
 
 
@@ -758,7 +771,7 @@ void NewFlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
 	if (zoomDragging)
 	{
 		int delta=event->pos ().y () - zoomDragStartPosition_widget.y ();
-		_radius=zoomDragStartRadius*pow (2, delta/50.0); // FIXME zoomDragDoubleDistance
+		_radius=zoomDragStartRadius*pow (2, delta/_mouseDragZoomDoubleDistance);
 	}
 }
 
@@ -833,7 +846,7 @@ void NewFlarmMapWidget::updateView ()
 /**
  * Undefined if the own position is invalid
  */
-QPointF NewFlarmMapWidget::transformGeographicToWidget (const GeoPosition &geoPosition)
+QPointF NewFlarmMapWidget::transformGeographicToWidget (const GeoPosition &geoPosition) const
 {
 	// Geographic to local
 	QPointF point_local (geoPosition.relativePositionTo (_ownPosition));
@@ -843,7 +856,7 @@ QPointF NewFlarmMapWidget::transformGeographicToWidget (const GeoPosition &geoPo
 }
 
 // Vectorized transform
-QPolygonF NewFlarmMapWidget::transformGeographicToWidget (const QVector<GeoPosition> &geoPositions)
+QPolygonF NewFlarmMapWidget::transformGeographicToWidget (const QVector<GeoPosition> &geoPositions) const
 {
 	QPolygonF result;
 

@@ -36,6 +36,9 @@ class Angle
 		Angle operator- (const Angle &other) const;
 		Angle operator* (double factor) const;
 		Angle operator/ (double factor) const;
+		double operator/ (const Angle &other) const;
+
+		Angle operator- () const;
 
 		bool operator== (const Angle &other) const;
 		bool operator!= (const Angle &other) const;

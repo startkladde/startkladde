@@ -34,6 +34,9 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	connect (ui.oldFlarmMap, SIGNAL (ownPositionUpdated ()), this, SLOT (flarmMapOwnPositionUpdated ()));
 	connect (ui.oldFlarmMap, SIGNAL (viewChanged        ()), this, SLOT (flarmMapViewChanged        ()));
 
+	connect (ui.newFlarmMap, SIGNAL (ownPositionUpdated ()), this, SLOT (flarmMapOwnPositionUpdated ()));
+	connect (ui.newFlarmMap, SIGNAL (viewChanged        ()), this, SLOT (flarmMapViewChanged        ()));
+
 	// FIXME load default orientation
 
 	// Setup the table
@@ -57,7 +60,7 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	ui.oldFlarmMap->readKml (kmlFileName);
 	ui.newFlarmMap->readKml (kmlFileName);
 
-	ui.oldFlarmMap->setFocus ();
+	ui.newFlarmMap->setFocus ();
 
 	// FIXME remove
 	resize (width (), 800);
@@ -155,7 +158,7 @@ void FlarmWindow::linkActivated (const QString &link)
 		double distance;
 		Angle bearing;
 
-		bool ok=ui.oldFlarmMap->findClosestStaticElement (&distance, &bearing);
+		bool ok=ui.newFlarmMap->findClosestStaticElement (&distance, &bearing);
 		if (ok)
 		{
 			// Note that this is not generic functionality - the wording and
@@ -200,7 +203,7 @@ void FlarmWindow::updateWarnings ()
 	// => yes, move it out to the right or left, when the widget is wider than
 	//    high
 
-	switch (ui.oldFlarmMap->getKmlStatus ())
+	switch (ui.newFlarmMap->getKmlStatus ())
 	{
 		case FlarmMapWidget::kmlNone:
 			ui.kmlWarning->showInformation (tr ("No KML file specified  (<a href=\"kmlFileNotSpecified\">details</a>)"));
@@ -218,7 +221,7 @@ void FlarmWindow::updateWarnings ()
 			ui.kmlWarning->showWarning (tr ("The specified KML file does not contain any elements"));
 			break;
 		case FlarmMapWidget::kmlOk:
-			if (ui.oldFlarmMap->isOwnPositionKnown () && !ui.oldFlarmMap->isAnyStaticElementVisible ())
+			if (ui.newFlarmMap->isOwnPositionKnown () && !ui.newFlarmMap->isAnyStaticElementVisible ())
 				ui.kmlWarning->showWarning (tr ("None of the KML elements are visible (<a href=\"noKmlElementsVisible\">details</a>)"));
 			else
 				ui.kmlWarning->hide ();
@@ -226,18 +229,18 @@ void FlarmWindow::updateWarnings ()
 		// no default
 	}
 
-	if (ui.oldFlarmMap->isOwnPositionKnown ()) // GPS good
+	if (ui.newFlarmMap->isOwnPositionKnown ()) // GPS good
 		ui.gpsWarning->hide ();
 	else
 	{
-		if (ui.oldFlarmMap->getKmlStatus ()==FlarmMapWidget::kmlOk)
+		if (ui.newFlarmMap->getKmlStatus ()==FlarmMapWidget::kmlOk)
 			// We could show the KML data, if only we had GPS
 			ui.gpsWarning->showWarning (tr ("No GPS data. The data from the KML file cannot be shown."));
 		else
 			ui.gpsWarning->showWarning (tr ("No GPS data"));
 	}
 
-	if (!ui.oldFlarmMap->isOwnPositionVisible ())
+	if (!ui.newFlarmMap->isOwnPositionVisible ())
 		ui.positionWarning->showWarning (tr ("The own position is not visible (<a href=\"resetPosition\">reset</a>)"));
 	else
 		ui.positionWarning->hide ();
@@ -246,6 +249,7 @@ void FlarmWindow::updateWarnings ()
 void FlarmWindow::flarmMapViewChanged ()
 {
 	updateWarnings ();
+	ui.newFlarmMap->findClosestStaticElement (NULL, NULL);
 }
 
 void FlarmWindow::flarmMapOwnPositionUpdated ()

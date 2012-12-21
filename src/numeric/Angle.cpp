@@ -141,6 +141,19 @@ Angle Angle::operator/ (double factor) const
 	return Angle (value/factor, valid);
 }
 
+double Angle::operator/ (const Angle &other) const
+{
+	return value/other.value;
+}
+
+/**
+ * Returns the negated angle
+ */
+Angle Angle::operator- () const
+{
+	return Angle (-value, valid);
+}
+
 /**
  * Tests for equality
  *

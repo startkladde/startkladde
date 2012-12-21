@@ -3,12 +3,10 @@
 
 #include <QFrame>
 #include <QString>
-//#include <QTransform>
-//#include <QVector>
-//#include <QHash>
 
 #include "src/flarm/flarmMap/Kml.h"
 #include "src/numeric/GeoPosition.h"
+#include "src/numeric/Angle.h"
 
 class QModelIndex;
 
@@ -114,7 +112,7 @@ class NewFlarmMapWidget: public QFrame
 		QList<StaticCurve> staticCurves;
 		QList<StaticMarker> staticMarkers;
 
-		QList<QPointF> allStaticPoints;
+		QList<GeoPosition> allStaticPositions;
 		QHash<QString, PlaneMarker> planeMarkers;
 		GeoPosition kmlSouthEast, kmlNorthWest;
 
@@ -133,8 +131,8 @@ class NewFlarmMapWidget: public QFrame
 		// KML
 		KmlStatus readKmlImplementation (const QString &filename);
 
-		QPointF   transformGeographicToWidget (const GeoPosition &geoPosition);
-		QPolygonF transformGeographicToWidget (const QVector<GeoPosition> &geoPositions);
+		QPointF   transformGeographicToWidget (const GeoPosition &geoPosition) const;
+		QPolygonF transformGeographicToWidget (const QVector<GeoPosition> &geoPositions) const;
 
 		void paintCoordinateSystem (QPainter &painter);
 
@@ -185,6 +183,10 @@ class NewFlarmMapWidget: public QFrame
 		bool zoomDragging;
 		double zoomDragStartRadius;
 		QPoint zoomDragStartPosition_widget;
+
+		int _keyboardZoomDoubleCount;
+		double _mouseDragZoomDoubleDistance;
+		Angle _mouseWheelZoomDoubleAngle;
 };
 
 #endif

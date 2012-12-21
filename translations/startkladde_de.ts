@@ -1197,17 +1197,17 @@ Die Datei kann in den Einstellungen geändert werden.</translation>
     <message>
         <location filename="../src/flarm/FlarmWindow.cpp" line="225"/>
         <source>No GPS data. The data from the KML file cannot be shown.</source>
-        <translation>Keine GPS Daten. Die Daten der KML Datei können nicht gezeigt werden.</translation>
+        <translation>Keine GPS-Daten. Die Daten der KML-Datei können nicht angezeigt werden.</translation>
     </message>
     <message>
         <location filename="../src/flarm/FlarmWindow.cpp" line="227"/>
         <source>No GPS data</source>
-        <translation>Keine GPS Daten</translation>
+        <translation>Keine GPS-Daten</translation>
     </message>
     <message>
         <location filename="../src/flarm/FlarmWindow.cpp" line="231"/>
         <source>The own position is not visible (&lt;a href=&quot;resetPosition&quot;&gt;reset&lt;/a&gt;)</source>
-        <translation>Die eigene Position ist nicht sichtbar (&lt;a href=&quot;resetPosition&quot;&gt;rücksetzen&lt;/a)</translation>
+        <translation>Die eigene Position ist nicht sichtbar (&lt;a href=&quot;resetPosition&quot;&gt;zurücksetzen&lt;/a&gt;)</translation>
     </message>
 </context>
 <context>
