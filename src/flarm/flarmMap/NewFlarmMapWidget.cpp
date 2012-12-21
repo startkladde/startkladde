@@ -790,6 +790,7 @@ void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 {
 	painter.save ();
 	QPen pen=painter.pen ();
+	pen.setCosmetic (true);
 	pen.setWidthF (0.5);
 	painter.setPen (pen);
 
@@ -808,6 +809,13 @@ void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 		QRectF rect=centeredQRectF (origin_local*localSystem_widget, size);
 		painter.drawArc (rect, 0, 16*360);
 	}
+
+	// Draw an arrow from the own position to the north direction
+	// In order to facilitate the arrow drawing, we transform the painter.
+	painter.setTransform (localSystem_widget);
+//	painter.fillRect (0, 0, 1000, 2000, Qt::black);
+	painter.drawLine (0, 0, 0, 500);
+
 
 	// FIXME why do we have to transpose?
 	// FIXME arrow and "N"
@@ -914,7 +922,6 @@ void NewFlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
 		int delta=event->pos ().y () - zoomDragStartPosition_widget.y ();
 		smallerRadius=zoomDragStartRadius*pow (2, delta/50.0); // FIXME zoomDragDoubleDistance
 	}
-
 }
 
 
