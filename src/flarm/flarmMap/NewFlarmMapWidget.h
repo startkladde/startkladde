@@ -13,7 +13,7 @@
 class QModelIndex;
 
 //class Angle;
-//class FlarmRecord;
+class FlarmRecord;
 class FlarmList;
 class GpsTracker;
 
@@ -48,6 +48,18 @@ class NewFlarmMapWidget: public QFrame
 			GeoPosition position;
 			QString text;
 			QColor backgroundColor;
+		};
+
+
+		struct PlaneMarker
+		{
+			enum Style { invisible, minimal, verbose };
+
+			Style style;
+			QPointF position_local;
+			QString text;
+			QPolygonF trail_local;
+			QColor color;
 		};
 
 		NewFlarmMapWidget (QWidget *parent);
@@ -105,8 +117,7 @@ class NewFlarmMapWidget: public QFrame
 		QList<StaticMarker> staticMarkers;
 
 		QList<QPointF> allStaticPoints;
-//		QHash<QString, QwtPlotMarker *> flarmMarkers;
-//		QHash<QString, QwtPlotCurve  *> flarmCurves;
+		QHash<QString, PlaneMarker> planeMarkers;
 		GeoPosition kmlSouthEast, kmlNorthWest;
 
 		// Status
@@ -115,16 +126,11 @@ class NewFlarmMapWidget: public QFrame
 		// Static data
 		void updateStaticData ();
 
-		// Plot item updates
-//		virtual void updateTrail (QwtPlotCurve *curve, const FlarmRecord &record);
-//		virtual void updateMarkerMinimal (QwtPlotMarker *marker, const FlarmRecord &record);
-//		virtual void updateMarkerVerbose (QwtPlotMarker *marker, const FlarmRecord &record);
-
 		// Flarm data - Flarm list changes
-//		virtual void addFlarmData (const FlarmRecord &record);
-//		virtual void removeFlarmData (const FlarmRecord &record);
-//		virtual void updateFlarmData (const FlarmRecord &record);
-		virtual void refreshFlarmData ();
+		virtual void addPlaneMarker (const FlarmRecord &record);
+		virtual void updatePlaneMarker (const FlarmRecord &record);
+		virtual void removePlaneMarker (const FlarmRecord &record);
+		virtual void refreshPlaneMarkers ();
 
 		// KML
 		KmlStatus readKmlImplementation (const QString &filename);

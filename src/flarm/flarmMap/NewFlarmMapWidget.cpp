@@ -13,8 +13,8 @@
 // FIXME: must emit viewChanged
 
 #include "src/util/qRect.h"
-//#include "src/flarm/FlarmRecord.h"
-//#include "src/numeric/Velocity.h"
+#include "src/flarm/FlarmRecord.h"
+#include "src/numeric/Velocity.h"
 //#include "src/numeric/GeoPosition.h"
 #include "src/flarm/FlarmList.h"
 //#include "src/util/qHash.h"
@@ -23,6 +23,7 @@
 //#include "src/util/qPointF.h"
 //#include "src/util/qString.h"
 #include "src/flarm/flarmMap/KmlReader.h"
+#include "src/util/qPainter.h"
 
 
 // **************************
@@ -64,11 +65,11 @@ NewFlarmMapWidget::StaticCurve::StaticCurve (const Kml::Polygon &polygon, const 
 // ******************
 
 NewFlarmMapWidget::NewFlarmMapWidget (QWidget *parent): QFrame (parent),
-	kmlStatus (kmlNone),
 	_ownPositionColor (255,   0, 0, 127),
 	_climbColor       (  0, 255, 0, 127),
 	_descentColor     (255, 255, 0, 127),
 	flarmList (NULL), gpsTracker (NULL),
+	kmlStatus (kmlNone),
 	center_local (0, 0), smallerRadius (2000),
 	scrollDragging (false), zoomDragging (false)
 {
@@ -257,332 +258,171 @@ void NewFlarmMapWidget::setOwnPositionLabel (const QString &text, const QColor &
 	_ownPositionColor=color;
 }
 
-///**
-// * Updates the curve data structures for all static curves
-// *
-// * This must be called whenever the geometry of the curves as drawn on screen
-// * changes, for example when the own position or the tranform changes.
-// *
-// * This method does not call replot(). You have to call it yourself to update
-// * the display.
-// */
-//void NewFlarmMapWidget::updateStaticData ()
-//{
-//	bool valid=ownPosition.isValid ();
-//
-//	allStaticPoints.clear ();
-//
-//	// Markers
-//	foreach (const StaticMarker &marker, staticMarkers)
-//	{
-//		if (valid)
-//		{
-//			QPointF point (marker.position.relativePositionTo (ownPosition));
-//			QPointF transformedPoint=transform.map (point);
-//			marker.marker->setValue (transformedPoint);
-//			allStaticPoints.append (transformedPoint);
-//		}
-//		marker.marker->setVisible (valid);
-//	}
-//
-//	// Curves
-//	foreach (const StaticCurve &curve, staticCurves)
-//	{
-//		if (valid)
-//		{
-//			QPolygonF polygon (GeoPosition::relativePositionTo (curve.points, ownPosition));
-//			QPolygonF transformedPolygon=transform.map (polygon);
-//			curve.data->setSamples (transformedPolygon);
-//			allStaticPoints.append (transformedPolygon.toList ());
-//		}
-//		curve.curve->setVisible (valid);
-//	}
-//
-//}
-//
-//
-//// ***********************************
-//// ** Flarm data individual updates **
-//// ***********************************
-//
-///**
-// * Sets the marker for a Flarm record to the "minimal" form
-// *
-// * This method does not call replot(). You have to call it yourself to update
-// * the display.
-// *
-// * @param marker the marker to modify
-// * @param record the Flarm record the marker is associated with
-// */
-//void NewFlarmMapWidget::updateMarkerMinimal (QwtPlotMarker *marker, const FlarmRecord &record)
-//{
-//	marker->setVisible (true);
-//
-//	Q_UNUSED (record);
-//
-//	// Symbol: small blue cross
-//	QwtSymbol *symbol=new QwtSymbol (); // Will be deleted by the marker
-//	symbol->setStyle (QwtSymbol::Cross);
-//	symbol->setSize (8);
-//	symbol->setPen (QPen (Qt::blue));
-//	marker->setSymbol (symbol);
-//
-//	// Label: none
-//	marker->setLabel (QwtText ());
-//}
-//
-///**
-// * Sets the marker for a Flarm record to the "verbose" form
-// *
-// * This method does not call replot(). You have to call it yourself to update
-// * the display.
-// *
-// * @param marker the marker to modify
-// * @param record the Flarm record the marker is associated with
-// */
-//void NewFlarmMapWidget::updateMarkerVerbose (QwtPlotMarker *marker, const FlarmRecord &record)
-//{
-//	marker->setVisible (true);
-//
-//	// Symbol: none
-//	marker->setSymbol (NULL);
-//
-//	// Label: verbose text
-//	QwtText text (qnotr ("%1\n%2/%3/%4")
-//		.arg (record.getRegistration ())
-//		.arg (record.getRelativeAltitude ())
-//		.arg (record.getGroundSpeed () / Velocity::km_h)
-//		.arg (record.getClimbRate (), 0, 'f', 1));
-//
-//	if (record.getClimbRate () > 0.0)
-//		text.setBackgroundBrush (QBrush (climbColor));
-//	else
-//		text.setBackgroundBrush (QBrush (descentColor));
-//
-//	marker->setLabel (text);
-//}
-//
-///**
-// * Updates the trail curve for a Flarm
-// *
-// * This method does not call replot(). You have to call it yourself to update
-// * the display.
-// *
-// * @param curve the crve to modify
-// * @param record the Flarm record the curve is associated with
-// */
-//void NewFlarmMapWidget::updateTrail (QwtPlotCurve *curve, const FlarmRecord &record)
-//{
-//	curve->setVisible (true);
-//
-//	// Prepare data. The data will be deleted by the curve.
-//	QPolygonF polygon (record.getPreviousRelativePositions ().toVector ());
-//	// Will be deleted by the curve
-//	QwtPointSeriesData *data = new QwtPointSeriesData (transform.map (polygon));
-//	curve->setData (data);
-//}
-//
-//
-//// ****************
-//// ** Flarm data **
-//// ****************
-//
-///**
-// * Adds the plot data for a given Flarm record
-// *
-// * This must be called exactly once for each Flarm record after it is added.
-// * updateFlarmData may only be called after this method has been called for the
-// * given Flarm record.
-// *
-// * This method also calls updateFlarmData, so after the call to addFlarmData,
-// * the data will be up to date.
-// *
-// * This method does not call replot(). You have to call it yourself to update
-// * the display.
-// *
-// * @param record the new Flarm record
-// */
-//void NewFlarmMapWidget::addFlarmData (const FlarmRecord &record)
-//{
-//	// Create, attach and store the marker
-//	QwtPlotMarker *marker = new QwtPlotMarker ();
-//	marker->attach (this);
-//	flarmMarkers.insert (record.getFlarmId (), marker);
-//
-//	// Create, attach and store the curve
-//	QwtPlotCurve* curve = new QwtPlotCurve ("history");
-//	curve->attach (this);
-//	flarmCurves.insert (record.getFlarmId (), curve);
-//
-//	// Setup the curve
-//	QPen pen;
-//	pen.setWidth (2);
-//	curve->setPen (pen);
-//	curve->setRenderHint (QwtPlotItem::RenderAntialiased);
-//
-//	// Update the data (marker and trail)
-//	updateFlarmData (record);
-//}
-//
-///**
-// * Updates the plot data (marker and curve) for a given Flarm record
-// *
-// * This must be called whenever a Flarm record is updated.
-// *
-// * This method does not call replot(). You have to call it yourself to update
-// * the display.
-// *
-// * @param record the updated Flarm record
-// */
-//void NewFlarmMapWidget::updateFlarmData (const FlarmRecord &record)
-//{
-//	QwtPlotMarker *marker=flarmMarkers.value (record.getFlarmId (), NULL);
-//	QwtPlotCurve  *curve =flarmCurves .value (record.getFlarmId (), NULL);
-//
-//	// Always set the position, even if the marker is not visible
-//	marker->setValue (transform.map (record.getRelativePosition ()));
-//
-//	switch (record.getState ())
-//	{
-//		case FlarmRecord::stateStarting:
-//		case FlarmRecord::stateFlying:
-//		case FlarmRecord::stateLanding:
-//			// Verbose marker, trail
-//			updateMarkerVerbose (marker, record);
-//			updateTrail (curve, record);
-//			break;
-//		case FlarmRecord::stateOnGround:
-//			// Minimal marker, no trail
-//			updateMarkerMinimal (marker, record);
-//			curve->setVisible (false);
-//			break;
-//		case FlarmRecord::stateUnknown:
-//		case FlarmRecord::stateFlyingFar:
-//			// No marker, no trail
-//			marker->setVisible (false);
-//			curve->setVisible (false);
-//			break;
-//		// no default
-//	}
-//}
-//
-///**
-// * Removes the plot data for a given Flarm record
-// *
-// * This must be called exactly once for each Flarm record before (!) it is
-// * removed. updateFlarmData may not be called after this method has been called
-// * for the given Flarm record.
-// *
-// * This method does not call replot(). You have to call it yourself to update
-// * the display.
-// *
-// * @param record the new Flarm record
-// */
-//void NewFlarmMapWidget::removeFlarmData (const FlarmRecord &record)
-//{
-//	// Items will be detached automatically on deletion.
-//	QString flarmId=record.getFlarmId ();
-//	removeAndDeleteIfExists (flarmMarkers, flarmId);
-//	removeAndDeleteIfExists (flarmCurves , flarmId);
-//}
-//
-///**
-// * Refreshes the plot data for all Flarm records in the Flarm list
-// *
-// * This is done by first removing all plot data and then adding the plot data
-// * by calling addFlarmData for each Flarm record in the Flarm list.
-// *
-// * This method can be called even if there is no Flarm list. All plot data will
-// * still be removed and nothing will be added.
-// *
-// * This method does not call replot(). You have to call it yourself to update
-// * the display.
-// */
-void NewFlarmMapWidget::refreshFlarmData ()
+
+// ****************
+// ** Flarm data **
+// ****************
+
+/**
+ * Adds a marker for a given Flarm record
+ *
+ * This must be called exactly once for each Flarm record after it is added. If
+ * the plane data changes subsequently, updatePlaneMarker must be called. You
+ * may only call updatePlaneMarker after addPlaneMarker has been called with
+ * the respective Flarm record.
+ *
+ * This method also calls updatePlaneMarker.
+ */
+void NewFlarmMapWidget::addPlaneMarker (const FlarmRecord &record)
 {
-//	// Items will be detached automatically on deletion.
-//	clearAndDelete (flarmMarkers);
-//	clearAndDelete (flarmCurves);
-//
-//	// Only draw if we have a Flarm list
-//	if (flarmList)
-//	{
-//		for (int i=0, n=flarmList->size (); i<n; ++i)
-//		{
-//			const FlarmRecord &record=flarmList->at (i);
-//			addFlarmData (record);
-//		}
-//	}
+	planeMarkers.insert (record.getFlarmId (), PlaneMarker ());
+	updatePlaneMarker (record);
+}
+
+/**
+ * Updates the plane marker data for a given Flarm record
+ *
+ * This method must be called whenever a Flarm record is updated. It also
+ * schedules a repaint of the widget.
+ */
+void NewFlarmMapWidget::updatePlaneMarker (const FlarmRecord &record)
+{
+	PlaneMarker &marker=planeMarkers[record.getFlarmId ()];
+
+	// Always set the position, even if the marker is not visible
+	marker.position_local=record.getRelativePosition ();
+	marker.trail_local=record.getPreviousRelativePositions ().toVector ();
+
+	switch (record.getState ())
+	{
+		case FlarmRecord::stateStarting:
+		case FlarmRecord::stateFlying:
+		case FlarmRecord::stateLanding:
+			marker.style=PlaneMarker::verbose;
+
+			marker.text=qnotr ("%1\n%2/%3/%4")
+				.arg (record.getRegistration ())
+				.arg (record.getRelativeAltitude ())
+				.arg (record.getGroundSpeed () / Velocity::km_h)
+				.arg (record.getClimbRate (), 0, 'f', 1);
+
+			if (record.getClimbRate () > 0.0)
+				marker.color=_climbColor;
+			else
+				marker.color=_descentColor;
+
+			break;
+		case FlarmRecord::stateOnGround:
+			marker.style=PlaneMarker::minimal;
+			break;
+		case FlarmRecord::stateUnknown:
+		case FlarmRecord::stateFlyingFar:
+			marker.style=PlaneMarker::invisible;
+			break;
+		// no default
+	}
+
+	// Schedule a repaint
+}
+
+/**
+ * Removes the plane marker for a given Flarm record
+ *
+ * This must be called exactly once for each Flarm record before (!) it is
+ * removed. updateFlarmData may not be called after this method has been called
+ * for the given Flarm record. This method also schedules a repaint of the
+ * widget.
+ */
+void NewFlarmMapWidget::removePlaneMarker (const FlarmRecord &record)
+{
+	planeMarkers.remove (record.getFlarmId ());
+	update ();
+}
+
+/**
+ * Refreshes the plane markers for all Flarm records in the Flarm list
+ *
+ * This is done by first removing all plane markers and then adding the plane
+ * markers by calling addPlaneMarker for each Flarm record in the Flarm list.
+ *
+ * This method can be called even if there is no Flarm list. All plot data will
+ * still be removed and nothing will be added.
+ */
+void NewFlarmMapWidget::refreshPlaneMarkers ()
+{
+	planeMarkers.clear ();
+
+	// Only draw if we have a Flarm list
+	if (flarmList)
+	{
+		for (int i=0, n=flarmList->size (); i<n; ++i)
+		{
+			const FlarmRecord &record=flarmList->at (i);
+			addPlaneMarker (record);
+		}
+	}
 }
 
 
-//// **********************
-//// ** Flarm list slots **
-//// **********************
-//
-///**
-// * Called after one or more rows have been inserted into the Flarm lsit. Adds
-// * the Flarm data for the new row(s).
-// */
+// **********************
+// ** Flarm list slots **
+// **********************
+
+/**
+ * Called after one or more rows have been inserted into the Flarm list. Adds
+ * the Flarm data for the new row(s).
+ */
 void NewFlarmMapWidget::rowsInserted (const QModelIndex &parent, int start, int end)
 {
-//	Q_UNUSED (parent);
-//
-//	if (flarmList)
-//		for (int i=start; i<=end; ++i)
-//			addFlarmData (flarmList->at (i));
-//
-//	replot ();
+	Q_UNUSED (parent);
+
+	if (flarmList)
+		for (int i=start; i<=end; ++i)
+			addPlaneMarker (flarmList->at (i));
 }
 
-///**
-// * Called after one or more rows have changed in the Flarm list. Updates the
-// * Flarm data for the changed row(s).
-// */
+/**
+ * Called after one or more rows have changed in the Flarm list. Updates the
+ * Flarm data for the changed row(s).
+ */
 void NewFlarmMapWidget::dataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-//	if (flarmList)
-//		for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
-//			updateFlarmData (flarmList->at (i));
-//
-//	// Disable this to replot only when the own position changes
-//	replot ();
+	if (flarmList)
+		for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
+			updatePlaneMarker (flarmList->at (i));
 }
 
-///**
-// * Called before (!) one or more rows are removed from the Flarm list. Removes
-// * the Flarm data for the row(s) to be removed.
-// */
+/**
+ * Called before (!) one or more rows are removed from the Flarm list. Removes
+ * the Flarm data for the row(s) to be removed.
+ */
 void NewFlarmMapWidget::rowsAboutToBeRemoved (const QModelIndex &parent, int start, int end)
 {
-//	Q_UNUSED (parent);
-//
-//	if (flarmList)
-//		for (int i=start; i<=end; ++i)
-//			removeFlarmData (flarmList->at (i));
-//
-//	replot ();
+	Q_UNUSED (parent);
+
+	if (flarmList)
+		for (int i=start; i<=end; ++i)
+			removePlaneMarker (flarmList->at (i));
 }
 
-///**
-// * Called after the Flarm list has changed completely. Refreshes all Flarm data.
-// */
+/**
+ * Called after the Flarm list has changed completely. Refreshes all Flarm data.
+ */
 void NewFlarmMapWidget::modelReset ()
 {
-//	refreshFlarmData ();
-//	replot ();
+	refreshPlaneMarkers ();
 }
 
-///**
-// * Called before the Flarm list is destroyed
-// *
-// * This method sets the Flarm list to NULL, meaning "no Flarm list", to prevent
-// * further accesses to the model.
-// */
+/**
+ * Called before the Flarm list is destroyed
+ *
+ * This method sets the Flarm list to NULL, meaning "no Flarm list", to prevent
+ * further accesses to the model.
+ */
 void NewFlarmMapWidget::flarmListDestroyed ()
 {
-//	this->flarmList=NULL;
-//	modelReset ();
+	this->flarmList=NULL;
+	modelReset ();
 }
 
 
@@ -732,22 +572,6 @@ void NewFlarmMapWidget::resetPosition ()
 // ** Painting **
 // **************
 
-void drawCenteredText (QPainter &painter, const QPoint &position, const QString &text)
-{
-	QSize size=painter.fontMetrics ().size (0, text);
-	QRect rect=centeredQRect (position, size);
-	painter.fillRect (rect, painter.brush ());
-	painter.drawText (rect, text);
-}
-
-void drawCenteredText (QPainter &painter, const QPointF &position, const QString &text)
-{
-	QSize size=painter.fontMetrics ().size (0, text);
-	QRectF rect=centeredQRectF (position, QSizeF (size));
-	painter.fillRect (rect, painter.brush ());
-	painter.drawText (rect, text);
-}
-
 double NewFlarmMapWidget::getLargerRadius () const
 {
 	double widgetAspectRatio = width () / (double)height ();
@@ -840,15 +664,18 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 
 	paintCoordinateSystem (painter);
 
+	painter.save ();
 	// Draw the own position
 	painter.setBrush (_ownPositionColor);
 	// Draw at the own position
 	QPointF position_local (0, 0);
 	drawCenteredText (painter, position_local*localSystem_widget, _ownPositionText);
+	painter.restore ();
 
 	// We can only draw the static data if the own position is known, because it
 	// is specified in absolute (earth) coordinates and the display coordinate
 	// system is centered at the own position.
+	painter.save ();
 	if (_ownPosition.isValid ())
 	{
 		// Draw all static paths
@@ -866,6 +693,34 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 			painter.setBrush (marker.backgroundColor);
 			drawCenteredText (painter, p, marker.text);
 		}
+	}
+	painter.restore ();
+
+	foreach (const PlaneMarker &marker, planeMarkers.values ())
+	{
+		QPointF position_widget=(marker.position_local*localSystem_widget).toPoint ();
+
+		switch (marker.style)
+		{
+			case PlaneMarker::invisible:
+				// Don't paint at all
+				break;
+			case PlaneMarker::minimal:
+			{
+				// Cross, 8 pixels in size
+				QPointF dx (4, 0);
+				QPointF dy (0, 4);
+				painter.drawLine (position_widget-dx, position_widget+dx);
+				painter.drawLine (position_widget-dy, position_widget+dy);
+			} break;
+			case PlaneMarker::verbose:
+				// State-dependet text with state-dependent background color
+				painter.setBrush (QBrush (marker.color));
+				drawCenteredText (painter, position_widget, marker.text);
+				break;
+			// No default
+		}
+
 	}
 }
 
