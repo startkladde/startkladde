@@ -69,7 +69,8 @@ NewFlarmMapWidget::NewFlarmMapWidget (QWidget *parent): QFrame (parent),
 	_climbColor       (  0, 255, 0, 127),
 	_descentColor     (255, 255, 0, 127),
 	flarmList (NULL), gpsTracker (NULL),
-	center_local (0, 0), smallerRadius (2000)
+	center_local (0, 0), smallerRadius (2000),
+	scrollDragging (false), zoomDragging (false)
 {
 	_ownPositionText=tr ("Start"); // FIXME proper English word
 
@@ -119,7 +120,7 @@ void NewFlarmMapWidget::wheelEvent (QWheelEvent *event)
 	// Mouse wheel down (back) means zooming out. This is the convention that
 	// many other applications, including Firefox and Gimp, use.
 	double degrees=event->delta ()/(double)8;
-	smallerRadius*=pow (2, -degrees/120);
+	smallerRadius*=pow (2, -degrees/120); // FIXME wheelDoubleAngle
 	update ();
 }
 
@@ -862,23 +863,57 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 
 void NewFlarmMapWidget::mousePressEvent (QMouseEvent *event)
 {
-	// FIXME drag&drop
-	QPointF center_widget=event->posF ();
-	center_local=center_widget*widgetSystem_local;
-	updateGeometry ();
-//	if (event->buttons ()==Qt::LeftButton)
-//	{
-//		drag
-//	}
+	if (event->button ()==Qt::LeftButton)
+	{
+		QPointF dragLocation_widget=event->posF ();
+		dragLocation_local=dragLocation_widget*widgetSystem_local;
+		scrollDragging=true;
+	}
+	else if (event->button ()==Qt::RightButton)
+	{
+		zoomDragStartPosition_widget=event->pos ();
+		zoomDragStartRadius=smallerRadius;
+		zoomDragging=true;
+	}
 }
 
 void NewFlarmMapWidget::mouseReleaseEvent (QMouseEvent *event)
 {
-
+	if (event->button ()==Qt::LeftButton)
+		scrollDragging=false;
+	else if (event->button ()==Qt::RightButton)
+		zoomDragging=false;
 }
 
 void NewFlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
 {
+	if (scrollDragging)
+	{
+		QPointF mousePosition_widget=event->posF ();
+
+		// We want the dragged location (dragLocation) to be at the mouse position
+		// (mousePosition). We therefore calculate the location that is currently
+		// at the mouse position, determine the difference and correct the center
+		// location. This has to be done in local coordinates because this is the
+		// coordinate system the center location is stored in.
+
+		// Calculate the location that is currently displayed at the mouse position,
+		// in local coordinates.
+		QPointF currentLocation_widget=mousePosition_widget;
+		QPointF currentLocation_local=currentLocation_widget*widgetSystem_local;
+
+		// The location that is supposed to be displayed at the mouse position, in
+		// local coordinates, is given by dragLocation_local.
+
+		center_local += dragLocation_local-currentLocation_local;
+		updateView ();
+	}
+
+	if (zoomDragging)
+	{
+		int delta=event->pos ().y () - zoomDragStartPosition_widget.y ();
+		smallerRadius=zoomDragStartRadius*pow (2, delta/50.0); // FIXME zoomDragDoubleDistance
+	}
 
 }
 

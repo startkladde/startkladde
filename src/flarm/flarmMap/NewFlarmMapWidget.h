@@ -159,9 +159,6 @@ class NewFlarmMapWidget: public QFrame
 		void modelReset ();
 		void flarmListDestroyed ();
 
-	private:
-		bool dragging;
-		GeoPosition dragLocation;
 
 
 		// View
@@ -190,9 +187,12 @@ class NewFlarmMapWidget: public QFrame
 		// Combined transforms
 		QTransform widgetSystem_local, localSystem_widget;
 
-
-
-
+	private:
+		bool scrollDragging;
+		QPointF dragLocation_local;
+		bool zoomDragging;
+		double zoomDragStartRadius;
+		QPoint zoomDragStartPosition_widget;
 };
 
 #endif
