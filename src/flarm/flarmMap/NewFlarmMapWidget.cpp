@@ -710,9 +710,13 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 				painter.drawLine (position_widget-dy, position_widget+dy);
 			} break;
 			case PlaneMarker::verbose:
-				// State-dependet text with state-dependent background color
+				// State-dependent text with state-dependent background color
 				painter.setBrush (QBrush (marker.color));
+				QPen pen;
+				pen.setWidth (2);
+				painter.setPen (pen);
 				drawCenteredText (painter, position_widget, marker.text);
+				painter.drawPolyline (marker.trail_local*localSystem_widget);
 				break;
 			// No default
 		}
