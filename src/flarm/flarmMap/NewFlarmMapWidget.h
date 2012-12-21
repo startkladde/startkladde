@@ -111,8 +111,6 @@ class NewFlarmMapWidget: public QFrame
 		GeoPosition _ownPosition;
 
 		// Static curves and Flarm data
-//		QwtPlotMarker *ownPositionMarker;
-
 		QList<StaticCurve> staticCurves;
 		QList<StaticMarker> staticMarkers;
 
@@ -141,18 +139,6 @@ class NewFlarmMapWidget: public QFrame
 		void paintCoordinateSystem (QPainter &painter);
 
 	protected:
-		// Generic axis methods
-		QRectF getAxesRect () const;
-		QPointF getAxesRadius () const;
-		QPointF getAxesCenter () const;
-		void setAxes (const QPointF &center, const QPointF &radius);
-		void setAxesRadius (const QPointF &radius);
-		void setAxesRadius (double xRadius, double yRadius);
-		void setAxesCenter (const QPointF &center);
-		void zoomAxes (double factor);
-		void moveAxesCenter (const QPointF &offset);
-		void moveAxesCenter (double xOffset, double yOffset);
-
 		double getLargerRadius () const;
 		double getXRadius () const;
 		double getYRadius () const;
@@ -171,7 +157,7 @@ class NewFlarmMapWidget: public QFrame
 
 	public slots:
 		virtual void ownPositionChanged (const GeoPosition &ownPosition);
-		virtual void setOrientation (const Angle &upDirection);
+		virtual void setOrientation (const Angle &orientation);
 		virtual void zoom   (double factor);
 		virtual void scroll (double x, double y);
 
@@ -180,9 +166,9 @@ class NewFlarmMapWidget: public QFrame
 
 
 	private:
-		QPointF center_local; // In local coordinates, because that's what stays fixed when rotating
-		double smallerRadius;
-		Angle orientation;
+		QPointF _center_local; // In local coordinates, because that's what stays fixed when rotating
+		double _radius;
+		Angle _orientation;
 
 		// Basic transforms
 		// _x means "in the x system"

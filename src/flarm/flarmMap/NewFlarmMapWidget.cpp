@@ -70,7 +70,7 @@ NewFlarmMapWidget::NewFlarmMapWidget (QWidget *parent): QFrame (parent),
 	_descentColor     (255, 255, 0, 127),
 	flarmList (NULL), gpsTracker (NULL),
 	kmlStatus (kmlNone),
-	center_local (0, 0), smallerRadius (2000),
+	_center_local (0, 0), _radius (2000),
 	scrollDragging (false), zoomDragging (false)
 {
 	_ownPositionText=tr ("Start"); // FIXME proper English word
@@ -104,10 +104,10 @@ void NewFlarmMapWidget::keyPressEvent (QKeyEvent *event)
 		case Qt::Key_BracketRight: zoom (1/keyboardZoomFactor); break;
 
 		// Scroll
-		case Qt::Key_Right: case Qt::Key_L: scroll ( 0.1*smallerRadius, 0); break;
-		case Qt::Key_Left : case Qt::Key_H: scroll (-0.1*smallerRadius, 0); break;
-		case Qt::Key_Up   : case Qt::Key_K: scroll (0,  0.1*smallerRadius); break;
-		case Qt::Key_Down : case Qt::Key_J: scroll (0, -0.1*smallerRadius); break;
+		case Qt::Key_Right: case Qt::Key_L: scroll ( 0.1*_radius, 0); break;
+		case Qt::Key_Left : case Qt::Key_H: scroll (-0.1*_radius, 0); break;
+		case Qt::Key_Up   : case Qt::Key_K: scroll (0,  0.1*_radius); break;
+		case Qt::Key_Down : case Qt::Key_J: scroll (0, -0.1*_radius); break;
 
 		// Other
 		default: QFrame::keyPressEvent (event); break;
@@ -121,7 +121,7 @@ void NewFlarmMapWidget::wheelEvent (QWheelEvent *event)
 	// Mouse wheel down (back) means zooming out. This is the convention that
 	// many other applications, including Firefox and Gimp, use.
 	double degrees=event->delta ()/(double)8;
-	smallerRadius*=pow (2, -degrees/120); // FIXME wheelDoubleAngle
+	_radius*=pow (2, -degrees/120); // FIXME wheelDoubleAngle
 	update ();
 }
 
@@ -202,9 +202,9 @@ void NewFlarmMapWidget::setGpsTracker (GpsTracker *gpsTracker)
  *
  * The default is north up, or upDirection=0. upDirection=90° means east up.
  */
-void NewFlarmMapWidget::setOrientation (const Angle &upDirection)
+void NewFlarmMapWidget::setOrientation (const Angle &orientation)
 {
-	orientation=upDirection;
+	_orientation=orientation;
 
 	// Schedule a repaint
 	update ();
@@ -240,9 +240,9 @@ bool NewFlarmMapWidget::isOwnPositionKnown () const
 }
 
 
-//// *****************
-//// ** Static data **
-//// *****************
+// *****************
+// ** Static data **
+// *****************
 
 /**
  * Adds, updates or removes a static marker at the origin (i. e. the own
@@ -256,6 +256,7 @@ void NewFlarmMapWidget::setOwnPositionLabel (const QString &text, const QColor &
 {
 	_ownPositionText=text;
 	_ownPositionColor=color;
+	update ();
 }
 
 
@@ -501,10 +502,10 @@ NewFlarmMapWidget::KmlStatus NewFlarmMapWidget::readKml (const QString &filename
 }
 
 
-//// **********
-//// ** View **
-//// **********
-//
+// **********
+// ** View **
+// **********
+
 bool NewFlarmMapWidget::isOwnPositionVisible () const
 {
 //	return getAxesRect ().contains (0, 0);
@@ -572,29 +573,16 @@ void NewFlarmMapWidget::resetPosition ()
 // ** Painting **
 // **************
 
-double NewFlarmMapWidget::getLargerRadius () const
-{
-	double widgetAspectRatio = width () / (double)height ();
-
-	if (widgetAspectRatio>=1)
-		// The widget is wider than high
-		return smallerRadius*widgetAspectRatio;
-	else
-		// The widget is higher than wide
-		return smallerRadius/widgetAspectRatio;
-
-}
-
 double NewFlarmMapWidget::getXRadius () const
 {
 	double widgetAspectRatio = width () / (double)height ();
 
 	if (widgetAspectRatio>=1)
 		// The widget is wider than high
-		return smallerRadius*widgetAspectRatio;
+		return _radius*widgetAspectRatio;
 	else
 		// The widget is higher than wide
-		return smallerRadius;
+		return _radius;
 
 }
 
@@ -604,10 +592,10 @@ double NewFlarmMapWidget::getYRadius () const
 
 	if (widgetAspectRatio>=1)
 		// The widget is wider than high
-		return smallerRadius;
+		return _radius;
 	else
 		// The widget is higher than wide
-		return smallerRadius/widgetAspectRatio;
+		return _radius/widgetAspectRatio;
 }
 
 void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
@@ -620,12 +608,10 @@ void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 
 	double radiusIncrement=1000;
 
-	double largerRadius=getLargerRadius ();
-
 	// FIXME minimum pixel distance
 	// FIXME draw all visible, even when the origin is scrolled out of view
 	// FIXME draw distances
-	for (double radius=radiusIncrement; radius<=largerRadius; radius+=radiusIncrement)
+	for (double radius=radiusIncrement; radius<=_radius; radius+=radiusIncrement)
 	{
 		// FIXME inefficient
 		QSizeF size (radius*width ()/getXRadius (), radius*height ()/getYRadius ());
@@ -637,14 +623,11 @@ void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 	// Draw an arrow from the own position to the north direction
 	// In order to facilitate the arrow drawing, we transform the painter.
 	painter.setTransform (localSystem_widget);
-//	painter.fillRect (0, 0, 1000, 2000, Qt::black);
 	painter.drawLine (0, 0, 0, 500);
 
 
-	// FIXME why do we have to transpose?
 	// FIXME arrow and "N"
-	// FIXME move when scrolling
-	QTransform transform; transform.rotateRadians (orientation.toRadians ());
+	QTransform transform; transform.rotateRadians (_orientation.toRadians ());
 	painter.setTransform (transform.transposed (), true);
 	painter.drawLine (0, 0, 0, -qMin (width (), height ())*1/4);
 
@@ -735,7 +718,7 @@ void NewFlarmMapWidget::mousePressEvent (QMouseEvent *event)
 	else if (event->button ()==Qt::RightButton)
 	{
 		zoomDragStartPosition_widget=event->pos ();
-		zoomDragStartRadius=smallerRadius;
+		zoomDragStartRadius=_radius;
 		zoomDragging=true;
 	}
 }
@@ -768,14 +751,14 @@ void NewFlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
 		// The location that is supposed to be displayed at the mouse position, in
 		// local coordinates, is given by dragLocation_local.
 
-		center_local += dragLocation_local-currentLocation_local;
+		_center_local += dragLocation_local-currentLocation_local;
 		updateView ();
 	}
 
 	if (zoomDragging)
 	{
 		int delta=event->pos ().y () - zoomDragStartPosition_widget.y ();
-		smallerRadius=zoomDragStartRadius*pow (2, delta/50.0); // FIXME zoomDragDoubleDistance
+		_radius=zoomDragStartRadius*pow (2, delta/50.0); // FIXME zoomDragDoubleDistance
 	}
 }
 
@@ -787,7 +770,7 @@ void NewFlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
 
 void NewFlarmMapWidget::zoom (double factor)
 {
-	smallerRadius/=factor;
+	_radius/=factor;
 
 	updateView ();
 }
@@ -795,11 +778,11 @@ void NewFlarmMapWidget::zoom (double factor)
 void NewFlarmMapWidget::scroll (double dx, double dy) // In meters
 {
 	QTransform t;
-	t.rotateRadians (orientation.toRadians ());
+	t.rotateRadians (_orientation.toRadians ());
 	// Scrolling takes place in plot/view coordinates
-	QPointF center_view=center_local*localSystem_view;
+	QPointF center_view=_center_local*localSystem_view;
 	center_view+=QPointF (dx, dy);
-	center_local=center_view*viewSystem_local;
+	_center_local=center_view*viewSystem_local;
 
 	updateView ();
 }
@@ -818,13 +801,13 @@ void NewFlarmMapWidget::updateView ()
 	// of 45° (northeast up), the view coordinate system is rotated clockwise by
 	// 45°. QTransform::rotateRadians rotates counter-clockwise.
 	viewSystem_local=QTransform ();
-	viewSystem_local.rotateRadians (-orientation.toRadians ());
+	viewSystem_local.rotateRadians (-_orientation.toRadians ());
 	localSystem_view=viewSystem_local.inverted ();
 
 	// The plot coordinate system has its origin at the center of the display,
 	// is parallel to the view coordinate system and uses pixel units instead of
 	// meter units.
-	QPointF center_view=center_local*localSystem_view;
+	QPointF center_view=_center_local*localSystem_view;
 	plotSystem_view=QTransform ();
 	plotSystem_view.translate (center_view.x (), center_view.y ());
 	plotSystem_view.scale (2*getXRadius ()/width (), 2*getYRadius ()/height ());
