@@ -64,12 +64,12 @@ NewFlarmMapWidget::StaticCurve::StaticCurve (const Kml::Polygon &polygon, const 
 // ******************
 
 NewFlarmMapWidget::NewFlarmMapWidget (QWidget *parent): QFrame (parent),
+	kmlStatus (kmlNone),
 	_ownPositionColor (255,   0, 0, 127),
 	_climbColor       (  0, 255, 0, 127),
 	_descentColor     (255, 255, 0, 127),
 	flarmList (NULL), gpsTracker (NULL),
-	local_center (0, 0), smallerRadius (2000),
-	kmlStatus (kmlNone)
+	center_local (0, 0), smallerRadius (2000)
 {
 	_ownPositionText=tr ("Start"); // FIXME proper English word
 
@@ -802,8 +802,9 @@ void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 	for (double radius=radiusIncrement; radius<=largerRadius; radius+=radiusIncrement)
 	{
 		// FIXME inefficient
-		QSize size (radius*width ()/getXRadius (), radius*height ()/getYRadius ());
-		QRect rect=centeredQRect (widget_T_local.map (QPoint (0, 0)), size);
+		QSizeF size (radius*width ()/getXRadius (), radius*height ()/getYRadius ());
+		QPointF origin_local (0, 0); // The origin is at the origin of the local coordinate system
+		QRectF rect=centeredQRectF (origin_local*localSystem_widget, size);
 		painter.drawArc (rect, 0, 16*360);
 	}
 
@@ -828,11 +829,13 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 
 	painter.setPen (Qt::black);
 
-//	paintCoordinateSystem (painter);
+	paintCoordinateSystem (painter);
 
 	// Draw the own position
 	painter.setBrush (_ownPositionColor);
-	drawCenteredText (painter, widget_T_local.map (QPoint (0, 0)), _ownPositionText);
+	// Draw at the own position
+	QPointF position_local (0, 0);
+	drawCenteredText (painter, position_local*localSystem_widget, _ownPositionText);
 
 	// We can only draw the static data if the own position is known, because it
 	// is specified in absolute (earth) coordinates and the display coordinate
@@ -859,37 +862,10 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 
 void NewFlarmMapWidget::mousePressEvent (QMouseEvent *event)
 {
-
-	// Let's translate the own position to widget coordinates, step by step
-
-//	updateView ();
-//
-//	QPointF local_p (0, 0);
-//	qDebug () << "local" << local_p;
-//
-//	QPointF view_p = view_T_local.map (local_p);
-//	qDebug () << "view" << view_p;
-//
-//	QPointF plot_p = plot_T_view.map (view_p);
-//	qDebug () << "plot" << plot_p;
-//
-//	QPointF widget_p = widget_T_plot.map (plot_p);
-//	qDebug () << "widget" << widget_p;
-//
-//	QPointF widget_p_direct = widget_T_local.map (local_p);
-//	qDebug () << "widget (direct)" << widget_p_direct;
-
-	QTransform t1, t2;
-	t1.scale (10, 10);
-	t2.translate (1, 2);
-
-	qDebug () << t1;
-	qDebug () << t2;
-	qDebug () << t1*t2;
-
-
-//	localCenter=transformWidgetToLocal (event->pos ());
-//	update ();
+	// FIXME drag&drop
+	QPointF center_widget=event->posF ();
+	center_local=center_widget*widgetSystem_local;
+	updateGeometry ();
 //	if (event->buttons ()==Qt::LeftButton)
 //	{
 //		drag
@@ -919,14 +895,14 @@ void NewFlarmMapWidget::zoom (double factor)
 	updateView ();
 }
 
-void NewFlarmMapWidget::scroll (double x, double y)
+void NewFlarmMapWidget::scroll (double dx, double dy) // In meters
 {
 	QTransform t;
 	t.rotateRadians (orientation.toRadians ());
 	// Scrolling takes place in plot/view coordinates
-	QPointF viewCenter=t.map (local_center);
-	viewCenter+=QPointF (x, y);
-	local_center=t.transposed ().map (viewCenter);
+	QPointF center_view=center_local*localSystem_view;
+	center_view+=QPointF (dx, dy);
+	center_local=center_view*viewSystem_local;
 
 	updateView ();
 }
@@ -938,32 +914,37 @@ void NewFlarmMapWidget::scroll (double x, double y)
 //   * plot: right/up in pixels, orientation up, origin at the display center
 //   * widget: right/down in pixels, orientation up, origin in the upper left
 
-
 void NewFlarmMapWidget::updateView ()
 {
-	local_T_view=view_T_plot=plot_T_widget=QTransform ();
+	// The view coordinate system is rotated clockwise by the orientation with
+	// respect to the local coordinate system. For example, for an orientation
+	// of 45° (northeast up), the view coordinate system is rotated clockwise by
+	// 45°. QTransform::rotateRadians rotates counter-clockwise.
+	viewSystem_local=QTransform ();
+	viewSystem_local.rotateRadians (-orientation.toRadians ());
+	localSystem_view=viewSystem_local.inverted ();
 
-	local_T_view.rotateRadians (-orientation.toRadians ());
-	view_T_local=local_T_view.inverted ();
-//	qDebug () << "local_T_view" << local_T_view;
+	// The plot coordinate system has its origin at the center of the display,
+	// is parallel to the view coordinate system and uses pixel units instead of
+	// meter units.
+	QPointF center_view=center_local*localSystem_view;
+	plotSystem_view=QTransform ();
+	plotSystem_view.translate (center_view.x (), center_view.y ());
+	plotSystem_view.scale (2*getXRadius ()/width (), 2*getYRadius ()/height ());
+	viewSystem_plot=plotSystem_view.inverted ();
 
-	QPointF view_center=view_T_local.map (local_center);
-	view_T_plot.translate (view_center.x (), view_center.y ());
-	view_T_plot.scale (width ()/(2*getXRadius ()), height ()/(2*getYRadius ()));
-	plot_T_view=view_T_plot.inverted ();
-//	qDebug () << "view_T_plot" << view_T_plot;
+	// The widget coordinate system has its origin at the top left corner of the
+	// display and the y axis down instead of up. Otherwise, it is parallel to
+	// the plot coordinate system and has the same size.
+	widgetSystem_plot=QTransform ();
+	widgetSystem_plot.translate (-width ()/2, height ()/2);
+	widgetSystem_plot.scale (1, -1);
+	plotSystem_widget=widgetSystem_plot.inverted ();
 
-	plot_T_widget.translate (-width ()/2, height ()/2);
-	plot_T_widget.scale (1, -1);
-	widget_T_plot=plot_T_widget.inverted ();
-//	qDebug () << "plot_T_widget" << plot_T_widget;
-
-//	local_T_widget=local_T_view*view_T_plot*plot_T_widget;
-	local_T_widget=plot_T_widget*plot_T_view*view_T_local;
-	widget_T_local=local_T_widget.inverted ();
-
-//	qDebug () << "local_T_widget" << local_T_widget;
-//	qDebug () << "widget_T_local" << widget_T_local;
+	// The transform from the local to the widget coordinate system is given by
+	// the product of the individual transformations.
+	widgetSystem_local=widgetSystem_plot*plotSystem_view*viewSystem_local;
+	localSystem_widget=widgetSystem_local.inverted ();
 
 	emit viewChanged ();
 	update ();
@@ -975,10 +956,10 @@ void NewFlarmMapWidget::updateView ()
 QPointF NewFlarmMapWidget::transformGeographicToWidget (const GeoPosition &geoPosition)
 {
 	// Geographic to local
-	QPointF local_point (geoPosition.relativePositionTo (_ownPosition));
+	QPointF point_local (geoPosition.relativePositionTo (_ownPosition));
 
 	// Local to widget
-	return widget_T_local.map (local_point);
+	return point_local*localSystem_widget;
 }
 
 // Vectorized transform
@@ -986,6 +967,7 @@ QPolygonF NewFlarmMapWidget::transformGeographicToWidget (const QVector<GeoPosit
 {
 	QPolygonF result;
 
+	// FIXME we can transform a QPolygon directly
 	foreach (const GeoPosition &geoPosition, geoPositions)
 		result.append (transformGeographicToWidget (geoPosition));
 

@@ -177,17 +177,18 @@ class NewFlarmMapWidget: public QFrame
 
 
 	private:
-		QPointF local_center; // In local coordinates, because that's what stays fixed when rotating
+		QPointF center_local; // In local coordinates, because that's what stays fixed when rotating
 		double smallerRadius;
 		Angle orientation;
 
 		// Basic transforms
-		QTransform local_T_view, view_T_local;
-		QTransform view_T_plot, plot_T_view;
-		QTransform plot_T_widget, widget_T_plot;
+		// _x means "in the x system"
+		QTransform viewSystem_local, localSystem_view;
+		QTransform plotSystem_view, viewSystem_plot;
+		QTransform widgetSystem_plot, plotSystem_widget;
 
 		// Combined transforms
-		QTransform local_T_widget, widget_T_local;
+		QTransform widgetSystem_local, localSystem_widget;
 
 
 
