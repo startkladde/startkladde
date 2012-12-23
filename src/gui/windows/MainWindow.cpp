@@ -2397,6 +2397,10 @@ Flight MainWindow::createFlarmFlight (const FlightLookup::Result &lookupResult, 
  */
 void MainWindow::flarmList_departureDetected (const QString &flarmId)
 {
+	// Ignore the event if handling of Flarm events is disabled
+	if (!Settings::instance ().flarmAutostart)
+		return;
+
 	if (departureTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
 	{
 		std::cout <<
@@ -2474,6 +2478,10 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
  */
 void MainWindow::flarmList_landingDetected (const QString &flarmId)
 {
+	// Ignore the event if handling of Flarm events is disabled
+	if (!Settings::instance ().flarmAutostart)
+		return;
+
 	if (landingTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
 	{
 		std::cout <<
@@ -2537,6 +2545,10 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
  */
 void MainWindow::flarmList_touchAndGoDetected (const QString &flarmId)
 {
+	// Ignore the event if handling of Flarm events is disabled
+	if (!Settings::instance ().flarmAutostart)
+		return;
+
 	if (touchAndGoTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
 	{
 		std::cout <<
