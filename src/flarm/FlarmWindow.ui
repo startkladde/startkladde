@@ -114,6 +114,9 @@
             <property name="frameShadow">
              <enum>QFrame::Sunken</enum>
             </property>
+            <property name="lineWidth">
+             <number>4</number>
+            </property>
            </widget>
           </item>
          </layout>

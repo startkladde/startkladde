@@ -279,3 +279,8 @@ void FlarmWindow::on_flarmMap_mouseMoved (QPointF positionLocal)
 
 	mousePositionLabel->setText (tr ("%1, %2").arg (northText, eastText));
 }
+
+void FlarmWindow::on_flarmMap_mouseLeft ()
+{
+	mousePositionLabel->clear ();
+}

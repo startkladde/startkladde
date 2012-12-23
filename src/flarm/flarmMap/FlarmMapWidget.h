@@ -97,6 +97,7 @@ class FlarmMapWidget: public QFrame
 		void viewChanged () const;
 		void ownPositionUpdated () const;
 		void mouseMoved (QPointF position_local) const;
+		void mouseLeft () const;
 
 	protected:
 		virtual void paintEvent (QPaintEvent *event);
@@ -106,6 +107,7 @@ class FlarmMapWidget: public QFrame
 		virtual void mousePressEvent (QMouseEvent *event);
 		virtual void mouseReleaseEvent (QMouseEvent *event);
 		virtual void resizeEvent (QResizeEvent *event);
+		virtual void leaveEvent (QEvent *event);
 
 
 	private:

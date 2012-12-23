@@ -737,6 +737,8 @@ void FlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 
 void FlarmMapWidget::paintEvent (QPaintEvent *event)
 {
+	QFrame::paintEvent (event);
+
 	updateTransforms ();
 
 	(void)event;
@@ -978,4 +980,10 @@ void FlarmMapWidget::resizeEvent (QResizeEvent *event)
 {
 	(void)event;
 	updateView ();
+}
+
+void FlarmMapWidget::leaveEvent (QEvent *event)
+{
+	(void)event;
+	emit mouseLeft ();
 }
