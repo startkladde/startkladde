@@ -8,6 +8,8 @@
 #include <QFile>
 #include <QIODevice>
 #include <QStringList>
+#include <QFileInfo>
+#include <QDir>
 
 #include "src/util/qString.h"
 
@@ -151,6 +153,37 @@ void KmlReader::readPlacemark (const QDomNode &placemarkNode)
 		 readPolygon (placemarkName, styleUrl, polygonElement);
 }
 
+// FIXME documentation
+// FIXME should also support LatLonQuad (non-rectangular quadrilaterals)
+void KmlReader::readGroundOverlay (const QDomNode &groundOverlayNode, const QDir &dir)
+{
+	QString groundOverlayName=groundOverlayNode.firstChildElement ("name").text ();
+
+	QDomElement iconElement=groundOverlayNode.firstChildElement ("Icon");
+	QString filename=iconElement.firstChildElement ("href").text ();
+
+	QDomElement latLonBoxElement=groundOverlayNode.firstChildElement ("LatLonBox");
+	double north=latLonBoxElement.firstChildElement ("north").text ().toDouble ();
+	double south=latLonBoxElement.firstChildElement ("south").text ().toDouble ();
+	double east =latLonBoxElement.firstChildElement ("east" ).text ().toDouble ();
+	double west =latLonBoxElement.firstChildElement ("west" ).text ().toDouble ();
+	double rotation=latLonBoxElement.firstChildElement ("rotation").text ().toDouble (); // FIXME set to 0 if not present
+
+	// FIXME shown twice for a file with only one ground overlay => file loaded twice?
+	//qDebug () << dir;
+
+	Kml::GroundOverlay groundOverlay;
+	groundOverlay.name=groundOverlayName;
+	groundOverlay.filename=dir.filePath (filename);
+	groundOverlay.north=Angle::fromDegrees (north);
+	groundOverlay.south=Angle::fromDegrees (south);
+	groundOverlay.east =Angle::fromDegrees (east );
+	groundOverlay.west =Angle::fromDegrees (west );
+	groundOverlay.rotation=Angle::fromDegrees (rotation);
+
+	groundOverlays.append (groundOverlay);
+}
+
 /**
  * This method is not reentrant because it calls a non-reentrant method of
  * QDomDocument.
@@ -181,6 +214,14 @@ KmlReader::ReadResult KmlReader::read (const QString &filename)
 	 QDomNodeList placemarkNodes=document.elementsByTagName ("Placemark");
 	 for (int i=0, n=placemarkNodes.size (); i<n; ++i)
 		 readPlacemark (placemarkNodes.at (i));
+
+	 // Extract the ground overlays
+	 qDebug () << filename;
+	 qDebug () << QDir (filename);
+	 qDebug () << QDir (filename).dirName ();
+	 QDomNodeList groundOverlayNodes=document.elementsByTagName ("GroundOverlay");
+	 for (int i=0, n=groundOverlayNodes.size (); i<n; ++i)
+		 readGroundOverlay (groundOverlayNodes.at (i), QFileInfo (filename).dir ());
 
 	 // Extract the styles from the DOM structure
 	 QDomNodeList styleNodes=document.elementsByTagName ("Style");

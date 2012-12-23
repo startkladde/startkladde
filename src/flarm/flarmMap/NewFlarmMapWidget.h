@@ -48,6 +48,15 @@ class NewFlarmMapWidget: public QFrame
 			QColor backgroundColor;
 		};
 
+		struct Image
+		{
+			Image (const Kml::GroundOverlay &groundOverlay);
+
+			QPixmap pixmap;
+			// FIME remove those that are not required
+			GeoPosition northEast, southWest;
+			GeoPosition northWest, southEast;
+		};
 
 		struct PlaneMarker
 		{
@@ -111,6 +120,7 @@ class NewFlarmMapWidget: public QFrame
 		// Static curves and Flarm data
 		QList<StaticCurve> staticCurves;
 		QList<StaticMarker> staticMarkers;
+		QList<Image> images;
 
 		QList<GeoPosition> allStaticPositions;
 		QHash<QString, PlaneMarker> planeMarkers;

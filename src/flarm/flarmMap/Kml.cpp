@@ -25,7 +25,7 @@ QPen Kml::Style::linePen () const
 
 QColor Kml::parseColor (const QString color)
 {
-	// It seems like white, fully opaque, may be stored as an empty string.
+	// It seems like fully opaque white may be stored as an empty string.
 	if (color.isEmpty ())
 		return Qt::white;
 
@@ -40,4 +40,3 @@ QColor Kml::parseColor (const QString color)
 
 	return QColor (r, g, b, a);
 }
-

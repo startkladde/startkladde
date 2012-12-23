@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QMap>
 #include <QPen>
+#include <QDir>
 
 #include "src/flarm/flarmMap/Kml.h"
 #include "src/numeric/GeoPosition.h"
@@ -38,6 +39,7 @@ class KmlReader
 		QList<Kml::Marker> markers;
 		QList<Kml::Path> paths;
 		QList<Kml::Polygon> polygons;
+		QList<Kml::GroundOverlay> groundOverlays;
 
 		QMap<QString, Kml::Style> styles;
 		QMap<QString, Kml::StyleMap> styleMaps;
@@ -55,6 +57,7 @@ class KmlReader
 		void readMarker  (const QString &name, const QString &styleUrl, const QDomElement &lookAtElement);
 		void readPath    (const QString &name, const QString &styleUrl, const QDomElement &lineStringElement);
 		void readPolygon (const QString &name, const QString &styleUrl, const QDomElement &polygonElement);
+		void readGroundOverlay (const QDomNode &groundOverlayNode, const QDir &dir);
 };
 
 #endif

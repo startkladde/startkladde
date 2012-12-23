@@ -34,6 +34,15 @@ namespace Kml
 			QString styleUrl;
 	};
 
+	class GroundOverlay
+	{
+		public:
+			QString name;
+			QString filename;
+			Angle north, south, east, west;
+			Angle rotation;
+	};
+
 	class Style
 	{
 		public:
@@ -52,7 +61,6 @@ namespace Kml
 	};
 
 	QColor parseColor (const QString color);
-
 }
 
 

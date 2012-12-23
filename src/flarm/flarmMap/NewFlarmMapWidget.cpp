@@ -59,6 +59,22 @@ NewFlarmMapWidget::StaticCurve::StaticCurve (const Kml::Polygon &polygon, const 
 
 }
 
+// *******************
+// ** Image methods **
+// *******************
+
+NewFlarmMapWidget::Image::Image (const Kml::GroundOverlay &groundOverlay)
+{
+	// TODO error handling - .load returns false
+	pixmap.load (groundOverlay.filename);
+
+	northEast=GeoPosition (groundOverlay.north, groundOverlay.east);
+	southWest=GeoPosition (groundOverlay.south, groundOverlay.west);
+	northWest=GeoPosition (groundOverlay.north, groundOverlay.west);
+	southEast=GeoPosition (groundOverlay.south, groundOverlay.east);
+}
+
+
 // ******************
 // ** Construction **
 // ******************
@@ -493,6 +509,14 @@ NewFlarmMapWidget::KmlStatus NewFlarmMapWidget::readKmlImplementation (const QSt
 		allStaticPositions.append (staticCurve.points.toList ());
 	}
 
+	// For each ground overlay in the KML file, add an image
+	foreach (const Kml::GroundOverlay &overlay, kmlReader.groundOverlays)
+	{
+		Image image=Image (overlay);
+		images.append (image);
+		// FIXME allStaticPositions
+	}
+
 	// Something changed, so we have to schedule a repaint
 	update ();
 
@@ -649,7 +673,7 @@ void NewFlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 
 void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 {
-	// FIXME only when requried
+	// FIXME only when required
 	updateView ();
 
 	(void)event;
@@ -658,7 +682,39 @@ void NewFlarmMapWidget::paintEvent (QPaintEvent *event)
 
 	painter.setPen (Qt::black);
 
+	if (_ownPosition.isValid ())
+	{
+		painter.save ();
+
+		// FIXME doing handle north/south/east/west
+		// FIXME handle image.rotation
+		foreach (const Image &image, images)
+		{
+			QPointF northEast_local=image.northEast.relativePositionTo (_ownPosition);
+			QPointF southWest_local=image.southWest.relativePositionTo (_ownPosition);
+			QPointF northWest_local=image.northWest.relativePositionTo (_ownPosition);
+			QPointF southEast_local=image.southEast.relativePositionTo (_ownPosition);
+
+			QTransform drawSystem_local;
+			drawSystem_local.scale (1, -1);
+			QTransform localSystem_draw=drawSystem_local.inverted ();
+
+			QTransform drawSystem_widget=drawSystem_local*localSystem_widget;
+
+			QPointF northWest_draw=northWest_local*localSystem_draw;
+			QPointF southEast_draw=southEast_local*localSystem_draw;
+			QRectF imageRect_draw (northWest_draw, southEast_draw);
+
+			painter.setTransform (drawSystem_widget, false);
+			painter.drawPixmap (imageRect_draw, image.pixmap, image.pixmap.rect ());
+		}
+
+		painter.restore ();
+	}
+
+	painter.save ();
 	paintCoordinateSystem (painter);
+	painter.restore ();
 
 	painter.save ();
 	// Draw the own position
